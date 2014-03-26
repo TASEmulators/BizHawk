@@ -3,7 +3,7 @@ namespace BizHawk.Client.Common
 {
 	public class StringLuaLibrary : LuaLibraryBase
 	{
-		public override string Name { get { return "string"; } }
+		public override string Name { get { return "bizstring"; } }
 
 		[LuaMethodAttributes(
 			"hex",

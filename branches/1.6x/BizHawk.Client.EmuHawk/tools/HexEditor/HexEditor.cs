@@ -149,6 +149,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public byte[] ConvertTextToBytes(string str)
+		{
+			if (_textTable.Any())
+			{
+				var byteArr = new List<byte>();
+				foreach (var chr in str)
+				{
+					byteArr.Add((byte)_textTable.FirstOrDefault(kvp => kvp.Value == chr).Key);
+				}
+
+				return byteArr.ToArray();
+			}
+
+			return str.Select(Convert.ToByte).ToArray();
+		}
+
 		public void FindNext(string value, bool wrap)
 		{
 			var found = -1;
@@ -369,21 +385,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private static string GetSaveFileFromUser()
 		{
-			var sfd = new SaveFileDialog();
-
-			if (!(Global.Emulator is NullEmulator))
+			var sfd = new SaveFileDialog
 			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+				Filter = "Text (*.txt)|*.txt|All Files|*.*",
+				RestoreDirectory = true
+			};
+
+			if (Global.Emulator is NullEmulator)
+			{
+				sfd.FileName = "MemoryDump";
+				sfd.InitialDirectory = PathManager.GetBasePathAbsolute();
 			}
 			else
 			{
-				sfd.FileName = "MemoryDump";
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+				sfd.InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null));
 			}
 
-			sfd.InitialDirectory = PathManager.GetPlatformBase(Global.Emulator.SystemId);
-
-			sfd.Filter = "Text (*.txt)|*.txt|All Files|*.*";
-			sfd.RestoreDirectory = true;
 			var result = sfd.ShowHawkDialog();
 
 			return result == DialogResult.OK ? sfd.FileName : string.Empty;
@@ -599,7 +617,7 @@ namespace BizHawk.Client.EmuHawk
 					"File on Disk", _rom.Length, MemoryDomain.Endian.Little, i => _rom[i], (i, value) => _rom[i] = value);
 
 				// <zeromus> THIS IS HORRIBLE.
-				_domain = _romDomain;
+				SetMemoryDomain(_romDomain);
 			}
 			else if (pos < Global.Emulator.MemoryDomains.Count)
 			{
@@ -867,20 +885,31 @@ namespace BizHawk.Client.EmuHawk
 
 		private string GetBinarySaveFileFromUser()
 		{
-			var sfd = new SaveFileDialog();
-
-			if (!(Global.Emulator is NullEmulator))
+			var sfd = new SaveFileDialog
 			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+				Filter = GetSaveFileFilter(),
+				RestoreDirectory = true
+			};
+
+			if (Global.Emulator is NullEmulator)
+			{
+				sfd.FileName = "MemoryDump";
+				sfd.InitialDirectory = PathManager.GetBasePathAbsolute();
 			}
 			else
 			{
-				sfd.FileName = "MemoryDump";
+				if (_domain.Name == "File on Disk")
+				{
+					sfd.FileName = Path.GetFileName(Global.Config.RecentRoms.MostRecent);
+				}
+				else
+				{
+					sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+				}
+
+				sfd.InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null));
 			}
 
-			sfd.InitialDirectory = PathManager.GetPlatformBase(Global.Emulator.SystemId);
-			sfd.Filter = GetSaveFileFilter();
-			sfd.RestoreDirectory = true;
 			var result = sfd.ShowHawkDialog();
 
 			return result == DialogResult.OK ? sfd.FileName : string.Empty;
@@ -1220,6 +1249,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SaveAsBinaryMenuItem.Text = "Save as binary...";
 			}
+
+			CloseTableFileMenuItem.Enabled = _textTable.Any();
 		}
 		
 		private void SaveMenuItem_Click(object sender, EventArgs e)
@@ -1268,7 +1299,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ofd = new OpenFileDialog
 			{
-				InitialDirectory = PathManager.GetPlatformBase(Global.Emulator.SystemId),
+				FileName = Path.GetFileNameWithoutExtension(Global.Config.RecentRoms.MostRecent) + ".tbl",
+				InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null)),
 				Filter = "Text Table files (*.tbl)|*.tbl|All Files|*.*",
 				RestoreDirectory = false
 			};
@@ -1283,6 +1315,11 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.RecentTables.Add(ofd.FileName);
 				UpdateValues();
 			}
+		}
+
+		private void CloseTableFileMenuItem_Click(object sender, EventArgs e)
+		{
+			_textTable.Clear();
 		}
 
 		public void LoadFileFromRecent(string path)
