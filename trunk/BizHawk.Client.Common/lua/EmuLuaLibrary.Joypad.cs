@@ -102,57 +102,32 @@ namespace BizHawk.Client.Common
 						theValue = null;
 					}
 
+					var toPress = button;
+					if (controller != null)
+					{
+						toPress = "P" + controller + " " + button;
+					}
+
 					if (!invert)
 					{
-						if (theValue == true)
+						if (theValue == true) // Force On
 						{
-							if (controller == null) // Force On
-							{
-								Global.ClickyVirtualPadController.Click(button.ToString());
-								Global.ForceOffAdaptor.SetSticky(button.ToString(), false);
-							}
-							else
-							{
-								Global.ClickyVirtualPadController.Click("P" + controller + " " + button);
-								Global.ForceOffAdaptor.SetSticky("P" + controller + " " + button, false);
-							}
+							Global.ClickyVirtualPadController.Click(button.ToString());
+							Global.ForceOffAdaptor.SetSticky(button.ToString(), false);
 						}
 						else if (theValue == false) // Force off
 						{
-							if (controller == null)
-							{
-								Global.ForceOffAdaptor.SetSticky(button.ToString(), true);
-							}
-							else
-							{
-								Global.ForceOffAdaptor.SetSticky("P" + controller + " " + button, true);
-							}
+							Global.ForceOffAdaptor.SetSticky(button.ToString(), true);
 						}
 						else
 						{
-							// Turn everything off
-							if (controller == null)
-							{
-								Global.ForceOffAdaptor.SetSticky(button.ToString(), false);
-							}
-							else
-							{
-								Global.ForceOffAdaptor.SetSticky("P" + controller + " " + button, false);
-							}
+							Global.ForceOffAdaptor.SetSticky(button.ToString(), false);
 						}
 					}
 					else // Inverse
 					{
-						if (controller == null)
-						{
-							Global.StickyXORAdapter.SetSticky(button.ToString(), true);
-							Global.ForceOffAdaptor.SetSticky(button.ToString(), false);
-						}
-						else
-						{
-							Global.StickyXORAdapter.SetSticky("P" + controller + " " + button, true);
-							Global.ForceOffAdaptor.SetSticky("P" + controller + " " + button, false);
-						}
+						Global.StickyXORAdapter.SetSticky(button.ToString(), true);
+						Global.ForceOffAdaptor.SetSticky(button.ToString(), false);
 					}
 				}
 			}
