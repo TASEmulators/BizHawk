@@ -244,6 +244,11 @@ namespace BizHawk.Client.Common
 				this.StickySet.Remove(button);
 			}
 		}
+
+		public void Unset(string button)
+		{
+			StickySet.Remove(button);
+		}
 	}
 
 	public class StickyXorAdapter : IController
@@ -313,6 +318,11 @@ namespace BizHawk.Client.Common
 			{
 				stickySet.Remove(button);
 			}
+		}
+
+		public void Unset(string button)
+		{
+			stickySet.Remove(button);
 		}
 
 		public bool IsSticky(string button)

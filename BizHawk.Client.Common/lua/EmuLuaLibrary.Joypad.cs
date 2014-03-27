@@ -121,7 +121,8 @@ namespace BizHawk.Client.Common
 						}
 						else
 						{
-							Global.ForceOffAdaptor.SetSticky(button.ToString(), false);
+							Global.StickyXORAdapter.Unset(button.ToString());
+							Global.ForceOffAdaptor.Unset(button.ToString());
 						}
 					}
 					else // Inverse
