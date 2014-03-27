@@ -15,7 +15,7 @@ buttons["P1 Down"] = true;
 buttons["P1 Left"] = "invert";
 buttons["P1 Right"] = null;
 
-pushThings = false;	
+pushThings = true;	
 
 while true do
 	if (pushThings) then
