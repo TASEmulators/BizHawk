@@ -14,11 +14,13 @@ buttons["P1 Up"] = false;
 buttons["P1 Down"] = true;
 buttons["P1 Left"] = "invert";
 buttons["P1 Right"] = null;
+joypad.set(buttons);
 
 pushThings = true;	
 
 while true do
 	if (pushThings) then
+		buttons = { };
 		buttons["P1 A"] = false;
 		buttons["P1 B"] = true;
 		buttons["P1 Select"] = "invert";
