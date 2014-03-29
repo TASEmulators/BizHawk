@@ -73,9 +73,9 @@ namespace BizHawk.Client.Common
 		public static StickyXorAdapter StickyXORAdapter = new StickyXorAdapter();
 
 		/// <summary>
-		/// Forces any controller button to Off, useful for things like Joypad.Set
+		/// Used to AND to another controller, used for Joypad.Set()
 		/// </summary>
-		public static ForceOffAdaptor ForceOffAdaptor = new ForceOffAdaptor();
+		public static OverrideAdaptor LuaAndAdaptor = new OverrideAdaptor();
 
 		/// <summary>
 		/// fire off one-frame logical button clicks here. useful for things like ti-83 virtual pad and reset buttons

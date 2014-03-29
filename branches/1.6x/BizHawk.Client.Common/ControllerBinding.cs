@@ -134,6 +134,19 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public void Overrides(OverrideAdaptor controller)
+		{
+			foreach (var button in controller.Overrides)
+			{
+				_buttons[button] = controller[button];
+			}
+
+			foreach (var button in controller.InversedButtons)
+			{
+				_buttons[button] ^= true;
+			}
+		}
+
 		public void BindButton(string button, string control)
 		{
 			_bindings[button].Add(control);
