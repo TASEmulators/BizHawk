@@ -110,25 +110,18 @@ namespace BizHawk.Client.Common
 
 					if (!invert)
 					{
-						if (theValue == true) // Force On
+						if (theValue.HasValue) // Force
 						{
-							Global.ClickyVirtualPadController.Click(button.ToString());
-							Global.ForceOffAdaptor.SetSticky(button.ToString(), false);
+							Global.LuaAndAdaptor.SetButton(button.ToString(), theValue.Value);
 						}
-						else if (theValue == false) // Force off
+						else // Unset
 						{
-							Global.ForceOffAdaptor.SetSticky(button.ToString(), true);
-						}
-						else
-						{
-							Global.StickyXORAdapter.Unset(button.ToString());
-							Global.ForceOffAdaptor.Unset(button.ToString());
+							Global.LuaAndAdaptor.UnSet(button.ToString());
 						}
 					}
 					else // Inverse
 					{
-						Global.StickyXORAdapter.SetSticky(button.ToString(), true);
-						Global.ForceOffAdaptor.SetSticky(button.ToString(), false);
+						Global.LuaAndAdaptor.SetInverse(button.ToString());
 					}
 				}
 			}
