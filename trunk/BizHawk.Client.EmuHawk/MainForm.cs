@@ -398,6 +398,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.ActiveController.LatchFromPhysical(Global.ControllerInputCoalescer);
 
 				Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
+				Global.ActiveController.Overrides(Global.LuaAndAdaptor);
 				Global.AutoFireController.LatchFromPhysical(Global.ControllerInputCoalescer);
 
 				if (Global.ClientControls["Autohold"])
@@ -2339,6 +2340,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				Global.ClickyVirtualPadController.FrameTick();
+				Global.LuaAndAdaptor.FrameTick();
 
 				_runloopFps++;
 
