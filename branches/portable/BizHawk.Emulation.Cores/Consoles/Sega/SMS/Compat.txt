@@ -1,15 +1,17 @@
 ﻿======= SMS compatibility issues =======
 
-* NBA-Jam SMS Proto: works in PAL mode, which is how it's designed to run.
-  In NTSC mode, it is impossible to start a game, however, it is possible on
-  other emulators.
-  Need to give it a test on Everdrive, and eventually investigate its NTSC behavior,
-  but don't really consider it super-high priority since it works correctly in PAL mode.
+Note: add PS1J-retranslation to gamedb
+
+Korean games currently not booting:
+ - FA Tetris
+ - Flashpoint
+ - Sky Jaguar boots but gfx issues (works in cogwheel) (but not in MEKA!)
 
 * Desert Strike - you can enter the map screen but cannot leave.
-* Korean mapper needs to be implemented for SG-1000 games.
 
-Could probably stand to do another pass on SMS emulation after Genesis is working.
+- Light Gun emulation
+- Paddle emulation
+- Sports pad emulation?
 
 ======= Game Gear compatibility issues =======
 
@@ -18,6 +20,4 @@ Could probably stand to do another pass on SMS emulation after Genesis is workin
 
 ======= SG-1000 compatibility checklist =======
 
-The Castle      Dies, mapper issue
-Othello         Doesnt boot
 Terebi Oekaki   Req Graphic Board peripheral

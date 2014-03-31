@@ -53,9 +53,15 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public Action<string> ShowMessage { get; private set; }
 
-		public CoreComm(Action<string> ShowMessage)
+		/// <summary>
+		/// show a message.  less annoying (OSD message). Should be used for ignorable helpful messages
+		/// </summary>
+		public Action<string> Notify { get; private set; }
+
+		public CoreComm(Action<string> ShowMessage, Action<string> NotifyMessage)
 		{
 			this.ShowMessage = ShowMessage;
+			this.Notify = NotifyMessage;
 		}
 	}
 

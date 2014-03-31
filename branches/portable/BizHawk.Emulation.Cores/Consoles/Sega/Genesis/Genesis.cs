@@ -375,8 +375,8 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			Musashi.SaveStateBinary(writer);    // 124  
-			SoundCPU.SaveStateBinary(writer);   // 46
-			PSG.SaveStateBinary(writer);        // 15
+			//SoundCPU.SaveStateBinary(writer);   // 46     TODO fix this, there is no way to invoke this core from the UI for testing anyway.
+			//PSG.SaveStateBinary(writer);        // 15
 			VDP.SaveStateBinary(writer);        // 65781
 			YM2612.SaveStateBinary(writer);     // 1785
 
@@ -406,8 +406,8 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			Musashi.LoadStateBinary(reader);
-			SoundCPU.LoadStateBinary(reader);
-			PSG.LoadStateBinary(reader);
+			//SoundCPU.LoadStateBinary(reader);
+			//PSG.LoadStateBinary(reader); 
 			VDP.LoadStateBinary(reader);
 			YM2612.LoadStateBinary(reader);
 

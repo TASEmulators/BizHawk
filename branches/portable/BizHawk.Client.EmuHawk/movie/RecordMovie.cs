@@ -10,6 +10,7 @@ using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
+using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -169,6 +170,13 @@ namespace BizHawk.Client.EmuHawk
 						_movieToRecord.Header[HeaderKeys.PAL] = "1";
 					}
 				}
+				else if (Global.Emulator is GPGX)
+				{
+					if ((Global.Emulator as GPGX).DisplayType == DisplayType.PAL)
+					{
+						_movieToRecord.Header[HeaderKeys.PAL] = "1";
+					}
+				}
 
 				GlobalWin.MainForm.StartNewMovie(_movieToRecord, true);
 
@@ -208,7 +216,7 @@ namespace BizHawk.Client.EmuHawk
 			if (result == DialogResult.OK
 				&& !String.IsNullOrWhiteSpace(sfd.FileName))
 			{
-				RecordBox.Text = filename;
+				RecordBox.Text = sfd.FileName;
 			}
 		}
 

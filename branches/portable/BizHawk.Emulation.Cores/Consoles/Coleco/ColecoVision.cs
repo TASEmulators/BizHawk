@@ -57,14 +57,24 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			var domains = new List<MemoryDomain>(3);
 			var MainMemoryDomain = new MemoryDomain("Main RAM", Ram.Length, MemoryDomain.Endian.Little,
-				addr => Ram[addr & RamSizeMask],
-				(addr, value) => Ram[addr & RamSizeMask] = value);
+				addr => Ram[addr],
+				(addr, value) => Ram[addr] = value);
 			var VRamDomain = new MemoryDomain("Video RAM", VDP.VRAM.Length, MemoryDomain.Endian.Little,
-				addr => VDP.VRAM[addr & 0x3FFF],
-				(addr, value) => VDP.VRAM[addr & 0x3FFF] = value);
+				addr => VDP.VRAM[addr],
+				(addr, value) => VDP.VRAM[addr] = value);
 			var SystemBusDomain = new MemoryDomain("System Bus", 0x10000, MemoryDomain.Endian.Little,
-				addr => Cpu.ReadMemory((ushort)addr),
-				(addr, value) => Cpu.WriteMemory((ushort)addr, value));
+				(addr) =>
+				{
+					if (addr < 0 || addr >= 65536)
+						throw new ArgumentOutOfRangeException();
+					return Cpu.ReadMemory((ushort)addr);
+				},
+				(addr, value) =>
+				{
+					if (addr < 0 || addr >= 65536)
+						throw new ArgumentOutOfRangeException();
+					Cpu.WriteMemory((ushort)addr, value);
+				});
 
 			domains.Add(MainMemoryDomain);
 			domains.Add(VRamDomain);
@@ -75,50 +85,13 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public void FrameAdvance(bool render, bool renderSound)
 		{
 			Frame++;
-			islag = true;
+			isLag = true;
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
 			VDP.ExecuteFrame();
 			PSG.EndFrame(Cpu.TotalExecutedCycles);
 
-			if (islag)
+			if (isLag)
 				LagCount++;
-		}
-
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
-		{
-			return new List<KeyValuePair<string, int>>
-			{
-				new KeyValuePair<string, int>("A", Cpu.RegisterA),
-				new KeyValuePair<string, int>("AF", Cpu.RegisterAF),
-				new KeyValuePair<string, int>("B", Cpu.RegisterB),
-				new KeyValuePair<string, int>("BC", Cpu.RegisterBC),
-				new KeyValuePair<string, int>("C", Cpu.RegisterC),
-				new KeyValuePair<string, int>("D", Cpu.RegisterD),
-				new KeyValuePair<string, int>("DE", Cpu.RegisterDE),
-				new KeyValuePair<string, int>("E", Cpu.RegisterE),
-				new KeyValuePair<string, int>("F", Cpu.RegisterF),
-				new KeyValuePair<string, int>("H", Cpu.RegisterH),
-				new KeyValuePair<string, int>("HL", Cpu.RegisterHL),
-				new KeyValuePair<string, int>("I", Cpu.RegisterI),
-				new KeyValuePair<string, int>("IX", Cpu.RegisterIX),
-				new KeyValuePair<string, int>("IY", Cpu.RegisterIY),
-				new KeyValuePair<string, int>("L", Cpu.RegisterL),
-				new KeyValuePair<string, int>("PC", Cpu.RegisterPC),
-				new KeyValuePair<string, int>("R", Cpu.RegisterR),
-				new KeyValuePair<string, int>("Shadow AF", Cpu.RegisterShadowAF),
-				new KeyValuePair<string, int>("Shadow BC", Cpu.RegisterShadowBC),
-				new KeyValuePair<string, int>("Shadow DE", Cpu.RegisterShadowDE),
-				new KeyValuePair<string, int>("Shadow HL", Cpu.RegisterShadowHL),
-				new KeyValuePair<string, int>("SP", Cpu.RegisterSP),
-				new KeyValuePair<string, int>("Flag C", Cpu.RegisterF.Bit(0) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag N", Cpu.RegisterF.Bit(1) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag P/V", Cpu.RegisterF.Bit(2) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag 3rd", Cpu.RegisterF.Bit(3) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag H", Cpu.RegisterF.Bit(4) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag 5th", Cpu.RegisterF.Bit(5) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag Z", Cpu.RegisterF.Bit(6) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag S", Cpu.RegisterF.Bit(7) ? 1 : 0),
-			};
 		}
 
 		void LoadRom(byte[] rom, bool skipbios)
@@ -195,90 +168,59 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public bool DeterministicEmulation { get { return true; } }
 
-		public void SaveStateText(TextWriter writer)
-		{
-			writer.WriteLine("[Coleco]\n");
-			Cpu.SaveStateText(writer);
-			PSG.SaveStateText(writer);
-			VDP.SaveStateText(writer);
+		public bool BinarySaveStatesPreferred { get { return false; } }
+		public void SaveStateBinary(BinaryWriter bw) { SyncState(Serializer.CreateBinaryWriter(bw)); }
+		public void LoadStateBinary(BinaryReader br) { SyncState(Serializer.CreateBinaryReader(br)); PostLoadState(); }
+		public void SaveStateText(TextWriter tw) { SyncState(Serializer.CreateTextWriter(tw)); }
+		public void LoadStateText(TextReader tr) { SyncState(Serializer.CreateTextReader(tr)); PostLoadState(); }
 
-			writer.WriteLine("Frame {0}", Frame);
-			writer.WriteLine("Lag {0}", _lagcount);
-			writer.WriteLine("islag {0}", islag);
-			writer.Write("RAM ");
-			Ram.SaveAsHex(writer);
-			writer.WriteLine("[/Coleco]");
+		void SyncState(Serializer ser)
+		{
+			ser.BeginSection("Coleco");
+			Cpu.SyncState(ser);
+			VDP.SyncState(ser);
+			PSG.SyncState(ser);
+			ser.Sync("RAM", ref Ram, false);
+			ser.Sync("Frame", ref frame);
+			ser.Sync("LagCount", ref lagCount);
+			ser.Sync("IsLag", ref isLag);
+			ser.EndSection();
 		}
 
-		public void LoadStateText(TextReader reader)
+		void PostLoadState()
 		{
-			while (true)
-			{
-				string[] args = reader.ReadLine().Split(' ');
-				if (args[0].Trim() == "") continue;
-				if (args[0] == "[Coleco]") continue;
-				if (args[0] == "[/Coleco]") break;
-				else if (args[0] == "Frame")
-					Frame = int.Parse(args[1]);
-				else if (args[0] == "Lag")
-					_lagcount = int.Parse(args[1]);
-				else if (args[0] == "islag")
-					islag = bool.Parse(args[1]);
-				else if (args[0] == "RAM")
-					Ram.ReadFromHex(args[1]);
-				else if (args[0] == "[Z80]")
-					Cpu.LoadStateText(reader);
-				else if (args[0] == "[PSG]")
-					PSG.LoadStateText(reader);
-				else if (args[0] == "[VDP]")
-					VDP.LoadStateText(reader);
-				else
-					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
-			}
+			VDP.PostLoadState();
+			PSG.PostLoadState();
 		}
 
+		byte[] stateBuffer;
 		public byte[] SaveStateBinary()
 		{
-			var buf = new byte[24802 + 16384 + 16384];
-			var stream = new MemoryStream(buf);
-			var writer = new BinaryWriter(stream);
-			SaveStateBinary(writer);
-			writer.Close();
-			return buf;
-		}
-
-		public bool BinarySaveStatesPreferred { get { return false; } }
-
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			Cpu.SaveStateBinary(writer);
-			PSG.SaveStateBinary(writer);
-			VDP.SaveStateBinary(writer);
-
-			writer.Write(Frame);
-			writer.Write(_lagcount);
-			writer.Write(islag);
-			writer.Write(Ram);
-		}
-
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			Cpu.LoadStateBinary(reader);
-			PSG.LoadStateBinary(reader);
-			VDP.LoadStateBinary(reader);
-
-			Frame = reader.ReadInt32();
-			_lagcount = reader.ReadInt32();
-			islag = reader.ReadBoolean();
-			Ram = reader.ReadBytes(Ram.Length);
+			if (stateBuffer == null)
+			{
+				var stream = new MemoryStream();
+				var writer = new BinaryWriter(stream);
+				SaveStateBinary(writer);
+				stateBuffer = stream.ToArray();
+				writer.Close();
+				return stateBuffer;
+			}
+			else
+			{
+				var stream = new MemoryStream(stateBuffer);
+				var writer = new BinaryWriter(stream);
+				SaveStateBinary(writer);
+				writer.Close();
+				return stateBuffer;
+			}
 		}
 
 		public void Dispose() { }
 		public void ResetCounters()
 		{
 			Frame = 0;
-			_lagcount = 0;
-			islag = false;
+			lagCount = 0;
+			isLag = false;
 		}
 
 		public string SystemId { get { return "Coleco"; } }
@@ -313,6 +255,43 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			{
 				return (ColecoSyncSettings)MemberwiseClone();
 			}
+		}
+
+		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		{
+			return new List<KeyValuePair<string, int>>
+			{
+				new KeyValuePair<string, int>("A", Cpu.RegisterA),
+				new KeyValuePair<string, int>("AF", Cpu.RegisterAF),
+				new KeyValuePair<string, int>("B", Cpu.RegisterB),
+				new KeyValuePair<string, int>("BC", Cpu.RegisterBC),
+				new KeyValuePair<string, int>("C", Cpu.RegisterC),
+				new KeyValuePair<string, int>("D", Cpu.RegisterD),
+				new KeyValuePair<string, int>("DE", Cpu.RegisterDE),
+				new KeyValuePair<string, int>("E", Cpu.RegisterE),
+				new KeyValuePair<string, int>("F", Cpu.RegisterF),
+				new KeyValuePair<string, int>("H", Cpu.RegisterH),
+				new KeyValuePair<string, int>("HL", Cpu.RegisterHL),
+				new KeyValuePair<string, int>("I", Cpu.RegisterI),
+				new KeyValuePair<string, int>("IX", Cpu.RegisterIX),
+				new KeyValuePair<string, int>("IY", Cpu.RegisterIY),
+				new KeyValuePair<string, int>("L", Cpu.RegisterL),
+				new KeyValuePair<string, int>("PC", Cpu.RegisterPC),
+				new KeyValuePair<string, int>("R", Cpu.RegisterR),
+				new KeyValuePair<string, int>("Shadow AF", Cpu.RegisterShadowAF),
+				new KeyValuePair<string, int>("Shadow BC", Cpu.RegisterShadowBC),
+				new KeyValuePair<string, int>("Shadow DE", Cpu.RegisterShadowDE),
+				new KeyValuePair<string, int>("Shadow HL", Cpu.RegisterShadowHL),
+				new KeyValuePair<string, int>("SP", Cpu.RegisterSP),
+				new KeyValuePair<string, int>("Flag C", Cpu.RegisterF.Bit(0) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag N", Cpu.RegisterF.Bit(1) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag P/V", Cpu.RegisterF.Bit(2) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag 3rd", Cpu.RegisterF.Bit(3) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag H", Cpu.RegisterF.Bit(4) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag 5th", Cpu.RegisterF.Bit(5) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag Z", Cpu.RegisterF.Bit(6) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag S", Cpu.RegisterF.Bit(7) ? 1 : 0),
+			};
 		}
 	}
 }

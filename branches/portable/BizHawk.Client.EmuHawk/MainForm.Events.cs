@@ -1288,22 +1288,88 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
 			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			SMSregionExportToolStripMenuItem.Checked = ss.ConsoleRegion == "Export";
+			SMSregionJapanToolStripMenuItem.Checked = ss.ConsoleRegion == "Japan";
+			SMSregionAutoToolStripMenuItem.Checked = ss.ConsoleRegion == "Auto";
+			SMSdisplayNtscToolStripMenuItem.Checked = ss.DisplayType == "NTSC";
+			SMSdisplayPalToolStripMenuItem.Checked = ss.DisplayType == "PAL";
+			SMSdisplayAutoToolStripMenuItem.Checked = ss.DisplayType == "Auto";
+			SMSenableBIOSToolStripMenuItem.Checked = ss.UseBIOS;
 			SMSEnableFMChipMenuItem.Checked = ss.EnableFM;
 			SMSOverclockMenuItem.Checked = ss.AllowOverlock;
 			SMSForceStereoMenuItem.Checked = s.ForceStereoSeparation;
 			SMSSpriteLimitMenuItem.Checked = s.SpriteLimit;
+			SMSFix3DGameDisplayToolStripMenuItem.Checked = s.Fix3D;
 			ShowClippedRegionsMenuItem.Checked = s.ShowClippedRegions;
 			HighlightActiveDisplayRegionMenuItem.Checked = s.HighlightActiveDisplayRegion;
 
 			SMSEnableFMChipMenuItem.Visible =
-				SMSOverclockMenuItem.Visible =
+				SMSFix3DGameDisplayToolStripMenuItem.Visible = 
+				SMSenableBIOSToolStripMenuItem.Visible = 
+				Global.Game.System == "SMS";
+
+			SMSOverclockMenuItem.Visible =
 				SMSForceStereoMenuItem.Visible =
+				SMSdisplayToolStripMenuItem.Visible = 
 				Global.Game.System != "GG";
 
 			ShowClippedRegionsMenuItem.Visible =
 				HighlightActiveDisplayRegionMenuItem.Visible =
 				GGGameGenieMenuItem.Visible =
 				Global.Game.System == "GG";
+
+			SMSOverclockMenuItem.Visible =
+				SMSVDPViewerToolStripMenuItem.Visible = 
+				Global.Game.System != "SG";
+		}
+
+		private void SMS_RegionExport_Click(object sender, EventArgs e)
+		{
+			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			ss.ConsoleRegion = "Export";
+			PutCoreSyncSettings(ss);
+		}
+
+		private void SMS_RegionJapan_Click(object sender, EventArgs e)
+		{
+			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			ss.ConsoleRegion = "Japan";
+			PutCoreSyncSettings(ss);
+		}
+
+		private void SMS_RegionAuto_Click(object sender, EventArgs e)
+		{
+			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			ss.ConsoleRegion = "Auto";
+			PutCoreSyncSettings(ss);
+		}
+
+		private void SMS_DisplayNTSC_Click(object sender, EventArgs e)
+		{
+			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			ss.DisplayType = "NTSC";
+			PutCoreSyncSettings(ss);
+		}
+
+		private void SMS_DisplayPAL_Click(object sender, EventArgs e)
+		{
+			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			ss.DisplayType = "PAL";
+			PutCoreSyncSettings(ss);
+		}
+
+		private void SMS_DisplayAuto_Click(object sender, EventArgs e)
+		{
+			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			ss.DisplayType = "Auto";
+			PutCoreSyncSettings(ss);
+		}
+
+		private void SMS_BIOS_Click(object sender, EventArgs e)
+		{
+			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			ss.UseBIOS ^= true;
+			PutCoreSyncSettings(ss);
 		}
 
 		private void SMSEnableFMChipMenuItem_Click(object sender, EventArgs e)
@@ -1331,6 +1397,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
 			s.SpriteLimit ^= true;
+			PutCoreSettings(s);
+		}
+
+		private void SMSFix3DDisplayMenuItem_Click(object sender, EventArgs e)
+		{
+			var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
+			s.Fix3D ^= true;
 			PutCoreSettings(s);
 		}
 

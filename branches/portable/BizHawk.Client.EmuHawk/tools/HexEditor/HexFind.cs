@@ -13,6 +13,7 @@ namespace BizHawk.Client.EmuHawk
 		public HexFind()
 		{
 			InitializeComponent();
+			ChangeCasing();
 		}
 
 		public void SetInitialValue(string value)
@@ -35,24 +36,26 @@ namespace BizHawk.Client.EmuHawk
 
 		private string GetFindBoxChars()
 		{
-			if (String.IsNullOrWhiteSpace(FindBox.Text))
+			if (string.IsNullOrWhiteSpace(FindBox.Text))
 			{
-				return String.Empty;
+				return string.Empty;
 			}
-			else if (HexRadio.Checked)
+			
+			if (HexRadio.Checked)
 			{
 				return FindBox.Text;
 			}
-			else
-			{
-				var bytestring = new StringBuilder();
-				foreach (var b in FindBox.Text.Select(Convert.ToByte))
-				{
-					bytestring.Append(String.Format("{0:X2}", b));
-				}
+			
+			
+			var bytes = GlobalWin.Tools.HexEditor.ConvertTextToBytes(FindBox.Text);
 
-				return bytestring.ToString();
+			var bytestring = new StringBuilder();
+			foreach (var b in bytes)
+			{
+				bytestring.Append(string.Format("{0:X2}", b));
 			}
+
+			return bytestring.ToString();
 		}
 
 		private void Find_Prev_Click(object sender, EventArgs e)
@@ -67,7 +70,25 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ChangeCasing()
 		{
-			FindBox.CharacterCasing = HexRadio.Checked ? CharacterCasing.Upper : CharacterCasing.Normal;
+			var text = FindBox.Text;
+			var location = FindBox.Location;
+			var size = FindBox.Size;
+
+			Controls.Remove(FindBox);
+			if (HexRadio.Checked)
+			{
+				FindBox = new HexTextBox { CharacterCasing = CharacterCasing.Upper };
+				(FindBox as HexTextBox).Nullable = true;
+			}
+			else
+			{
+				FindBox = new TextBox { CharacterCasing = CharacterCasing.Normal };
+			}
+
+			FindBox.Text = text;
+			FindBox.Size = size;
+			Controls.Add(FindBox);
+			FindBox.Location = location;
 		}
 
 		private void HexRadio_CheckedChanged(object sender, EventArgs e)

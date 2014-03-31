@@ -129,6 +129,13 @@ namespace BizHawk.Client.Common
 			Changes = true;
 		}
 
+		public void AddRange(IEnumerable<Cheat> cheats)
+		{
+			_cheatList.AddRange(
+				cheats.Where(c => !_cheatList.Contains(c)));
+			Changes = true;
+		}
+
 		public void Insert(int index, Cheat c)
 		{
 			c.Changed += CheatChanged;
@@ -156,10 +163,10 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		public bool Remove(Watch w)
+		public bool Remove(Watch watch)
 		{
-			var cheat = _cheatList.FirstOrDefault(x => x.Domain == w.Domain && x.Address == w.Address);
-			if (cheat != null)
+			var cheat = _cheatList.FirstOrDefault(c => c == watch);
+			if (cheat != (Cheat)null)
 			{
 				_cheatList.Remove(cheat);
 				Changes = true;
@@ -171,7 +178,7 @@ namespace BizHawk.Client.Common
 
 		public bool Contains(Cheat cheat)
 		{
-			return _cheatList.Any(x => x.Domain == cheat.Domain && x.Address == cheat.Address);
+			return _cheatList.Any(c => c == cheat);
 		}
 
 		public void CopyTo(Cheat[] array, int arrayIndex)
@@ -181,11 +188,28 @@ namespace BizHawk.Client.Common
 
 		public void RemoveRange(IEnumerable<Cheat> cheats)
 		{
-			foreach (var cheat in cheats)
+			foreach (var cheat in cheats.ToList())
 			{
 				_cheatList.Remove(cheat);
 			}
 
+			Changes = true;
+		}
+
+		public void RemoveRange(IEnumerable<Watch> watches)
+		{
+			var removeList = _cheatList.Where(cheat => watches.Any(w => w == cheat)).ToList();
+			foreach (var cheat in removeList)
+			{
+				_cheatList.Remove(cheat);
+			}
+
+			Changes = true;
+		}
+
+		public void RemoveAll()
+		{
+			_cheatList.Clear();
 			Changes = true;
 		}
 
@@ -197,12 +221,14 @@ namespace BizHawk.Client.Common
 
 		public void DisableAll()
 		{
-			_cheatList.ForEach(x => x.Disable());
+			_cheatList.ForEach(c => c.Disable(false));
+			Changes = true;
 		}
 
 		public void EnableAll()
 		{
-			_cheatList.ForEach(x => x.Enable());
+			_cheatList.ForEach(c => c.Enable(false));
+			Changes = true;
 		}
 
 		public bool IsActive(MemoryDomain domain, int address)
@@ -273,7 +299,7 @@ namespace BizHawk.Client.Common
 								.Append(cheat.AddressStr).Append('\t')
 								.Append(cheat.ValueStr).Append('\t')
 								.Append(cheat.Compare.HasValue ? cheat.Compare.Value.ToString() : "N").Append('\t')
-								.Append(cheat.Domain != null ? cheat.Domain.Name : String.Empty).Append('\t')
+								.Append(cheat.Domain != null ? cheat.Domain.Name : string.Empty).Append('\t')
 								.Append(cheat.Enabled ? '1' : '0').Append('\t')
 								.Append(cheat.Name).Append('\t')
 								.Append(cheat.SizeAsChar).Append('\t')

@@ -372,26 +372,28 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return null;
 				}
-				else if (SpecificValueRadio.Checked)
+				
+				if (SpecificValueRadio.Checked)
 				{
 					return SpecificValueBox.ToRawInt();
 				}
-				else if (SpecificAddressRadio.Checked)
+				
+				if (SpecificAddressRadio.Checked)
 				{
 					return SpecificAddressBox.ToRawInt();
 				}
-				else if (NumberOfChangesRadio.Checked)
+				
+				if (NumberOfChangesRadio.Checked)
 				{
 					return NumberOfChangesBox.ToRawInt();
 				}
-				else if (DifferenceRadio.Checked)
+				
+				if (DifferenceRadio.Checked)
 				{
 					return DifferenceBox.ToRawInt();
 				}
-				else
-				{
-					return null;
-				}
+
+				return null;
 			}
 		}
 
@@ -407,13 +409,37 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (NotEqualToRadio.Checked) return RamSearchEngine.ComparisonOperator.NotEqual;
-				else if (LessThanRadio.Checked) return RamSearchEngine.ComparisonOperator.LessThan;
-				else if (GreaterThanRadio.Checked) return RamSearchEngine.ComparisonOperator.GreaterThan;
-				else if (LessThanOrEqualToRadio.Checked) return RamSearchEngine.ComparisonOperator.LessThanEqual;
-				else if (GreaterThanOrEqualToRadio.Checked) return RamSearchEngine.ComparisonOperator.GreaterThanEqual;
-				else if (DifferentByRadio.Checked) return RamSearchEngine.ComparisonOperator.DifferentBy;
-				else return RamSearchEngine.ComparisonOperator.Equal;
+				if (NotEqualToRadio.Checked)
+				{
+					return RamSearchEngine.ComparisonOperator.NotEqual;
+				}
+				
+				if (LessThanRadio.Checked)
+				{
+					return RamSearchEngine.ComparisonOperator.LessThan;
+				}
+				
+				if (GreaterThanRadio.Checked)
+				{
+					return RamSearchEngine.ComparisonOperator.GreaterThan;
+				}
+
+				if (LessThanOrEqualToRadio.Checked)
+				{
+					return RamSearchEngine.ComparisonOperator.LessThanEqual;
+				}
+				
+				if (GreaterThanOrEqualToRadio.Checked)
+				{
+					return RamSearchEngine.ComparisonOperator.GreaterThanEqual;
+				}
+
+				if (DifferentByRadio.Checked)
+				{
+					return RamSearchEngine.ComparisonOperator.DifferentBy;
+				}
+
+				return RamSearchEngine.ComparisonOperator.Equal;
 			}
 		}
 
@@ -421,11 +447,27 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (SpecificValueRadio.Checked) return RamSearchEngine.Compare.SpecificValue;
-				else if (SpecificAddressRadio.Checked) return RamSearchEngine.Compare.SpecificAddress;
-				else if (NumberOfChangesRadio.Checked) return RamSearchEngine.Compare.Changes;
-				else if (DifferenceRadio.Checked) return RamSearchEngine.Compare.Difference;
-				else return RamSearchEngine.Compare.Previous;
+				if (SpecificValueRadio.Checked)
+				{
+					return RamSearchEngine.Compare.SpecificValue;
+				}
+				
+				if (SpecificAddressRadio.Checked)
+				{
+					return RamSearchEngine.Compare.SpecificAddress;
+				}
+
+				if (NumberOfChangesRadio.Checked)
+				{
+					return RamSearchEngine.Compare.Changes;
+				}
+
+				if (DifferenceRadio.Checked)
+				{
+					return RamSearchEngine.Compare.Difference;
+				}
+
+				return RamSearchEngine.Compare.Previous;
 			}
 		}
 
@@ -856,11 +898,11 @@ namespace BizHawk.Client.EmuHawk
 		private void GoToSpecifiedAddress()
 		{
 			WatchListView.SelectedIndices.Clear();
-			var prompt = new InputPrompt { Text = "Go to Address", _Location = GetPromptPoint() };
+			var prompt = new InputPrompt { Text = "Go to Address", StartLocation = GetPromptPoint() };
 			prompt.SetMessage("Enter a hexadecimal value");
 			prompt.ShowHawkDialog();
 
-			if (prompt.UserOK)
+			if (prompt.UserOk)
 			{
 				if (InputValidate.IsHex(prompt.UserText))
 				{
@@ -1356,19 +1398,19 @@ namespace BizHawk.Client.EmuHawk
 
 			if (allCheats)
 			{
-				FreezeContextMenuItem.Text = "&Unfreeze address";
+				FreezeContextMenuItem.Text = "&Unfreeze Address";
 				FreezeContextMenuItem.Image = Properties.Resources.Unfreeze;
 			}
 			else
 			{
-				FreezeContextMenuItem.Text = "&Freeze address";
+				FreezeContextMenuItem.Text = "&Freeze Address";
 				FreezeContextMenuItem.Image = Properties.Resources.Freeze;
 			}
 		}
 
 		private void UnfreezeAllContextMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.CheatList.DisableAll();
+			Global.CheatList.RemoveAll();
 		}
 
 		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)

@@ -64,9 +64,9 @@ IndirectData = 0x10,
 // was read and used as function pointer
 // NB: there is no "IndirectCode"; all code is marked simply as code regardless of how it is reached
 FcnPtr = 0x20,
-// was used as a source (either initial or during the loop) of a block xfer
-BlockFrom = 0x40,
-// was used as a destination (either initial or during the loop) of a block xfer
-BlockTo = 0x80
+// was used as a source or destination (either initial or during the loop) of a block xfer
+BlockXFer = 0x40,
+// was fetched as an operand byte to an opcode
+CodeOperand = 0x80
 
 

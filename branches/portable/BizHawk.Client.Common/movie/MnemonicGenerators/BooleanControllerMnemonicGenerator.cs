@@ -21,6 +21,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public bool IsFloat { get { return true; } }
+
 		public void Add(string key, char value)
 		{
 			_controllerMnemonics.Add(key, value);

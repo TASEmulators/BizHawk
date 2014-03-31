@@ -163,6 +163,14 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void libyabause_glsetnativefactor(int n);
 
+
+		public enum CartType : int
+		{
+			NONE = 0,
+			DRAM8MBIT = 6,
+			DRAM32MBIT = 7
+		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -171,7 +179,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		/// <param name="usegl">true for opengl</param>
 		/// <returns></returns>
 		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool libyabause_init(ref CDInterface intf, string biosfn, bool usegl);
+		public static extern bool libyabause_init(ref CDInterface intf, string biosfn, bool usegl, CartType carttype);
 
 		public struct CDInterface
 		{

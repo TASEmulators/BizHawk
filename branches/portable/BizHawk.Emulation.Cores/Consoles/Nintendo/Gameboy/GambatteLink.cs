@@ -46,8 +46,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			GambatteLinkSyncSettings _SyncSettings = (GambatteLinkSyncSettings)SyncSettings ?? GambatteLinkSyncSettings.GetDefaults();
 
 			CoreComm = comm;
-			L = new Gameboy(new CoreComm(comm.ShowMessage), leftinfo, leftrom, _Settings.L, _SyncSettings.L);
-			R = new Gameboy(new CoreComm(comm.ShowMessage), rightinfo, rightrom, _Settings.R, _SyncSettings.R);
+			L = new Gameboy(new CoreComm(comm.ShowMessage, comm.Notify), leftinfo, leftrom, _Settings.L, _SyncSettings.L);
+			R = new Gameboy(new CoreComm(comm.ShowMessage, comm.Notify), rightinfo, rightrom, _Settings.R, _SyncSettings.R);
 
 			// connect link cable
 			LibGambatte.gambatte_linkstatus(L.GambatteState, 259);
@@ -385,14 +385,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				{
 					for (uint i = 0; i < SampPerFrame * 2; i += 2)
 					{
-						// gameboy audio output is mono, so ignore one sample
-						int s = sl[i];
+						int s = (sl[i] + sl[i + 1]) / 2;
 						if (s != LatchL)
 						{
 							blip_left.AddDelta(i, s - LatchL);
 							LatchL = s;
 						}
-						s = sr[i];
+						s = (sr[i] + sr[i + 1]) / 2;
 						if (s != LatchR)
 						{
 							blip_right.AddDelta(i, s - LatchR);

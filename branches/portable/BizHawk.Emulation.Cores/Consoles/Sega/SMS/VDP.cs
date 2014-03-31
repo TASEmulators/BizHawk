@@ -20,11 +20,16 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public byte[] Registers = new byte[] { 0x06, 0x80, 0xFF, 0xFF, 0xFF, 0xFF, 0xFB, 0xF0, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00 };
 		public byte StatusByte;
 
+		const int Command_VramRead = 0x00;
+		const int Command_VramWrite = 0x40;
+		const int Command_RegisterWrite = 0x80;
+		const int Command_CramWrite = 0xC0;
+
 		bool VdpWaitingForLatchByte = true;
 		byte VdpLatch;
 		byte VdpBuffer;
 		ushort VdpAddress;
-		VdpCommand vdpCommand;
+		byte VdpCommand;
 		int TmsMode = 4;
 
 		bool VIntPending;
@@ -145,20 +150,20 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			switch (value & 0xC0)
 			{
 				case 0x00: // read VRAM
-					vdpCommand = VdpCommand.VramRead;
+					VdpCommand = Command_VramRead;
 					VdpBuffer = VRAM[VdpAddress & 0x3FFF];
 					VdpAddress++;
 					break;
 				case 0x40: // write VRAM
-					vdpCommand = VdpCommand.VramWrite;
+					VdpCommand = Command_VramWrite;
 					break;
 				case 0x80: // VDP register write
-					vdpCommand = VdpCommand.RegisterWrite;
+					VdpCommand = Command_RegisterWrite;
 					int reg = value & 0x0F;
 					WriteRegister(reg, VdpLatch);
 					break;
 				case 0xC0: // write CRAM / modify palette
-					vdpCommand = VdpCommand.CramWrite;
+					VdpCommand = Command_CramWrite;
 					break;
 			}
 		}
@@ -167,7 +172,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			VdpWaitingForLatchByte = true;
 			VdpBuffer = value;
-			if (vdpCommand == VdpCommand.CramWrite)
+			if (VdpCommand == Command_CramWrite)
 			{
 				// Write Palette / CRAM
 				int mask = VdpMode == VdpMode.SMS ? 0x1F : 0x3F;
@@ -353,6 +358,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public void ExecFrame(bool render)
 		{
 			int scanlinesPerFrame = DisplayType == DisplayType.NTSC ? 262 : 313;
+			SpriteLimit = Sms.Settings.SpriteLimit;
 			for (ScanLine = 0; ScanLine < scanlinesPerFrame; ScanLine++)
 			{
 				RenderCurrentScanline(render);
@@ -363,153 +369,64 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				Cpu.ExecuteCycles(IPeriod);
 
 				if (ScanLine == scanlinesPerFrame - 1)
-					RenderBlankingRegions();
+					ProcessGGScreen();
 			}
 		}
 
 		internal void RenderCurrentScanline(bool render)
 		{
-			if (ScanLine >= FrameHeight)
-				return;
-
+			// only mode 4 supports frameskip. deal with it
 			if (TmsMode == 4)
 			{
-				if (render == false)
-				{
-					ProcessSpriteCollisionForFrameskip();
-					return;
-				}
-
-				RenderBackgroundCurrentLine(Sms.Settings.DispBG);
+				if (render)
+					RenderBackgroundCurrentLine(Sms.Settings.DispBG);
 
 				if (EnableDoubledSprites)
-					RenderSpritesCurrentLineDoubleSize(Sms.Settings.DispOBJ);
+					RenderSpritesCurrentLineDoubleSize(Sms.Settings.DispOBJ & render);
 				else
-					RenderSpritesCurrentLine(Sms.Settings.DispOBJ);
+					RenderSpritesCurrentLine(Sms.Settings.DispOBJ & render);
+
+				RenderLineBlanking(render);
 			}
 			else if (TmsMode == 2)
 			{
-				if (render == false)
-					return;
-
 				RenderBackgroundM2(Sms.Settings.DispBG);
 				RenderTmsSprites(Sms.Settings.DispOBJ);
 			}
 			else if (TmsMode == 0)
 			{
-				if (render == false)
-					return;
-
 				RenderBackgroundM0(Sms.Settings.DispBG);
 				RenderTmsSprites(Sms.Settings.DispOBJ);
 			}
 		}
 
-		public void SaveStateText(TextWriter writer)
+		public void SyncState(Serializer ser)
 		{
-			writer.WriteLine("[VDP]");
-			writer.WriteLine("StatusByte {0:X2}", StatusByte);
-			writer.WriteLine("WaitingForLatchByte {0}", VdpWaitingForLatchByte);
-			writer.WriteLine("Latch {0:X2}", VdpLatch);
-			writer.WriteLine("ReadBuffer {0:X2}", VdpBuffer);
-			writer.WriteLine("VdpAddress {0:X4}", VdpAddress);
-			writer.WriteLine("Command " + Enum.GetName(typeof(VdpCommand), vdpCommand));
-			writer.WriteLine("HIntPending {0}", HIntPending);
-			writer.WriteLine("VIntPending {0}", VIntPending);
-			writer.WriteLine("LineIntLinesRemaining {0}", lineIntLinesRemaining);
-
-			writer.Write("Registers ");
-			Registers.SaveAsHex(writer);
-			writer.Write("CRAM ");
-			CRAM.SaveAsHex(writer);
-			writer.Write("VRAM ");
-			VRAM.SaveAsHex(writer);
-
-			writer.WriteLine("[/VDP]");
-			writer.WriteLine();
+			ser.BeginSection("VDP");
+			ser.Sync("StatusByte", ref StatusByte);
+			ser.Sync("WaitingForLatchByte", ref VdpWaitingForLatchByte);
+			ser.Sync("Latch", ref VdpLatch);
+			ser.Sync("ReadBuffer", ref VdpBuffer);
+			ser.Sync("VdpAddress", ref VdpAddress);
+			ser.Sync("Command", ref VdpCommand);
+			ser.Sync("HIntPending", ref HIntPending);
+			ser.Sync("VIntPending", ref VIntPending);
+			ser.Sync("LineIntLinesRemaining", ref lineIntLinesRemaining);
+			ser.Sync("Registers", ref Registers, false);
+			ser.Sync("CRAM", ref CRAM, false);
+			ser.Sync("VRAM", ref VRAM, false);
+			ser.EndSection();
 		}
 
-		public void LoadStateText(TextReader reader)
+		public void PostLoadState()
 		{
-			while (true)
-			{
-				string[] args = reader.ReadLine().Split(' ');
-				if (args[0].Trim() == "") continue;
-				if (args[0] == "[/VDP]") break;
-				if (args[0] == "StatusByte")
-					StatusByte = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "WaitingForLatchByte")
-					VdpWaitingForLatchByte = bool.Parse(args[1]);
-				else if (args[0] == "Latch")
-					VdpLatch = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "ReadBuffer")
-					VdpBuffer = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "VdpAddress")
-					VdpAddress = ushort.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "Command")
-					vdpCommand = (VdpCommand)Enum.Parse(typeof(VdpCommand), args[1]);
-				else if (args[0] == "HIntPending")
-					HIntPending = bool.Parse(args[1]);
-				else if (args[0] == "VIntPending")
-					VIntPending = bool.Parse(args[1]);
-				else if (args[0] == "LineIntLinesRemaining")
-					lineIntLinesRemaining = int.Parse(args[1]);
-				else if (args[0] == "Registers")
-					Registers.ReadFromHex(args[1]);
-				else if (args[0] == "CRAM")
-				{
-					CRAM.ReadFromHex(args[1]);
-					UpdatePrecomputedPalette();
-				}
-				else if (args[0] == "VRAM")
-				{
-					VRAM.ReadFromHex(args[1]);
-					for (ushort i = 0; i < VRAM.Length; i++)
-						UpdatePatternBuffer(i, VRAM[i]);
-				}
-
-				else
-					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
-			}
 			for (int i = 0; i < Registers.Length; i++)
 				WriteRegister(i, Registers[i]);
-		}
 
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			writer.Write(StatusByte);
-			writer.Write(VdpWaitingForLatchByte);
-			writer.Write(VdpLatch);
-			writer.Write(VdpBuffer);
-			writer.Write(VdpAddress);
-			writer.Write((byte)vdpCommand);
-			writer.Write(HIntPending);
-			writer.Write(VIntPending);
-			writer.Write((short)lineIntLinesRemaining);
-			writer.Write(Registers);
-			writer.Write(CRAM);
-			writer.Write(VRAM);
-		}
-
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			StatusByte = reader.ReadByte();
-			VdpWaitingForLatchByte = reader.ReadBoolean();
-			VdpLatch = reader.ReadByte();
-			VdpBuffer = reader.ReadByte();
-			VdpAddress = reader.ReadUInt16();
-			vdpCommand = (VdpCommand)Enum.ToObject(typeof(VdpCommand), reader.ReadByte());
-			HIntPending = reader.ReadBoolean();
-			VIntPending = reader.ReadBoolean();
-			lineIntLinesRemaining = reader.ReadInt16();
-			Registers = reader.ReadBytes(Registers.Length);
-			CRAM = reader.ReadBytes(CRAM.Length);
-			VRAM = reader.ReadBytes(VRAM.Length);
-			UpdatePrecomputedPalette();
 			for (ushort i = 0; i < VRAM.Length; i++)
 				UpdatePatternBuffer(i, VRAM[i]);
-			for (int i = 0; i < Registers.Length; i++)
-				WriteRegister(i, Registers[i]);
+
+			UpdatePrecomputedPalette();
 		}
 
 		public int[] GetVideoBuffer()
@@ -543,14 +460,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public int BackgroundColor
 		{
 			get { return Palette[BackdropColor]; }
-		}
-
-		enum VdpCommand
-		{
-			VramRead,
-			VramWrite,
-			RegisterWrite,
-			CramWrite
 		}
 	}
 }

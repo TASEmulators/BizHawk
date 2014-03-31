@@ -37,6 +37,10 @@
 			this.SaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveAsBinaryMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveAsTextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+			this.LoadTableFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.RecentTablesSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.noneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.EditMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -67,6 +71,7 @@
 			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveWindowsPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.RestoreDefaultSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
@@ -88,7 +93,7 @@
 			this.HexScrollBar = new System.Windows.Forms.VScrollBar();
 			this.AddressesLabel = new System.Windows.Forms.Label();
 			this.Header = new System.Windows.Forms.Label();
-			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.CloseTableFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.HexMenuStrip.SuspendLayout();
 			this.ViewerContextMenuStrip.SuspendLayout();
 			this.MemoryViewerBox.SuspendLayout();
@@ -114,6 +119,10 @@
             this.SaveMenuItem,
             this.SaveAsBinaryMenuItem,
             this.SaveAsTextMenuItem,
+            this.toolStripSeparator4,
+            this.LoadTableFileMenuItem,
+            this.CloseTableFileMenuItem,
+            this.RecentTablesSubMenu,
             this.toolStripSeparator1,
             this.ExitMenuItem});
 			this.FileSubMenu.Name = "FileSubMenu";
@@ -145,6 +154,33 @@
 			this.SaveAsTextMenuItem.Size = new System.Drawing.Size(229, 22);
 			this.SaveAsTextMenuItem.Text = "Save as text...";
 			this.SaveAsTextMenuItem.Click += new System.EventHandler(this.SaveAsTextMenuItem_Click);
+			// 
+			// toolStripSeparator4
+			// 
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(226, 6);
+			// 
+			// LoadTableFileMenuItem
+			// 
+			this.LoadTableFileMenuItem.Name = "LoadTableFileMenuItem";
+			this.LoadTableFileMenuItem.Size = new System.Drawing.Size(229, 22);
+			this.LoadTableFileMenuItem.Text = "&Load .tbl file";
+			this.LoadTableFileMenuItem.Click += new System.EventHandler(this.LoadTableFileMenuItem_Click);
+			// 
+			// RecentTablesSubMenu
+			// 
+			this.RecentTablesSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.noneToolStripMenuItem});
+			this.RecentTablesSubMenu.Name = "RecentTablesSubMenu";
+			this.RecentTablesSubMenu.Size = new System.Drawing.Size(229, 22);
+			this.RecentTablesSubMenu.Text = "Recent";
+			this.RecentTablesSubMenu.DropDownOpened += new System.EventHandler(this.RecentTablesSubMenu_DropDownOpened);
+			// 
+			// noneToolStripMenuItem
+			// 
+			this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
+			this.noneToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+			this.noneToolStripMenuItem.Text = "None";
 			// 
 			// toolStripSeparator1
 			// 
@@ -396,6 +432,13 @@
 			this.AlwaysOnTopMenuItem.Text = "Always On Top";
 			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
 			// 
+			// FloatingWindowMenuItem
+			// 
+			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
+			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.FloatingWindowMenuItem.Text = "&Floating Window";
+			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
+			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
@@ -589,12 +632,12 @@
 			this.Header.TabIndex = 2;
 			this.Header.Text = "label1";
 			// 
-			// FloatingWindowMenuItem
+			// CloseTableFileMenuItem
 			// 
-			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
-			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.FloatingWindowMenuItem.Text = "&Floating Window";
-			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
+			this.CloseTableFileMenuItem.Name = "CloseTableFileMenuItem";
+			this.CloseTableFileMenuItem.Size = new System.Drawing.Size(229, 22);
+			this.CloseTableFileMenuItem.Text = "Close .tbl file";
+			this.CloseTableFileMenuItem.Click += new System.EventHandler(this.CloseTableFileMenuItem_Click);
 			// 
 			// HexEditor
 			// 
@@ -685,5 +728,10 @@
 		private System.Windows.Forms.ToolStripMenuItem PokeContextItem;
 		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+		private System.Windows.Forms.ToolStripMenuItem LoadTableFileMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem RecentTablesSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem noneToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem CloseTableFileMenuItem;
 	}
 }

@@ -49,15 +49,14 @@ namespace HuC6280
 			{
 				// nop
 				w.WriteLine("\t\t\t\tcase 0x{0:X2}: // {1}", opcode, "??");
-				w.WriteLine("\t\t\t\t\tMarkCode(PC);");
+				w.WriteLine("\t\t\t\t\tMarkCode(PC, 1);");
 				w.WriteLine("\t\t\t\t\tbreak;");
 				return;
 			}
 
             w.WriteLine("\t\t\t\tcase 0x{0:X2}: // {1}", opcode, op);
 
-			w.WriteLine("\t\t\t\t\tfor (int i = 0; i < {0}; i++)", op.Size);
-			w.WriteLine("\t\t\t\t\t\tMarkCode(PC + i);");
+			w.WriteLine("\t\t\t\t\tMarkCode(PC, {0});", op.Size);
 
 			switch (op.AddressMode)
 			{

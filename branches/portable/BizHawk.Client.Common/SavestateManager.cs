@@ -115,7 +115,7 @@ namespace BizHawk.Client.Common
 								break;
 							}
 							
-							if (str.Trim() == String.Empty)
+							if (str.Trim() == string.Empty)
 							{
 								continue;
 							}

@@ -604,7 +604,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					System.Runtime.InteropServices.Marshal.Copy(data, CachedMemory, 0, length);
 					readneeded = false;
 				}
-				return CachedMemory[addr % CachedMemory.Length];
+				return CachedMemory[addr];
 			}
 			public void Poke(int addr, byte val)
 			{
@@ -616,7 +616,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					System.Runtime.InteropServices.Marshal.Copy(data, CachedMemory, 0, length);
 					readneeded = false;
 				}
-				CachedMemory[addr % CachedMemory.Length] = val;
+				CachedMemory[addr] = val;
 				writeneeded = true;
 			}
 		}
@@ -658,10 +658,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			_MemoryDomains.Add(new MemoryDomain("System Bus", 65536, MemoryDomain.Endian.Little,
 				delegate(int addr)
 				{
+					if (addr < 0 || addr >= 65536)
+						throw new ArgumentOutOfRangeException();
 					return LibGambatte.gambatte_cpuread(GambatteState, (ushort)addr);
 				},
 				delegate(int addr, byte val)
 				{
+					if (addr < 0 || addr >= 65536)
+						throw new ArgumentOutOfRangeException();
 					LibGambatte.gambatte_cpuwrite(GambatteState, (ushort)addr, val);
 				}));
 
@@ -834,9 +838,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		short[] soundoutbuff = new short[2048];
 
-		int latchaudio = 0;
+		int latchL = 0;
+		int latchR = 0;
 
-		BlipBuffer blip;
+		BlipBuffer blipL, blipR;
 
 		void ProcessSound()
 		{
@@ -844,37 +849,53 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				int curr = soundbuff[i * 2];
 
-				if (curr != latchaudio)
+				if (curr != latchL)
 				{
-					int diff = latchaudio - curr;
-					latchaudio = curr;
-					blip.AddDelta(i, diff);
+					int diff = latchL - curr;
+					latchL = curr;
+					blipL.AddDelta(i, diff);
+				}
+				curr = soundbuff[i * 2 + 1];
+
+				if (curr != latchR)
+				{
+					int diff = latchR - curr;
+					latchR = curr;
+					blipR.AddDelta(i, diff);
 				}
 			}
-			blip.EndFrame((uint)soundbuffcontains);
+			blipL.EndFrame((uint)soundbuffcontains);
+			blipR.EndFrame((uint)soundbuffcontains);
 
-			soundoutbuffcontains = blip.SamplesAvailable();
+			soundoutbuffcontains = blipL.SamplesAvailable();
+			if (soundoutbuffcontains != blipR.SamplesAvailable())
+				throw new Exception("Audio processing error");
 
-			blip.ReadSamples(soundoutbuff, soundoutbuffcontains, true);
-			for (int i = 0; i < soundoutbuffcontains * 2; i += 2)
-				soundoutbuff[i + 1] = soundoutbuff[i];
+			blipL.ReadSamplesLeft(soundoutbuff, soundoutbuffcontains);
+			blipR.ReadSamplesRight(soundoutbuff, soundoutbuffcontains);
 
 			soundbuffcontains = 0;
-
 		}
 
 		void InitSound()
 		{
-			blip = new BlipBuffer(1024);
-			blip.SetRates(2097152, 44100);
+			blipL = new BlipBuffer(1024);
+			blipL.SetRates(2097152, 44100);
+			blipR = new BlipBuffer(1024);
+			blipR.SetRates(2097152, 44100);
 		}
 
 		void DisposeSound()
 		{
-			if (blip != null)
+			if (blipL != null)
 			{
-				blip.Dispose();
-				blip = null;
+				blipL.Dispose();
+				blipL = null;
+			}
+			if (blipR != null)
+			{
+				blipR.Dispose();
+				blipR = null;
 			}
 		}
 

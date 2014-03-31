@@ -18,8 +18,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		byte VdpLatch;
 		ushort VdpAddress;
 		byte VdpBuffer;
-		VdpCommand vdpCommand; // TODO remove?
-
 		int TmsMode;
 
 		bool Mode1Bit { get { return (Registers[1] & 16) > 0; } }
@@ -77,16 +75,13 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			switch (value & 0xC0)
 			{
 				case 0x00: // read VRAM
-					vdpCommand = VdpCommand.VramRead;
 					VdpBuffer = VRAM[VdpAddress];
 					VdpAddress++;
                     VdpAddress &= 0x3FFF;
 					break;
 				case 0x40: // write VRAM
-					vdpCommand = VdpCommand.VramWrite;
 					break;
 				case 0x80: // VDP register write
-					vdpCommand = VdpCommand.RegisterWrite;
 					int reg = value & 0x0F;
 					WriteRegister(reg, VdpLatch);
 					break;
@@ -455,8 +450,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public int BufferHeight { get { return 192; } }
 		public int BackgroundColor { get { return 0; } }
 
-		enum VdpCommand { VramRead, VramWrite, RegisterWrite }
-
 		int[] PaletteTMS9918 = new int[] 
 		{
 			unchecked((int)0xFF000000),
@@ -477,83 +470,23 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			unchecked((int)0xFFFFFFFF)
 		};
 
-		public void SaveStateText(TextWriter writer)
+		public void SyncState(Serializer ser)
 		{
-			//TODO - finish
-			writer.WriteLine("[VDP]");
-			writer.WriteLine("StatusByte {0:X2}", StatusByte);
-			writer.WriteLine("WaitingForLatchByte {0}", VdpWaitingForLatchByte);
-			writer.WriteLine("Latch {0:X2}", VdpLatch);
-			writer.WriteLine("ReadBuffer {0:X2}", VdpBuffer);
-			writer.WriteLine("VdpAddress {0:X4}", VdpAddress);
-			writer.WriteLine("Command " + Enum.GetName(typeof(VdpCommand), vdpCommand));
-
-			writer.Write("Registers ");
-			Registers.SaveAsHex(writer);
-			writer.Write("VRAM ");
-			VRAM.SaveAsHex(writer);
-
-			writer.WriteLine("[/VDP]");
-			writer.WriteLine();
+			ser.BeginSection("VDP");
+			ser.Sync("StatusByte", ref StatusByte);
+			ser.Sync("WaitingForLatchByte", ref VdpWaitingForLatchByte);
+			ser.Sync("Latch", ref VdpLatch);
+			ser.Sync("ReadBuffer", ref VdpBuffer);
+			ser.Sync("VdpAddress", ref VdpAddress);
+			ser.Sync("Registers", ref Registers, false);
+			ser.Sync("VRAM", ref VRAM, false);
+			ser.EndSection();
 		}
 
-		public void LoadStateText(TextReader reader)
+		public void PostLoadState()
 		{
-			//TODO - finish
-			while (true)
-			{
-				string[] args = reader.ReadLine().Split(' ');
-				if (args[0].Trim() == "") continue;
-				if (args[0] == "[/VDP]") break;
-				if (args[0] == "StatusByte")
-					StatusByte = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "WaitingForLatchByte")
-					VdpWaitingForLatchByte = bool.Parse(args[1]);
-				else if (args[0] == "Latch")
-					VdpLatch = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "ReadBuffer")
-					VdpBuffer = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "VdpAddress")
-					VdpAddress = ushort.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "Command")
-					vdpCommand = (VdpCommand)Enum.Parse(typeof(VdpCommand), args[1]);
-				else if (args[0] == "Registers")
-					Registers.ReadFromHex(args[1]);
-				else if (args[0] == "VRAM")
-					VRAM.ReadFromHex(args[1]);
-				else
-					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
-			}
 			for (int i = 0; i < Registers.Length; i++)
 				WriteRegister(i, Registers[i]);
-		}
-
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			writer.Write(StatusByte);
-			writer.Write(VdpWaitingForLatchByte);
-			writer.Write(VdpLatch);
-			writer.Write(VdpBuffer);
-			writer.Write(VdpAddress);
-			writer.Write((byte)vdpCommand);
-			writer.Write(Registers);
-			writer.Write(VRAM);
-		}
-
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			StatusByte = reader.ReadByte();
-			VdpWaitingForLatchByte = reader.ReadBoolean();
-			VdpLatch = reader.ReadByte();
-			VdpBuffer = reader.ReadByte();
-			VdpAddress = reader.ReadUInt16();
-			vdpCommand = (VdpCommand)Enum.ToObject(typeof(VdpCommand), reader.ReadByte());
-			Registers = reader.ReadBytes(Registers.Length);
-			VRAM = reader.ReadBytes(VRAM.Length);
-			for (int i = 0; i < Registers.Length; i++)
-			{
-				WriteRegister(i, Registers[i]);
-			}
 		}
 	}
 }

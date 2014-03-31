@@ -268,10 +268,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				MemoryDomain sb = new MemoryDomain("BUS", 1 << 28, MemoryDomain.Endian.Little,
 					delegate(int addr)
 					{
+						if (addr < 0 || addr >= 0x10000000)
+							throw new IndexOutOfRangeException();
 						return LibMeteor.libmeteor_peekbus((uint)addr);
 					},
 					delegate(int addr, byte val)
 					{
+						if (addr < 0 || addr >= 0x10000000)
+							throw new IndexOutOfRangeException();
 						LibMeteor.libmeteor_writebus((uint)addr, val);
 					});
 				_MemoryDomains.Add(sb);
@@ -283,6 +287,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				MemoryDomain cr = new MemoryDomain("Combined WRAM", (256 + 32) * 1024, MemoryDomain.Endian.Little,
 					delegate(int addr)
 					{
+						if (addr < 0 || addr >= (256 + 32) * 1024)
+							throw new IndexOutOfRangeException();
 						if (addr >= 256 * 1024)
 							return iw.PeekByte(addr & 32767);
 						else
@@ -290,6 +296,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 					},
 					delegate(int addr, byte val)
 					{
+						if (addr < 0 || addr >= (256 + 32) * 1024)
+							throw new IndexOutOfRangeException();
 						if (addr >= 256 * 1024)
 							iw.PokeByte(addr & 32767, val);
 						else

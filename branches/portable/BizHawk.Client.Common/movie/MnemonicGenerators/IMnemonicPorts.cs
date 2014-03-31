@@ -34,11 +34,8 @@ namespace BizHawk.Client.Common
 
 		Dictionary<string, bool> ParseMnemonicString(string mnemonicStr);
 
-		// Analog TODO: this assume the generators are boolean
 		Dictionary<string, bool> GetBoolButtons();
-
-		// TODO: this shouldn't be required, refactor MovieRecord
-		string GenerateMnemonicString(Dictionary<string, bool> buttons);
+		Dictionary<string, float> GetFloatButtons();
 
 		string EmptyMnemonic { get; }
 

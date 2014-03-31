@@ -9,15 +9,11 @@ using BizHawk.Emulation.Common.Components;
 using BizHawk.Emulation.Cores.Components.Z80;
 
 /*****************************************************
-
   TODO: 
   + HCounter
   + Try to clean up the organization of the source code. 
   + Lightgun/Paddle/etc if I get really bored  
-
-  + SG-1000 TMS does not fire sprite collision bit
-  + SG-1000 TMS sprite doubling most likely does not work!
-  + Maybe try to unify the Coleco TMS with SG-1000? Or at least pull in other TMS fixes.
+  + Mode 1 not implemented in VDP TMS modes. (I dont have a test case in SG1000 or Coleco)
  
 **********************************************************/
 
@@ -30,12 +26,14 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		// ROM
 		public byte[] RomData;
-		public byte RomBank0, RomBank1, RomBank2;
+		public byte RomBank0, RomBank1, RomBank2, RomBank3;
 		public byte RomBanks;
 
 		// SaveRAM
-		public byte[] SaveRAM = new byte[BankSize * 2];
+		public byte[] SaveRAM;
 		public byte SaveRamBank;
+
+		public byte[] BiosRom;
 
 		public byte[] ReadSaveRam()
 		{
@@ -66,17 +64,416 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public bool IsGameGear = false;
 		public bool HasYM2413 = false;
 
-		int _lagcount = 0;
+		int frame = 0;
+		int lagCount = 0;
 		bool lagged = true;
-		bool islag = false;
-		public int Frame { get; set; }
-		
+		bool isLag = false;
+		public int Frame { get { return frame; } set { frame = value; } }
+		public int LagCount { get { return lagCount; } set { lagCount = value; } }
+		public bool IsLagFrame { get { return isLag; } }
+		byte Port01 = 0xFF;
+		byte Port02 = 0xFF;
+		byte Port3E = 0xAF;
+		byte Port3F = 0xFF;
+
+		byte ForceStereoByte = 0xAD;
+		bool IsGame3D = false;
+
+		public DisplayType DisplayType { get; set; }
+		public bool DeterministicEmulation { get { return true; } }
+
+		public SMS(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
+		{
+			Settings = (SMSSettings)settings ?? new SMSSettings();
+			SyncSettings = (SMSSyncSettings)syncSettings ?? new SMSSyncSettings();
+			CoreComm = comm;
+
+			IsGameGear = game.System == "GG";
+		    RomData = rom;
+            CoreComm.CpuTraceAvailable = true;
+            
+            if (RomData.Length % BankSize != 0)
+                Array.Resize(ref RomData, ((RomData.Length / BankSize) + 1) * BankSize);
+            RomBanks = (byte)(RomData.Length / BankSize);
+
+            DisplayType = DetermineDisplayType(SyncSettings.DisplayType, game.Region);
+			if (game["PAL"] && DisplayType != DisplayType.PAL)
+			{
+				DisplayType = DisplayType.PAL;
+				CoreComm.Notify("Display was forced to PAL mode for game compatibility.");
+			}
+			if (IsGameGear) 
+				DisplayType = DisplayType.NTSC; // all game gears run at 60hz/NTSC mode
+			CoreComm.VsyncNum = DisplayType == DisplayType.NTSC ? 60 : 50;
+			CoreComm.VsyncDen = 1;
+
+			Region = SyncSettings.ConsoleRegion;
+			if (Region == "Auto") Region = DetermineRegion(game.Region);
+
+			if (game["Japan"] && Region != "Japan")
+			{
+				Region = "Japan";
+				CoreComm.Notify("Region was forced to Japan for game compatibility.");
+			}
+
+            if ((game.NotInDatabase || game["FM"]) && SyncSettings.EnableFM && !IsGameGear)
+                HasYM2413 = true;
+
+            if (Controller == null)
+                Controller = NullController.GetNullController();
+
+            Cpu = new Z80A();
+            Cpu.RegisterSP = 0xDFF0;
+            Cpu.ReadHardware = ReadPort;
+            Cpu.WriteHardware = WritePort;
+
+            Vdp = new VDP(this, Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, DisplayType);
+            PSG = new SN76489();
+            YM2413 = new YM2413();
+            SoundMixer = new SoundMixer(YM2413, PSG);
+            if (HasYM2413 && game["WhenFMDisablePSG"])
+                SoundMixer.DisableSource(PSG);
+            ActiveSoundProvider = HasYM2413 ? (ISoundProvider)SoundMixer : PSG;
+
+            SystemRam = new byte[0x2000];
+
+			if (game["CMMapper"])
+				InitCodeMastersMapper();
+			else if (game["CMMapperWithRam"])
+				InitCodeMastersMapperRam();
+			else if (game["ExtRam"])
+				InitExt2kMapper(int.Parse(game.OptionValue("ExtRam")));
+			else if (game["KoreaMapper"])
+				InitKoreaMapper();
+			else if (game["MSXMapper"])
+				InitMSXMapper();
+			else if (game["NemesisMapper"])
+				InitNemesisMapper();
+			else if (game["TerebiOekaki"])
+				InitTerebiOekaki();
+			else
+				InitSegaMapper();
+
+            if (Settings.ForceStereoSeparation && !IsGameGear)
+            {
+                if (game["StereoByte"])
+                {
+                    ForceStereoByte = byte.Parse(game.OptionValue("StereoByte"));
+                }
+				PSG.StereoPanning = ForceStereoByte;
+            }
+
+            if (SyncSettings.AllowOverlock && game["OverclockSafe"])
+                Vdp.IPeriod = 512;
+
+            if (Settings.SpriteLimit)
+                Vdp.SpriteLimit = true;
+
+			if (game["3D"])
+				IsGame3D = true;
+
+			if (game["BIOS"])
+			{
+				Port3E = 0xF7; // Disable cartridge, enable BIOS rom
+				InitBiosMapper();
+			}
+			else if (game.System == "SMS")
+			{
+				BiosRom = comm.CoreFileProvider.GetFirmware("SMS", Region, false);
+				if (BiosRom != null && (game["RequireBios"] || SyncSettings.UseBIOS))
+					Port3E = 0xF7;
+
+				if (BiosRom == null && game["RequireBios"])
+					CoreComm.Notify("BIOS image not available. This game requires BIOS to function.");
+				if (SyncSettings.UseBIOS && BiosRom == null)
+					CoreComm.Notify("BIOS was selected, but rom image not available. BIOS not enabled.");
+			}
+
+			if (game["SRAM"])
+				SaveRAM = new byte[int.Parse(game.OptionValue("SRAM"))];
+			else if (game.NotInDatabase)
+				SaveRAM = new byte[0x8000];
+
+			SetupMemoryDomains();
+		}
+
+		string DetermineRegion(string gameRegion)
+		{
+			if (gameRegion == null)
+				return "Export";
+			if (gameRegion.IndexOf("USA") >= 0)
+				return "Export";
+			if (gameRegion.IndexOf("Europe") >= 0)
+				return "Export";
+			if (gameRegion.IndexOf("World") >= 0)
+				return "Export";
+			if (gameRegion.IndexOf("Brazil") >= 0)
+				return "Export";
+			if (gameRegion.IndexOf("Australia") >= 0)
+				return "Export";
+			return "Japan";
+		}
+
+		DisplayType DetermineDisplayType(string display, string region)
+		{
+			if (display == "NTSC") return DisplayType.NTSC;
+			if (display == "PAL") return DisplayType.PAL;
+			if (region != null && region == "Europe") return DisplayType.PAL;
+			return DisplayType.NTSC;
+		}
+
 		public void ResetCounters()
 		{
 			Frame = 0;
-			_lagcount = 0;
-			islag = false;
+			lagCount = 0;
+			isLag = false;
 		}
+
+		public byte ReadPort(ushort port)
+		{
+			port &= 0xFF;
+			if (port < 0x40) // General IO ports
+			{
+				switch (port)
+				{
+					case 0x00: return ReadPort0();
+					case 0x01: return Port01;
+					case 0x02: return Port02;
+					case 0x03: return 0x00;
+					case 0x04: return 0xFF;
+					case 0x05: return 0x00;
+					case 0x06: return 0xFF;
+					case 0x3E: return Port3E;
+					default: return 0xFF;
+				}
+			}
+			if (port < 0x80)  // VDP Vcounter/HCounter
+			{
+				if ((port & 1) == 0)
+					return Vdp.ReadVLineCounter();
+				else
+					return 0x50; // TODO Vdp.ReadHLineCounter();
+			}
+			if (port < 0xC0) // VDP data/control ports
+			{
+				if ((port & 1) == 0)
+					return Vdp.ReadData();
+				else
+					return Vdp.ReadVdpStatus();
+			}
+			switch (port) 
+			{
+				case 0xC0:
+				case 0xDC: return ReadControls1();
+				case 0xC1:
+				case 0xDD: return ReadControls2();
+				case 0xF2: return HasYM2413 ? YM2413.DetectionValue : (byte)0xFF;
+				default: return 0xFF;
+			}
+		}
+
+		public void WritePort(ushort port, byte value)
+		{
+			port &= 0xFF;
+			if (port < 0x40) // general IO ports
+			{
+				switch (port & 0xFF)
+				{
+					case 0x01: Port01 = value; break;
+					case 0x02: Port02 = value; break;
+					case 0x06: PSG.StereoPanning = value; break;
+					case 0x3E: Port3E = value; break;
+					case 0x3F: Port3F = value; break;
+				}
+			}
+			else if (port < 0x80) // PSG
+				PSG.WritePsgData(value, Cpu.TotalExecutedCycles);
+			else if (port < 0xC0) // VDP
+			{
+				if ((port & 1) == 0)
+					Vdp.WriteVdpData(value);
+				else
+					Vdp.WriteVdpControl(value);
+			}
+			else if (port == 0xF0 && HasYM2413) YM2413.RegisterLatch = value;
+			else if (port == 0xF1 && HasYM2413) YM2413.Write(value);
+			else if (port == 0xF2 && HasYM2413) YM2413.DetectionValue = value;
+		}
+
+		public void FrameAdvance(bool render, bool rendersound)
+		{
+			lagged = true;
+			Frame++;
+			PSG.BeginFrame(Cpu.TotalExecutedCycles);
+			Cpu.Debug = CoreComm.Tracer.Enabled;
+			if (!IsGameGear)
+				PSG.StereoPanning = Settings.ForceStereoSeparation ? ForceStereoByte : (byte) 0xFF;
+
+			if (Cpu.Debug && Cpu.Logger == null) // TODO, lets not do this on each frame. But lets refactor CoreComm/CoreComm first
+				Cpu.Logger = (s) => CoreComm.Tracer.Put(s);
+
+			if (IsGameGear == false)
+				Cpu.NonMaskableInterrupt = Controller["Pause"];
+
+			if (IsGame3D && Settings.Fix3D)
+				Vdp.ExecFrame((Frame & 1) == 0);
+			else 
+				Vdp.ExecFrame(render);
+
+			PSG.EndFrame(Cpu.TotalExecutedCycles);
+			if (lagged)
+			{
+				lagCount++;
+				isLag = true;
+			}
+			else
+				isLag = false;
+		}
+
+		public bool BinarySaveStatesPreferred { get { return false; } }
+		public void SaveStateBinary(BinaryWriter bw) { SyncState(Serializer.CreateBinaryWriter(bw)); }
+		public void LoadStateBinary(BinaryReader br) { SyncState(Serializer.CreateBinaryReader(br)); PostLoadState(); }
+		public void SaveStateText(TextWriter tw) { SyncState(Serializer.CreateTextWriter(tw)); }
+		public void LoadStateText(TextReader tr) { SyncState(Serializer.CreateTextReader(tr)); PostLoadState(); }
+		
+		void SyncState(Serializer ser)
+		{
+			ser.BeginSection("SMS");
+			Cpu.SyncState(ser);
+			Vdp.SyncState(ser);
+			PSG.SyncState(ser);
+			ser.Sync("RAM", ref SystemRam, false);
+			ser.Sync("RomBank0", ref RomBank0);
+			ser.Sync("RomBank1", ref RomBank1);
+			ser.Sync("RomBank2", ref RomBank2);
+			ser.Sync("RomBank3", ref RomBank3);
+			ser.Sync("Port01", ref Port01);
+			ser.Sync("Port02", ref Port02);
+			ser.Sync("Port3E", ref Port3E);
+			ser.Sync("Port3F", ref Port3F);
+
+			if (SaveRAM != null)
+			{
+				ser.Sync("SaveRAM", ref SaveRAM, false);
+				ser.Sync("SaveRamBank", ref SaveRamBank);
+			}
+			if (ExtRam != null)
+				ser.Sync("ExtRAM", ref ExtRam, true);
+			if (HasYM2413)
+				YM2413.SyncState(ser);
+
+			ser.Sync("Frame", ref frame);
+			ser.Sync("LagCount", ref lagCount);
+			ser.Sync("IsLag", ref isLag);
+
+			ser.EndSection();
+		}
+
+		void PostLoadState()
+		{
+			Vdp.PostLoadState();
+			PSG.PostLoadState();
+			if (HasYM2413)
+				YM2413.PostLoadState();
+		}
+
+		byte[] stateBuffer;
+		public byte[] SaveStateBinary()
+		{
+			if (stateBuffer == null)
+			{
+				var stream = new MemoryStream();
+				var writer = new BinaryWriter(stream);
+				SaveStateBinary(writer);
+				stateBuffer = stream.ToArray();
+				writer.Close();
+				return stateBuffer;
+			}
+			else
+			{
+				var stream = new MemoryStream(stateBuffer);
+				var writer = new BinaryWriter(stream);
+				SaveStateBinary(writer);
+				writer.Close();
+				return stateBuffer;
+			}
+		}
+
+		public IVideoProvider VideoProvider { get { return Vdp; } }
+		public CoreComm CoreComm { get; private set; }
+
+		ISoundProvider ActiveSoundProvider;
+		public ISoundProvider SoundProvider { get { return ActiveSoundProvider; } }
+		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(ActiveSoundProvider, 735); } }
+		public bool StartAsyncSound() { return true; }
+		public void EndAsyncSound() { }
+
+		public string SystemId { get { return "SMS"; } }
+
+		public string BoardName { get { return null; } }
+
+		string region;
+		public string Region
+		{
+			get { return region; }
+			set
+			{
+				if (value.NotIn(validRegions))
+					throw new Exception("Passed value " + value + " is not a valid region!");
+				region = value;
+			}
+		}
+		
+		readonly string[] validRegions = { "Export", "Japan", "Auto" };
+
+		MemoryDomainList memoryDomains;
+
+		void SetupMemoryDomains()
+		{
+			var domains = new List<MemoryDomain>(3);
+			var MainMemoryDomain = new MemoryDomain("Main RAM", SystemRam.Length, MemoryDomain.Endian.Little,
+				addr => SystemRam[addr],
+				(addr, value) => SystemRam[addr] = value);
+			var VRamDomain = new MemoryDomain("Video RAM", Vdp.VRAM.Length, MemoryDomain.Endian.Little,
+				addr => Vdp.VRAM[addr],
+				(addr, value) => Vdp.VRAM[addr] = value);
+			
+			var SystemBusDomain = new MemoryDomain("System Bus", 0x10000, MemoryDomain.Endian.Little,
+				(addr) =>
+				{
+					if (addr < 0 || addr >= 65536)
+						throw new ArgumentOutOfRangeException();
+					return Cpu.ReadMemory((ushort)addr);
+				},
+				(addr, value) =>
+				{
+					if (addr < 0 || addr >= 65536)
+						throw new ArgumentOutOfRangeException();
+					Cpu.WriteMemory((ushort)addr, value);
+				});
+
+			domains.Add(MainMemoryDomain);
+			domains.Add(VRamDomain);
+			domains.Add(SystemBusDomain);
+
+			if (SaveRAM != null)
+			{
+				var SaveRamDomain = new MemoryDomain("Save RAM", SaveRAM.Length, MemoryDomain.Endian.Little,
+					addr => SaveRAM[addr],
+					(addr, value) => { SaveRAM[addr] = value; SaveRamModified = true; });
+				domains.Add(SaveRamDomain);
+			}
+			if (ExtRam != null)
+			{
+				var ExtRamDomain = new MemoryDomain("Cart (Volatile) RAM", ExtRam.Length, MemoryDomain.Endian.Little,
+					addr => ExtRam[addr],
+					(addr, value) => { ExtRam[addr] = value; });
+				domains.Add(ExtRamDomain);
+			}
+			memoryDomains = new MemoryDomainList(domains);
+		}
+
+		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
 		{
@@ -114,355 +511,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				new KeyValuePair<string, int>("Flag S", Cpu.RegisterF.Bit(7) ? 1 : 0),
 			};
 		}
-		
-		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
-		public bool IsLagFrame { get { return islag; } }
-		byte Port01 = 0xFF;
-		byte Port02 = 0xFF;
-		byte Port3E = 0xAF;
-		byte Port3F = 0xFF;
-
-		public DisplayType DisplayType { get; set; }
-		public bool DeterministicEmulation { get { return true; } }
-
-		public SMS(CoreComm comm, GameInfo game, byte[] rom, object Settings, object SyncSettings)
-		{
-			this.Settings = (SMSSettings)Settings ?? new SMSSettings();
-			this.SyncSettings = (SMSSyncSettings)SyncSettings ?? new SMSSyncSettings();
-
-			CoreComm = comm;
-			
-			IsGameGear = game.System == "GG";
-		    RomData = rom;
-            CoreComm.CpuTraceAvailable = true;
-            
-            if (RomData.Length % BankSize != 0)
-                Array.Resize(ref RomData, ((RomData.Length / BankSize) + 1) * BankSize);
-            RomBanks = (byte)(RomData.Length / BankSize);
-
-            DisplayType = DisplayType.NTSC;
-            if (game["PAL"]) DisplayType = DisplayType.PAL;
-			CoreComm.VsyncNum = DisplayType == DisplayType.NTSC ? 60 : 50;
-			CoreComm.VsyncDen = 1;
-            
-            if (game["Japan"]) Region = "Japan";
-            if (game.NotInDatabase || game["FM"] && this.SyncSettings.EnableFM && !IsGameGear)
-                HasYM2413 = true;
-
-            if (Controller == null)
-                Controller = NullController.GetNullController();
-
-            Cpu = new Z80A();
-            Cpu.RegisterSP = 0xDFF0;
-            Cpu.ReadHardware = ReadPort;
-            Cpu.WriteHardware = WritePort;
-
-            Vdp = new VDP(this, Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, DisplayType);
-            PSG = new SN76489();
-            YM2413 = new YM2413();
-            SoundMixer = new SoundMixer(YM2413, PSG);
-            if (HasYM2413 && game["WhenFMDisablePSG"])
-                SoundMixer.DisableSource(PSG);
-            ActiveSoundProvider = HasYM2413 ? (ISoundProvider)SoundMixer : PSG;
-
-            SystemRam = new byte[0x2000];
-            if (game["CMMapper"] == false)
-                InitSegaMapper();
-            else
-                InitCodeMastersMapper();
-
-            if (this.Settings.ForceStereoSeparation && !IsGameGear)
-            {
-                byte stereoByte = 0xAD;
-                if (game["StereoByte"])
-                {
-                    stereoByte = byte.Parse(game.OptionValue("StereoByte"));
-                }
-                PSG.StereoPanning = stereoByte;
-            }
-
-            if (this.SyncSettings.AllowOverlock && game["OverclockSafe"])
-                Vdp.IPeriod = 512;
-
-            if (this.Settings.SpriteLimit)
-                Vdp.SpriteLimit = true;
-
-            if (game["BIOS"])
-            {
-                Port3E = 0xF7; // Disable cartridge, enable BIOS rom
-                InitBiosMapper();
-            }
-            SetupMemoryDomains();
-		}
-
-		public byte ReadPort(ushort port)
-		{
-			switch (port & 0xFF)
-			{
-				case 0x00: return ReadPort0();
-				case 0x01: return Port01;
-				case 0x02: return Port02;
-				case 0x03: return 0x00;
-				case 0x04: return 0xFF;
-				case 0x05: return 0x00;
-				case 0x06: return 0xFF;
-				case 0x3E: return Port3E;
-				case 0x7E: return Vdp.ReadVLineCounter();
-				case 0x7F: break; // hline counter TODO
-				case 0xBE: return Vdp.ReadData();
-				case 0xBF: return Vdp.ReadVdpStatus();
-				case 0xC0:
-				case 0xDC: return ReadControls1();
-				case 0xC1:
-				case 0xDD: return ReadControls2();
-				case 0xF2: return HasYM2413 ? YM2413.DetectionValue : (byte)0xFF;
-			}
-			return 0xFF;
-		}
-
-		public void WritePort(ushort port, byte value)
-		{
-			switch (port & 0xFF)
-			{
-				case 0x01: Port01 = value; break;
-				case 0x02: Port02 = value; break;
-				case 0x06: PSG.StereoPanning = value; break;
-				case 0x3E: Port3E = value; break;
-				case 0x3F: Port3F = value; break;
-				case 0x7E:
-				case 0x7F: PSG.WritePsgData(value, Cpu.TotalExecutedCycles); break;
-				case 0xBE: Vdp.WriteVdpData(value); break;
-				case 0xBD:
-				case 0xBF: Vdp.WriteVdpControl(value); break;
-				case 0xF0: if (HasYM2413) YM2413.RegisterLatch = value; break;
-				case 0xF1: if (HasYM2413) YM2413.Write(value); break;
-				case 0xF2: if (HasYM2413) YM2413.DetectionValue = value; break;
-			}
-		}
-
-		public void FrameAdvance(bool render, bool rendersound)
-		{
-			lagged = true;
-			Frame++;
-			PSG.BeginFrame(Cpu.TotalExecutedCycles);
-			Cpu.Debug = CoreComm.Tracer.Enabled;
-			if (Cpu.Debug && Cpu.Logger == null) // TODO, lets not do this on each frame. But lets refactor CoreComm/CoreComm first
-			{
-				Cpu.Logger = (s) => CoreComm.Tracer.Put(s);
-			}
-
-			if (IsGameGear == false)
-			{
-				Cpu.NonMaskableInterrupt = Controller["Pause"];
-			}
-
-			Vdp.ExecFrame(render);
-			PSG.EndFrame(Cpu.TotalExecutedCycles);
-			if (lagged)
-			{
-				_lagcount++;
-				islag = true;
-			}
-			else
-				islag = false;
-		}
-
-		public void SaveStateText(TextWriter writer)
-		{
-			writer.WriteLine("[SMS]\n");
-			Cpu.SaveStateText(writer);
-			PSG.SaveStateText(writer);
-			Vdp.SaveStateText(writer);
-
-			writer.WriteLine("Frame {0}", Frame);
-			writer.WriteLine("Lag {0}", _lagcount);
-			writer.WriteLine("IsLag {0}", islag);
-			writer.WriteLine("Bank0 {0}", RomBank0);
-			writer.WriteLine("Bank1 {0}", RomBank1);
-			writer.WriteLine("Bank2 {0}", RomBank2);
-			writer.Write("RAM ");
-			SystemRam.SaveAsHex(writer);
-			writer.WriteLine("Port01 {0:X2}", Port01);
-			writer.WriteLine("Port02 {0:X2}", Port02);
-			writer.WriteLine("Port3F {0:X2}", Port3F);
-			int SaveRamLen = Util.SaveRamBytesUsed(SaveRAM);
-			if (SaveRamLen > 0)
-			{
-				writer.Write("SaveRAM ");
-				SaveRAM.SaveAsHex(writer, SaveRamLen);
-			}
-			if (HasYM2413)
-			{
-				writer.Write("FMRegs ");
-				YM2413.opll.reg.SaveAsHex(writer);
-			}
-			writer.WriteLine("[/SMS]");
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			while (true)
-			{
-				string[] args = reader.ReadLine().Split(' ');
-				if (args[0].Trim() == "") continue;
-				if (args[0] == "[SMS]") continue;
-				if (args[0] == "[/SMS]") break;
-				if (args[0] == "Bank0")
-					RomBank0 = byte.Parse(args[1]);
-				else if (args[0] == "Bank1")
-					RomBank1 = byte.Parse(args[1]);
-				else if (args[0] == "Bank2")
-					RomBank2 = byte.Parse(args[1]);
-				else if (args[0] == "Frame")
-					Frame = int.Parse(args[1]);
-				else if (args[0] == "Lag")
-					_lagcount = int.Parse(args[1]);
-				else if (args[0] == "IsLag")
-					islag = bool.Parse(args[1]);
-				else if (args[0] == "RAM")
-					SystemRam.ReadFromHex(args[1]);
-				else if (args[0] == "SaveRAM")
-				{
-					for (int i = 0; i < SaveRAM.Length; i++) SaveRAM[i] = 0;
-					SaveRAM.ReadFromHex(args[1]);
-				}
-				else if (args[0] == "FMRegs")
-				{
-					byte[] regs = new byte[YM2413.opll.reg.Length];
-					regs.ReadFromHex(args[1]);
-					for (byte i = 0; i < regs.Length; i++)
-						YM2413.Write(i, regs[i]);
-				}
-				else if (args[0] == "Port01")
-					Port01 = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "Port02")
-					Port02 = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "Port3F")
-					Port3F = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "[Z80]")
-					Cpu.LoadStateText(reader);
-				else if (args[0] == "[PSG]")
-					PSG.LoadStateText(reader);
-				else if (args[0] == "[VDP]")
-					Vdp.LoadStateText(reader);
-				else
-					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
-			}
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			var buf = new byte[24806 + 1 + 16384 + 16384];
-			var stream = new MemoryStream(buf);
-			var writer = new BinaryWriter(stream);
-			SaveStateBinary(writer);
-			if (stream.Length != buf.Length)
-				throw new Exception(string.Format("savestate buffer underrun: {0} < {1}", stream.Length, buf.Length));
-			writer.Close();
-			return buf;
-		}
-
-		public bool BinarySaveStatesPreferred { get { return false; } }
-
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			Cpu.SaveStateBinary(writer);
-			PSG.SaveStateBinary(writer);
-			Vdp.SaveStateBinary(writer);
-
-			writer.Write(Frame);
-			writer.Write(_lagcount);
-			writer.Write(islag);
-			writer.Write(RomBank0);
-			writer.Write(RomBank1);
-			writer.Write(RomBank2);
-			writer.Write(SystemRam);
-			writer.Write(SaveRAM);
-			writer.Write(Port01);
-			writer.Write(Port02);
-			writer.Write(Port3F);
-			writer.Write(YM2413.opll.reg);
-		}
-
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			Cpu.LoadStateBinary(reader);
-			PSG.LoadStateBinary(reader);
-			Vdp.LoadStateBinary(reader);
-
-			Frame = reader.ReadInt32();
-			_lagcount = reader.ReadInt32();
-			islag = reader.ReadBoolean();
-			RomBank0 = reader.ReadByte();
-			RomBank1 = reader.ReadByte();
-			RomBank2 = reader.ReadByte();
-			SystemRam = reader.ReadBytes(SystemRam.Length);
-			reader.Read(SaveRAM, 0, SaveRAM.Length);
-			Port01 = reader.ReadByte();
-			Port02 = reader.ReadByte();
-			Port3F = reader.ReadByte();
-			if (HasYM2413)
-			{
-				byte[] regs = new byte[YM2413.opll.reg.Length];
-				reader.Read(regs, 0, regs.Length);
-				for (byte i = 0; i < regs.Length; i++)
-					YM2413.Write(i, regs[i]);
-			}
-		}
-
-		public IVideoProvider VideoProvider { get { return Vdp; } }
-		public CoreComm CoreComm { get; private set; }
-
-		ISoundProvider ActiveSoundProvider;
-		public ISoundProvider SoundProvider { get { return ActiveSoundProvider; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(ActiveSoundProvider, 735); } }
-		public bool StartAsyncSound() { return true; }
-		public void EndAsyncSound() { }
-
-		public string SystemId { get { return "SMS"; } }
-
-		public string BoardName { get { return null; } }
-
-		string region = "Export";
-		public string Region
-		{
-			get { return region; }
-			set
-			{
-				if (value.NotIn(validRegions))
-					throw new Exception("Passed value " + value + " is not a valid region!");
-				region = value;
-			}
-		}
-
-		readonly string[] validRegions = { "Export", "Japan" };
-
-		MemoryDomainList memoryDomains;
-
-		void SetupMemoryDomains()
-		{
-			var domains = new List<MemoryDomain>(3);
-			var MainMemoryDomain = new MemoryDomain("Main RAM", SystemRam.Length, MemoryDomain.Endian.Little,
-				addr => SystemRam[addr & RamSizeMask],
-				(addr, value) => SystemRam[addr & RamSizeMask] = value);
-			var VRamDomain = new MemoryDomain("Video RAM", Vdp.VRAM.Length, MemoryDomain.Endian.Little,
-				addr => Vdp.VRAM[addr & 0x3FFF],
-				(addr, value) => Vdp.VRAM[addr & 0x3FFF] = value);
-			var SaveRamDomain = new MemoryDomain("Save RAM", SaveRAM.Length, MemoryDomain.Endian.Little,
-				addr => SaveRAM[addr % SaveRAM.Length],
-				(addr, value) => { SaveRAM[addr % SaveRAM.Length] = value; SaveRamModified = true; });
-			var SystemBusDomain = new MemoryDomain("System Bus", 0x10000, MemoryDomain.Endian.Little,
-				addr => Cpu.ReadMemory((ushort)addr),
-				(addr, value) => Cpu.WriteMemory((ushort)addr, value));
-
-			domains.Add(MainMemoryDomain);
-			domains.Add(VRamDomain);
-			domains.Add(SaveRamDomain);
-			domains.Add(SystemBusDomain);
-			memoryDomains = new MemoryDomainList(domains);
-		}
-
-		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		public void Dispose() { }
 
@@ -488,8 +536,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public class SMSSettings
 		{
+			// Game settings
 			public bool ForceStereoSeparation = false;
 			public bool SpriteLimit = false;
+			public bool Fix3D = true;
 			// GG settings
 			public bool ShowClippedRegions = false;
 			public bool HighlightActiveDisplayRegion = false;
@@ -503,7 +553,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 			public static bool RebootNeeded(SMSSettings x, SMSSettings y)
 			{
-				return x.ForceStereoSeparation != y.ForceStereoSeparation || x.SpriteLimit != y.SpriteLimit;
+				return false;
 			}
 		}
 
@@ -511,6 +561,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			public bool EnableFM = true;
 			public bool AllowOverlock = false;
+			public bool UseBIOS = false;
+			public string ConsoleRegion = "Export";
+			public string DisplayType = "NTSC";
 
 			public SMSSyncSettings Clone()
 			{
@@ -518,7 +571,12 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 			public static bool RebootNeeded(SMSSyncSettings x, SMSSyncSettings y)
 			{
-				return x.EnableFM != y.EnableFM || x.AllowOverlock != y.AllowOverlock;
+				return
+					x.EnableFM != y.EnableFM ||
+					x.AllowOverlock != y.AllowOverlock ||
+					x.UseBIOS != y.UseBIOS ||
+					x.ConsoleRegion != y.ConsoleRegion ||
+					x.DisplayType != y.DisplayType;
 			}
 		}
 	}

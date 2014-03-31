@@ -40,7 +40,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//user configuration 
 		int[,] palette = new int[64,3];
 		int[] palette_compiled = new int[64*8];
-		IPortDevice[] ports;
+
+		// new input system
+		NESControlSettings ControllerSettings; // this is stored internally so that a new change of settings won't replace
+		IControllerDeck ControllerDeck;
+		byte latched4016;
 
 		private DisplayType _display_type = DisplayType.NTSC;
 
@@ -50,6 +54,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public void SetTriangle(int v) { apu.TriangleV = v; }
 		public void SetNoise(int v) { apu.NoiseV = v; }
 		public void SetDMC(int v) { apu.DMCV = v; }
+
+		/// <summary>
+		/// for debugging only!
+		/// </summary>
+		/// <returns></returns>
+		public INESBoard GetBoard()
+		{
+			return board;
+		}
+
+		/// <summary>
+		/// for debugging only!
+		/// </summary>
+		/// <returns></returns>
+		public int[] GetCompiledPalette()
+		{
+			return palette_compiled;
+		}
 
 		public void Dispose()
 		{
@@ -157,9 +179,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ppu = new PPU(this);
 			ram = new byte[0x800];
 			CIRAM = new byte[0x800];
-			ports = new IPortDevice[2];
-			ports[0] = new JoypadPortDevice(this, 0);
-			ports[1] = new JoypadPortDevice(this, 1);
+			
+			// wire controllers
+			// todo: allow changing this
+			ControllerDeck = ControllerSettings.Instantiate(ppu.LightGunCallback);
+			// set controller definition first time only
+			if (ControllerDefinition == null)
+			{
+				ControllerDefinition = new ControllerDefinition(ControllerDeck.GetDefinition());
+				ControllerDefinition.Name = "NES Controller";
+				// controls other than the deck
+				ControllerDefinition.BoolButtons.Add("Power");
+				ControllerDefinition.BoolButtons.Add("Reset");
+				if (board is FDS)
+				{
+					var b = board as FDS;
+					ControllerDefinition.BoolButtons.Add("FDS Eject");
+					for (int i = 0; i < b.NumSides; i++)
+						ControllerDefinition.BoolButtons.Add("FDS Insert " + i);
+				}
+			}
 
 			// don't replace the magicSoundProvider on reset, as it's not needed
 			// if (magicSoundProvider != null) magicSoundProvider.Dispose();
@@ -375,8 +414,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x4014: Exec_OAMDma(val); break;
 				case 0x4015: apu.WriteReg(addr, val); break;
 				case 0x4016:
-					ports[0].Write(val & 1);
-					ports[1].Write(val & 1);
+					write_joyport(val);
 					break;
 				case 0x4017: apu.WriteReg(addr, val); break;
 				default:
@@ -385,28 +423,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
+		void write_joyport(byte value)
+		{
+			var si = new StrobeInfo(latched4016, value);
+			ControllerDeck.Strobe(si, Controller);
+			latched4016 = value;
+		}
+
 		byte read_joyport(int addr)
 		{
 			CoreComm.InputCallback.Call();
-			return handle_read_joyport(addr, false);
+			lagged = false;
+				byte ret = addr == 0x4016 ? ControllerDeck.ReadA(Controller) : ControllerDeck.ReadB(Controller);
+				ret &= 0x1f;
+				ret |= (byte)(0xe0 & DB);
+				return ret;
 		}
 
 		byte peek_joyport(int addr)
 		{
-			return handle_read_joyport(addr, true);
-		}
-
-		byte handle_read_joyport(int addr, bool peek)
-		{
-			//read joystick port
-			//many todos here
-			lagged = false;
-			byte ret;
-			if (addr == 0x4016)
-				ret = ports[0].Read(peek);
-			else
-				ret = ports[1].Read(peek);
-			return ret;
+			// at the moment, the new system doesn't support peeks
+			return 0;
 		}
 
 		void Exec_OAMDma(byte val)
@@ -489,11 +526,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x4000)
 			{
-				ret = ppu.ReadReg(addr & 7);
+				ret = ppu.PeekReg(addr & 7);
 			}
 			else if (addr < 0x4020)
 			{
-				ret = ReadReg(addr); //we're not rebasing the register just to keep register names canonical
+				ret = PeekReg(addr); //we're not rebasing the register just to keep register names canonical
 			}
 			else
 			{

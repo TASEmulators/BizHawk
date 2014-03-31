@@ -107,7 +107,14 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Sound.StartSound();
 				if (result == DialogResult.Yes)
 				{
-					_watches.Save();
+					if (string.IsNullOrWhiteSpace(_watches.CurrentFileName))
+					{
+						SaveAs();
+					}
+					else
+					{
+						_watches.Save();
+					}
 				}
 				else if (result == DialogResult.No)
 				{
@@ -1024,12 +1031,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (allCheats)
 			{
-				FreezeContextMenuItem.Text = "&Unfreeze address";
+				FreezeContextMenuItem.Text = "&Unfreeze Address";
 				FreezeContextMenuItem.Image = Properties.Resources.Unfreeze;
 			}
 			else
 			{
-				FreezeContextMenuItem.Text = "&Freeze address";
+				FreezeContextMenuItem.Text = "&Freeze Address";
 				FreezeContextMenuItem.Image = Properties.Resources.Freeze;
 			}
 
@@ -1045,7 +1052,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UnfreezeAllContextMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.CheatList.DisableAll();
+			Global.CheatList.RemoveAll();
 		}
 
 		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)

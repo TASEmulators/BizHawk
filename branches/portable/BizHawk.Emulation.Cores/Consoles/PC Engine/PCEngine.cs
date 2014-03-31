@@ -49,7 +49,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public byte[] SuperRam;  // Super System Card 192K of additional RAM
 		public byte[] ArcadeRam; // Arcade Card 2048K of additional RAM
 
-		private string systemid = "PCE";
+		string systemid = "PCE";
+		bool ForceSpriteLimit;
 
 		// 21,477,270  Machine clocks / sec
 		//  7,159,090  Cpu cycles / sec
@@ -238,12 +239,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 
 			// the gamedb can force sprite limit on, ignoring settings
-			if (Settings.SpriteLimit || game["ForceSpriteLimit"] || game.NotInDatabase)
-			{
-				VDC1.PerformSpriteLimit = true;
-				if (VDC2 != null)
-					VDC2.PerformSpriteLimit = true;
-			}
+			if (game["ForceSpriteLimit"] || game.NotInDatabase)
+				ForceSpriteLimit = true;
 
 			if (game["CdVol"])
 				CDAudio.MaxVolume = int.Parse(game.OptionValue("CdVol"));
@@ -252,7 +249,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (game["AdpcmVol"])
 				ADPCM.MaxVolume = int.Parse(game.OptionValue("AdpcmVol"));
 			// the gamedb can also force equalizevolumes on
-			if (Settings.EqualizeVolume || game["EqualizeVolumes"] || (game.NotInDatabase && TurboCD))
+			if (TurboCD && (Settings.EqualizeVolume || game["EqualizeVolumes"] || game.NotInDatabase))
 				SoundMixer.EqualizeVolumes();
 
 			// Ok, yes, HBlankPeriod's only purpose is game-specific hax.
@@ -297,6 +294,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			lagged = true;
 			CoreComm.DriveLED = false;
 			Frame++;
+			CheckSpriteLimit();
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
 
 			Cpu.Debug = CoreComm.Tracer.Enabled;
@@ -317,6 +315,14 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 			else
 				islag = false;
+		}
+
+		void CheckSpriteLimit()
+		{
+			bool spriteLimit = ForceSpriteLimit | Settings.SpriteLimit;
+			VDC1.PerformSpriteLimit = spriteLimit;
+			if (VDC2 != null)
+				VDC2.PerformSpriteLimit = spriteLimit;
 		}
 
 		public CoreComm CoreComm { get; private set; }
@@ -596,13 +602,23 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			var domains = new List<MemoryDomain>(10);
 			int mainmemorymask = Ram.Length - 1;
 			var MainMemoryDomain = new MemoryDomain("Main Memory", Ram.Length, MemoryDomain.Endian.Little,
-				addr => Ram[addr & mainmemorymask],
-				(addr, value) => Ram[addr & mainmemorymask] = value);
+				addr => Ram[addr],
+				(addr, value) => Ram[addr] = value);
 			domains.Add(MainMemoryDomain);
 
 			var SystemBusDomain = new MemoryDomain("System Bus", 0x200000, MemoryDomain.Endian.Little,
-				addr => Cpu.ReadMemory21(addr),
-				(addr, value) => Cpu.WriteMemory21(addr, value));
+				(addr) =>
+				{
+					if (addr < 0 || addr >= 0x200000)
+						throw new ArgumentOutOfRangeException();
+					return Cpu.ReadMemory21(addr);
+				},
+				(addr, value) =>
+				{
+					if (addr < 0 || addr >= 0x200000)
+						throw new ArgumentOutOfRangeException();
+					Cpu.WriteMemory21(addr, value);
+				});
 			domains.Add(SystemBusDomain);
 
 			var RomDomain = new MemoryDomain("ROM", RomLength, MemoryDomain.Endian.Little,
@@ -614,28 +630,28 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (BRAM != null)
 			{
 				var BRAMMemoryDomain = new MemoryDomain("Battery RAM", Ram.Length, MemoryDomain.Endian.Little,
-					addr => BRAM[addr & 0x7FF],
-					(addr, value) => BRAM[addr & 0x7FF] = value);
+					addr => BRAM[addr],
+					(addr, value) => BRAM[addr] = value);
 				domains.Add(BRAMMemoryDomain);
 			}
 
 			if (TurboCD)
 			{
 				var CDRamMemoryDomain = new MemoryDomain("TurboCD RAM", CDRam.Length, MemoryDomain.Endian.Little,
-					addr => CDRam[addr & 0xFFFF],
-					(addr, value) => CDRam[addr & 0xFFFF] = value);
+					addr => CDRam[addr],
+					(addr, value) => CDRam[addr] = value);
 				domains.Add(CDRamMemoryDomain);
 
 				var AdpcmMemoryDomain = new MemoryDomain("ADPCM RAM", ADPCM.RAM.Length, MemoryDomain.Endian.Little,
-					addr => ADPCM.RAM[addr & 0xFFFF],
-					(addr, value) => ADPCM.RAM[addr & 0xFFFF] = value);
+					addr => ADPCM.RAM[addr],
+					(addr, value) => ADPCM.RAM[addr] = value);
 				domains.Add(AdpcmMemoryDomain);
 
 				if (SuperRam != null)
 				{
 					var SuperRamMemoryDomain = new MemoryDomain("Super System Card RAM", SuperRam.Length, MemoryDomain.Endian.Little,
-						addr => SuperRam[addr & 0x3FFFF],
-						(addr, value) => SuperRam[addr & 0x3FFFF] = value);
+						addr => SuperRam[addr],
+						(addr, value) => SuperRam[addr] = value);
 					domains.Add(SuperRamMemoryDomain);
 				}
 			}
@@ -643,16 +659,16 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (ArcadeCard)
 			{
 				var ArcadeRamMemoryDomain = new MemoryDomain("Arcade Card RAM", ArcadeRam.Length, MemoryDomain.Endian.Little,
-						addr => ArcadeRam[addr & 0x1FFFFF],
-						(addr, value) => ArcadeRam[addr & 0x1FFFFF] = value);
+						addr => ArcadeRam[addr],
+						(addr, value) => ArcadeRam[addr] = value);
 				domains.Add(ArcadeRamMemoryDomain);
 			}
 
 			if (PopulousRAM != null)
 			{
 				var PopulusRAMDomain = new MemoryDomain("Cart Battery RAM", PopulousRAM.Length, MemoryDomain.Endian.Little,
-					addr => PopulousRAM[addr & 0x7fff],
-					(addr, value) => PopulousRAM[addr & 0x7fff] = value);
+					addr => PopulousRAM[addr],
+					(addr, value) => PopulousRAM[addr] = value);
 				domains.Add(PopulusRAMDomain);
 			}
 
@@ -697,7 +713,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			PCESettings n = (PCESettings)o;
 			bool ret;
 			if (n.ArcadeCardRewindHack != Settings.ArcadeCardRewindHack ||
-				n.SpriteLimit != Settings.SpriteLimit ||
 				n.EqualizeVolume != Settings.EqualizeVolume)
 				ret = true;
 			else

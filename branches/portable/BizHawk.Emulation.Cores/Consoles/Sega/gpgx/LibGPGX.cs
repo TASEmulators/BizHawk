@@ -232,5 +232,26 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public cd_read_cb readcallback;
 		}
 
+		[StructLayout(LayoutKind.Sequential)]
+		public struct VDPNameTable
+		{
+			public int Width; // in cells
+			public int Height; // in cells
+			public int Baseaddr;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public class VDPView
+		{
+			public IntPtr VRAM;
+			public IntPtr PatternCache;
+			public IntPtr ColorCache;
+			public VDPNameTable NTA;
+			public VDPNameTable NTB;
+			public VDPNameTable NTW;
+		}
+
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gpgx_get_vdp_view([Out] VDPView view);
 	}
 }

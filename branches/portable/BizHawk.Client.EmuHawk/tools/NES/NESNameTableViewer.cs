@@ -72,6 +72,99 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		private unsafe void DrawTile(int* dst, int pitch, byte* pal, byte* tile, int* finalpal)
+		{
+			dst += 7;
+			int vinc = pitch + 8;
+			for (int j = 0; j < 8; j++)
+			{
+				int lo = tile[0];
+				int hi = tile[8] << 1;
+				for (int i = 0; i < 8; i++)
+				{
+					*dst-- = finalpal[pal[lo & 1 | hi & 2]];
+					lo >>= 1;
+					hi >>= 1;
+				}
+				dst += vinc;
+				tile++;
+			}
+		}
+
+		private unsafe void GenerateExAttr(int* dst, int pitch, byte[] palram, byte[] ppumem, byte[] exram)
+		{
+			byte[] chr = _nes.GetBoard().VROM ?? _nes.GetBoard().VRAM;
+			int chr_mask = chr.Length - 1;
+
+			fixed (byte* chrptr = chr, palptr = palram, ppuptr = ppumem, exptr = exram)
+			fixed (int* finalpal = _nes.GetCompiledPalette())
+			{
+				DrawExNT(dst, pitch, palptr, ppuptr + 0x2000, exptr, chrptr, chr_mask, finalpal);
+				DrawExNT(dst + 256, pitch, palptr, ppuptr + 0x2400, exptr, chrptr, chr_mask, finalpal);
+				dst += pitch * 240;
+				DrawExNT(dst, pitch, palptr, ppuptr + 0x2800, exptr, chrptr, chr_mask, finalpal);
+				DrawExNT(dst + 256, pitch, palptr, ppuptr + 0x2c00, exptr, chrptr, chr_mask, finalpal);
+			}
+		}
+
+		private unsafe void GenerateAttr(int* dst, int pitch, byte[] palram, byte[] ppumem)
+		{
+			fixed (byte* palptr = palram, ppuptr = ppumem)
+			fixed (int* finalpal = _nes.GetCompiledPalette())
+			{
+				byte* chrptr = ppuptr + (_nes.ppu.reg_2000.bg_pattern_hi ? 0x1000 : 0);
+				DrawNT(dst, pitch, palptr, ppuptr + 0x2000, chrptr, finalpal);
+				DrawNT(dst + 256, pitch, palptr, ppuptr + 0x2400, chrptr, finalpal);
+				dst += pitch * 240;
+				DrawNT(dst, pitch, palptr, ppuptr + 0x2800, chrptr, finalpal);
+				DrawNT(dst + 256, pitch, palptr, ppuptr + 0x2c00, chrptr, finalpal);
+			}
+		}
+
+		private unsafe void DrawNT(int* dst, int pitch, byte* palram, byte* nt, byte* chr, int* finalpal)
+		{
+			byte* at = nt + 0x3c0;
+
+			for (int ty = 0; ty < 30; ty++)
+			{
+				for (int tx = 0; tx < 32; tx++)
+				{
+					byte t = *nt++;
+					byte a = at[ty >> 2 << 3 | tx >> 2];
+					a >>= tx & 2;
+					a >>= (ty & 2) << 1;
+					int palnum = a & 3;
+
+					int tileaddr = t << 4;
+					DrawTile(dst, pitch, palram + palnum * 4, chr + tileaddr, finalpal);
+					dst += 8;
+				}
+				dst -= 256;
+				dst += pitch * 8;
+			}
+		}
+
+		private unsafe void DrawExNT(int* dst, int pitch, byte* palram, byte* nt, byte* exnt, byte* chr, int chr_mask, int* finalpal)
+		{
+			for (int ty = 0; ty < 30; ty++)
+			{
+				for (int tx = 0; tx < 32; tx++)
+				{
+					byte t = *nt++;
+					byte ex = *exnt++;
+
+					int tilenum = t | (ex & 0x3f) << 8;
+					int palnum = ex >> 6;
+
+					int tileaddr = tilenum << 4 & chr_mask;
+					DrawTile(dst, pitch, palram + palnum * 4, chr + tileaddr, finalpal);
+					dst += 8;
+				}
+				dst -= 256;
+				dst += pitch * 8;
+			}
+		}
+
 		private unsafe void Generate(bool now = false)
 		{
 			if (!IsHandleCreated || IsDisposed)
@@ -111,59 +204,19 @@ namespace BizHawk.Client.EmuHawk
 				palram[i] = _nes.ppu.PALRAM[i];
 			}
 
-			int ytable = 0, yline = 0;
-			for (int y = 0; y < 480; y++)
+			var board = _nes.GetBoard();
+			if (board is ExROM && (board as ExROM).ExAttrActive)
 			{
-				if (y == 240)
-				{
-					ytable += 2;
-					yline = 240;
-				}
-				for (int x = 0; x < 512; x++, dptr++)
-				{
-					int table = (x >> 8) + ytable;
-					int ntaddr = table << 10;
-					int px = x & 255;
-					int py = y - yline;
-					int tx = px >> 3;
-					int ty = py >> 3;
-					int ntbyte_ptr = ntaddr + (ty * 32) + tx;
-					int atbyte_ptr = ntaddr + 0x3C0 + ((ty >> 2) << 3) + (tx >> 2);
-					int nt = ppuBuffer[ntbyte_ptr + 0x2000];
+				byte[] exram = new byte[1024];
+				var md = _nes.MemoryDomains["ExRAM"];
+				for (int i = 0; i < 1024; i++)
+					exram[i] = md.PeekByte(i);
 
-					int at = ppuBuffer[atbyte_ptr + 0x2000];
-					if ((ty & 2) != 0)
-					{
-						at >>= 4;
-					}
-
-					if ((tx & 2) != 0)
-					{
-						at >>= 2;
-					}
-
-					at &= 0x03;
-					at <<= 2;
-
-					int bgpx = x & 7;
-					int bgpy = y & 7;
-					int pt_addr = (nt << 4) + bgpy + pt_add;
-					int pt_0 = ppuBuffer[pt_addr];
-					int pt_1 = ppuBuffer[pt_addr + 8];
-					int pixel = ((pt_0 >> (7 - bgpx)) & 1) | (((pt_1 >> (7 - bgpx)) & 1) << 1);
-
-					// if the pixel is transparent, draw the backdrop color
-					// TODO - consider making this optional? nintendulator does it and fceux doesnt need to do it due to buggy palette logic which creates the same effect
-					if (pixel != 0)
-					{
-						pixel |= at;
-					}
-
-					pixel = palram[pixel];
-					*dptr = _nes.LookupColor(pixel);
-				}
-
-				dptr += pitch - 512;
+				GenerateExAttr(dptr, pitch, palram, ppuBuffer, exram);
+			}
+			else
+			{
+				GenerateAttr(dptr, pitch, palram, ppuBuffer);
 			}
 
 			NameTableView.Nametables.UnlockBits(bmpdata);

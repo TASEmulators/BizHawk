@@ -29,6 +29,7 @@ namespace BizHawk.Emulation.Common
 		public string Name;
 		public string System;
 		public string Hash;
+		public string Region;
 		public RomStatus Status = RomStatus.NotInDatabase;
 		public bool NotInDatabase = true;
 		public string FirmwareHash;
@@ -44,6 +45,7 @@ namespace BizHawk.Emulation.Common
 				Name = "Null",
 				System = "NULL",
 				Hash = "",
+				Region = "",
 				Status = RomStatus.GoodDump,
 				NotInDatabase = false
 			};
@@ -54,6 +56,7 @@ namespace BizHawk.Emulation.Common
 			Name = cgi.Name;
 			System = cgi.System;
 			Hash = cgi.Hash;
+			Region = cgi.Region;
 			Status = cgi.Status;
 			NotInDatabase = false;
 			ParseOptionsDictionary(cgi.MetaData);

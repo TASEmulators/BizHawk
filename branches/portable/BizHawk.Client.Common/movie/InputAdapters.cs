@@ -202,50 +202,6 @@ namespace BizHawk.Client.Common
 
 	}
 
-	public class ForceOffAdaptor : IController
-	{
-		public bool IsPressed(string button) { return this[button]; }
-
-		// what exactly would we want to do here with floats?
-		// ForceOffAdaptor is only used by lua, and the code there looks like a big mess...
-		public float GetFloat(string name) { return Source.GetFloat(name); }
-
-		protected HashSet<string> StickySet = new HashSet<string>();
-		public IController Source { get; set; }
-		public IController SourceOr { get; set; }
-
-		public ControllerDefinition Type
-		{
-			get { return Source.Type; } 
-			set { throw new InvalidOperationException(); }
-		}
-
-		public bool this[string button]
-		{
-			get
-			{
-				return !StickySet.Contains(button) && Source[button];
-			}
-
-			set
-			{
-				throw new InvalidOperationException();
-			}
-		}
-
-		public void SetSticky(string button, bool isSticky)
-		{
-			if (isSticky)
-			{
-				this.StickySet.Add(button);
-			}
-			else
-			{
-				this.StickySet.Remove(button);
-			}
-		}
-	}
-
 	public class StickyXorAdapter : IController
 	{
 		protected HashSet<string> stickySet = new HashSet<string>();
@@ -313,6 +269,11 @@ namespace BizHawk.Client.Common
 			{
 				stickySet.Remove(button);
 			}
+		}
+
+		public void Unset(string button)
+		{
+			stickySet.Remove(button);
 		}
 
 		public bool IsSticky(string button)
@@ -613,6 +574,95 @@ namespace BizHawk.Client.Common
 		public bool IsPressed(string button)
 		{
 			return Source.IsPressed(RemapButtonName(button));
+		}
+	}
+
+	/// <summary>
+	/// Used to pass into an Override method to manage the logic overriding input
+	/// This only works with bool buttons!
+	/// </summary>
+	public class OverrideAdaptor : IController
+	{
+		private readonly Dictionary<string, bool> _overrides = new Dictionary<string, bool>();
+		private readonly List<string> _inverses = new List<string>();
+
+		public bool this[string button]
+		{
+			get
+			{
+				if (_overrides.ContainsKey(button))
+				{
+					return _overrides[button];
+				}
+
+				throw new InvalidOperationException();
+			}
+
+			set
+			{
+				if (_overrides.ContainsKey(button))
+				{
+					_overrides[button] = value;
+				}
+				else
+				{
+					_overrides.Add(button, value);
+				}
+			}
+		}
+
+		public ControllerDefinition Type { get; set; }
+
+		public IEnumerable<string> Overrides
+		{
+			get
+			{
+				foreach (var kvp in _overrides)
+				{
+					yield return kvp.Key;
+				}
+			}
+		}
+
+		public IEnumerable<string> InversedButtons
+		{
+			get
+			{
+				foreach (var name in _inverses)
+				{
+					yield return name;
+				}
+			}
+		}
+
+		public float GetFloat(string name)
+		{
+			return 0.0F;
+		}
+
+		public bool IsPressed(string button) { return this[button]; }
+
+		public void SetButton(string button, bool value)
+		{
+			this[button] = value;
+			_inverses.Remove(button);
+		}
+
+		public void UnSet(string button)
+		{
+			_overrides.Remove(button);
+			_inverses.Remove(button);
+		}
+
+		public void SetInverse(string button)
+		{
+			_inverses.Add(button);
+		}
+
+		public void FrameTick()
+		{
+			_overrides.Clear();
+			_inverses.Clear();
 		}
 	}
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -161,46 +160,52 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Enable()
+		public void Enable(bool handleChange = true)
 		{
 			if (!IsSeparator)
 			{
 				var wasEnabled = _enabled;
 				_enabled = true;
-				if (!wasEnabled)
+				if (!wasEnabled && handleChange)
 				{
 					Changes();
 				}
 			}
 		}
 
-		public void Disable()
+		public void Disable(bool handleChange = true)
 		{
 			if (!IsSeparator)
 			{
 				var wasEnabled = _enabled;
 				_enabled = false;
-				if (wasEnabled)
+				if (wasEnabled && handleChange)
 				{
 					Changes();
 				}
 			}
 		}
 
-		public void Toggle()
+		public void Toggle(bool handleChange = true)
 		{
 			if (!IsSeparator)
 			{
 				_enabled ^= true;
-				Changes();
+				if (handleChange)
+				{
+					Changes();
+				}
 			}
 		}
 
-		string GetStringForPulse(int val)
+		private string GetStringForPulse(int val)
 		{
 			if (_watch.Type == Watch.DisplayType.Hex)
+			{
 				return val.ToString("X8");
-			else return val.ToString();
+			}
+			
+			return val.ToString();
 		}
 
 		public void Pulse()
@@ -275,5 +280,58 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public override bool Equals(object obj)
+		{
+			if (obj is Watch)
+			{
+				var watch = obj as Watch;
+				return this.Domain == watch.Domain && this.Address == watch.Address;
+			}
+
+			if (obj is Cheat)
+			{
+				var cheat = obj as Cheat;
+				return this.Domain == cheat.Domain && this.Address == cheat.Address;
+			}
+
+			return base.Equals(obj);
+		}
+
+		public override int GetHashCode()
+		{
+			return this.Domain.GetHashCode() + this.Address ?? 0;
+		}
+
+		public static bool operator ==(Cheat a, Cheat b)
+		{
+			// If one is null, but not both, return false.
+			if (((object)a == null) || ((object)b == null))
+			{
+				return false;
+			}
+
+			return a.Domain == b.Domain && a.Address == b.Address;
+		}
+
+		public static bool operator !=(Cheat a, Cheat b)
+		{
+			return !(a == b);
+		}
+
+		public static bool operator ==(Cheat a, Watch b)
+		{
+			// If one is null, but not both, return false.
+			if (((object)a == null) || ((object)b == null))
+			{
+				return false;
+			}
+
+			return a.Domain == b.Domain && a.Address == b.Address;
+		}
+
+		public static bool operator !=(Cheat a, Watch b)
+		{
+			return !(a == b);
+		}
 	}
 }

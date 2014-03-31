@@ -116,65 +116,6 @@ namespace BizHawk.Client.EmuHawk
 			return g;
 		}
 
-		private static void DoGuiText(
-			int x,
-			int y,
-			string message,
-			bool alert,
-			object background = null,
-			object forecolor = null, 
-			string anchor = null)
-		{
-			if (!alert)
-			{
-				if (forecolor == null)
-				{
-					forecolor = "white";
-				}
-
-				if (background == null)
-				{
-					background = "black";
-				}
-			}
-
-			var a = 0;
-			
-			if (!string.IsNullOrEmpty(anchor))
-			{
-				switch (anchor)
-				{
-					case "0":
-					case "topleft":
-						a = 0;
-						break;
-					case "1":
-					case "topright":
-						a = 1;
-						break;
-					case "2":
-					case "bottomleft":
-						a = 2;
-						break;
-					case "3":
-					case "bottomright":
-						a = 3;
-						break;
-				}
-			}
-			else
-			{
-				x -= Global.Emulator.CoreComm.ScreenLogicalOffsetX;
-				y -= Global.Emulator.CoreComm.ScreenLogicalOffsetY;
-			}
-
-			// blah hacks
-			x *= EmuHawkLuaLibrary.GetWindowSize();
-			y *= EmuHawkLuaLibrary.GetWindowSize();
-
-			GlobalWin.OSD.AddGUIText(message, x, y, alert, GetColor(background), GetColor(forecolor), a);
-		}
-
 		#endregion
 
 		[LuaMethodAttributes(
@@ -184,15 +125,6 @@ namespace BizHawk.Client.EmuHawk
 		public void AddMessage(string message)
 		{
 			GlobalWin.OSD.AddMessage(message);
-		}
-
-		[LuaMethodAttributes(
-			"alert",
-			"Functions the same as gui.text() but shows the message in the alert font"
-		)]
-		public void Alert(int x, int y, string message, string anchor = null)
-		{
-			DoGuiText(x, y, message, true, null, null, anchor); // TODO: refactor DoGuiText to take luaStr as string and refactor
 		}
 
 		[LuaMethodAttributes(
@@ -533,7 +465,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					var font = new Font(family, fontsize ?? 12, fstyle, GraphicsUnit.Pixel);
-					g.DrawString(message, font, GetBrush(color ?? "white"), LuaInt(x), LuaInt(y));
+					g.DrawString(message, font, GetBrush(color ?? "white"), x, y);
 				}
 				catch (Exception)
 				{
@@ -554,7 +486,41 @@ namespace BizHawk.Client.EmuHawk
 			object forecolor = null,
 			string anchor = null)
 		{
-			DoGuiText(x, y, message, false, background, forecolor, anchor);
+			var a = 0;
+
+			if (!string.IsNullOrEmpty(anchor))
+			{
+				switch (anchor)
+				{
+					case "0":
+					case "topleft":
+						a = 0;
+						break;
+					case "1":
+					case "topright":
+						a = 1;
+						break;
+					case "2":
+					case "bottomleft":
+						a = 2;
+						break;
+					case "3":
+					case "bottomright":
+						a = 3;
+						break;
+				}
+			}
+			else
+			{
+				x -= Global.Emulator.CoreComm.ScreenLogicalOffsetX;
+				y -= Global.Emulator.CoreComm.ScreenLogicalOffsetY;
+			}
+
+			// blah hacks
+			x *= EmuHawkLuaLibrary.GetWindowSize();
+			y *= EmuHawkLuaLibrary.GetWindowSize();
+
+			GlobalWin.OSD.AddGUIText(message, x, y, false, GetColor(background ?? "black"), GetColor(forecolor ?? "white"), a);
 		}
 	}
 }

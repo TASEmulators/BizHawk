@@ -201,5 +201,25 @@ namespace BizHawk.Client.EmuHawk
 			}
 			emu.Cpu.CDLLoggingActive = checkBox1.Checked;
 		}
+
+		private void disassembleToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (CDL == null)
+			{
+				MessageBox.Show(this, "Cannot disassemble with no CDL loaded!", "Alert");
+			}
+			else
+			{
+				var sfd = new SaveFileDialog();
+				var result = sfd.ShowDialog(this);
+				if (result == DialogResult.OK)
+				{
+					using (FileStream fs = new FileStream(sfd.FileName, FileMode.Create, FileAccess.Write))
+					{
+						CDL.Disassemble(fs, Global.Emulator.MemoryDomains);
+					}
+				}
+			}
+		}
 	}
 }

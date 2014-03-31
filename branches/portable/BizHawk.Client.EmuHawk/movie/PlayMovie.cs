@@ -69,8 +69,8 @@ namespace BizHawk.Client.EmuHawk
 
         private void OK_Click(object sender, EventArgs e)
         {
-            Global.MovieSession.ReadOnly = ReadOnlyCheckBox.Checked;
             Run();
+            Global.MovieSession.ReadOnly = ReadOnlyCheckBox.Checked;
             Close();
         }
 

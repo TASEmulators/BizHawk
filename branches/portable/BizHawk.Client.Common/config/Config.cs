@@ -254,6 +254,7 @@ namespace BizHawk.Client.Common
 		public bool AutoLoadHexEditor = false;
 		public bool HexEditorBigEndian = false;
 		public int HexEditorDataSize = 1;
+		public RecentFiles RecentTables = new RecentFiles(8);
 
 		// Hex Editor Colors
 		public Color HexBackgrndColor = Color.FromName("Control");

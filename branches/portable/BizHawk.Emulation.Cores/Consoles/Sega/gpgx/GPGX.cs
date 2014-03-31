@@ -49,6 +49,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			//hack, don't use
 			//romfile = File.ReadAllBytes(@"D:\encodes\bizhawksrc\output\SANIC CD\PierSolar (E).bin");
+			if (romfile != null && romfile.Length > 16 * 1024 * 1024)
+			{
+				throw new InvalidOperationException("ROM too big!  Did you try to load a CD as a ROM?");
+			}
 
 			try
 			{
@@ -109,6 +113,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					LibGPGX.gpgx_get_fps(ref fpsnum, ref fpsden);
 					CoreComm.VsyncNum = fpsnum;
 					CoreComm.VsyncDen = fpsden;
+					DisplayType = CoreComm.VsyncRate > 55 ? DisplayType.NTSC : DisplayType.PAL;
 				}
 
 				// compute state size
@@ -270,7 +275,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			var ses = CD.TOC.Sessions[0];
 			int ntrack = ses.Tracks.Count;
-	
+
 			// bet you a dollar this is all wrong
 			for (int i = 0; i < LibGPGX.CD_MAX_TRACKS; i++)
 			{
@@ -548,16 +553,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (area == IntPtr.Zero || pname == IntPtr.Zero || size == 0)
 					continue;
 				string name = Marshal.PtrToStringAnsi(pname);
-				byte *p = (byte*) area;
+				byte* p = (byte*)area;
 
 				mm.Add(new MemoryDomain(name, size, MemoryDomain.Endian.Unknown,
 					delegate(int addr)
 					{
-						return p[addr & (size - 1)];
+						if (addr < 0 || addr >= size)
+							throw new ArgumentOutOfRangeException();
+						return p[addr];
 					},
 					delegate(int addr, byte val)
 					{
-						p[addr & (size - 1)] = val;
+						if (addr < 0 || addr >= size)
+							throw new ArgumentOutOfRangeException();
+						p[addr] = val;
 					}));
 			}
 
@@ -568,6 +577,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
 		{
 			return new List<KeyValuePair<string, int>>();
+		}
+
+		public void UpdateVDPViewContext(LibGPGX.VDPView view)
+		{
+			LibGPGX.gpgx_get_vdp_view(view);
 		}
 
 		#endregion
@@ -621,6 +635,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		#region VideoProvider
 
+		public DisplayType DisplayType { get; private set; }
+
 		public IVideoProvider VideoProvider { get { return this; } }
 
 		int[] vidbuff = new int[0];
@@ -651,7 +667,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				for (int j = 0; j < vheight; j++)
 				{
 					for (int i = 0; i < vwidth; i++)
-						*pdst++ = *psrc++ | unchecked((int)0xff000000);
+						*pdst++ = *psrc++;// | unchecked((int)0xff000000);
 					psrc += rinc;
 				}
 			}

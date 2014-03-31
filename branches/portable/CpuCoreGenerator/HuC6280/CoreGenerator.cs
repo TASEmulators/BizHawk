@@ -754,6 +754,7 @@ namespace HuC6280
         public void GenerateDisassembler(string file)
         {
             var w = new StreamWriter(file, false);
+			w.WriteLine("using System;");
             w.WriteLine("namespace BizHawk.Emulation.Cores.Components.H6280");
             w.WriteLine();
             w.WriteLine("// Do not modify this file directly! This is GENERATED code.");
@@ -773,12 +774,28 @@ namespace HuC6280
                 if (Opcodes[i] != null)
                     DisassembleOpcode(w, i);
             }
-
             w.WriteLine("            }");
             w.WriteLine("            bytesToAdvance = 1;");
             w.WriteLine("            return \"???\";");
             w.WriteLine("        }");
-            w.WriteLine("    }");
+			w.WriteLine();
+			w.WriteLine("        // avoid slowing down the other disassembler");
+			w.WriteLine("        public static string DisassembleExt(ushort pc, out int bytesToAdvance, Func<ushort, byte> ReadMemory, Func<ushort, ushort> ReadWord)");
+			w.WriteLine("        {");
+			w.WriteLine("            byte op = ReadMemory(pc);");
+			w.WriteLine("            switch (op)");
+			w.WriteLine("            {");
+
+			for (int i = 0; i < 256; i++)
+			{
+				if (Opcodes[i] != null)
+					DisassembleOpcode(w, i);
+			}
+			w.WriteLine("            }");
+			w.WriteLine("            bytesToAdvance = 1;");
+			w.WriteLine("            return \"???\";");
+			w.WriteLine("        }");
+			w.WriteLine("    }");
             w.WriteLine("}");
             w.Close();
         }

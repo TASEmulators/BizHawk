@@ -208,6 +208,43 @@ GPGX_EX void gpgx_advance(void)
 	nsamples = audio_update(soundbuffer);
 }
 
+typedef struct
+{
+	uint32 width; // in cells
+	uint32 height;
+	uint32 baseaddr;
+} nametable_t;
+
+typedef struct
+{
+	uint8 *vram; // 64K vram
+	uint8 *patterncache; // every pattern, first normal, then hflip, vflip, bothflip
+	uint32 *colorcache; // 64 colors
+	nametable_t nta;
+	nametable_t ntb;
+	nametable_t ntw;
+} vdpview_t;
+
+
+extern uint8 bg_pattern_cache[];
+extern uint32 pixel[];
+
+GPGX_EX void gpgx_get_vdp_view(vdpview_t *view)
+{
+	view->vram = vram;
+	view->patterncache = bg_pattern_cache;
+	view->colorcache = pixel + 0x40;
+	view->nta.width = 1 << (playfield_shift - 1);
+	view->ntb.width = 1 << (playfield_shift - 1);
+	view->nta.height = (playfield_row_mask + 1) >> 3;
+	view->ntb.height = (playfield_row_mask + 1) >> 3;
+	view->ntw.width = 1 << (5 + (reg[12] & 1));
+	view->ntw.height = 32;
+	view->nta.baseaddr = ntab;
+	view->ntb.baseaddr = ntbb;
+	view->ntw.baseaddr = ntwb;
+}
+
 // internal: computes sram size (no brams)
 int saveramsize(void)
 {

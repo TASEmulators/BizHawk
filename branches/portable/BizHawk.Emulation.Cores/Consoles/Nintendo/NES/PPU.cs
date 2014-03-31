@@ -42,6 +42,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public DebugCallback NTViewCallback;
 			public DebugCallback PPUViewCallback;
 
+			// true = light sensed
+			public bool LightGunCallback(int x, int y)
+			{
+				// untested so far
+
+				int sum = 0;
+				int ymin = Math.Max(Math.Max(y - 20, ppur.status.sl - 30), 0);
+				int ymax = Math.Min(Math.Min(y + 20, ppur.status.sl + 5),239);
+				int xmin = Math.Max(0, x - 20);
+				int xmax = Math.Min(255, x + 20);
+
+				for (int j = ymin; j <= ymax; j++)
+				{
+					for (int i = xmin; i <= xmax; i++)
+					{
+						short s = xbuf[j * 256 + i];
+						int lum = s & 0x30;
+						if ((s & 0x0f) >= 0x0e)
+							lum = 0;
+						sum += lum;
+					}
+				}
+				return sum >= 40000;
+			}
+
 
 			//when the ppu issues a write it goes through here and into the game board
 			public void ppubus_write(int addr, byte value)
