@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	TIA registers at 00-3F or 40-7F without incurring any overhead.
 	*/
 
-	class mX07 : MapperBase
+	internal class mX07 : MapperBase
 	{
 		int rombank_2k;
 

@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Cores.Atari.Atari2600
+﻿using System;
+
+namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	/*
 	This is another 8K bankswitching method with two 4K banks.  The rationale is that it's
@@ -19,8 +21,11 @@
 	B is the bank we will select.  sooo, accessing 0800 will select bank 0, and 0840
 	will select bank 1.
 	*/
-	class m0840 : MapperBase 
+	internal class m0840 : MapperBase 
 	{
-
+		public m0840()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

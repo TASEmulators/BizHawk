@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Cores.Atari.Atari2600
+﻿using System;
+
+namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	/*
 	FE (Activision special)
@@ -55,8 +57,11 @@
 	to simply select which 8K bank to be in.
 	*/
 	
-	class mFE : MapperBase 
+	internal class mFE : MapperBase 
 	{
-
+		public mFE()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

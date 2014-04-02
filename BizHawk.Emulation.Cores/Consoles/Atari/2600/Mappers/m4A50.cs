@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	and M2 (clock) to be able to properly do most of the things it's doing.
 	*/
 
-	class m4A50 : MapperBase 
+	internal class m4A50 : MapperBase 
 	{
 		private int myLastData = 0xFF;
 		private int myLastAddress = 0xFFFF;

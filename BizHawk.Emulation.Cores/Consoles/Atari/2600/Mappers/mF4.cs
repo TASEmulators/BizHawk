@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	by accessing 1FF4 through 1FFB.
 	*/
 
-	class mF4 :MapperBase 
+	internal class mF4 :MapperBase 
 	{
 		int toggle;
 

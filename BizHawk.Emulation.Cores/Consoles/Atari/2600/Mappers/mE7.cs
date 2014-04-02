@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	Accessing 1FE8 through 1FEB select which 256 byte bank shows up.
 	*/
 
-	class mE7 : MapperBase
+	internal class mE7 : MapperBase
 	{
 		private int rombank_1k;
 		private int rambank1_toggle;
