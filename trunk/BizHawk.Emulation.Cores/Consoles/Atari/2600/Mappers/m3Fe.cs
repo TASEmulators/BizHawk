@@ -1,6 +1,12 @@
-﻿namespace BizHawk.Emulation.Cores.Atari.Atari2600
+﻿using System;
+
+namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	class m3Fe : MapperBase
+	internal class m3Fe : MapperBase
 	{
+		public m3Fe()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

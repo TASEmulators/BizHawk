@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	enough space for 256K of RAM.  When RAM is selected, 1000-13FF is the read port while
 	1400-17FF is the write port.
 	*/
-	class m3E : MapperBase 
+	internal class m3E : MapperBase 
 	{
 		int lowbank_2k;
 		int rambank_1k;

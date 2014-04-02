@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		Magicard
 	 */
 
-	class mCV: MapperBase
+	internal class mCV: MapperBase
 	{
 		ByteBuffer aux_ram = new ByteBuffer(1024);
 		

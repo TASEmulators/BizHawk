@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	yet.
 	*/
 
-	class m3F :MapperBase 
+	internal class m3F : MapperBase 
 	{
 		int lowbank_2k;
 

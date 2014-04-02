@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	Accessing 0220 will select the first bank, and accessing 0240 will select the second.
 	*/
 
-	class mUA : MapperBase 
+	internal class mUA : MapperBase 
 	{
 		int toggle;
 

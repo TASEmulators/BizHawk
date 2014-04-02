@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Cores.Atari.Atari2600
+﻿using System;
+
+namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	/*
 	MC (Megacart)
@@ -57,8 +59,11 @@
 	disregard accesses to 3C-3F instead.
 	*/
 
-	class mMC : MapperBase 
+	internal class mMC : MapperBase 
 	{
-
+		public mMC()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

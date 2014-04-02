@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	1FE1 = bank 1, etc.
 	*/
 
-	class mEF : MapperBase 
+	internal class mEF : MapperBase 
 	{
 		private int toggle;
 

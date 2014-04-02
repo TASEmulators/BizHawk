@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	The write port is at 1000-10FF, and the read port is 1100-11FF.
 	 */
 
-	class mFA : MapperBase 
+	internal class mFA : MapperBase 
 	{
 		int toggle;
 		ByteBuffer aux_ram = new ByteBuffer(256);

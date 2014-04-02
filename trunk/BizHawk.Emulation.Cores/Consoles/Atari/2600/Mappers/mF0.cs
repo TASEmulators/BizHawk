@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	1FF0 until the bank it is looking for comes up.
 	*/
 
-	class mF0 : MapperBase 
+	internal class mF0 : MapperBase 
 	{
 		int bank;
 

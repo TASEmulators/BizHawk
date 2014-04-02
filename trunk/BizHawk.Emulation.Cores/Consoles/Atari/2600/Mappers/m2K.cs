@@ -1,19 +1,20 @@
 ﻿namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	partial class Atari2600
+	internal class m2K : MapperBase
 	{
-		class m2K : MapperBase
+		public override byte ReadMemory(ushort addr)
 		{
-			public override byte ReadMemory(ushort addr)
+			if (addr < 0x1000)
 			{
-				if (addr < 0x1000) return base.ReadMemory(addr);
-				return core.rom[addr & 0x7FF];
+				return base.ReadMemory(addr);
 			}
 
-			public override byte PeekMemory(ushort addr)
-			{
-				return ReadMemory(addr);
-			}
+			return core.rom[addr & 0x7FF];
+		}
+
+		public override byte PeekMemory(ushort addr)
+		{
+			return ReadMemory(addr);
 		}
 	}
 }
