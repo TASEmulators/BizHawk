@@ -159,7 +159,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				case "F0": mapper = new mF0(); break;
 				case "UA": mapper = new mUA(); break;
 				//Homebrew mappers
-				case "3Fe": mapper = new m3Fe(); break;
 				case "3E": mapper = new m3E(); break;
 				case "0840": mapper = new m0840(); break;
 				case "MC": mapper = new mMC(); break;
