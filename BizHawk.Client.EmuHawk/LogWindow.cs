@@ -118,5 +118,13 @@ namespace BizHawk.Client.EmuHawk
 			if (sb.Length > 0)
 				Clipboard.SetText(sb.ToString(), TextDataFormat.Text);
 		}
+
+		private void virtualListView1_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift)
+			{
+				buttonCopy_Click(null, null);
+			}
+		}
 	}
 }
