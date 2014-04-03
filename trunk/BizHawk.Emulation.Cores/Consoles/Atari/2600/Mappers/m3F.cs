@@ -23,12 +23,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 	internal class m3F : MapperBase 
 	{
-		int lowbank_2k;
+		private int _lowbank_2K;
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("lowbank_2k", ref lowbank_2k);
+			ser.Sync("lowbank_2k", ref _lowbank_2K);
 		}
 
 		public override byte ReadMemory(ushort addr)
@@ -37,16 +37,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				return base.ReadMemory(addr);
 			}
-			else if (addr < 0x17FF) //Low 2k Bank
+			
+			if (addr < 0x17FF) // Low 2k Bank
 			{
-				int a = addr & 0x07FF; //2K
-				int bank = lowbank_2k << 11;
-				return core.rom[bank + a];
+				return core.rom[(_lowbank_2K << 11) + (addr & 0x07FF)];
 			}
-			else if (addr < 0x2000) //High bank fixed to last 2k of ROM
+			
+			if (addr < 0x2000) // High bank fixed to last 2k of ROM
 			{
 				return core.rom[(core.rom.Length - 2048) + (addr & 0x07FF)];
 			}
+
 			return base.ReadMemory(addr);
 		}
 
@@ -61,13 +62,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				if ((value << 11) < core.rom.Length)
 				{
-					lowbank_2k = value;
+					_lowbank_2K = value;
 				}
 				else
 				{
-					lowbank_2k = value & (core.rom.Length >> 11);
+					_lowbank_2K = value & (core.rom.Length >> 11);
 				}
 			}
+
 			base.WriteMemory(addr, value);
 		}
 	}

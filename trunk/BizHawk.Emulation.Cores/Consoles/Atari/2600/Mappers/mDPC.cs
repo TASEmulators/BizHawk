@@ -224,19 +224,19 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	 */
 	internal class mDPC : MapperBase
 	{
-		private ulong totalCycles = 0;
-		private ulong elapsedCycles = 0;
+		private ulong totalCycles;
+		private ulong elapsedCycles;
 		private double FractionalClocks;
 
-		private int bank_4k = 0;
+		private int bank_4k;
 		private IntBuffer Counters = new IntBuffer(8);
 		private ByteBuffer Flags = new ByteBuffer(8);
 		private IntBuffer Tops = new IntBuffer(8);
 		private IntBuffer Bottoms = new IntBuffer(8);
 		private ByteBuffer DisplayBank_2k = new ByteBuffer(2048);
-		private byte RandomNumber = 0;
+		private byte RandomNumber;
 
-		private bool[] MusicMode = new bool[3]; //TOOD: savestates
+		private bool[] MusicMode = new bool[3]; // TODO: savestates
 
 		public override byte PeekMemory(ushort addr)
 		{
@@ -279,31 +279,34 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						{
 							result = RandomNumber;
 						}
-						else //it's a music read
+						else // it's a music read
 						{
 							byte[] MusicAmplitudes = {
 								0x00, 0x04, 0x05, 0x09, 0x06, 0x0a, 0x0b, 0x0f
 							};
 
-							//// Update the music data fetchers (counter & flag)
+							// Update the music data fetchers (counter & flag)
 							UpdateMusicModeDataFetchers();
 
 							byte i = 0;
-							if(MusicMode[0] && Flags[5] > 0)
+							if (MusicMode[0] && Flags[5] > 0)
 							{
 								i |= 0x01;
 							}
-							if(MusicMode[1] && Flags[6] > 0)
+
+							if (MusicMode[1] && Flags[6] > 0)
 							{
 								i |= 0x02;
 							}
-							if(MusicMode[2] && Flags[7] > 0)
+
+							if (MusicMode[2] && Flags[7] > 0)
 							{
 								i |= 0x04;
 							}
 
 							result = MusicAmplitudes[i];
 						}
+
 						break;
 					case 0x01:
 						result = DisplayBank_2k[2047 - Counters[index]];
@@ -324,11 +327,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 				return result;
 			}
-			else
-			{
-				Address(addr);
-				return core.rom[(bank_4k << 12) + addr];
-			}
+			
+			Address(addr);
+			return core.rom[(bank_4k << 12) + addr];
 		}
 
 		public override void WriteMemory(ushort addr, byte value)
@@ -374,12 +375,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						// Execute special code for music mode data fetchers
 						if (index >= 5)
 						{
-							MusicMode[index - 5] = (value & 0x10) > 0 ? true : false;
+							MusicMode[index - 5] = (value & 0x10) > 0;
 
 							// NOTE: We are not handling the clock source input for
 							// the music mode data fetchers.  We're going to assume
 							// they always use the OSC input.
 						}
+
 						break;
 					case 0x06: // Random Number Generator Reset
 							RandomNumber = 1;
@@ -390,6 +392,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				Address(addr);
 			}
+
 			return;
 		}
 
@@ -415,7 +418,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public override void SyncState(Serializer ser)
 		{
-			//TODO
+			// TODO
 			base.SyncState(ser);
 			ser.Sync("bank_4k", ref bank_4k);
 			ser.Sync("DisplayBank_2k", ref DisplayBank_2k);
@@ -424,7 +427,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("RandomNumber", ref RandomNumber);
 		}
 
-			
 		private void UpdateMusicModeDataFetchers()
 		{
 			// Calculate the number of cycles since the last update
@@ -485,7 +487,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			// Table for computing the input bit of the random number generator's
 			// shift register (it's the NOT of the EOR of four bits)
-			byte[] f = {
+			byte[] f = 
+			{
 				1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1
 			};
 
