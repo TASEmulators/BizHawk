@@ -29,11 +29,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 	internal class mE7 : MapperBase
 	{
-		private int rombank_1k;
-		private int rambank1_toggle;
-		private ByteBuffer rambank0 = new ByteBuffer(1024);
-		private ByteBuffer rambank1 = new ByteBuffer(1024);
-		private bool EnableRam0;
+		private int _rombank_1K;
+		private int _rambank1Toggle;
+		private ByteBuffer _rambank0 = new ByteBuffer(1024);
+		private ByteBuffer _rambank1 = new ByteBuffer(1024);
+		private bool _enableRam0;
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -49,41 +49,38 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			if (addr < 0x1800)
 			{
-				if (EnableRam0)
+				if (_enableRam0)
 				{
-					if (addr < 0x1400) //Reading from the write port
+					if (addr < 0x1400) // Reading from the write port
 					{
-						return rambank0[addr & 0x3FF] = 0xFF; //Reading from 1k write port triggers an unwanted write
+						return _rambank0[addr & 0x3FF] = 0xFF; // Reading from 1k write port triggers an unwanted write
 					}
-					else
-					{
-						return rambank0[addr & 0x3FF];
-					}
+					
+					return _rambank0[addr & 0x3FF];
 				}
-				else
-				{
-					return core.rom[(rombank_1k * 0x800) + (addr & 0x7FF)];
-				}
+				
+				return core.rom[(_rombank_1K * 0x800) + (addr & 0x7FF)];
 			}
-			else if (addr < 0x1900) //Ram 1 Read port
+			
+			if (addr < 0x1900) // Ram 1 Read port
 			{
-				return rambank1[(rambank1_toggle * 0x100) + (addr & 0xFF)];
+				return _rambank1[(_rambank1Toggle * 0x100) + (addr & 0xFF)];
 			}
-			else if (addr < 0x1A00) //Ram 1 Write port
+			
+			if (addr < 0x1A00) // Ram 1 Write port
 			{
-				return rambank1[(rambank1_toggle * 0x100) + (addr & 0xFF)] = 0xFF; //Reading from the 256b write port @1800 riggers an unwanted write
+				return _rambank1[(_rambank1Toggle * 0x100) + (addr & 0xFF)] = 0xFF; // Reading from the 256b write port @1800 riggers an unwanted write
 			}
-			else if (addr < 0x2000)
+			
+			if (addr < 0x2000)
 			{
 				addr -= 0x1800;
 				addr &= 0x7FF;
 				int offset = core.rom.Length - 0x0800;
-				return core.rom[offset + addr]; //Fixed to last 1.5K
+				return core.rom[offset + addr]; // Fixed to last 1.5K
 			}
-			else
-			{
-				return base.ReadMemory(addr);
-			}
+			
+			return base.ReadMemory(addr);
 		}
 
 		public override byte ReadMemory(ushort addr)
@@ -105,63 +102,63 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (addr < 0x1400)
 			{
-				rambank0[addr & 0x3FF] = value;
+				_rambank0[addr & 0x3FF] = value;
 			}
 			else if (addr >= 0x1800 && addr < 0x2000)
 			{
-				rambank1[(addr & 0xFF) + (rambank1_toggle * 0x100)] = value;
+				_rambank1[(addr & 0xFF) + (_rambank1Toggle * 0x100)] = value;
 			}
 		}
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("toggle", ref rombank_1k);
-			ser.Sync("rambank0", ref rambank0);
-			ser.Sync("rambank1", ref rambank1);
-			ser.Sync("EnableRam0", ref EnableRam0);
-			ser.Sync("rambank1_toggle", ref rambank1_toggle);
+			ser.Sync("toggle", ref _rombank_1K);
+			ser.Sync("rambank0", ref _rambank0);
+			ser.Sync("rambank1", ref _rambank1);
+			ser.Sync("EnableRam0", ref _enableRam0);
+			ser.Sync("rambank1_toggle", ref _rambank1Toggle);
 		}
 
-		void Address(ushort addr)
+		private void Address(ushort addr)
 		{
 			switch (addr)
 			{
 				case 0x1FE0:
-					rombank_1k = 0;
+					_rombank_1K = 0;
 					break;
 				case 0x1FE1:
-					rombank_1k = 1;
+					_rombank_1K = 1;
 					break;
 				case 0x1FE2:
-					rombank_1k = 2;
+					_rombank_1K = 2;
 					break;
 				case 0x1FE3:
-					rombank_1k = 3;
+					_rombank_1K = 3;
 					break;
 				case 0x1FE4:
-					rombank_1k = 4;
+					_rombank_1K = 4;
 					break;
 				case 0x1FE5:
-					rombank_1k = 5;
+					_rombank_1K = 5;
 					break;
 				case 0x1FE6:
-					rombank_1k = 6;
+					_rombank_1K = 6;
 					break;
 				case 0x1FE7:
-					EnableRam0 = true;
+					_enableRam0 = true;
 					break;
 				case 0x1FE8:
-					rambank1_toggle = 0;
+					_rambank1Toggle = 0;
 					break;
 				case 0x1FE9:
-					rambank1_toggle = 1;
+					_rambank1Toggle = 1;
 					break;
 				case 0x1FEA:
-					rambank1_toggle = 2;
+					_rambank1Toggle = 2;
 					break;
 				case 0x1FEB:
-					rambank1_toggle = 3;
+					_rambank1Toggle = 3;
 					break;
 			}
 		}

@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 	internal class mUA : MapperBase 
 	{
-		int toggle;
+		private int _toggle;
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -23,8 +23,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				Address(addr);
 			}
 			
-			if (addr < 0x1000) return base.ReadMemory(addr);
-			return core.rom[(toggle << 12) + (addr & 0xFFF)];
+			if (addr < 0x1000)
+			{
+				return base.ReadMemory(addr);
+			}
+
+			return core.rom[(_toggle << 12) + (addr & 0xFFF)];
 		}
 
 		public override byte ReadMemory(ushort addr)
@@ -40,19 +44,28 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public override void WriteMemory(ushort addr, byte value)
 		{
 			Address(addr);
-			if (addr < 0x1000) base.WriteMemory(addr, value);
+			if (addr < 0x1000)
+			{
+				base.WriteMemory(addr, value);
+			}
 		}
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("toggle", ref toggle);
+			ser.Sync("toggle", ref _toggle);
 		}
 
-		void Address(ushort addr)
+		private void Address(ushort addr)
 		{
-			if (addr == 0x0220) toggle = 0;
-			else if (addr == 0x0240) toggle = 1;
+			if (addr == 0x0220)
+			{
+				_toggle = 0;
+			}
+			else if (addr == 0x0240)
+			{
+				_toggle = 1;
+			}
 		}
 	}
 }
