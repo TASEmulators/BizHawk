@@ -176,7 +176,6 @@
     <Compile Include="Computers\Commodore64\Tape\VIC1530.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs" />
-    <Compile Include="Consoles\Atari\2600\Mappers\m3Fe.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\m0840.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\m3E.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\m3F.cs" />
