@@ -1,4 +1,4 @@
-﻿using System;
+﻿using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
@@ -23,9 +23,59 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	*/
 	internal class m0840 : MapperBase 
 	{
-		public m0840()
+		private int _bank4K;
+
+		private byte ReadMem(ushort addr, bool peek)
 		{
-			throw new NotImplementedException();
+			if (!peek)
+			{
+				Address(addr);
+			}
+
+			if (addr < 0x1000)
+			{
+				return base.ReadMemory(addr);
+			}
+
+			return core.rom[(_bank4K << 12) + (addr & 0xFFF)];
+		}
+
+		public override byte ReadMemory(ushort addr)
+		{
+			return ReadMem(addr, false);
+		}
+
+		public override byte PeekMemory(ushort addr)
+		{
+			return ReadMem(addr, true);
+		}
+
+		public override void WriteMemory(ushort addr, byte value)
+		{
+			Address(addr);
+			if (addr < 0x1000)
+			{
+				base.WriteMemory(addr, value);
+			}
+		}
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("bank_4k", ref _bank4K);
+		}
+
+		private void Address(ushort addr)
+		{
+			switch (addr & 0x1840)
+			{
+				case 0x0800:
+					_bank4K = 0;
+					break;
+				case 0x0840:
+					_bank4K = 1;
+					break;
+			}
 		}
 	}
 }
