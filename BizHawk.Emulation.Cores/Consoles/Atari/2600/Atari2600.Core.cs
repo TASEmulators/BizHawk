@@ -170,6 +170,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				case "F8":
 					mapper = new mF8();
 					break;
+				case "F8SC":
+					mapper = new mF8SC();
+					break;
 				case "F6":
 					mapper = new mF6();
 					break;
