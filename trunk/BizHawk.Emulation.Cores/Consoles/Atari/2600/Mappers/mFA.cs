@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			base.SyncState(ser);
 			ser.Sync("toggle", ref _toggle);
-			ser.Sync("ram", ref _auxRam);
+			ser.Sync("auxRam", ref _auxRam);
 		}
 
 		private void Address(ushort addr)
