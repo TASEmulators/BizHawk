@@ -142,30 +142,96 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			//regenerate mapper here to make sure its state is entirely clean
 			switch (game.GetOptionsDict()["m"])
 			{
-				case "4K": mapper = new m4K(); break;
-				case "2K": mapper = new m2K(); break;
-				case "CV": mapper = new mCV(); break;
-				case "F8": mapper = new mF8(); break;
-				case "F6":
+				case "2IN1":
 				case "4IN1":
-				case "F6SC": mapper = new mF6(); break;
+				case "8IN1":
+				case "16IN1":
+				case "32IN1":
+					mapper = new Multicart();
+					break;
+				case "AR":
+					mapper = new mAR();
+					break;
+				case "4K":
+					mapper = new m4K();
+					break;
+				case "2K":
+					mapper = new m2K();
+					break;
+				case "CV":
+					mapper = new mCV();
+					break;
+				case "DPC":
+					mapper = new mDPC();
+					break;
+				case "DPC+":
+					mapper = new mDPCPlus();
+					break;
+				case "F8":
+					mapper = new mF8();
+					break;
+				case "F6":
+					mapper = new mF6();
+					break;
+				case "F6SC":
+					mapper = new mF6SC();
+					break;
 				case "F4":
-				case "F4SC": mapper = new mF4(); break;
-				case "FE": mapper = new mFE(); break;
-				case "E0": mapper = new mE0(); break;
-				case "3F": mapper = new m3F(); break;
-				case "FA": mapper = new mFA(); break;
-				case "E7": mapper = new mE7(); break;
-				case "F0": mapper = new mF0(); break;
-				case "UA": mapper = new mUA(); break;
+					mapper = new mF4();
+					break;
+				case "F4SC":
+					mapper = new mF4SC();
+					break;
+				case "FE":
+					mapper = new mFE();
+					break;
+				case "E0":
+					mapper = new mE0();
+					break;
+				case "3F":
+					mapper = new m3F();
+					break;
+				case "FA":
+					mapper = new mFA();
+					break;
+				case "FA2":
+					mapper = new mFA2();
+					break;
+				case "E7":
+					mapper = new mE7();
+					break;
+				case "F0":
+					mapper = new mF0();
+					break;
+				case "UA":
+					mapper = new mUA();
+					break;
+
 				//Homebrew mappers
-				case "3E": mapper = new m3E(); break;
-				case "0840": mapper = new m0840(); break;
-				case "MC": mapper = new mMC(); break;
-				case "EF": mapper = new mEF(); break;
-				case "X07": mapper = new mX07(); break;
-				case "4A50": mapper = new m4A50(); break;
-				case "DPC": mapper = new mDPC(); break;
+				case "3E":
+					mapper = new m3E();
+					break;
+				case "0840":
+					mapper = new m0840();
+					break;
+				case "MC":
+					mapper = new mMC();
+					break;
+				case "EF":
+					mapper = new mEF();
+					break;
+				case "EFSC":
+					mapper = new mEFSC();
+					break;
+				case "X07":
+					mapper = new mX07();
+					break;
+				case "4A50":
+					mapper = new m4A50();
+					break;
+				case "SB":
+					mapper = new mSB();
+					break;
 
 				default: throw new InvalidOperationException("mapper not supported: " + game.GetOptionsDict()["m"]);
 			}

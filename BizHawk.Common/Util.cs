@@ -16,6 +16,18 @@ namespace BizHawk.Common
 			HexConvPtr = (char*)HexConvHandle.AddrOfPinnedObject().ToPointer();
 		}
 
+		public static bool FindBytes(byte[] array, byte[] pattern)
+		{
+			int fidx = 0;
+			int result = Array.FindIndex(array, 0, array.Length, (byte b) =>
+			{
+				fidx = (b == pattern[fidx]) ? fidx + 1 : 0;
+				return (fidx == pattern.Length);
+			});
+
+			return (result >= pattern.Length - 1);
+		}
+
 		public static char* HexConvPtr { get; set; }
 
 		public static string Hash_MD5(byte[] data, int offset, int len)

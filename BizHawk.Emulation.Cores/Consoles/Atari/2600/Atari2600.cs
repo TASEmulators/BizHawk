@@ -44,32 +44,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			if (!game.GetOptionsDict().ContainsKey("m"))
 			{
-				DetectMapper();
+				game.AddOption("m", DetectMapper(rom));
 			}
 
 			Console.WriteLine("Game uses mapper " + game.GetOptionsDict()["m"]);
 			HardReset();
 		}
-
-		void DetectMapper()
-		{
-			string m = "UNKNOWN";
-			switch (rom.Length)
-			{
-				case 2048: m = "2K"; break;
-				case 4096: m = "4K"; break;
-				case 8192: m = "F8"; break;
-				case 16384: m = "F6"; break;
-				case 12288: m = "FA"; break;
-				case 32768: m = "F4"; break;
-				case 65536: m = "EF"; break;
-				case 131072: m = "MC"; break;
-				case 262144: m = "3F"; break;
-				case 524288: m = "3F"; break;
-			}
-			game.AddOption("m", m);
-		}
-
 
 		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
 		{
