@@ -1,7 +1,17 @@
-﻿namespace BizHawk.Emulation.Cores.Atari.Atari2600
+﻿using System;
+
+namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	internal class m4K : MapperBase
+	/*
+		Mapper used for multi-cart mappers
+	*/
+	internal class Multicart : MapperBase
 	{
+		public Multicart()
+		{
+			throw new NotImplementedException();
+		}
+
 		public override byte ReadMemory(ushort addr)
 		{
 			if (addr < 0x1000)

@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					return _rambank0[addr & 0x3FF];
 				}
 				
-				return core.rom[(_rombank_1K * 0x800) + (addr & 0x7FF)];
+				return Core.Rom[(_rombank_1K * 0x800) + (addr & 0x7FF)];
 			}
 			
 			if (addr < 0x1900) // Ram 1 Read port
@@ -76,8 +76,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				addr -= 0x1800;
 				addr &= 0x7FF;
-				int offset = core.rom.Length - 0x0800;
-				return core.rom[offset + addr]; // Fixed to last 1.5K
+				int offset = Core.Rom.Length - 0x0800;
+				return Core.Rom[offset + addr]; // Fixed to last 1.5K
 			}
 			
 			return base.ReadMemory(addr);

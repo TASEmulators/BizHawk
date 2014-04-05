@@ -329,7 +329,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			
 			Address(addr);
-			return core.rom[(bank_4k << 12) + addr];
+			return Core.Rom[(bank_4k << 12) + addr];
 		}
 
 		public override void WriteMemory(ushort addr, byte value)

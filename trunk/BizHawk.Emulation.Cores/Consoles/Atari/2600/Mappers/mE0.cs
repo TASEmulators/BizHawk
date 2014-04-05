@@ -43,20 +43,20 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			if (addr < 0x1400)
 			{
-				return core.rom[(_toggle1 << 10) + (addr & 0x3FF)];
+				return Core.Rom[(_toggle1 << 10) + (addr & 0x3FF)];
 			}
 
 			if (addr < 0x1800)
 			{
-				return core.rom[(_toggle2 << 10) + (addr & 0x3FF)];
+				return Core.Rom[(_toggle2 << 10) + (addr & 0x3FF)];
 			}
 
 			if (addr < 0x1C00)
 			{
-				return core.rom[(_toggle3 << 10) + (addr & 0x3FF)];
+				return Core.Rom[(_toggle3 << 10) + (addr & 0x3FF)];
 			}
 
-			return core.rom[(7 * 1024) + (addr & 0x3FF)]; // 7 because final bank is always set to last
+			return Core.Rom[(7 * 1024) + (addr & 0x3FF)]; // 7 because final bank is always set to last
 		}
 
 		public override byte ReadMemory(ushort addr)

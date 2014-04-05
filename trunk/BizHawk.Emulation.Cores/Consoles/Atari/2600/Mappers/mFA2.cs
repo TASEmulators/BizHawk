@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				return _auxRam[addr & 0xFF];
 			}
 
-			return core.rom[(_bank4k << 12) + (addr & 0xFFF)];
+			return Core.Rom[(_bank4k << 12) + (addr & 0xFFF)];
 		}
 
 		public override byte ReadMemory(ushort addr)
@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (addr == 0x1FF8) _bank4k = 3;
 			if (addr == 0x1FF9) _bank4k = 4;
 			if (addr == 0x1FFA) _bank4k = 5;
-			if (addr == 0x1FFB && core.rom.Length == 28 * 1024) // Only available on 28k Roms
+			if (addr == 0x1FFB && Core.Rom.Length == 28 * 1024) // Only available on 28k Roms
 			{
 				_bank4k = 6;
 			}

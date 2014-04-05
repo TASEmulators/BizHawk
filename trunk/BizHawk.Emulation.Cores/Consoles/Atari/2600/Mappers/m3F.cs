@@ -40,12 +40,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			
 			if (addr < 0x17FF) // Low 2k Bank
 			{
-				return core.rom[(_lowbank_2K << 11) + (addr & 0x07FF)];
+				return Core.Rom[(_lowbank_2K << 11) + (addr & 0x07FF)];
 			}
 			
 			if (addr < 0x2000) // High bank fixed to last 2k of ROM
 			{
-				return core.rom[(core.rom.Length - 2048) + (addr & 0x07FF)];
+				return Core.Rom[(Core.Rom.Length - 2048) + (addr & 0x07FF)];
 			}
 
 			return base.ReadMemory(addr);
@@ -60,13 +60,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			if (addr < 0x0040)
 			{
-				if ((value << 11) < core.rom.Length)
+				if ((value << 11) < Core.Rom.Length)
 				{
 					_lowbank_2K = value;
 				}
 				else
 				{
-					_lowbank_2K = value & (core.rom.Length >> 11);
+					_lowbank_2K = value & (Core.Rom.Length >> 11);
 				}
 			}
 
