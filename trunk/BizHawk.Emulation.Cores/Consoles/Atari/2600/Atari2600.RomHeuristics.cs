@@ -147,7 +147,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				return "F4";
 			}
 
-			if (rom.Length == 64 * 1064) // 64K
+			if (rom.Length == 64 * 1024) // 64K
 			{
 				if (IsProbably3E(rom))
 				{
