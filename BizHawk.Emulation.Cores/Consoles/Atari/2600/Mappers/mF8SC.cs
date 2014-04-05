@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				return _ram[(addr & 0x7F)];
 			}
 
-			return core.rom[(_bank_4K << 12) + (addr & 0xFFF)];
+			return Core.Rom[(_bank_4K << 12) + (addr & 0xFFF)];
 		}
 
 		public override byte ReadMemory(ushort addr)

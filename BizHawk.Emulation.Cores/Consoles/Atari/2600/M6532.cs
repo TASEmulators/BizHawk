@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				// Read Ram
 				ushort maskedAddr = (ushort)(addr & 0x007f);
-				return core.ram[maskedAddr];
+				return core.Ram[maskedAddr];
 			}
 			else
 			{
@@ -150,7 +150,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (!RS)
 			{
 				ushort maskedAddr = (ushort)(addr & 0x007f);
-				core.ram[maskedAddr] = value;
+				core.Ram[maskedAddr] = value;
 			}
 			else
 			{

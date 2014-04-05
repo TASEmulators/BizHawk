@@ -54,23 +54,23 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				if ((addr & 0x1800) == 0x1000)           // 2K region from 0x1000 - 0x17ff
 				{
-					val = _myIsRomLow ? core.rom[(addr & 0x7ff) + _mySliceLow]
+					val = _myIsRomLow ? Core.Rom[(addr & 0x7ff) + _mySliceLow]
 									   : _myRam[(addr & 0x7ff) + _mySliceLow];
 				}
 				else if (((addr & 0x1fff) >= 0x1800) &&  // 1.5K region from 0x1800 - 0x1dff
 						((addr & 0x1fff) <= 0x1dff))
 				{
-					val = _myIsRomMiddle ? core.rom[(addr & 0x7ff) + _mySliceMiddle]
+					val = _myIsRomMiddle ? Core.Rom[(addr & 0x7ff) + _mySliceMiddle]
 										  : _myRam[(addr & 0x7ff) + _mySliceMiddle];
 				}
 				else if ((addr & 0x1f00) == 0x1e00)      // 256B region from 0x1e00 - 0x1eff
 				{
-					val = _myIsRomHigh ? core.rom[(addr & 0xff) + _mySliceHigh]
+					val = _myIsRomHigh ? Core.Rom[(addr & 0xff) + _mySliceHigh]
 										: _myRam[(addr & 0xff) + _mySliceHigh];
 				}
 				else if ((addr & 0x1f00) == 0x1f00)      // 256B region from 0x1f00 - 0x1fff
 				{
-					val = core.rom[(addr & 0xff) + (core.rom.Length - 256)];
+					val = Core.Rom[(addr & 0xff) + (Core.Rom.Length - 256)];
 					if (((_myLastData & 0xe0) == 0x60) && ((_myLastAddress >= 0x1000) ||
 						(_myLastAddress < 0x200)))
 					{

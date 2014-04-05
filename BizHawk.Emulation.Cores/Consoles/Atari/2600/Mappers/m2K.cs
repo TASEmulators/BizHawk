@@ -9,7 +9,7 @@
 				return base.ReadMemory(addr);
 			}
 
-			return core.rom[addr & 0x7FF];
+			return this.Core.Rom[addr & 0x7FF];
 		}
 
 		public override byte PeekMemory(ushort addr)
