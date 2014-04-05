@@ -207,9 +207,13 @@
     <Compile Include="Consoles\Atari\2600\Mappers\Multicart.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\mX07.cs" />
     <Compile Include="Consoles\Atari\2600\M6532.cs" />
-    <Compile Include="Consoles\Atari\2600\TIA.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Consoles\Atari\2600\Tia\Tia.Audio.cs" />
+    <Compile Include="Consoles\Atari\2600\Tia\Tia.BallData.cs" />
+    <Compile Include="Consoles\Atari\2600\Tia\TIA.cs" />
+    <Compile Include="Consoles\Atari\2600\Tia\Tia.HMoveData.cs" />
+    <Compile Include="Consoles\Atari\2600\Tia\Tia.MissleData.cs" />
+    <Compile Include="Consoles\Atari\2600\Tia\Tia.PlayerData.cs" />
+    <Compile Include="Consoles\Atari\2600\Tia\Tia.PlayfieldData.cs" />
     <Compile Include="Consoles\Atari\7800\Atari7800.Core.cs" />
     <Compile Include="Consoles\Atari\7800\Atari7800.cs" />
     <Compile Include="Consoles\Atari\7800\Atari7800Control.cs" />

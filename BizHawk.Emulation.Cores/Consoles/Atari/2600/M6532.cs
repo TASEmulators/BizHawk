@@ -5,137 +5,85 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	// Emulates the M6532 RIOT Chip
 	public class M6532
 	{
-		public byte ddra = 0x00;
-		public byte ddrb = 0x00;
+		private readonly Atari2600 _core;
 
-		private readonly Atari2600 core;
+		public byte DDRa = 0x00;
+		public byte DDRb = 0x00;
 
-		public struct timerData
-		{
-			public int prescalerCount;
-			public byte prescalerShift;
-
-			public byte value;
-
-			public bool interruptEnabled;
-			public bool interruptFlag;
-			 
-			public void tick()
-			{
-				if (prescalerCount == 0)
-				{
-					value--;
-					prescalerCount = 1 << prescalerShift;
-				}
-
-				prescalerCount--;
-				if (prescalerCount == 0)
-				{
-					if (value == 0)
-					{
-						interruptFlag = true;
-						prescalerShift = 0;
-					}
-				}
-			}
-
-			public void SyncState(Serializer ser)
-			{
-				ser.Sync("prescalerCount", ref prescalerCount);
-				ser.Sync("prescalerShift", ref prescalerShift);
-				ser.Sync("value", ref value);
-				ser.Sync("interruptEnabled", ref interruptEnabled);
-				ser.Sync("interruptFlag", ref interruptFlag);
-			}
-
-		};
-
-		public timerData timer;
+		public TimerData Timer;
 
 		public M6532(Atari2600 core)
 		{
-			this.core = core;
+			_core = core;
 
 			// Apparently starting the timer at 0 will break for some games (Solaris and H.E.R.O.). To avoid that, we pick an
 			// arbitrary value to start with.
-			timer.value = 0x73;
-			timer.prescalerShift = 10;
-			timer.prescalerCount = 1 << timer.prescalerShift;
+			Timer.Value = 0x73;
+			Timer.PrescalerShift = 10;
+			Timer.PrescalerCount = 1 << Timer.PrescalerShift;
 		}
 
 		public byte ReadMemory(ushort addr, bool peek)
 		{
-			// Register Select (?)
-			bool RS = (addr & 0x0200) != 0;
-
-			if (!RS)
+			if ((addr & 0x0200) == 0) // If not register select, read Ram
 			{
-				// Read Ram
-				ushort maskedAddr = (ushort)(addr & 0x007f);
-				return core.Ram[maskedAddr];
+				return _core.Ram[(ushort)(addr & 0x007f)]; 
 			}
-			else
+
+			var registerAddr = (ushort)(addr & 0x0007);
+			if (registerAddr == 0x00)
 			{
-				ushort registerAddr = (ushort)(addr & 0x0007);
-				if (registerAddr == 0x00)
-				{
-					// Read Output reg A
-					// Combine readings from player 1 and player 2
-					byte temp = (byte)(core.ReadControls1(peek) & 0xF0 | ((core.ReadControls2(peek) >> 4) & 0x0F));
-					temp = (byte)(temp & ~ddra);
-					return temp;
-				}
-				else if (registerAddr == 0x01)
-				{
-					// Read DDRA
-					return ddra;
-				}
-				else if (registerAddr == 0x02)
-				{
-					// Read Output reg B
-					byte temp = core.ReadConsoleSwitches(peek);
-					temp = (byte)(temp & ~ddrb);
-					return temp;
+				// Read Output reg A
+				// Combine readings from player 1 and player 2
+				var temp = (byte)(_core.ReadControls1(peek) & 0xF0 | ((_core.ReadControls2(peek) >> 4) & 0x0F));
+				temp = (byte)(temp & ~DDRa);
+				return temp;
+			}
+			
+			if (registerAddr == 0x01)
+			{
+				// Read DDRA
+				return DDRa;
+			}
+			
+			if (registerAddr == 0x02)
+			{
+				// Read Output reg B
+				var temp = _core.ReadConsoleSwitches(peek);
+				temp = (byte)(temp & ~DDRb);
+				return temp;
+			}
 
-					/*
-					// TODO: Rewrite this!
-					bool temp = resetOccured;
-					resetOccured = false;
-					return (byte)(0x0A | (temp ? 0x00 : 0x01));
-					 * */
-				}
-				else if (registerAddr == 0x03)
-				{
-					// Read DDRB
-					return ddrb;
-				}
-				else if ((registerAddr & 0x5) == 0x4)
-				{
-					// Bit 0x0080 contains interrupt enable/disable
-					timer.interruptEnabled = (addr & 0x0080) != 0;
+			if (registerAddr == 0x03) // Read DDRB
+			{
+				return DDRb;
+			}
+			
+			if ((registerAddr & 0x5) == 0x4)
+			{
+				// Bit 0x0080 contains interrupt enable/disable
+				Timer.InterruptEnabled = (addr & 0x0080) != 0;
 
-					// The interrupt flag will be reset whenever the Timer is access by a read or a write
-					// However, the reading of the timer at the same time the interrupt occurs will not reset the interrupt flag
-					// (M6532 Datasheet)
-					if (!(timer.prescalerCount == 0 && timer.value == 0))
-					{
-						timer.interruptFlag = false;
-					}
-
-					return timer.value;
-				}
-				else if ((registerAddr & 0x5) == 0x5)
+				// The interrupt flag will be reset whenever the Timer is access by a read or a write
+				// However, the reading of the timer at the same time the interrupt occurs will not reset the interrupt flag
+				// (M6532 Datasheet)
+				if (!(Timer.PrescalerCount == 0 && Timer.Value == 0))
 				{
-					// Read interrupt flag
-					if (timer.interruptEnabled && timer.interruptFlag)
-					{
-						return 0x80;
-					}
-					else
-					{
-						return 0x00;
-					}
+					Timer.InterruptFlag = false;
 				}
+
+				return Timer.Value;
+			}
+			
+			if ((registerAddr & 0x5) == 0x5)
+			{
+				// Read interrupt flag
+				if (Timer.InterruptEnabled && Timer.InterruptFlag)
+				{
+					return 0x80;
+				}
+
+				return 0x00;
 			}
 
 			return 0x3A;
@@ -143,66 +91,61 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public void WriteMemory(ushort addr, byte value)
 		{
-			// Register Select (?)
-			bool RS = (addr & 0x0200) != 0;
-
-			// If the RS bit is not set, this is a ram write
-			if (!RS)
+			if ((addr & 0x0200) == 0) // If the RS bit is not set, this is a ram write
 			{
-				ushort maskedAddr = (ushort)(addr & 0x007f);
-				core.Ram[maskedAddr] = value;
+				_core.Ram[(ushort)(addr & 0x007f)] = value;
 			}
 			else
 			{
 				// If bit 0x0010 is set, and bit 0x0004 is set, this is a timer write
 				if ((addr & 0x0014) == 0x0014)
 				{
-					ushort registerAddr = (ushort)(addr & 0x0007);
+					var registerAddr = (ushort)(addr & 0x0007);
 
 					// Bit 0x0080 contains interrupt enable/disable
-					timer.interruptEnabled = (addr & 0x0080) != 0;
+					Timer.InterruptEnabled = (addr & 0x0080) != 0;
 
 					// The interrupt flag will be reset whenever the Timer is access by a read or a write
 					// (M6532 datasheet)
-
 					if (registerAddr == 0x04)
 					{
 						// Write to Timer/1
-						timer.prescalerShift = 0;
-						timer.value = value;
-						timer.prescalerCount = 1 << timer.prescalerShift;
-						timer.interruptFlag = false;
+						Timer.PrescalerShift = 0;
+						Timer.Value = value;
+						Timer.PrescalerCount = 1 << Timer.PrescalerShift;
+						Timer.InterruptFlag = false;
 					}
 					else if (registerAddr == 0x05)
 					{
 						// Write to Timer/8
-						timer.prescalerShift = 3;
-						timer.value = value;
-						timer.prescalerCount = 1 << timer.prescalerShift;
-						timer.interruptFlag = false;
+						Timer.PrescalerShift = 3;
+						Timer.Value = value;
+						Timer.PrescalerCount = 1 << Timer.PrescalerShift;
+						Timer.InterruptFlag = false;
 					}
 					else if (registerAddr == 0x06)
 					{
 						// Write to Timer/64
-						timer.prescalerShift = 6;
-						timer.value = value;
-						timer.prescalerCount = 1 << timer.prescalerShift;
-						timer.interruptFlag = false;
+						Timer.PrescalerShift = 6;
+						Timer.Value = value;
+						Timer.PrescalerCount = 1 << Timer.PrescalerShift;
+						Timer.InterruptFlag = false;
 					}
 					else if (registerAddr == 0x07)
 					{
 						// Write to Timer/1024
-						timer.prescalerShift = 10;
-						timer.value = value;
-						timer.prescalerCount = 1 << timer.prescalerShift;
-						timer.interruptFlag = false;
+						Timer.PrescalerShift = 10;
+						Timer.Value = value;
+						Timer.PrescalerCount = 1 << Timer.PrescalerShift;
+						Timer.InterruptFlag = false;
 					}
 				}
+
 				// If bit 0x0004 is not set, bit 0x0010 is ignored and
 				// these are register writes
 				else if ((addr & 0x0004) == 0)
 				{
-					ushort registerAddr = (ushort)(addr & 0x0007);
+					var registerAddr = (ushort)(addr & 0x0007);
 
 					if (registerAddr == 0x00)
 					{
@@ -211,7 +154,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					else if (registerAddr == 0x01)
 					{
 						// Write DDRA
-						ddra = value;
+						DDRa = value;
 					}
 					else if (registerAddr == 0x02)
 					{
@@ -220,7 +163,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					else if (registerAddr == 0x03)
 					{
 						// Write DDRB
-						ddrb = value;
+						DDRb = value;
 					}
 				}
 			}
@@ -229,10 +172,50 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("M6532");
-			ser.Sync("ddra", ref ddra);
-			ser.Sync("ddrb", ref ddrb);
-			timer.SyncState(ser);
+			ser.Sync("ddra", ref DDRa);
+			ser.Sync("ddrb", ref DDRb);
+			Timer.SyncState(ser);
 			ser.EndSection();
+		}
+
+		public struct TimerData
+		{
+			public int PrescalerCount;
+			public byte PrescalerShift;
+
+			public byte Value;
+
+			public bool InterruptEnabled;
+			public bool InterruptFlag;
+
+			public void Tick()
+			{
+				if (PrescalerCount == 0)
+				{
+					Value--;
+					PrescalerCount = 1 << PrescalerShift;
+				}
+
+				PrescalerCount--;
+				if (PrescalerCount == 0)
+				{
+					if (Value == 0)
+					{
+						InterruptFlag = true;
+						PrescalerShift = 0;
+					}
+				}
+			}
+
+			public void SyncState(Serializer ser)
+			{
+				ser.Sync("prescalerCount", ref PrescalerCount);
+				ser.Sync("prescalerShift", ref PrescalerShift);
+				ser.Sync("value", ref Value);
+				ser.Sync("interruptEnabled", ref InterruptEnabled);
+				ser.Sync("interruptFlag", ref InterruptFlag);
+			}
+
 		}
 	}
 }
