@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private int _lowbank_2K;
 		private int _rambank_1K;
 		private bool _hasRam;
-		private ByteBuffer _ram = new ByteBuffer(262144); // Up to 256k
+		private ByteBuffer _ram = new ByteBuffer(256 * 1024); // Up to 256k
 
 		public override void SyncState(Serializer ser)
 		{

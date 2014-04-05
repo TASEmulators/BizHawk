@@ -68,6 +68,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("auxRam", ref _ram);
 		}
 
+		public override void Dispose()
+		{
+			base.Dispose();
+			_ram.Dispose();
+		}
+
 		private void Address(ushort addr)
 		{
 			if (addr == 0x1FE0) _bank4k = 0;
