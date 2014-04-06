@@ -105,6 +105,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				case 1024 * 4: // 4K
 					return new Multicart4K(gameTotal);
 					break;
+				case 1024 * 8: // 8K
+					return new Multicart8K(gameTotal);
+					break;
 			}
 		}
 
