@@ -427,6 +427,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("RandomNumber", ref RandomNumber);
 		}
 
+		public override void HardReset()
+		{
+			// TODO
+			base.HardReset();
+		}
+
 		private void UpdateMusicModeDataFetchers()
 		{
 			// Calculate the number of cycles since the last update

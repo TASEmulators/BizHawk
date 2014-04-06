@@ -35,7 +35,19 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 	internal class mX07 : MapperBase
 	{
-		private int _rombank_2K;
+		private int _rombank2K;
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("rombank_2k", ref _rombank2K);
+		}
+
+		public override void HardReset()
+		{
+			_rombank2K = 0;
+			base.HardReset();
+		}
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -49,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				return base.ReadMemory(addr);
 			}
 			
-			return Core.Rom[(_rombank_2K << 12) + (addr & 0xFFF)];
+			return Core.Rom[(_rombank2K << 12) + (addr & 0xFFF)];
 		}
 
 		public override byte ReadMemory(ushort addr)
@@ -71,12 +83,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
-		public override void SyncState(Serializer ser)
-		{
-			base.SyncState(ser);
-			ser.Sync("rombank_2k", ref _rombank_2K);
-		}
-
 		private void Address(ushort addr)
 		{
 			if ((addr & 0x180F) == 0x080D)
@@ -85,16 +91,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if ((addr & 0x1880) == 0)
 			{
-				if ((_rombank_2K & 0xE) == 0xE)
+				if ((_rombank2K & 0xE) == 0xE)
 				{
-					Bank(((addr & 0x40) >> 6) | (_rombank_2K & 0xE));
+					Bank(((addr & 0x40) >> 6) | (_rombank2K & 0xE));
 				}
 			}
 		}
 
 		private void Bank(int bank)
 		{
-			_rombank_2K = bank & 0x0F;
+			_rombank2K = bank & 0x0F;
 		}
 	}
 }

@@ -17,7 +17,27 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	internal class mFA : MapperBase 
 	{
 		private int _toggle;
-		private ByteBuffer _auxRam = new ByteBuffer(256);
+		private ByteBuffer _ram = new ByteBuffer(256);
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("toggle", ref _toggle);
+			ser.Sync("auxRam", ref _ram);
+		}
+
+		public override void Dispose()
+		{
+			_ram.Dispose();
+			base.Dispose();
+		}
+
+		public override void HardReset()
+		{
+			_toggle = 0;
+			_ram = new ByteBuffer(128);
+			base.HardReset();
+		}
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -38,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			
 			if (addr < 0x1200)
 			{
-				return _auxRam[addr & 0xFF];
+				return _ram[addr & 0xFF];
 			}
 			
 			return Core.Rom[(_toggle << 12) + (addr & 0xFFF)];
@@ -63,15 +83,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (addr < 0x1100)
 			{
-				_auxRam[addr & 0xFF] = value;
+				_ram[addr & 0xFF] = value;
 			}
-		}
-
-		public override void SyncState(Serializer ser)
-		{
-			base.SyncState(ser);
-			ser.Sync("toggle", ref _toggle);
-			ser.Sync("auxRam", ref _auxRam);
 		}
 
 		private void Address(ushort addr)

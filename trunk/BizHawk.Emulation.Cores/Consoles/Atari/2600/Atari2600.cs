@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
 			Console.WriteLine("Game uses mapper " + game.GetOptionsDict()["m"]);
-			HardReset();
+			RebootCore();
 		}
 
 		public string SystemId { get { return "A26"; } }
@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button", 
 				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button", 
-				"Reset", "Select"
+				"Reset", "Select", "Power"
 			}
 		};
 

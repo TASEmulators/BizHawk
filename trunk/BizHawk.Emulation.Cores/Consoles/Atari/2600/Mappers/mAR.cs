@@ -21,6 +21,26 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			throw new NotImplementedException();
 		}
 
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("bank4k", ref _bank4k);
+			ser.Sync("ram", ref _ram);
+		}
+
+		public override void HardReset()
+		{
+			_bank4k = 0;
+			_ram = new ByteBuffer(6144);
+			base.HardReset();
+		}
+
+		public override void Dispose()
+		{
+			base.Dispose();
+			_ram.Dispose();
+		}
+
 		private byte ReadMem(ushort addr, bool peek)
 		{
 			if (!peek)
@@ -44,19 +64,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public override byte PeekMemory(ushort addr)
 		{
 			return ReadMem(addr, true);
-		}
-
-		public override void SyncState(Serializer ser)
-		{
-			base.SyncState(ser);
-			ser.Sync("bank4k", ref _bank4k);
-			ser.Sync("ram", ref _ram);
-		}
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			_ram.Dispose();
 		}
 
 		private void Address(ushort addr)

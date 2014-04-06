@@ -25,6 +25,18 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	{
 		private int _bank4K;
 
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("bank_4k", ref _bank4K);
+		}
+
+		public override void HardReset()
+		{
+			_bank4K = 0;
+			base.HardReset();
+		}
+
 		private byte ReadMem(ushort addr, bool peek)
 		{
 			if (!peek)
@@ -57,12 +69,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				base.WriteMemory(addr, value);
 			}
-		}
-
-		public override void SyncState(Serializer ser)
-		{
-			base.SyncState(ser);
-			ser.Sync("bank_4k", ref _bank4K);
 		}
 
 		private void Address(ushort addr)

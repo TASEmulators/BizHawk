@@ -76,6 +76,25 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_player1.ScanCnt = 8;
 		}
 
+		public void Reset()
+		{
+			_hsyncCnt = 0;
+			_capChargeStart = 0;
+			_capCharging = false;
+			_vblankEnabled = false;
+			_vsyncEnabled = false;
+			_scanline = new uint[160];
+
+			_player0 = new PlayerData();
+			_player1 = new PlayerData();
+			_playField = new PlayfieldData();
+			_hmove = new HMoveData();
+			_ball = new BallData();
+
+			_player0.ScanCnt = 8;
+			_player1.ScanCnt = 8;
+		}
+
 		public bool FrameComplete { get; set; }
 		public int MaxVolume { get; set; }
 
