@@ -49,11 +49,43 @@ namespace BizHawk.Client.Common
 
 		#region File Handling API
 
+		// Filename of the movie, settable by the client
 		string Filename { get; set; }
+
+		/// <summary>
+		/// Tells the movie to load the contents of Filename
+		/// </summary>
+		/// <returns>Return whether or not the file was successfully loaded</returns>
 		bool Load();
+
+		/// <summary>
+		/// Instructs the movie to save the current contents to Filename
+		/// </summary>
 		void Save();
+		
+		/// <summary>
+		/// Extracts the current input log from the user.  
+		/// This is provided as the means for putting the input log into savestates,
+		/// for the purpose of out of order savestate loading (known as "bullet-proof rerecording")
+		/// </summary>
+		/// <returns>returns a string represntation of the input log in its current state</returns>
 		string GetInputLog();
+
+		/// <summary>
+		/// Compares the input log inside reader with the movie's current input to see if the reader's input belongs to the same timeline,
+		/// in other words, if reader's input is completely contained in the movie's input, then it is considered in the same timeline
+		/// </summary>
+		/// <param name="reader">The reader containing the contents of the input log</param>
+		/// <param name="errorMessage">Returns an error message, if any</param>
+		/// <returns>Returns whether or not the input log in reader is in the same timeline as the movie</returns>
 		bool CheckTimeLines(TextReader reader, out string errorMessage);
+		
+		/// <summary>
+		/// Takes reader and extracts the input log, then replaces the movies input log with it
+		/// </summary>
+		/// <param name="reader">The reader containing the contents of the input log</param>
+		/// <param name="errorMessage">Returns an error message, if any</param>
+		/// <returns></returns>
 		bool ExtractInputLog(TextReader reader, out string errorMessage);
 
 		#endregion
@@ -118,7 +150,19 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		void RecordFrame(int frame, IController source);
 
+		/// <summary>
+		/// Instructs the movie to remove all input from its input log after frame,
+		/// AFter truncating, frame will be the last frame of input in the movie's input log
+		/// </summary>
+		/// <param name="frame">The frame at which to truncate</param>
 		void Truncate(int frame);
+
+		/// <summary>
+		/// Gets a single frame of input from the movie at the given frame
+		/// The input will be in the same format as represented in the input log when saved as a file
+		/// </summary>
+		/// <param name="frame">The frame of input to be retrieved</param>
+		/// <returns></returns>
 		string GetInput(int frame);
 
 		#endregion
