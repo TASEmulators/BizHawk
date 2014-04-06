@@ -94,17 +94,39 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			CoreComm.MemoryCallbackSystem.CallExecute(addr);
 		}
 
+		private static MapperBase SetMultiCartMapper(int romLength, int gameTotal)
+		{
+			switch(romLength / gameTotal)
+			{
+				case 1024 * 2: // 2K
+					return new Multicart2K(gameTotal);
+					break;
+				default:
+				case 1024 * 4: // 4K
+					return new Multicart4K(gameTotal);
+					break;
+			}
+		}
+
 		public void RebootCore()
 		{
 			// Regenerate mapper here to make sure its state is entirely clean
-			switch (this._game.GetOptionsDict()["m"])
+			switch (_game.GetOptionsDict()["m"])
 			{
 				case "2IN1":
+					_mapper = SetMultiCartMapper(Rom.Length, 2);
+					break;
 				case "4IN1":
+					_mapper = SetMultiCartMapper(Rom.Length, 4);
+					break;
 				case "8IN1":
+					_mapper = SetMultiCartMapper(Rom.Length, 8);
+					break;
 				case "16IN1":
+					_mapper = SetMultiCartMapper(Rom.Length, 16);
+					break;
 				case "32IN1":
-					_mapper = new Multicart();
+					_mapper = SetMultiCartMapper(Rom.Length, 32);
 					break;
 				case "AR":
 					_mapper = new mAR();

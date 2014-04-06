@@ -205,7 +205,9 @@
     <Compile Include="Consoles\Atari\2600\Mappers\mMC.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\mSB.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\mUA.cs" />
-    <Compile Include="Consoles\Atari\2600\Mappers\Multicart.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\Multicart2K.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\Multicart4K.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\Multicart8K.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\mX07.cs" />
     <Compile Include="Consoles\Atari\2600\M6532.cs" />
     <Compile Include="Consoles\Atari\2600\Tia\Tia.Audio.cs" />
