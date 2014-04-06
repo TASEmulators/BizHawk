@@ -36,6 +36,15 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("hasRam", ref _hasRam);
 		}
 
+		public override void HardReset()
+		{
+			_lowbank_2K = 0;
+			_rambank_1K = 0;
+			_hasRam = false;
+			_ram = new ByteBuffer(256 * 1024);
+			base.HardReset();
+		}
+
 		public override void Dispose()
 		{
 			base.Dispose();

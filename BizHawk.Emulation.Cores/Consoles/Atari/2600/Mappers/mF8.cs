@@ -21,7 +21,19 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 	internal class mF8 : MapperBase
 	{
-		private int _bank_4K;
+		private int _bank4K;
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("bank_4k", ref _bank4K);
+		}
+
+		public override void HardReset()
+		{
+			_bank4K = 0;
+			base.HardReset();
+		}
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -35,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				return base.ReadMemory(addr);
 			}
 
-			return Core.Rom[(_bank_4K << 12) + (addr & 0xFFF)];
+			return Core.Rom[(_bank4K << 12) + (addr & 0xFFF)];
 		}
 
 		public override byte ReadMemory(ushort addr)
@@ -57,21 +69,15 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
-		public override void SyncState(Serializer ser)
-		{
-			base.SyncState(ser);
-			ser.Sync("bank_4k", ref _bank_4K);
-		}
-
 		private void Address(ushort addr)
 		{
 			if (addr == 0x1FF8)
 			{
-				_bank_4K = 0;
+				_bank4K = 0;
 			}
 			else if (addr == 0x1FF9)
 			{
-				_bank_4K = 1;
+				_bank4K = 1;
 			}
 		}
 	}

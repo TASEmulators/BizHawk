@@ -18,8 +18,26 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 	internal class mCV: MapperBase
 	{
-		private ByteBuffer _auxRam = new ByteBuffer(1024);
-		
+		private ByteBuffer _ram = new ByteBuffer(1024);
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("aux_ram", ref _ram);
+		}
+
+		public override void HardReset()
+		{
+			_ram = new ByteBuffer(1024);
+			base.HardReset();
+		}
+
+		public override void Dispose()
+		{
+			base.Dispose();
+			_ram.Dispose();
+		}
+
 		public override byte ReadMemory(ushort addr)
 		{
 			if (addr < 0x1000)
@@ -29,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			
 			if (addr < 0x1400)
 			{
-				return _auxRam[(addr & 0x3FF)];
+				return _ram[(addr & 0x3FF)];
 			}
 			
 			if (addr >= 0x1800 && addr < 0x2000)
@@ -53,14 +71,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (addr >= 0x1400 && addr < 0x1800)
 			{
-				_auxRam[(addr & 0x3FF)] = value;
+				_ram[(addr & 0x3FF)] = value;
 			}
-		}
-
-		public override void SyncState(Serializer ser)
-		{
-			base.SyncState(ser);
-			ser.Sync("aux_ram", ref _auxRam);
 		}
 	}
 }

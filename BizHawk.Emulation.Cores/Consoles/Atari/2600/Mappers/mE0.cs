@@ -29,6 +29,22 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private int _toggle2;
 		private int _toggle3;
 
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("toggle1", ref _toggle1);
+			ser.Sync("toggle2", ref _toggle2);
+			ser.Sync("toggle3", ref _toggle3);
+		}
+
+		public override void HardReset()
+		{
+			_toggle1 = 0;
+			_toggle2 = 0;
+			_toggle3 = 0;
+			base.HardReset();
+		}
+
 		private byte ReadMem(ushort addr, bool peek)
 		{
 			if (!peek)
@@ -76,14 +92,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				base.WriteMemory(addr, value);
 			}
-		}
-
-		public override void SyncState(Serializer ser)
-		{
-			base.SyncState(ser);
-			ser.Sync("toggle1", ref _toggle1);
-			ser.Sync("toggle2", ref _toggle2);
-			ser.Sync("toggle3", ref _toggle3);
 		}
 
 		private void Address(ushort addr)

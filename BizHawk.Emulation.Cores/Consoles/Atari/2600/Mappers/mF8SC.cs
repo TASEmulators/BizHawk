@@ -11,6 +11,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private int _bank_4K;
 		private ByteBuffer _ram = new ByteBuffer(128);
 
+		public override void HardReset()
+		{
+			_bank_4K = 0;
+			_ram = new ByteBuffer(128);
+			base.HardReset();
+		}
+
 		private byte ReadMem(ushort addr, bool peek)
 		{
 			if (!peek)

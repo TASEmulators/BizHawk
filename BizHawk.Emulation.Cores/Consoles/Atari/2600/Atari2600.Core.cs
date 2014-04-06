@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			CoreComm.MemoryCallbackSystem.CallExecute(addr);
 		}
 
-		public void HardReset()
+		public void RebootCore()
 		{
 			// Regenerate mapper here to make sure its state is entirely clean
 			switch (this._game.GetOptionsDict()["m"])
@@ -230,6 +230,28 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					_mapper.GetType());
 		}
 
+		public void HardReset()
+		{
+			Ram = new byte[128];
+			_mapper.HardReset();
+
+			Cpu = new MOS6502X
+			{
+				ReadMemory = this.ReadMemory,
+				WriteMemory = this.WriteMemory,
+				PeekMemory = this.PeekMemory,
+				DummyReadMemory = this.ReadMemory,
+				OnExecFetch = this.ExecFetch
+			};
+
+			_tia.Reset();
+
+			M6532 = new M6532(this);
+			Cpu.PC = (ushort)(ReadMemory(0x1FFC) + (ReadMemory(0x1FFD) << 8)); // set the initial PC
+		}
+
+		private bool _hardResetSignal;
+
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			_frame++;
@@ -250,6 +272,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				Cpu.ExecuteOne();
 				_mapper.ClockCpu();
 			}
+
+			if (_hardResetSignal)
+			{
+				HardReset();
+			}
+
+			_hardResetSignal = Controller["Power"];
 
 			if (_islag)
 			{

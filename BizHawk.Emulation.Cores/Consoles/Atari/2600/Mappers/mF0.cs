@@ -22,6 +22,18 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	{
 		private int _bank;
 
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("bank", ref _bank);
+		}
+
+		public override void HardReset()
+		{
+			_bank = 0;
+			base.HardReset();
+		}
+
 		private byte ReadMem(ushort addr, bool peek)
 		{
 			if (!peek)
@@ -60,12 +72,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				Increment();
 			}
-		}
-
-		public override void SyncState(Serializer ser)
-		{
-			base.SyncState(ser);
-			ser.Sync("bank", ref _bank);
 		}
 
 		private void Increment()

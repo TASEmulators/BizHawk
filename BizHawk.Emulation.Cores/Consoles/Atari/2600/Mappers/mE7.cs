@@ -29,11 +29,38 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 	internal class mE7 : MapperBase
 	{
-		private int _rombank_1K;
+		private int _rombank1K;
 		private int _rambank1Toggle;
 		private ByteBuffer _rambank0 = new ByteBuffer(1024);
 		private ByteBuffer _rambank1 = new ByteBuffer(1024);
 		private bool _enableRam0;
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("toggle", ref _rombank1K);
+			ser.Sync("rambank0", ref _rambank0);
+			ser.Sync("rambank1", ref _rambank1);
+			ser.Sync("EnableRam0", ref _enableRam0);
+			ser.Sync("rambank1_toggle", ref _rambank1Toggle);
+		}
+
+		public override void HardReset()
+		{
+			_rombank1K = 0;
+			_rambank1Toggle = 0;
+			_rambank0 = new ByteBuffer(1024);
+			_rambank1 = new ByteBuffer(1024);
+			_enableRam0 = false;
+			base.HardReset();
+		}
+
+		public override void Dispose()
+		{
+			base.Dispose();
+			_rambank0.Dispose();
+			_rambank1.Dispose();
+		}
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -59,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					return _rambank0[addr & 0x3FF];
 				}
 				
-				return Core.Rom[(_rombank_1K * 0x800) + (addr & 0x7FF)];
+				return Core.Rom[(_rombank1K * 0x800) + (addr & 0x7FF)];
 			}
 			
 			if (addr < 0x1900) // Ram 1 Read port
@@ -110,40 +137,30 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
-		public override void SyncState(Serializer ser)
-		{
-			base.SyncState(ser);
-			ser.Sync("toggle", ref _rombank_1K);
-			ser.Sync("rambank0", ref _rambank0);
-			ser.Sync("rambank1", ref _rambank1);
-			ser.Sync("EnableRam0", ref _enableRam0);
-			ser.Sync("rambank1_toggle", ref _rambank1Toggle);
-		}
-
 		private void Address(ushort addr)
 		{
 			switch (addr)
 			{
 				case 0x1FE0:
-					_rombank_1K = 0;
+					_rombank1K = 0;
 					break;
 				case 0x1FE1:
-					_rombank_1K = 1;
+					_rombank1K = 1;
 					break;
 				case 0x1FE2:
-					_rombank_1K = 2;
+					_rombank1K = 2;
 					break;
 				case 0x1FE3:
-					_rombank_1K = 3;
+					_rombank1K = 3;
 					break;
 				case 0x1FE4:
-					_rombank_1K = 4;
+					_rombank1K = 4;
 					break;
 				case 0x1FE5:
-					_rombank_1K = 5;
+					_rombank1K = 5;
 					break;
 				case 0x1FE6:
-					_rombank_1K = 6;
+					_rombank1K = 6;
 					break;
 				case 0x1FE7:
 					_enableRam0 = true;
