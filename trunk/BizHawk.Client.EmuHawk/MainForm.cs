@@ -234,7 +234,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Global.Config.RecentRoms.AutoLoad && !Global.Config.RecentRoms.Empty)
 			{
-				LoadRomFromRecent(Global.Config.RecentRoms[0]);
+				LoadRomFromRecent(Global.Config.RecentRoms.MostRecent);
 			}
 
 			if (cmdMovie != null)
@@ -266,7 +266,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					StartNewMovie(new Movie(Global.Config.RecentMovies[0]), false);
+					StartNewMovie(new Movie(Global.Config.RecentMovies.MostRecent), false);
 				}
 			}
 
@@ -2835,7 +2835,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// restarts the lua console if a different rom is loaded.
 				// im not really a fan of how this is done..
-				if (Global.Config.RecentRoms.Empty || Global.Config.RecentRoms[0] != loader.CanonicalFullPath)
+				if (Global.Config.RecentRoms.Empty || Global.Config.RecentRoms.MostRecent != loader.CanonicalFullPath)
 				{
 					GlobalWin.Tools.Restart<LuaConsole>();
 				}

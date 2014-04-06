@@ -423,7 +423,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!IsLoaded<RamWatch>() && Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
 			{
-				GlobalWin.Tools.RamWatch.LoadFileFromRecent(Global.Config.RecentWatches[0]);
+				GlobalWin.Tools.RamWatch.LoadFileFromRecent(Global.Config.RecentWatches.MostRecent);
 			}
 
 			if (loadDialog)

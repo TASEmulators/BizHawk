@@ -1863,12 +1863,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadLastRomContextMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadRomFromRecent(Global.Config.RecentRoms[0]);
+			LoadRomFromRecent(Global.Config.RecentRoms.MostRecent);
 		}
 
 		private void LoadLastMovieContextMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadMoviesFromRecent(Global.Config.RecentMovies[0]);
+			LoadMoviesFromRecent(Global.Config.RecentMovies.MostRecent);
 		}
 
 		private void BackupMovieContextMenuItem_Click(object sender, EventArgs e)
@@ -2137,7 +2137,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var ext = Path.GetExtension(filePaths[0]) ?? String.Empty;
+			var ext = Path.GetExtension(filePaths[0]) ?? string.Empty;
 			if (ext.ToUpper() == ".LUASES")
 			{
 				OpenLuaConsole();
