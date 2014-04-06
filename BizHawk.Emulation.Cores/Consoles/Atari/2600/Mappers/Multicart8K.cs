@@ -13,6 +13,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private int _gameTotal;
 		private int _currentGame;
 
+		public Multicart8K(int gametotal)
+		{
+			_gameTotal = gametotal;
+			_currentGame = 0;
+		}
+
 		public override void SyncState(Serializer ser)
 		{
 			ser.Sync("bank_4k", ref _bank4K);
