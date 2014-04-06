@@ -89,10 +89,7 @@ namespace BizHawk.Client.EmuHawk
 					DecreaseSpeed();
 					break;
 				case "Reboot Core":
-					bool autoSaveState = Global.Config.AutoSavestates;
-					Global.Config.AutoSavestates = false;
-					LoadRom(CurrentlyOpenRom);
-					Global.Config.AutoSavestates = autoSaveState;
+					RebootCore();
 					break;
 
 				// Save States

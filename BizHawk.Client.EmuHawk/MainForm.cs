@@ -630,7 +630,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RebootCore()
 		{
+			bool autoSaveState = Global.Config.AutoSavestates;
+			Global.Config.AutoSavestates = false;
 			LoadRom(CurrentlyOpenRom);
+			Global.Config.AutoSavestates = autoSaveState;
 		}
 
 		public void PauseEmulator()
