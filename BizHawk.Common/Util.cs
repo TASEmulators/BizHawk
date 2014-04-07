@@ -205,6 +205,31 @@ namespace BizHawk.Common
 			return ret;
 		}
 
+		public static ushort[] ByteBufferToUshortBuffer(byte[] buf)
+		{
+			int num = buf.Length / 2;
+			var ret = new ushort[num];
+			for (int i = 0; i < num; i++)
+			{
+				ret[i] = (ushort)(buf[i * 2] | (buf[i * 2 + 1] << 8));
+			}
+
+			return ret;
+		}
+
+		public static byte[] UshortBufferToByteBuffer(ushort[] buf)
+		{
+			int num = buf.Length;
+			var ret = new byte[num * 2];
+			for (int i = 0; i < num; i++)
+			{
+				ret[i * 2 + 0] = (byte)(buf[i] & 0xFF);
+				ret[i * 2 + 1] = (byte)((buf[i] >> 8) & 0xFF);
+			}
+
+			return ret;
+		}
+
 		public static uint[] ByteBufferToUintBuffer(byte[] buf)
 		{
 			int num = buf.Length / 4;
