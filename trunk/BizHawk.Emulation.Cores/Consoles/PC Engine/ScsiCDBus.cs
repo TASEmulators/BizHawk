@@ -113,21 +113,18 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				rst = value;
 			}
 		}
-		public byte DataBits { get; set; } // data bits
+		public byte DataBits;
 
-		enum BusPhase
-		{
-			BusFree,
-			Command,
-			DataIn,
-			DataOut,
-			MessageIn,
-			MessageOut,
-			Status
-		}
+		const byte BusPhase_BusFree = 0;
+		const byte BusPhase_Command = 1;
+		const byte BusPhase_DataIn = 2;
+		const byte BusPhase_DataOut = 3;
+		const byte BusPhase_MessageIn = 4;
+		const byte BusPhase_MessageOut = 5;
+		const byte BusPhase_Status = 6;
 
 		bool busPhaseChanged;
-		BusPhase Phase = BusPhase.BusFree;
+		byte Phase = BusPhase_BusFree;
 
 		bool MessageCompleted;
 		bool StatusCompleted;
@@ -196,7 +193,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						DataReadInProgress = false;
 						DataTransferWasDone = true;
 					}
-					SetPhase(BusPhase.DataIn);
+					SetPhase(BusPhase_DataIn);
 				}
 			}
 
@@ -207,20 +204,20 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 				if (SEL && !BSY)
 				{
-					SetPhase(BusPhase.Command);
+					SetPhase(BusPhase_Command);
 				}
 				else if (ATN && !REQ && !ACK)
 				{
-					SetPhase(BusPhase.MessageOut);
+					SetPhase(BusPhase_MessageOut);
 				}
 				else switch (Phase)
 					{
-						case BusPhase.Command: ThinkCommandPhase(); break;
-						case BusPhase.DataIn: ThinkDataInPhase(); break;
-						case BusPhase.DataOut: ThinkDataOutPhase(); break;
-						case BusPhase.MessageIn: ThinkMessageInPhase(); break;
-						case BusPhase.MessageOut: ThinkMessageOutPhase(); break;
-						case BusPhase.Status: ThinkStatusPhase(); break;
+						case BusPhase_Command: ThinkCommandPhase(); break;
+						case BusPhase_DataIn: ThinkDataInPhase(); break;
+						case BusPhase_DataOut: ThinkDataOutPhase(); break;
+						case BusPhase_MessageIn: ThinkMessageInPhase(); break;
+						case BusPhase_MessageOut: ThinkMessageOutPhase(); break;
+						case BusPhase_Status: ThinkStatusPhase(); break;
 						default: break;
 					}
 			} while (signalsChanged || busPhaseChanged);
@@ -235,7 +232,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			ACK = false;
 			ATN = false;
 			DataBits = 0;
-			Phase = BusPhase.BusFree;
+			Phase = BusPhase_BusFree;
 
 			CommandBuffer.Clear();
 			DataIn.Clear();
@@ -298,7 +295,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		void ThinkDataOutPhase()
 		{
 			Console.WriteLine("*********** DATA OUT PHASE, DOES THIS HAPPEN? ****************");
-			SetPhase(BusPhase.BusFree);
+			SetPhase(BusPhase_BusFree);
 		}
 
 		void ThinkMessageInPhase()
@@ -312,14 +309,14 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (!REQ && !ACK && MessageCompleted)
 			{
 				MessageCompleted = false;
-				SetPhase(BusPhase.BusFree);
+				SetPhase(BusPhase_BusFree);
 			}
 		}
 
 		void ThinkMessageOutPhase()
 		{
 			Console.WriteLine("******* IN MESSAGE OUT PHASE. DOES THIS EVER HAPPEN? ********");
-			SetPhase(BusPhase.BusFree);
+			SetPhase(BusPhase_BusFree);
 		}
 
 		void ThinkStatusPhase()
@@ -333,7 +330,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			{
 				StatusCompleted = false;
 				DataBits = MessageValue;
-				SetPhase(BusPhase.MessageIn);
+				SetPhase(BusPhase_MessageIn);
 			}
 		}
 
@@ -470,17 +467,17 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				case 1: // play in loop mode. I guess this constitues A-B looping
 					pce.CDAudio.PlayStartingAtLba(audioStartLBA);
 					pce.CDAudio.EndLBA = audioEndLBA;
-					pce.CDAudio.PlayMode = CDAudio.PlaybackMode.LoopOnCompletion;
+					pce.CDAudio.PlayMode = CDAudio.PlaybackMode_LoopOnCompletion;
 					break;
 				case 2: // Play audio, fire IRQ2 when end position reached, maybe
 					pce.CDAudio.PlayStartingAtLba(audioStartLBA);
 					pce.CDAudio.EndLBA = audioEndLBA;
-					pce.CDAudio.PlayMode = CDAudio.PlaybackMode.CallbackOnCompletion;
+					pce.CDAudio.PlayMode = CDAudio.PlaybackMode_CallbackOnCompletion;
 					break;
 				case 3: // Play normal
 					pce.CDAudio.PlayStartingAtLba(audioStartLBA);
 					pce.CDAudio.EndLBA = audioEndLBA;
-					pce.CDAudio.PlayMode = CDAudio.PlaybackMode.StopOnCompletion;
+					pce.CDAudio.PlayMode = CDAudio.PlaybackMode_StopOnCompletion;
 					break;
 			}
 			SetStatusMessage(STATUS_GOOD, 0);
@@ -494,16 +491,16 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		void CommandReadSubcodeQ()
 		{
-			bool playing = pce.CDAudio.Mode != CDAudio.CDAudioMode.Stopped;
+			bool playing = pce.CDAudio.Mode != CDAudio.CDAudioMode_Stopped;
 			var sectorEntry = disc.ReadLBA_SectorEntry(playing ? pce.CDAudio.CurrentSector : CurrentReadingSector);
 
 			DataIn.Clear();
 
 			switch (pce.CDAudio.Mode)
 			{
-				case CDAudio.CDAudioMode.Playing: DataIn.Enqueue(0); break;
-				case CDAudio.CDAudioMode.Paused: DataIn.Enqueue(2); break;
-				case CDAudio.CDAudioMode.Stopped: DataIn.Enqueue(3); break;
+				case CDAudio.CDAudioMode_Playing: DataIn.Enqueue(0); break;
+				case CDAudio.CDAudioMode_Paused: DataIn.Enqueue(2); break;
+				case CDAudio.CDAudioMode_Stopped: DataIn.Enqueue(3); break;
 			}
 
 			DataIn.Enqueue(sectorEntry.q_status);          // I do not know what status is
@@ -516,7 +513,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			DataIn.Enqueue(sectorEntry.q_asec.BCDValue);   // S(abs)
 			DataIn.Enqueue(sectorEntry.q_aframe.BCDValue); // F(abs)
 
-			SetPhase(BusPhase.DataIn);
+			SetPhase(BusPhase_DataIn);
 		}
 
 		void CommandReadTOC()
@@ -528,7 +525,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						DataIn.Clear();
 						DataIn.Enqueue(0x01);
 						DataIn.Enqueue(((byte)disc.TOC.Sessions[0].Tracks.Count).BinToBCD());
-						SetPhase(BusPhase.DataIn);
+						SetPhase(BusPhase_DataIn);
 						break;
 					}
 				case 1: // return total disc length in minutes/seconds/frames
@@ -542,7 +539,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						DataIn.Enqueue(m.BinToBCD());
 						DataIn.Enqueue(s.BinToBCD());
 						DataIn.Enqueue(f.BinToBCD());
-						SetPhase(BusPhase.DataIn);
+						SetPhase(BusPhase_DataIn);
 						break;
 					}
 				case 2: // Return starting position of specified track in MSF format
@@ -574,7 +571,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 							DataIn.Enqueue(0);
 						else
 							DataIn.Enqueue(4);
-						SetPhase(BusPhase.DataIn);
+						SetPhase(BusPhase_DataIn);
 						break;
 					}
 				default:
@@ -589,10 +586,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			StatusCompleted = false;
 			MessageCompleted = false;
 			DataBits = status == STATUS_GOOD ? (byte)0x00 : (byte)0x01;
-			SetPhase(BusPhase.Status);
+			SetPhase(BusPhase_Status);
 		}
 
-		void SetPhase(BusPhase phase)
+		void SetPhase(byte phase)
 		{
 			if (Phase == phase)
 				return;
@@ -602,7 +599,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			switch (phase)
 			{
-				case BusPhase.BusFree:
+				case BusPhase_BusFree:
 					BSY = false;
 					MSG = false;
 					CD = false;
@@ -610,42 +607,42 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					REQ = false;
 					pce.IntDataTransferComplete = false;
 					break;
-				case BusPhase.Command:
+				case BusPhase_Command:
 					BSY = true;
 					MSG = false;
 					CD = true;
 					IO = false;
 					REQ = true;
 					break;
-				case BusPhase.DataIn:
+				case BusPhase_DataIn:
 					BSY = true;
 					MSG = false;
 					CD = false;
 					IO = true;
 					REQ = false;
 					break;
-				case BusPhase.DataOut:
+				case BusPhase_DataOut:
 					BSY = true;
 					MSG = false;
 					CD = false;
 					IO = false;
 					REQ = true;
 					break;
-				case BusPhase.MessageIn:
+				case BusPhase_MessageIn:
 					BSY = true;
 					MSG = true;
 					CD = true;
 					IO = true;
 					REQ = true;
 					break;
-				case BusPhase.MessageOut:
+				case BusPhase_MessageOut:
 					BSY = true;
 					MSG = true;
 					CD = true;
 					IO = false;
 					REQ = true;
 					break;
-				case BusPhase.Status:
+				case BusPhase_Status:
 					BSY = true;
 					MSG = false;
 					CD = true;
@@ -657,191 +654,43 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		// ***************************************************************************
 
-		public void SaveStateBinary(BinaryWriter writer)
+		public void SyncState(Serializer ser)
 		{
-			writer.Write(BSY);
-			writer.Write(SEL);
-			writer.Write(CD);
-			writer.Write(IO);
-			writer.Write(MSG);
-			writer.Write(REQ);
-			writer.Write(ACK);
-			writer.Write(ATN);
-			writer.Write(RST);
-			writer.Write(DataBits);
-			writer.Write((byte)Phase);
+			ser.BeginSection("SCSI");
+			ser.Sync("BSY", ref bsy);
+			ser.Sync("SEL", ref sel);
+			ser.Sync("CD", ref cd);
+			ser.Sync("IO", ref io);
+			ser.Sync("MSG", ref msg);
+			ser.Sync("REQ", ref req);
+			ser.Sync("ACK", ref ack);
+			ser.Sync("ATN", ref atn);
+			ser.Sync("RST", ref rst);
+			ser.Sync("DataBits", ref DataBits);
+			ser.Sync("Phase", ref Phase);
 
-			writer.Write(MessageCompleted);
-			writer.Write(StatusCompleted);
-			writer.Write(MessageValue);
+			ser.Sync("MessageCompleted", ref MessageCompleted);
+			ser.Sync("StatusCompleted", ref StatusCompleted);
+			ser.Sync("MessageValue", ref MessageValue);
 
-			writer.Write(DataReadWaitTimer);
-			writer.Write(DataReadInProgress);
-			writer.Write(DataTransferWasDone);
-			writer.Write(DataTransferInProgress);
-			writer.Write(CurrentReadingSector);
-			writer.Write((byte)SectorsLeftToRead);
+			ser.Sync("DataReadWaitTimer", ref DataReadWaitTimer);
+			ser.Sync("DataReadInProgress", ref DataReadInProgress);
+			ser.Sync("DataTransferWasDone", ref DataTransferWasDone);
+			ser.Sync("DataTransferInProgress", ref DataTransferInProgress);
+			ser.Sync("CurrentReadingSector", ref CurrentReadingSector);
+			ser.Sync("SectorsLeftToRead", ref SectorsLeftToRead);
 
-			writer.Write(CommandBuffer.buffer);
-			writer.Write((byte)CommandBuffer.Position);
+			ser.Sync("CommandBuffer", ref CommandBuffer.buffer, false);
+			ser.Sync("CommandBufferPosition", ref CommandBuffer.Position);
 
-			writer.Write(DataIn.buffer);
-			writer.Write((short)DataIn.head);
-			writer.Write((short)DataIn.tail);
-			writer.Write((short)DataIn.size);
+			ser.Sync("DataInBuffer", ref DataIn.buffer, false);
+			ser.Sync("DataInHead", ref DataIn.head);
+			ser.Sync("DataInTail", ref DataIn.tail);
+			ser.Sync("DataInSize", ref DataIn.size);
 
-			writer.Write(audioStartLBA);
-			writer.Write(audioEndLBA);
-		}
-
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			BSY = reader.ReadBoolean();
-			SEL = reader.ReadBoolean();
-			CD = reader.ReadBoolean();
-			IO = reader.ReadBoolean();
-			MSG = reader.ReadBoolean();
-			REQ = reader.ReadBoolean();
-			ACK = reader.ReadBoolean();
-			ATN = reader.ReadBoolean();
-			RST = reader.ReadBoolean();
-			DataBits = reader.ReadByte();
-			Phase = (BusPhase)Enum.ToObject(typeof(BusPhase), reader.ReadByte());
-
-			MessageCompleted = reader.ReadBoolean();
-			StatusCompleted = reader.ReadBoolean();
-			MessageValue = reader.ReadByte();
-
-			DataReadWaitTimer = reader.ReadInt64();
-			DataReadInProgress = reader.ReadBoolean();
-			DataTransferWasDone = reader.ReadBoolean();
-			DataTransferInProgress = reader.ReadBoolean();
-			CurrentReadingSector = reader.ReadInt32();
-			SectorsLeftToRead = reader.ReadByte();
-
-			CommandBuffer.buffer = reader.ReadBytes(10);
-			CommandBuffer.Position = reader.ReadByte();
-
-			DataIn.buffer = reader.ReadBytes(2048);
-			DataIn.head = reader.ReadInt16();
-			DataIn.tail = reader.ReadInt16();
-			DataIn.size = reader.ReadInt16();
-
-			audioStartLBA = reader.ReadInt32();
-			audioEndLBA = reader.ReadInt32();
-		}
-
-		public void SaveStateText(TextWriter writer)
-		{
-			writer.WriteLine("[SCSI]");
-			writer.WriteLine("BSY {0}", BSY);
-			writer.WriteLine("SEL {0}", SEL);
-			writer.WriteLine("CD {0}", CD);
-			writer.WriteLine("IO {0}", IO);
-			writer.WriteLine("MSG {0}", MSG);
-			writer.WriteLine("REQ {0}", REQ);
-			writer.WriteLine("ACK {0}", ACK);
-			writer.WriteLine("ATN {0}", ATN);
-			writer.WriteLine("RST {0}", RST);
-			writer.WriteLine("DataBits {0:X2}", DataBits);
-			writer.WriteLine("BusPhase " + Enum.GetName(typeof(BusPhase), Phase));
-			writer.WriteLine();
-			writer.WriteLine("MessageCompleted {0}", MessageCompleted);
-			writer.WriteLine("StatusCompleted {0}", StatusCompleted);
-			writer.WriteLine("MessageValue {0}", MessageValue);
-			writer.WriteLine();
-			writer.WriteLine("DataReadWaitTimer {0}", DataReadWaitTimer);
-			writer.WriteLine("DataReadInProgress {0}", DataReadInProgress);
-			writer.WriteLine("DataTransferWasDone {0}", DataTransferWasDone);
-			writer.WriteLine("DataTransferInProgress {0}", DataTransferInProgress);
-			writer.WriteLine("CurrentReadingSector {0}", CurrentReadingSector);
-			writer.WriteLine("SectorsLeftToRead {0}", SectorsLeftToRead);
-			writer.WriteLine();
-			writer.WriteLine("AudioStartLBA {0}", audioStartLBA);
-			writer.WriteLine("AudioEndLBA {0}", audioEndLBA);
-			writer.WriteLine();
-			writer.Write("CommandBuffer "); CommandBuffer.buffer.SaveAsHex(writer);
-			writer.WriteLine("CommandBufferPosition {0}", CommandBuffer.Position);
-			writer.WriteLine();
-			writer.Write("DataInBuffer "); DataIn.buffer.SaveAsHex(writer);
-			writer.WriteLine("DataInHead {0}", DataIn.head);
-			writer.WriteLine("DataInTail {0}", DataIn.tail);
-			writer.WriteLine("DataInSize {0}", DataIn.size);
-			writer.WriteLine("[/SCSI]\n");
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			while (true)
-			{
-				string[] args = reader.ReadLine().Split(' ');
-				if (args[0].Trim() == "") continue;
-				if (args[0] == "[/SCSI]") break;
-				if (args[0] == "BSY")
-					BSY = bool.Parse(args[1]);
-				else if (args[0] == "SEL")
-					SEL = bool.Parse(args[1]);
-				else if (args[0] == "CD")
-					CD = bool.Parse(args[1]);
-				else if (args[0] == "IO")
-					IO = bool.Parse(args[1]);
-				else if (args[0] == "MSG")
-					MSG = bool.Parse(args[1]);
-				else if (args[0] == "REQ")
-					REQ = bool.Parse(args[1]);
-				else if (args[0] == "ACK")
-					ACK = bool.Parse(args[1]);
-				else if (args[0] == "ATN")
-					ATN = bool.Parse(args[1]);
-				else if (args[0] == "RST")
-					RST = bool.Parse(args[1]);
-				else if (args[0] == "DataBits")
-					DataBits = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "BusPhase")
-					Phase = (BusPhase)Enum.Parse(typeof(BusPhase), args[1]);
-
-				else if (args[0] == "MessageCompleted")
-					MessageCompleted = bool.Parse(args[1]);
-				else if (args[0] == "StatusCompleted")
-					StatusCompleted = bool.Parse(args[1]);
-				else if (args[0] == "MessageValue")
-					MessageValue = byte.Parse(args[1]);
-
-				else if (args[0] == "DataReadWaitTimer")
-					DataReadWaitTimer = long.Parse(args[1]);
-				else if (args[0] == "DataReadInProgress")
-					DataReadInProgress = bool.Parse(args[1]);
-				else if (args[0] == "DataTransferWasDone")
-					DataTransferWasDone = bool.Parse(args[1]);
-				else if (args[0] == "DataTransferInProgress")
-					DataTransferInProgress = bool.Parse(args[1]);
-				else if (args[0] == "CurrentReadingSector")
-					CurrentReadingSector = int.Parse(args[1]);
-				else if (args[0] == "SectorsLeftToRead")
-					SectorsLeftToRead = int.Parse(args[1]);
-
-				else if (args[0] == "AudioStartLBA")
-					audioStartLBA = int.Parse(args[1]);
-				else if (args[0] == "AudioEndLBA")
-					audioEndLBA = int.Parse(args[1]);
-
-				else if (args[0] == "CommandBuffer")
-					CommandBuffer.buffer.ReadFromHex(args[1]);
-				else if (args[0] == "CommandBufferPosition")
-					CommandBuffer.Position = int.Parse(args[1]);
-
-				else if (args[0] == "DataInBuffer")
-					DataIn.buffer.ReadFromHex(args[1]);
-				else if (args[0] == "DataInHead")
-					DataIn.head = int.Parse(args[1]);
-				else if (args[0] == "DataInTail")
-					DataIn.tail = int.Parse(args[1]);
-				else if (args[0] == "DataInSize")
-					DataIn.size = int.Parse(args[1]);
-
-				else
-					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
-			}
+			ser.Sync("AudioStartLBA", ref audioStartLBA);
+			ser.Sync("AudioEndLBA", ref audioEndLBA);
+			ser.EndSection();
 		}
 	}
 }

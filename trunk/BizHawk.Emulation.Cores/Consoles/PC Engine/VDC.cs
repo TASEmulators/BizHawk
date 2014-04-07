@@ -300,131 +300,37 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		public void SaveStateText(TextWriter writer, int vdcNo)
+		public void SyncState(Serializer ser, int vdcNo)
 		{
-			writer.WriteLine("[VDC" + vdcNo + "]");
-			writer.Write("VRAM ");
-			VRAM.SaveAsHex(writer);
-			writer.Write("SAT ");
-			SpriteAttributeTable.SaveAsHex(writer);
-			writer.Write("Registers ");
-			Registers.SaveAsHex(writer);
+			ser.BeginSection("VDC"+vdcNo);
+			ser.Sync("VRAM", ref VRAM, false);
+			ser.Sync("SAT", ref SpriteAttributeTable, false);
+			ser.Sync("Registers", ref Registers, false);
+			ser.Sync("RegisterLatch", ref RegisterLatch);
+			ser.Sync("ReadBuffer", ref ReadBuffer);
+			ser.Sync("StatusByte", ref StatusByte);
 
-			writer.WriteLine("RegisterLatch {0:X2}", RegisterLatch);
-			writer.WriteLine("ReadBuffer {0:X4}", ReadBuffer);
-			writer.WriteLine("StatusByte {0:X2}", StatusByte);
+			ser.Sync("DmaRequested", ref DmaRequested);
+			ser.Sync("SatDmaRequested", ref SatDmaRequested);
+			ser.Sync("SatDmaPerformed", ref SatDmaPerformed);
 
-			writer.WriteLine("DmaRequested {0}", DmaRequested);
-			writer.WriteLine("SatDmaRequested {0}", SatDmaRequested);
-			writer.WriteLine("SatDmaPerformed {0}", SatDmaPerformed);
+			ser.Sync("ScanLine", ref ScanLine);
+			ser.Sync("BackgroundY", ref BackgroundY);
+			ser.Sync("RCRCounter", ref RCRCounter);
+			ser.Sync("ActiveLine", ref ActiveLine);
+			ser.EndSection();
 
-			writer.WriteLine("ScanLine {0}", ScanLine);
-			writer.WriteLine("BackgroundY {0}", BackgroundY);
-			writer.WriteLine("RCRCounter {0}", RCRCounter);
-			writer.WriteLine("ActiveLine {0}", ActiveLine);
-
-			writer.WriteLine("[/VDC" + vdcNo + "]\n");
-		}
-
-		public void LoadStateText(TextReader reader, int vdcNo)
-		{
-			while (true)
+			if (ser.IsReader)
 			{
-				string[] args = reader.ReadLine().Split(' ');
-				if (args[0].Trim() == "") continue;
-				if (args[0] == "[/VDC" + vdcNo + "]") break;
-				if (args[0] == "VRAM")
-					VRAM.ReadFromHex(args[1]);
-				else if (args[0] == "SAT")
-					SpriteAttributeTable.ReadFromHex(args[1]);
-				else if (args[0] == "Registers")
-					Registers.ReadFromHex(args[1]);
-				else if (args[0] == "RegisterLatch")
-					RegisterLatch = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "ReadBuffer")
-					ReadBuffer = ushort.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "StatusByte")
-					StatusByte = byte.Parse(args[1], NumberStyles.HexNumber);
+				for (ushort i = 0; i < VRAM.Length; i++)
+				{
+					UpdatePatternData(i);
+					UpdateSpriteData(i);
+				}
 
-				else if (args[0] == "DmaRequested")
-					DmaRequested = bool.Parse(args[1]);
-				else if (args[0] == "SatDmaRequested")
-					SatDmaRequested = bool.Parse(args[1]);
-				else if (args[0] == "SatDmaPerformed")
-					SatDmaPerformed = bool.Parse(args[1]);
-
-				else if (args[0] == "ScanLine")
-					ScanLine = int.Parse(args[1]);
-				else if (args[0] == "BackgroundY")
-					BackgroundY = int.Parse(args[1]);
-				else if (args[0] == "RCRCounter")
-					RCRCounter = int.Parse(args[1]);
-				else if (args[0] == "ActiveLine")
-					ActiveLine = int.Parse(args[1]);
-
-				else
-					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
+				CompleteMSBWrite(HDR);
+				CompleteMSBWrite(VDW);
 			}
-
-			for (ushort i = 0; i < VRAM.Length; i++)
-			{
-				UpdatePatternData(i);
-				UpdateSpriteData(i);
-			}
-
-			CompleteMSBWrite(HDR);
-			CompleteMSBWrite(VDW);
-		}
-
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			for (int i = 0; i < VRAM.Length; i++)
-				writer.Write(VRAM[i]);
-			for (int i = 0; i < SpriteAttributeTable.Length; i++)
-				writer.Write(SpriteAttributeTable[i]);
-			for (int i = 0; i < Registers.Length; i++)
-				writer.Write(Registers[i]);
-			writer.Write(RegisterLatch);
-			writer.Write(ReadBuffer);
-			writer.Write(StatusByte);
-
-			writer.Write(DmaRequested);
-			writer.Write(SatDmaRequested);
-			writer.Write(SatDmaPerformed);
-
-			writer.Write(ScanLine);
-			writer.Write(BackgroundY);
-			writer.Write(RCRCounter);
-			writer.Write(ActiveLine);
-		}
-
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			for (ushort i = 0; i < VRAM.Length; i++)
-			{
-				VRAM[i] = reader.ReadUInt16();
-				UpdatePatternData(i);
-				UpdateSpriteData(i);
-			}
-			for (int i = 0; i < SpriteAttributeTable.Length; i++)
-				SpriteAttributeTable[i] = reader.ReadUInt16();
-			for (int i = 0; i < Registers.Length; i++)
-				Registers[i] = reader.ReadUInt16();
-			RegisterLatch = reader.ReadByte();
-			ReadBuffer = reader.ReadUInt16();
-			StatusByte = reader.ReadByte();
-
-			DmaRequested = reader.ReadBoolean();
-			SatDmaRequested = reader.ReadBoolean();
-			SatDmaPerformed = reader.ReadBoolean();
-
-			ScanLine = reader.ReadInt32();
-			BackgroundY = reader.ReadInt32();
-			RCRCounter = reader.ReadInt32();
-			ActiveLine = reader.ReadInt32();
-
-			CompleteMSBWrite(HDR);
-			CompleteMSBWrite(VDW);
 		}
 	}
 }

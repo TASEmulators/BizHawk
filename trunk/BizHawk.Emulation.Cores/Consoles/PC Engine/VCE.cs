@@ -15,23 +15,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public byte CR;
 
 		public int NumberOfScanlines { get { return ((CR & 4) != 0) ? 263 : 262; } }
-		public int DotClock
-		{
-			get
-			{
-				int clock = CR & 3;
-				if (clock == 3)
-					clock = 2;
-				return clock;
-			}
-		}
-
-		// guess the dot clock affects wait states in combination with the dot with regs.
-		// We dont currently emulate wait states, probably will have to eventually...
-
-		// Note: To keep the VCE class from needing a reference to the CPU, the 1-cycle access 
-		// penalty for the VCE is handled by the memory mappers.
-		// One day I guess I could create an ICpu with a StealCycles method...
 
 		public void WriteVCE(int port, byte value)
 		{
@@ -91,54 +74,17 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			Palette[slot] = Colors.ARGB(r, g, b);
 		}
 
-		public void SaveStateText(TextWriter writer)
+		public void SyncState(Serializer ser)
 		{
-			writer.WriteLine("[VCE]");
-			writer.WriteLine("VceAddress {0:X4}", VceAddress);
-			writer.WriteLine("CR {0}", CR);
-			writer.Write("VceData ");
-			VceData.SaveAsHex(writer);
-			writer.WriteLine("[/VCE]\n");
-		}
+			ser.BeginSection("VCE");
+			ser.Sync("VceAddress", ref VceAddress);
+			ser.Sync("CR", ref CR);
+			ser.Sync("VceData", ref VceData, false);
+			ser.EndSection();
 
-		public void LoadStateText(TextReader reader)
-		{
-			while (true)
-			{
-				string[] args = reader.ReadLine().Split(' ');
-				if (args[0].Trim() == "") continue;
-				if (args[0] == "[/VCE]") break;
-				if (args[0] == "VceAddress")
-					VceAddress = ushort.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "CR")
-					CR = byte.Parse(args[1]);
-				else if (args[0] == "VceData")
-					VceData.ReadFromHex(args[1]);
-				else
-					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
-			}
-
-			for (int i = 0; i < VceData.Length; i++)
-				PrecomputePalette(i);
-		}
-
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			writer.Write(VceAddress);
-			writer.Write(CR);
-			for (int i = 0; i < VceData.Length; i++)
-				writer.Write(VceData[i]);
-		}
-
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			VceAddress = reader.ReadUInt16();
-			CR = reader.ReadByte();
-			for (int i = 0; i < VceData.Length; i++)
-			{
-				VceData[i] = reader.ReadUInt16();
-				PrecomputePalette(i);
-			}
+			if (ser.IsReader)
+				for (int i = 0; i < VceData.Length; i++)
+					PrecomputePalette(i);
 		}
 	}
 }

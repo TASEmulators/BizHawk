@@ -214,147 +214,35 @@ namespace BizHawk.Emulation.Common.Components
 			}
 		}
 
-		public void SaveStateText(TextWriter writer)
+		public void SyncState(Serializer ser)
 		{
-			writer.WriteLine("[PSG]");
-
-			writer.WriteLine("MainVolumeLeft {0:X2}", MainVolumeLeft);
-			writer.WriteLine("MainVolumeRight {0:X2}", MainVolumeRight);
-			writer.WriteLine("VoiceLatch {0}", VoiceLatch);
-			writer.WriteLine("WaveTableWriteOffset {0:X2}", WaveTableWriteOffset);
-			writer.WriteLine();
+			ser.BeginSection("PSG");
+			ser.Sync("MainVolumeLeft", ref MainVolumeLeft);
+			ser.Sync("MainVolumeRight", ref MainVolumeRight);
+			ser.Sync("VoiceLatch", ref VoiceLatch);
+			ser.Sync("WaveTableWriteOffset", ref WaveTableWriteOffset);
 
 			for (int i = 0; i < 6; i++)
 			{
-				writer.WriteLine("[Channel{0}]", i + 1);
-				writer.WriteLine("Frequency {0:X4}", Channels[i].Frequency);
-				writer.WriteLine("Panning {0:X2}", Channels[i].Panning);
-				writer.WriteLine("Volume {0:X2}", Channels[i].Volume);
-				writer.WriteLine("Enabled {0}", Channels[i].Enabled);
+				ser.BeginSection("Channel"+i);
+				ser.Sync("Frequency", ref Channels[i].Frequency);
+				ser.Sync("Panning", ref Channels[i].Panning);
+				ser.Sync("Volume", ref Channels[i].Volume);
+				ser.Sync("Enabled", ref Channels[i].Enabled);
 				if (i.In(4, 5))
 				{
-					writer.WriteLine("NoiseChannel {0}", Channels[i].NoiseChannel);
-					writer.WriteLine("NoiseFreq {0:X4}", Channels[i].NoiseFreq);
+					ser.Sync("NoiseChannel", ref Channels[i].NoiseChannel);
+					ser.Sync("NoiseFreq", ref Channels[i].NoiseFreq);
 				}
-				writer.WriteLine("DDA {0}", Channels[i].DDA);
-				writer.WriteLine("DDAValue {0:X4}", Channels[i].DDAValue);
-				writer.WriteLine("SampleOffset {0}", Channels[i].SampleOffset);
-				writer.Write("Wave ");
-				Channels[i].Wave.SaveAsHex(writer);
-				writer.WriteLine("[/Channel{0}]\n", i + 1);
+
+				ser.Sync("DDA", ref Channels[i].DDA);
+				ser.Sync("DDAValue", ref Channels[i].DDAValue);
+				ser.Sync("SampleOffset", ref Channels[i].SampleOffset);
+				ser.Sync("Wave", ref Channels[i].Wave, false);
+				ser.EndSection();
 			}
 
-			writer.WriteLine("[/PSG]\n");
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			while (true)
-			{
-				string[] args = reader.ReadLine().Split(' ');
-				if (args[0].Trim() == "") continue;
-				if (args[0] == "[/PSG]") break;
-				if (args[0] == "MainVolumeLeft")
-					MainVolumeLeft = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "MainVolumeRight")
-					MainVolumeRight = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "VoiceLatch")
-					VoiceLatch = byte.Parse(args[1]);
-				else if (args[0] == "WaveTableWriteOffset")
-					WaveTableWriteOffset = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "[Channel1]")
-					LoadChannelStateText(reader, 0);
-				else if (args[0] == "[Channel2]")
-					LoadChannelStateText(reader, 1);
-				else if (args[0] == "[Channel3]")
-					LoadChannelStateText(reader, 2);
-				else if (args[0] == "[Channel4]")
-					LoadChannelStateText(reader, 3);
-				else if (args[0] == "[Channel5]")
-					LoadChannelStateText(reader, 4);
-				else if (args[0] == "[Channel6]")
-					LoadChannelStateText(reader, 5);
-				else
-					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
-			}
-		}
-
-		void LoadChannelStateText(TextReader reader, int channel)
-		{
-			while (true)
-			{
-				string[] args = reader.ReadLine().Split(' ');
-				if (args[0].Trim() == "") continue;
-				if (args[0] == "[/Channel" + (channel + 1) + "]") break;
-				if (args[0] == "Frequency")
-					Channels[channel].Frequency = ushort.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "Panning")
-					Channels[channel].Panning = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "Volume")
-					Channels[channel].Volume = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "Enabled")
-					Channels[channel].Enabled = bool.Parse(args[1]);
-				else if (args[0] == "NoiseChannel")
-					Channels[channel].NoiseChannel = bool.Parse(args[1]);
-				else if (args[0] == "NoiseFreq")
-					Channels[channel].NoiseFreq = ushort.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "DDA")
-					Channels[channel].DDA = bool.Parse(args[1]);
-				else if (args[0] == "DDAValue")
-					Channels[channel].DDAValue = short.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "SampleOffset")
-					Channels[channel].SampleOffset = float.Parse(args[1]);
-				else if (args[0] == "Wave")
-					Channels[channel].Wave.ReadFromHex(args[1]);
-				else
-					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
-			}
-		}
-
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			writer.Write(MainVolumeLeft);
-			writer.Write(MainVolumeRight);
-			writer.Write(VoiceLatch);
-			writer.Write(WaveTableWriteOffset);
-
-			for (int i = 0; i < 6; i++)
-			{
-				writer.Write(Channels[i].Frequency);
-				writer.Write(Channels[i].Panning);
-				writer.Write(Channels[i].Volume);
-				writer.Write(Channels[i].Enabled);
-				writer.Write(Channels[i].NoiseChannel);
-				writer.Write(Channels[i].NoiseFreq);
-				writer.Write(Channels[i].DDA);
-				writer.Write(Channels[i].DDAValue);
-				writer.Write(Channels[i].SampleOffset);
-				for (int j = 0; j < 32; j++)
-					writer.Write(Channels[i].Wave[j]);
-			}
-		}
-
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			MainVolumeLeft = reader.ReadByte();
-			MainVolumeRight = reader.ReadByte();
-			VoiceLatch = reader.ReadByte();
-			WaveTableWriteOffset = reader.ReadByte();
-
-			for (int i = 0; i < 6; i++)
-			{
-				Channels[i].Frequency = reader.ReadUInt16();
-				Channels[i].Panning = reader.ReadByte();
-				Channels[i].Volume = reader.ReadByte();
-				Channels[i].Enabled = reader.ReadBoolean();
-				Channels[i].NoiseChannel = reader.ReadBoolean();
-				Channels[i].NoiseFreq = reader.ReadUInt16();
-				Channels[i].DDA = reader.ReadBoolean();
-				Channels[i].DDAValue = reader.ReadInt16();
-				Channels[i].SampleOffset = reader.ReadSingle();
-				for (int j = 0; j < 32; j++)
-					Channels[i].Wave[j] = reader.ReadInt16();
-			}
+			ser.EndSection();
 		}
 
 		class QueuedCommand
