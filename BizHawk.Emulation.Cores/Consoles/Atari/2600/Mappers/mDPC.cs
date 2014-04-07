@@ -1,4 +1,5 @@
-﻿using BizHawk.Common;
+﻿using System.Linq;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
@@ -224,228 +225,273 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	 */
 	internal class mDPC : MapperBase
 	{
-		private ulong totalCycles;
-		private ulong elapsedCycles;
-		private double FractionalClocks;
+		// TODO: HardReset
+		// TODO: Savestates
+		// TODO: Dispose
+		// TODO: sound channel doesn't work
+		private readonly IntBuffer _counters = new IntBuffer(8);
+		private readonly ByteBuffer _tops = new ByteBuffer(8);
+		private readonly ByteBuffer _flags = new ByteBuffer(8);
+		private readonly ByteBuffer _bottoms = new ByteBuffer(8);
+		private readonly bool[] _myMusicMode = new bool[3];
 
-		private int bank_4k;
-		private IntBuffer Counters = new IntBuffer(8);
-		private ByteBuffer Flags = new ByteBuffer(8);
-		private IntBuffer Tops = new IntBuffer(8);
-		private IntBuffer Bottoms = new IntBuffer(8);
-		private ByteBuffer DisplayBank_2k = new ByteBuffer(2048);
-		private byte RandomNumber;
+		private int _bank4K;
+		private byte _myRandomNumber;
 
-		private bool[] MusicMode = new bool[3]; // TODO: savestates
+		// TOD: something simpler here, don't need both
+		private int _mySystemCycles;
+		private int _systemCycles;
 
-		public override byte PeekMemory(ushort addr)
+		// Fractional DPC music OSC clocks unused during the last update
+		private double _myFractionalClocks;
+
+		// TODO: refactor to not do this mess
+		private byte[] __mydisp;
+		private byte[] _myDisplayImage
 		{
-			return base.PeekMemory(addr); //TODO
+			get
+			{
+				return __mydisp ?? (__mydisp = Core.Rom.Skip(8192).Take(2048).ToArray());
+			}
+		}
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("bank_4k", ref _bank4K);
+		}
+
+		public override void HardReset()
+		{
+			_bank4K = 0;
+			base.HardReset();
 		}
 
 		public override void ClockCpu()
 		{
-			totalCycles++;
+			_systemCycles++;
 		}
 
-		public override byte ReadMemory(ushort addr)
+		private byte ReadMem(ushort addr, bool peek)
 		{
-			ClockRandomNumberGenerator();
-			addr &= 0x0FFF;
-
-			if (addr < 0x0040)
+			if (addr < 0x1000)
 			{
-				byte result = 0;
-				int index = addr & 0x07;
-				int function = (addr >> 3) & 0x07;
+				return base.ReadMemory(addr);
+			}
+
+			if (!peek)
+			{
+				Address(addr);
+				ClockRandomNumberGenerator();
+			}
+
+			if (addr < 0x1040)
+			{
+				byte result;
+
+				// Get the index of the data fetcher that's being accessed
+				var index = addr & 0x07;
+				var function = (addr >> 3) & 0x07;
 
 				// Update flag register for selected data fetcher
-				if ((Counters[index] & 0x00ff) == Tops[index])
+				if ((_counters[index] & 0x00ff) == _tops[index])
 				{
-					Flags[index] = 0xff;
+					_flags[index] = 0xff;
 				}
-				else if ((Counters[index] & 0x00ff) == Bottoms[index])
+				else if ((_counters[index] & 0x00ff) == _bottoms[index])
 				{
-					Flags[index] = 0x00;
+					_flags[index] = 0x00;
 				}
 
 				switch (function)
 				{
-					default:
-						result = 0;
-						break;
 					case 0x00:
 						if (index < 4)
 						{
-							result = RandomNumber;
+							result = _myRandomNumber;
 						}
-						else // it's a music read
+						else // No, it's a music read
 						{
-							byte[] MusicAmplitudes = {
-								0x00, 0x04, 0x05, 0x09, 0x06, 0x0a, 0x0b, 0x0f
+							var musicAmplitudes = new byte[] {
+							  0x00, 0x04, 0x05, 0x09, 0x06, 0x0a, 0x0b, 0x0f
 							};
 
 							// Update the music data fetchers (counter & flag)
 							UpdateMusicModeDataFetchers();
 
 							byte i = 0;
-							if (MusicMode[0] && Flags[5] > 0)
+							if (_myMusicMode[0] && _flags[5] > 0)
 							{
 								i |= 0x01;
 							}
 
-							if (MusicMode[1] && Flags[6] > 0)
+							if (_myMusicMode[1] && _flags[6] > 0)
 							{
 								i |= 0x02;
 							}
 
-							if (MusicMode[2] && Flags[7] > 0)
+							if (_myMusicMode[2] && _flags[7] > 0)
 							{
 								i |= 0x04;
 							}
 
-							result = MusicAmplitudes[i];
+							result = musicAmplitudes[i];
 						}
 
 						break;
+
+					// DFx display data read
 					case 0x01:
-						result = DisplayBank_2k[2047 - Counters[index]];
+						result = _myDisplayImage[2047 - _counters[index]];
 						break;
+
+					// DFx display data read AND'd w/flag
 					case 0x02:
-						result = DisplayBank_2k[2047 - (Counters[index] & Flags[index])];
+						result = (byte)(_myDisplayImage[2047 - _counters[index]] & _flags[index]);
 						break;
+
+					// DFx flag
 					case 0x07:
-						result = Flags[index];
+						result = _flags[index];
+						break;
+
+					default:
+						result = 0;
 						break;
 				}
 
 				// Clock the selected data fetcher's counter if needed
-				if ((index < 5) || ((index >= 5) && (!MusicMode[index - 5])))
+				if ((index < 5) || ((index >= 5) && (!_myMusicMode[index - 5])))
 				{
-					Counters[index] = (Counters[index] - 1) & 0x07ff;
+					_counters[index] = (_counters[index] - 1) & 0x07ff;
 				}
 
 				return result;
 			}
-			
-			Address(addr);
-			return Core.Rom[(bank_4k << 12) + addr];
+
+			return Core.Rom[(_bank4K << 12) + (addr & 0xFFF)];
+		}
+
+		public override byte ReadMemory(ushort addr)
+		{
+			return ReadMem(addr, false);
+		}
+
+		public override byte PeekMemory(ushort addr)
+		{
+			return ReadMem(addr, true);
 		}
 
 		public override void WriteMemory(ushort addr, byte value)
 		{
-			addr &= 0x0FFF;
+			if (addr < 0x1000)
+			{
+				base.WriteMemory(addr, value);
+				return;
+			}
 
-			// Clock the random number generator.  This should be done for every
-			// cartridge access, however, we're only doing it for the DPC and 
-			// hot-spot accesses to save time.
+			Address(addr);
 			ClockRandomNumberGenerator();
 
-			if ((addr >= 0x0040) && (addr < 0x0080))
+			if (addr >= 0x1040 && addr < 0x1080)
 			{
-				// Get the index of the data fetcher that's being accessed
-				int index = addr & 0x07;
-				int function = (addr >> 3) & 0x07;
+				var index = addr & 0x07;
+				var function = (addr >> 3) & 0x07;
 
 				switch (function)
 				{
-					case 0x00: // DFx top count
-						Tops[index] = value;
-						Flags[index] = 0x00;
+					// DFx top count
+					case 0x00:
+						_tops[index] = value;
+						_flags[index] = 0x00;
 						break;
-					case 0x01: // DFx bottom count
-						Bottoms[index] = value;
+
+					// DFx bottom count
+					case 0x01:
+						_bottoms[index] = value;
 						break;
-					case 0x02: // DFx counter low
-						if ((index >= 5) && MusicMode[index - 5])
+
+					// DFx counter low
+					case 0x02:
+						if ((index >= 5) && _myMusicMode[index - 5])
 						{
-							Counters[index] = (Counters[index] & 0x0700) | Tops[index]; // Data fetcher is in music mode so its low counter value should be loaded from the top register not the poked value
+							// Data fetcher is in music mode so its low counter value
+							// should be loaded from the top register not the poked value
+							_counters[index] = (_counters[index] & 0x0700) |
+								_tops[index];
 						}
 						else
 						{
 							// Data fetcher is either not a music mode data fetcher or it
 							// isn't in music mode so it's low counter value should be loaded
 							// with the poked value
-							Counters[index] = (Counters[index] & 0x0700) | value;
+							_counters[index] = (_counters[index] & 0x0700) | value;
 						}
+
 						break;
-					case 0x03: // DFx counter high
-						Counters[index] = ((value & 0x07) << 8) | (Counters[index] & 0x00ff);
+
+					// DFx counter high
+					case 0x03:
+						_counters[index] = (ushort)(((value & 0x07) << 8) |
+							(_counters[index] & 0x00ff));
 
 						// Execute special code for music mode data fetchers
 						if (index >= 5)
 						{
-							MusicMode[index - 5] = (value & 0x10) > 0;
-
+							_myMusicMode[index - 5] = (value & 0x10) > 0;
+							
 							// NOTE: We are not handling the clock source input for
 							// the music mode data fetchers.  We're going to assume
 							// they always use the OSC input.
 						}
 
 						break;
-					case 0x06: // Random Number Generator Reset
-							RandomNumber = 1;
-							break;
+
+					// Random Number Generator Reset
+					case 0x06:
+						_myRandomNumber = 1;
+						break;
 				}
 			}
-			else
-			{
-				Address(addr);
-			}
-
-			return;
 		}
 
 		private void Address(ushort addr)
 		{
-			if (addr == 0x0FF8)
+			if (addr == 0x1FF8)
 			{
-				bank_4k = 0;
+				_bank4K = 0;
 			}
-			else if (addr == 0x0FF9)
+			else if (addr == 0x1FF9)
 			{
-				bank_4k = 1;
+				_bank4K = 1;
 			}
 		}
 
-		public override void Dispose()
+		private void ClockRandomNumberGenerator()
 		{
-			DisplayBank_2k.Dispose();
-			Counters.Dispose();
-			Flags.Dispose();
-			base.Dispose();
-		}
+			// Table for computing the input bit of the random number generator's
+			// shift register (it's the NOT of the EOR of four bits)
+			byte[] f = { 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1 };
 
-		public override void SyncState(Serializer ser)
-		{
-			// TODO
-			base.SyncState(ser);
-			ser.Sync("bank_4k", ref bank_4k);
-			ser.Sync("DisplayBank_2k", ref DisplayBank_2k);
-			ser.Sync("Flags", ref Flags);
-			ser.Sync("Counters", ref Counters);
-			ser.Sync("RandomNumber", ref RandomNumber);
-		}
+			// Using bits 7, 5, 4, & 3 of the shift register compute the input
+			// bit for the shift register
+			var bit = f[((_myRandomNumber >> 3) & 0x07) | 
+				(((_myRandomNumber & 0x80) > 0) ? 0x08 : 0x00)];
 
-		public override void HardReset()
-		{
-			// TODO
-			base.HardReset();
+			// Update the shift register 
+			_myRandomNumber = (byte)((_myRandomNumber << 1) | bit);
 		}
 
 		private void UpdateMusicModeDataFetchers()
 		{
 			// Calculate the number of cycles since the last update
-			//int cycles = mySystem->cycles() - mySystemCycles;
-			//mySystemCycles = mySystem->cycles();
-			ulong cycles = totalCycles - elapsedCycles;
-			elapsedCycles = totalCycles;
-
+			var cycles = _systemCycles - _mySystemCycles;
+			_mySystemCycles = _systemCycles;
 
 			// Calculate the number of DPC OSC clocks since the last update
-			double clocks = ((20000.0 * cycles) / 1193191.66666667) + FractionalClocks;
-			int wholeClocks = (int)clocks;
-			FractionalClocks = clocks - (double)wholeClocks;
+			var clocks = ((20000.0 * cycles) / 1193191.66666667) + _myFractionalClocks;
+			var wholeClocks = (int)clocks;
+			_myFractionalClocks = clocks - wholeClocks;
 
 			if (wholeClocks <= 0)
 			{
@@ -453,17 +499,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
 			// Let's update counters and flags of the music mode data fetchers
-			for (int x = 5; x <= 7; ++x)
+			for (var x = 5; x <= 7; ++x)
 			{
 				// Update only if the data fetcher is in music mode
-				if (MusicMode[x - 5])
+				if (_myMusicMode[x - 5])
 				{
-					int top = Tops[x] + 1;
-					int newLow = Counters[x] & 0x00ff;
+					var top = _tops[x] + 1;
+					var newLow = _counters[x] & 0x00ff;
 
-					if (Tops[x] != 0)
+					if (_tops[x] != 0)
 					{
-						newLow -= (wholeClocks % top);
+						newLow -= wholeClocks % top;
 						if (newLow < 0)
 						{
 							newLow += top;
@@ -475,36 +521,18 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					}
 
 					// Update flag register for this data fetcher
-					if (newLow <= Bottoms[x])
+					if (newLow <= _bottoms[x])
 					{
-						Flags[x] = 0x00;
+						_flags[x] = 0x00;
 					}
-					else if (newLow <= Tops[x])
+					else if (newLow <= _tops[x])
 					{
-						Flags[x] = 0xff;
+						_flags[x] = 0xff;
 					}
 
-					Counters[x] = (Counters[x] & 0x0700) | newLow;
+					_counters[x] = (_counters[x] & 0x0700) | (ushort)newLow;
 				}
 			}
-		}
-
-		private void ClockRandomNumberGenerator()
-		{
-			// Table for computing the input bit of the random number generator's
-			// shift register (it's the NOT of the EOR of four bits)
-			byte[] f = 
-			{
-				1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1
-			};
-
-			// Using bits 7, 5, 4, & 3 of the shift register compute the input
-			// bit for the shift register
-			byte bit = f[((RandomNumber >> 3) & 0x07) |
-				((RandomNumber & 0x80) > 0 ? 0x08 : 0x00)];
-
-			// Update the shift register 
-			RandomNumber = (byte)(RandomNumber << 1 | bit);
 		}
 	}
 }
