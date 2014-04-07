@@ -216,12 +216,12 @@ namespace BizHawk.Emulation.Common.Components
 			ser.Sync("PsgLatch", ref PsgLatch);
 			ser.Sync("Panning", ref stereoPanning);
 			ser.EndSection();
-		}
 
-		public void PostLoadState()
-		{
-			StereoPanning = stereoPanning;
-			UpdateNoiseType(Channels[3].NoiseType);
+			if (ser.IsReader)
+			{
+				StereoPanning = stereoPanning;
+				UpdateNoiseType(Channels[3].NoiseType);
+			}
 		}
 
 		public int MaxVolume { get; set; }

@@ -332,9 +332,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public bool BinarySaveStatesPreferred { get { return false; } }
 		public void SaveStateBinary(BinaryWriter bw) { SyncState(Serializer.CreateBinaryWriter(bw)); }
-		public void LoadStateBinary(BinaryReader br) { SyncState(Serializer.CreateBinaryReader(br)); PostLoadState(); }
+		public void LoadStateBinary(BinaryReader br) { SyncState(Serializer.CreateBinaryReader(br)); }
 		public void SaveStateText(TextWriter tw) { SyncState(Serializer.CreateTextWriter(tw)); }
-		public void LoadStateText(TextReader tr) { SyncState(Serializer.CreateTextReader(tr)); PostLoadState(); }
+		public void LoadStateText(TextReader tr) { SyncState(Serializer.CreateTextReader(tr)); }
 		
 		void SyncState(Serializer ser)
 		{
@@ -367,14 +367,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			ser.Sync("IsLag", ref isLag);
 
 			ser.EndSection();
-		}
-
-		void PostLoadState()
-		{
-			Vdp.PostLoadState();
-			PSG.PostLoadState();
-			if (HasYM2413)
-				YM2413.PostLoadState();
 		}
 
 		byte[] stateBuffer;

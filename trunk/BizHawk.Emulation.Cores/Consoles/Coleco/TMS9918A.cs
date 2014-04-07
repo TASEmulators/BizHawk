@@ -481,12 +481,10 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			ser.Sync("Registers", ref Registers, false);
 			ser.Sync("VRAM", ref VRAM, false);
 			ser.EndSection();
-		}
 
-		public void PostLoadState()
-		{
-			for (int i = 0; i < Registers.Length; i++)
-				WriteRegister(i, Registers[i]);
+			if (ser.IsReader)
+				for (int i = 0; i < Registers.Length; i++)
+					WriteRegister(i, Registers[i]);
 		}
 	}
 }
