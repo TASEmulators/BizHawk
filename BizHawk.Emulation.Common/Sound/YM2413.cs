@@ -42,12 +42,10 @@ namespace BizHawk.Emulation.Common.Components
 			ser.Sync("RegisterLatch", ref RegisterLatch);
 			ser.Sync("Registers", ref opll.reg, false);
 			ser.EndSection();
-		}
 
-		public void PostLoadState()
-		{
-			for (byte i = 0; i < opll.reg.Length; i++)
-				Write(i, opll.reg[i]);
+			if (ser.IsReader)
+				for (byte i = 0; i < opll.reg.Length; i++)
+					Write(i, opll.reg[i]);
 		}
 
 		public void Reset()

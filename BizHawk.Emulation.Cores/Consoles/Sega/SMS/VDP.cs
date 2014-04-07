@@ -416,17 +416,15 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			ser.Sync("CRAM", ref CRAM, false);
 			ser.Sync("VRAM", ref VRAM, false);
 			ser.EndSection();
-		}
 
-		public void PostLoadState()
-		{
-			for (int i = 0; i < Registers.Length; i++)
-				WriteRegister(i, Registers[i]);
-
-			for (ushort i = 0; i < VRAM.Length; i++)
-				UpdatePatternBuffer(i, VRAM[i]);
-
-			UpdatePrecomputedPalette();
+			if (ser.IsReader)
+			{
+				for (int i = 0; i < Registers.Length; i++)
+					WriteRegister(i, Registers[i]);
+				for (ushort i = 0; i < VRAM.Length; i++)
+					UpdatePatternBuffer(i, VRAM[i]);
+				UpdatePrecomputedPalette();
+			}
 		}
 
 		public int[] GetVideoBuffer()
