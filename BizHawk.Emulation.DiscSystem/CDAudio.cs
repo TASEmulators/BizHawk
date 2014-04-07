@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 // The state of the cd player is quantized to the frame level.
@@ -12,26 +12,20 @@ namespace BizHawk.Emulation.DiscSystem
 {
 	public sealed class CDAudio : ISoundProvider
 	{
-		public enum CDAudioMode
-		{
-			Stopped,
-			Playing,
-			Paused
-		}
+		public const byte CDAudioMode_Stopped = 0;
+		public const byte CDAudioMode_Playing = 1;
+		public const byte CDAudioMode_Paused = 2;
 
-		public enum PlaybackMode
-		{
-			StopOnCompletion,
-			NextTrackOnCompletion,
-			LoopOnCompletion,
-			CallbackOnCompletion
-		}
+		public const byte PlaybackMode_StopOnCompletion = 0;
+		public const byte PlaybackMode_NextTrackOnCompletion = 1;
+		public const byte PlaybackMode_LoopOnCompletion = 2;
+		public const byte PlaybackMode_CallbackOnCompletion = 3;
 
 		public Action CallbackAction = delegate { };
 
 		public Disc Disc;
-		public CDAudioMode Mode = CDAudioMode.Stopped;
-		public PlaybackMode PlayMode = PlaybackMode.LoopOnCompletion;
+		public byte Mode = CDAudioMode_Stopped;
+		public byte PlayMode = PlaybackMode_LoopOnCompletion;
 
 		public int MaxVolume { get; set; }
 		public int LogicalVolume = 100;
@@ -62,7 +56,7 @@ namespace BizHawk.Emulation.DiscSystem
 			PlayingTrack = track;
 			CurrentSector = StartLBA;
 			SectorOffset = 0;
-			Mode = CDAudioMode.Playing;
+			Mode = CDAudioMode_Playing;
 			FadeOutOverFrames = 0;
 			FadeOutFramesRemaining = 0;
 			LogicalVolume = 100;
@@ -79,7 +73,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			CurrentSector = StartLBA;
 			SectorOffset = 0;
-			Mode = CDAudioMode.Playing;
+			Mode = CDAudioMode_Playing;
 			FadeOutOverFrames = 0;
 			FadeOutFramesRemaining = 0;
 			LogicalVolume = 100;
@@ -87,7 +81,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public void Stop()
 		{
-			Mode = CDAudioMode.Stopped;
+			Mode = CDAudioMode_Stopped;
 			FadeOutOverFrames = 0;
 			FadeOutFramesRemaining = 0;
 			LogicalVolume = 100;
@@ -95,9 +89,9 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public void Pause()
 		{
-			if (Mode != CDAudioMode.Playing)
+			if (Mode != CDAudioMode_Playing)
 				return;
-			Mode = CDAudioMode.Paused;
+			Mode = CDAudioMode_Paused;
 			FadeOutOverFrames = 0;
 			FadeOutFramesRemaining = 0;
 			LogicalVolume = 100;
@@ -105,16 +99,16 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public void Resume()
 		{
-			if (Mode != CDAudioMode.Paused)
+			if (Mode != CDAudioMode_Paused)
 				return;
-			Mode = CDAudioMode.Playing;
+			Mode = CDAudioMode_Playing;
 		}
 
 		public void PauseResume()
 		{
-			if (Mode == CDAudioMode.Playing) Mode = CDAudioMode.Paused;
-			else if (Mode == CDAudioMode.Paused) Mode = CDAudioMode.Playing;
-			else if (Mode == CDAudioMode.Stopped) return;
+			if (Mode == CDAudioMode_Playing) Mode = CDAudioMode_Paused;
+			else if (Mode == CDAudioMode_Paused) Mode = CDAudioMode_Playing;
+			else if (Mode == CDAudioMode_Stopped) return;
 		}
 
 		public void FadeOut(int frames)
@@ -137,7 +131,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public void GetSamples(short[] samples)
 		{
-			if (Mode != CDAudioMode.Playing)
+			if (Mode != CDAudioMode_Playing)
 				return;
 
 			if (FadeOutFramesRemaining > 0)
@@ -169,21 +163,21 @@ namespace BizHawk.Emulation.DiscSystem
 					{
 						switch (PlayMode)
 						{
-							case PlaybackMode.NextTrackOnCompletion:
+							case PlaybackMode_NextTrackOnCompletion:
 								PlayTrack(PlayingTrack + 1);
 								break;
 
-							case PlaybackMode.StopOnCompletion:
+							case PlaybackMode_StopOnCompletion:
 								Stop();
 								return;
 
-							case PlaybackMode.LoopOnCompletion:
+							case PlaybackMode_LoopOnCompletion:
 								CurrentSector = StartLBA;
 								break;
 
-							case PlaybackMode.CallbackOnCompletion:
+							case PlaybackMode_CallbackOnCompletion:
 								CallbackAction();
-								if (Mode != CDAudioMode.Playing)
+								if (Mode != CDAudioMode_Playing)
 									return;
 								break;
 						}
@@ -198,7 +192,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			get
 			{
-				if (Mode != CDAudioMode.Playing)
+				if (Mode != CDAudioMode_Playing)
 					return 0;
 
 				int offset = SectorOffset * 4;
@@ -211,7 +205,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			get
 			{
-				if (Mode != CDAudioMode.Playing)
+				if (Mode != CDAudioMode_Playing)
 					return 0;
 
 				int offset = SectorOffset * 4;
@@ -222,83 +216,23 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public void DiscardSamples() { }
 
-		public void SaveStateText(TextWriter writer)
+		public void SyncState(Serializer ser)
 		{
-			writer.WriteLine("[CDAudio]");
-			writer.WriteLine("Mode " + Enum.GetName(typeof(CDAudioMode), Mode));
-			writer.WriteLine("PlayMode " + Enum.GetName(typeof(PlaybackMode), PlayMode));
-			writer.WriteLine("LogicalVolume {0}", LogicalVolume);
-			writer.WriteLine("StartLBA {0}", StartLBA);
-			writer.WriteLine("EndLBA {0}", EndLBA);
-			writer.WriteLine("PlayingTrack {0}", PlayingTrack);
-			writer.WriteLine("CurrentSector {0}", CurrentSector);
-			writer.WriteLine("SectorOffset {0}", SectorOffset);
-			writer.WriteLine("FadeOutOverFrames {0}", FadeOutOverFrames);
-			writer.WriteLine("FadeOutFramesRemaining {0}", FadeOutFramesRemaining);
-			writer.WriteLine("[/CDAudio]");
-			writer.WriteLine();
-		}
+			ser.BeginSection("CDAudio");
+			ser.Sync("Mode", ref Mode);
+			ser.Sync("PlayMode", ref PlayMode);
+			ser.Sync("LogicalVolume", ref LogicalVolume);
+			ser.Sync("StartLBA", ref StartLBA);
+			ser.Sync("EndLBA", ref EndLBA);
+			ser.Sync("PlayingTrack", ref PlayingTrack);
+			ser.Sync("CurrentSector", ref CurrentSector);
+			ser.Sync("SectorOffset", ref SectorOffset);
+			ser.Sync("FadeOutOverFrames", ref FadeOutOverFrames);
+			ser.Sync("FadeOutFramesRemaining", ref FadeOutFramesRemaining);
+			ser.EndSection();
 
-		public void LoadStateText(TextReader reader)
-		{
-			while (true)
-			{
-				string[] args = reader.ReadLine().Split(' ');
-				if (args[0].Trim() == "") continue;
-				if (args[0] == "[/CDAudio]") break;
-				if (args[0] == "Mode")
-					Mode = (CDAudioMode)Enum.Parse(typeof(CDAudioMode), args[1]);
-				else if (args[0] == "PlayMode")
-					PlayMode = (PlaybackMode)Enum.Parse(typeof(PlaybackMode), args[1]);
-				else if (args[0] == "LogicalVolume")
-					LogicalVolume = int.Parse(args[1]);
-				else if (args[0] == "StartLBA")
-					StartLBA = int.Parse(args[1]);
-				else if (args[0] == "EndLBA")
-					EndLBA = int.Parse(args[1]);
-				else if (args[0] == "PlayingTrack")
-					PlayingTrack = int.Parse(args[1]);
-				else if (args[0] == "CurrentSector")
-					CurrentSector = int.Parse(args[1]);
-				else if (args[0] == "SectorOffset")
-					SectorOffset = int.Parse(args[1]);
-				else if (args[0] == "FadeOutOverFrames")
-					FadeOutOverFrames = int.Parse(args[1]);
-				else if (args[0] == "FadeOutFramesRemaining")
-					FadeOutFramesRemaining = int.Parse(args[1]);
-
-				else
-					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
-			}
-			EnsureSector();
-		}
-
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			writer.Write((byte)Mode);
-			writer.Write((byte)PlayMode);
-			writer.Write(LogicalVolume);
-			writer.Write(CurrentSector);
-			writer.Write(SectorOffset);
-			writer.Write(StartLBA);
-			writer.Write(EndLBA);
-			writer.Write(PlayingTrack);
-			writer.Write((short)FadeOutOverFrames);
-			writer.Write((short)FadeOutFramesRemaining);
-		}
-
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			Mode = (CDAudioMode)reader.ReadByte();
-			PlayMode = (PlaybackMode)reader.ReadByte();
-			LogicalVolume = reader.ReadInt32();
-			CurrentSector = reader.ReadInt32();
-			SectorOffset = reader.ReadInt32();
-			StartLBA = reader.ReadInt32();
-			EndLBA = reader.ReadInt32();
-			PlayingTrack = reader.ReadInt32();
-			FadeOutOverFrames = reader.ReadInt16();
-			FadeOutFramesRemaining = reader.ReadInt16();
+			if (ser.IsReader)
+				EnsureSector();
 		}
 	}
 }

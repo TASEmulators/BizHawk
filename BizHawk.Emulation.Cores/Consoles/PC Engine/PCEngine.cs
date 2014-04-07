@@ -271,22 +271,22 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			Cpu.ResetPC();
 			SetupMemoryDomains();
-			SetupStateBuff();
 		}
 
-		int _lagcount = 0;
+		int lagCount;
+		int frame;
 		bool lagged = true;
-		bool islag = false;
-		public int Frame { get; set; }
-		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
-		public bool IsLagFrame { get { return islag; } }
+		bool isLag = false;
+		public int Frame { get { return frame; } set { frame = value; } }
+		public int LagCount { get { return lagCount; } set { lagCount = value; } }
+		public bool IsLagFrame { get { return isLag; } }
 
 		public void ResetCounters()
 		{
 			// this should just be a public setter instead of a new method.
 			Frame = 0;
-			_lagcount = 0;
-			islag = false;
+			lagCount = 0;
+			isLag = false;
 		}
 
 		public void FrameAdvance(bool render, bool rendersound)
@@ -310,11 +310,11 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			if (lagged)
 			{
-				_lagcount++;
-				islag = true;
+				lagCount++;
+				isLag = true;
 			}
 			else
-				islag = false;
+				isLag = false;
 		}
 
 		void CheckSpriteLimit()
@@ -364,238 +364,79 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		}
 		public bool SaveRamModified { get; set; }
 
-		public void SaveStateText(TextWriter writer)
+		public bool BinarySaveStatesPreferred { get { return false; } }
+		public void SaveStateBinary(BinaryWriter bw) { SyncState(Serializer.CreateBinaryWriter(bw)); }
+		public void LoadStateBinary(BinaryReader br) { SyncState(Serializer.CreateBinaryReader(br)); }
+		public void SaveStateText(TextWriter tw) { SyncState(Serializer.CreateTextWriter(tw)); }
+		public void LoadStateText(TextReader tr) { SyncState(Serializer.CreateTextReader(tr)); }
+
+		void SyncState(Serializer ser)
 		{
-			writer.WriteLine("[PCEngine]");
-			writer.Write("RAM ");
-			Ram.SaveAsHex(writer);
-			if (PopulousRAM != null)
-			{
-				writer.Write("PopulousRAM ");
-				PopulousRAM.SaveAsHex(writer);
-			}
-			if (BRAM != null)
-			{
-				writer.Write("BRAM ");
-				BRAM.SaveAsHex(writer);
-			}
-			writer.WriteLine("Frame {0}", Frame);
-			writer.WriteLine("Lag {0}", _lagcount);
-			writer.WriteLine("IsLag {0}", islag);
-			if (Cpu.ReadMemory21 == ReadMemorySF2)
-				writer.WriteLine("SF2MapperLatch " + SF2MapperLatch);
-			writer.WriteLine("IOBuffer {0:X2}", IOBuffer);
-			writer.Write("CdIoPorts "); CdIoPorts.SaveAsHex(writer);
-			writer.WriteLine("BramLocked {0}", BramLocked);
-			writer.WriteLine();
+			ser.BeginSection("PCEngine");
+			Cpu.SyncState(ser);
+			VCE.SyncState(ser);
+			VDC1.SyncState(ser, 1);
+			PSG.SyncState(ser);
 
 			if (SuperGrafx)
 			{
-				Cpu.SaveStateText(writer);
-				VPC.SaveStateText(writer);
-				VCE.SaveStateText(writer);
-				VDC1.SaveStateText(writer, 1);
-				VDC2.SaveStateText(writer, 2);
-				PSG.SaveStateText(writer);
+				VPC.SyncState(ser);
+				VDC2.SyncState(ser, 2);
 			}
-			else
-			{
-				Cpu.SaveStateText(writer);
-				VCE.SaveStateText(writer);
-				VDC1.SaveStateText(writer, 1);
-				PSG.SaveStateText(writer);
-			}
+
 			if (TurboCD)
 			{
-				writer.Write("CDRAM "); CDRam.SaveAsHex(writer);
+				ADPCM.SyncState(ser);
+				CDAudio.SyncState(ser);
+				SCSI.SyncState(ser);
+
+				ser.Sync("CDRAM", ref CDRam, false);
 				if (SuperRam != null)
-				{ writer.Write("SuperRAM "); SuperRam.SaveAsHex(writer); }
-
-				writer.WriteLine();
-				SCSI.SaveStateText(writer);
-				CDAudio.SaveStateText(writer);
-				ADPCM.SaveStateText(writer);
-			}
-			if (ArcadeCard)
-				SaveArcadeCardText(writer);
-
-			writer.WriteLine("[/PCEngine]");
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			while (true)
-			{
-				string[] args = reader.ReadLine().Split(' ');
-				if (args[0].Trim() == "") continue;
-				if (args[0] == "[PCEngine]") continue;
-				if (args[0] == "[/PCEngine]") break;
-				if (args[0] == "Frame")
-					Frame = int.Parse(args[1]);
-				else if (args[0] == "Lag")
-					_lagcount = int.Parse(args[1]);
-				else if (args[0] == "IsLag")
-					islag = bool.Parse(args[1]);
-				else if (args[0] == "SF2MapperLatch")
-					SF2MapperLatch = byte.Parse(args[1]);
-				else if (args[0] == "IOBuffer")
-					IOBuffer = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "CdIoPorts")
-				{ CdIoPorts.ReadFromHex(args[1]); RefreshIRQ2(); }
-				else if (args[0] == "BramLocked")
-					BramLocked = bool.Parse(args[1]);
-				else if (args[0] == "RAM")
-					Ram.ReadFromHex(args[1]);
-				else if (args[0] == "BRAM")
-					BRAM.ReadFromHex(args[1]);
-				else if (args[0] == "CDRAM")
-					CDRam.ReadFromHex(args[1]);
-				else if (args[0] == "SuperRAM")
-					SuperRam.ReadFromHex(args[1]);
-				else if (args[0] == "PopulousRAM" && PopulousRAM != null)
-					PopulousRAM.ReadFromHex(args[1]);
-				else if (args[0] == "[HuC6280]")
-					Cpu.LoadStateText(reader);
-				else if (args[0] == "[PSG]")
-					PSG.LoadStateText(reader);
-				else if (args[0] == "[VCE]")
-					VCE.LoadStateText(reader);
-				else if (args[0] == "[VPC]")
-					VPC.LoadStateText(reader);
-				else if (args[0] == "[VDC1]")
-					VDC1.LoadStateText(reader, 1);
-				else if (args[0] == "[VDC2]")
-					VDC2.LoadStateText(reader, 2);
-				else if (args[0] == "[SCSI]")
-					SCSI.LoadStateText(reader);
-				else if (args[0] == "[CDAudio]")
-					CDAudio.LoadStateText(reader);
-				else if (args[0] == "[ADPCM]")
-					ADPCM.LoadStateText(reader);
-				else if (args[0] == "[ArcadeCard]")
-					LoadArcadeCardText(reader);
-				else
-					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
-			}
-		}
-
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			if (SuperGrafx == false)
-			{
-				writer.Write(Ram);
-				writer.Write(CdIoPorts);
-				writer.Write(BramLocked);
-				if (BRAM != null)
-					writer.Write(BRAM);
-				if (PopulousRAM != null)
-					writer.Write(PopulousRAM);
-				if (SuperRam != null)
-					writer.Write(SuperRam);
-				if (TurboCD)
-				{
-					writer.Write(CDRam);
-					ADPCM.SaveStateBinary(writer);
-					CDAudio.SaveStateBinary(writer);
-					SCSI.SaveStateBinary(writer);
-				}
+					ser.Sync("SuperRAM", ref SuperRam, false);
 				if (ArcadeCard)
-					SaveArcadeCardBinary(writer);
-				writer.Write(Frame);
-				writer.Write(_lagcount);
-				writer.Write(SF2MapperLatch);
-				writer.Write(IOBuffer);
-				Cpu.SaveStateBinary(writer);
-				VCE.SaveStateBinary(writer);
-				VDC1.SaveStateBinary(writer);
-				PSG.SaveStateBinary(writer);
+					ArcadeCardSyncState(ser);
 			}
-			else
-			{
-				writer.Write(Ram);
-				writer.Write(Frame);
-				writer.Write(_lagcount);
-				writer.Write(IOBuffer);
-				Cpu.SaveStateBinary(writer);
-				VCE.SaveStateBinary(writer);
-				VPC.SaveStateBinary(writer);
-				VDC1.SaveStateBinary(writer);
-				VDC2.SaveStateBinary(writer);
-				PSG.SaveStateBinary(writer);
-			}
+
+			ser.Sync("RAM", ref Ram, false);
+			ser.Sync("IOBuffer", ref IOBuffer);
+			ser.Sync("CdIoPorts", ref CdIoPorts, false);
+			ser.Sync("BramLocked", ref BramLocked);
+
+			ser.Sync("Frame", ref frame);
+			ser.Sync("Lag", ref lagCount);
+			ser.Sync("IsLag", ref isLag);
+			if (Cpu.ReadMemory21 == ReadMemorySF2)
+				ser.Sync("SF2MapperLatch", ref SF2MapperLatch);
+			if (PopulousRAM != null)
+				ser.Sync("PopulousRAM", ref PopulousRAM, false);
+			if (BRAM != null)
+				ser.Sync("BRAM", ref BRAM, false);
+
+			ser.EndSection();
 		}
 
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			if (SuperGrafx == false)
-			{
-				Ram = reader.ReadBytes(0x2000);
-				CdIoPorts = reader.ReadBytes(16); RefreshIRQ2();
-				BramLocked = reader.ReadBoolean();
-				if (BRAM != null)
-					BRAM = reader.ReadBytes(0x800);
-				if (PopulousRAM != null)
-					PopulousRAM = reader.ReadBytes(0x8000);
-				if (SuperRam != null)
-					SuperRam = reader.ReadBytes(0x30000);
-				if (TurboCD)
-				{
-					CDRam = reader.ReadBytes(0x10000);
-					ADPCM.LoadStateBinary(reader);
-					CDAudio.LoadStateBinary(reader);
-					SCSI.LoadStateBinary(reader);
-				}
-				if (ArcadeCard)
-					LoadArcadeCardBinary(reader);
-				Frame = reader.ReadInt32();
-				_lagcount = reader.ReadInt32();
-				SF2MapperLatch = reader.ReadByte();
-				IOBuffer = reader.ReadByte();
-				Cpu.LoadStateBinary(reader);
-				VCE.LoadStateBinary(reader);
-				VDC1.LoadStateBinary(reader);
-				PSG.LoadStateBinary(reader);
-			}
-			else
-			{
-				Ram = reader.ReadBytes(0x8000);
-				Frame = reader.ReadInt32();
-				_lagcount = reader.ReadInt32();
-				IOBuffer = reader.ReadByte();
-				Cpu.LoadStateBinary(reader);
-				VCE.LoadStateBinary(reader);
-				VPC.LoadStateBinary(reader);
-				VDC1.LoadStateBinary(reader);
-				VDC2.LoadStateBinary(reader);
-				PSG.LoadStateBinary(reader);
-			}
-		}
-
-		byte[] SaveStateBinaryBuff;
-		void SetupStateBuff()
-		{
-			int buflen = 75908;
-			if (SuperGrafx) buflen += 90700;
-			if (BramEnabled) buflen += 2048;
-			if (PopulousRAM != null) buflen += 0x8000;
-			if (SuperRam != null) buflen += 0x30000;
-			if (TurboCD) buflen += 0x20000 + 2165;
-			if (ArcadeCard) buflen += 42;
-			if (ArcadeCard && !ArcadeCardRewindHack) buflen += 0x200000;
-			SaveStateBinaryBuff = new byte[buflen];
-			Console.WriteLine("PCE: Internal savestate buff of {0} allocated", buflen);
-		}
-
+		byte[] stateBuffer;
 		public byte[] SaveStateBinary()
 		{
-			var stream = new MemoryStream(SaveStateBinaryBuff);
-			var writer = new BinaryWriter(stream);
-			SaveStateBinary(writer);
-			writer.Close();
-			return SaveStateBinaryBuff;
-		}
 
-		public bool BinarySaveStatesPreferred { get { return false; } }
+			if (stateBuffer == null)
+			{
+				var stream = new MemoryStream();
+				var writer = new BinaryWriter(stream);
+				SaveStateBinary(writer);
+				stateBuffer = stream.ToArray();
+				writer.Close();
+				return stateBuffer;
+			}
+			else
+			{
+				var stream = new MemoryStream(stateBuffer);
+				var writer = new BinaryWriter(stream);
+				SaveStateBinary(writer);
+				writer.Close();
+				return stateBuffer;
+			}
+		}
 
 		void SetupMemoryDomains()
 		{
