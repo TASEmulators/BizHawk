@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using BizHawk.Common;
+﻿using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
@@ -239,8 +238,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private byte _myRandomNumber;
 
 		// TOD: something simpler here, don't need both
-		private int _mySystemCycles;
-		private int _systemCycles;
+		//private int _mySystemCycles;
+		private int _elapsedCycles = 85; // 85 compensates for a slight timing issue when ClockCpu is first run, 85 puts BizHawk back on track with Stella on elapsed timing values
 
 		// Fractional DPC music OSC clocks unused during the last update
 		private double _myFractionalClocks;
@@ -269,7 +268,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public override void ClockCpu()
 		{
-			_systemCycles++;
+			_elapsedCycles++;
 		}
 
 		private byte ReadMem(ushort addr, bool peek)
@@ -485,8 +484,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private void UpdateMusicModeDataFetchers()
 		{
 			// Calculate the number of cycles since the last update
-			var cycles = _systemCycles - _mySystemCycles;
-			_mySystemCycles = _systemCycles;
+			var cycles = _elapsedCycles;
+			_elapsedCycles = 0;
 
 			// Calculate the number of DPC OSC clocks since the last update
 			var clocks = ((20000.0 * cycles) / 1193191.66666667) + _myFractionalClocks;
