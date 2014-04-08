@@ -45,8 +45,6 @@ namespace BizHawk.Client.EmuHawk
 		IGL GL;
 		public GraphicsControl GraphicsControl;
 
-		private bool Vsync;
-
 		public Control Control { get { return GraphicsControl; } }
 		public static implicit operator Control(PresentationPanel self) { return self.GraphicsControl; }
 

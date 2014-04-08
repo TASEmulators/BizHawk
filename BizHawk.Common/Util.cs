@@ -385,10 +385,6 @@ namespace BizHawk.Common
 		{
 			decimal size = filesize;
 
-			const decimal OneKiloByte = 1024M;
-			const decimal OneMegaByte = OneKiloByte * 1024M;
-			decimal OneGigaByte = OneMegaByte * 1024M;
-
 			string suffix;
 			if (size > 1024 * 1024 * 1024)
 			{
@@ -407,7 +403,7 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				suffix = " B";
+				suffix = "B";
 			}
 
 			const string precision = "2";
