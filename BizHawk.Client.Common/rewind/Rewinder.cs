@@ -277,7 +277,6 @@ namespace BizHawk.Client.Common
 
 						inChangeSequence = true;
 						beginChangeSequence = i;
-						continue;
 					}
 
 					if (i - beginChangeSequence == 254 || i == currentState.Length - 1)
@@ -357,7 +356,7 @@ namespace BizHawk.Client.Common
 			else
 			{
 				var output = new MemoryStream(_lastState);
-				while (ms.Position < ms.Length - 1)
+				while (ms.Position < ms.Length)
 				{
 					var len = reader.ReadByte();
 					int offset = isSmall ? reader.ReadUInt16() : reader.ReadInt32();
