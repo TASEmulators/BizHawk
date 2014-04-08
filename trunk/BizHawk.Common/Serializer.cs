@@ -1021,7 +1021,7 @@ namespace BizHawk.Common
 		{
 			if (Present(name))
 			{
-				val = int.Parse(Item(name).Replace("0x", ""), NumberStyles.HexNumber);
+				val = long.Parse(Item(name).Replace("0x", ""), NumberStyles.HexNumber);
 			}
 		}
 
