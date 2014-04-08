@@ -418,12 +418,12 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		byte[] stateBuffer;
 		public byte[] SaveStateBinary()
 		{
-
 			if (stateBuffer == null)
 			{
 				var stream = new MemoryStream();
 				var writer = new BinaryWriter(stream);
 				SaveStateBinary(writer);
+				writer.Flush();
 				stateBuffer = stream.ToArray();
 				writer.Close();
 				return stateBuffer;
@@ -433,6 +433,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				var stream = new MemoryStream(stateBuffer);
 				var writer = new BinaryWriter(stream);
 				SaveStateBinary(writer);
+				writer.Flush();
 				writer.Close();
 				return stateBuffer;
 			}
