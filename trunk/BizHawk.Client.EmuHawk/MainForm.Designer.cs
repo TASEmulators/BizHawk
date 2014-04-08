@@ -3390,7 +3390,6 @@
 		private System.Windows.Forms.ToolStripMenuItem BackupSaveramMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel RebootStatusBarIcon;
 		private System.Windows.Forms.ToolStripMenuItem TraceLoggerMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem UseBilinearMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ShowClippedRegionsMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator24;
 		private System.Windows.Forms.ToolStripMenuItem HighlightActiveDisplayRegionMenuItem;

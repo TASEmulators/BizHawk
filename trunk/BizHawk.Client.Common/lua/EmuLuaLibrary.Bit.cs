@@ -91,7 +91,7 @@
 		)]
 		public static uint Set(uint num, int pos)
 		{
-			return (uint)(num | 1 << pos);
+			return (uint)(num | (uint)1 << pos);
 		}
 
 		[LuaMethodAttributes(
