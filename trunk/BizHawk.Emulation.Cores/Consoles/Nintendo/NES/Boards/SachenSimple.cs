@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			AssertPrg(16, 32, 64);
 			AssertChr(8, 16, 32, 64);
 			AssertVram(0);
-			AssertWram(0);
+			Cart.wram_size = 0;
 			prg_mask = Cart.prg_size / 32 - 1;
 			chr_mask = Cart.chr_size / 8 - 1;
 			prg_addr_mask = Cart.prg_size * 1024 - 1;
