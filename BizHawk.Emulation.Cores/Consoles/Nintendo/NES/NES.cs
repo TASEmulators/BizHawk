@@ -444,10 +444,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (file.Length < 16) throw new Exception("Alleged NES rom too small to be anything useful");
 			if (file.Take(4).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("UNIF")))
 			{
+				unif = new Unif(new MemoryStream(file));
 				LoadWriteLine("Found UNIF header:");
 				LoadWriteLine(unif.GetCartInfo());
 				LoadWriteLine("Since this is UNIF we can confidently parse PRG/CHR banks to hash.");
-				unif = new Unif(new MemoryStream(file));
 				hash_sha1 = unif.GetCartInfo().sha1;
 				hash_sha1_several.Add(hash_sha1);
 				LoadWriteLine("headerless rom hash: {0}", hash_sha1);
