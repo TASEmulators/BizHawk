@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				return base.ReadMemory(addr);
 			}
 			
-			if (addr < 0x17FF) // Low 2k Bank
+			if (addr < 0x1800) // Low 2k Bank
 			{
 				return Core.Rom[(_lowbank2K << 11) + (addr & 0x07FF)];
 			}
