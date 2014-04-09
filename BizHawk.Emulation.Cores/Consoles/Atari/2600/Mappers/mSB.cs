@@ -1,4 +1,4 @@
-﻿using System;
+﻿using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
@@ -8,9 +8,73 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	*/
 	internal class mSB : MapperBase
 	{
-		public mSB()
+		private int _bank4K;
+		private int myStartBank
 		{
-			throw new NotImplementedException();
+			get { return (Core.Rom.Length >> 12) - 1; }
+		}
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("bank_4k", ref _bank4K);
+		}
+
+		public override void HardReset()
+		{
+			_bank4K = 0;
+			base.HardReset();
+		}
+
+		private byte ReadMem(ushort addr, bool peek)
+		{
+			if (!peek)
+			{
+				Address(addr);
+			}
+
+			if (addr < 0x1000)
+			{
+				return base.ReadMemory(addr);
+			}
+
+			return Core.Rom[(_bank4K << 12) + (addr & 0xFFF)];
+		}
+
+		public override byte ReadMemory(ushort addr)
+		{
+			return ReadMem(addr, false);
+		}
+
+		public override byte PeekMemory(ushort addr)
+		{
+			return ReadMem(addr, true);
+		}
+
+		public override void WriteMemory(ushort addr, byte value)
+		{
+			Address(addr);
+			if (addr < 0x1000)
+			{
+				base.WriteMemory(addr, value);
+			}
+		}
+
+		private void Address(ushort addr)
+		{
+			var temp = addr & (0x17FF + (Core.Rom.Length >> 12));
+			if ((temp & 0x1800) == 0x800)
+			{
+				_bank4K = temp & myStartBank;
+			}
+			//switch (addr & 0x1840)
+			//{
+			//	case 0x0800:
+			//		_bank4K = 0;
+			//		break;
+			//	case 0x0840:
+			//		_bank4K = 1;
+			//		break;
+			//}
 		}
 	}
 }
