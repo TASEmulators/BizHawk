@@ -599,15 +599,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 					if (boardType == null)
 					{
-						try
-						{
-							boardType = FindBoard(iNesHeaderInfo, origin, InitialMapperRegisterValues);
-						}
-						catch {}
+						choice = iNesHeaderInfo; // we're out of options, really
+						boardType = FindBoard(iNesHeaderInfo, origin, InitialMapperRegisterValues);
 						if (boardType == null)
 							LoadWriteLine("Failed to load as iNES V1");
-						else
-							choice = iNesHeaderInfo;
 
 						// do not further meddle in wram sizes.  a board that is being loaded from a "MAPPERxxx"
 						// entry should know and handle the situation better for the individual board
@@ -621,7 +616,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 
 			//find a INESBoard to handle this
-			boardType = FindBoard(choice, origin, InitialMapperRegisterValues);
+			if (choice != null)
+				boardType = FindBoard(choice, origin, InitialMapperRegisterValues);
+			else
+				throw new Exception("Unable to detect ROM");
 			if (boardType == null)
 				throw new Exception("No class implements the necessary board type: " + choice.board_type);
 
