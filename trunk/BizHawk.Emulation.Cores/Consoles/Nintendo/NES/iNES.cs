@@ -1,117 +1,103 @@
+using System;
 using System.IO;
 using BizHawk.Common;
+using System.Linq;
+using System.Text;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	partial class NES
 	{
-		/// <summary>
-		/// attempts to classify a rom based on iNES header information.
-		/// this used to be way more complex. but later, we changed to have a board class implement a "MAPPERXXX" virtual board type and all hacks will be in there
-		/// so theres nothing to do here but pick the board type corresponding to the cart
-		/// </summary>
-		static class iNESBoardDetector
+		private static int iNES2Wram(int i)
 		{
-			public static string Detect(CartInfo cartInfo)
-			{
-				return string.Format("MAPPER{0:d3}",cartInfo.mapper);
-			}
+			if (i == 0) return 0;
+			if (i == 15) throw new InvalidDataException();
+			return 1 << (i + 6);
 		}
 
-		unsafe struct iNES_HEADER
+		public static bool DetectFromINES(byte[] data, out CartInfo Cart, out CartInfo CartV2)
 		{
-			public fixed byte ID[4]; /*NES^Z*/
-			public byte ROM_size;
-			public byte VROM_size;
-			public byte ROM_type;
-			public byte ROM_type2;
-			public byte wram_size;
-			public byte flags9, flags10;
-			public byte zero11, zero12, zero13, zero14, zero15;
-
-
-			public bool CheckID()
+			byte[] ID = new byte[4];
+			Buffer.BlockCopy(data, 0, ID, 0, 4);
+			if (!ID.SequenceEqual(Encoding.ASCII.GetBytes("NES\x1A")))
 			{
-				fixed (iNES_HEADER* self = &this)
-					return 0 == Util.Memcmp(self, "NES\x1A", 4);
+				Cart = null;
+				CartV2 = null;
+				return false;
 			}
 
-			//some cleanup code recommended by fceux
-			public void Cleanup()
+			if ((data[7] & 0x0c) == 0x08)
 			{
-				fixed (iNES_HEADER* self = &this)
+				// process as iNES v2
+				CartV2 = new CartInfo();
+
+				CartV2.prg_size = data[4] | data[9] << 8 & 0xf00;
+				CartV2.chr_size = data[5] | data[9] << 4 & 0xf00;
+				CartV2.prg_size *= 16;
+				CartV2.chr_size *= 8;
+
+				int wrambat = iNES2Wram(data[10] >> 4);
+				int wramnon = iNES2Wram(data[10] & 15);
+				CartV2.wram_battery = wrambat > 0;
+				// fixme - doesn't handle sizes not divisible by 1024
+				CartV2.wram_size = (short)((wrambat + wramnon) / 1024);
+
+				int mapper = data[6] >> 4 | data[7] & 0xf0 | data[8] << 8 & 0xf00;
+				int submapper = data[8] >> 4;
+				CartV2.board_type = string.Format("MAPPER{0:d4}-{1:d2}", mapper, submapper);
+
+				int vrambat = iNES2Wram(data[11] >> 4);
+				int vramnon = iNES2Wram(data[11] & 15);
+				// hopefully a game with battery backed vram understands what to do internally
+				CartV2.wram_battery |= vrambat > 0;
+				CartV2.vram_size = (vrambat + vramnon) / 1024;
+
+				CartV2.inesmirroring = data[6] & 1 | data[6] >> 2 & 2;
+				switch (CartV2.inesmirroring)
 				{
-					if (0 == Util.Memcmp((byte*)(self) + 0x7, "DiskDude", 8))
-					{
-						Util.Memset((byte*)(self) + 0x7, 0, 0x9);
-					}
-
-					if (0 == Util.Memcmp((byte*)(self) + 0x7, "demiforce", 9))
-					{
-						Util.Memset((byte*)(self) + 0x7, 0, 0x9);
-					}
-
-					if (0 == Util.Memcmp((byte*)(self) + 0x8, "blargg", 6)) //found a test rom with this in there, mucking up the wram size
-					{
-						Util.Memset((byte*)(self) + 0x8, 0, 6);
-					}
-
-					if (0 == Util.Memcmp((byte*)(self) + 0xA, "Ni03", 4))
-					{
-						if (0 == Util.Memcmp((byte*)(self) + 0x7, "Dis", 3))
-							Util.Memset((byte*)(self) + 0x7, 0, 0x9);
-						else
-							Util.Memset((byte*)(self) + 0xA, 0, 0x6);
-					}
+					case 0: CartV2.pad_v = 1; break;
+					case 1: CartV2.pad_h = 1; break;
 				}
+
+			}
+			else
+			{
+				CartV2 = null;
 			}
 
-			public CartInfo Analyze(TextWriter report)
+			// process as iNES v1
+			// the DiskDude cleaning is no longer; get better roms
+			Cart = new CartInfo();
+
+			Cart.prg_size = data[4];
+			Cart.chr_size = data[5];
+			if (Cart.prg_size == 0)
+				Cart.prg_size = 256;
+			Cart.prg_size *= 16;
+			Cart.chr_size *= 8;
+
+
+			Cart.wram_battery = (data[6] & 2) != 0;
+			Cart.wram_size = 8; // should be data[8], but that never worked
+
 			{
-				var ret = new CartInfo();
-				ret.game = new NESGameInfo();
-				int mapper = (ROM_type >> 4);
-				mapper |= (ROM_type2 & 0xF0);
-				ret.mapper = (byte)mapper;
-				int mirroring = (ROM_type & 1);
-				if ((ROM_type & 8) != 0) mirroring += 2;
-				if (mirroring == 0) ret.pad_v = 1;
-				else if (mirroring == 1) ret.pad_h = 1;
-				ret.inesmirroring = mirroring;
-				ret.prg_size = (short)(ROM_size * 16);
-				if (ret.prg_size == 0)
-					ret.prg_size = 256 * 16;
-				ret.chr_size = (short)(VROM_size * 8);
-				ret.wram_battery = (ROM_type & 2) != 0;
-				if (ROM_type.Bit(2))
-					report.WriteLine("DANGER:  According to the flags, this iNES has a trainer in it!  We don't support this garbage.");
-
-				if(wram_size != 0 || flags9 != 0 || flags10 != 0 || zero11 != 0 || zero12 != 0 || zero13 != 0 || zero14 != 0 || zero15 != 0)
-				{
-					report.WriteLine("Looks like you have an iNES 2.0 header, or some other kind of weird garbage.");
-					report.WriteLine("We haven't bothered to support iNES 2.0.");
-					report.WriteLine("We might, if we can find anyone who uses it. Let us know.");
-				}
-
-				ret.wram_size = (short)(wram_size * 8);
-				//0 is supposed to mean 8KB (for compatibility, as this is an extension to original iNES format)
-				if (ret.wram_size == 0)
-				{
-					report.WriteLine("iNES wr=0 interpreted as wr=8");
-					ret.wram_size = 8;
-				}
-
-				//iNES wants us to assume that no chr -> 8KB vram
-				if (ret.chr_size == 0) ret.vram_size = 8;
-
-				//let's not put a lot of hacks in here. that's what the databases are for.
-				//for example of one not to add: videomation hack to change vram = 8 -> 16
-
-				string mirror_memo = mirroring == 0 ? "horz" : (mirroring == 1 ? "vert" : "4screen");
-				report.WriteLine("map={0},pr={1},ch={2},wr={3},vr={4},ba={5},mir={6}({7})", ret.mapper, ret.prg_size, ret.chr_size, ret.wram_size, ret.vram_size, ret.wram_battery ? 1 : 0, mirroring, mirror_memo);
-
-				return ret;
+				int mapper = data[6] >> 4 | data[7] & 0xf0;
+				Cart.board_type = string.Format("MAPPER{0:d3}", mapper);
 			}
+
+			Cart.vram_size = Cart.chr_size > 0 ? 0 : 8;
+
+			Cart.inesmirroring = data[6] & 1 | data[6] >> 2 & 2;
+			switch (Cart.inesmirroring)
+			{
+				case 0: Cart.pad_v = 1; break;
+				case 1: Cart.pad_h = 1; break;
+			}
+
+			if (data[6].Bit(2))
+				Console.WriteLine("DANGER:  According to the flags, this iNES has a trainer in it!  We don't support this garbage.");
+
+			return true;
 		}
 
 	}
