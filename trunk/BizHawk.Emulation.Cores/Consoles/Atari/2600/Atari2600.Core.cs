@@ -279,6 +279,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_frame++;
 			_islag = true;
 			_tia.FrameComplete = false;
+			_tia.BeginAudioFrame();
 			while (_tia.FrameComplete == false)
 			{
 				_tia.Execute(1);
@@ -294,6 +295,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				Cpu.ExecuteOne();
 				_mapper.ClockCpu();
 			}
+			_tia.CompleteAudioFrame();
 
 			if (_hardResetSignal)
 			{
