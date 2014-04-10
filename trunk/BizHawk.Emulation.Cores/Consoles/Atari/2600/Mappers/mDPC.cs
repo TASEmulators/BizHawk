@@ -225,45 +225,69 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	 */
 	internal class mDPC : MapperBase
 	{
-		// TODO: HardReset
-		// TODO: Savestates
-		// TODO: Dispose
-		// TODO: sound channel doesn't work
-		private readonly IntBuffer _counters = new IntBuffer(8);
-		private readonly ByteBuffer _tops = new ByteBuffer(8);
-		private readonly ByteBuffer _flags = new ByteBuffer(8);
-		private readonly ByteBuffer _bottoms = new ByteBuffer(8);
-		private readonly bool[] _myMusicMode = new bool[3];
+		private IntBuffer _counters = new IntBuffer(8);
+		private ByteBuffer _tops = new ByteBuffer(8);
+		private ByteBuffer _flags = new ByteBuffer(8);
+		private ByteBuffer _bottoms = new ByteBuffer(8);
+		private bool[] _musicModes = new bool[3];
 
 		private int _bank4K;
-		private byte _myRandomNumber;
-
-		// TOD: something simpler here, don't need both
-		//private int _mySystemCycles;
+		private byte _currentRandomVal;
 		private int _elapsedCycles = 85; // 85 compensates for a slight timing issue when ClockCpu is first run, 85 puts BizHawk back on track with Stella on elapsed timing values
+		private float _fractionalClocks; // Fractional DPC music OSC clocks unused during the last update
 
-		// Fractional DPC music OSC clocks unused during the last update
-		private double _myFractionalClocks;
-
-		// TODO: refactor to not do this mess
-		private byte[] __mydisp;
-		private byte[] _myDisplayImage
+		private byte[] _dspData;
+		private byte[] DspData
 		{
 			get
 			{
-				return __mydisp ?? (__mydisp = Core.Rom.Skip(8192).Take(2048).ToArray());
+				return _dspData ?? (_dspData = Core.Rom.Skip(8192).Take(2048).ToArray());
 			}
+		}
+
+		// Table for computing the input bit of the random number generator's
+		// shift register (it's the NOT of the EOR of four bits)
+		private readonly byte[] _randomInputBits = { 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1 };
+
+		public override void Dispose()
+		{
+			base.Dispose();
+			_counters.Dispose();
+			_tops.Dispose();
+			_flags.Dispose();
+			_bottoms.Dispose();
 		}
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
+
+			ser.Sync("counters", ref _counters);
+			ser.Sync("tops", ref _tops);
+			ser.Sync("flags", ref _flags);
+			ser.Sync("bottoms", ref _bottoms);
+			ser.Sync("musicMode0", ref _musicModes[0]); // Silly, but I didn't want to support bool[] in Serializer just for this one variable
+			ser.Sync("musicMode1", ref _musicModes[1]);
+			ser.Sync("musicMode2", ref _musicModes[2]);
+
 			ser.Sync("bank_4k", ref _bank4K);
+			ser.Sync("currentRandomVal", ref _currentRandomVal);
+			ser.Sync("elapsedCycles", ref _elapsedCycles);
+			ser.Sync("fractionalClocks", ref _fractionalClocks);
 		}
 
 		public override void HardReset()
 		{
+			_counters = new IntBuffer(8);
+			_tops = new ByteBuffer(8);
+			_flags = new ByteBuffer(8);
+			_bottoms = new ByteBuffer(8);
+			_musicModes = new bool[3];
 			_bank4K = 0;
+			_currentRandomVal = 0;
+			_elapsedCycles = 85;
+			_fractionalClocks = 0;
+
 			base.HardReset();
 		}
 
@@ -308,7 +332,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					case 0x00:
 						if (index < 4)
 						{
-							result = _myRandomNumber;
+							result = _currentRandomVal;
 						}
 						else // No, it's a music read
 						{
@@ -320,17 +344,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 							UpdateMusicModeDataFetchers();
 
 							byte i = 0;
-							if (_myMusicMode[0] && _flags[5] > 0)
+							if (_musicModes[0] && _flags[5] > 0)
 							{
 								i |= 0x01;
 							}
 
-							if (_myMusicMode[1] && _flags[6] > 0)
+							if (_musicModes[1] && _flags[6] > 0)
 							{
 								i |= 0x02;
 							}
 
-							if (_myMusicMode[2] && _flags[7] > 0)
+							if (_musicModes[2] && _flags[7] > 0)
 							{
 								i |= 0x04;
 							}
@@ -342,12 +366,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 					// DFx display data read
 					case 0x01:
-						result = _myDisplayImage[2047 - _counters[index]];
+						result = DspData[2047 - _counters[index]];
 						break;
 
 					// DFx display data read AND'd w/flag
 					case 0x02:
-						result = (byte)(_myDisplayImage[2047 - _counters[index]] & _flags[index]);
+						result = (byte)(DspData[2047 - _counters[index]] & _flags[index]);
 						break;
 
 					// DFx flag
@@ -361,7 +385,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				}
 
 				// Clock the selected data fetcher's counter if needed
-				if ((index < 5) || ((index >= 5) && (!_myMusicMode[index - 5])))
+				if ((index < 5) || ((index >= 5) && (!_musicModes[index - 5])))
 				{
 					_counters[index] = (_counters[index] - 1) & 0x07ff;
 				}
@@ -413,7 +437,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 					// DFx counter low
 					case 0x02:
-						if ((index >= 5) && _myMusicMode[index - 5])
+						if ((index >= 5) && _musicModes[index - 5])
 						{
 							// Data fetcher is in music mode so its low counter value
 							// should be loaded from the top register not the poked value
@@ -438,7 +462,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						// Execute special code for music mode data fetchers
 						if (index >= 5)
 						{
-							_myMusicMode[index - 5] = (value & 0x10) > 0;
+							_musicModes[index - 5] = (value & 0x10) > 0;
 							
 							// NOTE: We are not handling the clock source input for
 							// the music mode data fetchers.  We're going to assume
@@ -449,7 +473,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 					// Random Number Generator Reset
 					case 0x06:
-						_myRandomNumber = 1;
+						_currentRandomVal = 1;
 						break;
 				}
 			}
@@ -469,17 +493,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private void ClockRandomNumberGenerator()
 		{
-			// Table for computing the input bit of the random number generator's
-			// shift register (it's the NOT of the EOR of four bits)
-			byte[] f = { 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1 };
-
 			// Using bits 7, 5, 4, & 3 of the shift register compute the input
 			// bit for the shift register
-			var bit = f[((_myRandomNumber >> 3) & 0x07) | 
-				(((_myRandomNumber & 0x80) > 0) ? 0x08 : 0x00)];
+			var bit = _randomInputBits[((_currentRandomVal >> 3) & 0x07) | 
+				(((_currentRandomVal & 0x80) > 0) ? 0x08 : 0x00)];
 
 			// Update the shift register 
-			_myRandomNumber = (byte)((_myRandomNumber << 1) | bit);
+			_currentRandomVal = (byte)((_currentRandomVal << 1) | bit);
 		}
 
 		private void UpdateMusicModeDataFetchers()
@@ -489,9 +509,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_elapsedCycles = 0;
 
 			// Calculate the number of DPC OSC clocks since the last update
-			var clocks = ((20000.0 * cycles) / 1193191.66666667) + _myFractionalClocks;
+			var clocks = ((20000.0 * cycles) / 1193191.66666667) + _fractionalClocks;
 			var wholeClocks = (int)clocks;
-			_myFractionalClocks = clocks - wholeClocks;
+			_fractionalClocks = (float)(clocks - wholeClocks);
 
 			if (wholeClocks <= 0)
 			{
@@ -502,7 +522,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			for (var x = 5; x <= 7; ++x)
 			{
 				// Update only if the data fetcher is in music mode
-				if (_myMusicMode[x - 5])
+				if (_musicModes[x - 5])
 				{
 					var top = _tops[x] + 1;
 					var newLow = _counters[x] & 0x00ff;
