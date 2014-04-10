@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-
+﻿using System;
+using System.Collections.Generic;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -122,26 +122,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			return FrameBuffer;
 		}
-
-		public void GetSamples(short[] samples)
-		{
-			var moreSamples = new short[523];
-			for (int i = 0; i < moreSamples.Length; i++)
-			{
-				for (int snd = 0; snd < 2; snd++)
-				{
-					moreSamples[i] += AUD[snd].Cycle();
-				}
-			}
-
-			for (int i = 0; i < samples.Length / 2; i++)
-			{
-				samples[i * 2] = moreSamples[(int)(((double)moreSamples.Length / (double)(samples.Length / 2)) * i)];
-				samples[(i * 2) + 1] = samples[i * 2];
-			}
-		}
-
-		public void DiscardSamples() { }
 
 		// Execute TIA cycles
 		public void Execute(int cycles)
@@ -736,27 +716,27 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (maskedAddr == 0x15) // AUDC0
 			{
-				AUD[0].AUDC = (byte)(value & 15);
+				WriteAudio(0, AudioRegister.AUDC, (byte)(value & 15));
 			}
 			else if (maskedAddr == 0x16) // AUDC1
 			{
-				AUD[1].AUDC = (byte)(value & 15);
+				WriteAudio(1, AudioRegister.AUDC, (byte)(value & 15));
 			}
 			else if (maskedAddr == 0x17) // AUDF0
 			{
-				AUD[0].AUDF = (byte)((value & 31) + 1);
+				WriteAudio(0, AudioRegister.AUDF, (byte)((value & 31) + 1));
 			}
 			else if (maskedAddr == 0x18) // AUDF1
 			{
-				AUD[1].AUDF = (byte)((value & 31) + 1);
+				WriteAudio(1, AudioRegister.AUDF, (byte)((value & 31) + 1));
 			}
 			else if (maskedAddr == 0x19) // AUDV0
 			{
-				AUD[0].AUDV = (byte)(value & 15);
+				WriteAudio(0, AudioRegister.AUDV, (byte)(value & 15));
 			}
 			else if (maskedAddr == 0x1A) // AUDV1
 			{
-				AUD[1].AUDV = (byte)(value & 15);
+				WriteAudio(1, AudioRegister.AUDV, (byte)(value & 15));
 			}
 			else if (maskedAddr == 0x1B) // GRP0
 			{
@@ -858,6 +838,91 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return result;
 		}
 
+		// =========================================================================
+		// Audio bits
+		// =========================================================================
+
+		enum AudioRegister : byte { AUDC, AUDF, AUDV }
+		struct QueuedCommand
+		{
+			public int Time;
+			public byte Channel;
+			public AudioRegister Register;
+			public byte Value;
+		}
+
+		int frameStartCycles, frameEndCycles;
+		Queue<QueuedCommand> commands = new Queue<QueuedCommand>(4096);
+		
+		public void BeginAudioFrame()
+		{
+			frameStartCycles = _core.Cpu.TotalExecutedCycles;
+		}
+
+		public void CompleteAudioFrame()
+		{
+			frameEndCycles = _core.Cpu.TotalExecutedCycles;
+		}
+
+		void WriteAudio(byte channel, AudioRegister register, byte value)
+		{
+			commands.Enqueue(new QueuedCommand { Channel = channel, Register = register, Value = value, Time = _core.Cpu.TotalExecutedCycles - frameStartCycles });
+		}
+
+		void ApplyAudioCommand(QueuedCommand cmd)
+		{
+			switch (cmd.Register)
+			{
+				case AudioRegister.AUDC: AUD[cmd.Channel].AUDC = cmd.Value; break;
+				case AudioRegister.AUDF: AUD[cmd.Channel].AUDF = cmd.Value; break;
+				case AudioRegister.AUDV: AUD[cmd.Channel].AUDV = cmd.Value; break;
+			}
+		}
+
+		public void GetSamples(short[] samples)
+		{
+			var samples31khz = new short[((samples.Length / 2) * 31380) / 44100];
+
+			int elapsedCycles = frameEndCycles - frameStartCycles;
+			if (elapsedCycles == 0)
+				elapsedCycles = 1; // better than diving by zero
+
+			int start = 0;
+			while (commands.Count > 0)
+			{
+				var cmd = commands.Dequeue();
+				int pos = ((cmd.Time * samples31khz.Length) / elapsedCycles);
+				pos = Math.Min(pos, samples31khz.Length); // sometimes the cpu timestamp of the write is > frameEndCycles
+				GetSamplesImmediate(samples31khz, start, pos - start);
+				start = pos;
+				ApplyAudioCommand(cmd);
+			}
+			GetSamplesImmediate(samples31khz, start, samples31khz.Length - start);
+
+			// convert from 31khz to 44khz
+			for (int i = 0; i < samples.Length / 2; i++)
+			{
+				samples[i * 2] = samples31khz[(int)(((double)samples31khz.Length / (double)(samples.Length / 2)) * i)];
+				samples[(i * 2) + 1] = samples[i * 2];
+			}
+		}
+
+		public void GetSamplesImmediate(short[] samples, int start, int len)
+		{
+			for (int i = start; i < start + len; i++)
+			{
+				samples[i] += AUD[0].Cycle();
+				samples[i] += AUD[1].Cycle();
+			}
+		}
+	
+		public void DiscardSamples() 
+		{
+			commands.Clear();
+		}
+
+		// =========================================================================
+		
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("TIA");
