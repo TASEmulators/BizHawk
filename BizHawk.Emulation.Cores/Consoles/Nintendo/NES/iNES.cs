@@ -36,9 +36,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				CartV2.prg_size *= 16;
 				CartV2.chr_size *= 8;
 
+                CartV2.wram_battery = (data[6] & 2) != 0; // should this be respected in v2 mode??
+
 				int wrambat = iNES2Wram(data[10] >> 4);
 				int wramnon = iNES2Wram(data[10] & 15);
-				CartV2.wram_battery = wrambat > 0;
+				CartV2.wram_battery |= wrambat > 0;
 				// fixme - doesn't handle sizes not divisible by 1024
 				CartV2.wram_size = (short)((wrambat + wramnon) / 1024);
 
