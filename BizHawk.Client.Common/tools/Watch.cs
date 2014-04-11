@@ -261,7 +261,12 @@ namespace BizHawk.Client.Common
 			if (obj is Watch)
 			{
 				var watch = obj as Watch;
-				return this.Domain == watch.Domain && this.Address == watch.Address;
+
+				return this.Domain == watch.Domain && 
+					this.Address == watch.Address && 
+					this.Size == watch.Size &&
+					this.Type == watch.Type &&
+					this.Notes == watch.Notes;
 			}
 
 			if (obj is Cheat)
@@ -286,7 +291,7 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			return a.Domain == b.Domain && a.Address == b.Address;
+			return a.Equals(b);
 		}
 
 		public static bool operator !=(Watch a, Watch b)
