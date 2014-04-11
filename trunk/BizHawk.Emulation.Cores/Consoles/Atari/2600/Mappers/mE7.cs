@@ -34,8 +34,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private int _rambank1Toggle;
 		private ByteBuffer _ram = new ByteBuffer(2048);
 
-		//private ByteBuffer _rambank0 = new ByteBuffer(1024);
-		//private ByteBuffer _rambank1 = new ByteBuffer(1024);
 		private bool _enableRam0;
 
 		public override void SyncState(Serializer ser)
@@ -99,14 +97,15 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				return Core.Rom[(_rombank1K * 0x800) + (addr & 0x7FF)];
 			}
 			
-			if (addr < 0x1900) // Ram 1 Read port
-			{
-				return _ram[(RamBank1Offset + _rambank1Toggle * 0x100) + (addr & 0xFF)];
-			}
-			
-			if (addr < 0x1A00) // Ram 1 Write port
+			if (addr < 0x1900) // Ram 1 Write port
 			{
 				return _ram[RamBank1Offset + (_rambank1Toggle * 0x100) + (addr & 0xFF)] = 0xFF; // Reading from the 256b write port @1800 riggers an unwanted write
+				
+			}
+			
+			if (addr < 0x1A00) // Ram 1 Read port
+			{
+				return _ram[(RamBank1Offset + _rambank1Toggle * 0x100) + (addr & 0xFF)];
 			}
 			
 			if (addr < 0x2000)
@@ -137,11 +136,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				base.WriteMemory(addr, value);
 			}
-			else if (addr < 0x1400)
+			else if (addr < 0x1400 && _enableRam0)
 			{
 				_ram[addr & 0x3FF] = value;
 			}
-			else if (addr >= 0x1800 && addr < 0x2000)
+			else if (addr >= 0x1800 && addr < 0x1900)
 			{
 				_ram[RamBank1Offset + (addr & 0xFF) + (_rambank1Toggle * 0x100)] = value;
 			}
@@ -149,6 +148,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private void Address(ushort addr)
 		{
+			_enableRam0 = false;
 			switch (addr)
 			{
 				case 0x1FE0:
@@ -173,6 +173,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					_rombank1K = 6;
 					break;
 				case 0x1FE7:
+					_rombank1K = 7;
 					_enableRam0 = true;
 					break;
 				case 0x1FE8:
