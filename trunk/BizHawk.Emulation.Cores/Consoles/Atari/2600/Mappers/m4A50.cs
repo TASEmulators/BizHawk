@@ -42,6 +42,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private int _mySliceLow;
 		private int _mySliceMiddle;
 
+		public override bool HasCartRam
+		{
+			get { return true; }
+		}
+
+		public override ByteBuffer CartRam
+		{
+			get { return _myRam; }
+		}
+
 		public override byte ReadMemory(ushort addr)
 		{
 			byte val = 0;

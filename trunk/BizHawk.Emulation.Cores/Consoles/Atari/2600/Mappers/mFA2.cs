@@ -13,6 +13,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private int _bank4k;
 		private ByteBuffer _ram = new ByteBuffer(256);
 
+		public override bool HasCartRam
+		{
+			get { return true; }
+		}
+
+		public override ByteBuffer CartRam
+		{
+			get { return _ram; }
+		}
+
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);

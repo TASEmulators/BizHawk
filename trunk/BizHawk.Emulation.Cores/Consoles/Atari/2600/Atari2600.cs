@@ -72,6 +72,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					(addr, value) => (_mapper as mDPC).DspData[addr] = value));
 			}
 
+			if (_mapper.HasCartRam)
+			{
+				domains.Add(new MemoryDomain(
+					"Cart Ram",
+					_mapper.CartRam.Len,
+					MemoryDomain.Endian.Little,
+					addr => _mapper.CartRam[addr],
+					(addr, value) => _mapper.CartRam[addr] = value));
+			}
+
 			MemoryDomains = new MemoryDomainList(domains);
 		}
 

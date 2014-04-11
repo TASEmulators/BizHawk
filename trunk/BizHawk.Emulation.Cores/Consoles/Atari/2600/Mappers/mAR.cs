@@ -21,6 +21,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			throw new NotImplementedException();
 		}
 
+		public override bool HasCartRam
+		{
+			get { return true; }
+		}
+
+		public override ByteBuffer CartRam
+		{
+			get { return _ram; }
+		}
+
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);

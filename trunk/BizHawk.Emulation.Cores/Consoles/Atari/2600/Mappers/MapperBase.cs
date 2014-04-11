@@ -6,6 +6,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	{
 		public Atari2600 Core { get; set; }
 
+		public virtual bool HasCartRam
+		{
+			get { return false; }
+		}
+
+		public virtual ByteBuffer CartRam
+		{
+			get { return new ByteBuffer(0); }
+		}
+
 		public virtual byte ReadMemory(ushort addr)
 		{
 			return Core.BaseReadMemory(addr);
@@ -28,5 +38,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public virtual void ClockCpu() { }
 
 		public virtual void HardReset() { }
+
 	}
 }
