@@ -11,6 +11,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private int _bank_4K;
 		private ByteBuffer _ram = new ByteBuffer(128);
 
+		public override bool HasCartRam
+		{
+			get { return true; }
+		}
+
+		public override ByteBuffer CartRam
+		{
+			get { return _ram; }
+		}
+
 		public override void HardReset()
 		{
 			_bank_4K = 0;
