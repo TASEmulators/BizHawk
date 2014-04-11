@@ -560,7 +560,7 @@ namespace BizHawk.Client.EmuHawk
 		private byte MakeByte(int address)
 		{
 			return Global.CheatList.IsActive(_domain, address)
-				? (byte) Global.CheatList[_domain, address].Value.Value
+				? Global.CheatList.GetByteValue(_domain, address).Value
 				: _domain.PeekByte(address); 
 		}
 

@@ -240,6 +240,22 @@ namespace BizHawk.Client.Common
 					&& cheat.Contains(address));
 		}
 
+		/// <summary>
+		/// Returns the value of a given byte in a cheat, If the cheat is a single byte this will be the same indexing the cheat,
+		/// But if the cheat is multi-byte, this will return just the cheat value for that specific byte
+		/// </summary>
+		/// <returns>Returns null if address is not a part of a cheat, else returns the value of that specific byte only</returns>
+		public byte? GetByteValue(MemoryDomain domain, int addr)
+		{
+			var activeCheat = _cheatList.FirstOrDefault(cheat => cheat.Contains(addr));
+			if (activeCheat == (Cheat)null)
+			{
+				return null;
+			}
+
+			return activeCheat.GetByteVal(addr);
+		}
+
 		public void SaveOnClose()
 		{
 			if (Global.Config.CheatsAutoSaveOnClose)
