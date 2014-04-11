@@ -66,15 +66,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				_bank4K = temp & myStartBank;
 			}
-			//switch (addr & 0x1840)
-			//{
-			//	case 0x0800:
-			//		_bank4K = 0;
-			//		break;
-			//	case 0x0840:
-			//		_bank4K = 1;
-			//		break;
-			//}
 		}
 	}
 }

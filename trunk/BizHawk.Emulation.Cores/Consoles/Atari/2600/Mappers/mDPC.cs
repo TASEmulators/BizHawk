@@ -237,7 +237,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private float _fractionalClocks; // Fractional DPC music OSC clocks unused during the last update
 
 		private byte[] _dspData;
-		private byte[] DspData
+		public byte[] DspData
 		{
 			get
 			{

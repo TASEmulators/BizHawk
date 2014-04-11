@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					addr => _mapper.PeekMemory((ushort) addr),
 					(addr, value) => { })
 			};
-			MemoryDomains = new MemoryDomainList(domains);
+
 			CoreComm.CpuTraceAvailable = true;
 			Rom = rom;
 			_game = game;
@@ -61,6 +61,18 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			Console.WriteLine("Game uses mapper " + game.GetOptionsDict()["m"]);
 			RebootCore();
+
+			if (_mapper is mDPC) // TODO: also mDPCPlus
+			{
+				domains.Add(new MemoryDomain(
+					"DPC",
+					2048,
+					MemoryDomain.Endian.Little,
+					addr => (_mapper as mDPC).DspData[addr],
+					(addr, value) => (_mapper as mDPC).DspData[addr] = value));
+			}
+
+			MemoryDomains = new MemoryDomainList(domains);
 		}
 
 		public string SystemId { get { return "A26"; } }
