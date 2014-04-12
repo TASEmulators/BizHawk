@@ -68,8 +68,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public byte ReadMemory(ushort addr)
 		{
+			_mapper.Bit13 = addr.Bit(13);
 			var temp = _mapper.ReadMemory((ushort)(addr & 0x1FFF));
-
 			CoreComm.MemoryCallbackSystem.CallRead(addr);
 
 			return temp;

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
@@ -56,12 +56,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	Using emulators or similar there is a large cheat that can be used.  A13 can be used
 	to simply select which 8K bank to be in.
 	*/
-	
 	internal class mFE : MapperBase 
 	{
-		public mFE()
+		public override byte ReadMemory(ushort addr)
 		{
-			throw new NotImplementedException();
+			if (addr < 0x1000)
+			{
+				return base.ReadMemory(addr);
+			}
+
+			return Core.Rom[(addr & 0x0FFF) + (Bit13 ? 0 : 4096)];
 		}
 	}
 }
