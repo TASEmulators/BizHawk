@@ -183,6 +183,7 @@
     <Compile Include="Consoles\Atari\2600\Mappers\m4A50.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\MapperBase.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\mAR.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\mCM.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\mDPC.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\mDPCPlus.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\mE0.cs" />

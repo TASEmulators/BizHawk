@@ -137,6 +137,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				case "2K":
 					_mapper = new m2K();
 					break;
+				case "CM":
+					_mapper = new mCM();
+					break;
 				case "CV":
 					_mapper = new mCV();
 					break;
