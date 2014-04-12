@@ -102,15 +102,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				_hasRam = true;
 				_rambank1K = value;
-				if (_rambank1K > 0)
-				{
-					int xxx = 0;
-					xxx++;
-					int yyy = xxx;
-					yyy++;
-				}
 			}
-			else if (addr < 0x0040)
+			else if (addr == 0x003F)
 			{
 				_hasRam = false;
 				if ((value << 11) < Core.Rom.Length)
