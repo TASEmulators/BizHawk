@@ -39,5 +39,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public virtual void HardReset() { }
 
+		// THis is here purely for mapper 3E because it needs the 13th bit to determine bankswitching (but only receives the first 12 on read memory)
+		public bool Bit13 { get; set; }
 	}
 }
