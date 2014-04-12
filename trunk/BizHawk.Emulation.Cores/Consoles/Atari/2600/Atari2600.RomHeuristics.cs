@@ -401,14 +401,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			// These signatures are attributed to the MESS project
 			return ContainsAny(rom, new List<byte[]>
 			{
-				new byte[] { 0x8D, 0xE0, 0x1F },  // STA $1FE0
-				new byte[] { 0x8D, 0xE0, 0x5F },  // STA $5FE0
-				new byte[] { 0x8D, 0xE9, 0xFF },  // STA $FFE9
-				new byte[] { 0x0C, 0xE0, 0x1F },  // NOP $1FE0
-				new byte[] { 0xAD, 0xE0, 0x1F },  // LDA $1FE0
-				new byte[] { 0xAD, 0xE9, 0xFF },  // LDA $FFE9
-				new byte[] { 0xAD, 0xED, 0xFF },  // LDA $FFED
-				new byte[] { 0xAD, 0xF3, 0xBF }   // LDA $BFF3
+				new byte[] { 0x44, 0x50, 0x43, 0x2B },
+				new byte[] { 0x44, 0x50, 0x43, 0x2B },
 			});
 		}
 
