@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.PCEngine;
@@ -9,8 +11,6 @@ using LuaInterface;
 
 namespace BizHawk.Client.Common
 {
-	using System.Collections.Generic;
-
 	public class EmulatorLuaLibrary : LuaLibraryBase
 	{
 		private readonly Lua _lua;
@@ -171,11 +171,29 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"yield",
-			"TODO"
+			"allows a script to run while emulation is paused and interact with the gui/main window in realtime "
 		)]
 		public void Yield()
 		{
 			_yieldCallback();
+		}
+
+		[LuaMethodAttributes(
+			"getdisplaytype",
+			"returns the display type (PAL vs NTSC) that the emulator is currently running in"
+		)]
+		public string GetDisplayType()
+		{
+			if (Global.Game != null)
+			{
+				var displaytype = Global.Emulator.GetType().GetProperty("DisplayType");
+				if (displaytype != null)
+				{
+					return displaytype.GetValue(Global.Emulator, null).ToString();
+				}
+			}
+
+			return string.Empty;
 		}
 	}
 }

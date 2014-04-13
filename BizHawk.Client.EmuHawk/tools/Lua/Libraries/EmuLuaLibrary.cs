@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 			new SavestateLuaLibrary().LuaRegister(lua, Docs);
 			new SnesLuaLibrary().LuaRegister(lua, Docs);
 			new StringLuaLibrary().LuaRegister(lua, Docs);
-
+			new GameInfoLuaLibrary(_lua).LuaRegister(lua, Docs);
 			Docs.Sort();
 		}
 
