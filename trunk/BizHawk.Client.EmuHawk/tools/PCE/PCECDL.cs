@@ -13,7 +13,6 @@ namespace BizHawk.Client.EmuHawk
 	public partial class PCECDL : Form, IToolForm
 	{
 		// TODO
-		// Loading doesn't work
 		private PCEngine _emu;
 		private CodeDataLog _cdl;
 		private string _currentFileName = string.Empty;
@@ -26,10 +25,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			TopMost = Global.Config.PceCdlSettings.TopMost;
 
-			Closing += (o, e) =>
-			{
-				SaveConfigSettings();
-			};
+			Closing += (o, e) => SaveConfigSettings();
 
 			Restart();
 		}
