@@ -136,9 +136,11 @@ namespace BizHawk.Client.EmuHawk
 		private void PreLoadMovieFile(HawkFile hf, bool force)
 		{
 			var movie = new Movie(hf.CanonicalFullPath);
-			movie.PreLoadText(hf);
+
 			try
 			{
+				movie.PreLoadText(hf);
+
 				// Don't do this from browse
 				if (movie.Header[HeaderKeys.GAMENAME] == Global.Game.Name ||
 					Global.Config.PlayMovie_MatchGameName == false || force)
@@ -148,6 +150,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
+				// TODO: inform the user that a movie failed to parse in some way
 				Console.WriteLine(ex.Message);
 			}
 		}

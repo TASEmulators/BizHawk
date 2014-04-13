@@ -174,7 +174,7 @@ namespace BizHawk.Client.Common
 						BoardProperties.Add(boardSplit[0], boardSplit[1]);
 					}
 				}
-				else if (HeaderKeys.Contains(splitLine[0]))
+				else if (HeaderKeys.Contains(splitLine[0]) && !this.ContainsKey(splitLine[0]))
 				{
 					Add(splitLine[0], splitLine[1]);
 				}
