@@ -349,6 +349,10 @@ namespace BizHawk.Client.Common
 		public ToolDialogSettings SmsVdpSettings = new ToolDialogSettings();
 		public bool SmsVdpAutoLoad = false;
 
+		// PCE VDP Viewer Settings
+		public ToolDialogSettings PceVdpSettings = new ToolDialogSettings();
+		public bool PceVdpAutoLoad = false;
+
 		// NESPPU Settings
 		public ToolDialogSettings NesPPUSettings = new ToolDialogSettings();
 		public bool AutoLoadNESPPU = false;

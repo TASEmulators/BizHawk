@@ -37,15 +37,27 @@
 			this.bmpViewSP = new BizHawk.Client.EmuHawk.BmpView();
 			this.checkBoxVDC2 = new System.Windows.Forms.CheckBox();
 			this.label1 = new System.Windows.Forms.Label();
+			this.menuStrip1 = new MenuStripEx();
+			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveBackgroundScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveSpriteScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.alwaysOnTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.floatingWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
+			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
 			// 
 			this.groupBox1.Controls.Add(this.bmpViewBGPal);
 			this.groupBox1.Controls.Add(this.bmpViewBG);
-			this.groupBox1.Location = new System.Drawing.Point(12, 12);
+			this.groupBox1.Location = new System.Drawing.Point(12, 25);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(786, 281);
 			this.groupBox1.TabIndex = 4;
@@ -73,7 +85,7 @@
 			// 
 			this.groupBox2.Controls.Add(this.bmpViewSPPal);
 			this.groupBox2.Controls.Add(this.bmpViewSP);
-			this.groupBox2.Location = new System.Drawing.Point(12, 299);
+			this.groupBox2.Location = new System.Drawing.Point(12, 312);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(786, 281);
 			this.groupBox2.TabIndex = 5;
@@ -100,7 +112,7 @@
 			// checkBoxVDC2
 			// 
 			this.checkBoxVDC2.AutoSize = true;
-			this.checkBoxVDC2.Location = new System.Drawing.Point(12, 586);
+			this.checkBoxVDC2.Location = new System.Drawing.Point(12, 599);
 			this.checkBoxVDC2.Name = "checkBoxVDC2";
 			this.checkBoxVDC2.Size = new System.Drawing.Size(57, 17);
 			this.checkBoxVDC2.TabIndex = 6;
@@ -111,28 +123,123 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(504, 593);
+			this.label1.Location = new System.Drawing.Point(504, 599);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(294, 13);
 			this.label1.TabIndex = 7;
 			this.label1.Text = "CTRL + C copies the pane under the mouse to the clipboard.";
 			// 
+			// menuStrip1
+			// 
+			this.menuStrip1.ClickThrough = true;
+			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.FileSubMenu,
+            this.OptionsSubMenu});
+			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+			this.menuStrip1.Name = "menuStrip1";
+			this.menuStrip1.Size = new System.Drawing.Size(810, 24);
+			this.menuStrip1.TabIndex = 8;
+			this.menuStrip1.Text = "menuStrip1";
+			// 
+			// FileSubMenu
+			// 
+			this.FileSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveBackgroundScreenshotToolStripMenuItem,
+            this.saveSpriteScreenshotToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.closeToolStripMenuItem});
+			this.FileSubMenu.Name = "FileSubMenu";
+			this.FileSubMenu.Size = new System.Drawing.Size(37, 20);
+			this.FileSubMenu.Text = "&File";
+			// 
+			// saveBackgroundScreenshotToolStripMenuItem
+			// 
+			this.saveBackgroundScreenshotToolStripMenuItem.Name = "saveBackgroundScreenshotToolStripMenuItem";
+			this.saveBackgroundScreenshotToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+			this.saveBackgroundScreenshotToolStripMenuItem.Text = "Save BG Screenshot...";
+			this.saveBackgroundScreenshotToolStripMenuItem.Click += new System.EventHandler(this.saveBackgroundScreenshotToolStripMenuItem_Click);
+			// 
+			// saveSpriteScreenshotToolStripMenuItem
+			// 
+			this.saveSpriteScreenshotToolStripMenuItem.Name = "saveSpriteScreenshotToolStripMenuItem";
+			this.saveSpriteScreenshotToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+			this.saveSpriteScreenshotToolStripMenuItem.Text = "Save Sprite Screenshot...";
+			this.saveSpriteScreenshotToolStripMenuItem.Click += new System.EventHandler(this.saveSpriteScreenshotToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(198, 6);
+			// 
+			// closeToolStripMenuItem
+			// 
+			this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
+			this.closeToolStripMenuItem.ShortcutKeyDisplayString = "Alt+F4";
+			this.closeToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+			this.closeToolStripMenuItem.Text = "&Close";
+			this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
+			// 
+			// OptionsSubMenu
+			// 
+			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.autoloadToolStripMenuItem,
+            this.saveWindowPositionToolStripMenuItem,
+            this.alwaysOnTopToolStripMenuItem,
+            this.floatingWindowToolStripMenuItem});
+			this.OptionsSubMenu.Name = "OptionsSubMenu";
+			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
+			this.OptionsSubMenu.Text = "&Options";
+			this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
+			// 
+			// autoloadToolStripMenuItem
+			// 
+			this.autoloadToolStripMenuItem.Name = "autoloadToolStripMenuItem";
+			this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.autoloadToolStripMenuItem.Text = "&Autoload";
+			this.autoloadToolStripMenuItem.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
+			// 
+			// saveWindowPositionToolStripMenuItem
+			// 
+			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
+			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
+			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
+			// 
+			// alwaysOnTopToolStripMenuItem
+			// 
+			this.alwaysOnTopToolStripMenuItem.Name = "alwaysOnTopToolStripMenuItem";
+			this.alwaysOnTopToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.alwaysOnTopToolStripMenuItem.Text = "Always On Top";
+			this.alwaysOnTopToolStripMenuItem.Click += new System.EventHandler(this.alwaysOnTopToolStripMenuItem_Click);
+			// 
+			// floatingWindowToolStripMenuItem
+			// 
+			this.floatingWindowToolStripMenuItem.Name = "floatingWindowToolStripMenuItem";
+			this.floatingWindowToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.floatingWindowToolStripMenuItem.Text = "Floating Window";
+			this.floatingWindowToolStripMenuItem.Click += new System.EventHandler(this.floatingWindowToolStripMenuItem_Click);
+			// 
 			// PCETileViewer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(810, 615);
+			this.ClientSize = new System.Drawing.Size(810, 624);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.checkBoxVDC2);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
+			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
+			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "PCETileViewer";
 			this.Text = "Tile Viewer";
+			this.Load += new System.EventHandler(this.PCETileViewer_Load);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PCETileViewer_KeyDown);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
+			this.menuStrip1.ResumeLayout(false);
+			this.menuStrip1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -148,5 +255,16 @@
 		private BmpView bmpViewSPPal;
 		private BmpView bmpViewSP;
 		private System.Windows.Forms.Label label1;
+		private MenuStripEx menuStrip1;
+		private System.Windows.Forms.ToolStripMenuItem FileSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem saveBackgroundScreenshotToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem saveSpriteScreenshotToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem autoloadToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem alwaysOnTopToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem floatingWindowToolStripMenuItem;
 	}
 }

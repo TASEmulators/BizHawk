@@ -349,6 +349,11 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Load<PceBgViewer>();
 			}
 
+			if (Global.Config.PceVdpAutoLoad && Global.Emulator is PCEngine)
+			{
+				GlobalWin.Tools.Load<PCETileViewer>();
+			}
+
 			if (Global.Config.RecentPceCdlFiles.AutoLoad && Global.Emulator is PCEngine)
 			{
 				GlobalWin.Tools.Load<PCECDL>();
