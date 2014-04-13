@@ -117,6 +117,7 @@
 			this.CD.Name = "CD";
 			this.CD.Size = new System.Drawing.Size(31, 23);
 			this.CD.TabIndex = 17;
+			this.CD.TabStop = false;
 			this.CD.Text = "cD";
 			this.CD.UseVisualStyleBackColor = true;
 			// 
@@ -129,6 +130,7 @@
 			this.CR.Name = "CR";
 			this.CR.Size = new System.Drawing.Size(31, 23);
 			this.CR.TabIndex = 16;
+			this.CR.TabStop = false;
 			this.CR.Text = "cR";
 			this.CR.UseVisualStyleBackColor = true;
 			// 
@@ -141,6 +143,7 @@
 			this.CL.Name = "CL";
 			this.CL.Size = new System.Drawing.Size(29, 23);
 			this.CL.TabIndex = 15;
+			this.CL.TabStop = false;
 			this.CL.Text = "cL";
 			this.CL.UseVisualStyleBackColor = true;
 			// 
@@ -153,6 +156,7 @@
 			this.CU.Name = "CU";
 			this.CU.Size = new System.Drawing.Size(31, 23);
 			this.CU.TabIndex = 14;
+			this.CU.TabStop = false;
 			this.CU.Text = "cU";
 			this.CU.UseVisualStyleBackColor = true;
 			// 
@@ -165,6 +169,7 @@
 			this.BA.Name = "BA";
 			this.BA.Size = new System.Drawing.Size(24, 23);
 			this.BA.TabIndex = 13;
+			this.BA.TabStop = false;
 			this.BA.Text = "A";
 			this.BA.UseVisualStyleBackColor = true;
 			// 
@@ -177,6 +182,7 @@
 			this.BB.Name = "BB";
 			this.BB.Size = new System.Drawing.Size(24, 23);
 			this.BB.TabIndex = 12;
+			this.BB.TabStop = false;
 			this.BB.Text = "B";
 			this.BB.UseVisualStyleBackColor = true;
 			// 
@@ -189,6 +195,7 @@
 			this.BZ.Name = "BZ";
 			this.BZ.Size = new System.Drawing.Size(24, 23);
 			this.BZ.TabIndex = 11;
+			this.BZ.TabStop = false;
 			this.BZ.Text = "Z";
 			this.BZ.UseVisualStyleBackColor = true;
 			// 
@@ -201,6 +208,7 @@
 			this.BS.Name = "BS";
 			this.BS.Size = new System.Drawing.Size(24, 23);
 			this.BS.TabIndex = 10;
+			this.BS.TabStop = false;
 			this.BS.Text = "S";
 			this.BS.UseVisualStyleBackColor = true;
 			// 
@@ -213,6 +221,7 @@
 			this.BR.Name = "BR";
 			this.BR.Size = new System.Drawing.Size(25, 23);
 			this.BR.TabIndex = 9;
+			this.BR.TabStop = false;
 			this.BR.Text = "R";
 			this.BR.UseVisualStyleBackColor = true;
 			// 
@@ -225,6 +234,7 @@
 			this.BL.Name = "BL";
 			this.BL.Size = new System.Drawing.Size(23, 23);
 			this.BL.TabIndex = 8;
+			this.BL.TabStop = false;
 			this.BL.Text = "L";
 			this.BL.UseVisualStyleBackColor = true;
 			// 
@@ -238,6 +248,7 @@
 			this.PL.Name = "PL";
 			this.PL.Size = new System.Drawing.Size(22, 22);
 			this.PL.TabIndex = 7;
+			this.PL.TabStop = false;
 			this.PL.UseVisualStyleBackColor = true;
 			// 
 			// PD
@@ -250,6 +261,7 @@
 			this.PD.Name = "PD";
 			this.PD.Size = new System.Drawing.Size(22, 22);
 			this.PD.TabIndex = 6;
+			this.PD.TabStop = false;
 			this.PD.UseVisualStyleBackColor = true;
 			// 
 			// PR
@@ -262,6 +274,7 @@
 			this.PR.Name = "PR";
 			this.PR.Size = new System.Drawing.Size(22, 22);
 			this.PR.TabIndex = 5;
+			this.PR.TabStop = false;
 			this.PR.UseVisualStyleBackColor = true;
 			// 
 			// PU
@@ -274,6 +287,7 @@
 			this.PU.Name = "PU";
 			this.PU.Size = new System.Drawing.Size(22, 22);
 			this.PU.TabIndex = 4;
+			this.PU.TabStop = false;
 			this.PU.UseVisualStyleBackColor = true;
 			// 
 			// AnalogControl1
