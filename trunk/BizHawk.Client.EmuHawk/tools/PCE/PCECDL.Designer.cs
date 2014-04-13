@@ -259,6 +259,7 @@
 			this.MainMenuStrip = this.menuStrip1;
 			this.MinimumSize = new System.Drawing.Size(150, 130);
 			this.Name = "PCECDL";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Code Data Logger";
 			this.Load += new System.EventHandler(this.PCECDL_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.PCECDL_DragDrop);

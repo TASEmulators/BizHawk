@@ -50,6 +50,7 @@
 			this.PceBgViewerToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.GbaGpuViewerToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.GenesisGameGenieToolBarItem = new System.Windows.Forms.ToolStripButton();
+			this.PceCdlToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.ToolBoxStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -81,6 +82,7 @@
             this.GGGameGenieToolbarItem,
             this.GbGpuViewerToolBarItem,
             this.GBGameGenieToolbarItem,
+            this.PceCdlToolbarItem,
             this.PceBgViewerToolbarItem,
             this.GbaGpuViewerToolBarItem,
             this.GenesisGameGenieToolBarItem});
@@ -88,7 +90,7 @@
 			this.ToolBoxStrip.Location = new System.Drawing.Point(2, 2);
 			this.ToolBoxStrip.Name = "ToolBoxStrip";
 			this.ToolBoxStrip.Padding = new System.Windows.Forms.Padding(0);
-			this.ToolBoxStrip.Size = new System.Drawing.Size(137, 141);
+			this.ToolBoxStrip.Size = new System.Drawing.Size(137, 175);
 			this.ToolBoxStrip.Stretch = true;
 			this.ToolBoxStrip.TabIndex = 0;
 			this.ToolBoxStrip.TabStop = true;
@@ -285,11 +287,21 @@
 			this.GenesisGameGenieToolBarItem.ToolTipText = "Genesis Game Genie Encoder/Decoder";
 			this.GenesisGameGenieToolBarItem.Click += new System.EventHandler(this.GenesisGameGenieToolBarItem_Click);
 			// 
+			// PceCdlToolbarItem
+			// 
+			this.PceCdlToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pcejin1;
+			this.PceCdlToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.PceCdlToolbarItem.Name = "PceCdlToolbarItem";
+			this.PceCdlToolbarItem.Size = new System.Drawing.Size(45, 20);
+			this.PceCdlToolbarItem.Text = "Cdl";
+			this.PceCdlToolbarItem.ToolTipText = "PC Engine Code Data Logger";
+			this.PceCdlToolbarItem.Click += new System.EventHandler(this.PceCdlToolbarItem_Click);
+			// 
 			// ToolBox
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(140, 145);
+			this.ClientSize = new System.Drawing.Size(140, 179);
 			this.Controls.Add(this.ToolBoxStrip);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximumSize = new System.Drawing.Size(270, 600);
@@ -326,6 +338,7 @@
 		private System.Windows.Forms.ToolStripButton GbGpuViewerToolBarItem;
 		private System.Windows.Forms.ToolStripButton GbaGpuViewerToolBarItem;
 		private System.Windows.Forms.ToolStripButton GenesisGameGenieToolBarItem;
+		private System.Windows.Forms.ToolStripButton PceCdlToolbarItem;
 
 	}
 }
