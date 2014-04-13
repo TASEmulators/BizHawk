@@ -52,6 +52,7 @@
 			this.GbaGpuViewerToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.GenesisGameGenieToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.SmsVdpToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.PceTileToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.ToolBoxStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -83,6 +84,7 @@
             this.GGGameGenieToolbarItem,
             this.GbGpuViewerToolBarItem,
             this.GBGameGenieToolbarItem,
+            this.PceTileToolbarItem,
             this.PceCdlToolbarItem,
             this.PceBgViewerToolbarItem,
             this.GbaGpuViewerToolBarItem,
@@ -92,7 +94,7 @@
 			this.ToolBoxStrip.Location = new System.Drawing.Point(2, 2);
 			this.ToolBoxStrip.Name = "ToolBoxStrip";
 			this.ToolBoxStrip.Padding = new System.Windows.Forms.Padding(0);
-			this.ToolBoxStrip.Size = new System.Drawing.Size(137, 175);
+			this.ToolBoxStrip.Size = new System.Drawing.Size(137, 179);
 			this.ToolBoxStrip.Stretch = true;
 			this.ToolBoxStrip.TabIndex = 0;
 			this.ToolBoxStrip.TabStop = true;
@@ -306,13 +308,24 @@
 			this.SmsVdpToolbarItem.Name = "SmsVdpToolbarItem";
 			this.SmsVdpToolbarItem.Size = new System.Drawing.Size(49, 20);
 			this.SmsVdpToolbarItem.Text = "VDP";
+			this.SmsVdpToolbarItem.ToolTipText = "SMS VDP Viewer";
 			this.SmsVdpToolbarItem.Click += new System.EventHandler(this.SmsVdpToolbarItem_Click);
+			// 
+			// PceTileToolbarItem
+			// 
+			this.PceTileToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pcejin1;
+			this.PceTileToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.PceTileToolbarItem.Name = "PceTileToolbarItem";
+			this.PceTileToolbarItem.Size = new System.Drawing.Size(46, 20);
+			this.PceTileToolbarItem.Text = "Tile";
+			this.PceTileToolbarItem.ToolTipText = "PC Engine Tile Viewer";
+			this.PceTileToolbarItem.Click += new System.EventHandler(this.PceTileToolbarItem_Click);
 			// 
 			// ToolBox
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(140, 179);
+			this.ClientSize = new System.Drawing.Size(140, 183);
 			this.Controls.Add(this.ToolBoxStrip);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximumSize = new System.Drawing.Size(270, 600);
@@ -351,6 +364,7 @@
 		private System.Windows.Forms.ToolStripButton GenesisGameGenieToolBarItem;
 		private System.Windows.Forms.ToolStripButton PceCdlToolbarItem;
 		private System.Windows.Forms.ToolStripButton SmsVdpToolbarItem;
+		private System.Windows.Forms.ToolStripButton PceTileToolbarItem;
 
 	}
 }

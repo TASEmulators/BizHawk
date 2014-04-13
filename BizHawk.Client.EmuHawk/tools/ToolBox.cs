@@ -64,6 +64,7 @@ namespace BizHawk.Client.EmuHawk
 
 			PceCdlToolbarItem.Visible =
 				PceBgViewerToolbarItem.Visible =
+				PceTileToolbarItem.Visible =
 				Global.Emulator is PCEngine;
 			
 			GBGameGenieToolbarItem.Visible = 
@@ -226,6 +227,11 @@ namespace BizHawk.Client.EmuHawk
 		private void SmsVdpToolbarItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<SmsVDPViewer>();
+		}
+
+		private void PceTileToolbarItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<PCETileViewer>();
 		}
 
 		#endregion
