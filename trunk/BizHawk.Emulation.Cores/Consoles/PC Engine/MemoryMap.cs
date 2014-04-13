@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				return 0xFF;
 			}
 
-			CoreComm.MemoryCallbackSystem.CallRead((uint)addr);
+			//CoreComm.MemoryCallbackSystem.CallRead((uint)addr);
 
 			Log.Error("MEM", "UNHANDLED READ: {0:X6}", addr);
 			return 0xFF;
@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			else
 				Log.Error("MEM", "UNHANDLED WRITE: {0:X6}:{1:X2}", addr, value);
 
-			CoreComm.MemoryCallbackSystem.CallWrite((uint)addr);
+			//CoreComm.MemoryCallbackSystem.CallWrite((uint)addr);
 		}
 	}
 }

@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PCECDL));
 			this.checkBox1 = new System.Windows.Forms.CheckBox();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -36,8 +37,8 @@
 			this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.unionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.disassembleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -73,43 +74,50 @@
             this.unionToolStripMenuItem,
             this.disassembleToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-			this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "&File";
 			// 
 			// newToolStripMenuItem
 			// 
 			this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-			this.newToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.newToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
 			this.newToolStripMenuItem.Text = "&New";
 			this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
 			// 
 			// clearToolStripMenuItem
 			// 
 			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-			this.clearToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.clearToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
 			this.clearToolStripMenuItem.Text = "&Clear";
 			this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
 			// 
 			// loadToolStripMenuItem
 			// 
 			this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-			this.loadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.loadToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
 			this.loadToolStripMenuItem.Text = "&Load...";
 			this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
 			// 
 			// saveToolStripMenuItem
 			// 
 			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-			this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.saveToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
 			this.saveToolStripMenuItem.Text = "&Save...";
 			this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
 			// 
 			// unionToolStripMenuItem
 			// 
 			this.unionToolStripMenuItem.Name = "unionToolStripMenuItem";
-			this.unionToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.unionToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
 			this.unionToolStripMenuItem.Text = "&Union...";
 			this.unionToolStripMenuItem.Click += new System.EventHandler(this.unionToolStripMenuItem_Click);
+			// 
+			// disassembleToolStripMenuItem
+			// 
+			this.disassembleToolStripMenuItem.Name = "disassembleToolStripMenuItem";
+			this.disassembleToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.disassembleToolStripMenuItem.Text = "&Disassemble...";
+			this.disassembleToolStripMenuItem.Click += new System.EventHandler(this.disassembleToolStripMenuItem_Click);
 			// 
 			// textBox1
 			// 
@@ -123,13 +131,6 @@
 			this.textBox1.Size = new System.Drawing.Size(292, 211);
 			this.textBox1.TabIndex = 3;
 			// 
-			// disassembleToolStripMenuItem
-			// 
-			this.disassembleToolStripMenuItem.Name = "disassembleToolStripMenuItem";
-			this.disassembleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.disassembleToolStripMenuItem.Text = "&Disassemble...";
-			this.disassembleToolStripMenuItem.Click += new System.EventHandler(this.disassembleToolStripMenuItem_Click);
-			// 
 			// PCECDL
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -138,9 +139,10 @@
 			this.Controls.Add(this.textBox1);
 			this.Controls.Add(this.checkBox1);
 			this.Controls.Add(this.menuStrip1);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "PCECDL";
-			this.Text = "PCE Code Data Logger";
+			this.Text = "Code Data Logger";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PCECDL_FormClosing);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
