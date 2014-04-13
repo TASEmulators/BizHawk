@@ -155,9 +155,53 @@ namespace BizHawk.Client.EmuHawk
 				return null;
 			}
 
-			var file = new FileInfo(sfd.FileName);
-			Global.Config.LastRomPath = file.DirectoryName;
-			return file;
+			return new FileInfo(sfd.FileName);
+		}
+
+		public static FileInfo GetCdlFileFromUser(string currentFile)
+		{
+			var ofd = new OpenFileDialog
+			{
+				Filter = "Code Data Logger Files (*.cdl)|*.cdl|All Files|*.*",
+				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null),
+				RestoreDirectory = true
+			};
+
+			if (!string.IsNullOrWhiteSpace(currentFile))
+			{
+				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
+			}
+
+			var result = ofd.ShowHawkDialog();
+			if (result != DialogResult.OK)
+			{
+				return null;
+			}
+
+			return new FileInfo(ofd.FileName);
+		}
+
+		public static FileInfo GetCdlSaveFileFromUser(string currentFile)
+		{
+			var sfd = new SaveFileDialog
+			{
+				Filter = "Code Data Logger Files (*.cdl)|*.cdl|All Files|*.*",
+				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null),
+				RestoreDirectory = true
+			};
+
+			if (!string.IsNullOrWhiteSpace(currentFile))
+			{
+				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
+			}
+
+			var result = sfd.ShowHawkDialog();
+			if (result != DialogResult.OK)
+			{
+				return null;
+			}
+
+			return new FileInfo(sfd.FileName);
 		}
 
 		public static ToolStripMenuItem GenerateAutoLoadItem(RecentFiles recent)
