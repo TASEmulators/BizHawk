@@ -30,6 +30,17 @@ namespace BizHawk.Client.EmuHawk
 			Restart();
 		}
 
+		private void RefreshFloatingWindowControl()
+		{
+			Owner = Global.Config.SmsVdpSettings.FloatingWindow ? null : GlobalWin.MainForm;
+		}
+
+		protected override void OnShown(EventArgs e)
+		{
+			RefreshFloatingWindowControl();
+			base.OnShown(e);
+		}
+
 		public void UpdateValues()
 		{
 			UpdateDisplay();
@@ -322,6 +333,7 @@ namespace BizHawk.Client.EmuHawk
 		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.PceCdlSettings.FloatingWindow ^= true;
+			RefreshFloatingWindowControl();
 		}
 
 		private void RestoreDefaultSettingsMenuItem_Click(object sender, EventArgs e)

@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
+
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -83,5 +87,51 @@ namespace BizHawk.Client.EmuHawk
 			Refresh();
 		}
 
+		public void SaveFile()
+		{
+			string path = PathManager.MakeAbsolutePath(
+						Global.Config.PathEntries[Global.Emulator.SystemId, "Screenshots"].Path,
+						Global.Emulator.SystemId);
+
+			DirectoryInfo di = new DirectoryInfo(path);
+
+			if (!di.Exists)
+			{
+				di.Create();
+			}
+
+			var sfd = new SaveFileDialog
+			{
+				FileName = PathManager.FilesystemSafeName(Global.Game) + "-Palettes",
+				InitialDirectory = path,
+				Filter = "PNG (*.png)|*.png|Bitmap (*.bmp)|*.bmp|All Files|*.*",
+				RestoreDirectory = true
+			};
+
+			var result = sfd.ShowHawkDialog();
+			if (result != DialogResult.OK)
+			{
+				return;
+			}
+
+			var file = new FileInfo(sfd.FileName);
+			var b = this.bmp;
+
+			ImageFormat i;
+			string extension = file.Extension.ToUpper();
+
+			switch (extension)
+			{
+				default:
+				case ".PNG":
+					i = ImageFormat.Png;
+					break;
+				case ".BMP":
+					i = ImageFormat.Bmp;
+					break;
+			}
+
+			b.Save(file.FullName, i);
+		}
 	}
 }
