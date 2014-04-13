@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -16,6 +15,7 @@ using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Client.EmuHawk
@@ -337,6 +337,11 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.AutoLoadLuaConsole)
 			{
 				OpenLuaConsole();
+			}
+
+			if (Global.Config.SmsVdpAutoLoad && Global.Emulator is SMS)
+			{
+				GlobalWin.Tools.Load<SmsVDPViewer>();
 			}
 
 			if (Global.Config.PCEBGViewerAutoload && Global.Emulator is PCEngine)
@@ -3078,7 +3083,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SMSVDPViewerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.Load<VDPViewer>();
+			GlobalWin.Tools.Load<SmsVDPViewer>();
 		}
 
 		private void codeDataLoggerToolStripMenuItem_Click(object sender, EventArgs e)

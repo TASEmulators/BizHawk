@@ -1323,6 +1323,7 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\sms-icon.png" />
     <None Include="images\pcb.png" />
     <None Include="images\tvIcon.png" />
     <None Include="Resources\pcb.png" />
