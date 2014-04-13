@@ -43,10 +43,10 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodAttributes(
-			"getindatabase",
+			"indatabase",
 			"returns whether or not the currently loaded rom is in the game database"
 		)]
-		public bool GetInDatabase()
+		public bool InDatabase()
 		{
 			if (Global.Game != null)
 			{
@@ -71,10 +71,10 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodAttributes(
-			"getisstatusbad",
+			"isstatusbad",
 			"returns the currently loaded rom's game database status is considered 'bad'"
 		)]
-		public bool GetIsStatusBad()
+		public bool IsStatusBad()
 		{
 			if (Global.Game != null)
 			{
