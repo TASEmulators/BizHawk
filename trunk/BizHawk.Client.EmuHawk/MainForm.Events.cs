@@ -2165,6 +2165,12 @@ namespace BizHawk.Client.EmuHawk
 				(GlobalWin.Tools.Get<RamWatch>() as RamWatch).LoadWatchFile(new FileInfo(filePaths[0]), false);
 			}
 
+			else if (ext.ToUpper() == ".CDL" && Global.Emulator is PCEngine)
+			{
+				GlobalWin.Tools.Load<PCECDL>();
+				(GlobalWin.Tools.Get<PCECDL>() as PCECDL).LoadFile(filePaths[0]);
+			}
+
 			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))
 			{
 				//tries to open a legacy movie format as if it were a BKM, by importing it

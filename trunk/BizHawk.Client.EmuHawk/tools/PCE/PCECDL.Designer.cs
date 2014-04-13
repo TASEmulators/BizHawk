@@ -248,6 +248,7 @@
 			// 
 			// PCECDL
 			// 
+			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(292, 273);
@@ -260,6 +261,8 @@
 			this.Name = "PCECDL";
 			this.Text = "Code Data Logger";
 			this.Load += new System.EventHandler(this.PCECDL_Load);
+			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.PCECDL_DragDrop);
+			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.PCECDL_DragEnter);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.ResumeLayout(false);

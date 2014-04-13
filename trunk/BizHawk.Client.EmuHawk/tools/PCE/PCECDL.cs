@@ -14,11 +14,9 @@ namespace BizHawk.Client.EmuHawk
 	{
 		// TODO
 		// Loading doesn't work
-		// Save
-		// Drag and drop cdl files
-		// Drag and drop cdl files onto Main window?
 		private PCEngine _emu;
 		private CodeDataLog _cdl;
+		private string _currentFileName = string.Empty;
 
 		private int _defaultWidth;
 		private int _defaultHeight;
@@ -34,16 +32,6 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			Restart();
-		}
-
-		private void PCECDL_Load(object sender, EventArgs e)
-		{
-			LoadConfigSettings();
-
-			if (Global.Config.RecentPceCdlFiles.AutoLoad)
-			{
-				LoadFileFromRecent(Global.Config.RecentPceCdlFiles.MostRecent);
-			}
 		}
 
 		public void UpdateValues()
@@ -114,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 			get { return false; }
 		}
 
-		private void LoadFileFromRecent(string path)
+		public void LoadFile(string path)
 		{
 			using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
 			{
@@ -159,16 +147,23 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Events
 
+		#region File
+
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			SaveAsMenuItem.Enabled = _cdl != null;
+			SaveMenuItem.Enabled = !string.IsNullOrWhiteSpace(_currentFileName);
+			SaveAsMenuItem.Enabled =
+				AppendMenuItem.Enabled =
+				ClearMenuItem.Enabled =
+				DisassembleMenuItem.Enabled =
+				_cdl != null;
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentSubMenu.DropDownItems.Clear();
 			RecentSubMenu.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentPceCdlFiles, LoadFileFromRecent));
+				ToolHelpers.GenerateRecentMenu(Global.Config.RecentPceCdlFiles, LoadFile));
 			RecentSubMenu.DropDownItems.Add(
 				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentPceCdlFiles));
 		}
@@ -189,7 +184,7 @@ namespace BizHawk.Client.EmuHawk
 			var result = MessageBox.Show(this, "OK to load new CDL?", "Query", MessageBoxButtons.YesNo);
 			if (result == DialogResult.Yes)
 			{
-				var file = ToolHelpers.GetCdlFileFromUser(string.Empty /*TODO*/);
+				var file = ToolHelpers.GetCdlFileFromUser(_currentFileName);
 				if (file != null)
 				{
 					using (var fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read))
@@ -205,6 +200,7 @@ namespace BizHawk.Client.EmuHawk
 							_emu.Cpu.CDL = _cdl;
 							UpdateDisplay();
 							Global.Config.RecentPceCdlFiles.Add(file.FullName);
+							_currentFileName = file.FullName;
 						}
 					}
 				}
@@ -213,7 +209,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveMenuItem_Click(object sender, EventArgs e)
 		{
-			// TODO
+			if (!string.IsNullOrWhiteSpace(_currentFileName))
+			{
+				using (var fs = new FileStream(_currentFileName, FileMode.Create, FileAccess.Write))
+				{
+					_cdl.Save(fs);
+				}
+			}
 		}
 
 		private void SaveAsMenuItem_Click(object sender, EventArgs e)
@@ -224,13 +226,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				var file = ToolHelpers.GetCdlSaveFileFromUser(string.Empty /* TODO */);
+				var file = ToolHelpers.GetCdlSaveFileFromUser(_currentFileName);
 				if (file != null)
 				{
 					using (var fs = new FileStream(file.FullName, FileMode.Create, FileAccess.Write))
 					{
 						_cdl.Save(fs);
 						Global.Config.RecentPceCdlFiles.Add(file.FullName);
+						_currentFileName = file.FullName;
 					}
 				}
 			}
@@ -240,11 +243,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_cdl == null)
 			{
-				MessageBox.Show(this, "Cannot union with no CDL loaded!", "Alert");
+				MessageBox.Show(this, "Cannot append with no CDL loaded!", "Alert");
 			}
 			else
 			{
-				var file = ToolHelpers.GetCdlFileFromUser(string.Empty /*TODO*/);
+				var file = ToolHelpers.GetCdlFileFromUser(_currentFileName);
 				if (file != null)
 				{
 					using (var fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read))
@@ -299,6 +302,10 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
+		#endregion
+
+		#region Options
+
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			SaveWindowPositionMenuItem.Checked = Global.Config.PceCdlSettings.SaveWindowPosition;
@@ -330,6 +337,21 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.PceCdlSettings.FloatingWindow = false;
 		}
 
+		#endregion
+
+		#region Dialog Events
+
+		private void PCECDL_Load(object sender, EventArgs e)
+		{
+			LoadConfigSettings();
+
+			if (Global.Config.RecentPceCdlFiles.AutoLoad)
+			{
+				LoadFile(Global.Config.RecentPceCdlFiles.MostRecent);
+				_currentFileName = Global.Config.RecentPceCdlFiles.MostRecent;
+			}
+		}
+
 		private void LoggingActiveCheckbox_CheckedChanged(object sender, EventArgs e)
 		{
 			if (LoggingActiveCheckbox.Checked && _cdl == null)
@@ -340,6 +362,22 @@ namespace BizHawk.Client.EmuHawk
 
 			_emu.Cpu.CDLLoggingActive = LoggingActiveCheckbox.Checked;
 		}
+
+		private void PCECDL_DragEnter(object sender, DragEventArgs e)
+		{
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+		}
+
+		private void PCECDL_DragDrop(object sender, DragEventArgs e)
+		{
+			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			if (Path.GetExtension(filePaths[0]) == ".cdl")
+			{
+				LoadFile(filePaths[0]);
+			}
+		}
+
+		#endregion
 
 		#endregion
 	}
