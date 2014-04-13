@@ -260,5 +260,20 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config.SmsVdpAutoLoad ^= true;
 		}
+
+		private void saveTilesScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			bmpViewTiles.SaveFile();
+		}
+
+		private void savePalettesScrenshotToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			bmpViewPalette.SaveFile();
+		}
+
+		private void saveBGScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			bmpViewBG.SaveFile();
+		}
 	}
 }

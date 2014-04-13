@@ -38,12 +38,16 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.menuStrip1 = new MenuStripEx();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveTilesScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.CloseMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.savePalettesScrenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveBGScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -129,16 +133,32 @@
 			// FileSubMenu
 			// 
 			this.FileSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveTilesScreenshotToolStripMenuItem,
+            this.savePalettesScrenshotToolStripMenuItem,
+            this.saveBGScreenshotToolStripMenuItem,
+            this.toolStripSeparator1,
             this.CloseMenuItem});
 			this.FileSubMenu.Name = "FileSubMenu";
 			this.FileSubMenu.Size = new System.Drawing.Size(37, 20);
 			this.FileSubMenu.Text = "&File";
 			// 
+			// saveTilesScreenshotToolStripMenuItem
+			// 
+			this.saveTilesScreenshotToolStripMenuItem.Name = "saveTilesScreenshotToolStripMenuItem";
+			this.saveTilesScreenshotToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.saveTilesScreenshotToolStripMenuItem.Text = "Save Tiles Screenshot...";
+			this.saveTilesScreenshotToolStripMenuItem.Click += new System.EventHandler(this.saveTilesScreenshotToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(203, 6);
+			// 
 			// CloseMenuItem
 			// 
 			this.CloseMenuItem.Name = "CloseMenuItem";
 			this.CloseMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.CloseMenuItem.Size = new System.Drawing.Size(145, 22);
+			this.CloseMenuItem.Size = new System.Drawing.Size(206, 22);
 			this.CloseMenuItem.Text = "&Close";
 			this.CloseMenuItem.Click += new System.EventHandler(this.CloseMenuItem_Click);
 			// 
@@ -182,7 +202,21 @@
 			this.FloatingWindowMenuItem.Text = "Floating Window";
 			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
 			// 
-			// VDPViewer
+			// savePalettesScrenshotToolStripMenuItem
+			// 
+			this.savePalettesScrenshotToolStripMenuItem.Name = "savePalettesScrenshotToolStripMenuItem";
+			this.savePalettesScrenshotToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.savePalettesScrenshotToolStripMenuItem.Text = "Save Palettes Screnshot...";
+			this.savePalettesScrenshotToolStripMenuItem.Click += new System.EventHandler(this.savePalettesScrenshotToolStripMenuItem_Click);
+			// 
+			// saveBGScreenshotToolStripMenuItem
+			// 
+			this.saveBGScreenshotToolStripMenuItem.Name = "saveBGScreenshotToolStripMenuItem";
+			this.saveBGScreenshotToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.saveBGScreenshotToolStripMenuItem.Text = "Save BG Screenshot...";
+			this.saveBGScreenshotToolStripMenuItem.Click += new System.EventHandler(this.saveBGScreenshotToolStripMenuItem_Click);
+			// 
+			// SmsVDPViewer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -196,7 +230,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip1;
-			this.Name = "VDPViewer";
+			this.Name = "SmsVDPViewer";
 			this.Text = "VDP Viewer";
 			this.Load += new System.EventHandler(this.VDPViewer_Load);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.VDPViewer_KeyDown);
@@ -227,5 +261,9 @@
 		private System.Windows.Forms.ToolStripMenuItem SaveWindowPositionMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem saveTilesScreenshotToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripMenuItem savePalettesScrenshotToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem saveBGScreenshotToolStripMenuItem;
 	}
 }
