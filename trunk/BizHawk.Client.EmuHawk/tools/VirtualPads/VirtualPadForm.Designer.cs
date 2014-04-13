@@ -36,15 +36,15 @@
 			this.menuStrip1 = new MenuStripEx();
 			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.RestoreDefaultSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.StickyBox = new System.Windows.Forms.CheckBox();
 			this.ClearButton = new System.Windows.Forms.Button();
-			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -110,6 +110,13 @@
 			this.AutoloadMenuItem.Text = "&Autoload";
 			this.AutoloadMenuItem.Click += new System.EventHandler(this.AutoloadMenuItem_Click);
 			// 
+			// SaveWindowPositionMenuItem
+			// 
+			this.SaveWindowPositionMenuItem.Name = "SaveWindowPositionMenuItem";
+			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.SaveWindowPositionMenuItem.Text = "&Save Window Position";
+			this.SaveWindowPositionMenuItem.Click += new System.EventHandler(this.SaveWindowPositionMenuItem_Click);
+			// 
 			// AlwaysOnTopMenuItem
 			// 
 			this.AlwaysOnTopMenuItem.Name = "AlwaysOnTopMenuItem";
@@ -117,12 +124,12 @@
 			this.AlwaysOnTopMenuItem.Text = "Always On Top";
 			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
 			// 
-			// SaveWindowPositionMenuItem
+			// FloatingWindowMenuItem
 			// 
-			this.SaveWindowPositionMenuItem.Name = "SaveWindowPositionMenuItem";
-			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.SaveWindowPositionMenuItem.Text = "&Save Window Position";
-			this.SaveWindowPositionMenuItem.Click += new System.EventHandler(this.SaveWindowPositionMenuItem_Click);
+			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
+			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.FloatingWindowMenuItem.Text = "Floating Window";
+			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
@@ -157,6 +164,7 @@
 			this.StickyBox.Name = "StickyBox";
 			this.StickyBox.Size = new System.Drawing.Size(55, 17);
 			this.StickyBox.TabIndex = 7;
+			this.StickyBox.TabStop = false;
 			this.StickyBox.Text = "Sticky";
 			this.StickyBox.UseVisualStyleBackColor = true;
 			this.StickyBox.CheckedChanged += new System.EventHandler(this.StickyBox_CheckedChanged);
@@ -168,16 +176,10 @@
 			this.ClearButton.Name = "ClearButton";
 			this.ClearButton.Size = new System.Drawing.Size(75, 23);
 			this.ClearButton.TabIndex = 8;
+			this.ClearButton.TabStop = false;
 			this.ClearButton.Text = "&Clear";
 			this.ClearButton.UseVisualStyleBackColor = true;
 			this.ClearButton.Click += new System.EventHandler(this.ClearMenuItem_Click);
-			// 
-			// FloatingWindowMenuItem
-			// 
-			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
-			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.FloatingWindowMenuItem.Text = "Floating Window";
-			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
 			// 
 			// VirtualPadForm
 			// 
