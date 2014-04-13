@@ -345,6 +345,10 @@ namespace BizHawk.Client.Common
 
 		#endregion
 
+		// SMS VDP Viewer Settings
+		public ToolDialogSettings SmsVdpSettings = new ToolDialogSettings();
+		public bool SmsVdpAutoLoad = false;
+
 		// NESPPU Settings
 		public ToolDialogSettings NesPPUSettings = new ToolDialogSettings();
 		public bool AutoLoadNESPPU = false;
