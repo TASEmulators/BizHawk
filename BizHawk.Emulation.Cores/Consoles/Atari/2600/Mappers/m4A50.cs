@@ -1,8 +1,9 @@
-﻿using BizHawk.Common;
+﻿using System;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	/*
+	/* From Kebtris docs
 	4A50 (no name)
 	-----
 
@@ -27,20 +28,64 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	and M2 (clock) to be able to properly do most of the things it's doing.
 	*/
 
+	/* From Stella docs
+	Bankswitching method as defined/created by John Payson (aka Supercat),
+	documented at http://www.casperkitty.com/stella/cartfmt.htm.
+
+	In this bankswitching scheme the 2600's 4K cartridge address space 
+	is broken into four segments.  The first 2K segment accesses any 2K
+	region of RAM, or of the first 32K of ROM.  The second 1.5K segment
+	accesses the first 1.5K of any 2K region of RAM, or of the last 32K
+	of ROM.  The 3rd 256 byte segment points to any 256 byte page of
+	RAM or ROM.  The last 256 byte segment always points to the last 256
+	bytes of ROM.
+	*/
+
 	internal class m4A50 : MapperBase 
 	{
-		private readonly ByteBuffer _myRam = new ByteBuffer(32768);
+		private ByteBuffer _ram = new ByteBuffer(32768);
 
-		private int _myLastData = 0xFF;
-		private int _myLastAddress = 0xFFFF;
+		private byte _lastData = 0xFF;
+		private ushort _lastAddress = 0xFFFF;
 
-		private bool _myIsRomHigh = true;
-		private bool _myIsRomLow = true;
-		private bool _myIsRomMiddle = true;
+		private bool _isRomHigh = true;
+		private bool _isRomLow = true;
+		private bool _isRomMiddle = true;
 
-		private int _mySliceHigh;
-		private int _mySliceLow;
-		private int _mySliceMiddle;
+		private int _sliceHigh;
+		private int _sliceLow;
+		private int _sliceMiddle;
+
+		private byte[] _romImage = null;
+		private byte[] RomImage
+		{
+			get
+			{
+				if (_romImage == null)
+				{
+					// Copy the ROM image into my buffer
+					// Supported file sizes are 32/64/128K, which are duplicated if necessary
+					_romImage = new byte[131072];
+					
+					if(Core.Rom.Length < 65536)
+					{
+						for (int i = 0; i < 4; i++)
+						{
+							Array.Copy(Core.Rom, 0, _romImage, 32768 * i, 32768);
+						}
+					}
+					else if(Core.Rom.Length < 131072)
+					{
+						for (int i = 0; i < 2; i++)
+						{
+							Array.Copy(Core.Rom, 0, _romImage, 65536 * i, 65536);
+						}
+					}
+				}
+
+				return _romImage;
+			}
+		}
 
 		public override bool HasCartRam
 		{
@@ -49,50 +94,102 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public override ByteBuffer CartRam
 		{
-			get { return _myRam; }
+			get { return _ram; }
+		}
+
+		public override void Dispose()
+		{
+			_ram.Dispose();
+			base.Dispose();
+		}
+
+		public override void SyncState(Serializer ser)
+		{
+			ser.Sync("cartRam", ref _ram);
+
+			ser.Sync("lastData", ref _lastData);
+			ser.Sync("lastAddress", ref _lastAddress);
+
+			ser.Sync("isRomHigh", ref _isRomHigh);
+			ser.Sync("isRomLow", ref _isRomLow);
+			ser.Sync("isRomMiddle", ref _isRomMiddle);
+
+			ser.Sync("sliceHigh", ref _sliceHigh);
+			ser.Sync("sliceLow", ref _sliceLow);
+			ser.Sync("sliceMiddle", ref _sliceMiddle);
+
+			base.SyncState(ser);
+		}
+
+
+		public override void HardReset()
+		{
+			_ram = new ByteBuffer(32768);
+
+			_lastData = 0xFF;
+			_lastAddress = 0xFFFF;
+
+			_isRomHigh = true;
+			_isRomLow = true;
+			_isRomMiddle = true;
+
+			_sliceHigh = 0;
+			_sliceLow = 0;
+			_sliceMiddle = 0;
+
+			base.HardReset();
+		}
+
+		private byte ReadMem(ushort addr, bool peek)
+		{
+			byte val = 0;
+				if (addr < 0x1000)
+				{
+					val = base.ReadMemory(addr);
+					if (!peek)
+					{
+						CheckBankSwitch(addr, val);
+					}
+				}
+				else if (addr < 0x1800) // 2K region from 0x1000 - 0x17ff
+				{
+					val = _isRomLow ? RomImage[(addr & 0x7ff) + _sliceLow]
+										: _ram[(addr & 0x7ff) + _sliceLow];
+				}
+				else if (addr < 0x1E00) // 1.5K region from 0x1800 - 0x1dff
+				{
+					val = _isRomMiddle ? RomImage[(addr & 0x7ff) + _sliceMiddle + 0x10000]
+										: _ram[(addr & 0x7ff) + _sliceMiddle];
+				}
+				else if (addr < 0x1F00) // 256B region from 0x1e00 - 0x1eff
+				{
+					val = _isRomHigh ? RomImage[(addr & 0xff) + _sliceHigh + 0x10000]
+										: _ram[(addr & 0xff) + _sliceHigh];
+				}
+				else if (addr < 0x2000)      // 256B region from 0x1f00 - 0x1fff
+				{
+					val = RomImage[(addr & 0xff) + (RomImage.Length - 256)];
+					if (((_lastData & 0xe0) == 0x60) && ((_lastAddress >= 0x1000) ||
+						(_lastAddress < 0x200)))
+					{
+						_sliceHigh = (_sliceHigh & 0xf0ff) | ((addr & 0x8) << 8) |
+							((addr & 0x70) << 4);
+					}
+				}
+
+				_lastData = val;
+				_lastAddress = (ushort)(addr & 0x1fff);
+				return val;
 		}
 
 		public override byte ReadMemory(ushort addr)
 		{
-			byte val = 0;
-			if (addr < 0x1000)
-			{
-				val = base.ReadMemory(addr);
-				CheckBankSwitch(addr, val);
-			}
-			else
-			{
-				if ((addr & 0x1800) == 0x1000)           // 2K region from 0x1000 - 0x17ff
-				{
-					val = _myIsRomLow ? Core.Rom[(addr & 0x7ff) + _mySliceLow]
-									   : _myRam[(addr & 0x7ff) + _mySliceLow];
-				}
-				else if (((addr & 0x1fff) >= 0x1800) &&  // 1.5K region from 0x1800 - 0x1dff
-						((addr & 0x1fff) <= 0x1dff))
-				{
-					val = _myIsRomMiddle ? Core.Rom[(addr & 0x7ff) + _mySliceMiddle]
-										  : _myRam[(addr & 0x7ff) + _mySliceMiddle];
-				}
-				else if ((addr & 0x1f00) == 0x1e00)      // 256B region from 0x1e00 - 0x1eff
-				{
-					val = _myIsRomHigh ? Core.Rom[(addr & 0xff) + _mySliceHigh]
-										: _myRam[(addr & 0xff) + _mySliceHigh];
-				}
-				else if ((addr & 0x1f00) == 0x1f00)      // 256B region from 0x1f00 - 0x1fff
-				{
-					val = Core.Rom[(addr & 0xff) + (Core.Rom.Length - 256)];
-					if (((_myLastData & 0xe0) == 0x60) && ((_myLastAddress >= 0x1000) ||
-						(_myLastAddress < 0x200)))
-					{
-						_mySliceHigh = (_mySliceHigh & 0xf0ff) | ((addr & 0x8) << 8) |
-							((addr & 0x70) << 4);
-					}
-				}
-			}
+			return ReadMem(addr, false);
+		}
 
-			_myLastData = val;
-			_myLastAddress = addr & 0x1fff;
-			return val;
+		public override byte PeekMemory(ushort addr)
+		{
+			return ReadMem(addr, true);
 		}
 
 		public override void WriteMemory(ushort addr, byte value)
@@ -102,94 +199,91 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				base.WriteMemory(addr, value);
 				CheckBankSwitch(addr, value);
 			}
-			else
+			else if (addr < 0x1800) // 2K region at 0x1000 - 0x17ff
 			{
-				if (addr < 0x1800) // 2K region at 0x1000 - 0x17ff
+				if (!_isRomLow)
 				{
-					if (!_myIsRomLow)
-					{
-						_myRam[(addr & 0x7ff) + _mySliceLow] = value;
-					}
-				}
-				else if (((addr & 0x1fff) >= 0x1800) && // 1.5K region at 0x1800 - 0x1dff
-						((addr & 0x1fff) <= 0x1dff))
-				{
-					if (!_myIsRomMiddle)
-					{
-						_myRam[(addr & 0x7ff) + _mySliceMiddle] = value;
-					}
-				}
-				else if ((addr & 0x1f00) == 0x1e00) // 256B region at 0x1e00 - 0x1eff
-				{
-					if (!_myIsRomHigh)
-					{
-						_myRam[(addr & 0xff) + _mySliceHigh] = value;
-					}
-				}
-				else if ((addr & 0x1f00) == 0x1f00) // 256B region at 0x1f00 - 0x1fff
-				{
-					if (((_myLastData & 0xe0) == 0x60) &&
-					   ((_myLastAddress >= 0x1000) || (_myLastAddress < 0x200)))
-					{
-						_mySliceHigh = (_mySliceHigh & 0xf0ff) | ((addr & 0x8) << 8) |
-									  ((addr & 0x70) << 4);
-					}
+					_ram[(addr & 0x7ff) + _sliceLow] = value;
 				}
 			}
-			_myLastData = value;
-			_myLastAddress = addr & 0x1fff;
+			else if (addr < 0x1E00)
+			{
+				if (!_isRomMiddle)
+				{
+					_ram[(addr & 0x7ff) + _sliceMiddle] = value;
+				}
+			}
+			else if (addr < 0x1F00) // 256B region at 0x1e00 - 0x1eff
+			{
+				if (!_isRomHigh)
+				{
+					_ram[(addr & 0xff) + _sliceHigh] = value;
+				}
+			}
+			else if (addr < 0x2000) // 256B region at 0x1f00 - 0x1fff
+			{
+				if (((_lastData & 0xe0) == 0x60) &&
+					((_lastAddress >= 0x1000) || (_lastAddress < 0x200)))
+				{
+					_sliceHigh = (_sliceHigh & 0xf0ff) | ((addr & 0x8) << 8) |
+									((addr & 0x70) << 4);
+				}
+			}
+
+			_lastData = value;
+			_lastAddress = (ushort)(addr & 0x1fff);
 		}
 
 		private void CheckBankSwitch(ushort address, byte value)
 		{
-			if (((_myLastData & 0xe0) == 0x60) && // Switch lower/middle/upper bank
-				((_myLastAddress >= 0x1000) || (_myLastAddress < 0x200)))
+			if (((_lastData & 0xe0) == 0x60) && // Switch lower/middle/upper bank
+				((_lastAddress >= 0x1000) || (_lastAddress < 0x200)))
 			{
 				if ((address & 0x0f00) == 0x0c00) // Enable 256B of ROM at 0x1e00 - 0x1eff
 				{
-					_myIsRomHigh = true;
-					_mySliceHigh = (address & 0xff) << 8;
+					_isRomHigh = true;
+					_sliceHigh = (address & 0xff) << 8;
 				}
 				else if ((address & 0x0f00) == 0x0d00) // Enable 256B of RAM at 0x1e00 - 0x1eff
 				{
-					_myIsRomHigh = false;
-					_mySliceHigh = (address & 0x7f) << 8;
+					_isRomHigh = false;
+					_sliceHigh = (address & 0x7f) << 8;
 				}
 				else if ((address & 0x0f40) == 0x0e00) // Enable 2K of ROM at 0x1000 - 0x17ff
 				{
-					_myIsRomLow = true;
-					_mySliceLow = (address & 0x1f) << 11;
+					_isRomLow = true;
+					_sliceLow = (address & 0x1f) << 11;
 				}
 				else if ((address & 0x0f40) == 0x0e40) // Enable 2K of RAM at 0x1000 - 0x17ff
 				{
-					_myIsRomLow = false;
-					_mySliceLow = (address & 0xf) << 11;
+					_isRomLow = false;
+					_sliceLow = (address & 0xf) << 11;
 				}
 				else if ((address & 0x0f40) == 0x0f00) // Enable 1.5K of ROM at 0x1800 - 0x1dff
 				{
-					_myIsRomMiddle = true;
-					_mySliceMiddle = (address & 0x1f) << 11;
+					_isRomMiddle = true;
+					_sliceMiddle = (address & 0x1f) << 11;
 				}
 				else if ((address & 0x0f50) == 0x0f40)  // Enable 1.5K of RAM at 0x1800 - 0x1dff
 				{
-					_myIsRomMiddle = false;
-					_mySliceMiddle = (address & 0xf) << 11;
+					_isRomMiddle = false;
+					_sliceMiddle = (address & 0xf) << 11;
 				}
 				else if ((address & 0x0f00) == 0x0400) // Toggle bit A11 of lower block address
 				{
-					_mySliceLow = _mySliceLow ^ 0x800;
+					_sliceLow = _sliceLow ^ 0x800;
 				}
 				else if ((address & 0x0f00) == 0x0500) // Toggle bit A12 of lower block address
 				{
-					_mySliceLow = _mySliceLow ^ 0x1000;
+					_sliceLow = _sliceLow ^ 0x1000;
 				}
 				else if ((address & 0x0f00) == 0x0800) // Toggle bit A11 of middle block address
 				{
-					_mySliceMiddle = _mySliceMiddle ^ 0x800;
+					_sliceMiddle = _sliceMiddle ^ 0x800;
 				}
 				else if ((address & 0x0f00) == 0x0900) // Toggle bit A12 of middle block address
 				{
-					_mySliceMiddle = _mySliceMiddle ^ 0x1000;
+					_sliceMiddle = _sliceMiddle ^ 0x1000;
 				}
 
 				// Zero-page hotspots for upper page
@@ -198,13 +292,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				// 0x74 - 0x7f (0x80 bytes lower)
 				if ((address & 0xf75) == 0x74) // Enable 256B of ROM at 0x1e00 - 0x1eff
 				{
-					_myIsRomHigh = true;
-					_mySliceHigh = value << 8;
+					_isRomHigh = true;
+					_sliceHigh = value << 8;
 				}
 				else if ((address & 0xf75) == 0x75) // Enable 256B of RAM at 0x1e00 - 0x1eff
 				{
-					_myIsRomHigh = false;
-					_mySliceHigh = (value & 0x7f) << 8;
+					_isRomHigh = false;
+					_sliceHigh = (value & 0x7f) << 8;
 				}
 
 				// Zero-page hotspots for lower and middle blocks
@@ -214,23 +308,23 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				{
 					if ((value & 0xf0) == 0) // Enable 2K of ROM at 0x1000 - 0x17ff
 					{
-						_myIsRomLow = true;
-						_mySliceLow = (value & 0xf) << 11;
+						_isRomLow = true;
+						_sliceLow = (value & 0xf) << 11;
 					}
 					else if ((value & 0xf0) == 0x40) // Enable 2K of RAM at 0x1000 - 0x17ff
 					{
-						_myIsRomLow = false;
-						_mySliceLow = (value & 0xf) << 11;
+						_isRomLow = false;
+						_sliceLow = (value & 0xf) << 11;
 					}
 					else if ((value & 0xf0) == 0x90) // Enable 1.5K of ROM at 0x1800 - 0x1dff
 					{
-						_myIsRomMiddle = true;
-						_mySliceMiddle = ((value & 0xf) | 0x10) << 11;
+						_isRomMiddle = true;
+						_sliceMiddle = ((value & 0xf) | 0x10) << 11;
 					}
 					else if ((value & 0xf0) == 0xc0) // Enable 1.5K of RAM at 0x1800 - 0x1dff
 					{
-						_myIsRomMiddle = false;
-						_mySliceMiddle = (value & 0xf) << 11;
+						_isRomMiddle = false;
+						_sliceMiddle = (value & 0xf) << 11;
 					}
 				}
 			}
