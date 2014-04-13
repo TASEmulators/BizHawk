@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PCETileViewer));
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.bmpViewBGPal = new BizHawk.Client.EmuHawk.BmpView();
 			this.bmpViewBG = new BizHawk.Client.EmuHawk.BmpView();
@@ -125,6 +126,7 @@
 			this.Controls.Add(this.checkBoxVDC2);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
 			this.Name = "PCETileViewer";
 			this.Text = "Tile Viewer";
