@@ -94,64 +94,103 @@ namespace BizHawk.Client.EmuHawk
 
 				// Save States
 				case "Save State 0": 
-					SaveQuickSave("QuickSave0"); 
+					SaveQuickSave("QuickSave0");
+					Global.Config.SaveSlot = 0;
+					UpdateStatusSlots();
 					break;
 				case "Save State 1": 
-					SaveQuickSave("QuickSave1"); 
+					SaveQuickSave("QuickSave1");
+					Global.Config.SaveSlot = 1;
+					UpdateStatusSlots();
 					break;
 				case "Save State 2": 
-					SaveQuickSave("QuickSave2"); 
+					SaveQuickSave("QuickSave2");
+					Global.Config.SaveSlot = 2;
+					UpdateStatusSlots();
 					break;
 				case "Save State 3":
 					SaveQuickSave("QuickSave3");
+					Global.Config.SaveSlot = 3;
+					UpdateStatusSlots();
 					break;
 				case "Save State 4":
 					SaveQuickSave("QuickSave4");
+					Global.Config.SaveSlot = 4;
+					UpdateStatusSlots();
 					break;
 				case "Save State 5":
 					SaveQuickSave("QuickSave5");
+					Global.Config.SaveSlot = 5;
+					UpdateStatusSlots();
 					break;
 				case "Save State 6":
 					SaveQuickSave("QuickSave6");
+					Global.Config.SaveSlot = 6;
+					UpdateStatusSlots();
 					break;
 				case "Save State 7":
 					SaveQuickSave("QuickSave7");
+					Global.Config.SaveSlot = 7;
+					UpdateStatusSlots();
 					break;
 				case "Save State 8":
 					SaveQuickSave("QuickSave8");
+					Global.Config.SaveSlot = 8;
+					UpdateStatusSlots();
 					break;
 				case "Save State 9":
 					SaveQuickSave("QuickSave9");
+					Global.Config.SaveSlot = 9;
+					UpdateStatusSlots();
 					break;
 				case "Load State 0":
 					LoadQuickSave("QuickSave0");
+					Global.Config.SaveSlot = 0;
+					UpdateStatusSlots();
 					break;
 				case "Load State 1":
 					LoadQuickSave("QuickSave1");
+					Global.Config.SaveSlot = 1;
+					UpdateStatusSlots();
 					break;
 				case "Load State 2":
 					LoadQuickSave("QuickSave2");
+					Global.Config.SaveSlot = 2;
+					UpdateStatusSlots();
 					break;
 				case "Load State 3":
 					LoadQuickSave("QuickSave3");
+					Global.Config.SaveSlot = 3;
+					UpdateStatusSlots();
 					break;
 				case "Load State 4":
 					LoadQuickSave("QuickSave4");
+					Global.Config.SaveSlot = 4;
+					UpdateStatusSlots();
 					break;
 				case "Load State 5":
 					LoadQuickSave("QuickSave5");
+					Global.Config.SaveSlot = 5;
+					UpdateStatusSlots();
 					break;
 				case "Load State 6":
 					LoadQuickSave("QuickSave6");
+					Global.Config.SaveSlot = 6;
+					UpdateStatusSlots();
 					break;
 				case "Load State 7":
 					LoadQuickSave("QuickSave7");
+					Global.Config.SaveSlot = 7;
 					break;
 				case "Load State 8":
 					LoadQuickSave("QuickSave8");
+					Global.Config.SaveSlot = 8;
+					UpdateStatusSlots();
 					break;
 				case "Load State 9":
 					LoadQuickSave("QuickSave9");
+					Global.Config.SaveSlot = 9;
+					UpdateStatusSlots();
 					break;
 
 				case "Select State 0":
