@@ -76,10 +76,9 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void FrameSkip(int numFrames)
 		{
-			var frames = LuaInt(numFrames);
-			if (frames > 0)
+			if (numFrames > 0)
 			{
-				Global.Config.FrameSkip = frames;
+				Global.Config.FrameSkip = numFrames;
 				GlobalWin.MainForm.FrameSkipMessage();
 			}
 			else
