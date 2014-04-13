@@ -385,6 +385,10 @@ namespace BizHawk.Client.Common
 		public bool PCEBGViewerAutoload = false;
 		public int PCEBGViewerRefreshRate = 16;
 
+		// PCE CDL settings
+		public ToolDialogSettings PceCdlSettings = new ToolDialogSettings();
+		public RecentFiles RecentPceCdlFiles = new RecentFiles(8);
+
 		#region Cheats Dialog
 
 		public ToolDialogSettings CheatsSettings = new ToolDialogSettings();
