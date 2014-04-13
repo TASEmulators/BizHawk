@@ -143,43 +143,43 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private byte ReadMem(ushort addr, bool peek)
 		{
 			byte val = 0;
-				if (addr < 0x1000)
+			if (addr < 0x1000)
+			{
+				val = base.ReadMemory(addr);
+				if (!peek)
 				{
-					val = base.ReadMemory(addr);
-					if (!peek)
-					{
-						CheckBankSwitch(addr, val);
-					}
+					CheckBankSwitch(addr, val);
 				}
-				else if (addr < 0x1800) // 2K region from 0x1000 - 0x17ff
+			}
+			else if (addr < 0x1800) // 2K region from 0x1000 - 0x17ff
+			{
+				val = _isRomLow ? RomImage[(addr & 0x7ff) + _sliceLow]
+									: _ram[(addr & 0x7ff) + _sliceLow];
+			}
+			else if (addr < 0x1E00) // 1.5K region from 0x1800 - 0x1dff
+			{
+				val = _isRomMiddle ? RomImage[(addr & 0x7ff) + _sliceMiddle + 0x10000]
+									: _ram[(addr & 0x7ff) + _sliceMiddle];
+			}
+			else if (addr < 0x1F00) // 256B region from 0x1e00 - 0x1eff
+			{
+				val = _isRomHigh ? RomImage[(addr & 0xff) + _sliceHigh + 0x10000]
+									: _ram[(addr & 0xff) + _sliceHigh];
+			}
+			else if (addr < 0x2000)      // 256B region from 0x1f00 - 0x1fff
+			{
+				val = RomImage[(addr & 0xff) + (RomImage.Length - 256)];
+				if (((_lastData & 0xe0) == 0x60) && ((_lastAddress >= 0x1000) ||
+					(_lastAddress < 0x200)))
 				{
-					val = _isRomLow ? RomImage[(addr & 0x7ff) + _sliceLow]
-										: _ram[(addr & 0x7ff) + _sliceLow];
+					_sliceHigh = (_sliceHigh & 0xf0ff) | ((addr & 0x8) << 8) |
+						((addr & 0x70) << 4);
 				}
-				else if (addr < 0x1E00) // 1.5K region from 0x1800 - 0x1dff
-				{
-					val = _isRomMiddle ? RomImage[(addr & 0x7ff) + _sliceMiddle + 0x10000]
-										: _ram[(addr & 0x7ff) + _sliceMiddle];
-				}
-				else if (addr < 0x1F00) // 256B region from 0x1e00 - 0x1eff
-				{
-					val = _isRomHigh ? RomImage[(addr & 0xff) + _sliceHigh + 0x10000]
-										: _ram[(addr & 0xff) + _sliceHigh];
-				}
-				else if (addr < 0x2000)      // 256B region from 0x1f00 - 0x1fff
-				{
-					val = RomImage[(addr & 0xff) + (RomImage.Length - 256)];
-					if (((_lastData & 0xe0) == 0x60) && ((_lastAddress >= 0x1000) ||
-						(_lastAddress < 0x200)))
-					{
-						_sliceHigh = (_sliceHigh & 0xf0ff) | ((addr & 0x8) << 8) |
-							((addr & 0x70) << 4);
-					}
-				}
+			}
 
-				_lastData = val;
-				_lastAddress = (ushort)(addr & 0x1fff);
-				return val;
+			_lastData = val;
+			_lastAddress = (ushort)(addr & 0x1fff);
+			return val;
 		}
 
 		public override byte ReadMemory(ushort addr)
