@@ -61,7 +61,9 @@ namespace BizHawk.Client.EmuHawk
 			GGGameGenieToolbarItem.Visible =
 				Global.Game.System == "GG";
 
-			PceBgViewerToolbarItem.Visible = Global.Emulator is PCEngine;
+			PceCdlToolbarItem.Visible =
+				PceBgViewerToolbarItem.Visible =
+				Global.Emulator is PCEngine;
 			
 			GBGameGenieToolbarItem.Visible = 
 				GbGpuViewerToolBarItem.Visible =
@@ -80,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			NesDebuggerToolbarItem.Visible = !VersionInfo.INTERIM;
+			NesDebuggerToolbarItem.Visible = !VersionInfo.INTERIM && Global.Emulator.SystemId == "NES";
 		}
 
 		private void SetSize()
@@ -196,6 +198,11 @@ namespace BizHawk.Client.EmuHawk
 		private void GbGpuViewerToolBarItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<GBGPUView>();
+		}
+
+		private void PceCdlToolbarItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<PCECDL>();
 		}
 
 		private void PceBgViewerToolbarItem_Click(object sender, EventArgs e)
