@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
@@ -14,16 +15,35 @@ namespace BizHawk.Client.EmuHawk
 		// TODO
 		// Loading doesn't work
 		// Save
-		// Save Window position and size
-		// Restore settings
+		// Drag and drop cdl files
+		// Drag and drop cdl files onto Main window?
 		private PCEngine _emu;
 		private CodeDataLog _cdl;
-		
+
+		private int _defaultWidth;
+		private int _defaultHeight;
+
 		public PCECDL()
 		{
 			InitializeComponent();
 			TopMost = Global.Config.PceCdlSettings.TopMost;
+
+			Closing += (o, e) =>
+			{
+				SaveConfigSettings();
+			};
+
 			Restart();
+		}
+
+		private void PCECDL_Load(object sender, EventArgs e)
+		{
+			LoadConfigSettings();
+
+			if (Global.Config.RecentPceCdlFiles.AutoLoad)
+			{
+				LoadFileFromRecent(Global.Config.RecentPceCdlFiles.MostRecent);
+			}
 		}
 
 		public void UpdateValues()
@@ -112,7 +132,37 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void SaveConfigSettings()
+		{
+			Global.Config.PceCdlSettings.Wndx = Location.X;
+			Global.Config.PceCdlSettings.Wndy = Location.Y;
+			Global.Config.PceCdlSettings.Width = Right - Left;
+			Global.Config.PceCdlSettings.Height = Bottom - Top;
+		}
+
+		private void LoadConfigSettings()
+		{
+			// Size and Positioning
+			_defaultWidth = Size.Width;
+			_defaultHeight = Size.Height;
+
+			if (Global.Config.PceCdlSettings.UseWindowPosition)
+			{
+				Location = Global.Config.PceCdlSettings.WindowPosition;
+			}
+
+			if (Global.Config.PceCdlSettings.UseWindowSize)
+			{
+				Size = Global.Config.PceCdlSettings.WindowSize;
+			}
+		}
+
 		#region Events
+
+		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			SaveAsMenuItem.Enabled = _cdl != null;
+		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -139,11 +189,10 @@ namespace BizHawk.Client.EmuHawk
 			var result = MessageBox.Show(this, "OK to load new CDL?", "Query", MessageBoxButtons.YesNo);
 			if (result == DialogResult.Yes)
 			{
-				var ofd = new OpenFileDialog();
-				result = ofd.ShowDialog(this);
-				if (result == DialogResult.OK)
+				var file = ToolHelpers.GetCdlFileFromUser(string.Empty /*TODO*/);
+				if (file != null)
 				{
-					using (var fs = new FileStream(ofd.FileName, FileMode.Open, FileAccess.Read))
+					using (var fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read))
 					{
 						var newCDL = CodeDataLog.Load(fs);
 						if (!newCDL.CheckConsistency(_emu.Cpu.Mappings))
@@ -155,7 +204,7 @@ namespace BizHawk.Client.EmuHawk
 							_cdl = newCDL;
 							_emu.Cpu.CDL = _cdl;
 							UpdateDisplay();
-							Global.Config.RecentPceCdlFiles.Add(ofd.FileName);
+							Global.Config.RecentPceCdlFiles.Add(file.FullName);
 						}
 					}
 				}
@@ -175,14 +224,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				var sfd = new SaveFileDialog();
-				var result = sfd.ShowDialog(this);
-				if (result == DialogResult.OK)
+				var file = ToolHelpers.GetCdlSaveFileFromUser(string.Empty /* TODO */);
+				if (file != null)
 				{
-					using (var fs = new FileStream(sfd.FileName, FileMode.Create, FileAccess.Write))
+					using (var fs = new FileStream(file.FullName, FileMode.Create, FileAccess.Write))
 					{
 						_cdl.Save(fs);
-						Global.Config.RecentPceCdlFiles.Add(sfd.FileName);
+						Global.Config.RecentPceCdlFiles.Add(file.FullName);
 					}
 				}
 			}
@@ -196,11 +244,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				var ofd = new OpenFileDialog();
-				var result = ofd.ShowDialog(this);
-				if (result == DialogResult.OK)
+				var file = ToolHelpers.GetCdlFileFromUser(string.Empty /*TODO*/);
+				if (file != null)
 				{
-					using (var fs = new FileStream(ofd.FileName, FileMode.Open, FileAccess.Read))
+					using (var fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read))
 					{
 						var newCDL = CodeDataLog.Load(fs);
 						_cdl.LogicalOrFrom(newCDL);
@@ -274,12 +321,13 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.PceCdlSettings.FloatingWindow ^= true;
 		}
 
-		private void PCECDL_Load(object sender, EventArgs e)
+		private void RestoreDefaultSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.Config.RecentPceCdlFiles.AutoLoad)
-			{
-				LoadFileFromRecent(Global.Config.RecentPceCdlFiles.MostRecent);
-			}
+			Size = new Size(_defaultWidth, _defaultHeight);
+
+			Global.Config.PceCdlSettings.SaveWindowPosition = true;
+			Global.Config.PceCdlSettings.TopMost = TopMost = false;
+			Global.Config.PceCdlSettings.FloatingWindow = false;
 		}
 
 		private void LoggingActiveCheckbox_CheckedChanged(object sender, EventArgs e)

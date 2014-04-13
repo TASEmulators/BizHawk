@@ -47,8 +47,10 @@
 			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.CdlTextbox = new System.Windows.Forms.TextBox();
 			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+			this.RestoreDefaultSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.CdlTextbox = new System.Windows.Forms.TextBox();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -93,6 +95,7 @@
 			this.FileSubMenu.Name = "FileSubMenu";
 			this.FileSubMenu.Size = new System.Drawing.Size(37, 20);
 			this.FileSubMenu.Text = "&File";
+			this.FileSubMenu.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
 			// 
 			// NewMenuItem
 			// 
@@ -190,7 +193,9 @@
 			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.SaveWindowPositionMenuItem,
             this.AlwaysOnTopMenuItem,
-            this.FloatingWindowMenuItem});
+            this.FloatingWindowMenuItem,
+            this.toolStripSeparator3,
+            this.RestoreDefaultSettingsMenuItem});
 			this.OptionsSubMenu.Name = "OptionsSubMenu";
 			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
 			this.OptionsSubMenu.Text = "&Options";
@@ -199,16 +204,35 @@
 			// SaveWindowPositionMenuItem
 			// 
 			this.SaveWindowPositionMenuItem.Name = "SaveWindowPositionMenuItem";
-			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.SaveWindowPositionMenuItem.Text = "Save Window Position";
 			this.SaveWindowPositionMenuItem.Click += new System.EventHandler(this.SaveWindowPositionMenuItem_Click);
 			// 
 			// AlwaysOnTopMenuItem
 			// 
 			this.AlwaysOnTopMenuItem.Name = "AlwaysOnTopMenuItem";
-			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.AlwaysOnTopMenuItem.Text = "&Always On Top";
 			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
+			// 
+			// FloatingWindowMenuItem
+			// 
+			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
+			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.FloatingWindowMenuItem.Text = "&Floating Window";
+			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
+			// 
+			// toolStripSeparator3
+			// 
+			this.toolStripSeparator3.Name = "toolStripSeparator3";
+			this.toolStripSeparator3.Size = new System.Drawing.Size(196, 6);
+			// 
+			// RestoreDefaultSettingsMenuItem
+			// 
+			this.RestoreDefaultSettingsMenuItem.Name = "RestoreDefaultSettingsMenuItem";
+			this.RestoreDefaultSettingsMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.RestoreDefaultSettingsMenuItem.Text = "Restore Default Settings";
+			this.RestoreDefaultSettingsMenuItem.Click += new System.EventHandler(this.RestoreDefaultSettingsMenuItem_Click);
 			// 
 			// CdlTextbox
 			// 
@@ -222,13 +246,6 @@
 			this.CdlTextbox.Size = new System.Drawing.Size(292, 211);
 			this.CdlTextbox.TabIndex = 3;
 			// 
-			// FloatingWindowMenuItem
-			// 
-			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
-			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.FloatingWindowMenuItem.Text = "&Floating Window";
-			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
-			// 
 			// PCECDL
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -239,6 +256,7 @@
 			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
+			this.MinimumSize = new System.Drawing.Size(150, 130);
 			this.Name = "PCECDL";
 			this.Text = "Code Data Logger";
 			this.Load += new System.EventHandler(this.PCECDL_Load);
@@ -271,6 +289,8 @@
 		private System.Windows.Forms.ToolStripMenuItem SaveWindowPositionMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+		private System.Windows.Forms.ToolStripMenuItem RestoreDefaultSettingsMenuItem;
 
 	}
 }
