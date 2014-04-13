@@ -290,12 +290,11 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void SetWindowSize(int size)
 		{
-			var s = LuaInt(size);
-			if (s == 1 || s == 2 || s == 3 || s == 4 || s == 5 || s == 10)
+			if (size == 1 || size == 2 || size == 3 || size == 4 || size == 5 || size == 10)
 			{
-				Global.Config.TargetZoomFactor = s;
+				Global.Config.TargetZoomFactor = size;
 				GlobalWin.MainForm.FrameBufferResized();
-				GlobalWin.OSD.AddMessage("Window size set to " + s + "x");
+				GlobalWin.OSD.AddMessage("Window size set to " + size + "x");
 			}
 			else
 			{
@@ -309,10 +308,9 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void SpeedMode(int percent)
 		{
-			var speed = LuaInt(percent);
-			if (speed > 0 && speed < 6400)
+			if (percent > 0 && percent < 6400)
 			{
-				GlobalWin.MainForm.ClickSpeedItem(speed);
+				GlobalWin.MainForm.ClickSpeedItem(percent);
 			}
 			else
 			{
