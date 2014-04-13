@@ -344,6 +344,11 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Load<PceBgViewer>();
 			}
 
+			if (Global.Config.RecentPceCdlFiles.AutoLoad && Global.Emulator is PCEngine)
+			{
+				GlobalWin.Tools.Load<PCECDL>();
+			}
+
 			if (Global.Config.AutoLoadSNESGraphicsDebugger && Global.Emulator is LibsnesCore)
 			{
 				GlobalWin.Tools.Load<SNESGraphicsDebugger>();
