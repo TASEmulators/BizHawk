@@ -293,8 +293,9 @@
 			this.DGBSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.DGBsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GenesisSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.GenesisSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.vDPViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator26 = new System.Windows.Forms.ToolStripSeparator();
+			this.GenesisSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.HelpSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.OnlineHelpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ForumsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -387,7 +388,7 @@
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.MainformMenu.Location = new System.Drawing.Point(0, 0);
 			this.MainformMenu.Name = "MainformMenu";
-			this.MainformMenu.Size = new System.Drawing.Size(470, 61);
+			this.MainformMenu.Size = new System.Drawing.Size(470, 42);
 			this.MainformMenu.TabIndex = 0;
 			this.MainformMenu.Text = "menuStrip1";
 			this.MainformMenu.MenuActivate += new System.EventHandler(this.MainformMenu_MenuActivate);
@@ -1964,6 +1965,7 @@
 			// 
 			// NESGraphicSettingsMenuItem
 			// 
+			this.NESGraphicSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.tvIcon;
 			this.NESGraphicSettingsMenuItem.Name = "NESGraphicSettingsMenuItem";
 			this.NESGraphicSettingsMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.NESGraphicSettingsMenuItem.Text = "Graphics Settings";
@@ -1971,6 +1973,7 @@
 			// 
 			// NESSoundChannelsMenuItem
 			// 
+			this.NESSoundChannelsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.AudioHS;
 			this.NESSoundChannelsMenuItem.Name = "NESSoundChannelsMenuItem";
 			this.NESSoundChannelsMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.NESSoundChannelsMenuItem.Text = "Sound Channels";
@@ -2105,21 +2108,21 @@
 			// SMSregionExportToolStripMenuItem
 			// 
 			this.SMSregionExportToolStripMenuItem.Name = "SMSregionExportToolStripMenuItem";
-			this.SMSregionExportToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.SMSregionExportToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.SMSregionExportToolStripMenuItem.Text = "Export";
 			this.SMSregionExportToolStripMenuItem.Click += new System.EventHandler(this.SMS_RegionExport_Click);
 			// 
 			// SMSregionJapanToolStripMenuItem
 			// 
 			this.SMSregionJapanToolStripMenuItem.Name = "SMSregionJapanToolStripMenuItem";
-			this.SMSregionJapanToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.SMSregionJapanToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.SMSregionJapanToolStripMenuItem.Text = "Japan";
 			this.SMSregionJapanToolStripMenuItem.Click += new System.EventHandler(this.SMS_RegionJapan_Click);
 			// 
 			// SMSregionAutoToolStripMenuItem
 			// 
 			this.SMSregionAutoToolStripMenuItem.Name = "SMSregionAutoToolStripMenuItem";
-			this.SMSregionAutoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.SMSregionAutoToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.SMSregionAutoToolStripMenuItem.Text = "Auto";
 			this.SMSregionAutoToolStripMenuItem.Click += new System.EventHandler(this.SMS_RegionAuto_Click);
 			// 
@@ -2136,21 +2139,21 @@
 			// SMSdisplayNtscToolStripMenuItem
 			// 
 			this.SMSdisplayNtscToolStripMenuItem.Name = "SMSdisplayNtscToolStripMenuItem";
-			this.SMSdisplayNtscToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.SMSdisplayNtscToolStripMenuItem.Size = new System.Drawing.Size(104, 22);
 			this.SMSdisplayNtscToolStripMenuItem.Text = "NTSC";
 			this.SMSdisplayNtscToolStripMenuItem.Click += new System.EventHandler(this.SMS_DisplayNTSC_Click);
 			// 
 			// SMSdisplayPalToolStripMenuItem
 			// 
 			this.SMSdisplayPalToolStripMenuItem.Name = "SMSdisplayPalToolStripMenuItem";
-			this.SMSdisplayPalToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.SMSdisplayPalToolStripMenuItem.Size = new System.Drawing.Size(104, 22);
 			this.SMSdisplayPalToolStripMenuItem.Text = "PAL";
 			this.SMSdisplayPalToolStripMenuItem.Click += new System.EventHandler(this.SMS_DisplayPAL_Click);
 			// 
 			// SMSdisplayAutoToolStripMenuItem
 			// 
 			this.SMSdisplayAutoToolStripMenuItem.Name = "SMSdisplayAutoToolStripMenuItem";
-			this.SMSdisplayAutoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.SMSdisplayAutoToolStripMenuItem.Size = new System.Drawing.Size(104, 22);
 			this.SMSdisplayAutoToolStripMenuItem.Text = "Auto";
 			this.SMSdisplayAutoToolStripMenuItem.Click += new System.EventHandler(this.SMS_DisplayAuto_Click);
 			// 
@@ -2567,18 +2570,12 @@
 			// GenesisSubMenu
 			// 
 			this.GenesisSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.GenesisSettingsToolStripMenuItem,
-            this.vDPViewerToolStripMenuItem});
+            this.vDPViewerToolStripMenuItem,
+            this.toolStripSeparator26,
+            this.GenesisSettingsToolStripMenuItem});
 			this.GenesisSubMenu.Name = "GenesisSubMenu";
 			this.GenesisSubMenu.Size = new System.Drawing.Size(59, 19);
 			this.GenesisSubMenu.Text = "&Genesis";
-			// 
-			// GenesisSettingsToolStripMenuItem
-			// 
-			this.GenesisSettingsToolStripMenuItem.Name = "GenesisSettingsToolStripMenuItem";
-			this.GenesisSettingsToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
-			this.GenesisSettingsToolStripMenuItem.Text = "&Settings...";
-			this.GenesisSettingsToolStripMenuItem.Click += new System.EventHandler(this.GenesisSettingsToolStripMenuItem_Click);
 			// 
 			// vDPViewerToolStripMenuItem
 			// 
@@ -2586,6 +2583,18 @@
 			this.vDPViewerToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
 			this.vDPViewerToolStripMenuItem.Text = "&VDP Viewer";
 			this.vDPViewerToolStripMenuItem.Click += new System.EventHandler(this.vDPViewerToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator26
+			// 
+			this.toolStripSeparator26.Name = "toolStripSeparator26";
+			this.toolStripSeparator26.Size = new System.Drawing.Size(131, 6);
+			// 
+			// GenesisSettingsToolStripMenuItem
+			// 
+			this.GenesisSettingsToolStripMenuItem.Name = "GenesisSettingsToolStripMenuItem";
+			this.GenesisSettingsToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+			this.GenesisSettingsToolStripMenuItem.Text = "&Settings...";
+			this.GenesisSettingsToolStripMenuItem.Click += new System.EventHandler(this.GenesisSettingsToolStripMenuItem_Click);
 			// 
 			// HelpSubMenu
 			// 
@@ -3475,6 +3484,7 @@
 		private System.Windows.Forms.ToolStripMenuItem SMSdisplayNtscToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSdisplayPalToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSdisplayAutoToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator26;
 	}
 }
 

@@ -353,6 +353,10 @@ namespace BizHawk.Client.Common
 		public ToolDialogSettings PceVdpSettings = new ToolDialogSettings();
 		public bool PceVdpAutoLoad = false;
 
+		// Genesis VDP Viewer Settings
+		public ToolDialogSettings GenVdpSettings = new ToolDialogSettings();
+		public bool GenVdpAutoLoad = false;
+
 		// NESPPU Settings
 		public ToolDialogSettings NesPPUSettings = new ToolDialogSettings();
 		public bool AutoLoadNESPPU = false;

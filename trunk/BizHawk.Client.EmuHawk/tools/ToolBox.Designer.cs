@@ -47,12 +47,13 @@
 			this.GGGameGenieToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.GbGpuViewerToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.GBGameGenieToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.PceTileToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.PceCdlToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.PceBgViewerToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.GbaGpuViewerToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.GenesisGameGenieToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.SmsVdpToolbarItem = new System.Windows.Forms.ToolStripButton();
-			this.PceTileToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.GenesisVdpToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.ToolBoxStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -88,6 +89,7 @@
             this.PceCdlToolbarItem,
             this.PceBgViewerToolbarItem,
             this.GbaGpuViewerToolBarItem,
+            this.GenesisVdpToolBarItem,
             this.GenesisGameGenieToolBarItem,
             this.SmsVdpToolbarItem});
 			this.ToolBoxStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
@@ -261,6 +263,16 @@
 			this.GBGameGenieToolbarItem.ToolTipText = "Gameboy Game Genie Encoder/Decoder";
 			this.GBGameGenieToolbarItem.Click += new System.EventHandler(this.GBGameGenieToolbarItem_Click);
 			// 
+			// PceTileToolbarItem
+			// 
+			this.PceTileToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pcejin1;
+			this.PceTileToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.PceTileToolbarItem.Name = "PceTileToolbarItem";
+			this.PceTileToolbarItem.Size = new System.Drawing.Size(46, 20);
+			this.PceTileToolbarItem.Text = "Tile";
+			this.PceTileToolbarItem.ToolTipText = "PC Engine Tile Viewer";
+			this.PceTileToolbarItem.Click += new System.EventHandler(this.PceTileToolbarItem_Click);
+			// 
 			// PceCdlToolbarItem
 			// 
 			this.PceCdlToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pcejin1;
@@ -311,15 +323,15 @@
 			this.SmsVdpToolbarItem.ToolTipText = "SMS VDP Viewer";
 			this.SmsVdpToolbarItem.Click += new System.EventHandler(this.SmsVdpToolbarItem_Click);
 			// 
-			// PceTileToolbarItem
+			// GenesisVdpToolBarItem
 			// 
-			this.PceTileToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pcejin1;
-			this.PceTileToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.PceTileToolbarItem.Name = "PceTileToolbarItem";
-			this.PceTileToolbarItem.Size = new System.Drawing.Size(46, 20);
-			this.PceTileToolbarItem.Text = "Tile";
-			this.PceTileToolbarItem.ToolTipText = "PC Engine Tile Viewer";
-			this.PceTileToolbarItem.Click += new System.EventHandler(this.PceTileToolbarItem_Click);
+			this.GenesisVdpToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GenesisControllerIcon;
+			this.GenesisVdpToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.GenesisVdpToolBarItem.Name = "GenesisVdpToolBarItem";
+			this.GenesisVdpToolBarItem.Size = new System.Drawing.Size(49, 20);
+			this.GenesisVdpToolBarItem.Text = "VDP";
+			this.GenesisVdpToolBarItem.ToolTipText = "Genesis VDP/Tile Viewer";
+			this.GenesisVdpToolBarItem.Click += new System.EventHandler(this.GenesisVdpToolBarItem_Click);
 			// 
 			// ToolBox
 			// 
@@ -365,6 +377,7 @@
 		private System.Windows.Forms.ToolStripButton PceCdlToolbarItem;
 		private System.Windows.Forms.ToolStripButton SmsVdpToolbarItem;
 		private System.Windows.Forms.ToolStripButton PceTileToolbarItem;
+		private System.Windows.Forms.ToolStripButton GenesisVdpToolBarItem;
 
 	}
 }

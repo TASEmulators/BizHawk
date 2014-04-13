@@ -10,6 +10,7 @@ using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Calculators;
+using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.NES;
@@ -357,6 +358,11 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.RecentPceCdlFiles.AutoLoad && Global.Emulator is PCEngine)
 			{
 				GlobalWin.Tools.Load<PCECDL>();
+			}
+
+			if (Global.Config.GenVdpAutoLoad && Global.Emulator is GPGX)
+			{
+				GlobalWin.Tools.Load<GenVDPViewer>();
 			}
 
 			if (Global.Config.AutoLoadSNESGraphicsDebugger && Global.Emulator is LibsnesCore)
@@ -3098,8 +3104,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void vDPViewerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.Load<BizHawk.Client.EmuHawk.tools.Genesis.VDPViewer>();
+			GlobalWin.Tools.Load<GenVDPViewer>();
 		}
-
 	}
 }

@@ -10,15 +10,15 @@ using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using System.Drawing.Imaging;
 
-namespace BizHawk.Client.EmuHawk.tools.Genesis
+namespace BizHawk.Client.EmuHawk
 {
-	public partial class VDPViewer : Form, IToolForm
+	public partial class GenVDPViewer : Form, IToolForm
 	{
 		private LibGPGX.VDPView View = new LibGPGX.VDPView();
 		private GPGX Emu;
 		int palindex = 0;
 
-		public VDPViewer()
+		public GenVDPViewer()
 		{
 			InitializeComponent();
 			bmpViewTiles.ChangeBitmapSize(512, 256);
@@ -177,6 +177,85 @@ namespace BizHawk.Client.EmuHawk.tools.Genesis
 					var bv = found as BmpView;
 					Clipboard.SetImage(bv.bmp);
 				}
+			}
+		}
+
+		private void saveBGAScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			bmpViewNTA.SaveFile();
+		}
+
+		private void saveBGBScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			bmpViewNTB.SaveFile();
+		}
+
+		private void saveTilesScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			bmpViewTiles.SaveFile();
+		}
+
+		private void saveWindowScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			bmpViewNTW.SaveFile();
+		}
+
+		private void savePaletteScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			bmpViewPal.SaveFile();
+		}
+
+		private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Close();
+		}
+
+		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			AutoloadMenuItem.Checked = Global.Config.GenVdpAutoLoad;
+			SaveWindowPositionMenuItem.Checked = Global.Config.GenVdpSettings.SaveWindowPosition;
+			AlwaysOnTopMenuItem.Checked = Global.Config.GenVdpSettings.TopMost;
+			FloatingWindowMenuItem.Checked = Global.Config.GenVdpSettings.FloatingWindow;
+		}
+
+		private void AutoloadMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GenVdpAutoLoad ^= true;
+		}
+
+		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GenVdpSettings.SaveWindowPosition ^= true;
+		}
+
+		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
+		{
+			TopMost = Global.Config.GenVdpSettings.TopMost ^= true;
+		}
+
+		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GenVdpSettings.FloatingWindow ^= true;
+			RefreshFloatingWindowControl();
+		}
+
+		private void RefreshFloatingWindowControl()
+		{
+			Owner = Global.Config.GenVdpSettings.FloatingWindow ? null : GlobalWin.MainForm;
+		}
+
+		protected override void OnShown(EventArgs e)
+		{
+			RefreshFloatingWindowControl();
+			base.OnShown(e);
+		}
+
+		private void GenVDPViewer_Load(object sender, EventArgs e)
+		{
+			TopMost = Global.Config.GenVdpSettings.TopMost;
+			if (Global.Config.GenVdpSettings.UseWindowPosition)
+			{
+				Location = Global.Config.GenVdpSettings.WindowPosition;
 			}
 		}
 	}

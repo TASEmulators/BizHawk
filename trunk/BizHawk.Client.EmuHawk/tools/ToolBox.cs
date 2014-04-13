@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Calculators;
+using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
@@ -74,6 +74,7 @@ namespace BizHawk.Client.EmuHawk
 			GbaGpuViewerToolBarItem.Visible = Global.Emulator is GBA;
 
 			GenesisGameGenieToolBarItem.Visible = Global.Emulator.SystemId == "GEN" && VersionInfo.INTERIM;
+			GenesisVdpToolBarItem.Visible = Global.Emulator is GPGX;
 
 			SmsVdpToolbarItem.Visible = Global.Emulator is SMS;
 
@@ -232,6 +233,11 @@ namespace BizHawk.Client.EmuHawk
 		private void PceTileToolbarItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<PCETileViewer>();
+		}
+
+		private void GenesisVdpToolBarItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<GenVDPViewer>();
 		}
 
 		#endregion
