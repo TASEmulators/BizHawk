@@ -76,7 +76,7 @@
             this.OK.Text = "&Ok";
             this.toolTip1.SetToolTip(this.OK, "Load selected movie");
             this.OK.UseVisualStyleBackColor = true;
-            this.OK.Click += new System.EventHandler(this.OK_Click);
+            this.OK.Click += new System.EventHandler(this.Ok_Click);
             // 
             // BrowseMovies
             // 
@@ -144,7 +144,7 @@
             this.SubtitlesBtn.TabIndex = 20;
             this.SubtitlesBtn.Text = "Subtitles";
             this.SubtitlesBtn.UseVisualStyleBackColor = true;
-            this.SubtitlesBtn.Click += new System.EventHandler(this.button2_Click);
+            this.SubtitlesBtn.Click += new System.EventHandler(this.SubtitlesBtn_Click);
             // 
             // CommentsBtn
             // 
@@ -156,7 +156,7 @@
             this.CommentsBtn.TabIndex = 15;
             this.CommentsBtn.Text = "Comments";
             this.CommentsBtn.UseVisualStyleBackColor = true;
-            this.CommentsBtn.Click += new System.EventHandler(this.button1_Click);
+            this.CommentsBtn.Click += new System.EventHandler(this.CommentsBtn_Click);
             // 
             // MovieCount
             // 

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.IO;
 
-using BizHawk.Common;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -26,90 +26,51 @@ namespace BizHawk.Client.EmuHawk
 			MovieView.QueryItemText += MovieView_QueryItemText;
 			MovieView.VirtualMode = true;
 			_sortReverse = false;
-			_sortedCol = String.Empty;
+			_sortedCol = string.Empty;
 
 			_sortDetailsReverse = false;
-			_sortedDetailsCol = String.Empty;
+			_sortedDetailsCol = string.Empty;
 		}
 
-		void MovieView_QueryItemText(int index, int column, out string text)
+		private void PlayMovie_Load(object sender, EventArgs e)
 		{
-			text = String.Empty;
-			if (column == 0) //File
+			IncludeSubDirectories.Checked = Global.Config.PlayMovie_IncludeSubdir;
+			ShowStateFiles.Checked = Global.Config.PlayMovie_ShowStateFiles;
+			MatchGameNameCheckBox.Checked = Global.Config.PlayMovie_MatchGameName;
+			ScanFiles();
+			PreHighlightMovie();
+		}
+
+		private void MovieView_QueryItemText(int index, int column, out string text)
+		{
+			text = string.Empty;
+			if (column == 0) // File
 			{
 				text = Path.GetFileName(_movieList[index].Filename);
 			}
-			if (column == 1) //System
+
+			if (column == 1) // System
 			{
 				text = _movieList[index].Header.SystemID;
 			}
-			if (column == 2) //Game
+
+			if (column == 2) // Game
 			{
 				text = _movieList[index].Header.GameName;
 			}
-			if (column == 3) //Time
+
+			if (column == 3) // Time
 			{
 				text = _movieList[index].Time.ToString(@"hh\:mm\:ss\.fff");
 			}
 		}
 
-		private void Cancel_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
 		private void Run()
 		{
 			var indices = MovieView.SelectedIndices;
-			if (indices.Count > 0) //Import file if necessary
+			if (indices.Count > 0) // Import file if necessary
 			{
 				GlobalWin.MainForm.StartNewMovie(_movieList[MovieView.SelectedIndices[0]], false);
-			}
-		}
-
-		private void OK_Click(object sender, EventArgs e)
-		{
-			Run();
-			Global.MovieSession.ReadOnly = ReadOnlyCheckBox.Checked;
-			Close();
-		}
-
-		private void BrowseMovies_Click(object sender, EventArgs e)
-		{
-			var ofd = new OpenFileDialog { InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null) };
-			var filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
-			ofd.Filter = filter;
-
-			var result = ofd.ShowHawkDialog();
-			if (result == DialogResult.OK)
-			{
-				var file = new FileInfo(ofd.FileName);
-				if (!file.Exists)
-				{
-					return;
-				}
-				else
-				{
-					if (file.Extension.ToUpper() == "STATE")
-					{
-						var movie = new Movie(file.FullName);
-						movie.Load(); //State files will have to load everything unfortunately
-						if (movie.FrameCount == 0)
-						{
-							MessageBox.Show("No input log detected in this savestate, aborting", "Can not load file", MessageBoxButtons.OK,
-											MessageBoxIcon.Hand);
-							return;
-						}
-					}
-
-					int? index = AddMovieToList(ofd.FileName, true);
-					if (index.HasValue)
-					{
-						MovieView.SelectedIndices.Clear();
-						MovieView.setSelection(index.Value);
-						MovieView.SelectItem(index.Value, true);
-					}
-				}
 			}
 		}
 
@@ -122,12 +83,12 @@ namespace BizHawk.Client.EmuHawk
 					if (!IsDuplicateOf(filename).HasValue)
 					{
 						var movie = new Movie(file.CanonicalFullPath);
-						movie.Load(); //State files will have to load everything unfortunately
+						movie.Load(); // State files will have to load everything unfortunately
 						if (movie.FrameCount > 0)
 						{
 							_movieList.Add(movie);
 							_sortReverse = false;
-							_sortedCol = String.Empty;
+							_sortedCol = string.Empty;
 						}
 					}
 				}
@@ -142,27 +103,26 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return null;
 				}
-				else
+				
+				var index = IsDuplicateOf(filename);
+				if (!index.HasValue)
 				{
-					int? index = IsDuplicateOf(filename);
-					if (!index.HasValue)
-					{
-						PreLoadMovieFile(file, force);
-						MovieView.ItemCount = _movieList.Count;
-						UpdateList();
+					PreLoadMovieFile(file, force);
+					MovieView.ItemCount = _movieList.Count;
+					UpdateList();
 
-						_sortReverse = false;
-						_sortedCol = String.Empty;
-						index = _movieList.Count - 1;
-					}
-					return index;
+					_sortReverse = false;
+					_sortedCol = string.Empty;
+					index = _movieList.Count - 1;
 				}
+
+				return index;
 			}
 		}
 
 		private int? IsDuplicateOf(string filename)
 		{
-			for (int i = 0; i < _movieList.Count; i++)
+			for (var i = 0; i < _movieList.Count; i++)
 			{
 				if (_movieList[i].Filename == filename)
 				{
@@ -179,7 +139,7 @@ namespace BizHawk.Client.EmuHawk
 			movie.PreLoadText(hf);
 			try
 			{
-				//Don't do this from browse
+				// Don't do this from browse
 				if (movie.Header[HeaderKeys.GAMENAME] == Global.Game.Name ||
 					Global.Config.PlayMovie_MatchGameName == false || force)
 				{
@@ -195,72 +155,76 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateList()
 		{
 			MovieView.Refresh();
-			UpdateMovieCount();
-		}
-
-		private void UpdateMovieCount()
-		{
 			MovieCount.Text = _movieList.Count + " movie"
-				+ (_movieList.Count != 1 ? "s" : String.Empty);
+				+ (_movieList.Count != 1 ? "s" : string.Empty);
 		}
 
 		private void PreHighlightMovie()
 		{
-			if (Global.Game == null) return;
-			var Indices = new List<int>();
+			if (Global.Game == null)
+			{
+				return;
+			}
 
-			//Pull out matching names
-			for (int i = 0; i < _movieList.Count; i++)
+			var indices = new List<int>();
+
+			// Pull out matching names
+			for (var i = 0; i < _movieList.Count; i++)
 			{
 				if (PathManager.FilesystemSafeName(Global.Game) == _movieList[i].Header.GameName)
 				{
-					Indices.Add(i);
+					indices.Add(i);
 				}
 			}
-			if (Indices.Count == 0) return;
-			if (Indices.Count == 1)
+
+			if (indices.Count == 0)
 			{
-				HighlightMovie(Indices[0]);
 				return;
 			}
 
-			//Prefer tas files
-			var TAS = new List<int>();
-			for (int i = 0; i < Indices.Count; i++)
+			if (indices.Count == 1)
 			{
-				if (Path.GetExtension(_movieList[Indices[i]].Filename).ToUpper() == "." + Global.Config.MovieExtension)
+				HighlightMovie(indices[0]);
+				return;
+			}
+
+			// Prefer tas files
+			var tas = new List<int>();
+			for (var i = 0; i < indices.Count; i++)
+			{
+				if (Path.GetExtension(_movieList[indices[i]].Filename).ToUpper() == "." + Global.Config.MovieExtension)
 				{
-					TAS.Add(i);
+					tas.Add(i);
 				}
 			}
 
-			if (TAS.Count == 1)
+			if (tas.Count == 1)
 			{
-				HighlightMovie(TAS[0]);
+				HighlightMovie(tas[0]);
 				return;
 			}
-			else if (TAS.Count > 1)
+			
+			if (tas.Count > 1)
 			{
-				Indices = new List<int>(TAS);
+				indices = new List<int>(tas);
 			}
 
-			//Final tie breaker - Last used file
-			var file = new FileInfo(_movieList[Indices[0]].Filename);
+			// Final tie breaker - Last used file
+			var file = new FileInfo(_movieList[indices[0]].Filename);
 			var time = file.LastAccessTime;
-			int mostRecent = Indices.First();
-			for (int i = 1; i < Indices.Count; i++)
+			var mostRecent = indices.First();
+			for (var i = 1; i < indices.Count; i++)
 			{
-				file = new FileInfo(_movieList[Indices[0]].Filename);
+				file = new FileInfo(_movieList[indices[0]].Filename);
 				if (file.LastAccessTime > time)
 				{
 					time = file.LastAccessTime;
-					mostRecent = Indices[i];
+					mostRecent = indices[i];
 				}
 			}
 
 			HighlightMovie(mostRecent);
 			return;
-
 		}
 
 		private void HighlightMovie(int index)
@@ -270,16 +234,11 @@ namespace BizHawk.Client.EmuHawk
 			MovieView.SelectItem(index, true);
 		}
 
-		private void ClearList()
+		private void ScanFiles()
 		{
 			_movieList.Clear();
 			MovieView.ItemCount = 0;
 			MovieView.Update();
-		}
-
-		private void ScanFiles()
-		{
-			ClearList();
 
 			var directory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
 			if (!Directory.Exists(directory))
@@ -295,7 +254,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Directory.GetFiles(directory, "*.state")
 					.ToList()
-					.ForEach(file => AddStateToList(file));
+					.ForEach(AddStateToList);
 			}
 
 			if (Global.Config.PlayMovie_IncludeSubdir)
@@ -309,113 +268,14 @@ namespace BizHawk.Client.EmuHawk
 
 					Directory.GetFiles(dir, "*.state")
 					.ToList()
-					.ForEach(file => AddStateToList(file));
+					.ForEach(AddStateToList);
 				}
 			}
 		}
 
-		private void PlayMovie_Load(object sender, EventArgs e)
-		{
-			IncludeSubDirectories.Checked = Global.Config.PlayMovie_IncludeSubdir;
-			ShowStateFiles.Checked = Global.Config.PlayMovie_ShowStateFiles;
-			MatchGameNameCheckBox.Checked = Global.Config.PlayMovie_MatchGameName;
-			ScanFiles();
-			PreHighlightMovie();
-		}
+		#region Events
 
-		private void MovieView_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			toolTip1.SetToolTip(DetailsView, String.Empty);
-			DetailsView.Items.Clear();
-			if (MovieView.SelectedIndices.Count < 1)
-			{
-				OK.Enabled = false;
-				return;
-			}
-			else
-			{
-				OK.Enabled = true;
-			}
-
-			int firstIndex = MovieView.SelectedIndices[0];
-			MovieView.ensureVisible(firstIndex);
-
-			foreach (var kvp in _movieList[firstIndex].Header)
-			{
-				var item = new ListViewItem(kvp.Key);
-				item.SubItems.Add(kvp.Value);
-
-				switch (kvp.Key)
-				{
-					case HeaderKeys.SHA1:
-						if (kvp.Value != Global.Game.Hash)
-						{
-							item.BackColor = Color.Pink;
-							toolTip1.SetToolTip(DetailsView, "Current SHA1: " + Global.Game.Hash);
-						}
-						break;
-					case HeaderKeys.MOVIEVERSION:
-						if (kvp.Value != HeaderKeys.MovieVersion1)
-						{
-							item.BackColor = Color.Yellow;
-						}
-						break;
-					case HeaderKeys.EMULATIONVERSION:
-						if (kvp.Value != VersionInfo.GetEmuVersion())
-						{
-							item.BackColor = Color.Yellow;
-						}
-						break;
-					case HeaderKeys.PLATFORM:
-						if (kvp.Value != Global.Game.System)
-						{
-							item.BackColor = Color.Pink;
-						}
-						break;
-				}
-
-				DetailsView.Items.Add(item);
-			}
-
-			var FpsItem = new ListViewItem("Fps");
-			FpsItem.SubItems.Add(String.Format("{0:0.#######}", _movieList[firstIndex].Fps));
-			DetailsView.Items.Add(FpsItem);
-
-			var FramesItem = new ListViewItem("Frames");
-			FramesItem.SubItems.Add(_movieList[firstIndex].FrameCount.ToString());
-			DetailsView.Items.Add(FramesItem);
-			CommentsBtn.Enabled = _movieList[firstIndex].Header.Comments.Any();
-			SubtitlesBtn.Enabled = _movieList[firstIndex].Header.Subtitles.Any();
-		}
-
-
-		private void button1_Click(object sender, EventArgs e)
-		{
-			var indices = MovieView.SelectedIndices;
-			if (indices.Count > 0)
-			{
-				var form = new EditCommentsForm();
-				form.GetMovie(_movieList[MovieView.SelectedIndices[0]]);
-				form.Show();
-			}
-		}
-
-		private void button2_Click(object sender, EventArgs e)
-		{
-			var indices = MovieView.SelectedIndices;
-			if (indices.Count > 0)
-			{
-				var s = new EditSubtitlesForm { ReadOnly = true };
-				s.GetMovie(_movieList[MovieView.SelectedIndices[0]]);
-				s.Show();
-			}
-		}
-
-		private void MovieView_DoubleClick(object sender, EventArgs e)
-		{
-			Run();
-			Close();
-		}
+		#region Movie List
 
 		private void MovieView_DragEnter(object sender, DragEventArgs e)
 		{
@@ -432,14 +292,38 @@ namespace BizHawk.Client.EmuHawk
 				.ForEach(path => AddMovieToList(path, force: true));
 		}
 
-		private void MovieView_ColumnClick(object sender, ColumnClickEventArgs e)
+		private void MovieView_KeyDown(object sender, KeyEventArgs e)
 		{
-			OrderColumn(e.Column);
+			if (e.Control && e.KeyCode == Keys.C)
+			{
+				var indexes = MovieView.SelectedIndices;
+				if (indexes.Count > 0)
+				{
+					var copyStr = new StringBuilder();
+					foreach (int index in indexes)
+					{
+						copyStr
+							.Append(_movieList[index].Filename).Append('\t')
+							.Append(_movieList[index].Header.SystemID).Append('\t')
+							.Append(_movieList[index].Header.GameName).Append('\t')
+							.Append(_movieList[index].Time.ToString(@"hh\:mm\:ss\.fff"))
+							.AppendLine();
+
+						Clipboard.SetDataObject(copyStr.ToString());
+					}
+				}
+			}
 		}
 
-		private void OrderColumn(int columnToOrder)
+		private void MovieView_DoubleClick(object sender, EventArgs e)
 		{
-			var columnName = MovieView.Columns[columnToOrder].Text;
+			Run();
+			Close();
+		}
+
+		private void MovieView_ColumnClick(object sender, ColumnClickEventArgs e)
+		{
+			var columnName = MovieView.Columns[e.Column].Text;
 			if (_sortedCol != columnName)
 			{
 				_sortReverse = false;
@@ -534,6 +418,214 @@ namespace BizHawk.Client.EmuHawk
 			MovieView.Refresh();
 		}
 
+		private void MovieView_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			toolTip1.SetToolTip(DetailsView, string.Empty);
+			DetailsView.Items.Clear();
+			if (MovieView.SelectedIndices.Count < 1)
+			{
+				OK.Enabled = false;
+				return;
+			}
+
+			OK.Enabled = true;
+
+			var firstIndex = MovieView.SelectedIndices[0];
+			MovieView.ensureVisible(firstIndex);
+
+			foreach (var kvp in _movieList[firstIndex].Header)
+			{
+				var item = new ListViewItem(kvp.Key);
+				item.SubItems.Add(kvp.Value);
+
+				switch (kvp.Key)
+				{
+					case HeaderKeys.SHA1:
+						if (kvp.Value != Global.Game.Hash)
+						{
+							item.BackColor = Color.Pink;
+							toolTip1.SetToolTip(DetailsView, "Current SHA1: " + Global.Game.Hash);
+						}
+						break;
+					case HeaderKeys.MOVIEVERSION:
+						if (kvp.Value != HeaderKeys.MovieVersion1)
+						{
+							item.BackColor = Color.Yellow;
+						}
+						break;
+					case HeaderKeys.EMULATIONVERSION:
+						if (kvp.Value != VersionInfo.GetEmuVersion())
+						{
+							item.BackColor = Color.Yellow;
+						}
+						break;
+					case HeaderKeys.PLATFORM:
+						if (kvp.Value != Global.Game.System)
+						{
+							item.BackColor = Color.Pink;
+						}
+						break;
+				}
+
+				DetailsView.Items.Add(item);
+			}
+
+			var FpsItem = new ListViewItem("Fps");
+			FpsItem.SubItems.Add(string.Format("{0:0.#######}", _movieList[firstIndex].Fps));
+			DetailsView.Items.Add(FpsItem);
+
+			var FramesItem = new ListViewItem("Frames");
+			FramesItem.SubItems.Add(_movieList[firstIndex].FrameCount.ToString());
+			DetailsView.Items.Add(FramesItem);
+			CommentsBtn.Enabled = _movieList[firstIndex].Header.Comments.Any();
+			SubtitlesBtn.Enabled = _movieList[firstIndex].Header.Subtitles.Any();
+		}
+
+		#endregion
+
+		#region Details
+
+		private void DetailsView_ColumnClick(object sender, ColumnClickEventArgs e)
+		{
+			var detailsList = new List<MovieDetails>();
+			for (var i = 0; i < DetailsView.Items.Count; i++)
+			{
+				detailsList.Add(new MovieDetails
+				{
+					Keys = DetailsView.Items[i].Text,
+					Values = DetailsView.Items[i].SubItems[1].Text,
+					BackgroundColor = DetailsView.Items[i].BackColor
+				});
+			}
+
+			var columnName = DetailsView.Columns[e.Column].Text;
+			if (_sortedDetailsCol != columnName)
+			{
+				_sortDetailsReverse = false;
+			}
+
+			switch (columnName)
+			{
+				// Header, Value
+				case "Header":
+					if (_sortDetailsReverse)
+					{
+						detailsList = detailsList
+							.OrderByDescending(x => x.Keys)
+							.ThenBy(x => x.Values).ToList();
+					}
+					else
+					{
+						detailsList = detailsList
+						   .OrderBy(x => x.Keys)
+						   .ThenBy(x => x.Values).ToList();
+					}
+
+					break;
+				case "Value":
+					if (_sortDetailsReverse)
+					{
+						detailsList = detailsList
+							.OrderByDescending(x => x.Values)
+							.ThenBy(x => x.Keys).ToList();
+					}
+					else
+					{
+						detailsList = detailsList
+							.OrderBy(x => x.Values)
+							.ThenBy(x => x.Keys).ToList();
+					}
+
+					break;
+			}
+
+			DetailsView.Items.Clear();
+			foreach (var detail in detailsList)
+			{
+				var item = new ListViewItem { Text = detail.Keys, BackColor = detail.BackgroundColor };
+				item.SubItems.Add(detail.Values);
+				DetailsView.Items.Add(item);
+			}
+
+			_sortedDetailsCol = columnName;
+			_sortDetailsReverse = !_sortDetailsReverse;
+		}
+
+		private void CommentsBtn_Click(object sender, EventArgs e)
+		{
+			var indices = MovieView.SelectedIndices;
+			if (indices.Count > 0)
+			{
+				var form = new EditCommentsForm();
+				form.GetMovie(_movieList[MovieView.SelectedIndices[0]]);
+				form.Show();
+			}
+		}
+
+		private void SubtitlesBtn_Click(object sender, EventArgs e)
+		{
+			var indices = MovieView.SelectedIndices;
+			if (indices.Count > 0)
+			{
+				var s = new EditSubtitlesForm { ReadOnly = true };
+				s.GetMovie(_movieList[MovieView.SelectedIndices[0]]);
+				s.Show();
+			}
+		}
+
+		#endregion
+
+		#region Misc Widgets
+
+		private void BrowseMovies_Click(object sender, EventArgs e)
+		{
+			var ofd = new OpenFileDialog
+			{
+				Filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*",
+				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null)
+			};
+
+			var result = ofd.ShowHawkDialog();
+			if (result == DialogResult.OK)
+			{
+				var file = new FileInfo(ofd.FileName);
+				if (!file.Exists)
+				{
+					return;
+				}
+
+				if (file.Extension.ToUpper() == "STATE")
+				{
+					var movie = new Movie(file.FullName);
+					movie.Load(); // State files will have to load everything unfortunately
+					if (movie.FrameCount == 0)
+					{
+						MessageBox.Show(
+							"No input log detected in this savestate, aborting",
+							"Can not load file",
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Hand);
+
+						return;
+					}
+				}
+
+				var index = AddMovieToList(ofd.FileName, true);
+				if (index.HasValue)
+				{
+					MovieView.SelectedIndices.Clear();
+					MovieView.setSelection(index.Value);
+					MovieView.SelectItem(index.Value, true);
+				}
+			}
+		}
+
+		private void Scan_Click(object sender, EventArgs e)
+		{
+			ScanFiles();
+			PreHighlightMovie();
+		}
+
 		private void IncludeSubDirectories_CheckedChanged(object sender, EventArgs e)
 		{
 			Global.Config.PlayMovie_IncludeSubdir = IncludeSubDirectories.Checked;
@@ -548,12 +640,6 @@ namespace BizHawk.Client.EmuHawk
 			PreHighlightMovie();
 		}
 
-		private void Scan_Click(object sender, EventArgs e)
-		{
-			ScanFiles();
-			PreHighlightMovie();
-		}
-
 		private void MatchGameNameCheckBox_CheckedChanged(object sender, EventArgs e)
 		{
 			Global.Config.PlayMovie_MatchGameName = MatchGameNameCheckBox.Checked;
@@ -561,92 +647,20 @@ namespace BizHawk.Client.EmuHawk
 			PreHighlightMovie();
 		}
 
-		private void MovieView_KeyDown(object sender, KeyEventArgs e)
+		private void Ok_Click(object sender, EventArgs e)
 		{
-			if (e.Control && e.KeyCode == Keys.C)
-			{
-				var indexes = MovieView.SelectedIndices;
-				if (indexes.Count > 0)
-				{
-					var copyStr = new StringBuilder();
-					foreach (int index in indexes)
-					{
-						copyStr
-							.Append(_movieList[index].Filename).Append('\t')
-							.Append(_movieList[index].Header.SystemID).Append('\t')
-							.Append(_movieList[index].Header.GameName).Append('\t')
-							.Append(_movieList[index].Time.ToString(@"hh\:mm\:ss\.fff"))
-							.AppendLine();
-
-						Clipboard.SetDataObject(copyStr.ToString());
-					}
-				}
-			}
+			Run();
+			Global.MovieSession.ReadOnly = ReadOnlyCheckBox.Checked;
+			Close();
 		}
 
-		private void DetailsView_ColumnClick(object sender, ColumnClickEventArgs e)
+		private void Cancel_Click(object sender, EventArgs e)
 		{
-			OrderDetailsColumn(e.Column);
+			Close();
 		}
 
-		/// <summary>
-		/// Takes the values from DetailView and puts them in a List of Detail classes, this list is then sorted and put back in the DetailView
-		/// </summary>
-		/// <param name="columnToOrder"></param>
-		private void OrderDetailsColumn(int columnToOrder)
-		{
-			List<MovieDetails> detailsList = new List<MovieDetails>();
-			for (int i = 0; i < DetailsView.Items.Count; i++)
-			{
-				detailsList.Add(new MovieDetails { keys = DetailsView.Items[i].Text, values = DetailsView.Items[i].SubItems[1].Text, backgroundColor = DetailsView.Items[i].BackColor });
-			}
-			var columnName = DetailsView.Columns[columnToOrder].Text;
-			if (_sortedDetailsCol != columnName)
-			{
-				_sortDetailsReverse = false;
-			}
-			switch (columnName)
-			{
-				//Header, Value
-				case "Header":
-					if (_sortDetailsReverse)
-					{
-						detailsList = detailsList
-							.OrderByDescending(x => x.keys)
-							.ThenBy(x => x.values).ToList();
-					}
-					else
-					{
-						detailsList = detailsList
-						   .OrderBy(x => x.keys)
-						   .ThenBy(x => x.values).ToList();
-					}
-					break;
-				case "Value":
-					if (_sortDetailsReverse)
-					{
-						detailsList = detailsList
-							.OrderByDescending(x => x.values)
-							.ThenBy(x => x.keys).ToList();
-					}
-					else
-					{
-						detailsList = detailsList
-							.OrderBy(x => x.values)
-							.ThenBy(x => x.keys).ToList();
-					}
-					break;
-			}
-			int firstIndex = MovieView.SelectedIndices[0];
-			DetailsView.Items.Clear();
-			foreach (var detail in detailsList)
-			{
-				ListViewItem item = new ListViewItem { Text = detail.keys, BackColor = detail.backgroundColor };
-				item.SubItems.Add(detail.values);
-				DetailsView.Items.Add(item);
-			}
-			_sortedDetailsCol = columnName;
-			_sortDetailsReverse = !_sortDetailsReverse;
-		}
+		#endregion
+
+		#endregion
 	}
 }
