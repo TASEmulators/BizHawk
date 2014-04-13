@@ -10,6 +10,7 @@ using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -72,6 +73,8 @@ namespace BizHawk.Client.EmuHawk
 			GbaGpuViewerToolBarItem.Visible = Global.Emulator is GBA;
 
 			GenesisGameGenieToolBarItem.Visible = Global.Emulator.SystemId == "GEN" && VersionInfo.INTERIM;
+
+			SmsVdpToolbarItem.Visible = Global.Emulator is SMS;
 
 			foreach (var button in ToolBoxItems)
 			{
@@ -218,6 +221,11 @@ namespace BizHawk.Client.EmuHawk
 		private void GenesisGameGenieToolBarItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<GenGameGenie>();
+		}
+
+		private void SmsVdpToolbarItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<SmsVDPViewer>();
 		}
 
 		#endregion
