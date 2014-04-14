@@ -139,40 +139,72 @@ namespace BizHawk.Emulation.Common
 				case ".FDS":
 					Game.System = "NES";
 					break;
+
 				case ".SFC":
 				case ".SMC": 
 					Game.System = "SNES"; 
 					break;
-				case ".PSF":
-					Game.System = "PSX";
+
+				case ".GB":
+					Game.System = "GB";
 					break;
-				case ".SMS": Game.System = "SMS"; break;
-				case ".GG": Game.System = "GG"; break;
-				case ".SG": Game.System = "SG"; break;
-				case ".PCE": Game.System = "PCE"; break;
-				case ".SGX": Game.System = "SGX"; break;
-				case ".GBC": Game.System = "GBC"; break;
-				case ".GB": Game.System = "GB"; break;
+				case ".GBC":
+					Game.System = "GBC";
+					break;
+				case ".GBA":
+					Game.System = "GBA";
+					break;
+
+				case ".SMS":
+					Game.System = "SMS";
+					break;
+				case ".GG":
+					Game.System = "GG";
+					break;
+				case ".SG":
+					Game.System = "SG";
+					break;
 
 				case ".BIN":
 				case ".GEN":
 				case ".MD":
-				case ".SMD": Game.System = "GEN"; break;
-				case ".A26": Game.System = "A26"; break;
-				case ".A78": Game.System = "A78"; break;
-				case ".COL": Game.System = "Coleco"; break;
-				case ".ROM":
-				case ".INT": Game.System = "INTV"; break;
+				case ".SMD":
+					Game.System = "GEN";
+					break;
+
+				case ".PSF":
+					Game.System = "PSX";
+					break;
+
+				case ".PCE":
+					Game.System = "PCE";
+					break;
+				case ".SGX":
+					Game.System = "SGX";
+					break;
+
+				case ".A26":
+					Game.System = "A26";
+					break;
+				case ".A78":
+					Game.System = "A78";
+					break;
+
+				case ".COL":
+					Game.System = "Coleco";
+					break;
+
+				case ".ROM": // TODO: Why does intellivision get to take up this generic extension
+				case ".INT":
+					Game.System = "INTV";
+					break;
+
 				case ".PRG":
 				case ".D64":
 				case ".T64":
 				case ".G64":
 				case ".CRT":
 					Game.System = "C64";
-					break;
-
-				case ".GBA":
-					Game.System = "GBA";
 					break;
 
 				case ".Z64":
@@ -187,6 +219,7 @@ namespace BizHawk.Emulation.Common
 			}
 
 			Game.Name = Path.GetFileNameWithoutExtension(fileName).Replace('_', ' ');
+
 			// If filename is all-caps, then attempt to proper-case the title.
 			if (Game.Name == Game.Name.ToUpperInvariant())
 				Game.Name = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(Game.Name.ToLower());
