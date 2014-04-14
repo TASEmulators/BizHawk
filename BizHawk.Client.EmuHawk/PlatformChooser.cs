@@ -56,6 +56,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PlatformChooser_Load(object sender, EventArgs e)
 		{
+			if (RomGame.RomData.Length > 10 * 1024 * 1024) // If 10mb, show in megabytes
+			{
+				RomSizeLabel.Text = string.Format("{0:n0}", (RomGame.RomData.Length / 1024 / 1024)) + "mb";
+			}
+			else
+			{
+				RomSizeLabel.Text = string.Format("{0:n0}", (RomGame.RomData.Length / 1024)) + "kb";
+			}
+
+			ExtensionLabel.Text = RomGame.Extension.ToLower();
+
 			int count = 0;
 			int spacing = 25;
 			foreach (var platform in Platforms)

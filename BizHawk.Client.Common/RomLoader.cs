@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
@@ -28,6 +28,13 @@ namespace BizHawk.Client.Common
 {
 	public class RomLoader
 	{
+		// These extensions will invoke a platform chooser if not found in the database
+		private readonly List<string> GenericExtensions = new List<string>
+		{
+			".bin",
+			".rom",
+		};
+
 		// helper methods for the settings events
 		private object GetCoreSettings<T>()
 			where T : IEmulator
@@ -265,7 +272,9 @@ namespace BizHawk.Client.Common
 					else // most extensions
 					{
 						rom = new RomGame(file);
-						if (string.IsNullOrEmpty(rom.GameInfo.System) && ChoosePlatform != null)
+						if (string.IsNullOrEmpty(rom.GameInfo.System) && 
+							GenericExtensions.Contains(rom.Extension.ToLower()) &&
+							ChoosePlatform != null)
 						{
 							rom.GameInfo.System = ChoosePlatform(rom);
 						}
@@ -314,7 +323,6 @@ namespace BizHawk.Client.Common
 								nextEmulator = new PCEngine(nextComm, game, rom.RomData, GetCoreSettings<PCEngine>());
 								break;
 							case "GEN":
-								// nextEmulator = new Genesis(nextComm, game, rom.RomData);
 								nextEmulator = new GPGX(nextComm, rom.RomData, null, "GEN", GetCoreSyncSettings<GPGX>());
 								break;
 							case "TI83":
