@@ -165,7 +165,7 @@ namespace BizHawk.Emulation.Common
 					Game.System = "SG";
 					break;
 
-				case ".BIN":
+				//case ".BIN":
 				case ".GEN":
 				case ".MD":
 				case ".SMD":

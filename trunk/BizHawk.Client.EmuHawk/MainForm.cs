@@ -2783,6 +2783,17 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddMessage(message);
 		}
 
+		private string ChoosePlatformForRom(RomGame rom)
+		{
+			var platformChooser = new PlatformChooser()
+			{
+				RomGame = rom
+			};
+
+			platformChooser.ShowDialog();
+			return platformChooser.PlatformChoice;
+		}
+
 		// Still needs a good bit of refactoring
 		public bool LoadRom(string path, bool deterministicemulation = false, bool hasmovie = false)
 		{
@@ -2794,6 +2805,7 @@ namespace BizHawk.Client.EmuHawk
 			var loader = new RomLoader
 				{
 					ChooseArchive = LoadArhiveChooser,
+					ChoosePlatform = ChoosePlatformForRom
 				};
 
 			loader.OnLoadError += ShowLoadError;
