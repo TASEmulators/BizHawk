@@ -28,103 +28,165 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.textBox1 = new System.Windows.Forms.TextBox();
-			this.textBox2 = new System.Windows.Forms.TextBox();
-			this.OkBtn = new System.Windows.Forms.Button();
-			this.CancelBtn = new System.Windows.Forms.Button();
-			this.PlatformsGroupBox = new System.Windows.Forms.Panel();
-			this.SuspendLayout();
-			// 
-			// textBox1
-			// 
-			this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.OkBtn = new System.Windows.Forms.Button();
+            this.CancelBtn = new System.Windows.Forms.Button();
+            this.PlatformsGroupBox = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.ExtensionLabel = new System.Windows.Forms.Label();
+            this.RomSizeLabel = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.SuspendLayout();
+            // 
+            // textBox1
+            // 
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			this.textBox1.Location = new System.Drawing.Point(12, 12);
-			this.textBox1.Multiline = true;
-			this.textBox1.Name = "textBox1";
-			this.textBox1.ReadOnly = true;
-			this.textBox1.Size = new System.Drawing.Size(333, 56);
-			this.textBox1.TabIndex = 2;
-			this.textBox1.Text = "This Rom was not found in the database.  Further more, the extension (*.bin) leav" +
-    "es no clue as to which platform should be chosen.";
-			// 
-			// textBox2
-			// 
-			this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			this.textBox2.Location = new System.Drawing.Point(12, 74);
-			this.textBox2.Multiline = true;
-			this.textBox2.Name = "textBox2";
-			this.textBox2.ReadOnly = true;
-			this.textBox2.Size = new System.Drawing.Size(333, 41);
-			this.textBox2.TabIndex = 3;
-			this.textBox2.Text = "Please choose the intended platform to use for this Rom";
-			// 
-			// OkBtn
-			// 
-			this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OkBtn.Location = new System.Drawing.Point(219, 439);
-			this.OkBtn.Name = "OkBtn";
-			this.OkBtn.Size = new System.Drawing.Size(60, 23);
-			this.OkBtn.TabIndex = 4;
-			this.OkBtn.Text = "&Ok";
-			this.OkBtn.UseVisualStyleBackColor = true;
-			this.OkBtn.Click += new System.EventHandler(this.OkBtn_Click);
-			// 
-			// CancelBtn
-			// 
-			this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.CancelBtn.Location = new System.Drawing.Point(285, 439);
-			this.CancelBtn.Name = "CancelBtn";
-			this.CancelBtn.Size = new System.Drawing.Size(60, 23);
-			this.CancelBtn.TabIndex = 5;
-			this.CancelBtn.Text = "&Cancel";
-			this.CancelBtn.UseVisualStyleBackColor = true;
-			this.CancelBtn.Click += new System.EventHandler(this.CancelButton_Click);
-			// 
-			// PlatformsGroupBox
-			// 
-			this.PlatformsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox1.Location = new System.Drawing.Point(12, 12);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(414, 35);
+            this.textBox1.TabIndex = 2;
+            this.textBox1.Text = "This Rom was not found in the database.  Further more, the extension leaves no cl" +
+    "ue as to which platform should be chosen.";
+            // 
+            // OkBtn
+            // 
+            this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.OkBtn.Location = new System.Drawing.Point(300, 448);
+            this.OkBtn.Name = "OkBtn";
+            this.OkBtn.Size = new System.Drawing.Size(60, 23);
+            this.OkBtn.TabIndex = 4;
+            this.OkBtn.Text = "&Ok";
+            this.OkBtn.UseVisualStyleBackColor = true;
+            this.OkBtn.Click += new System.EventHandler(this.OkBtn_Click);
+            // 
+            // CancelBtn
+            // 
+            this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.CancelBtn.Location = new System.Drawing.Point(366, 448);
+            this.CancelBtn.Name = "CancelBtn";
+            this.CancelBtn.Size = new System.Drawing.Size(60, 23);
+            this.CancelBtn.TabIndex = 5;
+            this.CancelBtn.Text = "&Cancel";
+            this.CancelBtn.UseVisualStyleBackColor = true;
+            this.CancelBtn.Click += new System.EventHandler(this.CancelButton_Click);
+            // 
+            // PlatformsGroupBox
+            // 
+            this.PlatformsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.PlatformsGroupBox.AutoScroll = true;
-			this.PlatformsGroupBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.PlatformsGroupBox.Location = new System.Drawing.Point(12, 97);
-			this.PlatformsGroupBox.Name = "PlatformsGroupBox";
-			this.PlatformsGroupBox.Size = new System.Drawing.Size(333, 336);
-			this.PlatformsGroupBox.TabIndex = 6;
-			// 
-			// PlatformChooser
-			// 
-			this.AcceptButton = this.OkBtn;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.CancelButton = this.CancelBtn;
-			this.ClientSize = new System.Drawing.Size(357, 474);
-			this.Controls.Add(this.PlatformsGroupBox);
-			this.Controls.Add(this.CancelBtn);
-			this.Controls.Add(this.OkBtn);
-			this.Controls.Add(this.textBox2);
-			this.Controls.Add(this.textBox1);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.Name = "PlatformChooser";
-			this.ShowIcon = false;
-			this.Text = "Choose a Platform";
-			this.Load += new System.EventHandler(this.PlatformChooser_Load);
-			this.ResumeLayout(false);
-			this.PerformLayout();
+            this.PlatformsGroupBox.AutoScroll = true;
+            this.PlatformsGroupBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.PlatformsGroupBox.Location = new System.Drawing.Point(12, 66);
+            this.PlatformsGroupBox.Name = "PlatformsGroupBox";
+            this.PlatformsGroupBox.Size = new System.Drawing.Size(285, 405);
+            this.PlatformsGroupBox.TabIndex = 6;
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(303, 50);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(67, 13);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "Rom Details:";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 50);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(270, 13);
+            this.label2.TabIndex = 8;
+            this.label2.Text = "Please choose the intended platform to use for this Rom";
+            // 
+            // label3
+            // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(303, 74);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(56, 13);
+            this.label3.TabIndex = 9;
+            this.label3.Text = "Extension:";
+            // 
+            // ExtensionLabel
+            // 
+            this.ExtensionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ExtensionLabel.AutoSize = true;
+            this.ExtensionLabel.Location = new System.Drawing.Point(303, 93);
+            this.ExtensionLabel.Name = "ExtensionLabel";
+            this.ExtensionLabel.Size = new System.Drawing.Size(24, 13);
+            this.ExtensionLabel.TabIndex = 10;
+            this.ExtensionLabel.Text = ".bin";
+            // 
+            // RomSizeLabel
+            // 
+            this.RomSizeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.RomSizeLabel.AutoSize = true;
+            this.RomSizeLabel.Location = new System.Drawing.Point(303, 134);
+            this.RomSizeLabel.Name = "RomSizeLabel";
+            this.RomSizeLabel.Size = new System.Drawing.Size(25, 13);
+            this.RomSizeLabel.TabIndex = 12;
+            this.RomSizeLabel.Text = "4kb";
+            // 
+            // label6
+            // 
+            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(303, 116);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(30, 13);
+            this.label6.TabIndex = 11;
+            this.label6.Text = "Size:";
+            // 
+            // PlatformChooser
+            // 
+            this.AcceptButton = this.OkBtn;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.CancelBtn;
+            this.ClientSize = new System.Drawing.Size(438, 483);
+            this.Controls.Add(this.RomSizeLabel);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.ExtensionLabel);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.PlatformsGroupBox);
+            this.Controls.Add(this.CancelBtn);
+            this.Controls.Add(this.OkBtn);
+            this.Controls.Add(this.textBox1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Name = "PlatformChooser";
+            this.ShowIcon = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text = "Choose a Platform";
+            this.Load += new System.EventHandler(this.PlatformChooser_Load);
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
 		}
 
 		#endregion
 
-		private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox textBox1;
 		private System.Windows.Forms.Button OkBtn;
 		private System.Windows.Forms.Button CancelBtn;
 		private System.Windows.Forms.Panel PlatformsGroupBox;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label ExtensionLabel;
+        private System.Windows.Forms.Label RomSizeLabel;
+        private System.Windows.Forms.Label label6;
 	}
 }

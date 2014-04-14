@@ -194,7 +194,6 @@ namespace BizHawk.Emulation.Common
 					Game.System = "Coleco";
 					break;
 
-				case ".ROM": // TODO: Why does intellivision get to take up this generic extension
 				case ".INT":
 					Game.System = "INTV";
 					break;

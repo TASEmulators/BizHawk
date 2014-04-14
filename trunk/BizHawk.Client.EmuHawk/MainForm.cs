@@ -2785,7 +2785,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string ChoosePlatformForRom(RomGame rom)
 		{
-			var platformChooser = new PlatformChooser()
+			var platformChooser = new PlatformChooser
 			{
 				RomGame = rom
 			};
