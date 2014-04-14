@@ -28,13 +28,6 @@ namespace BizHawk.Client.Common
 {
 	public class RomLoader
 	{
-		// These extensions will invoke a platform chooser if not found in the database
-		private readonly List<string> GenericExtensions = new List<string>
-		{
-			".bin",
-			".rom",
-		};
-
 		// helper methods for the settings events
 		private object GetCoreSettings<T>()
 			where T : IEmulator
@@ -124,6 +117,16 @@ namespace BizHawk.Client.Common
 			{
 				OnLoadError(this, new RomErrorArgs(message, systemId));
 			}
+		}
+
+		private bool PreferredPlatformIsDefined(string extension)
+		{
+			if (Global.Config.PreferredPlatformsForExtensions.ContainsKey(extension))
+			{
+				return !string.IsNullOrEmpty(Global.Config.PreferredPlatformsForExtensions[extension]);
+			}
+
+			return false;
 		}
 
 		public bool LoadRom(string path, CoreComm nextComm)
@@ -276,12 +279,11 @@ namespace BizHawk.Client.Common
 						if (string.IsNullOrEmpty(rom.GameInfo.System))
 						{
 							// Has the user picked a preference for this extension?
-							if (!string.IsNullOrEmpty(Global.Config.PreferredPlatformsForExtensions[rom.Extension.ToLower()]))
+							if (PreferredPlatformIsDefined(rom.Extension.ToLower()))
 							{
 								rom.GameInfo.System = Global.Config.PreferredPlatformsForExtensions[rom.Extension.ToLower()];
 							}
-							else if (GenericExtensions.Contains(rom.Extension.ToLower()) &&
-								ChoosePlatform != null)
+							else if (ChoosePlatform != null)
 							{
 								rom.GameInfo.System = ChoosePlatform(rom);
 							}

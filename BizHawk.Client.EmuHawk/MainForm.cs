@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -491,6 +492,45 @@ namespace BizHawk.Client.EmuHawk
 		public bool RestoreReadWriteOnStop = false;
 		public bool UpdateFrame = false;
 		public bool EmulatorPaused { get; private set; }
+
+		// Because we don't have enough places where we list SystemID's
+		public Dictionary<string, string> SupportedPlatforms
+		{
+			get
+			{
+				var released = new Dictionary<string, string>
+				{
+					{ "A26", "Atari 2600" },
+					{ "A78", "Atari 7800" },
+
+					{ "NES", "Nintendo Entertainment System/Famicom" },
+					{ "SNES", "Super Nintendo" },
+					{ "N64", "Nintendo 64" },
+
+					{ "GB", "Game Boy" },
+					{ "GBC", "Game Boy Color" },
+
+					{ "SMS", "Sega Master System" },
+					{ "GG", "Sega Game Gear" },
+					{ "SG", "SG-1000" },
+					{ "GEN", "Sega Genesis/Megadrive" },
+					{ "SAT", "Sega Saturn" },
+
+					{ "PCE", "PC Engine/TurboGrafx 16" },
+
+					{ "Coleco", "Colecovision" },
+					{ "TI83", "TI-83 Calculator" }
+				};
+
+				if (VersionInfo.INTERIM)
+				{
+					released.Add("GBA", "Gameboy Advance");
+					released.Add("C64", "Commodore 64");
+				}
+
+				return released;
+			}
+		}
 
 		#endregion
 
@@ -3117,6 +3157,11 @@ namespace BizHawk.Client.EmuHawk
 		private void vDPViewerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<GenVDPViewer>();
+		}
+
+		private void extensionsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new FileExtensionPreferences().ShowDialog();
 		}
 	}
 }
