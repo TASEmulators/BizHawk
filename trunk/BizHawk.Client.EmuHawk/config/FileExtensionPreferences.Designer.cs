@@ -39,7 +39,7 @@
 			// OkBtn
 			// 
 			this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OkBtn.Location = new System.Drawing.Point(232, 187);
+			this.OkBtn.Location = new System.Drawing.Point(232, 208);
 			this.OkBtn.Name = "OkBtn";
 			this.OkBtn.Size = new System.Drawing.Size(60, 23);
 			this.OkBtn.TabIndex = 0;
@@ -51,7 +51,7 @@
 			// 
 			this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.CancelBtn.Location = new System.Drawing.Point(298, 187);
+			this.CancelBtn.Location = new System.Drawing.Point(298, 208);
 			this.CancelBtn.Name = "CancelBtn";
 			this.CancelBtn.Size = new System.Drawing.Size(60, 23);
 			this.CancelBtn.TabIndex = 1;
@@ -64,9 +64,11 @@
 			this.PrefPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.PrefPanel.AutoScroll = true;
+			this.PrefPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.PrefPanel.Location = new System.Drawing.Point(12, 55);
 			this.PrefPanel.Name = "PrefPanel";
-			this.PrefPanel.Size = new System.Drawing.Size(346, 126);
+			this.PrefPanel.Size = new System.Drawing.Size(346, 147);
 			this.PrefPanel.TabIndex = 2;
 			// 
 			// label1
@@ -102,13 +104,14 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.CancelBtn;
-			this.ClientSize = new System.Drawing.Size(370, 222);
+			this.ClientSize = new System.Drawing.Size(370, 243);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.PrefPanel);
 			this.Controls.Add(this.CancelBtn);
 			this.Controls.Add(this.OkBtn);
+			this.MinimumSize = new System.Drawing.Size(203, 175);
 			this.Name = "FileExtensionPreferences";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
