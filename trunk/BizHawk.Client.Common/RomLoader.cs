@@ -272,11 +272,19 @@ namespace BizHawk.Client.Common
 					else // most extensions
 					{
 						rom = new RomGame(file);
-						if (string.IsNullOrEmpty(rom.GameInfo.System) && 
-							GenericExtensions.Contains(rom.Extension.ToLower()) &&
-							ChoosePlatform != null)
+
+						if (string.IsNullOrEmpty(rom.GameInfo.System))
 						{
-							rom.GameInfo.System = ChoosePlatform(rom);
+							// Has the user picked a preference for this extension?
+							if (!string.IsNullOrEmpty(Global.Config.PreferredPlatformsForExtensions[rom.Extension.ToLower()]))
+							{
+								rom.GameInfo.System = Global.Config.PreferredPlatformsForExtensions[rom.Extension.ToLower()];
+							}
+							else if (GenericExtensions.Contains(rom.Extension.ToLower()) &&
+								ChoosePlatform != null)
+							{
+								rom.GameInfo.System = ChoosePlatform(rom);
+							}
 						}
 
 						game = rom.GameInfo;

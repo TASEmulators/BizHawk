@@ -35,6 +35,13 @@ namespace BizHawk.Client.Common
 			HotkeyBindings.ResolveWithDefaults();
 		}
 
+		// Core preference for generic file extension, key: file extension, value: a systemID or empty if no preference
+		public Dictionary<string, string> PreferredPlatformsForExtensions = new Dictionary<string, string>
+		{
+			{ ".bin", "" },
+			{ ".rom", "" },
+		};
+
 		// Path Settings ************************************/
 		public bool UseRecentForROMs = false;
 		public string LastRomPath = ".";
