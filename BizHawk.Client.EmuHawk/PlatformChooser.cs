@@ -97,7 +97,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var selectedValue = SelectedRadio != null ? SelectedRadio.Text : string.Empty;
 			PlatformChoice = Platforms.FirstOrDefault(x => x.Value == selectedValue).Key;
+
+			if (AlwaysCheckbox.Checked)
+			{
+				Global.Config.PreferredPlatformsForExtensions[RomGame.Extension.ToLower()] = PlatformChoice;
+			}
+
 			Close();
+		}
+
+		private void label4_Click(object sender, EventArgs e)
+		{
+			AlwaysCheckbox.Checked ^= true;
 		}
 	}
 }
