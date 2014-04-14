@@ -99,6 +99,8 @@ namespace BizHawk.Client.Common
 
 		public Func<HawkFile, int?> ChooseArchive { get; set; }
 
+		public Func<RomGame, string> ChoosePlatform { get; set; }
+
 		private int? HandleArchive(HawkFile file)
 		{
 			if (ChooseArchive != null)
@@ -263,6 +265,11 @@ namespace BizHawk.Client.Common
 					else // most extensions
 					{
 						rom = new RomGame(file);
+						if (string.IsNullOrEmpty(rom.GameInfo.System) && ChoosePlatform != null)
+						{
+							rom.GameInfo.System = ChoosePlatform(rom);
+						}
+
 						game = rom.GameInfo;
 
 						var isXml = false;
