@@ -13,31 +13,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PlatformChooser : Form
 	{
-		// Because we don't have enough places where we list SystemID's
-		private readonly Dictionary<string, string> Platforms = new Dictionary<string,string>
-		{
-			
-			{ "A26", "Atari 2600" },
-			{ "A78", "Atari 7800" },
-
-			{ "NES", "Nintendo Entertainment System" },
-			{ "SNES", "Super Nintendo" },
-			{ "N64", "Nintendo 64" },
-
-			{ "GB", "Game Boy" },
-			{ "GBC", "Game Boy Color" },
-
-			{ "PCE", "PC Engine/TurboGrafx 16" },
-			{ "SGX", "Super Grafx" },
-
-			{ "SMS", "Sega Master System" },
-			{ "GG", "Sega Game Gear" },
-			{ "SG", "SG-1000" },
-			{ "GEN", "Sega Genesis" },
-
-			{ "Coleco", "Colecovision" },
-		};
-
 		public RomGame RomGame { get; set; }
 		public string PlatformChoice { get; set; }
 
@@ -69,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 
 			int count = 0;
 			int spacing = 25;
-			foreach (var platform in Platforms)
+			foreach (var platform in GlobalWin.MainForm.SupportedPlatforms)
 			{
 				var radio = new RadioButton
 				{
@@ -96,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
 			var selectedValue = SelectedRadio != null ? SelectedRadio.Text : string.Empty;
-			PlatformChoice = Platforms.FirstOrDefault(x => x.Value == selectedValue).Key;
+			PlatformChoice = GlobalWin.MainForm.SupportedPlatforms.FirstOrDefault(x => x.Value == selectedValue).Key;
 
 			if (AlwaysCheckbox.Checked)
 			{

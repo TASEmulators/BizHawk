@@ -134,6 +134,7 @@
 			this.MessagesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutofireMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RewindOptionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.extensionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			this.ConfigEnableSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.EnableContextMenuMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -388,7 +389,7 @@
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.MainformMenu.Location = new System.Drawing.Point(0, 0);
 			this.MainformMenu.Name = "MainformMenu";
-			this.MainformMenu.Size = new System.Drawing.Size(470, 42);
+			this.MainformMenu.Size = new System.Drawing.Size(470, 61);
 			this.MainformMenu.TabIndex = 0;
 			this.MainformMenu.Text = "menuStrip1";
 			this.MainformMenu.MenuActivate += new System.EventHandler(this.MainformMenu_MenuActivate);
@@ -1238,6 +1239,7 @@
             this.MessagesMenuItem,
             this.AutofireMenuItem,
             this.RewindOptionsMenuItem,
+            this.extensionsToolStripMenuItem,
             this.toolStripSeparator9,
             this.ConfigEnableSubMenu,
             this.GuiSubMenu,
@@ -1258,7 +1260,7 @@
 			// 
 			this.ControllersMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
 			this.ControllersMenuItem.Name = "ControllersMenuItem";
-			this.ControllersMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.ControllersMenuItem.Size = new System.Drawing.Size(159, 22);
 			this.ControllersMenuItem.Text = "&Controllers...";
 			this.ControllersMenuItem.Click += new System.EventHandler(this.ControllersMenuItem_Click);
 			// 
@@ -1266,7 +1268,7 @@
 			// 
 			this.HotkeysMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.HotKeys;
 			this.HotkeysMenuItem.Name = "HotkeysMenuItem";
-			this.HotkeysMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.HotkeysMenuItem.Size = new System.Drawing.Size(159, 22);
 			this.HotkeysMenuItem.Text = "&Hotkeys...";
 			this.HotkeysMenuItem.Click += new System.EventHandler(this.HotkeysMenuItem_Click);
 			// 
@@ -1274,7 +1276,7 @@
 			// 
 			this.DisplayConfigMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("DisplayConfigMenuItem.Image")));
 			this.DisplayConfigMenuItem.Name = "DisplayConfigMenuItem";
-			this.DisplayConfigMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.DisplayConfigMenuItem.Size = new System.Drawing.Size(159, 22);
 			this.DisplayConfigMenuItem.Text = "Display...";
 			this.DisplayConfigMenuItem.Click += new System.EventHandler(this.DisplayConfigMenuItem_Click);
 			// 
@@ -1282,7 +1284,7 @@
 			// 
 			this.SoundMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.AudioHS;
 			this.SoundMenuItem.Name = "SoundMenuItem";
-			this.SoundMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.SoundMenuItem.Size = new System.Drawing.Size(159, 22);
 			this.SoundMenuItem.Text = "&Sound...";
 			this.SoundMenuItem.Click += new System.EventHandler(this.SoundMenuItem_Click);
 			// 
@@ -1290,7 +1292,7 @@
 			// 
 			this.PathsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.CopyFolderHS;
 			this.PathsMenuItem.Name = "PathsMenuItem";
-			this.PathsMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.PathsMenuItem.Size = new System.Drawing.Size(159, 22);
 			this.PathsMenuItem.Text = "Paths...";
 			this.PathsMenuItem.Click += new System.EventHandler(this.PathsMenuItem_Click);
 			// 
@@ -1298,7 +1300,7 @@
 			// 
 			this.FirmwaresMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("FirmwaresMenuItem.Image")));
 			this.FirmwaresMenuItem.Name = "FirmwaresMenuItem";
-			this.FirmwaresMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.FirmwaresMenuItem.Size = new System.Drawing.Size(159, 22);
 			this.FirmwaresMenuItem.Text = "&Firmwares";
 			this.FirmwaresMenuItem.Click += new System.EventHandler(this.FirmwaresMenuItem_Click);
 			// 
@@ -1306,7 +1308,7 @@
 			// 
 			this.MessagesMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MessageConfig;
 			this.MessagesMenuItem.Name = "MessagesMenuItem";
-			this.MessagesMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.MessagesMenuItem.Size = new System.Drawing.Size(159, 22);
 			this.MessagesMenuItem.Text = "&Messages...";
 			this.MessagesMenuItem.Click += new System.EventHandler(this.MessagesMenuItem_Click);
 			// 
@@ -1314,7 +1316,7 @@
 			// 
 			this.AutofireMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Lightning;
 			this.AutofireMenuItem.Name = "AutofireMenuItem";
-			this.AutofireMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.AutofireMenuItem.Size = new System.Drawing.Size(159, 22);
 			this.AutofireMenuItem.Text = "&Autofire...";
 			this.AutofireMenuItem.Click += new System.EventHandler(this.AutofireMenuItem_Click);
 			// 
@@ -1322,14 +1324,21 @@
 			// 
 			this.RewindOptionsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Previous;
 			this.RewindOptionsMenuItem.Name = "RewindOptionsMenuItem";
-			this.RewindOptionsMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.RewindOptionsMenuItem.Size = new System.Drawing.Size(159, 22);
 			this.RewindOptionsMenuItem.Text = "&Rewind...";
 			this.RewindOptionsMenuItem.Click += new System.EventHandler(this.RewindOptionsMenuItem_Click);
+			// 
+			// extensionsToolStripMenuItem
+			// 
+			this.extensionsToolStripMenuItem.Name = "extensionsToolStripMenuItem";
+			this.extensionsToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+			this.extensionsToolStripMenuItem.Text = "File Extensions...";
+			this.extensionsToolStripMenuItem.Click += new System.EventHandler(this.extensionsToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator9
 			// 
 			this.toolStripSeparator9.Name = "toolStripSeparator9";
-			this.toolStripSeparator9.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator9.Size = new System.Drawing.Size(156, 6);
 			// 
 			// ConfigEnableSubMenu
 			// 
@@ -1341,7 +1350,7 @@
             this.FrameAdvanceSkipLagMenuItem,
             this.BackupSaveramMenuItem});
 			this.ConfigEnableSubMenu.Name = "ConfigEnableSubMenu";
-			this.ConfigEnableSubMenu.Size = new System.Drawing.Size(152, 22);
+			this.ConfigEnableSubMenu.Size = new System.Drawing.Size(159, 22);
 			this.ConfigEnableSubMenu.Text = "&Enable";
 			this.ConfigEnableSubMenu.DropDownOpened += new System.EventHandler(this.EnableMenuItem_DropDownOpened);
 			// 
@@ -1403,7 +1412,7 @@
             this.toolStripSeparator23,
             this.LogWindowAsConsoleMenuItem});
 			this.GuiSubMenu.Name = "GuiSubMenu";
-			this.GuiSubMenu.Size = new System.Drawing.Size(152, 22);
+			this.GuiSubMenu.Size = new System.Drawing.Size(159, 22);
 			this.GuiSubMenu.Text = "GUI";
 			this.GuiSubMenu.DropDownOpened += new System.EventHandler(this.GuiSubMenu_DropDownOpened);
 			// 
@@ -1514,7 +1523,7 @@
             this.Speed150MenuItem,
             this.Speed200MenuItem});
 			this.SpeedSkipSubMenu.Name = "SpeedSkipSubMenu";
-			this.SpeedSkipSubMenu.Size = new System.Drawing.Size(152, 22);
+			this.SpeedSkipSubMenu.Size = new System.Drawing.Size(159, 22);
 			this.SpeedSkipSubMenu.Text = "Speed/Skip";
 			this.SpeedSkipSubMenu.DropDownOpened += new System.EventHandler(this.FrameSkipMenuItem_DropDownOpened);
 			// 
@@ -1680,7 +1689,7 @@
             this.InputOverHkMenuItem,
             this.HkOverInputMenuItem});
 			this.KeyPrioritySubMenu.Name = "KeyPrioritySubMenu";
-			this.KeyPrioritySubMenu.Size = new System.Drawing.Size(152, 22);
+			this.KeyPrioritySubMenu.Size = new System.Drawing.Size(159, 22);
 			this.KeyPrioritySubMenu.Text = "Key Priority";
 			this.KeyPrioritySubMenu.DropDownOpened += new System.EventHandler(this.KeyPriorityMenuItem_DropDownOpened);
 			// 
@@ -1712,7 +1721,7 @@
             this.SavestateBinaryMenuItem,
             this.SavestateTextMenuItem});
 			this.SavestateTypeSubMenu.Name = "SavestateTypeSubMenu";
-			this.SavestateTypeSubMenu.Size = new System.Drawing.Size(152, 22);
+			this.SavestateTypeSubMenu.Size = new System.Drawing.Size(159, 22);
 			this.SavestateTypeSubMenu.Text = "Savestate Type";
 			this.SavestateTypeSubMenu.DropDownOpened += new System.EventHandler(this.SavestateTypeMenuItem_DropDownOpened);
 			// 
@@ -1740,13 +1749,13 @@
 			// toolStripSeparator10
 			// 
 			this.toolStripSeparator10.Name = "toolStripSeparator10";
-			this.toolStripSeparator10.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator10.Size = new System.Drawing.Size(156, 6);
 			// 
 			// SaveConfigMenuItem
 			// 
 			this.SaveConfigMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Save;
 			this.SaveConfigMenuItem.Name = "SaveConfigMenuItem";
-			this.SaveConfigMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.SaveConfigMenuItem.Size = new System.Drawing.Size(159, 22);
 			this.SaveConfigMenuItem.Text = "Save Config";
 			this.SaveConfigMenuItem.Click += new System.EventHandler(this.SaveConfigMenuItem_Click);
 			// 
@@ -1754,14 +1763,14 @@
 			// 
 			this.LoadConfigMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.LoadConfig;
 			this.LoadConfigMenuItem.Name = "LoadConfigMenuItem";
-			this.LoadConfigMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.LoadConfigMenuItem.Size = new System.Drawing.Size(159, 22);
 			this.LoadConfigMenuItem.Text = "Load Config";
 			this.LoadConfigMenuItem.Click += new System.EventHandler(this.LoadConfigMenuItem_Click);
 			// 
 			// toolStripSeparator8
 			// 
 			this.toolStripSeparator8.Name = "toolStripSeparator8";
-			this.toolStripSeparator8.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator8.Size = new System.Drawing.Size(156, 6);
 			// 
 			// coreSelectionToolStripMenuItem
 			// 
@@ -1769,7 +1778,7 @@
             this.gBInSGBToolStripMenuItem,
             this.nESInQuickNESToolStripMenuItem});
 			this.coreSelectionToolStripMenuItem.Name = "coreSelectionToolStripMenuItem";
-			this.coreSelectionToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.coreSelectionToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
 			this.coreSelectionToolStripMenuItem.Text = "Core Selection";
 			this.coreSelectionToolStripMenuItem.DropDownOpened += new System.EventHandler(this.coreSelectionToolStripMenuItem_DropDownOpened);
 			this.coreSelectionToolStripMenuItem.Click += new System.EventHandler(this.coreSelectionToolStripMenuItem_Click);
@@ -3485,6 +3494,7 @@
 		private System.Windows.Forms.ToolStripMenuItem SMSdisplayPalToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSdisplayAutoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator26;
+		private System.Windows.Forms.ToolStripMenuItem extensionsToolStripMenuItem;
 	}
 }
 
