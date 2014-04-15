@@ -18,6 +18,16 @@ namespace BizHawk.Common
 			return Path.GetDirectoryName(path);
 		}
 
+		public static IEnumerable<LinkedListNode<T>> EnumerateNodes<T>(this LinkedList<T> list)
+		{
+			var node = list.First;
+			while (node != null)
+			{
+				yield return node;
+				node = node.Next;
+			}
+		}
+
 		public static int LowerBoundBinarySearch<T, TKey>(this IList<T> list, Func<T, TKey> keySelector, TKey key) where TKey : IComparable<TKey>
 		{
 			int min = 0;

@@ -53,6 +53,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\BizHawk.Common\BizHawk.Common.csproj">
+      <Project>{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}</Project>
+      <Name>BizHawk.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BizHawk.Bizware.BizwareGL\BizHawk.Bizware.BizwareGL.csproj">
       <Project>{9F84A0B2-861E-4EF4-B89B-5E2A3F38A465}</Project>
       <Name>BizHawk.Bizware.BizwareGL</Name>
