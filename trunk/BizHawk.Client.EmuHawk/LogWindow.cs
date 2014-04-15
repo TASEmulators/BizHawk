@@ -142,12 +142,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddToGameDbBtn_Click(object sender, EventArgs e)
 		{
-			var entryObj = (CompactGameInfo)ReflectionUtil.InvokeMethod(Global.Emulator, "GenerateGameDbEntry", null);
-			var userDb = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb_user.txt");
-			Global.Game.Status = entryObj.Status = RomStatus.GoodDump; //TODO: let user decide
-			Database.SaveDatabaseEntry(userDb, entryObj);
-			GlobalWin.MainForm.UpdateDumpIcon();
-			HideShowGameDbButton();
+			var picker = new RomStatusPicker();
+			var result = picker.ShowDialog();
+			if (result == DialogResult.OK)
+			{
+				var entryObj = (CompactGameInfo)ReflectionUtil.InvokeMethod(Global.Emulator, "GenerateGameDbEntry", null);
+				var userDb = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb_user.txt");
+				Global.Game.Status = entryObj.Status = picker.PickedStatus;
+				Database.SaveDatabaseEntry(userDb, entryObj);
+				GlobalWin.MainForm.UpdateDumpIcon();
+				HideShowGameDbButton();
+			}
 		}
 	}
 }
