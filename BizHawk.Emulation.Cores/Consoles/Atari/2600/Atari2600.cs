@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -129,6 +130,19 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				"Reset", "Select", "Power"
 			}
 		};
+
+		public CompactGameInfo GenerateGameDbEntry()
+		{
+			return new CompactGameInfo
+			{
+				Name = _game.Name,
+				System = "A26",
+				MetaData = "m=" + _mapper.GetType().ToString().Split('.').ToList().Last(),
+				Hash = Util.Hash_SHA1(Rom),
+				Region = _game.Region,
+				Status = RomStatus.Unknown
+			};
+		}
 
 		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
 		{
