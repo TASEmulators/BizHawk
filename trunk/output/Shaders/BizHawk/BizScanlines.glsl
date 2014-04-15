@@ -32,7 +32,7 @@ uniform COMPAT_PRECISION vec2 InputSize;
 void main()
 {
 		gl_Position = MVPMatrix * VertexCoord;
-		vTexCoord0 = TexCoord;
+		vTexCoord0 = TexCoord.xy;
 } 
 
 #elif defined(FRAGMENT)
@@ -70,7 +70,7 @@ uniform float uIntensity;
 void main()
 {
 	vec4 temp = texture2D(Texture,vTexCoord0);
-	if((int(gl_FragCoord.y))%2==1) temp.rgb *= uIntensity;
+	if(floor(gl_FragCoord.y/2) != floor(gl_FragCoord.y)/2) temp.rgb *= uIntensity;
 	FragColor = temp;
 } 
 #endif

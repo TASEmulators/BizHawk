@@ -407,6 +407,10 @@
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\DisplaySurface.cs" />
     <Compile Include="DisplayManager\FilterManager.cs" />
+    <Compile Include="DisplayManager\Filters\BaseFilter.cs" />
+    <Compile Include="DisplayManager\Filters\Gui.cs" />
+    <Compile Include="DisplayManager\Filters\Utils.cs" />
+    <Compile Include="DisplayManager\Filters\Retro.cs" />
     <Compile Include="DisplayManager\OSDManager.cs" />
     <Compile Include="DisplayManager\RenderTargetFrugalizer.cs" />
     <Compile Include="DisplayManager\SwappableDisplaySurfaceSet.cs" />
@@ -1353,8 +1357,6 @@
     <None Include="images\sms-icon.png" />
     <None Include="images\pcb.png" />
     <None Include="images\tvIcon.png" />
-    <None Include="Resources\pcb.png" />
-    <None Include="Resources\tvIcon.png" />
     <EmbeddedResource Include="Resources\courier16px_0.png" />
     <None Include="images\pcejin1.bmp" />
     <None Include="images\watch.ico" />
@@ -1454,6 +1456,7 @@
     <None Include="images\alt_about_image.gif" />
     <None Include="images\gba-icon.png" />
     <None Include="images\checkbox.png" />
+    <None Include="images\Erase.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

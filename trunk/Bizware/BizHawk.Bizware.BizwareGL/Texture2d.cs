@@ -35,6 +35,11 @@ namespace BizHawk.Bizware.BizwareGL
 			Height = height;
 		}
 
+		public override string  ToString()
+		{
+			return string.Format("GL Tex: {0}x{1}", Width, Height);
+		}
+
 		public void LoadFrom(BitmapBuffer buffer)
 		{
 		}
@@ -73,5 +78,10 @@ namespace BizHawk.Bizware.BizwareGL
 		public int IntWidth { get { return (int)Width; } }
 		public int IntHeight { get { return (int)Height; } }
 		public Size Size { get { return new Size(IntWidth, IntHeight); } }
+
+		/// <summary>
+		/// opengl sucks, man. seriously, screw this (textures from render targets are upside down)
+		/// </summary>
+		public bool IsUpsideDown;
 	}
 }

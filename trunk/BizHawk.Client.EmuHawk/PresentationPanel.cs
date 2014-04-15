@@ -57,20 +57,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool Resized { get; set; }
 
-		public sd.Point ScreenToScreen(sd.Point p)
-		{
-			//TODO GL - yeah, this is broken for now, sorry.
-			//This logic now has more to do with DisplayManager
-			//p = GraphicsControl.Control.PointToClient(p);
-			//sd.Point ret = new sd.Point(p.X * sw / GraphicsControl.Control.Width,
-			//  p.Y * sh / GraphicsControl.Control.Height);
-			//return ret;
-			throw new InvalidOperationException("Not supported right now, sorry");
-		}
-
 		public Size NativeSize { get { return GraphicsControl.ClientSize; } }
-
-	
 	}
 
 	

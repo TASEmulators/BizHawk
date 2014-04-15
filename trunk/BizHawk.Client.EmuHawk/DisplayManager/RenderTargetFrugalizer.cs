@@ -39,6 +39,7 @@ namespace BizHawk.Client.EmuHawk
 		IGL GL;
 		List<RenderTarget> CurrentRenderTargets;
 
+		public RenderTarget Get(System.Drawing.Size dimensions) { return Get(dimensions.Width, dimensions.Height); }
 		public RenderTarget Get(int width, int height)
 		{
 			//get the current entry
@@ -59,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			//now shuffle the buffers
-			CurrentRenderTargets.Insert(0, CurrentRenderTargets[1]);
+			CurrentRenderTargets[0] = CurrentRenderTargets[1];
 			CurrentRenderTargets[1] = CurrentRenderTarget;
 
 			return CurrentRenderTarget;

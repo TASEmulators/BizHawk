@@ -1115,6 +1115,12 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		private void EraseToolbarItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.DisplayManager.ClearLuaSurfaces();
+		}
+
+	
 		#endregion
 	}
 }

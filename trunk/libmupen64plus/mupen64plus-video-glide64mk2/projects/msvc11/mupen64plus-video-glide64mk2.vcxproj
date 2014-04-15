@@ -98,7 +98,8 @@
       <OutputFile>.\Debug/n64Glide.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>xcopy /y "$(OutDir)$(TargetName)$(TargetExt)" "$(TargetDir)..\..\..\..\..\BizHawk.MultiClient\output\dll\"</Command>
+      <Command>xcopy /y "$(OutDir)$(TargetName)$(TargetExt)" "$(TargetDir)..\..\..\..\..\output\dll\"</Command>
+      <Message>Copying shared data and libraries to build directory...</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

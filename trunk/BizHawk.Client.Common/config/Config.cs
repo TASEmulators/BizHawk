@@ -60,6 +60,8 @@ namespace BizHawk.Client.Common
 		public int TargetZoomFactor = 2;
 		public int TargetScanlineFilterIntensity = 128; // choose between 0 and 256
 		public int TargetDisplayFilter = 0;
+		public int DispFinalFilter = 0;
+		public string DispUserFilterPath;
 		public RecentFiles RecentRoms = new RecentFiles(8);
 		public bool PauseWhenMenuActivated = true;
 		public bool SaveWindowPosition = true;
@@ -161,7 +163,10 @@ namespace BizHawk.Client.Common
 		public int DispAutoholdx = 0;
 		public int DispAutoholdy = 0;
 		public int DispAutoholdanchor = 1;
+		
 		public bool DispBlurry = false; // make display look ugly
+		public bool DispFixAspectRatio = true;
+		public bool DispFixScaleInteger = false;
 
 		// Sound options
 		public bool SoundEnabled = true;

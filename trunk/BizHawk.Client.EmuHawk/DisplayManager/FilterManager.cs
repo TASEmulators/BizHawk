@@ -1,14 +1,13 @@
-//https://github.com/Themaister/RetroArch/wiki/GLSL-shaders
-//https://github.com/Themaister/Emulator-Shader-Pack/blob/master/Cg/README
-//https://github.com/libretro/common-shaders/
-
 using System;
+using System.Linq;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.IO;
 using System.Drawing;
 
 using BizHawk.Common;
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.Filters;
 
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Bizware.BizwareGL.Drivers.OpenTK;
@@ -16,248 +15,226 @@ using BizHawk.Bizware.BizwareGL.Drivers.OpenTK;
 using OpenTK;
 using OpenTK.Graphics;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.EmuHawk.FilterManager
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	class RetroShaderChain : IDisposable
+	public enum SurfaceDisposition
 	{
-		public RetroShaderChain(IGL owner, RetroShaderPreset preset, string baseDirectory, bool debug = false)
-		{
-			Owner = owner;
-			this.Preset = preset;
-			Passes = preset.Passes.ToArray();
-
-			bool ok = true;
-
-			//load up the shaders
-			Shaders = new RetroShader[preset.Passes.Count];
-			for(int i=0;i<preset.Passes.Count;i++)
-			{
-				RetroShaderPreset.ShaderPass pass = preset.Passes[i];
-
-				//acquire content
-				string path = Path.Combine(baseDirectory, pass.ShaderPath);
-				string content = File.ReadAllText(path);
-
-				var shader = new RetroShader(Owner, content, debug);
-				Shaders[i] = shader;
-				if (!shader.Pipeline.Available)
-					ok = false;
-			}
-
-			Available = ok;
-		}
-
-		public void Dispose()
-		{
-			//todo
-		}
-
-		/// <summary>
-		/// Whether this shader chain is available (it wont be available if some resources failed to load or compile)
-		/// </summary>
-		public bool Available { get; private set; }
-
-		public readonly IGL Owner;
-		public readonly RetroShaderPreset Preset;
-		public readonly RetroShader[] Shaders;
-		public readonly RetroShaderPreset.ShaderPass[] Passes;
+		Unspecified, Texture, RenderTarget
 	}
 
-	class RetroShaderPreset
+	public class SurfaceFormat
 	{
+		public SurfaceFormat(Size size) { this.Size = size; }
+		public Size Size { get; private set; }
+	}
+
+	public class SurfaceState
+	{
+		public SurfaceState() { }
+		public SurfaceState(SurfaceFormat surfaceFormat, SurfaceDisposition surfaceDisposition = SurfaceDisposition.Unspecified)
+		{
+			this.SurfaceFormat = surfaceFormat;
+			this.SurfaceDisposition = surfaceDisposition;
+		}
+		public SurfaceFormat SurfaceFormat;
+		public SurfaceDisposition SurfaceDisposition;
+	}
+
+	public interface IRenderTargetProvider
+	{
+		RenderTarget Get(Size size);
+	}
+
+	public class FilterProgram
+	{
+		public List<BaseFilter> Filters = new List<BaseFilter>();
+		Dictionary<string, BaseFilter> FilterNameIndex = new Dictionary<string, BaseFilter>();
+		public List<ProgramStep> Program = new List<ProgramStep>();
+
+		public BaseFilter this[string name]
+		{
+			get
+			{
+				BaseFilter ret;
+				FilterNameIndex.TryGetValue(name, out ret);
+				return ret;
+			}
+		}
+
+		public enum ProgramStepType
+		{
+			Run,
+			NewTarget,
+			FinalTarget
+		}
+
+		//services to filters:
+		public GuiRenderer GuiRenderer;
+		public IGL GL;
+		public IRenderTargetProvider RenderTargetProvider;
+		public RenderTarget GetRenderTarget(string channel = "default") { return CurrRenderTarget; }
+		public RenderTarget CurrRenderTarget;
+				
+		public void AddFilter(BaseFilter filter, string name = "")
+		{
+			Filters.Add(filter);
+			FilterNameIndex[name] = filter;
+		}
+
 		/// <summary>
-		/// Parses an instance from a stream to a CGP file
+		/// Receives a point in the coordinate space of the output of the filter program and untransforms it back to input points
 		/// </summary>
-		public RetroShaderPreset(Stream stream)
+		public Vector2 UntransformPoint(string channel, Vector2 point)
 		{
-			var content = new StreamReader(stream).ReadToEnd();
-			Dictionary<string,string> dict = new Dictionary<string,string>();
-
-			//parse the key-value-pair format of the file
-			content = content.Replace("\r", "");
-			foreach (var _line in content.Split('\n'))
+			for (int i = Filters.Count - 1; i >= 0; i--)
 			{
-				var line = _line.Trim();
-				if(line.StartsWith("#")) continue; //lines that are solely comments
-				if (line == "") continue; //empty line
-				int eq = line.IndexOf('=');
-				var key = line.Substring(0,eq).Trim();
-				var value = line.Substring(eq + 1).Trim();
-				int quote = value.IndexOf('\"');
-				if (quote != -1)
-					value = value.Substring(quote + 1, value.IndexOf('\"', quote + 1) - (quote + 1));
-				else
+				var filter = Filters[i];
+				point = filter.UntransformPoint(channel, point);
+			}
+			return point;
+		}
+
+		public class ProgramStep
+		{
+			public ProgramStep(ProgramStepType type, object args, string comment = null)
+			{
+				this.Type = type;
+				this.Args = args;
+				this.Comment = comment;
+			}
+			public ProgramStepType Type;
+			public object Args;
+			public string Comment;
+			public override string ToString()
+			{
+				if (Type == ProgramStepType.Run)
+					return string.Format("Run {0} ({1})", (int)Args, Comment);
+				if (Type == ProgramStepType.NewTarget)
+					return string.Format("NewTarget {0}", (Size)Args);
+				if (Type == ProgramStepType.FinalTarget)
+					return string.Format("FinalTarget");
+				return null;
+			}
+		}
+
+		public void Compile(string channel, Size insize, Size outsize)
+		{
+		RETRY:
+			
+			Program.Clear();
+
+			//prep filters for initialization
+			foreach (var f in Filters)
+			{
+				f.BeginInitialization(this);
+				f.Initialize();
+			}
+
+			//propagate input size forwards through filter chain to allow a 'flex' filter to determine what its input will be
+			Size presize = insize;
+			for (int i = 0; i < Filters.Count; i++)
+			{
+				var filter = Filters[i];
+				presize = filter.PresizeInput(channel, presize);
+			}
+
+			//propagate output size backwards through filter chain to allow a 'flex' filter to determine its output based on the desired output needs
+			presize = outsize;
+			for (int i = Filters.Count - 1; i >= 0; i--)
+			{
+				var filter = Filters[i];
+				presize = filter.PresizeOutput(channel, presize);
+			}
+
+			SurfaceState currState = null;
+			List<SurfaceFormat> RenderTargets = new List<SurfaceFormat>();
+
+			for (int i = 0; i < Filters.Count; i++)
+			{
+				BaseFilter f = Filters[i];
+
+				//check whether this filter needs input. if so, notify it of the current pipeline state
+				var iosi = f.FindInput(channel);
+				if (iosi != null)
 				{
-					//remove comments from end of value. exclusive from above condition, since comments after quoted strings would be snipped by the quoted string extraction
-					int hash = value.IndexOf('#');
-					if (hash != -1)
-						value = value.Substring(0, hash);
-					value = value.Trim();
+					iosi.SurfaceFormat = currState.SurfaceFormat;
+					f.SetInputFormat(channel, currState);
+
+					//check if the desired disposition needs to change from texture to render target
+					//(if so, insert a render filter)
+					if (iosi.SurfaceDisposition == SurfaceDisposition.RenderTarget && currState.SurfaceDisposition == SurfaceDisposition.Texture)
+					{
+						var renderer = new Render();
+						Filters.Insert(i, renderer);
+						goto RETRY;
+					}
+					//check if the desired disposition needs to change from a render target to a texture
+					//(if so, the current render target gets resolved, and made no longer current
+					else if (iosi.SurfaceDisposition == SurfaceDisposition.Texture && currState.SurfaceDisposition == SurfaceDisposition.RenderTarget)
+					{
+						var resolver = new Resolve();
+						Filters.Insert(i, resolver);
+						goto RETRY;
+					}
 				}
-				dict[key.ToLower()] = value;
-			}
 
-			//process the keys
-			int nShaders = FetchInt(dict, "shaders", 0);
-			for (int i = 0; i < nShaders; i++)
+				//now, the filter will have set its output state depending on its input state. check if it outputs:
+				iosi = f.FindOutput(channel);
+				if (iosi != null)
+				{
+					if (currState == null)
+					{
+						currState = new SurfaceState();
+						currState.SurfaceFormat = iosi.SurfaceFormat;
+						currState.SurfaceDisposition = iosi.SurfaceDisposition;
+					}
+					else
+					{
+						//if output disposition is unspecified, change it to whatever we've got right now
+						if (iosi.SurfaceDisposition == SurfaceDisposition.Unspecified)
+						{
+							iosi.SurfaceDisposition = currState.SurfaceDisposition;
+						}
+
+						bool newTarget = false;
+						if (iosi.SurfaceFormat.Size != currState.SurfaceFormat.Size)
+							newTarget = true;
+						else if (currState.SurfaceDisposition == SurfaceDisposition.Texture && iosi.SurfaceDisposition == SurfaceDisposition.RenderTarget)
+							newTarget = true;
+
+						if (newTarget)
+						{
+							currState = new SurfaceState();
+							iosi.SurfaceFormat = currState.SurfaceFormat = iosi.SurfaceFormat;
+							iosi.SurfaceDisposition = currState.SurfaceDisposition = iosi.SurfaceDisposition;
+							Program.Add(new ProgramStep(ProgramStepType.NewTarget, currState.SurfaceFormat.Size));
+						}
+						else
+						{
+							currState.SurfaceDisposition = iosi.SurfaceDisposition;
+						}
+					}
+
+
+				}
+
+				Program.Add(new ProgramStep(ProgramStepType.Run, i, f.GetType().Name));
+
+			} //filter loop
+
+			//patch the program so that the final rendertarget set operation is the framebuffer instead
+			for (int i = Program.Count - 1; i >= 0; i--)
 			{
-				ShaderPass sp = new ShaderPass();
-				sp.Index = i;
-				Passes.Add(sp);
-
-				sp.InputFilterLinear = FetchBool(dict, "filter_linear" + i, false); //Should this value not be defined, the filtering option is implementation defined.
-				sp.OuputFloat = FetchBool(dict, "float_framebuffer" + i, false);
-				sp.FrameCountMod = FetchInt(dict, "frame_count_mod" + i, 1);
-				sp.ShaderPath = FetchString(dict, "shader" + i, "?"); //todo - change extension to .cg for better compatibility? just change .cg to .glsl transparently at last second?
-
-				//If no scale type is assumed, it is assumed that it is set to "source" with scaleN set to 1.0.
-				//It is possible to set scale_type_xN and scale_type_yN to specialize the scaling type in either direction. scale_typeN however overrides both of these.
-				sp.ScaleTypeX = (ScaleType)Enum.Parse(typeof(ScaleType), FetchString(dict, "scale_type_x" + i, "Source"), true); 
-				sp.ScaleTypeY = (ScaleType)Enum.Parse(typeof(ScaleType), FetchString(dict, "scale_type_y" + i, "Source"), true);
-				ScaleType st = (ScaleType)Enum.Parse(typeof(ScaleType), FetchString(dict, "scale_type" + i, "NotSet"), true);
-				if (st != ScaleType.NotSet)
-					sp.ScaleTypeX = sp.ScaleTypeY = st;
-
-				//scaleN controls both scaling type in horizontal and vertical directions. If scaleN is defined, scale_xN and scale_yN have no effect.
-				sp.Scale.X = FetchFloat(dict, "scale_x" + i, 1);
-				sp.Scale.Y = FetchFloat(dict, "scale_y" + i, 1);
-				float scale = FetchFloat(dict, "scale" + i, -999);
-				if(scale != -999) 
-					sp.Scale.X = sp.Scale.Y = FetchFloat(dict,"scale" + i, 1);
-
-				//TODO - LUTs
+				var ps = Program[i];
+				if (ps.Type == ProgramStepType.NewTarget)
+				{
+					var size = (Size)ps.Args;
+					Debug.Assert(size == outsize);
+					ps.Type = ProgramStepType.FinalTarget;
+					ps.Args = null;
+					break;
+				}
 			}
-		}
-
-		public List<ShaderPass> Passes = new List<ShaderPass>();
-
-		public enum ScaleType
-		{
-			NotSet, Source, Viewport, Absolute
-		}
-
-		public class ShaderPass
-		{
-			public int Index;
-			public string ShaderPath;
-			public bool InputFilterLinear;
-			public bool OuputFloat;
-			public int FrameCountMod;
-			public ScaleType ScaleTypeX;
-			public ScaleType ScaleTypeY;
-			public Vector2 Scale;
-		}
-
-		string FetchString(Dictionary<string, string> dict, string key, string @default)
-		{
-			string str;
-			if (dict.TryGetValue(key, out str))
-				return str;
-			else return @default;
-		}
-
-		int FetchInt(Dictionary<string, string> dict, string key, int @default)
-		{
-			string str;
-			if (dict.TryGetValue(key, out str))
-				return int.Parse(str);
-			else return @default;
-		}
-
-		float FetchFloat(Dictionary<string, string> dict, string key, float @default)
-		{
-			string str;
-			if (dict.TryGetValue(key, out str))
-				return float.Parse(str);
-			else return @default;
-		}
-
-		bool FetchBool(Dictionary<string, string> dict, string key, bool @default)
-		{
-			string str;
-			if (dict.TryGetValue(key, out str))
-				return ParseBool(str);
-			else return @default;
-		}
-
-
-		bool ParseBool(string value)
-		{
-			if (value == "1") return true;
-			if (value == "0") return false;
-			value = value.ToLower();
-			if (value == "true") return true;
-			if (value == "false") return false;
-			throw new InvalidOperationException("Unparseable bool in CGP file content");
 		}
 	}
 }
-
-//Here, I started making code to support GUI editing of filter chains.
-//I decided to go for broke and implement retroarch's system first, and then the GUI editing should be able to internally produce a metashader
-
-//namespace BizHawk.Client.EmuHawk
-//{
-//  class FilterManager
-//  {
-//    class PipelineState
-//    {
-//      public PipelineState(PipelineState other)
-//      {
-//        Size = other.Size;
-//        Format = other.Format;
-//      }
-//      public Size Size;
-//      public string Format;
-//    }
-
-//    abstract class BaseFilter
-//    {
-//      bool Connect(FilterChain chain, BaseFilter parent)
-//      {
-//        Chain = chain;
-//        Parent = parent;
-//        return OnConnect();
-//      }
-
-//      public PipelineState OutputState;
-//      public FilterChain Chain;
-//      public BaseFilter Parent;
-
-//      public abstract bool OnConnect();
-//    }
-
-//    class FilterChain
-//    {
-//      public void AddFilter(BaseFilter filter)
-//      {
-//      }
-//    }
-
-//    class Filter_Grayscale : BaseFilter
-//    {
-//      public override bool OnConnect()
-//      {
-//        if(Parent.OutputState.Format != "rgb") return false;
-//        OutputState = new PipelineState { Parent.OutputState; }
-//      }
-//    }
-
-//    class Filter_EmuOutput_RGBA : BaseFilter
-//    {
-//      public Filter_EmuOutput_RGBA(int width, int height)
-//      {
-//        OutputState = new PipelineState() { Size = new Size(width, height), Format = "rgb" };
-//      }
-
-//      public override bool OnConnect()
-//      {
-//        return true;
-//      }
-//    }
-
-//  }
-//}

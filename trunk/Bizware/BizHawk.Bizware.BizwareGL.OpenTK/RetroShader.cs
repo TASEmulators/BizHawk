@@ -57,6 +57,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			var Modelview = Owner.CreateGuiViewMatrix(OutputSize);
 			Pipeline["MVPMatrix"].Set(Modelview * Projection, false);
 
+			Owner.SetTextureWrapMode(tex, true);
 
 			Pipeline["Texture"].Set(tex);
 			Owner.SetViewport(OutputSize);
@@ -81,6 +82,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; //junk
 			pData[i++] = 1; pData[i++] = v1; //texcoord
 
+			Owner.SetBlendState(Owner.BlendNone);
 			Owner.BindArrayData(pData);
 			Owner.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
 		}

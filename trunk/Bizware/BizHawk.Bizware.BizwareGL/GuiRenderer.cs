@@ -1,6 +1,7 @@
 //http://stackoverflow.com/questions/6893302/decode-rgb-value-to-single-float-without-bit-shift-in-glsl
 
 using System;
+using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 using sd=System.Drawing;
@@ -106,6 +107,9 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void SetBlendState(IBlendState rsBlend)
 		{
+			#if DEBUG
+			BlendStateSet = true;
+			#endif
 			Flush();
 			Owner.SetBlendState(rsBlend);
 		}
@@ -130,6 +134,7 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 		}
 
+		public void Begin(sd.Size size) { Begin(size.Width, size.Height); }
 
 		/// <summary>
 		/// begin rendering, initializing viewport and projections to the given dimensions
@@ -170,6 +175,10 @@ namespace BizHawk.Bizware.BizwareGL
 			Modelview.Clear();
 			Projection.Clear();
 			SetModulateColorWhite();
+
+			#if DEBUG
+				BlendStateSet = false;
+			#endif
 		}
 
 		/// <summary>
@@ -248,7 +257,7 @@ namespace BizHawk.Bizware.BizwareGL
 			art.u0 = art.v0 = 0;
 			art.u1 = art.v1 = 1;
 			art.BaseTexture = tex;
-			DrawInternal(art,x,y,w,h,false,false);
+			DrawInternal(art,x,y,w,h,false,tex.IsUpsideDown);
 		}
 
 		unsafe void DrawInternal(Art art, float x, float y, float w, float h, bool fx, bool fy)
@@ -343,6 +352,10 @@ namespace BizHawk.Bizware.BizwareGL
 
 			Owner.BindArrayData(pData);
 			Owner.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
+
+			#if DEBUG
+			Debug.Assert(BlendStateSet);
+			#endif
 		}
 
 		unsafe void DrawSubrectInternal(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
@@ -359,6 +372,9 @@ namespace BizHawk.Bizware.BizwareGL
 
 		//state cache
 		Texture2d sTexture;
+		#if DEBUG
+			bool BlendStateSet;
+		#endif
 
 		public readonly string DefaultVertexShader = @"
 #version 110 //opengl 2.0 ~ 2004

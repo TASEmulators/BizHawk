@@ -261,6 +261,20 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			GL.BindTexture(TextureTarget.Texture2D, tex.Id.ToInt32());
 		}
 
+		public void SetTextureWrapMode(Texture2d tex, bool clamp)
+		{
+			BindTexture2d(tex);
+			int mode;
+			if (clamp)
+			{
+				mode = (int)global::OpenTK.Graphics.OpenGL.TextureWrapMode.ClampToEdge;
+			}
+			else
+				mode = (int)global::OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat;
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, mode);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, mode);
+		}
+
 		public unsafe void BindArrayData(void* pData)
 		{
 			MyBindArrayData(sStatePendingVertexLayout, pData);
@@ -349,6 +363,11 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		{
 			IntPtr id = (this as IGL).GenTexture();
 			return new Texture2d(this, id, width, height);
+		}
+
+		public Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height)
+		{
+			return new Texture2d(this as IGL,glTexId, width, height);
 		}
 
 		public void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
