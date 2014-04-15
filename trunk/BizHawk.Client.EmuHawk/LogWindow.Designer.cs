@@ -33,6 +33,7 @@
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.buttonCopy = new System.Windows.Forms.Button();
 			this.buttonCopyAll = new System.Windows.Forms.Button();
+			this.AddToGameDbBtn = new System.Windows.Forms.Button();
 			this.virtualListView1 = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.tableLayoutPanel1.SuspendLayout();
@@ -43,7 +44,7 @@
 			this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.btnClose.Location = new System.Drawing.Point(597, 3);
 			this.btnClose.Name = "btnClose";
-			this.btnClose.Size = new System.Drawing.Size(75, 23);
+			this.btnClose.Size = new System.Drawing.Size(75, 24);
 			this.btnClose.TabIndex = 2;
 			this.btnClose.Text = "Close";
 			this.btnClose.UseVisualStyleBackColor = true;
@@ -53,7 +54,7 @@
 			// 
 			this.btnClear.Location = new System.Drawing.Point(3, 3);
 			this.btnClear.Name = "btnClear";
-			this.btnClear.Size = new System.Drawing.Size(75, 23);
+			this.btnClear.Size = new System.Drawing.Size(75, 24);
 			this.btnClear.TabIndex = 1;
 			this.btnClear.Text = "&Clear";
 			this.btnClear.UseVisualStyleBackColor = true;
@@ -73,19 +74,20 @@
 			this.tableLayoutPanel1.Controls.Add(this.btnClose, 4, 0);
 			this.tableLayoutPanel1.Controls.Add(this.buttonCopy, 1, 0);
 			this.tableLayoutPanel1.Controls.Add(this.buttonCopyAll, 2, 0);
+			this.tableLayoutPanel1.Controls.Add(this.AddToGameDbBtn, 3, 0);
 			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 368);
+			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 367);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
 			this.tableLayoutPanel1.RowCount = 1;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(675, 29);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(675, 30);
 			this.tableLayoutPanel1.TabIndex = 5;
 			// 
 			// buttonCopy
 			// 
 			this.buttonCopy.Location = new System.Drawing.Point(84, 3);
 			this.buttonCopy.Name = "buttonCopy";
-			this.buttonCopy.Size = new System.Drawing.Size(75, 23);
+			this.buttonCopy.Size = new System.Drawing.Size(75, 24);
 			this.buttonCopy.TabIndex = 3;
 			this.buttonCopy.Text = "Copy Sel.";
 			this.buttonCopy.UseVisualStyleBackColor = true;
@@ -95,11 +97,24 @@
 			// 
 			this.buttonCopyAll.Location = new System.Drawing.Point(165, 3);
 			this.buttonCopyAll.Name = "buttonCopyAll";
-			this.buttonCopyAll.Size = new System.Drawing.Size(75, 23);
+			this.buttonCopyAll.Size = new System.Drawing.Size(75, 24);
 			this.buttonCopyAll.TabIndex = 4;
 			this.buttonCopyAll.Text = "Copy All";
 			this.buttonCopyAll.UseVisualStyleBackColor = true;
 			this.buttonCopyAll.Click += new System.EventHandler(this.buttonCopyAll_Click);
+			// 
+			// AddToGameDbBtn
+			// 
+			this.AddToGameDbBtn.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.RetroQuestion;
+			this.AddToGameDbBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.AddToGameDbBtn.Location = new System.Drawing.Point(246, 3);
+			this.AddToGameDbBtn.Name = "AddToGameDbBtn";
+			this.AddToGameDbBtn.Size = new System.Drawing.Size(109, 24);
+			this.AddToGameDbBtn.TabIndex = 5;
+			this.AddToGameDbBtn.Text = "Add to database";
+			this.AddToGameDbBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.AddToGameDbBtn.UseVisualStyleBackColor = true;
+			this.AddToGameDbBtn.Click += new System.EventHandler(this.AddToGameDbBtn_Click);
 			// 
 			// virtualListView1
 			// 
@@ -114,7 +129,7 @@
 			this.virtualListView1.Name = "virtualListView1";
 			this.virtualListView1.SelectAllInProgress = false;
 			this.virtualListView1.selectedItem = -1;
-			this.virtualListView1.Size = new System.Drawing.Size(675, 368);
+			this.virtualListView1.Size = new System.Drawing.Size(675, 367);
 			this.virtualListView1.TabIndex = 8;
 			this.virtualListView1.UseCompatibleStateImageBehavior = false;
 			this.virtualListView1.View = System.Windows.Forms.View.Details;
@@ -152,5 +167,6 @@
 		private System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.Button buttonCopy;
 		private System.Windows.Forms.Button buttonCopyAll;
+		private System.Windows.Forms.Button AddToGameDbBtn;
 	}
 }

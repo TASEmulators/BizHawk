@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Common;
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 //todo - perks - pause, copy to clipboard, backlog length limiting
 
@@ -12,6 +15,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class LogWindow : Form
 	{
+		//TODO: only show add to game db when this is a Rom details dialog
+		//Let user decide what type (instead of always adding it as a good dump)
 		private readonly List<string> Lines = new List<string>();
 
 		public LogWindow()
@@ -78,6 +83,8 @@ namespace BizHawk.Client.EmuHawk
 					Size = new Size(Global.Config.LogWindowWidth, Global.Config.LogWindowHeight);
 				}
 			}
+
+			HideShowGameDbButton();
 		}
 
 		public void SaveConfigSettings()
@@ -125,6 +132,22 @@ namespace BizHawk.Client.EmuHawk
 			{
 				buttonCopy_Click(null, null);
 			}
+		}
+
+		private void HideShowGameDbButton()
+		{
+			AddToGameDbBtn.Visible = ReflectionUtil.HasExposedMethod(Global.Emulator, "GenerateGameDbEntry") 
+				&& (Global.Game.Status == RomStatus.Unknown || Global.Game.Status == RomStatus.NotInDatabase);
+		}
+
+		private void AddToGameDbBtn_Click(object sender, EventArgs e)
+		{
+			var entryObj = (CompactGameInfo)ReflectionUtil.InvokeMethod(Global.Emulator, "GenerateGameDbEntry", null);
+			var userDb = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb_user.txt");
+			Global.Game.Status = entryObj.Status = RomStatus.GoodDump; //TODO: let user decide
+			Database.SaveDatabaseEntry(userDb, entryObj);
+			GlobalWin.MainForm.UpdateDumpIcon();
+			HideShowGameDbButton();
 		}
 	}
 }

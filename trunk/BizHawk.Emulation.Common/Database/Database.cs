@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading;
-
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common
@@ -68,6 +68,57 @@ namespace BizHawk.Emulation.Common
 			else
 			{
 				Console.WriteLine("BENIGN: missing external game database {0}", line);
+			}
+		}
+
+		public static void SaveDatabaseEntry(string path, CompactGameInfo gameInfo)
+		{
+			var sb = new StringBuilder();
+			sb
+				.Append("sha1:") // TODO: how do we know it is sha1?
+				.Append(gameInfo.Hash)
+				.Append('\t');
+
+			switch (gameInfo.Status)
+			{
+				case RomStatus.BadDump:
+					sb.Append("B");
+					break;
+				case RomStatus.TranslatedRom:
+					sb.Append("T");
+					break;
+				case RomStatus.Overdump:
+					sb.Append("O");
+					break;
+				case RomStatus.BIOS:
+					sb.Append("I");
+					break;
+				case RomStatus.Homebrew:
+					sb.Append("D");
+					break;
+				case RomStatus.Hack:
+					sb.Append("H");
+					break;
+				case RomStatus.Unknown:
+					sb.Append("U");
+					break;
+			}
+
+			sb
+				.Append('\t')
+				.Append(gameInfo.Name)
+				.Append('\t')
+				.Append(gameInfo.System)
+				.Append('\t')
+				.Append(gameInfo.MetaData)
+				.Append(Environment.NewLine);
+			try
+			{
+				File.AppendAllText(path, sb.ToString());
+			}
+			catch (Exception ex)
+			{
+				string blah = ex.ToString();
 			}
 		}
 

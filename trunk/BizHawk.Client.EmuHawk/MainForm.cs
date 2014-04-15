@@ -1092,7 +1092,7 @@ namespace BizHawk.Client.EmuHawk
 			HandleToggleLight();
 		}
 
-		private void UpdateDumpIcon()
+		public void UpdateDumpIcon()
 		{
 			DumpStatusButton.Image = Properties.Resources.Blank;
 			DumpStatusButton.ToolTipText = string.Empty;
