@@ -61,7 +61,7 @@ namespace BizHawk.Client.Common
 		public int TargetScanlineFilterIntensity = 128; // choose between 0 and 256
 		public int TargetDisplayFilter = 0;
 		public int DispFinalFilter = 0;
-		public string DispUserFilterPath = ".";
+		public string DispUserFilterPath = "";
 		public RecentFiles RecentRoms = new RecentFiles(8);
 		public bool PauseWhenMenuActivated = true;
 		public bool SaveWindowPosition = true;

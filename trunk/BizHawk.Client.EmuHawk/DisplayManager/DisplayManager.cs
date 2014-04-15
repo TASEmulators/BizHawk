@@ -130,10 +130,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (ShaderChain_user != null)
 				ShaderChain_user.Dispose();
-			var fi = new FileInfo(Global.Config.DispUserFilterPath);
-			if (fi.Exists)
+			if (File.Exists(Global.Config.DispUserFilterPath))
+			{
+				var fi = new FileInfo(Global.Config.DispUserFilterPath);
 				using (var stream = fi.OpenRead())
 					ShaderChain_user = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.GetDirectoryName(Global.Config.DispUserFilterPath));
+			}
 		}
 
 		FilterManager.FilterProgram BuildDefaultChain(Size chain_insize, Size chain_outsize)
