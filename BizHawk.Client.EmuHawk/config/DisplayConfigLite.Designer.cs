@@ -32,6 +32,9 @@
 			this.btnOk = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.lblUserFilterName = new System.Windows.Forms.Label();
+			this.btnSelectUserFilter = new System.Windows.Forms.Button();
+			this.rbUser = new System.Windows.Forms.RadioButton();
 			this.tbScanlineIntensity = new System.Windows.Forms.TrackBar();
 			this.rbNone = new System.Windows.Forms.RadioButton();
 			this.rbScanlines = new System.Windows.Forms.RadioButton();
@@ -42,9 +45,6 @@
 			this.rbFinalFilterBicubic = new System.Windows.Forms.RadioButton();
 			this.rbFinalFilterNone = new System.Windows.Forms.RadioButton();
 			this.rbFinalFilterBilinear = new System.Windows.Forms.RadioButton();
-			this.rbUser = new System.Windows.Forms.RadioButton();
-			this.btnSelectUserFilter = new System.Windows.Forms.Button();
-			this.lblUserFilterName = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			this.groupBox2.SuspendLayout();
@@ -97,13 +97,42 @@
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Scaling Filter";
 			// 
+			// lblUserFilterName
+			// 
+			this.lblUserFilterName.Location = new System.Drawing.Point(6, 114);
+			this.lblUserFilterName.Name = "lblUserFilterName";
+			this.lblUserFilterName.Size = new System.Drawing.Size(161, 15);
+			this.lblUserFilterName.TabIndex = 10;
+			this.lblUserFilterName.Text = "Will contain user filter name";
+			// 
+			// btnSelectUserFilter
+			// 
+			this.btnSelectUserFilter.Location = new System.Drawing.Point(83, 88);
+			this.btnSelectUserFilter.Name = "btnSelectUserFilter";
+			this.btnSelectUserFilter.Size = new System.Drawing.Size(75, 23);
+			this.btnSelectUserFilter.TabIndex = 5;
+			this.btnSelectUserFilter.Text = "Select";
+			this.btnSelectUserFilter.UseVisualStyleBackColor = true;
+			this.btnSelectUserFilter.Click += new System.EventHandler(this.btnSelectUserFilter_Click);
+			// 
+			// rbUser
+			// 
+			this.rbUser.AutoSize = true;
+			this.rbUser.Location = new System.Drawing.Point(6, 88);
+			this.rbUser.Name = "rbUser";
+			this.rbUser.Size = new System.Drawing.Size(47, 17);
+			this.rbUser.TabIndex = 4;
+			this.rbUser.TabStop = true;
+			this.rbUser.Text = "User";
+			this.rbUser.UseVisualStyleBackColor = true;
+			// 
 			// tbScanlineIntensity
 			// 
 			this.tbScanlineIntensity.LargeChange = 32;
 			this.tbScanlineIntensity.Location = new System.Drawing.Point(83, 55);
 			this.tbScanlineIntensity.Maximum = 255;
 			this.tbScanlineIntensity.Name = "tbScanlineIntensity";
-			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 42);
+			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 45);
 			this.tbScanlineIntensity.TabIndex = 3;
 			this.tbScanlineIntensity.TickFrequency = 32;
 			this.tbScanlineIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
@@ -206,35 +235,6 @@
 			this.rbFinalFilterBilinear.Text = "Bilinear";
 			this.rbFinalFilterBilinear.UseVisualStyleBackColor = true;
 			// 
-			// rbUser
-			// 
-			this.rbUser.AutoSize = true;
-			this.rbUser.Location = new System.Drawing.Point(6, 88);
-			this.rbUser.Name = "rbUser";
-			this.rbUser.Size = new System.Drawing.Size(47, 17);
-			this.rbUser.TabIndex = 4;
-			this.rbUser.TabStop = true;
-			this.rbUser.Text = "User";
-			this.rbUser.UseVisualStyleBackColor = true;
-			// 
-			// btnSelectUserFilter
-			// 
-			this.btnSelectUserFilter.Location = new System.Drawing.Point(83, 88);
-			this.btnSelectUserFilter.Name = "btnSelectUserFilter";
-			this.btnSelectUserFilter.Size = new System.Drawing.Size(75, 23);
-			this.btnSelectUserFilter.TabIndex = 5;
-			this.btnSelectUserFilter.Text = "Select";
-			this.btnSelectUserFilter.UseVisualStyleBackColor = true;
-			this.btnSelectUserFilter.Click += new System.EventHandler(this.btnSelectUserFilter_Click);
-			// 
-			// lblUserFilterName
-			// 
-			this.lblUserFilterName.Location = new System.Drawing.Point(6, 114);
-			this.lblUserFilterName.Name = "lblUserFilterName";
-			this.lblUserFilterName.Size = new System.Drawing.Size(161, 15);
-			this.lblUserFilterName.TabIndex = 10;
-			this.lblUserFilterName.Text = "Will contain user filter name";
-			// 
 			// DisplayConfigLite
 			// 
 			this.AcceptButton = this.btnOk;
@@ -251,6 +251,7 @@
 			this.Controls.Add(this.btnOk);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Name = "DisplayConfigLite";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Display Configuration";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
