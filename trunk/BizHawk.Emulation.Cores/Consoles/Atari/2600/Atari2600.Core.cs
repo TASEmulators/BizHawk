@@ -17,8 +17,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public MOS6502X Cpu { get; private set; }
 		public M6532 M6532 { get; private set; }
 
+		public int LastAddress;
+		public int NumberOfDistinctAddresses;
+
 		public byte BaseReadMemory(ushort addr)
 		{
+			if (addr != LastAddress)
+			{
+				NumberOfDistinctAddresses++;
+				LastAddress = addr;
+			}
+
 			addr = (ushort)(addr & 0x1FFF);
 			if ((addr & 0x1080) == 0)
 			{
@@ -51,6 +60,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public void BaseWriteMemory(ushort addr, byte value)
 		{
+			if (addr != LastAddress)
+			{
+				NumberOfDistinctAddresses++;
+				LastAddress = addr;
+			}
+
 			addr = (ushort)(addr & 0x1FFF);
 			if ((addr & 0x1080) == 0)
 			{
@@ -129,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					_mapper = SetMultiCartMapper(Rom.Length, 32);
 					break;
 				case "AR":
-					_mapper = new mAR();
+					_mapper = new mAR(this); // This mapper has to set up configurations in the contructor.
 					break;
 				case "4K":
 					_mapper = new m4K();
