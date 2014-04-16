@@ -222,6 +222,14 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 
 			} //filter loop
 
+			//if the current output disposition is a texture, we need to render it
+			if (currState.SurfaceDisposition == SurfaceDisposition.Texture)
+			{
+				var renderer = new Render();
+				Filters.Insert(Filters.Count, renderer);
+				goto RETRY;
+			}
+
 			//patch the program so that the final rendertarget set operation is the framebuffer instead
 			for (int i = Program.Count - 1; i >= 0; i--)
 			{
