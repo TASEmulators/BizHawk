@@ -31,17 +31,34 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	internal class mAR : MapperBase
 	{
-		public mAR()
+		// TODO: can we set the defaults instead of do it in the constructor?
+		// TODO: fastscbios setting
+		// TODO: var names, savestates, hard reset, dispose, cart ram
+		public mAR(Atari2600 core)
 		{
-			throw new NotImplementedException();
+			Core = core;
+			InitializeRom();
+			BankConfiguration(0);
 		}
 
 		private int _bank2k;
-		private ByteBuffer _ram = new ByteBuffer(6144);
-		private IntBuffer _offsets = new IntBuffer(2);
+		//private ByteBuffer _ram = new ByteBuffer(6144);
+		ByteBuffer myImage = new ByteBuffer(8192);
+		private IntBuffer _imageOffsets = new IntBuffer(2);
 		private bool _writePending = false;
+		int myNumberOfDistinctAccesses = 0;
+		bool myWriteEnabled = false;
+		byte myDataHoldRegister;
 
-		private readonly byte[] _RomCode = {
+		// Indicates if the ROM's power is on or off
+		private bool myPower;
+
+		// Indicates when the power was last turned on
+		int myPowerRomCycle;
+
+		private ulong _elapsedCycles;
+
+		private readonly byte[] DummyRomCode = {
 			0xa5, 0xfa, 0x85, 0x80, 0x4c, 0x18, 0xf8, 0xff,
 			0xff, 0xff, 0x78, 0xd8, 0xa0, 0x00, 0xa2, 0x00,
 			0x94, 0x00, 0xe8, 0xd0, 0xfb, 0x4c, 0x50, 0xf8,
@@ -81,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			0xfa, 0x00, 0xcd, 0xf8, 0xff, 0x4c
 		};
 
-		private readonly byte[] RomHeader = {
+		private readonly byte[] DefaultHeader = {
 			0xac, 0xfa, 0x0f, 0x18, 0x62, 0x00, 0x24, 0x02,
 			0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 			0x00, 0x04, 0x08, 0x0c, 0x10, 0x14, 0x18, 0x1c,
@@ -116,34 +133,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00
 		};
 
-		public override bool HasCartRam
+		public override void ClockCpu()
 		{
-			get { return true; }
-		}
-
-		public override ByteBuffer CartRam
-		{
-			get { return _ram; }
-		}
-
-		public override void SyncState(Serializer ser)
-		{
-			base.SyncState(ser);
-			ser.Sync("bank4k", ref _bank2k);
-			ser.Sync("ram", ref _ram);
-		}
-
-		public override void HardReset()
-		{
-			_bank2k = 0;
-			_ram = new ByteBuffer(6144);
-			base.HardReset();
-		}
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			_ram.Dispose();
+			_elapsedCycles++;
+			
 		}
 
 		private byte ReadMem(ushort addr, bool peek)
@@ -158,22 +151,57 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				return base.ReadMemory(addr);
 			}
 
-			if (addr == 0x1850 && _offsets[1] == (3 << 11))
+			if (addr == 0x1850 && _imageOffsets[1] == (3 << 11))
 			{
 				/// TODO: weird stuff goes here
 				/// 
-				return Core.Rom[(addr & 0x7FF) + _offsets[1]];
+				return myImage[(addr & 0x7FF) + _imageOffsets[1]];
 			}
 
-			// TODO: cancel pending writes
-			if (addr == 0x1FF8)
+
+			// Cancel any pending write if more than 5 distinct accesses have occurred
+			// TODO: Modify to handle when the distinct counter wraps around...
+			if (_writePending &&
+				(Core.NumberOfDistinctAddresses >  myNumberOfDistinctAccesses + 5))
 			{
 				_writePending = false;
+			}
+
+			if (!((addr & 0x0F00) > 0) && (!myWriteEnabled || !_writePending))
+			{
+				myDataHoldRegister = (byte)addr;
+				myNumberOfDistinctAccesses = Core.NumberOfDistinctAddresses;
+				_writePending = true;
 
 			}
 
+			// Is the bank configuration hotspot being accessed?
+			else if (addr == 0x1FF8)
+			{
+				// Yes, so handle the bank configuration
+				_writePending = false;
+				BankConfiguration(myDataHoldRegister);
 
-			return Core.Rom[(_bank2k << 12) + (addr & 0xFFF)];
+			}
+
+			else if (myWriteEnabled &&
+					_writePending &&
+					Core.NumberOfDistinctAddresses == (myNumberOfDistinctAccesses + 5))
+			{
+				if ((addr & 0x800) == 0)
+				{
+					// TODO
+				}
+				else if (_imageOffsets[1] != (3 << 11)) // Don't poke Rom
+				{
+					// TODO
+				}
+
+				_writePending = false;
+			}
+
+			var tempVal = (addr & 0x07FF) + _imageOffsets[((addr & 0x800) > 0) ? 1 : 0];
+			return myImage[(addr & 0x07FF) + _imageOffsets[((addr & 0x800) > 0) ? 1 : 0]];
 		}
 
 		public override byte ReadMemory(ushort addr)
@@ -195,6 +223,106 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			else if (addr == 0x1FF9)
 			{
 				_bank2k = 1;
+			}
+		}
+
+		private void InitializeRom()
+		{
+			/* scrom.asm data borrowed from Stella:
+			// Note that the following offsets depend on the 'scrom.asm' file
+			// in src/emucore/misc.  If that file is ever recompiled (and its
+			// contents placed in the ourDummyROMCode array), the offsets will
+			// almost definitely change
+			*/
+
+			// The scrom.asm code checks a value at offset 109 as follows:
+			//   0xFF -> do a complete jump over the SC BIOS progress bars code
+			//   0x00 -> show SC BIOS progress bars as normal
+			DummyRomCode[109] = 0x00; // TODO: fastscbios setting
+
+			// Stella does this, but randomness is bad for determinacy! Hopefully we don't really need it
+			//ourDummyROMCode[281] = mySystem->randGenerator().next();
+
+			// Initialize ROM with illegal 6502 opcode that causes a real 6502 to jam
+			for (int i = 0; i < 2048; i++)
+			{
+				myImage[(3 << 11) + i] = 0x02;
+			}
+
+			// Copy the "dummy" Supercharger BIOS code into the ROM area
+			for (int i = 0; i < DummyRomCode.Length; i++)
+			{
+				myImage[(3 << 11) + i] = DummyRomCode[i];
+			}
+
+			// Finally set 6502 vectors to point to initial load code at 0xF80A of BIOS
+			myImage[(3 << 11) + 2044] = 0x0A;
+			myImage[(3 << 11) + 2045] = 0xF8;
+			myImage[(3 << 11) + 2046] = 0x0A;
+			myImage[(3 << 11) + 2047] = 0xF8;
+		}
+
+		private void BankConfiguration(byte configuration)
+		{
+			// D7-D5 of this byte: Write Pulse Delay (n/a for emulator)
+			//
+			// D4-D0: RAM/ROM configuration:
+			//       $F000-F7FF    $F800-FFFF Address range that banks map into
+			//  000wp     2            ROM
+			//  001wp     0            ROM
+			//  010wp     2            0      as used in Commie Mutants and many others
+			//  011wp     0            2      as used in Suicide Mission
+			//  100wp     2            ROM
+			//  101wp     1            ROM
+			//  110wp     2            1      as used in Killer Satellites
+			//  111wp     1            2      as we use for 2k/4k ROM cloning
+			// 
+			//  w = Write Enable (1 = enabled; accesses to $F000-$F0FF cause writes
+			//    to happen.  0 = disabled, and the cart acts like ROM.)
+			//  p = ROM Power (0 = enabled, 1 = off.)  Only power the ROM if you're
+			//    wanting to access the ROM for multiloads.  Otherwise set to 1.
+
+			_bank2k = configuration & 0x1F;  // remember for the bank() method
+			myPower = !((configuration & 0x01) > 0);
+			if (myPower)
+			{
+				myPowerRomCycle = (int)_elapsedCycles;
+			}
+
+			switch ((configuration >> 2) & 0x07)
+			{
+				case 0x00:
+					_imageOffsets[0] = 2 << 11;
+					_imageOffsets[1] = 3 << 11;
+					break;
+				case 0x01:
+					_imageOffsets[0] = 0;
+					_imageOffsets[1] = 3 << 11;
+					break;
+				case 0x02:
+					_imageOffsets[0] = 2 << 11;
+					_imageOffsets[1] = 0;
+					break;
+				case 0x03:
+					_imageOffsets[0] = 0;
+					_imageOffsets[1] = 2 << 11;
+					break;
+				case 0x04:
+					_imageOffsets[0] = 2 << 11;
+					_imageOffsets[1] = 3 << 11;
+					break;
+				case 0x05:
+					_imageOffsets[0] = 1 << 11;
+					_imageOffsets[1] = 3 << 11;
+					break;
+				case 0x06:
+					_imageOffsets[0] = 2 << 11;
+					_imageOffsets[1] = 1 << 11;
+					break;
+				case 0x07:
+					_imageOffsets[0] = 1 << 11;
+					_imageOffsets[1] = 2 << 11;
+					break;
 			}
 		}
 	}
