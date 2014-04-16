@@ -351,6 +351,13 @@ namespace BizHawk.Client.EmuHawk
 							// coordinate translation happens later
 							FloatValues["WMouse X"] = P.X;
 							FloatValues["WMouse Y"] = P.Y;
+
+							var B = System.Windows.Forms.Control.MouseButtons;
+							HandleButton("WMouse L", (B & System.Windows.Forms.MouseButtons.Left) != 0);
+							HandleButton("WMouse M", (B & System.Windows.Forms.MouseButtons.Middle) != 0);
+							HandleButton("WMouse R", (B & System.Windows.Forms.MouseButtons.Right) != 0);
+							HandleButton("WMouse 1", (B & System.Windows.Forms.MouseButtons.XButton1) != 0);
+							HandleButton("WMouse 2", (B & System.Windows.Forms.MouseButtons.XButton2) != 0);
 						}
 
 					}

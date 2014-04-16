@@ -48,10 +48,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// untested so far
 
 				int sum = 0;
-				int ymin = Math.Max(Math.Max(y - 20, ppur.status.sl - 30), 0);
-				int ymax = Math.Min(Math.Min(y + 20, ppur.status.sl + 5),239);
-				int xmin = Math.Max(0, x - 20);
-				int xmax = Math.Min(255, x + 20);
+				int ymin = Math.Max(Math.Max(y - 30, ppur.status.sl - 20), 0);
+				int ymax = Math.Min(Math.Min(y + 30, ppur.status.sl + 2),239);
+				int xmin = Math.Max(0, x - 30);
+				int xmax = Math.Min(255, x + 30);
 
 				for (int j = ymin; j <= ymax; j++)
 				{
@@ -64,7 +64,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						sum += lum;
 					}
 				}
-				return sum >= 40000;
+				// judging from Duck Hunt 3rd mode (skeet shooting), this is about correct
+				return sum >= 9001;
 			}
 
 
