@@ -43,11 +43,11 @@ namespace BizHawk.Client.EmuHawk.Filters
 		{
 			//base class behaviour here just uses the input and output sizes, if appropriate. few filters will have to do anything more complex
 			var input = FindInput(channel);
-			var output = FindInput(channel);
+			var output = FindOutput(channel);
 			if (input != null && output != null)
 			{
-				point.X *= ((float)output.SurfaceFormat.Size.Width) / (float)input.SurfaceFormat.Size.Width;
-				point.Y *= ((float)output.SurfaceFormat.Size.Height) / (float)input.SurfaceFormat.Size.Height;
+				point.X *= ((float)input.SurfaceFormat.Size.Width) / (float)output.SurfaceFormat.Size.Width;
+				point.Y *= ((float)input.SurfaceFormat.Size.Height) / (float)output.SurfaceFormat.Size.Height;
 			}
 			return point;
 		}
