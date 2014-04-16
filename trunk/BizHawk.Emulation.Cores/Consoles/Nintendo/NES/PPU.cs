@@ -45,18 +45,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// true = light sensed
 			public bool LightGunCallback(int x, int y)
 			{
-				// untested so far
+				// the actual light gun circuit is very complex
+				// and this doesn't do it justice at all, as expected
+
+				const int radius = 10; // look at pixel values up to this far away, roughly
 
 				int sum = 0;
-				int ymin = Math.Max(Math.Max(y - 30, ppur.status.sl - 20), 0);
-				int ymax = Math.Min(Math.Min(y + 30, ppur.status.sl + 2),239);
-				int xmin = Math.Max(0, x - 30);
-				int xmax = Math.Min(255, x + 30);
+				int ymin = Math.Max(Math.Max(y - radius, ppur.status.sl - 20), 0);
+				int ymax = Math.Min(y + radius, 239);
+				int xmin = Math.Max(x - radius, 0);
+				int xmax = Math.Min(x + radius, 255);
+
+				int ystop = ppur.status.sl - 2;
+				int xstop = ppur.status.cycle - 20;
 
 				for (int j = ymin; j <= ymax; j++)
 				{
 					for (int i = xmin; i <= xmax; i++)
 					{
+						if (j >= ystop && i >= xstop || j > ystop)
+							goto loopout;
+
 						short s = xbuf[j * 256 + i];
 						int lum = s & 0x30;
 						if ((s & 0x0f) >= 0x0e)
@@ -64,8 +73,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						sum += lum;
 					}
 				}
-				// judging from Duck Hunt 3rd mode (skeet shooting), this is about correct
-				return sum >= 9001;
+				loopout:
+				return sum >= 2000;
 			}
 
 
