@@ -287,6 +287,12 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		public void BindPipeline(Pipeline pipeline)
 		{
+			if (pipeline == null)
+			{
+				sStatePendingVertexLayout = null;
+				GL.UseProgram(0);
+				return;
+			}
 			if (!pipeline.Available) throw new InvalidOperationException("Attempt to bind unavailable pipeline");
 			sStatePendingVertexLayout = pipeline.VertexLayout;
 			GL.UseProgram(pipeline.Id.ToInt32());
@@ -396,7 +402,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			IntPtr texid = (this as IGL).GenTexture();
 			Texture2d tex = new Texture2d(this, texid, w, h);
 			GL.BindTexture(TextureTarget.Texture2D,texid.ToInt32());
-			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, w,h,  0, PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
+			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8, w, h, 0, PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
 			tex.SetMagFilter(TextureMagFilter.Nearest);
 			tex.SetMinFilter(TextureMinFilter.Nearest);
 
@@ -603,6 +609,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			//HAMNUTS (continued)
 			var currBindings = sVertexAttribEnables;
 			sStateCurrentVertexLayout = sStatePendingVertexLayout;
+
+			if (layout == null) return;
 
 			foreach (var kvp in layout.Items)
 			{
