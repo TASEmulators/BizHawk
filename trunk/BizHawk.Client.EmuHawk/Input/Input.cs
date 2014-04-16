@@ -338,6 +338,21 @@ namespace BizHawk.Client.EmuHawk
 							}
 						}
 
+						// analyse moose
+						// other sorts of mouse api (raw input) could easily be added as a separate listing under a different class
+						{
+							var P = System.Windows.Forms.Control.MousePosition;
+							if (trackdeltas)
+							{
+								// these are relative to screen coordinates, but that's not terribly important
+								FloatDeltas["WMouse X"] += Math.Abs(P.X - FloatValues["WMouse X"]) * 50;
+								FloatDeltas["WMouse Y"] += Math.Abs(P.Y - FloatValues["WMouse Y"]) * 50;
+							}
+							// coordinate translation happens later
+							FloatValues["WMouse X"] = P.X;
+							FloatValues["WMouse Y"] = P.Y;
+						}
+
 					}
 
 					bool swallow = !GlobalWin.MainForm.AllowInput;

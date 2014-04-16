@@ -686,7 +686,26 @@ namespace BizHawk.Client.EmuHawk
 			} // foreach event
 
 			// also handle floats
-			conInput.AcceptNewFloats(Input.Instance.GetFloats());
+			conInput.AcceptNewFloats(Input.Instance.GetFloats().Select(o =>
+				{
+					// hackish
+					if (o.Item1 == "WMouse X")
+					{
+						var P = GlobalWin.DisplayManager.UntransformPoint(new System.Drawing.Point((int)o.Item2, 0));
+						float x = P.X / (float)Global.Emulator.VideoProvider.BufferWidth;
+						return new Tuple<string, float>("WMouse X", x * 20000 - 10000);
+					}
+					else if (o.Item1 == "WMouse Y")
+					{
+						var P = GlobalWin.DisplayManager.UntransformPoint(new System.Drawing.Point(0, (int)o.Item2));
+						float y = P.Y / (float)Global.Emulator.VideoProvider.BufferHeight;
+						return new Tuple<string, float>("WMouse Y", y * 20000 - 10000);
+					}
+					else
+					{
+						return o;
+					}
+				}));
 		}
 
 		public void RebootCore()
