@@ -68,7 +68,8 @@ namespace BizHawk.Client.Common
 
 					if (Global.MovieSession.Movie.IsActive)
 					{
-						bl.GetLump(BinaryStateLump.Input, true, tr => succeed = Global.MovieSession.HandleMovieLoadState(tr));
+						bl.GetLump(BinaryStateLump.Input, true, tr => succeed = Global.MovieSession.HandleMovieLoadState_HackyStep1(tr));
+						bl.GetLump(BinaryStateLump.Input, true, tr => succeed = Global.MovieSession.HandleMovieLoadState_HackyStep2(tr));
 						if (!succeed)
 						{
 							return false;
