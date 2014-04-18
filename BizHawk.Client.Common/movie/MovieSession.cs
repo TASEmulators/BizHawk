@@ -199,7 +199,48 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		//TODO: maybe someone who understands more about what's going on here could rename these step1 and step2 into something more descriptive
+		public bool HandleMovieLoadState_HackyStep2(TextReader reader)
+		{
+			if (!Movie.IsActive)
+			{
+				return true;
+			}
+
+
+			if (ReadOnly)
+			{
+
+			}
+			else
+			{
+
+				string errorMsg;
+
+				//// fixme: this is evil (it causes crashes in binary states because InflaterInputStream can't have its position set, even to zero.
+				//((StreamReader)reader).BaseStream.Position = 0;
+				//((StreamReader)reader).DiscardBufferedData();
+				//edit: zero 18-apr-2014 - this was solved by HackyStep1 and HackyStep2, so that the zip stream can be re-acquired instead of needing its position reset
+
+				var result = Movie.ExtractInputLog(reader, out errorMsg);
+				if (!result)
+				{
+					Output(errorMsg);
+					return false;
+				}
+			}
+
+			return true;
+		}
+
 		public bool HandleMovieLoadState(TextReader reader)
+		{
+			if (!HandleMovieLoadState_HackyStep1(reader))
+				return false;
+			return HandleMovieLoadState_HackyStep2(reader);
+		}
+
+		public bool HandleMovieLoadState_HackyStep1(TextReader reader)
 		{
 			if (!Movie.IsActive)
 			{
@@ -237,15 +278,6 @@ namespace BizHawk.Client.Common
 					Movie.SwitchToRecord();
 				}
 
-				// fixme: this is evil
-				((StreamReader)reader).BaseStream.Position = 0;
-				((StreamReader)reader).DiscardBufferedData();
-				var result = Movie.ExtractInputLog(reader, out errorMsg);
-				if (!result)
-				{
-					Output(errorMsg);
-					return false;
-				}
 			}
 
 			return true;
