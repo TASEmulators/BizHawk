@@ -18,16 +18,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public M6532 M6532 { get; private set; }
 
 		public int LastAddress;
-		public int NumberOfDistinctAddresses;
+		public int DistinctAccessCount;
 
 		public byte BaseReadMemory(ushort addr)
 		{
-			if (addr != LastAddress)
-			{
-				NumberOfDistinctAddresses++;
-				LastAddress = addr;
-			}
-
 			addr = (ushort)(addr & 0x1FFF);
 			if ((addr & 0x1080) == 0)
 			{
@@ -62,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			if (addr != LastAddress)
 			{
-				NumberOfDistinctAddresses++;
+				DistinctAccessCount++;
 				LastAddress = addr;
 			}
 
@@ -83,6 +77,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public byte ReadMemory(ushort addr)
 		{
+			if (addr != LastAddress)
+			{
+				DistinctAccessCount++;
+				LastAddress = addr;
+			}
+
 			_mapper.Bit13 = addr.Bit(13);
 			var temp = _mapper.ReadMemory((ushort)(addr & 0x1FFF));
 			CoreComm.MemoryCallbackSystem.CallRead(addr);
@@ -99,6 +99,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public void WriteMemory(ushort addr, byte value)
 		{
+			if (addr != LastAddress)
+			{
+				DistinctAccessCount++;
+				LastAddress = addr;
+			}
+
 			_mapper.WriteMemory((ushort)(addr & 0x1FFF), value);
 
 			CoreComm.MemoryCallbackSystem.CallWrite(addr);
