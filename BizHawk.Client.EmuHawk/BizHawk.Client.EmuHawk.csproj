@@ -278,6 +278,12 @@
     <Compile Include="config\HotkeyConfig.Designer.cs">
       <DependentUpon>HotkeyConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\InputCompositeWidget.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="config\InputCompositeWidget.Designer.cs">
+      <DependentUpon>InputCompositeWidget.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\InputWidget.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -999,6 +1005,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\HotkeyConfig.resx">
       <DependentUpon>HotkeyConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\InputCompositeWidget.resx">
+      <DependentUpon>InputCompositeWidget.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\N64\N64VideoPluginconfig.resx">
       <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>

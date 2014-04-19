@@ -63,18 +63,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private IEnumerable<InputWidget> InputWidgets
+		private IEnumerable<InputCompositeWidget> InputWidgets
 		{
 			get
 			{
-				var widgets = new List<InputWidget>();
+				var widgets = new List<InputCompositeWidget>();
 				for (var x = 0; x < HotkeyTabControl.TabPages.Count; x++)
 				{
 					for (var y = 0; y < HotkeyTabControl.TabPages[x].Controls.Count; y++)
 					{
-						if (HotkeyTabControl.TabPages[x].Controls[y] is InputWidget)
+						if (HotkeyTabControl.TabPages[x].Controls[y] is InputCompositeWidget)
 						{
-							widgets.Add(HotkeyTabControl.TabPages[x].Controls[y] as InputWidget);
+							widgets.Add(HotkeyTabControl.TabPages[x].Controls[y] as InputCompositeWidget);
 						}
 					}
 				}
