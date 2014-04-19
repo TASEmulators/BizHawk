@@ -358,6 +358,8 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.Atari2600DebuggerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator31 = new System.Windows.Forms.ToolStripSeparator();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -2297,6 +2299,8 @@
 			// AtariSubMenu
 			// 
 			this.AtariSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.Atari2600DebuggerMenuItem,
+            this.toolStripSeparator31,
             this.AtariSettingsToolStripMenuItem});
 			this.AtariSubMenu.Name = "AtariSubMenu";
 			this.AtariSubMenu.Size = new System.Drawing.Size(44, 19);
@@ -2305,7 +2309,7 @@
 			// AtariSettingsToolStripMenuItem
 			// 
 			this.AtariSettingsToolStripMenuItem.Name = "AtariSettingsToolStripMenuItem";
-			this.AtariSettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+			this.AtariSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.AtariSettingsToolStripMenuItem.Text = "Settings...";
 			this.AtariSettingsToolStripMenuItem.Click += new System.EventHandler(this.AtariSettingsToolStripMenuItem_Click);
 			// 
@@ -3126,6 +3130,19 @@
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
 			// 
+			// Atari2600DebuggerMenuItem
+			// 
+			this.Atari2600DebuggerMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Bug;
+			this.Atari2600DebuggerMenuItem.Name = "Atari2600DebuggerMenuItem";
+			this.Atari2600DebuggerMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.Atari2600DebuggerMenuItem.Text = "Debugger";
+			this.Atari2600DebuggerMenuItem.Click += new System.EventHandler(this.Atari2600DebuggerMenuItem_Click);
+			// 
+			// toolStripSeparator31
+			// 
+			this.toolStripSeparator31.Name = "toolStripSeparator31";
+			this.toolStripSeparator31.Size = new System.Drawing.Size(149, 6);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -3495,6 +3512,8 @@
 		private System.Windows.Forms.ToolStripMenuItem SMSdisplayAutoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator26;
 		private System.Windows.Forms.ToolStripMenuItem extensionsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem Atari2600DebuggerMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator31;
 	}
 }
 

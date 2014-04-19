@@ -3182,5 +3182,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			new FileExtensionPreferences().ShowDialog();
 		}
+
+		private void Atari2600DebuggerMenuItem_Click(object sender, EventArgs e)
+		{
+			new Atari2600Debugger().Show();
+		}
 	}
 }

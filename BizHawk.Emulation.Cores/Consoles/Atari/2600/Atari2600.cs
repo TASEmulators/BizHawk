@@ -164,6 +164,29 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			};
 		}
 
+		// TODO: rewrite GetCpuFlagsAndRegisters this way
+		public Dictionary<string, int> GetCpuFlagsAndRegisters2()
+		{
+			return new Dictionary<string, int>
+			{
+				{ "A", Cpu.A },
+				{ "X", Cpu.X },
+				{ "Y", Cpu.Y },
+				{ "S", Cpu.S },
+				{ "PC", Cpu.PC },
+
+				{ "Flag C", Cpu.FlagC ? 1 : 0 },
+				{ "Flag Z", Cpu.FlagZ ? 1 : 0 },
+				{ "Flag I", Cpu.FlagI ? 1 : 0 },
+				{ "Flag D", Cpu.FlagD ? 1 : 0 },
+
+				{ "Flag B", Cpu.FlagB ? 1 : 0 },
+				{ "Flag V", Cpu.FlagV ? 1 : 0 },
+				{ "Flag N", Cpu.FlagN ? 1 : 0 },
+				{ "Flag T", Cpu.FlagT ? 1 : 0 }
+			};
+		}
+
 		public bool StartAsyncSound() { return true; }
 
 		public void EndAsyncSound() { }

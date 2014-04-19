@@ -306,18 +306,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_tia.BeginAudioFrame();
 			while (_tia.FrameComplete == false)
 			{
-				_tia.Execute(1);
-				_tia.Execute(1);
-				_tia.Execute(1);
-
-				M6532.Timer.Tick();
-				if (CoreComm.Tracer.Enabled)
-				{
-					CoreComm.Tracer.Put(Cpu.TraceState());
-				}
-
-				Cpu.ExecuteOne();
-				_mapper.ClockCpu();
+				CycleAdvance();
 			}
 			_tia.CompleteAudioFrame();
 
@@ -332,6 +321,27 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				LagCount++;
 			}
+		}
+
+		public void CycleAdvance()
+		{
+			_tia.Execute(1);
+			_tia.Execute(1);
+			_tia.Execute(1);
+
+			M6532.Timer.Tick();
+			if (CoreComm.Tracer.Enabled)
+			{
+				CoreComm.Tracer.Put(Cpu.TraceState());
+			}
+
+			Cpu.ExecuteOne();
+			_mapper.ClockCpu();
+		}
+
+		public void ScanlineAdvance()
+		{
+			// TODO
 		}
 
 		public byte ReadControls1(bool peek)
