@@ -17,6 +17,14 @@ namespace BizHawk.Client.EmuHawk
 		private int _pos;	 // Which mapping the widget will listen for
 		private string _wasPressed = string.Empty;
 
+		/// <summary>
+		/// These bindings get ignored by the widget and can only be entered by SetBinding() via the contextmenu from the InputCompositeWidget
+		/// </summary>
+		public static readonly string[] SpecialBindings = new[] {
+			"WMouse L","WMouse M","WMouse R",
+			"WMouse 1", "WMouse 2"
+		};
+
 		public InputWidget()
 		{
 			ContextMenu = new ContextMenu();
@@ -108,6 +116,19 @@ namespace BizHawk.Client.EmuHawk
 			Text = string.Empty;
 		}
 
+		/// <summary>
+		/// sets a binding manually. This may not be implemented quite right.
+		/// </summary>
+		public void SetBinding(string bindingStr)
+		{
+			_bindings[_pos] = bindingStr;
+			UpdateLabel();
+			Increment();
+		}
+
+		/// <summary>
+		/// Poll input events and apply processing related to accepting that as a binding
+		/// </summary>
 		private void ReadKeys()
 		{
 			Input.Instance.Update();
@@ -119,6 +140,12 @@ namespace BizHawk.Client.EmuHawk
 			
 			if (bindingStr != null)
 			{
+				//ignore special bindings
+				if (SpecialBindings.Contains(bindingStr))
+				{
+					return;
+				}
+
 				if (bindingStr == "Escape")
 				{
 					EraseMappings();
