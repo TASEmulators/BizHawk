@@ -47,34 +47,34 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			var flags = _core.GetCpuFlagsAndRegisters2();
-			PCRegisterBox.Text = flags["PC"].ToString();
+			//var flags = _core.GetCpuFlagsAndRegisters();
+			//PCRegisterBox.Text = flags["PC"].ToString();
 
-			SPRegisterBox.Text = flags["S"].ToString();
-			SPRegisterHexBox.Text = string.Format("{0:X2}", flags["S"]);
-			SPRegisterBinaryBox.Text = ToBinStr(flags["S"]);
+			//SPRegisterBox.Text = flags["S"].ToString();
+			//SPRegisterHexBox.Text = string.Format("{0:X2}", flags["S"]);
+			//SPRegisterBinaryBox.Text = ToBinStr(flags["S"]);
 
-			ARegisterBox.Text = flags["A"].ToString();
-			ARegisterHexBox.Text = string.Format("{0:X2}", flags["A"]);
-			ARegisterBinaryBox.Text = ToBinStr(flags["A"]);
+			//ARegisterBox.Text = flags["A"].ToString();
+			//ARegisterHexBox.Text = string.Format("{0:X2}", flags["A"]);
+			//ARegisterBinaryBox.Text = ToBinStr(flags["A"]);
 
-			XRegisterBox.Text = flags["X"].ToString();
-			XRegisterHexBox.Text = string.Format("{0:X2}", flags["X"]);
-			XRegisterBinaryBox.Text = ToBinStr(flags["X"]);
+			//XRegisterBox.Text = flags["X"].ToString();
+			//XRegisterHexBox.Text = string.Format("{0:X2}", flags["X"]);
+			//XRegisterBinaryBox.Text = ToBinStr(flags["X"]);
 
-			YRegisterBox.Text = flags["Y"].ToString();
-			YRegisterHexBox.Text = string.Format("{0:X2}", flags["Y"]);
-			YRegisterBinaryBox.Text = ToBinStr(flags["Y"]);
+			//YRegisterBox.Text = flags["Y"].ToString();
+			//YRegisterHexBox.Text = string.Format("{0:X2}", flags["Y"]);
+			//YRegisterBinaryBox.Text = ToBinStr(flags["Y"]);
 
-			NFlagCheckbox.Checked = flags["Flag N"] == 1;
-			VFlagCheckbox.Checked = flags["Flag V"] == 1;
-			TFlagCheckbox.Checked = flags["Flag T"] == 1;
-			BFlagCheckbox.Checked = flags["Flag B"] == 1;
+			//NFlagCheckbox.Checked = flags["Flag N"] == 1;
+			//VFlagCheckbox.Checked = flags["Flag V"] == 1;
+			//TFlagCheckbox.Checked = flags["Flag T"] == 1;
+			//BFlagCheckbox.Checked = flags["Flag B"] == 1;
 
-			DFlagCheckbox.Checked = flags["Flag D"] == 1;
-			IFlagCheckbox.Checked = flags["Flag I"] == 1;
-			ZFlagCheckbox.Checked = flags["Flag Z"] == 1;
-			CFlagCheckbox.Checked = flags["Flag C"] == 1;
+			//DFlagCheckbox.Checked = flags["Flag D"] == 1;
+			//IFlagCheckbox.Checked = flags["Flag I"] == 1;
+			//ZFlagCheckbox.Checked = flags["Flag Z"] == 1;
+			//CFlagCheckbox.Checked = flags["Flag C"] == 1;
 
 			FrameCountBox.Text = _core.Frame.ToString();
 		}

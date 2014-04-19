@@ -574,9 +574,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		}
 
 
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
-			return new List<KeyValuePair<string, int>>();
+			throw new NotImplementedException();
 		}
 
 		public void UpdateVDPViewContext(LibGPGX.VDPView view)

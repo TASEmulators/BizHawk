@@ -143,7 +143,7 @@ namespace BizHawk.Emulation.Common
 		/// Returns a list of Cpu registers and their current state
 		/// </summary>
 		/// <returns></returns>
-		List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters();
+		Dictionary<string, int> GetCpuFlagsAndRegisters();
 
 		// ====settings interface====
 

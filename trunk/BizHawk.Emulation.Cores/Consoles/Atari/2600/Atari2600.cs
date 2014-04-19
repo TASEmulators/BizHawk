@@ -144,28 +144,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			};
 		}
 
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
-		{
-			return new List<KeyValuePair<string, int>>
-			{
-				new KeyValuePair<string, int>("A", Cpu.A),
-				new KeyValuePair<string, int>("X", Cpu.X),
-				new KeyValuePair<string, int>("Y", Cpu.Y),
-				new KeyValuePair<string, int>("S", Cpu.S),
-				new KeyValuePair<string, int>("PC", Cpu.PC),
-				new KeyValuePair<string, int>("Flag C", Cpu.FlagC ? 1 : 0),
-				new KeyValuePair<string, int>("Flag Z", Cpu.FlagZ ? 1 : 0),
-				new KeyValuePair<string, int>("Flag I", Cpu.FlagI ? 1 : 0),
-				new KeyValuePair<string, int>("Flag D", Cpu.FlagD ? 1 : 0),
-				new KeyValuePair<string, int>("Flag B", Cpu.FlagB ? 1 : 0),
-				new KeyValuePair<string, int>("Flag V", Cpu.FlagV ? 1 : 0),
-				new KeyValuePair<string, int>("Flag N", Cpu.FlagN ? 1 : 0),
-				new KeyValuePair<string, int>("Flag T", Cpu.FlagT ? 1 : 0)
-			};
-		}
-
 		// TODO: rewrite GetCpuFlagsAndRegisters this way
-		public Dictionary<string, int> GetCpuFlagsAndRegisters2()
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			return new Dictionary<string, int>
 			{

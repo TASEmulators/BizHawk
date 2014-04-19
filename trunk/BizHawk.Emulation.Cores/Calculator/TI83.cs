@@ -971,40 +971,40 @@ namespace BizHawk.Emulation.Cores.Calculators
 		public bool PutSettings(object o) { return false; }
 		public bool PutSyncSettings(object o) { return false; }
 
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
-			return new List<KeyValuePair<string, int>>
+			return new Dictionary<string, int>
 			{
-				new KeyValuePair<string, int>("A", cpu.RegisterA),
-				new KeyValuePair<string, int>("AF", cpu.RegisterAF),
-				new KeyValuePair<string, int>("B", cpu.RegisterB),
-				new KeyValuePair<string, int>("BC", cpu.RegisterBC),
-				new KeyValuePair<string, int>("C", cpu.RegisterC),
-				new KeyValuePair<string, int>("D", cpu.RegisterD),
-				new KeyValuePair<string, int>("DE", cpu.RegisterDE),
-				new KeyValuePair<string, int>("E", cpu.RegisterE),
-				new KeyValuePair<string, int>("F", cpu.RegisterF),
-				new KeyValuePair<string, int>("H", cpu.RegisterH),
-				new KeyValuePair<string, int>("HL", cpu.RegisterHL),
-				new KeyValuePair<string, int>("I", cpu.RegisterI),
-				new KeyValuePair<string, int>("IX", cpu.RegisterIX),
-				new KeyValuePair<string, int>("IY", cpu.RegisterIY),
-				new KeyValuePair<string, int>("L", cpu.RegisterL),
-				new KeyValuePair<string, int>("PC", cpu.RegisterPC),
-				new KeyValuePair<string, int>("R", cpu.RegisterR),
-				new KeyValuePair<string, int>("Shadow AF", cpu.RegisterShadowAF),
-				new KeyValuePair<string, int>("Shadow BC", cpu.RegisterShadowBC),
-				new KeyValuePair<string, int>("Shadow DE", cpu.RegisterShadowDE),
-				new KeyValuePair<string, int>("Shadow HL", cpu.RegisterShadowHL),
-				new KeyValuePair<string, int>("SP", cpu.RegisterSP),
-				new KeyValuePair<string, int>("Flag C", cpu.RegisterF.Bit(0) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag N", cpu.RegisterF.Bit(1) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag P/V", cpu.RegisterF.Bit(2) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag 3rd", cpu.RegisterF.Bit(3) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag H", cpu.RegisterF.Bit(4) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag 5th", cpu.RegisterF.Bit(5) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag Z", cpu.RegisterF.Bit(6) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag S", cpu.RegisterF.Bit(7) ? 1 : 0),
+				{ "A", cpu.RegisterA },
+				{ "AF", cpu.RegisterAF },
+				{ "B", cpu.RegisterB },
+				{ "BC", cpu.RegisterBC },
+				{ "C", cpu.RegisterC },
+				{ "D", cpu.RegisterD },
+				{ "DE", cpu.RegisterDE },
+				{ "E", cpu.RegisterE },
+				{ "F", cpu.RegisterF },
+				{ "H", cpu.RegisterH },
+				{ "HL", cpu.RegisterHL },
+				{ "I", cpu.RegisterI },
+				{ "IX", cpu.RegisterIX },
+				{ "IY", cpu.RegisterIY },
+				{ "L", cpu.RegisterL },
+				{ "PC", cpu.RegisterPC },
+				{ "R", cpu.RegisterR },
+				{ "Shadow AF", cpu.RegisterShadowAF },
+				{ "Shadow BC", cpu.RegisterShadowBC },
+				{ "Shadow DE", cpu.RegisterShadowDE },
+				{ "Shadow HL", cpu.RegisterShadowHL },
+				{ "SP", cpu.RegisterSP },
+				{ "Flag C", cpu.RegisterF.Bit(0) ? 1 : 0 },
+				{ "Flag N", cpu.RegisterF.Bit(1) ? 1 : 0 },
+				{ "Flag P/V", cpu.RegisterF.Bit(2) ? 1 : 0 },
+				{ "Flag 3rd", cpu.RegisterF.Bit(3) ? 1 : 0 },
+				{ "Flag H", cpu.RegisterF.Bit(4) ? 1 : 0 },
+				{ "Flag 5th", cpu.RegisterF.Bit(5) ? 1 : 0 },
+				{ "Flag Z", cpu.RegisterF.Bit(6) ? 1 : 0 },
+				{ "Flag S", cpu.RegisterF.Bit(7) ? 1 : 0 }
 			};
 		}
 	}

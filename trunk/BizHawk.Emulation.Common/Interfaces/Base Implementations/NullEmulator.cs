@@ -81,9 +81,9 @@ namespace BizHawk.Emulation.Common
 		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 		public void Dispose() { }
 
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
-			return new List<KeyValuePair<string, int>>();
+			return new Dictionary<string, int>();
 		}
 
 		bool xmas;

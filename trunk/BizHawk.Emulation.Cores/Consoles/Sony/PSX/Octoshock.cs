@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public bool StartAsyncSound() { return true; }
 		public void EndAsyncSound() { }
 
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			throw new NotImplementedException();
 		}

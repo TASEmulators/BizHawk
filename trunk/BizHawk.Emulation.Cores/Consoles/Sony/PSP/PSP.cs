@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 			}
 		}
 
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			throw new NotImplementedException();
 		}
