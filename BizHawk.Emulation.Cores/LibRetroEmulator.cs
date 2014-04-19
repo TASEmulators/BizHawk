@@ -371,16 +371,13 @@ namespace BizHawk.Emulation.Cores
 		void SetupDebuggingStuff()
 		{
 			MemoryDomains = MemoryDomainList.GetDummyList();
-			_cpufake = new List<KeyValuePair<string, int>>();
 		}
 
 		public MemoryDomainList MemoryDomains { get; private set; }
 
-		List<KeyValuePair<string, int>> _cpufake;
-
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
-			return _cpufake;
+			throw new NotImplementedException();
 		}
 
 		#endregion

@@ -12,48 +12,48 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	public class N64 : IEmulator
 	{
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			//note: the approach this code takes is highly bug-prone
 
-			List<KeyValuePair<string, int>> ret = new List<KeyValuePair<string, int>>();
+			var ret = new Dictionary<string, int>();
 			byte[] data = new byte[32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + 32 * 4 + 32 * 8];
 			api.getRegisters(data);
 
 			for (int i = 0; i < 32; i++)
 			{
 				long reg = BitConverter.ToInt64(data, i * 8);
-				ret.Add(new KeyValuePair<string, int>("REG" + i + "_lo", (int)(reg)));
-				ret.Add(new KeyValuePair<string, int>("REG" + i + "_hi", (int)(reg>>32)));
+				ret.Add("REG" + i + "_lo", (int)(reg));
+				ret.Add("REG" + i + "_hi", (int)(reg>>32));
 			}
 
 			UInt32 PC = BitConverter.ToUInt32(data, 32 * 8);
-			ret.Add(new KeyValuePair<string, int>("PC", (int)PC));
+			ret.Add("PC", (int)PC);
 
-			ret.Add(new KeyValuePair<string, int>("LL", BitConverter.ToInt32(data, 32 * 8 + 4)));
+			ret.Add("LL", BitConverter.ToInt32(data, 32 * 8 + 4));
 
 			long Lo = BitConverter.ToInt64(data, 32 * 8 + 4 + 4);
-			ret.Add(new KeyValuePair<string, int>("LO_lo", (int)Lo));
-			ret.Add(new KeyValuePair<string, int>("LO_hi", (int)(Lo>>32)));
+			ret.Add("LO_lo", (int)Lo);
+			ret.Add("LO_hi", (int)(Lo>>32));
 
 			long Hi = BitConverter.ToInt64(data, 32 * 8 + 4 + 4 + 8);
-			ret.Add(new KeyValuePair<string, int>("HI_lo", (int)Hi));
-			ret.Add(new KeyValuePair<string, int>("HI_hi", (int)(Hi>>32)));
+			ret.Add("HI_lo", (int)Hi);
+			ret.Add("HI_hi", (int)(Hi>>32));
 
-			ret.Add(new KeyValuePair<string, int>("FCR0", BitConverter.ToInt32(data, 32 * 8 + 4 + 4 + 8 + 8)));
-			ret.Add(new KeyValuePair<string, int>("FCR31", BitConverter.ToInt32(data, 32 * 8 + 4 + 4 + 8 + 8 + 4)));
+			ret.Add("FCR0", BitConverter.ToInt32(data, 32 * 8 + 4 + 4 + 8 + 8));
+			ret.Add("FCR31", BitConverter.ToInt32(data, 32 * 8 + 4 + 4 + 8 + 8 + 4));
 
 			for (int i = 0; i < 32; i++)
 			{
 				uint reg_cop0 = BitConverter.ToUInt32(data, 32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + i * 4);
-				ret.Add(new KeyValuePair<string, int>("CP0 REG" + i, (int)reg_cop0));
+				ret.Add("CP0 REG" + i, (int)reg_cop0);
 			}
 
 			for (int i = 0; i < 32; i++)
 			{
 				long reg_cop1_fgr_64 = BitConverter.ToInt64(data, 32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + 32 * 4 + i * 8);
-				ret.Add(new KeyValuePair<string, int>("CP1 FGR REG" + i + "_lo", (int)reg_cop1_fgr_64));
-				ret.Add(new KeyValuePair<string, int>("CP1 FGR REG" + i + "_hi", (int)(reg_cop1_fgr_64>>32)));
+				ret.Add("CP1 FGR REG" + i + "_lo", (int)reg_cop1_fgr_64);
+				ret.Add("CP1 FGR REG" + i + "_hi", (int)(reg_cop1_fgr_64>>32));
 			}
 
 			return ret;

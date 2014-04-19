@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		STIC Stic;
 		PSG Psg;
 
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			throw new NotImplementedException();
 		}

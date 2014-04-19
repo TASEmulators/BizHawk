@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 		public IController Controller { get; set; }
 
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			throw new NotImplementedException();
 		}

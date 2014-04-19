@@ -238,12 +238,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public override void WriteMemory(ushort addr, byte value)
 		{
-			if (myWritePending && (Core.DistinctAccessCount > myNumberOfDistinctAccesses + 5))
-			{
-				int xxxx = 0;
-			}
-
-
 			if (addr < 0x1000)
 			{
 				base.WriteMemory(addr, value);
