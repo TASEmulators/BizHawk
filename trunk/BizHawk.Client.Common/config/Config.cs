@@ -527,6 +527,10 @@ namespace BizHawk.Client.Common
 
 		public BindingCollection HotkeyBindings = new BindingCollection();
 
+		// Atari 2600 Debugger
+		public ToolDialogSettings Atari2600DebuggerSettings = new ToolDialogSettings();
+		public bool Atari2600DebuggerAutoload = false;
+
 		// Analog Hotkey values
 		public int Analog_LargeChange = 10;
 		public int Analog_SmallChange = 1;

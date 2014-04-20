@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Atari.Atari2600;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
@@ -374,6 +375,11 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.TraceLoggerAutoLoad)
 			{
 				GlobalWin.Tools.LoadTraceLogger();
+			}
+
+			if (Global.Config.Atari2600DebuggerAutoload && Global.Emulator is Atari2600)
+			{
+				GlobalWin.Tools.Load<Atari2600Debugger>();
 			}
 
 			if (Global.Config.DisplayStatusBar == false)
@@ -3185,7 +3191,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Atari2600DebuggerMenuItem_Click(object sender, EventArgs e)
 		{
-			new Atari2600Debugger().Show();
+			GlobalWin.Tools.Load<Atari2600Debugger>();
 		}
 	}
 }

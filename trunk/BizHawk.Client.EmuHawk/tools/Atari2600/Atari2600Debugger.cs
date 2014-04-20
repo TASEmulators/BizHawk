@@ -17,21 +17,45 @@ namespace BizHawk.Client.EmuHawk
 		private Atari2600 _core = Global.Emulator as Atari2600;
 		private readonly List<string> _instructions = new List<string>();
 
+		private int _defaultWidth;
+		private int _defaultHeight;
+
 		public Atari2600Debugger()
 		{
 			InitializeComponent();
 
 			TraceView.QueryItemText += TraceView_QueryItemText;
 			TraceView.VirtualMode = true;
+			TopMost = Global.Config.Atari2600DebuggerSettings.TopMost;
 
-			//TODO: add to Closing a Mainform.ResumeControl() call
+			Closing += (o, e) => Shutdown();
 		}
 
 		private void Atari2600Debugger_Load(object sender, EventArgs e)
 		{
+			_defaultWidth = Size.Width;
+			_defaultHeight = Size.Height;
+
 			// TODO: some kind of method like PauseAndRelinquishControl() which will set a flag preventing unpausing by the user, and then a ResumeControl() method that is done on close
-			GlobalWin.MainForm.PauseEmulator();
+			//GlobalWin.MainForm.PauseEmulator();
 			Global.CoreComm.Tracer.Enabled = true;
+
+			if (Global.Config.Atari2600DebuggerSettings.UseWindowPosition)
+			{
+				Location = Global.Config.Atari2600DebuggerSettings.WindowPosition;
+			}
+
+			if (Global.Config.Atari2600DebuggerSettings.UseWindowSize)
+			{
+				Size = Global.Config.Atari2600DebuggerSettings.WindowSize;
+			}
+		}
+
+		private void Shutdown()
+		{
+			//TODO: add a Mainform.ResumeControl() call
+			Global.CoreComm.Tracer.TakeContents();
+			Global.CoreComm.Tracer.Enabled = false;
 		}
 
 		public void Restart()
@@ -41,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool AskSave()
 		{
-			return false;
+			return true;
 		}
 
 		public bool UpdateBefore
@@ -139,6 +163,54 @@ namespace BizHawk.Client.EmuHawk
 			UpdateValues();
 		}
 
+		private void RefreshFloatingWindowControl()
+		{
+			Owner = Global.Config.RamSearchSettings.FloatingWindow ? null : GlobalWin.MainForm;
+		}
+
 		#endregion
+
+		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			AutoloadMenuItem.Checked = Global.Config.Atari2600DebuggerAutoload;
+			SaveWindowPositionMenuItem.Checked = Global.Config.Atari2600DebuggerSettings.SaveWindowPosition;
+			TopmostMenuItem.Checked = Global.Config.Atari2600DebuggerSettings.TopMost;
+			FloatingWindowMenuItem.Checked = Global.Config.Atari2600DebuggerSettings.FloatingWindow;
+		}
+
+		private void AutoloadMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600DebuggerAutoload ^= true;
+		}
+
+		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600DebuggerSettings.SaveWindowPosition ^= true;
+		}
+
+		private void TopmostMenuItem_Click(object sender, EventArgs e)
+		{
+			TopMost = Global.Config.Atari2600DebuggerSettings.TopMost ^= true;
+		}
+
+		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600DebuggerSettings.FloatingWindow ^= true;
+			RefreshFloatingWindowControl();
+		}
+
+		private void RestoreDefaultsMenuItem_Click(object sender, EventArgs e)
+		{
+			Size = new Size(_defaultWidth, _defaultHeight);
+			Global.Config.Atari2600DebuggerSettings = new ToolDialogSettings();
+			TopMost = Global.Config.Atari2600DebuggerSettings.TopMost;
+			RefreshFloatingWindowControl();
+		}
+
+		protected override void OnShown(EventArgs e)
+		{
+			RefreshFloatingWindowControl();
+			base.OnShown(e);
+		}
 	}
 }

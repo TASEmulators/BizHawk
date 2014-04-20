@@ -32,6 +32,13 @@
 			this.DebuggerMenu = new System.Windows.Forms.MenuStrip();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.TopmostMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.RestoreDefaultsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.StepBtn = new System.Windows.Forms.Button();
 			this.ScanlineAdvanceBtn = new System.Windows.Forms.Button();
 			this.FrameAdvButton = new System.Windows.Forms.Button();
@@ -64,6 +71,8 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.CoreInfoBox = new System.Windows.Forms.GroupBox();
+			this.VBlankCheckbox = new System.Windows.Forms.CheckBox();
+			this.VSyncChexkbox = new System.Windows.Forms.CheckBox();
 			this.ScanlineBox = new System.Windows.Forms.TextBox();
 			this.label8 = new System.Windows.Forms.Label();
 			this.FrameCountBox = new System.Windows.Forms.TextBox();
@@ -71,8 +80,6 @@
 			this.TracerBox = new System.Windows.Forms.GroupBox();
 			this.TraceView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.VSyncChexkbox = new System.Windows.Forms.CheckBox();
-			this.VBlankCheckbox = new System.Windows.Forms.CheckBox();
 			this.DebuggerMenu.SuspendLayout();
 			this.RegistersBox.SuspendLayout();
 			this.CoreInfoBox.SuspendLayout();
@@ -82,7 +89,8 @@
 			// DebuggerMenu
 			// 
 			this.DebuggerMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FileSubMenu});
+            this.FileSubMenu,
+            this.OptionsSubMenu});
 			this.DebuggerMenu.Location = new System.Drawing.Point(0, 0);
 			this.DebuggerMenu.Name = "DebuggerMenu";
 			this.DebuggerMenu.Size = new System.Drawing.Size(732, 24);
@@ -104,6 +112,60 @@
 			this.ExitMenuItem.Size = new System.Drawing.Size(145, 22);
 			this.ExitMenuItem.Text = "&Close";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
+			// 
+			// OptionsSubMenu
+			// 
+			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.AutoloadMenuItem,
+            this.SaveWindowPositionMenuItem,
+            this.TopmostMenuItem,
+            this.FloatingWindowMenuItem,
+            this.toolStripSeparator1,
+            this.RestoreDefaultsMenuItem});
+			this.OptionsSubMenu.Name = "OptionsSubMenu";
+			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
+			this.OptionsSubMenu.Text = "&Options";
+			this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
+			// 
+			// AutoloadMenuItem
+			// 
+			this.AutoloadMenuItem.Name = "AutoloadMenuItem";
+			this.AutoloadMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.AutoloadMenuItem.Text = "&Autoload";
+			this.AutoloadMenuItem.Click += new System.EventHandler(this.AutoloadMenuItem_Click);
+			// 
+			// SaveWindowPositionMenuItem
+			// 
+			this.SaveWindowPositionMenuItem.Name = "SaveWindowPositionMenuItem";
+			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.SaveWindowPositionMenuItem.Text = "Save Window Position";
+			this.SaveWindowPositionMenuItem.Click += new System.EventHandler(this.SaveWindowPositionMenuItem_Click);
+			// 
+			// TopmostMenuItem
+			// 
+			this.TopmostMenuItem.Name = "TopmostMenuItem";
+			this.TopmostMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.TopmostMenuItem.Text = "Always on Top";
+			this.TopmostMenuItem.Click += new System.EventHandler(this.TopmostMenuItem_Click);
+			// 
+			// FloatingWindowMenuItem
+			// 
+			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
+			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.FloatingWindowMenuItem.Text = "Floating Window";
+			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(188, 6);
+			// 
+			// RestoreDefaultsMenuItem
+			// 
+			this.RestoreDefaultsMenuItem.Name = "RestoreDefaultsMenuItem";
+			this.RestoreDefaultsMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.RestoreDefaultsMenuItem.Text = "Restore Defaults";
+			this.RestoreDefaultsMenuItem.Click += new System.EventHandler(this.RestoreDefaultsMenuItem_Click);
 			// 
 			// StepBtn
 			// 
@@ -438,6 +500,26 @@
 			this.CoreInfoBox.TabIndex = 5;
 			this.CoreInfoBox.TabStop = false;
 			// 
+			// VBlankCheckbox
+			// 
+			this.VBlankCheckbox.AutoSize = true;
+			this.VBlankCheckbox.Location = new System.Drawing.Point(9, 80);
+			this.VBlankCheckbox.Name = "VBlankCheckbox";
+			this.VBlankCheckbox.Size = new System.Drawing.Size(60, 17);
+			this.VBlankCheckbox.TabIndex = 5;
+			this.VBlankCheckbox.Text = "VBlank";
+			this.VBlankCheckbox.UseVisualStyleBackColor = true;
+			// 
+			// VSyncChexkbox
+			// 
+			this.VSyncChexkbox.AutoSize = true;
+			this.VSyncChexkbox.Location = new System.Drawing.Point(9, 63);
+			this.VSyncChexkbox.Name = "VSyncChexkbox";
+			this.VSyncChexkbox.Size = new System.Drawing.Size(57, 17);
+			this.VSyncChexkbox.TabIndex = 4;
+			this.VSyncChexkbox.Text = "VSync";
+			this.VSyncChexkbox.UseVisualStyleBackColor = true;
+			// 
 			// ScanlineBox
 			// 
 			this.ScanlineBox.Location = new System.Drawing.Point(58, 37);
@@ -515,26 +597,6 @@
 			this.Script.Text = "Instructions";
 			this.Script.Width = 599;
 			// 
-			// VSyncChexkbox
-			// 
-			this.VSyncChexkbox.AutoSize = true;
-			this.VSyncChexkbox.Location = new System.Drawing.Point(9, 63);
-			this.VSyncChexkbox.Name = "VSyncChexkbox";
-			this.VSyncChexkbox.Size = new System.Drawing.Size(57, 17);
-			this.VSyncChexkbox.TabIndex = 4;
-			this.VSyncChexkbox.Text = "VSync";
-			this.VSyncChexkbox.UseVisualStyleBackColor = true;
-			// 
-			// VBlankCheckbox
-			// 
-			this.VBlankCheckbox.AutoSize = true;
-			this.VBlankCheckbox.Location = new System.Drawing.Point(9, 80);
-			this.VBlankCheckbox.Name = "VBlankCheckbox";
-			this.VBlankCheckbox.Size = new System.Drawing.Size(60, 17);
-			this.VBlankCheckbox.TabIndex = 5;
-			this.VBlankCheckbox.Text = "VBlank";
-			this.VBlankCheckbox.UseVisualStyleBackColor = true;
-			// 
 			// Atari2600Debugger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -550,6 +612,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.DebuggerMenu;
 			this.Name = "Atari2600Debugger";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = " Debugger";
 			this.Load += new System.EventHandler(this.Atari2600Debugger_Load);
 			this.DebuggerMenu.ResumeLayout(false);
@@ -610,5 +673,12 @@
 		public System.Windows.Forms.ColumnHeader Script;
 		private System.Windows.Forms.CheckBox VBlankCheckbox;
 		private System.Windows.Forms.CheckBox VSyncChexkbox;
+		private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem AutoloadMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SaveWindowPositionMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem TopmostMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripMenuItem RestoreDefaultsMenuItem;
 	}
 }
