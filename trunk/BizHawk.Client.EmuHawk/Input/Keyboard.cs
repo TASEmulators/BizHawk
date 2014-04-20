@@ -1,4 +1,5 @@
-﻿using SlimDX;
+﻿using System.Collections.Generic;
+using SlimDX;
 using SlimDX.DirectInput;
 
 namespace BizHawk.Client.EmuHawk
@@ -17,21 +18,45 @@ namespace BizHawk.Client.EmuHawk
 			if (keyboard == null || keyboard.Disposed)
 				keyboard = new Keyboard(dinput);
 			keyboard.SetCooperativeLevel(GlobalWin.MainForm.Handle, CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
+			keyboard.Properties.BufferSize = 8;
 		}
 
-		public static void Update()
+		static List<KeyEvent> EmptyList = new List<KeyEvent>();
+		static List<KeyEvent> EventList = new List<KeyEvent>();
+
+		public static IEnumerable<KeyEvent> Update()
 		{
-			if (keyboard.Acquire().IsFailure)
-				return;
-			if (keyboard.Poll().IsFailure)
-				return;
+			EventList.Clear();
 
-			keyboard.GetCurrentState(ref state);
-			if (Result.Last.IsFailure)
-				return;
+			if (keyboard.Acquire().IsFailure)
+				return EmptyList;
+			if (keyboard.Poll().IsFailure)
+				return EmptyList;
+
+			for (; ; )
+			{
+				var events = keyboard.GetBufferedData();
+				if (Result.Last.IsFailure)
+					return EventList;
+				if (events.Count == 0)
+					break;
+				foreach (var e in events)
+				{
+					foreach (var k in e.PressedKeys)
+						EventList.Add(new KeyEvent { Key = k, Pressed = true });
+					foreach (var k in e.ReleasedKeys)
+					EventList.Add(new KeyEvent { Key = k, Pressed = false });
+				}
+			}
+
+			return EventList;
 		}
 
-		public static KeyboardState State { get { return state; } }
+		public struct KeyEvent
+		{
+			public Key Key;
+			public bool Pressed;
+		}
 
 		
 		public static bool IsPressed(Key key)
