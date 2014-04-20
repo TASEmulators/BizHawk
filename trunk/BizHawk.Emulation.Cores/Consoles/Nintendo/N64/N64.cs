@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -98,20 +99,60 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			IsLagFrame = false;
 		}
 
+		bool PendingThreadTerminate;
+		Action PendingThreadAction;
+		EventWaitHandle PendingThreadEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
+		EventWaitHandle CompleteThreadEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
+
+		void ThreadLoop()
+		{
+			for (; ; )
+			{
+				PendingThreadEvent.WaitOne();
+				PendingThreadAction();
+				if (PendingThreadTerminate)
+					break;
+				CompleteThreadEvent.Set();
+			}
+			PendingThreadTerminate = false;
+			CompleteThreadEvent.Set();
+		}
+
+		void RunThreadAction(Action action)
+		{
+			PendingThreadAction = action;
+			PendingThreadEvent.Set();
+			CompleteThreadEvent.WaitOne();
+		}
+
+		void StartThreadLoop()
+		{
+			new Thread(ThreadLoop).Start();
+		}
+
+		void EndThreadLoop()
+		{
+			RunThreadAction(() => { PendingThreadTerminate = true; });
+		}
+
 		public void FrameAdvance(bool render, bool rendersound) 
 		{
 			audioProvider.RenderSound = rendersound;
 
-			if (Controller["Reset"])
+			//RunThreadAction(() =>
 			{
-				api.soft_reset();
-			}
-			if (Controller["Power"])
-			{
-				api.hard_reset();
-			}
+				if (Controller["Reset"])
+				{
+					api.soft_reset();
+				}
+				if (Controller["Power"])
+				{
+					api.hard_reset();
+				}
 
-			api.frame_advance();
+				api.frame_advance();
+			}
+			//);
 
 			if (IsLagFrame) LagCount++;
 			Frame++;
@@ -312,9 +353,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public void Dispose()
 		{
-			videoProvider.Dispose();
-			audioProvider.Dispose();
-			api.Dispose();
+			RunThreadAction(() =>
+			{
+				videoProvider.Dispose();
+				audioProvider.Dispose();
+				api.Dispose();
+			});
+			EndThreadLoop();
 		}
 
 		// mupen64plus DLL Api
@@ -375,8 +420,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 					break;
 			}
 
+			StartThreadLoop();
+
 			var videosettings = this.SyncSettings.GetVPS(game);
-			api = new mupen64plusApi(this, rom, videosettings, SaveType);
+
+			//zero 19-apr-2014 - added this to solve problem with SDL initialization corrupting the main thread (I think) and breaking subsequent emulators (for example, NES)
+			//not sure why this works... if we put the plugin initializations in here, we get deadlocks in some SDL initialization. doesnt make sense to me...
+			RunThreadAction(() =>
+			{
+				api = new mupen64plusApi(this, rom, videosettings, SaveType);
+			});
+
 			// Order is important because the register with the mupen core
 			videoProvider = new N64VideoProvider(api, videosettings);
 			audioProvider = new N64Audio(api);
