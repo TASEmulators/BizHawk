@@ -92,7 +92,11 @@ namespace BizHawk.Client.EmuHawk
 		private Input()
 		{
 #if WINDOWS
-			UpdateThread = new Thread(UpdateThreadProc) {IsBackground = true};
+			UpdateThread = new Thread(UpdateThreadProc)
+			{
+				IsBackground = true, 
+				Priority = ThreadPriority.AboveNormal //why not? this thread shouldn't be very heavy duty, and we want it to be responsive
+			};
 			UpdateThread.Start();
 #endif
 		}
@@ -172,7 +176,8 @@ namespace BizHawk.Client.EmuHawk
 
 		void HandleButton(string button, bool newState)
 		{
-			if (EnableIgnoreModifiers && IgnoreKeys.Contains(button)) return;
+			bool isModifier = IgnoreKeys.Contains(button);
+			if (EnableIgnoreModifiers && isModifier) return;
 			if (LastState[button] && newState) return;
 			if (!LastState[button] && !newState) return;
 			
@@ -184,6 +189,15 @@ namespace BizHawk.Client.EmuHawk
 				LastState[button] = false;
 				return;
 			}
+
+			//apply 
+			//NOTE: this is not quite right. if someone held leftshift+rightshift it would be broken. seems unlikely, though.
+			if (button == "LeftShift") { _Modifiers &= ~ModifierKey.Shift; if (newState) _Modifiers |= ModifierKey.Shift; }
+			if (button == "RightShift") { _Modifiers &= ~ModifierKey.Shift; if (newState) _Modifiers |= ModifierKey.Shift; }
+			if (button == "LeftControl"){  _Modifiers &= ~ModifierKey.Control; if (newState) _Modifiers |= ModifierKey.Control; }
+			if (button == "RightControl"){  _Modifiers &= ~ModifierKey.Control; if (newState) _Modifiers |= ModifierKey.Control; }
+			if (button == "LeftAlt") { _Modifiers &= ~ModifierKey.Alt; if (newState) _Modifiers |= ModifierKey.Alt; }
+			if (button == "RightAlt") { _Modifiers &= ~ModifierKey.Alt; if (newState) _Modifiers |= ModifierKey.Alt; }
 
 			//dont generate events for things like Ctrl+LeftControl
 			ModifierKey mods = _Modifiers;
@@ -219,7 +233,7 @@ namespace BizHawk.Client.EmuHawk
 					LogicalButton alreadyReleased = ie.LogicalButton;
 					var ieModified = new InputEvent
 						{
-							LogicalButton = (LogicalButton) ModifierState[button],
+							LogicalButton = (LogicalButton)ModifierState[button],
 							EventType = InputEventType.Release
 						};
 					if (ieModified.LogicalButton != alreadyReleased)
@@ -276,11 +290,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			for (; ; )
 			{
-				KeyInput.Update();
+				var keyEvents = KeyInput.Update();
 				GamePad.UpdateAll();
 				GamePad360.UpdateAll();
-
-				_Modifiers = KeyInput.GetModifierKeysAsKeys();
 
 				//this block is going to massively modify data structures that the binding method uses, so we have to lock it all
 				lock (this)
@@ -288,14 +300,8 @@ namespace BizHawk.Client.EmuHawk
 					_NewEvents.Clear();
 
 					//analyze keys
-					var bleh = new HashSet<Key>();
-					foreach (var k in KeyInput.State.PressedKeys)
-						bleh.Add(k);
-					foreach (var k in KeyInput.State.AllKeys)
-						if (bleh.Contains(k))
-							HandleButton(k.ToString(), true);
-						else
-							HandleButton(k.ToString(), false);
+					foreach (var ke in keyEvents)
+						HandleButton(ke.Key.ToString(), ke.Pressed);
 
 					lock (FloatValues)
 					{
