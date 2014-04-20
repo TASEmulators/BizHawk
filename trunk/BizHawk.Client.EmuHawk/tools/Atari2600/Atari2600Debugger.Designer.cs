@@ -68,9 +68,15 @@
 			this.label8 = new System.Windows.Forms.Label();
 			this.FrameCountBox = new System.Windows.Forms.TextBox();
 			this.label7 = new System.Windows.Forms.Label();
+			this.TracerBox = new System.Windows.Forms.GroupBox();
+			this.TraceView = new BizHawk.Client.EmuHawk.VirtualListView();
+			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.VSyncChexkbox = new System.Windows.Forms.CheckBox();
+			this.VBlankCheckbox = new System.Windows.Forms.CheckBox();
 			this.DebuggerMenu.SuspendLayout();
 			this.RegistersBox.SuspendLayout();
 			this.CoreInfoBox.SuspendLayout();
+			this.TracerBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// DebuggerMenu
@@ -79,7 +85,7 @@
             this.FileSubMenu});
 			this.DebuggerMenu.Location = new System.Drawing.Point(0, 0);
 			this.DebuggerMenu.Name = "DebuggerMenu";
-			this.DebuggerMenu.Size = new System.Drawing.Size(534, 24);
+			this.DebuggerMenu.Size = new System.Drawing.Size(732, 24);
 			this.DebuggerMenu.TabIndex = 0;
 			this.DebuggerMenu.Text = "menuStrip1";
 			// 
@@ -102,7 +108,7 @@
 			// StepBtn
 			// 
 			this.StepBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.StepBtn.Location = new System.Drawing.Point(447, 27);
+			this.StepBtn.Location = new System.Drawing.Point(645, 27);
 			this.StepBtn.Name = "StepBtn";
 			this.StepBtn.Size = new System.Drawing.Size(75, 23);
 			this.StepBtn.TabIndex = 1;
@@ -113,7 +119,7 @@
 			// ScanlineAdvanceBtn
 			// 
 			this.ScanlineAdvanceBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.ScanlineAdvanceBtn.Location = new System.Drawing.Point(447, 56);
+			this.ScanlineAdvanceBtn.Location = new System.Drawing.Point(645, 56);
 			this.ScanlineAdvanceBtn.Name = "ScanlineAdvanceBtn";
 			this.ScanlineAdvanceBtn.Size = new System.Drawing.Size(75, 23);
 			this.ScanlineAdvanceBtn.TabIndex = 2;
@@ -124,7 +130,7 @@
 			// FrameAdvButton
 			// 
 			this.FrameAdvButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.FrameAdvButton.Location = new System.Drawing.Point(447, 85);
+			this.FrameAdvButton.Location = new System.Drawing.Point(645, 85);
 			this.FrameAdvButton.Name = "FrameAdvButton";
 			this.FrameAdvButton.Size = new System.Drawing.Size(75, 23);
 			this.FrameAdvButton.TabIndex = 3;
@@ -420,6 +426,8 @@
 			// 
 			// CoreInfoBox
 			// 
+			this.CoreInfoBox.Controls.Add(this.VBlankCheckbox);
+			this.CoreInfoBox.Controls.Add(this.VSyncChexkbox);
 			this.CoreInfoBox.Controls.Add(this.ScanlineBox);
 			this.CoreInfoBox.Controls.Add(this.label8);
 			this.CoreInfoBox.Controls.Add(this.FrameCountBox);
@@ -465,11 +473,74 @@
 			this.label7.TabIndex = 0;
 			this.label7.Text = "Frame:";
 			// 
+			// TracerBox
+			// 
+			this.TracerBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.TracerBox.Controls.Add(this.TraceView);
+			this.TracerBox.Location = new System.Drawing.Point(12, 188);
+			this.TracerBox.Name = "TracerBox";
+			this.TracerBox.Size = new System.Drawing.Size(511, 444);
+			this.TracerBox.TabIndex = 6;
+			this.TracerBox.TabStop = false;
+			this.TracerBox.Text = "Trace log";
+			// 
+			// TraceView
+			// 
+			this.TraceView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.TraceView.BlazingFast = false;
+			this.TraceView.CheckBoxes = true;
+			this.TraceView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.Script});
+			this.TraceView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.TraceView.FullRowSelect = true;
+			this.TraceView.GridLines = true;
+			this.TraceView.HideSelection = false;
+			this.TraceView.ItemCount = 0;
+			this.TraceView.Location = new System.Drawing.Point(8, 18);
+			this.TraceView.Name = "TraceView";
+			this.TraceView.SelectAllInProgress = false;
+			this.TraceView.selectedItem = -1;
+			this.TraceView.Size = new System.Drawing.Size(497, 414);
+			this.TraceView.TabIndex = 4;
+			this.TraceView.TabStop = false;
+			this.TraceView.UseCompatibleStateImageBehavior = false;
+			this.TraceView.View = System.Windows.Forms.View.Details;
+			// 
+			// Script
+			// 
+			this.Script.Text = "Instructions";
+			this.Script.Width = 599;
+			// 
+			// VSyncChexkbox
+			// 
+			this.VSyncChexkbox.AutoSize = true;
+			this.VSyncChexkbox.Location = new System.Drawing.Point(9, 63);
+			this.VSyncChexkbox.Name = "VSyncChexkbox";
+			this.VSyncChexkbox.Size = new System.Drawing.Size(57, 17);
+			this.VSyncChexkbox.TabIndex = 4;
+			this.VSyncChexkbox.Text = "VSync";
+			this.VSyncChexkbox.UseVisualStyleBackColor = true;
+			// 
+			// VBlankCheckbox
+			// 
+			this.VBlankCheckbox.AutoSize = true;
+			this.VBlankCheckbox.Location = new System.Drawing.Point(9, 80);
+			this.VBlankCheckbox.Name = "VBlankCheckbox";
+			this.VBlankCheckbox.Size = new System.Drawing.Size(60, 17);
+			this.VBlankCheckbox.TabIndex = 5;
+			this.VBlankCheckbox.Text = "VBlank";
+			this.VBlankCheckbox.UseVisualStyleBackColor = true;
+			// 
 			// Atari2600Debugger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(534, 498);
+			this.ClientSize = new System.Drawing.Size(732, 702);
+			this.Controls.Add(this.TracerBox);
 			this.Controls.Add(this.CoreInfoBox);
 			this.Controls.Add(this.RegistersBox);
 			this.Controls.Add(this.FrameAdvButton);
@@ -487,6 +558,7 @@
 			this.RegistersBox.PerformLayout();
 			this.CoreInfoBox.ResumeLayout(false);
 			this.CoreInfoBox.PerformLayout();
+			this.TracerBox.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -533,5 +605,10 @@
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.TextBox ScanlineBox;
 		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.GroupBox TracerBox;
+		private VirtualListView TraceView;
+		public System.Windows.Forms.ColumnHeader Script;
+		private System.Windows.Forms.CheckBox VBlankCheckbox;
+		private System.Windows.Forms.CheckBox VSyncChexkbox;
 	}
 }

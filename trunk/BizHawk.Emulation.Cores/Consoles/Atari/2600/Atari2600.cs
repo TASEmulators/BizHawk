@@ -131,6 +131,21 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		};
 
+		public int CurrentScanLine
+		{
+			get { return _tia.CurrentScanLine; }
+		}
+
+		public bool IsVsync
+		{
+			get { return _tia.IsVSync; }
+		}
+
+		public bool IsVBlank
+		{
+			get { return _tia.IsVBlank; }
+		}
+
 		public CompactGameInfo GenerateGameDbEntry()
 		{
 			return new CompactGameInfo

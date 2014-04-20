@@ -76,6 +76,21 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_player1.ScanCnt = 8;
 		}
 
+		public int CurrentScanLine
+		{
+			get { return _scanlinesBuffer.Count; }
+		}
+
+		public bool IsVBlank
+		{
+			get { return _vblankEnabled; }
+		}
+
+		public bool IsVSync
+		{
+			get { return _vsyncEnabled; }
+		}
+
 		public void Reset()
 		{
 			_hsyncCnt = 0;
