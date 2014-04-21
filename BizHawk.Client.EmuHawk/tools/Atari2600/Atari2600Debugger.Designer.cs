@@ -78,6 +78,8 @@
 			this.FrameCountBox = new System.Windows.Forms.TextBox();
 			this.label7 = new System.Windows.Forms.Label();
 			this.TracerBox = new System.Windows.Forms.GroupBox();
+			this.StepOverButton = new System.Windows.Forms.Button();
+			this.StepOutButton = new System.Windows.Forms.Button();
 			this.TraceView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.DebuggerMenu.SuspendLayout();
@@ -174,14 +176,14 @@
 			this.StepBtn.Name = "StepBtn";
 			this.StepBtn.Size = new System.Drawing.Size(75, 23);
 			this.StepBtn.TabIndex = 1;
-			this.StepBtn.Text = "&Step";
+			this.StepBtn.Text = "Step &Into";
 			this.StepBtn.UseVisualStyleBackColor = true;
 			this.StepBtn.Click += new System.EventHandler(this.StepBtn_Click);
 			// 
 			// ScanlineAdvanceBtn
 			// 
 			this.ScanlineAdvanceBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.ScanlineAdvanceBtn.Location = new System.Drawing.Point(645, 56);
+			this.ScanlineAdvanceBtn.Location = new System.Drawing.Point(645, 117);
 			this.ScanlineAdvanceBtn.Name = "ScanlineAdvanceBtn";
 			this.ScanlineAdvanceBtn.Size = new System.Drawing.Size(75, 23);
 			this.ScanlineAdvanceBtn.TabIndex = 2;
@@ -192,7 +194,7 @@
 			// FrameAdvButton
 			// 
 			this.FrameAdvButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.FrameAdvButton.Location = new System.Drawing.Point(645, 85);
+			this.FrameAdvButton.Location = new System.Drawing.Point(645, 144);
 			this.FrameAdvButton.Name = "FrameAdvButton";
 			this.FrameAdvButton.Size = new System.Drawing.Size(75, 23);
 			this.FrameAdvButton.TabIndex = 3;
@@ -527,7 +529,6 @@
 			this.ScanlineBox.ReadOnly = true;
 			this.ScanlineBox.Size = new System.Drawing.Size(74, 20);
 			this.ScanlineBox.TabIndex = 3;
-			this.ScanlineBox.Text = "Todo";
 			// 
 			// label8
 			// 
@@ -568,6 +569,26 @@
 			this.TracerBox.TabStop = false;
 			this.TracerBox.Text = "Trace log";
 			// 
+			// StepOverButton
+			// 
+			this.StepOverButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.StepOverButton.Location = new System.Drawing.Point(645, 56);
+			this.StepOverButton.Name = "StepOverButton";
+			this.StepOverButton.Size = new System.Drawing.Size(75, 23);
+			this.StepOverButton.TabIndex = 7;
+			this.StepOverButton.Text = "Step &Over";
+			this.StepOverButton.UseVisualStyleBackColor = true;
+			// 
+			// StepOutButton
+			// 
+			this.StepOutButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.StepOutButton.Location = new System.Drawing.Point(645, 82);
+			this.StepOutButton.Name = "StepOutButton";
+			this.StepOutButton.Size = new System.Drawing.Size(75, 23);
+			this.StepOutButton.TabIndex = 8;
+			this.StepOutButton.Text = "Step O&ut";
+			this.StepOutButton.UseVisualStyleBackColor = true;
+			// 
 			// TraceView
 			// 
 			this.TraceView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -602,6 +623,8 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(732, 702);
+			this.Controls.Add(this.StepOutButton);
+			this.Controls.Add(this.StepOverButton);
 			this.Controls.Add(this.TracerBox);
 			this.Controls.Add(this.CoreInfoBox);
 			this.Controls.Add(this.RegistersBox);
@@ -680,5 +703,7 @@
 		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem RestoreDefaultsMenuItem;
+		private System.Windows.Forms.Button StepOverButton;
+		private System.Windows.Forms.Button StepOutButton;
 	}
 }
