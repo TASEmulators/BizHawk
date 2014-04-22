@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 {
 	public enum NecSystemType { TurboGrafx, TurboCD, SuperGrafx }
 
+	[CoreAttributes("PCEHawk")]
 	public sealed partial class PCEngine : IEmulator
 	{
 		// ROM

@@ -6,6 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
+	[CoreAttributes("C64Hawk")]
 	sealed public partial class C64 : IEmulator
 	{
 		// internal variables

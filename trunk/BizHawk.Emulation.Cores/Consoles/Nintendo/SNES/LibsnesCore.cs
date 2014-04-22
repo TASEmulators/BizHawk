@@ -20,7 +20,6 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
-
 	public class ScanlineHookManager
 	{
 		public void Register(object tag, Action<int> callback)
@@ -58,6 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 	}
 
+	[CoreAttributes("BSNES")]
 	public unsafe class LibsnesCore : IEmulator, IVideoProvider
 	{
 		public bool IsSGB { get; private set; }

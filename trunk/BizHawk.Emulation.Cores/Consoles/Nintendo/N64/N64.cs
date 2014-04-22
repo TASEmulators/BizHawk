@@ -11,6 +11,7 @@ using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
+	[CoreAttributes("Mupen64Plus")]
 	public class N64 : IEmulator
 	{
 		public Dictionary<string, int> GetCpuFlagsAndRegisters()

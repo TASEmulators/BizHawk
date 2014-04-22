@@ -9,7 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-
+	[CoreAttributes("NesHawk")]
 	public partial class NES : IEmulator
 	{
 		static readonly bool USE_DATABASE = true;

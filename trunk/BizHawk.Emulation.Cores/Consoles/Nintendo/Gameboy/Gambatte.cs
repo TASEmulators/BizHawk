@@ -10,6 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	/// <summary>
 	/// a gameboy/gameboy color emulator wrapped around native C++ libgambatte
 	/// </summary>
+	[CoreAttributes("Gambatte")]
 	public class Gameboy : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
 		/// <summary>
