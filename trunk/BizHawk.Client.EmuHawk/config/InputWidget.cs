@@ -23,6 +23,7 @@ namespace BizHawk.Client.EmuHawk
 		/// These bindings get ignored by the widget and can only be entered by SetBinding() via the contextmenu from the InputCompositeWidget
 		/// </summary>
 		public static readonly string[] SpecialBindings = new[] {
+			"Escape",
 			"WMouse L","WMouse M","WMouse R",
 			"WMouse 1", "WMouse 2"
 		};
@@ -142,23 +143,28 @@ namespace BizHawk.Client.EmuHawk
 			
 			if (bindingStr != null)
 			{
-				//ignore special bindings
-				if (SpecialBindings.Contains(bindingStr))
-				{
-					return;
-				}
-
+				
+				//has special meaning for the binding UI system (clear it).
+				//you can set it through the special bindings dropdown menu
 				if (bindingStr == "Escape")
 				{
 					EraseMappings();
 					Increment();
 					return;
 				}
-				
+
+				//seriously, we refuse to allow you to bind this to anything else.
 				if (bindingStr == "Alt+F4")
 				{
 					return;
 				}
+
+				//ignore special bindings
+				if (SpecialBindings.Contains(bindingStr))
+				{
+					return;
+				}
+
 
 				if (!IsDuplicate(bindingStr))
 				{
