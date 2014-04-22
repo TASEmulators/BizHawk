@@ -1,4 +1,4 @@
-console.log("Unit test for joypad.set")
+console.log("Unit test for joypad.set using the controller parameter")
 console.log("Core Required: NES (or any multi-player core with U,D,L,R,select,start,A,B as buttons)")
 console.log("Correct behavior:")
 console.log("No Directional button shoudl be imparied in any way, should operate as if nothing was ever pressed")
