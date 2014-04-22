@@ -484,6 +484,15 @@ namespace BizHawk.Client.EmuHawk
 			SubtitlesBtn.Enabled = _movieList[firstIndex].Header.Subtitles.Any();
 		}
 
+		private void EditMenuItem_Click(object sender, EventArgs e)
+		{
+			MovieView.SelectedIndices
+				.Cast<int>()
+				.Select(index => _movieList[index])
+				.ToList()
+				.ForEach(movie => System.Diagnostics.Process.Start(movie.Filename));
+		}
+
 		#endregion
 
 		#region Details
