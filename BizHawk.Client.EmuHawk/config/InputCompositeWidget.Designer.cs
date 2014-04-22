@@ -44,7 +44,7 @@
 			this.btnSpecial.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
 			this.btnSpecial.Name = "btnSpecial";
 			this.btnSpecial.Size = new System.Drawing.Size(20, 20);
-			this.btnSpecial.TabIndex = 6;
+			this.btnSpecial.TabIndex = 2;
 			this.btnSpecial.UseVisualStyleBackColor = true;
 			this.btnSpecial.Click += new System.EventHandler(this.btnSpecial_Click);
 			// 
@@ -74,7 +74,7 @@
 			this.widget.Margin = new System.Windows.Forms.Padding(0);
 			this.widget.Name = "widget";
 			this.widget.Size = new System.Drawing.Size(470, 20);
-			this.widget.TabIndex = 8;
+			this.widget.TabIndex = 1;
 			this.widget.Text = "button1";
 			this.widget.WidgetName = null;
 			// 

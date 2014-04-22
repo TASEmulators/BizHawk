@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 						Width = iwOffsetX - 2,
 					};
 
-					var w = new InputWidget
+					var w = new InputCompositeWidget
 						{
 						Bindings = b.Bindings,
 						Location = new Point(_x + iwOffsetX, _y + iwOffsetY),

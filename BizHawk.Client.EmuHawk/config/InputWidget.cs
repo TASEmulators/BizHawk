@@ -17,6 +17,8 @@ namespace BizHawk.Client.EmuHawk
 		private int _pos;	 // Which mapping the widget will listen for
 		private string _wasPressed = string.Empty;
 
+		public InputCompositeWidget CompositeWidget;
+
 		/// <summary>
 		/// These bindings get ignored by the widget and can only be entered by SetBinding() via the contextmenu from the InputCompositeWidget
 		/// </summary>
@@ -200,7 +202,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (AutoTab)
 			{
-				Parent.SelectNextControl(this, true, true, true, true);
+				CompositeWidget.TabNext();
 			}
 			else
 			{
