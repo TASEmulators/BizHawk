@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common
 			"set",
 			"sets the given buttons to their provided values for the current frame"
 		)]
-		public void Set(LuaTable buttons, object controller = null)
+		public void Set(LuaTable buttons, int? controller = null)
 		{
 			try
 			{
@@ -102,8 +102,8 @@ namespace BizHawk.Client.Common
 						theValue = null;
 					}
 
-					var toPress = button;
-					if (controller != null)
+					var toPress = button.ToString();
+					if (controller.HasValue)
 					{
 						toPress = "P" + controller + " " + button;
 					}
@@ -112,16 +112,16 @@ namespace BizHawk.Client.Common
 					{
 						if (theValue.HasValue) // Force
 						{
-							Global.LuaAndAdaptor.SetButton(button.ToString(), theValue.Value);
+							Global.LuaAndAdaptor.SetButton(toPress, theValue.Value);
 						}
 						else // Unset
 						{
-							Global.LuaAndAdaptor.UnSet(button.ToString());
+							Global.LuaAndAdaptor.UnSet(toPress);
 						}
 					}
 					else // Inverse
 					{
-						Global.LuaAndAdaptor.SetInverse(button.ToString());
+						Global.LuaAndAdaptor.SetInverse(toPress);
 					}
 				}
 			}
