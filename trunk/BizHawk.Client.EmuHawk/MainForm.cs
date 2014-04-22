@@ -3141,11 +3141,13 @@ namespace BizHawk.Client.EmuHawk
 		private void gBInSGBToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GB_AsSGB ^= true;
+			FlagNeedsReboot();
 		}
 
 		private void nESInQuickNESToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.NES_InQuickNES ^= true;
+			FlagNeedsReboot();
 		}
 
 		private void batchRunnerToolStripMenuItem_Click(object sender, EventArgs e)
