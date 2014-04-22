@@ -217,7 +217,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!_gameGenieTable.ContainsKey(char.ToUpper(e.KeyChar)))
 			{
-				if (e.KeyChar != (char)Keys.Back || e.KeyChar == '\b' || e.KeyChar == 22 || e.KeyChar == 1 || e.KeyChar == 3)
+				if (Control.ModifierKeys != Keys.None)
+				{
+					return;
+				}
+
+				if (e.KeyChar != (char)Keys.Back || e.KeyChar != '\b' || e.KeyChar == 22 || e.KeyChar == 1 || e.KeyChar == 3)
 				{
 					e.Handled = true;
 				}
