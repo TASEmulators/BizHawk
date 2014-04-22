@@ -1,5 +1,7 @@
 ﻿using System.Linq;
+
 using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 
 namespace BizHawk.Client.Common
 {
@@ -41,6 +43,11 @@ namespace BizHawk.Client.Common
 		)]
 		public static bool GetAllowMoreThanEightSprites()
 		{
+			if (Global.Config.NES_InQuickNES)
+			{
+				return ((QuickNES.QuickNESSettings)Global.Emulator.GetSettings()).NumSprites != 8;
+			}
+
 			return ((NES.NESSettings)Global.Emulator.GetSettings()).AllowMoreThanEightSprites;
 		}
 
@@ -50,6 +57,11 @@ namespace BizHawk.Client.Common
 		)]
 		public static int GetBottomScanline(bool pal = false)
 		{
+			if (Global.Config.NES_InQuickNES)
+			{
+				return ((QuickNES.QuickNESSettings)Global.Emulator.GetSettings()).ClipTopAndBottom ? 231 : 239;
+			}
+
 			if (pal)
 			{
 				return ((NES.NESSettings)Global.Emulator.GetSettings()).PAL_BottomLine;
@@ -64,6 +76,11 @@ namespace BizHawk.Client.Common
 		)]
 		public static bool GetClipLeftAndRight()
 		{
+			if (Global.Config.NES_InQuickNES)
+			{
+				return ((QuickNES.QuickNESSettings)Global.Emulator.GetSettings()).ClipLeftAndRight;
+			}
+
 			return ((NES.NESSettings)Global.Emulator.GetSettings()).ClipLeftAndRight;
 		}
 
@@ -73,6 +90,11 @@ namespace BizHawk.Client.Common
 		)]
 		public static bool GetDisplayBackground()
 		{
+			if (Global.Config.NES_InQuickNES)
+			{
+				return true;
+			}
+
 			return ((NES.NESSettings)Global.Emulator.GetSettings()).DispBackground;
 		}
 
@@ -82,6 +104,11 @@ namespace BizHawk.Client.Common
 		)]
 		public static bool GetDisplaySprites()
 		{
+			if (Global.Config.NES_InQuickNES)
+			{
+				return true;
+			}
+
 			return ((NES.NESSettings)Global.Emulator.GetSettings()).DispSprites;
 		}
 
@@ -91,6 +118,11 @@ namespace BizHawk.Client.Common
 		)]
 		public static int GetTopScanline(bool pal = false)
 		{
+			if (Global.Config.NES_InQuickNES)
+			{
+				return ((QuickNES.QuickNESSettings)Global.Emulator.GetSettings()).ClipTopAndBottom ? 8 : 0;
+			}
+
 			if (pal)
 			{
 				return ((NES.NESSettings)Global.Emulator.GetSettings()).PAL_TopLine;
@@ -125,6 +157,13 @@ namespace BizHawk.Client.Common
 				s.AllowMoreThanEightSprites = allow;
 				Global.Emulator.PutSettings(s);
 			}
+			else if (Global.Emulator is QuickNES)
+			{
+				var s = (QuickNES.QuickNESSettings)Global.Emulator.GetSettings();
+				s.NumSprites = allow ? 64 : 8;
+				Global.Emulator.PutSettings(s);
+				
+			}
 		}
 
 		[LuaMethodAttributes(
@@ -138,6 +177,13 @@ namespace BizHawk.Client.Common
 				var s = (NES.NESSettings)Global.Emulator.GetSettings();
 				s.ClipLeftAndRight = leftandright;
 				Global.Emulator.PutSettings(s);
+			}
+			else if (Global.Emulator is QuickNES)
+			{
+				var s = (QuickNES.QuickNESSettings)Global.Emulator.GetSettings();
+				s.ClipLeftAndRight = leftandright;
+				Global.Emulator.PutSettings(s);
+
 			}
 		}
 
@@ -171,7 +217,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"setscanlines",
-			"sets the top and bottom scanlines to be drawn (same values as in the graphics options dialog). Top must be in the range of 0 to 127, bottom must be between 128 and 239"
+			"sets the top and bottom scanlines to be drawn (same values as in the graphics options dialog). Top must be in the range of 0 to 127, bottom must be between 128 and 239. Not supported in the Quick Nes core"
 		)]
 		public static void SetScanlines(int top, int bottom, bool pal = false)
 		{
