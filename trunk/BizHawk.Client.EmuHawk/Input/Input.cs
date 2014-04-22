@@ -180,7 +180,22 @@ namespace BizHawk.Client.EmuHawk
 			if (EnableIgnoreModifiers && isModifier) return;
 			if (LastState[button] && newState) return;
 			if (!LastState[button] && !newState) return;
-			
+
+			//apply 
+			//NOTE: this is not quite right. if someone held leftshift+rightshift it would be broken. seems unlikely, though.
+			if (button == "LeftShift")
+			{
+				Console.WriteLine("Processing modifiers with " + newState);
+				_Modifiers &= ~ModifierKey.Shift;
+				if (newState)
+					_Modifiers |= ModifierKey.Shift;
+			}
+			if (button == "RightShift") { _Modifiers &= ~ModifierKey.Shift; if (newState) _Modifiers |= ModifierKey.Shift; }
+			if (button == "LeftControl") { _Modifiers &= ~ModifierKey.Control; if (newState) _Modifiers |= ModifierKey.Control; }
+			if (button == "RightControl") { _Modifiers &= ~ModifierKey.Control; if (newState) _Modifiers |= ModifierKey.Control; }
+			if (button == "LeftAlt") { _Modifiers &= ~ModifierKey.Alt; if (newState) _Modifiers |= ModifierKey.Alt; }
+			if (button == "RightAlt") { _Modifiers &= ~ModifierKey.Alt; if (newState) _Modifiers |= ModifierKey.Alt; }
+
 			if (UnpressState.ContainsKey(button))
 			{
 				if (newState) return;
@@ -190,14 +205,6 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			//apply 
-			//NOTE: this is not quite right. if someone held leftshift+rightshift it would be broken. seems unlikely, though.
-			if (button == "LeftShift") { _Modifiers &= ~ModifierKey.Shift; if (newState) _Modifiers |= ModifierKey.Shift; }
-			if (button == "RightShift") { _Modifiers &= ~ModifierKey.Shift; if (newState) _Modifiers |= ModifierKey.Shift; }
-			if (button == "LeftControl"){  _Modifiers &= ~ModifierKey.Control; if (newState) _Modifiers |= ModifierKey.Control; }
-			if (button == "RightControl"){  _Modifiers &= ~ModifierKey.Control; if (newState) _Modifiers |= ModifierKey.Control; }
-			if (button == "LeftAlt") { _Modifiers &= ~ModifierKey.Alt; if (newState) _Modifiers |= ModifierKey.Alt; }
-			if (button == "RightAlt") { _Modifiers &= ~ModifierKey.Alt; if (newState) _Modifiers |= ModifierKey.Alt; }
 
 			//dont generate events for things like Ctrl+LeftControl
 			ModifierKey mods = _Modifiers;
