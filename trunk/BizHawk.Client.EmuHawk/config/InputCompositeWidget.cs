@@ -25,6 +25,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		
 			btnSpecial.ContextMenuStrip = DropdownMenu;
+
+			widget.CompositeWidget = this;
+		}
+
+		public void TabNext()
+		{
+			Parent.SelectNextControl(btnSpecial, true, true, true, true);
 		}
 
 		ContextMenuStrip DropdownMenu;
