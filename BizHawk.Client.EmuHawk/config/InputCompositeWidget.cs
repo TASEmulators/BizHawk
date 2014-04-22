@@ -18,6 +18,7 @@ namespace BizHawk.Client.EmuHawk
 			DropdownMenu = new ContextMenuStrip();
 
 			DropdownMenu.ItemClicked += new ToolStripItemClickedEventHandler(DropdownMenu_ItemClicked);
+			DropdownMenu.PreviewKeyDown += new PreviewKeyDownEventHandler(DropdownMenu_PreviewKeyDown);
 			foreach (var str in InputWidget.SpecialBindings)
 			{
 				var tsi = new ToolStripMenuItem(str);
@@ -27,6 +28,13 @@ namespace BizHawk.Client.EmuHawk
 			btnSpecial.ContextMenuStrip = DropdownMenu;
 
 			widget.CompositeWidget = this;
+		}
+
+		void DropdownMenu_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+		{
+			//suppress handling of ALT keys, so that we can receive them as binding modifiers
+			if (e.KeyCode == Keys.Menu)
+				e.IsInputKey = true;
 		}
 
 		public void TabNext()
