@@ -19,6 +19,7 @@ using BizHawk.Emulation.Cores.Components.Z80;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
+	[CoreAttributes("SMSHawk")]
 	public sealed partial class SMS : IEmulator
 	{
 		// Constants

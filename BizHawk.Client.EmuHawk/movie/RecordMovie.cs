@@ -12,6 +12,8 @@ using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
+using System.Reflection;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class RecordMovie : Form
@@ -177,6 +179,10 @@ namespace BizHawk.Client.EmuHawk
 						_movieToRecord.Header[HeaderKeys.PAL] = "1";
 					}
 				}
+
+				_movieToRecord.Header[HeaderKeys.CORE] = ((CoreAttributes)Attribute
+					.GetCustomAttribute(Global.Emulator.GetType(), typeof(CoreAttributes)))
+					.CoreName;
 
 				GlobalWin.MainForm.StartNewMovie(_movieToRecord, true);
 

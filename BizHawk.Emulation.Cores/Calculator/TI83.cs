@@ -11,6 +11,7 @@ using BizHawk.Emulation.Cores.Components.Z80;
 
 namespace BizHawk.Emulation.Cores.Calculators
 {
+	[CoreAttributes("TI83Hawk")]
 	public class TI83 : IEmulator
 	{
 		//hardware

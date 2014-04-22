@@ -20,6 +20,9 @@ namespace BizHawk.Client.Common
 		public const string PAL = "PAL";
 		public const string BOARDNAME = "BoardName";
 
+		// Core Setting
+		public const string CORE = "Core";
+
 		// Gameboy Settings that affect sync
 		public const string GB_FORCEDMG = "Force_DMG_Mode";
 		public const string GB_GBA_IN_CGB = "GBA_In_CGB";

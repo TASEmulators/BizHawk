@@ -9,6 +9,7 @@ using BizHawk.Emulation.Cores.Components.Z80;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
+	[CoreAttributes("ColecoHawk")]
 	public sealed partial class ColecoVision : IEmulator
 	{
 		// ROM

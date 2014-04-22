@@ -8,6 +8,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sony.PSP
 {
+	[CoreAttributes("PPSSPP")]
 	public class PSP : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
 		public static readonly ControllerDefinition PSPController = new ControllerDefinition

@@ -11,6 +11,7 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Sega.Saturn
 {
+	[CoreAttributes("Yabause")]
 	public class Yabause : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
 		public static ControllerDefinition SaturnController = new ControllerDefinition
