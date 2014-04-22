@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var w in InputWidgets)
 			{
 				var b = Global.Config.HotkeyBindings.FirstOrDefault(x => x.DisplayName == w.WidgetName);
-				b.Bindings = w.Text;
+				b.Bindings = w.Bindings;
 			}
 		}
 
@@ -139,7 +139,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var w in InputWidgets)
 			{
 				var b = Global.Config.HotkeyBindings.FirstOrDefault(x => x.DisplayName == w.WidgetName);
-				if (b != null) w.Text = b.DefaultBinding;
+				if (b != null) w.Bindings = b.DefaultBinding;
 			}
 		}
 
