@@ -145,6 +145,7 @@ namespace BizHawk.Client.Common
 				sw.Write(sb.ToString());
 			}
 
+			Filename = path;
 			Global.Config.RecentLuaSession.Add(path);
 			Changes = false;
 		}

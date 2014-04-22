@@ -193,7 +193,6 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					file.Stop();
-					_luaList.Changes = true;
 				}
 			}
 		}
@@ -724,7 +723,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			_luaList.Changes = true;
 			UpdateDialog();
 		}
 
