@@ -139,7 +139,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"cleartext",
-			"TODO"
+			"clears all text created by gui.text()"
 		)]
 		public static void ClearText()
 		{
