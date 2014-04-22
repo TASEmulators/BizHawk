@@ -53,7 +53,18 @@ namespace BizHawk.Client.EmuHawk
 
 		void DropdownMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
-			widget.SetBinding(e.ClickedItem.Text);
+			Input.ModifierKey mods = new Input.ModifierKey();
+			
+			if ((Control.ModifierKeys & Keys.Shift) != 0)
+				mods |= Input.ModifierKey.Shift;
+			if ((Control.ModifierKeys & Keys.Control) != 0)
+				mods |= Input.ModifierKey.Control;
+			if ((Control.ModifierKeys & Keys.Alt) != 0)
+				mods |= Input.ModifierKey.Alt;
+
+			Input.LogicalButton lb = new Input.LogicalButton(e.ClickedItem.Text,mods);
+
+			widget.SetBinding(lb.ToString());
 		}
 	}
 }
