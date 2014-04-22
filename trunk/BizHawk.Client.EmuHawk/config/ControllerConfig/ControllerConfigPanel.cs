@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var saveto = SaveConfigObject ?? RealConfigObject;
 			for (int button = 0; button < buttons.Count; button++)
-				saveto[buttons[button]] = Inputs[button].Text;
+				saveto[buttons[button]] = Inputs[button].Bindings;
 		}
 
 		public bool Autotab = false;
