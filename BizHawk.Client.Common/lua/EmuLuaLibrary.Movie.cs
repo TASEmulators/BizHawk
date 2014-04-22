@@ -137,5 +137,19 @@ namespace BizHawk.Client.Common
 		{
 			Global.MovieSession.Movie.Stop();
 		}
+
+		[LuaMethodAttributes(
+			"getfps",
+			"If a movie is loaded, gets the frames per second used by the movie to determine the movie length time"
+		)]
+		public static double GetFps()
+		{
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				return Global.MovieSession.Movie.Fps;
+			}
+
+			return 0.0;
+		}
 	}
 }
