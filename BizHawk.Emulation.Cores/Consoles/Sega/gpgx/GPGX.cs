@@ -489,14 +489,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public void LoadStateText(System.IO.TextReader reader)
 		{
 			string hex = reader.ReadLine();
-			if (hex.StartsWith("emuVersion")) // movie save
-			{
-				do // theoretically, our portion should start right after StartsFromSavestate, maybe...
-				{
-					hex = reader.ReadLine();
-				} while (!hex.StartsWith("StartsFromSavestate"));
-				hex = reader.ReadLine();
-			}
 			byte[] state = new byte[hex.Length / 2];
 			state.ReadFromHexFast(hex);
 			LoadStateBinary(new System.IO.BinaryReader(new System.IO.MemoryStream(state)));
