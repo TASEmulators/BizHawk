@@ -906,6 +906,9 @@
   <data name="bsnes" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\bsnes.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="emu7800" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\emu7800.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="QuickNes" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\QuickNes.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

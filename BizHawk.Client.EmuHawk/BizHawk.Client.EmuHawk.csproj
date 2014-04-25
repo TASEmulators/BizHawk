@@ -1488,6 +1488,7 @@
     <None Include="images\checkbox.png" />
     <None Include="images\Erase.png" />
     <None Include="images\bsnes.png" />
+    <None Include="images\emu7800.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />
