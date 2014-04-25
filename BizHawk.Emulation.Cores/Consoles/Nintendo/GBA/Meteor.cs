@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		"Meteor",
 		"blastrock",
 		isPorted: true,
-		isReleased: true
+		isReleased: false
 		)]
 	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
