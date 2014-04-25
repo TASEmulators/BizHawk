@@ -225,11 +225,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				AuthorBox.Text = Global.Config.DefaultAuthor;
 			}
-
-			if (Global.Emulator.SystemId == "N64")
-			{
-				StartFromCombo.Items.Remove(StartFromCombo.Items[1]);
-			}
 		}
 
 		private void RecordBox_DragEnter(object sender, DragEventArgs e)
