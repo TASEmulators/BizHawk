@@ -7,7 +7,12 @@ using BizHawk.Emulation.Cores.Components.CP1610;
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {
-	[CoreAttributes("IntelliHawk")]
+	[CoreAttributes(
+		"IntelliHawk",
+		"BrandonE",
+		isPorted: false,
+		isReleased: false
+		)]
 	public sealed partial class Intellivision : IEmulator
 	{
 		byte[] Rom;

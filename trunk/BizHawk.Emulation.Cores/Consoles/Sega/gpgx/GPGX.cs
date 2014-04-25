@@ -15,7 +15,12 @@ using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
-	[CoreAttributes("Genplus-gx")]
+	[CoreAttributes(
+		"Genplus-gx",
+		"ekeeke31",
+		isPorted: true,
+		isReleased: true
+		)]
 	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider
 	{
 		static GPGX AttachedCore = null;

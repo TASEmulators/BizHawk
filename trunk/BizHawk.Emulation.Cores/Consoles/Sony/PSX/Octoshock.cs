@@ -9,7 +9,12 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sony.PSX
 {
-	[CoreAttributes("MednafenPSX")]
+	[CoreAttributes(
+		"MednafenPSX",
+		"Ryphecha",
+		isPorted: true,
+		isReleased: false
+		)]
 	public unsafe class Octoshock : IEmulator, IVideoProvider, ISoundProvider
 	{
 		public string SystemId { get { return "NULL"; } }

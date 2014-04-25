@@ -8,7 +8,12 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
-	[CoreAttributes("Meteor")]
+	[CoreAttributes(
+		"Meteor",
+		"blastrock",
+		isPorted: true,
+		isReleased: true
+		)]
 	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
 		public Dictionary<string, int> GetCpuFlagsAndRegisters()

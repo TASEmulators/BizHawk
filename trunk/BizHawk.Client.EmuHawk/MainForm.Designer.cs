@@ -188,13 +188,13 @@
 			this.SavestateTypeDefaultMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SavestateBinaryMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SavestateTextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.coreSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.gBInSGBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.nESInQuickNESToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
 			this.SaveConfigMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LoadConfigMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
-			this.coreSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.gBInSGBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.nESInQuickNESToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ToolBoxMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
@@ -360,6 +360,7 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.CoreNameStatusBarButton = new System.Windows.Forms.ToolStripStatusLabel();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -1748,6 +1749,31 @@
 			this.SavestateTextMenuItem.Text = "Text";
 			this.SavestateTextMenuItem.Click += new System.EventHandler(this.SavestateTextMenuItem_Click);
 			// 
+			// coreSelectionToolStripMenuItem
+			// 
+			this.coreSelectionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.gBInSGBToolStripMenuItem,
+            this.nESInQuickNESToolStripMenuItem});
+			this.coreSelectionToolStripMenuItem.Name = "coreSelectionToolStripMenuItem";
+			this.coreSelectionToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+			this.coreSelectionToolStripMenuItem.Text = "Core Selection";
+			this.coreSelectionToolStripMenuItem.DropDownOpened += new System.EventHandler(this.coreSelectionToolStripMenuItem_DropDownOpened);
+			this.coreSelectionToolStripMenuItem.Click += new System.EventHandler(this.coreSelectionToolStripMenuItem_Click);
+			// 
+			// gBInSGBToolStripMenuItem
+			// 
+			this.gBInSGBToolStripMenuItem.Name = "gBInSGBToolStripMenuItem";
+			this.gBInSGBToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+			this.gBInSGBToolStripMenuItem.Text = "GB in SGB";
+			this.gBInSGBToolStripMenuItem.Click += new System.EventHandler(this.gBInSGBToolStripMenuItem_Click);
+			// 
+			// nESInQuickNESToolStripMenuItem
+			// 
+			this.nESInQuickNESToolStripMenuItem.Name = "nESInQuickNESToolStripMenuItem";
+			this.nESInQuickNESToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+			this.nESInQuickNESToolStripMenuItem.Text = "NES in QuickNES";
+			this.nESInQuickNESToolStripMenuItem.Click += new System.EventHandler(this.nESInQuickNESToolStripMenuItem_Click);
+			// 
 			// toolStripSeparator10
 			// 
 			this.toolStripSeparator10.Name = "toolStripSeparator10";
@@ -1773,31 +1799,6 @@
 			// 
 			this.toolStripSeparator8.Name = "toolStripSeparator8";
 			this.toolStripSeparator8.Size = new System.Drawing.Size(156, 6);
-			// 
-			// coreSelectionToolStripMenuItem
-			// 
-			this.coreSelectionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.gBInSGBToolStripMenuItem,
-            this.nESInQuickNESToolStripMenuItem});
-			this.coreSelectionToolStripMenuItem.Name = "coreSelectionToolStripMenuItem";
-			this.coreSelectionToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
-			this.coreSelectionToolStripMenuItem.Text = "Core Selection";
-			this.coreSelectionToolStripMenuItem.DropDownOpened += new System.EventHandler(this.coreSelectionToolStripMenuItem_DropDownOpened);
-			this.coreSelectionToolStripMenuItem.Click += new System.EventHandler(this.coreSelectionToolStripMenuItem_Click);
-			// 
-			// gBInSGBToolStripMenuItem
-			// 
-			this.gBInSGBToolStripMenuItem.Name = "gBInSGBToolStripMenuItem";
-			this.gBInSGBToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
-			this.gBInSGBToolStripMenuItem.Text = "GB in SGB";
-			this.gBInSGBToolStripMenuItem.Click += new System.EventHandler(this.gBInSGBToolStripMenuItem_Click);
-			// 
-			// nESInQuickNESToolStripMenuItem
-			// 
-			this.nESInQuickNESToolStripMenuItem.Name = "nESInQuickNESToolStripMenuItem";
-			this.nESInQuickNESToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
-			this.nESInQuickNESToolStripMenuItem.Text = "NES in QuickNES";
-			this.nESInQuickNESToolStripMenuItem.Click += new System.EventHandler(this.nESInQuickNESToolStripMenuItem_Click);
 			// 
 			// toolsToolStripMenuItem
 			// 
@@ -2678,7 +2679,8 @@
             this.Slot9StatusButton,
             this.Slot0StatusButton,
             this.CheatStatusButton,
-            this.KeyPriorityStatusLabel});
+            this.KeyPriorityStatusLabel,
+            this.CoreNameStatusBarButton});
 			this.MainStatusBar.Location = new System.Drawing.Point(0, 386);
 			this.MainStatusBar.Name = "MainStatusBar";
 			this.MainStatusBar.ShowItemToolTips = true;
@@ -2839,8 +2841,9 @@
 			// 
 			this.KeyPriorityStatusLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.KeyPriorityStatusLabel.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Both;
+			this.KeyPriorityStatusLabel.Margin = new System.Windows.Forms.Padding(5, 3, 5, 0);
 			this.KeyPriorityStatusLabel.Name = "KeyPriorityStatusLabel";
-			this.KeyPriorityStatusLabel.Size = new System.Drawing.Size(16, 17);
+			this.KeyPriorityStatusLabel.Size = new System.Drawing.Size(16, 19);
 			this.KeyPriorityStatusLabel.Text = "KeyPriority";
 			this.KeyPriorityStatusLabel.Click += new System.EventHandler(this.KeyPriorityStatusLabel_Click);
 			// 
@@ -3142,6 +3145,13 @@
 			this.ShowMenuContextMenuItem.Size = new System.Drawing.Size(216, 22);
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
+			// 
+			// CoreNameStatusBarButton
+			// 
+			this.CoreNameStatusBarButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.CorpHawkSmall;
+			this.CoreNameStatusBarButton.Name = "CoreNameStatusBarButton";
+			this.CoreNameStatusBarButton.Size = new System.Drawing.Size(71, 17);
+			this.CoreNameStatusBarButton.Text = "Neshawk";
 			// 
 			// MainForm
 			// 
@@ -3514,6 +3524,7 @@
 		private System.Windows.Forms.ToolStripMenuItem extensionsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem Atari2600DebuggerMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator31;
+		private System.Windows.Forms.ToolStripStatusLabel CoreNameStatusBarButton;
 	}
 }
 

@@ -9,7 +9,12 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	[CoreAttributes("Atari2600Hawk")]
+	[CoreAttributes(
+		"Atari2600Hawk",
+		"Micro500, adelikat",
+		isPorted: false,
+		isReleased: true
+		)]
 	public partial class Atari2600 : IEmulator
 	{
 		private readonly GameInfo _game;
