@@ -60,8 +60,8 @@ namespace BizHawk.Client.EmuHawk
 
 			AddressBox.SetHexProperties(_watchList[0].Domain.Size);
 			AddressBox.Text = _watchList.Select(a => a.AddressString).Distinct().Aggregate((addrStr, nextStr) => addrStr + ("," + nextStr));
-			ValueHexLabel.Text = _watchList[0].Type == Watch.DisplayType.Hex ? "0x" : String.Empty;
-			ValueBox.Text = _watchList[0].ValueString.Replace(" ", String.Empty);
+			ValueHexLabel.Text = _watchList[0].Type == Watch.DisplayType.Hex ? "0x" : string.Empty;
+			ValueBox.Text = _watchList[0].ValueString.Replace(" ", string.Empty);
 			DomainLabel.Text = _watchList[0].Domain.Name;
 			SizeLabel.Text = _watchList[0].Size.ToString();
 			DisplayTypeLabel.Text = Watch.DisplayTypeToString(_watchList[0].Type);
