@@ -425,7 +425,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				{
 					NumSprites = 8,
 					ClipLeftAndRight = false,
-					ClipTopAndBottom = false,
+					ClipTopAndBottom = true,
 					_Palette = GetDefaultColors()
 				};
 			}
