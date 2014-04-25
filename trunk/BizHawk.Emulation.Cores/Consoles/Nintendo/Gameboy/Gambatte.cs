@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		"Gambatte",
 		"sinamas",
 		isPorted: true,
-		isReleased: false
+		isReleased: true
 		)]
 	public class Gameboy : IEmulator, IVideoProvider, ISyncSoundProvider
 	{

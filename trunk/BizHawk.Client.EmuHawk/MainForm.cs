@@ -2374,11 +2374,14 @@ namespace BizHawk.Client.EmuHawk
 				{
 					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.ppsspp;
 				}
-
-				// TODO: other icons
-				// unknown
-				// mupen64plus,
-				// gambattte,
+				else if (Global.Emulator is Gameboy)
+				{
+					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.gambatte;
+				}
+				else
+				{
+					CoreNameStatusBarButton.Image = null;
+				}
 			}
 		}
 
