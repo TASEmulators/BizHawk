@@ -909,6 +909,15 @@
   <data name="emu7800" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\emu7800.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="genplus" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\genplus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="meteor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\meteor.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ppsspp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\ppsspp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="QuickNes" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\QuickNes.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

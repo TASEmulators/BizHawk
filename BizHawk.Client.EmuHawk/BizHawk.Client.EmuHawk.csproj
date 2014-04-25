@@ -1381,6 +1381,8 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\ppsspp.png" />
+    <None Include="images\meteor.png" />
     <None Include="images\yabause.png" />
     <None Include="images\QuickNes.png" />
     <None Include="images\QuickNES_128.ico" />
@@ -1489,6 +1491,7 @@
     <None Include="images\Erase.png" />
     <None Include="images\bsnes.png" />
     <None Include="images\emu7800.png" />
+    <None Include="images\genplus.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />
