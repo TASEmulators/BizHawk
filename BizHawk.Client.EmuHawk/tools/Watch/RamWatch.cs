@@ -724,10 +724,7 @@ namespace BizHawk.Client.EmuHawk
 					InitialLocation = GetPromptPoint()
 				};
 
-				if (SelectedWatches.Any())
-				{
-					poke.SetWatch(SelectedWatches);
-				}
+				poke.SetWatch(SelectedWatches);
 
 				if (poke.ShowHawkDialog() == DialogResult.OK)
 				{
