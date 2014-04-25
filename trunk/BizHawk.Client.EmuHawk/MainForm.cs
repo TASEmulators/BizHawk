@@ -22,6 +22,7 @@ using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Sega.Saturn;
+using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Client.EmuHawk
@@ -2361,16 +2362,23 @@ namespace BizHawk.Client.EmuHawk
 				{
 					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.emu7800;
 				}
-
+				else if (Global.Emulator is GBA)
+				{
+					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.meteor;
+				}
+				else if (Global.Emulator is GPGX)
+				{
+					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.genplus;
+				}
+				else if (Global.Emulator is PSP)
+				{
+					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.ppsspp;
+				}
 
 				// TODO: other icons
 				// unknown
 				// mupen64plus,
-				// emu7800,
-				// ppsspp,
 				// gambattte,
-				// meteor,
-				// gpgx
 			}
 		}
 

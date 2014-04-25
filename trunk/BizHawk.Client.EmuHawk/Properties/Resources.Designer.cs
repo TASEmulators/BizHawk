@@ -553,6 +553,16 @@ namespace BizHawk.Client.EmuHawk.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap genplus {
+            get {
+                object obj = ResourceManager.GetObject("genplus", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap GreenCheck {
             get {
                 object obj = ResourceManager.GetObject("GreenCheck", resourceCulture);
@@ -696,6 +706,16 @@ namespace BizHawk.Client.EmuHawk.Properties {
         internal static System.Drawing.Bitmap MessageConfig {
             get {
                 object obj = ResourceManager.GetObject("MessageConfig", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap meteor {
+            get {
+                object obj = ResourceManager.GetObject("meteor", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -875,6 +895,16 @@ namespace BizHawk.Client.EmuHawk.Properties {
         internal static System.Drawing.Bitmap poke {
             get {
                 object obj = ResourceManager.GetObject("poke", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ppsspp {
+            get {
+                object obj = ResourceManager.GetObject("ppsspp", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
