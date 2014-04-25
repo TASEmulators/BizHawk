@@ -88,10 +88,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore
 		{
-			get
-			{
-				return false;
-			}
+			get { return false; }
 		}
 
 		public bool AskSave()
