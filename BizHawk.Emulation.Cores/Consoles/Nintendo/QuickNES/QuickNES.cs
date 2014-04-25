@@ -10,7 +10,12 @@ using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
-	[CoreAttributes("QuickNes")]
+	[CoreAttributes(
+		"QuickNes",
+		"kode54",
+		isPorted: true,
+		isReleased: true
+		)]
 	public class QuickNES : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
 		#region FPU precision

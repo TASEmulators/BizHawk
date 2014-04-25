@@ -8,7 +8,12 @@ using EMU7800.Core;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari7800
 {
-	[CoreAttributes("EMU7800")]
+	[CoreAttributes(
+		"EMU7800",
+		"Mike Murphy",
+		isPorted: true,
+		isReleased: true
+		)]
 	public partial class Atari7800 : IEmulator
 	{
 		// TODO:

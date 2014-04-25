@@ -9,7 +9,12 @@ using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
-	[CoreAttributes("DualGambatte")]
+	[CoreAttributes(
+		"DualGambatte",
+		"sinamas/natt",
+		isPorted: true,
+		isReleased: true
+		)]
 	public class GambatteLink : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
 		bool disposed = false;

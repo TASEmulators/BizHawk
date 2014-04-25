@@ -1381,6 +1381,8 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\QuickNes.png" />
+    <None Include="images\QuickNES_128.ico" />
     <None Include="images\sms-icon.png" />
     <None Include="images\pcb.png" />
     <None Include="images\tvIcon.png" />

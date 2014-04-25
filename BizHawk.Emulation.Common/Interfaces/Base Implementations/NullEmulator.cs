@@ -5,7 +5,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common
 {
-	[CoreAttributes("NullHawk")]
+	[CoreAttributes("NullHawk", "")]
 	public class NullEmulator : IEmulator, IVideoProvider, ISyncSoundProvider, ISoundProvider
 	{
 		public string SystemId { get { return "NULL"; } }

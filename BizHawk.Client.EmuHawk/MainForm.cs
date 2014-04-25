@@ -12,6 +12,7 @@ using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
 using BizHawk.Emulation.Cores.Calculators;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
@@ -2319,6 +2320,49 @@ namespace BizHawk.Client.EmuHawk
 			return (ModifierKeys & Keys.Alt) != 0 || base.ProcessDialogChar(charCode);
 		}
 
+		private void UpdateCoreStatusBarButton()
+		{
+			if (Global.Emulator is NullEmulator)
+			{
+				CoreNameStatusBarButton.Visible = false;
+				return;
+			}
+
+			CoreNameStatusBarButton.Visible = true;
+			CoreAttributes attributes = Global.Emulator.Attributes();
+
+			CoreNameStatusBarButton.Text =
+				(!attributes.Released ? "(Experimental) " : string.Empty) +
+				attributes.CoreName;
+
+			CoreNameStatusBarButton.ToolTipText =
+				(attributes.Ported ? "(ported) " : string.Empty) +
+				"written by: " + attributes.Author;
+
+			if (!attributes.Ported)
+			{
+				CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.CorpHawkSmall;
+			}
+			else
+			{
+				if (Global.Emulator is QuickNES)
+				{
+					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.QuickNes;
+				}
+
+				// TODO: other icons
+				// unknown
+				// yabause,
+				// bsnes,
+				// mupen64plus,
+				// atari 7800,
+				// ppsspp,
+				// gambattte,
+				// meteor,
+				// gpgx
+			}
+		}
+
 		#endregion
 
 		#region Frame Loop
@@ -2967,6 +3011,7 @@ namespace BizHawk.Client.EmuHawk
 				HandlePlatformMenus();
 				_stateSlots.Clear();
 				UpdateStatusSlots();
+				UpdateCoreStatusBarButton();
 				UpdateDumpIcon();
 
 				Global.Rewinder.CaptureRewindState();
@@ -3093,10 +3138,11 @@ namespace BizHawk.Client.EmuHawk
 
 				RewireSound();
 				Global.Rewinder.ResetRewindBuffer();
-				Text = "BizHawk" + (VersionInfo.INTERIM ? " (interim) " : String.Empty);
+				Text = "BizHawk" + (VersionInfo.INTERIM ? " (interim) " : string.Empty);
 				HandlePlatformMenus();
 				_stateSlots.Clear();
 				UpdateDumpIcon();
+				UpdateCoreStatusBarButton();
 				ToolHelpers.UpdateCheatRelatedTools(null, null);
 			}
 		}

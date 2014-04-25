@@ -14,7 +14,12 @@ using Native68000;
 
 namespace BizHawk.Emulation.Cores.Sega.Genesis
 {
-	[CoreAttributes("GenesisHawk")]
+	[CoreAttributes(
+		"GenesisHawk",
+		"Vecna",
+		isPorted: false,
+		isReleased: false
+		)]
 	public sealed partial class Genesis : IEmulator
 	{
 		private int _lagcount = 0;
