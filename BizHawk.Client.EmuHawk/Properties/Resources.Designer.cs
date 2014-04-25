@@ -193,6 +193,16 @@ namespace BizHawk.Client.EmuHawk.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap bsnes {
+            get {
+                object obj = ResourceManager.GetObject("bsnes", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Bug {
             get {
                 object obj = ResourceManager.GetObject("Bug", resourceCulture);
@@ -1265,6 +1275,16 @@ namespace BizHawk.Client.EmuHawk.Properties {
         internal static System.Drawing.Bitmap whiteTriUp {
             get {
                 object obj = ResourceManager.GetObject("whiteTriUp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap yabause {
+            get {
+                object obj = ResourceManager.GetObject("yabause", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
