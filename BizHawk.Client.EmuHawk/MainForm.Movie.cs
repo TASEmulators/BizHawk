@@ -177,7 +177,8 @@ namespace BizHawk.Client.EmuHawk
 				LoadRom(CurrentlyOpenRom, true, true);
 				if (Global.MovieSession.Movie.Header.StartsFromSavestate)
 				{
-					LoadState(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
+					byte[] state = Convert.FromBase64String(Global.MovieSession.Movie.Header.SavestateBinaryBase64Blob);
+					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(state)));
 					Global.Emulator.ResetCounters();
 				}
 
