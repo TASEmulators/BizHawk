@@ -10,6 +10,7 @@ namespace BizHawk.Client.Common
 
 		ulong Rerecords { get; set; }
 		bool StartsFromSavestate { get; set; }
+		string SavestateBinaryBase64Blob { get; set; }
 		string GameName { get; set; }
 		string SystemID { get; set; }
 

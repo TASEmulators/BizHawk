@@ -81,23 +81,11 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					_movieToRecord = new Movie(path, startsFromSavestate: true);
-					var temppath = path;
-					var writer = new StreamWriter(temppath);
-					Global.Emulator.SaveStateText(writer);
-					writer.Close();
-
-					var file = new FileInfo(temppath);
-					using (var sr = file.OpenText())
-					{
-						string str;
-						while ((str = sr.ReadLine()) != null)
-						{
-							if (!String.IsNullOrWhiteSpace(str))
-							{
-								_movieToRecord.Header.Comments.Add(str);
-							}
-						}
-					}
+					//TODO - some emulators (c++ cores) are just returning a hex string already
+					//theres no sense hexifying those again. we need to record that fact in the IEmulator somehow
+					var bytestate = Global.Emulator.SaveStateBinary();
+					string stringstate = Convert.ToBase64String(bytestate);
+					_movieToRecord.Header.SavestateBinaryBase64Blob = stringstate;
 				}
 				else
 				{
