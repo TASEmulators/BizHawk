@@ -11,6 +11,7 @@ using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
+using BizHawk.Emulation.Cores.Atari.Atari7800;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
@@ -2336,9 +2337,7 @@ namespace BizHawk.Client.EmuHawk
 				(!attributes.Released ? "(Experimental) " : string.Empty) +
 				attributes.CoreName;
 
-			CoreNameStatusBarButton.ToolTipText =
-				(attributes.Ported ? "(ported) " : string.Empty) +
-				"written by: " + attributes.Author;
+			CoreNameStatusBarButton.ToolTipText = attributes.Ported ? "(ported) " : string.Empty;
 
 			if (!attributes.Ported)
 			{
@@ -2358,6 +2357,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.yabause;
 				}
+				else if (Global.Emulator is Atari7800)
+				{
+					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.emu7800;
+				}
+
 
 				// TODO: other icons
 				// unknown
