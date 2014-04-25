@@ -20,6 +20,7 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
+using BizHawk.Emulation.Cores.Sega.Saturn;
 using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Client.EmuHawk
@@ -2349,13 +2350,19 @@ namespace BizHawk.Client.EmuHawk
 				{
 					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.QuickNes;
 				}
+				else if (Global.Emulator is LibsnesCore)
+				{
+					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.bsnes;
+				}
+				else if (Global.Emulator is Yabause)
+				{
+					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.yabause;
+				}
 
 				// TODO: other icons
 				// unknown
-				// yabause,
-				// bsnes,
 				// mupen64plus,
-				// atari 7800,
+				// emu7800,
 				// ppsspp,
 				// gambattte,
 				// meteor,
