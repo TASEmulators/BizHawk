@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore
 		{
-			get { return true; }
+			get { return false; }
 		}
 
 		#endregion
