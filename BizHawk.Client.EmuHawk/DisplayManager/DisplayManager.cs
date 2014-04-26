@@ -359,11 +359,13 @@ TESTEROO:
 
 			//apply the vsync setting (should probably try to avoid repeating this)
 			bool vsync = Global.Config.VSyncThrottle || Global.Config.VSync;
-			presentationPanel.GraphicsControl.SetVsync(vsync);
+			//presentationPanel.GraphicsControl.SetVsync(vsync);
 
 			//present and conclude drawing
 			presentationPanel.GraphicsControl.SwapBuffers();
-			presentationPanel.GraphicsControl.End();
+
+			//nope. dont do this. workaround for slow context switching on intel GPUs. just switch to another context when necessary before doing anything
+			//presentationPanel.GraphicsControl.End();
 
 			//cleanup:
 			if(bb != null) bb.Dispose();

@@ -474,12 +474,13 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
+			//NOTE: this gets called twice sometimes. once by using() in Program.cs and once from winforms internals when the form is closed...
+		
 			if (GlobalWin.DisplayManager != null)
 			{
 				GlobalWin.DisplayManager.Dispose();
+				GlobalWin.DisplayManager = null;
 			}
-
-			GlobalWin.DisplayManager = null;
 
 			if (disposing && (components != null))
 			{
@@ -2520,6 +2521,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					GlobalWin.OSD.FPS = fps_string;
+					Text = fps_string;
 				}
 
 				if (!suppressCaptureRewind && Global.Rewinder.RewindActive)

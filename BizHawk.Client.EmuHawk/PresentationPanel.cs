@@ -36,8 +36,11 @@ namespace BizHawk.Client.EmuHawk
 			GraphicsControl.MouseClick += (o, e) => GlobalWin.MainForm.MainForm_MouseClick(o, e);
 		}
 
+		bool IsDisposed = false;
 		public void Dispose()
 		{
+			if (IsDisposed) return;
+			IsDisposed = true;
 			GraphicsControl.Dispose();
 		}
 
