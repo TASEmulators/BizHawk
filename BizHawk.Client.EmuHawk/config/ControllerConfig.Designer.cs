@@ -110,7 +110,7 @@
 			this.checkBoxAutoTab.TabIndex = 3;
 			this.checkBoxAutoTab.Text = "Auto Tab";
 			this.checkBoxAutoTab.UseVisualStyleBackColor = true;
-			this.checkBoxAutoTab.CheckedChanged += new System.EventHandler(this.checkBoxAutoTab_CheckedChanged);
+			this.checkBoxAutoTab.CheckedChanged += new System.EventHandler(this.CheckBoxAutoTab_CheckedChanged);
 			// 
 			// checkBoxUDLR
 			// 
@@ -122,7 +122,6 @@
 			this.checkBoxUDLR.TabIndex = 4;
 			this.checkBoxUDLR.Text = "Allow U+D/L+R";
 			this.checkBoxUDLR.UseVisualStyleBackColor = true;
-			this.checkBoxUDLR.CheckedChanged += new System.EventHandler(this.checkBoxUDLR_CheckedChanged);
 			// 
 			// buttonOK
 			// 
@@ -133,7 +132,7 @@
 			this.buttonOK.TabIndex = 5;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
-			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+			this.buttonOK.Click += new System.EventHandler(this.ButtonOk_Click);
 			// 
 			// buttonCancel
 			// 
@@ -145,7 +144,7 @@
 			this.buttonCancel.TabIndex = 6;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+			this.buttonCancel.Click += new System.EventHandler(this.ButtonCancel_Click);
 			// 
 			// tableLayoutPanel1
 			// 
@@ -184,7 +183,7 @@
 			this.buttonLoadDefaults.TabIndex = 8;
 			this.buttonLoadDefaults.Text = "Defaults";
 			this.buttonLoadDefaults.UseVisualStyleBackColor = true;
-			this.buttonLoadDefaults.Click += new System.EventHandler(this.buttonLoadDefaults_Click);
+			this.buttonLoadDefaults.Click += new System.EventHandler(this.ButtonLoadDefaults_Click);
 			// 
 			// buttonSaveDefaults
 			// 
@@ -195,7 +194,7 @@
 			this.buttonSaveDefaults.TabIndex = 9;
 			this.buttonSaveDefaults.Text = "Save Defs";
 			this.buttonSaveDefaults.UseVisualStyleBackColor = true;
-			this.buttonSaveDefaults.Click += new System.EventHandler(this.buttonSaveDefaults_Click);
+			this.buttonSaveDefaults.Click += new System.EventHandler(this.ButtonSaveDefaults_Click);
 			// 
 			// contextMenuStrip1
 			// 
