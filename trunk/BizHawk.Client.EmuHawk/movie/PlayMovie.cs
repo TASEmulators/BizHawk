@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			IncludeSubDirectories.Checked = Global.Config.PlayMovie_IncludeSubdir;
 			ShowStateFiles.Checked = Global.Config.PlayMovie_ShowStateFiles;
-			MatchGameNameCheckBox.Checked = Global.Config.PlayMovie_MatchGameName;
+			MatchHashCheckBox.Checked = Global.Config.PlayMovie_MatchHash;
 			ScanFiles();
 			PreHighlightMovie();
 		}
@@ -142,8 +142,8 @@ namespace BizHawk.Client.EmuHawk
 				movie.PreLoadText(hf);
 
 				// Don't do this from browse
-				if (movie.Header[HeaderKeys.GAMENAME] == Global.Game.Name ||
-					Global.Config.PlayMovie_MatchGameName == false || force)
+				if (movie.Header[HeaderKeys.SHA1] == Global.Game.Hash ||
+					Global.Config.PlayMovie_MatchHash == false || force)
 				{
 					_movieList.Add(movie);
 				}
@@ -652,9 +652,9 @@ namespace BizHawk.Client.EmuHawk
 			PreHighlightMovie();
 		}
 
-		private void MatchGameNameCheckBox_CheckedChanged(object sender, EventArgs e)
+		private void MatchHashCheckBox_CheckedChanged(object sender, EventArgs e)
 		{
-			Global.Config.PlayMovie_MatchGameName = MatchGameNameCheckBox.Checked;
+			Global.Config.PlayMovie_MatchHash = MatchHashCheckBox.Checked;
 			ScanFiles();
 			PreHighlightMovie();
 		}

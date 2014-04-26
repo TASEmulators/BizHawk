@@ -45,7 +45,7 @@
 			this.ShowStateFiles = new System.Windows.Forms.CheckBox();
 			this.Scan = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.MatchGameNameCheckBox = new System.Windows.Forms.CheckBox();
+			this.MatchHashCheckBox = new System.Windows.Forms.CheckBox();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MovieView = new BizHawk.Client.EmuHawk.VirtualListView();
@@ -219,30 +219,30 @@
 			this.Scan.UseVisualStyleBackColor = true;
 			this.Scan.Click += new System.EventHandler(this.Scan_Click);
 			// 
-			// MatchGameNameCheckBox
+			// MatchHashCheckBox
 			// 
-			this.MatchGameNameCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.MatchGameNameCheckBox.AutoSize = true;
-			this.MatchGameNameCheckBox.Location = new System.Drawing.Point(260, 337);
-			this.MatchGameNameCheckBox.Name = "MatchGameNameCheckBox";
-			this.MatchGameNameCheckBox.Size = new System.Drawing.Size(150, 17);
-			this.MatchGameNameCheckBox.TabIndex = 56;
-			this.MatchGameNameCheckBox.Text = "Match current game name";
-			this.MatchGameNameCheckBox.UseVisualStyleBackColor = true;
-			this.MatchGameNameCheckBox.CheckedChanged += new System.EventHandler(this.MatchGameNameCheckBox_CheckedChanged);
+			this.MatchHashCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.MatchHashCheckBox.AutoSize = true;
+			this.MatchHashCheckBox.Location = new System.Drawing.Point(260, 337);
+			this.MatchHashCheckBox.Name = "MatchHashCheckBox";
+			this.MatchHashCheckBox.Size = new System.Drawing.Size(147, 17);
+			this.MatchHashCheckBox.TabIndex = 56;
+			this.MatchHashCheckBox.Text = "Match current game hash";
+			this.MatchHashCheckBox.UseVisualStyleBackColor = true;
+			this.MatchHashCheckBox.CheckedChanged += new System.EventHandler(this.MatchHashCheckBox_CheckedChanged);
 			// 
 			// contextMenuStrip1
 			// 
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.editToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(153, 48);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(95, 26);
 			// 
 			// editToolStripMenuItem
 			// 
 			this.editToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.CutHS;
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-			this.editToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.editToolStripMenuItem.Size = new System.Drawing.Size(94, 22);
 			this.editToolStripMenuItem.Text = "&Edit";
 			this.editToolStripMenuItem.Click += new System.EventHandler(this.EditMenuItem_Click);
 			// 
@@ -306,7 +306,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
 			this.ClientSize = new System.Drawing.Size(774, 387);
-			this.Controls.Add(this.MatchGameNameCheckBox);
+			this.Controls.Add(this.MatchHashCheckBox);
 			this.Controls.Add(this.Scan);
 			this.Controls.Add(this.ShowStateFiles);
 			this.Controls.Add(this.IncludeSubDirectories);
@@ -354,7 +354,7 @@
 		private System.Windows.Forms.CheckBox ShowStateFiles;
 		private System.Windows.Forms.Button Scan;
 		private System.Windows.Forms.ToolTip toolTip1;
-		private System.Windows.Forms.CheckBox MatchGameNameCheckBox;
+		private System.Windows.Forms.CheckBox MatchHashCheckBox;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
 	}
