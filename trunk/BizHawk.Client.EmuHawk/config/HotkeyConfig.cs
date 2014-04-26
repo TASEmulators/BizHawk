@@ -13,6 +13,11 @@ namespace BizHawk.Client.EmuHawk
 		public HotkeyConfig()
 		{
 			InitializeComponent();
+
+			Closing += (o, e) =>
+			{
+				IDB_SAVE.Focus(); // A very dirty hack to avoid https://code.google.com/p/bizhawk/issues/detail?id=161
+			};
 		}
 
 		private void NewHotkeyWindow_Load(object sender, EventArgs e)
