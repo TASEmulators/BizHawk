@@ -43,6 +43,10 @@ namespace BizHawk.Client.EmuHawk
 		private ControllerConfig()
 		{
 			InitializeComponent();
+			Closing += (o, e) =>
+			{
+				buttonOK.Focus(); // A very dirty hack to avoid https://code.google.com/p/bizhawk/issues/detail?id=161
+			};
 		}
 
 		private delegate Control PanelCreator<T>(Dictionary<string, T> settings, List<string> buttons, Size size);
