@@ -95,6 +95,23 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private int MinSignedInt
+		{
+			get
+			{
+				switch (ByteSize)
+				{
+					default:
+					case Watch.WatchSize.Byte:
+						return sbyte.MinValue;
+					case Watch.WatchSize.Word:
+						return short.MinValue;
+					case Watch.WatchSize.DWord:
+						return int.MinValue;
+				}
+			}
+		}
+
 		private double Max12_4
 		{
 			get { return MaxUnsignedInt / 16.0; }
@@ -310,7 +327,7 @@ namespace BizHawk.Client.EmuHawk
 						int? val = ToRawInt() ?? 0;
 						if (val == MaxSignedInt)
 						{
-							val = 0;
+							val = MinSignedInt;
 						}
 						else
 						{
@@ -411,7 +428,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							Text = string.Empty;
 						}
-						else if (val == 0)
+						else if (val == MinSignedInt)
 						{
 							val = MaxSignedInt;
 						}
