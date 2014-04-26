@@ -506,11 +506,12 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		public void SetViewport(int x, int y, int width, int height)
 		{
 			GL.Viewport(x, y, width, height);
+			GL.Scissor(x, y, width, height); //hack for mupen[rice]+intel: at least the rice plugin leaves the scissor rectangle scrambled, and we're trying to run it in the main graphics context for intel
 		}
 
 		public void SetViewport(int width, int height)
 		{
-			GL.Viewport(0, 0, width, height);
+			SetViewport(0, 0, width, height);
 		}
 
 		public void SetViewport(sd.Size size)
@@ -521,7 +522,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		public void SetViewport(swf.Control control)
 		{
 			var r = control.ClientRectangle;
-			GL.Viewport(r.Left, r.Top, r.Width, r.Height);
+			SetViewport(r.Left, r.Top, r.Width, r.Height);
 		}
 
 		//------------------
