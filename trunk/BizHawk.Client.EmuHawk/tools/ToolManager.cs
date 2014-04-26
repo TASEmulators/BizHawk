@@ -128,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 			// If Cheat tool is loaded, restarting will restart the list too anyway
 			if (!GlobalWin.Tools.Has<Cheats>())
 			{
-				Global.CheatList.NewList(GenerateDefaultCheatFilename());
+				Global.CheatList.NewList(GenerateDefaultCheatFilename(), autosave: true);
 			}
 
 			_tools.ForEach(x => x.Restart());

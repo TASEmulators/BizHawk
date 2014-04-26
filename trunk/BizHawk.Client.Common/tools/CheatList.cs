@@ -101,9 +101,21 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		public void NewList(string defaultFileName)
+		public void NewList(string defaultFileName, bool autosave = false)
 		{
 			_defaultFileName = defaultFileName;
+
+			if (_cheatList.Any() && _changes && autosave)
+			{
+				if (string.IsNullOrEmpty(_currentFileName))
+				{
+					_currentFileName = _defaultFileName;
+				}
+
+				Save();
+			}
+
+			
 			_cheatList.Clear();
 			_currentFileName = string.Empty;
 			Changes = false;
