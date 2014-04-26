@@ -145,26 +145,6 @@ namespace BizHawk.Client.EmuHawk
 			GameGenieCode.Text = new NESGameGenieEncoder(_address.Value, _value.Value, _compare).Encode();
 		}
 
-		private void AddCheatClick()
-		{
-			if (!string.IsNullOrWhiteSpace(AddressBox.Text) && !string.IsNullOrWhiteSpace(ValueBox.Text))
-			{
-				var watch = Watch.GenerateWatch(
-					Global.Emulator.MemoryDomains["System Bus"],
-					AddressBox.ToRawInt().Value,
-					Watch.WatchSize.Byte,
-					Watch.DisplayType.Hex,
-					GameGenieCode.Text,
-					false);
-
-				Global.CheatList.Add(new Cheat(
-					watch,
-					ValueBox.ToRawInt().Value,
-					CompareBox.ToRawInt()
-				));
-			}
-		}
-
 		private void RefreshFloatingWindowControl()
 		{
 			Owner = Global.Config.NesGGSettings.FloatingWindow ? null : GlobalWin.MainForm;
@@ -242,7 +222,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddCheat_Click(object sender, EventArgs e)
 		{
-			AddCheatClick();
+			if (!string.IsNullOrWhiteSpace(AddressBox.Text) && !string.IsNullOrWhiteSpace(ValueBox.Text))
+			{
+				var watch = Watch.GenerateWatch(
+					Global.Emulator.MemoryDomains["System Bus"],
+					AddressBox.ToRawInt().Value,
+					Watch.WatchSize.Byte,
+					Watch.DisplayType.Hex,
+					GameGenieCode.Text,
+					false);
+
+				Global.CheatList.Add(new Cheat(
+					watch,
+					ValueBox.ToRawInt().Value,
+					CompareBox.ToRawInt()
+				));
+			}
 		}
 
 		private void GameGenieCode_KeyDown(object sender, KeyEventArgs e)
@@ -251,7 +246,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (AddCheat.Enabled)
 				{
-					AddCheatClick();
+					AddCheat_Click(null, null);
 				}
 			}
 		}
