@@ -127,11 +127,6 @@ namespace BizHawk.Client.EmuHawk
 			return Global.Emulator.Frame.ToString();
 		}
 
-		private string MakeLagCounter()
-		{
-			return Global.Emulator.LagCount.ToString();
-		}
-
 		private List<UIMessage> messages = new List<UIMessage>(5);
 		private List<UIDisplay> GUITextList = new List<UIDisplay>();
 
@@ -188,7 +183,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					if (messages.Count > 0)
+					if (messages.Any())
 					{
 						int i = messages.Count - 1;
 
@@ -208,15 +203,15 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				for (int x = 0; x < GUITextList.Count; x++)
+				foreach (var text in GUITextList)
 				{
 					try
 					{
-						float posx = GetX(g, GUITextList[x].X, GUITextList[x].Anchor, GUITextList[x].Message);
-						float posy = GetY(g, GUITextList[x].Y, GUITextList[x].Anchor, GUITextList[x].Message);
+						float posx = GetX(g, text.X, text.Anchor, text.Message);
+						float posy = GetY(g, text.Y, text.Anchor, text.Message);
 
-						g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].BackGround, posx + 2, posy + 2);
-						g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].ForeColor, posx, posy);
+						g.DrawString(text.Message, MessageFont, text.BackGround, posx + 2, posy + 2);
+						g.DrawString(text.Message, MessageFont, text.ForeColor, posx, posy);
 					}
 					catch (Exception)
 					{
@@ -314,10 +309,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.DisplayLagCounter)
 			{
-				string counter = MakeLagCounter();
-
-				float x = GetX(g, Global.Config.DispLagx, Global.Config.DispLaganchor, counter);
-				float y = GetY(g, Global.Config.DispLagy, Global.Config.DispLaganchor, counter);
+				var counter = Global.Emulator.LagCount.ToString();
+				var x = GetX(g, Global.Config.DispLagx, Global.Config.DispLaganchor, counter);
+				var y = GetY(g, Global.Config.DispLagy, Global.Config.DispLaganchor, counter);
 
 				DrawOsdMessage(g, counter, (Global.Emulator.IsLagFrame ? FixedAlertMessageColor : FixedAlertMessageColor), x, y);
 			}
