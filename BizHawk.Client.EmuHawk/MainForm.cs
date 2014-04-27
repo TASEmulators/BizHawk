@@ -2521,7 +2521,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					GlobalWin.OSD.FPS = fps_string;
-					Text = fps_string;
 				}
 
 				if (!suppressCaptureRewind && Global.Rewinder.RewindActive)
