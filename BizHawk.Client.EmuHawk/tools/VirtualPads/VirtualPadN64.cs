@@ -25,7 +25,12 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void UserControl1_Load(object sender, EventArgs e)
-		{
+        {
+            if (Controller == "P1")
+            {
+                numericUpDown1.Visible = true;
+                numericUpDown2.Visible = true;
+            }
 			PU.ControllerButton = Controller + " Up";
 			PD.ControllerButton = Controller + " Down";
 			PL.ControllerButton = Controller + " Left";
@@ -219,5 +224,21 @@ namespace BizHawk.Client.EmuHawk
 			AnalogControl1.Y = y;
 			AnalogControl1.Refresh();
 		}
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            AnalogControlPanel.Max = (int)numericUpDown1.Value;
+            ManualX.Maximum = (int)numericUpDown1.Value;
+            ManualY.Maximum = (int)numericUpDown1.Value;
+            AnalogControl1.Refresh();
+        }
+
+        private void numericUpDown2_ValueChanged(object sender, EventArgs e)
+        {
+            AnalogControlPanel.Min = (int)numericUpDown2.Value;
+            ManualX.Minimum = (int)numericUpDown2.Value;
+            ManualY.Minimum = (int)numericUpDown2.Value;
+            AnalogControl1.Refresh();
+        }
 	}
 }
