@@ -253,10 +253,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				return String.Empty;
+				return string.Empty;
 			}
 		}
-		
+
+		private void DrawOsdMessage(IBlitter g, string message, Color color, float x, float y)
+		{
+			g.DrawString(message, MessageFont, Color.Black, x + 1, y + 1);
+			g.DrawString(message, MessageFont, color, x, y);
+		}
+
 		/// <summary>
 		/// Display all screen info objects like fps, frame counter, lag counter, and input display
 		/// </summary>
@@ -267,9 +273,10 @@ namespace BizHawk.Client.EmuHawk
 				string message = MakeFrameCounter();
 				float x = GetX(g, Global.Config.DispFrameCx, Global.Config.DispFrameanchor, MessageFont, message);
 				float y = GetY(g, Global.Config.DispFrameCy, Global.Config.DispFrameanchor, MessageFont, message);
-				g.DrawString(message, MessageFont, Color.Black, x + 1, y + 1);
-				g.DrawString(message, MessageFont, Color.FromArgb(Global.Config.MessagesColor), x, y);
+
+				DrawOsdMessage(g, message, Color.FromArgb(Global.Config.MessagesColor), x, y);
 			}
+
 			if (Global.Config.DisplayInput)
 			{
 				string input = MakeInputDisplay();
@@ -285,53 +292,44 @@ namespace BizHawk.Client.EmuHawk
 					c = Color.FromArgb(Global.Config.MessagesColor);
 				}
 
+				// TODO: this needs to be multi-colored and more intelligent: https://code.google.com/p/bizhawk/issues/detail?id=52
 				g.DrawString(input, MessageFont, Color.Black, x + 1, y + 1);
 				g.DrawString(input, MessageFont, c, x, y);
 			}
+
 			if (Global.MovieSession.MultiTrack.IsActive)
 			{
 				float x = GetX(g, Global.Config.DispMultix, Global.Config.DispMultianchor, MessageFont, MT);
 				float y = GetY(g, Global.Config.DispMultiy, Global.Config.DispMultianchor, MessageFont, MT);
-				g.DrawString(MT, MessageFont, Color.Black,
-				x + 1, y + 1);
-				g.DrawString(MT, MessageFont, FixedMessagesColor,
-					x, y);
+
+				DrawOsdMessage(g, MT, FixedMessagesColor, x, y);
 			}
+
 			if (Global.Config.DisplayFPS && FPS != null)
 			{
 				float x = GetX(g, Global.Config.DispFPSx, Global.Config.DispFPSanchor, MessageFont, FPS);
 				float y = GetY(g, Global.Config.DispFPSy, Global.Config.DispFPSanchor, MessageFont, FPS);
-				g.DrawString(FPS, MessageFont, Color.Black, x + 1, y + 1);
-				g.DrawString(FPS, MessageFont, FixedMessagesColor, x, y);
+
+				DrawOsdMessage(g, FPS, FixedMessagesColor, x, y);
 			}
 
 			if (Global.Config.DisplayLagCounter)
 			{
 				string counter = MakeLagCounter();
 
-				if (Global.Emulator.IsLagFrame)
-				{
-					float x = GetX(g, Global.Config.DispLagx, Global.Config.DispLaganchor, MessageFont, counter);
-					float y = GetY(g, Global.Config.DispLagy, Global.Config.DispLaganchor, MessageFont, counter);
-					g.DrawString(counter, MessageFont, Color.Black, x + 1, y + 1);
-					g.DrawString(counter, MessageFont, FixedAlertMessageColor, x, y);
-				}
-				else
-				{
-					float x = GetX(g, Global.Config.DispLagx, Global.Config.DispLaganchor, MessageFont, counter);
-					float y = GetY(g, Global.Config.DispLagy, Global.Config.DispLaganchor, MessageFont, counter);
-					g.DrawString(counter, MessageFont, Color.Black, x + 1, y + 1);
-					g.DrawString(counter, MessageFont, FixedMessagesColor, x, y);
-				}
+				float x = GetX(g, Global.Config.DispLagx, Global.Config.DispLaganchor, MessageFont, counter);
+				float y = GetY(g, Global.Config.DispLagy, Global.Config.DispLaganchor, MessageFont, counter);
 
+				DrawOsdMessage(g, counter, (Global.Emulator.IsLagFrame ? FixedAlertMessageColor : FixedAlertMessageColor), x, y);
 			}
+
 			if (Global.Config.DisplayRerecordCount)
 			{
 				string rerec = MakeRerecordCount();
 				float x = GetX(g, Global.Config.DispRecx, Global.Config.DispRecanchor, MessageFont, rerec);
 				float y = GetY(g, Global.Config.DispRecy, Global.Config.DispRecanchor, MessageFont, rerec);
-				g.DrawString(rerec, MessageFont, Color.Black, x + 1, y + 1);
-				g.DrawString(rerec, MessageFont, FixedMessagesColor, x, y);
+
+				DrawOsdMessage(g, rerec, FixedMessagesColor, x, y);
 			}
 
 			if (Global.ClientControls["Autohold"] || Global.ClientControls["Autofire"])
@@ -355,31 +353,13 @@ namespace BizHawk.Client.EmuHawk
 					disp.ToString()), GetY(g, Global.Config.DispAutoholdy, Global.Config.DispAutoholdanchor, MessageFont, disp.ToString()));
 			}
 
-			//TODO
-			//if (Global.MovieSession.Movie.IsPlaying)
-			//{
-			//    //int r = (int)g.ClipBounds.Width;
-			//    //Point[] p = { new Point(r - 20, 2), 
-			//    //				new Point(r - 4, 12), 
-			//    //				new Point(r - 20, 22) };
-			//    //g.FillPolygon(new SolidBrush(Color.Red), p);
-			//    //g.DrawPolygon(new Pen(new SolidBrush(Color.Pink)), p);
-
-			//}
-			//else if (Global.MovieSession.Movie.IsRecording)
-			//{
-			//    //g.FillEllipse(new SolidBrush(Color.Red), new Rectangle((int)g.ClipBounds.Width - 22, 2, 20, 20));
-			//    //g.DrawEllipse(new Pen(new SolidBrush(Color.Pink)), new Rectangle((int)g.ClipBounds.Width - 22, 2, 20, 20));
-			//}
-
 			if (Global.MovieSession.Movie.IsActive && Global.Config.DisplaySubtitles)
 			{
 				var subList = Global.MovieSession.Movie.Header.Subtitles.GetSubtitles(Global.Emulator.Frame).ToList();
 
-				for (int i = 0; i < subList.Count; i++)
+				foreach (var sub in subList)
 				{
-					g.DrawString(subList[i].Message, MessageFont, Color.Black, subList[i].X + 1, subList[i].Y + 1);
-					g.DrawString(subList[i].Message, MessageFont, Color.FromArgb((int)subList[i].Color), subList[i].X, subList[i].Y);
+					DrawOsdMessage(g, sub.Message, Color.FromArgb((int)sub.Color), sub.X, sub.Y);
 				}
 			}
 		}
