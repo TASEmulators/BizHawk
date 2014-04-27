@@ -35,7 +35,6 @@ namespace BizHawk.Client.EmuHawk
 		public string Message;
 		public int X;
 		public int Y;
-		public bool Alert;
 		public int Anchor;
 		public Color ForeColor;
 		public Color BackGround;
@@ -46,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 		public string FPS { get; set; }
 		public string MT { get; set; }
 		public IBlitterFont MessageFont;
-		public IBlitterFont AlertFont;
+
 		public void Dispose()
 		{
 
@@ -55,7 +54,6 @@ namespace BizHawk.Client.EmuHawk
 		public void Begin(IBlitter blitter)
 		{
 			MessageFont = blitter.GetFontType("MessageFont");
-			AlertFont = blitter.GetFontType("AlertFont");
 		}
 
 		public System.Drawing.Color FixedMessagesColor { get { return System.Drawing.Color.FromArgb(Global.Config.MessagesColor); } }
@@ -144,10 +142,18 @@ namespace BizHawk.Client.EmuHawk
 			messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
 		}
 
-		public void AddGUIText(string message, int x, int y, bool alert, Color BackGround, Color ForeColor, int anchor)
+		public void AddGUIText(string message, int x, int y, Color backGround, Color foreColor, int anchor)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
-			GUITextList.Add(new UIDisplay { Message = message, X = x, Y = y, BackGround = BackGround, ForeColor = ForeColor, Alert = alert, Anchor = anchor });
+			GUITextList.Add(new UIDisplay
+			{
+				Message = message,
+				X = x,
+				Y = y,
+				BackGround = backGround,
+				ForeColor = foreColor,
+				Anchor = anchor
+			});
 		}
 
 		public void ClearGUIText()
@@ -197,6 +203,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							y -= ((line - 1) * 18);
 						}
+
 						g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
 						g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
 					}
@@ -210,12 +217,7 @@ namespace BizHawk.Client.EmuHawk
 						float posy = GetY(g, GUITextList[x].Y, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
 
 						g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].BackGround, posx + 2, posy + 2);
-						//g.DrawString(GUITextList[x].Message, MessageFont, Color.Gray, posx + 1, posy + 1);
-
-						if (GUITextList[x].Alert)
-							g.DrawString(GUITextList[x].Message, AlertFont, FixedMessagesColor, posx, posy);
-						else
-							g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].ForeColor, posx, posy);
+						g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].ForeColor, posx, posy);
 					}
 					catch (Exception)
 					{
@@ -309,10 +311,10 @@ namespace BizHawk.Client.EmuHawk
 
 				if (Global.Emulator.IsLagFrame)
 				{
-					float x = GetX(g, Global.Config.DispLagx, Global.Config.DispLaganchor, AlertFont, counter);
-					float y = GetY(g, Global.Config.DispLagy, Global.Config.DispLaganchor, AlertFont, counter);
-					g.DrawString(counter, AlertFont, Color.Black, x + 1, y + 1);
-					g.DrawString(counter, AlertFont, FixedAlertMessageColor, x, y);
+					float x = GetX(g, Global.Config.DispLagx, Global.Config.DispLaganchor, MessageFont, counter);
+					float y = GetY(g, Global.Config.DispLagy, Global.Config.DispLaganchor, MessageFont, counter);
+					g.DrawString(counter, MessageFont, Color.Black, x + 1, y + 1);
+					g.DrawString(counter, MessageFont, FixedAlertMessageColor, x, y);
 				}
 				else
 				{

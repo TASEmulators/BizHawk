@@ -520,7 +520,7 @@ namespace BizHawk.Client.EmuHawk
 			x *= EmuHawkLuaLibrary.GetWindowSize();
 			y *= EmuHawkLuaLibrary.GetWindowSize();
 
-			GlobalWin.OSD.AddGUIText(message, x, y, false, GetColor(background ?? "black"), GetColor(forecolor ?? "white"), a);
+			GlobalWin.OSD.AddGUIText(message, x, y, GetColor(background ?? "black"), GetColor(forecolor ?? "white"), a);
 		}
 	}
 }
