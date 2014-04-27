@@ -185,7 +185,6 @@ namespace BizHawk.Client.EmuHawk
 			//NOTE: this is not quite right. if someone held leftshift+rightshift it would be broken. seems unlikely, though.
 			if (button == "LeftShift")
 			{
-				Console.WriteLine("Processing modifiers with " + newState);
 				_Modifiers &= ~ModifierKey.Shift;
 				if (newState)
 					_Modifiers |= ModifierKey.Shift;
