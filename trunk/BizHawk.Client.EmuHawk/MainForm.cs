@@ -3265,5 +3265,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.Tools.Load<Atari2600Debugger>();
 		}
+
+		private void AtariSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			if (!VersionInfo.INTERIM)
+			{
+				Atari2600DebuggerMenuItem.Visible =
+					toolStripSeparator31.Visible = 
+					false;
+			}
+		}
 	}
 }
