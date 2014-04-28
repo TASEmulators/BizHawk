@@ -221,21 +221,82 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-
-		public string MakeInputDisplay()
+		public string InputStrMovie()
 		{
-			StringBuilder sb;
-			if (!Global.MovieSession.Movie.IsActive || Global.MovieSession.Movie.IsFinished)
-			{
-				sb = new StringBuilder(Global.GetOutputControllersAsMnemonic());
-			}
-			else
-			{
-				sb = new StringBuilder(Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
-			}
-
+			var sb = new StringBuilder(Global.GetOutputControllersAsMnemonic());
 			sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
+			return sb.ToString();
+		}
 
+		public string InputStrImmediate()
+		{
+			var mg = new MnemonicsGenerator();
+			mg.SetSource(Global.AutofireStickyXORAdapter);
+
+			var sb = new StringBuilder(mg.GetControllersAsMnemonic());
+			sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
+			return sb.ToString();
+		}
+
+		public string InputPrevious()
+		{
+			var sb = new StringBuilder(Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
+			sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
+			return sb.ToString();
+		}
+
+		public string InputStrOrAll()
+		{
+			var m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
+			m.SetControllersAsMnemonic(
+				Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
+
+			var orAdaptor = new ORAdapter()
+			{
+				Source = Global.AutofireStickyXORAdapter,
+				SourceOr = m
+			};
+
+			var mg = new MnemonicsGenerator();
+			mg.SetSource(orAdaptor);
+
+			var sb = new StringBuilder(mg.GetControllersAsMnemonic());
+			sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
+			return sb.ToString();
+		}
+
+		public string InputStrSticky()
+		{
+			var stickyOr = new StickyOrAdapter
+			{
+				Source = Global.StickyXORAdapter,
+				SourceStickyOr = Global.AutofireStickyXORAdapter
+			};
+
+			var mg = new MnemonicsGenerator();
+			mg.SetSource(stickyOr);
+			var sb = new StringBuilder(mg.GetControllersAsMnemonic());
+			sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
+			return sb.ToString();
+		}
+
+		public string MakeIntersectImmediatePrevious()
+		{
+			var m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
+			m.SetControllersAsMnemonic(
+				Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
+
+			var andAdaptor = new AndAdapter
+			{
+				Source = Global.AutofireStickyXORAdapter,
+				SourceAnd = m
+			};
+
+			var mg = new MnemonicsGenerator();
+			mg.SetSource(andAdaptor);
+
+			var sb = new StringBuilder(mg.GetControllersAsMnemonic());
+			sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
 			return sb.ToString();
 		}
 
@@ -245,10 +306,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return "Rerecord Count: " + Global.MovieSession.Movie.Header.Rerecords;
 			}
-			else
-			{
-				return string.Empty;
-			}
+			
+			return string.Empty;
 		}
 
 		private void DrawOsdMessage(IBlitter g, string message, Color color, float x, float y)
@@ -273,22 +332,41 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.DisplayInput)
 			{
-				string input = MakeInputDisplay();
-				Color c;
-				float x = GetX(g, Global.Config.DispInpx, Global.Config.DispInpanchor, input);
-				float y = GetY(g, Global.Config.DispInpy, Global.Config.DispInpanchor, input);
-				if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsRecording)
+				if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
 				{
-					c = Color.FromArgb(Global.Config.MovieInput);
-				}
-				else
-				{
-					c = Color.FromArgb(Global.Config.MessagesColor);
+					var input = InputStrMovie();
+					var x = GetX(g, Global.Config.DispInpx, Global.Config.DispInpanchor, input);
+					var y = GetY(g, Global.Config.DispInpy, Global.Config.DispInpanchor, input);
+					Color c = Color.FromArgb(Global.Config.MovieInput);
+					g.DrawString(input, MessageFont, Color.Black, x + 1, y + 1);
+					g.DrawString(input, MessageFont, c, x, y);
 				}
 
-				// TODO: this needs to be multi-colored and more intelligent: https://code.google.com/p/bizhawk/issues/detail?id=52
-				g.DrawString(input, MessageFont, Color.Black, x + 1, y + 1);
-				g.DrawString(input, MessageFont, c, x, y);
+				else // TODO: message config -- allow setting of "previous", "mixed", and "auto"
+				{
+					var bgStr = InputStrOrAll();
+					var x = GetX(g, Global.Config.DispInpx, Global.Config.DispInpanchor, bgStr);
+					var y = GetY(g, Global.Config.DispInpy, Global.Config.DispInpanchor, bgStr);
+					g.DrawString(bgStr, MessageFont, Color.Black, x + 1, y + 1);
+
+					
+
+					var previousStr = InputPrevious();
+					var pColor = Color.Orange;
+					g.DrawString(previousStr, MessageFont, pColor, x, y);
+
+
+					var immediate = InputStrImmediate();
+					Color immediateColor = Color.FromArgb(Global.Config.MessagesColor);
+					g.DrawString(immediate, MessageFont, immediateColor, x, y);
+
+					var immediateOverlay = MakeIntersectImmediatePrevious();
+					var oColor = Color.PeachPuff;
+					g.DrawString(immediateOverlay, MessageFont, oColor, x, y);
+
+					var autoString = InputStrSticky();
+					g.DrawString(autoString, MessageFont, Color.Pink, x, y);
+				}
 			}
 
 			if (Global.MovieSession.MultiTrack.IsActive)

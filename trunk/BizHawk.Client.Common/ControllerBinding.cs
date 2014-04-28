@@ -37,6 +37,19 @@ namespace BizHawk.Client.Common
 			return _buttons[button];
 		}
 
+		public bool AnyPressed
+		{
+			get
+			{
+				if (_buttons.Any(x => x.Value))
+				{
+					return true;
+				}
+
+				return _floatButtons.Any(x => x.Value != 0);
+			}
+		}
+
 		public float GetFloat(string name) { return _floatButtons[name]; }
 
 		// Looks for bindings which are activated by the supplied physical button.
