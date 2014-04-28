@@ -221,13 +221,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				endofframecallback(LibGambatte.gambatte_cpuread(GambatteState, 0xff40));
 		}
 
+		ulong _cycleCount = 0;
+		uint _nextRunAdjust = 0;
+
+		public ulong CycleCount { get { return _cycleCount; } }
+
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			FrameAdvancePrep();
 
-			uint nsamp = 35112; // according to gambatte docs, this is the nominal length of a frame in 2mhz clocks
+			uint nsamp = 35112 + _nextRunAdjust; // according to gambatte docs, this is the nominal length of a frame in 2mhz clocks
 
+			// Gambatte is going to run whatever it feels like, and report what it ran into nsamp
+			// Therefore we should track it and factor this in next frame, to keep a consistent definition of 1 frame = 35112 cycles
 			LibGambatte.gambatte_runfor(GambatteState, VideoBuffer, 160, soundbuff, ref nsamp);
+
+			_cycleCount += (ulong)nsamp;
+			_nextRunAdjust = 35112 - nsamp;
 
 			if (rendersound)
 			{
