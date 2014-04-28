@@ -448,6 +448,11 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.LuaConsole.ResumeScripts(false);
 				}
 
+				if (Global.Config.DisplayInput) // Input display wants to update even while paused
+				{
+					GlobalWin.DisplayManager.NeedsToPaint = true;
+				}
+
 				StepRunLoop_Core();
 				StepRunLoop_Throttle();
 
