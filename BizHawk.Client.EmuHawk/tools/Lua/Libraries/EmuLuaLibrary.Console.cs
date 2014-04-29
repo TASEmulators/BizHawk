@@ -88,6 +88,25 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[LuaMethodAttributes(
+			"writeline",
+			"Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable"
+		)]
+		public static void WriteLine(params object[] outputs)
+		{
+			Log(outputs);
+			Log('\n');
+		}
+
+		[LuaMethodAttributes(
+			"write",
+			"Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable"
+		)]
+		public static void Write(params object[] outputs)
+		{
+			Log(outputs);
+		}
+
 		// Single param version is used by logOutputCallback of some libraries.
 		public static void Log(string output)
 		{

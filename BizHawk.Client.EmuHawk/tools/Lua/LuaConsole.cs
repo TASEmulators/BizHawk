@@ -334,7 +334,7 @@ namespace BizHawk.Client.EmuHawk
 
 			OutputBox.Invoke(() =>
 			{
-				OutputBox.Text += message + "\n";
+				OutputBox.Text += message;
 				OutputBox.SelectionStart = OutputBox.Text.Length;
 				OutputBox.ScrollToCaret();
 			});
