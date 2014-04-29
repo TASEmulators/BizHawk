@@ -136,9 +136,9 @@ namespace BizHawk.Client.EmuHawk
 			return result;
 		}
 
-		public static void Print(string s)
+		public static void Print(params object[] outputs)
 		{
-			ConsoleLuaLibrary.Log(s);
+			ConsoleLuaLibrary.Log(outputs);
 		}
 
 		private void Frameadvance()
