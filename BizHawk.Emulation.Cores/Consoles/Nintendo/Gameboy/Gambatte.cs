@@ -221,8 +221,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				endofframecallback(LibGambatte.gambatte_cpuread(GambatteState, 0xff40));
 		}
 
-		ulong _cycleCount = 0;
-		uint _nextRunAdjust = 0;
+		private ulong _cycleCount = 0;
+		private uint frameOverflow = 0;
+		private const uint TICKSINFRAME = 35112;
 
 		public ulong CycleCount { get { return _cycleCount; } }
 
@@ -230,23 +231,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			FrameAdvancePrep();
 
-			uint nsamp = 35112 + _nextRunAdjust; // according to gambatte docs, this is the nominal length of a frame in 2mhz clocks
-
-			// Gambatte is going to run whatever it feels like, and report what it ran into nsamp
-			// Therefore we should track it and factor this in next frame, to keep a consistent definition of 1 frame = 35112 cycles
-			LibGambatte.gambatte_runfor(GambatteState, VideoBuffer, 160, soundbuff, ref nsamp);
-
-			_cycleCount += (ulong)nsamp;
-			_nextRunAdjust = 35112 - nsamp;
-
-			if (rendersound)
+			while (true)
 			{
-				soundbuffcontains = (int)nsamp;
-				ProcessSound();
-			}
-			else
-			{
-				soundbuffcontains = 0;
+				uint samplesEmitted = TICKSINFRAME - frameOverflow; // according to gambatte docs, this is the nominal length of a frame in 2mhz clocks
+				LibGambatte.gambatte_runfor(GambatteState, VideoBuffer, 160, soundbuff, ref samplesEmitted);
+
+				_cycleCount += (ulong)samplesEmitted;
+				frameOverflow += samplesEmitted;
+
+				if (rendersound)
+				{
+					soundbuffcontains = (int)samplesEmitted;
+					ProcessSound();
+				}
+				else
+				{
+					soundbuffcontains = 0;
+				}
+
+				if (frameOverflow >= TICKSINFRAME)
+				{
+					frameOverflow -= TICKSINFRAME;
+					break;
+				}
 			}
 
 			FrameAdvancePost();
@@ -853,7 +860,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		BlipBuffer blipL, blipR;
 
-		void ProcessSound()
+		private void ProcessSound()
 		{
 			for (uint i = 0; i < soundbuffcontains; i++)
 			{
@@ -874,6 +881,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					blipR.AddDelta(i, diff);
 				}
 			}
+
 			blipL.EndFrame((uint)soundbuffcontains);
 			blipR.EndFrame((uint)soundbuffcontains);
 
@@ -919,7 +927,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			samples = soundoutbuff;
 			nsamp = soundoutbuffcontains;
 		}
+
 		#endregion
+
+		#region Settings
 
 		GambatteSettings Settings;
 		GambatteSyncSettings SyncSettings;
@@ -1002,5 +1013,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				return (GambatteSyncSettings)MemberwiseClone();
 			}
 		}
+
+		#endregion
 	}
 }
