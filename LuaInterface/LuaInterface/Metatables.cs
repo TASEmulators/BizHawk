@@ -745,6 +745,55 @@ namespace LuaInterface
             LuaDLL.lua_pushnil(luaState);
             return 1;
         }
+        private static bool IsInteger(double x) {
+            return Math.Ceiling(x) == x;
+        }
+
+        internal Array TableToArray (Func<int, object> luaParamValueExtractor, Type paramArrayType, int startIndex, int count)
+        {
+            Array paramArray;
+
+            if (count == 0)
+                return Array.CreateInstance (paramArrayType, 0);
+
+            var luaParamValue = luaParamValueExtractor (startIndex);
+
+            if (luaParamValue is LuaTable) {
+                LuaTable table = (LuaTable)luaParamValue;
+                IDictionaryEnumerator tableEnumerator = table.GetEnumerator ();
+                tableEnumerator.Reset ();
+                paramArray = Array.CreateInstance (paramArrayType, table.Values.Count);
+
+                int paramArrayIndex = 0;
+
+                while (tableEnumerator.MoveNext ()) {
+
+                    object value = tableEnumerator.Value;
+
+                    if (paramArrayType == typeof (object)) {
+                        if (value != null && value.GetType () == typeof (double) && IsInteger ((double)value))
+                            value = Convert.ToInt32 ((double)value);
+                    }
+                    paramArray.SetValue (Convert.ChangeType (value, paramArrayType), paramArrayIndex);
+                    paramArrayIndex++;
+                }
+            } else {
+
+                paramArray = Array.CreateInstance (paramArrayType, count);
+
+                paramArray.SetValue (luaParamValue, 0);
+
+                for (int i = 1; i < count; i++) {
+                    startIndex++;
+                    var value = luaParamValueExtractor (startIndex);
+                    paramArray.SetValue (value, i);
+                }
+            }
+
+            return paramArray;
+
+        }
+
         /*
          * Matches a method against its arguments in the Lua stack. Returns
          * if the match was succesful. It it was also returns the information
@@ -754,104 +803,76 @@ namespace LuaInterface
         {
             ExtractValue extractValue;
             bool isMethod = true;
-            ParameterInfo[] paramInfo = method.GetParameters();
+            var paramInfo = method.GetParameters ();
             int currentLuaParam = 1;
             int nLuaParams = LuaDLL.lua_gettop(luaState);
-            ArrayList paramList = new ArrayList();
-            List<int> outList = new List<int>();
-            List<MethodArgs> argTypes = new List<MethodArgs>();
-            foreach (ParameterInfo currentNetParam in paramInfo)
-            {
-                if (!currentNetParam.IsIn && currentNetParam.IsOut)  // Skips out params
-                {
-                    outList.Add(paramList.Add(null));
-                }
-                else if (currentLuaParam > nLuaParams) // Adds optional parameters
-                {
-                    if (currentNetParam.IsOptional)
-                    {
-                        paramList.Add(currentNetParam.DefaultValue);
-                    }
-                    else
-                    {
-                        isMethod = false;
-                        break;
-                    }
-                }
-                else if (_IsTypeCorrect(luaState, currentLuaParam, currentNetParam, out extractValue))  // Type checking
-                {
-                    int index = paramList.Add(extractValue(luaState, currentLuaParam));
+            var paramList = new List<object> ();
+            var outList = new List<int> ();
+            var argTypes = new List<MethodArgs> ();
 
-                    MethodArgs methodArg = new MethodArgs();
+            foreach (var currentNetParam in paramInfo) {
+                if (!currentNetParam.IsIn && currentNetParam.IsOut)  // Skips out params 
+                {
+                    paramList.Add (null);
+                    outList.Add (paramList.LastIndexOf (null));
+                }  else if (_IsTypeCorrect (luaState, currentLuaParam, currentNetParam, out extractValue)) {  // Type checking
+                    var value = extractValue (luaState, currentLuaParam);
+                    paramList.Add (value);
+                    int index = paramList.LastIndexOf (value);
+                    var methodArg = new MethodArgs ();
                     methodArg.index = index;
                     methodArg.extractValue = extractValue;
-                    argTypes.Add(methodArg);
+                    argTypes.Add (methodArg);
 
                     if (currentNetParam.ParameterType.IsByRef)
-                        outList.Add(index);
+                        outList.Add (index);
+
                     currentLuaParam++;
                 }  // Type does not match, ignore if the parameter is optional
-                else if (_IsParamsArray(luaState, currentLuaParam, currentNetParam, out extractValue))
-                {
-                    object luaParamValue = extractValue(luaState, currentLuaParam);
+                else if (_IsParamsArray (luaState, currentLuaParam, currentNetParam, out extractValue)) {
 
-                    Type paramArrayType = currentNetParam.ParameterType.GetElementType();
+                    var paramArrayType = currentNetParam.ParameterType.GetElementType ();
 
-                    Array paramArray;
+                    Func<int, object> extractDelegate = (currentParam) => {
+                        currentLuaParam ++;
+                        return extractValue (luaState, currentParam);
+                    };
+                    int count = (nLuaParams - currentLuaParam) + 1;
+                    Array paramArray = TableToArray (extractDelegate, paramArrayType, currentLuaParam, count);
 
-                    if (luaParamValue is LuaTable)
-                    {
-                        LuaTable table = (LuaTable)luaParamValue;
-                        IDictionaryEnumerator tableEnumerator = table.GetEnumerator();
-
-                        paramArray = Array.CreateInstance(paramArrayType, table.Values.Count);
-
-                        tableEnumerator.Reset();
-
-                        int paramArrayIndex = 0;
-
-                        while(tableEnumerator.MoveNext())
-                        {
-                            paramArray.SetValue(Convert.ChangeType(tableEnumerator.Value, currentNetParam.ParameterType.GetElementType()), paramArrayIndex);
-                            paramArrayIndex++;
-                        }
-                    }
-                    else
-                    {
-                        paramArray = Array.CreateInstance(paramArrayType, 1);
-                        paramArray.SetValue(luaParamValue, 0);
-                    }
-
-                    int index = paramList.Add(paramArray);
-
-                    MethodArgs methodArg = new MethodArgs();
+                    paramList.Add (paramArray);
+                    int index = paramList.LastIndexOf (paramArray);
+                    var methodArg = new MethodArgs ();
                     methodArg.index = index;
                     methodArg.extractValue = extractValue;
                     methodArg.isParamsArray = true;
                     methodArg.paramsArrayType = paramArrayType;
-                    argTypes.Add(methodArg);
+                    argTypes.Add (methodArg);
 
-                    currentLuaParam++;
-                }
-                else if (currentNetParam.IsOptional)
-                {
-                    paramList.Add(currentNetParam.DefaultValue);
-                }
-                else  // No match
-                {
+                } else if (currentLuaParam > nLuaParams) { // Adds optional parameters
+                    if (currentNetParam.IsOptional)
+                        paramList.Add (currentNetParam.DefaultValue);
+                    else {
+                        isMethod = false;
+                        break;
+                    }
+                } else if (currentNetParam.IsOptional)
+                    paramList.Add (currentNetParam.DefaultValue);
+                else {  // No match
                     isMethod = false;
                     break;
                 }
             }
+
             if (currentLuaParam != nLuaParams + 1) // Number of parameters does not match
                 isMethod = false;
-            if (isMethod)
-            {
-                methodCache.args = paramList.ToArray();
+            if (isMethod) {
+                methodCache.args = paramList.ToArray ();
                 methodCache.cachedMethod = method;
-                methodCache.outList = outList.ToArray();
-                methodCache.argTypes = argTypes.ToArray();
+                methodCache.outList = outList.ToArray ();
+                methodCache.argTypes = argTypes.ToArray ();
             }
+
             return isMethod;
         }
 
