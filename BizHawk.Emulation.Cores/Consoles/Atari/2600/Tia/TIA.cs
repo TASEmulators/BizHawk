@@ -118,6 +118,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			get { return 320; }
 		}
 
+		public int VirtualHeight
+		{
+			get { return 262; }
+		}
+
 		public int BufferWidth
 		{
 			get { return 320; }

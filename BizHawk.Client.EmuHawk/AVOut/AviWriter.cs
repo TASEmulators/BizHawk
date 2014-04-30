@@ -90,17 +90,19 @@ namespace BizHawk.Client.EmuHawk
 		class VideoCopy : IVideoProvider
 		{
 			int[] vb;
-			int bw, bh, bc;
-			public int VirtualWidth { get { return bw; } }
-			public int BufferWidth { get { return bw; } }
-			public int BufferHeight { get { return bh; } }
-			public int BackgroundColor { get { return bc; } }
+			public int VirtualWidth { get; private set; }
+			public int VirtualHeight { get; private set; }
+			public int BufferWidth { get; private set; }
+			public int BufferHeight { get; private set; }
+			public int BackgroundColor { get; private set; }
 			public VideoCopy(IVideoProvider c)
 			{
 				vb = (int[])c.GetVideoBuffer().Clone();
-				bw = c.BufferWidth;
-				bh = c.BufferHeight;
-				bc = c.BackgroundColor;
+				BufferWidth = c.BufferWidth;
+				BufferHeight= c.BufferHeight;
+				BackgroundColor = c.BackgroundColor;
+				VirtualWidth = c.VirtualWidth;
+				VirtualHeight = c.VirtualHeight;
 			}
 			public int[] GetVideoBuffer()
 			{

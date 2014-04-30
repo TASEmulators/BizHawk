@@ -642,6 +642,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		int vheight;
 		public int[] GetVideoBuffer() { return vidbuff; }
 		public int VirtualWidth { get { return BufferWidth; } } // TODO
+		public int VirtualHeight { get { return BufferHeight; } } // TODO
 		public int BufferWidth { get { return vwidth; } }
 		public int BufferHeight { get { return vheight; } }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }

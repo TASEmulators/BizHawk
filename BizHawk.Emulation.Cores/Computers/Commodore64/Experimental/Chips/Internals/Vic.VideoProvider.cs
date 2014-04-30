@@ -47,6 +47,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Experimental
 			get { return screenWidth; }
 		}
 
+		public int VirtualHeight
+		{
+			get { return screenHeight; }
+		}
+
 		public int BufferWidth
 		{
 			get { return screenWidth; }
