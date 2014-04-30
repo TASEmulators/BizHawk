@@ -758,6 +758,10 @@ namespace LuaInterface
 
             var luaParamValue = luaParamValueExtractor (startIndex);
 
+#if false
+            // LuaTable unpacking is disabled.
+            // In Lua, print({1, 2, 3}) should pass an array, not multiple arguments.
+            // You can write print(unpack({1, 2, 3})) if necessary.
             if (luaParamValue is LuaTable) {
                 LuaTable table = (LuaTable)luaParamValue;
                 IDictionaryEnumerator tableEnumerator = table.GetEnumerator ();
@@ -777,8 +781,10 @@ namespace LuaInterface
                     paramArray.SetValue (Convert.ChangeType (value, paramArrayType), paramArrayIndex);
                     paramArrayIndex++;
                 }
-            } else {
-
+            }
+            else
+#endif
+            {
                 paramArray = Array.CreateInstance (paramArrayType, count);
 
                 paramArray.SetValue (luaParamValue, 0);
