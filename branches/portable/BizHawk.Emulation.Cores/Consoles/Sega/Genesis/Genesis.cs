@@ -14,6 +14,12 @@ using Native68000;
 
 namespace BizHawk.Emulation.Cores.Sega.Genesis
 {
+	[CoreAttributes(
+		"GenesisHawk",
+		"Vecna",
+		isPorted: false,
+		isReleased: false
+		)]
 	public sealed partial class Genesis : IEmulator
 	{
 		private int _lagcount = 0;
@@ -241,35 +247,35 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 #endif
 		}
 
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
-			return new List<KeyValuePair<string, int>>
+			return new Dictionary<string, int>
 			{
-				new KeyValuePair<string, int>("A-0", MainCPU.A[0].s32),
-				new KeyValuePair<string, int>("A-1", MainCPU.A[1].s32),
-				new KeyValuePair<string, int>("A-2", MainCPU.A[2].s32),
-				new KeyValuePair<string, int>("A-3", MainCPU.A[3].s32),
-				new KeyValuePair<string, int>("A-4", MainCPU.A[4].s32),
-				new KeyValuePair<string, int>("A-5", MainCPU.A[5].s32),
-				new KeyValuePair<string, int>("A-6", MainCPU.A[6].s32),
-				new KeyValuePair<string, int>("A-7", MainCPU.A[7].s32),
+				{ "A-0", MainCPU.A[0].s32 },
+				{ "A-1", MainCPU.A[1].s32 },
+				{ "A-2", MainCPU.A[2].s32 },
+				{ "A-3", MainCPU.A[3].s32 },
+				{ "A-4", MainCPU.A[4].s32 },
+				{ "A-5", MainCPU.A[5].s32 },
+				{ "A-6", MainCPU.A[6].s32 },
+				{ "A-7", MainCPU.A[7].s32 },
 
-				new KeyValuePair<string, int>("D-0", MainCPU.D[0].s32),
-				new KeyValuePair<string, int>("D-1", MainCPU.D[1].s32),
-				new KeyValuePair<string, int>("D-2", MainCPU.D[2].s32),
-				new KeyValuePair<string, int>("D-3", MainCPU.D[3].s32),
-				new KeyValuePair<string, int>("D-4", MainCPU.D[4].s32),
-				new KeyValuePair<string, int>("D-5", MainCPU.D[5].s32),
-				new KeyValuePair<string, int>("D-6", MainCPU.D[6].s32),
-				new KeyValuePair<string, int>("D-7", MainCPU.D[7].s32),
+				{ "D-0", MainCPU.D[0].s32 },
+				{ "D-1", MainCPU.D[1].s32 },
+				{ "D-2", MainCPU.D[2].s32 },
+				{ "D-3", MainCPU.D[3].s32 },
+				{ "D-4", MainCPU.D[4].s32 },
+				{ "D-5", MainCPU.D[5].s32 },
+				{ "D-6", MainCPU.D[6].s32 },
+				{ "D-7", MainCPU.D[7].s32 },
 
-				new KeyValuePair<string, int>("SR", MainCPU.SR),
+				{ "SR", MainCPU.SR },
 
-				new KeyValuePair<string, int>("Flag X", MainCPU.X ? 1 : 0),
-				new KeyValuePair<string, int>("Flag N", MainCPU.N ? 1 : 0),
-				new KeyValuePair<string, int>("Flag Z", MainCPU.Z ? 1 : 0),
-				new KeyValuePair<string, int>("Flag V", MainCPU.V ? 1 : 0),
-				new KeyValuePair<string, int>("Flag C", MainCPU.C ? 1 : 0)
+				{ "Flag X", MainCPU.X ? 1 : 0 },
+				{ "Flag N", MainCPU.N ? 1 : 0 },
+				{ "Flag Z", MainCPU.Z ? 1 : 0 },
+				{ "Flag V", MainCPU.V ? 1 : 0 },
+				{ "Flag C", MainCPU.C ? 1 : 0 }
 			};
 		}
 

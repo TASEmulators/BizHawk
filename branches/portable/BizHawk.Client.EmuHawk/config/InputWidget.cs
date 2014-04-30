@@ -17,6 +17,17 @@ namespace BizHawk.Client.EmuHawk
 		private int _pos;	 // Which mapping the widget will listen for
 		private string _wasPressed = string.Empty;
 
+		public InputCompositeWidget CompositeWidget;
+
+		/// <summary>
+		/// These bindings get ignored by the widget and can only be entered by SetBinding() via the contextmenu from the InputCompositeWidget
+		/// </summary>
+		public static readonly string[] SpecialBindings = new[] {
+			"Escape",
+			"WMouse L","WMouse M","WMouse R",
+			"WMouse 1", "WMouse 2"
+		};
+
 		public InputWidget()
 		{
 			ContextMenu = new ContextMenu();
@@ -112,6 +123,19 @@ namespace BizHawk.Client.EmuHawk
 			Text = string.Empty;
 		}
 
+		/// <summary>
+		/// sets a binding manually. This may not be implemented quite right.
+		/// </summary>
+		public void SetBinding(string bindingStr)
+		{
+			_bindings[_pos] = bindingStr;
+			UpdateLabel();
+			Increment();
+		}
+
+		/// <summary>
+		/// Poll input events and apply processing related to accepting that as a binding
+		/// </summary>
 		private void ReadKeys()
 		{
 			Input.Instance.Update();
@@ -123,17 +147,28 @@ namespace BizHawk.Client.EmuHawk
 			
 			if (bindingStr != null)
 			{
+				
+				//has special meaning for the binding UI system (clear it).
+				//you can set it through the special bindings dropdown menu
 				if (bindingStr == "Escape")
 				{
 					EraseMappings();
 					Increment();
 					return;
 				}
-				
+
+				//seriously, we refuse to allow you to bind this to anything else.
 				if (bindingStr == "Alt+F4")
 				{
 					return;
 				}
+
+				//ignore special bindings
+				if (SpecialBindings.Contains(bindingStr))
+				{
+					return;
+				}
+
 
 				if (!IsDuplicate(bindingStr))
 				{
@@ -177,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (AutoTab)
 			{
-				Parent.SelectNextControl(this, true, true, true, true);
+				CompositeWidget.TabNext();
 			}
 			else
 			{

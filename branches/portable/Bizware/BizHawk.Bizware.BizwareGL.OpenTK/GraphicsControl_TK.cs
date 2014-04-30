@@ -41,7 +41,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		public void Begin()
 		{
-			Owner.MakeContextCurrent(GLControl.Context, GLControl.WindowInfo);
+			if (!GLControl.Context.IsCurrent)
+				Owner.MakeContextCurrent(GLControl.Context, GLControl.WindowInfo);
 		}
 
 		public void End()
@@ -51,10 +52,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		public new void SwapBuffers()
 		{
-			//IGraphicsContext curr = global::OpenTK.Graphics.GraphicsContext.CurrentContext;
-			base.MakeCurrent();
+			if (!GLControl.Context.IsCurrent)
+				MakeCurrent();
 			base.SwapBuffers();
-			//Owner.MakeContextCurrent(curr, Owner.NativeWindowsForContexts[curr]);
 		}
 	}
 }

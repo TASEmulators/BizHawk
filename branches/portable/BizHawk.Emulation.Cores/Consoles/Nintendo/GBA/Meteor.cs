@@ -8,15 +8,21 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
+	[CoreAttributes(
+		"Meteor",
+		"blastrock",
+		isPorted: true,
+		isReleased: false
+		)]
 	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
-			var ret = new List<KeyValuePair<string, int>>();
+			var ret = new Dictionary<string, int>();
 			int[] data = new int[LibMeteor.regnames.Length];
 			LibMeteor.libmeteor_getregs(data);
 			for (int i = 0; i < data.Length; i++)
-				ret.Add(new KeyValuePair<string, int>(LibMeteor.regnames[i], data[i]));
+				ret.Add(LibMeteor.regnames[i], data[i]);
 			return ret;
 		}
 

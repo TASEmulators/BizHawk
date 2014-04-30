@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
@@ -99,6 +99,8 @@ namespace BizHawk.Client.Common
 
 		public Func<HawkFile, int?> ChooseArchive { get; set; }
 
+		public Func<RomGame, string> ChoosePlatform { get; set; }
+
 		private int? HandleArchive(HawkFile file)
 		{
 			if (ChooseArchive != null)
@@ -115,6 +117,16 @@ namespace BizHawk.Client.Common
 			{
 				OnLoadError(this, new RomErrorArgs(message, systemId));
 			}
+		}
+
+		private bool PreferredPlatformIsDefined(string extension)
+		{
+			if (Global.Config.PreferredPlatformsForExtensions.ContainsKey(extension))
+			{
+				return !string.IsNullOrEmpty(Global.Config.PreferredPlatformsForExtensions[extension]);
+			}
+
+			return false;
 		}
 
 		public bool LoadRom(string path, CoreComm nextComm)
@@ -263,6 +275,20 @@ namespace BizHawk.Client.Common
 					else // most extensions
 					{
 						rom = new RomGame(file);
+
+						if (string.IsNullOrEmpty(rom.GameInfo.System))
+						{
+							// Has the user picked a preference for this extension?
+							if (PreferredPlatformIsDefined(rom.Extension.ToLower()))
+							{
+								rom.GameInfo.System = Global.Config.PreferredPlatformsForExtensions[rom.Extension.ToLower()];
+							}
+							else if (ChoosePlatform != null)
+							{
+								rom.GameInfo.System = ChoosePlatform(rom);
+							}
+						}
+
 						game = rom.GameInfo;
 
 						var isXml = false;
@@ -307,7 +333,6 @@ namespace BizHawk.Client.Common
 								nextEmulator = new PCEngine(nextComm, game, rom.RomData, GetCoreSettings<PCEngine>());
 								break;
 							case "GEN":
-								// nextEmulator = new Genesis(nextComm, game, rom.RomData);
 								nextEmulator = new GPGX(nextComm, rom.RomData, null, "GEN", GetCoreSyncSettings<GPGX>());
 								break;
 							case "TI83":

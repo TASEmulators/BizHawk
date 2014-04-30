@@ -5,6 +5,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common
 {
+	[CoreAttributes("NullHawk", "")]
 	public class NullEmulator : IEmulator, IVideoProvider, ISyncSoundProvider, ISoundProvider
 	{
 		public string SystemId { get { return "NULL"; } }
@@ -81,9 +82,9 @@ namespace BizHawk.Emulation.Common
 		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 		public void Dispose() { }
 
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
-			return new List<KeyValuePair<string, int>>();
+			return new Dictionary<string, int>();
 		}
 
 		bool xmas;

@@ -10,6 +10,12 @@ using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
+	[CoreAttributes(
+		"QuickNes",
+		"kode54",
+		isPorted: true,
+		isReleased: true
+		)]
 	public class QuickNES : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
 		#region FPU precision
@@ -237,14 +243,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		public void LoadStateText(System.IO.TextReader reader)
 		{
 			string hex = reader.ReadLine();
-			if (hex.StartsWith("emuVersion")) // movie save
-			{
-				do // theoretically, our portion should start right after StartsFromSavestate, maybe...
-				{
-					hex = reader.ReadLine();
-				} while (!hex.StartsWith("StartsFromSavestate"));
-				hex = reader.ReadLine();
-			}
 			byte[] state = new byte[hex.Length / 2];
 			state.ReadFromHexFast(hex);
 			LoadStateBinary(new System.IO.BinaryReader(new System.IO.MemoryStream(state)));
@@ -361,9 +359,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public MemoryDomainList MemoryDomains { get; private set; }
 
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
-			return new List<KeyValuePair<string, int>>();
+			throw new NotImplementedException();
 		}
 
 		#endregion
@@ -419,7 +417,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				{
 					NumSprites = 8,
 					ClipLeftAndRight = false,
-					ClipTopAndBottom = false,
+					ClipTopAndBottom = true,
 					_Palette = GetDefaultColors()
 				};
 			}

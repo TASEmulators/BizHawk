@@ -15,6 +15,12 @@ using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
+	[CoreAttributes(
+		"Genplus-gx",
+		"ekeeke31",
+		isPorted: true,
+		isReleased: true
+		)]
 	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider
 	{
 		static GPGX AttachedCore = null;
@@ -483,14 +489,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public void LoadStateText(System.IO.TextReader reader)
 		{
 			string hex = reader.ReadLine();
-			if (hex.StartsWith("emuVersion")) // movie save
-			{
-				do // theoretically, our portion should start right after StartsFromSavestate, maybe...
-				{
-					hex = reader.ReadLine();
-				} while (!hex.StartsWith("StartsFromSavestate"));
-				hex = reader.ReadLine();
-			}
 			byte[] state = new byte[hex.Length / 2];
 			state.ReadFromHexFast(hex);
 			LoadStateBinary(new System.IO.BinaryReader(new System.IO.MemoryStream(state)));
@@ -574,9 +572,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		}
 
 
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
-			return new List<KeyValuePair<string, int>>();
+			throw new NotImplementedException();
 		}
 
 		public void UpdateVDPViewContext(LibGPGX.VDPView view)

@@ -20,26 +20,45 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	enough space for 256K of RAM.  When RAM is selected, 1000-13FF is the read port while
 	1400-17FF is the write port.
 	*/
-	class m3E : MapperBase 
+	internal class m3E : MapperBase
 	{
-		int lowbank_2k;
-		int rambank_1k;
-		bool hasRam;
-		ByteBuffer ram = new ByteBuffer(262144); //Up to 256k
+		private int _lowbank2K;
+		private int _rambank1K;
+		private bool _hasRam;
+		private ByteBuffer _ram = new ByteBuffer(256 * 1024); // Up to 256k
+
+		public override bool HasCartRam
+		{
+			get { return true; }
+		}
+
+		public override ByteBuffer CartRam
+		{
+			get { return _ram; }
+		}
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("lowbank_2k", ref lowbank_2k);
-			ser.Sync("rambank_1k", ref rambank_1k);
-			ser.Sync("cart_ram", ref ram);
-			ser.Sync("hasRam", ref hasRam);
+			ser.Sync("lowbank_2k", ref _lowbank2K);
+			ser.Sync("rambank_1k", ref _rambank1K);
+			ser.Sync("cart_ram", ref _ram);
+			ser.Sync("hasRam", ref _hasRam);
+		}
+
+		public override void HardReset()
+		{
+			_lowbank2K = 0;
+			_rambank1K = 0;
+			_hasRam = false;
+			_ram = new ByteBuffer(256 * 1024);
+			base.HardReset();
 		}
 
 		public override void Dispose()
 		{
 			base.Dispose();
-			ram.Dispose();
+			_ram.Dispose();
 		}
 
 		public override byte ReadMemory(ushort addr)
@@ -48,97 +67,66 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				return base.ReadMemory(addr);
 			}
-			else if (addr < 0x17FF) //Low 2k Bank
+
+			if (addr < 0x1800) // Low 2k Bank
 			{
-				if (hasRam)
+				if (_hasRam)
 				{
-					if (addr < 0x13FF)
+					if (addr < 0x1400)
 					{
-						return ram[(addr & 0x03FF) + (rambank_1k << 10)];
+						return _ram[(addr & 0x03FF) + (_rambank1K << 10)];
 					}
-					else
-					{
-						return ram[(addr & 0x03FF) + (rambank_1k << 10)] = 0xFF; //Reading from the write port triggers an unwanted write
-					}
+
+					return _ram[(addr & 0x03FF) + (_rambank1K << 10)] = 0xFF; // Reading from the write port triggers an unwanted write
 				}
-				else
-				{
-					int a = addr & 0x07FF; //2K
-					int bank = lowbank_2k << 11;
-					return core.rom[bank + a];
-				}
+
+				return Core.Rom[(_lowbank2K << 11) + (addr & 0x07FF)];
 			}
-			else if (addr < 0x2000) //High bank fixed to last 2k of ROM
+
+			if (addr < 0x2000) // High bank fixed to last 2k of ROM
 			{
-				return core.rom[(core.rom.Length - 2048) + (addr & 0x07FF)];
+				return Core.Rom[(Core.Rom.Length - 0x800) + (addr & 0x07FF)];
 			}
+
 			return base.ReadMemory(addr);
 		}
 
 		public override byte PeekMemory(ushort addr)
 		{
-			if (addr < 0x1000)
-			{
-				return base.ReadMemory(addr);
-			}
-			else if (addr < 0x17FF) //Low 2k Bank
-			{
-				if (hasRam)
-				{
-					if (addr < 0x13FF)
-					{
-						return ram[(addr & 0x03FF) + (rambank_1k << 10)];
-					}
-					else
-					{
-						return ram[(addr & 0x03FF) + (rambank_1k << 10)]; //Reading from the write port triggers an unwanted write
-					}
-				}
-				else
-				{
-					int a = addr & 0x07FF; //2K
-					int bank = lowbank_2k << 11;
-					return core.rom[bank + a];
-				}
-			}
-			else if (addr < 0x2000) //High bank fixed to last 2k of ROM
-			{
-				return core.rom[(core.rom.Length - 2048) + (addr & 0x07FF)];
-			}
-			return base.ReadMemory(addr);
+			return ReadMemory(addr);
 		}
 
 		public override void WriteMemory(ushort addr, byte value)
 		{
+			if (addr == 0x003E)
+			{
+				_hasRam = true;
+				_rambank1K = value;
+			}
+			else if (addr == 0x003F)
+			{
+				_hasRam = false;
+				if ((value << 11) < Core.Rom.Length)
+				{
+					_lowbank2K = value;
+				}
+				else
+				{
+					_lowbank2K = value & (Core.Rom.Length >> 11);
+				}
+			}
+
 			if (addr < 0x1000)
 			{
-				if (addr == 0x003E)
-				{
-					hasRam = true;
-					rambank_1k = value;
-				}
-				else if (addr == 0x003F)
-				{
-					hasRam = false;
-					if ((value << 11) < core.rom.Length)
-					{
-						lowbank_2k = value;
-					}
-					else
-					{
-						lowbank_2k = value & (core.rom.Length >> 11);
-					}
-				}
-
 				base.WriteMemory(addr, value);
 			}
 			else if (addr < 0x1400)
 			{
-				//Writing to the read port, for shame!
+				// Writing to the read port, for shame!
 			}
-			else if (addr < 0x1800) //Write port
+			else if (addr < 0x1800) // Write port
 			{
-				ram[(rambank_1k << 10) + (addr & 0x3FF)] = value;
+				_ram[(_rambank1K << 10) + (addr & 0x3FF)] = value;
 			}
 		}
 	}

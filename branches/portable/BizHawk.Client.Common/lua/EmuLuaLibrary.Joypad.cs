@@ -18,18 +18,18 @@ namespace BizHawk.Client.Common
 			"get",
 			"returns a lua table of the controller buttons pressed. If supplied, it will only return a table of buttons for the given controller"
 		)]
-		public LuaTable Get(object controller = null)
+		public LuaTable Get(int? controller = null)
 		{
 			var buttons = _lua.NewTable();
 			foreach (var button in Global.ControllerOutput.Source.Type.BoolButtons)
 			{
-				if (controller == null)
+				if (!controller.HasValue)
 				{
 					buttons[button] = Global.ControllerOutput[button];
 				}
-				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller))
+				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + controller)
 				{
-					buttons[button.Substring(3)] = Global.ControllerOutput["P" + LuaInt(controller) + " " + button.Substring(3)];
+					buttons[button.Substring(3)] = Global.ControllerOutput["P" + controller + " " + button.Substring(3)];
 				}
 			}
 
@@ -39,9 +39,9 @@ namespace BizHawk.Client.Common
 				{
 					buttons[button] = Global.ControllerOutput.GetFloat(button);
 				}
-				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller))
+				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + controller)
 				{
-					buttons[button.Substring(3)] = Global.ControllerOutput.GetFloat("P" + LuaInt(controller) + " " + button.Substring(3));
+					buttons[button.Substring(3)] = Global.ControllerOutput.GetFloat("P" + controller + " " + button.Substring(3));
 				}
 			}
 
@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common
 			"set",
 			"sets the given buttons to their provided values for the current frame"
 		)]
-		public void Set(LuaTable buttons, object controller = null)
+		public void Set(LuaTable buttons, int? controller = null)
 		{
 			try
 			{
@@ -102,8 +102,8 @@ namespace BizHawk.Client.Common
 						theValue = null;
 					}
 
-					var toPress = button;
-					if (controller != null)
+					var toPress = button.ToString();
+					if (controller.HasValue)
 					{
 						toPress = "P" + controller + " " + button;
 					}
@@ -112,16 +112,16 @@ namespace BizHawk.Client.Common
 					{
 						if (theValue.HasValue) // Force
 						{
-							Global.LuaAndAdaptor.SetButton(button.ToString(), theValue.Value);
+							Global.LuaAndAdaptor.SetButton(toPress, theValue.Value);
 						}
 						else // Unset
 						{
-							Global.LuaAndAdaptor.UnSet(button.ToString());
+							Global.LuaAndAdaptor.UnSet(toPress);
 						}
 					}
 					else // Inverse
 					{
-						Global.LuaAndAdaptor.SetInverse(button.ToString());
+						Global.LuaAndAdaptor.SetInverse(toPress);
 					}
 				}
 			}

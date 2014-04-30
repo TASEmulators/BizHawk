@@ -80,38 +80,14 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		public void SaveStateBinary(BinaryWriter writer)
+		public void SyncState(Serializer ser)
 		{
-			writer.Write(Registers);
-		}
+			ser.BeginSection("VPC");
+			ser.Sync("Registers", ref Registers, false);
+			ser.EndSection();
 
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			Registers = reader.ReadBytes(7);
-			WriteVPC(0x0E, Registers[6]);
-		}
-
-		public void SaveStateText(TextWriter writer)
-		{
-			writer.WriteLine("[VPC]");
-			writer.Write("Registers ");
-			Registers.SaveAsHex(writer);
-			writer.WriteLine("[/VPC]\n");
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			while (true)
-			{
-				string[] args = reader.ReadLine().Split(' ');
-				if (args[0].Trim() == "") continue;
-				if (args[0] == "[/VPC]") break;
-				if (args[0] == "Registers")
-					Registers.ReadFromHex(args[1]);
-				else
-					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
-			}
-			WriteVPC(0x0E, Registers[6]);
+			if (ser.IsReader)
+				WriteVPC(0x0E, Registers[6]);
 		}
 
 		// We use a single priority mode for the whole frame.

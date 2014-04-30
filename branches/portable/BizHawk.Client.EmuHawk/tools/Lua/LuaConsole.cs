@@ -193,7 +193,6 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					file.Stop();
-					_luaList.Changes = true;
 				}
 			}
 		}
@@ -333,7 +332,7 @@ namespace BizHawk.Client.EmuHawk
 
 			OutputBox.Invoke(() =>
 			{
-				OutputBox.Text += message + "\n\n";
+				OutputBox.Text += message;
 				OutputBox.SelectionStart = OutputBox.Text.Length;
 				OutputBox.ScrollToCaret();
 			});
@@ -722,7 +721,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			_luaList.Changes = true;
 			UpdateDialog();
 		}
 
@@ -1113,6 +1111,12 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		private void EraseToolbarItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.DisplayManager.ClearLuaSurfaces();
+		}
+
+	
 		#endregion
 	}
 }

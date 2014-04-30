@@ -102,7 +102,11 @@ namespace BizHawk.Client.EmuHawk
 			var afterList = _tools.Where(x => !x.UpdateBefore);
 			foreach (var tool in afterList.Where(tool => !tool.IsDisposed))
 			{
-				tool.UpdateValues();
+				if (!tool.IsDisposed ||
+					(tool is RamWatch && Global.Config.DisplayRamWatch)) // Ram Watch hack, on screen display should run even if Ram Watch is closed
+				{
+					tool.UpdateValues();
+				}
 			}
 		}
 
@@ -124,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 			// If Cheat tool is loaded, restarting will restart the list too anyway
 			if (!GlobalWin.Tools.Has<Cheats>())
 			{
-				Global.CheatList.NewList(GenerateDefaultCheatFilename());
+				Global.CheatList.NewList(GenerateDefaultCheatFilename(), autosave: true);
 			}
 
 			_tools.ForEach(x => x.Restart());
@@ -423,7 +427,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!IsLoaded<RamWatch>() && Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
 			{
-				GlobalWin.Tools.RamWatch.LoadFileFromRecent(Global.Config.RecentWatches[0]);
+				GlobalWin.Tools.RamWatch.LoadFileFromRecent(Global.Config.RecentWatches.MostRecent);
 			}
 
 			if (loadDialog)

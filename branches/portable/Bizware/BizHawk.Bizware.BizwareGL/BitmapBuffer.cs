@@ -29,6 +29,8 @@ namespace BizHawk.Bizware.BizwareGL
 		public int Width, Height;
 		public int[] Pixels;
 
+		public Size Size { get { return new Size(Width, Height); } }
+
 		sd.Bitmap WrappedBitmap;
 		GCHandle CurrLockHandle;
 		BitmapData CurrLock;

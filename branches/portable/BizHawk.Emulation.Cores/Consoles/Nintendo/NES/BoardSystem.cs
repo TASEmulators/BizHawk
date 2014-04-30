@@ -408,13 +408,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// </summary>
 		public class CartInfo
 		{
-			public NESGameInfo game;
 			public GameInfo DB_GameInfo;
+			public string name;
 
-			public short chr_size;
-			public short prg_size;
-			public short wram_size, vram_size;
-			public byte pad_h, pad_v, mapper;
+			public int chr_size;
+			public int prg_size;
+			public int wram_size, vram_size;
+			public byte pad_h, pad_v;
 			public bool wram_battery;
 			public bool bad;
 			/// <summary>in [0,3]; combination of bits 0 and 3 of flags6.  try not to use; will be null for bootgod-identified roms always</summary>
@@ -429,17 +429,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public override string ToString()
 			{
-				return string.Format("map={0},pr={1},ch={2},wr={3},vr={4},ba={5},pa={6}|{7},brd={8},sys={9}", mapper, prg_size, chr_size, wram_size, vram_size, wram_battery ? 1 : 0, pad_h, pad_v, board_type, system);
+				return string.Format("pr={1},ch={2},wr={3},vr={4},ba={5},pa={6}|{7},brd={8},sys={9}", board_type, prg_size, chr_size, wram_size, vram_size, wram_battery ? 1 : 0, pad_h, pad_v, board_type, system);
 			}
-		}
-
-		/// <summary>
-		/// Logical game information. May exist in form of several carts (different revisions)
-		/// </summary>
-		public class NESGameInfo
-		{
-			public string name;
-			public List<CartInfo> carts = new List<CartInfo>();
 		}
 
 		/// <summary>
@@ -503,15 +494,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			var gi = Database.CheckDatabase(hash);
 			if (gi == null) return null;
 
-			NESGameInfo game = new NESGameInfo();
 			CartInfo cart = new CartInfo();
-			game.carts.Add(cart);
 
 			//try generating a bootgod cart descriptor from the game database
 			var dict = gi.GetOptionsDict();
-			game.name = gi.Name;
 			cart.DB_GameInfo = gi;
-			cart.game = game;
 			if (!dict.ContainsKey("board"))
 				throw new Exception("NES gamedb entries must have a board identifier!");
 			cart.board_type = dict["board"];
@@ -585,8 +572,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				//in anticipation of any slowness annoying people, and just for shits and giggles, i made a super fast parser
 				int state=0;
 				var xmlreader = XmlReader.Create(new MemoryStream(GetDatabaseBytes()));
-				NESGameInfo currGame = null;
 				CartInfo currCart = null;
+				string currName = null;
 				while (xmlreader.Read())
 				{
 					switch (state)
@@ -594,8 +581,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						case 0:
 							if (xmlreader.NodeType == XmlNodeType.Element && xmlreader.Name == "game")
 							{
-								currGame = new NESGameInfo();
-								currGame.name = xmlreader.GetAttribute("name");
+								currName = xmlreader.GetAttribute("name");
 								state = 1;
 							}
 							break;
@@ -606,7 +592,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 								currCart.pcb = xmlreader.GetAttribute("pcb");
 								int mapper = int.Parse(xmlreader.GetAttribute("mapper"));
 								if (validate && mapper > 255) throw new Exception("didnt expect mapper>255!");
-								currCart.mapper = (byte)mapper;
+								// we don't actually use this value at all; only the board name
 								state = 3;
 							}
 							break;
@@ -646,7 +632,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						case 4:
 							if (xmlreader.NodeType == XmlNodeType.EndElement && xmlreader.Name == "cartridge")
 							{
-								currGame.carts.Add(currCart);
+								sha1_table[currCart.sha1].Add(currCart);
 								currCart = null;
 								state = 5;
 							}
@@ -656,33 +642,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							if (xmlreader.NodeType == XmlNodeType.Element && xmlreader.Name == "cartridge")
 							{
 								currCart = new CartInfo();
-								currCart.game = currGame;
 								currCart.system = xmlreader.GetAttribute("system");
 								currCart.sha1 = "sha1:" + xmlreader.GetAttribute("sha1");
+								currCart.name = currName;
 								state = 2;
 							}
 							if (xmlreader.NodeType == XmlNodeType.EndElement && xmlreader.Name == "game")
 							{
-								games.Add(currGame);
-								currGame = null;
+								currName = null;
 								state = 0;
 							}
 							break;
 					}
 				} //end xmlreader loop
 
-				//analyze
-				foreach (NESGameInfo game in games)
-				{
-					foreach (CartInfo cart in game.carts)
-					{
-						sha1_table[cart.sha1].Add(cart);
-					}
-				}
+
 			}
 
-
-			List<NESGameInfo> games = new List<NESGameInfo>(); //maybe we dont need to track this
 			Bag<string, CartInfo> sha1_table = new Bag<string, CartInfo>();
 
 			public List<CartInfo> Identify(string sha1)

@@ -8,6 +8,12 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sony.PSP
 {
+	[CoreAttributes(
+		"PPSSPP",
+		"hrydgard",
+		isPorted: true,
+		isReleased: false
+		)]
 	public class PSP : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
 		public static readonly ControllerDefinition PSPController = new ControllerDefinition
@@ -56,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 			}
 		}
 
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			throw new NotImplementedException();
 		}

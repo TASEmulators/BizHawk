@@ -248,6 +248,26 @@ namespace BizHawk.Common
 			}
 		}
 
+		public void Sync(string name, ref ushort[] val, bool useNull)
+		{
+			if (IsText)
+			{
+				SyncText(name, ref val, useNull);
+			}
+			else if (IsReader)
+			{
+				val = Util.ByteBufferToUshortBuffer(Util.ReadByteBuffer(_br, false));
+				if (val == null && !useNull)
+				{
+					val = new ushort[0];
+				}
+			}
+			else
+			{
+				Util.WriteByteBuffer(_bw, Util.UshortBufferToByteBuffer(val));
+			}
+		}
+
 		public void SyncText(string name, ref short[] val, bool useNull)
 		{
 			if (IsReader)
@@ -267,6 +287,28 @@ namespace BizHawk.Common
 			{
 				var temp = val ?? new short[0];
 				_tw.WriteLine("{0} {1}", name, Util.BytesToHexString(Util.ShortBufferToByteBuffer(temp)));
+			}
+		}
+
+		public void SyncText(string name, ref ushort[] val, bool useNull)
+		{
+			if (IsReader)
+			{
+				if (Present(name))
+				{
+					var bytes = Util.HexStringToBytes(Item(name));
+					val = Util.ByteBufferToUshortBuffer(bytes);
+				}
+
+				if (val != null && val.Length == 0 && useNull)
+				{
+					val = null;
+				}
+			}
+			else
+			{
+				var temp = val ?? new ushort[0];
+				_tw.WriteLine("{0} {1}", name, Util.BytesToHexString(Util.UshortBufferToByteBuffer(temp)));
 			}
 		}
 
@@ -463,6 +505,38 @@ namespace BizHawk.Common
 		}
 
 		public void Sync(string name, ref int val)
+		{
+			if (IsText)
+			{
+				SyncText(name, ref val);
+			}
+			else if (IsReader)
+			{
+				Read(ref val);
+			}
+			else
+			{
+				Write(ref val);
+			}
+		}
+
+		public void Sync(string name, ref long val)
+		{
+			if (IsText)
+			{
+				SyncText(name, ref val);
+			}
+			else if (IsReader)
+			{
+				Read(ref val);
+			}
+			else
+			{
+				Write(ref val);
+			}
+		}
+
+		public void Sync(string name, ref float val)
 		{
 			if (IsText)
 			{
@@ -737,6 +811,30 @@ namespace BizHawk.Common
 			}
 		}
 
+		private void SyncText(string name, ref long val)
+		{
+			if (IsReader)
+			{
+				ReadText(name, ref val);
+			}
+			else
+			{
+				WriteText(name, ref val);
+			}
+		}
+
+		private void SyncText(string name, ref float val)
+		{
+			if (IsReader)
+			{
+				ReadText(name, ref val);
+			}
+			else
+			{
+				WriteText(name, ref val);
+			}
+		}
+
 		private void SyncText(string name, ref bool val)
 		{
 			if (IsReader)
@@ -907,6 +1005,52 @@ namespace BizHawk.Common
 		private void WriteText(string name, ref int val)
 		{
 			_tw.WriteLine("{0} 0x{1:X8}", name, val);
+		}
+
+		private void Read(ref long val)
+		{
+			val = _br.ReadInt64();
+		}
+
+		private void Write(ref long val)
+		{
+			_bw.Write(val);
+		}
+
+		private void ReadText(string name, ref long val)
+		{
+			if (Present(name))
+			{
+				val = long.Parse(Item(name).Replace("0x", ""), NumberStyles.HexNumber);
+			}
+		}
+
+		private void WriteText(string name, ref long val)
+		{
+			_tw.WriteLine("{0} 0x{1:X16}", name, val);
+		}
+
+		private void Read(ref float val)
+		{
+			val = _br.ReadSingle();
+		}
+
+		private void Write(ref float val)
+		{
+			_bw.Write(val);
+		}
+
+		private void ReadText(string name, ref float val)
+		{
+			if (Present(name))
+			{
+				val = float.Parse(Item(name));
+			}
+		}
+
+		private void WriteText(string name, ref float val)
+		{
+			_tw.WriteLine("{0} {1}", name, val);
 		}
 
 		private void Read(ref bool val)

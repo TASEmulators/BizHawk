@@ -261,6 +261,20 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			GL.BindTexture(TextureTarget.Texture2D, tex.Id.ToInt32());
 		}
 
+		public void SetTextureWrapMode(Texture2d tex, bool clamp)
+		{
+			BindTexture2d(tex);
+			int mode;
+			if (clamp)
+			{
+				mode = (int)global::OpenTK.Graphics.OpenGL.TextureWrapMode.ClampToEdge;
+			}
+			else
+				mode = (int)global::OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat;
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, mode);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, mode);
+		}
+
 		public unsafe void BindArrayData(void* pData)
 		{
 			MyBindArrayData(sStatePendingVertexLayout, pData);
@@ -273,6 +287,12 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		public void BindPipeline(Pipeline pipeline)
 		{
+			if (pipeline == null)
+			{
+				sStatePendingVertexLayout = null;
+				GL.UseProgram(0);
+				return;
+			}
 			if (!pipeline.Available) throw new InvalidOperationException("Attempt to bind unavailable pipeline");
 			sStatePendingVertexLayout = pipeline.VertexLayout;
 			GL.UseProgram(pipeline.Id.ToInt32());
@@ -351,6 +371,11 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			return new Texture2d(this, id, width, height);
 		}
 
+		public Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height)
+		{
+			return new Texture2d(this as IGL,glTexId, width, height);
+		}
+
 		public void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
 		{
 			sdi.BitmapData bmp_data = bmp.LockBits();
@@ -377,7 +402,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			IntPtr texid = (this as IGL).GenTexture();
 			Texture2d tex = new Texture2d(this, texid, w, h);
 			GL.BindTexture(TextureTarget.Texture2D,texid.ToInt32());
-			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, w,h,  0, PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
+			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8, w, h, 0, PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
 			tex.SetMagFilter(TextureMagFilter.Nearest);
 			tex.SetMinFilter(TextureMinFilter.Nearest);
 
@@ -481,11 +506,12 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		public void SetViewport(int x, int y, int width, int height)
 		{
 			GL.Viewport(x, y, width, height);
+			GL.Scissor(x, y, width, height); //hack for mupen[rice]+intel: at least the rice plugin leaves the scissor rectangle scrambled, and we're trying to run it in the main graphics context for intel
 		}
 
 		public void SetViewport(int width, int height)
 		{
-			GL.Viewport(0, 0, width, height);
+			SetViewport(0, 0, width, height);
 		}
 
 		public void SetViewport(sd.Size size)
@@ -496,7 +522,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		public void SetViewport(swf.Control control)
 		{
 			var r = control.ClientRectangle;
-			GL.Viewport(r.Left, r.Top, r.Width, r.Height);
+			SetViewport(r.Left, r.Top, r.Width, r.Height);
 		}
 
 		//------------------
@@ -585,6 +611,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			//HAMNUTS (continued)
 			var currBindings = sVertexAttribEnables;
 			sStateCurrentVertexLayout = sStatePendingVertexLayout;
+
+			if (layout == null) return;
 
 			foreach (var kvp in layout.Items)
 			{

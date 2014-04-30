@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Calculators;
+using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -61,7 +62,10 @@ namespace BizHawk.Client.EmuHawk
 			GGGameGenieToolbarItem.Visible =
 				Global.Game.System == "GG";
 
-			PceBgViewerToolbarItem.Visible = Global.Emulator is PCEngine;
+			PceCdlToolbarItem.Visible =
+				PceBgViewerToolbarItem.Visible =
+				PceTileToolbarItem.Visible =
+				Global.Emulator is PCEngine;
 			
 			GBGameGenieToolbarItem.Visible = 
 				GbGpuViewerToolBarItem.Visible =
@@ -70,6 +74,9 @@ namespace BizHawk.Client.EmuHawk
 			GbaGpuViewerToolBarItem.Visible = Global.Emulator is GBA;
 
 			GenesisGameGenieToolBarItem.Visible = Global.Emulator.SystemId == "GEN" && VersionInfo.INTERIM;
+			GenesisVdpToolBarItem.Visible = Global.Emulator is GPGX;
+
+			SmsVdpToolbarItem.Visible = Global.Emulator is SMS;
 
 			foreach (var button in ToolBoxItems)
 			{
@@ -80,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			NesDebuggerToolbarItem.Visible = !VersionInfo.INTERIM;
+			NesDebuggerToolbarItem.Visible = !VersionInfo.INTERIM && Global.Emulator.SystemId == "NES";
 		}
 
 		private void SetSize()
@@ -198,6 +205,11 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.Load<GBGPUView>();
 		}
 
+		private void PceCdlToolbarItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<PCECDL>();
+		}
+
 		private void PceBgViewerToolbarItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<PceBgViewer>();
@@ -211,6 +223,21 @@ namespace BizHawk.Client.EmuHawk
 		private void GenesisGameGenieToolBarItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<GenGameGenie>();
+		}
+
+		private void SmsVdpToolbarItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<SmsVDPViewer>();
+		}
+
+		private void PceTileToolbarItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<PCETileViewer>();
+		}
+
+		private void GenesisVdpToolBarItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<GenVDPViewer>();
 		}
 
 		#endregion

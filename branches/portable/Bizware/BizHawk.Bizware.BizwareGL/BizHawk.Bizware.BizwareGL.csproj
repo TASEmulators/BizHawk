@@ -82,6 +82,12 @@
     <Compile Include="UniformInfo.cs" />
     <Compile Include="VertexLayout.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\BizHawk.Common\BizHawk.Common.csproj">
+      <Project>{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}</Project>
+      <Name>BizHawk.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -9,6 +9,12 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sony.PSX
 {
+	[CoreAttributes(
+		"MednafenPSX",
+		"Ryphecha",
+		isPorted: true,
+		isReleased: false
+		)]
 	public unsafe class Octoshock : IEmulator, IVideoProvider, ISoundProvider
 	{
 		public string SystemId { get { return "NULL"; } }
@@ -25,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public bool StartAsyncSound() { return true; }
 		public void EndAsyncSound() { }
 
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			throw new NotImplementedException();
 		}

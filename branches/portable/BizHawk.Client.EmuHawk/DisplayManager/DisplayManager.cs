@@ -1,4 +1,7 @@
-﻿using System;
+﻿//TODO
+//we could flag textures as 'actually' render targets (keep a reference to the render target?) which could allow us to convert between them more quickly in some cases
+
+using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -6,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -13,6 +17,8 @@ using System.Drawing.Imaging;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.FilterManager;
+using BizHawk.Client.EmuHawk;
 
 using BizHawk.Bizware.BizwareGL;
 
@@ -28,6 +34,15 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public class DisplayManager : IDisposable
 	{
+		class DisplayManagerRenderTargetProvider : FilterManager.IRenderTargetProvider
+		{
+			DisplayManagerRenderTargetProvider(Func<Size, RenderTarget> callback) { Callback = callback; }
+			Func<Size, RenderTarget> Callback;
+			RenderTarget FilterManager.IRenderTargetProvider.Get(Size size)
+			{
+				return Callback(size);
+			}
+		}
 
 		public DisplayManager(PresentationPanel presentationPanel)
 		{
@@ -40,7 +55,6 @@ namespace BizHawk.Client.EmuHawk
 
 			Renderer = new GuiRenderer(GL);
 
-			Video2xFrugalizer = new RenderTargetFrugalizer(GL);
 			VideoTextureFrugalizer = new TextureFrugalizer(GL);
 
 			ShaderChainFrugalizers = new RenderTargetFrugalizer[16]; //hacky hardcoded limit.. need some other way to manage these
@@ -56,16 +70,22 @@ namespace BizHawk.Client.EmuHawk
 			var fiHq2x = new FileInfo(System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(),"Shaders/BizHawk/hq2x.cgp"));
 			if(fiHq2x.Exists)
 				using(var stream = fiHq2x.OpenRead())
-					ShaderChain_hq2x = new RetroShaderChain(GL,new RetroShaderPreset(stream), System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(),"Shaders/BizHawk"));
+					ShaderChain_hq2x = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
 			var fiScanlines = new FileInfo(System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/BizScanlines.cgp"));
 			if (fiScanlines.Exists)
 				using (var stream = fiScanlines.OpenRead())
-					ShaderChain_scanlines = new RetroShaderChain(GL,new RetroShaderPreset(stream), System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(),"Shaders/BizHawk"));
+					ShaderChain_scanlines = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
+			var fiBicubic = new FileInfo(System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/bicubic-fast.cgp"));
+			if (fiBicubic.Exists)
+				using (var stream = fiBicubic.OpenRead())
+					ShaderChain_bicubic = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
 
 			LuaSurfaceSets["emu"] = new SwappableDisplaySurfaceSet();
 			LuaSurfaceSets["native"] = new SwappableDisplaySurfaceSet();
 			LuaSurfaceFrugalizers["emu"] = new TextureFrugalizer(GL);
 			LuaSurfaceFrugalizers["native"] = new TextureFrugalizer(GL);
+
+			RefreshUserShader();
 		}
 
 		public bool Disposed { get; private set; }
@@ -93,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 		//layer resources
 		PresentationPanel presentationPanel; //well, its the final layer's target, at least
 		GraphicsControl GraphicsControl; //well, its the final layer's target, at least
-
+		FilterManager.FilterProgram CurrentFilterProgram;
 
 		/// <summary>
 		/// these variables will track the dimensions of the last frame's (or the next frame? this is confusing) emulator native output size
@@ -102,135 +122,253 @@ namespace BizHawk.Client.EmuHawk
 
 		TextureFrugalizer VideoTextureFrugalizer;
 		Dictionary<string, TextureFrugalizer> LuaSurfaceFrugalizers = new Dictionary<string, TextureFrugalizer>();
-		RenderTargetFrugalizer Video2xFrugalizer;
 		RenderTargetFrugalizer[] ShaderChainFrugalizers;
-		RetroShaderChain ShaderChain_hq2x, ShaderChain_scanlines;
+		Filters.RetroShaderChain ShaderChain_hq2x, ShaderChain_scanlines, ShaderChain_bicubic;
+		Filters.RetroShaderChain ShaderChain_user;
 
-		/// <summary>
-		/// This will receive an emulated output frame from an IVideoProvider and run it through the complete frame processing pipeline
-		/// Then it will stuff it into the bound PresentationPanel
-		/// </summary>
-		public void UpdateSource(IVideoProvider videoProvider)
+		public void RefreshUserShader()
 		{
-			//wrap the videoprovider data in a BitmapBuffer (no point to refactoring that many IVidepProviders)
-			BitmapBuffer bb = new BitmapBuffer(videoProvider.BufferWidth, videoProvider.BufferHeight, videoProvider.GetVideoBuffer());
+			if (ShaderChain_user != null)
+				ShaderChain_user.Dispose();
+			if (File.Exists(Global.Config.DispUserFilterPath))
+			{
+				var fi = new FileInfo(Global.Config.DispUserFilterPath);
+				using (var stream = fi.OpenRead())
+					ShaderChain_user = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.GetDirectoryName(Global.Config.DispUserFilterPath));
+			}
+		}
 
-			//record the size of what we received, since lua and stuff is gonna want to draw onto it
-			currEmuWidth = bb.Width;
-			currEmuHeight = bb.Height;
-
-			//now, acquire the data sent from the videoProvider into a texture
-			var videoTexture = VideoTextureFrugalizer.Get(bb);
-
-			//acquire the lua surfaces as textures
-			Texture2d luaEmuTexture = null;
-			var luaEmuSurface = LuaSurfaceSets["emu"].GetCurrent();
-			if (luaEmuSurface != null)
-				luaEmuTexture = LuaSurfaceFrugalizers["emu"].Get(luaEmuSurface);
-
-			Texture2d luaNativeTexture = null;
-			var luaNativeSurface = LuaSurfaceSets["native"].GetCurrent();
-			if (luaNativeSurface != null)
-				luaNativeTexture = LuaSurfaceFrugalizers["native"].Get(luaNativeSurface);
-
-			//select shader chain
-			RetroShaderChain selectedChain = null;
+		FilterManager.FilterProgram BuildDefaultChain(Size chain_insize, Size chain_outsize)
+		{
+			//select user special FX shader chain
+			Dictionary<string, object> selectedChainProperties = new Dictionary<string, object>();
+			Filters.RetroShaderChain selectedChain = null;
 			if (Global.Config.TargetDisplayFilter == 1 && ShaderChain_hq2x != null && ShaderChain_hq2x.Available)
 				selectedChain = ShaderChain_hq2x;
 			if (Global.Config.TargetDisplayFilter == 2 && ShaderChain_scanlines != null && ShaderChain_scanlines.Available)
-				selectedChain = ShaderChain_scanlines;
-
-			//run shader chain
-			Texture2d currentTexture = videoTexture;
-			if (selectedChain != null)
 			{
-				foreach (var pass in selectedChain.Passes)
-				{
-					//calculate size of input and output (note, we dont have a distinction between logical size and POW2 buffer size yet, like we should)
-					
-					Size insize = currentTexture.Size;
-					Size outsize = insize;
+				//shader.Pipeline["uIntensity"].Set(1.0f - Global.Config.TargetScanlineFilterIntensity / 256.0f);
+				selectedChain = ShaderChain_scanlines;
+				selectedChainProperties["uIntensity"] = 1.0f - Global.Config.TargetScanlineFilterIntensity / 256.0f;
+			}
+			if (Global.Config.TargetDisplayFilter == 3 && ShaderChain_user != null && ShaderChain_user.Available)
+				selectedChain = ShaderChain_user;
 
-					//calculate letterboxing scale factors for the current configuration, so that ScaleType.Viewport can do something intelligent
-					var LLpass = new LetterboxingLogic(GraphicsControl.Width, GraphicsControl.Height, insize.Width, insize.Height);
+			Filters.FinalPresentation fPresent = new Filters.FinalPresentation(chain_outsize);
+			Filters.SourceImage fInput = new Filters.SourceImage(chain_insize);
+			Filters.OSD fOSD = new Filters.OSD();
+			fOSD.RenderCallback = () =>
+			{
+				var size = fOSD.FindInput().SurfaceFormat.Size;
+				Renderer.Begin(size.Width, size.Height);
+				MyBlitter myBlitter = new MyBlitter(this);
+				myBlitter.ClipBounds = new Rectangle(0, 0, size.Width, size.Height);
+				Renderer.SetBlendState(GL.BlendNormal);
+				GlobalWin.OSD.Begin(myBlitter);
+				GlobalWin.OSD.DrawScreenInfo(myBlitter);
+				GlobalWin.OSD.DrawMessages(myBlitter);
+				Renderer.End();
+			};
 
-					if (pass.ScaleTypeX == RetroShaderPreset.ScaleType.Absolute) { throw new NotImplementedException("ScaleType Absolute"); }
-					if (pass.ScaleTypeX == RetroShaderPreset.ScaleType.Viewport) outsize.Width = LLpass.Rectangle.Width;
-					if (pass.ScaleTypeX == RetroShaderPreset.ScaleType.Source) outsize.Width = (int)(insize.Width * pass.Scale.X);
-					if (pass.ScaleTypeY == RetroShaderPreset.ScaleType.Absolute) { throw new NotImplementedException("ScaleType Absolute"); }
-					if (pass.ScaleTypeY == RetroShaderPreset.ScaleType.Viewport) outsize.Height = LLpass.Rectangle.Height;
-					if (pass.ScaleTypeY == RetroShaderPreset.ScaleType.Source) outsize.Height = (int)(insize.Height * pass.Scale.Y);
+			FilterManager.FilterProgram chain = new FilterManager.FilterProgram();
 
-					if (pass.InputFilterLinear)
-						videoTexture.SetFilterLinear();
-					else
-						videoTexture.SetFilterNearest();
+			//add the first filter, encompassing output from the emulator core
+			chain.AddFilter(fInput, "input");
 
-					var rt = ShaderChainFrugalizers[pass.Index].Get(outsize.Width, outsize.Height);
-					rt.Bind();
+			//add lua layer 'emu'
+			AppendLuaLayer(chain, "emu");
 
-					var shader = selectedChain.Shaders[pass.Index];
-					shader.Bind();
-					if(selectedChain == ShaderChain_scanlines)
-						shader.Pipeline["uIntensity"].Set(1.0f - Global.Config.TargetScanlineFilterIntensity / 256.0f);
-					shader.Run(currentTexture, insize, outsize, true);
-					currentTexture = rt.Texture2d;
-				}
+			//add user-selected retro shader
+			if (selectedChain != null)
+				AppendRetroShaderChain(chain, "retroShader", selectedChain, selectedChainProperties);
+
+			//choose final filter
+			Filters.FinalPresentation.eFilterOption finalFilter = Filters.FinalPresentation.eFilterOption.None;
+			if (Global.Config.DispFinalFilter == 1) finalFilter = Filters.FinalPresentation.eFilterOption.Bilinear;
+			if (Global.Config.DispFinalFilter == 2) finalFilter = Filters.FinalPresentation.eFilterOption.Bicubic;
+			//if bicubic is selected and unavailable, dont use it
+			if (!ShaderChain_bicubic.Available && fPresent.FilterOption == Filters.FinalPresentation.eFilterOption.Bicubic)
+			{
+				finalFilter = Filters.FinalPresentation.eFilterOption.None;
+			}
+			fPresent.FilterOption = finalFilter;
+
+			//now if bicubic is chosen, insert it
+			if (finalFilter == Filters.FinalPresentation.eFilterOption.Bicubic)
+				AppendRetroShaderChain(chain, "bicubic", ShaderChain_bicubic, null);
+
+			//add final presentation 
+			chain.AddFilter(fPresent, "presentation");
+
+			//add lua layer 'native'
+			AppendLuaLayer(chain, "native");
+
+			//and OSD goes on top of that
+			chain.AddFilter(fOSD, "osd");
+
+			return chain;
+		}
+
+		void AppendRetroShaderChain(FilterManager.FilterProgram program, string name, Filters.RetroShaderChain retroChain, Dictionary<string, object> properties)
+		{
+			for (int i = 0; i < retroChain.Passes.Length; i++)
+			{
+				var pass = retroChain.Passes[i];
+				var rsp = new Filters.RetroShaderPass(retroChain, i);
+				string fname = string.Format("{0}[{1}]", name, i);
+				program.AddFilter(rsp, fname);
+				rsp.Parameters = properties;
+			}
+		}
+
+		void AppendLuaLayer(FilterManager.FilterProgram chain, string name)
+		{
+			Texture2d luaNativeTexture = null;
+			var luaNativeSurface = LuaSurfaceSets[name].GetCurrent();
+			if (luaNativeSurface == null)
+				return;
+			luaNativeTexture = LuaSurfaceFrugalizers[name].Get(luaNativeSurface);
+			var fLuaLayer = new Filters.LuaLayer();
+			fLuaLayer.SetTexture(luaNativeTexture);
+			chain.AddFilter(fLuaLayer, name);
+		}
+
+		/// <summary>
+		/// Using the current filter program, turn a mouse coordinate from window space to the original emulator screen space.
+		/// </summary>
+		public Point UntransformPoint(Point p)
+		{
+			//first, turn it into a window coordinate
+			p = presentationPanel.Control.PointToClient(p);
+			
+			//now, if theres no filter program active, just give up
+			if (CurrentFilterProgram == null) return p;
+			
+			//otherwise, have the filter program untransform it
+			Vector2 v = new Vector2(p.X, p.Y);
+			v = CurrentFilterProgram.UntransformPoint("default",v);
+			return new Point((int)v.X, (int)v.Y);
+		}
+
+		/// <summary>
+		/// This will receive an emulated output frame from an IVideoProvider and run it through the complete frame processing pipeline
+		/// Then it will stuff it into the bound PresentationPanel.
+		/// ---
+		/// If the int[] is size=1, then it contains an openGL texture ID (and the size should be as specified from videoProvider)
+		/// Don't worry about the case where the frontend isnt using opengl; it isnt supported yet, and it will be my responsibility to deal with anyway
+		/// </summary>
+		public void UpdateSource(IVideoProvider videoProvider)
+		{
+			int[] videoBuffer = videoProvider.GetVideoBuffer();
+			
+TESTEROO:
+			int bufferWidth = videoProvider.BufferWidth;
+			int bufferHeight = videoProvider.BufferHeight;
+			bool isGlTextureId = videoBuffer.Length == 1;
+
+
+			BitmapBuffer bb = null;
+			Texture2d videoTexture;
+			if (isGlTextureId)
+			{
+				videoTexture = GL.WrapGLTexture2d(new IntPtr(videoBuffer[0]), bufferWidth, bufferHeight);
+			}
+			else
+			{
+				//wrap the videoprovider data in a BitmapBuffer (no point to refactoring that many IVideoProviders)
+				bb = new BitmapBuffer(bufferWidth, bufferHeight, videoBuffer);
+
+				//now, acquire the data sent from the videoProvider into a texture
+				videoTexture = VideoTextureFrugalizer.Get(bb);
 			}
 
-			//begin drawing to the PresentationPanel:
-			GraphicsControl.Begin();
+			//TEST (to be removed once we have an actual example of bring in a texture ID from opengl emu core):
+			if (!isGlTextureId)
+			{
+				videoBuffer = new int[1] { videoTexture.Id.ToInt32() };
+				goto TESTEROO;
+			}
 
-			//1. clear it with the background color that the emulator specified (could we please only clear the necessary letterbox area, to save some time?)
-			GL.SetClearColor(Color.FromArgb(videoProvider.BackgroundColor));
-			GL.Clear(OpenTK.Graphics.OpenGL.ClearBufferMask.ColorBufferBit);
+			//record the size of what we received, since lua and stuff is gonna want to draw onto it
+			currEmuWidth = bufferWidth;
+			currEmuHeight = bufferHeight;
 
-			//2. begin 2d rendering
-			Renderer.Begin(GraphicsControl.Width, GraphicsControl.Height);
+			//build the default filter chain and set it up with services filters will need
+			Size chain_insize = new Size(bufferWidth, bufferHeight);
+			Size chain_outsize = GraphicsControl.Size;
+			CurrentFilterProgram = BuildDefaultChain(chain_insize, chain_outsize);
+			CurrentFilterProgram.GuiRenderer = Renderer;
+			CurrentFilterProgram.GL = GL;
+			//chain.RenderTargetProvider = new DisplayManagerRenderTargetProvider((size) => ShaderChainFrugalizers);
 
-			//3. figure out how to draw the emulator output content
-			var LL = new LetterboxingLogic(GraphicsControl.Width, GraphicsControl.Height, currentTexture.IntWidth, currentTexture.IntHeight);
+			//setup the source image filter
+			Filters.SourceImage fInput = CurrentFilterProgram["input"] as Filters.SourceImage;
+			fInput.Texture = videoTexture;
+			
+			//setup the final presentation filter
+			Filters.FinalPresentation fPresent = CurrentFilterProgram["presentation"] as Filters.FinalPresentation;
+			fPresent.BackgroundColor = videoProvider.BackgroundColor;
+			fPresent.GuiRenderer = Renderer;
+			fPresent.GL = GL;
 
+			CurrentFilterProgram.Compile("default", chain_insize, chain_outsize);	
 
-			//4. draw the emulator content
-			Renderer.SetBlendState(GL.BlendNone);
-			Renderer.Modelview.Push();
-			Renderer.Modelview.Translate(LL.dx, LL.dy);
-			Renderer.Modelview.Scale(LL.finalScale);
-			if (Global.Config.DispBlurry)
-				videoTexture.SetFilterLinear();
-			else
-				videoTexture.SetFilterNearest();
-			Renderer.Draw(currentTexture);
-			//4.b draw the "lua emu surface" which is designed for art matching up exactly with the emulator output
-			Renderer.SetBlendState(GL.BlendNormal);
-			if(luaEmuTexture != null) Renderer.Draw(luaEmuTexture);
-			Renderer.Modelview.Pop();
+			//run filter chain
+			Texture2d texCurr = null;
+			RenderTarget rtCurr = null;
+			int rtCounter = 0;
+			bool inFinalTarget = false;
+			foreach (var step in CurrentFilterProgram.Program)
+			{
+				switch (step.Type)
+				{
+					case FilterManager.FilterProgram.ProgramStepType.Run:
+					{
+						int fi = (int)step.Args;
+						var f = CurrentFilterProgram.Filters[fi];
+						f.SetInput(texCurr);
+						f.Run();
+						var orec = f.FindOutput();
+						if (orec != null)
+						{
+							if (orec.SurfaceDisposition == FilterManager.SurfaceDisposition.Texture)
+							{
+								texCurr = f.GetOutput();
+								rtCurr = null;
+							}
+						}
+						break;
+					}
+					case FilterManager.FilterProgram.ProgramStepType.NewTarget:
+					{
+						var size = (Size)step.Args;
+						rtCurr = ShaderChainFrugalizers[rtCounter++].Get(size);
+						rtCurr.Bind();
+						CurrentFilterProgram.CurrRenderTarget = rtCurr;
+						break;
+					}
+					case FilterManager.FilterProgram.ProgramStepType.FinalTarget:
+						inFinalTarget = true;
+						rtCurr = null;
+						CurrentFilterProgram.CurrRenderTarget = null;
+						GraphicsControl.Begin();
+						break;
+				}
+			}
+			Debug.Assert(inFinalTarget);
 
-			//5a. draw the native layer content
-			//4.b draw the "lua emu surface" which is designed for art matching up exactly with the emulator output
-			if (luaNativeTexture != null) Renderer.Draw(luaNativeTexture);
-
-			//5b. draw the native layer OSD
-			MyBlitter myBlitter = new MyBlitter(this);
-			myBlitter.ClipBounds = new Rectangle(0, 0, GraphicsControl.Width, GraphicsControl.Height);
-			GlobalWin.OSD.Begin(myBlitter);
-			GlobalWin.OSD.DrawScreenInfo(myBlitter);
-			GlobalWin.OSD.DrawMessages(myBlitter);
-
-			//6. finished drawing
-			Renderer.End();
-
-			//7. apply the vsync setting (should probably try to avoid repeating this)
+			//apply the vsync setting (should probably try to avoid repeating this)
 			bool vsync = Global.Config.VSyncThrottle || Global.Config.VSync;
-			presentationPanel.GraphicsControl.SetVsync(vsync);
+			//presentationPanel.GraphicsControl.SetVsync(vsync);
 
-			//7. present and conclude drawing
+			//present and conclude drawing
 			presentationPanel.GraphicsControl.SwapBuffers();
-			presentationPanel.GraphicsControl.End();
+
+			//nope. dont do this. workaround for slow context switching on intel GPUs. just switch to another context when necessary before doing anything
+			//presentationPanel.GraphicsControl.End();
 
 			//cleanup:
-			bb.Dispose();
+			if(bb != null) bb.Dispose();
 			NeedsToPaint = false; //??
 		}
 
@@ -268,6 +406,16 @@ namespace BizHawk.Client.EmuHawk
 			MapNameToLuaSurface[name] = ret;
 			MapLuaSurfaceToName[ret] = name;
 			return ret;
+		}
+
+		public void ClearLuaSurfaces()
+		{
+			foreach (var kvp in LuaSurfaceSets)
+			{
+				var surf = LockLuaSurface(kvp.Key);
+				surf.Clear();
+				UnlockLuaSurface(surf);
+			}
 		}
 
 		/// <summary>
@@ -320,40 +468,7 @@ namespace BizHawk.Client.EmuHawk
 			public Rectangle ClipBounds { get; set; }
 		}
 
-		/// <summary>
-		/// applies letterboxing logic to figure out how to fit the source dimensions into the target dimensions.
-		/// In the future this could also apply rules like integer-only scaling, etc.
-		/// TODO - make this work with a output rect instead of float and dx/dy
-		/// </summary>
-		class LetterboxingLogic
-		{
-			public LetterboxingLogic(int targetWidth, int targetHeight, int sourceWidth, int sourceHeight)
-			{
-				float vw = (float)targetWidth;
-				float vh = (float)targetHeight;
-				float widthScale = vw / sourceWidth;
-				float heightScale = vh / sourceHeight;
-				finalScale = Math.Min(widthScale, heightScale);
-				dx = (int)((vw - finalScale * sourceWidth) / 2);
-				dy = (int)((vh - finalScale * sourceHeight) / 2);
-				Rectangle = new Rectangle((int)dx, (int)dy, (int)(finalScale * sourceWidth), (int)(finalScale * sourceHeight));
-			}
-
-			/// <summary>
-			/// scale to be applied to both x and y
-			/// </summary>
-			public float finalScale;
-
-			/// <summary>
-			/// offset
-			/// </summary>
-			public float dx, dy;
-
-			/// <summary>
-			/// The destination rectangle
-			/// </summary>
-			public Rectangle Rectangle;
-		}
+		
 	}
 
 }

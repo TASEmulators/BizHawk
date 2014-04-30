@@ -35,7 +35,6 @@ namespace BizHawk.Client.EmuHawk
 		public string Message;
 		public int X;
 		public int Y;
-		public bool Alert;
 		public int Anchor;
 		public Color ForeColor;
 		public Color BackGround;
@@ -46,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 		public string FPS { get; set; }
 		public string MT { get; set; }
 		public IBlitterFont MessageFont;
-		public IBlitterFont AlertFont;
+
 		public void Dispose()
 		{
 
@@ -55,7 +54,6 @@ namespace BizHawk.Client.EmuHawk
 		public void Begin(IBlitter blitter)
 		{
 			MessageFont = blitter.GetFontType("MessageFont");
-			AlertFont = blitter.GetFontType("AlertFont");
 		}
 
 		public System.Drawing.Color FixedMessagesColor { get { return System.Drawing.Color.FromArgb(Global.Config.MessagesColor); } }
@@ -65,10 +63,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
-		private float GetX(IBlitter g, int x, int anchor, IBlitterFont font, string message)
+		private float GetX(IBlitter g, int x, int anchor, string message)
 		{
-			var size = g.MeasureString(message, font);
-			//Rectangle rect = g.MeasureString(Sprite, message, new DrawTextFormat());
+			var size = g.MeasureString(message, MessageFont);
+
 			switch (anchor)
 			{
 				default:
@@ -81,9 +79,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private float GetY(IBlitter g, int y, int anchor, IBlitterFont font, string message)
+		private float GetY(IBlitter g, int y, int anchor, string message)
 		{
-			var size = g.MeasureString(message, font);
+			var size = g.MeasureString(message, MessageFont);
+
 			switch (anchor)
 			{
 				default:
@@ -95,8 +94,6 @@ namespace BizHawk.Client.EmuHawk
 					return g.ClipBounds.Height - y - size.Height;
 			}
 		}
-
-
 
 		private string MakeFrameCounter()
 		{
@@ -110,7 +107,8 @@ namespace BizHawk.Client.EmuHawk
 					.Append(" (Finished)");
 				return sb.ToString();
 			}
-			else if (Global.MovieSession.Movie.IsPlaying)
+
+			if (Global.MovieSession.Movie.IsPlaying)
 			{
 				var sb = new StringBuilder();
 				sb
@@ -120,19 +118,13 @@ namespace BizHawk.Client.EmuHawk
 
 				return sb.ToString();
 			}
-			else if (Global.MovieSession.Movie.IsRecording)
+			
+			if (Global.MovieSession.Movie.IsRecording)
 			{
 				return Global.Emulator.Frame.ToString();
 			}
-			else
-			{
-				return Global.Emulator.Frame.ToString();
-			}
-		}
-
-		private string MakeLagCounter()
-		{
-			return Global.Emulator.LagCount.ToString();
+			
+			return Global.Emulator.Frame.ToString();
 		}
 
 		private List<UIMessage> messages = new List<UIMessage>(5);
@@ -144,10 +136,18 @@ namespace BizHawk.Client.EmuHawk
 			messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
 		}
 
-		public void AddGUIText(string message, int x, int y, bool alert, Color BackGround, Color ForeColor, int anchor)
+		public void AddGUIText(string message, int x, int y, Color backGround, Color foreColor, int anchor)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
-			GUITextList.Add(new UIDisplay { Message = message, X = x, Y = y, BackGround = BackGround, ForeColor = ForeColor, Alert = alert, Anchor = anchor });
+			GUITextList.Add(new UIDisplay
+			{
+				Message = message,
+				X = x,
+				Y = y,
+				BackGround = backGround,
+				ForeColor = foreColor,
+				Anchor = anchor
+			});
 		}
 
 		public void ClearGUIText()
@@ -155,7 +155,6 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			GUITextList.Clear();
 		}
-
 
 		public void DrawMessages(IBlitter g)
 		{
@@ -167,8 +166,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					for (int i = messages.Count - 1; i >= 0; i--, line++)
 					{
-						float x = GetX(g, Global.Config.DispMessagex, Global.Config.DispMessageanchor, MessageFont, messages[i].Message);
-						float y = GetY(g, Global.Config.DispMessagey, Global.Config.DispMessageanchor, MessageFont, messages[i].Message);
+						float x = GetX(g, Global.Config.DispMessagex, Global.Config.DispMessageanchor, messages[i].Message);
+						float y = GetY(g, Global.Config.DispMessagey, Global.Config.DispMessageanchor, messages[i].Message);
 						if (Global.Config.DispMessageanchor < 2)
 						{
 							y += ((line - 1) * 18);
@@ -177,18 +176,19 @@ namespace BizHawk.Client.EmuHawk
 						{
 							y -= ((line - 1) * 18);
 						}
+
 						g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
 						g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
 					}
 				}
 				else
 				{
-					if (messages.Count > 0)
+					if (messages.Any())
 					{
 						int i = messages.Count - 1;
 
-						float x = GetX(g, Global.Config.DispMessagex, Global.Config.DispMessageanchor, MessageFont, messages[i].Message);
-						float y = GetY(g, Global.Config.DispMessagey, Global.Config.DispMessageanchor, MessageFont, messages[i].Message);
+						float x = GetX(g, Global.Config.DispMessagex, Global.Config.DispMessageanchor, messages[i].Message);
+						float y = GetY(g, Global.Config.DispMessagey, Global.Config.DispMessageanchor, messages[i].Message);
 						if (Global.Config.DispMessageanchor < 2)
 						{
 							y += ((line - 1) * 18);
@@ -197,25 +197,21 @@ namespace BizHawk.Client.EmuHawk
 						{
 							y -= ((line - 1) * 18);
 						}
+
 						g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
 						g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
 					}
 				}
 
-				for (int x = 0; x < GUITextList.Count; x++)
+				foreach (var text in GUITextList)
 				{
 					try
 					{
-						float posx = GetX(g, GUITextList[x].X, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
-						float posy = GetY(g, GUITextList[x].Y, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
+						float posx = GetX(g, text.X, text.Anchor, text.Message);
+						float posy = GetY(g, text.Y, text.Anchor, text.Message);
 
-						g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].BackGround, posx + 2, posy + 2);
-						//g.DrawString(GUITextList[x].Message, MessageFont, Color.Gray, posx + 1, posy + 1);
-
-						if (GUITextList[x].Alert)
-							g.DrawString(GUITextList[x].Message, AlertFont, FixedMessagesColor, posx, posy);
-						else
-							g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].ForeColor, posx, posy);
+						g.DrawString(text.Message, MessageFont, text.BackGround, posx + 2, posy + 2);
+						g.DrawString(text.Message, MessageFont, text.ForeColor, posx, posy);
 					}
 					catch (Exception)
 					{
@@ -225,22 +221,83 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-
-		public string MakeInputDisplay()
+		public string InputStrMovie()
 		{
-			StringBuilder s;
-			if (!Global.MovieSession.Movie.IsActive || Global.MovieSession.Movie.IsFinished)
-			{
-				s = new StringBuilder(Global.GetOutputControllersAsMnemonic());
-			}
-			else
-			{
-				s = new StringBuilder(Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
-			}
+			var sb = new StringBuilder(Global.GetOutputControllersAsMnemonic());
+			sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
+			return sb.ToString();
+		}
 
-			s.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
+		public string InputStrImmediate()
+		{
+			var mg = new MnemonicsGenerator();
+			mg.SetSource(Global.AutofireStickyXORAdapter);
 
-			return s.ToString();
+			var sb = new StringBuilder(mg.GetControllersAsMnemonic());
+			sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
+			return sb.ToString();
+		}
+
+		public string InputPrevious()
+		{
+			var sb = new StringBuilder(Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
+			sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
+			return sb.ToString();
+		}
+
+		public string InputStrOrAll()
+		{
+			var m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
+			m.SetControllersAsMnemonic(
+				Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
+
+			var orAdaptor = new ORAdapter()
+			{
+				Source = Global.AutofireStickyXORAdapter,
+				SourceOr = m
+			};
+
+			var mg = new MnemonicsGenerator();
+			mg.SetSource(orAdaptor);
+
+			var sb = new StringBuilder(mg.GetControllersAsMnemonic());
+			sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
+			return sb.ToString();
+		}
+
+		public string InputStrSticky()
+		{
+			var stickyOr = new StickyOrAdapter
+			{
+				Source = Global.StickyXORAdapter,
+				SourceStickyOr = Global.AutofireStickyXORAdapter
+			};
+
+			var mg = new MnemonicsGenerator();
+			mg.SetSource(stickyOr);
+			var sb = new StringBuilder(mg.GetControllersAsMnemonic());
+			sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
+			return sb.ToString();
+		}
+
+		public string MakeIntersectImmediatePrevious()
+		{
+			var m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
+			m.SetControllersAsMnemonic(
+				Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
+
+			var andAdaptor = new AndAdapter
+			{
+				Source = Global.AutofireStickyXORAdapter,
+				SourceAnd = m
+			};
+
+			var mg = new MnemonicsGenerator();
+			mg.SetSource(andAdaptor);
+
+			var sb = new StringBuilder(mg.GetControllersAsMnemonic());
+			sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
+			return sb.ToString();
 		}
 
 		public string MakeRerecordCount()
@@ -249,12 +306,16 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return "Rerecord Count: " + Global.MovieSession.Movie.Header.Rerecords;
 			}
-			else
-			{
-				return String.Empty;
-			}
+			
+			return string.Empty;
 		}
-		
+
+		private void DrawOsdMessage(IBlitter g, string message, Color color, float x, float y)
+		{
+			g.DrawString(message, MessageFont, Color.Black, x + 1, y + 1);
+			g.DrawString(message, MessageFont, color, x, y);
+		}
+
 		/// <summary>
 		/// Display all screen info objects like fps, frame counter, lag counter, and input display
 		/// </summary>
@@ -263,121 +324,119 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.DisplayFrameCounter)
 			{
 				string message = MakeFrameCounter();
-				float x = GetX(g, Global.Config.DispFrameCx, Global.Config.DispFrameanchor, MessageFont, message);
-				float y = GetY(g, Global.Config.DispFrameCy, Global.Config.DispFrameanchor, MessageFont, message);
-				g.DrawString(message, MessageFont, Color.Black, x + 1, y + 1);
-				g.DrawString(message, MessageFont, Color.FromArgb(Global.Config.MessagesColor), x, y);
+				float x = GetX(g, Global.Config.DispFrameCx, Global.Config.DispFrameanchor, message);
+				float y = GetY(g, Global.Config.DispFrameCy, Global.Config.DispFrameanchor, message);
+
+				DrawOsdMessage(g, message, Color.FromArgb(Global.Config.MessagesColor), x, y);
 			}
+
 			if (Global.Config.DisplayInput)
 			{
-				string input = MakeInputDisplay();
-				Color c;
-				float x = GetX(g, Global.Config.DispInpx, Global.Config.DispInpanchor, MessageFont, input);
-				float y = GetY(g, Global.Config.DispInpy, Global.Config.DispInpanchor, MessageFont, input);
-				if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsRecording)
+				if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
 				{
-					c = Color.FromArgb(Global.Config.MovieInput);
-				}
-				else
-				{
-					c = Color.FromArgb(Global.Config.MessagesColor);
+					var input = InputStrMovie();
+					var x = GetX(g, Global.Config.DispInpx, Global.Config.DispInpanchor, input);
+					var y = GetY(g, Global.Config.DispInpy, Global.Config.DispInpanchor, input);
+					Color c = Color.FromArgb(Global.Config.MovieInput);
+					g.DrawString(input, MessageFont, Color.Black, x + 1, y + 1);
+					g.DrawString(input, MessageFont, c, x, y);
 				}
 
-				g.DrawString(input, MessageFont, Color.Black, x + 1, y + 1);
-				g.DrawString(input, MessageFont, c, x, y);
+				else // TODO: message config -- allow setting of "previous", "mixed", and "auto"
+				{
+					var bgStr = InputStrOrAll();
+					var x = GetX(g, Global.Config.DispInpx, Global.Config.DispInpanchor, bgStr);
+					var y = GetY(g, Global.Config.DispInpy, Global.Config.DispInpanchor, bgStr);
+					g.DrawString(bgStr, MessageFont, Color.Black, x + 1, y + 1);
+
+					
+
+					var previousStr = InputPrevious();
+					var pColor = Color.Orange;
+					g.DrawString(previousStr, MessageFont, pColor, x, y);
+
+
+					var immediate = InputStrImmediate();
+					Color immediateColor = Color.FromArgb(Global.Config.MessagesColor);
+					g.DrawString(immediate, MessageFont, immediateColor, x, y);
+
+					var immediateOverlay = MakeIntersectImmediatePrevious();
+					var oColor = Color.PeachPuff;
+					g.DrawString(immediateOverlay, MessageFont, oColor, x, y);
+
+					var autoString = InputStrSticky();
+					g.DrawString(autoString, MessageFont, Color.Pink, x, y);
+				}
 			}
+
 			if (Global.MovieSession.MultiTrack.IsActive)
 			{
-				float x = GetX(g, Global.Config.DispMultix, Global.Config.DispMultianchor, MessageFont, MT);
-				float y = GetY(g, Global.Config.DispMultiy, Global.Config.DispMultianchor, MessageFont, MT);
-				g.DrawString(MT, MessageFont, Color.Black,
-				x + 1, y + 1);
-				g.DrawString(MT, MessageFont, FixedMessagesColor,
-					x, y);
+				float x = GetX(g, Global.Config.DispMultix, Global.Config.DispMultianchor, MT);
+				float y = GetY(g, Global.Config.DispMultiy, Global.Config.DispMultianchor, MT);
+
+				DrawOsdMessage(g, MT, FixedMessagesColor, x, y);
 			}
+
 			if (Global.Config.DisplayFPS && FPS != null)
 			{
-				float x = GetX(g, Global.Config.DispFPSx, Global.Config.DispFPSanchor, MessageFont, FPS);
-				float y = GetY(g, Global.Config.DispFPSy, Global.Config.DispFPSanchor, MessageFont, FPS);
-				g.DrawString(FPS, MessageFont, Color.Black, x + 1, y + 1);
-				g.DrawString(FPS, MessageFont, FixedMessagesColor, x, y);
+				float x = GetX(g, Global.Config.DispFPSx, Global.Config.DispFPSanchor, FPS);
+				float y = GetY(g, Global.Config.DispFPSy, Global.Config.DispFPSanchor, FPS);
+
+				DrawOsdMessage(g, FPS, FixedMessagesColor, x, y);
 			}
 
 			if (Global.Config.DisplayLagCounter)
 			{
-				string counter = MakeLagCounter();
+				var counter = Global.Emulator.LagCount.ToString();
+				var x = GetX(g, Global.Config.DispLagx, Global.Config.DispLaganchor, counter);
+				var y = GetY(g, Global.Config.DispLagy, Global.Config.DispLaganchor, counter);
 
-				if (Global.Emulator.IsLagFrame)
-				{
-					float x = GetX(g, Global.Config.DispLagx, Global.Config.DispLaganchor, AlertFont, counter);
-					float y = GetY(g, Global.Config.DispLagy, Global.Config.DispLaganchor, AlertFont, counter);
-					g.DrawString(counter, AlertFont, Color.Black, x + 1, y + 1);
-					g.DrawString(counter, AlertFont, FixedAlertMessageColor, x, y);
-				}
-				else
-				{
-					float x = GetX(g, Global.Config.DispLagx, Global.Config.DispLaganchor, MessageFont, counter);
-					float y = GetY(g, Global.Config.DispLagy, Global.Config.DispLaganchor, MessageFont, counter);
-					g.DrawString(counter, MessageFont, Color.Black, x + 1, y + 1);
-					g.DrawString(counter, MessageFont, FixedMessagesColor, x, y);
-				}
-
+				DrawOsdMessage(g, counter, (Global.Emulator.IsLagFrame ? FixedAlertMessageColor : FixedAlertMessageColor), x, y);
 			}
+
 			if (Global.Config.DisplayRerecordCount)
 			{
 				string rerec = MakeRerecordCount();
-				float x = GetX(g, Global.Config.DispRecx, Global.Config.DispRecanchor, MessageFont, rerec);
-				float y = GetY(g, Global.Config.DispRecy, Global.Config.DispRecanchor, MessageFont, rerec);
-				g.DrawString(rerec, MessageFont, Color.Black, x + 1, y + 1);
-				g.DrawString(rerec, MessageFont, FixedMessagesColor, x, y);
+				float x = GetX(g, Global.Config.DispRecx, Global.Config.DispRecanchor, rerec);
+				float y = GetY(g, Global.Config.DispRecy, Global.Config.DispRecanchor, rerec);
+
+				DrawOsdMessage(g, rerec, FixedMessagesColor, x, y);
 			}
 
 			if (Global.ClientControls["Autohold"] || Global.ClientControls["Autofire"])
 			{
-				StringBuilder disp = new StringBuilder("Held: ");
+				var disp = new StringBuilder("Held: ");
 
-				foreach (string s in Global.StickyXORAdapter.CurrentStickies)
+				foreach (string sticky in Global.StickyXORAdapter.CurrentStickies)
 				{
-					disp.Append(s);
-					disp.Append(' ');
+					disp.Append(sticky).Append(' ');
 				}
 
-				foreach (string s in Global.AutofireStickyXORAdapter.CurrentStickies)
+				foreach (string autoSticky in Global.AutofireStickyXORAdapter.CurrentStickies)
 				{
-					disp.Append("Auto-");
-					disp.Append(s);
-					disp.Append(' ');
+					disp
+						.Append("Auto-")
+						.Append(autoSticky)
+						.Append(' ');
 				}
 
-				g.DrawString(disp.ToString(), MessageFont, Color.White, GetX(g, Global.Config.DispAutoholdx, Global.Config.DispAutoholdanchor, MessageFont,
-					disp.ToString()), GetY(g, Global.Config.DispAutoholdy, Global.Config.DispAutoholdanchor, MessageFont, disp.ToString()));
+				var message = disp.ToString();
+
+				g.DrawString(
+					message,
+					MessageFont,
+					Color.White,
+					GetX(g, Global.Config.DispAutoholdx, Global.Config.DispAutoholdanchor, message),
+					GetY(g, Global.Config.DispAutoholdy, Global.Config.DispAutoholdanchor, message));
 			}
-
-			//TODO
-			//if (Global.MovieSession.Movie.IsPlaying)
-			//{
-			//    //int r = (int)g.ClipBounds.Width;
-			//    //Point[] p = { new Point(r - 20, 2), 
-			//    //				new Point(r - 4, 12), 
-			//    //				new Point(r - 20, 22) };
-			//    //g.FillPolygon(new SolidBrush(Color.Red), p);
-			//    //g.DrawPolygon(new Pen(new SolidBrush(Color.Pink)), p);
-
-			//}
-			//else if (Global.MovieSession.Movie.IsRecording)
-			//{
-			//    //g.FillEllipse(new SolidBrush(Color.Red), new Rectangle((int)g.ClipBounds.Width - 22, 2, 20, 20));
-			//    //g.DrawEllipse(new Pen(new SolidBrush(Color.Pink)), new Rectangle((int)g.ClipBounds.Width - 22, 2, 20, 20));
-			//}
 
 			if (Global.MovieSession.Movie.IsActive && Global.Config.DisplaySubtitles)
 			{
-				var subList = Global.MovieSession.Movie.Header.Subtitles.GetSubtitles(Global.Emulator.Frame).ToList();
+				var subList = Global.MovieSession.Movie.Header.Subtitles.GetSubtitles(Global.Emulator.Frame);
 
-				for (int i = 0; i < subList.Count; i++)
+				foreach (var sub in subList)
 				{
-					g.DrawString(subList[i].Message, MessageFont, Color.Black, subList[i].X + 1, subList[i].Y + 1);
-					g.DrawString(subList[i].Message, MessageFont, Color.FromArgb((int)subList[i].Color), subList[i].X, subList[i].Y);
+					DrawOsdMessage(g, sub.Message, Color.FromArgb((int)sub.Color), sub.X, sub.Y);
 				}
 			}
 		}

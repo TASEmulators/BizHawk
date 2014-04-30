@@ -93,7 +93,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private Input()
 		{
-			UpdateThread = new Thread(UpdateThreadProc) {IsBackground = true};
+			UpdateThread = new Thread(UpdateThreadProc)
+			{
+				IsBackground = true, 
+				Priority = ThreadPriority.AboveNormal //why not? this thread shouldn't be very heavy duty, and we want it to be responsive
+			};
 			UpdateThread.Start();
 		}
 
@@ -178,10 +182,25 @@ namespace BizHawk.Client.EmuHawk
 
 		void HandleButton(string button, bool newState)
 		{
-			if (EnableIgnoreModifiers && IgnoreKeys.Contains(button)) return;
+			bool isModifier = IgnoreKeys.Contains(button);
+			if (EnableIgnoreModifiers && isModifier) return;
 			if (LastState[button] && newState) return;
 			if (!LastState[button] && !newState) return;
-			
+
+			//apply 
+			//NOTE: this is not quite right. if someone held leftshift+rightshift it would be broken. seems unlikely, though.
+			if (button == "LeftShift")
+			{
+				_Modifiers &= ~ModifierKey.Shift;
+				if (newState)
+					_Modifiers |= ModifierKey.Shift;
+			}
+			if (button == "RightShift") { _Modifiers &= ~ModifierKey.Shift; if (newState) _Modifiers |= ModifierKey.Shift; }
+			if (button == "LeftControl") { _Modifiers &= ~ModifierKey.Control; if (newState) _Modifiers |= ModifierKey.Control; }
+			if (button == "RightControl") { _Modifiers &= ~ModifierKey.Control; if (newState) _Modifiers |= ModifierKey.Control; }
+			if (button == "LeftAlt") { _Modifiers &= ~ModifierKey.Alt; if (newState) _Modifiers |= ModifierKey.Alt; }
+			if (button == "RightAlt") { _Modifiers &= ~ModifierKey.Alt; if (newState) _Modifiers |= ModifierKey.Alt; }
+
 			if (UnpressState.ContainsKey(button))
 			{
 				if (newState) return;
@@ -190,6 +209,7 @@ namespace BizHawk.Client.EmuHawk
 				LastState[button] = false;
 				return;
 			}
+
 
 			//dont generate events for things like Ctrl+LeftControl
 			ModifierKey mods = _Modifiers;
@@ -234,7 +254,7 @@ namespace BizHawk.Client.EmuHawk
 					LogicalButton alreadyReleased = ie.LogicalButton;
 					var ieModified = new InputEvent
 						{
-							LogicalButton = (LogicalButton) ModifierState[button],
+							LogicalButton = (LogicalButton)ModifierState[button],
 							EventType = InputEventType.Release
 						};
 					if (ieModified.LogicalButton != alreadyReleased)
@@ -291,17 +311,11 @@ namespace BizHawk.Client.EmuHawk
 			for (; ; )
 			{
 				#if WINDOWS
-				KeyInput.Update();
+				var keyEvents = KeyInput.Update();
 				GamePad.UpdateAll();
 				GamePad360.UpdateAll();
 				#else
 				OTK_Keyboard.Update();
-				#endif
-
-				#if WINDOWS
-				_Modifiers = KeyInput.GetModifierKeysAsKeys();
-				#else
-				_Modifiers = OTK_Keyboard.GetModifierKeysAsKeys();
 				#endif
 
 				//this block is going to massively modify data structures that the binding method uses, so we have to lock it all
@@ -311,14 +325,8 @@ namespace BizHawk.Client.EmuHawk
 
 					#if WINDOWS
 					//analyze keys
-					var bleh = new HashSet<Key>();
-					foreach (var k in KeyInput.State.PressedKeys)
-						bleh.Add(k);
-					foreach (var k in KeyInput.State.AllKeys)
-						if (bleh.Contains(k))
-							HandleButton(k.ToString(), true);
-						else
-							HandleButton(k.ToString(), false);
+					foreach (var ke in keyEvents)
+						HandleButton(ke.Key.ToString(), ke.Pressed);
 					#else
 					foreach(Key kb in Enum.GetValues(typeof(Key)))
 					{
@@ -326,11 +334,11 @@ namespace BizHawk.Client.EmuHawk
 					}
 					#endif
 
-					#if WINDOWS
 					lock (FloatValues)
 					{
 						//FloatValues.Clear();
 
+                        #if WINDOWS
 						//analyze xinput
 						for (int i = 0; i < GamePad360.Devices.Count; i++)
 						{
@@ -367,8 +375,30 @@ namespace BizHawk.Client.EmuHawk
 								FloatValues[n] = f;
 							}
 						}
+                        #endif
+						// analyse moose
+						// other sorts of mouse api (raw input) could easily be added as a separate listing under a different class
+						{
+							var P = System.Windows.Forms.Control.MousePosition;
+							if (trackdeltas)
+							{
+								// these are relative to screen coordinates, but that's not terribly important
+								FloatDeltas["WMouse X"] += Math.Abs(P.X - FloatValues["WMouse X"]) * 50;
+								FloatDeltas["WMouse Y"] += Math.Abs(P.Y - FloatValues["WMouse Y"]) * 50;
+					        }
+							// coordinate translation happens later
+							FloatValues["WMouse X"] = P.X;
+							FloatValues["WMouse Y"] = P.Y;
+
+							var B = System.Windows.Forms.Control.MouseButtons;
+							HandleButton("WMouse L", (B & System.Windows.Forms.MouseButtons.Left) != 0);
+							HandleButton("WMouse M", (B & System.Windows.Forms.MouseButtons.Middle) != 0);
+							HandleButton("WMouse R", (B & System.Windows.Forms.MouseButtons.Right) != 0);
+							HandleButton("WMouse 1", (B & System.Windows.Forms.MouseButtons.XButton1) != 0);
+							HandleButton("WMouse 2", (B & System.Windows.Forms.MouseButtons.XButton2) != 0);
+						}
+
 					}
-					#endif
 
 					bool swallow = !GlobalWin.MainForm.AllowInput;
 

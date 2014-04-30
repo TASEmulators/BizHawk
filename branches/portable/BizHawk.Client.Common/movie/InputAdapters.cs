@@ -202,7 +202,72 @@ namespace BizHawk.Client.Common
 
 	}
 
-	public class StickyXorAdapter : IController
+	public class AndAdapter : IController
+	{
+		public bool IsPressed(string button)
+		{
+			return this[button];
+		}
+
+		// pass floats solely from the original source
+		// this works in the code because SourceOr is the autofire controller
+		public float GetFloat(string name) { return Source.GetFloat(name); }
+
+		public IController Source { get; set; }
+		public IController SourceAnd { get; set; }
+		public ControllerDefinition Type { get { return Source.Type; } set { throw new InvalidOperationException(); } }
+
+		public bool this[string button]
+		{
+			get
+			{
+				return Source[button] & SourceAnd[button];
+			}
+
+			set
+			{
+				throw new InvalidOperationException();
+			}
+		}
+	}
+
+	// Used by input display, to determine if either autofire or regular stickies are "in effect" because we color this scenario differently
+	public class StickyOrAdapter : IController
+	{
+		public bool IsPressed(string button)
+		{
+			return this[button];
+		}
+
+		// pass floats solely from the original source
+		// this works in the code because SourceOr is the autofire controller
+		public float GetFloat(string name) { return 0.0F; } // Floats don't make sense in sticky land
+
+		public ISticky Source { get; set; }
+		public ISticky SourceStickyOr { get; set; }
+		public ControllerDefinition Type { get { return Source.Type; } set { throw new InvalidOperationException(); } }
+
+		public bool this[string button]
+		{
+			get
+			{
+				return Source.StickyIsInEffect(button) ||
+					SourceStickyOr.StickyIsInEffect(button);
+			}
+
+			set
+			{
+				throw new InvalidOperationException();
+			}
+		}
+	}
+
+	public interface ISticky : IController
+	{
+		bool StickyIsInEffect(string button);
+	}
+
+	public class StickyXorAdapter : IController, ISticky
 	{
 		protected HashSet<string> stickySet = new HashSet<string>();
 		
@@ -216,7 +281,10 @@ namespace BizHawk.Client.Common
 
 		public bool Locked { get; set; } // Pretty much a hack, 
 
-		public bool IsPressed(string button) { return this[button]; }
+		public bool IsPressed(string button)
+		{
+			return this[button];
+		}
 
 		// if SetFloat() is called (typically virtual pads), then that float will entirely override the Source input
 		// otherwise, the source is passed thru.
@@ -257,6 +325,20 @@ namespace BizHawk.Client.Common
 			{
 				throw new InvalidOperationException();
 			}
+		}
+
+		/// <summary>
+		/// Determines if a sticky is current mashing the button itself,
+		/// If sticky is not set then false, if set, it returns true if the Source is not pressed, else false
+		/// </summary>
+		public bool StickyIsInEffect(string button)
+		{
+			if (IsSticky(button))
+			{
+				return !Source.IsPressed(button);
+			}
+
+			return false;
 		}
 
 		public void SetSticky(string button, bool isSticky)
@@ -314,7 +396,7 @@ namespace BizHawk.Client.Common
 		private List<string> _justPressed = new List<string>();
 	}
 
-	public class AutoFireStickyXorAdapter : IController
+	public class AutoFireStickyXorAdapter : IController, ISticky
 	{
 		public int On { get; set; }
 		public int Off { get; set; }
@@ -340,22 +422,7 @@ namespace BizHawk.Client.Common
 
 		public bool IsPressed(string button)
 		{
-			if (_stickySet.Contains(button))
-			{
-				var a = (Global.Emulator.Frame - buttonStarts[button]) % (On + Off);
-				if (a < On)
-				{
-					return this[button];
-				}
-				else
-				{
-					return false;
-				}
-			}
-			else
-			{
-				return Source[button];
-			}
+			return this[button];
 		}
 
 		public bool this[string button]
@@ -369,14 +436,14 @@ namespace BizHawk.Client.Common
 					var a = (Global.Emulator.Frame - buttonStarts[button]) % (On + Off);
 					if (a < On)
 					{
-						source ^= true;
+						return source ^= true;
 					}
 					else
 					{
-						source ^= false;
+						return source ^= false;
 					}
 				}
-				
+
 				return source;
 			}
 
@@ -440,6 +507,20 @@ namespace BizHawk.Client.Common
 			}
 
 			_justPressed = buttons;
+		}
+
+		/// <summary>
+		/// Determines if a sticky is current mashing the button itself,
+		/// If sticky is not set then false, if set, it returns true if the Source is not pressed, else false
+		/// </summary>
+		public bool StickyIsInEffect(string button)
+		{
+			if (Source.IsPressed(button))
+			{
+				return false;
+			}
+
+			return (IsPressed(button)); // Shortcut logic since we know the Source isn't pressed, Ispressed can only return true if the autofire sticky is in effect for this frame
 		}
 
 		private List<string> _justPressed = new List<string>();

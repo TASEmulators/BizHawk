@@ -67,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			//now shuffle the buffers
-			CurrentTextures.Insert(0,CurrentTextures[1]);
+			CurrentTextures[0] = CurrentTextures[1];
 			CurrentTextures[1] = CurrentTexture;
 
 			return CurrentTexture;

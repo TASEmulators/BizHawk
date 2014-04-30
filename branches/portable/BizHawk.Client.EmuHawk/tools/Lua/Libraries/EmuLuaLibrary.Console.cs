@@ -39,50 +39,79 @@ namespace BizHawk.Client.EmuHawk
 			"log",
 			"Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable"
 		)]
-		public static void Log(object output)
+		public static void Log(params object[] outputs)
 		{
-			if (output == null)
+			foreach (var output in outputs)
 			{
-				GlobalWin.Tools.LuaConsole.WriteToOutputWindow("NULL");
-			}
-			else
-			{
-				if (output is LuaTable)
+				if (output == null)
 				{
-					var sb = new StringBuilder();
-					var lti = output as LuaTable;
-
-					var keys = (from object key in lti.Keys select key.ToString()).ToList();
-					var values = (from object value in lti.Values select value.ToString()).ToList();
-
-					var kvps = new List<KeyValuePair<string, string>>();
-					for (var i = 0; i < keys.Count; i++)
-					{
-						if (i < values.Count)
-						{
-							kvps.Add(new KeyValuePair<string, string>(keys[i], values[i]));
-						}
-					}
-
-					kvps = kvps.OrderBy(x => x.Key).ToList();
-					foreach (var kvp in kvps)
-					{
-						sb
-							.Append("\"")
-							.Append(kvp.Key)
-							.Append("\": \"")
-							.Append(kvp.Value)
-							.Append("\"")
-							.AppendLine();
-					}
-
-					GlobalWin.Tools.LuaConsole.WriteToOutputWindow(sb.ToString());
+					GlobalWin.Tools.LuaConsole.WriteToOutputWindow("NULL");
 				}
 				else
 				{
-					GlobalWin.Tools.LuaConsole.WriteToOutputWindow(output.ToString());
+					if (output is LuaTable)
+					{
+						var sb = new StringBuilder();
+						var lti = output as LuaTable;
+
+						var keys = (from object key in lti.Keys select key.ToString()).ToList();
+						var values = (from object value in lti.Values select value.ToString()).ToList();
+
+						var kvps = new List<KeyValuePair<string, string>>();
+						for (var i = 0; i < keys.Count; i++)
+						{
+							if (i < values.Count)
+							{
+								kvps.Add(new KeyValuePair<string, string>(keys[i], values[i]));
+							}
+						}
+
+						kvps = kvps.OrderBy(x => x.Key).ToList();
+						foreach (var kvp in kvps)
+						{
+							sb
+								.Append("\"")
+								.Append(kvp.Key)
+								.Append("\": \"")
+								.Append(kvp.Value)
+								.Append("\"")
+								.AppendLine();
+						}
+
+						GlobalWin.Tools.LuaConsole.WriteToOutputWindow(sb.ToString());
+					}
+					else
+					{
+						GlobalWin.Tools.LuaConsole.WriteToOutputWindow(output.ToString());
+					}
 				}
 			}
+		}
+
+		[LuaMethodAttributes(
+			"writeline",
+			"Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable"
+		)]
+		public static void WriteLine(params object[] outputs)
+		{
+			Log(outputs);
+			Log('\n');
+		}
+
+		[LuaMethodAttributes(
+			"write",
+			"Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable"
+		)]
+		public static void Write(params object[] outputs)
+		{
+			Log(outputs);
+		}
+
+		// Single param version is used by logOutputCallback of some libraries.
+		public static void Log(string output)
+		{
+			var outputs = new[] { output };
+			Log(outputs);
 		}
 	}
 }

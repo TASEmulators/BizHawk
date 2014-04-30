@@ -180,6 +180,17 @@ namespace BizHawk.Bizware.BizwareGL
 		Texture2d CreateTexture(int width, int height);
 
 		/// <summary>
+		/// In case you already have the texture ID (from an opengl emulator gpu core) you can get a Texture2d with it this way.
+		/// Otherwise, if this isn't an OpenGL frontend implementation, I guess... try reading the texturedata out of it and making a new texture?
+		/// </summary>
+		Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height);
+
+		/// <summary>
+		/// Sets the clamp mode (for both uv) for the Texture2d
+		/// </summary>
+		void SetTextureWrapMode(Texture2d tex, bool clamp);
+
+		/// <summary>
 		/// Loads the texture with new data. This isnt supposed to be especially versatile, it just blasts a bitmap buffer into the texture
 		/// </summary>
 		void LoadTextureData(Texture2d tex, BitmapBuffer bmp);

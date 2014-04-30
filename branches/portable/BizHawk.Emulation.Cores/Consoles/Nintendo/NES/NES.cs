@@ -9,7 +9,12 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-
+	[CoreAttributes(
+		"NesHawk",
+		"zeromus, natt, adelikat",
+		isPorted: false,
+		isReleased: true
+		)]
 	public partial class NES : IEmulator
 	{
 		static readonly bool USE_DATABASE = true;
@@ -432,6 +437,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Type boardType = null;
 			CartInfo choice = null;
 			CartInfo iNesHeaderInfo = null;
+			CartInfo iNesHeaderInfoV2 = null;
 			List<string> hash_sha1_several = new List<string>();
 			string hash_sha1 = null, hash_md5 = null;
 			Unif unif = null;
@@ -443,9 +449,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (file.Length < 16) throw new Exception("Alleged NES rom too small to be anything useful");
 			if (file.Take(4).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("UNIF")))
 			{
-				LoadWriteLine("Found UNIF header:");
-				LoadWriteLine("Since this is UNIF we can confidently parse PRG/CHR banks to hash.");
 				unif = new Unif(new MemoryStream(file));
+				LoadWriteLine("Found UNIF header:");
+				LoadWriteLine(unif.GetCartInfo());
+				LoadWriteLine("Since this is UNIF we can confidently parse PRG/CHR banks to hash.");
 				hash_sha1 = unif.GetCartInfo().sha1;
 				hash_sha1_several.Add(hash_sha1);
 				LoadWriteLine("headerless rom hash: {0}", hash_sha1);
@@ -480,41 +487,45 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				fixed (byte* bfile = &file[0])
+				byte[] nesheader = new byte[16];
+				Buffer.BlockCopy(file, 0, nesheader, 0, 16);
+
+				if (!DetectFromINES(nesheader, out iNesHeaderInfo, out iNesHeaderInfoV2))
+					throw new InvalidOperationException("iNES header not found");
+
+				//now that we know we have an iNES header, we can try to ignore it.
+
+				hash_sha1 = "sha1:" + Util.Hash_SHA1(file, 16, file.Length - 16);
+				hash_sha1_several.Add(hash_sha1);
+				hash_md5 = "md5:" + Util.Hash_MD5(file, 16, file.Length - 16);
+
+				LoadWriteLine("Found iNES header:");
+				LoadWriteLine(iNesHeaderInfo.ToString());
+				if (iNesHeaderInfoV2 != null)
 				{
-					var header = (iNES_HEADER*)bfile;
-					if (!header->CheckID()) throw new InvalidOperationException("iNES header not found");
-					header->Cleanup();
+					LoadWriteLine("Found iNES V2 header:");
+					LoadWriteLine(iNesHeaderInfoV2);
+				}
+				LoadWriteLine("Since this is iNES we can (somewhat) confidently parse PRG/CHR banks to hash.");
 
-					//now that we know we have an iNES header, we can try to ignore it.
+				LoadWriteLine("headerless rom hash: {0}", hash_sha1);
+				LoadWriteLine("headerless rom hash:  {0}", hash_md5);
 
-					hash_sha1 = "sha1:" + Util.Hash_SHA1(file, 16, file.Length - 16);
-					hash_sha1_several.Add(hash_sha1);
-					hash_md5 = "md5:" + Util.Hash_MD5(file, 16, file.Length - 16);
-
-					LoadWriteLine("Found iNES header:");
-					iNesHeaderInfo = header->Analyze(new MyWriter(LoadReport));
-					LoadWriteLine("Since this is iNES we can (somewhat) confidently parse PRG/CHR banks to hash.");
-
-					LoadWriteLine("headerless rom hash: {0}", hash_sha1);
-					LoadWriteLine("headerless rom hash:  {0}", hash_md5);
-
-					if (iNesHeaderInfo.prg_size == 16)
-					{
-						//8KB prg can't be stored in iNES format, which counts 16KB prg banks.
-						//so a correct hash will include only 8KB.
-						LoadWriteLine("Since this rom has a 16 KB PRG, we'll hash it as 8KB too for bootgod's DB:");
-						var msTemp = new MemoryStream();
-						msTemp.Write(file, 16, 8 * 1024); //add prg
-						msTemp.Write(file, 16 + 16 * 1024, iNesHeaderInfo.chr_size * 1024); //add chr
-						msTemp.Flush();
-						var bytes = msTemp.ToArray();
-						var hash = "sha1:" + Util.Hash_SHA1(bytes, 0, bytes.Length);
-						LoadWriteLine("  PRG (8KB) + CHR hash: {0}", hash);
-						hash_sha1_several.Add(hash);
-						hash = "md5:" + Util.Hash_MD5(bytes, 0, bytes.Length);
-						LoadWriteLine("  PRG (8KB) + CHR hash:  {0}", hash);
-					}
+				if (iNesHeaderInfo.prg_size == 16)
+				{
+					//8KB prg can't be stored in iNES format, which counts 16KB prg banks.
+					//so a correct hash will include only 8KB.
+					LoadWriteLine("Since this rom has a 16 KB PRG, we'll hash it as 8KB too for bootgod's DB:");
+					var msTemp = new MemoryStream();
+					msTemp.Write(file, 16, 8 * 1024); //add prg
+					msTemp.Write(file, 16 + 16 * 1024, iNesHeaderInfo.chr_size * 1024); //add chr
+					msTemp.Flush();
+					var bytes = msTemp.ToArray();
+					var hash = "sha1:" + Util.Hash_SHA1(bytes, 0, bytes.Length);
+					LoadWriteLine("  PRG (8KB) + CHR hash: {0}", hash);
+					hash_sha1_several.Add(hash);
+					hash = "md5:" + Util.Hash_MD5(bytes, 0, bytes.Length);
+					LoadWriteLine("  PRG (8KB) + CHR hash:  {0}", hash);
 				}
 			}
 
@@ -570,49 +581,50 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					LoadWriteLine("Using information from UNIF header");
 					choice = unif.GetCartInfo();
-					choice.game = new NESGameInfo();
-					choice.game.name = gameInfo.Name;
 					origin = EDetectionOrigin.UNIF;
 				}
 				if (iNesHeaderInfo != null)
 				{
 					LoadWriteLine("Attempting inference from iNES header");
-					choice = iNesHeaderInfo;
-					string iNES_board = iNESBoardDetector.Detect(choice);
-					if (iNES_board == null)
-						throw new Exception("couldnt identify NES rom");
-					choice.board_type = iNES_board;
-
-					//try spinning up a board with 8K wram and with 0K wram to see if one answers
-					try
+					// try to spin up V2 header first, then V1 header
+					if (iNesHeaderInfoV2 != null)
 					{
-						boardType = FindBoard(choice, origin, InitialMapperRegisterValues);
-					}
-					catch { }
-					if (boardType == null)
-					{
-						if (choice.wram_size == 8) choice.wram_size = 0;
-						else if (choice.wram_size == 0) choice.wram_size = 8;
 						try
 						{
-							boardType = FindBoard(choice, origin, InitialMapperRegisterValues);
+							boardType = FindBoard(iNesHeaderInfoV2, origin, InitialMapperRegisterValues);
 						}
 						catch { }
-						if (boardType != null)
-							LoadWriteLine("Ambiguous iNES wram size resolved as {0}k", choice.wram_size);
+						if (boardType == null)
+							LoadWriteLine("Failed to load as iNES V2");
+						else
+							choice = iNesHeaderInfoV2;
+
+						// V2 might fail but V1 might succeed because we don't have most V2 aliases setup; and there's
+						// no reason to do so except when needed
+					}
+					if (boardType == null)
+					{
+						choice = iNesHeaderInfo; // we're out of options, really
+						boardType = FindBoard(iNesHeaderInfo, origin, InitialMapperRegisterValues);
+						if (boardType == null)
+							LoadWriteLine("Failed to load as iNES V1");
+
+						// do not further meddle in wram sizes.  a board that is being loaded from a "MAPPERxxx"
+						// entry should know and handle the situation better for the individual board
 					}
 
-					LoadWriteLine("Chose board from iNES heuristics: " + iNES_board);
-					choice.game.name = gameInfo.Name;
+					LoadWriteLine("Chose board from iNES heuristics:");
+					LoadWriteLine(choice);
 					origin = EDetectionOrigin.INES;
 				}
 			}
 
-			//TODO - generate better name with region and system
-			game_name = choice.game.name;
 
 			//find a INESBoard to handle this
-			boardType = FindBoard(choice, origin, InitialMapperRegisterValues);
+			if (choice != null)
+				boardType = FindBoard(choice, origin, InitialMapperRegisterValues);
+			else
+				throw new Exception("Unable to detect ROM");
 			if (boardType == null)
 				throw new Exception("No class implements the necessary board type: " + choice.board_type);
 
@@ -805,24 +817,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public bool BinarySaveStatesPreferred { get { return false; } }
 
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
-			return new List<KeyValuePair<string, int>>
+			return new Dictionary<string, int>
 			{
-				new KeyValuePair<string, int>("A", cpu.A),
-				new KeyValuePair<string, int>("X", cpu.X),
-				new KeyValuePair<string, int>("Y", cpu.Y),
-				new KeyValuePair<string, int>("S", cpu.S),
-				new KeyValuePair<string, int>("PC", cpu.PC),
-				new KeyValuePair<string, int>("Flag C", cpu.FlagC ? 1 : 0),
-				new KeyValuePair<string, int>("Flag Z", cpu.FlagZ ? 1 : 0),
-				new KeyValuePair<string, int>("Flag I", cpu.FlagI ? 1 : 0),
-				new KeyValuePair<string, int>("Flag D", cpu.FlagD ? 1 : 0),
-				new KeyValuePair<string, int>("Flag B", cpu.FlagB ? 1 : 0),
-				new KeyValuePair<string, int>("Flag V", cpu.FlagV ? 1 : 0),
-				new KeyValuePair<string, int>("Flag N", cpu.FlagN ? 1 : 0),
-				new KeyValuePair<string, int>("Flag T", cpu.FlagT ? 1 : 0)
-
+				{ "A", cpu.A },
+				{ "X", cpu.X },
+				{ "Y", cpu.Y },
+				{ "S", cpu.S },
+				{ "PC", cpu.PC },
+				{ "Flag C", cpu.FlagC ? 1 : 0 },
+				{ "Flag Z", cpu.FlagZ ? 1 : 0 },
+				{ "Flag I", cpu.FlagI ? 1 : 0 },
+				{ "Flag D", cpu.FlagD ? 1 : 0 },
+				{ "Flag B", cpu.FlagB ? 1 : 0 },
+				{ "Flag V", cpu.FlagV ? 1 : 0 },
+				{ "Flag N", cpu.FlagN ? 1 : 0 },
+				{ "Flag T", cpu.FlagT ? 1 : 0 }
 			};
 		}
 

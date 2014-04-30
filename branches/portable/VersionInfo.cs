@@ -1,7 +1,9 @@
+using System;
+
 static class VersionInfo
 {
-	public const string MAINVERSION = "1.6.0";
-	public const string RELEASEDATE = "Beta built on January 20, 2014";
+	public const string MAINVERSION = "1.7.0";
+	public static string RELEASEDATE = "Unoffical BETA of unknown origin!";
 	public static bool INTERIM = true;
 
 	public static string GetEmuVersion()

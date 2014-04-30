@@ -36,16 +36,17 @@ namespace BizHawk.Client.EmuHawk
 			GraphicsControl.MouseClick += (o, e) => GlobalWin.MainForm.MainForm_MouseClick(o, e);
 		}
 
+		bool IsDisposed = false;
 		public void Dispose()
 		{
+			if (IsDisposed) return;
+			IsDisposed = true;
 			GraphicsControl.Dispose();
 		}
 
 		//graphics resources
 		IGL GL;
 		public GraphicsControl GraphicsControl;
-
-		private bool Vsync;
 
 		public Control Control { get { return GraphicsControl; } }
 		public static implicit operator Control(PresentationPanel self) { return self.GraphicsControl; }
@@ -59,20 +60,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool Resized { get; set; }
 
-		public sd.Point ScreenToScreen(sd.Point p)
-		{
-			//TODO GL - yeah, this is broken for now, sorry.
-			//This logic now has more to do with DisplayManager
-			//p = GraphicsControl.Control.PointToClient(p);
-			//sd.Point ret = new sd.Point(p.X * sw / GraphicsControl.Control.Width,
-			//  p.Y * sh / GraphicsControl.Control.Height);
-			//return ret;
-			throw new InvalidOperationException("Not supported right now, sorry");
-		}
-
 		public Size NativeSize { get { return GraphicsControl.ClientSize; } }
-
-	
 	}
 
 	

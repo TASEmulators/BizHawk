@@ -20,7 +20,6 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
-
 	public class ScanlineHookManager
 	{
 		public void Register(object tag, Action<int> callback)
@@ -58,6 +57,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 	}
 
+	[CoreAttributes(
+		"BSNES",
+		"byuu",
+		isPorted: true,
+		isReleased: true
+		)]
 	public unsafe class LibsnesCore : IEmulator, IVideoProvider
 	{
 		public bool IsSGB { get; private set; }
@@ -78,10 +83,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			api.Dispose();
 		}
 
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
-			var ret = new List<KeyValuePair<string, int>>();
-
 			LibsnesApi.CpuRegs regs;
 			api.QUERY_peek_cpu_regs(out regs);
 
@@ -94,31 +97,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			bool fz = (regs.p & 0x02)!=0;
 			bool fc = (regs.p & 0x01)!=0;
 			
-			return new List<KeyValuePair<string, int>>
+			return new Dictionary<string, int>
 			{
-				new KeyValuePair<string, int>("PC", (int)regs.pc),
-				new KeyValuePair<string, int>("A", (int)regs.a),
-				new KeyValuePair<string, int>("X", (int)regs.x),
-				new KeyValuePair<string, int>("Y", (int)regs.y),
-				new KeyValuePair<string, int>("Z", (int)regs.z),
-				new KeyValuePair<string, int>("S", (int)regs.s),
-				new KeyValuePair<string, int>("D", (int)regs.d),
-				new KeyValuePair<string, int>("Vector", (int)regs.vector),
-				new KeyValuePair<string, int>("P", (int)regs.p),
-				new KeyValuePair<string, int>("AA", (int)regs.aa),
-				new KeyValuePair<string, int>("RD", (int)regs.rd),
-				new KeyValuePair<string, int>("SP", (int)regs.sp),
-				new KeyValuePair<string, int>("DP", (int)regs.dp),
-				new KeyValuePair<string, int>("DB", (int)regs.db),
-				new KeyValuePair<string, int>("MDR", (int)regs.mdr),
-				new KeyValuePair<string, int>("Flag N", fn?1:0),
-				new KeyValuePair<string, int>("Flag V", fv?1:0),
-				new KeyValuePair<string, int>("Flag M", fm?1:0),
-				new KeyValuePair<string, int>("Flag X", fx?1:0),
-				new KeyValuePair<string, int>("Flag D", fd?1:0),
-				new KeyValuePair<string, int>("Flag I", fi?1:0),
-				new KeyValuePair<string, int>("Flag Z", fz?1:0),
-				new KeyValuePair<string, int>("Flag C", fc?1:0),
+				{ "PC", (int)regs.pc },
+				{ "A", (int)regs.a },
+				{ "X", (int)regs.x },
+				{ "Y", (int)regs.y },
+				{ "Z", (int)regs.z },
+				{ "S", (int)regs.s },
+				{ "D", (int)regs.d },
+				{ "Vector", (int)regs.vector },
+				{ "P", (int)regs.p },
+				{ "AA", (int)regs.aa },
+				{ "RD", (int)regs.rd },
+				{ "SP", (int)regs.sp },
+				{ "DP", (int)regs.dp },
+				{ "DB", (int)regs.db },
+				{ "MDR", (int)regs.mdr },
+				{ "Flag N", fn?1:0 },
+				{ "Flag V", fv?1:0 },
+				{ "Flag M", fm?1:0 },
+				{ "Flag X", fx?1:0 },
+				{ "Flag D", fd?1:0 },
+				{ "Flag I", fi?1:0 },
+				{ "Flag Z", fz?1:0 },
+				{ "Flag C", fc?1:0 },
 			};
 		}
 
@@ -823,14 +826,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public void LoadStateText(TextReader reader)
 		{
 			string hex = reader.ReadLine();
-			if (hex.StartsWith("emuVersion")) // movie save
-			{
-				do // theoretically, our portion should start right after StartsFromSavestate, maybe...
-				{
-					hex = reader.ReadLine();
-				} while (!hex.StartsWith("StartsFromSavestate"));
-				hex = reader.ReadLine();
-			}
 			byte[] state = new byte[hex.Length / 2];
 			state.ReadFromHexFast(hex);
 			LoadStateBinary(new BinaryReader(new MemoryStream(state)));

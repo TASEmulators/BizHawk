@@ -23,6 +23,18 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, string> BoardProperties { get; private set; }
 		public SubtitleList Subtitles { get; private set; }
 
+		public string SavestateBinaryBase64Blob
+		{
+			get {
+				if (ContainsKey(HeaderKeys.SAVESTATEBINARYBASE64BLOB)) return this[HeaderKeys.SAVESTATEBINARYBASE64BLOB];
+				else return null;
+			}
+			set {
+				if (value == null) Remove(HeaderKeys.SAVESTATEBINARYBASE64BLOB);
+				else Add(HeaderKeys.SAVESTATEBINARYBASE64BLOB, value);
+			}
+		}
+
 		public ulong Rerecords
 		{
 			get
@@ -174,7 +186,7 @@ namespace BizHawk.Client.Common
 						BoardProperties.Add(boardSplit[0], boardSplit[1]);
 					}
 				}
-				else if (HeaderKeys.Contains(splitLine[0]))
+				else if (HeaderKeys.Contains(splitLine[0]) && !this.ContainsKey(splitLine[0]))
 				{
 					Add(splitLine[0], splitLine[1]);
 				}

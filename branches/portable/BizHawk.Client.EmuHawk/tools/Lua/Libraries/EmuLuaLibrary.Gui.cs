@@ -139,7 +139,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"cleartext",
-			"TODO"
+			"clears all text created by gui.text()"
 		)]
 		public static void ClearText()
 		{
@@ -520,7 +520,7 @@ namespace BizHawk.Client.EmuHawk
 			x *= EmuHawkLuaLibrary.GetWindowSize();
 			y *= EmuHawkLuaLibrary.GetWindowSize();
 
-			GlobalWin.OSD.AddGUIText(message, x, y, false, GetColor(background ?? "black"), GetColor(forecolor ?? "white"), a);
+			GlobalWin.OSD.AddGUIText(message, x, y, GetColor(background ?? "black"), GetColor(forecolor ?? "white"), a);
 		}
 	}
 }

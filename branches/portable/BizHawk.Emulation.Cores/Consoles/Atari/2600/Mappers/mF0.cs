@@ -18,20 +18,38 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	1FF0 until the bank it is looking for comes up.
 	*/
 
-	class mF0 : MapperBase 
+	internal class mF0 : MapperBase 
 	{
-		int bank;
+		private int _bank;
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("bank", ref _bank);
+		}
+
+		public override void HardReset()
+		{
+			_bank = 0;
+			base.HardReset();
+		}
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
 			if (!peek)
 			{
 				if (addr == 0x1FF0)
+				{
 					Increment();
+				}
 			}
 
-			if (addr < 0x1000) return base.ReadMemory(addr);
-			else return core.rom[(bank << 12) + (addr & 0xFFF)];
+			if (addr < 0x1000)
+			{
+				return base.ReadMemory(addr);
+			}
+
+			return Core.Rom[(_bank << 12) + (addr & 0xFFF)];
 		}
 
 		public override byte ReadMemory(ushort addr)
@@ -46,21 +64,20 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		
 		public override void WriteMemory(ushort addr, byte value)
 		{
-			if (addr < 0x1000) base.WriteMemory(addr, value);
+			if (addr < 0x1000)
+			{
+				base.WriteMemory(addr, value);
+			}
 			else if (addr == 0x1ff0)
+			{
 				Increment();
+			}
 		}
 
-		public override void SyncState(Serializer ser)
+		private void Increment()
 		{
-			base.SyncState(ser);
-			ser.Sync("bank", ref bank);
-		}
-
-		void Increment()
-		{
-			bank++;
-			bank &= 0x0F;
+			_bank++;
+			_bank &= 0x0F;
 		}
 	}
 }

@@ -135,82 +135,27 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			return 0xFF;
 		}
 
-		void SaveArcadeCardBinary(BinaryWriter writer)
+		public void ArcadeCardSyncState(Serializer ser)
 		{
-			writer.Write(ShiftRegister);
-			writer.Write(ShiftAmount);
-			writer.Write(RotateAmount);
+			ser.BeginSection("ArcadeCard");
+			ser.Sync("ShiftRegister", ref ShiftRegister);
+			ser.Sync("ShiftAmount", ref ShiftAmount);
+			ser.Sync("RotateAmount", ref RotateAmount);
+
+			if (ArcadeCardRewindHack == false || ser.IsText)
+				ser.Sync("ArcadeRAM", ref ArcadeRam, false);
+
 			for (int i = 0; i < 4; i++)
 			{
-				writer.Write(ArcadePage[i].Control);
-				writer.Write(ArcadePage[i].Base);
-				writer.Write(ArcadePage[i].Offset);
-				writer.Write(ArcadePage[i].IncrementValue);
-			}
-			if (ArcadeCardRewindHack == false)
-				writer.Write(ArcadeRam);
-		}
+				ser.BeginSection("Page" + i);
 
-		void LoadArcadeCardBinary(BinaryReader reader)
-		{
-			ShiftRegister = reader.ReadInt32();
-			ShiftAmount = reader.ReadByte();
-			RotateAmount = reader.ReadByte();
-			for (int i = 0; i < 4; i++)
-			{
-				ArcadePage[i].Control = reader.ReadByte();
-				ArcadePage[i].Base = reader.ReadInt32();
-				ArcadePage[i].Offset = reader.ReadUInt16();
-				ArcadePage[i].IncrementValue = reader.ReadUInt16();
+				ser.Sync("Control", ref ArcadePage[i].Control);
+				ser.Sync("Base", ref ArcadePage[i].Base);
+				ser.Sync("Offset", ref ArcadePage[i].Offset);
+				ser.Sync("IncrementValue", ref ArcadePage[i].IncrementValue);
+				ser.EndSection();
 			}
-			if (ArcadeCardRewindHack == false)
-				ArcadeRam = reader.ReadBytes(0x200000);
-		}
-
-		void SaveArcadeCardText(TextWriter writer)
-		{
-			writer.WriteLine("[ArcadeCard]");
-			writer.WriteLine("ShiftRegister {0} ", ShiftRegister);
-			writer.WriteLine("RotateAmount {0} ", ShiftAmount);
-			writer.WriteLine("RotateAmount {0} ", RotateAmount);
-			for (int i = 0; i < 4; i++)
-			{
-				writer.WriteLine("Control {0} {1:X2}", i, ArcadePage[i].Control);
-				writer.WriteLine("Base {0} {1:X6}", i, ArcadePage[i].Base);
-				writer.WriteLine("Offset {0} {1:X4}", i, ArcadePage[i].Offset);
-				writer.WriteLine("Increment {0} {1:X4}", i, ArcadePage[i].IncrementValue);
-			}
-			writer.Write("RAM "); ArcadeRam.SaveAsHex(writer);
-			writer.WriteLine("[/ArcadeCard]");
-			writer.WriteLine();
-		}
-
-		public void LoadArcadeCardText(TextReader reader)
-		{
-			while (true)
-			{
-				string[] args = reader.ReadLine().Split(' ');
-				if (args[0].Trim() == "") continue;
-				if (args[0] == "[/ArcadeCard]") break;
-				if (args[0] == "ShiftRegister")
-					ShiftRegister = int.Parse(args[1]);
-				else if (args[0] == "ShiftAmount")
-					ShiftAmount = byte.Parse(args[1]);
-				else if (args[0] == "RotateAmount")
-					RotateAmount = byte.Parse(args[1]);
-				else if (args[0] == "RAM")
-					ArcadeRam.ReadFromHex(args[1]);
-				else if (args[0] == "Control")
-					ArcadePage[int.Parse(args[1])].Control = byte.Parse(args[2], NumberStyles.HexNumber);
-				else if (args[0] == "Base")
-					ArcadePage[int.Parse(args[1])].Base = int.Parse(args[2], NumberStyles.HexNumber);
-				else if (args[0] == "Offset")
-					ArcadePage[int.Parse(args[1])].Offset = ushort.Parse(args[2], NumberStyles.HexNumber);
-				else if (args[0] == "Increment")
-					ArcadePage[int.Parse(args[1])].IncrementValue = ushort.Parse(args[2], NumberStyles.HexNumber);
-				else
-					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
-			}
+			ser.EndSection();
 		}
 	}
 }

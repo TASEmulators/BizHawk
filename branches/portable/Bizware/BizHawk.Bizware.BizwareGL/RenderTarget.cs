@@ -10,6 +10,12 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner = owner;
 			Id = handle;
 			Texture2d = tex;
+			tex.IsUpsideDown = true;
+		}
+
+		public override string ToString()
+		{
+			return string.Format("GL RT: {0}x{1}", Texture2d.Width, Texture2d.Height);
 		}
 
 		public IntPtr Id { get; private set; }

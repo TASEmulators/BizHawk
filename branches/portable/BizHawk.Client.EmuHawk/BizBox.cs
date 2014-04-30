@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Text = "Version " + VersionInfo.MAINVERSION;
 			}
-			VersionLabel.Text = "Version " + VersionInfo.MAINVERSION + "  Released " + VersionInfo.RELEASEDATE;
+			VersionLabel.Text = "Version " + VersionInfo.MAINVERSION + " " + VersionInfo.RELEASEDATE;
 		}
 
 		private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

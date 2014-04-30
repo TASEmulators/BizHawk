@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Cores.Atari.Atari2600
+﻿using BizHawk.Common;
+
+namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	/*
 	This is another 8K bankswitching method with two 4K banks.  The rationale is that it's
@@ -19,8 +21,67 @@
 	B is the bank we will select.  sooo, accessing 0800 will select bank 0, and 0840
 	will select bank 1.
 	*/
-	class m0840 : MapperBase 
+	internal class m0840 : MapperBase 
 	{
+		private int _bank4K;
 
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("bank_4k", ref _bank4K);
+		}
+
+		public override void HardReset()
+		{
+			_bank4K = 0;
+			base.HardReset();
+		}
+
+		private byte ReadMem(ushort addr, bool peek)
+		{
+			if (!peek)
+			{
+				Address(addr);
+			}
+
+			if (addr < 0x1000)
+			{
+				return base.ReadMemory(addr);
+			}
+
+			return Core.Rom[(_bank4K << 12) + (addr & 0xFFF)];
+		}
+
+		public override byte ReadMemory(ushort addr)
+		{
+			return ReadMem(addr, false);
+		}
+
+		public override byte PeekMemory(ushort addr)
+		{
+			return ReadMem(addr, true);
+		}
+
+		public override void WriteMemory(ushort addr, byte value)
+		{
+			Address(addr);
+			if (addr < 0x1000)
+			{
+				base.WriteMemory(addr, value);
+			}
+		}
+
+		private void Address(ushort addr)
+		{
+			switch (addr & 0x1840)
+			{
+				case 0x0800:
+					_bank4K = 0;
+					break;
+				case 0x0840:
+					_bank4K = 1;
+					break;
+			}
+		}
 	}
 }

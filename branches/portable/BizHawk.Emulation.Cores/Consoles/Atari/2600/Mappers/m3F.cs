@@ -21,14 +21,20 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	yet.
 	*/
 
-	class m3F :MapperBase 
+	internal class m3F : MapperBase 
 	{
-		int lowbank_2k;
+		private int _lowbank2K;
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("lowbank_2k", ref lowbank_2k);
+			ser.Sync("lowbank_2k", ref _lowbank2K);
+		}
+
+		public override void HardReset()
+		{
+			_lowbank2K = 0;
+			base.HardReset();
 		}
 
 		public override byte ReadMemory(ushort addr)
@@ -37,16 +43,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				return base.ReadMemory(addr);
 			}
-			else if (addr < 0x17FF) //Low 2k Bank
+			
+			if (addr < 0x1800) // Low 2k Bank
 			{
-				int a = addr & 0x07FF; //2K
-				int bank = lowbank_2k << 11;
-				return core.rom[bank + a];
+				return Core.Rom[(_lowbank2K << 11) + (addr & 0x07FF)];
 			}
-			else if (addr < 0x2000) //High bank fixed to last 2k of ROM
+			
+			if (addr < 0x2000) // High bank fixed to last 2k of ROM
 			{
-				return core.rom[(core.rom.Length - 2048) + (addr & 0x07FF)];
+				return Core.Rom[(Core.Rom.Length - 2048) + (addr & 0x07FF)];
 			}
+
 			return base.ReadMemory(addr);
 		}
 
@@ -59,15 +66,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			if (addr < 0x0040)
 			{
-				if ((value << 11) < core.rom.Length)
+				if ((value << 11) < Core.Rom.Length)
 				{
-					lowbank_2k = value;
+					_lowbank2K = value;
 				}
 				else
 				{
-					lowbank_2k = value & (core.rom.Length >> 11);
+					_lowbank2K = value & (Core.Rom.Length >> 11);
 				}
 			}
+
 			base.WriteMemory(addr, value);
 		}
 	}

@@ -14,11 +14,15 @@ namespace BizHawk.Client.Common
 		public const string AUTHOR = "Author";
 		public const string RERECORDS = "rerecordCount";
 		public const string STARTSFROMSAVESTATE = "StartsFromSavestate";
+		public const string SAVESTATEBINARYBASE64BLOB = "SavestateBinaryBase64Blob"; //this string will not contain base64: ; it's implicit (this is to avoid another big string op to dice off the base64: substring)
 		public const string FOURSCORE = "FourScore";
 		public const string SHA1 = "SHA1";
 		public const string FIRMWARESHA1 = "FirmwareSHA1";
 		public const string PAL = "PAL";
 		public const string BOARDNAME = "BoardName";
+
+		// Core Setting
+		public const string CORE = "Core";
 
 		// Gameboy Settings that affect sync
 		public const string GB_FORCEDMG = "Force_DMG_Mode";

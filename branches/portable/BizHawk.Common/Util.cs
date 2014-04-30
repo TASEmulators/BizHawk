@@ -16,6 +16,18 @@ namespace BizHawk.Common
 			HexConvPtr = (char*)HexConvHandle.AddrOfPinnedObject().ToPointer();
 		}
 
+		public static bool FindBytes(byte[] array, byte[] pattern)
+		{
+			int fidx = 0;
+			int result = Array.FindIndex(array, 0, array.Length, (byte b) =>
+			{
+				fidx = (b == pattern[fidx]) ? fidx + 1 : 0;
+				return (fidx == pattern.Length);
+			});
+
+			return (result >= pattern.Length - 1);
+		}
+
 		public static char* HexConvPtr { get; set; }
 
 		public static string Hash_MD5(byte[] data, int offset, int len)
@@ -193,6 +205,31 @@ namespace BizHawk.Common
 			return ret;
 		}
 
+		public static ushort[] ByteBufferToUshortBuffer(byte[] buf)
+		{
+			int num = buf.Length / 2;
+			var ret = new ushort[num];
+			for (int i = 0; i < num; i++)
+			{
+				ret[i] = (ushort)(buf[i * 2] | (buf[i * 2 + 1] << 8));
+			}
+
+			return ret;
+		}
+
+		public static byte[] UshortBufferToByteBuffer(ushort[] buf)
+		{
+			int num = buf.Length;
+			var ret = new byte[num * 2];
+			for (int i = 0; i < num; i++)
+			{
+				ret[i * 2 + 0] = (byte)(buf[i] & 0xFF);
+				ret[i * 2 + 1] = (byte)((buf[i] >> 8) & 0xFF);
+			}
+
+			return ret;
+		}
+
 		public static uint[] ByteBufferToUintBuffer(byte[] buf)
 		{
 			int num = buf.Length / 4;
@@ -348,10 +385,6 @@ namespace BizHawk.Common
 		{
 			decimal size = filesize;
 
-			const decimal OneKiloByte = 1024M;
-			const decimal OneMegaByte = OneKiloByte * 1024M;
-			decimal OneGigaByte = OneMegaByte * 1024M;
-
 			string suffix;
 			if (size > 1024 * 1024 * 1024)
 			{
@@ -370,7 +403,7 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				suffix = " B";
+				suffix = "B";
 			}
 
 			const string precision = "2";

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -6,16 +7,22 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Atari.Atari2600;
+using BizHawk.Emulation.Cores.Atari.Atari7800;
 using BizHawk.Emulation.Cores.Calculators;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
+using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
+using BizHawk.Emulation.Cores.Sega.Saturn;
+using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Client.EmuHawk
@@ -240,7 +247,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Global.Config.RecentRoms.AutoLoad && !Global.Config.RecentRoms.Empty)
 			{
-				LoadRomFromRecent(Global.Config.RecentRoms[0]);
+				LoadRomFromRecent(Global.Config.RecentRoms.MostRecent);
 			}
 
 			if (cmdMovie != null)
@@ -272,7 +279,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					StartNewMovie(new Movie(Global.Config.RecentMovies[0]), false);
+					StartNewMovie(new Movie(Global.Config.RecentMovies.MostRecent), false);
 				}
 			}
 
@@ -345,9 +352,29 @@ namespace BizHawk.Client.EmuHawk
 				OpenLuaConsole();
 			}
 
+			if (Global.Config.SmsVdpAutoLoad && Global.Emulator is SMS)
+			{
+				GlobalWin.Tools.Load<SmsVDPViewer>();
+			}
+
 			if (Global.Config.PCEBGViewerAutoload && Global.Emulator is PCEngine)
 			{
 				GlobalWin.Tools.Load<PceBgViewer>();
+			}
+
+			if (Global.Config.PceVdpAutoLoad && Global.Emulator is PCEngine)
+			{
+				GlobalWin.Tools.Load<PCETileViewer>();
+			}
+
+			if (Global.Config.RecentPceCdlFiles.AutoLoad && Global.Emulator is PCEngine)
+			{
+				GlobalWin.Tools.Load<PCECDL>();
+			}
+
+			if (Global.Config.GenVdpAutoLoad && Global.Emulator is GPGX)
+			{
+				GlobalWin.Tools.Load<GenVDPViewer>();
 			}
 
 			if (Global.Config.AutoLoadSNESGraphicsDebugger && Global.Emulator is LibsnesCore)
@@ -359,6 +386,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GlobalWin.Tools.LoadTraceLogger();
 				}
+
+			if (Global.Config.Atari2600DebuggerAutoload && Global.Emulator is Atari2600)
+			{
+				GlobalWin.Tools.Load<Atari2600Debugger>();
+			}
 
 			if (Global.Config.DisplayStatusBar == false)
 			{
@@ -435,6 +467,11 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.LuaConsole.ResumeScripts(false);
 			}
 
+				if (Global.Config.DisplayInput) // Input display wants to update even while paused
+				{
+					GlobalWin.DisplayManager.NeedsToPaint = true;
+				}
+
 			StepRunLoop_Core();
 			StepRunLoop_Throttle();
 
@@ -458,12 +495,13 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
+			//NOTE: this gets called twice sometimes. once by using() in Program.cs and once from winforms internals when the form is closed...
+		
 			if (GlobalWin.DisplayManager != null)
 			{
 				GlobalWin.DisplayManager.Dispose();
+				GlobalWin.DisplayManager = null;
 			}
-
-			GlobalWin.DisplayManager = null;
 
 			if (disposing && (components != null))
 			{
@@ -486,6 +524,45 @@ namespace BizHawk.Client.EmuHawk
 		public bool RestoreReadWriteOnStop = false;
 		public bool UpdateFrame = false;
 		public bool EmulatorPaused { get; private set; }
+
+		// Because we don't have enough places where we list SystemID's
+		public Dictionary<string, string> SupportedPlatforms
+		{
+			get
+			{
+				var released = new Dictionary<string, string>
+				{
+					{ "A26", "Atari 2600" },
+					{ "A78", "Atari 7800" },
+
+					{ "NES", "Nintendo Entertainment System/Famicom" },
+					{ "SNES", "Super Nintendo" },
+					{ "N64", "Nintendo 64" },
+
+					{ "GB", "Game Boy" },
+					{ "GBC", "Game Boy Color" },
+
+					{ "SMS", "Sega Master System" },
+					{ "GG", "Sega Game Gear" },
+					{ "SG", "SG-1000" },
+					{ "GEN", "Sega Genesis/Megadrive" },
+					{ "SAT", "Sega Saturn" },
+
+					{ "PCE", "PC Engine/TurboGrafx 16" },
+
+					{ "Coleco", "Colecovision" },
+					{ "TI83", "TI-83 Calculator" }
+				};
+
+				if (VersionInfo.INTERIM)
+				{
+					released.Add("GBA", "Gameboy Advance");
+					released.Add("C64", "Commodore 64");
+				}
+
+				return released;
+			}
+		}
 
 		#endregion
 
@@ -641,12 +718,34 @@ namespace BizHawk.Client.EmuHawk
 			} // foreach event
 
 			// also handle floats
-			conInput.AcceptNewFloats(Input.Instance.GetFloats());
+			conInput.AcceptNewFloats(Input.Instance.GetFloats().Select(o =>
+				{
+					// hackish
+					if (o.Item1 == "WMouse X")
+					{
+						var P = GlobalWin.DisplayManager.UntransformPoint(new System.Drawing.Point((int)o.Item2, 0));
+						float x = P.X / (float)Global.Emulator.VideoProvider.BufferWidth;
+						return new Tuple<string, float>("WMouse X", x * 20000 - 10000);
+		}
+					else if (o.Item1 == "WMouse Y")
+					{
+						var P = GlobalWin.DisplayManager.UntransformPoint(new System.Drawing.Point(0, (int)o.Item2));
+						float y = P.Y / (float)Global.Emulator.VideoProvider.BufferHeight;
+						return new Tuple<string, float>("WMouse Y", y * 20000 - 10000);
+					}
+					else
+					{
+						return o;
+					}
+				}));
 		}
 
 		public void RebootCore()
 		{
+			bool autoSaveState = Global.Config.AutoSavestates;
+			Global.Config.AutoSavestates = false;
 			LoadRom(CurrentlyOpenRom);
+			Global.Config.AutoSavestates = autoSaveState;
 		}
 
 		public void PauseEmulator()
@@ -1044,7 +1143,7 @@ namespace BizHawk.Client.EmuHawk
 			HandleToggleLight();
 		}
 
-		private void UpdateDumpIcon()
+		public void UpdateDumpIcon()
 		{
 			DumpStatusButton.Image = Properties.Resources.Blank;
 			DumpStatusButton.ToolTipText = string.Empty;
@@ -2245,6 +2344,68 @@ namespace BizHawk.Client.EmuHawk
 			return (ModifierKeys & Keys.Alt) != 0 || base.ProcessDialogChar(charCode);
 		}
 
+		private void UpdateCoreStatusBarButton()
+		{
+			if (Global.Emulator is NullEmulator)
+			{
+				CoreNameStatusBarButton.Visible = false;
+				return;
+			}
+
+			CoreNameStatusBarButton.Visible = true;
+			CoreAttributes attributes = Global.Emulator.Attributes();
+
+			CoreNameStatusBarButton.Text =
+				(!attributes.Released ? "(Experimental) " : string.Empty) +
+				attributes.CoreName;
+
+			CoreNameStatusBarButton.ToolTipText = attributes.Ported ? "(ported) " : string.Empty;
+
+			if (!attributes.Ported)
+			{
+				CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.CorpHawkSmall;
+			}
+			else
+			{
+				if (Global.Emulator is QuickNES)
+				{
+					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.QuickNes;
+				}
+				else if (Global.Emulator is LibsnesCore)
+				{
+					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.bsnes;
+				}
+				else if (Global.Emulator is Yabause)
+				{
+					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.yabause;
+				}
+				else if (Global.Emulator is Atari7800)
+				{
+					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.emu7800;
+				}
+				else if (Global.Emulator is GBA)
+				{
+					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.meteor;
+				}
+				else if (Global.Emulator is GPGX)
+				{
+					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.genplus;
+				}
+				else if (Global.Emulator is PSP)
+				{
+					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.ppsspp;
+				}
+				else if (Global.Emulator is Gameboy)
+				{
+					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.gambatte;
+				}
+				else
+				{
+					CoreNameStatusBarButton.Image = null;
+				}
+			}
+		}
+
 		#endregion
 
 		#region Frame Loop
@@ -2774,6 +2935,17 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddMessage(message);
 		}
 
+		private string ChoosePlatformForRom(RomGame rom)
+		{
+			var platformChooser = new PlatformChooser
+			{
+				RomGame = rom
+			};
+
+			platformChooser.ShowDialog();
+			return platformChooser.PlatformChoice;
+		}
+
 		// Still needs a good bit of refactoring
 		public bool LoadRom(string path, bool deterministicemulation = false, bool hasmovie = false)
 		{
@@ -2785,6 +2957,7 @@ namespace BizHawk.Client.EmuHawk
 			var loader = new RomLoader
 			{
 					ChooseArchive = LoadArhiveChooser,
+					ChoosePlatform = ChoosePlatformForRom
 				};
 
 			loader.OnLoadError += ShowLoadError;
@@ -2850,7 +3023,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// restarts the lua console if a different rom is loaded.
 				// im not really a fan of how this is done..
-				if (Global.Config.RecentRoms.Empty || Global.Config.RecentRoms[0] != loader.CanonicalFullPath)
+				if (Global.Config.RecentRoms.Empty || Global.Config.RecentRoms.MostRecent != loader.CanonicalFullPath)
 				{
 					GlobalWin.Tools.Restart<LuaConsole>();
 				}
@@ -2883,6 +3056,7 @@ namespace BizHawk.Client.EmuHawk
 				HandlePlatformMenus();
 				_stateSlots.Clear();
 				UpdateStatusSlots();
+				UpdateCoreStatusBarButton();
 				UpdateDumpIcon();
 
 				Global.Rewinder.CaptureRewindState();
@@ -3009,10 +3183,11 @@ namespace BizHawk.Client.EmuHawk
 
 				RewireSound();
 				Global.Rewinder.ResetRewindBuffer();
-				Text = "BizHawk" + (VersionInfo.INTERIM ? " (interim) " : String.Empty);
+				Text = "BizHawk" + (VersionInfo.INTERIM ? " (interim) " : string.Empty);
 				HandlePlatformMenus();
 				_stateSlots.Clear();
 				UpdateDumpIcon();
+				UpdateCoreStatusBarButton();
 				ToolHelpers.UpdateCheatRelatedTools(null, null);
 			}
 		}
@@ -3057,11 +3232,13 @@ namespace BizHawk.Client.EmuHawk
 		private void gBInSGBToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GB_AsSGB ^= true;
+			FlagNeedsReboot();
 		}
 
 		private void nESInQuickNESToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.NES_InQuickNES ^= true;
+			FlagNeedsReboot();
 		}
 
 		private void batchRunnerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3087,7 +3264,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SMSVDPViewerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.Load<VDPViewer>();
+			GlobalWin.Tools.Load<SmsVDPViewer>();
 		}
 
 		private void codeDataLoggerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3097,8 +3274,27 @@ namespace BizHawk.Client.EmuHawk
 
 		private void vDPViewerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.Load<BizHawk.Client.EmuHawk.tools.Genesis.VDPViewer>();
+			GlobalWin.Tools.Load<GenVDPViewer>();
 	}
 
+		private void extensionsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new FileExtensionPreferences().ShowDialog();
+	}
+
+		private void Atari2600DebuggerMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<Atari2600Debugger>();
+		}
+
+		private void AtariSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			if (!VersionInfo.INTERIM)
+			{
+				Atari2600DebuggerMenuItem.Visible =
+					toolStripSeparator31.Visible = 
+					false;
+			}
+		}
 	}
 }

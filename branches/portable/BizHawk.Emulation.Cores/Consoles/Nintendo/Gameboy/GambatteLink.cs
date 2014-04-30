@@ -9,11 +9,17 @@ using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
+	[CoreAttributes(
+		"DualGambatte",
+		"sinamas/natt",
+		isPorted: true,
+		isReleased: true
+		)]
 	public class GambatteLink : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
 		bool disposed = false;
 
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			var left = L.GetCpuFlagsAndRegisters()
 				.Select(reg => new KeyValuePair<string, int>("Left " + reg.Key, reg.Value));
@@ -21,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			var right = R.GetCpuFlagsAndRegisters()
 				.Select(reg => new KeyValuePair<string, int>("Right " + reg.Key, reg.Value));
 
-			return left.Union(right).ToList();
+			return left.Union(right).ToList().ToDictionary(pair => pair.Key, pair => pair.Value);
 		}
 
 		Gameboy L;

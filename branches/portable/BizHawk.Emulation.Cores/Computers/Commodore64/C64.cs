@@ -6,6 +6,12 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
+	[CoreAttributes(
+		"C64Hawk",
+		"SaxxonPIke",
+		isPorted: false,
+		isReleased: false
+		)]
 	sealed public partial class C64 : IEmulator
 	{
 		// internal variables

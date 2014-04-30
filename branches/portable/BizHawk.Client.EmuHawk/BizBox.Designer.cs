@@ -41,6 +41,10 @@
 			this.label6 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.label36 = new System.Windows.Forms.Label();
+			this.label35 = new System.Windows.Forms.Label();
+			this.linkLabel12 = new System.Windows.Forms.LinkLabel();
+			this.label34 = new System.Windows.Forms.Label();
 			this.label33 = new System.Windows.Forms.Label();
 			this.SaturnLinkLabel = new System.Windows.Forms.LinkLabel();
 			this.label32 = new System.Windows.Forms.Label();
@@ -78,10 +82,6 @@
 			this.label9 = new System.Windows.Forms.Label();
 			this.label8 = new System.Windows.Forms.Label();
 			this.label27 = new System.Windows.Forms.Label();
-			this.label34 = new System.Windows.Forms.Label();
-			this.linkLabel12 = new System.Windows.Forms.LinkLabel();
-			this.label35 = new System.Windows.Forms.Label();
-			this.label36 = new System.Windows.Forms.Label();
 			this.label37 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.panel1.SuspendLayout();
@@ -91,7 +91,7 @@
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.OK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.OK.Location = new System.Drawing.Point(361, 565);
+			this.OK.Location = new System.Drawing.Point(361, 568);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 0;
@@ -102,7 +102,7 @@
 			// pictureBox1
 			// 
 			this.pictureBox1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.corphawk;
-			this.pictureBox1.Location = new System.Drawing.Point(12, 12);
+			this.pictureBox1.Location = new System.Drawing.Point(12, 10);
 			this.pictureBox1.Name = "pictureBox1";
 			this.pictureBox1.Size = new System.Drawing.Size(164, 164);
 			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -113,18 +113,18 @@
 			// 
 			this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabel1.AutoSize = true;
-			this.linkLabel1.Location = new System.Drawing.Point(236, 569);
+			this.linkLabel1.Location = new System.Drawing.Point(236, 572);
 			this.linkLabel1.Name = "linkLabel1";
-			this.linkLabel1.Size = new System.Drawing.Size(115, 13);
+			this.linkLabel1.Size = new System.Drawing.Size(102, 13);
 			this.linkLabel1.TabIndex = 2;
 			this.linkLabel1.TabStop = true;
-			this.linkLabel1.Text = "tasvideos.org/Bizhawk";
+			this.linkLabel1.Text = "Bizhawk Homepage";
 			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(198, 66);
+			this.label1.Location = new System.Drawing.Point(198, 70);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(46, 13);
 			this.label1.TabIndex = 3;
@@ -133,7 +133,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(198, 80);
+			this.label2.Location = new System.Drawing.Point(198, 85);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(149, 13);
 			this.label2.TabIndex = 4;
@@ -143,7 +143,7 @@
 			// 
 			this.label3.AutoSize = true;
 			this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label3.Location = new System.Drawing.Point(197, 12);
+			this.label3.Location = new System.Drawing.Point(197, 10);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(78, 20);
 			this.label3.TabIndex = 5;
@@ -153,7 +153,7 @@
 			// 
 			this.label4.AutoSize = true;
 			this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label4.Location = new System.Drawing.Point(201, 36);
+			this.label4.Location = new System.Drawing.Point(206, 31);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(156, 16);
 			this.label4.TabIndex = 6;
@@ -162,7 +162,7 @@
 			// VersionLabel
 			// 
 			this.VersionLabel.AutoSize = true;
-			this.VersionLabel.Location = new System.Drawing.Point(201, 56);
+			this.VersionLabel.Location = new System.Drawing.Point(198, 52);
 			this.VersionLabel.Name = "VersionLabel";
 			this.VersionLabel.Size = new System.Drawing.Size(0, 13);
 			this.VersionLabel.TabIndex = 7;
@@ -170,7 +170,7 @@
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(198, 101);
+			this.label5.Location = new System.Drawing.Point(198, 105);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(66, 13);
 			this.label5.TabIndex = 8;
@@ -179,7 +179,7 @@
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(198, 115);
+			this.label6.Location = new System.Drawing.Point(198, 119);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(217, 13);
 			this.label6.TabIndex = 9;
@@ -188,7 +188,7 @@
 			// label7
 			// 
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(198, 129);
+			this.label7.Location = new System.Drawing.Point(198, 133);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(216, 13);
 			this.label7.TabIndex = 10;
@@ -240,10 +240,48 @@
 			this.panel1.Controls.Add(this.label10);
 			this.panel1.Controls.Add(this.label9);
 			this.panel1.Controls.Add(this.label8);
-			this.panel1.Location = new System.Drawing.Point(12, 182);
+			this.panel1.Location = new System.Drawing.Point(12, 185);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(423, 377);
 			this.panel1.TabIndex = 11;
+			// 
+			// label36
+			// 
+			this.label36.AutoSize = true;
+			this.label36.Location = new System.Drawing.Point(211, 311);
+			this.label36.Name = "label36";
+			this.label36.Size = new System.Drawing.Size(91, 13);
+			this.label36.TabIndex = 42;
+			this.label36.Text = "author: ekeeke31";
+			// 
+			// label35
+			// 
+			this.label35.AutoSize = true;
+			this.label35.Location = new System.Drawing.Point(212, 298);
+			this.label35.Name = "label35";
+			this.label35.Size = new System.Drawing.Size(28, 13);
+			this.label35.TabIndex = 41;
+			this.label35.Text = "r580";
+			// 
+			// linkLabel12
+			// 
+			this.linkLabel12.AutoSize = true;
+			this.linkLabel12.Location = new System.Drawing.Point(212, 285);
+			this.linkLabel12.Name = "linkLabel12";
+			this.linkLabel12.Size = new System.Drawing.Size(84, 13);
+			this.linkLabel12.TabIndex = 40;
+			this.linkLabel12.TabStop = true;
+			this.linkLabel12.Text = "Genesis Plus Gx";
+			this.linkLabel12.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel12_LinkClicked);
+			// 
+			// label34
+			// 
+			this.label34.AutoSize = true;
+			this.label34.Location = new System.Drawing.Point(204, 272);
+			this.label34.Name = "label34";
+			this.label34.Size = new System.Drawing.Size(73, 13);
+			this.label34.TabIndex = 39;
+			this.label34.Text = "GenesisHawk";
 			// 
 			// label33
 			// 
@@ -594,54 +632,16 @@
 			// label27
 			// 
 			this.label27.AutoSize = true;
-			this.label27.Location = new System.Drawing.Point(198, 143);
+			this.label27.Location = new System.Drawing.Point(198, 147);
 			this.label27.Name = "label27";
 			this.label27.Size = new System.Drawing.Size(149, 13);
 			this.label27.TabIndex = 12;
 			this.label27.Text = "SaxxonPike, MasterofPuppets";
 			// 
-			// label34
-			// 
-			this.label34.AutoSize = true;
-			this.label34.Location = new System.Drawing.Point(204, 272);
-			this.label34.Name = "label34";
-			this.label34.Size = new System.Drawing.Size(73, 13);
-			this.label34.TabIndex = 39;
-			this.label34.Text = "GenesisHawk";
-			// 
-			// linkLabel12
-			// 
-			this.linkLabel12.AutoSize = true;
-			this.linkLabel12.Location = new System.Drawing.Point(212, 285);
-			this.linkLabel12.Name = "linkLabel12";
-			this.linkLabel12.Size = new System.Drawing.Size(84, 13);
-			this.linkLabel12.TabIndex = 40;
-			this.linkLabel12.TabStop = true;
-			this.linkLabel12.Text = "Genesis Plus Gx";
-			this.linkLabel12.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel12_LinkClicked);
-			// 
-			// label35
-			// 
-			this.label35.AutoSize = true;
-			this.label35.Location = new System.Drawing.Point(212, 298);
-			this.label35.Name = "label35";
-			this.label35.Size = new System.Drawing.Size(28, 13);
-			this.label35.TabIndex = 41;
-			this.label35.Text = "r580";
-			// 
-			// label36
-			// 
-			this.label36.AutoSize = true;
-			this.label36.Location = new System.Drawing.Point(211, 311);
-			this.label36.Name = "label36";
-			this.label36.Size = new System.Drawing.Size(91, 13);
-			this.label36.TabIndex = 42;
-			this.label36.Text = "author: ekeeke31";
-			// 
 			// label37
 			// 
 			this.label37.AutoSize = true;
-			this.label37.Location = new System.Drawing.Point(198, 158);
+			this.label37.Location = new System.Drawing.Point(198, 162);
 			this.label37.Name = "label37";
 			this.label37.Size = new System.Drawing.Size(96, 13);
 			this.label37.TabIndex = 13;

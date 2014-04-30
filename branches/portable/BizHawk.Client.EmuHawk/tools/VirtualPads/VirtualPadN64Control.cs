@@ -29,7 +29,8 @@ namespace BizHawk.Client.EmuHawk
 					TabIndex = 5,
 					Text = "Power",
 					TextAlign = ContentAlignment.BottomCenter,
-					UseVisualStyleBackColor = true
+					UseVisualStyleBackColor = true,
+					TabStop = false
 				};
 			B1.CheckedChanged += Buttons_CheckedChanged;
 			B1.ForeColor = Color.Red;
@@ -42,7 +43,8 @@ namespace BizHawk.Client.EmuHawk
 					TabIndex = 6,
 					Text = "Reset",
 					TextAlign = ContentAlignment.BottomCenter,
-					UseVisualStyleBackColor = true
+					UseVisualStyleBackColor = true,
+					TabStop = false
 				};
 			B2.CheckedChanged += Buttons_CheckedChanged;
 			B2.ForeColor = Color.Red;

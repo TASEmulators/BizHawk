@@ -33,9 +33,21 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	TIA registers at 00-3F or 40-7F without incurring any overhead.
 	*/
 
-	class mX07 : MapperBase
+	internal class mX07 : MapperBase
 	{
-		int rombank_2k;
+		private int _rombank2K;
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("rombank_2k", ref _rombank2K);
+		}
+
+		public override void HardReset()
+		{
+			_rombank2K = 0;
+			base.HardReset();
+		}
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -48,10 +60,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				return base.ReadMemory(addr);
 			}
-			else
-			{
-				return core.rom[(rombank_2k << 12) + (addr & 0xFFF)];
-			}
+			
+			return Core.Rom[(_rombank2K << 12) + (addr & 0xFFF)];
 		}
 
 		public override byte ReadMemory(ushort addr)
@@ -67,33 +77,30 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public override void WriteMemory(ushort addr, byte value)
 		{
 			Address(addr);
-			if (addr < 0x1000) base.WriteMemory(addr, value);
+			if (addr < 0x1000)
+			{
+				base.WriteMemory(addr, value);
+			}
 		}
 
-		public override void SyncState(Serializer ser)
-		{
-			base.SyncState(ser);
-			ser.Sync("rombank_2k", ref rombank_2k);
-		}
-
-		void Address(ushort addr)
+		private void Address(ushort addr)
 		{
 			if ((addr & 0x180F) == 0x080D)
 			{
-				bank((addr & 0xF0) >> 4);
+				Bank((addr & 0xF0) >> 4);
 			}
 			else if ((addr & 0x1880) == 0)
 			{
-				if ((rombank_2k & 0xE) == 0xE)
+				if ((_rombank2K & 0xE) == 0xE)
 				{
-					bank(((addr & 0x40) >> 6) | (rombank_2k & 0xE));
+					Bank(((addr & 0x40) >> 6) | (_rombank2K & 0xE));
 				}
 			}
 		}
 
-		private void bank(int bank)
+		private void Bank(int bank)
 		{
-			rombank_2k = (bank & 0x0F);
+			_rombank2K = bank & 0x0F;
 		}
 	}
 }

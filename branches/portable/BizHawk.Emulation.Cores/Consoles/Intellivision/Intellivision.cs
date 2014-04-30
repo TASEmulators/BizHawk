@@ -7,6 +7,12 @@ using BizHawk.Emulation.Cores.Components.CP1610;
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {
+	[CoreAttributes(
+		"IntelliHawk",
+		"BrandonE",
+		isPorted: false,
+		isReleased: false
+		)]
 	public sealed partial class Intellivision : IEmulator
 	{
 		byte[] Rom;
@@ -17,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		STIC Stic;
 		PSG Psg;
 
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			throw new NotImplementedException();
 		}

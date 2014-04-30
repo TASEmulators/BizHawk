@@ -1315,6 +1315,21 @@ void ReleaseGfx ()
 extern "C" {
 #endif
 
+EXPORT void* CALL GetScreenTextureID()
+{
+	//__asm int 3;
+ // GrLfbInfo_t info;
+ // info.size = sizeof(GrLfbInfo_t);
+ // if (grLfbLock (GR_LFB_READ_ONLY,
+ //   GR_BUFFER_BACKBUFFER,
+ //   GR_LFBWRITEMODE_888,
+ //   GR_ORIGIN_UPPER_LEFT,
+ //   FXFALSE,
+ //   &info))
+
+	return NULL;
+}
+
 EXPORT void CALL ReadScreen2(void *dest, int *width, int *height, int front)
 {
   VLOG("CALL ReadScreen2 ()\n");

@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 		public int ColumnWidth = 280;
 		public int LabelWidth = 60;
 
-		protected List<InputWidget> Inputs = new List<InputWidget>();
+		protected List<InputCompositeWidget> Inputs = new List<InputCompositeWidget>();
 		protected List<Label> Labels = new List<Label>();
 
 		private Size _panelSize = new Size(0, 0);
@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var saveto = SaveConfigObject ?? RealConfigObject;
 			for (int button = 0; button < buttons.Count; button++)
-				saveto[buttons[button]] = Inputs[button].Text;
+				saveto[buttons[button]] = Inputs[button].Bindings;
 		}
 
 		public bool Autotab = false;
@@ -109,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 					x += ColumnWidth;
 				}
 
-				InputWidget iw = new InputWidget
+				InputCompositeWidget iw = new InputCompositeWidget
 				{
 					Location = new Point(x, y),
 					Size = new Size(InputSize, 23),

@@ -613,8 +613,8 @@
       "Power": ""
     },
     "Atari 2600 Basic Controller": {
-      "Reset": "",
-      "Select": "",
+      "Reset": "D",
+      "Select": "S",
       "P1 Up": "",
       "P1 Down": "",
       "P1 Left": "",

@@ -243,6 +243,44 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public byte? GetByteVal(int addr)
+		{
+			if (!Contains(addr))
+			{
+				return null;
+			}
+
+			switch (_watch.Size)
+			{
+				default:
+				case Watch.WatchSize.Separator:
+				case Watch.WatchSize.Byte:
+					return (byte?)_val;
+				case Watch.WatchSize.Word:
+					if (addr == (_watch.Address ?? 0))
+					{
+						return (byte)(_val >> 8);
+					}
+
+					return (byte)(_val & 0xFF);
+				case Watch.WatchSize.DWord:
+					if (addr == (_watch.Address ?? 0))
+					{
+						return (byte)((_val >> 24) & 0xFF);
+					}
+					else if (addr == (_watch.Address ?? 0) + 1)
+					{
+						return (byte)((_val >> 16) & 0xFF);
+					}
+					else if (addr == ((_watch.Address ?? 0)) + 2)
+					{
+						return (byte)((_val >> 8) & 0xFF);
+					}
+
+					return (byte)(_val & 0xFF);
+			}
+		}
+
 		public void Increment()
 		{
 			if (!IsSeparator)

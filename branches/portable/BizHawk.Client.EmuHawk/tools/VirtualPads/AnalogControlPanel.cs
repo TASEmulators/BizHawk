@@ -52,8 +52,8 @@ namespace BizHawk.Client.EmuHawk
 		private int GFXToReal(int val)
 		{
 			int ret = (val * 2);
-			if (ret > 127) ret = 127;
-			if (ret < -128) ret = -128;
+            if (ret > Max) ret = Max;
+            if (ret < Min) ret = Min;
 			return ret;
 		}
 
@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			Refresh();
 		}
 
-		public static int Max = 127;
-		public static int Min = -127;
+		public static int Max;
+		public static int Min;
 	}
 }

@@ -76,6 +76,7 @@ namespace BizHawk.Client.EmuHawk
 			_guiLibrary.Dispose();
 		}
 
+
 		public void LuaRegister(Lua lua)
 		{
 			lua.RegisterFunction("print", this, GetType().GetMethod("Print"));
@@ -101,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 			new SavestateLuaLibrary().LuaRegister(lua, Docs);
 			new SnesLuaLibrary().LuaRegister(lua, Docs);
 			new StringLuaLibrary().LuaRegister(lua, Docs);
-
+			new GameInfoLuaLibrary(_lua).LuaRegister(lua, Docs);
 			Docs.Sort();
 		}
 
@@ -135,9 +136,9 @@ namespace BizHawk.Client.EmuHawk
 			return result;
 		}
 
-		public void Print(string s)
+		public static void Print(params object[] outputs)
 		{
-			_caller.ConsoleLog(s);
+			ConsoleLuaLibrary.Log(outputs);
 		}
 
 		private void Frameadvance()

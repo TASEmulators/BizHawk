@@ -35,6 +35,15 @@ namespace BizHawk.Client.Common
 			HotkeyBindings.ResolveWithDefaults();
 		}
 
+		// Core preference for generic file extension, key: file extension, value: a systemID or empty if no preference
+		public Dictionary<string, string> PreferredPlatformsForExtensions = new Dictionary<string, string>
+		{
+			{ ".bin", "" },
+			{ ".rom", "" },
+			{ ".iso", "" },
+			{ ".img", "" },
+		};
+
 		// Path Settings ************************************/
 		public bool UseRecentForROMs = false;
 		public string LastRomPath = ".";
@@ -54,6 +63,8 @@ namespace BizHawk.Client.Common
 		public int TargetZoomFactor = 2;
 		public int TargetScanlineFilterIntensity = 128; // choose between 0 and 256
 		public int TargetDisplayFilter = 0;
+		public int DispFinalFilter = 0;
+		public string DispUserFilterPath = "";
 		public RecentFiles RecentRoms = new RecentFiles(8);
 		public bool PauseWhenMenuActivated = true;
 		public bool SaveWindowPosition = true;
@@ -155,7 +166,10 @@ namespace BizHawk.Client.Common
 		public int DispAutoholdx = 0;
 		public int DispAutoholdy = 0;
 		public int DispAutoholdanchor = 1;
+		
 		public bool DispBlurry = false; // make display look ugly
+		public bool DispFixAspectRatio = true;
+		public bool DispFixScaleInteger = false;
 
 		// Sound options
 		public bool SoundEnabled = true;
@@ -348,6 +362,18 @@ namespace BizHawk.Client.Common
 
 		#endregion
 
+		// SMS VDP Viewer Settings
+		public ToolDialogSettings SmsVdpSettings = new ToolDialogSettings();
+		public bool SmsVdpAutoLoad = false;
+
+		// PCE VDP Viewer Settings
+		public ToolDialogSettings PceVdpSettings = new ToolDialogSettings();
+		public bool PceVdpAutoLoad = false;
+
+		// Genesis VDP Viewer Settings
+		public ToolDialogSettings GenVdpSettings = new ToolDialogSettings();
+		public bool GenVdpAutoLoad = false;
+
 		// NESPPU Settings
 		public ToolDialogSettings NesPPUSettings = new ToolDialogSettings();
 		public bool AutoLoadNESPPU = false;
@@ -387,6 +413,10 @@ namespace BizHawk.Client.Common
 		public ToolDialogSettings PceBgViewerSettings = new ToolDialogSettings();
 		public bool PCEBGViewerAutoload = false;
 		public int PCEBGViewerRefreshRate = 16;
+
+		// PCE CDL settings
+		public ToolDialogSettings PceCdlSettings = new ToolDialogSettings();
+		public RecentFiles RecentPceCdlFiles = new RecentFiles(8);
 
 		#region Cheats Dialog
 
@@ -491,7 +521,7 @@ namespace BizHawk.Client.Common
 		//Play Movie Dialog
 		public bool PlayMovie_IncludeSubdir = true;
 		public bool PlayMovie_ShowStateFiles = false;
-		public bool PlayMovie_MatchGameName = false;
+		public bool PlayMovie_MatchHash = false;
 
 		//TI83
 		public ToolDialogSettings TI83KeypadSettings = new ToolDialogSettings();
@@ -499,6 +529,10 @@ namespace BizHawk.Client.Common
 		public bool TI83ToolTips = true;
 
 		public BindingCollection HotkeyBindings = new BindingCollection();
+
+		// Atari 2600 Debugger
+		public ToolDialogSettings Atari2600DebuggerSettings = new ToolDialogSettings();
+		public bool Atari2600DebuggerAutoload = false;
 
 		// Analog Hotkey values
 		public int Analog_LargeChange = 10;

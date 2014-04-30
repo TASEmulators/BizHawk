@@ -3,6 +3,8 @@ using System.IO;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Sega.Genesis;
 using BizHawk.Emulation.Cores.Sega.Saturn;
@@ -50,9 +52,19 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (!record && Global.Emulator.SystemId == "NES")
 				{
-					var s = new Emulation.Cores.Nintendo.NES.NES.NESSyncSettings();
-					s.BoardProperties = new System.Collections.Generic.Dictionary<string, string>(Global.MovieSession.Movie.Header.BoardProperties);
-					this._syncSettingsHack = s;
+					var quicknesName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(QuickNES), typeof(CoreAttributes))).CoreName;
+					if (Global.MovieSession.Movie.Header[HeaderKeys.CORE] == quicknesName)
+					{
+						Global.Config.NES_InQuickNES = true;
+						var qs = new QuickNES.QuickNESSettings();
+						this._syncSettingsHack = qs;
+					}
+					else //Else assume Neshawk
+					{
+						var s = new Emulation.Cores.Nintendo.NES.NES.NESSyncSettings();
+						s.BoardProperties = new System.Collections.Generic.Dictionary<string, string>(Global.MovieSession.Movie.Header.BoardProperties);
+						this._syncSettingsHack = s;
+					}
 				}
 				else if (!record && Global.Emulator is Emulation.Cores.Consoles.Sega.gpgx.GPGX)
 				{
@@ -81,7 +93,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.MovieSession.Movie.Header.StartsFromSavestate)
 			{
-				LoadState(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
+				byte[] state = Convert.FromBase64String(Global.MovieSession.Movie.Header.SavestateBinaryBase64Blob);
+				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(state)));
 				Global.Emulator.ResetCounters();
 			}
 
@@ -164,7 +177,8 @@ namespace BizHawk.Client.EmuHawk
 				LoadRom(CurrentlyOpenRom, true, true);
 				if (Global.MovieSession.Movie.Header.StartsFromSavestate)
 				{
-					LoadState(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
+					byte[] state = Convert.FromBase64String(Global.MovieSession.Movie.Header.SavestateBinaryBase64Blob);
+					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(state)));
 					Global.Emulator.ResetCounters();
 				}
 

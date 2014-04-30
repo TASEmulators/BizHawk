@@ -16,19 +16,56 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		Magicard
 	 */
 
-	class mCV: MapperBase
+	internal class mCV: MapperBase
 	{
-		ByteBuffer aux_ram = new ByteBuffer(1024);
-		
+		private ByteBuffer _ram = new ByteBuffer(1024);
+
+		public override bool HasCartRam
+		{
+			get { return true; }
+		}
+
+		public override ByteBuffer CartRam
+		{
+			get { return _ram; }
+		}
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("aux_ram", ref _ram);
+		}
+
+		public override void HardReset()
+		{
+			_ram = new ByteBuffer(1024);
+			base.HardReset();
+		}
+
+		public override void Dispose()
+		{
+			base.Dispose();
+			_ram.Dispose();
+		}
+
 		public override byte ReadMemory(ushort addr)
 		{
 			if (addr < 0x1000)
+			{
 				return base.ReadMemory(addr);
-			else if (addr < 0x1400)
-				return aux_ram[(addr & 0x3FF)];
-			else if (addr >= 0x1800 && addr < 0x2000)
-				return core.rom[(addr & 0x7FF)];
-			else return base.ReadMemory(addr);
+			}
+			
+			if (addr < 0x1400)
+			{
+				return _ram[(addr & 0x3FF)];
+			}
+			
+			if (addr >= 0x1800 && addr < 0x2000)
+			{
+				return Core.Rom[(addr & 0x7FF)];
+			}
+			
+			return base.ReadMemory(addr);
 		}
 
 		public override byte PeekMemory(ushort addr)
@@ -39,15 +76,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public override void WriteMemory(ushort addr, byte value)
 		{
 			if (addr < 0x1000)
+			{
 				base.WriteMemory(addr, value);
+			}
 			else if (addr >= 0x1400 && addr < 0x1800)
-				aux_ram[(addr & 0x3FF)] = value;
-		}
-
-		public override void SyncState(Serializer ser)
-		{
-			base.SyncState(ser);
-			ser.Sync("aux_ram", ref aux_ram);
+			{
+				_ram[(addr & 0x3FF)] = value;
+			}
 		}
 	}
 }

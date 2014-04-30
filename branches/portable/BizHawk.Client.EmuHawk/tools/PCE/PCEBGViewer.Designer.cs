@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PceBgViewer));
 			this.PceBgViewerMenu = new MenuStripEx();
 			this.ViewerSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.VDC1MenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -37,6 +38,8 @@
 			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.canvas = new BizHawk.Client.EmuHawk.PCEBGCanvas();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
@@ -51,8 +54,6 @@
 			this.TileIDLabel = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
-			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PceBgViewerMenu.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.groupBox5.SuspendLayout();
@@ -136,6 +137,20 @@
 			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.SaveWindowPositionMenuItem.Text = "&Save Window position";
 			this.SaveWindowPositionMenuItem.Click += new System.EventHandler(this.SaveWindowPositionMenuItem_Click);
+			// 
+			// AlwaysOnTopMenuItem
+			// 
+			this.AlwaysOnTopMenuItem.Name = "AlwaysOnTopMenuItem";
+			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.AlwaysOnTopMenuItem.Text = "Always On Top";
+			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
+			// 
+			// FloatingWindowMenuItem
+			// 
+			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
+			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.FloatingWindowMenuItem.Text = "Floating Window";
+			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
 			// 
 			// groupBox1
 			// 
@@ -277,20 +292,6 @@
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Tile ID:";
 			// 
-			// AlwaysOnTopMenuItem
-			// 
-			this.AlwaysOnTopMenuItem.Name = "AlwaysOnTopMenuItem";
-			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.AlwaysOnTopMenuItem.Text = "Always On Top";
-			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
-			// 
-			// FloatingWindowMenuItem
-			// 
-			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
-			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.FloatingWindowMenuItem.Text = "Floating Window";
-			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
-			// 
 			// PceBgViewer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -300,9 +301,9 @@
 			this.Controls.Add(this.groupBox5);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.PceBgViewerMenu);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.PceBgViewerMenu;
 			this.Name = "PceBgViewer";
-			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Background Viewer";
 			this.Load += new System.EventHandler(this.PceBgViewer_Load);

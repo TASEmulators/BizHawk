@@ -13,6 +13,11 @@ namespace BizHawk.Client.EmuHawk
 		public HotkeyConfig()
 		{
 			InitializeComponent();
+
+			Closing += (o, e) =>
+			{
+				IDB_SAVE.Focus(); // A very dirty hack to avoid https://code.google.com/p/bizhawk/issues/detail?id=161
+			};
 		}
 
 		private void NewHotkeyWindow_Load(object sender, EventArgs e)
@@ -59,22 +64,22 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var w in InputWidgets)
 			{
 				var b = Global.Config.HotkeyBindings.FirstOrDefault(x => x.DisplayName == w.WidgetName);
-				b.Bindings = w.Text;
+				b.Bindings = w.Bindings;
 			}
 		}
 
-		private IEnumerable<InputWidget> InputWidgets
+		private IEnumerable<InputCompositeWidget> InputWidgets
 		{
 			get
 			{
-				var widgets = new List<InputWidget>();
+				var widgets = new List<InputCompositeWidget>();
 				for (var x = 0; x < HotkeyTabControl.TabPages.Count; x++)
 				{
 					for (var y = 0; y < HotkeyTabControl.TabPages[x].Controls.Count; y++)
 					{
-						if (HotkeyTabControl.TabPages[x].Controls[y] is InputWidget)
+						if (HotkeyTabControl.TabPages[x].Controls[y] is InputCompositeWidget)
 						{
-							widgets.Add(HotkeyTabControl.TabPages[x].Controls[y] as InputWidget);
+							widgets.Add(HotkeyTabControl.TabPages[x].Controls[y] as InputCompositeWidget);
 						}
 					}
 				}
@@ -110,7 +115,7 @@ namespace BizHawk.Client.EmuHawk
 						Width = iwOffsetX - 2,
 					};
 
-					var w = new InputWidget
+					var w = new InputCompositeWidget
 						{
 						Bindings = b.Bindings,
 						Location = new Point(_x + iwOffsetX, _y + iwOffsetY),
@@ -139,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var w in InputWidgets)
 			{
 				var b = Global.Config.HotkeyBindings.FirstOrDefault(x => x.DisplayName == w.WidgetName);
-				if (b != null) w.Text = b.DefaultBinding;
+				if (b != null) w.Bindings = b.DefaultBinding;
 			}
 		}
 

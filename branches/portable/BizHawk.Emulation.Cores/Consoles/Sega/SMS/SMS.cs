@@ -19,6 +19,12 @@ using BizHawk.Emulation.Cores.Components.Z80;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
+	[CoreAttributes(
+		"SMSHawk",
+		"Vecna",
+		isPorted: false,
+		isReleased: true
+		)]
 	public sealed partial class SMS : IEmulator
 	{
 		// Constants
@@ -332,9 +338,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public bool BinarySaveStatesPreferred { get { return false; } }
 		public void SaveStateBinary(BinaryWriter bw) { SyncState(Serializer.CreateBinaryWriter(bw)); }
-		public void LoadStateBinary(BinaryReader br) { SyncState(Serializer.CreateBinaryReader(br)); PostLoadState(); }
+		public void LoadStateBinary(BinaryReader br) { SyncState(Serializer.CreateBinaryReader(br)); }
 		public void SaveStateText(TextWriter tw) { SyncState(Serializer.CreateTextWriter(tw)); }
-		public void LoadStateText(TextReader tr) { SyncState(Serializer.CreateTextReader(tr)); PostLoadState(); }
+		public void LoadStateText(TextReader tr) { SyncState(Serializer.CreateTextReader(tr)); }
 		
 		void SyncState(Serializer ser)
 		{
@@ -367,14 +373,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			ser.Sync("IsLag", ref isLag);
 
 			ser.EndSection();
-		}
-
-		void PostLoadState()
-		{
-			Vdp.PostLoadState();
-			PSG.PostLoadState();
-			if (HasYM2413)
-				YM2413.PostLoadState();
 		}
 
 		byte[] stateBuffer;
@@ -475,40 +473,40 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
-			return new List<KeyValuePair<string, int>>
+			return new Dictionary<string, int>
 			{
-				new KeyValuePair<string, int>("A", Cpu.RegisterA),
-				new KeyValuePair<string, int>("AF", Cpu.RegisterAF),
-				new KeyValuePair<string, int>("B", Cpu.RegisterB),
-				new KeyValuePair<string, int>("BC", Cpu.RegisterBC),
-				new KeyValuePair<string, int>("C", Cpu.RegisterC),
-				new KeyValuePair<string, int>("D", Cpu.RegisterD),
-				new KeyValuePair<string, int>("DE", Cpu.RegisterDE),
-				new KeyValuePair<string, int>("E", Cpu.RegisterE),
-				new KeyValuePair<string, int>("F", Cpu.RegisterF),
-				new KeyValuePair<string, int>("H", Cpu.RegisterH),
-				new KeyValuePair<string, int>("HL", Cpu.RegisterHL),
-				new KeyValuePair<string, int>("I", Cpu.RegisterI),
-				new KeyValuePair<string, int>("IX", Cpu.RegisterIX),
-				new KeyValuePair<string, int>("IY", Cpu.RegisterIY),
-				new KeyValuePair<string, int>("L", Cpu.RegisterL),
-				new KeyValuePair<string, int>("PC", Cpu.RegisterPC),
-				new KeyValuePair<string, int>("R", Cpu.RegisterR),
-				new KeyValuePair<string, int>("Shadow AF", Cpu.RegisterShadowAF),
-				new KeyValuePair<string, int>("Shadow BC", Cpu.RegisterShadowBC),
-				new KeyValuePair<string, int>("Shadow DE", Cpu.RegisterShadowDE),
-				new KeyValuePair<string, int>("Shadow HL", Cpu.RegisterShadowHL),
-				new KeyValuePair<string, int>("SP", Cpu.RegisterSP),
-				new KeyValuePair<string, int>("Flag C", Cpu.RegisterF.Bit(0) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag N", Cpu.RegisterF.Bit(1) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag P/V", Cpu.RegisterF.Bit(2) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag 3rd", Cpu.RegisterF.Bit(3) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag H", Cpu.RegisterF.Bit(4) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag 5th", Cpu.RegisterF.Bit(5) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag Z", Cpu.RegisterF.Bit(6) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag S", Cpu.RegisterF.Bit(7) ? 1 : 0),
+				{ "A", Cpu.RegisterA },
+				{ "AF", Cpu.RegisterAF },
+				{ "B", Cpu.RegisterB },
+				{ "BC", Cpu.RegisterBC },
+				{ "C", Cpu.RegisterC },
+				{ "D", Cpu.RegisterD },
+				{ "DE", Cpu.RegisterDE },
+				{ "E", Cpu.RegisterE },
+				{ "F", Cpu.RegisterF },
+				{ "H", Cpu.RegisterH },
+				{ "HL", Cpu.RegisterHL },
+				{ "I", Cpu.RegisterI },
+				{ "IX", Cpu.RegisterIX },
+				{ "IY", Cpu.RegisterIY },
+				{ "L", Cpu.RegisterL },
+				{ "PC", Cpu.RegisterPC },
+				{ "R", Cpu.RegisterR },
+				{ "Shadow AF", Cpu.RegisterShadowAF },
+				{ "Shadow BC", Cpu.RegisterShadowBC },
+				{ "Shadow DE", Cpu.RegisterShadowDE },
+				{ "Shadow HL", Cpu.RegisterShadowHL },
+				{ "SP", Cpu.RegisterSP },
+				{ "Flag C", Cpu.RegisterF.Bit(0) ? 1 : 0 },
+				{ "Flag N", Cpu.RegisterF.Bit(1) ? 1 : 0 },
+				{ "Flag P/V", Cpu.RegisterF.Bit(2) ? 1 : 0 },
+				{ "Flag 3rd", Cpu.RegisterF.Bit(3) ? 1 : 0 },
+				{ "Flag H", Cpu.RegisterF.Bit(4) ? 1 : 0 },
+				{ "Flag 5th", Cpu.RegisterF.Bit(5) ? 1 : 0 },
+				{ "Flag Z", Cpu.RegisterF.Bit(6) ? 1 : 0 },
+				{ "Flag S", Cpu.RegisterF.Bit(7) ? 1 : 0 },
 			};
 		}
 

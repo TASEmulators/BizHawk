@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	FA (RAM Plus)
 	-----
 
-	CBS Thought they'd throw a few tricks of their own at the 2600 with this.  It's got
+	CBS Thought they'd throw a few tricks of their own at the 2600 with   It's got
 	12K of ROM and 256 bytes of RAM.
 
 	This works similar to F8, except there's only 3 4K ROM banks.  The banks are selected by
@@ -14,10 +14,30 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	The write port is at 1000-10FF, and the read port is 1100-11FF.
 	 */
 
-	class mFA : MapperBase 
+	internal class mFA : MapperBase 
 	{
-		int toggle;
-		ByteBuffer aux_ram = new ByteBuffer(256);
+		private int _toggle;
+		private ByteBuffer _ram = new ByteBuffer(256);
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("toggle", ref _toggle);
+			ser.Sync("auxRam", ref _ram);
+		}
+
+		public override void Dispose()
+		{
+			_ram.Dispose();
+			base.Dispose();
+		}
+
+		public override void HardReset()
+		{
+			_toggle = 0;
+			_ram = new ByteBuffer(128);
+			base.HardReset();
+		}
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -30,18 +50,18 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				return base.ReadMemory(addr);
 			}
-			else if (addr < 0x1100)
+			
+			if (addr < 0x1100)
 			{
 				return 0xFF;
 			}
-			else if (addr < 0x1200)
+			
+			if (addr < 0x1200)
 			{
-				return aux_ram[addr & 0xFF];
+				return _ram[addr & 0xFF];
 			}
-			else
-			{
-				return core.rom[(toggle << 12) + (addr & 0xFFF)];
-			}
+			
+			return Core.Rom[(_toggle << 12) + (addr & 0xFFF)];
 		}
 
 		public override byte ReadMemory(ushort addr)
@@ -57,24 +77,21 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public override void WriteMemory(ushort addr, byte value)
 		{
 			Address(addr);
-			if (addr < 0x1000) 
+			if (addr < 0x1000)
+			{
 				base.WriteMemory(addr, value);
-			else if (addr < 0x1100) 
-				aux_ram[addr & 0xFF] = value;
+			}
+			else if (addr < 0x1100)
+			{
+				_ram[addr & 0xFF] = value;
+			}
 		}
 
-		public override void SyncState(Serializer ser)
+		private void Address(ushort addr)
 		{
-			base.SyncState(ser);
-			ser.Sync("toggle", ref toggle);
-			ser.Sync("ram", ref aux_ram);
-		}
-
-		void Address(ushort addr)
-		{
-			if (addr == 0x1FF8) toggle = 0;
-			if (addr == 0x1FF9) toggle = 1;
-			if (addr == 0x1FFA) toggle = 2;
+			if (addr == 0x1FF8) _toggle = 0;
+			if (addr == 0x1FF9) _toggle = 1;
+			if (addr == 0x1FFA) _toggle = 2;
 		}
 	}
 }

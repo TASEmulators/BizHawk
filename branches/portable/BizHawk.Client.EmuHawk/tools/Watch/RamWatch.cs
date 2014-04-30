@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore
 		{
-			get { return true; }
+			get { return false; }
 		}
 
 		#endregion
@@ -208,16 +208,15 @@ namespace BizHawk.Client.EmuHawk
 
 				if (Global.Config.DisplayRamWatch)
 				{
-					for (var x = 0; x < _watches.Count; x++)
+					for (var i = 0; i < _watches.Count; i++)
 					{
-						var alert = !_watches[x].IsSeparator && Global.CheatList.IsActive(_watches[x].Domain, _watches[x].Address ?? 0);
+						var frozen = !_watches[i].IsSeparator && Global.CheatList.IsActive(_watches[i].Domain, _watches[i].Address ?? 0);
 						GlobalWin.OSD.AddGUIText(
-							_watches[x].ToString(),
+							_watches[i].ToString(),
 							Global.Config.DispRamWatchx,
-							Global.Config.DispRamWatchy + (x * 14),
-							alert,
+							Global.Config.DispRamWatchy + (i * 14),
 							Color.Black,
-							Color.White,
+							frozen ? Color.Cyan : Color.White,
 							0
 						);
 					}
@@ -724,10 +723,7 @@ namespace BizHawk.Client.EmuHawk
 					InitialLocation = GetPromptPoint()
 				};
 
-				if (SelectedWatches.Any())
-				{
-					poke.SetWatch(SelectedWatches);
-				}
+				poke.SetWatch(SelectedWatches);
 
 				if (poke.ShowHawkDialog() == DialogResult.OK)
 				{

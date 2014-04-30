@@ -36,6 +36,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		private delegate void ReadScreen2Res(IntPtr dummy, ref int width, ref int height, int buffer);
 		ReadScreen2Res GFXReadScreen2Res;
 
+		
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate Int32 GetScreenTextureID();
+		GetScreenTextureID GFXGetScreenTextureID;
+
 
 		public mupen64plusVideoApi(mupen64plusApi core, VideoPluginSettings settings)
 		{
@@ -58,6 +63,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 				videoplugin);
 			GFXReadScreen2 = (ReadScreen2)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "ReadScreen2"), typeof(ReadScreen2));
 			GFXReadScreen2Res = (ReadScreen2Res)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "ReadScreen2"), typeof(ReadScreen2Res));
+			if(GetProcAddress(GfxDll, "GetScreenTextureID") != IntPtr.Zero)
+				GFXGetScreenTextureID = (GetScreenTextureID)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "GetScreenTextureID"), typeof(GetScreenTextureID));
 		}
 
 		public void GetScreenDimensions(ref int width, ref int height)

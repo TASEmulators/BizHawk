@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 				return false;
 			foreach (var kvp in sizes)
 			{
-				if (ContainsKey(kvp.Key))
+				if (!ContainsKey(kvp.Key))
 					return false;
 				if (this[kvp.Key].Length != kvp.Value)
 					return false;

@@ -12,6 +12,8 @@ using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
+using System.Reflection;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class RecordMovie : Form
@@ -79,23 +81,11 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					_movieToRecord = new Movie(path, startsFromSavestate: true);
-					var temppath = path;
-					var writer = new StreamWriter(temppath);
-					Global.Emulator.SaveStateText(writer);
-					writer.Close();
-
-					var file = new FileInfo(temppath);
-					using (var sr = file.OpenText())
-					{
-						string str;
-						while ((str = sr.ReadLine()) != null)
-						{
-							if (!String.IsNullOrWhiteSpace(str))
-							{
-								_movieToRecord.Header.Comments.Add(str);
-							}
-						}
-					}
+					//TODO - some emulators (c++ cores) are just returning a hex string already
+					//theres no sense hexifying those again. we need to record that fact in the IEmulator somehow
+					var bytestate = Global.Emulator.SaveStateBinary();
+					string stringstate = Convert.ToBase64String(bytestate);
+					_movieToRecord.Header.SavestateBinaryBase64Blob = stringstate;
 				}
 				else
 				{
@@ -177,6 +167,10 @@ namespace BizHawk.Client.EmuHawk
 						_movieToRecord.Header[HeaderKeys.PAL] = "1";
 					}
 				}
+
+				_movieToRecord.Header[HeaderKeys.CORE] = ((CoreAttributes)Attribute
+					.GetCustomAttribute(Global.Emulator.GetType(), typeof(CoreAttributes)))
+					.CoreName;
 
 				GlobalWin.MainForm.StartNewMovie(_movieToRecord, true);
 

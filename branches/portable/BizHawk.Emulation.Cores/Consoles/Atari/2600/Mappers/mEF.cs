@@ -12,9 +12,21 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	1FE1 = bank 1, etc.
 	*/
 
-	class mEF : MapperBase 
+	internal class mEF : MapperBase 
 	{
-		private int toggle;
+		private int _toggle;
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("toggle", ref _toggle);
+		}
+
+		public override void HardReset()
+		{
+			_toggle = 0;
+			base.HardReset();
+		}
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -23,8 +35,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				Address(addr);
 			}
 
-			if (addr < 0x1000) return base.ReadMemory(addr);
-			return core.rom[(toggle << 12) + (addr & 0xFFF)];
+			if (addr < 0x1000)
+			{
+				return base.ReadMemory(addr);
+			}
+
+			return Core.Rom[(_toggle << 12) + (addr & 0xFFF)];
 		}
 
 		public override byte ReadMemory(ushort addr)
@@ -40,33 +56,30 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public override void WriteMemory(ushort addr, byte value)
 		{
 			Address(addr);
-			if (addr < 0x1000) base.WriteMemory(addr, value);
+			if (addr < 0x1000)
+			{
+				base.WriteMemory(addr, value);
+			}
 		}
 
-		public override void SyncState(Serializer ser)
+		private void Address(ushort addr)
 		{
-			base.SyncState(ser);
-			ser.Sync("toggle", ref toggle);
-		}
-
-		void Address(ushort addr)
-		{
-			if (addr == 0x1FE0) toggle = 0;
-			if (addr == 0x1FE1) toggle = 1;
-			if (addr == 0x1FE2) toggle = 2;
-			if (addr == 0x1FE3) toggle = 3;
-			if (addr == 0x1FE4) toggle = 4;
-			if (addr == 0x1FE5) toggle = 5;
-			if (addr == 0x1FE6) toggle = 6;
-			if (addr == 0x1FE7) toggle = 7;
-			if (addr == 0x1FE8) toggle = 8;
-			if (addr == 0x1FE9) toggle = 9;
-			if (addr == 0x1FEA) toggle = 10;
-			if (addr == 0x1FEB) toggle = 11;
-			if (addr == 0x1FEC) toggle = 12;
-			if (addr == 0x1FED) toggle = 13;
-			if (addr == 0x1FEE) toggle = 14;
-			if (addr == 0x1FEF) toggle = 15;
+			if (addr == 0x1FE0) _toggle = 0;
+			if (addr == 0x1FE1) _toggle = 1;
+			if (addr == 0x1FE2) _toggle = 2;
+			if (addr == 0x1FE3) _toggle = 3;
+			if (addr == 0x1FE4) _toggle = 4;
+			if (addr == 0x1FE5) _toggle = 5;
+			if (addr == 0x1FE6) _toggle = 6;
+			if (addr == 0x1FE7) _toggle = 7;
+			if (addr == 0x1FE8) _toggle = 8;
+			if (addr == 0x1FE9) _toggle = 9;
+			if (addr == 0x1FEA) _toggle = 10;
+			if (addr == 0x1FEB) _toggle = 11;
+			if (addr == 0x1FEC) _toggle = 12;
+			if (addr == 0x1FED) _toggle = 13;
+			if (addr == 0x1FEE) _toggle = 14;
+			if (addr == 0x1FEF) _toggle = 15;
 		}
 	}
 }

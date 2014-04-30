@@ -1,36 +1,12 @@
 using System;
 using System.Collections.Generic;
 
+using BizHawk.Common;
+
 using OpenTK.Graphics.OpenGL;
 
 namespace BizHawk.Bizware.BizwareGL
 {
-	//TEMP until its in bizhawk main
-	public class WorkingDictionary<K, V> : Dictionary<K, V> where V : new()
-	{
-		public new V this[K key]
-		{
-			get
-			{
-				V temp;
-				if (!TryGetValue(key, out temp))
-				{
-					temp = this[key] = new V();
-				}
-
-				return temp;
-			}
-
-			set
-			{
-				base[key] = value;
-			}
-		}
-
-		public WorkingDictionary() { }
-
-	}
-
 	public class VertexLayout : IDisposable
 	{
 		//TODO - could refactor to use vertex array objects? check opengl profile requirements (answer: 3.0. dont want to do this.)
