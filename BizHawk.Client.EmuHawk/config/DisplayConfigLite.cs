@@ -56,6 +56,8 @@ namespace BizHawk.Client.EmuHawk.config
 				Global.Config.DispFinalFilter = 2;
 
 			Global.Config.TargetScanlineFilterIntensity = tbScanlineIntensity.Value;
+			Global.Config.DispFixAspectRatio = checkLetterbox.Checked;
+			Global.Config.DispFixScaleInteger = checkPadInteger.Checked;
 
 			Global.Config.DispUserFilterPath = PathSelection;
 			GlobalWin.DisplayManager.RefreshUserShader();
