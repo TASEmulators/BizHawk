@@ -514,7 +514,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				byte ret = VRAMBuffer;
 
 				//in any case, we read from the ppu bus
-				VRAMBuffer = ppubus_peek(addr);
+				// can't do this in peek; updates the value that will be used later
+				// VRAMBuffer = ppubus_peek(addr);
 
 				//but reads from the palette are implemented in the PPU and return immediately
 				if ((addr & 0x3F00) == 0x3F00)
