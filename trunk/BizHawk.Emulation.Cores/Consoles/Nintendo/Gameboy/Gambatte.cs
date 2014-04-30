@@ -484,6 +484,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			writer.Write(IsLagFrame);
 			writer.Write(LagCount);
 			writer.Write(Frame);
+			writer.Write(frameOverflow);
+			writer.Write(_cycleCount);
 		}
 
 		public void LoadStateBinary(System.IO.BinaryReader reader)
@@ -497,6 +499,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			IsLagFrame = reader.ReadBoolean();
 			LagCount = reader.ReadInt32();
 			Frame = reader.ReadInt32();
+			frameOverflow = reader.ReadUInt32();
+			_cycleCount = reader.ReadUInt64();
 		}
 
 		public byte[] SaveStateBinary()
