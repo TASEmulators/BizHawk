@@ -234,6 +234,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			while (true)
 			{
 				uint samplesEmitted = TICKSINFRAME - frameOverflow; // according to gambatte docs, this is the nominal length of a frame in 2mhz clocks
+				System.Diagnostics.Debug.Assert(samplesEmitted * 2 <= soundbuff.Length);
 				LibGambatte.gambatte_runfor(GambatteState, VideoBuffer, 160, soundbuff, ref samplesEmitted);
 
 				_cycleCount += (ulong)samplesEmitted;
@@ -255,6 +256,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					break;
 				}
 			}
+
+			if (rendersound)
+				ProcessSoundEnd();
 
 			FrameAdvancePost();
 		}
@@ -845,7 +849,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <summary>
 		/// sample pairs before resampling
 		/// </summary>
-		short[] soundbuff = new short[(35112 + 2064) * 2];
+		short[] soundbuff = new short[(35112 + 2064) * 2 * 4];
 		/// <summary>
 		/// how many sample pairs are in soundbuff
 		/// </summary>
@@ -859,6 +863,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		int latchR = 0;
 
 		BlipBuffer blipL, blipR;
+		uint blipAccumulate;
 
 		private void ProcessSound()
 		{
@@ -870,7 +875,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				{
 					int diff = latchL - curr;
 					latchL = curr;
-					blipL.AddDelta(i, diff);
+					blipL.AddDelta(blipAccumulate, diff);
 				}
 				curr = soundbuff[i * 2 + 1];
 
@@ -878,12 +883,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				{
 					int diff = latchR - curr;
 					latchR = curr;
-					blipR.AddDelta(i, diff);
+					blipR.AddDelta(blipAccumulate, diff);
 				}
+
+				blipAccumulate++;
 			}
 
-			blipL.EndFrame((uint)soundbuffcontains);
-			blipR.EndFrame((uint)soundbuffcontains);
+			soundbuffcontains = 0;
+		}
+
+		private void ProcessSoundEnd()
+		{
+			blipL.EndFrame((uint)blipAccumulate);
+			blipR.EndFrame((uint)blipAccumulate);
+			blipAccumulate = 0;
 
 			soundoutbuffcontains = blipL.SamplesAvailable();
 			if (soundoutbuffcontains != blipR.SamplesAvailable())
@@ -891,8 +904,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			blipL.ReadSamplesLeft(soundoutbuff, soundoutbuffcontains);
 			blipR.ReadSamplesRight(soundoutbuff, soundoutbuffcontains);
-
-			soundbuffcontains = 0;
 		}
 
 		void InitSound()
