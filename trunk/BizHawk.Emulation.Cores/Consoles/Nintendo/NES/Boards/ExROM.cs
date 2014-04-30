@@ -332,6 +332,68 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
+		public override byte PeekPPU(int addr)
+		{
+			if (addr < 0x2000)
+			{
+				addr = MapCHR(addr);
+				return (VROM ?? VRAM)[addr];
+			}
+			else
+			{
+				addr -= 0x2000;
+				int nt_entry = addr & 0x3FF;
+				if (nt_entry < 0x3C0)
+				{
+					//track the last nametable entry read so that subsequent pattern and attribute reads will know which exram address to use
+					//last_nt_read = nt_entry;
+				}
+				else
+				{
+					//attribute table
+					if (exram_mode == 1)
+					{
+						//attribute will be in the top 2 bits of the exram byte
+						int exram_addr = last_nt_read;
+						int attribute = EXRAM[exram_addr] >> 6;
+						//calculate tile address by getting x/y from last nametable
+						int tx = last_nt_read & 0x1F;
+						int ty = last_nt_read / 32;
+						//attribute table address is just these coords shifted
+						int atx = tx >> 1;
+						int aty = ty >> 1;
+						//figure out how we need to shift the attribute to fake out the ppu
+						int at_shift = ((aty & 1) << 1) + (atx & 1);
+						at_shift <<= 1;
+						attribute <<= at_shift;
+						return (byte)attribute;
+					}
+				}
+				int nt = (addr >> 10) & 3; // &3 to read from the NT mirrors at 3xxx
+				int offset = addr & ((1 << 10) - 1);
+				nt = nt_modes[nt];
+				switch (nt)
+				{
+					case 0: //NES internal NTA
+						return NES.CIRAM[offset];
+					case 1: //NES internal NTB
+						return NES.CIRAM[0x400 | offset];
+					case 2: //use ExRAM as NT
+						//TODO - additional r/w security
+						if (exram_mode >= 2)
+							return 0;
+						else
+							return EXRAM[offset];
+					case 3: // Fill Mode
+						if (offset >= 0x3c0)
+							return nt_fill_attrib;
+						else
+							return nt_fill_tile;
+					default: throw new Exception();
+				}
+			}
+		}
+
 		public override void WritePPU(int addr, byte value)
 		{
 			if (addr < 0x2000)
@@ -388,6 +450,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ret = ROM[bank << 13 | offs];
 			if (addr < 0x4000)
 				audio.ReadROMTrigger(ret);
+			return ret;
+		}
+
+		public override byte PeekCart(int addr)
+		{
+			if (addr >= 0x8000)
+				return PeekPRG(addr - 0x8000);
+			else if (addr >= 0x6000)
+				return ReadWRAM(addr - 0x6000);
+			else
+				return PeekEXP(addr - 0x4000);
+		}
+
+		public byte PeekPRG(int addr)
+		{
+			bool ram;
+			byte ret;
+			int offs = addr & 0x1fff;
+			int bank = PRGGetBank(addr, out ram);
+
+			if (ram)
+				ret = ReadWRAMActual(bank, offs);
+			else
+				ret = ROM[bank << 13 | offs];
+			//if (addr < 0x4000)
+			//	audio.ReadROMTrigger(ret);
 			return ret;
 		}
 
@@ -548,7 +636,45 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				else ret = EXRAM[addr - 0x1C00];
 			}
 
-			return ret; ;
+			return ret;
+		}
+
+		public byte PeekEXP(int addr)
+		{
+			byte ret = 0xFF;
+			switch (addr)
+			{
+				case 0x1204: //$5204:  [E... ....]    IRQ Enable (0=disabled, 1=enabled)
+					ret = (byte)((irq_pending ? 0x80 : 0) | (in_frame ? 0x40 : 0));
+					//irq_pending = false;
+					//SyncIRQ();
+					break;
+
+				case 0x1205: //$5205:  low 8 bits of product
+					ret = product_low;
+					break;
+				case 0x1206: //$5206:  high 8 bits of product
+					ret = product_high;
+					break;
+
+				case 0x1015: // $5015: apu status
+					ret = audio.Read5015();
+					break;
+
+				case 0x1010: // $5010: apu PCM
+					ret = audio.Peek5010();
+					break;
+			}
+
+			//TODO - additional r/w timing security
+			if (addr >= 0x1C00)
+			{
+				if (exram_mode < 2)
+					ret = 0xFF;
+				else ret = EXRAM[addr - 0x1C00];
+			}
+
+			return ret;
 		}
 
 		void SyncIRQ()
