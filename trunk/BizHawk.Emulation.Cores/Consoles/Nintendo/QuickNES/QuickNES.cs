@@ -536,7 +536,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public IVideoProvider VideoProvider { get { return this; } }
 		public int[] GetVideoBuffer() { return VideoOutput; }
-		public int VirtualWidth { get { return (int)(BufferWidth * 1.14); } }
+		public int VirtualWidth { get { return (int)(BufferWidth * 1.146); } }
+		public int VirtualHeight { get { return BufferHeight; } }
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }

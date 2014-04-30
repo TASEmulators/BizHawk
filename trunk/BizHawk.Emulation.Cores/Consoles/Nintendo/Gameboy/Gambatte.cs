@@ -807,6 +807,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			get { return 160; }
 		}
 
+		public int VirtualHeight
+		{
+			get { return 144; }
+		}
+
 		public int BufferWidth
 		{
 			get { return 160; }

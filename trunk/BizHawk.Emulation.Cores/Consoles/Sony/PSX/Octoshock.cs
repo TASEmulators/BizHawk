@@ -279,6 +279,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public bool BinarySaveStatesPreferred { get { return false; } }
 		public int[] GetVideoBuffer() { return frameBuffer; }
 		public int VirtualWidth { get; private set; }
+		public int VirtualHeight { get { return BufferHeight; } }
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return 0; } }

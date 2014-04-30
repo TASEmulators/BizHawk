@@ -75,6 +75,7 @@ namespace BizHawk.Emulation.Common
 		public bool BinarySaveStatesPreferred { get { return false; } }
 		public int[] GetVideoBuffer() { return frameBuffer; }
 		public int VirtualWidth { get { return 256; } }
+		public int VirtualHeight { get { return 192; } }
 		public int BufferWidth { get { return 256; } }
 		public int BufferHeight { get { return 192; } }
 		public int BackgroundColor { get { return 0; } }

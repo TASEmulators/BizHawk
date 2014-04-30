@@ -427,6 +427,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public int[] GetVideoBuffer() { return FrameBuffer; }
 
 		public int VirtualWidth { get { return FramePitch; } }
+		public int VirtualHeight { get { return FrameHeight; } }
 		public int BufferWidth { get { return FramePitch; } }
 		public int BufferHeight { get { return FrameHeight; } }
 		public int BackgroundColor { get { return vce.Palette[256]; } }

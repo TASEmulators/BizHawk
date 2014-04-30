@@ -505,7 +505,8 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		public IVideoProvider VideoProvider { get { return this; } }
 		int[] VideoBuffer = new int[704 * 512];
 		public int[] GetVideoBuffer() { return VideoBuffer; }
-		public int VirtualWidth { get; private set; }
+		public int VirtualWidth { get { return BufferWidth; } }
+		public int VirtualHeight { get { return BufferHeight; } }
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }

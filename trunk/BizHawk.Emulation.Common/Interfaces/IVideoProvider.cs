@@ -4,7 +4,12 @@
 	{
 		int[] GetVideoBuffer();
 
-		int VirtualWidth { get; } // Used for controlling aspect ratio. Just return BufferWidth if you dont know what to do with this.
+		// put together, these describe a metric on the screen
+		// they should define the smallest size that the buffer can be placed inside such that:
+		// 1. no actual pixel data is lost
+		// 2. aspect ratio is accurate
+		int VirtualWidth { get; }
+		int VirtualHeight { get; }
 
 		int BufferWidth { get; }
 		int BufferHeight { get; }

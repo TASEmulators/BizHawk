@@ -445,7 +445,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public int[] FrameBuffer = new int[256 * 192];
 		public int[] GetVideoBuffer() { return FrameBuffer; }
 
-		public int VirtualWidth { get { return 256; } }
+		public int VirtualWidth { get { return 293; } }
+		public int VirtualHeight { get { return 192; } }
 		public int BufferWidth { get { return 256; } }
 		public int BufferHeight { get { return 192; } }
 		public int BackgroundColor { get { return 0; } }

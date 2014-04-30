@@ -434,7 +434,19 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			return GameGearFrameBuffer;
 		}
 
-		public int VirtualWidth { get { return BufferWidth; } }
+		public int VirtualWidth
+		{ 
+			get
+			{
+				if (mode == MasterSystem.VdpMode.SMS)
+					return 293;
+				else if (Sms.Settings.ShowClippedRegions)
+					return 256;
+				else
+					return 160;
+			}
+		}
+		public int VirtualHeight { get { return BufferHeight; } }
 		public int BufferWidth
 		{
 			get

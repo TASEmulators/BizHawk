@@ -465,6 +465,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 		}
 
 		public int VirtualWidth { get { return 320; } }
+		public int VirtualHeight { get { return FrameHeight; } }
 
 		public int BufferWidth
 		{

@@ -212,7 +212,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}
 			}
-			public int VirtualWidth { get { return BufferWidth; } }
+			public int VirtualWidth { get { return (int)(BufferWidth * 1.146); } }
+			public int VirtualHeight { get { return BufferHeight; } }
 			public int BufferWidth { get { return right - left + 1; } }
 			public int BackgroundColor { get { return 0; } }
 			public int BufferHeight
