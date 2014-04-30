@@ -205,6 +205,13 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			return (ushort)((h << 8) | l);
 		}
 
+		public ushort PeekWord(ushort address)
+		{
+			byte l = PeekMemory(address);
+			byte h = PeekMemory(++address);
+			return (ushort)((h << 8) | l);
+		}
+
 		private void WriteWord(ushort address, ushort value)
 		{
 			byte l = (byte)(value & 0xFF);
