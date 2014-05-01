@@ -3208,17 +3208,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		private void coreSelectionToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-		}
-
-		private void gBInSGBToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GB_AsSGB ^= true;
-			FlagNeedsReboot();
-		}
-
-		private void nESInQuickNESToolStripMenuItem_Click(object sender, EventArgs e)
+		private void NesInQuickNESMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.NES_InQuickNES ^= true;
 			FlagNeedsReboot();
@@ -3229,10 +3219,10 @@ namespace BizHawk.Client.EmuHawk
 			new BatchRun().ShowDialog();
 		}
 
-		private void coreSelectionToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		private void CoreSelectionMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			gBInSGBToolStripMenuItem.Checked = Global.Config.GB_AsSGB;
-			nESInQuickNESToolStripMenuItem.Checked = Global.Config.NES_InQuickNES;
+			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
+			NesInQuickNESMenuItem.Checked = Global.Config.NES_InQuickNES;
 		}
 
 		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
@@ -3278,6 +3268,31 @@ namespace BizHawk.Client.EmuHawk
 					toolStripSeparator31.Visible = 
 					false;
 			}
+		}
+
+		private void SavestateTypeContextSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			SavestateTypeDefaultContextMenuItem.Checked = false;
+			SavestateBinaryContextMenuItem.Checked = false;
+			SavestateTextContextMenuItem.Checked = false;
+			switch (Global.Config.SaveStateType)
+			{
+				case Config.SaveStateTypeE.Binary: SavestateBinaryContextMenuItem.Checked = true; break;
+				case Config.SaveStateTypeE.Text: SavestateTextContextMenuItem.Checked = true; break;
+				case Config.SaveStateTypeE.Default: SavestateTypeDefaultContextMenuItem.Checked = true; break;
+			}
+		}
+
+		private void GBInSGBMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GB_AsSGB ^= true;
+			FlagNeedsReboot();
+		}
+
+		private void CoreSelectionContextSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			GBInSGBContextMenuItem.Checked = Global.Config.GB_AsSGB;
+			NesInQuickNESContextMenuItem.Checked = Global.Config.NES_InQuickNES;
 		}
 	}
 }
