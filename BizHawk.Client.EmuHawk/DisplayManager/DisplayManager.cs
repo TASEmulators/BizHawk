@@ -359,7 +359,12 @@ TESTEROO:
 
 			//apply the vsync setting (should probably try to avoid repeating this)
 			bool vsync = Global.Config.VSyncThrottle || Global.Config.VSync;
-			//presentationPanel.GraphicsControl.SetVsync(vsync);
+			if (LastVsyncSetting != vsync || LastVsyncSettingGraphicsControl != presentationPanel.GraphicsControl)
+			{
+				presentationPanel.GraphicsControl.SetVsync(vsync);
+				LastVsyncSettingGraphicsControl = presentationPanel.GraphicsControl;
+				LastVsyncSetting = vsync;
+			}
 
 			//present and conclude drawing
 			presentationPanel.GraphicsControl.SwapBuffers();
@@ -371,6 +376,9 @@ TESTEROO:
 			if(bb != null) bb.Dispose();
 			NeedsToPaint = false; //??
 		}
+
+		bool? LastVsyncSetting;
+		GraphicsControl LastVsyncSettingGraphicsControl;
 
 		Dictionary<string, DisplaySurface> MapNameToLuaSurface = new Dictionary<string,DisplaySurface>();
 		Dictionary<DisplaySurface, string> MapLuaSurfaceToName = new Dictionary<DisplaySurface, string>();
