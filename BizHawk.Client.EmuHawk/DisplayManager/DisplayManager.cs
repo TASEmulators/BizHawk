@@ -311,7 +311,12 @@ TESTEROO:
 			fPresent.GuiRenderer = Renderer;
 			fPresent.GL = GL;
 
-			CurrentFilterProgram.Compile("default", chain_insize, chain_outsize);	
+			CurrentFilterProgram.Compile("default", chain_insize, chain_outsize);
+
+			//begin rendering on this context
+			//should this have been done earlier?
+			//do i need to check this on an intel video card to see if running excessively is a problem? (it used to be in the FinalTarget command below, shouldnt be a problem)
+			GraphicsControl.Begin();
 
 			//run filter chain
 			Texture2d texCurr = null;
@@ -351,7 +356,7 @@ TESTEROO:
 						inFinalTarget = true;
 						rtCurr = null;
 						CurrentFilterProgram.CurrRenderTarget = null;
-						GraphicsControl.Begin();
+						GL.BindRenderTarget(null);
 						break;
 				}
 			}
@@ -423,6 +428,7 @@ TESTEROO:
 				var surf = LockLuaSurface(kvp.Key);
 				surf.Clear();
 				UnlockLuaSurface(surf);
+				LuaSurfaceSets[kvp.Key].SetPending(null);
 			}
 		}
 
