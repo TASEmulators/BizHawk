@@ -16,6 +16,7 @@ namespace BizHawk.Client.EmuHawk
 	class SwappableDisplaySurfaceSet
 	{
 		DisplaySurface Pending, Current;
+		bool IsPending;
 		Queue<DisplaySurface> ReleasedSurfaces = new Queue<DisplaySurface>();
 
 		/// <summary>
@@ -50,6 +51,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Pending != null) ReleasedSurfaces.Enqueue(Pending);
 				Pending = newPending;
+				IsPending = true;
 			}
 		}
 
@@ -65,11 +67,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			lock (this)
 			{
-				if (Pending != null)
+				if (IsPending)
 				{
 					if (Current != null) ReleasedSurfaces.Enqueue(Current);
 					Current = Pending;
 					Pending = null;
+					IsPending = false;
 				}
 			}
 			return Current;
