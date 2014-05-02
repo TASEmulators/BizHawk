@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public int VirtualWidth
 		{
-			get { return 320; }
+			get { return ScreenWidth; }
 		}
 
 		public int VirtualHeight
@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public int BufferWidth
 		{
-			get { return 320; }
+			get { return ScreenWidth; }
 		}
 
 		public int BufferHeight
@@ -473,20 +473,21 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
+		private const int ScreenWidth = 160;
 		// TODO: Remove the magic numbers from this function to allow for a variable height screen
 		public void OutputFrame()
 		{
 			for (int row = 0; row < 262; row++)
 			{
-				for (int col = 0; col < 320; col++)
+				for (int col = 0; col < ScreenWidth; col++)
 				{
 					if (_scanlinesBuffer.Count > row)
 					{
-						FrameBuffer[(row * 320) + col] = (int)(_scanlinesBuffer[row][col / 2] | 0xFF000000);
+						FrameBuffer[(row * ScreenWidth) + col] = (int)(_scanlinesBuffer[row][col] | 0xFF000000);
 					}
 					else
 					{
-						FrameBuffer[(row * 320) + col] = unchecked((int)0xFF000000);
+						FrameBuffer[(row * ScreenWidth) + col] = unchecked((int)0xFF000000);
 					}
 				}
 			}
