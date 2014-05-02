@@ -66,7 +66,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private HMoveData _hmove;
 		private BallData _ball;
 
-		public int[] FrameBuffer = new int[320 * 262];
 		public Audio[] AUD = { new Audio(), new Audio() };
 
 		public TIA(Atari2600 core)
@@ -120,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public int VirtualHeight
 		{
-			get { return 262; }
+			get { return _bottomLine - _topLine; }
 		}
 
 		public int BufferWidth
@@ -130,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public int BufferHeight
 		{
-			get { return 262; }
+			get { return _bottomLine - _topLine; }
 		}
 
 		public int BackgroundColor
@@ -473,21 +472,28 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
+		public int[] FrameBuffer = new int[ScreenWidth * MaxScreenHeight];
+
 		private const int ScreenWidth = 160;
+		private const int MaxScreenHeight = 262;
+
+		private const int _topLine = 35;
+		private const int _bottomLine = 227;
+
 		// TODO: Remove the magic numbers from this function to allow for a variable height screen
 		public void OutputFrame()
 		{
-			for (int row = 0; row < 262; row++)
+			for (int row = _topLine; row < _bottomLine; row++)
 			{
 				for (int col = 0; col < ScreenWidth; col++)
 				{
 					if (_scanlinesBuffer.Count > row)
 					{
-						FrameBuffer[(row * ScreenWidth) + col] = (int)(_scanlinesBuffer[row][col] | 0xFF000000);
+						FrameBuffer[((row - _topLine) * ScreenWidth) + col] = (int)(_scanlinesBuffer[row][col] | 0xFF000000);
 					}
 					else
 					{
-						FrameBuffer[(row * ScreenWidth) + col] = unchecked((int)0xFF000000);
+						FrameBuffer[((row - _topLine) * ScreenWidth) + col] = unchecked((int)0xFF000000);
 					}
 				}
 			}
