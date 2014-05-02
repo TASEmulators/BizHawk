@@ -240,16 +240,25 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputPrevious()
 		{
-			var sb = new StringBuilder(Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
-			sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
-			return sb.ToString();
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				var sb = new StringBuilder(Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
+				sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
+				return sb.ToString();
+			}
+
+			return string.Empty;
 		}
 
 		public string InputStrOrAll()
 		{
 			var m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
-			m.SetControllersAsMnemonic(
-				Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
+
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				m.SetControllersAsMnemonic(
+					Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
+			}
 
 			var orAdaptor = new ORAdapter()
 			{
