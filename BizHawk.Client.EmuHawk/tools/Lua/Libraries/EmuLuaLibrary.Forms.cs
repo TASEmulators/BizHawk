@@ -379,6 +379,7 @@ namespace BizHawk.Client.EmuHawk
 			form.Text = title;
             form.MaximizeBox = false;
             form.FormBorderStyle = FormBorderStyle.FixedDialog;
+            form.Icon = SystemIcons.Application;
 			form.Show();
 			return (int)form.Handle;
 		}
