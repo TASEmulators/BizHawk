@@ -105,5 +105,11 @@ namespace BizHawk.Client.EmuHawk
 			linkLabel12.LinkVisited = true;
 			System.Diagnostics.Process.Start("https://code.google.com/p/genplus-gx/");
 		}
+
+		private void linkLabel13_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			linkLabel13.LinkVisited = true;
+			System.Diagnostics.Process.Start("https://github.com/kode54/QuickNES");
+		}
 	}
 }
