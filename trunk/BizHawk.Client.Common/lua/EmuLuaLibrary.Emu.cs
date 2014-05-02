@@ -123,7 +123,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodAttributes(
-			"setrenderpanes",
+			"setrenderplanes",
 			"Toggles the drawing of sprites and background planes. Set to false or nil to disable a pane, anything else will draw them"
 		)]
 		public static void SetRenderPlanes(params bool[] luaParam)
