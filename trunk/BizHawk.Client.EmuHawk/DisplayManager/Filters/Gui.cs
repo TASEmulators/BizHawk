@@ -152,8 +152,8 @@ namespace BizHawk.Client.EmuHawk.Filters
 			GuiRenderer.Begin(OutputSize.Width, OutputSize.Height);
 			GuiRenderer.SetBlendState(GL.BlendNone);
 			GuiRenderer.Modelview.Push();
-			GuiRenderer.Modelview.Translate(LL.vx, LL.vy);
-			GuiRenderer.Modelview.Scale(LL.WidthScale, LL.HeightScale);
+			//GuiRenderer.Modelview.Translate(LL.vx, LL.vy);
+			//GuiRenderer.Modelview.Scale(LL.WidthScale, LL.HeightScale);
 			if(FilterOption != eFilterOption.None)
 				InputTexture.SetFilterLinear();
 			else
@@ -164,7 +164,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 			}
 
 
-			GuiRenderer.Draw(InputTexture);
+			GuiRenderer.Draw(InputTexture,LL.vx,LL.vy,LL.vw,LL.vh);
 
 			GuiRenderer.End();
 		}

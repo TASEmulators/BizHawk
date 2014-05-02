@@ -259,6 +259,14 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void UpdateSource(IVideoProvider videoProvider)
 		{
+			int vw = videoProvider.BufferWidth;
+			int vh = videoProvider.BufferHeight;
+			if (Global.Config.DispObeyAR)
+			{
+				vw = videoProvider.VirtualWidth;
+				vh = videoProvider.VirtualHeight;
+			}
+
 			int[] videoBuffer = videoProvider.GetVideoBuffer();
 			
 TESTEROO:
@@ -280,6 +288,7 @@ TESTEROO:
 
 				//now, acquire the data sent from the videoProvider into a texture
 				videoTexture = VideoTextureFrugalizer.Get(bb);
+				GL.SetTextureWrapMode(videoTexture, true);
 			}
 
 			//TEST (to be removed once we have an actual example of bring in a texture ID from opengl emu core):
@@ -294,7 +303,7 @@ TESTEROO:
 			currEmuHeight = bufferHeight;
 
 			//build the default filter chain and set it up with services filters will need
-			Size chain_insize = new Size(bufferWidth, bufferHeight);
+			Size chain_insize = new Size(vw, vh);
 			Size chain_outsize = GraphicsControl.Size;
 			CurrentFilterProgram = BuildDefaultChain(chain_insize, chain_outsize);
 			CurrentFilterProgram.GuiRenderer = Renderer;

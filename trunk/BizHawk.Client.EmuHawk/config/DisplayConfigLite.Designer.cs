@@ -45,6 +45,7 @@
 			this.rbFinalFilterBicubic = new System.Windows.Forms.RadioButton();
 			this.rbFinalFilterNone = new System.Windows.Forms.RadioButton();
 			this.rbFinalFilterBilinear = new System.Windows.Forms.RadioButton();
+			this.checkObeyAR = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			this.groupBox2.SuspendLayout();
@@ -54,7 +55,7 @@
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(289, 190);
+			this.btnCancel.Location = new System.Drawing.Point(289, 221);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 5;
@@ -64,7 +65,7 @@
 			// btnOk
 			// 
 			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOk.Location = new System.Drawing.Point(208, 190);
+			this.btnOk.Location = new System.Drawing.Point(208, 221);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(75, 23);
 			this.btnOk.TabIndex = 4;
@@ -132,7 +133,7 @@
 			this.tbScanlineIntensity.Location = new System.Drawing.Point(83, 55);
 			this.tbScanlineIntensity.Maximum = 255;
 			this.tbScanlineIntensity.Name = "tbScanlineIntensity";
-			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 45);
+			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 42);
 			this.tbScanlineIntensity.TabIndex = 3;
 			this.tbScanlineIntensity.TickFrequency = 32;
 			this.tbScanlineIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
@@ -183,7 +184,7 @@
 			// checkPadInteger
 			// 
 			this.checkPadInteger.AutoSize = true;
-			this.checkPadInteger.Location = new System.Drawing.Point(12, 195);
+			this.checkPadInteger.Location = new System.Drawing.Point(12, 218);
 			this.checkPadInteger.Name = "checkPadInteger";
 			this.checkPadInteger.Size = new System.Drawing.Size(120, 17);
 			this.checkPadInteger.TabIndex = 9;
@@ -235,13 +236,24 @@
 			this.rbFinalFilterBilinear.Text = "Bilinear";
 			this.rbFinalFilterBilinear.UseVisualStyleBackColor = true;
 			// 
+			// checkObeyAR
+			// 
+			this.checkObeyAR.AutoSize = true;
+			this.checkObeyAR.Location = new System.Drawing.Point(12, 195);
+			this.checkObeyAR.Name = "checkObeyAR";
+			this.checkObeyAR.Size = new System.Drawing.Size(211, 17);
+			this.checkObeyAR.TabIndex = 10;
+			this.checkObeyAR.Text = "Obey system\'s Aspect Ratio suggestion";
+			this.checkObeyAR.UseVisualStyleBackColor = true;
+			// 
 			// DisplayConfigLite
 			// 
 			this.AcceptButton = this.btnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(376, 225);
+			this.ClientSize = new System.Drawing.Size(376, 256);
+			this.Controls.Add(this.checkObeyAR);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.checkPadInteger);
 			this.Controls.Add(this.checkLetterbox);
@@ -282,5 +294,6 @@
 		private System.Windows.Forms.Button btnSelectUserFilter;
 		private System.Windows.Forms.RadioButton rbUser;
 		private System.Windows.Forms.Label lblUserFilterName;
+		private System.Windows.Forms.CheckBox checkObeyAR;
 	}
 }
