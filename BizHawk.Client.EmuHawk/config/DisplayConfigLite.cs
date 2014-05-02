@@ -35,6 +35,7 @@ namespace BizHawk.Client.EmuHawk.config
 			tbScanlineIntensity.Value = Global.Config.TargetScanlineFilterIntensity;
 			checkLetterbox.Checked = Global.Config.DispFixAspectRatio;
 			checkPadInteger.Checked = Global.Config.DispFixScaleInteger;
+			checkObeyAR.Checked = Global.Config.DispObeyAR;
 		}
 
 		private void btnOk_Click(object sender, EventArgs e)
@@ -58,6 +59,7 @@ namespace BizHawk.Client.EmuHawk.config
 			Global.Config.TargetScanlineFilterIntensity = tbScanlineIntensity.Value;
 			Global.Config.DispFixAspectRatio = checkLetterbox.Checked;
 			Global.Config.DispFixScaleInteger = checkPadInteger.Checked;
+			Global.Config.DispObeyAR = checkObeyAR.Checked;
 
 			Global.Config.DispUserFilterPath = PathSelection;
 			GlobalWin.DisplayManager.RefreshUserShader();
