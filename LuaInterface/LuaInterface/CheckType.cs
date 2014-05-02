@@ -108,7 +108,7 @@ namespace LuaInterface
                 if (LuaDLL.lua_isboolean(luaState, stackPos))
 					return extractValues[runtimeHandleValue];
             }
-            else if (paramType == typeof(string))
+            else if (paramType == typeof(string) || paramType == typeof (char []))
             {
                 if (LuaDLL.lua_isstring(luaState, stackPos))
 					return extractValues[runtimeHandleValue];

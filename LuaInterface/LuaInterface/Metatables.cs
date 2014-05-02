@@ -821,7 +821,7 @@ namespace LuaInterface
                 {
                     paramList.Add (null);
                     outList.Add (paramList.LastIndexOf (null));
-                }  else if (_IsTypeCorrect (luaState, currentLuaParam, currentNetParam, out extractValue)) {  // Type checking
+                }  else if (currentLuaParam <= nLuaParams && _IsTypeCorrect (luaState, currentLuaParam, currentNetParam, out extractValue)) {  // Type checking
                     var value = extractValue (luaState, currentLuaParam);
                     paramList.Add (value);
                     int index = paramList.LastIndexOf (value);
