@@ -2500,8 +2500,11 @@ namespace BizHawk.Client.EmuHawk
 				Global.ClickyVirtualPadController.FrameTick();
 				Global.LuaAndAdaptor.FrameTick();
 
-				//zero 03-may-2014 - there is a bug in here: lua should be updating even when turboing
-				//please remove lua event-firing from gui viewing tools -related code
+				if (GlobalWin.Tools.Has<LuaConsole>())
+				{
+					GlobalWin.Tools.LuaConsole.LuaImp.CallFrameBeforeEvent();
+				}
+
 				if (!isTurboing)
 				{
 					GlobalWin.Tools.UpdateToolsBefore();
@@ -2565,6 +2568,12 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				PressFrameAdvance = false;
+
+				if (GlobalWin.Tools.Has<LuaConsole>())
+				{
+					GlobalWin.Tools.LuaConsole.LuaImp.CallFrameAfterEvent();
+				}
+
 				if (!isTurboing)
 				{
 					UpdateToolsAfter();
