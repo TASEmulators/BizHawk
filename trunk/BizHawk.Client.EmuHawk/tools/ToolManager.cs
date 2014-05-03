@@ -229,8 +229,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					LuaConsole.StartLuaDrawing();
 				}
-
-				LuaConsole.LuaImp.CallFrameBeforeEvent();
 			}
 
 			UpdateBefore();
@@ -247,7 +245,6 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Has<LuaConsole>())
 			{
-				LuaConsole.LuaImp.CallFrameAfterEvent();
 				if (!fromLua)
 				{
 					LuaConsole.EndLuaDrawing();
