@@ -41,21 +41,24 @@
 			this.rbHq2x = new System.Windows.Forms.RadioButton();
 			this.checkLetterbox = new System.Windows.Forms.CheckBox();
 			this.checkPadInteger = new System.Windows.Forms.CheckBox();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.grpFinalFilter = new System.Windows.Forms.GroupBox();
 			this.rbFinalFilterBicubic = new System.Windows.Forms.RadioButton();
 			this.rbFinalFilterNone = new System.Windows.Forms.RadioButton();
 			this.rbFinalFilterBilinear = new System.Windows.Forms.RadioButton();
-			this.checkObeyAR = new System.Windows.Forms.CheckBox();
+			this.rbUseRaw = new System.Windows.Forms.RadioButton();
+			this.rbUseSystem = new System.Windows.Forms.RadioButton();
+			this.grpARSelection = new System.Windows.Forms.GroupBox();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
-			this.groupBox2.SuspendLayout();
+			this.grpFinalFilter.SuspendLayout();
+			this.grpARSelection.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// btnCancel
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(289, 221);
+			this.btnCancel.Location = new System.Drawing.Point(288, 314);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 5;
@@ -65,7 +68,7 @@
 			// btnOk
 			// 
 			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOk.Location = new System.Drawing.Point(208, 221);
+			this.btnOk.Location = new System.Drawing.Point(207, 314);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(75, 23);
 			this.btnOk.TabIndex = 4;
@@ -174,34 +177,36 @@
 			// checkLetterbox
 			// 
 			this.checkLetterbox.AutoSize = true;
-			this.checkLetterbox.Location = new System.Drawing.Point(12, 172);
+			this.checkLetterbox.Location = new System.Drawing.Point(12, 176);
 			this.checkLetterbox.Name = "checkLetterbox";
 			this.checkLetterbox.Size = new System.Drawing.Size(173, 17);
 			this.checkLetterbox.TabIndex = 8;
 			this.checkLetterbox.Text = "Maintain aspect ratio (letterbox)";
 			this.checkLetterbox.UseVisualStyleBackColor = true;
+			this.checkLetterbox.CheckedChanged += new System.EventHandler(this.checkLetterbox_CheckedChanged);
 			// 
 			// checkPadInteger
 			// 
 			this.checkPadInteger.AutoSize = true;
-			this.checkPadInteger.Location = new System.Drawing.Point(12, 218);
+			this.checkPadInteger.Location = new System.Drawing.Point(21, 276);
 			this.checkPadInteger.Name = "checkPadInteger";
-			this.checkPadInteger.Size = new System.Drawing.Size(120, 17);
+			this.checkPadInteger.Size = new System.Drawing.Size(248, 17);
 			this.checkPadInteger.TabIndex = 9;
-			this.checkPadInteger.Text = "Pad to integer scale";
+			this.checkPadInteger.Text = "Stretch pixels by integers only (e.g. no 1.3333x)";
 			this.checkPadInteger.UseVisualStyleBackColor = true;
+			this.checkPadInteger.CheckedChanged += new System.EventHandler(this.checkPadInteger_CheckedChanged);
 			// 
-			// groupBox2
+			// grpFinalFilter
 			// 
-			this.groupBox2.Controls.Add(this.rbFinalFilterBicubic);
-			this.groupBox2.Controls.Add(this.rbFinalFilterNone);
-			this.groupBox2.Controls.Add(this.rbFinalFilterBilinear);
-			this.groupBox2.Location = new System.Drawing.Point(191, 34);
-			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(173, 132);
-			this.groupBox2.TabIndex = 8;
-			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "Final Filter";
+			this.grpFinalFilter.Controls.Add(this.rbFinalFilterBicubic);
+			this.grpFinalFilter.Controls.Add(this.rbFinalFilterNone);
+			this.grpFinalFilter.Controls.Add(this.rbFinalFilterBilinear);
+			this.grpFinalFilter.Location = new System.Drawing.Point(191, 34);
+			this.grpFinalFilter.Name = "grpFinalFilter";
+			this.grpFinalFilter.Size = new System.Drawing.Size(173, 132);
+			this.grpFinalFilter.TabIndex = 8;
+			this.grpFinalFilter.TabStop = false;
+			this.grpFinalFilter.Text = "Final Filter";
 			// 
 			// rbFinalFilterBicubic
 			// 
@@ -236,15 +241,40 @@
 			this.rbFinalFilterBilinear.Text = "Bilinear";
 			this.rbFinalFilterBilinear.UseVisualStyleBackColor = true;
 			// 
-			// checkObeyAR
+			// rbUseRaw
 			// 
-			this.checkObeyAR.AutoSize = true;
-			this.checkObeyAR.Location = new System.Drawing.Point(12, 195);
-			this.checkObeyAR.Name = "checkObeyAR";
-			this.checkObeyAR.Size = new System.Drawing.Size(211, 17);
-			this.checkObeyAR.TabIndex = 10;
-			this.checkObeyAR.Text = "Obey system\'s Aspect Ratio suggestion";
-			this.checkObeyAR.UseVisualStyleBackColor = true;
+			this.rbUseRaw.AutoSize = true;
+			this.rbUseRaw.Location = new System.Drawing.Point(6, 19);
+			this.rbUseRaw.Name = "rbUseRaw";
+			this.rbUseRaw.Size = new System.Drawing.Size(240, 17);
+			this.rbUseRaw.TabIndex = 11;
+			this.rbUseRaw.TabStop = true;
+			this.rbUseRaw.Text = "Use 1:1 pixel size (for crispness or debugging)";
+			this.rbUseRaw.UseVisualStyleBackColor = true;
+			this.rbUseRaw.CheckedChanged += new System.EventHandler(this.rbUseRaw_CheckedChanged);
+			// 
+			// rbUseSystem
+			// 
+			this.rbUseSystem.AutoSize = true;
+			this.rbUseSystem.Location = new System.Drawing.Point(6, 42);
+			this.rbUseSystem.Name = "rbUseSystem";
+			this.rbUseSystem.Size = new System.Drawing.Size(167, 17);
+			this.rbUseSystem.TabIndex = 12;
+			this.rbUseSystem.TabStop = true;
+			this.rbUseSystem.Text = "Use system\'s recommendation";
+			this.rbUseSystem.UseVisualStyleBackColor = true;
+			this.rbUseSystem.CheckedChanged += new System.EventHandler(this.rbUseSystem_CheckedChanged);
+			// 
+			// grpARSelection
+			// 
+			this.grpARSelection.Controls.Add(this.rbUseRaw);
+			this.grpARSelection.Controls.Add(this.rbUseSystem);
+			this.grpARSelection.Location = new System.Drawing.Point(21, 199);
+			this.grpARSelection.Name = "grpARSelection";
+			this.grpARSelection.Size = new System.Drawing.Size(264, 71);
+			this.grpARSelection.TabIndex = 13;
+			this.grpARSelection.TabStop = false;
+			this.grpARSelection.Text = "Aspect Ratio Selection";
 			// 
 			// DisplayConfigLite
 			// 
@@ -252,9 +282,9 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(376, 256);
-			this.Controls.Add(this.checkObeyAR);
-			this.Controls.Add(this.groupBox2);
+			this.ClientSize = new System.Drawing.Size(375, 349);
+			this.Controls.Add(this.grpARSelection);
+			this.Controls.Add(this.grpFinalFilter);
 			this.Controls.Add(this.checkPadInteger);
 			this.Controls.Add(this.checkLetterbox);
 			this.Controls.Add(this.groupBox1);
@@ -268,8 +298,10 @@
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).EndInit();
-			this.groupBox2.ResumeLayout(false);
-			this.groupBox2.PerformLayout();
+			this.grpFinalFilter.ResumeLayout(false);
+			this.grpFinalFilter.PerformLayout();
+			this.grpARSelection.ResumeLayout(false);
+			this.grpARSelection.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -287,13 +319,15 @@
 		private System.Windows.Forms.TrackBar tbScanlineIntensity;
 		private System.Windows.Forms.CheckBox checkLetterbox;
 		private System.Windows.Forms.CheckBox checkPadInteger;
-		private System.Windows.Forms.GroupBox groupBox2;
+		private System.Windows.Forms.GroupBox grpFinalFilter;
 		private System.Windows.Forms.RadioButton rbFinalFilterBicubic;
 		private System.Windows.Forms.RadioButton rbFinalFilterNone;
 		private System.Windows.Forms.RadioButton rbFinalFilterBilinear;
 		private System.Windows.Forms.Button btnSelectUserFilter;
 		private System.Windows.Forms.RadioButton rbUser;
 		private System.Windows.Forms.Label lblUserFilterName;
-		private System.Windows.Forms.CheckBox checkObeyAR;
+		private System.Windows.Forms.RadioButton rbUseRaw;
+		private System.Windows.Forms.RadioButton rbUseSystem;
+		private System.Windows.Forms.GroupBox grpARSelection;
 	}
 }

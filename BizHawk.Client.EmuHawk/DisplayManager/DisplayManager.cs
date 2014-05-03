@@ -261,10 +261,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			int vw = videoProvider.BufferWidth;
 			int vh = videoProvider.BufferHeight;
-			if (Global.Config.DispObeyAR)
+
+			if (Global.Config.DispObeyAR && Global.Config.DispFixAspectRatio)
 			{
-				vw = videoProvider.VirtualWidth;
-				vh = videoProvider.VirtualHeight;
+			  vw = videoProvider.VirtualWidth;
+			  vh = videoProvider.VirtualHeight;
 			}
 
 			int[] videoBuffer = videoProvider.GetVideoBuffer();
@@ -316,6 +317,7 @@ TESTEROO:
 			
 			//setup the final presentation filter
 			Filters.FinalPresentation fPresent = CurrentFilterProgram["presentation"] as Filters.FinalPresentation;
+			fPresent.TextureSize = new Size(bufferWidth, bufferHeight);
 			fPresent.BackgroundColor = videoProvider.BackgroundColor;
 			fPresent.GuiRenderer = Renderer;
 			fPresent.GL = GL;
