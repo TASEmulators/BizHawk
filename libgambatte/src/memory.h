@@ -95,10 +95,6 @@ public:
 	
 	bool getMemoryArea(int which, unsigned char **data, int *length); // { return cart.getMemoryArea(which, data, length); }
 
-	void setOsdElement(std::auto_ptr<OsdElement> osdElement) {
-		display.setOsdElement(osdElement);
-	}
-
 	unsigned long stop(unsigned long cycleCounter);
 	bool isCgb() const { return display.isCgb(); }
 	bool ime() const { return intreq.ime(); }

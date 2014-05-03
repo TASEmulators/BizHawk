@@ -21,7 +21,6 @@
 #include "savestate.h"
 #include "statesaver.h"
 #include "initstate.h"
-#include "state_osd_elements.h"
 #include <sstream>
 #include <cstring>
 
@@ -137,7 +136,6 @@ int GB::load(const char *romfiledata, unsigned romfilelength, const std::uint32_
 		//p_->cpu.loadSavedata();
 		
 		p_->stateNo = 1;
-		p_->cpu.setOsdElement(std::auto_ptr<OsdElement>());
 	}
 	
 	return failed;
@@ -242,9 +240,6 @@ bool GB::saveState(const gambatte::uint_least32_t *const videoBuf, const int pit
 void GB::selectState(int n) {
 	n -= (n / 10) * 10;
 	p_->stateNo = n < 0 ? n + 10 : n;
-	
-	if (p_->cpu.loaded())
-		p_->cpu.setOsdElement(newSaveStateOsdElement(statePath(p_->cpu.saveBasePath(), p_->stateNo), p_->stateNo));
 }
 
 int GB::currentState() const { return p_->stateNo; }

@@ -241,21 +241,6 @@ void LCD::updateScreen(const bool blanklcd, const unsigned long cycleCounter) {
 		const unsigned long color = ppu.cgb() ? gbcToRgb32(0xFFFF) : dmgColorsRgb32[0];
 		clear(ppu.frameBuf().fb(), color, ppu.frameBuf().pitch());
 	}
-
-	if (ppu.frameBuf().fb() && osdElement.get()) {
-		if (const uint_least32_t *const s = osdElement->update()) {
-			uint_least32_t *const d = ppu.frameBuf().fb()
-					+ static_cast<long>(osdElement->y()) * ppu.frameBuf().pitch() + osdElement->x();
-
-			switch (osdElement->opacity()) {
-			case OsdElement::SEVEN_EIGHTHS:
-				blitOsdElement(d, s, osdElement->w(), osdElement->h(), ppu.frameBuf().pitch(), Blend<8>()); break;
-			case OsdElement::THREE_FOURTHS:
-				blitOsdElement(d, s, osdElement->w(), osdElement->h(), ppu.frameBuf().pitch(), Blend<4>()); break;
-			}
-		} else
-			osdElement.reset();
-	}
 }
 
 void LCD::resetCc(const unsigned long oldCc, const unsigned long newCc) {
