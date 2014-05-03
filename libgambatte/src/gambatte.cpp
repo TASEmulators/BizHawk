@@ -30,19 +30,14 @@ static const std::string itos(const int i) {
 	return ss.str();
 }
 
-static const std::string statePath(const std::string &basePath, const int stateNo) {
-	return basePath + "_" + itos(stateNo) + ".gqs";
-}
-
 namespace gambatte {
 struct GB::Priv {
 	CPU cpu;
-	int stateNo;
 	bool gbaCgbMode;
 
 	gambatte::uint_least32_t *vbuff;
 	
-	Priv() : stateNo(1), gbaCgbMode(false)
+	Priv() : gbaCgbMode(false), vbuff(0)
 	{
 		vbuff = new gambatte::uint_least32_t[160*144];
 	}
@@ -156,8 +151,6 @@ int GB::load(const char *romfiledata, unsigned romfilelength, const std::uint32_
 		setInitState(state, p_->cpu.isCgb(), p_->gbaCgbMode = flags & GBA_CGB, now);
 		p_->cpu.loadState(state);
 		//p_->cpu.loadSavedata();
-		
-		p_->stateNo = 1;
 	}
 	
 	return failed;
@@ -244,13 +237,6 @@ bool GB::saveState(std::ostream &file) {
 
 	return false;
 }
-
-void GB::selectState(int n) {
-	n -= (n / 10) * 10;
-	p_->stateNo = n < 0 ? n + 10 : n;
-}
-
-int GB::currentState() const { return p_->stateNo; }
 
 const std::string GB::romTitle() const {
 	if (p_->cpu.loaded()) {
