@@ -2,22 +2,56 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
 {
-	[Newtonsoft.Json.JsonObject]
+	[JsonObject]
 	public class RecentFiles : IEnumerable
 	{
-		public int MAX_RECENT_FILES { get; private set; }       // Maximum number of files
-		public List<string> recentlist { get; private set; }    // List of recent files
-		
-		public bool AutoLoad = false;
-
+		private List<string> recentlist;
 		public RecentFiles() : this(8) { }
 		public RecentFiles(int max)
 		{
 			recentlist = new List<string>();
 			MAX_RECENT_FILES = max;
+		}
+
+		public int MAX_RECENT_FILES { get; private set; }
+		public bool AutoLoad { get; set; }
+
+		[JsonIgnore]
+		public bool Empty
+		{
+			get { return !recentlist.Any(); }
+		}
+
+		[JsonIgnore]
+		public int Count
+		{
+			get { return recentlist.Count; }
+		}
+
+		[JsonIgnore]
+		public string MostRecent
+		{
+			get
+			{
+				return recentlist.Any() ? recentlist[0] : string.Empty;
+			}
+		}
+
+		public string this[int index]
+		{
+			get
+			{
+				if (recentlist.Any())
+				{
+					return recentlist[index];
+				}
+
+				return string.Empty;
+			}
 		}
 
 		public IEnumerator<string> GetEnumerator()
@@ -35,39 +69,23 @@ namespace BizHawk.Client.Common
 			recentlist.Clear();
 		}
 
-		public bool Empty
-		{
-			get { return !recentlist.Any(); }
-		}
-
-		public int Count
-		{
-			get { return recentlist.Count; }
-		}
-
 		public void Add(string newFile)
 		{
-			for (int i = 0; i < recentlist.Count; i++)
-			{
-				if (String.Compare(newFile, recentlist[i], StringComparison.CurrentCultureIgnoreCase) == 0)
-				{
-					recentlist.Remove(newFile); // intentionally keeps iterating after this to remove duplicate instances, though those should never exist in the first place
-				}
-			}
-
+			Remove(newFile);
 			recentlist.Insert(0, newFile);
+
 			if (recentlist.Count > MAX_RECENT_FILES)
 			{
-				recentlist.Remove(recentlist[recentlist.Count - 1]);
+				recentlist.Remove(recentlist.Last());
 			}
 		}
 
 		public bool Remove(string newFile)
 		{
 			var removed = false;
-			for (int i = 0; i < recentlist.Count; i++)
+			foreach (var recent in recentlist.ToList())
 			{
-				if (String.Compare(newFile, recentlist[i], StringComparison.CurrentCultureIgnoreCase) == 0)
+				if (string.Compare(newFile, recent, StringComparison.CurrentCultureIgnoreCase) == 0)
 				{
 					recentlist.Remove(newFile); // intentionally keeps iterating after this to remove duplicate instances, though those should never exist in the first place
 					removed = true;
@@ -82,32 +100,9 @@ namespace BizHawk.Client.Common
 			return recentlist.Select(t => t.Substring(0, length)).ToList();
 		}
 
-		public string this[int index]
-		{
-			get
-			{
-				if (recentlist.Any())
-				{
-					return recentlist[index];
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-		}
-
 		public void ToggleAutoLoad()
 		{
 			AutoLoad ^= true;
-		}
-
-		public string MostRecent
-		{
-			get
-			{
-				return recentlist.Any() ? recentlist[0] : string.Empty;
-			}
 		}
 	}
 }
