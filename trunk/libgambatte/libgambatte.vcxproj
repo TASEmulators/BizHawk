@@ -104,7 +104,6 @@
     <ClInclude Include="src\mem\memptrs.h" />
     <ClInclude Include="src\mem\rtc.h" />
     <ClInclude Include="src\minkeeper.h" />
-    <ClInclude Include="src\osd_element.h" />
     <ClInclude Include="src\savestate.h" />
     <ClInclude Include="src\sound.h" />
     <ClInclude Include="src\sound\channel1.h" />
@@ -118,7 +117,6 @@
     <ClInclude Include="src\sound\sound_unit.h" />
     <ClInclude Include="src\sound\static_output_tester.h" />
     <ClInclude Include="src\statesaver.h" />
-    <ClInclude Include="src\state_osd_elements.h" />
     <ClInclude Include="src\tima.h" />
     <ClInclude Include="src\video.h" />
     <ClInclude Include="src\video\lyc_irq.h" />
@@ -149,7 +147,6 @@
     <ClCompile Include="src\sound\envelope_unit.cpp" />
     <ClCompile Include="src\sound\length_counter.cpp" />
     <ClCompile Include="src\statesaver.cpp" />
-    <ClCompile Include="src\state_osd_elements.cpp" />
     <ClCompile Include="src\tima.cpp" />
     <ClCompile Include="src\video.cpp" />
     <ClCompile Include="src\video\lyc_irq.cpp" />

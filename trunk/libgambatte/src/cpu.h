@@ -99,10 +99,6 @@ public:
 		return memory.saveBasePath();
 	}
 	
-	void setOsdElement(std::auto_ptr<OsdElement> osdElement) {
-		memory.setOsdElement(osdElement);
-	}
-	
 	int load(const char *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat) {
 		return memory.loadROM(romfiledata, romfilelength, forceDmg, multicartCompat);
 	}

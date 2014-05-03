@@ -96,9 +96,6 @@
     <ClInclude Include="include\gbint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\osd_element.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\sound.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -127,9 +124,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\video\sprite_mapper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\state_osd_elements.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\sound\static_output_tester.h">
@@ -222,9 +216,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\sound.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\state_osd_elements.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\tima.cpp">
