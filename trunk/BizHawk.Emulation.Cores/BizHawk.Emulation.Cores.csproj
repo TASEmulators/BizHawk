@@ -262,6 +262,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Farid-UNROM-8-in-1.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\FS304.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\GameGenie.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\inlnsf.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper028.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\CNROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\CPROM.cs">

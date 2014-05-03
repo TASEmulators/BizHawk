@@ -36,18 +36,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (flash_rom == null)
 				return;
-			int[] value = new int[1];
+			uint[] value = new uint[1];
 			int bank = (addr >= 0x4000) ? prg_bank_mask_16k : prg;
 			if (!direct)
 			{
 				Buffer.BlockCopy(flash_rom, (bank << 2 | (addr >> 12) & 3) << 2, value, 0, 4);
-				value[0]++;
+                if(value[0] < 0xFFFFFFFF) value[0]++;
 				Buffer.BlockCopy(value, 0, flash_rom, (bank << 2 | (addr >> 12) & 3) << 2, 4);
 			}
 			else
 			{
 				Buffer.BlockCopy(flash_rom, addr << 2, value, 0, 4);
-				value[0]++;
+                if (value[0] < 0xFFFFFFFF) value[0]++;
 				Buffer.BlockCopy(value, 0, flash_rom, addr << 2, 4);
 			}
 		}
@@ -196,18 +196,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (flash_mode == flashmode.fm_id)
 				{
-					if ((addr & 1) == 0)
-						return 0xBF;
-					else
-						switch (Cart.prg_size)
-						{
-							case 128:
-								return 0xB5;
-							case 256:
-								return 0xB6;
-							case 512:
-								return 0xB7;
-						}
+                    switch (addr & 0x1FF)
+                    {
+                        case 0:
+                            return 0xBF;
+                        case 1:
+                            switch (Cart.prg_size)
+                            {
+                                case 128:
+                                    return 0xB5;
+                                case 256:
+                                    return 0xB6;
+                                case 512:
+                                    return 0xB7;
+                            }
+                            return 0xFF;    //Shouldn't ever reach here, as the size was asserted earlier.
+                        default:
+                            return 0xFF;    //Other unknown data is returned from addresses 2-511, in software ID mode, mostly 0xFF.
+                    }
 				}
 				if (get_flash_write_count(addr) > 0)
 					return flash_rom[Cart.prg_size + (bank << 14 | addr & 0x3fff)];
