@@ -57,11 +57,42 @@ namespace BizHawk.Client.EmuHawk.Filters
 				//widthScale = (float)Math.Floor(widthScale);
 				//heightScale = (float)Math.Floor(heightScale);
 
-				//don't distorted the original texture
+				//don't distort the original texture
 				float apparentWidth = sourceWidth * widthScale;
 				float apparentHeight = sourceHeight * heightScale;
 				widthScale = (float)Math.Floor(apparentWidth / textureWidth);
 				heightScale = (float)Math.Floor(apparentHeight / textureHeight);
+
+				//prevent dysfunctional reduction to 0x
+				if (widthScale == 0) widthScale = 1;
+				if (heightScale == 0) heightScale = 1;
+			
+			REDO:
+				apparentWidth = sourceWidth * widthScale;
+				apparentHeight = sourceHeight * heightScale;
+
+				//in case we've exaggerated the aspect ratio too far beyond the goal by our blunt integerizing, heres a chance to fix it by reducing one of the dimensions
+				float goalAr = ((float)sourceWidth)/sourceHeight;
+				float haveAr = apparentWidth / apparentHeight;
+				if (widthScale>1)
+				{
+					float tryAnotherAR = (widthScale - 1)/heightScale;
+					if(Math.Abs(tryAnotherAR-goalAr) < Math.Abs(haveAr-goalAr))
+					{
+						widthScale -= 1;
+						goto REDO;
+					}
+				}
+				if (heightScale > 1)
+				{
+					float tryAnotherAR = widthScale / (heightScale-1);
+					if (Math.Abs(tryAnotherAR - goalAr) < Math.Abs(haveAr - goalAr))
+					{
+						heightScale -= 1;
+						goto REDO;
+					}
+				}
+				
 
 				vw = (int)(widthScale * textureWidth);
 				vh = (int)(heightScale * textureHeight);
