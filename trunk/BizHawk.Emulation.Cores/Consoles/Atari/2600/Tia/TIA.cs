@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public int VirtualWidth
 		{
-			get { return ScreenWidth; }
+			get { return 275; } //  275 comes from NTSC specs and the actual pixel clock of a 2600 TIA
 		}
 
 		public int VirtualHeight
