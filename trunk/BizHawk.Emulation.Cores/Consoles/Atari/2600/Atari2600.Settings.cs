@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-
+using System.Drawing;
 using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				set { this._palBottomLine = Math.Min(310, Math.Max(value, 192)); }
 			}
 
-			public int BackgroundColor { get; set; }
+			public Color BackgroundColor { get; set; }
 
 			public A2600Settings Clone()
 			{
@@ -106,7 +106,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					ShowMissle2 = true,
 					ShowBall = true,
 					ShowPlayfield = true,
-					BackgroundColor = 0
+					BackgroundColor = Color.Black
 				};
 			}
 		}
