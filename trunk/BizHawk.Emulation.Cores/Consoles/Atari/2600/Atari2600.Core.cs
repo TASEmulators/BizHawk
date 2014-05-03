@@ -11,6 +11,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private TIA _tia;
 		private DCFilter _dcfilter;
 		private MapperBase _mapper;
+		private bool _hardResetSignal;
+
 		public byte[] Ram;
 
 		public byte[] Rom { get; private set; }
@@ -117,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private static MapperBase SetMultiCartMapper(int romLength, int gameTotal)
 		{
-			switch(romLength / gameTotal)
+			switch (romLength / gameTotal)
 			{
 				case 1024 * 2: // 2K
 					return new Multicart2K(gameTotal);
@@ -296,8 +298,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			Cpu.PC = (ushort)(ReadMemory(0x1FFC) + (ReadMemory(0x1FFD) << 8)); // set the initial PC
 		}
 
-		private bool _hardResetSignal;
-
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			_frame++;
@@ -308,6 +308,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				CycleAdvance();
 			}
+
 			_tia.CompleteAudioFrame();
 
 			if (_hardResetSignal)

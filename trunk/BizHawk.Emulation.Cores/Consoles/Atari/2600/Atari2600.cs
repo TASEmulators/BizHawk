@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-
-using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
@@ -167,7 +164,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			};
 		}
 
-		// TODO: rewrite GetCpuFlagsAndRegisters this way
 		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			return new Dictionary<string, int>
@@ -256,118 +252,5 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		}
 
 		public void Dispose() { }
-
-		public object GetSettings()
-		{
-			return Settings.Clone();
-		}
-
-		public object GetSyncSettings()
-		{
-			return SyncSettings.Clone();
-		}
-
-		public bool PutSettings(object o)
-		{
-			Settings = (A2600Settings)o;
-			return false;
-		}
-
-		public bool PutSyncSettings(object o)
-		{
-			SyncSettings = (A2600SyncSettings)o;
-			return false;
-		}
-
-		public class A2600Settings
-		{
-			// todo: descriptions
-			public bool ShowBG { get; set; }
-			public bool ShowPlayer1 { get; set; }
-			public bool ShowPlayer2 { get; set; }
-			public bool ShowMissle1 { get; set; }
-			public bool ShowMissle2 { get; set; }
-			public bool ShowBall { get; set; }
-			public bool ShowPlayfield { get; set; }
-
-			public int NTSCTopLine
-			{
-				get { return _NTSCTopLine; }
-				set { _NTSCTopLine = Math.Min(64, Math.Max(value, 0)); }
-			}
-			public int NTSCBottomLine
-			{
-				get { return _NTSCBottomLine; }
-				set { _NTSCBottomLine = Math.Min(260, Math.Max(value, 192)); }
-			}
-			[JsonIgnore]
-			private int _NTSCTopLine = 24;
-			[JsonIgnore]
-			private int _NTSCBottomLine = 248;
-
-			public int PALTopLine
-			{
-				get { return _PALTopLine; }
-				set { _PALTopLine = Math.Min(64, Math.Max(value, 0)); }
-			}
-			public int PALBottomLine
-			{
-				get { return _PALBottomLine; }
-				set { _PALBottomLine = Math.Min(310, Math.Max(value, 192)); }
-			}
-			[JsonIgnore]
-			private int _PALTopLine = 24;
-			[JsonIgnore]
-			private int _PALBottomLine = 296;
-
-			public int BackgroundColor { get; set; }
-
-			public A2600Settings Clone()
-			{
-				return (A2600Settings)MemberwiseClone();
-			}
-
-			public static A2600Settings GetDefaults()
-			{
-				return new A2600Settings
-				{
-					ShowBG = true,
-					ShowPlayer1 = true,
-					ShowPlayer2 = true,
-					ShowMissle1 = true,
-					ShowMissle2 = true,
-					ShowBall = true,
-					ShowPlayfield = true,
-					BackgroundColor = 0
-				};
-			}
-		}
-
-		public class A2600SyncSettings
-		{
-			[Description("Set the TV Type switch on the console to B&W or Color")]
-			public bool BW { get; set; }
-
-			[Description("Set the Left Difficulty switch on the console")]
-			public bool LeftDifficulty { get; set; }
-
-			[Description("Set the Right Difficulty switch on the console")]
-			public bool RightDifficulty { get; set; }
-
-			public A2600SyncSettings Clone()
-			{
-				return (A2600SyncSettings)MemberwiseClone();
-			}
-
-			public static A2600SyncSettings GetDefaults()
-			{
-				return new A2600SyncSettings
-				{
-					BW = false,
-					LeftDifficulty = true,
-					RightDifficulty = true
-				};
-			}
-		}
 	}
 }
