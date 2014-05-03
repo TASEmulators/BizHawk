@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public int BackgroundColor
 		{
-			get { return _core.Settings.BackgroundColor; }
+			get { return _core.Settings.BackgroundColor.ToArgb(); }
 		}
 
 		public int[] GetVideoBuffer()
