@@ -83,7 +83,7 @@ namespace BizHawk.Client.Common
 		)]
 		public static string GetSystemId()
 		{
-			return Global.Emulator.SystemId;
+			return Global.Game.System;
 		}
 
 		[LuaMethodAttributes(
