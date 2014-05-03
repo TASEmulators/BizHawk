@@ -2495,13 +2495,17 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.OSD.ClearGUIText();
 
 				Global.CheatList.Pulse();
+
+				//zero 03-may-2014 - moved this before call to UpdateToolsBefore(), since it seems to clear the state which a lua event.framestart is going to want to alter
+				Global.ClickyVirtualPadController.FrameTick();
+				Global.LuaAndAdaptor.FrameTick();
+
+				//zero 03-may-2014 - there is a bug in here: lua should be updating even when turboing
+				//please remove lua event-firing from gui viewing tools -related code
 				if (!isTurboing)
 				{
 					GlobalWin.Tools.UpdateToolsBefore();
 				}
-
-				Global.ClickyVirtualPadController.FrameTick();
-				Global.LuaAndAdaptor.FrameTick();
 
 				_runloopFps++;
 
