@@ -288,6 +288,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			public bool ShowBall { get; set; }
 			public bool ShowPlayfield { get; set; }
 
+			public int TopLine { get; set; }
+			public int BottomLine { get; set; }
+
+			public int BackgroundColor { get; set; }
+
 			public A2600Settings Clone()
 			{
 				return (A2600Settings)MemberwiseClone();
@@ -303,7 +308,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					ShowMissle1 = true,
 					ShowMissle2 = true,
 					ShowBall = true,
-					ShowPlayfield = true
+					ShowPlayfield = true,
+
+					TopLine = 24,
+					BottomLine = 248,
+
+					BackgroundColor = 0
 				};
 			}
 		}
