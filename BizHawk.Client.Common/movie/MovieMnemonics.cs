@@ -221,29 +221,28 @@ namespace BizHawk.Client.Common
 
 		class MnemonicChecker
 		{
-			private readonly string m;
+			private readonly string _mnemonic;
 
-			public MnemonicChecker(string _m)
+			public MnemonicChecker(string mnemonic)
 			{
-				m = _m;
+				_mnemonic = mnemonic;
 			}
 
 			public bool this[int c]
 			{
 				get
 				{
-					if (m[c] == '.')
+					if (_mnemonic[c] == '.')
 					{
 						return false;
 					}
-					else if (m[c] == '?')
+					
+					if (_mnemonic[c] == '?')
 					{
 						return new Random((int)DateTime.Now.Ticks).Next(0, 10) > 5;
 					}
-					else
-					{
-						return true;
-					}
+					
+					return true;
 				}
 			}
 		}
@@ -503,13 +502,15 @@ namespace BizHawk.Client.Common
 
 		private void SetDualGameBoyControllerAsMnemonic(string mnemonic)
 		{
-			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			var checker = new MnemonicChecker(mnemonic);
 			MyBoolButtons.Clear();
 			for (int i = 0; i < MnemonicConstants.DGBMnemonic.Length; i++)
 			{
 				var t = MnemonicConstants.DGBMnemonic[i];
 				if (t.Item1 != null)
-					Force(t.Item1, c[i]);
+				{
+					Force(t.Item1, checker[i]);
+				}
 			}
 		}
 
