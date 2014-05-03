@@ -235,7 +235,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				uint samplesEmitted = TICKSINFRAME - frameOverflow; // according to gambatte docs, this is the nominal length of a frame in 2mhz clocks
 				System.Diagnostics.Debug.Assert(samplesEmitted * 2 <= soundbuff.Length);
-				LibGambatte.gambatte_runfor(GambatteState, VideoBuffer, 160, soundbuff, ref samplesEmitted);
+				if (LibGambatte.gambatte_runfor(GambatteState, soundbuff, ref samplesEmitted) > 0)
+				{
+					LibGambatte.gambatte_blitto(GambatteState, VideoBuffer, 160);
+				}
 
 				_cycleCount += (ulong)samplesEmitted;
 				frameOverflow += samplesEmitted;
@@ -431,7 +434,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			uint nlen = 0;
 			IntPtr ndata = IntPtr.Zero;
 
-			if (!LibGambatte.gambatte_savestate(GambatteState, VideoBuffer, 160, ref ndata, ref nlen))
+			if (!LibGambatte.gambatte_savestate(GambatteState, ref ndata, ref nlen))
 				throw new Exception("Gambatte failed to save the savestate!");
 
 			if (nlen == 0)

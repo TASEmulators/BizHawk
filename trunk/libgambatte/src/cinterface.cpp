@@ -24,13 +24,19 @@ __declspec(dllexport) int gambatte_load(void *core, const char *romfiledata, uns
 	return ret;
 }
 
-__declspec(dllexport) long gambatte_runfor(void *core, unsigned long *videobuf, int pitch, short *soundbuf, unsigned *samples)
+__declspec(dllexport) long gambatte_runfor(void *core, short *soundbuf, unsigned *samples)
 {
 	GB *g = (GB *) core;
 	unsigned sampv = *samples;
-	long ret = g->runFor((unsigned int*)videobuf, pitch, (unsigned int *) soundbuf, sampv);
+	long ret = g->runFor((unsigned int *) soundbuf, sampv);
 	*samples = sampv;
 	return ret;
+}
+
+__declspec(dllexport) void gambatte_blitto(void *core, unsigned long *videobuf, int pitch)
+{
+	GB *g = (GB *) core;
+	g->blitTo((unsigned int *)videobuf, pitch);
 }
 
 __declspec(dllexport) void gambatte_reset(void *core, long long now)
@@ -151,26 +157,12 @@ __declspec(dllexport) int gambatte_savesavedatalength(void *core)
 	return g->saveSavedataLength();
 }
 
-/*
-__declspec(dllexport) int gambatte_savestate(void *core, const unsigned long *videobuf, int pitch)
-{
-	GB *g = (GB *) core;
-	return g->saveState(videobuf, pitch);
-}
-
-__declspec(dllexport) int gambatte_loadstate(void *core)
-{
-	GB *g = (GB *) core;
-	return g->loadState();
-}
-*/
-
-__declspec(dllexport) int gambatte_savestate(void *core, const unsigned long *videobuf, int pitch, char **data, unsigned *len)
+__declspec(dllexport) int gambatte_savestate(void *core, char **data, unsigned *len)
 {
 	GB *g = (GB *) core;
 
 	std::ostringstream os = std::ostringstream(std::ios_base::binary | std::ios_base::out);
-	if (!g->saveState((const unsigned int*)videobuf, pitch, os))
+	if (!g->saveState(os))
 		return 0;
 
 	os.flush();
@@ -192,20 +184,6 @@ __declspec(dllexport) int gambatte_loadstate(void *core, const char *data, unsig
 	GB *g = (GB *) core;
 	return g->loadState(std::istringstream(std::string(data, len), std::ios_base::binary | std::ios_base::in));
 }
-
-/*
-__declspec(dllexport) void gambatte_selectstate(void *core, int n)
-{
-	GB *g = (GB *) core;
-	g->selectState(n);
-}
-
-__declspec(dllexport) int gambatte_currentstate(void *core)
-{
-	GB *g = (GB *) core;
-	return g->currentState();
-}
-*/
 
 static char horriblebuff[64];
 __declspec(dllexport) const char *gambatte_romtitle(void *core)

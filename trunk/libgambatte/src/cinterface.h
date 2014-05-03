@@ -10,7 +10,8 @@ extern "C"
 
 	__declspec(dllexport) int gambatte_load(void *core, const char *romfiledata, unsigned romfilelength, long long now, unsigned flags);
 
-	__declspec(dllexport) long gambatte_runfor(void *core, unsigned long *videobuf, int pitch, short *soundbuf, unsigned *samples);
+	__declspec(dllexport) long gambatte_runfor(void *core, short *soundbuf, unsigned *samples);
+	__declspec(dllexport) void gambatte_blitto(void *core, unsigned long *videobuf, int pitch);
 
 	__declspec(dllexport) void gambatte_reset(void *core, long long now);
 
@@ -46,7 +47,7 @@ extern "C"
 
 	//__declspec(dllexport) int gambatte_loadstate(void *core);
 
-	__declspec(dllexport) int gambatte_savestate(void *core, const unsigned long *videobuf, int pitch, char **data, unsigned *len);
+	__declspec(dllexport) int gambatte_savestate(void *core, char **data, unsigned *len);
 	__declspec(dllexport) void gambatte_savestate_destroy(char *data);
 
 	__declspec(dllexport) int gambatte_loadstate(void *core, const char *data, unsigned len);
