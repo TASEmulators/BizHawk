@@ -232,6 +232,11 @@ namespace BizHawk.Client.Common
 			{
 				get
 				{
+					if (string.IsNullOrEmpty(_mnemonic))
+					{
+						return false;
+					}
+
 					if (_mnemonic[c] == '.')
 					{
 						return false;
