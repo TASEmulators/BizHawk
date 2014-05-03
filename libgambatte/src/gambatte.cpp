@@ -39,8 +39,18 @@ struct GB::Priv {
 	CPU cpu;
 	int stateNo;
 	bool gbaCgbMode;
+
+	gambatte::uint_least32_t *vbuff;
 	
-	Priv() : stateNo(1), gbaCgbMode(false) {}
+	Priv() : stateNo(1), gbaCgbMode(false)
+	{
+		vbuff = new gambatte::uint_least32_t[160*144];
+	}
+
+	~Priv()
+	{
+		delete[] vbuff;
+	}
 };
 	
 GB::GB() : p_(new Priv) {}
@@ -52,19 +62,31 @@ GB::~GB() {
 	delete p_;
 }
 
-long GB::runFor(gambatte::uint_least32_t *const videoBuf, const int pitch,
-			gambatte::uint_least32_t *const soundBuf, unsigned &samples) {
+long GB::runFor(gambatte::uint_least32_t *const soundBuf, unsigned &samples) {
 	if (!p_->cpu.loaded()) {
 		samples = 0;
 		return -1;
 	}
 	
-	p_->cpu.setVideoBuffer(videoBuf, pitch);
+	p_->cpu.setVideoBuffer(p_->vbuff, 160);
 	p_->cpu.setSoundBuffer(soundBuf);
 	const long cyclesSinceBlit = p_->cpu.runFor(samples * 2);
 	samples = p_->cpu.fillSoundBuffer();
 	
 	return cyclesSinceBlit < 0 ? cyclesSinceBlit : static_cast<long>(samples) - (cyclesSinceBlit >> 1);
+}
+
+void GB::blitTo(gambatte::uint_least32_t *videoBuf, int pitch)
+{
+	gambatte::uint_least32_t *src = p_->vbuff;
+	gambatte::uint_least32_t *dst = videoBuf;
+
+	for (int i = 0; i < 144; i++)
+	{
+		std::memcpy(dst, src, sizeof(gambatte::uint_least32_t) * 160);
+		src += 160;
+		dst += pitch;
+	}
 }
 
 void GB::reset(const std::uint32_t now) {
@@ -201,37 +223,23 @@ bool GB::loadState(std::istream &file) {
 		
 		if (StateSaver::loadState(state, file)) {
 			p_->cpu.loadState(state);
+			file.read((char *)p_->vbuff, 160 * 144 * 4); // yes, sloppy
 			return true;
 		}
 	}
 
 	return false;
 }
-/*
-bool GB::saveState(const gambatte::uint_least32_t *const videoBuf, const int pitch) {
-	if (saveState(videoBuf, pitch, statePath(p_->cpu.saveBasePath(), p_->stateNo))) {
-		p_->cpu.setOsdElement(newStateSavedOsdElement(p_->stateNo));
-		return true;
-	}
 
-	return false;
-}
-
-bool GB::loadState() {
-	if (loadState(statePath(p_->cpu.saveBasePath(), p_->stateNo))) {
-		p_->cpu.setOsdElement(newStateLoadedOsdElement(p_->stateNo));
-		return true;
-	}
-
-	return false;
-}
-*/
-bool GB::saveState(const gambatte::uint_least32_t *const videoBuf, const int pitch, std::ostream &file) {
+bool GB::saveState(std::ostream &file) {
 	if (p_->cpu.loaded()) {
 		SaveState state;
 		p_->cpu.setStatePtrs(state);
 		p_->cpu.saveState(state);
-		return StateSaver::saveState(state, videoBuf, pitch, file);
+		bool ret =  StateSaver::saveState(state, file);
+		if (ret)
+			file.write((const char *)p_->vbuff, 160 * 144 * 4); // yes, sloppy
+		return ret;
 	}
 
 	return false;

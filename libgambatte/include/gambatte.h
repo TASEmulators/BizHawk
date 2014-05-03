@@ -62,15 +62,14 @@ public:
 	  * The return value indicates whether a new video frame has been drawn, and the
 	  * exact time (in number of samples) at which it was drawn.
 	  *
-	  * @param videoBuf 160x144 RGB32 (native endian) video frame buffer or 0
-	  * @param pitch distance in number of pixels (not bytes) from the start of one line to the next in videoBuf.
 	  * @param soundBuf buffer with space >= samples + 2064
 	  * @param samples in: number of stereo samples to produce, out: actual number of samples produced
 	  * @return sample number at which the video frame was produced. -1 means no frame was produced.
 	  */
-	long runFor(gambatte::uint_least32_t *videoBuf, int pitch,
-			gambatte::uint_least32_t *soundBuf, unsigned &samples);
-	
+	long runFor(gambatte::uint_least32_t *soundBuf, unsigned &samples);
+
+	void blitTo(gambatte::uint_least32_t *videoBuf, int pitch);
+
 	/** Reset to initial state.
 	  * Equivalent to reloading a ROM image, or turning a Game Boy Color off and on again.
 	  */
@@ -109,20 +108,6 @@ public:
 	
 	// 0 = vram, 1 = rom, 2 = wram, 3 = cartram, 4 = oam, 5 = hram
 	bool getMemoryArea(int which, unsigned char **data, int *length);
-
-	/** Saves emulator state to the state slot selected with selectState().
-	  * The data will be stored in the directory given by setSaveDir().
-	  *
-	  * @param  videoBuf 160x144 RGB32 (native endian) video frame buffer or 0. Used for saving a thumbnail.
-	  * @param  pitch distance in number of pixels (not bytes) from the start of one line to the next in videoBuf.
-	  * @return success
-	  */
-	//bool saveState(const gambatte::uint_least32_t *videoBuf, int pitch);
-	
-	/** Loads emulator state from the state slot selected with selectState().
-	  * @return success
-	  */
-	//bool loadState();
 	
 	/** Saves emulator state to the file given by 'filepath'.
 	  *
@@ -130,7 +115,7 @@ public:
 	  * @param  pitch distance in number of pixels (not bytes) from the start of one line to the next in videoBuf.
 	  * @return success
 	  */
-	bool saveState(const gambatte::uint_least32_t *videoBuf, int pitch, std::ostream &file);
+	bool saveState(std::ostream &file);
 	
 	/** Loads emulator state from the file given by 'filepath'.
 	  * @return success

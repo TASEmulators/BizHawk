@@ -151,13 +151,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 							while (nL < target)
 							{
 								uint nsamp = (uint)(target - nL);
-								LibGambatte.gambatte_runfor(L.GambatteState, leftvbuff, pitch, leftsbuff + nL * 2, ref nsamp);
+								if (LibGambatte.gambatte_runfor(L.GambatteState, leftsbuff + nL * 2, ref nsamp) > 0)
+									LibGambatte.gambatte_blitto(L.GambatteState, leftvbuff, pitch);
 								nL += (int)nsamp;
 							}
 							while (nR < target)
 							{
 								uint nsamp = (uint)(target - nR);
-								LibGambatte.gambatte_runfor(R.GambatteState, rightvbuff, pitch, rightsbuff + nR * 2, ref nsamp);
+								if (LibGambatte.gambatte_runfor(R.GambatteState, rightsbuff + nR * 2, ref nsamp) > 0)
+									LibGambatte.gambatte_blitto(R.GambatteState, rightvbuff, pitch);
 								nR += (int)nsamp;
 							}
 							// poll link cable statuses

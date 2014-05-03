@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			/// <summary>Use GBA intial CPU register values when in CGB mode.</summary>
 			GBA_CGB = 2,
 			/// <summary>Use heuristics to detect and support some multicart MBCs disguised as MBC1.</summary>
-			MULTICART_COMPAT = 4 
+			MULTICART_COMPAT = 4
 		}
 
 		/// <summary>
@@ -60,15 +60,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// exact time (in number of samples) at which it was drawn.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
-		/// <param name="videobuf">160x144 RGB32 (native endian) video frame buffer or null</param>
-		/// <param name="pitch">distance in number of pixels (not bytes) from the start of one line to the next in videoBuf.</param>
 		/// <param name="soundbuf">buffer with space >= samples + 2064</param>
 		/// <param name="samples">in: number of stereo samples to produce, out: actual number of samples produced</param>
 		/// <returns>sample number at which the video frame was produced. -1 means no frame was produced.</returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int gambatte_runfor(IntPtr core, int[] videobuf, int pitch, short[] soundbuf, ref uint samples);
+		public static extern int gambatte_runfor(IntPtr core, short[] soundbuf, ref uint samples);
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		unsafe public static extern int gambatte_runfor(IntPtr core, int* videobuf, int pitch, short* soundbuf, ref uint samples);
+		unsafe public static extern int gambatte_runfor(IntPtr core, short* soundbuf, ref uint samples);
+
+		/// <summary>
+		/// blit from internal framebuffer to provided framebuffer
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="videobuf"></param>
+		/// <param name="pitch">in pixels</param>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		unsafe public static extern void gambatte_blitto(IntPtr core, int* videobuf, int pitch);
+		/// <summary>
+		/// blit from internal framebuffer to provided framebuffer
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="videobuf"></param>
+		/// <param name="pitch">in pixels</param>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_blitto(IntPtr core, int[] videobuf, int pitch);
 
 		/// <summary>
 		/// Reset to initial state.
@@ -112,7 +127,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// </summary>
 		[Flags]
 		public enum Buttons
-		{ 
+		{
 			A = 0x01,
 			B = 0x02,
 			SELECT = 0x04,
@@ -268,13 +283,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// Saves emulator state to a byte array
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
-		/// <param name="videobuf">160x144 RGB32 (native endian) video frame buffer or 0. Used for saving a thumbnail.  NOT USED ANYMORE</param>
-		/// <param name="pitch">distance in number of pixels (not bytes) from the start of one line to the next in videoBuf.</param>
 		/// <param name="data">private savestate data returned by the core</param>
 		/// <param name="len">the length of the data in bytes</param>
 		/// <returns>success</returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool gambatte_savestate(IntPtr core, int[] videobuf, int pitch, ref IntPtr data, ref uint len);
+		public static extern bool gambatte_savestate(IntPtr core, ref IntPtr data, ref uint len);
 
 		/// <summary>
 		/// destroy data returned by gambatte_savestate() to avoid memory leaks
@@ -292,43 +305,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <returns>success</returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern bool gambatte_loadstate(IntPtr core, byte[] data, uint len);
-
-		/// <summary>
-		/// Saves emulator state to the file given by 'filepath'.
-		/// </summary>
-		/// <param name="core">opaque state pointer</param>
-		/// <param name="videobuf">160x144 RGB32 (native endian) video frame buffer or 0. Used for saving a thumbnail.</param>
-		/// <param name="pitch">distance in number of pixels (not bytes) from the start of one line to the next in videoBuf.</param>
-		/// <param name="filepath"></param>
-		/// <returns>success</returns>
-		//[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		//public static extern bool gambatte_savestate_file(IntPtr core, int[] videobuf, int pitch, string filepath);
-
-		/// <summary>
-		/// Loads emulator state from the file given by 'filepath'.
-		/// </summary>
-		/// <param name="core">opaque state pointer</param>
-		/// <param name="filepath"></param>
-		/// <returns>success</returns>
-		//[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		//public static extern bool gambatte_loadstate_file(IntPtr core, string filepath);
-
-		/// <summary>
-		/// Selects which state slot to save state to or load state from.
-		/// There are 10 such slots, numbered from 0 to 9 (periodically extended for all n).
-		/// </summary>
-		/// <param name="core">opaque state pointer</param>
-		/// <param name="n"></param>
-		//[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void gambatte_selectstate(IntPtr core, int n);
-
-		/// <summary>
-		/// Current state slot selected with selectState(). Returns a value between 0 and 9 inclusive.
-		/// </summary>
-		/// <param name="core">opaque state pointer</param>
-		/// <returns></returns>
-		//[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		//public static extern int gambatte_currentstate(IntPtr core);
 
 		/// <summary>
 		/// ROM header title of currently loaded ROM image.
