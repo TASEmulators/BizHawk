@@ -7,6 +7,8 @@ using System.Linq;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
+using Newtonsoft.Json;
+
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	[CoreAttributes(
@@ -288,8 +290,35 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			public bool ShowBall { get; set; }
 			public bool ShowPlayfield { get; set; }
 
-			public int TopLine { get; set; }
-			public int BottomLine { get; set; }
+			public int NTSCTopLine
+			{
+				get { return _NTSCTopLine; }
+				set { _NTSCTopLine = Math.Min(64, Math.Max(value, 0)); }
+			}
+			public int NTSCBottomLine
+			{
+				get { return _NTSCBottomLine; }
+				set { _NTSCBottomLine = Math.Min(260, Math.Max(value, 192)); }
+			}
+			[JsonIgnore]
+			private int _NTSCTopLine = 24;
+			[JsonIgnore]
+			private int _NTSCBottomLine = 248;
+
+			public int PALTopLine
+			{
+				get { return _PALTopLine; }
+				set { _PALTopLine = Math.Min(64, Math.Max(value, 0)); }
+			}
+			public int PALBottomLine
+			{
+				get { return _PALBottomLine; }
+				set { _PALBottomLine = Math.Min(310, Math.Max(value, 192)); }
+			}
+			[JsonIgnore]
+			private int _PALTopLine = 24;
+			[JsonIgnore]
+			private int _PALBottomLine = 296;
 
 			public int BackgroundColor { get; set; }
 
@@ -309,10 +338,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					ShowMissle2 = true,
 					ShowBall = true,
 					ShowPlayfield = true,
-
-					TopLine = 24,
-					BottomLine = 248,
-
 					BackgroundColor = 0
 				};
 			}
