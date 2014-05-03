@@ -122,14 +122,6 @@ public:
 	  */
 	bool loadState(std::istream &file);
 	
-	/** Selects which state slot to save state to or load state from.
-	  * There are 10 such slots, numbered from 0 to 9 (periodically extended for all n).
-	  */
-	void selectState(int n);
-	
-	/** Current state slot selected with selectState(). Returns a value between 0 and 9 inclusive. */
-	int currentState() const;
-	
 	/** ROM header title of currently loaded ROM image. */
 	const std::string romTitle() const;
 	
