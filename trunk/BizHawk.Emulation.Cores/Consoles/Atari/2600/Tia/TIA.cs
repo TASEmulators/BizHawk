@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public int VirtualHeight
 		{
-			get { return _core.Settings.BottomLine - _core.Settings.TopLine; }
+			get { return BufferHeight; }
 		}
 
 		public int BufferWidth
@@ -129,7 +129,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public int BufferHeight
 		{
-			get { return _core.Settings.BottomLine - _core.Settings.TopLine; }
+			get
+			{
+				if (false)
+					return _core.Settings.PALBottomLine - _core.Settings.PALTopLine;
+				else
+					return _core.Settings.NTSCBottomLine - _core.Settings.NTSCTopLine;
+			}
 		}
 
 		public int BackgroundColor
@@ -475,12 +481,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public int[] FrameBuffer = new int[ScreenWidth * MaxScreenHeight];
 
 		private const int ScreenWidth = 160;
-		private const int MaxScreenHeight = 262;
+		private const int MaxScreenHeight = 312;
 
 		public void OutputFrame()
 		{
-			var topLine = _core.Settings.TopLine;
-			var bottomLine = _core.Settings.BottomLine;
+			var topLine = _core.Settings.NTSCTopLine;
+			var bottomLine = _core.Settings.NTSCBottomLine;
 
 			for (int row = topLine; row < bottomLine; row++)
 			{
