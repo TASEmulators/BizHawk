@@ -1381,6 +1381,7 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\monitor.png" />
     <None Include="images\ppsspp.png" />
     <None Include="images\meteor.png" />
     <None Include="images\yabause.png" />
