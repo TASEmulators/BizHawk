@@ -263,7 +263,12 @@ namespace BizHawk.Client.Common
 		public static string SaveStatePrefix(GameInfo game)
 		{
 			var name = FilesystemSafeName(game);
-			
+
+			if (Global.Emulator.SystemId == "NES")
+			{
+				name += "." + Global.Emulator.Attributes().CoreName;
+			}
+
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
