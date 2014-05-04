@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.Common
 {
@@ -264,9 +265,16 @@ namespace BizHawk.Client.Common
 		{
 			var name = FilesystemSafeName(game);
 
+			// Neshawk and Quicknes have incompatible savestates, store the name to keep them separate
 			if (Global.Emulator.SystemId == "NES")
 			{
 				name += "." + Global.Emulator.Attributes().CoreName;
+			}
+
+			// Bsnes profiles have incompatible savestates so save the profile name
+			if (Global.Emulator is LibsnesCore)
+			{
+				name += "." + ((LibsnesCore.SnesSyncSettings)Global.Emulator.GetSyncSettings()).Profile;
 			}
 
 			if (Global.MovieSession.Movie.IsActive)
