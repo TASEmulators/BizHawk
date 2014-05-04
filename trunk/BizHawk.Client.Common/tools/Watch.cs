@@ -170,32 +170,32 @@ namespace BizHawk.Client.Common
 
 		protected byte GetByte()
 		{
-			return _domain.PeekByte(_address);
+			return _domain.PeekByte(_address % _domain.Size);
 		}
 
 		protected ushort GetWord()
 		{
-			return _domain.PeekWord(_address, _bigEndian);
+			return _domain.PeekWord(_address % _domain.Size, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
 		}
 
 		protected uint GetDWord()
 		{
-			return _domain.PeekDWord(_address, _bigEndian);
+			return _domain.PeekDWord(_address % _domain.Size, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
 		}
 
 		protected void PokeByte(byte val)
 		{
-			_domain.PokeByte(_address, val);
+			_domain.PokeByte(_address % _domain.Size, val);
 		}
 
 		protected void PokeWord(ushort val)
 		{
-			_domain.PokeWord(_address, val, _bigEndian);
+			_domain.PokeWord(_address % _domain.Size, val, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
 		}
 
 		protected void PokeDWord(uint val)
 		{
-			_domain.PokeDWord(_address, val, _bigEndian);
+			_domain.PokeDWord(_address % _domain.Size, val, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
 		}
 
 		public void ClearChangeCount() { _changecount = 0; }

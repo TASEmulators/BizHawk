@@ -188,6 +188,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!string.IsNullOrWhiteSpace(_watches.CurrentFileName))
 			{
 				_watches.Reload();
+				UpdateMessageLabel();
 			}
 			else
 			{
@@ -516,6 +517,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			if (_watches.Any(watch => (watch.Address ?? 0) >= watch.Domain.Size))
+			{
+				message += " WARNING! Out of range addresses";
+			}
+
 			MessageLabel.Text = message;
 		}
 
@@ -536,6 +542,10 @@ namespace BizHawk.Client.EmuHawk
 				if (_watches[index].IsSeparator)
 				{
 					color = BackColor;
+				}
+				else if (_watches[index].Address.Value >= _watches[index].Domain.Size)
+				{
+					color = Color.PeachPuff;
 				}
 				else if (Global.CheatList.IsActive(_watches.Domain, _watches[index].Address ?? 0))
 				{
