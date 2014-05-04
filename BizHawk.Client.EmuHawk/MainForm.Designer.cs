@@ -188,9 +188,11 @@
 			this.SavestateTypeDefaultMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SavestateBinaryMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SavestateTextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.CoreSelectionSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.CoresSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBInSGBMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NesInQuickNESMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+			this.N64VideoPluginSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
 			this.SaveConfigMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LoadConfigMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1258,7 +1260,7 @@
             this.SpeedSkipSubMenu,
             this.KeyPrioritySubMenu,
             this.SavestateTypeSubMenu,
-            this.CoreSelectionSubMenu,
+            this.CoresSubMenu,
             this.toolStripSeparator10,
             this.SaveConfigMenuItem,
             this.LoadConfigMenuItem});
@@ -1739,47 +1741,62 @@
 			// SavestateTypeDefaultMenuItem
 			// 
 			this.SavestateTypeDefaultMenuItem.Name = "SavestateTypeDefaultMenuItem";
-			this.SavestateTypeDefaultMenuItem.Size = new System.Drawing.Size(112, 22);
+			this.SavestateTypeDefaultMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.SavestateTypeDefaultMenuItem.Text = "Default";
 			this.SavestateTypeDefaultMenuItem.Click += new System.EventHandler(this.SavestateTypeDefaultMenuItem_Click);
 			// 
 			// SavestateBinaryMenuItem
 			// 
 			this.SavestateBinaryMenuItem.Name = "SavestateBinaryMenuItem";
-			this.SavestateBinaryMenuItem.Size = new System.Drawing.Size(112, 22);
+			this.SavestateBinaryMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.SavestateBinaryMenuItem.Text = "Binary";
 			this.SavestateBinaryMenuItem.Click += new System.EventHandler(this.SavestateBinaryMenuItem_Click);
 			// 
 			// SavestateTextMenuItem
 			// 
 			this.SavestateTextMenuItem.Name = "SavestateTextMenuItem";
-			this.SavestateTextMenuItem.Size = new System.Drawing.Size(112, 22);
+			this.SavestateTextMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.SavestateTextMenuItem.Text = "Text";
 			this.SavestateTextMenuItem.Click += new System.EventHandler(this.SavestateTextMenuItem_Click);
 			// 
-			// CoreSelectionSubMenu
+			// CoresSubMenu
 			// 
-			this.CoreSelectionSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.CoresSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.GBInSGBMenuItem,
-            this.NesInQuickNESMenuItem});
-			this.CoreSelectionSubMenu.Name = "CoreSelectionSubMenu";
-			this.CoreSelectionSubMenu.Size = new System.Drawing.Size(159, 22);
-			this.CoreSelectionSubMenu.Text = "Core Selection";
-			this.CoreSelectionSubMenu.DropDownOpened += new System.EventHandler(this.CoreSelectionMenuItem_DropDownOpened);
+            this.NesInQuickNESMenuItem,
+            this.toolStripSeparator8,
+            this.N64VideoPluginSettingsMenuItem});
+			this.CoresSubMenu.Name = "CoresSubMenu";
+			this.CoresSubMenu.Size = new System.Drawing.Size(159, 22);
+			this.CoresSubMenu.Text = "Cores";
+			this.CoresSubMenu.DropDownOpened += new System.EventHandler(this.CoreSelectionMenuItem_DropDownOpened);
 			// 
 			// GBInSGBMenuItem
 			// 
 			this.GBInSGBMenuItem.Name = "GBInSGBMenuItem";
-			this.GBInSGBMenuItem.Size = new System.Drawing.Size(163, 22);
+			this.GBInSGBMenuItem.Size = new System.Drawing.Size(210, 22);
 			this.GBInSGBMenuItem.Text = "GB in SGB";
 			this.GBInSGBMenuItem.Click += new System.EventHandler(this.GBInSGBMenuItem_Click);
 			// 
 			// NesInQuickNESMenuItem
 			// 
 			this.NesInQuickNESMenuItem.Name = "NesInQuickNESMenuItem";
-			this.NesInQuickNESMenuItem.Size = new System.Drawing.Size(163, 22);
+			this.NesInQuickNESMenuItem.Size = new System.Drawing.Size(210, 22);
 			this.NesInQuickNESMenuItem.Text = "NES in QuickNES";
 			this.NesInQuickNESMenuItem.Click += new System.EventHandler(this.NesInQuickNESMenuItem_Click);
+			// 
+			// toolStripSeparator8
+			// 
+			this.toolStripSeparator8.Name = "toolStripSeparator8";
+			this.toolStripSeparator8.Size = new System.Drawing.Size(207, 6);
+			// 
+			// N64VideoPluginSettingsMenuItem
+			// 
+			this.N64VideoPluginSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.monitor;
+			this.N64VideoPluginSettingsMenuItem.Name = "N64VideoPluginSettingsMenuItem";
+			this.N64VideoPluginSettingsMenuItem.Size = new System.Drawing.Size(210, 22);
+			this.N64VideoPluginSettingsMenuItem.Text = "N64 Video Plugin Settings";
+			this.N64VideoPluginSettingsMenuItem.Click += new System.EventHandler(this.N64VideoPluginSettingsMenuItem_Click);
 			// 
 			// toolStripSeparator10
 			// 
@@ -2884,7 +2901,7 @@
             this.ShowMenuContextMenuSeparator,
             this.ShowMenuContextMenuItem});
 			this.MainFormContextMenu.Name = "contextMenuStrip1";
-			this.MainFormContextMenu.Size = new System.Drawing.Size(217, 490);
+			this.MainFormContextMenu.Size = new System.Drawing.Size(217, 468);
 			this.MainFormContextMenu.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.MainFormContextMenu_Closing);
 			this.MainFormContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.MainFormContextMenu_Opening);
 			// 
@@ -3572,7 +3589,7 @@
 		private System.Windows.Forms.ToolStripMenuItem GenesisSettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AtariSettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MovieSettingsMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem CoreSelectionSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem CoresSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GBInSGBMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem NesInQuickNESMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem batchRunnerToolStripMenuItem;
@@ -3618,6 +3635,8 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator37;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem66;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem67;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+		private System.Windows.Forms.ToolStripMenuItem N64VideoPluginSettingsMenuItem;
 	}
 }
 

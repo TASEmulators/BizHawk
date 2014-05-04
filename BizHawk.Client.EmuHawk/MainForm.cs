@@ -1289,7 +1289,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HandlePlatformMenus()
 		{
-			var system = String.Empty;
+			var system = string.Empty;
 
 			if (Global.Game != null)
 			{
@@ -1314,9 +1314,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				case "GEN":
 					GenesisSubMenu.Visible = true;
-					break;
-				case "NULL":
-					N64SubMenu.Visible = true;
 					break;
 				case "TI83":
 					TI83SubMenu.Visible = true;
@@ -3307,6 +3304,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GBInSGBContextMenuItem.Checked = Global.Config.GB_AsSGB;
 			NesInQuickNESContextMenuItem.Checked = Global.Config.NES_InQuickNES;
+		}
+
+		private void N64VideoPluginSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			N64PluginSettingsMenuItem_Click(sender, e);
 		}
 	}
 }
