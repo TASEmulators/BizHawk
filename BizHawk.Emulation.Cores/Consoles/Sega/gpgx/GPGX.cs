@@ -574,7 +574,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
-			throw new NotImplementedException();
+			LibGPGX.RegisterInfo[] regs = new LibGPGX.RegisterInfo[LibGPGX.gpgx_getmaxnumregs()];
+
+			int n = LibGPGX.gpgx_getregs(regs);
+			if (n > regs.Length)
+				throw new InvalidOperationException("A buffer overrun has occured!");
+			var ret = new Dictionary<string, int>();
+			for (int i = 0; i < n; i++)
+				ret[Marshal.PtrToStringAnsi(regs[i].Name)] = regs[i].Value;
+			return ret;
 		}
 
 		public void UpdateVDPViewContext(LibGPGX.VDPView view)
@@ -674,6 +682,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		#endregion
 
+		#region Settings
+
 		GPGXSyncSettings SyncSettings;
 
 		public object GetSettings() { return null; }
@@ -722,5 +732,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				return x.UseSixButton != y.UseSixButton || x.ControlType != y.ControlType || x.Region != y.Region;
 			}
 		}
+
+		#endregion
 	}
 }
