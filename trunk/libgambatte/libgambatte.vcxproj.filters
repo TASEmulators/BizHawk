@@ -57,9 +57,6 @@
     <ClInclude Include="src\interrupter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\file\file.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\file\stdfile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -174,9 +171,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\interrupter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\file\file.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\video\next_m0_time.cpp">
