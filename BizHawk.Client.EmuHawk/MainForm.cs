@@ -2359,6 +2359,7 @@ namespace BizHawk.Client.EmuHawk
 				else if (Global.Emulator is LibsnesCore)
 				{
 					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.bsnes;
+					CoreNameStatusBarButton.Text += " (" + ((LibsnesCore.SnesSyncSettings)Global.Emulator.GetSyncSettings()).Profile + ")";
 				}
 				else if (Global.Emulator is Yabause)
 				{
