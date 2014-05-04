@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 		public MainForm(string[] args)
 		{
 			GlobalWin.MainForm = this;
-			Global.Rewinder = new Rewinder()
+			Global.Rewinder = new Rewinder
 			{
 				MessageCallback = GlobalWin.OSD.AddMessage
 			};
@@ -703,25 +703,24 @@ namespace BizHawk.Client.EmuHawk
 
 			// also handle floats
 			conInput.AcceptNewFloats(Input.Instance.GetFloats().Select(o =>
+			{
+				// hackish
+				if (o.Item1 == "WMouse X")
 				{
-					// hackish
-					if (o.Item1 == "WMouse X")
-					{
-						var P = GlobalWin.DisplayManager.UntransformPoint(new System.Drawing.Point((int)o.Item2, 0));
-						float x = P.X / (float)Global.Emulator.VideoProvider.BufferWidth;
-						return new Tuple<string, float>("WMouse X", x * 20000 - 10000);
-					}
-					else if (o.Item1 == "WMouse Y")
-					{
-						var P = GlobalWin.DisplayManager.UntransformPoint(new System.Drawing.Point(0, (int)o.Item2));
-						float y = P.Y / (float)Global.Emulator.VideoProvider.BufferHeight;
-						return new Tuple<string, float>("WMouse Y", y * 20000 - 10000);
-					}
-					else
-					{
-						return o;
-					}
-				}));
+					var P = GlobalWin.DisplayManager.UntransformPoint(new System.Drawing.Point((int)o.Item2, 0));
+					float x = P.X / (float)Global.Emulator.VideoProvider.BufferWidth;
+					return new Tuple<string, float>("WMouse X", x * 20000 - 10000);
+				}
+					
+				if (o.Item1 == "WMouse Y")
+				{
+					var P = GlobalWin.DisplayManager.UntransformPoint(new System.Drawing.Point(0, (int)o.Item2));
+					float y = P.Y / (float)Global.Emulator.VideoProvider.BufferHeight;
+					return new Tuple<string, float>("WMouse Y", y * 20000 - 10000);
+				}
+					
+				return o;
+			}));
 		}
 
 		public void RebootCore()
@@ -2345,38 +2344,38 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!attributes.Ported)
 			{
-				CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.CorpHawkSmall;
+				CoreNameStatusBarButton.Image = Properties.Resources.CorpHawkSmall;
 			}
 			else
 			{
 				if (Global.Emulator is QuickNES)
 				{
-					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.QuickNes;
+					CoreNameStatusBarButton.Image = Properties.Resources.QuickNes;
 				}
 				else if (Global.Emulator is LibsnesCore)
 				{
-					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.bsnes;
+					CoreNameStatusBarButton.Image = Properties.Resources.bsnes;
 					CoreNameStatusBarButton.Text += " (" + ((LibsnesCore.SnesSyncSettings)Global.Emulator.GetSyncSettings()).Profile + ")";
 				}
 				else if (Global.Emulator is Yabause)
 				{
-					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.yabause;
+					CoreNameStatusBarButton.Image = Properties.Resources.yabause;
 				}
 				else if (Global.Emulator is Atari7800)
 				{
-					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.emu7800;
+					CoreNameStatusBarButton.Image = Properties.Resources.emu7800;
 				}
 				else if (Global.Emulator is GBA)
 				{
-					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.meteor;
+					CoreNameStatusBarButton.Image = Properties.Resources.meteor;
 				}
 				else if (Global.Emulator is GPGX)
 				{
-					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.genplus;
+					CoreNameStatusBarButton.Image = Properties.Resources.genplus;
 				}
 				else if (Global.Emulator is PSP)
 				{
-					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.ppsspp;
+					CoreNameStatusBarButton.Image = Properties.Resources.ppsspp;
 				}
 				else if (Global.Emulator is Gameboy)
 				{

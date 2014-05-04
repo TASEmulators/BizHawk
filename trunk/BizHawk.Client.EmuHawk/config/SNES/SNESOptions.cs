@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Client.Common;
@@ -42,13 +36,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void btnOk_Click(object sender, EventArgs e)
 		{
-			DialogResult = System.Windows.Forms.DialogResult.OK;
+			DialogResult = DialogResult.OK;
 			Close();
 		}
 
 		private void btnCancel_Click(object sender, EventArgs e)
 		{
-			DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 			Close();
 		}
 
