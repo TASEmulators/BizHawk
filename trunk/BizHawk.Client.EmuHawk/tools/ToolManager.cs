@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 		public void UpdateAfter()
 		{
 			var afterList = _tools.Where(x => !x.UpdateBefore);
-			foreach (var tool in afterList.Where(tool => !tool.IsDisposed))
+			foreach (var tool in afterList)
 			{
 				if (!tool.IsDisposed ||
 					(tool is RamWatch && Global.Config.DisplayRamWatch)) // Ram Watch hack, on screen display should run even if Ram Watch is closed
