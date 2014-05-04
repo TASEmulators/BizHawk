@@ -150,7 +150,7 @@ namespace BizHawk.Client.EmuHawk
 					Global.Config.RecentWatches.Add(path);
 					WatchListView.ItemCount = _watches.ItemCount;
 					UpdateWatchCount();
-					UpdateMessageLabel();
+					UpdateStatusBar();
 					_watches.Changes = false;
 				}
 			}
@@ -170,10 +170,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_watches.Load(file.FullName, append);
 					WatchListView.ItemCount = _watches.ItemCount;
-					UpdateMessageLabel();
 					UpdateWatchCount();
 					Global.Config.RecentWatches.Add(_watches.CurrentFileName);
 					SetMemoryDomain(_watches.Domain.ToString());
+					UpdateStatusBar();
 				}
 			}
 		}
@@ -188,7 +188,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!string.IsNullOrWhiteSpace(_watches.CurrentFileName))
 			{
 				_watches.Reload();
-				UpdateMessageLabel();
+				UpdateStatusBar();
 			}
 			else
 			{
@@ -241,7 +241,7 @@ namespace BizHawk.Client.EmuHawk
 		private void Changes()
 		{
 			_watches.Changes = true;
-			UpdateMessageLabel();
+			UpdateStatusBar();
 		}
 
 		private void ColumnPositions()
@@ -405,7 +405,7 @@ namespace BizHawk.Client.EmuHawk
 				_watches.Clear();
 				WatchListView.ItemCount = _watches.ItemCount;
 				UpdateWatchCount();
-				UpdateMessageLabel();
+				UpdateStatusBar();
 				_sortReverse = false;
 				_sortedColumn = string.Empty;
 			}
@@ -431,7 +431,7 @@ namespace BizHawk.Client.EmuHawk
 			var result = _watches.SaveAs(ToolHelpers.GetWatchSaveFileFromUser(_watches.CurrentFileName));
 			if (result)
 			{
-				UpdateMessageLabel(saved: true);
+				UpdateStatusBar(saved: true);
 				Global.Config.RecentWatches.Add(_watches.CurrentFileName);
 			}
 		}
@@ -502,7 +502,7 @@ namespace BizHawk.Client.EmuHawk
 			MemDomainLabel.Text = Global.Emulator.SystemId + " " + _watches.Domain.Name;
 		}
 
-		private void UpdateMessageLabel(bool saved = false)
+		private void UpdateStatusBar(bool saved = false)
 		{
 			var message = string.Empty;
 			if (!string.IsNullOrWhiteSpace(_watches.CurrentFileName))
@@ -517,10 +517,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (_watches.Any(watch => (watch.Address ?? 0) >= watch.Domain.Size))
-			{
-				message += " WARNING! Out of range addresses";
-			}
+			var test1 = _watches.Any(watch => (watch.Address ?? 0) >= watch.Domain.Size);
+
+			ErrorIconButton.Visible = _watches.Any(watch => (watch.Address ?? 0) >= watch.Domain.Size);
 
 			MessageLabel.Text = message;
 		}
@@ -628,7 +627,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_watches.Save())
 				{
-					UpdateMessageLabel(saved: true);
+					UpdateStatusBar(saved: true);
 				}
 			}
 			else
@@ -988,7 +987,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewRamWatch_Load(object sender, EventArgs e)
 		{
+
 			LoadConfigSettings();
+			UpdateStatusBar();
 		}
 
 		private void NewRamWatch_Activated(object sender, EventArgs e)
@@ -1120,6 +1121,23 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RefreshFloatingWindowControl();
 			base.OnShown(e);
+		}
+
+		private void ErrorIconButton_Click(object sender, EventArgs e)
+		{
+			var items = _watches
+				.Where(watch => (watch.Address ?? 0) >= watch.Domain.Size)
+				.ToList();
+
+			foreach (var item in items)
+			{
+				_watches.Remove(item);
+			}
+
+			WatchListView.ItemCount = _watches.ItemCount;
+			UpdateValues();
+			UpdateWatchCount();
+			UpdateStatusBar();
 		}
 
 		#endregion

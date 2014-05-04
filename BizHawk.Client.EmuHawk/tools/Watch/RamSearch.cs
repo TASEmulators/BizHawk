@@ -139,14 +139,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OutOfRangeCheck()
 		{
-			if (_searches.OutOfRangeAddress.Any())
-			{
-				ErrorIconButton.Visible = true;
-			}
-			else
-			{
-				ErrorIconButton.Visible = false;
-			}
+			ErrorIconButton.Visible = _searches.OutOfRangeAddress.Any();
 		}
 
 		private void ListView_QueryItemBkColor(int index, int column, ref Color color)
@@ -1476,11 +1469,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ErrorIconButton_Click(object sender, EventArgs e)
 		{
-			var _outOfRangeAddresses = _searches.OutOfRangeAddress.ToList();
+			var outOfRangeAddresses = _searches.OutOfRangeAddress.ToList();
 
-			SetRemovedMessage(_outOfRangeAddresses.Count);
+			SetRemovedMessage(outOfRangeAddresses.Count);
 
-			_searches.RemoveRange(_outOfRangeAddresses);
+			_searches.RemoveRange(outOfRangeAddresses);
 
 			WatchListView.ItemCount = _searches.Count;
 			SetTotal();
