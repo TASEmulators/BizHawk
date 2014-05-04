@@ -1853,7 +1853,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if ((Control.ModifierKeys & (Keys.Control | Keys.Shift | Keys.Alt)) != 0)
+			if ((ModifierKeys & (Keys.Control | Keys.Shift | Keys.Alt)) != 0)
 			{
 				return;
 			}

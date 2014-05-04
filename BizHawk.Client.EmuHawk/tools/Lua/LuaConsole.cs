@@ -404,7 +404,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					catch (Exception ex)
 					{
-						if (ex is LuaInterface.LuaScriptException || ex is LuaInterface.LuaException)
+						if (ex is LuaScriptException || ex is LuaException)
 						{
 							lf.Enabled = false;
 							lf.Thread = null;
