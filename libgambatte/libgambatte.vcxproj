@@ -93,7 +93,6 @@
     <ClInclude Include="src\common\uncopyable.h" />
     <ClInclude Include="src\counterdef.h" />
     <ClInclude Include="src\cpu.h" />
-    <ClInclude Include="src\file\file.h" />
     <ClInclude Include="src\file\stdfile.h" />
     <ClInclude Include="src\initstate.h" />
     <ClInclude Include="src\insertion_sort.h" />
@@ -129,7 +128,6 @@
     <ClCompile Include="src\bitmap_font.cpp" />
     <ClCompile Include="src\cinterface.cpp" />
     <ClCompile Include="src\cpu.cpp" />
-    <ClCompile Include="src\file\file.cpp" />
     <ClCompile Include="src\gambatte.cpp" />
     <ClCompile Include="src\initstate.cpp" />
     <ClCompile Include="src\interrupter.cpp" />
