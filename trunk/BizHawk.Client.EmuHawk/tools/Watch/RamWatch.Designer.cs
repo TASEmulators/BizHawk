@@ -31,7 +31,6 @@
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RamWatch));
 			this.WatchCountLabel = new System.Windows.Forms.Label();
-			this.MessageLabel = new System.Windows.Forms.Label();
 			this.MemDomainLabel = new System.Windows.Forms.Label();
 			this.ListViewContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.EditContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,6 +49,8 @@
 			this.ShowChangeCountsContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowDiffContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowDomainContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+			this.MessageLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStrip1 = new ToolStripEx();
 			this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -117,7 +118,9 @@
 			this.DiffColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.DomainColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.NotesColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.ErrorIconButton = new System.Windows.Forms.ToolStripButton();
 			this.ListViewContextMenu.SuspendLayout();
+			this.statusStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -130,16 +133,6 @@
 			this.WatchCountLabel.Size = new System.Drawing.Size(56, 13);
 			this.WatchCountLabel.TabIndex = 5;
 			this.WatchCountLabel.Text = "0 watches";
-			// 
-			// MessageLabel
-			// 
-			this.MessageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.MessageLabel.AutoSize = true;
-			this.MessageLabel.Location = new System.Drawing.Point(18, 362);
-			this.MessageLabel.Name = "MessageLabel";
-			this.MessageLabel.Size = new System.Drawing.Size(187, 13);
-			this.MessageLabel.TabIndex = 6;
-			this.MessageLabel.Text = "                                                            ";
 			// 
 			// MemDomainLabel
 			// 
@@ -298,6 +291,23 @@
 			this.ShowDomainContextMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.ShowDomainContextMenuItem.Text = "Show Domain";
 			this.ShowDomainContextMenuItem.Click += new System.EventHandler(this.ShowDomainMenuItem_Click);
+			// 
+			// statusStrip1
+			// 
+			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ErrorIconButton,
+            this.MessageLabel});
+			this.statusStrip1.Location = new System.Drawing.Point(0, 356);
+			this.statusStrip1.Name = "statusStrip1";
+			this.statusStrip1.Size = new System.Drawing.Size(359, 22);
+			this.statusStrip1.TabIndex = 8;
+			this.statusStrip1.Text = "statusStrip1";
+			// 
+			// MessageLabel
+			// 
+			this.MessageLabel.Name = "MessageLabel";
+			this.MessageLabel.Size = new System.Drawing.Size(31, 17);
+			this.MessageLabel.Text = "        ";
 			// 
 			// toolStrip1
 			// 
@@ -868,6 +878,7 @@
 			this.WatchListView.ItemCount = 0;
 			this.WatchListView.Location = new System.Drawing.Point(16, 76);
 			this.WatchListView.Name = "WatchListView";
+			this.WatchListView.SelectAllInProgress = false;
 			this.WatchListView.selectedItem = -1;
 			this.WatchListView.Size = new System.Drawing.Size(327, 281);
 			this.WatchListView.TabIndex = 2;
@@ -925,13 +936,24 @@
 			this.NotesColumn.Text = "Notes";
 			this.NotesColumn.Width = 128;
 			// 
+			// ErrorIconButton
+			// 
+			this.ErrorIconButton.BackColor = System.Drawing.Color.NavajoWhite;
+			this.ErrorIconButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.ErrorIconButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.ExclamationRed;
+			this.ErrorIconButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.ErrorIconButton.Name = "ErrorIconButton";
+			this.ErrorIconButton.Size = new System.Drawing.Size(23, 20);
+			this.ErrorIconButton.Text = "Warning! Out of Range Addresses in list, click to remove them";
+			this.ErrorIconButton.Click += new System.EventHandler(this.ErrorIconButton_Click);
+			// 
 			// RamWatch
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(359, 378);
+			this.Controls.Add(this.statusStrip1);
 			this.Controls.Add(this.MemDomainLabel);
-			this.Controls.Add(this.MessageLabel);
 			this.Controls.Add(this.WatchCountLabel);
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.menuStrip1);
@@ -946,6 +968,8 @@
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.NewRamWatch_DragEnter);
 			this.Enter += new System.EventHandler(this.NewRamWatch_Enter);
 			this.ListViewContextMenu.ResumeLayout(false);
+			this.statusStrip1.ResumeLayout(false);
+			this.statusStrip1.PerformLayout();
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
 			this.menuStrip1.ResumeLayout(false);
@@ -1020,8 +1044,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripButton MoveUpStripButton1;
 		private System.Windows.Forms.ToolStripButton MoveDownStripButton1;
-        private System.Windows.Forms.Label WatchCountLabel;
-        private System.Windows.Forms.Label MessageLabel;
+		private System.Windows.Forms.Label WatchCountLabel;
         private System.Windows.Forms.Label MemDomainLabel;
 		private System.Windows.Forms.ToolStripSeparator Separator2;
 		private System.Windows.Forms.ToolStripMenuItem OriginalMenuItem;
@@ -1044,5 +1067,8 @@
 		private System.Windows.Forms.ToolStripMenuItem ShowDomainContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
+		private System.Windows.Forms.StatusStrip statusStrip1;
+		private System.Windows.Forms.ToolStripStatusLabel MessageLabel;
+		private System.Windows.Forms.ToolStripButton ErrorIconButton;
 	}
 }
