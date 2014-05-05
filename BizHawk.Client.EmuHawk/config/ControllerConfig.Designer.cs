@@ -44,6 +44,7 @@
 			this.buttonLoadDefaults = new System.Windows.Forms.Button();
 			this.buttonSaveDefaults = new System.Windows.Forms.Button();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.tabControl1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -176,23 +177,27 @@
 			// 
 			// buttonLoadDefaults
 			// 
-			this.buttonLoadDefaults.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonLoadDefaults.Location = new System.Drawing.Point(683, 514);
+			this.buttonLoadDefaults.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonLoadDefaults.Location = new System.Drawing.Point(465, 514);
 			this.buttonLoadDefaults.Name = "buttonLoadDefaults";
 			this.buttonLoadDefaults.Size = new System.Drawing.Size(75, 23);
 			this.buttonLoadDefaults.TabIndex = 8;
 			this.buttonLoadDefaults.Text = "Defaults";
+			this.toolTip1.SetToolTip(this.buttonLoadDefaults, "Set the default controller configuration to the current.  Note: this affects all " +
+        "controllers!");
 			this.buttonLoadDefaults.UseVisualStyleBackColor = true;
 			this.buttonLoadDefaults.Click += new System.EventHandler(this.ButtonLoadDefaults_Click);
 			// 
 			// buttonSaveDefaults
 			// 
-			this.buttonSaveDefaults.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonSaveDefaults.Location = new System.Drawing.Point(602, 514);
+			this.buttonSaveDefaults.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonSaveDefaults.Location = new System.Drawing.Point(384, 514);
 			this.buttonSaveDefaults.Name = "buttonSaveDefaults";
 			this.buttonSaveDefaults.Size = new System.Drawing.Size(75, 23);
 			this.buttonSaveDefaults.TabIndex = 9;
 			this.buttonSaveDefaults.Text = "Save Defs";
+			this.toolTip1.SetToolTip(this.buttonSaveDefaults, "Save the current configuration as your default controls. Note: this saves ALL con" +
+        "troller information!");
 			this.buttonSaveDefaults.UseVisualStyleBackColor = true;
 			this.buttonSaveDefaults.Click += new System.EventHandler(this.ButtonSaveDefaults_Click);
 			// 
@@ -245,5 +250,6 @@
 		private System.Windows.Forms.TabPage tabPage3;
 		private System.Windows.Forms.Button buttonSaveDefaults;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+		private System.Windows.Forms.ToolTip toolTip1;
 	}
 }

@@ -153,11 +153,6 @@ namespace BizHawk.Client.EmuHawk
 
 			SetControllerPicture(def.Name);
 
-			if (!VersionInfo.INTERIM)
-			{
-				buttonSaveDefaults.Hide();
-			}
-
 			ResumeLayout();
 		}
 
