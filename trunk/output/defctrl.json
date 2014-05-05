@@ -179,8 +179,8 @@
       "Power": ""
     },
     "Atari 2600 Basic Controller": {
-      "Reset": "",
-      "Select": "",
+      "Reset": "D, J1 B9",
+      "Select": "S, J1 B10",
       "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
       "P1 Down": "DownArrow, J1 POV1D, X1 DpadDown, X1 LStickDown",
       "P1 Left": "LeftArrow,J1 POV1L,  X1 DpadLeft, X1 LStickLeft",
@@ -194,8 +194,8 @@
     },
     "Atari 7800 ProLine Joystick Controller": {
       "Power": "",
-      "Reset": "",
-      "Select": "",
+      "Reset": "D, J1 B9",
+      "Select": "S, J1 B10",
       "Pause": "",
       "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
       "P1 Down": "DownArrow, J1 POV1D X1 DpadDown, X1 LStickDown",
@@ -613,8 +613,8 @@
       "Power": ""
     },
     "Atari 2600 Basic Controller": {
-      "Reset": "D",
-      "Select": "S",
+      "Reset": "",
+      "Select": "",
       "P1 Up": "",
       "P1 Down": "",
       "P1 Left": "",
