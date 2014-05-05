@@ -117,6 +117,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ClearBindings();
 			Text = string.Empty;
+			_tooltip1.SetToolTip(this, string.Empty);
 		}
 
 		/// <summary>
@@ -245,6 +246,7 @@ namespace BizHawk.Client.EmuHawk
 		public void UpdateLabel()
 		{
 			Text = string.Join(",", _bindings.Where(str => !string.IsNullOrWhiteSpace(str)));
+			_tooltip1.SetToolTip(this, Text);
 		}
 
 		protected override void OnKeyPress(KeyPressEventArgs e)
