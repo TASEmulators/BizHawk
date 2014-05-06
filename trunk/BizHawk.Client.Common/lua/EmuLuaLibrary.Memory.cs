@@ -311,7 +311,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodAttributes(
-			"write_s8",
+			"write_u8",
 			"write unsigned byte"
 		)]
 		public void WriteU8(int addr, uint value)
