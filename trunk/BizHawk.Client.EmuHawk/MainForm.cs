@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Game = GameInfo.GetNullGame();
 			if (Global.Config.ShowLogWindow)
 			{
-				ShowConsole();
+				LogConsole.ShowConsole();
 				DisplayLogWindowMenuItem.Checked = true;
 			}
 
@@ -725,10 +725,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RebootCore()
 		{
-			bool autoSaveState = Global.Config.AutoSavestates;
-			Global.Config.AutoSavestates = false;
 			LoadRom(CurrentlyOpenRom);
-			Global.Config.AutoSavestates = autoSaveState;
 		}
 
 		public void PauseEmulator()
@@ -831,6 +828,11 @@ namespace BizHawk.Client.EmuHawk
 		[System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
 		static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
+		public bool IsInFullscreen
+		{
+			get { return _inFullscreen; }
+		}
+
 		public void ToggleFullscreen()
 		{
 			if (_inFullscreen == false)
@@ -894,7 +896,6 @@ namespace BizHawk.Client.EmuHawk
 		public void NotifyLogWindowClosing()
 		{
 			DisplayLogWindowMenuItem.Checked = false;
-			LogWindowAsConsoleMenuItem.Enabled = true;
 		}
 
 		public void ClickSpeedItem(int num)
@@ -1958,18 +1959,6 @@ namespace BizHawk.Client.EmuHawk
 			return null;
 		}
 
-		private void ShowConsole()
-		{
-			LogConsole.ShowConsole();
-			LogWindowAsConsoleMenuItem.Enabled = false;
-		}
-
-		private void HideConsole()
-		{
-			LogConsole.HideConsole();
-			LogWindowAsConsoleMenuItem.Enabled = true;
-		}
-
 		private void IncreaseWindowSize()
 		{
 			switch (Global.Config.TargetZoomFactor)
@@ -3030,11 +3019,6 @@ namespace BizHawk.Client.EmuHawk
 					LoadSaveRam();
 				}
 
-				if (Global.Config.AutoSavestates)
-				{
-					LoadQuickSave("Auto");
-				}
-
 				GlobalWin.Tools.Restart();
 
 				if (Global.Config.LoadCheatFileByGame)
@@ -3123,11 +3107,6 @@ namespace BizHawk.Client.EmuHawk
 		// its very tricky. rename to be more clear or combine them.
 		private void CloseGame(bool clearSram = false)
 		{
-			if (Global.Config.AutoSavestates && Global.Emulator is NullEmulator == false)
-			{
-				SaveQuickSave("Auto");
-			}
-
 			if (clearSram)
 			{
 				var path = PathManager.SaveRamPath(Global.Game);
@@ -3308,6 +3287,11 @@ namespace BizHawk.Client.EmuHawk
 		private void N64VideoPluginSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			N64PluginSettingsMenuItem_Click(sender, e);
+		}
+
+		private void guiOptionsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new EmuHawkOptions().ShowDialog();
 		}
 	}
 }
