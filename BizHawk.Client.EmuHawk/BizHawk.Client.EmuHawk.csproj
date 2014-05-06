@@ -272,6 +272,12 @@
     <Compile Include="config\GenericCoreConfig.Designer.cs">
       <DependentUpon>GenericCoreConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\GuiOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\GuiOptions.Designer.cs">
+      <DependentUpon>GuiOptions.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\HotkeyConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1002,6 +1008,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\GenericCoreConfig.resx">
       <DependentUpon>GenericCoreConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\GuiOptions.resx">
+      <DependentUpon>GuiOptions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\HotkeyConfig.resx">
       <DependentUpon>HotkeyConfig.cs</DependentUpon>

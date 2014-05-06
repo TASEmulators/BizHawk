@@ -79,7 +79,6 @@ namespace BizHawk.Client.Common
 		public bool ShowLogWindow = false;
 		public bool BackupSavestates = true;
 		public bool BackupSaveram = true;
-		public bool AutoSavestates = false;
 		public bool SaveScreenshotWithStates = true;
 		public int AutofireOn = 1;
 		public int AutofireOff = 1;
@@ -150,8 +149,6 @@ namespace BizHawk.Client.Common
 		public int DispMultix = 0;
 		public int DispMultiy = 14;
 		public int DispMultianchor = 1;
-		public bool DisplayGDI = false;
-		public bool SuppressGui = false;
 		public bool DisplayStatusBar = true;
 		public int DispRamWatchx = 0;
 		public int DispRamWatchy = 70;
