@@ -113,12 +113,6 @@ GBEXPORT void gambatte_setrtccallback(void *core, unsigned int (*callback)())
 	g->setRTCCallback(callback);
 }
 
-GBEXPORT void gambatte_setsavedir(void *core, const char *sdir)
-{
-	GB *g = (GB *) core;
-	g->setSaveDir(std::string(sdir));
-}
-
 GBEXPORT int gambatte_iscgb(void *core)
 {
 	GB *g = (GB *) core;
@@ -185,18 +179,6 @@ GBEXPORT const char *gambatte_romtitle(void *core)
 	std::strncpy(horriblebuff, s, 63);
 	horriblebuff[63] = 0;
 	return horriblebuff;
-}
-
-GBEXPORT void gambatte_setgamegenie(void *core, const char *codes)
-{
-	GB *g = (GB *) core;
-	g->setGameGenie(std::string(codes));
-}
-
-GBEXPORT void gambatte_setgameshark(void *core, const char *codes)
-{
-	GB *g = (GB *) core;
-	g->setGameShark(std::string(codes));
 }
 
 GBEXPORT int gambatte_getmemoryarea(void *core, int which, unsigned char **data, int *length)

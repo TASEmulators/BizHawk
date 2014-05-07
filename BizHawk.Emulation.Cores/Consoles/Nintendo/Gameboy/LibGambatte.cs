@@ -232,14 +232,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public static extern void gambatte_setrtccallback(IntPtr core, RTCCallback callback);
 
 		/// <summary>
-		/// Sets the directory used for storing save data. The default is the same directory as the ROM Image file.
-		/// </summary>
-		/// <param name="core">opaque state pointer</param>
-		/// <param name="sdir"></param>
-		//[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void gambatte_setsavedir(IntPtr core, string sdir);
-
-		/// <summary>
 		/// Returns true if the currently loaded ROM image is treated as having CGB support.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
@@ -313,22 +305,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <returns></returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern string gambatte_romtitle(IntPtr core);
-
-		/// <summary>
-		/// Set Game Genie codes to apply to currently loaded ROM image. Cleared on ROM load.
-		/// </summary>
-		/// <param name="core">opaque state pointer</param>
-		/// <param name="codes">Game Genie codes in format HHH-HHH-HHH;HHH-HHH-HHH;... where H is [0-9]|[A-F]</param>
-		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_setgamegenie(IntPtr core, string codes);
-
-		/// <summary>
-		/// Game Shark codes to apply to currently loaded ROM image. Cleared on ROM load.
-		/// </summary>
-		/// <param name="core">opaque state pointer</param>
-		/// <param name="codes">Game Shark codes in format 01HHHHHH;01HHHHHH;... where H is [0-9]|[A-F]</param>
-		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_setgameshark(IntPtr core, string codes);
 
 		/// <summary>
 		/// memory areas that gambatte_getmemoryarea() can return

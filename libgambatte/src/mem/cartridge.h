@@ -47,9 +47,6 @@ class Cartridge {
 	MemPtrs memptrs;
 	Rtc rtc;
 	std::auto_ptr<Mbc> mbc;
-	std::string defaultSaveBasePath;
-	std::string saveDir;
-	std::vector<AddrData> ggUndoList;
 	
 	void applyGameGenie(const std::string &code);
 	
@@ -85,14 +82,11 @@ public:
 	void loadSavedata(const char *data);
 	int saveSavedataLength();
 	void saveSavedata(char *dest);
-	const std::string saveBasePath() const;
-	void setSaveDir(const std::string &dir);
 
 	bool getMemoryArea(int which, unsigned char **data, int *length);
 
 	int loadROM(const char *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat);
 	const char * romTitle() const { return reinterpret_cast<const char *>(memptrs.romdata() + 0x134); }
-	void setGameGenie(const std::string &codes);
 
 	void setRTCCallback(std::uint32_t (*callback)()) {
 		rtc.setRTCCallback(callback);

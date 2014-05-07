@@ -91,14 +91,6 @@ public:
 		memory.setRTCCallback(callback);
 	}
 	
-	void setSaveDir(const std::string &sdir) {
-		memory.setSaveDir(sdir);
-	}
-	
-	const std::string saveBasePath() const {
-		return memory.saveBasePath();
-	}
-	
 	int load(const char *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat) {
 		return memory.loadROM(romfiledata, romfilelength, forceDmg, multicartCompat);
 	}
@@ -119,9 +111,6 @@ public:
 		memory.setCgbPalette(lut);
 	}
 	
-	void setGameGenie(const std::string &codes) { memory.setGameGenie(codes); }
-	void setGameShark(const std::string &codes) { memory.setGameShark(codes); }
-
 	//unsigned char ExternalRead(unsigned short addr) { return memory.read(addr, cycleCounter_); }
 	unsigned char ExternalRead(unsigned short addr) { return memory.peek(addr); }
 	void ExternalWrite(unsigned short addr, unsigned char val) { memory.write_nocb(addr, val, cycleCounter_); }

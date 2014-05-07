@@ -135,10 +135,6 @@ void GB::setRTCCallback(std::uint32_t (*callback)()) {
 	p_->cpu.setRTCCallback(callback);
 }
 
-void GB::setSaveDir(const std::string &sdir) {
-	p_->cpu.setSaveDir(sdir);
-}
-
 int GB::load(const char *romfiledata, unsigned romfilelength, const std::uint32_t now, const unsigned flags) {
 	//if (p_->cpu.loaded())
 	//	p_->cpu.saveSavedata();
@@ -247,14 +243,6 @@ const std::string GB::romTitle() const {
 	}
 	
 	return std::string();
-}
-
-void GB::setGameGenie(const std::string &codes) {
-	p_->cpu.setGameGenie(codes);
-}
-
-void GB::setGameShark(const std::string &codes) {
-	p_->cpu.setGameShark(codes);
 }
 
 int GB::LinkStatus(int which) {

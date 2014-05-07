@@ -91,7 +91,6 @@ public:
 	void loadSavedata(const char *data) { cart.loadSavedata(data); }
 	int saveSavedataLength() {return cart.saveSavedataLength(); }
 	void saveSavedata(char *dest) { cart.saveSavedata(dest); }
-	const std::string saveBasePath() const { return cart.saveBasePath(); }
 	
 	bool getMemoryArea(int which, unsigned char **data, int *length); // { return cart.getMemoryArea(which, data, length); }
 
@@ -159,7 +158,6 @@ public:
 	unsigned long resetCounters(unsigned long cycleCounter);
 
 	int loadROM(const char *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat);
-	void setSaveDir(const std::string &dir) { cart.setSaveDir(dir); }
 
 	void setInputGetter(InputGetter *getInput) {
 		this->getInput = getInput;
@@ -194,8 +192,6 @@ public:
 	
 	void setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned long rgb32);
 	void setCgbPalette(unsigned *lut);
-	void setGameGenie(const std::string &codes) { cart.setGameGenie(codes); }
-	void setGameShark(const std::string &codes) { interrupter.setGameShark(codes); }
 
 	int LinkStatus(int which);
 };
