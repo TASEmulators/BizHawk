@@ -92,9 +92,6 @@ public:
 	void setScanlineCallback(void (*callback)(), int sl);
 	void setRTCCallback(std::uint32_t (*callback)());
 
-	/** Sets the directory used for storing save data. The default is the same directory as the ROM Image file. */
-	void setSaveDir(const std::string &sdir);
-	
 	/** Returns true if the currently loaded ROM image is treated as having CGB support. */
 	bool isCgb() const;
 	
@@ -124,16 +121,6 @@ public:
 	
 	/** ROM header title of currently loaded ROM image. */
 	const std::string romTitle() const;
-	
-	/** Set Game Genie codes to apply to currently loaded ROM image. Cleared on ROM load.
-	  * @param codes Game Genie codes in format HHH-HHH-HHH;HHH-HHH-HHH;... where H is [0-9]|[A-F]
-	  */
-	void setGameGenie(const std::string &codes);
-	
-	/** Set Game Shark codes to apply to currently loaded ROM image. Cleared on ROM load.
-	  * @param codes Game Shark codes in format 01HHHHHH;01HHHHHH;... where H is [0-9]|[A-F]
-	  */
-	void setGameShark(const std::string &codes);
 
 	unsigned char ExternalRead(unsigned short addr);
 	void ExternalWrite(unsigned short addr, unsigned char val);
