@@ -193,10 +193,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			// the controller callback will set this to false if it actually gets called during the frame
 			IsLagFrame = true;
 
-			// download any modified data to the core
-			foreach (var r in MemoryRefreshers)
-				r.RefreshWrite();
-
 			if (Controller["Power"])
 				LibGambatte.gambatte_reset(GambatteState, GetCurrentTime());
 
@@ -210,10 +206,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		internal void FrameAdvancePost()
 		{
-			// upload any modified data to the memory domains
-			foreach (var r in MemoryRefreshers)
-				r.RefreshRead();
-
 			if (IsLagFrame)
 				LagCount++;
 
@@ -230,15 +222,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			FrameAdvancePrep();
-
 			while (true)
 			{
 				uint samplesEmitted = TICKSINFRAME - frameOverflow; // according to gambatte docs, this is the nominal length of a frame in 2mhz clocks
 				System.Diagnostics.Debug.Assert(samplesEmitted * 2 <= soundbuff.Length);
 				if (LibGambatte.gambatte_runfor(GambatteState, soundbuff, ref samplesEmitted) > 0)
-				{
 					LibGambatte.gambatte_blitto(GambatteState, VideoBuffer, 160);
-				}
 
 				_cycleCount += (ulong)samplesEmitted;
 				frameOverflow += samplesEmitted;
@@ -455,9 +444,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			if (!LibGambatte.gambatte_loadstate(GambatteState, data, (uint)data.Length))
 				throw new Exception("Gambatte failed to load the savestate!");
-			// since a savestate has been loaded, all memory domain data is now dirty
-			foreach (var r in MemoryRefreshers)
-				r.RefreshRead();
 		}
 
 		public void SaveStateText(System.IO.TextWriter writer)
@@ -584,73 +570,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region MemoryDomains
 
-		class MemoryRefresher
-		{
-			IntPtr data;
-			int length;
-
-			byte[] CachedMemory;
-
-			public MemoryRefresher(IntPtr data, int length)
-			{
-				this.data = data;
-				this.length = length;
-				CachedMemory = new byte[length];
-
-				writeneeded = false;
-				// needs to be true in case a read is attempted before the first frame advance
-				readneeded = true;
-			}
-
-			bool readneeded;
-			bool writeneeded;
-
-			/// <summary>
-			/// reads data from native core to managed buffer
-			/// </summary>
-			public void RefreshRead()
-			{
-				readneeded = true;
-			}
-
-			/// <summary>
-			/// writes data from managed buffer back to core
-			/// </summary>
-			public void RefreshWrite()
-			{
-				if (writeneeded)
-				{
-					System.Runtime.InteropServices.Marshal.Copy(CachedMemory, 0, data, length);
-					writeneeded = false;
-				}
-			}
-
-			public byte Peek(int addr)
-			{
-				if (readneeded)
-				{
-					System.Runtime.InteropServices.Marshal.Copy(data, CachedMemory, 0, length);
-					readneeded = false;
-				}
-				return CachedMemory[addr];
-			}
-			public void Poke(int addr, byte val)
-			{
-				// a poke without any peek is certainly legal.  we need to update read, because writeneeded = true means that
-				// all of this data will be downloaded before the next frame.  so everything but that which was poked needs to
-				// be up to date.
-				if (readneeded)
-				{
-					System.Runtime.InteropServices.Marshal.Copy(data, CachedMemory, 0, length);
-					readneeded = false;
-				}
-				CachedMemory[addr] = val;
-				writeneeded = true;
-			}
-		}
-
-
-		void CreateMemoryDomain(LibGambatte.MemoryAreas which, string name)
+		unsafe void CreateMemoryDomain(LibGambatte.MemoryAreas which, string name)
 		{
 			IntPtr data = IntPtr.Zero;
 			int length = 0;
@@ -663,17 +583,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			if (data == IntPtr.Zero && length > 0)
 				throw new Exception("bad return from gambatte_getmemoryarea()");
 
-			var refresher = new MemoryRefresher(data, length);
+			byte* ptr = (byte*)data;
 
-			MemoryRefreshers.Add(refresher);
-
-			_MemoryDomains.Add(new MemoryDomain(name, length, MemoryDomain.Endian.Little, refresher.Peek, refresher.Poke));
+			_MemoryDomains.Add(new MemoryDomain(name, length, MemoryDomain.Endian.Little,
+				delegate(int addr)
+				{
+					if (addr < 0 || addr >= length)
+						throw new ArgumentOutOfRangeException();
+					return ptr[addr];
+				},
+				delegate(int addr, byte val)
+				{
+					if (addr < 0 || addr >= length)
+						throw new ArgumentOutOfRangeException();
+					ptr[addr] = val;
+				}));
 		}
 
 		void InitMemoryDomains()
 		{
-			MemoryRefreshers = new List<MemoryRefresher>();
-
 			CreateMemoryDomain(LibGambatte.MemoryAreas.wram, "WRAM");
 			CreateMemoryDomain(LibGambatte.MemoryAreas.rom, "ROM");
 			CreateMemoryDomain(LibGambatte.MemoryAreas.vram, "VRAM");
@@ -702,9 +630,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private List<MemoryDomain> _MemoryDomains = new List<MemoryDomain>();
 		public MemoryDomainList MemoryDomains { get; private set; }
-
-
-		List<MemoryRefresher> MemoryRefreshers;
 
 		#endregion
 
