@@ -339,7 +339,7 @@ namespace BizHawk.Client.Common
 
 		public string GetInput(int frame)
 		{
-			if (frame < _log.Length)
+			if (frame < FrameCount)
 			{
 				if (frame >= 0)
 				{

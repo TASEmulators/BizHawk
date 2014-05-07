@@ -259,6 +259,15 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void UpdateSource(IVideoProvider videoProvider)
 		{
+			int vw = videoProvider.BufferWidth;
+			int vh = videoProvider.BufferHeight;
+
+			if (Global.Config.DispObeyAR && Global.Config.DispFixAspectRatio)
+			{
+			  vw = videoProvider.VirtualWidth;
+			  vh = videoProvider.VirtualHeight;
+			}
+
 			int[] videoBuffer = videoProvider.GetVideoBuffer();
 			
 TESTEROO:
@@ -280,6 +289,7 @@ TESTEROO:
 
 				//now, acquire the data sent from the videoProvider into a texture
 				videoTexture = VideoTextureFrugalizer.Get(bb);
+				GL.SetTextureWrapMode(videoTexture, true);
 			}
 
 			//TEST (to be removed once we have an actual example of bring in a texture ID from opengl emu core):
@@ -294,7 +304,7 @@ TESTEROO:
 			currEmuHeight = bufferHeight;
 
 			//build the default filter chain and set it up with services filters will need
-			Size chain_insize = new Size(bufferWidth, bufferHeight);
+			Size chain_insize = new Size(vw, vh);
 			Size chain_outsize = GraphicsControl.Size;
 			CurrentFilterProgram = BuildDefaultChain(chain_insize, chain_outsize);
 			CurrentFilterProgram.GuiRenderer = Renderer;
@@ -307,11 +317,17 @@ TESTEROO:
 			
 			//setup the final presentation filter
 			Filters.FinalPresentation fPresent = CurrentFilterProgram["presentation"] as Filters.FinalPresentation;
+			fPresent.TextureSize = new Size(bufferWidth, bufferHeight);
 			fPresent.BackgroundColor = videoProvider.BackgroundColor;
 			fPresent.GuiRenderer = Renderer;
 			fPresent.GL = GL;
 
-			CurrentFilterProgram.Compile("default", chain_insize, chain_outsize);	
+			CurrentFilterProgram.Compile("default", chain_insize, chain_outsize);
+
+			//begin rendering on this context
+			//should this have been done earlier?
+			//do i need to check this on an intel video card to see if running excessively is a problem? (it used to be in the FinalTarget command below, shouldnt be a problem)
+			GraphicsControl.Begin();
 
 			//run filter chain
 			Texture2d texCurr = null;
@@ -351,7 +367,7 @@ TESTEROO:
 						inFinalTarget = true;
 						rtCurr = null;
 						CurrentFilterProgram.CurrRenderTarget = null;
-						GraphicsControl.Begin();
+						GL.BindRenderTarget(null);
 						break;
 				}
 			}
@@ -359,7 +375,12 @@ TESTEROO:
 
 			//apply the vsync setting (should probably try to avoid repeating this)
 			bool vsync = Global.Config.VSyncThrottle || Global.Config.VSync;
-			//presentationPanel.GraphicsControl.SetVsync(vsync);
+			if (LastVsyncSetting != vsync || LastVsyncSettingGraphicsControl != presentationPanel.GraphicsControl)
+			{
+				presentationPanel.GraphicsControl.SetVsync(vsync);
+				LastVsyncSettingGraphicsControl = presentationPanel.GraphicsControl;
+				LastVsyncSetting = vsync;
+			}
 
 			//present and conclude drawing
 			presentationPanel.GraphicsControl.SwapBuffers();
@@ -371,6 +392,9 @@ TESTEROO:
 			if(bb != null) bb.Dispose();
 			NeedsToPaint = false; //??
 		}
+
+		bool? LastVsyncSetting;
+		GraphicsControl LastVsyncSettingGraphicsControl;
 
 		Dictionary<string, DisplaySurface> MapNameToLuaSurface = new Dictionary<string,DisplaySurface>();
 		Dictionary<DisplaySurface, string> MapLuaSurfaceToName = new Dictionary<DisplaySurface, string>();
@@ -415,6 +439,7 @@ TESTEROO:
 				var surf = LockLuaSurface(kvp.Key);
 				surf.Clear();
 				UnlockLuaSurface(surf);
+				LuaSurfaceSets[kvp.Key].SetPending(null);
 			}
 		}
 

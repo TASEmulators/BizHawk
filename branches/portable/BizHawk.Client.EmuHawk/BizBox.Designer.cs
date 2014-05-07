@@ -83,6 +83,9 @@
 			this.label8 = new System.Windows.Forms.Label();
 			this.label27 = new System.Windows.Forms.Label();
 			this.label37 = new System.Windows.Forms.Label();
+			this.label39 = new System.Windows.Forms.Label();
+			this.label40 = new System.Windows.Forms.Label();
+			this.linkLabel13 = new System.Windows.Forms.LinkLabel();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
@@ -200,6 +203,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.panel1.Controls.Add(this.linkLabel13);
+			this.panel1.Controls.Add(this.label39);
+			this.panel1.Controls.Add(this.label40);
 			this.panel1.Controls.Add(this.label36);
 			this.panel1.Controls.Add(this.label35);
 			this.panel1.Controls.Add(this.linkLabel12);
@@ -647,6 +653,35 @@
 			this.label37.TabIndex = 13;
 			this.label37.Text = "null_ptr, MightyMar";
 			// 
+			// label39
+			// 
+			this.label39.AutoSize = true;
+			this.label39.Location = new System.Drawing.Point(16, 348);
+			this.label39.Name = "label39";
+			this.label39.Size = new System.Drawing.Size(79, 13);
+			this.label39.TabIndex = 44;
+			this.label39.Text = "author: kode54";
+			// 
+			// label40
+			// 
+			this.label40.AutoSize = true;
+			this.label40.Location = new System.Drawing.Point(8, 320);
+			this.label40.Name = "label40";
+			this.label40.Size = new System.Drawing.Size(80, 13);
+			this.label40.TabIndex = 43;
+			this.label40.Text = "QuicknesHawk";
+			// 
+			// linkLabel13
+			// 
+			this.linkLabel13.AutoSize = true;
+			this.linkLabel13.Location = new System.Drawing.Point(16, 335);
+			this.linkLabel13.Name = "linkLabel13";
+			this.linkLabel13.Size = new System.Drawing.Size(50, 13);
+			this.linkLabel13.TabIndex = 46;
+			this.linkLabel13.TabStop = true;
+			this.linkLabel13.Text = "quicknes";
+			this.linkLabel13.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel13_LinkClicked);
+			// 
 			// BizBox
 			// 
 			this.AcceptButton = this.OK;
@@ -739,5 +774,8 @@
 		private System.Windows.Forms.Label label36;
 		private System.Windows.Forms.Label label35;
 		private System.Windows.Forms.Label label37;
+		private System.Windows.Forms.Label label39;
+		private System.Windows.Forms.Label label40;
+		private System.Windows.Forms.LinkLabel linkLabel13;
 	}
 }

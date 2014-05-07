@@ -545,12 +545,23 @@ namespace BizHawk.Emulation.Cores
 		{
 			get
 			{
-				if (dar < 0.1f || dar > 3.0f)
-					return BufferWidth;
-				else
+				if (dar > 1.0f)
 					return (int)(BufferWidth * dar);
+				else
+					return BufferWidth;
 			}
 		}
+		public int VirtualHeight
+		{
+			get
+			{
+				if (dar < 1.0f)
+					return (int)(BufferHeight / dar);
+				else
+					return BufferHeight;
+			}
+		}
+
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }

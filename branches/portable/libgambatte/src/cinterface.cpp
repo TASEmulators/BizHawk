@@ -5,47 +5,53 @@
 using namespace gambatte;
 
 
-__declspec(dllexport) void *gambatte_create()
+GBEXPORT void *gambatte_create()
 {
 	GB *g = new GB();
 	return (void *) g;
 }
 
-__declspec(dllexport) void gambatte_destroy(void *core)
+GBEXPORT void gambatte_destroy(void *core)
 {
 	GB *g = (GB *) core;
 	delete g;
 }
 
-__declspec(dllexport) int gambatte_load(void *core, const char *romfiledata, unsigned romfilelength, long long now, unsigned flags)
+GBEXPORT int gambatte_load(void *core, const char *romfiledata, unsigned romfilelength, long long now, unsigned flags)
 {
 	GB *g = (GB *) core;
 	int ret = g->load(romfiledata, romfilelength, now, flags);
 	return ret;
 }
 
-__declspec(dllexport) long gambatte_runfor(void *core, unsigned long *videobuf, int pitch, short *soundbuf, unsigned *samples)
+GBEXPORT long gambatte_runfor(void *core, short *soundbuf, unsigned *samples)
 {
 	GB *g = (GB *) core;
 	unsigned sampv = *samples;
-	long ret = g->runFor((unsigned int*)videobuf, pitch, (unsigned int *) soundbuf, sampv);
+	long ret = g->runFor((unsigned int *) soundbuf, sampv);
 	*samples = sampv;
 	return ret;
 }
 
-__declspec(dllexport) void gambatte_reset(void *core, long long now)
+GBEXPORT void gambatte_blitto(void *core, unsigned long *videobuf, int pitch)
+{
+	GB *g = (GB *) core;
+	g->blitTo((unsigned int *)videobuf, pitch);
+}
+
+GBEXPORT void gambatte_reset(void *core, long long now)
 {
 	GB *g = (GB *) core;
 	g->reset(now);
 }
 
-__declspec(dllexport) void gambatte_setdmgpalettecolor(void *core, unsigned palnum, unsigned colornum, unsigned rgb32)
+GBEXPORT void gambatte_setdmgpalettecolor(void *core, unsigned palnum, unsigned colornum, unsigned rgb32)
 {
 	GB *g = (GB *) core;
 	g->setDmgPaletteColor(palnum, colornum, rgb32);
 }
 
-__declspec(dllexport) void gambatte_setcgbpalette(void *core, unsigned *lut)
+GBEXPORT void gambatte_setcgbpalette(void *core, unsigned *lut)
 {
 	GB *g = (GB *) core;
 	g->setCgbPalette(lut);
@@ -62,7 +68,7 @@ public:
 	}
 };
 
-__declspec(dllexport) void gambatte_setinputgetter(void *core, unsigned (*getinput)(void))
+GBEXPORT void gambatte_setinputgetter(void *core, unsigned (*getinput)(void))
 {
 	GB *g = (GB *) core;
 	CInputGetter *cig = new CInputGetter();
@@ -71,106 +77,84 @@ __declspec(dllexport) void gambatte_setinputgetter(void *core, unsigned (*getinp
 	g->setInputGetter(cig);
 }
 
-__declspec(dllexport) void gambatte_setreadcallback(void *core, void (*callback)(unsigned))
+GBEXPORT void gambatte_setreadcallback(void *core, void (*callback)(unsigned))
 {
 	GB *g = (GB *) core;
 	g->setReadCallback(callback);
 }
 
-__declspec(dllexport) void gambatte_setwritecallback(void *core, void (*callback)(unsigned))
+GBEXPORT void gambatte_setwritecallback(void *core, void (*callback)(unsigned))
 {
 	GB *g = (GB *) core;
 	g->setWriteCallback(callback);
 }
 
-__declspec(dllexport) void gambatte_setexeccallback(void *core, void (*callback)(unsigned))
+GBEXPORT void gambatte_setexeccallback(void *core, void (*callback)(unsigned))
 {
 	GB *g = (GB *) core;
 	g->setExecCallback(callback);
 }
 
-__declspec(dllexport) void gambatte_settracecallback(void *core, void (*callback)(void *))
+GBEXPORT void gambatte_settracecallback(void *core, void (*callback)(void *))
 {
 	GB *g = (GB *) core;
 	g->setTraceCallback(callback);
 }
 
-__declspec(dllexport) void gambatte_setscanlinecallback(void *core, void (*callback)(), int sl)
+GBEXPORT void gambatte_setscanlinecallback(void *core, void (*callback)(), int sl)
 {
 	GB *g = (GB *) core;
 	g->setScanlineCallback(callback, sl);
 }
 
-__declspec(dllexport) void gambatte_setrtccallback(void *core, unsigned int (*callback)())
+GBEXPORT void gambatte_setrtccallback(void *core, unsigned int (*callback)())
 {
 	GB *g = (GB *) core;
 	g->setRTCCallback(callback);
 }
 
-__declspec(dllexport) void gambatte_setsavedir(void *core, const char *sdir)
+GBEXPORT void gambatte_setsavedir(void *core, const char *sdir)
 {
 	GB *g = (GB *) core;
 	g->setSaveDir(std::string(sdir));
 }
 
-__declspec(dllexport) int gambatte_iscgb(void *core)
+GBEXPORT int gambatte_iscgb(void *core)
 {
 	GB *g = (GB *) core;
 	return g->isCgb();
 }
 
-__declspec(dllexport) int gambatte_isloaded(void *core)
+GBEXPORT int gambatte_isloaded(void *core)
 {
 	GB *g = (GB *) core;
 	return g->isLoaded();
 }
 
-/*
-__declspec(dllexport) void gambatte_savesavedata(void *core)
-{
-	GB *g = (GB *) core;
-	g->saveSavedata();
-}
-*/
-
-__declspec(dllexport) void gambatte_savesavedata(void *core, char *dest)
+GBEXPORT void gambatte_savesavedata(void *core, char *dest)
 {
 	GB *g = (GB *) core;
 	g->saveSavedata(dest);
 }
 
-__declspec(dllexport) void gambatte_loadsavedata(void *core, const char *data)
+GBEXPORT void gambatte_loadsavedata(void *core, const char *data)
 {
 	GB *g = (GB *) core;
 	g->loadSavedata(data);
 }
 
-__declspec(dllexport) int gambatte_savesavedatalength(void *core)
+GBEXPORT int gambatte_savesavedatalength(void *core)
 {
 	GB *g = (GB *) core;
 	return g->saveSavedataLength();
 }
 
-/*
-__declspec(dllexport) int gambatte_savestate(void *core, const unsigned long *videobuf, int pitch)
-{
-	GB *g = (GB *) core;
-	return g->saveState(videobuf, pitch);
-}
-
-__declspec(dllexport) int gambatte_loadstate(void *core)
-{
-	GB *g = (GB *) core;
-	return g->loadState();
-}
-*/
-
-__declspec(dllexport) int gambatte_savestate(void *core, const unsigned long *videobuf, int pitch, char **data, unsigned *len)
+GBEXPORT int gambatte_savestate(void *core, char **data, unsigned *len)
 {
 	GB *g = (GB *) core;
 
 	std::ostringstream os = std::ostringstream(std::ios_base::binary | std::ios_base::out);
-	if (!g->saveState((const unsigned int*)videobuf, pitch, os))
+	if (!g->saveState(os))
 		return 0;
 
 	os.flush();
@@ -182,33 +166,19 @@ __declspec(dllexport) int gambatte_savestate(void *core, const unsigned long *vi
 	return 1;
 }
 
-__declspec(dllexport) void gambatte_savestate_destroy(char *data)
+GBEXPORT void gambatte_savestate_destroy(char *data)
 {
 	std::free(data);
 }
 
-__declspec(dllexport) int gambatte_loadstate(void *core, const char *data, unsigned len)
+GBEXPORT int gambatte_loadstate(void *core, const char *data, unsigned len)
 {
 	GB *g = (GB *) core;
 	return g->loadState(std::istringstream(std::string(data, len), std::ios_base::binary | std::ios_base::in));
 }
 
-/*
-__declspec(dllexport) void gambatte_selectstate(void *core, int n)
-{
-	GB *g = (GB *) core;
-	g->selectState(n);
-}
-
-__declspec(dllexport) int gambatte_currentstate(void *core)
-{
-	GB *g = (GB *) core;
-	return g->currentState();
-}
-*/
-
 static char horriblebuff[64];
-__declspec(dllexport) const char *gambatte_romtitle(void *core)
+GBEXPORT const char *gambatte_romtitle(void *core)
 {
 	GB *g = (GB *) core;
 	const char *s = g->romTitle().c_str();
@@ -217,43 +187,43 @@ __declspec(dllexport) const char *gambatte_romtitle(void *core)
 	return horriblebuff;
 }
 
-__declspec(dllexport) void gambatte_setgamegenie(void *core, const char *codes)
+GBEXPORT void gambatte_setgamegenie(void *core, const char *codes)
 {
 	GB *g = (GB *) core;
 	g->setGameGenie(std::string(codes));
 }
 
-__declspec(dllexport) void gambatte_setgameshark(void *core, const char *codes)
+GBEXPORT void gambatte_setgameshark(void *core, const char *codes)
 {
 	GB *g = (GB *) core;
 	g->setGameShark(std::string(codes));
 }
 
-__declspec(dllexport) int gambatte_getmemoryarea(void *core, int which, unsigned char **data, int *length)
+GBEXPORT int gambatte_getmemoryarea(void *core, int which, unsigned char **data, int *length)
 {
 	GB *g = (GB *) core;
 	return g->getMemoryArea(which, data, length);
 }
 
-__declspec(dllexport) unsigned char gambatte_cpuread(void *core, unsigned short addr)
+GBEXPORT unsigned char gambatte_cpuread(void *core, unsigned short addr)
 {
 	GB *g = (GB *) core;
 	return g->ExternalRead(addr);
 }
 
-__declspec(dllexport) void gambatte_cpuwrite(void *core, unsigned short addr, unsigned char val)
+GBEXPORT void gambatte_cpuwrite(void *core, unsigned short addr, unsigned char val)
 {
 	GB *g = (GB *) core;
 	g->ExternalWrite(addr, val);
 }
 
-__declspec(dllexport) int gambatte_linkstatus(void *core, int which)
+GBEXPORT int gambatte_linkstatus(void *core, int which)
 {
 	GB *g = (GB *) core;
 	return g->LinkStatus(which);
 }
 
-__declspec(dllexport) void gambatte_getregs(void *core, int *dest)
+GBEXPORT void gambatte_getregs(void *core, int *dest)
 {
 	GB *g = (GB *) core;
 	g->GetRegs(dest);

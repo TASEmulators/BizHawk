@@ -47,6 +47,12 @@ namespace BizHawk.Client.EmuHawk
 			get { return bmp.Width; }
 		}
 
+		public int VirtualHeight
+		{
+			// todo: Bitmap actually has size metric data; use it
+			get { return bmp.Height; }
+		}
+
 		public int BufferWidth
 		{
 			get { return bmp.Width; }

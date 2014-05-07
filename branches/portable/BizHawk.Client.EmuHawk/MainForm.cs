@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 		public MainForm(string[] args)
 		{
 			GlobalWin.MainForm = this;
-			Global.Rewinder = new Rewinder()
+			Global.Rewinder = new Rewinder
 			{
 				MessageCallback = GlobalWin.OSD.AddMessage
 			};
@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Game = GameInfo.GetNullGame();
 			if (Global.Config.ShowLogWindow)
 			{
-				ShowConsole();
+				LogConsole.ShowConsole();
 				DisplayLogWindowMenuItem.Checked = true;
 			}
 
@@ -726,26 +726,22 @@ namespace BizHawk.Client.EmuHawk
 						var P = GlobalWin.DisplayManager.UntransformPoint(new System.Drawing.Point((int)o.Item2, 0));
 						float x = P.X / (float)Global.Emulator.VideoProvider.BufferWidth;
 						return new Tuple<string, float>("WMouse X", x * 20000 - 10000);
-		}
-					else if (o.Item1 == "WMouse Y")
+				}
+					
+				if (o.Item1 == "WMouse Y")
 					{
 						var P = GlobalWin.DisplayManager.UntransformPoint(new System.Drawing.Point(0, (int)o.Item2));
 						float y = P.Y / (float)Global.Emulator.VideoProvider.BufferHeight;
 						return new Tuple<string, float>("WMouse Y", y * 20000 - 10000);
 					}
-					else
-					{
+					
 						return o;
-					}
 				}));
 		}
 
 		public void RebootCore()
 		{
-			bool autoSaveState = Global.Config.AutoSavestates;
-			Global.Config.AutoSavestates = false;
 			LoadRom(CurrentlyOpenRom);
-			Global.Config.AutoSavestates = autoSaveState;
 		}
 
 		public void PauseEmulator()
@@ -848,6 +844,11 @@ namespace BizHawk.Client.EmuHawk
 		[System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
 		static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
+		public bool IsInFullscreen
+		{
+			get { return _inFullscreen; }
+		}
+
 		public void ToggleFullscreen()
 		{
 			if (_inFullscreen == false)
@@ -911,7 +912,6 @@ namespace BizHawk.Client.EmuHawk
 		public void NotifyLogWindowClosing()
 		{
 			DisplayLogWindowMenuItem.Checked = false;
-			LogWindowAsConsoleMenuItem.Enabled = true;
 		}
 
 		public void ClickSpeedItem(int num)
@@ -1305,7 +1305,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HandlePlatformMenus()
 		{
-			var system = String.Empty;
+			var system = string.Empty;
 
 			if (Global.Game != null)
 			{
@@ -1330,9 +1330,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				case "GEN":
 					GenesisSubMenu.Visible = true;
-					break;
-				case "NULL":
-					N64SubMenu.Visible = true;
 					break;
 				case "TI83":
 					TI83SubMenu.Visible = true;
@@ -1977,18 +1974,6 @@ namespace BizHawk.Client.EmuHawk
 			return null;
 		}
 
-		private void ShowConsole()
-		{
-			LogConsole.ShowConsole();
-			LogWindowAsConsoleMenuItem.Enabled = false;
-		}
-
-		private void HideConsole()
-		{
-			LogConsole.HideConsole();
-			LogWindowAsConsoleMenuItem.Enabled = true;
-		}
-
 		private void IncreaseWindowSize()
 		{
 			switch (Global.Config.TargetZoomFactor)
@@ -2363,37 +2348,38 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!attributes.Ported)
 			{
-				CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.CorpHawkSmall;
+				CoreNameStatusBarButton.Image = Properties.Resources.CorpHawkSmall;
 			}
 			else
 			{
 				if (Global.Emulator is QuickNES)
 				{
-					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.QuickNes;
+					CoreNameStatusBarButton.Image = Properties.Resources.QuickNes;
 				}
 				else if (Global.Emulator is LibsnesCore)
 				{
-					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.bsnes;
+					CoreNameStatusBarButton.Image = Properties.Resources.bsnes;
+					CoreNameStatusBarButton.Text += " (" + ((LibsnesCore.SnesSyncSettings)Global.Emulator.GetSyncSettings()).Profile + ")";
 				}
 				else if (Global.Emulator is Yabause)
 				{
-					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.yabause;
+					CoreNameStatusBarButton.Image = Properties.Resources.yabause;
 				}
 				else if (Global.Emulator is Atari7800)
 				{
-					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.emu7800;
+					CoreNameStatusBarButton.Image = Properties.Resources.emu7800;
 				}
 				else if (Global.Emulator is GBA)
 				{
-					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.meteor;
+					CoreNameStatusBarButton.Image = Properties.Resources.meteor;
 				}
 				else if (Global.Emulator is GPGX)
 				{
-					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.genplus;
+					CoreNameStatusBarButton.Image = Properties.Resources.genplus;
 				}
 				else if (Global.Emulator is PSP)
 				{
-					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.ppsspp;
+					CoreNameStatusBarButton.Image = Properties.Resources.ppsspp;
 				}
 				else if (Global.Emulator is Gameboy)
 				{
@@ -2510,13 +2496,20 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.OSD.ClearGUIText();
 
 				Global.CheatList.Pulse();
+
+				//zero 03-may-2014 - moved this before call to UpdateToolsBefore(), since it seems to clear the state which a lua event.framestart is going to want to alter
+				Global.ClickyVirtualPadController.FrameTick();
+				Global.LuaAndAdaptor.FrameTick();
+
+				if (GlobalWin.Tools.Has<LuaConsole>())
+				{
+					GlobalWin.Tools.LuaConsole.LuaImp.CallFrameBeforeEvent();
+				}
+
 				if (!isTurboing)
 				{
 					GlobalWin.Tools.UpdateToolsBefore();
 				}
-
-				Global.ClickyVirtualPadController.FrameTick();
-				Global.LuaAndAdaptor.FrameTick();
 
 				_runloopFps++;
 
@@ -2576,6 +2569,12 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				PressFrameAdvance = false;
+
+				if (GlobalWin.Tools.Has<LuaConsole>())
+				{
+					GlobalWin.Tools.LuaConsole.LuaImp.CallFrameAfterEvent();
+				}
+
 				if (!isTurboing)
 				{
 					UpdateToolsAfter();
@@ -3037,11 +3036,6 @@ namespace BizHawk.Client.EmuHawk
 					LoadSaveRam();
 				}
 
-				if (Global.Config.AutoSavestates)
-				{
-					LoadQuickSave("Auto");
-				}
-
 				GlobalWin.Tools.Restart();
 
 				if (Global.Config.LoadCheatFileByGame)
@@ -3130,11 +3124,6 @@ namespace BizHawk.Client.EmuHawk
 		// its very tricky. rename to be more clear or combine them.
 		private void CloseGame(bool clearSram = false)
 		{
-			if (Global.Config.AutoSavestates && Global.Emulator is NullEmulator == false)
-			{
-				SaveQuickSave("Auto");
-			}
-
 			if (clearSram)
 			{
 				var path = PathManager.SaveRamPath(Global.Game);
@@ -3225,17 +3214,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		private void coreSelectionToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-	}
-
-		private void gBInSGBToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GB_AsSGB ^= true;
-			FlagNeedsReboot();
-		}
-
-		private void nESInQuickNESToolStripMenuItem_Click(object sender, EventArgs e)
+		private void NesInQuickNESMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.NES_InQuickNES ^= true;
 			FlagNeedsReboot();
@@ -3246,10 +3225,10 @@ namespace BizHawk.Client.EmuHawk
 			new BatchRun().ShowDialog();
 		}
 
-		private void coreSelectionToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		private void CoreSelectionMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			gBInSGBToolStripMenuItem.Checked = Global.Config.GB_AsSGB;
-			nESInQuickNESToolStripMenuItem.Checked = Global.Config.NES_InQuickNES;
+			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
+			NesInQuickNESMenuItem.Checked = Global.Config.NES_InQuickNES;
 		}
 
 		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
@@ -3295,6 +3274,41 @@ namespace BizHawk.Client.EmuHawk
 					toolStripSeparator31.Visible = 
 					false;
 			}
+		}
+
+		private void SavestateTypeContextSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			SavestateTypeDefaultContextMenuItem.Checked = false;
+			SavestateBinaryContextMenuItem.Checked = false;
+			SavestateTextContextMenuItem.Checked = false;
+			switch (Global.Config.SaveStateType)
+			{
+				case Config.SaveStateTypeE.Binary: SavestateBinaryContextMenuItem.Checked = true; break;
+				case Config.SaveStateTypeE.Text: SavestateTextContextMenuItem.Checked = true; break;
+				case Config.SaveStateTypeE.Default: SavestateTypeDefaultContextMenuItem.Checked = true; break;
+	}
+		}
+
+		private void GBInSGBMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GB_AsSGB ^= true;
+			FlagNeedsReboot();
+		}
+
+		private void CoreSelectionContextSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			GBInSGBContextMenuItem.Checked = Global.Config.GB_AsSGB;
+			NesInQuickNESContextMenuItem.Checked = Global.Config.NES_InQuickNES;
+		}
+
+		private void N64VideoPluginSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			N64PluginSettingsMenuItem_Click(sender, e);
+		}
+
+		private void guiOptionsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new EmuHawkOptions().ShowDialog();
 		}
 	}
 }

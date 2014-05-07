@@ -662,11 +662,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.ShowLogWindow)
 			{
-				ShowConsole();
+				LogConsole.ShowConsole();
 			}
 			else
 			{
-				HideConsole();
+				LogConsole.HideConsole();
 			}
 		}
 
@@ -677,32 +677,6 @@ namespace BizHawk.Client.EmuHawk
 		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ControllersMenuItem.Enabled = !(Global.Emulator is NullEmulator);
-		}
-
-		private void EnableMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			EnableContextMenuMenuItem.Checked = Global.Config.ShowContextMenu;
-			BackupSavestatesMenuItem.Checked = Global.Config.BackupSavestates;
-			AutoSavestatesMenuItem.Checked = Global.Config.AutoSavestates;
-			SaveScreenshotInSavestatesMenuItem.Checked = Global.Config.SaveScreenshotWithStates;
-			FrameAdvanceSkipLagMenuItem.Checked = Global.Config.SkipLagFrame;
-			BackupSaveramMenuItem.Checked = Global.Config.BackupSaveram;
-		}
-
-		private void GuiSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			PauseWhenMenuActivatedMenuItem.Checked = Global.Config.PauseWhenMenuActivated;
-			StartPausedMenuItem.Checked = Global.Config.StartPaused;
-			SaveWindowPositionMenuItem.Checked = Global.Config.SaveWindowPosition;
-			SuppressGuiLayerMenuItem.Checked = Global.Config.SuppressGui;
-			ShowMenuInFullScreenMenuItem.Checked = Global.Config.ShowMenuInFullscreen;
-			RunInBackgroundMenuItem.Checked = Global.Config.RunInBackground;
-			BackgroundInputMenuItem.Checked = Global.Config.AcceptBackgroundInput;
-			SingleInstanceModeMenuItem.Checked = Global.Config.SingleInstanceMode;
-			LogWindowAsConsoleMenuItem.Checked = Global.Config.WIN32_CONSOLE;
-			DontAskToSaveChangesMenuItem.Checked = Global.Config.SupressAskSave;
-
-			BackgroundInputMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG Input"].Bindings;
 		}
 
 		private void FrameSkipMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -828,107 +802,6 @@ namespace BizHawk.Client.EmuHawk
 			new FirmwaresConfig().Show();
 		}
 
-		private void EnableContextMenuMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.ShowContextMenu ^= true;
-			GlobalWin.OSD.AddMessage(Global.Config.ShowContextMenu ? "Context menu enabled" : "Context menu disabled");
-		}
-
-		private void BackupSavestatesMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.BackupSavestates ^= true;
-			GlobalWin.OSD.AddMessage(Global.Config.BackupSavestates ? "Backup savestates enabled" : "Backup savestates disabled");
-		}
-
-		private void AutoSavestatesMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.AutoSavestates ^= true;
-			GlobalWin.OSD.AddMessage(Global.Config.AutoSavestates ? "AutoSavestates enabled" : "AutoSavestates disabled");
-		}
-
-		private void ScreenshotWithSavestatesMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveScreenshotWithStates ^= true;
-			GlobalWin.OSD.AddMessage(Global.Config.SaveScreenshotWithStates
-										 ? "Screenshots will be saved in savestates"
-										 : "Screenshots will not be saved in savestates");
-		}
-
-		private void frameAdvanceSkipLagFramesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SkipLagFrame ^= true;
-		}
-
-		private void BackupSaveramMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.BackupSaveram ^= true;
-			GlobalWin.OSD.AddMessage(Global.Config.BackupSaveram ? "Backup saveram enabled" : "Backup saveram disabled");
-		}
-
-		private void PauseWhenMenuActivatedMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.PauseWhenMenuActivated ^= true;
-		}
-
-		private void StartPausedMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.StartPaused ^= true;
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveWindowPosition ^= true;
-		}
-
-		private void UseGDIMenuItem_Click(object sender, EventArgs e)
-		{
-			//TODO GL - this concept is gone
-			//Global.Config.DisplayGDI ^= true;
-			//SyncPresentationMode();
-		}
-
-		private void SuppressGuiLayerMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SuppressGui ^= true;
-		}
-
-		private void ShowMenuInFullScreenMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.ShowMenuInFullscreen ^= true;
-
-			//make sure this gets applied immediately
-			if (_inFullscreen)
-			{
-				MainMenuStrip.Visible = Global.Config.ShowMenuInFullscreen;
-		}
-		}
-
-		private void RunInBackgroundMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RunInBackground ^= true;
-		}
-
-		private void BackgroundInputMenuItem_Click(object sender, EventArgs e)
-		{
-			ToggleBackgroundInput();
-		}
-
-		private void SingleInstanceModeMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SingleInstanceMode ^= true;
-			MessageBox.Show("BizHawk must be restarted for this setting to take effect.", "Reboot Required", MessageBoxButtons.OK, MessageBoxIcon.Information);
-		}
-
-		private void DontAskToSaveChangesMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SupressAskSave ^= true;
-		}
-
-		private void LogWindowAsConsoleMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.WIN32_CONSOLE ^= true;
-		}
-
 		private void ClickThrottleMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.ClockThrottle ^= true;
@@ -947,6 +820,7 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.PresentationPanel.Resized = true;
 				}
 			}
+
 			LimitFrameRateMessage();
 		}
 

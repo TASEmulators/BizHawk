@@ -30,6 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		}
 
 		public int VirtualWidth { get { return BufferWidth; } }
+		public int VirtualHeight { get { return BufferHeight; } }
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return 0; } }

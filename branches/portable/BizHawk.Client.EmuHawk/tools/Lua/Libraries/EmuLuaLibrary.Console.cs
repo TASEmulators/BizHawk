@@ -41,8 +41,45 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public static void Log(params object[] outputs)
 		{
-			foreach (var output in outputs)
+			LogWithSeparator("\t", "\n", outputs);
+		}
+
+		// Single param version is used by logOutputCallback of some libraries.
+		public static void Log(string output)
+		{
+			Log((object)output);
+		}
+
+		[LuaMethodAttributes(
+			"writeline",
+			"Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable"
+		)]
+		public static void WriteLine(params object[] outputs)
+		{
+			LogWithSeparator("\n", "\n", outputs);
+		}
+
+		[LuaMethodAttributes(
+			"write",
+			"Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable"
+		)]
+		public static void Write(params object[] outputs)
+		{
+			LogWithSeparator(string.Empty, string.Empty, outputs);
+		}
+
+		// Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable
+		private static void LogWithSeparator(string separator, string terminator, params object[] outputs)
+		{
+			for (var outIndex = 0; outIndex < outputs.Length; outIndex++)
 			{
+				var output = outputs[outIndex];
+
+				if (outIndex != 0)
+				{
+					GlobalWin.Tools.LuaConsole.WriteToOutputWindow(separator);
+				}
+
 				if (output == null)
 				{
 					GlobalWin.Tools.LuaConsole.WriteToOutputWindow("NULL");
@@ -86,32 +123,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
-		}
-
-		[LuaMethodAttributes(
-			"writeline",
-			"Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable"
-		)]
-		public static void WriteLine(params object[] outputs)
-		{
-			Log(outputs);
-			Log('\n');
-		}
-
-		[LuaMethodAttributes(
-			"write",
-			"Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable"
-		)]
-		public static void Write(params object[] outputs)
-		{
-			Log(outputs);
-		}
-
-		// Single param version is used by logOutputCallback of some libraries.
-		public static void Log(string output)
-		{
-			var outputs = new[] { output };
-			Log(outputs);
+			GlobalWin.Tools.LuaConsole.WriteToOutputWindow(terminator);
 		}
 	}
 }

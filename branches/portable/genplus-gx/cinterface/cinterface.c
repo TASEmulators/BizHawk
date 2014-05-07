@@ -518,3 +518,93 @@ GPGX_EX void gpgx_reset(int hard)
 	else
 		gen_reset(0);
 }
+
+typedef struct
+{
+	unsigned int value;
+	const char *name;
+} register_t;
+
+GPGX_EX int gpgx_getmaxnumregs(void)
+{
+	return 57;
+}
+
+GPGX_EX int gpgx_getregs(register_t *regs)
+{
+	int ret = 0;
+
+	// 22
+#define MAKEREG(x) regs->name = "M68K " #x; regs->value = m68k_get_reg(M68K_REG_##x); regs++; ret++;
+	MAKEREG(D0);
+	MAKEREG(D1);
+	MAKEREG(D2);
+	MAKEREG(D3);
+	MAKEREG(D4);
+	MAKEREG(D5);
+	MAKEREG(D6);
+	MAKEREG(D7);
+	MAKEREG(A0);
+	MAKEREG(A1);
+	MAKEREG(A2);
+	MAKEREG(A3);
+	MAKEREG(A4);
+	MAKEREG(A5);
+	MAKEREG(A6);
+	MAKEREG(A7);
+	MAKEREG(PC);
+	MAKEREG(SR);
+	MAKEREG(SP);
+	MAKEREG(USP);
+	MAKEREG(ISP);
+	MAKEREG(IR);
+#undef MAKEREG
+
+	// 13
+#define MAKEREG(x) regs->name = "Z80 " #x; regs->value = Z80.x.d; regs++; ret++;
+	MAKEREG(pc);
+	MAKEREG(sp);
+	MAKEREG(af);
+	MAKEREG(bc);
+	MAKEREG(de);
+	MAKEREG(hl);
+	MAKEREG(ix);
+	MAKEREG(iy);
+	MAKEREG(wz);
+	MAKEREG(af2);
+	MAKEREG(bc2);
+	MAKEREG(de2);
+	MAKEREG(hl2);
+#undef MAKEREG
+
+	// 22
+	if (system_hw == SYSTEM_MCD)
+	{
+#define MAKEREG(x) regs->name = "S68K " #x; regs->value = s68k_get_reg(M68K_REG_##x); regs++; ret++;
+	MAKEREG(D0);
+	MAKEREG(D1);
+	MAKEREG(D2);
+	MAKEREG(D3);
+	MAKEREG(D4);
+	MAKEREG(D5);
+	MAKEREG(D6);
+	MAKEREG(D7);
+	MAKEREG(A0);
+	MAKEREG(A1);
+	MAKEREG(A2);
+	MAKEREG(A3);
+	MAKEREG(A4);
+	MAKEREG(A5);
+	MAKEREG(A6);
+	MAKEREG(A7);
+	MAKEREG(PC);
+	MAKEREG(SR);
+	MAKEREG(SP);
+	MAKEREG(USP);
+	MAKEREG(ISP);
+	MAKEREG(IR);
+#undef MAKEREG
+	}
+
+	return ret;
+}

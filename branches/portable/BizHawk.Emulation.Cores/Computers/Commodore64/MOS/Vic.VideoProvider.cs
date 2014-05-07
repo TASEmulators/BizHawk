@@ -61,5 +61,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			get { return bufWidth; }
 		}
+
+		public int VirtualHeight
+		{
+			get { return bufHeight; }
+		}
 	}
 }

@@ -27,8 +27,8 @@
       "P1 Down": "DownArrow,J1 POV1D,  X1 DpadDown, X1 LStickDown",
       "P1 Left": "LeftArrow,J1 POV1L,  X1 DpadLeft, X1 LStickLeft",
       "P1 Right": "RightArrow,J1 POV1R,  X1 DpadRight, X1 LStickRight",
-      "P1 Select": "Space, J9, X1 Back",
-      "P1 Start": "Return, J10, X1 Start",
+      "P1 Select": "Space, J1 B9, X1 Back",
+      "P1 Start": "Return, J1 B10, X1 Start",
       "P1 Y": "A, J1 B1, X1 X",
       "P1 X": "S, J1 B4, X1 Y",
       "P1 B": "X, J1 B2, X1 A",
@@ -179,8 +179,8 @@
       "Power": ""
     },
     "Atari 2600 Basic Controller": {
-      "Reset": "",
-      "Select": "",
+      "Reset": "D, J1 B9",
+      "Select": "S, J1 B10",
       "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
       "P1 Down": "DownArrow, J1 POV1D, X1 DpadDown, X1 LStickDown",
       "P1 Left": "LeftArrow,J1 POV1L,  X1 DpadLeft, X1 LStickLeft",
@@ -194,8 +194,8 @@
     },
     "Atari 7800 ProLine Joystick Controller": {
       "Power": "",
-      "Reset": "",
-      "Select": "",
+      "Reset": "D, J1 B9",
+      "Select": "S, J1 B10",
       "Pause": "",
       "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
       "P1 Down": "DownArrow, J1 POV1D X1 DpadDown, X1 LStickDown",
@@ -439,14 +439,14 @@
       "P2 Pound": ""
     },
     "SMS Controller": {
-      "P1 Up": "UpArrow, X1 DpadUp, X1 LStickUp",
-      "P1 Down": "DownArrow, X1 DpadDown, X1 LStickDown",
-      "P1 Left": "LeftArrow, X1 DpadLeft, X1 LStickLeft",
-      "P1 Right": "RightArrow, X1 DpadRight, X1 LStickRight",
+      "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
+      "P1 Down": "DownArrow, J1 POV1D, X1 DpadDown, X1 LStickDown",
+      "P1 Left": "LeftArrow, J1 POV1L, X1 DpadLeft, X1 LStickLeft",
+      "P1 Right": "RightArrow, J1 POV1R, X1 DpadRight, X1 LStickRight",
       "P1 B1": "Z, J1 B1, X1 B",
       "P1 B2": "X, J1 B2, X1 A",
       "Reset": "",
-      "Pause": "",
+      "Pause": "J1 B10",
       "P2 Up": "",
       "P2 Down": "",
       "P2 Left": "",
@@ -613,8 +613,8 @@
       "Power": ""
     },
     "Atari 2600 Basic Controller": {
-      "Reset": "D",
-      "Select": "S",
+      "Reset": "",
+      "Select": "",
       "P1 Up": "",
       "P1 Down": "",
       "P1 Left": "",

@@ -106,6 +106,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RamSearch_Load(object sender, EventArgs e)
 		{
+			ErrorIconButton.Visible = false;
 			_dropdownDontfire = true;
 			LoadConfigSettings();
 			SpecificValueBox.ByteSize = _settings.Size;
@@ -136,6 +137,11 @@ namespace BizHawk.Client.EmuHawk
 			NewSearch();
 		}
 
+		private void OutOfRangeCheck()
+		{
+			ErrorIconButton.Visible = _searches.OutOfRangeAddress.Any();
+		}
+
 		private void ListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
 			if (_searches.Count > 0 && column == 0)
@@ -145,7 +151,11 @@ namespace BizHawk.Client.EmuHawk
 				var isCheat = Global.CheatList.IsActive(_settings.Domain, _searches[index].Address ?? 0);
 				var isWeeded = Global.Config.RamSearchPreviewMode && !_forcePreviewClear && _searches.Preview(_searches[index].Address ?? 0);
 
-				if (isCheat)
+				if (_searches[index].Address.Value >= _searches[index].Domain.Size)
+				{
+					nextColor = Color.PeachPuff;
+				}
+				else if (isCheat)
 				{
 					nextColor = isWeeded ? Color.Lavender : Color.LightCyan;
 				}
@@ -362,6 +372,7 @@ namespace BizHawk.Client.EmuHawk
 				CopyValueToPrevToolBarItem.Enabled =
 				_searches.Count > 0;
 			UpdateUndoToolBarButtons();
+			OutOfRangeCheck();
 		}
 
 		private int? CompareToValue
@@ -1454,6 +1465,19 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DoDisplayTypeClick(Watch.StringToDisplayType(DisplayTypeDropdown.SelectedItem.ToString()));
 			}
+		}
+
+		private void ErrorIconButton_Click(object sender, EventArgs e)
+		{
+			var outOfRangeAddresses = _searches.OutOfRangeAddress.ToList();
+
+			SetRemovedMessage(outOfRangeAddresses.Count);
+
+			_searches.RemoveRange(outOfRangeAddresses);
+
+			WatchListView.ItemCount = _searches.Count;
+			SetTotal();
+			ToggleSearchDependentToolBarItems();
 		}
 
 		#endregion

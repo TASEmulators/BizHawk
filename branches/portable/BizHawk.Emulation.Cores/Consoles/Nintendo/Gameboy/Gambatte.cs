@@ -234,7 +234,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			while (true)
 			{
 				uint samplesEmitted = TICKSINFRAME - frameOverflow; // according to gambatte docs, this is the nominal length of a frame in 2mhz clocks
-				LibGambatte.gambatte_runfor(GambatteState, VideoBuffer, 160, soundbuff, ref samplesEmitted);
+				System.Diagnostics.Debug.Assert(samplesEmitted * 2 <= soundbuff.Length);
+				if (LibGambatte.gambatte_runfor(GambatteState, soundbuff, ref samplesEmitted) > 0)
+				{
+					LibGambatte.gambatte_blitto(GambatteState, VideoBuffer, 160);
+				}
 
 				_cycleCount += (ulong)samplesEmitted;
 				frameOverflow += samplesEmitted;
@@ -255,6 +259,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					break;
 				}
 			}
+
+			if (rendersound)
+				ProcessSoundEnd();
 
 			FrameAdvancePost();
 		}
@@ -427,7 +434,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			uint nlen = 0;
 			IntPtr ndata = IntPtr.Zero;
 
-			if (!LibGambatte.gambatte_savestate(GambatteState, VideoBuffer, 160, ref ndata, ref nlen))
+			if (!LibGambatte.gambatte_savestate(GambatteState, ref ndata, ref nlen))
 				throw new Exception("Gambatte failed to save the savestate!");
 
 			if (nlen == 0)
@@ -480,6 +487,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			writer.Write(IsLagFrame);
 			writer.Write(LagCount);
 			writer.Write(Frame);
+			writer.Write(frameOverflow);
+			writer.Write(_cycleCount);
 		}
 
 		public void LoadStateBinary(System.IO.BinaryReader reader)
@@ -493,6 +502,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			IsLagFrame = reader.ReadBoolean();
 			LagCount = reader.ReadInt32();
 			Frame = reader.ReadInt32();
+			frameOverflow = reader.ReadUInt32();
+			_cycleCount = reader.ReadUInt64();
 		}
 
 		public byte[] SaveStateBinary()
@@ -799,6 +810,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			get { return 160; }
 		}
 
+		public int VirtualHeight
+		{
+			get { return 144; }
+		}
+
 		public int BufferWidth
 		{
 			get { return 160; }
@@ -845,7 +861,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <summary>
 		/// sample pairs before resampling
 		/// </summary>
-		short[] soundbuff = new short[(35112 + 2064) * 2];
+		short[] soundbuff = new short[(35112 + 2064) * 2 * 4];
 		/// <summary>
 		/// how many sample pairs are in soundbuff
 		/// </summary>
@@ -859,6 +875,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		int latchR = 0;
 
 		BlipBuffer blipL, blipR;
+		uint blipAccumulate;
 
 		private void ProcessSound()
 		{
@@ -870,7 +887,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				{
 					int diff = latchL - curr;
 					latchL = curr;
-					blipL.AddDelta(i, diff);
+					blipL.AddDelta(blipAccumulate, diff);
 				}
 				curr = soundbuff[i * 2 + 1];
 
@@ -878,12 +895,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				{
 					int diff = latchR - curr;
 					latchR = curr;
-					blipR.AddDelta(i, diff);
+					blipR.AddDelta(blipAccumulate, diff);
 				}
+
+				blipAccumulate++;
 			}
 
-			blipL.EndFrame((uint)soundbuffcontains);
-			blipR.EndFrame((uint)soundbuffcontains);
+			soundbuffcontains = 0;
+		}
+
+		private void ProcessSoundEnd()
+		{
+			blipL.EndFrame((uint)blipAccumulate);
+			blipR.EndFrame((uint)blipAccumulate);
+			blipAccumulate = 0;
 
 			soundoutbuffcontains = blipL.SamplesAvailable();
 			if (soundoutbuffcontains != blipR.SamplesAvailable())
@@ -891,8 +916,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			blipL.ReadSamplesLeft(soundoutbuff, soundoutbuffcontains);
 			blipR.ReadSamplesRight(soundoutbuff, soundoutbuffcontains);
-
-			soundbuffcontains = 0;
 		}
 
 		void InitSound()

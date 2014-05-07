@@ -206,7 +206,7 @@ namespace BizHawk.Client.EmuHawk
 					DrawPatternView(PatternView, _ppuBus);
 				}
 
-				var bmpdata2 = SpriteView.sprites.LockBits(new Rectangle(new Point(0, 0), SpriteView.sprites.Size), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+				var bmpdata2 = SpriteView.sprites.LockBits(new Rectangle(new Point(0, 0), SpriteView.sprites.Size), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 				var framebuf2 = (int*)bmpdata2.Scan0.ToPointer();
 
 				int pt_add = _nes.ppu.reg_2000.obj_pattern_hi ? 0x1000 : 0;

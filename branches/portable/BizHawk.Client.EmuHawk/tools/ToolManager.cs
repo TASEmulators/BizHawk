@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 		public void UpdateAfter()
 		{
 			var afterList = _tools.Where(x => !x.UpdateBefore);
-			foreach (var tool in afterList.Where(tool => !tool.IsDisposed))
+			foreach (var tool in afterList)
 			{
 				if (!tool.IsDisposed ||
 					(tool is RamWatch && Global.Config.DisplayRamWatch)) // Ram Watch hack, on screen display should run even if Ram Watch is closed
@@ -229,8 +229,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					LuaConsole.StartLuaDrawing();
 				}
-
-				LuaConsole.LuaImp.CallFrameBeforeEvent();
 			}
 
 			UpdateBefore();
@@ -247,7 +245,6 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Has<LuaConsole>())
 			{
-				LuaConsole.LuaImp.CallFrameAfterEvent();
 				if (!fromLua)
 				{
 					LuaConsole.EndLuaDrawing();

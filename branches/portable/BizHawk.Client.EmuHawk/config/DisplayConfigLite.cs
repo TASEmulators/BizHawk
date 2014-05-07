@@ -35,6 +35,10 @@ namespace BizHawk.Client.EmuHawk.config
 			tbScanlineIntensity.Value = Global.Config.TargetScanlineFilterIntensity;
 			checkLetterbox.Checked = Global.Config.DispFixAspectRatio;
 			checkPadInteger.Checked = Global.Config.DispFixScaleInteger;
+			rbUseSystem.Checked = Global.Config.DispObeyAR;
+			rbUseRaw.Checked = !Global.Config.DispObeyAR;
+
+			RefreshAspectRatioOptions();
 		}
 
 		private void btnOk_Click(object sender, EventArgs e)
@@ -56,6 +60,9 @@ namespace BizHawk.Client.EmuHawk.config
 				Global.Config.DispFinalFilter = 2;
 
 			Global.Config.TargetScanlineFilterIntensity = tbScanlineIntensity.Value;
+			Global.Config.DispFixAspectRatio = checkLetterbox.Checked;
+			Global.Config.DispFixScaleInteger = checkPadInteger.Checked;
+			Global.Config.DispObeyAR = rbUseSystem.Checked;
 
 			Global.Config.DispUserFilterPath = PathSelection;
 			GlobalWin.DisplayManager.RefreshUserShader();
@@ -81,6 +88,32 @@ namespace BizHawk.Client.EmuHawk.config
 				RefreshState();
 			}
 		}
+
+		private void checkLetterbox_CheckedChanged(object sender, EventArgs e)
+		{
+			RefreshAspectRatioOptions();
+		}
+		private void checkPadInteger_CheckedChanged(object sender, EventArgs e)
+		{
+			RefreshAspectRatioOptions();
+		}
+
+		private void rbUseRaw_CheckedChanged(object sender, EventArgs e)
+		{
+			RefreshAspectRatioOptions();
+		}
+
+		private void rbUseSystem_CheckedChanged(object sender, EventArgs e)
+		{
+			RefreshAspectRatioOptions();
+		}
+
+		void RefreshAspectRatioOptions()
+		{
+			grpARSelection.Enabled = checkLetterbox.Checked;
+			checkPadInteger.Enabled = checkLetterbox.Checked;
+		}
+
 
 	}
 }

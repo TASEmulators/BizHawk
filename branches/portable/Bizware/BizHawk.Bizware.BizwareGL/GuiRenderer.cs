@@ -249,6 +249,11 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public void DrawFlipped(Art art, bool xflip, bool yflip) { DrawInternal(art, 0, 0, art.Width, art.Height, xflip, yflip); }
 
+		public void Draw(Texture2d art, float x, float y, float width, float height)
+		{
+			DrawInternal(art, x, y, width, height);
+		}
+
 		unsafe void DrawInternal(Texture2d tex, float x, float y, float w, float h)
 		{
 			Art art = new Art(null);

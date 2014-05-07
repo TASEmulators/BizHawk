@@ -406,7 +406,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				return vidbuffer;
 			}
 
-			public int VirtualWidth { get { return BufferWidth; } }
+			public int VirtualWidth { get { return 275; } }
+			public int VirtualHeight { get { return BufferHeight; } }
 			public int BufferWidth { get; private set; }
 			public int BufferHeight { get; private set; }
 			public int BackgroundColor { get { return unchecked((int)0xff000000); } }

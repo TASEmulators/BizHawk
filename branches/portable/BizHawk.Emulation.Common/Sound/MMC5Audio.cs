@@ -216,6 +216,16 @@ namespace BizHawk.Emulation.Common.Components
 			return ret;
 		}
 
+		public byte Peek5010()
+		{
+			byte ret = 0;
+			if (PCMEnableIRQ && PCMIRQTriggered)
+			{
+				ret |= 0x80;
+			}
+			return ret;
+		}
+
 		/// <summary>
 		/// call for 8000:bfff reads
 		/// </summary>

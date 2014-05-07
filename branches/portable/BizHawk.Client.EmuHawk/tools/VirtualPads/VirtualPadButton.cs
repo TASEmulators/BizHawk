@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 
@@ -22,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
 
-			Appearance = System.Windows.Forms.Appearance.Button;
+			Appearance = Appearance.Button;
 
 			ForeColor = Color.Black;
 		}

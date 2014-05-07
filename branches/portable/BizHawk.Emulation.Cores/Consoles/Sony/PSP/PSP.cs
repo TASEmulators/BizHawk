@@ -203,6 +203,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		readonly int[] screenbuffer = new int[screenwidth * screenheight];
 		public int[] GetVideoBuffer() { return screenbuffer; }
 		public int VirtualWidth { get { return screenwidth; } }
+		public int VirtualHeight { get { return screenheight; } }
 		public int BufferWidth { get { return screenwidth; } }
 		public int BufferHeight { get { return screenheight; } }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }

@@ -8,6 +8,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	// Emulates the TIA
 	public partial class TIA : IVideoProvider, ISoundProvider
 	{
+		private const int ScreenWidth = 160;
+		private const int MaxScreenHeight = 312;
+
 		private const byte CXP0 = 0x01;
 		private const byte CXP1 = 0x02;
 		private const byte CXM0 = 0x04;
@@ -66,7 +69,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private HMoveData _hmove;
 		private BallData _ball;
 
-		public int[] FrameBuffer = new int[320 * 262];
 		public Audio[] AUD = { new Audio(), new Audio() };
 
 		public TIA(Atari2600 core)
@@ -91,6 +93,45 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			get { return _vsyncEnabled; }
 		}
 
+		public bool FrameComplete { get; set; }
+		public int MaxVolume { get; set; }
+
+		public int VirtualWidth
+		{
+			get { return 275; } //  275 comes from NTSC specs and the actual pixel clock of a 2600 TIA
+		}
+
+		public int VirtualHeight
+		{
+			get { return BufferHeight; }
+		}
+
+		public int BufferWidth
+		{
+			get { return ScreenWidth; }
+		}
+
+		public int BufferHeight
+		{
+			get
+			{
+				if (false)
+					return _core.Settings.PALBottomLine - _core.Settings.PALTopLine;
+				else
+					return _core.Settings.NTSCBottomLine - _core.Settings.NTSCTopLine;
+			}
+		}
+
+		public int BackgroundColor
+		{
+			get { return _core.Settings.BackgroundColor.ToArgb(); }
+		}
+
+		public int[] GetVideoBuffer()
+		{
+			return FrameBuffer;
+		}
+
 		public void Reset()
 		{
 			_hsyncCnt = 0;
@@ -108,34 +149,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			_player0.ScanCnt = 8;
 			_player1.ScanCnt = 8;
-		}
-
-		public bool FrameComplete { get; set; }
-		public int MaxVolume { get; set; }
-
-		public int VirtualWidth
-		{
-			get { return 320; }
-		}
-
-		public int BufferWidth
-		{
-			get { return 320; }
-		}
-
-		public int BufferHeight
-		{
-			get { return 262; }
-		}
-
-		public int BackgroundColor
-		{
-			get { return 0; }
-		}
-
-		public int[] GetVideoBuffer()
-		{
-			return FrameBuffer;
 		}
 
 		// Execute TIA cycles
@@ -468,20 +481,24 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
-		// TODO: Remove the magic numbers from this function to allow for a variable height screen
+		public int[] FrameBuffer = new int[ScreenWidth * MaxScreenHeight];
+
 		public void OutputFrame()
 		{
-			for (int row = 0; row < 262; row++)
+			var topLine = _core.Settings.NTSCTopLine;
+			var bottomLine = _core.Settings.NTSCBottomLine;
+
+			for (int row = topLine; row < bottomLine; row++)
 			{
-				for (int col = 0; col < 320; col++)
+				for (int col = 0; col < ScreenWidth; col++)
 				{
 					if (_scanlinesBuffer.Count > row)
 					{
-						FrameBuffer[(row * 320) + col] = (int)(_scanlinesBuffer[row][col / 2] | 0xFF000000);
+						FrameBuffer[((row - topLine) * ScreenWidth) + col] = (int)(_scanlinesBuffer[row][col] | 0xFF000000);
 					}
 					else
 					{
-						FrameBuffer[(row * 320) + col] = unchecked((int)0xFF000000);
+						FrameBuffer[((row - topLine) * ScreenWidth) + col] = unchecked((int)0xFF000000);
 					}
 				}
 			}
@@ -853,12 +870,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return result;
 		}
 
-		// =========================================================================
-		// Audio bits
-		// =========================================================================
+		#region Audio bits
 
-		enum AudioRegister : byte { AUDC, AUDF, AUDV }
-		struct QueuedCommand
+		private enum AudioRegister : byte { AUDC, AUDF, AUDV }
+		private struct QueuedCommand
 		{
 			public int Time;
 			public byte Channel;
@@ -866,8 +881,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			public byte Value;
 		}
 
-		int frameStartCycles, frameEndCycles;
-		Queue<QueuedCommand> commands = new Queue<QueuedCommand>(4096);
+		private int frameStartCycles, frameEndCycles;
+		private Queue<QueuedCommand> commands = new Queue<QueuedCommand>(4096);
 		
 		public void BeginAudioFrame()
 		{
@@ -879,18 +894,24 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			frameEndCycles = _core.Cpu.TotalExecutedCycles;
 		}
 
-		void WriteAudio(byte channel, AudioRegister register, byte value)
+		private void WriteAudio(byte channel, AudioRegister register, byte value)
 		{
 			commands.Enqueue(new QueuedCommand { Channel = channel, Register = register, Value = value, Time = _core.Cpu.TotalExecutedCycles - frameStartCycles });
 		}
 
-		void ApplyAudioCommand(QueuedCommand cmd)
+		private void ApplyAudioCommand(QueuedCommand cmd)
 		{
 			switch (cmd.Register)
 			{
-				case AudioRegister.AUDC: AUD[cmd.Channel].AUDC = cmd.Value; break;
-				case AudioRegister.AUDF: AUD[cmd.Channel].AUDF = cmd.Value; break;
-				case AudioRegister.AUDV: AUD[cmd.Channel].AUDV = cmd.Value; break;
+				case AudioRegister.AUDC:
+					AUD[cmd.Channel].AUDC = cmd.Value;
+					break;
+				case AudioRegister.AUDF:
+					AUD[cmd.Channel].AUDF = cmd.Value;
+					break;
+				case AudioRegister.AUDV:
+					AUD[cmd.Channel].AUDV = cmd.Value;
+					break;
 			}
 		}
 
@@ -900,22 +921,25 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			int elapsedCycles = frameEndCycles - frameStartCycles;
 			if (elapsedCycles == 0)
+			{
 				elapsedCycles = 1; // better than diving by zero
+			}
 
 			int start = 0;
 			while (commands.Count > 0)
 			{
 				var cmd = commands.Dequeue();
-				int pos = ((cmd.Time * samples31khz.Length) / elapsedCycles);
+				int pos = (cmd.Time * samples31khz.Length) / elapsedCycles;
 				pos = Math.Min(pos, samples31khz.Length); // sometimes the cpu timestamp of the write is > frameEndCycles
 				GetSamplesImmediate(samples31khz, start, pos - start);
 				start = pos;
 				ApplyAudioCommand(cmd);
 			}
+
 			GetSamplesImmediate(samples31khz, start, samples31khz.Length - start);
 
 			// convert from 31khz to 44khz
-			for (int i = 0; i < samples.Length / 2; i++)
+			for (var i = 0; i < samples.Length / 2; i++)
 			{
 				samples[i * 2] = samples31khz[(int)(((double)samples31khz.Length / (double)(samples.Length / 2)) * i)];
 				samples[(i * 2) + 1] = samples[i * 2];
@@ -924,7 +948,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public void GetSamplesImmediate(short[] samples, int start, int len)
 		{
-			for (int i = start; i < start + len; i++)
+			for (var i = start; i < start + len; i++)
 			{
 				samples[i] += AUD[0].Cycle();
 				samples[i] += AUD[1].Cycle();
@@ -936,8 +960,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			commands.Clear();
 		}
 
-		// =========================================================================
-		
+		#endregion
+
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("TIA");

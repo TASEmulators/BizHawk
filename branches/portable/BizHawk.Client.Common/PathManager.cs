@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.Common
 {
@@ -11,11 +12,12 @@ namespace BizHawk.Client.Common
 	{
 		public static string GetExeDirectoryAbsolute()
 		{
-			string path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+			var path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 			if (path.EndsWith(Path.DirectorySeparatorChar.ToString()))
 			{
 				path = path.Remove(path.Length - 1, 1);
 			}
+
 			return path;
 		}
 
@@ -41,35 +43,41 @@ namespace BizHawk.Client.Common
 		/// <returns></returns>
 		public static string GetBasePathAbsolute()
 		{
-			if (Global.Config.PathEntries.GlobalBaseFragment.Length < 1) //If empty, then EXE path
+			if (Global.Config.PathEntries.GlobalBaseFragment.Length < 1) // If empty, then EXE path
+			{
 				return GetExeDirectoryAbsolute();
+			}
 
-			if (Global.Config.PathEntries.GlobalBaseFragment.Length >= 5 &&
-				Global.Config.PathEntries.GlobalBaseFragment.Substring(0, 5) == "%exe%")
+			if (Global.Config.PathEntries.GlobalBaseFragment.Length >= 5
+			    && Global.Config.PathEntries.GlobalBaseFragment.Substring(0, 5) == "%exe%")
+			{
 				return GetExeDirectoryAbsolute();
+			}
+
 			if (Global.Config.PathEntries.GlobalBaseFragment[0] == '.')
 			{
 				if (Global.Config.PathEntries.GlobalBaseFragment.Length == 1)
-					return GetExeDirectoryAbsolute();
-				else
 				{
-					if (Global.Config.PathEntries.GlobalBaseFragment.Length == 2 &&
-						Global.Config.PathEntries.GlobalBaseFragment == ".\\")
-						return GetExeDirectoryAbsolute();
-					else
-					{
-						string tmp = Global.Config.PathEntries.GlobalBaseFragment;
-						tmp = tmp.Remove(0, 1);
-						tmp = tmp.Insert(0, GetExeDirectoryAbsolute());
-						return tmp;
-					}
+					return GetExeDirectoryAbsolute();
 				}
+
+				if (Global.Config.PathEntries.GlobalBaseFragment.Length == 2 &&
+				    Global.Config.PathEntries.GlobalBaseFragment == ".\\")
+				{
+					return GetExeDirectoryAbsolute();
+				}
+				
+				var tmp = Global.Config.PathEntries.GlobalBaseFragment.Remove(0, 1);
+				tmp = tmp.Insert(0, GetExeDirectoryAbsolute());
+				return tmp;
 			}
 
 			if (Global.Config.PathEntries.GlobalBaseFragment.Substring(0, 2) == "..")
+			{
 				return RemoveParents(Global.Config.PathEntries.GlobalBaseFragment, GetExeDirectoryAbsolute());
+			}
 
-			//In case of error, return EXE path
+			// In case of error, return EXE path
 			return GetExeDirectoryAbsolute();
 		}
 
@@ -85,16 +93,18 @@ namespace BizHawk.Client.Common
 
 		public static string MakeAbsolutePath(string path, string system)
 		{
-			//Hack
+			// Hack
 			if (system == "Global")
 			{
 				system = null;
 			}
 
-			//This function translates relative path and special identifiers in absolute paths
+			// This function translates relative path and special identifiers in absolute paths
 
 			if (path.Length < 1)
+			{
 				return GetBasePathAbsolute();
+			}
 
 			if (path == "%recent%")
 			{
@@ -104,62 +114,63 @@ namespace BizHawk.Client.Common
 			if (path.Length >= 5 && path.Substring(0, 5) == "%exe%")
 			{
 				if (path.Length == 5)
-					return GetExeDirectoryAbsolute();
-				else
 				{
-					string tmp = path.Remove(0, 5);
-					tmp = tmp.Insert(0, GetExeDirectoryAbsolute());
-					return tmp;
+					return GetExeDirectoryAbsolute();
 				}
+				
+				var tmp = path.Remove(0, 5);
+				tmp = tmp.Insert(0, GetExeDirectoryAbsolute());
+				return tmp;
 			}
 
 			if (path[0] == '.')
 			{
-				if (!String.IsNullOrWhiteSpace(system))
+				if (!string.IsNullOrWhiteSpace(system))
 				{
-
 					path = path.Remove(0, 1);
 					path = path.Insert(0, GetPlatformBase(system));
 				}
-				if (path.Length == 1)
-					return GetBasePathAbsolute();
-				else
-				{
-					if (path[0] == '.')
-					{
-						path = path.Remove(0, 1);
-						path = path.Insert(0, GetBasePathAbsolute());
-					}
 
-					return path;
+				if (path.Length == 1)
+				{
+					return GetBasePathAbsolute();
 				}
+				
+				if (path[0] == '.')
+				{
+					path = path.Remove(0, 1);
+					path = path.Insert(0, GetBasePathAbsolute());
+				}
+
+				return path;
 			}
 
-			//If begins wtih .. do alorithm to determine how many ..\.. combos and deal with accordingly, return drive letter only if too many ..
-
+			// If begins wtih .. do alorithm to determine how many ..\.. combos and deal with accordingly, return drive letter only if too many ..
 			if ((path[0] > 'A' && path[0] < 'Z') || (path[0] > 'a' && path[0] < 'z'))
 			{
-				//C:\
+				// C:\
 				if (path.Length > 2 && path[1] == ':' && path[2] == '\\')
-					return path;
-				else
 				{
-					//file:\ is an acceptable path as well, and what FileBrowserDialog returns
-					if (path.Length >= 6 && path.Substring(0, 6) == "file:\\")
-						return path;
-					else
-						return GetExeDirectoryAbsolute(); //bad path
+					return path;
 				}
+				
+				// file:\ is an acceptable path as well, and what FileBrowserDialog returns
+				if (path.Length >= 6 && path.Substring(0, 6) == "file:\\")
+				{
+					return path;
+				}
+
+				return GetExeDirectoryAbsolute(); // bad path
 			}
 
-			//all pad paths default to EXE
+			// all pad paths default to EXE
 			return GetExeDirectoryAbsolute();
 		}
 
 		public static string RemoveParents(string path, string workingpath)
 		{
-			//determines number of parents, then removes directories from working path, return absolute path result
-			//Ex: "..\..\Bob\", "C:\Projects\Emulators\Bizhawk" will return "C:\Projects\Bob\" 
+			// determines number of parents, then removes directories from working path, return absolute path result
+			// Ex: "..\..\Bob\", "C:\Projects\Emulators\Bizhawk" will return "C:\Projects\Bob\" 
 			int x = NumParentDirectories(path);
 			if (x > 0)
 			{
@@ -169,19 +180,22 @@ namespace BizHawk.Client.Common
 				{
 					//Return drive letter only, working path must be absolute?
 				}
-				return "";
+
+				return string.Empty;
 			}
-			else return path;
+
+			return path;
 		}
 
 		public static int NumParentDirectories(string path)
 		{
-			//determine the number of parent directories in path and return result
+			// determine the number of parent directories in path and return result
 			int x = StringHelpers.HowMany(path, '\\');
 			if (x > 0)
 			{
 				return StringHelpers.HowMany(path, "..\\");
 			}
+
 			return 0;
 		}
 
@@ -202,79 +216,92 @@ namespace BizHawk.Client.Common
 				return Environment.SpecialFolder.Recent.ToString();
 			}
 
-			PathEntry path = Global.Config.PathEntries[sysID, "ROM"] ?? Global.Config.PathEntries[sysID, "Base"];
+			var path = Global.Config.PathEntries[sysID, "ROM"] ?? Global.Config.PathEntries[sysID, "Base"];
 
 			return MakeAbsolutePath(path.Path, sysID);
 		}
 
 		public static string RemoveInvalidFileSystemChars(string name)
 		{
-			string newStr = name;
-			char[] chars = Path.GetInvalidFileNameChars();
-			return chars.Aggregate(newStr, (current, c) => current.Replace(c.ToString(), ""));
+			var newStr = name;
+			var chars = Path.GetInvalidFileNameChars();
+			return chars.Aggregate(newStr, (current, c) => current.Replace(c.ToString(), string.Empty));
 		}
 
 		public static string FilesystemSafeName(GameInfo game)
 		{
-			string filesystemSafeName = game.Name.Replace("|", "+");
+			var filesystemSafeName = game.Name.Replace("|", "+");
 			filesystemSafeName = RemoveInvalidFileSystemChars(filesystemSafeName);
-			//zero 22-jul-2012 - i dont think this is used the same way it used to. game.Name shouldnt be a path, so this stuff is illogical.
-			//if game.Name is a path, then someone shouldve made it not-a-path already.
-			//return Path.Combine(Path.GetDirectoryName(filesystemSafeName), Path.GetFileNameWithoutExtension(filesystemSafeName));
+
+			// zero 22-jul-2012 - i dont think this is used the same way it used to. game.Name shouldnt be a path, so this stuff is illogical.
+			// if game.Name is a path, then someone shouldve made it not-a-path already.
+			// return Path.Combine(Path.GetDirectoryName(filesystemSafeName), Path.GetFileNameWithoutExtension(filesystemSafeName));
 			return filesystemSafeName;
 		}
 
 		public static string SaveRamPath(GameInfo game)
 		{
-			string name = FilesystemSafeName(game);
+			var name = FilesystemSafeName(game);
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
 			}
 
-			PathEntry pathEntry = Global.Config.PathEntries[game.System, "Save RAM"] ??
-			                      Global.Config.PathEntries[game.System, "Base"];
+			var pathEntry = Global.Config.PathEntries[game.System, "Save RAM"] ??
+			                Global.Config.PathEntries[game.System, "Base"];
 
 			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name) + ".SaveRAM";
 		}
 
 		public static string GetSaveStatePath(GameInfo game)
 		{
-			PathEntry pathEntry = Global.Config.PathEntries[game.System, "Savestates"] ??
-			                      Global.Config.PathEntries[game.System, "Base"];
+			var pathEntry = Global.Config.PathEntries[game.System, "Savestates"] ??
+			                Global.Config.PathEntries[game.System, "Base"];
 
 			return MakeAbsolutePath(pathEntry.Path, game.System);
 		}
 
 		public static string SaveStatePrefix(GameInfo game)
 		{
-			string name = FilesystemSafeName(game);
-			
+			var name = FilesystemSafeName(game);
+
+			// Neshawk and Quicknes have incompatible savestates, store the name to keep them separate
+			if (Global.Emulator.SystemId == "NES")
+			{
+				name += "." + Global.Emulator.Attributes().CoreName;
+			}
+
+			// Bsnes profiles have incompatible savestates so save the profile name
+			if (Global.Emulator is LibsnesCore)
+			{
+				name += "." + ((LibsnesCore.SnesSyncSettings)Global.Emulator.GetSyncSettings()).Profile;
+			}
+
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
 			}
 
-			PathEntry pathEntry = Global.Config.PathEntries[game.System, "Savestates"] ??
-			                      Global.Config.PathEntries[game.System, "Base"];
+			var pathEntry = Global.Config.PathEntries[game.System, "Savestates"] ??
+			                Global.Config.PathEntries[game.System, "Base"];
 
 			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name);
 		}
 
 		public static string GetCheatsPath(GameInfo game)
 		{
-			PathEntry pathEntry = Global.Config.PathEntries[game.System, "Cheats"] ??
-			                      Global.Config.PathEntries[game.System, "Base"];
+			var pathEntry = Global.Config.PathEntries[game.System, "Cheats"] ??
+			                Global.Config.PathEntries[game.System, "Base"];
 
 			return MakeAbsolutePath(pathEntry.Path, game.System);
 		}
 
 		public static string ScreenshotPrefix(GameInfo game)
 		{
-			string name = FilesystemSafeName(game);
+			var name = FilesystemSafeName(game);
 
-			PathEntry pathEntry = Global.Config.PathEntries[game.System, "Screenshots"] ??
-			                      Global.Config.PathEntries[game.System, "Base"];
+			var pathEntry = Global.Config.PathEntries[game.System, "Screenshots"] ??
+			                Global.Config.PathEntries[game.System, "Base"];
 
 			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name);
 		}
@@ -283,29 +310,21 @@ namespace BizHawk.Client.Common
 		/// Takes an absolute path and attempts to convert it to a relative, based on the system, 
 		/// or global base if no system is supplied, if it is not a subfolder of the base, it will return the path unaltered
 		/// </summary>
-		/// <param name="absolute_path"></param>
+		/// <param name="absolutePath"></param>
 		/// <param name="system"></param>
 		/// <returns></returns>
-		public static string TryMakeRelative(string absolute_path, string system = null)
+		public static string TryMakeRelative(string absolutePath, string system = null)
 		{
-			string parent_path;
-			if (String.IsNullOrWhiteSpace(system))
-			{
-				parent_path = GetBasePathAbsolute();
-			}
-			else
-			{
-				parent_path = MakeAbsolutePath(GetPlatformBase(system), system);
-			}
+			var parentPath = string.IsNullOrWhiteSpace(system) ?
+				GetBasePathAbsolute() :
+				MakeAbsolutePath(GetPlatformBase(system), system);
 
-			if (IsSubfolder(parent_path, absolute_path))
+			if (IsSubfolder(parentPath, absolutePath))
 			{
-				return absolute_path.Replace(parent_path, ".");
+				return absolutePath.Replace(parentPath, ".");
 			}
-			else
-			{
-				return absolute_path;
-			}
+			
+			return absolutePath;
 		}
 
 		//http://stackoverflow.com/questions/3525775/how-to-check-if-directory-1-is-a-subdirectory-of-dir2-and-vice-versa

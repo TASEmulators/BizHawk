@@ -34,27 +34,78 @@ namespace BizHawk.Client.EmuHawk.Filters
 		/// </summary>
 		public float WidthScale, HeightScale;
 
-		public LetterboxingLogic(bool maintainAspect, bool maintainInteger, int targetWidth, int targetHeight, int sourceWidth, int sourceHeight)
+		public LetterboxingLogic(bool maintainAspect, bool maintainInteger, int targetWidth, int targetHeight, int sourceWidth, int sourceHeight, int textureWidth, int textureHeight)
 		{
 			//do maths on the viewport and the native resolution and the user settings to get a display rectangle
-			Size sz = new Size(targetWidth, targetHeight);
 
-			float widthScale = (float)sz.Width / sourceWidth;
-			float heightScale = (float)sz.Height / sourceHeight;
+			//this doesnt make sense
+			if (!maintainAspect)
+				maintainInteger = false;
+			
+			float widthScale = (float)targetWidth / sourceWidth;
+			float heightScale = (float)targetHeight / sourceHeight;
+			
 			if (maintainAspect)
 			{
 				if (widthScale > heightScale) widthScale = heightScale;
 				if (heightScale > widthScale) heightScale = widthScale;
 			}
+
 			if (maintainInteger)
 			{
-				widthScale = (float)Math.Floor(widthScale);
-				heightScale = (float)Math.Floor(heightScale);
+				//pre- AR-correction
+				//widthScale = (float)Math.Floor(widthScale);
+				//heightScale = (float)Math.Floor(heightScale);
+
+				//don't distort the original texture
+				float apparentWidth = sourceWidth * widthScale;
+				float apparentHeight = sourceHeight * heightScale;
+				widthScale = (float)Math.Floor(apparentWidth / textureWidth);
+				heightScale = (float)Math.Floor(apparentHeight / textureHeight);
+
+				//prevent dysfunctional reduction to 0x
+				if (widthScale == 0) widthScale = 1;
+				if (heightScale == 0) heightScale = 1;
+			
+			REDO:
+				apparentWidth = sourceWidth * widthScale;
+				apparentHeight = sourceHeight * heightScale;
+
+				//in case we've exaggerated the aspect ratio too far beyond the goal by our blunt integerizing, heres a chance to fix it by reducing one of the dimensions
+				float goalAr = ((float)sourceWidth)/sourceHeight;
+				float haveAr = apparentWidth / apparentHeight;
+				if (widthScale>1)
+				{
+					float tryAnotherAR = (widthScale - 1)/heightScale;
+					if(Math.Abs(tryAnotherAR-goalAr) < Math.Abs(haveAr-goalAr))
+					{
+						widthScale -= 1;
+						goto REDO;
+					}
+				}
+				if (heightScale > 1)
+				{
+					float tryAnotherAR = widthScale / (heightScale-1);
+					if (Math.Abs(tryAnotherAR - goalAr) < Math.Abs(haveAr - goalAr))
+					{
+						heightScale -= 1;
+						goto REDO;
+					}
+				}
+				
+
+				vw = (int)(widthScale * textureWidth);
+				vh = (int)(heightScale * textureHeight);
 			}
-			vw = (int)(widthScale * sourceWidth);
-			vh = (int)(heightScale * sourceHeight);
-			vx = (sz.Width - vw) / 2;
-			vy = (sz.Height - vh) / 2;
+			else
+			{
+				vw = (int)(widthScale * sourceWidth);
+				vh = (int)(heightScale * sourceHeight);
+			}
+
+
+			vx = (targetWidth - vw) / 2;
+			vy = (targetHeight - vh) / 2;
 			WidthScale = widthScale;
 			HeightScale = heightScale;
 		}
@@ -77,6 +128,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 		}
 
 		Size OutputSize, InputSize;
+		public Size TextureSize;
 		public int BackgroundColor;
 		public GuiRenderer GuiRenderer;
 		public IGL GL;
@@ -105,7 +157,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 			if (FilterOption != eFilterOption.Bicubic)
 				return size;
 
-			LL = new LetterboxingLogic(Global.Config.DispFixAspectRatio, Global.Config.DispFixScaleInteger, OutputSize.Width, OutputSize.Height, size.Width, size.Height);
+			LL = new LetterboxingLogic(Global.Config.DispFixAspectRatio, Global.Config.DispFixScaleInteger, OutputSize.Width, OutputSize.Height, size.Width, size.Height, TextureSize.Width, TextureSize.Height);
 
 			return size;
 		}
@@ -127,7 +179,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 			FindInput().SurfaceDisposition = SurfaceDisposition.Texture;
 			DeclareOutput(new SurfaceState(new SurfaceFormat(OutputSize), SurfaceDisposition.RenderTarget));
 			InputSize = state.SurfaceFormat.Size;
-			LL = new LetterboxingLogic(Global.Config.DispFixAspectRatio, Global.Config.DispFixScaleInteger, OutputSize.Width, OutputSize.Height, InputSize.Width, InputSize.Height);
+			LL = new LetterboxingLogic(Global.Config.DispFixAspectRatio, Global.Config.DispFixScaleInteger, OutputSize.Width, OutputSize.Height, InputSize.Width, InputSize.Height, TextureSize.Width, TextureSize.Height);
 		}
 
 		public override Vector2 UntransformPoint(string channel, Vector2 point)
@@ -152,8 +204,8 @@ namespace BizHawk.Client.EmuHawk.Filters
 			GuiRenderer.Begin(OutputSize.Width, OutputSize.Height);
 			GuiRenderer.SetBlendState(GL.BlendNone);
 			GuiRenderer.Modelview.Push();
-			GuiRenderer.Modelview.Translate(LL.vx, LL.vy);
-			GuiRenderer.Modelview.Scale(LL.WidthScale, LL.HeightScale);
+			//GuiRenderer.Modelview.Translate(LL.vx, LL.vy);
+			//GuiRenderer.Modelview.Scale(LL.WidthScale, LL.HeightScale);
 			if(FilterOption != eFilterOption.None)
 				InputTexture.SetFilterLinear();
 			else
@@ -164,7 +216,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 			}
 
 
-			GuiRenderer.Draw(InputTexture);
+			GuiRenderer.Draw(InputTexture,LL.vx,LL.vy,LL.vw,LL.vh);
 
 			GuiRenderer.End();
 		}

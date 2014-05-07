@@ -41,27 +41,5 @@ namespace BizHawk.Client.Common
 		{
 			return (uint)(double)luaArg;
 		}
-
-		/// <summary>
-		/// LuaInterface requires the exact match of parameter count, except optional parameters. 
-		/// So, if you want to support variable arguments, declare them as optional and pass
-		/// them to this method.
-		/// </summary>
-		protected static object[] LuaVarArgs(params object[] luaArgs)
-		{
-			int n = luaArgs.Length;
-			int trim = 0;
-			for (int i = n - 1; i >= 0; --i)
-			{
-				if (luaArgs[i] == null)
-				{
-					++trim;
-				}
-			}
-
-			var luaResult = new object[n - trim];
-			Array.Copy(luaArgs, luaResult, n - trim);
-			return luaResult;
-		}
 	}
 }

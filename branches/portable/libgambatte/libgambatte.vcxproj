@@ -93,7 +93,6 @@
     <ClInclude Include="src\common\uncopyable.h" />
     <ClInclude Include="src\counterdef.h" />
     <ClInclude Include="src\cpu.h" />
-    <ClInclude Include="src\file\file.h" />
     <ClInclude Include="src\file\stdfile.h" />
     <ClInclude Include="src\initstate.h" />
     <ClInclude Include="src\insertion_sort.h" />
@@ -104,7 +103,6 @@
     <ClInclude Include="src\mem\memptrs.h" />
     <ClInclude Include="src\mem\rtc.h" />
     <ClInclude Include="src\minkeeper.h" />
-    <ClInclude Include="src\osd_element.h" />
     <ClInclude Include="src\savestate.h" />
     <ClInclude Include="src\sound.h" />
     <ClInclude Include="src\sound\channel1.h" />
@@ -118,7 +116,6 @@
     <ClInclude Include="src\sound\sound_unit.h" />
     <ClInclude Include="src\sound\static_output_tester.h" />
     <ClInclude Include="src\statesaver.h" />
-    <ClInclude Include="src\state_osd_elements.h" />
     <ClInclude Include="src\tima.h" />
     <ClInclude Include="src\video.h" />
     <ClInclude Include="src\video\lyc_irq.h" />
@@ -131,7 +128,6 @@
     <ClCompile Include="src\bitmap_font.cpp" />
     <ClCompile Include="src\cinterface.cpp" />
     <ClCompile Include="src\cpu.cpp" />
-    <ClCompile Include="src\file\file.cpp" />
     <ClCompile Include="src\gambatte.cpp" />
     <ClCompile Include="src\initstate.cpp" />
     <ClCompile Include="src\interrupter.cpp" />
@@ -149,7 +145,6 @@
     <ClCompile Include="src\sound\envelope_unit.cpp" />
     <ClCompile Include="src\sound\length_counter.cpp" />
     <ClCompile Include="src\statesaver.cpp" />
-    <ClCompile Include="src\state_osd_elements.cpp" />
     <ClCompile Include="src\tima.cpp" />
     <ClCompile Include="src\video.cpp" />
     <ClCompile Include="src\video\lyc_irq.cpp" />

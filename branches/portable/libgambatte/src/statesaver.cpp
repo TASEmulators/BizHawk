@@ -410,9 +410,7 @@ static SaverList list;
 
 namespace gambatte {
 
-bool StateSaver::saveState(const SaveState &state,
-		const uint_least32_t *const videoBuf,
-		const int pitch, std::ostream &file) {
+bool StateSaver::saveState(const SaveState &state, std::ostream &file) {
 	//std::ostream file(filename.c_str(), std::ios_base::binary);
 	
 	if (file.fail())
