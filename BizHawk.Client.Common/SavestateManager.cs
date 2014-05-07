@@ -18,8 +18,14 @@ namespace BizHawk.Client.Common
 				Global.MovieSession.HandleMovieSaveState(writer);
 				if (Global.Config.SaveScreenshotWithStates)
 				{
-					writer.Write("Framebuffer ");
-					Global.Emulator.VideoProvider.GetVideoBuffer().SaveAsHex(writer);
+					var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
+
+					// If user wants large screenshots, or screenshot is small enough
+					if (Global.Config.SaveLargeScreenshotWithStates || buff.Length < Global.Config.BigScreenshotSize)
+					{
+						writer.Write("Framebuffer ");
+						buff.SaveAsHex(writer);
+					}
 				}
 
 				writer.Close();
@@ -39,7 +45,12 @@ namespace BizHawk.Client.Common
 					if (Global.Config.SaveScreenshotWithStates)
 					{
 						var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
-						bs.PutLump(BinaryStateLump.Framebuffer, (BinaryWriter bw) => bw.Write(buff));
+
+						// If user wants large screenshots, or screenshot is small enough
+						if (Global.Config.SaveLargeScreenshotWithStates || buff.Length < Global.Config.BigScreenshotSize)
+						{
+							bs.PutLump(BinaryStateLump.Framebuffer, (BinaryWriter bw) => bw.Write(buff));
+						}
 					}
 
 					if (Global.MovieSession.Movie.IsActive)
