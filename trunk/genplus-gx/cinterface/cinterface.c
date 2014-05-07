@@ -523,14 +523,14 @@ typedef struct
 {
 	unsigned int value;
 	const char *name;
-} register_t;
+} gpregister_t;
 
 GPGX_EX int gpgx_getmaxnumregs(void)
 {
 	return 57;
 }
 
-GPGX_EX int gpgx_getregs(register_t *regs)
+GPGX_EX int gpgx_getregs(gpregister_t *regs)
 {
 	int ret = 0;
 
