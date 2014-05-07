@@ -176,7 +176,16 @@ void Nes_Ppu_Rendering::draw_background_( int remain )
 		byte const* nametable2 = get_nametable( addr ^ 0x400 );
 		int count2 = addr & 31;
 		int count = 32 - count2 - left_clip;
-		if ( pixel_x )
+
+		// this conditional is commented out because of mmc2\4
+		// normally, the extra row of pixels is only fetched when pixel_ x is not 0, which makes sense
+		// but here, we need a correct fetch pattern to pick up 0xfd\0xfe tiles off the edge of the display
+		
+		// this doesn't cause any problems with buffer overflow because the framebuffer we're rendering to is
+		// already guarded (width = 272)
+		// this doesn't give us a fully correct ppu fetch pattern, but it's close enough for punch out
+
+		//if ( pixel_x )
 			count2++;
 		
 		byte const* attr_table = &nametable [0x3c0 | (addr >> 4 & 0x38)];

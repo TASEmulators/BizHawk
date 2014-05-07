@@ -44,7 +44,7 @@ public:
 	enum { vaddr_clock_mask = 0x1000 };
 	void set_nt_banks( int bank0, int bank1, int bank2, int bank3 );
 	void set_chr_bank( int addr, int size, long data );
-	void set_chr_bank_ex( int addr, int size, long data );
+	void set_chr_bank_ex( int addr, int size, long data ); // mmc24 only
 	
 	// Nametable and CHR RAM
 	enum { nt_ram_size = 0x1000 };
@@ -103,13 +103,16 @@ private:
 	// Mapping
 	enum { chr_page_size = 0x400 };
 	long chr_pages [chr_addr_size / chr_page_size];
-	long chr_pages_ex [chr_addr_size / chr_page_size];
+	long chr_pages_ex [chr_addr_size / chr_page_size]; // mmc24 only
 	long map_chr_addr( unsigned a ) /*const*/
 	{
 		if (!mmc24_enabled)
 			return chr_pages [a / chr_page_size] + a;
 
+		// mmc24 calculations
+
 		int page = a >> 12 & 1;
+		// can't check against bit 3 of address, because quicknes never actually fetches those
 		int newval0 = (a & 0xff0) != 0xfd0;
 		int newval1 = (a & 0xff0) == 0xfe0;
 
@@ -126,8 +129,8 @@ private:
 	}
 	byte* nt_banks [4];
 	
-	bool mmc24_enabled;
-	byte mmc24_latched [2];
+	bool mmc24_enabled; // true if mmc24 regs need to be latched and checked
+	byte mmc24_latched [2]; // current latch value for the first\second 4k of memory
 
 	// CHR data
 	byte const* chr_data; // points to chr ram when there is no read-only data
