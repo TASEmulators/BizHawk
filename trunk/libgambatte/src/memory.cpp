@@ -1033,7 +1033,6 @@ int Memory::loadROM(const char *romfiledata, unsigned romfilelength, const bool 
 
 	sound.init(cart.isCgb());
 	display.reset(ioamhram, cart.vramdata(), cart.isCgb());
-	interrupter.setGameShark(std::string());
 
 	return 0;
 }

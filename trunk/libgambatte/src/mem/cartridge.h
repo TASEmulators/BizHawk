@@ -38,17 +38,9 @@ public:
 };
 
 class Cartridge {
-	struct AddrData {
-		unsigned long addr;
-		unsigned char data;
-		AddrData(unsigned long addr, unsigned data) : addr(addr), data(data) {}
-	};
-	
 	MemPtrs memptrs;
 	Rtc rtc;
 	std::auto_ptr<Mbc> mbc;
-	
-	void applyGameGenie(const std::string &code);
 	
 public:
 	void setStatePtrs(SaveState &);
