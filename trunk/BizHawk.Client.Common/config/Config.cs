@@ -62,7 +62,7 @@ namespace BizHawk.Client.Common
 		public int TargetDisplayFilter = 0;
 		public int DispFinalFilter = 0;
 		public string DispUserFilterPath = "";
-		public RecentFiles RecentRoms = new RecentFiles(8);
+		public RecentFiles RecentRoms = new RecentFiles(10);
 		public bool PauseWhenMenuActivated = true;
 		public bool SaveWindowPosition = true;
 		public bool StartPaused = false;
