@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common
 			MAX_RECENT_FILES = max;
 		}
 
-		public int MAX_RECENT_FILES { get; private set; }
+		public int MAX_RECENT_FILES { get; set; }
 		public bool AutoLoad { get; set; }
 
 		[JsonIgnore]
