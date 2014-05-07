@@ -135,6 +135,9 @@
     <ClCompile Include="..\bizinterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\nes_emu\Mmc24.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\nes_emu\abstract_file.h">
@@ -256,6 +259,9 @@
     </ClInclude>
     <ClInclude Include="..\fex\Data_Reader.h">
       <Filter>Header Files\fex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Mmc24.h">
+      <Filter>Header Files\nes_emu</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

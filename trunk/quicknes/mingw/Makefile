@@ -38,6 +38,7 @@ SRCS = \
 	../nes_emu/Nes_State.cpp \
 	../nes_emu/nes_util.cpp \
 	../nes_emu/Nes_Vrc6_Apu.cpp \
+	../nes_emu/Mmc24.cpp \
 	../bizinterface.cpp \
 	../fex/Data_Reader.cpp \
 	../fex/blargg_errors.cpp \
