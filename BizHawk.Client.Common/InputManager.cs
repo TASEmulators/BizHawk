@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static void SyncControls() // Move to client.comon
+		public static void SyncControls()
 		{
 			var def = Global.Emulator.ControllerDefinition;
 
