@@ -22,8 +22,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		private class FPCtrl : IDisposable
 		{
+			#if WINDOWS
 			[DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
 			public static extern uint _control87(uint @new, uint mask);
+			#else
+			public static uint _control87(uint val, uint mask){
+				return 0; //Not needed, we don't have FP problems on *nix/osx
+			}
+			#endif
 
 			public static void PrintCurrentFP()
 			{
