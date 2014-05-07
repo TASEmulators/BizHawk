@@ -33,6 +33,10 @@ Nes_Ppu_Impl::Nes_Ppu_Impl()
 	max_palette_size = 0;
 	tile_cache_mem = NULL;
 	ppu_state_t::unused = 0;
+
+	mmc24_enabled = false;
+	mmc24_latched[0] = 0;
+	mmc24_latched[1] = 0;
 	
 	#ifndef NDEBUG
 		// verify that unaligned accesses work
@@ -121,6 +125,29 @@ void Nes_Ppu_Impl::set_chr_bank( int addr, int size, long data )
 	while ( count-- )
 	{
 		chr_pages [page] = data - page * chr_page_size;
+		page++;
+		data += chr_page_size;
+	}
+}
+
+void Nes_Ppu_Impl::set_chr_bank_ex( int addr, int size, long data )
+{
+	mmc24_enabled = true;
+
+	check( !chr_is_writable || addr == data ); // to do: is CHR RAM ever bank-switched?
+	//dprintf( "Tried to set CHR RAM bank at %04X to CHR+%04X\n", addr, data );
+	
+	if ( data + size > chr_size )
+		data %= chr_size;
+	
+	int count = (unsigned) size / chr_page_size;
+	assert( chr_page_size * count == size );
+	assert( addr + size <= chr_addr_size );
+	
+	int page = (unsigned) addr / chr_page_size;
+	while ( count-- )
+	{
+		chr_pages_ex [page] = data - page * chr_page_size;
 		page++;
 		data += chr_page_size;
 	}

@@ -226,7 +226,7 @@ inline void Nes_Ppu::invalidate_sprite_max( nes_time_t t )
 
 // Sprite 0 hit
 
-inline int Nes_Ppu_Impl::first_opaque_sprite_line() const
+inline int Nes_Ppu_Impl::first_opaque_sprite_line() /*const*/
 {
 	// advance earliest time if sprite has blank lines at beginning
 	byte const* p = map_chr( sprite_tile_index( spr_ram ) * 16 );

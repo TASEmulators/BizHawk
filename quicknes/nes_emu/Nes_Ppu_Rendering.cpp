@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 // Nes_Ppu_Impl
 
 inline Nes_Ppu_Impl::cached_tile_t const&
-		Nes_Ppu_Impl::get_sprite_tile( byte const* sprite ) const
+		Nes_Ppu_Impl::get_sprite_tile( byte const* sprite ) /*const*/
 {
 	cached_tile_t* tiles = tile_cache;
 	if ( sprite [2] & 0x40 )
@@ -45,7 +45,7 @@ inline Nes_Ppu_Impl::cached_tile_t const&
 			((byte*) tiles + map_chr_addr( index * bytes_per_tile ));
 }
 
-inline Nes_Ppu_Impl::cached_tile_t const& Nes_Ppu_Impl::get_bg_tile( int index ) const
+inline Nes_Ppu_Impl::cached_tile_t const& Nes_Ppu_Impl::get_bg_tile( int index ) /*const*/
 {
 	// use index directly, since cached tile is same size as native tile
 	BOOST_STATIC_ASSERT( sizeof (cached_tile_t) == bytes_per_tile );

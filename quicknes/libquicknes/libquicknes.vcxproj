@@ -24,6 +24,7 @@
     <ClCompile Include="..\nes_emu\Mapper_Namco106.cpp" />
     <ClCompile Include="..\nes_emu\Mapper_Vrc6.cpp" />
     <ClCompile Include="..\nes_emu\misc_mappers.cpp" />
+    <ClCompile Include="..\nes_emu\Mmc24.cpp" />
     <ClCompile Include="..\nes_emu\Multi_Buffer.cpp" />
     <ClCompile Include="..\nes_emu\Nes_Apu.cpp" />
     <ClCompile Include="..\nes_emu\Nes_Buffer.cpp" />
@@ -64,6 +65,7 @@
     <ClInclude Include="..\nes_emu\Blip_Buffer.h" />
     <ClInclude Include="..\nes_emu\Blip_Synth.h" />
     <ClInclude Include="..\nes_emu\Effects_Buffer.h" />
+    <ClInclude Include="..\nes_emu\Mmc24.h" />
     <ClInclude Include="..\nes_emu\Multi_Buffer.h" />
     <ClInclude Include="..\nes_emu\Nes_Apu.h" />
     <ClInclude Include="..\nes_emu\Nes_Buffer.h" />
