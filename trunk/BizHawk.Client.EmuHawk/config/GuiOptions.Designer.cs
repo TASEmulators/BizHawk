@@ -85,6 +85,9 @@
 			this.label19 = new System.Windows.Forms.Label();
 			this.DecreaseRecentBtn = new System.Windows.Forms.Button();
 			this.IncreaseRecentBtn = new System.Windows.Forms.Button();
+			this.SaveLargeScreenshotsCheckbox = new System.Windows.Forms.CheckBox();
+			this.BigScreenshotNumeric = new System.Windows.Forms.NumericUpDown();
+			this.KbLabel = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage3.SuspendLayout();
@@ -99,6 +102,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.RecentWatchesNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.RecentLuaSessionsNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.RecentLuaScriptNumeric)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.BigScreenshotNumeric)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// OkBtn
@@ -289,6 +293,9 @@
 			// 
 			// tabPage3
 			// 
+			this.tabPage3.Controls.Add(this.KbLabel);
+			this.tabPage3.Controls.Add(this.BigScreenshotNumeric);
+			this.tabPage3.Controls.Add(this.SaveLargeScreenshotsCheckbox);
 			this.tabPage3.Controls.Add(this.label12);
 			this.tabPage3.Controls.Add(this.label13);
 			this.tabPage3.Controls.Add(this.FrameAdvSkipLagCheckbox);
@@ -313,7 +320,7 @@
 			// label12
 			// 
 			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(24, 283);
+			this.label12.Location = new System.Drawing.Point(24, 295);
 			this.label12.Name = "label12";
 			this.label12.Size = new System.Drawing.Size(231, 13);
 			this.label12.TabIndex = 14;
@@ -322,7 +329,7 @@
 			// label13
 			// 
 			this.label13.AutoSize = true;
-			this.label13.Location = new System.Drawing.Point(24, 270);
+			this.label13.Location = new System.Drawing.Point(24, 282);
 			this.label13.Name = "label13";
 			this.label13.Size = new System.Drawing.Size(268, 13);
 			this.label13.TabIndex = 13;
@@ -331,7 +338,7 @@
 			// FrameAdvSkipLagCheckbox
 			// 
 			this.FrameAdvSkipLagCheckbox.AutoSize = true;
-			this.FrameAdvSkipLagCheckbox.Location = new System.Drawing.Point(6, 250);
+			this.FrameAdvSkipLagCheckbox.Location = new System.Drawing.Point(6, 262);
 			this.FrameAdvSkipLagCheckbox.Name = "FrameAdvSkipLagCheckbox";
 			this.FrameAdvSkipLagCheckbox.Size = new System.Drawing.Size(241, 17);
 			this.FrameAdvSkipLagCheckbox.TabIndex = 12;
@@ -341,7 +348,7 @@
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(24, 224);
+			this.label9.Location = new System.Drawing.Point(24, 236);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(99, 13);
 			this.label9.TabIndex = 11;
@@ -350,7 +357,7 @@
 			// label10
 			// 
 			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(24, 211);
+			this.label10.Location = new System.Drawing.Point(24, 223);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(277, 13);
 			this.label10.TabIndex = 10;
@@ -359,7 +366,7 @@
 			// BackupSRamCheckbox
 			// 
 			this.BackupSRamCheckbox.AutoSize = true;
-			this.BackupSRamCheckbox.Location = new System.Drawing.Point(4, 195);
+			this.BackupSRamCheckbox.Location = new System.Drawing.Point(4, 207);
 			this.BackupSRamCheckbox.Name = "BackupSRamCheckbox";
 			this.BackupSRamCheckbox.Size = new System.Drawing.Size(108, 17);
 			this.BackupSRamCheckbox.TabIndex = 9;
@@ -369,7 +376,7 @@
 			// label8
 			// 
 			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(24, 167);
+			this.label8.Location = new System.Drawing.Point(24, 186);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(183, 13);
 			this.label8.TabIndex = 8;
@@ -378,7 +385,7 @@
 			// label7
 			// 
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(24, 153);
+			this.label7.Location = new System.Drawing.Point(24, 172);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(290, 13);
 			this.label7.TabIndex = 7;
@@ -393,6 +400,7 @@
 			this.ScreenshotInStatesCheckbox.TabIndex = 6;
 			this.ScreenshotInStatesCheckbox.Text = "Save a screenshot in savestates";
 			this.ScreenshotInStatesCheckbox.UseVisualStyleBackColor = true;
+			this.ScreenshotInStatesCheckbox.CheckedChanged += new System.EventHandler(this.ScreenshotInStatesCheckbox_CheckedChanged);
 			// 
 			// label6
 			// 
@@ -795,6 +803,47 @@
 			this.IncreaseRecentBtn.UseVisualStyleBackColor = true;
 			this.IncreaseRecentBtn.Click += new System.EventHandler(this.IncreaseRecentBtn_Click);
 			// 
+			// SaveLargeScreenshotsCheckbox
+			// 
+			this.SaveLargeScreenshotsCheckbox.AutoSize = true;
+			this.SaveLargeScreenshotsCheckbox.Location = new System.Drawing.Point(27, 153);
+			this.SaveLargeScreenshotsCheckbox.Name = "SaveLargeScreenshotsCheckbox";
+			this.SaveLargeScreenshotsCheckbox.Size = new System.Drawing.Size(131, 17);
+			this.SaveLargeScreenshotsCheckbox.TabIndex = 15;
+			this.SaveLargeScreenshotsCheckbox.Text = "And large screenshots";
+			this.SaveLargeScreenshotsCheckbox.UseVisualStyleBackColor = true;
+			// 
+			// BigScreenshotNumeric
+			// 
+			this.BigScreenshotNumeric.Location = new System.Drawing.Point(155, 151);
+			this.BigScreenshotNumeric.Maximum = new decimal(new int[] {
+            8192,
+            0,
+            0,
+            0});
+			this.BigScreenshotNumeric.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.BigScreenshotNumeric.Name = "BigScreenshotNumeric";
+			this.BigScreenshotNumeric.Size = new System.Drawing.Size(58, 20);
+			this.BigScreenshotNumeric.TabIndex = 16;
+			this.BigScreenshotNumeric.Value = new decimal(new int[] {
+            128,
+            0,
+            0,
+            0});
+			// 
+			// KbLabel
+			// 
+			this.KbLabel.AutoSize = true;
+			this.KbLabel.Location = new System.Drawing.Point(213, 155);
+			this.KbLabel.Name = "KbLabel";
+			this.KbLabel.Size = new System.Drawing.Size(19, 13);
+			this.KbLabel.TabIndex = 17;
+			this.KbLabel.Text = "kb";
+			// 
 			// EmuHawkOptions
 			// 
 			this.AcceptButton = this.OkBtn;
@@ -826,6 +875,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.RecentWatchesNumeric)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.RecentLuaSessionsNumeric)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.RecentLuaScriptNumeric)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.BigScreenshotNumeric)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -888,5 +938,8 @@
 		private System.Windows.Forms.Label label19;
 		private System.Windows.Forms.Button IncreaseRecentBtn;
 		private System.Windows.Forms.Button DecreaseRecentBtn;
+		private System.Windows.Forms.CheckBox SaveLargeScreenshotsCheckbox;
+		private System.Windows.Forms.NumericUpDown BigScreenshotNumeric;
+		private System.Windows.Forms.Label KbLabel;
 	}
 }
