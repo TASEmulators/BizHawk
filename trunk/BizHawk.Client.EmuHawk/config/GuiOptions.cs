@@ -13,8 +13,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class EmuHawkOptions : Form
 	{
-		// TODO: make sure these options are cleaned out of the mainform context menu
-		// TODO: put this in the context menu
 		public EmuHawkOptions()
 		{
 			InitializeComponent();

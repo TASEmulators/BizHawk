@@ -353,6 +353,7 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.customizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -2880,6 +2881,7 @@
             this.toolStripMenuItem13,
             this.toolStripMenuItem14,
             this.toolStripMenuItem15,
+            this.customizeToolStripMenuItem,
             this.toolStripSeparator30,
             this.SavestateTypeContextSubMenu,
             this.CoreSelectionContextSubMenu,
@@ -3084,6 +3086,13 @@
 			this.ShowMenuContextMenuItem.Size = new System.Drawing.Size(216, 22);
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
+			// 
+			// customizeToolStripMenuItem
+			// 
+			this.customizeToolStripMenuItem.Name = "customizeToolStripMenuItem";
+			this.customizeToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+			this.customizeToolStripMenuItem.Text = "Customize...";
+			this.customizeToolStripMenuItem.Click += new System.EventHandler(this.guiOptionsToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -3449,6 +3458,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
 		private System.Windows.Forms.ToolStripMenuItem N64VideoPluginSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ClientOptionsMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem customizeToolStripMenuItem;
 	}
 }
 
