@@ -221,16 +221,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		void AppendLuaLayer(FilterManager.FilterProgram chain, string name)
+		Filters.LuaLayer AppendLuaLayer(FilterManager.FilterProgram chain, string name)
 		{
 			Texture2d luaNativeTexture = null;
 			var luaNativeSurface = LuaSurfaceSets[name].GetCurrent();
 			if (luaNativeSurface == null)
-				return;
+				return null;
 			luaNativeTexture = LuaSurfaceFrugalizers[name].Get(luaNativeSurface);
 			var fLuaLayer = new Filters.LuaLayer();
 			fLuaLayer.SetTexture(luaNativeTexture);
 			chain.AddFilter(fLuaLayer, name);
+			return fLuaLayer;
 		}
 
 		/// <summary>
@@ -304,7 +305,7 @@ TESTEROO:
 			currEmuHeight = bufferHeight;
 
 			//build the default filter chain and set it up with services filters will need
-			Size chain_insize = new Size(vw, vh);
+			Size chain_insize = new Size(bufferWidth, bufferHeight);
 			Size chain_outsize = GraphicsControl.Size;
 			CurrentFilterProgram = BuildDefaultChain(chain_insize, chain_outsize);
 			CurrentFilterProgram.GuiRenderer = Renderer;
@@ -317,6 +318,7 @@ TESTEROO:
 			
 			//setup the final presentation filter
 			Filters.FinalPresentation fPresent = CurrentFilterProgram["presentation"] as Filters.FinalPresentation;
+			fPresent.VirtualTextureSize = new Size(vw, vh);
 			fPresent.TextureSize = new Size(bufferWidth, bufferHeight);
 			fPresent.BackgroundColor = videoProvider.BackgroundColor;
 			fPresent.GuiRenderer = Renderer;
