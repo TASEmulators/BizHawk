@@ -1,5 +1,6 @@
 ﻿using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.N64;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
@@ -44,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 		};
 
-		public N64Input(mupen64plusApi core, CoreComm comm)
+		public N64Input(mupen64plusApi core, CoreComm comm, N64ControllerSettings[] controllerSettings)
 		{
 			api = new mupen64plusInputApi(core);
 			CoreComm = comm;
@@ -52,6 +53,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			api.SetM64PInputCallback(new mupen64plusInputApi.InputCallback(GetControllerInput));
 
 			core.VInterrupt += ShiftInputPolledBools;
+			for (int i = 0; i < controllerSettings.Length; ++i)
+			{
+				SetControllerConnected(i, controllerSettings[i].IsConnected);
+				SetControllerPakType(i, controllerSettings[i].PakType);
+			}
 		}
 
 		public void ShiftInputPolledBools()
@@ -115,6 +121,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			if (Controller["P" + num + " L"]) buttons |= (1 << 13);
 
 			return buttons;
+		}
+
+		/// <summary>
+		/// Sets the controller pak of the controller to the specified type
+		/// </summary>
+		/// <param name="controller">Id of the controller</param>
+		/// <param name="type">Type to which the controller pak is set. Currently only NO_PAK and MEMORY_CARD are supported</param>
+		public void SetControllerPakType(int controller, N64ControllerSettings.N64ControllerPakType type)
+		{
+			api.SetM64PControllerPakType(controller, type);
+		}
+
+		/// <summary>
+		/// Sets the connection status of the controller
+		/// </summary>
+		/// <param name="controller">Id of the controller to connect or disconnect</param>
+		/// <param name="connectionStatus">New status of the controller connection</param>
+		public void SetControllerConnected(int controller, bool connectionStatus)
+		{
+			api.SetM64PControllerConnected(controller, connectionStatus);
 		}
 	}
 }

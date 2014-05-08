@@ -432,7 +432,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			// Order is important because the register with the mupen core
 			videoProvider = new N64VideoProvider(api, videosettings);
 			audioProvider = new N64Audio(api);
-			inputProvider = new N64Input(api, comm);
+			inputProvider = new N64Input(api, comm, this.SyncSettings.Controllers);
 			api.AttachPlugin(mupen64plusApi.m64p_plugin_type.M64PLUGIN_RSP,
 				"mupen64plus-rsp-hle.dll");
 

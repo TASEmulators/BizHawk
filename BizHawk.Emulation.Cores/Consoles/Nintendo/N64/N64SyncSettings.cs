@@ -10,6 +10,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N64
 		public PLUGINTYPE VidPlugin = PLUGINTYPE.RICE;
 		public int VideoSizeX = 320;
 		public int VideoSizeY = 240;
+		public N64ControllerSettings[] Controllers = new N64ControllerSettings[4]
+		{
+			new N64ControllerSettings(),
+			new N64ControllerSettings(),
+			new N64ControllerSettings(),
+			new N64ControllerSettings()
+		};
 
 		public N64RicePluginSettings RicePlugin = new N64RicePluginSettings();
 		public N64GlidePluginSettings GlidePlugin = new N64GlidePluginSettings();
@@ -24,7 +31,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N64
 				VideoSizeY = VideoSizeY,
 				RicePlugin = RicePlugin.Clone(),
 				GlidePlugin = GlidePlugin.Clone(),
-				Glide64mk2Plugin = Glide64mk2Plugin.Clone()
+				Glide64mk2Plugin = Glide64mk2Plugin.Clone(),
+				Controllers = System.Array.ConvertAll(Controllers, a => a.Clone())
 			};
 		}
 
@@ -420,4 +428,59 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N64
 		}
 	}
 
+	public class N64ControllerSettings
+	{
+		/// <summary>
+		/// Enumeration defining the different controller pak types
+		/// for N64
+		/// </summary>
+		public enum N64ControllerPakType
+		{
+			NO_PAK = 1,
+			MEMORY_CARD = 2,
+			RUMBLE_PAK = 3,
+			TRANSFER_PAK = 4
+		}
+
+		private N64ControllerPakType _type = N64ControllerPakType.MEMORY_CARD;
+		/// <summary>
+		/// Type of the pak inserted in the controller
+		/// Currently only NO_PAK and MEMORY_CARD are
+		/// supported. Other values may be set and
+		/// are recognized but they have no function
+		/// yet. e.g. TRANSFER_PAK makes the N64
+		/// recognize a transfer pak inserted in
+		/// the controller but there is no
+		/// communication to the transfer pak.
+		/// </summary>
+		public N64ControllerPakType PakType
+		{
+			get { return _type; }
+			set { _type = value; }
+		}
+
+		private bool _isConnected = true;
+		/// <summary>
+		/// Connection status of the controller i.e.:
+		/// Is the controller plugged into the N64?
+		/// </summary>
+		public bool IsConnected
+		{
+			get { return _isConnected; }
+			set { _isConnected = value; }
+		}
+
+		/// <summary>
+		/// Clones this object
+		/// </summary>
+		/// <returns>New object with the same values</returns>
+		public N64ControllerSettings Clone()
+		{
+			return new N64ControllerSettings
+			{
+				PakType = PakType,
+				IsConnected = IsConnected
+			};
+		}
+	}
 }
