@@ -423,13 +423,16 @@ namespace BizHawk.Client.Common
 
 					if (nextEmulator == null)
 					{
-						ThrowLoadError("No core could load the rom.", "NULL");
+						ThrowLoadError("No core could load the rom.", null);
 						return false;
 					}
 				}
 				catch (Exception ex)
 				{
-					ThrowLoadError("Exception during loadgame:\n\n" + ex, "NULL");
+					string system = null;
+					if (game != null)
+						system = game.System;
+					ThrowLoadError("A core accepted the rom, but throw an exception while loading it:\n\n" + ex, system);
 					return false;
 				}
 

@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.DiscSystem
 			return args.Select(s => s.Contains(" ") ? string.Format("\"{0}\"", s) : s).ToArray();
 		}
 
-		static readonly Regex rxHasAudio = new Regex(@"Stream \#(\d*\.\d*)\: Audio", RegexOptions.Compiled);
+		static readonly Regex rxHasAudio = new Regex(@"Stream \#(\d*\:\d*)\: Audio", RegexOptions.Compiled);
 		public AudioQueryResult QueryAudio(string path)
 		{
 			var ret = new AudioQueryResult();
@@ -66,7 +66,8 @@ namespace BizHawk.Emulation.DiscSystem
 				};
 
 			Process proc = Process.Start(oInfo);
-			string result = proc.StandardError.ReadToEnd();
+			string result = proc.StandardOutput.ReadToEnd();
+			result += proc.StandardError.ReadToEnd();
 			proc.WaitForExit();
 
 			return result;
