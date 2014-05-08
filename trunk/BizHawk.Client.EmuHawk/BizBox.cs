@@ -29,8 +29,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				Text = "Version " + VersionInfo.MAINVERSION;
+				Text = "Version " + VersionInfo.MAINVERSION + " (SVN " + SubWCRev.SVN_REV + ")";
 			}
+
 			VersionLabel.Text = "Version " + VersionInfo.MAINVERSION + " " + VersionInfo.RELEASEDATE;
 		}
 
