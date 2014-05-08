@@ -2911,7 +2911,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ShowLoadError(object sender, RomLoader.RomErrorArgs e)
 		{
-			MessageBox.Show(this, e.Message, e.AttemptedCoreLoad + " load warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			string title = "load error";
+			if (e.AttemptedCoreLoad != null)
+				title = e.AttemptedCoreLoad + " load error";
+
+			MessageBox.Show(this, e.Message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 
 		private void NotifyCoreComm(string message)
