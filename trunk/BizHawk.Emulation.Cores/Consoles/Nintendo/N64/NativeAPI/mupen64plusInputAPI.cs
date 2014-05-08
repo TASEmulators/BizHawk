@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 using BizHawk.Emulation.Cores.Nintendo.N64;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.N64;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 {
@@ -44,6 +45,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		RumbleCallback m64pRumbleCallback;
 
 		/// <summary>
+		/// Sets the controller pak type
+		/// </summary>
+		/// <param name="controller">Controller id</param>
+		/// <param name="type">Type id according to (well documented... hurr hurr) mupen api</param>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void SetControllerPakType(int controller, int type);
+		SetControllerPakType InpSetControllerPakType;
+
+		/// <summary>
+		/// Connects and disconnects controllers
+		/// </summary>
+		/// <param name="controller">Controller id</param>
+		/// <param name="connected">1 if controller should be connected, 0 if controller should be disconnected</param>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void SetControllerConnected(int controller, int connected);
+		SetControllerConnected InpSetControllerConnected;
+
+		/// <summary>
 		/// Event fired when mupen changes rumble pak status
 		/// </summary>
 		event RumbleCallback OnRumbleChange;
@@ -56,6 +75,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			mupen64plusApi.m64p_error result;
 			InpSetInputCallback = (SetInputCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "SetInputCallback"), typeof(SetInputCallback));
 			InpSetRumbleCallback = (SetRumbleCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "SetRumbleCallback"), typeof(SetRumbleCallback));
+			InpSetControllerPakType = (SetControllerPakType)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "SetControllerPakType"), typeof(SetControllerPakType));
+			InpSetControllerConnected = (SetControllerConnected)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "SetControllerConnected"), typeof(SetControllerConnected));
 
 			m64pRumbleCallback = new RumbleCallback(FireOnRumbleChange);
 			result = InpSetRumbleCallback(m64pRumbleCallback);
@@ -67,10 +88,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			InpSetInputCallback(InpInputCallback);
 		}
 
-		void FireOnRumbleChange(int Control, int on)
+		private void FireOnRumbleChange(int Control, int on)
 		{
 			if (OnRumbleChange != null)
 				OnRumbleChange(Control, on);
+		}
+
+		public void SetM64PControllerPakType(int controller, N64ControllerSettings.N64ControllerPakType type)
+		{
+			InpSetControllerPakType(controller, (int)type);
+		}
+
+		public void SetM64PControllerConnected(int controller, bool connected)
+		{
+			InpSetControllerConnected(controller, connected?1:0);
 		}
 	}
 }
