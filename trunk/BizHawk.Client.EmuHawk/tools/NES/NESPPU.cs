@@ -273,6 +273,9 @@ namespace BizHawk.Client.EmuHawk
 
 				SpriteView.sprites.UnlockBits(bmpdata2);
 				SpriteView.Refresh();
+
+				HandleSpriteViewMouseMove(SpriteView.PointToClient(Control.MousePosition));
+				HandlePaletteViewMouseMove(PaletteView.PointToClient(Control.MousePosition));
 			}
 		}
 
@@ -599,9 +602,19 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ClearDetails();
 		}
-
+		
 		private void SpriteView_MouseMove(object sender, MouseEventArgs e)
 		{
+			HandleSpriteViewMouseMove(e.Location);
+		}
+
+		private void HandleSpriteViewMouseMove(Point e)
+		{
+			if (e.X < SpriteView.ClientRectangle.Left) return;
+			if (e.Y < SpriteView.ClientRectangle.Top) return;
+			if (e.X >= SpriteView.ClientRectangle.Right) return;
+			if (e.Y >= SpriteView.ClientRectangle.Bottom) return;
+
 			bool is8x16 = _nes.ppu.reg_2000.obj_size_16;
 			var spriteNumber = ((e.Y / 24) * 16) + (e.X / 16);
 			int x = _nes.ppu.OAM[(spriteNumber * 4) + 3];
@@ -671,13 +684,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PaletteView_MouseMove(object sender, MouseEventArgs e)
 		{
+			HandlePaletteViewMouseMove(e.Location);
+		}
+
+		private void HandlePaletteViewMouseMove(Point e)
+		{
+			if (e.X < PaletteView.ClientRectangle.Left) return;
+			if (e.Y < PaletteView.ClientRectangle.Top) return;
+			if (e.X >= PaletteView.ClientRectangle.Right) return;
+			if (e.Y >= PaletteView.ClientRectangle.Bottom) return;
+
 			int baseAddr = 0x3F00;
 			if (e.Y > 16)
 			{
 				baseAddr += 16;
 			}
 
-			int column = (e.X - PaletteView.Location.X) / 16;
+			int column = e.X / 16;
 			int addr = column + baseAddr;
 			AddressLabel.Text = "Address: 0x" + string.Format("{0:X4}", addr);
 			int val;
