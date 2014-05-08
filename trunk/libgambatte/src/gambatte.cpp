@@ -24,27 +24,19 @@
 #include <sstream>
 #include <cstring>
 
-static const std::string itos(const int i) {
-	std::stringstream ss;
-	ss << i;
-	return ss.str();
-}
-
 namespace gambatte {
 struct GB::Priv {
 	CPU cpu;
 	bool gbaCgbMode;
 
-	gambatte::uint_least32_t *vbuff;
+	uint_least32_t vbuff[160*144];
 	
-	Priv() : gbaCgbMode(false), vbuff(0)
+	Priv() : gbaCgbMode(false)
 	{
-		vbuff = new gambatte::uint_least32_t[160*144];
 	}
 
 	~Priv()
 	{
-		delete[] vbuff;
 	}
 };
 	
