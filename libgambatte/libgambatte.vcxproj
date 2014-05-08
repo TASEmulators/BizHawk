@@ -87,7 +87,6 @@
     <ClInclude Include="include\gambatte.h" />
     <ClInclude Include="include\gbint.h" />
     <ClInclude Include="include\inputgetter.h" />
-    <ClInclude Include="src\bitmap_font.h" />
     <ClInclude Include="src\cinterface.h" />
     <ClInclude Include="src\common\array.h" />
     <ClInclude Include="src\common\uncopyable.h" />
@@ -125,7 +124,6 @@
     <ClInclude Include="src\video\sprite_mapper.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\bitmap_font.cpp" />
     <ClCompile Include="src\cinterface.cpp" />
     <ClCompile Include="src\cpu.cpp" />
     <ClCompile Include="src\gambatte.cpp" />

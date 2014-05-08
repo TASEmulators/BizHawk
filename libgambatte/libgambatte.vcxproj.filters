@@ -87,9 +87,6 @@
     <ClInclude Include="src\tima.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\bitmap_font.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\gbint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -174,9 +171,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\video\next_m0_time.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\bitmap_font.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\sound\channel1.cpp">
