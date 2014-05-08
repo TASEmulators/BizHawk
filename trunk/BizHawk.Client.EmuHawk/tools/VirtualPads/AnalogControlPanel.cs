@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			Refresh();
 		}
 
-		public static int Max;
-		public static int Min;
+		public static int Max = 127;
+		public static int Min = -127;
 	}
 }
