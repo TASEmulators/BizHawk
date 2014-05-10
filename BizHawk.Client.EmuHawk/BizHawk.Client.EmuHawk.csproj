@@ -299,6 +299,18 @@
     <Compile Include="config\MessageConfig.Designer.cs">
       <DependentUpon>MessageConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\N64\N64ControllerSettingControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="config\N64\N64ControllerSettingControl.Designer.cs">
+      <DependentUpon>N64ControllerSettingControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\N64\N64ControllersSetup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\N64\N64ControllersSetup.Designer.cs">
+      <DependentUpon>N64ControllersSetup.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\N64\N64VideoPluginconfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1017,6 +1029,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\InputCompositeWidget.resx">
       <DependentUpon>InputCompositeWidget.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\N64\N64ControllerSettingControl.resx">
+      <DependentUpon>N64ControllerSettingControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\N64\N64ControllersSetup.resx">
+      <DependentUpon>N64ControllersSetup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\N64\N64VideoPluginconfig.resx">
       <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>

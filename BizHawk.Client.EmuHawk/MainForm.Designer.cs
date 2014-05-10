@@ -337,6 +337,7 @@
 			this.toolStripMenuItem13 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem14 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem15 = new System.Windows.Forms.ToolStripMenuItem();
+			this.customizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator30 = new System.Windows.Forms.ToolStripSeparator();
 			this.SavestateTypeContextSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SavestateTypeDefaultContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -353,7 +354,7 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.customizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.controllerSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -385,7 +386,7 @@
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.MainformMenu.Location = new System.Drawing.Point(0, 0);
 			this.MainformMenu.Name = "MainformMenu";
-			this.MainformMenu.Size = new System.Drawing.Size(470, 42);
+			this.MainformMenu.Size = new System.Drawing.Size(470, 61);
 			this.MainformMenu.TabIndex = 0;
 			this.MainformMenu.Text = "menuStrip1";
 			this.MainformMenu.MenuActivate += new System.EventHandler(this.MainformMenu_MenuActivate);
@@ -2402,7 +2403,8 @@
 			// N64SubMenu
 			// 
 			this.N64SubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.N64PluginSettingsMenuItem});
+            this.N64PluginSettingsMenuItem,
+            this.controllerSettingsToolStripMenuItem});
 			this.N64SubMenu.Name = "N64SubMenu";
 			this.N64SubMenu.Size = new System.Drawing.Size(40, 19);
 			this.N64SubMenu.Text = "N64";
@@ -2411,8 +2413,8 @@
 			// 
 			this.N64PluginSettingsMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("N64PluginSettingsMenuItem.Image")));
 			this.N64PluginSettingsMenuItem.Name = "N64PluginSettingsMenuItem";
-			this.N64PluginSettingsMenuItem.Size = new System.Drawing.Size(186, 22);
-			this.N64PluginSettingsMenuItem.Text = "Video Plugin Settings";
+			this.N64PluginSettingsMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.N64PluginSettingsMenuItem.Text = "Video Plugin Settings...";
 			this.N64PluginSettingsMenuItem.Click += new System.EventHandler(this.N64PluginSettingsMenuItem_Click);
 			// 
 			// SaturnSubMenu
@@ -2970,6 +2972,13 @@
 			this.toolStripMenuItem15.Text = "File Extensions...";
 			this.toolStripMenuItem15.Click += new System.EventHandler(this.extensionsToolStripMenuItem_Click);
 			// 
+			// customizeToolStripMenuItem
+			// 
+			this.customizeToolStripMenuItem.Name = "customizeToolStripMenuItem";
+			this.customizeToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+			this.customizeToolStripMenuItem.Text = "Customize...";
+			this.customizeToolStripMenuItem.Click += new System.EventHandler(this.guiOptionsToolStripMenuItem_Click);
+			// 
 			// toolStripSeparator30
 			// 
 			this.toolStripSeparator30.Name = "toolStripSeparator30";
@@ -3087,12 +3096,13 @@
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
 			// 
-			// customizeToolStripMenuItem
+			// controllerSettingsToolStripMenuItem
 			// 
-			this.customizeToolStripMenuItem.Name = "customizeToolStripMenuItem";
-			this.customizeToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
-			this.customizeToolStripMenuItem.Text = "Customize...";
-			this.customizeToolStripMenuItem.Click += new System.EventHandler(this.guiOptionsToolStripMenuItem_Click);
+			this.controllerSettingsToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
+			this.controllerSettingsToolStripMenuItem.Name = "controllerSettingsToolStripMenuItem";
+			this.controllerSettingsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.controllerSettingsToolStripMenuItem.Text = "Controller Settings...";
+			this.controllerSettingsToolStripMenuItem.Click += new System.EventHandler(this.ControllerSettingsMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -3459,6 +3469,7 @@
 		private System.Windows.Forms.ToolStripMenuItem N64VideoPluginSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ClientOptionsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem customizeToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem controllerSettingsToolStripMenuItem;
 	}
 }
 
