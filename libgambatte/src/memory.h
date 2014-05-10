@@ -196,8 +196,7 @@ public:
 
 	int LinkStatus(int which);
 
-	void SaveS(NewState *ns);
-	void LoadS(NewState *ns);
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 }

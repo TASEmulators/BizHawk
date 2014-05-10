@@ -2872,7 +2872,7 @@ void CPU::GetRegs(int *dest)
 	dest[9] = L;
 }
 
-void CPU::SaveS(NewState *ns)
+SYNCFUNC(CPU)
 {
 	SSS(memory);
 	NSS(cycleCounter_);
@@ -2891,26 +2891,5 @@ void CPU::SaveS(NewState *ns)
 	NSS(L);
 	NSS(skip);
 }
-
-void CPU::LoadS(NewState *ns)
-{
-	SSL(memory);
-	NSL(cycleCounter_);
-	NSL(PC_);
-	NSL(SP);
-	NSL(HF1);
-	NSL(HF2);
-	NSL(ZF);
-	NSL(CF);
-	NSL(A_);
-	NSL(B);
-	NSL(C);
-	NSL(D);
-	NSL(E);
-	NSL(H);
-	NSL(L);
-	NSL(skip);
-}
-
 
 }

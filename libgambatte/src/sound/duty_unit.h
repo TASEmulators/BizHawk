@@ -56,8 +56,7 @@ public:
 	unsigned getFreq() const { return 2048 - (period >> 1); }
 	void setFreq(unsigned newFreq, unsigned long cc);
 
-	void SaveS(NewState *ns);
-	void LoadS(NewState *ns);
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 class DutyMasterDisabler : public MasterDisabler {

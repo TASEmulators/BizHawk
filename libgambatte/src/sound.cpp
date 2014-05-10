@@ -180,7 +180,7 @@ unsigned PSG::getStatus() const {
 }
 
 // the buffer and position are not saved, as they're set and flushed on each runfor() call
-void PSG::SaveS(NewState *ns)
+SYNCFUNC(PSG)
 {
 	SSS(ch1);
 	SSS(ch2);
@@ -190,18 +190,6 @@ void PSG::SaveS(NewState *ns)
 	NSS(soVol);
 	NSS(rsum);
 	NSS(enabled);
-}
-
-void PSG::LoadS(NewState *ns)
-{
-	SSL(ch1);
-	SSL(ch2);
-	SSL(ch3);
-	SSL(ch4);
-	NSL(lastUpdate);
-	NSL(soVol);
-	NSL(rsum);
-	NSL(enabled);
 }
 
 }

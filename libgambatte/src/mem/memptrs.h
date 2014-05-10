@@ -41,7 +41,9 @@ class MemPtrs {
 	
 	OamDmaSrc oamDmaSrc_;
 
-	unsigned memchunk_len;
+	int memchunk_len;
+	int memchunk_saveoffs;
+	int memchunk_savelen;
 
 	MemPtrs(const MemPtrs &);
 	MemPtrs & operator=(const MemPtrs &);
@@ -79,8 +81,7 @@ public:
 	void setWrambank(unsigned bank);
 	void setOamDmaSrc(OamDmaSrc oamDmaSrc);
 
-	void SaveS(NewState *ns);
-	void LoadS(NewState *ns);
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 inline bool isCgb(const MemPtrs &memptrs) {

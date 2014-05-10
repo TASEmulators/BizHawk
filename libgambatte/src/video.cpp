@@ -744,7 +744,7 @@ void LCD::setDmgPaletteColor(const unsigned palNum, const unsigned colorNum, con
 
 // don't need to save or load rgb32 color data
 
-void LCD::SaveS(NewState *ns)
+SYNCFUNC(LCD)
 {
 	SSS(ppu);
 	NSS(bgpData);
@@ -757,21 +757,6 @@ void LCD::SaveS(NewState *ns)
 	NSS(statReg);
 	NSS(m2IrqStatReg_);
 	NSS(m1IrqStatReg_);
-}
-
-void LCD::LoadS(NewState *ns)
-{
-	SSL(ppu);
-	NSL(bgpData);
-	NSL(objpData);
-	SSL(eventTimes_);
-	SSL(m0Irq_);
-	SSL(lycIrq);
-	SSL(nextM0Time_);
-
-	NSL(statReg);
-	NSL(m2IrqStatReg_);
-	NSL(m1IrqStatReg_);
 }
 
 }

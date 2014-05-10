@@ -99,7 +99,7 @@ void LycIrq::lcdReset() {
 	lycReg_ = lycRegSrc_;
 }
 
-void LycIrq::SaveS(NewState *ns)
+SYNCFUNC(LycIrq)
 {
 	NSS(time_);
 	NSS(lycRegSrc_);
@@ -107,16 +107,6 @@ void LycIrq::SaveS(NewState *ns)
 	NSS(lycReg_);
 	NSS(statReg_);
 	NSS(cgb_);
-}
-
-void LycIrq::LoadS(NewState *ns)
-{
-	NSL(time_);
-	NSL(lycRegSrc_);
-	NSL(statRegSrc_);
-	NSL(lycReg_);
-	NSL(statReg_);
-	NSL(cgb_);
 }
 
 }

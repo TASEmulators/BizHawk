@@ -1745,7 +1745,7 @@ void PPU::update(const unsigned long cc) {
 	}
 }
 
-void PPU::SaveS(NewState *ns)
+SYNCFUNC(PPU)
 {
 	NSS(p_.bgPalette);
 	NSS(p_.spPalette);
@@ -1809,72 +1809,6 @@ void PPU::SaveS(NewState *ns)
 
 	NSS(p_.cgb);
 	NSS(p_.weMaster);
-}
-
-void PPU::LoadS(NewState *ns)
-{
-	NSL(p_.bgPalette);
-	NSL(p_.spPalette);
-	NSL(p_.spriteList);
-	NSL(p_.spwordList);
-	NSL(p_.nextSprite);
-	NSL(p_.currentSprite);
-
-	EBL(p_.nextCallPtr, 0);
-	EVL(p_.nextCallPtr, &M2::Ly0::f0_, 1);
-	EVL(p_.nextCallPtr, &M2::LyNon0::f0_, 2);
-	EVL(p_.nextCallPtr, &M2::LyNon0::f1_, 3);
-	EVL(p_.nextCallPtr, &M3Start::f0_, 4);
-	EVL(p_.nextCallPtr, &M3Start::f1_, 5);
-	EVL(p_.nextCallPtr, &M3Loop::Tile::f0_, 6);
-	EVL(p_.nextCallPtr, &M3Loop::Tile::f1_, 7);
-	EVL(p_.nextCallPtr, &M3Loop::Tile::f2_, 8);
-	EVL(p_.nextCallPtr, &M3Loop::Tile::f3_, 9);
-	EVL(p_.nextCallPtr, &M3Loop::Tile::f4_, 10);
-	EVL(p_.nextCallPtr, &M3Loop::Tile::f5_, 11);
-	EVL(p_.nextCallPtr, &M3Loop::LoadSprites::f0_, 12);
-	EVL(p_.nextCallPtr, &M3Loop::LoadSprites::f1_, 13);
-	EVL(p_.nextCallPtr, &M3Loop::LoadSprites::f2_, 14);
-	EVL(p_.nextCallPtr, &M3Loop::LoadSprites::f3_, 15);
-	EVL(p_.nextCallPtr, &M3Loop::LoadSprites::f4_, 16);
-	EVL(p_.nextCallPtr, &M3Loop::LoadSprites::f5_, 17);
-	EVL(p_.nextCallPtr, &M3Loop::StartWindowDraw::f0_, 18);
-	EVL(p_.nextCallPtr, &M3Loop::StartWindowDraw::f1_, 19);
-	EVL(p_.nextCallPtr, &M3Loop::StartWindowDraw::f2_, 20);
-	EVL(p_.nextCallPtr, &M3Loop::StartWindowDraw::f3_, 21);
-	EVL(p_.nextCallPtr, &M3Loop::StartWindowDraw::f4_, 22);
-	EVL(p_.nextCallPtr, &M3Loop::StartWindowDraw::f5_, 23);
-	EEL(p_.nextCallPtr, NULL);
-
-	NSL(p_.now);
-	NSL(p_.lastM0Time);
-	NSL(p_.cycles);
-
-	NSL(p_.tileword);
-	NSL(p_.ntileword);
-
-	SSL(p_.spriteMapper);
-	SSL(p_.lyCounter);
-	//SSL(p_.framebuf); // no state
-
-	NSL(p_.lcdc);
-	NSL(p_.scy);
-	NSL(p_.scx);
-	NSL(p_.wy);
-	NSL(p_.wy2);
-	NSL(p_.wx);
-	NSL(p_.winDrawState);
-	NSL(p_.wscx);
-	NSL(p_.winYPos);
-	NSL(p_.reg0);
-	NSL(p_.reg1);
-	NSL(p_.attrib);
-	NSL(p_.nattrib);
-	NSL(p_.xpos);
-	NSL(p_.endx);
-
-	NSL(p_.cgb);
-	NSL(p_.weMaster);
 }
 
 }

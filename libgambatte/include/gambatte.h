@@ -130,8 +130,7 @@ public:
 
 	void GetRegs(int *dest);
 
-	void SaveS(NewState *ns);
-	void LoadS(NewState *ns);
+	template<bool isReader>void SyncState(NewState *ns);
 
 private:
 	struct Priv;

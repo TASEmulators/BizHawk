@@ -104,20 +104,13 @@ void Channel1::SweepUnit::loadState(const SaveState &state) {
 	negging = state.spu.ch1.sweep.negging;
 }
 
-void Channel1::SweepUnit::SaveS(NewState *ns)
+template<bool isReader>
+void Channel1::SweepUnit::SyncState(NewState *ns)
 {
 	NSS(counter);
 	NSS(shadow);
 	NSS(nr0);
 	NSS(negging);
-}
-
-void Channel1::SweepUnit::LoadS(NewState *ns)
-{
-	NSL(counter);
-	NSL(shadow);
-	NSL(nr0);
-	NSL(negging);
 }
 
 Channel1::Channel1() :
@@ -275,7 +268,7 @@ void Channel1::update(uint_least32_t *buf, const unsigned long soBaseVol, unsign
 	}
 }
 
-void Channel1::SaveS(NewState *ns)
+SYNCFUNC(Channel1)
 {
 	SSS(lengthCounter);
 	SSS(dutyUnit);
@@ -295,28 +288,6 @@ void Channel1::SaveS(NewState *ns)
 
 	NSS(nr4);
 	NSS(master);
-}
-
-void Channel1::LoadS(NewState *ns)
-{
-	SSL(lengthCounter);
-	SSL(dutyUnit);
-	SSL(envelopeUnit);
-	SSL(sweepUnit);
-
-	EBL(nextEventUnit, 0);
-	EVL(nextEventUnit, &dutyUnit, 1);
-	EVL(nextEventUnit, &sweepUnit, 2);
-	EVL(nextEventUnit, &envelopeUnit, 3);
-	EVL(nextEventUnit, &lengthCounter, 4);
-	EEL(nextEventUnit, NULL);
-
-	NSL(cycleCounter);
-	NSL(soMask);
-	NSL(prevOut);
-
-	NSL(nr4);
-	NSL(master);
 }
 
 }

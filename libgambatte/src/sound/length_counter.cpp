@@ -88,18 +88,11 @@ void LengthCounter::loadState(const SaveState::SPU::LCounter &lstate, const unsi
 	lengthCounter = lstate.lengthCounter;
 }
 
-void LengthCounter::SaveS(NewState *ns)
+SYNCFUNC(LengthCounter)
 {
 	NSS(counter);
 	NSS(lengthCounter);
 	NSS(cgb);
-}
-
-void LengthCounter::LoadS(NewState *ns)
-{
-	NSL(counter);
-	NSL(lengthCounter);
-	NSL(cgb);
 }
 
 }

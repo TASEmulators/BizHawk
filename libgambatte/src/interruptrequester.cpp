@@ -100,22 +100,13 @@ void InterruptRequester::setIfreg(const unsigned ifreg) {
 		eventTimes.setValue<INTERRUPTS>(pendingIrqs() ? minIntTime : static_cast<unsigned long>(DISABLED_TIME));
 }
 
-void InterruptRequester::SaveS(NewState *ns)
+SYNCFUNC(InterruptRequester)
 {
 	SSS(eventTimes);
 	NSS(minIntTime);
 	NSS(ifreg_);
 	NSS(iereg_);
 	NSS(intFlags.flags_);
-}
-
-void InterruptRequester::LoadS(NewState *ns)
-{
-	SSL(eventTimes);
-	NSL(minIntTime);
-	NSL(ifreg_);
-	NSL(iereg_);
-	NSL(intFlags.flags_);
 }
 
 }

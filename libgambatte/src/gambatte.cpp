@@ -245,18 +245,11 @@ void GB::GetRegs(int *dest) {
 	p_->cpu.GetRegs(dest);
 }
 
-void GB::SaveS(NewState *ns)
+SYNCFUNC(GB)
 {
 	SSS(p_->cpu);
 	NSS(p_->gbaCgbMode);
 	NSS(p_->vbuff);
-}
-
-void GB::LoadS(NewState *ns)
-{
-	SSL(p_->cpu);
-	NSL(p_->gbaCgbMode);
-	NSL(p_->vbuff);
 }
 
 }

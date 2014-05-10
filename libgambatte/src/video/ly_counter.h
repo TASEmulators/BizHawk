@@ -52,8 +52,7 @@ public:
 	void setDoubleSpeed(bool ds_in);
 	unsigned long time() const { return time_; }
 
-	void SaveS(NewState *ns);
-	void LoadS(NewState *ns);
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 }
