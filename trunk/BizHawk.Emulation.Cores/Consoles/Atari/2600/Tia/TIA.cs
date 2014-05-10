@@ -115,9 +115,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			get
 			{
-				if (false)
-					return _core.Settings.PALBottomLine - _core.Settings.PALTopLine;
-				else
+				// TODO PAL support
+				//if (false)
+				//	return _core.Settings.PALBottomLine - _core.Settings.PALTopLine;
+				//else
 					return _core.Settings.NTSCBottomLine - _core.Settings.NTSCTopLine;
 			}
 		}
