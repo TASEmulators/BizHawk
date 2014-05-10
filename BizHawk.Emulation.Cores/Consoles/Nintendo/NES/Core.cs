@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		byte[] ram;
 		NESWatch[] sysbus_watch = new NESWatch[65536];
 		public byte[] CIRAM; //AKA nametables
-		string game_name; //friendly name exposed to user and used as filename base
+		string game_name = string.Empty; //friendly name exposed to user and used as filename base
 		CartInfo cart; //the current cart prototype. should be moved into the board, perhaps
 		INESBoard board; //the board hardware that is currently driving things
 		EDetectionOrigin origin = EDetectionOrigin.None;
