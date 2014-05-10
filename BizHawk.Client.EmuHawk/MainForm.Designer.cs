@@ -1328,14 +1328,14 @@
 			this.extensionsToolStripMenuItem.Name = "extensionsToolStripMenuItem";
 			this.extensionsToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
 			this.extensionsToolStripMenuItem.Text = "File Extensions...";
-			this.extensionsToolStripMenuItem.Click += new System.EventHandler(this.extensionsToolStripMenuItem_Click);
+			this.extensionsToolStripMenuItem.Click += new System.EventHandler(this.FileExtensionsMenuItem_Click);
 			// 
 			// ClientOptionsMenuItem
 			// 
 			this.ClientOptionsMenuItem.Name = "ClientOptionsMenuItem";
 			this.ClientOptionsMenuItem.Size = new System.Drawing.Size(159, 22);
 			this.ClientOptionsMenuItem.Text = "&Customize...";
-			this.ClientOptionsMenuItem.Click += new System.EventHandler(this.guiOptionsToolStripMenuItem_Click);
+			this.ClientOptionsMenuItem.Click += new System.EventHandler(this.CustomizeMenuItem_Click);
 			// 
 			// toolStripSeparator9
 			// 
@@ -1602,7 +1602,7 @@
 			this.CoresSubMenu.Name = "CoresSubMenu";
 			this.CoresSubMenu.Size = new System.Drawing.Size(159, 22);
 			this.CoresSubMenu.Text = "Cores";
-			this.CoresSubMenu.DropDownOpened += new System.EventHandler(this.CoreSelectionMenuItem_DropDownOpened);
+			this.CoresSubMenu.DropDownOpened += new System.EventHandler(this.CoresSubMenu_DropDownOpened);
 			// 
 			// GBInSGBMenuItem
 			// 
@@ -1894,14 +1894,14 @@
 			this.PCEtileViewerToolStripMenuItem.Name = "PCEtileViewerToolStripMenuItem";
 			this.PCEtileViewerToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
 			this.PCEtileViewerToolStripMenuItem.Text = "&Tile Viewer";
-			this.PCEtileViewerToolStripMenuItem.Click += new System.EventHandler(this.PCEtileViewerToolStripMenuItem_Click);
+			this.PCEtileViewerToolStripMenuItem.Click += new System.EventHandler(this.PceTileViewerMenuItem_Click);
 			// 
 			// codeDataLoggerToolStripMenuItem
 			// 
 			this.codeDataLoggerToolStripMenuItem.Name = "codeDataLoggerToolStripMenuItem";
 			this.codeDataLoggerToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
 			this.codeDataLoggerToolStripMenuItem.Text = "Code-Data Logger";
-			this.codeDataLoggerToolStripMenuItem.Click += new System.EventHandler(this.codeDataLoggerToolStripMenuItem_Click);
+			this.codeDataLoggerToolStripMenuItem.Click += new System.EventHandler(this.CodeDataLoggerMenuItem_Click);
 			// 
 			// toolStripSeparator25
 			// 
@@ -2106,7 +2106,7 @@
 			this.SMSVDPViewerToolStripMenuItem.Name = "SMSVDPViewerToolStripMenuItem";
 			this.SMSVDPViewerToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
 			this.SMSVDPViewerToolStripMenuItem.Text = "&VDP Viewer";
-			this.SMSVDPViewerToolStripMenuItem.Click += new System.EventHandler(this.SMSVDPViewerToolStripMenuItem_Click);
+			this.SMSVDPViewerToolStripMenuItem.Click += new System.EventHandler(this.SmsVdpViewerMenuItem_Click);
 			// 
 			// TI83SubMenu
 			// 
@@ -2471,7 +2471,7 @@
 			this.vDPViewerToolStripMenuItem.Name = "vDPViewerToolStripMenuItem";
 			this.vDPViewerToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
 			this.vDPViewerToolStripMenuItem.Text = "&VDP Viewer";
-			this.vDPViewerToolStripMenuItem.Click += new System.EventHandler(this.vDPViewerToolStripMenuItem_Click);
+			this.vDPViewerToolStripMenuItem.Click += new System.EventHandler(this.GenVdpViewerMenuItem_Click);
 			// 
 			// toolStripSeparator26
 			// 
@@ -2483,7 +2483,7 @@
 			this.GenesisSettingsToolStripMenuItem.Name = "GenesisSettingsToolStripMenuItem";
 			this.GenesisSettingsToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
 			this.GenesisSettingsToolStripMenuItem.Text = "&Settings...";
-			this.GenesisSettingsToolStripMenuItem.Click += new System.EventHandler(this.GenesisSettingsToolStripMenuItem_Click);
+			this.GenesisSettingsToolStripMenuItem.Click += new System.EventHandler(this.GenesisSettingsMenuItem_Click);
 			// 
 			// HelpSubMenu
 			// 
@@ -2979,14 +2979,14 @@
 			this.toolStripMenuItem15.Name = "toolStripMenuItem15";
 			this.toolStripMenuItem15.Size = new System.Drawing.Size(159, 22);
 			this.toolStripMenuItem15.Text = "File Extensions...";
-			this.toolStripMenuItem15.Click += new System.EventHandler(this.extensionsToolStripMenuItem_Click);
+			this.toolStripMenuItem15.Click += new System.EventHandler(this.FileExtensionsMenuItem_Click);
 			// 
 			// customizeToolStripMenuItem
 			// 
 			this.customizeToolStripMenuItem.Name = "customizeToolStripMenuItem";
 			this.customizeToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
 			this.customizeToolStripMenuItem.Text = "Customize...";
-			this.customizeToolStripMenuItem.Click += new System.EventHandler(this.guiOptionsToolStripMenuItem_Click);
+			this.customizeToolStripMenuItem.Click += new System.EventHandler(this.CustomizeMenuItem_Click);
 			// 
 			// toolStripSeparator30
 			// 
