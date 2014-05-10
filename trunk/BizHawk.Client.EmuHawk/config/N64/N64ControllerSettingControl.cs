@@ -49,7 +49,10 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
-				EnabledCheckbox.Checked = value;
+				EnabledCheckbox.Checked = 
+					PakTypeDropdown.Enabled =
+					value;
+
 				Refresh();
 			}
 		}
