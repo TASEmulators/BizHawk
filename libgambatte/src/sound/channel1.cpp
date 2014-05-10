@@ -104,6 +104,22 @@ void Channel1::SweepUnit::loadState(const SaveState &state) {
 	negging = state.spu.ch1.sweep.negging;
 }
 
+void Channel1::SweepUnit::SaveS(NewState *ns)
+{
+	NSS(counter);
+	NSS(shadow);
+	NSS(nr0);
+	NSS(negging);
+}
+
+void Channel1::SweepUnit::LoadS(NewState *ns)
+{
+	NSL(counter);
+	NSL(shadow);
+	NSL(nr0);
+	NSL(negging);
+}
+
 Channel1::Channel1() :
 	staticOutputTest(*this, dutyUnit),
 	disableMaster(master, dutyUnit),
@@ -257,6 +273,50 @@ void Channel1::update(uint_least32_t *buf, const unsigned long soBaseVol, unsign
 		
 		cycleCounter -= SoundUnit::COUNTER_MAX;
 	}
+}
+
+void Channel1::SaveS(NewState *ns)
+{
+	SSS(lengthCounter);
+	SSS(dutyUnit);
+	SSS(envelopeUnit);
+	SSS(sweepUnit);
+
+	EBS(nextEventUnit, 0);
+	EVS(nextEventUnit, &dutyUnit, 1);
+	EVS(nextEventUnit, &sweepUnit, 2);
+	EVS(nextEventUnit, &envelopeUnit, 3);
+	EVS(nextEventUnit, &lengthCounter, 4);
+	EES(nextEventUnit, NULL);
+
+	NSS(cycleCounter);
+	NSS(soMask);
+	NSS(prevOut);
+
+	NSS(nr4);
+	NSS(master);
+}
+
+void Channel1::LoadS(NewState *ns)
+{
+	SSL(lengthCounter);
+	SSL(dutyUnit);
+	SSL(envelopeUnit);
+	SSL(sweepUnit);
+
+	EBL(nextEventUnit, 0);
+	EVL(nextEventUnit, &dutyUnit, 1);
+	EVL(nextEventUnit, &sweepUnit, 2);
+	EVL(nextEventUnit, &envelopeUnit, 3);
+	EVL(nextEventUnit, &lengthCounter, 4);
+	EEL(nextEventUnit, NULL);
+
+	NSL(cycleCounter);
+	NSL(soMask);
+	NSL(prevOut);
+
+	NSL(nr4);
+	NSL(master);
 }
 
 }

@@ -117,6 +117,28 @@ void SpriteMapper::OamReader::loadState(const SaveState &ss, const unsigned char
 	change(lu);
 }
 
+void SpriteMapper::OamReader::SaveS(NewState *ns)
+{
+	NSS(buf);
+	NSS(szbuf);
+
+	NSS(lu);
+	NSS(lastChange);
+	NSS(largeSpritesSrc);
+	NSS(cgb_);
+}
+
+void SpriteMapper::OamReader::LoadS(NewState *ns)
+{
+	NSL(buf);
+	NSL(szbuf);
+
+	NSL(lu);
+	NSL(lastChange);
+	NSL(largeSpritesSrc);
+	NSL(cgb_);
+}
+
 void SpriteMapper::OamReader::enableDisplay(const unsigned long cc) {
 	std::memset(buf, 0x00, sizeof(buf));
 	std::fill(szbuf, szbuf + 40, false);
@@ -177,6 +199,24 @@ unsigned long SpriteMapper::doEvent(const unsigned long time) {
 	oamReader.update(time);
 	mapSprites();
 	return oamReader.changed() ? time + oamReader.lyCounter.lineTime() : static_cast<unsigned long>(DISABLED_TIME);
+}
+
+void SpriteMapper::SaveS(NewState *ns)
+{
+	NSS(spritemap);
+	NSS(num);
+	
+	SSS(nextM0Time_);
+	SSS(oamReader);
+}
+
+void SpriteMapper::LoadS(NewState *ns)
+{
+	NSL(spritemap);
+	NSL(num);
+	
+	SSL(nextM0Time_);
+	SSL(oamReader);
 }
 
 }

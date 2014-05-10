@@ -60,6 +60,9 @@ public:
 	unsigned tima(unsigned long cc);
 	
 	void doIrqEvent(TimaInterruptRequester timaIrq);
+
+	void SaveS(NewState *ns);
+	void LoadS(NewState *ns);
 };
 
 }

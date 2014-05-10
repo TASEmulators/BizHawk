@@ -24,6 +24,7 @@
 #include "sound.h"
 #include "interrupter.h"
 #include "tima.h"
+#include "newstate.h"
 
 namespace gambatte {
 class InputGetter;
@@ -194,6 +195,9 @@ public:
 	void setCgbPalette(unsigned *lut);
 
 	int LinkStatus(int which);
+
+	void SaveS(NewState *ns);
+	void LoadS(NewState *ns);
 };
 
 }

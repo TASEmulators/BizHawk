@@ -2872,4 +2872,45 @@ void CPU::GetRegs(int *dest)
 	dest[9] = L;
 }
 
+void CPU::SaveS(NewState *ns)
+{
+	SSS(memory);
+	NSS(cycleCounter_);
+	NSS(PC_);
+	NSS(SP);
+	NSS(HF1);
+	NSS(HF2);
+	NSS(ZF);
+	NSS(CF);
+	NSS(A_);
+	NSS(B);
+	NSS(C);
+	NSS(D);
+	NSS(E);
+	NSS(H);
+	NSS(L);
+	NSS(skip);
+}
+
+void CPU::LoadS(NewState *ns)
+{
+	SSL(memory);
+	NSL(cycleCounter_);
+	NSL(PC_);
+	NSL(SP);
+	NSL(HF1);
+	NSL(HF2);
+	NSL(ZF);
+	NSL(CF);
+	NSL(A_);
+	NSL(B);
+	NSL(C);
+	NSL(D);
+	NSL(E);
+	NSL(H);
+	NSL(L);
+	NSL(skip);
+}
+
+
 }

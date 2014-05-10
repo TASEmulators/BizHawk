@@ -120,13 +120,16 @@
     <ClInclude Include="src\video\sprite_mapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\sound\static_output_tester.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\common\uncopyable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\insertion_sort.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\newstate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sound\static_output_tester.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -207,6 +210,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\tima.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\newstate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -24,7 +24,8 @@ namespace gambatte {
 
 MemPtrs::MemPtrs()
 : rmem_(), wmem_(), romdata_(), wramdata_(), vrambankptr_(0), rsrambankptr_(0),
-  wsrambankptr_(0), memchunk_(0), rambankdata_(0), wramdataend_(0), oamDmaSrc_(OAM_DMA_SRC_OFF)
+  wsrambankptr_(0), memchunk_(0), rambankdata_(0), wramdataend_(0), oamDmaSrc_(OAM_DMA_SRC_OFF),
+  memchunk_len(0)
 {
 }
 
@@ -34,7 +35,8 @@ MemPtrs::~MemPtrs() {
 
 void MemPtrs::reset(const unsigned rombanks, const unsigned rambanks, const unsigned wrambanks) {
 	delete []memchunk_;
-	memchunk_ = new unsigned char[0x4000 + rombanks * 0x4000ul + 0x4000 + rambanks * 0x2000ul + wrambanks * 0x1000ul + 0x4000];
+	memchunk_len = 0x4000 + rombanks * 0x4000ul + 0x4000 + rambanks * 0x2000ul + wrambanks * 0x1000ul + 0x4000;
+	memchunk_ = new unsigned char[memchunk_len];
 
 	romdata_[0] = romdata();
 	rambankdata_ = romdata_[0] + rombanks * 0x4000ul + 0x4000;
@@ -134,6 +136,119 @@ void MemPtrs::disconnectOamDmaAreas() {
 			break;
 		}
 	}
+}
+
+// all pointers here are relative to memchunk_
+#define MSS(a) RSS(a,memchunk_)
+#define MSL(a) RSL(a,memchunk_)
+
+void MemPtrs::SaveS(NewState *ns)
+{
+	MSS(rmem_[0x0]);
+	MSS(wmem_[0x0]);
+	MSS(rmem_[0x1]);
+	MSS(wmem_[0x1]);
+	MSS(rmem_[0x2]);
+	MSS(wmem_[0x2]);
+	MSS(rmem_[0x3]);
+	MSS(wmem_[0x3]);
+	MSS(rmem_[0x4]);
+	MSS(wmem_[0x4]);
+	MSS(rmem_[0x5]);
+	MSS(wmem_[0x5]);
+	MSS(rmem_[0x6]);
+	MSS(wmem_[0x6]);
+	MSS(rmem_[0x7]);
+	MSS(wmem_[0x7]);
+	MSS(rmem_[0x8]);
+	MSS(wmem_[0x8]);
+	MSS(rmem_[0x9]);
+	MSS(wmem_[0x9]);
+	MSS(rmem_[0xa]);
+	MSS(wmem_[0xa]);
+	MSS(rmem_[0xb]);
+	MSS(wmem_[0xb]);
+	MSS(rmem_[0xc]);
+	MSS(wmem_[0xc]);
+	MSS(rmem_[0xd]);
+	MSS(wmem_[0xd]);
+	MSS(rmem_[0xe]);
+	MSS(wmem_[0xe]);
+	MSS(rmem_[0xf]);
+	MSS(wmem_[0xf]);
+	//for (int i = 0; i < 0x10; i++)
+	//{
+	//	MSS(rmem_[i]);
+	//	MSS(wmem_[i]);
+	//}
+	MSS(romdata_[0]);
+	MSS(romdata_[1]);
+	MSS(wramdata_[0]);
+	MSS(wramdata_[1]);
+	MSS(vrambankptr_);
+	MSS(rsrambankptr_);
+	MSS(wsrambankptr_);
+	NSS(memchunk_len);
+	PSS(memchunk_, memchunk_len);
+	MSS(rambankdata_);
+	MSS(wramdataend_);
+	NSS(oamDmaSrc_);
+}
+
+void MemPtrs::LoadS(NewState *ns)
+{
+	MSL(rmem_[0x0]);
+	MSL(wmem_[0x0]);
+	MSL(rmem_[0x1]);
+	MSL(wmem_[0x1]);
+	MSL(rmem_[0x2]);
+	MSL(wmem_[0x2]);
+	MSL(rmem_[0x3]);
+	MSL(wmem_[0x3]);
+	MSL(rmem_[0x4]);
+	MSL(wmem_[0x4]);
+	MSL(rmem_[0x5]);
+	MSL(wmem_[0x5]);
+	MSL(rmem_[0x6]);
+	MSL(wmem_[0x6]);
+	MSL(rmem_[0x7]);
+	MSL(wmem_[0x7]);
+	MSL(rmem_[0x8]);
+	MSL(wmem_[0x8]);
+	MSL(rmem_[0x9]);
+	MSL(wmem_[0x9]);
+	MSL(rmem_[0xa]);
+	MSL(wmem_[0xa]);
+	MSL(rmem_[0xb]);
+	MSL(wmem_[0xb]);
+	MSL(rmem_[0xc]);
+	MSL(wmem_[0xc]);
+	MSL(rmem_[0xd]);
+	MSL(wmem_[0xd]);
+	MSL(rmem_[0xe]);
+	MSL(wmem_[0xe]);
+	MSL(rmem_[0xf]);
+	MSL(wmem_[0xf]);
+	//for (int i = 0; i < 0x10; i++)
+	//{
+	//	MSL(rmem_[i]);
+	//	MSL(wmem_[i]);
+	//}
+	MSL(romdata_[0]);
+	MSL(romdata_[1]);
+	MSL(wramdata_[0]);
+	MSL(wramdata_[1]);
+	MSL(vrambankptr_);
+	MSL(rsrambankptr_);
+	MSL(wsrambankptr_);
+	unsigned tmp = memchunk_len;
+	NSL(memchunk_len);
+	if (tmp != memchunk_len) // how graceful could we be here?  not sure
+		__debugbreak();
+	PSL(memchunk_, memchunk_len);
+	MSL(rambankdata_);
+	MSL(wramdataend_);
+	NSL(oamDmaSrc_);
 }
 
 }

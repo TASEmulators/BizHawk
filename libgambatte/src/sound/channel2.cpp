@@ -162,4 +162,45 @@ void Channel2::update(uint_least32_t *buf, const unsigned long soBaseVol, unsign
 	}
 }
 
+void Channel2::SaveS(NewState *ns)
+{
+	SSS(lengthCounter);
+	SSS(dutyUnit);
+	SSS(envelopeUnit);
+
+	EBS(nextEventUnit, 0);
+	EVS(nextEventUnit, &dutyUnit, 1);
+	EVS(nextEventUnit, &envelopeUnit, 2);
+	EVS(nextEventUnit, &lengthCounter, 3);
+	EES(nextEventUnit, NULL);
+
+	NSS(cycleCounter);
+	NSS(soMask);
+	NSS(prevOut);
+
+	NSS(nr4);
+	NSS(master);
+}
+
+void Channel2::LoadS(NewState *ns)
+{
+	SSL(lengthCounter);
+	SSL(dutyUnit);
+	SSL(envelopeUnit);
+
+	EBL(nextEventUnit, 0);
+	EVL(nextEventUnit, &dutyUnit, 1);
+	EVL(nextEventUnit, &envelopeUnit, 2);
+	EVL(nextEventUnit, &lengthCounter, 3);
+	EEL(nextEventUnit, NULL);
+
+	NSL(cycleCounter);
+	NSL(soMask);
+	NSL(prevOut);
+
+	NSL(nr4);
+	NSL(master);
+}
+
+
 }

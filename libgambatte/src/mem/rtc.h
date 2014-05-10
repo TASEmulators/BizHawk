@@ -20,6 +20,7 @@
 #define RTC_H
 
 #include <cstdint>
+#include "newstate.h"
 
 namespace gambatte {
 
@@ -89,6 +90,9 @@ public:
 	void setRTCCallback(std::uint32_t (*callback)()) {
 		timeCB = callback;
 	}
+
+	void SaveS(NewState *ns);
+	void LoadS(NewState *ns);
 };
 
 }

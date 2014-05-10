@@ -208,4 +208,50 @@ void Channel3::update(uint_least32_t *buf, const unsigned long soBaseVol, unsign
 	}
 }
 
+void Channel3::SaveS(NewState *ns)
+{
+	NSS(waveRam);
+	
+	SSS(lengthCounter);
+
+	NSS(cycleCounter);
+	NSS(soMask);
+	NSS(prevOut);
+	NSS(waveCounter);
+	NSS(lastReadTime);
+
+	NSS(nr0);
+	NSS(nr3);
+	NSS(nr4);
+	NSS(wavePos);
+	NSS(rShift);
+	NSS(sampleBuf);
+
+	NSS(master);
+	NSS(cgb);
+}
+
+void Channel3::LoadS(NewState *ns)
+{
+	NSL(waveRam);
+	
+	SSL(lengthCounter);
+
+	NSL(cycleCounter);
+	NSL(soMask);
+	NSL(prevOut);
+	NSL(waveCounter);
+	NSL(lastReadTime);
+
+	NSL(nr0);
+	NSL(nr3);
+	NSL(nr4);
+	NSL(wavePos);
+	NSL(rShift);
+	NSL(sampleBuf);
+
+	NSL(master);
+	NSL(cgb);
+}
+
 }

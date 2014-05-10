@@ -24,6 +24,7 @@
 #include "length_counter.h"
 #include "envelope_unit.h"
 #include "static_output_tester.h"
+#include "newstate.h"
 
 namespace gambatte {
 
@@ -51,6 +52,9 @@ class Channel4 {
 		void disableMaster() { killCounter(); master = false; reg = 0x7FFF; }
 		void killCounter() { counter = COUNTER_DISABLED; }
 		void reviveCounter(unsigned long cc);
+
+		void SaveS(NewState *ns);
+		void LoadS(NewState *ns);
 	};
 	
 	class Ch4MasterDisabler : public MasterDisabler {
@@ -95,6 +99,9 @@ public:
 	void init(bool cgb);
 	void saveState(SaveState &state);
 	void loadState(const SaveState &state);
+
+	void SaveS(NewState *ns);
+	void LoadS(NewState *ns);
 };
 
 }

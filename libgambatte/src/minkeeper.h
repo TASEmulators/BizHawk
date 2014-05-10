@@ -20,6 +20,7 @@
 #define MINKEEPER_H
 
 #include <algorithm>
+#include "newstate.h"
 
 namespace MinKeeperUtil {
 template<int n> struct CeiledLog2 { enum { R = 1 + CeiledLog2<(n + 1) / 2>::R }; };
@@ -105,6 +106,20 @@ public:
 	}
 	
 	unsigned long value(const int id) const { return values[id]; }
+
+	// not sure if i understood everything in minkeeper correctly, so something might be missing here?
+	void SaveS(gambatte::NewState *ns)
+	{
+		NSS(values);
+		NSS(minValue_);
+		NSS(a);
+	}
+	void LoadS(gambatte::NewState *ns)
+	{
+		NSL(values);
+		NSL(minValue_);
+		NSL(a);
+	}
 };
 
 template<int ids> typename MinKeeper<ids>::UpdateValueLut MinKeeper<ids>::updateValueLut;

@@ -299,6 +299,46 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public static extern bool gambatte_loadstate(IntPtr core, byte[] data, uint len);
 
 		/// <summary>
+		/// new savestate method
+		/// </summary>
+		/// <param name="core"></param>
+		/// <returns></returns>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int gambatte_newstatelen(IntPtr core);
+
+		/// <summary>
+		/// new savestate method
+		/// </summary>
+		/// <param name="core"></param>
+		/// <param name="data"></param>
+		/// <param name="len"></param>
+		/// <returns></returns>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool gambatte_newstatesave(IntPtr core, byte[] data, int len);
+
+		/// <summary>
+		/// new savestate method
+		/// </summary>
+		/// <param name="core"></param>
+		/// <param name="data"></param>
+		/// <param name="len"></param>
+		/// <returns></returns>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool gambatte_newstateload(IntPtr core, byte[] data, int len);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void DataFunction(IntPtr data, int length, string name);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void SectionFunction(string name);
+
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_newstatesave_ex(IntPtr core, DataFunction Save, SectionFunction EnterSection, SectionFunction ExitSection);
+
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_newstateload_ex(IntPtr core, DataFunction Load, SectionFunction EnterSection, SectionFunction ExitSection);
+
+		/// <summary>
 		/// ROM header title of currently loaded ROM image.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>

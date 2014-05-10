@@ -155,4 +155,64 @@ void Rtc::setS(const unsigned new_seconds) {
 	baseTime -= new_seconds;
 }
 
+void Rtc::SaveS(NewState *ns)
+{
+	EBS(activeData, 0);
+	EVS(activeData, &dataS, 1);
+	EVS(activeData, &dataM, 2);
+	EVS(activeData, &dataH, 3);
+	EVS(activeData, &dataDl, 4);
+	EVS(activeData, &dataDh, 5);
+	EES(activeData, NULL);
+
+	EBS(activeSet, 0);
+	EVS(activeSet, &Rtc::setS, 1);
+	EVS(activeSet, &Rtc::setM, 2);
+	EVS(activeSet, &Rtc::setH, 3);
+	EVS(activeSet, &Rtc::setDl, 4);
+	EVS(activeSet, &Rtc::setDh, 5);
+	EES(activeSet, NULL);
+
+	NSS(baseTime);
+	NSS(haltTime);
+	NSS(index);
+	NSS(dataDh);
+	NSS(dataDl);
+	NSS(dataH);
+	NSS(dataM);
+	NSS(dataS);
+	NSS(enabled);
+	NSS(lastLatchData);
+}
+
+void Rtc::LoadS(NewState *ns)
+{
+	EBL(activeData, 0);
+	EVL(activeData, &dataS, 1);
+	EVL(activeData, &dataM, 2);
+	EVL(activeData, &dataH, 3);
+	EVL(activeData, &dataDl, 4);
+	EVL(activeData, &dataDh, 5);
+	EEL(activeData, NULL);
+
+	EBL(activeSet, 0);
+	EVL(activeSet, &Rtc::setS, 1);
+	EVL(activeSet, &Rtc::setM, 2);
+	EVL(activeSet, &Rtc::setH, 3);
+	EVL(activeSet, &Rtc::setDl, 4);
+	EVL(activeSet, &Rtc::setDh, 5);
+	EEL(activeSet, NULL);
+
+	NSL(baseTime);
+	NSL(haltTime);
+	NSL(index);
+	NSL(dataDh);
+	NSL(dataDl);
+	NSL(dataH);
+	NSL(dataM);
+	NSL(dataS);
+	NSL(enabled);
+	NSL(lastLatchData);
+}
+
 }

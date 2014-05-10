@@ -37,43 +37,9 @@ void LCD::setCgbPalette(unsigned *lut) {
 }
 
 unsigned long LCD::gbcToRgb32(const unsigned bgr15) {
-	/*
-	const unsigned long r = bgr15       & 0x1F;
-	const unsigned long g = bgr15 >>  5 & 0x1F;
-	const unsigned long b = bgr15 >> 10 & 0x1F;
-
-	return ((r * 13 + g * 2 + b) >> 1) << 16 | (g * 3 + b) << 9 | (r * 3 + g * 2 + b * 11) >> 1;
-	*/
 	return cgbColorsRgb32[bgr15 & 0x7FFF];
 }
 
-/*static unsigned long gbcToRgb16(const unsigned bgr15) {
-	const unsigned r = bgr15 & 0x1F;
-	const unsigned g = bgr15 >> 5 & 0x1F;
-	const unsigned b = bgr15 >> 10 & 0x1F;
-
-	return (((r * 13 + g * 2 + b + 8) << 7) & 0xF800) | ((g * 3 + b + 1) >> 1) << 5 | ((r * 3 + g * 2 + b * 11 + 8) >> 4);
-}
-
-static unsigned long gbcToUyvy(const unsigned bgr15) {
-	const unsigned r5 = bgr15 & 0x1F;
-	const unsigned g5 = bgr15 >> 5 & 0x1F;
-	const unsigned b5 = bgr15 >> 10 & 0x1F;
-
-	// y = (r5 * 926151 + g5 * 1723530 + b5 * 854319) / 510000 + 16;
-	// u = (b5 * 397544 - r5 * 68824 - g5 * 328720) / 225930 + 128;
-	// v = (r5 * 491176 - g5 * 328720 - b5 * 162456) / 178755 + 128;
-
-	const unsigned long y = (r5 * 116 + g5 * 216 + b5 * 107 + 16 * 64 + 32) >> 6;
-	const unsigned long u = (b5 * 225 - r5 * 39 - g5 * 186 + 128 * 128 + 64) >> 7;
-	const unsigned long v = (r5 * 176 - g5 * 118 - b5 * 58 + 128 * 64 + 32) >> 6;
-
-#ifdef WORDS_BIGENDIAN
-	return u << 24 | y << 16 | v << 8 | y;
-#else
-	return y << 24 | v << 16 | y << 8 | u;
-#endif
-}*/
 
 LCD::LCD(const unsigned char *const oamram, const unsigned char *const vram, const VideoInterruptRequester memEventRequester) :
 	ppu(nextM0Time_, oamram, vram),
@@ -195,32 +161,6 @@ void LCD::refreshPalettes() {
 }
 
 namespace {
-
-template<class Blend>
-static void blitOsdElement(uint_least32_t *d,
-		const uint_least32_t *s, const unsigned width, unsigned h, const int dpitch, Blend blend)
-{
-	while (h--) {
-		for (unsigned w = width; w--;) {
-			if (*s != 0xFFFFFFFF)
-				*d = blend(*s, *d);
-
-			++d;
-			++s;
-		}
-
-		d += dpitch - static_cast<int>(width);
-	}
-}
-
-template<unsigned weight>
-struct Blend {
-	enum { SW = weight - 1 };
-	enum { LOWMASK = SW * 0x010101ul };
-	uint_least32_t operator()(const uint_least32_t s, const uint_least32_t d) const {
-		return (s * SW + d - (((s & LOWMASK) * SW + (d & LOWMASK)) & LOWMASK)) / weight;
-	}
-};
 
 template<typename T>
 static void clear(T *buf, const unsigned long color, const int dpitch) {
@@ -800,6 +740,38 @@ void LCD::setDmgPaletteColor(const unsigned palNum, const unsigned colorNum, con
 
 	setDmgPaletteColor(palNum * 4 | colorNum, rgb32);
 	refreshPalettes();
+}
+
+// don't need to save or load rgb32 color data
+
+void LCD::SaveS(NewState *ns)
+{
+	SSS(ppu);
+	NSS(bgpData);
+	NSS(objpData);
+	SSS(eventTimes_);
+	SSS(m0Irq_);
+	SSS(lycIrq);
+	SSS(nextM0Time_);
+
+	NSS(statReg);
+	NSS(m2IrqStatReg_);
+	NSS(m1IrqStatReg_);
+}
+
+void LCD::LoadS(NewState *ns)
+{
+	SSL(ppu);
+	NSL(bgpData);
+	NSL(objpData);
+	SSL(eventTimes_);
+	SSL(m0Irq_);
+	SSL(lycIrq);
+	SSL(nextM0Time_);
+
+	NSL(statReg);
+	NSL(m2IrqStatReg_);
+	NSL(m1IrqStatReg_);
 }
 
 }

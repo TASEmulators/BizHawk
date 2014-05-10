@@ -168,4 +168,22 @@ void Tima::doIrqEvent(const TimaInterruptRequester timaIrq) {
 	timaIrq.setNextIrqEventTime(timaIrq.nextIrqEventTime() + ((256u - tma_) << timaClock[tac_ & 3]));
 }
 
+void Tima::SaveS(NewState *ns)
+{
+	NSS(lastUpdate_);
+	NSS(tmatime_);
+	NSS(tima_);
+	NSS(tma_);
+	NSS(tac_);
+}
+
+void Tima::LoadS(NewState *ns)
+{
+	NSL(lastUpdate_);
+	NSL(tmatime_);
+	NSL(tima_);
+	NSL(tma_);
+	NSL(tac_);
+}
+
 }

@@ -21,6 +21,7 @@
 
 #include "sound_unit.h"
 #include "../savestate.h"
+#include "newstate.h"
 
 namespace gambatte {
 
@@ -41,6 +42,9 @@ public:
 	void init(bool cgb);
 	void saveState(SaveState::SPU::LCounter &lstate) const;
 	void loadState(const SaveState::SPU::LCounter &lstate, unsigned long cc);
+
+	void SaveS(NewState *ns);
+	void LoadS(NewState *ns);
 };
 
 }

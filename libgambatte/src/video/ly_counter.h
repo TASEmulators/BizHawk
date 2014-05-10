@@ -19,6 +19,8 @@
 #ifndef LY_COUNTER_H
 #define LY_COUNTER_H
 
+#include "newstate.h"
+
 namespace gambatte {
 
 struct SaveState;
@@ -49,6 +51,9 @@ public:
 	void reset(unsigned long videoCycles, unsigned long lastUpdate);
 	void setDoubleSpeed(bool ds_in);
 	unsigned long time() const { return time_; }
+
+	void SaveS(NewState *ns);
+	void LoadS(NewState *ns);
 };
 
 }
