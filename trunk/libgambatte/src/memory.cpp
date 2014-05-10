@@ -1104,4 +1104,53 @@ int Memory::LinkStatus(int which)
 	return -1;
 }
 
+void Memory::SaveS(NewState *ns)
+{
+	SSS(cart);
+	NSS(ioamhram);
+	NSS(divLastUpdate);
+	NSS(lastOamDmaUpdate);
+
+	SSS(intreq);
+	SSS(tima);
+	SSS(display);
+	SSS(sound);
+	//SSS(interrupter); // no state
+
+	NSS(dmaSource);
+	NSS(dmaDestination);
+	NSS(oamDmaPos);
+	NSS(serialCnt);
+	NSS(blanklcd);
+
+	NSS(LINKCABLE);
+	NSS(linkClockTrigger);
+}
+
+void Memory::LoadS(NewState *ns)
+{
+	SSL(cart);
+	NSL(ioamhram);
+	NSL(divLastUpdate);
+	NSL(lastOamDmaUpdate);
+
+	SSL(intreq);
+	SSL(tima);
+	SSL(display);
+	SSL(sound);
+	//SSL(interrupter); // no state
+
+	NSL(dmaSource);
+	NSL(dmaDestination);
+	NSL(oamDmaPos);
+	NSL(serialCnt);
+	NSL(blanklcd);
+
+	NSL(LINKCABLE);
+	NSL(linkClockTrigger);
+}
+
+
+
+
 }

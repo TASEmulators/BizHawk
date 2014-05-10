@@ -20,6 +20,7 @@
 #define CPU_H
 
 #include "memory.h"
+#include "newstate.h"
 
 namespace gambatte {
 
@@ -118,6 +119,9 @@ public:
 	int LinkStatus(int which) { return memory.LinkStatus(which); }
 
 	void GetRegs(int *dest);
+
+	void SaveS(NewState *ns);
+	void LoadS(NewState *ns);
 };
 
 }

@@ -22,6 +22,7 @@
 #include "gbint.h"
 #include "master_disabler.h"
 #include "length_counter.h"
+#include "newstate.h"
 
 namespace gambatte {
 
@@ -96,6 +97,9 @@ public:
 		
 		waveRam[index] = data;
 	}
+
+	void SaveS(NewState *ns);
+	void LoadS(NewState *ns);
 };
 
 }

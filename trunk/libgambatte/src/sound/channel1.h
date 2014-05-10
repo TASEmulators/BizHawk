@@ -25,6 +25,7 @@
 #include "duty_unit.h"
 #include "envelope_unit.h"
 #include "static_output_tester.h"
+#include "newstate.h"
 
 namespace gambatte {
 
@@ -48,6 +49,9 @@ class Channel1 {
 		void reset();
 		void saveState(SaveState &state) const;
 		void loadState(const SaveState &state);
+
+		void SaveS(NewState *ns);
+		void LoadS(NewState *ns);
 	};
 	
 	friend class StaticOutputTester<Channel1,DutyUnit>;
@@ -87,6 +91,9 @@ public:
 	void init(bool cgb);
 	void saveState(SaveState &state);
 	void loadState(const SaveState &state);
+
+	void SaveS(NewState *ns);
+	void LoadS(NewState *ns);
 };
 
 }

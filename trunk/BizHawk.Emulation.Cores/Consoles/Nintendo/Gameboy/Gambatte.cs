@@ -106,6 +106,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				TimeCallback = new LibGambatte.RTCCallback(GetCurrentTime);
 				LibGambatte.gambatte_setrtccallback(GambatteState, TimeCallback);
+
+				NewSaveCoreSetBuff();
 			}
 			catch
 			{
@@ -253,6 +255,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				ProcessSoundEnd();
 
 			FrameAdvancePost();
+
+			//DebugStates(); // for maximum fun only
 		}
 
 		static string MapperName(byte[] romdata)
@@ -414,6 +418,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region savestates
 
+		byte[] newsavebuff;
+
+		void NewSaveCoreSetBuff()
+		{
+			newsavebuff = new byte[LibGambatte.gambatte_newstatelen(GambatteState)];
+		}
+
+		byte[] NewSaveCoreBinary()
+		{
+			if (!LibGambatte.gambatte_newstatesave(GambatteState, newsavebuff, newsavebuff.Length))
+				throw new Exception("gambatte_newstatesave() returned false");
+			return newsavebuff;
+		}
+
+		void NewLoadCoreBinary(byte[] data)
+		{
+			if (!LibGambatte.gambatte_newstateload(GambatteState, data, data.Length))
+				throw new Exception("gambatte_newstateload() returned false");
+		}
+
 		/// <summary>
 		/// handles the core-portion of savestating
 		/// </summary>
@@ -464,7 +488,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public void SaveStateBinary(System.IO.BinaryWriter writer)
 		{
-			byte[] data = SaveCoreBinary();
+			//byte[] data = SaveCoreBinary();
+			byte[] data = NewSaveCoreBinary();
 
 			writer.Write(data.Length);
 			writer.Write(data);
@@ -482,7 +507,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			int length = reader.ReadInt32();
 			byte[] data = reader.ReadBytes(length);
 
-			LoadCoreBinary(data);
+			//LoadCoreBinary(data);
+			NewLoadCoreBinary(data);
 
 			// other variables
 			IsLagFrame = reader.ReadBoolean();
@@ -502,6 +528,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		}
 
 		public bool BinarySaveStatesPreferred { get { return true; } }
+
+		void DebugStates()
+		{
+			var sd = new StateDebug();
+			var Save = new LibGambatte.DataFunction(sd.Save);
+			var Load = new LibGambatte.DataFunction(sd.Load);
+			var EnterSection = new LibGambatte.SectionFunction(sd.EnterSection);
+			var ExitSection = new LibGambatte.SectionFunction(sd.ExitSection);
+
+			LibGambatte.gambatte_newstatesave_ex(GambatteState, Save, EnterSection, ExitSection);
+			LibGambatte.gambatte_newstateload_ex(GambatteState, Load, EnterSection, ExitSection);
+		}
 
 		#endregion
 

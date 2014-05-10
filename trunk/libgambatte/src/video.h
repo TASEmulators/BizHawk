@@ -25,6 +25,7 @@
 #include "interruptrequester.h"
 #include "minkeeper.h"
 #include <memory>
+#include "newstate.h"
 
 namespace gambatte {
 
@@ -80,6 +81,17 @@ public:
 	}
 	
 	unsigned statReg() const { return statReg_; }
+
+	void SaveS(NewState *ns)
+	{
+		NSS(statReg_);
+		NSS(lycReg_);
+	}
+	void LoadS(NewState *ns)
+	{
+		NSL(statReg_);
+		NSL(lycReg_);
+	}
 };
 
 class LCD {
@@ -115,6 +127,19 @@ class LCD {
 		
 		void flagIrq(const unsigned bit) { memEventRequester_.flagIrq(bit); }
 		void flagHdmaReq() { memEventRequester_.flagHdmaReq(); }
+
+		void SaveS(NewState *ns)
+		{
+			SSS(eventMin_);
+			SSS(memEventMin_);
+			//SSS(memEventRequester_); // not needed
+		}
+		void LoadS(NewState *ns)
+		{
+			SSL(eventMin_);
+			SSL(memEventMin_);
+			//SSL(memEventRequester_); // not needed
+		}
 	};
 	
 	PPU ppu;
@@ -258,6 +283,9 @@ public:
 	unsigned long *spPalette() { return ppu.spPalette(); }
 
 	void setScanlineCallback(void (*callback)(), int sl) { scanlinecallback = callback; scanlinecallbacksl = sl; }
+
+	void SaveS(NewState *ns);
+	void LoadS(NewState *ns);
 };
 
 }

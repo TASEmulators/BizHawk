@@ -103,4 +103,18 @@ void EnvelopeUnit::loadState(const SaveState::SPU::Env &estate, const unsigned n
 	this->nr2 = nr2;
 }
 
+void EnvelopeUnit::SaveS(NewState *ns)
+{
+	NSS(counter);
+	NSS(nr2);
+	NSS(volume);
+}
+
+void EnvelopeUnit::LoadS(NewState *ns)
+{
+	NSL(counter);
+	NSL(nr2);
+	NSL(volume);
+}
+
 }

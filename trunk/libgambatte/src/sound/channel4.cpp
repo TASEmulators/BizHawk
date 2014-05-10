@@ -163,6 +163,24 @@ void Channel4::Lfsr::loadState(const SaveState &state) {
 	nr3 = state.mem.ioamhram.get()[0x122];
 }
 
+void Channel4::Lfsr::SaveS(NewState *ns)
+{
+	NSS(counter);
+	NSS(backupCounter);
+	NSS(reg);
+	NSS(nr3);
+	NSS(master);
+}
+
+void Channel4::Lfsr::LoadS(NewState *ns)
+{
+	NSL(counter);
+	NSL(backupCounter);
+	NSL(reg);
+	NSL(nr3);
+	NSL(master);
+}
+
 Channel4::Channel4() :
 	staticOutputTest(*this, lfsr),
 	disableMaster(master, lfsr),
@@ -299,6 +317,46 @@ void Channel4::update(uint_least32_t *buf, const unsigned long soBaseVol, unsign
 		
 		cycleCounter -= SoundUnit::COUNTER_MAX;
 	}
+}
+
+void Channel4::SaveS(NewState *ns)
+{
+	SSS(lengthCounter);
+	SSS(envelopeUnit);
+	SSS(lfsr);
+
+	EBS(nextEventUnit, 0);
+	EVS(nextEventUnit, &lfsr, 1);
+	EVS(nextEventUnit, &envelopeUnit, 2);
+	EVS(nextEventUnit, &lengthCounter, 3);
+	EES(nextEventUnit, NULL);
+
+	NSS(cycleCounter);
+	NSS(soMask);
+	NSS(prevOut);
+	
+	NSS(nr4);
+	NSS(master);
+}
+
+void Channel4::LoadS(NewState *ns)
+{
+	SSL(lengthCounter);
+	SSL(envelopeUnit);
+	SSL(lfsr);
+
+	EBL(nextEventUnit, 0);
+	EVL(nextEventUnit, &lfsr, 1);
+	EVL(nextEventUnit, &envelopeUnit, 2);
+	EVL(nextEventUnit, &lengthCounter, 3);
+	EEL(nextEventUnit, NULL);
+
+	NSL(cycleCounter);
+	NSL(soMask);
+	NSL(prevOut);
+	
+	NSL(nr4);
+	NSL(master);
 }
 
 }

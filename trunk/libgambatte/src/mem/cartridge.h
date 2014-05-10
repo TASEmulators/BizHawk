@@ -25,6 +25,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include "newstate.h"
 
 namespace gambatte {
 
@@ -35,6 +36,9 @@ public:
 	virtual void saveState(SaveState::Mem &ss) const = 0;
 	virtual void loadState(const SaveState::Mem &ss) = 0;
 	virtual bool isAddressWithinAreaRombankCanBeMappedTo(unsigned address, unsigned rombank) const = 0;
+
+	virtual void SaveS(NewState *ns) = 0;
+	virtual void LoadS(NewState *ns) = 0;
 };
 
 class Cartridge {
@@ -83,6 +87,9 @@ public:
 	void setRTCCallback(std::uint32_t (*callback)()) {
 		rtc.setRTCCallback(callback);
 	}
+
+	void SaveS(NewState *ns);
+	void LoadS(NewState *ns);
 };
 
 }

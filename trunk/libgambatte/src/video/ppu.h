@@ -23,6 +23,8 @@
 #include "video/sprite_mapper.h"
 #include "gbint.h"
 
+#include "newstate.h"
+
 namespace gambatte {
 
 class PPUFrameBuf {
@@ -128,6 +130,9 @@ public:
 	void speedChange(unsigned long cycleCounter);
 	unsigned long * spPalette() { return p_.spPalette; }
 	void update(unsigned long cc);
+
+	void SaveS(NewState *ns);
+	void LoadS(NewState *ns);
 };
 
 }

@@ -24,6 +24,7 @@
 #include "duty_unit.h"
 #include "envelope_unit.h"
 #include "static_output_tester.h"
+#include "newstate.h"
 
 namespace gambatte {
 
@@ -66,6 +67,9 @@ public:
 	void init(bool cgb);
 	void saveState(SaveState &state);
 	void loadState(const SaveState &state);
+
+	void SaveS(NewState *ns);
+	void LoadS(NewState *ns);
 };
 
 }

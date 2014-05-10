@@ -1,6 +1,7 @@
 #include "cinterface.h"
 #include "gambatte.h"
 #include <cstdlib>
+#include "newstate.h"
 
 using namespace gambatte;
 
@@ -168,7 +169,53 @@ GBEXPORT void gambatte_savestate_destroy(char *data)
 GBEXPORT int gambatte_loadstate(void *core, const char *data, unsigned len)
 {
 	GB *g = (GB *) core;
-	return g->loadState(std::istringstream(std::string(data, len), std::ios_base::binary | std::ios_base::in));
+	// msvc allows using an Rvalue directly where an Lvalue is need, which is kind of cool and sort of makes sense, but no
+	std::istringstream iss(std::string(data, len), std::ios_base::binary | std::ios_base::in);
+	return g->loadState(iss);
+}
+
+GBEXPORT long gambatte_newstatelen(void *core)
+{
+	GB *g = (GB *) core;
+	NewStateDummy dummy;
+	g->SaveS(&dummy);
+	return dummy.GetLength();
+}
+
+GBEXPORT int gambatte_newstatesave(void *core, char *data, long len)
+{
+	GB *g = (GB *) core;
+	NewStateExternalBuffer saver(data, len);
+	g->SaveS(&saver);
+	return !saver.Overflow() && saver.GetLength() == len;
+}
+
+GBEXPORT int gambatte_newstateload(void *core, const char *data, long len)
+{
+	GB *g = (GB *) core;
+	NewStateExternalBuffer loader((char *)data, len);
+	g->LoadS(&loader);
+	return !loader.Overflow() && loader.GetLength() == len;
+}
+
+GBEXPORT void gambatte_newstatesave_ex(void *core,
+	void (*Save_)(const void *ptr, size_t size, const char *name),
+	void (*EnterSection_)(const char *name),
+	void (*ExitSection_)(const char *name))
+{
+	GB *g = (GB *) core;
+	NewStateExternalFunctions saver(Save_, NULL, EnterSection_, ExitSection_);
+	g->SaveS(&saver);
+}
+
+GBEXPORT void gambatte_newstateload_ex(void *core,
+	void (*Load_)(void *ptr, size_t size, const char *name),
+	void (*EnterSection_)(const char *name),
+	void (*ExitSection_)(const char *name))
+{
+	GB *g = (GB *) core;
+	NewStateExternalFunctions loader(NULL, Load_, EnterSection_, ExitSection_);
+	g->LoadS(&loader);
 }
 
 static char horriblebuff[64];

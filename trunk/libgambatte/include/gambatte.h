@@ -24,6 +24,7 @@
 #include <string>
 #include <sstream>
 #include <cstdint>
+#include "newstate.h"
 
 namespace gambatte {
 enum { BG_PALETTE = 0, SP1_PALETTE = 1, SP2_PALETTE = 2 };
@@ -128,6 +129,9 @@ public:
 	int LinkStatus(int which);
 
 	void GetRegs(int *dest);
+
+	void SaveS(NewState *ns);
+	void LoadS(NewState *ns);
 
 private:
 	struct Priv;

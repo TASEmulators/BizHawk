@@ -35,6 +35,13 @@ public:
 	virtual bool isAddressWithinAreaRombankCanBeMappedTo(unsigned addr, unsigned bank) const {
 		return (addr< 0x4000) == (bank == 0);
 	}
+
+	virtual void SaveS(NewState *ns)
+	{
+	}
+	virtual void LoadS(NewState *ns)
+	{
+	}
 };
 
 class Mbc0 : public DefaultMbc {
@@ -62,6 +69,15 @@ public:
 	virtual void loadState(const SaveState::Mem &ss) {
 		enableRam = ss.enableRam;
 		memptrs.setRambank(enableRam ? MemPtrs::READ_EN | MemPtrs::WRITE_EN : 0, 0);
+	}
+
+	virtual void SaveS(NewState *ns)
+	{
+		NSS(enableRam);
+	}
+	virtual void LoadS(NewState *ns)
+	{
+		NSL(enableRam);
 	}
 };
 
@@ -137,6 +153,21 @@ public:
 		setRambank();
 		setRombank();
 	}
+
+	virtual void SaveS(NewState *ns)
+	{
+		NSS(rombank);
+		NSS(rambank);
+		NSS(enableRam);
+		NSS(rambankMode);
+	}
+	virtual void LoadS(NewState *ns)
+	{
+		NSL(rombank);
+		NSL(rambank);
+		NSL(enableRam);
+		NSL(rambankMode);
+	}
 };
 
 class Mbc1Multi64 : public Mbc {
@@ -205,6 +236,19 @@ public:
 	virtual bool isAddressWithinAreaRombankCanBeMappedTo(unsigned addr, unsigned bank) const {
 		return (addr < 0x4000) == ((bank & 0xF) == 0);
 	}
+
+	virtual void SaveS(NewState *ns)
+	{
+		NSS(rombank);
+		NSS(enableRam);
+		NSS(rombank0Mode);
+	}
+	virtual void LoadS(NewState *ns)
+	{
+		NSL(rombank);
+		NSL(enableRam);
+		NSL(rombank0Mode);
+	}
 };
 
 class Mbc2 : public DefaultMbc {
@@ -243,6 +287,17 @@ public:
 		enableRam = ss.enableRam;
 		memptrs.setRambank(enableRam ? MemPtrs::READ_EN | MemPtrs::WRITE_EN : 0, 0);
 		memptrs.setRombank(rombank & (rombanks(memptrs) - 1));
+	}
+
+	virtual void SaveS(NewState *ns)
+	{
+		NSS(rombank);
+		NSS(enableRam);
+	}
+	virtual void LoadS(NewState *ns)
+	{
+		NSL(rombank);
+		NSL(enableRam);
 	}
 };
 
@@ -315,6 +370,19 @@ public:
 		setRambank();
 		setRombank();
 	}
+
+	virtual void SaveS(NewState *ns)
+	{
+		NSS(rombank);
+		NSS(rambank);
+		NSS(enableRam);
+	}
+	virtual void LoadS(NewState *ns)
+	{
+		NSL(rombank);
+		NSL(rambank);
+		NSL(enableRam);
+	}
 };
 
 class HuC1 : public DefaultMbc {
@@ -378,6 +446,20 @@ public:
 		setRambank();
 		setRombank();
 	}
+	virtual void SaveS(NewState *ns)
+	{
+		NSS(rombank);
+		NSS(rambank);
+		NSS(enableRam);
+		NSS(rambankMode);
+	}
+	virtual void LoadS(NewState *ns)
+	{
+		NSL(rombank);
+		NSL(rambank);
+		NSL(enableRam);
+		NSL(rambankMode);
+	}
 };
 
 class Mbc5 : public DefaultMbc {
@@ -431,6 +513,19 @@ public:
 		enableRam = ss.enableRam;
 		setRambank();
 		setRombank();
+	}
+
+	virtual void SaveS(NewState *ns)
+	{
+		NSS(rombank);
+		NSS(rambank);
+		NSS(enableRam);
+	}
+	virtual void LoadS(NewState *ns)
+	{
+		NSL(rombank);
+		NSL(rambank);
+		NSL(enableRam);
 	}
 };
 
@@ -690,6 +785,20 @@ bool Cartridge::getMemoryArea(int which, unsigned char **data, int *length) {
 		return false;
 	}
 	return false;
+}
+
+void Cartridge::SaveS(NewState *ns)
+{
+	SSS(memptrs);
+	SSS(rtc);
+	TSS(mbc);
+}
+
+void Cartridge::LoadS(NewState *ns)
+{
+	SSL(memptrs);
+	SSL(rtc);
+	TSL(mbc);
 }
 
 }
