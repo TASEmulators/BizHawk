@@ -386,7 +386,7 @@
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.MainformMenu.Location = new System.Drawing.Point(0, 0);
 			this.MainformMenu.Name = "MainformMenu";
-			this.MainformMenu.Size = new System.Drawing.Size(470, 61);
+			this.MainformMenu.Size = new System.Drawing.Size(470, 42);
 			this.MainformMenu.TabIndex = 0;
 			this.MainformMenu.Text = "menuStrip1";
 			this.MainformMenu.MenuActivate += new System.EventHandler(this.MainformMenu_MenuActivate);
@@ -2414,15 +2414,15 @@
 			// 
 			this.N64PluginSettingsMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("N64PluginSettingsMenuItem.Image")));
 			this.N64PluginSettingsMenuItem.Name = "N64PluginSettingsMenuItem";
-			this.N64PluginSettingsMenuItem.Size = new System.Drawing.Size(195, 22);
-			this.N64PluginSettingsMenuItem.Text = "Video Plugin Settings...";
+			this.N64PluginSettingsMenuItem.Size = new System.Drawing.Size(181, 22);
+			this.N64PluginSettingsMenuItem.Text = "Plugins";
 			this.N64PluginSettingsMenuItem.Click += new System.EventHandler(this.N64PluginSettingsMenuItem_Click);
 			// 
 			// N64ControllerSettingsMenuItem
 			// 
 			this.N64ControllerSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
 			this.N64ControllerSettingsMenuItem.Name = "N64ControllerSettingsMenuItem";
-			this.N64ControllerSettingsMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.N64ControllerSettingsMenuItem.Size = new System.Drawing.Size(181, 22);
 			this.N64ControllerSettingsMenuItem.Text = "Controller Settings...";
 			this.N64ControllerSettingsMenuItem.Click += new System.EventHandler(this.N64ControllerSettingsMenuItem_Click);
 			// 

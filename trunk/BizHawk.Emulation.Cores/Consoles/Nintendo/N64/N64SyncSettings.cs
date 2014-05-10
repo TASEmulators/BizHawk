@@ -41,6 +41,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		{
 			return new N64SyncSettings
 			{
+				CoreType = CoreType,
 				VidPlugin = VidPlugin,
 				VideoSizeX = VideoSizeX,
 				VideoSizeY = VideoSizeY,
