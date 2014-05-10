@@ -8,6 +8,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	public class N64SyncSettings
 	{
+		public CORETYPE CoreType = CORETYPE.Dynarec;
+
+		public enum CORETYPE
+		{
+			[Description("Pure Interpreter")]
+			Pure_Interpret = 0,
+
+			[Description("Interpreter")]
+			Interpret = 1,
+
+			[Description("DynaRec")]
+			Dynarec = 2,
+		}
+
 		public PLUGINTYPE VidPlugin = PLUGINTYPE.RICE;
 		public int VideoSizeX = 320;
 		public int VideoSizeY = 240;

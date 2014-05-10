@@ -420,12 +420,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			StartThreadLoop();
 
 			var videosettings = this.SyncSettings.GetVPS(game);
+			var coreType = this.SyncSettings.CoreType;
 
 			//zero 19-apr-2014 - added this to solve problem with SDL initialization corrupting the main thread (I think) and breaking subsequent emulators (for example, NES)
 			//not sure why this works... if we put the plugin initializations in here, we get deadlocks in some SDL initialization. doesnt make sense to me...
 			RunThreadAction(() =>
 			{
-				api = new mupen64plusApi(this, rom, videosettings, SaveType);
+				api = new mupen64plusApi(this, rom, videosettings, SaveType, (int)coreType);
 			});
 
 			// Order is important because the register with the mupen core
