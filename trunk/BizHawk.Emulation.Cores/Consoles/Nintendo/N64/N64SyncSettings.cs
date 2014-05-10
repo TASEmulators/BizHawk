@@ -2,6 +2,7 @@
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 using Newtonsoft.Json;
+using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N64
 {
@@ -436,14 +437,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N64
 		/// </summary>
 		public enum N64ControllerPakType
 		{
+			[Description("None")]
 			NO_PAK = 1,
+
+			[Description("Memory Card")]
 			MEMORY_CARD = 2,
+
+			[Description("Rumble Pak")]
 			RUMBLE_PAK = 3,
+
+			[Description("Transfer Pak")]
 			TRANSFER_PAK = 4
 		}
 
 		[JsonIgnore]
 		private N64ControllerPakType _type = N64ControllerPakType.MEMORY_CARD;
+
 		/// <summary>
 		/// Type of the pak inserted in the controller
 		/// Currently only NO_PAK and MEMORY_CARD are
@@ -462,6 +471,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N64
 
 		[JsonIgnore]
 		private bool _isConnected = true;
+
 		/// <summary>
 		/// Connection status of the controller i.e.:
 		/// Is the controller plugged into the N64?
