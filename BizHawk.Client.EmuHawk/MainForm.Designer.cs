@@ -273,6 +273,7 @@
 			this.ColecoSkipBiosMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.N64SubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.N64PluginSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.N64ControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaturnSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaturnPreferencesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DGBSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -354,7 +355,6 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.controllerSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -2404,10 +2404,11 @@
 			// 
 			this.N64SubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.N64PluginSettingsMenuItem,
-            this.controllerSettingsToolStripMenuItem});
+            this.N64ControllerSettingsMenuItem});
 			this.N64SubMenu.Name = "N64SubMenu";
 			this.N64SubMenu.Size = new System.Drawing.Size(40, 19);
 			this.N64SubMenu.Text = "N64";
+			this.N64SubMenu.DropDownOpened += new System.EventHandler(this.N64SubMenu_DropDownOpened);
 			// 
 			// N64PluginSettingsMenuItem
 			// 
@@ -2416,6 +2417,14 @@
 			this.N64PluginSettingsMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.N64PluginSettingsMenuItem.Text = "Video Plugin Settings...";
 			this.N64PluginSettingsMenuItem.Click += new System.EventHandler(this.N64PluginSettingsMenuItem_Click);
+			// 
+			// N64ControllerSettingsMenuItem
+			// 
+			this.N64ControllerSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
+			this.N64ControllerSettingsMenuItem.Name = "N64ControllerSettingsMenuItem";
+			this.N64ControllerSettingsMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.N64ControllerSettingsMenuItem.Text = "Controller Settings...";
+			this.N64ControllerSettingsMenuItem.Click += new System.EventHandler(this.N64ControllerSettingsMenuItem_Click);
 			// 
 			// SaturnSubMenu
 			// 
@@ -3096,14 +3105,6 @@
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
 			// 
-			// controllerSettingsToolStripMenuItem
-			// 
-			this.controllerSettingsToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
-			this.controllerSettingsToolStripMenuItem.Name = "controllerSettingsToolStripMenuItem";
-			this.controllerSettingsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-			this.controllerSettingsToolStripMenuItem.Text = "Controller Settings...";
-			this.controllerSettingsToolStripMenuItem.Click += new System.EventHandler(this.ControllerSettingsMenuItem_Click);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -3469,7 +3470,7 @@
 		private System.Windows.Forms.ToolStripMenuItem N64VideoPluginSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ClientOptionsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem customizeToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem controllerSettingsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem N64ControllerSettingsMenuItem;
 	}
 }
 

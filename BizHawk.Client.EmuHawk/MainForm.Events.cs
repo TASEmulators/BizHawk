@@ -1551,6 +1551,13 @@ namespace BizHawk.Client.EmuHawk
 
 		#region N64
 
+		private void N64SubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			N64PluginSettingsMenuItem.Enabled =
+				N64ControllerSettingsMenuItem.Enabled =
+				!Global.MovieSession.Movie.IsActive;
+		}
+
 		private void N64PluginSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (new N64VideoPluginconfig().ShowDialog() == DialogResult.OK)
@@ -1561,6 +1568,19 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				GlobalWin.OSD.AddMessage("Plugin settings aborted");
+			}
+		}
+
+		private void N64ControllerSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			if (new N64ControllersSetup().ShowDialog() == DialogResult.OK)
+			{
+				GlobalWin.MainForm.FlagNeedsReboot();
+				GlobalWin.OSD.AddMessage("Controller settings saved");
+			}
+			else
+			{
+				GlobalWin.OSD.AddMessage("Controller settings aborted");
 			}
 		}
 

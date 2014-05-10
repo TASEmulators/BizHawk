@@ -57,14 +57,12 @@ namespace BizHawk.Client.EmuHawk
 			Global.Emulator.PutSyncSettings(n64Settings);
 
 			DialogResult = DialogResult.OK;
-			GlobalWin.OSD.AddMessage("Controller settings saved.");
 			Close();
 		}
 
 		private void CancelBtn_Click(object sender, EventArgs e)
 		{
 			DialogResult = DialogResult.Cancel;
-			GlobalWin.OSD.AddMessage("Controller settings aborted.");
 			Close();
 		}
 	}
