@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64;
+using BizHawk.Common;
+
+
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -50,6 +55,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveSettings()
 		{
 			var s = GetS();
+
 			//Global
 			var video_settings = VideoResolutionComboBox.SelectedItem.ToString();
 			var strArr = video_settings.Split('x');
@@ -280,11 +286,23 @@ namespace BizHawk.Client.EmuHawk
 			s.Glide64mk2Plugin.read_back_to_screen = Glide64mk2_read_back_to_screen.SelectedIndex;
 			s.Glide64mk2Plugin.fast_crc = Glide64mk2_fast_crc.Checked;
 
+
+			s.CoreType = EnumHelper.GetValueFromDescription<N64SyncSettings.CORETYPE>(
+				CoreTypeDropdown.SelectedItem.ToString());
+
 			PutS(s);
 		} 
 
 		private void N64VideoPluginconfig_Load(object sender, EventArgs e)
 		{
+			var n64Settings = (N64SyncSettings)Global.Emulator.GetSyncSettings();
+
+			CoreTypeDropdown.Items.Clear();
+			CoreTypeDropdown.Items.AddRange(
+				EnumHelper.GetDescriptions<N64SyncSettings.CORETYPE>()
+				.ToArray());
+			CoreTypeDropdown.SelectedItem = EnumHelper.GetDescription(n64Settings.CoreType);
+
 			var s = GetS();
 
 			//Load Variables
