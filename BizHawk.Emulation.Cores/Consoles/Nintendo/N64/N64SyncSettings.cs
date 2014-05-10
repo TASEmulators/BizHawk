@@ -4,7 +4,7 @@ using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 using Newtonsoft.Json;
 using System.ComponentModel;
 
-namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N64
+namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	public class N64SyncSettings
 	{

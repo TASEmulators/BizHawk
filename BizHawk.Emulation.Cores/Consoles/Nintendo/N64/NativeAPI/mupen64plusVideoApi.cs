@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.N64;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 {
