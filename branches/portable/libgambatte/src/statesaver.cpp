@@ -196,7 +196,7 @@ public:
 static void pushSaver(SaverList::list_t &list, const char *label,
 		void (*save)(std::ostream &file, const SaveState &state),
 		void (*load)(std::istream &file, SaveState &state), unsigned labelsize) {
-	const Saver saver = { label, save, load, labelsize };
+	const Saver saver = { label, save, load, static_cast<unsigned char>(labelsize) };
 	list.push_back(saver);
 }
 
@@ -447,7 +447,7 @@ bool StateSaver::loadState(SaveState &state, std::istream &file) {
 		return false;
 	
 	const Array<char> labelbuf(list.maxLabelsize());
-	const Saver labelbufSaver = { labelbuf, 0, 0, list.maxLabelsize() };
+	const Saver labelbufSaver = { labelbuf, 0, 0, static_cast<unsigned char>(list.maxLabelsize()) };
 	
 	SaverList::const_iterator done = list.begin();
 	

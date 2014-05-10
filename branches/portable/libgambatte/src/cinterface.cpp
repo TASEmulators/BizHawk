@@ -174,7 +174,9 @@ GBEXPORT void gambatte_savestate_destroy(char *data)
 GBEXPORT int gambatte_loadstate(void *core, const char *data, unsigned len)
 {
 	GB *g = (GB *) core;
-	return g->loadState(std::istringstream(std::string(data, len), std::ios_base::binary | std::ios_base::in));
+    //Changed to two lines, because loadState requires an lvalue and passing an rvalue only works in MSVC.
+    std::istringstream ss(std::string(data, len), std::ios_base::binary | std::ios_base::in);
+	return g->loadState(ss);
 }
 
 static char horriblebuff[64];

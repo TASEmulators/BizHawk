@@ -1644,11 +1644,11 @@ void PPU::loadState(const SaveState &ss, const unsigned char *const oamram) {
 		p_.cycles = -1;
 	} else if (vcycs < 143 * 456L + static_cast<long>(m3StartLineCycle(p_.cgb)) + MAX_M3START_CYCLES) {
 		const struct CycleState lineCycleStates[] = {
-			{    &M3Start::f0_, m3StartLineCycle(p_.cgb) },
-			{    &M3Start::f1_, m3StartLineCycle(p_.cgb) + MAX_M3START_CYCLES },
-			{ &M2::LyNon0::f0_, weMasterCheckPriorToLyIncLineCycle(p_.cgb) },
-			{ &M2::LyNon0::f1_, weMasterCheckAfterLyIncLineCycle(p_.cgb) },
-			{    &M3Start::f0_, m3StartLineCycle(p_.cgb) + 456 }
+			{    &M3Start::f0_, static_cast<long>(m3StartLineCycle(p_.cgb)) },
+			{    &M3Start::f1_, static_cast<long>(m3StartLineCycle(p_.cgb) + MAX_M3START_CYCLES) },
+			{ &M2::LyNon0::f0_, static_cast<long>(weMasterCheckPriorToLyIncLineCycle(p_.cgb)) },
+			{ &M2::LyNon0::f1_, static_cast<long>(weMasterCheckAfterLyIncLineCycle(p_.cgb)) },
+			{    &M3Start::f0_, static_cast<long>(m3StartLineCycle(p_.cgb) + 456) }
 		};
 		
 		const std::size_t pos =
