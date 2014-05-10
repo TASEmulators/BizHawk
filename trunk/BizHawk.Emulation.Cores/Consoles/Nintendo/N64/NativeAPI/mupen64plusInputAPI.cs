@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 using BizHawk.Emulation.Cores.Nintendo.N64;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.N64;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 {
