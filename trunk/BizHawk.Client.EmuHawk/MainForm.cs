@@ -3297,10 +3297,5 @@ namespace BizHawk.Client.EmuHawk
 		{
 			new EmuHawkOptions().ShowDialog();
 		}
-
-		private void ControllerSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			new N64ControllersSetup().ShowDialog();
-		}
 	}
 }
