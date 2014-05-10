@@ -178,7 +178,7 @@ GBEXPORT long gambatte_newstatelen(void *core)
 {
 	GB *g = (GB *) core;
 	NewStateDummy dummy;
-	g->SaveS(&dummy);
+	g->SyncState<false>(&dummy);
 	return dummy.GetLength();
 }
 
@@ -186,7 +186,7 @@ GBEXPORT int gambatte_newstatesave(void *core, char *data, long len)
 {
 	GB *g = (GB *) core;
 	NewStateExternalBuffer saver(data, len);
-	g->SaveS(&saver);
+	g->SyncState<false>(&saver);
 	return !saver.Overflow() && saver.GetLength() == len;
 }
 
@@ -194,7 +194,7 @@ GBEXPORT int gambatte_newstateload(void *core, const char *data, long len)
 {
 	GB *g = (GB *) core;
 	NewStateExternalBuffer loader((char *)data, len);
-	g->LoadS(&loader);
+	g->SyncState<true>(&loader);
 	return !loader.Overflow() && loader.GetLength() == len;
 }
 
@@ -205,7 +205,7 @@ GBEXPORT void gambatte_newstatesave_ex(void *core,
 {
 	GB *g = (GB *) core;
 	NewStateExternalFunctions saver(Save_, NULL, EnterSection_, ExitSection_);
-	g->SaveS(&saver);
+	g->SyncState<false>(&saver);
 }
 
 GBEXPORT void gambatte_newstateload_ex(void *core,
@@ -215,7 +215,7 @@ GBEXPORT void gambatte_newstateload_ex(void *core,
 {
 	GB *g = (GB *) core;
 	NewStateExternalFunctions loader(NULL, Load_, EnterSection_, ExitSection_);
-	g->LoadS(&loader);
+	g->SyncState<true>(&loader);
 }
 
 static char horriblebuff[64];

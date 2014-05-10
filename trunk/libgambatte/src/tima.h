@@ -61,8 +61,7 @@ public:
 	
 	void doIrqEvent(TimaInterruptRequester timaIrq);
 
-	void SaveS(NewState *ns);
-	void LoadS(NewState *ns);
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 }

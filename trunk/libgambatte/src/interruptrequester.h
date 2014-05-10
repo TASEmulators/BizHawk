@@ -82,8 +82,7 @@ public:
 	void setEventTime(const MemEventId id, unsigned long value) { eventTimes.setValue(id, value); }
 	unsigned long eventTime(MemEventId id) const { return eventTimes.value(id); }
 
-	void SaveS(NewState *ns);
-	void LoadS(NewState *ns);
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 inline void flagHdmaReq(InterruptRequester *const intreq) { intreq->setEventTime<DMA>(0); }

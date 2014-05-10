@@ -39,6 +39,4 @@ unsigned long Interrupter::interrupt(const unsigned address, unsigned long cycle
 	return cycleCounter;
 }
 
-
-
 }

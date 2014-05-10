@@ -155,7 +155,7 @@ void Rtc::setS(const unsigned new_seconds) {
 	baseTime -= new_seconds;
 }
 
-void Rtc::SaveS(NewState *ns)
+SYNCFUNC(Rtc)
 {
 	EBS(activeData, 0);
 	EVS(activeData, &dataS, 1);
@@ -183,36 +183,6 @@ void Rtc::SaveS(NewState *ns)
 	NSS(dataS);
 	NSS(enabled);
 	NSS(lastLatchData);
-}
-
-void Rtc::LoadS(NewState *ns)
-{
-	EBL(activeData, 0);
-	EVL(activeData, &dataS, 1);
-	EVL(activeData, &dataM, 2);
-	EVL(activeData, &dataH, 3);
-	EVL(activeData, &dataDl, 4);
-	EVL(activeData, &dataDh, 5);
-	EEL(activeData, NULL);
-
-	EBL(activeSet, 0);
-	EVL(activeSet, &Rtc::setS, 1);
-	EVL(activeSet, &Rtc::setM, 2);
-	EVL(activeSet, &Rtc::setH, 3);
-	EVL(activeSet, &Rtc::setDl, 4);
-	EVL(activeSet, &Rtc::setDh, 5);
-	EEL(activeSet, NULL);
-
-	NSL(baseTime);
-	NSL(haltTime);
-	NSL(index);
-	NSL(dataDh);
-	NSL(dataDl);
-	NSL(dataH);
-	NSL(dataM);
-	NSL(dataS);
-	NSL(enabled);
-	NSL(lastLatchData);
 }
 
 }

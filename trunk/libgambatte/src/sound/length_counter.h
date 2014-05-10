@@ -43,8 +43,7 @@ public:
 	void saveState(SaveState::SPU::LCounter &lstate) const;
 	void loadState(const SaveState::SPU::LCounter &lstate, unsigned long cc);
 
-	void SaveS(NewState *ns);
-	void LoadS(NewState *ns);
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 }

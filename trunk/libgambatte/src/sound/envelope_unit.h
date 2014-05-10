@@ -49,8 +49,7 @@ public:
 	void saveState(SaveState::SPU::Env &estate) const;
 	void loadState(const SaveState::SPU::Env &estate, unsigned nr2, unsigned long cc);
 
-	void SaveS(NewState *ns);
-	void LoadS(NewState *ns);
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 }

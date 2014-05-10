@@ -36,10 +36,7 @@ public:
 		return (addr< 0x4000) == (bank == 0);
 	}
 
-	virtual void SaveS(NewState *ns)
-	{
-	}
-	virtual void LoadS(NewState *ns)
+	virtual void SyncState(NewState *ns, bool isReader)
 	{
 	}
 };
@@ -71,13 +68,9 @@ public:
 		memptrs.setRambank(enableRam ? MemPtrs::READ_EN | MemPtrs::WRITE_EN : 0, 0);
 	}
 
-	virtual void SaveS(NewState *ns)
+	virtual void SyncState(NewState *ns, bool isReader)
 	{
 		NSS(enableRam);
-	}
-	virtual void LoadS(NewState *ns)
-	{
-		NSL(enableRam);
 	}
 };
 
@@ -154,19 +147,12 @@ public:
 		setRombank();
 	}
 
-	virtual void SaveS(NewState *ns)
+	virtual void SyncState(NewState *ns, bool isReader)
 	{
 		NSS(rombank);
 		NSS(rambank);
 		NSS(enableRam);
 		NSS(rambankMode);
-	}
-	virtual void LoadS(NewState *ns)
-	{
-		NSL(rombank);
-		NSL(rambank);
-		NSL(enableRam);
-		NSL(rambankMode);
 	}
 };
 
@@ -237,17 +223,11 @@ public:
 		return (addr < 0x4000) == ((bank & 0xF) == 0);
 	}
 
-	virtual void SaveS(NewState *ns)
+	virtual void SyncState(NewState *ns, bool isReader)
 	{
 		NSS(rombank);
 		NSS(enableRam);
 		NSS(rombank0Mode);
-	}
-	virtual void LoadS(NewState *ns)
-	{
-		NSL(rombank);
-		NSL(enableRam);
-		NSL(rombank0Mode);
 	}
 };
 
@@ -289,15 +269,10 @@ public:
 		memptrs.setRombank(rombank & (rombanks(memptrs) - 1));
 	}
 
-	virtual void SaveS(NewState *ns)
+	virtual void SyncState(NewState *ns, bool isReader)
 	{
 		NSS(rombank);
 		NSS(enableRam);
-	}
-	virtual void LoadS(NewState *ns)
-	{
-		NSL(rombank);
-		NSL(enableRam);
 	}
 };
 
@@ -371,17 +346,11 @@ public:
 		setRombank();
 	}
 
-	virtual void SaveS(NewState *ns)
+	virtual void SyncState(NewState *ns, bool isReader)
 	{
 		NSS(rombank);
 		NSS(rambank);
 		NSS(enableRam);
-	}
-	virtual void LoadS(NewState *ns)
-	{
-		NSL(rombank);
-		NSL(rambank);
-		NSL(enableRam);
 	}
 };
 
@@ -446,19 +415,13 @@ public:
 		setRambank();
 		setRombank();
 	}
-	virtual void SaveS(NewState *ns)
+
+	virtual void SyncState(NewState *ns, bool isReader)
 	{
 		NSS(rombank);
 		NSS(rambank);
 		NSS(enableRam);
 		NSS(rambankMode);
-	}
-	virtual void LoadS(NewState *ns)
-	{
-		NSL(rombank);
-		NSL(rambank);
-		NSL(enableRam);
-		NSL(rambankMode);
 	}
 };
 
@@ -515,17 +478,11 @@ public:
 		setRombank();
 	}
 
-	virtual void SaveS(NewState *ns)
+	virtual void SyncState(NewState *ns, bool isReader)
 	{
 		NSS(rombank);
 		NSS(rambank);
 		NSS(enableRam);
-	}
-	virtual void LoadS(NewState *ns)
-	{
-		NSL(rombank);
-		NSL(rambank);
-		NSL(enableRam);
 	}
 };
 
@@ -787,18 +744,11 @@ bool Cartridge::getMemoryArea(int which, unsigned char **data, int *length) {
 	return false;
 }
 
-void Cartridge::SaveS(NewState *ns)
+SYNCFUNC(Cartridge)
 {
 	SSS(memptrs);
 	SSS(rtc);
 	TSS(mbc);
-}
-
-void Cartridge::LoadS(NewState *ns)
-{
-	SSL(memptrs);
-	SSL(rtc);
-	TSL(mbc);
 }
 
 }

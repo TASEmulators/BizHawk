@@ -59,8 +59,7 @@ class SpriteMapper {
 		void loadState(const SaveState &ss, const unsigned char *oamram);
 		bool inactivePeriodAfterDisplayEnable(const unsigned long cc) const { return cc < lu; }
 
-		void SaveS(NewState *ns);
-		void LoadS(NewState *ns);
+		template<bool isReader>void SyncState(NewState *ns);
 	};
 
 	enum { NEED_SORTING_MASK = 0x80 };
@@ -127,8 +126,7 @@ public:
 	void loadState(const SaveState &state, const unsigned char *const oamram) { oamReader.loadState(state, oamram); mapSprites(); }
 	bool inactivePeriodAfterDisplayEnable(unsigned long cc) const { return oamReader.inactivePeriodAfterDisplayEnable(cc); }
 
-	void SaveS(NewState *ns);
-	void LoadS(NewState *ns);
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 }

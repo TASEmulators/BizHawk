@@ -68,8 +68,7 @@ public:
 	void saveState(SaveState &state);
 	void loadState(const SaveState &state);
 
-	void SaveS(NewState *ns);
-	void LoadS(NewState *ns);
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 }

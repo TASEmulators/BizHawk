@@ -53,6 +53,10 @@ void MemPtrs::reset(const unsigned rombanks, const unsigned rambanks, const unsi
 	setRambank(0, 0);
 	setVrambank(0);
 	setWrambank(1);
+
+	// we save only the ram areas
+	memchunk_saveoffs = vramdata() - memchunk_;
+	memchunk_savelen = wramdataend() - memchunk_ - memchunk_saveoffs;
 }
 
 void MemPtrs::setRombank0(const unsigned bank) {
@@ -142,8 +146,24 @@ void MemPtrs::disconnectOamDmaAreas() {
 #define MSS(a) RSS(a,memchunk_)
 #define MSL(a) RSL(a,memchunk_)
 
-void MemPtrs::SaveS(NewState *ns)
+SYNCFUNC(MemPtrs)
 {
+	int memchunk_len_old = memchunk_len;
+	int memchunk_saveoffs_old = memchunk_saveoffs;
+	int memchunk_savelen_old = memchunk_savelen;
+
+	NSS(memchunk_len);
+	NSS(memchunk_saveoffs);
+	NSS(memchunk_savelen);
+
+	if (isReader)
+	{
+		if (memchunk_len != memchunk_len_old || memchunk_saveoffs != memchunk_saveoffs_old || memchunk_savelen != memchunk_savelen_old)
+			__debugbreak();
+	}
+
+	PSS(memchunk_ + memchunk_saveoffs, memchunk_savelen);
+
 	MSS(rmem_[0x0]);
 	MSS(wmem_[0x0]);
 	MSS(rmem_[0x1]);
@@ -188,67 +208,9 @@ void MemPtrs::SaveS(NewState *ns)
 	MSS(vrambankptr_);
 	MSS(rsrambankptr_);
 	MSS(wsrambankptr_);
-	NSS(memchunk_len);
-	PSS(memchunk_, memchunk_len);
 	MSS(rambankdata_);
 	MSS(wramdataend_);
 	NSS(oamDmaSrc_);
-}
-
-void MemPtrs::LoadS(NewState *ns)
-{
-	MSL(rmem_[0x0]);
-	MSL(wmem_[0x0]);
-	MSL(rmem_[0x1]);
-	MSL(wmem_[0x1]);
-	MSL(rmem_[0x2]);
-	MSL(wmem_[0x2]);
-	MSL(rmem_[0x3]);
-	MSL(wmem_[0x3]);
-	MSL(rmem_[0x4]);
-	MSL(wmem_[0x4]);
-	MSL(rmem_[0x5]);
-	MSL(wmem_[0x5]);
-	MSL(rmem_[0x6]);
-	MSL(wmem_[0x6]);
-	MSL(rmem_[0x7]);
-	MSL(wmem_[0x7]);
-	MSL(rmem_[0x8]);
-	MSL(wmem_[0x8]);
-	MSL(rmem_[0x9]);
-	MSL(wmem_[0x9]);
-	MSL(rmem_[0xa]);
-	MSL(wmem_[0xa]);
-	MSL(rmem_[0xb]);
-	MSL(wmem_[0xb]);
-	MSL(rmem_[0xc]);
-	MSL(wmem_[0xc]);
-	MSL(rmem_[0xd]);
-	MSL(wmem_[0xd]);
-	MSL(rmem_[0xe]);
-	MSL(wmem_[0xe]);
-	MSL(rmem_[0xf]);
-	MSL(wmem_[0xf]);
-	//for (int i = 0; i < 0x10; i++)
-	//{
-	//	MSL(rmem_[i]);
-	//	MSL(wmem_[i]);
-	//}
-	MSL(romdata_[0]);
-	MSL(romdata_[1]);
-	MSL(wramdata_[0]);
-	MSL(wramdata_[1]);
-	MSL(vrambankptr_);
-	MSL(rsrambankptr_);
-	MSL(wsrambankptr_);
-	unsigned tmp = memchunk_len;
-	NSL(memchunk_len);
-	if (tmp != memchunk_len) // how graceful could we be here?  not sure
-		__debugbreak();
-	PSL(memchunk_, memchunk_len);
-	MSL(rambankdata_);
-	MSL(wramdataend_);
-	NSL(oamDmaSrc_);
 }
 
 }

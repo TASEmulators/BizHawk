@@ -61,6 +61,11 @@ public:
 	virtual void ExitSection(const char *name);
 };
 
+// defines and explicitly instantiates 
+#define SYNCFUNC(x)\
+	template void x::SyncState<false>(NewState *ns);\
+	template void x::SyncState<true>(NewState *ns);\
+	template<bool isReader>void x::SyncState(NewState *ns)
 
 // N = normal variable
 // P = pointer to fixed size data
@@ -71,29 +76,22 @@ public:
 
 
 // first line is default value in converted enum; last line is default value in argument x
-#define EBS(x,d) do { int _ttmp = (d); if (0)
-#define EVS(x,v,n) else if ((x) == (v)) _ttmp = (n)
-#define EES(x,d) ns->Save(&_ttmp, sizeof(_ttmp), #x); } while (0)
+#define EBS(x,d) do { int _ttmp = (d); if (isReader) ns->Load(&_ttmp, sizeof(_ttmp), #x); if (0)
+#define EVS(x,v,n) else if (!isReader && (x) == (v)) _ttmp = (n); else if (isReader && _ttmp == (n)) (x) = (v)
+#define EES(x,d) else if (isReader) (x) = (d); if (!isReader) ns->Save(&_ttmp, sizeof(_ttmp), #x); } while (0)
 
-#define EBL(x,d) do { int _ttmp = (d); ns->Load(&_ttmp, sizeof(_ttmp), #x); if (0)
-#define EVL(x,v,n) else if (_ttmp == (n)) (x) = (v)
-#define EEL(x,d) else (x) = (d); } while (0)
+#define RSS(x,b) do { if (isReader)\
+{ ptrdiff_t _ttmp; ns->Load(&_ttmp, sizeof(_ttmp), #x); (x) = (_ttmp == 0xdeadbeef ? 0 : (b) + _ttmp); }\
+	else\
+{ ptrdiff_t _ttmp = (x) == 0 ? 0xdeadbeef : (x) - (b); ns->Save(&_ttmp, sizeof(_ttmp), #x); } } while (0)
 
+#define PSS(x,s) do { if (isReader) ns->Load((x), (s), #x); else ns->Save((x), (s), #x); } while (0)
 
-#define RSS(x,b) do { ptrdiff_t _ttmp = (x) == 0 ? 0xdeadbeef : (x) - (b); ns->Save(&_ttmp, sizeof(_ttmp), #x); } while (0)
-#define RSL(x,b) do { ptrdiff_t _ttmp; ns->Load(&_ttmp, sizeof(_ttmp), #x); (x) = (_ttmp == 0xdeadbeef ? 0 : (b) + _ttmp); } while (0)
+#define NSS(x) do { if (isReader) ns->Load(&(x), sizeof(x), #x); else ns->Save(&(x), sizeof(x), #x); } while (0)
 
-#define PSS(x,s) ns->Save((x), (s), #x)
-#define PSL(x,s) ns->Load((x), (s), #x)
+#define SSS(x) do { ns->EnterSection(#x); (x).SyncState<isReader>(ns); ns->ExitSection(#x); } while (0)
 
-#define NSS(x) ns->Save(&(x), sizeof(x), #x)
-#define NSL(x) ns->Load(&(x), sizeof(x), #x)
-
-#define SSS(x) do { ns->EnterSection(#x); (x).SaveS(ns); ns->ExitSection(#x); } while (0)
-#define SSL(x) do { ns->EnterSection(#x); (x).LoadS(ns); ns->ExitSection(#x); } while (0)
-
-#define TSS(x) do { ns->EnterSection(#x); (x)->SaveS(ns); ns->ExitSection(#x); } while (0)
-#define TSL(x) do { ns->EnterSection(#x); (x)->LoadS(ns); ns->ExitSection(#x); } while (0)
+#define TSS(x) do { ns->EnterSection(#x); (x)->SyncState<isReader>(ns); ns->ExitSection(#x); } while (0)
 
 }
 

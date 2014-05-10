@@ -14,8 +14,7 @@ public:
 	void invalidatePredictedNextM0Time() { predictedNextM0Time_ = 0; }
 	unsigned predictedNextM0Time() const { return predictedNextM0Time_; }
 
-	void SaveS(NewState *ns);
-	void LoadS(NewState *ns);
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 }

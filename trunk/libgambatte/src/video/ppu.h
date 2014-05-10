@@ -131,8 +131,7 @@ public:
 	unsigned long * spPalette() { return p_.spPalette; }
 	void update(unsigned long cc);
 
-	void SaveS(NewState *ns);
-	void LoadS(NewState *ns);
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 }

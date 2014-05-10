@@ -55,8 +55,7 @@ public:
 		regChange(statRegSrc_, lycReg, lyCounter, cc);
 	}
 
-	void SaveS(NewState *ns);
-	void LoadS(NewState *ns);
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 }

@@ -1104,7 +1104,7 @@ int Memory::LinkStatus(int which)
 	return -1;
 }
 
-void Memory::SaveS(NewState *ns)
+SYNCFUNC(Memory)
 {
 	SSS(cart);
 	NSS(ioamhram);
@@ -1126,31 +1126,5 @@ void Memory::SaveS(NewState *ns)
 	NSS(LINKCABLE);
 	NSS(linkClockTrigger);
 }
-
-void Memory::LoadS(NewState *ns)
-{
-	SSL(cart);
-	NSL(ioamhram);
-	NSL(divLastUpdate);
-	NSL(lastOamDmaUpdate);
-
-	SSL(intreq);
-	SSL(tima);
-	SSL(display);
-	SSL(sound);
-	//SSL(interrupter); // no state
-
-	NSL(dmaSource);
-	NSL(dmaDestination);
-	NSL(oamDmaPos);
-	NSL(serialCnt);
-	NSL(blanklcd);
-
-	NSL(LINKCABLE);
-	NSL(linkClockTrigger);
-}
-
-
-
 
 }

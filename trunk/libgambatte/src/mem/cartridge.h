@@ -37,8 +37,12 @@ public:
 	virtual void loadState(const SaveState::Mem &ss) = 0;
 	virtual bool isAddressWithinAreaRombankCanBeMappedTo(unsigned address, unsigned rombank) const = 0;
 
-	virtual void SaveS(NewState *ns) = 0;
-	virtual void LoadS(NewState *ns) = 0;
+	template<bool isReader>void SyncState(NewState *ns)
+	{
+		// can't have virtual templates, so..
+		SyncState(ns, isReader);
+	}
+	virtual void SyncState(NewState *ns, bool isReader) = 0;
 };
 
 class Cartridge {
@@ -88,8 +92,7 @@ public:
 		rtc.setRTCCallback(callback);
 	}
 
-	void SaveS(NewState *ns);
-	void LoadS(NewState *ns);
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 }

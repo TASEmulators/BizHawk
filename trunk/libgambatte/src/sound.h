@@ -90,8 +90,7 @@ public:
 	void map_so(unsigned nr51);
 	unsigned getStatus() const;
 
-	void SaveS(NewState *ns);
-	void LoadS(NewState *ns);
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 }

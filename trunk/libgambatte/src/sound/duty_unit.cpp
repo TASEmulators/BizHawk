@@ -149,7 +149,7 @@ void DutyUnit::reviveCounter(const unsigned long cc) {
 	setCounter();
 }
 
-void DutyUnit::SaveS(NewState *ns)
+SYNCFUNC(DutyUnit)
 {
 	NSS(counter);
 	NSS(nextPosUpdate);
@@ -159,17 +159,5 @@ void DutyUnit::SaveS(NewState *ns)
 	NSS(high);
 	NSS(enableEvents);
 }
-
-void DutyUnit::LoadS(NewState *ns)
-{
-	NSL(counter);
-	NSL(nextPosUpdate);
-	NSL(period);
-	NSL(pos);
-	NSL(duty);
-	NSL(high);
-	NSL(enableEvents);
-}
-
 
 }
