@@ -8,7 +8,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadA78 : UserControl, IVirtualPad
 	{
-		public string Controller = "P1";
+		public string Controller { get; set; }
 
 		public VirtualPadA78()
 		{
@@ -17,6 +17,8 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.DoubleBuffer, true);
 			BorderStyle = BorderStyle.Fixed3D;
 			InitializeComponent();
+
+			Controller = "P1";
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 		public CheckBox B6;
 		public CheckBox B7;
 		public CheckBox B8;
-		public string Controller;
+		public string Controller { get; set; }
 
 		public VirtualPad()
 		{
