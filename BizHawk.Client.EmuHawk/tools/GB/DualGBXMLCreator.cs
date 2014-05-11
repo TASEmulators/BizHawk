@@ -103,14 +103,14 @@ namespace BizHawk.Client.EmuHawk
 
 				textBoxOutputDir.Text = BasePath;
 				textBoxXML.Text = XML.ToString();
-				SaveRunButton.Enabled = buttonOK.Enabled = true;
+				SaveRunButton.Enabled = true;
 				return true;
 			}
 			catch (Exception e)
 			{
-				textBoxOutputDir.Text = "";
+				textBoxOutputDir.Text = string.Empty;
 				textBoxXML.Text = "Failed!\n" + e.ToString();
-				buttonOK.Enabled = false;
+				SaveRunButton.Enabled = false;
 				return false;
 			}
 		}

@@ -33,15 +33,14 @@
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.textBoxName = new System.Windows.Forms.TextBox();
-			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.textBoxOutputDir = new System.Windows.Forms.TextBox();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.textBoxXML = new System.Windows.Forms.TextBox();
+			this.SaveRunButton = new System.Windows.Forms.Button();
 			this.dualGBFileSelector2 = new BizHawk.Client.EmuHawk.DualGBFileSelector();
 			this.dualGBFileSelector1 = new BizHawk.Client.EmuHawk.DualGBFileSelector();
-			this.SaveRunButton = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -94,18 +93,6 @@
 			this.textBoxName.Size = new System.Drawing.Size(420, 20);
 			this.textBoxName.TabIndex = 0;
 			this.textBoxName.TextChanged += new System.EventHandler(this.textBoxName_TextChanged);
-			// 
-			// buttonOK
-			// 
-			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonOK.Enabled = false;
-			this.buttonOK.Location = new System.Drawing.Point(318, 477);
-			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(60, 23);
-			this.buttonOK.TabIndex = 6;
-			this.buttonOK.Text = "&Save";
-			this.buttonOK.UseVisualStyleBackColor = true;
-			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
 			// 
 			// buttonCancel
 			// 
@@ -168,6 +155,18 @@
 			this.textBoxXML.TabIndex = 5;
 			this.textBoxXML.WordWrap = false;
 			// 
+			// SaveRunButton
+			// 
+			this.SaveRunButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.SaveRunButton.Enabled = false;
+			this.SaveRunButton.Location = new System.Drawing.Point(293, 477);
+			this.SaveRunButton.Name = "SaveRunButton";
+			this.SaveRunButton.Size = new System.Drawing.Size(85, 23);
+			this.SaveRunButton.TabIndex = 8;
+			this.SaveRunButton.Text = "&Save and Run";
+			this.SaveRunButton.UseVisualStyleBackColor = true;
+			this.SaveRunButton.Click += new System.EventHandler(this.SaveRunButton_Click);
+			// 
 			// dualGBFileSelector2
 			// 
 			this.dualGBFileSelector2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -188,21 +187,9 @@
 			this.dualGBFileSelector1.TabIndex = 0;
 			this.dualGBFileSelector1.NameChanged += new System.EventHandler(this.dualGBFileSelector1_NameChanged);
 			// 
-			// SaveRunButton
-			// 
-			this.SaveRunButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.SaveRunButton.Enabled = false;
-			this.SaveRunButton.Location = new System.Drawing.Point(214, 477);
-			this.SaveRunButton.Name = "SaveRunButton";
-			this.SaveRunButton.Size = new System.Drawing.Size(98, 23);
-			this.SaveRunButton.TabIndex = 8;
-			this.SaveRunButton.Text = "&Save and Run";
-			this.SaveRunButton.UseVisualStyleBackColor = true;
-			this.SaveRunButton.Click += new System.EventHandler(this.SaveRunButton_Click);
-			// 
 			// DualGBXMLCreator
 			// 
-			this.AcceptButton = this.buttonOK;
+			this.AcceptButton = this.SaveRunButton;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
@@ -211,7 +198,6 @@
 			this.Controls.Add(this.groupBox5);
 			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.buttonCancel);
-			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
@@ -240,7 +226,6 @@
 		private DualGBFileSelector dualGBFileSelector2;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.Windows.Forms.TextBox textBoxName;
-		private System.Windows.Forms.Button buttonOK;
 		private System.Windows.Forms.Button buttonCancel;
 		private System.Windows.Forms.GroupBox groupBox4;
 		private System.Windows.Forms.TextBox textBoxOutputDir;

@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -88,13 +89,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DualGBFileSelector_Load(object sender, EventArgs e)
 		{
-			Update();
+			UpdateValues();
 		}
 
-		public void Update()
+		public void UpdateValues()
 		{
 			UseCurrentRomButton.Enabled = Global.Emulator != null && // For the designer
-				!(Global.Emulator is NullEmulator) &&
+				(Global.Emulator is Gameboy) &&
 				!string.IsNullOrEmpty(GlobalWin.MainForm.CurrentlyOpenRom) &&
 				!GlobalWin.MainForm.CurrentlyOpenRom.Contains('|') && // Can't be archive
 				!GlobalWin.MainForm.CurrentlyOpenRom.Contains(".xml"); // Can't already be an xml
