@@ -22,6 +22,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private List<string> CurrentFrameInputs
+		{
+			get
+			{
+				return Global.MovieSession.Movie
+					.GetInput(Global.Emulator.Frame)
+					.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
+					.ToList();
+			}
+		}
+
 		private int _defaultWidth;
 		private int _defaultHeight;
 
@@ -60,16 +71,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
 			{
-				var str = Global.MovieSession.Movie.GetInput(Global.Emulator.Frame);
-
-				var sections = Global.MovieSession.Movie
-					.GetInput(Global.Emulator.Frame)
-					.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
-					.ToList();
-
 				for (int i = 0; i < Pads.Count; i++)
 				{
-					Pads[i].SetButtons(sections[i]);
+					Pads[i].SetButtons(CurrentFrameInputs[i]);
 				}
 			}
 			else if (!Global.Config.VirtualPadSticky)
@@ -121,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadStartingPads()
 		{
-			// Order matters! Add them in the of the mnemonics
+			// Order matters! Add them in the of order of the mnemonic system
 			switch (Global.Emulator.SystemId)
 			{
 				case "A26":
