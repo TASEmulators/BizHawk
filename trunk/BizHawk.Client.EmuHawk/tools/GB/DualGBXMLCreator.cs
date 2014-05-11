@@ -152,6 +152,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Recalculate())
 			{
+				var fileInfo = new FileInfo(textBoxOutputDir.Text);
+
+				if (fileInfo.Exists)
+				{
+					var result = MessageBox.Show(this, "File already exists, overwrite?", "File exists", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+					if (result != DialogResult.OK)
+					{
+						return;
+					}
+				}
 				using (var sw = new StreamWriter(textBoxOutputDir.Text))
 				{
 					sw.Write(textBoxXML.Text);
