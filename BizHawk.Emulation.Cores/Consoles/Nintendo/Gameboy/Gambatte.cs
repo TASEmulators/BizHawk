@@ -438,38 +438,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				throw new Exception("gambatte_newstateload() returned false");
 		}
 
-		/// <summary>
-		/// handles the core-portion of savestating
-		/// </summary>
-		/// <returns>private binary data corresponding to a savestate</returns>
-		byte[] SaveCoreBinary()
-		{
-			uint nlen = 0;
-			IntPtr ndata = IntPtr.Zero;
-
-			if (!LibGambatte.gambatte_savestate(GambatteState, ref ndata, ref nlen))
-				throw new Exception("Gambatte failed to save the savestate!");
-
-			if (nlen == 0)
-				throw new Exception("Gambatte returned a 0-length savestate?");
-
-			byte[] data = new byte[nlen];
-			System.Runtime.InteropServices.Marshal.Copy(ndata, data, 0, (int)nlen);
-			LibGambatte.gambatte_savestate_destroy(ndata);
-
-			return data;
-		}
-
-		/// <summary>
-		/// handles the core portion of loadstating
-		/// </summary>
-		/// <param name="data">private binary data previously returned from SaveCoreBinary()</param>
-		void LoadCoreBinary(byte[] data)
-		{
-			if (!LibGambatte.gambatte_loadstate(GambatteState, data, (uint)data.Length))
-				throw new Exception("Gambatte failed to load the savestate!");
-		}
-
 		public void SaveStateText(System.IO.TextWriter writer)
 		{
 			var temp = SaveStateBinary();

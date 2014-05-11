@@ -107,19 +107,6 @@ public:
 	// 0 = vram, 1 = rom, 2 = wram, 3 = cartram, 4 = oam, 5 = hram
 	bool getMemoryArea(int which, unsigned char **data, int *length);
 	
-	/** Saves emulator state to the file given by 'filepath'.
-	  *
-	  * @param  videoBuf 160x144 RGB32 (native endian) video frame buffer or 0. Used for saving a thumbnail.
-	  * @param  pitch distance in number of pixels (not bytes) from the start of one line to the next in videoBuf.
-	  * @return success
-	  */
-	bool saveState(std::ostream &file);
-	
-	/** Loads emulator state from the file given by 'filepath'.
-	  * @return success
-	  */
-	bool loadState(std::istream &file);
-	
 	/** ROM header title of currently loaded ROM image. */
 	const std::string romTitle() const;
 

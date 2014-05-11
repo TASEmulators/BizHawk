@@ -272,33 +272,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public static extern int gambatte_savesavedatalength(IntPtr core);
 
 		/// <summary>
-		/// Saves emulator state to a byte array
-		/// </summary>
-		/// <param name="core">opaque state pointer</param>
-		/// <param name="data">private savestate data returned by the core</param>
-		/// <param name="len">the length of the data in bytes</param>
-		/// <returns>success</returns>
-		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool gambatte_savestate(IntPtr core, ref IntPtr data, ref uint len);
-
-		/// <summary>
-		/// destroy data returned by gambatte_savestate() to avoid memory leaks
-		/// </summary>
-		/// <param name="data">pointer from gambatte_savestate()</param>
-		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_savestate_destroy(IntPtr data);
-
-		/// <summary>
-		/// Loads emulator state from a byte array
-		/// </summary>
-		/// <param name="core">opaque state pointer</param>
-		/// <param name="data">savestate data</param>
-		/// <param name="len">length of the savestate data in bytes</param>
-		/// <returns>success</returns>
-		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool gambatte_loadstate(IntPtr core, byte[] data, uint len);
-
-		/// <summary>
 		/// new savestate method
 		/// </summary>
 		/// <param name="core"></param>

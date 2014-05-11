@@ -19,7 +19,6 @@
 #include "gambatte.h"
 #include "cpu.h"
 #include "savestate.h"
-#include "statesaver.h"
 #include "initstate.h"
 #include <sstream>
 #include <cstring>
@@ -193,37 +192,6 @@ void GB::setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned rgb32) 
 
 void GB::setCgbPalette(unsigned *lut) {
 	p_->cpu.setCgbPalette(lut);
-}
-
-bool GB::loadState(std::istream &file) {
-	if (p_->cpu.loaded()) {
-	//	p_->cpu.saveSavedata();
-		
-		SaveState state;
-		p_->cpu.setStatePtrs(state);
-		
-		if (StateSaver::loadState(state, file)) {
-			p_->cpu.loadState(state);
-			file.read((char *)p_->vbuff, 160 * 144 * 4); // yes, sloppy
-			return true;
-		}
-	}
-
-	return false;
-}
-
-bool GB::saveState(std::ostream &file) {
-	if (p_->cpu.loaded()) {
-		SaveState state;
-		p_->cpu.setStatePtrs(state);
-		p_->cpu.saveState(state);
-		bool ret =  StateSaver::saveState(state, file);
-		if (ret)
-			file.write((const char *)p_->vbuff, 160 * 144 * 4); // yes, sloppy
-		return ret;
-	}
-
-	return false;
 }
 
 const std::string GB::romTitle() const {

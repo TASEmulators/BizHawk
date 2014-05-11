@@ -144,36 +144,6 @@ GBEXPORT int gambatte_savesavedatalength(void *core)
 	return g->saveSavedataLength();
 }
 
-GBEXPORT int gambatte_savestate(void *core, char **data, unsigned *len)
-{
-	GB *g = (GB *) core;
-
-	std::ostringstream os = std::ostringstream(std::ios_base::binary | std::ios_base::out);
-	if (!g->saveState(os))
-		return 0;
-
-	os.flush();
-	std::string s = os.str();
-	char *ret = (char *) std::malloc(s.length());
-	std::memcpy(ret, s.data(), s.length());
-	*len = s.length();
-	*data = ret;
-	return 1;
-}
-
-GBEXPORT void gambatte_savestate_destroy(char *data)
-{
-	std::free(data);
-}
-
-GBEXPORT int gambatte_loadstate(void *core, const char *data, unsigned len)
-{
-	GB *g = (GB *) core;
-	// msvc allows using an Rvalue directly where an Lvalue is need, which is kind of cool and sort of makes sense, but no
-	std::istringstream iss(std::string(data, len), std::ios_base::binary | std::ios_base::in);
-	return g->loadState(iss);
-}
-
 GBEXPORT long gambatte_newstatelen(void *core)
 {
 	GB *g = (GB *) core;

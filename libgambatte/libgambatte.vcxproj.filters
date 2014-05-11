@@ -21,9 +21,6 @@
     <ClInclude Include="include\gambatte.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\statesaver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\video.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -138,9 +135,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gambatte.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\statesaver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\video.cpp">
