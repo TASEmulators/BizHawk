@@ -41,6 +41,7 @@
 			this.textBoxXML = new System.Windows.Forms.TextBox();
 			this.dualGBFileSelector2 = new BizHawk.Client.EmuHawk.DualGBFileSelector();
 			this.dualGBFileSelector1 = new BizHawk.Client.EmuHawk.DualGBFileSelector();
+			this.SaveRunButton = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -98,11 +99,11 @@
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.Enabled = false;
-			this.buttonOK.Location = new System.Drawing.Point(288, 477);
+			this.buttonOK.Location = new System.Drawing.Point(318, 477);
 			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(75, 23);
+			this.buttonOK.Size = new System.Drawing.Size(60, 23);
 			this.buttonOK.TabIndex = 6;
-			this.buttonOK.Text = "OK";
+			this.buttonOK.Text = "&Save";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
 			// 
@@ -110,11 +111,11 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(369, 477);
+			this.buttonCancel.Location = new System.Drawing.Point(384, 477);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+			this.buttonCancel.Size = new System.Drawing.Size(60, 23);
 			this.buttonCancel.TabIndex = 7;
-			this.buttonCancel.Text = "Cancel";
+			this.buttonCancel.Text = "&Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			// 
 			// groupBox4
@@ -187,6 +188,18 @@
 			this.dualGBFileSelector1.TabIndex = 0;
 			this.dualGBFileSelector1.NameChanged += new System.EventHandler(this.dualGBFileSelector1_NameChanged);
 			// 
+			// SaveRunButton
+			// 
+			this.SaveRunButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.SaveRunButton.Enabled = false;
+			this.SaveRunButton.Location = new System.Drawing.Point(214, 477);
+			this.SaveRunButton.Name = "SaveRunButton";
+			this.SaveRunButton.Size = new System.Drawing.Size(98, 23);
+			this.SaveRunButton.TabIndex = 8;
+			this.SaveRunButton.Text = "&Save and Run";
+			this.SaveRunButton.UseVisualStyleBackColor = true;
+			this.SaveRunButton.Click += new System.EventHandler(this.SaveRunButton_Click);
+			// 
 			// DualGBXMLCreator
 			// 
 			this.AcceptButton = this.buttonOK;
@@ -194,6 +207,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(456, 512);
+			this.Controls.Add(this.SaveRunButton);
 			this.Controls.Add(this.groupBox5);
 			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.buttonCancel);
@@ -232,5 +246,6 @@
 		private System.Windows.Forms.TextBox textBoxOutputDir;
 		private System.Windows.Forms.GroupBox groupBox5;
 		private System.Windows.Forms.TextBox textBoxXML;
+		private System.Windows.Forms.Button SaveRunButton;
 	}
 }

@@ -1044,7 +1044,15 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Sound.StopSound();
 			using (var dlg = new DualGBXMLCreator())
 			{
-				dlg.ShowDialog(this);
+				var result = dlg.ShowDialog(this);
+				if (result == System.Windows.Forms.DialogResult.OK)
+				{
+					GlobalWin.OSD.AddMessage("XML File saved");
+				}
+				else
+				{
+					GlobalWin.OSD.AddMessage("Dual GB creator aborted");
+				}
 			}
 
 			GlobalWin.Sound.StartSound();
