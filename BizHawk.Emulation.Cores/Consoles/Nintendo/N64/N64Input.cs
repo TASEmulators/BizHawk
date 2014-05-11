@@ -65,6 +65,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			ThisFrameInputPolled = false;
 		}
 
+		private const sbyte _maxAnalogX = 127;
+		private const sbyte _minAnalogX = -127;
+		private const sbyte _maxAnalogY = 127;
+		private const sbyte _minAnalogY = -127;
+
 		/// <summary>
 		/// Translates controller input from EmuHawk into
 		/// N64 controller data
@@ -79,14 +84,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			// Analog stick up = +Y
 			string p = "P" + (i + 1);
 			sbyte x;
-			if (Controller.IsPressed(p + " A Left")) { x = -127; }
-			else if (Controller.IsPressed(p + " A Right")) { x = 127; }
-			else { x = (sbyte)Controller.GetFloat(p + " X Axis"); }
+			if (Controller.IsPressed(p + " A Left"))
+			{
+				x = _minAnalogX;
+			}
+			else if (Controller.IsPressed(p + " A Right"))
+			{
+				x = _maxAnalogX;
+			}
+			else
+			{
+				x = (sbyte)Controller.GetFloat(p + " X Axis");
+			}
 
 			sbyte y;
-			if (Controller.IsPressed(p + " A Up")) { y = 127; }
-			else if (Controller.IsPressed(p + " A Down")) { y = -127; }
-			else { y = (sbyte)Controller.GetFloat(p + " Y Axis"); }
+			if (Controller.IsPressed(p + " A Up"))
+			{
+				y = _maxAnalogY;
+			}
+			else if (Controller.IsPressed(p + " A Down"))
+			{
+				y = _minAnalogY;
+			}
+			else
+			{
+				y = (sbyte)Controller.GetFloat(p + " Y Axis");
+			}
 
 			int value = ReadController(i + 1);
 			value |= (x & 0xFF) << 16;
