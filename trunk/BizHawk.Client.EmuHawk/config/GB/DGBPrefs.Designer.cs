@@ -28,13 +28,14 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DGBPrefs));
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.gbPrefControl1 = new BizHawk.Client.EmuHawk.config.GB.GBPrefControl();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.gbPrefControl2 = new BizHawk.Client.EmuHawk.config.GB.GBPrefControl();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonOK = new System.Windows.Forms.Button();
-			this.gbPrefControl1 = new BizHawk.Client.EmuHawk.config.GB.GBPrefControl();
-			this.gbPrefControl2 = new BizHawk.Client.EmuHawk.config.GB.GBPrefControl();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -64,6 +65,15 @@
 			this.tabPage1.Text = "Left Gameboy";
 			this.tabPage1.UseVisualStyleBackColor = true;
 			// 
+			// gbPrefControl1
+			// 
+			this.gbPrefControl1.ColorGameBoy = false;
+			this.gbPrefControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.gbPrefControl1.Location = new System.Drawing.Point(3, 3);
+			this.gbPrefControl1.Name = "gbPrefControl1";
+			this.gbPrefControl1.Size = new System.Drawing.Size(503, 302);
+			this.gbPrefControl1.TabIndex = 0;
+			// 
 			// tabPage2
 			// 
 			this.tabPage2.Controls.Add(this.gbPrefControl2);
@@ -74,6 +84,15 @@
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "Right Gameboy";
 			this.tabPage2.UseVisualStyleBackColor = true;
+			// 
+			// gbPrefControl2
+			// 
+			this.gbPrefControl2.ColorGameBoy = false;
+			this.gbPrefControl2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.gbPrefControl2.Location = new System.Drawing.Point(3, 3);
+			this.gbPrefControl2.Name = "gbPrefControl2";
+			this.gbPrefControl2.Size = new System.Drawing.Size(503, 302);
+			this.gbPrefControl2.TabIndex = 0;
 			// 
 			// buttonCancel
 			// 
@@ -97,24 +116,6 @@
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			// 
-			// gbPrefControl1
-			// 
-			this.gbPrefControl1.ColorGameBoy = false;
-			this.gbPrefControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.gbPrefControl1.Location = new System.Drawing.Point(3, 3);
-			this.gbPrefControl1.Name = "gbPrefControl1";
-			this.gbPrefControl1.Size = new System.Drawing.Size(503, 302);
-			this.gbPrefControl1.TabIndex = 0;
-			// 
-			// gbPrefControl2
-			// 
-			this.gbPrefControl2.ColorGameBoy = false;
-			this.gbPrefControl2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.gbPrefControl2.Location = new System.Drawing.Point(3, 3);
-			this.gbPrefControl2.Name = "gbPrefControl2";
-			this.gbPrefControl2.Size = new System.Drawing.Size(503, 302);
-			this.gbPrefControl2.TabIndex = 0;
-			// 
 			// DGBPrefs
 			// 
 			this.AcceptButton = this.buttonOK;
@@ -125,6 +126,7 @@
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.tabControl1);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "DGBPrefs";
 			this.Text = "Gameboy Link Settings";
 			this.tabControl1.ResumeLayout(false);
