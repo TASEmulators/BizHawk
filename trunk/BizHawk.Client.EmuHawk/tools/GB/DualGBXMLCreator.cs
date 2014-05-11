@@ -4,11 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using BizHawk.Client.Common;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class DualGBXMLCreator : Form
 	{
+		private bool _suspendRecalculate = false;
+
 		public DualGBXMLCreator()
 		{
 			InitializeComponent();
@@ -51,8 +55,13 @@ namespace BizHawk.Client.EmuHawk
 			throw new FileNotFoundException();
 		}
 
-		bool Recalculate()
+		private bool Recalculate()
 		{
+			if (_suspendRecalculate)
+			{
+				return false;
+			}
+
 			try
 			{
 				var PathLeft = dualGBFileSelector1.GetName();
@@ -130,23 +139,13 @@ namespace BizHawk.Client.EmuHawk
 			Recalculate();
 		}
 
-		private void buttonOK_Click(object sender, EventArgs e)
-		{
-			if (Recalculate())
-			{
-				using (var sw = new StreamWriter(textBoxOutputDir.Text))
-				{
-					sw.Write(textBoxXML.Text);
-				}
-
-				DialogResult = DialogResult.OK;
-				Close();
-			}
-		}
-
 		private void DualGBXMLCreator_Load(object sender, EventArgs e)
 		{
-
+			CurrentForAllButton.Enabled = Global.Emulator != null && // For the designer
+				(Global.Emulator is Gameboy) &&
+				!string.IsNullOrEmpty(GlobalWin.MainForm.CurrentlyOpenRom) &&
+				!GlobalWin.MainForm.CurrentlyOpenRom.Contains('|') && // Can't be archive
+				!GlobalWin.MainForm.CurrentlyOpenRom.Contains(".xml"); // Can't already be an xml
 		}
 
 		private void SaveRunButton_Click(object sender, EventArgs e)
@@ -162,6 +161,24 @@ namespace BizHawk.Client.EmuHawk
 				Close();
 				GlobalWin.MainForm.LoadRom(textBoxOutputDir.Text);
 			}
+		}
+
+		private void CurrentForAllButton_Click(object sender, EventArgs e)
+		{
+			_suspendRecalculate = true;
+			dualGBFileSelector1.SetName(GlobalWin.MainForm.CurrentlyOpenRom);
+			dualGBFileSelector2.SetName(GlobalWin.MainForm.CurrentlyOpenRom);
+
+			textBoxName.Text = Path.GetFileNameWithoutExtension(GlobalWin.MainForm.CurrentlyOpenRom);
+			_suspendRecalculate = false;
+
+			Recalculate();
+		}
+
+		private void buttonCancel_Click(object sender, EventArgs e)
+		{
+			DialogResult = DialogResult.Cancel;
+			Close();
 		}
 	}
 }
