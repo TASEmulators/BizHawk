@@ -20,6 +20,11 @@ namespace BizHawk.Client.EmuHawk
 			return textBox1.Text;
 		}
 
+		public void SetName(string val)
+		{
+			textBox1.Text = val;
+		}
+
 		public event EventHandler NameChanged;
 
 		private void HandleLabelTextChanged(object sender, EventArgs e)

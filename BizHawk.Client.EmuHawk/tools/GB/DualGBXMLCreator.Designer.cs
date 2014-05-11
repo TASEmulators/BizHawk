@@ -39,6 +39,7 @@
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.textBoxXML = new System.Windows.Forms.TextBox();
 			this.SaveRunButton = new System.Windows.Forms.Button();
+			this.CurrentForAllButton = new System.Windows.Forms.Button();
 			this.dualGBFileSelector2 = new BizHawk.Client.EmuHawk.DualGBFileSelector();
 			this.dualGBFileSelector1 = new BizHawk.Client.EmuHawk.DualGBFileSelector();
 			this.groupBox1.SuspendLayout();
@@ -104,6 +105,7 @@
 			this.buttonCancel.TabIndex = 7;
 			this.buttonCancel.Text = "&Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
 			// 
 			// groupBox4
 			// 
@@ -167,6 +169,17 @@
 			this.SaveRunButton.UseVisualStyleBackColor = true;
 			this.SaveRunButton.Click += new System.EventHandler(this.SaveRunButton_Click);
 			// 
+			// CurrentForAllButton
+			// 
+			this.CurrentForAllButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.CurrentForAllButton.Location = new System.Drawing.Point(12, 477);
+			this.CurrentForAllButton.Name = "CurrentForAllButton";
+			this.CurrentForAllButton.Size = new System.Drawing.Size(128, 23);
+			this.CurrentForAllButton.TabIndex = 9;
+			this.CurrentForAllButton.Text = "Use Current Rom for All";
+			this.CurrentForAllButton.UseVisualStyleBackColor = true;
+			this.CurrentForAllButton.Click += new System.EventHandler(this.CurrentForAllButton_Click);
+			// 
 			// dualGBFileSelector2
 			// 
 			this.dualGBFileSelector2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -194,6 +207,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(456, 512);
+			this.Controls.Add(this.CurrentForAllButton);
 			this.Controls.Add(this.SaveRunButton);
 			this.Controls.Add(this.groupBox5);
 			this.Controls.Add(this.groupBox4);
@@ -232,5 +246,6 @@
 		private System.Windows.Forms.GroupBox groupBox5;
 		private System.Windows.Forms.TextBox textBoxXML;
 		private System.Windows.Forms.Button SaveRunButton;
+		private System.Windows.Forms.Button CurrentForAllButton;
 	}
 }
