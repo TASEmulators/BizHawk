@@ -4,6 +4,7 @@ using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -438,20 +439,41 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				throw new Exception("gambatte_newstateload() returned false");
 		}
 
+		JsonSerializer ser = new JsonSerializer() { Formatting = Formatting.Indented };
+
 		public void SaveStateText(System.IO.TextWriter writer)
 		{
-			var temp = SaveStateBinary();
-			temp.SaveAsHex(writer);
+			var s = new TextState();
+			s.Prepare();
+			LibGambatte.gambatte_newstatesave_ex(GambatteState,
+				s.Save,
+				s.EnterSection,
+				s.ExitSection);
+			s.IsLagFrame = IsLagFrame;
+			s.LagCount = LagCount;
+			s.Frame = Frame;
+			s.frameOverflow = frameOverflow;
+			s._cycleCount = _cycleCount;
+
+			ser.Serialize(writer, s);
 			// write extra copy of stuff we don't use
+			writer.WriteLine();
 			writer.WriteLine("Frame {0}", Frame);
 		}
 
 		public void LoadStateText(System.IO.TextReader reader)
 		{
-			string hex = reader.ReadLine();
-			byte[] state = new byte[hex.Length / 2];
-			state.ReadFromHex(hex);
-			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
+			var s = (TextState)ser.Deserialize(reader, typeof(TextState));
+			s.Prepare();
+			LibGambatte.gambatte_newstateload_ex(GambatteState,
+				s.Load,
+				s.EnterSection,
+				s.ExitSection);
+			IsLagFrame = s.IsLagFrame;
+			LagCount = s.LagCount;
+			Frame = s.Frame;
+			frameOverflow = s.frameOverflow;
+			_cycleCount = s._cycleCount;
 		}
 
 		public void SaveStateBinary(System.IO.BinaryWriter writer)
