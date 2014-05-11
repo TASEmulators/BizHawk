@@ -190,7 +190,7 @@
       "P2 Down": "NumberPad2, J1 RotationZ+",
       "P2 Left": "NumberPad4, J1 Z-",
       "P2 Right": "NumberPad6, J1 Z+",
-      "P2 Button": "NumberPad1, J1 B4"
+      "P2 Button": "NumberPad1, J1 B2"
     },
     "Atari 7800 ProLine Joystick Controller": {
       "Power": "",
@@ -198,17 +198,17 @@
       "Select": "S, J1 B10",
       "Pause": "",
       "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
-      "P1 Down": "DownArrow, J1 POV1D X1 DpadDown, X1 LStickDown",
-      "P1 Left": "LeftArrow, J1 POV1L X1 DpadLeft, X1 LStickLeft",
-      "P1 Right": "RightArrow, J1 POV1R X1 DpadRight, X1 LStickRight",
-      "P1 Trigger 1": "Z, J1 B1, X1 A",
-      "P1 Trigger 2": "X, J1 B1, X1 X",
+      "P1 Down": "DownArrow, J1 POV1D, X1 DpadDown, X1 LStickDown",
+      "P1 Left": "LeftArrow, J1 POV1L, X1 DpadLeft, X1 LStickLeft",
+      "P1 Right": "RightArrow, J1 POV1R, X1 DpadRight, X1 LStickRight",
+      "P1 Trigger": "Z, J1 B1, X1 A",
+      "P1 Trigger 2": "X, J1 B2, X1 X",
       "P2 Up": "NumberPad8, J1 RotationZ-",
       "P2 Down": "NumberPad2, J1 RotationZ+",
       "P2 Left": "NumberPad4, J1 Z-",
       "P2 Right": "NumberPad6, J1 Z+",
-      "P2 Trigger 1": "NumberPad1, J1 B4",
-      "P2 Trigger 2": "NumberPad3, B1 B3"
+      "P2 Trigger": "NumberPad1, J1 B4",
+      "P2 Trigger 2": "NumberPad3, J1 B3"
     },
     "Commodore 64 Controller": {
       "P1 Up": "NumberPad8, J1 POV1U, X1 DpadUp, X1 LStickUp",
