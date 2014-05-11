@@ -103,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 
 				textBoxOutputDir.Text = BasePath;
 				textBoxXML.Text = XML.ToString();
-				buttonOK.Enabled = true;
+				SaveRunButton.Enabled = buttonOK.Enabled = true;
 				return true;
 			}
 			catch (Exception e)
@@ -147,6 +147,21 @@ namespace BizHawk.Client.EmuHawk
 		private void DualGBXMLCreator_Load(object sender, EventArgs e)
 		{
 
+		}
+
+		private void SaveRunButton_Click(object sender, EventArgs e)
+		{
+			if (Recalculate())
+			{
+				using (var sw = new StreamWriter(textBoxOutputDir.Text))
+				{
+					sw.Write(textBoxXML.Text);
+				}
+
+				DialogResult = DialogResult.OK;
+				Close();
+				GlobalWin.MainForm.LoadRom(textBoxOutputDir.Text);
+			}
 		}
 	}
 }
