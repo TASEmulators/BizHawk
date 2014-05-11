@@ -36,8 +36,6 @@ namespace BizHawk.Client.EmuHawk
 		private int _defaultWidth;
 		private int _defaultHeight;
 
-		private bool _multiplayerMode;
-
 		#region Public API
 
 		public bool AskSave() { return true; }
@@ -95,6 +93,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			LoadConfigSettings();
 			LoadStartingPads();
+			if (Global.Config.VirtualPadMultiplayerMode)
+			{
+				SwitchToMultiplayer();
+			}
 		}
 
 		private void LoadConfigSettings()
@@ -196,7 +198,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void LoadExtraPads()
+		private void SwitchToMultiplayer()
 		{
 			switch (Global.Emulator.SystemId)
 			{
@@ -254,7 +256,7 @@ namespace BizHawk.Client.EmuHawk
 					break;
 			}
 
-			_multiplayerMode = true;
+			Global.Config.VirtualPadMultiplayerMode = true;
 		}
 
 		public void BumpAnalogValue(int? dx, int? dy) // TODO: multi-player
@@ -314,6 +316,8 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.VirtualPadSettings.SaveWindowPosition = true;
 			Global.Config.VirtualPadSettings.TopMost = TopMost = false;
 			Global.Config.VirtualPadSettings.FloatingWindow = false;
+			Global.Config.VirtualPadMultiplayerMode = false;
+			SwitchToSinglePlayer();
 		}
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
@@ -347,18 +351,39 @@ namespace BizHawk.Client.EmuHawk
 			base.OnShown(e);
 		}
 
+		private void SwitchToSinglePlayer()
+		{
+			var toRemove = Pads
+					.Where(pad => !string.IsNullOrEmpty(pad.Controller) && pad.Controller != "P1")
+					.ToList();
+
+			foreach (var pad in toRemove)
+			{
+				ControllerBox.Controls.Remove(pad as Control);
+			}
+
+			Global.Config.VirtualPadMultiplayerMode = false;
+		}
+
 		#endregion
 
 		#endregion
 
 		private void MultiplayerModeMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadExtraPads();
+			if (Global.Config.VirtualPadMultiplayerMode)
+			{
+				SwitchToSinglePlayer();
+			}
+			else
+			{
+				SwitchToMultiplayer();
+			}
 		}
 
 		private void PadsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			MultiplayerModeMenuItem.Enabled = !_multiplayerMode;
+			MultiplayerModeMenuItem.Checked = Global.Config.VirtualPadMultiplayerMode;
 		}
 	}
 }

@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadN64 : UserControl, IVirtualPad
 	{
-		public string Controller = "P1";
+		public string Controller { get; set; }
 
 		private int old_X = 0;
 		private int old_Y = 0;
@@ -22,15 +22,19 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.DoubleBuffer, true);
 			BorderStyle = BorderStyle.Fixed3D;
 			InitializeComponent();
+
+			Controller = "P1";
 		}
 
 		private void UserControl1_Load(object sender, EventArgs e)
-        {
-            if (Controller == "P1")
-            {
-                numericUpDown1.Visible = true;
-                numericUpDown2.Visible = true;
-            }
+		{
+			// adelikat: What's wrong with having this on players 2 - 4?
+			if (Controller == "P1")
+			{
+				numericUpDown1.Visible = true;
+				numericUpDown2.Visible = true;
+			}
+
 			PU.ControllerButton = Controller + " Up";
 			PD.ControllerButton = Controller + " Down";
 			PL.ControllerButton = Controller + " Left";

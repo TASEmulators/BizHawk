@@ -8,7 +8,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadColeco : UserControl , IVirtualPad
 	{
-		public string Controller = "P1";
+		public string Controller { get; set; }
 		public VirtualPadColeco()
 		{
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
@@ -17,6 +17,8 @@ namespace BizHawk.Client.EmuHawk
 			BorderStyle = BorderStyle.Fixed3D;
 			Paint += VirtualPad_Paint;
 			InitializeComponent();
+
+			Controller = "P1";
 		}
 
 		private void VirtualPadColeco_Load(object sender, EventArgs e)

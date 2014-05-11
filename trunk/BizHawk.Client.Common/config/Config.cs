@@ -489,6 +489,7 @@ namespace BizHawk.Client.Common
 		public bool VirtualPadsUpdatePads = true;
 		public bool AutoloadVirtualPad = false;
 		public bool VirtualPadSticky = true;
+		public bool VirtualPadMultiplayerMode = false;
 
 		// NES Game Genie Encoder/Decoder
 		public ToolDialogSettings NesGGSettings = new ToolDialogSettings();

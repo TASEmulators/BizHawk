@@ -8,6 +8,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadSaturnControl : UserControl, IVirtualPad
 	{
+		public string Controller { get; set; }
+
 		public VirtualPadSaturnControl()
 		{
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
@@ -16,6 +18,8 @@ namespace BizHawk.Client.EmuHawk
 			BorderStyle = BorderStyle.Fixed3D;
 			Paint += VirtualPad_Paint;
 			InitializeComponent();
+
+			Controller = string.Empty;
 		}
 
 		private void VirtualPadSaturnControl_Load(object sender, EventArgs e)
