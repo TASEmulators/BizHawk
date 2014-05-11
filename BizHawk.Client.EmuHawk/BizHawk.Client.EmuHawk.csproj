@@ -1521,6 +1521,7 @@
     <None Include="images\emu7800.png" />
     <None Include="images\genplus.png" />
     <None Include="images\gambatte.png" />
+    <None Include="images\dual.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

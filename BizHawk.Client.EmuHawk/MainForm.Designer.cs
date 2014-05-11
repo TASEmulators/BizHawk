@@ -1678,20 +1678,20 @@
 			// 
 			this.ToolBoxMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.ToolBox;
 			this.ToolBoxMenuItem.Name = "ToolBoxMenuItem";
-			this.ToolBoxMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.ToolBoxMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.ToolBoxMenuItem.Text = "&Tool Box";
 			this.ToolBoxMenuItem.Click += new System.EventHandler(this.ToolBoxMenuItem_Click);
 			// 
 			// toolStripSeparator12
 			// 
 			this.toolStripSeparator12.Name = "toolStripSeparator12";
-			this.toolStripSeparator12.Size = new System.Drawing.Size(186, 6);
+			this.toolStripSeparator12.Size = new System.Drawing.Size(180, 6);
 			// 
 			// RamWatchMenuItem
 			// 
 			this.RamWatchMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.watch;
 			this.RamWatchMenuItem.Name = "RamWatchMenuItem";
-			this.RamWatchMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.RamWatchMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.RamWatchMenuItem.Text = "RAM &Watch";
 			this.RamWatchMenuItem.Click += new System.EventHandler(this.RamWatchMenuItem_Click);
 			// 
@@ -1699,7 +1699,7 @@
 			// 
 			this.RamSearchMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.search;
 			this.RamSearchMenuItem.Name = "RamSearchMenuItem";
-			this.RamSearchMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.RamSearchMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.RamSearchMenuItem.Text = "RAM &Search";
 			this.RamSearchMenuItem.Click += new System.EventHandler(this.RamSearchMenuItem_Click);
 			// 
@@ -1707,7 +1707,7 @@
 			// 
 			this.HexEditorMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
 			this.HexEditorMenuItem.Name = "HexEditorMenuItem";
-			this.HexEditorMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.HexEditorMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.HexEditorMenuItem.Text = "&Hex Editor";
 			this.HexEditorMenuItem.Click += new System.EventHandler(this.HexEditorMenuItem_Click);
 			// 
@@ -1715,7 +1715,7 @@
 			// 
 			this.TraceLoggerMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pencil;
 			this.TraceLoggerMenuItem.Name = "TraceLoggerMenuItem";
-			this.TraceLoggerMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.TraceLoggerMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.TraceLoggerMenuItem.Text = "Trace &Logger";
 			this.TraceLoggerMenuItem.Click += new System.EventHandler(this.TraceLoggerMenuItem_Click);
 			// 
@@ -1723,7 +1723,7 @@
 			// 
 			this.TAStudioMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio;
 			this.TAStudioMenuItem.Name = "TAStudioMenuItem";
-			this.TAStudioMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.TAStudioMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.TAStudioMenuItem.Text = "&TAStudio";
 			this.TAStudioMenuItem.Click += new System.EventHandler(this.TAStudioMenuItem_Click);
 			// 
@@ -1731,20 +1731,20 @@
 			// 
 			this.VirtualPadMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
 			this.VirtualPadMenuItem.Name = "VirtualPadMenuItem";
-			this.VirtualPadMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.VirtualPadMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.VirtualPadMenuItem.Text = "Virtual Pad";
 			this.VirtualPadMenuItem.Click += new System.EventHandler(this.VirtualPadMenuItem_Click);
 			// 
 			// toolStripSeparator11
 			// 
 			this.toolStripSeparator11.Name = "toolStripSeparator11";
-			this.toolStripSeparator11.Size = new System.Drawing.Size(186, 6);
+			this.toolStripSeparator11.Size = new System.Drawing.Size(180, 6);
 			// 
 			// CheatsMenuItem
 			// 
 			this.CheatsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
 			this.CheatsMenuItem.Name = "CheatsMenuItem";
-			this.CheatsMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.CheatsMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.CheatsMenuItem.Text = "Cheats";
 			this.CheatsMenuItem.Click += new System.EventHandler(this.CheatsMenuItem_Click);
 			// 
@@ -1752,26 +1752,27 @@
 			// 
 			this.LuaConsoleMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Lua;
 			this.LuaConsoleMenuItem.Name = "LuaConsoleMenuItem";
-			this.LuaConsoleMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.LuaConsoleMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.LuaConsoleMenuItem.Text = "Lua Console";
 			this.LuaConsoleMenuItem.Click += new System.EventHandler(this.LuaConsoleMenuItem_Click);
 			// 
 			// toolStripSeparator29
 			// 
 			this.toolStripSeparator29.Name = "toolStripSeparator29";
-			this.toolStripSeparator29.Size = new System.Drawing.Size(186, 6);
+			this.toolStripSeparator29.Size = new System.Drawing.Size(180, 6);
 			// 
 			// CreateDualGbXmlMenuItem
 			// 
+			this.CreateDualGbXmlMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.dual;
 			this.CreateDualGbXmlMenuItem.Name = "CreateDualGbXmlMenuItem";
-			this.CreateDualGbXmlMenuItem.Size = new System.Drawing.Size(189, 22);
-			this.CreateDualGbXmlMenuItem.Text = "Create Dual GB XML...";
+			this.CreateDualGbXmlMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.CreateDualGbXmlMenuItem.Text = "Create Dual GB File...";
 			this.CreateDualGbXmlMenuItem.Click += new System.EventHandler(this.CreateDualGbXmlMenuItem_Click);
 			// 
 			// batchRunnerToolStripMenuItem
 			// 
 			this.batchRunnerToolStripMenuItem.Name = "batchRunnerToolStripMenuItem";
-			this.batchRunnerToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.batchRunnerToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.batchRunnerToolStripMenuItem.Text = "Batch Runner";
 			this.batchRunnerToolStripMenuItem.Visible = false;
 			this.batchRunnerToolStripMenuItem.Click += new System.EventHandler(this.batchRunnerToolStripMenuItem_Click);
