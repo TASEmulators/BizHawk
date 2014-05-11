@@ -33,6 +33,25 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private readonly List<string> SupportedMultiplayerPlatforms = new List<string>
+		{
+			"A26",
+			"A78",
+			"NES",
+			"N64",
+			"SMS",
+			"SG",
+			"GG",
+			"PCE",
+			"PCECD",
+			"SGX",
+			"SNES",
+			"GEN",
+			"Coleco",
+			"C64",
+			"SAT"
+		};
+
 		private int _defaultWidth;
 		private int _defaultHeight;
 
@@ -166,6 +185,11 @@ namespace BizHawk.Client.EmuHawk
 					ControllerBox.Controls.Add(new VirtualPadGBControl { Location = new Point(8, 109) });	
 					ControllerBox.Controls.Add(new VirtualPadGB { Location = new Point(8, 19), Controller = string.Empty });
 					break;
+				case "DGB":
+					ControllerBox.Controls.Add(new VirtualPadGBControl { Location = new Point(8, 109), Controller = string.Empty });
+					ControllerBox.Controls.Add(new VirtualPadGB { Location = new Point(8, 19), Controller = "P1" });
+					ControllerBox.Controls.Add(new VirtualPadGB { Location = new Point(188, 19), Controller = "P2" });
+					break;
 				case "GBA":
 					ControllerBox.Controls.Add(new VirtualPadGBA { Location = new Point(8, 19), Controller = string.Empty });
 					break;
@@ -233,20 +257,11 @@ namespace BizHawk.Client.EmuHawk
 					ControllerBox.Controls.Add(new VirtualPadSNES { Location = new Point(8, 95), Controller = "P3" });
 					ControllerBox.Controls.Add(new VirtualPadSNES { Location = new Point(188, 95), Controller = "P4" });
 					break;
-				case "GB":
-				case "GBC":
-					ControllerBox.Controls.Add(new VirtualPadGB { Location = new Point(8, 19), Controller = string.Empty });
-					ControllerBox.Controls.Add(new VirtualPadGBControl { Location = new Point(8, 109) });
-					break;
-				case "GBA":
-					ControllerBox.Controls.Add(new VirtualPadGBA { Location = new Point(8, 19), Controller = string.Empty });
-					break;
 				case "GEN":
 					ControllerBox.Controls.Add(new VirtualPadGen6Button { Location = new Point(195, 19), Controller = "P2" });
 					break;
 				case "Coleco":
-					var coleco2 = new VirtualPadColeco { Location = new Point(130, 19), Controller = "P2" };
-					ControllerBox.Controls.Add(coleco2);
+					ControllerBox.Controls.Add(new VirtualPadColeco { Location = new Point(130, 19), Controller = "P2" });
 					break;
 				case "C64":
 					ControllerBox.Controls.Add(new VirtualPadA26 { Location = new Point(218, 159), Controller = "P2" });
@@ -383,6 +398,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PadsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
+			MultiplayerModeMenuItem.Enabled = SupportedMultiplayerPlatforms.Contains(Global.Emulator.SystemId);
 			MultiplayerModeMenuItem.Checked = Global.Config.VirtualPadMultiplayerMode;
 		}
 	}
