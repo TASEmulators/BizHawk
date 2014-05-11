@@ -36,13 +36,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private static Win32.FileAttributes GetPathAttribute(string path)
 		{
-			var di = new DirectoryInfo(path);
+			var di = new DirectoryInfo(path.Split('|').First());
 			if (di.Exists)
 			{
 				return Win32.FileAttributes.Directory;
 			}
 
-			var fi = new FileInfo(path);
+			var fi = new FileInfo(path.Split('|').First());
 			if (fi.Exists)
 			{
 				return Win32.FileAttributes.Normal;
@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 					throw new Exception("Common path?");
 				}
 
-				BasePath = Path.GetDirectoryName(BasePath);
+				BasePath = Path.GetDirectoryName(BasePath.Split('|').First());
 				PathLeft = GetRelativePath(BasePath, PathLeft);
 				PathRight = GetRelativePath(BasePath, PathRight);
 
