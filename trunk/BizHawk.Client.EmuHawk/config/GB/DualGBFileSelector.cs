@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -42,10 +43,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void textBox1_DragEnter(object sender, DragEventArgs e)
 		{
-			if (e.Data.GetDataPresent(DataFormats.FileDrop) && ((string[])e.Data.GetData(DataFormats.FileDrop)).Length == 1)
+			if (e.Data.GetDataPresent(DataFormats.FileDrop) &&
+				((string[])e.Data.GetData(DataFormats.FileDrop)).Length == 1)
+			{
 				e.Effect = DragDropEffects.Copy;
+			}
 			else
+			{
 				e.Effect = DragDropEffects.None;
+			}
 		}
 
 		private void textBox1_DragDrop(object sender, DragEventArgs e)
@@ -54,7 +60,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var ff = (string[])e.Data.GetData(DataFormats.FileDrop);
 				if (ff.Length == 1)
+				{
 					textBox1.Text = ff[0];
+				}
 			}				
 		}
 
@@ -67,8 +75,29 @@ namespace BizHawk.Client.EmuHawk
 				ofd.RestoreDirectory = true;
 				var result = ofd.ShowDialog(this);
 				if (result == DialogResult.OK)
+				{
 					textBox1.Text = ofd.FileName;
+				}
 			}
+		}
+
+		private void UseCurrentRomButton_Click(object sender, EventArgs e)
+		{
+			textBox1.Text = GlobalWin.MainForm.CurrentlyOpenRom;
+		}
+
+		private void DualGBFileSelector_Load(object sender, EventArgs e)
+		{
+			Update();
+		}
+
+		public void Update()
+		{
+			UseCurrentRomButton.Enabled = Global.Emulator != null && // For the designer
+				!(Global.Emulator is NullEmulator) &&
+				!string.IsNullOrEmpty(GlobalWin.MainForm.CurrentlyOpenRom) &&
+				!GlobalWin.MainForm.CurrentlyOpenRom.Contains('|') && // Can't be archive
+				!GlobalWin.MainForm.CurrentlyOpenRom.Contains(".xml"); // Can't already be an xml
 		}
 	}
 }

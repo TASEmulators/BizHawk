@@ -143,5 +143,10 @@ namespace BizHawk.Client.EmuHawk
 				Close();
 			}
 		}
+
+		private void DualGBXMLCreator_Load(object sender, EventArgs e)
+		{
+
+		}
 	}
 }
