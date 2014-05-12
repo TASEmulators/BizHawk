@@ -1377,7 +1377,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static string DisplayNameForSystem(string system)
 		{
-			var str = String.Empty;
+			var str = string.Empty;
 			switch (system)
 			{
 				case "INTV": str = "Intellivision"; break;
@@ -2992,7 +2992,13 @@ namespace BizHawk.Client.EmuHawk
 					Global.Game.Status = nes.RomStatus;
 				}
 
-				Text = DisplayNameForSystem(loader.Game.System) + " - " + loader.Game.Name;
+				string gamename = Path.GetFileNameWithoutExtension(path);
+				if (!string.IsNullOrWhiteSpace(loader.Game.Name)) // Prefer Game db name, else use the path
+				{
+					gamename = loader.Game.Name;
+				}
+
+				Text = DisplayNameForSystem(loader.Game.System) + " - " + gamename;
 				Global.Rewinder.ResetRewindBuffer();
 
 				if (Global.Emulator.CoreComm.RomStatusDetails == null && loader.Rom != null)
