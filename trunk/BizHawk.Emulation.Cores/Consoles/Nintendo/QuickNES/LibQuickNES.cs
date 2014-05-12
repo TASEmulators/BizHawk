@@ -224,6 +224,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr qn_get_mapper(IntPtr e, ref int number);
 
+		public class UnsupportedMapperException : InvalidOperationException
+		{
+			public UnsupportedMapperException(string message)
+				: base(message)
+			{
+
+			}
+		}
+
 		/// <summary>
 		/// handle "string error" as returned by some quicknes functions
 		/// </summary>
@@ -233,7 +242,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			if (p == IntPtr.Zero)
 				return;
 			string s = Marshal.PtrToStringAnsi(p);
-			throw new InvalidOperationException("LibQuickNES error: " + s);
+			if (s == "Unsupported mapper")
+			{
+				throw new UnsupportedMapperException("Quicknes unsupported mapper");
+			}
+			else
+			{
+				throw new InvalidOperationException("LibQuickNES error: " + s);
+			}
 		}
 	}
 }
