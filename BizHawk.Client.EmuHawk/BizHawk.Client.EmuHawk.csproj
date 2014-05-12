@@ -260,6 +260,12 @@
     <Compile Include="config\GB\GBPrefControl.Designer.cs">
       <DependentUpon>GBPrefControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\GB\GBPrefs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\GB\GBPrefs.Designer.cs">
+      <DependentUpon>GBPrefs.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\GenericCoreConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1014,6 +1020,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\GB\GBPrefControl.resx">
       <DependentUpon>GBPrefControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\GB\GBPrefs.resx">
+      <DependentUpon>GBPrefs.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\GenericCoreConfig.resx">
       <DependentUpon>GenericCoreConfig.cs</DependentUpon>

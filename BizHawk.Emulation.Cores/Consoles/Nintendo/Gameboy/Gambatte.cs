@@ -35,24 +35,57 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// </summary>
 		LibGambatte.Buttons CurrentButtons = 0;
 
+		#region RTC
+
 		/// <summary>
 		/// RTC time when emulation begins.
 		/// </summary>
 		uint zerotime = 0;
 
+		/// <summary>
+		/// if true, RTC will run off of real elapsed time
+		/// </summary>
+		bool real_rtc_time = false;
+
 		LibGambatte.RTCCallback TimeCallback;
+
+		static long GetUnixNow()
+		{
+			// because internally the RTC works off of relative time, we don't need to base
+			// this off of any particular canonical epoch.
+			return DateTime.UtcNow.Ticks / 10000000L - 60000000000L;
+		}
 
 		uint GetCurrentTime()
 		{
-			ulong fn = (ulong)Frame;
-			// as we're exactly tracking cpu cycles, this can be pretty accurate
-			fn *= 4389;
-			fn /= 262144;
-			fn += zerotime;
-			return (uint)fn;
+			if (real_rtc_time)
+			{
+				return (uint)GetUnixNow();
+			}
+			else
+			{
+				ulong fn = (ulong)Frame;
+				// as we're exactly tracking cpu cycles, this can be pretty accurate
+				fn *= 4389;
+				fn /= 262144;
+				fn += zerotime;
+				return (uint)fn;
+			}
 		}
 
-		public Gameboy(CoreComm comm, GameInfo game, byte[] romdata, object Settings, object SyncSettings)
+		uint GetInitialTime()
+		{
+			if (real_rtc_time)
+				return (uint)GetUnixNow();
+			else
+				// setting the initial boot time to 0 will cause our zerotime
+				// to function as an initial offset, which is what we want
+				return 0;
+		}
+
+		#endregion
+
+		public Gameboy(CoreComm comm, GameInfo game, byte[] romdata, object Settings, object SyncSettings, bool deterministic)
 		{
 			CoreComm = comm;
 
@@ -67,6 +100,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			ThrowExceptionForBadRom(romdata);
 			BoardName = MapperName(romdata);
 
+			DeterministicEmulation = deterministic;
+
 			GambatteState = LibGambatte.gambatte_create();
 
 			if (GambatteState == IntPtr.Zero)
@@ -75,6 +110,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			try
 			{
 				this.SyncSettings = (GambatteSyncSettings)SyncSettings ?? GambatteSyncSettings.GetDefaults();
+				// copy over non-loadflag syncsettings now; they won't take effect if changed later
+				zerotime = (uint)this.SyncSettings.RTCInitialTime;
+				real_rtc_time = DeterministicEmulation ? false : this.SyncSettings.RealTimeRTC;
 
 				LibGambatte.LoadFlags flags = 0;
 
@@ -357,7 +395,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public string BoardName { get; private set; }
 
-		public bool DeterministicEmulation { get { return true; } }
+		public bool DeterministicEmulation { get; private set; }
 
 		#region saveram
 
@@ -932,7 +970,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			bool ret;
 			if (s.ForceDMG != SyncSettings.ForceDMG ||
 				s.GBACGB != SyncSettings.GBACGB ||
-				s.MulticartCompat != SyncSettings.MulticartCompat)
+				s.MulticartCompat != SyncSettings.MulticartCompat ||
+				s.RealTimeRTC != SyncSettings.RealTimeRTC ||
+				s.RTCInitialTime != SyncSettings.RTCInitialTime)
 				ret = true;
 			else
 				ret = false;
@@ -970,11 +1010,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public class GambatteSyncSettings
 		{
 			[Description("Force the game to run on DMG hardware, even if it's detected as a CGB game.  Relevant for games that are \"CGB Enhanced\" but do not require CGB.")]
+			[DefaultValue(false)]
 			public bool ForceDMG { get; set; }
 			[Description("Emulate GBA hardware running a CGB game, instead of CGB hardware.  Relevant only for titles that detect the presense of a GBA, such as Shantae.")]
+			[DefaultValue(false)]
 			public bool GBACGB { get; set; }
 			[Description("Use special compatibility hacks for certain multicart games.  Relevant only for specific multicarts.")]
+			[DefaultValue(false)]
 			public bool MulticartCompat { get; set; }
+			[Description("If true, the real time clock in MBC3 games will reflect real time, instead of emulated time.  Ignored (treated as false) when a movie is recording.")]
+			[DefaultValue(false)]
+			public bool RealTimeRTC { get; set; }
+			[Description("Set the initial RTC time in terms of elapsed seconds.  Only used when RealTimeRTC is false.")]
+			[DefaultValue(0)]
+			public int RTCInitialTime
+			{
+				get { return _RTCInitialTime; }
+				set { _RTCInitialTime = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
+			}
+			[JsonIgnore]
+			int _RTCInitialTime;
 
 			public static GambatteSyncSettings GetDefaults()
 			{
@@ -982,7 +1037,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				{
 					ForceDMG = false,
 					GBACGB = false,
-					MulticartCompat = false
+					MulticartCompat = false,
+					RealTimeRTC = false,
+					_RTCInitialTime = 0
 				};
 			}
 

@@ -46,14 +46,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			return right ? R.IsCGBMode() : L.IsCGBMode();
 		}
 
-		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom, object Settings, object SyncSettings)
+		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom, object Settings, object SyncSettings, bool deterministic)
 		{
 			GambatteLinkSettings _Settings = (GambatteLinkSettings)Settings ?? GambatteLinkSettings.GetDefaults();
 			GambatteLinkSyncSettings _SyncSettings = (GambatteLinkSyncSettings)SyncSettings ?? GambatteLinkSyncSettings.GetDefaults();
 
 			CoreComm = comm;
-			L = new Gameboy(new CoreComm(comm.ShowMessage, comm.Notify), leftinfo, leftrom, _Settings.L, _SyncSettings.L);
-			R = new Gameboy(new CoreComm(comm.ShowMessage, comm.Notify), rightinfo, rightrom, _Settings.R, _SyncSettings.R);
+			L = new Gameboy(new CoreComm(comm.ShowMessage, comm.Notify), leftinfo, leftrom, _Settings.L, _SyncSettings.L, deterministic);
+			R = new Gameboy(new CoreComm(comm.ShowMessage, comm.Notify), rightinfo, rightrom, _Settings.R, _SyncSettings.R, deterministic);
 
 			// connect link cable
 			LibGambatte.gambatte_linkstatus(L.GambatteState, 259);
@@ -213,7 +213,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
 		public string SystemId { get { return "DGB"; } }
-		public bool DeterministicEmulation { get { return true; } }
+		public bool DeterministicEmulation { get { return L.DeterministicEmulation && R.DeterministicEmulation; } }
 
 		public string BoardName { get { return L.BoardName + '|' + R.BoardName; } }
 
