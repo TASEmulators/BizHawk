@@ -5,6 +5,7 @@ using System.IO;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using Newtonsoft.Json;
+using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -43,10 +44,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		uint GetCurrentTime()
 		{
-			uint fn = (uint)Frame;
-			fn /= 60; // exactly 60 fps.  in case you feel bad about it, remember that we're not exactly tracking cpu cycles either.
+			ulong fn = (ulong)Frame;
+			// as we're exactly tracking cpu cycles, this can be pretty accurate
+			fn *= 4389;
+			fn /= 262144;
 			fn += zerotime;
-			return fn;
+			return (uint)fn;
 		}
 
 		public Gameboy(CoreComm comm, GameInfo game, byte[] romdata, object Settings, object SyncSettings)
@@ -966,11 +969,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public class GambatteSyncSettings
 		{
-			[System.ComponentModel.Description("Force the game to run on DMG hardware, even if it's detected as a CGB game.  Relevant for games that are \"CGB Enhanced\" but do not require CGB.")]
+			[Description("Force the game to run on DMG hardware, even if it's detected as a CGB game.  Relevant for games that are \"CGB Enhanced\" but do not require CGB.")]
 			public bool ForceDMG { get; set; }
-			[System.ComponentModel.Description("Emulate GBA hardware running a CGB game, instead of CGB hardware.  Relevant only for titles that detect the presense of a GBA, such as Shantae.")]
+			[Description("Emulate GBA hardware running a CGB game, instead of CGB hardware.  Relevant only for titles that detect the presense of a GBA, such as Shantae.")]
 			public bool GBACGB { get; set; }
-			[System.ComponentModel.Description("Use special compatibility hacks for certain multicart games.  Relevant only for specific multicarts.")]
+			[Description("Use special compatibility hacks for certain multicart games.  Relevant only for specific multicarts.")]
 			public bool MulticartCompat { get; set; }
 
 			public static GambatteSyncSettings GetDefaults()
