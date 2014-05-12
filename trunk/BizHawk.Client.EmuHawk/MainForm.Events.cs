@@ -1437,12 +1437,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			var s = (Gameboy.GambatteSyncSettings)Global.Emulator.GetSyncSettings();
-
-			GBForceDMGMenuItem.Checked = s.ForceDMG;
-			GBAInCGBModeMenuItem.Checked = s.GBACGB;
-			GBMulticartCompatibilityMenuItem.Checked = s.MulticartCompat;
-			LoadGBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
 		}
 
 		private void GBForceDMGMenuItem_Click(object sender, EventArgs e)

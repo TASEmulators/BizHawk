@@ -258,7 +258,8 @@ namespace BizHawk.Client.Common
 										right,
 										xmlGame.Assets["RightRom"],
 										GetCoreSettings<GambatteLink>(),
-										GetCoreSyncSettings<GambatteLink>());
+										GetCoreSyncSettings<GambatteLink>(),
+										Deterministic);
 
 									// other stuff todo
 									break;
@@ -363,7 +364,8 @@ namespace BizHawk.Client.Common
 										game,
 										rom.FileData,
 										GetCoreSettings<Gameboy>(),
-										GetCoreSyncSettings<Gameboy>());
+										GetCoreSyncSettings<Gameboy>(),
+										Deterministic);
 								}
 								else
 								{

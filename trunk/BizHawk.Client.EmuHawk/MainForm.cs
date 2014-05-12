@@ -3206,5 +3206,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
+
+		private void GBcoreSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			BizHawk.Client.EmuHawk.config.GB.GBPrefs.DoGBPrefsDialog(this);
+		}
 	}
 }
