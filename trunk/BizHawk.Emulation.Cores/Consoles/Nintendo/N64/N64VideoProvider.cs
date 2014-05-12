@@ -19,7 +19,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			int width = 0;
 			int height = 0;
 			api.GetScreenDimensions(ref width, ref height);
-			SetBufferSize(width, height);
+			
+			SetBufferSize(
+				width > videosettings.Width ? width : videosettings.Width,
+				height > videosettings.Height ? height : videosettings.Height
+			);
 
 			core.FrameFinished += DoVideoFrame;
 		}
@@ -57,6 +61,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// <param name="height">New height in pixels</param>
 		private void SetBufferSize(int width, int height)
 		{
+			if (width == 0)
+			{
+				int zzz = 0;
+			}
+
 			BufferHeight = height;
 			BufferWidth = width;
 			frameBuffer = new int[width * height];
