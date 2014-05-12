@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
-			Text = "BizHawk" + (VersionInfo.INTERIM ? " (interim) " : String.Empty);
+			Text = "BizHawk" + (VersionInfo.INTERIM ? " (interim) " : string.Empty);
 
 			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
 
@@ -925,7 +925,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				CheatStatusButton.ToolTipText = String.Empty;
+				CheatStatusButton.ToolTipText = string.Empty;
 				CheatStatusButton.Image = Properties.Resources.Blank;
 				CheatStatusButton.Visible = false;
 			}
@@ -1466,7 +1466,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				PauseStatusButton.Image = Properties.Resources.Blank;
 				PauseStatusButton.Visible = false;
-				PauseStatusButton.ToolTipText = String.Empty;
+				PauseStatusButton.ToolTipText = string.Empty;
 			}
 		}
 
@@ -2992,13 +2992,18 @@ namespace BizHawk.Client.EmuHawk
 					Global.Game.Status = nes.RomStatus;
 				}
 
-				string gamename = Path.GetFileNameWithoutExtension(path);
+				string gamename = string.Empty;
 				if (!string.IsNullOrWhiteSpace(loader.Game.Name)) // Prefer Game db name, else use the path
 				{
 					gamename = loader.Game.Name;
 				}
+				else
+				{
+					gamename = Path.GetFileNameWithoutExtension(path.Split('|').Last());
+				}
 
 				Text = DisplayNameForSystem(loader.Game.System) + " - " + gamename;
+
 				Global.Rewinder.ResetRewindBuffer();
 
 				if (Global.Emulator.CoreComm.RomStatusDetails == null && loader.Rom != null)
