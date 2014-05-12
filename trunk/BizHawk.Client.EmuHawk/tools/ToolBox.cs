@@ -87,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			NesDebuggerToolbarItem.Visible = !VersionInfo.INTERIM && Global.Emulator.SystemId == "NES";
+			NesDebuggerToolbarItem.Visible = VersionInfo.INTERIM && Global.Emulator.SystemId == "NES";
 		}
 
 		private void SetSize()
