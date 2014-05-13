@@ -148,19 +148,23 @@ void MemPtrs::disconnectOamDmaAreas() {
 
 SYNCFUNC(MemPtrs)
 {
+	/*
 	int memchunk_len_old = memchunk_len;
 	int memchunk_saveoffs_old = memchunk_saveoffs;
 	int memchunk_savelen_old = memchunk_savelen;
+	*/
 
 	NSS(memchunk_len);
 	NSS(memchunk_saveoffs);
 	NSS(memchunk_savelen);
 
+	/*
 	if (isReader)
 	{
 		if (memchunk_len != memchunk_len_old || memchunk_saveoffs != memchunk_saveoffs_old || memchunk_savelen != memchunk_savelen_old)
 			__debugbreak();
 	}
+	*/
 
 	PSS(memchunk_ + memchunk_saveoffs, memchunk_savelen);
 

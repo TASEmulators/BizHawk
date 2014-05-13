@@ -81,7 +81,7 @@ public:
 #define EES(x,d) else if (isReader) (x) = (d); if (!isReader) ns->Save(&_ttmp, sizeof(_ttmp), #x); } while (0)
 
 #define RSS(x,b) do { if (isReader)\
-{ ptrdiff_t _ttmp; ns->Load(&_ttmp, sizeof(_ttmp), #x); (x) = (_ttmp == 0xdeadbeef ? 0 : (b) + _ttmp); }\
+{ ptrdiff_t _ttmp; ns->Load(&_ttmp, sizeof(_ttmp), #x); (x) = (_ttmp == (ptrdiff_t)0xdeadbeef ? 0 : (b) + _ttmp); }\
 	else\
 { ptrdiff_t _ttmp = (x) == 0 ? 0xdeadbeef : (x) - (b); ns->Save(&_ttmp, sizeof(_ttmp), #x); } } while (0)
 
