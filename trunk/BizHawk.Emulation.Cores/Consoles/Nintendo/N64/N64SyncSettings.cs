@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public PLUGINTYPE VidPlugin = PLUGINTYPE.RICE;
 		public int VideoSizeX = 320;
 		public int VideoSizeY = 240;
-		public N64ControllerSettings[] Controllers = new N64ControllerSettings[4]
+		public N64ControllerSettings[] Controllers = 
 		{
 			new N64ControllerSettings(),
 			new N64ControllerSettings(),
@@ -124,11 +124,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public Dictionary<string, object> GetPluginSettings()
 		{
 			//TODO: deal witn the game depedent settings
-			Dictionary<string, object> dictionary = new Dictionary<string, object>();
-			System.Reflection.FieldInfo[] members = this.GetType().GetFields();
-			foreach (System.Reflection.FieldInfo member in members)
+			var dictionary = new Dictionary<string, object>();
+			var members = this.GetType().GetFields();
+			foreach (var member in members)
 			{
-				object field = this.GetType().GetField(member.Name).GetValue(this);
+				var field = this.GetType().GetField(member.Name).GetValue(this);
 				dictionary.Add(member.Name, field);
 			}
 
