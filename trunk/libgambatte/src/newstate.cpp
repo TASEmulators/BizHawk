@@ -17,14 +17,13 @@ void NewStateDummy::Load(void *ptr, size_t size, const char *name)
 }
 
 NewStateExternalBuffer::NewStateExternalBuffer(char *buffer, long maxlength)
-	:buffer(buffer), maxlength(maxlength), length(0)
+	:buffer(buffer), length(0), maxlength(maxlength)
 {
 }
 
 void NewStateExternalBuffer::Save(const void *ptr, size_t size, const char *name)
 {
-	const char *src = static_cast<const char *>(ptr);
-	if (maxlength - length >= size)
+	if (maxlength - length >= (long)size)
 	{
 		std::memcpy(buffer + length, ptr, size);
 	}
@@ -34,7 +33,7 @@ void NewStateExternalBuffer::Save(const void *ptr, size_t size, const char *name
 void NewStateExternalBuffer::Load(void *ptr, size_t size, const char *name)
 {
 	char *dst = static_cast<char *>(ptr);
-	if (maxlength - length >= size)
+	if (maxlength - length >= (long)size)
 	{
 		std::memcpy(dst, buffer + length, size);
 	}

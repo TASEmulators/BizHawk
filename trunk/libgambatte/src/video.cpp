@@ -708,7 +708,7 @@ inline void LCD::event() {
 	case LY_COUNT:
 		ppu.doLyCountEvent();
 		eventTimes_.set<LY_COUNT>(ppu.lyCounter().time());
-		if (scanlinecallback && ppu.lyCounter().ly() == scanlinecallbacksl)
+		if (scanlinecallback && ppu.lyCounter().ly() == (unsigned)scanlinecallbacksl)
 			scanlinecallback();
 		break;
 	}
