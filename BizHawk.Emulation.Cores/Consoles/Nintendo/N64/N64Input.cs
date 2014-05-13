@@ -3,7 +3,7 @@ using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
-	class N64Input
+	internal class N64Input
 	{
 		private mupen64plusInputApi api;
 		public CoreComm CoreComm { get; private set; }
