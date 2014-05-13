@@ -4,7 +4,7 @@ using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
-	class N64VideoProvider : IVideoProvider, IDisposable
+	internal class N64VideoProvider : IVideoProvider, IDisposable
 	{
 		private int[] frameBuffer;
 		private mupen64plusVideoApi api;
@@ -51,6 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			{
 				SetBufferSize(width, height);
 			}
+
 			api.Getm64pFrameBuffer(frameBuffer, ref width, ref height);
 		}
 
@@ -61,11 +62,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// <param name="height">New height in pixels</param>
 		private void SetBufferSize(int width, int height)
 		{
-			if (width == 0)
-			{
-				int zzz = 0;
-			}
-
 			BufferHeight = height;
 			BufferWidth = width;
 			frameBuffer = new int[width * height];
@@ -73,7 +69,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public void Dispose()
 		{
-			// api is disposed by N64
 			api = null;
 		}
 	}

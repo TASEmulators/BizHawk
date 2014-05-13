@@ -18,6 +18,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		)]
 	public class N64 : IEmulator
 	{
+		private readonly N64Input _inputProvider;
+		private readonly N64VideoProvider _videoProvider;
+		private readonly N64Audio _audioProvider;
+
+		private readonly EventWaitHandle _pendingThreadEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
+		private readonly EventWaitHandle _completeThreadEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
+
+		private mupen64plusApi api; // mupen64plus DLL Api
+		private N64SyncSettings _syncSettings;
+		private bool _pendingThreadTerminate;
+
+		private DisplayType _display_type = DisplayType.NTSC;
+
+		private Action _pendingThreadAction;
+
+
 		/// <summary>
 		/// Create mupen64plus Emulator
 		/// </summary>
@@ -35,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			CoreComm = comm;
 
-			this.SyncSettings = (N64SyncSettings)SyncSettings ?? new N64SyncSettings();
+			_syncSettings = (N64SyncSettings)SyncSettings ?? new N64SyncSettings();
 
 			byte country_code = rom[0x3E];
 			switch (country_code)
@@ -75,8 +91,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			StartThreadLoop();
 
-			var videosettings = this.SyncSettings.GetVPS(game);
-			var coreType = this.SyncSettings.CoreType;
+			var videosettings = _syncSettings.GetVPS(game);
+			var coreType = _syncSettings.CoreType;
 
 			//zero 19-apr-2014 - added this to solve problem with SDL initialization corrupting the main thread (I think) and breaking subsequent emulators (for example, NES)
 			//not sure why this works... if we put the plugin initializations in here, we get deadlocks in some SDL initialization. doesnt make sense to me...
@@ -88,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			// Order is important because the register with the mupen core
 			_videoProvider = new N64VideoProvider(api, videosettings);
 			_audioProvider = new N64Audio(api);
-			_inputProvider = new N64Input(api, comm, this.SyncSettings.Controllers);
+			_inputProvider = new N64Input(api, comm, this._syncSettings.Controllers);
 			api.AttachPlugin(mupen64plusApi.m64p_plugin_type.M64PLUGIN_RSP,
 				"mupen64plus-rsp-hle.dll");
 
@@ -98,135 +114,54 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			api.AsyncExecuteEmulator();
 		}
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public void Dispose()
 		{
-			//note: the approach this code takes is highly bug-prone
-			var ret = new Dictionary<string, int>();
-			var data = new byte[32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + 32 * 4 + 32 * 8];
-			api.getRegisters(data);
-
-			for (int i = 0; i < 32; i++)
+			RunThreadAction(() =>
 			{
-				var reg = BitConverter.ToInt64(data, i * 8);
-				ret.Add("REG" + i + "_lo", (int)(reg));
-				ret.Add("REG" + i + "_hi", (int)(reg>>32));
-			}
+				_videoProvider.Dispose();
+				_audioProvider.Dispose();
+				api.Dispose();
+			});
 
-			var PC = BitConverter.ToUInt32(data, 32 * 8);
-			ret.Add("PC", (int)PC);
-
-			ret.Add("LL", BitConverter.ToInt32(data, 32 * 8 + 4));
-
-			var Lo = BitConverter.ToInt64(data, 32 * 8 + 4 + 4);
-			ret.Add("LO_lo", (int)Lo);
-			ret.Add("LO_hi", (int)(Lo>>32));
-
-			var Hi = BitConverter.ToInt64(data, 32 * 8 + 4 + 4 + 8);
-			ret.Add("HI_lo", (int)Hi);
-			ret.Add("HI_hi", (int)(Hi>>32));
-
-			ret.Add("FCR0", BitConverter.ToInt32(data, 32 * 8 + 4 + 4 + 8 + 8));
-			ret.Add("FCR31", BitConverter.ToInt32(data, 32 * 8 + 4 + 4 + 8 + 8 + 4));
-
-			for (int i = 0; i < 32; i++)
-			{
-				var reg_cop0 = BitConverter.ToUInt32(data, 32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + i * 4);
-				ret.Add("CP0 REG" + i, (int)reg_cop0);
-			}
-
-			for (int i = 0; i < 32; i++)
-			{
-				var reg_cop1_fgr_64 = BitConverter.ToInt64(data, 32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + 32 * 4 + i * 8);
-				ret.Add("CP1 FGR REG" + i + "_lo", (int)reg_cop1_fgr_64);
-				ret.Add("CP1 FGR REG" + i + "_hi", (int)(reg_cop1_fgr_64>>32));
-			}
-
-			return ret;
+			EndThreadLoop();
 		}
 
-		public string SystemId { get { return "N64"; } }
-
-		public string BoardName { get { return null; } }
-
-		public CoreComm CoreComm { get; private set; }
-
-		private readonly N64VideoProvider _videoProvider;
-		public IVideoProvider VideoProvider { get { return _videoProvider; } }
-		
-		private DisplayType _display_type = DisplayType.NTSC;
-		public DisplayType DisplayType { get { return _display_type; } }
-
-		private readonly N64Audio _audioProvider;
-		public ISoundProvider SoundProvider { get { return null; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return _audioProvider.Resampler; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
-
-		private readonly N64Input _inputProvider;
-		public ControllerDefinition ControllerDefinition { get { return _inputProvider.ControllerDefinition; } }
-		public IController Controller
-		{
-			get { return _inputProvider.Controller; }
-			set { _inputProvider.Controller = value; }
-		}
-
-		public int Frame { get; private set; }
-		public int LagCount { get; set; }
-
-		public bool IsLagFrame
-		{
-			get { return !_inputProvider.LastFrameInputPolled; }
-			set { _inputProvider.LastFrameInputPolled = !value; }
-		}
-
-		public void ResetCounters()
-		{
-			Frame = 0;
-			LagCount = 0;
-			IsLagFrame = false;
-		}
-
-		private bool PendingThreadTerminate;
-		private Action PendingThreadAction;
-		private EventWaitHandle PendingThreadEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
-		private EventWaitHandle CompleteThreadEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
-
-		void ThreadLoop()
+		private void ThreadLoop()
 		{
 			for (; ; )
 			{
-				PendingThreadEvent.WaitOne();
-				PendingThreadAction();
-				if (PendingThreadTerminate)
+				_pendingThreadEvent.WaitOne();
+				_pendingThreadAction();
+				if (_pendingThreadTerminate)
 				{
 					break;
 				}
 
-				CompleteThreadEvent.Set();
+				_completeThreadEvent.Set();
 			}
 
-			PendingThreadTerminate = false;
-			CompleteThreadEvent.Set();
+			_pendingThreadTerminate = false;
+			_completeThreadEvent.Set();
 		}
 
-		void RunThreadAction(Action action)
+		private void RunThreadAction(Action action)
 		{
-			PendingThreadAction = action;
-			PendingThreadEvent.Set();
-			CompleteThreadEvent.WaitOne();
+			_pendingThreadAction = action;
+			_pendingThreadEvent.Set();
+			_completeThreadEvent.WaitOne();
 		}
 
-		void StartThreadLoop()
+		private void StartThreadLoop()
 		{
 			new Thread(ThreadLoop).Start();
 		}
 
-		void EndThreadLoop()
+		private void EndThreadLoop()
 		{
-			RunThreadAction(() => { PendingThreadTerminate = true; });
+			RunThreadAction(() => { _pendingThreadTerminate = true; });
 		}
 
-		public void FrameAdvance(bool render, bool rendersound) 
+		public void FrameAdvance(bool render, bool rendersound)
 		{
 			_audioProvider.RenderSound = rendersound;
 
@@ -251,6 +186,51 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			Frame++;
 		}
 
+		public string SystemId { get { return "N64"; } }
+
+		public string BoardName { get { return null; } }
+
+		public CoreComm CoreComm { get; private set; }
+
+		public IVideoProvider VideoProvider { get { return _videoProvider; } }
+
+		public DisplayType DisplayType { get { return _display_type; } }
+
+		public ISoundProvider SoundProvider { get { return null; } }
+
+		public ISyncSoundProvider SyncSoundProvider { get { return _audioProvider.Resampler; } }
+
+		public bool StartAsyncSound() { return false; }
+
+		public void EndAsyncSound() { }
+
+		public ControllerDefinition ControllerDefinition
+		{
+			get { return _inputProvider.ControllerDefinition; }
+		}
+
+		public IController Controller
+		{
+			get { return _inputProvider.Controller; }
+			set { _inputProvider.Controller = value; }
+		}
+
+		public int Frame { get; private set; }
+		public int LagCount { get; set; }
+
+		public bool IsLagFrame
+		{
+			get { return !_inputProvider.LastFrameInputPolled; }
+			set { _inputProvider.LastFrameInputPolled = !value; }
+		}
+
+		public void ResetCounters()
+		{
+			Frame = 0;
+			LagCount = 0;
+			IsLagFrame = false;
+		}
+
 		public bool DeterministicEmulation { get { return false; } }
 
 		public byte[] ReadSaveRam()
@@ -270,9 +250,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public bool SaveRamModified { get { return true; } set { } }
 
+		#region Savestates
+
 		// these next 5 functions are all exact copy paste from gambatte.
 		// if something's wrong here, it's probably wrong there too
-
 		public void SaveStateText(TextWriter writer)
 		{
 			var temp = SaveStateBinary();
@@ -349,19 +330,69 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			bw.Flush();
 
 			if (ms.Length != SaveStateBinaryPrivateBuff.Length)
+			{
 				throw new Exception("Unexpected Length");
+			}
 
 			return SaveStateBinaryPrivateBuff;
 		}
 
 		public bool BinarySaveStatesPreferred { get { return true; } }
 
-		#region memorycallback
+		#endregion
+
+		#region Debugging Hooks
+
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		{
+			//note: the approach this code takes is highly bug-prone
+			var ret = new Dictionary<string, int>();
+			var data = new byte[32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + 32 * 4 + 32 * 8];
+			api.getRegisters(data);
+
+			for (int i = 0; i < 32; i++)
+			{
+				var reg = BitConverter.ToInt64(data, i * 8);
+				ret.Add("REG" + i + "_lo", (int)(reg));
+				ret.Add("REG" + i + "_hi", (int)(reg >> 32));
+			}
+
+			var PC = BitConverter.ToUInt32(data, 32 * 8);
+			ret.Add("PC", (int)PC);
+
+			ret.Add("LL", BitConverter.ToInt32(data, 32 * 8 + 4));
+
+			var Lo = BitConverter.ToInt64(data, 32 * 8 + 4 + 4);
+			ret.Add("LO_lo", (int)Lo);
+			ret.Add("LO_hi", (int)(Lo >> 32));
+
+			var Hi = BitConverter.ToInt64(data, 32 * 8 + 4 + 4 + 8);
+			ret.Add("HI_lo", (int)Hi);
+			ret.Add("HI_hi", (int)(Hi >> 32));
+
+			ret.Add("FCR0", BitConverter.ToInt32(data, 32 * 8 + 4 + 4 + 8 + 8));
+			ret.Add("FCR31", BitConverter.ToInt32(data, 32 * 8 + 4 + 4 + 8 + 8 + 4));
+
+			for (int i = 0; i < 32; i++)
+			{
+				var reg_cop0 = BitConverter.ToUInt32(data, 32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + i * 4);
+				ret.Add("CP0 REG" + i, (int)reg_cop0);
+			}
+
+			for (int i = 0; i < 32; i++)
+			{
+				var reg_cop1_fgr_64 = BitConverter.ToInt64(data, 32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + 32 * 4 + i * 8);
+				ret.Add("CP1 FGR REG" + i + "_lo", (int)reg_cop1_fgr_64);
+				ret.Add("CP1 FGR REG" + i + "_hi", (int)(reg_cop1_fgr_64 >> 32));
+			}
+
+			return ret;
+		}
 
 		private mupen64plusApi.MemoryCallback readcb;
 		private mupen64plusApi.MemoryCallback writecb;
 
-		void RefreshMemoryCallbacks()
+		private void RefreshMemoryCallbacks()
 		{
 			var mcs = CoreComm.MemoryCallbackSystem;
 
@@ -381,7 +412,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		#endregion
 
-		#region memorydomains
+		#region Memory Domains
 
 		private MemoryDomain MakeMemoryDomain(string name, mupen64plusApi.N64_MEMORY id, MemoryDomain.Endian endian)
 		{
@@ -389,7 +420,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			//if this type of memory isnt available, dont make the memory domain
 			if (size == 0)
+			{
 				return null;
+			}
 
 			IntPtr memPtr = api.get_memory_ptr(id);
 
@@ -400,22 +433,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				delegate(int addr)
 				{
 					if (addr < 0 || addr >= size)
+					{
 						throw new ArgumentOutOfRangeException();
+					}
+
 					return Marshal.ReadByte(memPtr, addr);
 				},
 				delegate(int addr, byte val)
 				{
 					if (addr < 0 || addr >= size)
+					{
 						throw new ArgumentOutOfRangeException();
+					}
+
 					Marshal.WriteByte(memPtr + addr, val);
 				});
 
-			memoryDomains.Add(md);
+			_memoryDomains.Add(md);
 
 			return md;
 		}
 
-		void InitMemoryDomains()
+		private void InitMemoryDomains()
 		{
 			MakeMemoryDomain("RDRAM", mupen64plusApi.N64_MEMORY.RDRAM, MemoryDomain.Endian.Little);
 			MakeMemoryDomain("PI Register", mupen64plusApi.N64_MEMORY.PI_REG, MemoryDomain.Endian.Little);
@@ -430,34 +469,36 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			MakeMemoryDomain("Mempak 3", mupen64plusApi.N64_MEMORY.MEMPAK3, MemoryDomain.Endian.Little);
 			MakeMemoryDomain("Mempak 4", mupen64plusApi.N64_MEMORY.MEMPAK4, MemoryDomain.Endian.Little);
 
-			MemoryDomains = new MemoryDomainList(memoryDomains);
+			MemoryDomains = new MemoryDomainList(_memoryDomains);
 		}
 
-		private List<MemoryDomain> memoryDomains = new List<MemoryDomain>();
+		private List<MemoryDomain> _memoryDomains = new List<MemoryDomain>();
 		public MemoryDomainList MemoryDomains { get; private set; }
 
 		#endregion
 
-		public void Dispose()
-		{
-			RunThreadAction(() =>
-			{
-				_videoProvider.Dispose();
-				_audioProvider.Dispose();
-				api.Dispose();
-			});
+		#region Settings
 
-			EndThreadLoop();
+		public object GetSettings()
+		{
+			return null;
 		}
 
-		// mupen64plus DLL Api
-		private mupen64plusApi api;
+		public object GetSyncSettings()
+		{
+			return _syncSettings.Clone();
+		}
 
-		private N64SyncSettings SyncSettings;
+		public bool PutSettings(object o)
+		{
+			return false;
+		}
 
-		public object GetSettings() { return null; }
-		public object GetSyncSettings() { return SyncSettings.Clone(); }
-		public bool PutSettings(object o) { return false; }
-		public bool PutSyncSettings(object o) { SyncSettings = (N64SyncSettings)o; return true; }
+		public bool PutSyncSettings(object o)
+		{
+			_syncSettings = (N64SyncSettings)o; return true;
+		}
+
+		#endregion
 	}
 }
