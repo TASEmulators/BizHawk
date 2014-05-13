@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				//DEEMPH BITS MAY BE ORDERED WRONG. PLEASE CHECK
 				if (deemph_bits == 0) return;
-				int d = deemph_bits-1;
+				int d = deemph_bits - 1;
 				r = (int)(r * rtmul[d]);
 				g = (int)(g * gtmul[d]);
 				b = (int)(b * btmul[d]);
@@ -29,11 +29,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (fileContents.Length != 192) return null;
 				int[,] ret = new int[64, 3];
-				int i=0;
+				int i = 0;
 				for (int c = 0; c < 64; c++)
 				{
-					for(int z=0;z<3;z++)
-						ret[c,z] = fileContents[i++];
+					for (int z = 0; z < 3; z++)
+						ret[c, z] = fileContents[i++];
 				}
 				return ret;
 			}
@@ -106,9 +106,76 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{ 0x00<<SHIFT, 0x00<<SHIFT, 0x00<<SHIFT }, /* Value 62 */
 				{ 0x00<<SHIFT, 0x00<<SHIFT, 0x00<<SHIFT }, /* Value 63 */
 			};
-		
+
+			public static int[,] QuickNESPalette = 
+			{
+				{102, 102, 102},
+				{0, 42, 136},
+				{20, 18, 168},
+				{59, 0, 164},
+				{92, 0, 126},
+				{110, 0, 64},
+				{108, 7, 0},
+				{87, 29, 0},
+				{52, 53, 0},
+				{12, 73, 0},
+				{0, 82, 0},
+				{0, 79, 8},
+				{0, 64, 78},
+				{0, 0, 0},
+				{0, 0, 0},
+				{0, 0, 0},
+				{174, 174, 174},
+				{21, 95, 218},
+				{66, 64, 254},
+				{118, 39, 255},
+				{161, 27, 205},
+				{184, 30, 124},
+				{181, 50, 32},
+				{153, 79, 0},
+				{108, 110, 0},
+				{56, 135, 0},
+				{13, 148, 0},
+				{0, 144, 50},
+				{0, 124, 142},
+				{0, 0, 0},
+				{0, 0, 0},
+				{0, 0, 0},
+				{254, 254, 254},
+				{100, 176, 254},
+				{147, 144, 254},
+				{199, 119, 254},
+				{243, 106, 254},
+				{254, 110, 205},
+				{254, 130, 112},
+				{235, 159, 35},
+				{189, 191, 0},
+				{137, 217, 0},
+				{93, 229, 48},
+				{69, 225, 130},
+				{72, 206, 223},
+				{79, 79, 79},
+				{0, 0, 0},
+				{0, 0, 0},
+				{254, 254, 254},
+				{193, 224, 254},
+				{212, 211, 254},
+				{233, 200, 254},
+				{251, 195, 254},
+				{254, 197, 235},
+				{254, 205, 198},
+				{247, 217, 166},
+				{229, 230, 149},
+				{208, 240, 151},
+				{190, 245, 171},
+				{180, 243, 205},
+				{181, 236, 243},
+				{184, 184, 184},
+				{0, 0, 0},
+				{0, 0, 0},
+			};
 		} //class palettes
-	
+
 	} //partial class NES
 
 } //namespace
