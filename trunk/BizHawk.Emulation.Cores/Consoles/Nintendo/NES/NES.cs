@@ -36,7 +36,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			CoreComm = comm;
 			CoreComm.CpuTraceAvailable = true;
 			BootGodDB.Initialize();
-			SetPalette(Palettes.FCEUX_Standard);
 			videoProvider = new MyVideoProvider(this);
 			Init(game, rom, fdsbios);
 			if (board is FDS)
@@ -907,7 +906,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public NESSettings()
 			{
-				Palette = (int[,])Palettes.FCEUX_Standard.Clone();
+				Palette = (int[,])Palettes.QuickNESPalette.Clone();
 			}
 
 			[Newtonsoft.Json.JsonConstructor]
@@ -915,7 +914,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (Palette == null)
 					// only needed for SVN purposes
-					this.Palette = (int[,])Palettes.FCEUX_Standard.Clone();
+					this.Palette = (int[,])Palettes.QuickNESPalette.Clone();
 				else
 					this.Palette = Palette;
 			}
