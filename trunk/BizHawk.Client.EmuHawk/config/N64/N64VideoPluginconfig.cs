@@ -29,7 +29,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				return (N64SyncSettings)Global.Config.GetCoreSyncSettings<N64>();
+				return (N64SyncSettings)Global.Config.GetCoreSyncSettings<N64>() 
+					?? new N64SyncSettings();
 			}
 		}
 
