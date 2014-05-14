@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
+using BizHawk.Client.EmuHawk.ControlExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Common;
@@ -308,19 +309,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var s = GetS();
 
-			CoreTypeDropdown.Items.Clear();
-			CoreTypeDropdown.Items.AddRange(
-				EnumHelper.GetDescriptions<N64SyncSettings.CORETYPE>()
-				.ToArray());
-			CoreTypeDropdown.SelectedItem = EnumHelper.GetDescription(s.CoreType);
-
-			RspTypeDropdown.Items.Clear();
-			RspTypeDropdown.Items.AddRange(
-				EnumHelper.GetDescriptions<N64SyncSettings.RSPTYPE>()
-				.ToArray());
-			RspTypeDropdown.SelectedItem = EnumHelper.GetDescription(s.RspType);
-
-			
+			CoreTypeDropdown.PopulateFromEnum<N64SyncSettings.CORETYPE>(s.CoreType);
+			RspTypeDropdown.PopulateFromEnum<N64SyncSettings.RSPTYPE>(s.RspType);
 
 			//Load Variables
 			//Global
