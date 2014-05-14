@@ -32,6 +32,8 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(N64VideoPluginconfig));
 			this.N64plugintabcontrol = new System.Windows.Forms.TabControl();
 			this.N64vpluginglobaltab = new System.Windows.Forms.TabPage();
+			this.label48 = new System.Windows.Forms.Label();
+			this.CoreTypeDropdown = new System.Windows.Forms.ComboBox();
 			this.label47 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.VideoResolutionComboBox = new System.Windows.Forms.ComboBox();
@@ -270,8 +272,8 @@
 			this.SaveButton = new System.Windows.Forms.Button();
 			this.CancelBT = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.CoreTypeDropdown = new System.Windows.Forms.ComboBox();
-			this.label48 = new System.Windows.Forms.Label();
+			this.label49 = new System.Windows.Forms.Label();
+			this.RspTypeDropdown = new System.Windows.Forms.ComboBox();
 			this.N64plugintabcontrol.SuspendLayout();
 			this.N64vpluginglobaltab.SuspendLayout();
 			this.RiceTabPage.SuspendLayout();
@@ -311,6 +313,8 @@
 			// 
 			// N64vpluginglobaltab
 			// 
+			this.N64vpluginglobaltab.Controls.Add(this.label49);
+			this.N64vpluginglobaltab.Controls.Add(this.RspTypeDropdown);
 			this.N64vpluginglobaltab.Controls.Add(this.label48);
 			this.N64vpluginglobaltab.Controls.Add(this.CoreTypeDropdown);
 			this.N64vpluginglobaltab.Controls.Add(this.label47);
@@ -325,6 +329,28 @@
 			this.N64vpluginglobaltab.TabIndex = 0;
 			this.N64vpluginglobaltab.Text = "Global";
 			this.N64vpluginglobaltab.UseVisualStyleBackColor = true;
+			// 
+			// label48
+			// 
+			this.label48.AutoSize = true;
+			this.label48.Location = new System.Drawing.Point(10, 13);
+			this.label48.Name = "label48";
+			this.label48.Size = new System.Drawing.Size(56, 13);
+			this.label48.TabIndex = 16;
+			this.label48.Text = "Core Type";
+			// 
+			// CoreTypeDropdown
+			// 
+			this.CoreTypeDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.CoreTypeDropdown.FormattingEnabled = true;
+			this.CoreTypeDropdown.Items.AddRange(new object[] {
+            "Pure Interpreter",
+            "Interpreter",
+            "DynaRec"});
+			this.CoreTypeDropdown.Location = new System.Drawing.Point(13, 29);
+			this.CoreTypeDropdown.Name = "CoreTypeDropdown";
+			this.CoreTypeDropdown.Size = new System.Drawing.Size(136, 21);
+			this.CoreTypeDropdown.TabIndex = 1;
 			// 
 			// label47
 			// 
@@ -3190,27 +3216,27 @@
 			this.toolTip1.ReshowDelay = 100;
 			this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 			// 
-			// CoreTypeDropdown
+			// label49
 			// 
-			this.CoreTypeDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.CoreTypeDropdown.FormattingEnabled = true;
-			this.CoreTypeDropdown.Items.AddRange(new object[] {
+			this.label49.AutoSize = true;
+			this.label49.Location = new System.Drawing.Point(206, 13);
+			this.label49.Name = "label49";
+			this.label49.Size = new System.Drawing.Size(58, 13);
+			this.label49.TabIndex = 18;
+			this.label49.Text = "Rsp Plugin";
+			// 
+			// RspTypeDropdown
+			// 
+			this.RspTypeDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.RspTypeDropdown.FormattingEnabled = true;
+			this.RspTypeDropdown.Items.AddRange(new object[] {
             "Pure Interpreter",
             "Interpreter",
             "DynaRec"});
-			this.CoreTypeDropdown.Location = new System.Drawing.Point(13, 29);
-			this.CoreTypeDropdown.Name = "CoreTypeDropdown";
-			this.CoreTypeDropdown.Size = new System.Drawing.Size(136, 21);
-			this.CoreTypeDropdown.TabIndex = 1;
-			// 
-			// label48
-			// 
-			this.label48.AutoSize = true;
-			this.label48.Location = new System.Drawing.Point(10, 13);
-			this.label48.Name = "label48";
-			this.label48.Size = new System.Drawing.Size(56, 13);
-			this.label48.TabIndex = 16;
-			this.label48.Text = "Core Type";
+			this.RspTypeDropdown.Location = new System.Drawing.Point(209, 29);
+			this.RspTypeDropdown.Name = "RspTypeDropdown";
+			this.RspTypeDropdown.Size = new System.Drawing.Size(136, 21);
+			this.RspTypeDropdown.TabIndex = 17;
 			// 
 			// N64VideoPluginconfig
 			// 
@@ -3508,5 +3534,7 @@
 		private System.Windows.Forms.Label label47;
 		private System.Windows.Forms.Label label48;
 		private System.Windows.Forms.ComboBox CoreTypeDropdown;
+		private System.Windows.Forms.Label label49;
+		private System.Windows.Forms.ComboBox RspTypeDropdown;
 	}
 }

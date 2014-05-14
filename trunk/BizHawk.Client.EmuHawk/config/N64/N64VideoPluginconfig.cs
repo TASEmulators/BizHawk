@@ -290,6 +290,9 @@ namespace BizHawk.Client.EmuHawk
 			s.CoreType = EnumHelper.GetValueFromDescription<N64SyncSettings.CORETYPE>(
 				CoreTypeDropdown.SelectedItem.ToString());
 
+			s.RspType = EnumHelper.GetValueFromDescription<N64SyncSettings.RSPTYPE>(
+				RspTypeDropdown.SelectedItem.ToString());
+
 			PutS(s);
 		} 
 
@@ -302,6 +305,12 @@ namespace BizHawk.Client.EmuHawk
 				EnumHelper.GetDescriptions<N64SyncSettings.CORETYPE>()
 				.ToArray());
 			CoreTypeDropdown.SelectedItem = EnumHelper.GetDescription(n64Settings.CoreType);
+
+			RspTypeDropdown.Items.Clear();
+			RspTypeDropdown.Items.AddRange(
+				EnumHelper.GetDescriptions<N64SyncSettings.RSPTYPE>()
+				.ToArray());
+			RspTypeDropdown.SelectedItem = EnumHelper.GetDescription(n64Settings.RspType);
 
 			var s = GetS();
 
