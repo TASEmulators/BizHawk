@@ -516,10 +516,6 @@ namespace BizHawk.Client.EmuHawk
 				y -= Global.Emulator.CoreComm.ScreenLogicalOffsetY;
 			}
 
-			// blah hacks
-			x *= EmuHawkLuaLibrary.GetWindowSize();
-			y *= EmuHawkLuaLibrary.GetWindowSize();
-
 			GlobalWin.OSD.AddGUIText(message, x, y, GetColor(background ?? "black"), GetColor(forecolor ?? "white"), a);
 		}
 	}
