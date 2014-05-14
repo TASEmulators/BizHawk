@@ -26,10 +26,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public enum RSPTYPE
 		{
-			[Description("RSP HLE")]
+			[Description("Hle")]
 			Rsp_Hle = 0,
 
-			[Description("RSP Z64 HLE Video")]
+			[Description("Z64 Hle Video")]
 			Rsp_Z64_hlevideo = 1
 		}
 
@@ -53,6 +53,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			return new N64SyncSettings
 			{
 				CoreType = CoreType,
+				RspType = RspType,
 				VidPlugin = VidPlugin,
 				VideoSizeX = VideoSizeX,
 				VideoSizeY = VideoSizeY,
