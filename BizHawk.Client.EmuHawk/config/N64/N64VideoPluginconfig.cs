@@ -23,19 +23,27 @@ namespace BizHawk.Client.EmuHawk
 		static N64SyncSettings GetS()
 		{
 			if (Global.Emulator is N64)
+			{
 				return (N64SyncSettings)Global.Emulator.GetSyncSettings();
+			}
 			else
+			{
 				return (N64SyncSettings)Global.Config.GetCoreSyncSettings<N64>();
+			}
 		}
 
 		// never do this
 		static void PutS(N64SyncSettings s)
 		{
 			if (Global.Emulator is N64)
+			{
 				GlobalWin.MainForm.PutCoreSyncSettings(s);
+			}
 			else
+			{
 				// hack, don't do!
 				Global.Config.PutCoreSyncSettings<N64>(s);
+			}
 		}
 
 		private void CancelBT_Click(object sender, EventArgs e)
@@ -298,21 +306,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void N64VideoPluginconfig_Load(object sender, EventArgs e)
 		{
-			var n64Settings = (N64SyncSettings)Global.Emulator.GetSyncSettings();
+			var s = GetS();
 
 			CoreTypeDropdown.Items.Clear();
 			CoreTypeDropdown.Items.AddRange(
 				EnumHelper.GetDescriptions<N64SyncSettings.CORETYPE>()
 				.ToArray());
-			CoreTypeDropdown.SelectedItem = EnumHelper.GetDescription(n64Settings.CoreType);
+			CoreTypeDropdown.SelectedItem = EnumHelper.GetDescription(s.CoreType);
 
 			RspTypeDropdown.Items.Clear();
 			RspTypeDropdown.Items.AddRange(
 				EnumHelper.GetDescriptions<N64SyncSettings.RSPTYPE>()
 				.ToArray());
-			RspTypeDropdown.SelectedItem = EnumHelper.GetDescription(n64Settings.RspType);
+			RspTypeDropdown.SelectedItem = EnumHelper.GetDescription(s.RspType);
 
-			var s = GetS();
+			
 
 			//Load Variables
 			//Global
