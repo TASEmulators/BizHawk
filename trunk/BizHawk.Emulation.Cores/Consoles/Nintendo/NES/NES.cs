@@ -196,18 +196,60 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				backdrop = emu.Settings.BackgroundColor;
 				bool useBackdrop = (backdrop & 0xFF000000) != 0;
 
-				//TODO - we could recalculate this on the fly (and invalidate/recalculate it when the palette is changed)
-				int width = BufferWidth;
-				for (int x = left; x <= right; x++)
+				if (useBackdrop)
 				{
-					for (int y = the_top; y <= the_bottom; y++)
+					int width = BufferWidth;
+					for (int x = left; x <= right; x++)
 					{
-						short pixel = emu.ppu.xbuf[(y << 8) + x];
-						if ((pixel & 0x8000) != 0 && useBackdrop)
+						for (int y = the_top; y <= the_bottom; y++)
 						{
-							pixels[((y - the_top) * width) + (x - left)] = backdrop;
+							short pixel = emu.ppu.xbuf[(y << 8) + x];
+							if ((pixel & 0x8000) != 0 && useBackdrop)
+							{
+								pixels[((y - the_top) * width) + (x - left)] = backdrop;
+							}
+							else pixels[((y - the_top) * width) + (x - left)] = emu.palette_compiled[pixel & 0x7FFF];
 						}
-						else pixels[((y - the_top) * width) + (x - left)] = emu.palette_compiled[pixel & 0x7FFF];
+					}
+				}
+				else
+				{
+					unsafe
+					{
+						fixed (int* dst_ = pixels)
+						fixed (short* src_ = emu.ppu.xbuf)
+						fixed (int* pal = emu.palette_compiled)
+						{
+							int* dst = dst_;
+							short* src = src_ + 256 * the_top + left;
+							int xcount = right - left + 1;
+							int srcinc = 256 - xcount;
+							int ycount = the_bottom - the_top + 1;
+							xcount /= 16;
+							for (int y = 0; y < ycount; y++)
+							{
+								for (int x = 0; x < xcount; x++)
+								{
+									*dst++ = pal[0x7fff & *src++];
+									*dst++ = pal[0x7fff & *src++];
+									*dst++ = pal[0x7fff & *src++];
+									*dst++ = pal[0x7fff & *src++];
+									*dst++ = pal[0x7fff & *src++];
+									*dst++ = pal[0x7fff & *src++];
+									*dst++ = pal[0x7fff & *src++];
+									*dst++ = pal[0x7fff & *src++];
+									*dst++ = pal[0x7fff & *src++];
+									*dst++ = pal[0x7fff & *src++];
+									*dst++ = pal[0x7fff & *src++];
+									*dst++ = pal[0x7fff & *src++];
+									*dst++ = pal[0x7fff & *src++];
+									*dst++ = pal[0x7fff & *src++];
+									*dst++ = pal[0x7fff & *src++];
+									*dst++ = pal[0x7fff & *src++];
+								}
+								src += srcinc;
+							}
+						}
 					}
 				}
 			}
