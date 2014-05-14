@@ -1119,7 +1119,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public class SnesSyncSettings
 		{
-			public string Profile = "Compatibility";
+			public string Profile = "Performance"; // "Compatibility" is the othe choice, todo: make this an enum
 
 			public SnesSyncSettings Clone()
 			{
