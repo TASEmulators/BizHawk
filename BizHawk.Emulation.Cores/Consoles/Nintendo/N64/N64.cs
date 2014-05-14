@@ -105,8 +105,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			_videoProvider = new N64VideoProvider(api, videosettings);
 			_audioProvider = new N64Audio(api);
 			_inputProvider = new N64Input(api, comm, this._syncSettings.Controllers);
-			api.AttachPlugin(mupen64plusApi.m64p_plugin_type.M64PLUGIN_RSP,
-				"mupen64plus-rsp-hle.dll");
+
+
+			string rsp = _syncSettings.RspType == N64SyncSettings.RSPTYPE.Rsp_Hle ?
+				"mupen64plus-rsp-hle.dll" :
+				"mupen64plus-rsp-z64-hlevideo.dll";
+
+			api.AttachPlugin(mupen64plusApi.m64p_plugin_type.M64PLUGIN_RSP, rsp);
 
 			InitMemoryDomains();
 			RefreshMemoryCallbacks();

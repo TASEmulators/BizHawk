@@ -22,6 +22,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			Dynarec = 2,
 		}
 
+		public RSPTYPE RspType = RSPTYPE.Rsp_Hle;
+
+		public enum RSPTYPE
+		{
+			[Description("RSP HLE")]
+			Rsp_Hle = 0,
+
+			[Description("RSP Z64 HLE Video")]
+			Rsp_Z64_hlevideo = 1
+		}
+
 		public PLUGINTYPE VidPlugin = PLUGINTYPE.RICE;
 		public int VideoSizeX = 320;
 		public int VideoSizeY = 240;
