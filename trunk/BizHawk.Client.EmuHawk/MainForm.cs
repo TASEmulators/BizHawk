@@ -1872,6 +1872,13 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddMessage("Volume " + Global.Config.SoundVolume);
 		}
 
+		public static void ToggleSound()
+		{
+			Global.Config.SoundEnabled ^= true;
+			GlobalWin.Sound.UpdateSoundSettings();
+			GlobalWin.Sound.StartSound();
+		}
+
 		private static void VolumeDown()
 		{
 			Global.Config.SoundVolume -= 10;
