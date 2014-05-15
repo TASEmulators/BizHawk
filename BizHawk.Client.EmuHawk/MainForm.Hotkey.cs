@@ -71,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 					VolumeDown();
 					break;
 				case "Toggle Sound":
-					Global.Config.SoundEnabled ^= true;
+					ToggleSound();
 					break;
 				case "Record A/V":
 					RecordAv();
