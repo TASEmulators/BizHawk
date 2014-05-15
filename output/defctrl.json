@@ -17,6 +17,7 @@
       "P2 Select": "",
       "P2 B": "",
       "P2 A": "",
+      "P2 Fire": "WMouse L",
       "Reset": "",
       "Power": ""
     },
@@ -730,6 +731,23 @@
     },
   },
   "AllTrollersAnalog": {
+    "NES Controller": {
+      "P2 Zapper X": {
+        "Value": "WMouse X",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+      "P2 Zapper Y": {
+        "Value": "WMouse Y",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+      "P2 Paddle": {
+        "Value": "WMouse X",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      }
+    },
     "Nintento 64 Controller": {
       "P1 X Axis": {
         "Value": "J1 X",
