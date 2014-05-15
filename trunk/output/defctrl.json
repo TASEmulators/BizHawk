@@ -18,6 +18,8 @@
       "P2 B": "",
       "P2 A": "",
       "P2 Fire": "WMouse L",
+      "P2 Microphone": "",
+      "P3 Fire": "WMouse L",
       "Reset": "",
       "Power": ""
     },
@@ -586,6 +588,9 @@
       "P2 Select": "",
       "P2 B": "",
       "P2 A": "",
+      "P2 Fire": "",
+      "P2 Microphone": "",
+      "P3 Fire": "",
       "Reset": "",
       "Power": ""
     },
@@ -728,24 +733,39 @@
       "L": "",
       "R": "",
       "Power": ""
-    },
+    }
   },
   "AllTrollersAnalog": {
     "NES Controller": {
+      "P2 Paddle": {
+        "Value": "WMouse X",
+        "Mult": 1.0,
+        "Deadzone": 0.0
+      },
       "P2 Zapper X": {
         "Value": "WMouse X",
         "Mult": 1.0,
-        "Deadzone": 0.1
+        "Deadzone": 0.0
       },
       "P2 Zapper Y": {
         "Value": "WMouse Y",
         "Mult": 1.0,
-        "Deadzone": 0.1
+        "Deadzone": 0.0
       },
-      "P2 Paddle": {
+      "P3 Paddle": {
         "Value": "WMouse X",
         "Mult": 1.0,
-        "Deadzone": 0.1
+        "Deadzone": 0.0
+      },
+      "P3 Zapper X": {
+        "Value": "WMouse X",
+        "Mult": 1.0,
+        "Deadzone": 0.0
+      },
+      "P3 Zapper Y": {
+        "Value": "WMouse Y",
+        "Mult": 1.0,
+        "Deadzone": 0.0
       }
     },
     "Nintento 64 Controller": {
@@ -790,7 +810,6 @@
         "Deadzone": 0.1
       }
     },
-    "NES Controller": {},
     "GPGX Genesis Controller": {}
   }
 }
