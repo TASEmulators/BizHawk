@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -107,17 +108,20 @@ namespace BizHawk.Client.EmuHawk
 				var index = IsDuplicateOf(filename);
 				if (!index.HasValue)
 				{
-					PreLoadMovieFile(file, force);
-					MovieView.ItemCount = _movieList.Count;
-					UpdateList();
+					var movie = PreLoadMovieFile(file, force);
+					lock (_movieList)
+					{
+						_movieList.Add(movie);
+						index = _movieList.Count - 1;
+					}
 
 					_sortReverse = false;
 					_sortedCol = string.Empty;
-					index = _movieList.Count - 1;
 				}
 
 				return index;
 			}
+
 		}
 
 		private int? IsDuplicateOf(string filename)
@@ -133,7 +137,7 @@ namespace BizHawk.Client.EmuHawk
 			return null;
 		}
 
-		private void PreLoadMovieFile(HawkFile hf, bool force)
+		private Movie PreLoadMovieFile(HawkFile hf, bool force)
 		{
 			var movie = new Movie(hf.CanonicalFullPath);
 
@@ -145,7 +149,7 @@ namespace BizHawk.Client.EmuHawk
 				if (movie.Header[HeaderKeys.SHA1] == Global.Game.Hash ||
 					Global.Config.PlayMovie_MatchHash == false || force)
 				{
-					_movieList.Add(movie);
+					return movie;
 				}
 			}
 			catch (Exception ex)
@@ -153,6 +157,8 @@ namespace BizHawk.Client.EmuHawk
 				// TODO: inform the user that a movie failed to parse in some way
 				Console.WriteLine(ex.Message);
 			}
+
+			return null;
 		}
 
 		private void UpdateList()
@@ -249,36 +255,51 @@ namespace BizHawk.Client.EmuHawk
 				Directory.CreateDirectory(directory);
 			}
 
-			Directory.GetFiles(directory, "*." + Global.Config.MovieExtension)
-					.ToList()
-					.ForEach(file => AddMovieToList(file, force: false));
+			var dpTodo = new Queue<string>();
+			var fpTodo = new List<string>();
+			dpTodo.Enqueue(directory);
+			Dictionary<string, int> ordinals = new Dictionary<string, int>();
 
-			if (Global.Config.PlayMovie_ShowStateFiles)
+			while (dpTodo.Count > 0)
 			{
-				Directory.GetFiles(directory, "*.state")
-					.ToList()
-					.ForEach(AddStateToList);
+				string dp = dpTodo.Dequeue();
+				
+				//enqueue subdirectories if appropriate
+				if (Global.Config.PlayMovie_IncludeSubdir)
+					foreach(var subdir in Directory.GetDirectories(dp))
+						dpTodo.Enqueue(subdir);
+
+				//add movies
+				fpTodo.AddRange(Directory.GetFiles(dp, "*." + Global.Config.MovieExtension));
+				
+				//add states if requested
+				if (Global.Config.PlayMovie_ShowStateFiles)
+					fpTodo.AddRange(Directory.GetFiles(dp, "*.state"));
 			}
 
-			if (Global.Config.PlayMovie_IncludeSubdir)
+			//in parallel, scan each movie
+			Parallel.For(0, fpTodo.Count, (i) =>
 			{
-				var subs = Directory.GetDirectories(directory);
-				foreach (var dir in subs)
-				{
-					Directory.GetFiles(dir, "*." + Global.Config.MovieExtension)
-					.ToList()
-					.ForEach(file => AddMovieToList(file, force: false));
+				var file = fpTodo[i];
+				lock(ordinals) ordinals[file] = i;
+				AddMovieToList(file, force: false);
+			});
 
-					Directory.GetFiles(dir, "*.state")
-					.ToList()
-					.ForEach(AddStateToList);
-				}
-			}
+			//sort by the ordinal key to maintain relatively stable results when rescanning
+			_movieList.Sort((a, b) => ordinals[a.Filename].CompareTo(ordinals[b.Filename]));
+
+			RefreshMovieList();
 		}
 
 		#region Events
 
 		#region Movie List
+
+		void RefreshMovieList()
+		{
+			MovieView.ItemCount = _movieList.Count;
+			UpdateList();
+		}
 
 		private void MovieView_DragEnter(object sender, DragEventArgs e)
 		{
@@ -293,6 +314,8 @@ namespace BizHawk.Client.EmuHawk
 				.Where(path => Path.GetExtension(path) == "." + Global.Config.MovieExtension)
 				.ToList()
 				.ForEach(path => AddMovieToList(path, force: true));
+
+			RefreshMovieList();
 		}
 
 		private void MovieView_KeyDown(object sender, KeyEventArgs e)
@@ -441,6 +464,8 @@ namespace BizHawk.Client.EmuHawk
 				var item = new ListViewItem(kvp.Key);
 				item.SubItems.Add(kvp.Value);
 
+				bool add = true;
+
 				switch (kvp.Key)
 				{
 					case HeaderKeys.SHA1:
@@ -468,9 +493,15 @@ namespace BizHawk.Client.EmuHawk
 							item.BackColor = Color.Pink;
 						}
 						break;
+					
+					case HeaderKeys.SAVESTATEBINARYBASE64BLOB:
+						//a waste of time
+						add = false;
+						break;
 				}
 
-				DetailsView.Items.Add(item);
+				if(add)
+					DetailsView.Items.Add(item);
 			}
 
 			var FpsItem = new ListViewItem("Fps");
@@ -622,7 +653,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				var index = AddMovieToList(ofd.FileName, true);
+				int? index = AddMovieToList(ofd.FileName, true);
+				RefreshMovieList();
 				if (index.HasValue)
 				{
 					MovieView.SelectedIndices.Clear();
