@@ -99,10 +99,10 @@
 			// trackBarDeadzone
 			// 
 			this.trackBarDeadzone.Location = new System.Drawing.Point(267, 51);
-			this.trackBarDeadzone.Maximum = 6;
 			this.trackBarDeadzone.Name = "trackBarDeadzone";
 			this.trackBarDeadzone.Size = new System.Drawing.Size(104, 42);
 			this.trackBarDeadzone.TabIndex = 5;
+			this.trackBarDeadzone.TickFrequency = 2;
 			this.trackBarDeadzone.ValueChanged += new System.EventHandler(this.trackBarDeadzone_ValueChanged);
 			// 
 			// labelDeadzone
