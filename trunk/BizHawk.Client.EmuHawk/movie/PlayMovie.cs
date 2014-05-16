@@ -108,7 +108,9 @@ namespace BizHawk.Client.EmuHawk
 				var index = IsDuplicateOf(filename);
 				if (!index.HasValue)
 				{
+					//System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch(); watch.Start();
 					var movie = PreLoadMovieFile(file, force);
+					//watch.Stop(); Console.WriteLine("[{0}] {1}",watch.ElapsedMilliseconds,Path.GetFileName(filename));
 					lock (_movieList)
 					{
 						_movieList.Add(movie);
@@ -279,11 +281,13 @@ namespace BizHawk.Client.EmuHawk
 
 			//in parallel, scan each movie
 			Parallel.For(0, fpTodo.Count, (i) =>
+			//for(int i=0;i<fpTodo.Count;i++)
 			{
 				var file = fpTodo[i];
 				lock(ordinals) ordinals[file] = i;
 				AddMovieToList(file, force: false);
-			});
+			}
+			);
 
 			//sort by the ordinal key to maintain relatively stable results when rescanning
 			_movieList.Sort((a, b) => ordinals[a.Filename].CompareTo(ordinals[b.Filename]));
@@ -492,11 +496,6 @@ namespace BizHawk.Client.EmuHawk
 						{
 							item.BackColor = Color.Pink;
 						}
-						break;
-					
-					case HeaderKeys.SAVESTATEBINARYBASE64BLOB:
-						//a waste of time
-						add = false;
 						break;
 				}
 
