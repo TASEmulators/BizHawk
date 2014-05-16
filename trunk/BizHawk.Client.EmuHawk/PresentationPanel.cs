@@ -53,10 +53,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HandleFullscreenToggle(object sender, MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Left)
+			if (e.Button == MouseButtons.Left && Control.ModifierKeys == Keys.Shift)
+			{
 				GlobalWin.MainForm.ToggleFullscreen();
+			}
 		}
-
 
 		public bool Resized { get; set; }
 
