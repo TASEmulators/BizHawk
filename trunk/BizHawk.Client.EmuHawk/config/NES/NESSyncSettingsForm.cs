@@ -84,5 +84,10 @@ namespace BizHawk.Client.EmuHawk
 			comboBoxNESL.Enabled = !checkBoxFamicom.Checked;
 			comboBoxNESR.Enabled = !checkBoxFamicom.Checked;
 		}
+
+		private void NESSyncSettingsForm_Load(object sender, EventArgs e)
+		{
+
+		}
 	}
 }

@@ -1072,7 +1072,6 @@ namespace BizHawk.Client.EmuHawk
 			FDSControlsMenuItem.Enabled = Global.Emulator.BoardName == "FDS";
 
 			NESDebuggerMenuItem.Visible =
-			MovieSettingsMenuItem.Visible =
 				VersionInfo.INTERIM;
 
 			NESDebuggerMenuItem.Enabled =
@@ -1081,6 +1080,9 @@ namespace BizHawk.Client.EmuHawk
 				NESSoundChannelsMenuItem.Enabled =
 				MovieSettingsMenuItem.Enabled =
 				Global.Emulator is NES;
+
+			NesControllerSettingsMenuItem.Enabled = Global.Emulator is NES && !Global.MovieSession.Movie.IsActive;
+			MovieSettingsMenuItem.Enabled = Global.Emulator is NES && !Global.MovieSession.Movie.IsActive;
 		}
 
 		private void FdsControlsMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1142,6 +1144,11 @@ namespace BizHawk.Client.EmuHawk
 				Global.ClickyVirtualPadController.Click("FDS Eject");
 				GlobalWin.OSD.AddMessage("FDS disk ejected.");
 			}
+		}
+
+		private void NesControllerSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			new NesControllerSettings().ShowDialog();
 		}
 
 		private void MovieSettingsMenuItem_Click(object sender, EventArgs e)
@@ -1632,7 +1639,7 @@ namespace BizHawk.Client.EmuHawk
 			if (new N64VideoPluginconfig().ShowDialog() == DialogResult.OK)
 			{
 				GlobalWin.MainForm.FlagNeedsReboot();
-				GlobalWin.OSD.AddMessage("Plugin settings saved");
+				GlobalWin.OSD.AddMessage("Plugin settings saved but a core reboot is required");
 			}
 			else
 			{
@@ -1645,7 +1652,7 @@ namespace BizHawk.Client.EmuHawk
 			if (new N64ControllersSetup().ShowDialog() == DialogResult.OK)
 			{
 				GlobalWin.MainForm.FlagNeedsReboot();
-				GlobalWin.OSD.AddMessage("Controller settings saved");
+				GlobalWin.OSD.AddMessage("Controller settings saved but a core reboot is required");
 			}
 			else
 			{
