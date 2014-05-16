@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(QuickNesConfig));
 			this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -140,9 +141,9 @@
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.propertyGrid1);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MinimumSize = new System.Drawing.Size(390, 285);
 			this.Name = "QuickNesConfig";
-			this.ShowIcon = false;
 			this.Text = "NES Graphics Settings";
 			this.Load += new System.EventHandler(this.QuickNesConfig_Load);
 			this.groupBox1.ResumeLayout(false);
