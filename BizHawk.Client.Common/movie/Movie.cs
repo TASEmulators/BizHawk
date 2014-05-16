@@ -228,48 +228,92 @@ namespace BizHawk.Client.Common
 
 			var origStreamPosn = hawkFile.GetStream().Position; 
 			hawkFile.GetStream().Position = 0; // Reset to start
+
+			// No using block because we're sharing the stream and need to give it back undisposed.
 			var sr = new StreamReader(hawkFile.GetStream());
 			
-			// No using block because we're sharing the stream and need to give it back undisposed.
-			if (!sr.EndOfStream)
+			for(;;)
 			{
-				string line;
-				while ((line = sr.ReadLine()) != null)
+				//read to first space (key/value delimeter), or pipe, or EOF
+				int first = sr.Read();
+					
+				if (first == -1) break; //EOF
+				else if(first == '|') //pipe: begin input log
 				{
-					if (line.Contains("LoopOffset"))
+					//NOTE - this code is a bit convoluted due to its predating the basic outline of the parser which was upgraded in may 2014
+					string line = '|' + sr.ReadLine();
+
+					//how many bytes are left, total?
+					long remain = sr.BaseStream.Length - sr.BaseStream.Position;
+
+					//try to find out whether we use \r\n or \n
+					//but only look for 1K characters.
+					bool usesR = false;
+					for (int i = 0; i < 1024; i++)
 					{
-						try
+						int c = sr.Read();
+						if (c == -1)
+							break;
+						if (c == '\r')
 						{
-							_loopOffset = int.Parse(line.Split(new[] { ' ' }, 2)[1]);
+							usesR = true;
+							break;
 						}
-						catch (Exception)
-						{
-							continue;
-						}
+						if (c == '\n')
+							break;
 					}
-					else if (string.IsNullOrWhiteSpace(line) || Header.ParseLineFromFile(line))
+
+					int lineLen = line.Length + 1; //account for \n
+					if (usesR) lineLen++; //account for \r
+
+					_preloadFramecount = (int)(remain / lineLen); //length is remaining bytes / length per line
+					_preloadFramecount++; //account for the current line
+					break;
+				}
+				else
+				{
+					//a header line. finish reading key token, to make sure it isn't one of the FORBIDDEN keys
+					StringBuilder sbLine = new StringBuilder();
+					sbLine.Append((char)first);
+					for (; ; )
 					{
+						int c = sr.Read();
+						if (c == -1) break;
+						if (c == '\n') break;
+						if (c == ' ') break;
+						sbLine.Append((char)c);
+					}
+
+					string line = sbLine.ToString();
+
+					//ignore these suckers, theyre way too big for preloading. seriously, we will get out of memory errors.
+					bool skip = false;
+					if (line == HeaderKeys.SAVESTATEBINARYBASE64BLOB) skip = true;
+
+					if (skip)
+					{
+						//skip remainder of the line
+						sr.DiscardBufferedData();
+						var stream = sr.BaseStream;
+						for (; ; )
+						{
+							int c = stream.ReadByte();
+							if (c == -1) break;
+							if (c == '\n') break;
+						}
+						//proceed to next line
 						continue;
 					}
-					else if (line.StartsWith("|"))
-					{
-						var frames = sr.ReadToEnd();
-						var length = line.Length;
+						
 
-						// Account for line breaks of either size.
-						if (frames.IndexOf("\r\n") != -1)
-						{
-							length++;
-						}
+					string remainder = sr.ReadLine();
+					sbLine.Append(' ');
+					sbLine.Append(remainder);
+					line = sbLine.ToString();
 
-						length++;
-						_preloadFramecount = (frames.Length / length) + 1; // Count the remaining frames and the current one.
-						break;
-					}
-					else
-					{
-						Header.Comments.Add(line);
-					}
+					if (string.IsNullOrWhiteSpace(line) || Header.ParseLineFromFile(line))
+						continue;
+					Header.Comments.Add(line);
 				}
 			}
 
