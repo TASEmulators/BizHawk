@@ -198,6 +198,7 @@
 			this.NESNametableViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NESGameGenieCodesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator17 = new System.Windows.Forms.ToolStripSeparator();
+			this.NesControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MovieSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NESGraphicSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NESSoundChannelsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -352,7 +353,7 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.NesControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator22 = new System.Windows.Forms.ToolStripSeparator();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -384,7 +385,7 @@
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.MainformMenu.Location = new System.Drawing.Point(0, 0);
 			this.MainformMenu.Name = "MainformMenu";
-			this.MainformMenu.Size = new System.Drawing.Size(470, 61);
+			this.MainformMenu.Size = new System.Drawing.Size(470, 42);
 			this.MainformMenu.TabIndex = 0;
 			this.MainformMenu.Text = "menuStrip1";
 			this.MainformMenu.MenuActivate += new System.EventHandler(this.MainformMenu_MenuActivate);
@@ -1784,9 +1785,10 @@
             this.NESGameGenieCodesMenuItem,
             this.toolStripSeparator17,
             this.NesControllerSettingsMenuItem,
-            this.MovieSettingsMenuItem,
             this.NESGraphicSettingsMenuItem,
             this.NESSoundChannelsMenuItem,
+            this.MovieSettingsMenuItem,
+            this.toolStripSeparator22,
             this.FDSControlsMenuItem});
 			this.NESSubMenu.Name = "NESSubMenu";
 			this.NESSubMenu.Size = new System.Drawing.Size(40, 19);
@@ -1827,6 +1829,14 @@
 			this.toolStripSeparator17.Name = "toolStripSeparator17";
 			this.toolStripSeparator17.Size = new System.Drawing.Size(230, 6);
 			// 
+			// NesControllerSettingsMenuItem
+			// 
+			this.NesControllerSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
+			this.NesControllerSettingsMenuItem.Name = "NesControllerSettingsMenuItem";
+			this.NesControllerSettingsMenuItem.Size = new System.Drawing.Size(233, 22);
+			this.NesControllerSettingsMenuItem.Text = "Controller Settings...";
+			this.NesControllerSettingsMenuItem.Click += new System.EventHandler(this.NesControllerSettingsMenuItem_Click);
+			// 
 			// MovieSettingsMenuItem
 			// 
 			this.MovieSettingsMenuItem.Name = "MovieSettingsMenuItem";
@@ -1862,7 +1872,7 @@
 			// FdsEjectDiskMenuItem
 			// 
 			this.FdsEjectDiskMenuItem.Name = "FdsEjectDiskMenuItem";
-			this.FdsEjectDiskMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.FdsEjectDiskMenuItem.Size = new System.Drawing.Size(124, 22);
 			this.FdsEjectDiskMenuItem.Text = "&Eject Disk";
 			this.FdsEjectDiskMenuItem.Click += new System.EventHandler(this.FdsEjectDiskMenuItem_Click);
 			// 
@@ -3081,13 +3091,10 @@
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
 			// 
-			// NesControllerSettingsMenuItem
+			// toolStripSeparator22
 			// 
-			this.NesControllerSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
-			this.NesControllerSettingsMenuItem.Name = "NesControllerSettingsMenuItem";
-			this.NesControllerSettingsMenuItem.Size = new System.Drawing.Size(233, 22);
-			this.NesControllerSettingsMenuItem.Text = "Controller Settings...";
-			this.NesControllerSettingsMenuItem.Click += new System.EventHandler(this.NesControllerSettingsMenuItem_Click);
+			this.toolStripSeparator22.Name = "toolStripSeparator22";
+			this.toolStripSeparator22.Size = new System.Drawing.Size(230, 6);
 			// 
 			// MainForm
 			// 
@@ -3453,6 +3460,7 @@
 		private System.Windows.Forms.ToolStripMenuItem N64ControllerSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GBcoreSettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem NesControllerSettingsMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator22;
 	}
 }
 
