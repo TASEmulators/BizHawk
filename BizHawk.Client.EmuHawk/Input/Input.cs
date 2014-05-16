@@ -322,7 +322,7 @@ namespace BizHawk.Client.EmuHawk
 								HandleButton(xname + pad.ButtonName(b), pad.Pressed(b));
 							foreach (var sv in pad.GetFloats())
 							{
-								string n = xname = sv.Item1;
+								string n = xname + sv.Item1;
 								float f = sv.Item2;
 								if (trackdeltas)
 									FloatDeltas[n] += Math.Abs(f - FloatValues[n]);
