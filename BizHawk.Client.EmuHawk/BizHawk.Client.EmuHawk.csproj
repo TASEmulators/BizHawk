@@ -318,6 +318,12 @@
       <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
     </Compile>
     <Compile Include="config\NES\DataTableDictionaryBind.cs" />
+    <Compile Include="config\NES\NesControllerSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\NES\NesControllerSettings.Designer.cs">
+      <DependentUpon>NesControllerSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\NES\NESGraphicsConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1045,6 +1051,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\N64\N64VideoPluginconfig.resx">
       <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\NES\NesControllerSettings.resx">
+      <DependentUpon>NesControllerSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\NES\NESGraphicsConfig.resx">
       <DependentUpon>NESGraphicsConfig.cs</DependentUpon>
