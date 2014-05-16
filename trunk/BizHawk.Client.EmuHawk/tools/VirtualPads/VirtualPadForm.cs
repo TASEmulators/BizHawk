@@ -97,6 +97,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Pads.ForEach(pad => pad.Clear());
 			}
+
+			if (Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished)
+			{
+				Pads
+					.Where(x => x is VirtualPadN64)
+					.Cast<VirtualPadN64>()
+					.ToList()
+					.ForEach(x =>
+					{
+						x.RefreshAnalog();
+					});
+			}
 		}
 
 		public VirtualPadForm()

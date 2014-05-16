@@ -10,7 +10,19 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadN64 : UserControl, IVirtualPad
 	{
-		public string Controller { get; set; }
+		private string _controllerNum = string.Empty;
+		public string Controller
+		{
+			get
+			{
+				return _controllerNum;
+			}
+
+			set
+			{
+				AnalogControl1.Controller = _controllerNum = value;
+			}
+		}
 
 		private int old_X = 0;
 		private int old_Y = 0;
@@ -142,6 +154,11 @@ namespace BizHawk.Client.EmuHawk
 		private void ManualY_ValueChanged(object sender, EventArgs e)
 		{
 			SetAnalogControlFromNumerics();
+		}
+
+		public void RefreshAnalog()
+		{
+			AnalogControl1.Refresh();
 		}
 
 		public void set_analog(bool hasValue, int X, int Y)
