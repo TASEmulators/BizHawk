@@ -199,9 +199,10 @@
 			this.NESGameGenieCodesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator17 = new System.Windows.Forms.ToolStripSeparator();
 			this.NesControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.MovieSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NESGraphicSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NESSoundChannelsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.MovieSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator22 = new System.Windows.Forms.ToolStripSeparator();
 			this.FDSControlsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.FdsEjectDiskMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PCESubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -353,7 +354,8 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator22 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator23 = new System.Windows.Forms.ToolStripSeparator();
+			this.N64CircularAnalogRangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -385,7 +387,7 @@
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.MainformMenu.Location = new System.Drawing.Point(0, 0);
 			this.MainformMenu.Name = "MainformMenu";
-			this.MainformMenu.Size = new System.Drawing.Size(470, 42);
+			this.MainformMenu.Size = new System.Drawing.Size(470, 61);
 			this.MainformMenu.TabIndex = 0;
 			this.MainformMenu.Text = "menuStrip1";
 			this.MainformMenu.MenuActivate += new System.EventHandler(this.MainformMenu_MenuActivate);
@@ -1837,13 +1839,6 @@
 			this.NesControllerSettingsMenuItem.Text = "Controller Settings...";
 			this.NesControllerSettingsMenuItem.Click += new System.EventHandler(this.NesControllerSettingsMenuItem_Click);
 			// 
-			// MovieSettingsMenuItem
-			// 
-			this.MovieSettingsMenuItem.Name = "MovieSettingsMenuItem";
-			this.MovieSettingsMenuItem.Size = new System.Drawing.Size(233, 22);
-			this.MovieSettingsMenuItem.Text = "Advanced Movie Settings...";
-			this.MovieSettingsMenuItem.Click += new System.EventHandler(this.MovieSettingsMenuItem_Click);
-			// 
 			// NESGraphicSettingsMenuItem
 			// 
 			this.NESGraphicSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.tvIcon;
@@ -1859,6 +1854,18 @@
 			this.NESSoundChannelsMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.NESSoundChannelsMenuItem.Text = "Sound Channels...";
 			this.NESSoundChannelsMenuItem.Click += new System.EventHandler(this.NESSoundChannelsMenuItem_Click);
+			// 
+			// MovieSettingsMenuItem
+			// 
+			this.MovieSettingsMenuItem.Name = "MovieSettingsMenuItem";
+			this.MovieSettingsMenuItem.Size = new System.Drawing.Size(233, 22);
+			this.MovieSettingsMenuItem.Text = "Advanced Movie Settings...";
+			this.MovieSettingsMenuItem.Click += new System.EventHandler(this.MovieSettingsMenuItem_Click);
+			// 
+			// toolStripSeparator22
+			// 
+			this.toolStripSeparator22.Name = "toolStripSeparator22";
+			this.toolStripSeparator22.Size = new System.Drawing.Size(230, 6);
 			// 
 			// FDSControlsMenuItem
 			// 
@@ -2390,7 +2397,9 @@
 			// 
 			this.N64SubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.N64PluginSettingsMenuItem,
-            this.N64ControllerSettingsMenuItem});
+            this.N64ControllerSettingsMenuItem,
+            this.toolStripSeparator23,
+            this.N64CircularAnalogRangeMenuItem});
 			this.N64SubMenu.Name = "N64SubMenu";
 			this.N64SubMenu.Size = new System.Drawing.Size(40, 19);
 			this.N64SubMenu.Text = "N64";
@@ -2400,7 +2409,7 @@
 			// 
 			this.N64PluginSettingsMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("N64PluginSettingsMenuItem.Image")));
 			this.N64PluginSettingsMenuItem.Name = "N64PluginSettingsMenuItem";
-			this.N64PluginSettingsMenuItem.Size = new System.Drawing.Size(181, 22);
+			this.N64PluginSettingsMenuItem.Size = new System.Drawing.Size(192, 22);
 			this.N64PluginSettingsMenuItem.Text = "Plugins";
 			this.N64PluginSettingsMenuItem.Click += new System.EventHandler(this.N64PluginSettingsMenuItem_Click);
 			// 
@@ -2408,7 +2417,7 @@
 			// 
 			this.N64ControllerSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
 			this.N64ControllerSettingsMenuItem.Name = "N64ControllerSettingsMenuItem";
-			this.N64ControllerSettingsMenuItem.Size = new System.Drawing.Size(181, 22);
+			this.N64ControllerSettingsMenuItem.Size = new System.Drawing.Size(192, 22);
 			this.N64ControllerSettingsMenuItem.Text = "Controller Settings...";
 			this.N64ControllerSettingsMenuItem.Click += new System.EventHandler(this.N64ControllerSettingsMenuItem_Click);
 			// 
@@ -2507,6 +2516,7 @@
 			// 
 			// MainStatusBar
 			// 
+			this.MainStatusBar.ClickThrough = true;
 			this.MainStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.DumpStatusButton,
             this.EmuStatus,
@@ -3091,10 +3101,17 @@
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
 			// 
-			// toolStripSeparator22
+			// toolStripSeparator23
 			// 
-			this.toolStripSeparator22.Name = "toolStripSeparator22";
-			this.toolStripSeparator22.Size = new System.Drawing.Size(230, 6);
+			this.toolStripSeparator23.Name = "toolStripSeparator23";
+			this.toolStripSeparator23.Size = new System.Drawing.Size(189, 6);
+			// 
+			// N64CircularAnalogRangeMenuItem
+			// 
+			this.N64CircularAnalogRangeMenuItem.Name = "N64CircularAnalogRangeMenuItem";
+			this.N64CircularAnalogRangeMenuItem.Size = new System.Drawing.Size(192, 22);
+			this.N64CircularAnalogRangeMenuItem.Text = "Circular Analog Range";
+			this.N64CircularAnalogRangeMenuItem.Click += new System.EventHandler(this.N64CircularAnalogRangeMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -3461,6 +3478,8 @@
 		private System.Windows.Forms.ToolStripMenuItem GBcoreSettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem NesControllerSettingsMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator22;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator23;
+		private System.Windows.Forms.ToolStripMenuItem N64CircularAnalogRangeMenuItem;
 	}
 }
 
