@@ -97,6 +97,9 @@ namespace BizHawk.Client.Common
 		public enum SaveStateTypeE { Default, Binary, Text };
 		public SaveStateTypeE SaveStateType = SaveStateTypeE.Default;
 
+		// N64
+		public bool N64UseCircularAnalogConstraint = true;
+
 		// Run-Control settings
 		public int FrameProgressDelayMs = 500; // how long until a frame advance hold turns into a frame progress?
 		public int FrameSkip = 4;

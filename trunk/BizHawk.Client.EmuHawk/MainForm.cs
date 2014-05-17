@@ -24,6 +24,7 @@ using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Sega.Saturn;
 using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.DiscSystem;
+using BizHawk.Emulation.Cores.Nintendo.N64;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -430,8 +431,8 @@ namespace BizHawk.Client.EmuHawk
 
 				Global.ActiveController.LatchFromPhysical(Global.ControllerInputCoalescer);
 
-				//TODO - use preferences to apply this
-				Global.ActiveController.ApplyAxisConstraints("Natural Circle");
+				Global.ActiveController.ApplyAxisConstraints(
+					(Global.Emulator is N64 && Global.Config.N64UseCircularAnalogConstraint) ? "Natural Circle" : null);
 
 				Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
 				Global.ActiveController.Overrides(Global.LuaAndAdaptor);
