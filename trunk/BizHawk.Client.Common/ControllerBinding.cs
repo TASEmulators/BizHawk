@@ -113,14 +113,18 @@ namespace BizHawk.Client.Common
 					}
 
 					var output = (input * multiplier + 10000.0f) * (range.Max - range.Min) / 20000.0f + range.Min;
-					if (output < range.Min)
+
+					float lbound = Math.Min(range.Min, range.Max);
+					float ubound = Math.Max(range.Min, range.Max);
+
+					if (output < lbound)
 					{
-						output = range.Min;
+						output = lbound;
 					}
 
-					if (output > range.Max)
+					if (output > ubound)
 					{
-						output = range.Max;
+						output = ubound;
 					}
 
 					_floatButtons[outkey] = output;
