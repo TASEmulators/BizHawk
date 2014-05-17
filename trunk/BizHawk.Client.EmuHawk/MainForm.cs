@@ -792,17 +792,19 @@ namespace BizHawk.Client.EmuHawk
 				int borderHeight = Size.Height - GlobalWin.PresentationPanel.Control.Size.Height;
 
 				// start at target zoom and work way down until we find acceptable zoom
+				Size lastComputedSize = new Size(1, 1);
 				for (; zoom >= 1; zoom--)
 				{
-					if ((((video.BufferWidth * zoom) + borderWidth) < area.Width)
-						&& (((video.BufferHeight * zoom) + borderHeight) < area.Height))
+					lastComputedSize = GlobalWin.DisplayManager.CalculateClientSize(video, zoom);
+					if ((((lastComputedSize.Width) + borderWidth) < area.Width)
+						&& (((lastComputedSize.Height) + borderHeight) < area.Height))
 					{
 						break;
 					}
 				}
 
 				// Change size
-				Size = new Size((video.BufferWidth * zoom) + borderWidth, ((video.BufferHeight * zoom) + borderHeight));
+				Size = new Size((lastComputedSize.Width) + borderWidth, ((lastComputedSize.Height) + borderHeight));
 				PerformLayout();
 				GlobalWin.PresentationPanel.Resized = true;
 
