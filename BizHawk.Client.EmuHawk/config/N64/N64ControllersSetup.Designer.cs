@@ -40,7 +40,7 @@
 			// OkBtn
 			// 
 			this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OkBtn.Location = new System.Drawing.Point(179, 157);
+			this.OkBtn.Location = new System.Drawing.Point(169, 145);
 			this.OkBtn.Name = "OkBtn";
 			this.OkBtn.Size = new System.Drawing.Size(60, 23);
 			this.OkBtn.TabIndex = 0;
@@ -52,7 +52,7 @@
 			// 
 			this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.CancelBtn.Location = new System.Drawing.Point(245, 157);
+			this.CancelBtn.Location = new System.Drawing.Point(235, 145);
 			this.CancelBtn.Name = "CancelBtn";
 			this.CancelBtn.Size = new System.Drawing.Size(60, 23);
 			this.CancelBtn.TabIndex = 1;
@@ -106,13 +106,14 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.CancelBtn;
-			this.ClientSize = new System.Drawing.Size(317, 192);
+			this.ClientSize = new System.Drawing.Size(307, 180);
 			this.Controls.Add(this.ControllerSetting4);
 			this.Controls.Add(this.ControllerSetting3);
 			this.Controls.Add(this.ControllerSetting2);
 			this.Controls.Add(this.ControllerSetting1);
 			this.Controls.Add(this.CancelBtn);
 			this.Controls.Add(this.OkBtn);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "N64ControllersSetup";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
