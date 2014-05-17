@@ -342,7 +342,12 @@ namespace BizHawk.Client.EmuHawk
 				float x = GetX(g, Global.Config.DispFrameCx, Global.Config.DispFrameanchor, message);
 				float y = GetY(g, Global.Config.DispFrameCy, Global.Config.DispFrameanchor, message);
 
-				DrawOsdMessage(g, message, Color.FromArgb(Global.Config.MessagesColor), x, y);
+				DrawOsdMessage(
+					g,
+					message,
+					Global.Emulator.IsLagFrame ? FixedAlertMessageColor : Color.FromArgb(Global.Config.MessagesColor),
+					x,
+					y);
 			}
 
 			if (Global.Config.DisplayInput)
@@ -406,7 +411,7 @@ namespace BizHawk.Client.EmuHawk
 				var x = GetX(g, Global.Config.DispLagx, Global.Config.DispLaganchor, counter);
 				var y = GetY(g, Global.Config.DispLagy, Global.Config.DispLaganchor, counter);
 
-				DrawOsdMessage(g, counter, (Global.Emulator.IsLagFrame ? FixedAlertMessageColor : FixedAlertMessageColor), x, y);
+				DrawOsdMessage(g, counter, FixedAlertMessageColor, x, y);
 			}
 
 			if (Global.Config.DisplayRerecordCount)
