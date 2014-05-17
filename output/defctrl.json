@@ -776,7 +776,7 @@
       },
       "P1 Y Axis": {
         "Value": "J1 Y",
-        "Mult": -1.0,
+        "Mult": 1.0,
         "Deadzone": 0.1
       },
       "P2 X Axis": {
@@ -786,7 +786,7 @@
       },
       "P2 Y Axis": {
         "Value": "",
-        "Mult": -1.0,
+        "Mult": 1.0,
         "Deadzone": 0.1
       },
       "P3 X Axis": {
@@ -796,7 +796,7 @@
       },
       "P3 Y Axis": {
         "Value": "",
-        "Mult": -1.0,
+        "Mult": 1.0,
         "Deadzone": 0.1
       },
       "P4 X Axis": {
@@ -806,7 +806,7 @@
       },
       "P4 Y Axis": {
         "Value": "",
-        "Mult": -1.0,
+        "Mult": 1.0,
         "Deadzone": 0.1
       }
     },
