@@ -101,7 +101,7 @@
 			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.NesPPUStatusBar = new System.Windows.Forms.StatusStrip();
+			this.NesPPUStatusBar = new StatusStripEx();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.Messagetimer = new System.Windows.Forms.Timer(this.components);
 			this.CHRROMGroup = new System.Windows.Forms.GroupBox();
@@ -942,7 +942,7 @@
 		private System.Windows.Forms.ToolStripMenuItem CopyPatternToClipboardMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem CopySpriteToClipboardMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-		private System.Windows.Forms.StatusStrip NesPPUStatusBar;
+		private StatusStripEx NesPPUStatusBar;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
 		private System.Windows.Forms.Timer Messagetimer;
 		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;

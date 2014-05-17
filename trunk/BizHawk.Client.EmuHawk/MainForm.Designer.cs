@@ -284,7 +284,7 @@
 			this.OnlineHelpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ForumsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AboutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.MainStatusBar = new System.Windows.Forms.StatusStrip();
+			this.MainStatusBar = new StatusStripEx();
 			this.DumpStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
 			this.EmuStatus = new System.Windows.Forms.ToolStripStatusLabel();
 			this.PlayRecordStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
@@ -3248,7 +3248,7 @@
 		private System.Windows.Forms.ToolStripMenuItem ToolBoxMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
 		private System.Windows.Forms.ToolStripMenuItem SwitchToFullscreenMenuItem;
-		private System.Windows.Forms.StatusStrip MainStatusBar;
+		private StatusStripEx MainStatusBar;
 		private System.Windows.Forms.ToolStripStatusLabel EmuStatus;
 		private System.Windows.Forms.ToolStripMenuItem MessagesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem TI83SubMenu;

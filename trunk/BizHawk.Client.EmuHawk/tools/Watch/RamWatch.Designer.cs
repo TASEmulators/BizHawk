@@ -49,7 +49,7 @@
 			this.ShowChangeCountsContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowDiffContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowDomainContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+			this.statusStrip1 = new StatusStripEx();
 			this.MessageLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStrip1 = new ToolStripEx();
 			this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -1067,7 +1067,7 @@
 		private System.Windows.Forms.ToolStripMenuItem ShowDomainContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
-		private System.Windows.Forms.StatusStrip statusStrip1;
+		private StatusStripEx statusStrip1;
 		private System.Windows.Forms.ToolStripStatusLabel MessageLabel;
 		private System.Windows.Forms.ToolStripButton ErrorIconButton;
 	}
