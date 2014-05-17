@@ -427,7 +427,11 @@ namespace BizHawk.Client.EmuHawk
 				// handle events and dispatch as a hotkey action, or a hotkey button, or an input button
 				ProcessInput();
 				Global.ClientControls.LatchFromPhysical(GlobalWin.HotkeyCoalescer);
+
 				Global.ActiveController.LatchFromPhysical(Global.ControllerInputCoalescer);
+
+				//TODO - use preferences to apply this
+				Global.ActiveController.ApplyAxisConstraints("Natural Circle");
 
 				Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
 				Global.ActiveController.Overrides(Global.LuaAndAdaptor);

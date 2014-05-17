@@ -41,6 +41,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				new[] {127.0f, 0.0f, -128.0f},
 				new[] {-128.0f, 0.0f, 127.0f},
 				new[] {127.0f, 0.0f, -128.0f}
+			},
+			AxisConstraints =
+			{
+				new ControllerDefinition.AxisConstraint { Class = "Natural Circle", Type = ControllerDefinition.AxisConstraintType.Circular, Params = new object[] {"P1 X Axis", "P1 Y Axis", 127.0f} }
 			}
 		};
 

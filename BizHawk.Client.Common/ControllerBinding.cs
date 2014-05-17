@@ -132,6 +132,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public void ApplyAxisConstraints(string constraintClass)
+		{
+			_type.ApplyAxisConstraints(constraintClass,_floatButtons);
+		}
+
 		/// <summary>
 		/// merges pressed logical buttons from the supplied controller, effectively ORing it with the current state
 		/// </summary>
