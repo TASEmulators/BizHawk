@@ -49,9 +49,11 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
-				EnabledCheckbox.Checked = 
-					PakTypeDropdown.Enabled =
-					value;
+				EnabledCheckbox.Checked = value;
+				if (PakTypeDropdown != null) // Null check for designer
+				{
+					PakTypeDropdown.Enabled = value;
+				}
 
 				Refresh();
 			}
@@ -61,18 +63,26 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				return EnumHelper.GetValueFromDescription<N64ControllerSettings.N64ControllerPakType>(
-					PakTypeDropdown.SelectedItem.ToString());
+				if (PakTypeDropdown.SelectedItem != null) // Null check for designer
+				{
+					return EnumHelper.GetValueFromDescription<N64ControllerSettings.N64ControllerPakType>(
+						PakTypeDropdown.SelectedItem.ToString());
+				}
+
+				return N64ControllerSettings.N64ControllerPakType.NO_PAK;
 			}
 
 			set
 			{
-				var toSelect = PakTypeDropdown.Items
-					.OfType<object>()
-					.FirstOrDefault(item => item.ToString() == EnumHelper.GetDescription(value));
-				PakTypeDropdown.SelectedItem = toSelect;
+				if (PakTypeDropdown.Items.Count > 0 && PakTypeDropdown.SelectedItem != null) // Null check for designer
+				{
+					var toSelect = PakTypeDropdown.Items
+						.OfType<object>()
+						.FirstOrDefault(item => item.ToString() == EnumHelper.GetDescription(value));
+					PakTypeDropdown.SelectedItem = toSelect;
 
-				Refresh();
+					Refresh();
+				}
 			}
 		}
 
