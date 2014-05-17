@@ -822,19 +822,20 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[System.Runtime.InteropServices.DllImport("user32.dll")]
-		static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
-
-		[System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
-		static extern int GetWindowLong(IntPtr hWnd, int nIndex);
-
 		public bool IsInFullscreen
 		{
 			get { return _inFullscreen; }
 		}
 
-		public void ToggleFullscreen()
+		public void ToggleFullscreen(bool allowSuppress=false)
 		{
+			//prohibit this operation if the current controls include LMouse
+			if (allowSuppress)
+			{
+				if (Global.ActiveController.HasBinding("WMouse L"))
+					return;
+			}
+
 			if (_inFullscreen == false)
 			{
 				SuspendLayout();
