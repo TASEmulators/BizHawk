@@ -164,6 +164,18 @@
     <Compile Include="BizBox.Designer.cs">
       <DependentUpon>BizBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\AnalogRangeConfig.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="config\AnalogRangeConfig.Designer.cs">
+      <DependentUpon>AnalogRangeConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\AnalogRangeConfigControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="config\AnalogRangeConfigControl.Designer.cs">
+      <DependentUpon>AnalogRangeConfigControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\AutofireConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -985,6 +997,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AVOut\VideoWriterChooserForm.resx">
       <DependentUpon>VideoWriterChooserForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\AnalogRangeConfigControl.resx">
+      <DependentUpon>AnalogRangeConfigControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\ControllerConfig.resx">
       <DependentUpon>ControllerConfig.cs</DependentUpon>
