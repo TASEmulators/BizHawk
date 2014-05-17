@@ -1632,6 +1632,8 @@ namespace BizHawk.Client.EmuHawk
 			N64PluginSettingsMenuItem.Enabled =
 				N64ControllerSettingsMenuItem.Enabled =
 				!Global.MovieSession.Movie.IsActive;
+
+			N64CircularAnalogRangeMenuItem.Checked = Global.Config.N64UseCircularAnalogConstraint;
 		}
 
 		private void N64PluginSettingsMenuItem_Click(object sender, EventArgs e)
@@ -1658,6 +1660,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GlobalWin.OSD.AddMessage("Controller settings aborted");
 			}
+		}
+
+		private void N64CircularAnalogRangeMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.N64UseCircularAnalogConstraint ^= true;
 		}
 
 		#endregion
