@@ -20,7 +20,7 @@ namespace BizHawk.Client.Common
 		public const string FIRMWARESHA1 = "FirmwareSHA1";
 		public const string PAL = "PAL";
 		public const string BOARDNAME = "BoardName";
-
+		public const string SYNCSETTINGS = "SyncSettings";
 		// Core Setting
 		public const string CORE = "Core";
 

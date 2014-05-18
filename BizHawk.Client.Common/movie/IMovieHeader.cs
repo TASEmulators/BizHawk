@@ -13,6 +13,7 @@ namespace BizHawk.Client.Common
 		string SavestateBinaryBase64Blob { get; set; }
 		string GameName { get; set; }
 		string SystemID { get; set; }
+		string SyncSettingsJson { get; set; }
 
 		/// <summary>
 		/// Receives a line and attempts to add as a header
