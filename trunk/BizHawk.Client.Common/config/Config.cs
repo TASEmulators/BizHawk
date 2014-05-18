@@ -168,7 +168,7 @@ namespace BizHawk.Client.Common
 		
 		public bool DispBlurry = false; // make display look ugly
 		public bool DispFixAspectRatio = true;
-		public bool DispFixScaleInteger = false;
+		public bool DispFixScaleInteger = true;
 		public bool DispObeyAR = true;
 
 		// Sound options
