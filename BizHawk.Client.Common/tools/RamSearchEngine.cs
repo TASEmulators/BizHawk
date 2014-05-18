@@ -299,10 +299,6 @@ namespace BizHawk.Client.Common
 			{
 				_settings.Type = type;
 			}
-			else
-			{
-				throw new InvalidOperationException();
-			}
 		}
 
 		public void SetEndian(bool bigendian)
