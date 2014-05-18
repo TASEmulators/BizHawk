@@ -1070,8 +1070,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Private variables
 
-		private int _lastWidth = -1;
-		private int _lastHeight = -1;
+		private Size _lastVideoSize = new Size(-1, -1), _lastVirtualSize = new Size(-1, -1);
 		private readonly SaveSlotManager _stateSlots = new SaveSlotManager();
 
 		// AVI/WAV state
@@ -1622,11 +1621,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Render()
 		{
+			//private Size _lastVideoSize = new Size(-1, -1), _lastVirtualSize = new Size(-1, -1);
 			var video = Global.Emulator.VideoProvider;
-			if (video.BufferHeight != _lastHeight || video.BufferWidth != _lastWidth)
+			bool change = false;
+			Size currVideoSize = new Size(video.BufferWidth,video.BufferHeight);
+			Size currVirtualSize = new Size(video.VirtualWidth,video.VirtualWidth);
+			if (currVideoSize != _lastVideoSize || currVirtualSize != _lastVirtualSize)
 			{
-				_lastWidth = video.BufferWidth;
-				_lastHeight = video.BufferHeight;
+				_lastVideoSize = currVideoSize;
+				_lastVirtualSize = currVirtualSize;
 				FrameBufferResized();
 			}
 
