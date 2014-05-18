@@ -342,12 +342,12 @@ namespace BizHawk.Client.EmuHawk
 				float x = GetX(g, Global.Config.DispFrameCx, Global.Config.DispFrameanchor, message);
 				float y = GetY(g, Global.Config.DispFrameCy, Global.Config.DispFrameanchor, message);
 
-				DrawOsdMessage(
-					g,
-					message,
-					Global.Emulator.IsLagFrame ? FixedAlertMessageColor : Color.FromArgb(Global.Config.MessagesColor),
-					x,
-					y);
+				DrawOsdMessage(g, message, Color.FromArgb(Global.Config.MessagesColor), x, y);
+
+				if (Global.Emulator.IsLagFrame)
+				{
+					DrawOsdMessage(g, Global.Emulator.Frame.ToString(), FixedAlertMessageColor, x, y);
+				}
 			}
 
 			if (Global.Config.DisplayInput)
