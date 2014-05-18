@@ -5,7 +5,6 @@ namespace BizHawk.Client.Common
 	public interface IMovieHeader : IDictionary<string, string>
 	{
 		SubtitleList Subtitles { get; }
-		Dictionary<string, string> BoardProperties { get; }
 		List<string> Comments { get; }
 
 		ulong Rerecords { get; set; }

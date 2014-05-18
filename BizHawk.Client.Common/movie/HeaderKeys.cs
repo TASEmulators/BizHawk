@@ -31,9 +31,6 @@ namespace BizHawk.Client.Common
 		// Plugin Settings
 		public const string VIDEOPLUGIN = "VideoPlugin";
 
-		// Board properties
-		public const string BOARDPROPERTIES = "BoardProperty";
-
 		public static bool Contains(string val)
 		{
 			return typeof(HeaderKeys)

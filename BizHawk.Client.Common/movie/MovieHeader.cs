@@ -9,7 +9,6 @@ namespace BizHawk.Client.Common
 		{
 			Comments = new List<string>();
 			Subtitles = new SubtitleList();
-			BoardProperties = new Dictionary<string, string>();
 
 			this[HeaderKeys.EMULATIONVERSION] = VersionInfo.GetEmuVersion();
 			this[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion1;
@@ -20,7 +19,6 @@ namespace BizHawk.Client.Common
 		}
 
 		public List<string> Comments { get; private set; }
-		public Dictionary<string, string> BoardProperties { get; private set; }
 		public SubtitleList Subtitles { get; private set; }
 
 		public string SavestateBinaryBase64Blob
@@ -154,7 +152,6 @@ namespace BizHawk.Client.Common
 
 		public new void Clear()
 		{
-			BoardProperties.Clear();
 			Comments.Clear();
 			Subtitles.Clear();
 			base.Clear();
@@ -173,17 +170,6 @@ namespace BizHawk.Client.Common
 					.AppendLine();
 			}
 
-			foreach (var kvp in BoardProperties)
-			{
-				sb
-					.Append(HeaderKeys.BOARDPROPERTIES)
-					.Append(' ')
-					.Append(kvp.Key)
-					.Append(' ')
-					.Append(kvp.Value)
-					.AppendLine();
-			}
-
 			sb.Append(Subtitles);
 			Comments.ForEach(comment => sb.AppendLine(comment));
 
@@ -196,15 +182,7 @@ namespace BizHawk.Client.Common
 			{
 				var splitLine = line.Split(new[] { ' ' }, 2);
 
-				if (line.Contains(HeaderKeys.BOARDPROPERTIES))
-				{
-					var boardSplit = splitLine[1].Split(' ');
-					if (!BoardProperties.ContainsKey(boardSplit[0]))
-					{
-						BoardProperties.Add(boardSplit[0], boardSplit[1]);
-					}
-				}
-				else if (HeaderKeys.Contains(splitLine[0]) && !this.ContainsKey(splitLine[0]))
+				if (HeaderKeys.Contains(splitLine[0]) && !this.ContainsKey(splitLine[0]))
 				{
 					Add(splitLine[0], splitLine[1]);
 				}
