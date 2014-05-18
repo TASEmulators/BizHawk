@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
-				if (PakTypeDropdown.Items.Count > 0 && PakTypeDropdown.SelectedItem != null) // Null check for designer
+				if (PakTypeDropdown.Items.Count > 0) // Null check for designer
 				{
 					var toSelect = PakTypeDropdown.Items
 						.OfType<object>()
