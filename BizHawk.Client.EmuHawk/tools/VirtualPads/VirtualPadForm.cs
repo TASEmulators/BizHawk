@@ -88,9 +88,13 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
 			{
-				for (int i = 0; i < Pads.Count; i++)
+				var inputs = CurrentFrameInputs; // THis is necessary because of the weird situation on the frame after the end of the movie, it goes into finished mode AFTER the input is read so this will be empty on that frame
+				if (inputs.Any())
 				{
-					Pads[i].SetButtons(CurrentFrameInputs[i]);
+					for (int i = 0; i < Pads.Count; i++)
+					{
+						Pads[i].SetButtons(inputs[i]);
+					}
 				}
 			}
 			else if (!Global.Config.VirtualPadSticky)
