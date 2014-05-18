@@ -15,6 +15,8 @@ using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
 using System.Reflection;
 
+using Newtonsoft.Json;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class RecordMovie : Form
@@ -94,10 +96,15 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// Header
+
 				_movieToRecord.Header[HeaderKeys.AUTHOR] = AuthorBox.Text;
 				_movieToRecord.Header[HeaderKeys.EMULATIONVERSION] = VersionInfo.GetEmuVersion();
 				_movieToRecord.Header[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion1;
 				_movieToRecord.Header[HeaderKeys.PLATFORM] = Global.Game.System;
+
+				// Sync Settings, for movies 1.0, just dump a json blob into a header line
+				_movieToRecord.Header[HeaderKeys.SYNCSETTINGS] = JsonConvert.SerializeObject(Global.Emulator.GetSyncSettings());
+
 				if (Global.Game != null)
 				{
 					_movieToRecord.Header[HeaderKeys.GAMENAME] = PathManager.FilesystemSafeName(Global.Game);
