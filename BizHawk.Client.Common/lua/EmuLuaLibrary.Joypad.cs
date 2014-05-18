@@ -68,6 +68,26 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodAttributes(
+			"setfrommnemonicstr",
+			"sets the given buttons to their provided values for the current frame, string will be interpretted the same way an entry from a movie input log would be"
+		)]
+		public void SetFromMnemonicStr(string inputLogEntry)
+		{
+			var m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
+			m.SetControllersAsMnemonic(inputLogEntry);
+
+			foreach (var button in m.Type.BoolButtons)
+			{
+				Global.LuaAndAdaptor.SetButton(button, m.IsPressed(button));
+			}
+
+			foreach (var floatButton in m.Type.FloatControls)
+			{
+				Global.StickyXORAdapter.SetFloat(floatButton, m.GetFloat(floatButton));
+			}
+		}
+
+		[LuaMethodAttributes(
 			"set",
 			"sets the given buttons to their provided values for the current frame"
 		)]
