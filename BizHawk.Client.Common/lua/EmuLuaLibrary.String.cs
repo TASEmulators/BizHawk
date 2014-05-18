@@ -1,9 +1,20 @@
 ﻿using System;
+using System.Linq;
+
+using LuaInterface;
+
 namespace BizHawk.Client.Common
 {
 	public class StringLuaLibrary : LuaLibraryBase
 	{
+		private readonly Lua _lua;
+
 		public override string Name { get { return "bizstring"; } }
+
+		public StringLuaLibrary(Lua lua)
+		{
+			_lua = lua;
+		}
 
 		[LuaMethodAttributes(
 			"hex",
@@ -125,6 +136,25 @@ namespace BizHawk.Client.Common
 		public static bool EndsWith(string str, string str2)
 		{
 			return str.EndsWith(str2);
+		}
+
+		[LuaMethodAttributes(
+			"split",
+			"Splits str based on separator into a LuaTable. Separator must be one character!. Same functionality as .NET string.Split() using the RemoveEmptyEntries option"
+		)]
+		public LuaTable Split(string str, string separator)
+		{
+			var table = _lua.NewTable();
+			var splitStr = str.Split(
+				new char[] { separator.FirstOrDefault() },
+				StringSplitOptions.RemoveEmptyEntries);
+
+			for(int i = 0; i < splitStr.Length; i++)
+			{
+				table[i] = splitStr[i];
+			}
+
+			return table;
 		}
 	}
 }
