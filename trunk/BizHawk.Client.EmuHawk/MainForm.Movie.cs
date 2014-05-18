@@ -12,6 +12,7 @@ using BizHawk.Emulation.Cores.Sega.Saturn;
 using BizHawk.Emulation.Cores.Sony.PSP;
 
 using Newtonsoft.Json;
+using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -41,50 +42,32 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				// Get Sync settings and put into hack variable
-				_syncSettingsHack = JsonConvert.DeserializeObject(Global.MovieSession.Movie.Header.SyncSettingsJson, Global.Emulator.GetSyncSettings().GetType());
+				var quicknesName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(QuickNES), typeof(CoreAttributes))).CoreName;
 
-				// movie 1.0 hack: restore sync settings for the only core that fully supported them in movie 1.0
-				if (!record && Global.Emulator.SystemId == "Coleco")
+				if (!record && Global.Emulator.SystemId == "NES") // For NES we need special logic since the movie will drive which core to load
 				{
-					string str = Global.MovieSession.Movie.Header[HeaderKeys.SKIPBIOS];
-					if (!String.IsNullOrWhiteSpace(str))
-					{
-						this._syncSettingsHack = new Emulation.Cores.ColecoVision.ColecoVision.ColecoSyncSettings
-						{
-							SkipBiosIntro = str.ToLower() == "true"
-						};
-					}
-				}
-				else if (!record && Global.Emulator.SystemId == "NES")
-				{
-					var quicknesName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(QuickNES), typeof(CoreAttributes))).CoreName;
-
 					if (Global.MovieSession.Movie.Header[HeaderKeys.CORE] == quicknesName)
 					{
 						Global.Config.NES_InQuickNES = true;
-						var qs = new QuickNES.QuickNESSettings();
-						this._syncSettingsHack = qs;
+
+						_syncSettingsHack = JsonConvert.DeserializeObject(
+							Global.MovieSession.Movie.Header.SyncSettingsJson,
+							typeof(QuickNES.QuickNESSyncSettings));
 					}
-					else //Else assume Neshawk
+					else
 					{
-						var s = new Emulation.Cores.Nintendo.NES.NES.NESSyncSettings();
-						s.BoardProperties = new System.Collections.Generic.Dictionary<string, string>(Global.MovieSession.Movie.Header.BoardProperties);
-						this._syncSettingsHack = s;
+						Global.Config.NES_InQuickNES = false;
+
+						_syncSettingsHack = JsonConvert.DeserializeObject(
+							Global.MovieSession.Movie.Header.SyncSettingsJson,
+							typeof(NES.NESSyncSettings));
 					}
 				}
-				else if (!record && Global.Emulator is Emulation.Cores.Consoles.Sega.gpgx.GPGX)
-				{
-					// unfortunately, gpgx is being released with movie 1.0
-					// we don't save the control settings there, so hack and assume a particular configuration
-					var s = new Emulation.Cores.Consoles.Sega.gpgx.GPGX.GPGXSyncSettings
-					{
-						ControlType = Emulation.Cores.Consoles.Sega.gpgx.GPGX.ControlType.Normal,
-						UseSixButton = true,
-					};
-					this._syncSettingsHack = s;
-				}
-				// load the rom in any case
+				
+				_syncSettingsHack = JsonConvert.DeserializeObject(
+					Global.MovieSession.Movie.Header.SyncSettingsJson,
+					Global.Emulator.GetSyncSettings().GetType());
+
 				LoadRom(GlobalWin.MainForm.CurrentlyOpenRom, true, !record);
 			}
 			finally
