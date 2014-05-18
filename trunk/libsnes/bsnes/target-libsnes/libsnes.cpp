@@ -367,7 +367,8 @@ int snes_peek_logical_register(int reg)
 	switch(reg)
 	{
 		//$2105
-#if !defined(PROFILE_PERFORMANCE)
+		//zero 17-may-2014 TODO - enable these for other profiles
+#if !defined(PROFILE_PERFORMANCE) && !defined(PROFILE_ACCURACY)
 	case SNES_REG_BG_MODE: return SNES::ppu.regs.bg_mode;
 	case SNES_REG_BG3_PRIORITY: return SNES::ppu.regs.bg3_priority;
 	case SNES_REG_BG1_TILESIZE: return SNES::ppu.regs.bg_tilesize[SNES::PPU::BG1];

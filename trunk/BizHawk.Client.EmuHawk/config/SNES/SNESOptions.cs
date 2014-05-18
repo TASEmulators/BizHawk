@@ -12,13 +12,24 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
+		bool SuppressDoubleSize;
+		bool UserDoubleSizeOption;
+
 		public string Profile
 		{
-			get { return rbCompatibility.Checked ? "Compatibility" : "Performance"; }
+			get
+			{
+				if (rbCompatibility.Checked) return "Compatibility";
+				else if (rbPerformance.Checked) return "Performance";
+				else if (rbAccuracy.Checked) return "Accuracy";
+				else throw new InvalidOperationException();
+			}
+
 			set
 			{
 				rbCompatibility.Checked = (value == "Compatibility");
 				rbPerformance.Checked = (value == "Performance");
+				rbAccuracy.Checked = (value == "Accuracy");
 			}
 		}
 
@@ -30,8 +41,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool AlwaysDoubleSize
 		{
-			get { return cbDoubleSize.Checked; }
-			set { cbDoubleSize.Checked = value; }
+			get { return UserDoubleSizeOption; }
+			set { UserDoubleSizeOption = value; RefreshDoubleSizeOption();  }
 		}
 
 		private void btnOk_Click(object sender, EventArgs e)
@@ -67,5 +78,28 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.MainForm.PutCoreSyncSettings(ss);
 			}
 		}
+
+		private void rbAccuracy_CheckedChanged(object sender, EventArgs e)
+		{
+			cbDoubleSize.Enabled = !rbAccuracy.Checked;
+			lblDoubleSize.ForeColor = cbDoubleSize.Enabled ? System.Drawing.SystemColors.ControlText : System.Drawing.SystemColors.GrayText;
+			RefreshDoubleSizeOption();
+		}
+
+		void RefreshDoubleSizeOption()
+		{
+			SuppressDoubleSize = true;
+			if (cbDoubleSize.Enabled)
+				cbDoubleSize.Checked = UserDoubleSizeOption;
+			else cbDoubleSize.Checked = true;
+			SuppressDoubleSize = false;
+		}
+
+		private void cbDoubleSize_CheckedChanged(object sender, EventArgs e)
+		{
+			if (SuppressDoubleSize) return;
+			UserDoubleSizeOption = cbDoubleSize.Checked;
+		}
+
 	}
 }
