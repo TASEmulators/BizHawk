@@ -902,7 +902,8 @@ namespace BizHawk.Client.Common
 				case DisplayType.Float:
 					var bytes = BitConverter.GetBytes(val);
 					var _float = BitConverter.ToSingle(bytes, 0);
-					return string.Format("{0:0.######}", _float);
+					//return string.Format("{0:0.######}", _float);
+					return _float.ToString(); // adelikat: decided that we like sci notation instead of spooky rounding
 			}
 		}
 
