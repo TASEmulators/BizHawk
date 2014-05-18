@@ -49,25 +49,17 @@ namespace BizHawk.Client.EmuHawk
 					if (Global.MovieSession.Movie.Header[HeaderKeys.CORE] == quicknesName)
 					{
 						Global.Config.NES_InQuickNES = true;
-
-						_syncSettingsHack = JsonConvert.DeserializeObject(
-							Global.MovieSession.Movie.Header.SyncSettingsJson,
-							typeof(QuickNES.QuickNESSyncSettings));
 					}
 					else
 					{
 						Global.Config.NES_InQuickNES = false;
-
-						_syncSettingsHack = JsonConvert.DeserializeObject(
-							Global.MovieSession.Movie.Header.SyncSettingsJson,
-							typeof(NES.NESSyncSettings));
 					}
 				}
-				
-				_syncSettingsHack = JsonConvert.DeserializeObject(
-					Global.MovieSession.Movie.Header.SyncSettingsJson,
-					Global.Emulator.GetSyncSettings().GetType());
-
+				string s = Global.MovieSession.Movie.Header.SyncSettingsJson;
+				if (!string.IsNullOrWhiteSpace(s))
+				{
+					_syncSettingsHack = ConfigService.LoadWithType(Global.MovieSession.Movie.Header.SyncSettingsJson);
+				}
 				LoadRom(GlobalWin.MainForm.CurrentlyOpenRom, true, !record);
 			}
 			finally
