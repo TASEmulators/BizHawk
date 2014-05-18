@@ -43,6 +43,20 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodAttributes(
+			"getinputasmnemonic",
+			"Returns the input of a given frame of the loaded movie in a raw inputlog string"
+		)]
+		public string GetInputAsMnemonic(int frame)
+		{
+			if (frame < Global.MovieSession.Movie.InputLogLength)
+			{
+				return Global.MovieSession.Movie.GetInput(frame);
+			}
+
+			return string.Empty;
+		}
+
+		[LuaMethodAttributes(
 			"getreadonly",
 			"Returns true if the movie is in read-only mode, false if in read+write"
 		)]
