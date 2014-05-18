@@ -103,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 				_movieToRecord.Header[HeaderKeys.PLATFORM] = Global.Game.System;
 
 				// Sync Settings, for movies 1.0, just dump a json blob into a header line
-				_movieToRecord.Header[HeaderKeys.SYNCSETTINGS] = JsonConvert.SerializeObject(Global.Emulator.GetSyncSettings());
+				_movieToRecord.Header[HeaderKeys.SYNCSETTINGS] = ConfigService.SaveWithType(Global.Emulator.GetSyncSettings());
 
 				if (Global.Game != null)
 				{
