@@ -993,8 +993,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					!NESControlSettings.NeedsReboot(x.Controls, y.Controls));
 			}
 		}
-
-
 	}
 }
 
