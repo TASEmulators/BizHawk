@@ -11,6 +11,8 @@ using BizHawk.Emulation.Cores.Sega.Genesis;
 using BizHawk.Emulation.Cores.Sega.Saturn;
 using BizHawk.Emulation.Cores.Sony.PSP;
 
+using Newtonsoft.Json;
+
 namespace BizHawk.Client.EmuHawk
 {
 	partial class MainForm
@@ -39,6 +41,9 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
+				// Get Sync settings and put into hack variable
+				_syncSettingsHack = JsonConvert.DeserializeObject(Global.MovieSession.Movie.Header.SyncSettingsJson, Global.Emulator.GetSyncSettings().GetType());
+
 				// movie 1.0 hack: restore sync settings for the only core that fully supported them in movie 1.0
 				if (!record && Global.Emulator.SystemId == "Coleco")
 				{
@@ -54,6 +59,7 @@ namespace BizHawk.Client.EmuHawk
 				else if (!record && Global.Emulator.SystemId == "NES")
 				{
 					var quicknesName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(QuickNES), typeof(CoreAttributes))).CoreName;
+
 					if (Global.MovieSession.Movie.Header[HeaderKeys.CORE] == quicknesName)
 					{
 						Global.Config.NES_InQuickNES = true;
