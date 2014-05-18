@@ -1215,7 +1215,9 @@ namespace BizHawk.Client.EmuHawk
 					var oldram = Global.Emulator.ReadSaveRam();
 					if (oldram == null)
 					{
-						MessageBox.Show("Error: tried to load saveram, but core would not accept it?");
+						// we're eating this one now.  the possible negative consequence is that a user could lose
+						// their saveram and not know why
+						// MessageBox.Show("Error: tried to load saveram, but core would not accept it?");
 						return;
 					}
 					sram = new byte[oldram.Length];
