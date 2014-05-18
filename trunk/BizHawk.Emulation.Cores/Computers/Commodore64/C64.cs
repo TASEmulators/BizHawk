@@ -86,6 +86,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			cyclesPerFrame = board.vic.CyclesPerFrame;
 			CoreComm.UsesDriveLed = true;
 			SetupMemoryDomains();
+			HardReset();
 		}
 
 		public void Dispose()
