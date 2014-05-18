@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
 	[CoreAttributes(
 		"QuickNes",
-		"kode54",
+		"blargg, kode54",
 		isPorted: true,
 		isReleased: true
 		)]
