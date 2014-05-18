@@ -58,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 				string s = Global.MovieSession.Movie.Header.SyncSettingsJson;
 				if (!string.IsNullOrWhiteSpace(s))
 				{
-					_syncSettingsHack = ConfigService.LoadWithType(Global.MovieSession.Movie.Header.SyncSettingsJson);
+					_syncSettingsHack = ConfigService.LoadWithType(s);
 				}
 				LoadRom(GlobalWin.MainForm.CurrentlyOpenRom, true, !record);
 			}
