@@ -25,12 +25,8 @@ namespace BizHawk.Client.Common
 		public const string CORE = "Core";
 
 		// Gameboy Settings that affect sync
-		public const string GB_FORCEDMG = "Force_DMG_Mode";
-		public const string GB_GBA_IN_CGB = "GBA_In_CGB";
+		// TODO: movie import references these but it shoudl be populating sync settings instead
 		public const string SGB = "SGB"; // A snes movie will set this to indicate that it's actually SGB
-
-		// BIO skipping setting (affects sync)
-		public const string SKIPBIOS = "Skip_Bios";
 
 		// Plugin Settings
 		public const string VIDEOPLUGIN = "VideoPlugin";
