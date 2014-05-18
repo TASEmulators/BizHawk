@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -29,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (RecordBox.Text.Length == 0)
 			{
-				return String.Empty;
+				return string.Empty;
 			}
 
 			var path = RecordBox.Text;
@@ -217,7 +218,11 @@ namespace BizHawk.Client.EmuHawk
 		private void RecordMovie_Load(object sender, EventArgs e)
 		{
 			var name = PathManager.FilesystemSafeName(Global.Game);
-			name = Path.GetFileNameWithoutExtension(name);
+			if (string.IsNullOrEmpty(name))
+			{
+				name = Path.GetFileNameWithoutExtension(GlobalWin.MainForm.CurrentlyOpenRom.Split('|').Last());
+			}
+
 			RecordBox.Text = name;
 			StartFromCombo.SelectedIndex = 0;
 			DefaultAuthorCheckBox.Checked = Global.Config.UseDefaultAuthor;
