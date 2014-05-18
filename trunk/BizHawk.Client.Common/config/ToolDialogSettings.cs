@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
 {
@@ -19,6 +20,7 @@ namespace BizHawk.Client.Common
 		public bool TopMost { get; set; }
 		public bool FloatingWindow { get; set; }
 
+		[JsonIgnore]
 		public bool UseWindowPosition
 		{
 			get
@@ -27,6 +29,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		[JsonIgnore]
 		public bool UseWindowSize
 		{
 			get
@@ -35,6 +38,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		[JsonIgnore]
 		public Point WindowPosition
 		{
 			get
@@ -43,6 +47,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		[JsonIgnore]
 		public Size WindowSize
 		{
 			get
