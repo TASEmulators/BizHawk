@@ -1,11 +1,19 @@
 ﻿using System;
 using System.Linq;
 
+using LuaInterface;
+
 namespace BizHawk.Client.Common
 {
 	public class MemoryLuaLibrary : LuaLibraryBase
 	{
+		private readonly Lua _lua;
 		private int _currentMemoryDomain; // Main memory by default
+
+		public MemoryLuaLibrary(Lua lua)
+		{
+			_lua = lua;
+		}
 
 		public override string Name { get { return "memory"; } }
 
@@ -93,9 +101,15 @@ namespace BizHawk.Client.Common
 			"getmemorydomainlist",
 			"Returns a string of the memory domains for the loaded platform core. List will be a single string delimited by line feeds"
 		)]
-		public string GetMemoryDomainList()
+		public LuaTable GetMemoryDomainList()
 		{
-			return Global.Emulator.MemoryDomains.Aggregate(string.Empty, (current, t) => current + (t.Name + '\n'));
+			var table = _lua.NewTable();
+			for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
+			{
+				table[i] = Global.Emulator.MemoryDomains[i].Name;
+			}
+
+			return table;
 		}
 
 		[LuaMethodAttributes(
