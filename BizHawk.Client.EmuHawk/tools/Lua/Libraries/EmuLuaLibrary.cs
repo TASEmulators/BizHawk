@@ -9,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 	public class EmuLuaLibrary
 	{
 		private readonly FormsLuaLibrary _formsLibrary = new FormsLuaLibrary();
-		private readonly EventLuaLibrary _eventLibrary = new EventLuaLibrary(ConsoleLuaLibrary.Log);
+		private readonly EventLuaLibrary _eventLibrary = new EventLuaLibrary(ConsoleLuaLibrary.LogOutput);
 		private readonly GuiLuaLibrary _guiLibrary = new GuiLuaLibrary();
 		private readonly LuaConsole _caller;
 
@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			lua.RegisterFunction("print", this, GetType().GetMethod("Print"));
 
 			new BitLuaLibrary().LuaRegister(lua, Docs);
-			new EmuHawkLuaLibrary(ConsoleLuaLibrary.Log).LuaRegister(lua, Docs);
+			new EmuHawkLuaLibrary(ConsoleLuaLibrary.LogOutput).LuaRegister(lua, Docs);
 			new ConsoleLuaLibrary().LuaRegister(lua, Docs);
 			
 			new EmulatorLuaLibrary(
@@ -95,14 +95,26 @@ namespace BizHawk.Client.EmuHawk
 			_guiLibrary.LuaRegister(lua, Docs);
 			new InputLuaLibrary(_lua).LuaRegister(lua, Docs);
 			new JoypadLuaLibrary(_lua).LuaRegister(lua, Docs);
-			new MemoryLuaLibrary(_lua).LuaRegister(lua, Docs);
-			new MainMemoryLuaLibrary(_lua).LuaRegister(lua, Docs);
+
+			var memory = new MemoryLuaLibrary(_lua)
+			{
+				LogOutputCallback = ConsoleLuaLibrary.LogOutput
+			};
+			memory.LuaRegister(lua, Docs);
+
+			var mainmemory = new MainMemoryLuaLibrary(_lua)
+			{
+				LogOutputCallback = ConsoleLuaLibrary.LogOutput
+			};
+			mainmemory.LuaRegister(lua, Docs);
+			
 			new MovieLuaLibrary(_lua).LuaRegister(lua, Docs);
 			new NesLuaLibrary().LuaRegister(lua, Docs);
 			new SavestateLuaLibrary().LuaRegister(lua, Docs);
 			new SnesLuaLibrary().LuaRegister(lua, Docs);
 			new StringLuaLibrary(_lua).LuaRegister(lua, Docs);
 			new GameInfoLuaLibrary(_lua).LuaRegister(lua, Docs);
+
 			Docs.Sort();
 		}
 
