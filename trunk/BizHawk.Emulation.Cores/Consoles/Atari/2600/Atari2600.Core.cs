@@ -302,12 +302,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			_frame++;
 			_islag = true;
-			_tia.FrameComplete = false;
+			_tia.LineCount = 0;
 			_tia.BeginAudioFrame();
-			while (_tia.FrameComplete == false)
+			while (_tia.LineCount < 262) // will be 312 for PAL
 			{
 				CycleAdvance();
 			}
+			//Console.WriteLine("{0}", _tia.CurrentScanLine);
 
 			_tia.CompleteAudioFrame();
 
