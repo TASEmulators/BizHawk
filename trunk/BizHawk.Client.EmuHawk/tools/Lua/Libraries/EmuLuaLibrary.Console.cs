@@ -44,10 +44,10 @@ namespace BizHawk.Client.EmuHawk
 			LogWithSeparator("\t", "\n", outputs);
 		}
 
-		// Single param version is used by logOutputCallback of some libraries.
-		public static void Log(string output)
+		//// Single param version is used by logOutputCallback of some libraries.
+		public static void LogOutput(object output)
 		{
-			Log((object)output);
+			Log(output);
 		}
 
 		[LuaMethodAttributes(

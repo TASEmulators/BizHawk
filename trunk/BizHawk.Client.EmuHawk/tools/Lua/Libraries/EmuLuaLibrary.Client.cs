@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 				{ 4, "Scanlines" },
 			};
 
-		public EmuHawkLuaLibrary(Action<string> logOutputCallback)
+		public EmuHawkLuaLibrary(Action<object> logOutputCallback)
 			: this()
 		{
 			LogOutputCallback = logOutputCallback;
@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 		public EmuHawkLuaLibrary() { }
 
 		public override string Name { get { return "client"; } }
-		public Action<string> LogOutputCallback { get; set; }
+		public Action<object> LogOutputCallback { get; set; }
 
 		private void Log(string message)
 		{

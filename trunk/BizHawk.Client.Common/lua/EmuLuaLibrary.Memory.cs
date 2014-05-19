@@ -16,8 +16,17 @@ namespace BizHawk.Client.Common
 		}
 
 		public override string Name { get { return "memory"; } }
+		public Action<string> LogOutputCallback { get; set; }
 
 		#region Memory Library Helpers
+
+		private void Log(object message)
+		{
+			if (LogOutputCallback != null)
+			{
+				LogOutputCallback(message.ToString());
+			}
+		}
 
 		private static int U2S(uint u, int size)
 		{
@@ -120,12 +129,22 @@ namespace BizHawk.Client.Common
 		{
 			var lastAddr = length + addr;
 			var table = _lua.NewTable();
-			for (var i = addr; i <= lastAddr; i++)
+
+			if (lastAddr < Global.Emulator.MemoryDomains[_currentMemoryDomain].Size)
 			{
-				var a = string.Format("{0:X2}", i);
-				var v = Global.Emulator.MemoryDomains[_currentMemoryDomain].PeekByte(i);
-				var vs = string.Format("{0:X2}", (int)v);
-				table[a] = vs;
+				for (var i = addr; i <= lastAddr; i++)
+				{
+					var a = string.Format("{0:X2}", i);
+					var v = Global.Emulator.MemoryDomains[_currentMemoryDomain].PeekByte(i);
+					var vs = string.Format("{0:X2}", (int)v);
+					table[a] = vs;
+				}
+			}
+			else
+			{
+				Log("Warning: Attempted read " + lastAddr + " outside memory domain size of " +
+					Global.Emulator.MemoryDomains[_currentMemoryDomain].Size +
+					" in memory.readbyterange()");
 			}
 
 			return table;
@@ -139,9 +158,19 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var address in memoryblock.Keys)
 			{
-				Global.Emulator.MemoryDomains[_currentMemoryDomain].PokeByte(
-					LuaInt(address),
-					(byte)LuaInt(memoryblock[address]));
+				var addr = LuaInt(address);
+				if (addr < Global.Emulator.MemoryDomains[_currentMemoryDomain].Size)
+				{
+					Global.Emulator.MemoryDomains[_currentMemoryDomain].PokeByte(
+						addr,
+						(byte)LuaInt(memoryblock[address]));
+				}
+				else
+				{
+					Log("Warning: Attempted read " + addr + " outside memory domain size of " +
+						Global.Emulator.MemoryDomains[_currentMemoryDomain].Size +
+						" in memory.writebyterange()");
+				}
 			}
 		}
 
