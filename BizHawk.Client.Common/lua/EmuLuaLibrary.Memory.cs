@@ -113,6 +113,39 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodAttributes(
+			"readbyterange",
+			"Reads the address range that starts from address, and is length long. Returns the result into a table of key value pairs (where the address is the key)."
+		)]
+		public LuaTable ReadByteRange(int addr, int length)
+		{
+			var lastAddr = length + addr;
+			var table = _lua.NewTable();
+			for (var i = addr; i <= lastAddr; i++)
+			{
+				var a = string.Format("{0:X2}", i);
+				var v = Global.Emulator.MemoryDomains[_currentMemoryDomain].PeekByte(i);
+				var vs = string.Format("{0:X2}", (int)v);
+				table[a] = vs;
+			}
+
+			return table;
+		}
+
+		[LuaMethodAttributes(
+			"writebyterange",
+			"Writes the given values to the given addresses as unsigned bytes"
+		)]
+		public void WriteByteRange(LuaTable memoryblock)
+		{
+			foreach (var address in memoryblock.Keys)
+			{
+				Global.Emulator.MemoryDomains[_currentMemoryDomain].PokeByte(
+					LuaInt(address),
+					(byte)LuaInt(memoryblock[address]));
+			}
+		}
+
+		[LuaMethodAttributes(
 			"getcurrentmemorydomain",
 			"Returns a string name of the current memory domain selected by Lua. The default is Main memory"
 		)]
