@@ -1625,7 +1625,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			//private Size _lastVideoSize = new Size(-1, -1), _lastVirtualSize = new Size(-1, -1);
 			var video = Global.Emulator.VideoProvider;
-			bool change = false;
+			//bool change = false;
 			Size currVideoSize = new Size(video.BufferWidth,video.BufferHeight);
 			Size currVirtualSize = new Size(video.VirtualWidth,video.VirtualWidth);
 			if (currVideoSize != _lastVideoSize || currVirtualSize != _lastVirtualSize)
