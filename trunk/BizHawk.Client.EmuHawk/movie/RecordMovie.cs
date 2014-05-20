@@ -1,8 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
+using Newtonsoft.Json;
+
+using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.ColecoVision;
@@ -12,10 +16,6 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
-
-using System.Reflection;
-
-using Newtonsoft.Json;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -124,41 +124,18 @@ namespace BizHawk.Client.EmuHawk
 					_movieToRecord.Header[HeaderKeys.BOARDNAME] = Global.Emulator.BoardName;
 				}
 
+				if (Global.Emulator.HasPublicProperty("DisplayType"))
+				{
+					var region = Global.Emulator.GetPropertyValue("DisplayType");
+					if ((DisplayType)region == DisplayType.PAL)
+					{
+						_movieToRecord.Header[HeaderKeys.PAL] = "1";
+					}
+				}
+
 				if (Global.Emulator is LibsnesCore)
 				{
 					_movieToRecord.Header[HeaderKeys.SGB] = (Global.Emulator as LibsnesCore).IsSGB.ToString();
-					if ((Global.Emulator as LibsnesCore).DisplayType == DisplayType.PAL)
-					{
-						_movieToRecord.Header[HeaderKeys.PAL] = "1";
-					}
-				}
-				else if (Global.Emulator is SMS)
-				{
-					if ((Global.Emulator as SMS).DisplayType == DisplayType.PAL)
-					{
-						_movieToRecord.Header[HeaderKeys.PAL] = "1";
-					}
-				}
-				else if (Global.Emulator is NES)
-				{
-					if ((Global.Emulator as NES).DisplayType == DisplayType.PAL)
-					{
-						_movieToRecord.Header[HeaderKeys.PAL] = "1";
-					}
-				}
-				else if (Global.Emulator is N64)
-				{
-					if ((Global.Emulator as N64).DisplayType == DisplayType.PAL)
-					{
-						_movieToRecord.Header[HeaderKeys.PAL] = "1";
-					}
-				}
-				else if (Global.Emulator is GPGX)
-				{
-					if ((Global.Emulator as GPGX).DisplayType == DisplayType.PAL)
-					{
-						_movieToRecord.Header[HeaderKeys.PAL] = "1";
-					}
 				}
 
 				_movieToRecord.Header[HeaderKeys.CORE] = ((CoreAttributes)Attribute

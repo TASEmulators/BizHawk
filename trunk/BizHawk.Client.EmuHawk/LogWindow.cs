@@ -9,6 +9,8 @@ using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
+using BizHawk.Common.ReflectionExtensions;
+
 //todo - perks - pause, copy to clipboard, backlog length limiting
 
 namespace BizHawk.Client.EmuHawk
@@ -136,7 +138,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HideShowGameDbButton()
 		{
-			AddToGameDbBtn.Visible = ReflectionUtil.HasExposedMethod(Global.Emulator, "GenerateGameDbEntry") 
+			AddToGameDbBtn.Visible = Global.Emulator.HasExposedMethod("GenerateGameDbEntry")
 				&& (Global.Game.Status == RomStatus.Unknown || Global.Game.Status == RomStatus.NotInDatabase);
 		}
 
@@ -146,7 +148,7 @@ namespace BizHawk.Client.EmuHawk
 			var result = picker.ShowDialog();
 			if (result == DialogResult.OK)
 			{
-				var entryObj = (CompactGameInfo)ReflectionUtil.InvokeMethod(Global.Emulator, "GenerateGameDbEntry", null);
+				var entryObj = (CompactGameInfo)Global.Emulator.InvokeMethod("GenerateGameDbEntry", null);
 				var userDb = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb_user.txt");
 				Global.Game.Status = entryObj.Status = picker.PickedStatus;
 				Database.SaveDatabaseEntry(userDb, entryObj);
