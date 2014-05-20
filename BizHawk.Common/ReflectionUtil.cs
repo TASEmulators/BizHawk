@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace BizHawk.Common
+namespace BizHawk.Common.ReflectionExtensions
 {
 	/// <summary>
 	/// Reflection based helper methods
@@ -15,7 +15,7 @@ namespace BizHawk.Common
 		/// Takes an object and determines if it has methodName as a public method
 		/// </summary>
 		/// <returns>Returns whether or not the obj both contains the method name and the method is public</returns>
-		public static bool HasExposedMethod(object obj, string methodName)
+		public static bool HasExposedMethod(this object obj, string methodName)
 		{
 			var method = obj.GetType().GetMethod(methodName);
 
@@ -35,12 +35,35 @@ namespace BizHawk.Common
 		/// If the method returns void, the return value is null
 		/// If the method does not exist or is not public, it returns null
 		/// </returns>
-		public static object InvokeMethod(object obj, string methodName, object[] args)
+		public static object InvokeMethod(this object obj, string methodName, object[] args)
 		{
 			var method = obj.GetType().GetMethod(methodName);
 			if (method != null && method.IsPublic)
 			{
 				return method.Invoke(obj, args);
+			}
+
+			return null;
+		}
+
+		public static bool HasPublicProperty(this object obj, string propertyName)
+		{
+			var property = obj.GetType().GetProperty(propertyName);
+
+			if (property != null)
+			{
+				return property.CanRead;
+			}
+
+			return false;
+		}
+
+		public static object GetPropertyValue(this object obj, string propertyName)
+		{
+			var property = obj.GetType().GetProperty(propertyName);
+			if (property != null && property.CanRead)
+			{
+				return property.GetValue(obj, null);
 			}
 
 			return null;
