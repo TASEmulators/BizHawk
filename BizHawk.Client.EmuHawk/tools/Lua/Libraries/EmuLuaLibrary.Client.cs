@@ -24,15 +24,6 @@ namespace BizHawk.Client.EmuHawk
 		public EmuHawkLuaLibrary() { }
 
 		public override string Name { get { return "client"; } }
-		public Action<object> LogOutputCallback { get; set; }
-
-		private void Log(string message)
-		{
-			if (LogOutputCallback != null)
-			{
-				LogOutputCallback(message);
-			}
-		}
 
 		[LuaMethodAttributes(
 			"clearautohold",

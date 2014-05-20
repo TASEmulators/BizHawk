@@ -16,18 +16,9 @@ namespace BizHawk.Client.Common
 
 		public override string Name { get { return "event"; } }
 
-		public Action<object> LogOutputCallback { get; set; }
 		public Lua CurrentThread { get; set; }
 
 		#region Events Library Helpers
-
-		private void Log(string message)
-		{
-			if (LogOutputCallback != null)
-			{
-				LogOutputCallback(message);
-			}
-		}
 
 		public LuaFunctionList RegisteredFunctions { get { return _luaFunctions; } }
 

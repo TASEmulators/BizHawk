@@ -16,17 +16,8 @@ namespace BizHawk.Client.Common
 		}
 
 		public override string Name { get { return "memory"; } }
-		public Action<string> LogOutputCallback { get; set; }
 
 		#region Memory Library Helpers
-
-		private void Log(object message)
-		{
-			if (LogOutputCallback != null)
-			{
-				LogOutputCallback(message.ToString());
-			}
-		}
 
 		private static int U2S(uint u, int size)
 		{

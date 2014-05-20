@@ -8,6 +8,15 @@ namespace BizHawk.Client.Common
 	public abstract class LuaLibraryBase
 	{
 		public abstract string Name { get; }
+		public Action<string> LogOutputCallback { get; set; }
+
+		protected void Log(object message)
+		{
+			if (LogOutputCallback != null)
+			{
+				LogOutputCallback(message.ToString());
+			}
+		}
 
 		public virtual void LuaRegister(Lua lua, ILuaDocumentation docs = null)
 		{
