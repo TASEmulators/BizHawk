@@ -221,7 +221,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach (var instruction in _instructions)
 				{
-					sw.WriteLine(instruction);
+					sw.WriteLine(instruction
+						.Replace("\r", string.Empty)
+						.Replace("\n", string.Empty));
 				}
 			}
 		}
