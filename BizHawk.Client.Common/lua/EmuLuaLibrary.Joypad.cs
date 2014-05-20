@@ -7,12 +7,10 @@ namespace BizHawk.Client.Common
 	{
 		public JoypadLuaLibrary(Lua lua)
 		{
-			_lua = lua;
+			Lua = lua;
 		}
 
 		public override string Name { get { return "joypad"; } }
-
-		private readonly Lua _lua;
 
 		[LuaMethodAttributes(
 			"get",
@@ -20,7 +18,7 @@ namespace BizHawk.Client.Common
 		)]
 		public LuaTable Get(int? controller = null)
 		{
-			var buttons = _lua.NewTable();
+			var buttons = Lua.NewTable();
 			foreach (var button in Global.ControllerOutput.Source.Type.BoolButtons)
 			{
 				if (!controller.HasValue)
@@ -58,7 +56,7 @@ namespace BizHawk.Client.Common
 		)]
 		public LuaTable GetImmediate()
 		{
-			var buttons = _lua.NewTable();
+			var buttons = Lua.NewTable();
 			foreach (var button in Global.ActiveController.Type.BoolButtons)
 			{
 				buttons[button] = Global.ActiveController[button];

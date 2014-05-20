@@ -7,12 +7,11 @@ namespace BizHawk.Client.Common
 {
 	public class MemoryLuaLibrary : LuaLibraryBase
 	{
-		private readonly Lua _lua;
 		private int _currentMemoryDomain; // Main memory by default
 
 		public MemoryLuaLibrary(Lua lua)
 		{
-			_lua = lua;
+			Lua = lua;
 		}
 
 		public override string Name { get { return "memory"; } }
@@ -103,7 +102,7 @@ namespace BizHawk.Client.Common
 		)]
 		public LuaTable GetMemoryDomainList()
 		{
-			var table = _lua.NewTable();
+			var table = Lua.NewTable();
 			for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
 			{
 				table[i] = Global.Emulator.MemoryDomains[i].Name;
@@ -119,7 +118,7 @@ namespace BizHawk.Client.Common
 		public LuaTable ReadByteRange(int addr, int length)
 		{
 			var lastAddr = length + addr;
-			var table = _lua.NewTable();
+			var table = Lua.NewTable();
 
 			if (lastAddr < Global.Emulator.MemoryDomains[_currentMemoryDomain].Size)
 			{
