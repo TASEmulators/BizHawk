@@ -9,6 +9,7 @@ namespace BizHawk.Client.Common
 	{
 		public abstract string Name { get; }
 		public Action<string> LogOutputCallback { get; set; }
+		public Lua Lua { get; set; }
 
 		protected void Log(object message)
 		{

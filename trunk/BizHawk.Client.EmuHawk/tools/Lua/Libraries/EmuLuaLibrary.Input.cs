@@ -10,12 +10,10 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public InputLuaLibrary(Lua lua)
 		{
-			_lua = lua;
+			Lua = lua;
 		}
 
 		public override string Name { get { return "input"; } }
-
-		private readonly Lua _lua;
 
 		[LuaMethodAttributes(
 			"get",
@@ -23,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public LuaTable Get()
 		{
-			var buttons = _lua.NewTable();
+			var buttons = Lua.NewTable();
 			foreach (var kvp in Global.ControllerInputCoalescer.BoolButtons().Where(kvp => kvp.Value))
 			{
 				buttons[kvp.Key] = true;
@@ -38,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public LuaTable GetMouse()
 		{
-			var buttons = _lua.NewTable();
+			var buttons = Lua.NewTable();
 			//TODO - need to specify whether in "emu" or "native" coordinate space.
 			var p = GlobalWin.DisplayManager.UntransformPoint(Control.MousePosition);
 			buttons["X"] = p.X;

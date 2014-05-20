@@ -13,13 +13,12 @@ namespace BizHawk.Client.Common
 {
 	public class EmulatorLuaLibrary : LuaLibraryBase
 	{
-		private readonly Lua _lua;
 		private readonly Action _frameAdvanceCallback;
 		private readonly Action _yieldCallback;
 
 		public EmulatorLuaLibrary(Lua lua, Action frameAdvanceCallback, Action yieldCallback)
 		{
-			_lua = lua;
+			Lua = lua;
 			_frameAdvanceCallback = frameAdvanceCallback;
 			_yieldCallback = yieldCallback;
 		}
@@ -68,7 +67,7 @@ namespace BizHawk.Client.Common
 		)]
 		public LuaTable GetRegisters()
 		{
-			var table = _lua.NewTable();
+			var table = Lua.NewTable();
 			foreach (var kvp in Global.Emulator.GetCpuFlagsAndRegisters())
 			{
 				table[kvp.Key] = kvp.Value;

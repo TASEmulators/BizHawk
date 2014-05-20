@@ -7,12 +7,10 @@ namespace BizHawk.Client.Common
 	{
 		public GameInfoLuaLibrary(Lua lua)
 		{
-			_lua = lua;
+			Lua = lua;
 		}
 
 		public override string Name { get { return "gameinfo"; } }
-
-		private readonly Lua _lua;
 
 		[LuaMethodAttributes(
 			"getromname",
@@ -99,7 +97,7 @@ namespace BizHawk.Client.Common
 		)]
 		public LuaTable GetOptions()
 		{
-			var options = _lua.NewTable();
+			var options = Lua.NewTable();
 
 			if (Global.Game != null)
 			{

@@ -7,13 +7,11 @@ namespace BizHawk.Client.Common
 {
 	public class StringLuaLibrary : LuaLibraryBase
 	{
-		private readonly Lua _lua;
-
 		public override string Name { get { return "bizstring"; } }
 
 		public StringLuaLibrary(Lua lua)
 		{
-			_lua = lua;
+			Lua = lua;
 		}
 
 		[LuaMethodAttributes(
@@ -144,7 +142,7 @@ namespace BizHawk.Client.Common
 		)]
 		public LuaTable Split(string str, string separator)
 		{
-			var table = _lua.NewTable();
+			var table = Lua.NewTable();
 			var splitStr = str.Split(
 				new char[] { separator.FirstOrDefault() },
 				StringSplitOptions.RemoveEmptyEntries);

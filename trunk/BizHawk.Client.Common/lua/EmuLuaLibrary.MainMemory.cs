@@ -7,11 +7,9 @@ namespace BizHawk.Client.Common
 	// TODO: this needs a major refactor, as well as MemoryLuaLibrary, and this shoudl inherit memorylua library and extend it
 	public class MainMemoryLuaLibrary : LuaLibraryBase
 	{
-		private readonly Lua _lua;
-
 		public MainMemoryLuaLibrary(Lua lua)
 		{
-			_lua = lua;
+			Lua = lua;
 		}
 
 		public override string Name { get { return "mainmemory"; } }
@@ -120,7 +118,7 @@ namespace BizHawk.Client.Common
 		public LuaTable ReadByteRange(int addr, int length)
 		{
 			var lastAddr = length + addr;
-			var table = _lua.NewTable();
+			var table = Lua.NewTable();
 			if (lastAddr < Global.Emulator.MemoryDomains.MainMemory.Size)
 			{
 				for (var i = addr; i <= lastAddr; i++)

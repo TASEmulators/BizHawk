@@ -4,11 +4,9 @@ namespace BizHawk.Client.Common
 {
 	public class MovieLuaLibrary : LuaLibraryBase
 	{
-		private readonly Lua _lua;
-
 		public MovieLuaLibrary(Lua lua)
 		{
-			_lua = lua;
+			Lua = lua;
 		}
 
 		public override string Name { get { return "movie"; } }
@@ -28,7 +26,7 @@ namespace BizHawk.Client.Common
 		)]
 		public LuaTable GetInput(int frame)
 		{
-			var input = _lua.NewTable();
+			var input = Lua.NewTable();
 
 			var m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
 			m.SetControllersAsMnemonic(
