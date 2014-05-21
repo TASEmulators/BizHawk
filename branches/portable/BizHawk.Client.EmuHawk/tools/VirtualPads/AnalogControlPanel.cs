@@ -1,6 +1,8 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public sealed class AnalogControlPanel : Panel
@@ -8,6 +10,7 @@ namespace BizHawk.Client.EmuHawk
 		public int X = 0;
 		public int Y = 0;
 		public bool HasValue = false;
+		public string Controller = "P1";
 
 		private readonly Brush _white_brush = Brushes.White;
 		private readonly Brush _black_brush = Brushes.Black;
@@ -18,6 +21,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Pen _blue_pen;
 
 		private readonly Bitmap dot = new Bitmap(7, 7);
+		private readonly Bitmap graydot = new Bitmap(7, 7);
 
 		public AnalogControlPanel()
 		{
@@ -42,6 +46,12 @@ namespace BizHawk.Client.EmuHawk
 			g.FillRectangle(_red_brush, 2, 0, 3, 7);
 			g.FillRectangle(_red_brush, 1, 1, 5, 5);
 			g.FillRectangle(_red_brush, 0, 2, 7, 3);
+
+			Graphics gg = Graphics.FromImage(graydot);
+			gg.Clear(Color.Transparent);
+			gg.FillRectangle(Brushes.Gray, 2, 0, 3, 7);
+			gg.FillRectangle(Brushes.Gray, 1, 1, 5, 5);
+			gg.FillRectangle(Brushes.Gray, 0, 2, 7, 3);
 		}
 
 		private int RealToGFX(int val)
@@ -52,8 +62,16 @@ namespace BizHawk.Client.EmuHawk
 		private int GFXToReal(int val)
 		{
 			int ret = (val * 2);
-            if (ret > Max) ret = Max;
-            if (ret < Min) ret = Min;
+			if (ret > Max)
+			{
+				ret = Max;
+			}
+
+			if (ret < Min)
+			{
+				ret = Min;
+			}
+
 			return ret;
 		}
 
@@ -67,6 +85,22 @@ namespace BizHawk.Client.EmuHawk
 				e.Graphics.DrawEllipse(_black_pen, 0, 0, 127, 127);
 				e.Graphics.DrawLine(_black_pen, 64, 0, 64, 127);
 				e.Graphics.DrawLine(_black_pen, 0, 63, 127, 63);
+
+				if (Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished)
+				{
+					var mnemonicStr = Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1);
+					var m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
+					m.SetControllersAsMnemonic(mnemonicStr);
+
+					var x = m.GetFloat(Controller + " X Axis");
+					var y = m.GetFloat(Controller + " Y Axis");
+
+					var xx = RealToGFX((int)x);
+					var yy = RealToGFX((int)y);
+
+					e.Graphics.DrawLine(new Pen(Brushes.Gray), 64, 63, xx, 127 - yy);
+					e.Graphics.DrawImage(graydot, xx - 3, 127 - yy - 3);
+				}
 
 				//Line
 				if (HasValue)
@@ -145,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 			Refresh();
 		}
 
-		public static int Max;
-		public static int Min;
+		public static int Max = 127;
+		public static int Min = -127;
 	}
 }

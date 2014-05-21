@@ -7,11 +7,32 @@ namespace BizHawk.Client.Common
 {
 	public abstract class LuaLibraryBase
 	{
-		public abstract string Name { get; }
-
-		public virtual void LuaRegister(Lua lua, ILuaDocumentation docs = null)
+		public LuaLibraryBase(Lua lua)
 		{
-			lua.NewTable(Name);
+			Lua = lua;
+		}
+
+		public LuaLibraryBase(Lua lua, Action<string> logOutputCallback)
+			: this(lua)
+		{
+			LogOutputCallback = logOutputCallback;
+		}
+
+		public abstract string Name { get; }
+		public Action<string> LogOutputCallback { get; set; }
+		public Lua Lua { get; set; }
+
+		protected void Log(object message)
+		{
+			if (LogOutputCallback != null)
+			{
+				LogOutputCallback(message.ToString());
+			}
+		}
+
+		public virtual void LuaRegister(ILuaDocumentation docs = null)
+		{
+			Lua.NewTable(Name);
 
 			var luaAttr = typeof(LuaMethodAttributes);
 
@@ -23,7 +44,7 @@ namespace BizHawk.Client.Common
 			{
 				var luaMethodAttr = method.GetCustomAttributes(luaAttr, false).First() as LuaMethodAttributes;
 				var luaName = Name + "." + luaMethodAttr.Name;
-				lua.RegisterFunction(luaName, this, method);
+				Lua.RegisterFunction(luaName, this, method);
 
 				if (docs != null)
 				{

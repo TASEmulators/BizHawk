@@ -8,9 +8,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class EmuLuaLibrary
 	{
-		private readonly FormsLuaLibrary _formsLibrary = new FormsLuaLibrary();
-		private readonly EventLuaLibrary _eventLibrary = new EventLuaLibrary(ConsoleLuaLibrary.Log);
-		private readonly GuiLuaLibrary _guiLibrary = new GuiLuaLibrary();
+		private readonly FormsLuaLibrary _formsLibrary;
+		private readonly EventLuaLibrary _eventLibrary;
+		private readonly GuiLuaLibrary _guiLibrary;
 		private readonly LuaConsole _caller;
 
 		private Lua _lua = new Lua();
@@ -27,7 +27,48 @@ namespace BizHawk.Client.EmuHawk
 			LuaWait = new AutoResetEvent(false);
 			Docs.Clear();
 			_caller = passed.Get();
-			LuaRegister(_lua);
+
+			// Register lua libraries
+			
+			_lua.RegisterFunction("print", this, GetType().GetMethod("Print"));
+
+			// TODO: Search the assemblies for objects that inherit LuaBaseLibrary, and instantiate and register them and put them into an array,
+			// rather than call them all by name here
+
+			_formsLibrary = new FormsLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput);
+			_formsLibrary.LuaRegister(Docs);
+
+			_eventLibrary = new EventLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput);
+			_eventLibrary.LuaRegister(Docs);
+
+			_guiLibrary = new GuiLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput);
+			_guiLibrary.LuaRegister(Docs);
+
+			new BitLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
+			new EmuHawkLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
+			new ConsoleLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
+
+			var emuLib = new EmulatorLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput)
+			{
+				FrameAdvanceCallback = Frameadvance,
+				YieldCallback = EmuYield
+			};
+
+			emuLib.LuaRegister(Docs);
+
+			new InputLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
+			new JoypadLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
+			new MemoryLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
+			new MainMemoryLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
+
+			new MovieLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
+			new NesLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
+			new SavestateLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
+			new SnesLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
+			new StringLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
+			new GameInfoLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
+
+			Docs.Sort();
 		}
 
 		public LuaDocumentation Docs { get; private set; }
@@ -74,36 +115,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_lua = new Lua();
 			_guiLibrary.Dispose();
-		}
-
-
-		public void LuaRegister(Lua lua)
-		{
-			lua.RegisterFunction("print", this, GetType().GetMethod("Print"));
-
-			new BitLuaLibrary().LuaRegister(lua, Docs);
-			new EmuHawkLuaLibrary(ConsoleLuaLibrary.Log).LuaRegister(lua, Docs);
-			new ConsoleLuaLibrary().LuaRegister(lua, Docs);
-			
-			new EmulatorLuaLibrary(
-				_lua,
-				Frameadvance,
-				EmuYield).LuaRegister(lua, Docs);
-
-			_eventLibrary.LuaRegister(lua, Docs);
-			_formsLibrary.LuaRegister(lua, Docs);
-			_guiLibrary.LuaRegister(lua, Docs);
-			new InputLuaLibrary(_lua).LuaRegister(lua, Docs);
-			new JoypadLuaLibrary(_lua).LuaRegister(lua, Docs);
-			new MemoryLuaLibrary().LuaRegister(lua, Docs);
-			new MainMemoryLuaLibrary(_lua).LuaRegister(lua, Docs);
-			new MovieLuaLibrary(_lua).LuaRegister(lua, Docs);
-			new NesLuaLibrary().LuaRegister(lua, Docs);
-			new SavestateLuaLibrary().LuaRegister(lua, Docs);
-			new SnesLuaLibrary().LuaRegister(lua, Docs);
-			new StringLuaLibrary().LuaRegister(lua, Docs);
-			new GameInfoLuaLibrary(_lua).LuaRegister(lua, Docs);
-			Docs.Sort();
 		}
 
 		public Lua SpawnCoroutine(string file)

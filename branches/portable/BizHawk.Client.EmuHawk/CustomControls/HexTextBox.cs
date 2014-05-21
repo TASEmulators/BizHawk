@@ -42,8 +42,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return (uint)_maxSize.Value;
 			}
-			
-			return IntHelpers.MaxHexValueFromMaxDigits(MaxLength);
+
+            return (uint)(((long)1 << (4 * MaxLength)) - 1);
 		}
 
 		public override void ResetText()

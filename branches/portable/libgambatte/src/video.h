@@ -25,6 +25,7 @@
 #include "interruptrequester.h"
 #include "minkeeper.h"
 #include <memory>
+#include "newstate.h"
 
 namespace gambatte {
 
@@ -80,6 +81,13 @@ public:
 	}
 	
 	unsigned statReg() const { return statReg_; }
+
+	template<bool isReader>
+	void SyncState(NewState *ns)
+	{
+		NSS(statReg_);
+		NSS(lycReg_);
+	}
 };
 
 class LCD {
@@ -115,6 +123,14 @@ class LCD {
 		
 		void flagIrq(const unsigned bit) { memEventRequester_.flagIrq(bit); }
 		void flagHdmaReq() { memEventRequester_.flagHdmaReq(); }
+
+		template<bool isReader>
+		void SyncState(NewState *ns)
+		{
+			SSS(eventMin_);
+			SSS(memEventMin_);
+			//SSS(memEventRequester_); // not needed
+		}
 	};
 	
 	PPU ppu;
@@ -258,6 +274,8 @@ public:
 	unsigned long *spPalette() { return ppu.spPalette(); }
 
 	void setScanlineCallback(void (*callback)(), int sl) { scanlinecallback = callback; scanlinecallbacksl = sl; }
+
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 }

@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
+using BizHawk.Client.EmuHawk.ControlExtensions;
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.N64;
+using BizHawk.Common;
+
+
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -19,19 +24,28 @@ namespace BizHawk.Client.EmuHawk
 		static N64SyncSettings GetS()
 		{
 			if (Global.Emulator is N64)
+			{
 				return (N64SyncSettings)Global.Emulator.GetSyncSettings();
+			}
 			else
-				return (N64SyncSettings)Global.Config.GetCoreSyncSettings<N64>();
+			{
+				return (N64SyncSettings)Global.Config.GetCoreSyncSettings<N64>() 
+					?? new N64SyncSettings();
+			}
 		}
 
 		// never do this
 		static void PutS(N64SyncSettings s)
 		{
 			if (Global.Emulator is N64)
+			{
 				GlobalWin.MainForm.PutCoreSyncSettings(s);
+			}
 			else
+			{
 				// hack, don't do!
 				Global.Config.PutCoreSyncSettings<N64>(s);
+			}
 		}
 
 		private void CancelBT_Click(object sender, EventArgs e)
@@ -51,6 +65,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveSettings()
 		{
 			var s = GetS();
+
 			//Global
 			var video_settings = VideoResolutionComboBox.SelectedItem.ToString();
 			var strArr = video_settings.Split('x');
@@ -281,12 +296,22 @@ namespace BizHawk.Client.EmuHawk
 			s.Glide64mk2Plugin.read_back_to_screen = Glide64mk2_read_back_to_screen.SelectedIndex;
 			s.Glide64mk2Plugin.fast_crc = Glide64mk2_fast_crc.Checked;
 
+
+			s.CoreType = EnumHelper.GetValueFromDescription<N64SyncSettings.CORETYPE>(
+				CoreTypeDropdown.SelectedItem.ToString());
+
+			s.RspType = EnumHelper.GetValueFromDescription<N64SyncSettings.RSPTYPE>(
+				RspTypeDropdown.SelectedItem.ToString());
+
 			PutS(s);
 		} 
 
 		private void N64VideoPluginconfig_Load(object sender, EventArgs e)
 		{
 			var s = GetS();
+
+			CoreTypeDropdown.PopulateFromEnum<N64SyncSettings.CORETYPE>(s.CoreType);
+			RspTypeDropdown.PopulateFromEnum<N64SyncSettings.RSPTYPE>(s.RspType);
 
 			//Load Variables
 			//Global

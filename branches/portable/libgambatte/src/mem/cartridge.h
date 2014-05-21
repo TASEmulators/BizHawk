@@ -25,6 +25,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include "newstate.h"
 
 namespace gambatte {
 
@@ -35,23 +36,19 @@ public:
 	virtual void saveState(SaveState::Mem &ss) const = 0;
 	virtual void loadState(const SaveState::Mem &ss) = 0;
 	virtual bool isAddressWithinAreaRombankCanBeMappedTo(unsigned address, unsigned rombank) const = 0;
+
+	template<bool isReader>void SyncState(NewState *ns)
+	{
+		// can't have virtual templates, so..
+		SyncState(ns, isReader);
+	}
+	virtual void SyncState(NewState *ns, bool isReader) = 0;
 };
 
 class Cartridge {
-	struct AddrData {
-		unsigned long addr;
-		unsigned char data;
-		AddrData(unsigned long addr, unsigned data) : addr(addr), data(data) {}
-	};
-	
 	MemPtrs memptrs;
 	Rtc rtc;
 	std::auto_ptr<Mbc> mbc;
-	std::string defaultSaveBasePath;
-	std::string saveDir;
-	std::vector<AddrData> ggUndoList;
-	
-	void applyGameGenie(const std::string &code);
 	
 public:
 	void setStatePtrs(SaveState &);
@@ -85,18 +82,17 @@ public:
 	void loadSavedata(const char *data);
 	int saveSavedataLength();
 	void saveSavedata(char *dest);
-	const std::string saveBasePath() const;
-	void setSaveDir(const std::string &dir);
 
 	bool getMemoryArea(int which, unsigned char **data, int *length);
 
 	int loadROM(const char *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat);
 	const char * romTitle() const { return reinterpret_cast<const char *>(memptrs.romdata() + 0x134); }
-	void setGameGenie(const std::string &codes);
 
 	void setRTCCallback(std::uint32_t (*callback)()) {
 		rtc.setRTCCallback(callback);
 	}
+
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 }

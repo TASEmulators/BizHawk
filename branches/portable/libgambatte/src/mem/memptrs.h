@@ -19,6 +19,8 @@
 #ifndef MEMPTRS_H
 #define MEMPTRS_H
 
+#include "newstate.h"
+
 namespace gambatte {
 
 enum OamDmaSrc { OAM_DMA_SRC_ROM, OAM_DMA_SRC_SRAM, OAM_DMA_SRC_VRAM,
@@ -38,7 +40,11 @@ class MemPtrs {
 	unsigned char *wramdataend_;
 	
 	OamDmaSrc oamDmaSrc_;
-	
+
+	int memchunk_len;
+	int memchunk_saveoffs;
+	int memchunk_savelen;
+
 	MemPtrs(const MemPtrs &);
 	MemPtrs & operator=(const MemPtrs &);
 	void disconnectOamDmaAreas();
@@ -74,6 +80,8 @@ public:
 	void setVrambank(unsigned bank) { vrambankptr_ = vramdata() + bank * 0x2000ul - 0x8000; }
 	void setWrambank(unsigned bank);
 	void setOamDmaSrc(OamDmaSrc oamDmaSrc);
+
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 inline bool isCgb(const MemPtrs &memptrs) {

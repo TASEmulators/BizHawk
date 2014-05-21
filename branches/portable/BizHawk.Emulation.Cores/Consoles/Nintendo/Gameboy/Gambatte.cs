@@ -4,6 +4,8 @@ using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using Newtonsoft.Json;
+using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -33,22 +35,57 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// </summary>
 		LibGambatte.Buttons CurrentButtons = 0;
 
+		#region RTC
+
 		/// <summary>
 		/// RTC time when emulation begins.
 		/// </summary>
 		uint zerotime = 0;
 
+		/// <summary>
+		/// if true, RTC will run off of real elapsed time
+		/// </summary>
+		bool real_rtc_time = false;
+
 		LibGambatte.RTCCallback TimeCallback;
+
+		static long GetUnixNow()
+		{
+			// because internally the RTC works off of relative time, we don't need to base
+			// this off of any particular canonical epoch.
+			return DateTime.UtcNow.Ticks / 10000000L - 60000000000L;
+		}
 
 		uint GetCurrentTime()
 		{
-			uint fn = (uint)Frame;
-			fn /= 60; // exactly 60 fps.  in case you feel bad about it, remember that we're not exactly tracking cpu cycles either.
-			fn += zerotime;
-			return fn;
+			if (real_rtc_time)
+			{
+				return (uint)GetUnixNow();
+			}
+			else
+			{
+				ulong fn = (ulong)Frame;
+				// as we're exactly tracking cpu cycles, this can be pretty accurate
+				fn *= 4389;
+				fn /= 262144;
+				fn += zerotime;
+				return (uint)fn;
+			}
 		}
 
-		public Gameboy(CoreComm comm, GameInfo game, byte[] romdata, object Settings, object SyncSettings)
+		uint GetInitialTime()
+		{
+			if (real_rtc_time)
+				return (uint)GetUnixNow();
+			else
+				// setting the initial boot time to 0 will cause our zerotime
+				// to function as an initial offset, which is what we want
+				return 0;
+		}
+
+		#endregion
+
+		public Gameboy(CoreComm comm, GameInfo game, byte[] romdata, object Settings, object SyncSettings, bool deterministic)
 		{
 			CoreComm = comm;
 
@@ -63,6 +100,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			ThrowExceptionForBadRom(romdata);
 			BoardName = MapperName(romdata);
 
+			DeterministicEmulation = deterministic;
+
 			GambatteState = LibGambatte.gambatte_create();
 
 			if (GambatteState == IntPtr.Zero)
@@ -71,6 +110,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			try
 			{
 				this.SyncSettings = (GambatteSyncSettings)SyncSettings ?? GambatteSyncSettings.GetDefaults();
+				// copy over non-loadflag syncsettings now; they won't take effect if changed later
+				zerotime = (uint)this.SyncSettings.RTCInitialTime;
+				real_rtc_time = DeterministicEmulation ? false : this.SyncSettings.RealTimeRTC;
 
 				LibGambatte.LoadFlags flags = 0;
 
@@ -106,6 +148,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				TimeCallback = new LibGambatte.RTCCallback(GetCurrentTime);
 				LibGambatte.gambatte_setrtccallback(GambatteState, TimeCallback);
+
+				NewSaveCoreSetBuff();
 			}
 			catch
 			{
@@ -193,10 +237,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			// the controller callback will set this to false if it actually gets called during the frame
 			IsLagFrame = true;
 
-			// download any modified data to the core
-			foreach (var r in MemoryRefreshers)
-				r.RefreshWrite();
-
 			if (Controller["Power"])
 				LibGambatte.gambatte_reset(GambatteState, GetCurrentTime());
 
@@ -210,10 +250,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		internal void FrameAdvancePost()
 		{
-			// upload any modified data to the memory domains
-			foreach (var r in MemoryRefreshers)
-				r.RefreshRead();
-
 			if (IsLagFrame)
 				LagCount++;
 
@@ -230,15 +266,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			FrameAdvancePrep();
-
 			while (true)
 			{
 				uint samplesEmitted = TICKSINFRAME - frameOverflow; // according to gambatte docs, this is the nominal length of a frame in 2mhz clocks
 				System.Diagnostics.Debug.Assert(samplesEmitted * 2 <= soundbuff.Length);
 				if (LibGambatte.gambatte_runfor(GambatteState, soundbuff, ref samplesEmitted) > 0)
-				{
 					LibGambatte.gambatte_blitto(GambatteState, VideoBuffer, 160);
-				}
 
 				_cycleCount += (ulong)samplesEmitted;
 				frameOverflow += samplesEmitted;
@@ -264,6 +297,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				ProcessSoundEnd();
 
 			FrameAdvancePost();
+
+			//DebugStates(); // for maximum fun only
 		}
 
 		static string MapperName(byte[] romdata)
@@ -360,7 +395,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public string BoardName { get; private set; }
 
-		public bool DeterministicEmulation { get { return true; } }
+		public bool DeterministicEmulation { get; private set; }
 
 		#region saveram
 
@@ -425,60 +460,67 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region savestates
 
-		/// <summary>
-		/// handles the core-portion of savestating
-		/// </summary>
-		/// <returns>private binary data corresponding to a savestate</returns>
-		byte[] SaveCoreBinary()
+		byte[] newsavebuff;
+
+		void NewSaveCoreSetBuff()
 		{
-			uint nlen = 0;
-			IntPtr ndata = IntPtr.Zero;
-
-			if (!LibGambatte.gambatte_savestate(GambatteState, ref ndata, ref nlen))
-				throw new Exception("Gambatte failed to save the savestate!");
-
-			if (nlen == 0)
-				throw new Exception("Gambatte returned a 0-length savestate?");
-
-			byte[] data = new byte[nlen];
-			System.Runtime.InteropServices.Marshal.Copy(ndata, data, 0, (int)nlen);
-			LibGambatte.gambatte_savestate_destroy(ndata);
-
-			return data;
+			newsavebuff = new byte[LibGambatte.gambatte_newstatelen(GambatteState)];
 		}
 
-		/// <summary>
-		/// handles the core portion of loadstating
-		/// </summary>
-		/// <param name="data">private binary data previously returned from SaveCoreBinary()</param>
-		void LoadCoreBinary(byte[] data)
+		byte[] NewSaveCoreBinary()
 		{
-			if (!LibGambatte.gambatte_loadstate(GambatteState, data, (uint)data.Length))
-				throw new Exception("Gambatte failed to load the savestate!");
-			// since a savestate has been loaded, all memory domain data is now dirty
-			foreach (var r in MemoryRefreshers)
-				r.RefreshRead();
+			if (!LibGambatte.gambatte_newstatesave(GambatteState, newsavebuff, newsavebuff.Length))
+				throw new Exception("gambatte_newstatesave() returned false");
+			return newsavebuff;
 		}
+
+		void NewLoadCoreBinary(byte[] data)
+		{
+			if (!LibGambatte.gambatte_newstateload(GambatteState, data, data.Length))
+				throw new Exception("gambatte_newstateload() returned false");
+		}
+
+		JsonSerializer ser = new JsonSerializer() { Formatting = Formatting.Indented };
 
 		public void SaveStateText(System.IO.TextWriter writer)
 		{
-			var temp = SaveStateBinary();
-			temp.SaveAsHex(writer);
+			var s = new TextState();
+			s.Prepare();
+			LibGambatte.gambatte_newstatesave_ex(GambatteState,
+				s.Save,
+				s.EnterSection,
+				s.ExitSection);
+			s.IsLagFrame = IsLagFrame;
+			s.LagCount = LagCount;
+			s.Frame = Frame;
+			s.frameOverflow = frameOverflow;
+			s._cycleCount = _cycleCount;
+
+			ser.Serialize(writer, s);
 			// write extra copy of stuff we don't use
+			writer.WriteLine();
 			writer.WriteLine("Frame {0}", Frame);
 		}
 
 		public void LoadStateText(System.IO.TextReader reader)
 		{
-			string hex = reader.ReadLine();
-			byte[] state = new byte[hex.Length / 2];
-			state.ReadFromHex(hex);
-			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
+			var s = (TextState)ser.Deserialize(reader, typeof(TextState));
+			s.Prepare();
+			LibGambatte.gambatte_newstateload_ex(GambatteState,
+				s.Load,
+				s.EnterSection,
+				s.ExitSection);
+			IsLagFrame = s.IsLagFrame;
+			LagCount = s.LagCount;
+			Frame = s.Frame;
+			frameOverflow = s.frameOverflow;
+			_cycleCount = s._cycleCount;
 		}
 
 		public void SaveStateBinary(System.IO.BinaryWriter writer)
 		{
-			byte[] data = SaveCoreBinary();
+			//byte[] data = SaveCoreBinary();
+			byte[] data = NewSaveCoreBinary();
 
 			writer.Write(data.Length);
 			writer.Write(data);
@@ -496,7 +538,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			int length = reader.ReadInt32();
 			byte[] data = reader.ReadBytes(length);
 
-			LoadCoreBinary(data);
+			//LoadCoreBinary(data);
+			NewLoadCoreBinary(data);
 
 			// other variables
 			IsLagFrame = reader.ReadBoolean();
@@ -516,6 +559,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		}
 
 		public bool BinarySaveStatesPreferred { get { return true; } }
+
+		void DebugStates()
+		{
+			var sd = new StateDebug();
+			var Save = new LibGambatte.DataFunction(sd.Save);
+			var Load = new LibGambatte.DataFunction(sd.Load);
+			var EnterSection = new LibGambatte.SectionFunction(sd.EnterSection);
+			var ExitSection = new LibGambatte.SectionFunction(sd.ExitSection);
+
+			LibGambatte.gambatte_newstatesave_ex(GambatteState, Save, EnterSection, ExitSection);
+			LibGambatte.gambatte_newstateload_ex(GambatteState, Load, EnterSection, ExitSection);
+		}
 
 		#endregion
 
@@ -584,73 +639,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region MemoryDomains
 
-		class MemoryRefresher
-		{
-			IntPtr data;
-			int length;
-
-			byte[] CachedMemory;
-
-			public MemoryRefresher(IntPtr data, int length)
-			{
-				this.data = data;
-				this.length = length;
-				CachedMemory = new byte[length];
-
-				writeneeded = false;
-				// needs to be true in case a read is attempted before the first frame advance
-				readneeded = true;
-			}
-
-			bool readneeded;
-			bool writeneeded;
-
-			/// <summary>
-			/// reads data from native core to managed buffer
-			/// </summary>
-			public void RefreshRead()
-			{
-				readneeded = true;
-			}
-
-			/// <summary>
-			/// writes data from managed buffer back to core
-			/// </summary>
-			public void RefreshWrite()
-			{
-				if (writeneeded)
-				{
-					System.Runtime.InteropServices.Marshal.Copy(CachedMemory, 0, data, length);
-					writeneeded = false;
-				}
-			}
-
-			public byte Peek(int addr)
-			{
-				if (readneeded)
-				{
-					System.Runtime.InteropServices.Marshal.Copy(data, CachedMemory, 0, length);
-					readneeded = false;
-				}
-				return CachedMemory[addr];
-			}
-			public void Poke(int addr, byte val)
-			{
-				// a poke without any peek is certainly legal.  we need to update read, because writeneeded = true means that
-				// all of this data will be downloaded before the next frame.  so everything but that which was poked needs to
-				// be up to date.
-				if (readneeded)
-				{
-					System.Runtime.InteropServices.Marshal.Copy(data, CachedMemory, 0, length);
-					readneeded = false;
-				}
-				CachedMemory[addr] = val;
-				writeneeded = true;
-			}
-		}
-
-
-		void CreateMemoryDomain(LibGambatte.MemoryAreas which, string name)
+		unsafe void CreateMemoryDomain(LibGambatte.MemoryAreas which, string name)
 		{
 			IntPtr data = IntPtr.Zero;
 			int length = 0;
@@ -663,17 +652,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			if (data == IntPtr.Zero && length > 0)
 				throw new Exception("bad return from gambatte_getmemoryarea()");
 
-			var refresher = new MemoryRefresher(data, length);
+			byte* ptr = (byte*)data;
 
-			MemoryRefreshers.Add(refresher);
-
-			_MemoryDomains.Add(new MemoryDomain(name, length, MemoryDomain.Endian.Little, refresher.Peek, refresher.Poke));
+			_MemoryDomains.Add(new MemoryDomain(name, length, MemoryDomain.Endian.Little,
+				delegate(int addr)
+				{
+					if (addr < 0 || addr >= length)
+						throw new ArgumentOutOfRangeException();
+					return ptr[addr];
+				},
+				delegate(int addr, byte val)
+				{
+					if (addr < 0 || addr >= length)
+						throw new ArgumentOutOfRangeException();
+					ptr[addr] = val;
+				}));
 		}
 
 		void InitMemoryDomains()
 		{
-			MemoryRefreshers = new List<MemoryRefresher>();
-
 			CreateMemoryDomain(LibGambatte.MemoryAreas.wram, "WRAM");
 			CreateMemoryDomain(LibGambatte.MemoryAreas.rom, "ROM");
 			CreateMemoryDomain(LibGambatte.MemoryAreas.vram, "VRAM");
@@ -702,9 +699,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private List<MemoryDomain> _MemoryDomains = new List<MemoryDomain>();
 		public MemoryDomainList MemoryDomains { get; private set; }
-
-
-		List<MemoryRefresher> MemoryRefreshers;
 
 		#endregion
 
@@ -976,7 +970,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			bool ret;
 			if (s.ForceDMG != SyncSettings.ForceDMG ||
 				s.GBACGB != SyncSettings.GBACGB ||
-				s.MulticartCompat != SyncSettings.MulticartCompat)
+				s.MulticartCompat != SyncSettings.MulticartCompat ||
+				s.RealTimeRTC != SyncSettings.RealTimeRTC ||
+				s.RTCInitialTime != SyncSettings.RTCInitialTime)
 				ret = true;
 			else
 				ret = false;
@@ -1013,12 +1009,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public class GambatteSyncSettings
 		{
-			[System.ComponentModel.Description("Force the game to run on DMG hardware, even if it's detected as a CGB game.  Relevant for games that are \"CGB Enhanced\" but do not require CGB.")]
+			[Description("Force the game to run on DMG hardware, even if it's detected as a CGB game.  Relevant for games that are \"CGB Enhanced\" but do not require CGB.")]
+			[DefaultValue(false)]
 			public bool ForceDMG { get; set; }
-			[System.ComponentModel.Description("Emulate GBA hardware running a CGB game, instead of CGB hardware.  Relevant only for titles that detect the presense of a GBA, such as Shantae.")]
+			[Description("Emulate GBA hardware running a CGB game, instead of CGB hardware.  Relevant only for titles that detect the presense of a GBA, such as Shantae.")]
+			[DefaultValue(false)]
 			public bool GBACGB { get; set; }
-			[System.ComponentModel.Description("Use special compatibility hacks for certain multicart games.  Relevant only for specific multicarts.")]
+			[Description("Use special compatibility hacks for certain multicart games.  Relevant only for specific multicarts.")]
+			[DefaultValue(false)]
 			public bool MulticartCompat { get; set; }
+			[Description("If true, the real time clock in MBC3 games will reflect real time, instead of emulated time.  Ignored (treated as false) when a movie is recording.")]
+			[DefaultValue(false)]
+			public bool RealTimeRTC { get; set; }
+			[Description("Set the initial RTC time in terms of elapsed seconds.  Only used when RealTimeRTC is false.")]
+			[DefaultValue(0)]
+			public int RTCInitialTime
+			{
+				get { return _RTCInitialTime; }
+				set { _RTCInitialTime = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
+			}
+			[JsonIgnore]
+			int _RTCInitialTime;
 
 			public static GambatteSyncSettings GetDefaults()
 			{
@@ -1026,7 +1037,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				{
 					ForceDMG = false,
 					GBACGB = false,
-					MulticartCompat = false
+					MulticartCompat = false,
+					RealTimeRTC = false,
+					_RTCInitialTime = 0
 				};
 			}
 

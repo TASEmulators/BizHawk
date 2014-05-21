@@ -99,4 +99,14 @@ void LycIrq::lcdReset() {
 	lycReg_ = lycRegSrc_;
 }
 
+SYNCFUNC(LycIrq)
+{
+	NSS(time_);
+	NSS(lycRegSrc_);
+	NSS(statRegSrc_);
+	NSS(lycReg_);
+	NSS(statReg_);
+	NSS(cgb_);
+}
+
 }

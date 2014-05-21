@@ -1,9 +1,17 @@
-﻿using BizHawk.Emulation.Cores.Nintendo.SNES;
+﻿using System;
+using LuaInterface;
+using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.Common
 {
 	public class SnesLuaLibrary : LuaLibraryBase
 	{
+		public SnesLuaLibrary(Lua lua)
+			: base(lua) { }
+
+		public SnesLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
+
 		public override string Name { get { return "snes"; } }
 
 		[LuaMethodAttributes(

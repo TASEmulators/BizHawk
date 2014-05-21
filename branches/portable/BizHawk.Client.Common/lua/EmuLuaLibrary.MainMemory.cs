@@ -1,5 +1,4 @@
 ﻿using System;
-
 using LuaInterface;
 
 namespace BizHawk.Client.Common
@@ -7,12 +6,11 @@ namespace BizHawk.Client.Common
 	// TODO: this needs a major refactor, as well as MemoryLuaLibrary, and this shoudl inherit memorylua library and extend it
 	public class MainMemoryLuaLibrary : LuaLibraryBase
 	{
-		private readonly Lua _lua;
-
 		public MainMemoryLuaLibrary(Lua lua)
-		{
-			_lua = lua;
-		}
+			: base(lua) { }
+
+		public MainMemoryLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
 
 		public override string Name { get { return "mainmemory"; } }
 
@@ -120,13 +118,22 @@ namespace BizHawk.Client.Common
 		public LuaTable ReadByteRange(int addr, int length)
 		{
 			var lastAddr = length + addr;
-			var table = _lua.NewTable();
-			for (var i = addr; i <= lastAddr; i++)
+			var table = Lua.NewTable();
+			if (lastAddr < Global.Emulator.MemoryDomains.MainMemory.Size)
 			{
-				var a = string.Format("{0:X2}", i);
-				var v = Global.Emulator.MemoryDomains.MainMemory.PeekByte(i);
-				var vs = string.Format("{0:X2}", (int)v);
-				table[a] = vs;
+				for (var i = addr; i <= lastAddr; i++)
+				{
+					var a = string.Format("{0:X2}", i);
+					var v = Global.Emulator.MemoryDomains.MainMemory.PeekByte(i);
+					var vs = string.Format("{0:X2}", (int)v);
+					table[a] = vs;
+				}
+			}
+			else
+			{
+				Log("Warning: Attempted read " + lastAddr + " outside memory domain size of " +
+					Global.Emulator.MemoryDomains.MainMemory.Size +
+					" in mainmemory.readbyterange()");
 			}
 
 			return table;
@@ -160,9 +167,19 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var address in memoryblock.Keys)
 			{
-				Global.Emulator.MemoryDomains.MainMemory.PokeByte(
-					LuaInt(address),
-					(byte)LuaInt(memoryblock[address]));
+				var addr = LuaInt(address);
+				if (addr < Global.Emulator.MemoryDomains.MainMemory.Size)
+				{
+					Global.Emulator.MemoryDomains.MainMemory.PokeByte(
+						addr,
+						(byte)LuaInt(memoryblock[address]));
+				}
+				else
+				{
+					Log("Warning: Attempted read " + addr + " outside memory domain size of " +
+						Global.Emulator.MemoryDomains.MainMemory.Size +
+						" in mainmemory.writebyterange()");
+				}
 			}
 		}
 

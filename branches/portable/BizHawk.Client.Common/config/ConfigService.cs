@@ -15,6 +15,7 @@ namespace BizHawk.Client.Common
 			Serializer = new JsonSerializer
 			{
 				MissingMemberHandling = MissingMemberHandling.Ignore,
+				MissingTypeHandling = MissingTypeHandling.Ignore,
 				TypeNameHandling = TypeNameHandling.Auto,
 				ConstructorHandling = ConstructorHandling.Default,
 
@@ -65,5 +66,35 @@ namespace BizHawk.Client.Common
 				Serializer.Serialize(w, config);
 			}
 		}
+
+		// movie 1.0 header stuff
+
+		private class TypeNameEncapsulator
+		{
+			public object o;
+		}
+
+		public static object LoadWithType(string serialized)
+		{
+			using (TextReader tr = new StringReader(serialized))
+			using (JsonTextReader jr = new JsonTextReader(tr))
+			{
+				TypeNameEncapsulator tne = (TypeNameEncapsulator)Serializer.Deserialize(jr, typeof(TypeNameEncapsulator));
+				return tne.o;
+			}
+		}
+
+		public static string SaveWithType(object o)
+		{
+			using (StringWriter sw = new StringWriter())
+			using (JsonTextWriter jw = new JsonTextWriter(sw) { Formatting = Formatting.None })
+			{
+				TypeNameEncapsulator tne = new TypeNameEncapsulator { o = o };
+				Serializer.Serialize(jw, tne, typeof(TypeNameEncapsulator));
+				sw.Flush();
+				return sw.ToString();
+			}
+		}
+
 	}
 }

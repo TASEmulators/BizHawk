@@ -19,32 +19,23 @@
 #include "gambatte.h"
 #include "cpu.h"
 #include "savestate.h"
-#include "statesaver.h"
 #include "initstate.h"
 #include <sstream>
 #include <cstring>
-
-static const std::string itos(const int i) {
-	std::stringstream ss;
-	ss << i;
-	return ss.str();
-}
 
 namespace gambatte {
 struct GB::Priv {
 	CPU cpu;
 	bool gbaCgbMode;
 
-	gambatte::uint_least32_t *vbuff;
+	uint_least32_t vbuff[160*144];
 	
-	Priv() : gbaCgbMode(false), vbuff(0)
+	Priv() : gbaCgbMode(false)
 	{
-		vbuff = new gambatte::uint_least32_t[160*144];
 	}
 
 	~Priv()
 	{
-		delete[] vbuff;
 	}
 };
 	
@@ -135,10 +126,6 @@ void GB::setRTCCallback(std::uint32_t (*callback)()) {
 	p_->cpu.setRTCCallback(callback);
 }
 
-void GB::setSaveDir(const std::string &sdir) {
-	p_->cpu.setSaveDir(sdir);
-}
-
 int GB::load(const char *romfiledata, unsigned romfilelength, const std::uint32_t now, const unsigned flags) {
 	//if (p_->cpu.loaded())
 	//	p_->cpu.saveSavedata();
@@ -207,37 +194,6 @@ void GB::setCgbPalette(unsigned *lut) {
 	p_->cpu.setCgbPalette(lut);
 }
 
-bool GB::loadState(std::istream &file) {
-	if (p_->cpu.loaded()) {
-	//	p_->cpu.saveSavedata();
-		
-		SaveState state;
-		p_->cpu.setStatePtrs(state);
-		
-		if (StateSaver::loadState(state, file)) {
-			p_->cpu.loadState(state);
-			file.read((char *)p_->vbuff, 160 * 144 * 4); // yes, sloppy
-			return true;
-		}
-	}
-
-	return false;
-}
-
-bool GB::saveState(std::ostream &file) {
-	if (p_->cpu.loaded()) {
-		SaveState state;
-		p_->cpu.setStatePtrs(state);
-		p_->cpu.saveState(state);
-		bool ret =  StateSaver::saveState(state, file);
-		if (ret)
-			file.write((const char *)p_->vbuff, 160 * 144 * 4); // yes, sloppy
-		return ret;
-	}
-
-	return false;
-}
-
 const std::string GB::romTitle() const {
 	if (p_->cpu.loaded()) {
 		char title[0x11];
@@ -249,20 +205,19 @@ const std::string GB::romTitle() const {
 	return std::string();
 }
 
-void GB::setGameGenie(const std::string &codes) {
-	p_->cpu.setGameGenie(codes);
-}
-
-void GB::setGameShark(const std::string &codes) {
-	p_->cpu.setGameShark(codes);
-}
-
 int GB::LinkStatus(int which) {
 	return p_->cpu.LinkStatus(which);
 }
 
 void GB::GetRegs(int *dest) {
 	p_->cpu.GetRegs(dest);
+}
+
+SYNCFUNC(GB)
+{
+	SSS(p_->cpu);
+	NSS(p_->gbaCgbMode);
+	NSS(p_->vbuff);
 }
 
 }

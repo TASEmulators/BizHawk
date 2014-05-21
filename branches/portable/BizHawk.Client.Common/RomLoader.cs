@@ -129,7 +129,7 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		public bool LoadRom(string path, CoreComm nextComm)
+		public bool LoadRom(string path, CoreComm nextComm, bool forceAccurateCore = false) // forceAccurateCore is currently just for Quicknes vs Neshawk but could be used for other situations
 		{
 			if (path == null)
 			{
@@ -258,7 +258,8 @@ namespace BizHawk.Client.Common
 										right,
 										xmlGame.Assets["RightRom"],
 										GetCoreSettings<GambatteLink>(),
-										GetCoreSyncSettings<GambatteLink>());
+										GetCoreSyncSettings<GambatteLink>(),
+										Deterministic);
 
 									// other stuff todo
 									break;
@@ -339,7 +340,7 @@ namespace BizHawk.Client.Common
 								nextEmulator = new TI83(nextComm, game, rom.RomData);
 								break;
 							case "NES":
-								if (!Global.Config.NES_InQuickNES)
+								if (!Global.Config.NES_InQuickNES || forceAccurateCore)
 								{
 									nextEmulator = new NES(
 										nextComm,
@@ -363,7 +364,8 @@ namespace BizHawk.Client.Common
 										game,
 										rom.FileData,
 										GetCoreSettings<Gameboy>(),
-										GetCoreSyncSettings<Gameboy>());
+										GetCoreSyncSettings<Gameboy>(),
+										Deterministic);
 								}
 								else
 								{
@@ -423,13 +425,29 @@ namespace BizHawk.Client.Common
 
 					if (nextEmulator == null)
 					{
-						ThrowLoadError("No core could load the rom.", "NULL");
+						ThrowLoadError("No core could load the rom.", null);
 						return false;
 					}
 				}
 				catch (Exception ex)
 				{
-					ThrowLoadError("Exception during loadgame:\n\n" + ex, "NULL");
+					string system = null;
+					if (game != null)
+					{
+						system = game.System;
+					}
+
+					// Specific hack here, as we get more cores of the same system, this isn't scalable
+					if (ex is LibQuickNES.UnsupportedMapperException)
+					{
+						LoadRom(path, nextComm, forceAccurateCore: true);
+						return true;
+					}
+					else
+					{
+						ThrowLoadError("A core accepted the rom, but throw an exception while loading it:\n\n" + ex, system);
+					}
+
 					return false;
 				}
 

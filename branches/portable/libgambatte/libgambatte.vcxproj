@@ -87,7 +87,6 @@
     <ClInclude Include="include\gambatte.h" />
     <ClInclude Include="include\gbint.h" />
     <ClInclude Include="include\inputgetter.h" />
-    <ClInclude Include="src\bitmap_font.h" />
     <ClInclude Include="src\cinterface.h" />
     <ClInclude Include="src\common\array.h" />
     <ClInclude Include="src\common\uncopyable.h" />
@@ -103,6 +102,7 @@
     <ClInclude Include="src\mem\memptrs.h" />
     <ClInclude Include="src\mem\rtc.h" />
     <ClInclude Include="src\minkeeper.h" />
+    <ClInclude Include="src\newstate.h" />
     <ClInclude Include="src\savestate.h" />
     <ClInclude Include="src\sound.h" />
     <ClInclude Include="src\sound\channel1.h" />
@@ -115,7 +115,6 @@
     <ClInclude Include="src\sound\master_disabler.h" />
     <ClInclude Include="src\sound\sound_unit.h" />
     <ClInclude Include="src\sound\static_output_tester.h" />
-    <ClInclude Include="src\statesaver.h" />
     <ClInclude Include="src\tima.h" />
     <ClInclude Include="src\video.h" />
     <ClInclude Include="src\video\lyc_irq.h" />
@@ -125,7 +124,6 @@
     <ClInclude Include="src\video\sprite_mapper.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\bitmap_font.cpp" />
     <ClCompile Include="src\cinterface.cpp" />
     <ClCompile Include="src\cpu.cpp" />
     <ClCompile Include="src\gambatte.cpp" />
@@ -136,6 +134,7 @@
     <ClCompile Include="src\mem\cartridge.cpp" />
     <ClCompile Include="src\mem\memptrs.cpp" />
     <ClCompile Include="src\mem\rtc.cpp" />
+    <ClCompile Include="src\newstate.cpp" />
     <ClCompile Include="src\sound.cpp" />
     <ClCompile Include="src\sound\channel1.cpp" />
     <ClCompile Include="src\sound\channel2.cpp" />
@@ -144,7 +143,6 @@
     <ClCompile Include="src\sound\duty_unit.cpp" />
     <ClCompile Include="src\sound\envelope_unit.cpp" />
     <ClCompile Include="src\sound\length_counter.cpp" />
-    <ClCompile Include="src\statesaver.cpp" />
     <ClCompile Include="src\tima.cpp" />
     <ClCompile Include="src\video.cpp" />
     <ClCompile Include="src\video\lyc_irq.cpp" />

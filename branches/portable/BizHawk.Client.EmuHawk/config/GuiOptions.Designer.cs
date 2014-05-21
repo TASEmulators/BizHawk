@@ -47,6 +47,9 @@
 			this.StartPausedCheckbox = new System.Windows.Forms.CheckBox();
 			this.PauseWhenMenuActivatedCheckbox = new System.Windows.Forms.CheckBox();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.KbLabel = new System.Windows.Forms.Label();
+			this.BigScreenshotNumeric = new System.Windows.Forms.NumericUpDown();
+			this.SaveLargeScreenshotsCheckbox = new System.Windows.Forms.CheckBox();
 			this.label12 = new System.Windows.Forms.Label();
 			this.label13 = new System.Windows.Forms.Label();
 			this.FrameAdvSkipLagCheckbox = new System.Windows.Forms.CheckBox();
@@ -62,18 +65,10 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.LogWindowAsConsoleCheckbox = new System.Windows.Forms.CheckBox();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
-			this.label11 = new System.Windows.Forms.Label();
-			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.RecentRomsNumeric = new System.Windows.Forms.NumericUpDown();
+			this.IncreaseRecentBtn = new System.Windows.Forms.Button();
+			this.DecreaseRecentBtn = new System.Windows.Forms.Button();
 			this.RecentGroupBox = new System.Windows.Forms.GroupBox();
-			this.RecentMoviesNumeric = new System.Windows.Forms.NumericUpDown();
-			this.label15 = new System.Windows.Forms.Label();
-			this.RecentTblNumeric = new System.Windows.Forms.NumericUpDown();
-			this.label16 = new System.Windows.Forms.Label();
-			this.RecentCheatsNumeric = new System.Windows.Forms.NumericUpDown();
-			this.label17 = new System.Windows.Forms.Label();
-			this.RecentPceCDLNumeric = new System.Windows.Forms.NumericUpDown();
-			this.label18 = new System.Windows.Forms.Label();
+			this.label19 = new System.Windows.Forms.Label();
 			this.RecentSearchesNumeric = new System.Windows.Forms.NumericUpDown();
 			this.label20 = new System.Windows.Forms.Label();
 			this.RecentWatchesNumeric = new System.Windows.Forms.NumericUpDown();
@@ -82,23 +77,32 @@
 			this.label22 = new System.Windows.Forms.Label();
 			this.RecentLuaScriptNumeric = new System.Windows.Forms.NumericUpDown();
 			this.label23 = new System.Windows.Forms.Label();
-			this.label19 = new System.Windows.Forms.Label();
-			this.DecreaseRecentBtn = new System.Windows.Forms.Button();
-			this.IncreaseRecentBtn = new System.Windows.Forms.Button();
+			this.RecentPceCDLNumeric = new System.Windows.Forms.NumericUpDown();
+			this.label18 = new System.Windows.Forms.Label();
+			this.RecentTblNumeric = new System.Windows.Forms.NumericUpDown();
+			this.label16 = new System.Windows.Forms.Label();
+			this.RecentCheatsNumeric = new System.Windows.Forms.NumericUpDown();
+			this.label17 = new System.Windows.Forms.Label();
+			this.RecentMoviesNumeric = new System.Windows.Forms.NumericUpDown();
+			this.label15 = new System.Windows.Forms.Label();
+			this.RecentRomsNumeric = new System.Windows.Forms.NumericUpDown();
+			this.label11 = new System.Windows.Forms.Label();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage3.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.BigScreenshotNumeric)).BeginInit();
 			this.tabPage2.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.RecentRomsNumeric)).BeginInit();
 			this.RecentGroupBox.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.RecentMoviesNumeric)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.RecentTblNumeric)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.RecentCheatsNumeric)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.RecentPceCDLNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.RecentSearchesNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.RecentWatchesNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.RecentLuaSessionsNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.RecentLuaScriptNumeric)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.RecentPceCDLNumeric)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.RecentTblNumeric)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.RecentCheatsNumeric)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.RecentMoviesNumeric)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.RecentRomsNumeric)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// OkBtn
@@ -289,6 +293,9 @@
 			// 
 			// tabPage3
 			// 
+			this.tabPage3.Controls.Add(this.KbLabel);
+			this.tabPage3.Controls.Add(this.BigScreenshotNumeric);
+			this.tabPage3.Controls.Add(this.SaveLargeScreenshotsCheckbox);
 			this.tabPage3.Controls.Add(this.label12);
 			this.tabPage3.Controls.Add(this.label13);
 			this.tabPage3.Controls.Add(this.FrameAdvSkipLagCheckbox);
@@ -310,10 +317,51 @@
 			this.tabPage3.Text = "Advanced";
 			this.tabPage3.UseVisualStyleBackColor = true;
 			// 
+			// KbLabel
+			// 
+			this.KbLabel.AutoSize = true;
+			this.KbLabel.Location = new System.Drawing.Point(213, 155);
+			this.KbLabel.Name = "KbLabel";
+			this.KbLabel.Size = new System.Drawing.Size(19, 13);
+			this.KbLabel.TabIndex = 17;
+			this.KbLabel.Text = "kb";
+			// 
+			// BigScreenshotNumeric
+			// 
+			this.BigScreenshotNumeric.Location = new System.Drawing.Point(155, 151);
+			this.BigScreenshotNumeric.Maximum = new decimal(new int[] {
+            8192,
+            0,
+            0,
+            0});
+			this.BigScreenshotNumeric.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.BigScreenshotNumeric.Name = "BigScreenshotNumeric";
+			this.BigScreenshotNumeric.Size = new System.Drawing.Size(58, 20);
+			this.BigScreenshotNumeric.TabIndex = 16;
+			this.BigScreenshotNumeric.Value = new decimal(new int[] {
+            128,
+            0,
+            0,
+            0});
+			// 
+			// SaveLargeScreenshotsCheckbox
+			// 
+			this.SaveLargeScreenshotsCheckbox.AutoSize = true;
+			this.SaveLargeScreenshotsCheckbox.Location = new System.Drawing.Point(27, 153);
+			this.SaveLargeScreenshotsCheckbox.Name = "SaveLargeScreenshotsCheckbox";
+			this.SaveLargeScreenshotsCheckbox.Size = new System.Drawing.Size(131, 17);
+			this.SaveLargeScreenshotsCheckbox.TabIndex = 15;
+			this.SaveLargeScreenshotsCheckbox.Text = "And large screenshots";
+			this.SaveLargeScreenshotsCheckbox.UseVisualStyleBackColor = true;
+			// 
 			// label12
 			// 
 			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(24, 283);
+			this.label12.Location = new System.Drawing.Point(24, 295);
 			this.label12.Name = "label12";
 			this.label12.Size = new System.Drawing.Size(231, 13);
 			this.label12.TabIndex = 14;
@@ -322,7 +370,7 @@
 			// label13
 			// 
 			this.label13.AutoSize = true;
-			this.label13.Location = new System.Drawing.Point(24, 270);
+			this.label13.Location = new System.Drawing.Point(24, 282);
 			this.label13.Name = "label13";
 			this.label13.Size = new System.Drawing.Size(268, 13);
 			this.label13.TabIndex = 13;
@@ -331,7 +379,7 @@
 			// FrameAdvSkipLagCheckbox
 			// 
 			this.FrameAdvSkipLagCheckbox.AutoSize = true;
-			this.FrameAdvSkipLagCheckbox.Location = new System.Drawing.Point(6, 250);
+			this.FrameAdvSkipLagCheckbox.Location = new System.Drawing.Point(6, 262);
 			this.FrameAdvSkipLagCheckbox.Name = "FrameAdvSkipLagCheckbox";
 			this.FrameAdvSkipLagCheckbox.Size = new System.Drawing.Size(241, 17);
 			this.FrameAdvSkipLagCheckbox.TabIndex = 12;
@@ -341,7 +389,7 @@
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(24, 224);
+			this.label9.Location = new System.Drawing.Point(24, 236);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(99, 13);
 			this.label9.TabIndex = 11;
@@ -350,7 +398,7 @@
 			// label10
 			// 
 			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(24, 211);
+			this.label10.Location = new System.Drawing.Point(24, 223);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(277, 13);
 			this.label10.TabIndex = 10;
@@ -359,7 +407,7 @@
 			// BackupSRamCheckbox
 			// 
 			this.BackupSRamCheckbox.AutoSize = true;
-			this.BackupSRamCheckbox.Location = new System.Drawing.Point(4, 195);
+			this.BackupSRamCheckbox.Location = new System.Drawing.Point(4, 207);
 			this.BackupSRamCheckbox.Name = "BackupSRamCheckbox";
 			this.BackupSRamCheckbox.Size = new System.Drawing.Size(108, 17);
 			this.BackupSRamCheckbox.TabIndex = 9;
@@ -369,7 +417,7 @@
 			// label8
 			// 
 			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(24, 167);
+			this.label8.Location = new System.Drawing.Point(24, 186);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(183, 13);
 			this.label8.TabIndex = 8;
@@ -378,7 +426,7 @@
 			// label7
 			// 
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(24, 153);
+			this.label7.Location = new System.Drawing.Point(24, 172);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(290, 13);
 			this.label7.TabIndex = 7;
@@ -393,6 +441,7 @@
 			this.ScreenshotInStatesCheckbox.TabIndex = 6;
 			this.ScreenshotInStatesCheckbox.Text = "Save a screenshot in savestates";
 			this.ScreenshotInStatesCheckbox.UseVisualStyleBackColor = true;
+			this.ScreenshotInStatesCheckbox.CheckedChanged += new System.EventHandler(this.ScreenshotInStatesCheckbox_CheckedChanged);
 			// 
 			// label6
 			// 
@@ -454,36 +503,27 @@
 			this.tabPage2.Text = "Recent Menus";
 			this.tabPage2.UseVisualStyleBackColor = true;
 			// 
-			// label11
+			// IncreaseRecentBtn
 			// 
-			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(15, 31);
-			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(34, 13);
-			this.label11.TabIndex = 0;
-			this.label11.Text = "Roms";
+			this.IncreaseRecentBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.IncreaseRecentBtn.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Forward;
+			this.IncreaseRecentBtn.Location = new System.Drawing.Point(357, 14);
+			this.IncreaseRecentBtn.Name = "IncreaseRecentBtn";
+			this.IncreaseRecentBtn.Size = new System.Drawing.Size(23, 23);
+			this.IncreaseRecentBtn.TabIndex = 5;
+			this.IncreaseRecentBtn.UseVisualStyleBackColor = true;
+			this.IncreaseRecentBtn.Click += new System.EventHandler(this.IncreaseRecentBtn_Click);
 			// 
-			// RecentRomsNumeric
+			// DecreaseRecentBtn
 			// 
-			this.RecentRomsNumeric.Location = new System.Drawing.Point(124, 27);
-			this.RecentRomsNumeric.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-			this.RecentRomsNumeric.Minimum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-			this.RecentRomsNumeric.Name = "RecentRomsNumeric";
-			this.RecentRomsNumeric.Size = new System.Drawing.Size(43, 20);
-			this.RecentRomsNumeric.TabIndex = 1;
-			this.RecentRomsNumeric.Value = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
+			this.DecreaseRecentBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.DecreaseRecentBtn.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Back;
+			this.DecreaseRecentBtn.Location = new System.Drawing.Point(335, 14);
+			this.DecreaseRecentBtn.Name = "DecreaseRecentBtn";
+			this.DecreaseRecentBtn.Size = new System.Drawing.Size(23, 23);
+			this.DecreaseRecentBtn.TabIndex = 3;
+			this.DecreaseRecentBtn.UseVisualStyleBackColor = true;
+			this.DecreaseRecentBtn.Click += new System.EventHandler(this.DecreaseRecentBtn_Click);
 			// 
 			// RecentGroupBox
 			// 
@@ -516,129 +556,14 @@
 			this.RecentGroupBox.TabStop = false;
 			this.RecentGroupBox.Text = "Max number of recent files";
 			// 
-			// RecentMoviesNumeric
+			// label19
 			// 
-			this.RecentMoviesNumeric.Location = new System.Drawing.Point(124, 53);
-			this.RecentMoviesNumeric.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-			this.RecentMoviesNumeric.Minimum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-			this.RecentMoviesNumeric.Name = "RecentMoviesNumeric";
-			this.RecentMoviesNumeric.Size = new System.Drawing.Size(43, 20);
-			this.RecentMoviesNumeric.TabIndex = 2;
-			this.RecentMoviesNumeric.Value = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-			// 
-			// label15
-			// 
-			this.label15.AutoSize = true;
-			this.label15.Location = new System.Drawing.Point(15, 57);
-			this.label15.Name = "label15";
-			this.label15.Size = new System.Drawing.Size(41, 13);
-			this.label15.TabIndex = 2;
-			this.label15.Text = "Movies";
-			// 
-			// RecentTblNumeric
-			// 
-			this.RecentTblNumeric.Location = new System.Drawing.Point(124, 118);
-			this.RecentTblNumeric.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-			this.RecentTblNumeric.Minimum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-			this.RecentTblNumeric.Name = "RecentTblNumeric";
-			this.RecentTblNumeric.Size = new System.Drawing.Size(43, 20);
-			this.RecentTblNumeric.TabIndex = 4;
-			this.RecentTblNumeric.Value = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-			// 
-			// label16
-			// 
-			this.label16.AutoSize = true;
-			this.label16.Location = new System.Drawing.Point(15, 109);
-			this.label16.Name = "label16";
-			this.label16.Size = new System.Drawing.Size(56, 13);
-			this.label16.TabIndex = 6;
-			this.label16.Text = "Hex Editor";
-			// 
-			// RecentCheatsNumeric
-			// 
-			this.RecentCheatsNumeric.Location = new System.Drawing.Point(124, 79);
-			this.RecentCheatsNumeric.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-			this.RecentCheatsNumeric.Minimum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-			this.RecentCheatsNumeric.Name = "RecentCheatsNumeric";
-			this.RecentCheatsNumeric.Size = new System.Drawing.Size(43, 20);
-			this.RecentCheatsNumeric.TabIndex = 3;
-			this.RecentCheatsNumeric.Value = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-			// 
-			// label17
-			// 
-			this.label17.AutoSize = true;
-			this.label17.Location = new System.Drawing.Point(15, 83);
-			this.label17.Name = "label17";
-			this.label17.Size = new System.Drawing.Size(40, 13);
-			this.label17.TabIndex = 4;
-			this.label17.Text = "Cheats";
-			// 
-			// RecentPceCDLNumeric
-			// 
-			this.RecentPceCDLNumeric.Location = new System.Drawing.Point(124, 142);
-			this.RecentPceCDLNumeric.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-			this.RecentPceCDLNumeric.Minimum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-			this.RecentPceCDLNumeric.Name = "RecentPceCDLNumeric";
-			this.RecentPceCDLNumeric.Size = new System.Drawing.Size(43, 20);
-			this.RecentPceCDLNumeric.TabIndex = 5;
-			this.RecentPceCDLNumeric.Value = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-			// 
-			// label18
-			// 
-			this.label18.AutoSize = true;
-			this.label18.Location = new System.Drawing.Point(15, 146);
-			this.label18.Name = "label18";
-			this.label18.Size = new System.Drawing.Size(103, 13);
-			this.label18.TabIndex = 8;
-			this.label18.Text = "PCE code/data logs";
+			this.label19.AutoSize = true;
+			this.label19.Location = new System.Drawing.Point(15, 122);
+			this.label19.Name = "label19";
+			this.label19.Size = new System.Drawing.Size(90, 13);
+			this.label19.TabIndex = 18;
+			this.label19.Text = "Translation tables";
 			// 
 			// RecentSearchesNumeric
 			// 
@@ -764,36 +689,160 @@
 			this.label23.TabIndex = 10;
 			this.label23.Text = "Lua Scripts";
 			// 
-			// label19
+			// RecentPceCDLNumeric
 			// 
-			this.label19.AutoSize = true;
-			this.label19.Location = new System.Drawing.Point(15, 122);
-			this.label19.Name = "label19";
-			this.label19.Size = new System.Drawing.Size(90, 13);
-			this.label19.TabIndex = 18;
-			this.label19.Text = "Translation tables";
+			this.RecentPceCDLNumeric.Location = new System.Drawing.Point(124, 142);
+			this.RecentPceCDLNumeric.Maximum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+			this.RecentPceCDLNumeric.Minimum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+			this.RecentPceCDLNumeric.Name = "RecentPceCDLNumeric";
+			this.RecentPceCDLNumeric.Size = new System.Drawing.Size(43, 20);
+			this.RecentPceCDLNumeric.TabIndex = 5;
+			this.RecentPceCDLNumeric.Value = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
 			// 
-			// DecreaseRecentBtn
+			// label18
 			// 
-			this.DecreaseRecentBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.DecreaseRecentBtn.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Back;
-			this.DecreaseRecentBtn.Location = new System.Drawing.Point(335, 14);
-			this.DecreaseRecentBtn.Name = "DecreaseRecentBtn";
-			this.DecreaseRecentBtn.Size = new System.Drawing.Size(23, 23);
-			this.DecreaseRecentBtn.TabIndex = 3;
-			this.DecreaseRecentBtn.UseVisualStyleBackColor = true;
-			this.DecreaseRecentBtn.Click += new System.EventHandler(this.DecreaseRecentBtn_Click);
+			this.label18.AutoSize = true;
+			this.label18.Location = new System.Drawing.Point(15, 146);
+			this.label18.Name = "label18";
+			this.label18.Size = new System.Drawing.Size(103, 13);
+			this.label18.TabIndex = 8;
+			this.label18.Text = "PCE code/data logs";
 			// 
-			// IncreaseRecentBtn
+			// RecentTblNumeric
 			// 
-			this.IncreaseRecentBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.IncreaseRecentBtn.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Forward;
-			this.IncreaseRecentBtn.Location = new System.Drawing.Point(357, 14);
-			this.IncreaseRecentBtn.Name = "IncreaseRecentBtn";
-			this.IncreaseRecentBtn.Size = new System.Drawing.Size(23, 23);
-			this.IncreaseRecentBtn.TabIndex = 5;
-			this.IncreaseRecentBtn.UseVisualStyleBackColor = true;
-			this.IncreaseRecentBtn.Click += new System.EventHandler(this.IncreaseRecentBtn_Click);
+			this.RecentTblNumeric.Location = new System.Drawing.Point(124, 118);
+			this.RecentTblNumeric.Maximum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+			this.RecentTblNumeric.Minimum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+			this.RecentTblNumeric.Name = "RecentTblNumeric";
+			this.RecentTblNumeric.Size = new System.Drawing.Size(43, 20);
+			this.RecentTblNumeric.TabIndex = 4;
+			this.RecentTblNumeric.Value = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
+			// 
+			// label16
+			// 
+			this.label16.AutoSize = true;
+			this.label16.Location = new System.Drawing.Point(15, 109);
+			this.label16.Name = "label16";
+			this.label16.Size = new System.Drawing.Size(56, 13);
+			this.label16.TabIndex = 6;
+			this.label16.Text = "Hex Editor";
+			// 
+			// RecentCheatsNumeric
+			// 
+			this.RecentCheatsNumeric.Location = new System.Drawing.Point(124, 79);
+			this.RecentCheatsNumeric.Maximum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+			this.RecentCheatsNumeric.Minimum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+			this.RecentCheatsNumeric.Name = "RecentCheatsNumeric";
+			this.RecentCheatsNumeric.Size = new System.Drawing.Size(43, 20);
+			this.RecentCheatsNumeric.TabIndex = 3;
+			this.RecentCheatsNumeric.Value = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
+			// 
+			// label17
+			// 
+			this.label17.AutoSize = true;
+			this.label17.Location = new System.Drawing.Point(15, 83);
+			this.label17.Name = "label17";
+			this.label17.Size = new System.Drawing.Size(40, 13);
+			this.label17.TabIndex = 4;
+			this.label17.Text = "Cheats";
+			// 
+			// RecentMoviesNumeric
+			// 
+			this.RecentMoviesNumeric.Location = new System.Drawing.Point(124, 53);
+			this.RecentMoviesNumeric.Maximum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+			this.RecentMoviesNumeric.Minimum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+			this.RecentMoviesNumeric.Name = "RecentMoviesNumeric";
+			this.RecentMoviesNumeric.Size = new System.Drawing.Size(43, 20);
+			this.RecentMoviesNumeric.TabIndex = 2;
+			this.RecentMoviesNumeric.Value = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
+			// 
+			// label15
+			// 
+			this.label15.AutoSize = true;
+			this.label15.Location = new System.Drawing.Point(15, 57);
+			this.label15.Name = "label15";
+			this.label15.Size = new System.Drawing.Size(41, 13);
+			this.label15.TabIndex = 2;
+			this.label15.Text = "Movies";
+			// 
+			// RecentRomsNumeric
+			// 
+			this.RecentRomsNumeric.Location = new System.Drawing.Point(124, 27);
+			this.RecentRomsNumeric.Maximum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+			this.RecentRomsNumeric.Minimum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+			this.RecentRomsNumeric.Name = "RecentRomsNumeric";
+			this.RecentRomsNumeric.Size = new System.Drawing.Size(43, 20);
+			this.RecentRomsNumeric.TabIndex = 1;
+			this.RecentRomsNumeric.Value = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
+			// 
+			// label11
+			// 
+			this.label11.AutoSize = true;
+			this.label11.Location = new System.Drawing.Point(15, 31);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(34, 13);
+			this.label11.TabIndex = 0;
+			this.label11.Text = "Roms";
 			// 
 			// EmuHawkOptions
 			// 
@@ -807,6 +856,7 @@
 			this.Controls.Add(this.OkBtn);
 			this.Name = "EmuHawkOptions";
 			this.ShowIcon = false;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Gui Options";
 			this.Load += new System.EventHandler(this.GuiOptions_Load);
 			this.tabControl1.ResumeLayout(false);
@@ -814,18 +864,19 @@
 			this.tabPage1.PerformLayout();
 			this.tabPage3.ResumeLayout(false);
 			this.tabPage3.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.BigScreenshotNumeric)).EndInit();
 			this.tabPage2.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.RecentRomsNumeric)).EndInit();
 			this.RecentGroupBox.ResumeLayout(false);
 			this.RecentGroupBox.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.RecentMoviesNumeric)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.RecentTblNumeric)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.RecentCheatsNumeric)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.RecentPceCDLNumeric)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.RecentSearchesNumeric)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.RecentWatchesNumeric)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.RecentLuaSessionsNumeric)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.RecentLuaScriptNumeric)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.RecentPceCDLNumeric)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.RecentTblNumeric)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.RecentCheatsNumeric)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.RecentMoviesNumeric)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.RecentRomsNumeric)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -888,5 +939,8 @@
 		private System.Windows.Forms.Label label19;
 		private System.Windows.Forms.Button IncreaseRecentBtn;
 		private System.Windows.Forms.Button DecreaseRecentBtn;
+		private System.Windows.Forms.CheckBox SaveLargeScreenshotsCheckbox;
+		private System.Windows.Forms.NumericUpDown BigScreenshotNumeric;
+		private System.Windows.Forms.Label KbLabel;
 	}
 }

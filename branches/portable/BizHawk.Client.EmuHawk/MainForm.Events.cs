@@ -748,6 +748,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void CoresSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
+			NesInQuickNESMenuItem.Checked = Global.Config.NES_InQuickNES;
+		}
+
 		private void ControllersMenuItem_Click(object sender, EventArgs e)
 		{
 			var controller = new ControllerConfig(Global.Emulator.ControllerDefinition);
@@ -760,12 +766,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HotkeysMenuItem_Click(object sender, EventArgs e)
 		{
-			var hotkeys = new HotkeyConfig();
-			if (hotkeys.ShowDialog() == DialogResult.OK)
+			if (new HotkeyConfig().ShowDialog() == DialogResult.OK)
 			{
 				InitControls();
 				InputManager.SyncControls();
 			}
+		}
+
+		private void FirmwaresMenuItem_Click(object sender, EventArgs e)
+		{
+			new FirmwaresConfig().ShowDialog();
 		}
 
 		private void MessagesMenuItem_Click(object sender, EventArgs e)
@@ -780,8 +790,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SoundMenuItem_Click(object sender, EventArgs e)
 		{
-			var sound = new SoundConfig();
-			if (sound.ShowDialog() == DialogResult.OK)
+			if (new SoundConfig().ShowDialog() == DialogResult.OK)
 			{
 				RewireSound();
 			}
@@ -797,9 +806,14 @@ namespace BizHawk.Client.EmuHawk
 			new RewindConfig().ShowDialog();
 		}
 
-		private void FirmwaresMenuItem_Click(object sender, EventArgs e)
+		private void FileExtensionsMenuItem_Click(object sender, EventArgs e)
 		{
-			new FirmwaresConfig().Show();
+			new FileExtensionPreferences().ShowDialog();
+		}
+
+		private void CustomizeMenuItem_Click(object sender, EventArgs e)
+		{
+			new EmuHawkOptions().ShowDialog();
 		}
 
 		private void ClickThrottleMenuItem_Click(object sender, EventArgs e)
@@ -854,6 +868,7 @@ namespace BizHawk.Client.EmuHawk
 					RewireSound();
 				}
 			}
+
 			VsyncMessage();
 		}
 
@@ -921,6 +936,22 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.SaveStateType = Config.SaveStateTypeE.Text;
 		}
 
+		private void GBInSGBMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GB_AsSGB ^= true;
+			FlagNeedsReboot();
+		}
+
+		private void NesInQuickNESMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.NES_InQuickNES ^= true;
+			FlagNeedsReboot();
+		}
+
+		private void N64VideoPluginSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			N64PluginSettingsMenuItem_Click(sender, e);
+		}
 
 		private void SaveConfigMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1011,9 +1042,23 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Sound.StopSound();
 			using (var dlg = new DualGBXMLCreator())
 			{
-				dlg.ShowDialog(this);
+				var result = dlg.ShowDialog(this);
+				if (result == System.Windows.Forms.DialogResult.OK)
+				{
+					GlobalWin.OSD.AddMessage("XML File saved");
+				}
+				else
+				{
+					GlobalWin.OSD.AddMessage("Dual GB creator aborted");
+				}
 			}
+
 			GlobalWin.Sound.StartSound();
+		}
+
+		private void batchRunnerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new BatchRun().ShowDialog();
 		}
 
 		#endregion
@@ -1025,7 +1070,6 @@ namespace BizHawk.Client.EmuHawk
 			FDSControlsMenuItem.Enabled = Global.Emulator.BoardName == "FDS";
 
 			NESDebuggerMenuItem.Visible =
-			MovieSettingsMenuItem.Visible =
 				VersionInfo.INTERIM;
 
 			NESDebuggerMenuItem.Enabled =
@@ -1034,6 +1078,9 @@ namespace BizHawk.Client.EmuHawk
 				NESSoundChannelsMenuItem.Enabled =
 				MovieSettingsMenuItem.Enabled =
 				Global.Emulator is NES;
+
+			NesControllerSettingsMenuItem.Enabled = Global.Emulator is NES && !Global.MovieSession.Movie.IsActive;
+			MovieSettingsMenuItem.Enabled = Global.Emulator is NES && !Global.MovieSession.Movie.IsActive;
 		}
 
 		private void FdsControlsMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1097,6 +1144,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void NesControllerSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			new NesControllerSettings().ShowDialog();
+		}
+
 		private void MovieSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			using (var dlg = new NESSyncSettingsForm())
@@ -1122,6 +1174,16 @@ namespace BizHawk.Client.EmuHawk
 		private void PCEBGViewerMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<PceBgViewer>();
+		}
+
+		private void PceTileViewerMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<PCETileViewer>();
+		}
+
+		private void CodeDataLoggerMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<PCECDL>();
 		}
 
 		private void PCEAlwaysPerformSpriteLimitMenuItem_Click(object sender, EventArgs e)
@@ -1301,6 +1363,11 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.LoadGameGenieEc();
 		}
 
+		private void SmsVdpViewerMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<SmsVDPViewer>();
+		}
+
 		#endregion
 
 		#region TI83
@@ -1349,6 +1416,21 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Atari
 
+		private void AtariSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			if (!VersionInfo.INTERIM)
+			{
+				Atari2600DebuggerMenuItem.Visible =
+					toolStripSeparator31.Visible =
+					false;
+			}
+		}
+
+		private void Atari2600DebuggerMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<Atari2600Debugger>();
+		}
+
 		private void AtariSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Atari 2600 Settings");
@@ -1360,12 +1442,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			var s = (Gameboy.GambatteSyncSettings)Global.Emulator.GetSyncSettings();
-
-			GBForceDMGMenuItem.Checked = s.ForceDMG;
-			GBAInCGBModeMenuItem.Checked = s.GBACGB;
-			GBMulticartCompatibilityMenuItem.Checked = s.MulticartCompat;
-			LoadGBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
 		}
 
 		private void GBForceDMGMenuItem_Click(object sender, EventArgs e)
@@ -1549,17 +1625,44 @@ namespace BizHawk.Client.EmuHawk
 
 		#region N64
 
+		private void N64SubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			N64PluginSettingsMenuItem.Enabled =
+				N64ControllerSettingsMenuItem.Enabled =
+				!Global.MovieSession.Movie.IsActive;
+
+			N64CircularAnalogRangeMenuItem.Checked = Global.Config.N64UseCircularAnalogConstraint;
+		}
+
 		private void N64PluginSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (new N64VideoPluginconfig().ShowDialog() == DialogResult.OK)
 			{
 				GlobalWin.MainForm.FlagNeedsReboot();
-				GlobalWin.OSD.AddMessage("Plugin settings saved");
+				GlobalWin.OSD.AddMessage("Plugin settings saved but a core reboot is required");
 			}
 			else
 			{
 				GlobalWin.OSD.AddMessage("Plugin settings aborted");
 			}
+		}
+
+		private void N64ControllerSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			if (new N64ControllersSetup().ShowDialog() == DialogResult.OK)
+			{
+				GlobalWin.MainForm.FlagNeedsReboot();
+				GlobalWin.OSD.AddMessage("Controller settings saved but a core reboot is required");
+			}
+			else
+			{
+				GlobalWin.OSD.AddMessage("Controller settings aborted");
+			}
+		}
+
+		private void N64CircularAnalogRangeMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.N64UseCircularAnalogConstraint ^= true;
 		}
 
 		#endregion
@@ -1587,7 +1690,12 @@ namespace BizHawk.Client.EmuHawk
 
 		#region GEN
 
-		private void GenesisSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		private void GenVdpViewerMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<GenVDPViewer>();
+		}
+
+		private void GenesisSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Genesis Settings");
 		}
@@ -1727,6 +1835,30 @@ namespace BizHawk.Client.EmuHawk
 			{
 				UnpauseEmulator();
 			}
+		}
+
+		private void SavestateTypeContextSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			SavestateTypeDefaultContextMenuItem.Checked = false;
+			SavestateBinaryContextMenuItem.Checked = false;
+			SavestateTextContextMenuItem.Checked = false;
+			switch (Global.Config.SaveStateType)
+			{
+				case Config.SaveStateTypeE.Binary: SavestateBinaryContextMenuItem.Checked = true; break;
+				case Config.SaveStateTypeE.Text: SavestateTextContextMenuItem.Checked = true; break;
+				case Config.SaveStateTypeE.Default: SavestateTypeDefaultContextMenuItem.Checked = true; break;
+			}
+		}
+
+		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
+		{
+			new config.DisplayConfigLite().ShowDialog();
+		}
+
+		private void CoreSelectionContextSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			GBInSGBContextMenuItem.Checked = Global.Config.GB_AsSGB;
+			NesInQuickNESContextMenuItem.Checked = Global.Config.NES_InQuickNES;
 		}
 
 		private void LoadLastRomContextMenuItem_Click(object sender, EventArgs e)

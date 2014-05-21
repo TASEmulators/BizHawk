@@ -1,15 +1,16 @@
-﻿using LuaInterface;
+﻿using System;
+using LuaInterface;
 
 namespace BizHawk.Client.Common
 {
 	public class MovieLuaLibrary : LuaLibraryBase
 	{
-		private readonly Lua _lua;
-
 		public MovieLuaLibrary(Lua lua)
-		{
-			_lua = lua;
-		}
+			: base(lua) { }
+
+		public MovieLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
+
 
 		public override string Name { get { return "movie"; } }
 
@@ -28,7 +29,7 @@ namespace BizHawk.Client.Common
 		)]
 		public LuaTable GetInput(int frame)
 		{
-			var input = _lua.NewTable();
+			var input = Lua.NewTable();
 
 			var m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
 			m.SetControllersAsMnemonic(
@@ -40,6 +41,20 @@ namespace BizHawk.Client.Common
 			}
 
 			return input;
+		}
+
+		[LuaMethodAttributes(
+			"getinputasmnemonic",
+			"Returns the input of a given frame of the loaded movie in a raw inputlog string"
+		)]
+		public string GetInputAsMnemonic(int frame)
+		{
+			if (frame < Global.MovieSession.Movie.InputLogLength)
+			{
+				return Global.MovieSession.Movie.GetInput(frame);
+			}
+
+			return string.Empty;
 		}
 
 		[LuaMethodAttributes(

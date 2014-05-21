@@ -6,13 +6,12 @@ namespace BizHawk.Client.Common
 	public class JoypadLuaLibrary : LuaLibraryBase
 	{
 		public JoypadLuaLibrary(Lua lua)
-		{
-			_lua = lua;
-		}
+			: base(lua) { }
+
+		public JoypadLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
 
 		public override string Name { get { return "joypad"; } }
-
-		private readonly Lua _lua;
 
 		[LuaMethodAttributes(
 			"get",
@@ -20,7 +19,7 @@ namespace BizHawk.Client.Common
 		)]
 		public LuaTable Get(int? controller = null)
 		{
-			var buttons = _lua.NewTable();
+			var buttons = Lua.NewTable();
 			foreach (var button in Global.ControllerOutput.Source.Type.BoolButtons)
 			{
 				if (!controller.HasValue)
@@ -58,13 +57,33 @@ namespace BizHawk.Client.Common
 		)]
 		public LuaTable GetImmediate()
 		{
-			var buttons = _lua.NewTable();
+			var buttons = Lua.NewTable();
 			foreach (var button in Global.ActiveController.Type.BoolButtons)
 			{
 				buttons[button] = Global.ActiveController[button];
 			}
 
 			return buttons;
+		}
+
+		[LuaMethodAttributes(
+			"setfrommnemonicstr",
+			"sets the given buttons to their provided values for the current frame, string will be interpretted the same way an entry from a movie input log would be"
+		)]
+		public void SetFromMnemonicStr(string inputLogEntry)
+		{
+			var m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
+			m.SetControllersAsMnemonic(inputLogEntry);
+
+			foreach (var button in m.Type.BoolButtons)
+			{
+				Global.LuaAndAdaptor.SetButton(button, m.IsPressed(button));
+			}
+
+			foreach (var floatButton in m.Type.FloatControls)
+			{
+				Global.StickyXORAdapter.SetFloat(floatButton, m.GetFloat(floatButton));
+			}
 		}
 
 		[LuaMethodAttributes(

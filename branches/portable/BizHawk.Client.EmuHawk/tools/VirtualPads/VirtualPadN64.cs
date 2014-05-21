@@ -10,7 +10,19 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadN64 : UserControl, IVirtualPad
 	{
-		public string Controller = "P1";
+		private string _controllerNum = string.Empty;
+		public string Controller
+		{
+			get
+			{
+				return _controllerNum;
+			}
+
+			set
+			{
+				AnalogControl1.Controller = _controllerNum = value;
+			}
+		}
 
 		private int old_X = 0;
 		private int old_Y = 0;
@@ -22,15 +34,19 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.DoubleBuffer, true);
 			BorderStyle = BorderStyle.Fixed3D;
 			InitializeComponent();
+
+			Controller = "P1";
 		}
 
 		private void UserControl1_Load(object sender, EventArgs e)
-        {
-            if (Controller == "P1")
-            {
-                numericUpDown1.Visible = true;
-                numericUpDown2.Visible = true;
-            }
+		{
+			// adelikat: What's wrong with having this on players 2 - 4?
+			if (Controller == "P1")
+			{
+				numericUpDown1.Visible = true;
+				numericUpDown2.Visible = true;
+			}
+
 			PU.ControllerButton = Controller + " Up";
 			PD.ControllerButton = Controller + " Down";
 			PL.ControllerButton = Controller + " Left";
@@ -81,15 +97,9 @@ namespace BizHawk.Client.EmuHawk
 
 			int x = 0;
 			int y = 0;
-			if (InputValidate.IsSigned(buttons.Substring(14, 4)))
-			{
-				x = Int32.Parse(buttons.Substring(14, 4));
+			x = int.Parse(buttons.Substring(14, 4));
+			y = int.Parse(buttons.Substring(19, 4));
 
-			}
-			if (InputValidate.IsSigned(buttons.Substring(19, 4)))
-			{
-				y = Int32.Parse(buttons.Substring(19, 4));
-			}
 			set_analog(true, x, y);
 		}
 
@@ -138,6 +148,11 @@ namespace BizHawk.Client.EmuHawk
 		private void ManualY_ValueChanged(object sender, EventArgs e)
 		{
 			SetAnalogControlFromNumerics();
+		}
+
+		public void RefreshAnalog()
+		{
+			AnalogControl1.Refresh();
 		}
 
 		public void set_analog(bool hasValue, int X, int Y)

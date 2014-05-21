@@ -109,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 				else // no filename: interpret this as "reset to default"
 				{
 					if (showmsg) GlobalWin.OSD.AddMessage("Standard Palette set");
-					return (int[,])NES.Palettes.FCEUX_Standard.Clone();
+					return (int[,])NES.Palettes.QuickNESPalette.Clone();
 				}
 			}
 			else // checkbox unchecked: we're reusing whatever palette was set

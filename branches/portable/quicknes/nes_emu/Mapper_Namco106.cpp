@@ -209,5 +209,8 @@ void register_optional_mappers()
 	
 	extern void register_namco106_mapper();
 	register_namco106_mapper();
+
+	extern void register_mmc24();
+	register_mmc24();
 }
 

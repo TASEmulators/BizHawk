@@ -1,11 +1,20 @@
 ﻿using System;
 using System.Linq;
 
+using LuaInterface;
+
 namespace BizHawk.Client.Common
 {
 	public class MemoryLuaLibrary : LuaLibraryBase
 	{
+		// TODO: when is this ever set by default?
 		private int _currentMemoryDomain; // Main memory by default
+
+		public MemoryLuaLibrary(Lua lua)
+			: base(lua) { }
+
+		public MemoryLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
 
 		public override string Name { get { return "memory"; } }
 
@@ -93,9 +102,68 @@ namespace BizHawk.Client.Common
 			"getmemorydomainlist",
 			"Returns a string of the memory domains for the loaded platform core. List will be a single string delimited by line feeds"
 		)]
-		public string GetMemoryDomainList()
+		public LuaTable GetMemoryDomainList()
 		{
-			return Global.Emulator.MemoryDomains.Aggregate(string.Empty, (current, t) => current + (t.Name + '\n'));
+			var table = Lua.NewTable();
+			for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
+			{
+				table[i] = Global.Emulator.MemoryDomains[i].Name;
+			}
+
+			return table;
+		}
+
+		[LuaMethodAttributes(
+			"readbyterange",
+			"Reads the address range that starts from address, and is length long. Returns the result into a table of key value pairs (where the address is the key)."
+		)]
+		public LuaTable ReadByteRange(int addr, int length)
+		{
+			var lastAddr = length + addr;
+			var table = Lua.NewTable();
+
+			if (lastAddr < Global.Emulator.MemoryDomains[_currentMemoryDomain].Size)
+			{
+				for (var i = addr; i <= lastAddr; i++)
+				{
+					var a = string.Format("{0:X2}", i);
+					var v = Global.Emulator.MemoryDomains[_currentMemoryDomain].PeekByte(i);
+					var vs = string.Format("{0:X2}", (int)v);
+					table[a] = vs;
+				}
+			}
+			else
+			{
+				Log("Warning: Attempted read " + lastAddr + " outside memory domain size of " +
+					Global.Emulator.MemoryDomains[_currentMemoryDomain].Size +
+					" in memory.readbyterange()");
+			}
+
+			return table;
+		}
+
+		[LuaMethodAttributes(
+			"writebyterange",
+			"Writes the given values to the given addresses as unsigned bytes"
+		)]
+		public void WriteByteRange(LuaTable memoryblock)
+		{
+			foreach (var address in memoryblock.Keys)
+			{
+				var addr = LuaInt(address);
+				if (addr < Global.Emulator.MemoryDomains[_currentMemoryDomain].Size)
+				{
+					Global.Emulator.MemoryDomains[_currentMemoryDomain].PokeByte(
+						addr,
+						(byte)LuaInt(memoryblock[address]));
+				}
+				else
+				{
+					Log("Warning: Attempted read " + addr + " outside memory domain size of " +
+						Global.Emulator.MemoryDomains[_currentMemoryDomain].Size +
+						" in memory.writebyterange()");
+				}
+			}
 		}
 
 		[LuaMethodAttributes(

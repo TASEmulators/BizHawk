@@ -22,6 +22,7 @@
 #include "gbint.h"
 #include "master_disabler.h"
 #include "length_counter.h"
+#include "newstate.h"
 
 namespace gambatte {
 
@@ -96,6 +97,8 @@ public:
 		
 		waveRam[index] = data;
 	}
+
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 }

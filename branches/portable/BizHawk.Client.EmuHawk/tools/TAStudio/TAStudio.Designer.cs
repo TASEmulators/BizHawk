@@ -102,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView = new BizHawk.Client.EmuHawk.TasListView();
 			this.Frame = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Log = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.TasStatusStrip = new System.Windows.Forms.StatusStrip();
+			this.TasStatusStrip = new StatusStripEx();
 			this.MessageStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.SplicerStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.TasPlaybackBox = new BizHawk.Client.EmuHawk.PlaybackBox();
@@ -839,7 +839,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
 		private System.Windows.Forms.ToolStripMenuItem RestoreDefaultSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AutoloadProjectMenuItem;
-		private System.Windows.Forms.StatusStrip TasStatusStrip;
+		private StatusStripEx TasStatusStrip;
 		private System.Windows.Forms.ToolStripStatusLabel MessageStatusLabel;
 		private PlaybackBox TasPlaybackBox;
 		private BookmarksBranchesBox TasBookmarksBranchesBox;

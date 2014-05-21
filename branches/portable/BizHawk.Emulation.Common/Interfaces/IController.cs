@@ -17,6 +17,38 @@ namespace BizHawk.Emulation.Common
 
 	public class ControllerDefinition
 	{
+		public void ApplyAxisConstraints(string constraintClass, IDictionary<string, float> floatButtons)
+		{
+			if (AxisConstraints == null) return;
+
+			foreach (var constraint in AxisConstraints)
+			{
+				if (constraint.Class != constraintClass)
+					continue;
+				switch (constraint.Type)
+				{
+					case AxisConstraintType.Circular:
+					{
+						string xaxis = constraint.Params[0] as string;
+						string yaxis = constraint.Params[1] as string;
+						float range = (float)constraint.Params[2];
+						double xval = floatButtons[xaxis];
+						double yval = floatButtons[yaxis];
+						double length = Math.Sqrt(xval * xval + yval * yval);
+						if (length > range)
+						{
+							double ratio = range / length;
+							xval *= ratio;
+							yval *= ratio;
+						}
+						floatButtons[xaxis] = (float)xval;
+						floatButtons[yaxis] = (float)yval;
+						break;
+					}
+				}
+			}
+		}
+
 		public struct FloatRange
 		{
 			public readonly float Min;
@@ -46,11 +78,24 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
+		public enum AxisConstraintType
+		{
+			Circular
+		}
+
+		public struct AxisConstraint
+		{
+			public string Class;
+			public AxisConstraintType Type;
+			public object[] Params;
+		}
+
 		public string Name { get; set; }
 
 		public List<string> BoolButtons { get; set; }
 		public List<string> FloatControls { get; private set; }
 		public List<FloatRange> FloatRanges { get; private set; }
+		public List<AxisConstraint> AxisConstraints { get; private set; }
 		
 		public ControllerDefinition(ControllerDefinition source)
 			: this()
@@ -59,6 +104,7 @@ namespace BizHawk.Emulation.Common
 			BoolButtons.AddRange(source.BoolButtons);
 			FloatControls.AddRange(source.FloatControls);
 			FloatRanges.AddRange(source.FloatRanges);
+			AxisConstraints.AddRange(source.AxisConstraints);
 		}
 
 		public ControllerDefinition()
@@ -66,6 +112,7 @@ namespace BizHawk.Emulation.Common
 			BoolButtons = new List<string>();
 			FloatControls = new List<string>();
 			FloatRanges = new List<FloatRange>();
+			AxisConstraints = new List<AxisConstraint>();
 		}
 	}
 

@@ -102,19 +102,18 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				CoreComm.ShowMessage(
 					"The PCE-CD System Card you have selected is known to be a bad dump. This may cause problems playing PCE-CD games.\n\n"
 					+ "It is recommended that you find a good dump of the system card. Sorry to be the bearer of bad news!");
-				throw new Exception();
 			}
 			else if (biosInfo.NotInDatabase)
 			{
 				CoreComm.ShowMessage(
 					"The PCE-CD System Card you have selected is not recognized in our database. That might mean it's a bad dump, or isn't the correct rom.");
-				throw new Exception();
 			}
 			else if (biosInfo["BIOS"] == false)
 			{
+				//zeromus says: someone please write a note about how this could possibly happen.
+				//it seems like this is a relic of using gameDB for storing whether something is a bios? firmwareDB should be handling it now.
 				CoreComm.ShowMessage(
-					"The PCE-CD System Card you have selected is not a BIOS image. You may have selected the wrong rom.");
-				throw new Exception();
+					"The PCE-CD System Card you have selected is not a BIOS image. You may have selected the wrong rom. FYI-Please report this to developers, I don't think this error message should happen.");
 			}
 
 			if (biosInfo["SuperSysCard"])

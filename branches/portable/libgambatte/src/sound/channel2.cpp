@@ -162,4 +162,24 @@ void Channel2::update(uint_least32_t *buf, const unsigned long soBaseVol, unsign
 	}
 }
 
+SYNCFUNC(Channel2)
+{
+	SSS(lengthCounter);
+	SSS(dutyUnit);
+	SSS(envelopeUnit);
+
+	EBS(nextEventUnit, 0);
+	EVS(nextEventUnit, &dutyUnit, 1);
+	EVS(nextEventUnit, &envelopeUnit, 2);
+	EVS(nextEventUnit, &lengthCounter, 3);
+	EES(nextEventUnit, NULL);
+
+	NSS(cycleCounter);
+	NSS(soMask);
+	NSS(prevOut);
+
+	NSS(nr4);
+	NSS(master);
+}
+
 }

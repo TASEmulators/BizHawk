@@ -24,6 +24,7 @@
 #include <string>
 #include <sstream>
 #include <cstdint>
+#include "newstate.h"
 
 namespace gambatte {
 enum { BG_PALETTE = 0, SP1_PALETTE = 1, SP2_PALETTE = 2 };
@@ -92,9 +93,6 @@ public:
 	void setScanlineCallback(void (*callback)(), int sl);
 	void setRTCCallback(std::uint32_t (*callback)());
 
-	/** Sets the directory used for storing save data. The default is the same directory as the ROM Image file. */
-	void setSaveDir(const std::string &sdir);
-	
 	/** Returns true if the currently loaded ROM image is treated as having CGB support. */
 	bool isCgb() const;
 	
@@ -109,31 +107,8 @@ public:
 	// 0 = vram, 1 = rom, 2 = wram, 3 = cartram, 4 = oam, 5 = hram
 	bool getMemoryArea(int which, unsigned char **data, int *length);
 	
-	/** Saves emulator state to the file given by 'filepath'.
-	  *
-	  * @param  videoBuf 160x144 RGB32 (native endian) video frame buffer or 0. Used for saving a thumbnail.
-	  * @param  pitch distance in number of pixels (not bytes) from the start of one line to the next in videoBuf.
-	  * @return success
-	  */
-	bool saveState(std::ostream &file);
-	
-	/** Loads emulator state from the file given by 'filepath'.
-	  * @return success
-	  */
-	bool loadState(std::istream &file);
-	
 	/** ROM header title of currently loaded ROM image. */
 	const std::string romTitle() const;
-	
-	/** Set Game Genie codes to apply to currently loaded ROM image. Cleared on ROM load.
-	  * @param codes Game Genie codes in format HHH-HHH-HHH;HHH-HHH-HHH;... where H is [0-9]|[A-F]
-	  */
-	void setGameGenie(const std::string &codes);
-	
-	/** Set Game Shark codes to apply to currently loaded ROM image. Cleared on ROM load.
-	  * @param codes Game Shark codes in format 01HHHHHH;01HHHHHH;... where H is [0-9]|[A-F]
-	  */
-	void setGameShark(const std::string &codes);
 
 	unsigned char ExternalRead(unsigned short addr);
 	void ExternalWrite(unsigned short addr, unsigned char val);
@@ -141,6 +116,8 @@ public:
 	int LinkStatus(int which);
 
 	void GetRegs(int *dest);
+
+	template<bool isReader>void SyncState(NewState *ns);
 
 private:
 	struct Priv;

@@ -9,14 +9,14 @@ namespace BizHawk.Client.Common
 	{
 		private readonly LuaFunctionList _luaFunctions = new LuaFunctionList();
 
-		public EventLuaLibrary(Action<string> logOutputCallback)
-		{
-			LogOutputCallback = logOutputCallback;
-		}
+		public EventLuaLibrary(Lua lua)
+			: base(lua) { }
+
+		public EventLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
 
 		public override string Name { get { return "event"; } }
 
-		public Action<string> LogOutputCallback { get; set; }
 		public Lua CurrentThread { get; set; }
 
 		#region Events Library Helpers
@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 				}
 				catch (SystemException e)
 				{
-					LogOutputCallback(
+					Log(
 						"error running function attached by lua function event.onsavestate" +
 						"\nError message: " +
 						e.Message);
@@ -59,7 +59,7 @@ namespace BizHawk.Client.Common
 				}
 				catch (SystemException e)
 				{
-					LogOutputCallback(
+					Log(
 						"error running function attached by lua function event.onloadstate" +
 						"\nError message: " +
 						e.Message);
@@ -81,7 +81,7 @@ namespace BizHawk.Client.Common
 				}
 				catch (SystemException e)
 				{
-					LogOutputCallback(
+					Log(
 						"error running function attached by lua function event.onframestart" +
 						"\nError message: " +
 						e.Message);
@@ -103,7 +103,7 @@ namespace BizHawk.Client.Common
 				}
 				catch (SystemException e)
 				{
-					LogOutputCallback(
+					Log(
 						"error running function attached by lua function event.onframeend" +
 						"\nError message: " +
 						e.Message);

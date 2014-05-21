@@ -21,6 +21,7 @@
 
 #include "counterdef.h"
 #include "minkeeper.h"
+#include "newstate.h"
 
 namespace gambatte {
 struct SaveState;
@@ -33,6 +34,7 @@ class InterruptRequester {
 	unsigned iereg_;
 	
 	class IntFlags {
+		friend class InterruptRequester;
 		unsigned char flags_;
 		enum { IME_MASK = 1, HALTED_MASK = 2 };
 		
@@ -79,6 +81,8 @@ public:
 	template<MemEventId id> void setEventTime(unsigned long value) { eventTimes.setValue<id>(value); }
 	void setEventTime(const MemEventId id, unsigned long value) { eventTimes.setValue(id, value); }
 	unsigned long eventTime(MemEventId id) const { return eventTimes.value(id); }
+
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 inline void flagHdmaReq(InterruptRequester *const intreq) { intreq->setEventTime<DMA>(0); }

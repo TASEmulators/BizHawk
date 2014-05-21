@@ -2872,4 +2872,24 @@ void CPU::GetRegs(int *dest)
 	dest[9] = L;
 }
 
+SYNCFUNC(CPU)
+{
+	SSS(memory);
+	NSS(cycleCounter_);
+	NSS(PC_);
+	NSS(SP);
+	NSS(HF1);
+	NSS(HF2);
+	NSS(ZF);
+	NSS(CF);
+	NSS(A_);
+	NSS(B);
+	NSS(C);
+	NSS(D);
+	NSS(E);
+	NSS(H);
+	NSS(L);
+	NSS(skip);
+}
+
 }

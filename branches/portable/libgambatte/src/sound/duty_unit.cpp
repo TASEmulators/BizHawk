@@ -149,4 +149,15 @@ void DutyUnit::reviveCounter(const unsigned long cc) {
 	setCounter();
 }
 
+SYNCFUNC(DutyUnit)
+{
+	NSS(counter);
+	NSS(nextPosUpdate);
+	NSS(period);
+	NSS(pos);
+	NSS(duty);
+	NSS(high);
+	NSS(enableEvents);
+}
+
 }

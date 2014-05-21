@@ -284,5 +284,7 @@ EXPORT const char *qn_get_mapper(Nes_Emu *e, int *number)
 	case 66: return "gnrom";
 	case 87: return "mapper_87";
 	case 232: return "quattro";
+	case 9: return "mmc2";
+	case 10: return "mmc4";
 	}
 }

@@ -20,23 +20,16 @@ namespace BizHawk.Client.Common
 		public const string FIRMWARESHA1 = "FirmwareSHA1";
 		public const string PAL = "PAL";
 		public const string BOARDNAME = "BoardName";
-
+		public const string SYNCSETTINGS = "SyncSettings";
 		// Core Setting
 		public const string CORE = "Core";
 
 		// Gameboy Settings that affect sync
-		public const string GB_FORCEDMG = "Force_DMG_Mode";
-		public const string GB_GBA_IN_CGB = "GBA_In_CGB";
+		// TODO: movie import references these but it shoudl be populating sync settings instead
 		public const string SGB = "SGB"; // A snes movie will set this to indicate that it's actually SGB
-
-		// BIO skipping setting (affects sync)
-		public const string SKIPBIOS = "Skip_Bios";
 
 		// Plugin Settings
 		public const string VIDEOPLUGIN = "VideoPlugin";
-
-		// Board properties
-		public const string BOARDPROPERTIES = "BoardProperty";
 
 		public static bool Contains(string val)
 		{

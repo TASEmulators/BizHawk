@@ -54,9 +54,12 @@ namespace BizHawk.Client.EmuHawk
 		private void HandleFullscreenToggle(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Left)
-				GlobalWin.MainForm.ToggleFullscreen();
+			{
+				//allow suppression of the toggle.. but if shift is pressed, always do the toggle
+				bool allowSuppress = Control.ModifierKeys != Keys.Shift;
+				GlobalWin.MainForm.ToggleFullscreen(allowSuppress);
+			}
 		}
-
 
 		public bool Resized { get; set; }
 

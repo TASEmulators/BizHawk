@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
 	[CoreAttributes(
 		"QuickNes",
-		"kode54",
+		"blargg, kode54",
 		isPorted: true,
 		isReleased: true
 		)]
@@ -460,6 +460,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		QuickNESSettings Settings = QuickNESSettings.GetDefaults();
 
+		public class QuickNESSyncSettings
+		{
+			public QuickNESSyncSettings Clone()
+			{
+				return new QuickNESSyncSettings();
+			}
+		}
+
 		public object GetSettings()
 		{
 			return Settings.Clone();
@@ -467,7 +475,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public object GetSyncSettings()
 		{
-			return null;
+			return new QuickNESSyncSettings();
 		}
 
 		public bool PutSettings(object o)

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -9,13 +10,12 @@ namespace BizHawk.Client.EmuHawk
 	public class InputLuaLibrary : LuaLibraryBase
 	{
 		public InputLuaLibrary(Lua lua)
-		{
-			_lua = lua;
-		}
+			: base(lua) { }
+
+		public InputLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
 
 		public override string Name { get { return "input"; } }
-
-		private readonly Lua _lua;
 
 		[LuaMethodAttributes(
 			"get",
@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public LuaTable Get()
 		{
-			var buttons = _lua.NewTable();
+			var buttons = Lua.NewTable();
 			foreach (var kvp in Global.ControllerInputCoalescer.BoolButtons().Where(kvp => kvp.Value))
 			{
 				buttons[kvp.Key] = true;
@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public LuaTable GetMouse()
 		{
-			var buttons = _lua.NewTable();
+			var buttons = Lua.NewTable();
 			//TODO - need to specify whether in "emu" or "native" coordinate space.
 			var p = GlobalWin.DisplayManager.UntransformPoint(Control.MousePosition);
 			buttons["X"] = p.X;

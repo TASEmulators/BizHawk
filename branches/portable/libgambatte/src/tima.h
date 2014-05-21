@@ -60,6 +60,8 @@ public:
 	unsigned tima(unsigned long cc);
 	
 	void doIrqEvent(TimaInterruptRequester timaIrq);
+
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 }

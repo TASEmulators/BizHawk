@@ -5,7 +5,6 @@ namespace BizHawk.Client.Common
 	public interface IMovieHeader : IDictionary<string, string>
 	{
 		SubtitleList Subtitles { get; }
-		Dictionary<string, string> BoardProperties { get; }
 		List<string> Comments { get; }
 
 		ulong Rerecords { get; set; }
@@ -13,6 +12,7 @@ namespace BizHawk.Client.Common
 		string SavestateBinaryBase64Blob { get; set; }
 		string GameName { get; set; }
 		string SystemID { get; set; }
+		string SyncSettingsJson { get; set; }
 
 		/// <summary>
 		/// Receives a line and attempts to add as a header

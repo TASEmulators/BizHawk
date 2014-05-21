@@ -6,6 +6,8 @@
 ./bizwinclean.sh
 ./bizwinmakeone.sh 32 performance compress
 ./bizwinclean.sh
+./bizwinmakeone.sh 32 accuracy compress
+./bizwinclean.sh
 ./bizwinmakeone.sh 32 compatibility compress
 
 #leave compatibility built as objs because thats more useful to us while devving

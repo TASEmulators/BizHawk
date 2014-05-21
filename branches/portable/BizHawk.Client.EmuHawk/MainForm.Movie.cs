@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -9,6 +10,9 @@ using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Sega.Genesis;
 using BizHawk.Emulation.Cores.Sega.Saturn;
 using BizHawk.Emulation.Cores.Sony.PSP;
+
+using Newtonsoft.Json;
+using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -38,46 +42,24 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				// movie 1.0 hack: restore sync settings for the only core that fully supported them in movie 1.0
-				if (!record && Global.Emulator.SystemId == "Coleco")
+				var quicknesName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(QuickNES), typeof(CoreAttributes))).CoreName;
+
+				if (!record && Global.Emulator.SystemId == "NES") // For NES we need special logic since the movie will drive which core to load
 				{
-					string str = Global.MovieSession.Movie.Header[HeaderKeys.SKIPBIOS];
-					if (!String.IsNullOrWhiteSpace(str))
-					{
-						this._syncSettingsHack = new Emulation.Cores.ColecoVision.ColecoVision.ColecoSyncSettings
-						{
-							SkipBiosIntro = str.ToLower() == "true"
-						};
-					}
-				}
-				else if (!record && Global.Emulator.SystemId == "NES")
-				{
-					var quicknesName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(QuickNES), typeof(CoreAttributes))).CoreName;
 					if (Global.MovieSession.Movie.Header[HeaderKeys.CORE] == quicknesName)
 					{
 						Global.Config.NES_InQuickNES = true;
-						var qs = new QuickNES.QuickNESSettings();
-						this._syncSettingsHack = qs;
 					}
-					else //Else assume Neshawk
+					else
 					{
-						var s = new Emulation.Cores.Nintendo.NES.NES.NESSyncSettings();
-						s.BoardProperties = new System.Collections.Generic.Dictionary<string, string>(Global.MovieSession.Movie.Header.BoardProperties);
-						this._syncSettingsHack = s;
+						Global.Config.NES_InQuickNES = false;
 					}
 				}
-				else if (!record && Global.Emulator is Emulation.Cores.Consoles.Sega.gpgx.GPGX)
+				string s = Global.MovieSession.Movie.Header.SyncSettingsJson;
+				if (!string.IsNullOrWhiteSpace(s))
 				{
-					// unfortunately, gpgx is being released with movie 1.0
-					// we don't save the control settings there, so hack and assume a particular configuration
-					var s = new Emulation.Cores.Consoles.Sega.gpgx.GPGX.GPGXSyncSettings
-					{
-						ControlType = Emulation.Cores.Consoles.Sega.gpgx.GPGX.ControlType.Normal,
-						UseSixButton = true,
-					};
-					this._syncSettingsHack = s;
+					_syncSettingsHack = ConfigService.LoadWithType(s);
 				}
-				// load the rom in any case
 				LoadRom(GlobalWin.MainForm.CurrentlyOpenRom, true, !record);
 			}
 			finally
@@ -124,23 +106,34 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetMainformMovieInfo()
 		{
+			// TODO: this shoudln't be here it is copy paste from MainForm LoadRom
+			string gamename = string.Empty;
+			if (!string.IsNullOrWhiteSpace(Global.Game.Name)) // Prefer Game db name, else use the path
+			{
+				gamename = Global.Game.Name;
+			}
+			else
+			{
+				gamename = Path.GetFileNameWithoutExtension(GlobalWin.MainForm.CurrentlyOpenRom.Split('|').Last());
+			}
+
 			if (Global.MovieSession.Movie.IsPlaying)
 			{
-				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name + " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
+				Text = DisplayNameForSystem(Global.Game.System) + " - " + gamename + " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
 				PlayRecordStatusButton.Image = Properties.Resources.Play;
 				PlayRecordStatusButton.ToolTipText = "Movie is in playback mode";
 				PlayRecordStatusButton.Visible = true;
 			}
 			else if (Global.MovieSession.Movie.IsRecording)
 			{
-				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name + " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
+				Text = DisplayNameForSystem(Global.Game.System) + " - " + gamename + " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
 				PlayRecordStatusButton.Image = Properties.Resources.RecordHS;
 				PlayRecordStatusButton.ToolTipText = "Movie is in record mode";
 				PlayRecordStatusButton.Visible = true;
 			}
 			else if (!Global.MovieSession.Movie.IsActive)
 			{
-				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name;
+				Text = DisplayNameForSystem(Global.Game.System) + " - " + gamename;
 				PlayRecordStatusButton.Image = Properties.Resources.Blank;
 				PlayRecordStatusButton.ToolTipText = "No movie is active";
 				PlayRecordStatusButton.Visible = false;

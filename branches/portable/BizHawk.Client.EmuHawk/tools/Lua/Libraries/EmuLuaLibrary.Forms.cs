@@ -11,6 +11,12 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class FormsLuaLibrary : LuaLibraryBase
 	{
+		public FormsLuaLibrary(Lua lua)
+			: base(lua) { }
+
+		public FormsLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
+
 		// TODO: replace references to ConsoleLuaLibrary.Log with a callback that is passed in
 		public override string Name { get { return "forms"; } }
 
@@ -391,7 +397,7 @@ namespace BizHawk.Client.EmuHawk
 		public string OpenFile(string fileName = null, string initialDirectory = null, string filter = "All files (*.*)|*.*")
 		{
 			// filterext format ex: "Image Files(*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*"
-			var openFileDialog1 = HawkDialogFactory.CreateOpenFileDialog();
+			var openFileDialog1 = new OpenFileDialog();
 			if (initialDirectory != null)
 			{
 				openFileDialog1.InitialDirectory = initialDirectory;

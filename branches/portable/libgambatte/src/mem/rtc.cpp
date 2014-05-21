@@ -155,4 +155,34 @@ void Rtc::setS(const unsigned new_seconds) {
 	baseTime -= new_seconds;
 }
 
+SYNCFUNC(Rtc)
+{
+	EBS(activeData, 0);
+	EVS(activeData, &dataS, 1);
+	EVS(activeData, &dataM, 2);
+	EVS(activeData, &dataH, 3);
+	EVS(activeData, &dataDl, 4);
+	EVS(activeData, &dataDh, 5);
+	EES(activeData, NULL);
+
+	EBS(activeSet, 0);
+	EVS(activeSet, &Rtc::setS, 1);
+	EVS(activeSet, &Rtc::setM, 2);
+	EVS(activeSet, &Rtc::setH, 3);
+	EVS(activeSet, &Rtc::setDl, 4);
+	EVS(activeSet, &Rtc::setDh, 5);
+	EES(activeSet, NULL);
+
+	NSS(baseTime);
+	NSS(haltTime);
+	NSS(index);
+	NSS(dataDh);
+	NSS(dataDl);
+	NSS(dataH);
+	NSS(dataM);
+	NSS(dataS);
+	NSS(enabled);
+	NSS(lastLatchData);
+}
+
 }

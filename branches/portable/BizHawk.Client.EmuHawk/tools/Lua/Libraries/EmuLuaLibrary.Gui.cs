@@ -10,6 +10,12 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class GuiLuaLibrary : LuaLibraryBase
 	{
+		public GuiLuaLibrary(Lua lua)
+			: base(lua) { }
+
+		public GuiLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
+
 		public override string Name { get { return "gui"; } }
 
 		#region Gui API
@@ -515,10 +521,6 @@ namespace BizHawk.Client.EmuHawk
 				x -= Global.Emulator.CoreComm.ScreenLogicalOffsetX;
 				y -= Global.Emulator.CoreComm.ScreenLogicalOffsetY;
 			}
-
-			// blah hacks
-			x *= EmuHawkLuaLibrary.GetWindowSize();
-			y *= EmuHawkLuaLibrary.GetWindowSize();
 
 			GlobalWin.OSD.AddGUIText(message, x, y, GetColor(background ?? "black"), GetColor(forecolor ?? "white"), a);
 		}

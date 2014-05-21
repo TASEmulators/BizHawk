@@ -162,6 +162,18 @@
     <Compile Include="BizBox.Designer.cs">
       <DependentUpon>BizBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\AnalogRangeConfig.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="config\AnalogRangeConfig.Designer.cs">
+      <DependentUpon>AnalogRangeConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\AnalogRangeConfigControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="config\AnalogRangeConfigControl.Designer.cs">
+      <DependentUpon>AnalogRangeConfigControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\AutofireConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -252,17 +264,17 @@
     <Compile Include="config\GB\DualGBFileSelector.Designer.cs">
       <DependentUpon>DualGBFileSelector.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\GB\DualGBXMLCreator.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\GB\DualGBXMLCreator.Designer.cs">
-      <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
-    </Compile>
     <Compile Include="config\GB\GBPrefControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="config\GB\GBPrefControl.Designer.cs">
       <DependentUpon>GBPrefControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\GB\GBPrefs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\GB\GBPrefs.Designer.cs">
+      <DependentUpon>GBPrefs.cs</DependentUpon>
     </Compile>
     <Compile Include="config\GenericCoreConfig.cs">
       <SubType>Form</SubType>
@@ -297,6 +309,18 @@
     <Compile Include="config\MessageConfig.Designer.cs">
       <DependentUpon>MessageConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\N64\N64ControllerSettingControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="config\N64\N64ControllerSettingControl.Designer.cs">
+      <DependentUpon>N64ControllerSettingControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\N64\N64ControllersSetup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\N64\N64ControllersSetup.Designer.cs">
+      <DependentUpon>N64ControllersSetup.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\N64\N64VideoPluginconfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -304,6 +328,12 @@
       <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
     </Compile>
     <Compile Include="config\NES\DataTableDictionaryBind.cs" />
+    <Compile Include="config\NES\NesControllerSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\NES\NesControllerSettings.Designer.cs">
+      <DependentUpon>NesControllerSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\NES\NESGraphicsConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -425,6 +455,7 @@
     <Compile Include="DisplayManager\RenderTargetFrugalizer.cs" />
     <Compile Include="DisplayManager\SwappableDisplaySurfaceSet.cs" />
     <Compile Include="DisplayManager\TextureFrugalizer.cs" />
+    <Compile Include="Extensions\ControlExtensions.cs" />
     <Compile Include="GlobalWin.cs" />
     <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\GamePad360.cs" Condition=" '$(OS)' == 'Windows_NT' " />
@@ -557,6 +588,12 @@
     <Compile Include="tools\GBA\MobileDetailView.Designer.cs">
       <DependentUpon>MobileDetailView.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\GB\DualGBXMLCreator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\GB\DualGBXMLCreator.Designer.cs">
+      <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\GB\GBGameGenie.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -613,7 +650,6 @@
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Gui.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Input.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Savestate.cs" />
-    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.String.cs" />
     <Compile Include="tools\Lua\LuaCheckbox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -960,6 +996,9 @@
     <EmbeddedResource Include="AVOut\VideoWriterChooserForm.resx">
       <DependentUpon>VideoWriterChooserForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="config\AnalogRangeConfigControl.resx">
+      <DependentUpon>AnalogRangeConfigControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="config\ControllerConfig.resx">
       <DependentUpon>ControllerConfig.cs</DependentUpon>
     </EmbeddedResource>
@@ -999,11 +1038,11 @@
     <EmbeddedResource Include="config\GB\DualGBFileSelector.resx">
       <DependentUpon>DualGBFileSelector.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="config\GB\DualGBXMLCreator.resx">
-      <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="config\GB\GBPrefControl.resx">
       <DependentUpon>GBPrefControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\GB\GBPrefs.resx">
+      <DependentUpon>GBPrefs.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\GenericCoreConfig.resx">
       <DependentUpon>GenericCoreConfig.cs</DependentUpon>
@@ -1017,8 +1056,17 @@
     <EmbeddedResource Include="config\InputCompositeWidget.resx">
       <DependentUpon>InputCompositeWidget.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="config\N64\N64ControllerSettingControl.resx">
+      <DependentUpon>N64ControllerSettingControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\N64\N64ControllersSetup.resx">
+      <DependentUpon>N64ControllersSetup.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="config\N64\N64VideoPluginconfig.resx">
       <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\NES\NesControllerSettings.resx">
+      <DependentUpon>NesControllerSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\NES\NESGraphicsConfig.resx">
       <DependentUpon>NESGraphicsConfig.cs</DependentUpon>
@@ -1104,6 +1152,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\GBA\MobileDetailView.resx">
       <DependentUpon>MobileDetailView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\GB\DualGBXMLCreator.resx">
+      <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\GB\GBGameGenie.resx">
       <DependentUpon>GBGameGenie.cs</DependentUpon>
@@ -1506,6 +1557,7 @@
     <None Include="images\emu7800.png" />
     <None Include="images\genplus.png" />
     <None Include="images\gambatte.png" />
+    <None Include="images\dual.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

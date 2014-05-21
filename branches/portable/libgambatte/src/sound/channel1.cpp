@@ -104,6 +104,15 @@ void Channel1::SweepUnit::loadState(const SaveState &state) {
 	negging = state.spu.ch1.sweep.negging;
 }
 
+template<bool isReader>
+void Channel1::SweepUnit::SyncState(NewState *ns)
+{
+	NSS(counter);
+	NSS(shadow);
+	NSS(nr0);
+	NSS(negging);
+}
+
 Channel1::Channel1() :
 	staticOutputTest(*this, dutyUnit),
 	disableMaster(master, dutyUnit),
@@ -257,6 +266,28 @@ void Channel1::update(uint_least32_t *buf, const unsigned long soBaseVol, unsign
 		
 		cycleCounter -= SoundUnit::COUNTER_MAX;
 	}
+}
+
+SYNCFUNC(Channel1)
+{
+	SSS(lengthCounter);
+	SSS(dutyUnit);
+	SSS(envelopeUnit);
+	SSS(sweepUnit);
+
+	EBS(nextEventUnit, 0);
+	EVS(nextEventUnit, &dutyUnit, 1);
+	EVS(nextEventUnit, &sweepUnit, 2);
+	EVS(nextEventUnit, &envelopeUnit, 3);
+	EVS(nextEventUnit, &lengthCounter, 4);
+	EES(nextEventUnit, NULL);
+
+	NSS(cycleCounter);
+	NSS(soMask);
+	NSS(prevOut);
+
+	NSS(nr4);
+	NSS(master);
 }
 
 }

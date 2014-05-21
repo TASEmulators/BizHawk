@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -90,7 +90,7 @@
       <HintPath>..\output\dll\EMU7800.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -249,6 +249,8 @@
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\GBColors.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\LibGambatte.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\StateDebug.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\TextState.cs" />
     <Compile Include="Consoles\Nintendo\GBA\LibMeteor.cs" />
     <Compile Include="Consoles\Nintendo\GBA\Meteor.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64Input.cs" />

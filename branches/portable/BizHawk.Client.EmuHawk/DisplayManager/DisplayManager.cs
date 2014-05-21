@@ -221,16 +221,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		void AppendLuaLayer(FilterManager.FilterProgram chain, string name)
+		Filters.LuaLayer AppendLuaLayer(FilterManager.FilterProgram chain, string name)
 		{
 			Texture2d luaNativeTexture = null;
 			var luaNativeSurface = LuaSurfaceSets[name].GetCurrent();
 			if (luaNativeSurface == null)
-				return;
+				return null;
 			luaNativeTexture = LuaSurfaceFrugalizers[name].Get(luaNativeSurface);
 			var fLuaLayer = new Filters.LuaLayer();
 			fLuaLayer.SetTexture(luaNativeTexture);
 			chain.AddFilter(fLuaLayer, name);
+			return fLuaLayer;
 		}
 
 		/// <summary>
@@ -250,6 +251,7 @@ namespace BizHawk.Client.EmuHawk
 			return new Point((int)v.X, (int)v.Y);
 		}
 
+
 		/// <summary>
 		/// This will receive an emulated output frame from an IVideoProvider and run it through the complete frame processing pipeline
 		/// Then it will stuff it into the bound PresentationPanel.
@@ -258,6 +260,45 @@ namespace BizHawk.Client.EmuHawk
 		/// Don't worry about the case where the frontend isnt using opengl; it isnt supported yet, and it will be my responsibility to deal with anyway
 		/// </summary>
 		public void UpdateSource(IVideoProvider videoProvider)
+		{
+			UpdateSourceInternal(videoProvider,false, GraphicsControl.Size);
+		}
+
+		class FakeVideoProvider : IVideoProvider
+		{
+			public int[] GetVideoBuffer() { return new int[] {}; }
+
+			public int VirtualWidth { get; set; }
+			public int VirtualHeight { get; set; }
+
+			public int BufferWidth { get; set; }
+			public int BufferHeight { get; set; }
+			public int BackgroundColor { get; set; }
+		}
+
+		/// <summary>
+		/// Attempts to calculate a good client size with the given zoom factor, considering the user's DisplayManager preferences
+		/// </summary>
+		public Size CalculateClientSize(IVideoProvider videoProvider, int zoom)
+		{
+			var fvp = new FakeVideoProvider ();
+			fvp.BufferWidth = videoProvider.BufferWidth;
+			fvp.BufferHeight = videoProvider.BufferHeight;
+			fvp.VirtualWidth = videoProvider.VirtualWidth;
+			fvp.VirtualHeight = videoProvider.VirtualHeight;
+
+			Size chain_outsize = new Size(fvp.BufferWidth * zoom, fvp.BufferHeight * zoom);
+			if (Global.Config.DispObeyAR && Global.Config.DispFixAspectRatio)
+				chain_outsize = new Size(fvp.VirtualWidth * zoom, fvp.VirtualHeight * zoom);
+
+			var filterProgram = UpdateSourceInternal(fvp, true, chain_outsize);
+
+			var size = filterProgram.Filters[filterProgram.Filters.Count - 1].FindOutput().SurfaceFormat.Size;
+
+			return size;
+		}
+
+		FilterManager.FilterProgram UpdateSourceInternal(IVideoProvider videoProvider, bool simulate, Size chain_outsize)
 		{
 			int vw = videoProvider.BufferWidth;
 			int vh = videoProvider.BufferHeight;
@@ -277,26 +318,29 @@ TESTEROO:
 
 
 			BitmapBuffer bb = null;
-			Texture2d videoTexture;
-			if (isGlTextureId)
+			Texture2d videoTexture = null;
+			if (!simulate)
 			{
-				videoTexture = GL.WrapGLTexture2d(new IntPtr(videoBuffer[0]), bufferWidth, bufferHeight);
-			}
-			else
-			{
-				//wrap the videoprovider data in a BitmapBuffer (no point to refactoring that many IVideoProviders)
-				bb = new BitmapBuffer(bufferWidth, bufferHeight, videoBuffer);
+				if (isGlTextureId)
+				{
+					videoTexture = GL.WrapGLTexture2d(new IntPtr(videoBuffer[0]), bufferWidth, bufferHeight);
+				}
+				else
+				{
+					//wrap the videoprovider data in a BitmapBuffer (no point to refactoring that many IVideoProviders)
+					bb = new BitmapBuffer(bufferWidth, bufferHeight, videoBuffer);
 
-				//now, acquire the data sent from the videoProvider into a texture
-				videoTexture = VideoTextureFrugalizer.Get(bb);
-				GL.SetTextureWrapMode(videoTexture, true);
-			}
+					//now, acquire the data sent from the videoProvider into a texture
+					videoTexture = VideoTextureFrugalizer.Get(bb);
+					GL.SetTextureWrapMode(videoTexture, true);
+				}
 
-			//TEST (to be removed once we have an actual example of bring in a texture ID from opengl emu core):
-			if (!isGlTextureId)
-			{
-				videoBuffer = new int[1] { videoTexture.Id.ToInt32() };
-				goto TESTEROO;
+				//TEST (to be removed once we have an actual example of bring in a texture ID from opengl emu core):
+				if (!isGlTextureId)
+				{
+					videoBuffer = new int[1] { videoTexture.Id.ToInt32() };
+					goto TESTEROO;
+				}
 			}
 
 			//record the size of what we received, since lua and stuff is gonna want to draw onto it
@@ -304,26 +348,43 @@ TESTEROO:
 			currEmuHeight = bufferHeight;
 
 			//build the default filter chain and set it up with services filters will need
-			Size chain_insize = new Size(vw, vh);
-			Size chain_outsize = GraphicsControl.Size;
-			CurrentFilterProgram = BuildDefaultChain(chain_insize, chain_outsize);
-			CurrentFilterProgram.GuiRenderer = Renderer;
-			CurrentFilterProgram.GL = GL;
-			//chain.RenderTargetProvider = new DisplayManagerRenderTargetProvider((size) => ShaderChainFrugalizers);
+			Size chain_insize = new Size(bufferWidth, bufferHeight);
+
+			FilterManager.FilterProgram filterProgram = BuildDefaultChain(chain_insize, chain_outsize);
+			filterProgram.GuiRenderer = Renderer;
+			filterProgram.GL = GL;
 
 			//setup the source image filter
-			Filters.SourceImage fInput = CurrentFilterProgram["input"] as Filters.SourceImage;
+			Filters.SourceImage fInput = filterProgram["input"] as Filters.SourceImage;
 			fInput.Texture = videoTexture;
 			
 			//setup the final presentation filter
-			Filters.FinalPresentation fPresent = CurrentFilterProgram["presentation"] as Filters.FinalPresentation;
+			Filters.FinalPresentation fPresent = filterProgram["presentation"] as Filters.FinalPresentation;
+			fPresent.VirtualTextureSize = new Size(vw, vh);
 			fPresent.TextureSize = new Size(bufferWidth, bufferHeight);
 			fPresent.BackgroundColor = videoProvider.BackgroundColor;
 			fPresent.GuiRenderer = Renderer;
 			fPresent.GL = GL;
 
-			CurrentFilterProgram.Compile("default", chain_insize, chain_outsize);
+			filterProgram.Compile("default", chain_insize, chain_outsize);
 
+			if (simulate)
+			{
+			}
+			else
+			{
+				CurrentFilterProgram = filterProgram;
+				UpdateSourceDrawingWork();
+			}
+
+			//cleanup:
+			if (bb != null) bb.Dispose();
+
+			return filterProgram;
+		}
+
+		void UpdateSourceDrawingWork()
+		{
 			//begin rendering on this context
 			//should this have been done earlier?
 			//do i need to check this on an intel video card to see if running excessively is a problem? (it used to be in the FinalTarget command below, shouldnt be a problem)
@@ -339,30 +400,30 @@ TESTEROO:
 				switch (step.Type)
 				{
 					case FilterManager.FilterProgram.ProgramStepType.Run:
-					{
-						int fi = (int)step.Args;
-						var f = CurrentFilterProgram.Filters[fi];
-						f.SetInput(texCurr);
-						f.Run();
-						var orec = f.FindOutput();
-						if (orec != null)
 						{
-							if (orec.SurfaceDisposition == FilterManager.SurfaceDisposition.Texture)
+							int fi = (int)step.Args;
+							var f = CurrentFilterProgram.Filters[fi];
+							f.SetInput(texCurr);
+							f.Run();
+							var orec = f.FindOutput();
+							if (orec != null)
 							{
-								texCurr = f.GetOutput();
-								rtCurr = null;
+								if (orec.SurfaceDisposition == FilterManager.SurfaceDisposition.Texture)
+								{
+									texCurr = f.GetOutput();
+									rtCurr = null;
+								}
 							}
+							break;
 						}
-						break;
-					}
 					case FilterManager.FilterProgram.ProgramStepType.NewTarget:
-					{
-						var size = (Size)step.Args;
-						rtCurr = ShaderChainFrugalizers[rtCounter++].Get(size);
-						rtCurr.Bind();
-						CurrentFilterProgram.CurrRenderTarget = rtCurr;
-						break;
-					}
+						{
+							var size = (Size)step.Args;
+							rtCurr = ShaderChainFrugalizers[rtCounter++].Get(size);
+							rtCurr.Bind();
+							CurrentFilterProgram.CurrRenderTarget = rtCurr;
+							break;
+						}
 					case FilterManager.FilterProgram.ProgramStepType.FinalTarget:
 						inFinalTarget = true;
 						rtCurr = null;
@@ -388,8 +449,6 @@ TESTEROO:
 			//nope. dont do this. workaround for slow context switching on intel GPUs. just switch to another context when necessary before doing anything
 			//presentationPanel.GraphicsControl.End();
 
-			//cleanup:
-			if(bb != null) bb.Dispose();
 			NeedsToPaint = false; //??
 		}
 

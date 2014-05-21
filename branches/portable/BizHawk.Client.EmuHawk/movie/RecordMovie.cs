@@ -1,7 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
+using Newtonsoft.Json;
+
+using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.ColecoVision;
@@ -11,8 +16,6 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
-
-using System.Reflection;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -29,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (RecordBox.Text.Length == 0)
 			{
-				return String.Empty;
+				return string.Empty;
 			}
 
 			var path = RecordBox.Text;
@@ -93,10 +96,15 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// Header
+
 				_movieToRecord.Header[HeaderKeys.AUTHOR] = AuthorBox.Text;
 				_movieToRecord.Header[HeaderKeys.EMULATIONVERSION] = VersionInfo.GetEmuVersion();
 				_movieToRecord.Header[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion1;
 				_movieToRecord.Header[HeaderKeys.PLATFORM] = Global.Game.System;
+
+				// Sync Settings, for movies 1.0, just dump a json blob into a header line
+				_movieToRecord.Header[HeaderKeys.SYNCSETTINGS] = ConfigService.SaveWithType(Global.Emulator.GetSyncSettings());
+
 				if (Global.Game != null)
 				{
 					_movieToRecord.Header[HeaderKeys.GAMENAME] = PathManager.FilesystemSafeName(Global.Game);
@@ -116,56 +124,18 @@ namespace BizHawk.Client.EmuHawk
 					_movieToRecord.Header[HeaderKeys.BOARDNAME] = Global.Emulator.BoardName;
 				}
 
-				if (Global.Emulator is Gameboy)
+				if (Global.Emulator.HasPublicProperty("DisplayType"))
 				{
-					// probably won't fix any of this in movie 1.0?? (movie 2.0 only??)
-					// FIXME: the multicartcompat is in the syncsettings object.  is that supposed to go here?
-					// FIXME: these are never read back and given to the core, anywhere
-					var s = (Gameboy.GambatteSyncSettings)Global.Emulator.GetSyncSettings();
-					_movieToRecord.Header[HeaderKeys.GB_FORCEDMG] = s.ForceDMG.ToString();
-					_movieToRecord.Header[HeaderKeys.GB_GBA_IN_CGB] = s.GBACGB.ToString();
+					var region = Global.Emulator.GetPropertyValue("DisplayType");
+					if ((DisplayType)region == DisplayType.PAL)
+					{
+						_movieToRecord.Header[HeaderKeys.PAL] = "1";
+					}
 				}
 
 				if (Global.Emulator is LibsnesCore)
 				{
 					_movieToRecord.Header[HeaderKeys.SGB] = (Global.Emulator as LibsnesCore).IsSGB.ToString();
-					if ((Global.Emulator as LibsnesCore).DisplayType == DisplayType.PAL)
-					{
-						_movieToRecord.Header[HeaderKeys.PAL] = "1";
-					}
-				}
-				else if (Global.Emulator is SMS)
-				{
-					if ((Global.Emulator as SMS).DisplayType == DisplayType.PAL)
-					{
-						_movieToRecord.Header[HeaderKeys.PAL] = "1";
-					}
-				}
-				else if (Global.Emulator is NES)
-				{
-					if ((Global.Emulator as NES).DisplayType == DisplayType.PAL)
-					{
-						_movieToRecord.Header[HeaderKeys.PAL] = "1";
-					}
-				}
-				else if (Global.Emulator is ColecoVision)
-				{
-					var s = (ColecoVision.ColecoSyncSettings)Global.Emulator.GetSyncSettings();
-					_movieToRecord.Header[HeaderKeys.SKIPBIOS] = s.SkipBiosIntro.ToString();
-				}
-				else if (Global.Emulator is N64)
-				{
-					if ((Global.Emulator as N64).DisplayType == DisplayType.PAL)
-					{
-						_movieToRecord.Header[HeaderKeys.PAL] = "1";
-					}
-				}
-				else if (Global.Emulator is GPGX)
-				{
-					if ((Global.Emulator as GPGX).DisplayType == DisplayType.PAL)
-					{
-						_movieToRecord.Header[HeaderKeys.PAL] = "1";
-					}
 				}
 
 				_movieToRecord.Header[HeaderKeys.CORE] = ((CoreAttributes)Attribute
@@ -217,7 +187,11 @@ namespace BizHawk.Client.EmuHawk
 		private void RecordMovie_Load(object sender, EventArgs e)
 		{
 			var name = PathManager.FilesystemSafeName(Global.Game);
-			name = Path.GetFileNameWithoutExtension(name);
+			if (string.IsNullOrEmpty(name))
+			{
+				name = Path.GetFileNameWithoutExtension(GlobalWin.MainForm.CurrentlyOpenRom.Split('|').Last());
+			}
+
 			RecordBox.Text = name;
 			StartFromCombo.SelectedIndex = 0;
 			DefaultAuthorCheckBox.Checked = Global.Config.UseDefaultAuthor;

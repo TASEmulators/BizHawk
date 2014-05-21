@@ -83,6 +83,8 @@ namespace BizHawk.Client.Common
 		public bool BackupSavestates = true;
 		public bool BackupSaveram = true;
 		public bool SaveScreenshotWithStates = true;
+		public int BigScreenshotSize = 128 * 1024;
+		public bool SaveLargeScreenshotWithStates = false;
 		public int AutofireOn = 1;
 		public int AutofireOff = 1;
 		public bool AutofireLagFrames = true;
@@ -97,6 +99,9 @@ namespace BizHawk.Client.Common
 
 		public enum SaveStateTypeE { Default, Binary, Text };
 		public SaveStateTypeE SaveStateType = SaveStateTypeE.Default;
+
+		// N64
+		public bool N64UseCircularAnalogConstraint = true;
 
 		// Run-Control settings
 		public int FrameProgressDelayMs = 500; // how long until a frame advance hold turns into a frame progress?
@@ -166,8 +171,8 @@ namespace BizHawk.Client.Common
 		
 		public bool DispBlurry = false; // make display look ugly
 		public bool DispFixAspectRatio = true;
-		public bool DispFixScaleInteger = false;
-		public bool DispObeyAR = false;
+		public bool DispFixScaleInteger = true;
+		public bool DispObeyAR = true;
 
 		// Sound options
 		public bool SoundEnabled = true;
@@ -490,6 +495,7 @@ namespace BizHawk.Client.Common
 		public bool VirtualPadsUpdatePads = true;
 		public bool AutoloadVirtualPad = false;
 		public bool VirtualPadSticky = true;
+		public bool VirtualPadMultiplayerMode = false;
 
 		// NES Game Genie Encoder/Decoder
 		public ToolDialogSettings NesGGSettings = new ToolDialogSettings();
@@ -561,7 +567,7 @@ namespace BizHawk.Client.Common
 		// as this setting spans multiple cores and doesn't actually affect the behavior of any core,
 		// it hasn't been absorbed into the new system
 		public bool GB_AsSGB = false;
-		public bool NES_InQuickNES = false;
+		public bool NES_InQuickNES = true;
 
 		// LuaWriter Settings
 		public int LuaDefaultTextColor = -16777216;

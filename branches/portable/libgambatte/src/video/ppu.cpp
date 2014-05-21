@@ -1745,4 +1745,70 @@ void PPU::update(const unsigned long cc) {
 	}
 }
 
+SYNCFUNC(PPU)
+{
+	NSS(p_.bgPalette);
+	NSS(p_.spPalette);
+	NSS(p_.spriteList);
+	NSS(p_.spwordList);
+	NSS(p_.nextSprite);
+	NSS(p_.currentSprite);
+
+	EBS(p_.nextCallPtr, 0);
+	EVS(p_.nextCallPtr, &M2::Ly0::f0_, 1);
+	EVS(p_.nextCallPtr, &M2::LyNon0::f0_, 2);
+	EVS(p_.nextCallPtr, &M2::LyNon0::f1_, 3);
+	EVS(p_.nextCallPtr, &M3Start::f0_, 4);
+	EVS(p_.nextCallPtr, &M3Start::f1_, 5);
+	EVS(p_.nextCallPtr, &M3Loop::Tile::f0_, 6);
+	EVS(p_.nextCallPtr, &M3Loop::Tile::f1_, 7);
+	EVS(p_.nextCallPtr, &M3Loop::Tile::f2_, 8);
+	EVS(p_.nextCallPtr, &M3Loop::Tile::f3_, 9);
+	EVS(p_.nextCallPtr, &M3Loop::Tile::f4_, 10);
+	EVS(p_.nextCallPtr, &M3Loop::Tile::f5_, 11);
+	EVS(p_.nextCallPtr, &M3Loop::LoadSprites::f0_, 12);
+	EVS(p_.nextCallPtr, &M3Loop::LoadSprites::f1_, 13);
+	EVS(p_.nextCallPtr, &M3Loop::LoadSprites::f2_, 14);
+	EVS(p_.nextCallPtr, &M3Loop::LoadSprites::f3_, 15);
+	EVS(p_.nextCallPtr, &M3Loop::LoadSprites::f4_, 16);
+	EVS(p_.nextCallPtr, &M3Loop::LoadSprites::f5_, 17);
+	EVS(p_.nextCallPtr, &M3Loop::StartWindowDraw::f0_, 18);
+	EVS(p_.nextCallPtr, &M3Loop::StartWindowDraw::f1_, 19);
+	EVS(p_.nextCallPtr, &M3Loop::StartWindowDraw::f2_, 20);
+	EVS(p_.nextCallPtr, &M3Loop::StartWindowDraw::f3_, 21);
+	EVS(p_.nextCallPtr, &M3Loop::StartWindowDraw::f4_, 22);
+	EVS(p_.nextCallPtr, &M3Loop::StartWindowDraw::f5_, 23);
+	EES(p_.nextCallPtr, NULL);
+
+	NSS(p_.now);
+	NSS(p_.lastM0Time);
+	NSS(p_.cycles);
+
+	NSS(p_.tileword);
+	NSS(p_.ntileword);
+
+	SSS(p_.spriteMapper);
+	SSS(p_.lyCounter);
+	//SSS(p_.framebuf); // no state
+
+	NSS(p_.lcdc);
+	NSS(p_.scy);
+	NSS(p_.scx);
+	NSS(p_.wy);
+	NSS(p_.wy2);
+	NSS(p_.wx);
+	NSS(p_.winDrawState);
+	NSS(p_.wscx);
+	NSS(p_.winYPos);
+	NSS(p_.reg0);
+	NSS(p_.reg1);
+	NSS(p_.attrib);
+	NSS(p_.nattrib);
+	NSS(p_.xpos);
+	NSS(p_.endx);
+
+	NSS(p_.cgb);
+	NSS(p_.weMaster);
+}
+
 }

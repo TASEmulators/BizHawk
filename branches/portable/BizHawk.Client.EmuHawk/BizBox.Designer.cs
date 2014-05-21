@@ -41,6 +41,9 @@
 			this.label6 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.linkLabel13 = new System.Windows.Forms.LinkLabel();
+			this.label39 = new System.Windows.Forms.Label();
+			this.label40 = new System.Windows.Forms.Label();
 			this.label36 = new System.Windows.Forms.Label();
 			this.label35 = new System.Windows.Forms.Label();
 			this.linkLabel12 = new System.Windows.Forms.LinkLabel();
@@ -83,9 +86,6 @@
 			this.label8 = new System.Windows.Forms.Label();
 			this.label27 = new System.Windows.Forms.Label();
 			this.label37 = new System.Windows.Forms.Label();
-			this.label39 = new System.Windows.Forms.Label();
-			this.label40 = new System.Windows.Forms.Label();
-			this.linkLabel13 = new System.Windows.Forms.LinkLabel();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
@@ -250,6 +250,35 @@
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(423, 377);
 			this.panel1.TabIndex = 11;
+			// 
+			// linkLabel13
+			// 
+			this.linkLabel13.AutoSize = true;
+			this.linkLabel13.Location = new System.Drawing.Point(16, 335);
+			this.linkLabel13.Name = "linkLabel13";
+			this.linkLabel13.Size = new System.Drawing.Size(50, 13);
+			this.linkLabel13.TabIndex = 46;
+			this.linkLabel13.TabStop = true;
+			this.linkLabel13.Text = "quicknes";
+			this.linkLabel13.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel13_LinkClicked);
+			// 
+			// label39
+			// 
+			this.label39.AutoSize = true;
+			this.label39.Location = new System.Drawing.Point(16, 348);
+			this.label39.Name = "label39";
+			this.label39.Size = new System.Drawing.Size(114, 13);
+			this.label39.TabIndex = 44;
+			this.label39.Text = "author: blargg, kode54";
+			// 
+			// label40
+			// 
+			this.label40.AutoSize = true;
+			this.label40.Location = new System.Drawing.Point(8, 320);
+			this.label40.Name = "label40";
+			this.label40.Size = new System.Drawing.Size(80, 13);
+			this.label40.TabIndex = 43;
+			this.label40.Text = "QuicknesHawk";
 			// 
 			// label36
 			// 
@@ -652,35 +681,6 @@
 			this.label37.Size = new System.Drawing.Size(96, 13);
 			this.label37.TabIndex = 13;
 			this.label37.Text = "null_ptr, MightyMar";
-			// 
-			// label39
-			// 
-			this.label39.AutoSize = true;
-			this.label39.Location = new System.Drawing.Point(16, 348);
-			this.label39.Name = "label39";
-			this.label39.Size = new System.Drawing.Size(79, 13);
-			this.label39.TabIndex = 44;
-			this.label39.Text = "author: kode54";
-			// 
-			// label40
-			// 
-			this.label40.AutoSize = true;
-			this.label40.Location = new System.Drawing.Point(8, 320);
-			this.label40.Name = "label40";
-			this.label40.Size = new System.Drawing.Size(80, 13);
-			this.label40.TabIndex = 43;
-			this.label40.Text = "QuicknesHawk";
-			// 
-			// linkLabel13
-			// 
-			this.linkLabel13.AutoSize = true;
-			this.linkLabel13.Location = new System.Drawing.Point(16, 335);
-			this.linkLabel13.Name = "linkLabel13";
-			this.linkLabel13.Size = new System.Drawing.Size(50, 13);
-			this.linkLabel13.TabIndex = 46;
-			this.linkLabel13.TabStop = true;
-			this.linkLabel13.Text = "quicknes";
-			this.linkLabel13.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel13_LinkClicked);
 			// 
 			// BizBox
 			// 

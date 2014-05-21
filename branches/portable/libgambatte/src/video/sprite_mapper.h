@@ -21,6 +21,7 @@
 
 #include "ly_counter.h"
 #include "../savestate.h"
+#include "newstate.h"
 
 namespace gambatte {
 class NextM0Time;
@@ -57,6 +58,8 @@ class SpriteMapper {
 		void saveState(SaveState &state) const { state.ppu.enableDisplayM0Time = lu; }
 		void loadState(const SaveState &ss, const unsigned char *oamram);
 		bool inactivePeriodAfterDisplayEnable(const unsigned long cc) const { return cc < lu; }
+
+		template<bool isReader>void SyncState(NewState *ns);
 	};
 
 	enum { NEED_SORTING_MASK = 0x80 };
@@ -122,6 +125,8 @@ public:
 	void saveState(SaveState &state) const { oamReader.saveState(state); }
 	void loadState(const SaveState &state, const unsigned char *const oamram) { oamReader.loadState(state, oamram); mapSprites(); }
 	bool inactivePeriodAfterDisplayEnable(unsigned long cc) const { return oamReader.inactivePeriodAfterDisplayEnable(cc); }
+
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 }

@@ -121,6 +121,7 @@ protected:
 	
 	// Map 'size' bytes from 'CHR + bank * size' to PPU address space starting at 'addr'
 	void set_chr_bank( nes_addr_t addr, bank_size_t size, int bank );
+	void set_chr_bank_ex( nes_addr_t addr, bank_size_t size, int bank ); // mmc24 only
 	
 	// Set PPU mirroring. All mappings implemented using mirror_manual().
 	void mirror_manual( int page0, int page1, int page2, int page3 );

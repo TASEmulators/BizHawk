@@ -3,7 +3,7 @@ using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
-	class N64Input
+	internal class N64Input
 	{
 		private mupen64plusInputApi api;
 		public CoreComm CoreComm { get; private set; }
@@ -34,17 +34,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			FloatRanges =
 			{
 				new[] {-128.0f, 0.0f, 127.0f},
+				new[] {127.0f, 0.0f, -128.0f},
 				new[] {-128.0f, 0.0f, 127.0f},
+				new[] {127.0f, 0.0f, -128.0f},
 				new[] {-128.0f, 0.0f, 127.0f},
+				new[] {127.0f, 0.0f, -128.0f},
 				new[] {-128.0f, 0.0f, 127.0f},
-				new[] {-128.0f, 0.0f, 127.0f},
-				new[] {-128.0f, 0.0f, 127.0f},
-				new[] {-128.0f, 0.0f, 127.0f},
-				new[] {-128.0f, 0.0f, 127.0f}
+				new[] {127.0f, 0.0f, -128.0f}
+			},
+			AxisConstraints =
+			{
+				new ControllerDefinition.AxisConstraint { Class = "Natural Circle", Type = ControllerDefinition.AxisConstraintType.Circular, Params = new object[] {"P1 X Axis", "P1 Y Axis", 127.0f} }
 			}
 		};
 
-		public N64Input(mupen64plusApi core, CoreComm comm)
+		public N64Input(mupen64plusApi core, CoreComm comm, N64ControllerSettings[] controllerSettings)
 		{
 			api = new mupen64plusInputApi(core);
 			CoreComm = comm;
@@ -52,6 +56,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			api.SetM64PInputCallback(new mupen64plusInputApi.InputCallback(GetControllerInput));
 
 			core.VInterrupt += ShiftInputPolledBools;
+			for (int i = 0; i < controllerSettings.Length; ++i)
+			{
+				SetControllerConnected(i, controllerSettings[i].IsConnected);
+				SetControllerPakType(i, controllerSettings[i].PakType);
+			}
 		}
 
 		public void ShiftInputPolledBools()
@@ -59,6 +68,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			LastFrameInputPolled = ThisFrameInputPolled;
 			ThisFrameInputPolled = false;
 		}
+
+		private const sbyte _maxAnalogX = 127;
+		private const sbyte _minAnalogX = -127;
+		private const sbyte _maxAnalogY = 127;
+		private const sbyte _minAnalogY = -127;
 
 		/// <summary>
 		/// Translates controller input from EmuHawk into
@@ -74,14 +88,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			// Analog stick up = +Y
 			string p = "P" + (i + 1);
 			sbyte x;
-			if (Controller.IsPressed(p + " A Left")) { x = -127; }
-			else if (Controller.IsPressed(p + " A Right")) { x = 127; }
-			else { x = (sbyte)Controller.GetFloat(p + " X Axis"); }
+			if (Controller.IsPressed(p + " A Left"))
+			{
+				x = _minAnalogX;
+			}
+			else if (Controller.IsPressed(p + " A Right"))
+			{
+				x = _maxAnalogX;
+			}
+			else
+			{
+				x = (sbyte)Controller.GetFloat(p + " X Axis");
+			}
 
 			sbyte y;
-			if (Controller.IsPressed(p + " A Up")) { y = 127; }
-			else if (Controller.IsPressed(p + " A Down")) { y = -127; }
-			else { y = (sbyte)Controller.GetFloat(p + " Y Axis"); }
+			if (Controller.IsPressed(p + " A Up"))
+			{
+				y = _maxAnalogY;
+			}
+			else if (Controller.IsPressed(p + " A Down"))
+			{
+				y = _minAnalogY;
+			}
+			else
+			{
+				y = (sbyte)Controller.GetFloat(p + " Y Axis");
+			}
 
 			int value = ReadController(i + 1);
 			value |= (x & 0xFF) << 16;
@@ -115,6 +147,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			if (Controller["P" + num + " L"]) buttons |= (1 << 13);
 
 			return buttons;
+		}
+
+		/// <summary>
+		/// Sets the controller pak of the controller to the specified type
+		/// </summary>
+		/// <param name="controller">Id of the controller</param>
+		/// <param name="type">Type to which the controller pak is set. Currently only NO_PAK and MEMORY_CARD are supported</param>
+		public void SetControllerPakType(int controller, N64ControllerSettings.N64ControllerPakType type)
+		{
+			api.SetM64PControllerPakType(controller, type);
+		}
+
+		/// <summary>
+		/// Sets the connection status of the controller
+		/// </summary>
+		/// <param name="controller">Id of the controller to connect or disconnect</param>
+		/// <param name="connectionStatus">New status of the controller connection</param>
+		public void SetControllerConnected(int controller, bool connectionStatus)
+		{
+			api.SetM64PControllerConnected(controller, connectionStatus);
 		}
 	}
 }

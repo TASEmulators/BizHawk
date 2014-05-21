@@ -24,6 +24,7 @@ using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Sega.Saturn;
 using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.DiscSystem;
+using BizHawk.Emulation.Cores.Nintendo.N64;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -33,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
-			Text = "BizHawk" + (VersionInfo.INTERIM ? " (interim) " : String.Empty);
+			Text = "BizHawk" + (VersionInfo.INTERIM ? " (interim) " : string.Empty);
 
 			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
 
@@ -446,7 +447,11 @@ namespace BizHawk.Client.EmuHawk
 			// handle events and dispatch as a hotkey action, or a hotkey button, or an input button
 			ProcessInput();
 			Global.ClientControls.LatchFromPhysical(GlobalWin.HotkeyCoalescer);
+
 			Global.ActiveController.LatchFromPhysical(Global.ControllerInputCoalescer);
+
+				Global.ActiveController.ApplyAxisConstraints(
+					(Global.Emulator is N64 && Global.Config.N64UseCircularAnalogConstraint) ? "Natural Circle" : null);
 
 			Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
 				Global.ActiveController.Overrides(Global.LuaAndAdaptor);
@@ -808,17 +813,19 @@ namespace BizHawk.Client.EmuHawk
 				int borderHeight = Size.Height - GlobalWin.PresentationPanel.Control.Size.Height;
 
 				// start at target zoom and work way down until we find acceptable zoom
+				Size lastComputedSize = new Size(1, 1);
 				for (; zoom >= 1; zoom--)
 				{
-					if ((((video.BufferWidth * zoom) + borderWidth) < area.Width)
-						&& (((video.BufferHeight * zoom) + borderHeight) < area.Height))
+					lastComputedSize = GlobalWin.DisplayManager.CalculateClientSize(video, zoom);
+					if ((((lastComputedSize.Width) + borderWidth) < area.Width)
+						&& (((lastComputedSize.Height) + borderHeight) < area.Height))
 					{
 						break;
 				}
 				}
 
 				// Change size
-				Size = new Size((video.BufferWidth * zoom) + borderWidth, ((video.BufferHeight * zoom) + borderHeight));
+				Size = new Size((lastComputedSize.Width) + borderWidth, ((lastComputedSize.Height) + borderHeight));
 				PerformLayout();
 				GlobalWin.PresentationPanel.Resized = true;
 
@@ -838,19 +845,20 @@ namespace BizHawk.Client.EmuHawk
 		}
 		}
 
-		[System.Runtime.InteropServices.DllImport("user32.dll")]
-		static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
-
-		[System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
-		static extern int GetWindowLong(IntPtr hWnd, int nIndex);
-
 		public bool IsInFullscreen
 		{
 			get { return _inFullscreen; }
 		}
 
-		public void ToggleFullscreen()
+		public void ToggleFullscreen(bool allowSuppress=false)
 		{
+			//prohibit this operation if the current controls include LMouse
+			if (allowSuppress)
+			{
+				if (Global.ActiveController.HasBinding("WMouse L"))
+					return;
+			}
+
 			if (_inFullscreen == false)
 			{
 				SuspendLayout();
@@ -941,7 +949,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				CheatStatusButton.ToolTipText = String.Empty;
+				CheatStatusButton.ToolTipText = string.Empty;
 				CheatStatusButton.Image = Properties.Resources.Blank;
 				CheatStatusButton.Visible = false;
 			}
@@ -1078,8 +1086,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Private variables
 
-		private int _lastWidth = -1;
-		private int _lastHeight = -1;
+		private Size _lastVideoSize = new Size(-1, -1), _lastVirtualSize = new Size(-1, -1);
 		private readonly SaveSlotManager _stateSlots = new SaveSlotManager();
 
 		// AVI/WAV state
@@ -1224,7 +1231,9 @@ namespace BizHawk.Client.EmuHawk
 					var oldram = Global.Emulator.ReadSaveRam();
 					if (oldram == null)
 					{
-						MessageBox.Show("Error: tried to load saveram, but core would not accept it?");
+						// we're eating this one now.  the possible negative consequence is that a user could lose
+						// their saveram and not know why
+						// MessageBox.Show("Error: tried to load saveram, but core would not accept it?");
 						return;
 					}
 					sram = new byte[oldram.Length];
@@ -1393,7 +1402,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static string DisplayNameForSystem(string system)
 		{
-			var str = String.Empty;
+			var str = string.Empty;
 			switch (system)
 			{
 				case "INTV": str = "Intellivision"; break;
@@ -1482,7 +1491,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				PauseStatusButton.Image = Properties.Resources.Blank;
 				PauseStatusButton.Visible = false;
-				PauseStatusButton.ToolTipText = String.Empty;
+				PauseStatusButton.ToolTipText = string.Empty;
 			}
 		}
 
@@ -1628,11 +1637,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Render()
 		{
+			//private Size _lastVideoSize = new Size(-1, -1), _lastVirtualSize = new Size(-1, -1);
 			var video = Global.Emulator.VideoProvider;
-			if (video.BufferHeight != _lastHeight || video.BufferWidth != _lastWidth)
+			//bool change = false;
+			Size currVideoSize = new Size(video.BufferWidth,video.BufferHeight);
+			Size currVirtualSize = new Size(video.VirtualWidth,video.VirtualWidth);
+			if (currVideoSize != _lastVideoSize || currVirtualSize != _lastVirtualSize)
 			{
-				_lastWidth = video.BufferWidth;
-				_lastHeight = video.BufferHeight;
+				_lastVideoSize = currVideoSize;
+				_lastVirtualSize = currVirtualSize;
 				FrameBufferResized();
 			}
 
@@ -1696,7 +1709,7 @@ namespace BizHawk.Client.EmuHawk
 					"Savestate", "*.state",
 					"Atari 2600", "*.a26;*.bin;%ARCH%",
 					"Atari 7800", "*.a78;*.bin;%ARCH%",
-					"Genesis (experimental)", "*.gen;*.smd;*.bin;*.md;*.cue;%ARCH%",
+					"Genesis", "*.gen;*.smd;*.bin;*.md;*.cue;%ARCH%",
 					"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
 					"Colecovision", "*.col;%ARCH%",
 					"Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
@@ -1724,7 +1737,7 @@ namespace BizHawk.Client.EmuHawk
 					"TI-83", "*.rom;%ARCH%",
 					"Archive Files", "%ARCH%",
 					"Savestate", "*.state",
-					"Genesis (experimental)", "*.gen;*.md;*.smd;*.bin;*.cue;%ARCH%",
+					"Genesis", "*.gen;*.md;*.smd;*.bin;*.cue;%ARCH%",
 					"All Files", "*.*");
 			}
 
@@ -1885,6 +1898,13 @@ namespace BizHawk.Client.EmuHawk
 
 			GlobalWin.Sound.ChangeVolume(Global.Config.SoundVolume);
 			GlobalWin.OSD.AddMessage("Volume " + Global.Config.SoundVolume);
+		}
+
+		public static void ToggleSound()
+		{
+			Global.Config.SoundEnabled ^= true;
+			GlobalWin.Sound.UpdateSoundSettings();
+			GlobalWin.Sound.StartSound();
 		}
 
 		private static void VolumeDown()
@@ -2926,7 +2946,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ShowLoadError(object sender, RomLoader.RomErrorArgs e)
 		{
-			MessageBox.Show(this, e.Message, e.AttemptedCoreLoad + " load warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			string title = "load error";
+			if (e.AttemptedCoreLoad != null)
+				title = e.AttemptedCoreLoad + " load error";
+
+			MessageBox.Show(this, e.Message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
 					}
 
 		private void NotifyCoreComm(string message)
@@ -3003,7 +3027,18 @@ namespace BizHawk.Client.EmuHawk
 					Global.Game.Status = nes.RomStatus;
 				}
 
-				Text = DisplayNameForSystem(loader.Game.System) + " - " + loader.Game.Name;
+				string gamename = string.Empty;
+				if (!string.IsNullOrWhiteSpace(loader.Game.Name)) // Prefer Game db name, else use the path
+				{
+					gamename = loader.Game.Name;
+				}
+				else
+				{
+					gamename = Path.GetFileNameWithoutExtension(path.Split('|').Last());
+				}
+
+				Text = DisplayNameForSystem(loader.Game.System) + " - " + gamename;
+
 				Global.Rewinder.ResetRewindBuffer();
 
 				if (Global.Emulator.CoreComm.RomStatusDetails == null && loader.Rom != null)
@@ -3214,101 +3249,9 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		private void NesInQuickNESMenuItem_Click(object sender, EventArgs e)
+		private void GBcoreSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.NES_InQuickNES ^= true;
-			FlagNeedsReboot();
+			BizHawk.Client.EmuHawk.config.GB.GBPrefs.DoGBPrefsDialog(this);
 		}
-
-		private void batchRunnerToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			new BatchRun().ShowDialog();
 		}
-
-		private void CoreSelectionMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
-			NesInQuickNESMenuItem.Checked = Global.Config.NES_InQuickNES;
-		}
-
-		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
-		{
-			new config.DisplayConfigLite().ShowDialog();
-		}
-
-		private void PCEtileViewerToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<PCETileViewer>();
-		}
-
-		private void SMSVDPViewerToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<SmsVDPViewer>();
-		}
-
-		private void codeDataLoggerToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<PCECDL>();
-		}
-
-		private void vDPViewerToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<GenVDPViewer>();
-	}
-
-		private void extensionsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			new FileExtensionPreferences().ShowDialog();
-	}
-
-		private void Atari2600DebuggerMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<Atari2600Debugger>();
-		}
-
-		private void AtariSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			if (!VersionInfo.INTERIM)
-			{
-				Atari2600DebuggerMenuItem.Visible =
-					toolStripSeparator31.Visible = 
-					false;
-			}
-		}
-
-		private void SavestateTypeContextSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			SavestateTypeDefaultContextMenuItem.Checked = false;
-			SavestateBinaryContextMenuItem.Checked = false;
-			SavestateTextContextMenuItem.Checked = false;
-			switch (Global.Config.SaveStateType)
-			{
-				case Config.SaveStateTypeE.Binary: SavestateBinaryContextMenuItem.Checked = true; break;
-				case Config.SaveStateTypeE.Text: SavestateTextContextMenuItem.Checked = true; break;
-				case Config.SaveStateTypeE.Default: SavestateTypeDefaultContextMenuItem.Checked = true; break;
-	}
-		}
-
-		private void GBInSGBMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GB_AsSGB ^= true;
-			FlagNeedsReboot();
-		}
-
-		private void CoreSelectionContextSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			GBInSGBContextMenuItem.Checked = Global.Config.GB_AsSGB;
-			NesInQuickNESContextMenuItem.Checked = Global.Config.NES_InQuickNES;
-		}
-
-		private void N64VideoPluginSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			N64PluginSettingsMenuItem_Click(sender, e);
-		}
-
-		private void guiOptionsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			new EmuHawkOptions().ShowDialog();
-		}
-	}
 }

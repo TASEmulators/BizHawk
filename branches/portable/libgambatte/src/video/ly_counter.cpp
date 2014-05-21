@@ -65,4 +65,12 @@ void LyCounter::setDoubleSpeed(const bool ds_in) {
 	lineTime_ = 456U << ds_in;
 }
 
+SYNCFUNC(LyCounter)
+{
+	NSS(time_);
+	NSS(lineTime_);
+	NSS(ly_);
+	NSS(ds);
+}
+
 }

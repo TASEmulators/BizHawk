@@ -232,14 +232,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public static extern void gambatte_setrtccallback(IntPtr core, RTCCallback callback);
 
 		/// <summary>
-		/// Sets the directory used for storing save data. The default is the same directory as the ROM Image file.
-		/// </summary>
-		/// <param name="core">opaque state pointer</param>
-		/// <param name="sdir"></param>
-		//[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void gambatte_setsavedir(IntPtr core, string sdir);
-
-		/// <summary>
 		/// Returns true if the currently loaded ROM image is treated as having CGB support.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
@@ -280,31 +272,44 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public static extern int gambatte_savesavedatalength(IntPtr core);
 
 		/// <summary>
-		/// Saves emulator state to a byte array
+		/// new savestate method
 		/// </summary>
-		/// <param name="core">opaque state pointer</param>
-		/// <param name="data">private savestate data returned by the core</param>
-		/// <param name="len">the length of the data in bytes</param>
-		/// <returns>success</returns>
+		/// <param name="core"></param>
+		/// <returns></returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool gambatte_savestate(IntPtr core, ref IntPtr data, ref uint len);
+		public static extern int gambatte_newstatelen(IntPtr core);
 
 		/// <summary>
-		/// destroy data returned by gambatte_savestate() to avoid memory leaks
+		/// new savestate method
 		/// </summary>
-		/// <param name="data">pointer from gambatte_savestate()</param>
+		/// <param name="core"></param>
+		/// <param name="data"></param>
+		/// <param name="len"></param>
+		/// <returns></returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_savestate_destroy(IntPtr data);
+		public static extern bool gambatte_newstatesave(IntPtr core, byte[] data, int len);
 
 		/// <summary>
-		/// Loads emulator state from a byte array
+		/// new savestate method
 		/// </summary>
-		/// <param name="core">opaque state pointer</param>
-		/// <param name="data">savestate data</param>
-		/// <param name="len">length of the savestate data in bytes</param>
-		/// <returns>success</returns>
+		/// <param name="core"></param>
+		/// <param name="data"></param>
+		/// <param name="len"></param>
+		/// <returns></returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool gambatte_loadstate(IntPtr core, byte[] data, uint len);
+		public static extern bool gambatte_newstateload(IntPtr core, byte[] data, int len);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void DataFunction(IntPtr data, int length, string name);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void SectionFunction(string name);
+
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_newstatesave_ex(IntPtr core, DataFunction Save, SectionFunction EnterSection, SectionFunction ExitSection);
+
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_newstateload_ex(IntPtr core, DataFunction Load, SectionFunction EnterSection, SectionFunction ExitSection);
 
 		/// <summary>
 		/// ROM header title of currently loaded ROM image.
@@ -313,22 +318,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <returns></returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern string gambatte_romtitle(IntPtr core);
-
-		/// <summary>
-		/// Set Game Genie codes to apply to currently loaded ROM image. Cleared on ROM load.
-		/// </summary>
-		/// <param name="core">opaque state pointer</param>
-		/// <param name="codes">Game Genie codes in format HHH-HHH-HHH;HHH-HHH-HHH;... where H is [0-9]|[A-F]</param>
-		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_setgamegenie(IntPtr core, string codes);
-
-		/// <summary>
-		/// Game Shark codes to apply to currently loaded ROM image. Cleared on ROM load.
-		/// </summary>
-		/// <param name="core">opaque state pointer</param>
-		/// <param name="codes">Game Shark codes in format 01HHHHHH;01HHHHHH;... where H is [0-9]|[A-F]</param>
-		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_setgameshark(IntPtr core, string codes);
 
 		/// <summary>
 		/// memory areas that gambatte_getmemoryarea() can return

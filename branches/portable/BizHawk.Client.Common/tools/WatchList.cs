@@ -525,6 +525,7 @@ namespace BizHawk.Client.Common
 				}
 
 				Domain = Global.Emulator.MemoryDomains[domain] ?? Global.Emulator.MemoryDomains.MainMemory;
+				_currentFilename = path;
 			}
 
 			if (!append)

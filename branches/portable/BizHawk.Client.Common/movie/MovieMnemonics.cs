@@ -417,11 +417,7 @@ namespace BizHawk.Client.Common
 
 				foreach (string name in MnemonicConstants.ANALOGS[ControlType].Keys)
 				{
-					if (InputValidate.IsSigned(mnemonic.Substring(srcindex + start, 4)))
-					{
-						Force("P" + player + " " + name, Int32.Parse(mnemonic.Substring(srcindex + start, 4)));
-					}
-
+					Force("P" + player + " " + name, Int32.Parse(mnemonic.Substring(srcindex + start, 4)));
 					start += 5;
 				}
 			}

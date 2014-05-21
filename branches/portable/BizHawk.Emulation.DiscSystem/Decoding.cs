@@ -67,7 +67,8 @@ namespace BizHawk.Emulation.DiscSystem
 
 			Process proc = Process.Start(oInfo);
 			#if WINDOWS
-			string result = proc.StandardError.ReadToEnd();
+			string result = proc.StandardOutput.ReadToEnd();
+			result += proc.StandardError.ReadToEnd();
 			#else
 			string result = proc.StandardOutput.ReadToEnd();
 			if(string.IsNullOrEmpty(result))

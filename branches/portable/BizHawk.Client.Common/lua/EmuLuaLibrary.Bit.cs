@@ -1,7 +1,16 @@
-﻿namespace BizHawk.Client.Common
+﻿using System;
+using LuaInterface;
+
+namespace BizHawk.Client.Common
 {
 	public class BitLuaLibrary : LuaLibraryBase
 	{
+		public BitLuaLibrary(Lua lua)
+			: base(lua) { }
+
+		public BitLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
+
 		public override string Name { get { return "bit"; } }
 
 		[LuaMethodAttributes(

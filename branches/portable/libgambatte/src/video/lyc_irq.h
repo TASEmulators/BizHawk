@@ -19,6 +19,8 @@
 #ifndef VIDEO_LYC_IRQ_H
 #define VIDEO_LYC_IRQ_H
 
+#include "newstate.h"
+
 namespace gambatte {
 
 struct SaveState;
@@ -52,6 +54,8 @@ public:
 	void lycRegChange(unsigned lycReg, const LyCounter &lyCounter, unsigned long cc) {
 		regChange(statRegSrc_, lycReg, lyCounter, cc);
 	}
+
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 }

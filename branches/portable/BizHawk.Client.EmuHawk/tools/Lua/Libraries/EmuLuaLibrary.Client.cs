@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+
+using LuaInterface;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -15,24 +17,13 @@ namespace BizHawk.Client.EmuHawk
 				{ 4, "Scanlines" },
 			};
 
-		public EmuHawkLuaLibrary(Action<string> logOutputCallback)
-			: this()
-		{
-			LogOutputCallback = logOutputCallback;
-		}
+		public EmuHawkLuaLibrary(Lua lua)
+			: base(lua) { }
 
-		public EmuHawkLuaLibrary() { }
+		public EmuHawkLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
 
 		public override string Name { get { return "client"; } }
-		public Action<string> LogOutputCallback { get; set; }
-
-		private void Log(string message)
-		{
-			if (LogOutputCallback != null)
-			{
-				LogOutputCallback(message);
-			}
-		}
 
 		[LuaMethodAttributes(
 			"clearautohold",

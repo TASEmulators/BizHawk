@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.N64;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 {
@@ -338,7 +337,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		// DLL handles
 		public IntPtr CoreDll { get; private set; }
 
-		public mupen64plusApi(N64 bizhawkCore, byte[] rom, VideoPluginSettings video_settings, int SaveType)
+		public mupen64plusApi(N64 bizhawkCore, byte[] rom, VideoPluginSettings video_settings, int SaveType, int CoreType)
 		{
 			// There can only be one core (otherwise breaks mupen64plus)
 			if (AttachedCore != null)
@@ -365,6 +364,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 				m64pConfigOpenSection("Core", ref core_section);
 				m64pConfigSetParameter(core_section, "SaveType", m64p_type.M64TYPE_INT, ref SaveType);
 			}
+
+			IntPtr coreSection = IntPtr.Zero;
+			m64pConfigOpenSection("Core", ref coreSection);
+			m64pConfigSetParameter(coreSection, "R4300Emulator", m64p_type.M64TYPE_INT, ref CoreType);
 
 			// Pass the rom to the core
 			result = m64pCoreDoCommandByteArray(m64p_command.M64CMD_ROM_OPEN, rom.Length, rom);

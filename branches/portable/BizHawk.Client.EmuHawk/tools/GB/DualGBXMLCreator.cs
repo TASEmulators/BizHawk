@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using BizHawk.Client.Common;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class DualGBXMLCreator : Form
 	{
+		private bool _suspendRecalculate = false;
+
 		public DualGBXMLCreator()
 		{
 			InitializeComponent();
@@ -23,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 			Win32.FileAttributes fromAttr = GetPathAttribute(fromPath);
 			Win32.FileAttributes toAttr = GetPathAttribute(toPath);
 
-			StringBuilder path = new StringBuilder(260); // MAX_PATH
+			var path = new StringBuilder(260); // MAX_PATH
 			if (Win32.PathRelativePathTo(
 				path,
 				fromPath,
@@ -33,18 +34,19 @@ namespace BizHawk.Client.EmuHawk
 			{
 				throw new ArgumentException("Paths must have a common prefix");
 			}
+
 			return path.ToString();
 		}
 
 		private static Win32.FileAttributes GetPathAttribute(string path)
 		{
-			DirectoryInfo di = new DirectoryInfo(path);
+			var di = new DirectoryInfo(path.Split('|').First());
 			if (di.Exists)
 			{
 				return Win32.FileAttributes.Directory;
 			}
 
-			FileInfo fi = new FileInfo(path);
+			var fi = new FileInfo(path.Split('|').First());
 			if (fi.Exists)
 			{
 				return Win32.FileAttributes.Normal;
@@ -53,36 +55,53 @@ namespace BizHawk.Client.EmuHawk
 			throw new FileNotFoundException();
 		}
 
-		bool Recalculate()
+		private bool Recalculate()
 		{
+			if (_suspendRecalculate)
+			{
+				return false;
+			}
+
 			try
 			{
-				string PathLeft = dualGBFileSelector1.GetName();
-				string PathRight = dualGBFileSelector2.GetName();
-				string Name = textBoxName.Text;
+				var PathLeft = dualGBFileSelector1.GetName();
+				var PathRight = dualGBFileSelector2.GetName();
+				var Name = textBoxName.Text;
 
-				if (string.IsNullOrWhiteSpace(PathLeft) || string.IsNullOrWhiteSpace(PathRight) || string.IsNullOrWhiteSpace(Name))
+				if (string.IsNullOrWhiteSpace(PathLeft) ||
+					string.IsNullOrWhiteSpace(PathRight) ||
+					string.IsNullOrWhiteSpace(Name))
+				{
 					throw new Exception("Blank Names");
+				}
 
-				List<char> NewPathL = new List<char>();
+				var NewPathL = new List<char>();
 
 				for (int i = 0; i < PathLeft.Length && i < PathRight.Length; i++)
 				{
 					if (PathLeft[i] == PathRight[i])
+					{
 						NewPathL.Add(PathLeft[i]);
+					}
 					else
+					{
 						break;
+					}
 				}
-				string BasePath = new string(NewPathL.ToArray());
+
+				var BasePath = new string(NewPathL.ToArray());
 				if (string.IsNullOrWhiteSpace(BasePath))
+				{
 					throw new Exception("Common path?");
-				BasePath = Path.GetDirectoryName(BasePath);
+				}
+
+				BasePath = Path.GetDirectoryName(BasePath.Split('|').First());
 				PathLeft = GetRelativePath(BasePath, PathLeft);
 				PathRight = GetRelativePath(BasePath, PathRight);
 
 				BasePath = Path.Combine(BasePath, Name) + ".xml";
 
-				StringWriter XML = new StringWriter();
+				var XML = new StringWriter();
 				XML.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
 				XML.WriteLine("<BizHawk-XMLGame System=\"DGB\" Name=\"{0}\">", Name);
 				XML.WriteLine("  <LoadAssets>");
@@ -93,14 +112,14 @@ namespace BizHawk.Client.EmuHawk
 
 				textBoxOutputDir.Text = BasePath;
 				textBoxXML.Text = XML.ToString();
-				buttonOK.Enabled = true;
+				SaveRunButton.Enabled = true;
 				return true;
 			}
 			catch (Exception e)
 			{
-				textBoxOutputDir.Text = "";
+				textBoxOutputDir.Text = string.Empty;
 				textBoxXML.Text = "Failed!\n" + e.ToString();
-				buttonOK.Enabled = false;
+				SaveRunButton.Enabled = false;
 				return false;
 			}
 		}
@@ -120,17 +139,56 @@ namespace BizHawk.Client.EmuHawk
 			Recalculate();
 		}
 
-		private void buttonOK_Click(object sender, EventArgs e)
+		private void DualGBXMLCreator_Load(object sender, EventArgs e)
+		{
+			CurrentForAllButton.Enabled = Global.Emulator != null && // For the designer
+				(Global.Emulator is Gameboy) &&
+				!string.IsNullOrEmpty(GlobalWin.MainForm.CurrentlyOpenRom) &&
+				!GlobalWin.MainForm.CurrentlyOpenRom.Contains('|') && // Can't be archive
+				!GlobalWin.MainForm.CurrentlyOpenRom.Contains(".xml"); // Can't already be an xml
+		}
+
+		private void SaveRunButton_Click(object sender, EventArgs e)
 		{
 			if (Recalculate())
 			{
+				var fileInfo = new FileInfo(textBoxOutputDir.Text);
+
+				if (fileInfo.Exists)
+				{
+					var result = MessageBox.Show(this, "File already exists, overwrite?", "File exists", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+					if (result != DialogResult.OK)
+					{
+						return;
+					}
+				}
 				using (var sw = new StreamWriter(textBoxOutputDir.Text))
 				{
 					sw.Write(textBoxXML.Text);
 				}
-				DialogResult = System.Windows.Forms.DialogResult.OK;
+
+				DialogResult = DialogResult.OK;
 				Close();
+				GlobalWin.MainForm.LoadRom(textBoxOutputDir.Text);
 			}
+		}
+
+		private void CurrentForAllButton_Click(object sender, EventArgs e)
+		{
+			_suspendRecalculate = true;
+			dualGBFileSelector1.SetName(GlobalWin.MainForm.CurrentlyOpenRom);
+			dualGBFileSelector2.SetName(GlobalWin.MainForm.CurrentlyOpenRom);
+
+			textBoxName.Text = Path.GetFileNameWithoutExtension(GlobalWin.MainForm.CurrentlyOpenRom);
+			_suspendRecalculate = false;
+
+			Recalculate();
+		}
+
+		private void buttonCancel_Click(object sender, EventArgs e)
+		{
+			DialogResult = DialogResult.Cancel;
+			Close();
 		}
 	}
 }

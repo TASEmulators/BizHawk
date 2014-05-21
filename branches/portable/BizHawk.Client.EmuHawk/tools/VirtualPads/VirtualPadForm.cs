@@ -11,13 +11,46 @@ namespace BizHawk.Client.EmuHawk
 	public partial class VirtualPadForm : Form, IToolForm
 	{
 		// TODO: UpdateValues doesn't support all cores, and is probably wrong for gens, also done in an unsustainable way
+		// TODO: move _multiplayerMode to config, and support on load, also support being able to go back to single player mode.  Also, more nuanced options are preferrable
 		private List<IVirtualPad> Pads
 		{
 			get
 			{
-				return ControllerBox.Controls.OfType<IVirtualPad>().ToList();
+				return ControllerBox.Controls
+					.OfType<IVirtualPad>()
+					.ToList();
 			}
 		}
+
+		private List<string> CurrentFrameInputs
+		{
+			get
+			{
+				return Global.MovieSession.Movie
+					.GetInput(Global.Emulator.Frame)
+					.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
+					.ToList();
+			}
+		}
+
+		private readonly List<string> SupportedMultiplayerPlatforms = new List<string>
+		{
+			"A26",
+			"A78",
+			"NES",
+			"N64",
+			"SMS",
+			"SG",
+			"GG",
+			"PCE",
+			"PCECD",
+			"SGX",
+			"SNES",
+			"GEN",
+			"Coleco",
+			"C64",
+			"SAT"
+		};
 
 		private int _defaultWidth;
 		private int _defaultHeight;
@@ -43,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			ControllerBox.Controls.Clear();
-			LoadPads();
+			LoadStartingPads();
 		}
 
 		public void UpdateValues()
@@ -55,69 +88,30 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
 			{
-				var str = Global.MovieSession.Movie.GetInput(Global.Emulator.Frame);
-				if (Global.Config.VirtualPadsUpdatePads && str != string.Empty)
+				var inputs = CurrentFrameInputs; // THis is necessary because of the weird situation on the frame after the end of the movie, it goes into finished mode AFTER the input is read so this will be empty on that frame
+				if (inputs.Any())
 				{
-					switch (Global.Emulator.SystemId)
+					for (int i = 0; i < Pads.Count; i++)
 					{
-						case "NES":
-							Pads[0].SetButtons(str.Substring(3, 8));
-							Pads[1].SetButtons(str.Substring(12, 8));
-							Pads[2].SetButtons(str[1].ToString());
-							break;
-						case "A26":
-							Pads[0].SetButtons(str.Substring(4, 5));
-							Pads[1].SetButtons(str.Substring(10, 5));
-							Pads[2].SetButtons(str.Substring(1, 2));
-							break;
-						case "SMS":
-						case "GG":
-						case "SG":
-							Pads[0].SetButtons(str.Substring(1, 6));
-							Pads[1].SetButtons(str.Substring(8, 6));
-							Pads[2].SetButtons(str.Substring(15, 2));
-							break;
-						case "PCE":
-						case "SGX":
-							Pads[0].SetButtons(str.Substring(3, 8));
-							Pads[1].SetButtons(str.Substring(12, 8));
-							Pads[2].SetButtons(str.Substring(21, 8));
-							Pads[3].SetButtons(str.Substring(30, 8));
-							break;
-						case "TI83":
-							Pads[0].SetButtons(str.Substring(2, 50));
-							break;
-						case "SNES":
-							Pads[0].SetButtons(str.Substring(3, 12));
-							Pads[1].SetButtons(str.Substring(16, 12));
-							Pads[2].SetButtons(str.Substring(29, 12));
-							Pads[3].SetButtons(str.Substring(42, 12));
-							break;
-						case "GEN":
-							Pads[0].SetButtons(str.Substring(3, 8));
-							Pads[1].SetButtons(str.Substring(12, 8));
-							break;
-						case "GB":
-							Pads[0].SetButtons(str.Substring(3, 8));
-							break;
-						case "Coleco":
-							Pads[0].SetButtons(str.Substring(1, 18));
-							Pads[1].SetButtons(str.Substring(20, 18));
-							break;
-						case "C64":
-							break;
-						case "N64":
-							Pads[0].SetButtons(str.Substring(3, 23));
-							Pads[1].SetButtons(str.Substring(27, 23));
-							Pads[2].SetButtons(str.Substring(51, 23));
-							Pads[3].SetButtons(str.Substring(75, 23));
-							break;
+						Pads[i].SetButtons(inputs[i]);
 					}
 				}
 			}
 			else if (!Global.Config.VirtualPadSticky)
 			{
 				Pads.ForEach(pad => pad.Clear());
+			}
+
+			if (Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished)
+			{
+				Pads
+					.Where(x => x is VirtualPadN64)
+					.Cast<VirtualPadN64>()
+					.ToList()
+					.ForEach(x =>
+					{
+						x.RefreshAnalog();
+					});
 			}
 		}
 
@@ -133,7 +127,11 @@ namespace BizHawk.Client.EmuHawk
 		private void VirtualPadForm_Load(object sender, EventArgs e)
 		{
 			LoadConfigSettings();
-			LoadPads();
+			LoadStartingPads();
+			if (Global.Config.VirtualPadMultiplayerMode)
+			{
+				SwitchToMultiplayer();
+			}
 		}
 
 		private void LoadConfigSettings()
@@ -162,31 +160,32 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.VirtualPadSettings.Height = Bottom - Top;
 		}
 
-		private void LoadPads()
+		private void LoadStartingPads()
 		{
+			// Order matters! Add them in the of order of the mnemonic system
 			switch (Global.Emulator.SystemId)
 			{
 				case "A26":
-					ControllerBox.Controls.Add(new VirtualPadA26 { Location = new Point(8, 19), Controller = "P1" });
 					ControllerBox.Controls.Add(new VirtualPadA26Control { Location = new Point(8, 109) });
+					ControllerBox.Controls.Add(new VirtualPadA26 { Location = new Point(8, 19), Controller = "P1" });
 					break;
 				case "A78":
-					ControllerBox.Controls.Add(new VirtualPadA78 { Location = new Point(8, 19), Controller = "P1" });
 					ControllerBox.Controls.Add(new VirtualPadA78Control { Location = new Point(8, 125) });
+					ControllerBox.Controls.Add(new VirtualPadA78 { Location = new Point(8, 19), Controller = "P1" });
 					break;
 				case "NES":
-					ControllerBox.Controls.Add(new VirtualPadNES { Location = new Point(8, 19), Controller = "P1" });
 					ControllerBox.Controls.Add(new VirtualPadNESControl { Location = new Point(8, 109) });
+					ControllerBox.Controls.Add(new VirtualPadNES { Location = new Point(8, 19), Controller = "P1" });
 					break;
 				case "N64":
-					ControllerBox.Controls.Add(new VirtualPadN64 { Location = new Point(8, 19), Controller = "P1" });
 					ControllerBox.Controls.Add(new VirtualPadN64Control { Location = new Point(8, 350) });
+					ControllerBox.Controls.Add(new VirtualPadN64 { Location = new Point(8, 19), Controller = "P1" });
 					break;
 				case "SMS":
 				case "SG":
 				case "GG":
+					ControllerBox.Controls.Add(new VirtualPadSMSControl { Location = new Point(8, 109) });	
 					ControllerBox.Controls.Add(new VirtualPadSMS { Location = new Point(8, 19), Controller = "P1" });
-					ControllerBox.Controls.Add(new VirtualPadSMSControl { Location = new Point(8, 109) });
 					break;
 				case "PCE":
 				case "PCECD":
@@ -194,32 +193,37 @@ namespace BizHawk.Client.EmuHawk
 					ControllerBox.Controls.Add(new VirtualPadPCE { Location = new Point(8, 19), Controller = "P1" });
 					break;
 				case "SNES":
-					ControllerBox.Controls.Add(new VirtualPadSNES { Location = new Point(8, 19), Controller = "P1" });
 					ControllerBox.Controls.Add(new VirtualPadSNESControl { Location = new Point(8, 170) });
+					ControllerBox.Controls.Add(new VirtualPadSNES { Location = new Point(8, 19), Controller = "P1" });
 					break;
 				case "GB":
 				case "GBC":
+					ControllerBox.Controls.Add(new VirtualPadGBControl { Location = new Point(8, 109) });	
 					ControllerBox.Controls.Add(new VirtualPadGB { Location = new Point(8, 19), Controller = string.Empty });
-					ControllerBox.Controls.Add(new VirtualPadGBControl { Location = new Point(8, 109) });
+					break;
+				case "DGB":
+					ControllerBox.Controls.Add(new VirtualPadGBControl { Location = new Point(8, 109), Controller = string.Empty });
+					ControllerBox.Controls.Add(new VirtualPadGB { Location = new Point(8, 19), Controller = "P1" });
+					ControllerBox.Controls.Add(new VirtualPadGB { Location = new Point(188, 19), Controller = "P2" });
 					break;
 				case "GBA":
 					ControllerBox.Controls.Add(new VirtualPadGBA { Location = new Point(8, 19), Controller = string.Empty });
 					break;
 				case "GEN":
-					ControllerBox.Controls.Add(new VirtualPadGen6Button { Location = new Point(8, 19), Controller = "P1" });
 					ControllerBox.Controls.Add(new VirtualPadNESControl { Location = new Point(8, 105) });
+					ControllerBox.Controls.Add(new VirtualPadGen6Button { Location = new Point(8, 19), Controller = "P1" });
 					break;
 				case "Coleco":
 					var coleco1 = new VirtualPadColeco { Location = new Point(8, 19), Controller = "P1" };
 					ControllerBox.Controls.Add(coleco1);
 					break;
 				case "C64":
-					ControllerBox.Controls.Add(new VirtualPadC64Keyboard { Location = new Point(8, 19) });
 					ControllerBox.Controls.Add(new VirtualPadA26 { Location = new Point(8, 159), Controller = "P1" });
+					ControllerBox.Controls.Add(new VirtualPadC64Keyboard { Location = new Point(8, 19) });
 					break;
 				case "SAT":
-					ControllerBox.Controls.Add(new VirtualPadSaturn { Location = new Point(8, 19), Controller = "P1" });
 					ControllerBox.Controls.Add(new VirtualPadSaturnControl { Location = new Point(8, 125) });
+					ControllerBox.Controls.Add(new VirtualPadSaturn { Location = new Point(8, 19), Controller = "P1" });
 					break;
 			}
 
@@ -232,6 +236,58 @@ namespace BizHawk.Client.EmuHawk
 					ControllerBox.Width = Width - 37;
 				}
 			}
+		}
+
+		private void SwitchToMultiplayer()
+		{
+			switch (Global.Emulator.SystemId)
+			{
+				case "A26":
+					ControllerBox.Controls.Add(new VirtualPadA26 { Location = new Point(188, 19), Controller = "P2" });
+					break;
+				case "A78":
+					ControllerBox.Controls.Add(new VirtualPadA78 { Location = new Point(150, 19), Controller = "P2" });
+					break;
+				case "NES":
+					ControllerBox.Controls.Add(new VirtualPadNES { Location = new Point(188, 19), Controller = "P2" });
+					break;
+				case "N64":
+					ControllerBox.Controls.Add(new VirtualPadN64 { Location = new Point(208, 19), Controller = "P2" });
+					ControllerBox.Controls.Add(new VirtualPadN64 { Location = new Point(408, 19), Controller = "P3" });
+					ControllerBox.Controls.Add(new VirtualPadN64 { Location = new Point(608, 19), Controller = "P4" });
+					break;
+				case "SMS":
+				case "SG":
+				case "GG":
+					ControllerBox.Controls.Add(new VirtualPadSMS { Location = new Point(188, 19), Controller = "P2" });
+					break;
+				case "PCE":
+				case "PCECD":
+				case "SGX":
+					ControllerBox.Controls.Add(new VirtualPadPCE { Location = new Point(188, 19), Controller = "P2" });
+					ControllerBox.Controls.Add(new VirtualPadPCE { Location = new Point(8, 109), Controller = "P3" });
+					ControllerBox.Controls.Add(new VirtualPadPCE { Location = new Point(188, 109), Controller = "P4" });
+					break;
+				case "SNES":
+					ControllerBox.Controls.Add(new VirtualPadSNES { Location = new Point(188, 19), Controller = "P2" });
+					ControllerBox.Controls.Add(new VirtualPadSNES { Location = new Point(8, 95), Controller = "P3" });
+					ControllerBox.Controls.Add(new VirtualPadSNES { Location = new Point(188, 95), Controller = "P4" });
+					break;
+				case "GEN":
+					ControllerBox.Controls.Add(new VirtualPadGen6Button { Location = new Point(195, 19), Controller = "P2" });
+					break;
+				case "Coleco":
+					ControllerBox.Controls.Add(new VirtualPadColeco { Location = new Point(130, 19), Controller = "P2" });
+					break;
+				case "C64":
+					ControllerBox.Controls.Add(new VirtualPadA26 { Location = new Point(218, 159), Controller = "P2" });
+					break;
+				case "SAT":
+					ControllerBox.Controls.Add(new VirtualPadSaturn { Location = new Point(213, 19), Controller = "P2" });
+					break;
+			}
+
+			Global.Config.VirtualPadMultiplayerMode = true;
 		}
 
 		public void BumpAnalogValue(int? dx, int? dy) // TODO: multi-player
@@ -291,6 +347,8 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.VirtualPadSettings.SaveWindowPosition = true;
 			Global.Config.VirtualPadSettings.TopMost = TopMost = false;
 			Global.Config.VirtualPadSettings.FloatingWindow = false;
+			Global.Config.VirtualPadMultiplayerMode = false;
+			SwitchToSinglePlayer();
 		}
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
@@ -324,67 +382,40 @@ namespace BizHawk.Client.EmuHawk
 			base.OnShown(e);
 		}
 
-		#endregion
+		private void SwitchToSinglePlayer()
+		{
+			var toRemove = Pads
+					.Where(pad => !string.IsNullOrEmpty(pad.Controller) && pad.Controller != "P1")
+					.ToList();
 
-        private void addPlayerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            switch (Global.Emulator.SystemId)
-            {
-                case "A26":
-                    ControllerBox.Controls.Add(new VirtualPadA26 { Location = new Point(188, 19), Controller = "P2" });
-                    break;
-                case "A78":
-                    ControllerBox.Controls.Add(new VirtualPadA78 { Location = new Point(150, 19), Controller = "P2" });
-                    break;
-                case "NES":
-                    ControllerBox.Controls.Add(new VirtualPadNES { Location = new Point(188, 19), Controller = "P2" });
-                    break;
-                case "N64":
-                    ControllerBox.Controls.Add(new VirtualPadN64 { Location = new Point(208, 19), Controller = "P2" });
-                    ControllerBox.Controls.Add(new VirtualPadN64 { Location = new Point(408, 19), Controller = "P3" });
-                    ControllerBox.Controls.Add(new VirtualPadN64 { Location = new Point(608, 19), Controller = "P4" });
-                    break;
-                case "SMS":
-                case "SG":
-                case "GG":
-                    ControllerBox.Controls.Add(new VirtualPadSMS { Location = new Point(188, 19), Controller = "P2" });
-                    break;
-                case "PCE":
-                case "PCECD":
-                case "SGX":
-                    ControllerBox.Controls.Add(new VirtualPadPCE { Location = new Point(188, 19), Controller = "P2" });
-                    ControllerBox.Controls.Add(new VirtualPadPCE { Location = new Point(8, 109), Controller = "P3" });
-                    ControllerBox.Controls.Add(new VirtualPadPCE { Location = new Point(188, 109), Controller = "P4" });
-                    break;
-                case "SNES":
-                    ControllerBox.Controls.Add(new VirtualPadSNES { Location = new Point(188, 19), Controller = "P2" });
-                    ControllerBox.Controls.Add(new VirtualPadSNES { Location = new Point(8, 95), Controller = "P3" });
-                    ControllerBox.Controls.Add(new VirtualPadSNES { Location = new Point(188, 95), Controller = "P4" });
-                    break;
-                case "GB":
-                case "GBC":
-                    ControllerBox.Controls.Add(new VirtualPadGB { Location = new Point(8, 19), Controller = string.Empty });
-                    ControllerBox.Controls.Add(new VirtualPadGBControl { Location = new Point(8, 109) });
-                    break;
-                case "GBA":
-                    ControllerBox.Controls.Add(new VirtualPadGBA { Location = new Point(8, 19), Controller = string.Empty });
-                    break;
-                case "GEN":
-                    ControllerBox.Controls.Add(new VirtualPadGen6Button { Location = new Point(195, 19), Controller = "P2" });
-                    break;
-                case "Coleco":
-                    var coleco2 = new VirtualPadColeco { Location = new Point(130, 19), Controller = "P2" };
-                    ControllerBox.Controls.Add(coleco2);
-                    break;
-                case "C64":
-                    ControllerBox.Controls.Add(new VirtualPadA26 { Location = new Point(218, 159), Controller = "P2" });
-                    break;
-                case "SAT":
-                    ControllerBox.Controls.Add(new VirtualPadSaturn { Location = new Point(213, 19), Controller = "P2" });
-                    break;
-            }
-        }
+			foreach (var pad in toRemove)
+			{
+				ControllerBox.Controls.Remove(pad as Control);
+			}
+
+			Global.Config.VirtualPadMultiplayerMode = false;
+		}
 
 		#endregion
+
+		#endregion
+
+		private void MultiplayerModeMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.Config.VirtualPadMultiplayerMode)
+			{
+				SwitchToSinglePlayer();
+			}
+			else
+			{
+				SwitchToMultiplayer();
+			}
+		}
+
+		private void PadsSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			MultiplayerModeMenuItem.Enabled = SupportedMultiplayerPlatforms.Contains(Global.Emulator.SystemId);
+			MultiplayerModeMenuItem.Checked = Global.Config.VirtualPadMultiplayerMode;
+		}
 	}
 }

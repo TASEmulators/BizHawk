@@ -168,4 +168,13 @@ void Tima::doIrqEvent(const TimaInterruptRequester timaIrq) {
 	timaIrq.setNextIrqEventTime(timaIrq.nextIrqEventTime() + ((256u - tma_) << timaClock[tac_ & 3]));
 }
 
+SYNCFUNC(Tima)
+{
+	NSS(lastUpdate_);
+	NSS(tmatime_);
+	NSS(tima_);
+	NSS(tma_);
+	NSS(tac_);
+}
+
 }

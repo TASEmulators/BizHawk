@@ -21,9 +21,6 @@
     <ClInclude Include="include\gambatte.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\statesaver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\video.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -87,9 +84,6 @@
     <ClInclude Include="src\tima.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\bitmap_font.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\gbint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -123,13 +117,16 @@
     <ClInclude Include="src\video\sprite_mapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\sound\static_output_tester.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\common\uncopyable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\insertion_sort.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\newstate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sound\static_output_tester.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -138,9 +135,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gambatte.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\statesaver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\video.cpp">
@@ -174,9 +168,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\video\next_m0_time.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\bitmap_font.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\sound\channel1.cpp">
@@ -213,6 +204,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\tima.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\newstate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

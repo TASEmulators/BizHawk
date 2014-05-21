@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 			_timer.Start();
 
 			_wasPressed = Input.Instance.GetNextBindEvent();
-			BackColor = Color.LightCyan;
+			BackColor = Color.FromArgb(unchecked((int)0xFFC0FFFF)); // Color.LightCyan is too light on Windows 8, this is a bit darker
 		}
 
 		protected override void OnLeave(EventArgs e)

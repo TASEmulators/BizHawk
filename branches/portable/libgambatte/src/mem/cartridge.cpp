@@ -35,6 +35,10 @@ public:
 	virtual bool isAddressWithinAreaRombankCanBeMappedTo(unsigned addr, unsigned bank) const {
 		return (addr< 0x4000) == (bank == 0);
 	}
+
+	virtual void SyncState(NewState *ns, bool isReader)
+	{
+	}
 };
 
 class Mbc0 : public DefaultMbc {
@@ -62,6 +66,11 @@ public:
 	virtual void loadState(const SaveState::Mem &ss) {
 		enableRam = ss.enableRam;
 		memptrs.setRambank(enableRam ? MemPtrs::READ_EN | MemPtrs::WRITE_EN : 0, 0);
+	}
+
+	virtual void SyncState(NewState *ns, bool isReader)
+	{
+		NSS(enableRam);
 	}
 };
 
@@ -137,6 +146,14 @@ public:
 		setRambank();
 		setRombank();
 	}
+
+	virtual void SyncState(NewState *ns, bool isReader)
+	{
+		NSS(rombank);
+		NSS(rambank);
+		NSS(enableRam);
+		NSS(rambankMode);
+	}
 };
 
 class Mbc1Multi64 : public Mbc {
@@ -205,6 +222,13 @@ public:
 	virtual bool isAddressWithinAreaRombankCanBeMappedTo(unsigned addr, unsigned bank) const {
 		return (addr < 0x4000) == ((bank & 0xF) == 0);
 	}
+
+	virtual void SyncState(NewState *ns, bool isReader)
+	{
+		NSS(rombank);
+		NSS(enableRam);
+		NSS(rombank0Mode);
+	}
 };
 
 class Mbc2 : public DefaultMbc {
@@ -243,6 +267,12 @@ public:
 		enableRam = ss.enableRam;
 		memptrs.setRambank(enableRam ? MemPtrs::READ_EN | MemPtrs::WRITE_EN : 0, 0);
 		memptrs.setRombank(rombank & (rombanks(memptrs) - 1));
+	}
+
+	virtual void SyncState(NewState *ns, bool isReader)
+	{
+		NSS(rombank);
+		NSS(enableRam);
 	}
 };
 
@@ -315,6 +345,13 @@ public:
 		setRambank();
 		setRombank();
 	}
+
+	virtual void SyncState(NewState *ns, bool isReader)
+	{
+		NSS(rombank);
+		NSS(rambank);
+		NSS(enableRam);
+	}
 };
 
 class HuC1 : public DefaultMbc {
@@ -378,6 +415,14 @@ public:
 		setRambank();
 		setRombank();
 	}
+
+	virtual void SyncState(NewState *ns, bool isReader)
+	{
+		NSS(rombank);
+		NSS(rambank);
+		NSS(enableRam);
+		NSS(rambankMode);
+	}
 };
 
 class Mbc5 : public DefaultMbc {
@@ -432,6 +477,13 @@ public:
 		setRambank();
 		setRombank();
 	}
+
+	virtual void SyncState(NewState *ns, bool isReader)
+	{
+		NSS(rombank);
+		NSS(rambank);
+		NSS(enableRam);
+	}
 };
 
 static bool hasRtc(const unsigned headerByte0x147) {
@@ -458,36 +510,6 @@ void Cartridge::saveState(SaveState &state) const {
 void Cartridge::loadState(const SaveState &state) {
 	rtc.loadState(state);
 	mbc->loadState(state.mem);
-}
-
-static const std::string stripExtension(const std::string &str) {
-	const std::string::size_type lastDot = str.find_last_of('.');
-	const std::string::size_type lastSlash = str.find_last_of('/');
-
-	if (lastDot != std::string::npos && (lastSlash == std::string::npos || lastSlash < lastDot))
-		return str.substr(0, lastDot);
-
-	return str;
-}
-
-static const std::string stripDir(const std::string &str) {
-	const std::string::size_type lastSlash = str.find_last_of('/');
-
-	if (lastSlash != std::string::npos)
-		return str.substr(lastSlash + 1);
-
-	return str;
-}
-
-const std::string Cartridge::saveBasePath() const {
-	return saveDir.empty() ? defaultSaveBasePath : saveDir + stripDir(defaultSaveBasePath);
-}
-
-void Cartridge::setSaveDir(const std::string &dir) {
-	saveDir = dir;
-
-	if (!saveDir.empty() && saveDir[saveDir.length() - 1] != '/')
-		saveDir += '/';
 }
 
 static void enforce8bit(unsigned char *data, unsigned long sz) {
@@ -607,8 +629,6 @@ int Cartridge::loadROM(const char *romfiledata, unsigned romfilelength, const bo
 	rombanks = std::max(pow2ceil(filesize / 0x4000), 2u);
 	std::printf("rombanks: %u\n", static_cast<unsigned>(filesize / 0x4000));
 	
-	defaultSaveBasePath.clear();
-	ggUndoList.clear();
 	mbc.reset();
 	memptrs.reset(rombanks, rambanks, cgb ? 8 : 2);
 	rtc.set(false, 0);
@@ -621,8 +641,6 @@ int Cartridge::loadROM(const char *romfiledata, unsigned romfilelength, const bo
 	
 	//if (rom->fail())
 	//	return -1;
-	
-	defaultSaveBasePath = stripExtension("fixmefixme.gb"); //(romfile);
 	
 	switch (type) {
 	case PLAIN: mbc.reset(new Mbc0(memptrs)); break;
@@ -726,46 +744,11 @@ bool Cartridge::getMemoryArea(int which, unsigned char **data, int *length) {
 	return false;
 }
 
-static int asHex(const char c) {
-	return c >= 'A' ? c - 'A' + 0xA : c - '0';
-}
-
-void Cartridge::applyGameGenie(const std::string &code) {
-	if (6 < code.length()) {
-		const unsigned val = (asHex(code[0]) << 4 | asHex(code[1])) & 0xFF;
-		const unsigned addr = (asHex(code[2]) << 8 | asHex(code[4]) << 4 | asHex(code[5]) | (asHex(code[6]) ^ 0xF) << 12) & 0x7FFF;
-		unsigned cmp = 0xFFFF;
-
-		if (10 < code.length()) {
-			cmp = (asHex(code[8]) << 4 | asHex(code[10])) ^ 0xFF;
-			cmp = ((cmp >> 2 | cmp << 6) ^ 0x45) & 0xFF;
-		}
-
-		for (unsigned bank = 0; bank < static_cast<std::size_t>(memptrs.romdataend() - memptrs.romdata()) / 0x4000; ++bank) {
-			if (mbc->isAddressWithinAreaRombankCanBeMappedTo(addr, bank)
-					&& (cmp > 0xFF || memptrs.romdata()[bank * 0x4000ul + (addr & 0x3FFF)] == cmp)) {
-				ggUndoList.push_back(AddrData(bank * 0x4000ul + (addr & 0x3FFF), memptrs.romdata()[bank * 0x4000ul + (addr & 0x3FFF)]));
-				memptrs.romdata()[bank * 0x4000ul + (addr & 0x3FFF)] = val;
-			}
-		}
-	}
-}
-
-void Cartridge::setGameGenie(const std::string &codes) {
-	if (loaded()) {
-		for (std::vector<AddrData>::reverse_iterator it = ggUndoList.rbegin(), end = ggUndoList.rend(); it != end; ++it) {
-			if (memptrs.romdata() + it->addr < memptrs.romdataend())
-				memptrs.romdata()[it->addr] = it->data;
-		}
-		
-		ggUndoList.clear();
-		
-		std::string code;
-		for (std::size_t pos = 0; pos < codes.length()
-				&& (code = codes.substr(pos, codes.find(';', pos) - pos), true); pos += code.length() + 1) {
-			applyGameGenie(code);
-		}
-	}
+SYNCFUNC(Cartridge)
+{
+	SSS(memptrs);
+	SSS(rtc);
+	TSS(mbc);
 }
 
 }

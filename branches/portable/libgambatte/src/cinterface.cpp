@@ -1,6 +1,7 @@
 #include "cinterface.h"
 #include "gambatte.h"
 #include <cstdlib>
+#include "newstate.h"
 
 using namespace gambatte;
 
@@ -113,12 +114,6 @@ GBEXPORT void gambatte_setrtccallback(void *core, unsigned int (*callback)())
 	g->setRTCCallback(callback);
 }
 
-GBEXPORT void gambatte_setsavedir(void *core, const char *sdir)
-{
-	GB *g = (GB *) core;
-	g->setSaveDir(std::string(sdir));
-}
-
 GBEXPORT int gambatte_iscgb(void *core)
 {
 	GB *g = (GB *) core;
@@ -149,34 +144,48 @@ GBEXPORT int gambatte_savesavedatalength(void *core)
 	return g->saveSavedataLength();
 }
 
-GBEXPORT int gambatte_savestate(void *core, char **data, unsigned *len)
+GBEXPORT long gambatte_newstatelen(void *core)
 {
 	GB *g = (GB *) core;
-
-	std::ostringstream os = std::ostringstream(std::ios_base::binary | std::ios_base::out);
-	if (!g->saveState(os))
-		return 0;
-
-	os.flush();
-	std::string s = os.str();
-	char *ret = (char *) std::malloc(s.length());
-	std::memcpy(ret, s.data(), s.length());
-	*len = s.length();
-	*data = ret;
-	return 1;
+	NewStateDummy dummy;
+	g->SyncState<false>(&dummy);
+	return dummy.GetLength();
 }
 
-GBEXPORT void gambatte_savestate_destroy(char *data)
-{
-	std::free(data);
-}
-
-GBEXPORT int gambatte_loadstate(void *core, const char *data, unsigned len)
+GBEXPORT int gambatte_newstatesave(void *core, char *data, long len)
 {
 	GB *g = (GB *) core;
-    //Changed to two lines, because loadState requires an lvalue and passing an rvalue only works in MSVC.
-    std::istringstream ss(std::string(data, len), std::ios_base::binary | std::ios_base::in);
-	return g->loadState(ss);
+	NewStateExternalBuffer saver(data, len);
+	g->SyncState<false>(&saver);
+	return !saver.Overflow() && saver.GetLength() == len;
+}
+
+GBEXPORT int gambatte_newstateload(void *core, const char *data, long len)
+{
+	GB *g = (GB *) core;
+	NewStateExternalBuffer loader((char *)data, len);
+	g->SyncState<true>(&loader);
+	return !loader.Overflow() && loader.GetLength() == len;
+}
+
+GBEXPORT void gambatte_newstatesave_ex(void *core,
+	void (*Save_)(const void *ptr, size_t size, const char *name),
+	void (*EnterSection_)(const char *name),
+	void (*ExitSection_)(const char *name))
+{
+	GB *g = (GB *) core;
+	NewStateExternalFunctions saver(Save_, NULL, EnterSection_, ExitSection_);
+	g->SyncState<false>(&saver);
+}
+
+GBEXPORT void gambatte_newstateload_ex(void *core,
+	void (*Load_)(void *ptr, size_t size, const char *name),
+	void (*EnterSection_)(const char *name),
+	void (*ExitSection_)(const char *name))
+{
+	GB *g = (GB *) core;
+	NewStateExternalFunctions loader(NULL, Load_, EnterSection_, ExitSection_);
+	g->SyncState<true>(&loader);
 }
 
 static char horriblebuff[64];
@@ -187,18 +196,6 @@ GBEXPORT const char *gambatte_romtitle(void *core)
 	std::strncpy(horriblebuff, s, 63);
 	horriblebuff[63] = 0;
 	return horriblebuff;
-}
-
-GBEXPORT void gambatte_setgamegenie(void *core, const char *codes)
-{
-	GB *g = (GB *) core;
-	g->setGameGenie(std::string(codes));
-}
-
-GBEXPORT void gambatte_setgameshark(void *core, const char *codes)
-{
-	GB *g = (GB *) core;
-	g->setGameShark(std::string(codes));
 }
 
 GBEXPORT int gambatte_getmemoryarea(void *core, int which, unsigned char **data, int *length)

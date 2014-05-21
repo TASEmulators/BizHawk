@@ -23,6 +23,7 @@
 #include "sound/channel2.h"
 #include "sound/channel3.h"
 #include "sound/channel4.h"
+#include "newstate.h"
 
 namespace gambatte {
 
@@ -88,6 +89,8 @@ public:
 	void set_so_volume(unsigned nr50);
 	void map_so(unsigned nr51);
 	unsigned getStatus() const;
+
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 }

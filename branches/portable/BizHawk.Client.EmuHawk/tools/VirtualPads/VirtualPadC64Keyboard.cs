@@ -8,9 +8,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadC64Keyboard : UserControl , IVirtualPad
 	{
+		public string Controller { get; set; }
 		public VirtualPadC64Keyboard()
 		{
 			InitializeComponent();
+			Controller = string.Empty;
 		}
 
 		private void Buttons_CheckedChanged(object sender, EventArgs e)

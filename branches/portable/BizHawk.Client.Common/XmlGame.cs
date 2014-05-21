@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 
 using BizHawk.Common;
@@ -71,11 +72,11 @@ namespace BizHawk.Client.Common
 						else
 						{
 							// relative path
-							var fullpath = Path.GetDirectoryName(f.CanonicalFullPath.Split('|')[0]) ?? String.Empty;
-							fullpath = Path.Combine(fullpath, filename);
+							var fullpath = Path.GetDirectoryName(f.CanonicalFullPath.Split('|').First()) ?? string.Empty;
+							fullpath = Path.Combine(fullpath, filename.Split('|').First());
 							try
 							{
-								data = File.ReadAllBytes(fullpath);
+								data = File.ReadAllBytes(fullpath.Split('|').First());
 							}
 							catch
 							{

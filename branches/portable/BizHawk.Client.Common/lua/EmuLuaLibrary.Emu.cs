@@ -13,16 +13,16 @@ namespace BizHawk.Client.Common
 {
 	public class EmulatorLuaLibrary : LuaLibraryBase
 	{
-		private readonly Lua _lua;
-		private readonly Action _frameAdvanceCallback;
-		private readonly Action _yieldCallback;
+		public Action FrameAdvanceCallback { get; set; }
+		public Action YieldCallback { get; set; }
 
-		public EmulatorLuaLibrary(Lua lua, Action frameAdvanceCallback, Action yieldCallback)
-		{
-			_lua = lua;
-			_frameAdvanceCallback = frameAdvanceCallback;
-			_yieldCallback = yieldCallback;
-		}
+
+
+		public EmulatorLuaLibrary(Lua lua)
+			: base(lua) { }
+
+		public EmulatorLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
 
 		public override string Name { get { return "emu"; } }
 
@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 		)]
 		public void FrameAdvance()
 		{
-			_frameAdvanceCallback();
+			FrameAdvanceCallback();
 		}
 
 		[LuaMethodAttributes(
@@ -68,7 +68,7 @@ namespace BizHawk.Client.Common
 		)]
 		public LuaTable GetRegisters()
 		{
-			var table = _lua.NewTable();
+			var table = Lua.NewTable();
 			foreach (var kvp in Global.Emulator.GetCpuFlagsAndRegisters())
 			{
 				table[kvp.Key] = kvp.Value;
@@ -175,7 +175,7 @@ namespace BizHawk.Client.Common
 		)]
 		public void Yield()
 		{
-			_yieldCallback();
+			YieldCallback();
 		}
 
 		[LuaMethodAttributes(

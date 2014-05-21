@@ -103,4 +103,11 @@ void EnvelopeUnit::loadState(const SaveState::SPU::Env &estate, const unsigned n
 	this->nr2 = nr2;
 }
 
+SYNCFUNC(EnvelopeUnit)
+{
+	NSS(counter);
+	NSS(nr2);
+	NSS(volume);
+}
+
 }

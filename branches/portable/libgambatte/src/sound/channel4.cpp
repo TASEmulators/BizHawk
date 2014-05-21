@@ -163,6 +163,16 @@ void Channel4::Lfsr::loadState(const SaveState &state) {
 	nr3 = state.mem.ioamhram.get()[0x122];
 }
 
+template<bool isReader>
+void Channel4::Lfsr::SyncState(NewState *ns)
+{
+	NSS(counter);
+	NSS(backupCounter);
+	NSS(reg);
+	NSS(nr3);
+	NSS(master);
+}
+
 Channel4::Channel4() :
 	staticOutputTest(*this, lfsr),
 	disableMaster(master, lfsr),
@@ -299,6 +309,26 @@ void Channel4::update(uint_least32_t *buf, const unsigned long soBaseVol, unsign
 		
 		cycleCounter -= SoundUnit::COUNTER_MAX;
 	}
+}
+
+SYNCFUNC(Channel4)
+{
+	SSS(lengthCounter);
+	SSS(envelopeUnit);
+	SSS(lfsr);
+
+	EBS(nextEventUnit, 0);
+	EVS(nextEventUnit, &lfsr, 1);
+	EVS(nextEventUnit, &envelopeUnit, 2);
+	EVS(nextEventUnit, &lengthCounter, 3);
+	EES(nextEventUnit, NULL);
+
+	NSS(cycleCounter);
+	NSS(soMask);
+	NSS(prevOut);
+	
+	NSS(nr4);
+	NSS(master);
 }
 
 }

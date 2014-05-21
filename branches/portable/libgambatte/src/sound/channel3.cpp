@@ -208,4 +208,27 @@ void Channel3::update(uint_least32_t *buf, const unsigned long soBaseVol, unsign
 	}
 }
 
+SYNCFUNC(Channel3)
+{
+	NSS(waveRam);
+	
+	SSS(lengthCounter);
+
+	NSS(cycleCounter);
+	NSS(soMask);
+	NSS(prevOut);
+	NSS(waveCounter);
+	NSS(lastReadTime);
+
+	NSS(nr0);
+	NSS(nr3);
+	NSS(nr4);
+	NSS(wavePos);
+	NSS(rShift);
+	NSS(sampleBuf);
+
+	NSS(master);
+	NSS(cgb);
+}
+
 }

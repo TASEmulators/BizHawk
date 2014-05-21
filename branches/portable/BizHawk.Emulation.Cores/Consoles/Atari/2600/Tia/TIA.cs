@@ -8,19 +8,104 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	// Emulates the TIA
 	public partial class TIA : IVideoProvider, ISoundProvider
 	{
-		private const int ScreenWidth = 160;
-		private const int MaxScreenHeight = 312;
 
-		private const byte CXP0 = 0x01;
-		private const byte CXP1 = 0x02;
-		private const byte CXM0 = 0x04;
-		private const byte CXM1 = 0x08;
-		private const byte CXPF = 0x10;
-		private const byte CXBL = 0x20;
+		#region palette
 
-		private readonly Atari2600 _core;
-		private readonly List<uint[]> _scanlinesBuffer = new List<uint[]>();
-		private readonly uint[] _palette = new uint[]
+		const int BackColor = unchecked((int)0xff000000);
+
+		static TIA()
+		{
+			// add alpha to palette entries
+			for (int i = 0; i < PALPalette.Length; i++)
+				PALPalette[i] |= unchecked((int)0xff000000);
+			for (int i = 0; i < NTSCPalette.Length; i++)
+				NTSCPalette[i] |= unchecked((int)0xff000000);
+		}
+
+		private static readonly int[] PALPalette =
+		{
+			0x000000, 0x000000, 0x2b2b2b, 0x2b2b2b,
+            0x525252, 0x525252, 0x767676, 0x767676,
+            0x979797, 0x979797, 0xb6b6b6, 0xb6b6b6,
+            0xd2d2d2, 0xd2d2d2, 0xececec, 0xececec,
+
+            0x000000, 0x000000, 0x2b2b2b, 0x2b2b2b,
+            0x525252, 0x525252, 0x767676, 0x767676,
+            0x979797, 0x979797, 0xb6b6b6, 0xb6b6b6,
+            0xd2d2d2, 0xd2d2d2, 0xececec, 0xececec,
+
+            0x805800, 0x000000, 0x96711a, 0x2b2b2b,
+            0xab8732, 0x525252, 0xbe9c48, 0x767676,
+            0xcfaf5c, 0x979797, 0xdfc06f, 0xb6b6b6,
+            0xeed180, 0xd2d2d2, 0xfce090, 0xececec,
+
+            0x445c00, 0x000000, 0x5e791a, 0x2b2b2b,
+            0x769332, 0x525252, 0x8cac48, 0x767676,
+            0xa0c25c, 0x979797, 0xb3d76f, 0xb6b6b6,
+            0xc4ea80, 0xd2d2d2, 0xd4fc90, 0xececec,
+
+            0x703400, 0x000000, 0x89511a, 0x2b2b2b,
+            0xa06b32, 0x525252, 0xb68448, 0x767676,
+            0xc99a5c, 0x979797, 0xdcaf6f, 0xb6b6b6,
+            0xecc280, 0xd2d2d2, 0xfcd490, 0xececec,
+
+            0x006414, 0x000000, 0x1a8035, 0x2b2b2b,
+            0x329852, 0x525252, 0x48b06e, 0x767676,
+            0x5cc587, 0x979797, 0x6fd99e, 0xb6b6b6,
+            0x80ebb4, 0xd2d2d2, 0x90fcc8, 0xececec,
+
+            0x700014, 0x000000, 0x891a35, 0x2b2b2b,
+            0xa03252, 0x525252, 0xb6486e, 0x767676,
+            0xc95c87, 0x979797, 0xdc6f9e, 0xb6b6b6,
+            0xec80b4, 0xd2d2d2, 0xfc90c8, 0xececec,
+
+            0x005c5c, 0x000000, 0x1a7676, 0x2b2b2b,
+            0x328e8e, 0x525252, 0x48a4a4, 0x767676,
+            0x5cb8b8, 0x979797, 0x6fcbcb, 0xb6b6b6,
+            0x80dcdc, 0xd2d2d2, 0x90ecec, 0xececec,
+
+            0x70005c, 0x000000, 0x841a74, 0x2b2b2b,
+            0x963289, 0x525252, 0xa8489e, 0x767676,
+            0xb75cb0, 0x979797, 0xc66fc1, 0xb6b6b6,
+            0xd380d1, 0xd2d2d2, 0xe090e0, 0xececec,
+
+            0x003c70, 0x000000, 0x195a89, 0x2b2b2b,
+            0x2f75a0, 0x525252, 0x448eb6, 0x767676,
+            0x57a5c9, 0x979797, 0x68badc, 0xb6b6b6,
+            0x79ceec, 0xd2d2d2, 0x88e0fc, 0xececec,
+
+            0x580070, 0x000000, 0x6e1a89, 0x2b2b2b,
+            0x8332a0, 0x525252, 0x9648b6, 0x767676,
+            0xa75cc9, 0x979797, 0xb76fdc, 0xb6b6b6,
+            0xc680ec, 0xd2d2d2, 0xd490fc, 0xececec,
+
+            0x002070, 0x000000, 0x193f89, 0x2b2b2b,
+            0x2f5aa0, 0x525252, 0x4474b6, 0x767676,
+            0x578bc9, 0x979797, 0x68a1dc, 0xb6b6b6,
+            0x79b5ec, 0xd2d2d2, 0x88c8fc, 0xececec,
+
+            0x340080, 0x000000, 0x4a1a96, 0x2b2b2b,
+            0x5f32ab, 0x525252, 0x7248be, 0x767676,
+            0x835ccf, 0x979797, 0x936fdf, 0xb6b6b6,
+            0xa280ee, 0xd2d2d2, 0xb090fc, 0xececec,
+
+            0x000088, 0x000000, 0x1a1a9d, 0x2b2b2b,
+            0x3232b0, 0x525252, 0x4848c2, 0x767676,
+            0x5c5cd2, 0x979797, 0x6f6fe1, 0xb6b6b6,
+            0x8080ef, 0xd2d2d2, 0x9090fc, 0xececec,
+
+            0x000000, 0x000000, 0x2b2b2b, 0x2b2b2b,
+            0x525252, 0x525252, 0x767676, 0x767676,
+            0x979797, 0x979797, 0xb6b6b6, 0xb6b6b6,
+            0xd2d2d2, 0xd2d2d2, 0xececec, 0xececec,
+
+            0x000000, 0x000000, 0x2b2b2b, 0x2b2b2b,
+            0x525252, 0x525252, 0x767676, 0x767676,
+            0x979797, 0x979797, 0xb6b6b6, 0xb6b6b6,
+            0xd2d2d2, 0xd2d2d2, 0xececec, 0xececec
+		};
+
+		private static readonly int[] NTSCPalette =
 		{
 			0x000000, 0, 0x4a4a4a, 0, 0x6f6f6f, 0, 0x8e8e8e, 0,
 			0xaaaaaa, 0, 0xc0c0c0, 0, 0xd6d6d6, 0, 0xececec, 0,
@@ -56,12 +141,29 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			0xbb9f47, 0, 0xd2b656, 0, 0xe8cc63, 0, 0xfce070, 0
 		};
 
+		#endregion
+
+		private const int ScreenWidth = 160;
+		private const int MaxScreenHeight = 312;
+
+		private const byte CXP0 = 0x01;
+		private const byte CXP1 = 0x02;
+		private const byte CXM0 = 0x04;
+		private const byte CXM1 = 0x08;
+		private const byte CXPF = 0x10;
+		private const byte CXBL = 0x20;
+
+		private readonly Atari2600 _core;
+		private int[] _scanlinebuffer = new int[ScreenWidth * MaxScreenHeight];
+
+		private readonly int[] _palette = NTSCPalette; // todo: make this NTSC or PAL, obviously
+
 		private byte _hsyncCnt;
 		private int _capChargeStart;
 		private bool _capCharging;
 		private bool _vblankEnabled;
 		private bool _vsyncEnabled;
-		private uint[] _scanline = new uint[160];
+		private int _CurrentScanLine;
 
 		private PlayerData _player0;
 		private PlayerData _player1;
@@ -80,7 +182,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public int CurrentScanLine
 		{
-			get { return _scanlinesBuffer.Count; }
+			get { return _CurrentScanLine; }
 		}
 
 		public bool IsVBlank
@@ -93,7 +195,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			get { return _vsyncEnabled; }
 		}
 
-		public bool FrameComplete { get; set; }
+		/// <summary>
+		/// a count of lines emulated; incremented by the TIA but not used by it
+		/// </summary>
+		public int LineCount { get; set; }
+
 		public int MaxVolume { get; set; }
 
 		public int VirtualWidth
@@ -115,10 +221,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			get
 			{
-				if (false)
-					return _core.Settings.PALBottomLine - _core.Settings.PALTopLine;
-				else
-					return _core.Settings.NTSCBottomLine - _core.Settings.NTSCTopLine;
+				// TODO PAL support
+				//if (false)
+				//	return _core.Settings.PALBottomLine - _core.Settings.PALTopLine;
+				//else
+				return _core.Settings.NTSCBottomLine - _core.Settings.NTSCTopLine;
 			}
 		}
 
@@ -139,7 +246,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_capCharging = false;
 			_vblankEnabled = false;
 			_vsyncEnabled = false;
-			_scanline = new uint[160];
+			_CurrentScanLine = 0;
 
 			_player0 = new PlayerData();
 			_player1 = new PlayerData();
@@ -208,7 +315,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 
 				// Pick the pixel color from collisions
-				uint pixelColor = 0x000000;
+				int pixelColor = BackColor;
 				if (_core.Settings.ShowBG)
 				{
 					pixelColor = _palette[_playField.BkColor];
@@ -236,7 +343,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				if ((collisions & CXBL) != 0)
 				{
 					_ball.Collisions |= collisions;
-					if (_core.Settings.ShowBall) 
+					if (_core.Settings.ShowBall)
 					{
 						pixelColor = _palette[_playField.PfColor];
 					}
@@ -293,12 +400,22 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				// Handle vblank
 				if (_vblankEnabled)
 				{
-					pixelColor = 0x000000;
+					pixelColor = BackColor;
 				}
 
 				// Add the pixel to the scanline
 				// TODO: Remove this magic number (68)
-				_scanline[_hsyncCnt - 68] = pixelColor;
+
+				int y = _CurrentScanLine;
+				// y >= max screen height means lag frame or game crashed, but is a legal situation.
+				// either way, there's nothing to display
+				if (y < MaxScreenHeight)
+				{
+					int x = _hsyncCnt - 68;
+					if (x < 0 || x > 159) // this can't happen, right?
+						throw new Exception(); // TODO
+					_scanlinebuffer[_CurrentScanLine * ScreenWidth + x] = pixelColor;
+				}
 			}
 
 			// ---- Things that happen every time ----
@@ -464,46 +581,32 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (_hsyncCnt == 0)
 			{
 				_hmove.LateHBlankReset = false;
-				_scanlinesBuffer.Add(_scanline);
-				_scanline = new uint[160];
-			}
-
-			if (_scanlinesBuffer.Count >= 1024)
-			{
-				/* if a rom never toggles vsync, FrameAdvance() will hang while consuming
-				 * huge amounts of ram.  this is most certainly due to emulation defects
-				 * that need to be fixed; but it's preferable to not crash the emulator
-				 * in such situations
-				 */
-				OutputFrame();
-				_scanlinesBuffer.Clear();
-				FrameComplete = true;
+				_CurrentScanLine++;
+				LineCount++;
 			}
 		}
 
 		public int[] FrameBuffer = new int[ScreenWidth * MaxScreenHeight];
 
-		public void OutputFrame()
+		void OutputFrame(int validlines)
 		{
-			var topLine = _core.Settings.NTSCTopLine;
-			var bottomLine = _core.Settings.NTSCBottomLine;
+			int topLine = _core.Settings.NTSCTopLine;
+			int bottomLine = _core.Settings.NTSCBottomLine;
 
-			for (int row = topLine; row < bottomLine; row++)
+			// if vsync occured unexpectedly early, black out the remainer
+			for (; validlines < bottomLine; validlines++)
 			{
-				for (int col = 0; col < ScreenWidth; col++)
-				{
-					if (_scanlinesBuffer.Count > row)
-					{
-						FrameBuffer[((row - topLine) * ScreenWidth) + col] = (int)(_scanlinesBuffer[row][col] | 0xFF000000);
-					}
-					else
-					{
-						FrameBuffer[((row - topLine) * ScreenWidth) + col] = unchecked((int)0xFF000000);
-					}
-				}
+				for (int i = 0; i < 160; i++)
+					_scanlinebuffer[validlines * 160 + i] = BackColor;
 			}
+
+			int srcbytes = sizeof(int) * ScreenWidth * topLine;
+			int count = bottomLine - topLine; // no +1, as the bottom line number is not inclusive
+			count *= sizeof(int) * ScreenWidth;
+
+			Buffer.BlockCopy(_scanlinebuffer, srcbytes, FrameBuffer, 0, count);
 		}
-		
+
 		public byte ReadMemory(ushort addr, bool peek)
 		{
 			var maskedAddr = (ushort)(addr & 0x000F);
@@ -511,42 +614,42 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				return (byte)((((_player0.Missile.Collisions & CXP1) != 0) ? 0x80 : 0x00) | (((_player0.Missile.Collisions & CXP0) != 0) ? 0x40 : 0x00));
 			}
-			
+
 			if (maskedAddr == 0x01) // CXM1P
 			{
 				return (byte)((((_player1.Missile.Collisions & CXP0) != 0) ? 0x80 : 0x00) | (((_player1.Missile.Collisions & CXP1) != 0) ? 0x40 : 0x00));
 			}
-			
+
 			if (maskedAddr == 0x02) // CXP0FB
 			{
 				return (byte)((((_player0.Collisions & CXPF) != 0) ? 0x80 : 0x00) | (((_player0.Collisions & CXBL) != 0) ? 0x40 : 0x00));
 			}
-			
+
 			if (maskedAddr == 0x03) // CXP1FB
 			{
 				return (byte)((((_player1.Collisions & CXPF) != 0) ? 0x80 : 0x00) | (((_player1.Collisions & CXBL) != 0) ? 0x40 : 0x00));
 			}
-			
+
 			if (maskedAddr == 0x04) // CXM0FB
 			{
 				return (byte)((((_player0.Missile.Collisions & CXPF) != 0) ? 0x80 : 0x00) | (((_player0.Missile.Collisions & CXBL) != 0) ? 0x40 : 0x00));
 			}
-			
+
 			if (maskedAddr == 0x05) // CXM1FB
 			{
 				return (byte)((((_player1.Missile.Collisions & CXPF) != 0) ? 0x80 : 0x00) | (((_player1.Missile.Collisions & CXBL) != 0) ? 0x40 : 0x00));
 			}
-			
+
 			if (maskedAddr == 0x06) // CXBLPF
 			{
 				return (byte)(((_ball.Collisions & CXPF) != 0) ? 0x80 : 0x00);
 			}
-			
+
 			if (maskedAddr == 0x07) // CXPPMM
 			{
 				return (byte)((((_player0.Collisions & CXP1) != 0) ? 0x80 : 0x00) | (((_player0.Missile.Collisions & CXM1) != 0) ? 0x40 : 0x00));
 			}
-			
+
 			if (maskedAddr == 0x08) // INPT0
 			{
 				// Changing the hard coded value will change the paddle position. The range seems to be roughly 0-56000 according to values from stella
@@ -558,12 +661,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 				return 0x00;
 			}
-			
+
 			if (maskedAddr == 0x0C) // INPT4
 			{
 				return (byte)((_core.ReadControls1(peek) & 0x08) != 0 ? 0x80 : 0x00);
 			}
-			
+
 			if (maskedAddr == 0x0D) // INPT5
 			{
 				return (byte)((_core.ReadControls2(peek) & 0x08) != 0 ? 0x80 : 0x00);
@@ -588,14 +691,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					// When VSYNC is disabled, this will be the first line of the new frame
 
 					// write to frame buffer
-					OutputFrame();
+					OutputFrame(_CurrentScanLine);
+
+					//Console.WriteLine("@{0}", _CurrentScanLine);
 
 					// Clear all from last frame
-					_scanlinesBuffer.Clear();
+					_CurrentScanLine = 0;
 
 					// Frame is done
-					FrameComplete = true;
-
 					_vsyncEnabled = false;
 
 					// Do not reset hsync, since we're on the first line of the new frame
@@ -883,7 +986,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private int frameStartCycles, frameEndCycles;
 		private Queue<QueuedCommand> commands = new Queue<QueuedCommand>(4096);
-		
+
 		public void BeginAudioFrame()
 		{
 			frameStartCycles = _core.Cpu.TotalExecutedCycles;
@@ -954,8 +1057,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				samples[i] += AUD[1].Cycle();
 			}
 		}
-	
-		public void DiscardSamples() 
+
+		public void DiscardSamples()
 		{
 			commands.Clear();
 		}
@@ -968,6 +1071,15 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_ball.SyncState(ser);
 			_hmove.SyncState(ser);
 			ser.Sync("hsyncCnt", ref _hsyncCnt);
+			// some of these things weren't in the state because they weren't needed if
+			// states were always taken at frame boundaries
+			ser.Sync("capChargeStart", ref _capChargeStart);
+			ser.Sync("capCharging", ref _capCharging);
+			ser.Sync("vblankEnabled", ref _vblankEnabled);
+			ser.Sync("vsyncEnabled", ref _vsyncEnabled);
+			ser.Sync("CurrentScanLine", ref _CurrentScanLine);
+			ser.Sync("scanlinebuffer", ref _scanlinebuffer, false);
+
 			ser.BeginSection("Player0");
 			_player0.SyncState(ser);
 			ser.EndSection();
