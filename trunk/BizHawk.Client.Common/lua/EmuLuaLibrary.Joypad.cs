@@ -6,9 +6,10 @@ namespace BizHawk.Client.Common
 	public class JoypadLuaLibrary : LuaLibraryBase
 	{
 		public JoypadLuaLibrary(Lua lua)
-		{
-			Lua = lua;
-		}
+			: base(lua) { }
+
+		public JoypadLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
 
 		public override string Name { get { return "joypad"; } }
 

@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+
+using LuaInterface;
 
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
@@ -11,6 +14,12 @@ namespace BizHawk.Client.Common
 		// perhaps with the new core config system, one could
 		// automatically bring out all of the settings to a lua table, with names.  that
 		// would be completely arbitrary and would remove the whole requirement for this mess
+		public NesLuaLibrary(Lua lua)
+			: base(lua) { }
+
+		public NesLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
+
 		public override string Name { get { return "nes"; } }
 
 		[LuaMethodAttributes(

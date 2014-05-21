@@ -7,12 +7,14 @@ namespace BizHawk.Client.Common
 {
 	public class MemoryLuaLibrary : LuaLibraryBase
 	{
+		// TODO: when is this ever set by default?
 		private int _currentMemoryDomain; // Main memory by default
 
 		public MemoryLuaLibrary(Lua lua)
-		{
-			Lua = lua;
-		}
+			: base(lua) { }
+
+		public MemoryLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
 
 		public override string Name { get { return "memory"; } }
 

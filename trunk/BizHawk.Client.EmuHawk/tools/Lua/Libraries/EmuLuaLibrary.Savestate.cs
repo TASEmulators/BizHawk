@@ -1,10 +1,19 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+
+using LuaInterface;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public class SavestateLuaLibrary : LuaLibraryBase
 	{
+		public SavestateLuaLibrary(Lua lua)
+			: base(lua) { }
+
+		public SavestateLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
+
 		public override string Name { get { return "savestate"; } }
 
 		[LuaMethodAttributes(

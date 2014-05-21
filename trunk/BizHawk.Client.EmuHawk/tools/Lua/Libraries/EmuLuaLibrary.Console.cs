@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -9,6 +10,12 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class ConsoleLuaLibrary : LuaLibraryBase
 	{
+		public ConsoleLuaLibrary(Lua lua)
+			: base(lua) { }
+
+		public ConsoleLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
+
 		public override string Name { get { return "console"; } }
 
 		[LuaMethodAttributes(

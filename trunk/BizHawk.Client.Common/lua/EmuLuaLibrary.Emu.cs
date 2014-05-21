@@ -16,9 +16,15 @@ namespace BizHawk.Client.Common
 		private readonly Action _frameAdvanceCallback;
 		private readonly Action _yieldCallback;
 
-		public EmulatorLuaLibrary(Lua lua, Action frameAdvanceCallback, Action yieldCallback)
+		public EmulatorLuaLibrary(Lua lua)
+			: base(lua) { }
+
+		public EmulatorLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
+
+		public EmulatorLuaLibrary(Lua lua,  Action<string> logOutputCallback, Action frameAdvanceCallback, Action yieldCallback)
+			: this(lua, logOutputCallback)
 		{
-			Lua = lua;
 			_frameAdvanceCallback = frameAdvanceCallback;
 			_yieldCallback = yieldCallback;
 		}
