@@ -29,7 +29,11 @@ namespace BizHawk.Client.EmuHawk
 			_caller = passed.Get();
 
 			// Register lua libraries
+			
 			_lua.RegisterFunction("print", this, GetType().GetMethod("Print"));
+
+			// TODO: Search the assemblies for objects that inherit LuaBaseLibrary, and instantiate and register them and put them into an array,
+			// rather than call them all by name here
 
 			_formsLibrary = new FormsLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput);
 			_formsLibrary.LuaRegister(Docs);
@@ -44,11 +48,13 @@ namespace BizHawk.Client.EmuHawk
 			new EmuHawkLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
 			new ConsoleLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
 
-			new EmulatorLuaLibrary(
-				_lua,
-				ConsoleLuaLibrary.LogOutput,
-				Frameadvance,
-				EmuYield).LuaRegister(Docs);
+			var emuLib = new EmulatorLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput)
+			{
+				FrameAdvanceCallback = Frameadvance,
+				YieldCallback = EmuYield
+			};
+
+			emuLib.LuaRegister(Docs);
 
 			new InputLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
 			new JoypadLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
