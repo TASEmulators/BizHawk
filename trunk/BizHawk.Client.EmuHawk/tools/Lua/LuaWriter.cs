@@ -576,7 +576,7 @@ namespace BizHawk.Client.EmuHawk
 				sfd.FileName = "NULL";
 				sfd.InitialDirectory = PathManager.GetLuaPath();
 			}
-			sfd.Filter = "Watch Files (*.lua)|*.lua|All Files|*.*";
+			sfd.Filter = "Lua Script Files (*.lua)|*.lua|All Files|*.*";
 			sfd.RestoreDirectory = true;
 			var result = sfd.ShowHawkDialog();
 			if (result != DialogResult.OK)
