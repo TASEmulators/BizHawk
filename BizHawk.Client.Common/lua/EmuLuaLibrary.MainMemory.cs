@@ -1,5 +1,4 @@
 ﻿using System;
-
 using LuaInterface;
 
 namespace BizHawk.Client.Common
@@ -8,9 +7,10 @@ namespace BizHawk.Client.Common
 	public class MainMemoryLuaLibrary : LuaLibraryBase
 	{
 		public MainMemoryLuaLibrary(Lua lua)
-		{
-			Lua = lua;
-		}
+			: base(lua) { }
+
+		public MainMemoryLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
 
 		public override string Name { get { return "mainmemory"; } }
 

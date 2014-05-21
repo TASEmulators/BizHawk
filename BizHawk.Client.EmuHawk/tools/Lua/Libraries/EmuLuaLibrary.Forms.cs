@@ -11,6 +11,12 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class FormsLuaLibrary : LuaLibraryBase
 	{
+		public FormsLuaLibrary(Lua lua)
+			: base(lua) { }
+
+		public FormsLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
+
 		// TODO: replace references to ConsoleLuaLibrary.Log with a callback that is passed in
 		public override string Name { get { return "forms"; } }
 

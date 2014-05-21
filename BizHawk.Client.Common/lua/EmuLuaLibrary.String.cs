@@ -10,9 +10,10 @@ namespace BizHawk.Client.Common
 		public override string Name { get { return "bizstring"; } }
 
 		public StringLuaLibrary(Lua lua)
-		{
-			Lua = lua;
-		}
+			: base(lua) { }
+
+		public StringLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
 
 		[LuaMethodAttributes(
 			"hex",

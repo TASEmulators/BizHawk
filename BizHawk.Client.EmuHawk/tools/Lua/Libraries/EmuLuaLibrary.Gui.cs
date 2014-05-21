@@ -10,6 +10,12 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class GuiLuaLibrary : LuaLibraryBase
 	{
+		public GuiLuaLibrary(Lua lua)
+			: base(lua) { }
+
+		public GuiLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
+
 		public override string Name { get { return "gui"; } }
 
 		#region Gui API

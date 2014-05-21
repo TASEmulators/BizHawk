@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -9,9 +10,10 @@ namespace BizHawk.Client.EmuHawk
 	public class InputLuaLibrary : LuaLibraryBase
 	{
 		public InputLuaLibrary(Lua lua)
-		{
-			Lua = lua;
-		}
+			: base(lua) { }
+
+		public InputLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
 
 		public override string Name { get { return "input"; } }
 

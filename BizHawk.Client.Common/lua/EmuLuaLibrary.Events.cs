@@ -9,10 +9,11 @@ namespace BizHawk.Client.Common
 	{
 		private readonly LuaFunctionList _luaFunctions = new LuaFunctionList();
 
-		public EventLuaLibrary(Action<object> logOutputCallback)
-		{
-			LogOutputCallback = logOutputCallback;
-		}
+		public EventLuaLibrary(Lua lua)
+			: base(lua) { }
+
+		public EventLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
 
 		public override string Name { get { return "event"; } }
 

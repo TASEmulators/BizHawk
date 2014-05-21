@@ -1,13 +1,16 @@
-﻿using LuaInterface;
+﻿using System;
+using LuaInterface;
 
 namespace BizHawk.Client.Common
 {
 	public class MovieLuaLibrary : LuaLibraryBase
 	{
 		public MovieLuaLibrary(Lua lua)
-		{
-			Lua = lua;
-		}
+			: base(lua) { }
+
+		public MovieLuaLibrary(Lua lua, Action<string> logOutputCallback)
+			: base(lua, logOutputCallback) { }
+
 
 		public override string Name { get { return "movie"; } }
 
