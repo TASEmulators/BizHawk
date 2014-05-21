@@ -200,6 +200,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		/// </summary>
 		public int LineCount { get; set; }
 
+		/// <summary>
+		/// called at the end of a video frame.  used internally
+		/// </summary>
+		public Action<int> FrameEndCallBack { get; set; }
+
 		public int MaxVolume { get; set; }
 
 		public int VirtualWidth
@@ -693,7 +698,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					// write to frame buffer
 					OutputFrame(_CurrentScanLine);
 
-					//Console.WriteLine("@{0}", _CurrentScanLine);
+					if (FrameEndCallBack != null)
+						FrameEndCallBack(_CurrentScanLine);
 
 					// Clear all from last frame
 					_CurrentScanLine = 0;

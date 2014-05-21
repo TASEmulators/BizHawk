@@ -219,7 +219,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		}
 
 		public void StoreSaveRam(byte[] data) { }
-		
+
 		public void ClearSaveRam() { }
 
 		public void SaveStateText(TextWriter writer)
@@ -252,5 +252,22 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		}
 
 		public void Dispose() { }
+
+		private static bool DetectPal(GameInfo game, byte[] rom)
+		{
+			var comm = new CoreComm(null, null);
+			comm.InputCallback = new InputCallbackSystem();
+
+			Atari2600 emu = new Atari2600(new CoreComm(null, null), game, rom, null, null);
+			emu.Controller = new NullController();
+
+			List<int> framecounts = new List<int>();
+			emu._tia.FrameEndCallBack = (i) => framecounts.Add(i);
+			for (int i = 0; i < 71; i++) // run for 71 * 262 lines, since we're in NTSC mode
+				emu.FrameAdvance(false, false);
+			int numpal = framecounts.Where((i) => i > 287).Count();
+			Console.WriteLine("{0} PAL", numpal);
+			return numpal >= 25;
+		}
 	}
 }
