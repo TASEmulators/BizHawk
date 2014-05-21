@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				AssertChr(0);
 			}
 
-			AssertWram(0);
+			Cart.wram_size = 0;
 			// not sure on initial mirroring
 			SetMirrorType(EMirrorType.Vertical);
 			return true;
