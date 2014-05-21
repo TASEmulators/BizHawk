@@ -82,7 +82,7 @@ namespace BizHawk.Client.Common
 
 			foreach (var floatButton in m.Type.FloatControls)
 			{
-				Global.StickyXORAdapter.SetFloat(floatButton, m.GetFloat(floatButton));
+				Global.LuaAndAdaptor.SetFloat(floatButton, m.GetFloat(floatButton));
 			}
 		}
 
