@@ -144,13 +144,16 @@ namespace BizHawk.Client.Common
 		public LuaTable Split(string str, string separator)
 		{
 			var table = Lua.NewTable();
-			var splitStr = str.Split(
-				new char[] { separator.FirstOrDefault() },
-				StringSplitOptions.RemoveEmptyEntries);
-
-			for(int i = 0; i < splitStr.Length; i++)
+			if (!string.IsNullOrEmpty(str))
 			{
-				table[i] = splitStr[i];
+				var splitStr = str.Split(
+					new char[] { separator.FirstOrDefault() },
+					StringSplitOptions.RemoveEmptyEntries);
+
+				for (int i = 0; i < splitStr.Length; i++)
+				{
+					table[i] = splitStr[i];
+				}
 			}
 
 			return table;
