@@ -255,19 +255,21 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private static bool DetectPal(GameInfo game, byte[] rom)
 		{
+			// give the emu a minimal of input\output connections so it doesn't crash
 			var comm = new CoreComm(null, null);
 			comm.InputCallback = new InputCallbackSystem();
+			using (Atari2600 emu = new Atari2600(new CoreComm(null, null), game, rom, null, null))
+			{
+				emu.Controller = new NullController();
 
-			Atari2600 emu = new Atari2600(new CoreComm(null, null), game, rom, null, null);
-			emu.Controller = new NullController();
-
-			List<int> framecounts = new List<int>();
-			emu._tia.FrameEndCallBack = (i) => framecounts.Add(i);
-			for (int i = 0; i < 71; i++) // run for 71 * 262 lines, since we're in NTSC mode
-				emu.FrameAdvance(false, false);
-			int numpal = framecounts.Where((i) => i > 287).Count();
-			Console.WriteLine("{0} PAL", numpal);
-			return numpal >= 25;
+				List<int> framecounts = new List<int>();
+				emu._tia.FrameEndCallBack = (i) => framecounts.Add(i);
+				for (int i = 0; i < 71; i++) // run for 71 * 262 lines, since we're in NTSC mode
+					emu.FrameAdvance(false, false);
+				int numpal = framecounts.Count((i) => i > 287);
+				Console.WriteLine("{0} PAL", numpal);
+				return numpal >= 25;
+			}
 		}
 	}
 }
