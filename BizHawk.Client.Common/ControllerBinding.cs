@@ -163,6 +163,11 @@ namespace BizHawk.Client.Common
 				_buttons[button] = controller[button];
 			}
 
+			foreach (var button in controller.FloatOverrides)
+			{
+				_floatButtons[button] = controller.GetFloat(button);
+			}
+
 			foreach (var button in controller.InversedButtons)
 			{
 				_buttons[button] ^= true;
