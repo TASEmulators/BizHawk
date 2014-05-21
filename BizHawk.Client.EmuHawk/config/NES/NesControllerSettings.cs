@@ -63,8 +63,9 @@ namespace BizHawk.Client.EmuHawk
 			if (changed)
 			{
 				GlobalWin.MainForm.PutCoreSyncSettings(SyncSettings);
-				GlobalWin.MainForm.FlagNeedsReboot();
-				GlobalWin.OSD.AddMessage("Controller settings saved but a core reboot is required");
+				// redundant -- MainForm.PutCoreSyncSettings() flags reboot when it is needed
+				// GlobalWin.MainForm.FlagNeedsReboot();
+				// GlobalWin.OSD.AddMessage("Controller settings saved but a core reboot is required");
 			}
 
 			DialogResult = DialogResult.OK;
