@@ -96,23 +96,26 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return ReadMemory(addr);
 		}
 
-		public override void WriteMemory(ushort addr, byte value)
+		private void WriteMem(ushort addr, byte value, bool poke)
 		{
-			if (addr == 0x003E)
+			if (!poke)
 			{
-				_hasRam = true;
-				_rambank1K = value;
-			}
-			else if (addr == 0x003F)
-			{
-				_hasRam = false;
-				if ((value << 11) < Core.Rom.Length)
+				if (addr == 0x003E)
 				{
-					_lowbank2K = value;
+					_hasRam = true;
+					_rambank1K = value;
 				}
-				else
+				else if (addr == 0x003F)
 				{
-					_lowbank2K = value & (Core.Rom.Length >> 11);
+					_hasRam = false;
+					if ((value << 11) < Core.Rom.Length)
+					{
+						_lowbank2K = value;
+					}
+					else
+					{
+						_lowbank2K = value & (Core.Rom.Length >> 11);
+					}
 				}
 			}
 
@@ -128,6 +131,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				_ram[(_rambank1K << 10) + (addr & 0x3FF)] = value;
 			}
+		}
+
+		public override void WriteMemory(ushort addr, byte value)
+		{
+			WriteMem(addr, value, poke: false);
+		}
+
+		public override void PokeMemory(ushort addr, byte value)
+		{
+			WriteMem(addr, value, poke: true);
 		}
 	}
 }

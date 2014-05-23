@@ -31,6 +31,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			Core.BaseWriteMemory(addr, value);
 		}
 
+		public virtual void PokeMemory(ushort addr, byte value)
+		{
+			Core.BasePokeMemory(addr, value);
+		}
+
 		public virtual void SyncState(Serializer ser) { }
 
 		public virtual void Dispose() { }

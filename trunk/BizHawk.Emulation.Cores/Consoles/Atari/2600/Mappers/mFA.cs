@@ -74,9 +74,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return ReadMem(addr, true);
 		}
 
-		public override void WriteMemory(ushort addr, byte value)
+		private void WriteMem(ushort addr, byte value, bool poke)
 		{
-			Address(addr);
+			if (!poke)
+			{
+				Address(addr);
+			}
+
 			if (addr < 0x1000)
 			{
 				base.WriteMemory(addr, value);
@@ -85,6 +89,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				_ram[addr & 0xFF] = value;
 			}
+		}
+
+		public override void WriteMemory(ushort addr, byte value)
+		{
+			WriteMem(addr, value, poke: false);
+		}
+
+		public override void PokeMemory(ushort addr, byte value)
+		{
+			WriteMem(addr, value, poke: true);
 		}
 
 		private void Address(ushort addr)
