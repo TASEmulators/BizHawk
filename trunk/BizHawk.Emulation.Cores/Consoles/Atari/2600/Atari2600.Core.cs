@@ -280,15 +280,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			};
 
 			// TODO: add to game db so we only run DetectPal() on unknown games
-			bool pal;
 			if (_game["PAL"])
-				pal = true;
+				_pal = true;
 			else if (_game["NTSC"])
-				pal = false;
+				_pal = false;
 			else
-				pal = DetectPal(_game, Rom);
+				_pal = DetectPal(_game, Rom);
 
-			_tia = new TIA(this, pal);
+			_tia = new TIA(this, _pal);
 			_tia.GetFrameRate(out CoreComm.VsyncNum, out CoreComm.VsyncDen);
 
 			// dcfilter coefficent is from real observed hardware behavior: a latched "1" will fully decay by ~170 or so tia sound cycles
@@ -308,6 +307,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					Util.Hash_SHA1(Rom), 
 					Util.Hash_MD5(Rom),
 					_mapper.GetType());
+		}
+
+		private bool _pal;
+
+		public DisplayType DisplayType
+		{
+			get { return _pal ? DisplayType.PAL : Common.DisplayType.NTSC; }
 		}
 
 		public void HardReset()
