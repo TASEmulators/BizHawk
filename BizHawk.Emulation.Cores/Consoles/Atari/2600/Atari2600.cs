@@ -101,7 +101,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public ISoundProvider SoundProvider { get { return _dcfilter; } }
 
-		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(_dcfilter, 735); } }
+		// todo: make this not so ugly
+		public ISyncSoundProvider SyncSoundProvider
+		{
+			get
+			{
+				return new FakeSyncSound(_dcfilter, CoreComm.VsyncRate > 55.0 ? 735 : 882);
+			}
+		}
 
 		public ControllerDefinition ControllerDefinition { get { return Atari2600ControllerDefinition; } }
 
