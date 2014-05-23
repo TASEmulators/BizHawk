@@ -219,8 +219,11 @@ template<typename T> inline void reconstruct(T* t) {
 
 void snes_init(void) {
 
-	//force everything to get initialized, even thuogh it probably already is
+	//force everything to get initialized, even though it probably already is
 	SNES::interface();
+
+	//zero 22-may-2014 - why not this too, for the sake of completeness? 
+	reconstruct(&SNES::cartridge);
 
 	//zero 01-dec-2012 - due to systematic variable initialization fails in bsnes components, these reconstructions are necessary,
 	//and the previous comment here which called this paranoid has been removed.
