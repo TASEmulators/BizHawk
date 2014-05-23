@@ -1854,7 +1854,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
 		{
-			new config.DisplayConfigLite().ShowDialog();
+			var result = new config.DisplayConfigLite().ShowDialog();
+			if (result == System.Windows.Forms.DialogResult.OK)
+				FrameBufferResized();
 		}
 
 		private void CoreSelectionContextSubMenu_DropDownOpened(object sender, EventArgs e)
