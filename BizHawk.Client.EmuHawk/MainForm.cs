@@ -3012,17 +3012,7 @@ namespace BizHawk.Client.EmuHawk
 					Global.Game.Status = nes.RomStatus;
 				}
 
-				string gamename = string.Empty;
-				if (!string.IsNullOrWhiteSpace(loader.Game.Name)) // Prefer Game db name, else use the path
-				{
-					gamename = loader.Game.Name;
-				}
-				else
-				{
-					gamename = Path.GetFileNameWithoutExtension(path.Split('|').Last());
-				}
-
-				Text = DisplayNameForSystem(loader.Game.System) + " - " + gamename;
+				Text = DisplayNameForSystem(loader.Game.System) + " - " + Global.Game.Name;
 
 				Global.Rewinder.ResetRewindBuffer();
 
