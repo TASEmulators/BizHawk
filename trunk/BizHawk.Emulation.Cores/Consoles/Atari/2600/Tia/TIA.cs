@@ -188,6 +188,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private bool _vblankEnabled;
 		private bool _vsyncEnabled;
 		private int _CurrentScanLine;
+		private int _audioClocks; // not savestated
 
 		private PlayerData _player0;
 		private PlayerData _player1;
@@ -278,6 +279,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_vblankEnabled = false;
 			_vsyncEnabled = false;
 			_CurrentScanLine = 0;
+			_audioClocks = 0;
 
 			_player0 = new PlayerData();
 			_player1 = new PlayerData();
@@ -614,6 +616,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				_hmove.LateHBlankReset = false;
 				_CurrentScanLine++;
 				LineCount++;
+				_audioClocks += 2; // TODO: increment this at the appropriate places twice per line
 			}
 		}
 
@@ -1050,9 +1053,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
+		// TODO: more accurate would be to have audio.Cycle() occur at
+		// the explicit exact times in the scanline, instead of just approximately spaced
 		public void GetSamples(short[] samples)
 		{
-			var samples31khz = new short[((samples.Length / 2) * 31380) / 44100];
+			var samples31khz = new short[_audioClocks]; // mono
 
 			int elapsedCycles = frameEndCycles - frameStartCycles;
 			if (elapsedCycles == 0)
@@ -1079,6 +1084,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				samples[i * 2] = samples31khz[(int)(((double)samples31khz.Length / (double)(samples.Length / 2)) * i)];
 				samples[(i * 2) + 1] = samples[i * 2];
 			}
+
+			_audioClocks = 0;
 		}
 
 		public void GetSamplesImmediate(short[] samples, int start, int len)
@@ -1093,6 +1100,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public void DiscardSamples()
 		{
 			commands.Clear();
+			_audioClocks = 0;
 		}
 
 		#endregion
