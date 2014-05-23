@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					8192,
 					MemoryDomain.Endian.Little,
 					addr => _mapper.PeekMemory((ushort) addr),
-					(addr, value) => { })
+					(addr, value) => _mapper.PokeMemory((ushort) addr, value)) 
 			};
 
 			CoreComm.CpuTraceAvailable = true;

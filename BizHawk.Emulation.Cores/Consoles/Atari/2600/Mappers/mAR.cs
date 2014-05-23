@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		// TODO: can we set the defaults instead of do it in the constructor?
 		// TODO: fastscbios setting
 		// TODO: var names, savestates, hard reset, dispose, cart ram
+		// TOOD: pokeMem
 		public mAR(Atari2600 core)
 		{
 			// TODO: clean this stuff up

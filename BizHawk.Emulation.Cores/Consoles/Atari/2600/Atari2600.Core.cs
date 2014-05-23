@@ -77,6 +77,23 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
+		public void BasePokeMemory(ushort addr, byte value)
+		{
+			addr = (ushort)(addr & 0x1FFF);
+			if ((addr & 0x1080) == 0)
+			{
+				_tia.WriteMemory(addr, value);
+			}
+			else if ((addr & 0x1080) == 0x0080)
+			{
+				M6532.WriteMemory(addr, value);
+			}
+			else
+			{
+				Console.WriteLine("ROM write(?):  " + addr.ToString("x"));
+			}
+		}
+
 		public byte ReadMemory(ushort addr)
 		{
 			if (addr != LastAddress)
@@ -110,6 +127,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_mapper.WriteMemory((ushort)(addr & 0x1FFF), value);
 
 			CoreComm.MemoryCallbackSystem.CallWrite(addr);
+		}
+
+		public void PokeMemory(ushort addr, byte value)
+		{
+			_mapper.PokeMemory((ushort)(addr & 0x1FFF), value);
 		}
 
 		public void ExecFetch(ushort addr)
