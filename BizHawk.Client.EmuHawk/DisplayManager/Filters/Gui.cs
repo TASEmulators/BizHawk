@@ -49,9 +49,15 @@ namespace BizHawk.Client.EmuHawk.Filters
 			//this doesnt make sense
 			if (!maintainAspect)
 				maintainInteger = false;
-			
+
 			float widthScale = (float)targetWidth / sourceWidth;
 			float heightScale = (float)targetHeight / sourceHeight;
+			//zero 22-may-2014 - added this to combat problem where nes would default to having sidebars
+			if (Global.Config.DispFixScaleInteger)
+			{
+				widthScale = (float)targetWidth / textureSize.Width;
+				heightScale = (float)targetHeight / textureSize.Height;
+			}
 			
 			if (maintainAspect)
 			{
@@ -185,6 +191,8 @@ namespace BizHawk.Client.EmuHawk.Filters
 			InputSize = state.SurfaceFormat.Size;
 			LL = new LetterboxingLogic(Global.Config.DispFixAspectRatio, Global.Config.DispFixScaleInteger, OutputSize.Width, OutputSize.Height, InputSize.Width, InputSize.Height, TextureSize, VirtualTextureSize);
 		}
+
+		public Size GetContentSize() { return new Size(LL.vw, LL.vh); }
 
 		public override Vector2 UntransformPoint(string channel, Vector2 point)
 		{
