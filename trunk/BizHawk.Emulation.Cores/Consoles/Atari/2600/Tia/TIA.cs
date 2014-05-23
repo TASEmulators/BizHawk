@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using System.Numerics;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
@@ -143,6 +144,29 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		#endregion
 
+		// in all cases, the TIA has 228 clocks per scanline
+		// the NTSC TIA has a clock rate of 3579575hz
+		// the PAL/SECAM TIA has a clock rate of 3546894hz
+
+		private bool _pal;
+
+		public int NominalNumScanlines
+		{
+			get
+			{
+				return _pal ? 312 : 262;
+			}
+		}
+
+		public void GetFrameRate(out int num, out int den)
+		{
+			int clockrate = _pal ? 3546894 : 3579575;
+			int clocksperframe = 228 * NominalNumScanlines;
+			int gcd = (int)BigInteger.GreatestCommonDivisor(clockrate, clocksperframe);
+			num = clockrate / gcd;
+			den = clocksperframe / gcd;
+		}
+
 		private const int ScreenWidth = 160;
 		private const int MaxScreenHeight = 312;
 
@@ -156,7 +180,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private readonly Atari2600 _core;
 		private int[] _scanlinebuffer = new int[ScreenWidth * MaxScreenHeight];
 
-		private readonly int[] _palette = NTSCPalette; // todo: make this NTSC or PAL, obviously
+		private readonly int[] _palette;
 
 		private byte _hsyncCnt;
 		private int _capChargeStart;
@@ -173,11 +197,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public Audio[] AUD = { new Audio(), new Audio() };
 
-		public TIA(Atari2600 core)
+		public TIA(Atari2600 core, bool pal)
 		{
 			_core = core;
 			_player0.ScanCnt = 8;
 			_player1.ScanCnt = 8;
+			_pal = pal;
+			_palette = _pal ? PALPalette : NTSCPalette;
 		}
 
 		public int CurrentScanLine
@@ -209,6 +235,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public int VirtualWidth
 		{
+			// TODO: PAL?
 			get { return 275; } //  275 comes from NTSC specs and the actual pixel clock of a 2600 TIA
 		}
 
@@ -226,11 +253,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			get
 			{
-				// TODO PAL support
-				//if (false)
-				//	return _core.Settings.PALBottomLine - _core.Settings.PALTopLine;
-				//else
-				return _core.Settings.NTSCBottomLine - _core.Settings.NTSCTopLine;
+				if (_pal)
+					return _core.Settings.PALBottomLine - _core.Settings.PALTopLine;
+				else
+					return _core.Settings.NTSCBottomLine - _core.Settings.NTSCTopLine;
 			}
 		}
 
@@ -595,8 +621,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		void OutputFrame(int validlines)
 		{
-			int topLine = _core.Settings.NTSCTopLine;
-			int bottomLine = _core.Settings.NTSCBottomLine;
+			int topLine = _pal ? _core.Settings.PALTopLine : _core.Settings.NTSCTopLine;
+			int bottomLine = _pal ? _core.Settings.PALBottomLine : _core.Settings.NTSCBottomLine;
 
 			// if vsync occured unexpectedly early, black out the remainer
 			for (; validlines < bottomLine; validlines++)

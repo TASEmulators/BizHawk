@@ -255,10 +255,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private static bool DetectPal(GameInfo game, byte[] rom)
 		{
+			// force NTSC mode for the new core we instantiate
+			var newgame = game.Clone();
+			if (newgame["PAL"])
+				newgame.RemoveOption("PAL");
+			if (!newgame["NTSC"])
+				newgame.AddOption("NTSC");
+
 			// give the emu a minimal of input\output connections so it doesn't crash
 			var comm = new CoreComm(null, null);
 			comm.InputCallback = new InputCallbackSystem();
-			using (Atari2600 emu = new Atari2600(new CoreComm(null, null), game, rom, null, null))
+			using (Atari2600 emu = new Atari2600(new CoreComm(null, null), newgame, rom, null, null))
 			{
 				emu.Controller = new NullController();
 
@@ -267,8 +274,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				for (int i = 0; i < 71; i++) // run for 71 * 262 lines, since we're in NTSC mode
 					emu.FrameAdvance(false, false);
 				int numpal = framecounts.Count((i) => i > 287);
-				Console.WriteLine("{0} PAL", numpal);
-				return numpal >= 25;
+				bool pal = numpal >= 25;
+				Console.WriteLine("PAL Detection: {0} lines, {1}", numpal, pal);
+				return pal;
 			}
 		}
 	}
