@@ -661,6 +661,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
+			game_name = choice.name;
 
 			//find a INESBoard to handle this
 			if (choice != null)
