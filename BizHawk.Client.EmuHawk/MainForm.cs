@@ -3004,7 +3004,7 @@ namespace BizHawk.Client.EmuHawk
 				if (loader.LoadedEmulator is NES)
 				{
 					var nes = loader.LoadedEmulator as NES;
-					if (nes.GameName != null)
+					if (!string.IsNullOrWhiteSpace(nes.GameName))
 					{
 						Global.Game.Name = nes.GameName;
 					}
