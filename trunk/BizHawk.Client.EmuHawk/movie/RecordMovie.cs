@@ -186,13 +186,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RecordMovie_Load(object sender, EventArgs e)
 		{
-			var name = PathManager.FilesystemSafeName(Global.Game);
-			if (string.IsNullOrEmpty(name))
-			{
-				name = Path.GetFileNameWithoutExtension(GlobalWin.MainForm.CurrentlyOpenRom.Split('|').Last());
-			}
-
-			RecordBox.Text = name;
+			RecordBox.Text = PathManager.FilesystemSafeName(Global.Game);
 			StartFromCombo.SelectedIndex = 0;
 			DefaultAuthorCheckBox.Checked = Global.Config.UseDefaultAuthor;
 			if (Global.Config.UseDefaultAuthor)
