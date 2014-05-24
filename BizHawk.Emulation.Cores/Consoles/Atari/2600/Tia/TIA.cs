@@ -237,7 +237,15 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public int VirtualWidth
 		{
 			// TODO: PAL?
-			get { return 275; } //  275 comes from NTSC specs and the actual pixel clock of a 2600 TIA
+			get
+			{
+				if (_pal)
+				{
+					return 320;
+				}
+
+				return 275; //  275 comes from NTSC specs and the actual pixel clock of a 2600 TIA
+			} 
 		}
 
 		public int VirtualHeight
