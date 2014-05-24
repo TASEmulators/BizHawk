@@ -1,37 +1,85 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class LuaFunctionsForm : Form
 	{
 		private readonly Sorting _columnSort = new Sorting();
-		
+
+		private List<LuaDocumentation.LibraryFunction> FunctionList = new List<LuaDocumentation.LibraryFunction>();
+
+		private List<LuaDocumentation.LibraryFunction> FilteredList
+		{
+			get
+			{
+				if (!string.IsNullOrWhiteSpace(FilterBox.Text))
+				{
+					return FunctionList
+						.Where(f => (f.Library + "." + f.Name).Contains(FilterBox.Text))
+						.ToList();
+				}
+
+				return FunctionList;
+			}
+		}
+
 		public LuaFunctionsForm()
 		{
 			InitializeComponent();
+			FunctionView.QueryItemText += FunctionView_QueryItemText;
+			FunctionView.QueryItemBkColor += FunctionView_QueryItemBkColor;
 		}
 
 		private void LuaFunctionList_Load(object sender, EventArgs e)
 		{
-			PopulateListView();
+			FunctionList = GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList.ToList();
+			UpdateList();
+			FilterBox.Focus();
 		}
 
-		private void PopulateListView()
+		private void FunctionView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			FunctionView.Items.Clear();
-			foreach (var libraryFunction in GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList)
+			
+		}
+
+		private void FunctionView_QueryItemText(int index, int column, out string text)
+		{
+			text = string.Empty;
+
+			try
 			{
-				var item = new ListViewItem { Text = libraryFunction.ReturnType };
-				item.SubItems.Add(libraryFunction.Library + ".");
-				item.SubItems.Add(libraryFunction.Name);
-				item.SubItems.Add(libraryFunction.ParameterList);
-				item.SubItems.Add(libraryFunction.Description);
-				FunctionView.Items.Add(item);
+				switch (column)
+				{
+					case 0:
+						text = FilteredList[index].ReturnType;
+						break;
+					case 1:
+						text = FilteredList[index].Library;
+						break;
+					case 2:
+						text = FilteredList[index].Name;
+						break;
+					case 3:
+						text = FilteredList[index].ParameterList;
+						break;
+					case 4:
+						text = FilteredList[index].Description;
+						break;
+				}
+			}
+			catch(Exception ex)
+			{
+				
 			}
 		}
+
 
 		private void OrderColumn(int column)
 		{
@@ -41,19 +89,19 @@ namespace BizHawk.Client.EmuHawk
 				switch (column)
 				{
 					case 0: // Return
-						GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList = GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList.OrderByDescending(x => x.ReturnType).ToList();
+						FunctionList = FunctionList.OrderByDescending(x => x.ReturnType).ToList();
 						break;
 					case 1: // Library
-						GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList = GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList.OrderByDescending(x => x.Library).ToList();
+						FunctionList = FunctionList.OrderByDescending(x => x.Library).ToList();
 						break;
 					case 2: // Name
-						GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList = GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList.OrderByDescending(x => x.Name).ToList();
+						FunctionList = FunctionList.OrderByDescending(x => x.Name).ToList();
 						break;
 					case 3: // Parameters
-						GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList = GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList.OrderByDescending(x => x.ParameterList).ToList();
+						FunctionList = FunctionList.OrderByDescending(x => x.ParameterList).ToList();
 						break;
 					case 4: // Description
-						GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList = GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList.OrderByDescending(x => x.Description).ToList();
+						FunctionList = FunctionList.OrderByDescending(x => x.Description).ToList();
 						break;
 				}
 			}
@@ -62,24 +110,24 @@ namespace BizHawk.Client.EmuHawk
 				switch (column)
 				{
 					case 0: // Return
-						GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList = GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList.OrderBy(x => x.ReturnType).ToList();
+						FunctionList = FunctionList.OrderBy(x => x.ReturnType).ToList();
 						break;
 					case 1: // Library
-						GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList = GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList.OrderBy(x => x.Library).ToList();
+						FunctionList = FunctionList.OrderBy(x => x.Library).ToList();
 						break;
 					case 2: // Name
-						GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList = GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList.OrderBy(x => x.Name).ToList();
+						FunctionList = FunctionList.OrderBy(x => x.Name).ToList();
 						break;
 					case 3: // Parameters
-						GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList = GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList.OrderBy(x => x.ParameterList).ToList();
+						FunctionList = FunctionList.OrderBy(x => x.ParameterList).ToList();
 						break;
 					case 4: // Description
-						GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList = GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList.OrderBy(x => x.Description).ToList();
+						FunctionList = FunctionList.OrderBy(x => x.Description).ToList();
 						break;
 				}
 			}
 
-			PopulateListView();
+			UpdateList();
 		}
 
 		private void Ok_Click(object sender, EventArgs e)
@@ -143,6 +191,16 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
+		}
+
+		private void UpdateList()
+		{
+			FunctionView.ItemCount = FilteredList.Count;
+		}
+
+		private void FilterBox_KeyUp(object sender, KeyEventArgs e)
+		{
+			UpdateList();
 		}
 	}
 }
