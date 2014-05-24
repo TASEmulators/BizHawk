@@ -688,21 +688,6 @@
     <Compile Include="tools\Lua\LuaWinform.Designer.cs">
       <DependentUpon>LuaWinform.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\Lua\LuaWriter.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Lua\LuaWriter.Designer.cs">
-      <DependentUpon>LuaWriter.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Lua\LuaWriterBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\Lua\LuaWriterColorConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Lua\LuaWriterColorConfig.Designer.cs">
-      <DependentUpon>LuaWriterColorConfig.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\Lua\SyncTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1193,12 +1178,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Lua\LuaWinform.resx">
       <DependentUpon>LuaWinform.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Lua\LuaWriter.resx">
-      <DependentUpon>LuaWriter.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Lua\LuaWriterColorConfig.resx">
-      <DependentUpon>LuaWriterColorConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\NES\NESDebugger.resx">
       <DependentUpon>NESDebugger.cs</DependentUpon>
