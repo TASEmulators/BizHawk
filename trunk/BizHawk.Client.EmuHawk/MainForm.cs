@@ -2955,8 +2955,13 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// Still needs a good bit of refactoring
-		public bool LoadRom(string path, bool deterministicemulation = false, bool hasmovie = false)
+		public bool LoadRom(string path, bool? deterministicemulation = null)
 		{
+			// If deterministic emulation is passed in, respect that value regardless, else determine a good value (currently that simply means movies require detemrinistic emulaton)
+			bool deterministic = deterministicemulation.HasValue ?
+				deterministicemulation.Value :
+				Global.MovieSession.Movie.IsActive;
+			
 			if (!GlobalWin.Tools.AskSave())
 			{
 				return false;
@@ -2965,7 +2970,8 @@ namespace BizHawk.Client.EmuHawk
 			var loader = new RomLoader
 				{
 					ChooseArchive = LoadArhiveChooser,
-					ChoosePlatform = ChoosePlatformForRom
+					ChoosePlatform = ChoosePlatformForRom,
+					Deterministic = deterministic
 				};
 
 			loader.OnLoadError += ShowLoadError;

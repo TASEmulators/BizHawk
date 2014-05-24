@@ -55,7 +55,7 @@ namespace BizHawk.Client.Common
 
 		public RomLoader()
 		{
-			Deterministic = true;
+
 		}
 
 		// TODO: reconsider the need for exposing these;
@@ -64,7 +64,7 @@ namespace BizHawk.Client.Common
 		public RomGame Rom { get; private set; }
 		public string CanonicalFullPath { get; private set; }
 
-		public bool Deterministic { get; private set; }
+		public bool Deterministic { get; set; }
 
 		public class RomErrorArgs : EventArgs
 		{
