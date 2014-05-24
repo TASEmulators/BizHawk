@@ -279,13 +279,18 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				OnExecFetch = this.ExecFetch
 			};
 
-			// TODO: add to game db so we only run DetectPal() on unknown games
 			if (_game["PAL"])
+			{
 				_pal = true;
+			}
 			else if (_game["NTSC"])
+			{
 				_pal = false;
+			}
 			else
+			{
 				_pal = DetectPal(_game, Rom);
+			}
 
 			_tia = new TIA(this, _pal);
 			_tia.GetFrameRate(out CoreComm.VsyncNum, out CoreComm.VsyncDen);
