@@ -60,7 +60,13 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_syncSettingsHack = ConfigService.LoadWithType(s);
 				}
-				LoadRom(GlobalWin.MainForm.CurrentlyOpenRom, true, !record);
+
+				if (record) // This is a hack really, the movie isn't active yet unless I do this, and LoadRom wants to know if it is
+				{
+					Global.MovieSession.Movie.SwitchToRecord();
+				}
+
+				LoadRom(GlobalWin.MainForm.CurrentlyOpenRom);
 			}
 			finally
 			{
@@ -156,7 +162,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				LoadRom(CurrentlyOpenRom, true, true);
+				LoadRom(CurrentlyOpenRom);
 				if (Global.MovieSession.Movie.Header.StartsFromSavestate)
 				{
 					byte[] state = Convert.FromBase64String(Global.MovieSession.Movie.Header.SavestateBinaryBase64Blob);
