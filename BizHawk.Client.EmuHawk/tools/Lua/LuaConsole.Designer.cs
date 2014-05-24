@@ -528,6 +528,7 @@
 			// FunctionsListMenuItem
 			// 
 			this.FunctionsListMenuItem.Name = "FunctionsListMenuItem";
+			this.FunctionsListMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
 			this.FunctionsListMenuItem.Size = new System.Drawing.Size(202, 22);
 			this.FunctionsListMenuItem.Text = "&Lua Functions List";
 			this.FunctionsListMenuItem.Click += new System.EventHandler(this.FunctionsListMenuItem_Click);
