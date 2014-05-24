@@ -97,9 +97,6 @@ namespace BizHawk.Client.EmuHawk
 					LoadSessionFromRecent(Global.Config.RecentLuaSession[0]);
 				}
 			}
-
-			NewScriptToolbarItem.Visible = VersionInfo.INTERIM;
-			NewScriptMenuItem.Visible = VersionInfo.INTERIM;
 		}
 
 		public void Restart()
@@ -547,12 +544,6 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		private void OpenLuaWriter(string path)
-		{
-			var writer = new LuaWriter(this) { CurrentFile = path };
-			writer.Show();
-		}
-
 		private Point GetPromptPoint()
 		{
 			return PointToScreen(
@@ -660,13 +651,33 @@ namespace BizHawk.Client.EmuHawk
 			SelectAllMenuItem.Enabled = _luaList.Any();
 			StopAllScriptsMenuItem.Enabled = _luaList.Any(script => script.Enabled);
 			RegisteredFunctionsMenuItem.Enabled = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Any();
-
-			NewScriptMenuItem.Visible = VersionInfo.INTERIM;
 		}
 
 		private void NewScriptMenuItem_Click(object sender, EventArgs e)
 		{
-			OpenLuaWriter(null);
+			var sfd = new SaveFileDialog
+			{
+				InitialDirectory = !string.IsNullOrWhiteSpace(_luaList.Filename) ? 
+					Path.GetDirectoryName(_luaList.Filename) :
+					PathManager.MakeAbsolutePath(Global.Config.PathEntries.LuaPathFragment, null),
+				DefaultExt = ".lua",
+				FileName = !string.IsNullOrWhiteSpace(_luaList.Filename) ?
+					Path.GetFileNameWithoutExtension(_luaList.Filename) :
+					Path.GetFileNameWithoutExtension(Global.Game.Name),
+					OverwritePrompt = true,
+				Filter = "Lua Scripts (*.lua)|*.lua|All Files (*.*)|*.*"
+			};
+
+			var result = sfd.ShowHawkDialog();
+			if (result == DialogResult.OK
+				&& !string.IsNullOrWhiteSpace(sfd.FileName))
+			{
+				string defaultTemplate = "while true do\n\temu.frameadvance();\nend";
+				File.WriteAllText(sfd.FileName, defaultTemplate);
+				_luaList.Add(new LuaFile(Path.GetFileNameWithoutExtension(sfd.FileName), sfd.FileName));
+				UpdateDialog();
+				System.Diagnostics.Process.Start(sfd.FileName);
+			}
 		}
 
 		private void OpenScriptMenuItem_Click(object sender, EventArgs e)
@@ -930,18 +941,6 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region Toolbar and Context Menu
-
-		private void EditToolbarItem_Click(object sender, EventArgs e)
-		{
-			if (VersionInfo.INTERIM)
-			{
-				SelectedFiles.ToList().ForEach(x => OpenLuaWriter(x.Path));
-			}
-			else
-			{
-				EditScriptMenuItem_Click(sender, e);
-			}
-		}
 
 		private void ScriptListContextMenu_Opening(object sender, CancelEventArgs e)
 		{
