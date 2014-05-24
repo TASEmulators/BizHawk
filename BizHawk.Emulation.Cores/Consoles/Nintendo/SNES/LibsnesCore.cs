@@ -365,7 +365,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 				CurrLoadParams = new LoadParams()
 				{
-					type = LoadParamType.Normal,
+					type = LoadParamType.SuperGameBoy,
 					rom_xml = null,
 					rom_data = sgbRomData,
 					rom_size = (uint)sgbRomData.Length,
