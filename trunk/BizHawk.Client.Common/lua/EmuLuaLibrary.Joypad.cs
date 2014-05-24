@@ -20,27 +20,28 @@ namespace BizHawk.Client.Common
 		public LuaTable Get(int? controller = null)
 		{
 			var buttons = Lua.NewTable();
-			foreach (var button in Global.ControllerOutput.Source.Type.BoolButtons)
+			var adaptor = Global.AutofireStickyXORAdapter;
+			foreach (var button in adaptor.Source.Type.BoolButtons)
 			{
 				if (!controller.HasValue)
 				{
-					buttons[button] = Global.ControllerOutput[button];
+					buttons[button] = adaptor[button];
 				}
 				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + controller)
 				{
-					buttons[button.Substring(3)] = Global.ControllerOutput["P" + controller + " " + button.Substring(3)];
+					buttons[button.Substring(3)] = adaptor["P" + controller + " " + button.Substring(3)];
 				}
 			}
 
-			foreach (var button in Global.ControllerOutput.Source.Type.FloatControls)
+			foreach (var button in adaptor.Source.Type.FloatControls)
 			{
 				if (controller == null)
 				{
-					buttons[button] = Global.ControllerOutput.GetFloat(button);
+					buttons[button] = adaptor.GetFloat(button);
 				}
 				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + controller)
 				{
-					buttons[button.Substring(3)] = Global.ControllerOutput.GetFloat("P" + controller + " " + button.Substring(3));
+					buttons[button.Substring(3)] = adaptor.GetFloat("P" + controller + " " + button.Substring(3));
 				}
 			}
 
@@ -132,15 +133,18 @@ namespace BizHawk.Client.Common
 						if (theValue.HasValue) // Force
 						{
 							Global.LuaAndAdaptor.SetButton(toPress, theValue.Value);
+							Global.ActiveController.Overrides(Global.LuaAndAdaptor);
 						}
 						else // Unset
 						{
 							Global.LuaAndAdaptor.UnSet(toPress);
+							Global.ActiveController.Overrides(Global.LuaAndAdaptor);
 						}
 					}
 					else // Inverse
 					{
 						Global.LuaAndAdaptor.SetInverse(toPress);
+						Global.ActiveController.Overrides(Global.LuaAndAdaptor);
 					}
 				}
 			}
