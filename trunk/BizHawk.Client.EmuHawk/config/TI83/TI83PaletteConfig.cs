@@ -22,8 +22,10 @@ namespace BizHawk.Client.EmuHawk
 		private void TI83PaletteConfig_Load(object sender, EventArgs e)
 		{
 			var s = (TI83.TI83Settings)Global.Emulator.GetSettings();
-			BackgroundPanel.BackColor = Color.FromArgb((int)s.BGColor);
-			ForeGroundPanel.BackColor = Color.FromArgb((int)s.ForeColor);
+
+			// Alpha hack because Winform is lame with colors
+			BackgroundPanel.BackColor = Color.FromArgb(255, Color.FromArgb((int)s.BGColor));
+			ForeGroundPanel.BackColor = Color.FromArgb(255, Color.FromArgb((int)s.ForeColor));
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
