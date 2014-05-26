@@ -22,9 +22,12 @@ namespace BizHawk.Client.EmuHawk
 		// Step
 		// Advance 1 scanline?
 		// Settable registers, also implement in lua
-		// Breakpoints
+		// Breakpoints - Double click toggle, Delete to remove
+		// Save breakpoints to file?
 		private Atari2600 _core = Global.Emulator as Atari2600;
 		private readonly List<string> _instructions = new List<string>();
+
+		private readonly AtariBreakpointList Breakpoints = new AtariBreakpointList();
 
 		private int _defaultWidth;
 		private int _defaultHeight;
@@ -89,9 +92,14 @@ namespace BizHawk.Client.EmuHawk
 
 			TraceView.QueryItemText += TraceView_QueryItemText;
 			TraceView.VirtualMode = true;
+
+			BreakpointView.QueryItemText += BreakPointView_QueryItemText;
+			BreakpointView.VirtualMode = true;
+
 			TopMost = Global.Config.Atari2600DebuggerSettings.TopMost;
 
 			Closing += (o, e) => Shutdown();
+			Breakpoints.Callback = BreakpointCallback;
 		}
 
 		private void Atari2600Debugger_Load(object sender, EventArgs e)
@@ -200,6 +208,40 @@ namespace BizHawk.Client.EmuHawk
 			text = index < _instructions.Count ? _instructions[index] : string.Empty;
 		}
 
+		private void BreakPointView_QueryItemText(int index, int column, out string text)
+		{
+			text = string.Empty;
+			switch(column)
+			{
+				case 0:
+					text = string.Format("{0:X4}", Breakpoints[index].Address);
+					break;
+				case 1:
+					text = Breakpoints[index].Type.ToString();
+					break;
+			}
+		}
+
+		private void BreakPointView_QueryItemBkColor(int index, int column, ref Color color)
+		{
+			if (index >= BreakpointView.ItemCount)
+			{
+				return;
+			}
+
+			if (column == 0)
+			{
+				if (Breakpoints[index].Active)
+				{
+					color = Color.LightCyan;
+				}
+				else
+				{
+					color = BackColor;
+				}
+			}
+		}
+
 		#region Events
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
@@ -275,5 +317,103 @@ namespace BizHawk.Client.EmuHawk
 			RefreshFloatingWindowControl();
 			base.OnShown(e);
 		}
+
+
+		// TODO: these can be generic to any debugger
+		#region Breakpoint Classes
+
+		public class AtariBreakpointList : List<AtariBreakpoint>
+		{
+			public Action Callback { get; set; }
+
+			public void Add(uint address, BreakpointType type)
+			{
+				Add(new AtariBreakpoint(Callback, address, type));
+			}
+		}
+
+		public class AtariBreakpoint
+		{
+			private bool _active;
+
+			public AtariBreakpoint(Action callBack, uint address, BreakpointType type, bool enabled = true)
+			{
+				Callback = callBack;
+				Address = address;
+				Active = enabled;
+
+				if (enabled)
+				{
+					AddCallback();
+				}
+			}
+
+			public Action Callback { get; set; }
+			public uint Address { get; set; }
+			public BreakpointType Type { get; set; }
+
+			public bool Active
+			{
+				get
+				{
+					return _active;
+				}
+
+				set
+				{
+					if (!value)
+					{
+						RemoveCallback();
+					}
+
+					if (!_active && value) // If inactive and changing to active
+					{
+						AddCallback();
+					}
+
+					_active = value;
+				}
+			}
+
+			private void AddCallback()
+			{
+				switch (Type)
+				{
+					case BreakpointType.Read:
+						Global.CoreComm.MemoryCallbackSystem.AddRead(Callback, Address);
+						break;
+					case BreakpointType.Write:
+						Global.CoreComm.MemoryCallbackSystem.AddWrite(Callback, Address);
+						break;
+					case BreakpointType.Execute:
+						Global.CoreComm.MemoryCallbackSystem.AddExecute(Callback, Address);
+						break;
+				}
+			}
+
+			private void RemoveCallback()
+			{
+				Global.CoreComm.MemoryCallbackSystem.Remove(Callback);
+			}
+		}
+
+		private void AddBreakpointButton_Click(object sender, EventArgs e)
+		{
+			var b = new AddBreakpointDialog();
+			if (b.ShowDialog() == DialogResult.OK)
+			{
+				Breakpoints.Add(b.Address, b.BreakType);
+			}
+
+			BreakpointView.ItemCount = Breakpoints.Count;
+		}
+
+		private void BreakpointCallback()
+		{
+			GlobalWin.MainForm.PauseEmulator();
+			UpdateValues();
+		}
+
+		#endregion
 	}
 }
