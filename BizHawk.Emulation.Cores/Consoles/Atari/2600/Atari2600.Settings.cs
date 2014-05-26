@@ -122,6 +122,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			[Description("Set the Right Difficulty switch on the console")]
 			public bool RightDifficulty { get; set; }
 
+			[Description("Super Charger only, sets whether or not to skip the BIOS intro")]
+			public bool FastScBios { get; set; }
+
 			public A2600SyncSettings Clone()
 			{
 				return (A2600SyncSettings)MemberwiseClone();
