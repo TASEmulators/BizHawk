@@ -21,6 +21,15 @@ namespace BizHawk.Client.Common
 
 		#region Events Library Helpers
 
+		public void CallExitEvent(Lua thread)
+		{
+			var exitCallbacks = _luaFunctions.Where(x => x.Lua == thread && x.Event == "OnExit");
+			foreach (var exitCallback in exitCallbacks)
+			{
+				exitCallback.Call();
+			}
+		}
+
 		public LuaFunctionList RegisteredFunctions { get { return _luaFunctions; } }
 
 		public void CallSaveStateEvent(string name)
@@ -200,6 +209,17 @@ namespace BizHawk.Client.Common
 		public string OnSaveState(LuaFunction luaf, string name = null)
 		{
 			var nlf = new NamedLuaFunction(luaf, "OnSavestateSave", LogOutputCallback, CurrentThread, name);
+			_luaFunctions.Add(nlf);
+			return nlf.Guid.ToString();
+		}
+
+		[LuaMethodAttributes(
+			"onexit",
+			"Fires after the calling script has stopped"
+		)]
+		public string OnExit(LuaFunction luaf, string name = null)
+		{
+			var nlf = new NamedLuaFunction(luaf, "OnExit", LogOutputCallback, CurrentThread, name);
 			_luaFunctions.Add(nlf);
 			return nlf.Guid.ToString();
 		}

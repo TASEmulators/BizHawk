@@ -111,6 +111,11 @@ namespace BizHawk.Client.EmuHawk
 			_eventLibrary.CallFrameAfterEvent();
 		}
 
+		public void CallExitEvent(Lua thread)
+		{
+			_eventLibrary.CallExitEvent(thread);
+		}
+
 		public void Close()
 		{
 			_lua = new Lua();
