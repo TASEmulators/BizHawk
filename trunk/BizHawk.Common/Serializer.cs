@@ -536,6 +536,22 @@ namespace BizHawk.Common
 			}
 		}
 
+		public void Sync(string name, ref ulong val)
+		{
+			if (IsText)
+			{
+				SyncText(name, ref val);
+			}
+			else if (IsReader)
+			{
+				Read(ref val);
+			}
+			else
+			{
+				Write(ref val);
+			}
+		}
+
 		public void Sync(string name, ref float val)
 		{
 			if (IsText)
@@ -823,6 +839,18 @@ namespace BizHawk.Common
 			}
 		}
 
+		private void SyncText(string name, ref ulong val)
+		{
+			if (IsReader)
+			{
+				ReadText(name, ref val);
+			}
+			else
+			{
+				WriteText(name, ref val);
+			}
+		}
+
 		private void SyncText(string name, ref float val)
 		{
 			if (IsReader)
@@ -1017,6 +1045,16 @@ namespace BizHawk.Common
 			_bw.Write(val);
 		}
 
+		private void Read(ref ulong val)
+		{
+			val = _br.ReadUInt64();
+		}
+
+		private void Write(ref ulong val)
+		{
+			_bw.Write(val);
+		}
+
 		private void ReadText(string name, ref long val)
 		{
 			if (Present(name))
@@ -1026,6 +1064,19 @@ namespace BizHawk.Common
 		}
 
 		private void WriteText(string name, ref long val)
+		{
+			_tw.WriteLine("{0} 0x{1:X16}", name, val);
+		}
+
+		private void ReadText(string name, ref ulong val)
+		{
+			if (Present(name))
+			{
+				val = ulong.Parse(Item(name).Replace("0x", ""), NumberStyles.HexNumber);
+			}
+		}
+
+		private void WriteText(string name, ref ulong val)
 		{
 			_tw.WriteLine("{0} 0x{1:X16}", name, val);
 		}
