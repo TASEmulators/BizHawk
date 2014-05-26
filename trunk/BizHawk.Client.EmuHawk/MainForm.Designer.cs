@@ -1967,10 +1967,10 @@
             this.SMSFix3DGameDisplayToolStripMenuItem,
             this.ShowClippedRegionsMenuItem,
             this.HighlightActiveDisplayRegionMenuItem,
-            this.toolStripSeparator24,
             this.SMSGraphicsSettingsMenuItem,
-            this.GGGameGenieMenuItem,
-            this.SMSVDPViewerToolStripMenuItem});
+            this.toolStripSeparator24,
+            this.SMSVDPViewerToolStripMenuItem,
+            this.GGGameGenieMenuItem});
 			this.SMSSubMenu.Name = "SMSSubMenu";
 			this.SMSSubMenu.Size = new System.Drawing.Size(42, 19);
 			this.SMSSubMenu.Text = "&SMS";

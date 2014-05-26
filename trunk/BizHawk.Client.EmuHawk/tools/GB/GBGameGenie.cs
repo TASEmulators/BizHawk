@@ -179,6 +179,16 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Location = Global.Config.GbGGSettings.WindowPosition;
 			}
+
+			//"Game Boy/Game Gear Game Genie Encoder / Decoder"
+			if (Global.Emulator.SystemId == "GB")
+			{
+				Text = "Game Boy Game Genie Encoder/Decoder";
+			}
+			else
+			{
+				Text = "Game Gear Game Genie Encoder/Decoder";
+			}
 		}
 
 		private void SaveConfigSettings()
