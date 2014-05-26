@@ -2138,7 +2138,7 @@ namespace BizHawk.Client.Common
 			m.Header.Comments.Add(COMMENT + " " + movieDescription);
 			r.BaseStream.Position = firstFrameOffset;
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition()};
-			if (platform == "GBA")
+			if (platform != "GBA")
 			{
 				controllers.Type.Name = "Gameboy Controller";
 			}
@@ -2146,20 +2146,20 @@ namespace BizHawk.Client.Common
 			{
 				controllers.Type.Name = "GBA Controller";
 			}
+            /*
+             * 01 00 A
+             * 02 00 B
+             * 04 00 Select
+             * 08 00 Start
+             * 10 00 Right
+             * 20 00 Left
+             * 40 00 Up
+             * 80 00 Down
+             * 00 01 R
+             * 00 02 L
+            */
+            string[] buttons = new[] { "A", "B", "Select", "Start", "Right", "Left", "Up", "Down", "R", "L" };
 			/*
-			 * 01 00 A
-			 * 02 00 B
-			 * 04 00 Select
-			 * 08 00 Start
-			 * 10 00 Right
-			 * 20 00 Left
-			 * 40 00 Up
-			 * 80 00 Down
-			*/
-			string[] buttons = new[] { "A", "B", "Select", "Start", "Right", "Left", "Up", "Down" };
-			/*
-			 * 00 01 R
-			 * 00 02 L
 			 * 00 04 Reset (old timing)
 			 * 00 08 Reset (new timing since version 1.1)
 			 * 00 10 Left motion sensor
@@ -2168,8 +2168,8 @@ namespace BizHawk.Client.Common
 			 * 00 80 Up motion sensor
 			*/
 			string[] other = new[] {
-				"R", "L", "Reset (old timing)" , "Reset (new timing since version 1.1)", "Left motion sensor",
-				"Right motion sensor", "Down motion sensor", "Up motion sensor"
+				"Reset (old timing)" , "Reset (new timing since version 1.1)", "Left motion sensor",
+                "Right motion sensor", "Down motion sensor", "Up motion sensor"
 			};
 			for (int frame = 1; frame <= frameCount; frame++)
 			{
@@ -2181,21 +2181,21 @@ namespace BizHawk.Client.Common
 				for (int button = 0; button < buttons.Length; button++)
 				{
 					controllers[buttons[button]] = (((controllerState >> button) & 0x1) != 0);
+                    if (((controllerState >> button) & 0x1) != 0 && button > 7)
+                    {
+                        continue;
+                    }
 				}
 				// TODO: Handle the other buttons.
 				if (warningMsg == "")
 				{
 					for (int button = 0; button < other.Length; button++)
 					{
-						if (((controllerState >> (button + 8)) & 0x1) != 0)
+						if (((controllerState >> (button + 10)) & 0x1) != 0)
 						{
-							warningMsg = other[button];
+                            warningMsg = "Unable to import " + warningMsg + " at frame " + frame + ".";
 							break;
 						}
-					}
-					if (warningMsg != "")
-					{
-						warningMsg = "Unable to import " + warningMsg + " at frame " + frame + ".";
 					}
 				}
 				// TODO: Handle the additional controllers.
