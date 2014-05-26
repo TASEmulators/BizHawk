@@ -2121,6 +2121,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FormDragDrop(object sender, DragEventArgs e)
 		{
+			try
+			{
+				FormDragDrop_internal(sender, e);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Exception on drag and drop:\n" + ex.ToString());
+			}
+		}
+
+		private void FormDragDrop_internal(object sender, DragEventArgs e)
+		{		
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			var isLua = false;
 			foreach (var path in filePaths)
