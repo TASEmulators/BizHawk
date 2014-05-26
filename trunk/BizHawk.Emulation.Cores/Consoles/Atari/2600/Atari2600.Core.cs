@@ -11,7 +11,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private TIA _tia;
 		private DCFilter _dcfilter;
 		private MapperBase _mapper;
-		private bool _hardResetSignal;
 
 		public byte[] Ram;
 
@@ -29,12 +28,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				return _tia.ReadMemory(addr, false);
 			}
-			
+
 			if ((addr & 0x1080) == 0x0080)
 			{
 				return M6532.ReadMemory(addr, false);
 			}
-			
+
 			return Rom[addr & 0x0FFF];
 		}
 
@@ -45,12 +44,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				return _tia.ReadMemory(addr, true);
 			}
-			
+
 			if ((addr & 0x1080) == 0x0080)
 			{
 				return M6532.ReadMemory(addr, true);
 			}
-			
+
 			return Rom[addr & 0x0FFF];
 		}
 
@@ -309,7 +308,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				string.Format(
 					"{0}\r\nSHA1:{1}\r\nMD5:{2}\r\nMapper Impl \"{3}\"",
 					this._game.Name,
-					Util.Hash_SHA1(Rom), 
+					Util.Hash_SHA1(Rom),
 					Util.Hash_MD5(Rom),
 					_mapper.GetType());
 		}
@@ -346,6 +345,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_frame++;
 			_islag = true;
 			_tia.LineCount = 0;
+
+			if (Controller["Power"])
+			{
+				HardReset();
+			}
+
 			_tia.BeginAudioFrame();
 			while (_tia.LineCount < _tia.NominalNumScanlines)
 			{
@@ -354,13 +359,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			//Console.WriteLine("{0}", _tia.CurrentScanLine);
 
 			_tia.CompleteAudioFrame();
-
-			if (_hardResetSignal)
-			{
-				HardReset();
-			}
-
-			_hardResetSignal = Controller["Power"];
 
 			if (_islag)
 			{
@@ -399,7 +397,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (Controller["P1 Left"]) { value &= 0xBF; }
 			if (Controller["P1 Right"]) { value &= 0x7F; }
 			if (Controller["P1 Button"]) { value &= 0xF7; }
-			
+
 			if (!peek)
 			{
 				_islag = false;
@@ -418,7 +416,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (Controller["P2 Left"]) { value &= 0xBF; }
 			if (Controller["P2 Right"]) { value &= 0x7F; }
 			if (Controller["P2 Button"]) { value &= 0xF7; }
-			
+
 			if (!peek)
 			{
 				_islag = false;
@@ -438,7 +436,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (SyncSettings.BW) { value &= 0xF7; }
 			if (SyncSettings.LeftDifficulty) { value &= 0xBF; }
 			if (SyncSettings.RightDifficulty) { value &= 0x7F; }
-			
+
 			if (!peek)
 			{
 				_islag = false;
