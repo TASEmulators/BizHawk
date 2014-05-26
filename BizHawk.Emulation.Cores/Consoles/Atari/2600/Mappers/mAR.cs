@@ -191,7 +191,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (!((addr & 0x0F00) > 0) && (!myWriteEnabled || !myWritePending))
 			{
 				myDataHoldRegister = (byte)addr;
-				addrThatChangedDataHoldRegister = addr;
 				myNumberOfDistinctAccesses = Core.DistinctAccessCount;
 				myWritePending = true;
 			}
@@ -206,12 +205,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				if ((addr & 0x800) == 0)
 				{
-					var test1 = addr & 0x07FF;
-					myImage[(addr & 0x07FF) + myImage[0]] = myDataHoldRegister;
+					myImage[(addr & 0x07FF) + myImageOffsets[0]] = myDataHoldRegister;
 				}
 				else if (myImageOffsets[1] != (3 << 11)) // Don't poke Rom
 				{
-					var test2 = addr & 0x07FF;
 					myImage[(addr & 0x07FF) + myImageOffsets[1]] = myDataHoldRegister;
 				}
 
@@ -222,10 +219,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			return myImage[(addr & 0x07FF) + myImageOffsets[((addr & 0x800) > 0) ? 1 : 0]];
 		}
-		
-		// Temp hacks
-		bool written = false;
-		ushort addrThatChangedDataHoldRegister;
 
 		public override byte ReadMemory(ushort addr)
 		{
@@ -432,31 +425,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					base.WriteMemory(0xFE, myHeader[0]);
 					base.WriteMemory(0xFF, myHeader[1]);
 					base.WriteMemory(0x80, myHeader[2]);
-
-					
 				}
-			}
-		}
-
-		private void WriteToFile() // TODO: Delete me
-		{
-			// A hack for now, because this byte is different than in stella
-			if (myImage[6426] != 85) 
-			{
-				myImage[6425] = 85;
-			}
-
-			if (!written)
-			{
-				var sb = new StringBuilder();
-				for (int i = 0; i < myImage.Len; i++)
-				{
-					sb.Append(((int)(myImage[i])).ToString()).AppendLine();
-				}
-
-				File.WriteAllText("C:\\Repos\\bizlog.log", sb.ToString());
-
-				written = true;
 			}
 		}
 
