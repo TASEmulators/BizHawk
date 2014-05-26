@@ -273,6 +273,8 @@
 			this.N64SubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.N64PluginSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.N64ControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator23 = new System.Windows.Forms.ToolStripSeparator();
+			this.N64CircularAnalogRangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaturnSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaturnPreferencesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DGBSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -354,8 +356,6 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator23 = new System.Windows.Forms.ToolStripSeparator();
-			this.N64CircularAnalogRangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -387,7 +387,7 @@
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.MainformMenu.Location = new System.Drawing.Point(0, 0);
 			this.MainformMenu.Name = "MainformMenu";
-			this.MainformMenu.Size = new System.Drawing.Size(470, 61);
+			this.MainformMenu.Size = new System.Drawing.Size(470, 42);
 			this.MainformMenu.TabIndex = 0;
 			this.MainformMenu.Text = "menuStrip1";
 			this.MainformMenu.MenuActivate += new System.EventHandler(this.MainformMenu_MenuActivate);
@@ -2213,7 +2213,7 @@
 			// 
 			this.GBcoreSettingsToolStripMenuItem.Name = "GBcoreSettingsToolStripMenuItem";
 			this.GBcoreSettingsToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
-			this.GBcoreSettingsToolStripMenuItem.Text = "Core Settings";
+			this.GBcoreSettingsToolStripMenuItem.Text = "Core Settings...";
 			this.GBcoreSettingsToolStripMenuItem.Click += new System.EventHandler(this.GBcoreSettingsToolStripMenuItem_Click);
 			// 
 			// LoadGBInSGBMenuItem
@@ -2420,6 +2420,18 @@
 			this.N64ControllerSettingsMenuItem.Size = new System.Drawing.Size(192, 22);
 			this.N64ControllerSettingsMenuItem.Text = "Controller Settings...";
 			this.N64ControllerSettingsMenuItem.Click += new System.EventHandler(this.N64ControllerSettingsMenuItem_Click);
+			// 
+			// toolStripSeparator23
+			// 
+			this.toolStripSeparator23.Name = "toolStripSeparator23";
+			this.toolStripSeparator23.Size = new System.Drawing.Size(189, 6);
+			// 
+			// N64CircularAnalogRangeMenuItem
+			// 
+			this.N64CircularAnalogRangeMenuItem.Name = "N64CircularAnalogRangeMenuItem";
+			this.N64CircularAnalogRangeMenuItem.Size = new System.Drawing.Size(192, 22);
+			this.N64CircularAnalogRangeMenuItem.Text = "Circular Analog Range";
+			this.N64CircularAnalogRangeMenuItem.Click += new System.EventHandler(this.N64CircularAnalogRangeMenuItem_Click);
 			// 
 			// SaturnSubMenu
 			// 
@@ -3100,18 +3112,6 @@
 			this.ShowMenuContextMenuItem.Size = new System.Drawing.Size(216, 22);
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
-			// 
-			// toolStripSeparator23
-			// 
-			this.toolStripSeparator23.Name = "toolStripSeparator23";
-			this.toolStripSeparator23.Size = new System.Drawing.Size(189, 6);
-			// 
-			// N64CircularAnalogRangeMenuItem
-			// 
-			this.N64CircularAnalogRangeMenuItem.Name = "N64CircularAnalogRangeMenuItem";
-			this.N64CircularAnalogRangeMenuItem.Size = new System.Drawing.Size(192, 22);
-			this.N64CircularAnalogRangeMenuItem.Text = "Circular Analog Range";
-			this.N64CircularAnalogRangeMenuItem.Click += new System.EventHandler(this.N64CircularAnalogRangeMenuItem_Click);
 			// 
 			// MainForm
 			// 

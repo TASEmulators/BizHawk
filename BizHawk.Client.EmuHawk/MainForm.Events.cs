@@ -1444,6 +1444,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
+			LoadGBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
 		}
 
 		private void GBForceDMGMenuItem_Click(object sender, EventArgs e)
