@@ -389,6 +389,7 @@ namespace BizHawk.Client.EmuHawk
 								var result = LuaImp.ResumeScript(lf.Thread);
 								if (result.Terminated)
 								{
+									LuaImp.CallExitEvent(lf.Thread);
 									lf.Stop();
 								}
 
@@ -717,6 +718,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (!item.Enabled && item.Thread != null)
 				{
+					LuaImp.CallExitEvent(item.Thread);
+
 					var items = SelectedItems.ToList();
 					foreach (var sitem in items)
 					{
@@ -730,6 +733,7 @@ namespace BizHawk.Client.EmuHawk
 						UpdateRegisteredFunctionsDialog();
 					}
 
+					LuaImp.CallExitEvent(item.Thread);
 					item.Stop();
 				}
 			}
