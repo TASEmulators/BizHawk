@@ -35,53 +35,56 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	internal class mAR : MapperBase
 	{
-		// TODO: can we set the defaults instead of do it in the constructor?
 		// TODO: fastscbios setting
-		// TODO: var names, savestates, hard reset, dispose, cart ram
-		// TOOD: pokeMem
+		// TODO: cart ram
 		public mAR(Atari2600 core)
+		{
+			Core = core;
+			InitializeSettings();
+		}
+
+		private ByteBuffer _superChargerImage = new ByteBuffer(8192);
+		private IntBuffer _imageOffsets = new IntBuffer(2);
+		private bool _writePending = false;
+		private int _distinctAccesses = 0;
+		private bool _writeEnabled = false;
+		private byte _dataHoldRegister;
+		private byte _numberOfLoadImages;
+		private ByteBuffer _loadedImages;
+		private ByteBuffer _header = new ByteBuffer(256);
+		private bool _powerIndicator; // Indicates if the ROM's power is on or off
+		private int _powerRomCycle; // Indicates when the power was last turned on
+		private int _size;
+		private ulong _elapsedCycles;
+
+		private void InitializeSettings()
 		{
 			// TODO: clean this stuff up
 			/*****************************************/
-			int size = core.Rom.Length;
-			mySize = core.Rom.Length < 8448 ? 8448 : core.Rom.Length; //8448 or Rom size, whichever is bigger
+			int size = Core.Rom.Length;
+			_size = Core.Rom.Length < 8448 ? 8448 : Core.Rom.Length; //8448 or Rom size, whichever is bigger
 
-			myNumberOfLoadImages = (byte)(mySize / 8448);
+			_numberOfLoadImages = (byte)(_size / 8448);
 
 			// TODO: why are we making a redundant copy?
-			myLoadedImages = new ByteBuffer(mySize);
+			_loadedImages = new ByteBuffer(_size);
 			for (int i = 0; i < size; i++)
 			{
-				myLoadedImages[i] = core.Rom[i];
+				_loadedImages[i] = Core.Rom[i];
 			}
 
 			if (size < 8448)
 			{
-				for (int i = size; i < mySize; i++)
+				for (int i = size; i < _size; i++)
 				{
-					myLoadedImages[i] = DefaultHeader[i];
+					_loadedImages[i] = DefaultHeader[i];
 				}
 			}
 			/*****************************************/
 
-			Core = core;
 			InitializeRom();
 			BankConfiguration(0);
 		}
-
-		private ByteBuffer myImage = new ByteBuffer(8192);
-		private IntBuffer myImageOffsets = new IntBuffer(2);
-		private bool myWritePending = false;
-		private int myNumberOfDistinctAccesses = 0;
-		private bool myWriteEnabled = false;
-		private byte myDataHoldRegister;
-		private byte myNumberOfLoadImages;
-		private ByteBuffer myLoadedImages;
-		private byte[] myHeader = new byte[256];
-		private bool myPower; // Indicates if the ROM's power is on or off
-		private int myPowerRomCycle; 		// Indicates when the power was last turned on
-		private int mySize;
-		private ulong _elapsedCycles;
 
 		#region SuperCharger Data
 
@@ -162,6 +165,59 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		#endregion
 
+		public override void HardReset()
+		{
+			_superChargerImage = new ByteBuffer(8192);
+			_imageOffsets = new IntBuffer(2);
+			_writePending = false;
+			_distinctAccesses = 0;
+
+			_writeEnabled = false;
+			_dataHoldRegister = 0;
+			_numberOfLoadImages = 0;
+			_loadedImages = null;
+			
+			_header = new ByteBuffer(256);
+			_powerIndicator = false;
+			_powerRomCycle = 0;
+			_size = 0;
+			
+			_elapsedCycles = 0;
+
+			InitializeSettings();
+			base.HardReset();
+		}
+
+		public override void Dispose()
+		{
+			_superChargerImage.Dispose();
+			_imageOffsets.Dispose();
+			_loadedImages.Dispose();
+			base.Dispose();
+		}
+
+		public override void SyncState(Serializer ser)
+		{
+			ser.Sync("superChargerImage", ref _superChargerImage);
+			ser.Sync("imageOffsets", ref _imageOffsets);
+			ser.Sync("writePending", ref _writePending);
+			ser.Sync("distinctAccesses", ref _distinctAccesses);
+
+			ser.Sync("writeEnabled", ref _writeEnabled);
+			ser.Sync("dataHoldRegister", ref _dataHoldRegister);
+			ser.Sync("numberOfLoadImages", ref _numberOfLoadImages);
+			ser.Sync("loadedImages", ref _loadedImages);
+
+			ser.Sync("header", ref _header);
+			ser.Sync("powerIndicator", ref _powerIndicator);
+			ser.Sync("powerRomCycle", ref _powerRomCycle);
+			ser.Sync("size", ref _size);
+
+			ser.Sync("elapsedCycles", ref _elapsedCycles);
+
+			base.SyncState(ser);
+		}
+
 		public override void ClockCpu()
 		{
 			_elapsedCycles++;
@@ -174,50 +230,50 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			/*---------------------------*/
 
-			if (addr == 0x1850 && myImageOffsets[1] == (3 << 11))
+			if (addr == 0x1850 && _imageOffsets[1] == (3 << 11))
 			{
 				LoadIntoRam(Core.MemoryDomains["System Bus"].PeekByte(0x80)); // Get load that's being accessed (BIOS places load number at 0x80) // TODO: a better way to do this
-				return myImage[(addr & 0x7FF) + myImageOffsets[1]];
+				return _superChargerImage[(addr & 0x7FF) + _imageOffsets[1]];
 			}
 
-			if (myWritePending && // Cancel any pending write if more than 5 distinct accesses have occurred // TODO: Modify to handle when the distinct counter wraps around...
-				(Core.DistinctAccessCount >  myNumberOfDistinctAccesses + 5))
+			if (_writePending && // Cancel any pending write if more than 5 distinct accesses have occurred // TODO: Modify to handle when the distinct counter wraps around...
+				(Core.DistinctAccessCount >  _distinctAccesses + 5))
 			{
-				myWritePending = false;
+				_writePending = false;
 			}
 
 			/*---------------------------*/
 
-			if (!((addr & 0x0F00) > 0) && (!myWriteEnabled || !myWritePending))
+			if (!((addr & 0x0F00) > 0) && (!_writeEnabled || !_writePending))
 			{
-				myDataHoldRegister = (byte)addr;
-				myNumberOfDistinctAccesses = Core.DistinctAccessCount;
-				myWritePending = true;
+				_dataHoldRegister = (byte)addr;
+				_distinctAccesses = Core.DistinctAccessCount;
+				_writePending = true;
 			}
 			else if ((addr & 0x1FFF) == 0x1FF8) // Is the bank configuration hotspot being accessed?
 			{
-				myWritePending = false;
-				BankConfiguration(myDataHoldRegister);
+				_writePending = false;
+				BankConfiguration(_dataHoldRegister);
 
 			}
-			else if (myWriteEnabled && myWritePending &&
-					Core.DistinctAccessCount == (myNumberOfDistinctAccesses + 5))
+			else if (_writeEnabled && _writePending &&
+					Core.DistinctAccessCount == (_distinctAccesses + 5))
 			{
 				if ((addr & 0x800) == 0)
 				{
-					myImage[(addr & 0x07FF) + myImageOffsets[0]] = myDataHoldRegister;
+					_superChargerImage[(addr & 0x07FF) + _imageOffsets[0]] = _dataHoldRegister;
 				}
-				else if (myImageOffsets[1] != (3 << 11)) // Don't poke Rom
+				else if (_imageOffsets[1] != (3 << 11)) // Don't poke Rom
 				{
-					myImage[(addr & 0x07FF) + myImageOffsets[1]] = myDataHoldRegister;
+					_superChargerImage[(addr & 0x07FF) + _imageOffsets[1]] = _dataHoldRegister;
 				}
 
-				myWritePending = false;
+				_writePending = false;
 			}
 
 			/*---------------------------*/
 
-			return myImage[(addr & 0x07FF) + myImageOffsets[((addr & 0x800) > 0) ? 1 : 0]];
+			return _superChargerImage[(addr & 0x07FF) + _imageOffsets[((addr & 0x800) > 0) ? 1 : 0]];
 		}
 
 		public override byte ReadMemory(ushort addr)
@@ -230,7 +286,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return ReadMem(addr, true);
 		}
 
-		public override void WriteMemory(ushort addr, byte value)
+		private void WriteMem(ushort addr, byte value, bool poke)
 		{
 			if (addr < 0x1000)
 			{
@@ -238,41 +294,51 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				return;
 			}
 
-			if (myWritePending && (Core.DistinctAccessCount > myNumberOfDistinctAccesses + 5))
+			if (!poke && _writePending && (Core.DistinctAccessCount > _distinctAccesses + 5))
 			{
-				myWritePending = false;
+				_writePending = false;
 			}
 
 			// Is the data hold register being set?
-			if (!((addr & 0x0F00) > 0) && (!myWriteEnabled || !myWritePending))
+			if (!poke && !((addr & 0x0F00) > 0) && (!_writeEnabled || !_writePending))
 			{
-				myDataHoldRegister = (byte)addr;
-				myNumberOfDistinctAccesses = Core.DistinctAccessCount;
-				myWritePending = true;
+				_dataHoldRegister = (byte)addr;
+				_distinctAccesses = Core.DistinctAccessCount;
+				_writePending = true;
 			}
 			// Is the bank configuration hotspot being accessed?
-			else if ((addr & 0x1FFF) == 0x1FF8)
+			else if (!poke && (addr & 0x1FFF) == 0x1FF8)
 			{
 				// Yes, so handle bank configuration
-				myWritePending = false;
-				BankConfiguration(myDataHoldRegister);
+				_writePending = false;
+				BankConfiguration(_dataHoldRegister);
 			}
 
 			// Handle poke if writing enabled
-			else if (myWriteEnabled && myWritePending &&
-				(Core.DistinctAccessCount == (myNumberOfDistinctAccesses + 5)))
+			else if (_writeEnabled && _writePending &&
+				(Core.DistinctAccessCount == (_distinctAccesses + 5)))
 			{
 				if ((addr & 0x0800) == 0)
 				{
-					myImage[(addr & 0x07FF) + myImageOffsets[0]] = myDataHoldRegister;
+					_superChargerImage[(addr & 0x07FF) + _imageOffsets[0]] = _dataHoldRegister;
 				}
-				else if (myImageOffsets[1] != (3 << 11))    // Can't poke to ROM
+				else if (_imageOffsets[1] != (3 << 11))    // Can't poke to ROM
 				{
-					myImage[(addr & 0x07FF) + myImageOffsets[1]] = myDataHoldRegister;
+					_superChargerImage[(addr & 0x07FF) + _imageOffsets[1]] = _dataHoldRegister;
 				}
 
-				myWritePending = false;
+				_writePending = false;
 			}
+		}
+
+		public override void WriteMemory(ushort addr, byte value)
+		{
+			WriteMem(addr, value, poke: false);
+		}
+
+		public override void PokeMemory(ushort addr, byte value)
+		{
+			WriteMem(addr, value, poke: true);
 		}
 
 		private void InitializeRom()
@@ -295,20 +361,20 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			// Initialize ROM with illegal 6502 opcode that causes a real 6502 to jam
 			for (int i = 0; i < 2048; i++)
 			{
-				myImage[(3 << 11) + i] = 0x02;
+				_superChargerImage[(3 << 11) + i] = 0x02;
 			}
 
 			// Copy the "dummy" Supercharger BIOS code into the ROM area
 			for (int i = 0; i < DummyRomCode.Length; i++)
 			{
-				myImage[(3 << 11) + i] = DummyRomCode[i];
+				_superChargerImage[(3 << 11) + i] = DummyRomCode[i];
 			}
 
 			// Finally set 6502 vectors to point to initial load code at 0xF80A of BIOS
-			myImage[(3 << 11) + 2044] = 0x0A;
-			myImage[(3 << 11) + 2045] = 0xF8;
-			myImage[(3 << 11) + 2046] = 0x0A;
-			myImage[(3 << 11) + 2047] = 0xF8;
+			_superChargerImage[(3 << 11) + 2044] = 0x0A;
+			_superChargerImage[(3 << 11) + 2045] = 0xF8;
+			_superChargerImage[(3 << 11) + 2046] = 0x0A;
+			_superChargerImage[(3 << 11) + 2047] = 0xF8;
 		}
 
 		private void BankConfiguration(byte configuration)
@@ -332,47 +398,47 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			//    wanting to access the ROM for multiloads.  Otherwise set to 1.
 
 			//_bank2k = configuration & 0x1F;  // remember for the bank() method
-			myPower = !((configuration & 0x01) > 0);
-			if (myPower)
+			_powerIndicator = !((configuration & 0x01) > 0);
+			if (_powerIndicator)
 			{
-				myPowerRomCycle = (int)_elapsedCycles;
+				_powerRomCycle = (int)_elapsedCycles;
 			}
 
-			myWriteEnabled = (configuration & 0x02) > 0;
+			_writeEnabled = (configuration & 0x02) > 0;
 
 			switch ((configuration >> 2) & 0x07)
 			{
 				case 0x00:
-					myImageOffsets[0] = 2 << 11;
-					myImageOffsets[1] = 3 << 11;
+					_imageOffsets[0] = 2 << 11;
+					_imageOffsets[1] = 3 << 11;
 					break;
 				case 0x01:
-					myImageOffsets[0] = 0;
-					myImageOffsets[1] = 3 << 11;
+					_imageOffsets[0] = 0;
+					_imageOffsets[1] = 3 << 11;
 					break;
 				case 0x02:
-					myImageOffsets[0] = 2 << 11;
-					myImageOffsets[1] = 0;
+					_imageOffsets[0] = 2 << 11;
+					_imageOffsets[1] = 0;
 					break;
 				case 0x03:
-					myImageOffsets[0] = 0;
-					myImageOffsets[1] = 2 << 11;
+					_imageOffsets[0] = 0;
+					_imageOffsets[1] = 2 << 11;
 					break;
 				case 0x04:
-					myImageOffsets[0] = 2 << 11;
-					myImageOffsets[1] = 3 << 11;
+					_imageOffsets[0] = 2 << 11;
+					_imageOffsets[1] = 3 << 11;
 					break;
 				case 0x05:
-					myImageOffsets[0] = 1 << 11;
-					myImageOffsets[1] = 3 << 11;
+					_imageOffsets[0] = 1 << 11;
+					_imageOffsets[1] = 3 << 11;
 					break;
 				case 0x06:
-					myImageOffsets[0] = 2 << 11;
-					myImageOffsets[1] = 1 << 11;
+					_imageOffsets[0] = 2 << 11;
+					_imageOffsets[1] = 1 << 11;
 					break;
 				case 0x07:
-					myImageOffsets[0] = 1 << 11;
-					myImageOffsets[1] = 2 << 11;
+					_imageOffsets[0] = 1 << 11;
+					_imageOffsets[1] = 2 << 11;
 					break;
 			}
 		}
@@ -381,16 +447,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			ushort image;
 
-			for (image = 0; image < myNumberOfLoadImages; image++)
+			for (image = 0; image < _numberOfLoadImages; image++)
 			{
-				if (myLoadedImages[(image * 8448) + 8192 + 5] == load)
+				if (_loadedImages[(image * 8448) + 8192 + 5] == load)
 				{
 					for (int i = 0; i < 256; i++)
 					{
-						myHeader[i] = myLoadedImages[(image * 8448) + 8192 + i];
+						_header[i] = _loadedImages[(image * 8448) + 8192 + i];
 					}
 
-					if (Checksum(myHeader.Take(8).ToArray()) != 0x55)
+					if (Checksum(_header.Arr.Take(8).ToArray()) != 0x55)
 					{
 						Console.WriteLine("WARNING: The Supercharger header checksum is invalid...");
 					}
@@ -399,12 +465,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 					// Load all of the pages from the load
 					bool invalidPageChecksumSeen = false;
-					for (int j = 0; j < myHeader[3]; j++)
+					for (int j = 0; j < _header[3]; j++)
 					{
-						int bank = myHeader[16 + j] & 0x03;
-						int page = (myHeader[16 + j] >> 2) & 0x07;
-						var src = myLoadedImages.Arr.Skip((image * 8448) + (j * 256)).Take(256).ToArray();
-						byte sum = (byte)(Checksum(src) + myHeader[16 + j] + myHeader[64 + j]);
+						int bank = _header[16 + j] & 0x03;
+						int page = (_header[16 + j] >> 2) & 0x07;
+						var src = _loadedImages.Arr.Skip((image * 8448) + (j * 256)).Take(256).ToArray();
+						byte sum = (byte)(Checksum(src) + _header[16 + j] + _header[64 + j]);
 
 						if (!invalidPageChecksumSeen && (sum != 0x55))
 						{
@@ -416,15 +482,15 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						{
 							for (int k = 0; k < src.Length; k++)
 							{
-								myImage[(bank * 2048) + (page * 256) + k] = src[k];
+								_superChargerImage[(bank * 2048) + (page * 256) + k] = src[k];
 							}
 						}
 					}
 
 					// TODO: is this the correct Write to do?
-					base.WriteMemory(0xFE, myHeader[0]);
-					base.WriteMemory(0xFF, myHeader[1]);
-					base.WriteMemory(0x80, myHeader[2]);
+					base.WriteMemory(0xFE, _header[0]);
+					base.WriteMemory(0xFF, _header[1]);
+					base.WriteMemory(0x80, _header[2]);
 				}
 			}
 		}
