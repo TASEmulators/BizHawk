@@ -144,6 +144,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 		public IGL GL;
 		bool nop;
 		LetterboxingLogic LL;
+		Size ContentSize;
 
 		public override void Initialize()
 		{
@@ -183,6 +184,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 			if (!need)
 			{
 				nop = true;
+				ContentSize = state.SurfaceFormat.Size;
 				return;
 			}
 
@@ -190,9 +192,10 @@ namespace BizHawk.Client.EmuHawk.Filters
 			DeclareOutput(new SurfaceState(new SurfaceFormat(OutputSize), SurfaceDisposition.RenderTarget));
 			InputSize = state.SurfaceFormat.Size;
 			LL = new LetterboxingLogic(Global.Config.DispFixAspectRatio, Global.Config.DispFixScaleInteger, OutputSize.Width, OutputSize.Height, InputSize.Width, InputSize.Height, TextureSize, VirtualTextureSize);
+			ContentSize = new Size(LL.vw,LL.vh);
 		}
 
-		public Size GetContentSize() { return new Size(LL.vw, LL.vh); }
+		public Size GetContentSize() { return ContentSize; }
 
 		public override Vector2 UntransformPoint(string channel, Vector2 point)
 		{
