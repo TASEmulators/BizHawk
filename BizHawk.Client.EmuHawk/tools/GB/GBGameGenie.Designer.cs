@@ -144,9 +144,8 @@
 			// 
 			// addcheatbt
 			// 
-			this.addcheatbt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.addcheatbt.Enabled = false;
-			this.addcheatbt.Location = new System.Drawing.Point(84, 163);
+			this.addcheatbt.Location = new System.Drawing.Point(86, 163);
 			this.addcheatbt.Margin = new System.Windows.Forms.Padding(0);
 			this.addcheatbt.Name = "addcheatbt";
 			this.addcheatbt.Size = new System.Drawing.Size(65, 26);
@@ -408,7 +407,6 @@
 			// 
 			// ClearButton
 			// 
-			this.ClearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.ClearButton.Location = new System.Drawing.Point(31, 163);
 			this.ClearButton.Margin = new System.Windows.Forms.Padding(2);
 			this.ClearButton.Name = "ClearButton";
@@ -425,7 +423,7 @@
             this.OptionsSubMenu});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(292, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(322, 24);
 			this.menuStrip1.TabIndex = 8;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -514,7 +512,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(292, 252);
+			this.ClientSize = new System.Drawing.Size(322, 252);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.ClearButton);
 			this.Controls.Add(this.groupBox1);
@@ -525,7 +523,7 @@
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
 			this.MainMenuStrip = this.menuStrip1;
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(312, 294);
+			this.MaximumSize = new System.Drawing.Size(342, 294);
 			this.MinimumSize = new System.Drawing.Size(312, 294);
 			this.Name = "GBGameGenie";
 			this.ShowIcon = false;
