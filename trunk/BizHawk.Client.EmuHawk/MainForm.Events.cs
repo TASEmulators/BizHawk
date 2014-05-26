@@ -1414,6 +1414,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void paletteToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (new TI83PaletteConfig().ShowDialog() == DialogResult.OK)
+			{
+				GlobalWin.OSD.AddMessage("Palette settings saved");
+			}
+			else
+			{
+				GlobalWin.OSD.AddMessage("Palette config aborted");
+			}
+		}
+
 		#endregion
 
 		#region Atari

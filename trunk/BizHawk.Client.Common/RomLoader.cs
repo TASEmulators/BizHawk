@@ -337,7 +337,7 @@ namespace BizHawk.Client.Common
 								nextEmulator = new GPGX(nextComm, rom.RomData, null, "GEN", GetCoreSyncSettings<GPGX>());
 								break;
 							case "TI83":
-								nextEmulator = new TI83(nextComm, game, rom.RomData);
+								nextEmulator = new TI83(nextComm, game, rom.RomData, GetCoreSettings<TI83>());
 								break;
 							case "NES":
 								if (!Global.Config.NES_InQuickNES || forceAccurateCore)
