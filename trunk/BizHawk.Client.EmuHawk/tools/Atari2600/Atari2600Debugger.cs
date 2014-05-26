@@ -141,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore
 		{
-			get { return false; } // TODO: think about this
+			get { return false; }
 		}
 
 		public void UpdateValues()
@@ -242,38 +242,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#region Events
+		private void BreakpointCallback()
+		{
+			GlobalWin.MainForm.PauseEmulator();
+			UpdateValues();
+		}
+
+		#region Menu
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
 			Close();
 		}
-
-		private void StepBtn_Click(object sender, EventArgs e)
-		{
-			_core.CycleAdvance();
-			UpdateValues();
-
-		}
-
-		private void ScanlineAdvanceBtn_Click(object sender, EventArgs e)
-		{
-			_core.ScanlineAdvance();
-			UpdateValues();
-		}
-
-		private void FrameAdvButton_Click(object sender, EventArgs e)
-		{
-			_core.FrameAdvance(true, true);
-			UpdateValues();
-		}
-
-		private void RefreshFloatingWindowControl()
-		{
-			Owner = Global.Config.RamSearchSettings.FloatingWindow ? null : GlobalWin.MainForm;
-		}
-
-		#endregion
 
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -312,11 +292,58 @@ namespace BizHawk.Client.EmuHawk
 			RefreshFloatingWindowControl();
 		}
 
+		#endregion
+
+		#region Dialog Events
+
 		protected override void OnShown(EventArgs e)
 		{
 			RefreshFloatingWindowControl();
 			base.OnShown(e);
 		}
+
+		private void StepBtn_Click(object sender, EventArgs e)
+		{
+			var size = opsize[_core.Op];
+
+			for (int i = 0; i < size; i++)
+			{
+				_core.CycleAdvance();
+			}
+
+			UpdateValues();
+
+		}
+
+		private void ScanlineAdvanceBtn_Click(object sender, EventArgs e)
+		{
+			_core.ScanlineAdvance();
+			UpdateValues();
+		}
+
+		private void FrameAdvButton_Click(object sender, EventArgs e)
+		{
+			_core.FrameAdvance(true, true);
+			UpdateValues();
+		}
+
+		private void AddBreakpointButton_Click(object sender, EventArgs e)
+		{
+			var b = new AddBreakpointDialog();
+			if (b.ShowDialog() == DialogResult.OK)
+			{
+				Breakpoints.Add(b.Address, b.BreakType);
+			}
+
+			BreakpointView.ItemCount = Breakpoints.Count;
+		}
+
+		private void RefreshFloatingWindowControl()
+		{
+			Owner = Global.Config.RamSearchSettings.FloatingWindow ? null : GlobalWin.MainForm;
+		}
+
+		#endregion
 
 
 		// TODO: these can be generic to any debugger
@@ -395,23 +422,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.CoreComm.MemoryCallbackSystem.Remove(Callback);
 			}
-		}
-
-		private void AddBreakpointButton_Click(object sender, EventArgs e)
-		{
-			var b = new AddBreakpointDialog();
-			if (b.ShowDialog() == DialogResult.OK)
-			{
-				Breakpoints.Add(b.Address, b.BreakType);
-			}
-
-			BreakpointView.ItemCount = Breakpoints.Count;
-		}
-
-		private void BreakpointCallback()
-		{
-			GlobalWin.MainForm.PauseEmulator();
-			UpdateValues();
 		}
 
 		#endregion
