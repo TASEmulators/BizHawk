@@ -204,6 +204,7 @@ public:
 	byte peek_prg(nes_addr_t addr) const { return *static_cast<Nes_Cpu>(emu).get_code(addr); }
 	void poke_prg(nes_addr_t addr, byte value) { *static_cast<Nes_Cpu>(emu).get_code(addr) = value; }
 
+	void get_regs(unsigned int *dest) const;
 
 	// End of public interface
 public:
@@ -271,4 +272,3 @@ inline long Nes_Emu::chr_size() const
 }
 
 #endif
-

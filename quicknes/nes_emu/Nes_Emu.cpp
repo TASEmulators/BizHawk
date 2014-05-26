@@ -495,3 +495,12 @@ Nes_Emu::rgb_t const Nes_Emu::nes_colors [color_table_size] =
 	{136,190,197},{184,184,184},{  0,  0,  0},{  0,  0,  0}
 };
 
+void Nes_Emu::get_regs(unsigned int *dest) const
+{
+	dest[0] = emu.r.a;
+	dest[1] = emu.r.x;
+	dest[2] = emu.r.y;
+	dest[3] = emu.r.sp;
+	dest[4] = emu.r.pc;
+	dest[5] = emu.r.status;
+}
