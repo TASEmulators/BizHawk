@@ -45,22 +45,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr qn_set_sample_rate(IntPtr e, int rate);
 		/// <summary>
-		/// get required min dimensions of output video buffer (8bpp)
-		/// </summary>
-		/// <param name="e">context</param>
-		/// <param name="width">width</param>
-		/// <param name="height">height</param>
-		//[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void qn_get_image_dimensions(IntPtr e, ref int width, ref int height);
-		/// <summary>
-		/// set output video buffer that will be used for all subsequent renders until replaced
-		/// </summary>
-		/// <param name="e">context</param>
-		/// <param name="dest">8bpp, at least as big as qn_get_image_dimensions()</param>
-		/// <param name="pitch">byte pitch</param>
-		//[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void qn_set_pixels(IntPtr e, IntPtr dest, int pitch);
-		/// <summary>
 		/// emulate a single frame
 		/// </summary>
 		/// <param name="e">context</param>
@@ -215,6 +199,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		/// <param name="val"></param>
 		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void qn_poke_prgbus(IntPtr e, int addr, byte val);
+		/// <summary>
+		/// get internal registers
+		/// </summary>
+		/// <param name="e">Context</param>
+		/// <param name="dest">a, x, y, sp, pc, p</param>
+		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void qn_get_cpuregs(IntPtr e, [Out] int[] dest);
 		/// <summary>
 		/// get the mapper that's loaded
 		/// </summary>
