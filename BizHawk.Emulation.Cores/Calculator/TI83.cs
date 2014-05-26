@@ -979,15 +979,15 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		public class TI83Settings
 		{
-			public uint BGColor = 0xFFFFFFFF;
-			public uint ForeColor = 0;
+			public uint BGColor = 0x889778;
+			public uint ForeColor = 0x36412D;
 
 			public static TI83Settings GetDefaults()
 			{
 				return new TI83Settings
 				{
-					BGColor = 0xFFFFFFFF,
-					ForeColor = 0
+					BGColor = 0x889778,
+					ForeColor = 0x36412D
 				};
 			}
 
