@@ -35,8 +35,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	internal class mAR : MapperBase
 	{
-		// TODO: fastscbios setting
-		// TODO: cart ram
 		public mAR(Atari2600 core)
 		{
 			Core = core;
@@ -164,6 +162,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		};
 
 		#endregion
+
+		public override bool HasCartRam
+		{
+			get { return true; }
+		}
+
+		public override ByteBuffer CartRam
+		{
+			get { return _superChargerImage; }
+		}
 
 		public override void HardReset()
 		{
@@ -353,7 +361,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			// The scrom.asm code checks a value at offset 109 as follows:
 			//   0xFF -> do a complete jump over the SC BIOS progress bars code
 			//   0x00 -> show SC BIOS progress bars as normal
-			DummyRomCode[109] = 0x00; // TODO: fastscbios setting
+			DummyRomCode[109] = (byte)(Core.SyncSettings.FastScBios ? 0xFF : 0x00);
 
 			// Stella does this, but randomness is bad for determinacy! Hopefully we don't really need it
 			//ourDummyROMCode[281] = mySystem->randGenerator().next();
