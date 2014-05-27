@@ -145,7 +145,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public int CurrentScanLine
 		{
-			get { return _tia.CurrentScanLine; }
+			get { return _tia.LineCount; }
 		}
 
 		public bool IsVsync

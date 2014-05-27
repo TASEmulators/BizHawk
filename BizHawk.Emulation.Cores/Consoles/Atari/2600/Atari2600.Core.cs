@@ -340,7 +340,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			Cpu.PC = (ushort)(ReadMemory(0x1FFC) + (ReadMemory(0x1FFD) << 8)); // set the initial PC
 		}
 
-		public void FrameAdvance(bool render, bool rendersound)
+		private void StartNewFrame()
 		{
 			_frame++;
 			_islag = true;
@@ -351,12 +351,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
 			_tia.BeginAudioFrame();
-			while (_tia.LineCount < _tia.NominalNumScanlines)
-			{
-				CycleAdvance();
-			}
-			//Console.WriteLine("{0}", _tia.CurrentScanLine);
+		}
 
+		private void FinishFrame()
+		{
 			_tia.CompleteAudioFrame();
 
 			if (_islag)
@@ -367,7 +365,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_tia.LineCount = 0;
 		}
 
-		public void CycleAdvance()
+		private void Cycle()
 		{
 			_tia.Execute(1);
 			_tia.Execute(1);
@@ -383,12 +381,41 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_mapper.ClockCpu();
 		}
 
+		public void FrameAdvance(bool render, bool rendersound)
+		{
+			StartNewFrame();
+
+			while (_tia.LineCount < _tia.NominalNumScanlines)
+			{
+				Cycle();
+			}
+
+			FinishFrame();
+		}
+
+		public void CycleAdvance()
+		{
+			Cycle();
+
+			if (_tia.LineCount >= _tia.NominalNumScanlines)
+			{
+				FinishFrame();
+				StartNewFrame();
+			}
+		}
+
 		public void ScanlineAdvance()
 		{
 			var currLineCount = _tia.LineCount;
 			while (_tia.LineCount == currLineCount)
 			{
 				CycleAdvance();
+			}
+
+			if (_tia.LineCount >= _tia.NominalNumScanlines)
+			{
+				FinishFrame();
+				StartNewFrame();
 			}
 		}
 
