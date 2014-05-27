@@ -19,11 +19,13 @@ namespace BizHawk.Client.EmuHawk
 		// Consider how to handle trace logger (the two will compete with each other with the TakeContents() method)
 		// Step Into
 		// Step Out
-		// Step
-		// Advance 1 scanline?
 		// Settable registers, also implement in lua
 		// Breakpoints - Double click toggle, Delete to remove
 		// Save breakpoints to file?
+		// Video Frame advance
+		// Update on load
+		// Add to toolbox
+
 		private Atari2600 _core = Global.Emulator as Atari2600;
 		private readonly List<string> _instructions = new List<string>();
 
