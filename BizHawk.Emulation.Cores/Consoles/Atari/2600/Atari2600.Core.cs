@@ -385,7 +385,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public void ScanlineAdvance()
 		{
-			// TODO
+			var currLineCount = _tia.LineCount;
+			while (_tia.LineCount == currLineCount)
+			{
+				CycleAdvance();
+			}
 		}
 
 		public byte ReadControls1(bool peek)
