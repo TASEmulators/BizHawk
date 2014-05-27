@@ -21,6 +21,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public int LastAddress;
 		public int DistinctAccessCount;
 
+		private bool _frameStartPending = true;
+
 		public byte BaseReadMemory(ushort addr)
 		{
 			addr = (ushort)(addr & 0x1FFF);
@@ -340,29 +342,67 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			Cpu.PC = (ushort)(ReadMemory(0x1FFC) + (ReadMemory(0x1FFD) << 8)); // set the initial PC
 		}
 
-		private void StartNewFrame()
+		public void CycleAdvance()
 		{
-			_frame++;
-			_islag = true;
-
-			if (Controller["Power"])
-			{
-				HardReset();
-			}
-
-			_tia.BeginAudioFrame();
+			StartFrameCond();
+			Cycle();
+			FinishFrameCond();
 		}
 
-		private void FinishFrame()
+		public void ScanlineAdvance()
 		{
-			_tia.CompleteAudioFrame();
+			StartFrameCond();
+			int currentLine = _tia.LineCount;
+			while (_tia.LineCount == currentLine)
+				Cycle();
+			FinishFrameCond();
+		}
 
-			if (_islag)
+		public void FrameAdvance(bool render, bool rendersound)
+		{
+			StartFrameCond();
+			while (_tia.LineCount < _tia.NominalNumScanlines)
+				Cycle();
+			FinishFrameCond();
+		}
+
+		public void VFrameAdvance() // advance up to 500 lines looking for end of video frame
+			// after vsync falling edge, continues to end of next line
+		{
+			bool frameend = false;
+			_tia.FrameEndCallBack = (n) => frameend = true;
+			for (int i = 0; i < 500 && !frameend; i++)
+				ScanlineAdvance();
+			_tia.FrameEndCallBack = null;
+		}
+
+		private void StartFrameCond()
+		{
+			if (_frameStartPending)
 			{
-				LagCount++;
-			}
+				_frame++;
+				_islag = true;
 
-			_tia.LineCount = 0;
+				if (Controller["Power"])
+				{
+					HardReset();
+				}
+
+				_tia.BeginAudioFrame();
+				_frameStartPending = false;
+			}
+		}
+
+		private void FinishFrameCond()
+		{
+			if (_tia.LineCount >= _tia.NominalNumScanlines)
+			{
+				_tia.CompleteAudioFrame();
+				if (_islag)
+					LagCount++;
+				_tia.LineCount = 0;
+				_frameStartPending = true;
+			}
 		}
 
 		private void Cycle()
@@ -370,53 +410,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_tia.Execute(1);
 			_tia.Execute(1);
 			_tia.Execute(1);
-
 			M6532.Timer.Tick();
 			if (CoreComm.Tracer.Enabled)
 			{
 				CoreComm.Tracer.Put(Cpu.TraceState());
 			}
-
 			Cpu.ExecuteOne();
 			_mapper.ClockCpu();
-		}
-
-		public void FrameAdvance(bool render, bool rendersound)
-		{
-			StartNewFrame();
-
-			while (_tia.LineCount < _tia.NominalNumScanlines)
-			{
-				Cycle();
-			}
-
-			FinishFrame();
-		}
-
-		public void CycleAdvance()
-		{
-			Cycle();
-
-			if (_tia.LineCount >= _tia.NominalNumScanlines)
-			{
-				FinishFrame();
-				StartNewFrame();
-			}
-		}
-
-		public void ScanlineAdvance()
-		{
-			var currLineCount = _tia.LineCount;
-			while (_tia.LineCount == currLineCount)
-			{
-				CycleAdvance();
-			}
-
-			if (_tia.LineCount >= _tia.NominalNumScanlines)
-			{
-				FinishFrame();
-				StartNewFrame();
-			}
 		}
 
 		public byte ReadControls1(bool peek)
