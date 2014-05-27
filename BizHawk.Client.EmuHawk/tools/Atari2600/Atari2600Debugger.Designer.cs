@@ -73,15 +73,21 @@
 			this.CoreInfoBox = new System.Windows.Forms.GroupBox();
 			this.VBlankCheckbox = new System.Windows.Forms.CheckBox();
 			this.VSyncChexkbox = new System.Windows.Forms.CheckBox();
-			this.ScanlineBox = new System.Windows.Forms.TextBox();
 			this.label8 = new System.Windows.Forms.Label();
-			this.FrameCountBox = new System.Windows.Forms.TextBox();
 			this.label7 = new System.Windows.Forms.Label();
 			this.TracerBox = new System.Windows.Forms.GroupBox();
 			this.StepOverButton = new System.Windows.Forms.Button();
 			this.StepOutButton = new System.Windows.Forms.Button();
 			this.BreakpointGroupBox = new System.Windows.Forms.GroupBox();
 			this.AddBreakpointButton = new System.Windows.Forms.Button();
+			this.FrameLabel = new System.Windows.Forms.Label();
+			this.ScanlineLabel = new System.Windows.Forms.Label();
+			this.TotalCyclesLabel = new System.Windows.Forms.Label();
+			this.label10 = new System.Windows.Forms.Label();
+			this.DistinctAccesLabel = new System.Windows.Forms.Label();
+			this.label11 = new System.Windows.Forms.Label();
+			this.label9 = new System.Windows.Forms.Label();
+			this.LastAddressLabel = new System.Windows.Forms.Label();
 			this.BreakpointView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -496,22 +502,28 @@
 			// 
 			// CoreInfoBox
 			// 
+			this.CoreInfoBox.Controls.Add(this.LastAddressLabel);
+			this.CoreInfoBox.Controls.Add(this.label9);
+			this.CoreInfoBox.Controls.Add(this.DistinctAccesLabel);
+			this.CoreInfoBox.Controls.Add(this.label11);
+			this.CoreInfoBox.Controls.Add(this.TotalCyclesLabel);
+			this.CoreInfoBox.Controls.Add(this.label10);
+			this.CoreInfoBox.Controls.Add(this.ScanlineLabel);
+			this.CoreInfoBox.Controls.Add(this.FrameLabel);
 			this.CoreInfoBox.Controls.Add(this.VBlankCheckbox);
 			this.CoreInfoBox.Controls.Add(this.VSyncChexkbox);
-			this.CoreInfoBox.Controls.Add(this.ScanlineBox);
 			this.CoreInfoBox.Controls.Add(this.label8);
-			this.CoreInfoBox.Controls.Add(this.FrameCountBox);
 			this.CoreInfoBox.Controls.Add(this.label7);
 			this.CoreInfoBox.Location = new System.Drawing.Point(260, 27);
 			this.CoreInfoBox.Name = "CoreInfoBox";
-			this.CoreInfoBox.Size = new System.Drawing.Size(160, 155);
+			this.CoreInfoBox.Size = new System.Drawing.Size(238, 155);
 			this.CoreInfoBox.TabIndex = 5;
 			this.CoreInfoBox.TabStop = false;
 			// 
 			// VBlankCheckbox
 			// 
 			this.VBlankCheckbox.AutoSize = true;
-			this.VBlankCheckbox.Location = new System.Drawing.Point(9, 80);
+			this.VBlankCheckbox.Location = new System.Drawing.Point(9, 107);
 			this.VBlankCheckbox.Name = "VBlankCheckbox";
 			this.VBlankCheckbox.Size = new System.Drawing.Size(60, 17);
 			this.VBlankCheckbox.TabIndex = 5;
@@ -521,42 +533,26 @@
 			// VSyncChexkbox
 			// 
 			this.VSyncChexkbox.AutoSize = true;
-			this.VSyncChexkbox.Location = new System.Drawing.Point(9, 63);
+			this.VSyncChexkbox.Location = new System.Drawing.Point(9, 90);
 			this.VSyncChexkbox.Name = "VSyncChexkbox";
 			this.VSyncChexkbox.Size = new System.Drawing.Size(57, 17);
 			this.VSyncChexkbox.TabIndex = 4;
 			this.VSyncChexkbox.Text = "VSync";
 			this.VSyncChexkbox.UseVisualStyleBackColor = true;
 			// 
-			// ScanlineBox
-			// 
-			this.ScanlineBox.Location = new System.Drawing.Point(58, 37);
-			this.ScanlineBox.Name = "ScanlineBox";
-			this.ScanlineBox.ReadOnly = true;
-			this.ScanlineBox.Size = new System.Drawing.Size(74, 20);
-			this.ScanlineBox.TabIndex = 3;
-			// 
 			// label8
 			// 
 			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(6, 40);
+			this.label8.Location = new System.Drawing.Point(6, 38);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(51, 13);
 			this.label8.TabIndex = 2;
 			this.label8.Text = "Scanline:";
 			// 
-			// FrameCountBox
-			// 
-			this.FrameCountBox.Location = new System.Drawing.Point(58, 13);
-			this.FrameCountBox.Name = "FrameCountBox";
-			this.FrameCountBox.ReadOnly = true;
-			this.FrameCountBox.Size = new System.Drawing.Size(74, 20);
-			this.FrameCountBox.TabIndex = 1;
-			// 
 			// label7
 			// 
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(6, 16);
+			this.label7.Location = new System.Drawing.Point(6, 15);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(39, 13);
 			this.label7.TabIndex = 0;
@@ -617,6 +613,78 @@
 			this.AddBreakpointButton.Text = "&Add";
 			this.AddBreakpointButton.UseVisualStyleBackColor = true;
 			this.AddBreakpointButton.Click += new System.EventHandler(this.AddBreakpointButton_Click);
+			// 
+			// FrameLabel
+			// 
+			this.FrameLabel.AutoSize = true;
+			this.FrameLabel.Location = new System.Drawing.Point(72, 15);
+			this.FrameLabel.Name = "FrameLabel";
+			this.FrameLabel.Size = new System.Drawing.Size(13, 13);
+			this.FrameLabel.TabIndex = 6;
+			this.FrameLabel.Text = "0";
+			// 
+			// ScanlineLabel
+			// 
+			this.ScanlineLabel.AutoSize = true;
+			this.ScanlineLabel.Location = new System.Drawing.Point(72, 38);
+			this.ScanlineLabel.Name = "ScanlineLabel";
+			this.ScanlineLabel.Size = new System.Drawing.Size(13, 13);
+			this.ScanlineLabel.TabIndex = 7;
+			this.ScanlineLabel.Text = "0";
+			// 
+			// TotalCyclesLabel
+			// 
+			this.TotalCyclesLabel.AutoSize = true;
+			this.TotalCyclesLabel.Location = new System.Drawing.Point(72, 61);
+			this.TotalCyclesLabel.Name = "TotalCyclesLabel";
+			this.TotalCyclesLabel.Size = new System.Drawing.Size(13, 13);
+			this.TotalCyclesLabel.TabIndex = 9;
+			this.TotalCyclesLabel.Text = "0";
+			// 
+			// label10
+			// 
+			this.label10.AutoSize = true;
+			this.label10.Location = new System.Drawing.Point(6, 61);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(68, 13);
+			this.label10.TabIndex = 8;
+			this.label10.Text = "Total Cycles:";
+			// 
+			// DistinctAccesLabel
+			// 
+			this.DistinctAccesLabel.AutoSize = true;
+			this.DistinctAccesLabel.Location = new System.Drawing.Point(191, 38);
+			this.DistinctAccesLabel.Name = "DistinctAccesLabel";
+			this.DistinctAccesLabel.Size = new System.Drawing.Size(13, 13);
+			this.DistinctAccesLabel.TabIndex = 11;
+			this.DistinctAccesLabel.Text = "0";
+			// 
+			// label11
+			// 
+			this.label11.AutoSize = true;
+			this.label11.Location = new System.Drawing.Point(96, 38);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(94, 13);
+			this.label11.TabIndex = 10;
+			this.label11.Text = "Distinct Accesses:";
+			// 
+			// label9
+			// 
+			this.label9.AutoSize = true;
+			this.label9.Location = new System.Drawing.Point(96, 15);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(71, 13);
+			this.label9.TabIndex = 12;
+			this.label9.Text = "Last Address:";
+			// 
+			// LastAddressLabel
+			// 
+			this.LastAddressLabel.AutoSize = true;
+			this.LastAddressLabel.Location = new System.Drawing.Point(191, 15);
+			this.LastAddressLabel.Name = "LastAddressLabel";
+			this.LastAddressLabel.Size = new System.Drawing.Size(13, 13);
+			this.LastAddressLabel.TabIndex = 13;
+			this.LastAddressLabel.Text = "0";
 			// 
 			// BreakpointView
 			// 
@@ -753,9 +821,7 @@
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.CheckBox NFlagCheckbox;
 		private System.Windows.Forms.GroupBox CoreInfoBox;
-		private System.Windows.Forms.TextBox FrameCountBox;
 		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.TextBox ScanlineBox;
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.GroupBox TracerBox;
 		private VirtualListView TraceView;
@@ -776,5 +842,13 @@
 		public System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.Button AddBreakpointButton;
 		private System.Windows.Forms.ColumnHeader columnHeader2;
+		private System.Windows.Forms.Label FrameLabel;
+		private System.Windows.Forms.Label ScanlineLabel;
+		private System.Windows.Forms.Label TotalCyclesLabel;
+		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.Label DistinctAccesLabel;
+		private System.Windows.Forms.Label label11;
+		private System.Windows.Forms.Label LastAddressLabel;
+		private System.Windows.Forms.Label label9;
 	}
 }

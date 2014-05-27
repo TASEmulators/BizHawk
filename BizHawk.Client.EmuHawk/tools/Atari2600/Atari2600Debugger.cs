@@ -175,8 +175,11 @@ namespace BizHawk.Client.EmuHawk
 			ZFlagCheckbox.Checked = flags["Flag Z"] == 1;
 			CFlagCheckbox.Checked = flags["Flag C"] == 1;
 
-			FrameCountBox.Text = _core.Frame.ToString();
-			ScanlineBox.Text = _core.CurrentScanLine.ToString();
+			FrameLabel.Text = _core.Frame.ToString();
+			ScanlineLabel.Text = _core.CurrentScanLine.ToString();
+			TotalCyclesLabel.Text = _core.Cpu.TotalExecutedCycles.ToString();
+			DistinctAccesLabel.Text = _core.DistinctAccessCount.ToString();
+			LastAddressLabel.Text = _core.LastAddress.ToString();
 			VSyncChexkbox.Checked = _core.IsVsync;
 			VBlankCheckbox.Checked = _core.IsVBlank;
 			UpdateTraceLog();
@@ -304,7 +307,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StepBtn_Click(object sender, EventArgs e)
 		{
-			var size = opsize[_core.Op];
+			var size = opsize[_core.Cpu.PeekMemory(_core.Cpu.PC)];
 
 			for (int i = 0; i < size; i++)
 			{

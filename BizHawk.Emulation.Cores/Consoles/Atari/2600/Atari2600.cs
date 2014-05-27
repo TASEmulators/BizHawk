@@ -193,14 +193,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			};
 		}
 
-		public byte Op
-		{
-			get
-			{
-				return Cpu.PeekMemory(Cpu.PC);
-			}
-		}
-
 		public bool StartAsyncSound() { return true; }
 
 		public void EndAsyncSound() { }
