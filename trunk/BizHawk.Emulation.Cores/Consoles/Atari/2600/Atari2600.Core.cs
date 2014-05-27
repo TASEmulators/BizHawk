@@ -344,7 +344,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			_frame++;
 			_islag = true;
-			_tia.LineCount = 0;
 
 			if (Controller["Power"])
 			{
@@ -364,6 +363,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				LagCount++;
 			}
+
+			_tia.LineCount = 0;
 		}
 
 		public void CycleAdvance()
