@@ -238,9 +238,10 @@
 			this.GGGameGenieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TI83SubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.KeypadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.LoadTIFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
 			this.AutoloadKeypadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.LoadTIFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.paletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AtariSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.Atari2600DebuggerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator31 = new System.Windows.Forms.ToolStripSeparator();
@@ -356,7 +357,6 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.paletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -2147,6 +2147,13 @@
 			this.KeypadMenuItem.Text = "Keypad";
 			this.KeypadMenuItem.Click += new System.EventHandler(this.KeypadMenuItem_Click);
 			// 
+			// LoadTIFileMenuItem
+			// 
+			this.LoadTIFileMenuItem.Name = "LoadTIFileMenuItem";
+			this.LoadTIFileMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.LoadTIFileMenuItem.Text = "Load TI File...";
+			this.LoadTIFileMenuItem.Click += new System.EventHandler(this.LoadTIFileMenuItem_Click);
+			// 
 			// toolStripSeparator13
 			// 
 			this.toolStripSeparator13.Name = "toolStripSeparator13";
@@ -2161,12 +2168,12 @@
 			this.AutoloadKeypadMenuItem.Text = "Autoload Keypad";
 			this.AutoloadKeypadMenuItem.Click += new System.EventHandler(this.AutoloadKeypadMenuItem_Click);
 			// 
-			// LoadTIFileMenuItem
+			// paletteToolStripMenuItem
 			// 
-			this.LoadTIFileMenuItem.Name = "LoadTIFileMenuItem";
-			this.LoadTIFileMenuItem.Size = new System.Drawing.Size(165, 22);
-			this.LoadTIFileMenuItem.Text = "Load TI File...";
-			this.LoadTIFileMenuItem.Click += new System.EventHandler(this.LoadTIFileMenuItem_Click);
+			this.paletteToolStripMenuItem.Name = "paletteToolStripMenuItem";
+			this.paletteToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.paletteToolStripMenuItem.Text = "Palette...";
+			this.paletteToolStripMenuItem.Click += new System.EventHandler(this.paletteToolStripMenuItem_Click);
 			// 
 			// AtariSubMenu
 			// 
@@ -2177,24 +2184,25 @@
 			this.AtariSubMenu.Name = "AtariSubMenu";
 			this.AtariSubMenu.Size = new System.Drawing.Size(44, 19);
 			this.AtariSubMenu.Text = "&Atari";
+			this.AtariSubMenu.DropDownOpened += new System.EventHandler(this.AtariSubMenu_DropDownOpened);
 			// 
 			// Atari2600DebuggerMenuItem
 			// 
 			this.Atari2600DebuggerMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Bug;
 			this.Atari2600DebuggerMenuItem.Name = "Atari2600DebuggerMenuItem";
-			this.Atari2600DebuggerMenuItem.Size = new System.Drawing.Size(126, 22);
+			this.Atari2600DebuggerMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.Atari2600DebuggerMenuItem.Text = "Debugger";
 			this.Atari2600DebuggerMenuItem.Click += new System.EventHandler(this.Atari2600DebuggerMenuItem_Click);
 			// 
 			// toolStripSeparator31
 			// 
 			this.toolStripSeparator31.Name = "toolStripSeparator31";
-			this.toolStripSeparator31.Size = new System.Drawing.Size(123, 6);
+			this.toolStripSeparator31.Size = new System.Drawing.Size(149, 6);
 			// 
 			// AtariSettingsToolStripMenuItem
 			// 
 			this.AtariSettingsToolStripMenuItem.Name = "AtariSettingsToolStripMenuItem";
-			this.AtariSettingsToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+			this.AtariSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.AtariSettingsToolStripMenuItem.Text = "Settings...";
 			this.AtariSettingsToolStripMenuItem.Click += new System.EventHandler(this.AtariSettingsToolStripMenuItem_Click);
 			// 
@@ -3114,13 +3122,6 @@
 			this.ShowMenuContextMenuItem.Size = new System.Drawing.Size(216, 22);
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
-			// 
-			// paletteToolStripMenuItem
-			// 
-			this.paletteToolStripMenuItem.Name = "paletteToolStripMenuItem";
-			this.paletteToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
-			this.paletteToolStripMenuItem.Text = "Palette...";
-			this.paletteToolStripMenuItem.Click += new System.EventHandler(this.paletteToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 

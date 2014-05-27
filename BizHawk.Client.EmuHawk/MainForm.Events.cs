@@ -1438,6 +1438,8 @@ namespace BizHawk.Client.EmuHawk
 					toolStripSeparator31.Visible =
 					false;
 			}
+
+			Atari2600DebuggerMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
 		}
 
 		private void Atari2600DebuggerMenuItem_Click(object sender, EventArgs e)
