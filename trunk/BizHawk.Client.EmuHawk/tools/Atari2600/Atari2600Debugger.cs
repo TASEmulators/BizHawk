@@ -315,7 +315,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			UpdateValues();
-
 		}
 
 		private void ScanlineAdvanceBtn_Click(object sender, EventArgs e)

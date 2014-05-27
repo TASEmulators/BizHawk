@@ -71,28 +71,28 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.CoreInfoBox = new System.Windows.Forms.GroupBox();
+			this.LastAddressLabel = new System.Windows.Forms.Label();
+			this.label9 = new System.Windows.Forms.Label();
+			this.DistinctAccesLabel = new System.Windows.Forms.Label();
+			this.label11 = new System.Windows.Forms.Label();
+			this.TotalCyclesLabel = new System.Windows.Forms.Label();
+			this.label10 = new System.Windows.Forms.Label();
+			this.ScanlineLabel = new System.Windows.Forms.Label();
+			this.FrameLabel = new System.Windows.Forms.Label();
 			this.VBlankCheckbox = new System.Windows.Forms.CheckBox();
 			this.VSyncChexkbox = new System.Windows.Forms.CheckBox();
 			this.label8 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
 			this.TracerBox = new System.Windows.Forms.GroupBox();
+			this.TraceView = new BizHawk.Client.EmuHawk.VirtualListView();
+			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.StepOverButton = new System.Windows.Forms.Button();
 			this.StepOutButton = new System.Windows.Forms.Button();
 			this.BreakpointGroupBox = new System.Windows.Forms.GroupBox();
 			this.AddBreakpointButton = new System.Windows.Forms.Button();
-			this.FrameLabel = new System.Windows.Forms.Label();
-			this.ScanlineLabel = new System.Windows.Forms.Label();
-			this.TotalCyclesLabel = new System.Windows.Forms.Label();
-			this.label10 = new System.Windows.Forms.Label();
-			this.DistinctAccesLabel = new System.Windows.Forms.Label();
-			this.label11 = new System.Windows.Forms.Label();
-			this.label9 = new System.Windows.Forms.Label();
-			this.LastAddressLabel = new System.Windows.Forms.Label();
 			this.BreakpointView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.TraceView = new BizHawk.Client.EmuHawk.VirtualListView();
-			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.DebuggerMenu.SuspendLayout();
 			this.RegistersBox.SuspendLayout();
 			this.CoreInfoBox.SuspendLayout();
@@ -516,9 +516,81 @@
 			this.CoreInfoBox.Controls.Add(this.label7);
 			this.CoreInfoBox.Location = new System.Drawing.Point(260, 27);
 			this.CoreInfoBox.Name = "CoreInfoBox";
-			this.CoreInfoBox.Size = new System.Drawing.Size(238, 155);
+			this.CoreInfoBox.Size = new System.Drawing.Size(265, 155);
 			this.CoreInfoBox.TabIndex = 5;
 			this.CoreInfoBox.TabStop = false;
+			// 
+			// LastAddressLabel
+			// 
+			this.LastAddressLabel.AutoSize = true;
+			this.LastAddressLabel.Location = new System.Drawing.Point(191, 15);
+			this.LastAddressLabel.Name = "LastAddressLabel";
+			this.LastAddressLabel.Size = new System.Drawing.Size(13, 13);
+			this.LastAddressLabel.TabIndex = 13;
+			this.LastAddressLabel.Text = "0";
+			// 
+			// label9
+			// 
+			this.label9.AutoSize = true;
+			this.label9.Location = new System.Drawing.Point(96, 15);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(71, 13);
+			this.label9.TabIndex = 12;
+			this.label9.Text = "Last Address:";
+			// 
+			// DistinctAccesLabel
+			// 
+			this.DistinctAccesLabel.AutoSize = true;
+			this.DistinctAccesLabel.Location = new System.Drawing.Point(191, 38);
+			this.DistinctAccesLabel.Name = "DistinctAccesLabel";
+			this.DistinctAccesLabel.Size = new System.Drawing.Size(13, 13);
+			this.DistinctAccesLabel.TabIndex = 11;
+			this.DistinctAccesLabel.Text = "0";
+			// 
+			// label11
+			// 
+			this.label11.AutoSize = true;
+			this.label11.Location = new System.Drawing.Point(96, 38);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(94, 13);
+			this.label11.TabIndex = 10;
+			this.label11.Text = "Distinct Accesses:";
+			// 
+			// TotalCyclesLabel
+			// 
+			this.TotalCyclesLabel.AutoSize = true;
+			this.TotalCyclesLabel.Location = new System.Drawing.Point(72, 61);
+			this.TotalCyclesLabel.Name = "TotalCyclesLabel";
+			this.TotalCyclesLabel.Size = new System.Drawing.Size(13, 13);
+			this.TotalCyclesLabel.TabIndex = 9;
+			this.TotalCyclesLabel.Text = "0";
+			// 
+			// label10
+			// 
+			this.label10.AutoSize = true;
+			this.label10.Location = new System.Drawing.Point(6, 61);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(68, 13);
+			this.label10.TabIndex = 8;
+			this.label10.Text = "Total Cycles:";
+			// 
+			// ScanlineLabel
+			// 
+			this.ScanlineLabel.AutoSize = true;
+			this.ScanlineLabel.Location = new System.Drawing.Point(72, 38);
+			this.ScanlineLabel.Name = "ScanlineLabel";
+			this.ScanlineLabel.Size = new System.Drawing.Size(13, 13);
+			this.ScanlineLabel.TabIndex = 7;
+			this.ScanlineLabel.Text = "0";
+			// 
+			// FrameLabel
+			// 
+			this.FrameLabel.AutoSize = true;
+			this.FrameLabel.Location = new System.Drawing.Point(72, 15);
+			this.FrameLabel.Name = "FrameLabel";
+			this.FrameLabel.Size = new System.Drawing.Size(13, 13);
+			this.FrameLabel.TabIndex = 6;
+			this.FrameLabel.Text = "0";
 			// 
 			// VBlankCheckbox
 			// 
@@ -570,6 +642,35 @@
 			this.TracerBox.TabStop = false;
 			this.TracerBox.Text = "Trace log";
 			// 
+			// TraceView
+			// 
+			this.TraceView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.TraceView.BlazingFast = false;
+			this.TraceView.CheckBoxes = true;
+			this.TraceView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.Script});
+			this.TraceView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.TraceView.FullRowSelect = true;
+			this.TraceView.GridLines = true;
+			this.TraceView.HideSelection = false;
+			this.TraceView.ItemCount = 0;
+			this.TraceView.Location = new System.Drawing.Point(8, 18);
+			this.TraceView.Name = "TraceView";
+			this.TraceView.SelectAllInProgress = false;
+			this.TraceView.selectedItem = -1;
+			this.TraceView.Size = new System.Drawing.Size(393, 414);
+			this.TraceView.TabIndex = 4;
+			this.TraceView.TabStop = false;
+			this.TraceView.UseCompatibleStateImageBehavior = false;
+			this.TraceView.View = System.Windows.Forms.View.Details;
+			// 
+			// Script
+			// 
+			this.Script.Text = "Instructions";
+			this.Script.Width = 599;
+			// 
 			// StepOverButton
 			// 
 			this.StepOverButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -614,78 +715,6 @@
 			this.AddBreakpointButton.UseVisualStyleBackColor = true;
 			this.AddBreakpointButton.Click += new System.EventHandler(this.AddBreakpointButton_Click);
 			// 
-			// FrameLabel
-			// 
-			this.FrameLabel.AutoSize = true;
-			this.FrameLabel.Location = new System.Drawing.Point(72, 15);
-			this.FrameLabel.Name = "FrameLabel";
-			this.FrameLabel.Size = new System.Drawing.Size(13, 13);
-			this.FrameLabel.TabIndex = 6;
-			this.FrameLabel.Text = "0";
-			// 
-			// ScanlineLabel
-			// 
-			this.ScanlineLabel.AutoSize = true;
-			this.ScanlineLabel.Location = new System.Drawing.Point(72, 38);
-			this.ScanlineLabel.Name = "ScanlineLabel";
-			this.ScanlineLabel.Size = new System.Drawing.Size(13, 13);
-			this.ScanlineLabel.TabIndex = 7;
-			this.ScanlineLabel.Text = "0";
-			// 
-			// TotalCyclesLabel
-			// 
-			this.TotalCyclesLabel.AutoSize = true;
-			this.TotalCyclesLabel.Location = new System.Drawing.Point(72, 61);
-			this.TotalCyclesLabel.Name = "TotalCyclesLabel";
-			this.TotalCyclesLabel.Size = new System.Drawing.Size(13, 13);
-			this.TotalCyclesLabel.TabIndex = 9;
-			this.TotalCyclesLabel.Text = "0";
-			// 
-			// label10
-			// 
-			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(6, 61);
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(68, 13);
-			this.label10.TabIndex = 8;
-			this.label10.Text = "Total Cycles:";
-			// 
-			// DistinctAccesLabel
-			// 
-			this.DistinctAccesLabel.AutoSize = true;
-			this.DistinctAccesLabel.Location = new System.Drawing.Point(191, 38);
-			this.DistinctAccesLabel.Name = "DistinctAccesLabel";
-			this.DistinctAccesLabel.Size = new System.Drawing.Size(13, 13);
-			this.DistinctAccesLabel.TabIndex = 11;
-			this.DistinctAccesLabel.Text = "0";
-			// 
-			// label11
-			// 
-			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(96, 38);
-			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(94, 13);
-			this.label11.TabIndex = 10;
-			this.label11.Text = "Distinct Accesses:";
-			// 
-			// label9
-			// 
-			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(96, 15);
-			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(71, 13);
-			this.label9.TabIndex = 12;
-			this.label9.Text = "Last Address:";
-			// 
-			// LastAddressLabel
-			// 
-			this.LastAddressLabel.AutoSize = true;
-			this.LastAddressLabel.Location = new System.Drawing.Point(191, 15);
-			this.LastAddressLabel.Name = "LastAddressLabel";
-			this.LastAddressLabel.Size = new System.Drawing.Size(13, 13);
-			this.LastAddressLabel.TabIndex = 13;
-			this.LastAddressLabel.Text = "0";
-			// 
 			// BreakpointView
 			// 
 			this.BreakpointView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -720,35 +749,6 @@
 			// 
 			this.columnHeader2.Text = "Type";
 			this.columnHeader2.Width = 103;
-			// 
-			// TraceView
-			// 
-			this.TraceView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.TraceView.BlazingFast = false;
-			this.TraceView.CheckBoxes = true;
-			this.TraceView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Script});
-			this.TraceView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.TraceView.FullRowSelect = true;
-			this.TraceView.GridLines = true;
-			this.TraceView.HideSelection = false;
-			this.TraceView.ItemCount = 0;
-			this.TraceView.Location = new System.Drawing.Point(8, 18);
-			this.TraceView.Name = "TraceView";
-			this.TraceView.SelectAllInProgress = false;
-			this.TraceView.selectedItem = -1;
-			this.TraceView.Size = new System.Drawing.Size(393, 414);
-			this.TraceView.TabIndex = 4;
-			this.TraceView.TabStop = false;
-			this.TraceView.UseCompatibleStateImageBehavior = false;
-			this.TraceView.View = System.Windows.Forms.View.Details;
-			// 
-			// Script
-			// 
-			this.Script.Text = "Instructions";
-			this.Script.Width = 599;
 			// 
 			// Atari2600Debugger
 			// 
