@@ -212,6 +212,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("Lag", ref _lagcount);
 			ser.Sync("Frame", ref _frame);
 			ser.Sync("IsLag", ref _islag);
+			ser.Sync("frameStartPending", ref _frameStartPending);
 			_tia.SyncState(ser);
 			M6532.SyncState(ser);
 			ser.BeginSection("Mapper");
