@@ -70,14 +70,16 @@ namespace BizHawk.Client.EmuHawk.Filters
 				//don't distort the original texture
 				float apparentWidth = sourceWidth * widthScale;
 				float apparentHeight = sourceHeight * heightScale;
-				widthScale = (float)Math.Floor(apparentWidth / textureWidth);
-				heightScale = (float)Math.Floor(apparentHeight / textureHeight);
+				widthScale = (apparentWidth / textureWidth);
+				heightScale = (apparentHeight / textureHeight);
 
+				//zero 27-may-2014 - no longer relevant, but this is sneaky, so leaving it as a reminder for now
 				//prevent dysfunctional reduction to 0x
-				if (widthScale == 0) widthScale = 1;
-				if (heightScale == 0) heightScale = 1;
+				//if (widthScale == 0) widthScale = 1;
+				//if (heightScale == 0) heightScale = 1;
 			
 			REDO:
+
 				apparentWidth = textureWidth * widthScale;
 				apparentHeight = textureHeight * heightScale;
 
@@ -86,21 +88,47 @@ namespace BizHawk.Client.EmuHawk.Filters
 				float haveAr = apparentWidth / apparentHeight;
 				if (widthScale>1)
 				{
-					float tryAnotherAR = (widthScale - 1)/heightScale;
+					//try truncating this scale, or reducing it by 1 if it's already truncated
+					float floored = (float)Math.Floor(widthScale);
+					float next;
+					if (widthScale == floored)
+						next = widthScale - 1;
+					else next = floored;
+
+					float tryAnotherAR = (next*textureWidth)/(heightScale*textureHeight);
 					if(Math.Abs(tryAnotherAR-goalAr) < Math.Abs(haveAr-goalAr))
 					{
-						widthScale -= 1;
+						widthScale = next;
 						goto REDO;
 					}
 				}
 				if (heightScale > 1)
 				{
-					float tryAnotherAR = widthScale / (heightScale-1);
+					//try truncating this scale, or reducing it by 1 if it's already truncated
+					float floored = (float)Math.Floor(heightScale);
+					float next;
+					if (heightScale == floored)
+						next = heightScale - 1;
+					else next = floored;
+
+					float tryAnotherAR = (widthScale*textureWidth) / (next*textureHeight);
 					if (Math.Abs(tryAnotherAR - goalAr) < Math.Abs(haveAr - goalAr))
 					{
-						heightScale -= 1;
+						heightScale = next;
 						goto REDO;
 					}
+				}
+
+				//we're not allowed to get out of here with non-integer scales, so if that's happened, back in for another loop we go
+				if (Math.Floor(heightScale) != heightScale && heightScale >= 1)
+				{
+					heightScale = (float)Math.Floor(heightScale);
+					goto REDO;
+				}
+				if (Math.Floor(widthScale) != widthScale && widthScale >= 1)
+				{
+					widthScale = (float)Math.Floor(widthScale);
+					goto REDO;
 				}
 				
 

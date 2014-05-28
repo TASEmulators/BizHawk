@@ -288,8 +288,10 @@ namespace BizHawk.Client.EmuHawk
 			fvp.VirtualHeight = videoProvider.VirtualHeight;
 
 			Size chain_outsize = new Size(fvp.BufferWidth * zoom, fvp.BufferHeight * zoom);
+
+			//zero 27-may-2014 - this code is now slightly suspicious.. but no proof we need to get rid of it
 			if (Global.Config.DispObeyAR && Global.Config.DispFixAspectRatio)
-				chain_outsize = new Size(fvp.VirtualWidth * zoom, fvp.VirtualHeight * zoom);
+			  chain_outsize = new Size(fvp.VirtualWidth * zoom, fvp.VirtualHeight * zoom);
 
 			var filterProgram = UpdateSourceInternal(fvp, true, chain_outsize);
 
