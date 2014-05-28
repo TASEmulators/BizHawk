@@ -384,12 +384,6 @@
     <Compile Include="config\RewindConfig.Designer.cs">
       <DependentUpon>RewindConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\Saturn\SaturnPrefs.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\Saturn\SaturnPrefs.Designer.cs">
-      <DependentUpon>SaturnPrefs.cs</DependentUpon>
-    </Compile>
     <Compile Include="config\SMS\SMSGraphicsConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1091,9 +1085,6 @@
     <EmbeddedResource Include="config\RewindConfig.resx">
       <DependentUpon>RewindConfig.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="config\Saturn\SaturnPrefs.resx">
-      <DependentUpon>SaturnPrefs.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="config\SMS\SMSGraphicsConfig.resx">
       <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
     </EmbeddedResource>
@@ -1594,7 +1585,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="config\Saturn\" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

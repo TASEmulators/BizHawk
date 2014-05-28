@@ -507,7 +507,16 @@ void vdp2newhook(u16 v)
 	}
 }
 
-extern "C" __declspec(dllexport) int libyabause_init(CDInterface *_CD, const char *biosfn, int usegl, int carttype)
+extern "C" __declspec(dllexport) int libyabause_init
+(
+	CDInterface *_CD,
+	const char *biosfn,
+	int usegl,
+	int carttype,
+	int quickload,
+	int clocksync,
+	int clockbase
+)
 {
 	usinggl = usegl;
 	if (usegl && (!StartGLContext() || !LoadExtensions()))
@@ -547,6 +556,11 @@ extern "C" __declspec(dllexport) int libyabause_init(CDInterface *_CD, const cha
 	yinit.carttype = carttype;
 	yinit.netlinksetting = NULL;
 	yinit.videoformattype = VIDEOFORMATTYPE_NTSC;
+	yabsys.usequickload = quickload;
+	yinit.usethreads = 0;
+	yinit.frameskip = 0;
+	yinit.clocksync = clocksync;
+	yinit.basetime = clockbase; // same format as return from time(); 0 to use time()
 
 	if (usegl && !vdp2hookfcn)
 	{

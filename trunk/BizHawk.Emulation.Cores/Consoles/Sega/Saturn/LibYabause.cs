@@ -177,9 +177,12 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		/// <param name="intf">cd interface.  struct need not persist after call, but the function pointers better</param>
 		/// <param name="biosfn">path to bios, pass null to use built in bios emulation</param>
 		/// <param name="usegl">true for opengl</param>
+		/// <param name="quickload">if true, skip bios opening</param>
+		/// <param name="clocksync">if true, sync RTC to actual emulated time; if false, use real real time</param>
+		/// <param name="clockbase">if non-zero, initial emulation time in unix format</param>
 		/// <returns></returns>
 		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool libyabause_init(ref CDInterface intf, string biosfn, bool usegl, CartType carttype);
+		public static extern bool libyabause_init(ref CDInterface intf, string biosfn, bool usegl, CartType carttype, bool quickload, bool clocksync, int clockbase);
 
 		public struct CDInterface
 		{

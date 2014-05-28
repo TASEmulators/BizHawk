@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.ComponentModel;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
+
+using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Sega.Saturn
 {
@@ -88,7 +91,23 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			string BiosPipe = fp.GetPipeNameNative();
 			fp.Offer(bios);
 
-			if (!LibYabause.libyabause_init(ref CDInt, BiosPipe, GL, SyncSettings.CartType))
+			int basetime;
+			if (SyncSettings.RealTimeRTC)
+				basetime = 0;
+			else
+				basetime = (int)((SyncSettings.RTCInitialTime - new DateTime(1970, 1, 1).ToLocalTime()).TotalSeconds);
+
+
+			if (!LibYabause.libyabause_init
+			(
+				ref CDInt,
+				BiosPipe,
+				GL,
+				SyncSettings.CartType,
+				SyncSettings.SkipBios,
+				!SyncSettings.RealTimeRTC,
+				basetime
+			))
 				throw new Exception("libyabause_init() failed!");
 
 			fp.Finish();
@@ -664,20 +683,59 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 		public class SaturnSyncSettings
 		{
-			public bool UseGL = false;
-			public int DispFactor = 1;
-			public bool DispFree = false;
-			public int GLW = 640;
-			public int GLH = 480;
-			public LibYabause.CartType CartType = LibYabause.CartType.NONE;
+			[Description("Use OpenGL mode for rendering instead of software.")]
+			[DefaultValue(false)]
+			public bool UseGL { get; set; }
+
+			[Description("In OpenGL mode, the internal resolution as a multiple of the normal internal resolution (1x, 2x, 3x, 4x).  Ignored in software mode or when a custom resolution is used.")]
+			[DefaultValue(1)]
+			public int DispFactor { get { return _DispFactor; } set { _DispFactor = Math.Max(1, Math.Min(value, 4)); } }
+			[JsonIgnore]
+			private int _DispFactor;
+
+			[Description("In OpenGL mode, set to true to use a custom resolution and ignore DispFactor.")]
+			[DefaultValue(false)]
+			public bool DispFree { get; set; }
+
+			[Description("In OpenGL mode and when DispFree is true, the width of the final resolution.")]
+			[DefaultValue(640)]
+			public int GLW { get { return _GLW; } set { _GLW = Math.Max(320, Math.Min(value, 2048)); } }
+			[JsonIgnore]
+			private int _GLW;
+
+			[Description("In OpenGL mode and when DispFree is true, the height of the final resolution.")]
+			[DefaultValue(480)]
+			public int GLH { get { return _GLH; } set { _GLH = Math.Max(224, Math.Min(value, 1024)); } }
+			[JsonIgnore]
+			private int _GLH;
+
+			[Description("The type of the attached RAM cart.  Most games will not use this.")]
+			[DefaultValue(LibYabause.CartType.NONE)]
+			public LibYabause.CartType CartType { get; set; }
+
+			[Description("Skip the Bios Intro screen.")]
+			[DefaultValue(false)]
+			public bool SkipBios { get; set; }
+
+			[Description("If true, the real time clock will reflect real time, instead of emulated time.  Ignored (forced to false) when a movie is recording.")]
+			[DefaultValue(false)]
+			public bool RealTimeRTC { get; set; }
+
+			[Description("Set the initial RTC time.  Only used when RealTimeRTC is false.")]
+			[DefaultValue(typeof(DateTime), "2010-01-01")]
+			public DateTime RTCInitialTime { get; set; }
 
 			public static bool NeedsReboot(SaturnSyncSettings x, SaturnSyncSettings y)
 			{
-				return x.UseGL != y.UseGL || x.CartType != y.CartType;
+				return x.UseGL != y.UseGL || x.CartType != y.CartType || x.SkipBios != y.SkipBios || x.RealTimeRTC != y.RealTimeRTC || x.RTCInitialTime != y.RTCInitialTime;
 			}
 			public SaturnSyncSettings Clone()
 			{
 				return (SaturnSyncSettings)MemberwiseClone();
+			}
+			public SaturnSyncSettings()
+			{
+				SettingsUtil.SetDefaultValues<SaturnSyncSettings>(this);
 			}
 		}
 	}
