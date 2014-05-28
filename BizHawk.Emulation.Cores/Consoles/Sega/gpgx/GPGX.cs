@@ -220,6 +220,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					if (srcdata == null)
 					{
 						Console.WriteLine("Frontend couldn't satisfy firmware request GEN:{0}", firmwareID);
+						// this path will be the most common PEBKAC error, so be a bit more vocal about the problem
+						CoreComm.ShowMessage(string.Format("GPGX couldn't load firmware {0}.  This is usually fatal.", firmwareID));
 						return 0;
 					}
 				}
