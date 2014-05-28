@@ -250,7 +250,7 @@ int YabauseInit(yabauseinit_struct *init)
    else
       yabsys.emulatebios = 1;
 
-   yabsys.usequickload = 0;
+   //yabsys.usequickload = 0;
 
    #if defined(SH2_DYNAREC)
    if(SH2Core->id==2) {

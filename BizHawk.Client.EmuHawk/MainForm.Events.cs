@@ -1689,10 +1689,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaturnPreferencesMenuItem_Click(object sender, EventArgs e)
 		{
+			GenericCoreConfig.DoDialog(this, "Saturn Settings");
+			/*  -- delete me, out of date
 			using (var dlg = new SaturnPrefs())
 			{
 				dlg.ShowDialog(this);
 			}
+			 * */
 		}
 
 		#endregion
