@@ -345,8 +345,10 @@ namespace BizHawk.Emulation.Cores.Calculators
 			}
 		}
 
-		public TI83(CoreComm comm, GameInfo game, byte[] rom)
+		public TI83(CoreComm comm, GameInfo game, byte[] rom, object Settings)
 		{
+			PutSettings(Settings ?? TI83Settings.GetDefaults());
+
 			CoreComm = comm;
 			cpu.ReadMemory = ReadMemory;
 			cpu.WriteMemory = WriteMemory;
@@ -406,13 +408,18 @@ namespace BizHawk.Emulation.Cores.Calculators
 						int bufbit = offset & 7;
 						int bit = ((emu.vram[bufbyte] >> (7 - bufbit)) & 1);
 						if (bit == 0)
-							unchecked { pixels[i++] = (int)0xFFFFFFFF; }
+						{
+							unchecked { pixels[i++] = (int)emu.Settings.BGColor; }
+						}
 						else
-							pixels[i++] = 0;
+						{
+							pixels[i++] = (int)emu.Settings.ForeColor;
+						}
 
 					}
 				return pixels;
 			}
+
 			public int VirtualWidth { get { return 96; } }
 			public int VirtualHeight { get { return 64; } }
 			public int BufferWidth { get { return 96; } }
@@ -604,11 +611,10 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		public class Link
 		{
-            //Emulates TI linking software.
-            //See http://www.ticalc.org/archives/files/fileinfo/294/29418.html for documentation
+			// Emulates TI linking software.
+			// See http://www.ticalc.org/archives/files/fileinfo/294/29418.html for documentation
 
-            //Note: Each hardware read/write to the link port calls tthe update method.
-
+			// Note: Each hardware read/write to the link port calls tthe update method.
 			readonly TI83 Parent;
 
 			private FileStream CurrentFile;
@@ -861,7 +867,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 				Parent.LinkActive = false;
 				CurrentData.Clear();
 
-				//Prepare to receive the Aknowledgement response from the calculator.
+				// Prepare to receive the Aknowledgement response from the calculator.
 				BytesToSend = 8;
 				CurrentStatus = Status.PrepareSend;
 				NextStep = SendVariableData;
@@ -869,7 +875,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 			private void SendVariableData()
 			{
-				//Check to see if out of memory first.
+				// Check to see if out of memory first.
 				CurrentData.Dequeue();
 				CurrentData.Dequeue();
 				CurrentData.Dequeue();
@@ -913,7 +919,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 				Parent.LinkActive = false;
 				CurrentData.Clear();
 
-				//Prepare to receive the Aknowledgement response from the calculator.
+				// Prepare to receive the Aknowledgement response from the calculator.
 				BytesToSend = 4;
 				CurrentStatus = Status.PrepareSend;
 				NextStep = EndTransmission;
@@ -923,14 +929,14 @@ namespace BizHawk.Emulation.Cores.Calculators
 			{
 				CurrentData.Clear();
 
-				//Send the end transmission command.
+				// Send the end transmission command.
 				CurrentData.Enqueue(0x03);
 				CurrentData.Enqueue(0x92);
 				CurrentData.Enqueue(0x00);
 				CurrentData.Enqueue(0x00);
 
 				CurrentStatus = Status.PrepareReceive;
-                NextStep = FinalizeFile;
+				NextStep = FinalizeFile;
 				Parent.LinkActive = true;
 			}
 
@@ -940,7 +946,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 				Parent.LinkActive = false;
 				CurrentData.Clear();
 
-				//Prepare to receive the Aknowledgement response from the calculator.
+				// Prepare to receive the Aknowledgement response from the calculator.
 				BytesToSend = 3;
 				CurrentStatus = Status.PrepareSend;
 				NextStep = EndOutOfMemory;
@@ -950,22 +956,20 @@ namespace BizHawk.Emulation.Cores.Calculators
 			{
 				CurrentData.Clear();
 
-				//Send the end transmission command.
+				// Send the end transmission command.
 				CurrentData.Enqueue(0x03);
 				CurrentData.Enqueue(0x56);
 				CurrentData.Enqueue(0x01);
 				CurrentData.Enqueue(0x00);
 
 				CurrentStatus = Status.PrepareReceive;
-                NextStep = FinalizeFile;
+				NextStep = FinalizeFile;
 				Parent.LinkActive = true;
 			}
 
-			//adelikat: This isn't used (yet?) and causes a warning.  Did you really mean to override finalize? if so it should be protected virtual, else rename this
-			//Envian: I didn't notice there was a naming conflict. Fixed it since this method is necessary for the file upload proccess.
 			private void FinalizeFile()
 			{
-                //Resets the link software, and checks to see if there is an additional file to send.
+				// Resets the link software, and checks to see if there is an additional file to send.
 				CurrentData.Clear();
 				Parent.LinkActive = false;
 				NextStep = null;
@@ -973,9 +977,37 @@ namespace BizHawk.Emulation.Cores.Calculators
 			}
 		}
 
-		public object GetSettings() { return null; }
+		public class TI83Settings
+		{
+			public uint BGColor = 0x889778;
+			public uint ForeColor = 0x36412D;
+
+			public static TI83Settings GetDefaults()
+			{
+				return new TI83Settings
+				{
+					BGColor = 0x889778,
+					ForeColor = 0x36412D
+				};
+			}
+
+			public TI83Settings Clone()
+			{
+				return (TI83Settings)MemberwiseClone();
+			}
+		}
+
+		TI83Settings Settings;
+
+		public object GetSettings() { return Settings.Clone(); }
+
+		public bool PutSettings(object o)
+		{
+			Settings = (TI83Settings)o;
+			return false;
+		}
+
 		public object GetSyncSettings() { return null; }
-		public bool PutSettings(object o) { return false; }
 		public bool PutSyncSettings(object o) { return false; }
 
 		public Dictionary<string, int> GetCpuFlagsAndRegisters()

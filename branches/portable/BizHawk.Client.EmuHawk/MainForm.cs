@@ -2970,8 +2970,13 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// Still needs a good bit of refactoring
-		public bool LoadRom(string path, bool deterministicemulation = false, bool hasmovie = false)
+		public bool LoadRom(string path, bool? deterministicemulation = null)
 		{
+			// If deterministic emulation is passed in, respect that value regardless, else determine a good value (currently that simply means movies require detemrinistic emulaton)
+			bool deterministic = deterministicemulation.HasValue ?
+				deterministicemulation.Value :
+				Global.MovieSession.Movie.IsActive;
+			
 			if (!GlobalWin.Tools.AskSave())
 			{
 				return false;
@@ -2980,7 +2985,8 @@ namespace BizHawk.Client.EmuHawk
 			var loader = new RomLoader
 			{
 					ChooseArchive = LoadArhiveChooser,
-					ChoosePlatform = ChoosePlatformForRom
+					ChoosePlatform = ChoosePlatformForRom,
+					Deterministic = deterministic
 				};
 
 			loader.OnLoadError += ShowLoadError;
@@ -3019,7 +3025,7 @@ namespace BizHawk.Client.EmuHawk
 				if (loader.LoadedEmulator is NES)
 				{
 					var nes = loader.LoadedEmulator as NES;
-					if (nes.GameName != null)
+					if (!string.IsNullOrWhiteSpace(nes.GameName))
 					{
 						Global.Game.Name = nes.GameName;
 				}
@@ -3027,17 +3033,7 @@ namespace BizHawk.Client.EmuHawk
 					Global.Game.Status = nes.RomStatus;
 				}
 
-				string gamename = string.Empty;
-				if (!string.IsNullOrWhiteSpace(loader.Game.Name)) // Prefer Game db name, else use the path
-				{
-					gamename = loader.Game.Name;
-				}
-				else
-				{
-					gamename = Path.GetFileNameWithoutExtension(path.Split('|').Last());
-				}
-
-				Text = DisplayNameForSystem(loader.Game.System) + " - " + gamename;
+				Text = DisplayNameForSystem(loader.Game.System) + " - " + Global.Game.Name;
 
 				Global.Rewinder.ResetRewindBuffer();
 

@@ -1412,6 +1412,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void paletteToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (new TI83PaletteConfig().ShowDialog() == DialogResult.OK)
+			{
+				GlobalWin.OSD.AddMessage("Palette settings saved");
+			}
+			else
+			{
+				GlobalWin.OSD.AddMessage("Palette config aborted");
+			}
+		}
+
 		#endregion
 
 		#region Atari
@@ -1424,6 +1436,8 @@ namespace BizHawk.Client.EmuHawk
 					toolStripSeparator31.Visible =
 					false;
 			}
+
+			Atari2600DebuggerMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
 		}
 
 		private void Atari2600DebuggerMenuItem_Click(object sender, EventArgs e)
@@ -1442,6 +1456,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
+			LoadGBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
 		}
 
 		private void GBForceDMGMenuItem_Click(object sender, EventArgs e)
@@ -1852,7 +1867,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
 		{
-			new config.DisplayConfigLite().ShowDialog();
+			var result = new config.DisplayConfigLite().ShowDialog();
+			if (result == System.Windows.Forms.DialogResult.OK)
+				FrameBufferResized();
 		}
 
 		private void CoreSelectionContextSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -2118,6 +2135,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FormDragDrop(object sender, DragEventArgs e)
 		{
+			try
+			{
+				FormDragDrop_internal(sender, e);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Exception on drag and drop:\n" + ex.ToString());
+			}
+		}
+
+		private void FormDragDrop_internal(object sender, DragEventArgs e)
+		{		
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			var isLua = false;
 			foreach (var path in filePaths)

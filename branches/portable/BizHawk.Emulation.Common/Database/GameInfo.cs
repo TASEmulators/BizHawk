@@ -34,9 +34,16 @@ namespace BizHawk.Emulation.Common
 		public bool NotInDatabase = true;
 		public string FirmwareHash;
 
-		readonly Dictionary<string, string> Options = new Dictionary<string, string>();
+		Dictionary<string, string> Options = new Dictionary<string, string>();
 
 		public GameInfo() { }
+
+		public GameInfo Clone()
+		{
+			var ret = (GameInfo)MemberwiseClone();
+			ret.Options = new Dictionary<string, string>(Options);
+			return ret;
+		}
 
 		public static GameInfo GetNullGame()
 		{

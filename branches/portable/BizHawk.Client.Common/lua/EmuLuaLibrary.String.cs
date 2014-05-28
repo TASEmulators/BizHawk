@@ -62,6 +62,11 @@ namespace BizHawk.Client.Common
 		)]
 		public static string Trim(string str)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return null;
+			}
+
 			return str.Trim();
 		}
 
@@ -71,6 +76,11 @@ namespace BizHawk.Client.Common
 		)]
 		public static string Replace(string str, string str2, string replace)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return null;
+			}
+
 			return str.Replace(str2, replace);
 		}
 
@@ -80,6 +90,11 @@ namespace BizHawk.Client.Common
 		)]
 		public static string ToUpper(string str)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return null;
+			}
+
 			return str.ToUpper();
 		}
 
@@ -89,6 +104,11 @@ namespace BizHawk.Client.Common
 		)]
 		public static string ToLower(string str)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return null;
+			}
+
 			return str.ToLower();
 		}
 
@@ -98,6 +118,11 @@ namespace BizHawk.Client.Common
 		)]
 		public static string SubString(string str, int position, int length)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return null;
+			}
+
 			return str.Substring(position, length);
 		}
 
@@ -107,6 +132,11 @@ namespace BizHawk.Client.Common
 		)]
 		public static string Remove(string str, int position, int count)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return null;
+			}
+
 			return str.Remove(position, count);
 		}
 
@@ -116,6 +146,11 @@ namespace BizHawk.Client.Common
 		)]
 		public static bool Contains(string str, string str2)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return false;
+			}
+
 			return str.Contains(str2);
 		}
 
@@ -125,6 +160,11 @@ namespace BizHawk.Client.Common
 		)]
 		public static bool StartsWith(string str, string str2)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return false;
+			}
+
 			return str.StartsWith(str2);
 		}
 
@@ -134,6 +174,11 @@ namespace BizHawk.Client.Common
 		)]
 		public static bool EndsWith(string str, string str2)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return false;
+			}
+
 			return str.EndsWith(str2);
 		}
 
@@ -144,13 +189,16 @@ namespace BizHawk.Client.Common
 		public LuaTable Split(string str, string separator)
 		{
 			var table = Lua.NewTable();
-			var splitStr = str.Split(
-				new char[] { separator.FirstOrDefault() },
-				StringSplitOptions.RemoveEmptyEntries);
-
-			for(int i = 0; i < splitStr.Length; i++)
+			if (!string.IsNullOrEmpty(str))
 			{
-				table[i] = splitStr[i];
+				var splitStr = str.Split(
+					new char[] { separator.FirstOrDefault() },
+					StringSplitOptions.RemoveEmptyEntries);
+
+				for (int i = 0; i < splitStr.Length; i++)
+				{
+					table[i] = splitStr[i];
+				}
 			}
 
 			return table;

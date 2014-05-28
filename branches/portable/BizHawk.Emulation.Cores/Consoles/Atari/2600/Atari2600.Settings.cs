@@ -19,7 +19,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public bool PutSettings(object o)
 		{
-			Settings = (A2600Settings)o;
+			A2600Settings newSettings = (A2600Settings)o;
+			if (Settings == null || Settings.SECAMColors != newSettings.SECAMColors)
+			{
+				if (_tia != null)
+					_tia.SetSECAM(newSettings.SECAMColors);
+			}
+
+			Settings = newSettings;
 			return false;
 		}
 
@@ -64,6 +71,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			[Description("Sets whether or not the Playfield layer will be displayed")]
 			public bool ShowPlayfield { get; set; }
 
+			[Description("If true, PAL mode will show with SECAM (French) colors.")]
+			public bool SECAMColors { get; set; }
+
 			public int NTSCTopLine
 			{
 				get { return this._ntscTopLine; }
@@ -106,7 +116,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					ShowMissle2 = true,
 					ShowBall = true,
 					ShowPlayfield = true,
-					BackgroundColor = Color.Black
+					BackgroundColor = Color.Black,
+					SECAMColors = false
 				};
 			}
 		}
@@ -121,6 +132,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			[Description("Set the Right Difficulty switch on the console")]
 			public bool RightDifficulty { get; set; }
+
+			[Description("Super Charger only, sets whether or not to skip the BIOS intro")]
+			public bool FastScBios { get; set; }
 
 			public A2600SyncSettings Clone()
 			{

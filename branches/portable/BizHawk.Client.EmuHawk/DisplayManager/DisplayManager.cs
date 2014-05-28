@@ -294,6 +294,19 @@ namespace BizHawk.Client.EmuHawk
 			var filterProgram = UpdateSourceInternal(fvp, true, chain_outsize);
 
 			var size = filterProgram.Filters[filterProgram.Filters.Count - 1].FindOutput().SurfaceFormat.Size;
+			
+			//zero 22-may-2014 - added this to combat problem where nes would default to having sidebars
+			//this would use the actual chain output size. this is undesireable, in the following scenario:
+			//load a nes game at 2x with system-preferred and integer AR enabled, and there will be sidebars.
+			//the sidebars were created by this, so we can peek into it and remove the sidebars.
+			//Only do this if integer fixing is enabled, since only in that case do we have discardable sidebars.
+			//Otherwise discarding the 'sidebars' would result in cropping image. 
+			//This is getting complicated..
+			if (Global.Config.DispFixScaleInteger)
+			{
+				var fp = filterProgram["presentation"] as Filters.FinalPresentation;
+				size = fp.GetContentSize();
+			}
 
 			return size;
 		}

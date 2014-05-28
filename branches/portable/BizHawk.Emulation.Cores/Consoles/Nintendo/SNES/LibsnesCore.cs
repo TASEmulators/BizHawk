@@ -207,6 +207,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			//build romfilename
 			string test = CoreComm.CoreFileProvider.GetFirmwarePath("SNES", firmwareID, false, "Game may function incorrectly without the requested firmware.");
 
+			//we need to return something to bsnes
+			test = test ?? "";
+
 			Console.WriteLine("Served libsnes request for firmware \"{0}\" with \"{1}\"", hint, test);
 
 			//return the path we built
@@ -290,6 +293,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		LibsnesApi.snes_trace_t tracecb;
 		LibsnesApi.snes_audio_sample_t soundcb;
 
+		enum LoadParamType
+		{
+			Normal, SuperGameBoy
+		}
+		struct LoadParams
+		{
+			public LoadParamType type;
+			public byte[] xml_data;
+
+			public string rom_xml;
+			public byte[] rom_data;
+			public uint rom_size;
+			public string dmg_xml;
+			public byte[] dmg_data;
+			public uint dmg_size;
+		}
+
+		LoadParams CurrLoadParams;
+
+		bool LoadCurrent()
+		{
+			if (CurrLoadParams.type == LoadParamType.Normal)
+				return api.CMD_load_cartridge_normal(CurrLoadParams.xml_data, CurrLoadParams.rom_data);
+			else return api.CMD_load_cartridge_super_game_boy(CurrLoadParams.rom_xml, CurrLoadParams.rom_data, CurrLoadParams.rom_size, CurrLoadParams.dmg_xml, CurrLoadParams.dmg_data, CurrLoadParams.dmg_size);
+		}
+
 		public void Load(GameInfo game, byte[] romData, bool DeterministicEmulation, byte[] xmlData)
 		{
 			byte[] sgbRomData = null;
@@ -333,8 +362,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				IsSGB = true;
 				SystemId = "SNES";
-				if (!api.CMD_load_cartridge_super_game_boy(null, sgbRomData, (uint)sgbRomData.Length, null, romData, (uint)romData.Length))
-					throw new Exception("snes_load_cartridge_super_game_boy() failed");
+
+				CurrLoadParams = new LoadParams()
+				{
+					type = LoadParamType.SuperGameBoy,
+					rom_xml = null,
+					rom_data = sgbRomData,
+					rom_size = (uint)sgbRomData.Length,
+					dmg_xml = null,
+					dmg_data = romData,
+					dmg_size = (uint)romData.Length
+				};
+
+				if (!LoadCurrent())
+					throw new Exception("snes_load_cartridge_normal() failed");
 			}
 			else
 			{
@@ -353,7 +394,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				}
 
 				SystemId = "SNES";
-				if (!api.CMD_load_cartridge_normal(xmlData, romData))
+				CurrLoadParams = new LoadParams()
+				{
+					type = LoadParamType.Normal,
+					xml_data = xmlData,
+					rom_data = romData
+				};
+
+				if(!LoadCurrent())
 					throw new Exception("snes_load_cartridge_normal() failed");
 			}
 
@@ -920,6 +968,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			if (data.Length != size)
 				throw new Exception("Libsnes internal savestate size mismatch!");
 			api.CMD_init();
+			LoadCurrent(); //need to make sure chip roms are reloaded
 			fixed (byte* pbuf = &data[0])
 				api.CMD_unserialize(new IntPtr(pbuf), size);
 		}

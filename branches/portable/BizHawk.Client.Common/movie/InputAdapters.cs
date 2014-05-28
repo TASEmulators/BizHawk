@@ -665,6 +665,7 @@ namespace BizHawk.Client.Common
 	public class OverrideAdaptor : IController
 	{
 		private readonly Dictionary<string, bool> _overrides = new Dictionary<string, bool>();
+		private readonly Dictionary<string, float> _floatOverrides = new Dictionary<string, float>();
 		private readonly List<string> _inverses = new List<string>();
 
 		public bool this[string button]
@@ -705,6 +706,17 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public IEnumerable<string> FloatOverrides
+		{
+			get
+			{
+				foreach (var kvp in _floatOverrides)
+				{
+					yield return kvp.Key;
+				}
+			}
+		}
+
 		public IEnumerable<string> InversedButtons
 		{
 			get
@@ -716,8 +728,25 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public void SetFloat(string name, float value)
+		{
+			if (_floatOverrides.ContainsKey(name))
+			{
+				_floatOverrides[name] = value;
+			}
+			else
+			{
+				_floatOverrides.Add(name, value);
+			}
+		}
+
 		public float GetFloat(string name)
 		{
+			if (_floatOverrides.ContainsKey(name))
+			{
+				return _floatOverrides[name];
+			}
+
 			return 0.0F;
 		}
 
@@ -743,6 +772,7 @@ namespace BizHawk.Client.Common
 		public void FrameTick()
 		{
 			_overrides.Clear();
+			_floatOverrides.Clear();
 			_inverses.Clear();
 		}
 	}

@@ -12,6 +12,7 @@ namespace BizHawk.Client.EmuHawk
 		public LuaWinform()
 		{
 			InitializeComponent();
+			StartPosition = FormStartPosition.CenterParent;
 			Closing += (o, e) => CloseThis();
 		}
 

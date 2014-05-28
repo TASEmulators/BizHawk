@@ -232,15 +232,16 @@
 			this.SMSFix3DGameDisplayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowClippedRegionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.HighlightActiveDisplayRegionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator24 = new System.Windows.Forms.ToolStripSeparator();
 			this.SMSGraphicsSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.GGGameGenieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator24 = new System.Windows.Forms.ToolStripSeparator();
 			this.SMSVDPViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.GGGameGenieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TI83SubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.KeypadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.LoadTIFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
 			this.AutoloadKeypadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.LoadTIFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.paletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AtariSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.Atari2600DebuggerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator31 = new System.Windows.Forms.ToolStripSeparator();
@@ -273,6 +274,8 @@
 			this.N64SubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.N64PluginSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.N64ControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator23 = new System.Windows.Forms.ToolStripSeparator();
+			this.N64CircularAnalogRangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaturnSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaturnPreferencesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DGBSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -354,8 +357,6 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator23 = new System.Windows.Forms.ToolStripSeparator();
-			this.N64CircularAnalogRangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -1967,10 +1968,10 @@
             this.SMSFix3DGameDisplayToolStripMenuItem,
             this.ShowClippedRegionsMenuItem,
             this.HighlightActiveDisplayRegionMenuItem,
-            this.toolStripSeparator24,
             this.SMSGraphicsSettingsMenuItem,
-            this.GGGameGenieMenuItem,
-            this.SMSVDPViewerToolStripMenuItem});
+            this.toolStripSeparator24,
+            this.SMSVDPViewerToolStripMenuItem,
+            this.GGGameGenieMenuItem});
 			this.SMSSubMenu.Name = "SMSSubMenu";
 			this.SMSSubMenu.Size = new System.Drawing.Size(42, 19);
 			this.SMSSubMenu.Text = "&SMS";
@@ -2099,11 +2100,6 @@
 			this.HighlightActiveDisplayRegionMenuItem.Text = "&Highlight Active Display Region";
 			this.HighlightActiveDisplayRegionMenuItem.Click += new System.EventHandler(this.HighlightActiveDisplayRegionMenuItem_Click);
 			// 
-			// toolStripSeparator24
-			// 
-			this.toolStripSeparator24.Name = "toolStripSeparator24";
-			this.toolStripSeparator24.Size = new System.Drawing.Size(238, 6);
-			// 
 			// SMSGraphicsSettingsMenuItem
 			// 
 			this.SMSGraphicsSettingsMenuItem.Name = "SMSGraphicsSettingsMenuItem";
@@ -2111,12 +2107,10 @@
 			this.SMSGraphicsSettingsMenuItem.Text = "&Graphics Settings...";
 			this.SMSGraphicsSettingsMenuItem.Click += new System.EventHandler(this.SMSGraphicsSettingsMenuItem_Click);
 			// 
-			// GGGameGenieMenuItem
+			// toolStripSeparator24
 			// 
-			this.GGGameGenieMenuItem.Name = "GGGameGenieMenuItem";
-			this.GGGameGenieMenuItem.Size = new System.Drawing.Size(241, 22);
-			this.GGGameGenieMenuItem.Text = "&Game Genie Encoder/Decoder";
-			this.GGGameGenieMenuItem.Click += new System.EventHandler(this.GGGameGenieMenuItem_Click);
+			this.toolStripSeparator24.Name = "toolStripSeparator24";
+			this.toolStripSeparator24.Size = new System.Drawing.Size(238, 6);
 			// 
 			// SMSVDPViewerToolStripMenuItem
 			// 
@@ -2125,13 +2119,21 @@
 			this.SMSVDPViewerToolStripMenuItem.Text = "&VDP Viewer";
 			this.SMSVDPViewerToolStripMenuItem.Click += new System.EventHandler(this.SmsVdpViewerMenuItem_Click);
 			// 
+			// GGGameGenieMenuItem
+			// 
+			this.GGGameGenieMenuItem.Name = "GGGameGenieMenuItem";
+			this.GGGameGenieMenuItem.Size = new System.Drawing.Size(241, 22);
+			this.GGGameGenieMenuItem.Text = "&Game Genie Encoder/Decoder";
+			this.GGGameGenieMenuItem.Click += new System.EventHandler(this.GGGameGenieMenuItem_Click);
+			// 
 			// TI83SubMenu
 			// 
 			this.TI83SubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.KeypadMenuItem,
+            this.LoadTIFileMenuItem,
             this.toolStripSeparator13,
             this.AutoloadKeypadMenuItem,
-            this.LoadTIFileMenuItem});
+            this.paletteToolStripMenuItem});
 			this.TI83SubMenu.Name = "TI83SubMenu";
 			this.TI83SubMenu.Size = new System.Drawing.Size(41, 19);
 			this.TI83SubMenu.Text = "TI83";
@@ -2144,6 +2146,13 @@
 			this.KeypadMenuItem.Size = new System.Drawing.Size(165, 22);
 			this.KeypadMenuItem.Text = "Keypad";
 			this.KeypadMenuItem.Click += new System.EventHandler(this.KeypadMenuItem_Click);
+			// 
+			// LoadTIFileMenuItem
+			// 
+			this.LoadTIFileMenuItem.Name = "LoadTIFileMenuItem";
+			this.LoadTIFileMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.LoadTIFileMenuItem.Text = "Load TI File...";
+			this.LoadTIFileMenuItem.Click += new System.EventHandler(this.LoadTIFileMenuItem_Click);
 			// 
 			// toolStripSeparator13
 			// 
@@ -2159,12 +2168,12 @@
 			this.AutoloadKeypadMenuItem.Text = "Autoload Keypad";
 			this.AutoloadKeypadMenuItem.Click += new System.EventHandler(this.AutoloadKeypadMenuItem_Click);
 			// 
-			// LoadTIFileMenuItem
+			// paletteToolStripMenuItem
 			// 
-			this.LoadTIFileMenuItem.Name = "LoadTIFileMenuItem";
-			this.LoadTIFileMenuItem.Size = new System.Drawing.Size(165, 22);
-			this.LoadTIFileMenuItem.Text = "Load TI File";
-			this.LoadTIFileMenuItem.Click += new System.EventHandler(this.LoadTIFileMenuItem_Click);
+			this.paletteToolStripMenuItem.Name = "paletteToolStripMenuItem";
+			this.paletteToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.paletteToolStripMenuItem.Text = "Palette...";
+			this.paletteToolStripMenuItem.Click += new System.EventHandler(this.paletteToolStripMenuItem_Click);
 			// 
 			// AtariSubMenu
 			// 
@@ -2175,24 +2184,25 @@
 			this.AtariSubMenu.Name = "AtariSubMenu";
 			this.AtariSubMenu.Size = new System.Drawing.Size(44, 19);
 			this.AtariSubMenu.Text = "&Atari";
+			this.AtariSubMenu.DropDownOpened += new System.EventHandler(this.AtariSubMenu_DropDownOpened);
 			// 
 			// Atari2600DebuggerMenuItem
 			// 
 			this.Atari2600DebuggerMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Bug;
 			this.Atari2600DebuggerMenuItem.Name = "Atari2600DebuggerMenuItem";
-			this.Atari2600DebuggerMenuItem.Size = new System.Drawing.Size(126, 22);
+			this.Atari2600DebuggerMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.Atari2600DebuggerMenuItem.Text = "Debugger";
 			this.Atari2600DebuggerMenuItem.Click += new System.EventHandler(this.Atari2600DebuggerMenuItem_Click);
 			// 
 			// toolStripSeparator31
 			// 
 			this.toolStripSeparator31.Name = "toolStripSeparator31";
-			this.toolStripSeparator31.Size = new System.Drawing.Size(123, 6);
+			this.toolStripSeparator31.Size = new System.Drawing.Size(149, 6);
 			// 
 			// AtariSettingsToolStripMenuItem
 			// 
 			this.AtariSettingsToolStripMenuItem.Name = "AtariSettingsToolStripMenuItem";
-			this.AtariSettingsToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+			this.AtariSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.AtariSettingsToolStripMenuItem.Text = "Settings...";
 			this.AtariSettingsToolStripMenuItem.Click += new System.EventHandler(this.AtariSettingsToolStripMenuItem_Click);
 			// 
@@ -2213,7 +2223,7 @@
 			// 
 			this.GBcoreSettingsToolStripMenuItem.Name = "GBcoreSettingsToolStripMenuItem";
 			this.GBcoreSettingsToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
-			this.GBcoreSettingsToolStripMenuItem.Text = "Core Settings";
+			this.GBcoreSettingsToolStripMenuItem.Text = "Core Settings...";
 			this.GBcoreSettingsToolStripMenuItem.Click += new System.EventHandler(this.GBcoreSettingsToolStripMenuItem_Click);
 			// 
 			// LoadGBInSGBMenuItem
@@ -2420,6 +2430,18 @@
 			this.N64ControllerSettingsMenuItem.Size = new System.Drawing.Size(192, 22);
 			this.N64ControllerSettingsMenuItem.Text = "Controller Settings...";
 			this.N64ControllerSettingsMenuItem.Click += new System.EventHandler(this.N64ControllerSettingsMenuItem_Click);
+			// 
+			// toolStripSeparator23
+			// 
+			this.toolStripSeparator23.Name = "toolStripSeparator23";
+			this.toolStripSeparator23.Size = new System.Drawing.Size(189, 6);
+			// 
+			// N64CircularAnalogRangeMenuItem
+			// 
+			this.N64CircularAnalogRangeMenuItem.Name = "N64CircularAnalogRangeMenuItem";
+			this.N64CircularAnalogRangeMenuItem.Size = new System.Drawing.Size(192, 22);
+			this.N64CircularAnalogRangeMenuItem.Text = "Circular Analog Range";
+			this.N64CircularAnalogRangeMenuItem.Click += new System.EventHandler(this.N64CircularAnalogRangeMenuItem_Click);
 			// 
 			// SaturnSubMenu
 			// 
@@ -3101,18 +3123,6 @@
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
 			// 
-			// toolStripSeparator23
-			// 
-			this.toolStripSeparator23.Name = "toolStripSeparator23";
-			this.toolStripSeparator23.Size = new System.Drawing.Size(189, 6);
-			// 
-			// N64CircularAnalogRangeMenuItem
-			// 
-			this.N64CircularAnalogRangeMenuItem.Name = "N64CircularAnalogRangeMenuItem";
-			this.N64CircularAnalogRangeMenuItem.Size = new System.Drawing.Size(192, 22);
-			this.N64CircularAnalogRangeMenuItem.Text = "Circular Analog Range";
-			this.N64CircularAnalogRangeMenuItem.Click += new System.EventHandler(this.N64CircularAnalogRangeMenuItem_Click);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -3480,6 +3490,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator22;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator23;
 		private System.Windows.Forms.ToolStripMenuItem N64CircularAnalogRangeMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem paletteToolStripMenuItem;
 	}
 }
 

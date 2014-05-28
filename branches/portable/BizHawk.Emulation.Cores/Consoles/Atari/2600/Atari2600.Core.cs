@@ -11,7 +11,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private TIA _tia;
 		private DCFilter _dcfilter;
 		private MapperBase _mapper;
-		private bool _hardResetSignal;
 
 		public byte[] Ram;
 
@@ -22,6 +21,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public int LastAddress;
 		public int DistinctAccessCount;
 
+		private bool _frameStartPending = true;
+
 		public byte BaseReadMemory(ushort addr)
 		{
 			addr = (ushort)(addr & 0x1FFF);
@@ -29,12 +30,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				return _tia.ReadMemory(addr, false);
 			}
-			
+
 			if ((addr & 0x1080) == 0x0080)
 			{
 				return M6532.ReadMemory(addr, false);
 			}
-			
+
 			return Rom[addr & 0x0FFF];
 		}
 
@@ -45,12 +46,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				return _tia.ReadMemory(addr, true);
 			}
-			
+
 			if ((addr & 0x1080) == 0x0080)
 			{
 				return M6532.ReadMemory(addr, true);
 			}
-			
+
 			return Rom[addr & 0x0FFF];
 		}
 
@@ -62,6 +63,23 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				LastAddress = addr;
 			}
 
+			addr = (ushort)(addr & 0x1FFF);
+			if ((addr & 0x1080) == 0)
+			{
+				_tia.WriteMemory(addr, value);
+			}
+			else if ((addr & 0x1080) == 0x0080)
+			{
+				M6532.WriteMemory(addr, value);
+			}
+			else
+			{
+				Console.WriteLine("ROM write(?):  " + addr.ToString("x"));
+			}
+		}
+
+		public void BasePokeMemory(ushort addr, byte value)
+		{
 			addr = (ushort)(addr & 0x1FFF);
 			if ((addr & 0x1080) == 0)
 			{
@@ -110,6 +128,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_mapper.WriteMemory((ushort)(addr & 0x1FFF), value);
 
 			CoreComm.MemoryCallbackSystem.CallWrite(addr);
+		}
+
+		public void PokeMemory(ushort addr, byte value)
+		{
+			_mapper.PokeMemory((ushort)(addr & 0x1FFF), value);
 		}
 
 		public void ExecFetch(ushort addr)
@@ -257,7 +280,21 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				OnExecFetch = this.ExecFetch
 			};
 
-			_tia = new TIA(this);
+			if (_game["PAL"])
+			{
+				_pal = true;
+			}
+			else if (_game["NTSC"])
+			{
+				_pal = false;
+			}
+			else
+			{
+				_pal = DetectPal(_game, Rom);
+			}
+
+			_tia = new TIA(this, _pal, Settings.SECAMColors);
+			_tia.GetFrameRate(out CoreComm.VsyncNum, out CoreComm.VsyncDen);
 
 			// dcfilter coefficent is from real observed hardware behavior: a latched "1" will fully decay by ~170 or so tia sound cycles
 			_dcfilter = DCFilter.AsISoundProvider(_tia, 256);
@@ -273,9 +310,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				string.Format(
 					"{0}\r\nSHA1:{1}\r\nMD5:{2}\r\nMapper Impl \"{3}\"",
 					this._game.Name,
-					Util.Hash_SHA1(Rom), 
+					Util.Hash_SHA1(Rom),
 					Util.Hash_MD5(Rom),
 					_mapper.GetType());
+		}
+
+		private bool _pal;
+
+		public DisplayType DisplayType
+		{
+			get { return _pal ? DisplayType.PAL : Common.DisplayType.NTSC; }
 		}
 
 		public void HardReset()
@@ -298,52 +342,81 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			Cpu.PC = (ushort)(ReadMemory(0x1FFC) + (ReadMemory(0x1FFD) << 8)); // set the initial PC
 		}
 
+		public void CycleAdvance()
+		{
+			StartFrameCond();
+			Cycle();
+			FinishFrameCond();
+		}
+
+		public void ScanlineAdvance()
+		{
+			StartFrameCond();
+			int currentLine = _tia.LineCount;
+			while (_tia.LineCount == currentLine)
+				Cycle();
+			FinishFrameCond();
+		}
+
 		public void FrameAdvance(bool render, bool rendersound)
 		{
-			_frame++;
-			_islag = true;
-			_tia.LineCount = 0;
-			_tia.BeginAudioFrame();
-			while (_tia.LineCount < 262) // will be 312 for PAL
+			StartFrameCond();
+			while (_tia.LineCount < _tia.NominalNumScanlines)
+				Cycle();
+			FinishFrameCond();
+		}
+
+		public void VFrameAdvance() // advance up to 500 lines looking for end of video frame
+			// after vsync falling edge, continues to end of next line
+		{
+			bool frameend = false;
+			_tia.FrameEndCallBack = (n) => frameend = true;
+			for (int i = 0; i < 500 && !frameend; i++)
+				ScanlineAdvance();
+			_tia.FrameEndCallBack = null;
+		}
+
+		private void StartFrameCond()
+		{
+			if (_frameStartPending)
 			{
-				CycleAdvance();
-			}
-			//Console.WriteLine("{0}", _tia.CurrentScanLine);
+				_frame++;
+				_islag = true;
 
-			_tia.CompleteAudioFrame();
+				if (Controller["Power"])
+				{
+					HardReset();
+				}
 
-			if (_hardResetSignal)
-			{
-				HardReset();
-			}
-
-			_hardResetSignal = Controller["Power"];
-
-			if (_islag)
-			{
-				LagCount++;
+				_tia.BeginAudioFrame();
+				_frameStartPending = false;
 			}
 		}
 
-		public void CycleAdvance()
+		private void FinishFrameCond()
+		{
+			if (_tia.LineCount >= _tia.NominalNumScanlines)
+			{
+				_tia.CompleteAudioFrame();
+				if (_islag)
+					LagCount++;
+				_tia.LineCount = 0;
+				_frameStartPending = true;
+			}
+		}
+
+		private void Cycle()
 		{
 			_tia.Execute(1);
 			_tia.Execute(1);
 			_tia.Execute(1);
-
 			M6532.Timer.Tick();
 			if (CoreComm.Tracer.Enabled)
 			{
 				CoreComm.Tracer.Put(Cpu.TraceState());
 			}
-
 			Cpu.ExecuteOne();
 			_mapper.ClockCpu();
-		}
-
-		public void ScanlineAdvance()
-		{
-			// TODO
 		}
 
 		public byte ReadControls1(bool peek)
@@ -356,7 +429,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (Controller["P1 Left"]) { value &= 0xBF; }
 			if (Controller["P1 Right"]) { value &= 0x7F; }
 			if (Controller["P1 Button"]) { value &= 0xF7; }
-			
+
 			if (!peek)
 			{
 				_islag = false;
@@ -375,7 +448,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (Controller["P2 Left"]) { value &= 0xBF; }
 			if (Controller["P2 Right"]) { value &= 0x7F; }
 			if (Controller["P2 Button"]) { value &= 0xF7; }
-			
+
 			if (!peek)
 			{
 				_islag = false;
@@ -395,7 +468,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (SyncSettings.BW) { value &= 0xF7; }
 			if (SyncSettings.LeftDifficulty) { value &= 0xBF; }
 			if (SyncSettings.RightDifficulty) { value &= 0x7F; }
-			
+
 			if (!peek)
 			{
 				_islag = false;

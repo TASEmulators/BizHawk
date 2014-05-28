@@ -101,6 +101,7 @@
     <Compile Include="lua\LuaFileList.cs" />
     <Compile Include="lua\LuaFunctionList.cs" />
     <Compile Include="lua\LuaLibraryBase.cs" />
+    <Compile Include="lua\LuaMemoryBase.cs" />
     <Compile Include="lua\NamedLuaFunction.cs" />
     <Compile Include="movie\HeaderKeys.cs" />
     <Compile Include="movie\IMovie.cs" />

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using System.Numerics;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
@@ -141,7 +142,113 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			0xbb9f47, 0, 0xd2b656, 0, 0xe8cc63, 0, 0xfce070, 0
 		};
 
+		private static readonly int[] SECAMPalette =
+		{
+			0x000000,0x000000,0x2121FF,0x2121FF,			
+			0xF03C79,0xF03C79,0xFF50FF,0xFF50FF,			
+			0x7FFF00,0x7FFF00,0x7FFFFF,0x7FFFFF,			
+			0xFFFF3F,0xFFFF3F,0xffffff,0xffffff,
+
+			0x000000,0x000000,0x2121FF,0x2121FF,			
+			0xF03C79,0xF03C79,0xFF50FF,0xFF50FF,			
+			0x7FFF00,0x7FFF00,0x7FFFFF,0x7FFFFF,			
+			0xFFFF3F,0xFFFF3F,0xffffff,0xffffff,
+
+			0x000000,0x000000,0x2121FF,0x2121FF,			
+			0xF03C79,0xF03C79,0xFF50FF,0xFF50FF,			
+			0x7FFF00,0x7FFF00,0x7FFFFF,0x7FFFFF,			
+			0xFFFF3F,0xFFFF3F,0xffffff,0xffffff,
+
+			0x000000,0x000000,0x2121FF,0x2121FF,			
+			0xF03C79,0xF03C79,0xFF50FF,0xFF50FF,			
+			0x7FFF00,0x7FFF00,0x7FFFFF,0x7FFFFF,			
+			0xFFFF3F,0xFFFF3F,0xffffff,0xffffff,
+
+			0x000000,0x000000,0x2121FF,0x2121FF,			
+			0xF03C79,0xF03C79,0xFF50FF,0xFF50FF,			
+			0x7FFF00,0x7FFF00,0x7FFFFF,0x7FFFFF,			
+			0xFFFF3F,0xFFFF3F,0xffffff,0xffffff,
+
+			0x000000,0x000000,0x2121FF,0x2121FF,			
+			0xF03C79,0xF03C79,0xFF50FF,0xFF50FF,			
+			0x7FFF00,0x7FFF00,0x7FFFFF,0x7FFFFF,			
+			0xFFFF3F,0xFFFF3F,0xffffff,0xffffff,
+
+			0x000000,0x000000,0x2121FF,0x2121FF,			
+			0xF03C79,0xF03C79,0xFF50FF,0xFF50FF,			
+			0x7FFF00,0x7FFF00,0x7FFFFF,0x7FFFFF,			
+			0xFFFF3F,0xFFFF3F,0xffffff,0xffffff,
+
+			0x000000,0x000000,0x2121FF,0x2121FF,			
+			0xF03C79,0xF03C79,0xFF50FF,0xFF50FF,			
+			0x7FFF00,0x7FFF00,0x7FFFFF,0x7FFFFF,			
+			0xFFFF3F,0xFFFF3F,0xffffff,0xffffff,
+
+			0x000000,0x000000,0x2121FF,0x2121FF,			
+			0xF03C79,0xF03C79,0xFF50FF,0xFF50FF,			
+			0x7FFF00,0x7FFF00,0x7FFFFF,0x7FFFFF,			
+			0xFFFF3F,0xFFFF3F,0xffffff,0xffffff,
+
+			0x000000,0x000000,0x2121FF,0x2121FF,			
+			0xF03C79,0xF03C79,0xFF50FF,0xFF50FF,			
+			0x7FFF00,0x7FFF00,0x7FFFFF,0x7FFFFF,			
+			0xFFFF3F,0xFFFF3F,0xffffff,0xffffff,
+
+			0x000000,0x000000,0x2121FF,0x2121FF,			
+			0xF03C79,0xF03C79,0xFF50FF,0xFF50FF,			
+			0x7FFF00,0x7FFF00,0x7FFFFF,0x7FFFFF,			
+			0xFFFF3F,0xFFFF3F,0xffffff,0xffffff,
+
+			0x000000,0x000000,0x2121FF,0x2121FF,			
+			0xF03C79,0xF03C79,0xFF50FF,0xFF50FF,			
+			0x7FFF00,0x7FFF00,0x7FFFFF,0x7FFFFF,			
+			0xFFFF3F,0xFFFF3F,0xffffff,0xffffff,
+
+			0x000000,0x000000,0x2121FF,0x2121FF,			
+			0xF03C79,0xF03C79,0xFF50FF,0xFF50FF,			
+			0x7FFF00,0x7FFF00,0x7FFFFF,0x7FFFFF,			
+			0xFFFF3F,0xFFFF3F,0xffffff,0xffffff,
+
+			0x000000,0x000000,0x2121FF,0x2121FF,			
+			0xF03C79,0xF03C79,0xFF50FF,0xFF50FF,			
+			0x7FFF00,0x7FFF00,0x7FFFFF,0x7FFFFF,			
+			0xFFFF3F,0xFFFF3F,0xffffff,0xffffff,
+
+			0x000000,0x000000,0x2121FF,0x2121FF,			
+			0xF03C79,0xF03C79,0xFF50FF,0xFF50FF,			
+			0x7FFF00,0x7FFF00,0x7FFFFF,0x7FFFFF,			
+			0xFFFF3F,0xFFFF3F,0xffffff,0xffffff,
+
+			0x000000,0x000000,0x2121FF,0x2121FF,			
+			0xF03C79,0xF03C79,0xFF50FF,0xFF50FF,			
+			0x7FFF00,0x7FFF00,0x7FFFFF,0x7FFFFF,			
+			0xFFFF3F,0xFFFF3F,0xffffff,0xffffff,
+		};
+
 		#endregion
+
+		// in all cases, the TIA has 228 clocks per scanline
+		// the NTSC TIA has a clock rate of 3579575hz
+		// the PAL/SECAM TIA has a clock rate of 3546894hz
+
+		private bool _pal;
+
+		public int NominalNumScanlines
+		{
+			get
+			{
+				return _pal ? 312 : 262;
+			}
+		}
+
+		public void GetFrameRate(out int num, out int den)
+		{
+			int clockrate = _pal ? 3546894 : 3579575;
+			int clocksperframe = 228 * NominalNumScanlines;
+			int gcd = (int)BigInteger.GreatestCommonDivisor(clockrate, clocksperframe);
+			num = clockrate / gcd;
+			den = clocksperframe / gcd;
+		}
 
 		private const int ScreenWidth = 160;
 		private const int MaxScreenHeight = 312;
@@ -156,7 +263,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private readonly Atari2600 _core;
 		private int[] _scanlinebuffer = new int[ScreenWidth * MaxScreenHeight];
 
-		private readonly int[] _palette = NTSCPalette; // todo: make this NTSC or PAL, obviously
+		private int[] _palette;
 
 		private byte _hsyncCnt;
 		private int _capChargeStart;
@@ -164,6 +271,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private bool _vblankEnabled;
 		private bool _vsyncEnabled;
 		private int _CurrentScanLine;
+		private int _audioClocks; // not savestated
 
 		private PlayerData _player0;
 		private PlayerData _player1;
@@ -173,11 +281,18 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public Audio[] AUD = { new Audio(), new Audio() };
 
-		public TIA(Atari2600 core)
+		public TIA(Atari2600 core, bool pal, bool secam)
 		{
 			_core = core;
 			_player0.ScanCnt = 8;
 			_player1.ScanCnt = 8;
+			_pal = pal;
+			SetSECAM(secam);
+		}
+
+		public void SetSECAM(bool secam)
+		{
+			_palette = _pal ? secam ? SECAMPalette : PALPalette : NTSCPalette;
 		}
 
 		public int CurrentScanLine
@@ -200,11 +315,25 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		/// </summary>
 		public int LineCount { get; set; }
 
+		/// <summary>
+		/// called at the end of a video frame.  used internally
+		/// </summary>
+		public Action<int> FrameEndCallBack { get; set; }
+
 		public int MaxVolume { get; set; }
 
 		public int VirtualWidth
 		{
-			get { return 275; } //  275 comes from NTSC specs and the actual pixel clock of a 2600 TIA
+			// TODO: PAL?
+			get
+			{
+				if (_pal)
+				{
+					return 320;
+				}
+
+				return 275; //  275 comes from NTSC specs and the actual pixel clock of a 2600 TIA
+			}
 		}
 
 		public int VirtualHeight
@@ -221,11 +350,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			get
 			{
-				// TODO PAL support
-				//if (false)
-				//	return _core.Settings.PALBottomLine - _core.Settings.PALTopLine;
-				//else
-				return _core.Settings.NTSCBottomLine - _core.Settings.NTSCTopLine;
+				if (_pal)
+					return _core.Settings.PALBottomLine - _core.Settings.PALTopLine;
+				else
+					return _core.Settings.NTSCBottomLine - _core.Settings.NTSCTopLine;
 			}
 		}
 
@@ -247,6 +375,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_vblankEnabled = false;
 			_vsyncEnabled = false;
 			_CurrentScanLine = 0;
+			_audioClocks = 0;
 
 			_player0 = new PlayerData();
 			_player1 = new PlayerData();
@@ -583,6 +712,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				_hmove.LateHBlankReset = false;
 				_CurrentScanLine++;
 				LineCount++;
+				_audioClocks += 2; // TODO: increment this at the appropriate places twice per line
 			}
 		}
 
@@ -590,8 +720,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		void OutputFrame(int validlines)
 		{
-			int topLine = _core.Settings.NTSCTopLine;
-			int bottomLine = _core.Settings.NTSCBottomLine;
+			int topLine = _pal ? _core.Settings.PALTopLine : _core.Settings.NTSCTopLine;
+			int bottomLine = _pal ? _core.Settings.PALBottomLine : _core.Settings.NTSCBottomLine;
 
 			// if vsync occured unexpectedly early, black out the remainer
 			for (; validlines < bottomLine; validlines++)
@@ -693,7 +823,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					// write to frame buffer
 					OutputFrame(_CurrentScanLine);
 
-					//Console.WriteLine("@{0}", _CurrentScanLine);
+					if (FrameEndCallBack != null)
+						FrameEndCallBack(_CurrentScanLine);
 
 					// Clear all from last frame
 					_CurrentScanLine = 0;
@@ -1018,9 +1149,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
+		// TODO: more accurate would be to have audio.Cycle() occur at
+		// the explicit exact times in the scanline, instead of just approximately spaced
 		public void GetSamples(short[] samples)
 		{
-			var samples31khz = new short[((samples.Length / 2) * 31380) / 44100];
+			var samples31khz = new short[_audioClocks]; // mono
 
 			int elapsedCycles = frameEndCycles - frameStartCycles;
 			if (elapsedCycles == 0)
@@ -1047,6 +1180,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				samples[i * 2] = samples31khz[(int)(((double)samples31khz.Length / (double)(samples.Length / 2)) * i)];
 				samples[(i * 2) + 1] = samples[i * 2];
 			}
+
+			_audioClocks = 0;
 		}
 
 		public void GetSamplesImmediate(short[] samples, int start, int len)
@@ -1061,6 +1196,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public void DiscardSamples()
 		{
 			commands.Clear();
+			_audioClocks = 0;
 		}
 
 		#endregion

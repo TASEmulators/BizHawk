@@ -661,6 +661,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
+			game_name = choice.name;
 
 			//find a INESBoard to handle this
 			if (choice != null)
@@ -807,7 +808,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void SyncState(Serializer ser)
 		{
-			int version = 3;
+			int version = 4;
 			ser.BeginSection("NES");
 			ser.Sync("version", ref version);
 			ser.Sync("Frame", ref _frame);
@@ -831,13 +832,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			apu.SyncState(ser);
 
 			if (version >= 2)
+			{
 				ser.Sync("DB", ref DB);
+			}
 			if (version >= 3)
 			{
 				ser.Sync("latched4016", ref latched4016);
 				ser.BeginSection("ControllerDeck");
 				ControllerDeck.SyncState(ser);
 				ser.EndSection();
+			}
+			if (version >= 4)
+			{
+				ser.Sync("resetSignal", ref resetSignal);
+				ser.Sync("hardResetSignal", ref hardResetSignal);
 			}
 
 			ser.EndSection();

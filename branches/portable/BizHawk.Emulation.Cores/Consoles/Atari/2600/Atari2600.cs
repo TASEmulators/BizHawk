@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					8192,
 					MemoryDomain.Endian.Little,
 					addr => _mapper.PeekMemory((ushort) addr),
-					(addr, value) => { })
+					(addr, value) => _mapper.PokeMemory((ushort) addr, value)) 
 			};
 
 			CoreComm.CpuTraceAvailable = true;
@@ -101,7 +101,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public ISoundProvider SoundProvider { get { return _dcfilter; } }
 
-		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(_dcfilter, 735); } }
+		// todo: make this not so ugly
+		public ISyncSoundProvider SyncSoundProvider
+		{
+			get
+			{
+				return new FakeSyncSound(_dcfilter, CoreComm.VsyncRate > 55.0 ? 735 : 882);
+			}
+		}
 
 		public ControllerDefinition ControllerDefinition { get { return Atari2600ControllerDefinition; } }
 
@@ -138,7 +145,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public int CurrentScanLine
 		{
-			get { return _tia.CurrentScanLine; }
+			get { return _tia.LineCount; }
 		}
 
 		public bool IsVsync
@@ -205,6 +212,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("Lag", ref _lagcount);
 			ser.Sync("Frame", ref _frame);
 			ser.Sync("IsLag", ref _islag);
+			ser.Sync("frameStartPending", ref _frameStartPending);
 			_tia.SyncState(ser);
 			M6532.SyncState(ser);
 			ser.BeginSection("Mapper");
@@ -219,7 +227,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		}
 
 		public void StoreSaveRam(byte[] data) { }
-		
+
 		public void ClearSaveRam() { }
 
 		public void SaveStateText(TextWriter writer)
@@ -252,5 +260,32 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		}
 
 		public void Dispose() { }
+
+		private static bool DetectPal(GameInfo game, byte[] rom)
+		{
+			// force NTSC mode for the new core we instantiate
+			var newgame = game.Clone();
+			if (newgame["PAL"])
+				newgame.RemoveOption("PAL");
+			if (!newgame["NTSC"])
+				newgame.AddOption("NTSC");
+
+			// give the emu a minimal of input\output connections so it doesn't crash
+			var comm = new CoreComm(null, null);
+			comm.InputCallback = new InputCallbackSystem();
+			using (Atari2600 emu = new Atari2600(new CoreComm(null, null), newgame, rom, null, null))
+			{
+				emu.Controller = new NullController();
+
+				List<int> framecounts = new List<int>();
+				emu._tia.FrameEndCallBack = (i) => framecounts.Add(i);
+				for (int i = 0; i < 71; i++) // run for 71 * 262 lines, since we're in NTSC mode
+					emu.FrameAdvance(false, false);
+				int numpal = framecounts.Count((i) => i > 287);
+				bool pal = numpal >= 25;
+				Console.WriteLine("PAL Detection: {0} lines, {1}", numpal, pal);
+				return pal;
+			}
+		}
 	}
 }

@@ -367,7 +367,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
-			throw new NotImplementedException();
+			int[] regs = new int[6];
+			var ret = new Dictionary<string, int>();
+			LibQuickNES.qn_get_cpuregs(Context, regs);
+			ret["A"] = regs[0];
+			ret["X"] = regs[1];
+			ret["Y"] = regs[2];
+			ret["SP"] = regs[3];
+			ret["PC"] = regs[4];
+			ret["P"] = regs[5];
+			return ret;
 		}
 
 		#endregion
@@ -500,11 +509,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				LibQuickNES.qn_delete(Context);
 				Context = IntPtr.Zero;
 			}
-			//if (VideoInput != null)
-			//{
-			//	VideoInputH.Free();
-			//	VideoInput = null;
-			//}
 			if (VideoOutput != null)
 			{
 				VideoOutputH.Free();
@@ -515,8 +519,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		#region VideoProvider
 
 		int[] VideoOutput;
-		//byte[] VideoInput;
-		//GCHandle VideoInputH;
 		GCHandle VideoOutputH;
 
 		int cropleft = 0;
@@ -534,11 +536,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		void InitVideo()
 		{
-			//int w = 0, h = 0;
-			//LibQuickNES.qn_get_image_dimensions(Context, ref w, ref h);
-			//VideoInput = new byte[w * h];
-			//VideoInputH = GCHandle.Alloc(VideoInput, GCHandleType.Pinned);
-			//LibQuickNES.qn_set_pixels(Context, VideoInputH.AddrOfPinnedObject(), w);
 			VideoOutput = new int[256 * 240];
 			VideoOutputH = GCHandle.Alloc(VideoOutput, GCHandleType.Pinned);
 		}
@@ -575,7 +572,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			NumSamples = LibQuickNES.qn_read_audio(Context, MonoBuff, MonoBuff.Length);
 			unsafe
 			{
-				fixed (short *_src = &MonoBuff[0], _dst = &StereoBuff[0])
+				fixed (short* _src = &MonoBuff[0], _dst = &StereoBuff[0])
 				{
 					short* src = _src;
 					short* dst = _dst;
@@ -585,7 +582,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 						*dst++ = *src++;
 					}
 				}
-			}			
+			}
 		}
 
 		short[] MonoBuff = new short[1024];

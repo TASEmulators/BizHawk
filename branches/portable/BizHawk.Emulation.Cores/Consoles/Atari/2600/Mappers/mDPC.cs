@@ -406,7 +406,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return ReadMem(addr, true);
 		}
 
-		public override void WriteMemory(ushort addr, byte value)
+		private void WriteMem(ushort addr, byte value, bool poke)
 		{
 			if (addr < 0x1000)
 			{
@@ -414,8 +414,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				return;
 			}
 
-			Address(addr);
-			ClockRandomNumberGenerator();
+			if (poke)
+			{
+				return;
+			}
 
 			if (addr >= 0x1040 && addr < 0x1080)
 			{
@@ -463,7 +465,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						if (index >= 5)
 						{
 							_musicModes[index - 5] = (value & 0x10) > 0;
-							
+
 							// NOTE: We are not handling the clock source input for
 							// the music mode data fetchers.  We're going to assume
 							// they always use the OSC input.
@@ -477,6 +479,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						break;
 				}
 			}
+		}
+
+		public override void WriteMemory(ushort addr, byte value)
+		{
+			WriteMem(addr, value, poke: false);
+		}
+
+		public override void PokeMemory(ushort addr, byte value)
+		{
+			WriteMem(addr, value, poke: true);
 		}
 
 		private void Address(ushort addr)

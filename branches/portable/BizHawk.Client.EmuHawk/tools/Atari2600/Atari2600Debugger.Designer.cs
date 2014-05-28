@@ -71,21 +71,33 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.CoreInfoBox = new System.Windows.Forms.GroupBox();
+			this.LastAddressLabel = new System.Windows.Forms.Label();
+			this.label9 = new System.Windows.Forms.Label();
+			this.DistinctAccesLabel = new System.Windows.Forms.Label();
+			this.label11 = new System.Windows.Forms.Label();
+			this.TotalCyclesLabel = new System.Windows.Forms.Label();
+			this.label10 = new System.Windows.Forms.Label();
+			this.ScanlineLabel = new System.Windows.Forms.Label();
+			this.FrameLabel = new System.Windows.Forms.Label();
 			this.VBlankCheckbox = new System.Windows.Forms.CheckBox();
 			this.VSyncChexkbox = new System.Windows.Forms.CheckBox();
-			this.ScanlineBox = new System.Windows.Forms.TextBox();
 			this.label8 = new System.Windows.Forms.Label();
-			this.FrameCountBox = new System.Windows.Forms.TextBox();
 			this.label7 = new System.Windows.Forms.Label();
 			this.TracerBox = new System.Windows.Forms.GroupBox();
-			this.StepOverButton = new System.Windows.Forms.Button();
-			this.StepOutButton = new System.Windows.Forms.Button();
 			this.TraceView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.StepOverButton = new System.Windows.Forms.Button();
+			this.StepOutButton = new System.Windows.Forms.Button();
+			this.BreakpointGroupBox = new System.Windows.Forms.GroupBox();
+			this.AddBreakpointButton = new System.Windows.Forms.Button();
+			this.BreakpointView = new BizHawk.Client.EmuHawk.VirtualListView();
+			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.DebuggerMenu.SuspendLayout();
 			this.RegistersBox.SuspendLayout();
 			this.CoreInfoBox.SuspendLayout();
 			this.TracerBox.SuspendLayout();
+			this.BreakpointGroupBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// DebuggerMenu
@@ -95,7 +107,7 @@
             this.OptionsSubMenu});
 			this.DebuggerMenu.Location = new System.Drawing.Point(0, 0);
 			this.DebuggerMenu.Name = "DebuggerMenu";
-			this.DebuggerMenu.Size = new System.Drawing.Size(732, 24);
+			this.DebuggerMenu.Size = new System.Drawing.Size(653, 24);
 			this.DebuggerMenu.TabIndex = 0;
 			this.DebuggerMenu.Text = "menuStrip1";
 			// 
@@ -172,7 +184,7 @@
 			// StepBtn
 			// 
 			this.StepBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.StepBtn.Location = new System.Drawing.Point(645, 27);
+			this.StepBtn.Location = new System.Drawing.Point(566, 27);
 			this.StepBtn.Name = "StepBtn";
 			this.StepBtn.Size = new System.Drawing.Size(75, 23);
 			this.StepBtn.TabIndex = 1;
@@ -183,7 +195,7 @@
 			// ScanlineAdvanceBtn
 			// 
 			this.ScanlineAdvanceBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.ScanlineAdvanceBtn.Location = new System.Drawing.Point(645, 117);
+			this.ScanlineAdvanceBtn.Location = new System.Drawing.Point(566, 117);
 			this.ScanlineAdvanceBtn.Name = "ScanlineAdvanceBtn";
 			this.ScanlineAdvanceBtn.Size = new System.Drawing.Size(75, 23);
 			this.ScanlineAdvanceBtn.TabIndex = 2;
@@ -194,7 +206,7 @@
 			// FrameAdvButton
 			// 
 			this.FrameAdvButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.FrameAdvButton.Location = new System.Drawing.Point(645, 144);
+			this.FrameAdvButton.Location = new System.Drawing.Point(566, 144);
 			this.FrameAdvButton.Name = "FrameAdvButton";
 			this.FrameAdvButton.Size = new System.Drawing.Size(75, 23);
 			this.FrameAdvButton.TabIndex = 3;
@@ -490,22 +502,100 @@
 			// 
 			// CoreInfoBox
 			// 
+			this.CoreInfoBox.Controls.Add(this.LastAddressLabel);
+			this.CoreInfoBox.Controls.Add(this.label9);
+			this.CoreInfoBox.Controls.Add(this.DistinctAccesLabel);
+			this.CoreInfoBox.Controls.Add(this.label11);
+			this.CoreInfoBox.Controls.Add(this.TotalCyclesLabel);
+			this.CoreInfoBox.Controls.Add(this.label10);
+			this.CoreInfoBox.Controls.Add(this.ScanlineLabel);
+			this.CoreInfoBox.Controls.Add(this.FrameLabel);
 			this.CoreInfoBox.Controls.Add(this.VBlankCheckbox);
 			this.CoreInfoBox.Controls.Add(this.VSyncChexkbox);
-			this.CoreInfoBox.Controls.Add(this.ScanlineBox);
 			this.CoreInfoBox.Controls.Add(this.label8);
-			this.CoreInfoBox.Controls.Add(this.FrameCountBox);
 			this.CoreInfoBox.Controls.Add(this.label7);
 			this.CoreInfoBox.Location = new System.Drawing.Point(260, 27);
 			this.CoreInfoBox.Name = "CoreInfoBox";
-			this.CoreInfoBox.Size = new System.Drawing.Size(160, 155);
+			this.CoreInfoBox.Size = new System.Drawing.Size(265, 155);
 			this.CoreInfoBox.TabIndex = 5;
 			this.CoreInfoBox.TabStop = false;
+			// 
+			// LastAddressLabel
+			// 
+			this.LastAddressLabel.AutoSize = true;
+			this.LastAddressLabel.Location = new System.Drawing.Point(191, 15);
+			this.LastAddressLabel.Name = "LastAddressLabel";
+			this.LastAddressLabel.Size = new System.Drawing.Size(13, 13);
+			this.LastAddressLabel.TabIndex = 13;
+			this.LastAddressLabel.Text = "0";
+			// 
+			// label9
+			// 
+			this.label9.AutoSize = true;
+			this.label9.Location = new System.Drawing.Point(96, 15);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(71, 13);
+			this.label9.TabIndex = 12;
+			this.label9.Text = "Last Address:";
+			// 
+			// DistinctAccesLabel
+			// 
+			this.DistinctAccesLabel.AutoSize = true;
+			this.DistinctAccesLabel.Location = new System.Drawing.Point(191, 38);
+			this.DistinctAccesLabel.Name = "DistinctAccesLabel";
+			this.DistinctAccesLabel.Size = new System.Drawing.Size(13, 13);
+			this.DistinctAccesLabel.TabIndex = 11;
+			this.DistinctAccesLabel.Text = "0";
+			// 
+			// label11
+			// 
+			this.label11.AutoSize = true;
+			this.label11.Location = new System.Drawing.Point(96, 38);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(94, 13);
+			this.label11.TabIndex = 10;
+			this.label11.Text = "Distinct Accesses:";
+			// 
+			// TotalCyclesLabel
+			// 
+			this.TotalCyclesLabel.AutoSize = true;
+			this.TotalCyclesLabel.Location = new System.Drawing.Point(72, 61);
+			this.TotalCyclesLabel.Name = "TotalCyclesLabel";
+			this.TotalCyclesLabel.Size = new System.Drawing.Size(13, 13);
+			this.TotalCyclesLabel.TabIndex = 9;
+			this.TotalCyclesLabel.Text = "0";
+			// 
+			// label10
+			// 
+			this.label10.AutoSize = true;
+			this.label10.Location = new System.Drawing.Point(6, 61);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(68, 13);
+			this.label10.TabIndex = 8;
+			this.label10.Text = "Total Cycles:";
+			// 
+			// ScanlineLabel
+			// 
+			this.ScanlineLabel.AutoSize = true;
+			this.ScanlineLabel.Location = new System.Drawing.Point(72, 38);
+			this.ScanlineLabel.Name = "ScanlineLabel";
+			this.ScanlineLabel.Size = new System.Drawing.Size(13, 13);
+			this.ScanlineLabel.TabIndex = 7;
+			this.ScanlineLabel.Text = "0";
+			// 
+			// FrameLabel
+			// 
+			this.FrameLabel.AutoSize = true;
+			this.FrameLabel.Location = new System.Drawing.Point(72, 15);
+			this.FrameLabel.Name = "FrameLabel";
+			this.FrameLabel.Size = new System.Drawing.Size(13, 13);
+			this.FrameLabel.TabIndex = 6;
+			this.FrameLabel.Text = "0";
 			// 
 			// VBlankCheckbox
 			// 
 			this.VBlankCheckbox.AutoSize = true;
-			this.VBlankCheckbox.Location = new System.Drawing.Point(9, 80);
+			this.VBlankCheckbox.Location = new System.Drawing.Point(9, 107);
 			this.VBlankCheckbox.Name = "VBlankCheckbox";
 			this.VBlankCheckbox.Size = new System.Drawing.Size(60, 17);
 			this.VBlankCheckbox.TabIndex = 5;
@@ -515,42 +605,26 @@
 			// VSyncChexkbox
 			// 
 			this.VSyncChexkbox.AutoSize = true;
-			this.VSyncChexkbox.Location = new System.Drawing.Point(9, 63);
+			this.VSyncChexkbox.Location = new System.Drawing.Point(9, 90);
 			this.VSyncChexkbox.Name = "VSyncChexkbox";
 			this.VSyncChexkbox.Size = new System.Drawing.Size(57, 17);
 			this.VSyncChexkbox.TabIndex = 4;
 			this.VSyncChexkbox.Text = "VSync";
 			this.VSyncChexkbox.UseVisualStyleBackColor = true;
 			// 
-			// ScanlineBox
-			// 
-			this.ScanlineBox.Location = new System.Drawing.Point(58, 37);
-			this.ScanlineBox.Name = "ScanlineBox";
-			this.ScanlineBox.ReadOnly = true;
-			this.ScanlineBox.Size = new System.Drawing.Size(74, 20);
-			this.ScanlineBox.TabIndex = 3;
-			// 
 			// label8
 			// 
 			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(6, 40);
+			this.label8.Location = new System.Drawing.Point(6, 38);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(51, 13);
 			this.label8.TabIndex = 2;
 			this.label8.Text = "Scanline:";
 			// 
-			// FrameCountBox
-			// 
-			this.FrameCountBox.Location = new System.Drawing.Point(58, 13);
-			this.FrameCountBox.Name = "FrameCountBox";
-			this.FrameCountBox.ReadOnly = true;
-			this.FrameCountBox.Size = new System.Drawing.Size(74, 20);
-			this.FrameCountBox.TabIndex = 1;
-			// 
 			// label7
 			// 
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(6, 16);
+			this.label7.Location = new System.Drawing.Point(6, 15);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(39, 13);
 			this.label7.TabIndex = 0;
@@ -558,36 +632,15 @@
 			// 
 			// TracerBox
 			// 
-			this.TracerBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.TracerBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
 			this.TracerBox.Controls.Add(this.TraceView);
 			this.TracerBox.Location = new System.Drawing.Point(12, 188);
 			this.TracerBox.Name = "TracerBox";
-			this.TracerBox.Size = new System.Drawing.Size(511, 444);
+			this.TracerBox.Size = new System.Drawing.Size(407, 444);
 			this.TracerBox.TabIndex = 6;
 			this.TracerBox.TabStop = false;
 			this.TracerBox.Text = "Trace log";
-			// 
-			// StepOverButton
-			// 
-			this.StepOverButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.StepOverButton.Location = new System.Drawing.Point(645, 56);
-			this.StepOverButton.Name = "StepOverButton";
-			this.StepOverButton.Size = new System.Drawing.Size(75, 23);
-			this.StepOverButton.TabIndex = 7;
-			this.StepOverButton.Text = "Step &Over";
-			this.StepOverButton.UseVisualStyleBackColor = true;
-			// 
-			// StepOutButton
-			// 
-			this.StepOutButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.StepOutButton.Location = new System.Drawing.Point(645, 82);
-			this.StepOutButton.Name = "StepOutButton";
-			this.StepOutButton.Size = new System.Drawing.Size(75, 23);
-			this.StepOutButton.TabIndex = 8;
-			this.StepOutButton.Text = "Step O&ut";
-			this.StepOutButton.UseVisualStyleBackColor = true;
 			// 
 			// TraceView
 			// 
@@ -607,7 +660,7 @@
 			this.TraceView.Name = "TraceView";
 			this.TraceView.SelectAllInProgress = false;
 			this.TraceView.selectedItem = -1;
-			this.TraceView.Size = new System.Drawing.Size(497, 414);
+			this.TraceView.Size = new System.Drawing.Size(393, 414);
 			this.TraceView.TabIndex = 4;
 			this.TraceView.TabStop = false;
 			this.TraceView.UseCompatibleStateImageBehavior = false;
@@ -618,11 +671,91 @@
 			this.Script.Text = "Instructions";
 			this.Script.Width = 599;
 			// 
+			// StepOverButton
+			// 
+			this.StepOverButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.StepOverButton.Location = new System.Drawing.Point(566, 56);
+			this.StepOverButton.Name = "StepOverButton";
+			this.StepOverButton.Size = new System.Drawing.Size(75, 23);
+			this.StepOverButton.TabIndex = 7;
+			this.StepOverButton.Text = "Step &Over";
+			this.StepOverButton.UseVisualStyleBackColor = true;
+			// 
+			// StepOutButton
+			// 
+			this.StepOutButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.StepOutButton.Location = new System.Drawing.Point(566, 82);
+			this.StepOutButton.Name = "StepOutButton";
+			this.StepOutButton.Size = new System.Drawing.Size(75, 23);
+			this.StepOutButton.TabIndex = 8;
+			this.StepOutButton.Text = "Step O&ut";
+			this.StepOutButton.UseVisualStyleBackColor = true;
+			// 
+			// BreakpointGroupBox
+			// 
+			this.BreakpointGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.BreakpointGroupBox.Controls.Add(this.AddBreakpointButton);
+			this.BreakpointGroupBox.Controls.Add(this.BreakpointView);
+			this.BreakpointGroupBox.Location = new System.Drawing.Point(435, 188);
+			this.BreakpointGroupBox.Name = "BreakpointGroupBox";
+			this.BreakpointGroupBox.Size = new System.Drawing.Size(206, 444);
+			this.BreakpointGroupBox.TabIndex = 7;
+			this.BreakpointGroupBox.TabStop = false;
+			this.BreakpointGroupBox.Text = "Breakpoints";
+			// 
+			// AddBreakpointButton
+			// 
+			this.AddBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.AddBreakpointButton.Location = new System.Drawing.Point(8, 409);
+			this.AddBreakpointButton.Name = "AddBreakpointButton";
+			this.AddBreakpointButton.Size = new System.Drawing.Size(75, 23);
+			this.AddBreakpointButton.TabIndex = 5;
+			this.AddBreakpointButton.Text = "&Add";
+			this.AddBreakpointButton.UseVisualStyleBackColor = true;
+			this.AddBreakpointButton.Click += new System.EventHandler(this.AddBreakpointButton_Click);
+			// 
+			// BreakpointView
+			// 
+			this.BreakpointView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.BreakpointView.BlazingFast = false;
+			this.BreakpointView.CheckBoxes = true;
+			this.BreakpointView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2});
+			this.BreakpointView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.BreakpointView.FullRowSelect = true;
+			this.BreakpointView.GridLines = true;
+			this.BreakpointView.HideSelection = false;
+			this.BreakpointView.ItemCount = 0;
+			this.BreakpointView.Location = new System.Drawing.Point(8, 18);
+			this.BreakpointView.Name = "BreakpointView";
+			this.BreakpointView.SelectAllInProgress = false;
+			this.BreakpointView.selectedItem = -1;
+			this.BreakpointView.Size = new System.Drawing.Size(192, 384);
+			this.BreakpointView.TabIndex = 4;
+			this.BreakpointView.TabStop = false;
+			this.BreakpointView.UseCompatibleStateImageBehavior = false;
+			this.BreakpointView.View = System.Windows.Forms.View.Details;
+			// 
+			// columnHeader1
+			// 
+			this.columnHeader1.Text = "Address";
+			this.columnHeader1.Width = 85;
+			// 
+			// columnHeader2
+			// 
+			this.columnHeader2.Text = "Type";
+			this.columnHeader2.Width = 103;
+			// 
 			// Atari2600Debugger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(732, 702);
+			this.ClientSize = new System.Drawing.Size(653, 702);
+			this.Controls.Add(this.BreakpointGroupBox);
 			this.Controls.Add(this.StepOutButton);
 			this.Controls.Add(this.StepOverButton);
 			this.Controls.Add(this.TracerBox);
@@ -645,6 +778,7 @@
 			this.CoreInfoBox.ResumeLayout(false);
 			this.CoreInfoBox.PerformLayout();
 			this.TracerBox.ResumeLayout(false);
+			this.BreakpointGroupBox.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -687,9 +821,7 @@
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.CheckBox NFlagCheckbox;
 		private System.Windows.Forms.GroupBox CoreInfoBox;
-		private System.Windows.Forms.TextBox FrameCountBox;
 		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.TextBox ScanlineBox;
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.GroupBox TracerBox;
 		private VirtualListView TraceView;
@@ -705,5 +837,18 @@
 		private System.Windows.Forms.ToolStripMenuItem RestoreDefaultsMenuItem;
 		private System.Windows.Forms.Button StepOverButton;
 		private System.Windows.Forms.Button StepOutButton;
+		private System.Windows.Forms.GroupBox BreakpointGroupBox;
+		private VirtualListView BreakpointView;
+		public System.Windows.Forms.ColumnHeader columnHeader1;
+		private System.Windows.Forms.Button AddBreakpointButton;
+		private System.Windows.Forms.ColumnHeader columnHeader2;
+		private System.Windows.Forms.Label FrameLabel;
+		private System.Windows.Forms.Label ScanlineLabel;
+		private System.Windows.Forms.Label TotalCyclesLabel;
+		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.Label DistinctAccesLabel;
+		private System.Windows.Forms.Label label11;
+		private System.Windows.Forms.Label LastAddressLabel;
+		private System.Windows.Forms.Label label9;
 	}
 }

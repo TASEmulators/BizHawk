@@ -18,24 +18,31 @@ SET ERRORLEVEL=0
 
 rem if we didnt even have a svnrev, then go ahead and copy it
 if not exist %SVNREV% (
-   copy /y %TEMPFILE% %SVNREV%
+   @copy /y %TEMPFILE% %SVNREV% > NUL
 ) else if exist %TEMPFILE% (
   rem check to see whether its any different, so we dont touch unchanged files
   fc /b %TEMPFILE% %SVNREV% > nul
-  if ERRORLEVEL 0 (
-    echo Not touching unchanged svnrev file
+  if ERRORLEVEL 2 (
+    echo Updated svnrev file
+    @copy /y %TEMPFILE% %SVNREV% > NUL
+    goto SKIP
   )
   if ERRORLEVEL 1 (
     echo Updated svnrev file
-    @copy /y %TEMPFILE% %SVNREV%
+    @copy /y %TEMPFILE% %SVNREV% > NUL
+    goto SKIP
   )
-  if ERRORLEVEL 2 (
-    echo Updated svnrev file
-    @copy /y %TEMPFILE% %SVNREV%
-  )
+  if ERRORLEVEL 0 (
+    echo Not touching unchanged svnrev file
+    goto SKIP
+  )  
+
+
 ) else (
   echo Ran into a weird error writing subwcrev output to tempfile: %TEMPFILE%
 )
+
+:SKIP
 
 rem <zero> make subwcrev process more reliable. sorry for leaving so many tempfiles, but life's too short
 rem del %TEMPFILE%
