@@ -83,6 +83,8 @@
 		9E6378D91919D8B600527AF4 /* nes_util.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E6378971919D8B600527AF4 /* nes_util.h */; };
 		9E6378DA1919D8B600527AF4 /* Nes_Vrc6_Apu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E6378981919D8B600527AF4 /* Nes_Vrc6_Apu.cpp */; };
 		9E6378DB1919D8B600527AF4 /* Nes_Vrc6_Apu.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E6378991919D8B600527AF4 /* Nes_Vrc6_Apu.h */; };
+		9EDD437419356B0700C62248 /* Mmc24.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EDD437219356B0700C62248 /* Mmc24.cpp */; };
+		9EDD437519356B0700C62248 /* Mmc24.h in Headers */ = {isa = PBXBuildFile; fileRef = 9EDD437319356B0700C62248 /* Mmc24.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -163,6 +165,8 @@
 		9E6378971919D8B600527AF4 /* nes_util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nes_util.h; sourceTree = "<group>"; };
 		9E6378981919D8B600527AF4 /* Nes_Vrc6_Apu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Nes_Vrc6_Apu.cpp; sourceTree = "<group>"; };
 		9E6378991919D8B600527AF4 /* Nes_Vrc6_Apu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Nes_Vrc6_Apu.h; sourceTree = "<group>"; };
+		9EDD437219356B0700C62248 /* Mmc24.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Mmc24.cpp; sourceTree = "<group>"; };
+		9EDD437319356B0700C62248 /* Mmc24.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mmc24.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -214,6 +218,8 @@
 		9E6378571919D8B600527AF4 /* nes_emu */ = {
 			isa = PBXGroup;
 			children = (
+				9EDD437219356B0700C62248 /* Mmc24.cpp */,
+				9EDD437319356B0700C62248 /* Mmc24.h */,
 				9E6378581919D8B600527AF4 /* abstract_file.cpp */,
 				9E6378591919D8B600527AF4 /* abstract_file.h */,
 				9E63785A1919D8B600527AF4 /* apu_state.cpp */,
@@ -310,6 +316,7 @@
 				9E6378541919D8AF00527AF4 /* blargg_source.h in Headers */,
 				9E6378A61919D8B600527AF4 /* Effects_Buffer.h in Headers */,
 				9E6378D01919D8B600527AF4 /* Nes_Ppu_Bg.h in Headers */,
+				9EDD437519356B0700C62248 /* Mmc24.h in Headers */,
 				9E6378CB1919D8B600527AF4 /* nes_ntsc_impl.h in Headers */,
 				9E6378AF1919D8B600527AF4 /* Nes_Apu.h in Headers */,
 				9E6378CA1919D8B600527AF4 /* nes_ntsc.h in Headers */,
@@ -403,6 +410,7 @@
 				9E6378D11919D8B600527AF4 /* Nes_Ppu_Impl.cpp in Sources */,
 				9E6378C51919D8B600527AF4 /* nes_mappers.cpp in Sources */,
 				9E6378CC1919D8B600527AF4 /* Nes_Oscs.cpp in Sources */,
+				9EDD437419356B0700C62248 /* Mmc24.cpp in Sources */,
 				9E6378AA1919D8B600527AF4 /* Mapper_Vrc6.cpp in Sources */,
 				9E6378A51919D8B600527AF4 /* Effects_Buffer.cpp in Sources */,
 				9E6378C81919D8B600527AF4 /* Nes_Namco_Apu.cpp in Sources */,
@@ -432,6 +440,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -478,6 +487,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;

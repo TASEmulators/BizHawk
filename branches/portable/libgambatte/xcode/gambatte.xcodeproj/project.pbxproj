@@ -10,8 +10,6 @@
 		9E306AB5191DA0AD002AD90A /* gambatte.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E306A6D191DA0AD002AD90A /* gambatte.h */; };
 		9E306AB6191DA0AD002AD90A /* gbint.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E306A6E191DA0AD002AD90A /* gbint.h */; };
 		9E306AB7191DA0AD002AD90A /* inputgetter.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E306A6F191DA0AD002AD90A /* inputgetter.h */; };
-		9E306AB8191DA0AD002AD90A /* bitmap_font.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E306A71191DA0AD002AD90A /* bitmap_font.cpp */; };
-		9E306AB9191DA0AD002AD90A /* bitmap_font.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E306A72191DA0AD002AD90A /* bitmap_font.h */; };
 		9E306ABA191DA0AD002AD90A /* cinterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E306A73191DA0AD002AD90A /* cinterface.cpp */; };
 		9E306ABB191DA0AD002AD90A /* cinterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E306A74191DA0AD002AD90A /* cinterface.h */; };
 		9E306ABC191DA0AD002AD90A /* array.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E306A76191DA0AD002AD90A /* array.h */; };
@@ -57,8 +55,6 @@
 		9E306AE4191DA0AD002AD90A /* static_output_tester.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E306AA1191DA0AD002AD90A /* static_output_tester.h */; };
 		9E306AE5191DA0AD002AD90A /* sound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E306AA2191DA0AD002AD90A /* sound.cpp */; };
 		9E306AE6191DA0AD002AD90A /* sound.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E306AA3191DA0AD002AD90A /* sound.h */; };
-		9E306AE7191DA0AD002AD90A /* statesaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E306AA4191DA0AD002AD90A /* statesaver.cpp */; };
-		9E306AE8191DA0AD002AD90A /* statesaver.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E306AA5191DA0AD002AD90A /* statesaver.h */; };
 		9E306AE9191DA0AD002AD90A /* tima.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E306AA6191DA0AD002AD90A /* tima.cpp */; };
 		9E306AEA191DA0AD002AD90A /* tima.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E306AA7191DA0AD002AD90A /* tima.h */; };
 		9E306AEB191DA0AD002AD90A /* ly_counter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E306AA9191DA0AD002AD90A /* ly_counter.cpp */; };
@@ -73,6 +69,8 @@
 		9E306AF4191DA0AD002AD90A /* sprite_mapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E306AB2191DA0AD002AD90A /* sprite_mapper.h */; };
 		9E306AF5191DA0AD002AD90A /* video.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E306AB3191DA0AD002AD90A /* video.cpp */; };
 		9E306AF6191DA0AD002AD90A /* video.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E306AB4191DA0AD002AD90A /* video.h */; };
+		9EDD4370193568E900C62248 /* newstate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EDD436E193568E900C62248 /* newstate.cpp */; };
+		9EDD4371193568E900C62248 /* newstate.h in Headers */ = {isa = PBXBuildFile; fileRef = 9EDD436F193568E900C62248 /* newstate.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -80,8 +78,6 @@
 		9E306A6D191DA0AD002AD90A /* gambatte.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gambatte.h; sourceTree = "<group>"; };
 		9E306A6E191DA0AD002AD90A /* gbint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gbint.h; sourceTree = "<group>"; };
 		9E306A6F191DA0AD002AD90A /* inputgetter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = inputgetter.h; sourceTree = "<group>"; };
-		9E306A71191DA0AD002AD90A /* bitmap_font.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bitmap_font.cpp; sourceTree = "<group>"; };
-		9E306A72191DA0AD002AD90A /* bitmap_font.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitmap_font.h; sourceTree = "<group>"; };
 		9E306A73191DA0AD002AD90A /* cinterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cinterface.cpp; sourceTree = "<group>"; };
 		9E306A74191DA0AD002AD90A /* cinterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cinterface.h; sourceTree = "<group>"; };
 		9E306A76191DA0AD002AD90A /* array.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = array.h; sourceTree = "<group>"; };
@@ -127,8 +123,6 @@
 		9E306AA1191DA0AD002AD90A /* static_output_tester.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = static_output_tester.h; sourceTree = "<group>"; };
 		9E306AA2191DA0AD002AD90A /* sound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sound.cpp; sourceTree = "<group>"; };
 		9E306AA3191DA0AD002AD90A /* sound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sound.h; sourceTree = "<group>"; };
-		9E306AA4191DA0AD002AD90A /* statesaver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = statesaver.cpp; sourceTree = "<group>"; };
-		9E306AA5191DA0AD002AD90A /* statesaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = statesaver.h; sourceTree = "<group>"; };
 		9E306AA6191DA0AD002AD90A /* tima.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tima.cpp; sourceTree = "<group>"; };
 		9E306AA7191DA0AD002AD90A /* tima.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tima.h; sourceTree = "<group>"; };
 		9E306AA9191DA0AD002AD90A /* ly_counter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ly_counter.cpp; sourceTree = "<group>"; };
@@ -143,6 +137,8 @@
 		9E306AB2191DA0AD002AD90A /* sprite_mapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sprite_mapper.h; sourceTree = "<group>"; };
 		9E306AB3191DA0AD002AD90A /* video.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = video.cpp; sourceTree = "<group>"; };
 		9E306AB4191DA0AD002AD90A /* video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = video.h; sourceTree = "<group>"; };
+		9EDD436E193568E900C62248 /* newstate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = newstate.cpp; sourceTree = "<group>"; };
+		9EDD436F193568E900C62248 /* newstate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = newstate.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,8 +183,8 @@
 		9E306A70191DA0AD002AD90A /* src */ = {
 			isa = PBXGroup;
 			children = (
-				9E306A71191DA0AD002AD90A /* bitmap_font.cpp */,
-				9E306A72191DA0AD002AD90A /* bitmap_font.h */,
+				9EDD436E193568E900C62248 /* newstate.cpp */,
+				9EDD436F193568E900C62248 /* newstate.h */,
 				9E306A73191DA0AD002AD90A /* cinterface.cpp */,
 				9E306A74191DA0AD002AD90A /* cinterface.h */,
 				9E306A75191DA0AD002AD90A /* common */,
@@ -212,8 +208,6 @@
 				9E306A90191DA0AD002AD90A /* sound */,
 				9E306AA2191DA0AD002AD90A /* sound.cpp */,
 				9E306AA3191DA0AD002AD90A /* sound.h */,
-				9E306AA4191DA0AD002AD90A /* statesaver.cpp */,
-				9E306AA5191DA0AD002AD90A /* statesaver.h */,
 				9E306AA6191DA0AD002AD90A /* tima.cpp */,
 				9E306AA7191DA0AD002AD90A /* tima.h */,
 				9E306AA8191DA0AD002AD90A /* video */,
@@ -303,11 +297,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				9E306AC0191DA0AD002AD90A /* cpu.h in Headers */,
+				9EDD4371193568E900C62248 /* newstate.h in Headers */,
 				9E306AEA191DA0AD002AD90A /* tima.h in Headers */,
 				9E306ACB191DA0AD002AD90A /* cartridge.h in Headers */,
 				9E306AC4191DA0AD002AD90A /* initstate.h in Headers */,
 				9E306ABC191DA0AD002AD90A /* array.h in Headers */,
-				9E306AE8191DA0AD002AD90A /* statesaver.h in Headers */,
 				9E306ABE191DA0AD002AD90A /* counterdef.h in Headers */,
 				9E306ADB191DA0AD002AD90A /* channel4.h in Headers */,
 				9E306AD3191DA0AD002AD90A /* savestate.h in Headers */,
@@ -337,7 +331,6 @@
 				9E306AE4191DA0AD002AD90A /* static_output_tester.h in Headers */,
 				9E306AD5191DA0AD002AD90A /* channel1.h in Headers */,
 				9E306ADF191DA0AD002AD90A /* envelope_unit.h in Headers */,
-				9E306AB9191DA0AD002AD90A /* bitmap_font.h in Headers */,
 				9E306AB6191DA0AD002AD90A /* gbint.h in Headers */,
 				9E306AD2191DA0AD002AD90A /* minkeeper.h in Headers */,
 				9E306AF2191DA0AD002AD90A /* ppu.h in Headers */,
@@ -407,15 +400,14 @@
 				9E306AE5191DA0AD002AD90A /* sound.cpp in Sources */,
 				9E306ADE191DA0AD002AD90A /* envelope_unit.cpp in Sources */,
 				9E306AC6191DA0AD002AD90A /* interrupter.cpp in Sources */,
-				9E306AE7191DA0AD002AD90A /* statesaver.cpp in Sources */,
 				9E306AF5191DA0AD002AD90A /* video.cpp in Sources */,
 				9E306ACA191DA0AD002AD90A /* cartridge.cpp in Sources */,
 				9E306AD8191DA0AD002AD90A /* channel3.cpp in Sources */,
-				9E306AB8191DA0AD002AD90A /* bitmap_font.cpp in Sources */,
 				9E306AC2191DA0AD002AD90A /* gambatte.cpp in Sources */,
 				9E306AE0191DA0AD002AD90A /* length_counter.cpp in Sources */,
 				9E306AD6191DA0AD002AD90A /* channel2.cpp in Sources */,
 				9E306ADA191DA0AD002AD90A /* channel4.cpp in Sources */,
+				9EDD4370193568E900C62248 /* newstate.cpp in Sources */,
 				9E306AEF191DA0AD002AD90A /* next_m0_time.cpp in Sources */,
 				9E306AEB191DA0AD002AD90A /* ly_counter.cpp in Sources */,
 				9E306AC8191DA0AD002AD90A /* interruptrequester.cpp in Sources */,
