@@ -53,7 +53,7 @@
 			this.textBox1.ReadOnly = true;
 			this.textBox1.Size = new System.Drawing.Size(414, 35);
 			this.textBox1.TabIndex = 2;
-			this.textBox1.Text = "This Rom was not found in the database.  Further more, the extension leaves no cl" +
+			this.textBox1.Text = "This Rom was not found in the database.  Furthermore, the extension leaves no cl" +
     "ue as to which platform should be chosen.";
 			// 
 			// OkBtn

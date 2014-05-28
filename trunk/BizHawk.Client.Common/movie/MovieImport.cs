@@ -79,6 +79,9 @@ namespace BizHawk.Client.Common
 					case ".VMV":
 						m = ImportVMV(path, out errorMsg, out warningMsg);
 						break;
+                    case ".YMV":
+                        m = ImportYMV(path, out errorMsg, out warningMsg);
+                        break;
 					case ".ZMV":
 						m = ImportZMV(path, out errorMsg, out warningMsg);
 						break;
@@ -100,7 +103,7 @@ namespace BizHawk.Client.Common
 		{
 			string[] extensions = new[]
 			{
-				"FCM", "FM2", "FMV", "GMV", "MCM", "MC2", "MMV", "NMV", "LSMV", "SMV", "VBM", "VMV", "ZMV"
+				"FCM", "FM2", "FMV", "GMV", "MCM", "MC2", "MMV", "NMV", "LSMV", "SMV", "VBM", "VMV", "YMV", "ZMV"
 			};
 			return extensions.Any(ext => extension.ToUpper() == "." + ext);
 		}
@@ -150,6 +153,10 @@ namespace BizHawk.Client.Common
 						controller = "Gameboy Controller";
 					}
 					break;
+                case ".YMV":
+                    buttons = new[] { "Left", "Right", "Up", "Down", "Start", "A", "B", "C", "X", "Y", "Z", "L", "R" };
+                    controller = "Saturn Controller";
+                    break;
 			}
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = controller}};
 			// Split up the sections of the frame.
@@ -282,7 +289,7 @@ namespace BizHawk.Client.Common
 			return m;
 		}
 
-		// Import a text-based movie format. This works for .FM2 and .MC2.
+		// Import a text-based movie format. This works for .FM2, .MC2, and .YMV.
 		private static Movie ImportText(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = String.Empty;
@@ -301,6 +308,10 @@ namespace BizHawk.Client.Common
 					emulator = "Mednafen/PCEjin";
 					platform = "PCE";
 					break;
+                case ".YMV":
+                    emulator = "Yabause";
+                    platform = "Sega Saturn";
+                    break;
 			}
 			m.Header[HeaderKeys.PLATFORM] = platform;
 			int lineNum = 0;
@@ -348,64 +359,73 @@ namespace BizHawk.Client.Common
 				{
 					m.Header[HeaderKeys.GAMENAME] = ParseHeader(line, "romFilename");
 				}
-				else if (line.ToLower().StartsWith("romchecksum"))
-				{
-					string blob = ParseHeader(line, "romChecksum");
-					byte[] md5 = DecodeBlob(blob);
-					if (md5 != null && md5.Length == 16)
-					{
-						m.Header[MD5] = Util.BytesToHexString(md5).ToLower();
-					}
-					else
-					{
-						warningMsg = "Bad ROM checksum.";
-					}
-				}
-				else if (line.ToLower().StartsWith("comment author"))
-				{
-					m.Header[HeaderKeys.AUTHOR] = ParseHeader(line, "comment author");
-				}
-				else if (line.ToLower().StartsWith("rerecordcount"))
-				{
-					int rerecordCount;
-					// Try to parse the re-record count as an integer, defaulting to 0 if it fails.
-					try
-					{
-						rerecordCount = int.Parse(ParseHeader(line, "rerecordCount"));
-					}
-					catch
-					{
-						rerecordCount = 0;
-					}
-					m.Header.Rerecords = (ulong)rerecordCount;
-				}
-				else if (line.ToLower().StartsWith("guid"))
-				{
-					continue; //We no longer care to keep this info
-				}
-				else if (line.ToLower().StartsWith("startsfromsavestate"))
-				{
-					// If this movie starts from a savestate, we can't support it.
-					if (ParseHeader(line, "StartsFromSavestate") == "1")
-					{
-						errorMsg = "Movies that begin with a savestate are not supported.";
-						sr.Close();
-						return null;
-					}
-				}
-				else if (line.ToLower().StartsWith("palflag"))
-				{
-					bool pal = (ParseHeader(line, "palFlag") == "1");
-					m.Header[HeaderKeys.PAL] = pal.ToString();
-				}
-				else if (line.ToLower().StartsWith("fourscore"))
-				{
-					bool fourscore = (ParseHeader(line, "fourscore") == "1");
-					m.Header[HeaderKeys.FOURSCORE] = fourscore.ToString();
-				}
-				else
-					// Everything not explicitly defined is treated as a comment.
-					m.Header.Comments.Add(line);
+                else if (line.ToLower().StartsWith("cdgamename"))
+                {
+                    m.Header[HeaderKeys.GAMENAME] = ParseHeader(line, "cdGameName");
+                }
+                else if (line.ToLower().StartsWith("romchecksum"))
+                {
+                    string blob = ParseHeader(line, "romChecksum");
+                    byte[] md5 = DecodeBlob(blob);
+                    if (md5 != null && md5.Length == 16)
+                    {
+                        m.Header[MD5] = Util.BytesToHexString(md5).ToLower();
+                    }
+                    else
+                    {
+                        warningMsg = "Bad ROM checksum.";
+                    }
+                }
+                else if (line.ToLower().StartsWith("comment author"))
+                {
+                    m.Header[HeaderKeys.AUTHOR] = ParseHeader(line, "comment author");
+                }
+                else if (line.ToLower().StartsWith("rerecordcount"))
+                {
+                    int rerecordCount;
+                    // Try to parse the re-record count as an integer, defaulting to 0 if it fails.
+                    try
+                    {
+                        rerecordCount = int.Parse(ParseHeader(line, "rerecordCount"));
+                    }
+                    catch
+                    {
+                        rerecordCount = 0;
+                    }
+                    m.Header.Rerecords = (ulong)rerecordCount;
+                }
+                else if (line.ToLower().StartsWith("guid"))
+                {
+                    continue; //We no longer care to keep this info
+                }
+                else if (line.ToLower().StartsWith("startsfromsavestate"))
+                {
+                    // If this movie starts from a savestate, we can't support it.
+                    if (ParseHeader(line, "StartsFromSavestate") == "1")
+                    {
+                        errorMsg = "Movies that begin with a savestate are not supported.";
+                        sr.Close();
+                        return null;
+                    }
+                }
+                else if (line.ToLower().StartsWith("palflag"))
+                {
+                    bool pal = (ParseHeader(line, "palFlag") == "1");
+                    m.Header[HeaderKeys.PAL] = pal.ToString();
+                }
+                else if (line.ToLower().StartsWith("ispal"))
+                {
+                    bool pal = (ParseHeader(line, "isPal") == "1");
+                    m.Header[HeaderKeys.PAL] = pal.ToString();
+                }
+                else if (line.ToLower().StartsWith("fourscore"))
+                {
+                    bool fourscore = (ParseHeader(line, "fourscore") == "1");
+                    m.Header[HeaderKeys.FOURSCORE] = fourscore.ToString();
+                }
+                else
+                    // Everything not explicitly defined is treated as a comment.
+                    m.Header.Comments.Add(line);
 			}
 			sr.Close();
 			return m;
@@ -2430,6 +2450,12 @@ namespace BizHawk.Client.Common
 			fs.Close();
 			return m;
 		}
+
+        // YMV file format: https://code.google.com/p/yabause-rr/wiki/YMVfileformat
+        private static Movie ImportYMV(string path, out string errorMsg, out string warningMsg)
+        {
+            return ImportText(path, out errorMsg, out warningMsg);
+        }
 
 		// ZMV file format: http://tasvideos.org/ZMV.html
 		private static Movie ImportZMV(string path, out string errorMsg, out string warningMsg)

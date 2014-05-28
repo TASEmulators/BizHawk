@@ -445,7 +445,7 @@ namespace BizHawk.Client.Common
 					}
 					else
 					{
-						ThrowLoadError("A core accepted the rom, but throw an exception while loading it:\n\n" + ex, system);
+						ThrowLoadError("A core accepted the rom, but threw an exception while loading it:\n\n" + ex, system);
 					}
 
 					return false;
