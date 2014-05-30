@@ -23,6 +23,7 @@ using BizHawk.Emulation.Cores.Sega.Saturn;
 using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.DiscSystem;
+using BizHawk.Emulation.Cores.WonderSwan;
 
 namespace BizHawk.Client.Common
 {
@@ -412,6 +413,9 @@ namespace BizHawk.Client.Common
 								break;
 							case "N64":
 								nextEmulator = new N64(nextComm, game, rom.RomData, GetCoreSyncSettings<N64>());
+								break;
+							case "WSWAN":
+								nextEmulator = new WonderSwan(nextComm, rom.RomData);
 								break;
 							case "DEBUG":
 								if (VersionInfo.INTERIM)
