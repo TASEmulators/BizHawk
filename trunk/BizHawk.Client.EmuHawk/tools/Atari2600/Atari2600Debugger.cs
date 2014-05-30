@@ -122,6 +122,24 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Size = Global.Config.Atari2600DebuggerSettings.WindowSize;
 			}
+
+			UpdateBreakpointRemoveButton();
+			UpdateValues();
+		}
+
+		private IEnumerable<int> SelectedIndices
+		{
+			get { return BreakpointView.SelectedIndices.Cast<int>(); }
+		}
+
+		private IEnumerable<AtariBreakpoint> SelectedItems
+		{
+			get { return SelectedIndices.Select(index => Breakpoints[index]); }
+		}
+
+		private void UpdateBreakpointRemoveButton()
+		{
+			RemoveBreakpointButton.Enabled = BreakpointView.SelectedIndices.Count > 0;
 		}
 
 		private void Shutdown()
@@ -340,6 +358,38 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			BreakpointView.ItemCount = Breakpoints.Count;
+			UpdateBreakpointRemoveButton();
+		}
+
+		private void RemoveBreakpointButton_Click(object sender, EventArgs e)
+		{
+			if (BreakpointView.SelectedIndices.Count > 0)
+			{
+				var items = SelectedItems.ToList();
+				if (items.Any())
+				{
+					foreach (var item in items)
+					{
+						Breakpoints.Remove(item);
+					}
+
+					BreakpointView.ItemCount = Breakpoints.Count;
+					UpdateBreakpointRemoveButton();
+				}
+			}
+		}
+
+		private void BreakpointView_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			UpdateBreakpointRemoveButton();
+		}
+
+		private void BreakpointView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
+			{
+				RemoveBreakpointButton_Click(sender, e);
+			}
 		}
 
 		private void RefreshFloatingWindowControl()
