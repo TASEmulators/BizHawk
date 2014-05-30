@@ -1386,8 +1386,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private static string DisplayNameForSystem(string system)
 		{
-			var str = string.Empty;
-			switch (system)
+			var str = Global.SystemInfo.DisplayName;
+			/*
+			switch (Global.SystemInfo.DisplayName)
 			{
 				case "INTV": str = "Intellivision"; break;
 				case "SG": str = "SG-1000"; break;
@@ -1412,7 +1413,7 @@ namespace BizHawk.Client.EmuHawk
 				case "DGB": str = "Game Boy Link"; break;
 				case "WSWAN": str = "WonderSwan"; break;
 			}
-
+			*/
 			if (VersionInfo.INTERIM)
 			{
 				str += " (interim)";
