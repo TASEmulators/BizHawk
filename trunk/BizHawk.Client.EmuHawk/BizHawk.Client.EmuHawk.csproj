@@ -1544,6 +1544,7 @@
     <None Include="images\genplus.png" />
     <None Include="images\gambatte.png" />
     <None Include="images\dual.png" />
+    <None Include="config\ControllerImages\WonderSwanColor.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />
