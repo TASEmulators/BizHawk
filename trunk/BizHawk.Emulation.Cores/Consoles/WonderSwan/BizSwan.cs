@@ -11,20 +11,77 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		const CallingConvention cc = CallingConvention.Cdecl;
 		const string dd = "bizswan.dll";
 
+		/// <summary>
+		/// create new instance
+		/// </summary>
+		/// <returns></returns>
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern IntPtr bizswan_new();
 
+		/// <summary>
+		/// delete instance, freeing all associated memory
+		/// </summary>
+		/// <param name="core"></param>
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern void bizswan_delete(IntPtr core);
 
+		/// <summary>
+		/// hard reset
+		/// </summary>
+		/// <param name="core"></param>
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern void bizswan_reset(IntPtr core);
 
+		/// <summary>
+		/// frame advance
+		/// </summary>
+		/// <param name="core"></param>
+		/// <param name="buttons">input to use on this frame</param>
+		/// <param name="novideo">true to skip all video rendering</param>
+		/// <param name="surface">uint32 video output buffer</param>
+		/// <param name="soundbuff">int16 sound output buffer</param>
+		/// <param name="soundbuffsize">[In] max hold size of soundbuff [Out] number of samples actually deposited</param>
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern void bizswan_advance(IntPtr core, Buttons buttons, bool novideo, int[] surface, short[] soundbuff, ref int soundbuffsize);
 
+		/// <summary>
+		/// load rom
+		/// </summary>
+		/// <param name="core"></param>
+		/// <param name="data"></param>
+		/// <param name="length"></param>
+		/// <param name="settings"></param>
+		/// <returns></returns>
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern bool bizswan_load(IntPtr core, byte[] data, int length, [In] ref Settings settings);
+
+		/// <summary>
+		/// get size of saveram
+		/// </summary>
+		/// <param name="core"></param>
+		/// <returns></returns>
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern int bizswan_saveramsize(IntPtr core);
+
+		/// <summary>
+		/// load saveram into core
+		/// </summary>
+		/// <param name="core"></param>
+		/// <param name="data"></param>
+		/// <param name="size">should be same as bizswan_saveramsize()</param>
+		/// <returns>false if size mismatch</returns>
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern bool bizswan_saveramload(IntPtr core, byte[] data, int size);
+
+		/// <summary>
+		/// save saveram from core
+		/// </summary>
+		/// <param name="core"></param>
+		/// <param name="data"></param>
+		/// <param name="maxsize">should be same as bizswan_saveramsize()</param>
+		/// <returns>false if size mismatch</returns>
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern bool bizswan_saveramsave(IntPtr core, byte[] data, int maxsize);
 
 		[Flags]
 		public enum Buttons : ushort

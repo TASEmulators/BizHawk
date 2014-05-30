@@ -32,6 +32,10 @@ public:
 	void Advance(uint16 buttons, bool novideo, uint32 *surface, int16 *soundbuff, int &soundbuffsize);
 	bool Load(const uint8 *data, int length, const Settings &s);
 
+	int SaveRamSize();
+	bool SaveRamLoad(const uint8 *data, int size);
+	bool SaveRamSave(uint8 *dest, int maxsize);
+
 public:
 	GFX gfx;
 	Memory memory;

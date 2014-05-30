@@ -15,8 +15,6 @@ public:
 
 	int32 Flush(int16 *SoundBuf, const int32 MaxSoundFrames);
 
-	void Init();
-	void Kill();
 	void SetMultiplier(double multiplier);
 	bool SetRate(uint32 rate);
 

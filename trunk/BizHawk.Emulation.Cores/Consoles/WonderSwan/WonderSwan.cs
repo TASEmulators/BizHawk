@@ -65,6 +65,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 				CoreComm.VsyncNum = 3072000; // master CPU clock, also pixel clock
 				CoreComm.VsyncDen = (144 + 15) * (224 + 32); // 144 vislines, 15 vblank lines; 224 vispixels, 32 hblank pixels
+
+				saverambuff = new byte[BizSwan.bizswan_saveramsize(Core)];
 			}
 			catch
 			{
@@ -101,6 +103,15 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				LagCount++;
 		}
 
+		public CoreComm CoreComm { get; private set; }
+
+		public void ResetCounters()
+		{
+			Frame = 0;
+			IsLagFrame = false;
+			LagCount = 0;
+		}
+
 		IntPtr Core;
 
 		public int Frame { get; private set; }
@@ -114,39 +125,33 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		#region SaveRam
 
+		byte[] saverambuff;
+
 		public byte[] ReadSaveRam()
 		{
-			return new byte[0];
+			if (!BizSwan.bizswan_saveramsave(Core, saverambuff, saverambuff.Length))
+				throw new InvalidOperationException("bizswan_saveramsave() returned false!");
+			return saverambuff;
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
-
+			if (!BizSwan.bizswan_saveramload(Core, data, data.Length))
+				throw new InvalidOperationException("bizswan_saveramload() returned false!");
 		}
 
 		public void ClearSaveRam()
 		{
-
+			throw new InvalidOperationException("A new core starts with a clear saveram.  Instantiate a new core if you want this.");
 		}
 
 		public bool SaveRamModified
 		{
-			get
-			{
-				return false;
-			}
-			set
-			{
-
-			}
+			get { return BizSwan.bizswan_saveramsize(Core) > 0; }
+			set { throw new InvalidOperationException(); }
 		}
 
 		#endregion
-
-		public void ResetCounters()
-		{
-			throw new NotImplementedException();
-		}
 
 		#region Savestates
 
@@ -177,8 +182,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		}
 
 		#endregion
-
-		public CoreComm CoreComm { get; private set; }
 
 		#region Debugging
 

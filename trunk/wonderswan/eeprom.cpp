@@ -24,8 +24,6 @@
 
 namespace MDFN_IEN_WSWAN
 {
-	//uint8 wsEEPROM[2048];
-	//static uint8 iEEPROM[0x400];
 	static const uint8 iEEPROM_Init[0x400] = 
 	{
 		255,255,255,255,255,255,192,255,0,0,0,0,

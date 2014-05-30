@@ -126,11 +126,6 @@ namespace MDFN_IEN_WSWAN
 		SetupEA();
 	}
 
-	void V30MZ::init()
-	{
-
-	}
-
 	void V30MZ::reset()
 	{
 		const BREGS reg_name[8] = { AL, CL, DL, BL, AH, CH, DH, BH };

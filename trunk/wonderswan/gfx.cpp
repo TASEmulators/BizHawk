@@ -26,14 +26,11 @@
 namespace MDFN_IEN_WSWAN
 {
 	GFX::GFX()
+		:LayerEnabled(7) // 1 = bg, 2 = fg, 4 = sprite
 	{
 		SetPixelFormat();
 	}
 
-	void GFX::Init()
-	{
-		LayerEnabled = 7; // BG, FG, sprites
-	}
 
 	void GFX::PaletteRAMWrite(uint32 ws_offset, uint8 data)
 	{

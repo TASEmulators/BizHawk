@@ -23,14 +23,6 @@
 
 namespace MDFN_IEN_WSWAN
 {
-
-	/*
-	static uint64 CurrentTime;
-	static uint32 ClockCycleCounter;
-	static uint8 wsCA15;
-	static uint8 Command, Data;
-	*/
-
 	void RTC::Write(uint32 A, uint8 V)
 	{
 		switch(A)

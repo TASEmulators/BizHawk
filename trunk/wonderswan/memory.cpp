@@ -289,42 +289,13 @@ namespace MDFN_IEN_WSWAN
 		}
 	}
 	
-	/*
-	void Memory::Kill()
-	{
-		if((sram_size || eeprom_size) && !SkipSL)
-		{
-			
-			std::vector<PtrLengthPair> EvilRams;
-
-			if(eeprom_size)
-			EvilRams.push_back(PtrLengthPair(wsEEPROM, eeprom_size));
-
-			if(sram_size)
-			EvilRams.push_back(PtrLengthPair(wsSRAM, sram_size));
-
-			MDFN_DumpToFile(MDFN_MakeFName(MDFNMKF_SAV, 0, "sav").c_str(), 6, EvilRams);
-			
-		}
-
-		if(wsSRAM)
-		{
-			free(wsSRAM);
-			wsSRAM = NULL;
-		}
-	}
-	*/
-
-	void Memory::Init(bool SkipSaveLoad, const Settings &settings)
+	void Memory::Init(const Settings &settings)
 	{
 		char tmpname[17];
 		std::memcpy(tmpname, settings.name, 16);
 		tmpname[16] = 0;
 
-
 		language = settings.language;
-		SkipSL = SkipSaveLoad;
-
 
 		// WSwan_EEPROMInit() will also clear wsEEPROM
 		sys->eeprom.Init(tmpname, settings.byear, settings.bmonth, settings.bday, settings.sex, settings.blood);
@@ -334,28 +305,6 @@ namespace MDFN_IEN_WSWAN
 			wsSRAM = (uint8*)malloc(sram_size);
 			memset(wsSRAM, 0, sram_size);
 		}
-
-		/* TODO: SAVERAM
-		if((sram_size || eeprom_size) && !SkipSL)
-		{
-		gzFile savegame_fp;
-
-		savegame_fp = gzopen(MDFN_MakeFName(MDFNMKF_SAV, 0, "sav").c_str(), "rb");
-		if(savegame_fp)
-		{
-		if(eeprom_size)
-		gzread(savegame_fp, wsEEPROM, eeprom_size);
-		if(sram_size)
-		gzread(savegame_fp, wsSRAM, sram_size);
-		gzclose(savegame_fp);
-		}
-		}
-		*/
-
-		//MDFNMP_AddRAM(wsRAMSize, 0x00000, wsRAM); // 65536
-
-		//if(sram_size)
-		// MDFNMP_AddRAM(sram_size, 0x10000, wsSRAM);
 	}
 
 	void Memory::Reset()
