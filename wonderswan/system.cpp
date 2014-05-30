@@ -68,7 +68,6 @@ namespace MDFN_IEN_WSWAN
 
 	void System::Advance(uint16 buttons, bool novideo, uint32 *surface, int16 *soundbuff, int &soundbuffsize)
 	{
-
 		memory.WSButtonStatus = buttons;
 		while (!gfx.ExecuteLine(surface, novideo))
 		{
@@ -80,7 +79,6 @@ namespace MDFN_IEN_WSWAN
 		// how is this OK to reset?  it's only used by the sound code, so once the sound for the frame has
 		// been collected, it's OK to zero.  indeed, it should be done as there's no rollover protection
 		cpu.timestamp = 0;
-
 	}
 
 	// Source: http://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
@@ -198,12 +196,9 @@ namespace MDFN_IEN_WSWAN
 		//MDFNMP_Init(16384, (1 << 20) / 1024);
 
 
-		// TODO: control WSC setting
-
 		memory.Init(settings);
+		gfx.Init(settings.color);
 		rtc.Init(settings.initialtime, settings.userealtime);
-
-		//MDFNGameInfo->fps = (uint32)((uint64)3072000 * 65536 * 256 / (159*256));
 
 		gfx.MakeTiles();
 
@@ -269,10 +264,6 @@ namespace MDFN_IEN_WSWAN
 
 		return true;
 	}
-
-
-
-
 
 	EXPORT System *bizswan_new()
 	{

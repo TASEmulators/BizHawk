@@ -137,7 +137,7 @@ namespace MDFN_IEN_WSWAN
 		case 0x14: return(LCDControl);
 		case 0x15: return(LCDIcons);
 		case 0x60: return(VideoMode);
-		case 0xa0: return(sys->wsc ? 0x87 : 0x86);
+		case 0xa0: return(wsc ? 0x87 : 0x86);
 		case 0xa2: return(BTimerControl);
 		case 0xa4: return((HBTimerPeriod >> 0) & 0xFF);
 		case 0xa5: return((HBTimerPeriod >> 8) & 0xFF);
@@ -549,6 +549,10 @@ namespace MDFN_IEN_WSWAN
 		}
 	}
 
+	void GFX::Init(bool color)
+	{
+		wsc = color;
+	}
 
 	void GFX::Reset()
 	{

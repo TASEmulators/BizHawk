@@ -112,9 +112,6 @@
     <None Include="..\start.inc">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="..\v30mz-ea.inc">
-      <Filter>Source Files</Filter>
-    </None>
     <None Include="..\v30mz-modrm.inc">
       <Filter>Source Files</Filter>
     </None>

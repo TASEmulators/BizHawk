@@ -50,8 +50,6 @@ private:
 
 	bool language;
 
-	bool wsc; // mono / color
-
 public:
 	System *sys;
 private:
