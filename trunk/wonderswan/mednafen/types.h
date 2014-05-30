@@ -195,6 +195,6 @@ typedef unsigned char   Boolean; /* 0 or 1 */
  #error "Define MSB_FIRST or LSB_FIRST!"
 #endif
 
-#include "error.h"
+//#include "error.h"
 
 #endif

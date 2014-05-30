@@ -260,9 +260,9 @@ namespace MDFN_IEN_WSWAN
 			int ch = (A - 0x80) >> 1;
 
 			if(A & 1)
-				return(period[ch] >> 8);
+				return period[ch] >> 8;
 			else
-				return(period[ch]);
+				return (uint8)period[ch];
 		}
 		else if(A >= 0x88 && A <= 0x8B)
 			return(volume[A - 0x88]);
@@ -320,7 +320,7 @@ namespace MDFN_IEN_WSWAN
 			sbuf[i]->bass_freq(20);
 		}
 
-		double eff_volume = 1.0 / 4;
+		double eff_volume = 0.1; //TOOLOUD  1.0 / 4;
 
 		WaveSynth.volume(eff_volume);
 		NoiseSynth.volume(eff_volume);

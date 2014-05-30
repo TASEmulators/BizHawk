@@ -30,12 +30,12 @@ public:
 	static void* operator new(std::size_t size);
 
 	void Reset();
-	void Advance(uint16 buttons, bool novideo, uint32 *surface, int16 *soundbuff, int &soundbuffsize);
+	bool Advance(uint16 buttons, bool novideo, uint32 *surface, int16 *soundbuff, int &soundbuffsize);
 	bool Load(const uint8 *data, int length, const SyncSettings &s);
 
-	int SaveRamSize();
+	int SaveRamSize() const;
 	bool SaveRamLoad(const uint8 *data, int size);
-	bool SaveRamSave(uint8 *dest, int maxsize);
+	bool SaveRamSave(uint8 *dest, int maxsize) const;
 
 public:
 	GFX gfx;
@@ -45,6 +45,8 @@ public:
 	Sound sound;
 	V30MZ cpu;
 	Interrupt interrupt;
+	
+	bool rotate; // rotate screen and controls left 90
 };
 
 struct SyncSettings
@@ -56,7 +58,6 @@ struct SyncSettings
 	uint8 language; // 0 = J, 1 = E; only affects "Digimon Tamers - Battle Spirit"
 	uint8 sex; // sex, 1 = male, 2 = female
 	uint8 blood; // 1 = a, 2 = b, 3 = o, 4 = ab
-	bool rotateinput; // true to rotate input and dpads,  sync setting because of this
 	bool color; // true if wonderswan is in color mode
 	bool userealtime; // true to use the system's actual clock; false to use an emulation pegged clock
 	uint64 initialtime; // when userealtime is false, the initial time in unix format

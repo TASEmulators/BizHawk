@@ -26,10 +26,13 @@ namespace MDFN_IEN_WSWAN
 	static void GMTime(uint64 ticks, tm &time)
 	{
 		time_t t = ticks;
-		#ifdef __GNUC__
-		gmtime_r(&t, &time);
-		#elif defined _MSC_VER
+		#if defined _MSC_VER
 		gmtime_s(&time, &t);
+		#elif defined __MINGW32__
+		tm *tmp = gmtime(&t);
+		time = *tmp;		
+		#elif defined __GNUC__
+		gmtime_r(&t, &time);
 		#endif
 	}
 
@@ -58,7 +61,7 @@ namespace MDFN_IEN_WSWAN
 			{
 				tm newtime;
 				uint64 now = userealtime ? time(0) : CurrentTime;
-				GMTime(CurrentTime, newtime);
+				GMTime(now, newtime);
 
 				switch(wsCA15)
 				{

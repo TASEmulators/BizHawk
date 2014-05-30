@@ -54,20 +54,23 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 					sex = BizSwan.Gender.Male,
 					blood = BizSwan.Bloodtype.A,
 					language = BizSwan.Language.Japanese,
-					rotateinput = false, // TODO
 					bday = 5,
 					bmonth = 12,
 					byear = 1968
 				};
 				ss.SetName("LaForge");
 
-				if (!BizSwan.bizswan_load(Core, rom, rom.Length, ref ss))
+				bool rotate = false;
+
+				if (!BizSwan.bizswan_load(Core, rom, rom.Length, ref ss, ref rotate))
 					throw new InvalidOperationException("bizswan_load() returned FALSE!");
 
 				CoreComm.VsyncNum = 3072000; // master CPU clock, also pixel clock
 				CoreComm.VsyncDen = (144 + 15) * (224 + 32); // 144 vislines, 15 vblank lines; 224 vispixels, 32 hblank pixels
 
 				saverambuff = new byte[BizSwan.bizswan_saveramsize(Core)];
+
+				InitVideo(rotate);
 			}
 			catch
 			{
@@ -94,12 +97,11 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				BizSwan.bizswan_reset(Core);
 
 			int soundbuffsize = sbuff.Length;
-			BizSwan.bizswan_advance(Core, GetButtons(), !render, vbuff, sbuff, ref soundbuffsize);
+			IsLagFrame = BizSwan.bizswan_advance(Core, GetButtons(), !render, vbuff, sbuff, ref soundbuffsize);
 			if (soundbuffsize == sbuff.Length)
 				throw new Exception();
 			sbuffcontains = soundbuffsize;
 
-			IsLagFrame = false; // TODO
 			if (IsLagFrame)
 				LagCount++;
 		}
@@ -226,6 +228,20 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public IVideoProvider VideoProvider { get { return this; } }
 
+		void InitVideo(bool rotate)
+		{
+			if (rotate)
+			{
+				BufferWidth = 144;
+				BufferHeight = 224;
+			}
+			else
+			{
+				BufferWidth = 224;
+				BufferHeight = 144;
+			}
+		}
+
 		private int[] vbuff = new int[224 * 144];
 
 		public int[] GetVideoBuffer()
@@ -233,10 +249,10 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			return vbuff;
 		}
 
-		public int VirtualWidth { get { return 224; } }
-		public int VirtualHeight { get { return 144; } }
-		public int BufferWidth { get { return 224; } }
-		public int BufferHeight { get { return 144; } }
+		public int VirtualWidth { get { return BufferWidth; } }
+		public int VirtualHeight { get { return BufferHeight; } }
+		public int BufferWidth { get; private set; }
+		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
 
 		#endregion
