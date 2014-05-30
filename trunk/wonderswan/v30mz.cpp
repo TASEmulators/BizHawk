@@ -957,7 +957,7 @@ namespace MDFN_IEN_WSWAN
 	/*****************************************************************************/
 
 
-	unsigned V30MZ::get_reg(int regnum)
+	unsigned V30MZ::get_reg(int regnum) const
 	{
 		switch( regnum )
 		{

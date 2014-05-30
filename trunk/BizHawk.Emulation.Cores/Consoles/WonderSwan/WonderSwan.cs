@@ -7,6 +7,7 @@ using BizHawk.Emulation.Common;
 using System.IO;
 using System.ComponentModel;
 using Newtonsoft.Json;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
@@ -68,6 +69,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 				InitVideo(rotate);
 				PutSettings(_Settings);
+				SetMemoryDomains();
 			}
 			catch
 			{
@@ -185,14 +187,52 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		#region Debugging
 
-		public MemoryDomainList MemoryDomains
+		unsafe void SetMemoryDomains()
 		{
-			get { throw new NotImplementedException(); }
+			var mmd = new List<MemoryDomain>();
+			for (int i = 0; ; i++)
+			{
+				IntPtr name;
+				int size;
+				IntPtr data;
+				if (!BizSwan.bizswan_getmemoryarea(Core, i, out name, out size, out data))
+					break;
+				if (size == 0)
+					continue;
+				string sname = Marshal.PtrToStringAnsi(name);
+				byte *p = (byte*)data;
+				mmd.Add(new MemoryDomain(
+					sname,
+					size,
+					MemoryDomain.Endian.Little,
+					delegate(int addr)
+					{
+						if (addr < 0 || addr >= size)
+							throw new ArgumentOutOfRangeException();
+						return p[addr];
+					},
+					delegate(int addr, byte value)
+					{
+						if (addr < 0 || addr >= size)
+							throw new ArgumentOutOfRangeException();
+						p[addr] = value;
+					}));
+			}
+			MemoryDomains = new MemoryDomainList(mmd, 0);
 		}
+
+		public MemoryDomainList MemoryDomains { get; private set; }
 
 		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
-			throw new NotImplementedException();
+			var ret = new Dictionary<string, int>();
+			for (int i = (int)BizSwan.NecRegsMin; i <= (int)BizSwan.NecRegsMax; i++)
+			{
+				BizSwan.NecRegs en = (BizSwan.NecRegs)i;
+				uint val = BizSwan.bizswan_getnecreg(Core, en);
+				ret[Enum.GetName(typeof(BizSwan.NecRegs), en)] = (int)val;
+			}
+			return ret;
 		}
 
 		#endregion

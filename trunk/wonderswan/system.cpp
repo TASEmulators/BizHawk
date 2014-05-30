@@ -274,6 +274,26 @@ namespace MDFN_IEN_WSWAN
 		gfx.SetLayerEnableMask(s.LayerMask);
 	}
 
+	uint32 System::GetNECReg(int which) const
+	{
+		return cpu.get_reg(which);
+	}
+
+	bool System::GetMemoryArea(int index, const char *&name, int &size, uint8 *&data)
+	{
+		bool ret = true;
+		switch (index)
+		{
+		case 0: name = "RAM"; size = 65536; data = memory.wsRAM; break;
+		case 1: name = "ROM"; size = memory.rom_size; data = memory.wsCartROM; break;
+		case 2: name = "SRAM"; size = memory.sram_size; data = memory.wsSRAM; break;
+		case 3: name = "iEEPROM"; size = eeprom.ieeprom_size; data = eeprom.iEEPROM; break;
+		case 4: name = "EEPROM"; size = eeprom.eeprom_size; data = eeprom.wsEEPROM; break;
+		default: ret = false; break;
+		}
+		return ret;
+	}
+
 
 	EXPORT System *bizswan_new()
 	{
@@ -320,6 +340,16 @@ namespace MDFN_IEN_WSWAN
 	EXPORT void bizswan_putsettings(System *s, const Settings *settings)
 	{
 		s->PutSettings(*settings);
+	}
+
+	EXPORT uint32 bizswan_getnecreg(System *s, int which)
+	{
+		return s->GetNECReg(which);
+	}
+
+	EXPORT int bizswan_getmemoryarea(System *s, int index, const char **name, int *size, uint8 **data)
+	{
+		return s->GetMemoryArea(index, *name, *size, *data);
 	}
 
 }

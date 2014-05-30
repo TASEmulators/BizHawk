@@ -44,7 +44,7 @@ public:
 
 	void execute(int cycles);
 	void set_reg(int, unsigned);
-	unsigned get_reg(int regnum);
+	unsigned get_reg(int regnum) const;
 	void reset();
 
 	void interrupt(uint32 vector, bool IgnoreIF = FALSE);
@@ -81,10 +81,6 @@ private:
 	} Mod_RM;
 
 private:
-	//void (*cpu_writemem20)(uint32,uint8);// = NULL;
-	//uint8 (*cpu_readport)(uint32);// = NULL;
-	//void (*cpu_writeport)(uint32, uint8);// = NULL;
-	//uint8 (*cpu_readmem20)(uint32);// = NULL;
 
 private:
 	void nec_interrupt(unsigned int_num);
@@ -152,13 +148,6 @@ enum {
 	NEC_PC=1, NEC_AW, NEC_CW, NEC_DW, NEC_BW, NEC_SP, NEC_BP, NEC_IX, NEC_IY,
 	NEC_FLAGS, NEC_DS1, NEC_PS, NEC_SS, NEC_DS0
 };
-
-/* Public variables */
-//extern int v30mz_ICount;
-//extern uint32 v30mz_timestamp;
-
-
-/* Public functions */
 
 }
 
