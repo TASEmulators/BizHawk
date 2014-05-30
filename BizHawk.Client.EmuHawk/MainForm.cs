@@ -1410,6 +1410,7 @@ namespace BizHawk.Client.EmuHawk
 				case "N64": str = "Nintendo 64"; break;
 				case "SAT": str = "Saturn"; break;
 				case "DGB": str = "Game Boy Link"; break;
+				case "WSWAN": str = "WonderSwan"; break;
 			}
 
 			if (VersionInfo.INTERIM)
