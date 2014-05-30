@@ -85,6 +85,15 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern bool bizswan_saveramsave(IntPtr core, byte[] data, int maxsize);
 
+		/// <summary>
+		/// put non-sync settings, can be done at any time
+		/// </summary>
+		/// <param name="core"></param>
+		/// <param name="settings"></param>
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern void bizswan_putsettings(IntPtr core, [In] ref Settings settings);
+
+
 		[Flags]
 		public enum Buttons : ushort
 		{
@@ -101,13 +110,13 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			B = 0x0400,
 		}
 
-		public enum Language : byte
+		public enum Language : uint
 		{
 			Japanese = 0,
 			English = 1
 		}
 
-		public enum Bloodtype : byte
+		public enum Bloodtype : uint
 		{
 			A = 1,
 			B = 2,
@@ -115,7 +124,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			AB = 4
 		}
 
-		public enum Gender : byte
+		public enum Gender : uint
 		{
 			Male = 1,
 			Female = 2
@@ -124,19 +133,23 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		public struct SyncSettings
 		{
-			public ushort byear;
-			public byte bmonth;
-			public byte bday;
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 17)]
-			public byte[] name;
+			public ulong initialtime; // inital time in unix format; only used when userealtime = false
+
+			public uint byear;
+			public uint bmonth;
+			public uint bday;
+
+			[MarshalAs(UnmanagedType.Bool)]
+			public bool color; // true for color system
+			[MarshalAs(UnmanagedType.Bool)]
+			public bool userealtime; // true for use real real RTC instead of emulation pegged time
+
 			public Language language;
 			public Gender sex;
 			public Bloodtype blood;
-			[MarshalAs(UnmanagedType.U1)]
-			public bool color; // true for color system
-			[MarshalAs(UnmanagedType.U1)]
-			public bool userealtime; // true for use real real RTC instead of emulation pegged time
-			public ulong initialtime; // inital time in unix format; only used when userealtime = false
+
+			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 17)]
+			public byte[] name;
 
 			public void SetName(string newname)
 			{
@@ -144,6 +157,20 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				name = new byte[17];
 				Buffer.BlockCopy(data, 0, name, 0, Math.Min(data.Length, name.Length));
 			}
+		}
+
+		[Flags]
+		public enum LayerFlags : uint
+		{
+			BG = 1,
+			FG = 2,
+			Sprite = 4
+		}
+
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		public struct Settings
+		{
+			public LayerFlags LayerMask; // 1 = show
 		}
 	}
 }

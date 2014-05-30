@@ -105,13 +105,13 @@ namespace MDFN_IEN_WSWAN
 		}
 	}
 
-	INLINE void V30MZ::i_real_pushf()
+	inline void V30MZ::i_real_pushf()
 	{
 		PUSH( CompressFlags() ); 
 		CLK(2);
 	}
 
-	INLINE void V30MZ::i_real_popf()
+	inline void V30MZ::i_real_popf()
 	{
 		uint32 tmp; 
 		POP(tmp); 
@@ -230,14 +230,14 @@ namespace MDFN_IEN_WSWAN
 	/*                             OPCODES                                      */
 	/****************************************************************************/
 
-	INLINE void V30MZ::i_real_insb()
+	inline void V30MZ::i_real_insb()
 	{
 		PutMemB(DS1,I.regs.w[IY], read_port(I.regs.w[DW])); 
 		I.regs.w[IY]+= -2 * I.DF + 1; 
 		CLK(6); 
 	}
 
-	INLINE void V30MZ::i_real_insw()
+	inline void V30MZ::i_real_insw()
 	{ 
 		PutMemB(DS1,I.regs.w[IY],read_port(I.regs.w[DW])); 
 		PutMemB(DS1,(I.regs.w[IY]+1)&0xffff,read_port((I.regs.w[DW]+1)&0xffff)); 
@@ -245,14 +245,14 @@ namespace MDFN_IEN_WSWAN
 		CLK(6); 
 	}
 
-	INLINE void V30MZ::i_real_outsb()
+	inline void V30MZ::i_real_outsb()
 	{ 
 		write_port(I.regs.w[DW],GetMemB(DS0,I.regs.w[IX])); 
 		I.regs.w[IX]+= -2 * I.DF + 1; 
 		CLK(7); 
 	} 
 
-	INLINE void V30MZ::i_real_outsw()
+	inline void V30MZ::i_real_outsw()
 	{
 		write_port(I.regs.w[DW],GetMemB(DS0,I.regs.w[IX])); 
 		write_port((I.regs.w[DW]+1)&0xffff,GetMemB(DS0,(I.regs.w[IX]+1)&0xffff)); 
@@ -260,7 +260,7 @@ namespace MDFN_IEN_WSWAN
 		CLK(7); 
 	}
 
-	INLINE void V30MZ::i_real_movsb() 
+	inline void V30MZ::i_real_movsb() 
 	{ 
 		uint32 tmp = GetMemB(DS0,I.regs.w[IX]); 
 		PutMemB(DS1,I.regs.w[IY], tmp); 
@@ -269,51 +269,51 @@ namespace MDFN_IEN_WSWAN
 		CLK(5); 
 	}
 
-	INLINE void V30MZ::i_real_movsw() 
+	inline void V30MZ::i_real_movsw() 
 	{
 		uint32 tmp = GetMemW(DS0,I.regs.w[IX]); PutMemW(DS1,I.regs.w[IY], tmp); I.regs.w[IY] += -4 * I.DF + 2; 
 		I.regs.w[IX] += -4 * I.DF + 2; CLK(5); 
 	}
 
-	INLINE void V30MZ::i_real_cmpsb() 
+	inline void V30MZ::i_real_cmpsb() 
 	{
 		uint32 src = GetMemB(DS1, I.regs.w[IY]); uint32 dst = GetMemB(DS0, I.regs.w[IX]); SUBB; I.regs.w[IY] += -2 * I.DF + 1; 
 		I.regs.w[IX] += -2 * I.DF + 1; CLK(6); 
 	}
 
-	INLINE void V30MZ::i_real_cmpsw() 
+	inline void V30MZ::i_real_cmpsw() 
 	{
 		uint32 src = GetMemW(DS1, I.regs.w[IY]); uint32 dst = GetMemW(DS0, I.regs.w[IX]); SUBW; I.regs.w[IY] += -4 * I.DF + 2; 
 		I.regs.w[IX] += -4 * I.DF + 2; CLK(6); 
 	}
 
-	INLINE void V30MZ::i_real_stosb() 
+	inline void V30MZ::i_real_stosb() 
 	{
 		PutMemB(DS1,I.regs.w[IY],I.regs.b[AL]);       I.regs.w[IY] += -2 * I.DF + 1; CLK(3);  
 	}
 
-	INLINE void V30MZ::i_real_stosw() 
+	inline void V30MZ::i_real_stosw() 
 	{
 		PutMemW(DS1,I.regs.w[IY],I.regs.w[AW]);       I.regs.w[IY] += -4 * I.DF + 2; CLK(3);
 	}
 
-	INLINE void V30MZ::i_real_lodsb() 
+	inline void V30MZ::i_real_lodsb() 
 	{
 		I.regs.b[AL] = GetMemB(DS0,I.regs.w[IX]); I.regs.w[IX] += -2 * I.DF + 1; CLK(3); 
 	}
 
-	INLINE void V30MZ::i_real_lodsw() 
+	inline void V30MZ::i_real_lodsw() 
 	{
 		I.regs.w[AW] = GetMemW(DS0,I.regs.w[IX]); I.regs.w[IX] += -4 * I.DF + 2; CLK(3); 
 	}
 
-	INLINE void V30MZ::i_real_scasb() 
+	inline void V30MZ::i_real_scasb() 
 	{ 
 		uint32 src = GetMemB(DS1, I.regs.w[IY]);      uint32 dst = I.regs.b[AL]; SUBB;
 		I.regs.w[IY] += -2 * I.DF + 1; CLK(4); 
 	}
 
-	INLINE void V30MZ::i_real_scasw() 
+	inline void V30MZ::i_real_scasw() 
 	{ 
 		uint32 src = GetMemW(DS1, I.regs.w[IY]);      uint32 dst = I.regs.w[AW]; SUBW; 
 		I.regs.w[IY] += -4 * I.DF + 2; CLK(4); 

@@ -97,7 +97,7 @@ namespace MDFN_IEN_WSWAN
 
 	// Source: http://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
 	// Rounds up to the nearest power of 2.
-	static INLINE uint32 round_up_pow2(uint32 v)
+	static inline uint32 round_up_pow2(uint32 v)
 	{
 		v--;
 		v |= v >> 1;
@@ -200,7 +200,6 @@ namespace MDFN_IEN_WSWAN
 
 		rotate = header[6] & 1;
 
-
 		memory.Init(settings);
 		gfx.Init(settings.color);
 		rtc.Init(settings.initialtime, settings.userealtime);
@@ -270,6 +269,12 @@ namespace MDFN_IEN_WSWAN
 		return true;
 	}
 
+	void System::PutSettings(const Settings &s)
+	{
+		gfx.SetLayerEnableMask(s.LayerMask);
+	}
+
+
 	EXPORT System *bizswan_new()
 	{
 		return new System();
@@ -310,6 +315,11 @@ namespace MDFN_IEN_WSWAN
 	EXPORT int bizswan_saveramsave(System *s, uint8 *dest, int maxsize)
 	{
 		return s->SaveRamSave(dest, maxsize);
+	}
+
+	EXPORT void bizswan_putsettings(System *s, const Settings *settings)
+	{
+		s->PutSettings(*settings);
 	}
 
 }

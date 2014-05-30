@@ -5,6 +5,8 @@ using System.Text;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using System.IO;
+using System.ComponentModel;
+using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
@@ -40,25 +42,19 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		#endregion
 
-		public WonderSwan(CoreComm comm, byte[] rom, bool deterministicEmulation)
+		public WonderSwan(CoreComm comm, byte[] rom, bool deterministicEmulation, object Settings, object SyncSettings)
 		{
-			this.CoreComm = comm;
+			CoreComm = comm;
+			_Settings = (Settings)Settings ?? new Settings();
+			_SyncSettings = (SyncSettings)SyncSettings ?? new SyncSettings();
+			
 			DeterministicEmulation = deterministicEmulation; // when true, remember to force the RTC flag!
 			Core = BizSwan.bizswan_new();
 			if (Core == IntPtr.Zero)
 				throw new InvalidOperationException("bizswan_new() returned NULL!");
 			try
 			{
-				var ss = new BizSwan.SyncSettings
-				{
-					sex = BizSwan.Gender.Male,
-					blood = BizSwan.Bloodtype.A,
-					language = BizSwan.Language.Japanese,
-					bday = 5,
-					bmonth = 12,
-					byear = 1968
-				};
-				ss.SetName("LaForge");
+				var ss = _SyncSettings.GetNativeSettings();
 
 				bool rotate = false;
 
@@ -71,6 +67,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				saverambuff = new byte[BizSwan.bizswan_saveramsize(Core)];
 
 				InitVideo(rotate);
+				PutSettings(_Settings);
 			}
 			catch
 			{
@@ -202,24 +199,133 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		#region Settings
 
+		Settings _Settings;
+		SyncSettings _SyncSettings;
+
+		public class Settings
+		{
+			[Description("True to display the selected layer.")]
+			[DefaultValue(true)]
+			public bool EnableBG { get; set; }
+			[Description("True to display the selected layer.")]
+			[DefaultValue(true)]
+			public bool EnableFG { get; set; }
+			[Description("True to display the selected layer.")]
+			[DefaultValue(true)]
+			public bool EnableSprites { get; set; }
+
+			public BizSwan.Settings GetNativeSettings()
+			{
+				var ret = new BizSwan.Settings();
+				if (EnableBG) ret.LayerMask |= BizSwan.LayerFlags.BG;
+				if (EnableFG) ret.LayerMask |= BizSwan.LayerFlags.FG;
+				if (EnableSprites) ret.LayerMask |= BizSwan.LayerFlags.Sprite;
+				return ret;
+			}
+
+			public Settings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+
+			public Settings Clone()
+			{
+				return (Settings)MemberwiseClone();
+			}
+		}
+
+		public class SyncSettings
+		{
+			[Description("Initial time of emulation.  Only relevant when UseRealTime is false.")]
+			[DefaultValue(typeof(DateTime), "2010-01-01")]
+			public DateTime InitialTime { get; set; }
+			
+			[Description("Your birthdate.  Stored in EEPROM and used by some games.")]
+			[DefaultValue(typeof(DateTime), "1968-05-13")]
+			public DateTime BirthDate { get; set; }
+
+			[Description("True to emulate a color system.")]
+			[DefaultValue(true)]
+			public bool Color { get; set; }
+
+			[Description("If true, RTC clock will be based off of real time instead of emulated time.  Ignored (set to false) when recording a movie.")]
+			[DefaultValue(false)]
+			public bool UseRealTime { get; set; }
+
+			[Description("Your gender.  Stored in EEPROM and used by some games.")]
+			[DefaultValue(BizSwan.Gender.Female)]
+			public BizSwan.Gender Gender { get; set; }
+
+			[Description("Language to play games in.  Most games ignore this.")]
+			[DefaultValue(BizSwan.Language.Japanese)]
+			public BizSwan.Language Language { get; set; }
+
+			[Description("Your blood type.  Stored in EEPROM and used by some games.")]
+			[DefaultValue(BizSwan.Bloodtype.AB)]
+			public BizSwan.Bloodtype BloodType { get; set; }
+
+			[Description("Your name.  Stored in EEPROM and used by some games.  Maximum of 16 characters")]
+			[DefaultValue("Lady Ashelia")]
+			public string Name { get; set; }
+
+			public BizSwan.SyncSettings GetNativeSettings()
+			{
+				var ret = new BizSwan.SyncSettings
+				{
+					color = Color,
+					userealtime = UseRealTime,
+					sex = Gender,
+					language = Language,
+					blood = BloodType
+				};
+				ret.SetName(Name);
+				ret.bday = (uint)BirthDate.Day;
+				ret.bmonth = (uint)BirthDate.Month;
+				ret.byear = (uint)BirthDate.Year;
+				ret.initialtime = (ulong)((InitialTime - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds);
+				return ret;
+			}
+
+			public SyncSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+
+			public SyncSettings Clone()
+			{
+				return (SyncSettings)MemberwiseClone();
+			}
+
+			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
+			{
+				return x != y;
+			}
+		}
+
 		public object GetSettings()
 		{
-			return null;
+			return _Settings.Clone();
 		}
 
 		public object GetSyncSettings()
 		{
-			return null;
+			return _SyncSettings.Clone();
 		}
 
 		public bool PutSettings(object o)
 		{
+			_Settings = (Settings)o;
+			var native = _Settings.GetNativeSettings();
+			BizSwan.bizswan_putsettings(Core, ref native);
 			return false;
 		}
 
 		public bool PutSyncSettings(object o)
 		{
-			return false;
+			var newsettings = (SyncSettings)o;
+			bool ret = SyncSettings.NeedsReboot(newsettings, _SyncSettings);
+			_SyncSettings = newsettings;
+			return ret;
 		}
 
 		#endregion
