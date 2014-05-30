@@ -7,7 +7,6 @@ namespace BizHawk.Client.Common
 	{
 		public static IEmulator Emulator;
 		public static CoreComm CoreComm;
-
 		public static Config Config;
 		public static GameInfo Game;
 		public static CheatCollection CheatList;
@@ -89,5 +88,20 @@ namespace BizHawk.Client.Common
 		// Input state which has been estine for game controller inputs are coalesce here
 		// This relies on a client specific implementation!
 		public static SimpleController ControllerInputCoalescer;
+
+		public static SystemInfo SystemInfo
+		{
+			get
+			{
+				switch(Global.Emulator.SystemId)
+				{ 
+					default:
+					case "NULL":
+						return SystemInfo.Null;
+					case "NES":
+						return SystemInfo.Nes;
+				}
+			}
+		}
 	}
 }
