@@ -75,6 +75,8 @@ namespace BizHawk.Client.Common
 						return "|.|............|............|............|............|";
 					case "SAT":
 						return "|.|.............|.............|";
+					case "WSWAN":
+						return "|....|....|...|";
 				}
 			}
 		}
@@ -175,6 +177,26 @@ namespace BizHawk.Client.Common
 			var input = new StringBuilder();
 
 			foreach (var t in MnemonicConstants.DGBMnemonic)
+			{
+				if (t.Item1 != null)
+				{
+					input.Append(IsBasePressed(t.Item1) ? t.Item2 : '.');
+				}
+				else
+				{
+					input.Append(t.Item2); // Separator
+				}
+			}
+
+			return input.ToString();
+		}
+
+		private string GetWonderSwanControllerAsMnemonic()
+		{
+			// |....|....|...|
+			var input = new StringBuilder();
+
+			foreach (var t in MnemonicConstants.WSMnemonic)
 			{
 				if (t.Item1 != null)
 				{
@@ -383,6 +405,10 @@ namespace BizHawk.Client.Common
 			else if (_controlType == "Dual Gameboy Controller")
 			{
 				return GetDualGameBoyControllerAsMnemonic();
+			}
+			else if (_controlType == "WonderSwan Controller")
+			{
+				return GetWonderSwanControllerAsMnemonic();
 			}
 			else if (_controlType == "Nintento 64 Controller")
 			{
