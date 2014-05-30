@@ -309,10 +309,6 @@ namespace MDFN_IEN_WSWAN
 			Update();
 	}
 
-	void Sound::Init()
-	{
-	}
-
 	Sound::Sound()
 	{
 		for(int i = 0; i < 2; i++)

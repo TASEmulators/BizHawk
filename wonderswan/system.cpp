@@ -29,53 +29,21 @@
 namespace MDFN_IEN_WSWAN
 {
 
+	// maybe change?
+	int Debug::puts ( const char * str )
+	{
+		return std::puts(str);
+	}
+	int Debug::printf ( const char * format, ... )
+	{
+		va_list args;
+		va_start(args, format);
+		int ret = vprintf(format, args);
+		va_end(args);
+		return ret;
+	}
+
 #include "start.inc"
-
-	typedef struct
-	{
-		const uint8 id;
-		const char *name;
-	} DLEntry;
-
-	static const DLEntry Developers[] =
-	{
-		{ 0x01, "Bandai" },
-		{ 0x02, "Taito" },
-		{ 0x03, "Tomy" },
-		{ 0x04, "Koei" },
-		{ 0x05, "Data East" },
-		{ 0x06, "Asmik" }, // Asmik Ace?
-		{ 0x07, "Media Entertainment" },
-		{ 0x08, "Nichibutsu" },
-		{ 0x0A, "Coconuts Japan" },
-		{ 0x0B, "Sammy" },
-		{ 0x0C, "Sunsoft" },
-		{ 0x0D, "Mebius" },
-		{ 0x0E, "Banpresto" },
-		{ 0x10, "Jaleco" },
-		{ 0x11, "Imagineer" },
-		{ 0x12, "Konami" },
-		{ 0x16, "Kobunsha" },
-		{ 0x17, "Bottom Up" },
-		{ 0x18, "Naxat" },	// Mechanic Arms?  Media Entertainment? Argh!
-		{ 0x19, "Sunrise" },
-		{ 0x1A, "Cyberfront" },
-		{ 0x1B, "Megahouse" },
-		{ 0x1D, "Interbec" },
-		{ 0x1E, "NAC" },
-		{ 0x1F, "Emotion" }, // Bandai Visual??
-		{ 0x20, "Athena" },
-		{ 0x21, "KID" },
-		{ 0x24, "Omega Micott" },
-		{ 0x25, "Upstar" },
-		{ 0x26, "Kadokawa/Megas" },
-		{ 0x27, "Cocktail Soft" },
-		{ 0x28, "Squaresoft" },
-		{ 0x2B, "TomCreate" },
-		{ 0x2D, "Namco" },
-		{ 0x2F, "Gust" },
-		{ 0x36, "Capcom" },
-	};
 
 	void System::Reset()
 	{
@@ -179,7 +147,7 @@ namespace MDFN_IEN_WSWAN
 		}
 
 		memory.sram_size = 0;
-		memory.eeprom_size = 0;
+		eeprom.eeprom_size = 0;
 
 		switch(header[5])
 		{
@@ -188,15 +156,15 @@ namespace MDFN_IEN_WSWAN
 		case 0x03: memory.sram_size = 16 * 65536; break;
 		case 0x04: memory.sram_size = 32 * 65536; break; // Dicing Knight!
 
-		case 0x10: memory.eeprom_size = 128; break;
-		case 0x20: memory.eeprom_size = 2*1024; break;
-		case 0x50: memory.eeprom_size = 1024; break;
+		case 0x10: eeprom.eeprom_size = 128; break;
+		case 0x20: eeprom.eeprom_size = 2*1024; break;
+		case 0x50: eeprom.eeprom_size = 1024; break;
 		}
 
 		//printf("%02x\n", header[5]);
 
-		if(memory.eeprom_size)
-			Debug::printf("EEPROM:  %d bytes\n", memory.eeprom_size);
+		if(eeprom.eeprom_size)
+			Debug::printf("EEPROM:  %d bytes\n", eeprom.eeprom_size);
 
 		if(memory.sram_size)
 			Debug::printf("Battery-backed RAM:  %d bytes\n", memory.sram_size);
@@ -229,17 +197,12 @@ namespace MDFN_IEN_WSWAN
 
 		//MDFNMP_Init(16384, (1 << 20) / 1024);
 
-		cpu.init();
 
 		// TODO: control WSC setting
-		// TODO: rip out skipsaveload code
 
-		memory.Init(false, settings);
+		memory.Init(settings);
 
-		gfx.Init();
 		//MDFNGameInfo->fps = (uint32)((uint64)3072000 * 65536 * 256 / (159*256));
-
-		sound.Init();
 
 		gfx.MakeTiles();
 
@@ -271,19 +234,43 @@ namespace MDFN_IEN_WSWAN
 	{
 	}
 
-	// maybe change?
-	int Debug::puts ( const char * str )
+	int System::SaveRamSize()
 	{
-		return std::puts(str);
+		return eeprom.ieeprom_size + eeprom.eeprom_size + memory.sram_size;
 	}
-	int Debug::printf ( const char * format, ... )
+	bool System::SaveRamLoad(const uint8 *data, int size)
 	{
-		va_list args;
-		va_start(args, format);
-		int ret = vprintf(format, args);
-		va_end(args);
-		return ret;
+		if (size != SaveRamSize())
+			return false;
+
+		#define LOAD(sz,ptr) { if (sz) { std::memcpy((ptr), data, (sz)); data += (sz); } }
+
+		LOAD(eeprom.ieeprom_size, eeprom.iEEPROM);
+		LOAD(eeprom.eeprom_size, eeprom.wsEEPROM);
+		LOAD(memory.sram_size, memory.wsSRAM);
+
+		#undef LOAD
+
+		return true;
 	}
+
+	bool System::SaveRamSave(uint8 *dest, int maxsize)
+	{
+		if (maxsize != SaveRamSize())
+			return false;
+
+		#define SAVE(sz,ptr) { if (sz) { std::memcpy(dest, (ptr), (sz)); dest += (sz); } }
+
+		SAVE(eeprom.ieeprom_size, eeprom.iEEPROM);
+		SAVE(eeprom.eeprom_size, eeprom.wsEEPROM);
+		SAVE(memory.sram_size, memory.wsSRAM);
+
+		#undef SAVE
+
+		return true;
+	}
+
+
 
 
 
@@ -310,6 +297,21 @@ namespace MDFN_IEN_WSWAN
 	EXPORT int bizswan_load(System *s, const uint8 *data, int length, const Settings *settings)
 	{
 		return s->Load(data, length, *settings);
+	}
+
+	EXPORT int bizswan_saveramsize(System *s)
+	{
+		return s->SaveRamSize();
+	}
+
+	EXPORT int bizswan_saveramload(System *s, const uint8 *data, int size)
+	{
+		return s->SaveRamLoad(data, size);
+	}
+
+	EXPORT int bizswan_saveramsave(System *s, uint8 *dest, int maxsize)
+	{
+		return s->SaveRamSave(dest, maxsize);
 	}
 
 }

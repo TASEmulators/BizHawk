@@ -16,11 +16,14 @@ public:
 	void Init(const char *Name, const uint16 BYear, const uint8 BMonth, const uint8 BDay, const uint8 Sex, const uint8 Blood);
 
 private:
-	uint8 wsEEPROM[2048];
-	uint8 iEEPROM[0x400];
 	uint8 iEEPROM_Command, EEPROM_Command;
 	uint16 iEEPROM_Address, EEPROM_Address;
+public:
 	uint32 eeprom_size;
+	uint8 iEEPROM[0x400];
+	uint8 wsEEPROM[2048];
+	
+	enum { ieeprom_size = 0x400 };
 
 public:
 	System *sys;

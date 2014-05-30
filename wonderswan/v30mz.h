@@ -46,7 +46,6 @@ public:
 	void set_reg(int, unsigned);
 	unsigned get_reg(int regnum);
 	void reset();
-	void init();
 
 	void interrupt(uint32 vector, bool IgnoreIF = FALSE);
 

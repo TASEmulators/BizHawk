@@ -20,7 +20,6 @@ public:
 	void Scanline(uint32 *target);
 	void SetPixelFormat();
 
-	void Init();
 	void Reset();
 	void Write(uint32 A, uint8 V);
 	uint8 Read(uint32 A);

@@ -13,8 +13,7 @@ public:
 	uint8 Read20(uint32);
 	void Write20(uint32 address,uint8 data);
 
-	void Init(bool SkipSaveLoad, const Settings &settings);
-	//void Kill();
+	void Init(const Settings &settings);
 
 	void CheckSoundDMA();
 	void Reset();
@@ -23,20 +22,16 @@ public:
 	uint32 GetRegister(const unsigned int id, char *special, const uint32 special_len);
 	void SetRegister(const unsigned int id, uint32 value);
 
-private:
-	bool SkipSL; // Skip save and load
-
 public:
 	uint8 wsRAM[65536];
 	uint8 *wsCartROM;
 	uint32 rom_size;
 	uint32 sram_size;
-	uint32 eeprom_size;
+	uint8 *wsSRAM; // = NULL;
 
 	uint16 WSButtonStatus; // bitfield of buttons, indeed
 
 private:
-	uint8 *wsSRAM; // = NULL;
 
 
 	uint8 ButtonWhich, ButtonReadLatch;
@@ -62,13 +57,6 @@ private:
 	void CheckDMA();
 
 };
-
-
-//extern uint8 wsRAM[65536];
-//extern uint8 *wsCartROM;
-//extern uint32 eeprom_size;
-//extern uint8 wsEEPROM[2048];
-
 
 enum
 {
