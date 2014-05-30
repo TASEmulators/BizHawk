@@ -93,6 +93,48 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern void bizswan_putsettings(IntPtr core, [In] ref Settings settings);
 
+		/// <summary>
+		/// get a memory area
+		/// </summary>
+		/// <param name="core"></param>
+		/// <param name="index">start at 0, increment until return is false</param>
+		/// <param name="name"></param>
+		/// <param name="size"></param>
+		/// <param name="data"></param>
+		/// <returns></returns>
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern bool bizswan_getmemoryarea(IntPtr core, int index, out IntPtr name, out int size, out IntPtr data);
+
+
+		/// <summary>
+		/// return a CPU register
+		/// </summary>
+		/// <param name="core"></param>
+		/// <param name="which"></param>
+		/// <returns></returns>
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern uint bizswan_getnecreg(IntPtr core, NecRegs which);
+
+		public const NecRegs NecRegsMin = NecRegs.PC;
+		public const NecRegs NecRegsMax = NecRegs.DS0;
+
+		public enum NecRegs : int
+		{
+			PC = 1,
+			AW = 2,
+			CW = 3,
+			DW = 4,
+			BW = 5,
+			SP = 6,
+			BP = 7,
+			IX = 8,
+			IY = 9,
+			FLAGS = 10,
+			DS1 = 11,
+			PS = 12,
+			SS = 13,
+			DS0 = 14
+		};
 
 		[Flags]
 		public enum Buttons : ushort

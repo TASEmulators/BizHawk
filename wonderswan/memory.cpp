@@ -20,7 +20,6 @@
 
 #include "system.h"
 
-#include <time.h>
 #include <math.h>
 #include <cstring>
 #include <cstdlib>

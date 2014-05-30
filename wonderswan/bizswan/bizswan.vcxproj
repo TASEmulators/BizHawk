@@ -74,7 +74,6 @@
     <ClCompile Include="..\eeprom.cpp" />
     <ClCompile Include="..\gfx.cpp" />
     <ClCompile Include="..\interrupt.cpp" />
-    <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\memory.cpp" />
     <ClCompile Include="..\rtc.cpp" />
     <ClCompile Include="..\sound.cpp" />

@@ -38,6 +38,10 @@ public:
 	bool SaveRamLoad(const uint8 *data, int size);
 	bool SaveRamSave(uint8 *dest, int maxsize) const;
 
+	uint32 GetNECReg(int which) const;
+
+	bool GetMemoryArea(int index, const char *&name, int &size, uint8 *&data);
+
 public:
 	GFX gfx;
 	Memory memory;
