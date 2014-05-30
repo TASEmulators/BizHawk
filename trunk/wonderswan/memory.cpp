@@ -296,7 +296,6 @@ namespace MDFN_IEN_WSWAN
 		tmpname[16] = 0;
 
 		language = settings.language;
-		wsc = settings.color;
 
 		// WSwan_EEPROMInit() will also clear wsEEPROM
 		sys->eeprom.Init(tmpname, settings.byear, settings.bmonth, settings.bday, settings.sex, settings.blood);

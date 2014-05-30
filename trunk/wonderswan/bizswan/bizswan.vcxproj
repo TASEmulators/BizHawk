@@ -101,7 +101,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\start.inc" />
-    <None Include="..\v30mz-ea.inc" />
     <None Include="..\v30mz-modrm.inc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

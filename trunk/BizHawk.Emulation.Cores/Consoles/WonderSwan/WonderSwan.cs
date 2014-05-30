@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public static readonly ControllerDefinition WonderSwanController = new ControllerDefinition
 		{
 			Name = "WonderSwan Controller",
-			BoolButtons = { "Up X, Down X, Left X, Right X, Up Y, Down Y, Left Y, Right Y, Start, B, A, Power" }
+			BoolButtons = { "Up X", "Down X", "Left X", "Right X", "Up Y", "Down Y", "Left Y", "Right Y", "Start", "B", "A", "Power" }
 		};
 		public ControllerDefinition ControllerDefinition { get { return WonderSwanController; } }
 		public IController Controller { get; set; }
