@@ -154,18 +154,17 @@ namespace MDFN_IEN_WSWAN
 
 	bool GFX::ExecuteLine(uint32 *surface, bool skip)
 	{
-		//static const void* const WEP_Tab[3] = { &&WEP0, &&WEP1, &&WEP2 };	// The things we do for debugger step mode save states!  If we ever add more entries, remember to change the mask stuff in StateAction
-		bool ret;
-
-//		weppy = 0;
-//WEP0: ;
-
-		ret = FALSE;
+		bool ret = false; // true if we finish frame here
 
 		if(wsLine < 144)
 		{
 			if(!skip)
-				Scanline(surface + wsLine * 224);
+			{
+				if (sys->rotate)
+					Scanline(surface + 223 * 144 + wsLine);
+				else
+					Scanline(surface + wsLine * 224);
+			}
 		}
 
 		sys->memory.CheckSoundDMA();
@@ -183,7 +182,7 @@ namespace MDFN_IEN_WSWAN
 
 		if(wsLine == 144)
 		{
-			ret = TRUE;
+			ret = true;
 			sys->interrupt.DoInterrupt(WSINT_VBLANK);
 			//printf("VBlank: %d\n", wsLine);
 		}
@@ -201,10 +200,9 @@ namespace MDFN_IEN_WSWAN
 			}
 		}
 
-//		weppy = 1;
+		// CPU ==========================
 		sys->cpu.execute(224);
-//		goto *WEP_Tab[weppy];
-//WEP1: ;
+		// CPU ==========================
 
 		wsLine = (wsLine + 1) % 159;
 		if(wsLine == LineCompare)
@@ -213,10 +211,9 @@ namespace MDFN_IEN_WSWAN
 			//printf("Line hit: %d\n", wsLine);
 		}
 
-//		weppy = 2;
+		// CPU ==========================
 		sys->cpu.execute(32);
-//		goto *WEP_Tab[weppy];
-//WEP2: ;
+		// CPU ==========================
 
 		sys->rtc.Clock(256);
 
@@ -236,8 +233,7 @@ namespace MDFN_IEN_WSWAN
 			wsLine = 0;
 		}
 
-//		weppy = 0;
-		return(ret);
+		return ret;
 	}
 
 	void GFX::SetLayerEnableMask(uint32 mask)
@@ -248,7 +244,9 @@ namespace MDFN_IEN_WSWAN
 	void GFX::SetPixelFormat()
 	{
 		for(int r = 0; r < 16; r++)
+		{
 			for(int g = 0; g < 16; g++)
+			{
 				for(int b = 0; b < 16; b++)
 				{
 					uint32 neo_r, neo_g, neo_b;
@@ -270,6 +268,8 @@ namespace MDFN_IEN_WSWAN
 
 					ColorMapG[i] = 0xff000000 | neo_r << 16 | neo_g << 8 | neo_b << 0;
 				}
+			}
+		}
 	}
 
 	void GFX::Scanline(uint32 *target)
@@ -537,15 +537,23 @@ namespace MDFN_IEN_WSWAN
 
 		}	// End sprite drawing
 
+		const int hinc = sys->rotate ? -144 : 1;
+
 		if(wsVMode)
 		{
 			for(l=0;l<224;l++)
-				target[l] = ColorMap[wsCols[b_bg_pal[l+7]][b_bg[(l+7)]&0xf]];
+			{
+				target[0] = ColorMap[wsCols[b_bg_pal[l+7]][b_bg[(l+7)]&0xf]];
+				target += hinc;
+			}
 		}
 		else
 		{
 			for(l=0;l<224;l++)
-				target[l] = ColorMapG[(b_bg[l+7])&15];
+			{
+				target[0] = ColorMapG[(b_bg[l+7])&15];
+				target += hinc;
+			}
 		}
 	}
 
@@ -556,11 +564,10 @@ namespace MDFN_IEN_WSWAN
 
 	void GFX::Reset()
 	{
-		//weppy = 0;
-		wsLine=145; // all frames same length
-		SetVideo(0,TRUE);
+		wsLine = 145; // all frames same length
+		SetVideo(0, true);
 
-		memset(SpriteTable, 0, sizeof(SpriteTable));
+		std::memset(SpriteTable, 0, sizeof(SpriteTable));
 		SpriteCountCache = 0;
 		DispControl = 0;
 		BGColor = 0;
@@ -592,11 +599,7 @@ namespace MDFN_IEN_WSWAN
 		HBCounter = 0;
 		VBCounter = 0;
 
-
-		for(int u0=0;u0<16;u0++)
-			for(int u1=0;u1<16;u1++)
-				wsCols[u0][u1]=0;
-
+		std::memset(wsCols, 0, sizeof(wsCols));
 	}
 
 }

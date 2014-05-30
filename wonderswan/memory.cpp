@@ -23,7 +23,7 @@
 #include <time.h>
 #include <math.h>
 #include <cstring>
-#include <vector>
+#include <cstdlib>
 
 
 namespace MDFN_IEN_WSWAN
@@ -256,6 +256,7 @@ namespace MDFN_IEN_WSWAN
 		case 0xB3: CommControl = V & 0xF0; break;
 
 		case 0xb5: ButtonWhich = V >> 4;
+			Lagged = false;
 			ButtonReadLatch = 0;
 
 			if(ButtonWhich & 0x4) /*buttons*/

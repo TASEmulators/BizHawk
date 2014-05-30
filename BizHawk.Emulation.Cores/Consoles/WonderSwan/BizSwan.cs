@@ -41,8 +41,9 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		/// <param name="surface">uint32 video output buffer</param>
 		/// <param name="soundbuff">int16 sound output buffer</param>
 		/// <param name="soundbuffsize">[In] max hold size of soundbuff [Out] number of samples actually deposited</param>
+		/// <returns>true if lagged</returns>
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern void bizswan_advance(IntPtr core, Buttons buttons, bool novideo, int[] surface, short[] soundbuff, ref int soundbuffsize);
+		public static extern bool bizswan_advance(IntPtr core, Buttons buttons, bool novideo, int[] surface, short[] soundbuff, ref int soundbuffsize);
 
 		/// <summary>
 		/// load rom
@@ -51,9 +52,10 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		/// <param name="data"></param>
 		/// <param name="length"></param>
 		/// <param name="settings"></param>
+		/// <param name="IsRotated">(out) true if screen is rotated left 90</param>
 		/// <returns></returns>
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern bool bizswan_load(IntPtr core, byte[] data, int length, [In] ref SyncSettings settings);
+		public static extern bool bizswan_load(IntPtr core, byte[] data, int length, [In] ref SyncSettings settings, ref bool IsRotated);
 
 		/// <summary>
 		/// get size of saveram
@@ -95,8 +97,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			DownY = 0x0040,
 			LeftY = 0x0080,
 			Start = 0x0100,
-			B = 0x0200,
-			A = 0x0400,
+			A = 0x0200,
+			B = 0x0400,
 		}
 
 		public enum Language : byte
@@ -130,8 +132,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			public Language language;
 			public Gender sex;
 			public Bloodtype blood;
-			[MarshalAs(UnmanagedType.U1)]
-			public bool rotateinput;
 			[MarshalAs(UnmanagedType.U1)]
 			public bool color; // true for color system
 			[MarshalAs(UnmanagedType.U1)]

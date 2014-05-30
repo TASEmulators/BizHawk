@@ -30,6 +30,7 @@ public:
 	uint8 *wsSRAM; // = NULL;
 
 	uint16 WSButtonStatus; // bitfield of buttons, indeed
+	bool Lagged;
 
 private:
 

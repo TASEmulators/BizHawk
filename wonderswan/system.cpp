@@ -65,10 +65,23 @@ namespace MDFN_IEN_WSWAN
 		cpu.set_reg(NEC_SP,0x2000);
 	}
 
-
-	void System::Advance(uint16 buttons, bool novideo, uint32 *surface, int16 *soundbuff, int &soundbuffsize)
+	static uint16 RotateButtons(uint16 input)
 	{
-		memory.WSButtonStatus = buttons;
+		int groupx = input & 0xf;
+		groupx <<= 1;
+		groupx |= groupx >> 4;
+		groupx &= 0x0f;
+		int groupy = input & 0xf0;
+		groupy <<= 1;
+		groupy |= groupy >> 4;
+		groupy &= 0xf0;
+		return input & 0xff00 | groupx | groupy;
+	}
+
+	bool System::Advance(uint16 buttons, bool novideo, uint32 *surface, int16 *soundbuff, int &soundbuffsize)
+	{
+		memory.WSButtonStatus = rotate ? RotateButtons(buttons) : buttons;
+		memory.Lagged = true;
 		while (!gfx.ExecuteLine(surface, novideo))
 		{
 		}
@@ -79,11 +92,12 @@ namespace MDFN_IEN_WSWAN
 		// how is this OK to reset?  it's only used by the sound code, so once the sound for the frame has
 		// been collected, it's OK to zero.  indeed, it should be done as there's no rollover protection
 		cpu.timestamp = 0;
+		return memory.Lagged;
 	}
 
 	// Source: http://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
 	// Rounds up to the nearest power of 2.
-	static INLINE uint64 round_up_pow2(uint64 v)
+	static INLINE uint32 round_up_pow2(uint32 v)
 	{
 		v--;
 		v |= v >> 1;
@@ -91,7 +105,6 @@ namespace MDFN_IEN_WSWAN
 		v |= v >> 4;
 		v |= v >> 8;
 		v |= v >> 16;
-		v |= v >> 32;
 		v++;
 
 		v += (v == 0);
@@ -114,7 +127,6 @@ namespace MDFN_IEN_WSWAN
 			Debug::puts("WSRF files not supported");
 			return false;
 		}
-
 
 		real_rom_size = (length + 0xFFFF) & ~0xFFFF;
 		memory.rom_size = round_up_pow2(real_rom_size);
@@ -186,14 +198,7 @@ namespace MDFN_IEN_WSWAN
 			memory.wsCartROM[0xfffec]=0x20;
 		}
 
-
-		if(header[6] & 0x1)
-		{
-			//MDFNGameInfo->rotated = MDFN_ROTATE90;
-		}
-
-
-		//MDFNMP_Init(16384, (1 << 20) / 1024);
+		rotate = header[6] & 1;
 
 
 		memory.Init(settings);
@@ -229,7 +234,7 @@ namespace MDFN_IEN_WSWAN
 	{
 	}
 
-	int System::SaveRamSize()
+	int System::SaveRamSize() const
 	{
 		return eeprom.ieeprom_size + eeprom.eeprom_size + memory.sram_size;
 	}
@@ -249,7 +254,7 @@ namespace MDFN_IEN_WSWAN
 		return true;
 	}
 
-	bool System::SaveRamSave(uint8 *dest, int maxsize)
+	bool System::SaveRamSave(uint8 *dest, int maxsize) const
 	{
 		if (maxsize != SaveRamSize())
 			return false;
@@ -280,14 +285,16 @@ namespace MDFN_IEN_WSWAN
 		s->Reset();
 	}
 
-	EXPORT void bizswan_advance(System *s, uint16 buttons, bool novideo, uint32 *surface, int16 *soundbuff, int *soundbuffsize)
+	EXPORT int bizswan_advance(System *s, uint16 buttons, bool novideo, uint32 *surface, int16 *soundbuff, int *soundbuffsize)
 	{
-		s->Advance(buttons, novideo, surface, soundbuff, *soundbuffsize);
+		return s->Advance(buttons, novideo, surface, soundbuff, *soundbuffsize);
 	}
 
-	EXPORT int bizswan_load(System *s, const uint8 *data, int length, const SyncSettings *settings)
+	EXPORT int bizswan_load(System *s, const uint8 *data, int length, const SyncSettings *settings, int *IsRotated)
 	{
-		return s->Load(data, length, *settings);
+		bool ret = s->Load(data, length, *settings);
+		*IsRotated = s->rotate;
+		return ret;
 	}
 
 	EXPORT int bizswan_saveramsize(System *s)
