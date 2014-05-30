@@ -193,6 +193,25 @@ namespace BizHawk.Client.Common
 			new Tuple<string, char>("P2 A", 'A'),
 			new Tuple<string, char>(null, '|')
 		};
+
+		public static Tuple<string, char>[] WSMnemonic = new[]
+		{
+			new Tuple<string, char>(null, '|'),
+			new Tuple<string, char>("Up X", 'U'),
+			new Tuple<string, char>("Down X", 'D'),
+			new Tuple<string, char>("Left X", 'L'),
+			new Tuple<string, char>("Right X", 'R'),
+			new Tuple<string, char>(null, '|'),
+			new Tuple<string, char>("Up Y", 'U'),
+			new Tuple<string, char>("Down Y", 'D'),
+			new Tuple<string, char>("Left Y", 'L'),
+			new Tuple<string, char>("Right Y", 'R'),
+			new Tuple<string, char>(null, '|'),
+			new Tuple<string, char>("B", 'B'),
+			new Tuple<string, char>("A", 'A'),
+			new Tuple<string, char>("Power", 'P'),
+			new Tuple<string, char>(null, '|'),
+		};
 	}
 
 	public class MovieControllerAdapter : IController
@@ -515,6 +534,20 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		private void SetWonderSwanControllerAsMnemonic(string mnemonic)
+		{
+			var checker = new MnemonicChecker(mnemonic);
+			MyBoolButtons.Clear();
+			for (int i = 0; i < MnemonicConstants.WSMnemonic.Length; i++)
+			{
+				var t = MnemonicConstants.WSMnemonic[i];
+				if (t.Item1 != null)
+				{
+					Force(t.Item1, checker[i]);
+				}
+			}
+		}
+
 		private void SetC64ControllersAsMnemonic(string mnemonic)
 		{
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
@@ -576,6 +609,11 @@ namespace BizHawk.Client.Common
 			else if (ControlType == "Dual Gameboy Controller")
 			{
 				SetDualGameBoyControllerAsMnemonic(mnemonic);
+				return;
+			}
+			else if (ControlType == "WonderSwan Controller")
+			{
+				SetWonderSwanControllerAsMnemonic(mnemonic);
 				return;
 			}
 			else if (ControlType == "Nintento 64 Controller")
