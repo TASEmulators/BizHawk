@@ -19,10 +19,20 @@
 */
 
 #include "system.h"
-#include <ctime>
+#include <time.h>
 
 namespace MDFN_IEN_WSWAN
 {
+	static void GMTime(uint64 ticks, tm &time)
+	{
+		time_t t = ticks;
+		#ifdef __GNUC__
+		gmtime_r(&t, &time);
+		#elif defined _MSC_VER
+		gmtime_s(&time, &t);
+		#endif
+	}
+
 	void RTC::Write(uint32 A, uint8 V)
 	{
 		switch(A)
@@ -46,18 +56,19 @@ namespace MDFN_IEN_WSWAN
 		case 0xcb :
 			if(Command == 0x15)
 			{
-				time_t long_time = CurrentTime;
-				struct tm *newtime = gmtime( &long_time );
+				tm newtime;
+				uint64 now = userealtime ? time(0) : CurrentTime;
+				GMTime(CurrentTime, newtime);
 
 				switch(wsCA15)
 				{
-				case 0: wsCA15++;return mBCD(newtime->tm_year-100);
-				case 1: wsCA15++;return mBCD(newtime->tm_mon);
-				case 2: wsCA15++;return mBCD(newtime->tm_mday);
-				case 3: wsCA15++;return mBCD(newtime->tm_wday);
-				case 4: wsCA15++;return mBCD(newtime->tm_hour);
-				case 5: wsCA15++;return mBCD(newtime->tm_min);
-				case 6: wsCA15=0;return mBCD(newtime->tm_sec);
+				case 0: wsCA15++;return mBCD(newtime.tm_year-100);
+				case 1: wsCA15++;return mBCD(newtime.tm_mon);
+				case 2: wsCA15++;return mBCD(newtime.tm_mday);
+				case 3: wsCA15++;return mBCD(newtime.tm_wday);
+				case 4: wsCA15++;return mBCD(newtime.tm_hour);
+				case 5: wsCA15++;return mBCD(newtime.tm_min);
+				case 6: wsCA15=0;return mBCD(newtime.tm_sec);
 				}
 				return 0;
 			}
@@ -68,22 +79,33 @@ namespace MDFN_IEN_WSWAN
 		return(0);
 	}
 
-	void RTC::Reset()
+	void RTC::Init(uint64 initialtime, bool realtime)
 	{
-		time_t happy_time = time(NULL);
+		if (realtime)
+		{
+			userealtime = true;
+			CurrentTime = time(0);
+		}
+		else
+		{
+			userealtime = false;
+			CurrentTime = initialtime;
+		}
 
-		CurrentTime = mktime(localtime(&happy_time));
 		ClockCycleCounter = 0;
-		wsCA15 = 0;
+		wsCA15 = 0; // is this also possibly set to 0 on reset?
 	}
 
 	void RTC::Clock(uint32 cycles)
 	{
-		ClockCycleCounter += cycles;
-		while(ClockCycleCounter >= 3072000)
+		if (!userealtime)
 		{
-			ClockCycleCounter -= 3072000;
-			CurrentTime++;
+			ClockCycleCounter += cycles;
+			while(ClockCycleCounter >= 3072000)
+			{
+				ClockCycleCounter -= 3072000;
+				CurrentTime++;
+			}
 		}
 	}
 

@@ -4,6 +4,7 @@
 namespace MDFN_IEN_WSWAN
 {
 class System;
+struct SyncSettings;
 struct Settings;
 }
 
@@ -30,7 +31,7 @@ public:
 
 	void Reset();
 	void Advance(uint16 buttons, bool novideo, uint32 *surface, int16 *soundbuff, int &soundbuffsize);
-	bool Load(const uint8 *data, int length, const Settings &s);
+	bool Load(const uint8 *data, int length, const SyncSettings &s);
 
 	int SaveRamSize();
 	bool SaveRamLoad(const uint8 *data, int size);
@@ -44,12 +45,9 @@ public:
 	Sound sound;
 	V30MZ cpu;
 	Interrupt interrupt;
-public:
-	int 		wsc; // 1 = 1;			/*color/mono*/
-
 };
 
-struct Settings
+struct SyncSettings
 {
 	uint16 byear; // birth year, 0000-9999
 	uint8 bmonth; // birth month, 1-12
@@ -59,6 +57,14 @@ struct Settings
 	uint8 sex; // sex, 1 = male, 2 = female
 	uint8 blood; // 1 = a, 2 = b, 3 = o, 4 = ab
 	bool rotateinput; // true to rotate input and dpads,  sync setting because of this
+	bool color; // true if wonderswan is in color mode
+	bool userealtime; // true to use the system's actual clock; false to use an emulation pegged clock
+	uint64 initialtime; // when userealtime is false, the initial time in unix format
+};
+
+struct Settings
+{
+	uint32 LayerMask; // 1 = enable bg, 2 = enable fg, 4 = enable sprites
 };
 
 namespace Debug

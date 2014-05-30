@@ -52,7 +52,7 @@ namespace MDFN_IEN_WSWAN
 		gfx.Reset();
 		sound.Reset();
 		interrupt.Reset();
-		rtc.Reset();
+		//rtc.Reset(); // at the moment, RTC changes no state on hard reset
 		eeprom.Reset();
 
 		for(int u0=0;u0<0xc9;u0++)
@@ -101,7 +101,7 @@ namespace MDFN_IEN_WSWAN
 		return(v);
 	}
 
-	bool System::Load(const uint8 *data, int length, const Settings &settings)
+	bool System::Load(const uint8 *data, int length, const SyncSettings &settings)
 	{
 		uint32 real_rom_size;
 
@@ -201,6 +201,7 @@ namespace MDFN_IEN_WSWAN
 		// TODO: control WSC setting
 
 		memory.Init(settings);
+		rtc.Init(settings.initialtime, settings.userealtime);
 
 		//MDFNGameInfo->fps = (uint32)((uint64)3072000 * 65536 * 256 / (159*256));
 
@@ -219,7 +220,6 @@ namespace MDFN_IEN_WSWAN
 	}
 
 	System::System()
-		:wsc(1)
 	{
 		gfx.sys = this;
 		memory.sys = this;
@@ -294,7 +294,7 @@ namespace MDFN_IEN_WSWAN
 		s->Advance(buttons, novideo, surface, soundbuff, *soundbuffsize);
 	}
 
-	EXPORT int bizswan_load(System *s, const uint8 *data, int length, const Settings *settings)
+	EXPORT int bizswan_load(System *s, const uint8 *data, int length, const SyncSettings *settings)
 	{
 		return s->Load(data, length, *settings);
 	}

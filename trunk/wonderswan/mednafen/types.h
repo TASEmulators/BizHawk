@@ -76,7 +76,6 @@ typedef uint64_t uint64;
  #undef MDFN_GCC_VERSION
 #elif defined(_MSC_VER)
 
-  #pragma message("Compiling with MSVC, untested")
 
   #define INLINE __forceinline
   #define NO_INLINE __declspec(noinline)
