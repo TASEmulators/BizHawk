@@ -13,7 +13,7 @@ public:
 	uint8 Read20(uint32);
 	void Write20(uint32 address,uint8 data);
 
-	void Init(const Settings &settings);
+	void Init(const SyncSettings &settings);
 
 	void CheckSoundDMA();
 	void Reset();
@@ -50,6 +50,7 @@ private:
 
 	bool language;
 
+	bool wsc; // mono / color
 
 public:
 	System *sys;

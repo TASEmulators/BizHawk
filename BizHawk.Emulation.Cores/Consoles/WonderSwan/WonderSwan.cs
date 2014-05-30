@@ -40,15 +40,16 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		#endregion
 
-		public WonderSwan(CoreComm comm, byte[] rom)
+		public WonderSwan(CoreComm comm, byte[] rom, bool deterministicEmulation)
 		{
 			this.CoreComm = comm;
+			DeterministicEmulation = deterministicEmulation; // when true, remember to force the RTC flag!
 			Core = BizSwan.bizswan_new();
 			if (Core == IntPtr.Zero)
 				throw new InvalidOperationException("bizswan_new() returned NULL!");
 			try
 			{
-				var ss = new BizSwan.Settings
+				var ss = new BizSwan.SyncSettings
 				{
 					sex = BizSwan.Gender.Male,
 					blood = BizSwan.Bloodtype.A,
@@ -120,7 +121,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 
 		public string SystemId { get { return "WSWAN"; } }
-		public bool DeterministicEmulation { get { return true; } }
+		public bool DeterministicEmulation { get; private set; }
 		public string BoardName { get { return null; } }
 
 		#region SaveRam

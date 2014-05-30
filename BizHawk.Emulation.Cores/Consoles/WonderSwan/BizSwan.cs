@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		/// <param name="settings"></param>
 		/// <returns></returns>
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern bool bizswan_load(IntPtr core, byte[] data, int length, [In] ref Settings settings);
+		public static extern bool bizswan_load(IntPtr core, byte[] data, int length, [In] ref SyncSettings settings);
 
 		/// <summary>
 		/// get size of saveram
@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		}
 
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		public struct Settings
+		public struct SyncSettings
 		{
 			public ushort byear;
 			public byte bmonth;
@@ -132,6 +132,11 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			public Bloodtype blood;
 			[MarshalAs(UnmanagedType.U1)]
 			public bool rotateinput;
+			[MarshalAs(UnmanagedType.U1)]
+			public bool color; // true for color system
+			[MarshalAs(UnmanagedType.U1)]
+			public bool userealtime; // true for use real real RTC instead of emulation pegged time
+			public ulong initialtime; // inital time in unix format; only used when userealtime = false
 
 			public void SetName(string newname)
 			{

@@ -240,7 +240,7 @@ namespace MDFN_IEN_WSWAN
 		return(ret);
 	}
 
-	void GFX::SetLayerEnableMask(uint64 mask)
+	void GFX::SetLayerEnableMask(uint32 mask)
 	{
 		LayerEnabled = mask;
 	}

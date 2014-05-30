@@ -27,7 +27,7 @@ public:
 
 	bool ExecuteLine(uint32 *surface, bool skip);
 
-	void SetLayerEnableMask(uint64 mask);
+	void SetLayerEnableMask(uint32 mask);
 
 private:
 	// TCACHE ====================================
