@@ -84,15 +84,16 @@
 			this.label8 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
 			this.TracerBox = new System.Windows.Forms.GroupBox();
-			this.TraceView = new BizHawk.Client.EmuHawk.VirtualListView();
-			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.StepOverButton = new System.Windows.Forms.Button();
 			this.StepOutButton = new System.Windows.Forms.Button();
 			this.BreakpointGroupBox = new System.Windows.Forms.GroupBox();
 			this.AddBreakpointButton = new System.Windows.Forms.Button();
+			this.RemoveBreakpointButton = new System.Windows.Forms.Button();
 			this.BreakpointView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.TraceView = new BizHawk.Client.EmuHawk.VirtualListView();
+			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.DebuggerMenu.SuspendLayout();
 			this.RegistersBox.SuspendLayout();
 			this.CoreInfoBox.SuspendLayout();
@@ -642,6 +643,99 @@
 			this.TracerBox.TabStop = false;
 			this.TracerBox.Text = "Trace log";
 			// 
+			// StepOverButton
+			// 
+			this.StepOverButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.StepOverButton.Location = new System.Drawing.Point(566, 56);
+			this.StepOverButton.Name = "StepOverButton";
+			this.StepOverButton.Size = new System.Drawing.Size(75, 23);
+			this.StepOverButton.TabIndex = 7;
+			this.StepOverButton.Text = "Step &Over";
+			this.StepOverButton.UseVisualStyleBackColor = true;
+			// 
+			// StepOutButton
+			// 
+			this.StepOutButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.StepOutButton.Location = new System.Drawing.Point(566, 82);
+			this.StepOutButton.Name = "StepOutButton";
+			this.StepOutButton.Size = new System.Drawing.Size(75, 23);
+			this.StepOutButton.TabIndex = 8;
+			this.StepOutButton.Text = "Step O&ut";
+			this.StepOutButton.UseVisualStyleBackColor = true;
+			// 
+			// BreakpointGroupBox
+			// 
+			this.BreakpointGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.BreakpointGroupBox.Controls.Add(this.RemoveBreakpointButton);
+			this.BreakpointGroupBox.Controls.Add(this.AddBreakpointButton);
+			this.BreakpointGroupBox.Controls.Add(this.BreakpointView);
+			this.BreakpointGroupBox.Location = new System.Drawing.Point(435, 188);
+			this.BreakpointGroupBox.Name = "BreakpointGroupBox";
+			this.BreakpointGroupBox.Size = new System.Drawing.Size(206, 444);
+			this.BreakpointGroupBox.TabIndex = 7;
+			this.BreakpointGroupBox.TabStop = false;
+			this.BreakpointGroupBox.Text = "Breakpoints";
+			// 
+			// AddBreakpointButton
+			// 
+			this.AddBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.AddBreakpointButton.Location = new System.Drawing.Point(8, 409);
+			this.AddBreakpointButton.Name = "AddBreakpointButton";
+			this.AddBreakpointButton.Size = new System.Drawing.Size(75, 23);
+			this.AddBreakpointButton.TabIndex = 5;
+			this.AddBreakpointButton.Text = "&Add";
+			this.AddBreakpointButton.UseVisualStyleBackColor = true;
+			this.AddBreakpointButton.Click += new System.EventHandler(this.AddBreakpointButton_Click);
+			// 
+			// RemoveBreakpointButton
+			// 
+			this.RemoveBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.RemoveBreakpointButton.Location = new System.Drawing.Point(125, 409);
+			this.RemoveBreakpointButton.Name = "RemoveBreakpointButton";
+			this.RemoveBreakpointButton.Size = new System.Drawing.Size(75, 23);
+			this.RemoveBreakpointButton.TabIndex = 6;
+			this.RemoveBreakpointButton.Text = "&Remove";
+			this.RemoveBreakpointButton.UseVisualStyleBackColor = true;
+			this.RemoveBreakpointButton.Click += new System.EventHandler(this.RemoveBreakpointButton_Click);
+			// 
+			// BreakpointView
+			// 
+			this.BreakpointView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.BreakpointView.BlazingFast = false;
+			this.BreakpointView.CheckBoxes = true;
+			this.BreakpointView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2});
+			this.BreakpointView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.BreakpointView.FullRowSelect = true;
+			this.BreakpointView.GridLines = true;
+			this.BreakpointView.HideSelection = false;
+			this.BreakpointView.ItemCount = 0;
+			this.BreakpointView.Location = new System.Drawing.Point(8, 18);
+			this.BreakpointView.Name = "BreakpointView";
+			this.BreakpointView.SelectAllInProgress = false;
+			this.BreakpointView.selectedItem = -1;
+			this.BreakpointView.Size = new System.Drawing.Size(192, 384);
+			this.BreakpointView.TabIndex = 4;
+			this.BreakpointView.TabStop = false;
+			this.BreakpointView.UseCompatibleStateImageBehavior = false;
+			this.BreakpointView.View = System.Windows.Forms.View.Details;
+			this.BreakpointView.SelectedIndexChanged += new System.EventHandler(this.BreakpointView_SelectedIndexChanged);
+			this.BreakpointView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.BreakpointView_KeyDown);
+			// 
+			// columnHeader1
+			// 
+			this.columnHeader1.Text = "Address";
+			this.columnHeader1.Width = 85;
+			// 
+			// columnHeader2
+			// 
+			this.columnHeader2.Text = "Type";
+			this.columnHeader2.Width = 103;
+			// 
 			// TraceView
 			// 
 			this.TraceView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -670,85 +764,6 @@
 			// 
 			this.Script.Text = "Instructions";
 			this.Script.Width = 599;
-			// 
-			// StepOverButton
-			// 
-			this.StepOverButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.StepOverButton.Location = new System.Drawing.Point(566, 56);
-			this.StepOverButton.Name = "StepOverButton";
-			this.StepOverButton.Size = new System.Drawing.Size(75, 23);
-			this.StepOverButton.TabIndex = 7;
-			this.StepOverButton.Text = "Step &Over";
-			this.StepOverButton.UseVisualStyleBackColor = true;
-			// 
-			// StepOutButton
-			// 
-			this.StepOutButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.StepOutButton.Location = new System.Drawing.Point(566, 82);
-			this.StepOutButton.Name = "StepOutButton";
-			this.StepOutButton.Size = new System.Drawing.Size(75, 23);
-			this.StepOutButton.TabIndex = 8;
-			this.StepOutButton.Text = "Step O&ut";
-			this.StepOutButton.UseVisualStyleBackColor = true;
-			// 
-			// BreakpointGroupBox
-			// 
-			this.BreakpointGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.BreakpointGroupBox.Controls.Add(this.AddBreakpointButton);
-			this.BreakpointGroupBox.Controls.Add(this.BreakpointView);
-			this.BreakpointGroupBox.Location = new System.Drawing.Point(435, 188);
-			this.BreakpointGroupBox.Name = "BreakpointGroupBox";
-			this.BreakpointGroupBox.Size = new System.Drawing.Size(206, 444);
-			this.BreakpointGroupBox.TabIndex = 7;
-			this.BreakpointGroupBox.TabStop = false;
-			this.BreakpointGroupBox.Text = "Breakpoints";
-			// 
-			// AddBreakpointButton
-			// 
-			this.AddBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.AddBreakpointButton.Location = new System.Drawing.Point(8, 409);
-			this.AddBreakpointButton.Name = "AddBreakpointButton";
-			this.AddBreakpointButton.Size = new System.Drawing.Size(75, 23);
-			this.AddBreakpointButton.TabIndex = 5;
-			this.AddBreakpointButton.Text = "&Add";
-			this.AddBreakpointButton.UseVisualStyleBackColor = true;
-			this.AddBreakpointButton.Click += new System.EventHandler(this.AddBreakpointButton_Click);
-			// 
-			// BreakpointView
-			// 
-			this.BreakpointView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.BreakpointView.BlazingFast = false;
-			this.BreakpointView.CheckBoxes = true;
-			this.BreakpointView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2});
-			this.BreakpointView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.BreakpointView.FullRowSelect = true;
-			this.BreakpointView.GridLines = true;
-			this.BreakpointView.HideSelection = false;
-			this.BreakpointView.ItemCount = 0;
-			this.BreakpointView.Location = new System.Drawing.Point(8, 18);
-			this.BreakpointView.Name = "BreakpointView";
-			this.BreakpointView.SelectAllInProgress = false;
-			this.BreakpointView.selectedItem = -1;
-			this.BreakpointView.Size = new System.Drawing.Size(192, 384);
-			this.BreakpointView.TabIndex = 4;
-			this.BreakpointView.TabStop = false;
-			this.BreakpointView.UseCompatibleStateImageBehavior = false;
-			this.BreakpointView.View = System.Windows.Forms.View.Details;
-			// 
-			// columnHeader1
-			// 
-			this.columnHeader1.Text = "Address";
-			this.columnHeader1.Width = 85;
-			// 
-			// columnHeader2
-			// 
-			this.columnHeader2.Text = "Type";
-			this.columnHeader2.Width = 103;
 			// 
 			// Atari2600Debugger
 			// 
@@ -850,5 +865,6 @@
 		private System.Windows.Forms.Label label11;
 		private System.Windows.Forms.Label LastAddressLabel;
 		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.Button RemoveBreakpointButton;
 	}
 }
