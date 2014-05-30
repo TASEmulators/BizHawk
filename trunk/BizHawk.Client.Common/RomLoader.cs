@@ -415,7 +415,8 @@ namespace BizHawk.Client.Common
 								nextEmulator = new N64(nextComm, game, rom.RomData, GetCoreSyncSettings<N64>());
 								break;
 							case "WSWAN":
-								nextEmulator = new WonderSwan(nextComm, rom.RomData, Deterministic);
+								nextEmulator = new WonderSwan(nextComm, rom.RomData, Deterministic,
+									GetCoreSettings<WonderSwan>(), GetCoreSyncSettings<WonderSwan>());
 								break;
 							case "DEBUG":
 								if (VersionInfo.INTERIM)

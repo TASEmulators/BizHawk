@@ -2,7 +2,6 @@
 #define __WSWAN_H
 
 #include <mednafen/types.h>
-#include <mednafen/state.h>
 
 #include "interrupt.h"
 

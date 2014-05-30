@@ -87,7 +87,6 @@
     <ClInclude Include="..\eeprom.h" />
     <ClInclude Include="..\gfx.h" />
     <ClInclude Include="..\interrupt.h" />
-    <ClInclude Include="..\mednafen\state.h" />
     <ClInclude Include="..\mednafen\types.h" />
     <ClInclude Include="..\memory.h" />
     <ClInclude Include="..\msvc\inttypes.h" />

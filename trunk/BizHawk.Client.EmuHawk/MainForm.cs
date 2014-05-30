@@ -1318,6 +1318,7 @@ namespace BizHawk.Client.EmuHawk
 			SaturnSubMenu.Visible = false;
 			DGBSubMenu.Visible = false;
 			GenesisSubMenu.Visible = false;
+			wonderSwanToolStripMenuItem.Visible = false;
 
 			switch (system)
 			{
@@ -1380,6 +1381,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "DGB":
 					DGBSubMenu.Visible = true;
+					break;
+				case "WSWAN":
+					wonderSwanToolStripMenuItem.Visible = true;
 					break;
 			}
 		}
@@ -3233,6 +3237,11 @@ namespace BizHawk.Client.EmuHawk
 		private void GBcoreSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			BizHawk.Client.EmuHawk.config.GB.GBPrefs.DoGBPrefsDialog(this);
+		}
+
+		private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "WonderSwan Settings");
 		}
 	}
 }

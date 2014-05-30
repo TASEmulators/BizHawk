@@ -98,9 +98,6 @@
     <ClInclude Include="..\mednafen\types.h">
       <Filter>Header Files\mednafen</Filter>
     </ClInclude>
-    <ClInclude Include="..\mednafen\state.h">
-      <Filter>Header Files\mednafen</Filter>
-    </ClInclude>
     <ClInclude Include="..\blip\Blip_Buffer.h">
       <Filter>Header Files\blip</Filter>
     </ClInclude>
