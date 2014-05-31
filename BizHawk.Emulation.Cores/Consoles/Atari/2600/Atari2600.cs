@@ -212,7 +212,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					Cpu.S = (byte)value;
 					break;
 				case "PC":
-					Cpu.PC = (byte)value;
+					Cpu.PC = (ushort)value;
 					break;
 				case "Flag I":
 					Cpu.FlagI = value > 0;

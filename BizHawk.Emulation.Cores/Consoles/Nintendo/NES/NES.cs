@@ -906,7 +906,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					cpu.S = (byte)value;
 					break;
 				case "PC":
-					cpu.PC = (byte)value;
+					cpu.PC = (ushort)value;
 					break;
 				case "Flag I":
 					cpu.FlagI = value > 0;

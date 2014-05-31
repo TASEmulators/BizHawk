@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 					theMachine.CPU.P = (byte)value;
 					break;
 				case "PC":
-					theMachine.CPU.PC = (byte)value;
+					theMachine.CPU.PC = (ushort)value;
 					break;
 				case "S":
 					theMachine.CPU.S = (byte)value;

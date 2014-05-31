@@ -1049,7 +1049,77 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		public void SetCpuRegister(string register, int value)
 		{
-			throw new NotImplementedException();
+			switch (register)
+			{
+				default:
+					throw new InvalidOperationException();
+				case "A":
+					cpu.RegisterA = (byte)value;
+					break;
+				case "AF":
+					cpu.RegisterAF = (byte)value;
+					break;
+				case "B":
+					cpu.RegisterB = (byte)value;
+					break;
+				case "BC":
+					cpu.RegisterBC = (byte)value;
+					break;
+				case "C":
+					cpu.RegisterC = (byte)value;
+					break;
+				case "D":
+					cpu.RegisterD = (byte)value;
+					break;
+				case "DE":
+					cpu.RegisterDE = (byte)value;
+					break;
+				case "E":
+					cpu.RegisterE = (byte)value;
+					break;
+				case "F":
+					cpu.RegisterF = (byte)value;
+					break;
+				case "H":
+					cpu.RegisterH = (byte)value;
+					break;
+				case "HL":
+					cpu.RegisterHL = (byte)value;
+					break;
+				case "I":
+					cpu.RegisterI = (byte)value;
+					break;
+				case "IX":
+					cpu.RegisterIX = (byte)value;
+					break;
+				case "IY":
+					cpu.RegisterIY = (byte)value;
+					break;
+				case "L":
+					cpu.RegisterL = (byte)value;
+					break;
+				case "PC":
+					cpu.RegisterPC = (ushort)value;
+					break;
+				case "R":
+					cpu.RegisterR = (byte)value;
+					break;
+				case "Shadow AF":
+					cpu.RegisterShadowAF = (byte)value;
+					break;
+				case "Shadow BC":
+					cpu.RegisterShadowBC = (byte)value;
+					break;
+				case "Shadow DE":
+					cpu.RegisterShadowDE = (byte)value;
+					break;
+				case "Shadow HL":
+					cpu.RegisterShadowHL = (byte)value;
+					break;
+				case "SP":
+					cpu.RegisterSP = (byte)value;
+					break;
+			}
 		}
 	}
 }

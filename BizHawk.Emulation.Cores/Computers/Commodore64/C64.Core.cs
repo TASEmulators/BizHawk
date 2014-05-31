@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 					board.cpu.S = (byte)value;
 					break;
 				case "PC":
-					board.cpu.PC = (byte)value;
+					board.cpu.PC = (ushort)value;
 					break;
 			}
 		}
