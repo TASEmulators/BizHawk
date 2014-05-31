@@ -1393,33 +1393,7 @@ namespace BizHawk.Client.EmuHawk
 		private static string DisplayNameForSystem(string system)
 		{
 			var str = Global.SystemInfo.DisplayName;
-			/*
-			switch (Global.SystemInfo.DisplayName)
-			{
-				case "INTV": str = "Intellivision"; break;
-				case "SG": str = "SG-1000"; break;
-				case "SMS": str = "Sega Master System"; break;
-				case "GG": str = "Game Gear"; break;
-				case "PCECD": str = "TurboGrafx-16 (CD)"; break;
-				case "PCE": str = "TurboGrafx-16"; break;
-				case "SGX": str = "SuperGrafx"; break;
-				case "GEN": str = "Genesis"; break;
-				case "TI83": str = "TI-83"; break;
-				case "NES": str = "NES"; break;
-				case "SNES": str = "SNES"; break;
-				case "GB": str = "Game Boy"; break;
-				case "GBC": str = "Game Boy Color"; break;
-				case "A26": str = "Atari 2600"; break;
-				case "A78": str = "Atari 7800"; break;
-				case "C64": str = "Commodore 64"; break;
-				case "Coleco": str = "ColecoVision"; break;
-				case "GBA": str = "Game Boy Advance"; break;
-				case "N64": str = "Nintendo 64"; break;
-				case "SAT": str = "Saturn"; break;
-				case "DGB": str = "Game Boy Link"; break;
-				case "WSWAN": str = "WonderSwan"; break;
-			}
-			*/
+
 			if (VersionInfo.INTERIM)
 			{
 				str += " (interim)";
