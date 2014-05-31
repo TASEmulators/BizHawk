@@ -43,15 +43,15 @@
 			this.ScanlineAdvanceBtn = new System.Windows.Forms.Button();
 			this.FrameAdvButton = new System.Windows.Forms.Button();
 			this.RegistersBox = new System.Windows.Forms.GroupBox();
-			this.CFlagCheckbox = new System.Windows.Forms.CheckBox();
-			this.ZFlagCheckbox = new System.Windows.Forms.CheckBox();
-			this.IFlagCheckbox = new System.Windows.Forms.CheckBox();
-			this.DFlagCheckbox = new System.Windows.Forms.CheckBox();
-			this.BFlagCheckbox = new System.Windows.Forms.CheckBox();
-			this.TFlagCheckbox = new System.Windows.Forms.CheckBox();
-			this.VFlagCheckbox = new System.Windows.Forms.CheckBox();
+			this.CFlagCheckbox = new ReadonlyCheckBox();
+			this.ZFlagCheckbox = new ReadonlyCheckBox();
+			this.IFlagCheckbox = new ReadonlyCheckBox();
+			this.DFlagCheckbox = new ReadonlyCheckBox();
+			this.BFlagCheckbox = new ReadonlyCheckBox();
+			this.TFlagCheckbox = new ReadonlyCheckBox();
+			this.VFlagCheckbox = new ReadonlyCheckBox();
 			this.label6 = new System.Windows.Forms.Label();
-			this.NFlagCheckbox = new System.Windows.Forms.CheckBox();
+			this.NFlagCheckbox = new ReadonlyCheckBox();
 			this.YRegisterHexBox = new System.Windows.Forms.TextBox();
 			this.XRegisterHexBox = new System.Windows.Forms.TextBox();
 			this.ARegisterHexBox = new System.Windows.Forms.TextBox();
@@ -87,8 +87,8 @@
 			this.StepOverButton = new System.Windows.Forms.Button();
 			this.StepOutButton = new System.Windows.Forms.Button();
 			this.BreakpointGroupBox = new System.Windows.Forms.GroupBox();
-			this.AddBreakpointButton = new System.Windows.Forms.Button();
 			this.RemoveBreakpointButton = new System.Windows.Forms.Button();
+			this.AddBreakpointButton = new System.Windows.Forms.Button();
 			this.BreakpointView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -677,17 +677,6 @@
 			this.BreakpointGroupBox.TabStop = false;
 			this.BreakpointGroupBox.Text = "Breakpoints";
 			// 
-			// AddBreakpointButton
-			// 
-			this.AddBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.AddBreakpointButton.Location = new System.Drawing.Point(8, 409);
-			this.AddBreakpointButton.Name = "AddBreakpointButton";
-			this.AddBreakpointButton.Size = new System.Drawing.Size(75, 23);
-			this.AddBreakpointButton.TabIndex = 5;
-			this.AddBreakpointButton.Text = "&Add";
-			this.AddBreakpointButton.UseVisualStyleBackColor = true;
-			this.AddBreakpointButton.Click += new System.EventHandler(this.AddBreakpointButton_Click);
-			// 
 			// RemoveBreakpointButton
 			// 
 			this.RemoveBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -698,6 +687,17 @@
 			this.RemoveBreakpointButton.Text = "&Remove";
 			this.RemoveBreakpointButton.UseVisualStyleBackColor = true;
 			this.RemoveBreakpointButton.Click += new System.EventHandler(this.RemoveBreakpointButton_Click);
+			// 
+			// AddBreakpointButton
+			// 
+			this.AddBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.AddBreakpointButton.Location = new System.Drawing.Point(8, 409);
+			this.AddBreakpointButton.Name = "AddBreakpointButton";
+			this.AddBreakpointButton.Size = new System.Drawing.Size(75, 23);
+			this.AddBreakpointButton.TabIndex = 5;
+			this.AddBreakpointButton.Text = "&Add";
+			this.AddBreakpointButton.UseVisualStyleBackColor = true;
+			this.AddBreakpointButton.Click += new System.EventHandler(this.AddBreakpointButton_Click);
 			// 
 			// BreakpointView
 			// 
@@ -826,15 +826,15 @@
 		private System.Windows.Forms.TextBox XRegisterHexBox;
 		private System.Windows.Forms.TextBox ARegisterHexBox;
 		private System.Windows.Forms.TextBox SPRegisterHexBox;
-		private System.Windows.Forms.CheckBox CFlagCheckbox;
-		private System.Windows.Forms.CheckBox ZFlagCheckbox;
-		private System.Windows.Forms.CheckBox IFlagCheckbox;
-		private System.Windows.Forms.CheckBox DFlagCheckbox;
-		private System.Windows.Forms.CheckBox BFlagCheckbox;
-		private System.Windows.Forms.CheckBox TFlagCheckbox;
-		private System.Windows.Forms.CheckBox VFlagCheckbox;
+		private ReadonlyCheckBox CFlagCheckbox;
+		private ReadonlyCheckBox ZFlagCheckbox;
+		private ReadonlyCheckBox IFlagCheckbox;
+		private ReadonlyCheckBox DFlagCheckbox;
+		private ReadonlyCheckBox BFlagCheckbox;
+		private ReadonlyCheckBox TFlagCheckbox;
+		private ReadonlyCheckBox VFlagCheckbox;
 		private System.Windows.Forms.Label label6;
-		private System.Windows.Forms.CheckBox NFlagCheckbox;
+		private ReadonlyCheckBox NFlagCheckbox;
 		private System.Windows.Forms.GroupBox CoreInfoBox;
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.Label label8;
