@@ -1,4 +1,5 @@
 ﻿using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.DiscSystem;
 
@@ -129,9 +130,12 @@ namespace BizHawk.Client.Common
 					case "SNES":
 						return SystemInfo.SNES;
 					case "GB":
+						if ((Global.Emulator as Gameboy).IsCGBMode())
+						{
+							return SystemInfo.GBC;
+						}
+
 						return SystemInfo.GB;
-					case "GBC":
-						return SystemInfo.GBC;
 					case "A26":
 						return SystemInfo.Atari2600;
 					case "A78":
