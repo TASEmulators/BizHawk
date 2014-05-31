@@ -1,4 +1,5 @@
 ﻿using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Client.Common
@@ -105,9 +106,16 @@ namespace BizHawk.Client.Common
 					case "SG":
 						return SystemInfo.SG;
 					case "SMS":
+						if ((Global.Emulator as SMS).IsGameGear)
+						{
+							return SystemInfo.GG;
+						}
+						else if ((Global.Emulator as SMS).IsSG1000)
+						{
+							return SystemInfo.SG;
+						}
+
 						return SystemInfo.SMS;
-					case "GG":
-						return SystemInfo.GG;
 					case "PCECD":
 						return SystemInfo.PCECD;
 					case "PCE":

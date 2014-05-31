@@ -68,6 +68,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public YM2413 YM2413;
 		public SoundMixer SoundMixer;
 		public bool IsGameGear = false;
+		public bool IsSG1000 = false;
+
 		public bool HasYM2413 = false;
 
 		int frame = 0;
@@ -95,6 +97,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			CoreComm = comm;
 
 			IsGameGear = game.System == "GG";
+			IsSG1000 = game.System == "SG";
 		    RomData = rom;
             CoreComm.CpuTraceAvailable = true;
             
