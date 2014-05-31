@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
@@ -105,6 +106,17 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern bool bizswan_getmemoryarea(IntPtr core, int index, out IntPtr name, out int size, out IntPtr data);
 
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern int bizswan_binstatesize(IntPtr core);
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern bool bizswan_binstatesave(IntPtr core, byte[] data, int length);
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern bool bizswan_binstateload(IntPtr core, byte[] data, int length);
+
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern void bizswan_txtstatesave(IntPtr core, [In]ref TextStateFPtrs ff);
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern void bizswan_txtstateload(IntPtr core, [In]ref TextStateFPtrs ff);
 
 		/// <summary>
 		/// return a CPU register

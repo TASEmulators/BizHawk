@@ -27,9 +27,6 @@
 
 namespace MDFN_IEN_WSWAN
 {
-
-	//extern uint16 WSButtonStatus;
-
 	void Memory::Write20(uint32 A, uint8 V)
 	{
 		uint32 offset, bank;
@@ -336,4 +333,34 @@ namespace MDFN_IEN_WSWAN
 		CommData = 0;
 	}
 
+	SYNCFUNC(Memory)
+	{
+		NSS(wsRAM);
+		//NSS(rom_size);
+		//PSS(wsCartROM, rom_size);
+		NSS(sram_size);
+		PSS(wsSRAM, sram_size);
+
+		NSS(WSButtonStatus);
+		NSS(Lagged);
+
+		NSS(ButtonWhich);
+		NSS(ButtonReadLatch);
+
+		NSS(DMASource);
+		NSS(DMADest);
+		NSS(DMALength);
+		NSS(DMAControl);
+
+		NSS(SoundDMASource);
+		NSS(SoundDMALength);
+		NSS(SoundDMAControl);
+
+		NSS(BankSelector);
+
+		NSS(CommControl);
+		NSS(CommData);
+
+		NSS(language);
+	}
 }

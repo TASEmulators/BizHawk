@@ -379,4 +379,35 @@ namespace MDFN_IEN_WSWAN
 			sbuf[y]->clear();
 	}
 
+	SYNCFUNC(Sound)
+	{
+		// don't need to save any of the blip stuff
+
+		NSS(period[4]);
+		NSS(volume[4]);
+		NSS(voice_volume);
+
+		NSS(sweep_step);
+		NSS(sweep_value);
+		NSS(noise_control);
+		NSS(control);
+		NSS(output_control);
+
+		NSS(sweep_8192_divider);
+		NSS(sweep_counter);
+		NSS(SampleRAMPos);
+
+		NSS(sample_cache);
+
+		NSS(last_v_val);
+
+		NSS(HyperVoice);
+		NSS(last_hv_val);
+
+		NSS(period_counter);
+		NSS(last_val);
+		NSS(sample_pos);
+		NSS(nreg);
+		NSS(last_ts);
+	}
 }

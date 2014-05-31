@@ -74,4 +74,14 @@ namespace MDFN_IEN_WSWAN
 		Recalc();
 	}
 
+	SYNCFUNC(Interrupt)
+	{
+		NSS(IStatus);
+		NSS(IEnable);
+		NSS(IVectorBase);
+
+		NSS(IOn_Cache);
+		NSS(IOn_Which);
+		NSS(IVector_Cache);
+	}
 }

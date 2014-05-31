@@ -9,6 +9,9 @@ struct Settings;
 }
 
 #include "wswan.h"
+
+#include "newstate.h"
+
 #include "gfx.h"
 #include "memory.h"
 #include "eeprom.h"
@@ -52,6 +55,8 @@ public:
 	Interrupt interrupt;
 	
 	bool rotate; // rotate screen and controls left 90
+
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 struct SyncSettings

@@ -237,6 +237,7 @@ namespace MDFN_IEN_WSWAN
 	{
 		return eeprom.ieeprom_size + eeprom.eeprom_size + memory.sram_size;
 	}
+
 	bool System::SaveRamLoad(const uint8 *data, int size)
 	{
 		if (size != SaveRamSize())
@@ -294,6 +295,18 @@ namespace MDFN_IEN_WSWAN
 		return ret;
 	}
 
+	SYNCFUNC(System)
+	{
+		SSS(gfx);
+		SSS(memory);
+		SSS(eeprom);
+		SSS(rtc);
+		SSS(sound);
+		SSS(cpu);
+		SSS(interrupt);
+	
+		NSS(rotate);
+	}
 
 	EXPORT System *bizswan_new()
 	{
@@ -352,4 +365,36 @@ namespace MDFN_IEN_WSWAN
 		return s->GetMemoryArea(index, *name, *size, *data);
 	}
 
+	EXPORT int bizswan_binstatesize(System *s)
+	{
+		NewStateDummy dummy;
+		s->SyncState<false>(&dummy);
+		return dummy.GetLength();
+	}
+
+	EXPORT int bizswan_binstatesave(System *s, char *data, int length)
+	{
+		NewStateExternalBuffer saver(data, length);
+		s->SyncState<false>(&saver);
+		return !saver.Overflow() && saver.GetLength() == length;
+	}
+	
+	EXPORT int bizswan_binstateload(System *s, const char *data, int length)
+	{
+		NewStateExternalBuffer loader(const_cast<char *>(data), length);
+		s->SyncState<true>(&loader);
+		return !loader.Overflow() && loader.GetLength() == length;
+	}
+
+	EXPORT void bizswan_txtstatesave(System *s, FPtrs *ff)
+	{
+		NewStateExternalFunctions saver(ff);
+		s->SyncState<false>(&saver);
+	}
+
+	EXPORT void bizswan_txtstateload(System *s, FPtrs *ff)
+	{
+		NewStateExternalFunctions loader(ff);
+		s->SyncState<true>(&loader);
+	}
 }

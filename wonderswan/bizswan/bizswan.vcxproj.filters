@@ -57,6 +57,9 @@
     <ClCompile Include="..\system.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\newstate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\eeprom.h">
@@ -99,6 +102,9 @@
       <Filter>Header Files\blip</Filter>
     </ClInclude>
     <ClInclude Include="..\system.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\newstate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

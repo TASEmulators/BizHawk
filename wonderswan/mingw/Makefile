@@ -16,6 +16,7 @@ SRCS = \
 	../system.cpp \
 	../tcache.cpp \
 	../v30mz.cpp \
+	../newstate.cpp \
 	../Blip/Blip_Buffer.cpp
 
 OBJS = $(SRCS:.cpp=.o)

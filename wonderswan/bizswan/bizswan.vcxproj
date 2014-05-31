@@ -75,6 +75,7 @@
     <ClCompile Include="..\gfx.cpp" />
     <ClCompile Include="..\interrupt.cpp" />
     <ClCompile Include="..\memory.cpp" />
+    <ClCompile Include="..\newstate.cpp" />
     <ClCompile Include="..\rtc.cpp" />
     <ClCompile Include="..\sound.cpp" />
     <ClCompile Include="..\system.cpp" />
@@ -90,6 +91,7 @@
     <ClInclude Include="..\memory.h" />
     <ClInclude Include="..\msvc\inttypes.h" />
     <ClInclude Include="..\msvc\stdint.h" />
+    <ClInclude Include="..\newstate.h" />
     <ClInclude Include="..\rtc.h" />
     <ClInclude Include="..\sound.h" />
     <ClInclude Include="..\system.h" />

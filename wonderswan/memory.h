@@ -53,6 +53,7 @@ private:
 
 public:
 	System *sys;
+	template<bool isReader>void SyncState(NewState *ns);
 private:
 	void CheckDMA();
 
@@ -65,8 +66,6 @@ enum
  MEMORY_GSREG_BNK2SLCT,
  MEMORY_GSREG_BNK3SLCT,
 };
-
-
 
 }
 
