@@ -568,7 +568,7 @@
       "Right Y": "NumberPad6, J1 Z+, X1 RStickRight",
       "Start": "Return, J1 B10, X1 Start",
       "B": "Z, J1 B1, X1 X",
-      "A": "X, J1 B2 X1 A",
+      "A": "X, J1 B2, X1 A",
       "Power": ""
     }
   },
