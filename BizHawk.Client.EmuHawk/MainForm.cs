@@ -7,9 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
 using BizHawk.Emulation.Cores.Atari.Atari7800;
 using BizHawk.Emulation.Cores.Calculators;

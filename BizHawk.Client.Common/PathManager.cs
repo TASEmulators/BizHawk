@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.Common
