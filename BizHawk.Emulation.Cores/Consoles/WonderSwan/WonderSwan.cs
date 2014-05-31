@@ -296,6 +296,11 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			return ret;
 		}
 
+		public void SetCpuRegister(string register, int value)
+		{
+			throw new NotImplementedException();
+		}
+
 		#endregion
 
 		#region Settings

@@ -100,6 +100,24 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodAttributes(
+			"setregister",
+			"sets the given register name to the given value"
+		)]
+		public void SetRegister(string register, int value)
+		{
+			try
+			{
+				Global.Emulator.SetCpuRegister(register, value);
+			}
+			catch (NotImplementedException)
+			{
+				Log(string.Format(
+					"Error: {0} does not yet implement setregister()",
+					Global.Emulator.Attributes().CoreName));
+			}
+		}
+
+		[LuaMethodAttributes(
 			"getsystemid",
 			"Returns the ID string of the current core loaded. Note: No ROM loaded will return the string NULL"
 		)]

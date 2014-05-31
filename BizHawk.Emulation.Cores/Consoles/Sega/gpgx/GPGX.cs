@@ -586,6 +586,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			return ret;
 		}
 
+		public void SetCpuRegister(string register, int value)
+		{
+			throw new NotImplementedException();
+		}
+
 		public void UpdateVDPViewContext(LibGPGX.VDPView view)
 		{
 			LibGPGX.gpgx_get_vdp_view(view);

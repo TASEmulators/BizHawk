@@ -1046,5 +1046,10 @@ namespace BizHawk.Emulation.Cores.Calculators
 				{ "Flag S", cpu.RegisterF.Bit(7) ? 1 : 0 }
 			};
 		}
+
+		public void SetCpuRegister(string register, int value)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

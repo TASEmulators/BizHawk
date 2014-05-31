@@ -394,6 +394,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			return ret;
 		}
 
+		public void SetCpuRegister(string register, int value)
+		{
+			throw new NotImplementedException();
+		}
+
 		private mupen64plusApi.MemoryCallback readcb;
 		private mupen64plusApi.MemoryCallback writecb;
 

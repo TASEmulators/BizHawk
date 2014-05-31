@@ -201,6 +201,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			};
 		}
 
+		public void SetCpuRegister(string register, int value)
+		{
+			throw new NotImplementedException();
+		}
+
 		/// <summary>
 		/// true if the emulator is currently emulating CGB
 		/// </summary>

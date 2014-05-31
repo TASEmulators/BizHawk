@@ -193,6 +193,33 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			};
 		}
 
+		public void SetCpuRegister(string register, int value)
+		{
+			switch(register)
+			{
+				default:
+					throw new InvalidOperationException();
+				case "A":
+					Cpu.A = (byte)value;
+					break;
+				case "X":
+					Cpu.X = (byte)value;
+					break;
+				case "Y":
+					Cpu.Y = (byte)value;
+					break;
+				case "S":
+					Cpu.S = (byte)value;
+					break;
+				case "PC":
+					Cpu.PC = (byte)value;
+					break;
+				case "Flag I":
+					Cpu.FlagI = value > 0;
+					break;
+			}
+		}
+
 		public bool StartAsyncSound() { return true; }
 
 		public void EndAsyncSound() { }

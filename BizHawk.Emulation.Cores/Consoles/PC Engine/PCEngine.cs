@@ -545,6 +545,11 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			};
 		}
 
+		public void SetCpuRegister(string register, int value)
+		{
+			throw new NotImplementedException();
+		}
+
 		public void Dispose()
 		{
 			if (disc != null)

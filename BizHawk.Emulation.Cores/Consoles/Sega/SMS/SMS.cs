@@ -510,6 +510,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			};
 		}
 
+		public void SetCpuRegister(string register, int value)
+		{
+			throw new NotImplementedException();
+		}
+
 		public void Dispose() { }
 
 		public object GetSettings() { return Settings.Clone(); }

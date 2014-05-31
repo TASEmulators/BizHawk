@@ -125,6 +125,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			};
 		}
 
+		public void SetCpuRegister(string register, int value)
+		{
+			throw new NotImplementedException();
+		}
+
 		public class MyScanlineHookManager : ScanlineHookManager
 		{
 			public MyScanlineHookManager(LibsnesCore core)

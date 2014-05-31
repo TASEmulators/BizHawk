@@ -103,6 +103,30 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				{ "Flag T", board.cpu.FlagT ? 1 : 0 }
 			};
 		}
+
+		public void SetCpuRegister(string register, int value)
+		{
+			switch (register)
+			{
+				default:
+					throw new InvalidOperationException();
+				case "A":
+					board.cpu.A = (byte)value;
+					break;
+				case "X":
+					board.cpu.X = (byte)value;
+					break;
+				case "Y":
+					board.cpu.Y = (byte)value;
+					break;
+				case "S":
+					board.cpu.S = (byte)value;
+					break;
+				case "PC":
+					board.cpu.PC = (byte)value;
+					break;
+			}
+		}
 	}
 
 	static public class C64Util

@@ -373,6 +373,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			return ret;
 		}
 
+		public void SetCpuRegister(string register, int value)
+		{
+			throw new NotImplementedException();
+		}
+
 		#endregion
 
 		#region settings
