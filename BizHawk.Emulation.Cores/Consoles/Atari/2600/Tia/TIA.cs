@@ -243,7 +243,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public void GetFrameRate(out int num, out int den)
 		{
-			int clockrate = _pal ? 3546894 : 3579575;
+			// TODO when sound timing is made exact:
+			// NTSC refclock is actually 315 / 88 mhz
+
+			int clockrate = _pal ? 3546895 : 3579545;
 			int clocksperframe = 228 * NominalNumScanlines;
 			int gcd = (int)BigInteger.GreatestCommonDivisor(clockrate, clocksperframe);
 			num = clockrate / gcd;
