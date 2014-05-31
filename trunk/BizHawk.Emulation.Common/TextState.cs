@@ -5,7 +5,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 
-namespace BizHawk.Common
+namespace BizHawk.Emulation.Common
 {
 	// managed counterpart to unmanaged serialization code in GB and WSWAN cores
 
