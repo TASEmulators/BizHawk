@@ -27,6 +27,7 @@ public:
 
 public:
 	System *sys;
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 

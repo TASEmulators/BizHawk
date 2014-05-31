@@ -56,6 +56,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			try
 			{
 				var ss = _SyncSettings.GetNativeSettings();
+				if (deterministicEmulation)
+					ss.userealtime = false;
 
 				bool rotate = false;
 
@@ -70,6 +72,9 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				InitVideo(rotate);
 				PutSettings(_Settings);
 				SetMemoryDomains();
+
+				savebuff = new byte[BizSwan.bizswan_binstatesize(Core)];
+				savebuff2 = new byte[savebuff.Length + 13];
 			}
 			catch
 			{
@@ -157,25 +162,81 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		#region Savestates
 
+		JsonSerializer ser = new JsonSerializer() { Formatting = Formatting.Indented };
+
+		class TextStateData
+		{
+			public int Frame;
+			public int LagCount;
+			public bool IsLagFrame;
+		}
+		
 		public void SaveStateText(TextWriter writer)
 		{
+			var s = new TextState<TextStateData>();
+			s.Prepare();
+			var ff = s.GetFunctionPointers();
+			BizSwan.bizswan_txtstatesave(Core, ref ff);
+			s.ExtraData.IsLagFrame = IsLagFrame;
+			s.ExtraData.LagCount = LagCount;
+			s.ExtraData.Frame = Frame;
+
+			ser.Serialize(writer, s);
+			// write extra copy of stuff we don't use
+			writer.WriteLine();
+			writer.WriteLine("Frame {0}", Frame);
 		}
 
 		public void LoadStateText(TextReader reader)
 		{
+			var s = (TextState<TextStateData>)ser.Deserialize(reader, typeof(TextState<TextStateData>));
+			s.Prepare();
+			var ff = s.GetFunctionPointers();
+			BizSwan.bizswan_txtstateload(Core, ref ff);
+			IsLagFrame = s.ExtraData.IsLagFrame;
+			LagCount = s.ExtraData.LagCount;
+			Frame = s.ExtraData.Frame;
 		}
+
+		byte[] savebuff;
+		byte[] savebuff2;
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
+			if (!BizSwan.bizswan_binstatesave(Core, savebuff, savebuff.Length))
+				throw new InvalidOperationException("bizswan_binstatesave() returned false!");
+			writer.Write(savebuff.Length);
+			writer.Write(savebuff);
+
+			// other variables
+			writer.Write(IsLagFrame);
+			writer.Write(LagCount);
+			writer.Write(Frame);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
+			int length = reader.ReadInt32();
+			if (length != savebuff.Length)
+				throw new InvalidOperationException("Save buffer size mismatch!");
+			reader.Read(savebuff, 0, length);
+			if (!BizSwan.bizswan_binstateload(Core, savebuff, savebuff.Length))
+				throw new InvalidOperationException("bizswan_binstateload() returned false!");
+
+			// other variables
+			IsLagFrame = reader.ReadBoolean();
+			LagCount = reader.ReadInt32();
+			Frame = reader.ReadInt32();
 		}
 
 		public byte[] SaveStateBinary()
 		{
-			return new byte[0];
+			var ms = new MemoryStream(savebuff2, true);
+			var bw = new BinaryWriter(ms);
+			SaveStateBinary(bw);
+			bw.Flush();
+			ms.Close();
+			return savebuff2;
 		}
 
 		public bool BinarySaveStatesPreferred

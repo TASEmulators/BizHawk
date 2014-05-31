@@ -19,8 +19,6 @@
 */
 
 #include "system.h"
-//#include <mednafen/video.h>
-//#include <trio/trio.h>
 #include <cstring>
 
 namespace MDFN_IEN_WSWAN
@@ -602,4 +600,71 @@ namespace MDFN_IEN_WSWAN
 		std::memset(wsCols, 0, sizeof(wsCols));
 	}
 
+	SYNCFUNC(GFX)
+	{
+		
+		// TCACHE stuff.  we invalidate the cache instead of saving it
+		if (isReader)
+		{
+			std::memset(wsTCacheUpdate, 0, sizeof(wsTCacheUpdate));
+			std::memset(wsTCacheUpdate2, 0, sizeof(wsTCacheUpdate2));
+		}
+		/*
+		NSS(tiles);
+		NSS(wsTCache);			
+		NSS(wsTCache2);			
+		NSS(wsTCacheFlipped);
+		NSS(wsTCacheFlipped2);
+		NSS(wsTCacheUpdate);		
+		NSS(wsTCacheUpdate2);		  
+		NSS(wsTileRow);
+		*/
+
+		NSS(wsVMode);
+
+		NSS(wsMonoPal);
+		NSS(wsColors);
+		NSS(wsCols);
+
+		NSS(ColorMapG);
+		NSS(ColorMap);
+		NSS(LayerEnabled);
+
+		NSS(wsLine);
+
+		NSS(SpriteTable);
+		NSS(SpriteCountCache);
+		NSS(DispControl);
+		NSS(BGColor);
+		NSS(LineCompare);
+		NSS(SPRBase);
+		NSS(SpriteStart);
+		NSS(SpriteCount);
+		NSS(FGBGLoc);
+		NSS(FGx0);
+		NSS(FGy0);
+		NSS(FGx1);
+		NSS(FGy1);
+		NSS(SPRx0);
+		NSS(SPRy0);
+		NSS(SPRx1);
+		NSS(SPRy1);
+
+		NSS(BGXScroll);
+		NSS(BGYScroll);
+		NSS(FGXScroll);
+		NSS(FGYScroll);
+		NSS(LCDControl);
+		NSS(LCDIcons);
+
+		NSS(BTimerControl);
+		NSS(HBTimerPeriod);
+		NSS(VBTimerPeriod);
+
+		NSS(HBCounter);
+		NSS(VBCounter);
+		NSS(VideoMode);
+
+		NSS(wsc); // mono / color
+	}
 }

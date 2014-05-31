@@ -114,9 +114,6 @@ namespace MDFN_IEN_WSWAN
 		255,255,255,255
 	};
 
-	//static uint8 iEEPROM_Command, EEPROM_Command;
-	//static uint16 iEEPROM_Address, EEPROM_Address;
-
 	uint8 EEPROM::Read(uint32 A)
 	{
 		switch(A)
@@ -203,4 +200,15 @@ namespace MDFN_IEN_WSWAN
 		iEEPROM[0x375] = Blood;
 	}
 
+	SYNCFUNC(EEPROM)
+	{
+		NSS(iEEPROM_Command);
+		NSS(EEPROM_Command);
+		NSS(iEEPROM_Address);
+		NSS(EEPROM_Address);
+
+		NSS(eeprom_size);
+		NSS(iEEPROM);
+		NSS(wsEEPROM);
+	}
 }

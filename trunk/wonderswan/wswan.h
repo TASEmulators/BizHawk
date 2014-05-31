@@ -3,8 +3,6 @@
 
 #include <mednafen/types.h>
 
-#include "interrupt.h"
-
 namespace MDFN_IEN_WSWAN
 {
 

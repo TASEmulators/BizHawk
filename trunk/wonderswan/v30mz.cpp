@@ -1027,4 +1027,25 @@ namespace MDFN_IEN_WSWAN
 
 	}
 
+	SYNCFUNC(V30MZ)
+	{
+		NSS(old_CS);
+		NSS(old_IP);
+		NSS(timestamp);
+		NSS(ICount);
+
+		NSS(I);
+		NSS(InHLT);
+
+		NSS(prefix_base);
+		NSS(seg_prefix);
+
+		NSS(parity_table);
+
+		NSS(EA);
+		NSS(EO);
+		NSS(E16);
+
+		NSS(Mod_RM);
+	}
 }

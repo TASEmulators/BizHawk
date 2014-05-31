@@ -112,4 +112,14 @@ namespace MDFN_IEN_WSWAN
 		}
 	}
 
+	SYNCFUNC(RTC)
+	{
+		NSS(CurrentTime);
+		NSS(userealtime);
+
+		NSS(ClockCycleCounter);
+		NSS(wsCA15);
+		NSS(Command);
+		NSS(Data);
+	}
 }

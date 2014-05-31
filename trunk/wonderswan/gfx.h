@@ -40,8 +40,9 @@ private:
 	uint8	wsTCacheUpdate[512];		
 	uint8	wsTCacheUpdate2[512];		  
 	uint8	wsTileRow[8];
-	int		wsVMode; // doesn't belong here?
 	// TCACHE/====================================
+	int		wsVMode;
+
 	uint32 wsMonoPal[16][4];
 	uint32 wsColors[8];
 	uint32 wsCols[16][16];
@@ -78,15 +79,8 @@ private:
 
 public:
 	System *sys;
+	template<bool isReader>void SyncState(NewState *ns);
 };
-
-
-
-// ?
-//extern uint32		dx_r,dx_g,dx_b,dx_sr,dx_sg,dx_sb;
-//extern uint32		dx_bits,dx_pitch,cmov,dx_linewidth_blit,dx_buffer_line;
-
-
 
 }
 
