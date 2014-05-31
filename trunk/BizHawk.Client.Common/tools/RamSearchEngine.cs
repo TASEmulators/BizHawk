@@ -1158,54 +1158,12 @@ namespace BizHawk.Client.Common
 
 			public Settings()
 			{
-				switch (Global.Emulator.SystemId)
-				{
-					case "N64":
-						Mode = SearchMode.Fast;
-						Size = Watch.WatchSize.DWord;
-						Type = Watch.DisplayType.Unsigned;
-						BigEndian = true;
-						break;
-					case "GBA":
-						Mode = SearchMode.Detailed;
-						Size = Watch.WatchSize.DWord;
-						Type = Watch.DisplayType.Unsigned;
-						BigEndian = false;
-						break;
-					case "GEN":
-						Mode = SearchMode.Detailed;
-						Size = Watch.WatchSize.Word;
-						Type = Watch.DisplayType.Unsigned;
-						BigEndian = true;
-						break;
-					case "SNES":
-						Mode = SearchMode.Detailed;
-						Size = Watch.WatchSize.Byte;
-						Type = Watch.DisplayType.Unsigned;
-						BigEndian = false;
-						break;
-					case "SAT":
-						Mode = SearchMode.Fast;
-						Size = Watch.WatchSize.DWord;
-						Type = Watch.DisplayType.Unsigned;
-						BigEndian = true;
-						break;
-					default:
-					case "NES":
-					case "A26":
-					case "A78":
-					case "TI83":
-					case "SMS":
-					case "GG":
-					case "SG":
-					case "Coleco":
-					case "C64":
-						Mode = SearchMode.Detailed;
-						Size = Watch.WatchSize.Byte;
-						Type = Watch.DisplayType.Unsigned;
-						BigEndian = false;
-						break;
-				}
+				BigEndian = Global.Emulator.MemoryDomains.MainMemory.EndianType == MemoryDomain.Endian.Big;
+				Size = (Watch.WatchSize)Global.SystemInfo.ByteSize;
+				Type = Watch.DisplayType.Unsigned;
+				Mode = Global.Emulator.MemoryDomains.MainMemory.Size > (1024 * 1024) ?
+					SearchMode.Fast :
+					SearchMode.Detailed;
 
 				Domain = Global.Emulator.MemoryDomains.MainMemory;
 				CheckMisAligned = false;

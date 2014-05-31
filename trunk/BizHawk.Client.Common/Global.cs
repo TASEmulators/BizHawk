@@ -100,6 +100,48 @@ namespace BizHawk.Client.Common
 						return SystemInfo.Null;
 					case "NES":
 						return SystemInfo.Nes;
+					case "INTV":
+						return SystemInfo.Intellivision;
+					case "SG":
+						return SystemInfo.SG;
+					case "SMS":
+						return SystemInfo.SMS;
+					case "GG":
+						return SystemInfo.GG;
+					case "PCECD":
+						return SystemInfo.PCECD;
+					case "PCE":
+						return SystemInfo.PCE;
+					case "SGX":
+						return SystemInfo.SGX;
+					case "GEN":
+						return SystemInfo.Genesis;
+					case "TI83":
+						return SystemInfo.TI83;
+					case "SNES":
+						return SystemInfo.SNES;
+					case "GB":
+						return SystemInfo.GB;
+					case "GBC":
+						return SystemInfo.GBC;
+					case "A26":
+						return SystemInfo.Atari2600;
+					case "A78":
+						return SystemInfo.Atari7800;
+					case "C64":
+						return SystemInfo.C64;
+					case "Coleco":
+						return SystemInfo.Coleco;
+					case "GBA":
+						return SystemInfo.GBA;
+					case "N64":
+						return SystemInfo.N64;
+					case "SAT":
+						return SystemInfo.Saturn;
+					case "DGB":
+						return SystemInfo.DualGB;
+					case "WSWAN":
+						return SystemInfo.WonderSwan;
 				}
 			}
 		}
