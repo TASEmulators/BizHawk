@@ -168,23 +168,17 @@ GBEXPORT int gambatte_newstateload(void *core, const char *data, long len)
 	return !loader.Overflow() && loader.GetLength() == len;
 }
 
-GBEXPORT void gambatte_newstatesave_ex(void *core,
-	void (*Save_)(const void *ptr, size_t size, const char *name),
-	void (*EnterSection_)(const char *name),
-	void (*ExitSection_)(const char *name))
+GBEXPORT void gambatte_newstatesave_ex(void *core, FPtrs *ff)
 {
 	GB *g = (GB *) core;
-	NewStateExternalFunctions saver(Save_, NULL, EnterSection_, ExitSection_);
+	NewStateExternalFunctions saver(ff);
 	g->SyncState<false>(&saver);
 }
 
-GBEXPORT void gambatte_newstateload_ex(void *core,
-	void (*Load_)(void *ptr, size_t size, const char *name),
-	void (*EnterSection_)(const char *name),
-	void (*ExitSection_)(const char *name))
+GBEXPORT void gambatte_newstateload_ex(void *core, FPtrs *ff)
 {
 	GB *g = (GB *) core;
-	NewStateExternalFunctions loader(NULL, Load_, EnterSection_, ExitSection_);
+	NewStateExternalFunctions loader(ff);
 	g->SyncState<true>(&loader);
 }
 

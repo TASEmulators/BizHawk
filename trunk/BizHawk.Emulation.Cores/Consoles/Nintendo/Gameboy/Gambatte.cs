@@ -482,19 +482,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		JsonSerializer ser = new JsonSerializer() { Formatting = Formatting.Indented };
 
+		// other data in the text state besides core
+		class TextStateData
+		{
+			public int Frame;
+			public int LagCount;
+			public bool IsLagFrame;
+			public ulong _cycleCount;
+			public uint frameOverflow;
+		}
+
 		public void SaveStateText(System.IO.TextWriter writer)
 		{
-			var s = new TextState();
+			var s = new TextState<TextStateData>();
 			s.Prepare();
-			LibGambatte.gambatte_newstatesave_ex(GambatteState,
-				s.Save,
-				s.EnterSection,
-				s.ExitSection);
-			s.IsLagFrame = IsLagFrame;
-			s.LagCount = LagCount;
-			s.Frame = Frame;
-			s.frameOverflow = frameOverflow;
-			s._cycleCount = _cycleCount;
+			var ff = s.GetFunctionPointers();
+			LibGambatte.gambatte_newstatesave_ex(GambatteState, ref ff);
+			s.ExtraData.IsLagFrame = IsLagFrame;
+			s.ExtraData.LagCount = LagCount;
+			s.ExtraData.Frame = Frame;
+			s.ExtraData.frameOverflow = frameOverflow;
+			s.ExtraData._cycleCount = _cycleCount;
 
 			ser.Serialize(writer, s);
 			// write extra copy of stuff we don't use
@@ -504,17 +512,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public void LoadStateText(System.IO.TextReader reader)
 		{
-			var s = (TextState)ser.Deserialize(reader, typeof(TextState));
+			var s = (TextState<TextStateData>)ser.Deserialize(reader, typeof(TextState<TextStateData>));
 			s.Prepare();
-			LibGambatte.gambatte_newstateload_ex(GambatteState,
-				s.Load,
-				s.EnterSection,
-				s.ExitSection);
-			IsLagFrame = s.IsLagFrame;
-			LagCount = s.LagCount;
-			Frame = s.Frame;
-			frameOverflow = s.frameOverflow;
-			_cycleCount = s._cycleCount;
+			var ff = s.GetFunctionPointers();
+			LibGambatte.gambatte_newstateload_ex(GambatteState, ref ff);
+			IsLagFrame = s.ExtraData.IsLagFrame;
+			LagCount = s.ExtraData.LagCount;
+			Frame = s.ExtraData.Frame;
+			frameOverflow = s.ExtraData.frameOverflow;
+			_cycleCount = s.ExtraData._cycleCount;
 		}
 
 		public void SaveStateBinary(System.IO.BinaryWriter writer)
@@ -560,6 +566,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public bool BinarySaveStatesPreferred { get { return true; } }
 
+		/*
 		void DebugStates()
 		{
 			var sd = new StateDebug();
@@ -570,7 +577,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			LibGambatte.gambatte_newstatesave_ex(GambatteState, Save, EnterSection, ExitSection);
 			LibGambatte.gambatte_newstateload_ex(GambatteState, Load, EnterSection, ExitSection);
-		}
+		}*/
 
 		#endregion
 
