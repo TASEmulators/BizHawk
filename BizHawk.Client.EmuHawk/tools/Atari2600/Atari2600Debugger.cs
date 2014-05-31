@@ -399,7 +399,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-
 		// TODO: these can be generic to any debugger
 		#region Breakpoint Classes
 
