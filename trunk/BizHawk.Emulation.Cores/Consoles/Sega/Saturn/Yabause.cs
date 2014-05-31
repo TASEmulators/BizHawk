@@ -139,6 +139,11 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			throw new NotImplementedException();
 		}
 
+		public void SetCpuRegister(string register, int value)
+		{
+			throw new NotImplementedException();
+		}
+
 		public bool GLMode { get; private set; }
 
 		public void SetGLRes(int factor, int width, int height)

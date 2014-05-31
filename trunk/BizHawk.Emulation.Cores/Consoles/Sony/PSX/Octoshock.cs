@@ -36,6 +36,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			throw new NotImplementedException();
 		}
 
+		public void SetCpuRegister(string register, int value)
+		{
+			throw new NotImplementedException();
+		}
+
 		public static bool CheckIsPSX(DiscSystem.Disc disc)
 		{
 			bool ret = false;

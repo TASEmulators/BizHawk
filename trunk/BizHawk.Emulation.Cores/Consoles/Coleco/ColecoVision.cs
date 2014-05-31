@@ -293,5 +293,10 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				{ "Flag S", Cpu.RegisterF.Bit(7) ? 1 : 0 }
 			};
 		}
+
+		public void SetCpuRegister(string register, int value)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

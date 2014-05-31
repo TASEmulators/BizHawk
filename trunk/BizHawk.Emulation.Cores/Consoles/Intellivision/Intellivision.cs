@@ -28,6 +28,11 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			throw new NotImplementedException();
 		}
 
+		public void SetCpuRegister(string register, int value)
+		{
+			throw new NotImplementedException();
+		}
+
 		public void Connect()
 		{
 			Cpu.SetIntRM(Stic.GetSr1());

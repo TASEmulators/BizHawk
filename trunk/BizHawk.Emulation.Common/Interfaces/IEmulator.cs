@@ -145,6 +145,13 @@ namespace BizHawk.Emulation.Common
 		/// <returns></returns>
 		Dictionary<string, int> GetCpuFlagsAndRegisters();
 
+		/// <summary>
+		/// Sets a given Cpu register to the given value
+		/// </summary>
+		/// <param name="register"></param>
+		/// <param name="value"></param>
+		void SetCpuRegister(string register, int value);
+
 		// ====settings interface====
 
 		// in addition to these methods, it's expected that the constructor or Load() method

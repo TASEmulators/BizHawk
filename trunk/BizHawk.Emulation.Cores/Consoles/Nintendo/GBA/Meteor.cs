@@ -26,6 +26,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			return ret;
 		}
 
+		public void SetCpuRegister(string register, int value)
+		{
+			throw new NotImplementedException();
+		}
+
 		public static readonly ControllerDefinition GBAController =
 		new ControllerDefinition
 		{
