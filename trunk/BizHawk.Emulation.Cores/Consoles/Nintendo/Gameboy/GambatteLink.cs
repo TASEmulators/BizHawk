@@ -36,13 +36,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				L.SetCpuRegister(register.Replace("Left ", ""), value);
 			}
-
 			else if (register.StartsWith("Right "))
 			{
-				L.SetCpuRegister(register.Replace("Right ", ""), value);
+				R.SetCpuRegister(register.Replace("Right ", ""), value);
 			}
-
-			throw new InvalidOperationException();
 		}
 
 		Gameboy L;
