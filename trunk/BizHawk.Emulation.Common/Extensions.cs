@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BizHawk.Emulation.Common
+namespace BizHawk.Emulation.Common.IEmulatorExtensions
 {
 	public static class Extensions
 	{
