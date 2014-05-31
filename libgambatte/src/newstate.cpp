@@ -40,15 +40,11 @@ void NewStateExternalBuffer::Load(void *ptr, size_t size, const char *name)
 	length += size;
 }
 
-NewStateExternalFunctions::NewStateExternalFunctions(
-	void (*Save_)(const void *ptr, size_t size, const char *name),
-	void (*Load_)(void *ptr, size_t size, const char *name),
-	void (*EnterSection_)(const char *name),
-	void (*ExitSection_)(const char *name))
-	:Save_(Save_),
-	Load_(Load_),
-	EnterSection_(EnterSection_),
-	ExitSection_(ExitSection_)
+NewStateExternalFunctions::NewStateExternalFunctions(const FPtrs *ff)
+	:Save_(ff->Save_),
+	Load_(ff->Load_),
+	EnterSection_(ff->EnterSection_),
+	ExitSection_(ff->ExitSection_)
 {
 }
 

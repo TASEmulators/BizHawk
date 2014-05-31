@@ -35,6 +35,10 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -67,6 +71,7 @@
     <Compile Include="Serializer.cs" />
     <Compile Include="SettingsUtil.cs" />
     <Compile Include="SwitcherStream.cs" />
+    <Compile Include="TextState.cs" />
     <Compile Include="UndoHistory.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
