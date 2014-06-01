@@ -3,7 +3,7 @@ using LuaInterface;
 
 namespace BizHawk.Client.Common
 {
-	public class MovieLuaLibrary : LuaLibraryBase
+	public sealed class MovieLuaLibrary : LuaLibraryBase
 	{
 		public MovieLuaLibrary(Lua lua)
 			: base(lua) { }

@@ -8,7 +8,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 
 namespace BizHawk.Client.Common
 {
-	public class NesLuaLibrary : LuaLibraryBase
+	public sealed class NesLuaLibrary : LuaLibraryBase
 	{
 		// TODO:  
 		// perhaps with the new core config system, one could

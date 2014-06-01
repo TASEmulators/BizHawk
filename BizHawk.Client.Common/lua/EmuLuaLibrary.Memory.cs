@@ -4,7 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public class MemoryLuaLibrary : LuaMemoryBase
+	public sealed class MemoryLuaLibrary : LuaMemoryBase
 	{
 		private int _currentMemoryDomain; // Main memory by default probably (index 0 is currently always main memory but may never be)
 

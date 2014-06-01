@@ -4,7 +4,7 @@ using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.Common
 {
-	public class SnesLuaLibrary : LuaLibraryBase
+	public sealed class SnesLuaLibrary : LuaLibraryBase
 	{
 		public SnesLuaLibrary(Lua lua)
 			: base(lua) { }

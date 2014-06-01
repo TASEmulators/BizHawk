@@ -9,7 +9,7 @@ using LuaInterface;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class FormsLuaLibrary : LuaLibraryBase
+	public sealed class FormsLuaLibrary : LuaLibraryBase
 	{
 		public FormsLuaLibrary(Lua lua)
 			: base(lua) { }

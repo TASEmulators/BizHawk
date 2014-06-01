@@ -4,7 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public class MainMemoryLuaLibrary : LuaMemoryBase
+	public sealed class MainMemoryLuaLibrary : LuaMemoryBase
 	{
 		public MainMemoryLuaLibrary(Lua lua)
 			: base(lua) { }
