@@ -14,9 +14,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	/// </summary>
 	[CoreAttributes(
 		"Gambatte",
-		"sinamas",
+		"",
 		isPorted: true,
-		isReleased: true
+		isReleased: true,
+		portedVersion: "SVN 344",
+		portedUrl: "http://gambatte.sourceforge.net/"
 		)]
 	public class Gameboy : IEmulator, IVideoProvider, ISyncSoundProvider
 	{

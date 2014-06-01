@@ -12,9 +12,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	[CoreAttributes(
 		"Mupen64Plus",
-		"Richard Goedeken",
+		"",
 		isPorted: true,
-		isReleased: true
+		isReleased: true,
+		portedVersion: "2.0",
+		portedUrl: "https://code.google.com/p/mupen64plus/"
 		)]
 	public class N64 : IEmulator
 	{
