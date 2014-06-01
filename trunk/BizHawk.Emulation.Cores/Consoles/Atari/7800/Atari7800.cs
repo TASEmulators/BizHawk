@@ -10,9 +10,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 {
 	[CoreAttributes(
 		"EMU7800",
-		"Mike Murphy",
+		"",
 		isPorted: true,
-		isReleased: true
+		isReleased: true,
+		portedVersion: "v1.5",
+		portedUrl: "http://emu7800.sourceforge.net/"
 		)]
 	public partial class Atari7800 : IEmulator
 	{

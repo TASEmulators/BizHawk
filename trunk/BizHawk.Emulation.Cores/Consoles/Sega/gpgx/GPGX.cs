@@ -17,9 +17,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	[CoreAttributes(
 		"Genplus-gx",
-		"ekeeke31",
+		"",
 		isPorted: true,
-		isReleased: true
+		isReleased: true,
+		portedVersion: "r580",
+		portedUrl: "https://code.google.com/p/genplus-gx/"
 		)]
 	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider
 	{

@@ -16,9 +16,11 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 {
 	[CoreAttributes(
 		"Yabause",
-		"Guillaume",
+		"",
 		isPorted: true,
-		isReleased: true
+		isReleased: true,
+		portedVersion: "9.12",
+		portedUrl: "http://yabause.org"
 		)]
 	public class Yabause : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
