@@ -207,6 +207,7 @@ namespace BizHawk.Client.Common
 			new Tuple<string, char>("Left Y", 'L'),
 			new Tuple<string, char>("Right Y", 'R'),
 			new Tuple<string, char>(null, '|'),
+			new Tuple<string, char>("Start", 'S'),
 			new Tuple<string, char>("B", 'B'),
 			new Tuple<string, char>("A", 'A'),
 			new Tuple<string, char>("Power", 'P'),
