@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
-	[CoreAttributes("Mednafen/Cygne", "Dox", true, false)]
+	[CoreAttributes("Mednafen/Cygne", "Dox", true, true)]
 	public class WonderSwan : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
 		#region Controller
