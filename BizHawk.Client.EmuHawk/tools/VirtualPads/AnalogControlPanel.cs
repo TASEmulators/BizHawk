@@ -164,10 +164,11 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 
-		void Clear()
+		public void Clear()
 		{
 			X = Y = 0;
 			HasValue = false;
+			Refresh();
 		}
 
 		public void SetPosition(int xval, int yval)
