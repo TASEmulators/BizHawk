@@ -225,6 +225,9 @@ namespace BizHawk.Client.EmuHawk
 					ControllerBox.Controls.Add(new VirtualPadSaturnControl { Location = new Point(8, 125) });
 					ControllerBox.Controls.Add(new VirtualPadSaturn { Location = new Point(8, 19), Controller = "P1" });
 					break;
+				case "WSWAN":
+					ControllerBox.Controls.Add(new VirtualPadWonderSawn { Location = new Point(8, 19) });
+					break;
 			}
 
 			// Hack for now
