@@ -516,6 +516,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool UpdateFrame = false;
 		public bool EmulatorPaused { get; private set; }
 
+		// TODO: SystemInfo should be able to do this
 		// Because we don't have enough places where we list SystemID's
 		public Dictionary<string, string> SupportedPlatforms
 		{
@@ -542,7 +543,9 @@ namespace BizHawk.Client.EmuHawk
 					{ "PCE", "PC Engine/TurboGrafx 16" },
 
 					{ "Coleco", "Colecovision" },
-					{ "TI83", "TI-83 Calculator" }
+					{ "TI83", "TI-83 Calculator" },
+
+					{ "WSWAN", "WonderSwan" }
 				};
 
 				if (VersionInfo.INTERIM)
