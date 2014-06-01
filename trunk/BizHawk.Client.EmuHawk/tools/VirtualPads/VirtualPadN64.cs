@@ -69,11 +69,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Clear()
 		{
-			if (Global.Emulator.SystemId != "N64") return;
+			if (Global.Emulator.SystemId != "N64")
+			{
+				return;
+			}
 
 			foreach (var button in Buttons)
 			{
 				button.Clear();
+				AnalogControl1.Clear();
 			}
 		}
 
