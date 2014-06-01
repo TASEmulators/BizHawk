@@ -3,7 +3,7 @@ using LuaInterface;
 
 namespace BizHawk.Client.Common
 {
-	public class BitLuaLibrary : LuaLibraryBase
+	public sealed class BitLuaLibrary : LuaLibraryBase
 	{
 		public BitLuaLibrary(Lua lua)
 			: base(lua) { }

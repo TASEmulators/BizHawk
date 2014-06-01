@@ -5,7 +5,7 @@ using LuaInterface;
 
 namespace BizHawk.Client.Common
 {
-	public class StringLuaLibrary : LuaLibraryBase
+	public sealed class StringLuaLibrary : LuaLibraryBase
 	{
 		public override string Name { get { return "bizstring"; } }
 

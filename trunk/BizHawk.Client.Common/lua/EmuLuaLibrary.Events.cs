@@ -5,7 +5,7 @@ using LuaInterface;
 
 namespace BizHawk.Client.Common
 {
-	public class EventLuaLibrary : LuaLibraryBase
+	public sealed class EventLuaLibrary : LuaLibraryBase
 	{
 		private readonly LuaFunctionList _luaFunctions = new LuaFunctionList();
 

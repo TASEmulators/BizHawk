@@ -6,7 +6,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class EmuHawkLuaLibrary : LuaLibraryBase
+	public sealed class EmuHawkLuaLibrary : LuaLibraryBase
 	{
 		private readonly Dictionary<int, string> _filterMappings = new Dictionary<int, string>
 			{

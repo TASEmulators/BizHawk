@@ -12,7 +12,7 @@ using LuaInterface;
 
 namespace BizHawk.Client.Common
 {
-	public class EmulatorLuaLibrary : LuaLibraryBase
+	public sealed class EmulatorLuaLibrary : LuaLibraryBase
 	{
 		public Action FrameAdvanceCallback { get; set; }
 		public Action YieldCallback { get; set; }
