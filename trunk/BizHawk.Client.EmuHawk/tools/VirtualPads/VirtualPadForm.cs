@@ -26,6 +26,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
+				if (Global.Emulator.SystemId == "WSWAN") // Hack - Wonderswan mnemonics violate the 1 controller per pipe rule
+				{
+					return new[]
+					{
+						Global.MovieSession.Movie
+						.GetInput(Global.Emulator.Frame) 
+					}.ToList();
+				}
+
 				return Global.MovieSession.Movie
 					.GetInput(Global.Emulator.Frame)
 					.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)

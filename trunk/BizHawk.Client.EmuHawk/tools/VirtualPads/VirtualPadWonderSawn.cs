@@ -131,20 +131,20 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (buttons.Length < 15) return;
 
-			if (buttons[0] == '.') PU.Checked = false; else PU.Checked = true;
-			if (buttons[1] == '.') PD.Checked = false; else PD.Checked = true;
-			if (buttons[2] == '.') PL.Checked = false; else PL.Checked = true;
-			if (buttons[3] == '.') PR.Checked = false; else PR.Checked = true;
+			if (buttons[1] == '.') PU.Checked = false; else PU.Checked = true;
+			if (buttons[2] == '.') PD.Checked = false; else PD.Checked = true;
+			if (buttons[3] == '.') PL.Checked = false; else PL.Checked = true;
+			if (buttons[4] == '.') PR.Checked = false; else PR.Checked = true;
 
-			if (buttons[5] == '.') PU2.Checked = false; else PU2.Checked = true;
-			if (buttons[6] == '.') PD2.Checked = false; else PD2.Checked = true;
-			if (buttons[7] == '.') PL2.Checked = false; else PL2.Checked = true;
-			if (buttons[8] == '.') PR2.Checked = false; else PR2.Checked = true;
+			if (buttons[6] == '.') PU2.Checked = false; else PU2.Checked = true;
+			if (buttons[7] == '.') PD2.Checked = false; else PD2.Checked = true;
+			if (buttons[8] == '.') PL2.Checked = false; else PL2.Checked = true;
+			if (buttons[9] == '.') PR2.Checked = false; else PR2.Checked = true;
 
-			if (buttons[10] == '.') BStart.Checked = false; else BStart.Checked = true;
-			if (buttons[11] == '.') BB.Checked = false; else BB.Checked = true;
-			if (buttons[12] == '.') BA.Checked = false; else BA.Checked = true;
-			if (buttons[13] == '.') BPower.Checked = false; else BPower.Checked = true;
+			if (buttons[11] == '.') BStart.Checked = false; else BStart.Checked = true;
+			if (buttons[12] == '.') BB.Checked = false; else BB.Checked = true;
+			if (buttons[13] == '.') BA.Checked = false; else BA.Checked = true;
+			if (buttons[14] == '.') BPower.Checked = false; else BPower.Checked = true;
 		}
 
 		private void Buttons_CheckedChanged(object sender, EventArgs e)
