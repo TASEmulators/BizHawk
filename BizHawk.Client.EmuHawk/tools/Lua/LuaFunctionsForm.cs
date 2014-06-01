@@ -53,23 +53,33 @@ namespace BizHawk.Client.EmuHawk
 		{
 			text = string.Empty;
 
-			switch (column)
+			try
+			{ 
+				if (FilteredList.Any() && index < FilteredList.Count)
+				{
+					switch (column)
+					{
+						case 0:
+							text = FilteredList[index].ReturnType;
+							break;
+						case 1:
+							text = FilteredList[index].Library;
+							break;
+						case 2:
+							text = FilteredList[index].Name;
+							break;
+						case 3:
+							text = FilteredList[index].ParameterList;
+							break;
+						case 4:
+							text = FilteredList[index].Description;
+							break;
+					}
+				}
+			}
+			catch
 			{
-				case 0:
-					text = FilteredList[index].ReturnType;
-					break;
-				case 1:
-					text = FilteredList[index].Library;
-					break;
-				case 2:
-					text = FilteredList[index].Name;
-					break;
-				case 3:
-					text = FilteredList[index].ParameterList;
-					break;
-				case 4:
-					text = FilteredList[index].Description;
-					break;
+				/* Eat it*/
 			}
 		}
 
