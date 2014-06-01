@@ -28,7 +28,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		private readonly EventWaitHandle _completeThreadEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
 
 		private mupen64plusApi api; // mupen64plus DLL Api
+		
 		private N64SyncSettings _syncSettings;
+		private N64Settings _settings;
+
 		private bool _pendingThreadTerminate;
 
 		private DisplayType _display_type = DisplayType.NTSC;
@@ -43,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// <param name="game">Game information of game to load</param>
 		/// <param name="rom">Rom that should be loaded</param>
 		/// <param name="SyncSettings">N64SyncSettings object</param>
-		public N64(CoreComm comm, GameInfo game, byte[] rom, object SyncSettings)
+		public N64(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
 			int SaveType = 0;
 			if (game.OptionValue("SaveType") == "EEPROM_16K")
@@ -53,7 +56,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			CoreComm = comm;
 
-			_syncSettings = (N64SyncSettings)SyncSettings ?? new N64SyncSettings();
+			_syncSettings = (N64SyncSettings)syncSettings ?? new N64SyncSettings();
+			_settings = (N64Settings)settings ?? new N64Settings();
 
 			byte country_code = rom[0x3E];
 			switch (country_code)
@@ -93,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			StartThreadLoop();
 
-			var videosettings = _syncSettings.GetVPS(game);
+			var videosettings = _syncSettings.GetVPS(game, _settings.VideoSizeX, _settings.VideoSizeY);
 			var coreType = _syncSettings.CoreType;
 
 			//zero 19-apr-2014 - added this to solve problem with SDL initialization corrupting the main thread (I think) and breaking subsequent emulators (for example, NES)
@@ -513,7 +517,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public object GetSettings()
 		{
-			return null;
+			return _settings.Clone();
 		}
 
 		public object GetSyncSettings()
@@ -523,12 +527,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public bool PutSettings(object o)
 		{
-			return false;
+			_settings = (N64Settings)o;
+			return true;
 		}
 
 		public bool PutSyncSettings(object o)
 		{
-			_syncSettings = (N64SyncSettings)o; return true;
+			_syncSettings = (N64SyncSettings)o;
+			return true;
 		}
 
 		#endregion

@@ -412,7 +412,8 @@ namespace BizHawk.Client.Common
 
 								break;
 							case "N64":
-								nextEmulator = new N64(nextComm, game, rom.RomData, GetCoreSyncSettings<N64>());
+								nextEmulator = new N64(nextComm, game, rom.RomData,
+									GetCoreSettings<N64>(), GetCoreSyncSettings<N64>());
 								break;
 							case "WSWAN":
 								nextEmulator = new WonderSwan(nextComm, rom.RomData, Deterministic,
