@@ -1,17 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
-using BizHawk.Emulation.Cores.Nintendo.GBA;
-using BizHawk.Emulation.Cores.Sega.Genesis;
-using BizHawk.Emulation.Cores.Sega.Saturn;
-using BizHawk.Emulation.Cores.Sony.PSP;
-
-using Newtonsoft.Json;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.EmuHawk
@@ -56,6 +50,7 @@ namespace BizHawk.Client.EmuHawk
 						Global.Config.NES_InQuickNES = false;
 					}
 				}
+
 				string s = Global.MovieSession.Movie.Header.SyncSettingsJson;
 				if (!string.IsNullOrWhiteSpace(s))
 				{
@@ -82,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.MovieSession.Movie.Header.StartsFromSavestate)
 			{
-				byte[] state = Convert.FromBase64String(Global.MovieSession.Movie.Header.SavestateBinaryBase64Blob);
+				var state = Convert.FromBase64String(Global.MovieSession.Movie.Header.SavestateBinaryBase64Blob);
 				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(state)));
 				Global.Emulator.ResetCounters();
 			}
@@ -143,11 +138,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadRecordMovieDialog()
 		{
-			// put any BEETA quality cores here
-			if (Global.Emulator is GBA ||
-				Global.Emulator is Genesis ||
-				Global.Emulator is Yabause ||
-				Global.Emulator is PSP)
+			if (!Global.Emulator.Attributes().Released)
 			{
 				var result = MessageBox.Show
 					(this, "Thanks for using Bizhawk!  The emulation core you have selected " +
@@ -166,7 +157,7 @@ namespace BizHawk.Client.EmuHawk
 				LoadRom(CurrentlyOpenRom);
 				if (Global.MovieSession.Movie.Header.StartsFromSavestate)
 				{
-					byte[] state = Convert.FromBase64String(Global.MovieSession.Movie.Header.SavestateBinaryBase64Blob);
+					var state = Convert.FromBase64String(Global.MovieSession.Movie.Header.SavestateBinaryBase64Blob);
 					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(state)));
 					Global.Emulator.ResetCounters();
 				}
