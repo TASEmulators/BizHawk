@@ -17,11 +17,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public BizBoxInfoControl(CoreAttributes attributes)
 		{
-			if (attributes.CoreName.ToLower().StartsWith("bs"))
-			{
-				int zzz = 0;
-			}
-
 			InitializeComponent();
 			CoreNameLabel.Text = attributes.CoreName;
 			
