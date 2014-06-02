@@ -108,7 +108,7 @@ namespace BizHawk.Client.Common
 			// If Starting a new recording requires clearing sram it shoudl be done at a higher layer and not rely on all IMovies doing this
 			// Haven't removed it yet because I coudln't guarantee that power-on movies coudl live without it
 			// And the immediate fire is that Savestate movies are breaking
-			if (!Header.StartsFromSavestate && Global.Emulator.SystemId != "WSWAN")
+			if (!Header.StartsFromSavestate) // && Global.Emulator.SystemId != "WSWAN")
 			{
 				Global.Emulator.ClearSaveRam();
 			}
@@ -126,7 +126,7 @@ namespace BizHawk.Client.Common
 		public void StartNewPlayback()
 		{
 			// See StartNewRecording for details as to why this savestate check is here
-			if (!Header.StartsFromSavestate && Global.Emulator.SystemId != "WSWAN")
+			if (!Header.StartsFromSavestate) // && Global.Emulator.SystemId != "WSWAN")
 			{
 				Global.Emulator.ClearSaveRam();
 			}
