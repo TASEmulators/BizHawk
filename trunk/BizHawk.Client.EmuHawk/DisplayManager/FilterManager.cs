@@ -117,7 +117,7 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 			}
 		}
 
-		public void Compile(string channel, Size insize, Size outsize)
+		public void Compile(string channel, Size insize, Size outsize, bool finalTarget)
 		{
 		RETRY:
 			
@@ -231,16 +231,19 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 			}
 
 			//patch the program so that the final rendertarget set operation is the framebuffer instead
-			for (int i = Program.Count - 1; i >= 0; i--)
+			if (finalTarget)
 			{
-				var ps = Program[i];
-				if (ps.Type == ProgramStepType.NewTarget)
+				for (int i = Program.Count - 1; i >= 0; i--)
 				{
-					var size = (Size)ps.Args;
-					Debug.Assert(size == outsize);
-					ps.Type = ProgramStepType.FinalTarget;
-					ps.Args = null;
-					break;
+					var ps = Program[i];
+					if (ps.Type == ProgramStepType.NewTarget)
+					{
+						var size = (Size)ps.Args;
+						Debug.Assert(size == outsize);
+						ps.Type = ProgramStepType.FinalTarget;
+						ps.Args = size;
+						break;
+					}
 				}
 			}
 		}

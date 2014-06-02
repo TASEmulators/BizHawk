@@ -9,12 +9,12 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
-	/// an IVideoProivder wrapping a Bitmap
+	/// an IVideoProvder wrapping a Bitmap
 	/// </summary>
-	public class BmpVideoProvder : IVideoProvider, IDisposable
+	public class BmpVideoProvider : IVideoProvider, IDisposable
 	{
 		Bitmap bmp;
-		public BmpVideoProvder(Bitmap bmp)
+		public BmpVideoProvider(Bitmap bmp)
 		{
 			this.bmp = bmp;
 		}
