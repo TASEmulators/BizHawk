@@ -68,8 +68,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private DisplaySurface _luaSurface;
 
+		// TODO: obsolete this method and strongly type all colors
 		private static Color GetColor(object color)
 		{
+			if (color is Color)
+			{
+				return (Color)color;
+			}
 			if (color is double)
 			{
 				return Color.FromArgb(int.Parse(long.Parse(color.ToString()).ToString("X"), NumberStyles.HexNumber));
@@ -233,14 +238,14 @@ namespace BizHawk.Client.EmuHawk
 			"drawEllipse",
 			"Draws an ellipse at the given coordinates and the given width and height. Line is the color of the ellipse. Background is the optional fill color"
 		)]
-		public void DrawEllipse(int x, int y, int width, int height, object line, object background = null)
+		public void DrawEllipse(int x, int y, int width, int height, Color? line, Color? background = null)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
 				{
-					g.DrawEllipse(GetPen(line ?? "white"), x, y, width, height);
+					g.DrawEllipse(GetPen(line ?? Color.White), x, y, width, height);
 					if (background != null)
 					{
 						var brush = GetBrush(background);

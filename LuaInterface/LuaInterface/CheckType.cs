@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Reflection;
 using Lua511;
 
@@ -40,8 +41,8 @@ namespace LuaInterface
             extractValues.Add(typeof(LuaFunction).TypeHandle.Value.ToInt64(), new ExtractValue(getAsFunction));
             extractValues.Add(typeof(LuaTable).TypeHandle.Value.ToInt64(), new ExtractValue(getAsTable));
             extractValues.Add(typeof(LuaUserData).TypeHandle.Value.ToInt64(), new ExtractValue(getAsUserdata));
-
-            extractNetObject = new ExtractValue(getAsNetObject);		
+			extractValues.Add(typeof(Color).TypeHandle.Value.ToInt64(), new ExtractValue(getAsColor));
+            extractNetObject = new ExtractValue(getAsNetObject);
 		}
 
 		/*
@@ -108,59 +109,63 @@ namespace LuaInterface
                 if (LuaDLL.lua_isboolean(luaState, stackPos))
 					return extractValues[runtimeHandleValue];
             }
-            else if (paramType == typeof(string) || paramType == typeof (char []))
-            {
-                if (LuaDLL.lua_isstring(luaState, stackPos))
+			else if (paramType == typeof(Color))
+			{
+				return extractValues[runtimeHandleValue];
+			}
+			else if (paramType == typeof(string) || paramType == typeof(char[]))
+			{
+				if (LuaDLL.lua_isstring(luaState, stackPos))
 					return extractValues[runtimeHandleValue];
-                else if (luatype == LuaTypes.LUA_TNIL)
+				else if (luatype == LuaTypes.LUA_TNIL)
 					return extractNetObject; // kevinh - silently convert nil to a null string pointer
-            }
-            else if (paramType == typeof(LuaTable))
-            {
-                if (luatype == LuaTypes.LUA_TTABLE)
+			}
+			else if (paramType == typeof(LuaTable))
+			{
+				if (luatype == LuaTypes.LUA_TTABLE)
 					return extractValues[runtimeHandleValue];
-            }
-            else if (paramType == typeof(LuaUserData))
-            {
-                if (luatype == LuaTypes.LUA_TUSERDATA)
+			}
+			else if (paramType == typeof(LuaUserData))
+			{
+				if (luatype == LuaTypes.LUA_TUSERDATA)
 					return extractValues[runtimeHandleValue];
-            }
-            else if (paramType == typeof(LuaFunction))
-            {
-                if (luatype == LuaTypes.LUA_TFUNCTION)
+			}
+			else if (paramType == typeof(LuaFunction))
+			{
+				if (luatype == LuaTypes.LUA_TFUNCTION)
 					return extractValues[runtimeHandleValue];
-            }
-            else if (typeof(Delegate).IsAssignableFrom(paramType) && luatype == LuaTypes.LUA_TFUNCTION)
-            {
-                return new ExtractValue(new DelegateGenerator(translator, paramType).extractGenerated);
-            }
-            else if (paramType.IsInterface && luatype == LuaTypes.LUA_TTABLE)
-            {
-                return new ExtractValue(new ClassGenerator(translator, paramType).extractGenerated);
-            }
-            else if ((paramType.IsInterface || paramType.IsClass) && luatype == LuaTypes.LUA_TNIL)
-            {
-                // kevinh - allow nil to be silently converted to null - extractNetObject will return null when the item ain't found
-                return extractNetObject;
-            }
-            else if (LuaDLL.lua_type(luaState, stackPos) == LuaTypes.LUA_TTABLE)
-            {
-                if (LuaDLL.luaL_getmetafield(luaState, stackPos, "__index"))
-                {
-                    object obj = translator.getNetObject(luaState, -1);
-                    LuaDLL.lua_settop(luaState, -2);
-                    if (obj != null && paramType.IsAssignableFrom(obj.GetType()))
+			}
+			else if (typeof(Delegate).IsAssignableFrom(paramType) && luatype == LuaTypes.LUA_TFUNCTION)
+			{
+				return new ExtractValue(new DelegateGenerator(translator, paramType).extractGenerated);
+			}
+			else if (paramType.IsInterface && luatype == LuaTypes.LUA_TTABLE)
+			{
+				return new ExtractValue(new ClassGenerator(translator, paramType).extractGenerated);
+			}
+			else if ((paramType.IsInterface || paramType.IsClass) && luatype == LuaTypes.LUA_TNIL)
+			{
+				// kevinh - allow nil to be silently converted to null - extractNetObject will return null when the item ain't found
+				return extractNetObject;
+			}
+			else if (LuaDLL.lua_type(luaState, stackPos) == LuaTypes.LUA_TTABLE)
+			{
+				if (LuaDLL.luaL_getmetafield(luaState, stackPos, "__index"))
+				{
+					object obj = translator.getNetObject(luaState, -1);
+					LuaDLL.lua_settop(luaState, -2);
+					if (obj != null && paramType.IsAssignableFrom(obj.GetType()))
 						return extractNetObject;
-                }
-                else
+				}
+				else
 					return null;
-            }
-            else
-            {
-                object obj = translator.getNetObject(luaState, stackPos);
-                if (obj != null && paramType.IsAssignableFrom(obj.GetType()))
+			}
+			else
+			{
+				object obj = translator.getNetObject(luaState, stackPos);
+				if (obj != null && paramType.IsAssignableFrom(obj.GetType()))
 					return extractNetObject;
-            }
+			}
 
             return null;
 		}
@@ -251,6 +256,29 @@ namespace LuaInterface
 			string retVal=LuaDLL.lua_tostring(luaState,stackPos);
 			if(retVal=="" && !LuaDLL.lua_isstring(luaState,stackPos)) return null;
 			return retVal;
+		}
+		private object getAsColor(IntPtr luaState, int stackPos)
+		{
+			try
+			{
+				if (LuaDLL.lua_isnumber(luaState, stackPos))
+				{
+					Color retVal = Color.FromArgb((int)LuaDLL.lua_tonumber(luaState, stackPos));
+					return retVal;
+				}
+				else if (LuaDLL.lua_isstring(luaState, stackPos))
+				{
+
+					Color retVal = Color.FromName(LuaDLL.lua_tostring(luaState, stackPos));
+					return retVal;
+				}
+
+				return null;
+			}
+			catch (Exception)
+			{
+				return null;
+			}
 		}
 		private object getAsTable(IntPtr luaState,int stackPos) 
 		{
