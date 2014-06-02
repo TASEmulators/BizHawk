@@ -86,7 +86,9 @@ namespace BizHawk.Client.Common
 										 .Replace(" ", string.Empty)
 										 .Replace(".", string.Empty)
 										 .Replace("LuaInterface", string.Empty)
+										 .Replace("Object[]", "object[] ")
 										 .Replace("Object", "object ")
+										 .Replace("Boolean[]", "bool[] ")
 										 .Replace("Boolean", "bool ")
 										 .Replace("String", "string ")
 										 .Replace("LuaTable", "table ")
@@ -102,7 +104,9 @@ namespace BizHawk.Client.Common
 										 .Replace("UInt32", "uint ")
 										 .Replace("UInt64", "ulong ")
 										 .Replace("Double", "double ")
-										 .Replace("Uint", "uint ");
+										 .Replace("Uint", "uint ")
+										 .Replace("Nullable`1[DrawingColor]", "Color? ")
+										 .Replace("DrawingColor", "Color ");
 
 						list.Append(param);
 						if (i < Parameters.Count - 1)
