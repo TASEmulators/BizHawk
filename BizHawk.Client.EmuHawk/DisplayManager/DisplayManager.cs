@@ -261,8 +261,27 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void UpdateSource(IVideoProvider videoProvider)
 		{
-			UpdateSourceInternal(videoProvider,false, GraphicsControl.Size);
+			var job = new JobInfo
+			{
+				videoProvider = videoProvider,
+				simulate = false,
+				chain_outsize = GraphicsControl.Size
+			};
+			UpdateSourceInternal(job);
 		}
+
+		public BitmapBuffer RenderOffscreen(IVideoProvider videoProvider)
+		{
+			var job = new JobInfo
+			{
+				videoProvider = videoProvider,
+				simulate = false,
+				chain_outsize = GraphicsControl.Size,
+				offscreen = true
+			};
+			UpdateSourceInternal(job);
+			return job.offscreenBB;
+		}		
 
 		class FakeVideoProvider : IVideoProvider
 		{
@@ -293,7 +312,13 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.DispObeyAR && Global.Config.DispFixAspectRatio)
 			  chain_outsize = new Size(fvp.VirtualWidth * zoom, fvp.VirtualHeight * zoom);
 
-			var filterProgram = UpdateSourceInternal(fvp, true, chain_outsize);
+			var job = new JobInfo
+			{
+				videoProvider = fvp,
+				simulate = true,
+				chain_outsize = chain_outsize
+			};
+			var filterProgram = UpdateSourceInternal(job);
 
 			var size = filterProgram.Filters[filterProgram.Filters.Count - 1].FindOutput().SurfaceFormat.Size;
 			
@@ -313,8 +338,21 @@ namespace BizHawk.Client.EmuHawk
 			return size;
 		}
 
-		FilterManager.FilterProgram UpdateSourceInternal(IVideoProvider videoProvider, bool simulate, Size chain_outsize)
+		class JobInfo
 		{
+			public IVideoProvider videoProvider;
+			public bool simulate;
+			public Size chain_outsize;
+			public bool offscreen;
+			public BitmapBuffer offscreenBB;
+		}
+
+		FilterManager.FilterProgram UpdateSourceInternal(JobInfo job)
+		{
+			IVideoProvider videoProvider = job.videoProvider;
+			bool simulate = job.simulate;
+			Size chain_outsize = job.chain_outsize;
+			
 			int vw = videoProvider.BufferWidth;
 			int vh = videoProvider.BufferHeight;
 
@@ -381,7 +419,7 @@ TESTEROO:
 			fPresent.GuiRenderer = Renderer;
 			fPresent.GL = GL;
 
-			filterProgram.Compile("default", chain_insize, chain_outsize);
+			filterProgram.Compile("default", chain_insize, chain_outsize, !job.offscreen);
 
 			if (simulate)
 			{
@@ -389,7 +427,7 @@ TESTEROO:
 			else
 			{
 				CurrentFilterProgram = filterProgram;
-				UpdateSourceDrawingWork();
+				UpdateSourceDrawingWork(job);
 			}
 
 			//cleanup:
@@ -398,7 +436,7 @@ TESTEROO:
 			return filterProgram;
 		}
 
-		void UpdateSourceDrawingWork()
+		void UpdateSourceDrawingWork(JobInfo job)
 		{
 			//begin rendering on this context
 			//should this have been done earlier?
@@ -440,31 +478,41 @@ TESTEROO:
 							break;
 						}
 					case FilterManager.FilterProgram.ProgramStepType.FinalTarget:
-						inFinalTarget = true;
-						rtCurr = null;
-						CurrentFilterProgram.CurrRenderTarget = null;
-						GL.BindRenderTarget(null);
-						break;
+						{
+							var size = (Size)step.Args;
+							inFinalTarget = true;
+							rtCurr = null;
+							CurrentFilterProgram.CurrRenderTarget = null;
+							GL.BindRenderTarget(null);
+							break;
+						}
 				}
 			}
-			Debug.Assert(inFinalTarget);
 
-			//apply the vsync setting (should probably try to avoid repeating this)
-			bool vsync = Global.Config.VSyncThrottle || Global.Config.VSync;
-			if (LastVsyncSetting != vsync || LastVsyncSettingGraphicsControl != presentationPanel.GraphicsControl)
+			if (job.offscreen)
 			{
-				presentationPanel.GraphicsControl.SetVsync(vsync);
-				LastVsyncSettingGraphicsControl = presentationPanel.GraphicsControl;
-				LastVsyncSetting = vsync;
+				job.offscreenBB = rtCurr.Texture2d.Resolve();
 			}
+			else
+			{
+				Debug.Assert(inFinalTarget);
+				//apply the vsync setting (should probably try to avoid repeating this)
+				bool vsync = Global.Config.VSyncThrottle || Global.Config.VSync;
+				if (LastVsyncSetting != vsync || LastVsyncSettingGraphicsControl != presentationPanel.GraphicsControl)
+				{
+					presentationPanel.GraphicsControl.SetVsync(vsync);
+					LastVsyncSettingGraphicsControl = presentationPanel.GraphicsControl;
+					LastVsyncSetting = vsync;
+				}
 
-			//present and conclude drawing
-			presentationPanel.GraphicsControl.SwapBuffers();
+				//present and conclude drawing
+				presentationPanel.GraphicsControl.SwapBuffers();
 
-			//nope. dont do this. workaround for slow context switching on intel GPUs. just switch to another context when necessary before doing anything
-			//presentationPanel.GraphicsControl.End();
+				//nope. dont do this. workaround for slow context switching on intel GPUs. just switch to another context when necessary before doing anything
+				//presentationPanel.GraphicsControl.End();
 
-			NeedsToPaint = false; //??
+				NeedsToPaint = false; //??
+			}
 		}
 
 		bool? LastVsyncSetting;

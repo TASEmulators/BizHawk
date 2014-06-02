@@ -465,7 +465,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			BindTexture2d(tex);
 			var bb = new BitmapBuffer(tex.IntWidth, tex.IntHeight);
 			var bmpdata = bb.LockBits();
-			GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Bgra, PixelType.Byte, bmpdata.Scan0);
+			GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Bgra, PixelType.UnsignedByte, bmpdata.Scan0);
 			bb.UnlockBits(bmpdata);
 			return bb;
 		}
