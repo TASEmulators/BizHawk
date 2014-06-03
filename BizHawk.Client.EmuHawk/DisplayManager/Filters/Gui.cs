@@ -42,9 +42,9 @@ namespace BizHawk.Client.EmuHawk.Filters
 			int virtualWidth = virtualSize.Width;
 			int virtualHeight = virtualSize.Height;
 
-			//adjust source dimensions to get scaled proportionally to textureSize vs virtualSize ratio
-			sourceWidth = (int)(sourceWidth * (float)virtualWidth / textureWidth);
-			sourceHeight = (int)(sourceHeight * (float)virtualHeight / textureHeight);
+			//zero 02-jun-2014 - we passed these in, but ignored them. kind of weird..
+			sourceWidth = (int)virtualWidth;
+			sourceHeight = (int)virtualHeight;
 
 			//this doesnt make sense
 			if (!maintainAspect)
