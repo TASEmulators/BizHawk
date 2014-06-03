@@ -1,9 +1,12 @@
 ﻿using System;
+using System.ComponentModel;
+
 using LuaInterface;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
+	[Description("Main memory library reads and writes from the Main memory domain (the default memory domain set by any given core)")]
 	public sealed class MainMemoryLuaLibrary : LuaMemoryBase
 	{
 		public MainMemoryLuaLibrary(Lua lua)

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Linq;
+using System.ComponentModel;
 
 using LuaInterface;
 
+
 namespace BizHawk.Client.Common
 {
+	[Description("A library for registering lua functions to emulator events.\n All events support multiple registered methods.\nAll registered event methods can be named and return a Guid when registered")]
 	public sealed class EventLuaLibrary : LuaLibraryBase
 	{
 		private readonly LuaFunctionList _luaFunctions = new LuaFunctionList();

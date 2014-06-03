@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 using LuaInterface;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[Description("A library for manipulating the EmuHawk client UI")]
 	public sealed class EmuHawkLuaLibrary : LuaLibraryBase
 	{
 		private readonly Dictionary<int, string> _filterMappings = new Dictionary<int, string>
