@@ -30,7 +30,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public virtual void LuaRegister(ILuaDocumentation docs = null)
+		public virtual void LuaRegister(LuaDocumentation docs = null)
 		{
 			Lua.NewTable(Name);
 
@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common
 
 				if (docs != null)
 				{
-					docs.Add(Name, luaMethodAttr.Name, method, luaMethodAttr.Description);
+					docs.Add(new LibraryFunction(Name, luaMethodAttr.Name, method, luaMethodAttr.Description));
 				}
 			}
 		}

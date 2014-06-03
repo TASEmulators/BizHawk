@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 		public static string GetLuaFunctionsList()
 		{
 			var list = new StringBuilder();
-			foreach (var function in GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList)
+			foreach (var function in GlobalWin.Tools.LuaConsole.LuaImp.Docs)
 			{
 				list.AppendLine(function.Name);
 			}

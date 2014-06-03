@@ -13,9 +13,9 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly Sorting _columnSort = new Sorting();
 
-		private List<LuaDocumentation.LibraryFunction> FunctionList = new List<LuaDocumentation.LibraryFunction>();
+		private List<LibraryFunction> FunctionList = new List<LibraryFunction>();
 
-		private List<LuaDocumentation.LibraryFunction> FilteredList
+		private List<LibraryFunction> FilteredList
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaFunctionList_Load(object sender, EventArgs e)
 		{
-			FunctionList = GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList.ToList();
+			FunctionList = GlobalWin.Tools.LuaConsole.LuaImp.Docs.ToList();
 			UpdateList();
 			FilterBox.Focus();
 		}
@@ -183,7 +183,7 @@ namespace BizHawk.Client.EmuHawk
 
 					foreach (int index in indexes)
 					{
-						var libraryFunction = GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList[index];
+						var libraryFunction = GlobalWin.Tools.LuaConsole.LuaImp.Docs[index];
 						sb.Append(libraryFunction.Library).Append('.').Append(libraryFunction.Name).Append("()\n");
 					}
 
