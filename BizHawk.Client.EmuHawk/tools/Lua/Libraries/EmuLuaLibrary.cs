@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 		public Lua SpawnCoroutine(string file)
 		{
 			var lua = _lua.NewThread();
-			var main = lua.LoadFile(file);
+			var main = lua.LoadFile(PathManager.MakeAbsolutePath(file,null));
 			lua.Push(main); // push main function on to stack for subsequent resuming
 			return lua;
 		}
