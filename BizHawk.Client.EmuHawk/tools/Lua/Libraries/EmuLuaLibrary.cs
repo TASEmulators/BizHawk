@@ -68,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var lib in libs)
 			{
 				var instance = (LuaLibraryBase)Activator.CreateInstance(lib, _lua);
-				instance.LuaRegister(Docs);
+				instance.LuaRegister(lib, Docs);
 				Libraries.Add(lib, instance);
 			}
 

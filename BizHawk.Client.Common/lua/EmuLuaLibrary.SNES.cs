@@ -1,9 +1,12 @@
 ﻿using System;
+using System.ComponentModel;
+
 using LuaInterface;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.Common
 {
+	[Description("Functions specific to SNESHawk (functions may not run when an SNES game is not loaded)")]
 	public sealed class SnesLuaLibrary : LuaLibraryBase
 	{
 		public SnesLuaLibrary(Lua lua)

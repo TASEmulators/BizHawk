@@ -1,13 +1,15 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 
 using LuaInterface;
-
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 
+
 namespace BizHawk.Client.Common
 {
+	[Description("Functions related specifically to Nes Cores")]
 	public sealed class NesLuaLibrary : LuaLibraryBase
 	{
 		// TODO:  
