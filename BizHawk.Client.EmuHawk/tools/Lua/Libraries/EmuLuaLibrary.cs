@@ -76,8 +76,6 @@ namespace BizHawk.Client.EmuHawk
 
 			EmulatorLuaLibrary.FrameAdvanceCallback = Frameadvance;
 			EmulatorLuaLibrary.YieldCallback = EmuYield;
-
-			Docs.Sort();
 		}
 
 		public LuaDocumentation Docs { get; private set; }

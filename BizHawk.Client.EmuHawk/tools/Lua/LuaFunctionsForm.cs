@@ -39,7 +39,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaFunctionList_Load(object sender, EventArgs e)
 		{
-			FunctionList = GlobalWin.Tools.LuaConsole.LuaImp.Docs.ToList();
+			FunctionList = GlobalWin.Tools.LuaConsole.LuaImp.Docs
+				.OrderBy(x => x.Library)
+				.ThenBy(x => x.Name)
+				.ToList();
 			UpdateList();
 			FilterBox.Focus();
 		}
