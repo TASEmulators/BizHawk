@@ -525,6 +525,16 @@ TESTEROO:
 		public void SetLuaSurfaceNativePreOSD(DisplaySurface surface) { luaNativeSurfaceSet.SetPending(surface); }
 
 		/// <summary>
+		/// Peeks a locked lua surface, or returns null if it isnt locked
+		/// </summary>
+		public DisplaySurface PeekLockedLuaSurface(string name)
+		{
+			if (MapNameToLuaSurface.ContainsKey(name))
+				return MapNameToLuaSurface[name];
+			return null;
+		}
+
+		/// <summary>
 		/// Locks the requested lua surface name
 		/// </summary>
 		public DisplaySurface LockLuaSurface(string name)
@@ -558,9 +568,13 @@ TESTEROO:
 		{
 			foreach (var kvp in LuaSurfaceSets)
 			{
-				var surf = LockLuaSurface(kvp.Key);
+				var surf = PeekLockedLuaSurface(kvp.Key);
+				DisplaySurface surfLocked = null;
+				if (surf == null)
+					surf = surfLocked = LockLuaSurface(kvp.Key);
 				surf.Clear();
-				UnlockLuaSurface(surf);
+				if(surfLocked != null)
+					UnlockLuaSurface(surfLocked);
 				LuaSurfaceSets[kvp.Key].SetPending(null);
 			}
 		}
