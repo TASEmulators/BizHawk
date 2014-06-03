@@ -309,6 +309,7 @@ namespace BizHawk.Client.EmuHawk
 			Size chain_outsize = new Size(fvp.BufferWidth * zoom, fvp.BufferHeight * zoom);
 
 			//zero 27-may-2014 - this code is now slightly suspicious.. but no proof we need to get rid of it
+			//zero 02-jun-2014 - now, I suspect it is more important
 			if (Global.Config.DispObeyAR && Global.Config.DispFixAspectRatio)
 			  chain_outsize = new Size(fvp.VirtualWidth * zoom, fvp.VirtualHeight * zoom);
 
