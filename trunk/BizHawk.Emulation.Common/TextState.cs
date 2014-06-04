@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Common
 
 	// T is a class that has any other data you want to serialize in it
 	public class TextState<T>
-		where T: new()
+		where T : new()
 	{
 		public TextState()
 		{
@@ -41,15 +41,30 @@ namespace BizHawk.Emulation.Common
 		{
 			byte[] d = new byte[length];
 			Marshal.Copy(data, d, 0, length);
-			Current.Data.Add(name, d);
+			Current.Data.Add(name, d); // will except for us if the key is already present
 		}
 		public void Load(IntPtr data, int length, string name)
 		{
 			byte[] d = Current.Data[name];
+			if (length != d.Length)
+				throw new InvalidOperationException();
 			Marshal.Copy(d, 0, data, length);
+		}
+		public void EnterSectionSave(string name)
+		{
+			Node next = new Node();
+			Current.Objects.Add(name, next);
+			Nodes.Push(next);
+		}
+		public void EnterSectionLoad(string name)
+		{
+			Node next = Current.Objects[name];
+			Nodes.Push(next);
 		}
 		public void EnterSection(string name)
 		{
+			// works for either save or load, but as a consequence cannot report intelligent
+			// errors about section name mismatches
 			Node next = null;
 			Current.Objects.TryGetValue(name, out next);
 			if (next == null)
@@ -69,13 +84,23 @@ namespace BizHawk.Emulation.Common
 		// other data besides the core
 		public T ExtraData;
 
-		public TextStateFPtrs GetFunctionPointers()
+		public TextStateFPtrs GetFunctionPointersSave()
 		{
 			return new TextStateFPtrs
 			{
 				Save = new TextStateFPtrs.DataFunction(Save),
+				Load = null,
+				EnterSection = new TextStateFPtrs.SectionFunction(EnterSectionSave),
+				ExitSection = new TextStateFPtrs.SectionFunction(ExitSection)
+			};
+		}
+		public TextStateFPtrs GetFunctionPointersLoad()
+		{
+			return new TextStateFPtrs
+			{
+				Save = null,
 				Load = new TextStateFPtrs.DataFunction(Load),
-				EnterSection = new TextStateFPtrs.SectionFunction(EnterSection),
+				EnterSection = new TextStateFPtrs.SectionFunction(EnterSectionLoad),
 				ExitSection = new TextStateFPtrs.SectionFunction(ExitSection)
 			};
 		}

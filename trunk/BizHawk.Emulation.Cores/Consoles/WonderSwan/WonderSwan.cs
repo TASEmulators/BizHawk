@@ -182,7 +182,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		{
 			var s = new TextState<TextStateData>();
 			s.Prepare();
-			var ff = s.GetFunctionPointers();
+			var ff = s.GetFunctionPointersSave();
 			BizSwan.bizswan_txtstatesave(Core, ref ff);
 			s.ExtraData.IsLagFrame = IsLagFrame;
 			s.ExtraData.LagCount = LagCount;
@@ -201,7 +201,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		{
 			var s = (TextState<TextStateData>)ser.Deserialize(reader, typeof(TextState<TextStateData>));
 			s.Prepare();
-			var ff = s.GetFunctionPointers();
+			var ff = s.GetFunctionPointersLoad();
 			BizSwan.bizswan_txtstateload(Core, ref ff);
 			IsLagFrame = s.ExtraData.IsLagFrame;
 			LagCount = s.ExtraData.LagCount;
