@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	[CoreAttributes(
 		"Atari2600Hawk",
-		"Micro500, adelikat",
+		"Micro500, adelikat, natt",
 		isPorted: false,
 		isReleased: true
 		)]
