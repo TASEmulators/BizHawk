@@ -680,6 +680,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ControllersMenuItem.Enabled = !(Global.Emulator is NullEmulator);
+			ProfilesMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
 
 		private void FrameSkipMenuItem_DropDownOpened(object sender, EventArgs e)

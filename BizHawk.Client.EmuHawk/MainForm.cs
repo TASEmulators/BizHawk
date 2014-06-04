@@ -3226,5 +3226,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GenericCoreConfig.DoDialog(this, "WonderSwan Settings");
 		}
+
+		private void ProfilesMenuItem_Click(object sender, EventArgs e)
+		{
+			if (new ProfileConfig().ShowDialog() == DialogResult.OK)
+			{
+				GlobalWin.OSD.AddMessage("Profile settings saved");
+			}
+			else
+			{
+				GlobalWin.OSD.AddMessage("Profile config aborted");
+			}
+		}
 	}
 }
