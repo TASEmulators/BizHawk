@@ -503,7 +503,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			var s = new TextState<TextStateData>();
 			s.Prepare();
-			var ff = s.GetFunctionPointers();
+			var ff = s.GetFunctionPointersSave();
 			LibGambatte.gambatte_newstatesave_ex(GambatteState, ref ff);
 			s.ExtraData.IsLagFrame = IsLagFrame;
 			s.ExtraData.LagCount = LagCount;
@@ -521,7 +521,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			var s = (TextState<TextStateData>)ser.Deserialize(reader, typeof(TextState<TextStateData>));
 			s.Prepare();
-			var ff = s.GetFunctionPointers();
+			var ff = s.GetFunctionPointersLoad();
 			LibGambatte.gambatte_newstateload_ex(GambatteState, ref ff);
 			IsLagFrame = s.ExtraData.IsLagFrame;
 			LagCount = s.ExtraData.LagCount;
