@@ -49,10 +49,7 @@ namespace BizHawk.Client.Common
 
 				if (docs != null)
 				{
-					docs.Add(new LibraryFunction(Name, luaMethodAttr.Name, method, luaMethodAttr.Description)
-					{
-						LibraryDescription = callingLibrary.Description()
-					});
+					docs.Add(new LibraryFunction(Name, callingLibrary.Description(), method));
 				}
 			}
 		}
