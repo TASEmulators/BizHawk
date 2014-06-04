@@ -57,6 +57,7 @@ public:
 	Interrupt interrupt;
 	
 	bool rotate; // rotate screen and controls left 90
+	uint16 oldbuttons;
 
 	template<bool isReader>void SyncState(NewState *ns);
 };

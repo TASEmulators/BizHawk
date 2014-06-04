@@ -80,6 +80,10 @@ namespace MDFN_IEN_WSWAN
 
 	bool System::Advance(uint16 buttons, bool novideo, uint32 *surface, int16 *soundbuff, int &soundbuffsize)
 	{
+		// we hijack the top bit of the buttons input and use it as a positive edge sensitive toggle to the rotate input
+		rotate ^= (buttons & 0x8000) > (oldbuttons & 0x8000);
+		oldbuttons = buttons;
+
 		memory.WSButtonStatus = rotate ? RotateButtons(buttons) : buttons;
 		memory.Lagged = true;
 		while (!gfx.ExecuteLine(surface, novideo))
@@ -306,6 +310,7 @@ namespace MDFN_IEN_WSWAN
 		SSS(interrupt);
 	
 		NSS(rotate);
+		NSS(oldbuttons);
 	}
 
 	void System::SaveRamClearHacky(const SyncSettings &s)
@@ -330,9 +335,11 @@ namespace MDFN_IEN_WSWAN
 		s->Reset();
 	}
 
-	EXPORT int bizswan_advance(System *s, uint16 buttons, bool novideo, uint32 *surface, int16 *soundbuff, int *soundbuffsize)
+	EXPORT int bizswan_advance(System *s, uint16 buttons, bool novideo, uint32 *surface, int16 *soundbuff, int *soundbuffsize, int *IsRotated)
 	{
-		return s->Advance(buttons, novideo, surface, soundbuff, *soundbuffsize);
+		int ret = s->Advance(buttons, novideo, surface, soundbuff, *soundbuffsize);
+		*IsRotated = s->rotate;
+		return ret;
 	}
 
 	EXPORT int bizswan_load(System *s, const uint8 *data, int length, const SyncSettings *settings, int *IsRotated)

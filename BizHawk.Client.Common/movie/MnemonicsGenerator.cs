@@ -76,7 +76,7 @@ namespace BizHawk.Client.Common
 					case "SAT":
 						return "|.|.............|.............|";
 					case "WSWAN":
-						return "|....|....|...|";
+						return "|....|....|.....|";
 				}
 			}
 		}

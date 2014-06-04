@@ -42,9 +42,10 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		/// <param name="surface">uint32 video output buffer</param>
 		/// <param name="soundbuff">int16 sound output buffer</param>
 		/// <param name="soundbuffsize">[In] max hold size of soundbuff [Out] number of samples actually deposited</param>
+		/// <param name="IsRotated">(out) true if the screen is rotated left 90</param>
 		/// <returns>true if lagged</returns>
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern bool bizswan_advance(IntPtr core, Buttons buttons, bool novideo, int[] surface, short[] soundbuff, ref int soundbuffsize);
+		public static extern bool bizswan_advance(IntPtr core, Buttons buttons, bool novideo, int[] surface, short[] soundbuff, ref int soundbuffsize, ref bool IsRotated);
 
 		/// <summary>
 		/// load rom
@@ -170,6 +171,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			Start = 0x0100,
 			A = 0x0200,
 			B = 0x0400,
+			Rotate = 0x8000,
 		}
 
 		public enum Language : uint

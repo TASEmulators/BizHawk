@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public static readonly ControllerDefinition WonderSwanController = new ControllerDefinition
 		{
 			Name = "WonderSwan Controller",
-			BoolButtons = { "Up X", "Down X", "Left X", "Right X", "Up Y", "Down Y", "Left Y", "Right Y", "Start", "B", "A", "Power" }
+			BoolButtons = { "Up X", "Down X", "Left X", "Right X", "Up Y", "Down Y", "Left Y", "Right Y", "Start", "B", "A", "Power", "Rotate" }
 		};
 		public ControllerDefinition ControllerDefinition { get { return WonderSwanController; } }
 		public IController Controller { get; set; }
@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			if (Controller["Start"]) ret |= BizSwan.Buttons.Start;
 			if (Controller["B"]) ret |= BizSwan.Buttons.B;
 			if (Controller["A"]) ret |= BizSwan.Buttons.A;
+			if (Controller["Rotate"]) ret |= BizSwan.Buttons.Rotate;
 			return ret;
 		}
 
@@ -103,11 +104,13 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			if (Controller["Power"])
 				BizSwan.bizswan_reset(Core);
 
+			bool rotate = false;
 			int soundbuffsize = sbuff.Length;
-			IsLagFrame = BizSwan.bizswan_advance(Core, GetButtons(), !render, vbuff, sbuff, ref soundbuffsize);
+			IsLagFrame = BizSwan.bizswan_advance(Core, GetButtons(), !render, vbuff, sbuff, ref soundbuffsize, ref rotate);
 			if (soundbuffsize == sbuff.Length)
 				throw new Exception();
 			sbuffcontains = soundbuffsize;
+			InitVideo(rotate);
 
 			if (IsLagFrame)
 				LagCount++;
