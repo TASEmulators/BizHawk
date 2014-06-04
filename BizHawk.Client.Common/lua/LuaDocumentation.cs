@@ -54,42 +54,56 @@ namespace BizHawk.Client.Common
 
 	public class LibraryFunction
 	{
-		private readonly string _returnType = string.Empty;
+		private readonly LuaMethodAttributes _luaAttributes;
+		private readonly MethodInfo _method;
 
-		public LibraryFunction(string methodLib, string methodName, MethodInfo method, string description)
+		public LibraryFunction(string library, string libraryDescription, MethodInfo method)
 		{
-			Library = methodLib;
-			Name = methodName;
-			var info = method.GetParameters();
+			_luaAttributes = method.GetCustomAttributes(typeof(LuaMethodAttributes), false)
+				.First() as LuaMethodAttributes;
+			_method = method;
 
-			Parameters = new List<string>();
-			foreach (var p in info)
-			{
-				Parameters.Add(p.ToString());
-			}
-
-			_returnType = method.ReturnType.ToString();
-
-			Description = description;
+			Library = library;
+			LibraryDescription = libraryDescription;
 		}
 
-		public string Library { get; set; }
-		public string Name { get; set; }
-		public List<string> Parameters { get; set; }
+		public string Library { get; private set; }
+		public string LibraryDescription { get; private set; }
 
-		public string Description { get; set; }
-		public string LibraryDescription { get; set; }
+		public string Name
+		{
+			get { return _luaAttributes.Name; }
+		}
+
+		public IEnumerable<string> Parameters
+		{
+			get
+			{
+				var info = _method.GetParameters();
+				foreach (var p in info)
+				{
+					yield return p.ToString();
+				}
+			}
+		}
+
+		public string Description
+		{
+			get { return _luaAttributes.Description; }
+		}
 
 		public string ParameterList
 		{
 			get
 			{
+				var parameters = Parameters.ToList();
+
 				var list = new StringBuilder();
 				list.Append('(');
-				for (var i = 0; i < Parameters.Count; i++)
+				for (var i = 0; i < parameters.Count; i++)
 				{
 					var param =
-						Parameters[i].Replace("System", string.Empty)
+						parameters[i].Replace("System", string.Empty)
 									 .Replace(" ", string.Empty)
 									 .Replace(".", string.Empty)
 									 .Replace("LuaInterface", string.Empty)
@@ -116,7 +130,7 @@ namespace BizHawk.Client.Common
 									 .Replace("DrawingColor", "Color ");
 
 					list.Append(param);
-					if (i < Parameters.Count - 1)
+					if (i < parameters.Count - 1)
 					{
 						list.Append(", ");
 					}
@@ -132,7 +146,9 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return _returnType
+				var returnType = _method.ReturnType.ToString();
+
+				return returnType
 					.Replace("System.", string.Empty)
 					.Replace("LuaInterface.", string.Empty)
 					.ToLower()
