@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Clear()
 		{
-			widget.Clear();
+			widget.ClearAll();
 		}
 
 		private void btnSpecial_Click(object sender, EventArgs e)

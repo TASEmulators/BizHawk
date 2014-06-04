@@ -379,5 +379,40 @@ namespace BizHawk.Client.EmuHawk
 				ConfigService.Save(Config.ControlDefaultPath, cd);
 			}
 		}
+
+		private void ClearWidgetAndChildren(Control c)
+		{
+			if (c is InputCompositeWidget)
+			{
+				(c as InputCompositeWidget).Clear();
+			}
+
+			if (c is InputWidget)
+			{
+				(c as InputWidget).ClearAll();
+			}
+
+			if (c is AnalogBindControl)
+			{
+				(c as AnalogBindControl).Unbind_Click(null, null);
+			}
+
+			if (c.Controls.Count > 0)
+			{
+				foreach (Control child in c.Controls.OfType<Control>())
+				{
+					ClearWidgetAndChildren(child);
+				}
+			}
+		}
+
+		private void ClearBtn_Click(object sender, EventArgs e)
+		{
+			// TODO: make this recursive to not depend on the current structure
+			foreach (var c in Controls.OfType<Control>())
+			{
+				ClearWidgetAndChildren(c);
+			}
+		}
 	}
 }

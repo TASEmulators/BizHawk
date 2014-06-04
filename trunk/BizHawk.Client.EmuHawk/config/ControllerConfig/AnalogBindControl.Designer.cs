@@ -132,7 +132,7 @@
 			this.buttonUnbind.TabIndex = 8;
 			this.buttonUnbind.Text = "Unbind!";
 			this.buttonUnbind.UseVisualStyleBackColor = true;
-			this.buttonUnbind.Click += new System.EventHandler(this.buttonUnbind_Click);
+			this.buttonUnbind.Click += new System.EventHandler(this.Unbind_Click);
 			// 
 			// AnalogBindControl
 			// 
