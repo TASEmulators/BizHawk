@@ -294,6 +294,13 @@ namespace BizHawk.Client.Common
 					new PathEntry { System = "SAT", SystemDisplayName = "Saturn", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
 					new PathEntry { System = "SAT", SystemDisplayName = "Saturn", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 					new PathEntry { System = "SAT", SystemDisplayName = "Saturn", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+
+					new PathEntry { System = "WSWAN", SystemDisplayName = "WonderSwan", Type = "Base", Path = Path.Combine(".", "WonderSwan"), Ordinal = 0 },
+					new PathEntry { System = "WSWAN", SystemDisplayName = "WonderSwan", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry { System = "WSWAN", SystemDisplayName = "WonderSwan", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry { System = "WSWAN", SystemDisplayName = "WonderSwan", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+					new PathEntry { System = "WSWAN", SystemDisplayName = "WonderSwan", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry { System = "WSWAN", SystemDisplayName = "WonderSwan", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 				};
 			}
 		}
