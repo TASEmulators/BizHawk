@@ -383,8 +383,8 @@ namespace MDFN_IEN_WSWAN
 	{
 		// don't need to save any of the blip stuff
 
-		NSS(period[4]);
-		NSS(volume[4]);
+		NSS(period);
+		NSS(volume);
 		NSS(voice_volume);
 
 		NSS(sweep_step);
