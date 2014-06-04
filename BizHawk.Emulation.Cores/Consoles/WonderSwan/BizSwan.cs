@@ -158,20 +158,33 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		};
 
 		[Flags]
-		public enum Buttons : ushort
+		public enum Buttons : uint
 		{
-			UpX = 0x0001,
-			RightX = 0x0002,
-			DownX = 0x0004,
-			LeftX = 0x0008,
-			UpY = 0x0010,
-			RightY = 0x0020,
-			DownY = 0x0040,
-			LeftY = 0x0080,
-			Start = 0x0100,
-			A = 0x0200,
-			B = 0x0400,
-			Rotate = 0x8000,
+			UpX      = 0x00000001,
+			RightX   = 0x00000002,
+			DownX    = 0x00000004,
+			LeftX    = 0x00000008,
+			UpY      = 0x00000010,
+			RightY   = 0x00000020,
+			DownY    = 0x00000040,
+			LeftY    = 0x00000080,
+			Start    = 0x00000100,
+			A        = 0x00000200,
+			B        = 0x00000400,
+
+			R_UpX    = 0x00010000,
+			R_RightX = 0x00020000,
+			R_DownX  = 0x00040000,
+			R_LeftX  = 0x00080000,
+			R_UpY    = 0x00100000,
+			R_RightY = 0x00200000,
+			R_DownY  = 0x00400000,
+			R_LeftY  = 0x00800000,
+			R_Start  = 0x01000000,
+			R_A      = 0x02000000,
+			R_B      = 0x04000000,
+
+			Rotate   = 0x80000000,
 		}
 
 		public enum Language : uint

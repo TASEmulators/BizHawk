@@ -65,26 +65,13 @@ namespace MDFN_IEN_WSWAN
 		cpu.set_reg(NEC_SP,0x2000);
 	}
 
-	static uint16 RotateButtons(uint16 input)
-	{
-		int groupx = input & 0xf;
-		groupx <<= 1;
-		groupx |= groupx >> 4;
-		groupx &= 0x0f;
-		int groupy = input & 0xf0;
-		groupy <<= 1;
-		groupy |= groupy >> 4;
-		groupy &= 0xf0;
-		return input & 0xff00 | groupx | groupy;
-	}
-
-	bool System::Advance(uint16 buttons, bool novideo, uint32 *surface, int16 *soundbuff, int &soundbuffsize)
+	bool System::Advance(uint32 buttons, bool novideo, uint32 *surface, int16 *soundbuff, int &soundbuffsize)
 	{
 		// we hijack the top bit of the buttons input and use it as a positive edge sensitive toggle to the rotate input
-		rotate ^= (buttons & 0x8000) > (oldbuttons & 0x8000);
+		rotate ^= (buttons & 0x80000000) > (oldbuttons & 0x80000000);
 		oldbuttons = buttons;
 
-		memory.WSButtonStatus = rotate ? RotateButtons(buttons) : buttons;
+		memory.WSButtonStatus = rotate ? buttons >> 16 : buttons;
 		memory.WSButtonStatus &= 0x7ff; // mask out "rotate" bit and other unused bits
 		memory.Lagged = true;
 		while (!gfx.ExecuteLine(surface, novideo))
@@ -336,7 +323,7 @@ namespace MDFN_IEN_WSWAN
 		s->Reset();
 	}
 
-	EXPORT int bizswan_advance(System *s, uint16 buttons, bool novideo, uint32 *surface, int16 *soundbuff, int *soundbuffsize, int *IsRotated)
+	EXPORT int bizswan_advance(System *s, uint32 buttons, bool novideo, uint32 *surface, int16 *soundbuff, int *soundbuffsize, int *IsRotated)
 	{
 		int ret = s->Advance(buttons, novideo, surface, soundbuff, *soundbuffsize);
 		*IsRotated = s->rotate;

@@ -33,7 +33,7 @@ public:
 	static void* operator new(std::size_t size);
 
 	void Reset();
-	bool Advance(uint16 buttons, bool novideo, uint32 *surface, int16 *soundbuff, int &soundbuffsize);
+	bool Advance(uint32 buttons, bool novideo, uint32 *surface, int16 *soundbuff, int &soundbuffsize);
 	bool Load(const uint8 *data, int length, const SyncSettings &s);
 	void PutSettings(const Settings &s);
 
@@ -57,7 +57,7 @@ public:
 	Interrupt interrupt;
 	
 	bool rotate; // rotate screen and controls left 90
-	uint16 oldbuttons;
+	uint32 oldbuttons;
 
 	template<bool isReader>void SyncState(NewState *ns);
 };

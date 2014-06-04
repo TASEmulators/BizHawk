@@ -19,7 +19,35 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public static readonly ControllerDefinition WonderSwanController = new ControllerDefinition
 		{
 			Name = "WonderSwan Controller",
-			BoolButtons = { "Up X", "Down X", "Left X", "Right X", "Up Y", "Down Y", "Left Y", "Right Y", "Start", "B", "A", "Power", "Rotate" }
+			BoolButtons =
+			{
+				"P1 Up X",
+				"P1 Down X",
+				"P1 Left X",
+				"P1 Right X",
+				"P1 Up Y",
+				"P1 Down Y",
+				"P1 Left Y",
+				"P1 Right Y",
+				"P1 Start",
+				"P1 B",
+				"P1 A",
+
+				"P2 Up X",
+				"P2 Down X",
+				"P2 Left X",
+				"P2 Right X",
+				"P2 Up Y",
+				"P2 Down Y",
+				"P2 Left Y",
+				"P2 Right Y",
+				"P2 Start",
+				"P2 B",
+				"P2 A",
+
+				"Power",				
+				"Rotate"
+			}
 		};
 		public ControllerDefinition ControllerDefinition { get { return WonderSwanController; } }
 		public IController Controller { get; set; }
@@ -27,17 +55,30 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		BizSwan.Buttons GetButtons()
 		{
 			BizSwan.Buttons ret = 0;
-			if (Controller["Up X"]) ret |= BizSwan.Buttons.UpX;
-			if (Controller["Down X"]) ret |= BizSwan.Buttons.DownX;
-			if (Controller["Left X"]) ret |= BizSwan.Buttons.LeftX;
-			if (Controller["Right X"]) ret |= BizSwan.Buttons.RightX;
-			if (Controller["Up Y"]) ret |= BizSwan.Buttons.UpY;
-			if (Controller["Down Y"]) ret |= BizSwan.Buttons.DownY;
-			if (Controller["Left Y"]) ret |= BizSwan.Buttons.LeftY;
-			if (Controller["Right Y"]) ret |= BizSwan.Buttons.RightY;
-			if (Controller["Start"]) ret |= BizSwan.Buttons.Start;
-			if (Controller["B"]) ret |= BizSwan.Buttons.B;
-			if (Controller["A"]) ret |= BizSwan.Buttons.A;
+			if (Controller["P1 Up X"]) ret |= BizSwan.Buttons.UpX;
+			if (Controller["P1 Down X"]) ret |= BizSwan.Buttons.DownX;
+			if (Controller["P1 Left X"]) ret |= BizSwan.Buttons.LeftX;
+			if (Controller["P1 Right X"]) ret |= BizSwan.Buttons.RightX;
+			if (Controller["P1 Up Y"]) ret |= BizSwan.Buttons.UpY;
+			if (Controller["P1 Down Y"]) ret |= BizSwan.Buttons.DownY;
+			if (Controller["P1 Left Y"]) ret |= BizSwan.Buttons.LeftY;
+			if (Controller["P1 Right Y"]) ret |= BizSwan.Buttons.RightY;
+			if (Controller["P1 Start"]) ret |= BizSwan.Buttons.Start;
+			if (Controller["P1 B"]) ret |= BizSwan.Buttons.B;
+			if (Controller["P1 A"]) ret |= BizSwan.Buttons.A;
+
+			if (Controller["P2 Up X"]) ret |= BizSwan.Buttons.R_UpX;
+			if (Controller["P2 Down X"]) ret |= BizSwan.Buttons.R_DownX;
+			if (Controller["P2 Left X"]) ret |= BizSwan.Buttons.R_LeftX;
+			if (Controller["P2 Right X"]) ret |= BizSwan.Buttons.R_RightX;
+			if (Controller["P2 Up Y"]) ret |= BizSwan.Buttons.R_UpY;
+			if (Controller["P2 Down Y"]) ret |= BizSwan.Buttons.R_DownY;
+			if (Controller["P2 Left Y"]) ret |= BizSwan.Buttons.R_LeftY;
+			if (Controller["P2 Right Y"]) ret |= BizSwan.Buttons.R_RightY;
+			if (Controller["P2 Start"]) ret |= BizSwan.Buttons.R_Start;
+			if (Controller["P2 B"]) ret |= BizSwan.Buttons.R_B;
+			if (Controller["P2 A"]) ret |= BizSwan.Buttons.R_A;
+
 			if (Controller["Rotate"]) ret |= BizSwan.Buttons.Rotate;
 			return ret;
 		}
