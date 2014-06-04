@@ -85,7 +85,7 @@ namespace MDFN_IEN_WSWAN
 		oldbuttons = buttons;
 
 		memory.WSButtonStatus = rotate ? RotateButtons(buttons) : buttons;
-		memory.WSButtonStatus &= 0x3ff; // mask out "rotate" bit and other unused bits
+		memory.WSButtonStatus &= 0x7ff; // mask out "rotate" bit and other unused bits
 		memory.Lagged = true;
 		while (!gfx.ExecuteLine(surface, novideo))
 		{
