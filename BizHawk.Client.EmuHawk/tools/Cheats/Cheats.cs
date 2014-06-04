@@ -180,7 +180,7 @@ namespace BizHawk.Client.EmuHawk
 			GameGenieToolbarSeparator.Visible =
 				LoadGameGenieToolbarItem.Visible =
 				   (Global.Emulator.SystemId == "NES")
-				|| (Global.Emulator.SystemId == "GEN" && VersionInfo.INTERIM)
+				|| (Global.Emulator.SystemId == "GEN" && VersionInfo.DeveloperBuild)
 				|| (Global.Emulator.SystemId == "GB")
 				|| (Global.Game.System == "GG")
 				|| (Global.Emulator is LibsnesCore);

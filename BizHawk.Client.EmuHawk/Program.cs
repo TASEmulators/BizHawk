@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 			// this check has to be done VERY early.  i stepped through a debug build with wrong .dll versions purposely used,
 			// and there was a TypeLoadException before the first line of SubMain was reached (some static ColorType init?)
 			// zero 25-dec-2012 - only do for public builds. its annoying during development
-			if (!VersionInfo.INTERIM)
+			if (!VersionInfo.DeveloperBuild)
 			{
 				var thisversion = typeof(Program).Assembly.GetName().Version;
 				var utilversion = Assembly.LoadWithPartialName("Bizhawk.Client.Common").GetName().Version;
@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 						catch (Exception e)
 						{
 #if WINDOWS
-							if (!VersionInfo.INTERIM && Global.MovieSession.Movie.IsActive)
+							if (!VersionInfo.DeveloperBuild && Global.MovieSession.Movie.IsActive)
 							{
 								var result = MessageBox.Show(
 									"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may succeed)",

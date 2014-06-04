@@ -992,7 +992,7 @@ namespace BizHawk.Client.EmuHawk
 				TAStudioMenuItem.Enabled =
 				VirtualPadMenuItem.Enabled =
 				!(Global.Emulator is NullEmulator);
-			batchRunnerToolStripMenuItem.Visible = VersionInfo.INTERIM;
+			batchRunnerToolStripMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
 
 		private void ToolBoxMenuItem_Click(object sender, EventArgs e)
@@ -1073,7 +1073,7 @@ namespace BizHawk.Client.EmuHawk
 			FDSControlsMenuItem.Enabled = Global.Emulator.BoardName == "FDS";
 
 			NESDebuggerMenuItem.Visible =
-				VersionInfo.INTERIM;
+				VersionInfo.DeveloperBuild;
 
 			NESDebuggerMenuItem.Enabled =
 				NESPPUViewerMenuItem.Enabled =
@@ -1433,7 +1433,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AtariSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			if (!VersionInfo.INTERIM)
+			if (!VersionInfo.DeveloperBuild)
 			{
 				Atari2600DebuggerMenuItem.Visible =
 					toolStripSeparator31.Visible =
@@ -1737,7 +1737,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AboutMenuItem_Click(object sender, EventArgs e)
 		{
-			if (VersionInfo.INTERIM)
+			if (VersionInfo.DeveloperBuild)
 			{
 				new AboutBox().ShowDialog();
 			}
