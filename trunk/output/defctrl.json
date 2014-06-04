@@ -558,17 +558,30 @@
       "Reset": ""
     },
     "WonderSwan Controller": {
-      "Up X": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
-      "Down X": "DownArrow, J1 POV1D, X1 DpadDown, X1 LStickDown",
-      "Left X": "LeftArrow, J1 POV1L, X1 DpadLeft, X1 LStickLeft",
-      "Right X": "RightArrow, J1 POV1R, X1 DpadRight, X1 LStickRight",
-      "Up Y": "NumberPad8, J1 RotationZ-, X1 RStickUp",
-      "Down Y": "NumberPad2, J1 RotationZ+, X1 RStickDown",
-      "Left Y": "NumberPad4, J1 Z-, X1 RStickLeft",
-      "Right Y": "NumberPad6, J1 Z+, X1 RStickRight",
-      "Start": "Return, J1 B10, X1 Start",
-      "B": "Z, J1 B1, X1 X",
-      "A": "X, J1 B2, X1 A",
+      "P1 Up X": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
+      "P1 Down X": "DownArrow, J1 POV1D, X1 DpadDown, X1 LStickDown",
+      "P1 Left X": "LeftArrow, J1 POV1L, X1 DpadLeft, X1 LStickLeft",
+      "P1 Right X": "RightArrow, J1 POV1R, X1 DpadRight, X1 LStickRight",
+      "P1 Up Y": "NumberPad8, J1 RotationZ-, X1 RStickUp",
+      "P1 Down Y": "NumberPad2, J1 RotationZ+, X1 RStickDown",
+      "P1 Left Y": "NumberPad4, J1 Z-, X1 RStickLeft",
+      "P1 Right Y": "NumberPad6, J1 Z+, X1 RStickRight",
+      "P1 Start": "Return, J1 B10, X1 Start",
+      "P1 B": "Z, J1 B1, X1 X",
+      "P1 A": "X, J1 B2, X1 A",
+	  
+      "P2 Up X": "",
+      "P2 Down X": "X, J1 B2, X1 A",
+      "P2 Left X": "Z, J1 B1, X1 X",
+      "P2 Right X": "",
+      "P2 Up Y": "LeftArrow, J1 POV1L, X1 DpadLeft, X1 LStickLeft",
+      "P2 Down Y": "RightArrow, J1 POV1R, X1 DpadRight, X1 LStickRight",
+      "P2 Left Y": "DownArrow, J1 POV1D, X1 DpadDown, X1 LStickDown",
+      "P2 Right Y": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
+      "P2 Start": "Return, J1 B10, X1 Start",
+      "P2 B": "",
+      "P2 A": "",
+	  
       "Power": ""
     }
   },
@@ -736,17 +749,10 @@
       "Power": ""
     },
     "WonderSwan Controller": {
-      "Up X": "",
-      "Down X": "",
-      "Left X": "",
-      "Right X": "",
-      "Up Y": "",
-      "Down Y": "",
-      "Left Y": "",
-      "Right Y": "",
-      "Start": "",
-      "B": "A, J1 B4, X1 Y",
-      "A": "S, J1 B3, X1 B",
+      "P1 B": "A, J1 B4, X1 Y",
+      "P1 A": "S, J1 B3, X1 B",
+      "P2 Left X": "A, J1 B4, X1 Y",
+      "P2 Down X": "S, J1 B3, X1 B",
       "Power": ""
     }
   },

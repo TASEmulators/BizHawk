@@ -129,7 +129,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (buckets[i].Count > 0)
 					{
-						tt.TabPages.Add("Player " + i);
+						string tabname = Global.Emulator.SystemId == "WSWAN" ? i == 1 ? "Normal" : "Rotated" : "Player " + i; // hack
+						tt.TabPages.Add(tabname);
 						tt.TabPages[pageidx].Controls.Add(createpanel(settings, buckets[i], tt.Size));
 						pageidx++;
 					}
@@ -137,7 +138,8 @@ namespace BizHawk.Client.EmuHawk
 
 				if (buckets[0].Count > 0)
 				{
-					tt.TabPages.Add(Global.Emulator.SystemId == "C64" ? "Keyboard" : "Console");
+					string tabname = Global.Emulator.SystemId == "C64" ? "Keyboard" : "Console"; // hack
+					tt.TabPages.Add(tabname);
 					tt.TabPages[pageidx].Controls.Add(createpanel(settings, buckets[0], tt.Size));
 				}
 			}
