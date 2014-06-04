@@ -403,7 +403,7 @@ namespace BizHawk.Client.Common
 								nextEmulator = c64;
 								break;
 							case "GBA":
-								if (VersionInfo.INTERIM)
+								if (VersionInfo.DeveloperBuild)
 								{
 									var gba = new GBA(nextComm);
 									gba.Load(rom.RomData);
@@ -420,7 +420,7 @@ namespace BizHawk.Client.Common
 									GetCoreSettings<WonderSwan>(), GetCoreSyncSettings<WonderSwan>());
 								break;
 							case "DEBUG":
-								if (VersionInfo.INTERIM)
+								if (VersionInfo.DeveloperBuild)
 								{
 									nextEmulator = LibRetroEmulator.CreateDebug(nextComm, rom.RomData);
 								}

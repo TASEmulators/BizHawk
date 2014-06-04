@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BizBox_Load(object sender, EventArgs e)
 		{
-			if (VersionInfo.INTERIM)
+			if (VersionInfo.DeveloperBuild)
 			{
 				Text = " BizHawk  (SVN r" + SubWCRev.SVN_REV + ")";
 			}

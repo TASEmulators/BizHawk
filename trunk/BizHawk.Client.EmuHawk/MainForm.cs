@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
-			Text = "BizHawk" + (VersionInfo.INTERIM ? " (interim) " : string.Empty);
+			Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
 
 			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
 
@@ -549,7 +549,7 @@ namespace BizHawk.Client.EmuHawk
 					{ "WSWAN", "WonderSwan" }
 				};
 
-				if (VersionInfo.INTERIM)
+				if (VersionInfo.DeveloperBuild)
 				{
 					released.Add("GBA", "Gameboy Advance");
 					released.Add("C64", "Commodore 64");
@@ -1400,7 +1400,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var str = Global.SystemInfo.DisplayName;
 
-			if (VersionInfo.INTERIM)
+			if (VersionInfo.DeveloperBuild)
 			{
 				str += " (interim)";
 			}
@@ -1670,7 +1670,7 @@ namespace BizHawk.Client.EmuHawk
 			var ofd = new OpenFileDialog { InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId) };
 
 			// adelikat: ugly design for this, I know
-			if (VersionInfo.INTERIM)
+			if (VersionInfo.DeveloperBuild)
 			{
 				ofd.Filter = FormatFilter(
 					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.cue;*.exe;*.gb;*.gbc;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;%ARCH%",
@@ -3175,7 +3175,7 @@ namespace BizHawk.Client.EmuHawk
 
 				RewireSound();
 				Global.Rewinder.ResetRewindBuffer();
-				Text = "BizHawk" + (VersionInfo.INTERIM ? " (interim) " : string.Empty);
+				Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
 				HandlePlatformMenus();
 				_stateSlots.Clear();
 				UpdateDumpIcon();

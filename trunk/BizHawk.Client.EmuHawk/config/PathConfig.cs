@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LockDownCores()
 		{
-			if (VersionInfo.INTERIM)
+			if (VersionInfo.DeveloperBuild)
 			{
 				return;
 			}
