@@ -75,70 +75,73 @@ namespace BizHawk.Client.Common
 			get { return _luaAttributes.Name; }
 		}
 
-		public IEnumerable<string> Parameters
-		{
-			get
-			{
-				var info = _method.GetParameters();
-				foreach (var p in info)
-				{
-					yield return p.ToString();
-				}
-			}
-		}
-
 		public string Description
 		{
 			get { return _luaAttributes.Description; }
 		}
 
+		private string _paramterList = null;
+
 		public string ParameterList
 		{
 			get
 			{
-				var parameters = Parameters.ToList();
-
-				var list = new StringBuilder();
-				list.Append('(');
-				for (var i = 0; i < parameters.Count; i++)
+				if (_paramterList == null)
 				{
-					var param =
-						parameters[i].Replace("System", string.Empty)
-									 .Replace(" ", string.Empty)
-									 .Replace(".", string.Empty)
-									 .Replace("LuaInterface", string.Empty)
-									 .Replace("Object[]", "object[] ")
-									 .Replace("Object", "object ")
-									 .Replace("Boolean[]", "bool[] ")
-									 .Replace("Boolean", "bool ")
-									 .Replace("String", "string ")
-									 .Replace("LuaTable", "table ")
-									 .Replace("LuaFunction", "func ")
-									 .Replace("Nullable`1[Int32]", "int? ")
-									 .Replace("Nullable`1[UInt32]", "uint? ")
-									 .Replace("Byte", "byte ")
-									 .Replace("Int16", "short ")
-									 .Replace("Int32", "int ")
-									 .Replace("Int64", "long ")
-									 .Replace("Ushort", "ushort ")
-									 .Replace("Ulong", "ulong ")
-									 .Replace("UInt32", "uint ")
-									 .Replace("UInt64", "ulong ")
-									 .Replace("Double", "double ")
-									 .Replace("Uint", "uint ")
-									 .Replace("Nullable`1[DrawingColor]", "Color? ")
-									 .Replace("DrawingColor", "Color ");
+					var parameters = _method.GetParameters();
 
-					list.Append(param);
-					if (i < parameters.Count - 1)
+					var list = new StringBuilder();
+					list.Append('(');
+					for (var i = 0; i < parameters.Length; i++)
 					{
-						list.Append(", ");
+						var p =
+							parameters[i].ToString().Replace("System", string.Empty)
+										 .Replace(" ", string.Empty)
+										 .Replace(".", string.Empty)
+										 .Replace("LuaInterface", string.Empty)
+										 .Replace("Object[]", "object[] ")
+										 .Replace("Object", "object ")
+										 .Replace("Boolean[]", "bool[] ")
+										 .Replace("Boolean", "bool ")
+										 .Replace("String", "string ")
+										 .Replace("LuaTable", "table ")
+										 .Replace("LuaFunction", "func ")
+										 .Replace("Nullable`1[Int32]", "int? ")
+										 .Replace("Nullable`1[UInt32]", "uint? ")
+										 .Replace("Byte", "byte ")
+										 .Replace("Int16", "short ")
+										 .Replace("Int32", "int ")
+										 .Replace("Int64", "long ")
+										 .Replace("Ushort", "ushort ")
+										 .Replace("Ulong", "ulong ")
+										 .Replace("UInt32", "uint ")
+										 .Replace("UInt64", "ulong ")
+										 .Replace("Double", "double ")
+										 .Replace("Uint", "uint ")
+										 .Replace("Nullable`1[DrawingColor]", "Color? ")
+										 .Replace("DrawingColor", "Color ");
+
+						if (parameters[i].IsOptional)
+						{
+							var def = parameters[i].DefaultValue != null ? parameters[i].DefaultValue.ToString() : "null";
+							list.AppendFormat("[{0} = {1}]", p, def);
+						}
+						else
+						{
+							list.Append(p);
+						}
+
+						if (i < parameters.Length - 1)
+						{
+							list.Append(", ");
+						}
 					}
+
+					list.Append(')');
+					_paramterList = list.ToString();
 				}
 
-				list.Append(')');
-
-				return list.ToString();
+				return _paramterList;
 			}
 		}
 
