@@ -569,7 +569,7 @@
       "P1 Start": "Return, J1 B10, X1 Start",
       "P1 B": "Z, J1 B1, X1 X",
       "P1 A": "X, J1 B2, X1 A",
-	  
+        
       "P2 Up X": "",
       "P2 Down X": "X, J1 B2, X1 A",
       "P2 Left X": "Z, J1 B1, X1 X",
@@ -581,7 +581,7 @@
       "P2 Start": "Return, J1 B10, X1 Start",
       "P2 B": "",
       "P2 A": "",
-	  
+        
       "Power": ""
     }
   },
@@ -593,8 +593,8 @@
       "P1 Right": "",
       "P1 Start": "",
       "P1 Select": "",
-      "P1 B": "A, J1 B4, X1 Y",
-      "P1 A": "S, J1 B3, X1 B",
+      "P1 B": "A",
+      "P1 A": "S",
       "P2 Up": "",
       "P2 Down": "",
       "P2 Left": "",
@@ -616,8 +616,8 @@
       "Right": "",
       "Start": "",
       "Select": "",
-      "B": "A, J1 B4, X1 Y",
-      "A": "S, J1 B3, X1 B",
+      "B": "A",
+      "A": "S",
       "Power": ""
     },
     "GBAController": {
@@ -627,8 +627,8 @@
       "Right": "",
       "Start": "",
       "Select": "",
-      "B": "A, J1 B4, X1 Y",
-      "A": "S, J1 B3, X1 B",
+      "B": "A",
+      "A": "S",
       "L": "",
       "R": "",
       "Power": ""
@@ -640,12 +640,12 @@
       "P1 Down": "",
       "P1 Left": "",
       "P1 Right": "",
-      "P1 Button": "A, J1 B4, X1 Y",
+      "P1 Button": "A",
       "P2 Up": "",
       "P2 Down": "",
       "P2 Left": "",
       "P2 Right": "",
-      "P2 Button": "S, J1 B3, X1 B"
+      "P2 Button": "S"
     },
     "PC Engine Controller": {
       "Reset": "",
@@ -654,8 +654,8 @@
       "P1 Down": "",
       "P1 Left": "",
       "P1 Right": "",
-      "P1 B2": "A, J1 B4, X1 Y",
-      "P1 B1": "S, J1 B3, X1 B",
+      "P1 B2": "A",
+      "P1 B1": "S",
       "P1 Select": "",
       "P1 Run": "",
       "P2 Up": "",
@@ -696,8 +696,8 @@
       "P1 Down": "",
       "P1 Left": "",
       "P1 Right": "",
-      "P1 B1": "A, J1 B3, X1 B",
-      "P1 B2": "S, J1 B4, X1 Y",
+      "P1 B1": "A",
+      "P1 B2": "S",
       "Reset": "",
       "Pause": "",
       "P2 Up": "",
@@ -742,17 +742,17 @@
       "Right": "",
       "Start": "",
       "Select": "",
-      "B": "J1 B4, X1 Y",
-      "A": "J1 B3, X1 B",
+      "B": "A",
+      "A": "S",
       "L": "",
       "R": "",
       "Power": ""
     },
     "WonderSwan Controller": {
-      "P1 B": "A, J1 B4, X1 Y",
-      "P1 A": "S, J1 B3, X1 B",
-      "P2 Left X": "A, J1 B4, X1 Y",
-      "P2 Down X": "S, J1 B3, X1 B",
+      "P1 B": "A",
+      "P1 A": "S",
+      "P2 Left X": "A",
+      "P2 Down X": "S",
       "Power": ""
     }
   },
