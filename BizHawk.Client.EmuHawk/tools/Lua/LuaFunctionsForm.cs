@@ -45,6 +45,8 @@ namespace BizHawk.Client.EmuHawk
 				.ToList();
 			UpdateList();
 			FilterBox.Focus();
+
+			ToWikiMarkupButton.Visible = VersionInfo.DeveloperBuild;
 		}
 
 		private void FunctionView_QueryItemBkColor(int index, int column, ref Color color)
@@ -206,6 +208,11 @@ namespace BizHawk.Client.EmuHawk
 		private void FilterBox_KeyUp(object sender, KeyEventArgs e)
 		{
 			UpdateList();
+		}
+
+		private void ToWikiMarkupButton_Click(object sender, EventArgs e)
+		{
+			Clipboard.SetDataObject(GlobalWin.Tools.LuaConsole.LuaImp.Docs.ToTASVideosWikiMarkup());
 		}
 	}
 }

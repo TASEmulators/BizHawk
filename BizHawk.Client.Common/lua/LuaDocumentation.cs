@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 		public LuaDocumentation()
 			:base() { }
 
-		public void ToTASVideosWikiMarkup()
+		public string ToTASVideosWikiMarkup()
 		{
 			var sb = new StringBuilder();
 			
@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			File.WriteAllText(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "LuaDocumentationWiki.txt"), sb.ToString());
+			return sb.ToString();
 		}
 	}
 

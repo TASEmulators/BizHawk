@@ -33,6 +33,7 @@
 			this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
 			this.FilterBox = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
+			this.ToWikiMarkupButton = new System.Windows.Forms.Button();
 			this.FunctionView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.LibraryReturn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.LibraryHead = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -70,6 +71,16 @@
 			this.label1.Size = new System.Drawing.Size(29, 13);
 			this.label1.TabIndex = 3;
 			this.label1.Text = "Filter";
+			// 
+			// ToWikiMarkupButton
+			// 
+			this.ToWikiMarkupButton.Location = new System.Drawing.Point(493, 309);
+			this.ToWikiMarkupButton.Name = "ToWikiMarkupButton";
+			this.ToWikiMarkupButton.Size = new System.Drawing.Size(138, 23);
+			this.ToWikiMarkupButton.TabIndex = 11;
+			this.ToWikiMarkupButton.Text = "Wiki markup to Clipboard";
+			this.ToWikiMarkupButton.UseVisualStyleBackColor = true;
+			this.ToWikiMarkupButton.Click += new System.EventHandler(this.ToWikiMarkupButton_Click);
 			// 
 			// FunctionView
 			// 
@@ -129,6 +140,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(730, 340);
+			this.Controls.Add(this.ToWikiMarkupButton);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.FilterBox);
 			this.Controls.Add(this.FunctionView);
@@ -156,5 +168,6 @@
 		private System.Windows.Forms.ColumnHeader LibraryDescription;
 		private System.Windows.Forms.TextBox FilterBox;
 		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Button ToWikiMarkupButton;
 	}
 }
