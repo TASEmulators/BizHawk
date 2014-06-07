@@ -101,5 +101,10 @@ namespace BizHawk.Client.EmuHawk
 			UserDoubleSizeOption = cbDoubleSize.Checked;
 		}
 
+		private void SNESOptions_Load(object sender, EventArgs e)
+		{
+			rbAccuracy.Visible = VersionInfo.DeveloperBuild;
+		}
+
 	}
 }
