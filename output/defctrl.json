@@ -791,12 +791,12 @@
     },
     "Nintento 64 Controller": {
       "P1 X Axis": {
-        "Value": "J1 X, X1 LeftThumbX",
+        "Value": "J1 X",
         "Mult": 1.0,
         "Deadzone": 0.1
       },
       "P1 Y Axis": {
-        "Value": "J1 Y, X1 LeftThumbY",
+        "Value": "J1 Y",
         "Mult": 1.0,
         "Deadzone": 0.1
       },
