@@ -94,13 +94,11 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Tells the movie to start recording from the beginning.
-		/// This will clear SRAM, and the movie log
 		/// </summary>
 		void StartNewRecording();
 
 		/// <summary>
 		/// Tells the movie to start playback from the beginning
-		/// This will clear SRAM
 		/// </summary>
 		void StartNewPlayback();
 
@@ -113,13 +111,11 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Switches to record mode
-		/// Does not change the movie log or clear SRAM
 		/// </summary>
 		void SwitchToRecord();
 
 		/// <summary>
 		/// Switches to playback mode
-		/// Does not change the movie log or clear SRAM
 		/// </summary>
 		void SwitchToPlay();
 
