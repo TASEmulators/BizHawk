@@ -1922,9 +1922,9 @@ namespace BizHawk.Client.EmuHawk
 
 			int index = -1;
 			var sub = new Subtitle();
-			for (int x = 0; x < Global.MovieSession.Movie.Header.Subtitles.Count; x++)
+			for (int x = 0; x < Global.MovieSession.Movie.Subtitles.Count; x++)
 			{
-				sub = Global.MovieSession.Movie.Header.Subtitles[x];
+				sub = Global.MovieSession.Movie.Subtitles[x];
 				if (Global.Emulator.Frame == sub.Frame)
 				{
 					index = x;
@@ -1943,10 +1943,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (index >= 0)
 				{
-					Global.MovieSession.Movie.Header.Subtitles.RemoveAt(index);
+					Global.MovieSession.Movie.Subtitles.RemoveAt(index);
 				}
 
-				Global.MovieSession.Movie.Header.Subtitles.Add(subForm.Sub);
+				Global.MovieSession.Movie.Subtitles.Add(subForm.Sub);
 			}
 		}
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 using BizHawk.Emulation.Common;
@@ -48,7 +49,15 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		string PreferredExtension { get; }
 
+		/// <summary>
+		/// Sync Settings from the Core
+		/// Movies 2.0 TODO: instead of enforcing a Json transfer, there should be methods that get and receive SyncSettings objects and let the implementation decide the format
+		/// </summary>
+		string SyncSettingsJson { get; set; }
+
 		IMovieHeader Header { get; }
+		SubtitleList Subtitles { get; }
+		IList<string> Comments { get; }
 
 		#endregion
 

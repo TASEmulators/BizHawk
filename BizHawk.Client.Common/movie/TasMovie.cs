@@ -86,6 +86,29 @@ namespace BizHawk.Client.Common
 			IsCountingRerecords = true;
 		}
 
+		public SubtitleList Subtitles
+		{
+			get { return Header.Subtitles; }
+		}
+
+		public IList<string> Comments
+		{
+			get { return Header.Comments; }
+		}
+
+		public string SyncSettingsJson
+		{
+			get
+			{
+				return Header[HeaderKeys.SYNCSETTINGS];
+			}
+
+			set
+			{
+				Header[HeaderKeys.SYNCSETTINGS] = value;
+			}
+		}
+
 		public string Filename { get; set; }
 
 		public IMovieHeader Header { get; private set; }
