@@ -97,6 +97,8 @@
     <Compile Include="7z\SevenZipSfx.cs" />
     <Compile Include="7z\StreamWrappers.cs" />
     <Compile Include="BinarySaveStates.cs" />
+    <Compile Include="bk2\Movie2.cs" />
+    <Compile Include="bk2\MovieHeader2.cs" />
     <Compile Include="config\Binding.cs" />
     <Compile Include="config\Config.cs" />
     <Compile Include="config\ConfigService.cs" />

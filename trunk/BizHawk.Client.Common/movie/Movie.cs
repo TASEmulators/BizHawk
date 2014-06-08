@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -6,12 +7,14 @@ using System.Text;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
+
 namespace BizHawk.Client.Common
 {
 	public class Movie : IMovie
 	{
 		private readonly MovieLog _log = new MovieLog();
 		private readonly PlatformFrameRates _frameRates = new PlatformFrameRates();
+		private bool _makeBackup = true;
 
 		private Moviemode _mode = Moviemode.Inactive;
 		private int _preloadFramecount; // Not a a reliable number, used for preloading (when no log has yet been loaded), this is only for quick stat compilation for dialogs such as play movie
@@ -35,20 +38,43 @@ namespace BizHawk.Client.Common
 			
 			IsCountingRerecords = true;
 			_mode = Moviemode.Inactive;
-			MakeBackup = true;
+			_makeBackup = true;
 		}
 
 		private enum Moviemode { Inactive, Play, Record, Finished }
 
 		#region Properties
 
+		public SubtitleList Subtitles
+		{
+			get { return Header.Subtitles; }
+		}
+
+		public IList<string> Comments
+		{
+			get { return Header.Comments; }
+		}
+
+		public string SyncSettingsJson
+		{
+			get
+			{
+				return Header[HeaderKeys.SYNCSETTINGS];
+			}
+
+			set
+			{
+				Header[HeaderKeys.SYNCSETTINGS] = value;
+			}
+		}
+
 		public string PreferredExtension { get { return "bkm"; } }
 
+		// TODO: delete me
 		public static string Extension { get { return "bkm"; } }
 
 		public IMovieHeader Header { get; private set; }
 
-		public bool MakeBackup { get; set; }
 		public string Filename { get; set; }
 		public bool IsCountingRerecords { get; set; }
 		
@@ -118,10 +144,10 @@ namespace BizHawk.Client.Common
 			}
 
 			_mode = Moviemode.Record;
-			if (Global.Config.EnableBackupMovies && MakeBackup && _log.Length > 0)
+			if (Global.Config.EnableBackupMovies && _makeBackup && _log.Length > 0)
 			{
 				SaveBackup();
-				MakeBackup = false;
+				_makeBackup = false;
 			}
 
 			_log.Clear();
@@ -509,10 +535,10 @@ namespace BizHawk.Client.Common
 			// We are in record mode so replace the movie log with the one from the savestate
 			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
-				if (Global.Config.EnableBackupMovies && MakeBackup && _log.Length > 0)
+				if (Global.Config.EnableBackupMovies && _makeBackup && _log.Length > 0)
 				{
 					SaveBackup();
-					MakeBackup = false;
+					_makeBackup = false;
 				}
 
 				_log.Clear();

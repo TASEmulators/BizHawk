@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				string s = Global.MovieSession.Movie.Header.SyncSettingsJson;
+				string s = Global.MovieSession.Movie.SyncSettingsJson;
 				if (!string.IsNullOrWhiteSpace(s))
 				{
 					_syncSettingsHack = ConfigService.LoadWithType(s);

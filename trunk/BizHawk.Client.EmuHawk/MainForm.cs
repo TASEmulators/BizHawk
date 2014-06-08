@@ -1430,6 +1430,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadMoviesFromRecent(string path)
 		{
+			// Movies 2.0 TODO - Use MovieLoader that returns an IMovie, loader will have a success flag to pass to HandleLoadError()
 			var movie = new Movie(path);
 
 			if (!movie.Loaded)

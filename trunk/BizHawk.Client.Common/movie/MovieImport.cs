@@ -317,7 +317,7 @@ namespace BizHawk.Client.Common
 					length = line.Substring(first + 1, second - first - 1);
 				}
 				string message = line.Substring(second + 1).Trim();
-				m.Header.Subtitles.AddFromString("subtitle " + frame + " 0 0 " + length + " FFFFFFFF " + message);
+				m.Subtitles.AddFromString("subtitle " + frame + " 0 0 " + length + " FFFFFFFF " + message);
 			}
 			return m;
 		}
@@ -371,14 +371,14 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.ToLower().StartsWith("emuversion"))
 				{
-					m.Header.Comments.Add(
+					m.Comments.Add(
 						EMULATIONORIGIN + " " + emulator + " version " + ParseHeader(line, "emuVersion")
 					);
 				}
 				else if (line.ToLower().StartsWith("version"))
 				{
 					string version = ParseHeader(line, "version");
-					m.Header.Comments.Add(
+					m.Comments.Add(
 						MOVIEORIGIN + " " + Path.GetExtension(path) + " version " + version
 					);
 					if (Path.GetExtension(path).ToUpper() == ".FM2" && version != "3")
@@ -459,7 +459,7 @@ namespace BizHawk.Client.Common
 				else
 				{
 					// Everything not explicitly defined is treated as a comment.
-					m.Header.Comments.Add(line);
+					m.Comments.Add(line);
 				}
 			}
 			sr.Close();
@@ -543,7 +543,7 @@ namespace BizHawk.Client.Common
 				fs.Close();
 				return null;
 			}
-			m.Header.Comments.Add(MOVIEORIGIN + " .FCM version " + version);
+			m.Comments.Add(MOVIEORIGIN + " .FCM version " + version);
 			// 008 1-byte flags
 			byte flags = r.ReadByte();
 			// bit 0: reserved, set to 0
@@ -571,7 +571,7 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.PAL] = pal.ToString();
 			// other: reserved, set to 0
 			bool syncHack = (((flags >> 4) & 0x1) != 0);
-			m.Header.Comments.Add(SYNCHACK + " " + syncHack.ToString());
+			m.Comments.Add(SYNCHACK + " " + syncHack.ToString());
 			// 009 1-byte flags: reserved, set to 0
 			r.ReadByte();
 			// 00A 1-byte flags: reserved, set to 0
@@ -597,7 +597,7 @@ namespace BizHawk.Client.Common
 			m.Header[MD5] = Util.BytesToHexString(md5).ToLower();
 			// 030 4-byte little-endian unsigned int: version of the emulator used
 			uint emuVersion = r.ReadUInt32();
-			m.Header.Comments.Add(EMULATIONORIGIN + " FCEU " + emuVersion.ToString());
+			m.Comments.Add(EMULATIONORIGIN + " FCEU " + emuVersion.ToString());
 			// 034 name of the ROM used - UTF8 encoded nul-terminated string.
 			List<byte> gameBytes = new List<byte>();
 			while (r.PeekChar() != 0)
@@ -833,11 +833,11 @@ namespace BizHawk.Client.Common
 			r.ReadInt16();
 			// 010 64-byte zero-terminated emulator identifier string
 			string emuVersion = NullTerminated(r.ReadStringFixedAscii(64));
-			m.Header.Comments.Add(EMULATIONORIGIN + " Famtasia version " + emuVersion);
-			m.Header.Comments.Add(MOVIEORIGIN + " .FMV");
+			m.Comments.Add(EMULATIONORIGIN + " Famtasia version " + emuVersion);
+			m.Comments.Add(MOVIEORIGIN + " .FMV");
 			// 050 64-byte zero-terminated movie title string
 			string description = NullTerminated(r.ReadStringFixedAscii(64));
-			m.Header.Comments.Add(COMMENT + " " + description);
+			m.Comments.Add(COMMENT + " " + description);
 			if (!controller1 && !controller2 && !FDS)
 			{
 				warningMsg = "No input recorded.";
@@ -929,8 +929,8 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.PLATFORM] = "Genesis";
 			// 00F ASCII-encoded GMV file format version. The most recent is 'A'. (?)
 			string version = r.ReadStringFixedAscii(1);
-			m.Header.Comments.Add(MOVIEORIGIN + " .GMV version " + version);
-			m.Header.Comments.Add(EMULATIONORIGIN + " Gens");
+			m.Comments.Add(MOVIEORIGIN + " .GMV version " + version);
+			m.Comments.Add(EMULATIONORIGIN + " Gens");
 			// 010 4-byte little-endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
 			m.Header.Rerecords = rerecordCount;
@@ -970,7 +970,7 @@ namespace BizHawk.Client.Common
 			r.ReadByte();
 			// 018 40-byte zero-terminated ASCII movie name string
 			string description = NullTerminated(r.ReadStringFixedAscii(40));
-			m.Header.Comments.Add(COMMENT + " " + description);
+			m.Comments.Add(COMMENT + " " + description);
 			/*
 			 040 frame data
 			 For controller bytes, each value is determined by OR-ing together values for whichever of the following are
@@ -1089,7 +1089,7 @@ namespace BizHawk.Client.Common
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string coreversion = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
-					m.Header.Comments.Add(COREORIGIN + " " + coreversion);
+					m.Comments.Add(COREORIGIN + " " + coreversion);
 					hf.Unbind();
 				}
 				else if (item.Name == "gamename")
@@ -1255,7 +1255,7 @@ namespace BizHawk.Client.Common
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string systemid = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
-					m.Header.Comments.Add(EMULATIONORIGIN + " " + systemid);
+					m.Comments.Add(EMULATIONORIGIN + " " + systemid);
 					hf.Unbind();
 				}
 			}
@@ -1284,10 +1284,10 @@ namespace BizHawk.Client.Common
 			}
 			// 008 uint32	 Mednafen Version (Current is 0A 08)
 			uint emuVersion = r.ReadUInt32();
-			m.Header.Comments.Add(EMULATIONORIGIN + " Mednafen " + emuVersion.ToString());
+			m.Comments.Add(EMULATIONORIGIN + " Mednafen " + emuVersion.ToString());
 			// 00C uint32	 Movie Format Version (Current is 01)
 			uint version = r.ReadUInt32();
-			m.Header.Comments.Add(MOVIEORIGIN + " .MCM version " + version);
+			m.Comments.Add(MOVIEORIGIN + " .MCM version " + version);
 			// 010 32-byte	MD5 of the ROM used
 			byte[] md5 = r.ReadBytes(16);
 			// Discard the second 16 bytes.
@@ -1405,8 +1405,8 @@ namespace BizHawk.Client.Common
 			}
 			// 0004: 4-byte little endian unsigned int: dega version
 			uint emuVersion = r.ReadUInt32();
-			m.Header.Comments.Add(EMULATIONORIGIN + " Dega version " + emuVersion.ToString());
-			m.Header.Comments.Add(MOVIEORIGIN + " .MMV");
+			m.Comments.Add(EMULATIONORIGIN + " Dega version " + emuVersion.ToString());
+			m.Comments.Add(MOVIEORIGIN + " .MMV");
 			// 0008: 4-byte little endian unsigned int: frame count
 			uint frameCount = r.ReadUInt32();
 			// 000c: 4-byte little endian unsigned int: rerecord count
@@ -1519,8 +1519,8 @@ namespace BizHawk.Client.Common
 			}
 			// 004 4-byte version string (example "0960")
 			string emuVersion = r.ReadStringFixedAscii(4);
-			m.Header.Comments.Add(EMULATIONORIGIN + " Nintendulator version " + emuVersion);
-			m.Header.Comments.Add(MOVIEORIGIN + " .NMV");
+			m.Comments.Add(EMULATIONORIGIN + " Nintendulator version " + emuVersion);
+			m.Comments.Add(MOVIEORIGIN + " .NMV");
 			// 008 4-byte file size, not including the 16-byte header
 			r.ReadUInt32();
 			/*
@@ -1680,7 +1680,7 @@ namespace BizHawk.Client.Common
 			 00C (variable) null-terminated UTF-8 text, movie description (currently not implemented)
 			*/
 			string movieDescription = NullTerminated(r.ReadStringFixedAscii((int)r.ReadUInt32()));
-			m.Header.Comments.Add(COMMENT + " " + movieDescription);
+			m.Comments.Add(COMMENT + " " + movieDescription);
 			// ... 4-byte little-endian unsigned int: length of controller data in bytes
 			uint length = r.ReadUInt32();
 			// ... (variable) controller data
@@ -1765,8 +1765,8 @@ namespace BizHawk.Client.Common
 					fs.Close();
 					return null;
 			}
-			m.Header.Comments.Add(EMULATIONORIGIN + " Snes9x version " + version);
-			m.Header.Comments.Add(MOVIEORIGIN + " .SMV");
+			m.Comments.Add(EMULATIONORIGIN + " Snes9x version " + version);
+			m.Comments.Add(MOVIEORIGIN + " .SMV");
 			/*
 			 008 4-byte little-endian integer: movie "uid" - identifies the movie-savestate relationship, also used as the
 			 recording time in Unix epoch format
@@ -2116,7 +2116,7 @@ namespace BizHawk.Client.Common
 			}
 			if (is_sgb)
 			{
-				m.Header.Comments.Add(SUPERGAMEBOYMODE + " True");
+				m.Comments.Add(SUPERGAMEBOYMODE + " True");
 			}
 			m.Header[HeaderKeys.PLATFORM] = platform;
 			// 017 1-byte flags: (values of some boolean emulator options)
@@ -2158,8 +2158,8 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.GAMENAME] = gameName;
 			// 030 1-byte unsigned char: minor version/revision number of current VBM version, the latest is "1"
 			byte minorVersion = r.ReadByte();
-			m.Header.Comments.Add(MOVIEORIGIN + " .VBM version " + majorVersion + "." + minorVersion);
-			m.Header.Comments.Add(EMULATIONORIGIN + " Visual Boy Advance");
+			m.Comments.Add(MOVIEORIGIN + " .VBM version " + majorVersion + "." + minorVersion);
+			m.Comments.Add(EMULATIONORIGIN + " Visual Boy Advance");
 			// 031 1-byte unsigned char: the internal CRC of the ROM used while recording
 			r.ReadByte();
 			/*
@@ -2191,7 +2191,7 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.AUTHOR] = author;
 			// The following 128 bytes are for a description of the movie. Both parts must be null-terminated.
 			string movieDescription = NullTerminated(r.ReadStringFixedAscii(128));
-			m.Header.Comments.Add(COMMENT + " " + movieDescription);
+			m.Comments.Add(COMMENT + " " + movieDescription);
 			r.BaseStream.Position = firstFrameOffset;
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition()};
 			if (platform != "GBA")
@@ -2288,11 +2288,11 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.PLATFORM] = "NES";
 			// 00C 2-byte little-endian integer: movie version 0x0400
 			ushort version = r.ReadUInt16();
-			m.Header.Comments.Add(MOVIEORIGIN + " .VMV version " + version);
-			m.Header.Comments.Add(EMULATIONORIGIN + " VirtuaNES");
+			m.Comments.Add(MOVIEORIGIN + " .VMV version " + version);
+			m.Comments.Add(EMULATIONORIGIN + " VirtuaNES");
 			// 00E 2-byte little-endian integer: record version
 			ushort recordVersion = r.ReadUInt16();
-			m.Header.Comments.Add(COMMENT + " Record version " + recordVersion);
+			m.Comments.Add(COMMENT + " Record version " + recordVersion);
 			// 010 4-byte flags (control byte)
 			uint flags = r.ReadUInt32();
 			/*
@@ -2512,8 +2512,8 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.PLATFORM] = "SNES";
 			// 003 2-byte little-endian unsigned int: zsnes version number
 			short version = r.ReadInt16();
-			m.Header.Comments.Add(EMULATIONORIGIN + " ZSNES version " + version);
-			m.Header.Comments.Add(MOVIEORIGIN + " .ZMV");
+			m.Comments.Add(EMULATIONORIGIN + " ZSNES version " + version);
+			m.Comments.Add(MOVIEORIGIN + " .ZMV");
 			// 005 4-byte little-endian integer: CRC32 of the ROM
 			int crc32 = r.ReadInt32();
 			m.Header[CRC32] = crc32.ToString();

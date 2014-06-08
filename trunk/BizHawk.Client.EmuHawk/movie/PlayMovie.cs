@@ -511,8 +511,8 @@ namespace BizHawk.Client.EmuHawk
 			var FramesItem = new ListViewItem("Frames");
 			FramesItem.SubItems.Add(_movieList[firstIndex].FrameCount.ToString());
 			DetailsView.Items.Add(FramesItem);
-			CommentsBtn.Enabled = _movieList[firstIndex].Header.Comments.Any();
-			SubtitlesBtn.Enabled = _movieList[firstIndex].Header.Subtitles.Any();
+			CommentsBtn.Enabled = _movieList[firstIndex].Comments.Any();
+			SubtitlesBtn.Enabled = _movieList[firstIndex].Subtitles.Any();
 		}
 
 		private void EditMenuItem_Click(object sender, EventArgs e)
