@@ -61,13 +61,25 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 			this.SyncSettings = (SaturnSyncSettings)SyncSettings ?? new SaturnSyncSettings();
 
+			if (this.SyncSettings.UseGL && glContext == null)
+			{
+				glContext = CoreComm.RequestGLContext();
+			}
+
+
 			ResetCounters();
+
+			CoreComm.ActivateGLContext(glContext);
 			Init(bios);
 
 			InputCallbackH = new LibYabause.InputCallback(() => CoreComm.InputCallback.Call());
 			LibYabause.libyabause_setinputcallback(InputCallbackH);
 			CoreComm.UsesDriveLed = true;
+
+			CoreComm.DeactivateGLContext();
 		}
+
+		static object glContext;
 
 		void Init(byte[] bios)
 		{
@@ -98,7 +110,6 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 				basetime = 0;
 			else
 				basetime = (int)((SyncSettings.RTCInitialTime - new DateTime(1970, 1, 1).ToLocalTime()).TotalSeconds);
-
 
 			if (!LibYabause.libyabause_init
 			(
@@ -186,6 +197,8 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		{
 			int w, h, nsamp;
 
+			CoreComm.ActivateGLContext(glContext);
+
 			LibYabause.Buttons1 p11 = (LibYabause.Buttons1)0xff;
 			LibYabause.Buttons2 p12 = (LibYabause.Buttons2)0xff;
 			LibYabause.Buttons1 p21 = (LibYabause.Buttons1)0xff;
@@ -265,6 +278,8 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			//Console.WriteLine(nsamp);
 
 			//CheckStates();
+
+			CoreComm.DeactivateGLContext();
 		}
 
 		public int Frame { get; private set; }
@@ -515,6 +530,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		{
 			if (!Disposed)
 			{
+				CoreComm.ActivateGLContext(glContext);
 				if (SaveRamModified)
 					DisposedSaveRam = ReadSaveRam();
 				LibYabause.libyabause_setvidbuff(IntPtr.Zero);
@@ -523,6 +539,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 				VideoHandle.Free();
 				SoundHandle.Free();
 				Disposed = true;
+				CoreComm.DeactivateGLContext();
 			}
 		}
 

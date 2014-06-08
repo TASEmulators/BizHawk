@@ -57,6 +57,15 @@ namespace BizHawk.Client.EmuHawk
 			// its.. weird. dont ask.
 		}
 
+		CoreComm CreateCoreComm()
+		{
+			CoreComm ret = new CoreComm(ShowMessageCoreComm, NotifyCoreComm);
+			ret.RequestGLContext = () => GlobalWin.GLManager.CreateGLContext();
+			ret.ActivateGLContext = (gl) => GlobalWin.GLManager.Activate((GLManager.ContextRef)gl);
+			ret.DeactivateGLContext = () => GlobalWin.GLManager.Deactivate();
+			return ret;
+		}
+
 		public MainForm(string[] args)
 		{
 			GlobalWin.MainForm = this;
@@ -160,7 +169,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Input.Initialize();
 			InitControls();
-			Global.CoreComm = new CoreComm(ShowMessageCoreComm, NotifyCoreComm);
+			Global.CoreComm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals();
 			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.ActiveController = Global.NullControls;
@@ -2538,7 +2547,12 @@ namespace BizHawk.Client.EmuHawk
 
 				coreskipaudio = Global.ClientControls["Turbo"] && _currAviWriter == null;
 
-				Global.Emulator.FrameAdvance(!_throttle.skipnextframe || _currAviWriter != null, !coreskipaudio);
+				{
+					bool render = !_throttle.skipnextframe || _currAviWriter != null;
+					bool renderSound = !coreskipaudio;
+					Global.Emulator.FrameAdvance(render, renderSound);
+				}
+
 				GlobalWin.DisplayManager.NeedsToPaint = true;
 				Global.CheatList.Pulse();
 
@@ -2974,7 +2988,7 @@ namespace BizHawk.Client.EmuHawk
 			// the new settings objects
 			CommitCoreSettingsToConfig();
 
-			var nextComm = new CoreComm(ShowMessageCoreComm, NotifyCoreComm);
+			var nextComm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals(nextComm);
 
 			var result = loader.LoadRom(path, nextComm);
@@ -3147,7 +3161,7 @@ namespace BizHawk.Client.EmuHawk
 			CommitCoreSettingsToConfig();
 
 			Global.Emulator.Dispose();
-			Global.CoreComm = new CoreComm(ShowMessageCoreComm, NotifyCoreComm);
+			Global.CoreComm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals();
 			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.ActiveController = Global.NullControls;
@@ -3167,7 +3181,7 @@ namespace BizHawk.Client.EmuHawk
 			if (GlobalWin.Tools.AskSave())
 			{
 				CloseGame(clearSram);
-				Global.CoreComm = new CoreComm(ShowMessageCoreComm, NotifyCoreComm);
+				Global.CoreComm = CreateCoreComm();
 				CoreFileProvider.SyncCoreCommInputSignals();
 				Global.Emulator = new NullEmulator(Global.CoreComm);
 				Global.Game = GameInfo.GetNullGame();

@@ -50,6 +50,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -105,6 +106,9 @@
     <Compile Include="ControllerBinding.cs" />
     <Compile Include="CoreFileProvider.cs" />
     <Compile Include="FirmwareManager.cs" />
+    <Compile Include="GLManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Global.cs" />
     <Compile Include="helpers\InputValidate.cs" />
     <Compile Include="InputManager.cs" />
@@ -193,6 +197,14 @@
     <ProjectReference Include="..\BizHawk.Emulation.DiscSystem\BizHawk.Emulation.DiscSystem.csproj">
       <Project>{f51946ea-827f-4d82-b841-1f2f6d060312}</Project>
       <Name>BizHawk.Emulation.DiscSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL.OpenTK\BizHawk.Bizware.BizwareGL.OpenTK.csproj">
+      <Project>{5160CFB1-5389-47C1-B7F6-8A0DC97641EE}</Project>
+      <Name>BizHawk.Bizware.BizwareGL.OpenTK</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL\BizHawk.Bizware.BizwareGL.csproj">
+      <Project>{9F84A0B2-861E-4EF4-B89B-5E2A3F38A465}</Project>
+      <Name>BizHawk.Bizware.BizwareGL</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
