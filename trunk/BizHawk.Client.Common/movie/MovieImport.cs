@@ -11,6 +11,7 @@ namespace BizHawk.Client.Common
 {
 	public static class MovieImport
 	{
+		// Movies 2.0 TODO: this is Movie.cs specific, can it be IMovie based? If not, needs to be refactored to a hardcoded 2.0 implementation, client needs to know what kind of type it imported to, or the mainform method needs to be moved here
 		public const string COMMENT = "comment";
 		public const string COREORIGIN = "CoreOrigin";
 		public const string CRC16 = "CRC16";
@@ -31,14 +32,46 @@ namespace BizHawk.Client.Common
 		public const string SYNCHACK = "SyncHack";
 		public const string UNITCODE = "UnitCode";
 
+		public static void ProcessMovieImport(string fn, Action<string> conversionErrorCallback, Action<string> messageCallback)
+		{
+			var d = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
+			string errorMsg;
+			string warningMsg;
+			var m = ImportFile(fn, out errorMsg, out warningMsg);
+
+			if (!string.IsNullOrWhiteSpace(errorMsg))
+			{
+				conversionErrorCallback(errorMsg);
+			}
+
+			if (!string.IsNullOrWhiteSpace(warningMsg))
+			{
+				messageCallback(warningMsg);
+				
+			}
+			else
+			{
+				messageCallback(Path.GetFileName(fn) + " imported as " + "Movies\\" +
+								Path.GetFileName(fn) + "." + Global.MovieSession.Movie.PreferredExtension);
+			}
+
+			if (!Directory.Exists(d))
+			{
+				Directory.CreateDirectory(d);
+			}
+
+			var outPath = Path.Combine(d, Path.GetFileName(fn) + "." + Global.MovieSession.Movie.PreferredExtension);
+			m.SaveAs(outPath);
+		}
+
 		// Attempt to import another type of movie file into a movie object.
 		public static Movie ImportFile(string path, out string errorMsg, out string warningMsg)
 		{
 			Movie m = new Movie();
-			errorMsg = String.Empty;
-			warningMsg = String.Empty;
+			errorMsg = string.Empty;
+			warningMsg = string.Empty;
 
-			string ext = path != null ? Path.GetExtension(path).ToUpper() : String.Empty;
+			string ext = path != null ? Path.GetExtension(path).ToUpper() : string.Empty;
 			try
 			{
 				switch (ext)
@@ -293,7 +326,7 @@ namespace BizHawk.Client.Common
 		private static Movie ImportText(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			Movie m = new Movie(path + "." + Movie.Extension);
 			FileInfo file = new FileInfo(path);
 			StreamReader sr = file.OpenText();
 			string emulator = String.Empty;
@@ -489,7 +522,7 @@ namespace BizHawk.Client.Common
 		private static Movie ImportFCM(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			Movie m = new Movie(path + "." + Movie.Extension);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 46 43 4D 1A "FCM\x1A"
@@ -741,7 +774,7 @@ namespace BizHawk.Client.Common
 		private static Movie ImportFMV(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			Movie m = new Movie(path + "." + Movie.Extension);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 46 4D 56 1A "FMV\x1A"
@@ -881,7 +914,7 @@ namespace BizHawk.Client.Common
 		private static Movie ImportGMV(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			Movie m = new Movie(path + "." + Movie.Extension);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 16-byte signature and format version: "Gens Movie TEST9"
@@ -1005,7 +1038,7 @@ namespace BizHawk.Client.Common
 		private static Movie ImportLSMV(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			Movie m = new Movie(path + "." + Movie.Extension);
 			HawkFile hf = new HawkFile(path);
 			// .LSMV movies are .zip files containing data files.
 			if (!hf.IsArchive)
@@ -1237,7 +1270,7 @@ namespace BizHawk.Client.Common
 		private static Movie ImportMCM(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			Movie m = new Movie(path + "." + Movie.Extension);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 8-byte	"MDFNMOVI" signature
@@ -1358,7 +1391,7 @@ namespace BizHawk.Client.Common
 		private static Movie ImportMMV(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			Movie m = new Movie(path + "." + Movie.Extension);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 0000: 4-byte signature: "MMV\0"
@@ -1472,7 +1505,7 @@ namespace BizHawk.Client.Common
 		private static Movie ImportNMV(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			Movie m = new Movie(path + "." + Movie.Extension);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 4E 53 53 1A "NSS\x1A"
@@ -1699,7 +1732,7 @@ namespace BizHawk.Client.Common
 		private static Movie ImportSMV(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			Movie m = new Movie(path + "." + Movie.Extension);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 53 4D 56 1A "SMV\x1A"
@@ -1970,7 +2003,7 @@ namespace BizHawk.Client.Common
 		private static Movie ImportVBM(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			Movie m = new Movie(path + "." + Movie.Extension);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 56 42 4D 1A "VBM\x1A"
@@ -2240,7 +2273,7 @@ namespace BizHawk.Client.Common
 		private static Movie ImportVMV(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			Movie m = new Movie(path + "." + Movie.Extension);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 12-byte signature: "VirtuaNES MV"
@@ -2464,7 +2497,7 @@ namespace BizHawk.Client.Common
 		private static Movie ImportZMV(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			Movie m = new Movie(path + "." + Movie.Extension);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 3-byte signature: 5A 4D 56 "ZMV"

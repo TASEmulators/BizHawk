@@ -31,6 +31,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public string PreferredExtension { get { return "tasproj"; } }
+
 		public void ToggleButton(int frame, string buttonName)
 		{
 			InvalidateGreenzone(frame);

@@ -2,8 +2,8 @@
 using System.Globalization;
 using System.IO;
 using System.Text;
-using BizHawk.Common;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -41,6 +41,10 @@ namespace BizHawk.Client.Common
 		private enum Moviemode { Inactive, Play, Record, Finished }
 
 		#region Properties
+
+		public string PreferredExtension { get { return "bkm"; } }
+
+		public static string Extension { get { return "bkm"; } }
 
 		public IMovieHeader Header { get; private set; }
 

@@ -3184,35 +3184,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private static void ShowConversionError(string errorMsg)
+		{
+			MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+		}
+
 		private static void ProcessMovieImport(string fn) // Nothing Winform Specific here, move to Movie import
 		{
-			var d = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
-			string errorMsg;
-			string warningMsg;
-			var m = MovieImport.ImportFile(fn, out errorMsg, out warningMsg);
-
-			if (!String.IsNullOrWhiteSpace(errorMsg))
-			{
-				MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-
-			if (!String.IsNullOrWhiteSpace(warningMsg))
-			{
-				GlobalWin.OSD.AddMessage(warningMsg);
-			}
-			else
-			{
-				GlobalWin.OSD.AddMessage(Path.GetFileName(fn) + " imported as " + "Movies\\" +
-										 Path.GetFileName(fn) + "." + Global.Config.MovieExtension);
-			}
-
-			if (!Directory.Exists(d))
-			{
-				Directory.CreateDirectory(d);
-			}
-
-			var outPath = Path.Combine(d, Path.GetFileName(fn) + "." + Global.Config.MovieExtension);
-			m.SaveAs(outPath);
+			MovieImport.ProcessMovieImport(fn, ShowConversionError, GlobalWin.OSD.AddMessage);
 		}
 
 		#endregion
