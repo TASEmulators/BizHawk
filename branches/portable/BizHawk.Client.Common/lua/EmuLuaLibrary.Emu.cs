@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
@@ -11,7 +12,7 @@ using LuaInterface;
 
 namespace BizHawk.Client.Common
 {
-	public class EmulatorLuaLibrary : LuaLibraryBase
+	public sealed class EmulatorLuaLibrary : LuaLibraryBase
 	{
 		public Action FrameAdvanceCallback { get; set; }
 		public Action YieldCallback { get; set; }
@@ -57,9 +58,20 @@ namespace BizHawk.Client.Common
 			"getregister",
 			"returns the value of a cpu register or flag specified by name. For a complete list of possible registers or flags for a given core, use getregisters"
 		)]
-		public static int GetRegister(string name)
+		public int GetRegister(string name)
 		{
-			return Global.Emulator.GetCpuFlagsAndRegisters().FirstOrDefault(x => x.Key == name).Value;
+			try
+			{
+				return Global.Emulator.GetCpuFlagsAndRegisters().FirstOrDefault(x => x.Key == name).Value;
+			}
+			catch (NotImplementedException)
+			{
+
+				Log(string.Format(
+					"Error: {0} does not yet implement getregister()",
+					Global.Emulator.Attributes().CoreName));
+				return 0;
+			}
 		}
 
 		[LuaMethodAttributes(
@@ -69,12 +81,40 @@ namespace BizHawk.Client.Common
 		public LuaTable GetRegisters()
 		{
 			var table = Lua.NewTable();
-			foreach (var kvp in Global.Emulator.GetCpuFlagsAndRegisters())
+
+			try
 			{
-				table[kvp.Key] = kvp.Value;
+				foreach (var kvp in Global.Emulator.GetCpuFlagsAndRegisters())
+				{
+					table[kvp.Key] = kvp.Value;
+				}
+			}
+			catch (NotImplementedException)
+			{
+				Log(string.Format(
+					"Error: {0} does not yet implement getregisters()",
+					Global.Emulator.Attributes().CoreName));
 			}
 
 			return table;
+		}
+
+		[LuaMethodAttributes(
+			"setregister",
+			"sets the given register name to the given value"
+		)]
+		public void SetRegister(string register, int value)
+		{
+			try
+			{
+				Global.Emulator.SetCpuRegister(register, value);
+			}
+			catch (NotImplementedException)
+			{
+				Log(string.Format(
+					"Error: {0} does not yet implement setregister()",
+					Global.Emulator.Attributes().CoreName));
+			}
 		}
 
 		[LuaMethodAttributes(

@@ -6,6 +6,21 @@ using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
+	public class N64Settings
+	{
+		public int VideoSizeX = 320;
+		public int VideoSizeY = 240;
+
+		public N64Settings Clone()
+		{
+			return new N64Settings
+			{
+				VideoSizeX = VideoSizeX,
+				VideoSizeY = VideoSizeY,
+			};
+		}
+	}
+
 	public class N64SyncSettings
 	{
 		public CORETYPE CoreType = CORETYPE.Dynarec;
@@ -34,8 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		}
 
 		public PLUGINTYPE VidPlugin = PLUGINTYPE.RICE;
-		public int VideoSizeX = 320;
-		public int VideoSizeY = 240;
+
 		public N64ControllerSettings[] Controllers = 
 		{
 			new N64ControllerSettings(),
@@ -55,8 +69,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				CoreType = CoreType,
 				RspType = RspType,
 				VidPlugin = VidPlugin,
-				VideoSizeX = VideoSizeX,
-				VideoSizeY = VideoSizeY,
 				RicePlugin = RicePlugin.Clone(),
 				GlidePlugin = GlidePlugin.Clone(),
 				Glide64mk2Plugin = Glide64mk2Plugin.Clone(),
@@ -65,9 +77,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		}
 
 		// get mupenapi internal object
-		public VideoPluginSettings GetVPS(GameInfo game)
+		public VideoPluginSettings GetVPS(GameInfo game, int videoSizeX, int videoSizeY)
 		{
-			var ret = new VideoPluginSettings(VidPlugin, VideoSizeX, VideoSizeY);
+			var ret = new VideoPluginSettings(VidPlugin, videoSizeX, videoSizeY);
 			IPluginSettings ips = null;
 			switch (VidPlugin)
 			{

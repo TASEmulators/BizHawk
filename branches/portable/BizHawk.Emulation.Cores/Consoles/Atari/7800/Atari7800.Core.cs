@@ -35,5 +35,32 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				{ "Flag Z", theMachine.CPU.fZ ? 1 : 0 }
 			};
 		}
+
+		public void SetCpuRegister(string register, int value)
+		{
+			switch (register)
+			{
+				default:
+					throw new InvalidOperationException();
+				case "A":
+					theMachine.CPU.A = (byte)value;
+					break;
+				case "P":
+					theMachine.CPU.P = (byte)value;
+					break;
+				case "PC":
+					theMachine.CPU.PC = (ushort)value;
+					break;
+				case "S":
+					theMachine.CPU.S = (byte)value;
+					break;
+				case "X":
+					theMachine.CPU.X = (byte)value;
+					break;
+				case "Y":
+					theMachine.CPU.Y = (byte)value;
+					break;
+			}
+		}
 	}
 }

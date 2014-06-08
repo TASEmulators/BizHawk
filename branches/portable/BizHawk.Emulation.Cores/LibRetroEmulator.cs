@@ -380,6 +380,11 @@ namespace BizHawk.Emulation.Cores
 			throw new NotImplementedException();
 		}
 
+		public void SetCpuRegister(string register, int value)
+		{
+			throw new NotImplementedException();
+		}
+
 		#endregion
 
 		public void Dispose()

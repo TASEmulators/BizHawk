@@ -7,7 +7,7 @@ using LuaInterface;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class InputLuaLibrary : LuaLibraryBase
+	public sealed class InputLuaLibrary : LuaLibraryBase
 	{
 		public InputLuaLibrary(Lua lua)
 			: base(lua) { }
@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"get",
-			"Returns a lua table of all the buttons the user is currently pressing on their keyboard and gamepads"
+			"Returns a lua table of all the buttons the user is currently pressing on their keyboard and gamepads\nAll buttons that are pressed have their key values set to true; all others remain null.\nAll key names use the names from http://slimdx.mdxinfo.com/latestdocs/Help/Html/T_SlimDX_DirectInput_Key.htm and are case-sensitive."
 		)]
 		public LuaTable Get()
 		{

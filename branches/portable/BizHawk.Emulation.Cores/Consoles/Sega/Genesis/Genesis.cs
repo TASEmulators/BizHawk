@@ -279,6 +279,11 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 			};
 		}
 
+		public void SetCpuRegister(string register, int value)
+		{
+			throw new NotImplementedException();
+		}
+
 		int vdpcallback(int level) // Musashi handler
 		{
 			InterruptCallback(level);

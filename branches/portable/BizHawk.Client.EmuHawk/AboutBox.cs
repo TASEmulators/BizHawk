@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 			using (Font font = new Font("Courier New", 20, FontStyle.Bold))
 			{
 				if (bounceCounter == -1) return;
-				const string str = "INTERIM BUILD";
+				const string str = "DEVELOPER BUILD";
 				float x = 0;
 				int timefactor = bounceCounter;
 				for (int i = 0; i < str.Length; i++)
@@ -160,9 +160,9 @@ namespace BizHawk.Client.EmuHawk
         private void AboutBox_Load(object sender, EventArgs e)
         {
 #if DEBUG
-			Text = "BizHawk Interim Build (DEBUG MODE) SVN r" + SubWCRev.SVN_REV;
+			Text = "BizHawk Developer Build (DEBUG MODE) SVN r" + SubWCRev.SVN_REV;
 #else
-			Text = "BizHawk Interim Build (RELEASE MODE) SVN r" + SubWCRev.SVN_REV;
+			Text = "BizHawk Developer Build (RELEASE MODE) SVN r" + SubWCRev.SVN_REV;
 #endif
 			if (DateTime.Now > DateTime.Parse("12/17/2013") && DateTime.Now <= DateTime.Parse("12/25/2013"))
 			{

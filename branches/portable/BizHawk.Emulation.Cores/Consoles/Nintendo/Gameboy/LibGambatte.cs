@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -306,10 +307,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public delegate void SectionFunction(string name);
 
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_newstatesave_ex(IntPtr core, DataFunction Save, SectionFunction EnterSection, SectionFunction ExitSection);
+		public static extern void gambatte_newstatesave_ex(IntPtr core, ref TextStateFPtrs ff);
 
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_newstateload_ex(IntPtr core, DataFunction Load, SectionFunction EnterSection, SectionFunction ExitSection);
+		public static extern void gambatte_newstateload_ex(IntPtr core, ref TextStateFPtrs ff);
 
 		/// <summary>
 		/// ROM header title of currently loaded ROM image.

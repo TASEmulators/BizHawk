@@ -38,6 +38,8 @@ namespace BizHawk.Client.EmuHawk
 			ControllerImages.Add("PC Engine Controller", Properties.Resources.PCEngineController);
 			ControllerImages.Add("Commodore 64 Controller", Properties.Resources.C64Joystick);
 			ControllerImages.Add("TI83 Controller", Properties.Resources.TI83_Controller);
+
+			ControllerImages.Add("WonderSwan Controller", Properties.Resources.WonderSwanColor);
 		}
 
 		private ControllerConfig()
@@ -127,7 +129,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (buckets[i].Count > 0)
 					{
-						tt.TabPages.Add("Player " + i);
+						string tabname = Global.Emulator.SystemId == "WSWAN" ? i == 1 ? "Normal" : "Rotated" : "Player " + i; // hack
+						tt.TabPages.Add(tabname);
 						tt.TabPages[pageidx].Controls.Add(createpanel(settings, buckets[i], tt.Size));
 						pageidx++;
 					}
@@ -135,7 +138,8 @@ namespace BizHawk.Client.EmuHawk
 
 				if (buckets[0].Count > 0)
 				{
-					tt.TabPages.Add(Global.Emulator.SystemId == "C64" ? "Keyboard" : "Console");
+					string tabname = Global.Emulator.SystemId == "C64" ? "Keyboard" : "Console"; // hack
+					tt.TabPages.Add(tabname);
 					tt.TabPages[pageidx].Controls.Add(createpanel(settings, buckets[0], tt.Size));
 				}
 			}
@@ -375,6 +379,41 @@ namespace BizHawk.Client.EmuHawk
 				SaveToDefaults(cd);
 
 				ConfigService.Save(Config.ControlDefaultPath, cd);
+			}
+		}
+
+		private void ClearWidgetAndChildren(Control c)
+		{
+			if (c is InputCompositeWidget)
+			{
+				(c as InputCompositeWidget).Clear();
+			}
+
+			if (c is InputWidget)
+			{
+				(c as InputWidget).ClearAll();
+			}
+
+			if (c is AnalogBindControl)
+			{
+				(c as AnalogBindControl).Unbind_Click(null, null);
+			}
+
+			if (c.Controls.Count > 0)
+			{
+				foreach (Control child in c.Controls.OfType<Control>())
+				{
+					ClearWidgetAndChildren(child);
+				}
+			}
+		}
+
+		private void ClearBtn_Click(object sender, EventArgs e)
+		{
+			// TODO: make this recursive to not depend on the current structure
+			foreach (var c in Controls.OfType<Control>())
+			{
+				ClearWidgetAndChildren(c);
 			}
 		}
 	}

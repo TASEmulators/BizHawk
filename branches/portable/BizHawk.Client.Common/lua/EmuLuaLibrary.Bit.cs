@@ -1,9 +1,12 @@
 ﻿using System;
+using System.ComponentModel;
+
 using LuaInterface;
 
 namespace BizHawk.Client.Common
 {
-	public class BitLuaLibrary : LuaLibraryBase
+	[Description("A library for performing standard bitwise operations.")]
+	public sealed class BitLuaLibrary : LuaLibraryBase
 	{
 		public BitLuaLibrary(Lua lua)
 			: base(lua) { }

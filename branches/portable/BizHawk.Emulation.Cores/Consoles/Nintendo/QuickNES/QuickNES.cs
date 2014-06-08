@@ -12,9 +12,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
 	[CoreAttributes(
 		"QuickNes",
-		"blargg, kode54",
+		"",
 		isPorted: true,
-		isReleased: true
+		isReleased: true,
+		portedVersion: "0.7.0",
+		portedUrl: "https://github.com/kode54/QuickNES"
 		)]
 	public class QuickNES : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
@@ -377,6 +379,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			ret["PC"] = regs[4];
 			ret["P"] = regs[5];
 			return ret;
+		}
+
+		public void SetCpuRegister(string register, int value)
+		{
+			throw new NotImplementedException();
 		}
 
 		#endregion

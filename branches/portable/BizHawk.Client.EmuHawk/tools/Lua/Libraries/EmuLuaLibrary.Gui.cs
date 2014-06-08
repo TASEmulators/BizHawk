@@ -8,7 +8,7 @@ using LuaInterface;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class GuiLuaLibrary : LuaLibraryBase
+	public sealed class GuiLuaLibrary : LuaLibraryBase
 	{
 		public GuiLuaLibrary(Lua lua)
 			: base(lua) { }
@@ -68,39 +68,25 @@ namespace BizHawk.Client.EmuHawk
 
 		private DisplaySurface _luaSurface;
 
-		private static Color GetColor(object color)
+		private SolidBrush GetBrush(Color color)
 		{
-			if (color is double)
-			{
-				return Color.FromArgb(int.Parse(long.Parse(color.ToString()).ToString("X"), NumberStyles.HexNumber));
-			}
-			else
-			{
-				return Color.FromName(color.ToString().ToLower());
-			}
-		}
-
-		private SolidBrush GetBrush(object color)
-		{
-			var c = GetColor(color);
 			SolidBrush b;
-			if (!_solidBrushes.TryGetValue(c, out b))
+			if (!_solidBrushes.TryGetValue(color, out b))
 			{
-				b = new SolidBrush(c);
-				_solidBrushes[c] = b;
+				b = new SolidBrush(color);
+				_solidBrushes[color] = b;
 			}
 
 			return b;
 		}
 
-		private Pen GetPen(object color)
+		private Pen GetPen(Color color)
 		{
-			var c = GetColor(color);
 			Pen p;
-			if (!_pens.TryGetValue(c, out p))
+			if (!_pens.TryGetValue(color, out p))
 			{
-				p = new Pen(c);
-				_pens[c] = p;
+				p = new Pen(color);
+				_pens[color] = p;
 			}
 
 			return p;
@@ -156,7 +142,7 @@ namespace BizHawk.Client.EmuHawk
 			"drawBezier",
 			"Draws a Bezier curve using the table of coordinates provided in the given color"
 		)]
-		public void DrawBezier(LuaTable points, object color)
+		public void DrawBezier(LuaTable points, Color color)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
@@ -189,7 +175,7 @@ namespace BizHawk.Client.EmuHawk
 			"drawBox",
 			"Draws a rectangle on screen from x1/y1 to x2/y2. Same as drawRectangle except it receives two points intead of a point and width/height"
 		)]
-		public void DrawBox(int x, int y, int x2, int y2, object line = null, object background = null)
+		public void DrawBox(int x, int y, int x2, int y2, Color? line = null, Color? background = null)
 		{
 			using (var g = GetGraphics())
 			{
@@ -215,10 +201,10 @@ namespace BizHawk.Client.EmuHawk
 						y -= y2;
 					}
 
-					g.DrawRectangle(GetPen(line ?? "white"), x, y, x2, y2);
-					if (background != null)
+					g.DrawRectangle(GetPen(line ?? Color.White), x, y, x2, y2);
+					if (background.HasValue)
 					{
-						g.FillRectangle(GetBrush(background), x, y, x2, y2);
+						g.FillRectangle(GetBrush(background.Value), x, y, x2, y2);
 					}
 				}
 				catch (Exception)
@@ -233,17 +219,17 @@ namespace BizHawk.Client.EmuHawk
 			"drawEllipse",
 			"Draws an ellipse at the given coordinates and the given width and height. Line is the color of the ellipse. Background is the optional fill color"
 		)]
-		public void DrawEllipse(int x, int y, int width, int height, object line, object background = null)
+		public void DrawEllipse(int x, int y, int width, int height, Color? line, Color? background = null)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
 				{
-					g.DrawEllipse(GetPen(line ?? "white"), x, y, width, height);
-					if (background != null)
+					g.DrawEllipse(GetPen(line ?? Color.White), x, y, width, height);
+					if (background.HasValue)
 					{
-						var brush = GetBrush(background);
+						var brush = GetBrush(background.Value);
 						g.FillEllipse(brush, x, y, width, height);
 					}
 				}
@@ -303,12 +289,12 @@ namespace BizHawk.Client.EmuHawk
 			"drawLine",
 			"Draws a line from the first coordinate pair to the 2nd. Color is optional (if not specified it will be drawn black)"
 		)]
-		public void DrawLine(int x1, int y1, int x2, int y2, object color = null)
+		public void DrawLine(int x1, int y1, int x2, int y2, Color? color = null)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
-				g.DrawLine(GetPen(color ?? "white"), x1, y1, x2, y2);
+				g.DrawLine(GetPen(color ?? Color.White), x1, y1, x2, y2);
 			}
 		}
 
@@ -323,16 +309,16 @@ namespace BizHawk.Client.EmuHawk
 			int height,
 			int startangle,
 			int sweepangle,
-			object line,
-			object background = null)
+			Color line,
+			Color? background = null)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				g.DrawPie(GetPen(line), x, y, width, height, startangle, sweepangle);
-				if (background != null)
+				if (background.HasValue)
 				{
-					var brush = GetBrush(background);
+					var brush = GetBrush(background.Value);
 					g.FillPie(brush, x, y, width, height, startangle, sweepangle);
 				}
 			}
@@ -342,14 +328,14 @@ namespace BizHawk.Client.EmuHawk
 			"drawPixel",
 			"Draws a single pixel at the given coordinates in the given color. Color is optional (if not specified it will be drawn black)"
 		)]
-		public void DrawPixel(int x, int y, object color = null)
+		public void DrawPixel(int x, int y, Color? color = null)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
 				{
-					g.DrawLine(GetPen(color ?? "white"), x, y, x + 0.1F, y);
+					g.DrawLine(GetPen(color ?? Color.White), x, y, x + 0.1F, y);
 				}
 				catch (Exception)
 				{
@@ -362,7 +348,7 @@ namespace BizHawk.Client.EmuHawk
 			"drawPolygon",
 			"Draws a polygon using the table of coordinates specified in points. Line is the color of the polygon. Background is the optional fill color"
 		)]
-		public void DrawPolygon(LuaTable points, object line, object background = null)
+		public void DrawPolygon(LuaTable points, Color line, Color? background = null)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 
@@ -379,9 +365,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					g.DrawPolygon(GetPen(line), pointsArr);
-					if (background != null)
+					if (background.HasValue)
 					{
-						g.FillPolygon(GetBrush(background), pointsArr);
+						g.FillPolygon(GetBrush(background.Value), pointsArr);
 					}
 				}
 				catch (Exception)
@@ -395,14 +381,14 @@ namespace BizHawk.Client.EmuHawk
 			"drawRectangle",
 			"Draws a rectangle at the given coordinate and the given width and height. Line is the color of the box. Background is the optional fill color"
 		)]
-		public void DrawRectangle(int x, int y, int width, int height, object line, object background = null)
+		public void DrawRectangle(int x, int y, int width, int height, Color? line = null, Color? background = null)
 		{
 			using (var g = GetGraphics())
 			{
-				g.DrawRectangle(GetPen(line ?? "white"), x, y, width, height);
-				if (background != null)
+				g.DrawRectangle(GetPen(line ?? Color.White), x, y, width, height);
+				if (background.HasValue)
 				{
-					g.FillRectangle(GetBrush(background), x, y, width, height);
+					g.FillRectangle(GetBrush(background.Value), x, y, width, height);
 				}
 			}
 		}
@@ -415,7 +401,7 @@ namespace BizHawk.Client.EmuHawk
 			int x,
 			int y,
 			string message,
-			object color = null,
+			Color? color = null,
 			int? fontsize = null,
 			string fontfamily = null,
 			string fontstyle = null)
@@ -431,7 +417,7 @@ namespace BizHawk.Client.EmuHawk
 			int x,
 			int y,
 			string message,
-			object color = null,
+			Color? color = null,
 			int? fontsize = null,
 			string fontfamily = null,
 			string fontstyle = null)
@@ -471,7 +457,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					var font = new Font(family, fontsize ?? 12, fstyle, GraphicsUnit.Pixel);
-					g.DrawString(message, font, GetBrush(color ?? "white"), x, y);
+					g.DrawString(message, font, GetBrush(color ?? Color.White), x, y);
 				}
 				catch (Exception)
 				{
@@ -488,8 +474,8 @@ namespace BizHawk.Client.EmuHawk
 			int x,
 			int y,
 			string message,
-			object background = null,
-			object forecolor = null,
+			Color? background = null,
+			Color? forecolor = null,
 			string anchor = null)
 		{
 			var a = 0;
@@ -522,7 +508,7 @@ namespace BizHawk.Client.EmuHawk
 				y -= Global.Emulator.CoreComm.ScreenLogicalOffsetY;
 			}
 
-			GlobalWin.OSD.AddGUIText(message, x, y, GetColor(background ?? "black"), GetColor(forecolor ?? "white"), a);
+			GlobalWin.OSD.AddGUIText(message, x, y, background ?? Color.Black, forecolor ?? Color.White, a);
 		}
 	}
 }

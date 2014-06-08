@@ -44,14 +44,14 @@ namespace BizHawk.Client.EmuHawk
 
 		ContextMenuStrip DropdownMenu;
 
-		public bool AutoTab { get { return widget.AutoTab; } set { widget.AutoTab = true; } }
+		public bool AutoTab { get { return widget.AutoTab; } set { widget.AutoTab = value; } }
 		public string WidgetName { get { return widget.WidgetName; } set { widget.WidgetName = value; } }
 
 		public string Bindings { get { return widget.Bindings; } set { widget.Bindings = value; } }
 
 		public void Clear()
 		{
-			widget.Clear();
+			widget.ClearAll();
 		}
 
 		private void btnSpecial_Click(object sender, EventArgs e)

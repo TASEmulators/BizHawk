@@ -30,6 +30,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			return left.Union(right).ToList().ToDictionary(pair => pair.Key, pair => pair.Value);
 		}
 
+		public void SetCpuRegister(string register, int value)
+		{
+			if (register.StartsWith("Left "))
+			{
+				L.SetCpuRegister(register.Replace("Left ", ""), value);
+			}
+			else if (register.StartsWith("Right "))
+			{
+				R.SetCpuRegister(register.Replace("Right ", ""), value);
+			}
+		}
+
 		Gameboy L;
 		Gameboy R;
 		// counter to ensure we do 35112 samples per frame

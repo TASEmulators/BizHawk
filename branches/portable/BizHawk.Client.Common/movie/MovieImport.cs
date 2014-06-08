@@ -79,6 +79,9 @@ namespace BizHawk.Client.Common
 					case ".VMV":
 						m = ImportVMV(path, out errorMsg, out warningMsg);
 						break;
+					case ".YMV":
+						m = ImportYMV(path, out errorMsg, out warningMsg);
+						break;
 					case ".ZMV":
 						m = ImportZMV(path, out errorMsg, out warningMsg);
 						break;
@@ -100,7 +103,7 @@ namespace BizHawk.Client.Common
 		{
 			string[] extensions = new[]
 			{
-				"FCM", "FM2", "FMV", "GMV", "MCM", "MC2", "MMV", "NMV", "LSMV", "SMV", "VBM", "VMV", "ZMV"
+				"FCM", "FM2", "FMV", "GMV", "MCM", "MC2", "MMV", "NMV", "LSMV", "SMV", "VBM", "VMV", "YMV", "ZMV"
 			};
 			return extensions.Any(ext => extension.ToUpper() == "." + ext);
 		}
@@ -149,6 +152,10 @@ namespace BizHawk.Client.Common
 						buttons = new[] { "A", "B", "Select", "Start", "Right", "Left", "Up", "Down" };
 						controller = "Gameboy Controller";
 					}
+					break;
+				case ".YMV":
+					buttons = new[] { "Left", "Right", "Up", "Down", "Start", "A", "B", "C", "X", "Y", "Z", "L", "R" };
+					controller = "Saturn Controller";
 					break;
 			}
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = controller}};
@@ -282,7 +289,7 @@ namespace BizHawk.Client.Common
 			return m;
 		}
 
-		// Import a text-based movie format. This works for .FM2 and .MC2.
+		// Import a text-based movie format. This works for .FM2, .MC2, and .YMV.
 		private static Movie ImportText(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = String.Empty;
@@ -300,6 +307,10 @@ namespace BizHawk.Client.Common
 				case ".MC2":
 					emulator = "Mednafen/PCEjin";
 					platform = "PCE";
+					break;
+				case ".YMV":
+					emulator = "Yabause";
+					platform = "Sega Saturn";
 					break;
 			}
 			m.Header[HeaderKeys.PLATFORM] = platform;
@@ -348,6 +359,10 @@ namespace BizHawk.Client.Common
 				{
 					m.Header[HeaderKeys.GAMENAME] = ParseHeader(line, "romFilename");
 				}
+				else if (line.ToLower().StartsWith("cdgamename"))
+				{
+					m.Header[HeaderKeys.GAMENAME] = ParseHeader(line, "cdGameName");
+				}
 				else if (line.ToLower().StartsWith("romchecksum"))
 				{
 					string blob = ParseHeader(line, "romChecksum");
@@ -371,11 +386,11 @@ namespace BizHawk.Client.Common
 					// Try to parse the re-record count as an integer, defaulting to 0 if it fails.
 					try
 					{
-						rerecordCount = int.Parse(ParseHeader(line, "rerecordCount"));
+							rerecordCount = int.Parse(ParseHeader(line, "rerecordCount"));
 					}
 					catch
 					{
-						rerecordCount = 0;
+					rerecordCount = 0;
 					}
 					m.Header.Rerecords = (ulong)rerecordCount;
 				}
@@ -398,14 +413,21 @@ namespace BizHawk.Client.Common
 					bool pal = (ParseHeader(line, "palFlag") == "1");
 					m.Header[HeaderKeys.PAL] = pal.ToString();
 				}
+				else if (line.ToLower().StartsWith("ispal"))
+				{
+					bool pal = (ParseHeader(line, "isPal") == "1");
+					m.Header[HeaderKeys.PAL] = pal.ToString();
+				}
 				else if (line.ToLower().StartsWith("fourscore"))
 				{
 					bool fourscore = (ParseHeader(line, "fourscore") == "1");
 					m.Header[HeaderKeys.FOURSCORE] = fourscore.ToString();
 				}
 				else
+				{
 					// Everything not explicitly defined is treated as a comment.
 					m.Header.Comments.Add(line);
+				}
 			}
 			sr.Close();
 			return m;
@@ -883,9 +905,14 @@ namespace BizHawk.Client.Common
 			string player1Config = r.ReadStringFixedAscii(1);
 			// 015 ASCII-encoded controller config for player 2. '3' or '6'.
 			string player2Config = r.ReadStringFixedAscii(1);
+			SimpleController controllers = new SimpleController { Type = new ControllerDefinition() };
 			if (player1Config == "6" || player2Config == "6")
 			{
-				warningMsg = "6 button controllers are not properly supported.";
+				controllers.Type.Name = "GPGX Genesis Controller";
+			}
+			else
+			{
+				controllers.Type.Name = "Genesis 3-Button Controller";
 			}
 			// 016 special flags (Version A and up only)
 			byte flags = r.ReadByte();
@@ -911,10 +938,6 @@ namespace BizHawk.Client.Common
 			// 018 40-byte zero-terminated ASCII movie name string
 			string description = NullTerminated(r.ReadStringFixedAscii(40));
 			m.Header.Comments.Add(COMMENT + " " + description);
-			SimpleController controllers = new SimpleController
-				{
-					Type = new ControllerDefinition { Name = "GPGX Genesis Controller" }
-				};
 			/*
 			 040 frame data
 			 For controller bytes, each value is determined by OR-ing together values for whichever of the following are
@@ -2146,19 +2169,19 @@ namespace BizHawk.Client.Common
 			{
 				controllers.Type.Name = "GBA Controller";
 			}
-            /*
-             * 01 00 A
-             * 02 00 B
-             * 04 00 Select
-             * 08 00 Start
-             * 10 00 Right
-             * 20 00 Left
-             * 40 00 Up
-             * 80 00 Down
-             * 00 01 R
-             * 00 02 L
-            */
-            string[] buttons = new[] { "A", "B", "Select", "Start", "Right", "Left", "Up", "Down", "R", "L" };
+			/*
+			 * 01 00 A
+			 * 02 00 B
+			 * 04 00 Select
+			 * 08 00 Start
+			 * 10 00 Right
+			 * 20 00 Left
+			 * 40 00 Up
+			 * 80 00 Down
+			 * 00 01 R
+			 * 00 02 L
+			*/
+			string[] buttons = new[] { "A", "B", "Select", "Start", "Right", "Left", "Up", "Down", "R", "L" };
 			/*
 			 * 00 04 Reset (old timing)
 			 * 00 08 Reset (new timing since version 1.1)
@@ -2169,7 +2192,7 @@ namespace BizHawk.Client.Common
 			*/
 			string[] other = new[] {
 				"Reset (old timing)" , "Reset (new timing since version 1.1)", "Left motion sensor",
-                "Right motion sensor", "Down motion sensor", "Up motion sensor"
+				"Right motion sensor", "Down motion sensor", "Up motion sensor"
 			};
 			for (int frame = 1; frame <= frameCount; frame++)
 			{
@@ -2181,10 +2204,10 @@ namespace BizHawk.Client.Common
 				for (int button = 0; button < buttons.Length; button++)
 				{
 					controllers[buttons[button]] = (((controllerState >> button) & 0x1) != 0);
-                    if (((controllerState >> button) & 0x1) != 0 && button > 7)
-                    {
-                        continue;
-                    }
+					if (((controllerState >> button) & 0x1) != 0 && button > 7)
+					{
+						continue;
+					}
 				}
 				// TODO: Handle the other buttons.
 				if (warningMsg == "")
@@ -2193,7 +2216,7 @@ namespace BizHawk.Client.Common
 					{
 						if (((controllerState >> (button + 10)) & 0x1) != 0)
 						{
-                            warningMsg = "Unable to import " + warningMsg + " at frame " + frame + ".";
+							warningMsg = "Unable to import " + other[button] + " at frame " + frame + ".";
 							break;
 						}
 					}
@@ -2429,6 +2452,12 @@ namespace BizHawk.Client.Common
 			r.Close();
 			fs.Close();
 			return m;
+		}
+
+		// YMV file format: https://code.google.com/p/yabause-rr/wiki/YMVfileformat
+		private static Movie ImportYMV(string path, out string errorMsg, out string warningMsg)
+		{
+			return ImportText(path, out errorMsg, out warningMsg);
 		}
 
 		// ZMV file format: http://tasvideos.org/ZMV.html

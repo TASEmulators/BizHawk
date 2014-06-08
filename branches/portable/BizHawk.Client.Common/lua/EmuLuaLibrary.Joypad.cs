@@ -3,7 +3,7 @@ using LuaInterface;
 
 namespace BizHawk.Client.Common
 {
-	public class JoypadLuaLibrary : LuaLibraryBase
+	public sealed class JoypadLuaLibrary : LuaLibraryBase
 	{
 		public JoypadLuaLibrary(Lua lua)
 			: base(lua) { }

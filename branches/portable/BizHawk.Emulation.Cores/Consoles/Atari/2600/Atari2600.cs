@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	[CoreAttributes(
 		"Atari2600Hawk",
-		"Micro500, adelikat",
+		"Micro500, adelikat, natt",
 		isPorted: false,
 		isReleased: true
 		)]
@@ -191,6 +191,33 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				{ "Flag N", Cpu.FlagN ? 1 : 0 },
 				{ "Flag T", Cpu.FlagT ? 1 : 0 }
 			};
+		}
+
+		public void SetCpuRegister(string register, int value)
+		{
+			switch(register)
+			{
+				default:
+					throw new InvalidOperationException();
+				case "A":
+					Cpu.A = (byte)value;
+					break;
+				case "X":
+					Cpu.X = (byte)value;
+					break;
+				case "Y":
+					Cpu.Y = (byte)value;
+					break;
+				case "S":
+					Cpu.S = (byte)value;
+					break;
+				case "PC":
+					Cpu.PC = (ushort)value;
+					break;
+				case "Flag I":
+					Cpu.FlagI = value > 0;
+					break;
+			}
 		}
 
 		public bool StartAsyncSound() { return true; }

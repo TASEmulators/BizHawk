@@ -7,9 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Bizware.BizwareGL;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
 using BizHawk.Emulation.Cores.Atari.Atari7800;
 using BizHawk.Emulation.Cores.Calculators;
@@ -34,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
-			Text = "BizHawk" + (VersionInfo.INTERIM ? " (interim) " : string.Empty);
+			Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
 
 			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
 
@@ -530,6 +533,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool UpdateFrame = false;
 		public bool EmulatorPaused { get; private set; }
 
+		// TODO: SystemInfo should be able to do this
 		// Because we don't have enough places where we list SystemID's
 		public Dictionary<string, string> SupportedPlatforms
 		{
@@ -556,10 +560,12 @@ namespace BizHawk.Client.EmuHawk
 					{ "PCE", "PC Engine/TurboGrafx 16" },
 
 					{ "Coleco", "Colecovision" },
-					{ "TI83", "TI-83 Calculator" }
+					{ "TI83", "TI-83 Calculator" },
+
+					{ "WSWAN", "WonderSwan" }
 				};
 
-				if (VersionInfo.INTERIM)
+				if (VersionInfo.DeveloperBuild)
 				{
 					released.Add("GBA", "Gameboy Advance");
 					released.Add("C64", "Commodore 64");
@@ -769,9 +775,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public void TakeScreenshotToClipboard()
 		{
-			using (var img = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
+			using (var bb = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
 			{
-				Clipboard.SetImage(img);
+				using(var img = bb.ToSysdrawingBitmap())
+					Clipboard.SetImage(img);
 			}
 
 			GlobalWin.OSD.AddMessage("Screenshot saved to clipboard.");
@@ -792,9 +799,10 @@ namespace BizHawk.Client.EmuHawk
 				fi.Directory.Create();
 			}
 
-			using (var img = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
+			using (var bb = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
 			{
-				img.Save(fi.FullName, ImageFormat.Png);
+				using(var img = bb.ToSysdrawingBitmap())
+					img.Save(fi.FullName, ImageFormat.Png);
 			}
 
 			GlobalWin.OSD.AddMessage(fi.Name + " saved.");
@@ -1334,6 +1342,7 @@ namespace BizHawk.Client.EmuHawk
 			SaturnSubMenu.Visible = false;
 			DGBSubMenu.Visible = false;
 			GenesisSubMenu.Visible = false;
+			wonderSwanToolStripMenuItem.Visible = false;
 
 			switch (system)
 			{
@@ -1397,38 +1406,17 @@ namespace BizHawk.Client.EmuHawk
 				case "DGB":
 					DGBSubMenu.Visible = true;
 					break;
+				case "WSWAN":
+					wonderSwanToolStripMenuItem.Visible = true;
+					break;
 			}
 		}
 
 		private static string DisplayNameForSystem(string system)
 		{
-			var str = string.Empty;
-			switch (system)
-			{
-				case "INTV": str = "Intellivision"; break;
-				case "SG": str = "SG-1000"; break;
-				case "SMS": str = "Sega Master System"; break;
-				case "GG": str = "Game Gear"; break;
-				case "PCECD": str = "TurboGrafx-16 (CD)"; break;
-				case "PCE": str = "TurboGrafx-16"; break;
-				case "SGX": str = "SuperGrafx"; break;
-				case "GEN": str = "Genesis"; break;
-				case "TI83": str = "TI-83"; break;
-				case "NES": str = "NES"; break;
-				case "SNES": str = "SNES"; break;
-				case "GB": str = "Game Boy"; break;
-				case "GBC": str = "Game Boy Color"; break;
-				case "A26": str = "Atari 2600"; break;
-				case "A78": str = "Atari 7800"; break;
-				case "C64": str = "Commodore 64"; break;
-				case "Coleco": str = "ColecoVision"; break;
-				case "GBA": str = "Game Boy Advance"; break;
-				case "N64": str = "Nintendo 64"; break;
-				case "SAT": str = "Saturn"; break;
-				case "DGB": str = "Game Boy Link"; break;
-			}
+			var str = Global.SystemInfo.DisplayName;
 
-			if (VersionInfo.INTERIM)
+			if (VersionInfo.DeveloperBuild)
 			{
 				str += " (interim)";
 			}
@@ -1541,43 +1529,47 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static unsafe Image MakeScreenshotImage()
+		private static unsafe BitmapBuffer MakeScreenshotImage()
 		{
-			var video = Global.Emulator.VideoProvider;
-			var image = new Bitmap(video.BufferWidth, video.BufferHeight, PixelFormat.Format32bppArgb);
+			//var video = Global.Emulator.VideoProvider;
+			//var image = new Bitmap(video.BufferWidth, video.BufferHeight, PixelFormat.Format32bppArgb);
+			return new BitmapBuffer(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight, Global.Emulator.VideoProvider.GetVideoBuffer());
 
+			//this is all rotten.
+			//among other things, cores are required to set 0xFF000000 themselves
 			// TODO - replace with BitmapBuffer
-			var framebuf = video.GetVideoBuffer();
-			var bmpdata = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-			int* ptr = (int*)bmpdata.Scan0.ToPointer();
-			int stride = bmpdata.Stride / 4;
-			for (int y = 0; y < video.BufferHeight; y++)
-			{
-				for (int x = 0; x < video.BufferWidth; x++)
-				{
-					int col = framebuf[(y * video.BufferWidth) + x];
+			//var framebuf = video.GetVideoBuffer();
+			//var bmpdata = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			//int* ptr = (int*)bmpdata.Scan0.ToPointer();
+			//int stride = bmpdata.Stride / 4;
+			//for (int y = 0; y < video.BufferHeight; y++)
+			//{
+			//  for (int x = 0; x < video.BufferWidth; x++)
+			//  {
+			//    int col = framebuf[(y * video.BufferWidth) + x];
 
-					if (Global.Emulator is TI83)
-					{
-						if (col == 0)
-						{
-							col = Color.Black.ToArgb();
-						}
-						else
-						{
-							col = Color.White.ToArgb();
+			//    if (Global.Emulator is TI83)
+			//    {
+			//      if (col == 0)
+			//      {
+			//        col = Color.Black.ToArgb();
+			//      }
+			//      else
+			//      {
+			//        col = Color.White.ToArgb();
+			//      }
+			//    }
 					}
-					}
 
-					// make opaque
-					col |= unchecked((int)0xff000000);
+			//    // make opaque
+			//    col |= unchecked((int)0xff000000);
 
-					ptr[(y * stride) + x] = col;
-				}
-			}
+			//    ptr[(y * stride) + x] = col;
+			//  }
+			//}
 
-			image.UnlockBits(bmpdata);
-			return image;
+			//image.UnlockBits(bmpdata);
+			//return image;
 		}
 
 		private void SaveStateAs()
@@ -1694,10 +1686,10 @@ namespace BizHawk.Client.EmuHawk
 			ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
 
 			// adelikat: ugly design for this, I know
-			if (VersionInfo.INTERIM)
+			if (VersionInfo.DeveloperBuild)
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.cue;*.exe;*.gb;*.gbc;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.cue;*.exe;*.gb;*.gbc;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;%ARCH%",
 					"Music Files", "*.psf;*.sid",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;*.fds;%ARCH%",
@@ -1718,12 +1710,13 @@ namespace BizHawk.Client.EmuHawk
 					"Commodore 64 (experimental)", "*.prg; *.d64, *.g64; *.crt;%ARCH%",
 					"SID Commodore 64 Music File", "*.sid;%ARCH%",
 					"Nintendo 64", "*.z64;*.v64;*.n64",
+					"WonderSawn", "*.ws;*.wsc;%ARCH%",
 					"All Files", "*.*");
 			}
 			else
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.col;*.rom;*.cue;*.sgb;*.z64;*.v64;*.n64;*.xml;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.col;*.rom;*.cue;*.sgb;*.z64;*.v64;*.n64;*.wsc;*.xml;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;*.fds;%ARCH%",
 					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
@@ -1738,6 +1731,7 @@ namespace BizHawk.Client.EmuHawk
 					"Archive Files", "%ARCH%",
 					"Savestate", "*.state",
 					"Genesis", "*.gen;*.md;*.smd;*.bin;*.cue;%ARCH%",
+					"WonderSawn", "*.wsc;%ARCH%",
 					"All Files", "*.*");
 			}
 
@@ -1972,26 +1966,11 @@ namespace BizHawk.Client.EmuHawk
 			Slot9StatusButton.BackColor = Global.Config.SaveSlot == 9 ? SystemColors.Highlight : SystemColors.Control;
 		}
 
-		//TODO GL - this whole feature will have to be re-added
-		private Bitmap CaptureOSD() // sort of like MakeScreenShot(), but with OSD and LUA captured as well.  slow and bad.
+		private BitmapBuffer CaptureOSD()
 		{
-		//  // this code captures the emu display with OSD and lua composited onto it.
-		//  // it's slow and a bit hackish; a better solution is to create a new
-		//  // "dummy render" class that implements IRenderer, IBlitter, and possibly
-		//  // IVideoProvider, and pass that to DisplayManager.UpdateSourceEx()
-		//  if (_captureOsdRvp == null)
-		//  {
-		//    _captureOsdRvp = new RetainedViewportPanel();
-		//    _captureOsdSrp = new SysdrawingRenderPanel(_captureOsdRvp);
-		//  }
-
-		//  // this size can be different for showing off stretching or filters
-		//  _captureOsdRvp.Width = Global.Emulator.VideoProvider.BufferWidth;
-		//  _captureOsdRvp.Height = Global.Emulator.VideoProvider.BufferHeight;
-
-		//  GlobalWin.DisplayManager.UpdateSourceEx(Global.Emulator.VideoProvider, _captureOsdSrp);
-		//  return (Bitmap)_captureOsdRvp.GetBitmap().Clone();
-			return null;
+			var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider);
+			bb.Normalize(true);
+			return bb;
 		}
 
 		private void IncreaseWindowSize()
@@ -2741,7 +2720,7 @@ namespace BizHawk.Client.EmuHawk
 					var sfd = new SaveFileDialog();
 					if (!(Global.Emulator is NullEmulator))
 					{
-						sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+						sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + "." + aw.DesiredExtension(); //dont use Path.ChangeExtension, it might wreck game names with dots in them
 						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPathFragment, null);
 					}
 					else
@@ -2844,57 +2823,68 @@ namespace BizHawk.Client.EmuHawk
 				_aviSoundInput.GetSamples(temp);
 				_dumpProxy.buffer.enqueue_samples(temp, (int)nsamp);
 
+				//TODO ZERO - this code is pretty jacked. we'll want to frugalize buffers better for speedier dumping, and we might want to rely on the GL layer for padding
 				try
 				{
 					IVideoProvider output;
+					IDisposable disposableOutput = null;
 					if (_avwriterResizew > 0 && _avwriterResizeh > 0)
 					{
-						Bitmap bmpin;
-						if (Global.Config.AVI_CaptureOSD)
+						BizHawk.Bizware.BizwareGL.BitmapBuffer bbin = null;
+						Bitmap bmpin = null;
+						Bitmap bmpout = null;
+						try
 						{
-							bmpin = CaptureOSD();
-						}
-						else
-						{
-							bmpin = new Bitmap(
-								Global.Emulator.VideoProvider.BufferWidth,
-								Global.Emulator.VideoProvider.BufferHeight,
-								PixelFormat.Format32bppArgb);
-							var lockdata = bmpin.LockBits(
-								new Rectangle(0, 0, bmpin.Width, bmpin.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-							System.Runtime.InteropServices.Marshal.Copy(
-								Global.Emulator.VideoProvider.GetVideoBuffer(), 0, lockdata.Scan0, bmpin.Width * bmpin.Height);
-							bmpin.UnlockBits(lockdata);
-						}
-
-						var bmpout = new Bitmap(_avwriterResizew, _avwriterResizeh, PixelFormat.Format32bppArgb);
-						using (var g = Graphics.FromImage(bmpout))
-						{
-							if (_avwriterpad)
+							if (Global.Config.AVI_CaptureOSD)
 							{
-								g.Clear(Color.FromArgb(Global.Emulator.VideoProvider.BackgroundColor));
-								g.DrawImageUnscaled(bmpin, (bmpout.Width - bmpin.Width) / 2, (bmpout.Height - bmpin.Height) / 2);
+								bbin = CaptureOSD();
 							}
 							else
 							{
-								g.DrawImage(bmpin, new Rectangle(0, 0, bmpout.Width, bmpout.Height));
+								bbin = new Bizware.BizwareGL.BitmapBuffer(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight, Global.Emulator.VideoProvider.GetVideoBuffer());
 							}
-						}
 
-						bmpin.Dispose();
-						output = new BmpVideoProvder(bmpout);
+
+							bmpout = new Bitmap(_avwriterResizew, _avwriterResizeh, PixelFormat.Format32bppArgb);
+							bmpin = bbin.ToSysdrawingBitmap();
+							using (var g = Graphics.FromImage(bmpout))
+							{
+								if (_avwriterpad)
+								{
+									g.Clear(Color.FromArgb(Global.Emulator.VideoProvider.BackgroundColor));
+									g.DrawImageUnscaled(bmpin, (bmpout.Width - bmpin.Width) / 2, (bmpout.Height - bmpin.Height) / 2);
+								}
+								else
+								{
+									g.DrawImage(bmpin, new Rectangle(0, 0, bmpout.Width, bmpout.Height));
+								}
+							}
+
+							output = new BmpVideoProvider(bmpout);
+							disposableOutput = (IDisposable)output;
+						}
+						finally
+						{
+							if (bbin != null) bbin.Dispose();
+							if (bmpin != null) bmpin.Dispose();
+						}
 					}
 					else
 					{
-						output = Global.Config.AVI_CaptureOSD
-							? new BmpVideoProvder(CaptureOSD())
-							: Global.Emulator.VideoProvider;
+						if (Global.Config.AVI_CaptureOSD)
+						{
+							output = new BitmapBufferVideoProvider(CaptureOSD());
+							disposableOutput = (IDisposable)output;
+						}
+						else
+							output = Global.Emulator.VideoProvider;
 					}
 
 					_currAviWriter.AddFrame(output);
-					if (output is BmpVideoProvder)
+
+					if (disposableOutput != null)
 					{
-						(output as BmpVideoProvder).Dispose();
+						disposableOutput.Dispose();
 					}
 
 					_currAviWriter.AddSamples(temp);
@@ -3203,7 +3193,7 @@ namespace BizHawk.Client.EmuHawk
 
 				RewireSound();
 				Global.Rewinder.ResetRewindBuffer();
-				Text = "BizHawk" + (VersionInfo.INTERIM ? " (interim) " : string.Empty);
+				Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
 				HandlePlatformMenus();
 				_stateSlots.Clear();
 				UpdateDumpIcon();
@@ -3249,5 +3239,22 @@ namespace BizHawk.Client.EmuHawk
 		{
 			BizHawk.Client.EmuHawk.config.GB.GBPrefs.DoGBPrefsDialog(this);
 		}
+
+		private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "WonderSwan Settings");
 		}
+
+		private void ProfilesMenuItem_Click(object sender, EventArgs e)
+		{
+			if (new ProfileConfig().ShowDialog() == DialogResult.OK)
+			{
+				GlobalWin.OSD.AddMessage("Profile settings saved");
+			}
+			else
+			{
+				GlobalWin.OSD.AddMessage("Profile config aborted");
+			}
+		}
+	}
 }

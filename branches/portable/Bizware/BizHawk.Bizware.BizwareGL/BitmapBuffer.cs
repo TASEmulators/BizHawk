@@ -76,6 +76,34 @@ namespace BizHawk.Bizware.BizwareGL
 			UnlockBits(CurrLock);
 		}
 
+		public unsafe void Normalize(bool yflip)
+		{
+			var bmpdata = LockBits();
+			int[] newPixels = new int[Width * Height];
+			int todo = Width*Height;
+			int* s = (int*)bmpdata.Scan0.ToPointer();
+			fixed (int* d = newPixels)
+			{
+				if (yflip)
+					for (int y = 0, si = 0, di = (Height - 1) * Width; y < Height; y++)
+					{
+						for (int x = 0; x < Width; x++, si++, di++)
+						{
+							d[di] = s[si] | unchecked((int)0xFF000000);
+						}
+						di -= Width * 2;
+					}
+				else
+				{
+					//TODO
+				}
+			}
+
+			UnlockBits(bmpdata);
+		
+			Pixels = newPixels;
+		}
+
 		public int GetPixel(int x, int y) { return Pixels[Width * y + x]; }
 		public void SetPixel(int x, int y, int value) { Pixels[Width * y + x] = value; }
 		public Color GetPixelAsColor(int x, int y)

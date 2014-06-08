@@ -381,7 +381,7 @@ namespace BizHawk.Client.EmuHawk
 								// Restore this lua thread's preferred current directory
 								if (lf.CurrentDirectory != null)
 								{
-									Environment.CurrentDirectory = lf.CurrentDirectory;
+									Environment.CurrentDirectory = PathManager.MakeAbsolutePath(lf.CurrentDirectory, null);
 								}
 
 								var result = LuaImp.ResumeScript(lf.Thread);
@@ -411,9 +411,11 @@ namespace BizHawk.Client.EmuHawk
 							MessageBox.Show(ex.ToString());
 						}
 					}
-
-					// Restore the current directory
-					Environment.CurrentDirectory = oldcd;
+					finally
+					{
+						// Restore the current directory
+						Environment.CurrentDirectory = oldcd;
+					}
 				}
 			}
 		}

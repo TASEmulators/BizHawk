@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Linq;
+using System.ComponentModel;
 
 using LuaInterface;
 
+
 namespace BizHawk.Client.Common
 {
-	public class EventLuaLibrary : LuaLibraryBase
+	[Description("A library for registering lua functions to emulator events.\n All events support multiple registered methods.\nAll registered event methods can be named and return a Guid when registered")]
+	public sealed class EventLuaLibrary : LuaLibraryBase
 	{
 		private readonly LuaFunctionList _luaFunctions = new LuaFunctionList();
 
@@ -228,7 +231,7 @@ namespace BizHawk.Client.Common
 			"unregisterbyid",
 			"Removes the registered function that matches the guid. If a function is found and remove the function will return true. If unable to find a match, the function will return false."
 		)]
-		public bool UnregisterById(object guid)
+		public bool UnregisterById(string guid)
 		{
 			foreach (var nlf in _luaFunctions.Where(nlf => nlf.Guid.ToString() == guid.ToString()))
 			{

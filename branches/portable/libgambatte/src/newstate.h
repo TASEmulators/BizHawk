@@ -42,6 +42,14 @@ public:
 	virtual void Load(void *ptr, size_t size, const char *name);
 };
 
+struct FPtrs
+{
+	void (*Save_)(const void *ptr, size_t size, const char *name);
+	void (*Load_)(void *ptr, size_t size, const char *name);
+	void (*EnterSection_)(const char *name);
+	void (*ExitSection_)(const char *name);
+};
+
 class NewStateExternalFunctions : public NewState
 {
 private:
@@ -50,11 +58,7 @@ private:
 	void (*EnterSection_)(const char *name);
 	void (*ExitSection_)(const char *name);
 public:
-	NewStateExternalFunctions(
-		void (*Save_)(const void *ptr, size_t size, const char *name),
-		void (*Load_)(void *ptr, size_t size, const char *name),
-		void (*EnterSection_)(const char *name),
-		void (*ExitSection_)(const char *name));
+	NewStateExternalFunctions(const FPtrs *ff);
 	virtual void Save(const void *ptr, size_t size, const char *name);
 	virtual void Load(void *ptr, size_t size, const char *name);
 	virtual void EnterSection(const char *name);

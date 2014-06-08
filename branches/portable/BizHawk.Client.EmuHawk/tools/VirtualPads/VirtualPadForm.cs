@@ -26,6 +26,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
+				if (Global.Emulator.SystemId == "WSWAN") // Hack - Wonderswan mnemonics violate the 1 controller per pipe rule
+				{
+					return new[]
+					{
+						Global.MovieSession.Movie
+						.GetInput(Global.Emulator.Frame) 
+					}.ToList();
+				}
+
 				return Global.MovieSession.Movie
 					.GetInput(Global.Emulator.Frame)
 					.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
@@ -224,6 +233,9 @@ namespace BizHawk.Client.EmuHawk
 				case "SAT":
 					ControllerBox.Controls.Add(new VirtualPadSaturnControl { Location = new Point(8, 125) });
 					ControllerBox.Controls.Add(new VirtualPadSaturn { Location = new Point(8, 19), Controller = "P1" });
+					break;
+				case "WSWAN":
+					ControllerBox.Controls.Add(new VirtualPadWonderSawn { Location = new Point(8, 19) });
 					break;
 			}
 

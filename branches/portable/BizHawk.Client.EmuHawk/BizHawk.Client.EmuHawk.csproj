@@ -121,6 +121,7 @@
       <DependentUpon>ArchiveChooser.cs</DependentUpon>
     </Compile>
     <Compile Include="AVOut\AviWriter.cs" />
+    <Compile Include="AVOut\BitmapBufferVideoProvder.cs" />
     <Compile Include="AVOut\BmpVideoProvder.cs" />
     <Compile Include="AVOut\FFmpegWriter.cs" />
     <Compile Include="AVOut\FFmpegWriterForm.cs">
@@ -161,6 +162,12 @@
     </Compile>
     <Compile Include="BizBox.Designer.cs">
       <DependentUpon>BizBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BizBoxInfoControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BizBoxInfoControl.Designer.cs">
+      <DependentUpon>BizBoxInfoControl.cs</DependentUpon>
     </Compile>
     <Compile Include="config\AnalogRangeConfig.cs">
       <SubType>Component</SubType>
@@ -376,17 +383,17 @@
     <Compile Include="config\PCE\PCEGraphicsConfig.Designer.cs">
       <DependentUpon>PCEGraphicsConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\ProfileConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\ProfileConfig.Designer.cs">
+      <DependentUpon>ProfileConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\RewindConfig.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="config\RewindConfig.Designer.cs">
       <DependentUpon>RewindConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\Saturn\SaturnPrefs.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\Saturn\SaturnPrefs.Designer.cs">
-      <DependentUpon>SaturnPrefs.cs</DependentUpon>
     </Compile>
     <Compile Include="config\SMS\SMSGraphicsConfig.cs">
       <SubType>Form</SubType>
@@ -429,6 +436,9 @@
     </Compile>
     <Compile Include="CustomControls\QuickProgressPopup.Designer.cs">
       <DependentUpon>QuickProgressPopup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\ReadonlyCheckbox.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="CustomControls\SmartTextBoxControl.cs">
       <SubType>Component</SubType>
@@ -954,6 +964,12 @@
     <Compile Include="tools\VirtualPads\VirtualPadSNESControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\VirtualPads\VirtualPadWonderSawn.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPads\VirtualPadWonderSawn.Designer.cs">
+      <DependentUpon>VirtualPadWonderSawn.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\Watch\RamPoke.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -992,6 +1008,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AVOut\VideoWriterChooserForm.resx">
       <DependentUpon>VideoWriterChooserForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BizBoxInfoControl.resx">
+      <DependentUpon>BizBoxInfoControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\AnalogRangeConfigControl.resx">
       <DependentUpon>AnalogRangeConfigControl.cs</DependentUpon>
@@ -1086,11 +1105,11 @@
     <EmbeddedResource Include="config\PCE\PCEGraphicsConfig.resx">
       <DependentUpon>PCEGraphicsConfig.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="config\ProfileConfig.resx">
+      <DependentUpon>ProfileConfig.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="config\RewindConfig.resx">
       <DependentUpon>RewindConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\Saturn\SaturnPrefs.resx">
-      <DependentUpon>SaturnPrefs.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\SMS\SMSGraphicsConfig.resx">
       <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
@@ -1288,6 +1307,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPads\VirtualPadSaturnControl.resx">
       <DependentUpon>VirtualPadSaturnControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\VirtualPads\VirtualPadWonderSawn.resx">
+      <DependentUpon>VirtualPadWonderSawn.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Watch\RamPoke.resx">
       <DependentUpon>RamPoke.cs</DependentUpon>
@@ -1555,6 +1577,7 @@
     <None Include="images\genplus.png" />
     <None Include="images\gambatte.png" />
     <None Include="images\dual.png" />
+    <None Include="config\ControllerImages\WonderSwanColor.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />
@@ -1596,7 +1619,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="config\Saturn\" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

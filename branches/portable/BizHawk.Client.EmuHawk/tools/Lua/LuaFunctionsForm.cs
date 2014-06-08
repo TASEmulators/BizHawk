@@ -13,9 +13,9 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly Sorting _columnSort = new Sorting();
 
-		private List<LuaDocumentation.LibraryFunction> FunctionList = new List<LuaDocumentation.LibraryFunction>();
+		private List<LibraryFunction> FunctionList = new List<LibraryFunction>();
 
-		private List<LuaDocumentation.LibraryFunction> FilteredList
+		private List<LibraryFunction> FilteredList
 		{
 			get
 			{
@@ -39,9 +39,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaFunctionList_Load(object sender, EventArgs e)
 		{
-			FunctionList = GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList.ToList();
+			FunctionList = GlobalWin.Tools.LuaConsole.LuaImp.Docs
+				.OrderBy(x => x.Library)
+				.ThenBy(x => x.Name)
+				.ToList();
 			UpdateList();
 			FilterBox.Focus();
+
+			ToWikiMarkupButton.Visible = VersionInfo.DeveloperBuild;
 		}
 
 		private void FunctionView_QueryItemBkColor(int index, int column, ref Color color)
@@ -53,23 +58,33 @@ namespace BizHawk.Client.EmuHawk
 		{
 			text = string.Empty;
 
-			switch (column)
+			try
+			{ 
+				if (FilteredList.Any() && index < FilteredList.Count)
+				{
+					switch (column)
+					{
+						case 0:
+							text = FilteredList[index].ReturnType;
+							break;
+						case 1:
+							text = FilteredList[index].Library;
+							break;
+						case 2:
+							text = FilteredList[index].Name;
+							break;
+						case 3:
+							text = FilteredList[index].ParameterList;
+							break;
+						case 4:
+							text = FilteredList[index].Description;
+							break;
+					}
+				}
+			}
+			catch
 			{
-				case 0:
-					text = FilteredList[index].ReturnType;
-					break;
-				case 1:
-					text = FilteredList[index].Library;
-					break;
-				case 2:
-					text = FilteredList[index].Name;
-					break;
-				case 3:
-					text = FilteredList[index].ParameterList;
-					break;
-				case 4:
-					text = FilteredList[index].Description;
-					break;
+				/* Eat it*/
 			}
 		}
 
@@ -173,7 +188,7 @@ namespace BizHawk.Client.EmuHawk
 
 					foreach (int index in indexes)
 					{
-						var libraryFunction = GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList[index];
+						var libraryFunction = GlobalWin.Tools.LuaConsole.LuaImp.Docs[index];
 						sb.Append(libraryFunction.Library).Append('.').Append(libraryFunction.Name).Append("()\n");
 					}
 
@@ -193,6 +208,11 @@ namespace BizHawk.Client.EmuHawk
 		private void FilterBox_KeyUp(object sender, KeyEventArgs e)
 		{
 			UpdateList();
+		}
+
+		private void ToWikiMarkupButton_Click(object sender, EventArgs e)
+		{
+			Clipboard.SetDataObject(GlobalWin.Tools.LuaConsole.LuaImp.Docs.ToTASVideosWikiMarkup());
 		}
 	}
 }

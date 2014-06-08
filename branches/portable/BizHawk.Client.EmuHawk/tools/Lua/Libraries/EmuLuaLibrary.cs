@@ -1,16 +1,17 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 
 using BizHawk.Client.Common;
 using LuaInterface;
+using System.Reflection;
+using System.Collections.Generic;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public class EmuLuaLibrary
 	{
-		private readonly FormsLuaLibrary _formsLibrary;
-		private readonly EventLuaLibrary _eventLibrary;
-		private readonly GuiLuaLibrary _guiLibrary;
+		private readonly Dictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();
 		private readonly LuaConsole _caller;
 
 		private Lua _lua = new Lua();
@@ -21,6 +22,26 @@ namespace BizHawk.Client.EmuHawk
 			Docs = new LuaDocumentation();
 		}
 
+		private FormsLuaLibrary FormsLibrary
+		{
+			get { return (FormsLuaLibrary)Libraries[typeof(FormsLuaLibrary)]; }
+		}
+
+		private EventLuaLibrary EventsLibrary
+		{
+			get { return (EventLuaLibrary)Libraries[typeof(EventLuaLibrary)]; }
+		}
+
+		private EmulatorLuaLibrary EmulatorLuaLibrary
+		{
+			get { return (EmulatorLuaLibrary)Libraries[typeof(EmulatorLuaLibrary)]; }
+		}
+
+		public GuiLuaLibrary GuiLibrary
+		{
+			get { return (GuiLuaLibrary)Libraries[typeof(GuiLuaLibrary)]; }
+		}
+
 		public EmuLuaLibrary(LuaConsole passed)
 			: this()
 		{
@@ -29,46 +50,32 @@ namespace BizHawk.Client.EmuHawk
 			_caller = passed.Get();
 
 			// Register lua libraries
-			
+			var libs = Assembly
+				.Load("BizHawk.Client.Common")
+				.GetTypes()
+				.Where(t => typeof(LuaLibraryBase).IsAssignableFrom(t))
+				.Where(t => t.IsSealed)
+				.ToList();
+
+			libs.AddRange(
+				Assembly
+				.GetAssembly(typeof(EmuLuaLibrary))
+				.GetTypes()
+				.Where(t => typeof(LuaLibraryBase).IsAssignableFrom(t))
+				.Where(t => t.IsSealed)
+			);
+
+			foreach (var lib in libs)
+			{
+				var instance = (LuaLibraryBase)Activator.CreateInstance(lib, _lua);
+				instance.LuaRegister(lib, Docs);
+				Libraries.Add(lib, instance);
+			}
+
 			_lua.RegisterFunction("print", this, GetType().GetMethod("Print"));
 
-			// TODO: Search the assemblies for objects that inherit LuaBaseLibrary, and instantiate and register them and put them into an array,
-			// rather than call them all by name here
-
-			_formsLibrary = new FormsLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput);
-			_formsLibrary.LuaRegister(Docs);
-
-			_eventLibrary = new EventLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput);
-			_eventLibrary.LuaRegister(Docs);
-
-			_guiLibrary = new GuiLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput);
-			_guiLibrary.LuaRegister(Docs);
-
-			new BitLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
-			new EmuHawkLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
-			new ConsoleLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
-
-			var emuLib = new EmulatorLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput)
-			{
-				FrameAdvanceCallback = Frameadvance,
-				YieldCallback = EmuYield
-			};
-
-			emuLib.LuaRegister(Docs);
-
-			new InputLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
-			new JoypadLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
-			new MemoryLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
-			new MainMemoryLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
-
-			new MovieLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
-			new NesLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
-			new SavestateLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
-			new SnesLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
-			new StringLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
-			new GameInfoLuaLibrary(_lua, ConsoleLuaLibrary.LogOutput).LuaRegister(Docs);
-
-			Docs.Sort();
+			EmulatorLuaLibrary.FrameAdvanceCallback = Frameadvance;
+			EmulatorLuaLibrary.YieldCallback = EmuYield;
 		}
 
 		public LuaDocumentation Docs { get; private set; }
@@ -76,63 +83,58 @@ namespace BizHawk.Client.EmuHawk
 		public EventWaitHandle LuaWait { get; private set; }
 		public bool FrameAdvanceRequested { get; private set; }
 
-		public GuiLuaLibrary GuiLibrary
-		{
-			get { return _guiLibrary; }
-		}
-
 		public LuaFunctionList RegisteredFunctions
 		{
-			get { return _eventLibrary.RegisteredFunctions; }
+			get { return EventsLibrary.RegisteredFunctions; }
 		}
 
 		public void WindowClosed(IntPtr handle)
 		{
-			_formsLibrary.WindowClosed(handle);
+			FormsLibrary.WindowClosed(handle);
 		}
 
 		public void CallSaveStateEvent(string name)
 		{
-			_eventLibrary.CallSaveStateEvent(name);
+			EventsLibrary.CallSaveStateEvent(name);
 		}
 
 		public void CallLoadStateEvent(string name)
 		{
-			_eventLibrary.CallLoadStateEvent(name);
+			EventsLibrary.CallLoadStateEvent(name);
 		}
 
 		public void CallFrameBeforeEvent()
 		{
-			_eventLibrary.CallFrameBeforeEvent();
+			EventsLibrary.CallFrameBeforeEvent();
 		}
 
 		public void CallFrameAfterEvent()
 		{
-			_eventLibrary.CallFrameAfterEvent();
+			EventsLibrary.CallFrameAfterEvent();
 		}
 
 		public void CallExitEvent(Lua thread)
 		{
-			_eventLibrary.CallExitEvent(thread);
+			EventsLibrary.CallExitEvent(thread);
 		}
 
 		public void Close()
 		{
 			_lua = new Lua();
-			_guiLibrary.Dispose();
+			GuiLibrary.Dispose();
 		}
 
 		public Lua SpawnCoroutine(string file)
 		{
 			var lua = _lua.NewThread();
-			var main = lua.LoadFile(file);
+			var main = lua.LoadFile(PathManager.MakeAbsolutePath(file,null));
 			lua.Push(main); // push main function on to stack for subsequent resuming
 			return lua;
 		}
 
 		public ResumeResult ResumeScript(Lua script)
 		{
-			_eventLibrary.CurrentThread = script;
+			EventsLibrary.CurrentThread = script;
 			_currThread = script;
 			var execResult = script.Resume(0);
 			_currThread = null;

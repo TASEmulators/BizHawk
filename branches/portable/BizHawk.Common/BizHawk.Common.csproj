@@ -75,6 +75,7 @@
     <Compile Include="QuickCollections.cs" />
     <Compile Include="ReflectionUtil.cs" />
     <Compile Include="Serializer.cs" />
+    <Compile Include="SettingsUtil.cs" />
     <Compile Include="SwitcherStream.cs" />
     <Compile Include="UndoHistory.cs" />
     <Compile Include="Util.cs" />

@@ -61,7 +61,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		"BSNES",
 		"byuu",
 		isPorted: true,
-		isReleased: true
+		isReleased: true,
+		portedVersion: "v87",
+		portedUrl: "http://byuu.org/"
 		)]
 	public unsafe class LibsnesCore : IEmulator, IVideoProvider
 	{
@@ -123,6 +125,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				{ "Flag Z", fz?1:0 },
 				{ "Flag C", fc?1:0 },
 			};
+		}
+
+		public void SetCpuRegister(string register, int value)
+		{
+			throw new NotImplementedException();
 		}
 
 		public class MyScanlineHookManager : ScanlineHookManager

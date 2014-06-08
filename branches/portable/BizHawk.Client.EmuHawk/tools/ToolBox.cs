@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 
 			GbaGpuViewerToolBarItem.Visible = Global.Emulator is GBA;
 
-			GenesisGameGenieToolBarItem.Visible = Global.Emulator.SystemId == "GEN" && VersionInfo.INTERIM;
+			GenesisGameGenieToolBarItem.Visible = Global.Emulator.SystemId == "GEN" && VersionInfo.DeveloperBuild;
 			GenesisVdpToolBarItem.Visible = Global.Emulator is GPGX;
 
 			SmsVdpToolbarItem.Visible = Global.Emulator is SMS;
@@ -87,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			NesDebuggerToolbarItem.Visible = VersionInfo.INTERIM && Global.Emulator.SystemId == "NES";
+			NesDebuggerToolbarItem.Visible = VersionInfo.DeveloperBuild && Global.Emulator.SystemId == "NES";
 		}
 
 		private void SetSize()

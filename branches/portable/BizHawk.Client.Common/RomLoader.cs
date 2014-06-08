@@ -23,6 +23,7 @@ using BizHawk.Emulation.Cores.Sega.Saturn;
 using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.DiscSystem;
+using BizHawk.Emulation.Cores.WonderSwan;
 
 namespace BizHawk.Client.Common
 {
@@ -138,7 +139,7 @@ namespace BizHawk.Client.Common
 
 			using (var file = new HawkFile())
 			{
-				var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64" };
+				var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64", "WS", "WSC" };
 
 				// lets not use this unless we need to
 				// file.NonArchiveExtensions = romExtensions;
@@ -402,7 +403,7 @@ namespace BizHawk.Client.Common
 								nextEmulator = c64;
 								break;
 							case "GBA":
-								if (VersionInfo.INTERIM)
+								if (VersionInfo.DeveloperBuild)
 								{
 									var gba = new GBA(nextComm);
 									gba.Load(rom.RomData);
@@ -411,10 +412,15 @@ namespace BizHawk.Client.Common
 
 								break;
 							case "N64":
-								nextEmulator = new N64(nextComm, game, rom.RomData, GetCoreSyncSettings<N64>());
+								nextEmulator = new N64(nextComm, game, rom.RomData,
+									GetCoreSettings<N64>(), GetCoreSyncSettings<N64>());
+								break;
+							case "WSWAN":
+								nextEmulator = new WonderSwan(nextComm, rom.RomData, Deterministic,
+									GetCoreSettings<WonderSwan>(), GetCoreSyncSettings<WonderSwan>());
 								break;
 							case "DEBUG":
-								if (VersionInfo.INTERIM)
+								if (VersionInfo.DeveloperBuild)
 								{
 									nextEmulator = LibRetroEmulator.CreateDebug(nextComm, rom.RomData);
 								}
@@ -445,7 +451,7 @@ namespace BizHawk.Client.Common
 					}
 					else
 					{
-						ThrowLoadError("A core accepted the rom, but throw an exception while loading it:\n\n" + ex, system);
+						ThrowLoadError("A core accepted the rom, but threw an exception while loading it:\n\n" + ex, system);
 					}
 
 					return false;

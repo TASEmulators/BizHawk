@@ -1,4 +1,6 @@
 ﻿using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Client.Common
@@ -7,7 +9,6 @@ namespace BizHawk.Client.Common
 	{
 		public static IEmulator Emulator;
 		public static CoreComm CoreComm;
-
 		public static Config Config;
 		public static GameInfo Game;
 		public static CheatCollection CheatList;
@@ -89,5 +90,72 @@ namespace BizHawk.Client.Common
 		// Input state which has been estine for game controller inputs are coalesce here
 		// This relies on a client specific implementation!
 		public static SimpleController ControllerInputCoalescer;
+
+		public static SystemInfo SystemInfo
+		{
+			get
+			{
+				switch(Global.Emulator.SystemId)
+				{ 
+					default:
+					case "NULL":
+						return SystemInfo.Null;
+					case "NES":
+						return SystemInfo.Nes;
+					case "INTV":
+						return SystemInfo.Intellivision;
+					case "SG":
+						return SystemInfo.SG;
+					case "SMS":
+						if ((Global.Emulator as SMS).IsGameGear)
+						{
+							return SystemInfo.GG;
+						}
+						else if ((Global.Emulator as SMS).IsSG1000)
+						{
+							return SystemInfo.SG;
+						}
+
+						return SystemInfo.SMS;
+					case "PCECD":
+						return SystemInfo.PCECD;
+					case "PCE":
+						return SystemInfo.PCE;
+					case "SGX":
+						return SystemInfo.SGX;
+					case "GEN":
+						return SystemInfo.Genesis;
+					case "TI83":
+						return SystemInfo.TI83;
+					case "SNES":
+						return SystemInfo.SNES;
+					case "GB":
+						if ((Global.Emulator as Gameboy).IsCGBMode())
+						{
+							return SystemInfo.GBC;
+						}
+
+						return SystemInfo.GB;
+					case "A26":
+						return SystemInfo.Atari2600;
+					case "A78":
+						return SystemInfo.Atari7800;
+					case "C64":
+						return SystemInfo.C64;
+					case "Coleco":
+						return SystemInfo.Coleco;
+					case "GBA":
+						return SystemInfo.GBA;
+					case "N64":
+						return SystemInfo.N64;
+					case "SAT":
+						return SystemInfo.Saturn;
+					case "DGB":
+						return SystemInfo.DualGB;
+					case "WSWAN":
+						return SystemInfo.WonderSwan;
+				}
+			}
+		}
 	}
 }

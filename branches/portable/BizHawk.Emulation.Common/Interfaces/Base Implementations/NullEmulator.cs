@@ -88,6 +88,8 @@ namespace BizHawk.Emulation.Common
 			return new Dictionary<string, int>();
 		}
 
+		public void SetCpuRegister(string register, int value) { }
+
 		bool xmas;
 		Pleg pleg;
 

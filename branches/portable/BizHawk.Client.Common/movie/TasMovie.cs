@@ -191,7 +191,7 @@ namespace BizHawk.Client.Common
 		public void StartNewPlayback()
 		{
 			_mode = Moviemode.Play;
-			Global.Emulator.ClearSaveRam();
+			Global.Emulator.ClearSaveRam(); // should this exist??
 		}
 
 		public void Stop(bool saveChanges = true)

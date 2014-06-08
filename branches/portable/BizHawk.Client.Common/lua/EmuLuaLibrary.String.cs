@@ -1,11 +1,13 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 
 using LuaInterface;
 
 namespace BizHawk.Client.Common
 {
-	public class StringLuaLibrary : LuaLibraryBase
+	[Description("A library exposing standard .NET string methods")]
+	public sealed class StringLuaLibrary : LuaLibraryBase
 	{
 		public override string Name { get { return "bizstring"; } }
 

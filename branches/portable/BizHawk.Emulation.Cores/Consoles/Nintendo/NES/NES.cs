@@ -887,6 +887,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			};
 		}
 
+		public void SetCpuRegister(string register, int value)
+		{
+			switch (register)
+			{
+				default:
+					throw new InvalidOperationException();
+				case "A":
+					cpu.A = (byte)value;
+					break;
+				case "X":
+					cpu.X = (byte)value;
+					break;
+				case "Y":
+					cpu.Y = (byte)value;
+					break;
+				case "S":
+					cpu.S = (byte)value;
+					break;
+				case "PC":
+					cpu.PC = (ushort)value;
+					break;
+				case "Flag I":
+					cpu.FlagI = value > 0;
+					break;
+			}
+		}
+
 		NESSettings Settings = new NESSettings();
 		NESSyncSettings SyncSettings = new NESSyncSettings();
 

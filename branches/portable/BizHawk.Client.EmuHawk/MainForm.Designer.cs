@@ -136,6 +136,7 @@
 			this.RewindOptionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.extensionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ClientOptionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ProfilesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			this.SpeedSkipSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.ClickThrottleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -284,6 +285,8 @@
 			this.vDPViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator26 = new System.Windows.Forms.ToolStripSeparator();
 			this.GenesisSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.wonderSwanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.HelpSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.OnlineHelpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ForumsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -384,6 +387,7 @@
             this.SaturnSubMenu,
             this.DGBSubMenu,
             this.GenesisSubMenu,
+            this.wonderSwanToolStripMenuItem,
             this.HelpSubMenu});
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.MainformMenu.Location = new System.Drawing.Point(0, 0);
@@ -1240,6 +1244,7 @@
             this.RewindOptionsMenuItem,
             this.extensionsToolStripMenuItem,
             this.ClientOptionsMenuItem,
+            this.ProfilesMenuItem,
             this.toolStripSeparator9,
             this.SpeedSkipSubMenu,
             this.KeyPrioritySubMenu,
@@ -1338,6 +1343,13 @@
 			this.ClientOptionsMenuItem.Size = new System.Drawing.Size(159, 22);
 			this.ClientOptionsMenuItem.Text = "&Customize...";
 			this.ClientOptionsMenuItem.Click += new System.EventHandler(this.CustomizeMenuItem_Click);
+			// 
+			// ProfilesMenuItem
+			// 
+			this.ProfilesMenuItem.Name = "ProfilesMenuItem";
+			this.ProfilesMenuItem.Size = new System.Drawing.Size(159, 22);
+			this.ProfilesMenuItem.Text = "&Profiles...";
+			this.ProfilesMenuItem.Click += new System.EventHandler(this.ProfilesMenuItem_Click);
 			// 
 			// toolStripSeparator9
 			// 
@@ -2190,19 +2202,19 @@
 			// 
 			this.Atari2600DebuggerMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Bug;
 			this.Atari2600DebuggerMenuItem.Name = "Atari2600DebuggerMenuItem";
-			this.Atari2600DebuggerMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.Atari2600DebuggerMenuItem.Size = new System.Drawing.Size(126, 22);
 			this.Atari2600DebuggerMenuItem.Text = "Debugger";
 			this.Atari2600DebuggerMenuItem.Click += new System.EventHandler(this.Atari2600DebuggerMenuItem_Click);
 			// 
 			// toolStripSeparator31
 			// 
 			this.toolStripSeparator31.Name = "toolStripSeparator31";
-			this.toolStripSeparator31.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator31.Size = new System.Drawing.Size(123, 6);
 			// 
 			// AtariSettingsToolStripMenuItem
 			// 
 			this.AtariSettingsToolStripMenuItem.Name = "AtariSettingsToolStripMenuItem";
-			this.AtariSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.AtariSettingsToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
 			this.AtariSettingsToolStripMenuItem.Text = "Settings...";
 			this.AtariSettingsToolStripMenuItem.Click += new System.EventHandler(this.AtariSettingsToolStripMenuItem_Click);
 			// 
@@ -2501,6 +2513,21 @@
 			this.GenesisSettingsToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
 			this.GenesisSettingsToolStripMenuItem.Text = "&Settings...";
 			this.GenesisSettingsToolStripMenuItem.Click += new System.EventHandler(this.GenesisSettingsMenuItem_Click);
+			// 
+			// wonderSwanToolStripMenuItem
+			// 
+			this.wonderSwanToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.settingsToolStripMenuItem});
+			this.wonderSwanToolStripMenuItem.Name = "wonderSwanToolStripMenuItem";
+			this.wonderSwanToolStripMenuItem.Size = new System.Drawing.Size(89, 19);
+			this.wonderSwanToolStripMenuItem.Text = "&WonderSwan";
+			// 
+			// settingsToolStripMenuItem
+			// 
+			this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+			this.settingsToolStripMenuItem.Text = "&Settings...";
+			this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
 			// 
 			// HelpSubMenu
 			// 
@@ -3491,6 +3518,9 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator23;
 		private System.Windows.Forms.ToolStripMenuItem N64CircularAnalogRangeMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem paletteToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem wonderSwanToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ProfilesMenuItem;
 	}
 }
 

@@ -87,6 +87,12 @@ namespace BizHawk.Client.EmuHawk
 			base.OnMouseClick(e);
 		}
 
+		public void ClearAll()
+		{
+			ClearBindings();
+			Clear();
+		}
+
 		private void ClearBindings()
 		{
 			for (var i = 0; i < _maxBind; i++)

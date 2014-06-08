@@ -43,15 +43,7 @@
 			this.ScanlineAdvanceBtn = new System.Windows.Forms.Button();
 			this.FrameAdvButton = new System.Windows.Forms.Button();
 			this.RegistersBox = new System.Windows.Forms.GroupBox();
-			this.CFlagCheckbox = new System.Windows.Forms.CheckBox();
-			this.ZFlagCheckbox = new System.Windows.Forms.CheckBox();
-			this.IFlagCheckbox = new System.Windows.Forms.CheckBox();
-			this.DFlagCheckbox = new System.Windows.Forms.CheckBox();
-			this.BFlagCheckbox = new System.Windows.Forms.CheckBox();
-			this.TFlagCheckbox = new System.Windows.Forms.CheckBox();
-			this.VFlagCheckbox = new System.Windows.Forms.CheckBox();
 			this.label6 = new System.Windows.Forms.Label();
-			this.NFlagCheckbox = new System.Windows.Forms.CheckBox();
 			this.YRegisterHexBox = new System.Windows.Forms.TextBox();
 			this.XRegisterHexBox = new System.Windows.Forms.TextBox();
 			this.ARegisterHexBox = new System.Windows.Forms.TextBox();
@@ -60,10 +52,6 @@
 			this.XRegisterBinaryBox = new System.Windows.Forms.TextBox();
 			this.ARegisterBinaryBox = new System.Windows.Forms.TextBox();
 			this.SPRegisterBinaryBox = new System.Windows.Forms.TextBox();
-			this.YRegisterBox = new System.Windows.Forms.TextBox();
-			this.XRegisterBox = new System.Windows.Forms.TextBox();
-			this.ARegisterBox = new System.Windows.Forms.TextBox();
-			this.SPRegisterBox = new System.Windows.Forms.TextBox();
 			this.PCRegisterBox = new System.Windows.Forms.TextBox();
 			this.label5 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
@@ -84,20 +72,37 @@
 			this.label8 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
 			this.TracerBox = new System.Windows.Forms.GroupBox();
-			this.TraceView = new BizHawk.Client.EmuHawk.VirtualListView();
-			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.StepOverButton = new System.Windows.Forms.Button();
 			this.StepOutButton = new System.Windows.Forms.Button();
 			this.BreakpointGroupBox = new System.Windows.Forms.GroupBox();
+			this.RemoveBreakpointButton = new System.Windows.Forms.Button();
 			this.AddBreakpointButton = new System.Windows.Forms.Button();
+			this.SPRegisterBox = new System.Windows.Forms.NumericUpDown();
+			this.ARegisterBox = new System.Windows.Forms.NumericUpDown();
+			this.XRegisterBox = new System.Windows.Forms.NumericUpDown();
+			this.YRegisterBox = new System.Windows.Forms.NumericUpDown();
 			this.BreakpointView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.TraceView = new BizHawk.Client.EmuHawk.VirtualListView();
+			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.CFlagCheckbox = new BizHawk.Client.EmuHawk.ReadonlyCheckBox();
+			this.ZFlagCheckbox = new BizHawk.Client.EmuHawk.ReadonlyCheckBox();
+			this.IFlagCheckbox = new BizHawk.Client.EmuHawk.ReadonlyCheckBox();
+			this.DFlagCheckbox = new BizHawk.Client.EmuHawk.ReadonlyCheckBox();
+			this.BFlagCheckbox = new BizHawk.Client.EmuHawk.ReadonlyCheckBox();
+			this.TFlagCheckbox = new BizHawk.Client.EmuHawk.ReadonlyCheckBox();
+			this.VFlagCheckbox = new BizHawk.Client.EmuHawk.ReadonlyCheckBox();
+			this.NFlagCheckbox = new BizHawk.Client.EmuHawk.ReadonlyCheckBox();
 			this.DebuggerMenu.SuspendLayout();
 			this.RegistersBox.SuspendLayout();
 			this.CoreInfoBox.SuspendLayout();
 			this.TracerBox.SuspendLayout();
 			this.BreakpointGroupBox.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.SPRegisterBox)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.ARegisterBox)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.XRegisterBox)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.YRegisterBox)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// DebuggerMenu
@@ -216,6 +221,10 @@
 			// 
 			// RegistersBox
 			// 
+			this.RegistersBox.Controls.Add(this.YRegisterBox);
+			this.RegistersBox.Controls.Add(this.XRegisterBox);
+			this.RegistersBox.Controls.Add(this.ARegisterBox);
+			this.RegistersBox.Controls.Add(this.SPRegisterBox);
 			this.RegistersBox.Controls.Add(this.CFlagCheckbox);
 			this.RegistersBox.Controls.Add(this.ZFlagCheckbox);
 			this.RegistersBox.Controls.Add(this.IFlagCheckbox);
@@ -233,10 +242,6 @@
 			this.RegistersBox.Controls.Add(this.XRegisterBinaryBox);
 			this.RegistersBox.Controls.Add(this.ARegisterBinaryBox);
 			this.RegistersBox.Controls.Add(this.SPRegisterBinaryBox);
-			this.RegistersBox.Controls.Add(this.YRegisterBox);
-			this.RegistersBox.Controls.Add(this.XRegisterBox);
-			this.RegistersBox.Controls.Add(this.ARegisterBox);
-			this.RegistersBox.Controls.Add(this.SPRegisterBox);
 			this.RegistersBox.Controls.Add(this.PCRegisterBox);
 			this.RegistersBox.Controls.Add(this.label5);
 			this.RegistersBox.Controls.Add(this.label4);
@@ -250,83 +255,6 @@
 			this.RegistersBox.TabStop = false;
 			this.RegistersBox.Text = "Registers";
 			// 
-			// CFlagCheckbox
-			// 
-			this.CFlagCheckbox.Appearance = System.Windows.Forms.Appearance.Button;
-			this.CFlagCheckbox.AutoSize = true;
-			this.CFlagCheckbox.Location = new System.Drawing.Point(209, 121);
-			this.CFlagCheckbox.Name = "CFlagCheckbox";
-			this.CFlagCheckbox.Size = new System.Drawing.Size(24, 23);
-			this.CFlagCheckbox.TabIndex = 26;
-			this.CFlagCheckbox.Text = "C";
-			this.CFlagCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// ZFlagCheckbox
-			// 
-			this.ZFlagCheckbox.Appearance = System.Windows.Forms.Appearance.Button;
-			this.ZFlagCheckbox.AutoSize = true;
-			this.ZFlagCheckbox.Location = new System.Drawing.Point(186, 121);
-			this.ZFlagCheckbox.Name = "ZFlagCheckbox";
-			this.ZFlagCheckbox.Size = new System.Drawing.Size(24, 23);
-			this.ZFlagCheckbox.TabIndex = 25;
-			this.ZFlagCheckbox.Text = "Z";
-			this.ZFlagCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// IFlagCheckbox
-			// 
-			this.IFlagCheckbox.Appearance = System.Windows.Forms.Appearance.Button;
-			this.IFlagCheckbox.AutoSize = true;
-			this.IFlagCheckbox.Location = new System.Drawing.Point(167, 121);
-			this.IFlagCheckbox.Name = "IFlagCheckbox";
-			this.IFlagCheckbox.Size = new System.Drawing.Size(20, 23);
-			this.IFlagCheckbox.TabIndex = 24;
-			this.IFlagCheckbox.Text = "I";
-			this.IFlagCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// DFlagCheckbox
-			// 
-			this.DFlagCheckbox.Appearance = System.Windows.Forms.Appearance.Button;
-			this.DFlagCheckbox.AutoSize = true;
-			this.DFlagCheckbox.Location = new System.Drawing.Point(143, 121);
-			this.DFlagCheckbox.Name = "DFlagCheckbox";
-			this.DFlagCheckbox.Size = new System.Drawing.Size(25, 23);
-			this.DFlagCheckbox.TabIndex = 23;
-			this.DFlagCheckbox.Text = "D";
-			this.DFlagCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// BFlagCheckbox
-			// 
-			this.BFlagCheckbox.Appearance = System.Windows.Forms.Appearance.Button;
-			this.BFlagCheckbox.AutoSize = true;
-			this.BFlagCheckbox.Location = new System.Drawing.Point(118, 121);
-			this.BFlagCheckbox.Name = "BFlagCheckbox";
-			this.BFlagCheckbox.Size = new System.Drawing.Size(24, 23);
-			this.BFlagCheckbox.TabIndex = 22;
-			this.BFlagCheckbox.Text = "B";
-			this.BFlagCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// TFlagCheckbox
-			// 
-			this.TFlagCheckbox.Appearance = System.Windows.Forms.Appearance.Button;
-			this.TFlagCheckbox.AutoSize = true;
-			this.TFlagCheckbox.Location = new System.Drawing.Point(95, 121);
-			this.TFlagCheckbox.Name = "TFlagCheckbox";
-			this.TFlagCheckbox.Size = new System.Drawing.Size(24, 23);
-			this.TFlagCheckbox.TabIndex = 21;
-			this.TFlagCheckbox.Text = "T";
-			this.TFlagCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// VFlagCheckbox
-			// 
-			this.VFlagCheckbox.Appearance = System.Windows.Forms.Appearance.Button;
-			this.VFlagCheckbox.AutoSize = true;
-			this.VFlagCheckbox.Location = new System.Drawing.Point(72, 121);
-			this.VFlagCheckbox.Name = "VFlagCheckbox";
-			this.VFlagCheckbox.Size = new System.Drawing.Size(24, 23);
-			this.VFlagCheckbox.TabIndex = 20;
-			this.VFlagCheckbox.Text = "V";
-			this.VFlagCheckbox.UseVisualStyleBackColor = true;
-			// 
 			// label6
 			// 
 			this.label6.AutoSize = true;
@@ -335,17 +263,6 @@
 			this.label6.Size = new System.Drawing.Size(35, 13);
 			this.label6.TabIndex = 19;
 			this.label6.Text = "Flags:";
-			// 
-			// NFlagCheckbox
-			// 
-			this.NFlagCheckbox.Appearance = System.Windows.Forms.Appearance.Button;
-			this.NFlagCheckbox.AutoSize = true;
-			this.NFlagCheckbox.Location = new System.Drawing.Point(48, 121);
-			this.NFlagCheckbox.Name = "NFlagCheckbox";
-			this.NFlagCheckbox.Size = new System.Drawing.Size(25, 23);
-			this.NFlagCheckbox.TabIndex = 18;
-			this.NFlagCheckbox.Text = "N";
-			this.NFlagCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// YRegisterHexBox
 			// 
@@ -414,38 +331,6 @@
 			this.SPRegisterBinaryBox.Size = new System.Drawing.Size(62, 20);
 			this.SPRegisterBinaryBox.TabIndex = 10;
 			this.SPRegisterBinaryBox.Text = "0000 0000";
-			// 
-			// YRegisterBox
-			// 
-			this.YRegisterBox.Location = new System.Drawing.Point(36, 97);
-			this.YRegisterBox.Name = "YRegisterBox";
-			this.YRegisterBox.ReadOnly = true;
-			this.YRegisterBox.Size = new System.Drawing.Size(32, 20);
-			this.YRegisterBox.TabIndex = 9;
-			// 
-			// XRegisterBox
-			// 
-			this.XRegisterBox.Location = new System.Drawing.Point(36, 77);
-			this.XRegisterBox.Name = "XRegisterBox";
-			this.XRegisterBox.ReadOnly = true;
-			this.XRegisterBox.Size = new System.Drawing.Size(32, 20);
-			this.XRegisterBox.TabIndex = 8;
-			// 
-			// ARegisterBox
-			// 
-			this.ARegisterBox.Location = new System.Drawing.Point(36, 57);
-			this.ARegisterBox.Name = "ARegisterBox";
-			this.ARegisterBox.ReadOnly = true;
-			this.ARegisterBox.Size = new System.Drawing.Size(32, 20);
-			this.ARegisterBox.TabIndex = 7;
-			// 
-			// SPRegisterBox
-			// 
-			this.SPRegisterBox.Location = new System.Drawing.Point(36, 37);
-			this.SPRegisterBox.Name = "SPRegisterBox";
-			this.SPRegisterBox.ReadOnly = true;
-			this.SPRegisterBox.Size = new System.Drawing.Size(32, 20);
-			this.SPRegisterBox.TabIndex = 6;
 			// 
 			// PCRegisterBox
 			// 
@@ -642,6 +527,171 @@
 			this.TracerBox.TabStop = false;
 			this.TracerBox.Text = "Trace log";
 			// 
+			// StepOverButton
+			// 
+			this.StepOverButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.StepOverButton.Location = new System.Drawing.Point(566, 56);
+			this.StepOverButton.Name = "StepOverButton";
+			this.StepOverButton.Size = new System.Drawing.Size(75, 23);
+			this.StepOverButton.TabIndex = 7;
+			this.StepOverButton.Text = "Step &Over";
+			this.StepOverButton.UseVisualStyleBackColor = true;
+			// 
+			// StepOutButton
+			// 
+			this.StepOutButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.StepOutButton.Location = new System.Drawing.Point(566, 82);
+			this.StepOutButton.Name = "StepOutButton";
+			this.StepOutButton.Size = new System.Drawing.Size(75, 23);
+			this.StepOutButton.TabIndex = 8;
+			this.StepOutButton.Text = "Step O&ut";
+			this.StepOutButton.UseVisualStyleBackColor = true;
+			// 
+			// BreakpointGroupBox
+			// 
+			this.BreakpointGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.BreakpointGroupBox.Controls.Add(this.RemoveBreakpointButton);
+			this.BreakpointGroupBox.Controls.Add(this.AddBreakpointButton);
+			this.BreakpointGroupBox.Controls.Add(this.BreakpointView);
+			this.BreakpointGroupBox.Location = new System.Drawing.Point(435, 188);
+			this.BreakpointGroupBox.Name = "BreakpointGroupBox";
+			this.BreakpointGroupBox.Size = new System.Drawing.Size(206, 444);
+			this.BreakpointGroupBox.TabIndex = 7;
+			this.BreakpointGroupBox.TabStop = false;
+			this.BreakpointGroupBox.Text = "Breakpoints";
+			// 
+			// RemoveBreakpointButton
+			// 
+			this.RemoveBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.RemoveBreakpointButton.Location = new System.Drawing.Point(125, 409);
+			this.RemoveBreakpointButton.Name = "RemoveBreakpointButton";
+			this.RemoveBreakpointButton.Size = new System.Drawing.Size(75, 23);
+			this.RemoveBreakpointButton.TabIndex = 6;
+			this.RemoveBreakpointButton.Text = "&Remove";
+			this.RemoveBreakpointButton.UseVisualStyleBackColor = true;
+			this.RemoveBreakpointButton.Click += new System.EventHandler(this.RemoveBreakpointButton_Click);
+			// 
+			// AddBreakpointButton
+			// 
+			this.AddBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.AddBreakpointButton.Location = new System.Drawing.Point(8, 409);
+			this.AddBreakpointButton.Name = "AddBreakpointButton";
+			this.AddBreakpointButton.Size = new System.Drawing.Size(75, 23);
+			this.AddBreakpointButton.TabIndex = 5;
+			this.AddBreakpointButton.Text = "&Add";
+			this.AddBreakpointButton.UseVisualStyleBackColor = true;
+			this.AddBreakpointButton.Click += new System.EventHandler(this.AddBreakpointButton_Click);
+			// 
+			// SPRegisterBox
+			// 
+			this.SPRegisterBox.Location = new System.Drawing.Point(36, 37);
+			this.SPRegisterBox.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.SPRegisterBox.Name = "SPRegisterBox";
+			this.SPRegisterBox.Size = new System.Drawing.Size(43, 20);
+			this.SPRegisterBox.TabIndex = 27;
+			this.SPRegisterBox.Value = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.SPRegisterBox.ValueChanged += new System.EventHandler(this.SPRegisterBox_ValueChanged);
+			// 
+			// ARegisterBox
+			// 
+			this.ARegisterBox.Location = new System.Drawing.Point(36, 56);
+			this.ARegisterBox.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.ARegisterBox.Name = "ARegisterBox";
+			this.ARegisterBox.Size = new System.Drawing.Size(43, 20);
+			this.ARegisterBox.TabIndex = 28;
+			this.ARegisterBox.Value = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.ARegisterBox.ValueChanged += new System.EventHandler(this.ARegisterBox_ValueChanged);
+			// 
+			// XRegisterBox
+			// 
+			this.XRegisterBox.Location = new System.Drawing.Point(36, 76);
+			this.XRegisterBox.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.XRegisterBox.Name = "XRegisterBox";
+			this.XRegisterBox.Size = new System.Drawing.Size(43, 20);
+			this.XRegisterBox.TabIndex = 29;
+			this.XRegisterBox.Value = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.XRegisterBox.ValueChanged += new System.EventHandler(this.XRegisterBox_ValueChanged);
+			// 
+			// YRegisterBox
+			// 
+			this.YRegisterBox.Location = new System.Drawing.Point(36, 96);
+			this.YRegisterBox.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.YRegisterBox.Name = "YRegisterBox";
+			this.YRegisterBox.Size = new System.Drawing.Size(43, 20);
+			this.YRegisterBox.TabIndex = 30;
+			this.YRegisterBox.Value = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.YRegisterBox.ValueChanged += new System.EventHandler(this.YRegisterBox_ValueChanged);
+			// 
+			// BreakpointView
+			// 
+			this.BreakpointView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.BreakpointView.BlazingFast = false;
+			this.BreakpointView.CheckBoxes = true;
+			this.BreakpointView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2});
+			this.BreakpointView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.BreakpointView.FullRowSelect = true;
+			this.BreakpointView.GridLines = true;
+			this.BreakpointView.HideSelection = false;
+			this.BreakpointView.ItemCount = 0;
+			this.BreakpointView.Location = new System.Drawing.Point(8, 18);
+			this.BreakpointView.Name = "BreakpointView";
+			this.BreakpointView.SelectAllInProgress = false;
+			this.BreakpointView.selectedItem = -1;
+			this.BreakpointView.Size = new System.Drawing.Size(192, 384);
+			this.BreakpointView.TabIndex = 4;
+			this.BreakpointView.TabStop = false;
+			this.BreakpointView.UseCompatibleStateImageBehavior = false;
+			this.BreakpointView.View = System.Windows.Forms.View.Details;
+			this.BreakpointView.SelectedIndexChanged += new System.EventHandler(this.BreakpointView_SelectedIndexChanged);
+			this.BreakpointView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.BreakpointView_KeyDown);
+			// 
+			// columnHeader1
+			// 
+			this.columnHeader1.Text = "Address";
+			this.columnHeader1.Width = 85;
+			// 
+			// columnHeader2
+			// 
+			this.columnHeader2.Text = "Type";
+			this.columnHeader2.Width = 103;
+			// 
 			// TraceView
 			// 
 			this.TraceView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -671,84 +721,93 @@
 			this.Script.Text = "Instructions";
 			this.Script.Width = 599;
 			// 
-			// StepOverButton
+			// CFlagCheckbox
 			// 
-			this.StepOverButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.StepOverButton.Location = new System.Drawing.Point(566, 56);
-			this.StepOverButton.Name = "StepOverButton";
-			this.StepOverButton.Size = new System.Drawing.Size(75, 23);
-			this.StepOverButton.TabIndex = 7;
-			this.StepOverButton.Text = "Step &Over";
-			this.StepOverButton.UseVisualStyleBackColor = true;
+			this.CFlagCheckbox.Appearance = System.Windows.Forms.Appearance.Button;
+			this.CFlagCheckbox.AutoSize = true;
+			this.CFlagCheckbox.Location = new System.Drawing.Point(209, 121);
+			this.CFlagCheckbox.Name = "CFlagCheckbox";
+			this.CFlagCheckbox.Size = new System.Drawing.Size(24, 23);
+			this.CFlagCheckbox.TabIndex = 26;
+			this.CFlagCheckbox.Text = "C";
+			this.CFlagCheckbox.UseVisualStyleBackColor = true;
 			// 
-			// StepOutButton
+			// ZFlagCheckbox
 			// 
-			this.StepOutButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.StepOutButton.Location = new System.Drawing.Point(566, 82);
-			this.StepOutButton.Name = "StepOutButton";
-			this.StepOutButton.Size = new System.Drawing.Size(75, 23);
-			this.StepOutButton.TabIndex = 8;
-			this.StepOutButton.Text = "Step O&ut";
-			this.StepOutButton.UseVisualStyleBackColor = true;
+			this.ZFlagCheckbox.Appearance = System.Windows.Forms.Appearance.Button;
+			this.ZFlagCheckbox.AutoSize = true;
+			this.ZFlagCheckbox.Location = new System.Drawing.Point(186, 121);
+			this.ZFlagCheckbox.Name = "ZFlagCheckbox";
+			this.ZFlagCheckbox.Size = new System.Drawing.Size(24, 23);
+			this.ZFlagCheckbox.TabIndex = 25;
+			this.ZFlagCheckbox.Text = "Z";
+			this.ZFlagCheckbox.UseVisualStyleBackColor = true;
 			// 
-			// BreakpointGroupBox
+			// IFlagCheckbox
 			// 
-			this.BreakpointGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.BreakpointGroupBox.Controls.Add(this.AddBreakpointButton);
-			this.BreakpointGroupBox.Controls.Add(this.BreakpointView);
-			this.BreakpointGroupBox.Location = new System.Drawing.Point(435, 188);
-			this.BreakpointGroupBox.Name = "BreakpointGroupBox";
-			this.BreakpointGroupBox.Size = new System.Drawing.Size(206, 444);
-			this.BreakpointGroupBox.TabIndex = 7;
-			this.BreakpointGroupBox.TabStop = false;
-			this.BreakpointGroupBox.Text = "Breakpoints";
+			this.IFlagCheckbox.Appearance = System.Windows.Forms.Appearance.Button;
+			this.IFlagCheckbox.AutoSize = true;
+			this.IFlagCheckbox.Location = new System.Drawing.Point(167, 121);
+			this.IFlagCheckbox.Name = "IFlagCheckbox";
+			this.IFlagCheckbox.Size = new System.Drawing.Size(20, 23);
+			this.IFlagCheckbox.TabIndex = 24;
+			this.IFlagCheckbox.Text = "I";
+			this.IFlagCheckbox.UseVisualStyleBackColor = true;
 			// 
-			// AddBreakpointButton
+			// DFlagCheckbox
 			// 
-			this.AddBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.AddBreakpointButton.Location = new System.Drawing.Point(8, 409);
-			this.AddBreakpointButton.Name = "AddBreakpointButton";
-			this.AddBreakpointButton.Size = new System.Drawing.Size(75, 23);
-			this.AddBreakpointButton.TabIndex = 5;
-			this.AddBreakpointButton.Text = "&Add";
-			this.AddBreakpointButton.UseVisualStyleBackColor = true;
-			this.AddBreakpointButton.Click += new System.EventHandler(this.AddBreakpointButton_Click);
+			this.DFlagCheckbox.Appearance = System.Windows.Forms.Appearance.Button;
+			this.DFlagCheckbox.AutoSize = true;
+			this.DFlagCheckbox.Location = new System.Drawing.Point(143, 121);
+			this.DFlagCheckbox.Name = "DFlagCheckbox";
+			this.DFlagCheckbox.Size = new System.Drawing.Size(25, 23);
+			this.DFlagCheckbox.TabIndex = 23;
+			this.DFlagCheckbox.Text = "D";
+			this.DFlagCheckbox.UseVisualStyleBackColor = true;
 			// 
-			// BreakpointView
+			// BFlagCheckbox
 			// 
-			this.BreakpointView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.BreakpointView.BlazingFast = false;
-			this.BreakpointView.CheckBoxes = true;
-			this.BreakpointView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2});
-			this.BreakpointView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.BreakpointView.FullRowSelect = true;
-			this.BreakpointView.GridLines = true;
-			this.BreakpointView.HideSelection = false;
-			this.BreakpointView.ItemCount = 0;
-			this.BreakpointView.Location = new System.Drawing.Point(8, 18);
-			this.BreakpointView.Name = "BreakpointView";
-			this.BreakpointView.SelectAllInProgress = false;
-			this.BreakpointView.selectedItem = -1;
-			this.BreakpointView.Size = new System.Drawing.Size(192, 384);
-			this.BreakpointView.TabIndex = 4;
-			this.BreakpointView.TabStop = false;
-			this.BreakpointView.UseCompatibleStateImageBehavior = false;
-			this.BreakpointView.View = System.Windows.Forms.View.Details;
+			this.BFlagCheckbox.Appearance = System.Windows.Forms.Appearance.Button;
+			this.BFlagCheckbox.AutoSize = true;
+			this.BFlagCheckbox.Location = new System.Drawing.Point(118, 121);
+			this.BFlagCheckbox.Name = "BFlagCheckbox";
+			this.BFlagCheckbox.Size = new System.Drawing.Size(24, 23);
+			this.BFlagCheckbox.TabIndex = 22;
+			this.BFlagCheckbox.Text = "B";
+			this.BFlagCheckbox.UseVisualStyleBackColor = true;
 			// 
-			// columnHeader1
+			// TFlagCheckbox
 			// 
-			this.columnHeader1.Text = "Address";
-			this.columnHeader1.Width = 85;
+			this.TFlagCheckbox.Appearance = System.Windows.Forms.Appearance.Button;
+			this.TFlagCheckbox.AutoSize = true;
+			this.TFlagCheckbox.Location = new System.Drawing.Point(95, 121);
+			this.TFlagCheckbox.Name = "TFlagCheckbox";
+			this.TFlagCheckbox.Size = new System.Drawing.Size(24, 23);
+			this.TFlagCheckbox.TabIndex = 21;
+			this.TFlagCheckbox.Text = "T";
+			this.TFlagCheckbox.UseVisualStyleBackColor = true;
 			// 
-			// columnHeader2
+			// VFlagCheckbox
 			// 
-			this.columnHeader2.Text = "Type";
-			this.columnHeader2.Width = 103;
+			this.VFlagCheckbox.Appearance = System.Windows.Forms.Appearance.Button;
+			this.VFlagCheckbox.AutoSize = true;
+			this.VFlagCheckbox.Location = new System.Drawing.Point(72, 121);
+			this.VFlagCheckbox.Name = "VFlagCheckbox";
+			this.VFlagCheckbox.Size = new System.Drawing.Size(24, 23);
+			this.VFlagCheckbox.TabIndex = 20;
+			this.VFlagCheckbox.Text = "V";
+			this.VFlagCheckbox.UseVisualStyleBackColor = true;
+			// 
+			// NFlagCheckbox
+			// 
+			this.NFlagCheckbox.Appearance = System.Windows.Forms.Appearance.Button;
+			this.NFlagCheckbox.AutoSize = true;
+			this.NFlagCheckbox.Location = new System.Drawing.Point(48, 121);
+			this.NFlagCheckbox.Name = "NFlagCheckbox";
+			this.NFlagCheckbox.Size = new System.Drawing.Size(25, 23);
+			this.NFlagCheckbox.TabIndex = 18;
+			this.NFlagCheckbox.Text = "N";
+			this.NFlagCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// Atari2600Debugger
 			// 
@@ -779,6 +838,10 @@
 			this.CoreInfoBox.PerformLayout();
 			this.TracerBox.ResumeLayout(false);
 			this.BreakpointGroupBox.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.SPRegisterBox)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.ARegisterBox)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.XRegisterBox)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.YRegisterBox)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -793,10 +856,6 @@
 		private System.Windows.Forms.Button ScanlineAdvanceBtn;
 		private System.Windows.Forms.Button FrameAdvButton;
 		private System.Windows.Forms.GroupBox RegistersBox;
-		private System.Windows.Forms.TextBox YRegisterBox;
-		private System.Windows.Forms.TextBox XRegisterBox;
-		private System.Windows.Forms.TextBox ARegisterBox;
-		private System.Windows.Forms.TextBox SPRegisterBox;
 		private System.Windows.Forms.TextBox PCRegisterBox;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label label4;
@@ -811,15 +870,15 @@
 		private System.Windows.Forms.TextBox XRegisterHexBox;
 		private System.Windows.Forms.TextBox ARegisterHexBox;
 		private System.Windows.Forms.TextBox SPRegisterHexBox;
-		private System.Windows.Forms.CheckBox CFlagCheckbox;
-		private System.Windows.Forms.CheckBox ZFlagCheckbox;
-		private System.Windows.Forms.CheckBox IFlagCheckbox;
-		private System.Windows.Forms.CheckBox DFlagCheckbox;
-		private System.Windows.Forms.CheckBox BFlagCheckbox;
-		private System.Windows.Forms.CheckBox TFlagCheckbox;
-		private System.Windows.Forms.CheckBox VFlagCheckbox;
+		private ReadonlyCheckBox CFlagCheckbox;
+		private ReadonlyCheckBox ZFlagCheckbox;
+		private ReadonlyCheckBox IFlagCheckbox;
+		private ReadonlyCheckBox DFlagCheckbox;
+		private ReadonlyCheckBox BFlagCheckbox;
+		private ReadonlyCheckBox TFlagCheckbox;
+		private ReadonlyCheckBox VFlagCheckbox;
 		private System.Windows.Forms.Label label6;
-		private System.Windows.Forms.CheckBox NFlagCheckbox;
+		private ReadonlyCheckBox NFlagCheckbox;
 		private System.Windows.Forms.GroupBox CoreInfoBox;
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.Label label8;
@@ -850,5 +909,10 @@
 		private System.Windows.Forms.Label label11;
 		private System.Windows.Forms.Label LastAddressLabel;
 		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.Button RemoveBreakpointButton;
+		private System.Windows.Forms.NumericUpDown SPRegisterBox;
+		private System.Windows.Forms.NumericUpDown ARegisterBox;
+		private System.Windows.Forms.NumericUpDown XRegisterBox;
+		private System.Windows.Forms.NumericUpDown YRegisterBox;
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -11,6 +12,19 @@ namespace BizHawk.Common.ReflectionExtensions
 	/// </summary>
 	public static class ReflectionUtil
 	{
+		public static string Description(this Type type)
+		{
+			var descriptions = (DescriptionAttribute[])
+			type.GetCustomAttributes(typeof(DescriptionAttribute), false);
+
+			if (descriptions.Length == 0)
+			{
+				return string.Empty;
+			}
+
+			return descriptions[0].Description;
+		}
+
 		/// <summary>
 		/// Takes an object and determines if it has methodName as a public method
 		/// </summary>

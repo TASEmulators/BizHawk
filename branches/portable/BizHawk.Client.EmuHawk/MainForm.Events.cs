@@ -394,25 +394,28 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ImportMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			var ofd = HawkDialogFactory.CreateOpenFileDialog();
-			ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
-			ofd.Multiselect = true;
-			ofd.Filter = FormatFilter(
-				"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.zmv;",
-				"FCEUX", "*.fm2",
-				"PCEjin/Mednafen", "*.mc2;*.mcm",
-				"Dega", "*.mmv",
-				"Gens", "*.gmv",
-				"Visual Boy Advance", "*.vbm",
-				"LSNES", "*.lsmv",
-				"FCEU", "*.fcm",
-				"Famtasia", "*.fmv",
-				"VirtuaNES", "*.vmv",
-				"Nintendulator", "*.nmv",
-				"Snes9x", "*.smv",
-				"ZSNES", "*.zmv",
-				"All Files", "*.*");
-			ofd.RestoreDirectory = false;
+			var ofd = new OpenFileDialog
+			{
+				InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId),
+				Multiselect = true,
+				Filter = FormatFilter(
+					"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.ymv;*.zmv;",
+					"FCEUX", "*.fm2",
+					"PCEjin/Mednafen", "*.mc2;*.mcm",
+					"Dega", "*.mmv",
+					"Gens", "*.gmv",
+					"Visual Boy Advance", "*.vbm",
+					"LSNES", "*.lsmv",
+					"FCEU", "*.fcm",
+					"Famtasia", "*.fmv",
+					"VirtuaNES", "*.vmv",
+					"Nintendulator", "*.nmv",
+					"Snes9x", "*.smv",
+                    "Yabause", "*.ymv",
+					"ZSNES", "*.zmv",
+					"All Files", "*.*"),
+				RestoreDirectory = false
+			};
 
 			var result = ofd.ShowHawkDialog();
 			if (result == DialogResult.OK)
@@ -677,6 +680,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ControllersMenuItem.Enabled = !(Global.Emulator is NullEmulator);
+			ProfilesMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
 
 		private void FrameSkipMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -989,7 +993,7 @@ namespace BizHawk.Client.EmuHawk
 				TAStudioMenuItem.Enabled =
 				VirtualPadMenuItem.Enabled =
 				!(Global.Emulator is NullEmulator);
-			batchRunnerToolStripMenuItem.Visible = VersionInfo.INTERIM;
+			batchRunnerToolStripMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
 
 		private void ToolBoxMenuItem_Click(object sender, EventArgs e)
@@ -1070,7 +1074,7 @@ namespace BizHawk.Client.EmuHawk
 			FDSControlsMenuItem.Enabled = Global.Emulator.BoardName == "FDS";
 
 			NESDebuggerMenuItem.Visible =
-				VersionInfo.INTERIM;
+				VersionInfo.DeveloperBuild;
 
 			NESDebuggerMenuItem.Enabled =
 				NESPPUViewerMenuItem.Enabled =
@@ -1430,7 +1434,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AtariSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			if (!VersionInfo.INTERIM)
+			if (!VersionInfo.DeveloperBuild)
 			{
 				Atari2600DebuggerMenuItem.Visible =
 					toolStripSeparator31.Visible =
@@ -1686,10 +1690,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaturnPreferencesMenuItem_Click(object sender, EventArgs e)
 		{
+			GenericCoreConfig.DoDialog(this, "Saturn Settings");
+			/*  -- delete me, out of date
 			using (var dlg = new SaturnPrefs())
 			{
 				dlg.ShowDialog(this);
 			}
+			 * */
 		}
 
 		#endregion
@@ -1731,7 +1738,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AboutMenuItem_Click(object sender, EventArgs e)
 		{
-			if (VersionInfo.INTERIM)
+			if (VersionInfo.DeveloperBuild)
 			{
 				new AboutBox().ShowDialog();
 			}

@@ -17,13 +17,11 @@ namespace BizHawk.Client.EmuHawk
 		// TODO:
 		// Take control of mainform
 		// Consider how to handle trace logger (the two will compete with each other with the TakeContents() method)
-		// Step Into
+		// Step Over
 		// Step Out
-		// Settable registers, also implement in lua
-		// Breakpoints - Double click toggle, Delete to remove
+		// Breakpoints - Double click toggle
 		// Save breakpoints to file?
 		// Video Frame advance
-		// Update on load
 		// Add to toolbox
 
 		private Atari2600 _core = Global.Emulator as Atari2600;
@@ -33,6 +31,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _defaultWidth;
 		private int _defaultHeight;
+
+		private bool _programmaticUpdateOfRegisterBoxes = false; // Winforms have no way to programmitcally set the value of a widget without invoking the change event so hacks like this are necessary
 
 		//the opsize table is used to quickly grab the instruction sizes (in bytes)
 		private readonly byte[] opsize = new byte[]
@@ -122,6 +122,24 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Size = Global.Config.Atari2600DebuggerSettings.WindowSize;
 			}
+
+			UpdateBreakpointRemoveButton();
+			UpdateValues();
+		}
+
+		private IEnumerable<int> SelectedIndices
+		{
+			get { return BreakpointView.SelectedIndices.Cast<int>(); }
+		}
+
+		private IEnumerable<AtariBreakpoint> SelectedItems
+		{
+			get { return SelectedIndices.Select(index => Breakpoints[index]); }
+		}
+
+		private void UpdateBreakpointRemoveButton()
+		{
+			RemoveBreakpointButton.Enabled = BreakpointView.SelectedIndices.Count > 0;
 		}
 
 		private void Shutdown()
@@ -148,6 +166,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
+			_programmaticUpdateOfRegisterBoxes = true;
 			var flags = _core.GetCpuFlagsAndRegisters();
 			PCRegisterBox.Text = flags["PC"].ToString();
 
@@ -185,6 +204,7 @@ namespace BizHawk.Client.EmuHawk
 			VSyncChexkbox.Checked = _core.IsVsync;
 			VBlankCheckbox.Checked = _core.IsVBlank;
 			UpdateTraceLog();
+			_programmaticUpdateOfRegisterBoxes = false;
 		}
 
 		private void UpdateTraceLog()
@@ -251,6 +271,38 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.MainForm.PauseEmulator();
 			UpdateValues();
+		}
+
+		private void SPRegisterBox_ValueChanged(object sender, EventArgs e)
+		{
+			if (!_programmaticUpdateOfRegisterBoxes)
+			{
+				_core.SetCpuRegister("S", (int)SPRegisterBox.Value);
+			}
+		}
+
+		private void ARegisterBox_ValueChanged(object sender, EventArgs e)
+		{
+			if (!_programmaticUpdateOfRegisterBoxes)
+			{
+				_core.SetCpuRegister("A", (int)SPRegisterBox.Value);
+			}
+		}
+
+		private void XRegisterBox_ValueChanged(object sender, EventArgs e)
+		{
+			if (!_programmaticUpdateOfRegisterBoxes)
+			{
+				_core.SetCpuRegister("X", (int)SPRegisterBox.Value);
+			}
+		}
+
+		private void YRegisterBox_ValueChanged(object sender, EventArgs e)
+		{
+			if (!_programmaticUpdateOfRegisterBoxes)
+			{
+				_core.SetCpuRegister("Y", (int)SPRegisterBox.Value);
+			}
 		}
 
 		#region Menu
@@ -340,6 +392,38 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			BreakpointView.ItemCount = Breakpoints.Count;
+			UpdateBreakpointRemoveButton();
+		}
+
+		private void RemoveBreakpointButton_Click(object sender, EventArgs e)
+		{
+			if (BreakpointView.SelectedIndices.Count > 0)
+			{
+				var items = SelectedItems.ToList();
+				if (items.Any())
+				{
+					foreach (var item in items)
+					{
+						Breakpoints.Remove(item);
+					}
+
+					BreakpointView.ItemCount = Breakpoints.Count;
+					UpdateBreakpointRemoveButton();
+				}
+			}
+		}
+
+		private void BreakpointView_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			UpdateBreakpointRemoveButton();
+		}
+
+		private void BreakpointView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
+			{
+				RemoveBreakpointButton_Click(sender, e);
+			}
 		}
 
 		private void RefreshFloatingWindowControl()
@@ -348,7 +432,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
-
 
 		// TODO: these can be generic to any debugger
 		#region Breakpoint Classes

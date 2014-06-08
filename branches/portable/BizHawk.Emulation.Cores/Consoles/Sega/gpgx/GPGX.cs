@@ -17,9 +17,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	[CoreAttributes(
 		"Genplus-gx",
-		"ekeeke31",
+		"",
 		isPorted: true,
-		isReleased: true
+		isReleased: true,
+		portedVersion: "r580",
+		portedUrl: "https://code.google.com/p/genplus-gx/"
 		)]
 	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider
 	{
@@ -216,7 +218,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				}
 				if (firmwareID != null)
 				{
-					srcdata = CoreComm.CoreFileProvider.GetFirmware("GEN", firmwareID, false);
+					// this path will be the most common PEBKAC error, so be a bit more vocal about the problem
+					srcdata = CoreComm.CoreFileProvider.GetFirmware("GEN", firmwareID, false, "GPGX firmwares are usually required.");
 					if (srcdata == null)
 					{
 						Console.WriteLine("Frontend couldn't satisfy firmware request GEN:{0}", firmwareID);
@@ -583,6 +586,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			for (int i = 0; i < n; i++)
 				ret[Marshal.PtrToStringAnsi(regs[i].Name)] = regs[i].Value;
 			return ret;
+		}
+
+		public void SetCpuRegister(string register, int value)
+		{
+			throw new NotImplementedException();
 		}
 
 		public void UpdateVDPViewContext(LibGPGX.VDPView view)

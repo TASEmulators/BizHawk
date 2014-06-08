@@ -293,5 +293,80 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				{ "Flag S", Cpu.RegisterF.Bit(7) ? 1 : 0 }
 			};
 		}
+
+		public void SetCpuRegister(string register, int value)
+		{
+			switch (register)
+			{
+				default:
+					throw new InvalidOperationException();
+				case "A":
+					Cpu.RegisterA = (byte)value;
+					break;
+				case "AF":
+					Cpu.RegisterAF = (byte)value;
+					break;
+				case "B":
+					Cpu.RegisterB = (byte)value;
+					break;
+				case "BC":
+					Cpu.RegisterBC = (byte)value;
+					break;
+				case "C":
+					Cpu.RegisterC = (byte)value;
+					break;
+				case "D":
+					Cpu.RegisterD = (byte)value;
+					break;
+				case "DE":
+					Cpu.RegisterDE = (byte)value;
+					break;
+				case "E":
+					Cpu.RegisterE = (byte)value;
+					break;
+				case "F":
+					Cpu.RegisterF = (byte)value;
+					break;
+				case "H":
+					Cpu.RegisterH = (byte)value;
+					break;
+				case "HL":
+					Cpu.RegisterHL = (byte)value;
+					break;
+				case "I":
+					Cpu.RegisterI = (byte)value;
+					break;
+				case "IX":
+					Cpu.RegisterIX = (byte)value;
+					break;
+				case "IY":
+					Cpu.RegisterIY = (byte)value;
+					break;
+				case "L":
+					Cpu.RegisterL = (byte)value;
+					break;
+				case "PC":
+					Cpu.RegisterPC = (ushort)value;
+					break;
+				case "R":
+					Cpu.RegisterR = (byte)value;
+					break;
+				case "Shadow AF":
+					Cpu.RegisterShadowAF = (byte)value;
+					break;
+				case "Shadow BC":
+					Cpu.RegisterShadowBC = (byte)value;
+					break;
+				case "Shadow DE":
+					Cpu.RegisterShadowDE = (byte)value;
+					break;
+				case "Shadow HL":
+					Cpu.RegisterShadowHL = (byte)value;
+					break;
+				case "SP":
+					Cpu.RegisterSP = (byte)value;
+					break;
+			}
+		}
 	}
 }

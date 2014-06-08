@@ -193,6 +193,38 @@ namespace BizHawk.Client.Common
 			new Tuple<string, char>("P2 A", 'A'),
 			new Tuple<string, char>(null, '|')
 		};
+
+		public static Tuple<string, char>[] WSMnemonic = new[]
+		{
+			new Tuple<string, char>(null, '|'),
+			new Tuple<string, char>("P1 X1", '1'),
+			new Tuple<string, char>("P1 X3", '3'),
+			new Tuple<string, char>("P1 X4", '4'),
+			new Tuple<string, char>("P1 X2", '2'),
+			new Tuple<string, char>("P1 Y1", '1'),
+			new Tuple<string, char>("P1 Y3", '3'),
+			new Tuple<string, char>("P1 Y4", '4'),
+			new Tuple<string, char>("P1 Y2", '2'),
+			new Tuple<string, char>("P1 Start", 'S'),
+			new Tuple<string, char>("P1 B", 'B'),
+			new Tuple<string, char>("P1 A", 'A'),
+			new Tuple<string, char>(null, '|'),
+			new Tuple<string, char>("P2 X1", '1'),
+			new Tuple<string, char>("P2 X3", '3'),
+			new Tuple<string, char>("P2 X4", '4'),
+			new Tuple<string, char>("P2 X2", '2'),
+			new Tuple<string, char>("P2 Y1", '1'),
+			new Tuple<string, char>("P2 Y3", '3'),
+			new Tuple<string, char>("P2 Y4", '4'),
+			new Tuple<string, char>("P2 Y2", '2'),
+			new Tuple<string, char>("P2 Start", 'S'),
+			new Tuple<string, char>("P2 B", 'B'),
+			new Tuple<string, char>("P2 A", 'A'),
+			new Tuple<string, char>(null, '|'),
+			new Tuple<string, char>("Power", 'P'),
+			new Tuple<string, char>("Rotate", 'R'),
+			new Tuple<string, char>(null, '|'),
+		};
 	}
 
 	public class MovieControllerAdapter : IController
@@ -515,6 +547,20 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		private void SetWonderSwanControllerAsMnemonic(string mnemonic)
+		{
+			var checker = new MnemonicChecker(mnemonic);
+			MyBoolButtons.Clear();
+			for (int i = 0; i < MnemonicConstants.WSMnemonic.Length; i++)
+			{
+				var t = MnemonicConstants.WSMnemonic[i];
+				if (t.Item1 != null)
+				{
+					Force(t.Item1, checker[i]);
+				}
+			}
+		}
+
 		private void SetC64ControllersAsMnemonic(string mnemonic)
 		{
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
@@ -576,6 +622,11 @@ namespace BizHawk.Client.Common
 			else if (ControlType == "Dual Gameboy Controller")
 			{
 				SetDualGameBoyControllerAsMnemonic(mnemonic);
+				return;
+			}
+			else if (ControlType == "WonderSwan Controller")
+			{
+				SetWonderSwanControllerAsMnemonic(mnemonic);
 				return;
 			}
 			else if (ControlType == "Nintento 64 Controller")
