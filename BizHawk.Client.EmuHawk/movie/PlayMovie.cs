@@ -14,6 +14,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PlayMovie : Form
 	{
+		// Movies 2.0 TODO: this is hopelessly Movie.cs specific, to make it generic, make a MovieLoader class that receives a path and returns an IMovie, that does the logic of determining bkm, bk2, or tasproj
 		private List<IMovie> _movieList = new List<IMovie>();
 		private bool _sortReverse;
 		private string _sortedCol;
@@ -203,7 +204,7 @@ namespace BizHawk.Client.EmuHawk
 			var tas = new List<int>();
 			for (var i = 0; i < indices.Count; i++)
 			{
-				if (Path.GetExtension(_movieList[indices[i]].Filename).ToUpper() == "." + Global.Config.MovieExtension)
+				if (Path.GetExtension(_movieList[indices[i]].Filename).ToUpper() == "." + Movie.Extension)
 				{
 					tas.Add(i);
 				}
@@ -272,7 +273,7 @@ namespace BizHawk.Client.EmuHawk
 						dpTodo.Enqueue(subdir);
 
 				//add movies
-				fpTodo.AddRange(Directory.GetFiles(dp, "*." + Global.Config.MovieExtension));
+				fpTodo.AddRange(Directory.GetFiles(dp, "*." + Movie.Extension));
 				
 				//add states if requested
 				if (Global.Config.PlayMovie_ShowStateFiles)
@@ -315,7 +316,7 @@ namespace BizHawk.Client.EmuHawk
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 
 			filePaths
-				.Where(path => Path.GetExtension(path) == "." + Global.Config.MovieExtension)
+				.Where(path => Path.GetExtension(path) == "." + Movie.Extension)
 				.ToList()
 				.ForEach(path => AddMovieToList(path, force: true));
 
@@ -623,7 +624,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ofd = new OpenFileDialog
 			{
-				Filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*",
+				Filter = "Movie Files (*." + Movie.Extension + ")|*." + Movie.Extension + "|Savestates|*.state|All Files|*.*",
 				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null)
 			};
 

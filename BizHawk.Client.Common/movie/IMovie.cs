@@ -43,6 +43,11 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		int InputLogLength { get; }
 
+		/// <summary>
+		/// Returns the file extension for this implementation
+		/// </summary>
+		string PreferredExtension { get; }
+
 		IMovieHeader Header { get; }
 
 		#endregion

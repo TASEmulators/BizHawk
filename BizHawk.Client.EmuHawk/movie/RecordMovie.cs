@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (path[path.Length - 4] != '.') // If no file extension, add movie extension
 				{
-					path += "." + Global.Config.MovieExtension;
+					path += "." + Global.MovieSession.Movie.PreferredExtension;
 				}
 
 				return path;
@@ -169,11 +169,11 @@ namespace BizHawk.Client.EmuHawk
 			var sfd = new SaveFileDialog
 				{
 					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
-					DefaultExt = "." + Global.Config.MovieExtension,
+					DefaultExt = "." + Global.MovieSession.Movie.PreferredExtension,
 					FileName = RecordBox.Text,
 					OverwritePrompt = false
 				};
-			var filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
+			var filter = "Movie Files (*." + Global.MovieSession.Movie.PreferredExtension + ")|*." + Global.MovieSession.Movie.PreferredExtension + "|Savestates|*.state|All Files|*.*";
 			sfd.Filter = filter;
 
 			var result = sfd.ShowHawkDialog();

@@ -33,7 +33,8 @@ namespace BizHawk.Client.Common
 
 		public static bool IsValidMovieExtension(string ext)
 		{
-			if (ext.ToUpper() == "." + Global.Config.MovieExtension)
+			// Movies 2.0 TODO
+			if (ext.ToUpper() == "." + Global.MovieSession.Movie.PreferredExtension)
 			{
 				return true;
 			}
