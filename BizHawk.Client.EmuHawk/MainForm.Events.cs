@@ -1185,6 +1185,12 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.Load<PCETileViewer>();
 		}
 
+
+		private void PceSoundDebuggerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<PCESoundDebugger>();
+		}
+
 		private void CodeDataLoggerMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<PCECDL>();

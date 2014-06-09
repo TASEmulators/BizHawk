@@ -764,6 +764,12 @@
     <Compile Include="tools\PCE\PCECDL.Designer.cs">
       <DependentUpon>PCECDL.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\PCE\PCESoundDebugger.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\PCE\PCESoundDebugger.Designer.cs">
+      <DependentUpon>PCESoundDebugger.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\PCE\PCETileViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1237,6 +1243,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\PCE\PCECDL.resx">
       <DependentUpon>PCECDL.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\PCE\PCESoundDebugger.resx">
+      <DependentUpon>PCESoundDebugger.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\PCE\PCETileViewer.resx">
       <DependentUpon>PCETileViewer.cs</DependentUpon>
