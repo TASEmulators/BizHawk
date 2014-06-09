@@ -45,6 +45,7 @@
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.pictureBox5 = new BizHawk.Client.EmuHawk.MyViewportPanel();
 			this.CloseBtn = new System.Windows.Forms.Button();
+			this.btnBizBox = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.mom2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.mom1)).BeginInit();
@@ -197,12 +198,23 @@
 			this.CloseBtn.Click += new System.EventHandler(this.Close_Click);
 			this.CloseBtn.MouseEnter += new System.EventHandler(this.Close_MouseEnter);
 			// 
+			// btnBizBox
+			// 
+			this.btnBizBox.Location = new System.Drawing.Point(-4, -3);
+			this.btnBizBox.Name = "btnBizBox";
+			this.btnBizBox.Size = new System.Drawing.Size(75, 23);
+			this.btnBizBox.TabIndex = 19;
+			this.btnBizBox.Text = "BizBox";
+			this.btnBizBox.UseVisualStyleBackColor = true;
+			this.btnBizBox.Click += new System.EventHandler(this.btnBizBox_Click);
+			// 
 			// AboutBox
 			// 
 			this.AcceptButton = this.CloseBtn;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(511, 486);
+			this.ClientSize = new System.Drawing.Size(519, 497);
+			this.Controls.Add(this.btnBizBox);
 			this.Controls.Add(this.CloseBtn);
 			this.Controls.Add(this.pictureBox5);
 			this.Controls.Add(this.pictureBox1);
@@ -255,5 +267,6 @@
 		private System.Windows.Forms.PictureBox pictureBox3;
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.Button CloseBtn;
+		private System.Windows.Forms.Button btnBizBox;
 	}
 }
