@@ -69,17 +69,31 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 			ResetCounters();
 
-			CoreComm.ActivateGLContext(glContext);
+			ActivateGL();
 			Init(bios);
 
 			InputCallbackH = new LibYabause.InputCallback(() => CoreComm.InputCallback.Call());
 			LibYabause.libyabause_setinputcallback(InputCallbackH);
 			CoreComm.UsesDriveLed = true;
 
-			CoreComm.DeactivateGLContext();
+			DeactivateGL();
 		}
 
 		static object glContext;
+
+		void ActivateGL()
+		{
+			//if (!SyncSettings.UseGL) return; //not safe
+			if (glContext == null) return;
+			CoreComm.ActivateGLContext(glContext);
+		}
+
+		void DeactivateGL()
+		{
+			//if (!SyncSettings.UseGL) return; //not safe
+			if (glContext == null) return;
+			CoreComm.DeactivateGLContext();
+		}
 
 		void Init(byte[] bios)
 		{
@@ -197,7 +211,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		{
 			int w, h, nsamp;
 
-			CoreComm.ActivateGLContext(glContext);
+			ActivateGL();
 
 			LibYabause.Buttons1 p11 = (LibYabause.Buttons1)0xff;
 			LibYabause.Buttons2 p12 = (LibYabause.Buttons2)0xff;
@@ -279,7 +293,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 			//CheckStates();
 
-			CoreComm.DeactivateGLContext();
+			DeactivateGL();
 		}
 
 		public int Frame { get; private set; }
@@ -373,11 +387,11 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			fp.Offer(data);
 
 			//loadstate can trigger GL work
-			CoreComm.ActivateGLContext(glContext);
+			ActivateGL();
 
 			bool succeed = LibYabause.libyabause_loadstate(fp.GetPipeNameNative());
 
-			CoreComm.DeactivateGLContext();
+			DeactivateGL();
 
 			fp.Finish();
 			if (!succeed)
@@ -537,7 +551,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		{
 			if (!Disposed)
 			{
-				CoreComm.ActivateGLContext(glContext);
+				ActivateGL();
 				if (SaveRamModified)
 					DisposedSaveRam = ReadSaveRam();
 				LibYabause.libyabause_setvidbuff(IntPtr.Zero);
@@ -546,7 +560,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 				VideoHandle.Free();
 				SoundHandle.Free();
 				Disposed = true;
-				CoreComm.DeactivateGLContext();
+				DeactivateGL();
 			}
 		}
 
