@@ -1559,7 +1559,6 @@ namespace BizHawk.Client.EmuHawk
 			//        col = Color.White.ToArgb();
 			//      }
 			//    }
-					}
 
 			//    // make opaque
 			//    col |= unchecked((int)0xff000000);
