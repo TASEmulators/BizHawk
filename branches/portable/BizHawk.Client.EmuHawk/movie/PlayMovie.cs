@@ -621,11 +621,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BrowseMovies_Click(object sender, EventArgs e)
 		{
-			var ofd = new OpenFileDialog
-			{
-				Filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*",
-				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null)
-			};
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
+			ofd.Filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
 
 			var result = ofd.ShowHawkDialog();
 			if (result == DialogResult.OK)

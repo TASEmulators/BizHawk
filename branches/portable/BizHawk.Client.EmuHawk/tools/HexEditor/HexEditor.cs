@@ -1294,13 +1294,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadTableFileMenuItem_Click(object sender, EventArgs e)
 		{
-			var ofd = new OpenFileDialog
-			{
-				FileName = Path.GetFileNameWithoutExtension(Global.Config.RecentRoms.MostRecent) + ".tbl",
-				InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null)),
-				Filter = "Text Table files (*.tbl)|*.tbl|All Files|*.*",
-				RestoreDirectory = false
-			};
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
+			ofd.FileName = Path.GetFileNameWithoutExtension(Global.Config.RecentRoms.MostRecent) + ".tbl";
+			ofd.InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null));
+			ofd.Filter = "Text Table files (*.tbl)|*.tbl|All Files|*.*";
+			ofd.RestoreDirectory = false;
 
 			GlobalWin.Sound.StopSound();
 			var result = ofd.ShowDialog();

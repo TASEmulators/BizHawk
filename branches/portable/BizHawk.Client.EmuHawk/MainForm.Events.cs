@@ -394,28 +394,26 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ImportMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			var ofd = new OpenFileDialog
-			{
-				InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId),
-				Multiselect = true,
-				Filter = FormatFilter(
-					"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.ymv;*.zmv;",
-					"FCEUX", "*.fm2",
-					"PCEjin/Mednafen", "*.mc2;*.mcm",
-					"Dega", "*.mmv",
-					"Gens", "*.gmv",
-					"Visual Boy Advance", "*.vbm",
-					"LSNES", "*.lsmv",
-					"FCEU", "*.fcm",
-					"Famtasia", "*.fmv",
-					"VirtuaNES", "*.vmv",
-					"Nintendulator", "*.nmv",
-					"Snes9x", "*.smv",
-                    "Yabause", "*.ymv",
-					"ZSNES", "*.zmv",
-					"All Files", "*.*"),
-				RestoreDirectory = false
-			};
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
+			ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
+			ofd.Multiselect = true;
+			ofd.Filter = FormatFilter(
+				"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.ymv;*.zmv;",
+				"FCEUX", "*.fm2",
+				"PCEjin/Mednafen", "*.mc2;*.mcm",
+				"Dega", "*.mmv",
+				"Gens", "*.gmv",
+				"Visual Boy Advance", "*.vbm",
+				"LSNES", "*.lsmv",
+				"FCEU", "*.fcm",
+				"Famtasia", "*.fmv",
+				"VirtuaNES", "*.vmv",
+				"Nintendulator", "*.nmv",
+				"Snes9x", "*.smv",
+				"Yabause", "*.ymv",
+				"ZSNES", "*.zmv",
+				"All Files", "*.*");
+			ofd.RestoreDirectory = false;
 
 			var result = ofd.ShowHawkDialog();
 			if (result == DialogResult.OK)
