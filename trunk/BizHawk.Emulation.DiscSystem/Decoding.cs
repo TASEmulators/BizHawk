@@ -22,7 +22,9 @@ namespace BizHawk.Emulation.DiscSystem
 			return args.Select(s => s.Contains(" ") ? string.Format("\"{0}\"", s) : s).ToArray();
 		}
 
-		static readonly Regex rxHasAudio = new Regex(@"Stream \#(\d*\:\d*)\: Audio", RegexOptions.Compiled);
+		//note: accepts . or : in the stream stream/substream separator in the stream ID format, since that changed at some point in FFMPEG history
+		//if someone has a better idea how to make the determination of whether an audio stream is available, I'm all ears
+		static readonly Regex rxHasAudio = new Regex(@"Stream \#(\d*(\.|\:)\d*)\: Audio", RegexOptions.Compiled);
 		public AudioQueryResult QueryAudio(string path)
 		{
 			var ret = new AudioQueryResult();
