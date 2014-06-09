@@ -183,6 +183,11 @@ namespace BizHawk.Client.EmuHawk
 			CloseBtn.Location = new Point(width, height);
 			CloseBtn.BringToFront();
 		}
+
+		private void btnBizBox_Click(object sender, EventArgs e)
+		{
+			new BizBox().ShowDialog();
+		}
 	}
 
 	class MyViewportPanel : Control
