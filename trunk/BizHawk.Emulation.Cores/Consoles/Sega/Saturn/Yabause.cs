@@ -371,7 +371,14 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		{
 			var fp = new FilePiping();
 			fp.Offer(data);
+
+			//loadstate can trigger GL work
+			CoreComm.ActivateGLContext(glContext);
+
 			bool succeed = LibYabause.libyabause_loadstate(fp.GetPipeNameNative());
+
+			CoreComm.DeactivateGLContext();
+
 			fp.Finish();
 			if (!succeed)
 				throw new Exception("libyabause_loadstate() failed");
