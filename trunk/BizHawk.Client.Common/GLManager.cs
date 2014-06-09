@@ -76,10 +76,6 @@ namespace BizHawk.Client.Common
 		{
 			//this is here for future use and tracking purposes.. however.. instead of relying on this, we should just make sure we always activate what we need before we use it
 		}
-		
-			//    ret.RequestGLContext = () => new BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
-			//ret.ActivateGLContext = (gl) => ((BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK)gl).MakeDefaultCurrent();
-			//ret.DeactivateGLContext = () => GlobalWin.DisplayManager..
 
 		public class ContextRef
 		{
