@@ -223,7 +223,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputStrMovie()
 		{
-			var sb = new StringBuilder(Global.GetOutputControllersAsMnemonic());
+			var sb = new StringBuilder(Global.MovieSession.Movie.GetInput(Global.Emulator.Frame));
 			sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
 			return sb.ToString();
 		}
