@@ -111,7 +111,12 @@ namespace BizHawk.Client.EmuHawk
 				{
 					//System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch(); watch.Start();
 					var movie = PreLoadMovieFile(file, force);
+					if (movie == null)
+					{
+						return null;
+					}
 					//watch.Stop(); Console.WriteLine("[{0}] {1}",watch.ElapsedMilliseconds,Path.GetFileName(filename));
+					
 					lock (_movieList)
 					{
 						_movieList.Add(movie);
