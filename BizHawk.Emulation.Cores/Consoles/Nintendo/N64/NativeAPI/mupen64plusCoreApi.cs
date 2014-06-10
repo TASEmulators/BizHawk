@@ -80,7 +80,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			M64CMD_READ_SCREEN,
 			M64CMD_RESET,
 			M64CMD_ADVANCE_FRAME,
-			M64CMD_SET_VI_CALLBACK
+			M64CMD_SET_VI_CALLBACK,
+			M64CMD_SET_RENDER_CALLBACK
 		};
 
 		public enum m64p_emu_state
@@ -255,6 +256,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate m64p_error CoreDoCommandVICallback(m64p_command Command, int ParamInt, VICallback ParamPtr);
 		CoreDoCommandVICallback m64pCoreDoCommandVICallback;
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate m64p_error CoreDoCommandRenderCallback(m64p_command Command, int ParamInt, RenderCallback ParamPtr);
+		CoreDoCommandRenderCallback m64pCoreDoCommandRenderCallback;
 
 		// These are common for all four plugins
 
@@ -299,6 +303,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void VICallback();
 		VICallback m64pVICallback;
+
+		/// <summary>
+		/// This will be called every time before the screen is drawn
+		/// </summary>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void RenderCallback();
+		RenderCallback m64pRenderCallback;
 
 		/// <summary>
 		/// This will be called after the emulator is setup and is ready to be used
@@ -389,6 +400,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			result = m64pCoreDoCommandFrameCallback(m64p_command.M64CMD_SET_FRAME_CALLBACK, 0, m64pFrameCallback);
 			m64pVICallback = new VICallback(FireVIEvent);
 			result = m64pCoreDoCommandVICallback(m64p_command.M64CMD_SET_VI_CALLBACK, 0, m64pVICallback);
+			m64pRenderCallback = new RenderCallback(FireRenderEvent);
+			result = m64pCoreDoCommandRenderCallback(m64p_command.M64CMD_SET_RENDER_CALLBACK, 0, m64pRenderCallback);
 
 			// Prepare to start the emulator in a different thread
 			m64pEmulator = new Thread(ExecuteEmulator);
@@ -436,6 +449,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			m64pCoreDoCommandRefInt = (CoreDoCommandRefInt)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandRefInt));
 			m64pCoreDoCommandFrameCallback = (CoreDoCommandFrameCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandFrameCallback));
 			m64pCoreDoCommandVICallback = (CoreDoCommandVICallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandVICallback));
+			m64pCoreDoCommandRenderCallback = (CoreDoCommandRenderCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandRenderCallback));
 			m64pCoreAttachPlugin = (CoreAttachPlugin)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreAttachPlugin"), typeof(CoreAttachPlugin));
 			m64pCoreDetachPlugin = (CoreDetachPlugin)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDetachPlugin"), typeof(CoreDetachPlugin));
 			m64pConfigOpenSection = (ConfigOpenSection)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "ConfigOpenSection"), typeof(ConfigOpenSection));
@@ -665,6 +679,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 		public event Action FrameFinished;
 		public event Action VInterrupt;
+		public event Action BeforeRender;
 
 		private void FireFrameFinishedEvent()
 		{
@@ -679,6 +694,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			if (VInterrupt != null)
 				VInterrupt();
 			m64pFrameComplete.Set();
+		}
+
+		private void FireRenderEvent()
+		{
+			if (BeforeRender != null)
+				BeforeRender();
 		}
 
 		private void CompletedFrameCallback()
