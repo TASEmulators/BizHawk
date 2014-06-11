@@ -88,25 +88,12 @@ namespace BizHawk.Client.Common
 
 		public SubtitleList Subtitles
 		{
-			get { return Header.Subtitles; }
+			get { return (Header as MovieHeader).Subtitles; }
 		}
 
 		public IList<string> Comments
 		{
-			get { return Header.Comments; }
-		}
-
-		public string SyncSettingsJson
-		{
-			get
-			{
-				return Header[HeaderKeys.SYNCSETTINGS];
-			}
-
-			set
-			{
-				Header[HeaderKeys.SYNCSETTINGS] = value;
-			}
+			get { return (Header as MovieHeader).Comments; }
 		}
 
 		public string Filename { get; set; }
@@ -336,7 +323,7 @@ namespace BizHawk.Client.Common
 						string line;
 						while ((line = tr.ReadLine()) != null)
 							if (!Header.ParseLineFromFile(line))
-								Header.Comments.Add(line);
+								(Header as MovieHeader).Comments.Add(line);
 					});
 				bl.GetLump(BinaryStateLump.Input, true,
 					delegate(TextReader tr)

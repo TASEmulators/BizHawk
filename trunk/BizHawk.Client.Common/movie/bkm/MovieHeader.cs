@@ -33,24 +33,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string SyncSettingsJson
-		{
-			get
-			{
-				if (ContainsKey(HeaderKeys.SYNCSETTINGS))
-				{
-					return this[HeaderKeys.SYNCSETTINGS];
-				}
-
-				return string.Empty;
-			}
-
-			set
-			{
-				this[HeaderKeys.SYNCSETTINGS] = value;
-			}
-		}
-
 		public ulong Rerecords
 		{
 			get
