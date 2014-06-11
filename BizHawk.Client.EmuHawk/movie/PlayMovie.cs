@@ -125,8 +125,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private IMovie PreLoadMovieFile(HawkFile hf, bool force)
 		{
-			// Movies 2.0 TODO: don't cast and find a way to load this stuff with only IMovie!
-			var movie = (MovieLoader.Load(hf.CanonicalFullPath) as Movie);
+			var movie = MovieService.Get(hf.CanonicalFullPath);
 
 			try
 			{
@@ -188,10 +187,12 @@ namespace BizHawk.Client.EmuHawk
 			var tas = new List<int>();
 			for (var i = 0; i < indices.Count; i++)
 			{
-				// Movies 2.0 TODO: MovieLoader could have a list of valid extensiosn to match
-				if (Path.GetExtension(_movieList[indices[i]].Filename).ToUpper() == "." + Movie.Extension)
+				foreach (var ext in MovieService.MovieExtensions)
 				{
-					tas.Add(i);
+					if (Path.GetExtension(_movieList[indices[i]].Filename).ToUpper() == "." + ext)
+					{
+						tas.Add(i);
+					}
 				}
 			}
 
@@ -296,9 +297,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-			// Movies 2.0 TODO: MovieLoader could have a list of valid extensiosn to match
 			filePaths
-				.Where(path => Path.GetExtension(path) == "." + Movie.Extension)
+				.Where(path => MovieService.MovieExtensions.Contains(Path.GetExtension(path).Replace(".", "")))
 				.ToList()
 				.ForEach(path => AddMovieToList(path, force: true));
 
@@ -607,8 +607,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ofd = new OpenFileDialog
 			{
-				// Movies 2.0 TODO
-				Filter = "Movie Files (*." + Movie.Extension + ")|*." + Movie.Extension + "|Savestates|*.state|All Files|*.*",
+				// Movies 2.0 TODO - add tasproj in addition to default, hardcoded is fine in this case
+				Filter = "Movie Files (*." + Movie.Extension + ")|*." + MovieService.DefaultExtension + "|All Files|*.*",
 				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null)
 			};
 

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -68,6 +70,11 @@ namespace BizHawk.Client.Common
 		}
 
 		#region IMovie Implementation
+
+		public bool PreLoadText(HawkFile hawkFile)
+		{
+			throw new NotImplementedException();
+		}
 
 		public TasMovie(string filename, bool startsFromSavestate = false)
 			: this(startsFromSavestate)

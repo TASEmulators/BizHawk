@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BizHawk.Client.Common
 {
-	public static class MovieLoader
+	public static class MovieService
 	{
 		public static IMovie Load(string path)
 		{

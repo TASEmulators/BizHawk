@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -64,6 +65,8 @@ namespace BizHawk.Client.Common
 		string GameName { get; set; }
 		string SystemID { get; set; }
 		string Hash { get; set; }
+		bool PreLoadText(HawkFile hawkFile); // Movies 2.0 TODO: find a better way to not need this
+
 		#endregion
 
 		#region File Handling API
