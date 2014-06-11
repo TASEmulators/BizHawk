@@ -31,11 +31,6 @@ tma_(0),
 tac_(0)
 {}
 
-void Tima::saveState(SaveState &state) const {
-	state.mem.timaLastUpdate = lastUpdate_;
-	state.mem.tmatime = tmatime_;
-}
-
 void Tima::loadState(const SaveState &state, const TimaInterruptRequester timaIrq) {
 	lastUpdate_ = state.mem.timaLastUpdate;
 	tmatime_ = state.mem.tmatime;

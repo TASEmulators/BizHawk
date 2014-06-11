@@ -90,17 +90,6 @@ void Rtc::doSwapActive() {
 	}
 }
 
-void Rtc::saveState(SaveState &state) const {
-	state.rtc.baseTime = baseTime;
-	state.rtc.haltTime = haltTime;
-	state.rtc.dataDh = dataDh;
-	state.rtc.dataDl = dataDl;
-	state.rtc.dataH = dataH;
-	state.rtc.dataM = dataM;
-	state.rtc.dataS = dataS;
-	state.rtc.lastLatchData = lastLatchData;
-}
-
 void Rtc::loadState(const SaveState &state) {
 	baseTime = state.rtc.baseTime;
 	haltTime = state.rtc.haltTime;

@@ -78,11 +78,6 @@ void LengthCounter::init(const bool cgb) {
 	this->cgb = cgb;
 }
 
-void LengthCounter::saveState(SaveState::SPU::LCounter &lstate) const {
-	lstate.counter = counter;
-	lstate.lengthCounter = lengthCounter;
-}
-
 void LengthCounter::loadState(const SaveState::SPU::LCounter &lstate, const unsigned long cc) {
 	counter = std::max(lstate.counter, cc);
 	lengthCounter = lstate.lengthCounter;

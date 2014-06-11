@@ -85,10 +85,6 @@ void LycIrq::loadState(const SaveState &state) {
 	statReg_ = statRegSrc_;
 }
 
-void LycIrq::saveState(SaveState &state) const {
-	state.ppu.lyc = lycReg_;
-}
-
 void LycIrq::reschedule(const LyCounter & lyCounter, const unsigned long cc) {
 	time_ = std::min(schedule(statReg_   , lycReg_   , lyCounter, cc),
 	                 schedule(statRegSrc_, lycRegSrc_, lyCounter, cc));

@@ -40,7 +40,6 @@ public:
 	void nr4Change(unsigned oldNr4, unsigned newNr4, unsigned long cc);
 // 	void reset();
 	void init(bool cgb);
-	void saveState(SaveState::SPU::LCounter &lstate) const;
 	void loadState(const SaveState::SPU::LCounter &lstate, unsigned long cc);
 
 	template<bool isReader>void SyncState(NewState *ns);

@@ -87,7 +87,6 @@ public:
 	const char * romTitle() const { return cart.romTitle(); }
 
 	void setStatePtrs(SaveState &state);
-	unsigned long saveState(SaveState &state, unsigned long cc);
 	void loadState(const SaveState &state/*, unsigned long oldCc*/);
 	void loadSavedata(const char *data) { cart.loadSavedata(data); }
 	int saveSavedataLength() {return cart.saveSavedataLength(); }
