@@ -40,6 +40,11 @@ namespace BizHawk.Client.Common
 		public string PreferredExtension { get { return "bk2"; } }
 		public bool IsCountingRerecords { get; set; }
 
+		public bool PreLoadText(HawkFile hawkFile)
+		{
+			throw new NotImplementedException();
+		}
+
 		public SubtitleList Subtitles
 		{
 			get { throw new NotImplementedException(); }

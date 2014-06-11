@@ -2192,7 +2192,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (MovieSession.IsValidMovieExtension(ext))
 			{
-				StartNewMovie(MovieLoader.Load(filePaths[0]), false);
+				StartNewMovie(MovieService.Get(filePaths[0]), false);
 			}
 			else if (ext.ToUpper() == ".STATE")
 			{
@@ -2232,7 +2232,7 @@ namespace BizHawk.Client.EmuHawk
 				string errorMsg;
 				string warningMsg;
 				var movie = MovieImport.ImportFile(filePaths[0], out errorMsg, out warningMsg);
-				if (!String.IsNullOrEmpty(errorMsg))
+				if (!string.IsNullOrEmpty(errorMsg))
 				{
 					MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}

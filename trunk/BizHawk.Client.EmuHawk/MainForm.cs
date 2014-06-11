@@ -265,7 +265,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var movie = MovieLoader.Load(cmdMovie);
+					var movie = MovieService.Get(cmdMovie);
 					Global.MovieSession.ReadOnly = true;
 
 					// if user is dumping and didnt supply dump length, make it as long as the loaded movie
@@ -286,7 +286,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					StartNewMovie(MovieLoader.Load(Global.Config.RecentMovies.MostRecent), false);
+					StartNewMovie(MovieService.Get(Global.Config.RecentMovies.MostRecent), false);
 				}
 			}
 
@@ -1439,7 +1439,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadMoviesFromRecent(string path)
 		{
-			var movie = MovieLoader.Load(path);
+			var movie = MovieService.Get(path);
 
 			// Movies 2.0 TODO
 			if (!(movie as Movie).Loaded)
