@@ -37,7 +37,6 @@ namespace BizHawk.Client.EmuHawk
 		private void PlayMovie_Load(object sender, EventArgs e)
 		{
 			IncludeSubDirectories.Checked = Global.Config.PlayMovie_IncludeSubdir;
-			ShowStateFiles.Checked = Global.Config.PlayMovie_ShowStateFiles;
 			MatchHashCheckBox.Checked = Global.Config.PlayMovie_MatchHash;
 			ScanFiles();
 			PreHighlightMovie();
@@ -280,10 +279,6 @@ namespace BizHawk.Client.EmuHawk
 
 				//add movies
 				fpTodo.AddRange(Directory.GetFiles(dp, "*." + Movie.Extension));
-				
-				//add states if requested
-				if (Global.Config.PlayMovie_ShowStateFiles)
-					fpTodo.AddRange(Directory.GetFiles(dp, "*.state"));
 			}
 
 			//in parallel, scan each movie
@@ -680,13 +675,6 @@ namespace BizHawk.Client.EmuHawk
 		private void IncludeSubDirectories_CheckedChanged(object sender, EventArgs e)
 		{
 			Global.Config.PlayMovie_IncludeSubdir = IncludeSubDirectories.Checked;
-			ScanFiles();
-			PreHighlightMovie();
-		}
-
-		private void ShowStateFiles_CheckedChanged(object sender, EventArgs e)
-		{
-			Global.Config.PlayMovie_ShowStateFiles = ShowStateFiles.Checked;
 			ScanFiles();
 			PreHighlightMovie();
 		}
