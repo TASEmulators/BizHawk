@@ -63,7 +63,7 @@ namespace BizHawk.Client.Common
 		bool StartsFromSavestate { get; set; }
 		string GameName { get; set; }
 		string SystemID { get; set; }
-
+		string Hash { get; set; }
 		#endregion
 
 		#region File Handling API

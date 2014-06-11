@@ -47,12 +47,12 @@ namespace BizHawk.Client.Common
 
 		public SubtitleList Subtitles
 		{
-			get { return (Header as MovieHeader).Subtitles; }
+			get { return Header.Subtitles; }
 		}
 
 		public IList<string> Comments
 		{
-			get { return (Header as MovieHeader).Comments; }
+			get { return Header.Comments; }
 		}
 
 		public string SyncSettingsJson
@@ -72,12 +72,12 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return (Header as MovieHeader).SavestateBinaryBase64Blob;
+				return Header.SavestateBinaryBase64Blob;
 			}
 
 			set
 			{
-				(Header as MovieHeader).SavestateBinaryBase64Blob = value;
+				Header.SavestateBinaryBase64Blob = value;
 			}
 		}
 
@@ -85,12 +85,12 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return (Header as MovieHeader).Rerecords;
+				return Header.Rerecords;
 			}
 
 			set
 			{
-				(Header as MovieHeader).Rerecords = value;
+				Header.Rerecords = value;
 			}
 		}
 
@@ -98,12 +98,12 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return (Header as MovieHeader).StartsFromSavestate;
+				return Header.StartsFromSavestate;
 			}
 
 			set
 			{
-				(Header as MovieHeader).StartsFromSavestate = value;
+				Header.StartsFromSavestate = value;
 			}
 		}
 
@@ -111,12 +111,12 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return (Header as MovieHeader).GameName;
+				return Header.GameName;
 			}
 
 			set
 			{
-				(Header as MovieHeader).GameName = value;
+				Header.GameName = value;
 			}
 		}
 
@@ -124,12 +124,25 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return (Header as MovieHeader).SystemID;
+				return Header.SystemID;
 			}
 
 			set
 			{
-				(Header as MovieHeader).SystemID = value;
+				Header.SystemID = value;
+			}
+		}
+
+		public string Hash
+		{
+			get
+			{
+				return Header[HeaderKeys.SHA1];
+			}
+
+			set
+			{
+				Header[HeaderKeys.SHA1] = value;
 			}
 		}
 
@@ -420,8 +433,11 @@ namespace BizHawk.Client.Common
 					line = sbLine.ToString();
 
 					if (string.IsNullOrWhiteSpace(line) || Header.ParseLineFromFile(line))
+					{
 						continue;
-					(Header as MovieHeader).Comments.Add(line);
+					}
+
+					Header.Comments.Add(line);
 				}
 			}
 
@@ -475,7 +491,7 @@ namespace BizHawk.Client.Common
 					}
 					else
 					{
-						(Header as MovieHeader).Comments.Add(line);
+						Header.Comments.Add(line);
 					}
 				}
 			}
