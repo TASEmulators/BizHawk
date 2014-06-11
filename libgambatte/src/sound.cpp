@@ -70,13 +70,6 @@ void PSG::setStatePtrs(SaveState &state) {
 	ch3.setStatePtrs(state);
 }
 
-void PSG::saveState(SaveState &state) {
-	ch1.saveState(state);
-	ch2.saveState(state);
-	ch3.saveState(state);
-	ch4.saveState(state);
-}
-
 void PSG::loadState(const SaveState &state) {
 	ch1.loadState(state);
 	ch2.loadState(state);

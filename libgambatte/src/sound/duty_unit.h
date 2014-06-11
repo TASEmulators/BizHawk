@@ -46,7 +46,6 @@ public:
 	void nr3Change(unsigned newNr3, unsigned long cc);
 	void nr4Change(unsigned newNr4, unsigned long cc);
 	void reset();
-	void saveState(SaveState::SPU::Duty &dstate, unsigned long cc);
 	void loadState(const SaveState::SPU::Duty &dstate, unsigned nr1, unsigned nr4, unsigned long cc);
 	void resetCounters(unsigned long oldCc);
 	void killCounter();

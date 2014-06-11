@@ -105,16 +105,6 @@ void LCD::setStatePtrs(SaveState &state) {
 	ppu.setStatePtrs(state);
 }
 
-void LCD::saveState(SaveState &state) const {
-	state.mem.hdmaTransfer = hdmaIsEnabled();
-	state.ppu.nextM0Irq = eventTimes_(MODE0_IRQ) - ppu.now();
-	state.ppu.pendingLcdstatIrq = eventTimes_(ONESHOT_LCDSTATIRQ) != DISABLED_TIME;
-	
-	lycIrq.saveState(state);
-	m0Irq_.saveState(state);
-	ppu.saveState(state);
-}
-
 void LCD::loadState(const SaveState &state, const unsigned char *const oamram) {
 	statReg = state.mem.ioamhram.get()[0x141];
 	m2IrqStatReg_ = statReg;
