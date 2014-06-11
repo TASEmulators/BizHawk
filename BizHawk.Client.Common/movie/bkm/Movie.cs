@@ -47,12 +47,12 @@ namespace BizHawk.Client.Common
 
 		public SubtitleList Subtitles
 		{
-			get { return Header.Subtitles; }
+			get { return (Header as MovieHeader).Subtitles; }
 		}
 
 		public IList<string> Comments
 		{
-			get { return Header.Comments; }
+			get { return (Header as MovieHeader).Comments; }
 		}
 
 		public string SyncSettingsJson
@@ -356,7 +356,7 @@ namespace BizHawk.Client.Common
 
 					if (string.IsNullOrWhiteSpace(line) || Header.ParseLineFromFile(line))
 						continue;
-					Header.Comments.Add(line);
+					(Header as MovieHeader).Comments.Add(line);
 				}
 			}
 
@@ -410,7 +410,7 @@ namespace BizHawk.Client.Common
 					}
 					else
 					{
-						Header.Comments.Add(line);
+						(Header as MovieHeader).Comments.Add(line);
 					}
 				}
 			}

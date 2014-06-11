@@ -7,16 +7,6 @@ namespace BizHawk.Client.Common
 {
 	public class MovieHeader2 : IMovieHeader
 	{
-		public SubtitleList Subtitles
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-		public List<string> Comments
-		{
-			get { throw new NotImplementedException(); }
-		}
-
 		public ulong Rerecords
 		{
 			get
@@ -66,18 +56,6 @@ namespace BizHawk.Client.Common
 		}
 
 		public string SystemID
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-			set
-			{
-				throw new NotImplementedException();
-			}
-		}
-
-		public string SyncSettingsJson
 		{
 			get
 			{
@@ -180,5 +158,19 @@ namespace BizHawk.Client.Common
 		{
 			throw new NotImplementedException();
 		}
+
+		#region Won't implement
+
+		public SubtitleList Subtitles
+		{
+			get { throw new NotImplementedException(); }
+		}
+
+		public List<string> Comments
+		{
+			get { throw new NotImplementedException(); }
+		}
+
+		#endregion
 	}
 }
