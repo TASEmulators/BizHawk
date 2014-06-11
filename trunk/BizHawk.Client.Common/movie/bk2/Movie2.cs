@@ -21,15 +21,14 @@ namespace BizHawk.Client.Common
 		public Movie2(string filename, bool startsFromSavestate = false)
 			: this(startsFromSavestate)
 		{
-			Header.Rerecords = 0;
+			Rerecords = 0;
 			Filename = filename;
 		}
 
 		public Movie2(bool startsFromSavestate = false)
 		{
-			Header = new MovieHeader2();
 			Filename = string.Empty;
-			Header.StartsFromSavestate = startsFromSavestate;
+			StartsFromSavestate = startsFromSavestate;
 			
 			IsCountingRerecords = true;
 			_mode = Moviemode.Inactive;
@@ -39,9 +38,8 @@ namespace BizHawk.Client.Common
 		#region Implementation
 
 		public string PreferredExtension { get { return "bk2"; } }
-
 		public bool IsCountingRerecords { get; set; }
-		public IMovieHeader Header { get; private set; }
+
 		public SubtitleList Subtitles
 		{
 			get { throw new NotImplementedException(); }
@@ -66,6 +64,58 @@ namespace BizHawk.Client.Common
 		}
 
 		public string SavestateBinaryBase64Blob
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+
+			set
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		public ulong Rerecords
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+
+			set
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		public bool StartsFromSavestate
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+
+			set
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		public string GameName
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+
+			set
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		public string SystemID
 		{
 			get
 			{

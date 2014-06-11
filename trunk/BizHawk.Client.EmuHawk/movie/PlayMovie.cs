@@ -53,12 +53,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (column == 1) // System
 			{
-				text = _movieList[index].Header.SystemID;
+				text = _movieList[index].SystemID;
 			}
 
 			if (column == 2) // Game
 			{
-				text = _movieList[index].Header.GameName;
+				text = _movieList[index].GameName;
 			}
 
 			if (column == 3) // Time
@@ -188,7 +188,7 @@ namespace BizHawk.Client.EmuHawk
 			// Pull out matching names
 			for (var i = 0; i < _movieList.Count; i++)
 			{
-				if (PathManager.FilesystemSafeName(Global.Game) == _movieList[i].Header.GameName)
+				if (PathManager.FilesystemSafeName(Global.Game) == _movieList[i].GameName)
 				{
 					indices.Add(i);
 				}
@@ -340,8 +340,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						copyStr
 							.Append(_movieList[index].Filename).Append('\t')
-							.Append(_movieList[index].Header.SystemID).Append('\t')
-							.Append(_movieList[index].Header.GameName).Append('\t')
+							.Append(_movieList[index].SystemID).Append('\t')
+							.Append(_movieList[index].GameName).Append('\t')
 							.Append(_movieList[index].Time.ToString(@"hh\:mm\:ss\.fff"))
 							.AppendLine();
 
@@ -372,8 +372,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						_movieList = _movieList
 							.OrderByDescending(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.Header.SystemID)
-							.ThenBy(x => x.Header.GameName)
+							.ThenBy(x => x.SystemID)
+							.ThenBy(x => x.GameName)
 							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
@@ -381,8 +381,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						_movieList = _movieList
 							.OrderBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.Header.SystemID)
-							.ThenBy(x => x.Header.GameName)
+							.ThenBy(x => x.SystemID)
+							.ThenBy(x => x.GameName)
 							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
@@ -391,18 +391,18 @@ namespace BizHawk.Client.EmuHawk
 					if (_sortReverse)
 					{
 						_movieList = _movieList
-							.OrderByDescending(x => x.Header.SystemID)
+							.OrderByDescending(x => x.SystemID)
 							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.Header.GameName)
+							.ThenBy(x => x.GameName)
 							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
 					else
 					{
 						_movieList = _movieList
-							.OrderBy(x => x.Header.SystemID)
+							.OrderBy(x => x.SystemID)
 							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.Header.GameName)
+							.ThenBy(x => x.GameName)
 							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
@@ -411,18 +411,18 @@ namespace BizHawk.Client.EmuHawk
 					if (_sortReverse)
 					{
 						_movieList = _movieList
-							.OrderByDescending(x => x.Header.GameName)
+							.OrderByDescending(x => x.GameName)
 							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.Header.SystemID)
+							.ThenBy(x => x.SystemID)
 							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
 					else
 					{
 						_movieList = _movieList
-							.OrderBy(x => x.Header.GameName)
+							.OrderBy(x => x.GameName)
 							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.Header.SystemID)
+							.ThenBy(x => x.SystemID)
 							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
@@ -433,7 +433,7 @@ namespace BizHawk.Client.EmuHawk
 						_movieList = _movieList
 							.OrderByDescending(x => x.FrameCount)
 							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.Header.SystemID)
+							.ThenBy(x => x.SystemID)
 							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
@@ -442,8 +442,8 @@ namespace BizHawk.Client.EmuHawk
 						_movieList = _movieList
 							.OrderBy(x => x.FrameCount)
 							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.Header.SystemID)
-							.ThenBy(x => x.Header.GameName)
+							.ThenBy(x => x.SystemID)
+							.ThenBy(x => x.GameName)
 							.ToList();
 					}
 					break;
@@ -469,7 +469,8 @@ namespace BizHawk.Client.EmuHawk
 			var firstIndex = MovieView.SelectedIndices[0];
 			MovieView.ensureVisible(firstIndex);
 
-			foreach (var kvp in _movieList[firstIndex].Header)
+			// Movies 2.0 TODO - what responsibility should a mvoie implementation have here?
+			foreach (var kvp in (_movieList[firstIndex] as Movie).Header)
 			{
 				var item = new ListViewItem(kvp.Key);
 				item.SubItems.Add(kvp.Value);

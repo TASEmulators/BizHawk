@@ -3,7 +3,7 @@ using System.Text;
 
 namespace BizHawk.Client.Common
 {
-	public class MovieHeader : Dictionary<string, string>, IMovieHeader
+	public class MovieHeader : Dictionary<string, string>
 	{
 		public MovieHeader()
 		{

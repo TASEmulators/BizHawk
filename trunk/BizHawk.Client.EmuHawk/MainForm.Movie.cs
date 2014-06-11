@@ -41,11 +41,13 @@ namespace BizHawk.Client.EmuHawk
 				if (!record && Global.Emulator.SystemId == "NES") // For NES we need special logic since the movie will drive which core to load
 				{
 					// If either is specified use that, else use whatever is currently set
-					if (Global.MovieSession.Movie.Header[HeaderKeys.CORE] == quicknesName)
+					// Movies 2.0 TODO
+					if ((Global.MovieSession.Movie as Movie).Header[HeaderKeys.CORE] == quicknesName)
 					{
 						Global.Config.NES_InQuickNES = true;
 					}
-					else if (Global.MovieSession.Movie.Header[HeaderKeys.CORE] == neshawkName)
+					// Movies 2.0 TODO
+					else if ((Global.MovieSession.Movie as Movie).Header[HeaderKeys.CORE] == neshawkName)
 					{
 						Global.Config.NES_InQuickNES = false;
 					}
@@ -75,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.RecentMovies.Add(movie.Filename);
 			}
 
-			if (Global.MovieSession.Movie.Header.StartsFromSavestate)
+			if (Global.MovieSession.Movie.StartsFromSavestate)
 			{
 				var state = Convert.FromBase64String(Global.MovieSession.Movie.SavestateBinaryBase64Blob);
 				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(state)));
@@ -155,7 +157,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				LoadRom(CurrentlyOpenRom);
-				if (Global.MovieSession.Movie.Header.StartsFromSavestate)
+				if (Global.MovieSession.Movie.StartsFromSavestate)
 				{
 					var state = Convert.FromBase64String(Global.MovieSession.Movie.SavestateBinaryBase64Blob);
 					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(state)));

@@ -123,7 +123,7 @@ namespace BizHawk.Client.Common
 		)]
 		public static string RerecordCount()
 		{
-			return Global.MovieSession.Movie.Header.Rerecords.ToString();
+			return Global.MovieSession.Movie.Rerecords.ToString();
 		}
 
 		[LuaMethodAttributes(
