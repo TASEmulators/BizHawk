@@ -14,7 +14,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PlayMovie : Form
 	{
-		// Movies 2.0 TODO: this is hopelessly Movie.cs specific, make it generic, 
 		private List<IMovie> _movieList = new List<IMovie>();
 		private bool _sortReverse;
 		private string _sortedCol;
@@ -446,8 +445,7 @@ namespace BizHawk.Client.EmuHawk
 			var firstIndex = MovieView.SelectedIndices[0];
 			MovieView.ensureVisible(firstIndex);
 
-			// Movies 2.0 TODO - what responsibility should a mvoie implementation have here?
-			foreach (var kvp in (_movieList[firstIndex] as Movie).Header)
+			foreach (var kvp in _movieList[firstIndex].HeaderEntries)
 			{
 				var item = new ListViewItem(kvp.Key);
 				item.SubItems.Add(kvp.Value);

@@ -146,6 +146,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public IDictionary<string, string> HeaderEntries
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+		}
+
 		public bool IsActive
 		{
 			get { return _mode != Moviemode.Inactive; }

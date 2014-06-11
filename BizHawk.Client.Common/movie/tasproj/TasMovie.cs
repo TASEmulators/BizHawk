@@ -71,11 +71,6 @@ namespace BizHawk.Client.Common
 
 		#region IMovie Implementation
 
-		public bool PreLoadText(HawkFile hawkFile)
-		{
-			throw new NotImplementedException();
-		}
-
 		public TasMovie(string filename, bool startsFromSavestate = false)
 			: this(startsFromSavestate)
 		{
@@ -191,6 +186,19 @@ namespace BizHawk.Client.Common
 			set
 			{
 				Header[HeaderKeys.SHA1] = value;
+			}
+		}
+
+		public bool PreLoadText(HawkFile hawkFile)
+		{
+			throw new NotImplementedException();
+		}
+
+		public IDictionary<string, string> HeaderEntries
+		{
+			get
+			{
+				return Header;
 			}
 		}
 

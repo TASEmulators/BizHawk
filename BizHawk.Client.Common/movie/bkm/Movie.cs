@@ -146,6 +146,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public IDictionary<string, string> HeaderEntries
+		{
+			get
+			{
+				return Header;
+			}
+		}
+
 		public string PreferredExtension { get { return "bkm"; } }
 
 		// Movies 2.0 TODO: delete me
