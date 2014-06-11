@@ -42,7 +42,6 @@
 			this.MovieCount = new System.Windows.Forms.Label();
 			this.ReadOnlyCheckBox = new System.Windows.Forms.CheckBox();
 			this.IncludeSubDirectories = new System.Windows.Forms.CheckBox();
-			this.ShowStateFiles = new System.Windows.Forms.CheckBox();
 			this.Scan = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.MatchHashCheckBox = new System.Windows.Forms.CheckBox();
@@ -85,7 +84,7 @@
 			// 
 			this.BrowseMovies.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.BrowseMovies.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
-			this.BrowseMovies.Location = new System.Drawing.Point(12, 337);
+			this.BrowseMovies.Location = new System.Drawing.Point(12, 353);
 			this.BrowseMovies.Name = "BrowseMovies";
 			this.BrowseMovies.Size = new System.Drawing.Size(31, 23);
 			this.BrowseMovies.TabIndex = 25;
@@ -106,7 +105,7 @@
 			this.DetailsView.HideSelection = false;
 			this.DetailsView.Location = new System.Drawing.Point(15, 19);
 			this.DetailsView.Name = "DetailsView";
-			this.DetailsView.Size = new System.Drawing.Size(228, 242);
+			this.DetailsView.Size = new System.Drawing.Size(228, 261);
 			this.DetailsView.TabIndex = 10;
 			this.toolTip1.SetToolTip(this.DetailsView, "Contains the header information for the selected movie");
 			this.DetailsView.UseCompatibleStateImageBehavior = false;
@@ -132,7 +131,7 @@
 			this.groupBox1.Controls.Add(this.DetailsView);
 			this.groupBox1.Location = new System.Drawing.Point(503, 28);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(259, 303);
+			this.groupBox1.Size = new System.Drawing.Size(259, 322);
 			this.groupBox1.TabIndex = 6;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Details";
@@ -141,7 +140,7 @@
 			// 
 			this.SubtitlesBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.SubtitlesBtn.Enabled = false;
-			this.SubtitlesBtn.Location = new System.Drawing.Point(125, 267);
+			this.SubtitlesBtn.Location = new System.Drawing.Point(125, 286);
 			this.SubtitlesBtn.Name = "SubtitlesBtn";
 			this.SubtitlesBtn.Size = new System.Drawing.Size(75, 23);
 			this.SubtitlesBtn.TabIndex = 20;
@@ -153,7 +152,7 @@
 			// 
 			this.CommentsBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.CommentsBtn.Enabled = false;
-			this.CommentsBtn.Location = new System.Drawing.Point(15, 267);
+			this.CommentsBtn.Location = new System.Drawing.Point(15, 286);
 			this.CommentsBtn.Name = "CommentsBtn";
 			this.CommentsBtn.Size = new System.Drawing.Size(75, 23);
 			this.CommentsBtn.TabIndex = 15;
@@ -187,7 +186,7 @@
 			// 
 			this.IncludeSubDirectories.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.IncludeSubDirectories.AutoSize = true;
-			this.IncludeSubDirectories.Location = new System.Drawing.Point(123, 337);
+			this.IncludeSubDirectories.Location = new System.Drawing.Point(257, 356);
 			this.IncludeSubDirectories.Name = "IncludeSubDirectories";
 			this.IncludeSubDirectories.Size = new System.Drawing.Size(131, 17);
 			this.IncludeSubDirectories.TabIndex = 35;
@@ -195,23 +194,11 @@
 			this.IncludeSubDirectories.UseVisualStyleBackColor = true;
 			this.IncludeSubDirectories.CheckedChanged += new System.EventHandler(this.IncludeSubDirectories_CheckedChanged);
 			// 
-			// ShowStateFiles
-			// 
-			this.ShowStateFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.ShowStateFiles.AutoSize = true;
-			this.ShowStateFiles.Location = new System.Drawing.Point(123, 358);
-			this.ShowStateFiles.Name = "ShowStateFiles";
-			this.ShowStateFiles.Size = new System.Drawing.Size(128, 17);
-			this.ShowStateFiles.TabIndex = 40;
-			this.ShowStateFiles.Text = "Show valid .state files";
-			this.ShowStateFiles.UseVisualStyleBackColor = true;
-			this.ShowStateFiles.CheckedChanged += new System.EventHandler(this.ShowStateFiles_CheckedChanged);
-			// 
 			// Scan
 			// 
 			this.Scan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.Scan.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Scan;
-			this.Scan.Location = new System.Drawing.Point(49, 337);
+			this.Scan.Location = new System.Drawing.Point(49, 353);
 			this.Scan.Name = "Scan";
 			this.Scan.Size = new System.Drawing.Size(27, 23);
 			this.Scan.TabIndex = 30;
@@ -223,7 +210,7 @@
 			// 
 			this.MatchHashCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.MatchHashCheckBox.AutoSize = true;
-			this.MatchHashCheckBox.Location = new System.Drawing.Point(260, 337);
+			this.MatchHashCheckBox.Location = new System.Drawing.Point(104, 356);
 			this.MatchHashCheckBox.Name = "MatchHashCheckBox";
 			this.MatchHashCheckBox.Size = new System.Drawing.Size(147, 17);
 			this.MatchHashCheckBox.TabIndex = 56;
@@ -268,7 +255,7 @@
 			this.MovieView.Name = "MovieView";
 			this.MovieView.SelectAllInProgress = false;
 			this.MovieView.selectedItem = -1;
-			this.MovieView.Size = new System.Drawing.Size(480, 303);
+			this.MovieView.Size = new System.Drawing.Size(480, 322);
 			this.MovieView.TabIndex = 5;
 			this.MovieView.UseCompatibleStateImageBehavior = false;
 			this.MovieView.View = System.Windows.Forms.View.Details;
@@ -308,7 +295,6 @@
 			this.ClientSize = new System.Drawing.Size(774, 387);
 			this.Controls.Add(this.MatchHashCheckBox);
 			this.Controls.Add(this.Scan);
-			this.Controls.Add(this.ShowStateFiles);
 			this.Controls.Add(this.IncludeSubDirectories);
 			this.Controls.Add(this.ReadOnlyCheckBox);
 			this.Controls.Add(this.MovieCount);
@@ -351,7 +337,6 @@
 		private System.Windows.Forms.Label MovieCount;
 		private System.Windows.Forms.CheckBox ReadOnlyCheckBox;
 		private System.Windows.Forms.CheckBox IncludeSubDirectories;
-		private System.Windows.Forms.CheckBox ShowStateFiles;
 		private System.Windows.Forms.Button Scan;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.CheckBox MatchHashCheckBox;
