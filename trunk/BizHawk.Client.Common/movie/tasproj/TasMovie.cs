@@ -96,6 +96,19 @@ namespace BizHawk.Client.Common
 			get { return (Header as MovieHeader).Comments; }
 		}
 
+		public string SyncSettingsJson
+		{
+			get
+			{
+				return Header[HeaderKeys.SYNCSETTINGS];
+			}
+
+			set
+			{
+				Header[HeaderKeys.SYNCSETTINGS] = value;
+			}
+		}
+
 		public string Filename { get; set; }
 
 		public IMovieHeader Header { get; private set; }
