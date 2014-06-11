@@ -145,16 +145,17 @@ namespace BizHawk.Client.EmuHawk
 			return null;
 		}
 
-		private Movie PreLoadMovieFile(HawkFile hf, bool force)
+		private IMovie PreLoadMovieFile(HawkFile hf, bool force)
 		{
-			var movie = new Movie(hf.CanonicalFullPath);
+			// Movies 2.0 TODO: don't cast and find a way to load this stuff with only IMovie!
+			var movie = (MovieLoader.Load(hf.CanonicalFullPath) as Movie);
 
 			try
 			{
 				movie.PreLoadText(hf);
 
 				// Don't do this from browse
-				if (movie.Header[HeaderKeys.SHA1] == Global.Game.Hash ||
+				if (movie.Hash == Global.Game.Hash ||
 					Global.Config.PlayMovie_MatchHash == false || force)
 				{
 					return movie;

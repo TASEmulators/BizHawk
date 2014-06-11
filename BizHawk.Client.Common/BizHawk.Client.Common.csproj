@@ -148,6 +148,7 @@
     <Compile Include="movie\MnemonicGenerators\NesMnemonicGenerator.cs" />
     <Compile Include="movie\MnemonicsGenerator.cs" />
     <Compile Include="movie\MovieImport.cs" />
+    <Compile Include="movie\MovieLoader.cs" />
     <Compile Include="movie\MovieMnemonics.cs" />
     <Compile Include="movie\MovieSession.cs" />
     <Compile Include="movie\MultitrackRecording.cs" />
