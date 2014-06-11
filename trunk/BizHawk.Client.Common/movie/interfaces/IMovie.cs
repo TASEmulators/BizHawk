@@ -66,6 +66,11 @@ namespace BizHawk.Client.Common
 		string SystemID { get; set; }
 		string Hash { get; set; }
 		bool PreLoadText(HawkFile hawkFile); // Movies 2.0 TODO: find a better way to not need this
+		
+		/// <summary>
+		/// Returns header key value pairs stored in the movie file
+		/// </summary>
+		IDictionary<string, string> HeaderEntries { get; }
 
 		#endregion
 
