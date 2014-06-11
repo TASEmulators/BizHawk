@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.MovieSession.Movie.Header.StartsFromSavestate)
 			{
-				var state = Convert.FromBase64String(Global.MovieSession.Movie.Header.SavestateBinaryBase64Blob);
+				var state = Convert.FromBase64String(Global.MovieSession.Movie.SavestateBinaryBase64Blob);
 				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(state)));
 				Global.Emulator.ResetCounters();
 			}
@@ -157,7 +157,7 @@ namespace BizHawk.Client.EmuHawk
 				LoadRom(CurrentlyOpenRom);
 				if (Global.MovieSession.Movie.Header.StartsFromSavestate)
 				{
-					var state = Convert.FromBase64String(Global.MovieSession.Movie.Header.SavestateBinaryBase64Blob);
+					var state = Convert.FromBase64String(Global.MovieSession.Movie.SavestateBinaryBase64Blob);
 					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(state)));
 					Global.Emulator.ResetCounters();
 				}

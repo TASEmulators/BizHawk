@@ -58,6 +58,7 @@ namespace BizHawk.Client.Common
 		IMovieHeader Header { get; }
 		SubtitleList Subtitles { get; }
 		IList<string> Comments { get; }
+		string SavestateBinaryBase64Blob { get; set; }
 
 		#endregion
 
