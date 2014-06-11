@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PlayMovie : Form
 	{
-		// Movies 2.0 TODO: this is hopelessly Movie.cs specific, to make it generic, make a MovieLoader class that receives a path and returns an IMovie, that does the logic of determining bkm, bk2, or tasproj
+		// Movies 2.0 TODO: this is hopelessly Movie.cs specific, make it generic, 
 		private List<IMovie> _movieList = new List<IMovie>();
 		private bool _sortReverse;
 		private string _sortedCol;
@@ -72,27 +72,6 @@ namespace BizHawk.Client.EmuHawk
 			if (indices.Count > 0) // Import file if necessary
 			{
 				GlobalWin.MainForm.StartNewMovie(_movieList[MovieView.SelectedIndices[0]], false);
-			}
-		}
-
-		private void AddStateToList(string filename)
-		{
-			using (var file = new HawkFile(filename))
-			{
-				if (file.Exists)
-				{
-					if (!IsDuplicateOf(filename).HasValue)
-					{
-						var movie = new Movie(file.CanonicalFullPath);
-						movie.Load(); // State files will have to load everything unfortunately
-						if (movie.FrameCount > 0)
-						{
-							_movieList.Add(movie);
-							_sortReverse = false;
-							_sortedCol = string.Empty;
-						}
-					}
-				}
 			}
 		}
 
