@@ -1794,6 +1794,7 @@ namespace BizHawk.Client.EmuHawk
 				SaveMovieContextMenuItem.Visible =
 				Global.MovieSession.Movie.IsActive;
 
+			// Movies 2.0 TODO
 			BackupMovieContextMenuItem.Visible = Global.MovieSession.Movie is Movie && Global.MovieSession.Movie.IsActive;
 
 			StopNoSaveContextMenuItem.Visible = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.Changes;
@@ -1903,6 +1904,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BackupMovieContextMenuItem_Click(object sender, EventArgs e)
 		{
+			//Movies 2.0 TODO
 			if (Global.MovieSession.Movie is Movie)
 			{
 				GlobalWin.OSD.AddMessage("Backup movie saved.");
@@ -2190,7 +2192,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (MovieSession.IsValidMovieExtension(ext))
 			{
-				StartNewMovie(new Movie(filePaths[0]), false);
+				StartNewMovie(MovieLoader.Load(filePaths[0]), false);
 			}
 			else if (ext.ToUpper() == ".STATE")
 			{
@@ -2236,9 +2238,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					//fix movie extension to something palatable for these purposes. 
-					//for instance, something which doesnt clobber movies you already may have had.
-					//i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
+					// fix movie extension to something palatable for these purposes. 
+					// for instance, something which doesnt clobber movies you already may have had.
+					// i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
 					movie.Filename += ".autoimported." + Movie.Extension;
 					movie.Save();
 					StartNewMovie(movie, false);

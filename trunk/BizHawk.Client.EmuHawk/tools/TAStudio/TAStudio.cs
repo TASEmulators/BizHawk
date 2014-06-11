@@ -44,7 +44,6 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.OSD.AddMessage("TAStudio Disengaged");
 					if (Global.MovieSession.Movie is TasMovie)
 					{
-						Global.MovieSession.Movie = new Movie();
 						GlobalWin.MainForm.StopMovie(saveChanges: false);
 					}
 				}
