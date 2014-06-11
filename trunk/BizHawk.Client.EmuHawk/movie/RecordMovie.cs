@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 					//theres no sense hexifying those again. we need to record that fact in the IEmulator somehow
 					var bytestate = Global.Emulator.SaveStateBinary();
 					string stringstate = Convert.ToBase64String(bytestate);
-					_movieToRecord.Header.SavestateBinaryBase64Blob = stringstate;
+					_movieToRecord.SavestateBinaryBase64Blob = stringstate;
 				}
 				else
 				{

@@ -65,6 +65,19 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public string SavestateBinaryBase64Blob
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+
+			set
+			{
+				throw new NotImplementedException();
+			}
+		}
+
 		public bool IsActive
 		{
 			get { return _mode != Moviemode.Inactive; }

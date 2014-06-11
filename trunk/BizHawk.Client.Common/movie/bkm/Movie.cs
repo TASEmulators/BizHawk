@@ -68,6 +68,19 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public string SavestateBinaryBase64Blob
+		{
+			get
+			{
+				return (Header as MovieHeader).SavestateBinaryBase64Blob;
+			}
+
+			set
+			{
+				(Header as MovieHeader).SavestateBinaryBase64Blob = value;
+			}
+		} 
+
 		public string PreferredExtension { get { return "bkm"; } }
 
 		// TODO: delete me
