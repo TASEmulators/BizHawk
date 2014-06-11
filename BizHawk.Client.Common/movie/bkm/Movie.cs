@@ -148,7 +148,7 @@ namespace BizHawk.Client.Common
 
 		public string PreferredExtension { get { return "bkm"; } }
 
-		// TODO: delete me
+		// Movies 2.0 TODO: delete me
 		public static string Extension { get { return "bkm"; } }
 
 		public MovieHeader Header { get; private set; }

@@ -73,6 +73,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
+				// Movies 2.0 TODO
 				Movie _movieToRecord;
 
 				if (StartFromCombo.SelectedItem.ToString() == "Now")

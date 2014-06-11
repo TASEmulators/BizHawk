@@ -265,7 +265,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var movie = new Movie(cmdMovie);
+					var movie = MovieLoader.Load(cmdMovie);
 					Global.MovieSession.ReadOnly = true;
 
 					// if user is dumping and didnt supply dump length, make it as long as the loaded movie
@@ -286,7 +286,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					StartNewMovie(new Movie(Global.Config.RecentMovies.MostRecent), false);
+					StartNewMovie(MovieLoader.Load(Global.Config.RecentMovies.MostRecent), false);
 				}
 			}
 
@@ -1439,10 +1439,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadMoviesFromRecent(string path)
 		{
-			// Movies 2.0 TODO - Use MovieLoader that returns an IMovie, loader will have a success flag to pass to HandleLoadError()
-			var movie = new Movie(path);
+			var movie = MovieLoader.Load(path);
 
-			if (!movie.Loaded)
+			// Movies 2.0 TODO
+			if (!(movie as Movie).Loaded)
 			{
 				ToolHelpers.HandleLoadError(Global.Config.RecentMovies, path);
 			}
