@@ -141,7 +141,6 @@
     <Compile Include="movie\HeaderKeys.cs" />
     <Compile Include="movie\InputAdapters.cs" />
     <Compile Include="movie\interfaces\IMovie.cs" />
-    <Compile Include="movie\interfaces\IMovieHeader.cs" />
     <Compile Include="movie\MnemonicGenerators\BooleanControllerMnemonicGenerator.cs" />
     <Compile Include="movie\MnemonicGenerators\IMnemonicGenerator.cs" />
     <Compile Include="movie\MnemonicGenerators\IMnemonicPorts.cs" />

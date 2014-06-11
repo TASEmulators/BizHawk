@@ -122,9 +122,61 @@ namespace BizHawk.Client.Common
 			}
 		} 
 
+		public ulong Rerecords
+		{
+			get
+			{
+				return (Header as MovieHeader).Rerecords;
+			}
+
+			set
+			{
+				(Header as MovieHeader).Rerecords = value;
+			}
+		}
+
+		public bool StartsFromSavestate
+		{
+			get
+			{
+				return (Header as MovieHeader).StartsFromSavestate;
+			}
+
+			set
+			{
+				(Header as MovieHeader).StartsFromSavestate = value;
+			}
+		}
+
+		public string GameName
+		{
+			get
+			{
+				return (Header as MovieHeader).GameName;
+			}
+
+			set
+			{
+				(Header as MovieHeader).GameName = value;
+			}
+		}
+
+		public string SystemID
+		{
+			get
+			{
+				return (Header as MovieHeader).SystemID;
+			}
+
+			set
+			{
+				(Header as MovieHeader).SystemID = value;
+			}
+		}
+
 		public string Filename { get; set; }
 
-		public IMovieHeader Header { get; private set; }
+		public MovieHeader Header { get; private set; }
 
 		public bool IsActive
 		{
@@ -372,7 +424,7 @@ namespace BizHawk.Client.Common
 						}
 					});
 
-				if (Header.StartsFromSavestate)
+				if (StartsFromSavestate)
 				{
 					// should we raise some sort of error if there's a savestate in the archive but Header.StartsFromSavestate is false?
 					bl.GetCoreState(
@@ -417,7 +469,7 @@ namespace BizHawk.Client.Common
 			{
 				bs.PutLump(BinaryStateLump.Movieheader, (tw) => tw.WriteLine(Header.ToString()));
 				bs.PutLump(BinaryStateLump.Input, (tw) => tw.WriteLine(GetInputLog()));
-				if (Header.StartsFromSavestate)
+				if (StartsFromSavestate)
 				{
 #if true
 					bs.PutLump(BinaryStateLump.CorestateText, (tw) => Global.Emulator.SaveStateText(tw));

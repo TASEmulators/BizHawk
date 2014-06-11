@@ -55,10 +55,14 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		string SyncSettingsJson { get; set; }
 
-		IMovieHeader Header { get; }
+		// TODO: document these
 		SubtitleList Subtitles { get; }
 		IList<string> Comments { get; }
 		string SavestateBinaryBase64Blob { get; set; }
+		ulong Rerecords { get; set; }
+		bool StartsFromSavestate { get; set; }
+		string GameName { get; set; }
+		string SystemID { get; set; }
 
 		#endregion
 

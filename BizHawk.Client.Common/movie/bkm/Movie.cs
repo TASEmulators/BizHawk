@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 		public Movie(string filename, bool startsFromSavestate = false)
 			: this(startsFromSavestate)
 		{
-			Header.Rerecords = 0;
+			Rerecords = 0;
 			Filename = filename;
 			Loaded = !string.IsNullOrWhiteSpace(filename);
 		}
@@ -34,7 +34,7 @@ namespace BizHawk.Client.Common
 			Header = new MovieHeader();
 			Filename = string.Empty;
 			_preloadFramecount = 0;
-			Header.StartsFromSavestate = startsFromSavestate;
+			StartsFromSavestate = startsFromSavestate;
 			
 			IsCountingRerecords = true;
 			_mode = Moviemode.Inactive;
@@ -79,14 +79,66 @@ namespace BizHawk.Client.Common
 			{
 				(Header as MovieHeader).SavestateBinaryBase64Blob = value;
 			}
-		} 
+		}
+
+		public ulong Rerecords
+		{
+			get
+			{
+				return (Header as MovieHeader).Rerecords;
+			}
+
+			set
+			{
+				(Header as MovieHeader).Rerecords = value;
+			}
+		}
+
+		public bool StartsFromSavestate
+		{
+			get
+			{
+				return (Header as MovieHeader).StartsFromSavestate;
+			}
+
+			set
+			{
+				(Header as MovieHeader).StartsFromSavestate = value;
+			}
+		}
+
+		public string GameName
+		{
+			get
+			{
+				return (Header as MovieHeader).GameName;
+			}
+
+			set
+			{
+				(Header as MovieHeader).GameName = value;
+			}
+		}
+
+		public string SystemID
+		{
+			get
+			{
+				return (Header as MovieHeader).SystemID;
+			}
+
+			set
+			{
+				(Header as MovieHeader).SystemID = value;
+			}
+		}
 
 		public string PreferredExtension { get { return "bkm"; } }
 
 		// TODO: delete me
 		public static string Extension { get { return "bkm"; } }
 
-		public IMovieHeader Header { get; private set; }
+		public MovieHeader Header { get; private set; }
 
 		public string Filename { get; set; }
 		public bool IsCountingRerecords { get; set; }
@@ -151,7 +203,7 @@ namespace BizHawk.Client.Common
 			// If Starting a new recording requires clearing sram it shoudl be done at a higher layer and not rely on all IMovies doing this
 			// Haven't removed it yet because I coudln't guarantee that power-on movies coudl live without it
 			// And the immediate fire is that Savestate movies are breaking
-			if (!Header.StartsFromSavestate) // && Global.Emulator.SystemId != "WSWAN")
+			if (!StartsFromSavestate)
 			{
 				Global.Emulator.ClearSaveRam();
 			}
@@ -169,7 +221,7 @@ namespace BizHawk.Client.Common
 		public void StartNewPlayback()
 		{
 			// See StartNewRecording for details as to why this savestate check is here
-			if (!Header.StartsFromSavestate) // && Global.Emulator.SystemId != "WSWAN")
+			if (!StartsFromSavestate)
 			{
 				Global.Emulator.ClearSaveRam();
 			}
@@ -688,7 +740,7 @@ namespace BizHawk.Client.Common
 
 			if (IsCountingRerecords)
 			{
-				Header.Rerecords++;
+				Rerecords++;
 			}
 
 			return true;
