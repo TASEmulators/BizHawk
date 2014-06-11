@@ -639,22 +639,6 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				if (file.Extension.ToUpper() == "STATE")
-				{
-					var movie = new Movie(file.FullName);
-					movie.Load(); // State files will have to load everything unfortunately
-					if (movie.FrameCount == 0)
-					{
-						MessageBox.Show(
-							"No input log detected in this savestate, aborting",
-							"Can not load file",
-							MessageBoxButtons.OK,
-							MessageBoxIcon.Hand);
-
-						return;
-					}
-				}
-
 				int? index = AddMovieToList(ofd.FileName, true);
 				RefreshMovieList();
 				if (index.HasValue)
