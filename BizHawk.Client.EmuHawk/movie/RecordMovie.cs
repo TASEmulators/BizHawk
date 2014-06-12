@@ -134,12 +134,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				if (Global.Emulator is LibsnesCore)
-				{
-					// TODO: shouldn't the Boardname property have sgb?
-					_movieToRecord.HeaderEntries[HeaderKeys.SGB] = (Global.Emulator as LibsnesCore).IsSGB.ToString();
-				}
-
 				_movieToRecord.Core = ((CoreAttributes)Attribute
 					.GetCustomAttribute(Global.Emulator.GetType(), typeof(CoreAttributes)))
 					.CoreName;
