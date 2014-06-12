@@ -462,12 +462,6 @@ namespace BizHawk.Client.EmuHawk
 							toolTip1.SetToolTip(DetailsView, "Current SHA1: " + Global.Game.Hash);
 						}
 						break;
-					case HeaderKeys.MOVIEVERSION:
-						if (kvp.Value != HeaderKeys.MovieVersion1)
-						{
-							item.BackColor = Color.Yellow;
-						}
-						break;
 					case HeaderKeys.EMULATIONVERSION:
 						if (kvp.Value != VersionInfo.GetEmuVersion())
 						{

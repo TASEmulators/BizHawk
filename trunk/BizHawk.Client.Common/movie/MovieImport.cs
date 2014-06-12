@@ -119,10 +119,6 @@ namespace BizHawk.Client.Common
 						m = ImportZMV(path, out errorMsg, out warningMsg);
 						break;
 				}
-				if (errorMsg == string.Empty)
-				{
-					m.Header[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion1;
-				}
 			}
 			catch (Exception except)
 			{

@@ -11,7 +11,6 @@ namespace BizHawk.Client.Common
 			Subtitles = new SubtitleList();
 
 			this[HeaderKeys.EMULATIONVERSION] = VersionInfo.GetEmuVersion();
-			this[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion1;
 			this[HeaderKeys.PLATFORM] = Global.Emulator != null ? Global.Emulator.SystemId : string.Empty;
 			this[HeaderKeys.GAMENAME] = string.Empty;
 			this[HeaderKeys.AUTHOR] = string.Empty;

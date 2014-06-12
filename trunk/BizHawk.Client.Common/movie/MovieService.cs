@@ -39,5 +39,17 @@ namespace BizHawk.Client.Common
 				yield return "tasproj";
 			}
 		}
+
+		/// <summary>
+		/// Creates a default instance of the default implementation, 
+		/// no path is specified so this is in a minimal state that would not be able to be saved
+		/// </summary>
+		public static IMovie DefaultInstance
+		{
+			get
+			{
+				return new Movie();
+			}
+		}
 	}
 }
