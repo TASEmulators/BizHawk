@@ -257,8 +257,9 @@ namespace BizHawk.Client.EmuHawk
 					foreach(var subdir in Directory.GetDirectories(dp))
 						dpTodo.Enqueue(subdir);
 
+				// Movies 2.0 TODO: add tasproj, hardcoded is okay here
 				//add movies
-				fpTodo.AddRange(Directory.GetFiles(dp, "*." + Movie.Extension));
+				fpTodo.AddRange(Directory.GetFiles(dp, "*." + MovieService.DefaultExtension));
 			}
 
 			//in parallel, scan each movie
@@ -606,7 +607,7 @@ namespace BizHawk.Client.EmuHawk
 			var ofd = new OpenFileDialog
 			{
 				// Movies 2.0 TODO - add tasproj in addition to default, hardcoded is fine in this case
-				Filter = "Movie Files (*." + Movie.Extension + ")|*." + MovieService.DefaultExtension + "|All Files|*.*",
+				Filter = "Movie Files (*." + MovieService.DefaultExtension + ")|*." + MovieService.DefaultExtension + "|All Files|*.*",
 				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null)
 			};
 

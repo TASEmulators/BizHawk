@@ -72,6 +72,11 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		IDictionary<string, string> HeaderEntries { get; }
 
+		/// <summary>
+		/// Forces the creation of a backup file of the current movie state
+		/// </summary>
+		void SaveBackup();
+
 		#endregion
 
 		#region File Handling API
