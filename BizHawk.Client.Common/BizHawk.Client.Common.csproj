@@ -136,6 +136,10 @@
     <Compile Include="movie\bk2\Movie2.cs" />
     <Compile Include="movie\bk2\MovieHeader2.cs" />
     <Compile Include="movie\bkm\Movie.cs" />
+    <Compile Include="movie\bkm\Movie.HeaderApi.cs" />
+    <Compile Include="movie\bkm\Movie.InputLog.cs" />
+    <Compile Include="movie\bkm\Movie.IO.cs" />
+    <Compile Include="movie\bkm\Movie.ModeApi.cs" />
     <Compile Include="movie\bkm\MovieHeader.cs" />
     <Compile Include="movie\bkm\MovieLog.cs" />
     <Compile Include="movie\HeaderKeys.cs" />
