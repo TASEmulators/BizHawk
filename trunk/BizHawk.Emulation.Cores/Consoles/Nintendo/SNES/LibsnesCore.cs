@@ -369,6 +369,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				IsSGB = true;
 				SystemId = "SNES";
+				BoardName = "SGB";
 
 				CurrLoadParams = new LoadParams()
 				{
@@ -713,7 +714,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public bool IsLagFrame { get; private set; }
 		public string SystemId { get; private set; }
 
-		public string BoardName { get { return null; } }
+		public string BoardName { get; private set; }
 
 		public bool DeterministicEmulation
 		{
