@@ -1903,7 +1903,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BackupMovieContextMenuItem_Click(object sender, EventArgs e)
 		{
-			(Global.MovieSession.Movie as Movie).SaveBackup();
+			Global.MovieSession.Movie.SaveBackup();
 			GlobalWin.OSD.AddMessage("Backup movie saved.");
 		}
 
