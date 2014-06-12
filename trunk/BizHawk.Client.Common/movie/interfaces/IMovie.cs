@@ -65,6 +65,13 @@ namespace BizHawk.Client.Common
 		string GameName { get; set; }
 		string SystemID { get; set; }
 		string Hash { get; set; }
+		string Author { get; set; }
+		string Core { get; set; }
+		string Platform { get; set; }
+		string EmulatorVersion { get; set; }
+		string FirmwareHash { get; set; }
+		string BoardName { get; set; }
+
 		bool PreLoadText(HawkFile hawkFile); // Movies 2.0 TODO: find a better way to not need this
 		
 		/// <summary>

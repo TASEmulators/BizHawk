@@ -32,6 +32,7 @@ namespace BizHawk.Client.Common
 		public Movie(bool startsFromSavestate = false)
 		{
 			Header = new MovieHeader();
+			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v0.0.1";
 			Filename = string.Empty;
 			_preloadFramecount = 0;
 			StartsFromSavestate = startsFromSavestate;
@@ -143,6 +144,84 @@ namespace BizHawk.Client.Common
 			set
 			{
 				Header[HeaderKeys.SHA1] = value;
+			}
+		}
+
+		public string Author
+		{
+			get
+			{
+				return Header[HeaderKeys.AUTHOR];
+			}
+
+			set
+			{
+				Header[HeaderKeys.AUTHOR] = value;
+			}
+		}
+
+		public string Core
+		{
+			get
+			{
+				return Header[HeaderKeys.CORE];
+			}
+
+			set
+			{
+				Header[HeaderKeys.CORE] = value;
+			}
+		}
+
+		public string Platform
+		{
+			get
+			{
+				return Header[HeaderKeys.PLATFORM];
+			}
+
+			set
+			{
+				Header[HeaderKeys.PLATFORM] = value;
+			}
+		}
+
+		public string BoardName
+		{
+			get
+			{
+				return Header[HeaderKeys.BOARDNAME];
+			}
+
+			set
+			{
+				Header[HeaderKeys.BOARDNAME] = value;
+			}
+		}
+
+		public string EmulatorVersion
+		{
+			get
+			{
+				return Header[HeaderKeys.EMULATIONVERSION];
+			}
+
+			set
+			{
+				Header[HeaderKeys.EMULATIONVERSION] = value;
+			}
+		}
+
+		public string FirmwareHash
+		{
+			get
+			{
+				return Header[HeaderKeys.FIRMWARESHA1];
+			}
+
+			set
+			{
+				Header[HeaderKeys.FIRMWARESHA1] = value;
 			}
 		}
 

@@ -82,7 +82,7 @@ namespace BizHawk.Client.Common
 			_mg = MnemonicGeneratorFactory.Generate();
 			Filename = string.Empty;
 			Header = new MovieHeader { StartsFromSavestate = startsFromSavestate };
-			Header[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion2;
+			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0"; 
 			_records = new MovieRecordList();
 			_mode = Moviemode.Inactive;
 			IsCountingRerecords = true;
@@ -186,6 +186,84 @@ namespace BizHawk.Client.Common
 			set
 			{
 				Header[HeaderKeys.SHA1] = value;
+			}
+		}
+
+		public string Author
+		{
+			get
+			{
+				return Header[HeaderKeys.AUTHOR];
+			}
+
+			set
+			{
+				Header[HeaderKeys.AUTHOR] = value;
+			}
+		}
+
+		public string Core
+		{
+			get
+			{
+				return Header[HeaderKeys.CORE];
+			}
+
+			set
+			{
+				Header[HeaderKeys.CORE] = value;
+			}
+		}
+
+		public string Platform
+		{
+			get
+			{
+				return Header[HeaderKeys.PLATFORM];
+			}
+
+			set
+			{
+				Header[HeaderKeys.PLATFORM] = value;
+			}
+		}
+
+		public string FirmwareHash
+		{
+			get
+			{
+				return Header[HeaderKeys.FIRMWARESHA1];
+			}
+
+			set
+			{
+				Header[HeaderKeys.FIRMWARESHA1] = value;
+			}
+		}
+
+		public string EmulatorVersion
+		{
+			get
+			{
+				return Header[HeaderKeys.EMULATIONVERSION];
+			}
+
+			set
+			{
+				Header[HeaderKeys.EMULATIONVERSION] = value;
+			}
+		}
+
+		public string BoardName
+		{
+			get
+			{
+				return Header[HeaderKeys.BOARDNAME];
+			}
+
+			set
+			{
+				Header[HeaderKeys.BOARDNAME] = value;
 			}
 		}
 
