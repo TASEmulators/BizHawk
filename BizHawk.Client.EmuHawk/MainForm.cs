@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.FirmwareManager = new FirmwareManager();
 			Global.MovieSession = new MovieSession
 			{
-				Movie = new Movie(),
+				Movie = MovieService.DefaultInstance,
 				MessageCallback = GlobalWin.OSD.AddMessage,
 				AskYesNoCallback = StateErrorAskUser
 			};
@@ -1439,17 +1439,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadMoviesFromRecent(string path)
 		{
-			var movie = MovieService.Get(path);
-
-			// Movies 2.0 TODO
-			if (!(movie as Movie).Loaded)
+			if (File.Exists(path))
 			{
-				ToolHelpers.HandleLoadError(Global.Config.RecentMovies, path);
+				var movie = MovieService.Get(path);
+				Global.MovieSession.ReadOnly = true;
+				StartNewMovie(movie, false);
 			}
 			else
 			{
-				Global.MovieSession.ReadOnly = true;
-				StartNewMovie(movie, false);
+				ToolHelpers.HandleLoadError(Global.Config.RecentMovies, path);
 			}
 		}
 

@@ -4,9 +4,6 @@ namespace BizHawk.Client.Common
 {
 	public static class HeaderKeys
 	{
-		public const string MovieVersion1 = "BizHawk v0.0.1";
-		public const string MovieVersion2 = "BizHawk v0.0.2";
-
 		public const string EMULATIONVERSION = "emuVersion";
 		public const string MOVIEVERSION = "MovieVersion";
 		public const string PLATFORM = "Platform";
