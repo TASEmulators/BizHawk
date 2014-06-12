@@ -266,7 +266,14 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 			var outDisposition = FindOutput().SurfaceDisposition;
 			var input = InputTexture;
+			if (SP.InputFilterLinear)
+				InputTexture.SetFilterLinear();
+			else
+				InputTexture.SetFilterNearest();
 			RSC.Shaders[RSI].Run(input, input.Size, OutputSize, InputTexture.IsUpsideDown);
+
+			//maintain invariant.. i think.
+			InputTexture.SetFilterNearest();
 		}
 	}
 
