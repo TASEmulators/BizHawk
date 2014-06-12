@@ -1794,8 +1794,7 @@ namespace BizHawk.Client.EmuHawk
 				SaveMovieContextMenuItem.Visible =
 				Global.MovieSession.Movie.IsActive;
 
-			// Movies 2.0 TODO
-			BackupMovieContextMenuItem.Visible = Global.MovieSession.Movie is Movie && Global.MovieSession.Movie.IsActive;
+			BackupMovieContextMenuItem.Visible = Global.MovieSession.Movie.IsActive;
 
 			StopNoSaveContextMenuItem.Visible = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.Changes;
 
@@ -1904,12 +1903,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BackupMovieContextMenuItem_Click(object sender, EventArgs e)
 		{
-			//Movies 2.0 TODO
-			if (Global.MovieSession.Movie is Movie)
-			{
-				GlobalWin.OSD.AddMessage("Backup movie saved.");
-				(Global.MovieSession.Movie as Movie).SaveBackup();
-			}
+			(Global.MovieSession.Movie as Movie).SaveBackup();
+			GlobalWin.OSD.AddMessage("Backup movie saved.");
 		}
 
 		private void ViewSubtitlesContextMenuItem_Click(object sender, EventArgs e)
@@ -2217,8 +2212,6 @@ namespace BizHawk.Client.EmuHawk
 
 			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))
 			{
-				// Movies 2.0 TODO: rethink this method
-
 				//tries to open a legacy movie format as if it were a BKM, by importing it
 				if (CurrentlyOpenRom == null)
 				{
@@ -2241,10 +2234,11 @@ namespace BizHawk.Client.EmuHawk
 					// fix movie extension to something palatable for these purposes. 
 					// for instance, something which doesnt clobber movies you already may have had.
 					// i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
-					movie.Filename += ".autoimported." + Movie.Extension;
+					movie.Filename += ".autoimported." + MovieService.DefaultExtension;
 					movie.Save();
 					StartNewMovie(movie, false);
 				}
+
 				GlobalWin.OSD.AddMessage(warningMsg);
 			}
 			else

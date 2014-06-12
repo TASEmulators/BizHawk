@@ -202,6 +202,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public void SaveBackup()
+		{
+			throw new NotImplementedException();
+		}
+
 		public string Filename { get; set; }
 
 		public MovieHeader Header { get; private set; }
