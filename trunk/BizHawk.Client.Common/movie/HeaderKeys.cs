@@ -24,10 +24,6 @@ namespace BizHawk.Client.Common
 		// Core Setting
 		public const string CORE = "Core";
 
-		// Gameboy Settings that affect sync
-		// TODO: movie import references these but it shoudl be populating sync settings instead
-		public const string SGB = "SGB"; // A snes movie will set this to indicate that it's actually SGB
-
 		// Plugin Settings
 		public const string VIDEOPLUGIN = "VideoPlugin";
 
