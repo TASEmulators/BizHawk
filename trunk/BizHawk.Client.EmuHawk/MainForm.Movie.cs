@@ -41,13 +41,11 @@ namespace BizHawk.Client.EmuHawk
 				if (!record && Global.Emulator.SystemId == "NES") // For NES we need special logic since the movie will drive which core to load
 				{
 					// If either is specified use that, else use whatever is currently set
-					// Movies 2.0 TODO
-					if ((Global.MovieSession.Movie as Movie).Header[HeaderKeys.CORE] == quicknesName)
+					if (Global.MovieSession.Movie.Core == quicknesName)
 					{
 						Global.Config.NES_InQuickNES = true;
 					}
-					// Movies 2.0 TODO
-					else if ((Global.MovieSession.Movie as Movie).Header[HeaderKeys.CORE] == neshawkName)
+					else if (Global.MovieSession.Movie.Core == neshawkName)
 					{
 						Global.Config.NES_InQuickNES = false;
 					}
