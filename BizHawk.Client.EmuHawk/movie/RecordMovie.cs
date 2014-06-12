@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// Movies 2.0 TODO
-				Movie _movieToRecord;
+				IMovie _movieToRecord = MovieService.Get(path);
 
 				if (StartFromCombo.SelectedItem.ToString() == "Now")
 				{
@@ -84,7 +84,8 @@ namespace BizHawk.Client.EmuHawk
 						Directory.CreateDirectory(fileInfo.DirectoryName);
 					}
 
-					_movieToRecord = new Movie(path, startsFromSavestate: true);
+					_movieToRecord.StartsFromSavestate = true;
+
 					//TODO - some emulators (c++ cores) are just returning a hex string already
 					//theres no sense hexifying those again. we need to record that fact in the IEmulator somehow
 					var bytestate = Global.Emulator.SaveStateBinary();
@@ -93,36 +94,35 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					_movieToRecord = new Movie(path);
+					
 				}
 
 				// Header
 
-				_movieToRecord.Header[HeaderKeys.AUTHOR] = AuthorBox.Text;
-				_movieToRecord.Header[HeaderKeys.EMULATIONVERSION] = VersionInfo.GetEmuVersion();
-				_movieToRecord.Header[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion1;
-				_movieToRecord.Header[HeaderKeys.PLATFORM] = Global.Game.System;
+				_movieToRecord.Author = AuthorBox.Text;
+				_movieToRecord.EmulatorVersion = VersionInfo.GetEmuVersion();
+				_movieToRecord.Platform = Global.Game.System;
 
 				// Sync Settings, for movies 1.0, just dump a json blob into a header line
 				_movieToRecord.SyncSettingsJson = ConfigService.SaveWithType(Global.Emulator.GetSyncSettings());
 
 				if (Global.Game != null)
 				{
-					_movieToRecord.Header[HeaderKeys.GAMENAME] = PathManager.FilesystemSafeName(Global.Game);
-					_movieToRecord.Header[HeaderKeys.SHA1] = Global.Game.Hash;
+					_movieToRecord.GameName = PathManager.FilesystemSafeName(Global.Game);
+					_movieToRecord.Hash = Global.Game.Hash;
 					if (Global.Game.FirmwareHash != null)
 					{
-						_movieToRecord.Header[HeaderKeys.FIRMWARESHA1] = Global.Game.FirmwareHash;
+						_movieToRecord.FirmwareHash = Global.Game.FirmwareHash;
 					}
 				}
 				else
 				{
-					_movieToRecord.Header[HeaderKeys.GAMENAME] = "NULL";
+					_movieToRecord.GameName = "NULL";
 				}
 
 				if (Global.Emulator.BoardName != null)
 				{
-					_movieToRecord.Header[HeaderKeys.BOARDNAME] = Global.Emulator.BoardName;
+					_movieToRecord.BoardName = Global.Emulator.BoardName;
 				}
 
 				if (Global.Emulator.HasPublicProperty("DisplayType"))
@@ -130,16 +130,17 @@ namespace BizHawk.Client.EmuHawk
 					var region = Global.Emulator.GetPropertyValue("DisplayType");
 					if ((DisplayType)region == DisplayType.PAL)
 					{
-						_movieToRecord.Header[HeaderKeys.PAL] = "1";
+						_movieToRecord.HeaderEntries.Add(HeaderKeys.PAL, "1");
 					}
 				}
 
 				if (Global.Emulator is LibsnesCore)
 				{
-					_movieToRecord.Header[HeaderKeys.SGB] = (Global.Emulator as LibsnesCore).IsSGB.ToString();
+					// TODO: shouldn't the Boardname property have sgb?
+					_movieToRecord.HeaderEntries[HeaderKeys.SGB] = (Global.Emulator as LibsnesCore).IsSGB.ToString();
 				}
 
-				_movieToRecord.Header[HeaderKeys.CORE] = ((CoreAttributes)Attribute
+				_movieToRecord.Core = ((CoreAttributes)Attribute
 					.GetCustomAttribute(Global.Emulator.GetType(), typeof(CoreAttributes)))
 					.CoreName;
 
