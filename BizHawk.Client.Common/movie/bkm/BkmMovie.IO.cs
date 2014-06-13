@@ -6,7 +6,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Client.Common
 {
-	public partial class Movie : IMovie
+	public partial class BkmMovie : IMovie
 	{
 		private int _preloadFramecount; // Not a a reliable number, used for preloading (when no log has yet been loaded), this is only for quick stat compilation for dialogs such as play movie
 
