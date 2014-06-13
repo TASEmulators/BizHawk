@@ -12,7 +12,13 @@ namespace BizHawk.Client.Common
 
 		public string GetInputLog()
 		{
-			throw new NotImplementedException();
+			var sb = new StringBuilder();
+
+			sb.AppendLine("[Input]");
+			sb.Append(RawInputLog());
+			sb.AppendLine("[/Input]");
+
+			return sb.ToString();
 		}
 
 		public bool ExtractInputLog(TextReader reader, out string errorMessage)
@@ -23,6 +29,17 @@ namespace BizHawk.Client.Common
 		public bool CheckTimeLines(TextReader reader, out string errorMessage)
 		{
 			throw new NotImplementedException();
+		}
+
+		private StringBuilder RawInputLog()
+		{
+			var sb = new StringBuilder();
+			foreach (var record in _log)
+			{
+				sb.AppendLine(record);
+			}
+
+			return sb;
 		}
 	}
 }

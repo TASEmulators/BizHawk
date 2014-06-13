@@ -13,7 +13,11 @@ namespace BizHawk.Client.Common
 		Framebuffer,
 		Input,
 		CorestateText,
-		Movieheader
+
+		// Only for movies they probably shoudln't be leaching this stuff
+		Movieheader,
+		Comments,
+		Subtitles
 	}
 
 	public class BinaryStateFileNames
@@ -38,6 +42,10 @@ namespace BizHawk.Client.Common
 			LumpNames[BinaryStateLump.Input] = "Input Log";
 			LumpNames[BinaryStateLump.CorestateText] = "CoreText";
 			LumpNames[BinaryStateLump.Movieheader] = "Header";
+
+			// Only for movies they probably shoudln't be leaching this stuff
+			LumpNames[BinaryStateLump.Comments] = "Comments";
+			LumpNames[BinaryStateLump.Subtitles] = "Subtitles";
 		}
 
 		public static string Get(BinaryStateLump lump)
