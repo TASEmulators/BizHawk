@@ -38,8 +38,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					path += "." + Global.MovieSession.Movie.PreferredExtension;
 				}
-
-				return path;
 			}
 			
 			return path;
@@ -48,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 		private void Ok_Click(object sender, EventArgs e)
 		{
 			var path = MakePath();
-			if (!String.IsNullOrWhiteSpace(path))
+			if (!string.IsNullOrWhiteSpace(path))
 			{
 				var test = new FileInfo(path);
 				if (test.Exists)
