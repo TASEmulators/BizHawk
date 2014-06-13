@@ -81,7 +81,7 @@ namespace BizHawk.Client.Common
 		{
 			_mg = MnemonicGeneratorFactory.Generate();
 			Filename = string.Empty;
-			Header = new MovieHeader { StartsFromSavestate = startsFromSavestate };
+			Header = new BkmHeader { StartsFromSavestate = startsFromSavestate };
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0"; 
 			_records = new MovieRecordList();
 			_mode = Moviemode.Inactive;
@@ -287,7 +287,7 @@ namespace BizHawk.Client.Common
 
 		public string Filename { get; set; }
 
-		public MovieHeader Header { get; private set; }
+		public BkmHeader Header { get; private set; }
 
 		public bool IsActive
 		{

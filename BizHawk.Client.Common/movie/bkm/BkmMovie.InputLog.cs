@@ -6,7 +6,7 @@ namespace BizHawk.Client.Common
 {
 	public partial class BkmMovie : IMovie
 	{
-		private readonly MovieLog _log = new MovieLog();
+		private readonly BkmLog _log = new BkmLog();
 
 		public string GetInputLog()
 		{
@@ -182,7 +182,7 @@ namespace BizHawk.Client.Common
 		{
 			// This function will compare the movie data to the savestate movie data to see if they match
 			errorMessage = string.Empty;
-			var log = new MovieLog();
+			var log = new BkmLog();
 			var stateFrame = 0;
 			while (true)
 			{

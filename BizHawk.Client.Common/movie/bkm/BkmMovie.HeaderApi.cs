@@ -91,7 +91,6 @@ namespace BizHawk.Client.Common
 		public string EmulatorVersion
 		{
 			get { return Header[HeaderKeys.EMULATIONVERSION]; }
-
 			set { Header[HeaderKeys.EMULATIONVERSION] = value; }
 		}
 

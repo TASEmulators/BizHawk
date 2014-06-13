@@ -7,47 +7,53 @@ namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie : IMovie
 	{
+		private readonly Bk2Header Header = new Bk2Header();
+
 		public IDictionary<string, string> HeaderEntries
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
+			get { return Header; }
 		}
 
 		public SubtitleList Subtitles
 		{
-			get { throw new NotImplementedException(); }
+			get;
+			private set;
 		}
 
 		public IList<string> Comments
 		{
-			get { throw new NotImplementedException(); }
+			get;
+			private set;
 		}
 
 		public string SyncSettingsJson
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-
-			set
-			{
-				throw new NotImplementedException();
-			}
+			get { return Header[HeaderKeys.SYNCSETTINGS]; }
+			set { Header[HeaderKeys.SYNCSETTINGS] = value; }
 		}
 
 		public string SavestateBinaryBase64Blob
 		{
 			get
 			{
-				throw new NotImplementedException();
+				if (Header.ContainsKey(HeaderKeys.SAVESTATEBINARYBASE64BLOB))
+				{
+					return Header[HeaderKeys.SAVESTATEBINARYBASE64BLOB];
+				}
+				
+				return null;
 			}
 
 			set
 			{
-				throw new NotImplementedException();
+				if (value == null)
+				{
+					Header.Remove(HeaderKeys.SAVESTATEBINARYBASE64BLOB);
+				}
+				else
+				{
+					Header.Add(HeaderKeys.SAVESTATEBINARYBASE64BLOB, value);
+				}
 			}
 		}
 
@@ -55,12 +61,17 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				throw new NotImplementedException();
+				if (!Header.ContainsKey(HeaderKeys.RERECORDS))
+				{
+					Header[HeaderKeys.RERECORDS] = "0";
+				}
+
+				return ulong.Parse(Header[HeaderKeys.RERECORDS]);
 			}
 
 			set
 			{
-				throw new NotImplementedException();
+				Header[HeaderKeys.RERECORDS] = value.ToString();
 			}
 		}
 
@@ -68,12 +79,24 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				throw new NotImplementedException();
+				if (Header.ContainsKey(HeaderKeys.STARTSFROMSAVESTATE))
+				{
+					return bool.Parse(Header[HeaderKeys.STARTSFROMSAVESTATE]);
+				}
+
+				return false;
 			}
 
 			set
 			{
-				throw new NotImplementedException();
+				if (value)
+				{
+					Header.Add(HeaderKeys.STARTSFROMSAVESTATE, "True");
+				}
+				else
+				{
+					Header.Remove(HeaderKeys.STARTSFROMSAVESTATE);
+				}
 			}
 		}
 
@@ -81,12 +104,17 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				throw new NotImplementedException();
+				if (Header.ContainsKey(HeaderKeys.GAMENAME))
+				{
+					return Header[HeaderKeys.GAMENAME];
+				}
+
+				return string.Empty;
 			}
 
 			set
 			{
-				throw new NotImplementedException();
+				Header[HeaderKeys.GAMENAME] = value;
 			}
 		}
 
@@ -94,104 +122,60 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				throw new NotImplementedException();
+				if (Header.ContainsKey(HeaderKeys.PLATFORM))
+				{
+					return Header[HeaderKeys.PLATFORM];
+				}
+
+				return string.Empty;
 			}
 
 			set
 			{
-				throw new NotImplementedException();
+				Header[HeaderKeys.PLATFORM] = value;
 			}
 		}
 
 		public string Hash
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-
-			set
-			{
-				throw new NotImplementedException();
-			}
+			get { return Header[HeaderKeys.SHA1]; }
+			set { Header[HeaderKeys.SHA1] = value; }
 		}
 
 		public string Author
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-
-			set
-			{
-				throw new NotImplementedException();
-			}
+			get { return Header[HeaderKeys.AUTHOR]; }
+			set { Header[HeaderKeys.AUTHOR] = value; }
 		}
 
 		public string Core
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-
-			set
-			{
-				throw new NotImplementedException();
-			}
+			get { return Header[HeaderKeys.CORE]; }
+			set { Header[HeaderKeys.CORE] = value; }
 		}
 
 		public string Platform
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-
-			set
-			{
-				throw new NotImplementedException();
-			}
+			get { return Header[HeaderKeys.PLATFORM]; }
+			set { Header[HeaderKeys.PLATFORM] = value; }
 		}
 
 		public string BoardName
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-
-			set
-			{
-				throw new NotImplementedException();
-			}
+			get { return Header[HeaderKeys.BOARDNAME]; }
+			set { Header[HeaderKeys.BOARDNAME] = value; }
 		}
 
 		public string EmulatorVersion
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-
-			set
-			{
-				throw new NotImplementedException();
-			}
+			get { return Header[HeaderKeys.EMULATIONVERSION]; }
+			set { Header[HeaderKeys.EMULATIONVERSION] = value; }
 		}
 
 		public string FirmwareHash
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-
-			set
-			{
-				throw new NotImplementedException();
-			}
+			get { return Header[HeaderKeys.FIRMWARESHA1]; }
+			set { Header[HeaderKeys.FIRMWARESHA1] = value; }
 		}
 	}
 }

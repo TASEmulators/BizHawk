@@ -3,9 +3,9 @@ using System.Text;
 
 namespace BizHawk.Client.Common
 {
-	public class MovieHeader : Dictionary<string, string>
+	public class BkmHeader : Dictionary<string, string>
 	{
-		public MovieHeader()
+		public BkmHeader()
 		{
 			Comments = new List<string>();
 			Subtitles = new SubtitleList();
