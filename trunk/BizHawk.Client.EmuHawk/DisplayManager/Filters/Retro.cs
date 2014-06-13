@@ -40,6 +40,11 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 				//acquire content
 				string path = Path.Combine(baseDirectory, pass.ShaderPath);
+				if (!File.Exists(path))
+				{
+					ok = false;
+					break;
+				}
 				string content = File.ReadAllText(path);
 
 				var shader = new RetroShader(Owner, content, debug);
