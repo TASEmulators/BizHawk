@@ -1,21 +1,10 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
-
-using Newtonsoft.Json;
 
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.ColecoVision;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
-using BizHawk.Emulation.Cores.Nintendo.N64;
-using BizHawk.Emulation.Cores.Nintendo.NES;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
-using BizHawk.Emulation.Cores.Sega.MasterSystem;
-using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -52,10 +41,8 @@ namespace BizHawk.Client.EmuHawk
 
 				return path;
 			}
-			else
-			{
-				return path;
-			}
+			
+			return path;
 		}
 
 		private void Ok_Click(object sender, EventArgs e)
@@ -74,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// Movies 2.0 TODO
-				IMovie _movieToRecord = MovieService.Get(path);
+				IMovie movieToRecord = MovieService.Get(path);
 
 				if (StartFromCombo.SelectedItem.ToString() == "Now")
 				{
@@ -84,45 +71,41 @@ namespace BizHawk.Client.EmuHawk
 						Directory.CreateDirectory(fileInfo.DirectoryName);
 					}
 
-					_movieToRecord.StartsFromSavestate = true;
+					movieToRecord.StartsFromSavestate = true;
 
-					//TODO - some emulators (c++ cores) are just returning a hex string already
-					//theres no sense hexifying those again. we need to record that fact in the IEmulator somehow
+					// TODO - some emulators (c++ cores) are just returning a hex string already
+					// theres no sense hexifying those again. we need to record that fact in the IEmulator somehow
 					var bytestate = Global.Emulator.SaveStateBinary();
 					string stringstate = Convert.ToBase64String(bytestate);
-					_movieToRecord.SavestateBinaryBase64Blob = stringstate;
-				}
-				else
-				{
-					
+					movieToRecord.SavestateBinaryBase64Blob = stringstate;
 				}
 
 				// Header
 
-				_movieToRecord.Author = AuthorBox.Text;
-				_movieToRecord.EmulatorVersion = VersionInfo.GetEmuVersion();
-				_movieToRecord.Platform = Global.Game.System;
+				movieToRecord.Author = AuthorBox.Text;
+				movieToRecord.EmulatorVersion = VersionInfo.GetEmuVersion();
+				movieToRecord.Platform = Global.Game.System;
 
 				// Sync Settings, for movies 1.0, just dump a json blob into a header line
-				_movieToRecord.SyncSettingsJson = ConfigService.SaveWithType(Global.Emulator.GetSyncSettings());
+				movieToRecord.SyncSettingsJson = ConfigService.SaveWithType(Global.Emulator.GetSyncSettings());
 
 				if (Global.Game != null)
 				{
-					_movieToRecord.GameName = PathManager.FilesystemSafeName(Global.Game);
-					_movieToRecord.Hash = Global.Game.Hash;
+					movieToRecord.GameName = PathManager.FilesystemSafeName(Global.Game);
+					movieToRecord.Hash = Global.Game.Hash;
 					if (Global.Game.FirmwareHash != null)
 					{
-						_movieToRecord.FirmwareHash = Global.Game.FirmwareHash;
+						movieToRecord.FirmwareHash = Global.Game.FirmwareHash;
 					}
 				}
 				else
 				{
-					_movieToRecord.GameName = "NULL";
+					movieToRecord.GameName = "NULL";
 				}
 
 				if (Global.Emulator.BoardName != null)
 				{
-					_movieToRecord.BoardName = Global.Emulator.BoardName;
+					movieToRecord.BoardName = Global.Emulator.BoardName;
 				}
 
 				if (Global.Emulator.HasPublicProperty("DisplayType"))
@@ -130,15 +113,15 @@ namespace BizHawk.Client.EmuHawk
 					var region = Global.Emulator.GetPropertyValue("DisplayType");
 					if ((DisplayType)region == DisplayType.PAL)
 					{
-						_movieToRecord.HeaderEntries.Add(HeaderKeys.PAL, "1");
+						movieToRecord.HeaderEntries.Add(HeaderKeys.PAL, "1");
 					}
 				}
 
-				_movieToRecord.Core = ((CoreAttributes)Attribute
+				movieToRecord.Core = ((CoreAttributes)Attribute
 					.GetCustomAttribute(Global.Emulator.GetType(), typeof(CoreAttributes)))
 					.CoreName;
 
-				GlobalWin.MainForm.StartNewMovie(_movieToRecord, true);
+				GlobalWin.MainForm.StartNewMovie(movieToRecord, true);
 
 				Global.Config.UseDefaultAuthor = DefaultAuthorCheckBox.Checked;
 				if (DefaultAuthorCheckBox.Checked)
@@ -161,7 +144,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BrowseBtn_Click(object sender, EventArgs e)
 		{
-			var filename = String.Empty;
 			var sfd = new SaveFileDialog
 				{
 					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
@@ -169,12 +151,12 @@ namespace BizHawk.Client.EmuHawk
 					FileName = RecordBox.Text,
 					OverwritePrompt = false
 				};
-			var filter = "Movie Files (*." + Global.MovieSession.Movie.PreferredExtension + ")|*." + Global.MovieSession.Movie.PreferredExtension + "|Savestates|*.state|All Files|*.*";
+			var filter = "Movie Files (*." + Global.MovieSession.Movie.PreferredExtension + ")|*." + Global.MovieSession.Movie.PreferredExtension + "|All Files|*.*";
 			sfd.Filter = filter;
 
 			var result = sfd.ShowHawkDialog();
 			if (result == DialogResult.OK
-				&& !String.IsNullOrWhiteSpace(sfd.FileName))
+				&& !string.IsNullOrWhiteSpace(sfd.FileName))
 			{
 				RecordBox.Text = sfd.FileName;
 			}
