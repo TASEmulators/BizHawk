@@ -14,17 +14,8 @@ namespace BizHawk.Client.Common
 			get { return Header; }
 		}
 
-		public SubtitleList Subtitles
-		{
-			get;
-			private set;
-		}
-
-		public IList<string> Comments
-		{
-			get;
-			private set;
-		}
+		public SubtitleList Subtitles { get; private set; }
+		public IList<string> Comments { get; private set; }
 
 		public string SyncSettingsJson
 		{
@@ -176,6 +167,18 @@ namespace BizHawk.Client.Common
 		{
 			get { return Header[HeaderKeys.FIRMWARESHA1]; }
 			set { Header[HeaderKeys.FIRMWARESHA1] = value; }
+		}
+
+		private string CommentsString()
+		{
+			StringBuilder sb = new StringBuilder();
+
+			foreach(var comment in Comments)
+			{
+				sb.AppendLine(comment);
+			}
+
+			return sb.ToString();
 		}
 	}
 }
