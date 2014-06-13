@@ -8,6 +8,8 @@ namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie : IMovie
 	{
+		private readonly BkmLog _log = new BkmLog();
+
 		public string GetInputLog()
 		{
 			throw new NotImplementedException();

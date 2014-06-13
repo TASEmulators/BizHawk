@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 
 		public bool IsRecording
 		{
-			get { throw new NotImplementedException(); }
+			get { return _mode == Moviemode.Record; }
 		}
 
 		public bool IsFinished
@@ -32,27 +32,44 @@ namespace BizHawk.Client.Common
 
 		public void StartNewRecording()
 		{
-			throw new NotImplementedException();
+			_mode = Moviemode.Record;
+			if (Global.Config.EnableBackupMovies && _makeBackup && _log.Any())
+			{
+				SaveBackup();
+				_makeBackup = false;
+			}
+
+			_log.Clear();
 		}
 
 		public void StartNewPlayback()
 		{
-			throw new NotImplementedException();
+			_mode = Moviemode.Play;
 		}
 
 		public void SwitchToRecord()
 		{
-			throw new NotImplementedException();
+			_mode = Moviemode.Record;
 		}
 
 		public void SwitchToPlay()
 		{
-			throw new NotImplementedException();
+			_mode = Moviemode.Play;
+			Save();
 		}
 
 		public void Stop(bool saveChanges = true)
 		{
-			throw new NotImplementedException();
+			if (saveChanges)
+			{
+				if (_mode == Moviemode.Record || Changes)
+				{
+					Save();
+				}
+			}
+
+			Changes = false;
+			_mode = Moviemode.Inactive;
 		}
 	}
 }

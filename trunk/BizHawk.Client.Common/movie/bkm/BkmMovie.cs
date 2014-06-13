@@ -20,7 +20,7 @@ namespace BizHawk.Client.Common
 
 		public BkmMovie(bool startsFromSavestate = false)
 		{
-			Header = new MovieHeader();
+			Header = new BkmHeader();
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v0.0.1";
 			Filename = string.Empty;
 			_preloadFramecount = 0;
@@ -34,7 +34,7 @@ namespace BizHawk.Client.Common
 		#region Properties
 
 		public string PreferredExtension { get { return "bkm"; } }
-		public MovieHeader Header { get; private set; }
+		public BkmHeader Header { get; private set; }
 		public string Filename { get; set; }
 		public bool IsCountingRerecords { get; set; }
 		public bool Loaded { get; private set; }

@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 	/// <summary>
 	/// Represents the controller key presses of a movie
 	/// </summary>
-	public class MovieLog : IEnumerable<string>
+	public class BkmLog : IEnumerable<string>
 	{
 		public IEnumerator<string> GetEnumerator()
 		{

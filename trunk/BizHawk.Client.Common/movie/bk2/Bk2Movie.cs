@@ -11,14 +11,15 @@ namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie : IMovie
 	{
-		private readonly MovieLog _log = new MovieLog();
 		private readonly PlatformFrameRates _frameRates = new PlatformFrameRates();
-		
-		private bool MakeBackup { get; set; }
+		private bool _makeBackup = true;
 
 		public Bk2Movie(string filename, bool startsFromSavestate = false)
 			: this(startsFromSavestate)
 		{
+			Subtitles = new SubtitleList();
+			Comments = new List<string>();
+
 			Rerecords = 0;
 			Filename = filename;
 		}
@@ -30,7 +31,7 @@ namespace BizHawk.Client.Common
 			
 			IsCountingRerecords = true;
 			_mode = Moviemode.Inactive;
-			MakeBackup = true;
+			_makeBackup = true;
 		}
 
 		#region Implementation
@@ -38,11 +39,7 @@ namespace BizHawk.Client.Common
 		public string PreferredExtension { get { return "bk2"; } }
 		public bool IsCountingRerecords { get; set; }
 
-		public bool Changes
-		{
-			get { throw new NotImplementedException(); }
-			private set { throw new NotImplementedException(); }
-		}
+		public bool Changes { get; private set; }
 
 		public double FrameCount
 		{
