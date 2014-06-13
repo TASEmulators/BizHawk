@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common
 			// TODO: open the file and determine the format, and instantiate the appropriate implementation
 			// Currently we just assume it is a bkm implementation
 			// TODO: change IMovies to take HawkFiles only and not path
-			return new Movie(path);
+			return new BkmMovie(path);
 		}
 
 		/// <summary>
@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return new Movie();
+				return new BkmMovie();
 			}
 		}
 	}

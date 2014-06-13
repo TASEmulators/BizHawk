@@ -3,14 +3,14 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public partial class Movie : IMovie
+	public partial class BkmMovie : IMovie
 	{
 		private readonly PlatformFrameRates _frameRates = new PlatformFrameRates();
 		private bool _makeBackup = true;
 		private bool _changes;
 		private int? _loopOffset;
 
-		public Movie(string filename, bool startsFromSavestate = false)
+		public BkmMovie(string filename, bool startsFromSavestate = false)
 			: this(startsFromSavestate)
 		{
 			Rerecords = 0;
@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 			Loaded = !string.IsNullOrWhiteSpace(filename);
 		}
 
-		public Movie(bool startsFromSavestate = false)
+		public BkmMovie(bool startsFromSavestate = false)
 		{
 			Header = new MovieHeader();
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v0.0.1";
