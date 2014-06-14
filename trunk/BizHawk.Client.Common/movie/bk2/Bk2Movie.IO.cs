@@ -50,20 +50,97 @@ namespace BizHawk.Client.Common
 					return false;
 				}
 
-				Header.Clear();
-				_log.Clear();
-				Subtitles.Clear();
-				Comments.Clear();
-				_syncSettingsJson = string.Empty;
-				_savestateBlob = string.Empty;
+				ClearBeforeLoad();
+
+				bl.GetLump(BinaryStateLump.Movieheader, true, delegate(TextReader tr)
+				{
+					string line;
+					while ((line = tr.ReadLine()) != null)
+					{
+						if (!string.IsNullOrWhiteSpace(line))
+						{
+							var pair = line.Split(new char[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
+							Header.Add(pair[0], pair[1]);
+						}
+					}
+				});
+
+				bl.GetLump(BinaryStateLump.Comments, true, delegate(TextReader tr)
+				{
+					string line;
+					while ((line = tr.ReadLine()) != null)
+					{
+						if (!string.IsNullOrWhiteSpace(line))
+						{
+							Comments.Add(line);
+						}
+					}
+				});
+
+				bl.GetLump(BinaryStateLump.Subtitles, true, delegate(TextReader tr)
+				{
+					string line;
+					while ((line = tr.ReadLine()) != null)
+					{
+						if (!string.IsNullOrWhiteSpace(line))
+						{
+							Subtitles.AddFromString(line);
+						}
+					}
+				});
+
+				bl.GetLump(BinaryStateLump.SyncSettings, true, delegate(TextReader tr)
+				{
+					string line;
+					while ((line = tr.ReadLine()) != null)
+					{
+						if (!string.IsNullOrWhiteSpace(line))
+						{
+							_syncSettingsJson = line;
+						}
+					}
+				});
+
+				bl.GetLump(BinaryStateLump.Input, true, delegate(TextReader tr)
+				{
+					string line;
+					while ((line = tr.ReadLine()) != null)
+					{
+						if (line != null && line.StartsWith("|"))
+						{
+							_log.AppendFrame(line);
+						}
+					}
+				});
+
+				// Movies 2.0 TODO: be smart about text or binary state
+				if (StartsFromSavestate)
+				{
+					bl.GetLump(BinaryStateLump.CorestateText, true, delegate(TextReader tr)
+					{
+						string line;
+						while ((line = tr.ReadLine()) != null)
+						{
+							// TODO: savestate
+						}
+					});
+				}
 			}
 
-			throw new NotImplementedException();
+			return true;
 		}
 
 		public bool PreLoadText(HawkFile hawkFile)
 		{
-			throw new NotImplementedException();
+			// For now, preload simply loads everything
+			var file = new FileInfo(Filename);
+			if (!file.Exists)
+			{
+				return false;
+			}
+
+			Filename = file.FullName;
+			return Load();
 		}
 
 		private void Write(string fn)
@@ -74,12 +151,13 @@ namespace BizHawk.Client.Common
 			using (BinaryStateSaver bs = new BinaryStateSaver(fs))
 			{
 				bs.PutLump(BinaryStateLump.Movieheader, (tw) => tw.WriteLine(Header.ToString()));
-				bs.PutLump(BinaryStateLump.Input, (tw) => tw.WriteLine(RawInputLog()));
-
 				bs.PutLump(BinaryStateLump.Comments, (tw) => tw.WriteLine(CommentsString()));
 				bs.PutLump(BinaryStateLump.Subtitles, (tw) => tw.WriteLine(Subtitles.ToString()));
 				bs.PutLump(BinaryStateLump.SyncSettings, (tw) => tw.WriteLine(_syncSettingsJson));
 
+				bs.PutLump(BinaryStateLump.Input, (tw) => tw.WriteLine(RawInputLog()));
+
+				
 				if (StartsFromSavestate)
 				{
 					bs.PutLump(BinaryStateLump.CorestateText, (tw) => tw.WriteLine(SavestateBinaryBase64Blob));
@@ -87,6 +165,16 @@ namespace BizHawk.Client.Common
 			}
 
 			Changes = false;
+		}
+
+		private void ClearBeforeLoad()
+		{
+			Header.Clear();
+			_log.Clear();
+			Subtitles.Clear();
+			Comments.Clear();
+			_syncSettingsJson = string.Empty;
+			_savestateBlob = string.Empty;
 		}
 	}
 }
