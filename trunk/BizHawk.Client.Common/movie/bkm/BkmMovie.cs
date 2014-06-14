@@ -67,40 +67,62 @@ namespace BizHawk.Client.Common
 			get { return _changes; }
 		}
 
+		public double Fps
+		{
+			get
+			{
+				var system = Header[HeaderKeys.PLATFORM];
+				var pal = Header.ContainsKey(HeaderKeys.PAL) &&
+					Header[HeaderKeys.PAL] == "1";
+
+				return _frameRates[system, pal];
+			}
+		}
+
+		public TimeSpan Time
+		{
+			get
+			{
+				var dblseconds = GetSeconds(Loaded ? _log.Length : _preloadFramecount);
+				var seconds = (int)(dblseconds % 60);
+				var days = seconds / 86400;
+				var hours = seconds / 3600;
+				var minutes = (seconds / 60) % 60;
+				var milliseconds = (int)((dblseconds - seconds) * 1000);
+				return new TimeSpan(days, hours, minutes, seconds, milliseconds);
+			}
+		}
+
 		#endregion
 
 		#region Public Log Editing
 
 		public string GetInput(int frame)
 		{
-			if (frame < FrameCount)
+			if (frame < FrameCount && frame >= 0)
 			{
-				if (frame >= 0)
-				{
-					int getframe;
 
-					if (_loopOffset.HasValue)
-					{
-						if (frame < _log.Length)
-						{
-							getframe = frame;
-						}
-						else
-						{
-							getframe = ((frame - _loopOffset.Value) % (_log.Length - _loopOffset.Value)) + _loopOffset.Value;
-						}
-					}
-					else
+				int getframe;
+
+				if (_loopOffset.HasValue)
+				{
+					if (frame < _log.Length)
 					{
 						getframe = frame;
 					}
-
-					return _log[getframe];
+					else
+					{
+						getframe = ((frame - _loopOffset.Value) % (_log.Length - _loopOffset.Value)) + _loopOffset.Value;
+					}
 				}
-				
-				return string.Empty;
+				else
+				{
+					getframe = frame;
+				}
+
+				return _log[getframe];
 			}
-			
+
 			Finish();
 			return string.Empty;
 		}
@@ -155,20 +177,6 @@ namespace BizHawk.Client.Common
 			_log.SetFrameAt(frame, mg.GetControllersAsMnemonic());
 		}
 
-		public TimeSpan Time
-		{
-			get
-			{
-				var dblseconds = GetSeconds(Loaded ? _log.Length : _preloadFramecount);
-				var seconds = (int)(dblseconds % 60);
-				var days = seconds / 86400;
-				var hours = seconds / 3600;
-				var minutes = (seconds / 60) % 60;
-				var milliseconds = (int)((dblseconds - seconds) * 1000);
-				return new TimeSpan(days, hours, minutes, seconds, milliseconds);
-			}
-		}
-
 		#endregion
 
 		private double GetSeconds(int frameCount)
@@ -180,23 +188,7 @@ namespace BizHawk.Client.Common
 				return 0;
 			}
 
-			var system = Header[HeaderKeys.PLATFORM];
-			var pal = Header.ContainsKey(HeaderKeys.PAL) &&
-				Header[HeaderKeys.PAL] == "1";
-
-			return frames / _frameRates[system, pal];
-		}
-
-		public double Fps
-		{
-			get
-			{
-				var system = Header[HeaderKeys.PLATFORM];
-				var pal = Header.ContainsKey(HeaderKeys.PAL) &&
-					Header[HeaderKeys.PAL] == "1";
-
-				return _frameRates[system, pal];
-			}
+			return frames / Fps;
 		}
 	}
 }
