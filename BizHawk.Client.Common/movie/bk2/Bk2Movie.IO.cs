@@ -54,6 +54,8 @@ namespace BizHawk.Client.Common
 				_log.Clear();
 				Subtitles.Clear();
 				Comments.Clear();
+				_syncSettingsJson = string.Empty;
+				_savestateBlob = string.Empty;
 			}
 
 			throw new NotImplementedException();
@@ -76,6 +78,7 @@ namespace BizHawk.Client.Common
 
 				bs.PutLump(BinaryStateLump.Comments, (tw) => tw.WriteLine(CommentsString()));
 				bs.PutLump(BinaryStateLump.Subtitles, (tw) => tw.WriteLine(Subtitles.ToString()));
+				bs.PutLump(BinaryStateLump.SyncSettings, (tw) => tw.WriteLine(_syncSettingsJson));
 
 				if (StartsFromSavestate)
 				{
