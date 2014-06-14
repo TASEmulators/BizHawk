@@ -116,7 +116,7 @@ namespace BizHawk.Client.Common
 		/// Load Header information only for displaying file information in dialogs such as play movie
 		/// TODO - consider not loading the SavestateBinaryBase64Blob key?
 		/// </summary>
-		public bool PreLoadText(HawkFile hawkFile)
+		public bool PreLoadHeaderAndLength(HawkFile hawkFile)
 		{
 			Loaded = false;
 			var file = new FileInfo(hawkFile.CanonicalFullPath);

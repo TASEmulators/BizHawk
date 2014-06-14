@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 using BizHawk.Common;
@@ -47,7 +48,6 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static IEnumerable<string> MovieExtensions
 		{
-			// Movies 2.0 TODO: consider using reflection to find IMovie implementations
 			get
 			{
 				yield return "bkm";

@@ -133,7 +133,7 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		public bool PreLoadText(HawkFile hawkFile)
+		public bool PreLoadHeaderAndLength(HawkFile hawkFile)
 		{
 			// For now, preload simply loads everything
 			var file = new FileInfo(Filename);
