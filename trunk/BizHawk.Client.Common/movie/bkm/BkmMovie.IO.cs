@@ -99,7 +99,7 @@ namespace BizHawk.Client.Common
 					}
 					else if (line.StartsWith("|"))
 					{
-						_log.AppendFrame(line);
+						_log.Add(line);
 					}
 					else
 					{

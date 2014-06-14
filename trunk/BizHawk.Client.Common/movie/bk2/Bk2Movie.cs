@@ -50,7 +50,7 @@ namespace BizHawk.Client.Common
 					return double.PositiveInfinity;
 				}
 
-				return _log.Length;
+				return _log.Count;
 			}
 		}
 
@@ -70,7 +70,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				var dblseconds = GetSeconds(_log.Length);
+				var dblseconds = GetSeconds(_log.Count);
 				var seconds = (int)(dblseconds % 60);
 				var days = seconds / 86400;
 				var hours = seconds / 3600;
@@ -82,7 +82,7 @@ namespace BizHawk.Client.Common
 
 		public int InputLogLength
 		{
-			get { return _log.Length; }
+			get { return _log.Count; }
 		}
 
 		#region Log Editing
@@ -91,7 +91,7 @@ namespace BizHawk.Client.Common
 		{
 			var mg = new MnemonicsGenerator();
 			mg.SetSource(source);
-			_log.AppendFrame(mg.GetControllersAsMnemonic());
+			_log.Add(mg.GetControllersAsMnemonic());
 			Changes = true;
 		}
 
@@ -99,7 +99,7 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Config.VBAStyleMovieLoadState)
 			{
-				if (Global.Emulator.Frame < _log.Length)
+				if (Global.Emulator.Frame < _log.Count)
 				{
 					_log.TruncateMovie(Global.Emulator.Frame);
 				}
@@ -127,13 +127,13 @@ namespace BizHawk.Client.Common
 
 				if (LoopOffset.HasValue)
 				{
-					if (frame < _log.Length)
+					if (frame < _log.Count)
 					{
 						getframe = frame;
 					}
 					else
 					{
-						getframe = ((frame - LoopOffset.Value) % (_log.Length - LoopOffset.Value)) + LoopOffset.Value;
+						getframe = ((frame - LoopOffset.Value) % (_log.Count - LoopOffset.Value)) + LoopOffset.Value;
 					}
 				}
 				else

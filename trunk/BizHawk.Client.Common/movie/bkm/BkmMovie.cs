@@ -40,7 +40,7 @@ namespace BizHawk.Client.Common
 		
 		public int InputLogLength
 		{
-			get { return _log.Length; }
+			get { return _log.Count; }
 		}
 
 		public double FrameCount
@@ -54,7 +54,7 @@ namespace BizHawk.Client.Common
 				
 				if (Loaded)
 				{
-					return _log.Length;
+					return _log.Count;
 				}
 
 				return _preloadFramecount;
@@ -82,7 +82,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				var dblseconds = GetSeconds(Loaded ? _log.Length : _preloadFramecount);
+				var dblseconds = GetSeconds(Loaded ? _log.Count : _preloadFramecount);
 				var seconds = (int)(dblseconds % 60);
 				var days = seconds / 86400;
 				var hours = seconds / 3600;
@@ -105,13 +105,13 @@ namespace BizHawk.Client.Common
 
 				if (_loopOffset.HasValue)
 				{
-					if (frame < _log.Length)
+					if (frame < _log.Count)
 					{
 						getframe = frame;
 					}
 					else
 					{
-						getframe = ((frame - _loopOffset.Value) % (_log.Length - _loopOffset.Value)) + _loopOffset.Value;
+						getframe = ((frame - _loopOffset.Value) % (_log.Count - _loopOffset.Value)) + _loopOffset.Value;
 					}
 				}
 				else
@@ -136,14 +136,13 @@ namespace BizHawk.Client.Common
 		{
 			var mg = new MnemonicsGenerator();
 			mg.SetSource(source);
-			_log.AppendFrame(mg.GetControllersAsMnemonic());
+			_log.Add(mg.GetControllersAsMnemonic());
 			_changes = true;
 		}
 
 		public void Truncate(int frame)
 		{
 			_log.TruncateMovie(frame);
-			_log.TruncateStates(frame);
 			_changes = true;
 		}
 
@@ -163,7 +162,7 @@ namespace BizHawk.Client.Common
 			// this allows users to restore a movie with any savestate from that "timeline"
 			if (Global.Config.VBAStyleMovieLoadState)
 			{
-				if (Global.Emulator.Frame < _log.Length)
+				if (Global.Emulator.Frame < _log.Count)
 				{
 					_log.TruncateMovie(Global.Emulator.Frame);
 				}
