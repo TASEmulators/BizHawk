@@ -55,6 +55,7 @@ namespace BizHawk.Client.Common
 		public string FFMpegPath = "%exe%/dll/ffmpeg.exe";
 
 		// General Client Settings
+		public bool DontAskPerformanceCoreRecordingNag = false;
 		public int Input_Hotkey_OverrideOptions = 0;
 		public bool StackOSDMessages = true;
 		public int TargetZoomFactor = 2;
