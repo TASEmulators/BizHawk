@@ -101,7 +101,7 @@ namespace BizHawk.Client.Common
 			{
 				if (Global.Emulator.Frame < _log.Count)
 				{
-					_log.TruncateMovie(Global.Emulator.Frame);
+					_log.Truncate(Global.Emulator.Frame);
 				}
 			}
 
@@ -114,7 +114,7 @@ namespace BizHawk.Client.Common
 
 		public void Truncate(int frame)
 		{
-			_log.TruncateMovie(frame);
+			_log.Truncate(frame);
 			Changes = true;
 		}
 

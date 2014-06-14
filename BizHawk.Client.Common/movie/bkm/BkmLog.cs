@@ -22,12 +22,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void DeleteFrame(int frame)
-		{
-			this.RemoveAt(frame);
-		}
-
-		public void TruncateMovie(int frame)
+		public void Truncate(int frame)
 		{
 			if (frame < this.Count)
 			{
