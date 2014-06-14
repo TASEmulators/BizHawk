@@ -121,7 +121,10 @@ namespace BizHawk.Client.Common
 						string line;
 						while ((line = tr.ReadLine()) != null)
 						{
-							// TODO: savestate
+							if (!string.IsNullOrWhiteSpace(line))
+							{
+								SavestateBinaryBase64Blob = line;
+							}
 						}
 					});
 				}
