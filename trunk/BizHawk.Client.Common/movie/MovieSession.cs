@@ -148,9 +148,9 @@ namespace BizHawk.Client.Common
 					else if (Global.Config.MoviePlaybackPokeMode)
 					{
 						LatchInputFromPlayer(Global.MovieInputSourceAdapter);
-						var mg = new MnemonicsGenerator();
-						mg.SetSource(Global.MovieOutputHardpoint);
-						if (!mg.IsEmpty)
+						var lg = Movie.LogGeneratorInstance();
+						lg.SetSource(Global.MovieOutputHardpoint);
+						if (!lg.IsEmpty)
 						{
 							LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 							Movie.PokeFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);

@@ -5,18 +5,9 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	// Used with the version 1 movie implementation
-	public class MnemonicsGenerator
+	public class BkmLogEntryGenerator : ILogEntryGenerator
 	{
 		private IController _source;
-
-		public bool this[int player, string mnemonic]
-		{
-			get
-			{
-				return IsBasePressed("P" + player + " " + mnemonic); // TODO: not every controller uses "P"
-			}
-		}
 
 		public void SetSource(IController source)
 		{
@@ -24,15 +15,183 @@ namespace BizHawk.Client.Common
 			_controlType = source.Type.Name;
 		}
 
+		public string GenerateLogEntry()
+		{
+			if (_controlType == "Null Controller")
+			{
+				return "|.|";
+			}
+			else if (_controlType == "Atari 7800 ProLine Joystick Controller")
+			{
+				return GetA78ControllersAsMnemonic();
+			}
+			else if (_controlType == "SNES Controller")
+			{
+				return GetSNESControllersAsMnemonic();
+			}
+			else if (_controlType == "Commodore 64 Controller")
+			{
+				return GetC64ControllersAsMnemonic();
+			}
+			else if (_controlType == "GBA Controller")
+			{
+				return GetGBAControllersAsMnemonic();
+			}
+			else if (_controlType == "Dual Gameboy Controller")
+			{
+				return GetDualGameBoyControllerAsMnemonic();
+			}
+			else if (_controlType == "WonderSwan Controller")
+			{
+				return GetWonderSwanControllerAsMnemonic();
+			}
+			else if (_controlType == "Nintento 64 Controller")
+			{
+				return GetN64ControllersAsMnemonic();
+			}
+			else if (_controlType == "Saturn Controller")
+			{
+				return GetSaturnControllersAsMnemonic();
+			}
+			else if (_controlType == "PSP Controller")
+			{
+				return "|.|"; // TODO
+			}
+			else if (_controlType == "GPGX Genesis Controller")
+			{
+				return GetGeneis6ButtonControllersAsMnemonic();
+			}
+
+			var input = new StringBuilder("|");
+
+			if (_controlType == "PC Engine Controller")
+			{
+				input.Append(".");
+			}
+			else if (_controlType == "Atari 2600 Basic Controller")
+			{
+				input.Append(IsBasePressed("Reset") ? "r" : ".");
+				input.Append(IsBasePressed("Select") ? "s" : ".");
+			}
+			else if (_controlType == "NES Controller")
+			{
+				if (IsBasePressed("Power"))
+				{
+					input.Append(MnemonicConstants.COMMANDS[_controlType]["Power"]);
+				}
+				else if (IsBasePressed("Reset"))
+				{
+					input.Append(MnemonicConstants.COMMANDS[_controlType]["Reset"]);
+				}
+				else if (IsBasePressed("FDS Eject"))
+				{
+					input.Append(MnemonicConstants.COMMANDS[_controlType]["FDS Eject"]);
+				}
+				else if (IsBasePressed("FDS Insert 0"))
+				{
+					input.Append("0");
+				}
+				else if (IsBasePressed("FDS Insert 1"))
+				{
+					input.Append("1");
+				}
+				else if (IsBasePressed("FDS Insert 2"))
+				{
+					input.Append("2");
+				}
+				else if (IsBasePressed("FDS Insert 3"))
+				{
+					input.Append("3");
+				}
+				else if (IsBasePressed("VS Coin 1"))
+				{
+					input.Append(MnemonicConstants.COMMANDS[_controlType]["VS Coin 1"]);
+				}
+				else if (IsBasePressed("VS Coin 2"))
+				{
+					input.Append(MnemonicConstants.COMMANDS[_controlType]["VS Coin 2"]);
+				}
+				else
+				{
+					input.Append('.');
+				}
+			}
+			else if (_controlType == "Genesis 3-Button Controller")
+			{
+				if (IsBasePressed("Power"))
+				{
+					input.Append(MnemonicConstants.COMMANDS[_controlType]["Power"]);
+				}
+				else if (IsBasePressed("Reset"))
+				{
+					input.Append(MnemonicConstants.COMMANDS[_controlType]["Reset"]);
+				}
+				else
+				{
+					input.Append('.');
+				}
+			}
+			else if (_controlType == "Gameboy Controller")
+			{
+				input.Append(IsBasePressed("Power") ? MnemonicConstants.COMMANDS[_controlType]["Power"] : ".");
+			}
+
+			if (_controlType != "SMS Controller" && _controlType != "TI83 Controller" && _controlType != "ColecoVision Basic Controller")
+			{
+				input.Append("|");
+			}
+
+			for (int player = 1; player <= MnemonicConstants.PLAYERS[_controlType]; player++)
+			{
+				var prefix = String.Empty;
+				if (_controlType != "Gameboy Controller" && _controlType != "TI83 Controller")
+				{
+					prefix = "P" + player + " ";
+				}
+
+				foreach (var button in MnemonicConstants.BUTTONS[_controlType].Keys)
+				{
+					input.Append(IsBasePressed(prefix + button) ? MnemonicConstants.BUTTONS[_controlType][button] : ".");
+				}
+
+				input.Append("|");
+			}
+
+			if (_controlType == "SMS Controller")
+			{
+				foreach (var command in MnemonicConstants.COMMANDS[_controlType].Keys)
+				{
+					input.Append(IsBasePressed(command) ? MnemonicConstants.COMMANDS[_controlType][command] : ".");
+				}
+
+				input.Append("|");
+			}
+
+			if (_controlType == "TI83 Controller")
+			{
+				input.Append(".|"); // TODO: perhaps ON should go here?
+			}
+
+			return input.ToString();
+		}
+
+		public string GenerateInputDisplay()
+		{
+			return GenerateLogEntry()
+				.Replace(".", " ")
+				.Replace("|", "")
+				.Replace(" 000, 000", "         ");
+		}
+
 		public bool IsEmpty
 		{
 			get
 			{
-				return EmptyMnemonic == GetControllersAsMnemonic();
+				return EmptyEntry == GenerateLogEntry();
 			}
 		}
 
-		public string EmptyMnemonic
+		public string EmptyEntry
 		{
 			get
 			{
@@ -377,166 +536,6 @@ namespace BizHawk.Client.Common
 			}
 
 			input.Append("|");
-			return input.ToString();
-		}
-
-		public string GetControllersAsMnemonic()
-		{
-			if (_controlType == "Null Controller")
-			{
-				return "|.|";
-			}
-			else if (_controlType == "Atari 7800 ProLine Joystick Controller")
-			{
-				return GetA78ControllersAsMnemonic();
-			}
-			else if (_controlType == "SNES Controller")
-			{
-				return GetSNESControllersAsMnemonic();
-			}
-			else if (_controlType == "Commodore 64 Controller")
-			{
-				return GetC64ControllersAsMnemonic();
-			}
-			else if (_controlType == "GBA Controller")
-			{
-				return GetGBAControllersAsMnemonic();
-			}
-			else if (_controlType == "Dual Gameboy Controller")
-			{
-				return GetDualGameBoyControllerAsMnemonic();
-			}
-			else if (_controlType == "WonderSwan Controller")
-			{
-				return GetWonderSwanControllerAsMnemonic();
-			}
-			else if (_controlType == "Nintento 64 Controller")
-			{
-				return GetN64ControllersAsMnemonic();
-			}
-			else if (_controlType == "Saturn Controller")
-			{
-				return GetSaturnControllersAsMnemonic();
-			}
-			else if (_controlType == "PSP Controller")
-			{
-				return "|.|"; // TODO
-			}
-			else if (_controlType == "GPGX Genesis Controller")
-			{
-				return GetGeneis6ButtonControllersAsMnemonic();
-			}
-
-			var input = new StringBuilder("|");
-
-			if (_controlType == "PC Engine Controller")
-			{
-				input.Append(".");
-			}
-			else if (_controlType == "Atari 2600 Basic Controller")
-			{
-				input.Append(IsBasePressed("Reset") ? "r" : ".");
-				input.Append(IsBasePressed("Select") ? "s" : ".");
-			}
-			else if (_controlType == "NES Controller")
-			{
-				if (IsBasePressed("Power"))
-				{
-					input.Append(MnemonicConstants.COMMANDS[_controlType]["Power"]);
-				}
-				else if (IsBasePressed("Reset"))
-				{
-					input.Append(MnemonicConstants.COMMANDS[_controlType]["Reset"]);
-				}
-				else if (IsBasePressed("FDS Eject"))
-				{
-					input.Append(MnemonicConstants.COMMANDS[_controlType]["FDS Eject"]);
-				}
-				else if (IsBasePressed("FDS Insert 0"))
-				{
-					input.Append("0");
-				}
-				else if (IsBasePressed("FDS Insert 1"))
-				{
-					input.Append("1");
-				}
-				else if (IsBasePressed("FDS Insert 2"))
-				{
-					input.Append("2");
-				}
-				else if (IsBasePressed("FDS Insert 3"))
-				{
-					input.Append("3");
-				}
-				else if (IsBasePressed("VS Coin 1"))
-				{
-					input.Append(MnemonicConstants.COMMANDS[_controlType]["VS Coin 1"]);
-				}
-				else if (IsBasePressed("VS Coin 2"))
-				{
-					input.Append(MnemonicConstants.COMMANDS[_controlType]["VS Coin 2"]);
-				}
-				else
-				{
-					input.Append('.');
-				}
-			}
-			else if (_controlType == "Genesis 3-Button Controller")
-			{
-				if (IsBasePressed("Power"))
-				{
-					input.Append(MnemonicConstants.COMMANDS[_controlType]["Power"]);
-				}
-				else if (IsBasePressed("Reset"))
-				{
-					input.Append(MnemonicConstants.COMMANDS[_controlType]["Reset"]);
-				}
-				else
-				{
-					input.Append('.');
-				}
-			}
-			else if (_controlType == "Gameboy Controller")
-			{
-				input.Append(IsBasePressed("Power") ? MnemonicConstants.COMMANDS[_controlType]["Power"] : ".");
-			}
-
-			if (_controlType != "SMS Controller" && _controlType != "TI83 Controller" && _controlType != "ColecoVision Basic Controller")
-			{
-				input.Append("|");
-			}
-
-			for (int player = 1; player <= MnemonicConstants.PLAYERS[_controlType]; player++)
-			{
-				var prefix = String.Empty;
-				if (_controlType != "Gameboy Controller" && _controlType != "TI83 Controller")
-				{
-					prefix = "P" + player + " ";
-				}
-
-				foreach (var button in MnemonicConstants.BUTTONS[_controlType].Keys)
-				{
-					input.Append(IsBasePressed(prefix + button) ? MnemonicConstants.BUTTONS[_controlType][button] : ".");
-				}
-
-				input.Append("|");
-			}
-
-			if (_controlType == "SMS Controller")
-			{
-				foreach (var command in MnemonicConstants.COMMANDS[_controlType].Keys)
-				{
-					input.Append(IsBasePressed(command) ? MnemonicConstants.COMMANDS[_controlType][command] : ".");
-				}
-
-				input.Append("|");
-			}
-
-			if (_controlType == "TI83 Controller")
-			{
-				input.Append(".|"); // TODO: perhaps ON should go here?
-			}
-
 			return input.ToString();
 		}
 

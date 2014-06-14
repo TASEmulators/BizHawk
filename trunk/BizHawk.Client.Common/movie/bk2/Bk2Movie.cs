@@ -41,6 +41,11 @@ namespace BizHawk.Client.Common
 		public bool Changes { get; private set; }
 		public bool IsCountingRerecords { get; set; }
 
+		public ILogEntryGenerator LogGeneratorInstance()
+		{
+			return new BkmLogEntryGenerator();
+		}
+
 		public double FrameCount
 		{
 			get
@@ -89,9 +94,9 @@ namespace BizHawk.Client.Common
 
 		public void AppendFrame(IController source)
 		{
-			var mg = new MnemonicsGenerator();
+			var mg = new BkmLogEntryGenerator();
 			mg.SetSource(source);
-			_log.Add(mg.GetControllersAsMnemonic());
+			_log.Add(mg.GenerateLogEntry());
 			Changes = true;
 		}
 
@@ -105,11 +110,11 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			var mg = new MnemonicsGenerator();
-			mg.SetSource(source);
+			var lg = LogGeneratorInstance();
+			lg.SetSource(source);
+			_log.SetFrameAt(frame, lg.GenerateLogEntry());
 
 			Changes = true;
-			_log.SetFrameAt(frame, mg.GetControllersAsMnemonic());
 		}
 
 		public void Truncate(int frame)
@@ -148,6 +153,16 @@ namespace BizHawk.Client.Common
 			return string.Empty;
 		}
 
+		public void PokeFrame(int frame, IController source)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void ClearFrame(int frame)
+		{
+			_log.SetFrameAt(frame, LogGeneratorInstance().EmptyEntry);
+		}
+
 		#endregion
 
 		private double GetSeconds(int frameCount)
@@ -161,19 +176,5 @@ namespace BizHawk.Client.Common
 
 			return frames / Fps;
 		}
-
-		#region Probably won't support
-
-		public void PokeFrame(int frame, IController source)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void ClearFrame(int frame)
-		{
-			throw new NotImplementedException();
-		}
-
-		#endregion
 	}
 }

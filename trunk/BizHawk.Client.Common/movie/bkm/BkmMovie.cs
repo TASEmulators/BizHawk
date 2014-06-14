@@ -32,6 +32,11 @@ namespace BizHawk.Client.Common
 
 		#region Properties
 
+		public ILogEntryGenerator LogGeneratorInstance()
+		{
+			return new BkmLogEntryGenerator();
+		}
+
 		public string PreferredExtension { get { return "bkm"; } }
 		public BkmHeader Header { get; private set; }
 		public string Filename { get; set; }
@@ -128,15 +133,16 @@ namespace BizHawk.Client.Common
 
 		public void ClearFrame(int frame)
 		{
-			_log.SetFrameAt(frame, new MnemonicsGenerator().EmptyMnemonic);
+			var lg = LogGeneratorInstance();
+			_log.SetFrameAt(frame, lg.EmptyEntry);
 			_changes = true;
 		}
 
 		public void AppendFrame(IController source)
 		{
-			var mg = new MnemonicsGenerator();
-			mg.SetSource(source);
-			_log.Add(mg.GetControllersAsMnemonic());
+			var lg = LogGeneratorInstance();
+			lg.SetSource(source);
+			_log.Add(lg.GenerateLogEntry());
 			_changes = true;
 		}
 
@@ -148,11 +154,11 @@ namespace BizHawk.Client.Common
 
 		public void PokeFrame(int frame, IController source)
 		{
-			var mg = new MnemonicsGenerator();
-			mg.SetSource(source);
+			var lg = LogGeneratorInstance();
+			lg.SetSource(source);
 
 			_changes = true;
-			_log.SetFrameAt(frame, mg.GetControllersAsMnemonic());
+			_log.SetFrameAt(frame, lg.GenerateLogEntry());
 		}
 
 		public void RecordFrame(int frame, IController source)
@@ -168,11 +174,11 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			var mg = new MnemonicsGenerator();
-			mg.SetSource(source);
+			var lg = LogGeneratorInstance();
+			lg.SetSource(source);
+			_log.SetFrameAt(frame, lg.GenerateLogEntry());
 
 			_changes = true;
-			_log.SetFrameAt(frame, mg.GetControllersAsMnemonic());
 		}
 
 		#endregion
