@@ -160,6 +160,32 @@ namespace BizHawk.Client.Common
 			set { Header[HeaderKeys.FIRMWARESHA1] = value; }
 		}
 
+		private int? LoopOffset
+		{
+			get
+			{
+				var offsetStr = Header[HeaderKeys.LOOPOFFSET];
+				if (!string.IsNullOrWhiteSpace(offsetStr))
+				{
+					return int.Parse(offsetStr);
+				}
+
+				return null;
+			}
+
+			set
+			{
+				if (value.HasValue)
+				{
+					Header[HeaderKeys.LOOPOFFSET] = value.ToString();
+				}
+				else
+				{
+					Header.Remove(HeaderKeys.LOOPOFFSET);
+				}
+			}
+		}
+
 		private string CommentsString()
 		{
 			StringBuilder sb = new StringBuilder();

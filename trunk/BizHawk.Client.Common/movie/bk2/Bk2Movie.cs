@@ -14,7 +14,6 @@ namespace BizHawk.Client.Common
 		// Movies 2.0 TODO: save and load loopOffset, put in header object
 		private readonly PlatformFrameRates _frameRates = new PlatformFrameRates();
 		private bool _makeBackup = true;
-		private int? _loopOffset;
 
 		public Bk2Movie(string filename, bool startsFromSavestate = false)
 			: this(startsFromSavestate)
@@ -45,7 +44,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (_loopOffset.HasValue)
+				if (LoopOffset.HasValue)
 				{
 					return double.PositiveInfinity;
 				}
@@ -125,7 +124,7 @@ namespace BizHawk.Client.Common
 
 				int getframe;
 
-				if (_loopOffset.HasValue)
+				if (LoopOffset.HasValue)
 				{
 					if (frame < _log.Length)
 					{
@@ -133,7 +132,7 @@ namespace BizHawk.Client.Common
 					}
 					else
 					{
-						getframe = ((frame - _loopOffset.Value) % (_log.Length - _loopOffset.Value)) + _loopOffset.Value;
+						getframe = ((frame - LoopOffset.Value) % (_log.Length - LoopOffset.Value)) + LoopOffset.Value;
 					}
 				}
 				else
