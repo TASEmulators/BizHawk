@@ -160,7 +160,6 @@ namespace BizHawk.Client.Common
 
 				bs.PutLump(BinaryStateLump.Input, (tw) => tw.WriteLine(RawInputLog()));
 
-				
 				if (StartsFromSavestate)
 				{
 					bs.PutLump(BinaryStateLump.CorestateText, (tw) => tw.WriteLine(SavestateBinaryBase64Blob));
