@@ -36,7 +36,7 @@ namespace BizHawk.Client.Common
 
 		public string Filename { get; set; }
 
-		public string PreferredExtension { get { return "bk2"; } }
+		public virtual string PreferredExtension { get { return "bk2"; } }
 
 		public bool Changes { get; private set; }
 		public bool IsCountingRerecords { get; set; }
