@@ -7,7 +7,7 @@ namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie : IMovie
 	{
-		private readonly Bk2Header Header = new Bk2Header();
+		protected readonly Bk2Header Header = new Bk2Header();
 		private string _syncSettingsJson = string.Empty;
 		private string _savestateBlob = string.Empty;
 
