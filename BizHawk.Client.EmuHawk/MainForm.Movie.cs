@@ -7,6 +7,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -145,8 +146,36 @@ namespace BizHawk.Client.EmuHawk
 					"is currently BETA-status.  We appreciate your help in testing Bizhawk. " +
 					"You can record a movie on this core if you'd like to, but expect to " +
 					"encounter bugs and sync problems.  Continue?", "BizHawk", MessageBoxButtons.YesNo);
-				if (result != DialogResult.Yes) return;
+
+				if (result != DialogResult.Yes)
+				{
+					return;
+				}
 			}
+			else if (Global.Emulator is LibsnesCore)
+			{
+				var ss = (LibsnesCore.SnesSyncSettings)Global.Emulator.GetSyncSettings();
+				if (ss.Profile == "Performance")
+				{
+					var result = MessageBox.Show(
+						this,
+						"While the performance core is faster, it is recommended that you use the Compatibility profile when recording movies for better accuracy and stability\nSwitch to Compatibility?",
+						"Stability Warning",
+						MessageBoxButtons.YesNoCancel,
+						MessageBoxIcon.Warning);
+
+					if (result == DialogResult.Yes)
+					{
+						ss.Profile = "Compatibility";
+						Global.Emulator.PutSyncSettings(ss);
+					}
+					else if (result == DialogResult.Cancel)
+					{
+						return;
+					}
+				}
+			}
+
 			new RecordMovie().ShowDialog();
 		}
 
