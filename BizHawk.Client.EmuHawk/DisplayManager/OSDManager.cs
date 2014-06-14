@@ -230,12 +230,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputStrImmediate()
 		{
-			var mg = new MnemonicsGenerator();
-			mg.SetSource(Global.AutofireStickyXORAdapter);
+			var lg = Global.MovieSession.Movie.LogGeneratorInstance();
+			lg.SetSource(Global.AutofireStickyXORAdapter);
 
-			var sb = new StringBuilder(mg.GetControllersAsMnemonic());
-			sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
-			return sb.ToString();
+			return lg.GenerateInputDisplay();
 		}
 
 		public string InputPrevious()
@@ -266,12 +264,9 @@ namespace BizHawk.Client.EmuHawk
 				SourceOr = m
 			};
 
-			var mg = new MnemonicsGenerator();
+			var mg = Global.MovieSession.Movie.LogGeneratorInstance();
 			mg.SetSource(orAdaptor);
-
-			var sb = new StringBuilder(mg.GetControllersAsMnemonic());
-			sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
-			return sb.ToString();
+			return mg.GenerateInputDisplay();
 		}
 
 		public string InputStrSticky()
@@ -282,11 +277,9 @@ namespace BizHawk.Client.EmuHawk
 				SourceStickyOr = Global.AutofireStickyXORAdapter
 			};
 
-			var mg = new MnemonicsGenerator();
-			mg.SetSource(stickyOr);
-			var sb = new StringBuilder(mg.GetControllersAsMnemonic());
-			sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
-			return sb.ToString();
+			var lg = Global.MovieSession.Movie.LogGeneratorInstance();
+			lg.SetSource(stickyOr);
+			return lg.GenerateInputDisplay();
 		}
 
 		public string MakeIntersectImmediatePrevious()
@@ -303,15 +296,11 @@ namespace BizHawk.Client.EmuHawk
 					SourceAnd = m
 				};
 
-				var mg = new MnemonicsGenerator();
-				mg.SetSource(andAdaptor);
-
-				var sb = new StringBuilder(mg.GetControllersAsMnemonic());
-				sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
-				return sb.ToString();
+				var lg = Global.MovieSession.Movie.LogGeneratorInstance();
+				lg.SetSource(andAdaptor);
+				return lg.GenerateInputDisplay();
 			}
 
-			// TODO: track previous input even when not movie recording
 			return string.Empty;
 		}
 

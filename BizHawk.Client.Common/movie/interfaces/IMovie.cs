@@ -91,6 +91,11 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		void SaveBackup();
 
+		/// <summary>
+		/// Creates an instance of the Input log entry used to generate the input log
+		/// </summary>
+		ILogEntryGenerator LogGeneratorInstance();
+
 		#endregion
 
 		#region File Handling API

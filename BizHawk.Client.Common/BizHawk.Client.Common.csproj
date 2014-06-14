@@ -148,6 +148,7 @@
     <Compile Include="movie\bkm\BkmMovie.ModeApi.cs" />
     <Compile Include="movie\HeaderKeys.cs" />
     <Compile Include="movie\InputAdapters.cs" />
+    <Compile Include="movie\interfaces\ILogEntryGenerator.cs" />
     <Compile Include="movie\interfaces\IMovie.cs" />
     <Compile Include="movie\MnemonicsGenerator.cs" />
     <Compile Include="movie\MovieImport.cs" />
