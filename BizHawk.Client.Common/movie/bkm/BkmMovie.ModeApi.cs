@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.Common
+﻿using System.Linq;
+
+namespace BizHawk.Client.Common
 {
 	public partial class BkmMovie : IMovie
 	{
@@ -38,7 +40,7 @@
 			}
 
 			_mode = Moviemode.Record;
-			if (Global.Config.EnableBackupMovies && _makeBackup && _log.Length > 0)
+			if (Global.Config.EnableBackupMovies && _makeBackup && _log.Any())
 			{
 				SaveBackup();
 				_makeBackup = false;

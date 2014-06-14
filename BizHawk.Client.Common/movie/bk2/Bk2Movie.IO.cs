@@ -43,7 +43,7 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			using (BinaryStateLoader bl = BinaryStateLoader.LoadAndDetect(Filename))
+			using (BinaryStateLoader bl = BinaryStateLoader.LoadAndDetect(Filename, true))
 			{
 				if (bl == null)
 				{
@@ -108,7 +108,7 @@ namespace BizHawk.Client.Common
 					{
 						if (line != null && line.StartsWith("|"))
 						{
-							_log.AppendFrame(line);
+							_log.Add(line);
 						}
 					}
 				});

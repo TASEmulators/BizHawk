@@ -71,7 +71,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (result == DialogResult.No)
 				{
-					_tas.Changes = false;
 					return true;
 				}
 				else if (result == DialogResult.Cancel)
@@ -166,7 +165,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				var result = MessageBox.Show("Warning, Tastudio doesn't support .bkm movie files at this time, opening this will cause you to lose your work, proceed? If you have unsaved changes you should cancel this, and savebefore opening TAStudio", "Unsupported movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+				var result = MessageBox.Show("Warning, Tastudio doesn't support regular movie files at this time, opening this will cause you to lose your work, proceed? If you have unsaved changes you should cancel this, and savebefore opening TAStudio", "Unsupported movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
 				if (result != DialogResult.Yes)
 				{
 					Close();
@@ -184,8 +183,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				EngageTasStudio();
 			}
-
-			_tas.ActivePlayers = new List<string> { "Player 1" }; // TODO
 
 			SetUpColumns();
 			LoadConfigSettings();
@@ -218,7 +215,7 @@ namespace BizHawk.Client.EmuHawk
 			AddColumn(MarkerColumnName, String.Empty, 18);
 			AddColumn(FrameColumnName, "Frame#", 68);
 
-			foreach (var kvp in _tas.AvailableMnemonics)
+			foreach (var kvp in _tas.ColumnNames)
 			{
 				AddColumn(kvp.Key, kvp.Value.ToString(), 20);
 			}
@@ -492,11 +489,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					_tas.ToggleButton(TasView.PointedCell.Row.Value, TasView.PointedCell.Column);
+					//_tas.ToggleButton(TasView.PointedCell.Row.Value, TasView.PointedCell.Column);
 					TasView.Refresh();
 
 					_startDrawColumn = TasView.PointedCell.Column;
-					_startOn = _tas.IsPressed(TasView.PointedCell.Row.Value, TasView.PointedCell.Column);
+					//_startOn = _tas.IsPressed(TasView.PointedCell.Row.Value, TasView.PointedCell.Column);
 				}
 			}
 		}
@@ -541,7 +538,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (TasView.IsPaintDown && e.NewCell.Row.HasValue && !string.IsNullOrEmpty(_startDrawColumn))
 			{
-				_tas.SetButton(e.NewCell.Row.Value, _startDrawColumn, _startOn); // Notice it uses new row, old column, you can only paint across a single column
+				_tas.SetBoolButton(e.NewCell.Row.Value, _startDrawColumn, _startOn); // Notice it uses new row, old column, you can only paint across a single column
 				TasView.Refresh();
 			}
 		}

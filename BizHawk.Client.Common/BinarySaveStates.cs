@@ -104,7 +104,7 @@ namespace BizHawk.Client.Common
 			Console.WriteLine("Read a zipstate of version {0}", _ver);
 		}
 
-		public static BinaryStateLoader LoadAndDetect(string filename)
+		public static BinaryStateLoader LoadAndDetect(string filename, bool isMovieLoad = false)
 		{
 			var ret = new BinaryStateLoader();
 
@@ -126,7 +126,8 @@ namespace BizHawk.Client.Common
 			try
 			{
 				ret._zip = new ZipFile(filename);
-				if (!ret.GetLump(BinaryStateLump.Versiontag, false, ret.ReadVersion))
+
+				if (!isMovieLoad && !ret.GetLump(BinaryStateLump.Versiontag, false, ret.ReadVersion))
 				{
 					ret._zip.Close();
 					return null;
