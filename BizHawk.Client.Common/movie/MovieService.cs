@@ -13,9 +13,17 @@ namespace BizHawk.Client.Common
 		public static IMovie Get(string path)
 		{
 			// TODO: open the file and determine the format, and instantiate the appropriate implementation
-			// Currently we just assume it is a bkm implementation
+			// Currently we just use the file extension
 			// TODO: change IMovies to take HawkFiles only and not path
-			return new BkmMovie(path);
+			// TOOD: tasproj
+			if (Path.GetExtension(path).EndsWith("bk2"))
+			{
+				return new Bk2Movie(path);
+			}
+			else
+			{
+				return new BkmMovie(path);
+			}
 		}
 
 		/// <summary>
@@ -23,7 +31,15 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static string DefaultExtension
 		{
-			get { return "bkm"; }
+			get
+			{
+				if (VersionInfo.DeveloperBuild)
+				{
+					return "bk2";
+				}
+
+				return "bkm";
+			}
 		}
 
 		/// <summary>
@@ -58,6 +74,11 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
+				if (VersionInfo.DeveloperBuild)
+				{
+					return new Bk2Movie();
+				}
+
 				return new BkmMovie();
 			}
 		}
