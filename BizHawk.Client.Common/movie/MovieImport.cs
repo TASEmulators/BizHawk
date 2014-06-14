@@ -6,6 +6,7 @@ using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.Common
 {
@@ -1115,9 +1116,7 @@ namespace BizHawk.Client.Common
 						case "sgb_ntsc":
 						case "sgb_pal":
 							platform = "SNES";
-							// Movies 2.0 TODO: populating this flag wasn't doing anything useful
-							// Figure out how to properly set sync settings to set it to sgb
-							//m.Header[HeaderKeys.SGB] = "True";
+							Global.Config.GB_AsSGB = true;
 							break;
 					}
 					bool pal = (gametype == "snes_pal" || gametype == "sgb_pal");

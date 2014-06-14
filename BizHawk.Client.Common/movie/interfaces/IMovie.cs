@@ -56,10 +56,14 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		string SyncSettingsJson { get; set; }
 
-		// TODO: document these
 		SubtitleList Subtitles { get; }
 		IList<string> Comments { get; }
+
+		/// <summary>
+		/// For savestate anchored movies, this is the starting savestate
+		/// </summary>
 		string SavestateBinaryBase64Blob { get; set; }
+
 		ulong Rerecords { get; set; }
 		bool StartsFromSavestate { get; set; }
 		string GameName { get; set; }
@@ -72,7 +76,11 @@ namespace BizHawk.Client.Common
 		string FirmwareHash { get; set; }
 		string BoardName { get; set; }
 
-		bool PreLoadText(HawkFile hawkFile); // Movies 2.0 TODO: find a better way to not need this
+		/// <summary>
+		/// Loads from the HawkFile the minimal amount of information needed to determine Header info and Movie length
+		/// This method is intended to be more performant than a full load
+		/// </summary>
+		bool PreLoadHeaderAndLength(HawkFile hawkFile);
 		
 		/// <summary>
 		/// Returns header key value pairs stored in the movie file

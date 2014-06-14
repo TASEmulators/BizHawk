@@ -11,7 +11,6 @@ namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie : IMovie
 	{
-		// Movies 2.0 TODO: save and load loopOffset, put in header object
 		private readonly PlatformFrameRates _frameRates = new PlatformFrameRates();
 		private bool _makeBackup = true;
 

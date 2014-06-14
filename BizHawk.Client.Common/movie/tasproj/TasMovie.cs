@@ -267,7 +267,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool PreLoadText(HawkFile hawkFile)
+		public bool PreLoadHeaderAndLength(HawkFile hawkFile)
 		{
 			throw new NotImplementedException();
 		}
