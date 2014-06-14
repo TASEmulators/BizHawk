@@ -58,8 +58,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				// Movies 2.0 TODO
-				IMovie movieToRecord = MovieService.Get(path);
+				var movieToRecord = MovieService.Get(path);
 
 				if (StartFromCombo.SelectedItem.ToString() == "Now")
 				{
@@ -84,7 +83,6 @@ namespace BizHawk.Client.EmuHawk
 				movieToRecord.EmulatorVersion = VersionInfo.GetEmuVersion();
 				movieToRecord.Platform = Global.Game.System;
 
-				// Sync Settings, for movies 1.0, just dump a json blob into a header line
 				movieToRecord.SyncSettingsJson = ConfigService.SaveWithType(Global.Emulator.GetSyncSettings());
 
 				if (Global.Game != null)
