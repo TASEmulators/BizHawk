@@ -156,14 +156,14 @@ namespace BizHawk.Client.Common
 			{
 				if (!Global.Config.VBAStyleMovieLoadState)
 				{
-					_log.TruncateMovie(stateFramei);
+					_log.Truncate(stateFramei);
 				}
 			}
 			else if (stateFramei > _log.Count) // Post movie savestate
 			{
 				if (!Global.Config.VBAStyleMovieLoadState)
 				{
-					_log.TruncateMovie(_log.Count);
+					_log.Truncate(_log.Count);
 				}
 
 				_mode = Moviemode.Finished;
