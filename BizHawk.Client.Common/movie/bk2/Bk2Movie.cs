@@ -13,6 +13,7 @@ namespace BizHawk.Client.Common
 	{
 		private readonly PlatformFrameRates _frameRates = new PlatformFrameRates();
 		private bool _makeBackup = true;
+		private int? _loopOffset;
 
 		public Bk2Movie(string filename, bool startsFromSavestate = false)
 			: this(startsFromSavestate)
@@ -34,66 +35,134 @@ namespace BizHawk.Client.Common
 			_makeBackup = true;
 		}
 
-		#region Implementation
-
+		public string Filename { get; set; }
 		public string PreferredExtension { get { return "bk2"; } }
-		public bool IsCountingRerecords { get; set; }
-
 		public bool Changes { get; private set; }
+		public bool IsCountingRerecords { get; set; }
 
 		public double FrameCount
 		{
-			get { throw new NotImplementedException(); }
+			get
+			{
+				if (_loopOffset.HasValue)
+				{
+					return double.PositiveInfinity;
+				}
+
+				return _log.Length;
+			}
 		}
 
 		public double Fps
 		{
-			get { throw new NotImplementedException(); }
+			get
+			{
+				var system = Header[HeaderKeys.PLATFORM];
+				var pal = Header.ContainsKey(HeaderKeys.PAL) &&
+					Header[HeaderKeys.PAL] == "1";
+
+				return _frameRates[system, pal];
+			}
 		}
 
 		public TimeSpan Time
 		{
-			get { throw new NotImplementedException(); }
+			get
+			{
+				var dblseconds = GetSeconds(_log.Length);
+				var seconds = (int)(dblseconds % 60);
+				var days = seconds / 86400;
+				var hours = seconds / 3600;
+				var minutes = (seconds / 60) % 60;
+				var milliseconds = (int)((dblseconds - seconds) * 1000);
+				return new TimeSpan(days, hours, minutes, seconds, milliseconds);
+			}
 		}
 
 		public int InputLogLength
 		{
-			get { throw new NotImplementedException(); }
+			get { return _log.Length; }
 		}
 
-		public string Filename
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-			set
-			{
-				throw new NotImplementedException();
-			}
-		}
+		#region Log Editing
 
 		public void AppendFrame(IController source)
 		{
-			throw new NotImplementedException();
+			var mg = new MnemonicsGenerator();
+			mg.SetSource(source);
+			_log.AppendFrame(mg.GetControllersAsMnemonic());
+			Changes = true;
 		}
 
 		public void RecordFrame(int frame, IController source)
 		{
-			throw new NotImplementedException();
+			if (Global.Config.VBAStyleMovieLoadState)
+			{
+				if (Global.Emulator.Frame < _log.Length)
+				{
+					_log.TruncateMovie(Global.Emulator.Frame);
+				}
+			}
+
+			var mg = new MnemonicsGenerator();
+			mg.SetSource(source);
+
+			Changes = true;
+			_log.SetFrameAt(frame, mg.GetControllersAsMnemonic());
 		}
 
 		public void Truncate(int frame)
 		{
-			throw new NotImplementedException();
+			_log.TruncateMovie(frame);
+			Changes = true;
 		}
 
 		public string GetInput(int frame)
 		{
-			throw new NotImplementedException();
+			if (frame < FrameCount && frame >= 0)
+			{
+
+				int getframe;
+
+				if (_loopOffset.HasValue)
+				{
+					if (frame < _log.Length)
+					{
+						getframe = frame;
+					}
+					else
+					{
+						getframe = ((frame - _loopOffset.Value) % (_log.Length - _loopOffset.Value)) + _loopOffset.Value;
+					}
+				}
+				else
+				{
+					getframe = frame;
+				}
+
+				return _log[getframe];
+			}
+
+			Finish();
+			return string.Empty;
 		}
 
-		// Probably won't support
+		#endregion
+
+		private double GetSeconds(int frameCount)
+		{
+			double frames = frameCount;
+
+			if (frames < 1)
+			{
+				return 0;
+			}
+
+			return frames / Fps;
+		}
+
+		#region Probably won't support
+
 		public void PokeFrame(int frame, IController source)
 		{
 			throw new NotImplementedException();

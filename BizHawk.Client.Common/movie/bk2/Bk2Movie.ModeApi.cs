@@ -71,5 +71,13 @@ namespace BizHawk.Client.Common
 			Changes = false;
 			_mode = Moviemode.Inactive;
 		}
+
+		private void Finish()
+		{
+			if (_mode == Moviemode.Play)
+			{
+				_mode = Moviemode.Finished;
+			}
+		}
 	}
 }
