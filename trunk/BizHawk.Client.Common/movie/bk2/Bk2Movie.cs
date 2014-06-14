@@ -14,8 +14,8 @@ namespace BizHawk.Client.Common
 		private readonly PlatformFrameRates _frameRates = new PlatformFrameRates();
 		private bool _makeBackup = true;
 
-		public Bk2Movie(string filename, bool startsFromSavestate = false)
-			: this(startsFromSavestate)
+		public Bk2Movie(string filename)
+			: this()
 		{
 			Subtitles = new SubtitleList();
 			Comments = new List<string>();
@@ -24,18 +24,20 @@ namespace BizHawk.Client.Common
 			Filename = filename;
 		}
 
-		public Bk2Movie(bool startsFromSavestate = false)
+		public Bk2Movie()
 		{
 			Filename = string.Empty;
-			StartsFromSavestate = startsFromSavestate;
-			
 			IsCountingRerecords = true;
 			_mode = Moviemode.Inactive;
 			_makeBackup = true;
+
+			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0.0";
 		}
 
 		public string Filename { get; set; }
+
 		public string PreferredExtension { get { return "bk2"; } }
+
 		public bool Changes { get; private set; }
 		public bool IsCountingRerecords { get; set; }
 

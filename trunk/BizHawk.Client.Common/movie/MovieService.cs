@@ -16,10 +16,13 @@ namespace BizHawk.Client.Common
 			// TODO: open the file and determine the format, and instantiate the appropriate implementation
 			// Currently we just use the file extension
 			// TODO: change IMovies to take HawkFiles only and not path
-			// TOOD: tasproj
 			if (Path.GetExtension(path).EndsWith("bk2"))
 			{
 				return new Bk2Movie(path);
+			}
+			else if (Path.GetExtension(path).EndsWith("tasproj"))
+			{
+				return new TasMovie(path);
 			}
 			else
 			{

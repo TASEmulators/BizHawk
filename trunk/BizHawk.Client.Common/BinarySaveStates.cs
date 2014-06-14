@@ -225,7 +225,7 @@ namespace BizHawk.Client.Common
 		/// 
 		/// </summary>
 		/// <param name="s">not closed when finished!</param>
-		public BinaryStateSaver(Stream s)
+		public BinaryStateSaver(Stream s, bool stateVersionTag = true) // stateVersionTag is a hack for reusing this for movie code
 		{
 			_zip = new ZipOutputStream(s)
 				{
@@ -234,7 +234,10 @@ namespace BizHawk.Client.Common
 				};
 			_zip.SetLevel(5);
 
-			PutLump(BinaryStateLump.Versiontag, WriteVersion);	
+			if (stateVersionTag)
+			{
+				PutLump(BinaryStateLump.Versiontag, WriteVersion);
+			}
 		}
 
 		public void PutLump(BinaryStateLump lump, Action<Stream> callback)

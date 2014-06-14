@@ -10,21 +10,20 @@ namespace BizHawk.Client.Common
 		private bool _changes;
 		private int? _loopOffset;
 
-		public BkmMovie(string filename, bool startsFromSavestate = false)
-			: this(startsFromSavestate)
+		public BkmMovie(string filename)
+			: this()
 		{
 			Rerecords = 0;
 			Filename = filename;
 			Loaded = !string.IsNullOrWhiteSpace(filename);
 		}
 
-		public BkmMovie(bool startsFromSavestate = false)
+		public BkmMovie()
 		{
 			Header = new BkmHeader();
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v0.0.1";
 			Filename = string.Empty;
 			_preloadFramecount = 0;
-			StartsFromSavestate = startsFromSavestate;
 
 			IsCountingRerecords = true;
 			_mode = Moviemode.Inactive;
