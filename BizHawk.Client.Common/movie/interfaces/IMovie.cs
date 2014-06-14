@@ -52,7 +52,6 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Sync Settings from the Core
-		/// Movies 2.0 TODO: instead of enforcing a Json transfer, there should be methods that get and receive SyncSettings objects and let the implementation decide the format
 		/// </summary>
 		string SyncSettingsJson { get; set; }
 

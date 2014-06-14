@@ -148,10 +148,8 @@ namespace BizHawk.Client.Common
 
 		private void Write(string fn)
 		{
-			// Movies 2.0 TODO: Save and Load Movie version
-			// there's a lot of common code here with SavestateManager.  refactor?
 			using (FileStream fs = new FileStream(Filename, FileMode.Create, FileAccess.Write))
-			using (BinaryStateSaver bs = new BinaryStateSaver(fs))
+			using (BinaryStateSaver bs = new BinaryStateSaver(fs, false))
 			{
 				bs.PutLump(BinaryStateLump.Movieheader, (tw) => tw.WriteLine(Header.ToString()));
 				bs.PutLump(BinaryStateLump.Comments, (tw) => tw.WriteLine(CommentsString()));

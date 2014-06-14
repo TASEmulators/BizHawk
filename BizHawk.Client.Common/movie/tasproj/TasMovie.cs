@@ -33,7 +33,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string PreferredExtension { get { return "tasproj"; } }
+		public string PreferredExtension { get { return Extension; } }
+
+		public const string Extension = "tasproj";
 
 		public void ToggleButton(int frame, string buttonName)
 		{
@@ -71,17 +73,17 @@ namespace BizHawk.Client.Common
 
 		#region IMovie Implementation
 
-		public TasMovie(string filename, bool startsFromSavestate = false)
-			: this(startsFromSavestate)
+		public TasMovie(string filename)
+			: this()
 		{
 			Filename = filename;
 		}
 
-		public TasMovie(bool startsFromSavestate = false)
+		public TasMovie()
 		{
 			_mg = MnemonicGeneratorFactory.Generate();
 			Filename = string.Empty;
-			Header = new BkmHeader { StartsFromSavestate = startsFromSavestate };
+			Header = new BkmHeader();
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0"; 
 			_records = new MovieRecordList();
 			_mode = Moviemode.Inactive;
