@@ -600,7 +600,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ofd = new OpenFileDialog
 			{
-				// Movies 2.0 TODO - add tasproj in addition to default, hardcoded is fine in this case
 				Filter = "Movie Files (*." + MovieService.DefaultExtension + ")|*." + MovieService.DefaultExtension +
 					"|TAS project Files (*." + TasMovie.Extension + ")|*." + TasMovie.Extension +
 					"|All Files|*.*",
