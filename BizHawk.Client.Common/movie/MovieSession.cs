@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 
 using BizHawk.Emulation.Common;
@@ -29,21 +31,6 @@ namespace BizHawk.Client.Common
 			{
 				MessageCallback(message);
 			}
-		}
-
-		public static bool IsValidMovieExtension(string ext)
-		{
-			// Movies 2.0 TODO
-			if (ext.ToUpper() == "." + Global.MovieSession.Movie.PreferredExtension)
-			{
-				return true;
-			}
-			else if (ext.ToUpper() == ".TAS" || ext.ToUpper() == ".BKM")
-			{
-				return true;
-			}
-
-			return false;
 		}
 
 		public void LatchMultitrackPlayerInput(IController playerSource, MultitrackRewiringControllerAdapter rewiredSource)

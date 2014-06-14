@@ -40,6 +40,16 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public static bool IsValidMovieExtension(string ext)
+		{
+			if (MovieExtensions.Contains(ext.ToLower().Replace(".", "")))
+			{
+				return true;
+			}
+
+			return false;
+		}
+
 		/// <summary>
 		/// Creates a default instance of the default implementation, 
 		/// no path is specified so this is in a minimal state that would not be able to be saved
