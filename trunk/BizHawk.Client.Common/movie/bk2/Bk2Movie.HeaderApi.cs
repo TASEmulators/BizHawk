@@ -8,6 +8,9 @@ namespace BizHawk.Client.Common
 	public partial class Bk2Movie : IMovie
 	{
 		private readonly Bk2Header Header = new Bk2Header();
+		private string _syncSettingsJson = string.Empty;
+		private string _savestateBlob = string.Empty;
+
 
 		public IDictionary<string, string> HeaderEntries
 		{
@@ -19,32 +22,20 @@ namespace BizHawk.Client.Common
 
 		public string SyncSettingsJson
 		{
-			get { return Header[HeaderKeys.SYNCSETTINGS]; }
-			set { Header[HeaderKeys.SYNCSETTINGS] = value; }
+			get { return _syncSettingsJson; }
+			set { _syncSettingsJson = value; }
 		}
 
 		public string SavestateBinaryBase64Blob
 		{
 			get
 			{
-				if (Header.ContainsKey(HeaderKeys.SAVESTATEBINARYBASE64BLOB))
-				{
-					return Header[HeaderKeys.SAVESTATEBINARYBASE64BLOB];
-				}
-				
-				return null;
+				return _savestateBlob;
 			}
 
 			set
 			{
-				if (value == null)
-				{
-					Header.Remove(HeaderKeys.SAVESTATEBINARYBASE64BLOB);
-				}
-				else
-				{
-					Header.Add(HeaderKeys.SAVESTATEBINARYBASE64BLOB, value);
-				}
+				_savestateBlob = value;
 			}
 		}
 

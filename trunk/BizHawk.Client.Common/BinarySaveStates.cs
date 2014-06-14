@@ -17,7 +17,8 @@ namespace BizHawk.Client.Common
 		// Only for movies they probably shoudln't be leaching this stuff
 		Movieheader,
 		Comments,
-		Subtitles
+		Subtitles,
+		SyncSettings
 	}
 
 	public class BinaryStateFileNames
@@ -46,6 +47,7 @@ namespace BizHawk.Client.Common
 			// Only for movies they probably shoudln't be leaching this stuff
 			LumpNames[BinaryStateLump.Comments] = "Comments";
 			LumpNames[BinaryStateLump.Subtitles] = "Subtitles";
+			LumpNames[BinaryStateLump.SyncSettings] = "SyncSettings";
 		}
 
 		public static string Get(BinaryStateLump lump)
