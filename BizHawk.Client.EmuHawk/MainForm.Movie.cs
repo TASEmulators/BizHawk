@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
@@ -155,14 +156,21 @@ namespace BizHawk.Client.EmuHawk
 			else if (Global.Emulator is LibsnesCore)
 			{
 				var ss = (LibsnesCore.SnesSyncSettings)Global.Emulator.GetSyncSettings();
-				if (ss.Profile == "Performance")
+				if (ss.Profile == "Performance" && !Global.Config.DontAskPerformanceCoreRecordingNag)
 				{
-					var result = MessageBox.Show(
-						this,
-						"While the performance core is faster, it is recommended that you use the Compatibility profile when recording movies for better accuracy and stability\nSwitch to Compatibility?",
+					var box = new MsgBox(
+						"While the performance core is faster, it is recommended that you use the Compatibility profile when recording movies for better accuracy and stability\n\nSwitch to Compatibility?",
 						"Stability Warning",
-						MessageBoxButtons.YesNoCancel,
 						MessageBoxIcon.Warning);
+
+					box.SetButtons(
+						new [] {"Switch", "Continue", "Cancel" },
+						new DialogResult[] { DialogResult.Yes, DialogResult.No, DialogResult.Cancel });
+					box.SetCheckbox("Don't ask me again");
+					box.MaximumSize = new Size(450, 350);
+					box.SetMessageToAutoSize();
+					var result = box.ShowDialog();
+					Global.Config.DontAskPerformanceCoreRecordingNag = box.CheckboxChecked;
 
 					if (result == DialogResult.Yes)
 					{
