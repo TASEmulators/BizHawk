@@ -134,7 +134,7 @@ namespace BizHawk.Client.Common
 		public void ClearFrame(int frame)
 		{
 			var lg = LogGeneratorInstance();
-			_log.SetFrameAt(frame, lg.EmptyEntry);
+			SetFrameAt(frame, lg.EmptyEntry);
 			_changes = true;
 		}
 
@@ -148,8 +148,11 @@ namespace BizHawk.Client.Common
 
 		public void Truncate(int frame)
 		{
-			_log.Truncate(frame);
-			_changes = true;
+			if (frame < _log.Count)
+			{
+				_log.RemoveRange(frame, _log.Count - frame);
+				_changes = true;
+			}
 		}
 
 		public void PokeFrame(int frame, IController source)
@@ -158,7 +161,7 @@ namespace BizHawk.Client.Common
 			lg.SetSource(source);
 
 			_changes = true;
-			_log.SetFrameAt(frame, lg.GenerateLogEntry());
+			SetFrameAt(frame, lg.GenerateLogEntry());
 		}
 
 		public void RecordFrame(int frame, IController source)
@@ -170,13 +173,13 @@ namespace BizHawk.Client.Common
 			{
 				if (Global.Emulator.Frame < _log.Count)
 				{
-					_log.Truncate(Global.Emulator.Frame);
+					Truncate(Global.Emulator.Frame);
 				}
 			}
 
 			var lg = LogGeneratorInstance();
 			lg.SetSource(source);
-			_log.SetFrameAt(frame, lg.GenerateLogEntry());
+			SetFrameAt(frame, lg.GenerateLogEntry());
 
 			_changes = true;
 		}
@@ -193,6 +196,18 @@ namespace BizHawk.Client.Common
 			}
 
 			return frames / Fps;
+		}
+
+		private void SetFrameAt(int frameNum, string frame)
+		{
+			if (_log.Count > frameNum)
+			{
+				_log[frameNum] = frame;
+			}
+			else
+			{
+				_log.Add(frame);
+			}
 		}
 	}
 }
