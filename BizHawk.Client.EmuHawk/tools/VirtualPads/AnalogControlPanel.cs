@@ -89,7 +89,7 @@ namespace BizHawk.Client.EmuHawk
 				if (Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished)
 				{
 					var mnemonicStr = Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1);
-					var m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
+					var m = new BkmControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
 					m.SetControllersAsMnemonic(mnemonicStr);
 
 					var x = m.GetFloat(Controller + " X Axis");

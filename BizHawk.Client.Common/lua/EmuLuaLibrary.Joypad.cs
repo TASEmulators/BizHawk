@@ -73,7 +73,7 @@ namespace BizHawk.Client.Common
 		)]
 		public void SetFromMnemonicStr(string inputLogEntry)
 		{
-			var m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
+			var m = new BkmControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
 			m.SetControllersAsMnemonic(inputLogEntry);
 
 			foreach (var button in m.Type.BoolButtons)

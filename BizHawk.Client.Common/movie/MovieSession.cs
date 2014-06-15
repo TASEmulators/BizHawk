@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 	public class MovieSession
 	{
 		private readonly MultitrackRecording _multiTrack = new MultitrackRecording();
-		private readonly MovieControllerAdapter _movieControllerAdapter = new MovieControllerAdapter();
+		private readonly BkmControllerAdapter _movieControllerAdapter = new BkmControllerAdapter();
 
 		public MovieSession()
 		{
@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 		}
 
 		public MultitrackRecording MultiTrack { get { return _multiTrack; } }
-		public MovieControllerAdapter MovieControllerAdapter { get { return _movieControllerAdapter; } }
+		public BkmControllerAdapter MovieControllerAdapter { get { return _movieControllerAdapter; } }
 
 		public IMovie Movie { get; set; }
 		public bool ReadOnly { get; set; }
