@@ -9,7 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public static class MnemonicConstants
+	public static class BkmMnemonicConstants
 	{
 		public static readonly Dictionary<string, Dictionary<string, string>> BUTTONS = new Dictionary<string, Dictionary<string, string>>
 		{
@@ -330,7 +330,7 @@ namespace BizHawk.Client.Common
 				Force("Power", true);
 			}
 			int start = 3;
-			foreach (string button in MnemonicConstants.BUTTONS[ControlType].Keys)
+			foreach (string button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
 			{
 				Force(button, c[start++]);
 			}
@@ -360,17 +360,17 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			for (int player = 1; player <= MnemonicConstants.PLAYERS[ControlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[ControlType]; player++)
 			{
-				int srcindex = (player - 1) * (MnemonicConstants.BUTTONS[ControlType].Count + 1);
+				int srcindex = (player - 1) * (BkmMnemonicConstants.BUTTONS[ControlType].Count + 1);
 
-				if (mnemonic.Length < srcindex + 3 + MnemonicConstants.BUTTONS[ControlType].Count - 1)
+				if (mnemonic.Length < srcindex + 3 + BkmMnemonicConstants.BUTTONS[ControlType].Count - 1)
 				{
 					return;
 				}
 
 				int start = 3;
-				foreach (string button in MnemonicConstants.BUTTONS[ControlType].Keys)
+				foreach (string button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
 				{
 					Force("P" + player + " " + button, c[srcindex + start++]);
 				}
@@ -396,17 +396,17 @@ namespace BizHawk.Client.Common
 				Force("Reset", true);
 			}
 
-			for (int player = 1; player <= MnemonicConstants.PLAYERS[ControlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[ControlType]; player++)
 			{
-				int srcindex = (player - 1) * (MnemonicConstants.BUTTONS[ControlType].Count + 1);
+				int srcindex = (player - 1) * (BkmMnemonicConstants.BUTTONS[ControlType].Count + 1);
 
-				if (mnemonic.Length < srcindex + 3 + MnemonicConstants.BUTTONS[ControlType].Count - 1)
+				if (mnemonic.Length < srcindex + 3 + BkmMnemonicConstants.BUTTONS[ControlType].Count - 1)
 				{
 					return;
 				}
 
 				int start = 3;
-				foreach (string button in MnemonicConstants.BUTTONS[ControlType].Keys)
+				foreach (string button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
 				{
 					Force("P" + player + " " + button, c[srcindex + start++]);
 				}
@@ -432,22 +432,22 @@ namespace BizHawk.Client.Common
 				Force("Reset", true);
 			}
 
-			for (int player = 1; player <= MnemonicConstants.PLAYERS[ControlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[ControlType]; player++)
 			{
-				int srcindex = (player - 1) * (MnemonicConstants.BUTTONS[ControlType].Count + MnemonicConstants.ANALOGS[ControlType].Count * 4 + 1 + 1);
+				int srcindex = (player - 1) * (BkmMnemonicConstants.BUTTONS[ControlType].Count + BkmMnemonicConstants.ANALOGS[ControlType].Count * 4 + 1 + 1);
 
-				if (mnemonic.Length < srcindex + 3 + MnemonicConstants.BUTTONS[ControlType].Count - 1)
+				if (mnemonic.Length < srcindex + 3 + BkmMnemonicConstants.BUTTONS[ControlType].Count - 1)
 				{
 					return;
 				}
 
 				int start = 3;
-				foreach (string button in MnemonicConstants.BUTTONS[ControlType].Keys)
+				foreach (string button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
 				{
 					Force("P" + player + " " + button, c[srcindex + start++]);
 				}
 
-				foreach (string name in MnemonicConstants.ANALOGS[ControlType].Keys)
+				foreach (string name in BkmMnemonicConstants.ANALOGS[ControlType].Keys)
 				{
 					Force("P" + player + " " + name, Int32.Parse(mnemonic.Substring(srcindex + start, 4)));
 					start += 5;
@@ -474,17 +474,17 @@ namespace BizHawk.Client.Common
 				Force("Reset", true);
 			}
 
-			for (int player = 1; player <= MnemonicConstants.PLAYERS[ControlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[ControlType]; player++)
 			{
-				int srcindex = (player - 1) * (MnemonicConstants.BUTTONS[ControlType].Count + 1);
+				int srcindex = (player - 1) * (BkmMnemonicConstants.BUTTONS[ControlType].Count + 1);
 
-				if (mnemonic.Length < srcindex + 3 + MnemonicConstants.BUTTONS[ControlType].Count - 1)
+				if (mnemonic.Length < srcindex + 3 + BkmMnemonicConstants.BUTTONS[ControlType].Count - 1)
 				{
 					return;
 				}
 
 				int start = 3;
-				foreach (string button in MnemonicConstants.BUTTONS[ControlType].Keys)
+				foreach (string button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
 				{
 					Force("P" + player + " " + button, c[srcindex + start++]);
 				}
@@ -517,16 +517,16 @@ namespace BizHawk.Client.Common
 				Force("Pause", true);
 			}
 
-			for (int player = 1; player <= MnemonicConstants.PLAYERS[ControlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[ControlType]; player++)
 			{
-				int srcindex = (player - 1) * (MnemonicConstants.BUTTONS[ControlType].Count + 1);
+				int srcindex = (player - 1) * (BkmMnemonicConstants.BUTTONS[ControlType].Count + 1);
 				int start = 6;
-				if (mnemonic.Length < srcindex + start + MnemonicConstants.BUTTONS[ControlType].Count)
+				if (mnemonic.Length < srcindex + start + BkmMnemonicConstants.BUTTONS[ControlType].Count)
 				{
 					return;
 				}
 
-				foreach (string button in MnemonicConstants.BUTTONS[ControlType].Keys)
+				foreach (string button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
 				{
 					Force("P" + player + " " + button, c[srcindex + start++]);
 				}
@@ -537,9 +537,9 @@ namespace BizHawk.Client.Common
 		{
 			var checker = new MnemonicChecker(mnemonic);
 			MyBoolButtons.Clear();
-			for (int i = 0; i < MnemonicConstants.DGBMnemonic.Length; i++)
+			for (int i = 0; i < BkmMnemonicConstants.DGBMnemonic.Length; i++)
 			{
-				var t = MnemonicConstants.DGBMnemonic[i];
+				var t = BkmMnemonicConstants.DGBMnemonic[i];
 				if (t.Item1 != null)
 				{
 					Force(t.Item1, checker[i]);
@@ -551,9 +551,9 @@ namespace BizHawk.Client.Common
 		{
 			var checker = new MnemonicChecker(mnemonic);
 			MyBoolButtons.Clear();
-			for (int i = 0; i < MnemonicConstants.WSMnemonic.Length; i++)
+			for (int i = 0; i < BkmMnemonicConstants.WSMnemonic.Length; i++)
 			{
-				var t = MnemonicConstants.WSMnemonic[i];
+				var t = BkmMnemonicConstants.WSMnemonic[i];
 				if (t.Item1 != null)
 				{
 					Force(t.Item1, checker[i]);
@@ -567,24 +567,24 @@ namespace BizHawk.Client.Common
 			MyBoolButtons.Clear();
 
 
-			for (int player = 1; player <= MnemonicConstants.PLAYERS[ControlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[ControlType]; player++)
 			{
-				int srcindex = (player - 1) * (MnemonicConstants.BUTTONS[ControlType].Count + 1);
+				int srcindex = (player - 1) * (BkmMnemonicConstants.BUTTONS[ControlType].Count + 1);
 
-				if (mnemonic.Length < srcindex + 1 + MnemonicConstants.BUTTONS[ControlType].Count - 1)
+				if (mnemonic.Length < srcindex + 1 + BkmMnemonicConstants.BUTTONS[ControlType].Count - 1)
 				{
 					return;
 				}
 
 				int start = 1;
-				foreach (string button in MnemonicConstants.BUTTONS[ControlType].Keys)
+				foreach (string button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
 				{
 					Force("P" + player + " " + button, c[srcindex + start++]);
 				}
 			}
 
 			int startk = 13;
-			foreach (string button in MnemonicConstants.BUTTONS["Commodore 64 Keyboard"].Keys)
+			foreach (string button in BkmMnemonicConstants.BUTTONS["Commodore 64 Keyboard"].Keys)
 			{
 				Force(button, c[startk++]);
 			}
@@ -719,11 +719,11 @@ namespace BizHawk.Client.Common
 				Force("Select", mnemonic[2] != '.' && mnemonic[2] != '0');
 				start = 4;
 			}
-			for (int player = 1; player <= MnemonicConstants.PLAYERS[ControlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[ControlType]; player++)
 			{
-				int srcindex = (player - 1) * (MnemonicConstants.BUTTONS[ControlType].Count + 1);
+				int srcindex = (player - 1) * (BkmMnemonicConstants.BUTTONS[ControlType].Count + 1);
 				int ctr = start;
-				if (mnemonic.Length < srcindex + ctr + MnemonicConstants.BUTTONS[ControlType].Count - 1)
+				if (mnemonic.Length < srcindex + ctr + BkmMnemonicConstants.BUTTONS[ControlType].Count - 1)
 				{
 					return;
 				}
@@ -732,16 +732,16 @@ namespace BizHawk.Client.Common
 				{
 					prefix = "P" + player + " ";
 				}
-				foreach (string button in MnemonicConstants.BUTTONS[ControlType].Keys)
+				foreach (string button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
 				{
 					Force(prefix + button, c[srcindex + ctr++]);
 				}
 			}
 			if (ControlType == "SMS Controller")
 			{
-				int srcindex = MnemonicConstants.PLAYERS[ControlType] * (MnemonicConstants.BUTTONS[ControlType].Count + 1);
+				int srcindex = BkmMnemonicConstants.PLAYERS[ControlType] * (BkmMnemonicConstants.BUTTONS[ControlType].Count + 1);
 				int ctr = start;
-				foreach (string command in MnemonicConstants.COMMANDS[ControlType].Keys)
+				foreach (string command in BkmMnemonicConstants.COMMANDS[ControlType].Keys)
 				{
 					Force(command, c[srcindex + ctr++]);
 				}
