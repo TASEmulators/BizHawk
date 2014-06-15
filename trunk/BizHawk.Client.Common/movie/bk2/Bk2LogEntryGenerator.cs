@@ -42,9 +42,14 @@ namespace BizHawk.Client.Common
 					sb.Append('.');
 				}
 
-				foreach (var floatBtn in _source.Type.FloatControls)
+				if (_source.Type.FloatControls.Any())
 				{
-					sb.Append("000 ");
+					foreach (var floatBtn in _source.Type.FloatControls)
+					{
+						sb.Append(" 000,");
+					}
+
+					sb.Remove(sb.Length - 1, 1);
 				}
 
 				sb.Append('|');
@@ -60,10 +65,15 @@ namespace BizHawk.Client.Common
 				sb.Append(_source.IsPressed(button) ? '1' : '.');
 			}
 
-			foreach (var floatBtn in _source.Type.FloatControls)
+			if (_source.Type.FloatControls.Any())
 			{
-				var val = (int)_source.GetFloat(floatBtn);
-				sb.Append(val).Append(' ');
+				foreach (var floatBtn in _source.Type.FloatControls)
+				{
+					var val = (int)_source.GetFloat(floatBtn);
+					sb.Append(' ').Append(val).Append(',');
+				}
+
+				sb.Remove(sb.Length - 1, 1);
 			}
 
 			sb.Append('|');

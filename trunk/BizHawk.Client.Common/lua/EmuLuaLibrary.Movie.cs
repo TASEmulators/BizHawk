@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common
 		{
 			var input = Lua.NewTable();
 
-			var m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
+			var m = new BkmControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
 			m.SetControllersAsMnemonic(
 				Global.MovieSession.Movie.GetInput(frame));
 
