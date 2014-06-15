@@ -250,7 +250,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputStrOrAll()
 		{
-			var m = new BkmControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
+			//var m = new BkmControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
+			var m = Global.MovieSession.Movie.LogGeneratorInstance().MovieControllerAdapter;
+			m.Type = Global.MovieSession.MovieControllerAdapter.Type;
 
 			if (Global.MovieSession.Movie.IsActive)
 			{
@@ -286,7 +288,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				var m = new BkmControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
+				var m = Global.MovieSession.Movie.LogGeneratorInstance().MovieControllerAdapter;
+				m.Type = Global.MovieSession.MovieControllerAdapter.Type;
 				m.SetControllersAsMnemonic(
 					Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
 

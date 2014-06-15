@@ -10,15 +10,23 @@ namespace BizHawk.Client.Common
 	public class MovieSession
 	{
 		private readonly MultitrackRecording _multiTrack = new MultitrackRecording();
-		private readonly BkmControllerAdapter _movieControllerAdapter = new BkmControllerAdapter();
 
 		public MovieSession()
 		{
 			ReadOnly = true;
+			// Movies 2.0 TODO: Put this logic somewhere else, movie service?
+			if (VersionInfo.DeveloperBuild)
+			{
+				MovieControllerAdapter = new Bk2ControllerAdapter();
+			}
+			else
+			{
+				MovieControllerAdapter = new BkmControllerAdapter();
+			}
 		}
 
 		public MultitrackRecording MultiTrack { get { return _multiTrack; } }
-		public BkmControllerAdapter MovieControllerAdapter { get { return _movieControllerAdapter; } }
+		public IMovieController MovieControllerAdapter { get; private set; }
 
 		public IMovie Movie { get; set; }
 		public bool ReadOnly { get; set; }
@@ -49,12 +57,12 @@ namespace BizHawk.Client.Common
 				rewiredSource.PlayerSource = -1;
 			}
 
-			_movieControllerAdapter.LatchPlayerFromSource(rewiredSource, _multiTrack.CurrentPlayer);
+			MovieControllerAdapter.LatchPlayerFromSource(rewiredSource, _multiTrack.CurrentPlayer);
 		}
 
 		public void LatchInputFromPlayer(IController source)
 		{
-			_movieControllerAdapter.LatchFromSource(source);
+			MovieControllerAdapter.LatchFromSource(source);
 		}
 
 		/// <summary>
@@ -67,7 +75,7 @@ namespace BizHawk.Client.Common
 			// Attempting to get a frame past the end of a movie changes the mode to finished
 			if (!Movie.IsFinished)
 			{
-				_movieControllerAdapter.SetControllersAsMnemonic(input);
+				MovieControllerAdapter.SetControllersAsMnemonic(input);
 			}
 		}
 

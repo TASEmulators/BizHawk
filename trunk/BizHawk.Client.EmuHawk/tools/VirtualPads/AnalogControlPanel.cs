@@ -86,14 +86,15 @@ namespace BizHawk.Client.EmuHawk
 				e.Graphics.DrawLine(_black_pen, 64, 0, 64, 127);
 				e.Graphics.DrawLine(_black_pen, 0, 63, 127, 63);
 
-				if (Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished)
+				if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
 				{
-					var mnemonicStr = Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1);
-					var m = new BkmControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
-					m.SetControllersAsMnemonic(mnemonicStr);
+					var logEntry = Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1);
+					var lg = Global.MovieSession.Movie.LogGeneratorInstance().MovieControllerAdapter;
+					lg.Type = Global.MovieSession.MovieControllerAdapter.Type;
+					lg.SetControllersAsMnemonic(logEntry);
 
-					var x = m.GetFloat(Controller + " X Axis");
-					var y = m.GetFloat(Controller + " Y Axis");
+					var x = lg.GetFloat(Controller + " X Axis");
+					var y = lg.GetFloat(Controller + " Y Axis");
 
 					var xx = RealToGFX((int)x);
 					var yy = RealToGFX((int)y);

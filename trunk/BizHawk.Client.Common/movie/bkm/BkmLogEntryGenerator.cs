@@ -240,6 +240,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public IMovieController MovieControllerAdapter
+		{
+			get
+			{
+				return new BkmControllerAdapter();
+			}
+		}
+
 		#region Privates
 
 		private bool IsBasePressed(string name)

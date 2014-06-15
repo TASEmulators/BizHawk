@@ -31,13 +31,13 @@ namespace BizHawk.Client.Common
 		{
 			var input = Lua.NewTable();
 
-			var m = new BkmControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
-			m.SetControllersAsMnemonic(
-				Global.MovieSession.Movie.GetInput(frame));
+			var lg = Global.MovieSession.Movie.LogGeneratorInstance().MovieControllerAdapter;
+			lg.Type = Global.MovieSession.MovieControllerAdapter.Type;
+			lg.SetControllersAsMnemonic(Global.MovieSession.Movie.GetInput(frame));
 
-			foreach (var button in m.Type.BoolButtons)
+			foreach (var button in lg.Type.BoolButtons)
 			{
-				input[button] = m[button];
+				input[button] = lg[button];
 			}
 
 			return input;
