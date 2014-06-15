@@ -43,6 +43,11 @@ namespace BizHawk.Client.Common
 
 		public ILogEntryGenerator LogGeneratorInstance()
 		{
+			if (VersionInfo.DeveloperBuild)
+			{
+				return new Bk2LogEntryGenerator();
+			}
+
 			return new BkmLogEntryGenerator();
 		}
 
