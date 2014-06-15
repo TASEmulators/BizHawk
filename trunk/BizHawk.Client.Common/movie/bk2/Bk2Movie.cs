@@ -106,21 +106,24 @@ namespace BizHawk.Client.Common
 			{
 				if (Global.Emulator.Frame < _log.Count)
 				{
-					_log.Truncate(Global.Emulator.Frame);
+					Truncate(Global.Emulator.Frame);
 				}
 			}
 
 			var lg = LogGeneratorInstance();
 			lg.SetSource(source);
-			_log.SetFrameAt(frame, lg.GenerateLogEntry());
+			SetFrameAt(frame, lg.GenerateLogEntry());
 
 			Changes = true;
 		}
 
 		public void Truncate(int frame)
 		{
-			_log.Truncate(frame);
-			Changes = true;
+			if (frame < _log.Count)
+			{
+				_log.RemoveRange(frame, _log.Count - frame);
+				Changes = true;
+			}
 		}
 
 		public string GetInput(int frame)
@@ -160,7 +163,7 @@ namespace BizHawk.Client.Common
 
 		public void ClearFrame(int frame)
 		{
-			_log.SetFrameAt(frame, LogGeneratorInstance().EmptyEntry);
+			SetFrameAt(frame, LogGeneratorInstance().EmptyEntry);
 		}
 
 		#endregion
@@ -175,6 +178,18 @@ namespace BizHawk.Client.Common
 			}
 
 			return frames / Fps;
+		}
+
+		private void SetFrameAt(int frameNum, string frame)
+		{
+			if (_log.Count > frameNum)
+			{
+				_log[frameNum] = frame;
+			}
+			else
+			{
+				_log.Add(frame);
+			}
 		}
 	}
 }

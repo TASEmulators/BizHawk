@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -7,7 +8,7 @@ namespace BizHawk.Client.Common
 {
 	public partial class BkmMovie : IMovie
 	{
-		private readonly BkmLog _log = new BkmLog();
+		private readonly List<string> _log = new List<string>();
 
 		public string GetInputLog()
 		{
@@ -139,7 +140,7 @@ namespace BizHawk.Client.Common
 					}
 					else if (line.StartsWith("|"))
 					{
-						_log.SetFrameAt(i, line);
+						SetFrameAt(i, line);
 						i++;
 					}
 				}
@@ -156,14 +157,14 @@ namespace BizHawk.Client.Common
 			{
 				if (!Global.Config.VBAStyleMovieLoadState)
 				{
-					_log.Truncate(stateFramei);
+					Truncate(stateFramei);
 				}
 			}
 			else if (stateFramei > _log.Count) // Post movie savestate
 			{
 				if (!Global.Config.VBAStyleMovieLoadState)
 				{
-					_log.Truncate(_log.Count);
+					Truncate(_log.Count);
 				}
 
 				_mode = Moviemode.Finished;
@@ -181,7 +182,7 @@ namespace BizHawk.Client.Common
 		{
 			// This function will compare the movie data to the savestate movie data to see if they match
 			errorMessage = string.Empty;
-			var log = new BkmLog();
+			var log = new List<string>();
 			var stateFrame = 0;
 			while (true)
 			{
