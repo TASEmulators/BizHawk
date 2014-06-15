@@ -94,9 +94,9 @@ namespace BizHawk.Client.Common
 
 		public void AppendFrame(IController source)
 		{
-			var mg = new BkmLogEntryGenerator();
-			mg.SetSource(source);
-			_log.Add(mg.GenerateLogEntry());
+			var lg = LogGeneratorInstance();
+			lg.SetSource(source);
+			_log.Add(lg.GenerateLogEntry());
 			Changes = true;
 		}
 
