@@ -59,7 +59,8 @@ namespace BizHawk.Client.Common
 
 		public string GenerateLogEntry()
 		{
-			var sb = new StringBuilder('|');
+			var sb = new StringBuilder();
+			sb.Append('|');
 			foreach (var button in _source.Type.BoolButtons)
 			{
 				sb.Append(_source.IsPressed(button) ? '1' : '.');
@@ -78,6 +79,14 @@ namespace BizHawk.Client.Common
 
 			sb.Append('|');
 			return sb.ToString();
+		}
+
+		public IMovieController MovieControllerAdapter
+		{
+			get
+			{
+				return new Bk2ControllerAdapter();
+			}
 		}
 	}
 }

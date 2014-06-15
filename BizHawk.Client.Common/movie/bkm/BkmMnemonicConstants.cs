@@ -5,8 +5,6 @@ using System.Text;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-// TODO: this entire file is scheduled to be obsolete
-
 namespace BizHawk.Client.Common
 {
 	public static class BkmMnemonicConstants

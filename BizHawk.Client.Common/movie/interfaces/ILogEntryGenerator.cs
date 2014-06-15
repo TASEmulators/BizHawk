@@ -32,6 +32,9 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		string EmptyEntry { get; }
 
-
+		/// <summary>
+		/// Returns a movie controller adapter in the same state 
+		/// </summary>
+		IMovieController MovieControllerAdapter { get; }
 	}
 }
