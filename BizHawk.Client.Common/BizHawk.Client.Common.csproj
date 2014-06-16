@@ -136,6 +136,7 @@
     <Compile Include="movie\bk2\Bk2ControllerAdapter.cs" />
     <Compile Include="movie\bk2\Bk2Header.cs" />
     <Compile Include="movie\bk2\Bk2LogEntryGenerator.cs" />
+    <Compile Include="movie\bk2\Bk2MnemonicConstants.cs" />
     <Compile Include="movie\bk2\Bk2Movie.cs" />
     <Compile Include="movie\bk2\Bk2Movie.HeaderApi.cs" />
     <Compile Include="movie\bk2\Bk2Movie.InputLog.cs" />
