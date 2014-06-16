@@ -63,7 +63,7 @@ public:
 		memory.setVideoBuffer(videoBuf, pitch);
 	}
 	
-	void setInputGetter(InputGetter *getInput) {
+	void setInputGetter(unsigned (*getInput)()) {
 		memory.setInputGetter(getInput);
 	}
 

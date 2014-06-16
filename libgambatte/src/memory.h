@@ -38,7 +38,7 @@ class Memory {
 	void (*writeCallback)(unsigned);
 	void (*execCallback)(unsigned);
 
-	InputGetter *getInput;
+	unsigned (*getInput)();
 	unsigned long divLastUpdate;
 	unsigned long lastOamDmaUpdate;
 	
@@ -159,7 +159,7 @@ public:
 
 	int loadROM(const char *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat);
 
-	void setInputGetter(InputGetter *getInput) {
+	void setInputGetter(unsigned (*getInput)()) {
 		this->getInput = getInput;
 	}
 

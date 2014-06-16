@@ -86,7 +86,6 @@
   <ItemGroup>
     <ClInclude Include="include\gambatte.h" />
     <ClInclude Include="include\gbint.h" />
-    <ClInclude Include="include\inputgetter.h" />
     <ClInclude Include="src\cinterface.h" />
     <ClInclude Include="src\common\array.h" />
     <ClInclude Include="src\common\uncopyable.h" />

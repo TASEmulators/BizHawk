@@ -19,7 +19,6 @@
 #include "memory.h"
 #include "video.h"
 #include "sound.h"
-#include "inputgetter.h"
 #include "savestate.h"
 #include <cstring>
 
