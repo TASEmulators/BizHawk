@@ -11,6 +11,11 @@ namespace BizHawk.Client.Common
 	{
 		private IController _source;
 
+		public IMovieController MovieControllerAdapter
+		{
+			get { return new Bk2ControllerAdapter(); }
+		}
+
 		public void SetSource(IController source)
 		{
 			_source = source;
@@ -36,42 +41,45 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				var sb = new StringBuilder('|');
-				foreach (var button in _source.Type.BoolButtons)
-				{
-					sb.Append('.');
-				}
-
-				if (_source.Type.FloatControls.Any())
-				{
-					foreach (var floatBtn in _source.Type.FloatControls)
-					{
-						sb.Append(" 000,");
-					}
-
-					sb.Remove(sb.Length - 1, 1);
-				}
-
-				sb.Append('|');
-				return sb.ToString();
+				return CreateLogEntry(createEmpty: true);
 			}
 		}
 
 		public string GenerateLogEntry()
 		{
+			return CreateLogEntry();
+		}
+
+		private string CreateLogEntry(bool createEmpty = false)
+		{
 			var sb = new StringBuilder();
 			sb.Append('|');
+
 			foreach (var button in _source.Type.BoolButtons)
 			{
-				sb.Append(_source.IsPressed(button) ? '1' : '.');
+				if (createEmpty)
+				{
+					sb.Append('.');
+				}
+				else
+				{
+					sb.Append(_source.IsPressed(button) ? Mnemonics[button] : '.');
+				}
 			}
 
 			if (_source.Type.FloatControls.Any())
 			{
 				foreach (var floatBtn in _source.Type.FloatControls)
 				{
-					var val = (int)_source.GetFloat(floatBtn);
-					sb.Append(' ').Append(val).Append(',');
+					if (createEmpty)
+					{
+						sb.Append(" 000,");
+					}
+					else
+					{
+						var val = (int)_source.GetFloat(floatBtn);
+						sb.Append(' ').Append(val).Append(',');
+					}
 				}
 
 				sb.Remove(sb.Length - 1, 1);
@@ -81,12 +89,58 @@ namespace BizHawk.Client.Common
 			return sb.ToString();
 		}
 
-		public IMovieController MovieControllerAdapter
+		private readonly Bk2MnemonicsLookup Mnemonics = new Bk2MnemonicsLookup();
+
+		public class Bk2MnemonicsLookup
 		{
-			get
+			public char this[string button]
 			{
-				return new Bk2ControllerAdapter();
+				get
+				{
+					if (SystemOverrides.ContainsKey(Global.Emulator.SystemId) && SystemOverrides[Global.Emulator.SystemId].ContainsKey(button))
+					{
+						return SystemOverrides[Global.Emulator.SystemId][button];
+					}
+					else if (BaseMnemonicLookupTable.ContainsKey(button))
+					{
+						return BaseMnemonicLookupTable[button];
+					}
+
+					return '!';
+				}
 			}
+
+			private readonly Dictionary<string, char> BaseMnemonicLookupTable = new Dictionary<string, char>
+			{
+				{ "P1 Up", 'U' },
+				{ "P1 Down", 'D' },
+				{ "P1 Left", 'L' },
+				{ "P1 Right", 'R' },
+				{ "P1 B", 'B' },
+				{ "P1 A", 'A' },
+				{ "P1 Select", 's' },
+				{ "P1 Start", 'S' },
+
+				{ "P2 Up", 'U' },
+				{ "P2 Down", 'D' },
+				{ "P2 Left", 'L' },
+				{ "P2 Right", 'R' },
+				{ "P2 B", 'B' },
+				{ "P2 A", 'A' },
+				{ "P2 Select", 's' },
+				{ "P2 Start", 'S' },
+			};
+
+			private readonly Dictionary<string, Dictionary<string, char>> SystemOverrides = new Dictionary<string, Dictionary<string, char>>
+			{
+				{
+					"NES",
+					new Dictionary<string, char>
+					{
+						{ "P1 Up", 'Q' }
+					}
+				}
+			};
 		}
 	}
 }
