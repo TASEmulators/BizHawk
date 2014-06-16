@@ -9,13 +9,23 @@ namespace BizHawk.Client.Common
 	{
 		public static void SaveStateFile(string filename, string name)
 		{
-			if (Global.Config.SaveStateType == Config.SaveStateTypeE.Text ||
-				(Global.Config.SaveStateType == Config.SaveStateTypeE.Default && !Global.Emulator.BinarySaveStatesPreferred))
+			// the old method of text savestate save is now gone.
+			// a text savestate is just like a binary savestate, but with a different core lump
+			using (var fs = new FileStream(filename, FileMode.Create, FileAccess.Write))
+			using (var bs = new BinaryStateSaver(fs))
 			{
-				// text mode savestates
-				var writer = new StreamWriter(filename);
-				Global.Emulator.SaveStateText(writer);
-				Global.MovieSession.HandleMovieSaveState(writer);
+				if (Global.Config.SaveStateType == Config.SaveStateTypeE.Text ||
+					(Global.Config.SaveStateType == Config.SaveStateTypeE.Default && !Global.Emulator.BinarySaveStatesPreferred))
+				{
+					// text savestate format
+					bs.PutLump(BinaryStateLump.CorestateText, (tw) => Global.Emulator.SaveStateText(tw));
+				}
+				else
+				{
+					// binary core lump format
+					bs.PutLump(BinaryStateLump.Corestate, bw => Global.Emulator.SaveStateBinary(bw));
+				}
+
 				if (Global.Config.SaveScreenshotWithStates)
 				{
 					var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
@@ -23,46 +33,19 @@ namespace BizHawk.Client.Common
 					// If user wants large screenshots, or screenshot is small enough
 					if (Global.Config.SaveLargeScreenshotWithStates || buff.Length < Global.Config.BigScreenshotSize)
 					{
-						writer.Write("Framebuffer ");
-						buff.SaveAsHex(writer);
+						bs.PutLump(BinaryStateLump.Framebuffer, (BinaryWriter bw) => bw.Write(buff));
 					}
 				}
 
-				writer.Close();
-			}
-			else
-			{
-				// binary savestates
-				using (var fs = new FileStream(filename, FileMode.Create, FileAccess.Write))
-				using (var bs = new BinaryStateSaver(fs))
+				if (Global.MovieSession.Movie.IsActive)
 				{
-#if true
-					bs.PutLump(BinaryStateLump.Corestate, bw => Global.Emulator.SaveStateBinary(bw));
-#else
-					// this would put text states inside the zipfile
-					bs.PutLump(BinaryStateLump.CorestateText, (tw) => Global.Emulator.SaveStateText(tw));
-#endif
-					if (Global.Config.SaveScreenshotWithStates)
-					{
-						var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
-
-						// If user wants large screenshots, or screenshot is small enough
-						if (Global.Config.SaveLargeScreenshotWithStates || buff.Length < Global.Config.BigScreenshotSize)
+					bs.PutLump(BinaryStateLump.Input,
+						delegate(TextWriter tw)
 						{
-							bs.PutLump(BinaryStateLump.Framebuffer, (BinaryWriter bw) => bw.Write(buff));
-						}
-					}
-
-					if (Global.MovieSession.Movie.IsActive)
-					{
-						bs.PutLump(BinaryStateLump.Input,
-							delegate(TextWriter tw)
-							{
-								// this never should have been a core's responsibility
-								tw.WriteLine("Frame {0}", Global.Emulator.Frame);
-								Global.MovieSession.HandleMovieSaveState(tw);
-							});
-					}
+							// this never should have been a core's responsibility
+							tw.WriteLine("Frame {0}", Global.Emulator.Frame);
+							Global.MovieSession.HandleMovieSaveState(tw);
+						});
 				}
 			}
 		}
