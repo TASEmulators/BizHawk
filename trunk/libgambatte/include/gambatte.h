@@ -19,7 +19,6 @@
 #ifndef GAMBATTE_H
 #define GAMBATTE_H
 
-#include "inputgetter.h"
 #include "gbint.h"
 #include <string>
 #include <sstream>
@@ -84,7 +83,7 @@ public:
 	void setCgbPalette(unsigned *lut);
 
 	/** Sets the callback used for getting input state. */
-	void setInputGetter(InputGetter *getInput);
+	void setInputGetter(unsigned (*getInput)());
 	
 	void setReadCallback(void (*callback)(unsigned));
 	void setWriteCallback(void (*callback)(unsigned));
