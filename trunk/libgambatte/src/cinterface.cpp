@@ -6,15 +6,27 @@
 
 using namespace gambatte;
 
+// new is actually called in a few different places, so replace all of them for determinism guarantees
+void *operator new(std::size_t n)
+{
+	void *p = std::malloc(n);
+	std::memset(p, 0, n);
+	return p;
+}
+
+void operator delete(void *p)
+{
+	std::free(p);
+}
+
 GBEXPORT GB *gambatte_create()
 {
-	return new (std::calloc(1, sizeof (GB))) GB();
+	return new GB();
 }
 
 GBEXPORT void gambatte_destroy(GB *g)
 {
-	g->~GB();
-	std::free(g);
+	delete g;
 }
 
 GBEXPORT int gambatte_load(GB *g, const char *romfiledata, unsigned romfilelength, long long now, unsigned flags)
