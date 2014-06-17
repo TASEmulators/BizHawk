@@ -286,7 +286,11 @@ namespace BizHawk.Client.Common
 
 		private StringBuilder RawInputLog()
 		{
+			var lg = new Bk2LogEntryGenerator();
+			lg.SetSource(Global.MovieOutputHardpoint);
+
 			var sb = new StringBuilder();
+			sb.AppendLine(lg.GenerateLogKey());
 			foreach (var record in _log)
 			{
 				sb.AppendLine(record);
