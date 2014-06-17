@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 
 using BizHawk.Common;
+using BizHawk.Client.Common.MovieConversionExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -26,7 +27,17 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				return new BkmMovie(path);
+				var movie = new BkmMovie(path);
+
+				if (VersionInfo.DeveloperBuild)
+				{
+					movie.Load();
+					return movie.ToBk2();
+				}
+				else
+				{
+					return movie;
+				}
 			}
 		}
 
