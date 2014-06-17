@@ -250,7 +250,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputStrOrAll()
 		{
-			//var m = new BkmControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
 			var m = Global.MovieSession.Movie.LogGeneratorInstance().MovieControllerAdapter;
 			m.Type = Global.MovieSession.MovieControllerAdapter.Type;
 
@@ -266,9 +265,9 @@ namespace BizHawk.Client.EmuHawk
 				SourceOr = m
 			};
 
-			var mg = Global.MovieSession.Movie.LogGeneratorInstance();
-			mg.SetSource(orAdaptor);
-			return mg.GenerateInputDisplay();
+			var lg = Global.MovieSession.Movie.LogGeneratorInstance();
+			lg.SetSource(orAdaptor);
+			return lg.GenerateInputDisplay();
 		}
 
 		public string InputStrSticky()

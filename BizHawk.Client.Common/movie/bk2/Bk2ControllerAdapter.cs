@@ -77,17 +77,23 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void SetControllersAsMnemonic(string mnemonic)
 		{
-			/*
-			 * This doesn't work because the working dictionary is populated by setting things by name, it will always be 0 in this context
-			 * Need some sort of reverse lookup
-			var segments = mnemonic.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
-
-			var keys = MyBoolButtons.Keys.Select(x => x).ToList();
-			for (int i = 0; i < segments.Length; i++)
+			if (!string.IsNullOrWhiteSpace(mnemonic))
 			{
-				MyBoolButtons[keys[i]] = !(segments[0][i] == '.');
+				var trimmed = mnemonic.Replace("|", "");
+				for (int i = 0; i < Type.BoolButtons.Count; i++)
+				{
+					MyBoolButtons[Type.BoolButtons[i]] = trimmed[i] == '.' ? false : true;
+				}
+
+				var floats = trimmed.Remove(0, Type.BoolButtons.Count);
+
+				for (int i = 0; i < Type.FloatControls.Count; i++)
+				{
+					var temp = floats.Substring(i * 4, 3);
+					var val = int.Parse(temp);
+					MyFloatControls[Type.FloatControls[i]] = val;
+				}
 			}
-			*/
 		}
 
 		#endregion

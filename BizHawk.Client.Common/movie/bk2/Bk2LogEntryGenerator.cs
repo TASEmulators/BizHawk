@@ -17,6 +17,8 @@ namespace BizHawk.Client.Common
 			get { return new Bk2ControllerAdapter(); }
 		}
 
+		#region ILogEntryGenerator Implementation
+
 		public void SetSource(IController source)
 		{
 			_source = source;
@@ -51,6 +53,26 @@ namespace BizHawk.Client.Common
 			return CreateLogEntry();
 		}
 
+		#endregion
+
+		public string GenerateLogKey()
+		{
+			StringBuilder sb = new StringBuilder();
+			sb.Append("LogKey:");
+
+			foreach (var button in _source.Type.BoolButtons)
+			{
+				sb.Append(button).Append('|');
+			}
+
+			foreach (var button in _source.Type.FloatControls)
+			{
+				sb.Append(button).Append('|');
+			}
+
+			return sb.ToString();
+		}
+
 		private string CreateLogEntry(bool createEmpty = false)
 		{
 			var sb = new StringBuilder();
@@ -68,18 +90,19 @@ namespace BizHawk.Client.Common
 				}
 			}
 
+			sb.Append('|');
 			if (_source.Type.FloatControls.Any())
 			{
 				foreach (var floatBtn in _source.Type.FloatControls)
 				{
 					if (createEmpty)
 					{
-						sb.Append(" 000,");
+						sb.Append("000,");
 					}
 					else
 					{
 						var val = (int)_source.GetFloat(floatBtn);
-						sb.Append(' ').Append(val).Append(',');
+						sb.Append(val.ToString().PadLeft(3, '0')).Append(',');
 					}
 				}
 
