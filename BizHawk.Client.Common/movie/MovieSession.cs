@@ -14,15 +14,7 @@ namespace BizHawk.Client.Common
 		public MovieSession()
 		{
 			ReadOnly = true;
-			// Movies 2.0 TODO: Put this logic somewhere else, movie service?
-			if (VersionInfo.DeveloperBuild)
-			{
-				MovieControllerAdapter = new Bk2ControllerAdapter();
-			}
-			else
-			{
-				MovieControllerAdapter = new BkmControllerAdapter();
-			}
+			MovieControllerAdapter = MovieService.DefaultInstance.LogGeneratorInstance().MovieControllerAdapter;
 		}
 
 		public MultitrackRecording MultiTrack { get { return _multiTrack; } }
