@@ -37,7 +37,9 @@ namespace BizHawk.Client.Common
 			return new BkmLogEntryGenerator();
 		}
 
-		public string PreferredExtension { get { return "bkm"; } }
+		public string PreferredExtension { get { return Extension; } }
+		public const string Extension = "bkm";
+
 		public BkmHeader Header { get; private set; }
 		public string Filename { get; set; }
 		public bool IsCountingRerecords { get; set; }

@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public const string Extension = "tasproj";
+		public new const string Extension = "tasproj";
 
 		public MovieRecord this[int index]
 		{
