@@ -152,6 +152,13 @@
     </Compile>
     <Compile Include="AVOut\NutMuxer.cs" />
     <Compile Include="AVOut\NutWriter.cs" />
+    <Compile Include="AVOut\SynclessRecorder.cs" />
+    <Compile Include="AVOut\SynclessRecordingTools.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AVOut\SynclessRecordingTools.Designer.cs">
+      <DependentUpon>SynclessRecordingTools.cs</DependentUpon>
+    </Compile>
     <Compile Include="AVOut\VideoWriterChooserForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1019,6 +1026,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AVOut\JMDForm.resx">
       <DependentUpon>JMDForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AVOut\SynclessRecordingTools.resx">
+      <DependentUpon>SynclessRecordingTools.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AVOut\VideoWriterChooserForm.resx">
       <DependentUpon>VideoWriterChooserForm.cs</DependentUpon>

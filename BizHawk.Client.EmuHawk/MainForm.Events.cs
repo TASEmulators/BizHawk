@@ -457,6 +457,11 @@ namespace BizHawk.Client.EmuHawk
 			this.StopAv();
 		}
 
+		private void SynclessRecordingMenuItem_Click(object sender, EventArgs e)
+		{
+			new SynclessRecordingTools().Run();
+		}
+
 		private void CaptureOSDMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.AVI_CaptureOSD ^= true;

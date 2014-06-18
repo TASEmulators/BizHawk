@@ -2714,28 +2714,47 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var sfd = new SaveFileDialog();
-					if (!(Global.Emulator is NullEmulator))
+					string ext = aw.DesiredExtension();
+					string pathForOpenFile;
+
+					//handle directories first
+					if (ext == "<directory>")
 					{
-						sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + "." + aw.DesiredExtension(); //dont use Path.ChangeExtension, it might wreck game names with dots in them
-						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPathFragment, null);
+						var fbd = new FolderBrowserEx();
+						if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
+						{
+							aw.Dispose();
+							return;
+						}
+						pathForOpenFile = fbd.SelectedPath;
 					}
 					else
 					{
-						sfd.FileName = "NULL";
-						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPathFragment, null);
+						var sfd = new SaveFileDialog();
+						if (!(Global.Emulator is NullEmulator))
+						{
+							sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + "." + ext; //dont use Path.ChangeExtension, it might wreck game names with dots in them
+							sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPathFragment, null);
+						}
+						else
+						{
+							sfd.FileName = "NULL";
+							sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPathFragment, null);
+						}
+
+						sfd.Filter = String.Format("{0} (*.{0})|*.{0}|All Files|*.*", ext);
+
+						var result = sfd.ShowHawkDialog();
+						if (result == DialogResult.Cancel)
+						{
+							aw.Dispose();
+							return;
+						}
+
+						pathForOpenFile = sfd.FileName;
 					}
 
-					sfd.Filter = String.Format("{0} (*.{0})|*.{0}|All Files|*.*", aw.DesiredExtension());
-
-					var result = sfd.ShowHawkDialog();
-					if (result == DialogResult.Cancel)
-					{
-						aw.Dispose();
-						return;
-					}
-
-					aw.OpenFile(sfd.FileName);
+					aw.OpenFile(pathForOpenFile);
 				}
 
 				// commit the avi writing last, in case there were any errors earlier
@@ -2877,6 +2896,7 @@ namespace BizHawk.Client.EmuHawk
 							output = Global.Emulator.VideoProvider;
 					}
 
+					_currAviWriter.SetFrame(Global.Emulator.Frame);
 					_currAviWriter.AddFrame(output);
 
 					if (disposableOutput != null)
@@ -3230,5 +3250,6 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.OSD.AddMessage("Profile config aborted");
 			}
 		}
+
 	}
 }
