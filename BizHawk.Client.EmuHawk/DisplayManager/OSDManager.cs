@@ -223,7 +223,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputStrMovie()
 		{
-			var lg = Global.MovieSession.Movie.LogGeneratorInstance();
+			var lg = Global.MovieSession.LogGeneratorInstance();
 			lg.SetSource(Global.MovieSession.MovieControllerAdapter);
 
 			return lg.GenerateInputDisplay();
@@ -231,7 +231,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputStrImmediate()
 		{
-			var lg = Global.MovieSession.Movie.LogGeneratorInstance();
+			var lg = Global.MovieSession.LogGeneratorInstance();
 			lg.SetSource(Global.AutofireStickyXORAdapter);
 
 			return lg.GenerateInputDisplay();
@@ -241,7 +241,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished)
 			{
-				var lg = Global.MovieSession.Movie.LogGeneratorInstance();
+				var lg = Global.MovieSession.LogGeneratorInstance();
 				var state = Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1);
 				if (state != null)
 				{
@@ -255,8 +255,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputStrOrAll()
 		{
-			var m = Global.MovieSession.Movie.LogGeneratorInstance().MovieControllerAdapter;
-			m.Type = Global.MovieSession.MovieControllerAdapter.Type;
+			var m = Global.MovieSession.MovieControllerInstance();
 
 			if (Global.MovieSession.Movie.IsActive)
 			{
@@ -270,7 +269,7 @@ namespace BizHawk.Client.EmuHawk
 				SourceOr = m
 			};
 
-			var lg = Global.MovieSession.Movie.LogGeneratorInstance();
+			var lg = Global.MovieSession.LogGeneratorInstance();
 			lg.SetSource(orAdaptor);
 			return lg.GenerateInputDisplay();
 		}
@@ -283,7 +282,7 @@ namespace BizHawk.Client.EmuHawk
 				SourceStickyOr = Global.AutofireStickyXORAdapter
 			};
 
-			var lg = Global.MovieSession.Movie.LogGeneratorInstance();
+			var lg = Global.MovieSession.LogGeneratorInstance();
 			lg.SetSource(stickyOr);
 			return lg.GenerateInputDisplay();
 		}
@@ -292,8 +291,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				var m = Global.MovieSession.Movie.LogGeneratorInstance().MovieControllerAdapter;
-				m.Type = Global.MovieSession.MovieControllerAdapter.Type;
+				var m = Global.MovieSession.MovieControllerInstance();
 				m.SetControllersAsMnemonic(
 					Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
 
@@ -303,7 +301,7 @@ namespace BizHawk.Client.EmuHawk
 					SourceAnd = m
 				};
 
-				var lg = Global.MovieSession.Movie.LogGeneratorInstance();
+				var lg = Global.MovieSession.LogGeneratorInstance();
 				lg.SetSource(andAdaptor);
 				return lg.GenerateInputDisplay();
 			}
