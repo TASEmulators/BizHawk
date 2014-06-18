@@ -223,9 +223,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputStrMovie()
 		{
-			var sb = new StringBuilder(Global.MovieSession.Movie.GetInput(Global.Emulator.Frame));
-			sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
-			return sb.ToString();
+			var lg = Global.MovieSession.Movie.LogGeneratorInstance();
+			lg.SetSource(Global.MovieSession.MovieControllerAdapter);
+
+			return lg.GenerateInputDisplay();
 		}
 
 		public string InputStrImmediate()
@@ -240,9 +241,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				var sb = new StringBuilder(Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
-				sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
-				return sb.ToString();
+				var lg = Global.MovieSession.Movie.LogGeneratorInstance();
+				lg.SetSource(Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1));
+				return lg.GenerateInputDisplay();
 			}
 
 			return string.Empty;
