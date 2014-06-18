@@ -88,13 +88,10 @@ namespace BizHawk.Client.EmuHawk
 
 				if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
 				{
-					var logEntry = Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1);
-					var lg = Global.MovieSession.Movie.LogGeneratorInstance().MovieControllerAdapter;
-					lg.Type = Global.MovieSession.MovieControllerAdapter.Type;
-					lg.SetControllersAsMnemonic(logEntry);
+					var input = Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1);
 
-					var x = lg.GetFloat(Controller + " X Axis");
-					var y = lg.GetFloat(Controller + " Y Axis");
+					var x = input.GetFloat(Controller + " X Axis");
+					var y = input.GetFloat(Controller + " Y Axis");
 
 					var xx = RealToGFX((int)x);
 					var yy = RealToGFX((int)y);
