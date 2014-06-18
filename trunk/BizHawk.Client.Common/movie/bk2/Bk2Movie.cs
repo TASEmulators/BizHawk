@@ -157,6 +157,39 @@ namespace BizHawk.Client.Common
 			return string.Empty;
 		}
 
+		public IController GetInputState(int frame)
+		{
+			if (frame < FrameCount && frame >= 0)
+			{
+
+				int getframe;
+
+				if (LoopOffset.HasValue)
+				{
+					if (frame < _log.Count)
+					{
+						getframe = frame;
+					}
+					else
+					{
+						getframe = ((frame - LoopOffset.Value) % (_log.Count - LoopOffset.Value)) + LoopOffset.Value;
+					}
+				}
+				else
+				{
+					getframe = frame;
+				}
+
+				var adapter = new Bk2ControllerAdapter();
+				adapter.Type = Global.MovieSession.MovieControllerAdapter.Type;
+				adapter.SetControllersAsMnemonic(_log[getframe]);
+				return adapter;
+			}
+
+			Finish();
+			return null;
+		}
+
 		public void PokeFrame(int frame, IController source)
 		{
 			throw new NotImplementedException();
