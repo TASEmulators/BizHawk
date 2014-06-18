@@ -14,7 +14,10 @@ namespace BizHawk.Client.Common
 
 		public IMovieController MovieControllerAdapter
 		{
-			get { return new Bk2ControllerAdapter(); }
+			get
+			{
+				return new Bk2ControllerAdapter();
+			}
 		}
 
 		#region ILogEntryGenerator Implementation

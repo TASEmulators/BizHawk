@@ -30,14 +30,16 @@ namespace BizHawk.Client.Common
 		public LuaTable GetInput(int frame)
 		{
 			var input = Lua.NewTable();
+			var adapter = Global.MovieSession.Movie.GetInputState(frame);
 
-			var lg = Global.MovieSession.Movie.LogGeneratorInstance().MovieControllerAdapter;
-			lg.Type = Global.MovieSession.MovieControllerAdapter.Type;
-			lg.SetControllersAsMnemonic(Global.MovieSession.Movie.GetInput(frame));
-
-			foreach (var button in lg.Type.BoolButtons)
+			foreach (var button in adapter.Type.BoolButtons)
 			{
-				input[button] = lg[button];
+				input[button] = adapter[button];
+			}
+
+			foreach (var button in adapter.Type.FloatControls)
+			{
+				input[button] = adapter[button];
 			}
 
 			return input;

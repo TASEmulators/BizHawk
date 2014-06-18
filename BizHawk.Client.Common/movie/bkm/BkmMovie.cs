@@ -133,6 +133,39 @@ namespace BizHawk.Client.Common
 			return string.Empty;
 		}
 
+		public IController GetInputState(int frame)
+		{
+			if (frame < FrameCount && frame >= 0)
+			{
+
+				int getframe;
+
+				if (_loopOffset.HasValue)
+				{
+					if (frame < _log.Count)
+					{
+						getframe = frame;
+					}
+					else
+					{
+						getframe = ((frame - _loopOffset.Value) % (_log.Count - _loopOffset.Value)) + _loopOffset.Value;
+					}
+				}
+				else
+				{
+					getframe = frame;
+				}
+
+				var adapter = new BkmControllerAdapter();
+				adapter.Type = Global.MovieSession.MovieControllerAdapter.Type;
+				adapter.SetControllersAsMnemonic(_log[getframe]);
+				return adapter;
+			}
+
+			Finish();
+			return null; ;
+		}
+
 		public void ClearFrame(int frame)
 		{
 			var lg = LogGeneratorInstance();

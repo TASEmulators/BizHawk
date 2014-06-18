@@ -209,8 +209,15 @@ namespace BizHawk.Client.Common
 		/// The input will be in the same format as represented in the input log when saved as a file
 		/// </summary>
 		/// <param name="frame">The frame of input to be retrieved</param>
-		/// <returns></returns>
+		/// <returns>a string representation of a log entry from the input log file itself</returns>
 		string GetInput(int frame);
+
+		/// <summary>
+		/// Gets a single frame of input via a controller state
+		/// </summary>
+		/// <param name="frame">The frame of input to be retrieved</param>
+		/// <returns>A controller state representing the specified frame of input, if frame is out of range, will return null</returns>
+		IController GetInputState(int frame);
 
 		#endregion
 	}
