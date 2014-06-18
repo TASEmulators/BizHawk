@@ -25,6 +25,22 @@ namespace BizHawk.Client.Common
 		public Action<string> MessageCallback { get; set; }
 		public Func<string, string, bool> AskYesNoCallback { get; set; }
 
+		/// <summary>
+		/// Simply shortens the verbosity necessary otherwise
+		/// </summary>
+		/// <returns></returns>
+		public ILogEntryGenerator LogGeneratorInstance()
+		{
+			return Movie.LogGeneratorInstance();
+		}
+
+		public IMovieController MovieControllerInstance()
+		{
+			var adapter = Movie.LogGeneratorInstance().MovieControllerAdapter;
+			adapter.Type = MovieControllerAdapter.Type;
+			return adapter;
+		}
+
 		private void Output(string message)
 		{
 			if (MessageCallback != null)
