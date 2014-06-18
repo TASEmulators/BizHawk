@@ -239,11 +239,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputPrevious()
 		{
-			if (Global.MovieSession.Movie.IsActive)
+			if (Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished)
 			{
 				var lg = Global.MovieSession.Movie.LogGeneratorInstance();
-				lg.SetSource(Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1));
-				return lg.GenerateInputDisplay();
+				var state = Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1);
+				if (state != null)
+				{
+					lg.SetSource(state);
+					return lg.GenerateInputDisplay();
+				}
 			}
 
 			return string.Empty;

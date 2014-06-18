@@ -78,42 +78,49 @@ namespace BizHawk.Client.Common
 
 		private string CreateLogEntry(bool createEmpty = false)
 		{
-			var sb = new StringBuilder();
-			sb.Append('|');
-
-			foreach (var button in _source.Type.BoolButtons)
+			try
 			{
-				if (createEmpty)
-				{
-					sb.Append('.');
-				}
-				else
-				{
-					sb.Append(_source.IsPressed(button) ? Mnemonics[button] : '.');
-				}
-			}
+				var sb = new StringBuilder();
+				sb.Append('|');
 
-			sb.Append('|');
-			if (_source.Type.FloatControls.Any())
-			{
-				foreach (var floatBtn in _source.Type.FloatControls)
+				foreach (var button in _source.Type.BoolButtons)
 				{
 					if (createEmpty)
 					{
-						sb.Append("000,");
+						sb.Append('.');
 					}
 					else
 					{
-						var val = (int)_source.GetFloat(floatBtn);
-						sb.Append(val.ToString().PadLeft(3, '0')).Append(',');
+						sb.Append(_source.IsPressed(button) ? Mnemonics[button] : '.');
 					}
 				}
 
-				sb.Remove(sb.Length - 1, 1);
-			}
+				sb.Append('|');
+				if (_source.Type.FloatControls.Any())
+				{
+					foreach (var floatBtn in _source.Type.FloatControls)
+					{
+						if (createEmpty)
+						{
+							sb.Append("000,");
+						}
+						else
+						{
+							var val = (int)_source.GetFloat(floatBtn);
+							sb.Append(val.ToString().PadLeft(3, '0')).Append(',');
+						}
+					}
 
-			sb.Append('|');
-			return sb.ToString();
+					sb.Remove(sb.Length - 1, 1);
+				}
+
+				sb.Append('|');
+				return sb.ToString();
+			}
+			catch (Exception ex)
+			{
+				return ex.ToString();
+			}
 		}
 	}
 }
