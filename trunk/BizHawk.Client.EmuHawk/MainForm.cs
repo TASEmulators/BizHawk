@@ -49,6 +49,7 @@ namespace BizHawk.Client.EmuHawk
 			RebootStatusBarIcon.Visible = false;
 			StatusBarDiskLightOnImage = Properties.Resources.LightOn;
 			StatusBarDiskLightOffImage = Properties.Resources.LightOff;
+			UpdateCoreStatusBarButton();
 		}
 
 		static MainForm()
