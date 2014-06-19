@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 
 		// Input Painting
 		private string _startDrawColumn = string.Empty;
-		private bool _startOn;
+		//private bool _startOn;
 		private bool _startMarkerDrag;
 		private bool _startFrameDrag;
 
@@ -538,7 +538,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (TasView.IsPaintDown && e.NewCell.Row.HasValue && !string.IsNullOrEmpty(_startDrawColumn))
 			{
-				_tas.SetBoolButton(e.NewCell.Row.Value, _startDrawColumn, _startOn); // Notice it uses new row, old column, you can only paint across a single column
+				_tas.SetBoolButton(e.NewCell.Row.Value, _startDrawColumn, /*_startOn*/ false); // Notice it uses new row, old column, you can only paint across a single column
 				TasView.Refresh();
 			}
 		}
