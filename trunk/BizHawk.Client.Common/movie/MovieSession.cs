@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 		}
 
 		public MultitrackRecording MultiTrack { get { return _multiTrack; } }
-		public IMovieController MovieControllerAdapter { get; private set; }
+		public IMovieController MovieControllerAdapter{ get; set; }
 
 		public IMovie Movie { get; set; }
 		public bool ReadOnly { get; set; }
