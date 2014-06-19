@@ -3224,7 +3224,7 @@ namespace BizHawk.Client.EmuHawk
 			MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 
-		private static void ProcessMovieImport(string fn) // Nothing Winform Specific here, move to Movie import
+		private static void ProcessMovieImport(string fn)
 		{
 			MovieImport.ProcessMovieImport(fn, ShowConversionError, GlobalWin.OSD.AddMessage);
 		}
