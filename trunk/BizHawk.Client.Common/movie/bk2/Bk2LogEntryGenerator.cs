@@ -29,10 +29,16 @@ namespace BizHawk.Client.Common
 
 		public string GenerateInputDisplay()
 		{
+			var le = GenerateLogEntry();
+			if (le == EmptyEntry)
+			{
+				return string.Empty;
+			}
+			
 			return GenerateLogEntry()
 				.Replace(".", " ")
 				.Replace("|", "")
-				.Replace(" 000, 000", "         ");
+				.Replace("000,000", "       ");
 		}
 
 		public bool IsEmpty
