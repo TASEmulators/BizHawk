@@ -60,7 +60,11 @@ namespace BizHawk.Client.Common
 						if (!string.IsNullOrWhiteSpace(line))
 						{
 							var pair = line.Split(new char[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
-							Header.Add(pair[0], pair[1]);
+
+							if (pair.Length > 1)
+							{
+								Header.Add(pair[0], pair[1]);
+							}
 						}
 					}
 				});
