@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 		public static Bk2Movie ToBk2(this BkmMovie bkm)
 		{
 			var newFilename = bkm.Filename + "." + Bk2Movie.Extension;
-			var bk2 = new Bk2Movie(bkm.Filename);
+			var bk2 = new Bk2Movie(newFilename);
 			bk2.HeaderEntries.Clear();
 			foreach(var kvp in bkm.HeaderEntries)
 			{
@@ -32,8 +32,13 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				bk2.Subtitles.Add(sub);
 			}
 
-			// TODO: savestate
-			// TODO: input log
+			bk2.SavestateBinaryBase64Blob = bkm.SavestateBinaryBase64Blob;
+
+			for (int i = 0; i < bkm.InputLogLength; i++)
+			{
+				var input = bkm.GetInputState(i);
+				bk2.AppendFrame(input);
+			}
 
 			return bk2;
 		}
