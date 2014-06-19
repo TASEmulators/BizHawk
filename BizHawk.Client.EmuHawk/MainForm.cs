@@ -79,6 +79,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.MovieSession = new MovieSession
 			{
 				Movie = MovieService.DefaultInstance,
+				MovieControllerAdapter = MovieService.DefaultInstance.LogGeneratorInstance().MovieControllerAdapter,
 				MessageCallback = GlobalWin.OSD.AddMessage,
 				AskYesNoCallback = StateErrorAskUser
 			};

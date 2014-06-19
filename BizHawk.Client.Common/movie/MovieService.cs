@@ -31,8 +31,8 @@ namespace BizHawk.Client.Common
 
 				if (VersionInfo.DeveloperBuild)
 				{
-					movie.Load();
-					return movie.ToBk2();
+					//movie.Load();
+					return movie; //.ToBk2();
 				}
 				else
 				{
