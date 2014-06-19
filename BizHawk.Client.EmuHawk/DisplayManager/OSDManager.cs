@@ -280,6 +280,16 @@ namespace BizHawk.Client.EmuHawk
 
 			var lg = Global.MovieSession.LogGeneratorInstance();
 			lg.SetSource(stickyOr);
+
+			var test = lg.GenerateInputDisplay();
+			if (test.Trim() != string.Empty)
+			{
+				int zzz = 0;
+				zzz++;
+				int yyy = zzz;
+				yyy++;
+			}
+
 			return lg.GenerateInputDisplay();
 		}
 
