@@ -150,6 +150,9 @@ namespace BizHawk.Emulation.Common
 		{
 			_list.Clear();
 		}
+
+		// why was this missing?
+		public bool Has { get { return _list.Any(); } }
 	}
 
 	public class MemoryCallbackSystem

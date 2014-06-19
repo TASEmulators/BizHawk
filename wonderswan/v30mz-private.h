@@ -1,9 +1,9 @@
-#define cpu_readop sys->memory.Read20
+//#define cpu_readop sys->memory.Read20
 //cpu_readmem20	
-#define cpu_readop_arg sys->memory.Read20
+//#define cpu_readop_arg sys->memory.Read20
 //cpu_readmem20	
-#define cpu_readmem20 sys->memory.Read20
-#define cpu_writemem20 sys->memory.Write20
+//#define cpu_readmem20 sys->memory.Read20
+//#define cpu_writemem20 sys->memory.Write20
 #define cpu_readport sys->memory.readport
 #define cpu_writeport sys->memory.writeport
 

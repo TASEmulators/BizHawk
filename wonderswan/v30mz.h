@@ -81,8 +81,6 @@ private:
 	} Mod_RM;
 
 private:
-
-private:
 	void nec_interrupt(unsigned int_num);
 	bool CheckInHLT();
 	void DoOP(uint8 opcode);
@@ -138,6 +136,18 @@ private:
 	
 	typedef unsigned(V30MZ::*EAFPtr)();
 	EAFPtr GetEA[192];
+
+	// memory callback system plumbing
+public:
+	void (*ReadHook)(uint32 addr);
+	void (*WriteHook)(uint32 addr);
+	void (*ExecHook)(uint32 addr);
+private:
+	uint8 cpu_readop(uint32 addr);
+	uint8 cpu_readop_arg(uint32 addr);
+	uint8 cpu_readmem20(uint32 addr);
+	void cpu_writemem20(uint32 addr, uint8 val);
+
 
 public:
 	System *sys;
