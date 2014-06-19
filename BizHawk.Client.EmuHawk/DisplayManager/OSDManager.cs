@@ -255,13 +255,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputStrOrAll()
 		{
-			var m = Global.MovieSession.MovieControllerInstance();
-
-			if (Global.MovieSession.Movie.IsActive)
-			{
-				m.SetControllersAsMnemonic(
-					Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
-			}
+			var m = Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished ?
+				Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1) :
+				Global.MovieSession.MovieControllerInstance();
 
 			var orAdaptor = new ORAdapter()
 			{
@@ -291,9 +287,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				var m = Global.MovieSession.MovieControllerInstance();
-				m.SetControllersAsMnemonic(
-					Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
+				var m = Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished ?
+				Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1) :
+				Global.MovieSession.MovieControllerInstance();
 
 				var andAdaptor = new AndAdapter
 				{

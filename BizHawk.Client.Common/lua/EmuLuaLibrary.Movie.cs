@@ -51,9 +51,11 @@ namespace BizHawk.Client.Common
 		)]
 		public string GetInputAsMnemonic(int frame)
 		{
-			if (frame < Global.MovieSession.Movie.InputLogLength)
+			if (Global.MovieSession.Movie.IsActive && frame < Global.MovieSession.Movie.InputLogLength)
 			{
-				return Global.MovieSession.Movie.GetInput(frame);
+				var lg = Global.MovieSession.LogGeneratorInstance();
+				lg.SetSource(Global.MovieSession.Movie.GetInputState(frame));
+				return lg.GenerateLogEntry();
 			}
 
 			return string.Empty;
