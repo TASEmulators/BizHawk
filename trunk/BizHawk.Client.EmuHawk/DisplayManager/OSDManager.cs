@@ -255,7 +255,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputStrOrAll()
 		{
-			var m = Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished ?
+			var m = (Global.MovieSession.Movie.IsActive && 
+				!Global.MovieSession.Movie.IsFinished &&
+				Global.Emulator.Frame > 0) ?
 				Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1) :
 				Global.MovieSession.MovieControllerInstance();
 
@@ -265,7 +267,9 @@ namespace BizHawk.Client.EmuHawk
 				SourceOr = m
 			};
 
+
 			var lg = Global.MovieSession.LogGeneratorInstance();
+
 			lg.SetSource(orAdaptor);
 			return lg.GenerateInputDisplay();
 		}

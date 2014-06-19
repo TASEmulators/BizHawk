@@ -192,7 +192,8 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return Source[button] | SourceOr[button];
+				return (Source != null ? Source[button] : false) | 
+					(SourceOr != null ? SourceOr[button] : false);
 			}
 			set
 			{
@@ -221,7 +222,12 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return Source[button] & SourceAnd[button];
+				if (Source != null && SourceAnd != null)
+				{
+					return Source[button] & SourceAnd[button];
+				}
+
+				return false;
 			}
 
 			set
@@ -304,7 +310,19 @@ namespace BizHawk.Client.Common
 
 		public float GetFloat(string name)
 		{
-			return _floatSet[name] ?? Source.GetFloat(name);
+			var val = _floatSet[name];
+
+			if (val.HasValue)
+			{
+				return val.Value;
+			}
+
+			if (Source == null)
+			{
+				return 0;
+			}
+
+			return Source.GetFloat(name);
 		}
 
 		public void ClearStickyFloats()
