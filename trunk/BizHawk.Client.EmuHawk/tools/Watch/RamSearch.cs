@@ -1699,15 +1699,6 @@ namespace BizHawk.Client.EmuHawk
 				SelectedIndices.Any();
 		}
 
-		private void WatchListView_ColumnReordered(object sender, ColumnReorderedEventArgs e)
-		{
-			Global.Config.RamSearchColumnIndexes[WatchList.ADDRESS] = WatchListView.Columns[WatchList.ADDRESS].DisplayIndex;
-			Global.Config.RamSearchColumnIndexes[WatchList.VALUE] = WatchListView.Columns[WatchList.VALUE].DisplayIndex;
-			Global.Config.RamSearchColumnIndexes[WatchList.PREV] = WatchListView.Columns[WatchList.ADDRESS].DisplayIndex;
-			Global.Config.RamSearchColumnIndexes[WatchList.CHANGES] = WatchListView.Columns[WatchList.CHANGES].DisplayIndex;
-			Global.Config.RamSearchColumnIndexes[WatchList.DIFF] = WatchListView.Columns[WatchList.DIFF].DisplayIndex;
-		}
-
 		private void WatchListView_Enter(object sender, EventArgs e)
 		{
 			WatchListView.Refresh();
