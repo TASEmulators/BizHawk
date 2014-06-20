@@ -238,6 +238,24 @@ namespace BizHawk.Client.EmuHawk
 			ToolHelpers.AddColumn(CheatListView, SIZE, Global.Config.CheatsColumnShow[SIZE], GetColumnWidth(SIZE));
 			ToolHelpers.AddColumn(CheatListView, ENDIAN, Global.Config.CheatsColumnShow[ENDIAN], GetColumnWidth(ENDIAN));
 			ToolHelpers.AddColumn(CheatListView, TYPE, Global.Config.CheatsColumnShow[TYPE], GetColumnWidth(TYPE));
+
+			ColumnPositions();
+		}
+
+		private void ColumnPositions()
+		{
+			var columns = Global.Config.CheatsColumnIndices
+					.Where(x => CheatListView.Columns.ContainsKey(x.Key))
+					.OrderBy(x => x.Value)
+					.ToList();
+
+			for (var i = 0; i < columns.Count; i++)
+			{
+				if (CheatListView.Columns.ContainsKey(columns[i].Key))
+				{
+					CheatListView.Columns[columns[i].Key].DisplayIndex = i;
+				}
+			}
 		}
 
 		private int GetColumnWidth(string columnName)
