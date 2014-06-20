@@ -28,12 +28,6 @@ namespace BizHawk.Client.Common
 			set { Header[HeaderKeys.SYNCSETTINGS] = value; }
 		}
 
-		public string SavestateBinaryBase64Blob
-		{
-			get { return Header.SavestateBinaryBase64Blob; }
-			set { Header.SavestateBinaryBase64Blob = value; }
-		}
-
 		public ulong Rerecords
 		{
 			get { return Header.Rerecords; }
@@ -99,5 +93,8 @@ namespace BizHawk.Client.Common
 			get { return Header[HeaderKeys.FIRMWARESHA1]; }
 			set { Header[HeaderKeys.FIRMWARESHA1] = value; }
 		}
+
+		public string TextSavestate { get; set; }
+		public byte[] BinarySavestate { get; set; }
 	}
 }

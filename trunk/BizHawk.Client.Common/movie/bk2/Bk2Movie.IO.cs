@@ -117,23 +117,19 @@ namespace BizHawk.Client.Common
 					}
 				});
 
-				// Movies 2.0 TODO: be smart about text or binary state
 				if (StartsFromSavestate)
 				{
-					bl.GetLump(BinaryStateLump.CorestateText, true, delegate(TextReader tr)
-					{
-						string line;
-						while ((line = tr.ReadLine()) != null)
+					bl.GetCoreState(
+						delegate(BinaryReader br)
 						{
-							if (!string.IsNullOrWhiteSpace(line))
-							{
-								SavestateBinaryBase64Blob = line;
-							}
-						}
-					});
+							BinarySavestate = br.ReadBytes((int)br.BaseStream.Length);
+						},
+						delegate(TextReader tr)
+						{
+							TextSavestate = tr.ReadToEnd();
+						});
 				}
 			}
-
 			return true;
 		}
 
@@ -164,7 +160,14 @@ namespace BizHawk.Client.Common
 
 				if (StartsFromSavestate)
 				{
-					bs.PutLump(BinaryStateLump.CorestateText, (tw) => tw.WriteLine(SavestateBinaryBase64Blob));
+					if (TextSavestate != null)
+					{
+						bs.PutLump(BinaryStateLump.CorestateText, (TextWriter tw) => tw.Write(TextSavestate));
+					}
+					else
+					{
+						bs.PutLump(BinaryStateLump.Corestate, (BinaryWriter bw) => bw.Write(BinarySavestate));
+					}
 				}
 			}
 
@@ -178,7 +181,8 @@ namespace BizHawk.Client.Common
 			Subtitles.Clear();
 			Comments.Clear();
 			_syncSettingsJson = string.Empty;
-			_savestateBlob = string.Empty;
+			TextSavestate = null;
+			BinarySavestate = null;
 		}
 	}
 }

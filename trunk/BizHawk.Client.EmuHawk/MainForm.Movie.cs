@@ -80,9 +80,10 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.MovieSession.Movie.StartsFromSavestate)
 			{
-				var state = Convert.FromBase64String(Global.MovieSession.Movie.SavestateBinaryBase64Blob);
-				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(state)));
-				Global.Emulator.ResetCounters();
+				if (Global.MovieSession.Movie.TextSavestate != null)
+					Global.Emulator.LoadStateText(new StringReader(Global.MovieSession.Movie.TextSavestate));
+				else
+					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.BinarySavestate, false)));
 			}
 
 			if (!fromTastudio)
@@ -195,8 +196,19 @@ namespace BizHawk.Client.EmuHawk
 				LoadRom(CurrentlyOpenRom);
 				if (Global.MovieSession.Movie.StartsFromSavestate)
 				{
-					var state = Convert.FromBase64String(Global.MovieSession.Movie.SavestateBinaryBase64Blob);
-					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(state)));
+					// TODO: why does this code exist twice??
+
+					if (Global.MovieSession.Movie.TextSavestate != null)
+					{
+						Global.Emulator.LoadStateText(new StringReader(Global.MovieSession.Movie.TextSavestate));
+					}
+					else
+					{
+						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.BinarySavestate, false)));
+					}
+
+					//var state = Convert.FromBase64String(Global.MovieSession.Movie.SavestateBinaryBase64Blob);
+					//Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(state)));
 					Global.Emulator.ResetCounters();
 				}
 
