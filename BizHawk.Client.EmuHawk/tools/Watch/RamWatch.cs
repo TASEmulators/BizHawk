@@ -476,7 +476,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (WatchListView.Columns[WatchList.NOTES] != null)
 			{
-				Global.Config.RamWatchColumnIndexes[WatchList.NOTES] = WatchListView.Columns[WatchList.NOTES].Index;
+				Global.Config.RamWatchColumnIndexes[WatchList.NOTES] = WatchListView.Columns[WatchList.NOTES].DisplayIndex;
 				Global.Config.RamWatchColumnWidths[WatchList.NOTES] = WatchListView.Columns[WatchList.NOTES].Width;
 			}
 		}
