@@ -82,10 +82,6 @@ namespace BizHawk.Client.EmuHawk
 							movieToRecord.TextSavestate = sw.ToString();
 						}
 					}
-
-					//var bytestate = Global.Emulator.SaveStateBinary();
-					//string stringstate = Convert.ToBase64String(bytestate);
-					//movieToRecord.SavestateBinaryBase64Blob = stringstate;
 				}
 
 				// Header
