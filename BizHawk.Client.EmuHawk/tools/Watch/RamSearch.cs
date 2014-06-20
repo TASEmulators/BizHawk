@@ -1300,26 +1300,29 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Size = new Size(_defaultWidth, _defaultHeight);
 
+			Global.Config.RamSearchColumnWidths = new Dictionary<string, int>
+			{
+				{ "AddressColumn", -1 },
+				{ "ValueColumn", -1 },
+				{ "PrevColumn", -1 },
+				{ "ChangesColumn", -1 },
+				{ "DiffColumn", -1 },
+			};
+
 			Global.Config.RamSearchColumnIndexes = new Dictionary<string, int>
 				{
-					{ "AddressColumn", 0 },
-					{ "ValueColumn", 1 },
-					{ "PrevColumn", 2 },
-					{ "ChangesColumn", 3 },
-					{ "DiffColumn", 4 },
-					{ "DomainColumn", 5 },
-					{ "NotesColumn", 6 },
-				};
+				{ "AddressColumn", 0 },
+				{ "ValueColumn", 1 },
+				{ "PrevColumn", 2 },
+				{ "ChangesColumn", 3 },
+				{ "DiffColumn", 4 },
+			};
 
 			ColumnPositions();
 
 			Global.Config.RamSearchShowChangeColumn = true;
 			Global.Config.RamSearchShowPrevColumn = true;
 			Global.Config.RamSearchShowDiffColumn = false;
-
-			WatchListView.Columns[WatchList.ADDRESS].Width = _defaultColumnWidths[WatchList.ADDRESS];
-			WatchListView.Columns[WatchList.VALUE].Width = _defaultColumnWidths[WatchList.VALUE];
-			WatchListView.Columns[WatchList.CHANGES].Width = _defaultColumnWidths[WatchList.CHANGES];
 
 			Global.Config.RamSearchSettings.SaveWindowPosition = true;
 			Global.Config.RamSearchSettings.TopMost = TopMost = false;
@@ -1334,7 +1337,7 @@ namespace BizHawk.Client.EmuHawk
 					{ "DiffColumn", -1 },
 				};
 
-			LoadColumnInfo();
+			
 
 			_settings = new RamSearchEngine.Settings();
 			if (_settings.Mode == RamSearchEngine.Settings.SearchMode.Fast)
@@ -1343,6 +1346,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			RefreshFloatingWindowControl();
+			ColumnPositions();
+			LoadColumnInfo();
 		}
 
 		#endregion
