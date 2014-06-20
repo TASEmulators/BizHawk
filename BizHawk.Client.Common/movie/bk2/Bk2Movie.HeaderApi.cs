@@ -9,8 +9,6 @@ namespace BizHawk.Client.Common
 	{
 		protected readonly Bk2Header Header = new Bk2Header();
 		private string _syncSettingsJson = string.Empty;
-		private string _savestateBlob = string.Empty;
-
 
 		public IDictionary<string, string> HeaderEntries
 		{
@@ -24,19 +22,6 @@ namespace BizHawk.Client.Common
 		{
 			get { return _syncSettingsJson; }
 			set { _syncSettingsJson = value; }
-		}
-
-		public string SavestateBinaryBase64Blob
-		{
-			get
-			{
-				return _savestateBlob;
-			}
-
-			set
-			{
-				_savestateBlob = value;
-			}
 		}
 
 		public ulong Rerecords
@@ -197,5 +182,8 @@ namespace BizHawk.Client.Common
 
 			return sb.ToString();
 		}
+
+		public string TextSavestate { get; set; }
+		public byte[] BinarySavestate { get; set; }
 	}
 }

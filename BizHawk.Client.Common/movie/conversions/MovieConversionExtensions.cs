@@ -32,7 +32,8 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				bk2.Subtitles.Add(sub);
 			}
 
-			bk2.SavestateBinaryBase64Blob = bkm.SavestateBinaryBase64Blob;
+			bk2.TextSavestate = bkm.TextSavestate;
+			bk2.BinarySavestate = bkm.BinarySavestate;
 
 			for (int i = 0; i < bkm.InputLogLength; i++)
 			{

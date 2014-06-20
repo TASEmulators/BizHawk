@@ -107,6 +107,8 @@ namespace BizHawk.Client.Common
 					}
 				}
 			}
+			if (Header.SavestateBinaryBase64Blob != null)
+				BinarySavestate = Convert.FromBase64String(Header.SavestateBinaryBase64Blob);
 
 			Loaded = true;
 			return true;
@@ -229,6 +231,11 @@ namespace BizHawk.Client.Common
 
 		private void Write(string fn)
 		{
+			if (BinarySavestate != null)
+				Header.SavestateBinaryBase64Blob = Convert.ToBase64String(BinarySavestate);
+			else
+				Header.SavestateBinaryBase64Blob = null;
+
 			using (var fs = new FileStream(fn, FileMode.Create, FileAccess.Write, FileShare.Read))
 			{
 				using (var sw = new StreamWriter(fs))

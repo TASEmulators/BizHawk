@@ -58,10 +58,9 @@ namespace BizHawk.Client.Common
 		SubtitleList Subtitles { get; }
 		IList<string> Comments { get; }
 
-		/// <summary>
-		/// For savestate anchored movies, this is the starting savestate
-		/// </summary>
-		string SavestateBinaryBase64Blob { get; set; }
+		// savestate anchor.
+		string TextSavestate { get; set; }
+		byte[] BinarySavestate { get; set; }
 
 		ulong Rerecords { get; set; }
 		bool StartsFromSavestate { get; set; }
