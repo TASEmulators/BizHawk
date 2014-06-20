@@ -237,6 +237,14 @@ namespace BizHawk.Client.Common
 			// zero 22-jul-2012 - i dont think this is used the same way it used to. game.Name shouldnt be a path, so this stuff is illogical.
 			// if game.Name is a path, then someone shouldve made it not-a-path already.
 			// return Path.Combine(Path.GetDirectoryName(filesystemSafeName), Path.GetFileNameWithoutExtension(filesystemSafeName));
+
+			// adelikat:
+			// This hack is to prevent annoying things like Super Mario Bros..bk2
+			if (filesystemSafeName.EndsWith("."))
+			{
+				return filesystemSafeName.Remove(filesystemSafeName.Length - 1, 1);
+			}
+
 			return filesystemSafeName;
 		}
 
