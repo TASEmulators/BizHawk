@@ -440,43 +440,36 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (WatchListView.Columns[WatchList.ADDRESS] != null)
 			{
-				Global.Config.RamWatchColumnIndexes[WatchList.ADDRESS] = WatchListView.Columns[WatchList.ADDRESS].DisplayIndex;
 				Global.Config.RamWatchColumnWidths[WatchList.ADDRESS] = WatchListView.Columns[WatchList.ADDRESS].Width;
 			}
 
 			if (WatchListView.Columns[WatchList.VALUE] != null)
 			{
-				Global.Config.RamWatchColumnIndexes[WatchList.VALUE] = WatchListView.Columns[WatchList.VALUE].DisplayIndex;
 				Global.Config.RamWatchColumnWidths[WatchList.VALUE] = WatchListView.Columns[WatchList.VALUE].Width;
 			}
 
 			if (WatchListView.Columns[WatchList.PREV] != null)
 			{
-				Global.Config.RamWatchColumnIndexes[WatchList.PREV] = WatchListView.Columns[WatchList.PREV].DisplayIndex;
 				Global.Config.RamWatchColumnWidths[WatchList.PREV] = WatchListView.Columns[WatchList.PREV].Width;
 			}
 
 			if (WatchListView.Columns[WatchList.CHANGES] != null)
 			{
-				Global.Config.RamWatchColumnIndexes[WatchList.CHANGES] = WatchListView.Columns[WatchList.CHANGES].DisplayIndex;
 				Global.Config.RamWatchColumnWidths[WatchList.CHANGES] = WatchListView.Columns[WatchList.CHANGES].Width;
 			}
 
 			if (WatchListView.Columns[WatchList.DIFF] != null)
 			{
-				Global.Config.RamWatchColumnIndexes[WatchList.DIFF] = WatchListView.Columns[WatchList.DIFF].DisplayIndex;
 				Global.Config.RamWatchColumnWidths[WatchList.DIFF] = WatchListView.Columns[WatchList.DIFF].Width;
 			}
 
 			if (WatchListView.Columns[WatchList.DOMAIN] != null)
 			{
-				Global.Config.RamWatchColumnIndexes[WatchList.DOMAIN] = WatchListView.Columns[WatchList.DOMAIN].DisplayIndex;
 				Global.Config.RamWatchColumnWidths[WatchList.DOMAIN] = WatchListView.Columns[WatchList.DOMAIN].Width;
 			}
 
 			if (WatchListView.Columns[WatchList.NOTES] != null)
 			{
-				Global.Config.RamWatchColumnIndexes[WatchList.NOTES] = WatchListView.Columns[WatchList.NOTES].Index;
 				Global.Config.RamWatchColumnWidths[WatchList.NOTES] = WatchListView.Columns[WatchList.NOTES].Width;
 			}
 		}
@@ -1106,13 +1099,40 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchListView_ColumnReordered(object sender, ColumnReorderedEventArgs e)
 		{
-			Global.Config.RamWatchColumnIndexes[WatchList.ADDRESS] = WatchListView.Columns[WatchList.ADDRESS].DisplayIndex;
-			Global.Config.RamWatchColumnIndexes[WatchList.VALUE] = WatchListView.Columns[WatchList.VALUE].DisplayIndex;
-			Global.Config.RamWatchColumnIndexes[WatchList.PREV] = WatchListView.Columns[WatchList.ADDRESS].DisplayIndex;
-			Global.Config.RamWatchColumnIndexes[WatchList.CHANGES] = WatchListView.Columns[WatchList.CHANGES].DisplayIndex;
-			Global.Config.RamWatchColumnIndexes[WatchList.DIFF] = WatchListView.Columns[WatchList.DIFF].DisplayIndex;
-			Global.Config.RamWatchColumnIndexes[WatchList.DOMAIN] = WatchListView.Columns[WatchList.DOMAIN].DisplayIndex;
-			Global.Config.RamWatchColumnIndexes[WatchList.NOTES] = WatchListView.Columns[WatchList.NOTES].DisplayIndex;
+			if (e.Header.Name == WatchList.ADDRESS)
+			{
+				Global.Config.RamWatchColumnIndexes[WatchList.ADDRESS] = e.NewDisplayIndex;
+			}
+
+			if (e.Header.Name == WatchList.VALUE)
+			{
+				Global.Config.RamWatchColumnIndexes[WatchList.VALUE] = e.NewDisplayIndex;
+			}
+
+			if (e.Header.Name == WatchList.PREV)
+			{
+				Global.Config.RamWatchColumnIndexes[WatchList.PREV] = e.NewDisplayIndex;
+			}
+
+			if (e.Header.Name == WatchList.CHANGES)
+			{
+				Global.Config.RamWatchColumnIndexes[WatchList.CHANGES] = e.NewDisplayIndex;
+			}
+
+			if (e.Header.Name == WatchList.DIFF)
+			{
+				Global.Config.RamWatchColumnIndexes[WatchList.DIFF] = e.NewDisplayIndex;
+			}
+
+			if (e.Header.Name == WatchList.DOMAIN)
+			{
+				Global.Config.RamWatchColumnIndexes[WatchList.DOMAIN] = e.NewDisplayIndex;
+			}
+
+			if (e.Header.Name == WatchList.NOTES)
+			{
+				Global.Config.RamWatchColumnIndexes[WatchList.NOTES] = e.NewDisplayIndex;
+			}
 		}
 
 		protected override void OnShown(EventArgs e)
