@@ -904,28 +904,31 @@ namespace BizHawk.Client.EmuHawk
 			Size = new Size(_defaultWidth, _defaultHeight);
 
 			Global.Config.RamWatchColumnIndexes = new Dictionary<string, int>
-				{
-					{ "AddressColumn", 0 },
-					{ "ValueColumn", 1 },
-					{ "PrevColumn", 2 },
-					{ "ChangesColumn", 3 },
-					{ "DiffColumn", 4 },
-					{ "DomainColumn", 5 },
-					{ "NotesColumn", 6 },
-				};
+			{
+				{ "AddressColumn", 0 },
+				{ "ValueColumn", 1 },
+				{ "PrevColumn", 2 },
+				{ "ChangesColumn", 3 },
+				{ "DiffColumn", 4 },
+				{ "DomainColumn", 5 },
+				{ "NotesColumn", 6 },
+			};
 
-			ColumnPositions();
+			Global.Config.RamWatchColumnWidths = new Dictionary<string, int>
+			{
+				{ "AddressColumn", -1 },
+				{ "ValueColumn", -1 },
+				{ "PrevColumn", -1 },
+				{ "ChangesColumn", -1 },
+				{ "DiffColumn", -1 },
+				{ "DomainColumn", -1 },
+				{ "NotesColumn", -1 },
+			};
 
 			Global.Config.RamWatchShowChangeColumn = true;
 			Global.Config.RamWatchShowDomainColumn = true;
 			Global.Config.RamWatchShowPrevColumn = false;
 			Global.Config.RamWatchShowDiffColumn = false;
-
-			WatchListView.Columns[WatchList.ADDRESS].Width = _defaultColumnWidths[WatchList.ADDRESS];
-			WatchListView.Columns[WatchList.VALUE].Width = _defaultColumnWidths[WatchList.VALUE];
-			WatchListView.Columns[WatchList.CHANGES].Width = _defaultColumnWidths[WatchList.CHANGES];
-			WatchListView.Columns[WatchList.DOMAIN].Width = _defaultColumnWidths[WatchList.DOMAIN];
-			WatchListView.Columns[WatchList.NOTES].Width = _defaultColumnWidths[WatchList.NOTES];
 
 			Global.Config.DisplayRamWatch = false;
 			Global.Config.RamWatchSettings.SaveWindowPosition = true;
@@ -933,6 +936,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.RamWatchSettings.FloatingWindow = false;
 
 			RefreshFloatingWindowControl();
+			ColumnPositions();
 			LoadColumnInfo();
 		}
 
@@ -1102,17 +1106,6 @@ namespace BizHawk.Client.EmuHawk
 		private void WatchListView_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
 			OrderColumn(e.Column);
-		}
-
-		private void WatchListView_ColumnReordered(object sender, ColumnReorderedEventArgs e)
-		{
-			Global.Config.RamWatchColumnIndexes[WatchList.ADDRESS] = WatchListView.Columns[WatchList.ADDRESS].DisplayIndex;
-			Global.Config.RamWatchColumnIndexes[WatchList.VALUE] = WatchListView.Columns[WatchList.VALUE].DisplayIndex;
-			Global.Config.RamWatchColumnIndexes[WatchList.PREV] = WatchListView.Columns[WatchList.ADDRESS].DisplayIndex;
-			Global.Config.RamWatchColumnIndexes[WatchList.CHANGES] = WatchListView.Columns[WatchList.CHANGES].DisplayIndex;
-			Global.Config.RamWatchColumnIndexes[WatchList.DIFF] = WatchListView.Columns[WatchList.DIFF].DisplayIndex;
-			Global.Config.RamWatchColumnIndexes[WatchList.DOMAIN] = WatchListView.Columns[WatchList.DOMAIN].DisplayIndex;
-			Global.Config.RamWatchColumnIndexes[WatchList.NOTES] = WatchListView.Columns[WatchList.NOTES].DisplayIndex;
 		}
 
 		protected override void OnShown(EventArgs e)
