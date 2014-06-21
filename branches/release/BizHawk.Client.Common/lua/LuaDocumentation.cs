@@ -48,6 +48,8 @@ namespace BizHawk.Client.Common
 				}
 			}
 
+			sb.Append("%%TAB_END%%");
+
 			return sb.ToString();
 		}
 	}

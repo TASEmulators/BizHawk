@@ -994,6 +994,8 @@ namespace BizHawk.Client.EmuHawk
 				VirtualPadMenuItem.Enabled =
 				!(Global.Emulator is NullEmulator);
 			batchRunnerToolStripMenuItem.Visible = VersionInfo.DeveloperBuild;
+
+			TAStudioMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
 
 		private void ToolBoxMenuItem_Click(object sender, EventArgs e)

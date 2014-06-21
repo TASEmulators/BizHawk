@@ -34,6 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		
 		string InstanceName;
 		Process process;
+		System.Threading.EventWaitHandle watchdogEvent;
 		NamedPipeServerStream pipe;
 		BinaryWriter bwPipe;
 		BinaryReader brPipe;
@@ -96,6 +97,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.None, 1024 * 1024, 1024);
 
+			//slim chance this might be useful sometimes:
+			//http://stackoverflow.com/questions/2590334/creating-a-cross-process-eventwaithandle
+			//create an event for the child process to monitor with a watchdog, to make sure it terminates when the emuhawk process terminates.
+			//NOTE: this is alarming! for some reason .net releases this event when it gets finalized, instead of when i (dont) dispose it.
+			bool createdNew;
+			watchdogEvent = new System.Threading.EventWaitHandle(false, System.Threading.EventResetMode.AutoReset, InstanceName + "-event", out createdNew);
+
 			process = new Process();
 			process.StartInfo.WorkingDirectory = Path.GetDirectoryName(exePath);
 			process.StartInfo.FileName = exePath;
@@ -134,6 +142,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public void Dispose()
 		{
+			watchdogEvent.Dispose();
 			process.Kill();
 			process.Dispose();
 			process = null;
