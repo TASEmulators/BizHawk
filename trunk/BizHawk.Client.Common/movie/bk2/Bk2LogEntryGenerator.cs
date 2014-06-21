@@ -11,12 +11,18 @@ namespace BizHawk.Client.Common
 	{
 		private readonly Bk2MnemonicConstants Mnemonics = new Bk2MnemonicConstants();
 		private IController _source;
+		private string _logKey = string.Empty;
+
+		public Bk2LogEntryGenerator(string logKey)
+		{
+			_logKey = logKey;
+		}
 
 		public IMovieController MovieControllerAdapter
 		{
 			get
 			{
-				return new Bk2ControllerAdapter();
+				return new Bk2ControllerAdapter(_logKey);
 			}
 		}
 
@@ -69,8 +75,9 @@ namespace BizHawk.Client.Common
 			var sb = new StringBuilder();
 			sb.Append("LogKey:");
 
-			foreach (var group in _source.Type.ControlsOrdered)
+			foreach (var group in _source.Type.ControlsOrdered.Where(c => c.Any()))
 			{
+				sb.Append("#");
 				foreach (var button in group)
 				{
 					sb
