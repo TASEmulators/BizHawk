@@ -12,6 +12,11 @@ namespace BizHawk.Client.Common
 	{
 		private string _logKey = string.Empty;
 
+		public Bk2ControllerAdapter()
+		{
+		
+		}
+
 		public Bk2ControllerAdapter(string key)
 		{
 			_logKey = key;

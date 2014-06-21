@@ -180,8 +180,11 @@ namespace BizHawk.Client.Common
 					getframe = frame;
 				}
 
-				var adapter = new Bk2ControllerAdapter(_logKey);
-				adapter.Type = Global.MovieSession.MovieControllerAdapter.Type;
+				var adapter = new Bk2ControllerAdapter
+				{
+					Type = Global.MovieSession.MovieControllerAdapter.Type
+				};
+
 				adapter.SetControllersAsMnemonic(_log[getframe]);
 				return adapter;
 			}
