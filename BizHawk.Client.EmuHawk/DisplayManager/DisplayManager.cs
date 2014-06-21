@@ -49,6 +49,7 @@ namespace BizHawk.Client.EmuHawk
 			GL = GlobalWin.GL;
 			this.presentationPanel = presentationPanel;
 			GraphicsControl = this.presentationPanel.GraphicsControl;
+			CR_GraphicsControl = GlobalWin.GLManager.GetContextForGraphicsControl(GraphicsControl);
 
 			//it's sort of important for these to be initialized to something nonzero
 			currEmuWidth = currEmuHeight = 1;
@@ -106,13 +107,14 @@ namespace BizHawk.Client.EmuHawk
 		public bool NeedsToPaint { get; set; }
 
 		//rendering resources:
-		IGL GL;
+		public IGL GL;
 		StringRenderer TheOneFont;
 		GuiRenderer Renderer;
 
 		//layer resources
 		PresentationPanel presentationPanel; //well, its the final layer's target, at least
 		GraphicsControl GraphicsControl; //well, its the final layer's target, at least
+		GLManager.ContextRef CR_GraphicsControl;
 		FilterManager.FilterProgram CurrentFilterProgram;
 
 		/// <summary>
@@ -350,6 +352,8 @@ namespace BizHawk.Client.EmuHawk
 
 		FilterManager.FilterProgram UpdateSourceInternal(JobInfo job)
 		{
+			GlobalWin.GLManager.Activate(CR_GraphicsControl);
+
 			IVideoProvider videoProvider = job.videoProvider;
 			bool simulate = job.simulate;
 			Size chain_outsize = job.chain_outsize;
@@ -442,7 +446,7 @@ TESTEROO:
 			//begin rendering on this context
 			//should this have been done earlier?
 			//do i need to check this on an intel video card to see if running excessively is a problem? (it used to be in the FinalTarget command below, shouldnt be a problem)
-			GraphicsControl.Begin();
+			//GraphicsControl.Begin();
 
 			//run filter chain
 			Texture2d texCurr = null;
