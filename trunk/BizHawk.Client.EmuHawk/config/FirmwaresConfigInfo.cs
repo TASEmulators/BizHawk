@@ -15,9 +15,18 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class FirmwaresConfigInfo : Form
 	{
+
+		public const int idIdeal = 0;
+		public const int idAcceptable = 1;
+		public const int idUnacceptable = 2;
+		public const int idBad = 3;
+
 		public FirmwaresConfigInfo()
 		{
 			InitializeComponent();
+
+			//prep imagelist for listview with 4 item states for (ideal, acceptable, unacceptable, bad)
+			imageList1.Images.AddRange(new[] { EmuHawk.Properties.Resources.GreenCheck, EmuHawk.Properties.Resources.Freeze, EmuHawk.Properties.Resources.thumbsdown, EmuHawk.Properties.Resources.ExclamationRed });
 		}
 
 		private void lvOptions_KeyDown(object sender, KeyEventArgs e)

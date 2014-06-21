@@ -1489,6 +1489,7 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\thumbsdown.png" />
     <None Include="images\monitor.png" />
     <None Include="images\ppsspp.png" />
     <None Include="images\meteor.png" />
@@ -1604,6 +1605,7 @@
     <None Include="images\gambatte.png" />
     <None Include="images\dual.png" />
     <None Include="config\ControllerImages\WonderSwanColor.png" />
+    <None Include="images\alt_about_image.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />
