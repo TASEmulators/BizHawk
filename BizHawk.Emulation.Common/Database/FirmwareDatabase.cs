@@ -112,6 +112,12 @@ namespace BizHawk.Emulation.Common
 			Option("SMS", "Export", sms_us_1b);
 			Option("SMS", "Export", sms_m404);
 			Option("SMS", "Japan", sms_jp_21);
+
+			//PSX
+			//http://forum.fobby.net/index.php?t=msg&goto=2763&
+			FirmwareAndOption("0555C6FAE8906F3F09BAF5988F00E55F88E9F30B", "PSX", "U", "scph5501.bin", "BIOS (U)");
+			FirmwareAndOption("B05DEF971D8EC59F346F2D9AC21FB742E3EB6917", "PSX", "J", "scph5500.bin", "BIOS (J)");
+			FirmwareAndOption("F8DE9325FC36FCFA4B29124D291C9251094F2E54", "PSX", "E", "scph5502.bin", "BIOS (E)");
 		}
 
 		//adds a defined firmware ID to the database
