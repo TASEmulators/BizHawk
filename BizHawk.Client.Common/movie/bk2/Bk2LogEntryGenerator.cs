@@ -66,17 +66,17 @@ namespace BizHawk.Client.Common
 
 		public string GenerateLogKey()
 		{
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 			sb.Append("LogKey:");
 
-			foreach (var button in _source.Type.BoolButtons)
+			foreach (var group in _source.Type.ControlsOrdered)
 			{
-				sb.Append(button).Append('|');
-			}
-
-			foreach (var button in _source.Type.FloatControls)
-			{
-				sb.Append(button).Append('|');
+				foreach (var button in group)
+				{
+					sb
+						.Append(button)
+						.Append('|');
+				}
 			}
 
 			return sb.ToString();
@@ -84,49 +84,45 @@ namespace BizHawk.Client.Common
 
 		private string CreateLogEntry(bool createEmpty = false)
 		{
-			try
+			var sb = new StringBuilder();
+			sb.Append('|');
+
+			foreach (var group in _source.Type.ControlsOrdered)
 			{
-				var sb = new StringBuilder();
-				sb.Append('|');
-
-				foreach (var button in _source.Type.BoolButtons)
+				if (group.Any())
 				{
-					if (createEmpty)
+					foreach (var button in group)
 					{
-						sb.Append('.');
-					}
-					else
-					{
-						sb.Append(_source.IsPressed(button) ? Mnemonics[button] : '.');
-					}
-				}
-
-				sb.Append('|');
-				if (_source.Type.FloatControls.Any())
-				{
-					foreach (var floatBtn in _source.Type.FloatControls)
-					{
-						if (createEmpty)
+						if (_source.Type.FloatControls.Contains(button))
 						{
-							sb.Append("000,");
+							if (createEmpty)
+							{
+								sb.Append("000,");
+							}
+							else
+							{
+								var val = (int)_source.GetFloat(button);
+								sb.Append(val.ToString().PadLeft(3, '0')).Append(',');
+							}
 						}
-						else
+						else if (_source.Type.BoolButtons.Contains(button))
 						{
-							var val = (int)_source.GetFloat(floatBtn);
-							sb.Append(val.ToString().PadLeft(3, '0')).Append(',');
+							if (createEmpty)
+							{
+								sb.Append('.');
+							}
+							else
+							{
+								sb.Append(_source.IsPressed(button) ? Mnemonics[button] : '.');
+							}
 						}
 					}
 
-					sb.Remove(sb.Length - 1, 1);
+					sb.Append('|');
 				}
+			}
 
-				sb.Append('|');
-				return sb.ToString();
-			}
-			catch (Exception ex)
-			{
-				return ex.ToString();
-			}
+			return sb.ToString();
 		}
 	}
 }

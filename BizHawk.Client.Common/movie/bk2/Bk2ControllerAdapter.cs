@@ -80,18 +80,30 @@ namespace BizHawk.Client.Common
 			if (!string.IsNullOrWhiteSpace(mnemonic))
 			{
 				var trimmed = mnemonic.Replace("|", "");
-				for (int i = 0; i < Type.BoolButtons.Count; i++)
-				{
-					MyBoolButtons[Type.BoolButtons[i]] = trimmed[i] == '.' ? false : true;
-				}
+				var buttons = Type.ControlsOrdered.SelectMany(x => x).ToList();
+				var iterator = 0;
+				var boolIt = 0;
+				var floatIt = 0;
 
-				var floats = trimmed.Remove(0, Type.BoolButtons.Count);
-
-				for (int i = 0; i < Type.FloatControls.Count; i++)
+				for (int i = 0; i < buttons.Count; i++)
 				{
-					var temp = floats.Substring(i * 4, 3);
-					var val = int.Parse(temp);
-					MyFloatControls[Type.FloatControls[i]] = val;
+					if (Type.BoolButtons.Contains(buttons[i]))
+					{
+						var boolBtn = Type.BoolButtons.First(x => x == buttons[i]);
+						MyBoolButtons[boolBtn] = trimmed[iterator] == '.' ? false : true;
+						iterator++;
+						boolIt++;
+					}
+					else if (Type.FloatControls.Contains(buttons[i]))
+					{
+						var temp = trimmed.Substring(iterator, 3);
+						var val = int.Parse(temp);
+						var floatBtn = Type.FloatControls.First(x => x == buttons[i]);
+
+						MyFloatControls[floatBtn] = val;
+						iterator += 4;
+						floatIt++;
+					}
 				}
 			}
 		}
