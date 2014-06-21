@@ -1,0 +1,103 @@
+﻿////////////////////////////
+//we can't use these because we need more clever control over the delegate type (marshalling attributes, for one thing)
+
+		Delegate MyMakeDelegate(string methodName)
+		{
+			MethodInfo mi = GetType().GetMethod(methodName,BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+			 var parameters = mi.GetParameters()
+                .Select(p => p.ParameterType)
+                .ToArray();
+
+			 Type t = DelegateCreator.MakeNewCustomDelegate(mi.ReturnType, parameters);
+			 return Delegate.CreateDelegate(t, this, mi);
+		}
+
+
+		static class DelegateCreator
+		{
+			public static Type MakeNewCustomDelegate(Type ret_type, Type[] argtypes)
+			{
+				var _DelegateCtorSignature = new Type[] { typeof(object), typeof(IntPtr) };
+				Type returnType = ret_type;
+				Type[] parameterTypes = argtypes;
+				TypeBuilder builder = DefineDelegateType("Delegate" + argtypes.Length);
+				builder.DefineConstructor(MethodAttributes.RTSpecialName | MethodAttributes.HideBySig | MethodAttributes.Public, CallingConventions.Standard, _DelegateCtorSignature).SetImplementationFlags(MethodImplAttributes.CodeTypeMask);
+				builder.DefineMethod("Invoke", MethodAttributes.VtableLayoutMask | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.Public, returnType, parameterTypes).SetImplementationFlags(MethodImplAttributes.CodeTypeMask);
+
+				//[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+				//builder.SetCustomAttribute(new CustomAttributeBuilder(new ConstructorInfo(
+				ConstructorInfo ci = typeof(UnmanagedFunctionPointerAttribute).GetConstructor(new[] { typeof(CallingConvention) });
+				CustomAttributeBuilder cab = new CustomAttributeBuilder(ci, new object[] { CallingConvention.ThisCall });
+				builder.SetCustomAttribute(cab);
+
+				return builder.CreateType();
+			}
+
+			internal static TypeBuilder DefineDelegateType(string name)
+			{
+				return DefineType(name, typeof(MulticastDelegate), TypeAttributes.AutoClass | TypeAttributes.Sealed | TypeAttributes.Public);
+			}
+
+			static int _index;
+			private static TypeBuilder DefineType(string name, Type parent, TypeAttributes attr)
+			{
+				StringBuilder builder = new StringBuilder(name);
+				int num = Interlocked.Increment(ref _index);
+				builder.Append("$");
+				builder.Append(num);
+				builder.Replace('+', '_').Replace('[', '_').Replace(']', '_').Replace('*', '_').Replace('&', '_').Replace(',', '_').Replace('\\', '_');
+				name = builder.ToString();
+				return _myModule.DefineType(name, attr, parent);
+			}
+
+			static AssemblyBuilder _myAssembly;
+			static ModuleBuilder _myModule;
+			static void InitializeAssemblyGen()
+			{
+				AssemblyName name = new AssemblyName("Snippets");
+				CustomAttributeBuilder[] assemblyAttributes = new CustomAttributeBuilder[] { new CustomAttributeBuilder(typeof(SecurityTransparentAttribute).GetConstructor(Type.EmptyTypes), new object[0]) };
+				_myAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(name, AssemblyBuilderAccess.Run, assemblyAttributes);
+				_myModule = _myAssembly.DefineDynamicModule(name.Name, false);
+				_myAssembly.DefineVersionInfoResource();
+			}
+			static DelegateCreator()
+			{
+				InitializeAssemblyGen();
+			}
+		}
+
+
+////////////////
+these are members of external core. theyre deprecated.
+
+
+		public IntPtr Signal(string param, IntPtr value)
+		{
+			return mAccessor.Signal(null, IntPtr.Zero, param, value);
+		}
+
+		public IntPtr Signal(string param)
+		{
+			return mAccessor.Signal(null, IntPtr.Zero, param, IntPtr.Zero);
+		}
+
+		public IntPtr Signal(string type, IntPtr obj, string param, Delegate value)
+		{
+			liveDelegates[value.Target ?? ostatic][param] = value;
+			return mAccessor.Signal(type, obj, param, Marshal.GetFunctionPointerForDelegate(value));
+		}
+
+		public IntPtr Signal(string param, Delegate value)
+		{
+			return Signal(null, IntPtr.Zero, param, value);
+		}
+
+		public IntPtr Signal(string param, int value)
+		{
+			return mAccessor.Signal(null, IntPtr.Zero, param, new IntPtr(value));
+		}
+
+		public IntPtr Signal(string type, IntPtr obj, string param, IntPtr value)
+		{
+			return mAccessor.Signal(type, obj, param, value);
+		}

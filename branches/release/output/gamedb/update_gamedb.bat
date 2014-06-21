@@ -1,0 +1,1 @@
+wget http://bizhawk.googlecode.com/svn/trunk/BizHawk.MultiClient/output/gamedb/gamedb.txt -O gamedb.txt

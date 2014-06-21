@@ -1,0 +1,23 @@
+﻿======= SMS compatibility issues =======
+
+Note: add PS1J-retranslation to gamedb
+
+Korean games currently not booting:
+ - FA Tetris
+ - Flashpoint
+ - Sky Jaguar boots but gfx issues (works in cogwheel) (but not in MEKA!)
+
+* Desert Strike - you can enter the map screen but cannot leave.
+
+- Light Gun emulation
+- Paddle emulation
+- Sports pad emulation?
+
+======= Game Gear compatibility issues =======
+
+* Outrun has raster effect on the wrong line. I've been able to modify interrupt code to
+  fix it, but so far, not without breaking other games.
+
+======= SG-1000 compatibility checklist =======
+
+Terebi Oekaki   Req Graphic Board peripheral

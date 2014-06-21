@@ -1,0 +1,267 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\fex">
+      <UniqueIdentifier>{ba7f113f-5234-44b7-a84c-35ad9dd39db2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\nes_emu">
+      <UniqueIdentifier>{704585a9-2165-422f-8457-b6c5ffe9179d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\fex">
+      <UniqueIdentifier>{109f60b9-f5f8-4f85-807d-b0c977848674}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\nes_emu">
+      <UniqueIdentifier>{278454e6-01bf-4140-8707-bc2a4512c2ac}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\nes_emu\abstract_file.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\apu_state.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Blip_Buffer.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Effects_Buffer.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Mapper_Fme7.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Mapper_Mmc5.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Mapper_Namco106.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Mapper_Vrc6.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\misc_mappers.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Multi_Buffer.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Nes_Apu.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Nes_Buffer.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Nes_Cart.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Nes_Core.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Nes_Cpu.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\nes_data.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Nes_Effects_Buffer.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Nes_Emu.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Nes_File.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Nes_Fme7_Apu.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Nes_Mapper.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\nes_mappers.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Nes_Mmc1.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Nes_Mmc3.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Nes_Namco_Apu.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Nes_Oscs.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Nes_Ppu.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Nes_Ppu_Impl.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Nes_Ppu_Rendering.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Nes_State.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\nes_util.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Nes_Vrc6_Apu.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\fex\blargg_common.cpp">
+      <Filter>Source Files\fex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\fex\blargg_errors.cpp">
+      <Filter>Source Files\fex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\fex\Data_Reader.cpp">
+      <Filter>Source Files\fex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bizinterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Mmc24.cpp">
+      <Filter>Source Files\nes_emu</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\nes_emu\abstract_file.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\apu_state.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\blargg_common.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\blargg_config.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\blargg_endian.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\blargg_source.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Blip_Buffer.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Blip_Synth.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Effects_Buffer.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Multi_Buffer.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Apu.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Buffer.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Cart.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Core.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Cpu.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\nes_cpu_io.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\nes_data.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Effects_Buffer.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Emu.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_File.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Fme7_Apu.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Mapper.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Namco_Apu.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\nes_ntsc.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\nes_ntsc_impl.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Oscs.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Ppu.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Ppu_Bg.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Ppu_Impl.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Ppu_Rendering.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Ppu_Sprites.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_State.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\nes_util.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Vrc6_Apu.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\fex\blargg_common.h">
+      <Filter>Header Files\fex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\fex\blargg_config.h">
+      <Filter>Header Files\fex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\fex\blargg_endian.h">
+      <Filter>Header Files\fex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\fex\blargg_errors.h">
+      <Filter>Header Files\fex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\fex\blargg_source.h">
+      <Filter>Header Files\fex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\fex\Data_Reader.h">
+      <Filter>Header Files\fex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Mmc24.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

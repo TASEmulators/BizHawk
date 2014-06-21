@@ -1,0 +1,115 @@
+
+	ColecoVision Sound Generation Hardware
+
+ The ColecoVision uses the Texas Instruments SN76489A sound
+generator chip. It contains three programmable tone generators,
+each with its own programmable attenuator, and a noise source
+with its own attenuator.
+
+1. Tone Generators
+
+ Each tone generator consists of a frequency synthesis section
+requiring ten bits of information to define half the period of
+the desired frequency (n). F0 is the most significant bit and
+F9 is the least significant bit. The information is loaded into
+a ten stage tone counter, which is decremented at a N/16 rate
+where N (3.579MHz) is the input clock frequency. When the tone
+counter decrements to zero, a borrow signal is produced. This
+borrow signal toggles the frequency flip-flop and also reloads
+the tone counter. Thus, the period of the desired frequency is
+twice the value of the period register.
+
+The frequency can be calculated by the following:
+
+   f = 3.579MHz/(32n)
+
+The output of the frequency flip-flop feeds into a four stage
+attenuator. The attenuator values, along with their bit position
+in the data word, are shown below. Multiple attenuation control
+bits may be true simultaneously. THus, the maximum attenuation
+is 28 db.
+
+	A0	A1	A2	A3		Weight
+
+	0	0	0	1		 2 db
+	0	0	1	0		 4 db
+	0	1	0	0		 8 db
+	1	0	0	0		16 db
+	1	1	1	1		 Off
+
+2. Noise Generator
+
+ The noise generator consists of a noise source that is a
+shift register with an exclusive OR feedback network. The
+feedback network has provisions to protect the shift register
+from being locked in the zero state.
+
+	Noise Feedback Control
+
+		FB		Configuration
+
+ 		0		"Periodic" Noise
+		1		"White" Noise
+
+
+	Noise Generator Frequency Control
+
+	NF0	NF1		Shift Rate
+
+	0	0		N/512
+	0	1		N/1024
+	1	0		N/2048
+	1	1		Tone gen #3 output
+
+3. Control Registers
+
+ The SN76489A has eight internal registers which are used
+to control the three tone generators and the noise source.
+During all data transfers to the SN76489A, the first byte
+contains a three bit field which determines the destination
+control register. The register address codes are shown here.
+
+
+
+	Register Address Field
+
+	R0	R1	R2	Destination Control Register
+
+	0	0	0	Tone 1 Frequency
+	0	0	1	Tone 1 Attenuation
+	0	1	0	Tone 2 Frequency
+	0	1	1	Tone 2 Attenuation
+	1	0	0	Tone 3 Frequency
+	1	0	1	Tone 3 Attenuation
+	1	1	0	Noise Control
+	1	1	1	Noise Attenuation
+
+4. Data Formats
+
+ The formats required to transfer data are shown below.
+
+	Frequency
+ LSB                  MSB    LSB                   MSB
++---+--------+-----------+  +---+---+-----------------+
+|   |Reg Addr|    Data   |  |   |   |       Data      |
++ 1 +--+--+--+--+--+--+--+  | 0 | X +--+--+--+--+--+--+
+|   |R0|R1|R2|F6|F7|F8|F9|  |   |   |F0|F1|F2|F3|F4|F5|
++---+--+--+--+--+--+--+--+  +---+---+--+--+--+--+--+--+
+
+	Noise Control
+ LSB                          MSB
++---+---+---+---+---+----+-------+
+|   |  Reg Addr |   |    | Shift |
++ 1 +---+---+---+ X | FB +---+---+
+|   | 1 | 1 | 0 |   |    |NF0|NF1|
++---+---+---+---+---+----+---+---+
+
+	Attenuator
+ LSB                  MSB    
++---+--------+-----------+
+|   |Reg Addr|    Data   |
++ 1 +--+--+--+--+--+--+--+
+|   |R0|R1|R2|A0|A1|A2|A3|
++---+--+--+--+--+--+--+--+
+
+

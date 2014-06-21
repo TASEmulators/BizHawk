@@ -1,0 +1,195 @@
+%1/%2 blocks free|%1/%2 block fria
+%1 Images (*.%2)|%1 Avbilder (*.%2)
+503/512 blocks free|503/512 block fria
+510/512 blocks free|510/512 block fria
+About...|Om...
+&About...|&Om...
+About|Om
+&Action Replay|&Action Replay
+Action Replay Code :|Action Replay-kod
+Add Action Replay Code|Lägg till en Action Replay-kod
+Add Codes...|Lägg till kod...
+Add Raw Memory Code|Lägg till råminneskod
+Address :|Adress :
+Advanced|Avancerat
+<a href="http://www.monkeystudio.org"><img src=":/icons/icons/made.png"></a>|<a href="http://www.monkeystudio.org"><img src=":/icons/icons/made.png"></a>
+Are you sure you want to delete '%1' ?|Är du säker på att du vill ta bort '%1' ?
+Are you sure you want to format '%1' ?|Är du säker på att du vill formatera '%1' ?
+Backup Manager|Backuphanterare
+Backup Manager...|Backuphanterare...
+&Backup Ram Manager|&Backup Ram Manager
+Backup Ram Manager|Backup Ram Manager
+Bios|Bios
+Block Size :|Blockstorlek
+&Browse|&Bläddra
+Browse|Bläddra
+Byte Write|Byteskrivning
+Cancel|Avbryt
+Cannot initialize|Kan inte initialisera
+&Capture Screen|&Skärmdump
+Cart/Memory|Kassett/Minne
+Cartridge|Kassett
+CD Images (*.iso *.cue *.bin)|CD-avbild (*.iso *.cue *.bin)
+Cd-Rom|CD-ROM
+&Cheats|&Fusk
+Cheats|Fusk
+Cheats File|Fuskfil
+&Cheat List|&Lista över fusk
+Cheats List|Lista över fusk
+Cheats List...|Lista över fusk...
+Cheat Type|Typ av fusk
+Choose a cdrom drive/mount point|Välj en CD-läsare eller en monteringspunkt
+Choose a cheat file to open|Välj fuskfil att öppna
+Choose a cheat file to save to|Välj fuskfil att spara till
+Choose a file to save your state|Välj en fil att spara ditt läge till
+Choose a location for your screenshot|Välj plats att spara skärmdump till
+&Clear|&Rensa
+Close|Stäng
+Code|Kod
+Comment :|Kommentar :
+Data Size :|Datastorlek :
+_Debug|_Debug
+&Debug|%Debug
+&Delete|&Ta bort
+Delete|Ta bort
+Description|Beskrivning
+Description :|Beskrivning :
+Device List|Lista över enheter
+Disabled|Inaktiverad
+Down|Ner
+Download|Nerladdning
+Emu-Compatibility|Emu-kompatibilitet
+Emulation|Emulering
+End Address:|Slutadress
+Enable|Aktivera
+Enabled|Aktiverad
+English|Engelska
+&File|&Fil
+File|Fil
+File :|File :
+File Name :|Filnamn :
+File transfer|Filöverföring
+<font color="red"><b>WARNING:</b> Master Codes are <b>NOT</b> supported.</font>|<font color="red"><b>VARNING:</b> Master Codes stöds <b>INTE</b></font>
+Format|Formatera
+FPS|FPS
+Frame Skip/Limiter|Frame Skip/Limiter
+French|Franska
+From|Från
+From File|Från fil
+From File...|Från fil...
+&Fullscreen|&Helskärm
+Fullscreen|Helskärm
+General|Allmänt
+German|Tyska
+Hard Reset|Hård reset
+Height|Höjd
+_Help|_Hjälp
+&Help|&Hjälp
+http://www.emu-compatibility.com/yabause/index.php?lang=uk|http://www.emu-compatibility.com/yabause/index.php?lang=uk
+http://www.monkeystudio.org|http://www.monkeystudio.org
+Input|Kontroller
+Invalid Address|Ogiltig adress
+Invalid Value|Ogiltigt värde
+Italian|Italienska
+Japanese|Japanska
+Language :|Språk :
+&Layer|&Lager
+Layer|Lager
+Left|Vänster
+Left trigger|Vänster avtryckare
+Load as executable|Ladda som exekverbar
+Load|Ladda
+&Load From File|Ladda från fil
+Load State|Ladda läge
+Load State As|Ladda läge som
+Log|Logg
+Long Write|Lång skrivning
+M68K|M68K
+Memory dump|Minnesdump
+Memory Dump|Minnesdump
+Memory Editor|Minnesredigerare
+&Memory Transfer|&Minnesöverföring
+Memory Transfer|Minnesöverföring
+Memory|Minne
+Mpeg ROM|MPEG ROM
+MSH2|MSH2
+NBG0|NBG0
+NBG1|NBG1
+NBG2|NBG2
+NBG3|NBG3
+Ok|OK
+&OK|&OK
+Open CD Rom|Öppna CD-ROM
+Open CD Rom...|Öppna CD-ROM...
+Open ISO|Öppna ISO
+Open ISO...|Öppna ISO...
+&Pause|&Paus
+Pause|Paus
+&Quit|&Avsluta
+Quit|Avsluta
+&Raw Memory Address|&Rå minnesadress
+RBG0|RBG0
+Region|Region
+&Reset|&Reset
+Reset|Reset
+Resolution|Upplösning
+Right|Höger
+Right trigger|Höger avtryckare
+R&un|&Kör
+Run|Kör
+Save Information|Spara information
+Save List|Spara lista
+Save|Spara
+Save State|Spara läge
+Save State As|Spara läge som
+Save States|Spara lägen
+&Save To File|&Spara till fil
+Screenshot|Skärmdump
+SCSP|SCSP
+SCU-DSP|SCU-DSP
+Select a file to load your state|Välj fil för att ladda ditt läge
+Select your iso/cue/bin file|Välj din iso/cue/bin-fil
+&Settings...|&Inställningar...
+Settings|Inställningar
+SH2 Interpreter|SH2-tolkare
+Sound Core|Ljudgränssnitt
+Sound|Ljud
+Spanish|Spanska
+SSH2|SSH2
+Start|Start
+Start Address:|Startadress
+Status|Status
+Store|Lagra
+To File|Till fil
+To File...|Till fil...
+toolBar|Verktygsfält
+Tools|Verktyg
+To|Till
+Transfer|Överföring
+Translation|Översättning
+Unable to add code|Kan inte lägga till kod
+Unable to change description|Kan inte ändra beskrivning
+Unable to open file for loading|Kan inte öppna fil för att ladda
+Unable to open file for saving|Kan inte öppna fil för att spara
+Unable to remove code|Kan inte ta bort kod
+Unknow (%1)|Okänt (%1)
+Up|Upp
+Upload|Uppladdning
+Value :|Värde :
+Vdp1|Vdp1
+VDP1|VDP1
+Vdp2|Vdp2
+VDP2|VDP2
+Video Core|Videogränssnitt
+Video Driver|Videodrivrutin
+Video Format|Videoformat
+Video|Video
+_View|_Visa
+&View|&Visa
+Waiting Input...|Väntar på input...
+Width|Bredd
+Word Write|Ordskrivning
+Yabause Cheat Files (*.yct);;All Files (*)|Yabause fuskfil (*.yct);;Alla filer (*)
+Yabause Qt Gui<br />Based on Yabause 0.9.5<br /><a href="http://yabause.org">http://yabause.org</a><br />The Yabause Team<br /><a href="mailto:pasnox@gmail.com">Filipe AZEVEDO</a>|Yabause Qt GUI<br />Baserat på Yabause 0.9.5<br /><a href="http://yabause.org">http://yabause.org</a><br />Yabause-teamet<br /><a href="mailto:pasnox@gmail.com">Filipe AZEVEDO</a>
+Yabause Qt GUI|Yabause Qt GUI
+Yabause Save State (*.yss)|Yabause Sparat Läge (*.yss)

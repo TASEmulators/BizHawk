@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IBDocumentLocation</key>
+	<string>76 101 356 240 0 0 1280 1002 </string>
+	<key>IBFramework Version</key>
+	<string>446.1</string>
+	<key>IBLockedObjects</key>
+	<array>
+		<integer>223</integer>
+		<integer>239</integer>
+		<integer>240</integer>
+		<integer>241</integer>
+		<integer>242</integer>
+		<integer>243</integer>
+		<integer>244</integer>
+		<integer>245</integer>
+		<integer>232</integer>
+		<integer>235</integer>
+		<integer>246</integer>
+		<integer>247</integer>
+		<integer>248</integer>
+		<integer>249</integer>
+		<integer>250</integer>
+		<integer>251</integer>
+		<integer>252</integer>
+		<integer>253</integer>
+		<integer>254</integer>
+		<integer>258</integer>
+		<integer>259</integer>
+		<integer>261</integer>
+		<integer>277</integer>
+		<integer>296</integer>
+		<integer>286</integer>
+		<integer>271</integer>
+		<integer>267</integer>
+		<integer>299</integer>
+		<integer>300</integer>
+		<integer>306</integer>
+		<integer>304</integer>
+		<integer>270</integer>
+		<integer>308</integer>
+		<integer>303</integer>
+		<integer>266</integer>
+		<integer>298</integer>
+		<integer>273</integer>
+		<integer>302</integer>
+		<integer>274</integer>
+		<integer>301</integer>
+		<integer>269</integer>
+		<integer>311</integer>
+		<integer>310</integer>
+		<integer>295</integer>
+	</array>
+	<key>IBOldestOS</key>
+	<integer>1</integer>
+	<key>IBOpenObjects</key>
+	<array>
+		<integer>166</integer>
+	</array>
+	<key>IBSystem Version</key>
+	<string>8L2127</string>
+	<key>targetFramework</key>
+	<string>IBCarbonFramework</string>
+</dict>
+</plist>

@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F92A3734-EAE1-44D9-B474-FF80AE039790}</ProjectGuid>
+    <RootNamespace>bizswan</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..;$(ProjectDir)\..\msvc</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);LSB_FIRST</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy /y $(TargetDir)$(TargetFileName) $(ProjectDir)..\..\output\dll\$(TargetFileName)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..;$(ProjectDir)\..\msvc</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);LSB_FIRST</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy /y $(TargetDir)$(TargetFileName) $(ProjectDir)..\..\output\dll\$(TargetFileName)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\blip\Blip_Buffer.cpp" />
+    <ClCompile Include="..\eeprom.cpp" />
+    <ClCompile Include="..\gfx.cpp" />
+    <ClCompile Include="..\interrupt.cpp" />
+    <ClCompile Include="..\memory.cpp" />
+    <ClCompile Include="..\newstate.cpp" />
+    <ClCompile Include="..\rtc.cpp" />
+    <ClCompile Include="..\sound.cpp" />
+    <ClCompile Include="..\system.cpp" />
+    <ClCompile Include="..\tcache.cpp" />
+    <ClCompile Include="..\v30mz.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\blip\Blip_Buffer.h" />
+    <ClInclude Include="..\eeprom.h" />
+    <ClInclude Include="..\gfx.h" />
+    <ClInclude Include="..\interrupt.h" />
+    <ClInclude Include="..\mednafen\types.h" />
+    <ClInclude Include="..\memory.h" />
+    <ClInclude Include="..\msvc\inttypes.h" />
+    <ClInclude Include="..\msvc\stdint.h" />
+    <ClInclude Include="..\newstate.h" />
+    <ClInclude Include="..\rtc.h" />
+    <ClInclude Include="..\sound.h" />
+    <ClInclude Include="..\system.h" />
+    <ClInclude Include="..\v30mz-private.h" />
+    <ClInclude Include="..\v30mz.h" />
+    <ClInclude Include="..\wswan.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\start.inc" />
+    <None Include="..\v30mz-modrm.inc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

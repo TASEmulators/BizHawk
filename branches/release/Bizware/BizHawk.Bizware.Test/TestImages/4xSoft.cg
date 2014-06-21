@@ -1,0 +1,105 @@
+/*
+
+   Copyright (C) 2007 guest(r) - guest.r@gmail.com
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+ */
+
+struct tex_coords
+{
+   float4 t1;
+   float4 t2;
+   float4 t3;
+   float4 t4;
+   float4 t5;
+   float4 t6;
+};
+
+struct input
+{
+   float2 video_size;
+   float2 texture_size;
+   float2 output_size;
+};
+
+void main_vertex
+(
+   float4 position	: POSITION,
+   out float4 oPosition : POSITION,
+
+   uniform float4x4 modelViewProj,
+
+   float4 color	: COLOR,
+   out float4 oColor    : COLOR,
+
+   float2 tex : TEXCOORD,
+   out float2 oTex : TEXCOORD,
+
+   uniform input IN,
+   out tex_coords coords
+)
+{
+   oPosition = mul(modelViewProj, position);
+   oColor = color;
+   oTex = tex;
+
+   float2 ps = 0.5 / IN.texture_size;
+   float dx = ps.x;
+   float dy = ps.y;
+   float sx = ps.x * 0.5;
+   float sy = ps.y * 0.5;
+
+   coords = tex_coords (
+      float4(tex, tex) + float4(-dx, -dy, dx, -dy), // outer diag. texels
+      float4(tex, tex) + float4(dx, dy, -dx, dy),
+      float4(tex, tex) + float4(-sx, -sy, sx, -sy), // inner diag. texels
+      float4(tex, tex) + float4(sx, sy, -sx, sy),
+      float4(tex, tex) + float4(-dx, 0, dx, 0), // inner hor/vert texels
+      float4(tex, tex) + float4(0, -dy, 0, dy)
+   );
+}
+
+float4 main_fragment (float2 tex : TEXCOORD, in tex_coords co, uniform input IN, uniform sampler2D s0 : TEXUNIT0) : COLOR
+{
+   float3 dt = float3(1.0, 1.0, 1.0);
+
+   float3 c11 = tex2D(s0, tex).xyz;
+   float3 c00 = tex2D(s0, co.t1.xy).xyz;
+   float3 c20 = tex2D(s0, co.t1.zw).xyz;
+   float3 c22 = tex2D(s0, co.t2.xy).xyz;
+   float3 c02 = tex2D(s0, co.t2.zw).xyz;
+   float3 s00 = tex2D(s0, co.t3.xy).xyz;
+   float3 s20 = tex2D(s0, co.t3.zw).xyz;
+   float3 s22 = tex2D(s0, co.t4.xy).xyz;
+   float3 s02 = tex2D(s0, co.t4.zw).xyz;
+   float3 c01 = tex2D(s0, co.t5.xy).xyz;
+   float3 c21 = tex2D(s0, co.t5.zw).xyz;
+   float3 c10 = tex2D(s0, co.t6.xy).xyz;
+   float3 c12 = tex2D(s0, co.t6.zw).xyz;
+
+   float d1 = dot(abs(c00 - c22), dt) + 0.0001;
+   float d2 = dot(abs(c20 - c02), dt) + 0.0001;
+   float hl = dot(abs(c01 - c21), dt) + 0.0001;
+   float vl = dot(abs(c10 - c12), dt) + 0.0001;
+   float m1 = dot(abs(c00 - c22), dt) + 0.001;
+   float m2 = dot(abs(c02 - c20), dt) + 0.001;
+
+   float3 t1 =(hl * (c10 + c12) + vl * (c01 + c21) + (hl + vl) * c11) / (3.0 * (hl + vl));
+   float3 t2 =(d1 * (c20 + c02) + d2 * (c00 + c22) + (d1 + d2) * c11) / (3.0 * (d1 + d2));
+
+   return float4(0.25 * (t1 + t2 + (m2 * (s00 + s22) + m1 * (s02 + s20)) / (m1 + m2)), 1.0);
+}
+
