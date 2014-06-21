@@ -115,6 +115,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gpgx_set_input_callback(input_cb cb);
 
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void mem_cb(uint addr);
+
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gpgx_set_mem_callback(mem_cb read, mem_cb write, mem_cb exec);
+
 		/// <summary>
 		/// not every flag is valid for every device!
 		/// </summary>
