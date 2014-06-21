@@ -357,21 +357,33 @@ namespace BizHawk.Client.EmuHawk
 				ListViewItem olvi = new ListViewItem();
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
+				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				var ff = FirmwareDatabase.FirmwareFilesByHash[o.hash];
+				if (o.status == FirmwareDatabase.FirmwareOptionStatus.Ideal)
+					olvi.ImageIndex = FirmwaresConfigInfo.idIdeal;
+				if (o.status == FirmwareDatabase.FirmwareOptionStatus.Acceptable)
+					olvi.ImageIndex = FirmwaresConfigInfo.idAcceptable;
+				if (o.status == FirmwareDatabase.FirmwareOptionStatus.Unacceptable)
+					olvi.ImageIndex = FirmwaresConfigInfo.idUnacceptable;
+				if (o.status == FirmwareDatabase.FirmwareOptionStatus.Bad)
+					olvi.ImageIndex = FirmwaresConfigInfo.idBad;
 				olvi.SubItems[0].Text = o.hash;
 				olvi.SubItems[0].Font = fixedFont;
 				olvi.SubItems[1].Text = ff.recommendedName;
 				olvi.SubItems[1].Font = this.Font; //why doesnt this work?
 				olvi.SubItems[2].Text = ff.descr;
 				olvi.SubItems[2].Font = this.Font; //why doesnt this work?
+				olvi.SubItems[3].Text = ff.info;
+				olvi.SubItems[3].Font = this.Font; //why doesnt this work?
 				fciDialog.lvOptions.Items.Add(olvi);
 			}
 
 			fciDialog.lvOptions.AutoResizeColumn(0, ColumnHeaderAutoResizeStyle.ColumnContent);
 			fciDialog.lvOptions.AutoResizeColumn(1, ColumnHeaderAutoResizeStyle.ColumnContent);
 			fciDialog.lvOptions.AutoResizeColumn(2, ColumnHeaderAutoResizeStyle.ColumnContent);
+			fciDialog.lvOptions.AutoResizeColumn(3, ColumnHeaderAutoResizeStyle.ColumnContent);
 
-			fciDialog.ShowDialog();
+			fciDialog.ShowDialog(this);
 		}
 
 		private void lvFirmwaresContextMenuStrip_Opening(object sender, CancelEventArgs e)
