@@ -175,6 +175,12 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!IsDuplicate(bindingStr))
 				{
+					if (AutoTab)
+					{
+						ClearBindings();
+						_pos = 0;
+					}
+
 					_bindings[_pos] = bindingStr;
 				}
 				
