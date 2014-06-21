@@ -40,6 +40,11 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 				//acquire content
 				string path = Path.Combine(baseDirectory, pass.ShaderPath);
+				if (!File.Exists(path))
+				{
+					ok = false;
+					break;
+				}
 				string content = File.ReadAllText(path);
 
 				var shader = new RetroShader(Owner, content, debug);
@@ -266,7 +271,14 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 			var outDisposition = FindOutput().SurfaceDisposition;
 			var input = InputTexture;
+			if (SP.InputFilterLinear)
+				InputTexture.SetFilterLinear();
+			else
+				InputTexture.SetFilterNearest();
 			RSC.Shaders[RSI].Run(input, input.Size, OutputSize, InputTexture.IsUpsideDown);
+
+			//maintain invariant.. i think.
+			InputTexture.SetFilterNearest();
 		}
 	}
 
