@@ -2020,6 +2020,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IncreaseSpeed()
 		{
+			if (!Global.Config.ClockThrottle)
+			{
+				GlobalWin.OSD.AddMessage("Unable to change speed, please switch to clock throttle");
+				return;
+			}
+
 			var oldp = Global.Config.SpeedPercent;
 			int newp;
 
@@ -2081,6 +2087,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DecreaseSpeed()
 		{
+			if (!Global.Config.ClockThrottle)
+			{
+				GlobalWin.OSD.AddMessage("Unable to change speed, please switch to clock throttle");
+				return;
+			}
+
 			var oldp = Global.Config.SpeedPercent;
 			int newp;
 
