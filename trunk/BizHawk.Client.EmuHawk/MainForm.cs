@@ -3018,7 +3018,9 @@ namespace BizHawk.Client.EmuHawk
 			// this also happens in CloseGame().  but it needs to happen here since if we're restarting with the same core,
 			// any settings changes that we made need to make it back to config before we try to instantiate that core with
 			// the new settings objects
-			CommitCoreSettingsToConfig();
+			CommitCoreSettingsToConfig(); // adelikat: I Think by reordering things, this isn't necessary anymore
+			CloseGame();
+			Global.Emulator.Dispose();
 
 			var nextComm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals(nextComm);
@@ -3035,8 +3037,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				CloseGame();
-				Global.Emulator.Dispose();
 				Global.Emulator = loader.LoadedEmulator;
 				Global.CoreComm = nextComm;
 				Global.Game = loader.Game;
