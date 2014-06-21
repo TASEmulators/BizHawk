@@ -89,6 +89,25 @@ void CPU::setStatePtrs(SaveState &state) {
 	memory.setStatePtrs(state);
 }
 
+void CPU::saveState(SaveState &state) {
+	cycleCounter_ = memory.saveState(state, cycleCounter_);
+	
+	calcHF(HF1, HF2);
+	
+	state.cpu.cycleCounter = cycleCounter_;
+	state.cpu.PC = PC_;
+	state.cpu.SP = SP;
+	state.cpu.A = A_;
+	state.cpu.B = B;
+	state.cpu.C = C;
+	state.cpu.D = D;
+	state.cpu.E = E;
+	state.cpu.F = F();
+	state.cpu.H = H;
+	state.cpu.L = L;
+	state.cpu.skip = skip;
+}
+
 void CPU::loadState(const SaveState &state) {
 	memory.loadState(state/*, cycleCounter_*/);
 	

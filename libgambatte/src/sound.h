@@ -51,6 +51,7 @@ public:
 	void init(bool cgb);
 	void reset();
 	void setStatePtrs(SaveState &state);
+	void saveState(SaveState &state);
 	void loadState(const SaveState &state);
 
 	void generate_samples(unsigned long cycleCounter, unsigned doubleSpeed);

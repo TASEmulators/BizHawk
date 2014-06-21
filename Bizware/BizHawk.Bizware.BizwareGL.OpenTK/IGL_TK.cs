@@ -621,7 +621,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			}
 		}
 
-		public void MakeDefaultCurrent()
+		internal void MakeDefaultCurrent()
 		{
 			MakeContextCurrent(this.GraphicsContext,OffscreenNativeWindow.WindowInfo);
 		}

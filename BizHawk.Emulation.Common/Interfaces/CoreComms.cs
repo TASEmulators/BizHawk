@@ -63,10 +63,6 @@ namespace BizHawk.Emulation.Common
 			this.ShowMessage = ShowMessage;
 			this.Notify = NotifyMessage;
 		}
-
-		public Func<object> RequestGLContext;
-		public Action<object> ActivateGLContext;
-		public Action DeactivateGLContext; //this shouldnt be necessary.. frontend should be changing context before it does anything.. but for now..
 	}
 
 	public class TraceBuffer
@@ -150,9 +146,6 @@ namespace BizHawk.Emulation.Common
 		{
 			_list.Clear();
 		}
-
-		// why was this missing?
-		public bool Has { get { return _list.Any(); } }
 	}
 
 	public class MemoryCallbackSystem

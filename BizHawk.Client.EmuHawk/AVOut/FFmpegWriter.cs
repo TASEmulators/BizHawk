@@ -58,8 +58,6 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		string ext;
 
-		public void SetFrame(int frame) { }
-
 		public void OpenFile(string baseName)
 		{
 			this.baseName = System.IO.Path.Combine(

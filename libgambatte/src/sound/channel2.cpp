@@ -100,6 +100,15 @@ void Channel2::init(const bool cgb) {
 	lengthCounter.init(cgb);
 }
 
+void Channel2::saveState(SaveState &state) {
+	dutyUnit.saveState(state.spu.ch2.duty, cycleCounter);
+	envelopeUnit.saveState(state.spu.ch2.env);
+	lengthCounter.saveState(state.spu.ch2.lcounter);
+	
+	state.spu.ch2.nr4 = nr4;
+	state.spu.ch2.master = master;
+}
+
 void Channel2::loadState(const SaveState &state) {
 	dutyUnit.loadState(state.spu.ch2.duty, state.mem.ioamhram.get()[0x116], state.spu.ch2.nr4,state.spu.cycleCounter);
 	envelopeUnit.loadState(state.spu.ch2.env, state.mem.ioamhram.get()[0x117], state.spu.cycleCounter);

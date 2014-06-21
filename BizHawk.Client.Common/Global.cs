@@ -49,6 +49,14 @@ namespace BizHawk.Client.Common
 		//the "output" port for the controller chain.
 		public static CopyControllerAdapter ControllerOutput = new CopyControllerAdapter();
 
+
+		public static string GetOutputControllersAsMnemonic()
+		{
+			MnemonicsGenerator mg = new MnemonicsGenerator();
+			mg.SetSource(ControllerOutput);
+			return mg.GetControllersAsMnemonic();
+		}
+
 		public static DiscHopper DiscHopper = new DiscHopper();
 
 		public static UD_LR_ControllerAdapter UD_LR_ControllerAdapter = new UD_LR_ControllerAdapter();

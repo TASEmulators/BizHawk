@@ -14,7 +14,6 @@
 #endif /* M68K_EMULATE_ADDRESS_ERROR */
 
 #include "m68k.h"
-#include "../cinterface/callbacks.h"
 
 
 /* ======================================================================== */
@@ -868,8 +867,6 @@ INLINE uint m68ki_read_imm_32(void)
 INLINE uint m68ki_read_8_fc(uint address, uint fc)
 {
   cpu_memory_map *temp = &m68ki_cpu.memory_map[((address)>>16)&0xff];;
-	if (biz_readcb)
-		biz_readcb(address);
 
   m68ki_set_fc(fc) /* auto-disable (see m68kcpu.h) */
 
@@ -880,8 +877,6 @@ INLINE uint m68ki_read_8_fc(uint address, uint fc)
 INLINE uint m68ki_read_16_fc(uint address, uint fc)
 {
   cpu_memory_map *temp;
-	if (biz_readcb)
-		biz_readcb(address);
 
   m68ki_set_fc(fc) /* auto-disable (see m68kcpu.h) */
   m68ki_check_address_error(address, MODE_READ, fc) /* auto-disable (see m68kcpu.h) */
@@ -894,8 +889,6 @@ INLINE uint m68ki_read_16_fc(uint address, uint fc)
 INLINE uint m68ki_read_32_fc(uint address, uint fc)
 {
   cpu_memory_map *temp;
-	if (biz_readcb)
-		biz_readcb(address);
 
   m68ki_set_fc(fc) /* auto-disable (see m68kcpu.h) */
   m68ki_check_address_error(address, MODE_READ, fc) /* auto-disable (see m68kcpu.h) */
@@ -908,8 +901,6 @@ INLINE uint m68ki_read_32_fc(uint address, uint fc)
 INLINE void m68ki_write_8_fc(uint address, uint fc, uint value)
 {
   cpu_memory_map *temp;
-	if (biz_writecb)
-		biz_writecb(address);
 
   m68ki_set_fc(fc) /* auto-disable (see m68kcpu.h) */
 
@@ -921,8 +912,6 @@ INLINE void m68ki_write_8_fc(uint address, uint fc, uint value)
 INLINE void m68ki_write_16_fc(uint address, uint fc, uint value)
 {
   cpu_memory_map *temp;
-	if (biz_writecb)
-		biz_writecb(address);
 
   m68ki_set_fc(fc) /* auto-disable (see m68kcpu.h) */
   m68ki_check_address_error(address, MODE_WRITE, fc); /* auto-disable (see m68kcpu.h) */
@@ -935,8 +924,6 @@ INLINE void m68ki_write_16_fc(uint address, uint fc, uint value)
 INLINE void m68ki_write_32_fc(uint address, uint fc, uint value)
 {
   cpu_memory_map *temp;
-	if (biz_writecb)
-		biz_writecb(address);
 
   m68ki_set_fc(fc) /* auto-disable (see m68kcpu.h) */
   m68ki_check_address_error(address, MODE_WRITE, fc) /* auto-disable (see m68kcpu.h) */

@@ -7,8 +7,6 @@ using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
-using BizHawk.Emulation.Cores.WonderSwan;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 
 using LuaInterface;
 
@@ -179,17 +177,6 @@ namespace BizHawk.Client.Common
 				s.DispBackground = (bool)luaParam[1];
 				Global.Emulator.PutSettings(s);
 			}
-			else if (Global.Emulator is QuickNES)
-			{
-				var s = (QuickNES.QuickNESSettings)Global.Emulator.GetSettings();
-				// this core doesn't support disabling BG
-				bool showsp = GetSetting(0, luaParam);
-				if (showsp && s.NumSprites == 0)
-					s.NumSprites = 8;
-				else if (!showsp && s.NumSprites > 0)
-					s.NumSprites = 0;
-				Global.Emulator.PutSettings(s);
-			}
 			else if (Global.Emulator is PCEngine)
 			{
 				var s = (PCEngine.PCESettings)Global.Emulator.GetSettings();
@@ -208,14 +195,6 @@ namespace BizHawk.Client.Common
 				var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
 				s.DispOBJ = GetSetting(0, luaParam);
 				s.DispBG = GetSetting(1, luaParam);
-				Global.Emulator.PutSettings(s);
-			}
-			else if (Global.Emulator is WonderSwan)
-			{
-				var s = (WonderSwan.Settings)Global.Emulator.GetSettings();
-				s.EnableSprites = GetSetting(0, luaParam);
-				s.EnableFG = GetSetting(1, luaParam);
-				s.EnableBG = GetSetting(2, luaParam);
 				Global.Emulator.PutSettings(s);
 			}
 		}

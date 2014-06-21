@@ -73,17 +73,17 @@ namespace BizHawk.Client.Common
 		)]
 		public void SetFromMnemonicStr(string inputLogEntry)
 		{
-			var lg = Global.MovieSession.MovieControllerInstance();
-			lg.SetControllersAsMnemonic(inputLogEntry);
+			var m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
+			m.SetControllersAsMnemonic(inputLogEntry);
 
-			foreach (var button in lg.Type.BoolButtons)
+			foreach (var button in m.Type.BoolButtons)
 			{
-				Global.LuaAndAdaptor.SetButton(button, lg.IsPressed(button));
+				Global.LuaAndAdaptor.SetButton(button, m.IsPressed(button));
 			}
 
-			foreach (var floatButton in lg.Type.FloatControls)
+			foreach (var floatButton in m.Type.FloatControls)
 			{
-				Global.LuaAndAdaptor.SetFloat(floatButton, lg.GetFloat(floatButton));
+				Global.LuaAndAdaptor.SetFloat(floatButton, m.GetFloat(floatButton));
 			}
 		}
 

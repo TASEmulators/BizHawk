@@ -33,6 +33,7 @@ class Mbc {
 public:
 	virtual ~Mbc() {}
 	virtual void romWrite(unsigned P, unsigned data) = 0;
+	virtual void saveState(SaveState::Mem &ss) const = 0;
 	virtual void loadState(const SaveState::Mem &ss) = 0;
 	virtual bool isAddressWithinAreaRombankCanBeMappedTo(unsigned address, unsigned rombank) const = 0;
 
@@ -51,6 +52,7 @@ class Cartridge {
 	
 public:
 	void setStatePtrs(SaveState &);
+	void saveState(SaveState &) const;
 	void loadState(const SaveState &);
 	
 	bool loaded() const { return mbc.get(); }

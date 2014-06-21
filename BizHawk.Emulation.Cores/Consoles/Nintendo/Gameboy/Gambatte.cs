@@ -148,13 +148,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					Util.Hash_SHA1(romdata), Util.Hash_MD5(romdata)
 					);
 
-				{
-					byte[] buff = new byte[32];
-					LibGambatte.gambatte_romtitle(GambatteState, buff);
-					string romname = System.Text.Encoding.ASCII.GetString(buff);
-					Console.WriteLine("Core reported rom name: {0}", romname);
-				}
-
 				TimeCallback = new LibGambatte.RTCCallback(GetCurrentTime);
 				LibGambatte.gambatte_setrtccallback(GambatteState, TimeCallback);
 

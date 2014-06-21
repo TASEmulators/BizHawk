@@ -100,6 +100,18 @@ void Channel3::setStatePtrs(SaveState &state) {
 	state.spu.ch3.waveRam.set(waveRam, sizeof waveRam);
 }
 
+void Channel3::saveState(SaveState &state) const {
+	lengthCounter.saveState(state.spu.ch3.lcounter);
+	
+	state.spu.ch3.waveCounter = waveCounter;
+	state.spu.ch3.lastReadTime = lastReadTime;
+	state.spu.ch3.nr3 = nr3;
+	state.spu.ch3.nr4 = nr4;
+	state.spu.ch3.wavePos = wavePos;
+	state.spu.ch3.sampleBuf = sampleBuf;
+	state.spu.ch3.master = master;
+}
+
 void Channel3::loadState(const SaveState &state) {
 	lengthCounter.loadState(state.spu.ch3.lcounter, state.spu.cycleCounter);
 	

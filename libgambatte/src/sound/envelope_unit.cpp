@@ -92,6 +92,11 @@ void EnvelopeUnit::reset() {
 	counter = COUNTER_DISABLED;
 }
 
+void EnvelopeUnit::saveState(SaveState::SPU::Env &estate) const {
+	estate.counter = counter;
+	estate.volume = volume;
+}
+
 void EnvelopeUnit::loadState(const SaveState::SPU::Env &estate, const unsigned nr2, const unsigned long cc) {
 	counter = std::max(estate.counter, cc);
 	volume = estate.volume;

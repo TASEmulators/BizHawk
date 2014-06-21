@@ -1,10 +1,21 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
+
+using Newtonsoft.Json;
 
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.ColecoVision;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Nintendo.N64;
+using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Nintendo.SNES;
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
+using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -36,17 +47,21 @@ namespace BizHawk.Client.EmuHawk
 
 				if (path[path.Length - 4] != '.') // If no file extension, add movie extension
 				{
-					path += "." + Global.MovieSession.Movie.PreferredExtension;
+					path += "." + Global.Config.MovieExtension;
 				}
+
+				return path;
 			}
-			
-			return path;
+			else
+			{
+				return path;
+			}
 		}
 
 		private void Ok_Click(object sender, EventArgs e)
 		{
 			var path = MakePath();
-			if (!string.IsNullOrWhiteSpace(path))
+			if (!String.IsNullOrWhiteSpace(path))
 			{
 				var test = new FileInfo(path);
 				if (test.Exists)
@@ -58,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				var movieToRecord = MovieService.Get(path);
+				Movie _movieToRecord;
 
 				if (StartFromCombo.SelectedItem.ToString() == "Now")
 				{
@@ -68,47 +83,45 @@ namespace BizHawk.Client.EmuHawk
 						Directory.CreateDirectory(fileInfo.DirectoryName);
 					}
 
-					movieToRecord.StartsFromSavestate = true;
-
-					if (Global.Emulator.BinarySaveStatesPreferred)
-					{
-						movieToRecord.BinarySavestate = (byte[])Global.Emulator.SaveStateBinary().Clone();
-					}
-					else
-					{
-						using (var sw = new StringWriter())
-						{
-							Global.Emulator.SaveStateText(sw);
-							movieToRecord.TextSavestate = sw.ToString();
-						}
-					}
+					_movieToRecord = new Movie(path, startsFromSavestate: true);
+					//TODO - some emulators (c++ cores) are just returning a hex string already
+					//theres no sense hexifying those again. we need to record that fact in the IEmulator somehow
+					var bytestate = Global.Emulator.SaveStateBinary();
+					string stringstate = Convert.ToBase64String(bytestate);
+					_movieToRecord.Header.SavestateBinaryBase64Blob = stringstate;
+				}
+				else
+				{
+					_movieToRecord = new Movie(path);
 				}
 
 				// Header
 
-				movieToRecord.Author = AuthorBox.Text;
-				movieToRecord.EmulatorVersion = VersionInfo.GetEmuVersion();
-				movieToRecord.Platform = Global.Game.System;
+				_movieToRecord.Header[HeaderKeys.AUTHOR] = AuthorBox.Text;
+				_movieToRecord.Header[HeaderKeys.EMULATIONVERSION] = VersionInfo.GetEmuVersion();
+				_movieToRecord.Header[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion1;
+				_movieToRecord.Header[HeaderKeys.PLATFORM] = Global.Game.System;
 
-				movieToRecord.SyncSettingsJson = ConfigService.SaveWithType(Global.Emulator.GetSyncSettings());
+				// Sync Settings, for movies 1.0, just dump a json blob into a header line
+				_movieToRecord.Header[HeaderKeys.SYNCSETTINGS] = ConfigService.SaveWithType(Global.Emulator.GetSyncSettings());
 
 				if (Global.Game != null)
 				{
-					movieToRecord.GameName = PathManager.FilesystemSafeName(Global.Game);
-					movieToRecord.Hash = Global.Game.Hash;
+					_movieToRecord.Header[HeaderKeys.GAMENAME] = PathManager.FilesystemSafeName(Global.Game);
+					_movieToRecord.Header[HeaderKeys.SHA1] = Global.Game.Hash;
 					if (Global.Game.FirmwareHash != null)
 					{
-						movieToRecord.FirmwareHash = Global.Game.FirmwareHash;
+						_movieToRecord.Header[HeaderKeys.FIRMWARESHA1] = Global.Game.FirmwareHash;
 					}
 				}
 				else
 				{
-					movieToRecord.GameName = "NULL";
+					_movieToRecord.Header[HeaderKeys.GAMENAME] = "NULL";
 				}
 
 				if (Global.Emulator.BoardName != null)
 				{
-					movieToRecord.BoardName = Global.Emulator.BoardName;
+					_movieToRecord.Header[HeaderKeys.BOARDNAME] = Global.Emulator.BoardName;
 				}
 
 				if (Global.Emulator.HasPublicProperty("DisplayType"))
@@ -116,15 +129,20 @@ namespace BizHawk.Client.EmuHawk
 					var region = Global.Emulator.GetPropertyValue("DisplayType");
 					if ((DisplayType)region == DisplayType.PAL)
 					{
-						movieToRecord.HeaderEntries.Add(HeaderKeys.PAL, "1");
+						_movieToRecord.Header[HeaderKeys.PAL] = "1";
 					}
 				}
 
-				movieToRecord.Core = ((CoreAttributes)Attribute
+				if (Global.Emulator is LibsnesCore)
+				{
+					_movieToRecord.Header[HeaderKeys.SGB] = (Global.Emulator as LibsnesCore).IsSGB.ToString();
+				}
+
+				_movieToRecord.Header[HeaderKeys.CORE] = ((CoreAttributes)Attribute
 					.GetCustomAttribute(Global.Emulator.GetType(), typeof(CoreAttributes)))
 					.CoreName;
 
-				GlobalWin.MainForm.StartNewMovie(movieToRecord, true);
+				GlobalWin.MainForm.StartNewMovie(_movieToRecord, true);
 
 				Global.Config.UseDefaultAuthor = DefaultAuthorCheckBox.Checked;
 				if (DefaultAuthorCheckBox.Checked)
@@ -147,18 +165,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BrowseBtn_Click(object sender, EventArgs e)
 		{
+			var filename = String.Empty;
 			var sfd = new SaveFileDialog
-			{
-				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
-				DefaultExt = "." + Global.MovieSession.Movie.PreferredExtension,
-				FileName = RecordBox.Text,
-				OverwritePrompt = false,
-				Filter = "Movie Files (*." + Global.MovieSession.Movie.PreferredExtension + ")|*." + Global.MovieSession.Movie.PreferredExtension + "|All Files|*.*"
-			};
+				{
+					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
+					DefaultExt = "." + Global.Config.MovieExtension,
+					FileName = RecordBox.Text,
+					OverwritePrompt = false
+				};
+			var filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
+			sfd.Filter = filter;
 
 			var result = sfd.ShowHawkDialog();
 			if (result == DialogResult.OK
-				&& !string.IsNullOrWhiteSpace(sfd.FileName))
+				&& !String.IsNullOrWhiteSpace(sfd.FileName))
 			{
 				RecordBox.Text = sfd.FileName;
 			}

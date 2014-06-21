@@ -69,11 +69,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!Global.MovieSession.ReadOnly)
 			{
-				_selectedMovie.Comments.Clear();
+				_selectedMovie.Header.Comments.Clear();
 				for (int i = 0; i < CommentGrid.Rows.Count - 1; i++)
 				{
 					var c = CommentGrid.Rows[i].Cells[0];
-					_selectedMovie.Comments.Add("comment " + c.Value);
+					_selectedMovie.Header.Comments.Add("comment " + c.Value);
 				}
 				_selectedMovie.Save();
 			}
@@ -83,11 +83,11 @@ namespace BizHawk.Client.EmuHawk
 		public void GetMovie(IMovie m)
 		{
 			_selectedMovie = m;
-			if (m.Comments.Count == 0) return;
+			if (m.Header.Comments.Count == 0) return;
 
-			for (int i = 0; i < m.Comments.Count; i++)
+			for (int i = 0; i < m.Header.Comments.Count; i++)
 			{
-				var str = m.Comments[i];
+				var str = m.Header.Comments[i];
 				if (str.Length >= 7 && str.Substring(0, 7) == "comment")
 				{
 					str = str.Remove(0, 7);

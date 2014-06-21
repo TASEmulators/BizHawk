@@ -23,8 +23,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void SetFrame(int frame) { }
-
 		public void SetVideoCodecToken(IDisposable token)
 		{
 			// ignored

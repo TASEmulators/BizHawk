@@ -41,6 +41,7 @@ public:
 	void doEvent(unsigned char *ifreg, const LyCounter &lyCounter);
 	unsigned lycReg() const { return lycRegSrc_; }
 	void loadState(const SaveState &state);
+	void saveState(SaveState &state) const;
 	unsigned long time() const { return time_; }
 	void setCgb(const bool cgb) { cgb_ = cgb; }
 	void lcdReset();

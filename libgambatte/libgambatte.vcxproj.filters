@@ -99,6 +99,9 @@
     <ClInclude Include="src\sound\envelope_unit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\inputgetter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\interruptrequester.h">
       <Filter>Header Files</Filter>
     </ClInclude>

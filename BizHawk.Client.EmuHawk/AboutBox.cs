@@ -164,11 +164,10 @@ namespace BizHawk.Client.EmuHawk
 #else
 			Text = "BizHawk Developer Build (RELEASE MODE) SVN r" + SubWCRev.SVN_REV;
 #endif
-			if (DateTime.Now.Month == 12)
-				if (DateTime.Now.Day > 17 && DateTime.Now.Day <= 25)
-				{
-					pictureBox1.Image = Properties.Resources.alt_about_image;
-				}
+			if (DateTime.Now > DateTime.Parse("12/17/2013") && DateTime.Now <= DateTime.Parse("12/25/2013"))
+			{
+				pictureBox1.Image = Properties.Resources.alt_about_image;
+			}
 		}
 
 		private void Close_Click(object sender, EventArgs e)
@@ -183,11 +182,6 @@ namespace BizHawk.Client.EmuHawk
 			int height = random.Next(1, Height - CloseBtn.Height);
 			CloseBtn.Location = new Point(width, height);
 			CloseBtn.BringToFront();
-		}
-
-		private void btnBizBox_Click(object sender, EventArgs e)
-		{
-			new BizBox().ShowDialog();
 		}
 	}
 

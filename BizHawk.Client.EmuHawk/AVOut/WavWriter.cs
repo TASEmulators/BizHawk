@@ -202,7 +202,6 @@ namespace BizHawk.Client.EmuHawk
 		public void AddFrame(IVideoProvider source) { }
 		public void SetMovieParameters(int fpsnum, int fpsden) { }
 		public void SetVideoParameters(int width, int height) { }
-		public void SetFrame(int frame) { }
 
 		class WavWriterVToken : IDisposable
 		{

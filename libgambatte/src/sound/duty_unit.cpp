@@ -112,6 +112,13 @@ void DutyUnit::reset() {
 	setCounter();
 }
 
+void DutyUnit::saveState(SaveState::SPU::Duty &dstate, const unsigned long cc) {
+	updatePos(cc);
+	dstate.nextPosUpdate = nextPosUpdate;
+	dstate.nr3 = getFreq() & 0xFF;
+	dstate.pos = pos;
+}
+
 void DutyUnit::loadState(const SaveState::SPU::Duty &dstate, const unsigned nr1, const unsigned nr4, const unsigned long cc) {
 	nextPosUpdate = std::max(dstate.nextPosUpdate, cc);
 	pos = dstate.pos & 7;

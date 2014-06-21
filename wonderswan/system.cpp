@@ -203,8 +203,6 @@ namespace MDFN_IEN_WSWAN
 		return true;
 	}
 
-	// this is more than just being defensive; these classes do
-	// in some cases rely on zero filled constuct state
 	void *System::operator new(std::size_t size)
 	{
 		void *p = ::operator new(size);
@@ -405,17 +403,5 @@ namespace MDFN_IEN_WSWAN
 	EXPORT void bizswan_saveramclearhacky(System *s, const SyncSettings *settings)
 	{
 		s->SaveRamClearHacky(*settings);
-	}
-
-	EXPORT void bizswan_setmemorycallbacks(System *s, void (*rcb)(uint32), void (*ecb)(uint32), void (*wcb)(uint32))
-	{
-		s->cpu.ReadHook = rcb;
-		s->cpu.WriteHook = wcb;
-		s->cpu.ExecHook = ecb;
-	}
-
-	EXPORT void bizswan_setbuttoncallback(System *s, void (*bcb)())
-	{
-		s->memory.ButtonHook = bcb;
 	}
 }

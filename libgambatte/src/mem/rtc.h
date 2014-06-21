@@ -68,6 +68,7 @@ public:
 		lastLatchData = data;
 	}
 	
+	void saveState(SaveState &state) const;
 	void loadState(const SaveState &state);
 	
 	void set(const bool enabled, unsigned bank) {

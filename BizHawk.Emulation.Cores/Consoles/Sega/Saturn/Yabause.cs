@@ -61,38 +61,12 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 			this.SyncSettings = (SaturnSyncSettings)SyncSettings ?? new SaturnSyncSettings();
 
-			if (this.SyncSettings.UseGL && glContext == null)
-			{
-				glContext = CoreComm.RequestGLContext();
-			}
-
-
 			ResetCounters();
-
-			ActivateGL();
 			Init(bios);
 
 			InputCallbackH = new LibYabause.InputCallback(() => CoreComm.InputCallback.Call());
 			LibYabause.libyabause_setinputcallback(InputCallbackH);
 			CoreComm.UsesDriveLed = true;
-
-			DeactivateGL();
-		}
-
-		static object glContext;
-
-		void ActivateGL()
-		{
-			//if (!SyncSettings.UseGL) return; //not safe
-			if (glContext == null) return;
-			CoreComm.ActivateGLContext(glContext);
-		}
-
-		void DeactivateGL()
-		{
-			//if (!SyncSettings.UseGL) return; //not safe
-			if (glContext == null) return;
-			CoreComm.DeactivateGLContext();
 		}
 
 		void Init(byte[] bios)
@@ -124,6 +98,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 				basetime = 0;
 			else
 				basetime = (int)((SyncSettings.RTCInitialTime - new DateTime(1970, 1, 1).ToLocalTime()).TotalSeconds);
+
 
 			if (!LibYabause.libyabause_init
 			(
@@ -211,8 +186,6 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		{
 			int w, h, nsamp;
 
-			ActivateGL();
-
 			LibYabause.Buttons1 p11 = (LibYabause.Buttons1)0xff;
 			LibYabause.Buttons2 p12 = (LibYabause.Buttons2)0xff;
 			LibYabause.Buttons1 p21 = (LibYabause.Buttons1)0xff;
@@ -292,8 +265,6 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			//Console.WriteLine(nsamp);
 
 			//CheckStates();
-
-			DeactivateGL();
 		}
 
 		public int Frame { get; private set; }
@@ -385,14 +356,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		{
 			var fp = new FilePiping();
 			fp.Offer(data);
-
-			//loadstate can trigger GL work
-			ActivateGL();
-
 			bool succeed = LibYabause.libyabause_loadstate(fp.GetPipeNameNative());
-
-			DeactivateGL();
-
 			fp.Finish();
 			if (!succeed)
 				throw new Exception("libyabause_loadstate() failed");
@@ -551,7 +515,6 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		{
 			if (!Disposed)
 			{
-				ActivateGL();
 				if (SaveRamModified)
 					DisposedSaveRam = ReadSaveRam();
 				LibYabause.libyabause_setvidbuff(IntPtr.Zero);
@@ -560,7 +523,6 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 				VideoHandle.Free();
 				SoundHandle.Free();
 				Disposed = true;
-				DeactivateGL();
 			}
 		}
 

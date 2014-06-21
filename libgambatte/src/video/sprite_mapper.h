@@ -55,6 +55,7 @@ class SpriteMapper {
 		const unsigned char *spritePosBuf() const { return buf; }
 		void setStatePtrs(SaveState &state);
 		void enableDisplay(unsigned long cc);
+		void saveState(SaveState &state) const { state.ppu.enableDisplayM0Time = lu; }
 		void loadState(const SaveState &ss, const unsigned char *oamram);
 		bool inactivePeriodAfterDisplayEnable(const unsigned long cc) const { return cc < lu; }
 
@@ -121,6 +122,7 @@ public:
 
 	void setStatePtrs(SaveState &state) { oamReader.setStatePtrs(state); }
 	void enableDisplay(unsigned long cc) { oamReader.enableDisplay(cc); }
+	void saveState(SaveState &state) const { oamReader.saveState(state); }
 	void loadState(const SaveState &state, const unsigned char *const oamram) { oamReader.loadState(state, oamram); mapSprites(); }
 	bool inactivePeriodAfterDisplayEnable(unsigned long cc) const { return oamReader.inactivePeriodAfterDisplayEnable(cc); }
 

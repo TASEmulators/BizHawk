@@ -127,18 +127,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern void bizswan_txtstateload(IntPtr core, [In]ref TextStateFPtrs ff);
 
-		[DllImport(dd, CallingConvention = cc)]
-		public static extern void bizswan_setmemorycallbacks(IntPtr core, MemoryCallback rcb, MemoryCallback ecb, MemoryCallback wcb);
-
-		[DllImport(dd, CallingConvention = cc)]
-		public static extern void bizswan_setbuttoncallback(IntPtr core, ButtonCallback bcb);
-
-		[UnmanagedFunctionPointer(cc)]
-		public delegate void MemoryCallback(uint addr);
-
-		[UnmanagedFunctionPointer(cc)]
-		public delegate void ButtonCallback();
-
 		/// <summary>
 		/// return a CPU register
 		/// </summary>

@@ -50,6 +50,7 @@ class Tima {
 	
 public:
 	Tima();
+	void saveState(SaveState &) const;
 	void loadState(const SaveState &, TimaInterruptRequester timaIrq);
 	void resetCc(unsigned long oldCc, unsigned long newCc, TimaInterruptRequester timaIrq);
 	

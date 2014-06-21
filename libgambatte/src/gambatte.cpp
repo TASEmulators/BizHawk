@@ -98,7 +98,7 @@ void GB::reset(const std::uint32_t now) {
 	}
 }
 
-void GB::setInputGetter(unsigned (*getInput)()) {
+void GB::setInputGetter(InputGetter *getInput) {
 	p_->cpu.setInputGetter(getInput);
 }
 

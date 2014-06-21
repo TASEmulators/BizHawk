@@ -238,24 +238,6 @@ namespace BizHawk.Client.EmuHawk
 			ToolHelpers.AddColumn(CheatListView, SIZE, Global.Config.CheatsColumnShow[SIZE], GetColumnWidth(SIZE));
 			ToolHelpers.AddColumn(CheatListView, ENDIAN, Global.Config.CheatsColumnShow[ENDIAN], GetColumnWidth(ENDIAN));
 			ToolHelpers.AddColumn(CheatListView, TYPE, Global.Config.CheatsColumnShow[TYPE], GetColumnWidth(TYPE));
-
-			ColumnPositions();
-		}
-
-		private void ColumnPositions()
-		{
-			var columns = Global.Config.CheatsColumnIndices
-					.Where(x => CheatListView.Columns.ContainsKey(x.Key))
-					.OrderBy(x => x.Value)
-					.ToList();
-
-			for (var i = 0; i < columns.Count; i++)
-			{
-				if (CheatListView.Columns.ContainsKey(columns[i].Key))
-				{
-					CheatListView.Columns[columns[i].Key].DisplayIndex = i;
-				}
-			}
 		}
 
 		private int GetColumnWidth(string columnName)
@@ -707,6 +689,19 @@ namespace BizHawk.Client.EmuHawk
 				{ "DisplayTypeColumn", 8 },
 			};
 
+			Global.Config.CheatsColumnIndices = new Dictionary<string, int>
+			{
+				{ "NamesColumn", 0 },
+				{ "AddressColumn", 1 },
+				{ "ValueColumn", 2 },
+				{ "CompareColumn", 3 },
+				{ "OnColumn", 4 },
+				{ "DomainColumn", 5 },
+				{ "SizeColumn", 6 },
+				{ "EndianColumn", 7 },
+				{ "DisplayTypeColumn", 8 },
+			};
+
 			Global.Config.CheatsColumnShow = new Dictionary<string, bool>
 				{
 				{ "NamesColumn", true },
@@ -720,10 +715,8 @@ namespace BizHawk.Client.EmuHawk
 				{ "DisplayTypeColumn", false },
 			};
 
-			RefreshFloatingWindowControl();
-			ColumnPositions();
 			LoadColumnInfo();
-			
+			RefreshFloatingWindowControl();
 		}
 
 		#endregion
@@ -795,6 +788,19 @@ namespace BizHawk.Client.EmuHawk
 		private void CheatListView_Click(object sender, EventArgs e)
 		{
 			DoSelectedIndexChange();
+		}
+
+		private void CheatListView_ColumnReordered(object sender, ColumnReorderedEventArgs e)
+		{
+			Global.Config.CheatsColumnIndices[NAME] = CheatListView.Columns[NAME].DisplayIndex;
+			Global.Config.CheatsColumnIndices[ADDRESS] = CheatListView.Columns[ADDRESS].DisplayIndex;
+			Global.Config.CheatsColumnIndices[VALUE] = CheatListView.Columns[VALUE].DisplayIndex;
+			Global.Config.CheatsColumnIndices[COMPARE] = CheatListView.Columns[COMPARE].DisplayIndex;
+			Global.Config.CheatsColumnIndices[ON] = CheatListView.Columns[ON].DisplayIndex;
+			Global.Config.CheatsColumnIndices[DOMAIN] = CheatListView.Columns[DOMAIN].DisplayIndex;
+			Global.Config.CheatsColumnIndices[SIZE] = CheatListView.Columns[SIZE].DisplayIndex;
+			Global.Config.CheatsColumnIndices[ENDIAN] = CheatListView.Columns[ENDIAN].DisplayIndex;
+			Global.Config.CheatsColumnIndices[TYPE] = CheatListView.Columns[TYPE].DisplayIndex;
 		}
 
 		private void CheatListView_DoubleClick(object sender, EventArgs e)

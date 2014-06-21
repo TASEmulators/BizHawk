@@ -80,8 +80,6 @@ namespace BizHawk.Client.EmuHawk
 			//create IGL context.
 			//at some point in the future, we may need to select from several drivers
 			GlobalWin.GL = new BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
-			GlobalWin.GLManager = new GLManager();
-			GlobalWin.CR_GL = GlobalWin.GLManager.GetContextForIGL(GlobalWin.GL);
 
 			try
 			{

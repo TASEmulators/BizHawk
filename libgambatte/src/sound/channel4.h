@@ -46,6 +46,7 @@ class Channel4 {
 		void nr3Change(unsigned newNr3, unsigned long cc);
 		void nr4Init(unsigned long cc);
 		void reset(unsigned long cc);
+		void saveState(SaveState &state, const unsigned long cc);
 		void loadState(const SaveState &state);
 		void resetCounters(unsigned long oldCc);
 		void disableMaster() { killCounter(); master = false; reg = 0x7FFF; }
@@ -95,6 +96,7 @@ public:
 	
 	void reset();
 	void init(bool cgb);
+	void saveState(SaveState &state);
 	void loadState(const SaveState &state);
 
 	template<bool isReader>void SyncState(NewState *ns);

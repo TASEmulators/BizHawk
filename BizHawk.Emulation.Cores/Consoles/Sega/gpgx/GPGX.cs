@@ -147,9 +147,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				if (CD != null)
 					CoreComm.UsesDriveLed = true;
-
-				InitMemCallbacks();
-				KillMemCallbacks();
 			}
 			catch
 			{
@@ -369,9 +366,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			IsLagFrame = true;
 			Frame++;
 			drivelight = false;
-
-			RefreshMemCallbacks();
-
 			LibGPGX.gpgx_advance();
 			update_video();
 			update_audio();
@@ -604,30 +598,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			LibGPGX.gpgx_get_vdp_view(view);
 		}
 
-		LibGPGX.mem_cb ExecCallback;
-		LibGPGX.mem_cb ReadCallback;
-		LibGPGX.mem_cb WriteCallback;
-
-		void InitMemCallbacks()
-		{
-			ExecCallback = new LibGPGX.mem_cb(a => CoreComm.MemoryCallbackSystem.CallExecute(a));
-			ReadCallback = new LibGPGX.mem_cb(a => CoreComm.MemoryCallbackSystem.CallRead(a));
-			WriteCallback = new LibGPGX.mem_cb(a => CoreComm.MemoryCallbackSystem.CallWrite(a));
-		}
-
-		void RefreshMemCallbacks()
-		{
-			LibGPGX.gpgx_set_mem_callback(
-				CoreComm.MemoryCallbackSystem.HasReads ? ReadCallback : null,
-				CoreComm.MemoryCallbackSystem.HasWrites ? WriteCallback : null,
-				CoreComm.MemoryCallbackSystem.HasExecutes ? ExecCallback : null);
-		}
-
-		void KillMemCallbacks()
-		{
-			LibGPGX.gpgx_set_mem_callback(null, null, null);
-		}
-
 		#endregion
 
 		public void Dispose()
@@ -638,7 +608,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					throw new Exception();
 				if (SaveRamModified)
 					DisposedSaveRam = ReadSaveRam();
-				KillMemCallbacks();
 				AttachedCore = null;
 				disposed = true;
 			}

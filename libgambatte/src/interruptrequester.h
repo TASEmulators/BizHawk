@@ -57,6 +57,7 @@ class InterruptRequester {
 public:
 	InterruptRequester();
 	
+	void saveState(SaveState &) const;
 	void loadState(const SaveState &);
 	
 	void resetCc(unsigned long oldCc, unsigned long newCc);

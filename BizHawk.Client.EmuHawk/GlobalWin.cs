@@ -12,12 +12,10 @@ namespace BizHawk.Client.EmuHawk
 		public static DirectSound DSound;
 #endif
 		public static IGL GL;
-		public static GLManager.ContextRef CR_GL;
 		public static Sound Sound;
 		public static PresentationPanel PresentationPanel;
 		public static OSDManager OSD = new OSDManager();
 		public static DisplayManager DisplayManager;
-		public static GLManager GLManager;
 
 		//input state which has been destined for game controller inputs are coalesced here
 		//public static ControllerInputCoalescer ControllerInputCoalescer = new ControllerInputCoalescer();

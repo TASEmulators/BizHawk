@@ -49,22 +49,12 @@ namespace BizHawk.Client.EmuHawk
 			RebootStatusBarIcon.Visible = false;
 			StatusBarDiskLightOnImage = Properties.Resources.LightOn;
 			StatusBarDiskLightOffImage = Properties.Resources.LightOff;
-			UpdateCoreStatusBarButton();
 		}
 
 		static MainForm()
 		{
 			// If this isnt here, then our assemblyresolving hacks wont work due to the check for MainForm.INTERIM
 			// its.. weird. dont ask.
-		}
-
-		CoreComm CreateCoreComm()
-		{
-			CoreComm ret = new CoreComm(ShowMessageCoreComm, NotifyCoreComm);
-			ret.RequestGLContext = () => GlobalWin.GLManager.CreateGLContext();
-			ret.ActivateGLContext = (gl) => GlobalWin.GLManager.Activate((GLManager.ContextRef)gl);
-			ret.DeactivateGLContext = () => GlobalWin.GLManager.Deactivate();
-			return ret;
 		}
 
 		public MainForm(string[] args)
@@ -79,8 +69,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.FirmwareManager = new FirmwareManager();
 			Global.MovieSession = new MovieSession
 			{
-				Movie = MovieService.DefaultInstance,
-				MovieControllerAdapter = MovieService.DefaultInstance.LogGeneratorInstance().MovieControllerAdapter,
+				Movie = new Movie(),
 				MessageCallback = GlobalWin.OSD.AddMessage,
 				AskYesNoCallback = StateErrorAskUser
 			};
@@ -171,7 +160,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Input.Initialize();
 			InitControls();
-			Global.CoreComm = CreateCoreComm();
+			Global.CoreComm = new CoreComm(ShowMessageCoreComm, NotifyCoreComm);
 			CoreFileProvider.SyncCoreCommInputSignals();
 			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.ActiveController = Global.NullControls;
@@ -267,7 +256,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var movie = MovieService.Get(cmdMovie);
+					var movie = new Movie(cmdMovie);
 					Global.MovieSession.ReadOnly = true;
 
 					// if user is dumping and didnt supply dump length, make it as long as the loaded movie
@@ -288,7 +277,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					StartNewMovie(MovieService.Get(Global.Config.RecentMovies.MostRecent), false);
+					StartNewMovie(new Movie(Global.Config.RecentMovies.MostRecent), false);
 				}
 			}
 
@@ -1441,15 +1430,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadMoviesFromRecent(string path)
 		{
-			if (File.Exists(path))
+			var movie = new Movie(path);
+
+			if (!movie.Loaded)
 			{
-				var movie = MovieService.Get(path);
-				Global.MovieSession.ReadOnly = true;
-				StartNewMovie(movie, false);
+				ToolHelpers.HandleLoadError(Global.Config.RecentMovies, path);
 			}
 			else
 			{
-				ToolHelpers.HandleLoadError(Global.Config.RecentMovies, path);
+				Global.MovieSession.ReadOnly = true;
+				StartNewMovie(movie, false);
 			}
 		}
 
@@ -1710,7 +1700,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.col;*.rom;*.cue;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.col;*.rom;*.cue;*.sgb;*.z64;*.v64;*.n64;*.wsc;*.xml;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;*.fds;%ARCH%",
 					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
@@ -1725,7 +1715,7 @@ namespace BizHawk.Client.EmuHawk
 					"Archive Files", "%ARCH%",
 					"Savestate", "*.state",
 					"Genesis", "*.gen;*.md;*.smd;*.bin;*.cue;%ARCH%",
-					"WonderSawn", "*.ws;*.wsc;%ARCH%",
+					"WonderSawn", "*.wsc;%ARCH%",
 					"All Files", "*.*");
 			}
 
@@ -2547,12 +2537,7 @@ namespace BizHawk.Client.EmuHawk
 
 				coreskipaudio = Global.ClientControls["Turbo"] && _currAviWriter == null;
 
-				{
-					bool render = !_throttle.skipnextframe || _currAviWriter != null;
-					bool renderSound = !coreskipaudio;
-					Global.Emulator.FrameAdvance(render, renderSound);
-				}
-
+				Global.Emulator.FrameAdvance(!_throttle.skipnextframe || _currAviWriter != null, !coreskipaudio);
 				GlobalWin.DisplayManager.NeedsToPaint = true;
 				Global.CheatList.Pulse();
 
@@ -2716,47 +2701,28 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					string ext = aw.DesiredExtension();
-					string pathForOpenFile;
-
-					//handle directories first
-					if (ext == "<directory>")
+					var sfd = new SaveFileDialog();
+					if (!(Global.Emulator is NullEmulator))
 					{
-						var fbd = new FolderBrowserEx();
-						if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
-						{
-							aw.Dispose();
-							return;
-						}
-						pathForOpenFile = fbd.SelectedPath;
+						sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + "." + aw.DesiredExtension(); //dont use Path.ChangeExtension, it might wreck game names with dots in them
+						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPathFragment, null);
 					}
 					else
 					{
-						var sfd = new SaveFileDialog();
-						if (!(Global.Emulator is NullEmulator))
-						{
-							sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + "." + ext; //dont use Path.ChangeExtension, it might wreck game names with dots in them
-							sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPathFragment, null);
-						}
-						else
-						{
-							sfd.FileName = "NULL";
-							sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPathFragment, null);
-						}
-
-						sfd.Filter = String.Format("{0} (*.{0})|*.{0}|All Files|*.*", ext);
-
-						var result = sfd.ShowHawkDialog();
-						if (result == DialogResult.Cancel)
-						{
-							aw.Dispose();
-							return;
-						}
-
-						pathForOpenFile = sfd.FileName;
+						sfd.FileName = "NULL";
+						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPathFragment, null);
 					}
 
-					aw.OpenFile(pathForOpenFile);
+					sfd.Filter = String.Format("{0} (*.{0})|*.{0}|All Files|*.*", aw.DesiredExtension());
+
+					var result = sfd.ShowHawkDialog();
+					if (result == DialogResult.Cancel)
+					{
+						aw.Dispose();
+						return;
+					}
+
+					aw.OpenFile(sfd.FileName);
 				}
 
 				// commit the avi writing last, in case there were any errors earlier
@@ -2898,7 +2864,6 @@ namespace BizHawk.Client.EmuHawk
 							output = Global.Emulator.VideoProvider;
 					}
 
-					_currAviWriter.SetFrame(Global.Emulator.Frame);
 					_currAviWriter.AddFrame(output);
 
 					if (disposableOutput != null)
@@ -3008,7 +2973,7 @@ namespace BizHawk.Client.EmuHawk
 			// the new settings objects
 			CommitCoreSettingsToConfig();
 
-			var nextComm = CreateCoreComm();
+			var nextComm = new CoreComm(ShowMessageCoreComm, NotifyCoreComm);
 			CoreFileProvider.SyncCoreCommInputSignals(nextComm);
 
 			var result = loader.LoadRom(path, nextComm);
@@ -3181,7 +3146,7 @@ namespace BizHawk.Client.EmuHawk
 			CommitCoreSettingsToConfig();
 
 			Global.Emulator.Dispose();
-			Global.CoreComm = CreateCoreComm();
+			Global.CoreComm = new CoreComm(ShowMessageCoreComm, NotifyCoreComm);
 			CoreFileProvider.SyncCoreCommInputSignals();
 			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.ActiveController = Global.NullControls;
@@ -3201,7 +3166,7 @@ namespace BizHawk.Client.EmuHawk
 			if (GlobalWin.Tools.AskSave())
 			{
 				CloseGame(clearSram);
-				Global.CoreComm = CreateCoreComm();
+				Global.CoreComm = new CoreComm(ShowMessageCoreComm, NotifyCoreComm);
 				CoreFileProvider.SyncCoreCommInputSignals();
 				Global.Emulator = new NullEmulator(Global.CoreComm);
 				Global.Game = GameInfo.GetNullGame();
@@ -3219,14 +3184,35 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static void ShowConversionError(string errorMsg)
+		private static void ProcessMovieImport(string fn) // Nothing Winform Specific here, move to Movie import
 		{
-			MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-		}
+			var d = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
+			string errorMsg;
+			string warningMsg;
+			var m = MovieImport.ImportFile(fn, out errorMsg, out warningMsg);
 
-		private static void ProcessMovieImport(string fn)
-		{
-			MovieImport.ProcessMovieImport(fn, ShowConversionError, GlobalWin.OSD.AddMessage);
+			if (!String.IsNullOrWhiteSpace(errorMsg))
+			{
+				MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+
+			if (!String.IsNullOrWhiteSpace(warningMsg))
+			{
+				GlobalWin.OSD.AddMessage(warningMsg);
+			}
+			else
+			{
+				GlobalWin.OSD.AddMessage(Path.GetFileName(fn) + " imported as " + "Movies\\" +
+										 Path.GetFileName(fn) + "." + Global.Config.MovieExtension);
+			}
+
+			if (!Directory.Exists(d))
+			{
+				Directory.CreateDirectory(d);
+			}
+
+			var outPath = Path.Combine(d, Path.GetFileName(fn) + "." + Global.Config.MovieExtension);
+			m.SaveAs(outPath);
 		}
 
 		#endregion
@@ -3252,6 +3238,5 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.OSD.AddMessage("Profile config aborted");
 			}
 		}
-
 	}
 }

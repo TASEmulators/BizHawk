@@ -50,7 +50,6 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -106,9 +105,6 @@
     <Compile Include="ControllerBinding.cs" />
     <Compile Include="CoreFileProvider.cs" />
     <Compile Include="FirmwareManager.cs" />
-    <Compile Include="GLManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Global.cs" />
     <Compile Include="helpers\InputValidate.cs" />
     <Compile Include="InputManager.cs" />
@@ -133,40 +129,30 @@
     <Compile Include="lua\LuaLibraryBase.cs" />
     <Compile Include="lua\LuaMemoryBase.cs" />
     <Compile Include="lua\NamedLuaFunction.cs" />
-    <Compile Include="movie\bk2\Bk2ControllerAdapter.cs" />
-    <Compile Include="movie\bk2\Bk2Header.cs" />
-    <Compile Include="movie\bk2\Bk2LogEntryGenerator.cs" />
-    <Compile Include="movie\bk2\Bk2MnemonicConstants.cs" />
-    <Compile Include="movie\bk2\Bk2Movie.cs" />
-    <Compile Include="movie\bk2\Bk2Movie.HeaderApi.cs" />
-    <Compile Include="movie\bk2\Bk2Movie.InputLog.cs" />
-    <Compile Include="movie\bk2\Bk2Movie.IO.cs" />
-    <Compile Include="movie\bk2\Bk2Movie.ModeApi.cs" />
-    <Compile Include="movie\bkm\BkmControllerAdapter.cs" />
-    <Compile Include="movie\bkm\BkmHeader.cs" />
-    <Compile Include="movie\bkm\BkmLogEntryGenerator.cs" />
-    <Compile Include="movie\bkm\BkmMnemonicConstants.cs" />
-    <Compile Include="movie\bkm\BkmMovie.cs" />
-    <Compile Include="movie\bkm\BkmMovie.HeaderApi.cs" />
-    <Compile Include="movie\bkm\BkmMovie.InputLog.cs" />
-    <Compile Include="movie\bkm\BkmMovie.IO.cs" />
-    <Compile Include="movie\bkm\BkmMovie.ModeApi.cs" />
-    <Compile Include="movie\conversions\MovieConversionExtensions.cs" />
     <Compile Include="movie\HeaderKeys.cs" />
+    <Compile Include="movie\IMovie.cs" />
+    <Compile Include="movie\IMovieHeader.cs" />
     <Compile Include="movie\InputAdapters.cs" />
-    <Compile Include="movie\interfaces\ILogEntryGenerator.cs" />
-    <Compile Include="movie\interfaces\IMovie.cs" />
-    <Compile Include="movie\interfaces\IMovieController.cs" />
+    <Compile Include="movie\MnemonicGenerators\BooleanControllerMnemonicGenerator.cs" />
+    <Compile Include="movie\MnemonicGenerators\IMnemonicGenerator.cs" />
+    <Compile Include="movie\MnemonicGenerators\IMnemonicPorts.cs" />
+    <Compile Include="movie\MnemonicGenerators\MnemonicGeneratorFactory.cs" />
+    <Compile Include="movie\MnemonicGenerators\NesMnemonicGenerator.cs" />
+    <Compile Include="movie\MnemonicsGenerator.cs" />
+    <Compile Include="movie\Movie.cs" />
+    <Compile Include="movie\MovieHeader.cs" />
     <Compile Include="movie\MovieImport.cs" />
-    <Compile Include="movie\MovieService.cs" />
+    <Compile Include="movie\MovieLog.cs" />
+    <Compile Include="movie\MovieMnemonics.cs" />
+    <Compile Include="movie\MovieRecord.cs" />
+    <Compile Include="movie\MovieRecordList.cs" />
     <Compile Include="movie\MovieSession.cs" />
     <Compile Include="movie\MultitrackRecording.cs" />
+    <Compile Include="movie\MnemonicsLookupTable.cs" />
     <Compile Include="movie\PlatformFrameRates.cs" />
     <Compile Include="movie\Subtitle.cs" />
     <Compile Include="movie\SubtitleList.cs" />
-    <Compile Include="movie\tasproj\MovieRecord.cs" />
-    <Compile Include="movie\tasproj\MovieRecordList.cs" />
-    <Compile Include="movie\tasproj\TasMovie.cs" />
+    <Compile Include="movie\TasMovie.cs" />
     <Compile Include="NESGameGenieEncoderDecoder.cs" />
     <Compile Include="PathManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -205,14 +191,6 @@
     <ProjectReference Include="..\BizHawk.Emulation.DiscSystem\BizHawk.Emulation.DiscSystem.csproj">
       <Project>{f51946ea-827f-4d82-b841-1f2f6d060312}</Project>
       <Name>BizHawk.Emulation.DiscSystem</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL.OpenTK\BizHawk.Bizware.BizwareGL.OpenTK.csproj">
-      <Project>{5160CFB1-5389-47C1-B7F6-8A0DC97641EE}</Project>
-      <Name>BizHawk.Bizware.BizwareGL.OpenTK</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL\BizHawk.Bizware.BizwareGL.csproj">
-      <Project>{9F84A0B2-861E-4EF4-B89B-5E2A3F38A465}</Project>
-      <Name>BizHawk.Bizware.BizwareGL</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

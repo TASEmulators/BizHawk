@@ -3,7 +3,6 @@
 
 namespace BizHawk.Emulation.Common
 {
-	//TODO - why am I here? put me alongside hash_md5 and such in a non-emulation-related class
 	public static class CRC32
 	{
 		// Lookup table for speed.

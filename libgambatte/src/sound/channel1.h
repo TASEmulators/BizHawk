@@ -47,6 +47,7 @@ class Channel1 {
 		void nr0Change(unsigned newNr0);
 		void nr4Init(unsigned long cycleCounter);
 		void reset();
+		void saveState(SaveState &state) const;
 		void loadState(const SaveState &state);
 
 		template<bool isReader>void SyncState(NewState *ns);
@@ -87,6 +88,7 @@ public:
 	
 	void reset();
 	void init(bool cgb);
+	void saveState(SaveState &state);
 	void loadState(const SaveState &state);
 
 	template<bool isReader>void SyncState(NewState *ns);

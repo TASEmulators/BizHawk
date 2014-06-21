@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace BizHawk.Emulation.Common
 {
@@ -114,33 +113,6 @@ namespace BizHawk.Emulation.Common
 			FloatControls = new List<string>();
 			FloatRanges = new List<FloatRange>();
 			AxisConstraints = new List<AxisConstraint>();
-		}
-
-		/// <summary>
-		/// Puts the controls in a logical order such as by controller number,
-		/// This is a default implementation that should work most of the time
-		/// </summary>
-		public virtual IEnumerable<IEnumerable<string>> ControlsOrdered
-		{
-			get
-			{
-				var list = FloatControls.Union(BoolButtons);
-
-				yield return list
-					.Where(x => !x.StartsWith("P1 ") && !x.StartsWith("P2 ") && !x.StartsWith("P3 ") && !x.StartsWith("P4 "));
-
-				yield return list
-					.Where(x => x.StartsWith("P1 "));
-
-				yield return list
-					.Where(x => x.StartsWith("P2 "));
-
-				yield return list
-					.Where(x => x.StartsWith("P3 "));
-
-				yield return list
-					.Where(x => x.StartsWith("P4 "));
-			}
 		}
 	}
 

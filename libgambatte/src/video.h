@@ -71,6 +71,10 @@ public:
 		 lycReg_ =  lycReg;
 	}
 	
+	void saveState(SaveState &state) const {
+		state.ppu.m0lyc = lycReg_;
+	}
+	
 	void loadState(const SaveState &state) {
 		 lycReg_ = state.ppu.m0lyc;
 		statReg_ = state.mem.ioamhram.get()[0x141];
@@ -170,6 +174,7 @@ public:
 	LCD(const unsigned char *oamram, const unsigned char *vram_in, VideoInterruptRequester memEventRequester);
 	void reset(const unsigned char *oamram, const unsigned char *vram, bool cgb);
 	void setStatePtrs(SaveState &state);
+	void saveState(SaveState &state) const;
 	void loadState(const SaveState &state, const unsigned char *oamram);
 	void setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned long rgb32);
 	void setCgbPalette(unsigned *lut);

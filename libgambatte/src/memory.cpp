@@ -19,6 +19,7 @@
 #include "memory.h"
 #include "video.h"
 #include "sound.h"
+#include "inputgetter.h"
 #include "savestate.h"
 #include <cstring>
 
@@ -53,6 +54,28 @@ void Memory::setStatePtrs(SaveState &state) {
 	sound.setStatePtrs(state);
 }
 
+unsigned long Memory::saveState(SaveState &state, unsigned long cycleCounter) {
+	cycleCounter = resetCounters(cycleCounter);
+	nontrivial_ff_read(0xFF05, cycleCounter);
+	nontrivial_ff_read(0xFF0F, cycleCounter);
+	nontrivial_ff_read(0xFF26, cycleCounter);
+
+	state.mem.divLastUpdate = divLastUpdate;
+	state.mem.nextSerialtime = intreq.eventTime(SERIAL);
+	state.mem.unhaltTime = intreq.eventTime(UNHALT);
+	state.mem.lastOamDmaUpdate = lastOamDmaUpdate;
+	state.mem.dmaSource = dmaSource;
+	state.mem.dmaDestination = dmaDestination;
+	state.mem.oamDmaPos = oamDmaPos;
+
+	intreq.saveState(state);
+	cart.saveState(state);
+	tima.saveState(state);
+	display.saveState(state);
+	sound.saveState(state);
+
+	return cycleCounter;
+}
 
 static inline int serialCntFrom(const unsigned long cyclesUntilDone, const bool cgbFast) {
 	return cgbFast ? (cyclesUntilDone + 0xF) >> 4 : (cyclesUntilDone + 0x1FF) >> 9;

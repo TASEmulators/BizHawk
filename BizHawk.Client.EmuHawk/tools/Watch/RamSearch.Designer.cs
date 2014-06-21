@@ -213,6 +213,7 @@
 			this.WatchListView.View = System.Windows.Forms.View.Details;
 			this.WatchListView.VirtualMode = true;
 			this.WatchListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.WatchListView_ColumnClick);
+			this.WatchListView.ColumnReordered += new System.Windows.Forms.ColumnReorderedEventHandler(this.WatchListView_ColumnReordered);
 			this.WatchListView.SelectedIndexChanged += new System.EventHandler(this.WatchListView_SelectedIndexChanged);
 			this.WatchListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamSearch_DragDrop);
 			this.WatchListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.NewRamSearch_DragEnter);

@@ -128,7 +128,7 @@ namespace BizHawk.Client.Common
 				var fr1 = fr;
 				var options =
 					from fo in FirmwareDatabase.FirmwareOptions
-					where fo.systemId == fr1.systemId && fo.firmwareId == fr1.firmwareId && fo.IsAcceptableOrIdeal
+					where fo.systemId == fr1.systemId && fo.firmwareId == fr1.firmwareId
 					select fo;
 
 				// try each option

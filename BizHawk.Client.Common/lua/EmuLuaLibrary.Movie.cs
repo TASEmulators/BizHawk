@@ -30,16 +30,14 @@ namespace BizHawk.Client.Common
 		public LuaTable GetInput(int frame)
 		{
 			var input = Lua.NewTable();
-			var adapter = Global.MovieSession.Movie.GetInputState(frame);
 
-			foreach (var button in adapter.Type.BoolButtons)
-			{
-				input[button] = adapter[button];
-			}
+			var m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
+			m.SetControllersAsMnemonic(
+				Global.MovieSession.Movie.GetInput(frame));
 
-			foreach (var button in adapter.Type.FloatControls)
+			foreach (var button in m.Type.BoolButtons)
 			{
-				input[button] = adapter[button];
+				input[button] = m[button];
 			}
 
 			return input;
@@ -51,11 +49,9 @@ namespace BizHawk.Client.Common
 		)]
 		public string GetInputAsMnemonic(int frame)
 		{
-			if (Global.MovieSession.Movie.IsActive && frame < Global.MovieSession.Movie.InputLogLength)
+			if (frame < Global.MovieSession.Movie.InputLogLength)
 			{
-				var lg = Global.MovieSession.LogGeneratorInstance();
-				lg.SetSource(Global.MovieSession.Movie.GetInputState(frame));
-				return lg.GenerateLogEntry();
+				return Global.MovieSession.Movie.GetInput(frame);
 			}
 
 			return string.Empty;
@@ -127,7 +123,7 @@ namespace BizHawk.Client.Common
 		)]
 		public static string RerecordCount()
 		{
-			return Global.MovieSession.Movie.Rerecords.ToString();
+			return Global.MovieSession.Movie.Header.Rerecords.ToString();
 		}
 
 		[LuaMethodAttributes(

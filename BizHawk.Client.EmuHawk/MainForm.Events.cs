@@ -457,11 +457,6 @@ namespace BizHawk.Client.EmuHawk
 			this.StopAv();
 		}
 
-		private void SynclessRecordingMenuItem_Click(object sender, EventArgs e)
-		{
-			new SynclessRecordingTools().Run();
-		}
-
 		private void CaptureOSDMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.AVI_CaptureOSD ^= true;
@@ -999,8 +994,6 @@ namespace BizHawk.Client.EmuHawk
 				VirtualPadMenuItem.Enabled =
 				!(Global.Emulator is NullEmulator);
 			batchRunnerToolStripMenuItem.Visible = VersionInfo.DeveloperBuild;
-
-			TAStudioMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
 
 		private void ToolBoxMenuItem_Click(object sender, EventArgs e)
@@ -1190,12 +1183,6 @@ namespace BizHawk.Client.EmuHawk
 		private void PceTileViewerMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<PCETileViewer>();
-		}
-
-
-		private void PceSoundDebuggerToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<PCESoundDebugger>();
 		}
 
 		private void CodeDataLoggerMenuItem_Click(object sender, EventArgs e)
@@ -1801,7 +1788,7 @@ namespace BizHawk.Client.EmuHawk
 				SaveMovieContextMenuItem.Visible =
 				Global.MovieSession.Movie.IsActive;
 
-			BackupMovieContextMenuItem.Visible = Global.MovieSession.Movie.IsActive;
+			BackupMovieContextMenuItem.Visible = Global.MovieSession.Movie is Movie && Global.MovieSession.Movie.IsActive;
 
 			StopNoSaveContextMenuItem.Visible = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.Changes;
 
@@ -1910,8 +1897,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BackupMovieContextMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.MovieSession.Movie.SaveBackup();
-			GlobalWin.OSD.AddMessage("Backup movie saved.");
+			if (Global.MovieSession.Movie is Movie)
+			{
+				GlobalWin.OSD.AddMessage("Backup movie saved.");
+				(Global.MovieSession.Movie as Movie).SaveBackup();
+			}
 		}
 
 		private void ViewSubtitlesContextMenuItem_Click(object sender, EventArgs e)
@@ -1932,9 +1922,9 @@ namespace BizHawk.Client.EmuHawk
 
 			int index = -1;
 			var sub = new Subtitle();
-			for (int x = 0; x < Global.MovieSession.Movie.Subtitles.Count; x++)
+			for (int x = 0; x < Global.MovieSession.Movie.Header.Subtitles.Count; x++)
 			{
-				sub = Global.MovieSession.Movie.Subtitles[x];
+				sub = Global.MovieSession.Movie.Header.Subtitles[x];
 				if (Global.Emulator.Frame == sub.Frame)
 				{
 					index = x;
@@ -1953,10 +1943,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (index >= 0)
 				{
-					Global.MovieSession.Movie.Subtitles.RemoveAt(index);
+					Global.MovieSession.Movie.Header.Subtitles.RemoveAt(index);
 				}
 
-				Global.MovieSession.Movie.Subtitles.Add(subForm.Sub);
+				Global.MovieSession.Movie.Header.Subtitles.Add(subForm.Sub);
 			}
 		}
 
@@ -2192,9 +2182,9 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.LuaConsole.LoadLuaSession(filePaths[0]);
 				}
 			}
-			else if (MovieService.IsValidMovieExtension(ext))
+			else if (MovieSession.IsValidMovieExtension(ext))
 			{
-				StartNewMovie(MovieService.Get(filePaths[0]), false);
+				StartNewMovie(new Movie(filePaths[0]), false);
 			}
 			else if (ext.ToUpper() == ".STATE")
 			{
@@ -2232,20 +2222,19 @@ namespace BizHawk.Client.EmuHawk
 				string errorMsg;
 				string warningMsg;
 				var movie = MovieImport.ImportFile(filePaths[0], out errorMsg, out warningMsg);
-				if (!string.IsNullOrEmpty(errorMsg))
+				if (!String.IsNullOrEmpty(errorMsg))
 				{
 					MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 				else
 				{
-					// fix movie extension to something palatable for these purposes. 
-					// for instance, something which doesnt clobber movies you already may have had.
-					// i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
-					movie.Filename = Path.ChangeExtension(movie.Filename, ".autoimported." + MovieService.DefaultExtension);
+					//fix movie extension to something palatable for these purposes. 
+					//for instance, something which doesnt clobber movies you already may have had.
+					//i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
+					movie.Filename += ".autoimported." + Global.Config.MovieExtension;
 					movie.Save();
 					StartNewMovie(movie, false);
 				}
-
 				GlobalWin.OSD.AddMessage(warningMsg);
 			}
 			else

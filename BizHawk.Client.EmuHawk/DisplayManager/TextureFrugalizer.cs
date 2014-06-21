@@ -70,9 +70,6 @@ namespace BizHawk.Client.EmuHawk
 			CurrentTextures[0] = CurrentTextures[1];
 			CurrentTextures[1] = CurrentTexture;
 
-			//deterministic state, i guess
-			CurrentTexture.SetFilterNearest();
-
 			return CurrentTexture;
 		}
 	}

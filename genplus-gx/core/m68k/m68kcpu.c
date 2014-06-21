@@ -1,5 +1,3 @@
-#include "../cinterface/callbacks.h"
-
 /* ======================================================================== */
 /*                            MAIN 68K CORE                                 */
 /* ======================================================================== */
@@ -290,9 +288,6 @@ void m68k_run(unsigned int cycles)
 
     /* Set the address space for reads */
     m68ki_use_data_space() /* auto-disable (see m68kcpu.h) */
-
-	if (biz_execcb)
-		biz_execcb(REG_PC);
 
     /* Decode next instruction */
     REG_IR = m68ki_read_imm_16();

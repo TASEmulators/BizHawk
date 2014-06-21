@@ -342,51 +342,10 @@ public:
 	}
 }; //class IPCRingBuffer
 
-
-class Watchdog
-{
-public:
-	void Start(const char* _eventName)
-	{
-		HANDLE thread = CreateThread( NULL, 0, (LPTHREAD_START_ROUTINE)&ThreadProc, this, 0, NULL);
-		SetThreadPriority(thread,THREAD_PRIORITY_LOWEST);
-		eventName = _eventName;
-	}
-
-private:
-
-	std::string eventName;
-
-
-	static DWORD ThreadProc(LPVOID lpParam)
-	{
-		Watchdog* w = (Watchdog*)lpParam;
-		for(;;)
-		{
-			//only check once per second
-			Sleep(1000);
-
-			//try opening the handle. if its gone, the process is gone
-			HANDLE hEvent = OpenEvent(SYNCHRONIZE  | EVENT_ALL_ACCESS, FALSE, w->eventName.c_str());
-			
-			//printf("event handle: %08X (%d)\n",hEvent,hEvent?0:GetLastError()); //debugging
-			
-			//handle was gone, terminate process
-			if(hEvent == 0)
-			{
-				TerminateProcess(INVALID_HANDLE_VALUE,0);
-			}
-
-			CloseHandle(hEvent);
-		}
-	}
-}; //class Watchdog
-
 static bool bufio = false;
 static IPCRingBuffer *rbuf = NULL, *wbuf = NULL;
 
-Watchdog s_Watchdog;
-HANDLE hPipe, hMapFile, hEvent;
+HANDLE hPipe, hMapFile;
 void* hMapFilePtr;
 static bool running = false;
 
@@ -1240,9 +1199,7 @@ int xmain(int argc, char** argv)
 	}
 
 	char pipename[256];
-	char eventname[256];
 	sprintf(pipename, "\\\\.\\Pipe\\%s",argv[1]);
-	sprintf(eventname, "%s-event",argv[1]);
 
 	if(!strncmp(argv[1],"console",7))
 	{
@@ -1250,9 +1207,6 @@ int xmain(int argc, char** argv)
 	}
 
 	printf("pipe: %s\n",pipename);
-	printf("event: %s\n",eventname);
-
-	s_Watchdog.Start(eventname);
 
 	hPipe = CreateFile(pipename, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
 

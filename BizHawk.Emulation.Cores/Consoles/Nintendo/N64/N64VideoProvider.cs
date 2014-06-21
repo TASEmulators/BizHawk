@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				height > videosettings.Height ? height : videosettings.Height
 			);
 
-			core.BeforeRender += DoVideoFrame;
+			core.FrameFinished += DoVideoFrame;
 		}
 
 		public int[] GetVideoBuffer()

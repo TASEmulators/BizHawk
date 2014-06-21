@@ -392,8 +392,5 @@
     <ClInclude Include="..\..\..\core\cart_hw\svp\svp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\cinterface\callbacks.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

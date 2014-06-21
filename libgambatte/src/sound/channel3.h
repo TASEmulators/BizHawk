@@ -66,6 +66,7 @@ public:
 	void reset();
 	void init(bool cgb);
 	void setStatePtrs(SaveState &state);
+	void saveState(SaveState &state) const;
 	void loadState(const SaveState &state);
 	void setNr0(unsigned data);
 	void setNr1(unsigned data) { lengthCounter.nr1Change(data, nr4, cycleCounter); }

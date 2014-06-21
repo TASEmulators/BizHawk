@@ -363,22 +363,11 @@ namespace BizHawk.Common
 			}
 		}
 
-		public static unsafe void ReadFromHexFast(this byte[] buffer, string hex)
+		public static void ReadFromHexFast(this byte[] buffer, string hex)
 		{
-			if (buffer.Length * 2 != hex.Length)
-				throw new Exception("Data size mismatch");
-			int count = buffer.Length;
-			fixed (byte* _dst = buffer)
-			fixed (char* _src = hex)
+			for (int i = 0; i < buffer.Length && i * 2 < hex.Length; i++)
 			{
-				byte* dst = _dst;
-				char* src = _src;
-				while (count > 0)
-				{
-					// in my tests, replacing Hex2Int() with a 256 entry LUT slowed things down slightly
-					*dst = (byte)(Hex2Int(*src++) << 4 | Hex2Int(*src++));
-					count--;
-				}
+				buffer[i] = (byte)(Hex2Int(hex[i * 2]) * 16 + Hex2Int(hex[i * 2 + 1]));
 			}
 		}
 
