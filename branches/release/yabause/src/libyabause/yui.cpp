@@ -1,3 +1,6 @@
+//bizhawk
+#define HEADLESS
+
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <gl/GL.h>
@@ -519,8 +522,17 @@ extern "C" __declspec(dllexport) int libyabause_init
 )
 {
 	usinggl = usegl;
-	if (usegl && (!StartGLContext() || !LoadExtensions()))
-		return 0;
+
+	if (usegl)
+	{
+		//headless cores should not create GL contexts, but use the one from the invoking frontend 
+		#ifndef HEADLESS
+		if(!StartGLContext())
+			return 0;
+		#endif
+		if(!LoadExtensions())
+			return 0;
+	}
 
 	FECD.DeInit = _CD->DeInit;
 	FECD.GetStatus = _CD->GetStatus;
