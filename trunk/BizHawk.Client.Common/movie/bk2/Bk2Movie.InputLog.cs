@@ -77,7 +77,7 @@ namespace BizHawk.Client.Common
 					}
 					else if (line[0] == '|')
 					{
-						_log.Add(line);
+						_log.Add(ConvertLogEntryFromFile(line, _logKey));
 					}
 				}
 			}
@@ -124,7 +124,7 @@ namespace BizHawk.Client.Common
 					}
 					else if (line.StartsWith("|"))
 					{
-						SetFrameAt(i, line);
+						SetFrameAt(i, ConvertLogEntryFromFile(line, _logKey));
 						i++;
 					}
 				}
@@ -277,6 +277,23 @@ namespace BizHawk.Client.Common
 			}
 
 			return sb;
+		}
+
+		/// <summary>
+		/// Takes a log entry from a line in an input log,
+		/// If the log key differs from the system's, it will be coverted
+		/// </summary>
+		/// <param name="line">a log entry line of text from the input log</param>
+		/// /// <param name="logKey">a log entry line of text from the input log</param>
+		private string ConvertLogEntryFromFile(string line, string logKey)
+		{
+			var adapter = new Bk2LogEntryGenerator(logKey).MovieControllerAdapter;
+			adapter.Type = Global.MovieSession.MovieControllerAdapter.Type;
+			adapter.SetControllersAsMnemonic(line);
+
+			var lg = LogGeneratorInstance();
+			lg.SetSource(adapter);
+			return lg.GenerateLogEntry();
 		}
 	}
 }
