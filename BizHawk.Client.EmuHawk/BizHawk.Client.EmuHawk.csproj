@@ -433,6 +433,12 @@
     <Compile Include="CustomControls\MiscControls.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CustomControls\MsgBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControls\MsgBox.designer.cs">
+      <DependentUpon>MsgBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="CustomControls\QuickProgressPopup.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1124,6 +1130,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControls\InputConfigBase.resx">
       <DependentUpon>InputConfigBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControls\MsgBox.resx">
+      <DependentUpon>MsgBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControls\QuickProgressPopup.resx">
       <DependentUpon>QuickProgressPopup.cs</DependentUpon>
