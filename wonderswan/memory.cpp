@@ -183,6 +183,9 @@ namespace MDFN_IEN_WSWAN
 			}
 		case 0xb5: 
 			{
+				Lagged = false;
+				if (ButtonHook)
+					ButtonHook();
 				uint8 ret = (ButtonWhich << 4) | ButtonReadLatch;
 				return(ret);
 			}
@@ -252,7 +255,7 @@ namespace MDFN_IEN_WSWAN
 		case 0xB3: CommControl = V & 0xF0; break;
 
 		case 0xb5: ButtonWhich = V >> 4;
-			Lagged = false;
+			// Lagged = false; // why was this being set here?
 			ButtonReadLatch = 0;
 
 			if(ButtonWhich & 0x4) /*buttons*/
