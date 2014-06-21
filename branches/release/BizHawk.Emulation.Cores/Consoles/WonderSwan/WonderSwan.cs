@@ -120,6 +120,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 				savebuff = new byte[BizSwan.bizswan_binstatesize(Core)];
 				savebuff2 = new byte[savebuff.Length + 13];
+
+				InitDebugCallbacks();
 			}
 			catch
 			{
@@ -141,6 +143,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		{
 			Frame++;
 			IsLagFrame = true;
+
+			SetDebugCallbacks();
 
 			if (Controller["Power"])
 				BizSwan.bizswan_reset(Core);
@@ -350,6 +354,46 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public void SetCpuRegister(string register, int value)
 		{
 			throw new NotImplementedException();
+		}
+
+		BizSwan.MemoryCallback ReadCallbackD;
+		BizSwan.MemoryCallback WriteCallbackD;
+		BizSwan.MemoryCallback ExecCallbackD;
+		BizSwan.ButtonCallback ButtonCallbackD;
+
+		void ReadCallback(uint addr)
+		{
+			CoreComm.MemoryCallbackSystem.CallRead(addr);
+		}
+		void WriteCallback(uint addr)
+		{
+			CoreComm.MemoryCallbackSystem.CallWrite(addr);
+		}
+		void ExecCallback(uint addr)
+		{
+			CoreComm.MemoryCallbackSystem.CallExecute(addr);
+		}
+		void ButtonCallback()
+		{
+			CoreComm.InputCallback.Call();
+		}
+
+		void InitDebugCallbacks()
+		{
+			ReadCallbackD = new BizSwan.MemoryCallback(ReadCallback);
+			WriteCallbackD = new BizSwan.MemoryCallback(WriteCallback);
+			ExecCallbackD = new BizSwan.MemoryCallback(ExecCallback);
+			ButtonCallbackD = new BizSwan.ButtonCallback(ButtonCallback);
+		}
+
+		void SetDebugCallbacks()
+		{
+			BizSwan.bizswan_setmemorycallbacks(Core,
+				CoreComm.MemoryCallbackSystem.HasReads ? ReadCallbackD : null,
+				CoreComm.MemoryCallbackSystem.HasWrites ? WriteCallbackD : null,
+				CoreComm.MemoryCallbackSystem.HasExecutes ? ExecCallbackD : null);
+			BizSwan.bizswan_setbuttoncallback(Core,
+				CoreComm.InputCallback.Has ? ButtonCallbackD : null);
 		}
 
 		#endregion

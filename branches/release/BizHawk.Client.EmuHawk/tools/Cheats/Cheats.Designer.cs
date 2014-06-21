@@ -137,7 +137,6 @@
 			this.CheatListView.UseCompatibleStateImageBehavior = false;
 			this.CheatListView.View = System.Windows.Forms.View.Details;
 			this.CheatListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.CheatListView_ColumnClick);
-			this.CheatListView.ColumnReordered += new System.Windows.Forms.ColumnReorderedEventHandler(this.CheatListView_ColumnReordered);
 			this.CheatListView.SelectedIndexChanged += new System.EventHandler(this.CheatListView_SelectedIndexChanged);
 			this.CheatListView.Click += new System.EventHandler(this.CheatListView_Click);
 			this.CheatListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewCheatForm_DragDrop);

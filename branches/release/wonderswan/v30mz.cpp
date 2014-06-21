@@ -1027,6 +1027,33 @@ namespace MDFN_IEN_WSWAN
 
 	}
 
+	uint8 V30MZ::cpu_readop(uint32 addr)
+	{
+		if (ExecHook)
+			ExecHook(addr);
+		return sys->memory.Read20(addr);
+	}
+	uint8 V30MZ::cpu_readop_arg(uint32 addr)
+	{
+		// only forward the first opcode byte to callback
+		return sys->memory.Read20(addr);
+	}
+	uint8 V30MZ::cpu_readmem20(uint32 addr)
+	{
+		if (ReadHook)
+			ReadHook(addr);
+		return sys->memory.Read20(addr);
+	}
+	void V30MZ::cpu_writemem20(uint32 addr, uint8 val)
+	{
+		sys->memory.Write20(addr, val);
+		if (WriteHook)
+			WriteHook(addr);
+	}
+
+
+
+
 	SYNCFUNC(V30MZ)
 	{
 		NSS(old_CS);
