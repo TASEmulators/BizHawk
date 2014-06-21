@@ -719,6 +719,13 @@ namespace BizHawk.Client.EmuHawk
 			Speed75MenuItem.Image = (Global.Config.SpeedPercentAlternate == 75) ? Properties.Resources.FastForward : null;
 			Speed50MenuItem.Checked = Global.Config.SpeedPercent == 50;
 			Speed50MenuItem.Image = (Global.Config.SpeedPercentAlternate == 50) ? Properties.Resources.FastForward : null;
+
+			Speed50MenuItem.Enabled =
+				Speed75MenuItem.Enabled =
+				Speed100MenuItem.Enabled =
+				Speed150MenuItem.Enabled =
+				Speed200MenuItem.Enabled =
+				Global.Config.ClockThrottle;
 		}
 
 		private void KeyPriorityMenuItem_DropDownOpened(object sender, EventArgs e)
