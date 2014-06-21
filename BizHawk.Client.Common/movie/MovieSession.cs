@@ -87,6 +87,12 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public void MovieLoad()
+		{
+			Movie.Load();
+			MovieControllerAdapter = Movie.LogGeneratorInstance().MovieControllerAdapter;
+		}
+
 		public void StopMovie(bool saveChanges = true)
 		{
 			var message = "Movie ";

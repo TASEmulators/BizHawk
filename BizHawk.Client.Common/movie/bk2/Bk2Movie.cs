@@ -44,7 +44,7 @@ namespace BizHawk.Client.Common
 
 		public ILogEntryGenerator LogGeneratorInstance()
 		{
-			return new Bk2LogEntryGenerator();
+			return new Bk2LogEntryGenerator(_logKey);
 		}
 
 		public double FrameCount
@@ -180,7 +180,7 @@ namespace BizHawk.Client.Common
 					getframe = frame;
 				}
 
-				var adapter = new Bk2ControllerAdapter();
+				var adapter = new Bk2ControllerAdapter(_logKey);
 				adapter.Type = Global.MovieSession.MovieControllerAdapter.Type;
 				adapter.SetControllersAsMnemonic(_log[getframe]);
 				return adapter;

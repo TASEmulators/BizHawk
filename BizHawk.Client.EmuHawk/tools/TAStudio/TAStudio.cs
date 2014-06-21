@@ -265,7 +265,7 @@ namespace BizHawk.Client.EmuHawk
 			if (AskSave())
 			{
 				_tas.Filename = path;
-				var loadResult = _tas.Load();
+				var loadResult = _tas.Load(); // TODO: Global.MovieSession.MovieLoad() needs to be called in order to set up the Movie adapter properly
 				if (!loadResult)
 				{
 					ToolHelpers.HandleLoadError(Global.Config.RecentTas, path);

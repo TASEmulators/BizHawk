@@ -107,14 +107,8 @@ namespace BizHawk.Client.Common
 
 				bl.GetLump(BinaryStateLump.Input, true, delegate(TextReader tr)
 				{
-					string line;
-					while ((line = tr.ReadLine()) != null)
-					{
-						if (line != null && line.StartsWith("|"))
-						{
-							_log.Add(line);
-						}
-					}
+					string errorMessage = string.Empty;
+					ExtractInputLog(tr, out errorMessage);
 				});
 
 				if (StartsFromSavestate)

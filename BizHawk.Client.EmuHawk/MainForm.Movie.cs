@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!record)
 			{
-				Global.MovieSession.Movie.Load();
+				Global.MovieSession.MovieLoad();
 			}
 
 			try

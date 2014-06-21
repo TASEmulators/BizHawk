@@ -10,6 +10,31 @@ namespace BizHawk.Client.Common
 {
 	public class Bk2ControllerAdapter : IMovieController
 	{
+		private string _logKey = string.Empty;
+
+		public Bk2ControllerAdapter(string key)
+		{
+			_logKey = key;
+			SetLogOverride();
+		}
+
+		private void SetLogOverride()
+		{
+			if (!string.IsNullOrEmpty(_logKey))
+			{
+				// TODO: this could be cleaned up into a LINQ select
+				List<List<string>> controls = new List<List<string>>();
+				var groups = _logKey.Split(new[] { "#" }, StringSplitOptions.RemoveEmptyEntries);
+				foreach (var group in groups)
+				{
+					var buttons = group.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+					controls.Add(buttons);
+				}
+
+				_type.ControlsFromLog = controls;
+			}
+		}
+
 		#region IController Implementation
 
 		public bool this[string button]
@@ -31,7 +56,21 @@ namespace BizHawk.Client.Common
 
 		#region IMovieController Implementation
 
-		public ControllerDefinition Type { get; set; }
+		private Bk2ControllerDefinition _type = new Bk2ControllerDefinition();
+
+		public ControllerDefinition Type
+		{
+			get
+			{
+				return _type;
+			}
+
+			set
+			{
+				_type = new Bk2ControllerDefinition(value);
+				SetLogOverride();
+			}
+		}
 
 		/// <summary>
 		/// latches one player from the source
@@ -79,6 +118,7 @@ namespace BizHawk.Client.Common
 		{
 			if (!string.IsNullOrWhiteSpace(mnemonic))
 			{
+				var def = Global.Emulator.ControllerDefinition;
 				var trimmed = mnemonic.Replace("|", "");
 				var buttons = Type.ControlsOrdered.SelectMany(x => x).ToList();
 				var iterator = 0;
@@ -87,20 +127,19 @@ namespace BizHawk.Client.Common
 
 				for (int i = 0; i < buttons.Count; i++)
 				{
-					if (Type.BoolButtons.Contains(buttons[i]))
+					var b = buttons[i];
+					if (def.BoolButtons.Contains(buttons[i]))
 					{
-						var boolBtn = Type.BoolButtons.First(x => x == buttons[i]);
-						MyBoolButtons[boolBtn] = trimmed[iterator] == '.' ? false : true;
+						MyBoolButtons[buttons[i]] = trimmed[iterator] == '.' ? false : true;
 						iterator++;
 						boolIt++;
 					}
-					else if (Type.FloatControls.Contains(buttons[i]))
+					else if (def.FloatControls.Contains(buttons[i]))
 					{
 						var temp = trimmed.Substring(iterator, 3);
 						var val = int.Parse(temp);
-						var floatBtn = Type.FloatControls.First(x => x == buttons[i]);
 
-						MyFloatControls[floatBtn] = val;
+						MyFloatControls[buttons[i]] = val;
 						iterator += 4;
 						floatIt++;
 					}
@@ -109,6 +148,38 @@ namespace BizHawk.Client.Common
 		}
 
 		#endregion
+
+		public class Bk2ControllerDefinition : ControllerDefinition
+		{
+			public Bk2ControllerDefinition()
+				: base()
+			{
+
+			}
+
+			public Bk2ControllerDefinition(ControllerDefinition source)
+				: base(source)
+			{
+
+			}
+
+			public List<List<string>> ControlsFromLog = new List<List<string>>();
+
+			public override IEnumerable<IEnumerable<string>> ControlsOrdered
+			{
+				get
+				{
+					if (ControlsFromLog.Any())
+					{
+						return ControlsFromLog;
+					}
+
+					return base.ControlsOrdered;
+				}
+			}
+		}
+
+		
 
 		private readonly WorkingDictionary<string, bool> MyBoolButtons = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, float> MyFloatControls = new WorkingDictionary<string, float>();

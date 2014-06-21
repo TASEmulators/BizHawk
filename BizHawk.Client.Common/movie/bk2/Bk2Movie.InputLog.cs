@@ -10,6 +10,7 @@ namespace BizHawk.Client.Common
 	public partial class Bk2Movie : IMovie
 	{
 		private readonly List<string> _log = new List<string>();
+		private string _logKey = string.Empty;
 
 		public string GetInputLog()
 		{
@@ -40,22 +41,11 @@ namespace BizHawk.Client.Common
 				while (true)
 				{
 					var line = reader.ReadLine();
-					if (line == null)
+					if (string.IsNullOrEmpty(line))
 					{
 						break;
 					}
-
-					if (line.Trim() == string.Empty || line == "[Input]")
-					{
-						continue;
-					}
-
-					if (line == "[/Input]")
-					{
-						break;
-					}
-
-					if (line.Contains("Frame 0x")) // NES stores frame count in hex, yay
+					else if (line.Contains("Frame 0x")) // NES stores frame count in hex, yay
 					{
 						var strs = line.Split('x');
 						try
@@ -80,6 +70,10 @@ namespace BizHawk.Client.Common
 							errorMessage = "Savestate Frame number failed to parse";
 							return false;
 						}
+					}
+					else if (line.StartsWith("LogKey:"))
+					{
+						_logKey = line.Replace("LogKey:", "");
 					}
 					else if (line[0] == '|')
 					{
@@ -98,16 +92,6 @@ namespace BizHawk.Client.Common
 						break;
 					}
 
-					if (line.Trim() == string.Empty || line == "[Input]")
-					{
-						continue;
-					}
-
-					if (line == "[/Input]")
-					{
-						break;
-					}
-
 					if (line.Contains("Frame 0x")) // NES stores frame count in hex, yay
 					{
 						var strs = line.Split('x');
@@ -133,6 +117,10 @@ namespace BizHawk.Client.Common
 							errorMessage = "Savestate Frame number failed to parse";
 							return false;
 						}
+					}
+					else if (line.StartsWith("LogKey:"))
+					{
+						_logKey = line.Replace("LogKey:", "");
 					}
 					else if (line.StartsWith("|"))
 					{
@@ -185,7 +173,7 @@ namespace BizHawk.Client.Common
 				var line = reader.ReadLine();
 				if (line == null)
 				{
-					return false;
+					break;
 				}
 
 				if (line.Trim() == string.Empty)
@@ -218,14 +206,6 @@ namespace BizHawk.Client.Common
 						errorMessage = "Savestate Frame number failed to parse";
 						return false;
 					}
-				}
-				else if (line == "[Input]")
-				{
-					continue;
-				}
-				else if (line == "[/Input]")
-				{
-					break;
 				}
 				else if (line[0] == '|')
 				{
@@ -286,7 +266,7 @@ namespace BizHawk.Client.Common
 
 		private StringBuilder RawInputLog()
 		{
-			var lg = new Bk2LogEntryGenerator();
+			var lg = new Bk2LogEntryGenerator(_logKey);
 			lg.SetSource(Global.MovieOutputHardpoint);
 
 			var sb = new StringBuilder();
