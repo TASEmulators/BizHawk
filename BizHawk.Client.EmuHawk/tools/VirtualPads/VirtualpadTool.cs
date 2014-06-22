@@ -13,12 +13,12 @@ namespace BizHawk.Client.EmuHawk
 		private int _defaultWidth;
 		private int _defaultHeight;
 
-		private List<IVirtualPad> Pads
+		private List<VirtualPad> Pads
 		{
 			get
 			{
 				return ControllerBox.Controls
-					.OfType<IVirtualPad>()
+					.OfType<VirtualPad>()
 					.ToList();
 			}
 		}
@@ -26,6 +26,8 @@ namespace BizHawk.Client.EmuHawk
 		public VirtualpadTool()
 		{
 			InitializeComponent();
+			Closing += (o, e) => SaveConfigSettings();
+			TopMost = Global.Config.VirtualPadSettings.TopMost;
 		}
 
 		private void VirtualpadTool_Load(object sender, EventArgs e)
@@ -68,12 +70,12 @@ namespace BizHawk.Client.EmuHawk
 			switch(Global.Emulator.SystemId)
 			{
 				case "NES":
-					ControllerBox.Controls.Add(new VirtualPadControl(
+					ControllerBox.Controls.Add(new VirtualPad(
 						NesSchema.StandardController(1))
 						{
 							Location = new Point(15, 15)
 						});
-					ControllerBox.Controls.Add(new VirtualPadControl(
+					ControllerBox.Controls.Add(new VirtualPad(
 						NesSchema.StandardController(2))
 						{
 							Location = new Point(200, 15)
@@ -81,6 +83,16 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				
 			}
+		}
+
+		private void SaveConfigSettings()
+		{
+			Global.Config.VirtualPadSettings.Wndx = Location.X;
+			Global.Config.VirtualPadSettings.Wndy = Location.Y;
+			Global.Config.VirtualPadSettings.Width = Right - Left;
+			Global.Config.VirtualPadSettings.Height = Bottom - Top;
+
+			Global.Config.VirtualPadSticky = StickyBox.Checked;
 		}
 
 		private void RefreshFloatingWindowControl()
@@ -110,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (!Global.Config.VirtualPadSticky)
+			if (!StickyBox.Checked)
 			{
 				Pads.ForEach(pad => pad.Clear());
 			}
@@ -167,9 +179,19 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
+		private void PadsSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			StickyMenuItem.Checked = StickyBox.Checked;
+		}
+
 		private void ClearAllMenuItem_Click(object sender, EventArgs e)
 		{
 			ClearVirtualPadHolds();
+		}
+
+		private void StickyMenuItem_Click(object sender, EventArgs e)
+		{
+			StickyBox.Checked ^= true;
 		}
 
 		#endregion

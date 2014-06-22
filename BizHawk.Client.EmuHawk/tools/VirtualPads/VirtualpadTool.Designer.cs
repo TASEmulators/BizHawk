@@ -44,6 +44,7 @@
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PadsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.ClearAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.StickyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PadMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -165,10 +166,12 @@
 			// PadsSubMenu
 			// 
 			this.PadsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ClearAllMenuItem});
+            this.ClearAllMenuItem,
+            this.StickyMenuItem});
 			this.PadsSubMenu.Name = "PadsSubMenu";
 			this.PadsSubMenu.Size = new System.Drawing.Size(44, 20);
 			this.PadsSubMenu.Text = "&Pads";
+			this.PadsSubMenu.DropDownOpened += new System.EventHandler(this.PadsSubMenu_DropDownOpened);
 			// 
 			// ClearAllMenuItem
 			// 
@@ -177,6 +180,13 @@
 			this.ClearAllMenuItem.Size = new System.Drawing.Size(174, 22);
 			this.ClearAllMenuItem.Text = "&Clear All";
 			this.ClearAllMenuItem.Click += new System.EventHandler(this.ClearAllMenuItem_Click);
+			// 
+			// StickyMenuItem
+			// 
+			this.StickyMenuItem.Name = "StickyMenuItem";
+			this.StickyMenuItem.Size = new System.Drawing.Size(174, 22);
+			this.StickyMenuItem.Text = "Sticky";
+			this.StickyMenuItem.Click += new System.EventHandler(this.StickyMenuItem_Click);
 			// 
 			// VirtualpadTool
 			// 
@@ -215,5 +225,6 @@
 		private System.Windows.Forms.CheckBox StickyBox;
 		private System.Windows.Forms.ToolStripMenuItem ClearAllMenuItem;
 		private System.Windows.Forms.GroupBox ControllerBox;
+		private System.Windows.Forms.ToolStripMenuItem StickyMenuItem;
 	}
 }

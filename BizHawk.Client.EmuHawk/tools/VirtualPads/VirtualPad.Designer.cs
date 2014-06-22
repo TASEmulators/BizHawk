@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-	partial class VirtualPadControl
+	partial class VirtualPad
 	{
 		/// <summary> 
 		/// Required designer variable.

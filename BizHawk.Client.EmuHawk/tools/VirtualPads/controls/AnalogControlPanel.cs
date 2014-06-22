@@ -5,7 +5,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public sealed class AnalogControlPanel : Panel
+	public sealed class AnalogControlPanel : Panel, IVirtualPadControl
 	{
 		public int X = 0;
 		public int Y = 0;
