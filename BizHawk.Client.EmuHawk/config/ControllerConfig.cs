@@ -42,6 +42,18 @@ namespace BizHawk.Client.EmuHawk
 			ControllerImages.Add("WonderSwan Controller", Properties.Resources.WonderSwanColor);
 		}
 
+		protected override void OnActivated(EventArgs e)
+		{
+			base.OnActivated(e);
+			Input.Instance.ControlInputFocus(this, Input.InputFocus.Mouse, true);
+		}
+
+		protected override void OnDeactivate(EventArgs e)
+		{
+			base.OnDeactivate(e);
+			Input.Instance.ControlInputFocus(this, Input.InputFocus.Mouse, false);
+		}
+
 		private ControllerConfig()
 		{
 			InitializeComponent();
