@@ -5,12 +5,11 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public sealed class VirtualPadAnalogStick : Panel, IVirtualPadControl
+	public sealed class AnalogStickPanel : Panel, IVirtualPadControl
 	{
 		public int X = 0;
 		public int Y = 0;
 		public bool HasValue = false;
-		public string Controller = "P1";
 
 		private readonly Brush _white_brush = Brushes.White;
 		private readonly Brush _black_brush = Brushes.Black;
@@ -23,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Bitmap dot = new Bitmap(7, 7);
 		private readonly Bitmap graydot = new Bitmap(7, 7);
 
-		public VirtualPadAnalogStick()
+		public AnalogStickPanel()
 		{
 			Size = new Size(129, 129);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
@@ -75,6 +74,21 @@ namespace BizHawk.Client.EmuHawk
 			return ret;
 		}
 
+		protected override void OnMouseClick(MouseEventArgs e)
+		{
+			SetAnalog();
+		}
+
+		private void SetAnalog()
+		{
+			int? xn = HasValue ? X : (int?)null;
+			int? yn = HasValue ? Y : (int?)null;
+			Global.StickyXORAdapter.SetFloat(Name, xn);
+			Global.StickyXORAdapter.SetFloat(Name.Replace("X", "Y"), yn); // Hack!
+
+			Refresh();
+		}
+
 		private void AnalogControlPanel_Paint(object sender, PaintEventArgs e)
 		{
 			unchecked
@@ -90,8 +104,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var input = Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1);
 
-					var x = input.GetFloat(Controller + " X Axis");
-					var y = input.GetFloat(Controller + " Y Axis");
+					var x = input.GetFloat(Name);
+					var y = input.GetFloat(Name.Replace("X", "Y")); // Hack!
 
 					var xx = RealToGFX((int)x);
 					var yy = RealToGFX((int)y);
@@ -116,14 +130,14 @@ namespace BizHawk.Client.EmuHawk
 				X = GFXToReal(e.X - 64);
 				Y = GFXToReal(-(e.Y - 63));
 				HasValue = true;
+				SetAnalog();
 			}
-			if (e.Button == MouseButtons.Right)
+			else if (e.Button == MouseButtons.Right)
 			{
 				Clear();
 			}
 
 			Refresh();
-
 			base.OnMouseMove(e);
 		}
 
@@ -142,6 +156,7 @@ namespace BizHawk.Client.EmuHawk
 				//dont let parent controls get this.. we handle the right mouse button ourselves
 				return;
 			}
+
 			base.WndProc(ref m);
 		}
 
