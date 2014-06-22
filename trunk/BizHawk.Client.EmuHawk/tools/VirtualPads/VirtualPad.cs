@@ -36,18 +36,20 @@ namespace BizHawk.Client.EmuHawk
 				switch (button.Type)
 				{
 					case PadSchema.PadInputType.Boolean:
-						var checkbox = new VirtualPadButton
+						Controls.Add(new VirtualPadButton
 						{
-							AutoSize = true,
-							Location = button.Location,
 							Name = button.Name,
 							Text = button.DisplayName,
+							Location = button.Location,
 							Image = button.Icon
-						};
-
-						Controls.Add(checkbox);
+						});
 						break;
-					case PadSchema.PadInputType.FloatPair:
+					case PadSchema.PadInputType.AnalogStick:
+						Controls.Add(new VirtualPadAnalogStick
+						{
+							Name = button.Name,
+							Location = button.Location
+						});
 						break;
 				}
 			}

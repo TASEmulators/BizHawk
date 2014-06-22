@@ -887,8 +887,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\VirtualPads\IVirtualPad.cs" />
+    <Compile Include="tools\VirtualPads\schema\N64Schema.cs" />
     <Compile Include="tools\VirtualPads\schema\NesSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\PadSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\PceSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\SmsSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\SnesSchema.cs" />
     <Compile Include="tools\VirtualPads\VirtualPad.cs">
       <SubType>UserControl</SubType>
     </Compile>
