@@ -9,19 +9,50 @@ using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	// we don't handle some possible connections of the expansion port that were never used
+	/*
+	 * This file covers all NES and Famicom controller related stuff.
+	 * It supports (or could be easily made to support by adding a new class) every existing
+	 * controller device I know about.  It does not support some things that were theoretically
+	 * possible with the electronic interface available, but never used.
+	 */
 
 	#region interfaces and such
 
+	/// <summary>
+	/// stores information about the strobe lines controlled by $4016
+	/// </summary>
 	public struct StrobeInfo
 	{
-		public int OUT0;
-		public int OUT1;
-		public int OUT2;
-		public int OUT0old;
-		public int OUT1old;
-		public int OUT2old;
+		/// <summary>
+		/// the current value of $4016.0; strobes regular controller ports
+		/// </summary>
+		public readonly int OUT0;
+		/// <summary>
+		/// the current value of $4016.1; strobes expansion port
+		/// </summary>
+		public readonly int OUT1;
+		/// <summary>
+		/// the current value of $4016.2; strobes expansion port
+		/// </summary>
+		public readonly int OUT2;
+		/// <summary>
+		/// the previous value or $4016.0 (for edge sensitive equipment)
+		/// </summary>
+		public readonly int OUT0old;
+		/// <summary>
+		/// the previous value or $4016.1 (for edge sensitive equipment)
+		/// </summary>
+		public readonly int OUT1old;
+		/// <summary>
+		/// the previous value or $4016.2 (for edge sensitive equipment)
+		/// </summary>
+		public readonly int OUT2old;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="oldvalue">the old latched $4016 byte</param>
+		/// <param name="newvalue">the new latched $4016 byte</param>
 		public StrobeInfo(byte oldvalue, byte newvalue)
 		{
 			OUT0old = oldvalue & 1;
@@ -33,24 +64,58 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
+	/// <summary>
+	/// the main system deck, handling all $4016 writes and $4016/$4017 reads
+	/// </summary>
 	public interface IControllerDeck
 	{
+		/// <summary>
+		/// call whenever $4016 is written
+		/// </summary>
+		/// <param name="s"></param>
+		/// <param name="c"></param>
 		void Strobe(StrobeInfo s, IController c);
+		/// <summary>
+		/// call whenever $4016 is read
+		/// </summary>
+		/// <param name="c"></param>
+		/// <returns>bits 0-4 are valid</returns>
 		byte ReadA(IController c); // D0:D4
+		/// <summary>
+		/// call whenever $4017 is read
+		/// </summary>
+		/// <param name="c"></param>
+		/// <returns>bits 0-4 are valid</returns>
 		byte ReadB(IController c); // D0:D4
 		ControllerDefinition GetDefinition();
 		void SyncState(Serializer ser);
 	}
 
+	/// <summary>
+	/// a peripheral that plugs into the famicom expansion port
+	/// </summary>
 	public interface IFamicomExpansion
 	{
 		void Strobe(StrobeInfo s, IController c);
-		byte ReadA(IController c); // only uses D1
-		byte ReadB(IController c); // only uses D1:D4
+		/// <summary>
+		/// read data from $4016
+		/// </summary>
+		/// <param name="c"></param>
+		/// <returns>only bit 1 is valid</returns>
+		byte ReadA(IController c);
+		/// <summary>
+		/// read data from $4017
+		/// </summary>
+		/// <param name="c"></param>
+		/// <returns>bits 1-4 are valid</returns>
+		byte ReadB(IController c);
 		ControllerDefinition GetDefinition();
 		void SyncState(Serializer ser);
 	}
 
+	/// <summary>
+	/// a peripheral that plugs into either of the two NES controller ports
+	/// </summary>
 	public interface INesPort
 	{
 		void Strobe(StrobeInfo s, IController c); // only uses OUT0
@@ -61,6 +126,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	#endregion
 
+	/// <summary>
+	/// a NES or AV famicom, with two attached devices
+	/// </summary>
 	public class NesDeck : IControllerDeck
 	{
 		INesPort Left;
@@ -144,6 +212,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
+	/// <summary>
+	/// a NES controller; also used internally to represent the two famicom controllers
+	/// </summary>
 	public class ControllerNES : INesPort
 	{
 		bool resetting = false;
@@ -215,6 +286,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
+	/// <summary>
+	/// vaus paddle, the NES (not famicom) version
+	/// </summary>
 	public class ArkanoidNES : INesPort
 	{
 		int shiftidx = 0;
@@ -375,6 +449,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	public class Zapper : INesPort, IFamicomExpansion
 	{
+		/// <summary>
+		/// returns true if light was detected at the ppu coordinates specified
+		/// </summary>
 		public Func<int, int, bool> PPUCallback;
 
 		static ControllerDefinition Definition = new ControllerDefinition
@@ -389,6 +466,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 		}
 
+		// NES controller port interface
 		public byte Read(IController c)
 		{
 			byte ret = 0;
@@ -493,6 +571,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
+	/// <summary>
+	/// vaus controller that plugs into a famicom's expansion port
+	/// </summary>
 	public class ArkanoidFam : IFamicomExpansion
 	{
 		int shiftidx = 0;
@@ -778,6 +859,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				int x = (int)c.GetFloat("0Pen X");
 				int y = (int)c.GetFloat("0Pen Y");
 				// http://forums.nesdev.com/viewtopic.php?p=19454#19454
+				// it almost feels like the hardware guys got the request for 
+				// a tablet that returned x in [0, 255] and y in [0, 239] and then
+				// accidentally flipped the whole thing sideways
 				x = (x + 8) * 240 / 256;
 				y = (y - 14) * 256 / 240;
 				x &= 255;
@@ -875,6 +959,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	}
 
 	#region control definition adapters
+
+	// the idea here is that various connected peripherals have their controls all merged
+	// into one definition, including logic to unmerge the data back so each one can work
+	// with it without knowing what else is connected
 
 	public class ControlDefUnMerger
 	{
