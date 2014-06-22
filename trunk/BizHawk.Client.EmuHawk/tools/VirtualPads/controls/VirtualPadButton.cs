@@ -8,7 +8,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class VirtualPadButton : CheckBox
 	{
-		public string ControllerButton = String.Empty;
 		private bool _rightClicked = false;
 
 		public VirtualPadButton()
@@ -18,8 +17,8 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.DoubleBuffer, true);
 
 			Appearance = Appearance.Button;
-
-			ForeColor = Color.Black;
+			AutoSize = true;
+			ForeColor = SystemColors.ControlText;
 		}
 
 		protected override void WndProc(ref Message m)
@@ -42,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected void SetSticky()
 		{
-			Global.StickyXORAdapter.SetSticky(ControllerButton, Checked);
+			Global.StickyXORAdapter.SetSticky(Name, Checked);
 
 			if (Checked == false)
 			{
@@ -52,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected void SetAutofireSticky()
 		{
-			Global.AutofireStickyXORAdapter.SetSticky(ControllerButton, Checked);
+			Global.AutofireStickyXORAdapter.SetSticky(Name, Checked);
 
 			if (Checked == false)
 			{
@@ -79,18 +78,19 @@ namespace BizHawk.Client.EmuHawk
 			if (e.Button == MouseButtons.Left)
 			{
 				_rightClicked = false;
-				ForeColor = Color.Black;
+				ForeColor = SystemColors.ControlText;
 			}
+
 			base.OnMouseClick(e);
 		}
 
 		public void Clear()
 		{
 			_rightClicked = false;
-			ForeColor = Color.Black;
+			ForeColor = SystemColors.ControlText;
 			Checked = false;
-			Global.AutofireStickyXORAdapter.SetSticky(ControllerButton, false);
-			Global.StickyXORAdapter.SetSticky(ControllerButton, false);
+			Global.AutofireStickyXORAdapter.SetSticky(Name, false);
+			Global.StickyXORAdapter.SetSticky(Name, false);
 		}
 	}
 }

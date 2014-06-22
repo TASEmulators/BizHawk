@@ -36,18 +36,14 @@ namespace BizHawk.Client.EmuHawk
 				switch (button.Type)
 				{
 					case PadSchema.PadInputType.Boolean:
-						var checkbox = new CheckBox
+						var checkbox = new VirtualPadButton
 						{
-							Appearance = Appearance.Button,
 							AutoSize = true,
 							Location = button.Location,
-							ForeColor = _schema.IsConsole ? Color.Red : SystemColors.ControlText,
 							Name = button.Name,
 							Text = button.DisplayName,
 							Image = button.Icon
 						};
-
-						checkbox.CheckedChanged += Boolean_CheckedChanged;
 
 						Controls.Add(checkbox);
 						break;
@@ -76,12 +72,6 @@ namespace BizHawk.Client.EmuHawk
 		public void Set(IController controller)
 		{
 			
-		}
-
-		private void Boolean_CheckedChanged(object sender, EventArgs e)
-		{
-			var cbox = sender as CheckBox;
-			Global.StickyXORAdapter.SetSticky(cbox.Name, cbox.Checked);
 		}
 	}
 }
