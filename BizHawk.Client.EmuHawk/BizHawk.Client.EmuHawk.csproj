@@ -884,6 +884,7 @@
     </Compile>
     <Compile Include="tools\VirtualPads\IVirtualPad.cs" />
     <Compile Include="tools\VirtualPads\PadSchema.cs" />
+    <Compile Include="tools\VirtualPads\VirtualPadButton.cs" />
     <Compile Include="tools\VirtualPads\VirtualPadControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
