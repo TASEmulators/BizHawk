@@ -899,6 +899,7 @@
       <DependentUpon>VirtualPadTargetScreen.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\VirtualPads\IVirtualPad.cs" />
+    <Compile Include="tools\VirtualPads\schema\IVirtualPadSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\N64Schema.cs" />
     <Compile Include="tools\VirtualPads\schema\NesSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\PadSchema.cs" />

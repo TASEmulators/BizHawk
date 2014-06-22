@@ -96,8 +96,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Clear()
 		{
-			X = 0;
-			Y = 0;
+			// Nothing to do
 		}
 
 		private void UpdatePanelFromNumeric()
