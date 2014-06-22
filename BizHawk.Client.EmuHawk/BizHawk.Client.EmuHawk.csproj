@@ -884,7 +884,10 @@
     </Compile>
     <Compile Include="tools\VirtualPads\IVirtualPad.cs" />
     <Compile Include="tools\VirtualPads\PadSchema.cs" />
-    <Compile Include="tools\VirtualPads\VirtualPadButton.cs" />
+    <Compile Include="tools\VirtualPads\schema\NesSchema.cs" />
+    <Compile Include="tools\VirtualPads\VirtualPadButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\VirtualPads\VirtualPadControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1528,6 +1531,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="config\Saturn\" />
+    <Folder Include="tools\VirtualPads\controls\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

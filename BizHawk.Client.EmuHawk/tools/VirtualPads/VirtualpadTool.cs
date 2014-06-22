@@ -68,77 +68,16 @@ namespace BizHawk.Client.EmuHawk
 			switch(Global.Emulator.SystemId)
 			{
 				case "NES":
-					var pad = new PadSchema
-					{
-						IsConsole = false,
-						DefaultSize = new Size(174, 74),
-						Buttons = new[]
+					ControllerBox.Controls.Add(new VirtualPadControl(
+						NesSchema.StandardController(1))
 						{
-							new PadSchema.ButtonScema
-							{
-								Name = "P1 Up",
-								DisplayName = "",
-								Icon = Properties.Resources.BlueUp,
-								Location = new Point(14, 2),
-								Type = PadSchema.PadInputType.Boolean
-							},
-							new PadSchema.ButtonScema
-							{
-								Name = "P1 Down",
-								DisplayName = "",
-								Icon = Properties.Resources.BlueDown,
-								Location = new Point(14, 46),
-								Type = PadSchema.PadInputType.Boolean
-							},
-							new PadSchema.ButtonScema
-							{
-								Name = "P1 Left",
-								DisplayName = "",
-								Icon = Properties.Resources.Back,
-								Location = new Point(2, 24),
-								Type = PadSchema.PadInputType.Boolean
-							},
-							new PadSchema.ButtonScema
-							{
-								Name = "P1 Right",
-								DisplayName = "",
-								Icon = Properties.Resources.Forward,
-								Location = new Point(24, 24),
-								Type = PadSchema.PadInputType.Boolean
-							},
-							new PadSchema.ButtonScema
-							{
-								Name = "P1 B",
-								DisplayName = "B",
-								Location = new Point(122, 24),
-								Type = PadSchema.PadInputType.Boolean
-							},
-							new PadSchema.ButtonScema
-							{
-								Name = "P1 A",
-								DisplayName = "A",
-								Location = new Point(146, 24),
-								Type = PadSchema.PadInputType.Boolean
-							},
-							new PadSchema.ButtonScema
-							{
-								Name = "P1 Select",
-								DisplayName = "s",
-								Location = new Point(52, 24),
-								Type = PadSchema.PadInputType.Boolean
-							},
-							new PadSchema.ButtonScema
-							{
-								Name = "P1 Start",
-								DisplayName = "S",
-								Location = new Point(74, 24),
-								Type = PadSchema.PadInputType.Boolean
-							}
-						}
-					};
-
-					ControllerBox.Controls.Add(new VirtualPadControl(pad));
-
+							Location = new Point(15, 15)
+						});
+					ControllerBox.Controls.Add(new VirtualPadControl(
+						NesSchema.StandardController(2))
+						{
+							Location = new Point(200, 15)
+						});
 					break;
 				
 			}
