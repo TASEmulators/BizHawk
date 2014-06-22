@@ -1,10 +1,11 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.Emulation.Common;
+
+namespace BizHawk.Client.EmuHawk
 {
 	public interface IVirtualPad
 	{
-		string Controller { get; set; }
-		string GetMnemonic();
+		IController Get();
+		void Set(IController controller);
 		void Clear();
-		void SetButtons(string buttons);
 	}
 }

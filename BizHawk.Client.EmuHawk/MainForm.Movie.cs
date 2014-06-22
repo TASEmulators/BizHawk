@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Restart<TAStudio>();
 			}
 
-			GlobalWin.Tools.Restart<VirtualPadForm>();
+			GlobalWin.Tools.Restart<VirtualpadTool>();
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 		}
 

@@ -350,7 +350,7 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.Load<ToolBox>();
 					break;
 				case "Virtual Pad":
-					GlobalWin.Tools.Load<VirtualPadForm>();
+					GlobalWin.Tools.Load<VirtualpadTool>();
 					break;
 
 				// Ram Search
