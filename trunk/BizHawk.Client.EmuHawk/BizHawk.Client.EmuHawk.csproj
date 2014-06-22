@@ -883,6 +883,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\VirtualPads\controls\IVirtualPadControl.cs" />
+    <Compile Include="tools\VirtualPads\controls\VirtualPadAnalogStick.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPads\controls\VirtualPadAnalogStick.Designer.cs">
+      <DependentUpon>VirtualPadAnalogStick.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\VirtualPads\controls\VirtualPadButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1221,6 +1227,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TI83\TI83KeyPad.resx">
       <DependentUpon>TI83KeyPad.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\VirtualPads\controls\VirtualPadAnalogStick.resx">
+      <DependentUpon>VirtualPadAnalogStick.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPads\VirtualPad.resx">
       <DependentUpon>VirtualPad.cs</DependentUpon>

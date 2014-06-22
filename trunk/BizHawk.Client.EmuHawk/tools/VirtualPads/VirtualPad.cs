@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 						});
 						break;
 					case PadSchema.PadInputType.AnalogStick:
-						Controls.Add(new AnalogStickPanel
+						Controls.Add(new VirtualPadAnalogStick
 						{
 							Name = button.Name,
 							Location = button.Location
