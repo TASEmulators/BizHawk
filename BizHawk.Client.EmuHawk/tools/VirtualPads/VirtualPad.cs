@@ -51,6 +51,16 @@ namespace BizHawk.Client.EmuHawk
 							Location = button.Location
 						});
 						break;
+					case PadSchema.PadInputType.TargetedPair:
+						Controls.Add(new VirtualPadTargetScreen
+						{
+							Name = button.Name,
+							Location = button.Location,
+							XName = button.Name,
+							YName = button.SecondaryNames[0],
+							FireButton = button.SecondaryNames[1]
+						});
+						break;
 				}
 			}
 		}

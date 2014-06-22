@@ -76,11 +76,16 @@ namespace BizHawk.Client.EmuHawk
 						{
 							Location = new Point(15, 15)
 						});
+					//ControllerBox.Controls.Add(new VirtualPad(
+					//	NesSchema.StandardController(2))
+					//	{
+					//		Location = new Point(200, 15)
+					//	});
 					ControllerBox.Controls.Add(new VirtualPad(
-						NesSchema.StandardController(2))
-						{
-							Location = new Point(200, 15)
-						});
+						NesSchema.Zapper(2))
+					{
+						Location = new Point(200, 15)
+					});
 					break;
 				case "N64":
 					ControllerBox.Controls.Add(new VirtualPad(
@@ -151,6 +156,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
+
+			Pads.ForEach(p => p.Refresh());
 
 			if (!StickyBox.Checked)
 			{

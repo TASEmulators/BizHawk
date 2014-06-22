@@ -892,6 +892,12 @@
     <Compile Include="tools\VirtualPads\controls\VirtualPadButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\VirtualPads\controls\VirtualPadTargetScreen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPads\controls\VirtualPadTargetScreen.Designer.cs">
+      <DependentUpon>VirtualPadTargetScreen.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\VirtualPads\IVirtualPad.cs" />
     <Compile Include="tools\VirtualPads\schema\N64Schema.cs" />
     <Compile Include="tools\VirtualPads\schema\NesSchema.cs" />
@@ -1230,6 +1236,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPads\controls\VirtualPadAnalogStick.resx">
       <DependentUpon>VirtualPadAnalogStick.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\VirtualPads\controls\VirtualPadTargetScreen.resx">
+      <DependentUpon>VirtualPadTargetScreen.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPads\VirtualPad.resx">
       <DependentUpon>VirtualPad.cs</DependentUpon>

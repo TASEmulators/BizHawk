@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 		public enum PadInputType
 		{
 			Boolean,		// A single on/off button
-			AnalogStick,		// An analog stick X,Y Pair
+			AnalogStick,	// An analog stick X,Y Pair
 			FloatSingle,	// A single analog button (pressure sensitive button for instance)
 			TargetedPair	// A X,Y pair intended to be a screen cooridnate (for zappers, mouse, stylus, etc)
 		}
@@ -30,6 +30,8 @@ namespace BizHawk.Client.EmuHawk
 			public PadInputType Type { get; set; }
 			public Point Location { get; set; }
 			public Bitmap Icon { get; set; }
+			public Size TargetSize { get; set; } // Specifically for TargetedPair, specifies the screen size
+			public string[] SecondaryNames { get; set; } // Any other buttons necessary to operate (such as the Y axis, fire buttons, etc
 		}
 	}
 
