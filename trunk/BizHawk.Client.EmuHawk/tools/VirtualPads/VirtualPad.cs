@@ -12,11 +12,11 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class VirtualPadControl : UserControl, IVirtualPad
+	public partial class VirtualPad : UserControl, IVirtualPad
 	{
 		private PadSchema _schema;
 
-		public VirtualPadControl(PadSchema schema)
+		public VirtualPad(PadSchema schema)
 		{
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
@@ -56,11 +56,10 @@ namespace BizHawk.Client.EmuHawk
 		public void Clear()
 		{
 			Controls
-				.OfType<CheckBox>()
+				.OfType<IVirtualPadControl>()
 				.ToList()
 				.ForEach(c => {
-					c.Checked = false;
-					Global.StickyXORAdapter.SetSticky(c.Name, false);
+					c.Clear();
 				});
 		}
 

@@ -6,7 +6,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class VirtualPadButton : CheckBox
+	public class VirtualPadButton : CheckBox, IVirtualPadControl
 	{
 		private bool _rightClicked = false;
 
@@ -25,14 +25,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			switch (m.Msg)
 			{
-				case 0x0204://WM_RBUTTONDOWN
+				case 0x0204: // WM_RBUTTONDOWN
 					_rightClicked = true;
-					ForeColor = Color.Red;
+					ForeColor = SystemColors.HotTrack;
 					Checked ^= true;
 					return;
-				case 0x0205://WM_RBUTTONUP
+				case 0x0205: // WM_RBUTTONUP
 					return;
-				case 0x0206://WM_RBUTTONDBLCLK
+				case 0x0206: // WM_RBUTTONDBLCLK
 					return;
 			}
 
