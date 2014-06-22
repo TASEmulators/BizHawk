@@ -1,10 +1,24 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public static class NesSchema
+	public class NesSchema : IVirtualPadSchema
 	{
-		public static PadSchema StandardController(int controller)
+		public IEnumerable<VirtualPad> GetPads()
+		{
+			yield return new VirtualPad(StandardController(1))
+				{
+					Location = new Point(15, 15)
+				};
+
+			yield return new VirtualPad(Zapper(2))
+				{
+					Location = new Point(200, 15)
+				};
+		}
+
+		private static PadSchema StandardController(int controller)
 		{
 			return new PadSchema
 			{
@@ -76,8 +90,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		// TODO
-		public static PadSchema Zapper(int controller)
+		private static PadSchema Zapper(int controller)
 		{
 			return new PadSchema
 			{
@@ -109,13 +122,13 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// TODO
-		public static PadSchema ArkanoidPaddle()
+		private static PadSchema ArkanoidPaddle()
 		{
 			return new PadSchema();
 		}
 
 		// TODO
-		public static PadSchema PowerPad()
+		private static PadSchema PowerPad()
 		{
 			return new PadSchema();
 		}

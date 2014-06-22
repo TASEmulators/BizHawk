@@ -83,21 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			switch(Global.Emulator.SystemId)
 			{
 				case "NES":
-					ControllerBox.Controls.Add(new VirtualPad(
-						NesSchema.StandardController(1))
-						{
-							Location = new Point(15, 15)
-						});
-					//ControllerBox.Controls.Add(new VirtualPad(
-					//	NesSchema.StandardController(2))
-					//	{
-					//		Location = new Point(200, 15)
-					//	});
-					ControllerBox.Controls.Add(new VirtualPad(
-						NesSchema.Zapper(2))
-					{
-						Location = new Point(200, 15)
-					});
+					ControllerBox.Controls.AddRange(new NesSchema().GetPads().ToArray());
 					break;
 				case "N64":
 					ControllerBox.Controls.Add(new VirtualPad(
