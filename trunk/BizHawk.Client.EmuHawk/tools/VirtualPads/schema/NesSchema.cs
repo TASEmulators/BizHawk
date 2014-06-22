@@ -77,9 +77,35 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// TODO
-		public static PadSchema Zapper()
+		public static PadSchema Zapper(int controller)
 		{
-			return new PadSchema();
+			return new PadSchema
+			{
+				IsConsole = false,
+				DefaultSize = new Size(356, 260),
+				Buttons = new[]
+				{
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Zapper X",
+						Location = new Point(14, 2),
+						Type = PadSchema.PadInputType.TargetedPair,
+						TargetSize = new Size(256, 240),
+						SecondaryNames = new []
+						{
+							"P" + controller + " Zapper Y",
+							"P" + controller + " Fire",
+						}
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Fire",
+						DisplayName = "Fire",
+						Location = new Point(284, 2),
+						Type = PadSchema.PadInputType.Boolean
+					}
+				}
+			};
 		}
 
 		// TODO
