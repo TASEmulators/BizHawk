@@ -1670,7 +1670,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var str = sb.ToString().Replace("%ARCH%", "*.zip;*.rar;*.7z");
+			var str = sb.ToString().Replace("%ARCH%", "*.zip;*.rar;*.7z;*.gz");
 			str = str.Replace(";", "; ");
 			return str;
 		}
