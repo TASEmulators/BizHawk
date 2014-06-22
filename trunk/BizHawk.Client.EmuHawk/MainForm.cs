@@ -623,6 +623,20 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+
+
+		protected override void OnActivated(EventArgs e)
+		{
+			base.OnActivated(e);
+			Input.Instance.ControlInputFocus(this, Input.InputFocus.Mouse, true);
+		}
+
+		protected override void OnDeactivate(EventArgs e)
+		{
+			base.OnDeactivate(e);
+			Input.Instance.ControlInputFocus(this, Input.InputFocus.Mouse, false);
+		}
+
 		public void ProcessInput()
 		{
 			ControllerInputCoalescer conInput = Global.ControllerInputCoalescer as ControllerInputCoalescer;
