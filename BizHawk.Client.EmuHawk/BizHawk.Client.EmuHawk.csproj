@@ -879,21 +879,19 @@
     <Compile Include="tools\TraceLogger.Designer.cs">
       <DependentUpon>TraceLogger.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\VirtualPads\AnalogControlPanel.cs">
+    <Compile Include="tools\VirtualPads\controls\AnalogControlPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\VirtualPads\IVirtualPad.cs" />
-    <Compile Include="tools\VirtualPads\PadSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\NesSchema.cs" />
-    <Compile Include="tools\VirtualPads\VirtualPadButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadControl.cs">
+    <Compile Include="tools\VirtualPads\controls\VirtualPadButton.cs" />
+    <Compile Include="tools\VirtualPads\controls\VirtualPadControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadControl.Designer.cs">
+    <Compile Include="tools\VirtualPads\controls\VirtualPadControl.Designer.cs">
       <DependentUpon>VirtualPadControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\VirtualPads\IVirtualPad.cs" />
+    <Compile Include="tools\VirtualPads\schema\NesSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\PadSchema.cs" />
     <Compile Include="tools\VirtualPads\VirtualpadTool.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1217,7 +1215,7 @@
     <EmbeddedResource Include="tools\TI83\TI83KeyPad.resx">
       <DependentUpon>TI83KeyPad.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\VirtualPads\VirtualPadControl.resx">
+    <EmbeddedResource Include="tools\VirtualPads\controls\VirtualPadControl.resx">
       <DependentUpon>VirtualPadControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPads\VirtualpadTool.resx">
@@ -1531,7 +1529,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="config\Saturn\" />
-    <Folder Include="tools\VirtualPads\controls\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
