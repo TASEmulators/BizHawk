@@ -67,6 +67,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ControllerBox.Controls.Clear();
 
+			// TODO: be more clever than this
 			switch(Global.Emulator.SystemId)
 			{
 				case "NES":
@@ -81,7 +82,36 @@ namespace BizHawk.Client.EmuHawk
 							Location = new Point(200, 15)
 						});
 					break;
-				
+				case "N64":
+					ControllerBox.Controls.Add(new VirtualPad(
+						N64Schema.StandardController(1))
+					{
+						Location = new Point(15, 15)
+					});
+					break;
+				case "SMS":
+				case "SG":
+				case "GG": // TODO: test if all 3 of these are needed
+					ControllerBox.Controls.Add(new VirtualPad(
+						SmsSchema.StandardController(1))
+					{
+						Location = new Point(15, 15)
+					});
+					break;
+				case "PCE":
+					ControllerBox.Controls.Add(new VirtualPad(
+						PceSchema.StandardController(1))
+					{
+						Location = new Point(15, 15)
+					});
+					break;
+				case "SNES":
+					ControllerBox.Controls.Add(new VirtualPad(
+						SnesSchema.StandardController(1))
+					{
+						Location = new Point(15, 15)
+					});
+					break;
 			}
 		}
 

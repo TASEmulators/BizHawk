@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 		public enum PadInputType
 		{
 			Boolean,		// A single on/off button
-			FloatPair,		// An analog stick X,Y Pair
+			AnalogStick,		// An analog stick X,Y Pair
 			FloatSingle,	// A single analog button (pressure sensitive button for instance)
 			TargetedPair	// A X,Y pair intended to be a screen cooridnate (for zappers, mouse, stylus, etc)
 		}

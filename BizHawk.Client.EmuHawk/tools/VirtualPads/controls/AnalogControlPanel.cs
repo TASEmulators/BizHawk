@@ -5,7 +5,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public sealed class AnalogControlPanel : Panel, IVirtualPadControl
+	public sealed class VirtualPadAnalogStick : Panel, IVirtualPadControl
 	{
 		public int X = 0;
 		public int Y = 0;
@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Bitmap dot = new Bitmap(7, 7);
 		private readonly Bitmap graydot = new Bitmap(7, 7);
 
-		public AnalogControlPanel()
+		public VirtualPadAnalogStick()
 		{
 			Size = new Size(129, 129);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
