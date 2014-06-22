@@ -353,7 +353,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.AutoloadVirtualPad)
 			{
-				GlobalWin.Tools.Load<VirtualPadForm>();
+				GlobalWin.Tools.Load<VirtualpadTool>();
 			}
 
 			if (Global.Config.AutoLoadLuaConsole)
@@ -579,7 +579,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.StickyXORAdapter.ClearStickies();
 			Global.AutofireStickyXORAdapter.ClearStickies();
 
-			if (GlobalWin.Tools.Has<VirtualPadForm>())
+			if (GlobalWin.Tools.Has<VirtualpadTool>())
 			{
 				GlobalWin.Tools.VirtualPad.ClearVirtualPadHolds();
 			}
@@ -608,7 +608,7 @@ namespace BizHawk.Client.EmuHawk
 				if (ActiveForm is HotkeyConfig ||
 					ActiveForm is ControllerConfig ||
 					ActiveForm is TAStudio ||
-					ActiveForm is VirtualPadForm)
+					ActiveForm is VirtualpadTool)
 				{
 					return true;
 				}

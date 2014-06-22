@@ -1042,7 +1042,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VirtualPadMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.Load<VirtualPadForm>();
+			GlobalWin.Tools.Load<VirtualpadTool>();
 		}
 
 		private void CheatsMenuItem_Click(object sender, EventArgs e)
