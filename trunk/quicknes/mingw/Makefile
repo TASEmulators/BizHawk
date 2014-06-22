@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall -DDISABLE_AUTO_FILE -D__LIBRETRO__ -I.. -Wno-multichar -O3
+CXXFLAGS = -Wall -DDISABLE_AUTO_FILE -D__LIBRETRO__ -I.. -Wno-multichar -O3 -fno-exceptions -fomit-frame-pointer
 TARGET = libquicknes.dll
 LDFLAGS = -shared -static-libgcc -static-libstdc++ 
 RM = rm
