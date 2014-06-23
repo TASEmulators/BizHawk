@@ -319,7 +319,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <param name="data">enough room for 16 ascii chars plus terminator</param>
 		/// <returns></returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern string gambatte_romtitle(IntPtr core, byte[] data);
+		public static extern void gambatte_romtitle(IntPtr core, byte[] data);
 
 		/// <summary>
 		/// memory areas that gambatte_getmemoryarea() can return
