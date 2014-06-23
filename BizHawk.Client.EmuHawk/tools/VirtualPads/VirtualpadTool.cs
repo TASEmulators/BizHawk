@@ -90,11 +90,7 @@ namespace BizHawk.Client.EmuHawk
 					});
 					break;
 				case "PCE":
-					ControllerBox.Controls.Add(new VirtualPad(
-						PceSchema.StandardController(1))
-					{
-						Location = new Point(15, 15)
-					});
+					ControllerBox.Controls.AddRange(new PceSchema().GetPads().ToArray());
 					break;
 				case "SNES":
 					ControllerBox.Controls.Add(new VirtualPad(
