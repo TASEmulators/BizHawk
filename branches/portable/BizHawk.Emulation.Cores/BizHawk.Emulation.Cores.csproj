@@ -90,9 +90,6 @@
     <Reference Include="EMU7800">
       <HintPath>..\output\dll\EMU7800.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\VersionInfo.cs">
