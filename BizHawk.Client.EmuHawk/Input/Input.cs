@@ -397,12 +397,13 @@ namespace BizHawk.Client.EmuHawk
 						}
 						else
 						{
+							//dont do this: for now, it will interfere with the virtualpad. dont do something similar for the mouse position either
 							//unpress all buttons
-							HandleButton("WMouse L", false);
-							HandleButton("WMouse C", false);
-							HandleButton("WMouse R", false);
-							HandleButton("WMouse 1", false);
-							HandleButton("WMouse 2", false);
+							//HandleButton("WMouse L", false);
+							//HandleButton("WMouse C", false);
+							//HandleButton("WMouse R", false);
+							//HandleButton("WMouse 1", false);
+							//HandleButton("WMouse 2", false);
 						}
 
 					}
