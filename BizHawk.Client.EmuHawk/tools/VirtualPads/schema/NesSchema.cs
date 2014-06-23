@@ -1,21 +1,78 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
+
+using BizHawk.Client.Common;
+using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[Description("NES")]
 	public class NesSchema : IVirtualPadSchema
 	{
 		public IEnumerable<VirtualPad> GetPads()
 		{
-			yield return new VirtualPad(StandardController(1))
+			if (Global.Emulator is NES)
+			{
+				var ss = (NES.NESSyncSettings)Global.Emulator.GetSyncSettings();
+
+				PadSchema schemaL = null;
+				switch(ss.Controls.NesLeftPort)
+				{
+					default:
+					case "UnpluggedNES":
+						break;
+					case "ControllerNES":
+						schemaL = StandardController(1);
+						break;
+					case "Zapper":
+						schemaL = Zapper(1);
+						break;
+				}
+
+				if (schemaL != null)
+				{
+					yield return new VirtualPad(schemaL)
+					{
+						Location = new Point(15, 15)
+					};
+				}
+
+				PadSchema schemaR = null;
+				switch (ss.Controls.NesRightPort)
+				{
+					default:
+					case "UnpluggedNES":
+						break;
+					case "ControllerNES":
+						schemaR = StandardController(2);
+						break;
+					case "Zapper":
+						schemaR = Zapper(2);
+						break;
+				}
+
+				if (schemaR != null)
+				{
+					yield return new VirtualPad(schemaR)
+					{
+						Location = new Point(200, 15)
+					};
+				}
+			}
+			else // Quicknes only supports 2 controllers and no other configuration
+			{
+				yield return new VirtualPad(StandardController(1))
 				{
 					Location = new Point(15, 15)
 				};
 
-			yield return new VirtualPad(Zapper(2))
+				yield return new VirtualPad(StandardController(2))
 				{
-					Location = new Point(200, 15)
+					Location = new Point(15, 15)
 				};
+			}
+			
 		}
 
 		private static PadSchema StandardController(int controller)
