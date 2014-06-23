@@ -6,7 +6,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[Description("SMS")]
+	[SchemaAttributes("SMS")]
 	public class SmsSchema : IVirtualPadSchema
 	{
 		public IEnumerable<VirtualPad> GetPads()

@@ -6,7 +6,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[Description("SAT")]
+	[SchemaAttributes("SAT")]
 	public class SaturnSchema : IVirtualPadSchema
 	{
 		public IEnumerable<VirtualPad> GetPads()

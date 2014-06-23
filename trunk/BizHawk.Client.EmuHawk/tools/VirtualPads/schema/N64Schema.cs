@@ -6,7 +6,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[Description("N64")]
+	[SchemaAttributes("N64")]
 	public class N64Schema : IVirtualPadSchema
 	{
 		public IEnumerable<VirtualPad> GetPads()

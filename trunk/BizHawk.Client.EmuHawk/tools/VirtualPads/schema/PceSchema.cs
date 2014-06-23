@@ -6,7 +6,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[Description("PCE")]
+	[SchemaAttributes("PCE")]
 	public class PceSchema : IVirtualPadSchema
 	{
 		public IEnumerable<VirtualPad> GetPads()

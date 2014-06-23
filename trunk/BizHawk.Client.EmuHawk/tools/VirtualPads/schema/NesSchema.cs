@@ -7,7 +7,7 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[Description("NES")]
+	[SchemaAttributes("NES")]
 	public class NesSchema : IVirtualPadSchema
 	{
 		public IEnumerable<VirtualPad> GetPads()
