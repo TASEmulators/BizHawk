@@ -107,6 +107,7 @@ namespace BizHawk.Client.EmuHawk
 
 		int fpsnum = 1, fpsden = 1;
 
+		public void SetFrame(int frame) { }
 
 		public void OpenFile(string baseName)
 		{

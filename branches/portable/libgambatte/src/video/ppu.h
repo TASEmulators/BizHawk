@@ -118,7 +118,6 @@ public:
 	unsigned long predictedNextXposTime(unsigned xpos) const;
 	void reset(const unsigned char *oamram, const unsigned char *vram, bool cgb);
 	void resetCc(unsigned long oldCc, unsigned long newCc);
-	void saveState(SaveState &ss) const;
 	void setFrameBuf(uint_least32_t *buf, unsigned pitch) { p_.framebuf.setBuf(buf, pitch); }
 	void setLcdc(unsigned lcdc, unsigned long cc);
 	void setScx(const unsigned scx) { p_.scx = scx; }

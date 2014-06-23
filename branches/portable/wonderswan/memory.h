@@ -52,6 +52,9 @@ private:
 	bool language;
 
 public:
+	void (*ButtonHook)();
+
+public:
 	System *sys;
 	template<bool isReader>void SyncState(NewState *ns);
 private:

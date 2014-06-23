@@ -150,6 +150,13 @@
     </Compile>
     <Compile Include="AVOut\NutMuxer.cs" />
     <Compile Include="AVOut\NutWriter.cs" />
+    <Compile Include="AVOut\SynclessRecorder.cs" />
+    <Compile Include="AVOut\SynclessRecordingTools.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AVOut\SynclessRecordingTools.Designer.cs">
+      <DependentUpon>SynclessRecordingTools.cs</DependentUpon>
+    </Compile>
     <Compile Include="AVOut\VideoWriterChooserForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -430,6 +437,12 @@
     </Compile>
     <Compile Include="CustomControls\MiscControls.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\MsgBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControls\MsgBox.designer.cs">
+      <DependentUpon>MsgBox.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControls\QuickProgressPopup.cs">
       <SubType>Form</SubType>
@@ -762,6 +775,12 @@
     <Compile Include="tools\PCE\PCECDL.Designer.cs">
       <DependentUpon>PCECDL.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\PCE\PCESoundDebugger.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\PCE\PCESoundDebugger.Designer.cs">
+      <DependentUpon>PCESoundDebugger.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\PCE\PCETileViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1006,6 +1025,9 @@
     <EmbeddedResource Include="AVOut\JMDForm.resx">
       <DependentUpon>JMDForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="AVOut\SynclessRecordingTools.resx">
+      <DependentUpon>SynclessRecordingTools.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AVOut\VideoWriterChooserForm.resx">
       <DependentUpon>VideoWriterChooserForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -1123,6 +1145,9 @@
     <EmbeddedResource Include="CustomControls\InputConfigBase.resx">
       <DependentUpon>InputConfigBase.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControls\MsgBox.resx">
+      <DependentUpon>MsgBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControls\QuickProgressPopup.resx">
       <DependentUpon>QuickProgressPopup.cs</DependentUpon>
     </EmbeddedResource>
@@ -1235,6 +1260,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\PCE\PCECDL.resx">
       <DependentUpon>PCECDL.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\PCE\PCESoundDebugger.resx">
+      <DependentUpon>PCESoundDebugger.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\PCE\PCETileViewer.resx">
       <DependentUpon>PCETileViewer.cs</DependentUpon>
@@ -1463,6 +1491,7 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\thumbsdown.png" />
     <None Include="images\monitor.png" />
     <None Include="images\ppsspp.png" />
     <None Include="images\meteor.png" />
@@ -1578,6 +1607,7 @@
     <None Include="images\gambatte.png" />
     <None Include="images\dual.png" />
     <None Include="config\ControllerImages\WonderSwanColor.png" />
+    <None Include="images\alt_about_image.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

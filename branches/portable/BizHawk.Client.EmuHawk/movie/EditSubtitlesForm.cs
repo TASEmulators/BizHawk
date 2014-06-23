@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!ReadOnly)
 			{
-				_selectedMovie.Header.Subtitles.Clear();
+				_selectedMovie.Subtitles.Clear();
 				for (int i = 0; i < SubGrid.Rows.Count - 1; i++)
 				{
 					var s = new Subtitle();
@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 					try { c = SubGrid.Rows[i].Cells[5]; }
 					catch { ShowError(i, 5); return; }
 					s.Message = c.Value.ToString();
-					_selectedMovie.Header.Subtitles.Add(s);
+					_selectedMovie.Subtitles.Add(s);
 				}
 				_selectedMovie.Save();
 			}
@@ -85,7 +85,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_selectedMovie = m;
 			var subs = new SubtitleList();
-			subs.AddRange(m.Header.Subtitles);
+			subs.AddRange(m.Subtitles);
 
 			for (int x = 0; x < subs.Count; x++)
 			{
@@ -150,7 +150,7 @@ namespace BizHawk.Client.EmuHawk
 			c = SubGrid.Rows[index].Cells[5];
 			try { s.Message = c.Value.ToString(); }
 			catch { }
-			_selectedMovie.Header.Subtitles.Add(s);
+			_selectedMovie.Subtitles.Add(s);
 
 			return s;
 		}

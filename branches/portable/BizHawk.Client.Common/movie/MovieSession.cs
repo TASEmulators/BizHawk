@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 
 using BizHawk.Emulation.Common;
@@ -8,20 +10,36 @@ namespace BizHawk.Client.Common
 	public class MovieSession
 	{
 		private readonly MultitrackRecording _multiTrack = new MultitrackRecording();
-		private readonly MovieControllerAdapter _movieControllerAdapter = new MovieControllerAdapter();
 
 		public MovieSession()
 		{
 			ReadOnly = true;
+			MovieControllerAdapter = MovieService.DefaultInstance.LogGeneratorInstance().MovieControllerAdapter;
 		}
 
 		public MultitrackRecording MultiTrack { get { return _multiTrack; } }
-		public MovieControllerAdapter MovieControllerAdapter { get { return _movieControllerAdapter; } }
+		public IMovieController MovieControllerAdapter{ get; set; }
 
 		public IMovie Movie { get; set; }
 		public bool ReadOnly { get; set; }
 		public Action<string> MessageCallback { get; set; }
 		public Func<string, string, bool> AskYesNoCallback { get; set; }
+
+		/// <summary>
+		/// Simply shortens the verbosity necessary otherwise
+		/// </summary>
+		/// <returns></returns>
+		public ILogEntryGenerator LogGeneratorInstance()
+		{
+			return Movie.LogGeneratorInstance();
+		}
+
+		public IMovieController MovieControllerInstance()
+		{
+			var adapter = Movie.LogGeneratorInstance().MovieControllerAdapter;
+			adapter.Type = MovieControllerAdapter.Type;
+			return adapter;
+		}
 
 		private void Output(string message)
 		{
@@ -29,20 +47,6 @@ namespace BizHawk.Client.Common
 			{
 				MessageCallback(message);
 			}
-		}
-
-		public static bool IsValidMovieExtension(string ext)
-		{
-			if (ext.ToUpper() == "." + Global.Config.MovieExtension)
-			{
-				return true;
-			}
-			else if (ext.ToUpper() == ".TAS" || ext.ToUpper() == ".BKM")
-			{
-				return true;
-			}
-
-			return false;
 		}
 
 		public void LatchMultitrackPlayerInput(IController playerSource, MultitrackRewiringControllerAdapter rewiredSource)
@@ -61,12 +65,12 @@ namespace BizHawk.Client.Common
 				rewiredSource.PlayerSource = -1;
 			}
 
-			_movieControllerAdapter.LatchPlayerFromSource(rewiredSource, _multiTrack.CurrentPlayer);
+			MovieControllerAdapter.LatchPlayerFromSource(rewiredSource, _multiTrack.CurrentPlayer);
 		}
 
 		public void LatchInputFromPlayer(IController source)
 		{
-			_movieControllerAdapter.LatchFromSource(source);
+			MovieControllerAdapter.LatchFromSource(source);
 		}
 
 		/// <summary>
@@ -79,8 +83,14 @@ namespace BizHawk.Client.Common
 			// Attempting to get a frame past the end of a movie changes the mode to finished
 			if (!Movie.IsFinished)
 			{
-				_movieControllerAdapter.SetControllersAsMnemonic(input);
+				MovieControllerAdapter.SetControllersAsMnemonic(input);
 			}
+		}
+
+		public void MovieLoad()
+		{
+			Movie.Load();
+			MovieControllerAdapter = Movie.LogGeneratorInstance().MovieControllerAdapter;
 		}
 
 		public void StopMovie(bool saveChanges = true)
@@ -160,9 +170,9 @@ namespace BizHawk.Client.Common
 					else if (Global.Config.MoviePlaybackPokeMode)
 					{
 						LatchInputFromPlayer(Global.MovieInputSourceAdapter);
-						var mg = new MnemonicsGenerator();
-						mg.SetSource(Global.MovieOutputHardpoint);
-						if (!mg.IsEmpty)
+						var lg = Movie.LogGeneratorInstance();
+						lg.SetSource(Global.MovieOutputHardpoint);
+						if (!lg.IsEmpty)
 						{
 							LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 							Movie.PokeFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);

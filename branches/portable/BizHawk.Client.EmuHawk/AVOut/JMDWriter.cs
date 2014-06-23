@@ -804,5 +804,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return "jmd";
 		}
+
+		public void SetFrame(int frame) { }
 	}
 }

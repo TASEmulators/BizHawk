@@ -23,12 +23,6 @@ namespace gambatte {
 
 InterruptRequester::InterruptRequester() : minIntTime(0), ifreg_(0), iereg_(0) {}
 
-void InterruptRequester::saveState(SaveState &state) const {
-	state.mem.minIntTime = minIntTime;
-	state.mem.IME = ime();
-	state.mem.halted = halted();
-}
-
 void InterruptRequester::loadState(const SaveState &state) {
 	minIntTime = state.mem.minIntTime;
 	ifreg_ = state.mem.ioamhram.get()[0x10F];

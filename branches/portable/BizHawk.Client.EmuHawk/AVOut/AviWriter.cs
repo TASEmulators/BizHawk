@@ -16,6 +16,8 @@ namespace BizHawk.Client.EmuHawk
 		AviWriterSegment currSegment;
 		IEnumerator<string> nameProvider;
 
+		public void SetFrame(int frame) { }
+
 		bool IsOpen { get { return nameProvider != null; } }
 
 		public void Dispose()

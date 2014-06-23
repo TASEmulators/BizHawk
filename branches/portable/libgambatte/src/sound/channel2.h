@@ -65,7 +65,6 @@ public:
 	
 	void reset();
 	void init(bool cgb);
-	void saveState(SaveState &state);
 	void loadState(const SaveState &state);
 
 	template<bool isReader>void SyncState(NewState *ns);

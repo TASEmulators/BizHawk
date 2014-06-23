@@ -58,6 +58,7 @@ namespace BizHawk.Client.Common
 		#endif
 
 		// General Client Settings
+		public bool DontAskPerformanceCoreRecordingNag = false;
 		public int Input_Hotkey_OverrideOptions = 0;
 		public bool StackOSDMessages = true;
 		public int TargetZoomFactor = 2;
@@ -92,7 +93,6 @@ namespace BizHawk.Client.Common
 		public bool AutoLoadLastSaveSlot = false;
 		public bool WIN32_CONSOLE = true;
 		public bool SkipLagFrame = false;
-		public string MovieExtension = "bkm";
 		public bool SupressAskSave = false;
 		public bool AVI_CaptureOSD = false;
 		public bool Screenshot_CaptureOSD = false;
@@ -524,7 +524,6 @@ namespace BizHawk.Client.Common
 
 		//Play Movie Dialog
 		public bool PlayMovie_IncludeSubdir = true;
-		public bool PlayMovie_ShowStateFiles = false;
 		public bool PlayMovie_MatchHash = false;
 
 		//TI83

@@ -502,11 +502,6 @@ void Cartridge::setStatePtrs(SaveState &state) {
 	state.mem.wram.set(memptrs.wramdata(0), memptrs.wramdataend() - memptrs.wramdata(0));
 }
 
-void Cartridge::saveState(SaveState &state) const {
-	mbc->saveState(state.mem);
-	rtc.saveState(state);
-}
-
 void Cartridge::loadState(const SaveState &state) {
 	rtc.loadState(state);
 	mbc->loadState(state.mem);

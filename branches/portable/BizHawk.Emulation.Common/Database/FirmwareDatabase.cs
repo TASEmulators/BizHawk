@@ -112,6 +112,71 @@ namespace BizHawk.Emulation.Common
 			Option("SMS", "Export", sms_us_1b);
 			Option("SMS", "Export", sms_m404);
 			Option("SMS", "Japan", sms_jp_21);
+
+			//PSX
+			//http://forum.fobby.net/index.php?t=msg&goto=2763 [f]
+			//http://www.psxdev.net/forum/viewtopic.php?f=69&t=56 [p]
+			//https://en.wikipedia.org/wiki/PlayStation_models#Comparison_of_models [w]
+			//https://github.com/petrockblog/RetroPie-Setup/wiki/PCSX-Core-Playstation-1 [g] 
+			var ps_10j = File("343883A7B555646DA8CEE54AADD2795B6E7DD070", "ps-10j.bin", "PSX BIOS (Version 1.0 J)", "Used on SCPH-1000, DTL-H1000 [g]. This is Rev for A hardware [w].");
+			var ps_11j = File("B06F4A861F74270BE819AA2A07DB8D0563A7CC4E", "ps-11j.bin", "PSX BIOS (Version 1.1 01/22/95)", "Used on SCPH-3000, DTL-H1000H [g]. This is for Rev B hardware [w].");
+			var ps_20j = File("649895EFD79D14790EABB362E94EB0622093DFB9", "ps-20j.bin", "PSX BIOS (Version 2.0 05/07/95 A)", "Used on DTL-H1001 [g]. This is for Rev B hardware [w].");
+			var ps_20e = File("20B98F3D80F11CBF5A7BFD0779B0E63760ECC62C", "ps-20e.bin", "PSX BIOS (Version 2.0 05/10/95 E)", "Used on DTL-H1002, SCPH-1002 [g]. This is for Rev B hardware [w].");
+			var ps_21j = File("E38466A4BA8005FBA7E9E3C7B9EFEBA7205BEE3F", "ps-21j.bin", "PSX BIOS (Version 2.1 07/17/95 J)", "Used on SCPH-3500 [g]. This is for Rev B hardware [w].");
+			var ps_21a = File("CA7AF30B50D9756CBD764640126C454CFF658479", "ps-21a.bin", "PSX BIOS (Version 2.1 07/17/95 A)", "Used on DTL-H1101 [g]. This is for Rev B hardware, presumably.");
+			var ps_21e = File("76CF6B1B2A7C571A6AD07F2BAC0DB6CD8F71E2CC", "ps-21e.bin", "PSX BIOS (Version 2.1 07/17/95 E)", "Used on SCPH-1002, DTL-H1102 [g]. This is for Rev B hardware [w].");
+			var ps_22j = File("FFA7F9A7FB19D773A0C3985A541C8E5623D2C30D", "ps-22j.bin", "PSX BIOS (Version 2.2 12/04/95 J)", "Used on SCPH-5000, DTL-H1200, DTL-H3000 [g]. This is for Rev C hardware [w].");
+			var ps_22j_bad = File("E340DB2696274DDA5FDC25E434A914DB71E8B02B", "ps-22j-bad.bin", "BAD DUMP OF SCPH-5000. Found on [p]."); //BAD!!
+			var ps_22a = File("10155D8D6E6E832D6EA66DB9BC098321FB5E8EBF", "ps-22a.bin", "PSX BIOS (Version 2.2 12/04/95 A)", "Used on SCPH-1001, DTL-H1201, DTL-H3001 [g]. This is for Rev C hardware [w].");
+			var ps_22e = File("B6A11579CAEF3875504FCF3831B8E3922746DF2C", "ps-22e.bin", "PSX BIOS (Version 2.2 12/04/95 E)", "Used on SCPH-1002, DTL-H1202, DTL-H3002 [g]. This is for Rev C hardware [w].");
+			var ps_22d = File("73107D468FC7CB1D2C5B18B269715DD889ECEF06", "ps-22d.bin", "PSX BIOS (Version 2.2 03/06/96 D)", "Used on DTL-H1100 [g]. This is for Rev C hardware, presumably.");
+			var ps_30j = File("B05DEF971D8EC59F346F2D9AC21FB742E3EB6917", "ps-30j.bin", "PSX BIOS (Version 3.0 09/09/96 J)", "Used on SCPH-5500 [g]. This is for Rev C hardware [w]. Recommended for (J) [f].");
+			var ps_30a = File("0555C6FAE8906F3F09BAF5988F00E55F88E9F30B", "ps-30a.bin", "PSX BIOS (Version 3.0 11/18/96 A)", "Used on SCPH-5501, SCPH-5503, SCPH-7003 [g]. This is for Rev C hardware [w]. Recommended for (U) [f].");
+			var ps_30e = File("F6BC2D1F5EB6593DE7D089C425AC681D6FFFD3F0", "ps-30e.bin", "PSX BIOS (Version 3.0 01/06/97 E)", "Used on SCPH-5502, SCPH-5552 [g]. This is for Rev C hardware [w]. Recommended for (E) [f].");
+			var ps_30e_bad = File("F8DE9325FC36FCFA4B29124D291C9251094F2E54", "ps-30e-bad.bin", "BAD DUMP OF SCPH-5502. Found on [p]."); //BAD!
+			var ps_40j = File("77B10118D21AC7FFA9B35F9C4FD814DA240EB3E9", "ps-40j.bin", "PSX BIOS (Version 4.0 08/18/97 J)", "Used on SCPH-7000, SCPH-7500, SCPH-9000 [g]. This is for Rev C hardware [w].");
+			var ps_41a = File("14DF4F6C1E367CE097C11DEAE21566B4FE5647A9", "ps-41a.bin", "PSX BIOS (Version 4.1 12/16/97 A)", "Used on SCPH-7001, SCPH-7501, SCPH-7503, SCPH-9001, SCPH-9003, SCPH-9903 [g]. This is for Rev C hardware [w].");
+			var ps_41e = File("8D5DE56A79954F29E9006929BA3FED9B6A418C1D", "ps-41e.bin", "PSX BIOS (Version 4.1 12/16/97 E)", "Used on SCPH-7002, SCPH-7502, SCPH-9002 [g]. This is for Rev C hardware [w].");
+			var psone_43j = File("339A48F4FCF63E10B5B867B8C93CFD40945FAF6C", "psone-43j.bin", "PSX BIOS (Version 4.3 03/11/00 J)", "Used on PSone SCPH-100 [g]. This is for Rev C PSone hardware [w].");
+			var psone_44e = File("BEB0AC693C0DC26DAF5665B3314DB81480FA5C7C", "psone-44e.bin", "PSX BIOS (Version 4.4 03/24/00 E)", "Used on PSone SCPH-102 [g]. This is for Rev C PSone hardware [w].");
+			var psone_45a = File("DCFFE16BD90A723499AD46C641424981338D8378", "psone-45a.bin", "PSX BIOS (Version 4.5 05/25/00 A)", "Used on PSone SCPH-101 [g]. This is for Rev C PSone hardware [w].");
+			var psone_r5e = File("DBC7339E5D85827C095764FC077B41F78FD2ECAE", "psone-45e.bin", "PSX BIOS (Version 4.5 05/25/00 E)", "Used on PSone SCPH-102 [g]. This is for Rev C PSone hardware [w].");
+			var ps2_50j = File("D7D6BE084F51354BC951D8FA2D8D912AA70ABC5E", "ps2-50j.bin", "PSX BIOS (Version 5.0 10/27/00 J)", "Found on a PS2 [p].");
+
+			ps_22j_bad.bad = ps_30e_bad.bad = true;
+				
+			Firmware("PSX", "U", "BIOS (U)");
+			Firmware("PSX", "J", "BIOS (J)");
+			Firmware("PSX", "E", "BIOS (E)");
+	
+			Option("PSX", "U", ps_30a);
+			Option("PSX", "J", ps_30j);
+			Option("PSX", "E", ps_30e);
+			//in general, alternates arent allowed.. their quality isnt known.
+			//we have this comment from fobby.net: "SCPH7502 works fine for European games" (TBD)
+			//however, we're sticking with the 3.0 series.
+			//please note: 2.1 or 2.2 would be a better choice, as the dates are the same and the bioses are more likely to matching in terms of entrypoints and such.
+			//but 3.0 is what mednafen used
+
+			Option("PSX", "J", ps_10j, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "J", ps_11j, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "J", ps_20j, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "E", ps_20e, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "J", ps_21j, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "U", ps_21a, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "E", ps_21e, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "J", ps_22j, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "J", ps_22j_bad, FirmwareOptionStatus.Bad);
+			Option("PSX", "U", ps_22a, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "E", ps_22e, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "E", ps_30e_bad, FirmwareOptionStatus.Bad);
+			Option("PSX", "J", ps_40j, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "U", ps_41a, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "E", ps_41e, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "J", psone_43j, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "U", psone_45a, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "E", psone_r5e, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "J", ps2_50j, FirmwareOptionStatus.Unacceptable);
 		}
 
 		//adds a defined firmware ID to the database
@@ -128,26 +193,36 @@ namespace BizHawk.Emulation.Common
 		}
 
 		//adds an acceptable option for a firmware ID to the database
-		static void Option(string hash, string systemId, string id)
+		static FirmwareOption Option(string hash, string systemId, string id, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
 		{
 			var fo = new FirmwareOption
 				{
 					systemId = systemId,
 					firmwareId = id,
-					hash = hash
+					hash = hash,
+					status = status,
 				};
 
 			FirmwareOptions.Add(fo);
+			
+			//first option is automatically ideal
+			if (FirmwareOptions.Count == 1 && fo.status == FirmwareOptionStatus.Acceptable)
+				fo.status = FirmwareOptionStatus.Ideal;
+			
+			return fo;
 		}
 
 		//adds an acceptable option for a firmware ID to the database
-		static void Option(string systemId, string id, FirmwareFile ff)
+		static FirmwareOption Option(string systemId, string id, FirmwareFile ff, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
 		{
-			Option(ff.hash, systemId, id);
+			var fo = Option(ff.hash, systemId, id, status);
+			//make sure this goes in as bad
+			if(ff.bad) fo.status = FirmwareOptionStatus.Bad;
+			return fo;
 		}
 
 		//defines a firmware file
-		static FirmwareFile File(string hash, string recommendedName, string descr)
+		static FirmwareFile File(string hash, string recommendedName, string descr, string additionalInfo = "")
 		{
 			string hashfix = hash.ToUpperInvariant();
 
@@ -155,7 +230,8 @@ namespace BizHawk.Emulation.Common
 				{
 					hash = hashfix,
 					recommendedName = recommendedName,
-					descr = descr
+					descr = descr,
+					info = additionalInfo
 				};
 			FirmwareFiles.Add(ff);
 			FirmwareFilesByHash[hashfix] = ff;
@@ -166,7 +242,7 @@ namespace BizHawk.Emulation.Common
 		static void FirmwareAndOption(string hash, string systemId, string id, string name, string descr)
 		{
 			Firmware(systemId, id, descr);
-			File(hash, name, descr);
+			File(hash, name, descr, "");
 			Option(hash, systemId, id);
 		}
 
@@ -182,6 +258,8 @@ namespace BizHawk.Emulation.Common
 			public string hash;
 			public string recommendedName;
 			public string descr;
+			public string info;
+			public bool bad;
 		}
 
 		public class FirmwareRecord
@@ -192,11 +270,18 @@ namespace BizHawk.Emulation.Common
 			public string ConfigKey { get { return string.Format("{0}+{1}", systemId, firmwareId); } }
 		}
 
+		public enum FirmwareOptionStatus
+		{
+			Ideal, Acceptable, Unacceptable, Bad
+		}
+
 		public class FirmwareOption
 		{
 			public string systemId;
 			public string firmwareId;
 			public string hash;
+			public FirmwareOptionStatus status;
+			public bool IsAcceptableOrIdeal { get { return status == FirmwareOptionStatus.Ideal || status == FirmwareOptionStatus.Acceptable; } }
 			public string ConfigKey { get { return string.Format("{0}+{1}", systemId, firmwareId); } }
 		}
 

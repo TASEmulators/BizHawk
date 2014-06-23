@@ -74,6 +74,7 @@ m64p_handle g_CoreConfig = NULL;
 
 m64p_frame_callback g_FrameCallback = NULL;
 m64p_vi_callback g_VICallback = NULL;
+m64p_render_callback g_RenderCallback = NULL;
 
 int         g_MemHasBeenBSwapped = 0;   // store byte-swapped flag so we don't swap twice when re-playing game
 int         g_EmulatorRunning = 0;      // need separate boolean to tell if emulator is running, since --nogui doesn't use a thread
@@ -653,6 +654,9 @@ static void video_plugin_render_callback(int bScreenRedrawn)
             l_TakeScreenshot = 0; // reset flag
         }
     }
+
+	if(g_RenderCallback != NULL)
+		g_RenderCallback();
 
     // if the OSD is enabled, then draw it now
     if (bOSD)

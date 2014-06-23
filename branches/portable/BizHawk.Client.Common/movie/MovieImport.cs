@@ -6,11 +6,14 @@ using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.SNES;
+using BizHawk.Client.Common.MovieConversionExtensions;
 
 namespace BizHawk.Client.Common
 {
 	public static class MovieImport
 	{
+		// Movies 2.0 TODO: this is Movie.cs specific, can it be IMovie based? If not, needs to be refactored to a hardcoded 2.0 implementation, client needs to know what kind of type it imported to, or the mainform method needs to be moved here
 		public const string COMMENT = "comment";
 		public const string COREORIGIN = "CoreOrigin";
 		public const string CRC16 = "CRC16";
@@ -31,14 +34,47 @@ namespace BizHawk.Client.Common
 		public const string SYNCHACK = "SyncHack";
 		public const string UNITCODE = "UnitCode";
 
-		// Attempt to import another type of movie file into a movie object.
-		public static Movie ImportFile(string path, out string errorMsg, out string warningMsg)
+		public static void ProcessMovieImport(string fn, Action<string> conversionErrorCallback, Action<string> messageCallback)
 		{
-			Movie m = new Movie();
-			errorMsg = String.Empty;
-			warningMsg = String.Empty;
+			var d = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
+			string errorMsg;
+			string warningMsg;
+			var m = ImportFile(fn, out errorMsg, out warningMsg);
 
-			string ext = path != null ? Path.GetExtension(path).ToUpper() : String.Empty;
+			if (!string.IsNullOrWhiteSpace(errorMsg))
+			{
+				conversionErrorCallback(errorMsg);
+			}
+
+			if (!string.IsNullOrWhiteSpace(warningMsg))
+			{
+				messageCallback(warningMsg);
+				
+			}
+			else
+			{
+				messageCallback(Path.GetFileName(fn) + " imported as " + "Movies\\" +
+								Path.GetFileName(fn) + "." + Global.MovieSession.Movie.PreferredExtension);
+			}
+
+			if (!Directory.Exists(d))
+			{
+				Directory.CreateDirectory(d);
+			}
+
+			var outPath = Path.Combine(d, Path.GetFileName(fn) + "." + Global.MovieSession.Movie.PreferredExtension);
+			m.Filename = outPath;
+			m.Save();
+		}
+
+		// Attempt to import another type of movie file into a movie object.
+		public static Bk2Movie ImportFile(string path, out string errorMsg, out string warningMsg)
+		{
+			BkmMovie m = new BkmMovie();
+			errorMsg = string.Empty;
+			warningMsg = string.Empty;
+
+			string ext = path != null ? Path.GetExtension(path).ToUpper() : string.Empty;
 			try
 			{
 				switch (ext)
@@ -86,16 +122,14 @@ namespace BizHawk.Client.Common
 						m = ImportZMV(path, out errorMsg, out warningMsg);
 						break;
 				}
-				if (errorMsg == String.Empty)
-				{
-					m.Header[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion1;
-				}
 			}
 			catch (Exception except)
 			{
 				errorMsg = except.ToString();
 			}
-			return m;
+
+			// Hack
+			return m.ToBk2();
 		}
 
 		// Return whether or not the type of file provided can currently be imported.
@@ -126,7 +160,7 @@ namespace BizHawk.Client.Common
 		}
 
 		// Import a frame from a text-based format.
-		private static Movie ImportTextFrame(string line, int lineNum, Movie m, string path, string platform,
+		private static BkmMovie ImportTextFrame(string line, int lineNum, BkmMovie m, string path, string platform,
 			ref string warningMsg)
 		{
 			string[] buttons = new string[] { };
@@ -165,7 +199,7 @@ namespace BizHawk.Client.Common
 			{
 				controllers["Reset"] = (sections[1][0] == '1');
 				// Get the first invalid command warning message that arises.
-				if (String.IsNullOrEmpty((warningMsg)))
+				if (string.IsNullOrEmpty((warningMsg)))
 				{
 					switch (sections[1][0])
 					{
@@ -244,7 +278,7 @@ namespace BizHawk.Client.Common
 				// Only count lines with that have the right number of buttons and are for valid players.
 				if (
 					sections[section].Length == buttons.Length &&
-					player <= MnemonicConstants.PLAYERS[controllers.Type.Name]
+					player <= BkmMnemonicConstants.PLAYERS[controllers.Type.Name]
 				)
 				{
 					for (int button = 0; button < buttons.Length; button++)
@@ -260,7 +294,7 @@ namespace BizHawk.Client.Common
 		}
 
 		// Import a subtitle from a text-based format.
-		private static Movie ImportTextSubtitle(string line, Movie m, string path)
+		private static BkmMovie ImportTextSubtitle(string line, BkmMovie m, string path)
 		{
 			line = SingleSpaces(line);
 			// The header name, frame, and message are separated by whitespace.
@@ -284,20 +318,20 @@ namespace BizHawk.Client.Common
 					length = line.Substring(first + 1, second - first - 1);
 				}
 				string message = line.Substring(second + 1).Trim();
-				m.Header.Subtitles.AddFromString("subtitle " + frame + " 0 0 " + length + " FFFFFFFF " + message);
+				m.Subtitles.AddFromString("subtitle " + frame + " 0 0 " + length + " FFFFFFFF " + message);
 			}
 			return m;
 		}
 
 		// Import a text-based movie format. This works for .FM2, .MC2, and .YMV.
-		private static Movie ImportText(string path, out string errorMsg, out string warningMsg)
+		private static BkmMovie ImportText(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			errorMsg = warningMsg = string.Empty;
+			BkmMovie m = new BkmMovie(path);
 			FileInfo file = new FileInfo(path);
 			StreamReader sr = file.OpenText();
-			string emulator = String.Empty;
-			string platform = String.Empty;
+			string emulator = string.Empty;
+			string platform = string.Empty;
 			switch (Path.GetExtension(path).ToUpper())
 			{
 				case ".FM2":
@@ -338,14 +372,14 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.ToLower().StartsWith("emuversion"))
 				{
-					m.Header.Comments.Add(
+					m.Comments.Add(
 						EMULATIONORIGIN + " " + emulator + " version " + ParseHeader(line, "emuVersion")
 					);
 				}
 				else if (line.ToLower().StartsWith("version"))
 				{
 					string version = ParseHeader(line, "version");
-					m.Header.Comments.Add(
+					m.Comments.Add(
 						MOVIEORIGIN + " " + Path.GetExtension(path) + " version " + version
 					);
 					if (Path.GetExtension(path).ToUpper() == ".FM2" && version != "3")
@@ -386,13 +420,14 @@ namespace BizHawk.Client.Common
 					// Try to parse the re-record count as an integer, defaulting to 0 if it fails.
 					try
 					{
-							rerecordCount = int.Parse(ParseHeader(line, "rerecordCount"));
+						rerecordCount = int.Parse(ParseHeader(line, "rerecordCount"));
 					}
 					catch
 					{
-					rerecordCount = 0;
+						rerecordCount = 0;
 					}
-					m.Header.Rerecords = (ulong)rerecordCount;
+
+					m.Rerecords = (ulong)rerecordCount;
 				}
 				else if (line.ToLower().StartsWith("guid"))
 				{
@@ -426,7 +461,7 @@ namespace BizHawk.Client.Common
 				else
 				{
 					// Everything not explicitly defined is treated as a comment.
-					m.Header.Comments.Add(line);
+					m.Comments.Add(line);
 				}
 			}
 			sr.Close();
@@ -486,10 +521,10 @@ namespace BizHawk.Client.Common
 		}
 
 		// FCM file format: http://code.google.com/p/fceu/wiki/FCM
-		private static Movie ImportFCM(string path, out string errorMsg, out string warningMsg)
+		private static BkmMovie ImportFCM(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			errorMsg = warningMsg = string.Empty;
+			BkmMovie m = new BkmMovie(path);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 46 43 4D 1A "FCM\x1A"
@@ -510,7 +545,7 @@ namespace BizHawk.Client.Common
 				fs.Close();
 				return null;
 			}
-			m.Header.Comments.Add(MOVIEORIGIN + " .FCM version " + version);
+			m.Comments.Add(MOVIEORIGIN + " .FCM version " + version);
 			// 008 1-byte flags
 			byte flags = r.ReadByte();
 			// bit 0: reserved, set to 0
@@ -538,7 +573,7 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.PAL] = pal.ToString();
 			// other: reserved, set to 0
 			bool syncHack = (((flags >> 4) & 0x1) != 0);
-			m.Header.Comments.Add(SYNCHACK + " " + syncHack.ToString());
+			m.Comments.Add(SYNCHACK + " " + syncHack.ToString());
 			// 009 1-byte flags: reserved, set to 0
 			r.ReadByte();
 			// 00A 1-byte flags: reserved, set to 0
@@ -549,7 +584,7 @@ namespace BizHawk.Client.Common
 			uint frameCount = r.ReadUInt32();
 			// 010 4-byte little-endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.Header.Rerecords = rerecordCount;
+			m.Rerecords = rerecordCount;
 			/*
 			 018 4-byte little-endian unsigned int: offset to the savestate inside file
 			 The savestate offset is <header_size + length_of_metadata_in_bytes + padding>. The savestate offset should be
@@ -564,7 +599,7 @@ namespace BizHawk.Client.Common
 			m.Header[MD5] = Util.BytesToHexString(md5).ToLower();
 			// 030 4-byte little-endian unsigned int: version of the emulator used
 			uint emuVersion = r.ReadUInt32();
-			m.Header.Comments.Add(EMULATIONORIGIN + " FCEU " + emuVersion.ToString());
+			m.Comments.Add(EMULATIONORIGIN + " FCEU " + emuVersion.ToString());
 			// 034 name of the ROM used - UTF8 encoded nul-terminated string.
 			List<byte> gameBytes = new List<byte>();
 			while (r.PeekChar() != 0)
@@ -732,16 +767,16 @@ namespace BizHawk.Client.Common
 		}
 
 		// FM2 file format: http://www.fceux.com/web/FM2.html
-		private static Movie ImportFM2(string path, out string errorMsg, out string warningMsg)
+		private static BkmMovie ImportFM2(string path, out string errorMsg, out string warningMsg)
 		{
 			return ImportText(path, out errorMsg, out warningMsg);
 		}
 
 		// FMV file format: http://tasvideos.org/FMV.html
-		private static Movie ImportFMV(string path, out string errorMsg, out string warningMsg)
+		private static BkmMovie ImportFMV(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			errorMsg = warningMsg = string.Empty;
+			BkmMovie m = new BkmMovie(path);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 46 4D 56 1A "FMV\x1A"
@@ -795,16 +830,16 @@ namespace BizHawk.Client.Common
 			 loaded, the number is 0. Famtasia however displays "1" in such case. It always adds 1 to the number found in
 			 the file.
 			*/
-			m.Header.Rerecords = rerecordCount + 1;
+			m.Rerecords = rerecordCount + 1;
 			// 00E 2-byte little-endian unsigned int: unknown, set to 0000
 			r.ReadInt16();
 			// 010 64-byte zero-terminated emulator identifier string
 			string emuVersion = NullTerminated(r.ReadStringFixedAscii(64));
-			m.Header.Comments.Add(EMULATIONORIGIN + " Famtasia version " + emuVersion);
-			m.Header.Comments.Add(MOVIEORIGIN + " .FMV");
+			m.Comments.Add(EMULATIONORIGIN + " Famtasia version " + emuVersion);
+			m.Comments.Add(MOVIEORIGIN + " .FMV");
 			// 050 64-byte zero-terminated movie title string
 			string description = NullTerminated(r.ReadStringFixedAscii(64));
-			m.Header.Comments.Add(COMMENT + " " + description);
+			m.Comments.Add(COMMENT + " " + description);
 			if (!controller1 && !controller2 && !FDS)
 			{
 				warningMsg = "No input recorded.";
@@ -878,10 +913,10 @@ namespace BizHawk.Client.Common
 		}
 
 		// GMV file format: http://code.google.com/p/gens-rerecording/wiki/GMV
-		private static Movie ImportGMV(string path, out string errorMsg, out string warningMsg)
+		private static BkmMovie ImportGMV(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			errorMsg = warningMsg = string.Empty;
+			BkmMovie m = new BkmMovie(path);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 16-byte signature and format version: "Gens Movie TEST9"
@@ -896,11 +931,11 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.PLATFORM] = "Genesis";
 			// 00F ASCII-encoded GMV file format version. The most recent is 'A'. (?)
 			string version = r.ReadStringFixedAscii(1);
-			m.Header.Comments.Add(MOVIEORIGIN + " .GMV version " + version);
-			m.Header.Comments.Add(EMULATIONORIGIN + " Gens");
+			m.Comments.Add(MOVIEORIGIN + " .GMV version " + version);
+			m.Comments.Add(EMULATIONORIGIN + " Gens");
 			// 010 4-byte little-endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.Header.Rerecords = rerecordCount;
+			m.Rerecords = rerecordCount;
 			// 014 ASCII-encoded controller config for player 1. '3' or '6'.
 			string player1Config = r.ReadStringFixedAscii(1);
 			// 015 ASCII-encoded controller config for player 2. '3' or '6'.
@@ -937,7 +972,7 @@ namespace BizHawk.Client.Common
 			r.ReadByte();
 			// 018 40-byte zero-terminated ASCII movie name string
 			string description = NullTerminated(r.ReadStringFixedAscii(40));
-			m.Header.Comments.Add(COMMENT + " " + description);
+			m.Comments.Add(COMMENT + " " + description);
 			/*
 			 040 frame data
 			 For controller bytes, each value is determined by OR-ing together values for whichever of the following are
@@ -1002,10 +1037,10 @@ namespace BizHawk.Client.Common
 		}
 
 		// LSMV file format: http://tasvideos.org/Lsnes/Movieformat.html
-		private static Movie ImportLSMV(string path, out string errorMsg, out string warningMsg)
+		private static BkmMovie ImportLSMV(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			errorMsg = warningMsg = string.Empty;
+			BkmMovie m = new BkmMovie(path);
 			HawkFile hf = new HawkFile(path);
 			// .LSMV movies are .zip files containing data files.
 			if (!hf.IsArchive)
@@ -1056,7 +1091,7 @@ namespace BizHawk.Client.Common
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string coreversion = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
-					m.Header.Comments.Add(COREORIGIN + " " + coreversion);
+					m.Comments.Add(COREORIGIN + " " + coreversion);
 					hf.Unbind();
 				}
 				else if (item.Name == "gamename")
@@ -1085,7 +1120,7 @@ namespace BizHawk.Client.Common
 						case "sgb_ntsc":
 						case "sgb_pal":
 							platform = "SNES";
-							m.Header[HeaderKeys.SGB] = "True";
+							Global.Config.GB_AsSGB = true;
 							break;
 					}
 					bool pal = (gametype == "snes_pal" || gametype == "sgb_pal");
@@ -1170,7 +1205,7 @@ namespace BizHawk.Client.Common
 					{
 						rerecordCount = 0;
 					}
-					m.Header.Rerecords = (ulong)rerecordCount;
+					m.Rerecords = (ulong)rerecordCount;
 					hf.Unbind();
 				}
 				else if (item.Name.EndsWith(".sha256"))
@@ -1222,7 +1257,7 @@ namespace BizHawk.Client.Common
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string systemid = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
-					m.Header.Comments.Add(EMULATIONORIGIN + " " + systemid);
+					m.Comments.Add(EMULATIONORIGIN + " " + systemid);
 					hf.Unbind();
 				}
 			}
@@ -1234,10 +1269,10 @@ namespace BizHawk.Client.Common
 		 MCM file format: http://code.google.com/p/mednafen-rr/wiki/MCM
 		 Mednafen-rr switched to MC2 from r261, so see r260 for details.
 		*/
-		private static Movie ImportMCM(string path, out string errorMsg, out string warningMsg)
+		private static BkmMovie ImportMCM(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			errorMsg = warningMsg = string.Empty;
+			BkmMovie m = new BkmMovie(path);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 8-byte	"MDFNMOVI" signature
@@ -1251,10 +1286,10 @@ namespace BizHawk.Client.Common
 			}
 			// 008 uint32	 Mednafen Version (Current is 0A 08)
 			uint emuVersion = r.ReadUInt32();
-			m.Header.Comments.Add(EMULATIONORIGIN + " Mednafen " + emuVersion.ToString());
+			m.Comments.Add(EMULATIONORIGIN + " Mednafen " + emuVersion.ToString());
 			// 00C uint32	 Movie Format Version (Current is 01)
 			uint version = r.ReadUInt32();
-			m.Header.Comments.Add(MOVIEORIGIN + " .MCM version " + version);
+			m.Comments.Add(MOVIEORIGIN + " .MCM version " + version);
 			// 010 32-byte	MD5 of the ROM used
 			byte[] md5 = r.ReadBytes(16);
 			// Discard the second 16 bytes.
@@ -1265,7 +1300,7 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.GAMENAME] = gameName;
 			// 070 uint32	 Re-record Count
 			uint rerecordCount = r.ReadUInt32();
-			m.Header.Rerecords = (ulong)rerecordCount;
+			m.Rerecords = (ulong)rerecordCount;
 			// 074 5-byte	 Console indicator (pce, ngp, pcfx, wswan)
 			string platform = NullTerminated(r.ReadStringFixedAscii(5));
 			Dictionary<string, Dictionary<string, object>> platforms = new Dictionary<string, Dictionary<string, object>>
@@ -1349,16 +1384,16 @@ namespace BizHawk.Client.Common
 		}
 
 		// MC2 file format: http://code.google.com/p/pcejin/wiki/MC2
-		private static Movie ImportMC2(string path, out string errorMsg, out string warningMsg)
+		private static BkmMovie ImportMC2(string path, out string errorMsg, out string warningMsg)
 		{
 			return ImportText(path, out errorMsg, out warningMsg);
 		}
 
 		// MMV file format: http://tasvideos.org/MMV.html
-		private static Movie ImportMMV(string path, out string errorMsg, out string warningMsg)
+		private static BkmMovie ImportMMV(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			errorMsg = warningMsg = string.Empty;
+			BkmMovie m = new BkmMovie(path);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 0000: 4-byte signature: "MMV\0"
@@ -1372,13 +1407,13 @@ namespace BizHawk.Client.Common
 			}
 			// 0004: 4-byte little endian unsigned int: dega version
 			uint emuVersion = r.ReadUInt32();
-			m.Header.Comments.Add(EMULATIONORIGIN + " Dega version " + emuVersion.ToString());
-			m.Header.Comments.Add(MOVIEORIGIN + " .MMV");
+			m.Comments.Add(EMULATIONORIGIN + " Dega version " + emuVersion.ToString());
+			m.Comments.Add(MOVIEORIGIN + " .MMV");
 			// 0008: 4-byte little endian unsigned int: frame count
 			uint frameCount = r.ReadUInt32();
 			// 000c: 4-byte little endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.Header.Rerecords = rerecordCount;
+			m.Rerecords = rerecordCount;
 			// 0010: 4-byte little endian flag: begin from reset?
 			uint reset = r.ReadUInt32();
 			if (reset == 0)
@@ -1425,7 +1460,7 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.GAMENAME] = gameName;
 			// 00e4-00f3: binary: rom MD5 digest
 			byte[] md5 = r.ReadBytes(16);
-			m.Header[MD5] = String.Format("{0:x8}", Util.BytesToHexString(md5).ToLower());
+			m.Header[MD5] = string.Format("{0:x8}", Util.BytesToHexString(md5).ToLower());
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "SMS Controller"}};
 			/*
 			 76543210
@@ -1469,10 +1504,10 @@ namespace BizHawk.Client.Common
 		}
 
 		// NMV file format: http://tasvideos.org/NMV.html
-		private static Movie ImportNMV(string path, out string errorMsg, out string warningMsg)
+		private static BkmMovie ImportNMV(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			errorMsg = warningMsg = string.Empty;
+			BkmMovie m = new BkmMovie(path);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 4E 53 53 1A "NSS\x1A"
@@ -1486,8 +1521,8 @@ namespace BizHawk.Client.Common
 			}
 			// 004 4-byte version string (example "0960")
 			string emuVersion = r.ReadStringFixedAscii(4);
-			m.Header.Comments.Add(EMULATIONORIGIN + " Nintendulator version " + emuVersion);
-			m.Header.Comments.Add(MOVIEORIGIN + " .NMV");
+			m.Comments.Add(EMULATIONORIGIN + " Nintendulator version " + emuVersion);
+			m.Comments.Add(MOVIEORIGIN + " .NMV");
 			// 008 4-byte file size, not including the 16-byte header
 			r.ReadUInt32();
 			/*
@@ -1641,13 +1676,13 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.PAL] = pal.ToString();
 			// 004 4-byte little-endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.Header.Rerecords = rerecordCount;
+			m.Rerecords = rerecordCount;
 			/*
 			 008 4-byte little-endian unsigned int: length of movie description
 			 00C (variable) null-terminated UTF-8 text, movie description (currently not implemented)
 			*/
 			string movieDescription = NullTerminated(r.ReadStringFixedAscii((int)r.ReadUInt32()));
-			m.Header.Comments.Add(COMMENT + " " + movieDescription);
+			m.Comments.Add(COMMENT + " " + movieDescription);
 			// ... 4-byte little-endian unsigned int: length of controller data in bytes
 			uint length = r.ReadUInt32();
 			// ... (variable) controller data
@@ -1696,10 +1731,10 @@ namespace BizHawk.Client.Common
 			return m;
 		}
 
-		private static Movie ImportSMV(string path, out string errorMsg, out string warningMsg)
+		private static BkmMovie ImportSMV(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			errorMsg = warningMsg = string.Empty;
+			BkmMovie m = new BkmMovie(path);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 53 4D 56 1A "SMV\x1A"
@@ -1732,8 +1767,8 @@ namespace BizHawk.Client.Common
 					fs.Close();
 					return null;
 			}
-			m.Header.Comments.Add(EMULATIONORIGIN + " Snes9x version " + version);
-			m.Header.Comments.Add(MOVIEORIGIN + " .SMV");
+			m.Comments.Add(EMULATIONORIGIN + " Snes9x version " + version);
+			m.Comments.Add(MOVIEORIGIN + " .SMV");
 			/*
 			 008 4-byte little-endian integer: movie "uid" - identifies the movie-savestate relationship, also used as the
 			 recording time in Unix epoch format
@@ -1741,7 +1776,7 @@ namespace BizHawk.Client.Common
 			uint uid = r.ReadUInt32();
 
 			// 00C 4-byte little-endian unsigned int: rerecord count
-			m.Header.Rerecords = r.ReadUInt32();
+			m.Rerecords = r.ReadUInt32();
 			// 010 4-byte little-endian unsigned int: number of frames
 			uint frameCount = r.ReadUInt32();
 			// 014 1-byte flags "controller mask"
@@ -1940,7 +1975,7 @@ namespace BizHawk.Client.Common
 						}
 					}
 					ushort controllerState = (ushort)(((controllerState1 << 4) & 0x0F00) | controllerState2);
-					if (player <= MnemonicConstants.PLAYERS[controllers.Type.Name])
+					if (player <= BkmMnemonicConstants.PLAYERS[controllers.Type.Name])
 					{
 						for (int button = 0; button < buttons.Length; button++)
 						{
@@ -1967,10 +2002,10 @@ namespace BizHawk.Client.Common
 		}
 
 		// VBM file format: http://code.google.com/p/vba-rerecording/wiki/VBM
-		private static Movie ImportVBM(string path, out string errorMsg, out string warningMsg)
+		private static BkmMovie ImportVBM(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			errorMsg = warningMsg = string.Empty;
+			BkmMovie m = new BkmMovie(path);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 56 42 4D 1A "VBM\x1A"
@@ -2001,7 +2036,7 @@ namespace BizHawk.Client.Common
 			uint frameCount = r.ReadUInt32();
 			// 010 4-byte little-endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.Header.Rerecords = rerecordCount;
+			m.Rerecords = rerecordCount;
 			// 014 1-byte flags: (movie start flags)
 			byte flags = r.ReadByte();
 			// bit 0: if "1", movie starts from an embedded "quicksave" snapshot
@@ -2083,7 +2118,7 @@ namespace BizHawk.Client.Common
 			}
 			if (is_sgb)
 			{
-				m.Header.Comments.Add(SUPERGAMEBOYMODE + " True");
+				m.Comments.Add(SUPERGAMEBOYMODE + " True");
 			}
 			m.Header[HeaderKeys.PLATFORM] = platform;
 			// 017 1-byte flags: (values of some boolean emulator options)
@@ -2125,8 +2160,8 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.GAMENAME] = gameName;
 			// 030 1-byte unsigned char: minor version/revision number of current VBM version, the latest is "1"
 			byte minorVersion = r.ReadByte();
-			m.Header.Comments.Add(MOVIEORIGIN + " .VBM version " + majorVersion + "." + minorVersion);
-			m.Header.Comments.Add(EMULATIONORIGIN + " Visual Boy Advance");
+			m.Comments.Add(MOVIEORIGIN + " .VBM version " + majorVersion + "." + minorVersion);
+			m.Comments.Add(EMULATIONORIGIN + " Visual Boy Advance");
 			// 031 1-byte unsigned char: the internal CRC of the ROM used while recording
 			r.ReadByte();
 			/*
@@ -2158,7 +2193,7 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.AUTHOR] = author;
 			// The following 128 bytes are for a description of the movie. Both parts must be null-terminated.
 			string movieDescription = NullTerminated(r.ReadStringFixedAscii(128));
-			m.Header.Comments.Add(COMMENT + " " + movieDescription);
+			m.Comments.Add(COMMENT + " " + movieDescription);
 			r.BaseStream.Position = firstFrameOffset;
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition()};
 			if (platform != "GBA")
@@ -2237,10 +2272,10 @@ namespace BizHawk.Client.Common
 		}
 
 		// VMV file format: http://tasvideos.org/VMV.html
-		private static Movie ImportVMV(string path, out string errorMsg, out string warningMsg)
+		private static BkmMovie ImportVMV(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			errorMsg = warningMsg = string.Empty;
+			BkmMovie m = new BkmMovie(path);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 12-byte signature: "VirtuaNES MV"
@@ -2255,11 +2290,11 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.PLATFORM] = "NES";
 			// 00C 2-byte little-endian integer: movie version 0x0400
 			ushort version = r.ReadUInt16();
-			m.Header.Comments.Add(MOVIEORIGIN + " .VMV version " + version);
-			m.Header.Comments.Add(EMULATIONORIGIN + " VirtuaNES");
+			m.Comments.Add(MOVIEORIGIN + " .VMV version " + version);
+			m.Comments.Add(EMULATIONORIGIN + " VirtuaNES");
 			// 00E 2-byte little-endian integer: record version
 			ushort recordVersion = r.ReadUInt16();
-			m.Header.Comments.Add(COMMENT + " Record version " + recordVersion);
+			m.Comments.Add(COMMENT + " Record version " + recordVersion);
 			// 010 4-byte flags (control byte)
 			uint flags = r.ReadUInt32();
 			/*
@@ -2301,7 +2336,7 @@ namespace BizHawk.Client.Common
 			r.ReadBytes(2);
 			// 01C 4-byte little-endian integer: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.Header.Rerecords = rerecordCount;
+			m.Rerecords = rerecordCount;
 			/*
 			020 BYTE	RenderMethod
 			0=POST_ALL,1=PRE_ALL
@@ -2455,16 +2490,16 @@ namespace BizHawk.Client.Common
 		}
 
 		// YMV file format: https://code.google.com/p/yabause-rr/wiki/YMVfileformat
-		private static Movie ImportYMV(string path, out string errorMsg, out string warningMsg)
+		private static BkmMovie ImportYMV(string path, out string errorMsg, out string warningMsg)
 		{
 			return ImportText(path, out errorMsg, out warningMsg);
 		}
 
 		// ZMV file format: http://tasvideos.org/ZMV.html
-		private static Movie ImportZMV(string path, out string errorMsg, out string warningMsg)
+		private static BkmMovie ImportZMV(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = String.Empty;
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			errorMsg = warningMsg = string.Empty;
+			BkmMovie m = new BkmMovie(path);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 3-byte signature: 5A 4D 56 "ZMV"
@@ -2479,8 +2514,8 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.PLATFORM] = "SNES";
 			// 003 2-byte little-endian unsigned int: zsnes version number
 			short version = r.ReadInt16();
-			m.Header.Comments.Add(EMULATIONORIGIN + " ZSNES version " + version);
-			m.Header.Comments.Add(MOVIEORIGIN + " .ZMV");
+			m.Comments.Add(EMULATIONORIGIN + " ZSNES version " + version);
+			m.Comments.Add(MOVIEORIGIN + " .ZMV");
 			// 005 4-byte little-endian integer: CRC32 of the ROM
 			int crc32 = r.ReadInt32();
 			m.Header[CRC32] = crc32.ToString();
@@ -2488,7 +2523,7 @@ namespace BizHawk.Client.Common
 			uint frameCount = r.ReadUInt32();
 			// 00D 4-byte little-endian unsigned int: number of rerecords
 			uint rerecordCount = r.ReadUInt32();
-			m.Header.Rerecords = rerecordCount;
+			m.Rerecords = rerecordCount;
 			// 011 4-byte little-endian unsigned int: number of frames removed by rerecord
 			r.ReadBytes(4);
 			// 015 4-byte little-endian unsigned int: number of frames advanced step by step
@@ -2728,7 +2763,7 @@ namespace BizHawk.Client.Common
 								}
 							}
 							leftOver = !leftOver;
-							if (player <= MnemonicConstants.PLAYERS[controllers.Type.Name])
+							if (player <= BkmMnemonicConstants.PLAYERS[controllers.Type.Name])
 							{
 								if (player != 2 || !superScope)
 								{
