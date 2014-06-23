@@ -6,19 +6,14 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[Description("SNES")]
-	public class SnesSchema : IVirtualPadSchema
+	[Description("WSWAN")]
+	public class WonderSwanSchema : IVirtualPadSchema
 	{
 		public IEnumerable<VirtualPad> GetPads()
 		{
 			yield return new VirtualPad(StandardController(1))
 			{
 				Location = new Point(15, 15)
-			};
-
-			yield return new VirtualPad(StandardController(2))
-			{
-				Location = new Point(200, 15)
 			};
 		}
 		public static PadSchema StandardController(int controller)
@@ -29,9 +24,10 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(174, 74),
 				Buttons = new[]
 				{
+					//TODO: Need All Locations and DisplayNames
 					new PadSchema.ButtonScema
 					{
-						Name = "P" + controller + " Up",
+						Name = "P" + controller + " Up X",
 						DisplayName = "",
 						Icon = Properties.Resources.BlueUp,
 						Location = new Point(14, 2),
@@ -39,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "P" + controller + " Down",
+						Name = "P" + controller + " Down X",
 						DisplayName = "",
 						Icon = Properties.Resources.BlueDown,
 						Location = new Point(14, 46),
@@ -47,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "P" + controller + " Left",
+						Name = "P" + controller + " Left X",
 						DisplayName = "",
 						Icon = Properties.Resources.Back,
 						Location = new Point(2, 24),
@@ -55,7 +51,39 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "P" + controller + " Right",
+						Name = "P" + controller + " Right X",
+						DisplayName = "",
+						Icon = Properties.Resources.Forward,
+						Location = new Point(24, 24),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Up Y",
+						DisplayName = "",
+						Icon = Properties.Resources.BlueUp,
+						Location = new Point(14, 2),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Down Y",
+						DisplayName = "",
+						Icon = Properties.Resources.BlueDown,
+						Location = new Point(14, 46),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Left Y",
+						DisplayName = "",
+						Icon = Properties.Resources.Back,
+						Location = new Point(2, 24),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Right Y",
 						DisplayName = "",
 						Icon = Properties.Resources.Forward,
 						Location = new Point(24, 24),
@@ -77,44 +105,16 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "P" + controller + " Select",
-						DisplayName = "s",
-						Location = new Point(56, 42),
-						Type = PadSchema.PadInputType.Boolean
-					},
-					new PadSchema.ButtonScema
-					{
 						Name = "P" + controller + " Start",
 						DisplayName = "S",
 						Location = new Point(78, 42),
 						Type = PadSchema.PadInputType.Boolean
 					},
-					new PadSchema.ButtonScema
+					new PadSchema.ButtonScema //Power
 					{
-						Name = "P" + controller + " X",
-						DisplayName = "X",
-						Location = new Point(122, 12),
-						Type = PadSchema.PadInputType.Boolean
-					},
-					new PadSchema.ButtonScema
-					{
-						Name = "P" + controller + " Y",
-						DisplayName = "Y",
+						Name = "P" + controller + " P",
+						DisplayName = "P",
 						Location = new Point(110, 34),
-						Type = PadSchema.PadInputType.Boolean
-					},
-					new PadSchema.ButtonScema
-					{
-						Name = "P" + controller + " L",
-						DisplayName = "L",
-						Location = new Point(42, 0),
-						Type = PadSchema.PadInputType.Boolean
-					},
-					new PadSchema.ButtonScema
-					{
-						Name = "P" + controller + " R",
-						DisplayName = "R",
-						Location = new Point(94, 0),
 						Type = PadSchema.PadInputType.Boolean
 					}
 				}

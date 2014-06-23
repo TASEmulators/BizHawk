@@ -6,8 +6,8 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[Description("SNES")]
-	public class SnesSchema : IVirtualPadSchema
+	[Description("GBA")]
+	class GBASchema : IVirtualPadSchema
 	{
 		public IEnumerable<VirtualPad> GetPads()
 		{
@@ -15,18 +15,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Location = new Point(15, 15)
 			};
-
-			yield return new VirtualPad(StandardController(2))
-			{
-				Location = new Point(200, 15)
-			};
 		}
 		public static PadSchema StandardController(int controller)
 		{
 			return new PadSchema
 			{
 				IsConsole = false,
-				DefaultSize = new Size(174, 74),
+				DefaultSize = new Size(194, 74),
 				Buttons = new[]
 				{
 					new PadSchema.ButtonScema
@@ -65,56 +60,42 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = "P" + controller + " B",
 						DisplayName = "B",
-						Location = new Point(134, 48),
+						Location = new Point(122, 24),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " A",
 						DisplayName = "A",
-						Location = new Point(146, 22),
+						Location = new Point(146, 24),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " Select",
 						DisplayName = "s",
-						Location = new Point(56, 42),
+						Location = new Point(52, 24),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " Start",
 						DisplayName = "S",
-						Location = new Point(78, 42),
-						Type = PadSchema.PadInputType.Boolean
-					},
-					new PadSchema.ButtonScema
-					{
-						Name = "P" + controller + " X",
-						DisplayName = "X",
-						Location = new Point(122, 12),
-						Type = PadSchema.PadInputType.Boolean
-					},
-					new PadSchema.ButtonScema
-					{
-						Name = "P" + controller + " Y",
-						DisplayName = "Y",
-						Location = new Point(110, 34),
+						Location = new Point(74, 24),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " L",
 						DisplayName = "L",
-						Location = new Point(42, 0),
+						Location = new Point(2, 2),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " R",
 						DisplayName = "R",
-						Location = new Point(94, 0),
+						Location = new Point(166, 2),
 						Type = PadSchema.PadInputType.Boolean
 					}
 				}
