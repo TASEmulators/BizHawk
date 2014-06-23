@@ -6,7 +6,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[Description("GEN")]
+	[SchemaAttributes("GEN")]
 	public class Gen6ButtonSchema : IVirtualPadSchema
 	{
 		public IEnumerable<VirtualPad> GetPads()

@@ -6,7 +6,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[Description("WSWAN")]
+	[SchemaAttributes("WSWAN")]
 	public class WonderSwanSchema : IVirtualPadSchema
 	{
 		public IEnumerable<VirtualPad> GetPads()

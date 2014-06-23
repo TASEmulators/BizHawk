@@ -6,8 +6,8 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[Description("GBA")]
-	class GBASchema : IVirtualPadSchema
+	[SchemaAttributes("GBA")]
+	public class GBASchema : IVirtualPadSchema
 	{
 		public IEnumerable<VirtualPad> GetPads()
 		{
