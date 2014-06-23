@@ -899,6 +899,11 @@
       <DependentUpon>VirtualPadTargetScreen.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\VirtualPads\IVirtualPad.cs" />
+    <Compile Include="tools\VirtualPads\schema\GBASchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\GBSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\Gen6ButtonSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\Gen3ButtonSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\SatSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\IVirtualPadSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\N64Schema.cs" />
     <Compile Include="tools\VirtualPads\schema\NesSchema.cs" />
@@ -906,6 +911,7 @@
     <Compile Include="tools\VirtualPads\schema\PceSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\SmsSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\SnesSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\WonderSwanSchema.cs" />
     <Compile Include="tools\VirtualPads\VirtualPad.cs">
       <SubType>UserControl</SubType>
     </Compile>

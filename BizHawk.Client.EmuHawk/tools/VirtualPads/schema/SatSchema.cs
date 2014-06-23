@@ -6,8 +6,8 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[Description("SNES")]
-	public class SnesSchema : IVirtualPadSchema
+	[Description("SAT")]
+	public class SaturnSchema : IVirtualPadSchema
 	{
 		public IEnumerable<VirtualPad> GetPads()
 		{
@@ -29,6 +29,7 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(174, 74),
 				Buttons = new[]
 				{
+					//TODO: C Button and Z Button, Need All Locations
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " Up",
@@ -73,13 +74,6 @@ namespace BizHawk.Client.EmuHawk
 						Name = "P" + controller + " A",
 						DisplayName = "A",
 						Location = new Point(146, 22),
-						Type = PadSchema.PadInputType.Boolean
-					},
-					new PadSchema.ButtonScema
-					{
-						Name = "P" + controller + " Select",
-						DisplayName = "s",
-						Location = new Point(56, 42),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
