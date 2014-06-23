@@ -30,18 +30,6 @@ namespace BizHawk.Client.EmuHawk
 			TopMost = Global.Config.VirtualPadSettings.TopMost;
 		}
 
-		protected override void OnActivated(EventArgs e)
-		{
-			base.OnActivated(e);
-			Input.Instance.ControlInputFocus(this, Input.InputFocus.Mouse, true);
-		}
-
-		protected override void OnDeactivate(EventArgs e)
-		{
-			base.OnDeactivate(e);
-			Input.Instance.ControlInputFocus(this, Input.InputFocus.Mouse, false);
-		}
-
 		private void VirtualpadTool_Load(object sender, EventArgs e)
 		{
 			_defaultWidth = Size.Width;
