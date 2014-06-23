@@ -1,9 +1,36 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class N64Schema
+	[Description("N64")]
+	public class N64Schema : IVirtualPadSchema
 	{
+		public IEnumerable<VirtualPad> GetPads()
+		{
+			yield return new VirtualPad(StandardController(1))
+			{
+				Location = new Point(15, 15)
+			};
+
+			yield return new VirtualPad(StandardController(2))
+			{
+				Location = new Point(200, 15)
+			};
+
+			yield return new VirtualPad(StandardController(3))
+			{
+				Location = new Point(385, 15)
+			};
+
+			yield return new VirtualPad(StandardController(4))
+			{
+				Location = new Point(570, 15)
+			};
+		}
 		public static PadSchema StandardController(int controller)
 		{
 			return new PadSchema

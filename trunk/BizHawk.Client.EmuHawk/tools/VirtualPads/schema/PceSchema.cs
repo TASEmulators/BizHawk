@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 				Location = new Point(15, 15)
 			};
 
-			yield return new VirtualPad(StandardController(1))
+			yield return new VirtualPad(StandardController(2))
 			{
 				Location = new Point(200, 15)
 			};
