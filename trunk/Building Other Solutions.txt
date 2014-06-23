@@ -1,0 +1,20 @@
+Besides the main Bizhawk.sln, there are a number of other projects, each with a build method:
+
+EMU7800: Load EMU7800/EMU7800.sln; builds as .NET 4.0.  Does file automatically copy to appropriate folder??
+
+genplus-gx: Load genplus-gx/libretro/msvc/msvc-2010.sln; builds as VC++ (VC10).  Output dll automatically copies to appropriate folder.
+
+libgambatte: Process libgambatte/Makefile with mingw.  Use "make install" to copy to output folder.  Alternatively, there is a VC10 solution at libgambatte/libgambatte.sln, but that's not used.
+
+libmeteor: Probably libmeteor/libmeteor.sln, but not well checked.
+
+libmupen64plus: ??
+
+libsnes: Try one of the shell scripts?
+
+quicknes: Process quicknes/mingw/Makefile with mingw.  Use "make install" top copy to output folder.  Alternatively, there is a VC10 solution at quicknes/libquicknes/libquicknes.sln, but that has audio output glitches.
+
+wonderswan: Load wonderswan/bizswan/bizswan.sln; builds as VC++ (VC10).  Output dll automatically copies to appropriate folder.  Alternatively, there is a mingw Makefile at wonderswan/mingw/Makefile, but that's not used.
+
+yabause: Load yabause/src/libyabause/libyabause.sln; builds as VC++ (VC10).  Output dll automatically copies to appropriate folder.
+
