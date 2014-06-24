@@ -41,16 +41,17 @@ namespace BizHawk.Client.EmuHawk
 		private int MinX { get { return 0 - MaxX; } }
 		private int MinY { get { return 0 - MaxY; } }
 
-		private readonly Brush _whiteBrush = Brushes.White;
-		private readonly Brush _blackBrush = Brushes.Black;
-		private readonly Brush _grayBrush = Brushes.LightGray;
-		private readonly Brush _redBrush = Brushes.Red;
-		private readonly Brush _blueBrush = Brushes.DarkBlue;
-		private readonly Pen _blackPen;
-		private readonly Pen _bluePen;
+		private readonly Brush WhiteBrush = Brushes.White;
+		private readonly Brush BlackBrush = Brushes.Black;
+		private readonly Brush GrayBrush = Brushes.LightGray;
+		private readonly Brush RedBrush = Brushes.Red;
+		private readonly Brush BlueBrush = Brushes.DarkBlue;
+		private readonly Pen BlackPen = new Pen(Brushes.Black);
+		private readonly Pen BluePen = new Pen(Brushes.Blue);
+		private readonly Pen GrayPen = new Pen(Brushes.LightGray);
 
-		private readonly Bitmap dot = new Bitmap(7, 7);
-		private readonly Bitmap graydot = new Bitmap(7, 7);
+		private readonly Bitmap Dot = new Bitmap(7, 7);
+		private readonly Bitmap GrayDot = new Bitmap(7, 7);
 
 		public AnalogStickPanel()
 		{
@@ -62,18 +63,16 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.Opaque, true);
 			BackColor = Color.Gray;
 			Paint += AnalogControlPanel_Paint;
-			_blackPen = new Pen(_blackBrush);
-			_bluePen = new Pen(_blueBrush);
 			BorderStyle = BorderStyle.Fixed3D;
 			
 			// Draw the dot into a bitmap
-			Graphics g = Graphics.FromImage(dot);
+			Graphics g = Graphics.FromImage(Dot);
 			g.Clear(Color.Transparent);
-			g.FillRectangle(_redBrush, 2, 0, 3, 7);
-			g.FillRectangle(_redBrush, 1, 1, 5, 5);
-			g.FillRectangle(_redBrush, 0, 2, 7, 3);
+			g.FillRectangle(RedBrush, 2, 0, 3, 7);
+			g.FillRectangle(RedBrush, 1, 1, 5, 5);
+			g.FillRectangle(RedBrush, 0, 2, 7, 3);
 
-			Graphics gg = Graphics.FromImage(graydot);
+			Graphics gg = Graphics.FromImage(GrayDot);
 			gg.Clear(Color.Transparent);
 			gg.FillRectangle(Brushes.Gray, 2, 0, 3, 7);
 			gg.FillRectangle(Brushes.Gray, 1, 1, 5, 5);
@@ -124,11 +123,11 @@ namespace BizHawk.Client.EmuHawk
 			unchecked
 			{
 				//Background
-				e.Graphics.FillRectangle(_grayBrush, 0, 0, 128, 128);
-				e.Graphics.FillEllipse(_whiteBrush, 0, 0, 127, 127);
-				e.Graphics.DrawEllipse(_blackPen, 0, 0, 127, 127);
-				e.Graphics.DrawLine(_blackPen, 64, 0, 64, 127);
-				e.Graphics.DrawLine(_blackPen, 0, 63, 127, 63);
+				e.Graphics.FillRectangle(GrayBrush, 0, 0, 128, 128);
+				e.Graphics.FillEllipse(WhiteBrush, 0, 0, 127, 127);
+				e.Graphics.DrawEllipse(BlackPen, 0, 0, 127, 127);
+				e.Graphics.DrawLine(BlackPen, 64, 0, 64, 127);
+				e.Graphics.DrawLine(BlackPen, 0, 63, 127, 63);
 
 				if (Global.MovieSession != null && Global.MovieSession.Movie != null && // For the desinger
 					Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished &&
@@ -136,21 +135,18 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var input = Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 2);
 
-					var x = input.GetFloat(XName);
-					var y = input.GetFloat(YName);
+					var x = (int)input.GetFloat(XName);
+					var y = (int)input.GetFloat(YName);
 
-					var xx = RealToGFX((int)x);
-					var yy = RealToGFX((int)y);
-
-					e.Graphics.DrawLine(new Pen(Brushes.Gray), 64, 63, xx, 127 - yy);
-					e.Graphics.DrawImage(graydot, xx - 3, 127 - yy - 3);
+					e.Graphics.DrawLine(GrayPen, 64, 63, RealToGFX(x), 127 - RealToGFX(y));
+					e.Graphics.DrawImage(GrayDot, RealToGFX(x) - 3, 127 - RealToGFX(y) - 3);
 				}
 
 				//Line
 				if (HasValue)
 				{
-					e.Graphics.DrawLine(_bluePen, 64, 63, RealToGFX(X), 127 - RealToGFX(Y));
-					e.Graphics.DrawImage(dot, RealToGFX(X) - 3, 127 - RealToGFX(Y) - 3);
+					e.Graphics.DrawLine(BluePen, 64, 63, RealToGFX(X), 127 - RealToGFX(Y));
+					e.Graphics.DrawImage(Dot, RealToGFX(X) - 3, 127 - RealToGFX(Y) - 3);
 				}
 			}
 		}
