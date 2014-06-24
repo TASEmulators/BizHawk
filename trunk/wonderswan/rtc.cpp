@@ -60,7 +60,7 @@ namespace MDFN_IEN_WSWAN
 			if(Command == 0x15)
 			{
 				tm newtime;
-				uint64 now = userealtime ? time(0) : CurrentTime;
+				uint64 now = userealtime ? time(nullptr) : CurrentTime;
 				GMTime(now, newtime);
 
 				switch(wsCA15)
@@ -87,7 +87,7 @@ namespace MDFN_IEN_WSWAN
 		if (realtime)
 		{
 			userealtime = true;
-			CurrentTime = time(0);
+			CurrentTime = time(nullptr);
 		}
 		else
 		{
