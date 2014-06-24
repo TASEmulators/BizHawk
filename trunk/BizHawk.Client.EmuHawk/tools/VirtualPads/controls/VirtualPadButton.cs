@@ -39,6 +39,19 @@ namespace BizHawk.Client.EmuHawk
 			base.WndProc(ref m);
 		}
 
+		protected override void OnPaint(PaintEventArgs e)
+		{
+			base.OnPaint(e);
+			if (RightClicked)
+			{
+				ControlPaint.DrawBorder(e.Graphics, ClientRectangle,
+										SystemColors.HotTrack, 1, ButtonBorderStyle.Inset,
+										SystemColors.HotTrack, 1, ButtonBorderStyle.Inset,
+										SystemColors.HotTrack, 1, ButtonBorderStyle.Inset,
+										SystemColors.HotTrack, 1, ButtonBorderStyle.Inset);
+			}
+		}
+
 		public bool RightClicked
 		{
 			get
