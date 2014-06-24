@@ -31,22 +31,22 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
-			BorderStyle = BorderStyle.Fixed3D;
 			InitializeComponent();
-
+			Dock = DockStyle.Top | DockStyle.Left;
 			_schema = schema;
 		}
 
 		private void VirtualPadControl_Load(object sender, EventArgs e)
 		{
 			Size = _schema.DefaultSize;
-
+			MaximumSize = _schema.MaxSize ?? _schema.DefaultSize;
+			PadBox.Text = _schema.DisplayName;
 			foreach (var button in _schema.Buttons)
 			{
 				switch (button.Type)
 				{
 					case PadSchema.PadInputType.Boolean:
-						Controls.Add(new VirtualPadButton
+						PadBox.Controls.Add(new VirtualPadButton
 						{
 							Name = button.Name,
 							Text = button.DisplayName,
@@ -55,14 +55,14 @@ namespace BizHawk.Client.EmuHawk
 						});
 						break;
 					case PadSchema.PadInputType.AnalogStick:
-						Controls.Add(new VirtualPadAnalogStick
+						PadBox.Controls.Add(new VirtualPadAnalogStick
 						{
 							Name = button.Name,
 							Location = button.Location
 						});
 						break;
 					case PadSchema.PadInputType.TargetedPair:
-						Controls.Add(new VirtualPadTargetScreen
+						PadBox.Controls.Add(new VirtualPadTargetScreen
 						{
 							Name = button.Name,
 							Location = button.Location,
@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 						});
 						break;
 					case PadSchema.PadInputType.FloatSingle:
-						Controls.Add(new VirtualPadAnalogButton
+						PadBox.Controls.Add(new VirtualPadAnalogButton
 						{
 							Name = button.Name,
 							DisplayName = button.DisplayName,
