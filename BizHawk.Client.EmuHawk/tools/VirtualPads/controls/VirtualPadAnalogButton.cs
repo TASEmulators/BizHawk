@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private string _displayName = string.Empty;
 		private int _maxValue = 0;
-
+		private bool _programmaticallyChangingValue = false;
 		public VirtualPadAnalogButton()
 		{
 			InitializeComponent();
@@ -59,6 +59,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public int CurrentValue
+		{
+			get
+			{
+				return AnalogTrackBar.Value;
+			}
+
+			set
+			{
+				_programmaticallyChangingValue = true;
+				AnalogTrackBar.Value = value;
+				ValueLabel.Text = AnalogTrackBar.Value.ToString();
+				_programmaticallyChangingValue = false;
+			}
+		}
+
 		public void Clear()
 		{
 			// Nothing to do
@@ -66,20 +82,21 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Set(IController controller)
 		{
-			// TODO
+			var newVal = (int)controller.GetFloat(Name);
+			var changed = AnalogTrackBar.Value != newVal;
+			if (changed)
+			{
+				CurrentValue = newVal;
+			}
 		}
 
 		private void AnalogTrackBar_ValueChanged(object sender, EventArgs e)
 		{
-			ValueLabel.Text = AnalogTrackBar.Value.ToString();
-			Refresh();
-			Global.StickyXORAdapter.SetFloat(Name, AnalogTrackBar.Value);
-		}
-
-		public void UpdateValues()
-		{
-			AnalogTrackBar.Value = (int)Global.StickyXORAdapter.GetFloat(Name);
-			base.Update();
+			if (!_programmaticallyChangingValue)
+			{
+				CurrentValue = AnalogTrackBar.Value;
+				Global.StickyXORAdapter.SetFloat(Name, AnalogTrackBar.Value);
+			}
 		}
 	}
 }
