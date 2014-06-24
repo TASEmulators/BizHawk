@@ -28,6 +28,9 @@ namespace BizHawk.Client.EmuHawk
 					case "Zapper":
 						schemaL = Zapper(1);
 						break;
+					case "ArkanoidNES":
+						schemaL = ArkanoidPaddle(1);
+						break;
 				}
 
 				if (schemaL != null)
@@ -49,6 +52,9 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					case "Zapper":
 						schemaR = Zapper(2);
+						break;
+					case "ArkanoidNES":
+						schemaR = ArkanoidPaddle(2);
 						break;
 				}
 
@@ -179,13 +185,36 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// TODO
-		private static PadSchema ArkanoidPaddle()
+		private static PadSchema ArkanoidPaddle(int controller)
 		{
-			return new PadSchema();
+			return new PadSchema
+			{
+				IsConsole = false,
+				DefaultSize = new Size(380, 110),
+				Buttons = new[]
+				{
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Paddle",
+						DisplayName = "Arkanoid Paddle",
+						Location = new Point(14, 2),
+						Type = PadSchema.PadInputType.FloatSingle,
+						TargetSize = new Size(375, 75),
+						MaxValue = 160
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Fire",
+						DisplayName = "Fire",
+						Location = new Point(14, 80),
+						Type = PadSchema.PadInputType.Boolean
+					}
+				}
+			};
 		}
 
 		// TODO
-		private static PadSchema PowerPad()
+		private static PadSchema PowerPad(int controller)
 		{
 			return new PadSchema();
 		}
