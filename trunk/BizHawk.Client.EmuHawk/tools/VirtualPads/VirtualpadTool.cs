@@ -53,10 +53,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ClearVirtualPadHolds()
 		{
-			ControllerBox.Controls
-				.OfType<IVirtualPad>()
-				.ToList()
-				.ForEach(pad => pad.Clear());
+			Pads.ForEach(pad => pad.Clear());
 		}
 
 		public void BumpAnalogValue(int? dx, int? dy) // TODO: multi-player
@@ -123,12 +120,16 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			Pads.ForEach(p => p.Refresh());
-
-			if (!StickyBox.Checked)
+			if (Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished)
 			{
-				Pads.ForEach(pad => pad.Clear());
+				Pads.ForEach(p => p.Set(Global.MovieOutputHardpoint));
 			}
+
+			// TODO
+			//if (!StickyBox.Checked)
+			//{
+			//	Pads.ForEach(pad => pad.Clear());
+			//}
 		}
 
 		#endregion

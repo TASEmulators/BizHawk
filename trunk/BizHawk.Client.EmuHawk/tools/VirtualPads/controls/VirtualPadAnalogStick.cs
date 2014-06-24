@@ -7,10 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadAnalogStick : UserControl, IVirtualPadControl
 	{
+		private bool _programmaticallyUpdatingNumerics = false;
+
 		public VirtualPadAnalogStick()
 		{
 			InitializeComponent();
@@ -22,6 +26,10 @@ namespace BizHawk.Client.EmuHawk
 			AnalogStick.Name = Name.Replace("X", "Y"); // TODO: allow schema to dictate this but this is a convenient default
 			MaxXNumeric.Value = 127;
 			MaxYNumeric.Value = 127; // Note: these trigger change events that change the analog stick too
+		}
+
+		public void Set(IController controller)
+		{
 		}
 
 		public void Clear()
@@ -50,9 +58,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SetAnalogControlFromNumerics();
 		}
-
-
-		private bool _programmaticallyUpdatingNumerics = false;
 
 		private void SetAnalogControlFromNumerics()
 		{
