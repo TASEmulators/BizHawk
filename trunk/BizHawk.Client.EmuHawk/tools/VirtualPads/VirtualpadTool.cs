@@ -120,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
+			if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished && Global.Emulator.Frame > 0)
 			{
 				Pads.ForEach(p => p.Set(Global.MovieSession.CurrentInput));
 			}
