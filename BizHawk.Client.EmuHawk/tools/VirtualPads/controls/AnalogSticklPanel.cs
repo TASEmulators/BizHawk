@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -61,10 +62,7 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.Opaque, true);
 			BackColor = Color.Gray;
 			Paint += AnalogControlPanel_Paint;
-			new Pen(_whiteBrush);
 			_blackPen = new Pen(_blackBrush);
-			new Pen(_grayBrush);
-			new Pen(_redBrush);
 			_bluePen = new Pen(_blueBrush);
 			BorderStyle = BorderStyle.Fixed3D;
 			
@@ -133,9 +131,10 @@ namespace BizHawk.Client.EmuHawk
 				e.Graphics.DrawLine(_blackPen, 0, 63, 127, 63);
 
 				if (Global.MovieSession != null && Global.MovieSession.Movie != null && // For the desinger
-					Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
+					Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished &&
+					Global.Emulator.Frame > 1)
 				{
-					var input = Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1);
+					var input = Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 2);
 
 					var x = input.GetFloat(XName);
 					var y = input.GetFloat(YName);
@@ -180,7 +179,6 @@ namespace BizHawk.Client.EmuHawk
 			Capture = false;
 		}
 
-
 		protected override void WndProc(ref Message m)
 		{
 			if (m.Msg == 0x007B) //WM_CONTEXTMENU
@@ -214,6 +212,17 @@ namespace BizHawk.Client.EmuHawk
 			X = Y = 0;
 			HasValue = false;
 			Refresh();
+		}
+
+		public void Set(IController controller)
+		{
+			var newX = (int)controller.GetFloat(XName);
+			var newY = (int)controller.GetFloat(YName);
+			var changed = newX != X || newY != Y;
+			if (changed)
+			{
+				SetPosition(newX, newY);
+			}
 		}
 
 		public void SetPosition(int xval, int yval)

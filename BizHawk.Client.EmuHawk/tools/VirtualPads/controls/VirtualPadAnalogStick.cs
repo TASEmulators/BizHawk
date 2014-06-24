@@ -23,13 +23,16 @@ namespace BizHawk.Client.EmuHawk
 		private void VirtualPadAnalogStick_Load(object sender, EventArgs e)
 		{
 			AnalogStick.Name = Name;
-			AnalogStick.Name = Name.Replace("X", "Y"); // TODO: allow schema to dictate this but this is a convenient default
+			AnalogStick.XName = Name;
+			AnalogStick.YName = Name.Replace("X", "Y"); // TODO: allow schema to dictate this but this is a convenient default
 			MaxXNumeric.Value = 127;
 			MaxYNumeric.Value = 127; // Note: these trigger change events that change the analog stick too
 		}
 
 		public void Set(IController controller)
 		{
+			AnalogStick.Set(controller);
+			SetNumericsFromAnalog();
 		}
 
 		public void Clear()
