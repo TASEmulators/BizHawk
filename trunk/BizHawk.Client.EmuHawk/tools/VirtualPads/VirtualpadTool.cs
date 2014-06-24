@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -67,38 +68,21 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ControllerBox.Controls.Clear();
 
-			// TODO: be more clever than this
-			switch(Global.Emulator.SystemId)
+			var schemaType = Assembly
+				.GetExecutingAssembly()
+				.GetTypes()
+				.Where(t => typeof(IVirtualPadSchema)
+					.IsAssignableFrom(t) && t.GetCustomAttributes(false)
+					.OfType<SchemaAttributes>()
+					.Any())
+				.FirstOrDefault(t => t.GetCustomAttributes(false)
+					.OfType<SchemaAttributes>()
+					.First().SystemId == Global.Emulator.SystemId);
+			
+			if (schemaType != null)
 			{
-				case "NES":
-					ControllerBox.Controls.AddRange(new NesSchema().GetPads().ToArray());
-					break;
-				case "N64":
-					ControllerBox.Controls.Add(new VirtualPad(
-						N64Schema.StandardController(1))
-					{
-						Location = new Point(15, 15)
-					});
-					break;
-				case "SMS":
-				case "SG":
-				case "GG": // TODO: test if all 3 of these are needed
-					ControllerBox.Controls.Add(new VirtualPad(
-						SmsSchema.StandardController(1))
-					{
-						Location = new Point(15, 15)
-					});
-					break;
-				case "PCE":
-					ControllerBox.Controls.AddRange(new PceSchema().GetPads().ToArray());
-					break;
-				case "SNES":
-					ControllerBox.Controls.Add(new VirtualPad(
-						SnesSchema.StandardController(1))
-					{
-						Location = new Point(15, 15)
-					});
-					break;
+				var pads = (Activator.CreateInstance(schemaType) as IVirtualPadSchema).GetPads();
+				ControllerBox.Controls.AddRange(pads.ToArray());
 			}
 		}
 
