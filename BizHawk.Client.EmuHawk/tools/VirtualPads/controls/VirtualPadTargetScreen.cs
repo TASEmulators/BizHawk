@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -97,6 +98,11 @@ namespace BizHawk.Client.EmuHawk
 		public void Clear()
 		{
 			// Nothing to do
+		}
+
+		public void Set(IController controller)
+		{
+
 		}
 
 		private void UpdatePanelFromNumeric()

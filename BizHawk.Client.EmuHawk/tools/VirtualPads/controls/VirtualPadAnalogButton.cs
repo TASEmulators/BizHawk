@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using System.Drawing;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -58,9 +59,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		// TODO
 		public void Clear()
 		{
+			// Nothing to do
+		}
+
+		public void Set(IController controller)
+		{
+			// TODO
 		}
 
 		private void AnalogTrackBar_ValueChanged(object sender, EventArgs e)
@@ -70,6 +76,10 @@ namespace BizHawk.Client.EmuHawk
 			Global.StickyXORAdapter.SetFloat(Name, AnalogTrackBar.Value);
 		}
 
-		
+		public void UpdateValues()
+		{
+			AnalogTrackBar.Value = (int)Global.StickyXORAdapter.GetFloat(Name);
+			base.Update();
+		}
 	}
 }

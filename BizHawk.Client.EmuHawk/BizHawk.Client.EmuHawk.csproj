@@ -904,7 +904,6 @@
     <Compile Include="tools\VirtualPads\controls\VirtualPadTargetScreen.Designer.cs">
       <DependentUpon>VirtualPadTargetScreen.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\VirtualPads\IVirtualPad.cs" />
     <Compile Include="tools\VirtualPads\schema\GBASchema.cs" />
     <Compile Include="tools\VirtualPads\schema\GBSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\Gen6ButtonSchema.cs" />

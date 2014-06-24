@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using System.Drawing;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -26,8 +27,7 @@ namespace BizHawk.Client.EmuHawk
 			switch (m.Msg)
 			{
 				case 0x0204: // WM_RBUTTONDOWN
-					_rightClicked = true;
-					ForeColor = SystemColors.HotTrack;
+					RightClicked = true;
 					Checked ^= true;
 					return;
 				case 0x0205: // WM_RBUTTONUP
@@ -39,7 +39,28 @@ namespace BizHawk.Client.EmuHawk
 			base.WndProc(ref m);
 		}
 
-		protected void SetSticky()
+		public bool RightClicked
+		{
+			get
+			{
+				return _rightClicked;
+			}
+
+			set
+			{
+				_rightClicked = value;
+				if (_rightClicked)
+				{
+					ForeColor = SystemColors.HotTrack;
+				}
+				else
+				{
+					ForeColor = SystemColors.ControlText;
+				}
+			}
+		}
+
+		private void SetSticky()
 		{
 			Global.StickyXORAdapter.SetSticky(Name, Checked);
 
@@ -49,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		protected void SetAutofireSticky()
+		private void SetAutofireSticky()
 		{
 			Global.AutofireStickyXORAdapter.SetSticky(Name, Checked);
 
@@ -61,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnCheckedChanged(EventArgs e)
 		{
-			if (_rightClicked)
+			if (RightClicked)
 			{
 				SetAutofireSticky();
 			}
@@ -77,8 +98,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				_rightClicked = false;
-				ForeColor = SystemColors.ControlText;
+				RightClicked = false;
 			}
 
 			base.OnMouseClick(e);
@@ -86,11 +106,22 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Clear()
 		{
-			_rightClicked = false;
-			ForeColor = SystemColors.ControlText;
+			RightClicked = false;
 			Checked = false;
 			Global.AutofireStickyXORAdapter.SetSticky(Name, false);
 			Global.StickyXORAdapter.SetSticky(Name, false);
+		}
+
+		public void Set(IController controller)
+		{
+			var newVal = controller.IsPressed(Name);
+			var changed = newVal != Checked;
+
+			Checked = newVal;
+			if (changed)
+			{
+				Refresh();
+			}
 		}
 	}
 }

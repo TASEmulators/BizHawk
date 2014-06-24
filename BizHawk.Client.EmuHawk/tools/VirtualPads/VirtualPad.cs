@@ -12,9 +12,19 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class VirtualPad : UserControl, IVirtualPad
+	public partial class VirtualPad : UserControl
 	{
 		private PadSchema _schema;
+
+		private List<IVirtualPadControl> Pads
+		{
+			get
+			{
+				return Controls
+					.OfType<IVirtualPadControl>()
+					.ToList();
+			}
+		}
 
 		public VirtualPad(PadSchema schema)
 		{
@@ -78,22 +88,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Clear()
 		{
-			Controls
-				.OfType<IVirtualPadControl>()
-				.ToList()
-				.ForEach(c => {
-					c.Clear();
-				});
-		}
-
-		public IController Get()
-		{
-			return Global.MovieSession.MovieControllerInstance();
+			Pads.ForEach(c => c.Clear());
 		}
 
 		public void Set(IController controller)
 		{
-			
+			Pads.ForEach(c => c.Set(controller));
 		}
 	}
 }
