@@ -41,6 +41,20 @@ namespace BizHawk.Client.Common
 			return adapter;
 		}
 
+		// Convenience property that gets the controller state from the movie for the most recent frame
+		public IController CurrentInput
+		{
+			get
+			{
+				if (Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished)
+				{
+					return Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1);
+				}
+
+				return null;
+			}
+		}
+
 		private void Output(string message)
 		{
 			if (MessageCallback != null)

@@ -120,9 +120,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished)
+			if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
 			{
-				Pads.ForEach(p => p.Set(Global.MovieOutputHardpoint));
+				Pads.ForEach(p => p.Set(Global.MovieSession.CurrentInput));
 			}
 
 			// TODO
