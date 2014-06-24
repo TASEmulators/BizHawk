@@ -465,6 +465,7 @@ namespace MDFN_IEN_WSWAN
 				POP(I.regs.w[CW]);
 				POP(I.regs.w[AW]);
 				CLK(8);
+				(void)tmp;
 			} OP_EPILOGUE;
 
 			OP( 0x62, i_chkind  ) 
