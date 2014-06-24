@@ -58,7 +58,18 @@ namespace BizHawk.Client.EmuHawk
 							Location = button.Location,
 							XName = button.Name,
 							YName = button.SecondaryNames[0],
-							FireButton = button.SecondaryNames[1]
+							FireButton = button.SecondaryNames[1],
+							Size = button.TargetSize
+						});
+						break;
+					case PadSchema.PadInputType.FloatSingle:
+						Controls.Add(new VirtualPadAnalogButton
+						{
+							Name = button.Name,
+							DisplayName = button.DisplayName,
+							Location = button.Location,
+							Size = button.TargetSize,
+							MaxValue = button.MaxValue
 						});
 						break;
 				}
