@@ -12,10 +12,36 @@ namespace BizHawk.Client.EmuHawk
 		private string _displayName = string.Empty;
 		private int _maxValue = 0;
 		private bool _programmaticallyChangingValue = false;
+
 		public VirtualPadAnalogButton()
 		{
 			InitializeComponent();
 		}
+
+		#region IVirtualPadControl Implementation
+
+		public void Clear()
+		{
+			// Nothing to do
+		}
+
+		public void Set(IController controller)
+		{
+			var newVal = (int)controller.GetFloat(Name);
+			var changed = AnalogTrackBar.Value != newVal;
+			if (changed)
+			{
+				CurrentValue = newVal;
+			}
+		}
+
+		public bool ReadOnly
+		{
+			get;
+			set; // TODO
+		}
+
+		#endregion
 
 		private void VirtualPadAnalogButton_Load(object sender, EventArgs e)
 		{
@@ -72,21 +98,6 @@ namespace BizHawk.Client.EmuHawk
 				AnalogTrackBar.Value = value;
 				ValueLabel.Text = AnalogTrackBar.Value.ToString();
 				_programmaticallyChangingValue = false;
-			}
-		}
-
-		public void Clear()
-		{
-			// Nothing to do
-		}
-
-		public void Set(IController controller)
-		{
-			var newVal = (int)controller.GetFloat(Name);
-			var changed = AnalogTrackBar.Value != newVal;
-			if (changed)
-			{
-				CurrentValue = newVal;
 			}
 		}
 
