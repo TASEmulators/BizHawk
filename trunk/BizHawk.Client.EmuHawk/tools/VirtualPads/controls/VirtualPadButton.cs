@@ -10,6 +10,7 @@ namespace BizHawk.Client.EmuHawk
 	public class VirtualPadButton : CheckBox, IVirtualPadControl
 	{
 		private bool _rightClicked = false;
+		private bool _readonly = false;
 
 		public VirtualPadButton()
 		{
@@ -26,10 +27,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Clear()
 		{
-			RightClicked = false;
-			Checked = false;
-			Global.AutofireStickyXORAdapter.SetSticky(Name, false);
-			Global.StickyXORAdapter.SetSticky(Name, false);
+			if (!ReadOnly)
+			{
+				RightClicked = false;
+				Checked = false;
+				Global.AutofireStickyXORAdapter.SetSticky(Name, false);
+				Global.StickyXORAdapter.SetSticky(Name, false);
+			}
 		}
 
 		public void Set(IController controller)
@@ -46,7 +50,22 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool ReadOnly
 		{
-			get; set; // TODO
+			get
+			{
+				return _readonly;
+			}
+
+			set
+			{
+				var changed = _readonly != value;
+				RightClicked = false;
+				Checked = false;
+				_readonly = value;
+				if (changed)
+				{
+					Refresh();
+				}
+			}
 		}
 
 		#endregion
@@ -56,8 +75,11 @@ namespace BizHawk.Client.EmuHawk
 			switch (m.Msg)
 			{
 				case 0x0204: // WM_RBUTTONDOWN
-					RightClicked = true;
-					Checked ^= true;
+					if (!ReadOnly)
+					{
+						RightClicked = true;
+						Checked ^= true;
+					}
 					return;
 				case 0x0205: // WM_RBUTTONUP
 					return;
@@ -71,7 +93,15 @@ namespace BizHawk.Client.EmuHawk
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
-			if (RightClicked)
+			if (ReadOnly)
+			{
+				ControlPaint.DrawBorder(e.Graphics, ClientRectangle,
+										SystemColors.ControlDark, 1, ButtonBorderStyle.Inset,
+										SystemColors.ControlDark, 1, ButtonBorderStyle.Inset,
+										SystemColors.ControlDark, 1, ButtonBorderStyle.Inset,
+										SystemColors.ControlDark, 1, ButtonBorderStyle.Inset);
+			}
+			else if (RightClicked)
 			{
 				ControlPaint.DrawBorder(e.Graphics, ClientRectangle,
 										SystemColors.HotTrack, 1, ButtonBorderStyle.Inset,
@@ -85,40 +115,23 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				return _rightClicked;
+				return !ReadOnly && _rightClicked;
 			}
 
 			set
 			{
-				_rightClicked = value;
-				if (_rightClicked)
+				if (!ReadOnly)
 				{
-					ForeColor = SystemColors.HotTrack;
+					_rightClicked = value;
+					if (_rightClicked)
+					{
+						ForeColor = SystemColors.HotTrack;
+					}
+					else
+					{
+						ForeColor = SystemColors.ControlText;
+					}
 				}
-				else
-				{
-					ForeColor = SystemColors.ControlText;
-				}
-			}
-		}
-
-		private void SetSticky()
-		{
-			Global.StickyXORAdapter.SetSticky(Name, Checked);
-
-			if (Checked == false)
-			{
-				Clear();
-			}
-		}
-
-		private void SetAutofireSticky()
-		{
-			Global.AutofireStickyXORAdapter.SetSticky(Name, Checked);
-
-			if (Checked == false)
-			{
-				Clear();
 			}
 		}
 
@@ -126,11 +139,21 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (RightClicked)
 			{
-				SetAutofireSticky();
+				Global.AutofireStickyXORAdapter.SetSticky(Name, Checked);
+
+				if (Checked == false)
+				{
+					Clear();
+				}
 			}
 			else
 			{
-				SetSticky();
+				Global.StickyXORAdapter.SetSticky(Name, Checked);
+
+				if (Checked == false)
+				{
+					Clear();
+				}
 			}
 
 			base.OnCheckedChanged(e);
@@ -138,12 +161,23 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnMouseClick(MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Left)
+			if (!ReadOnly)
 			{
-				RightClicked = false;
-			}
+				if (e.Button == MouseButtons.Left)
+				{
+					RightClicked = false;
+				}
 
-			base.OnMouseClick(e);
+				base.OnMouseClick(e);
+			}
+		}
+
+		protected override void OnClick(EventArgs e)
+		{
+			if (!ReadOnly)
+			{
+				base.OnClick(e);
+			}
 		}
 	}
 }

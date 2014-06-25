@@ -45,6 +45,7 @@
 			this.PadsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.ClearAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.StickyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.DebugReadonlyButton = new System.Windows.Forms.Button();
 			this.PadMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -188,11 +189,22 @@
 			this.StickyMenuItem.Text = "Sticky";
 			this.StickyMenuItem.Click += new System.EventHandler(this.StickyMenuItem_Click);
 			// 
+			// DebugReadonlyButton
+			// 
+			this.DebugReadonlyButton.Location = new System.Drawing.Point(265, 26);
+			this.DebugReadonlyButton.Name = "DebugReadonlyButton";
+			this.DebugReadonlyButton.Size = new System.Drawing.Size(175, 23);
+			this.DebugReadonlyButton.TabIndex = 12;
+			this.DebugReadonlyButton.Text = "ReadOnlyToggle delete me";
+			this.DebugReadonlyButton.UseVisualStyleBackColor = true;
+			this.DebugReadonlyButton.Click += new System.EventHandler(this.DebugReadonlyButton_Click);
+			// 
 			// VirtualpadTool
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(452, 312);
+			this.Controls.Add(this.DebugReadonlyButton);
 			this.Controls.Add(this.ControllerBox);
 			this.Controls.Add(this.StickyBox);
 			this.Controls.Add(this.ClearButton);
@@ -226,5 +238,6 @@
 		private System.Windows.Forms.ToolStripMenuItem ClearAllMenuItem;
 		private System.Windows.Forms.GroupBox ControllerBox;
 		private System.Windows.Forms.ToolStripMenuItem StickyMenuItem;
+		private System.Windows.Forms.Button DebugReadonlyButton;
 	}
 }

@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (ss.Controllers[i].IsConnected)
 				{
-					yield return new VirtualPad(StandardController(i));
+					yield return new VirtualPad(StandardController(i + 1));
 				}
 			}
 		}
