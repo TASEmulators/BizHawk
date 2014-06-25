@@ -107,6 +107,9 @@ namespace BizHawk.Client.EmuHawk
 				buckets[i] = new List<string>();
 			}
 
+			// by iterating through only the controller's active buttons, we're silently
+			// discarding anything that's not on the controller right now.  due to the way
+			// saving works, those entries will still be preserved in the config file, tho
 			foreach (var button in controllerButtons)
 			{
 				int i;
@@ -380,6 +383,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ButtonSaveDefaults_Click(object sender, EventArgs e)
 		{
+			// this doesn't work anymore, as it stomps out any defaults for buttons that aren't currently active on the console
+			// there are various ways to fix it, each with its own semantic problems
 			var result = MessageBox.Show(this, "OK to overwrite defaults for current control scheme?", "Save Defaults", MessageBoxButtons.YesNo);
 			if (result == DialogResult.Yes)
 			{
