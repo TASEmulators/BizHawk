@@ -107,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 				buckets[i] = new List<string>();
 			}
 
-			foreach (var button in settings.Keys)
+			foreach (var button in controllerButtons)
 			{
 				int i;
 				for (i = 1; i <= MAXPLAYERS; i++)
