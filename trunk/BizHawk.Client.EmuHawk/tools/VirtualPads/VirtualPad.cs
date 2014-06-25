@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				return Controls
+				return PadBox.Controls
 					.OfType<IVirtualPadControl>()
 					.ToList();
 			}

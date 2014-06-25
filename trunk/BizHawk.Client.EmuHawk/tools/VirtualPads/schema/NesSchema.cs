@@ -54,6 +54,10 @@ namespace BizHawk.Client.EmuHawk
 							yield return new VirtualPad(StandardController(2));
 							currentControlerNo += 2;
 							break;
+						case "PowerPad":
+							yield return new VirtualPad(PowerPad(1));
+							currentControlerNo++;
+							break;
 					}
 
 					switch (ss.Controls.NesRightPort)
@@ -74,6 +78,9 @@ namespace BizHawk.Client.EmuHawk
 							yield return new VirtualPad(StandardController(currentControlerNo));
 							yield return new VirtualPad(StandardController(currentControlerNo + 1));
 							currentControlerNo += 2;
+							break;
+						case "PowerPad":
+							yield return new VirtualPad(PowerPad(currentControlerNo));
 							break;
 					}
 
@@ -245,7 +252,7 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " Zapper X",
-						Location = new Point(14, 2),
+						Location = new Point(14, 17),
 						Type = PadSchema.PadInputType.TargetedPair,
 						TargetSize = new Size(256, 240),
 						SecondaryNames = new []
@@ -258,7 +265,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = "P" + controller + " Fire",
 						DisplayName = "Fire",
-						Location = new Point(284, 2),
+						Location = new Point(284, 17),
 						Type = PadSchema.PadInputType.Boolean
 					}
 				}
@@ -279,16 +286,16 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = "P" + controller + " Paddle",
 						DisplayName = "Arkanoid Paddle",
-						Location = new Point(14, 2),
+						Location = new Point(14, 17),
 						Type = PadSchema.PadInputType.FloatSingle,
-						TargetSize = new Size(375, 75),
+						TargetSize = new Size(380, 69),
 						MaxValue = 160
 					},
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " Fire",
 						DisplayName = "Fire",
-						Location = new Point(14, 80),
+						Location = new Point(14, 85),
 						Type = PadSchema.PadInputType.Boolean
 					}
 				}
@@ -298,7 +305,100 @@ namespace BizHawk.Client.EmuHawk
 		// TODO
 		private static PadSchema PowerPad(int controller)
 		{
-			return new PadSchema();
+			return new PadSchema
+			{
+				DisplayName = "Power Pad",
+				IsConsole = false,
+				DefaultSize = new Size(154, 114),
+				Buttons = new[]
+				{
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " PP1",
+						DisplayName = "1  ",
+						Location = new Point(14, 17),
+						Type = PadSchema.PadInputType.Boolean,
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " PP2",
+						DisplayName = "2  ",
+						Location = new Point(45, 17),
+						Type = PadSchema.PadInputType.Boolean,
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " PP3",
+						DisplayName = "3  ",
+						Location = new Point(76, 17),
+						Type = PadSchema.PadInputType.Boolean,
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " PP4",
+						DisplayName = "4  ",
+						Location = new Point(107, 17),
+						Type = PadSchema.PadInputType.Boolean,
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " PP5",
+						DisplayName = "5  ",
+						Location = new Point(14, 48),
+						Type = PadSchema.PadInputType.Boolean,
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " PP6",
+						DisplayName = "6  ",
+						Location = new Point(45, 48),
+						Type = PadSchema.PadInputType.Boolean,
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " PP7",
+						DisplayName = "7  ",
+						Location = new Point(76, 48),
+						Type = PadSchema.PadInputType.Boolean,
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " PP8",
+						DisplayName = "8  ",
+						Location = new Point(107, 48),
+						Type = PadSchema.PadInputType.Boolean,
+					},
+
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " PP9",
+						DisplayName = "9  ",
+						Location = new Point(14, 79),
+						Type = PadSchema.PadInputType.Boolean,
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " PP10",
+						DisplayName = "10",
+						Location = new Point(45, 79),
+						Type = PadSchema.PadInputType.Boolean,
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " PP11",
+						DisplayName = "11",
+						Location = new Point(76, 79),
+						Type = PadSchema.PadInputType.Boolean,
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " PP12",
+						DisplayName = "12",
+						Location = new Point(107, 79),
+						Type = PadSchema.PadInputType.Boolean,
+					}
+				}
+			};
 		}
 	}
 }
