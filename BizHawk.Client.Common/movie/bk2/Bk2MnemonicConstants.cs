@@ -118,6 +118,8 @@ namespace BizHawk.Client.Common
 						{ "PP10", 'A' },
 						{ "PP11", 'B' },
 						{ "PP12", 'C' },
+						{ "Click", 'C' },
+						{ "Touch", 'T' },
 					}
 				},
 				{
