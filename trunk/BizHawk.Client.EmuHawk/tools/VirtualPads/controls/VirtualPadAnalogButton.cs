@@ -12,6 +12,7 @@ namespace BizHawk.Client.EmuHawk
 		private string _displayName = string.Empty;
 		private int _maxValue = 0;
 		private bool _programmaticallyChangingValue = false;
+		private bool _readonly = false;
 
 		public VirtualPadAnalogButton()
 		{
@@ -37,8 +38,25 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool ReadOnly
 		{
-			get;
-			set; // TODO
+			get
+			{
+				return _readonly;
+			}
+
+			set
+			{
+				var changed = _readonly != value;
+
+				AnalogTrackBar.Enabled =
+					ValueLabel.Enabled =
+					!value;
+
+				_readonly = value;
+				if (changed)
+				{
+					Refresh();
+				}
+			}
 		}
 
 		#endregion
