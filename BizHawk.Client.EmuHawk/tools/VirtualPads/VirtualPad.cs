@@ -52,7 +52,6 @@ namespace BizHawk.Client.EmuHawk
 							Text = button.DisplayName,
 							Location = button.Location,
 							Image = button.Icon,
-							ReadOnly = true
 						});
 						break;
 					case PadSchema.PadInputType.AnalogStick:
