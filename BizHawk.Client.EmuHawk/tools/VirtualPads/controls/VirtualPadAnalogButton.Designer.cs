@@ -57,7 +57,7 @@
 			// 
 			this.ValueLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.ValueLabel.AutoSize = true;
-			this.ValueLabel.Location = new System.Drawing.Point(297, 7);
+			this.ValueLabel.Location = new System.Drawing.Point(265, 51);
 			this.ValueLabel.Name = "ValueLabel";
 			this.ValueLabel.Size = new System.Drawing.Size(37, 13);
 			this.ValueLabel.TabIndex = 2;
