@@ -16,9 +16,11 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly Pen BlackPen = new Pen(Brushes.Black, 2);
 		private readonly Pen WhitePen = new Pen(Brushes.White, 2);
+		private readonly Pen GrayPen = new Pen(Brushes.Gray, 2);
 
 		private bool _isProgrammicallyChangingNumerics = false;
 		private bool _isDragging = false;
+		private bool _readonly = false;
 
 		public VirtualPadTargetScreen()
 		{
@@ -55,8 +57,27 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool ReadOnly
 		{
-			get;
-			set; // TODO
+			get
+			{
+				return _readonly;
+			}
+
+			set
+			{
+				var changed = _readonly != value;
+
+				XNumeric.Enabled =
+					XLabel.Enabled =
+					YNumeric.Enabled =
+					YLabel.Enabled =
+					!value;
+
+				_readonly = value;
+				if (changed)
+				{
+					Refresh();
+				}
+			}
 		}
 
 		#endregion
@@ -137,24 +158,24 @@ namespace BizHawk.Client.EmuHawk
 		{
 
 			e.Graphics.DrawEllipse(
-				Fire ? WhitePen : BlackPen,
+				ReadOnly ? GrayPen : Fire ? WhitePen : BlackPen,
 				X - 10,
 				Y - 10,
 				21,
 				21);
 
 			e.Graphics.DrawLine(
-				Fire ? WhitePen : BlackPen,
+				ReadOnly ? GrayPen : Fire ? WhitePen : BlackPen,
 				new Point(X, Y - 10),
 				new Point(X, Y + 10));
 
 			e.Graphics.DrawLine(
-				Fire ? WhitePen : BlackPen,
+				ReadOnly ? GrayPen : Fire ? WhitePen : BlackPen,
 				new Point(X - 10, Y),
 				new Point(X + 10, Y));
 
 			e.Graphics.FillEllipse(
-				Brushes.Red,
+				ReadOnly ? Brushes.Gray : Brushes.Red,
 				new Rectangle(X - 2, Y - 2, 4, 4));
 		}
 
@@ -180,7 +201,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TargetPanel_MouseDown(object sender, MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Left)
+			if (e.Button == MouseButtons.Left && !ReadOnly)
 			{
 				_isDragging = true;
 				X = e.X;
@@ -191,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TargetPanel_MouseMove(object sender, MouseEventArgs e)
 		{
-			if (_isDragging)
+			if (_isDragging && !ReadOnly)
 			{
 				_isProgrammicallyChangingNumerics = true;
 				X = e.X;
