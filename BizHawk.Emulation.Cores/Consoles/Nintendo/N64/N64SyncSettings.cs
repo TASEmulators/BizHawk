@@ -53,9 +53,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public N64ControllerSettings[] Controllers = 
 		{
 			new N64ControllerSettings(),
-			new N64ControllerSettings(),
-			new N64ControllerSettings(),
-			new N64ControllerSettings()
+			new N64ControllerSettings { IsConnected = false, },
+			new N64ControllerSettings { IsConnected = false, },
+			new N64ControllerSettings { IsConnected = false, },
 		};
 
 		public N64RicePluginSettings RicePlugin = new N64RicePluginSettings();
@@ -490,7 +490,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		}
 
 		[JsonIgnore]
-		private N64ControllerPakType _type = N64ControllerPakType.MEMORY_CARD;
+		private N64ControllerPakType _type = N64ControllerPakType.NO_PAK;
 
 		/// <summary>
 		/// Type of the pak inserted in the controller
