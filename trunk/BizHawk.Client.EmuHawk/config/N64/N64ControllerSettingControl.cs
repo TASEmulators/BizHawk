@@ -91,5 +91,10 @@ namespace BizHawk.Client.EmuHawk
 			ControllerNameLabel.Text = "Controller " + ControllerNumber;
 			base.Refresh();
 		}
+
+		private void EnabledCheckbox_CheckedChanged(object sender, EventArgs e)
+		{
+			PakTypeDropdown.Enabled = EnabledCheckbox.Checked;
+		}
 	}
 }
