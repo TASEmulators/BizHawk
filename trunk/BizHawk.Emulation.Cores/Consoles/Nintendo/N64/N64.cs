@@ -556,30 +556,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				{
 					ControllerDefinition.BoolButtons.AddRange(new []
 					{
-						"P" + i + "A Up",
-						"P" + i + "A Down",
-						"P" + i + "A Left",
-						"P" + i + "A Right",
-						"P" + i + "DPad U",
-						"P" + i + "DPad D",
-						"P" + i + "DPad L",
-						"P" + i + "DPad R",
-						"P" + i + "Start",
-						"P" + i + "Z",
-						"P" + i + "B",
-						"P" + i + "A",
-						"P" + i + "C Up",
-						"P" + i + "C Down",
-						"P" + i + "C Right",
-						"P" + i + "C Left",
-						"P" + i + "L",
-						"P" + i + "R", 
+						"P" + (i + 1) + "A Up",
+						"P" + (i + 1) + "A Down",
+						"P" + (i + 1) + "A Left",
+						"P" + (i + 1) + "A Right",
+						"P" + (i + 1) + "DPad U",
+						"P" + (i + 1) + "DPad D",
+						"P" + (i + 1) + "DPad L",
+						"P" + (i + 1) + "DPad R",
+						"P" + (i + 1) + "Start",
+						"P" + (i + 1) + "Z",
+						"P" + (i + 1) + "B",
+						"P" + (i + 1) + "A",
+						"P" + (i + 1) + "C Up",
+						"P" + (i + 1) + "C Down",
+						"P" + (i + 1) + "C Right",
+						"P" + (i + 1) + "C Left",
+						"P" + (i + 1) + "L",
+						"P" + (i + 1) + "R", 
 					});
 
 					ControllerDefinition.FloatControls.AddRange(new[]
 					{
-						"P" + i + " X Axis",
-						"P" + i + " Y Axis",
+						"P" + (i + 1) + " X Axis",
+						"P" + (i + 1) + " Y Axis",
 					});
 				}
 			}
