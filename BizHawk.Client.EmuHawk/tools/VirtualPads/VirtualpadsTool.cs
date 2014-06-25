@@ -200,6 +200,11 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		private void DebugReadonlyButton_Click(object sender, EventArgs e)
+		{
+			Pads.ForEach(p => p.ToggleReadOnly());
+		}
+
 		#endregion
 	}
 }

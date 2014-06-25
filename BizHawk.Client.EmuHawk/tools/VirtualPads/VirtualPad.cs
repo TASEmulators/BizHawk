@@ -51,7 +51,8 @@ namespace BizHawk.Client.EmuHawk
 							Name = button.Name,
 							Text = button.DisplayName,
 							Location = button.Location,
-							Image = button.Icon
+							Image = button.Icon,
+							ReadOnly = true
 						});
 						break;
 					case PadSchema.PadInputType.AnalogStick:
@@ -88,7 +89,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Clear()
 		{
-			Pads.ForEach(c => c.Clear());
+			Pads.ForEach(p => p.Clear());
+		}
+
+		public void ToggleReadOnly()
+		{
+			Pads.ForEach(p => p.ReadOnly ^= true);
 		}
 
 		public void Set(IController controller)
