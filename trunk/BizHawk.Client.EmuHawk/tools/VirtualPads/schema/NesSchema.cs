@@ -25,6 +25,22 @@ namespace BizHawk.Client.EmuHawk
 					switch (ss.Controls.FamicomExpPort)
 					{
 						default:
+						case "UnpluggedFam":
+							break;
+						case "Zapper":
+							yield return new VirtualPad(Zapper(3));
+							break;
+						case "ArkanoidFam":
+							yield return new VirtualPad(ArkanoidPaddle(3));
+							break;
+						case "Famicom4P":
+							yield return new VirtualPad(StandardController(3));
+							yield return new VirtualPad(StandardController(4));
+							break;
+						case "FamilyBasicKeyboard":
+							break;
+						case "OekaKids":
+							yield return new VirtualPad(OekaKidsTablet(3));
 							break;
 					}
 				}
@@ -35,7 +51,6 @@ namespace BizHawk.Client.EmuHawk
 					{
 						default:
 						case "UnpluggedNES":
-						case "UnpluggedFam":
 							break;
 						case "ControllerNES":
 							yield return new VirtualPad(StandardController(1));
@@ -302,7 +317,6 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		// TODO
 		private static PadSchema PowerPad(int controller)
 		{
 			return new PadSchema
@@ -396,6 +410,46 @@ namespace BizHawk.Client.EmuHawk
 						DisplayName = "12",
 						Location = new Point(107, 79),
 						Type = PadSchema.PadInputType.Boolean,
+					}
+				}
+			};
+		}
+
+		private static PadSchema OekaKidsTablet(int controller)
+		{
+			return new PadSchema
+			{
+				DisplayName = "Zapper",
+				IsConsole = false,
+				DefaultSize = new Size(356, 260),
+				MaxSize = new Size(356, 260),
+				Buttons = new[]
+				{
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Pen X",
+						Location = new Point(14, 17),
+						Type = PadSchema.PadInputType.TargetedPair,
+						TargetSize = new Size(256, 240),
+						SecondaryNames = new []
+						{
+							"P" + controller + " Pen Y",
+							"P" + controller + " Click",
+						}
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Click",
+						DisplayName = "Click",
+						Location = new Point(284, 17),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Touch",
+						DisplayName = "Touch",
+						Location = new Point(284, 48),
+						Type = PadSchema.PadInputType.Boolean
 					}
 				}
 			};
