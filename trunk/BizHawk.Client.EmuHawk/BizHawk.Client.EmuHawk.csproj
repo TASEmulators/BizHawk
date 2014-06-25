@@ -879,7 +879,7 @@
     <Compile Include="tools\TraceLogger.Designer.cs">
       <DependentUpon>TraceLogger.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\VirtualPads\controls\AnalogSticklPanel.cs">
+    <Compile Include="tools\VirtualPads\controls\components\AnalogSticklPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\VirtualPads\controls\IVirtualPadControl.cs" />
@@ -924,11 +924,11 @@
     <Compile Include="tools\VirtualPads\VirtualPad.Designer.cs">
       <DependentUpon>VirtualPad.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\VirtualPads\VirtualpadTool.cs">
+    <Compile Include="tools\VirtualPads\VirtualpadsTool.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="tools\VirtualPads\VirtualpadTool.Designer.cs">
-      <DependentUpon>VirtualpadTool.cs</DependentUpon>
+    <Compile Include="tools\VirtualPads\VirtualpadsTool.Designer.cs">
+      <DependentUpon>VirtualpadsTool.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\Watch\RamPoke.cs">
       <SubType>Form</SubType>
@@ -1259,8 +1259,8 @@
     <EmbeddedResource Include="tools\VirtualPads\VirtualPad.resx">
       <DependentUpon>VirtualPad.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\VirtualPads\VirtualpadTool.resx">
-      <DependentUpon>VirtualpadTool.cs</DependentUpon>
+    <EmbeddedResource Include="tools\VirtualPads\VirtualpadsTool.resx">
+      <DependentUpon>VirtualpadsTool.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Watch\RamPoke.resx">
       <DependentUpon>RamPoke.cs</DependentUpon>
