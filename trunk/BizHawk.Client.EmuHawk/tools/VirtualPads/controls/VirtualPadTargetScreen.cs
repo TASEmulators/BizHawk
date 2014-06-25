@@ -40,7 +40,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Set(IController controller)
 		{
+			var newX = controller.GetFloat(XName);
+			var newY = controller.GetFloat(YName);
+			var changed = newX != X && newY != Y;
 
+			XNumeric.Value = (int)newX;
+			XNumeric.Value = (int)newY;
+
+			if (changed)
+			{
+				Refresh();
+			}
 		}
 
 		public bool ReadOnly
