@@ -30,8 +30,8 @@
 		{
 			this.TargetPanel = new System.Windows.Forms.Panel();
 			this.XNumeric = new System.Windows.Forms.NumericUpDown();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
+			this.XLabel = new System.Windows.Forms.Label();
+			this.YLabel = new System.Windows.Forms.Label();
 			this.YNumeric = new System.Windows.Forms.NumericUpDown();
 			((System.ComponentModel.ISupportInitialize)(this.XNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.YNumeric)).BeginInit();
@@ -62,25 +62,25 @@
 			this.XNumeric.ValueChanged += new System.EventHandler(this.XNumeric_ValueChanged);
 			this.XNumeric.KeyUp += new System.Windows.Forms.KeyEventHandler(this.XNumeric_KeyUp);
 			// 
-			// label1
+			// XLabel
 			// 
-			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(3, 233);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(14, 13);
-			this.label1.TabIndex = 2;
-			this.label1.Text = "X";
+			this.XLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.XLabel.AutoSize = true;
+			this.XLabel.Location = new System.Drawing.Point(3, 233);
+			this.XLabel.Name = "XLabel";
+			this.XLabel.Size = new System.Drawing.Size(14, 13);
+			this.XLabel.TabIndex = 2;
+			this.XLabel.Text = "X";
 			// 
-			// label2
+			// YLabel
 			// 
-			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(91, 233);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(14, 13);
-			this.label2.TabIndex = 4;
-			this.label2.Text = "Y";
+			this.YLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.YLabel.AutoSize = true;
+			this.YLabel.Location = new System.Drawing.Point(91, 233);
+			this.YLabel.Name = "YLabel";
+			this.YLabel.Size = new System.Drawing.Size(14, 13);
+			this.YLabel.TabIndex = 4;
+			this.YLabel.Text = "Y";
 			// 
 			// YNumeric
 			// 
@@ -96,9 +96,9 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.label2);
+			this.Controls.Add(this.YLabel);
 			this.Controls.Add(this.YNumeric);
-			this.Controls.Add(this.label1);
+			this.Controls.Add(this.XLabel);
 			this.Controls.Add(this.XNumeric);
 			this.Controls.Add(this.TargetPanel);
 			this.Name = "VirtualPadTargetScreen";
@@ -115,8 +115,8 @@
 
 		private System.Windows.Forms.Panel TargetPanel;
 		private System.Windows.Forms.NumericUpDown XNumeric;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label XLabel;
+		private System.Windows.Forms.Label YLabel;
 		private System.Windows.Forms.NumericUpDown YNumeric;
 	}
 }
