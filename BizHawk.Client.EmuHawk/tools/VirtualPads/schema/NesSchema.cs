@@ -38,10 +38,12 @@ namespace BizHawk.Client.EmuHawk
 							yield return new VirtualPad(StandardController(4));
 							break;
 						case "FamilyBasicKeyboard":
+							yield return new VirtualPad(FamicomFamilyKeyboard(3));
 							break;
 						case "OekaKids":
 							yield return new VirtualPad(OekaKidsTablet(3));
 							break;
+
 					}
 				}
 				else
@@ -451,6 +453,26 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(284, 48),
 						Type = PadSchema.PadInputType.Boolean
 					}
+				}
+			};
+		}
+
+		private static PadSchema FamicomFamilyKeyboard(int controller)
+		{
+			return new PadSchema
+			{
+				DisplayName = "Family Basic Keyoboard",
+				IsConsole = false,
+				DefaultSize = new Size(320, 240),
+				Buttons = new[]
+				{
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " F1",
+						DisplayName = "    F1    ",
+						Location = new Point(23, 15),
+						Type = PadSchema.PadInputType.Boolean
+					},
 				}
 			};
 		}
