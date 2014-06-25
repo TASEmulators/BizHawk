@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Cores.Nintendo.N64;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -11,26 +12,16 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IEnumerable<VirtualPad> GetPads()
 		{
-			yield return new VirtualPad(StandardController(1))
+			var ss = (N64SyncSettings)Global.Emulator.GetSyncSettings();
+			for (int i = 0; i < 4; i++)
 			{
-				Location = new Point(15, 15)
-			};
-
-			yield return new VirtualPad(StandardController(2))
-			{
-				Location = new Point(200, 15)
-			};
-
-			yield return new VirtualPad(StandardController(3))
-			{
-				Location = new Point(385, 15)
-			};
-
-			yield return new VirtualPad(StandardController(4))
-			{
-				Location = new Point(570, 15)
-			};
+				if (ss.Controllers[i].IsConnected)
+				{
+					yield return new VirtualPad(StandardController(i));
+				}
+			}
 		}
+
 		public static PadSchema StandardController(int controller)
 		{
 			return new PadSchema
@@ -82,14 +73,14 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = "P" + controller + " L",
 						DisplayName = "L",
-						Location = new Point(3, 148),
+						Location = new Point(3, 150),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " R",
 						DisplayName = "R",
-						Location = new Point(172, 148),
+						Location = new Point(172, 150),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema

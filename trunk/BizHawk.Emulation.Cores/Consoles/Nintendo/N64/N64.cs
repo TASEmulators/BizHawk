@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 using BizHawk.Common;
@@ -534,7 +535,54 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public bool PutSyncSettings(object o)
 		{
 			_syncSettings = (N64SyncSettings)o;
+			SetControllerButtons();
 			return true;
+		}
+
+		private void SetControllerButtons()
+		{
+			ControllerDefinition.BoolButtons.Clear();
+			ControllerDefinition.FloatControls.Clear();
+
+			ControllerDefinition.BoolButtons.AddRange(new[]
+			{
+				"Reset",
+				"Power"
+			});
+
+			for (int i = 0; i < 4; i++)
+			{
+				if (_syncSettings.Controllers[i].IsConnected)
+				{
+					ControllerDefinition.BoolButtons.AddRange(new []
+					{
+						"P" + i + "A Up",
+						"P" + i + "A Down",
+						"P" + i + "A Left",
+						"P" + i + "A Right",
+						"P" + i + "DPad U",
+						"P" + i + "DPad D",
+						"P" + i + "DPad L",
+						"P" + i + "DPad R",
+						"P" + i + "Start",
+						"P" + i + "Z",
+						"P" + i + "B",
+						"P" + i + "A",
+						"P" + i + "C Up",
+						"P" + i + "C Down",
+						"P" + i + "C Right",
+						"P" + i + "C Left",
+						"P" + i + "L",
+						"P" + i + "R", 
+					});
+
+					ControllerDefinition.FloatControls.AddRange(new[]
+					{
+						"P" + i + " X Axis",
+						"P" + i + " Y Axis",
+					});
+				}
+			}
 		}
 
 		#endregion
