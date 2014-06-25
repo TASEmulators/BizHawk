@@ -422,7 +422,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearBtn_Click(object sender, EventArgs e)
 		{
-			// TODO: make this recursive to not depend on the current structure
 			foreach (var c in Controls.OfType<Control>())
 			{
 				ClearWidgetAndChildren(c);
