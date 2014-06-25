@@ -22,6 +22,35 @@ namespace BizHawk.Client.EmuHawk
 			ForeColor = SystemColors.ControlText;
 		}
 
+		#region IVirtualPadControl Implementation
+
+		public void Clear()
+		{
+			RightClicked = false;
+			Checked = false;
+			Global.AutofireStickyXORAdapter.SetSticky(Name, false);
+			Global.StickyXORAdapter.SetSticky(Name, false);
+		}
+
+		public void Set(IController controller)
+		{
+			var newVal = controller.IsPressed(Name);
+			var changed = newVal != Checked;
+
+			Checked = newVal;
+			if (changed)
+			{
+				Refresh();
+			}
+		}
+
+		public bool ReadOnly
+		{
+			get; set; // TODO
+		}
+
+		#endregion
+
 		protected override void WndProc(ref Message m)
 		{
 			switch (m.Msg)
@@ -115,26 +144,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			base.OnMouseClick(e);
-		}
-
-		public void Clear()
-		{
-			RightClicked = false;
-			Checked = false;
-			Global.AutofireStickyXORAdapter.SetSticky(Name, false);
-			Global.StickyXORAdapter.SetSticky(Name, false);
-		}
-
-		public void Set(IController controller)
-		{
-			var newVal = controller.IsPressed(Name);
-			var changed = newVal != Checked;
-
-			Checked = newVal;
-			if (changed)
-			{
-				Refresh();
-			}
 		}
 	}
 }

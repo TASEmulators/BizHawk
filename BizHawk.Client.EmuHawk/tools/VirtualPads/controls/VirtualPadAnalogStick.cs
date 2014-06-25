@@ -29,6 +29,8 @@ namespace BizHawk.Client.EmuHawk
 			MaxYNumeric.Value = 127; // Note: these trigger change events that change the analog stick too
 		}
 
+		#region IVirtualPadControl Implementation
+
 		public void Set(IController controller)
 		{
 			AnalogStick.Set(controller);
@@ -41,6 +43,14 @@ namespace BizHawk.Client.EmuHawk
 			ManualX.Value = 0;
 			ManualY.Value = 0;
 		}
+
+		public bool ReadOnly
+		{
+			get;
+			set; // TODO
+		}
+
+		#endregion
 
 		private void ManualX_ValueChanged(object sender, EventArgs e)
 		{

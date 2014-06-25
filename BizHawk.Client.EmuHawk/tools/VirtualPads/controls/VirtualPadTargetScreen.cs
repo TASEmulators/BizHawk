@@ -31,6 +31,26 @@ namespace BizHawk.Client.EmuHawk
 			YNumeric.Maximum = TargetPanel.Height;
 		}
 
+		#region IVirtualPadControl Implementation
+
+		public void Clear()
+		{
+			// Nothing to do
+		}
+
+		public void Set(IController controller)
+		{
+
+		}
+
+		public bool ReadOnly
+		{
+			get;
+			set; // TODO
+		}
+
+		#endregion
+
 		public string XName { get; set; }
 		public string YName { get; set; }
 		public string FireButton { get; set; } // Fire, Press, etc
@@ -93,16 +113,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return Global.StickyXORAdapter.IsPressed(FireButton);
 			}
-		}
-
-		public void Clear()
-		{
-			// Nothing to do
-		}
-
-		public void Set(IController controller)
-		{
-
 		}
 
 		private void UpdatePanelFromNumeric()
