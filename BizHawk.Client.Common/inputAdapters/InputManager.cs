@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
-
+using BizHawk.Client.Common.InputAdapterExtensions;
 namespace BizHawk.Client.Common
 {
 	public static class InputManager
@@ -11,9 +11,7 @@ namespace BizHawk.Client.Common
 			Global.ControllerInputCoalescer.Clear();
 			Global.ControllerInputCoalescer.Type = Global.ActiveController.Type;
 
-			Global.OrControllerAdapter.Source = Global.ActiveController;
-			Global.OrControllerAdapter.SourceOr = Global.AutoFireController;
-			Global.UD_LR_ControllerAdapter.Source = Global.OrControllerAdapter;
+			Global.UD_LR_ControllerAdapter.Source = Global.ActiveController.Or(Global.AutoFireController);
 
 			Global.StickyXORAdapter.Source = Global.UD_LR_ControllerAdapter;
 			Global.AutofireStickyXORAdapter.Source = Global.StickyXORAdapter;
