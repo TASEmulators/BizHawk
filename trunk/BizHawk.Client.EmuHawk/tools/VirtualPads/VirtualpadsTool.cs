@@ -135,7 +135,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// TODO
-			if (!StickyBox.Checked)
+			if (!Readonly && !Global.Config.VirtualPadSticky)
 			{
 				Pads.ForEach(pad => pad.Clear());
 			}
