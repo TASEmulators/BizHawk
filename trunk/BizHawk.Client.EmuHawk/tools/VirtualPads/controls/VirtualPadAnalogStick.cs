@@ -14,6 +14,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class VirtualPadAnalogStick : UserControl, IVirtualPadControl
 	{
 		private bool _programmaticallyUpdatingNumerics = false;
+		private bool _readonly = false;
 
 		public VirtualPadAnalogStick()
 		{
@@ -46,8 +47,33 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool ReadOnly
 		{
-			get;
-			set; // TODO
+			get
+			{
+				return _readonly;
+			}
+
+			set
+			{
+				var changed = _readonly != value;
+
+				XLabel.Enabled =
+					ManualX.Enabled =
+					YLabel.Enabled =
+					ManualY.Enabled =
+					MaxLabel.Enabled =
+					MaxXNumeric.Enabled =
+					MaxYNumeric.Enabled =
+					!value;
+
+				AnalogStick.Readonly = 
+					_readonly =
+					value;
+				
+				if (changed)
+				{
+					Refresh();
+				}
+			}
 		}
 
 		#endregion
@@ -94,16 +120,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AnalogStick_MouseDown(object sender, MouseEventArgs e)
 		{
-			_programmaticallyUpdatingNumerics = true;
-			SetNumericsFromAnalog();
-			_programmaticallyUpdatingNumerics = false;
+			if (!ReadOnly)
+			{
+				_programmaticallyUpdatingNumerics = true;
+				SetNumericsFromAnalog();
+				_programmaticallyUpdatingNumerics = false;
+			}
 		}
 
 		private void AnalogStick_MouseMove(object sender, MouseEventArgs e)
 		{
-			_programmaticallyUpdatingNumerics = true;
-			SetNumericsFromAnalog();
-			_programmaticallyUpdatingNumerics = false;
+			if (!ReadOnly)
+			{
+				_programmaticallyUpdatingNumerics = true;
+				SetNumericsFromAnalog();
+				_programmaticallyUpdatingNumerics = false;
+			}
 		}
 
 		private void MaxXNumeric_ValueChanged(object sender, EventArgs e)
