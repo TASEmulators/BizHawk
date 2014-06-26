@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -11,9 +12,31 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IEnumerable<VirtualPad> GetPads()
 		{
-			yield return new VirtualPad(ThreeButtonController(1));
-
-			yield return new VirtualPad(SixButtonController(2));
+			var ss = (GPGX.GPGXSyncSettings)Global.Emulator.GetSyncSettings();
+			if (ss.ControlType == GPGX.ControlType.OnePlayer)
+			{
+				if (ss.UseSixButton)
+				{
+					yield return new VirtualPad(ThreeButtonController(1));
+				}
+			}
+			else if (ss.ControlType == GPGX.ControlType.Normal)
+			{
+				if (ss.UseSixButton)
+				{
+					yield return new VirtualPad(ThreeButtonController(1));
+					yield return new VirtualPad(ThreeButtonController(2));
+				}
+				else
+				{
+					yield return new VirtualPad(SixButtonController(1));
+					yield return new VirtualPad(SixButtonController(2));
+				}
+			}
+			else
+			{
+				yield return null;
+			}
 		}
 
 		public static PadSchema ThreeButtonController(int controller)
