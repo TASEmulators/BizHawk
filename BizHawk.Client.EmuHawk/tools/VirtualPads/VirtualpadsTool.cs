@@ -134,7 +134,6 @@ namespace BizHawk.Client.EmuHawk
 				Pads.ForEach(p => p.SetReadOnly(false));
 			}
 
-			// TODO
 			if (!Readonly && !Global.Config.VirtualPadSticky)
 			{
 				Pads.ForEach(pad => pad.Clear());
