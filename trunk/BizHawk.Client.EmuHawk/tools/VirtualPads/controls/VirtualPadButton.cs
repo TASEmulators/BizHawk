@@ -57,12 +57,15 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
-				var changed = _readonly != value;
-				RightClicked = false;
-				Checked = false;
-				_readonly = value;
-				if (changed)
+				if (_readonly != value)
 				{
+					_readonly = value;
+					RightClicked = false;
+					if (!value)
+					{
+						Checked = false;
+					}
+
 					Refresh();
 				}
 			}

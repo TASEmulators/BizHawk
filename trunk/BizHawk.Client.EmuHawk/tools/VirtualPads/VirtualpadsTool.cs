@@ -24,6 +24,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private bool Readonly
+		{
+			get
+			{
+				return Pads.First().ReadOnly; // Shortcut logic, assume all controls are in sync
+			}
+		}
+
 		public VirtualpadTool()
 		{
 			InitializeComponent();
@@ -127,10 +135,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// TODO
-			//if (!StickyBox.Checked)
-			//{
-			//	Pads.ForEach(pad => pad.Clear());
-			//}
+			if (!StickyBox.Checked)
+			{
+				Pads.ForEach(pad => pad.Clear());
+			}
 		}
 
 		#endregion

@@ -64,17 +64,15 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
-				var changed = _readonly != value;
-
-				XNumeric.Enabled =
-					XLabel.Enabled =
-					YNumeric.Enabled =
-					YLabel.Enabled =
-					!value;
-
-				_readonly = value;
-				if (changed)
+				if (_readonly != value)
 				{
+					XNumeric.Enabled =
+						XLabel.Enabled =
+						YNumeric.Enabled =
+						YLabel.Enabled =
+						!value;
+
+					_readonly = value;
 					Refresh();
 				}
 			}
