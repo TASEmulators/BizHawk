@@ -28,9 +28,9 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
+			this.XLabel = new System.Windows.Forms.Label();
 			this.ManualX = new System.Windows.Forms.NumericUpDown();
-			this.label2 = new System.Windows.Forms.Label();
+			this.YLabel = new System.Windows.Forms.Label();
 			this.ManualY = new System.Windows.Forms.NumericUpDown();
 			this.MaxLabel = new System.Windows.Forms.Label();
 			this.MaxXNumeric = new System.Windows.Forms.NumericUpDown();
@@ -42,14 +42,14 @@
 			((System.ComponentModel.ISupportInitialize)(this.MaxYNumeric)).BeginInit();
 			this.SuspendLayout();
 			// 
-			// label1
+			// XLabel
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(138, 7);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(14, 13);
-			this.label1.TabIndex = 23;
-			this.label1.Text = "X";
+			this.XLabel.AutoSize = true;
+			this.XLabel.Location = new System.Drawing.Point(138, 7);
+			this.XLabel.Name = "XLabel";
+			this.XLabel.Size = new System.Drawing.Size(14, 13);
+			this.XLabel.TabIndex = 23;
+			this.XLabel.Text = "X";
 			// 
 			// ManualX
 			// 
@@ -70,14 +70,14 @@
 			this.ManualX.ValueChanged += new System.EventHandler(this.ManualX_ValueChanged);
 			this.ManualX.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ManualX_KeyUp);
 			// 
-			// label2
+			// YLabel
 			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(138, 33);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(14, 13);
-			this.label2.TabIndex = 26;
-			this.label2.Text = "Y";
+			this.YLabel.AutoSize = true;
+			this.YLabel.Location = new System.Drawing.Point(138, 33);
+			this.YLabel.Name = "YLabel";
+			this.YLabel.Size = new System.Drawing.Size(14, 13);
+			this.YLabel.TabIndex = 26;
+			this.YLabel.Text = "Y";
 			// 
 			// ManualY
 			// 
@@ -152,6 +152,8 @@
 			this.AnalogStick.BackColor = System.Drawing.Color.Gray;
 			this.AnalogStick.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.AnalogStick.Location = new System.Drawing.Point(3, 3);
+			this.AnalogStick.MaxX = 127;
+			this.AnalogStick.MaxY = 127;
 			this.AnalogStick.Name = "AnalogStick";
 			this.AnalogStick.Size = new System.Drawing.Size(129, 129);
 			this.AnalogStick.TabIndex = 0;
@@ -165,10 +167,10 @@
 			this.Controls.Add(this.MaxYNumeric);
 			this.Controls.Add(this.MaxXNumeric);
 			this.Controls.Add(this.MaxLabel);
-			this.Controls.Add(this.label2);
+			this.Controls.Add(this.YLabel);
 			this.Controls.Add(this.ManualY);
 			this.Controls.Add(this.ManualX);
-			this.Controls.Add(this.label1);
+			this.Controls.Add(this.XLabel);
 			this.Controls.Add(this.AnalogStick);
 			this.Name = "VirtualPadAnalogStick";
 			this.Size = new System.Drawing.Size(204, 136);
@@ -185,9 +187,9 @@
 		#endregion
 
 		private AnalogStickPanel AnalogStick;
-		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label XLabel;
 		private System.Windows.Forms.NumericUpDown ManualX;
-		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label YLabel;
 		private System.Windows.Forms.NumericUpDown ManualY;
 		private System.Windows.Forms.Label MaxLabel;
 		private System.Windows.Forms.NumericUpDown MaxXNumeric;

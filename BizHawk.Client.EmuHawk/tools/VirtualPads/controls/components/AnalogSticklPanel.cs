@@ -11,6 +11,7 @@ namespace BizHawk.Client.EmuHawk
 		public int X = 0;
 		public int Y = 0;
 		public bool HasValue = false;
+		public bool Readonly { get; set; }
 
 		public string XName = string.Empty;
 		public string YName = string.Empty;
@@ -153,20 +154,23 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Left)
+			if (!Readonly)
 			{
-				X = GFXToReal(e.X - 64, true);
-				Y = GFXToReal(-(e.Y - 63), false);
-				HasValue = true;
-				SetAnalog();
-			}
-			else if (e.Button == MouseButtons.Right)
-			{
-				Clear();
-			}
+				if (e.Button == MouseButtons.Left)
+				{
+					X = GFXToReal(e.X - 64, true);
+					Y = GFXToReal(-(e.Y - 63), false);
+					HasValue = true;
+					SetAnalog();
+				}
+				else if (e.Button == MouseButtons.Right)
+				{
+					Clear();
+				}
 
-			Refresh();
-			base.OnMouseMove(e);
+				Refresh();
+				base.OnMouseMove(e);
+			}
 		}
 
 		protected override void OnMouseUp(MouseEventArgs e)
@@ -188,18 +192,21 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Left)
+			if (!Readonly)
 			{
-				X = GFXToReal(e.X - 64, true);
-				Y = GFXToReal(-(e.Y - 63), false);
-				HasValue = true;
-			}
-			if (e.Button == MouseButtons.Right)
-			{
-				Clear();
-			}
+				if (e.Button == MouseButtons.Left)
+				{
+					X = GFXToReal(e.X - 64, true);
+					Y = GFXToReal(-(e.Y - 63), false);
+					HasValue = true;
+				}
+				if (e.Button == MouseButtons.Right)
+				{
+					Clear();
+				}
 
-			Refresh();
+				Refresh();
+			}
 		}
 
 
