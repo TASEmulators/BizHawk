@@ -340,11 +340,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			ControllerDefinition = ControlConverter.ControllerDef;
 		}
 
-		public LibGPGX.INPUT_DEVICE GetDeviceAtPort(int i)
+		public LibGPGX.INPUT_DEVICE[] GetDevices()
 		{
-			if (i < 0 || i >= LibGPGX.MAX_DEVICES)
-				throw new IndexOutOfRangeException();
-			return input.dev[i];
+			return (LibGPGX.INPUT_DEVICE[])input.dev.Clone();
 		}
 
 		// core callback for input
