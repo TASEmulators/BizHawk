@@ -28,10 +28,12 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VirtualpadTool));
-			this.ClearButton = new System.Windows.Forms.Button();
-			this.StickyBox = new System.Windows.Forms.CheckBox();
 			this.ControllerBox = new System.Windows.Forms.GroupBox();
+			this.PadBoxContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.clearAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.stickyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PadMenu = new MenuStripEx();
 			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -45,42 +47,45 @@
 			this.PadsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.ClearAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.StickyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.PadBoxContextMenu.SuspendLayout();
 			this.PadMenu.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// ClearButton
-			// 
-			this.ClearButton.Location = new System.Drawing.Point(12, 27);
-			this.ClearButton.Name = "ClearButton";
-			this.ClearButton.Size = new System.Drawing.Size(75, 23);
-			this.ClearButton.TabIndex = 9;
-			this.ClearButton.TabStop = false;
-			this.ClearButton.Text = "&Clear";
-			this.ClearButton.UseVisualStyleBackColor = true;
-			this.ClearButton.Click += new System.EventHandler(this.ClearAllMenuItem_Click);
-			// 
-			// StickyBox
-			// 
-			this.StickyBox.AutoSize = true;
-			this.StickyBox.Location = new System.Drawing.Point(93, 30);
-			this.StickyBox.Name = "StickyBox";
-			this.StickyBox.Size = new System.Drawing.Size(55, 17);
-			this.StickyBox.TabIndex = 10;
-			this.StickyBox.TabStop = false;
-			this.StickyBox.Text = "Sticky";
-			this.StickyBox.UseVisualStyleBackColor = true;
 			// 
 			// ControllerBox
 			// 
 			this.ControllerBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.ControllerBox.Location = new System.Drawing.Point(12, 53);
+			this.ControllerBox.ContextMenuStrip = this.PadBoxContextMenu;
+			this.ControllerBox.Location = new System.Drawing.Point(12, 27);
 			this.ControllerBox.Name = "ControllerBox";
-			this.ControllerBox.Size = new System.Drawing.Size(431, 251);
+			this.ControllerBox.Size = new System.Drawing.Size(431, 277);
 			this.ControllerBox.TabIndex = 11;
 			this.ControllerBox.TabStop = false;
 			this.ControllerBox.Text = "Controllers";
+			// 
+			// PadBoxContextMenu
+			// 
+			this.PadBoxContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.clearAllToolStripMenuItem,
+            this.stickyToolStripMenuItem});
+			this.PadBoxContextMenu.Name = "PadBoxContextMenu";
+			this.PadBoxContextMenu.Size = new System.Drawing.Size(175, 48);
+			// 
+			// clearAllToolStripMenuItem
+			// 
+			this.clearAllToolStripMenuItem.Name = "clearAllToolStripMenuItem";
+			this.clearAllToolStripMenuItem.ShortcutKeyDisplayString = "Shift+Del";
+			this.clearAllToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+			this.clearAllToolStripMenuItem.Text = "Clear All";
+			this.clearAllToolStripMenuItem.Click += new System.EventHandler(this.ClearAllMenuItem_Click);
+			// 
+			// stickyToolStripMenuItem
+			// 
+			this.stickyToolStripMenuItem.Name = "stickyToolStripMenuItem";
+			this.stickyToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+			this.stickyToolStripMenuItem.Text = "Sticky";
+			this.stickyToolStripMenuItem.Click += new System.EventHandler(this.StickyMenuItem_Click);
 			// 
 			// PadMenu
 			// 
@@ -194,13 +199,12 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(452, 312);
 			this.Controls.Add(this.ControllerBox);
-			this.Controls.Add(this.StickyBox);
-			this.Controls.Add(this.ClearButton);
 			this.Controls.Add(this.PadMenu);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "VirtualpadTool";
 			this.Text = "Virtual Pads";
 			this.Load += new System.EventHandler(this.VirtualpadTool_Load);
+			this.PadBoxContextMenu.ResumeLayout(false);
 			this.PadMenu.ResumeLayout(false);
 			this.PadMenu.PerformLayout();
 			this.ResumeLayout(false);
@@ -221,10 +225,11 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PadsSubMenu;
-		private System.Windows.Forms.Button ClearButton;
-		private System.Windows.Forms.CheckBox StickyBox;
 		private System.Windows.Forms.ToolStripMenuItem ClearAllMenuItem;
 		private System.Windows.Forms.GroupBox ControllerBox;
 		private System.Windows.Forms.ToolStripMenuItem StickyMenuItem;
+		private System.Windows.Forms.ContextMenuStrip PadBoxContextMenu;
+		private System.Windows.Forms.ToolStripMenuItem clearAllToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem stickyToolStripMenuItem;
 	}
 }
