@@ -122,7 +122,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished && Global.Emulator.Frame > 0)
 			{
+				Pads.ForEach(p => p.SetReadOnly(true));
 				Pads.ForEach(p => p.Set(Global.MovieSession.CurrentInput));
+			}
+			else
+			{
+				Pads.ForEach(p => p.SetReadOnly(false));
 			}
 
 			// TODO
@@ -199,11 +204,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
-
-		private void DebugReadonlyButton_Click(object sender, EventArgs e)
-		{
-			Pads.ForEach(p => p.ToggleReadOnly());
-		}
 
 		#endregion
 	}

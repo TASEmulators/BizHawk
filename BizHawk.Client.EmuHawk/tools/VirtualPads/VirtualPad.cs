@@ -96,6 +96,11 @@ namespace BizHawk.Client.EmuHawk
 			Pads.ForEach(p => p.ReadOnly ^= true);
 		}
 
+		public void SetReadOnly(bool readOnly)
+		{
+			Pads.ForEach(p => p.ReadOnly = readOnly);
+		}
+
 		public void Set(IController controller)
 		{
 			Pads.ForEach(c => c.Set(controller));
