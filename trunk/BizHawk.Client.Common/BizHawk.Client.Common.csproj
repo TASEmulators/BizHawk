@@ -111,7 +111,10 @@
     </Compile>
     <Compile Include="Global.cs" />
     <Compile Include="helpers\InputValidate.cs" />
-    <Compile Include="InputManager.cs" />
+    <Compile Include="inputAdapters\BitwiseAdapters.cs" />
+    <Compile Include="inputAdapters\InputAdapterExtensions.cs" />
+    <Compile Include="inputAdapters\InputAdapters.cs" />
+    <Compile Include="inputAdapters\InputManager.cs" />
     <Compile Include="IPS.cs" />
     <Compile Include="KeyTurbo.cs" />
     <Compile Include="lua\EmuLuaLibrary.Bit.cs" />
@@ -153,7 +156,6 @@
     <Compile Include="movie\bkm\BkmMovie.ModeApi.cs" />
     <Compile Include="movie\conversions\MovieConversionExtensions.cs" />
     <Compile Include="movie\HeaderKeys.cs" />
-    <Compile Include="movie\InputAdapters.cs" />
     <Compile Include="movie\interfaces\ILogEntryGenerator.cs" />
     <Compile Include="movie\interfaces\IMovie.cs" />
     <Compile Include="movie\interfaces\IMovieController.cs" />
@@ -215,6 +217,7 @@
       <Name>BizHawk.Bizware.BizwareGL</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>

@@ -56,11 +56,6 @@ namespace BizHawk.Client.Common
 		public static AutoFireStickyXorAdapter AutofireStickyXORAdapter = new AutoFireStickyXorAdapter();
 
 		/// <summary>
-		/// will OR together two IControllers
-		/// </summary>
-		public static ORAdapter OrControllerAdapter = new ORAdapter();
-
-		/// <summary>
 		/// provides an opportunity to mutate the player's input in an autohold style
 		/// </summary>
 		public static StickyXorAdapter StickyXORAdapter = new StickyXorAdapter();

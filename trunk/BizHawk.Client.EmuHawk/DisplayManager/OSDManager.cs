@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Collections.Generic;
 
 using BizHawk.Client.Common;
-
+using BizHawk.Client.Common.InputAdapterExtensions;
 using BizHawk.Bizware.BizwareGL;
 
 namespace BizHawk.Client.EmuHawk
@@ -261,16 +261,9 @@ namespace BizHawk.Client.EmuHawk
 				Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1) :
 				Global.MovieSession.MovieControllerInstance();
 
-			var orAdaptor = new ORAdapter()
-			{
-				Source = Global.AutofireStickyXORAdapter,
-				SourceOr = m
-			};
-
-
 			var lg = Global.MovieSession.LogGeneratorInstance();
 
-			lg.SetSource(orAdaptor);
+			lg.SetSource(Global.AutofireStickyXORAdapter.Or(m));
 			return lg.GenerateInputDisplay();
 		}
 
@@ -293,17 +286,11 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				var m = Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished ?
-				Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1) :
-				Global.MovieSession.MovieControllerInstance();
-
-				var andAdaptor = new AndAdapter
-				{
-					Source = Global.AutofireStickyXORAdapter,
-					SourceAnd = m
-				};
+					Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1) :
+					Global.MovieSession.MovieControllerInstance();
 
 				var lg = Global.MovieSession.LogGeneratorInstance();
-				lg.SetSource(andAdaptor);
+				lg.SetSource(Global.AutofireStickyXORAdapter.And(m));
 				return lg.GenerateInputDisplay();
 			}
 
