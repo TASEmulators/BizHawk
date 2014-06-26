@@ -36,8 +36,6 @@ namespace BizHawk.Client.EmuHawk
 			_defaultWidth = Size.Width;
 			_defaultHeight = Size.Height;
 
-			StickyBox.Checked = Global.Config.VirtualPadSticky;
-
 			if (Global.Config.VirtualPadSettings.UseWindowPosition)
 			{
 				Location = Global.Config.VirtualPadSettings.WindowPosition;
@@ -89,8 +87,6 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.VirtualPadSettings.Wndy = Location.Y;
 			Global.Config.VirtualPadSettings.Width = Right - Left;
 			Global.Config.VirtualPadSettings.Height = Bottom - Top;
-
-			Global.Config.VirtualPadSticky = StickyBox.Checked;
 		}
 
 		private void RefreshFloatingWindowControl()
@@ -190,7 +186,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PadsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			StickyMenuItem.Checked = StickyBox.Checked;
+			StickyMenuItem.Checked = Global.Config.VirtualPadSticky;
 		}
 
 		private void ClearAllMenuItem_Click(object sender, EventArgs e)
@@ -200,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StickyMenuItem_Click(object sender, EventArgs e)
 		{
-			StickyBox.Checked ^= true;
+			Global.Config.VirtualPadSticky ^= true;
 		}
 
 		#endregion
