@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 					MaxYNumeric.Enabled =
 					!value;
 
-				AnalogStick.Readonly = 
+				AnalogStick.ReadOnly = 
 					_readonly =
 					value;
 				

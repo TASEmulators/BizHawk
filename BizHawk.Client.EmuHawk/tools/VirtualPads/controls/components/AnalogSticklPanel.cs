@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 		public int X = 0;
 		public int Y = 0;
 		public bool HasValue = false;
-		public bool Readonly { get; set; }
+		public bool ReadOnly { get; set; }
 
 		public string XName = string.Empty;
 		public string YName = string.Empty;
@@ -47,9 +47,12 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Brush GrayBrush = Brushes.LightGray;
 		private readonly Brush RedBrush = Brushes.Red;
 		private readonly Brush BlueBrush = Brushes.DarkBlue;
+		private readonly Brush OffWhiteBrush = Brushes.Beige;
+
 		private readonly Pen BlackPen = new Pen(Brushes.Black);
-		private readonly Pen BluePen = new Pen(Brushes.Blue);
+		private readonly Pen BluePen = new Pen(Brushes.Blue, 2);
 		private readonly Pen GrayPen = new Pen(Brushes.LightGray);
+		private readonly Pen OffWhite = new Pen(Brushes.Beige);
 
 		private readonly Bitmap Dot = new Bitmap(7, 7);
 		private readonly Bitmap GrayDot = new Bitmap(7, 7);
@@ -125,36 +128,23 @@ namespace BizHawk.Client.EmuHawk
 			{
 				//Background
 				e.Graphics.FillRectangle(GrayBrush, 0, 0, 128, 128);
-				e.Graphics.FillEllipse(WhiteBrush, 0, 0, 127, 127);
+				e.Graphics.FillEllipse(ReadOnly ? OffWhiteBrush : WhiteBrush, 0, 0, 127, 127);
 				e.Graphics.DrawEllipse(BlackPen, 0, 0, 127, 127);
 				e.Graphics.DrawLine(BlackPen, 64, 0, 64, 127);
 				e.Graphics.DrawLine(BlackPen, 0, 63, 127, 63);
-
-				if (Global.MovieSession != null && Global.MovieSession.Movie != null && // For the desinger
-					Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished &&
-					Global.Emulator.Frame > 1)
-				{
-					var input = Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 2);
-
-					var x = (int)input.GetFloat(XName);
-					var y = (int)input.GetFloat(YName);
-
-					e.Graphics.DrawLine(GrayPen, 64, 63, RealToGFX(x), 127 - RealToGFX(y));
-					e.Graphics.DrawImage(GrayDot, RealToGFX(x) - 3, 127 - RealToGFX(y) - 3);
-				}
 
 				//Line
 				if (HasValue)
 				{
 					e.Graphics.DrawLine(BluePen, 64, 63, RealToGFX(X), 127 - RealToGFX(Y));
-					e.Graphics.DrawImage(Dot, RealToGFX(X) - 3, 127 - RealToGFX(Y) - 3);
+					e.Graphics.DrawImage(ReadOnly ? GrayDot : Dot, RealToGFX(X) - 3, 127 - RealToGFX(Y) - 3);
 				}
 			}
 		}
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
-			if (!Readonly)
+			if (!ReadOnly)
 			{
 				if (e.Button == MouseButtons.Left)
 				{
@@ -192,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			if (!Readonly)
+			if (!ReadOnly)
 			{
 				if (e.Button == MouseButtons.Left)
 				{
