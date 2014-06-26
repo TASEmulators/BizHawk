@@ -16,13 +16,21 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private PadSchema _schema;
 
-		private List<IVirtualPadControl> Pads
+		private List<IVirtualPadControl> PadControls
 		{
 			get
 			{
 				return PadBox.Controls
 					.OfType<IVirtualPadControl>()
 					.ToList();
+			}
+		}
+
+		public bool ReadOnly
+		{
+			get
+			{
+				return PadControls.First().ReadOnly; // Shortcut logic, assume all controls are in sync
 			}
 		}
 
@@ -88,22 +96,22 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Clear()
 		{
-			Pads.ForEach(p => p.Clear());
+			PadControls.ForEach(p => p.Clear());
 		}
 
 		public void ToggleReadOnly()
 		{
-			Pads.ForEach(p => p.ReadOnly ^= true);
+			PadControls.ForEach(p => p.ReadOnly ^= true);
 		}
 
 		public void SetReadOnly(bool readOnly)
 		{
-			Pads.ForEach(p => p.ReadOnly = readOnly);
+			PadControls.ForEach(p => p.ReadOnly = readOnly);
 		}
 
 		public void Set(IController controller)
 		{
-			Pads.ForEach(c => c.Set(controller));
+			PadControls.ForEach(c => c.Set(controller));
 		}
 	}
 }

@@ -54,23 +54,21 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
-				var changed = _readonly != value;
-
-				XLabel.Enabled =
-					ManualX.Enabled =
-					YLabel.Enabled =
-					ManualY.Enabled =
-					MaxLabel.Enabled =
-					MaxXNumeric.Enabled =
-					MaxYNumeric.Enabled =
-					!value;
-
-				AnalogStick.ReadOnly = 
-					_readonly =
-					value;
-				
-				if (changed)
+				if (_readonly != value)
 				{
+					XLabel.Enabled =
+						ManualX.Enabled =
+						YLabel.Enabled =
+						ManualY.Enabled =
+						MaxLabel.Enabled =
+						MaxXNumeric.Enabled =
+						MaxYNumeric.Enabled =
+						!value;
+
+					AnalogStick.ReadOnly = 
+						_readonly =
+						value;
+				
 					Refresh();
 				}
 			}
