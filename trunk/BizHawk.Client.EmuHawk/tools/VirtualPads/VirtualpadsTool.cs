@@ -13,6 +13,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private int _defaultWidth;
 		private int _defaultHeight;
+		private bool _readOnly = false;
 
 		private List<VirtualPad> Pads
 		{
@@ -24,11 +25,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool Readonly
+		
+		public bool Readonly
 		{
 			get
 			{
-				return Pads.First().ReadOnly; // Shortcut logic, assume all controls are in sync
+				return _readOnly;
+			}
+
+			set
+			{
+				_readOnly = value;
+				Pads.ForEach(p => p.ReadOnly = value);
 			}
 		}
 
@@ -129,12 +137,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished && Global.Emulator.Frame > 0)
 			{
-				Pads.ForEach(p => p.SetReadOnly(true));
+				Readonly = true;
 				Pads.ForEach(p => p.Set(Global.MovieSession.CurrentInput));
 			}
 			else
 			{
-				Pads.ForEach(p => p.SetReadOnly(false));
+				Readonly = false;
 			}
 
 			if (!Readonly && !Global.Config.VirtualPadSticky)
