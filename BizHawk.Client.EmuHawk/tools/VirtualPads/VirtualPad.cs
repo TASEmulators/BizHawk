@@ -15,6 +15,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class VirtualPad : UserControl
 	{
 		private PadSchema _schema;
+		private bool _readOnly = false;
 
 		private List<IVirtualPadControl> PadControls
 		{
@@ -30,7 +31,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				return PadControls.First().ReadOnly; // Shortcut logic, assume all controls are in sync
+				return _readOnly;
+			}
+
+			set
+			{
+				_readOnly = value;
+				PadControls.ForEach(c => c.ReadOnly = value);
 			}
 		}
 
@@ -97,16 +104,6 @@ namespace BizHawk.Client.EmuHawk
 		public void Clear()
 		{
 			PadControls.ForEach(p => p.Clear());
-		}
-
-		public void ToggleReadOnly()
-		{
-			PadControls.ForEach(p => p.ReadOnly ^= true);
-		}
-
-		public void SetReadOnly(bool readOnly)
-		{
-			PadControls.ForEach(p => p.ReadOnly = readOnly);
 		}
 
 		public void Set(IController controller)
