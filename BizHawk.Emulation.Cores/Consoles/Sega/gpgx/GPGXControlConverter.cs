@@ -53,13 +53,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		static CName[] Mouse =
 		{
-			new CName("Left Button", LibGPGX.INPUT_KEYS.INPUT_MOUSE_LEFT),
-			new CName("Center Button", LibGPGX.INPUT_KEYS.INPUT_MOUSE_CENTER),
-			new CName("Right Button", LibGPGX.INPUT_KEYS.INPUT_MOUSE_RIGHT),
-			new CName("Start Button", LibGPGX.INPUT_KEYS.INPUT_MOUSE_START),
+			new CName("Mouse Left", LibGPGX.INPUT_KEYS.INPUT_MOUSE_LEFT),
+			new CName("Mouse Center", LibGPGX.INPUT_KEYS.INPUT_MOUSE_CENTER),
+			new CName("Mouse Right", LibGPGX.INPUT_KEYS.INPUT_MOUSE_RIGHT),
+			new CName("Mouse Start", LibGPGX.INPUT_KEYS.INPUT_MOUSE_START),
+		};
+
+		static CName[] Lightgun =
+		{
+			new CName("Lightgun Trigger", LibGPGX.INPUT_KEYS.INPUT_MENACER_TRIGGER),
+			new CName("Lightgun Start", LibGPGX.INPUT_KEYS.INPUT_MENACER_START),
 		};
 
 		static ControllerDefinition.FloatRange MouseRange = new ControllerDefinition.FloatRange(-512, 0, 511);
+		static ControllerDefinition.FloatRange LightgunX = new ControllerDefinition.FloatRange(0, 160, 319);
+		static ControllerDefinition.FloatRange LightgunY = new ControllerDefinition.FloatRange(0, 112, 223);
 
 		LibGPGX.InputData target = null;
 		IController source = null;
@@ -85,12 +93,27 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		void DoMouseAnalog(int idx, int player)
 		{
-			string NX = string.Format("P{0} X", player);
-			string NY = string.Format("P{0} Y", player);
+			string NX = string.Format("P{0} Mouse X", player);
+			string NY = string.Format("P{0} Mouse Y", player);
 			ControllerDef.FloatControls.Add(NX);
 			ControllerDef.FloatControls.Add(NY);
 			ControllerDef.FloatRanges.Add(MouseRange);
 			ControllerDef.FloatRanges.Add(MouseRange);
+			Converts.Add(delegate()
+			{
+				target.analog[(2 * idx) + 0] = (short)source.GetFloat(NX);
+				target.analog[(2 * idx) + 1] = (short)source.GetFloat(NY);
+			});
+		}
+
+		void DoLightgunAnalog(int idx, int player)
+		{
+			string NX = string.Format("P{0} Lightgun X", player);
+			string NY = string.Format("P{0} Lightgun Y", player);
+			ControllerDef.FloatControls.Add(NX);
+			ControllerDef.FloatControls.Add(NY);
+			ControllerDef.FloatRanges.Add(LightgunX);
+			ControllerDef.FloatRanges.Add(LightgunY);
 			Converts.Add(delegate()
 			{
 				target.analog[(2 * idx) + 0] = (short)source.GetFloat(NX);
@@ -131,6 +154,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						player++;
 						break;
 					case LibGPGX.INPUT_DEVICE.DEVICE_NONE:
+						break;
+					case LibGPGX.INPUT_DEVICE.DEVICE_LIGHTGUN:
+						// is this always a menacer??????
+						AddToController(i, player, Lightgun);
+						DoLightgunAnalog(i, player);
+						player++;
 						break;
 					default:
 						throw new Exception("Unhandled control device!  Something needs to be implemented first.");
