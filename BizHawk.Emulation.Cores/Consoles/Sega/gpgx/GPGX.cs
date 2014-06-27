@@ -38,7 +38,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		LibGPGX.InputData input = new LibGPGX.InputData();
 
-		// still working out what all the possibilities are here
 		public enum ControlType
 		{
 			None,
