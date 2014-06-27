@@ -112,6 +112,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						break;
 					case ControlType.Mouse:
 						system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_MD_GAMEPAD;
+						// seems like mouse in port 1 would be supported, but not both at the same time
 						system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_MOUSE;
 						break;
 				}
