@@ -12,34 +12,25 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IEnumerable<PadSchema> GetPadSchemas()
 		{
-			var ss = (GPGX.GPGXSyncSettings)Global.Emulator.GetSyncSettings();
-			if (ss.ControlType == GPGX.ControlType.OnePlayer)
+			var devs = ((GPGX)Global.Emulator).GetDevices();
+			int player = 1;
+			foreach (var dev in devs)
 			{
-				if (ss.UseSixButton)
+				switch (dev)
 				{
-					yield return SixButtonController(1);
+					case LibGPGX.INPUT_DEVICE.DEVICE_NONE:
+						continue; // do not increment player number
+					case LibGPGX.INPUT_DEVICE.DEVICE_PAD3B:
+						yield return ThreeButtonController(player);
+						break;
+					case LibGPGX.INPUT_DEVICE.DEVICE_PAD6B:
+						yield return SixButtonController(player);
+						break;
+					default:
+						// todo
+						break;
 				}
-				else
-				{
-					yield return ThreeButtonController(2);
-				}
-			}
-			else if (ss.ControlType == GPGX.ControlType.Normal)
-			{
-				if (ss.UseSixButton)
-				{
-					yield return SixButtonController(1);
-					yield return SixButtonController(2);
-				}
-				else
-				{
-					yield return ThreeButtonController(1);
-					yield return ThreeButtonController(2);
-				}
-			}
-			else
-			{
-				yield return null;
+				player++;
 			}
 		}
 
