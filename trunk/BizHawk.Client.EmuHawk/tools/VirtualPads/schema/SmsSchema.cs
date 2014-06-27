@@ -10,16 +10,16 @@ namespace BizHawk.Client.EmuHawk
 	[SchemaAttributes("SMS")]
 	public class SmsSchema : IVirtualPadSchema
 	{
-		public IEnumerable<VirtualPad> GetPads()
+		public IEnumerable<PadSchema> GetPadSchemas()
 		{
 			if ((Global.Emulator as SMS).IsGameGear)
 			{
-				yield return new VirtualPad(GGController(1));
+				yield return GGController(1);
 			}
 			else
 			{
-				yield return new VirtualPad(StandardController(1));
-				yield return new VirtualPad(StandardController(2));
+				yield return StandardController(1);
+				yield return StandardController(2);
 			}
 		}
 

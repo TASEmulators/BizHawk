@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 	[SchemaAttributes("NES")]
 	public class NesSchema : IVirtualPadSchema
 	{
-		public IEnumerable<VirtualPad> GetPads()
+		public IEnumerable<PadSchema> GetPadSchemas()
 		{
 			if (Global.Emulator is NES)
 			{
@@ -21,8 +21,8 @@ namespace BizHawk.Client.EmuHawk
 				var isFds = core.BoardName == "FDS";
 				if (ss.Controls.Famicom)
 				{
-					yield return new VirtualPad(StandardController(1));
-					yield return new VirtualPad(Famicom2ndController());
+					yield return StandardController(1);
+					yield return Famicom2ndController();
 
 					switch (ss.Controls.FamicomExpPort)
 					{
@@ -30,20 +30,20 @@ namespace BizHawk.Client.EmuHawk
 						case "UnpluggedFam":
 							break;
 						case "Zapper":
-							yield return new VirtualPad(Zapper(3));
+							yield return Zapper(3);
 							break;
 						case "ArkanoidFam":
-							yield return new VirtualPad(ArkanoidPaddle(3));
+							yield return ArkanoidPaddle(3);
 							break;
 						case "Famicom4P":
-							yield return new VirtualPad(StandardController(3));
-							yield return new VirtualPad(StandardController(4));
+							yield return StandardController(3);
+							yield return StandardController(4);
 							break;
 						case "FamilyBasicKeyboard":
-							yield return new VirtualPad(FamicomFamilyKeyboard(3));
+							yield return FamicomFamilyKeyboard(3);
 							break;
 						case "OekaKids":
-							yield return new VirtualPad(OekaKidsTablet(3));
+							yield return OekaKidsTablet(3);
 							break;
 
 					}
@@ -57,24 +57,24 @@ namespace BizHawk.Client.EmuHawk
 						case "UnpluggedNES":
 							break;
 						case "ControllerNES":
-							yield return new VirtualPad(StandardController(1));
+							yield return StandardController(1);
 							currentControlerNo++;
 							break;
 						case "Zapper":
-							yield return new VirtualPad(Zapper(1));
+							yield return Zapper(1);
 							currentControlerNo++;
 							break;
 						case "ArkanoidNES":
-							yield return new VirtualPad(ArkanoidPaddle(1));
+							yield return ArkanoidPaddle(1);
 							currentControlerNo++;
 							break;
 						case "FourScore":
-							yield return new VirtualPad(StandardController(1));
-							yield return new VirtualPad(StandardController(2));
+							yield return StandardController(1);
+							yield return StandardController(2);
 							currentControlerNo += 2;
 							break;
 						case "PowerPad":
-							yield return new VirtualPad(PowerPad(1));
+							yield return PowerPad(1);
 							currentControlerNo++;
 							break;
 					}
@@ -85,21 +85,21 @@ namespace BizHawk.Client.EmuHawk
 						case "UnpluggedNES":
 							break;
 						case "ControllerNES":
-							yield return new VirtualPad(StandardController(currentControlerNo));
+							yield return StandardController(currentControlerNo);
 							break;
 						case "Zapper":
-							yield return new VirtualPad(Zapper(currentControlerNo));
+							yield return Zapper(currentControlerNo);
 							break;
 						case "ArkanoidNES":
-							yield return new VirtualPad(ArkanoidPaddle(currentControlerNo));
+							yield return ArkanoidPaddle(currentControlerNo);
 							break;
 						case "FourScore":
-							yield return new VirtualPad(StandardController(currentControlerNo));
-							yield return new VirtualPad(StandardController(currentControlerNo + 1));
+							yield return StandardController(currentControlerNo);
+							yield return StandardController(currentControlerNo + 1);
 							currentControlerNo += 2;
 							break;
 						case "PowerPad":
-							yield return new VirtualPad(PowerPad(currentControlerNo));
+							yield return PowerPad(currentControlerNo);
 							break;
 					}
 
@@ -111,18 +111,18 @@ namespace BizHawk.Client.EmuHawk
 
 				if (isFds)
 				{
-					yield return new VirtualPad(FdsConsoleButtons(core.ControllerDefinition.BoolButtons.Count(b => b.StartsWith("FDS Insert "))));
+					yield return FdsConsoleButtons(core.ControllerDefinition.BoolButtons.Count(b => b.StartsWith("FDS Insert ")));
 				}
 				else
 				{
-					yield return new VirtualPad(NesConsoleButtons());
+					yield return NesConsoleButtons();
 				}
 			}
 			else // Quicknes only supports 2 controllers and no other configuration
 			{
-				yield return new VirtualPad(StandardController(1));
-				yield return new VirtualPad(StandardController(2));
-				yield return new VirtualPad(NesConsoleButtons());
+				yield return StandardController(1);
+				yield return StandardController(2);
+				yield return NesConsoleButtons();
 			}
 		}
 

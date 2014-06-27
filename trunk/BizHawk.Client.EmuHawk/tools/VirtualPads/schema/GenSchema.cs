@@ -10,31 +10,31 @@ namespace BizHawk.Client.EmuHawk
 	[SchemaAttributes("GEN")]
 	public class GenSchema : IVirtualPadSchema
 	{
-		public IEnumerable<VirtualPad> GetPads()
+		public IEnumerable<PadSchema> GetPadSchemas()
 		{
 			var ss = (GPGX.GPGXSyncSettings)Global.Emulator.GetSyncSettings();
 			if (ss.ControlType == GPGX.ControlType.OnePlayer)
 			{
 				if (ss.UseSixButton)
 				{
-					yield return new VirtualPad(SixButtonController(1));
+					yield return SixButtonController(1);
 				}
 				else
 				{
-					yield return new VirtualPad(ThreeButtonController(2));
+					yield return ThreeButtonController(2);
 				}
 			}
 			else if (ss.ControlType == GPGX.ControlType.Normal)
 			{
 				if (ss.UseSixButton)
 				{
-					yield return new VirtualPad(SixButtonController(1));
-					yield return new VirtualPad(SixButtonController(2));
+					yield return SixButtonController(1);
+					yield return SixButtonController(2);
 				}
 				else
 				{
-					yield return new VirtualPad(ThreeButtonController(1));
-					yield return new VirtualPad(ThreeButtonController(2));
+					yield return ThreeButtonController(1);
+					yield return ThreeButtonController(2);
 				}
 			}
 			else

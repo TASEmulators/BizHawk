@@ -10,14 +10,14 @@ namespace BizHawk.Client.EmuHawk
 	[SchemaAttributes("N64")]
 	public class N64Schema : IVirtualPadSchema
 	{
-		public IEnumerable<VirtualPad> GetPads()
+		public IEnumerable<PadSchema> GetPadSchemas()
 		{
 			var ss = (N64SyncSettings)Global.Emulator.GetSyncSettings();
 			for (int i = 0; i < 4; i++)
 			{
 				if (ss.Controllers[i].IsConnected)
 				{
-					yield return new VirtualPad(StandardController(i + 1));
+					yield return StandardController(i + 1);
 				}
 			}
 		}

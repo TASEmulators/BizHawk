@@ -4,6 +4,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public interface IVirtualPadSchema
 	{
-		IEnumerable<VirtualPad> GetPads();
+		IEnumerable<PadSchema> GetPadSchemas();
 	}
 }
