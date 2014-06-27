@@ -143,7 +143,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <DisableSpecificWarnings>4244;4800;4804;4996</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(ProjectDir)\..</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);DISABLE_AUTO_FILE;__LIBRETRO__</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);DISABLE_AUTO_FILE;__LIBRETRO__;NDEBUG</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
