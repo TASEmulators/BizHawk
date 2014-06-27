@@ -372,6 +372,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			if (!LibGPGX.gpgx_get_control(input, inputsize))
 				throw new Exception("gpgx_get_control() failed!");
 
+			ControlConverter.ScreenWidth = vwidth;
+			ControlConverter.ScreenHeight = vheight;
 			ControlConverter.Convert(Controller, input);
 
 			if (!LibGPGX.gpgx_put_control(input, inputsize))
