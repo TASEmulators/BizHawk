@@ -9,13 +9,11 @@ namespace BizHawk.Client.EmuHawk
 	[SchemaAttributes("GB")]
 	public class GBSchema : IVirtualPadSchema
 	{
-		public IEnumerable<VirtualPad> GetPads()
+		public IEnumerable<PadSchema> GetPadSchemas()
 		{
-			yield return new VirtualPad(StandardController(1))
-			{
-				Location = new Point(15, 15)
-			};
+			yield return StandardController(1);
 		}
+
 		public static PadSchema StandardController(int controller)
 		{
 			return new PadSchema

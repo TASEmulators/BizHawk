@@ -9,17 +9,10 @@ namespace BizHawk.Client.EmuHawk
 	[SchemaAttributes("PCE")]
 	public class PceSchema : IVirtualPadSchema
 	{
-		public IEnumerable<VirtualPad> GetPads()
+		public IEnumerable<PadSchema> GetPadSchemas()
 		{
-			yield return new VirtualPad(StandardController(1))
-			{
-				Location = new Point(15, 15)
-			};
-
-			yield return new VirtualPad(StandardController(2))
-			{
-				Location = new Point(200, 15)
-			};
+			yield return StandardController(1);
+			yield return StandardController(2);
 		}
 
 		public static PadSchema StandardController(int controller)

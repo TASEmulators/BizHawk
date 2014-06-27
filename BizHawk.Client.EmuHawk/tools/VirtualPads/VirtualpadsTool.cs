@@ -92,7 +92,10 @@ namespace BizHawk.Client.EmuHawk
 			
 			if (schemaType != null)
 			{
-				var pads = (Activator.CreateInstance(schemaType) as IVirtualPadSchema).GetPads() ?? Enumerable.Empty<VirtualPad>();
+				var pads = (Activator.CreateInstance(schemaType) as IVirtualPadSchema)
+					.GetPadSchemas()
+					.Select(s => new VirtualPad(s));
+
 				if (pads.Any())
 				{
 					ControllerBox.Controls.AddRange(pads.Reverse().ToArray());
