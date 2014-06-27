@@ -17,20 +17,24 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (ss.UseSixButton)
 				{
-					yield return new VirtualPad(ThreeButtonController(1));
+					yield return new VirtualPad(SixButtonController(1));
+				}
+				else
+				{
+					yield return new VirtualPad(ThreeButtonController(2));
 				}
 			}
 			else if (ss.ControlType == GPGX.ControlType.Normal)
 			{
 				if (ss.UseSixButton)
 				{
-					yield return new VirtualPad(ThreeButtonController(1));
-					yield return new VirtualPad(ThreeButtonController(2));
+					yield return new VirtualPad(SixButtonController(1));
+					yield return new VirtualPad(SixButtonController(2));
 				}
 				else
 				{
-					yield return new VirtualPad(SixButtonController(1));
-					yield return new VirtualPad(SixButtonController(2));
+					yield return new VirtualPad(ThreeButtonController(1));
+					yield return new VirtualPad(ThreeButtonController(2));
 				}
 			}
 			else
