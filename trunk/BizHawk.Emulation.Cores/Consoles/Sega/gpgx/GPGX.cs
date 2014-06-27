@@ -47,7 +47,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Xea1p,
 			Activator,
 			Teamplayer,
-			Wayplay
+			Wayplay,
+			Mouse
 		};
 
 		public GPGX(CoreComm NextComm, byte[] romfile, DiscSystem.Disc CD, string romextension, object SyncSettings)
@@ -64,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			try
 			{
-				this.SyncSettings = (GPGXSyncSettings)SyncSettings ?? GPGXSyncSettings.GetDefaults();
+				this._SyncSettings = (GPGXSyncSettings)SyncSettings ?? GPGXSyncSettings.GetDefaults();
 
 				CoreComm = NextComm;
 				if (AttachedCore != null)
@@ -82,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				LibGPGX.INPUT_SYSTEM system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
 				LibGPGX.INPUT_SYSTEM system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
 
-				switch (this.SyncSettings.ControlType)
+				switch (this._SyncSettings.ControlType)
 				{
 					case ControlType.None:
 					default:
@@ -109,10 +110,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_WAYPLAY;
 						system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_WAYPLAY;
 						break;
+					case ControlType.Mouse:
+						system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_MD_GAMEPAD;
+						system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_MOUSE;
+						break;
 				}
 
 
-				if (!LibGPGX.gpgx_init(romextension, LoadCallback, this.SyncSettings.UseSixButton, system_a, system_b, this.SyncSettings.Region))
+				if (!LibGPGX.gpgx_init(romextension, LoadCallback, this._SyncSettings.UseSixButton, system_a, system_b, this._SyncSettings.Region))
 					throw new Exception("gpgx_init() failed");
 
 				{
@@ -728,17 +733,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		#region Settings
 
-		GPGXSyncSettings SyncSettings;
+		GPGXSyncSettings _SyncSettings;
 
 		public object GetSettings() { return null; }
-		public object GetSyncSettings() { return SyncSettings.Clone(); }
+		public object GetSyncSettings() { return _SyncSettings.Clone(); }
 		public bool PutSettings(object o) { return false; }
 		public bool PutSyncSettings(object o)
 		{
 			bool ret;
 			var n = (GPGXSyncSettings)o;
-			ret = GPGXSyncSettings.NeedsReboot(SyncSettings, n);
-			SyncSettings = n;
+			ret = GPGXSyncSettings.NeedsReboot(_SyncSettings, n);
+			_SyncSettings = n;
 			return ret;
 		}
 

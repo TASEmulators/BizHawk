@@ -53,12 +53,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		static CName[] Mouse =
 		{
-			new CName("Left", LibGPGX.INPUT_KEYS.INPUT_MOUSE_LEFT),
-			new CName("Center", LibGPGX.INPUT_KEYS.INPUT_MOUSE_CENTER),
-			new CName("Right", LibGPGX.INPUT_KEYS.INPUT_MOUSE_RIGHT),
+			new CName("Left Button", LibGPGX.INPUT_KEYS.INPUT_MOUSE_LEFT),
+			new CName("Center Button", LibGPGX.INPUT_KEYS.INPUT_MOUSE_CENTER),
+			new CName("Right Button", LibGPGX.INPUT_KEYS.INPUT_MOUSE_RIGHT),
+			new CName("Start Button", LibGPGX.INPUT_KEYS.INPUT_MOUSE_START),
 		};
 
-		static ControllerDefinition.FloatRange FullShort = new ControllerDefinition.FloatRange(-32767, 0, 32767);
+		static ControllerDefinition.FloatRange MouseRange = new ControllerDefinition.FloatRange(-512, 0, 511);
 
 		LibGPGX.InputData target = null;
 		IController source = null;
@@ -88,8 +89,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			string NY = string.Format("P{0} Y", player);
 			ControllerDef.FloatControls.Add(NX);
 			ControllerDef.FloatControls.Add(NY);
-			ControllerDef.FloatRanges.Add(FullShort);
-			ControllerDef.FloatRanges.Add(FullShort);
+			ControllerDef.FloatRanges.Add(MouseRange);
+			ControllerDef.FloatRanges.Add(MouseRange);
 			Converts.Add(delegate()
 			{
 				target.analog[(2 * idx) + 0] = (short)source.GetFloat(NX);

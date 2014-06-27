@@ -220,7 +220,7 @@ namespace BizHawk.Client.Common
 						{
 							case "GEN":
 								var genesis = new GPGX(
-										nextComm, null, disc, "GEN", GetCoreSettings<GPGX>());
+										nextComm, null, disc, "GEN", GetCoreSyncSettings<GPGX>());
 										nextEmulator = genesis;
 								break;
 							case "SAT":
