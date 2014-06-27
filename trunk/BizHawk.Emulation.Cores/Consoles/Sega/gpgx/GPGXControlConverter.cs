@@ -66,8 +66,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		};
 
 		static ControllerDefinition.FloatRange MouseRange = new ControllerDefinition.FloatRange(-512, 0, 511);
-		static ControllerDefinition.FloatRange LightgunX = new ControllerDefinition.FloatRange(0, 160, 319);
-		static ControllerDefinition.FloatRange LightgunY = new ControllerDefinition.FloatRange(0, 112, 223);
+		// lightgun needs to be transformed to match the current screen resolution
+		static ControllerDefinition.FloatRange LightgunRange = new ControllerDefinition.FloatRange(0, 5000, 10000);
 
 		LibGPGX.InputData target = null;
 		IController source = null;
@@ -112,12 +112,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			string NY = string.Format("P{0} Lightgun Y", player);
 			ControllerDef.FloatControls.Add(NX);
 			ControllerDef.FloatControls.Add(NY);
-			ControllerDef.FloatRanges.Add(LightgunX);
-			ControllerDef.FloatRanges.Add(LightgunY);
+			ControllerDef.FloatRanges.Add(LightgunRange);
+			ControllerDef.FloatRanges.Add(LightgunRange);
 			Converts.Add(delegate()
 			{
-				target.analog[(2 * idx) + 0] = (short)source.GetFloat(NX);
-				target.analog[(2 * idx) + 1] = (short)source.GetFloat(NY);
+				target.analog[(2 * idx) + 0] = (short)(source.GetFloat(NX) / 10000.0f * (ScreenWidth - 1));
+				target.analog[(2 * idx) + 1] = (short)(source.GetFloat(NY) / 10000.0f * (ScreenHeight - 1));
 			});
 		}
 
@@ -179,6 +179,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			this.source = null;
 			this.target = null;
 		}
+
+		/// <summary>
+		/// must be set for proper lightgun operation
+		/// </summary>
+		public int ScreenWidth { get; set; }
+		/// <summary>
+		/// must be set for proper lightgun operation
+		/// </summary>
+		public int ScreenHeight { get; set; }
 
 	}
 }
