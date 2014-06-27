@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -16,7 +17,8 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Emulator is NES)
 			{
 				var ss = (NES.NESSyncSettings)Global.Emulator.GetSyncSettings();
-
+				var core = (Global.Emulator as NES);
+				var isFds = core.BoardName == "FDS";
 				if (ss.Controls.Famicom)
 				{
 					yield return new VirtualPad(StandardController(1));
@@ -106,14 +108,22 @@ namespace BizHawk.Client.EmuHawk
 						yield return null;
 					}
 				}
+
+				if (isFds)
+				{
+					yield return new VirtualPad(FdsConsoleButtons(core.ControllerDefinition.BoolButtons.Count(b => b.StartsWith("FDS Insert "))));
+				}
+				else
+				{
+					yield return new VirtualPad(NesConsoleButtons());
+				}
 			}
 			else // Quicknes only supports 2 controllers and no other configuration
 			{
 				yield return new VirtualPad(StandardController(1));
 				yield return new VirtualPad(StandardController(2));
+				yield return new VirtualPad(NesConsoleButtons());
 			}
-
-			yield return new VirtualPad(NesConsoleButtons());
 		}
 
 		private static PadSchema NesConsoleButtons()
@@ -140,6 +150,59 @@ namespace BizHawk.Client.EmuHawk
 						Type = PadSchema.PadInputType.Boolean
 					}
 				}
+			};
+		}
+
+		private static PadSchema FdsConsoleButtons(int diskSize)
+		{
+			List<PadSchema.ButtonScema> buttons = new List<PadSchema.ButtonScema>
+			{
+				new PadSchema.ButtonScema
+				{
+					Name = "Reset",
+					DisplayName = "Reset",
+					Location = new Point(10, 15),
+					Type = PadSchema.PadInputType.Boolean
+				},
+				new PadSchema.ButtonScema
+				{
+					Name = "Power",
+					DisplayName = "Power",
+					Location = new Point(58, 15),
+					Type = PadSchema.PadInputType.Boolean
+				},
+				new PadSchema.ButtonScema
+				{
+					Name = "FDSb Eject",
+					DisplayName = "Eject",
+					Location = new Point(108, 15),
+					Type = PadSchema.PadInputType.Boolean
+				}
+			};
+
+			for (int i = 0; i < diskSize; i++)
+			{
+				buttons.Add(new PadSchema.ButtonScema
+				{
+					Name = "FDS Insert " + i,
+					DisplayName = "Insert " + i,
+					Location = new Point(10 + (i * 58), 50),
+					Type = PadSchema.PadInputType.Boolean
+				});
+			}
+
+			var width = 20 + (diskSize * 58);
+			if (width < 160)
+			{
+				width = 160;
+			}
+
+			return new PadSchema
+			{
+				DisplayName = "Console",
+				IsConsole = true,
+				DefaultSize = new Size(width, 100),
+				Buttons = buttons
 			};
 		}
 
