@@ -15,7 +15,29 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				}
 			};
 
-		public ControllerDefinition ControllerDefinition { get { return SmsController; } }
+		public static readonly ControllerDefinition GGController = new ControllerDefinition
+		{
+			Name = "GG Controller",
+			BoolButtons =
+				{
+					"Reset",
+					"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 B1", "P1 B2", "P1 Start"
+				}
+		};
+
+		public ControllerDefinition ControllerDefinition
+		{
+			get
+			{
+				if (IsGameGear)
+				{
+					return GGController;
+				}
+
+				return SmsController;
+			}
+		}
+
 		public IController Controller { get; set; }
 
 		byte ReadControls1()
@@ -71,12 +93,22 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		byte ReadPort0()
 		{
 			if (IsGameGear == false)
+			{
 				return 0xFF;
+			}
+
 			byte value = 0xFF;
-			if (Controller["Pause"])
+			if ((Controller["Pause"] && !IsGameGear) ||
+				(Controller["Start"] && IsGameGear))
+			{
 				value ^= 0x80;
+			}
+
 			if (Region == "Japan")
+			{
 				value ^= 0x40;
+			}
+
 			return value;
 		}
 	}
