@@ -10,7 +10,7 @@ libmeteor: Probably libmeteor/libmeteor.sln, but not well checked.
 
 libmupen64plus: ??
 
-libsnes: Try one of the shell scripts?
+libsnes: During development, run bizwinmake.sh. Edit it as necessary to change profiles and bitness. For making release mode dlls for committing, run bizwinmakedistro.sh. Note that 64bits libsnes doesn't work right now.
 
 quicknes: Process quicknes/mingw/Makefile with mingw.  Use "make install" top copy to output folder.  Alternatively, there is a VC10 solution at quicknes/libquicknes/libquicknes.sln, but that has audio output glitches.
 
