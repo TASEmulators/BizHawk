@@ -173,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 				},
 				new PadSchema.ButtonScema
 				{
-					Name = "FDSb Eject",
+					Name = "FDS Eject",
 					DisplayName = "Eject",
 					Location = new Point(108, 15),
 					Type = PadSchema.PadInputType.Boolean
