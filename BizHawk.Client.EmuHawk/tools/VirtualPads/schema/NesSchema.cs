@@ -112,6 +112,35 @@ namespace BizHawk.Client.EmuHawk
 				yield return new VirtualPad(StandardController(1));
 				yield return new VirtualPad(StandardController(2));
 			}
+
+			yield return new VirtualPad(NesConsoleButtons());
+		}
+
+		private static PadSchema NesConsoleButtons()
+		{
+			return new PadSchema
+			{
+				DisplayName = "Console",
+				IsConsole = true,
+				DefaultSize = new Size(150, 50),
+				Buttons = new[]
+				{
+					new PadSchema.ButtonScema
+					{
+						Name = "Reset",
+						DisplayName = "Reset",
+						Location = new Point(10, 15),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "Power",
+						DisplayName = "Power",
+						Location = new Point(58, 15),
+						Type = PadSchema.PadInputType.Boolean
+					}
+				}
+			};
 		}
 
 		private static PadSchema StandardController(int controller)
