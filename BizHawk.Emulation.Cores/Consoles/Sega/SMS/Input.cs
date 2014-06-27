@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			byte value = 0xFF;
 			if ((Controller["Pause"] && !IsGameGear) ||
-				(Controller["Start"] && IsGameGear))
+				(Controller["P1 Start"] && IsGameGear))
 			{
 				value ^= 0x80;
 			}
