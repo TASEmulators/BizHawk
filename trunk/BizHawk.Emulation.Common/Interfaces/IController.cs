@@ -142,6 +142,26 @@ namespace BizHawk.Emulation.Common
 					.Where(x => x.StartsWith("P4 "));
 			}
 		}
+
+		// TODO: a more respectable logic here, and possibly per core implementation
+		public virtual int PlayerCount
+		{
+			get
+			{
+				var list = FloatControls.Union(BoolButtons);
+				if (list.Any(b => b.StartsWith("P8"))) { return 8; }
+				if (list.Any(b => b.StartsWith("P7"))) { return 7; }
+				if (list.Any(b => b.StartsWith("P6"))) { return 6; }
+				if (list.Any(b => b.StartsWith("P5"))) { return 5; }
+				if (list.Any(b => b.StartsWith("P4"))) { return 4; }
+				if (list.Any(b => b.StartsWith("P3"))) { return 3; }
+				if (list.Any(b => b.StartsWith("P2"))) { return 2; }
+				if (list.Any(b => b.StartsWith("P1"))) { return 1; }
+				if (list.Any(b => b.StartsWith("Up"))) { return 1; } // Hack for things like gameboy/ti-83 as opposed to genesis with no controllers plugged in
+
+				return 0;
+			}
+		}
 	}
 
 	public interface IController
