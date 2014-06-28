@@ -18,9 +18,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				switch (dev)
 				{
-					default:
 					case LibGPGX.INPUT_DEVICE.DEVICE_NONE:
-						continue; // do not increment player number
+						continue; // do not increment player number because no device was attached
 					case LibGPGX.INPUT_DEVICE.DEVICE_PAD3B:
 						yield return ThreeButtonController(player);
 						break;
@@ -34,6 +33,7 @@ namespace BizHawk.Client.EmuHawk
 						yield return Mouse(player);
 						break;
 					case LibGPGX.INPUT_DEVICE.DEVICE_XE_A1P:
+					default:
 						// TO DO
 						break;
 				}
