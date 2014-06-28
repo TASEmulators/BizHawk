@@ -124,6 +124,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			RefreshMemoryCallbacks();
 
 			api.AsyncExecuteEmulator();
+			SetControllerButtons();
 		}
 
 		public void Dispose()
