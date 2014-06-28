@@ -386,6 +386,12 @@
     <Compile Include="config\PathInfo.Designer.cs">
       <DependentUpon>PathInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\PCE\PCEControllerConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\PCE\PCEControllerConfig.Designer.cs">
+      <DependentUpon>PCEControllerConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\PCE\PCEGraphicsConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1067,6 +1073,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\PathInfo.resx">
       <DependentUpon>PathInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\PCE\PCEControllerConfig.resx">
+      <DependentUpon>PCEControllerConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\PCE\PCEGraphicsConfig.resx">
       <DependentUpon>PCEGraphicsConfig.cs</DependentUpon>
