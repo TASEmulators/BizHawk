@@ -12,9 +12,6 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IEnumerable<PadSchema> GetPadSchemas()
 		{
-			var core = Global.Emulator as WonderSwan;
-			var def = core.ControllerDefinition;
-			var ss = (WonderSwan.SyncSettings)core.GetSyncSettings();
 			yield return StandardController(1);
 			yield return RotatedController(2);
 			yield return ConsoleButtons();
