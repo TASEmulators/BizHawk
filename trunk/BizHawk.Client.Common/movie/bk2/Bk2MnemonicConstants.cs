@@ -88,15 +88,15 @@ namespace BizHawk.Client.Common
 				{ "Star", '*' },
 				{ "Pound", '#' },
 
-				{ "P2 X1", '1' },
-				{ "P2 X2", '2' },
-				{ "P2 X3", '3' },
-				{ "P2 X4", '4' },
+				{ "X1", '1' },
+				{ "X2", '2' },
+				{ "X3", '3' },
+				{ "X4", '4' },
 				
-				{ "P2 Y1", '1' },
-				{ "P2 Y2", '2' },
-				{ "P2 Y3", '3' },
-				{ "P2 Y4", '4' },
+				{ "Y1", '1' },
+				{ "Y2", '2' },
+				{ "Y3", '3' },
+				{ "Y4", '4' },
 			};
 
 		private readonly Dictionary<string, Dictionary<string, char>> SystemOverrides = new Dictionary<string, Dictionary<string, char>>
