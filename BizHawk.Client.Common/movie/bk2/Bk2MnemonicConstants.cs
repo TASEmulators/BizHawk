@@ -73,6 +73,11 @@ namespace BizHawk.Client.Common
 				{ "Trigger 1", '1' },
 				{ "Trigger 2", '2' },
 
+				{ "Mouse Left", 'l' },
+				{ "Mouse Right", 'r' },
+				{ "Mouse Center", 'c' },
+				{ "Mouse Start", 's' },
+
 				{"Mode", 'M'},
 
 				{ "Fire", 'F' },

@@ -30,6 +30,9 @@ namespace BizHawk.Client.EmuHawk
 					case LibGPGX.INPUT_DEVICE.DEVICE_LIGHTGUN:
 						yield return LighGun(player);
 						break;
+					case LibGPGX.INPUT_DEVICE.DEVICE_MOUSE:
+						yield return Mouse(player);
+						break;
 				}
 
 				player++;
@@ -237,6 +240,59 @@ namespace BizHawk.Client.EmuHawk
 						Name = "P" + controller + " Lightgun Start",
 						DisplayName = "Start",
 						Location = new Point(284, 40),
+						Type = PadSchema.PadInputType.Boolean
+					}
+				}
+			};
+		}
+
+		public static PadSchema Mouse(int controller)
+		{
+			return new PadSchema
+			{
+				DisplayName = "Mouse",
+				IsConsole = false,
+				DefaultSize = new Size(400, 290),
+				Buttons = new[]
+				{
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Mouse X",
+						Location = new Point(14, 17),
+						Type = PadSchema.PadInputType.TargetedPair,
+						TargetSize = new Size(320, 270),
+						SecondaryNames = new []
+						{
+							"P" + controller + " Mouse Y",
+							"P" + controller + " Mouse Left",
+						}
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Mouse Left",
+						DisplayName = "Left",
+						Location = new Point(335, 17),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Mouse Center",
+						DisplayName = "Center",
+						Location = new Point(335, 40),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Mouse Right",
+						DisplayName = "Right",
+						Location = new Point(335, 63),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Mouse Start",
+						DisplayName = "Start",
+						Location = new Point(335, 86),
 						Type = PadSchema.PadInputType.Boolean
 					}
 				}
