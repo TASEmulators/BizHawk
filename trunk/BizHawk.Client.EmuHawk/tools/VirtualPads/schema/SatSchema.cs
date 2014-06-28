@@ -24,7 +24,6 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(212, 90),
 				Buttons = new[]
 				{
-					//TODO: C Button and Z Button, Need All Locations
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " Up",
@@ -106,7 +105,6 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(158, 20),
 						Type = PadSchema.PadInputType.Boolean
 					},
-
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " L",
