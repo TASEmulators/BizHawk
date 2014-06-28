@@ -905,6 +905,7 @@
       <DependentUpon>VirtualPadTargetScreen.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\VirtualPads\schema\A26Schema.cs" />
+    <Compile Include="tools\VirtualPads\schema\A78Schema.cs" />
     <Compile Include="tools\VirtualPads\schema\GBASchema.cs" />
     <Compile Include="tools\VirtualPads\schema\GBSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\GenSchema.cs" />
