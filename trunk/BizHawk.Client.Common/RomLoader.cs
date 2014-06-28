@@ -236,7 +236,7 @@ namespace BizHawk.Client.Common
 								break;
 							case "PCE":
 							case "PCECD":
-								nextEmulator = new PCEngine(nextComm, game, disc, GetCoreSettings<PCEngine>());
+								nextEmulator = new PCEngine(nextComm, game, disc, GetCoreSettings<PCEngine>(), GetCoreSyncSettings<PCEngine>());
 								break;
 						}
 					}
@@ -332,7 +332,7 @@ namespace BizHawk.Client.Common
 							case "PCE":
 							case "PCECD":
 							case "SGX":
-								nextEmulator = new PCEngine(nextComm, game, rom.RomData, GetCoreSettings<PCEngine>());
+								nextEmulator = new PCEngine(nextComm, game, rom.RomData, GetCoreSettings<PCEngine>(), GetCoreSyncSettings<PCEngine>());
 								break;
 							case "GEN":
 								nextEmulator = new GPGX(nextComm, rom.RomData, null, "GEN", GetCoreSyncSettings<GPGX>());

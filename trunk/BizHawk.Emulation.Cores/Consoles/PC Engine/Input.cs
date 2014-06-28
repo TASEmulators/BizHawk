@@ -4,8 +4,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 {
 	public partial class PCEngine
 	{
-		public static readonly ControllerDefinition PCEngineController =
-			new ControllerDefinition
+		public readonly ControllerDefinition PCEngineController = new ControllerDefinition
 			{
 				Name = "PC Engine Controller",
 				BoolButtons =
@@ -17,6 +16,30 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					"P5 Up", "P5 Down", "P5 Left", "P5 Right", "P5 Select", "P5 Run", "P5 B2", "P5 B1"
 				}
 			};
+
+		private void SetControllerButtons()
+		{
+			ControllerDefinition.BoolButtons.Clear();
+			ControllerDefinition.FloatControls.Clear();
+
+			for (int i = 0; i < 5; i++)
+			{
+				if (_syncSettings.Controllers[i].IsConnected)
+				{
+					ControllerDefinition.BoolButtons.AddRange(new[]
+					{
+						"P" + (i + 1) + " Up",
+						"P" + (i + 1) + " Down",
+						"P" + (i + 1) + " Left",
+						"P" + (i + 1) + " Right",
+						"P" + (i + 1) + " Select",
+						"P" + (i + 1) + " Run",
+						"P" + (i + 1) + " B1",
+						"P" + (i + 1) + " B2"
+					});
+				}
+			}
+		}
 
 		public ControllerDefinition ControllerDefinition { get { return PCEngineController; } }
 		public IController Controller { get; set; }

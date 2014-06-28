@@ -53,9 +53,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public N64ControllerSettings[] Controllers = 
 		{
 			new N64ControllerSettings(),
-			new N64ControllerSettings { IsConnected = false, },
-			new N64ControllerSettings { IsConnected = false, },
-			new N64ControllerSettings { IsConnected = false, },
+			new N64ControllerSettings { IsConnected = false },
+			new N64ControllerSettings { IsConnected = false },
+			new N64ControllerSettings { IsConnected = false },
 		};
 
 		public N64RicePluginSettings RicePlugin = new N64RicePluginSettings();

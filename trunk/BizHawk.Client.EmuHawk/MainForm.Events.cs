@@ -1184,9 +1184,29 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var s = (PCEngine.PCESettings)Global.Emulator.GetSettings();
 
+			PceControllerSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
+
 			PCEAlwaysPerformSpriteLimitMenuItem.Checked = s.SpriteLimit;
 			PCEAlwaysEqualizeVolumesMenuItem.Checked = s.EqualizeVolume;
 			PCEArcadeCardRewindEnableMenuItem.Checked = s.ArcadeCardRewindHack;
+		}
+
+		private void PceControllerSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			if (new PCEControllerConfig().ShowDialog() == DialogResult.OK)
+			{
+				GlobalWin.MainForm.FlagNeedsReboot();
+				GlobalWin.OSD.AddMessage("Controller settings saved but a core reboot is required");
+			}
+			else
+			{
+				GlobalWin.OSD.AddMessage("Controller settings aborted");
+			}
+		}
+
+		private void PCEGraphicsSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			new PCEGraphicsConfig().ShowDialog();
 		}
 
 		private void PCEBGViewerMenuItem_Click(object sender, EventArgs e)
@@ -1198,7 +1218,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.Tools.Load<PCETileViewer>();
 		}
-
 
 		private void PceSoundDebuggerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1229,11 +1248,6 @@ namespace BizHawk.Client.EmuHawk
 			var s = (PCEngine.PCESettings)Global.Emulator.GetSettings();
 			s.ArcadeCardRewindHack ^= true;
 			PutCoreSettings(s);
-		}
-
-		private void PCEGraphicsSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			new PCEGraphicsConfig().ShowDialog();
 		}
 
 		#endregion
