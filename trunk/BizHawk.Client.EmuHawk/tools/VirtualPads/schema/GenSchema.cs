@@ -33,6 +33,9 @@ namespace BizHawk.Client.EmuHawk
 					case LibGPGX.INPUT_DEVICE.DEVICE_MOUSE:
 						yield return Mouse(player);
 						break;
+					case LibGPGX.INPUT_DEVICE.DEVICE_XE_A1P:
+						// TO DO
+						break;
 				}
 
 				player++;
