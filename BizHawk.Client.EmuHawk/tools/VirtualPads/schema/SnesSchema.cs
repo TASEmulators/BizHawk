@@ -11,8 +11,11 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IEnumerable<PadSchema> GetPadSchemas()
 		{
-			yield return StandardController(1);
-			yield return StandardController(2);
+			for (int i = 0; i < Global.Emulator.ControllerDefinition.PlayerCount; i++)
+			{
+				yield return StandardController(i);
+			}
+
 			yield return ConsoleButtons();
 		}
 
