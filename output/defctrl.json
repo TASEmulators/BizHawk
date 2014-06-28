@@ -564,6 +564,8 @@
       "P2 Y": "",
       "P2 Z": "",
       "P2 Mode": "",
+      "P2 Lightgun Trigger": "WMouse Click",
+      "P2 Lightgun Start": "NumberPad5",
       "Power": "",
       "Reset": ""
     },
@@ -841,7 +843,18 @@
         "Deadzone": 0.1
       }
     },
-    "GPGX Genesis Controller": {},
+    "GPGX Genesis Controller": {
+      "P2 Lightgun X": {
+        "Value": "WMouse X",
+        "Mult": 1.0,
+        "Deadzone": 0.0
+      },
+      "P2 Lightgun Y": {
+        "Value": "WMouse Y",
+        "Mult": 1.0,
+        "Deadzone": 0.0
+      },
+    },
     "WonderSwan Controller": {}
   }
 }
