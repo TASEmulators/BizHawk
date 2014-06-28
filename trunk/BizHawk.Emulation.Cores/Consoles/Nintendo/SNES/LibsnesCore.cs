@@ -703,8 +703,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					"Reset", "Power",
 					"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Select", "P1 Start", "P1 Y", "P1 X", "P1 B", "P1 A", "P1 L", "P1 R",
 					"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Select", "P2 Start", "P2 Y", "P2 X", "P2 B", "P2 A", "P2 L", "P2 R",
-					"P3 Up", "P3 Down", "P3 Left", "P3 Right", "P3 Select", "P3 Start", "P3 Y", "P3 X", "P3 B", "P3 A", "P3 L", "P3 R",
-					"P4 Up", "P4 Down", "P4 Left", "P4 Right", "P4 Select", "P4 Start", "P4 Y", "P4 X", "P4 B", "P4 A", "P4 L", "P4 R",
+
+					// adelikat: disabling these since they aren't hooked up
+					// "P3 Up", "P3 Down", "P3 Left", "P3 Right", "P3 Select", "P3 Start", "P3 Y", "P3 X", "P3 B", "P3 A", "P3 L", "P3 R",
+					// "P4 Up", "P4 Down", "P4 Left", "P4 Right", "P4 Select", "P4 Start", "P4 Y", "P4 X", "P4 B", "P4 A", "P4 L", "P4 R",
 				}
 			};
 
