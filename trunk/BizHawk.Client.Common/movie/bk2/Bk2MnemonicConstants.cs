@@ -76,6 +76,8 @@ namespace BizHawk.Client.Common
 				{"Mode", 'M'},
 
 				{ "Fire", 'F' },
+				{ "Lightgun Trigger", 'T' },
+				{ "Lightgun Start", 'S' },
 				{ "Microphone", 'M' },
 
 				{ "Star", '*' },

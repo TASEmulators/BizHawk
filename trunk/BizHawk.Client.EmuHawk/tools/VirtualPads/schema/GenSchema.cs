@@ -18,6 +18,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				switch (dev)
 				{
+					default:
 					case LibGPGX.INPUT_DEVICE.DEVICE_NONE:
 						continue; // do not increment player number
 					case LibGPGX.INPUT_DEVICE.DEVICE_PAD3B:
@@ -26,12 +27,15 @@ namespace BizHawk.Client.EmuHawk
 					case LibGPGX.INPUT_DEVICE.DEVICE_PAD6B:
 						yield return SixButtonController(player);
 						break;
-					default:
-						// todo
+					case LibGPGX.INPUT_DEVICE.DEVICE_LIGHTGUN:
+						yield return LighGun(player);
 						break;
 				}
+
 				player++;
 			}
+
+			yield return ConsoleButtons();
 		}
 
 		public static PadSchema ThreeButtonController(int controller)
@@ -193,6 +197,73 @@ namespace BizHawk.Client.EmuHawk
 						Name = "P" + controller + " Start",
 						DisplayName = "S",
 						Location = new Point(122, 12),
+						Type = PadSchema.PadInputType.Boolean
+					}
+				}
+			};
+		}
+
+		public static PadSchema LighGun(int controller)
+		{
+			return new PadSchema
+			{
+				DisplayName = "Light Gun",
+				IsConsole = false,
+				DefaultSize = new Size(356, 260),
+				MaxSize = new Size(356, 260),
+				Buttons = new[]
+				{
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Lightgun X",
+						Location = new Point(14, 17),
+						Type = PadSchema.PadInputType.TargetedPair,
+						TargetSize = new Size(256, 240),
+						SecondaryNames = new []
+						{
+							"P" + controller + " Lightgun Y",
+							"P" + controller + " Lightgun Trigger",
+						}
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Lightgun Trigger",
+						DisplayName = "Trigger",
+						Location = new Point(284, 17),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Lightgun Start",
+						DisplayName = "Start",
+						Location = new Point(284, 40),
+						Type = PadSchema.PadInputType.Boolean
+					}
+				}
+			};
+		}
+
+		public static PadSchema ConsoleButtons()
+		{
+			return new PadSchema
+			{
+				DisplayName = "Console",
+				IsConsole = true,
+				DefaultSize = new Size(150, 50),
+				Buttons = new[]
+				{
+					new PadSchema.ButtonScema
+					{
+						Name = "Reset",
+						DisplayName = "Reset",
+						Location = new Point(10, 15),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "Power",
+						DisplayName = "Power",
+						Location = new Point(58, 15),
 						Type = PadSchema.PadInputType.Boolean
 					}
 				}
