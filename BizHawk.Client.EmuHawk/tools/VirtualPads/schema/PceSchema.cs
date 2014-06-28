@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 
 using BizHawk.Client.Common;
 
@@ -11,8 +12,10 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IEnumerable<PadSchema> GetPadSchemas()
 		{
-			yield return StandardController(1);
-			yield return StandardController(2);
+			for (int i = 0; i < Global.Emulator.ControllerDefinition.PlayerCount; i++)
+			{
+				yield return StandardController(i);
+			}
 		}
 
 		public static PadSchema StandardController(int controller)
