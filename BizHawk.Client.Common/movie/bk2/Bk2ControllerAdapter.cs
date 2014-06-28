@@ -141,17 +141,9 @@ namespace BizHawk.Client.Common
 					}
 					else if (def.FloatControls.Contains(buttons[i]))
 					{
-						string temp;
-						try
-						{
-							temp = trimmed.Substring(iterator, 4);
-							var val = int.Parse(temp.Trim());
-							MyFloatControls[buttons[i]] = val;
-						}
-						catch (Exception ex)
-						{
-							int zzz = 0;
-						}
+						string temp = trimmed.Substring(iterator, 4);
+						var val = int.Parse(temp.Trim());
+						MyFloatControls[buttons[i]] = val;
 
 						iterator += 5;
 						floatIt++;
