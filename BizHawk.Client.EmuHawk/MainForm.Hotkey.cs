@@ -303,7 +303,7 @@ namespace BizHawk.Client.EmuHawk
 				case "MT Increment Player":
 					Global.MovieSession.MultiTrack.CurrentPlayer++;
 					Global.MovieSession.MultiTrack.RecordAll = false;
-					if (Global.MovieSession.MultiTrack.CurrentPlayer > 5) // TODO: Replace with console's maximum or current maximum players??!
+					if (Global.MovieSession.MultiTrack.CurrentPlayer > Global.Emulator.ControllerDefinition.PlayerCount)
 					{
 						Global.MovieSession.MultiTrack.CurrentPlayer = 1;
 					}
@@ -315,7 +315,7 @@ namespace BizHawk.Client.EmuHawk
 					Global.MovieSession.MultiTrack.RecordAll = false;
 					if (Global.MovieSession.MultiTrack.CurrentPlayer < 1)
 					{
-						Global.MovieSession.MultiTrack.CurrentPlayer = 5; // TODO: Replace with console's maximum or current maximum players??!
+						Global.MovieSession.MultiTrack.CurrentPlayer = Global.Emulator.ControllerDefinition.PlayerCount;
 					}
 					GlobalWin.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer;
 					GlobalWin.DisplayManager.NeedsToPaint = true;
