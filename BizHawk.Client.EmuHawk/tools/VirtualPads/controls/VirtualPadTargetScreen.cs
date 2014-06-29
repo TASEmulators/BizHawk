@@ -76,6 +76,21 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		public void Bump(int? x, int? y)
+		{
+			if (x.HasValue)
+			{
+				X = X + x.Value;
+			}
+
+			if (y.HasValue)
+			{
+				Y = Y + y.Value;
+			}
+
+			Refresh();
+		}
+
 		public string XName { get; set; }
 		public string YName { get; set; }
 		public string FireButton { get; set; } // Fire, Press, etc

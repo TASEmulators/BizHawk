@@ -70,9 +70,9 @@ namespace BizHawk.Client.EmuHawk
 			Pads.ForEach(pad => pad.Clear());
 		}
 
-		public void BumpAnalogValue(int? dx, int? dy) // TODO: multi-player
+		public void BumpAnalogValue(int? x, int? y) // TODO: multi-player
 		{
-
+			Pads.ForEach(pad => pad.BumpAnalog(x, y));
 		}
 
 		private void CreatePads()

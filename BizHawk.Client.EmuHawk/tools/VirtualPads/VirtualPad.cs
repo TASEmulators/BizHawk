@@ -113,5 +113,23 @@ namespace BizHawk.Client.EmuHawk
 				.ToList()
 				.ForEach(c => c.SetPrevious(previous));
 		}
+
+		public void BumpAnalog(int? x, int? y)
+		{
+			PadControls
+				.OfType<VirtualPadAnalogStick>()
+				.ToList()
+				.ForEach(a => a.Bump(x, y));
+
+			PadControls
+				.OfType<VirtualPadAnalogButton>()
+				.ToList()
+				.ForEach(a => a.Bump(x));
+
+			PadControls
+				.OfType<VirtualPadTargetScreen>()
+				.ToList()
+				.ForEach(a => a.Bump(x, y));
+		}
 	}
 }
