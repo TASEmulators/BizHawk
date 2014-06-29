@@ -14,6 +14,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PlayMovie : Form
 	{
+		private readonly PlatformFrameRates PlatformFrameRates = new PlatformFrameRates();
+
 		private List<IMovie> _movieList = new List<IMovie>();
 		private bool _sortReverse;
 		private string _sortedCol;
@@ -61,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (column == 3) // Time
 			{
-				text = _movieList[index].Time.ToString(@"hh\:mm\:ss\.fff");
+				text = PlatformFrameRates.MovieTime(_movieList[index]).ToString(@"hh\:mm\:ss\.fff");
 			}
 		}
 
@@ -319,7 +321,7 @@ namespace BizHawk.Client.EmuHawk
 							.Append(_movieList[index].Filename).Append('\t')
 							.Append(_movieList[index].SystemID).Append('\t')
 							.Append(_movieList[index].GameName).Append('\t')
-							.Append(_movieList[index].Time.ToString(@"hh\:mm\:ss\.fff"))
+							.Append(PlatformFrameRates.MovieTime(_movieList[index]).ToString(@"hh\:mm\:ss\.fff"))
 							.AppendLine();
 
 						Clipboard.SetDataObject(copyStr.ToString());

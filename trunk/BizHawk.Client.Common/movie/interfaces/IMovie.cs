@@ -31,11 +31,6 @@ namespace BizHawk.Client.Common
 		double FrameCount { get; }
 
 		/// <summary>
-		/// Gets the time calculation based on FrameCount and Fps
-		/// </summary>
-		TimeSpan Time { get; }
-
-		/// <summary>
 		/// Gets the actual length of the input log, should only be used by code that iterates or needs a real length
 		/// </summary>
 		int InputLogLength { get; }

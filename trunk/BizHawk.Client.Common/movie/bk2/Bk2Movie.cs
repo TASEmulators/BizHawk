@@ -60,32 +60,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private double Fps
-		{
-			get
-			{
-				var system = Header[HeaderKeys.PLATFORM];
-				var pal = Header.ContainsKey(HeaderKeys.PAL) &&
-					Header[HeaderKeys.PAL] == "1";
-
-				return _frameRates[system, pal];
-			}
-		}
-
-		public TimeSpan Time
-		{
-			get
-			{
-				var dblseconds = GetSeconds(_log.Count);
-				var seconds = (int)(dblseconds % 60);
-				var days = seconds / 86400;
-				var hours = seconds / 3600;
-				var minutes = (seconds / 60) % 60;
-				var milliseconds = (int)((dblseconds - seconds) * 1000);
-				return new TimeSpan(days, hours, minutes, seconds, milliseconds);
-			}
-		}
-
 		public int InputLogLength
 		{
 			get { return _log.Count; }
@@ -204,18 +178,6 @@ namespace BizHawk.Client.Common
 		}
 
 		#endregion
-
-		private double GetSeconds(int frameCount)
-		{
-			double frames = frameCount;
-
-			if (frames < 1)
-			{
-				return 0;
-			}
-
-			return frames / Fps;
-		}
 
 		private void SetFrameAt(int frameNum, string frame)
 		{
