@@ -69,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 
 		class DummyDisposable : IDisposable { public void Dispose() { } }
 
-		public IDisposable AcquireVideoCodecToken(System.Windows.Forms.IWin32Window hwnd) { return new DummyDisposable(); }
+		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd) { return new DummyDisposable(); }
 
 		public void SetMovieParameters(int fpsnum, int fpsden)
 		{

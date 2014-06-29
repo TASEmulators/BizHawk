@@ -276,9 +276,9 @@ namespace BizHawk.Client.EmuHawk.Filters
 			DeclareOutput(state);
 		}
 
-		Bizware.BizwareGL.Texture2d Texture;
+		Texture2d Texture;
 
-		public void SetTexture(Bizware.BizwareGL.Texture2d tex)
+		public void SetTexture(Texture2d tex)
 		{
 			Texture = tex;
 		}

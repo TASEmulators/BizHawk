@@ -38,9 +38,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 
 			var old = SyncSettings.RegionOverride;
-			SyncSettings.RegionOverride = (BizHawk.Emulation.Cores.Nintendo.NES.NES.NESSyncSettings.Region)
+			SyncSettings.RegionOverride = (NES.NESSyncSettings.Region)
 				Enum.Parse(
-				typeof(BizHawk.Emulation.Cores.Nintendo.NES.NES.NESSyncSettings.Region),
+				typeof(NES.NESSyncSettings.Region),
 				(string)comboBox1.SelectedItem);
 
 			bool changed = DTDB.WasModified ||

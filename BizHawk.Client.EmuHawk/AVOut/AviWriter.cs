@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception e)
 			{
-				System.Windows.Forms.MessageBox.Show("AVIFIL32 Thread died:\n\n" + e.ToString());
+				System.Windows.Forms.MessageBox.Show("AVIFIL32 Thread died:\n\n" + e);
 				return;
 			}
 		}
@@ -493,12 +493,12 @@ namespace BizHawk.Client.EmuHawk
 
 			public string Serialize()
 			{
-				return System.Convert.ToBase64String(SerializeToByteArray());
+				return Convert.ToBase64String(SerializeToByteArray());
 			}
 
 			public static CodecToken DeSerialize(string s)
 			{
-				return DeSerializeFromByteArray(System.Convert.FromBase64String(s));
+				return DeSerializeFromByteArray(Convert.FromBase64String(s));
 			}
 		}
 

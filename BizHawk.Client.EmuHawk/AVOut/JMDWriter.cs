@@ -228,14 +228,14 @@ namespace BizHawk.Client.EmuHawk
 				writeBE16(2); // data channel
 				writeBE32(0); // timestamp (same time as previous packet)
 				f.WriteByte(71); // gamename
-				temp = System.Text.Encoding.UTF8.GetBytes(mmd.gamename);
+				temp = Encoding.UTF8.GetBytes(mmd.gamename);
 				writeVar(temp.Length);
 				f.Write(temp, 0, temp.Length);
 
 				writeBE16(2);
 				writeBE32(0);
 				f.WriteByte(65); // authors
-				temp = System.Text.Encoding.UTF8.GetBytes(mmd.authors);
+				temp = Encoding.UTF8.GetBytes(mmd.authors);
 				writeVar(temp.Length);
 				f.Write(temp, 0, temp.Length);
 
@@ -652,7 +652,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception e)
 			{
-				System.Windows.Forms.MessageBox.Show("JMD Worker Thread died:\n\n" + e.ToString());
+				System.Windows.Forms.MessageBox.Show("JMD Worker Thread died:\n\n" + e);
 				return;
 			}
 		}
@@ -711,7 +711,7 @@ namespace BizHawk.Client.EmuHawk
 			m.WriteByte((byte)(v.BufferWidth & 255));
 			m.WriteByte((byte)(v.BufferHeight >> 8));
 			m.WriteByte((byte)(v.BufferHeight & 255));
-			var g = new DeflaterOutputStream(m, new ICSharpCode.SharpZipLib.Zip.Compression.Deflater(token.compressionlevel));
+			var g = new DeflaterOutputStream(m, new Deflater(token.compressionlevel));
 			g.IsStreamOwner = false; // leave memory stream open so we can pick its contents
 			g.Write(v.VideoBuffer, 0, v.VideoBuffer.Length);
 			g.Flush();

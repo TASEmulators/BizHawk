@@ -3,27 +3,16 @@
 
 using System;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.FilterManager;
-using BizHawk.Client.EmuHawk;
-
 using BizHawk.Bizware.BizwareGL;
 
 using OpenTK;
-using OpenTK.Graphics;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -34,11 +23,11 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public class DisplayManager : IDisposable
 	{
-		class DisplayManagerRenderTargetProvider : FilterManager.IRenderTargetProvider
+		class DisplayManagerRenderTargetProvider : IRenderTargetProvider
 		{
 			DisplayManagerRenderTargetProvider(Func<Size, RenderTarget> callback) { Callback = callback; }
 			Func<Size, RenderTarget> Callback;
-			RenderTarget FilterManager.IRenderTargetProvider.Get(Size size)
+			RenderTarget IRenderTargetProvider.Get(Size size)
 			{
 				return Callback(size);
 			}
@@ -68,18 +57,18 @@ namespace BizHawk.Client.EmuHawk
 			using (var tex = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px_0.png"))
 				TheOneFont = new StringRenderer(GL, xml, tex);
 
-			var fiHq2x = new FileInfo(System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(),"Shaders/BizHawk/hq2x.cgp"));
+			var fiHq2x = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(),"Shaders/BizHawk/hq2x.cgp"));
 			if(fiHq2x.Exists)
 				using(var stream = fiHq2x.OpenRead())
-					ShaderChain_hq2x = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
-			var fiScanlines = new FileInfo(System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/BizScanlines.cgp"));
+					ShaderChain_hq2x = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
+			var fiScanlines = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/BizScanlines.cgp"));
 			if (fiScanlines.Exists)
 				using (var stream = fiScanlines.OpenRead())
-					ShaderChain_scanlines = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
-			var fiBicubic = new FileInfo(System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/bicubic-fast.cgp"));
+					ShaderChain_scanlines = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
+			var fiBicubic = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/bicubic-fast.cgp"));
 			if (fiBicubic.Exists)
 				using (var stream = fiBicubic.OpenRead())
-					ShaderChain_bicubic = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
+					ShaderChain_bicubic = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
 
 			LuaSurfaceSets["emu"] = new SwappableDisplaySurfaceSet();
 			LuaSurfaceSets["native"] = new SwappableDisplaySurfaceSet();
@@ -115,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 		PresentationPanel presentationPanel; //well, its the final layer's target, at least
 		GraphicsControl GraphicsControl; //well, its the final layer's target, at least
 		GLManager.ContextRef CR_GraphicsControl;
-		FilterManager.FilterProgram CurrentFilterProgram;
+		FilterProgram CurrentFilterProgram;
 
 		/// <summary>
 		/// these variables will track the dimensions of the last frame's (or the next frame? this is confusing) emulator native output size
@@ -140,7 +129,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		FilterManager.FilterProgram BuildDefaultChain(Size chain_insize, Size chain_outsize)
+		FilterProgram BuildDefaultChain(Size chain_insize, Size chain_outsize)
 		{
 			//select user special FX shader chain
 			Dictionary<string, object> selectedChainProperties = new Dictionary<string, object>();
@@ -172,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 				Renderer.End();
 			};
 
-			FilterManager.FilterProgram chain = new FilterManager.FilterProgram();
+			var chain = new FilterProgram();
 
 			//add the first filter, encompassing output from the emulator core
 			chain.AddFilter(fInput, "input");
@@ -211,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 			return chain;
 		}
 
-		void AppendRetroShaderChain(FilterManager.FilterProgram program, string name, Filters.RetroShaderChain retroChain, Dictionary<string, object> properties)
+		void AppendRetroShaderChain(FilterProgram program, string name, Filters.RetroShaderChain retroChain, Dictionary<string, object> properties)
 		{
 			for (int i = 0; i < retroChain.Passes.Length; i++)
 			{
@@ -223,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		Filters.LuaLayer AppendLuaLayer(FilterManager.FilterProgram chain, string name)
+		Filters.LuaLayer AppendLuaLayer(FilterProgram chain, string name)
 		{
 			Texture2d luaNativeTexture = null;
 			var luaNativeSurface = LuaSurfaceSets[name].GetCurrent();
@@ -350,7 +339,7 @@ namespace BizHawk.Client.EmuHawk
 			public BitmapBuffer offscreenBB;
 		}
 
-		FilterManager.FilterProgram UpdateSourceInternal(JobInfo job)
+		FilterProgram UpdateSourceInternal(JobInfo job)
 		{
 			GlobalWin.GLManager.Activate(CR_GraphicsControl);
 
@@ -408,7 +397,7 @@ TESTEROO:
 			//build the default filter chain and set it up with services filters will need
 			Size chain_insize = new Size(bufferWidth, bufferHeight);
 
-			FilterManager.FilterProgram filterProgram = BuildDefaultChain(chain_insize, chain_outsize);
+			var filterProgram = BuildDefaultChain(chain_insize, chain_outsize);
 			filterProgram.GuiRenderer = Renderer;
 			filterProgram.GL = GL;
 
@@ -457,7 +446,7 @@ TESTEROO:
 			{
 				switch (step.Type)
 				{
-					case FilterManager.FilterProgram.ProgramStepType.Run:
+					case FilterProgram.ProgramStepType.Run:
 						{
 							int fi = (int)step.Args;
 							var f = CurrentFilterProgram.Filters[fi];
@@ -466,7 +455,7 @@ TESTEROO:
 							var orec = f.FindOutput();
 							if (orec != null)
 							{
-								if (orec.SurfaceDisposition == FilterManager.SurfaceDisposition.Texture)
+								if (orec.SurfaceDisposition == SurfaceDisposition.Texture)
 								{
 									texCurr = f.GetOutput();
 									rtCurr = null;
@@ -474,7 +463,7 @@ TESTEROO:
 							}
 							break;
 						}
-					case FilterManager.FilterProgram.ProgramStepType.NewTarget:
+					case FilterProgram.ProgramStepType.NewTarget:
 						{
 							var size = (Size)step.Args;
 							rtCurr = ShaderChainFrugalizers[rtCounter++].Get(size);
@@ -482,7 +471,7 @@ TESTEROO:
 							CurrentFilterProgram.CurrRenderTarget = rtCurr;
 							break;
 						}
-					case FilterManager.FilterProgram.ProgramStepType.FinalTarget:
+					case FilterProgram.ProgramStepType.FinalTarget:
 						{
 							var size = (Size)step.Args;
 							inFinalTarget = true;
