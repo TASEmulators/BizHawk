@@ -219,10 +219,10 @@ namespace BizHawk.Client.Common
 						{ "A Left", 'L' },
 						{ "A Right", 'R' },
 
-						{ "DPad Up", 'U' },
-						{ "DPad Down", 'D' },
-						{ "DPad Left", 'L' },
-						{ "DPad Right", 'R' },
+						{ "DPad U", 'U' },
+						{ "DPad D", 'D' },
+						{ "DPad L", 'L' },
+						{ "DPad R", 'R' },
 					}
 				}
 			};

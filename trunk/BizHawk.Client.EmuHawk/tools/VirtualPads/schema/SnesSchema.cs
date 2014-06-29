@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			for (var i = 0; i < Global.Emulator.ControllerDefinition.PlayerCount; i++)
 			{
-				yield return StandardController(i);
+				yield return StandardController(i + 1);
 			}
 
 			yield return ConsoleButtons();
