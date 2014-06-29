@@ -165,7 +165,12 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				return Global.MovieSession.Movie.Fps;
+				var movie = Global.MovieSession.Movie;
+				var system = movie.HeaderEntries[HeaderKeys.PLATFORM];
+				var pal = movie.HeaderEntries.ContainsKey(HeaderKeys.PAL) &&
+						movie.HeaderEntries[HeaderKeys.PAL] == "1";
+
+				return new PlatformFrameRates()[system, pal];
 			}
 
 			return 0.0;

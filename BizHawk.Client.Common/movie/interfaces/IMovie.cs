@@ -29,11 +29,6 @@ namespace BizHawk.Client.Common
 		/// Possibly (but unlikely different from InputLogLength (could be infinity, or maybe an implementation automatically discounts empty frames at the end of a movie, etc)
 		/// </summary>
 		double FrameCount { get; }
-		
-		/// <summary>
-		/// Gets the Fps used to calculate the time of the movie
-		/// </summary>
-		double Fps { get; }
 
 		/// <summary>
 		/// Gets the time calculation based on FrameCount and Fps

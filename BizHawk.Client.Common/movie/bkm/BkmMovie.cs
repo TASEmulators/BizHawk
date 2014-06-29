@@ -73,7 +73,7 @@ namespace BizHawk.Client.Common
 			get { return _changes; }
 		}
 
-		public double Fps
+		private double Fps
 		{
 			get
 			{
