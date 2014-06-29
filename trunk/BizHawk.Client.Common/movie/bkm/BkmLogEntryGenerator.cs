@@ -21,43 +21,53 @@ namespace BizHawk.Client.Common
 			{
 				return "|.|";
 			}
-			else if (_controlType == "Atari 7800 ProLine Joystick Controller")
+
+			if (_controlType == "Atari 7800 ProLine Joystick Controller")
 			{
 				return GetA78ControllersAsMnemonic();
 			}
-			else if (_controlType == "SNES Controller")
+
+			if (_controlType == "SNES Controller")
 			{
 				return GetSNESControllersAsMnemonic();
 			}
-			else if (_controlType == "Commodore 64 Controller")
+
+			if (_controlType == "Commodore 64 Controller")
 			{
 				return GetC64ControllersAsMnemonic();
 			}
-			else if (_controlType == "GBA Controller")
+
+			if (_controlType == "GBA Controller")
 			{
 				return GetGBAControllersAsMnemonic();
 			}
-			else if (_controlType == "Dual Gameboy Controller")
+
+			if (_controlType == "Dual Gameboy Controller")
 			{
 				return GetDualGameBoyControllerAsMnemonic();
 			}
-			else if (_controlType == "WonderSwan Controller")
+
+			if (_controlType == "WonderSwan Controller")
 			{
 				return GetWonderSwanControllerAsMnemonic();
 			}
-			else if (_controlType == "Nintento 64 Controller")
+
+			if (_controlType == "Nintento 64 Controller")
 			{
 				return GetN64ControllersAsMnemonic();
 			}
-			else if (_controlType == "Saturn Controller")
+
+			if (_controlType == "Saturn Controller")
 			{
 				return GetSaturnControllersAsMnemonic();
 			}
-			else if (_controlType == "PSP Controller")
+
+			if (_controlType == "PSP Controller")
 			{
 				return "|.|"; // TODO
 			}
-			else if (_controlType == "GPGX Genesis Controller")
+
+			if (_controlType == "GPGX Genesis Controller")
 			{
 				return GetGeneis6ButtonControllersAsMnemonic();
 			}

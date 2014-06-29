@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 
 namespace BizHawk.Client.Common
 {
-	public partial class Bk2Movie : IMovie
+	public partial class Bk2Movie
 	{
 		private enum Moviemode { Inactive, Play, Record, Finished }
 		private Moviemode _mode = Moviemode.Inactive;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
@@ -23,11 +20,13 @@ namespace BizHawk.Client.Common
 				{
 					return SystemOverrides[Global.Emulator.SystemId][key];
 				}
-				else if (BaseMnemonicLookupTable.ContainsKey(key))
+
+				if (BaseMnemonicLookupTable.ContainsKey(key))
 				{
 					return BaseMnemonicLookupTable[key];
 				}
-				else if (key.Length == 1)
+
+				if (key.Length == 1)
 				{
 					return key[0];
 				}

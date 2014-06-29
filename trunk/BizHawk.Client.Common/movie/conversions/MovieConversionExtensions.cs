@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Client.Common.MovieConversionExtensions
+﻿namespace BizHawk.Client.Common.MovieConversionExtensions
 {
 	public static class MovieConversionExtensions
 	{
@@ -35,7 +29,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			bk2.TextSavestate = bkm.TextSavestate;
 			bk2.BinarySavestate = bkm.BinarySavestate;
 
-			for (int i = 0; i < bkm.InputLogLength; i++)
+			for (var i = 0; i < bkm.InputLogLength; i++)
 			{
 				var input = bkm.GetInputState(i);
 				bk2.AppendFrame(input);

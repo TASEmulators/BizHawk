@@ -1,11 +1,9 @@
-﻿using System;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
 	public partial class BkmMovie : IMovie
 	{
-		private readonly PlatformFrameRates _frameRates = new PlatformFrameRates();
 		private bool _makeBackup = true;
 		private bool _changes;
 		private int? _loopOffset;
@@ -130,14 +128,16 @@ namespace BizHawk.Client.Common
 					getframe = frame;
 				}
 
-				var adapter = new BkmControllerAdapter();
-				adapter.Type = Global.MovieSession.MovieControllerAdapter.Type;
+				var adapter = new BkmControllerAdapter
+				{
+					Type = Global.MovieSession.MovieControllerAdapter.Type
+				};
 				adapter.SetControllersAsMnemonic(_log[getframe]);
 				return adapter;
 			}
 
 			Finish();
-			return null; ;
+			return null;
 		}
 
 		public void ClearFrame(int frame)

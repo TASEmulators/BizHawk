@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -7,7 +6,7 @@ using System.Text;
 
 namespace BizHawk.Client.Common
 {
-	public partial class Bk2Movie : IMovie
+	public partial class Bk2Movie
 	{
 		private readonly List<string> _log = new List<string>();
 		private string _logKey = string.Empty;

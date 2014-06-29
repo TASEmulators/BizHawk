@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
 
 namespace BizHawk.Client.Common
 {
-	public partial class Bk2Movie : IMovie
+	public partial class Bk2Movie
 	{
 		protected readonly Bk2Header Header = new Bk2Header();
 		private string _syncSettingsJson = string.Empty;
@@ -173,7 +171,7 @@ namespace BizHawk.Client.Common
 
 		private string CommentsString()
 		{
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 
 			foreach(var comment in Comments)
 			{
