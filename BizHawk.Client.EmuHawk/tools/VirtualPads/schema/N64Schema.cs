@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "P" + controller + " Up",
+						Name = "P" + controller + " DPad U",
 						DisplayName = "",
 						Icon = Properties.Resources.BlueUp,
 						Location = new Point(24, 195),
@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "P" + controller + " Down",
+						Name = "P" + controller + " DPad D",
 						DisplayName = "",
 						Icon = Properties.Resources.BlueDown,
 						Location = new Point(24, 216),
@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "P" + controller + " Left",
+						Name = "P" + controller + " DPad L",
 						DisplayName = "",
 						Icon = Properties.Resources.Back,
 						Location = new Point(3, 207),
@@ -62,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "P" + controller + " Right",
+						Name = "P" + controller + " DPad R",
 						DisplayName = "",
 						Icon = Properties.Resources.Forward,
 						Location = new Point(45, 207),
