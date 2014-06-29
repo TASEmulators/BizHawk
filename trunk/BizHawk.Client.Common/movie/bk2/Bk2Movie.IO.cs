@@ -139,6 +139,12 @@ namespace BizHawk.Client.Common
 
 		private void Write(string fn)
 		{
+			var file = new FileInfo(fn);
+			if (!file.Directory.Exists)
+			{
+				Directory.CreateDirectory(file.Directory.ToString());
+			}
+
 			using (var fs = new FileStream(fn, FileMode.Create, FileAccess.Write))
 			using (var bs = new BinaryStateSaver(fs, false))
 			{

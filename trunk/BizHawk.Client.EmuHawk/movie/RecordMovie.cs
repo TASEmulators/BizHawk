@@ -124,6 +124,7 @@ namespace BizHawk.Client.EmuHawk
 					.GetCustomAttribute(Global.Emulator.GetType(), typeof(CoreAttributes)))
 					.CoreName;
 
+				movieToRecord.Save();
 				GlobalWin.MainForm.StartNewMovie(movieToRecord, true);
 
 				Global.Config.UseDefaultAuthor = DefaultAuthorCheckBox.Checked;
