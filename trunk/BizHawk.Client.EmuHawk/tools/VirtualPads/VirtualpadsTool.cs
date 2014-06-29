@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private int _defaultWidth;
 		private int _defaultHeight;
-		private bool _readOnly = false;
+		private bool _readOnly;
 
 		private List<VirtualPad> Pads
 		{

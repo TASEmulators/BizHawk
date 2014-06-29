@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Atari.Atari7800;
@@ -21,8 +18,8 @@ namespace BizHawk.Client.EmuHawk
 					yield return JoystickController(2);
 					break;
 				case "Atari 7800 Paddle Controller":
-					PaddleController(1);
-					PaddleController(2);
+					yield return PaddleController(1);
+					yield return PaddleController(2);
 					break;
 				case "Atari 7800 Keypad Controller":
 					break;

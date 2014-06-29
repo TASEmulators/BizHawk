@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPad : UserControl
 	{
-		private PadSchema _schema;
-		private bool _readOnly = false;
+		private readonly PadSchema _schema;
+		private bool _readOnly;
 
 		private List<IVirtualPadControl> PadControls
 		{

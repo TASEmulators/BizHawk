@@ -43,16 +43,12 @@ namespace BizHawk.Client.EmuHawk
 		private int MinY { get { return 0 - MaxY; } }
 
 		private readonly Brush WhiteBrush = Brushes.White;
-		private readonly Brush BlackBrush = Brushes.Black;
 		private readonly Brush GrayBrush = Brushes.LightGray;
 		private readonly Brush RedBrush = Brushes.Red;
-		private readonly Brush BlueBrush = Brushes.DarkBlue;
 		private readonly Brush OffWhiteBrush = Brushes.Beige;
 
 		private readonly Pen BlackPen = new Pen(Brushes.Black);
 		private readonly Pen BluePen = new Pen(Brushes.Blue, 2);
-		private readonly Pen GrayPen = new Pen(Brushes.LightGray);
-		private readonly Pen OffWhite = new Pen(Brushes.Beige);
 
 		private readonly Bitmap Dot = new Bitmap(7, 7);
 		private readonly Bitmap GrayDot = new Bitmap(7, 7);
@@ -70,30 +66,30 @@ namespace BizHawk.Client.EmuHawk
 			BorderStyle = BorderStyle.Fixed3D;
 			
 			// Draw the dot into a bitmap
-			Graphics g = Graphics.FromImage(Dot);
+			var g = Graphics.FromImage(Dot);
 			g.Clear(Color.Transparent);
 			g.FillRectangle(RedBrush, 2, 0, 3, 7);
 			g.FillRectangle(RedBrush, 1, 1, 5, 5);
 			g.FillRectangle(RedBrush, 0, 2, 7, 3);
 
-			Graphics gg = Graphics.FromImage(GrayDot);
+			var gg = Graphics.FromImage(GrayDot);
 			gg.Clear(Color.Transparent);
 			gg.FillRectangle(Brushes.Gray, 2, 0, 3, 7);
 			gg.FillRectangle(Brushes.Gray, 1, 1, 5, 5);
 			gg.FillRectangle(Brushes.Gray, 0, 2, 7, 3);
 		}
 
-		private int RealToGFX(int val)
+		private static int RealToGfx(int val)
 		{
 			return (val + 128) / 2;
 		}
 
-		private int GFXToReal(int val, bool isX) // isX is a hack
+		private int GfxToReal(int val, bool isX) // isX is a hack
 		{
 			var max = isX ? MaxX : MaxY;
 			var min = isX ? MinX : MinY;
 
-			int ret = (val * 2);
+			var ret = (val * 2);
 			if (ret > max)
 			{
 				ret = max;
@@ -114,8 +110,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetAnalog()
 		{
-			int? xn = HasValue ? X : (int?)null;
-			int? yn = HasValue ? Y : (int?)null;
+			var xn = HasValue ? X : (int?)null;
+			var yn = HasValue ? Y : (int?)null;
 			Global.StickyXORAdapter.SetFloat(XName, xn);
 			Global.StickyXORAdapter.SetFloat(YName, yn);
 
@@ -136,8 +132,8 @@ namespace BizHawk.Client.EmuHawk
 				//Line
 				if (HasValue)
 				{
-					e.Graphics.DrawLine(BluePen, 64, 63, RealToGFX(X), 127 - RealToGFX(Y));
-					e.Graphics.DrawImage(ReadOnly ? GrayDot : Dot, RealToGFX(X) - 3, 127 - RealToGFX(Y) - 3);
+					e.Graphics.DrawLine(BluePen, 64, 63, RealToGfx(X), 127 - RealToGfx(Y));
+					e.Graphics.DrawImage(ReadOnly ? GrayDot : Dot, RealToGfx(X) - 3, 127 - RealToGfx(Y) - 3);
 				}
 			}
 		}
@@ -148,8 +144,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (e.Button == MouseButtons.Left)
 				{
-					X = GFXToReal(e.X - 64, true);
-					Y = GFXToReal(-(e.Y - 63), false);
+					X = GfxToReal(e.X - 64, true);
+					Y = GfxToReal(-(e.Y - 63), false);
 					HasValue = true;
 					SetAnalog();
 				}
@@ -171,9 +167,9 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void WndProc(ref Message m)
 		{
-			if (m.Msg == 0x007B) //WM_CONTEXTMENU
+			if (m.Msg == 0x007B) // WM_CONTEXTMENU
 			{
-				//dont let parent controls get this.. we handle the right mouse button ourselves
+				// Don't let parent controls get this. We handle the right mouse button ourselves
 				return;
 			}
 
@@ -186,8 +182,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (e.Button == MouseButtons.Left)
 				{
-					X = GFXToReal(e.X - 64, true);
-					Y = GFXToReal(-(e.Y - 63), false);
+					X = GfxToReal(e.X - 64, true);
+					Y = GfxToReal(-(e.Y - 63), false);
 					HasValue = true;
 				}
 				if (e.Button == MouseButtons.Right)

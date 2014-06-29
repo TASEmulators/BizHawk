@@ -9,8 +9,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class VirtualPadButton : CheckBox, IVirtualPadControl
 	{
-		private bool _rightClicked = false;
-		private bool _readonly = false;
+		private bool _rightClicked;
+		private bool _readonly;
 
 		public VirtualPadButton()
 		{
@@ -126,14 +126,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!ReadOnly)
 				{
 					_rightClicked = value;
-					if (_rightClicked)
-					{
-						ForeColor = SystemColors.HotTrack;
-					}
-					else
-					{
-						ForeColor = SystemColors.ControlText;
-					}
+					ForeColor = _rightClicked ? SystemColors.HotTrack : SystemColors.ControlText;
 				}
 			}
 		}

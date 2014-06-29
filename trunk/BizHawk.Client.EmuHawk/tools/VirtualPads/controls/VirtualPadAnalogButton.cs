@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using System.Drawing;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
@@ -10,9 +9,9 @@ namespace BizHawk.Client.EmuHawk
 	public partial class VirtualPadAnalogButton : UserControl, IVirtualPadControl
 	{
 		private string _displayName = string.Empty;
-		private int _maxValue = 0;
-		private bool _programmaticallyChangingValue = false;
-		private bool _readonly = false;
+		private int _maxValue;
+		private bool _programmaticallyChangingValue;
+		private bool _readonly;
 
 		public VirtualPadAnalogButton()
 		{

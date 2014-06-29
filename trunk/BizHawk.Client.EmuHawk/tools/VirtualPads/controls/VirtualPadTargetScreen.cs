@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -18,9 +13,9 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Pen WhitePen = new Pen(Brushes.White, 2);
 		private readonly Pen GrayPen = new Pen(Brushes.Gray, 2);
 
-		private bool _isProgrammicallyChangingNumerics = false;
-		private bool _isDragging = false;
-		private bool _readonly = false;
+		private bool _isProgrammicallyChangingNumerics;
+		private bool _isDragging;
+		private bool _readonly;
 
 		public VirtualPadTargetScreen()
 		{
