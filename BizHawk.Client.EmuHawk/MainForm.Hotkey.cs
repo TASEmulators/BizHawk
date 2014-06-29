@@ -243,11 +243,11 @@ namespace BizHawk.Client.EmuHawk
 				case "Toggle read-only":
 					ToggleReadOnly();
 					break;
-				case "Play Movie": 
-					LoadPlayMovieDialog();
+				case "Play Movie":
+					PlayMovieMenuItem_Click(null, null);
 					break;
-				case "Record Movie": 
-					LoadRecordMovieDialog(); 
+				case "Record Movie":
+					RecordMovieMenuItem_Click(null, null); 
 					break;
 				case "Stop Movie":
 					StopMovie();
