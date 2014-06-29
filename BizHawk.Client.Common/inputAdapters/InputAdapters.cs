@@ -308,6 +308,7 @@ namespace BizHawk.Client.Common
 		public void Unset(string button)
 		{
 			stickySet.Remove(button);
+			_floatSet.Remove(button);
 		}
 
 		public bool IsSticky(string button)

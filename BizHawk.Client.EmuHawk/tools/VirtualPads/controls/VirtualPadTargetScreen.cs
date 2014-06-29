@@ -32,7 +32,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Clear()
 		{
-			// Nothing to do
+			Global.StickyXORAdapter.Unset(XName);
+			Global.StickyXORAdapter.Unset(YName);
 		}
 
 		public void Set(IController controller)

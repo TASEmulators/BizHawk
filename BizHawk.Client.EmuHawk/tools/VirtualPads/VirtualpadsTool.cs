@@ -227,6 +227,11 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.VirtualPadSticky ^= true;
 		}
 
+		private void PadBoxContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			StickyContextMenuItem.Checked = Global.Config.VirtualPadSticky;
+		}
+
 		#endregion
 
 		#endregion
