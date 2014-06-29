@@ -13,7 +13,6 @@ namespace BizHawk.Client.Common
 					.Replace("P2 ", "")
 					.Replace("P3 ", "")
 					.Replace("P4 ", "")
-					.Replace("Key", "")
 					.Replace("Key ", "");
 
 				if (SystemOverrides.ContainsKey(Global.Emulator.SystemId) && SystemOverrides[Global.Emulator.SystemId].ContainsKey(key))
