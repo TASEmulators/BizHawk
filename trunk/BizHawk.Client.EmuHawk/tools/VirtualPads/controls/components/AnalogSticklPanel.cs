@@ -41,8 +41,8 @@ namespace BizHawk.Client.EmuHawk
 		private int _maxX = 127;
 		private int _maxY = 127;
 
-		private int MinX { get { return 0 - MaxX; } }
-		private int MinY { get { return 0 - MaxY; } }
+		public int MinX { get { return 0 - MaxX - 1; } }
+		public int MinY { get { return 0 - MaxY - 1; } }
 
 		private readonly Brush WhiteBrush = Brushes.White;
 		private readonly Brush GrayBrush = Brushes.LightGray;
