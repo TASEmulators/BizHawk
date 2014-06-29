@@ -362,7 +362,7 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadColumnInfo()
 		{
 			WatchListView.Columns.Clear();
-			ToolHelpers.AddColumn(WatchListView, WatchList.ADDRESS, true, GetColumnWidth(WatchList.ADDRESS));
+			ToolHelpers.AddColumn(WatchListView, WatchList.ADDRESS, Global.Config.RamWatchShowAddressColumn, GetColumnWidth(WatchList.ADDRESS));
 			ToolHelpers.AddColumn(WatchListView, WatchList.VALUE, true, GetColumnWidth(WatchList.VALUE));
 			ToolHelpers.AddColumn(WatchListView, WatchList.PREV, Global.Config.RamWatchShowPrevColumn, GetColumnWidth(WatchList.PREV));
 			ToolHelpers.AddColumn(WatchListView, WatchList.CHANGES, Global.Config.RamWatchShowChangeColumn, GetColumnWidth(WatchList.CHANGES));
@@ -925,6 +925,7 @@ namespace BizHawk.Client.EmuHawk
 				{ "NotesColumn", -1 },
 			};
 
+			Global.Config.RamWatchShowAddressColumn = true;
 			Global.Config.RamWatchShowChangeColumn = true;
 			Global.Config.RamWatchShowDomainColumn = true;
 			Global.Config.RamWatchShowPrevColumn = false;
@@ -946,10 +947,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColumnsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
+			ShowAddressMenuItem.Checked = Global.Config.RamWatchShowAddressColumn;
 			ShowPreviousMenuItem.Checked = Global.Config.RamWatchShowPrevColumn;
 			ShowChangesMenuItem.Checked = Global.Config.RamWatchShowChangeColumn;
 			ShowDiffMenuItem.Checked = Global.Config.RamWatchShowDiffColumn;
 			ShowDomainMenuItem.Checked = Global.Config.RamWatchShowDomainColumn;
+		}
+
+		private void ShowAddressMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamWatchShowAddressColumn ^= true;
+			SaveColumnInfo();
+			LoadColumnInfo();
 		}
 
 		private void ShowPreviousMenuItem_Click(object sender, EventArgs e)

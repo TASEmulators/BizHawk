@@ -50,6 +50,7 @@
 			this.ShowDiffContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowDomainContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.statusStrip1 = new StatusStripEx();
+			this.ErrorIconButton = new System.Windows.Forms.ToolStripButton();
 			this.MessageLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStrip1 = new ToolStripEx();
 			this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -118,7 +119,7 @@
 			this.DiffColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.DomainColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.NotesColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.ErrorIconButton = new System.Windows.Forms.ToolStripButton();
+			this.ShowAddressMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ListViewContextMenu.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
@@ -294,6 +295,7 @@
 			// 
 			// statusStrip1
 			// 
+			this.statusStrip1.ClickThrough = true;
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ErrorIconButton,
             this.MessageLabel});
@@ -302,6 +304,17 @@
 			this.statusStrip1.Size = new System.Drawing.Size(359, 22);
 			this.statusStrip1.TabIndex = 8;
 			this.statusStrip1.Text = "statusStrip1";
+			// 
+			// ErrorIconButton
+			// 
+			this.ErrorIconButton.BackColor = System.Drawing.Color.NavajoWhite;
+			this.ErrorIconButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.ErrorIconButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.ExclamationRed;
+			this.ErrorIconButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.ErrorIconButton.Name = "ErrorIconButton";
+			this.ErrorIconButton.Size = new System.Drawing.Size(23, 20);
+			this.ErrorIconButton.Text = "Warning! Out of Range Addresses in list, click to remove them";
+			this.ErrorIconButton.Click += new System.EventHandler(this.ErrorIconButton_Click);
 			// 
 			// MessageLabel
 			// 
@@ -815,6 +828,7 @@
 			// ColumnsSubMenu
 			// 
 			this.ColumnsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ShowAddressMenuItem,
             this.ShowPreviousMenuItem,
             this.ShowChangesMenuItem,
             this.ShowDiffMenuItem,
@@ -935,16 +949,12 @@
 			this.NotesColumn.Text = "Notes";
 			this.NotesColumn.Width = 128;
 			// 
-			// ErrorIconButton
+			// ShowAddressMenuItem
 			// 
-			this.ErrorIconButton.BackColor = System.Drawing.Color.NavajoWhite;
-			this.ErrorIconButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.ErrorIconButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.ExclamationRed;
-			this.ErrorIconButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.ErrorIconButton.Name = "ErrorIconButton";
-			this.ErrorIconButton.Size = new System.Drawing.Size(23, 20);
-			this.ErrorIconButton.Text = "Warning! Out of Range Addresses in list, click to remove them";
-			this.ErrorIconButton.Click += new System.EventHandler(this.ErrorIconButton_Click);
+			this.ShowAddressMenuItem.Name = "ShowAddressMenuItem";
+			this.ShowAddressMenuItem.Size = new System.Drawing.Size(156, 22);
+			this.ShowAddressMenuItem.Text = "Address";
+			this.ShowAddressMenuItem.Click += new System.EventHandler(this.ShowAddressMenuItem_Click);
 			// 
 			// RamWatch
 			// 
@@ -1069,5 +1079,6 @@
 		private StatusStripEx statusStrip1;
 		private System.Windows.Forms.ToolStripStatusLabel MessageLabel;
 		private System.Windows.Forms.ToolStripButton ErrorIconButton;
+		private System.Windows.Forms.ToolStripMenuItem ShowAddressMenuItem;
 	}
 }
