@@ -20,11 +20,7 @@ namespace BizHawk.Client.Common
 			get { return _wndx; }
 			set
 			{
-				if (value == -32000)
-				{
-					_wndx = null;
-				}
-				else
+				if (value != -32000)
 				{
 					_wndx = value;
 				}
@@ -38,11 +34,7 @@ namespace BizHawk.Client.Common
 			get { return _wndy; }
 			set
 			{
-				if (value == -32000)
-				{
-					_wndy = null;
-				}
-				else
+				if (value != -32000)
 				{
 					_wndy = value;
 				}
