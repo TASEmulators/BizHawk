@@ -832,8 +832,6 @@ namespace BizHawk.Client.EmuHawk
 			//txtPaletteDetailsIndexSpecific.Text = string.Format("{0}", lastColorNum & 0x7F);
 
 			txtPaletteDetailsAddress.Text = string.Format("${0:X3}", lastColorNum * 2);
-
-			string test = string.Format(@"Pal# ${0:X2} @{1:X3}", lastColorNum, lastColorNum * 2);
 		}
 
 
