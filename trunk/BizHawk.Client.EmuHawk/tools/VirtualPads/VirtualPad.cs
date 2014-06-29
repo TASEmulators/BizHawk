@@ -105,5 +105,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			PadControls.ForEach(c => c.Set(controller));
 		}
+
+		public void SetPrevious(IController previous)
+		{
+			PadControls
+				.OfType<VirtualPadAnalogStick>()
+				.ToList()
+				.ForEach(c => c.SetPrevious(previous));
+		}
 	}
 }

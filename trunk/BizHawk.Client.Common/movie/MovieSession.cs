@@ -44,9 +44,22 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished)
+				if (Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished && Global.Emulator.Frame > 0)
 				{
 					return Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1);
+				}
+
+				return null;
+			}
+		}
+
+		public IController PreviousFrame
+		{
+			get
+			{
+				if (Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished && Global.Emulator.Frame > 1)
+				{
+					return Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 2);
 				}
 
 				return null;
