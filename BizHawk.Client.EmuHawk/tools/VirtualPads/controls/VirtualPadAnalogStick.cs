@@ -20,6 +20,13 @@ namespace BizHawk.Client.EmuHawk
 			AnalogStick.Name = Name;
 			AnalogStick.XName = Name;
 			AnalogStick.YName = Name.Replace("X", "Y"); // TODO: allow schema to dictate this but this is a convenient default
+
+			ManualX.Minimum = AnalogStick.MinX;
+			ManualX.Maximum = AnalogStick.MaxX;
+
+			ManualY.Minimum = AnalogStick.MinY;
+			ManualY.Maximum = AnalogStick.MaxY;
+
 			MaxXNumeric.Value = 127;
 			MaxYNumeric.Value = 127; // Note: these trigger change events that change the analog stick too
 		}
