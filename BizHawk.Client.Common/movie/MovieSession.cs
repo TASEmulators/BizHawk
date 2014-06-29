@@ -317,5 +317,36 @@ namespace BizHawk.Client.Common
 
 			return true;
 		}
+
+		public void ToggleMultitrack()
+		{
+			if (Movie.IsActive)
+			{
+
+				if (Global.Config.VBAStyleMovieLoadState)
+				{
+					MessageCallback("Multi-track can not be used in Full Movie Loadstates mode");
+				}
+				else
+				{
+					Global.MovieSession.MultiTrack.IsActive = !Global.MovieSession.MultiTrack.IsActive;
+					if (Global.MovieSession.MultiTrack.IsActive)
+					{
+						MessageCallback("MultiTrack Enabled");
+						MultiTrack.CurrentState = "Recording None";
+					}
+					else
+					{
+						MessageCallback("MultiTrack Disabled");
+					}
+
+					Global.MovieSession.MultiTrack.SelectNone();
+				}
+			}
+			else
+			{
+				MessageCallback("MultiTrack cannot be enabled while not recording.");
+			}
+		}
 	}
 }
