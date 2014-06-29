@@ -137,7 +137,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var columnName = TasView.Columns[column].Name;
-				var columnText = TasView.Columns[column].Text;
+				//var columnText = TasView.Columns[column].Text;
 
 				if (columnName == MarkerColumnName)
 				{

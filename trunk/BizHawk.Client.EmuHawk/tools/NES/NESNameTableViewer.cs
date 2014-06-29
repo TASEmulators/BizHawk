@@ -189,7 +189,6 @@ namespace BizHawk.Client.EmuHawk
 
 			var dptr = (int*)bmpdata.Scan0.ToPointer();
 			var pitch = bmpdata.Stride / 4;
-			var pt_add = _nes.ppu.reg_2000.bg_pattern_hi ? 0x1000 : 0;
 
 			// Buffer all the data from the ppu, because it will be read multiple times and that is slow
 			var ppuBuffer = new byte[0x3000];

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
@@ -40,8 +37,6 @@ namespace BizHawk.Client.EmuHawk
 			int? newRow;
 			string newColumn = String.Empty;
 
-			string columnName = String.Empty;
-
 			var accumulator = 0;
 			foreach (ColumnHeader column in Columns)
 			{
@@ -50,11 +45,9 @@ namespace BizHawk.Client.EmuHawk
 				{
 					continue;
 				}
-				else
-				{
-					newColumn = column.Name;
-					break;
-				}
+
+				newColumn = column.Name;
+				break;
 			}
 
 			var headerHeight = 24; //Are these always true? Don't know, is there a way to programmatically determine them?
