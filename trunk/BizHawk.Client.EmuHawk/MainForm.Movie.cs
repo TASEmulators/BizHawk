@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Drawing;
 using System.IO;
-using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Nintendo.NES;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -54,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				string s = Global.MovieSession.Movie.SyncSettingsJson;
+				var s = Global.MovieSession.Movie.SyncSettingsJson;
 				if (!string.IsNullOrWhiteSpace(s))
 				{
 					_syncSettingsHack = ConfigService.LoadWithType(s);
@@ -133,60 +129,6 @@ namespace BizHawk.Client.EmuHawk
 				PlayRecordStatusButton.ToolTipText = "No movie is active";
 				PlayRecordStatusButton.Visible = false;
 			}
-		}
-
-		public void LoadPlayMovieDialog()
-		{
-			new PlayMovie().ShowDialog();
-		}
-
-		public void LoadRecordMovieDialog()
-		{
-			if (!Global.Emulator.Attributes().Released)
-			{
-				var result = MessageBox.Show
-					(this, "Thanks for using Bizhawk!  The emulation core you have selected " +
-					"is currently BETA-status.  We appreciate your help in testing Bizhawk. " +
-					"You can record a movie on this core if you'd like to, but expect to " +
-					"encounter bugs and sync problems.  Continue?", "BizHawk", MessageBoxButtons.YesNo);
-
-				if (result != DialogResult.Yes)
-				{
-					return;
-				}
-			}
-			else if (Global.Emulator is LibsnesCore)
-			{
-				var ss = (LibsnesCore.SnesSyncSettings)Global.Emulator.GetSyncSettings();
-				if (ss.Profile == "Performance" && !Global.Config.DontAskPerformanceCoreRecordingNag)
-				{
-					var box = new MsgBox(
-						"While the performance core is faster, it is recommended that you use the Compatibility profile when recording movies for better accuracy and stability\n\nSwitch to Compatibility?",
-						"Stability Warning",
-						MessageBoxIcon.Warning);
-
-					box.SetButtons(
-						new [] {"Switch", "Continue", "Cancel" },
-						new DialogResult[] { DialogResult.Yes, DialogResult.No, DialogResult.Cancel });
-					box.SetCheckbox("Don't ask me again");
-					box.MaximumSize = new Size(450, 350);
-					box.SetMessageToAutoSize();
-					var result = box.ShowDialog();
-					Global.Config.DontAskPerformanceCoreRecordingNag = box.CheckboxChecked;
-
-					if (result == DialogResult.Yes)
-					{
-						ss.Profile = "Compatibility";
-						Global.Emulator.PutSyncSettings(ss);
-					}
-					else if (result == DialogResult.Cancel)
-					{
-						return;
-					}
-				}
-			}
-
-			new RecordMovie().ShowDialog();
 		}
 
 		public void RestartMovie()
