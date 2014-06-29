@@ -56,8 +56,8 @@ namespace BizHawk.Client.EmuHawk
 			MessageFont = blitter.GetFontType("MessageFont");
 		}
 
-		public System.Drawing.Color FixedMessagesColor { get { return System.Drawing.Color.FromArgb(Global.Config.MessagesColor); } }
-		public System.Drawing.Color FixedAlertMessageColor { get { return System.Drawing.Color.FromArgb(Global.Config.AlertMessageColor); } }
+		public Color FixedMessagesColor { get { return Color.FromArgb(Global.Config.MessagesColor); } }
+		public Color FixedAlertMessageColor { get { return Color.FromArgb(Global.Config.AlertMessageColor); } }
 
 		public OSDManager()
 		{

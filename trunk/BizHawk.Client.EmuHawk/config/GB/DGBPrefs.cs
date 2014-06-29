@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk.config.GB
 				dlg.gbPrefControl1.ColorGameBoy = emu.IsCGBMode(false);
 				dlg.gbPrefControl2.ColorGameBoy = emu.IsCGBMode(true);
 
-				if (dlg.ShowDialog(owner) == System.Windows.Forms.DialogResult.OK)
+				if (dlg.ShowDialog(owner) == DialogResult.OK)
 				{
 					dlg.GetSettings(out s, out ss);
 					Global.Emulator.PutSettings(s);

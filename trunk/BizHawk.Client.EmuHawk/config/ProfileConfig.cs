@@ -72,8 +72,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (cProfile == true)
 			{
-				ProfileDialogHelpTexBox.Location = new System.Drawing.Point(217, 12);
-				ProfileDialogHelpTexBox.Size = new System.Drawing.Size(165, 126);
+				ProfileDialogHelpTexBox.Location = new Point(217, 12);
+				ProfileDialogHelpTexBox.Size = new Size(165, 126);
 				SaveScreenshotStatesCheckBox.Visible = true;
 				SaveLargeScreenshotStatesCheckBox.Visible = true;
 				AllowUDLRCheckBox.Visible = true;
@@ -81,8 +81,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (cProfile == false)
 			{
-				ProfileDialogHelpTexBox.Location = new System.Drawing.Point(184, 12);
-				ProfileDialogHelpTexBox.Size = new System.Drawing.Size(198, 126);
+				ProfileDialogHelpTexBox.Location = new Point(184, 12);
+				ProfileDialogHelpTexBox.Size = new Size(198, 126);
 				ProfileDialogHelpTexBox.Text = "Options: \r\nCasual Gaming - All about performance! \r\n\nTool-Assisted Speedruns - Maximum Accuracy! \r\n\nLongplays - Stability is the key!";
 				SaveScreenshotStatesCheckBox.Visible = false;
 				SaveLargeScreenshotStatesCheckBox.Visible = false;

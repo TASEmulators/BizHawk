@@ -71,8 +71,8 @@ namespace BizHawk.Client.EmuHawk
 					g.CompositingQuality = CompositingQuality.HighSpeed;
 					if (ScaleImage)
 					{
-						g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-						g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+						g.InterpolationMode = InterpolationMode.NearestNeighbor;
+						g.PixelOffsetMode = PixelOffsetMode.Half;
 						g.DrawImage(bmp, 0, 0, Width, Height);
 					}
 					else

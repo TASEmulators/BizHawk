@@ -7,7 +7,7 @@ class SyncTextBox : RichTextBox
 	public SyncTextBox()
 	{
 		this.Multiline = true;
-		this.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+		this.ScrollBars = RichTextBoxScrollBars.Vertical;
 			
 	}
 	public Control Buddy { get; set; }

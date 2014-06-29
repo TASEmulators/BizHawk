@@ -217,7 +217,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var kvp in _tas.ColumnNames)
 			{
-				AddColumn(kvp.Key, kvp.Value.ToString(), 20);
+				AddColumn(kvp.Key, kvp.Value, 20);
 			}
 		}
 

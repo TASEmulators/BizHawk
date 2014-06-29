@@ -19,10 +19,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public string ButtonName;
-		public BizHawk.Client.Common.Config.AnalogBind Bind;
+		public Config.AnalogBind Bind;
 		bool listening = false;
 
-		public AnalogBindControl(string ButtonName, BizHawk.Client.Common.Config.AnalogBind Bind)
+		public AnalogBindControl(string ButtonName, Config.AnalogBind Bind)
 			: this()
 		{
 			this.Bind = Bind;

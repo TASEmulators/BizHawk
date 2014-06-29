@@ -743,14 +743,14 @@ namespace BizHawk.Client.EmuHawk
 				// hackish
 				if (o.Item1 == "WMouse X")
 				{
-					var P = GlobalWin.DisplayManager.UntransformPoint(new System.Drawing.Point((int)o.Item2, 0));
+					var P = GlobalWin.DisplayManager.UntransformPoint(new Point((int)o.Item2, 0));
 					float x = P.X / (float)Global.Emulator.VideoProvider.BufferWidth;
 					return new Tuple<string, float>("WMouse X", x * 20000 - 10000);
 				}
 					
 				if (o.Item1 == "WMouse Y")
 				{
-					var P = GlobalWin.DisplayManager.UntransformPoint(new System.Drawing.Point(0, (int)o.Item2));
+					var P = GlobalWin.DisplayManager.UntransformPoint(new Point(0, (int)o.Item2));
 					float y = P.Y / (float)Global.Emulator.VideoProvider.BufferHeight;
 					return new Tuple<string, float>("WMouse Y", y * 20000 - 10000);
 				}
@@ -887,7 +887,7 @@ namespace BizHawk.Client.EmuHawk
 					//(this could be determined with more work; other side affects of the fullscreen mode include: corrupted taskbar, no modal boxes on top of GL control, no screenshots)
 					//At any rate, we can solve this by adding a 1px black border around the GL control
 					//Please note: It is important to do this before resizing things, otherwise momentarily a GL control without WS_BORDER will be at the magic dimensions and cause the flakeout
-					Padding = new System.Windows.Forms.Padding(1);
+					Padding = new Padding(1);
 					BackColor = Color.Black;
 				#endif
 
@@ -909,7 +909,7 @@ namespace BizHawk.Client.EmuHawk
 				WindowState = FormWindowState.Normal;
 
 				#if WINDOWS
-					Padding = new System.Windows.Forms.Padding(0);
+					Padding = new Padding(0);
 					//it's important that we set the form color back to this, because the statusbar icons blend onto the mainform, not onto the statusbar--
 					//so we need the statusbar and mainform backdrop color to match
 					BackColor = SystemColors.Control; 
@@ -2402,7 +2402,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (Global.Emulator is Gameboy)
 				{
-					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.gambatte;
+					CoreNameStatusBarButton.Image = Properties.Resources.gambatte;
 				}
 				else
 				{
@@ -2749,7 +2749,7 @@ namespace BizHawk.Client.EmuHawk
 					if (ext == "<directory>")
 					{
 						var fbd = new FolderBrowserEx();
-						if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
+						if (fbd.ShowDialog() == DialogResult.Cancel)
 						{
 							aw.Dispose();
 							return;
@@ -2874,7 +2874,7 @@ namespace BizHawk.Client.EmuHawk
 					IDisposable disposableOutput = null;
 					if (_avwriterResizew > 0 && _avwriterResizeh > 0)
 					{
-						BizHawk.Bizware.BizwareGL.BitmapBuffer bbin = null;
+						BitmapBuffer bbin = null;
 						Bitmap bmpin = null;
 						Bitmap bmpout = null;
 						try
@@ -2885,7 +2885,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 							else
 							{
-								bbin = new Bizware.BizwareGL.BitmapBuffer(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight, Global.Emulator.VideoProvider.GetVideoBuffer());
+								bbin = new BitmapBuffer(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight, Global.Emulator.VideoProvider.GetVideoBuffer());
 							}
 
 
@@ -3259,7 +3259,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBcoreSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			BizHawk.Client.EmuHawk.config.GB.GBPrefs.DoGBPrefsDialog(this);
+			config.GB.GBPrefs.DoGBPrefsDialog(this);
 		}
 
 		private void settingsToolStripMenuItem_Click(object sender, EventArgs e)

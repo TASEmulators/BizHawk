@@ -121,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 				using (var sfd = new SaveFileDialog())
 				{
 					var result = sfd.ShowDialog(this);
-					if (result == System.Windows.Forms.DialogResult.OK)
+					if (result == DialogResult.OK)
 					{
 						using (TextWriter tw = new StreamWriter(sfd.FileName))
 						{

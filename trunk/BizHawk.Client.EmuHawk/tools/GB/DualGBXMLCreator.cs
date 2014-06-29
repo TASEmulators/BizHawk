@@ -118,7 +118,7 @@ namespace BizHawk.Client.EmuHawk
 			catch (Exception e)
 			{
 				textBoxOutputDir.Text = string.Empty;
-				textBoxXML.Text = "Failed!\n" + e.ToString();
+				textBoxXML.Text = "Failed!\n" + e;
 				SaveRunButton.Enabled = false;
 				return false;
 			}

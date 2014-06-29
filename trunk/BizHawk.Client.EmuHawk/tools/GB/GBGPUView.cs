@@ -474,7 +474,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// try to run the current mouseover, to refresh if the mouse is being held over a pane while the emulator runs
 			// this doesn't really work well; the update rate seems to be throttled
-			MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y, 0);
+			MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, Cursor.Position.X, Cursor.Position.Y, 0);
 			OnMouseMove(e);
 		}
 

@@ -1487,7 +1487,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var Message = String.Format("Invalid file format. Reason: {0} \nForce transfer? This may cause the calculator to crash.", ex.Message);
 
-					if (MessageBox.Show(Message, "Upload Failed", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+					if (MessageBox.Show(Message, "Upload Failed", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == DialogResult.Yes)
 					{
 						(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), false);
 					}
@@ -1784,7 +1784,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DGBsettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			BizHawk.Client.EmuHawk.config.GB.DGBPrefs.DoDGBPrefsDialog(this);
+			config.GB.DGBPrefs.DoDGBPrefsDialog(this);
 		}
 
 		#endregion
@@ -1954,8 +1954,10 @@ namespace BizHawk.Client.EmuHawk
 		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
 		{
 			var result = new config.DisplayConfigLite().ShowDialog();
-			if (result == System.Windows.Forms.DialogResult.OK)
+			if (result == DialogResult.OK)
+			{
 				FrameBufferResized();
+			}
 		}
 
 		private void CoreSelectionContextSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -2223,7 +2225,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show("Exception on drag and drop:\n" + ex.ToString());
+				MessageBox.Show("Exception on drag and drop:\n" + ex);
 			}
 		}
 

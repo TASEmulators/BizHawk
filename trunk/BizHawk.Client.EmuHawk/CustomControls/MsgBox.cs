@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
             this.m_sysIcon = icon;
 
             if (this.m_sysIcon == null)
-                this.messageLbl.Location = new System.Drawing.Point(FORM_X_MARGIN, FORM_Y_MARGIN);
+                this.messageLbl.Location = new Point(FORM_X_MARGIN, FORM_Y_MARGIN);
         }
 
 		public void SetMessageToAutoSize()
