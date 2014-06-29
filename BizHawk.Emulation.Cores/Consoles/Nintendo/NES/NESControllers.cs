@@ -235,15 +235,49 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public ControllerNES()
 		{
-			Definition = new ControllerDefinition { BoolButtons = new List<string>(Buttons) };
+			Definition = new ControllerDefinition
+			{
+				BoolButtons = Buttons
+					.OrderBy(x => ButtonOrdinals[x])
+					.ToList()
+			};
 		}
+
+
+		Dictionary<string, int> ButtonOrdinals = new Dictionary<string, int>
+		{
+			{ "0Up", 1 },
+			{ "0Down", 2 },
+			{ "0Left", 3 },
+			{ "0Right", 4 },
+			{ "0Start", 5 },
+			{ "0Select", 6 },
+			{ "0B", 7 },
+			{ "0A", 8 },
+		};
 
 		public ControllerNES(bool famicomP2)
 		{
 			if (famicomP2)
-				Definition = new ControllerDefinition { BoolButtons = new List<string>(FamicomP2Buttons.Where((s) => s != null)) };
+			{
+				Definition = new ControllerDefinition
+				{
+					BoolButtons = FamicomP2Buttons
+					.Where((s) => s != null)
+					.OrderBy(x => ButtonOrdinals[x])
+					.ToList()
+				};
+			}
 			else
-				Definition = new ControllerDefinition { BoolButtons = new List<string>(Buttons) };
+			{
+				Definition = new ControllerDefinition
+				{
+					BoolButtons = Buttons
+					.OrderBy(x => ButtonOrdinals[x])
+					.ToList()
+				};
+			}
+
 			FamicomP2Hack = famicomP2;
 		}
 
