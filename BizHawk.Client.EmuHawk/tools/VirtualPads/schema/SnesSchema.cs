@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 
 using BizHawk.Client.Common;
@@ -11,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IEnumerable<PadSchema> GetPadSchemas()
 		{
-			for (int i = 0; i < Global.Emulator.ControllerDefinition.PlayerCount; i++)
+			for (var i = 0; i < Global.Emulator.ControllerDefinition.PlayerCount; i++)
 			{
 				yield return StandardController(i);
 			}
@@ -117,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 						DisplayName = "A",
 						Location = new Point(146, 25),
 						Type = PadSchema.PadInputType.Boolean
-					},
+					}
 				}
 			};
 		}

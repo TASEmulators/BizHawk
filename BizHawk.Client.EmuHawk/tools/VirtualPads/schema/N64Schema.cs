@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 
 using BizHawk.Client.Common;
@@ -13,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 		public IEnumerable<PadSchema> GetPadSchemas()
 		{
 			var ss = (N64SyncSettings)Global.Emulator.GetSyncSettings();
-			for (int i = 0; i < 4; i++)
+			for (var i = 0; i < 4; i++)
 			{
 				if (ss.Controllers[i].IsConnected)
 				{

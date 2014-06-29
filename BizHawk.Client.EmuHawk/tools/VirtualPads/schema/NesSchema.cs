@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
@@ -50,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					int currentControlerNo = 1;
+					var currentControlerNo = 1;
 					switch (ss.Controls.NesLeftPort)
 					{
 						default:
@@ -155,7 +153,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema FdsConsoleButtons(int diskSize)
 		{
-			List<PadSchema.ButtonScema> buttons = new List<PadSchema.ButtonScema>
+			var buttons = new List<PadSchema.ButtonScema>
 			{
 				new PadSchema.ButtonScema
 				{
@@ -180,7 +178,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 
-			for (int i = 0; i < diskSize; i++)
+			for (var i = 0; i < diskSize; i++)
 			{
 				buttons.Add(new PadSchema.ButtonScema
 				{
@@ -282,7 +280,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema Famicom2ndController()
 		{
-			int controller = 2;
+			var controller = 2;
 			return new PadSchema
 			{
 				DisplayName = "Player 2",
@@ -367,7 +365,7 @@ namespace BizHawk.Client.EmuHawk
 						SecondaryNames = new []
 						{
 							"P" + controller + " Zapper Y",
-							"P" + controller + " Fire",
+							"P" + controller + " Fire"
 						}
 					},
 					new PadSchema.ButtonScema
@@ -528,7 +526,7 @@ namespace BizHawk.Client.EmuHawk
 						SecondaryNames = new []
 						{
 							"P" + controller + " Pen Y",
-							"P" + controller + " Click",
+							"P" + controller + " Click"
 						}
 					},
 					new PadSchema.ButtonScema
@@ -564,7 +562,7 @@ namespace BizHawk.Client.EmuHawk
 						DisplayName = "    F1    ",
 						Location = new Point(23, 15),
 						Type = PadSchema.PadInputType.Boolean
-					},
+					}
 				}
 			};
 		}

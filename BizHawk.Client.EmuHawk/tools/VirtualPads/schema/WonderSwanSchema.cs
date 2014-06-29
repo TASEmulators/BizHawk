@@ -1,9 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-
-using BizHawk.Client.Common;
-using BizHawk.Emulation.Cores.WonderSwan;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -106,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 						DisplayName = "A",
 						Location = new Point(133, 103),
 						Type = PadSchema.PadInputType.Boolean
-					},
+					}
 				}
 			};
 		}
@@ -199,9 +195,7 @@ namespace BizHawk.Client.EmuHawk
 						DisplayName = "X4",
 						Location = new Point(103, 156),
 						Type = PadSchema.PadInputType.Boolean
-					},
-
-					
+					}
 				}
 			};
 		}

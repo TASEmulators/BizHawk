@@ -1,11 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
-
-using BizHawk.Client.Common;
-using BizHawk.Emulation.Cores.Atari.Atari2600;
 
 namespace BizHawk.Client.EmuHawk
 {

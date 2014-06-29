@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
@@ -13,8 +7,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadAnalogStick : UserControl, IVirtualPadControl
 	{
-		private bool _programmaticallyUpdatingNumerics = false;
-		private bool _readonly = false;
+		private bool _programmaticallyUpdatingNumerics;
+		private bool _readonly;
 
 		public VirtualPadAnalogStick()
 		{
