@@ -138,13 +138,20 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished && Global.Emulator.Frame > 0)
+			Pads.ForEach(p => p.SetPrevious(null)); // Not the cleanest way to clear this every frame
+
+			if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
 			{
 				Readonly = true;
 				Pads.ForEach(p => p.Set(Global.MovieSession.CurrentInput));
 			}
 			else
 			{
+				if (Global.MovieSession.Movie.IsRecording)
+				{
+					Pads.ForEach(p => p.SetPrevious(Global.MovieSession.PreviousFrame));
+				}
+
 				Readonly = false;
 			}
 

@@ -16,6 +16,8 @@ namespace BizHawk.Client.EmuHawk
 		public string XName = string.Empty;
 		public string YName = string.Empty;
 
+		private IController _previous = null;
+
 		public int MaxX
 		{
 			get { return _maxX; }
@@ -49,6 +51,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Pen BlackPen = new Pen(Brushes.Black);
 		private readonly Pen BluePen = new Pen(Brushes.Blue, 2);
+		private readonly Pen GrayPen = new Pen(Brushes.Gray, 2);
 
 		private readonly Bitmap Dot = new Bitmap(7, 7);
 		private readonly Bitmap GrayDot = new Bitmap(7, 7);
@@ -122,14 +125,23 @@ namespace BizHawk.Client.EmuHawk
 		{
 			unchecked
 			{
-				//Background
+				// Background
 				e.Graphics.FillRectangle(GrayBrush, 0, 0, 128, 128);
 				e.Graphics.FillEllipse(ReadOnly ? OffWhiteBrush : WhiteBrush, 0, 0, 127, 127);
 				e.Graphics.DrawEllipse(BlackPen, 0, 0, 127, 127);
 				e.Graphics.DrawLine(BlackPen, 64, 0, 64, 127);
 				e.Graphics.DrawLine(BlackPen, 0, 63, 127, 63);
 
-				//Line
+				// Previous frame
+				if (_previous != null)
+				{
+					var pX = (int)_previous.GetFloat(XName);
+					var pY = (int)_previous.GetFloat(YName);
+					e.Graphics.DrawLine(GrayPen, 64, 63, RealToGfx(pX), 127 - RealToGfx(pY));
+					e.Graphics.DrawImage(GrayDot, RealToGfx(pX) - 3, 127 - RealToGfx(pY) - 3);
+				}
+
+				// Line
 				if (HasValue)
 				{
 					e.Graphics.DrawLine(BluePen, 64, 63, RealToGfx(X), 127 - RealToGfx(Y));
@@ -212,6 +224,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SetPosition(newX, newY);
 			}
+		}
+
+		public void SetPrevious(IController previous)
+		{
+			_previous = previous;
 		}
 
 		public void SetPosition(int xval, int yval)
