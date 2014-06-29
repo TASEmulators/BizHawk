@@ -10,6 +10,8 @@ namespace BizHawk.Client.Common
 	public class Bk2ControllerAdapter : IMovieController
 	{
 		private readonly string _logKey = string.Empty;
+		private readonly WorkingDictionary<string, bool> MyBoolButtons = new WorkingDictionary<string, bool>();
+		private readonly WorkingDictionary<string, float> MyFloatControls = new WorkingDictionary<string, float>();
 
 		public Bk2ControllerAdapter()
 		{
@@ -172,10 +174,5 @@ namespace BizHawk.Client.Common
 				}
 			}
 		}
-
-		
-
-		private readonly WorkingDictionary<string, bool> MyBoolButtons = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, float> MyFloatControls = new WorkingDictionary<string, float>();
 	}
 }
