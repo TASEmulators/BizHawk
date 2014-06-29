@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
 
 using BizHawk.Emulation.Common;
@@ -11,7 +9,7 @@ namespace BizHawk.Client.Common
 	{
 		private readonly Bk2MnemonicConstants Mnemonics = new Bk2MnemonicConstants();
 		private IController _source;
-		private string _logKey = string.Empty;
+		private readonly string _logKey = string.Empty;
 
 		public Bk2LogEntryGenerator(string logKey)
 		{
