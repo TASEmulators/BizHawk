@@ -77,6 +77,23 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		public void Bump(int? x, int? y)
+		{
+			if (x.HasValue)
+			{
+				AnalogStick.HasValue = true;
+				AnalogStick.X += x.Value;
+			}
+
+			if (y.HasValue)
+			{
+				AnalogStick.HasValue = true;
+				AnalogStick.Y += y.Value;
+			}
+
+			SetNumericsFromAnalog();
+		}
+
 		public void SetPrevious(IController previous)
 		{
 			AnalogStick.SetPrevious(previous);

@@ -59,6 +59,14 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		public void Bump(int? x)
+		{
+			if (x.HasValue)
+			{
+				CurrentValue = CurrentValue + x.Value;
+			}
+		}
+
 		private void VirtualPadAnalogButton_Load(object sender, EventArgs e)
 		{
 			DisplayNameLabel.Text = DisplayName;
@@ -110,8 +118,22 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
+				int val;
+				if (value > AnalogTrackBar.Maximum)
+				{
+					val = AnalogTrackBar.Maximum;
+				}
+				else if (value < AnalogTrackBar.Minimum)
+				{
+					val = AnalogTrackBar.Minimum;
+				}
+				else
+				{
+					val = value;
+				}
+
 				_programmaticallyChangingValue = true;
-				AnalogTrackBar.Value = value;
+				AnalogTrackBar.Value = val;
 				ValueLabel.Text = AnalogTrackBar.Value.ToString();
 				_programmaticallyChangingValue = false;
 			}
