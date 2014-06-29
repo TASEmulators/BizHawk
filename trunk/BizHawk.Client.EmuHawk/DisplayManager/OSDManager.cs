@@ -43,7 +43,6 @@ namespace BizHawk.Client.EmuHawk
 	public class OSDManager
 	{
 		public string FPS { get; set; }
-		public string MT { get; set; }
 		public IBlitterFont MessageFont;
 
 		public void Dispose()
@@ -373,10 +372,10 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.MovieSession.MultiTrack.IsActive)
 			{
-				float x = GetX(g, Global.Config.DispMultix, Global.Config.DispMultianchor, MT);
-				float y = GetY(g, Global.Config.DispMultiy, Global.Config.DispMultianchor, MT);
+				float x = GetX(g, Global.Config.DispMultix, Global.Config.DispMultianchor, Global.MovieSession.MultiTrack.CurrentState);
+				float y = GetY(g, Global.Config.DispMultiy, Global.Config.DispMultianchor, Global.MovieSession.MultiTrack.CurrentState);
 
-				DrawOsdMessage(g, MT, FixedMessagesColor, x, y);
+				DrawOsdMessage(g, Global.MovieSession.MultiTrack.CurrentState, FixedMessagesColor, x, y);
 			}
 
 			if (Global.Config.DisplayFPS && FPS != null)

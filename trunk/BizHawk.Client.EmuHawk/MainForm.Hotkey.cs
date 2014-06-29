@@ -259,65 +259,23 @@ namespace BizHawk.Client.EmuHawk
 					SaveMovie(); 
 					break;
 				case "Toggle MultiTrack":
-					if (Global.MovieSession.Movie.IsActive)
-					{
-
-						if (Global.Config.VBAStyleMovieLoadState)
-						{
-							GlobalWin.OSD.AddMessage("Multi-track can not be used in Full Movie Loadstates mode");
-						}
-						else
-						{
-							Global.MovieSession.MultiTrack.IsActive = !Global.MovieSession.MultiTrack.IsActive;
-							if (Global.MovieSession.MultiTrack.IsActive)
-							{
-								GlobalWin.OSD.AddMessage("MultiTrack Enabled");
-								GlobalWin.OSD.MT = "Recording None";
-							}
-							else
-							{
-								GlobalWin.OSD.AddMessage("MultiTrack Disabled");
-							}
-							Global.MovieSession.MultiTrack.RecordAll = false;
-							Global.MovieSession.MultiTrack.CurrentPlayer = 0;
-						}
-					}
-					else
-					{
-						GlobalWin.OSD.AddMessage("MultiTrack cannot be enabled while not recording.");
-					}
+					Global.MovieSession.ToggleMultitrack();
 					GlobalWin.DisplayManager.NeedsToPaint = true;
 					break;
 				case "MT Select All":
-					Global.MovieSession.MultiTrack.CurrentPlayer = 0;
-					Global.MovieSession.MultiTrack.RecordAll = true;
-					GlobalWin.OSD.MT = "Recording All";
+					Global.MovieSession.MultiTrack.SelectAll();
 					GlobalWin.DisplayManager.NeedsToPaint = true;
 					break;
 				case "MT Select None":
-					Global.MovieSession.MultiTrack.CurrentPlayer = 0;
-					Global.MovieSession.MultiTrack.RecordAll = false;
-					GlobalWin.OSD.MT = "Recording None";
+					Global.MovieSession.MultiTrack.SelectNone();
 					GlobalWin.DisplayManager.NeedsToPaint = true;
 					break;
 				case "MT Increment Player":
-					Global.MovieSession.MultiTrack.CurrentPlayer++;
-					Global.MovieSession.MultiTrack.RecordAll = false;
-					if (Global.MovieSession.MultiTrack.CurrentPlayer > Global.Emulator.ControllerDefinition.PlayerCount)
-					{
-						Global.MovieSession.MultiTrack.CurrentPlayer = 1;
-					}
-					GlobalWin.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer;
+					Global.MovieSession.MultiTrack.Increment();
 					GlobalWin.DisplayManager.NeedsToPaint = true;
 					break;
 				case "MT Decrement Player":
-					Global.MovieSession.MultiTrack.CurrentPlayer--;
-					Global.MovieSession.MultiTrack.RecordAll = false;
-					if (Global.MovieSession.MultiTrack.CurrentPlayer < 1)
-					{
-						Global.MovieSession.MultiTrack.CurrentPlayer = Global.Emulator.ControllerDefinition.PlayerCount;
-					}
-					GlobalWin.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer;
+					Global.MovieSession.MultiTrack.Decrement();
 					GlobalWin.DisplayManager.NeedsToPaint = true;
 					break;
 				case "Movie Poke": 
