@@ -195,6 +195,7 @@ namespace BizHawk.Client.Common
 		// RamWatch Settings
 		public ToolDialogSettings RamWatchSettings = new ToolDialogSettings();
 		public RecentFiles RecentWatches = new RecentFiles(8);
+		public bool RamWatchShowAddressColumn = true;
 		public bool RamWatchShowChangeColumn = true;
 		public bool RamWatchShowPrevColumn = false;
 		public bool RamWatchShowDiffColumn = false;
