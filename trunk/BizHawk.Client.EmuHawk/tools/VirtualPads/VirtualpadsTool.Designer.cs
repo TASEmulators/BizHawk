@@ -33,7 +33,7 @@
 			this.ControllerBox = new System.Windows.Forms.GroupBox();
 			this.PadBoxContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.clearAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.stickyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.StickyContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PadMenu = new MenuStripEx();
 			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -68,9 +68,10 @@
 			// 
 			this.PadBoxContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.clearAllToolStripMenuItem,
-            this.stickyToolStripMenuItem});
+            this.StickyContextMenuItem});
 			this.PadBoxContextMenu.Name = "PadBoxContextMenu";
-			this.PadBoxContextMenu.Size = new System.Drawing.Size(175, 48);
+			this.PadBoxContextMenu.Size = new System.Drawing.Size(175, 70);
+			this.PadBoxContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.PadBoxContextMenu_Opening);
 			// 
 			// clearAllToolStripMenuItem
 			// 
@@ -80,12 +81,12 @@
 			this.clearAllToolStripMenuItem.Text = "Clear All";
 			this.clearAllToolStripMenuItem.Click += new System.EventHandler(this.ClearAllMenuItem_Click);
 			// 
-			// stickyToolStripMenuItem
+			// StickyContextMenuItem
 			// 
-			this.stickyToolStripMenuItem.Name = "stickyToolStripMenuItem";
-			this.stickyToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-			this.stickyToolStripMenuItem.Text = "Sticky";
-			this.stickyToolStripMenuItem.Click += new System.EventHandler(this.StickyMenuItem_Click);
+			this.StickyContextMenuItem.Name = "StickyContextMenuItem";
+			this.StickyContextMenuItem.Size = new System.Drawing.Size(174, 22);
+			this.StickyContextMenuItem.Text = "Sticky";
+			this.StickyContextMenuItem.Click += new System.EventHandler(this.StickyMenuItem_Click);
 			// 
 			// PadMenu
 			// 
@@ -230,6 +231,6 @@
 		private System.Windows.Forms.ToolStripMenuItem StickyMenuItem;
 		private System.Windows.Forms.ContextMenuStrip PadBoxContextMenu;
 		private System.Windows.Forms.ToolStripMenuItem clearAllToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem stickyToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem StickyContextMenuItem;
 	}
 }
