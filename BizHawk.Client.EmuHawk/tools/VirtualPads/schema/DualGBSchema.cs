@@ -2,19 +2,18 @@
 using System.ComponentModel;
 using System.Drawing;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.EmuHawk.tools.VirtualPads.schema
 {
-	
-	[SchemaAttributes("GB")]
-	public class GBSchema : IVirtualPadSchema
+	[SchemaAttributes("DGB")]
+	public class DualGBSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas()
 		{
-			yield return StandardController();
-			yield return ConsoleButtons();
+			yield return StandardController(1);
+			yield return StandardController(2);
 		}
 
-		public static PadSchema StandardController()
+		private static PadSchema StandardController(int controller)
 		{
 			return new PadSchema
 			{
@@ -24,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					new PadSchema.ButtonScema
 					{
-						Name = "Up",
+						Name = "P" + controller + " Up",
 						DisplayName = "",
 						Icon = Properties.Resources.BlueUp,
 						Location = new Point(14, 12),
@@ -32,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "Down",
+						Name = "P" + controller + " Down",
 						DisplayName = "",
 						Icon = Properties.Resources.BlueDown,
 						Location = new Point(14, 56),
@@ -40,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "Left",
+						Name = "P" + controller + " Left",
 						DisplayName = "",
 						Icon = Properties.Resources.Back,
 						Location = new Point(2, 34),
@@ -48,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "Right",
+						Name = "P" + controller + " Right",
 						DisplayName = "",
 						Icon = Properties.Resources.Forward,
 						Location = new Point(24, 34),
@@ -56,28 +55,28 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "B",
+						Name = "P" + controller + " B",
 						DisplayName = "B",
 						Location = new Point(122, 34),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "A",
+						Name = "P" + controller + " A",
 						DisplayName = "A",
 						Location = new Point(146, 34),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "Select",
+						Name = "P" + controller + " Select",
 						DisplayName = "s",
 						Location = new Point(52, 34),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "Start",
+						Name = "P" + controller + " Start",
 						DisplayName = "S",
 						Location = new Point(74, 34),
 						Type = PadSchema.PadInputType.Boolean
@@ -85,25 +84,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 		}
-
-		private static PadSchema ConsoleButtons()
-		{
-			return new PadSchema
-			{
-				DisplayName = "Console",
-				IsConsole = true,
-				DefaultSize = new Size(75, 50),
-				Buttons = new[]
-				{
-					new PadSchema.ButtonScema
-					{
-						Name = "Power",
-						DisplayName = "Power",
-						Location = new Point(10, 15),
-						Type = PadSchema.PadInputType.Boolean
-					}
-				}
-			};
-		}
 	}
+	
 }
