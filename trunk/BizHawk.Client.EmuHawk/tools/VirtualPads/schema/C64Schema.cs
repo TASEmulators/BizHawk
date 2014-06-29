@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Keyboard",
 				IsConsole = false,
-				DefaultSize = new Size(500, 250),
+				DefaultSize = new Size(500, 150),
 				Buttons = new[]
 				{
 					new PadSchema.ButtonScema
