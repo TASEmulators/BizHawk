@@ -14,11 +14,13 @@ namespace BizHawk.Client.EmuHawk
 			if ((Global.Emulator as SMS).IsGameGear)
 			{
 				yield return GGController(1);
+				yield return GGConsoleButtons();
 			}
 			else
 			{
 				yield return StandardController(1);
 				yield return StandardController(2);
+				yield return SmsConsoleButtons();
 			}
 		}
 
@@ -131,6 +133,53 @@ namespace BizHawk.Client.EmuHawk
 						Name = "P" + controller + " B2",
 						DisplayName = "2",
 						Location = new Point(146, 34),
+						Type = PadSchema.PadInputType.Boolean
+					}
+				}
+			};
+		}
+
+		private static PadSchema SmsConsoleButtons()
+		{
+			return new PadSchema
+			{
+				DisplayName = "Console",
+				IsConsole = true,
+				DefaultSize = new Size(150, 50),
+				Buttons = new[]
+				{
+					new PadSchema.ButtonScema
+					{
+						Name = "Reset",
+						DisplayName = "Reset",
+						Location = new Point(10, 15),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "Pause",
+						DisplayName = "Pause",
+						Location = new Point(58, 15),
+						Type = PadSchema.PadInputType.Boolean
+					}
+				}
+			};
+		}
+
+		private static PadSchema GGConsoleButtons()
+		{
+			return new PadSchema
+			{
+				DisplayName = "Console",
+				IsConsole = true,
+				DefaultSize = new Size(150, 50),
+				Buttons = new[]
+				{
+					new PadSchema.ButtonScema
+					{
+						Name = "Reset",
+						DisplayName = "Reset",
+						Location = new Point(10, 15),
 						Type = PadSchema.PadInputType.Boolean
 					}
 				}
