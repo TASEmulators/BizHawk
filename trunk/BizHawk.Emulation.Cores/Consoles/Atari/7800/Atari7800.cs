@@ -156,7 +156,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		}
 		#endregion
 
-		Atari7800Control ControlAdapter;
+		public Atari7800Control ControlAdapter;
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
 		public IController Controller { get; set; }
@@ -254,8 +254,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			theMachine.InputState.InputPollCallback = CoreComm.InputCallback.Call;
 
 			ControlAdapter = new Atari7800Control(theMachine);
-			if (ControlAdapter.ControlType.Name != "Atari 7800 ProLine Joystick Controller")
-				throw new Exception("For now, only Atari 7800 ProLine Joystick games are supported.");
 			ControllerDefinition = ControlAdapter.ControlType;
 
 			avProvider.ConnectToMachine(theMachine, GameInfo);
