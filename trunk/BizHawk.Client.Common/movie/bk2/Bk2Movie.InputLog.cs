@@ -76,7 +76,7 @@ namespace BizHawk.Client.Common
 					}
 					else if (line[0] == '|')
 					{
-						_log.Add(ConvertLogEntryFromFile(line, _logKey));
+						_log.Add(line);
 					}
 				}
 			}
@@ -123,7 +123,7 @@ namespace BizHawk.Client.Common
 					}
 					else if (line.StartsWith("|"))
 					{
-						SetFrameAt(i, ConvertLogEntryFromFile(line, _logKey));
+						SetFrameAt(i, line);
 						i++;
 					}
 				}
