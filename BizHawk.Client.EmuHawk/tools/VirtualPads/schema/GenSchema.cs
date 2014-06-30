@@ -32,6 +32,8 @@ namespace BizHawk.Client.EmuHawk
 						yield return Mouse(player);
 						break;
 					case LibGPGX.INPUT_DEVICE.DEVICE_XE_A1P:
+                        yield return XE1AP(player);
+                        break;
 					default:
 						// TO DO
 						break;
@@ -327,5 +329,74 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 		}
+
+        public static PadSchema XE1AP(int controller)
+        {
+            return new PadSchema
+            {
+                IsConsole = false,
+                DefaultSize = new Size(174, 90),
+                Buttons = new[]
+				{
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " A",
+						DisplayName = "A",
+						Location = new Point(98, 40),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " B",
+						DisplayName = "B",
+						Location = new Point(122, 40),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " C",
+						DisplayName = "C",
+						Location = new Point(146, 40),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " D",
+						DisplayName = "D",
+						Location = new Point(98, 65),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " E1",
+						DisplayName = "E¹",
+						Location = new Point(122, 65),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " E2",
+						DisplayName = "E²",
+						Location = new Point(152, 65),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Start",
+						DisplayName = "Start",
+						Location = new Point(122, 12),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Select",
+						DisplayName = "Select",
+						Location = new Point(162, 12),
+						Type = PadSchema.PadInputType.Boolean
+					}
+				}
+            };
+        }
+
 	}
 }
