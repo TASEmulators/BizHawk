@@ -11,25 +11,18 @@ namespace BizHawk.Client.Common
 		public static IMovie Get(string path)
 		{
 			// TODO: change IMovies to take HawkFiles only and not path
-			if (Path.GetExtension(path).EndsWith("bk2"))
-			{
-				return new Bk2Movie(path);
-			}
-
 			if (Path.GetExtension(path).EndsWith("tasproj"))
 			{
 				return new TasMovie(path);
 			}
 
-			var movie = new BkmMovie(path);
-
-			if (VersionInfo.DeveloperBuild)
+			if (Path.GetExtension(path).EndsWith("bkm"))
 			{
-				movie.Load();
-				return movie.ToBk2();
+				return new BkmMovie(path).ToBk2();
 			}
 
-			return movie;
+			// Default to bk2
+			return new Bk2Movie(path);
 		}
 
 		/// <summary>
@@ -39,12 +32,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (VersionInfo.DeveloperBuild)
-				{
-					return "bk2";
-				}
-
-				return "bkm";
+				return "bk2";
 			}
 		}
 
@@ -79,12 +67,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (VersionInfo.DeveloperBuild)
-				{
-					return new Bk2Movie();
-				}
-
-				return new BkmMovie();
+				return new Bk2Movie();
 			}
 		}
 	}
