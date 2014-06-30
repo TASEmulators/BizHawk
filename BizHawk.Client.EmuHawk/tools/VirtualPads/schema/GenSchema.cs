@@ -31,9 +31,12 @@ namespace BizHawk.Client.EmuHawk
 					case LibGPGX.INPUT_DEVICE.DEVICE_MOUSE:
 						yield return Mouse(player);
 						break;
+					case LibGPGX.INPUT_DEVICE.DEVICE_ACTIVATOR:
+						yield return Activator(player);
+						break;
 					case LibGPGX.INPUT_DEVICE.DEVICE_XE_A1P:
-                        yield return XE1AP(player);
-                        break;
+						yield return XE1AP(player);
+						break;
 					default:
 						// TO DO
 						break;
@@ -329,14 +332,91 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 		}
-
-        public static PadSchema XE1AP(int controller)
-        {
-            return new PadSchema
-            {
-                IsConsole = false,
-                DefaultSize = new Size(174, 90),
-                Buttons = new[]
+		public static PadSchema Activator(int controller)
+		{
+			return new PadSchema
+			{
+				IsConsole = false,
+				DefaultSize = new Size(110, 110),
+				Buttons = new[]
+				{
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Up",
+						DisplayName = "",
+						Icon = Properties.Resources.BlueUp,
+						Location = new Point(47, 10),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Down",
+						DisplayName = "",
+						Icon = Properties.Resources.BlueDown,
+						Location = new Point(47, 73),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Left",
+						DisplayName = "",
+						Icon = Properties.Resources.Back,
+						Location = new Point(15, 43),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Right",
+						DisplayName = "",
+						Icon = Properties.Resources.Forward,
+						Location = new Point(80, 43),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " A",
+						DisplayName = "A",
+						Location = new Point(70, 65),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " B",
+						DisplayName = "B",
+						Location = new Point(70, 20),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " C",
+						DisplayName = "C",
+						Location = new Point(22, 20),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " A",
+						DisplayName = "A",
+						Location = new Point(22, 65),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Start",
+						DisplayName = "S",
+						Location = new Point(47, 43),
+						Type = PadSchema.PadInputType.Boolean
+					}
+				}
+			};
+		}
+		public static PadSchema XE1AP(int controller)
+		{
+			return new PadSchema
+			{
+				IsConsole = false,
+				DefaultSize = new Size(174, 90),
+				Buttons = new[]
 				{
 					new PadSchema.ButtonScema
 					{
@@ -395,8 +475,8 @@ namespace BizHawk.Client.EmuHawk
 						Type = PadSchema.PadInputType.Boolean
 					}
 				}
-            };
-        }
+			};
+		}
 
 	}
 }
