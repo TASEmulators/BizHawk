@@ -92,13 +92,45 @@ namespace BizHawk.Client.EmuHawk
 			
 			if (schemaType != null)
 			{
-				var pads = (Activator.CreateInstance(schemaType) as IVirtualPadSchema)
-					.GetPadSchemas()
-					.Select(s => new VirtualPad(s));
+				var padschemas = (Activator.CreateInstance(schemaType) as IVirtualPadSchema).GetPadSchemas();
+				CheckPads(padschemas, Global.Emulator.ControllerDefinition);
+				var pads = padschemas.Select(s => new VirtualPad(s));
 
 				if (pads.Any())
 				{
 					ControllerBox.Controls.AddRange(pads.Reverse().ToArray());
+				}
+			}
+		}
+
+		private void CheckPads(IEnumerable<PadSchema> schemas, BizHawk.Emulation.Common.ControllerDefinition def)
+		{
+			HashSet<string> analogs = new HashSet<string>(def.FloatControls);
+			HashSet<string> bools = new HashSet<string>(def.BoolButtons);
+
+			foreach (var schema in schemas)
+			{
+				foreach (var button in schema.Buttons)
+				{
+					HashSet<string> searchset = null;
+					switch (button.Type)
+					{
+						case PadSchema.PadInputType.AnalogStick:
+						case PadSchema.PadInputType.FloatSingle:
+						case PadSchema.PadInputType.TargetedPair:
+							// analog
+							searchset = analogs;
+							break;
+						case PadSchema.PadInputType.Boolean:
+							searchset = bools;
+							break;
+					}
+					if (!searchset.Contains(button.Name))
+					{
+						MessageBox.Show(this,
+							string.Format("Schema warning: Schema entry '{0}':'{1}' will not correspond to any control in definition '{2}'", schema.DisplayName, button.Name, def.Name),
+							"Dev Warning");
+					}
 				}
 			}
 		}
