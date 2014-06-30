@@ -93,7 +93,10 @@ namespace BizHawk.Client.EmuHawk
 			if (schemaType != null)
 			{
 				var padschemas = (Activator.CreateInstance(schemaType) as IVirtualPadSchema).GetPadSchemas();
-				CheckPads(padschemas, Global.Emulator.ControllerDefinition);
+				if (VersionInfo.DeveloperBuild)
+				{
+					CheckPads(padschemas, Global.Emulator.ControllerDefinition);
+				}
 				var pads = padschemas.Select(s => new VirtualPad(s));
 
 				if (pads.Any())
