@@ -8,6 +8,8 @@ using System.Text;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 
+using BizHawk.Emulation.Cores.Nintendo.N64;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class ProfileConfig : Form
@@ -103,5 +105,22 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ProfileDialogHelpTexBox.Text = "All Up+Down or Left+Right: \r\n * Useful for TASing \r\n * Unchecked for Casual Gaming \r\n * Unknown for longplays";
 		}
+
+		#region Core specific Config setting helpers
+
+		// Unfortunatley there is not yet a generic way to match a sync setting object with its core implementation, so we need a bunch of these
+		private static void PutSyncSettings(N64SyncSettings s)
+		{
+			if (Global.Emulator is N64)
+			{
+				GlobalWin.MainForm.PutCoreSyncSettings(s);
+			}
+			else
+			{
+				Global.Config.PutCoreSyncSettings<N64>(s);
+			}
+		}
+
+		#endregion
 	}
 }
