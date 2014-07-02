@@ -469,7 +469,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public unsafe void Init(GameInfo gameInfo, byte[] rom, byte[] fdsbios = null)
+		public void Init(GameInfo gameInfo, byte[] rom, byte[] fdsbios = null)
 		{
 			LoadReport = new StringWriter();
 			LoadWriteLine("------");
@@ -502,7 +502,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else if (file.Take(4).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("FDS\x1A"))
 				|| file.Take(4).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("\x01*NI")))
 			{
-				// there's not much else to do with FDS images other than to feed them to the board
+				// danger!  this is a different codepath with an early return.  accordingly, some
+				// code is duplicated twice...
+
+				// FDS roms are just fed to the board, we don't do much else with them
 				origin = EDetectionOrigin.FDS;
 				LoadWriteLine("Found FDS header.");
 				if (fdsbios == null)
@@ -512,6 +515,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				fdsboard.biosrom = fdsbios;
 				fdsboard.SetDiskImage(rom);
 				fdsboard.Create(this);
+				// at the moment, FDS doesn't use the IRVs, but it could at some point in the future
+				fdsboard.InitialRegisterValues = InitialMapperRegisterValues;
 				fdsboard.Configure(origin);
 
 				board = fdsboard;
@@ -524,7 +529,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				board.PostConfigure();
 
+				Console.WriteLine("Using NTSC display type for FDS disk image");
+				_display_type = Common.DisplayType.NTSC;
+
 				HardReset();
+
 				return;
 			}
 			else
@@ -745,6 +754,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				board.VROM = unif.GetCHR();
 			}
 
+			// IF YOU DO ANYTHING AT ALL BELOW THIS LINE, MAKE SURE THE APPROPRIATE CHANGE IS MADE TO FDS (if applicable)
+
 			//create the vram and wram if necessary
 			if (cart.wram_size != 0)
 				board.WRAM = new byte[cart.wram_size * 1024];
@@ -783,7 +794,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			HardReset();
 		}
 
-		NESSyncSettings.Region DetectRegion(string system)
+		static NESSyncSettings.Region DetectRegion(string system)
 		{
 			switch (system)
 			{
