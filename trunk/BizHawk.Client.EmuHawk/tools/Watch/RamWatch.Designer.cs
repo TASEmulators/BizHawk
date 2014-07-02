@@ -95,6 +95,8 @@
 			this.MoveUpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MoveDownMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SelectAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.PauseMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.DefinePreviousValueSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.PreviousFrameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -107,6 +109,7 @@
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			this.RestoreWindowSizeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ColumnsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.ShowAddressMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowPreviousMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowChangesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowDiffMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -119,7 +122,8 @@
 			this.DiffColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.DomainColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.NotesColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.ShowAddressMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.PauseToolbarButton = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.ListViewContextMenu.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
@@ -139,7 +143,7 @@
 			// 
 			this.MemDomainLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.MemDomainLabel.AutoSize = true;
-			this.MemDomainLabel.Location = new System.Drawing.Point(216, 57);
+			this.MemDomainLabel.Location = new System.Drawing.Point(221, 57);
 			this.MemDomainLabel.Name = "MemDomainLabel";
 			this.MemDomainLabel.Size = new System.Drawing.Size(127, 13);
 			this.MemDomainLabel.TabIndex = 7;
@@ -301,7 +305,7 @@
             this.MessageLabel});
 			this.statusStrip1.Location = new System.Drawing.Point(0, 356);
 			this.statusStrip1.Name = "statusStrip1";
-			this.statusStrip1.Size = new System.Drawing.Size(359, 22);
+			this.statusStrip1.Size = new System.Drawing.Size(364, 22);
 			this.statusStrip1.TabIndex = 8;
 			this.statusStrip1.Text = "statusStrip1";
 			// 
@@ -338,12 +342,14 @@
             this.PoketoolStripButton2,
             this.FreezetoolStripButton2,
             this.toolStripButton1,
-            this.toolStripSeparator5,
+            this.toolStripSeparator6,
             this.MoveUpStripButton1,
-            this.MoveDownStripButton1});
+            this.MoveDownStripButton1,
+            this.toolStripSeparator5,
+            this.PauseToolbarButton});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(359, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(364, 25);
 			this.toolStrip1.TabIndex = 4;
 			this.toolStrip1.TabStop = true;
 			this.toolStrip1.Text = "toolStrip1";
@@ -503,7 +509,7 @@
             this.ColumnsSubMenu});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(359, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(364, 24);
 			this.menuStrip1.TabIndex = 3;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -611,7 +617,9 @@
             this.toolStripSeparator3,
             this.MoveUpMenuItem,
             this.MoveDownMenuItem,
-            this.SelectAllMenuItem});
+            this.SelectAllMenuItem,
+            this.toolStripSeparator2,
+            this.PauseMenuItem});
 			this.WatchesSubMenu.Name = "WatchesSubMenu";
 			this.WatchesSubMenu.Size = new System.Drawing.Size(64, 20);
 			this.WatchesSubMenu.Text = "&Watches";
@@ -738,6 +746,19 @@
 			this.SelectAllMenuItem.Text = "Select &All";
 			this.SelectAllMenuItem.Click += new System.EventHandler(this.SelectAllMenuItem_Click);
 			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(221, 6);
+			// 
+			// PauseMenuItem
+			// 
+			this.PauseMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Pause;
+			this.PauseMenuItem.Name = "PauseMenuItem";
+			this.PauseMenuItem.Size = new System.Drawing.Size(224, 22);
+			this.PauseMenuItem.Text = "&Pause";
+			this.PauseMenuItem.Click += new System.EventHandler(this.PauseMenuItem_Click);
+			// 
 			// OptionsSubMenu
 			// 
 			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -838,6 +859,13 @@
 			this.ColumnsSubMenu.Text = "&Columns";
 			this.ColumnsSubMenu.DropDownOpened += new System.EventHandler(this.ColumnsSubMenu_DropDownOpened);
 			// 
+			// ShowAddressMenuItem
+			// 
+			this.ShowAddressMenuItem.Name = "ShowAddressMenuItem";
+			this.ShowAddressMenuItem.Size = new System.Drawing.Size(156, 22);
+			this.ShowAddressMenuItem.Text = "Address";
+			this.ShowAddressMenuItem.Click += new System.EventHandler(this.ShowAddressMenuItem_Click);
+			// 
 			// ShowPreviousMenuItem
 			// 
 			this.ShowPreviousMenuItem.Name = "ShowPreviousMenuItem";
@@ -894,7 +922,7 @@
 			this.WatchListView.Name = "WatchListView";
 			this.WatchListView.SelectAllInProgress = false;
 			this.WatchListView.selectedItem = -1;
-			this.WatchListView.Size = new System.Drawing.Size(327, 281);
+			this.WatchListView.Size = new System.Drawing.Size(332, 281);
 			this.WatchListView.TabIndex = 2;
 			this.WatchListView.UseCompatibleStateImageBehavior = false;
 			this.WatchListView.View = System.Windows.Forms.View.Details;
@@ -949,18 +977,26 @@
 			this.NotesColumn.Text = "Notes";
 			this.NotesColumn.Width = 128;
 			// 
-			// ShowAddressMenuItem
+			// PauseToolbarButton
 			// 
-			this.ShowAddressMenuItem.Name = "ShowAddressMenuItem";
-			this.ShowAddressMenuItem.Size = new System.Drawing.Size(156, 22);
-			this.ShowAddressMenuItem.Text = "Address";
-			this.ShowAddressMenuItem.Click += new System.EventHandler(this.ShowAddressMenuItem_Click);
+			this.PauseToolbarButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.PauseToolbarButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Pause;
+			this.PauseToolbarButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.PauseToolbarButton.Name = "PauseToolbarButton";
+			this.PauseToolbarButton.Size = new System.Drawing.Size(23, 22);
+			this.PauseToolbarButton.Text = "Pause";
+			this.PauseToolbarButton.Click += new System.EventHandler(this.PauseMenuItem_Click);
+			// 
+			// toolStripSeparator6
+			// 
+			this.toolStripSeparator6.Name = "toolStripSeparator6";
+			this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
 			// 
 			// RamWatch
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(359, 378);
+			this.ClientSize = new System.Drawing.Size(364, 378);
 			this.Controls.Add(this.statusStrip1);
 			this.Controls.Add(this.MemDomainLabel);
 			this.Controls.Add(this.WatchCountLabel);
@@ -1080,5 +1116,9 @@
 		private System.Windows.Forms.ToolStripStatusLabel MessageLabel;
 		private System.Windows.Forms.ToolStripButton ErrorIconButton;
 		private System.Windows.Forms.ToolStripMenuItem ShowAddressMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private System.Windows.Forms.ToolStripMenuItem PauseMenuItem;
+		private System.Windows.Forms.ToolStripButton PauseToolbarButton;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
 	}
 }

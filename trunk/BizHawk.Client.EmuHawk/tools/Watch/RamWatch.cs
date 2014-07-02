@@ -30,6 +30,7 @@ namespace BizHawk.Client.EmuHawk
 		private int _defaultHeight;
 		private string _sortedColumn = string.Empty;
 		private bool _sortReverse;
+		private bool _paused = false;
 
 		public RamWatch()
 		{
@@ -198,6 +199,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
+			if (_paused)
+			{
+				return;
+			}
+
 			if ((!IsHandleCreated || IsDisposed) && !Global.Config.DisplayRamWatch)
 			{
 				return;
@@ -669,6 +675,8 @@ namespace BizHawk.Client.EmuHawk
 				PokeAddressMenuItem.Enabled =
 				FreezeAddressMenuItem.Enabled =
 				SelectedIndices.Any();
+
+			PauseMenuItem.Text = _paused ? "Unpause" : "Pause";
 		}
 
 		private void MemoryDomainsSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -832,6 +840,11 @@ namespace BizHawk.Client.EmuHawk
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
 		{
 			WatchListView.SelectAll();
+		}
+
+		private void PauseMenuItem_Click(object sender, EventArgs e)
+		{
+			_paused ^= true;
 		}
 
 		#endregion
