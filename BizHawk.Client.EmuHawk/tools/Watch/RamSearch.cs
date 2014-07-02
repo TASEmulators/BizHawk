@@ -497,9 +497,9 @@ namespace BizHawk.Client.EmuHawk
 			_forcePreviewClear = true;
 		}
 
-		private IList<int> SelectedIndices
+		private IEnumerable<int> SelectedIndices
 		{
-			get { return WatchListView.SelectedIndices.Cast<int>().ToList(); }
+			get { return WatchListView.SelectedIndices.Cast<int>(); }
 		}
 
 		private IEnumerable<Watch> SelectedItems
@@ -779,11 +779,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveAddresses()
 		{
-			if (SelectedIndices.Count > 0)
+			var indices = SelectedIndices.ToList();
+			if (indices.Any())
 			{
-				SetRemovedMessage(SelectedIndices.Count);
+				SetRemovedMessage(indices.Count);
 
-				var addresses = SelectedIndices.Select(index => _searches[index].Address ?? 0).ToList();
+				var addresses = indices.Select(index => _searches[index].Address ?? 0).ToList();
 				_searches.RemoveRange(addresses);
 
 				WatchListView.ItemCount = _searches.Count;
@@ -851,7 +852,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PokeAddress()
 		{
-			if (SelectedIndices.Count > 0)
+			if (SelectedIndices.Any())
 			{
 				var poke = new RamPoke();
 				var watches = SelectedIndices.Select(t => _searches[t]).ToList();
@@ -1397,7 +1398,7 @@ namespace BizHawk.Client.EmuHawk
 				ContextMenuSeparator2.Visible =
 
 				ViewInHexEditorContextMenuItem.Visible =
-				SelectedIndices.Count > 0;
+				SelectedIndices.Any();
 
 			UnfreezeAllContextMenuItem.Visible = Global.CheatList.ActiveCount > 0;
 
@@ -1664,7 +1665,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) // Copy
 			{
-				if (SelectedIndices.Count > 0)
+				if (SelectedIndices.Any())
 				{
 					var sb = new StringBuilder();
 					foreach (var index in SelectedIndices)
@@ -1721,7 +1722,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchListView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			if (SelectedIndices.Count > 0)
+			if (SelectedIndices.Any())
 			{
 				AddToRamWatch();
 			}
