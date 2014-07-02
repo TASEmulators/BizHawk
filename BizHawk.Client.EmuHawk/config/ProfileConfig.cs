@@ -14,6 +14,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class ProfileConfig : Form
 	{
+		// TODO:
+		// Save the profile selected to Global.Config (Casual is the default)
+		// Default the dropdown to the current profile selected instead of empty
+		// Put save logic in the Ok button click, not the profile selected change event!
+
 		public ProfileConfig()
 		{
 			InitializeComponent();
@@ -29,8 +34,9 @@ namespace BizHawk.Client.EmuHawk
 			if (ProfileSelectComboBox.SelectedIndex == 3)
 			{
 				//If custom profile, check all the checkboxes
+				//Save to config.ini
 			}
-			//Save to config.ini
+			
 			DialogResult = DialogResult.OK;
 			Close();
 		}
@@ -49,13 +55,19 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.SaveLargeScreenshotWithStates = false;
 				Global.Config.SaveScreenshotWithStates = false;
 				Global.Config.AllowUD_LR = false;
-			}
-			else if (ProfileSelectComboBox.SelectedIndex == 1) //TAS
-			{
-				DisplayProfileSettingBoxes(false);
-				Global.Config.SaveLargeScreenshotWithStates = true;
-				Global.Config.SaveScreenshotWithStates = true;
-				Global.Config.AllowUD_LR = true;
+				Global.Config.BackupSavestates = false;
+
+				Global.Config.RewindEnabledLarge = false;
+				Global.Config.RewindEnabledMedium = false;
+				Global.Config.RewindEnabledSmall = true;
+
+				// N64
+				var n64Settings = GetN64SyncSettings();
+				n64Settings.RspType = N64SyncSettings.RSPTYPE.Rsp_Hle;
+				n64Settings.CoreType = N64SyncSettings.CORETYPE.Dynarec;
+				Global.Config.N64UseCircularAnalogConstraint = true;
+				PutN64SyncSettings(n64Settings);
+
 			}
 			else if (ProfileSelectComboBox.SelectedIndex == 2) //Long Plays
 			{
@@ -63,6 +75,40 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.SaveLargeScreenshotWithStates = false;
 				Global.Config.SaveScreenshotWithStates = false;
 				Global.Config.AllowUD_LR = false;
+				Global.Config.BackupSavestates = true;
+
+				Global.Config.RewindEnabledLarge = false;
+				Global.Config.RewindEnabledMedium = false;
+				Global.Config.RewindEnabledSmall = true;
+
+				// N64
+				var n64Settings = GetN64SyncSettings();
+				n64Settings.RspType = N64SyncSettings.RSPTYPE.Rsp_Z64_hlevideo;
+				n64Settings.CoreType = N64SyncSettings.CORETYPE.Pure_Interpret;
+				Global.Config.N64UseCircularAnalogConstraint = true;
+				PutN64SyncSettings(n64Settings);
+			}
+			else if (ProfileSelectComboBox.SelectedIndex == 1) //TAS
+			{
+				DisplayProfileSettingBoxes(false);
+
+				// General
+				Global.Config.SaveLargeScreenshotWithStates = true;
+				Global.Config.SaveScreenshotWithStates = true;
+				Global.Config.AllowUD_LR = true;
+				Global.Config.BackupSavestates = true;
+
+				// Rewind
+				Global.Config.RewindEnabledLarge = false;
+				Global.Config.RewindEnabledMedium = false;
+				Global.Config.RewindEnabledSmall = false;
+
+				// N64
+				var n64Settings = GetN64SyncSettings();
+				n64Settings.RspType = N64SyncSettings.RSPTYPE.Rsp_Z64_hlevideo;
+				n64Settings.CoreType = N64SyncSettings.CORETYPE.Pure_Interpret;
+				Global.Config.N64UseCircularAnalogConstraint = false;
+				PutN64SyncSettings(n64Settings);
 			}
 			else if (ProfileSelectComboBox.SelectedIndex == 3) //custom
 			{
@@ -109,7 +155,19 @@ namespace BizHawk.Client.EmuHawk
 		#region Core specific Config setting helpers
 
 		// Unfortunatley there is not yet a generic way to match a sync setting object with its core implementation, so we need a bunch of these
-		private static void PutSyncSettings(N64SyncSettings s)
+		private static N64SyncSettings GetN64SyncSettings()
+		{
+			if (Global.Emulator is N64)
+			{
+				return (N64SyncSettings)Global.Emulator.GetSyncSettings();
+			}
+			else
+			{
+				return (N64SyncSettings)Global.Config.GetCoreSyncSettings<N64>();
+			}
+		}
+
+		private static void PutN64SyncSettings(N64SyncSettings s)
 		{
 			if (Global.Emulator is N64)
 			{
