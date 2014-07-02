@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 
 using BizHawk.Emulation.Cores.Nintendo.N64;
+using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -68,6 +69,11 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.N64UseCircularAnalogConstraint = true;
 				PutN64SyncSettings(n64Settings);
 
+				// SNES
+				var snesSettings = GetSnesSyncSettings();
+				snesSettings.Profile = "Performance";
+				PutSnesSyncSettings(snesSettings);
+
 			}
 			else if (ProfileSelectComboBox.SelectedIndex == 2) //Long Plays
 			{
@@ -87,6 +93,11 @@ namespace BizHawk.Client.EmuHawk
 				n64Settings.CoreType = N64SyncSettings.CORETYPE.Pure_Interpret;
 				Global.Config.N64UseCircularAnalogConstraint = true;
 				PutN64SyncSettings(n64Settings);
+
+				// SNES
+				var snesSettings = GetSnesSyncSettings();
+				snesSettings.Profile = "Compatibility";
+				PutSnesSyncSettings(snesSettings);
 			}
 			else if (ProfileSelectComboBox.SelectedIndex == 1) //TAS
 			{
@@ -109,10 +120,17 @@ namespace BizHawk.Client.EmuHawk
 				n64Settings.CoreType = N64SyncSettings.CORETYPE.Pure_Interpret;
 				Global.Config.N64UseCircularAnalogConstraint = false;
 				PutN64SyncSettings(n64Settings);
+
+				// SNES
+				var snesSettings = GetSnesSyncSettings();
+				snesSettings.Profile = "Compatibility";
+				PutSnesSyncSettings(snesSettings);
+
 			}
 			else if (ProfileSelectComboBox.SelectedIndex == 3) //custom
 			{
-				DisplayProfileSettingBoxes(true);
+				//Disabled for now
+				//DisplayProfileSettingBoxes(true);
 			}
 		}
 
@@ -179,6 +197,29 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private static LibsnesCore.SnesSyncSettings GetSnesSyncSettings()
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				return (LibsnesCore.SnesSyncSettings)Global.Emulator.GetSyncSettings();
+			}
+			else
+			{
+				return (LibsnesCore.SnesSyncSettings)Global.Config.GetCoreSyncSettings<LibsnesCore>();
+			}
+		}
+
+		private static void PutSnesSyncSettings(LibsnesCore.SnesSyncSettings s)
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				GlobalWin.MainForm.PutCoreSyncSettings(s);
+			}
+			else
+			{
+				Global.Config.PutCoreSyncSettings<LibsnesCore>(s);
+			}
+		}
 		#endregion
 	}
 }
