@@ -8,8 +8,37 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class AnalogStickPanel : Panel
 	{
-		public int X = 0;
-		public int Y = 0;
+		private int _x = 0;
+		private int _y = 0;
+
+		public int X
+		{
+			get
+			{
+				return _x;
+			}
+
+			set
+			{
+				_x = value;
+				SetAnalog();
+			}
+		}
+
+		public int Y
+		{
+			get
+			{
+				return _y;
+			}
+
+			set
+			{
+				_y = value;
+				SetAnalog();
+			}
+		}
+
 		public bool HasValue = false;
 		public bool ReadOnly { get; set; }
 
