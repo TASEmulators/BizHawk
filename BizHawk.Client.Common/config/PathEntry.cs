@@ -7,8 +7,6 @@ namespace BizHawk.Client.Common
 {
 	public class PathEntry
 	{
-		public PathEntry() { }
-
 		public string SystemDisplayName;
 		public string Type;
 		public string Path;
@@ -21,10 +19,8 @@ namespace BizHawk.Client.Common
 			{
 				return true;
 			}
-			else
-			{
-				return System.Split('_').Contains(systemID);
-			}
+
+			return System.Split('_').Contains(systemID);
 		}
 	}
 
@@ -75,25 +71,22 @@ namespace BizHawk.Client.Common
 				// we have the system, but not the type.  don't attempt to add an unknown type
 				return null;
 			}
-			else
+			
+			// we don't have anything for the system in question.  add a set of stock paths
+			var systempath = PathManager.RemoveInvalidFileSystemChars(system) + "_INTERIM";
+			var systemdisp = system + " (INTERIM)";
+
+			Paths.AddRange(new[]
 			{
-				// we don't have anything for the system in question.  add a set of stock paths
+				new PathEntry { System = system, SystemDisplayName=systemdisp, Type = "Base", Path= Path.Combine(".", systempath), Ordinal = 0 },
+				new PathEntry { System = system, SystemDisplayName=systemdisp, Type = "ROM", Path = ".", Ordinal = 1 },
+				new PathEntry { System = system, SystemDisplayName=systemdisp, Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+				new PathEntry { System = system, SystemDisplayName=systemdisp, Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+				new PathEntry { System = system, SystemDisplayName=systemdisp, Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+				new PathEntry { System = system, SystemDisplayName=systemdisp, Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 }
+			});
 
-				string systempath = PathManager.RemoveInvalidFileSystemChars(system) + "_INTERIM";
-				string systemdisp = system + " (INTERIM)";
-
-				Paths.AddRange(new[]
-				{
-					new PathEntry { System = system, SystemDisplayName=systemdisp, Type = "Base", Path= Path.Combine(".", systempath), Ordinal = 0 },
-					new PathEntry { System = system, SystemDisplayName=systemdisp, Type = "ROM", Path = ".", Ordinal = 1 },
-					new PathEntry { System = system, SystemDisplayName=systemdisp, Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
-					new PathEntry { System = system, SystemDisplayName=systemdisp, Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
-					new PathEntry { System = system, SystemDisplayName=systemdisp, Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
-					new PathEntry { System = system, SystemDisplayName=systemdisp, Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
-				});
-
-				return this[system, type];
-			}
+			return this[system, type];
 		}
 
 		public void ResolveWithDefaults()

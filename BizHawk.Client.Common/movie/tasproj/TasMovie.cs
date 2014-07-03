@@ -52,7 +52,7 @@ namespace BizHawk.Client.Common
 			get
 			{
 				// TODO
-				return new Dictionary<string, string>()
+				return new Dictionary<string, string>
 				{
 					{ "A", "A" },
 					{ "B", "B" }
