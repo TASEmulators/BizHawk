@@ -311,21 +311,6 @@ namespace BizHawk.Common
 			}
 		}
 
-		private static int Hex2Int(char c)
-		{
-			if (c <= '9')
-			{
-				return c - '0';
-			}
-			
-			if (c <= 'F')
-			{
-				return c - '7';
-			}
-
-			return c - 'W';
-		}
-
 		public static unsafe void ReadFromHexFast(this byte[] buffer, string hex)
 		{
 			if (buffer.Length * 2 != hex.Length)
@@ -381,6 +366,25 @@ namespace BizHawk.Common
 				buffer[i] = int.Parse(inthex, NumberStyles.HexNumber);
 			}
 		}
+
+		#region Helpers
+
+		private static int Hex2Int(char c)
+		{
+			if (c <= '9')
+			{
+				return c - '0';
+			}
+
+			if (c <= 'F')
+			{
+				return c - '7';
+			}
+
+			return c - 'W';
+		}
+
+		#endregion
 
 		//these don't work??? they dont get chosen by compiler
 		public static void WriteBit(this BinaryWriter bw, Bit bit) { bw.Write((bool)bit); }
