@@ -4,32 +4,12 @@ using System.Linq;
 using System.ComponentModel;
 using System.Reflection;
 
+using BizHawk.Common.ReflectionExtensions;
+
 namespace BizHawk.Common
 {
 	public static class EnumHelper
 	{
-		/// <summary>
-		/// Gets the description attribute from an object
-		/// </summary>
-		public static string GetDescription(this object obj)
-		{
-			Type type = obj.GetType();
-
-			var memInfo = type.GetMember(obj.ToString());
-
-			if (memInfo != null && memInfo.Length > 0)
-			{
-				object[] attrs = memInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
-
-				if (attrs != null && attrs.Length > 0)
-				{
-					return ((DescriptionAttribute)attrs[0]).Description;
-				}
-			}
-
-			return obj.ToString();
-		}
-
 		/// <summary>
 		/// Gets an enum from a description attribute
 		/// </summary>

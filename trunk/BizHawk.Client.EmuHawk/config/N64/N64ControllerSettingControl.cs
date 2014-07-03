@@ -6,8 +6,11 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using BizHawk.Emulation.Cores.Nintendo.N64;
+
 using BizHawk.Common;
+using BizHawk.Common.ReflectionExtensions;
+
+using BizHawk.Emulation.Cores.Nintendo.N64;
 
 namespace BizHawk.Client.EmuHawk
 {
