@@ -1,4 +1,5 @@
 ﻿using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {

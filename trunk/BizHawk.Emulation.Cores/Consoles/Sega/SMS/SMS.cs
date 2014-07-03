@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Common.StringExtensions;
+
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Components;
 using BizHawk.Emulation.Cores.Components.Z80;
