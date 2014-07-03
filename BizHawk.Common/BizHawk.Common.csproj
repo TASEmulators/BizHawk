@@ -54,6 +54,7 @@
     <Compile Include="CustomCollections.cs" />
     <Compile Include="EnumHelper.cs" />
     <Compile Include="Extensions\Extensions.cs" />
+    <Compile Include="Extensions\IOExtensions.cs" />
     <Compile Include="Extensions\NumberExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="HawkFile.cs" />

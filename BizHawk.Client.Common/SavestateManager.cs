@@ -2,6 +2,7 @@
 using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Common.IOExtensions;
 
 namespace BizHawk.Client.Common
 {
