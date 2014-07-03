@@ -10,6 +10,11 @@ using BizHawk.Client.Common;
 
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
+using BizHawk.Emulation.Cores.Sega.Saturn;
+using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
+using BizHawk.Emulation.Cores.ColecoVision;
+using BizHawk.Emulation.Cores.Atari.Atari2600;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -74,6 +79,32 @@ namespace BizHawk.Client.EmuHawk
 				snesSettings.Profile = "Performance";
 				PutSnesSyncSettings(snesSettings);
 
+				//Saturn
+				var saturnSettings = GetSaturnSyncSettings();
+				saturnSettings.SkipBios = false;
+				PutSaturnSyncSettings(saturnSettings);
+
+				//Genesis
+				var genesisSettings = GetGenesisSyncSettings();
+				genesisSettings.Region = LibGPGX.Region.Autodetect;
+				PutGenesisSyncSettings(genesisSettings);
+
+				//SMS
+				var smsSettings = GetSMSSyncSettings();
+				smsSettings.UseBIOS = false;
+				PutSMSSyncSettings(smsSettings);
+
+				//Coleco
+				var colecoSettings = GetColecoVisionSyncSettings();
+				colecoSettings.SkipBiosIntro = false;
+				PutColecoVisionSyncSettings(colecoSettings);
+
+				//A2600
+				var a2600Settings = GetA2600SyncSettings();
+				a2600Settings.FastScBios = true;
+				a2600Settings.LeftDifficulty = false;
+				a2600Settings.RightDifficulty = false;
+				PutA2600SyncSettings(a2600Settings);
 			}
 			else if (ProfileSelectComboBox.SelectedIndex == 2) //Long Plays
 			{
@@ -81,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.SaveLargeScreenshotWithStates = false;
 				Global.Config.SaveScreenshotWithStates = false;
 				Global.Config.AllowUD_LR = false;
-				Global.Config.BackupSavestates = true;
+				Global.Config.BackupSavestates = false;
 
 				Global.Config.RewindEnabledLarge = false;
 				Global.Config.RewindEnabledMedium = false;
@@ -98,6 +129,33 @@ namespace BizHawk.Client.EmuHawk
 				var snesSettings = GetSnesSyncSettings();
 				snesSettings.Profile = "Compatibility";
 				PutSnesSyncSettings(snesSettings);
+
+				//Saturn
+				var saturnSettings = GetSaturnSyncSettings();
+				saturnSettings.SkipBios = false;
+				PutSaturnSyncSettings(saturnSettings);
+
+				//Genesis
+				var genesisSettings = GetGenesisSyncSettings();
+				genesisSettings.Region = LibGPGX.Region.Autodetect;
+				PutGenesisSyncSettings(genesisSettings);
+
+				//SMS
+				var smsSettings = GetSMSSyncSettings();
+				smsSettings.UseBIOS = false;
+				PutSMSSyncSettings(smsSettings);
+
+				//Coleco
+				var colecoSettings = GetColecoVisionSyncSettings();
+				colecoSettings.SkipBiosIntro = false;
+				PutColecoVisionSyncSettings(colecoSettings);
+
+				//A2600
+				var a2600Settings = GetA2600SyncSettings();
+				a2600Settings.FastScBios = false;
+				a2600Settings.LeftDifficulty = true;
+				a2600Settings.RightDifficulty = true;
+				PutA2600SyncSettings(a2600Settings);
 			}
 			else if (ProfileSelectComboBox.SelectedIndex == 1) //TAS
 			{
@@ -126,6 +184,32 @@ namespace BizHawk.Client.EmuHawk
 				snesSettings.Profile = "Compatibility";
 				PutSnesSyncSettings(snesSettings);
 
+				//Saturn
+				var saturnSettings = GetSaturnSyncSettings();
+				saturnSettings.SkipBios = true;
+				PutSaturnSyncSettings(saturnSettings);
+
+				//Genesis
+				var genesisSettings = GetGenesisSyncSettings();
+				genesisSettings.Region = LibGPGX.Region.Autodetect;
+				PutGenesisSyncSettings(genesisSettings);
+
+				//SMS
+				var smsSettings = GetSMSSyncSettings();
+				smsSettings.UseBIOS = false;
+				PutSMSSyncSettings(smsSettings);
+
+				//Coleco
+				var colecoSettings = GetColecoVisionSyncSettings();
+				colecoSettings.SkipBiosIntro = true;
+				PutColecoVisionSyncSettings(colecoSettings);
+
+				//A2600
+				var a2600Settings = GetA2600SyncSettings();
+				a2600Settings.FastScBios = false;
+				a2600Settings.LeftDifficulty = true;
+				a2600Settings.RightDifficulty = true;
+				PutA2600SyncSettings(a2600Settings);
 			}
 			else if (ProfileSelectComboBox.SelectedIndex == 3) //custom
 			{
@@ -218,6 +302,125 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				Global.Config.PutCoreSyncSettings<LibsnesCore>(s);
+			}
+		}
+
+		private static Yabause.SaturnSyncSettings GetSaturnSyncSettings()
+		{
+			if (Global.Emulator is Yabause)
+			{
+				return (Yabause.SaturnSyncSettings)Global.Emulator.GetSyncSettings();
+			}
+			else
+			{
+				return (Yabause.SaturnSyncSettings)Global.Config.GetCoreSyncSettings<Yabause>();
+			}
+		}
+
+		private static void PutSaturnSyncSettings(Yabause.SaturnSyncSettings s)
+		{
+			if (Global.Emulator is Yabause)
+			{
+				GlobalWin.MainForm.PutCoreSyncSettings(s);
+			}
+			else
+			{
+				Global.Config.PutCoreSyncSettings<Yabause>(s);
+			}
+		}
+
+		private static GPGX.GPGXSyncSettings GetGenesisSyncSettings()
+		{
+			if (Global.Emulator is GPGX)
+			{
+				return (GPGX.GPGXSyncSettings)Global.Emulator.GetSyncSettings();
+			}
+			else
+			{
+				return (GPGX.GPGXSyncSettings)Global.Config.GetCoreSyncSettings<GPGX>();
+			}
+		}
+
+		private static void PutGenesisSyncSettings(GPGX.GPGXSyncSettings s)
+		{
+			if (Global.Emulator is GPGX)
+			{
+				GlobalWin.MainForm.PutCoreSyncSettings(s);
+			}
+			else
+			{
+				Global.Config.PutCoreSyncSettings<GPGX>(s);
+			}
+		}
+
+		private static SMS.SMSSyncSettings GetSMSSyncSettings()
+		{
+			if (Global.Emulator is SMS)
+			{
+				return (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			}
+			else
+			{
+				return (SMS.SMSSyncSettings)Global.Config.GetCoreSyncSettings<SMS>();
+			}
+		}
+
+		private static void PutSMSSyncSettings(SMS.SMSSyncSettings s)
+		{
+			if (Global.Emulator is SMS)
+			{
+				GlobalWin.MainForm.PutCoreSyncSettings(s);
+			}
+			else
+			{
+				Global.Config.PutCoreSyncSettings<SMS>(s);
+			}
+		}
+
+		private static ColecoVision.ColecoSyncSettings GetColecoVisionSyncSettings()
+		{
+			if (Global.Emulator is ColecoVision)
+			{
+				return (ColecoVision.ColecoSyncSettings)Global.Emulator.GetSyncSettings();
+			}
+			else
+			{
+				return (ColecoVision.ColecoSyncSettings)Global.Config.GetCoreSyncSettings<ColecoVision>();
+			}
+		}
+
+		private static void PutColecoVisionSyncSettings(ColecoVision.ColecoSyncSettings s)
+		{
+			if (Global.Emulator is ColecoVision)
+			{
+				GlobalWin.MainForm.PutCoreSyncSettings(s);
+			}
+			else
+			{
+				Global.Config.PutCoreSyncSettings<ColecoVision>(s);
+			}
+		}
+		private static Atari2600.A2600SyncSettings GetA2600SyncSettings()
+		{
+			if (Global.Emulator is Atari2600)
+			{
+				return (Atari2600.A2600SyncSettings)Global.Emulator.GetSyncSettings();
+			}
+			else
+			{
+				return (Atari2600.A2600SyncSettings)Global.Config.GetCoreSyncSettings<Atari2600>();
+			}
+		}
+
+		private static void PutA2600SyncSettings(Atari2600.A2600SyncSettings s)
+		{
+			if (Global.Emulator is Atari2600)
+			{
+				GlobalWin.MainForm.PutCoreSyncSettings(s);
+			}
+			else
+			{
+				Global.Config.PutCoreSyncSettings<Atari2600>(s);
 			}
 		}
 		#endregion
