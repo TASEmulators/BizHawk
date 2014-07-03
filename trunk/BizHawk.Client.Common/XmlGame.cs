@@ -5,6 +5,7 @@ using System.Linq;
 using System.Xml;
 
 using BizHawk.Common;
+using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -62,7 +63,7 @@ namespace BizHawk.Client.Common
 
 								f.Unbind();
 								f.BindArchiveMember(ai);
-								data = Util.ReadAllBytes(f.GetStream());
+								data = f.GetStream().ReadAllBytes();
 							}
 							else
 							{

@@ -5,6 +5,23 @@ namespace BizHawk.Common.IOExtensions
 {
 	public static class IOExtensions
 	{
+		public static byte[] ReadAllBytes(this Stream stream)
+		{
+			const int BUFF_SIZE = 4096;
+			var buffer = new byte[BUFF_SIZE];
+
+			int bytesRead;
+			var inStream = new BufferedStream(stream);
+			var outStream = new MemoryStream();
+
+			while ((bytesRead = inStream.Read(buffer, 0, BUFF_SIZE)) > 0)
+			{
+				outStream.Write(buffer, 0, bytesRead);
+			}
+
+			return outStream.ToArray();
+		}
+
 		public static void CopyTo(this Stream src, Stream dest)
 		{
 			int size = (src.CanSeek) ? Math.Min((int)(src.Length - src.Position), 0x2000) : 0x2000;

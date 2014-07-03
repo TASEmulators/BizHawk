@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.IOExtensions;
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
@@ -112,7 +113,9 @@ namespace BizHawk.Client.EmuHawk
 				using (var NesCartFile =
 						new HawkFile(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.7z")).BindFirst())
 				{
-					return Util.ReadAllBytes(NesCartFile.GetStream());
+					return NesCartFile
+						.GetStream()
+						.ReadAllBytes();
 				}
 			};
 

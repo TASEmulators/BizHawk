@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 
@@ -1054,7 +1055,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string authors = Encoding.UTF8.GetString(Util.ReadAllBytes(stream));
+					string authors = Encoding.UTF8.GetString(stream.ReadAllBytes());
 					string author_list = "";
 					string author_last = "";
 					using (StringReader reader = new StringReader(authors))
@@ -1089,7 +1090,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string coreversion = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					string coreversion = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					m.Comments.Add(COREORIGIN + " " + coreversion);
 					hf.Unbind();
 				}
@@ -1097,7 +1098,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string gamename = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					string gamename = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					m.Header[HeaderKeys.GAMENAME] = gamename;
 					hf.Unbind();
 				}
@@ -1105,7 +1106,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string gametype = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					string gametype = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					// TODO: Handle the other types.
 					switch (gametype)
 					{
@@ -1130,7 +1131,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string input = Encoding.UTF8.GetString(Util.ReadAllBytes(stream));
+					string input = Encoding.UTF8.GetString(stream.ReadAllBytes());
 					int lineNum = 0;
 					using (StringReader reader = new StringReader(input))
 					{
@@ -1156,7 +1157,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					byte[] moviesram = Util.ReadAllBytes(stream);
+					byte[] moviesram = stream.ReadAllBytes();
 					if (moviesram.Length != 0)
 					{
 						errorMsg = "Movies that begin with SRAM are not supported.";
@@ -1169,7 +1170,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string port1 = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					string port1 = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					m.Header[PORT1] = port1;
 					hf.Unbind();
 				}
@@ -1177,7 +1178,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string port2 = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					string port2 = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					m.Header[PORT2] = port2;
 					hf.Unbind();
 				}
@@ -1185,7 +1186,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string projectid = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					string projectid = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					m.Header[PROJECTID] = projectid;
 					hf.Unbind();
 				}
@@ -1193,7 +1194,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string rerecords = Encoding.UTF8.GetString(Util.ReadAllBytes(stream));
+					string rerecords = Encoding.UTF8.GetString(stream.ReadAllBytes());
 					int rerecordCount;
 					// Try to parse the re-record count as an integer, defaulting to 0 if it fails.
 					try
@@ -1211,7 +1212,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string rom = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					string rom = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					int pos = item.Name.LastIndexOf(".sha256");
 					string name = item.Name.Substring(0, pos);
 					m.Header[SHA256 + "_" + name] = rom;
@@ -1226,7 +1227,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string subtitles = Encoding.UTF8.GetString(Util.ReadAllBytes(stream));
+					string subtitles = Encoding.UTF8.GetString(stream.ReadAllBytes());
 					using (StringReader reader = new StringReader(subtitles))
 					{
 						string line;
@@ -1239,7 +1240,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string startSecond = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					string startSecond = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					m.Header[STARTSECOND] = startSecond;
 					hf.Unbind();
 				}
@@ -1247,7 +1248,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string startSubSecond = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					string startSubSecond = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					m.Header[STARTSUBSECOND] = startSubSecond;
 					hf.Unbind();
 				}
@@ -1255,7 +1256,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string systemid = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					string systemid = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					m.Comments.Add(EMULATIONORIGIN + " " + systemid);
 					hf.Unbind();
 				}

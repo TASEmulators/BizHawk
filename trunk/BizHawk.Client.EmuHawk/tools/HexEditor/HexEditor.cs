@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Common.StringExtensions;
+using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
@@ -355,7 +356,7 @@ namespace BizHawk.Client.EmuHawk
 				if (file.IsArchive)
 				{
 					var stream = file.GetStream();
-					return Util.ReadAllBytes(stream);
+					return stream.ReadAllBytes();
 				}
 				
 				return File.ReadAllBytes(path);
