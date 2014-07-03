@@ -273,6 +273,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var domain = Global.Emulator.MemoryDomains[DomainDropDown.SelectedItem.ToString()];
 				var address = AddressBox.ToRawInt().Value;
+				//var address = AddressBox.ToRawInt() ?? 0;
 				if (address < domain.Size)
 				{
 					var watch = Watch.GenerateWatch(
