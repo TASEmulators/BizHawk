@@ -2,8 +2,9 @@
 using System.Globalization;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {

@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Text;
 
 namespace BizHawk.Common
 {
@@ -72,26 +71,6 @@ namespace BizHawk.Common
 			midKey = keySelector(list[mid]);
 			if (midKey.CompareTo(key) >= 0) return mid - 1;
 			else return mid;
-		}
-
-		public static string ToHexString(this int n, int numdigits)
-		{
-			return String.Format("{0:X" + numdigits + "}", n);
-		}
-
-		public static string ToHexString(this uint n, int numdigits)
-		{
-			return String.Format("{0:X" + numdigits + "}", n);
-		}
-
-		public static string ToHexString(this byte n, int numdigits)
-		{
-			return String.Format("{0:X" + numdigits + "}", n);
-		}
-
-		public static string ToHexString(this ushort n, int numdigits)
-		{
-			return String.Format("{0:X" + numdigits + "}", n);
 		}
 
 		// http://stackoverflow.com/questions/1766328/can-linq-use-binary-search-when-the-collection-is-ordered
@@ -163,21 +142,6 @@ namespace BizHawk.Common
 		public static bool Bit(this byte b, int index)
 		{
 			return (b & (1 << index)) != 0;
-		}
-
-		public static bool Bit(this int b, int index)
-		{
-			return (b & (1 << index)) != 0;
-		}
-
-		public static bool Bit(this ushort b, int index)
-		{
-			return (b & (1 << index)) != 0;
-		}
-
-		public static bool In(this int i, params int[] options)
-		{
-			return options.Any(j => i == j);
 		}
 
 		public static bool ContainsStartsWith(this IEnumerable<string> options, string str)
@@ -353,14 +317,13 @@ namespace BizHawk.Common
 			{
 				return c - '0';
 			}
-			else if (c <= 'F')
+			
+			if (c <= 'F')
 			{
 				return c - '7';
 			}
-			else
-			{
-				return c - 'W';
-			}
+
+			return c - 'W';
 		}
 
 		public static unsafe void ReadFromHexFast(this byte[] buffer, string hex)
