@@ -52,7 +52,6 @@
     <Compile Include="Buffer.cs" />
     <Compile Include="Colors.cs" />
     <Compile Include="CustomCollections.cs" />
-    <Compile Include="EnumHelper.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Extensions\IOExtensions.cs" />
     <Compile Include="Extensions\NumberExtensions.cs" />

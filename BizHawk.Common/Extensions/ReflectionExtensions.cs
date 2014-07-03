@@ -138,5 +138,19 @@ namespace BizHawk.Common.ReflectionExtensions
 
 			return null;
 		}
+
+		/// <summary>
+		/// Takes an enum Type and generates a list of strings from the description attributes
+		/// </summary>
+		/// <returns></returns>
+		public static IEnumerable<string> GetEnumDescriptions(this Type type)
+		{
+			var vals = Enum.GetValues(type);
+
+			foreach (var v in vals)
+			{
+				yield return v.GetDescription();
+			}
+		}
 	}
 }
