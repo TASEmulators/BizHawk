@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Forms;
 
-using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
 
@@ -271,7 +271,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case Watch.DisplayType.Binary:
-					if (!InputValidate.IsBinary(e.KeyChar))
+					if (!e.KeyChar.IsBinary())
 					{
 						e.Handled = true;
 					}
@@ -279,35 +279,35 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case Watch.DisplayType.FixedPoint_12_4:
 				case Watch.DisplayType.FixedPoint_20_12:
-					if (!InputValidate.IsFixedPoint(e.KeyChar))
+					if (!e.KeyChar.IsFixedPoint())
 					{
 						e.Handled = true;
 					}
 
 					break;
 				case Watch.DisplayType.Float:
-					if (!InputValidate.IsFloat(e.KeyChar))
+					if (!e.KeyChar.IsFloat())
 					{
 						e.Handled = true;
 					}
 
 					break;
 				case Watch.DisplayType.Hex:
-					if (!InputValidate.IsHex(e.KeyChar))
+					if (!e.KeyChar.IsHex())
 					{
 						e.Handled = true;
 					}
 
 					break;
 				case Watch.DisplayType.Signed:
-					if (!InputValidate.IsSigned(e.KeyChar))
+					if (!e.KeyChar.IsSigned())
 					{
 						e.Handled = true;
 					}
 
 					break;
 				case Watch.DisplayType.Unsigned:
-					if (!InputValidate.IsUnsigned(e.KeyChar))
+					if (!e.KeyChar.IsUnsigned())
 					{
 						e.Handled = true;
 					}

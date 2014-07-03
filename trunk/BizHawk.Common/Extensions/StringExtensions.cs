@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace BizHawk.Common.StringExtensions
 {
 	public static class StringExtensions
 	{
-		public static bool IsBinary(this string str)
-		{
-			return str.All(c => c == '0' || c == '1');
-		}
-
 		public static string GetPrecedingString(this string str, string value)
 		{
 			var index = str.IndexOf(value);
@@ -66,6 +62,11 @@ namespace BizHawk.Common.StringExtensions
 
 		public static int HowMany(this string str, string s)
 		{
+			if (str == null)
+			{
+				return 0;
+			}
+
 			var count = 0;
 			for (var i = 0; i < (str.Length - s.Length); i++)
 			{
@@ -77,5 +78,166 @@ namespace BizHawk.Common.StringExtensions
 
 			return count;
 		}
+
+		#region String and Char validation extensions
+
+		/// <summary>
+		/// Validates all chars are 0-9
+		/// </summary>
+		public static bool IsUnsigned(this string str)
+		{
+			if (str == null)
+			{
+				return false;
+			}
+
+			return str.All(IsUnsigned);
+		}
+
+		/// <summary>
+		/// Validates the char is 0-9
+		/// </summary>
+		public static bool IsUnsigned(this char c)
+		{
+			return char.IsDigit(c);
+		}
+
+		/// <summary>
+		/// Validates all chars are 0-9, or a dash as the first value
+		/// </summary>
+		public static bool IsSigned(this string str)
+		{
+			if (str == null)
+			{
+				return false;
+			}
+
+			return str[0].IsSigned() && str.Substring(1).All(IsUnsigned);
+		}
+
+		/// <summary>
+		/// Validates the char is 0-9 or a dash
+		/// </summary>
+		public static bool IsSigned(this char c)
+		{
+			return char.IsDigit(c) || c == '-';
+		}
+
+		/// <summary>
+		/// Validates all chars are 0-9, A-F or a-f
+		/// </summary>
+		public static bool IsHex(this string str)
+		{
+			if (str == null)
+			{
+				return false;
+			}
+
+			return str.All(IsHex);
+		}
+
+		/// <summary>
+		/// Validates the char is 0-9, A-F or a-f
+		/// </summary>
+		public static bool IsHex(this char c)
+		{
+			if (char.IsDigit(c))
+			{
+				return true;
+			}
+
+			return char.ToUpper(c) >= 'A' && char.ToUpper(c) <= 'F';
+		}
+
+		/// <summary>
+		/// Takes any string and removes any value that is not a valid hex value (0-9, a-f, A-F), returns the remaining characters in uppercase
+		/// </summary>
+		public static string DoHexString(this string raw)
+		{
+			if (raw == null)
+			{
+				return string.Empty;
+			}
+
+			var output = new StringBuilder();
+
+			foreach (var chr in raw)
+			{
+				if (IsHex(chr))
+				{
+					output.Append(char.ToUpper(chr));
+				}
+			}
+
+			return output.ToString();
+		}
+
+		/// <summary>
+		/// Validates all chars are 0 or 1
+		/// </summary>
+		public static bool IsBinary(this string str)
+		{
+			if (str == null)
+			{
+				return false;
+			}
+
+			return str.All(IsBinary);
+		}
+
+		/// <summary>
+		/// Validates the char is 0 or 1
+		/// </summary>
+		public static bool IsBinary(this char c)
+		{
+			return c == '0' || c == '1';
+		}
+
+		/// <summary>
+		/// Validates all chars are 0-9, a decimal point, and that there is no more than 1 decimal point, can not be signed
+		/// </summary>
+		public static bool IsFixedPoint(this string str)
+		{
+			if (str == null)
+			{
+				return false;
+			}
+
+			return str.HowMany('.') <= 1
+				&& str.All(IsFixedPoint);
+		}
+
+		/// <summary>
+		/// Validates the char is 0-9, a dash, or a decimal
+		/// </summary>
+		public static bool IsFixedPoint(this char c)
+		{
+			return c.IsUnsigned() || c == '.';
+		}
+
+		/// <summary>
+		/// Validates all chars are 0-9 or decimal, and that there is no more than 1 decimal point, a dash can be the first character
+		/// </summary>
+		public static bool IsFloat(this string str)
+		{
+			if (str == null)
+			{
+				return false;
+			}
+
+			return str.HowMany('.') <= 1
+				&& str[0].IsFloat()
+				&& str.Substring(1).All(IsFixedPoint);
+		}
+
+		/// <summary>
+		/// Validates that the char is 0-9, a dash, or a decimal point
+		/// </summary>
+		public static bool IsFloat(this char c)
+		{
+			return c.IsFixedPoint() || c == '-';
+		}
+
+		#endregion
 	}
 }

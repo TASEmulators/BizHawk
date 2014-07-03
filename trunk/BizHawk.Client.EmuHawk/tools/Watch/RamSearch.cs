@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
-using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
 
@@ -918,7 +918,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (prompt.UserOk)
 			{
-				if (InputValidate.IsHex(prompt.UserText))
+				if (prompt.UserText.IsHex())
 				{
 					var addr = int.Parse(prompt.UserText, NumberStyles.HexNumber);
 					WatchListView.SelectItem(addr, true);

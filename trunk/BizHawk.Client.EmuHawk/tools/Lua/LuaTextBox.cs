@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Forms;
 
-using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -150,15 +150,15 @@ namespace BizHawk.Client.EmuHawk
 			switch (_boxType)
 			{
 				case BoxType.Unsigned:
-					if (!InputValidate.IsUnsigned(e.KeyChar))
+					if (!e.KeyChar.IsUnsigned())
 						e.Handled = true;
 					break;
 				case BoxType.Signed:
-					if (!InputValidate.IsSigned(e.KeyChar))
+					if (!e.KeyChar.IsSigned())
 						e.Handled = true;
 					break;
 				case BoxType.Hex:
-					if (!InputValidate.IsHex(e.KeyChar))
+					if (!e.KeyChar.IsHex())
 						e.Handled = true;
 					break;
 			}

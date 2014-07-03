@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					
-					if (!InputValidate.IsHex(e.KeyChar))
+					if (!e.KeyChar.IsHex())
 					{
 						e.Handled = true;
 					}
@@ -90,7 +90,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					
-					if (!InputValidate.IsUnsigned(e.KeyChar))
+					if (!e.KeyChar.IsUnsigned())
 					{
 						e.Handled = true;
 					}
@@ -102,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					
-					if (!InputValidate.IsSigned(e.KeyChar))
+					if (!e.KeyChar.IsSigned())
 					{
 						e.Handled = true;
 					}
