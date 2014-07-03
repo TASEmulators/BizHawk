@@ -7,6 +7,7 @@ using System.IO;
 using System.ComponentModel;
 
 using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
 

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using BizHawk.Emulation.Common;
-using System.Runtime.InteropServices;
-using BizHawk.Common;
 using System.ComponentModel;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+
 using Newtonsoft.Json;
+
+using BizHawk.Common.BufferExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {

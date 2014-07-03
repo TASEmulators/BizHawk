@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 
-using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
+
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Components;
 using BizHawk.Emulation.Cores.Components.M68000;

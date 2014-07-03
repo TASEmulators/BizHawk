@@ -3,6 +3,7 @@ using System.IO;
 using System.Globalization;
 
 using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 
