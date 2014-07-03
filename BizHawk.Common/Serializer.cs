@@ -1128,9 +1128,9 @@ namespace BizHawk.Common
 			_tw.WriteLine("{0} {1}", name, val);
 		}
 
-		private class Section : Dictionary<string, Section>
+		private sealed class Section : Dictionary<string, Section>
 		{
-			public string Name = String.Empty;
+			public string Name = string.Empty;
 			public readonly Dictionary<string, string> Items = new Dictionary<string, string>();
 		}
 

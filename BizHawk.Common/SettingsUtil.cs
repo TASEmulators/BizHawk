@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Collections.Concurrent;
@@ -11,10 +9,9 @@ namespace BizHawk.Common
 {
 	public class SettingsUtil
 	{
-		private class DefaultValueSetter
+		private sealed class DefaultValueSetter
 		{
 			public Action<object, object[]> SetDefaultValues;
-			public Type Type;
 			public object[] DefaultValues;
 		}
 
@@ -74,7 +71,6 @@ namespace BizHawk.Common
 			return new DefaultValueSetter
 			{
 				SetDefaultValues = (Action<object, object[]>)dyn.CreateDelegate(typeof(Action<object, object[]>)),
-				Type = t,
 				DefaultValues = DefaultValues.ToArray()
 			};
 		}
