@@ -56,7 +56,7 @@
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Extensions\IOExtensions.cs" />
     <Compile Include="Extensions\NumberExtensions.cs" />
-    <Compile Include="Extensions\ReflectionExtensionsl.cs" />
+    <Compile Include="Extensions\ReflectionExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="HawkFile.cs" />
     <Compile Include="IPC\IPCRingBuffer.cs" />
