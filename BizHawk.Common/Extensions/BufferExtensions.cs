@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Security.Cryptography;
 
 namespace BizHawk.Common.BufferExtensions
 {
@@ -181,6 +182,34 @@ namespace BizHawk.Common.BufferExtensions
 			});
 
 			return (result >= pattern.Length - 1);
+		}
+
+		public static string HashMD5(this byte[] data, int offset, int len)
+		{
+			using (var md5 = MD5.Create())
+			{
+				md5.ComputeHash(data, offset, len);
+				return md5.Hash.BytesToHexString();
+			}
+		}
+
+		public static string HashMD5(this byte[] data)
+		{
+			return HashMD5(data, 0, data.Length);
+		}
+
+		public static string HashSHA1(this byte[] data, int offset, int len)
+		{
+			using (var sha1 = SHA1.Create())
+			{
+				sha1.ComputeHash(data, offset, len);
+				return sha1.Hash.BytesToHexString();
+			}
+		}
+
+		public static string HashSHA1(this byte[] data)
+		{
+			return HashSHA1(data, 0, data.Length);
 		}
 
 		#region Helpers

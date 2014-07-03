@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 
-using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
+
 using Newtonsoft.Json;
-using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -145,8 +146,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				CoreComm.RomStatusDetails = string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
 					game.Name,
-					Util.Hash_SHA1(romdata), Util.Hash_MD5(romdata)
-					);
+					romdata.HashSHA1(),
+					romdata.HashMD5());
 
 				{
 					byte[] buff = new byte[32];

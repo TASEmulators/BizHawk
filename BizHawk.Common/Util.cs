@@ -20,34 +20,6 @@ namespace BizHawk.Common
 
 		public static char* HexConvPtr { get; set; }
 
-		public static string Hash_MD5(byte[] data, int offset, int len)
-		{
-			using (var md5 = System.Security.Cryptography.MD5.Create())
-			{
-				md5.ComputeHash(data, offset, len);
-				return md5.Hash.BytesToHexString();
-			}
-		}
-
-		public static string Hash_MD5(byte[] data)
-		{
-			return Hash_MD5(data, 0, data.Length);
-		}
-
-		public static string Hash_SHA1(byte[] data, int offset, int len)
-		{
-			using (var sha1 = System.Security.Cryptography.SHA1.Create())
-			{
-				sha1.ComputeHash(data, offset, len);
-				return sha1.Hash.BytesToHexString();
-			}
-		}
-
-		public static string Hash_SHA1(byte[] data)
-		{
-			return Hash_SHA1(data, 0, data.Length);
-		}
-
 		public static bool IsPowerOfTwo(int x)
 		{
 			if (x == 0 || x == 1)
