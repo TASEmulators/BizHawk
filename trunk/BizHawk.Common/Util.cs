@@ -81,35 +81,6 @@ namespace BizHawk.Common
 			return 0;
 		}
 
-		// Read bytes from a BinaryReader and translate them into the UTF-8 string they represent.
-		public static string ReadStringFixedAscii(this BinaryReader r, int bytes)
-		{
-			var read = new byte[bytes];
-			for (var b = 0; b < bytes; b++)
-			{
-				read[b] = r.ReadByte();
-			}
-
-			return Encoding.UTF8.GetString(read);
-		}
-
-		public static string ReadStringAsciiZ(this BinaryReader r)
-		{
-			var sb = new StringBuilder();
-			for (;;)
-			{
-				int b = r.ReadByte();
-				if (b <= 0)
-				{
-					break;
-				}
-
-				sb.Append((char)b);
-			}
-
-			return sb.ToString();
-		}
-
 		/// <summary>
 		/// Converts bytes to an uppercase string of hex numbers in upper case without any spacing or anything
 		/// //could be extension method

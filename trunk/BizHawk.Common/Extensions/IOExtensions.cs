@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 namespace BizHawk.Common.IOExtensions
 {
@@ -20,6 +21,18 @@ namespace BizHawk.Common.IOExtensions
 			}
 
 			return outStream.ToArray();
+		}
+
+		// Read bytes from a BinaryReader and translate them into the UTF-8 string they represent.
+		public static string ReadStringFixedAscii(this BinaryReader r, int bytes)
+		{
+			var read = new byte[bytes];
+			for (var b = 0; b < bytes; b++)
+			{
+				read[b] = r.ReadByte();
+			}
+
+			return Encoding.UTF8.GetString(read);
 		}
 
 		public static void CopyTo(this Stream src, Stream dest)
