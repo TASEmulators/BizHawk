@@ -159,7 +159,7 @@ namespace BizHawk.Common
 		/// <summary>
 		/// these extensions won't even be tried as archives (removes spurious archive detects since some of the signatures are pretty damn weak)
 		/// </summary>
-		public string[] NonArchiveExtensions = new string[] { };
+		public string[] NonArchiveExtensions = { };
 
 		public void Open(string path)
 		{

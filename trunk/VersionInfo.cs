@@ -1,5 +1,3 @@
-using System;
-
 static class VersionInfo
 {
 	public const string MAINVERSION = "1.7.0";

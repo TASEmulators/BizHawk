@@ -329,7 +329,7 @@ namespace BizHawk.Common.StringExtensions
 
 			var output = new StringBuilder();
 
-			bool usedDot = false;
+			var usedDot = false;
 			foreach (var chr in raw)
 			{
 				if (chr == '.')
@@ -338,10 +338,8 @@ namespace BizHawk.Common.StringExtensions
 					{
 						continue;
 					}
-					else
-					{
-						usedDot = true;
-					}
+
+					usedDot = true;
 				}
 
 				if (IsFixedPoint(chr))
@@ -366,8 +364,8 @@ namespace BizHawk.Common.StringExtensions
 
 			var output = new StringBuilder();
 
-			bool usedDot = false;
-			int count = 0;
+			var usedDot = false;
+			var count = 0;
 			foreach (var chr in raw)
 			{
 				if (count == 0 && chr == '-')
@@ -382,10 +380,8 @@ namespace BizHawk.Common.StringExtensions
 						{
 							continue;
 						}
-						else
-						{
-							usedDot = true;
-						}
+
+						usedDot = true;
 					}
 
 					if (IsFixedPoint(chr))
@@ -393,9 +389,10 @@ namespace BizHawk.Common.StringExtensions
 						output.Append(chr);
 					}
 				}
+
+				count++;
 			}
 
-			count++;
 			return output.ToString();
 		}
 

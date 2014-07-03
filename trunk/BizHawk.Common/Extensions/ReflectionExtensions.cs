@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 
 namespace BizHawk.Common.ReflectionExtensions
 {
@@ -17,15 +14,15 @@ namespace BizHawk.Common.ReflectionExtensions
 		/// </summary>
 		public static string GetDescription(this object obj)
 		{
-			Type type = obj.GetType();
+			var type = obj.GetType();
 
 			var memInfo = type.GetMember(obj.ToString());
 
-			if (memInfo != null && memInfo.Length > 0)
+			if (memInfo.Length > 0)
 			{
-				object[] attrs = memInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
+				var attrs = memInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
 
-				if (attrs != null && attrs.Length > 0)
+				if (attrs.Length > 0)
 				{
 					return ((DescriptionAttribute)attrs[0]).Description;
 				}
@@ -69,12 +66,16 @@ namespace BizHawk.Common.ReflectionExtensions
 				if (attribute != null)
 				{
 					if (attribute.Description == description)
+					{
 						return (T)field.GetValue(null);
+					}
 				}
 				else
 				{
 					if (field.Name == description)
+					{
 						return (T)field.GetValue(null);
+					}
 				}
 			}
 

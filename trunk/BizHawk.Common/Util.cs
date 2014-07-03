@@ -359,7 +359,7 @@ namespace BizHawk.Common
 			const int BUFF_SIZE = 4096;
 			var buffer = new byte[BUFF_SIZE];
 
-			int bytesRead = 0;
+			int bytesRead;
 			var inStream = new BufferedStream(stream);
 			var outStream = new MemoryStream();
 
