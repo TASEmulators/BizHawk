@@ -333,7 +333,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			if (game["SGB"])
 			{
 				sgbRomData = CoreComm.CoreFileProvider.GetFirmware("SNES", "Rom_SGB", true, "SGB Rom is required for SGB emulation.");
-				game.FirmwareHash = Util.Hash_SHA1(sgbRomData);
+				game.FirmwareHash = sgbRomData.HashSHA1();
 			}
 	
 			ScanlineHookManager = new MyScanlineHookManager(this);

@@ -217,13 +217,13 @@ namespace BizHawk.Emulation.Common
 				return new GameInfo(cgi);
 			}
 
-			hash = Util.Hash_MD5(romData);
+			hash = romData.HashMD5();
 			if (db.TryGetValue(hash, out cgi))
 			{
 				return new GameInfo(cgi);
 			}
 
-			hash = Util.Hash_SHA1(romData);
+			hash = romData.HashSHA1();
 			if (db.TryGetValue(hash, out cgi))
 			{
 				return new GameInfo(cgi);

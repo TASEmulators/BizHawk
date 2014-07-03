@@ -4,8 +4,11 @@ using System.Globalization;
 using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
+
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Components;
+
 using BizHawk.Emulation.Cores.Components.H6280;
 using BizHawk.Emulation.DiscSystem;
 
@@ -131,7 +134,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				throw new Exception();
 			}
 
-			game.FirmwareHash = Util.Hash_SHA1(rom);
+			game.FirmwareHash = rom.HashSHA1();
 
 			Init(game, rom);
 			// the default RomStatusDetails don't do anything with Disc

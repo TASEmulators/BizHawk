@@ -4,9 +4,11 @@ using System.IO;
 using System.Collections.Generic;
 
 using BizHawk.Common;
-using BizHawk.Emulation.Common;
-//TODO - redo all timekeeping in terms of master clock
+using BizHawk.Common.BufferExtensions;
 
+using BizHawk.Emulation.Common;
+
+//TODO - redo all timekeeping in terms of master clock
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	[CoreAttributes(
@@ -546,9 +548,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				//now that we know we have an iNES header, we can try to ignore it.
 
-				hash_sha1 = "sha1:" + Util.Hash_SHA1(file, 16, file.Length - 16);
+				hash_sha1 = "sha1:" + file.HashSHA1(16, file.Length - 16);
 				hash_sha1_several.Add(hash_sha1);
-				hash_md5 = "md5:" + Util.Hash_MD5(file, 16, file.Length - 16);
+				hash_md5 = "md5:" + file.HashMD5(16, file.Length - 16);
 
 				LoadWriteLine("Found iNES header:");
 				LoadWriteLine(iNesHeaderInfo.ToString());
@@ -572,10 +574,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					msTemp.Write(file, 16 + 16 * 1024, iNesHeaderInfo.chr_size * 1024); //add chr
 					msTemp.Flush();
 					var bytes = msTemp.ToArray();
-					var hash = "sha1:" + Util.Hash_SHA1(bytes, 0, bytes.Length);
+					var hash = "sha1:" + bytes.HashSHA1(0, bytes.Length);
 					LoadWriteLine("  PRG (8KB) + CHR hash: {0}", hash);
 					hash_sha1_several.Add(hash);
-					hash = "md5:" + Util.Hash_MD5(bytes, 0, bytes.Length);
+					hash = "md5:" + bytes.HashMD5(0, bytes.Length);
 					LoadWriteLine("  PRG (8KB) + CHR hash:  {0}", hash);
 				}
 			}

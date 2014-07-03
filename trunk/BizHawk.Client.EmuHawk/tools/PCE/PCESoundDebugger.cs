@@ -8,9 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Common.Components;
@@ -93,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 				foreach (var s in waveform)
 					bw.Write(s);
 				bw.Flush();
-				string md5 = Util.Hash_MD5(waveformTemp);
+				string md5 = waveformTemp.HashMD5();
 
 				if (!PSGEntryTable.ContainsKey(md5))
 				{

@@ -8,10 +8,13 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
 using BizHawk.Common.IOExtensions;
+
+using BizHawk.Client.Common;
 using BizHawk.Bizware.BizwareGL;
+
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
@@ -3080,8 +3083,8 @@ namespace BizHawk.Client.EmuHawk
 					Global.Emulator.CoreComm.RomStatusDetails = string.Format(
 						"{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
 						loader.Game.Name,
-						Util.Hash_SHA1(loader.Rom.RomData),
-						Util.Hash_MD5(loader.Rom.RomData));
+						loader.Rom.RomData.HashSHA1(),
+						loader.Rom.RomData.HashMD5());
 				}
 
 				if (Global.Emulator.BoardName != null)
