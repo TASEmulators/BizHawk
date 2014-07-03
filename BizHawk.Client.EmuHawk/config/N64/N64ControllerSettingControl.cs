@@ -68,8 +68,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (PakTypeDropdown.SelectedItem != null) // Null check for designer
 				{
-					return EnumHelper.GetValueFromDescription<N64ControllerSettings.N64ControllerPakType>(
-						PakTypeDropdown.SelectedItem.ToString());
+					return PakTypeDropdown.SelectedItem
+						.ToString()
+						.GetEnumFromDescription<N64ControllerSettings.N64ControllerPakType>();
 				}
 
 				return N64ControllerSettings.N64ControllerPakType.NO_PAK;
