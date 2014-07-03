@@ -54,6 +54,11 @@ namespace BizHawk.Client.EmuHawk
 			StatusBarDiskLightOnImage = Properties.Resources.LightOn;
 			StatusBarDiskLightOffImage = Properties.Resources.LightOff;
 			UpdateCoreStatusBarButton();
+			if (Global.Config.FirstBoot == true)
+			{
+				ProfileFirstBootLabel.Visible = true;
+			}
+				
 		}
 
 		static MainForm()
@@ -3283,6 +3288,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GlobalWin.OSD.AddMessage("Profile config aborted");
 			}
+		}
+
+		private void ProfileFirstBootLabel_Click(object sender, EventArgs e)
+		{
+			var profileForm = new ProfileConfig();
+			profileForm.ShowDialog();
+			Global.Config.FirstBoot = false;
 		}
 
 		
