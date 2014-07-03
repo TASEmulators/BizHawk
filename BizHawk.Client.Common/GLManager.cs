@@ -1,12 +1,5 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-using BizHawk.Common;
-using BizHawk.Emulation.Common;
-
 using BizHawk.Bizware.BizwareGL;
-using BizHawk.Bizware.BizwareGL.Drivers.OpenTK;
+
 
 namespace BizHawk.Client.Common
 {
@@ -17,7 +10,7 @@ namespace BizHawk.Client.Common
 	{
 		public GLManager()
 		{
-			int zzz = 9;
+
 		}
 
 		public ContextRef CreateGLContext()
