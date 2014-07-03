@@ -10,8 +10,34 @@ namespace BizHawk.Common.ReflectionExtensions
 	/// <summary>
 	/// Reflection based helper methods
 	/// </summary>
-	public static class ReflectionUtil
+	public static class ReflectionExtensions
 	{
+		/// <summary>
+		/// Gets the description attribute from an object
+		/// </summary>
+		public static string GetDescription(this object obj)
+		{
+			Type type = obj.GetType();
+
+			var memInfo = type.GetMember(obj.ToString());
+
+			if (memInfo != null && memInfo.Length > 0)
+			{
+				object[] attrs = memInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
+
+				if (attrs != null && attrs.Length > 0)
+				{
+					return ((DescriptionAttribute)attrs[0]).Description;
+				}
+			}
+
+			return obj.ToString();
+		}
+
+		/// <summary>
+		/// Gets the description attribute from a type
+		/// </summary>
+		/// <returns></returns>
 		public static string Description(this Type type)
 		{
 			var descriptions = (DescriptionAttribute[])
