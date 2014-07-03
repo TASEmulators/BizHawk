@@ -109,7 +109,7 @@ namespace BizHawk.Common.BufferExtensions
 				while (count > 0)
 				{
 					// in my tests, replacing Hex2Int() with a 256 entry LUT slowed things down slightly
-					*dst = (byte)(Hex2Int(*src++) << 4 | Hex2Int(*src++));
+					*dst++ = (byte)(Hex2Int(*src++) << 4 | Hex2Int(*src++));
 					count--;
 				}
 			}
