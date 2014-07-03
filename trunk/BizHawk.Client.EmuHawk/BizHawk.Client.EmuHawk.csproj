@@ -1423,6 +1423,7 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\user_blue.png" />
     <None Include="images\thumbsdown.png" />
     <None Include="images\monitor.png" />
     <None Include="images\ppsspp.png" />
