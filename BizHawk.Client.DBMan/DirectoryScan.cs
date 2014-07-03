@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using BizHawk.Common;
 using Community.CsharpSqlite.SQLiteClient;
+
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.DBMan
 {
