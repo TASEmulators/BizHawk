@@ -4,9 +4,11 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Common.StringExtensions;
+using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Cores.Nintendo.N64;
-using BizHawk.Client.EmuHawk.ControlExtensions;
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.ControlExtensions;
+
 
 using BizHawk.Common;
 
@@ -322,11 +324,11 @@ namespace BizHawk.Client.EmuHawk
 
 			ss.CoreType = CoreTypeDropdown.SelectedItem
 				.ToString()
-				.GetValueFromDescription<N64SyncSettings.CORETYPE>();
+				.GetEnumFromDescription<N64SyncSettings.CORETYPE>();
 
 			ss.RspType = RspTypeDropdown.SelectedItem
 				.ToString()
-				.GetValueFromDescription<N64SyncSettings.RSPTYPE>();
+				.GetEnumFromDescription<N64SyncSettings.RSPTYPE>();
 
 			PutSettings(s);
 			PutSyncSettings(ss);

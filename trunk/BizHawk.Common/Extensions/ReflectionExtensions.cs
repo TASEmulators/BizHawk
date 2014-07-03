@@ -52,6 +52,36 @@ namespace BizHawk.Common.ReflectionExtensions
 		}
 
 		/// <summary>
+		/// Gets an enum from a description attribute
+		/// </summary>
+		/// <typeparam name="T">The type of the enum</typeparam>
+		/// <param name="description">The description attribute value</param>
+		/// <returns>An enum value with the given description attribute, if no suitable description is found then a default value of the enum is returned</returns>
+		/// <remarks>http://stackoverflow.com/questions/4367723/get-enum-from-description-attribute</remarks>
+		public static T GetEnumFromDescription<T>(this string description)
+		{
+			var type = typeof(T);
+			if (!type.IsEnum) throw new InvalidOperationException();
+			foreach (var field in type.GetFields())
+			{
+				var attribute = Attribute.GetCustomAttribute(field,
+					typeof(DescriptionAttribute)) as DescriptionAttribute;
+				if (attribute != null)
+				{
+					if (attribute.Description == description)
+						return (T)field.GetValue(null);
+				}
+				else
+				{
+					if (field.Name == description)
+						return (T)field.GetValue(null);
+				}
+			}
+
+			return default(T);
+		}
+
+		/// <summary>
 		/// Takes an object and determines if it has methodName as a public method
 		/// </summary>
 		/// <returns>Returns whether or not the obj both contains the method name and the method is public</returns>
