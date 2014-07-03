@@ -105,6 +105,9 @@ namespace BizHawk.Client.EmuHawk
 				a2600Settings.LeftDifficulty = false;
 				a2600Settings.RightDifficulty = false;
 				PutA2600SyncSettings(a2600Settings);
+
+				// NES
+				Global.Config.NES_InQuickNES = true;
 			}
 			else if (ProfileSelectComboBox.SelectedIndex == 2) //Long Plays
 			{
@@ -130,32 +133,35 @@ namespace BizHawk.Client.EmuHawk
 				snesSettings.Profile = "Compatibility";
 				PutSnesSyncSettings(snesSettings);
 
-				//Saturn
+				// Saturn
 				var saturnSettings = GetSaturnSyncSettings();
 				saturnSettings.SkipBios = false;
 				PutSaturnSyncSettings(saturnSettings);
 
-				//Genesis
+				// Genesis
 				var genesisSettings = GetGenesisSyncSettings();
 				genesisSettings.Region = LibGPGX.Region.Autodetect;
 				PutGenesisSyncSettings(genesisSettings);
 
-				//SMS
+				// SMS
 				var smsSettings = GetSMSSyncSettings();
 				smsSettings.UseBIOS = false;
 				PutSMSSyncSettings(smsSettings);
 
-				//Coleco
+				// Coleco
 				var colecoSettings = GetColecoVisionSyncSettings();
 				colecoSettings.SkipBiosIntro = false;
 				PutColecoVisionSyncSettings(colecoSettings);
 
-				//A2600
+				// A2600
 				var a2600Settings = GetA2600SyncSettings();
 				a2600Settings.FastScBios = false;
 				a2600Settings.LeftDifficulty = true;
 				a2600Settings.RightDifficulty = true;
 				PutA2600SyncSettings(a2600Settings);
+
+				// NES
+				Global.Config.NES_InQuickNES = true;
 			}
 			else if (ProfileSelectComboBox.SelectedIndex == 1) //TAS
 			{
@@ -184,32 +190,35 @@ namespace BizHawk.Client.EmuHawk
 				snesSettings.Profile = "Compatibility";
 				PutSnesSyncSettings(snesSettings);
 
-				//Saturn
+				// Saturn
 				var saturnSettings = GetSaturnSyncSettings();
 				saturnSettings.SkipBios = true;
 				PutSaturnSyncSettings(saturnSettings);
 
-				//Genesis
+				// Genesis
 				var genesisSettings = GetGenesisSyncSettings();
 				genesisSettings.Region = LibGPGX.Region.Autodetect;
 				PutGenesisSyncSettings(genesisSettings);
 
-				//SMS
+				// SMS
 				var smsSettings = GetSMSSyncSettings();
 				smsSettings.UseBIOS = false;
 				PutSMSSyncSettings(smsSettings);
 
-				//Coleco
+				// Coleco
 				var colecoSettings = GetColecoVisionSyncSettings();
 				colecoSettings.SkipBiosIntro = true;
 				PutColecoVisionSyncSettings(colecoSettings);
 
-				//A2600
+				// A2600
 				var a2600Settings = GetA2600SyncSettings();
 				a2600Settings.FastScBios = false;
 				a2600Settings.LeftDifficulty = true;
 				a2600Settings.RightDifficulty = true;
 				PutA2600SyncSettings(a2600Settings);
+
+				// NES
+				Global.Config.NES_InQuickNES = true;
 			}
 			else if (ProfileSelectComboBox.SelectedIndex == 3) //custom
 			{
