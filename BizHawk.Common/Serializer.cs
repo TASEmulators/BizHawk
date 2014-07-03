@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 
 using BizHawk.Common.IOExtensions;
+using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Common
 {
@@ -226,7 +227,7 @@ namespace BizHawk.Common
 			else
 			{
 				var temp = val ?? new byte[0];
-				_tw.WriteLine("{0} {1}", name, Util.BytesToHexString(temp));
+				_tw.WriteLine("{0} {1}", name, temp.BytesToHexString());
 			}
 		}
 
@@ -288,7 +289,7 @@ namespace BizHawk.Common
 			else
 			{
 				var temp = val ?? new short[0];
-				_tw.WriteLine("{0} {1}", name, Util.BytesToHexString(Util.ShortBufferToByteBuffer(temp)));
+				_tw.WriteLine("{0} {1}", name, Util.ShortBufferToByteBuffer(temp).BytesToHexString());
 			}
 		}
 
@@ -310,7 +311,7 @@ namespace BizHawk.Common
 			else
 			{
 				var temp = val ?? new ushort[0];
-				_tw.WriteLine("{0} {1}", name, Util.BytesToHexString(Util.UshortBufferToByteBuffer(temp)));
+				_tw.WriteLine("{0} {1}", name, Util.UshortBufferToByteBuffer(temp).BytesToHexString());
 			}
 		}
 
@@ -352,7 +353,7 @@ namespace BizHawk.Common
 			else
 			{
 				var temp = val ?? new int[0];
-				_tw.WriteLine("{0} {1}", name, Util.BytesToHexString(Util.IntBufferToByteBuffer(temp)));
+				_tw.WriteLine("{0} {1}", name, Util.IntBufferToByteBuffer(temp).BytesToHexString());
 			}
 		}
 
@@ -394,7 +395,7 @@ namespace BizHawk.Common
 			else
 			{
 				var temp = val ?? new uint[0];
-				_tw.WriteLine("{0} {1}", name, Util.BytesToHexString(Util.UintBufferToByteBuffer(temp)));
+				_tw.WriteLine("{0} {1}", name, Util.UintBufferToByteBuffer(temp).BytesToHexString());
 			}
 		}
 

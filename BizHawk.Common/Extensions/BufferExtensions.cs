@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Text;
 
 namespace BizHawk.Common.BufferExtensions
 {
@@ -12,6 +13,7 @@ namespace BizHawk.Common.BufferExtensions
 			{
 				writer.Write("{0:X2}", b);
 			}
+
 			writer.WriteLine();
 		}
 
@@ -153,6 +155,32 @@ namespace BizHawk.Common.BufferExtensions
 				var inthex = hex.Substring(i * 8, 8);
 				buffer[i] = int.Parse(inthex, NumberStyles.HexNumber);
 			}
+		}
+
+		/// <summary>
+		/// Converts bytes to an uppercase string of hex numbers in upper case without any spacing or anything
+		/// </summary>
+		public static string BytesToHexString(this byte[] bytes)
+		{
+			var sb = new StringBuilder();
+			foreach (var b in bytes)
+			{
+				sb.AppendFormat("{0:X2}", b);
+			}
+
+			return sb.ToString();
+		}
+
+		public static bool FindBytes(this byte[] array, byte[] pattern)
+		{
+			var fidx = 0;
+			int result = Array.FindIndex(array, 0, array.Length, (byte b) =>
+			{
+				fidx = (b == pattern[fidx]) ? fidx + 1 : 0;
+				return (fidx == pattern.Length);
+			});
+
+			return (result >= pattern.Length - 1);
 		}
 
 		#region Helpers
