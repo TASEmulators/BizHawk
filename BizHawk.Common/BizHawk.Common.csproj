@@ -57,7 +57,6 @@
     <Compile Include="Extensions\NumberExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="HawkFile.cs" />
-    <Compile Include="InputValidate.cs" />
     <Compile Include="IPC\IPCRingBuffer.cs" />
     <Compile Include="IPC\SharedMemoryBlock.cs" />
     <Compile Include="Log.cs" />

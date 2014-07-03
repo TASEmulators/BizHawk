@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
@@ -1376,7 +1377,7 @@ namespace BizHawk.Client.EmuHawk
 			if (data != null && data.GetDataPresent(DataFormats.Text))
 			{
 				var clipboardRaw = (string)data.GetData(DataFormats.Text);
-				var hex = InputValidate.DoHexString(clipboardRaw);
+				var hex = clipboardRaw.DoHexString();
 
 				var numBytes = hex.Length / 2;
 				for (var i = 0; i < numBytes; i++)
@@ -1479,7 +1480,7 @@ namespace BizHawk.Client.EmuHawk
 			inputPrompt.SetMessage("Enter a hexadecimal value");
 			inputPrompt.ShowHawkDialog();
 
-			if (inputPrompt.UserOk && InputValidate.IsHex(inputPrompt.UserText))
+			if (inputPrompt.UserOk && inputPrompt.UserText.IsHex())
 			{
 				GoToAddress(int.Parse(inputPrompt.UserText, NumberStyles.HexNumber));
 			}
