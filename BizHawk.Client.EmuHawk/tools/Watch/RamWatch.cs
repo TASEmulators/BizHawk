@@ -73,11 +73,11 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Properties
 
-		public IEnumerable<int> AddressList
+		public IEnumerable<Watch> Watches
 		{
 			get
 			{
-				return _watches.Where(x => !x.IsSeparator).Select(x => x.Address ?? 0);
+				return _watches.Where(x => !x.IsSeparator);
 			}
 		}
 
