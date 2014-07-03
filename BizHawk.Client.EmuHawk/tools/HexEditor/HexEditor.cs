@@ -1377,7 +1377,7 @@ namespace BizHawk.Client.EmuHawk
 			if (data != null && data.GetDataPresent(DataFormats.Text))
 			{
 				var clipboardRaw = (string)data.GetData(DataFormats.Text);
-				var hex = clipboardRaw.DoHexString();
+				var hex = clipboardRaw.OnlyHex();
 
 				var numBytes = hex.Length / 2;
 				for (var i = 0; i < numBytes; i++)

@@ -150,29 +150,6 @@ namespace BizHawk.Common.StringExtensions
 		}
 
 		/// <summary>
-		/// Takes any string and removes any value that is not a valid hex value (0-9, a-f, A-F), returns the remaining characters in uppercase
-		/// </summary>
-		public static string DoHexString(this string raw)
-		{
-			if (raw == null)
-			{
-				return string.Empty;
-			}
-
-			var output = new StringBuilder();
-
-			foreach (var chr in raw)
-			{
-				if (IsHex(chr))
-				{
-					output.Append(char.ToUpper(chr));
-				}
-			}
-
-			return output.ToString();
-		}
-
-		/// <summary>
 		/// Validates all chars are 0 or 1
 		/// </summary>
 		public static bool IsBinary(this string str)
@@ -236,6 +213,190 @@ namespace BizHawk.Common.StringExtensions
 		public static bool IsFloat(this char c)
 		{
 			return c.IsFixedPoint() || c == '-';
+		}
+
+		/// <summary>
+		/// Takes any string and removes any value that is not a valid binary value (0 or 1)
+		/// </summary>
+		public static string OnlyBinary(this string raw)
+		{
+			if (raw == null)
+			{
+				return string.Empty;
+			}
+
+			var output = new StringBuilder();
+
+			foreach (var chr in raw)
+			{
+				if (IsBinary(chr))
+				{
+					output.Append(chr);
+				}
+			}
+
+			return output.ToString();
+		}
+
+		/// <summary>
+		/// Takes any string and removes any value that is not a valid unsigned integer value (0-9)
+		/// </summary>
+		public static string OnlyUnsigned(this string raw)
+		{
+			if (raw == null)
+			{
+				return string.Empty;
+			}
+
+			var output = new StringBuilder();
+
+			foreach (var chr in raw)
+			{
+				if (IsUnsigned(chr))
+				{
+					output.Append(chr);
+				}
+			}
+
+			return output.ToString();
+		}
+
+		/// <summary>
+		/// Takes any string and removes any value that is not a valid unsigned integer value (0-9 or -)
+		/// Note: a "-" will only be kept if it is the first digit
+		/// </summary>
+		public static string OnlySigned(this string raw)
+		{
+			if (raw == null)
+			{
+				return string.Empty;
+			}
+
+			var output = new StringBuilder();
+
+			int count = 0;
+			foreach (var chr in raw)
+			{
+				if (count == 0 && chr == '-')
+				{
+					output.Append(chr);
+				}
+				else if (IsUnsigned(chr))
+				{
+					
+					output.Append(chr);
+				}
+
+				count++;
+			}
+
+			return output.ToString();
+		}
+
+		/// <summary>
+		/// Takes any string and removes any value that is not a valid hex value (0-9, a-f, A-F), returns the remaining characters in uppercase
+		/// </summary>
+		public static string OnlyHex(this string raw)
+		{
+			if (raw == null)
+			{
+				return string.Empty;
+			}
+
+			var output = new StringBuilder();
+
+			foreach (var chr in raw)
+			{
+				if (IsHex(chr))
+				{
+					output.Append(char.ToUpper(chr));
+				}
+			}
+
+			return output.ToString();
+		}
+
+		/// <summary>
+		/// Takes any string and removes any value that is not a fixed point value (0-9 or .)
+		/// Note: only the first occurance of a . will be kept
+		/// </summary>
+		public static string OnlyFixedPoint(this string raw)
+		{
+			if (raw == null)
+			{
+				return string.Empty;
+			}
+
+			var output = new StringBuilder();
+
+			bool usedDot = false;
+			foreach (var chr in raw)
+			{
+				if (chr == '.')
+				{
+					if (usedDot)
+					{
+						continue;
+					}
+					else
+					{
+						usedDot = true;
+					}
+				}
+
+				if (IsFixedPoint(chr))
+				{
+					output.Append(chr);
+				}
+			}
+
+			return output.ToString();
+		}
+
+		/// <summary>
+		/// Takes any string and removes any value that is not a float point value (0-9, -, or .)
+		/// Note: - is only valid as the first character, and only the first occurance of a . will be kept
+		/// </summary>
+		public static string OnlyFloat(this string raw)
+		{
+			if (raw == null)
+			{
+				return string.Empty;
+			}
+
+			var output = new StringBuilder();
+
+			bool usedDot = false;
+			int count = 0;
+			foreach (var chr in raw)
+			{
+				if (count == 0 && chr == '-')
+				{
+					output.Append(chr);
+				}
+				else
+				{
+					if (chr == '.')
+					{
+						if (usedDot)
+						{
+							continue;
+						}
+						else
+						{
+							usedDot = true;
+						}
+					}
+
+					if (IsFixedPoint(chr))
+					{
+						output.Append(chr);
+					}
+				}
+			}
+
+			count++;
+			return output.ToString();
 		}
 
 		#endregion
