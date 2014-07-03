@@ -44,6 +44,16 @@ namespace BizHawk.Common.NumberExtensions
 			return options.Any(j => i == j);
 		}
 
+		public static byte BinToBCD(this byte v)
+		{
+			return (byte)(((v / 10) * 16) + (v % 10));
+		}
+
+		public static byte BCDtoBin(this byte v)
+		{
+			return (byte)(((v / 16) * 10) + (v % 16));
+		}
+
 		/// <summary>
 		/// Receives a number and returns the number of hexadecimal digits it is
 		/// Note: currently only returns 2, 4, 6, or 8

@@ -3,6 +3,7 @@ using System.IO;
 using System.Globalization;
 
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
 
