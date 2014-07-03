@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace BizHawk.Client.Common
+namespace BizHawk.Common
 {
 	using System.Linq;
 
