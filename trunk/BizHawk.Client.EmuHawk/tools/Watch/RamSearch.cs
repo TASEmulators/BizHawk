@@ -783,9 +783,7 @@ namespace BizHawk.Client.EmuHawk
 			if (indices.Any())
 			{
 				SetRemovedMessage(indices.Count);
-
-				var addresses = indices.Select(index => _searches[index].Address ?? 0).ToList();
-				_searches.RemoveRange(addresses);
+				_searches.RemoveRange(indices);
 
 				WatchListView.ItemCount = _searches.Count;
 				SetTotal();
@@ -805,12 +803,14 @@ namespace BizHawk.Client.EmuHawk
 
 				var watches = new WatchList(_settings.Domain);
 				watches.Load(file.FullName, append);
-				var addresses = watches.Where(x => !x.IsSeparator).Select(x => x.Address ?? 0).ToList();
+
+				var watchList = watches.Where(x => !x.IsSeparator);
+				var addresses = watchList.Select(x => x.Address ?? 0).ToList();
 
 				if (truncate)
 				{
 					SetRemovedMessage(addresses.Count);
-					_searches.RemoveRange(addresses);
+					_searches.RemoveSmallWatchRange(watchList);
 				}
 				else
 				{
@@ -867,7 +867,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (GlobalWin.Tools.Has<RamWatch>())
 			{
-				_searches.RemoveRange(GlobalWin.Tools.RamWatch.AddressList);
+				_searches.RemoveSmallWatchRange(GlobalWin.Tools.RamWatch.Watches);
 				WatchListView.ItemCount = _searches.Count;
 				SetTotal();
 			}
@@ -1479,7 +1479,7 @@ namespace BizHawk.Client.EmuHawk
 
 			SetRemovedMessage(outOfRangeAddresses.Count);
 
-			_searches.RemoveRange(outOfRangeAddresses);
+			//_searches.RemoveRange(outOfRangeAddresses); Remove TODO
 
 			WatchListView.ItemCount = _searches.Count;
 			SetTotal();
