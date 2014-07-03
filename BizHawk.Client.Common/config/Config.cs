@@ -93,6 +93,7 @@ namespace BizHawk.Client.Common
 		public bool SupressAskSave = false;
 		public bool AVI_CaptureOSD = false;
 		public bool Screenshot_CaptureOSD = false;
+		public bool FirstBoot = true;
 
 		public enum SaveStateTypeE { Default, Binary, Text };
 		public SaveStateTypeE SaveStateType = SaveStateTypeE.Default;
