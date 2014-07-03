@@ -107,11 +107,6 @@ namespace BizHawk.Common
 			throw new InvalidOperationException("Item not found");
 		}
 
-		public static bool Bit(this byte b, int index)
-		{
-			return (b & (1 << index)) != 0;
-		}
-
 		public static bool ContainsStartsWith(this IEnumerable<string> options, string str)
 		{
 			return options.Any(opt => opt.StartsWith(str));

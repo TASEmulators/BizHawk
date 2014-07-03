@@ -1,6 +1,7 @@
 ﻿using System;
 
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common.Components;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
