@@ -8,11 +8,14 @@ namespace BizHawk.Common
 {
 	public static class EnumHelper
 	{
-		public static string GetDescription(object en)
+		/// <summary>
+		/// Gets the description attribute from an object
+		/// </summary>
+		public static string GetDescription(this object obj)
 		{
-			Type type = en.GetType();
+			Type type = obj.GetType();
 
-			var memInfo = type.GetMember(en.ToString());
+			var memInfo = type.GetMember(obj.ToString());
 
 			if (memInfo != null && memInfo.Length > 0)
 			{
@@ -24,7 +27,7 @@ namespace BizHawk.Common
 				}
 			}
 
-			return en.ToString();
+			return obj.ToString();
 		}
 
 		/// <summary>
@@ -63,7 +66,7 @@ namespace BizHawk.Common
 
 			foreach (var v in vals)
 			{
-				yield return GetDescription(v);
+				yield return v.GetDescription();
 			}
 		}
 	}

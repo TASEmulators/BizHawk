@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var toSelect = PakTypeDropdown.Items
 						.OfType<object>()
-						.FirstOrDefault(item => item.ToString() == EnumHelper.GetDescription(value));
+						.FirstOrDefault(item => item.ToString() == value.GetDescription());
 					PakTypeDropdown.SelectedItem = toSelect;
 
 					Refresh();
