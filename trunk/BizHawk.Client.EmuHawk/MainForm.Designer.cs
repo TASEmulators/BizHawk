@@ -2801,6 +2801,7 @@
 			// 
 			// ProfileFirstBootLabel
 			// 
+			this.ProfileFirstBootLabel.AutoToolTip = true;
 			this.ProfileFirstBootLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.ProfileFirstBootLabel.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.user_blue;
 			this.ProfileFirstBootLabel.Name = "ProfileFirstBootLabel";
