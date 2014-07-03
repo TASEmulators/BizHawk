@@ -3,6 +3,7 @@ using System.Linq;
 using System.IO;
 using System.Reflection;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Nintendo.SNES;

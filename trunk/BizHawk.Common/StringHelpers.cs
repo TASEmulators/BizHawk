@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace BizHawk.Client.Common
+namespace BizHawk.Common
 {
 	// TODO: these classes are worthless or need to be extensions, decide which
 	public static class StringHelpers
