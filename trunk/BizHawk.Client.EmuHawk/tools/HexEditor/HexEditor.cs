@@ -8,9 +8,10 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {

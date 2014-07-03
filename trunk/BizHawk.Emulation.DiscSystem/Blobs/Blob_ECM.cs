@@ -28,6 +28,7 @@ using System.IO;
 using System.Collections.Generic;
 
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.DiscSystem
 {
