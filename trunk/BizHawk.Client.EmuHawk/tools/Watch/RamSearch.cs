@@ -10,6 +10,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -114,7 +115,7 @@ namespace BizHawk.Client.EmuHawk
 			SpecificValueBox.Type = _settings.Type;
 
 			MessageLabel.Text = string.Empty;
-			SpecificAddressBox.MaxLength = IntHelpers.GetNumDigits(Global.Emulator.MemoryDomains.MainMemory.Size);
+			SpecificAddressBox.MaxLength = (Global.Emulator.MemoryDomains.MainMemory.Size - 1).NumHexDigits();
 			HardSetSizeDropDown(_settings.Size);
 			PopulateTypeDropDown();
 			HardSetDisplayTypeDropDown(_settings.Type);
@@ -546,7 +547,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_settings.Domain = Global.Emulator.MemoryDomains[name];
 			SetReboot(true);
-			SpecificAddressBox.MaxLength = IntHelpers.GetNumDigits(_settings.Domain.Size);
+			SpecificAddressBox.MaxLength = (_settings.Domain.Size - 1).NumHexDigits();
 			DoDomainSizeCheck();
 		}
 
