@@ -3295,6 +3295,7 @@ namespace BizHawk.Client.EmuHawk
 			var profileForm = new ProfileConfig();
 			profileForm.ShowDialog();
 			Global.Config.FirstBoot = false;
+			ProfileFirstBootLabel.Visible = false;
 		}
 
 		
