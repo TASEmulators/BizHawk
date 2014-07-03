@@ -5,7 +5,9 @@ using System.Text;
 using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
 using BizHawk.Common.IOExtensions;
+
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 
@@ -403,7 +405,7 @@ namespace BizHawk.Client.Common
 					byte[] md5 = DecodeBlob(blob);
 					if (md5 != null && md5.Length == 16)
 					{
-						m.Header[MD5] = Util.BytesToHexString(md5).ToLower();
+						m.Header[MD5] = md5.BytesToHexString().ToLower();
 					}
 					else
 					{
@@ -596,7 +598,7 @@ namespace BizHawk.Client.Common
 			uint firstFrameOffset = r.ReadUInt32();
 			// 020 16-byte md5sum of the ROM used
 			byte[] md5 = r.ReadBytes(16);
-			m.Header[MD5] = Util.BytesToHexString(md5).ToLower();
+			m.Header[MD5] = md5.BytesToHexString().ToLower();
 			// 030 4-byte little-endian unsigned int: version of the emulator used
 			uint emuVersion = r.ReadUInt32();
 			m.Comments.Add(EMULATIONORIGIN + " FCEU " + emuVersion);
@@ -1294,7 +1296,7 @@ namespace BizHawk.Client.Common
 			byte[] md5 = r.ReadBytes(16);
 			// Discard the second 16 bytes.
 			r.ReadBytes(16);
-			m.Header[MD5] = Util.BytesToHexString(md5).ToLower();
+			m.Header[MD5] = md5.BytesToHexString().ToLower();
 			// 030 64-byte	Filename of the ROM used (with extension)
 			string gameName = NullTerminated(r.ReadStringFixedAscii(64));
 			m.Header[HeaderKeys.GAMENAME] = gameName;
@@ -1460,7 +1462,7 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.GAMENAME] = gameName;
 			// 00e4-00f3: binary: rom MD5 digest
 			byte[] md5 = r.ReadBytes(16);
-			m.Header[MD5] = string.Format("{0:x8}", Util.BytesToHexString(md5).ToLower());
+			m.Header[MD5] = string.Format("{0:x8}", md5.BytesToHexString().ToLower());
 			var controllers = new SimpleController { Type = new ControllerDefinition { Name = "SMS Controller" }};
 			/*
 			 76543210

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
+using BizHawk.Common.BufferExtensions;
+
 namespace BizHawk.Common
 {
 	public static unsafe class Util
@@ -16,18 +18,6 @@ namespace BizHawk.Common
 			HexConvPtr = (char*)HexConvHandle.AddrOfPinnedObject().ToPointer();
 		}
 
-		public static bool FindBytes(byte[] array, byte[] pattern)
-		{
-			int fidx = 0;
-			int result = Array.FindIndex(array, 0, array.Length, (byte b) =>
-			{
-				fidx = (b == pattern[fidx]) ? fidx + 1 : 0;
-				return (fidx == pattern.Length);
-			});
-
-			return (result >= pattern.Length - 1);
-		}
-
 		public static char* HexConvPtr { get; set; }
 
 		public static string Hash_MD5(byte[] data, int offset, int len)
@@ -35,7 +25,7 @@ namespace BizHawk.Common
 			using (var md5 = System.Security.Cryptography.MD5.Create())
 			{
 				md5.ComputeHash(data, offset, len);
-				return BytesToHexString(md5.Hash);
+				return md5.Hash.BytesToHexString();
 			}
 		}
 
@@ -49,7 +39,7 @@ namespace BizHawk.Common
 			using (var sha1 = System.Security.Cryptography.SHA1.Create())
 			{
 				sha1.ComputeHash(data, offset, len);
-				return BytesToHexString(sha1.Hash);
+				return sha1.Hash.BytesToHexString();
 			}
 		}
 
@@ -79,21 +69,6 @@ namespace BizHawk.Common
 			}
 
 			return 0;
-		}
-
-		/// <summary>
-		/// Converts bytes to an uppercase string of hex numbers in upper case without any spacing or anything
-		/// //could be extension method
-		/// </summary>
-		public static string BytesToHexString(byte[] bytes)
-		{
-			var sb = new StringBuilder();
-			foreach (var b in bytes)
-			{
-				sb.AppendFormat("{0:X2}", b);
-			}
-
-			return sb.ToString();
 		}
 
 		// Could be extension method
