@@ -325,16 +325,6 @@ namespace BizHawk.Common
 			}
 		}
 
-		public static byte BinToBCD(this byte v)
-		{
-			return (byte)(((v / 10) * 16) + (v % 10));
-		}
-
-		public static byte BCDtoBin(this byte v)
-		{
-			return (byte)(((v / 16) * 10) + (v % 16));
-		}
-
 		public static string FormatFileSize(long filesize)
 		{
 			decimal size = filesize;
@@ -400,24 +390,6 @@ namespace BizHawk.Common
 			}
 
 			return true;
-		}
-
-		public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key)
-		{
-			TValue ret;
-			dict.TryGetValue(key, out ret);
-			return ret;
-		}
-
-		public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue defaultvalue)
-		{
-			TValue ret;
-			if (!dict.TryGetValue(key, out ret))
-			{
-				return defaultvalue;
-			}
-			
-			return ret;
 		}
 	}
 

@@ -9,11 +9,30 @@ namespace BizHawk.Common
 {
 	public static class Extensions
 	{
+		public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key)
+		{
+			TValue ret;
+			dict.TryGetValue(key, out ret);
+			return ret;
+		}
+
+		public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue defaultvalue)
+		{
+			TValue ret;
+			if (!dict.TryGetValue(key, out ret))
+			{
+				return defaultvalue;
+			}
+
+			return ret;
+		}
+
 		public static string GetDirectory(this Assembly asm)
 		{
-			string codeBase = asm.CodeBase;
-			UriBuilder uri = new UriBuilder(codeBase);
-			string path = Uri.UnescapeDataString(uri.Path);
+			var codeBase = asm.CodeBase;
+			var uri = new UriBuilder(codeBase);
+			var path = Uri.UnescapeDataString(uri.Path);
+
 			return Path.GetDirectoryName(path);
 		}
 
@@ -125,7 +144,7 @@ namespace BizHawk.Common
 		{
 			try
 			{
-				foreach (string opt in options)
+				foreach (var opt in options)
 				{
 					if (opt.StartsWith(str))
 					{
@@ -139,7 +158,7 @@ namespace BizHawk.Common
 
 		public static void SaveAsHex(this byte[] buffer, TextWriter writer)
 		{
-			foreach (byte b in buffer)
+			foreach (var b in buffer)
 			{
 				writer.Write("{0:X2}", b);
 			}
@@ -173,7 +192,7 @@ namespace BizHawk.Common
 
 		public static void SaveAsHex(this short[] buffer, TextWriter writer)
 		{
-			foreach (short b in buffer)
+			foreach (var b in buffer)
 			{
 				writer.Write("{0:X4}", b);
 			}
@@ -182,7 +201,7 @@ namespace BizHawk.Common
 
 		public static void SaveAsHex(this ushort[] buffer, TextWriter writer)
 		{
-			foreach (ushort b in buffer)
+			foreach (var b in buffer)
 			{
 				writer.Write("{0:X4}", b);
 			}
@@ -200,7 +219,7 @@ namespace BizHawk.Common
 
 		public static void SaveAsHex(this uint[] buffer, TextWriter writer)
 		{
-			foreach (uint b in buffer)
+			foreach (var b in buffer)
 			{
 				writer.Write("{0:X8}", b);
 			}
@@ -216,7 +235,7 @@ namespace BizHawk.Common
 
 			for (int i = 0; i < buffer.Length && i * 2 < hex.Length; i++)
 			{
-				string bytehex = "" + hex[i * 2] + hex[i * 2 + 1];
+				var bytehex = "" + hex[i * 2] + hex[i * 2 + 1];
 				buffer[i] = byte.Parse(bytehex, NumberStyles.HexNumber);
 			}
 		}
@@ -224,7 +243,10 @@ namespace BizHawk.Common
 		public static unsafe void ReadFromHexFast(this byte[] buffer, string hex)
 		{
 			if (buffer.Length * 2 != hex.Length)
+			{
 				throw new Exception("Data size mismatch");
+			}
+
 			int count = buffer.Length;
 			fixed (byte* _dst = buffer)
 			fixed (char* _src = hex)
@@ -243,10 +265,13 @@ namespace BizHawk.Common
 		public static void ReadFromHex(this short[] buffer, string hex)
 		{
 			if (hex.Length % 4 != 0)
+			{
 				throw new Exception("Hex value string does not appear to be properly formatted.");
+			}
+
 			for (int i = 0; i < buffer.Length && i * 4 < hex.Length; i++)
 			{
-				string shorthex = "" + hex[i * 4] + hex[(i * 4) + 1] + hex[(i * 4) + 2] + hex[(i * 4) + 3];
+				var shorthex = "" + hex[i * 4] + hex[(i * 4) + 1] + hex[(i * 4) + 2] + hex[(i * 4) + 3];
 				buffer[i] = short.Parse(shorthex, NumberStyles.HexNumber);
 			}
 		}
@@ -254,10 +279,13 @@ namespace BizHawk.Common
 		public static void ReadFromHex(this ushort[] buffer, string hex)
 		{
 			if (hex.Length % 4 != 0)
+			{
 				throw new Exception("Hex value string does not appear to be properly formatted.");
+			}
+
 			for (int i = 0; i < buffer.Length && i * 4 < hex.Length; i++)
 			{
-				string ushorthex = "" + hex[i * 4] + hex[(i * 4) + 1] + hex[(i * 4) + 2] + hex[(i * 4) + 3];
+				var ushorthex = "" + hex[i * 4] + hex[(i * 4) + 1] + hex[(i * 4) + 2] + hex[(i * 4) + 3];
 				buffer[i] = ushort.Parse(ushorthex, NumberStyles.HexNumber);
 			}
 		}
@@ -272,7 +300,7 @@ namespace BizHawk.Common
 			for (int i = 0; i < buffer.Length && i * 8 < hex.Length; i++)
 			{
 				//string inthex = "" + hex[i * 8] + hex[(i * 8) + 1] + hex[(i * 4) + 2] + hex[(i * 4) + 3] + hex[(i*4
-				string inthex = hex.Substring(i * 8, 8);
+				var inthex = hex.Substring(i * 8, 8);
 				buffer[i] = int.Parse(inthex, NumberStyles.HexNumber);
 			}
 		}
