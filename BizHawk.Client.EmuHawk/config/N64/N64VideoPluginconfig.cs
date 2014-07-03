@@ -320,11 +320,13 @@ namespace BizHawk.Client.EmuHawk
 			ss.Glide64mk2Plugin.fast_crc = Glide64mk2_fast_crc.Checked;
 
 
-			ss.CoreType = EnumHelper.GetValueFromDescription<N64SyncSettings.CORETYPE>(
-				CoreTypeDropdown.SelectedItem.ToString());
+			ss.CoreType = CoreTypeDropdown.SelectedItem
+				.ToString()
+				.GetValueFromDescription<N64SyncSettings.CORETYPE>();
 
-			ss.RspType = EnumHelper.GetValueFromDescription<N64SyncSettings.RSPTYPE>(
-				RspTypeDropdown.SelectedItem.ToString());
+			ss.RspType = RspTypeDropdown.SelectedItem
+				.ToString()
+				.GetValueFromDescription<N64SyncSettings.RSPTYPE>();
 
 			PutSettings(s);
 			PutSyncSettings(ss);
