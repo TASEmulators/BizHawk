@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BizHawk.Common
+namespace BizHawk.Common.StringExtensions
 {
 	public static class StringExtensions
 	{
@@ -13,20 +13,19 @@ namespace BizHawk.Common
 
 		public static string GetPrecedingString(this string str, string value)
 		{
-			int index = str.IndexOf(value);
+			var index = str.IndexOf(value);
 
 			if (index < 0)
 			{
 				return null;
 			}
-			else if (index == 0)
+			
+			if (index == 0)
 			{
-				return String.Empty;
+				return string.Empty;
 			}
-			else
-			{
-				return str.Substring(0, index);
-			}
+
+			return str.Substring(0, index);
 		}
 
 		public static bool IsValidRomExtentsion(this string str, params string[] romExtensions)
@@ -58,6 +57,25 @@ namespace BizHawk.Common
 		public static bool NotIn(this string str, IEnumerable<string> options)
 		{
 			return options.All(opt => opt.ToLower() != str.ToLower());
+		}
+
+		public static int HowMany(this string str, char c)
+		{
+			return !string.IsNullOrEmpty(str) ? str.Count(t => t == c) : 0;
+		}
+
+		public static int HowMany(this string str, string s)
+		{
+			var count = 0;
+			for (var i = 0; i < (str.Length - s.Length); i++)
+			{
+				if (str.Substring(i, s.Length) == s)
+				{
+					count++;
+				}
+			}
+
+			return count;
 		}
 	}
 }

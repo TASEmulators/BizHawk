@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Cores.Components.M68000
 {

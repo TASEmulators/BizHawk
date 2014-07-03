@@ -4,6 +4,8 @@ namespace BizHawk.Common
 {
 	using System.Linq;
 
+	using BizHawk.Common.StringExtensions;
+
 	/// <summary>
 	/// Includes helper functions to validate user input
 	/// </summary>
@@ -101,7 +103,7 @@ namespace BizHawk.Common
 		/// </summary>
 		public static bool IsFixedPoint(string str)
 		{
-			return StringHelpers.HowMany(str, '.') <= 1 
+			return str.HowMany('.') <= 1 
 				&& str.All(IsFixedPoint);
 		}
 
@@ -118,7 +120,7 @@ namespace BizHawk.Common
 		/// </summary>
 		public static bool IsFloat(string str)
 		{
-			return StringHelpers.HowMany(str, '.') <= 1
+			return str.HowMany('.') <= 1
 				&& IsFloat(str[0])
 				&& str.Substring(1).All(IsFixedPoint);
 		}

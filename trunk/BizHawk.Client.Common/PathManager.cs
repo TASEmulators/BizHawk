@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
@@ -176,8 +177,8 @@ namespace BizHawk.Client.Common
 			int x = NumParentDirectories(path);
 			if (x > 0)
 			{
-				int y = StringHelpers.HowMany(path, "..\\");
-				int z = StringHelpers.HowMany(workingpath, "\\");
+				int y = path.HowMany("..\\");
+				int z = workingpath.HowMany("\\");
 				if (y >= z)
 				{
 					//Return drive letter only, working path must be absolute?
@@ -192,10 +193,10 @@ namespace BizHawk.Client.Common
 		public static int NumParentDirectories(string path)
 		{
 			// determine the number of parent directories in path and return result
-			int x = StringHelpers.HowMany(path, '\\');
+			int x = path.HowMany('\\');
 			if (x > 0)
 			{
-				return StringHelpers.HowMany(path, "..\\");
+				return path.HowMany("..\\");
 			}
 
 			return 0;

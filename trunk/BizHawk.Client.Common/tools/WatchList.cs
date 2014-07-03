@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -444,7 +445,7 @@ namespace BizHawk.Client.Common
 						continue;
 					}
 
-					var numColumns = StringHelpers.HowMany(line, '\t');
+					var numColumns = line.HowMany('\t');
 					int startIndex;
 					if (numColumns == 5)
 					{
