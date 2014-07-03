@@ -213,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnTextChanged(EventArgs e)
 		{
-			if (string.IsNullOrWhiteSpace(Text))
+			if (string.IsNullOrWhiteSpace(Text) || !Text.IsHex())
 			{
 				ResetText();
 			}
@@ -223,7 +223,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int? ToRawInt()
 		{
-			if (string.IsNullOrWhiteSpace(Text))
+			if (string.IsNullOrWhiteSpace(Text) || !Text.IsHex())
 			{
 				if (Nullable)
 				{
