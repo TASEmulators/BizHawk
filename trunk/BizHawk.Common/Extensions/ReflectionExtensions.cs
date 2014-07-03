@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+using System.Reflection;
 
 namespace BizHawk.Common.ReflectionExtensions
 {

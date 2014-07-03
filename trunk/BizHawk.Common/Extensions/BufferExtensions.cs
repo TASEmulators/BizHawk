@@ -1,23 +1,11 @@
-using System;
-using System.Linq;
-using System.Reflection;
-using System.Collections.Generic;
+﻿using System;
 using System.Globalization;
 using System.IO;
 
-namespace BizHawk.Common
+namespace BizHawk.Common.BufferExtensions
 {
-	public static class Extensions
+	public static class BufferExtensions
 	{
-		public static string GetDirectory(this Assembly asm)
-		{
-			var codeBase = asm.CodeBase;
-			var uri = new UriBuilder(codeBase);
-			var path = Uri.UnescapeDataString(uri.Path);
-
-			return Path.GetDirectoryName(path);
-		}
-
 		public static void SaveAsHex(this byte[] buffer, TextWriter writer)
 		{
 			foreach (var b in buffer)
@@ -90,7 +78,7 @@ namespace BizHawk.Common
 
 		public static void ReadFromHex(this byte[] buffer, string hex)
 		{
-			if (hex.Length%2 != 0)
+			if (hex.Length % 2 != 0)
 			{
 				throw new Exception("Hex value string does not appear to be properly formatted.");
 			}
