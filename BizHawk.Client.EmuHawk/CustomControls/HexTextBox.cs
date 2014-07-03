@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Windows.Forms;
 
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -30,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 		public void SetHexProperties(int domainSize)
 		{
 			_maxSize = domainSize - 1;
-			MaxLength = IntHelpers.GetNumDigits(_maxSize.Value);
+			MaxLength = _maxSize.Value.NumHexDigits();
 			_addressFormatStr = "{0:X" + MaxLength + "}";
 			
 			ResetText();

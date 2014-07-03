@@ -54,6 +54,7 @@
     <Compile Include="CustomCollections.cs" />
     <Compile Include="EnumHelper.cs" />
     <Compile Include="Extensions\Extensions.cs" />
+    <Compile Include="Extensions\NumberExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="HawkFile.cs" />
     <Compile Include="InputValidate.cs" />
@@ -67,7 +68,6 @@
     <Compile Include="ReflectionUtil.cs" />
     <Compile Include="Serializer.cs" />
     <Compile Include="SettingsUtil.cs" />
-    <Compile Include="StringHelpers.cs" />
     <Compile Include="SwitcherStream.cs" />
     <Compile Include="UndoHistory.cs" />
     <Compile Include="Util.cs" />

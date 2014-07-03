@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -161,7 +163,7 @@ namespace BizHawk.Client.Common
 			{
 				if (_domain != null)
 				{
-					return "X" + IntHelpers.GetNumDigits(this._domain.Size - 1);
+					return "X" + (_domain.Size - 1).NumHexDigits();
 				}
 				
 				return string.Empty;
