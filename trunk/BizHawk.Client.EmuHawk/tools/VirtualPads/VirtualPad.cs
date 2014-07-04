@@ -78,7 +78,6 @@ namespace BizHawk.Client.EmuHawk
 							Location = button.Location,
 							XName = button.Name,
 							YName = button.SecondaryNames[0],
-							FireButton = button.SecondaryNames[1],
 							Size = button.TargetSize,
 							RangeX = button.MaxValue,
 							RangeY = button.MaxValue // TODO: ability to have a different Y than X

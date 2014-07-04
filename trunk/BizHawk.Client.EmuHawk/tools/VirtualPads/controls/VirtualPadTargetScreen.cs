@@ -18,6 +18,9 @@ namespace BizHawk.Client.EmuHawk
 		private bool _isDragging;
 		private bool _readonly;
 		private bool _isSet; // The tool has to keep track of this because there is currently no way to know if a float button is being autoheld or just held
+		
+		private int? overrideX = null;
+		private int? overrideY = null;
 
 		public VirtualPadTargetScreen()
 		{
@@ -42,8 +45,6 @@ namespace BizHawk.Client.EmuHawk
 			Refresh();
 		}
 
-		int? overrideX = null;
-		int? overrideY = null;
 		public void Set(IController controller)
 		{
 			var newX = controller.GetFloat(XName) / MultiplierX;
@@ -146,7 +147,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public string XName { get; set; }
 		public string YName { get; set; }
-		public string FireButton { get; set; } // Fire, Press, etc
 
 		public int X
 		{
@@ -209,14 +209,6 @@ namespace BizHawk.Client.EmuHawk
 
 				Global.StickyXORAdapter.SetFloat(YName, (int)((float)YNumeric.Value * MultiplierY));
 				_isSet = true;
-			}
-		}
-
-		public bool Fire
-		{
-			get
-			{
-				return Global.StickyXORAdapter.IsPressed(FireButton);
 			}
 		}
 
