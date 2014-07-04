@@ -12,6 +12,13 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public void StartNewMovie(IMovie movie, bool record, bool fromTastudio = false) //TasStudio flag is a hack for now
 		{
+			if (movie.SystemID != Global.Emulator.SystemId)
+			{
+				GlobalWin.OSD.AddMessage("Movie does not match the currently loaded system, unable to load");
+				return;
+			}
+
+
 			//If a movie is already loaded, save it before starting a new movie
 			if (!fromTastudio && Global.MovieSession.Movie.IsActive)
 			{
@@ -56,7 +63,11 @@ namespace BizHawk.Client.EmuHawk
 					_syncSettingsHack = ConfigService.LoadWithType(s);
 				}
 
-				if (record) // This is a hack really, the movie isn't active yet unless I do this, and LoadRom wants to know if it is
+				if (record) // This is a hack really, we need to set the movie to its propert state so that it will be considered active later
+				{
+					Global.MovieSession.Movie.SwitchToRecord();
+				}
+				else
 				{
 					Global.MovieSession.Movie.SwitchToRecord();
 				}
