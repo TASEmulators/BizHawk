@@ -164,7 +164,11 @@ namespace BizHawk.Client.Common
 
 		public void PokeFrame(int frame, IController source)
 		{
-			throw new NotImplementedException();
+			var lg = LogGeneratorInstance();
+			lg.SetSource(source);
+
+			Changes = true;
+			SetFrameAt(frame, lg.GenerateLogEntry());
 		}
 
 		public void ClearFrame(int frame)
