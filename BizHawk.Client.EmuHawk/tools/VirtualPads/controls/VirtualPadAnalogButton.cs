@@ -64,6 +64,7 @@ namespace BizHawk.Client.EmuHawk
 				if (_readonly != value)
 				{
 					AnalogTrackBar.Enabled =
+						DisplayNameLabel.Enabled =
 						ValueLabel.Enabled =
 						!value;
 
@@ -165,6 +166,19 @@ namespace BizHawk.Client.EmuHawk
 				CurrentValue = AnalogTrackBar.Value;
 				Global.StickyXORAdapter.SetFloat(Name, AnalogTrackBar.Value);
 			}
+		}
+
+		protected override void OnPaint(PaintEventArgs e)
+		{
+			if (!_isSet)
+			{
+				_programmaticallyChangingValue = true;
+				AnalogTrackBar.Value = (int)Global.StickyXORAdapter.GetFloat(Name);
+				ValueLabel.Text = AnalogTrackBar.Value.ToString();
+				_programmaticallyChangingValue = false;
+			}
+
+			base.OnPaint(e);
 		}
 	}
 }
