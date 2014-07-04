@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -13,6 +14,21 @@ namespace BizHawk.Client.EmuHawk
 		private bool _programmaticallyChangingValue;
 		private bool _readonly;
 
+		private bool _isSet = false;
+		private bool IsSet
+		{
+			get
+			{
+				return _isSet;
+			}
+
+			set
+			{
+				_isSet = value;
+				ValueLabel.ForeColor = DisplayNameLabel.ForeColor = _isSet ? SystemColors.HotTrack : SystemColors.WindowText;
+			}
+		}
+
 		public VirtualPadAnalogButton()
 		{
 			InitializeComponent();
@@ -23,6 +39,7 @@ namespace BizHawk.Client.EmuHawk
 		public void Clear()
 		{
 			Global.StickyXORAdapter.Unset(Name);
+			IsSet = false;
 		}
 
 		public void Set(IController controller)
@@ -131,6 +148,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					val = value;
 				}
+
+				IsSet = true;
 
 				_programmaticallyChangingValue = true;
 				AnalogTrackBar.Value = val;
