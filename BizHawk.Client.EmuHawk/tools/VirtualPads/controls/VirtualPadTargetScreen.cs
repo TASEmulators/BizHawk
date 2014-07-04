@@ -293,9 +293,6 @@ namespace BizHawk.Client.EmuHawk
 			if (e.Button == MouseButtons.Left)
 			{
 				_isDragging = false;
-				_isProgrammicallyChangingNumerics = false;
-				Global.StickyXORAdapter.Unset(XName);
-				Global.StickyXORAdapter.Unset(YName);
 				TargetPanel.Refresh();
 			}
 		}
