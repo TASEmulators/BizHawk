@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			new CName("XE E2", LibGPGX.INPUT_KEYS.INPUT_XE_E2),
 		};
 
-		static ControllerDefinition.FloatRange MouseRange = new ControllerDefinition.FloatRange(-512, 0, 511);
+		static ControllerDefinition.FloatRange MouseRange = new ControllerDefinition.FloatRange(-256, 0, 255);
 		// lightgun needs to be transformed to match the current screen resolution
 		static ControllerDefinition.FloatRange LightgunRange = new ControllerDefinition.FloatRange(0, 5000, 10000);
 
