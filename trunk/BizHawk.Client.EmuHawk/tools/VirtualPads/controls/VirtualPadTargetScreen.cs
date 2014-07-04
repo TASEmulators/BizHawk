@@ -34,16 +34,27 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.StickyXORAdapter.Unset(XName);
 			Global.StickyXORAdapter.Unset(YName);
+			overrideX = null;
+			overrideY = null;
 		}
 
+		int? overrideX = null;
+		int? overrideY = null;
 		public void Set(IController controller)
 		{
 			var newX = controller.GetFloat(XName) / MultiplierX;
 			var newY = controller.GetFloat(YName) / MultiplierY;
-			var changed = newX != X && newY != Y;
+
+			var oldX = X / MultiplierX;
+			var oldY = Y / MultiplierY;
+
+			var changed = newX != oldX && newY != oldY;
 
 			XNumeric.Value = (int)newX;
-			XNumeric.Value = (int)newY;
+			YNumeric.Value = (int)newY;
+
+			overrideX = (int)newX;
+			overrideY = (int)newY;
 
 			if (changed)
 			{
@@ -70,6 +81,12 @@ namespace BizHawk.Client.EmuHawk
 
 					_readonly = value;
 					Refresh();
+				}
+
+				if (!_readonly)
+				{
+					overrideX = null;
+					overrideY = null;
 				}
 			}
 		}
@@ -129,6 +146,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
+				if (overrideY.HasValue)
+				{
+					return overrideY.Value;
+				}
+
 				return (int)(Global.StickyXORAdapter.GetFloat(XName) / MultiplierX);
 			}
 
@@ -155,6 +177,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
+				if (overrideY.HasValue)
+				{
+					return overrideX.Value;
+				}
+
 				return (int)(Global.StickyXORAdapter.GetFloat(YName) / MultiplierY);
 			}
 
