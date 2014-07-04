@@ -79,7 +79,9 @@ namespace BizHawk.Client.EmuHawk
 							XName = button.Name,
 							YName = button.SecondaryNames[0],
 							FireButton = button.SecondaryNames[1],
-							Size = button.TargetSize
+							Size = button.TargetSize,
+							RangeX = button.MaxValue,
+							RangeY = button.MaxValue // TODO: ability to have a different Y than X
 						});
 						break;
 					case PadSchema.PadInputType.FloatSingle:
