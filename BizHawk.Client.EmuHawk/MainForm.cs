@@ -1771,10 +1771,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CoreSyncSettings(object sender, RomLoader.SettingsLoadArgs e)
 		{
-			// if movie 2.0 was finished, this is where you'd decide whether to get a settings object
-			// from a config file or from the movie file
-
-			// since all we have right now is movie 1.0, we get silly hacks instead
+			// _syncSetting solely exists because of a bad and confusing workflow
+			// A movie is loaded, then load rom is called, which closes the current rom which closes the current movie (which is the movie just loaded)
+			// As such the movie is "inactive".  So instead we load the movie and populate the _syncSettingsHack
+			// Then let the rom logic work its magic, then use it here, as such it will be null unless a movie invoked the load rom call
 			e.Settings = _syncSettingsHack ?? Global.Config.GetCoreSyncSettings(e.Core);
 		}
 
