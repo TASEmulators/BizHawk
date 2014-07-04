@@ -12,10 +12,12 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Pen BlackPen = new Pen(Brushes.Black, 2);
 		private readonly Pen WhitePen = new Pen(Brushes.White, 2);
 		private readonly Pen GrayPen = new Pen(Brushes.Gray, 2);
+		private readonly Pen RedPen = new Pen(Brushes.Red, 2);
 
 		private bool _isProgrammicallyChangingNumerics;
 		private bool _isDragging;
 		private bool _readonly;
+		private bool _isSet; // The tool has to keep track of this because there is currently no way to know if a float button is being autoheld or just held
 
 		public VirtualPadTargetScreen()
 		{
@@ -36,6 +38,8 @@ namespace BizHawk.Client.EmuHawk
 			Global.StickyXORAdapter.Unset(YName);
 			overrideX = null;
 			overrideY = null;
+			_isSet = false;
+			Refresh();
 		}
 
 		int? overrideX = null;
@@ -60,6 +64,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Refresh();
 			}
+
+			_isSet = true;
 		}
 
 		public bool ReadOnly
@@ -171,6 +177,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				Global.StickyXORAdapter.SetFloat(XName, (int)((float)XNumeric.Value * MultiplierX));
+				_isSet = true;
 			}
 		}
 		public int Y
@@ -201,6 +208,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				Global.StickyXORAdapter.SetFloat(YName, (int)((float)YNumeric.Value * MultiplierY));
+				_isSet = true;
 			}
 		}
 
@@ -222,21 +230,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TargetPanel_Paint(object sender, PaintEventArgs e)
 		{
-
 			e.Graphics.DrawEllipse(
-				ReadOnly ? GrayPen : Fire ? WhitePen : BlackPen,
+				ReadOnly ? GrayPen : _isSet ? RedPen : BlackPen,
 				X - 10,
 				Y - 10,
 				21,
 				21);
 
 			e.Graphics.DrawLine(
-				ReadOnly ? GrayPen : Fire ? WhitePen : BlackPen,
+				ReadOnly ? GrayPen : BlackPen,
 				new Point(X, Y - 10),
 				new Point(X, Y + 10));
 
 			e.Graphics.DrawLine(
-				ReadOnly ? GrayPen : Fire ? WhitePen : BlackPen,
+				ReadOnly ? GrayPen : BlackPen,
 				new Point(X - 10, Y),
 				new Point(X + 10, Y));
 
@@ -295,14 +302,6 @@ namespace BizHawk.Client.EmuHawk
 				_isDragging = false;
 				TargetPanel.Refresh();
 			}
-		}
-
-		public override void Refresh()
-		{
-			X = X;
-			Y = Y;
-
-			base.Refresh();
 		}
 	}
 }
