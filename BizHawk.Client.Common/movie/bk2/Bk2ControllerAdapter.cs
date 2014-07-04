@@ -134,11 +134,11 @@ namespace BizHawk.Client.Common
 					}
 					else if (def.FloatControls.Contains(key))
 					{
-						var temp = trimmed.Substring(iterator, 4);
+						var temp = trimmed.Substring(iterator, 5);
 						var val = int.Parse(temp.Trim());
 						this.MyFloatControls[key] = val;
 
-						iterator += 5;
+						iterator += 6;
 					}
 				}
 			}

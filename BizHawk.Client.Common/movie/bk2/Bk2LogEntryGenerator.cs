@@ -42,7 +42,7 @@ namespace BizHawk.Client.Common
 			return GenerateLogEntry()
 				.Replace(".", " ")
 				.Replace("|", "")
-				.Replace("   0,   0,", "          ");
+				.Replace("    0,    0,", "            ");
 		}
 
 		public bool IsEmpty
@@ -102,12 +102,12 @@ namespace BizHawk.Client.Common
 						{
 							if (createEmpty)
 							{
-								sb.Append("  0,");
+								sb.Append("    0,");
 							}
 							else
 							{
 								var val = (int)_source.GetFloat(button);
-								sb.Append(val.ToString().PadLeft(4, ' ')).Append(',');
+								sb.Append(val.ToString().PadLeft(5, ' ')).Append(',');
 							}
 						}
 						else if (_source.Type.BoolButtons.Contains(button))
