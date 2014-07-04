@@ -365,7 +365,6 @@ namespace BizHawk.Client.EmuHawk
 						SecondaryNames = new []
 						{
 							"P" + controller + " Zapper Y",
-							"P" + controller + " Fire"
 						}
 					},
 					new PadSchema.ButtonScema
@@ -526,7 +525,6 @@ namespace BizHawk.Client.EmuHawk
 						SecondaryNames = new []
 						{
 							"P" + controller + " Pen Y",
-							"P" + controller + " Click"
 						}
 					},
 					new PadSchema.ButtonScema

@@ -200,7 +200,6 @@ namespace BizHawk.Client.EmuHawk
 						SecondaryNames = new []
 						{
 							"P" + controller + " HPos",
-							"P" + controller + " Trigger",
 						}
 					},
 					new PadSchema.ButtonScema
