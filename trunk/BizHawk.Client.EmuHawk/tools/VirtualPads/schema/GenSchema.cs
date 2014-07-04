@@ -219,8 +219,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Light Gun",
 				IsConsole = false,
-				DefaultSize = new Size(356, 260),
-				MaxSize = new Size(356, 260),
+				DefaultSize = new Size(356, 300),
 				Buttons = new[]
 				{
 					new PadSchema.ButtonScema
@@ -228,7 +227,8 @@ namespace BizHawk.Client.EmuHawk
 						Name = "P" + controller + " Lightgun X",
 						Location = new Point(14, 17),
 						Type = PadSchema.PadInputType.TargetedPair,
-						TargetSize = new Size(256, 240),
+						MaxValue = 10000,
+						TargetSize = new Size(320, 270),
 						SecondaryNames = new []
 						{
 							"P" + controller + " Lightgun Y",

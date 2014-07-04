@@ -38,8 +38,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Set(IController controller)
 		{
-			var newX = controller.GetFloat(XName);
-			var newY = controller.GetFloat(YName);
+			var newX = controller.GetFloat(XName) / MultiplierX;
+			var newY = controller.GetFloat(YName) / MultiplierY;
 			var changed = newX != X && newY != Y;
 
 			XNumeric.Value = (int)newX;
@@ -76,6 +76,36 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		// These are the value that a maximum x or y actually represent, used to translate from control X,Y to values the core expects
+		public int RangeX { get; set; }
+		public int RangeY { get; set; }
+
+		public float MultiplierX
+		{
+			get
+			{
+				if (RangeX > 0)
+				{
+					return RangeX / (float)TargetPanel.Width;
+				}
+
+				return 1;
+			}
+		}
+
+		public float MultiplierY
+		{
+			get
+			{
+				if (RangeY > 0)
+				{
+					return RangeY / (float)TargetPanel.Height;
+				}
+
+				return 1;
+			}
+		}
+
 		public void Bump(int? x, int? y)
 		{
 			if (x.HasValue)
@@ -99,7 +129,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				return (int)Global.StickyXORAdapter.GetFloat(XName);
+				return (int)(Global.StickyXORAdapter.GetFloat(XName) / MultiplierX);
 			}
 
 			set
@@ -118,14 +148,14 @@ namespace BizHawk.Client.EmuHawk
 					XNumeric.Value = XNumeric.Maximum;
 				}
 
-				Global.StickyXORAdapter.SetFloat(XName, (int)XNumeric.Value);
+				Global.StickyXORAdapter.SetFloat(XName, (int)((float)XNumeric.Value * MultiplierX));
 			}
 		}
 		public int Y
 		{
 			get
 			{
-				return (int)Global.StickyXORAdapter.GetFloat(YName);
+				return (int)(Global.StickyXORAdapter.GetFloat(YName) / MultiplierY);
 			}
 
 			set
@@ -143,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 					YNumeric.Value = YNumeric.Maximum;
 				}
 
-				Global.StickyXORAdapter.SetFloat(YName, (int)YNumeric.Value);
+				Global.StickyXORAdapter.SetFloat(YName, (int)((float)YNumeric.Value * MultiplierY));
 			}
 		}
 
@@ -237,8 +267,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_isDragging = false;
 				_isProgrammicallyChangingNumerics = false;
-				Global.StickyXORAdapter.SetSticky(XName, false);
-				Global.StickyXORAdapter.SetSticky(YName, false);
+				Global.StickyXORAdapter.Unset(XName);
+				Global.StickyXORAdapter.Unset(YName);
 				TargetPanel.Refresh();
 			}
 		}
