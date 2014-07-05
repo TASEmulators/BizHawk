@@ -292,19 +292,27 @@ void md_cart_init(void)
   while (cart.romsize > size)
     size <<= 1;
 
-  /* total ROM size is not a factor of 2  */
-  /* TODO: handle all possible ROM configurations using cartridge database */
-  if ((size < MAXROMSIZE) && (cart.romsize < size))
-  {
-    /* ROM is padded up to 2^k bytes */
-    memset(cart.rom + cart.romsize, 0xff, size - cart.romsize);
-  }
-
   /* Sonic & Knuckles */
   if (strstr(rominfo.international,"SONIC & KNUCKLES"))
   {
     /* disable ROM mirroring at $200000-$3fffff (normally mapped to external cartridge) */
     size = 0x400000;
+  }
+
+  /* total ROM size is not a factor of 2  */
+  /* TODO: handle all possible ROM configurations using cartridge database */
+  if (cart.romsize < size)
+  {
+    if (size < MAXROMSIZE)
+    {
+      /* ROM is padded up to 2^k bytes */
+      memset(cart.rom + cart.romsize, 0xff, size - cart.romsize);
+    }
+    else
+    {
+      /* ROM is padded up to max ROM size */
+      memset(cart.rom + cart.romsize, 0xff, MAXROMSIZE - cart.romsize);
+    }
   }
 
   /* ROM is mirrored each 2^k bytes */
