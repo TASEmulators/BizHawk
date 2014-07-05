@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		"",
 		isPorted: true,
 		isReleased: true,
-		portedVersion: "r580",
+		portedVersion: "r850",
 		portedUrl: "https://code.google.com/p/genplus-gx/"
 		)]
 	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider
