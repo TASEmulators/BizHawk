@@ -2,6 +2,7 @@
 using System.Text;
 
 using BizHawk.Emulation.Common;
+using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
@@ -85,6 +86,20 @@ namespace BizHawk.Client.Common
 			}
 
 			return sb.ToString();
+		}
+
+		public Dictionary<string, string> Map()
+		{
+			var dict = new Dictionary<string, string>();
+			foreach (var group in _source.Type.ControlsOrdered.Where(c => c.Any()))
+			{
+				foreach (var button in group)
+				{
+					dict.Add(button, Mnemonics[button].ToString()); // TODO: floats should be a float lookup that returns a string, floats by convention should always be more than one character to distinguish from boolean input
+				}
+			}
+
+			return dict;
 		}
 
 		private string CreateLogEntry(bool createEmpty = false)
