@@ -24,7 +24,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VirtualPadAnalogStick_Load(object sender, EventArgs e)
 		{
-			this.Size = new System.Drawing.Size(204 + (RangeX - 127), 136 + (RangeY - 127));
 			AnalogStick.Name = Name;
 			AnalogStick.XName = Name;
 			AnalogStick.YName = Name.Replace("X", "Y"); // TODO: allow schema to dictate this but this is a convenient default

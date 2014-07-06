@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
+using System.Drawing;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -69,6 +70,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							Name = button.Name,
 							Location = button.Location,
+							Size = new Size(button.MaxValue + 79, button.MaxValue + 9), // TODO: don't use hardcoded values here, at least make them defaults in the AnalogStick object itself
 							RangeX = button.MaxValue,
 							RangeY = button.MaxValue // TODO ability to pass in a different Y max
 						});

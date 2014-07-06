@@ -158,8 +158,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// Background
 				e.Graphics.FillRectangle(GrayBrush, 0, 0, MaxX, MaxY);
-				e.Graphics.FillEllipse(ReadOnly ? OffWhiteBrush : WhiteBrush, 0, 0, MaxX - 3, MaxY - 3);
-				e.Graphics.DrawEllipse(BlackPen, 0, 0, MaxX - 3, MaxY - 3);
+				e.Graphics.FillEllipse(ReadOnly ? OffWhiteBrush : WhiteBrush, 0, 0, MaxX - 1, MaxY - 3);
+				e.Graphics.DrawEllipse(BlackPen, 0, 0, MaxX - 1, MaxY - 3);
 				e.Graphics.DrawLine(BlackPen, MidX, 0, MidX, MaxY);
 				e.Graphics.DrawLine(BlackPen, 0, MidY, MaxX, MidY);
 
