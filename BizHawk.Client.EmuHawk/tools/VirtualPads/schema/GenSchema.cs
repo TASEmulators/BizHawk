@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 						yield return SixButtonController(player);
 						break;
 					case LibGPGX.INPUT_DEVICE.DEVICE_LIGHTGUN:
-						yield return LighGun(player);
+						yield return LightGun(player);
 						break;
 					case LibGPGX.INPUT_DEVICE.DEVICE_MOUSE:
 						yield return Mouse(player);
@@ -213,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		public static PadSchema LighGun(int controller)
+		public static PadSchema LightGun(int controller)
 		{
 			return new PadSchema
 			{
