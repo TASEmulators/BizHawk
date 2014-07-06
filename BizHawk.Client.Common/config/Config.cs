@@ -67,6 +67,7 @@ namespace BizHawk.Client.Common
 		public bool PauseWhenMenuActivated = true;
 		public bool SaveWindowPosition = true;
 		public bool StartPaused = false;
+		public bool StartFullscreen = false;
 		public int MainWndx = -1; // Negative numbers will be ignored
 		public int MainWndy = -1;
 		public bool RunInBackground = true;

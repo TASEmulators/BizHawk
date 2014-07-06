@@ -210,6 +210,7 @@ namespace BizHawk.Client.EmuHawk
 				Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
 			}
 
+			bool startFullscreen = false;
 			for (int i = 0; i < args.Length; i++)
 			{
 				// For some reason sometimes visual studio will pass this to us on the commandline. it makes no sense.
@@ -248,7 +249,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (arg.StartsWith("--fullscreen"))
 				{
-					ToggleFullscreen();
+					startFullscreen = true;
 				}
 				else
 				{
@@ -301,6 +302,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					StartNewMovie(MovieService.Get(Global.Config.RecentMovies.MostRecent), false);
 				}
+			}
+
+			if (startFullscreen || Global.Config.StartFullscreen)
+			{
+				ToggleFullscreen();
 			}
 
 			if (cmdLoadState != null && Global.Game != null)
