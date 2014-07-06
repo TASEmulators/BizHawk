@@ -650,8 +650,8 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnDeactivate(EventArgs e)
 		{
-			base.OnDeactivate(e);
 			Input.Instance.ControlInputFocus(this, Input.InputFocus.Mouse, false);
+			base.OnDeactivate(e);
 		}
 
 		public void ProcessInput()
