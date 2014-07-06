@@ -44,6 +44,7 @@
 			// 
 			// XLabel
 			// 
+			this.XLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.XLabel.AutoSize = true;
 			this.XLabel.Location = new System.Drawing.Point(138, 7);
 			this.XLabel.Name = "XLabel";
@@ -53,6 +54,7 @@
 			// 
 			// ManualX
 			// 
+			this.ManualX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.ManualX.Location = new System.Drawing.Point(156, 3);
 			this.ManualX.Maximum = new decimal(new int[] {
             127,
@@ -72,6 +74,7 @@
 			// 
 			// YLabel
 			// 
+			this.YLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.YLabel.AutoSize = true;
 			this.YLabel.Location = new System.Drawing.Point(138, 33);
 			this.YLabel.Name = "YLabel";
@@ -81,6 +84,7 @@
 			// 
 			// ManualY
 			// 
+			this.ManualY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.ManualY.Location = new System.Drawing.Point(156, 29);
 			this.ManualY.Maximum = new decimal(new int[] {
             127,
@@ -101,6 +105,7 @@
 			// 
 			// MaxLabel
 			// 
+			this.MaxLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.MaxLabel.AutoSize = true;
 			this.MaxLabel.Location = new System.Drawing.Point(138, 72);
 			this.MaxLabel.Name = "MaxLabel";
@@ -110,6 +115,7 @@
 			// 
 			// MaxXNumeric
 			// 
+			this.MaxXNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.MaxXNumeric.Location = new System.Drawing.Point(138, 89);
 			this.MaxXNumeric.Maximum = new decimal(new int[] {
             127,
@@ -129,6 +135,7 @@
 			// 
 			// MaxYNumeric
 			// 
+			this.MaxYNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.MaxYNumeric.Location = new System.Drawing.Point(138, 112);
 			this.MaxYNumeric.Maximum = new decimal(new int[] {
             127,
@@ -149,14 +156,20 @@
 			// 
 			// AnalogStick
 			// 
+			this.AnalogStick.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.AnalogStick.BackColor = System.Drawing.Color.Gray;
 			this.AnalogStick.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.AnalogStick.Location = new System.Drawing.Point(3, 3);
 			this.AnalogStick.MaxX = 127;
 			this.AnalogStick.MaxY = 127;
 			this.AnalogStick.Name = "AnalogStick";
+			this.AnalogStick.ReadOnly = false;
 			this.AnalogStick.Size = new System.Drawing.Size(129, 129);
 			this.AnalogStick.TabIndex = 0;
+			this.AnalogStick.X = 0;
+			this.AnalogStick.Y = 0;
 			this.AnalogStick.MouseDown += new System.Windows.Forms.MouseEventHandler(this.AnalogStick_MouseDown);
 			this.AnalogStick.MouseMove += new System.Windows.Forms.MouseEventHandler(this.AnalogStick_MouseMove);
 			// 

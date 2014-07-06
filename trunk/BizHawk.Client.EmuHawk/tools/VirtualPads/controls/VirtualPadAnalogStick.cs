@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
+using System.Windows;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -13,13 +15,21 @@ namespace BizHawk.Client.EmuHawk
 		public VirtualPadAnalogStick()
 		{
 			InitializeComponent();
+			RangeX = 127;
+			RangeY = 127;
 		}
+
+		public int RangeX { get; set; }
+		public int RangeY { get; set; }
 
 		private void VirtualPadAnalogStick_Load(object sender, EventArgs e)
 		{
+			this.Size = new System.Drawing.Size(204 + (RangeX - 127), 136 + (RangeY - 127));
 			AnalogStick.Name = Name;
 			AnalogStick.XName = Name;
 			AnalogStick.YName = Name.Replace("X", "Y"); // TODO: allow schema to dictate this but this is a convenient default
+			AnalogStick.MaxX = RangeX;
+			AnalogStick.MaxY = RangeY;
 
 			ManualX.Minimum = AnalogStick.MinX;
 			ManualX.Maximum = AnalogStick.MaxX;
@@ -27,8 +37,11 @@ namespace BizHawk.Client.EmuHawk
 			ManualY.Minimum = AnalogStick.MinY;
 			ManualY.Maximum = AnalogStick.MaxY;
 
-			MaxXNumeric.Value = 127;
-			MaxYNumeric.Value = 127; // Note: these trigger change events that change the analog stick too
+			MaxXNumeric.Maximum = RangeX;
+			MaxXNumeric.Value = RangeX;
+
+			MaxYNumeric.Maximum = RangeY;
+			MaxYNumeric.Value = RangeY; // Note: these trigger change events that change the analog stick too
 		}
 
 		#region IVirtualPadControl Implementation
