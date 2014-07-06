@@ -68,7 +68,9 @@ namespace BizHawk.Client.EmuHawk
 						PadBox.Controls.Add(new VirtualPadAnalogStick
 						{
 							Name = button.Name,
-							Location = button.Location
+							Location = button.Location,
+							RangeX = button.MaxValue,
+							RangeY = button.MaxValue // TODO ability to pass in a different Y max
 						});
 						break;
 					case PadSchema.PadInputType.TargetedPair:

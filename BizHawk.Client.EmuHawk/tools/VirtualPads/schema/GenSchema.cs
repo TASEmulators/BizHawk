@@ -258,15 +258,16 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Mouse",
 				IsConsole = false,
-				DefaultSize = new Size(400, 290),
+				DefaultSize = new Size(550, 290),
 				Buttons = new[]
 				{
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " Mouse X",
 						Location = new Point(14, 17),
-						Type = PadSchema.PadInputType.TargetedPair,
-						TargetSize = new Size(320, 270),
+						Type = PadSchema.PadInputType.AnalogStick,
+						MaxValue = 255,
+						TargetSize = new Size(520, 570),
 						SecondaryNames = new []
 						{
 							"P" + controller + " Mouse Y",

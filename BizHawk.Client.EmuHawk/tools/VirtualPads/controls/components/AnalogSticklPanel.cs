@@ -87,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public AnalogStickPanel()
 		{
-			Size = new Size(129, 129);
+			Size = new Size(MaxX + 1, MaxY + 1);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
@@ -111,9 +111,9 @@ namespace BizHawk.Client.EmuHawk
 			gg.FillRectangle(Brushes.Gray, 0, 2, 7, 3);
 		}
 
-		private static int RealToGfx(int val)
+		private int RealToGfx(int val)
 		{
-			return (val + 128) / 2;
+			return (val + MaxX) / 2;
 		}
 
 		private int GfxToReal(int val, bool isX) // isX is a hack
@@ -150,31 +150,33 @@ namespace BizHawk.Client.EmuHawk
 			Refresh();
 		}
 
+		private int MidX { get { return (int)((MaxX + 0.5) / 2); } }
+		private int MidY { get { return (int)((MaxY + 0.5) / 2); } }
 		private void AnalogControlPanel_Paint(object sender, PaintEventArgs e)
 		{
 			unchecked
 			{
 				// Background
-				e.Graphics.FillRectangle(GrayBrush, 0, 0, 128, 128);
-				e.Graphics.FillEllipse(ReadOnly ? OffWhiteBrush : WhiteBrush, 0, 0, 127, 127);
-				e.Graphics.DrawEllipse(BlackPen, 0, 0, 127, 127);
-				e.Graphics.DrawLine(BlackPen, 64, 0, 64, 127);
-				e.Graphics.DrawLine(BlackPen, 0, 63, 127, 63);
+				e.Graphics.FillRectangle(GrayBrush, 0, 0, MaxX, MaxY);
+				e.Graphics.FillEllipse(ReadOnly ? OffWhiteBrush : WhiteBrush, 0, 0, MaxX - 3, MaxY - 3);
+				e.Graphics.DrawEllipse(BlackPen, 0, 0, MaxX - 3, MaxY - 3);
+				e.Graphics.DrawLine(BlackPen, MidX, 0, MidX, MaxY);
+				e.Graphics.DrawLine(BlackPen, 0, MidY, MaxX, MidY);
 
 				// Previous frame
 				if (_previous != null)
 				{
 					var pX = (int)_previous.GetFloat(XName);
 					var pY = (int)_previous.GetFloat(YName);
-					e.Graphics.DrawLine(GrayPen, 64, 63, RealToGfx(pX), 127 - RealToGfx(pY));
-					e.Graphics.DrawImage(GrayDot, RealToGfx(pX) - 3, 127 - RealToGfx(pY) - 3);
+					e.Graphics.DrawLine(GrayPen, MidX, MidY, RealToGfx(pX), MaxY - RealToGfx(pY));
+					e.Graphics.DrawImage(GrayDot, RealToGfx(pX) - 3, MaxY - RealToGfx(pY) - 3);
 				}
 
 				// Line
 				if (HasValue)
 				{
-					e.Graphics.DrawLine(BluePen, 64, 63, RealToGfx(X), 127 - RealToGfx(Y));
-					e.Graphics.DrawImage(ReadOnly ? GrayDot : Dot, RealToGfx(X) - 3, 127 - RealToGfx(Y) - 3);
+					e.Graphics.DrawLine(BluePen, MidX, MidY, RealToGfx(X), MaxY - RealToGfx(Y));
+					e.Graphics.DrawImage(ReadOnly ? GrayDot : Dot, RealToGfx(X) - 3, MaxY - RealToGfx(Y) - 3);
 				}
 			}
 		}
@@ -185,8 +187,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (e.Button == MouseButtons.Left)
 				{
-					X = GfxToReal(e.X - 64, true);
-					Y = GfxToReal(-(e.Y - 63), false);
+					X = GfxToReal(e.X - MidX, true);
+					Y = GfxToReal(-(e.Y - MidY), false);
 					HasValue = true;
 					SetAnalog();
 				}
@@ -223,8 +225,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (e.Button == MouseButtons.Left)
 				{
-					X = GfxToReal(e.X - 64, true);
-					Y = GfxToReal(-(e.Y - 63), false);
+					X = GfxToReal(e.X - MidX, true);
+					Y = GfxToReal(-(e.Y - MidY), false);
 					HasValue = true;
 				}
 				if (e.Button == MouseButtons.Right)
