@@ -258,7 +258,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Mouse",
 				IsConsole = false,
-				DefaultSize = new Size(550, 290),
+				DefaultSize = new Size(418, 290),
 				Buttons = new[]
 				{
 					new PadSchema.ButtonScema
@@ -277,28 +277,28 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = "P" + controller + " Mouse Left",
 						DisplayName = "Left",
-						Location = new Point(335, 17),
+						Location = new Point(365, 17),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " Mouse Center",
 						DisplayName = "Center",
-						Location = new Point(335, 40),
+						Location = new Point(365, 40),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " Mouse Right",
 						DisplayName = "Right",
-						Location = new Point(335, 63),
+						Location = new Point(365, 63),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " Mouse Start",
 						DisplayName = "Start",
-						Location = new Point(335, 86),
+						Location = new Point(365, 86),
 						Type = PadSchema.PadInputType.Boolean
 					}
 				}
