@@ -12,15 +12,15 @@ namespace BizHawk.Client.Common
 		public Bk2Movie(string filename)
 			: this()
 		{
-			Subtitles = new SubtitleList();
-			Comments = new List<string>();
-
 			Rerecords = 0;
 			Filename = filename;
 		}
 
 		public Bk2Movie()
 		{
+			Subtitles = new SubtitleList();
+			Comments = new List<string>();
+
 			Filename = string.Empty;
 			IsCountingRerecords = true;
 			_mode = Moviemode.Inactive;

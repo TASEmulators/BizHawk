@@ -29,6 +29,22 @@ namespace BizHawk.Client.EmuHawk
 		private bool _startMarkerDrag;
 		private bool _startFrameDrag;
 
+		private Dictionary<string, string> _map = null;
+		private Dictionary<string, string> ColumnNames
+		{
+			get
+			{
+				if (_map == null)
+				{
+					var lg = new Bk2LogEntryGenerator(string.Empty);
+					lg.SetSource(Global.MovieSession.MovieControllerAdapter);
+					_map = lg.Map();
+				}
+
+				return _map;
+			}
+		}
+		
 		#region API
 
 		public TAStudio()
@@ -195,7 +211,7 @@ namespace BizHawk.Client.EmuHawk
 				EngageTasStudio();
 			}
 
-			//SetUpColumns();
+			SetUpColumns();
 			//LoadConfigSettings();
 		}
 
@@ -223,10 +239,10 @@ namespace BizHawk.Client.EmuHawk
 		private void SetUpColumns()
 		{
 			TasView.Columns.Clear();
-			AddColumn(MarkerColumnName, String.Empty, 18);
+			AddColumn(MarkerColumnName, string.Empty, 18);
 			AddColumn(FrameColumnName, "Frame#", 68);
 
-			foreach (var kvp in _tas.ColumnNames)
+			foreach (var kvp in ColumnNames)
 			{
 				AddColumn(kvp.Key, kvp.Value, 20);
 			}

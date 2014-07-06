@@ -46,18 +46,5 @@ namespace BizHawk.Client.Common
 		{
 			// TODO
 		}
-
-		public Dictionary<string, string> ColumnNames
-		{
-			get
-			{
-				// TODO
-				return new Dictionary<string, string>
-				{
-					{ "A", "A" },
-					{ "B", "B" }
-				};
-			}
-		}
 	}
 }
