@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Client.Common.MovieConversionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -163,17 +164,27 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Tastudio_Load(object sender, EventArgs e)
 		{
-			if (Global.MovieSession.Movie.IsActive)
+			if (Global.MovieSession.Movie.IsActive && !(Global.MovieSession.Movie is TasMovie))
 			{
-				var result = MessageBox.Show("Warning, Tastudio doesn't support regular movie files at this time, opening this will cause you to lose your work, proceed? If you have unsaved changes you should cancel this, and savebefore opening TAStudio", "Unsupported movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-				if (result != DialogResult.Yes)
+				var result = MessageBox.Show("In order to use Tastudio, a new project must be created from the current movie\nThe current movie will be saved and closed, and a new project file will be created\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+				if (result == DialogResult.OK)
+				{
+					Global.MovieSession.Movie.Save();
+					var newMovie = Global.MovieSession.Movie.ToTasMovie();
+					Global.MovieSession.Movie.Stop();
+					EngageTasStudio(newMovie);
+				}
+				else
 				{
 					Close();
 					return;
 				}
 			}
-
-			if (Global.Config.AutoloadTAStudioProject)
+			else if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie is TasMovie)
+			{
+				_tas = Global.MovieSession.Movie as TasMovie;
+			}
+			else if (Global.Config.AutoloadTAStudioProject)
 			{
 				Global.MovieSession.Movie = new TasMovie();
 				_tas = Global.MovieSession.Movie as TasMovie;
@@ -184,14 +195,14 @@ namespace BizHawk.Client.EmuHawk
 				EngageTasStudio();
 			}
 
-			SetUpColumns();
-			LoadConfigSettings();
+			//SetUpColumns();
+			//LoadConfigSettings();
 		}
 
-		private void EngageTasStudio()
+		private void EngageTasStudio(TasMovie newMovie = null)
 		{
 			GlobalWin.OSD.AddMessage("TAStudio engaged");
-			Global.MovieSession.Movie = new TasMovie();
+			Global.MovieSession.Movie = newMovie ?? new TasMovie();
 			
 			_tas = Global.MovieSession.Movie as TasMovie;
 			_tas.StartNewRecording();
