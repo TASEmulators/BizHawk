@@ -28,11 +28,11 @@ namespace BizHawk.Client.Common
 
 		public new const string Extension = "tasproj";
 
-		public MovieRecord this[int index]
+		public TasMovieRecord this[int index]
 		{
 			get
 			{
-				return new MovieRecord // TODO
+				return new TasMovieRecord // TODO
 				{
 					State = null,
 					LogEntry = "",
