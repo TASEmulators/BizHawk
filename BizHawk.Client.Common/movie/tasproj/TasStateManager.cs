@@ -63,5 +63,13 @@ namespace BizHawk.Client.Common
 				States.Remove(f);
 			}
 		}
+
+		/// <summary>
+		/// Clears all state information
+		/// </summary>
+		public void Clear()
+		{
+			States.Clear();
+		}
 	}
 }
