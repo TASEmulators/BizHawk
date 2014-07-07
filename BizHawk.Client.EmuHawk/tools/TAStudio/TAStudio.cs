@@ -359,7 +359,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			SaveTASMenuItem.Enabled = !string.IsNullOrWhiteSpace(_tas.Filename);
+			ToBk2MenuItem.Enabled = 
+				SaveTASMenuItem.Enabled =
+				!string.IsNullOrWhiteSpace(_tas.Filename);
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -414,6 +416,14 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.RecentTas.Add(_tas.Filename);
 				MessageStatusLabel.Text = Path.GetFileName(_tas.Filename) + " saved.";
 			}
+		}
+
+		private void ToBk2MenuItem_Click(object sender, EventArgs e)
+		{
+			var bk2 = _tas.ToBk2();
+			bk2.Save();
+			MessageStatusLabel.Text = Path.GetFileName(bk2.Filename) + " created.";
+			
 		}
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)

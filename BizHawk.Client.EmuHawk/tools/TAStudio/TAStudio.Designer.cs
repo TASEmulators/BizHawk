@@ -40,8 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			this.RecentSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.ImportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ExportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ToBk2MenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -93,6 +92,7 @@ namespace BizHawk.Client.EmuHawk
 			this.AutoloadProjectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
 			this.RestoreDefaultSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.HelpSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -107,7 +107,6 @@ namespace BizHawk.Client.EmuHawk
 			this.SplicerStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.TasPlaybackBox = new BizHawk.Client.EmuHawk.PlaybackBox();
 			this.TasBookmarksBranchesBox = new BizHawk.Client.EmuHawk.BookmarksBranchesBox();
-			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.SuspendLayout();
@@ -136,8 +135,7 @@ namespace BizHawk.Client.EmuHawk
             this.SaveAsTASMenuItem,
             this.RecentSubMenu,
             this.toolStripSeparator1,
-            this.ImportMenuItem,
-            this.ExportMenuItem,
+            this.ToBk2MenuItem,
             this.toolStripSeparator2,
             this.ExitMenuItem});
 			this.FileSubMenu.Name = "FileSubMenu";
@@ -191,26 +189,19 @@ namespace BizHawk.Client.EmuHawk
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(57, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
 			this.toolStripSeparator1.Size = new System.Drawing.Size(183, 6);
 			// 
-			// ImportMenuItem
+			// ToBk2MenuItem
 			// 
-			this.ImportMenuItem.Enabled = false;
-			this.ImportMenuItem.Name = "ImportMenuItem";
-			this.ImportMenuItem.Size = new System.Drawing.Size(186, 22);
-			this.ImportMenuItem.Text = "Import";
-			// 
-			// ExportMenuItem
-			// 
-			this.ExportMenuItem.Enabled = false;
-			this.ExportMenuItem.Name = "ExportMenuItem";
-			this.ExportMenuItem.Size = new System.Drawing.Size(186, 22);
-			this.ExportMenuItem.Text = "&Export";
+			this.ToBk2MenuItem.Name = "ToBk2MenuItem";
+			this.ToBk2MenuItem.Size = new System.Drawing.Size(186, 22);
+			this.ToBk2MenuItem.Text = "&Export to Bk2";
+			this.ToBk2MenuItem.Click += new System.EventHandler(this.ToBk2MenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
@@ -618,6 +609,13 @@ namespace BizHawk.Client.EmuHawk
 			this.AlwaysOnTopMenuItem.Text = "Always On Top";
 			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
 			// 
+			// FloatingWindowMenuItem
+			// 
+			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
+			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.FloatingWindowMenuItem.Text = "Floating Window";
+			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
+			// 
 			// toolStripSeparator12
 			// 
 			this.toolStripSeparator12.Name = "toolStripSeparator12";
@@ -675,6 +673,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.ItemCount = 0;
 			this.TasView.Location = new System.Drawing.Point(8, 27);
 			this.TasView.Name = "TasView";
+			this.TasView.SelectAllInProgress = false;
 			this.TasView.selectedItem = -1;
 			this.TasView.Size = new System.Drawing.Size(288, 471);
 			this.TasView.TabIndex = 1;
@@ -695,6 +694,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// TasStatusStrip
 			// 
+			this.TasStatusStrip.ClickThrough = true;
 			this.TasStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MessageStatusLabel,
             this.SplicerStatusLabel});
@@ -733,13 +733,6 @@ namespace BizHawk.Client.EmuHawk
 			this.TasBookmarksBranchesBox.Size = new System.Drawing.Size(204, 343);
 			this.TasBookmarksBranchesBox.TabIndex = 7;
 			// 
-			// FloatingWindowMenuItem
-			// 
-			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
-			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.FloatingWindowMenuItem.Text = "Floating Window";
-			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
-			// 
 			// TAStudio
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -775,7 +768,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem SaveTASMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SaveAsTASMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-		private System.Windows.Forms.ToolStripMenuItem ImportMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ConfigSubMenu;
@@ -799,7 +791,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem PasteMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PasteInsertMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem CutMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ExportMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ToBk2MenuItem;
 		private System.Windows.Forms.ToolStripMenuItem UndoMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem RedoMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SelectionUndoMenuItem;
