@@ -12,6 +12,7 @@ namespace BizHawk.Client.Common
 	public sealed partial class TasMovie : Bk2Movie
 	{
 		private readonly List<bool> LagLog = new List<bool>();
+		private readonly TasStateManager StateManager = new TasStateManager();
 
 		public TasMovie(string path) : base(path) { }
 
@@ -32,15 +33,13 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return new TasMovieRecord // TODO
+				return new TasMovieRecord
 				{
-					State = null,
-					LogEntry = "",
-					Lagged = false
+					State = StateManager[index],
+					LogEntry = GetInput(index),
+					Lagged = LagLog[index]
 				};
 			}
 		}
-
-		// _state = (byte[])Global.Emulator.SaveStateBinary().Clone();
 	}
 }

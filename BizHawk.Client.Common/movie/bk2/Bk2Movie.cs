@@ -70,7 +70,7 @@ namespace BizHawk.Client.Common
 			Changes = true;
 		}
 
-		public void RecordFrame(int frame, IController source)
+		public virtual void RecordFrame(int frame, IController source)
 		{
 			if (Global.Config.VBAStyleMovieLoadState)
 			{
@@ -87,7 +87,7 @@ namespace BizHawk.Client.Common
 			Changes = true;
 		}
 
-		public void Truncate(int frame)
+		public virtual void Truncate(int frame)
 		{
 			if (frame < _log.Count)
 			{
@@ -162,7 +162,7 @@ namespace BizHawk.Client.Common
 			return null;
 		}
 
-		public void PokeFrame(int frame, IController source)
+		public virtual void PokeFrame(int frame, IController source)
 		{
 			var lg = LogGeneratorInstance();
 			lg.SetSource(source);
@@ -171,9 +171,10 @@ namespace BizHawk.Client.Common
 			SetFrameAt(frame, lg.GenerateLogEntry());
 		}
 
-		public void ClearFrame(int frame)
+		public virtual void ClearFrame(int frame)
 		{
 			SetFrameAt(frame, LogGeneratorInstance().EmptyEntry);
+			Changes = true;
 		}
 
 		#endregion
