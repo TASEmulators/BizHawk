@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using BizHawk.Common.StringExtensions;
+
 // the HawkFile class is excessively engineered with the IHawkFileArchiveHandler to decouple the archive handling from the basic file handling.
 // This is so we could drop in an unamanged dearchiver library optionally later as a performance optimization without ruining the portability of the code.
 // Also, we want to be able to use HawkFiles in BizHawk.Common withuot bringing in a large 7-zip dependency
@@ -157,7 +159,7 @@ namespace BizHawk.Common
 		/// <summary>
 		/// these extensions won't even be tried as archives (removes spurious archive detects since some of the signatures are pretty damn weak)
 		/// </summary>
-		public string[] NonArchiveExtensions = new string[] { };
+		public string[] NonArchiveExtensions = { };
 
 		public void Open(string path)
 		{

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
@@ -16,18 +13,19 @@ namespace BizHawk.Client.Common
 					.Replace("P2 ", "")
 					.Replace("P3 ", "")
 					.Replace("P4 ", "")
-					.Replace("Key", "")
 					.Replace("Key ", "");
 
 				if (SystemOverrides.ContainsKey(Global.Emulator.SystemId) && SystemOverrides[Global.Emulator.SystemId].ContainsKey(key))
 				{
 					return SystemOverrides[Global.Emulator.SystemId][key];
 				}
-				else if (BaseMnemonicLookupTable.ContainsKey(key))
+
+				if (BaseMnemonicLookupTable.ContainsKey(key))
 				{
 					return BaseMnemonicLookupTable[key];
 				}
-				else if (key.Length == 1)
+
+				if (key.Length == 1)
 				{
 					return key[0];
 				}
@@ -73,23 +71,30 @@ namespace BizHawk.Client.Common
 				{ "Trigger 1", '1' },
 				{ "Trigger 2", '2' },
 
+				{ "Mouse Left", 'l' },
+				{ "Mouse Right", 'r' },
+				{ "Mouse Center", 'c' },
+				{ "Mouse Start", 's' },
+
 				{"Mode", 'M'},
 
 				{ "Fire", 'F' },
+				{ "Lightgun Trigger", 'T' },
+				{ "Lightgun Start", 'S' },
 				{ "Microphone", 'M' },
 
 				{ "Star", '*' },
 				{ "Pound", '#' },
 
-				{ "P2 X1", '1' },
-				{ "P2 X2", '2' },
-				{ "P2 X3", '3' },
-				{ "P2 X4", '4' },
+				{ "X1", '1' },
+				{ "X2", '2' },
+				{ "X3", '3' },
+				{ "X4", '4' },
 				
-				{ "P2 Y1", '1' },
-				{ "P2 Y2", '2' },
-				{ "P2 Y3", '3' },
-				{ "P2 Y4", '4' },
+				{ "Y1", '1' },
+				{ "Y2", '2' },
+				{ "Y3", '3' },
+				{ "Y4", '4' },
 			};
 
 		private readonly Dictionary<string, Dictionary<string, char>> SystemOverrides = new Dictionary<string, Dictionary<string, char>>
@@ -103,6 +108,23 @@ namespace BizHawk.Client.Common
 						{ "FDS Insert 1", '1' },
 						{ "VS Coin 1", 'c' },
 						{ "VS Coin 2", 'C' },
+
+						{ "PP1", '1' },
+						{ "PP2", '2' },
+						{ "PP3", '3' },
+						{ "PP4", '4' },
+
+						{ "PP5", '5' },
+						{ "PP6", '6' },
+						{ "PP7", '7' },
+						{ "PP8", '8' },
+
+						{ "PP9", '9' },
+						{ "PP10", 'A' },
+						{ "PP11", 'B' },
+						{ "PP12", 'C' },
+						{ "Click", 'C' },
+						{ "Touch", 'T' },
 					}
 				},
 				{
@@ -151,36 +173,38 @@ namespace BizHawk.Client.Common
 					"C64",
 					new Dictionary<string, char>
 					{
-						{"Key F1", '1' },
-						{"Key F3", '3' },
-						{"Key F5", '5' },
-						{"Key F7", '7' },
-						{"Key Left Arrow", 'l' },
-						{"Key Plus", '+' },
-						{"Key Minus", '-' },
-						{"Key Pound", 'l' },
-						{"Key Clear/Home", 'c' },
-						{"Key Insert/Delete", 'i' }, 
-						{"Key Control", 'c' },
-						{"Key At", '@' },
-						{"Key Asterisk", '*' },
-						{"Key Up Arrow", 'u' },
-						{"Key Restore", 'r' },
-						{"Key Run/Stop", 's' },
-						{"Key Lck", 'k' },
-						{"Key Colon", ':' },
-						{"Key Semicolon", ';' },
-						{"Key Equal", '=' },
-						{"Key Return", 'e'}, 
-						{"Key Commodore", 'o' },
-						{"Key Left Shift", 's' }, 
-						{"Key Comma", ',' },
-						{"Key Period", '>' },
-						{"Key Slash", '/' },
-						{"Key Right Shift", 's' },
-						{"Key Cursor Up/Down", 'u' },
-						{"Key Cursor Left/Right", 'l' }, 
-						{"Key Space", '_' }
+						{ "L", 'L' },
+						{ "R", 'R' },
+						{ "F1", '1' },
+						{ "F3", '3' },
+						{ "F5", '5' },
+						{ "F7", '7' },
+						{ "Left Arrow", 'l' },
+						{ "Plus", '+' },
+						{ "Minus", '-' },
+						{ "Pound", 'l' },
+						{ "Clear/Home", 'c' },
+						{ "Insert/Delete", 'i' }, 
+						{ "Control", 'c' },
+						{ "At", '@' },
+						{ "Asterisk", '*' },
+						{ "Up Arrow", 'u' },
+						{ "Restore", 'r' },
+						{ "Run/Stop", 's' },
+						{ "Lck", 'k' },
+						{ "Colon", ':' },
+						{ "Semicolon", ';' },
+						{ "Equal", '=' },
+						{ "Return", 'e'}, 
+						{ "Commodore", 'o' },
+						{ "Left Shift", 's' }, 
+						{ "Comma", ',' },
+						{ "Period", '>' },
+						{ "Slash", '/' },
+						{ "Right Shift", 's' },
+						{ "Cursor Up/Down", 'u' },
+						{ "Cursor Left/Right", 'l' }, 
+						{ "Space", '_' }
 					}
 				},
 				{
@@ -197,10 +221,10 @@ namespace BizHawk.Client.Common
 						{ "A Left", 'L' },
 						{ "A Right", 'R' },
 
-						{ "DPad Up", 'U' },
-						{ "DPad Down", 'D' },
-						{ "DPad Left", 'L' },
-						{ "DPad Right", 'R' },
+						{ "DPad U", 'U' },
+						{ "DPad D", 'D' },
+						{ "DPad L", 'L' },
+						{ "DPad R", 'R' },
 					}
 				}
 			};

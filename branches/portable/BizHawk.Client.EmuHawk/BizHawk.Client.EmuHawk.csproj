@@ -384,6 +384,12 @@
     <Compile Include="config\PathInfo.Designer.cs">
       <DependentUpon>PathInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\PCE\PCEControllerConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\PCE\PCEControllerConfig.Designer.cs">
+      <DependentUpon>PCEControllerConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\PCE\PCEGraphicsConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -877,117 +883,60 @@
     <Compile Include="tools\TraceLogger.Designer.cs">
       <DependentUpon>TraceLogger.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\VirtualPads\AnalogControlPanel.cs">
+    <Compile Include="tools\VirtualPads\controls\components\AnalogSticklPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\VirtualPads\IVirtualPad.cs" />
+    <Compile Include="tools\VirtualPads\controls\IVirtualPadControl.cs" />
+    <Compile Include="tools\VirtualPads\controls\VirtualPadAnalogButton.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPads\controls\VirtualPadAnalogButton.Designer.cs">
+      <DependentUpon>VirtualPadAnalogButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\VirtualPads\controls\VirtualPadAnalogStick.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPads\controls\VirtualPadAnalogStick.Designer.cs">
+      <DependentUpon>VirtualPadAnalogStick.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\VirtualPads\controls\VirtualPadButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPads\controls\VirtualPadTargetScreen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPads\controls\VirtualPadTargetScreen.Designer.cs">
+      <DependentUpon>VirtualPadTargetScreen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\VirtualPads\schema\A26Schema.cs" />
+    <Compile Include="tools\VirtualPads\schema\A78Schema.cs" />
+    <Compile Include="tools\VirtualPads\schema\C64Schema.cs" />
+    <Compile Include="tools\VirtualPads\schema\ColecoSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\DualGBSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\GBASchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\GBSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\GenSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\SatSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\IVirtualPadSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\N64Schema.cs" />
+    <Compile Include="tools\VirtualPads\schema\NesSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\PadSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\PceSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\SchemaAttributes.cs" />
+    <Compile Include="tools\VirtualPads\schema\SmsSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\SnesSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\WonderSwanSchema.cs" />
     <Compile Include="tools\VirtualPads\VirtualPad.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadA26.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadA26Control.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadA78.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadA78.Designer.cs">
-      <DependentUpon>VirtualPadA78.cs</DependentUpon>
+    <Compile Include="tools\VirtualPads\VirtualPad.Designer.cs">
+      <DependentUpon>VirtualPad.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadA78Control.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadA78Control.Designer.cs">
-      <DependentUpon>VirtualPadA78Control.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadC64Keyboard.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadC64Keyboard.Designer.cs">
-      <DependentUpon>VirtualPadC64Keyboard.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadColeco.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadColeco.Designer.cs">
-      <DependentUpon>VirtualPadColeco.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadForm.cs">
+    <Compile Include="tools\VirtualPads\VirtualpadsTool.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadForm.Designer.cs">
-      <DependentUpon>VirtualPadForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadGB.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadGBA.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadGBControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadGen3Button.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadGen6Button.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadGen6Button.Designer.cs">
-      <DependentUpon>VirtualPadGen6Button.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadN64.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadN64.Designer.cs">
-      <DependentUpon>VirtualPadN64.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadN64Control.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadNES.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadNESControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadPCE.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadSaturn.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadSaturn.Designer.cs">
-      <DependentUpon>VirtualPadSaturn.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadSaturnControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadSaturnControl.Designer.cs">
-      <DependentUpon>VirtualPadSaturnControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadSMS.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadSMSControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadSNES.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadSNESControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadWonderSawn.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPadWonderSawn.Designer.cs">
-      <DependentUpon>VirtualPadWonderSawn.cs</DependentUpon>
+    <Compile Include="tools\VirtualPads\VirtualpadsTool.Designer.cs">
+      <DependentUpon>VirtualpadsTool.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\Watch\RamPoke.cs">
       <SubType>Form</SubType>
@@ -1123,6 +1072,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\PathInfo.resx">
       <DependentUpon>PathInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\PCE\PCEControllerConfig.resx">
+      <DependentUpon>PCEControllerConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\PCE\PCEGraphicsConfig.resx">
       <DependentUpon>PCEGraphicsConfig.cs</DependentUpon>
@@ -1306,38 +1258,20 @@
     <EmbeddedResource Include="tools\TI83\TI83KeyPad.resx">
       <DependentUpon>TI83KeyPad.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="tools\VirtualPads\controls\VirtualPadAnalogButton.resx">
+      <DependentUpon>VirtualPadAnalogButton.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\VirtualPads\controls\VirtualPadAnalogStick.resx">
+      <DependentUpon>VirtualPadAnalogStick.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\VirtualPads\controls\VirtualPadTargetScreen.resx">
+      <DependentUpon>VirtualPadTargetScreen.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPads\VirtualPad.resx">
       <DependentUpon>VirtualPad.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\VirtualPads\VirtualPadA78.resx">
-      <DependentUpon>VirtualPadA78.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\VirtualPads\VirtualPadA78Control.resx">
-      <DependentUpon>VirtualPadA78Control.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\VirtualPads\VirtualPadC64Keyboard.resx">
-      <DependentUpon>VirtualPadC64Keyboard.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\VirtualPads\VirtualPadColeco.resx">
-      <DependentUpon>VirtualPadColeco.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\VirtualPads\VirtualPadForm.resx">
-      <DependentUpon>VirtualPadForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\VirtualPads\VirtualPadGen6Button.resx">
-      <DependentUpon>VirtualPadGen6Button.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\VirtualPads\VirtualPadN64.resx">
-      <DependentUpon>VirtualPadN64.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\VirtualPads\VirtualPadSaturn.resx">
-      <DependentUpon>VirtualPadSaturn.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\VirtualPads\VirtualPadSaturnControl.resx">
-      <DependentUpon>VirtualPadSaturnControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\VirtualPads\VirtualPadWonderSawn.resx">
-      <DependentUpon>VirtualPadWonderSawn.cs</DependentUpon>
+    <EmbeddedResource Include="tools\VirtualPads\VirtualpadsTool.resx">
+      <DependentUpon>VirtualpadsTool.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Watch\RamPoke.resx">
       <DependentUpon>RamPoke.cs</DependentUpon>
@@ -1491,6 +1425,7 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\user_blue.png" />
     <None Include="images\thumbsdown.png" />
     <None Include="images\monitor.png" />
     <None Include="images\ppsspp.png" />

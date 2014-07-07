@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.IO;
 
 using BizHawk.Emulation.Common;
@@ -39,6 +37,33 @@ namespace BizHawk.Client.Common
 			var adapter = Movie.LogGeneratorInstance().MovieControllerAdapter;
 			adapter.Type = MovieControllerAdapter.Type;
 			return adapter;
+		}
+
+		// Convenience property that gets the controller state from the movie for the most recent frame
+		public IController CurrentInput
+		{
+			get
+			{
+				if (Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished && Global.Emulator.Frame > 0)
+				{
+					return Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1);
+				}
+
+				return null;
+			}
+		}
+
+		public IController PreviousFrame
+		{
+			get
+			{
+				if (Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished && Global.Emulator.Frame > 1)
+				{
+					return Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 2);
+				}
+
+				return null;
+			}
 		}
 
 		private void Output(string message)
@@ -291,6 +316,37 @@ namespace BizHawk.Client.Common
 			}
 
 			return true;
+		}
+
+		public void ToggleMultitrack()
+		{
+			if (Movie.IsActive)
+			{
+
+				if (Global.Config.VBAStyleMovieLoadState)
+				{
+					MessageCallback("Multi-track can not be used in Full Movie Loadstates mode");
+				}
+				else
+				{
+					Global.MovieSession.MultiTrack.IsActive = !Global.MovieSession.MultiTrack.IsActive;
+					if (Global.MovieSession.MultiTrack.IsActive)
+					{
+						MessageCallback("MultiTrack Enabled");
+						MultiTrack.CurrentState = "Recording None";
+					}
+					else
+					{
+						MessageCallback("MultiTrack Disabled");
+					}
+
+					Global.MovieSession.MultiTrack.SelectNone();
+				}
+			}
+			else
+			{
+				MessageCallback("MultiTrack cannot be enabled while not recording.");
+			}
 		}
 	}
 }

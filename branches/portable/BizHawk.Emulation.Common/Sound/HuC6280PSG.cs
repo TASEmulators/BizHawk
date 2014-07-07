@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Common.Components
 {

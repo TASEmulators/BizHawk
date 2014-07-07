@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Client.Common.MovieConversionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -28,6 +29,22 @@ namespace BizHawk.Client.EmuHawk
 		private bool _startMarkerDrag;
 		private bool _startFrameDrag;
 
+		private Dictionary<string, string> _map = null;
+		private Dictionary<string, string> ColumnNames
+		{
+			get
+			{
+				if (_map == null)
+				{
+					var lg = new Bk2LogEntryGenerator(string.Empty);
+					lg.SetSource(Global.MovieSession.MovieControllerAdapter);
+					_map = lg.Map();
+				}
+
+				return _map;
+			}
+		}
+		
 		#region API
 
 		public TAStudio()
@@ -137,7 +154,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var columnName = TasView.Columns[column].Name;
-				var columnText = TasView.Columns[column].Text;
+				//var columnText = TasView.Columns[column].Text;
 
 				if (columnName == MarkerColumnName)
 				{
@@ -163,17 +180,27 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Tastudio_Load(object sender, EventArgs e)
 		{
-			if (Global.MovieSession.Movie.IsActive)
+			if (Global.MovieSession.Movie.IsActive && !(Global.MovieSession.Movie is TasMovie))
 			{
-				var result = MessageBox.Show("Warning, Tastudio doesn't support regular movie files at this time, opening this will cause you to lose your work, proceed? If you have unsaved changes you should cancel this, and savebefore opening TAStudio", "Unsupported movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-				if (result != DialogResult.Yes)
+				var result = MessageBox.Show("In order to use Tastudio, a new project must be created from the current movie\nThe current movie will be saved and closed, and a new project file will be created\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+				if (result == DialogResult.OK)
+				{
+					Global.MovieSession.Movie.Save();
+					var newMovie = Global.MovieSession.Movie.ToTasMovie();
+					Global.MovieSession.Movie.Stop();
+					EngageTasStudio(newMovie);
+				}
+				else
 				{
 					Close();
 					return;
 				}
 			}
-
-			if (Global.Config.AutoloadTAStudioProject)
+			else if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie is TasMovie)
+			{
+				_tas = Global.MovieSession.Movie as TasMovie;
+			}
+			else if (Global.Config.AutoloadTAStudioProject)
 			{
 				Global.MovieSession.Movie = new TasMovie();
 				_tas = Global.MovieSession.Movie as TasMovie;
@@ -185,13 +212,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			SetUpColumns();
-			LoadConfigSettings();
+			//LoadConfigSettings();
 		}
 
-		private void EngageTasStudio()
+		private void EngageTasStudio(TasMovie newMovie = null)
 		{
 			GlobalWin.OSD.AddMessage("TAStudio engaged");
-			Global.MovieSession.Movie = new TasMovie();
+			Global.MovieSession.Movie = newMovie ?? new TasMovie();
 			
 			_tas = Global.MovieSession.Movie as TasMovie;
 			_tas.StartNewRecording();
@@ -212,12 +239,12 @@ namespace BizHawk.Client.EmuHawk
 		private void SetUpColumns()
 		{
 			TasView.Columns.Clear();
-			AddColumn(MarkerColumnName, String.Empty, 18);
+			AddColumn(MarkerColumnName, string.Empty, 18);
 			AddColumn(FrameColumnName, "Frame#", 68);
 
-			foreach (var kvp in _tas.ColumnNames)
+			foreach (var kvp in ColumnNames)
 			{
-				AddColumn(kvp.Key, kvp.Value.ToString(), 20);
+				AddColumn(kvp.Key, kvp.Value, 20);
 			}
 		}
 

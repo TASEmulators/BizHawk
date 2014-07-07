@@ -146,6 +146,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			INPUT_BUTTON1 = 0x0010,
 
 			/* Mega Mouse specific bitmask */
+			INPUT_MOUSE_START = 0x0080,
 			INPUT_MOUSE_CENTER = 0x0040,
 			INPUT_MOUSE_RIGHT = 0x0020,
 			INPUT_MOUSE_LEFT = 0x0010,
@@ -181,6 +182,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			INPUT_ACTIVATOR_2L = 0x0004,
 			INPUT_ACTIVATOR_1U = 0x0002,
 			INPUT_ACTIVATOR_1L = 0x0001,
+
+			/* Menacer */
+			INPUT_MENACER_TRIGGER = 0x0040,
+			INPUT_MENACER_START = 0x0080,
 		};
 
 		[StructLayout(LayoutKind.Sequential)]

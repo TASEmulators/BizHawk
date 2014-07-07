@@ -6,8 +6,11 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using BizHawk.Emulation.Cores.Nintendo.N64;
+
 using BizHawk.Common;
+using BizHawk.Common.ReflectionExtensions;
+
+using BizHawk.Emulation.Cores.Nintendo.N64;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -65,8 +68,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (PakTypeDropdown.SelectedItem != null) // Null check for designer
 				{
-					return EnumHelper.GetValueFromDescription<N64ControllerSettings.N64ControllerPakType>(
-						PakTypeDropdown.SelectedItem.ToString());
+					return PakTypeDropdown.SelectedItem
+						.ToString()
+						.GetEnumFromDescription<N64ControllerSettings.N64ControllerPakType>();
 				}
 
 				return N64ControllerSettings.N64ControllerPakType.NO_PAK;
@@ -78,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var toSelect = PakTypeDropdown.Items
 						.OfType<object>()
-						.FirstOrDefault(item => item.ToString() == EnumHelper.GetDescription(value));
+						.FirstOrDefault(item => item.ToString() == value.GetDescription());
 					PakTypeDropdown.SelectedItem = toSelect;
 
 					Refresh();
@@ -90,6 +94,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ControllerNameLabel.Text = "Controller " + ControllerNumber;
 			base.Refresh();
+		}
+
+		private void EnabledCheckbox_CheckedChanged(object sender, EventArgs e)
+		{
+			PakTypeDropdown.Enabled = EnabledCheckbox.Checked;
 		}
 	}
 }

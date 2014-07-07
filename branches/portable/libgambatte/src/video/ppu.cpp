@@ -1475,17 +1475,6 @@ PPUPriv::PPUPriv(NextM0Time &nextM0Time, const unsigned char *const oamram, cons
 	std::memset(spwordList, 0, sizeof spwordList);
 }
 
-static void saveSpriteList(const PPUPriv &p, SaveState &ss) {
-	for (unsigned i = 0; i < 10; ++i) {
-		ss.ppu.spAttribList[i] = p.spriteList[i].attrib;
-		ss.ppu.spByte0List[i] = p.spwordList[i] & 0xFF;
-		ss.ppu.spByte1List[i] = p.spwordList[i] >> 8;
-	}
-	
-	ss.ppu.nextSprite    = p.nextSprite;
-	ss.ppu.currentSprite = p.currentSprite;
-}
-
 namespace {
 
 template<class T, class K, std::size_t start, std::size_t len>

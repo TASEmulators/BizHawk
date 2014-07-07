@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -80,13 +80,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			if (chunks.TryGetValue("MAPR", out tmp))
+			{
 				ci.board_type = Encoding.ASCII.GetString(tmp);
+			}
+
 			ci.board_type = ci.board_type.TrimEnd('\0');
 			ci.board_type = "UNIF_" + ci.board_type;
 
 			if (chunks.TryGetValue("BATR", out tmp))
+			{
 				// apparently, this chunk just existing means battery is yes
 				ci.wram_battery = true;
+			}
 
 			// is there any way using System.Security.Cryptography.SHA1 to compute the hash of
 			// prg concatentated with chr?  i couldn't figure it out, so this implementation is dumb
@@ -96,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ms.Write(chrrom, 0, chrrom.Length);
 				ms.Close();
 				byte[] all = ms.ToArray();
-				ci.sha1 = "sha1:" + Util.Hash_SHA1(all, 0, all.Length);
+				ci.sha1 = "sha1:" + all.HashSHA1(0, all.Length);
 			}
 
 			// other code will expect this

@@ -29,7 +29,7 @@ using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 
-using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Client.EmuHawk; //TODO: What??
@@ -832,8 +832,6 @@ namespace BizHawk.Client.EmuHawk
 			//txtPaletteDetailsIndexSpecific.Text = string.Format("{0}", lastColorNum & 0x7F);
 
 			txtPaletteDetailsAddress.Text = string.Format("${0:X3}", lastColorNum * 2);
-
-			string test = string.Format(@"Pal# ${0:X2} @{1:X3}", lastColorNum, lastColorNum * 2);
 		}
 
 
@@ -906,14 +904,14 @@ namespace BizHawk.Client.EmuHawk
 		private void viewer_MouseDown(object sender, MouseEventArgs e)
 		{
 			viewer.Capture = true;
-			if ((e.Button & System.Windows.Forms.MouseButtons.Middle) != 0)
+			if ((e.Button & MouseButtons.Middle) != 0)
 			{
 				viewerPan = true;
 				panStartLocation = viewer.PointToScreen(e.Location);
 				Cursor = Cursors.SizeAll;
 			}
 
-			if ((e.Button & System.Windows.Forms.MouseButtons.Right) != 0)
+			if ((e.Button & MouseButtons.Right) != 0)
 				Freeze();
 		}
 
@@ -1224,7 +1222,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void paletteViewer_MouseDown(object sender, MouseEventArgs e)
 		{
-			if ((e.Button & System.Windows.Forms.MouseButtons.Right) != 0)
+			if ((e.Button & MouseButtons.Right) != 0)
 				Freeze();
 		}
 
@@ -1285,7 +1283,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var cd = new ColorDialog();
 			cd.Color = pnBackdropColor.BackColor;
-			if (cd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+			if (cd.ShowDialog(this) == DialogResult.OK)
 			{
 				pnBackdropColor.BackColor = cd.Color;
 				Global.Config.SNESGraphicsUserBackdropColor = pnBackdropColor.BackColor.ToArgb();
@@ -1298,7 +1296,7 @@ namespace BizHawk.Client.EmuHawk
 			if(keyData == (Keys.C | Keys.Control))
 			{
 				// find the control under the mouse
-				Point m = System.Windows.Forms.Cursor.Position;
+				Point m = Cursor.Position;
 				Control top = this;
 				Control found = null;
 				do
@@ -1393,7 +1391,7 @@ namespace BizHawk.Client.EmuHawk
 			if (sender == checkEN2_OBJ) s.ShowOBJ_2 = checkEN2_OBJ.Checked;
 			if (sender == checkEN3_OBJ) s.ShowOBJ_3 = checkEN3_OBJ.Checked;
 
-			if ((Control.ModifierKeys & Keys.Shift) != 0)
+			if ((ModifierKeys & Keys.Shift) != 0)
 			{
 				if (sender == checkEN0_BG1) s.ShowBG1_1 = s.ShowBG1_0;
 				if (sender == checkEN1_BG1) s.ShowBG1_0 = s.ShowBG1_1;

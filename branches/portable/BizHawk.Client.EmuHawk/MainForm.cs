@@ -8,9 +8,13 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
+using BizHawk.Common.IOExtensions;
+
+using BizHawk.Client.Common;
 using BizHawk.Bizware.BizwareGL;
+
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
@@ -50,6 +54,11 @@ namespace BizHawk.Client.EmuHawk
 			StatusBarDiskLightOnImage = Properties.Resources.LightOn;
 			StatusBarDiskLightOffImage = Properties.Resources.LightOff;
 			UpdateCoreStatusBarButton();
+			if (Global.Config.FirstBoot == true)
+			{
+				ProfileFirstBootLabel.Visible = true;
+		}
+				
 		}
 
 		static MainForm()
@@ -118,7 +127,9 @@ namespace BizHawk.Client.EmuHawk
 				using (var NesCartFile =
 						new HawkFile(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.7z")).BindFirst())
 				{
-					return Util.ReadAllBytes(NesCartFile.GetStream());
+					return NesCartFile
+						.GetStream()
+						.ReadAllBytes();
 				}
 			};
 
@@ -205,6 +216,7 @@ namespace BizHawk.Client.EmuHawk
 				Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
 			}
 
+			bool startFullscreen = false;
 			for (int i = 0; i < args.Length; i++)
 			{
 				// For some reason sometimes visual studio will pass this to us on the commandline. it makes no sense.
@@ -243,7 +255,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (arg.StartsWith("--fullscreen"))
 				{
-					ToggleFullscreen();
+					startFullscreen = true;
 				}
 				else
 				{
@@ -296,6 +308,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					StartNewMovie(MovieService.Get(Global.Config.RecentMovies.MostRecent), false);
 				}
+			}
+
+			if (startFullscreen || Global.Config.StartFullscreen)
+			{
+				ToggleFullscreen();
 			}
 
 			if (cmdLoadState != null && Global.Game != null)
@@ -359,7 +376,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.AutoloadVirtualPad)
 			{
-				GlobalWin.Tools.Load<VirtualPadForm>();
+				GlobalWin.Tools.Load<VirtualpadTool>();
 			}
 
 			if (Global.Config.AutoLoadLuaConsole)
@@ -595,7 +612,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.StickyXORAdapter.ClearStickies();
 			Global.AutofireStickyXORAdapter.ClearStickies();
 
-			if (GlobalWin.Tools.Has<VirtualPadForm>())
+			if (GlobalWin.Tools.Has<VirtualpadTool>())
 			{
 				GlobalWin.Tools.VirtualPad.ClearVirtualPadHolds();
 			}
@@ -624,7 +641,7 @@ namespace BizHawk.Client.EmuHawk
 				if (ActiveForm is HotkeyConfig ||
 					ActiveForm is ControllerConfig ||
 					ActiveForm is TAStudio ||
-					ActiveForm is VirtualPadForm)
+					ActiveForm is VirtualpadTool)
 				{
 					return true;
 				}
@@ -637,6 +654,20 @@ namespace BizHawk.Client.EmuHawk
 
 				return false;
 			}
+		}
+
+
+
+		protected override void OnActivated(EventArgs e)
+		{
+			base.OnActivated(e);
+			Input.Instance.ControlInputFocus(this, Input.InputFocus.Mouse, true);
+		}
+
+		protected override void OnDeactivate(EventArgs e)
+		{
+			Input.Instance.ControlInputFocus(this, Input.InputFocus.Mouse, false);
+			base.OnDeactivate(e);
 		}
 
 		public void ProcessInput()
@@ -745,14 +776,14 @@ namespace BizHawk.Client.EmuHawk
 					// hackish
 					if (o.Item1 == "WMouse X")
 					{
-						var P = GlobalWin.DisplayManager.UntransformPoint(new System.Drawing.Point((int)o.Item2, 0));
+					var P = GlobalWin.DisplayManager.UntransformPoint(new Point((int)o.Item2, 0));
 						float x = P.X / (float)Global.Emulator.VideoProvider.BufferWidth;
 						return new Tuple<string, float>("WMouse X", x * 20000 - 10000);
 				}
 					
 				if (o.Item1 == "WMouse Y")
 					{
-						var P = GlobalWin.DisplayManager.UntransformPoint(new System.Drawing.Point(0, (int)o.Item2));
+					var P = GlobalWin.DisplayManager.UntransformPoint(new Point(0, (int)o.Item2));
 						float y = P.Y / (float)Global.Emulator.VideoProvider.BufferHeight;
 						return new Tuple<string, float>("WMouse Y", y * 20000 - 10000);
 					}
@@ -889,7 +920,7 @@ namespace BizHawk.Client.EmuHawk
 					//(this could be determined with more work; other side affects of the fullscreen mode include: corrupted taskbar, no modal boxes on top of GL control, no screenshots)
 					//At any rate, we can solve this by adding a 1px black border around the GL control
 					//Please note: It is important to do this before resizing things, otherwise momentarily a GL control without WS_BORDER will be at the magic dimensions and cause the flakeout
-					Padding = new System.Windows.Forms.Padding(1);
+					Padding = new Padding(1);
 					BackColor = Color.Black;
 				#endif
 
@@ -911,7 +942,7 @@ namespace BizHawk.Client.EmuHawk
 				WindowState = FormWindowState.Normal;
 
 				#if WINDOWS
-					Padding = new System.Windows.Forms.Padding(0);
+					Padding = new Padding(0);
 					//it's important that we set the form color back to this, because the statusbar icons blend onto the mainform, not onto the statusbar--
 					//so we need the statusbar and mainform backdrop color to match
 					BackColor = SystemColors.Control; 
@@ -1684,7 +1715,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			}
 
-			var str = sb.ToString().Replace("%ARCH%", "*.zip;*.rar;*.7z");
+			var str = sb.ToString().Replace("%ARCH%", "*.zip;*.rar;*.7z;*.gz");
 			str = str.Replace(";", "; ");
 			return str;
 		}
@@ -1761,10 +1792,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CoreSyncSettings(object sender, RomLoader.SettingsLoadArgs e)
 		{
-			// if movie 2.0 was finished, this is where you'd decide whether to get a settings object
-			// from a config file or from the movie file
-
-			// since all we have right now is movie 1.0, we get silly hacks instead
+			// _syncSetting solely exists because of a bad and confusing workflow
+			// A movie is loaded, then load rom is called, which closes the current rom which closes the current movie (which is the movie just loaded)
+			// As such the movie is "inactive".  So instead we load the movie and populate the _syncSettingsHack
+			// Then let the rom logic work its magic, then use it here, as such it will be null unless a movie invoked the load rom call
 			e.Settings = _syncSettingsHack ?? Global.Config.GetCoreSyncSettings(e.Core);
 		}
 
@@ -2403,7 +2434,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (Global.Emulator is Gameboy)
 				{
-					CoreNameStatusBarButton.Image = BizHawk.Client.EmuHawk.Properties.Resources.gambatte;
+					CoreNameStatusBarButton.Image = Properties.Resources.gambatte;
 				}
 				else
 				{
@@ -2750,7 +2781,7 @@ namespace BizHawk.Client.EmuHawk
 					if (ext == "<directory>")
 					{
 						var fbd = new FolderBrowserEx();
-						if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
+						if (fbd.ShowDialog() == DialogResult.Cancel)
 						{
 							aw.Dispose();
 							return;
@@ -2875,7 +2906,7 @@ namespace BizHawk.Client.EmuHawk
 					IDisposable disposableOutput = null;
 					if (_avwriterResizew > 0 && _avwriterResizeh > 0)
 					{
-						BizHawk.Bizware.BizwareGL.BitmapBuffer bbin = null;
+						BitmapBuffer bbin = null;
 						Bitmap bmpin = null;
 						Bitmap bmpout = null;
 						try
@@ -2886,7 +2917,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 							else
 							{
-								bbin = new Bizware.BizwareGL.BitmapBuffer(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight, Global.Emulator.VideoProvider.GetVideoBuffer());
+								bbin = new BitmapBuffer(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight, Global.Emulator.VideoProvider.GetVideoBuffer());
 							}
 
 
@@ -3033,7 +3064,9 @@ namespace BizHawk.Client.EmuHawk
 			// this also happens in CloseGame().  but it needs to happen here since if we're restarting with the same core,
 			// any settings changes that we made need to make it back to config before we try to instantiate that core with
 			// the new settings objects
-			CommitCoreSettingsToConfig();
+			CommitCoreSettingsToConfig(); // adelikat: I Think by reordering things, this isn't necessary anymore
+			CloseGame();
+			Global.Emulator.Dispose();
 
 			var nextComm = CreateCoreComm();
 				CoreFileProvider.SyncCoreCommInputSignals(nextComm);
@@ -3050,8 +3083,6 @@ namespace BizHawk.Client.EmuHawk
 								}
 									}
 
-				CloseGame();
-				Global.Emulator.Dispose();
 				Global.Emulator = loader.LoadedEmulator;
 				Global.CoreComm = nextComm;
 				Global.Game = loader.Game;
@@ -3078,8 +3109,8 @@ namespace BizHawk.Client.EmuHawk
 					Global.Emulator.CoreComm.RomStatusDetails = string.Format(
 						"{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
 						loader.Game.Name,
-						Util.Hash_SHA1(loader.Rom.RomData),
-						Util.Hash_MD5(loader.Rom.RomData));
+						loader.Rom.RomData.HashSHA1(),
+						loader.Rom.RomData.HashMD5());
 				}
 
 				if (Global.Emulator.BoardName != null)
@@ -3262,7 +3293,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBcoreSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			BizHawk.Client.EmuHawk.config.GB.GBPrefs.DoGBPrefsDialog(this);
+			config.GB.GBPrefs.DoGBPrefsDialog(this);
 		}
 
 		private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3281,6 +3312,16 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.OSD.AddMessage("Profile config aborted");
 			}
 		}
+
+		private void ProfileFirstBootLabel_Click(object sender, EventArgs e)
+		{
+			var profileForm = new ProfileConfig();
+			profileForm.ShowDialog();
+			Global.Config.FirstBoot = false;
+			ProfileFirstBootLabel.Visible = false;
+	}
+
+		
 
 	}
 }

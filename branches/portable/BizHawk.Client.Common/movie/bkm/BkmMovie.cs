@@ -1,11 +1,9 @@
-﻿using System;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
 	public partial class BkmMovie : IMovie
 	{
-		private readonly PlatformFrameRates _frameRates = new PlatformFrameRates();
 		private bool _makeBackup = true;
 		private bool _changes;
 		private int? _loopOffset;
@@ -73,32 +71,6 @@ namespace BizHawk.Client.Common
 			get { return _changes; }
 		}
 
-		public double Fps
-		{
-			get
-			{
-				var system = Header[HeaderKeys.PLATFORM];
-				var pal = Header.ContainsKey(HeaderKeys.PAL) &&
-					Header[HeaderKeys.PAL] == "1";
-
-				return _frameRates[system, pal];
-			}
-		}
-
-		public TimeSpan Time
-		{
-			get
-			{
-				var dblseconds = GetSeconds(Loaded ? _log.Count : _preloadFramecount);
-				var seconds = (int)(dblseconds % 60);
-				var days = seconds / 86400;
-				var hours = seconds / 3600;
-				var minutes = (seconds / 60) % 60;
-				var milliseconds = (int)((dblseconds - seconds) * 1000);
-				return new TimeSpan(days, hours, minutes, seconds, milliseconds);
-			}
-		}
-
 		#endregion
 
 		#region Public Log Editing
@@ -156,14 +128,16 @@ namespace BizHawk.Client.Common
 					getframe = frame;
 				}
 
-				var adapter = new BkmControllerAdapter();
-				adapter.Type = Global.MovieSession.MovieControllerAdapter.Type;
+				var adapter = new BkmControllerAdapter
+				{
+					Type = Global.MovieSession.MovieControllerAdapter.Type
+				};
 				adapter.SetControllersAsMnemonic(_log[getframe]);
 				return adapter;
 			}
 
 			Finish();
-			return null; ;
+			return null;
 		}
 
 		public void ClearFrame(int frame)
@@ -220,18 +194,6 @@ namespace BizHawk.Client.Common
 		}
 
 		#endregion
-
-		private double GetSeconds(int frameCount)
-		{
-			double frames = frameCount;
-			
-			if (frames < 1)
-			{
-				return 0;
-			}
-
-			return frames / Fps;
-		}
 
 		private void SetFrameAt(int frameNum, string frame)
 		{

@@ -22,13 +22,26 @@ namespace BizHawk.Client.Common
 
 		public string SavestateBinaryBase64Blob
 		{
-			get {
-				if (ContainsKey(HeaderKeys.SAVESTATEBINARYBASE64BLOB)) return this[HeaderKeys.SAVESTATEBINARYBASE64BLOB];
-				else return null;
+			get
+			{
+				if (ContainsKey(HeaderKeys.SAVESTATEBINARYBASE64BLOB))
+				{
+					return this[HeaderKeys.SAVESTATEBINARYBASE64BLOB];
+				}
+
+				return null;
 			}
-			set {
-				if (value == null) Remove(HeaderKeys.SAVESTATEBINARYBASE64BLOB);
-				else Add(HeaderKeys.SAVESTATEBINARYBASE64BLOB, value);
+
+			set
+			{
+				if (value == null)
+				{
+					Remove(HeaderKeys.SAVESTATEBINARYBASE64BLOB);
+				}
+				else
+				{
+					Add(HeaderKeys.SAVESTATEBINARYBASE64BLOB, value);
+				}
 			}
 		}
 

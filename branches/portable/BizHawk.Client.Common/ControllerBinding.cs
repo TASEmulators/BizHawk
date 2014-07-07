@@ -244,10 +244,8 @@ namespace BizHawk.Client.Common
 				var a = (Global.Emulator.Frame - _buttonStarts[button]) % (On + Off);
 				return a < On && _buttons[button];
 			}
-			else
-			{
-				return _buttons[button];
-			}
+
+			return _buttons[button];
 		}
 
 		public float GetFloat(string name) { throw new NotImplementedException(); }

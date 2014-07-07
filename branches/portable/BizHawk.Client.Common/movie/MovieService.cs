@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 
-using BizHawk.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 
 namespace BizHawk.Client.Common
@@ -14,31 +10,19 @@ namespace BizHawk.Client.Common
 	{
 		public static IMovie Get(string path)
 		{
-			// TODO: open the file and determine the format, and instantiate the appropriate implementation
-			// Currently we just use the file extension
 			// TODO: change IMovies to take HawkFiles only and not path
-			if (Path.GetExtension(path).EndsWith("bk2"))
-			{
-				return new Bk2Movie(path);
-			}
-			else if (Path.GetExtension(path).EndsWith("tasproj"))
+			if (Path.GetExtension(path).EndsWith("tasproj"))
 			{
 				return new TasMovie(path);
 			}
-			else
-			{
-				var movie = new BkmMovie(path);
 
-				if (VersionInfo.DeveloperBuild)
-				{
-					movie.Load();
-					return movie.ToBk2();
-				}
-				else
-				{
-					return movie;
-				}
+			if (Path.GetExtension(path).EndsWith("bkm"))
+			{
+				return new BkmMovie(path).ToBk2();
 			}
+
+			// Default to bk2
+			return new Bk2Movie(path);
 		}
 
 		/// <summary>
@@ -48,12 +32,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (VersionInfo.DeveloperBuild)
-				{
-					return "bk2";
-				}
-
-				return "bkm";
+				return "bk2";
 			}
 		}
 
@@ -88,12 +67,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (VersionInfo.DeveloperBuild)
-				{
-					return new Bk2Movie();
-				}
-
-				return new BkmMovie();
+				return new Bk2Movie();
 			}
 		}
 	}

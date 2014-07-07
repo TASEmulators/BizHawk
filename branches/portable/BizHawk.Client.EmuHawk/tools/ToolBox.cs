@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VirtualpadToolbarItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.Load<VirtualPadForm>();
+			GlobalWin.Tools.Load<VirtualpadTool>();
 		}
 
 		private void SNESGameGenieToolbarItem_Click(object sender, EventArgs e)

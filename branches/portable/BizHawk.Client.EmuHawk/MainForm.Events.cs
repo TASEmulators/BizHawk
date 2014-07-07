@@ -14,6 +14,7 @@ using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Client.EmuHawk.config.NES;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -374,12 +375,56 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RecordMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadRecordMovieDialog();
+			if (!Global.Emulator.Attributes().Released)
+			{
+				var result = MessageBox.Show
+					(this, "Thanks for using Bizhawk!  The emulation core you have selected " +
+					"is currently BETA-status.  We appreciate your help in testing Bizhawk. " +
+					"You can record a movie on this core if you'd like to, but expect to " +
+					"encounter bugs and sync problems.  Continue?", "BizHawk", MessageBoxButtons.YesNo);
+
+				if (result != DialogResult.Yes)
+				{
+					return;
+				}
+			}
+			else if (Global.Emulator is LibsnesCore)
+			{
+				var ss = (LibsnesCore.SnesSyncSettings)Global.Emulator.GetSyncSettings();
+				if (ss.Profile == "Performance" && !Global.Config.DontAskPerformanceCoreRecordingNag)
+				{
+					var box = new MsgBox(
+						"While the performance core is faster, it is recommended that you use the Compatibility profile when recording movies for better accuracy and stability\n\nSwitch to Compatibility?",
+						"Stability Warning",
+						MessageBoxIcon.Warning);
+
+					box.SetButtons(
+						new[] { "Switch", "Continue", "Cancel" },
+						new[] { DialogResult.Yes, DialogResult.No, DialogResult.Cancel });
+					box.SetCheckbox("Don't ask me again");
+					box.MaximumSize = new Size(450, 350);
+					box.SetMessageToAutoSize();
+					var result = box.ShowDialog();
+					Global.Config.DontAskPerformanceCoreRecordingNag = box.CheckboxChecked;
+
+					if (result == DialogResult.Yes)
+					{
+						ss.Profile = "Compatibility";
+						Global.Emulator.PutSyncSettings(ss);
+					}
+					else if (result == DialogResult.Cancel)
+					{
+						return;
+					}
+				}
+			}
+
+			new RecordMovie().ShowDialog();
 		}
 
 		private void PlayMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadPlayMovieDialog();
+			new PlayMovie().ShowDialog();
 		}
 
 		private void StopMovieMenuItem_Click(object sender, EventArgs e)
@@ -1040,7 +1085,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VirtualPadMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.Load<VirtualPadForm>();
+			GlobalWin.Tools.Load<VirtualpadTool>();
 		}
 
 		private void CheatsMenuItem_Click(object sender, EventArgs e)
@@ -1059,7 +1104,7 @@ namespace BizHawk.Client.EmuHawk
 			using (var dlg = new DualGBXMLCreator())
 			{
 				var result = dlg.ShowDialog(this);
-				if (result == System.Windows.Forms.DialogResult.OK)
+				if (result == DialogResult.OK)
 				{
 					GlobalWin.OSD.AddMessage("XML File saved");
 				}
@@ -1182,9 +1227,29 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var s = (PCEngine.PCESettings)Global.Emulator.GetSettings();
 
+			PceControllerSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
+
 			PCEAlwaysPerformSpriteLimitMenuItem.Checked = s.SpriteLimit;
 			PCEAlwaysEqualizeVolumesMenuItem.Checked = s.EqualizeVolume;
 			PCEArcadeCardRewindEnableMenuItem.Checked = s.ArcadeCardRewindHack;
+		}
+
+		private void PceControllerSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			if (new PCEControllerConfig().ShowDialog() == DialogResult.OK)
+			{
+				GlobalWin.MainForm.FlagNeedsReboot();
+				GlobalWin.OSD.AddMessage("Controller settings saved but a core reboot is required");
+			}
+			else
+			{
+				GlobalWin.OSD.AddMessage("Controller settings aborted");
+			}
+		}
+
+		private void PCEGraphicsSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			new PCEGraphicsConfig().ShowDialog();
 		}
 
 		private void PCEBGViewerMenuItem_Click(object sender, EventArgs e)
@@ -1196,7 +1261,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.Tools.Load<PCETileViewer>();
 		}
-
 
 		private void PceSoundDebuggerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1227,11 +1291,6 @@ namespace BizHawk.Client.EmuHawk
 			var s = (PCEngine.PCESettings)Global.Emulator.GetSettings();
 			s.ArcadeCardRewindHack ^= true;
 			PutCoreSettings(s);
-		}
-
-		private void PCEGraphicsSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			new PCEGraphicsConfig().ShowDialog();
 		}
 
 		#endregion
@@ -1426,7 +1485,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var Message = String.Format("Invalid file format. Reason: {0} \nForce transfer? This may cause the calculator to crash.", ex.Message);
 
-					if (MessageBox.Show(Message, "Upload Failed", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+					if (MessageBox.Show(Message, "Upload Failed", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == DialogResult.Yes)
 					{
 						(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), false);
 					}
@@ -1723,7 +1782,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DGBsettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			BizHawk.Client.EmuHawk.config.GB.DGBPrefs.DoDGBPrefsDialog(this);
+			config.GB.DGBPrefs.DoDGBPrefsDialog(this);
 		}
 
 		#endregion
@@ -1893,8 +1952,10 @@ namespace BizHawk.Client.EmuHawk
 		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
 		{
 			var result = new config.DisplayConfigLite().ShowDialog();
-			if (result == System.Windows.Forms.DialogResult.OK)
+			if (result == DialogResult.OK)
+			{
 				FrameBufferResized();
+			}
 		}
 
 		private void CoreSelectionContextSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -2163,7 +2224,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show("Exception on drag and drop:\n" + ex.ToString());
+				MessageBox.Show("Exception on drag and drop:\n" + ex);
 			}
 		}
 

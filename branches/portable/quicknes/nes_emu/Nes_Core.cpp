@@ -213,7 +213,9 @@ void Nes_Core::enable_sram( bool b, bool read_only )
 
 // Unmapped memory
 
+#if !defined (NDEBUG) && 0
 static nes_addr_t last_unmapped_addr;
+#endif
 
 void Nes_Core::log_unmapped( nes_addr_t addr, int data )
 {

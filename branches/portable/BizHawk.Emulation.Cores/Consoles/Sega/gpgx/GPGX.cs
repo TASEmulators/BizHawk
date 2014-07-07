@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 
 using System.Runtime.InteropServices;
@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		"",
 		isPorted: true,
 		isReleased: true,
-		portedVersion: "r580",
+		portedVersion: "r872",
 		portedUrl: "https://code.google.com/p/genplus-gx/"
 		)]
 	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider
@@ -38,7 +38,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		LibGPGX.InputData input = new LibGPGX.InputData();
 
-		// still working out what all the possibilities are here
 		public enum ControlType
 		{
 			None,
@@ -47,7 +46,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Xea1p,
 			Activator,
 			Teamplayer,
-			Wayplay
+			Wayplay,
+			Mouse
 		};
 
 		public GPGX(CoreComm NextComm, byte[] romfile, DiscSystem.Disc CD, string romextension, object SyncSettings)
@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			try
 			{
-				this.SyncSettings = (GPGXSyncSettings)SyncSettings ?? GPGXSyncSettings.GetDefaults();
+				this._SyncSettings = (GPGXSyncSettings)SyncSettings ?? GPGXSyncSettings.GetDefaults();
 
 				CoreComm = NextComm;
 				if (AttachedCore != null)
@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				LibGPGX.INPUT_SYSTEM system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
 				LibGPGX.INPUT_SYSTEM system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
 
-				switch (this.SyncSettings.ControlType)
+				switch (this._SyncSettings.ControlType)
 				{
 					case ControlType.None:
 					default:
@@ -109,10 +109,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_WAYPLAY;
 						system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_WAYPLAY;
 						break;
+					case ControlType.Mouse:
+						system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_MD_GAMEPAD;
+						// seems like mouse in port 1 would be supported, but not both at the same time
+						system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_MOUSE;
+						break;
 				}
 
 
-				if (!LibGPGX.gpgx_init(romextension, LoadCallback, this.SyncSettings.UseSixButton, system_a, system_b, this.SyncSettings.Region))
+				if (!LibGPGX.gpgx_init(romextension, LoadCallback, this._SyncSettings.UseSixButton, system_a, system_b, this._SyncSettings.Region))
 					throw new Exception("gpgx_init() failed");
 
 				{
@@ -340,6 +345,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			ControllerDefinition = ControlConverter.ControllerDef;
 		}
 
+		public LibGPGX.INPUT_DEVICE[] GetDevices()
+		{
+			return (LibGPGX.INPUT_DEVICE[])input.dev.Clone();
+		}
+
 		// core callback for input
 		void input_callback()
 		{
@@ -361,6 +371,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			if (!LibGPGX.gpgx_get_control(input, inputsize))
 				throw new Exception("gpgx_get_control() failed!");
 
+			ControlConverter.ScreenWidth = vwidth;
+			ControlConverter.ScreenHeight = vheight;
 			ControlConverter.Convert(Controller, input);
 
 			if (!LibGPGX.gpgx_put_control(input, inputsize))
@@ -723,17 +735,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		#region Settings
 
-		GPGXSyncSettings SyncSettings;
+		GPGXSyncSettings _SyncSettings;
 
 		public object GetSettings() { return null; }
-		public object GetSyncSettings() { return SyncSettings.Clone(); }
+		public object GetSyncSettings() { return _SyncSettings.Clone(); }
 		public bool PutSettings(object o) { return false; }
 		public bool PutSyncSettings(object o)
 		{
 			bool ret;
 			var n = (GPGXSyncSettings)o;
-			ret = GPGXSyncSettings.NeedsReboot(SyncSettings, n);
-			SyncSettings = n;
+			ret = GPGXSyncSettings.NeedsReboot(_SyncSettings, n);
+			_SyncSettings = n;
 			return ret;
 		}
 

@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-
-using BizHawk.Common;
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -165,7 +161,7 @@ namespace BizHawk.Client.Common
 
 		// just experimenting with different possibly more painful ways to handle mnemonics
 		// |P|UDLRsSBA|
-		public static Tuple<string, char>[] DGBMnemonic = new[]
+		public static Tuple<string, char>[] DGBMnemonic =
 		{
 			new Tuple<string, char>(null, '|'),
 			new Tuple<string, char>("P1 Power", 'P'),
@@ -192,7 +188,7 @@ namespace BizHawk.Client.Common
 			new Tuple<string, char>(null, '|')
 		};
 
-		public static Tuple<string, char>[] WSMnemonic = new[]
+		public static Tuple<string, char>[] WSMnemonic =
 		{
 			new Tuple<string, char>(null, '|'),
 			new Tuple<string, char>("P1 X1", '1'),
@@ -221,7 +217,7 @@ namespace BizHawk.Client.Common
 			new Tuple<string, char>(null, '|'),
 			new Tuple<string, char>("Power", 'P'),
 			new Tuple<string, char>("Rotate", 'R'),
-			new Tuple<string, char>(null, '|'),
+			new Tuple<string, char>(null, '|')
 		};
 	}
 }

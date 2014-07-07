@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Drawing;
 using System.IO;
-using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Nintendo.NES;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -16,6 +12,13 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public void StartNewMovie(IMovie movie, bool record, bool fromTastudio = false) //TasStudio flag is a hack for now
 		{
+			if (movie.SystemID != Global.Emulator.SystemId)
+			{
+				GlobalWin.OSD.AddMessage("Movie does not match the currently loaded system, unable to load");
+				return;
+			}
+
+
 			//If a movie is already loaded, save it before starting a new movie
 			if (!fromTastudio && Global.MovieSession.Movie.IsActive)
 			{
@@ -54,13 +57,17 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				string s = Global.MovieSession.Movie.SyncSettingsJson;
+				var s = Global.MovieSession.Movie.SyncSettingsJson;
 				if (!string.IsNullOrWhiteSpace(s))
 				{
 					_syncSettingsHack = ConfigService.LoadWithType(s);
 				}
 
-				if (record) // This is a hack really, the movie isn't active yet unless I do this, and LoadRom wants to know if it is
+				if (record) // This is a hack really, we need to set the movie to its propert state so that it will be considered active later
+				{
+					Global.MovieSession.Movie.SwitchToRecord();
+				}
+				else
 				{
 					Global.MovieSession.Movie.SwitchToRecord();
 				}
@@ -106,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Restart<TAStudio>();
 			}
 
-			GlobalWin.Tools.Restart<VirtualPadForm>();
+			GlobalWin.Tools.Restart<VirtualpadTool>();
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 		}
 
@@ -133,60 +140,6 @@ namespace BizHawk.Client.EmuHawk
 				PlayRecordStatusButton.ToolTipText = "No movie is active";
 				PlayRecordStatusButton.Visible = false;
 			}
-		}
-
-		public void LoadPlayMovieDialog()
-		{
-			new PlayMovie().ShowDialog();
-		}
-
-		public void LoadRecordMovieDialog()
-		{
-			if (!Global.Emulator.Attributes().Released)
-			{
-				var result = MessageBox.Show
-					(this, "Thanks for using Bizhawk!  The emulation core you have selected " +
-					"is currently BETA-status.  We appreciate your help in testing Bizhawk. " +
-					"You can record a movie on this core if you'd like to, but expect to " +
-					"encounter bugs and sync problems.  Continue?", "BizHawk", MessageBoxButtons.YesNo);
-
-				if (result != DialogResult.Yes)
-				{
-					return;
-				}
-			}
-			else if (Global.Emulator is LibsnesCore)
-			{
-				var ss = (LibsnesCore.SnesSyncSettings)Global.Emulator.GetSyncSettings();
-				if (ss.Profile == "Performance" && !Global.Config.DontAskPerformanceCoreRecordingNag)
-				{
-					var box = new MsgBox(
-						"While the performance core is faster, it is recommended that you use the Compatibility profile when recording movies for better accuracy and stability\n\nSwitch to Compatibility?",
-						"Stability Warning",
-						MessageBoxIcon.Warning);
-
-					box.SetButtons(
-						new [] {"Switch", "Continue", "Cancel" },
-						new DialogResult[] { DialogResult.Yes, DialogResult.No, DialogResult.Cancel });
-					box.SetCheckbox("Don't ask me again");
-					box.MaximumSize = new Size(450, 350);
-					box.SetMessageToAutoSize();
-					var result = box.ShowDialog();
-					Global.Config.DontAskPerformanceCoreRecordingNag = box.CheckboxChecked;
-
-					if (result == DialogResult.Yes)
-					{
-						ss.Profile = "Compatibility";
-						Global.Emulator.PutSyncSettings(ss);
-					}
-					else if (result == DialogResult.Cancel)
-					{
-						return;
-					}
-				}
-			}
-
-			new RecordMovie().ShowDialog();
 		}
 
 		public void RestartMovie()

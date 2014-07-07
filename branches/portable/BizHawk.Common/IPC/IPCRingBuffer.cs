@@ -179,7 +179,7 @@ namespace BizHawk.Common
 
 		public class Tester
 		{
-			Queue<byte> shazam = new Queue<byte>();
+			private readonly Queue<byte> shazam = new Queue<byte>();
 			string bufid;
 
 			unsafe void a()
@@ -247,11 +247,13 @@ namespace BizHawk.Common
 	/// </summary>
 	public unsafe class IPCRingBufferStream : Stream
 	{
+		private readonly IPCRingBuffer buf;
+
 		public IPCRingBufferStream(IPCRingBuffer buf)
 		{
 			this.buf = buf;
 		}
-		IPCRingBuffer buf;
+
 		public override bool CanRead { get { return true; } }
 		public override bool CanSeek { get { return false; } }
 		public override bool CanWrite { get { return true; } }

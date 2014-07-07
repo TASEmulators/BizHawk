@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 using BizHawk.Common;
 
 namespace BizHawk.Client.Common
 {
-	public partial class Bk2Movie : IMovie
+	public partial class Bk2Movie
 	{
 		public void Save()
 		{
@@ -43,7 +40,7 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			using (BinaryStateLoader bl = BinaryStateLoader.LoadAndDetect(Filename, true))
+			using (var bl = BinaryStateLoader.LoadAndDetect(Filename, true))
 			{
 				if (bl == null)
 				{
@@ -59,7 +56,7 @@ namespace BizHawk.Client.Common
 					{
 						if (!string.IsNullOrWhiteSpace(line))
 						{
-							var pair = line.Split(new char[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
+							var pair = line.Split(new[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
 
 							if (pair.Length > 1)
 							{
@@ -107,7 +104,7 @@ namespace BizHawk.Client.Common
 
 				bl.GetLump(BinaryStateLump.Input, true, delegate(TextReader tr)
 				{
-					string errorMessage = string.Empty;
+					var errorMessage = string.Empty;
 					ExtractInputLog(tr, out errorMessage);
 				});
 
@@ -142,15 +139,21 @@ namespace BizHawk.Client.Common
 
 		private void Write(string fn)
 		{
-			using (FileStream fs = new FileStream(Filename, FileMode.Create, FileAccess.Write))
-			using (BinaryStateSaver bs = new BinaryStateSaver(fs, false))
+			var file = new FileInfo(fn);
+			if (!file.Directory.Exists)
 			{
-				bs.PutLump(BinaryStateLump.Movieheader, (tw) => tw.WriteLine(Header.ToString()));
-				bs.PutLump(BinaryStateLump.Comments, (tw) => tw.WriteLine(CommentsString()));
-				bs.PutLump(BinaryStateLump.Subtitles, (tw) => tw.WriteLine(Subtitles.ToString()));
-				bs.PutLump(BinaryStateLump.SyncSettings, (tw) => tw.WriteLine(_syncSettingsJson));
+				Directory.CreateDirectory(file.Directory.ToString());
+			}
 
-				bs.PutLump(BinaryStateLump.Input, (tw) => tw.WriteLine(RawInputLog()));
+			using (var fs = new FileStream(fn, FileMode.Create, FileAccess.Write))
+			using (var bs = new BinaryStateSaver(fs, false))
+			{
+				bs.PutLump(BinaryStateLump.Movieheader, tw => tw.WriteLine(Header.ToString()));
+				bs.PutLump(BinaryStateLump.Comments, tw => tw.WriteLine(CommentsString()));
+				bs.PutLump(BinaryStateLump.Subtitles, tw => tw.WriteLine(Subtitles.ToString()));
+				bs.PutLump(BinaryStateLump.SyncSettings, tw => tw.WriteLine(_syncSettingsJson));
+
+				bs.PutLump(BinaryStateLump.Input, tw => tw.WriteLine(RawInputLog()));
 
 				if (StartsFromSavestate)
 				{

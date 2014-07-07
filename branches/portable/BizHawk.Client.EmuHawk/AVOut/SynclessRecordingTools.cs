@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			var ofd = new OpenFileDialog();
 			ofd.FileName = PathManager.FilesystemSafeName(Global.Game) + ".syncless.txt";
 			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPathFragment, null);
-			if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
+			if (ofd.ShowDialog() == DialogResult.Cancel)
 				return;
 
 			mSynclessConfigFile = ofd.FileName;
@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 			var sfd = new SaveFileDialog();
 			sfd.FileName = Path.ChangeExtension(mSynclessConfigFile, ".avi");
 			sfd.InitialDirectory = Path.GetDirectoryName(sfd.FileName);
-			if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
+			if (sfd.ShowDialog() == DialogResult.Cancel)
 				return;
 
 			using (AviWriter avw = new AviWriter())

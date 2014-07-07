@@ -1,31 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Text;
 
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie : IMovie
 	{
-		private readonly PlatformFrameRates _frameRates = new PlatformFrameRates();
 		private bool _makeBackup = true;
 
 		public Bk2Movie(string filename)
 			: this()
 		{
-			Subtitles = new SubtitleList();
-			Comments = new List<string>();
-
 			Rerecords = 0;
 			Filename = filename;
 		}
 
 		public Bk2Movie()
 		{
+			Subtitles = new SubtitleList();
+			Comments = new List<string>();
+
 			Filename = string.Empty;
 			IsCountingRerecords = true;
 			_mode = Moviemode.Inactive;
@@ -57,32 +52,6 @@ namespace BizHawk.Client.Common
 				}
 
 				return _log.Count;
-			}
-		}
-
-		public double Fps
-		{
-			get
-			{
-				var system = Header[HeaderKeys.PLATFORM];
-				var pal = Header.ContainsKey(HeaderKeys.PAL) &&
-					Header[HeaderKeys.PAL] == "1";
-
-				return _frameRates[system, pal];
-			}
-		}
-
-		public TimeSpan Time
-		{
-			get
-			{
-				var dblseconds = GetSeconds(_log.Count);
-				var seconds = (int)(dblseconds % 60);
-				var days = seconds / 86400;
-				var hours = seconds / 3600;
-				var minutes = (seconds / 60) % 60;
-				var milliseconds = (int)((dblseconds - seconds) * 1000);
-				return new TimeSpan(days, hours, minutes, seconds, milliseconds);
 			}
 		}
 
@@ -195,7 +164,11 @@ namespace BizHawk.Client.Common
 
 		public void PokeFrame(int frame, IController source)
 		{
-			throw new NotImplementedException();
+			var lg = LogGeneratorInstance();
+			lg.SetSource(source);
+
+			Changes = true;
+			SetFrameAt(frame, lg.GenerateLogEntry());
 		}
 
 		public void ClearFrame(int frame)
@@ -204,18 +177,6 @@ namespace BizHawk.Client.Common
 		}
 
 		#endregion
-
-		private double GetSeconds(int frameCount)
-		{
-			double frames = frameCount;
-
-			if (frames < 1)
-			{
-				return 0;
-			}
-
-			return frames / Fps;
-		}
 
 		private void SetFrameAt(int frameNum, string frame)
 		{

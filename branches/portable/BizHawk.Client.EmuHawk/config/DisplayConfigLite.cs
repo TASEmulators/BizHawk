@@ -67,7 +67,7 @@ namespace BizHawk.Client.EmuHawk.config
 			Global.Config.DispUserFilterPath = PathSelection;
 			GlobalWin.DisplayManager.RefreshUserShader();
 
-			DialogResult = System.Windows.Forms.DialogResult.OK;
+			DialogResult = DialogResult.OK;
 			Close();
 		}
 
@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk.config
 			var ofd = new OpenFileDialog();
 			ofd.Filter = ".CGP (*.cgp)|*.cgp";
 			ofd.FileName = PathSelection;
-			if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			if (ofd.ShowDialog() == DialogResult.OK)
 			{
 				rbUser.Checked = true;
 				PathSelection = Path.GetFullPath(ofd.FileName);

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -37,7 +35,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void LatchPlayerFromSource(IController playerSource, int playerNum)
 		{
-			foreach (string button in playerSource.Type.BoolButtons)
+			foreach (var button in playerSource.Type.BoolButtons)
 			{
 				var bnp = ButtonNameParser.Parse(button);
 				if (bnp == null)
@@ -50,7 +48,7 @@ namespace BizHawk.Client.Common
 					continue;
 				}
 
-				bool val = playerSource[button];
+				var val = playerSource[button];
 				MyBoolButtons[button] = val;
 			}
 		}
@@ -60,12 +58,12 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void LatchFromSource(IController source)
 		{
-			foreach (string button in Type.BoolButtons)
+			foreach (var button in Type.BoolButtons)
 			{
 				MyBoolButtons[button] = source[button];
 			}
 
-			foreach (string name in Type.FloatControls)
+			foreach (var name in Type.FloatControls)
 			{
 				MyFloatControls[name] = source.GetFloat(name);
 			}
@@ -80,58 +78,68 @@ namespace BizHawk.Client.Common
 			{
 				return;
 			}
-			else if (ControlType == "SNES Controller")
+
+			if (ControlType == "SNES Controller")
 			{
 				SetSNESControllersAsMnemonic(mnemonic);
 				return;
 			}
-			else if (ControlType == "Commodore 64 Controller")
+
+			if (ControlType == "Commodore 64 Controller")
 			{
 				SetC64ControllersAsMnemonic(mnemonic);
 				return;
 			}
-			else if (ControlType == "GBA Controller")
+
+			if (ControlType == "GBA Controller")
 			{
 				SetGBAControllersAsMnemonic(mnemonic);
 				return;
 			}
-			else if (ControlType == "Atari 7800 ProLine Joystick Controller")
+
+			if (ControlType == "Atari 7800 ProLine Joystick Controller")
 			{
 				SetAtari7800AsMnemonic(mnemonic);
 				return;
 			}
-			else if (ControlType == "Dual Gameboy Controller")
+
+			if (ControlType == "Dual Gameboy Controller")
 			{
 				SetDualGameBoyControllerAsMnemonic(mnemonic);
 				return;
 			}
-			else if (ControlType == "WonderSwan Controller")
+
+			if (ControlType == "WonderSwan Controller")
 			{
 				SetWonderSwanControllerAsMnemonic(mnemonic);
 				return;
 			}
-			else if (ControlType == "Nintento 64 Controller")
+
+			if (ControlType == "Nintento 64 Controller")
 			{
 				SetN64ControllersAsMnemonic(mnemonic);
 				return;
 			}
-			else if (ControlType == "Saturn Controller")
+
+			if (ControlType == "Saturn Controller")
 			{
 				SetSaturnControllersAsMnemonic(mnemonic);
 				return;
 			}
-			else if (ControlType == "PSP Controller")
+
+			if (ControlType == "PSP Controller")
 			{
 				// TODO
 				return;
 			}
-			else if (ControlType == "GPGX Genesis Controller")
+
+			if (ControlType == "GPGX Genesis Controller")
 			{
 				SetGensis6ControllersAsMnemonic(mnemonic);
 				return;
 			}
 
-			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			var c = new MnemonicChecker(mnemonic);
 
 			MyBoolButtons.Clear();
 
@@ -222,7 +230,7 @@ namespace BizHawk.Client.Common
 			{
 				int srcindex = BkmMnemonicConstants.PLAYERS[ControlType] * (BkmMnemonicConstants.BUTTONS[ControlType].Count + 1);
 				int ctr = start;
-				foreach (string command in BkmMnemonicConstants.COMMANDS[ControlType].Keys)
+				foreach (var command in BkmMnemonicConstants.COMMANDS[ControlType].Keys)
 				{
 					Force(command, c[srcindex + ctr++]);
 				}
@@ -308,7 +316,7 @@ namespace BizHawk.Client.Common
 
 		private void SetSNESControllersAsMnemonic(string mnemonic)
 		{
-			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			var c = new MnemonicChecker(mnemonic);
 			MyBoolButtons.Clear();
 
 			if (mnemonic.Length < 2)
@@ -335,7 +343,7 @@ namespace BizHawk.Client.Common
 				}
 
 				int start = 3;
-				foreach (string button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
+				foreach (var button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
 				{
 					Force("P" + player + " " + button, c[srcindex + start++]);
 				}
@@ -492,7 +500,7 @@ namespace BizHawk.Client.Common
 
 		private void SetC64ControllersAsMnemonic(string mnemonic)
 		{
-			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			var c = new MnemonicChecker(mnemonic);
 			MyBoolButtons.Clear();
 
 
@@ -506,7 +514,7 @@ namespace BizHawk.Client.Common
 				}
 
 				int start = 1;
-				foreach (string button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
+				foreach (var button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
 				{
 					Force("P" + player + " " + button, c[srcindex + start++]);
 				}
@@ -519,7 +527,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private class MnemonicChecker
+		private sealed class MnemonicChecker
 		{
 			private readonly string _mnemonic;
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -10,7 +9,9 @@ namespace BizHawk.Client.Common
 {
 	public class Bk2ControllerAdapter : IMovieController
 	{
-		private string _logKey = string.Empty;
+		private readonly string _logKey = string.Empty;
+		private readonly WorkingDictionary<string, bool> MyBoolButtons = new WorkingDictionary<string, bool>();
+		private readonly WorkingDictionary<string, float> MyFloatControls = new WorkingDictionary<string, float>();
 
 		public Bk2ControllerAdapter()
 		{
@@ -27,14 +28,10 @@ namespace BizHawk.Client.Common
 		{
 			if (!string.IsNullOrEmpty(_logKey))
 			{
-				// TODO: this could be cleaned up into a LINQ select
-				List<List<string>> controls = new List<List<string>>();
 				var groups = _logKey.Split(new[] { "#" }, StringSplitOptions.RemoveEmptyEntries);
-				foreach (var group in groups)
-				{
-					var buttons = group.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-					controls.Add(buttons);
-				}
+				var controls = groups
+					.Select(@group => @group.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries).ToList())
+					.ToList();
 
 				_type.ControlsFromLog = controls;
 			}
@@ -82,7 +79,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void LatchPlayerFromSource(IController playerSource, int playerNum)
 		{
-			foreach (string button in playerSource.Type.BoolButtons)
+			foreach (var button in playerSource.Type.BoolButtons)
 			{
 				var bnp = ButtonNameParser.Parse(button);
 				if (bnp == null)
@@ -95,7 +92,7 @@ namespace BizHawk.Client.Common
 					continue;
 				}
 
-				bool val = playerSource[button];
+				var val = playerSource[button];
 				MyBoolButtons[button] = val;
 			}
 		}
@@ -105,12 +102,12 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void LatchFromSource(IController source)
 		{
-			foreach (string button in Type.BoolButtons)
+			foreach (var button in Type.BoolButtons)
 			{
 				MyBoolButtons[button] = source[button];
 			}
 
-			foreach (string name in Type.FloatControls)
+			foreach (var name in Type.FloatControls)
 			{
 				MyFloatControls[name] = source.GetFloat(name);
 			}
@@ -127,34 +124,21 @@ namespace BizHawk.Client.Common
 				var trimmed = mnemonic.Replace("|", "");
 				var buttons = Type.ControlsOrdered.SelectMany(x => x).ToList();
 				var iterator = 0;
-				var boolIt = 0;
-				var floatIt = 0;
 
-				for (int i = 0; i < buttons.Count; i++)
+				foreach (var key in buttons)
 				{
-					var b = buttons[i];
-					if (def.BoolButtons.Contains(buttons[i]))
+					if (def.BoolButtons.Contains(key))
 					{
-						MyBoolButtons[buttons[i]] = trimmed[iterator] == '.' ? false : true;
+						this.MyBoolButtons[key] = trimmed[iterator] != '.';
 						iterator++;
-						boolIt++;
 					}
-					else if (def.FloatControls.Contains(buttons[i]))
+					else if (def.FloatControls.Contains(key))
 					{
-						string temp;
-						try
-						{
-							temp = trimmed.Substring(iterator, 4);
-							var val = int.Parse(temp.Trim());
-							MyFloatControls[buttons[i]] = val;
-						}
-						catch (Exception ex)
-						{
-							int zzz = 0;
-						}
+						var temp = trimmed.Substring(iterator, 5);
+						var val = int.Parse(temp.Trim());
+						this.MyFloatControls[key] = val;
 
-						iterator += 5;
-						floatIt++;
+						iterator += 6;
 					}
 				}
 			}
@@ -165,7 +149,6 @@ namespace BizHawk.Client.Common
 		public class Bk2ControllerDefinition : ControllerDefinition
 		{
 			public Bk2ControllerDefinition()
-				: base()
 			{
 
 			}
@@ -191,10 +174,5 @@ namespace BizHawk.Client.Common
 				}
 			}
 		}
-
-		
-
-		private readonly WorkingDictionary<string, bool> MyBoolButtons = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, float> MyFloatControls = new WorkingDictionary<string, float>();
 	}
 }

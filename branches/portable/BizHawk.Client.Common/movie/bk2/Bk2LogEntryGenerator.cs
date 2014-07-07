@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
 
 using BizHawk.Emulation.Common;
+using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
@@ -11,7 +10,7 @@ namespace BizHawk.Client.Common
 	{
 		private readonly Bk2MnemonicConstants Mnemonics = new Bk2MnemonicConstants();
 		private IController _source;
-		private string _logKey = string.Empty;
+		private readonly string _logKey = string.Empty;
 
 		public Bk2LogEntryGenerator(string logKey)
 		{
@@ -44,7 +43,7 @@ namespace BizHawk.Client.Common
 			return GenerateLogEntry()
 				.Replace(".", " ")
 				.Replace("|", "")
-				.Replace("   0,   0,", "          ");
+				.Replace("    0,    0,", "            ");
 		}
 
 		public bool IsEmpty
@@ -89,6 +88,20 @@ namespace BizHawk.Client.Common
 			return sb.ToString();
 		}
 
+		public Dictionary<string, string> Map()
+		{
+			var dict = new Dictionary<string, string>();
+			foreach (var group in _source.Type.ControlsOrdered.Where(c => c.Any()))
+			{
+				foreach (var button in group)
+				{
+					dict.Add(button, Mnemonics[button].ToString()); // TODO: floats should be a float lookup that returns a string, floats by convention should always be more than one character to distinguish from boolean input
+				}
+			}
+
+			return dict;
+		}
+
 		private string CreateLogEntry(bool createEmpty = false)
 		{
 			var sb = new StringBuilder();
@@ -104,12 +117,12 @@ namespace BizHawk.Client.Common
 						{
 							if (createEmpty)
 							{
-								sb.Append("  0,");
+								sb.Append("    0,");
 							}
 							else
 							{
 								var val = (int)_source.GetFloat(button);
-								sb.Append(val.ToString().PadLeft(4, ' ')).Append(',');
+								sb.Append(val.ToString().PadLeft(5, ' ')).Append(',');
 							}
 						}
 						else if (_source.Type.BoolButtons.Contains(button))

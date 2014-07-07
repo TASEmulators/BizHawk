@@ -1,7 +1,8 @@
 ﻿using System;
 using System.IO;
 
-using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
+using BizHawk.Common.IOExtensions;
 
 namespace BizHawk.Client.Common
 {

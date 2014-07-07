@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BizHawk.Client.Common
 {
-	public partial class BkmMovie : IMovie
+	public partial class BkmMovie
 	{
 		private readonly List<string> _log = new List<string>();
 

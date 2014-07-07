@@ -73,17 +73,24 @@ namespace BizHawk.Client.Common
 		)]
 		public void SetFromMnemonicStr(string inputLogEntry)
 		{
-			var lg = Global.MovieSession.MovieControllerInstance();
-			lg.SetControllersAsMnemonic(inputLogEntry);
-
-			foreach (var button in lg.Type.BoolButtons)
+			try
 			{
-				Global.LuaAndAdaptor.SetButton(button, lg.IsPressed(button));
+				var lg = Global.MovieSession.MovieControllerInstance();
+				lg.SetControllersAsMnemonic(inputLogEntry);
+
+				foreach (var button in lg.Type.BoolButtons)
+				{
+					Global.LuaAndAdaptor.SetButton(button, lg.IsPressed(button));
+				}
+
+				foreach (var floatButton in lg.Type.FloatControls)
+				{
+					Global.LuaAndAdaptor.SetFloat(floatButton, lg.GetFloat(floatButton));
+				}
 			}
-
-			foreach (var floatButton in lg.Type.FloatControls)
+			catch (Exception)
 			{
-				Global.LuaAndAdaptor.SetFloat(floatButton, lg.GetFloat(floatButton));
+				Log("invalid mnemonic string: " + inputLogEntry);
 			}
 		}
 

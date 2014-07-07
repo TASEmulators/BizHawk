@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 			//http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
 #if WINDOWS
 			// this will look in subdirectory "dll" to load pinvoked stuff
-			string dllDir = System.IO.Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
+			string dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
 			SetDllDirectory(dllDir);
 
 			//but before we even try doing that, whack the MOTW from everything in that directory (thats a dll)
@@ -64,10 +64,10 @@ namespace BizHawk.Client.EmuHawk
 
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			string iniPath = System.IO.Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.ini");
+			string iniPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.ini");
 			Global.Config = ConfigService.Load<Config>(iniPath);
 			Global.Config.ResolveDefaults();
-			BizHawk.Common.HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
+			HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
 
 #if WINDOWS
 			try { GlobalWin.DSound = SoundEnumeration.Create(); }
@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 
 			//create IGL context.
 			//at some point in the future, we may need to select from several drivers
-			GlobalWin.GL = new BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
+			GlobalWin.GL = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
 			GlobalWin.GLManager = new GLManager();
 			GlobalWin.CR_GL = GlobalWin.GLManager.GetContextForIGL(GlobalWin.GL);
 
@@ -169,7 +169,7 @@ namespace BizHawk.Client.EmuHawk
 
 		//for debugging purposes, this is provided. when we're satisfied everyone understands whats going on, we'll get rid of this
 		[DllImportAttribute("kernel32.dll", EntryPoint = "CreateFileW")]
-		public static extern System.IntPtr CreateFileW([InAttribute()] [MarshalAsAttribute(UnmanagedType.LPWStr)] string lpFileName, int dwDesiredAccess, int dwShareMode, [InAttribute()] int lpSecurityAttributes, int dwCreationDisposition, int dwFlagsAndAttributes, [InAttribute()] int hTemplateFile);
+		public static extern IntPtr CreateFileW([InAttribute()] [MarshalAsAttribute(UnmanagedType.LPWStr)] string lpFileName, int dwDesiredAccess, int dwShareMode, [InAttribute()] int lpSecurityAttributes, int dwCreationDisposition, int dwFlagsAndAttributes, [InAttribute()] int hTemplateFile);
 		static void ApplyMOTW(string path)
 		{
 			int generic_write = 0x40000000;
@@ -178,7 +178,7 @@ namespace BizHawk.Client.EmuHawk
 			var adsHandle = CreateFileW(path + ":Zone.Identifier", generic_write, file_share_write, 0, create_always, 0, 0);
 			using (var sfh = new Microsoft.Win32.SafeHandles.SafeFileHandle(adsHandle, true))
 			{
-				var adsStream = new System.IO.FileStream(sfh, FileAccess.Write);
+				var adsStream = new FileStream(sfh, FileAccess.Write);
 				StreamWriter sw = new StreamWriter(adsStream);
 				sw.Write("[ZoneTransfer]\r\nZoneId=3");
 				sw.Flush();
@@ -212,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 
 				//load missing assemblies by trying to find them in the dll directory
 				string dllname = new AssemblyName(args.Name).Name + ".dll";
-				string directory = System.IO.Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
+				string directory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
 				string fname = Path.Combine(directory, dllname);
 				if (!File.Exists(fname)) return null;
 				//it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unamanged) assemblies can't load

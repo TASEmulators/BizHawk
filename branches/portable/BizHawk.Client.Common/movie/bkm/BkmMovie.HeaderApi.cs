@@ -2,7 +2,7 @@
 
 namespace BizHawk.Client.Common
 {
-	public partial class BkmMovie : IMovie
+	public partial class BkmMovie
 	{
 		public IDictionary<string, string> HeaderEntries
 		{

@@ -9,6 +9,8 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Common.StringExtensions;
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -113,7 +115,7 @@ namespace BizHawk.Client.EmuHawk
 			SpecificValueBox.Type = _settings.Type;
 
 			MessageLabel.Text = string.Empty;
-			SpecificAddressBox.MaxLength = IntHelpers.GetNumDigits(Global.Emulator.MemoryDomains.MainMemory.Size);
+			SpecificAddressBox.MaxLength = (Global.Emulator.MemoryDomains.MainMemory.Size - 1).NumHexDigits();
 			HardSetSizeDropDown(_settings.Size);
 			PopulateTypeDropDown();
 			HardSetDisplayTypeDropDown(_settings.Type);
@@ -497,9 +499,9 @@ namespace BizHawk.Client.EmuHawk
 			_forcePreviewClear = true;
 		}
 
-		private IList<int> SelectedIndices
+		private IEnumerable<int> SelectedIndices
 		{
-			get { return WatchListView.SelectedIndices.Cast<int>().ToList(); }
+			get { return WatchListView.SelectedIndices.Cast<int>(); }
 		}
 
 		private IEnumerable<Watch> SelectedItems
@@ -545,7 +547,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_settings.Domain = Global.Emulator.MemoryDomains[name];
 			SetReboot(true);
-			SpecificAddressBox.MaxLength = IntHelpers.GetNumDigits(_settings.Domain.Size);
+			SpecificAddressBox.MaxLength = (_settings.Domain.Size - 1).NumHexDigits();
 			DoDomainSizeCheck();
 		}
 
@@ -779,12 +781,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveAddresses()
 		{
-			if (SelectedIndices.Count > 0)
+			var indices = SelectedIndices.ToList();
+			if (indices.Any())
 			{
-				SetRemovedMessage(SelectedIndices.Count);
-
-				var addresses = SelectedIndices.Select(index => _searches[index].Address ?? 0).ToList();
-				_searches.RemoveRange(addresses);
+				SetRemovedMessage(indices.Count);
+				_searches.RemoveRange(indices);
 
 				WatchListView.ItemCount = _searches.Count;
 				SetTotal();
@@ -804,12 +805,14 @@ namespace BizHawk.Client.EmuHawk
 
 				var watches = new WatchList(_settings.Domain);
 				watches.Load(file.FullName, append);
-				var addresses = watches.Where(x => !x.IsSeparator).Select(x => x.Address ?? 0).ToList();
+
+				var watchList = watches.Where(x => !x.IsSeparator);
+				var addresses = watchList.Select(x => x.Address ?? 0).ToList();
 
 				if (truncate)
 				{
 					SetRemovedMessage(addresses.Count);
-					_searches.RemoveRange(addresses);
+					_searches.RemoveSmallWatchRange(watchList);
 				}
 				else
 				{
@@ -851,7 +854,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PokeAddress()
 		{
-			if (SelectedIndices.Count > 0)
+			if (SelectedIndices.Any())
 			{
 				var poke = new RamPoke();
 				var watches = SelectedIndices.Select(t => _searches[t]).ToList();
@@ -866,7 +869,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (GlobalWin.Tools.Has<RamWatch>())
 			{
-				_searches.RemoveRange(GlobalWin.Tools.RamWatch.AddressList);
+				_searches.RemoveSmallWatchRange(GlobalWin.Tools.RamWatch.Watches);
 				WatchListView.ItemCount = _searches.Count;
 				SetTotal();
 			}
@@ -915,7 +918,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (prompt.UserOk)
 			{
-				if (InputValidate.IsHex(prompt.UserText))
+				if (prompt.UserText.IsHex())
 				{
 					var addr = int.Parse(prompt.UserText, NumberStyles.HexNumber);
 					WatchListView.SelectItem(addr, true);
@@ -1397,7 +1400,7 @@ namespace BizHawk.Client.EmuHawk
 				ContextMenuSeparator2.Visible =
 
 				ViewInHexEditorContextMenuItem.Visible =
-				SelectedIndices.Count > 0;
+				SelectedIndices.Any();
 
 			UnfreezeAllContextMenuItem.Visible = Global.CheatList.ActiveCount > 0;
 
@@ -1478,7 +1481,7 @@ namespace BizHawk.Client.EmuHawk
 
 			SetRemovedMessage(outOfRangeAddresses.Count);
 
-			_searches.RemoveRange(outOfRangeAddresses);
+			//_searches.RemoveRange(outOfRangeAddresses); Remove TODO
 
 			WatchListView.ItemCount = _searches.Count;
 			SetTotal();
@@ -1664,7 +1667,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) // Copy
 			{
-				if (SelectedIndices.Count > 0)
+				if (SelectedIndices.Any())
 				{
 					var sb = new StringBuilder();
 					foreach (var index in SelectedIndices)
@@ -1721,7 +1724,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchListView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			if (SelectedIndices.Count > 0)
+			if (SelectedIndices.Any())
 			{
 				AddToRamWatch();
 			}

@@ -325,7 +325,7 @@ namespace BizHawk.Client.EmuHawk
 		public static extern FileType GetFileType(IntPtr hFile);
 
 		[DllImport("kernel32.dll", CharSet = CharSet.Auto)]
-		public static extern System.IntPtr GetCommandLine();
+		public static extern IntPtr GetCommandLine();
 
 		public enum FileType : uint
 		{

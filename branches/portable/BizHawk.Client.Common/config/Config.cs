@@ -70,6 +70,7 @@ namespace BizHawk.Client.Common
 		public bool PauseWhenMenuActivated = true;
 		public bool SaveWindowPosition = true;
 		public bool StartPaused = false;
+		public bool StartFullscreen = false;
 		public int MainWndx = -1; // Negative numbers will be ignored
 		public int MainWndy = -1;
 		public bool RunInBackground = true;
@@ -96,6 +97,7 @@ namespace BizHawk.Client.Common
 		public bool SupressAskSave = false;
 		public bool AVI_CaptureOSD = false;
 		public bool Screenshot_CaptureOSD = false;
+		public bool FirstBoot = true;
 
 		public enum SaveStateTypeE { Default, Binary, Text };
 		public SaveStateTypeE SaveStateType = SaveStateTypeE.Default;
@@ -198,6 +200,7 @@ namespace BizHawk.Client.Common
 		// RamWatch Settings
 		public ToolDialogSettings RamWatchSettings = new ToolDialogSettings();
 		public RecentFiles RecentWatches = new RecentFiles(8);
+		public bool RamWatchShowAddressColumn = true;
 		public bool RamWatchShowChangeColumn = true;
 		public bool RamWatchShowPrevColumn = false;
 		public bool RamWatchShowDiffColumn = false;

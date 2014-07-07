@@ -2,7 +2,7 @@
 
 namespace BizHawk.Client.Common
 {
-	public partial class BkmMovie : IMovie
+	public partial class BkmMovie
 	{
 		private enum Moviemode { Inactive, Play, Record, Finished }
 

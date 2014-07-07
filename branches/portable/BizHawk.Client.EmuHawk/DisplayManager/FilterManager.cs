@@ -147,7 +147,6 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 			}
 
 			SurfaceState currState = null;
-			List<SurfaceFormat> RenderTargets = new List<SurfaceFormat>();
 
 			for (int i = 0; i < Filters.Count; i++)
 			{

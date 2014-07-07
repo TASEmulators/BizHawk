@@ -118,9 +118,10 @@ namespace BizHawk.Emulation.Common
 			//http://www.psxdev.net/forum/viewtopic.php?f=69&t=56 [p]
 			//https://en.wikipedia.org/wiki/PlayStation_models#Comparison_of_models [w]
 			//https://github.com/petrockblog/RetroPie-Setup/wiki/PCSX-Core-Playstation-1 [g] 
+			//http://redump.org/datfile/psx-bios/ also
 			var ps_10j = File("343883A7B555646DA8CEE54AADD2795B6E7DD070", "ps-10j.bin", "PSX BIOS (Version 1.0 J)", "Used on SCPH-1000, DTL-H1000 [g]. This is Rev for A hardware [w].");
 			var ps_11j = File("B06F4A861F74270BE819AA2A07DB8D0563A7CC4E", "ps-11j.bin", "PSX BIOS (Version 1.1 01/22/95)", "Used on SCPH-3000, DTL-H1000H [g]. This is for Rev B hardware [w].");
-			var ps_20j = File("649895EFD79D14790EABB362E94EB0622093DFB9", "ps-20j.bin", "PSX BIOS (Version 2.0 05/07/95 A)", "Used on DTL-H1001 [g]. This is for Rev B hardware [w].");
+			var ps_20a = File("649895EFD79D14790EABB362E94EB0622093DFB9", "ps-20a.bin", "PSX BIOS (Version 2.0 05/07/95 A)", "Used on DTL-H1001 [g]. This is for Rev B hardware [w].");
 			var ps_20e = File("20B98F3D80F11CBF5A7BFD0779B0E63760ECC62C", "ps-20e.bin", "PSX BIOS (Version 2.0 05/10/95 E)", "Used on DTL-H1002, SCPH-1002 [g]. This is for Rev B hardware [w].");
 			var ps_21j = File("E38466A4BA8005FBA7E9E3C7B9EFEBA7205BEE3F", "ps-21j.bin", "PSX BIOS (Version 2.1 07/17/95 J)", "Used on SCPH-3500 [g]. This is for Rev B hardware [w].");
 			var ps_21a = File("CA7AF30B50D9756CBD764640126C454CFF658479", "ps-21a.bin", "PSX BIOS (Version 2.1 07/17/95 A)", "Used on DTL-H1101 [g]. This is for Rev B hardware, presumably.");
@@ -160,7 +161,7 @@ namespace BizHawk.Emulation.Common
 
 			Option("PSX", "J", ps_10j, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "J", ps_11j, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "J", ps_20j, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "U", ps_20a, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "E", ps_20e, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "J", ps_21j, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "U", ps_21a, FirmwareOptionStatus.Unacceptable);

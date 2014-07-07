@@ -53,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="cmax">maximum compression level</param>
 		/// <param name="hwnd">hwnd of parent</param>
 		/// <returns>false if user canceled; true if user consented</returns>
-		public static bool DoCompressionDlg(ref int threads, ref int complevel, int tmin, int tmax, int cmin, int cmax, System.Windows.Forms.IWin32Window hwnd)
+		public static bool DoCompressionDlg(ref int threads, ref int complevel, int tmin, int tmax, int cmin, int cmax, IWin32Window hwnd)
 		{
 			JMDForm j = new JMDForm();
 			j.threadsBar.Minimum = tmin;

@@ -6,7 +6,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Client.Common
 {
-	public partial class BkmMovie : IMovie
+	public partial class BkmMovie
 	{
 		private int _preloadFramecount; // Not a a reliable number, used for preloading (when no log has yet been loaded), this is only for quick stat compilation for dialogs such as play movie
 
@@ -142,11 +142,15 @@ namespace BizHawk.Client.Common
 				//read to first space (key/value delimeter), or pipe, or EOF
 				int first = sr.Read();
 
-				if (first == -1) break; //EOF
-				else if (first == '|') //pipe: begin input log
+				if (first == -1)
+				{
+					break;
+				} // EOF
+
+				if (first == '|') //pipe: begin input log
 				{
 					//NOTE - this code is a bit convoluted due to its predating the basic outline of the parser which was upgraded in may 2014
-					string line = '|' + sr.ReadLine();
+					var line = '|' + sr.ReadLine();
 
 					//how many bytes are left, total?
 					long remain = sr.BaseStream.Length - sr.BaseStream.Position;
@@ -178,7 +182,7 @@ namespace BizHawk.Client.Common
 				else
 				{
 					//a header line. finish reading key token, to make sure it isn't one of the FORBIDDEN keys
-					StringBuilder sbLine = new StringBuilder();
+					var sbLine = new StringBuilder();
 					sbLine.Append((char)first);
 					for (; ; )
 					{
@@ -210,7 +214,7 @@ namespace BizHawk.Client.Common
 					}
 
 
-					string remainder = sr.ReadLine();
+					var remainder = sr.ReadLine();
 					sbLine.Append(' ');
 					sbLine.Append(remainder);
 					line = sbLine.ToString();

@@ -5,8 +5,10 @@ using System.Text;
 using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
+using BizHawk.Common.IOExtensions;
+
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Client.Common.MovieConversionExtensions;
 
 namespace BizHawk.Client.Common
@@ -135,7 +137,7 @@ namespace BizHawk.Client.Common
 		// Return whether or not the type of file provided can currently be imported.
 		public static bool IsValidMovieExtension(string extension)
 		{
-			string[] extensions = new[]
+			string[] extensions =
 			{
 				"FCM", "FM2", "FMV", "GMV", "MCM", "MC2", "MMV", "NMV", "LSMV", "SMV", "VBM", "VMV", "YMV", "ZMV"
 			};
@@ -163,9 +165,9 @@ namespace BizHawk.Client.Common
 		private static BkmMovie ImportTextFrame(string line, int lineNum, BkmMovie m, string path, string platform,
 			ref string warningMsg)
 		{
-			string[] buttons = new string[] { };
-			string controller = "";
-			string ext = path != null ? Path.GetExtension(path).ToUpper() : "";
+			string[] buttons = { };
+			var controller = string.Empty;
+			var ext = path != null ? Path.GetExtension(path).ToUpper() : "";
 			switch (ext)
 			{
 				case ".FM2":
@@ -192,7 +194,7 @@ namespace BizHawk.Client.Common
 					controller = "Saturn Controller";
 					break;
 			}
-			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = controller}};
+			var controllers = new SimpleController {Type = new ControllerDefinition {Name = controller}};
 			// Split up the sections of the frame.
 			string[] sections = line.Split('|');
 			if (ext == ".FM2" && sections.Length >= 2 && sections[1].Length != 0)
@@ -269,7 +271,7 @@ namespace BizHawk.Client.Common
 			{
 				// The player number is one less than the section number for the reasons explained above.
 				int player = section + player_offset;
-				string prefix = "P" + (player).ToString() + " ";
+				string prefix = "P" + (player) + " ";
 				// Gameboy doesn't currently have a prefix saying which player the input is for.
 				if (controllers.Type.Name == "Gameboy Controller")
 				{
@@ -327,11 +329,11 @@ namespace BizHawk.Client.Common
 		private static BkmMovie ImportText(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = string.Empty;
-			BkmMovie m = new BkmMovie(path);
-			FileInfo file = new FileInfo(path);
-			StreamReader sr = file.OpenText();
-			string emulator = string.Empty;
-			string platform = string.Empty;
+			var m = new BkmMovie(path);
+			var file = new FileInfo(path);
+			var sr = file.OpenText();
+			var emulator = string.Empty;
+			var platform = string.Empty;
 			switch (Path.GetExtension(path).ToUpper())
 			{
 				case ".FM2":
@@ -403,7 +405,7 @@ namespace BizHawk.Client.Common
 					byte[] md5 = DecodeBlob(blob);
 					if (md5 != null && md5.Length == 16)
 					{
-						m.Header[MD5] = Util.BytesToHexString(md5).ToLower();
+						m.Header[MD5] = md5.BytesToHexString().ToLower();
 					}
 					else
 					{
@@ -573,7 +575,7 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.PAL] = pal.ToString();
 			// other: reserved, set to 0
 			bool syncHack = (((flags >> 4) & 0x1) != 0);
-			m.Comments.Add(SYNCHACK + " " + syncHack.ToString());
+			m.Comments.Add(SYNCHACK + " " + syncHack);
 			// 009 1-byte flags: reserved, set to 0
 			r.ReadByte();
 			// 00A 1-byte flags: reserved, set to 0
@@ -596,10 +598,10 @@ namespace BizHawk.Client.Common
 			uint firstFrameOffset = r.ReadUInt32();
 			// 020 16-byte md5sum of the ROM used
 			byte[] md5 = r.ReadBytes(16);
-			m.Header[MD5] = Util.BytesToHexString(md5).ToLower();
+			m.Header[MD5] = md5.BytesToHexString().ToLower();
 			// 030 4-byte little-endian unsigned int: version of the emulator used
 			uint emuVersion = r.ReadUInt32();
-			m.Comments.Add(EMULATIONORIGIN + " FCEU " + emuVersion.ToString());
+			m.Comments.Add(EMULATIONORIGIN + " FCEU " + emuVersion);
 			// 034 name of the ROM used - UTF8 encoded nul-terminated string.
 			List<byte> gameBytes = new List<byte>();
 			while (r.PeekChar() != 0)
@@ -623,7 +625,7 @@ namespace BizHawk.Client.Common
 			// Advance to first byte of input data.
 			r.BaseStream.Position = firstFrameOffset;
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "NES Controller"}};
-			string[] buttons = new[] { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
+			string[] buttons = { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
 			bool fds = false;
 			bool fourscore = false;
 			int frame = 1;
@@ -864,8 +866,8 @@ namespace BizHawk.Client.Common
 			 * 40 Select
 			 * 80 Start
 			*/
-			string[] buttons = new[] { "Right", "Left", "Up", "Down", "B", "A", "Select", "Start" };
-			bool[] masks = new[] { controller1, controller2, FDS };
+			string[] buttons = { "Right", "Left", "Up", "Down", "B", "A", "Select", "Start" };
+			bool[] masks = { controller1, controller2, FDS };
 			/*
 			 The file has no terminator byte or frame count. The number of frames is the <filesize minus 144> divided by
 			 <number of bytes per frame>.
@@ -986,7 +988,7 @@ namespace BizHawk.Client.Common
 			 * 0x40 C
 			 * 0x80 Start
 			*/
-			string[] buttons = new[] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start" };
+			string[] buttons = { "Up", "Down", "Left", "Right", "A", "B", "C", "Start" };
 			/*
 			 For XYZ-mode, each value is determined by OR-ing together values for whichever of the following are left
 			 unpressed:
@@ -999,7 +1001,7 @@ namespace BizHawk.Client.Common
 			 * 0x40 Controller 2 Z
 			 * 0x80 Controller 2 Mode
 			*/
-			string[] other = new[] { "X", "Y", "Z", "Mode" };
+			string[] other = { "X", "Y", "Z", "Mode" };
 			// The file has no terminator byte or frame count. The number of frames is the <filesize minus 64> divided by 3.
 			long frameCount = (fs.Length - 64) / 3;
 			for (long frame = 1; frame <= frameCount; frame++)
@@ -1040,8 +1042,8 @@ namespace BizHawk.Client.Common
 		private static BkmMovie ImportLSMV(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = string.Empty;
-			BkmMovie m = new BkmMovie(path);
-			HawkFile hf = new HawkFile(path);
+			var m = new BkmMovie(path);
+			var hf = new HawkFile(path);
 			// .LSMV movies are .zip files containing data files.
 			if (!hf.IsArchive)
 			{
@@ -1055,7 +1057,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string authors = Encoding.UTF8.GetString(Util.ReadAllBytes(stream));
+					string authors = Encoding.UTF8.GetString(stream.ReadAllBytes());
 					string author_list = "";
 					string author_last = "";
 					using (StringReader reader = new StringReader(authors))
@@ -1090,7 +1092,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string coreversion = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					string coreversion = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					m.Comments.Add(COREORIGIN + " " + coreversion);
 					hf.Unbind();
 				}
@@ -1098,7 +1100,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string gamename = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					string gamename = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					m.Header[HeaderKeys.GAMENAME] = gamename;
 					hf.Unbind();
 				}
@@ -1106,7 +1108,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string gametype = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					string gametype = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					// TODO: Handle the other types.
 					switch (gametype)
 					{
@@ -1131,7 +1133,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string input = Encoding.UTF8.GetString(Util.ReadAllBytes(stream));
+					string input = Encoding.UTF8.GetString(stream.ReadAllBytes());
 					int lineNum = 0;
 					using (StringReader reader = new StringReader(input))
 					{
@@ -1157,7 +1159,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					byte[] moviesram = Util.ReadAllBytes(stream);
+					byte[] moviesram = stream.ReadAllBytes();
 					if (moviesram.Length != 0)
 					{
 						errorMsg = "Movies that begin with SRAM are not supported.";
@@ -1170,7 +1172,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string port1 = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					string port1 = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					m.Header[PORT1] = port1;
 					hf.Unbind();
 				}
@@ -1178,7 +1180,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string port2 = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					string port2 = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					m.Header[PORT2] = port2;
 					hf.Unbind();
 				}
@@ -1186,7 +1188,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string projectid = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					string projectid = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					m.Header[PROJECTID] = projectid;
 					hf.Unbind();
 				}
@@ -1194,7 +1196,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string rerecords = Encoding.UTF8.GetString(Util.ReadAllBytes(stream));
+					string rerecords = Encoding.UTF8.GetString(stream.ReadAllBytes());
 					int rerecordCount;
 					// Try to parse the re-record count as an integer, defaulting to 0 if it fails.
 					try
@@ -1212,7 +1214,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string rom = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					string rom = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					int pos = item.Name.LastIndexOf(".sha256");
 					string name = item.Name.Substring(0, pos);
 					m.Header[SHA256 + "_" + name] = rom;
@@ -1227,7 +1229,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string subtitles = Encoding.UTF8.GetString(Util.ReadAllBytes(stream));
+					string subtitles = Encoding.UTF8.GetString(stream.ReadAllBytes());
 					using (StringReader reader = new StringReader(subtitles))
 					{
 						string line;
@@ -1240,7 +1242,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string startSecond = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					string startSecond = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					m.Header[STARTSECOND] = startSecond;
 					hf.Unbind();
 				}
@@ -1248,7 +1250,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string startSubSecond = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					string startSubSecond = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					m.Header[STARTSUBSECOND] = startSubSecond;
 					hf.Unbind();
 				}
@@ -1256,7 +1258,7 @@ namespace BizHawk.Client.Common
 				{
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
-					string systemid = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					string systemid = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					m.Comments.Add(EMULATIONORIGIN + " " + systemid);
 					hf.Unbind();
 				}
@@ -1276,7 +1278,7 @@ namespace BizHawk.Client.Common
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 8-byte	"MDFNMOVI" signature
-			string signature = r.ReadStringFixedAscii(8);
+			var signature = r.ReadStringFixedAscii(8);
 			if (signature != "MDFNMOVI")
 			{
 				errorMsg = "This is not a valid .MCM file.";
@@ -1286,7 +1288,7 @@ namespace BizHawk.Client.Common
 			}
 			// 008 uint32	 Mednafen Version (Current is 0A 08)
 			uint emuVersion = r.ReadUInt32();
-			m.Comments.Add(EMULATIONORIGIN + " Mednafen " + emuVersion.ToString());
+			m.Comments.Add(EMULATIONORIGIN + " Mednafen " + emuVersion);
 			// 00C uint32	 Movie Format Version (Current is 01)
 			uint version = r.ReadUInt32();
 			m.Comments.Add(MOVIEORIGIN + " .MCM version " + version);
@@ -1294,7 +1296,7 @@ namespace BizHawk.Client.Common
 			byte[] md5 = r.ReadBytes(16);
 			// Discard the second 16 bytes.
 			r.ReadBytes(16);
-			m.Header[MD5] = Util.BytesToHexString(md5).ToLower();
+			m.Header[MD5] = md5.BytesToHexString().ToLower();
 			// 030 64-byte	Filename of the ROM used (with extension)
 			string gameName = NullTerminated(r.ReadStringFixedAscii(64));
 			m.Header[HeaderKeys.GAMENAME] = gameName;
@@ -1407,7 +1409,7 @@ namespace BizHawk.Client.Common
 			}
 			// 0004: 4-byte little endian unsigned int: dega version
 			uint emuVersion = r.ReadUInt32();
-			m.Comments.Add(EMULATIONORIGIN + " Dega version " + emuVersion.ToString());
+			m.Comments.Add(EMULATIONORIGIN + " Dega version " + emuVersion);
 			m.Comments.Add(MOVIEORIGIN + " .MMV");
 			// 0008: 4-byte little endian unsigned int: frame count
 			uint frameCount = r.ReadUInt32();
@@ -1460,8 +1462,8 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.GAMENAME] = gameName;
 			// 00e4-00f3: binary: rom MD5 digest
 			byte[] md5 = r.ReadBytes(16);
-			m.Header[MD5] = string.Format("{0:x8}", Util.BytesToHexString(md5).ToLower());
-			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "SMS Controller"}};
+			m.Header[MD5] = string.Format("{0:x8}", md5.BytesToHexString().ToLower());
+			var controllers = new SimpleController { Type = new ControllerDefinition { Name = "SMS Controller" }};
 			/*
 			 76543210
 			 * bit 0 (0x01): up
@@ -1473,7 +1475,7 @@ namespace BizHawk.Client.Common
 			 * bit 6 (0x40): start (Master System)
 			 * bit 7 (0x80): start (Game Gear)
 			*/
-			string[] buttons = new[] { "Up", "Down", "Left", "Right", "B1", "B2" };
+			string[] buttons = { "Up", "Down", "Left", "Right", "B1", "B2" };
 			for (int frame = 1; frame <= frameCount; frame++)
 			{
 				/*
@@ -1902,7 +1904,7 @@ namespace BizHawk.Client.Common
 			 00 40 Y
 			 00 80 B
 			*/
-			string[] buttons = new[]
+			string[] buttons =
 			{
 				"Right", "Left", "Down", "Up", "Start", "Select", "Y", "B", "R", "L", "X", "A"
 			};
@@ -1937,7 +1939,7 @@ namespace BizHawk.Client.Common
 					*/
 					if (version != "1.43" && player <= controllerTypes.Length)
 					{
-						string peripheral = "";
+						var peripheral = string.Empty;
 						switch (controllerTypes[player - 1])
 						{
 							// NONE
@@ -2216,7 +2218,7 @@ namespace BizHawk.Client.Common
 			 * 00 01 R
 			 * 00 02 L
 			*/
-			string[] buttons = new[] { "A", "B", "Select", "Start", "Right", "Left", "Up", "Down", "R", "L" };
+			string[] buttons = { "A", "B", "Select", "Start", "Right", "Left", "Up", "Down", "R", "L" };
 			/*
 			 * 00 04 Reset (old timing)
 			 * 00 08 Reset (new timing since version 1.1)
@@ -2225,7 +2227,8 @@ namespace BizHawk.Client.Common
 			 * 00 40 Down motion sensor
 			 * 00 80 Up motion sensor
 			*/
-			string[] other = new[] {
+			string[] other = 
+			{
 				"Reset (old timing)" , "Reset (new timing since version 1.1)", "Left motion sensor",
 				"Right motion sensor", "Down motion sensor", "Up motion sensor"
 			};
@@ -2624,7 +2627,7 @@ namespace BizHawk.Client.Common
 			 * bit 1:  Left
 			 * bit 0:  Right
 			*/
-			string[] buttons = new[]
+			string[] buttons =
 			{
 				"Right", "Left", "Down", "Up", "Start", "Select", "Y", "B", "R", "L", "X", "A"
 			};
@@ -2787,7 +2790,7 @@ namespace BizHawk.Client.Common
 			}
 			r.BaseStream.Position = r.BaseStream.Length - authorSize;
 			// Last in the file comes the author name field, which is an UTF-8 encoded text string.
-			string author = Encoding.UTF8.GetString(r.ReadBytes(authorSize));
+			var author = Encoding.UTF8.GetString(r.ReadBytes(authorSize));
 			m.Header[HeaderKeys.AUTHOR] = author;
 			return m;
 		}

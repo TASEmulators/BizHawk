@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -340,14 +341,30 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void RemoveRange(IEnumerable<int> addresses)
+		/// <summary>
+		/// Remove a set of watches
+		/// However, this should not be used with large data sets (100k or more) as it uses a contains logic to perform the task
+		/// </summary>
+		public void RemoveSmallWatchRange(IEnumerable<Watch> watches)
 		{
 			if (_keepHistory)
 			{
 				_history.AddState(_watchList);
 			}
 
-			_watchList = _watchList.Where(x => !addresses.Contains(x.Address)).ToList();
+			var addresses = watches.Select(x => x.Address ?? 0);
+			var removeList = _watchList.Where(x => !addresses.Contains(x.Address)).ToList();
+		}
+
+		public void RemoveRange(IEnumerable<int> indices)
+		{
+			if (_keepHistory)
+			{
+				_history.AddState(_watchList);
+			}
+
+			var removeList = indices.Select(i => _watchList[i]);
+			_watchList = _watchList.Except(removeList).ToList();
 		}
 
 		public void AddRange(List<int> addresses, bool append)

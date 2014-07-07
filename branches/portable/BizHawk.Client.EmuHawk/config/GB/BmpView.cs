@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -22,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public BmpView()
 		{
-			if (System.Diagnostics.Process.GetCurrentProcess().ProcessName == "devenv")
+			if (Process.GetCurrentProcess().ProcessName == "devenv")
 			{
 				// in the designer
 				//this.BackColor = Color.Black;
@@ -74,14 +71,14 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				bmp.Dispose();
 			}
-			bmp = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			bmp = new Bitmap(w, h, PixelFormat.Format32bppArgb);
 			BmpView_SizeChanged(null, null);
 			Refresh();
 		}
 
 		public void Clear()
 		{
-			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			Win32.MemSet(lockdata.Scan0, 0xff, (uint)(lockdata.Height * lockdata.Stride));
 			bmp.UnlockBits(lockdata);
 			Refresh();
@@ -93,7 +90,7 @@ namespace BizHawk.Client.EmuHawk
 						Global.Config.PathEntries[Global.Emulator.SystemId, "Screenshots"].Path,
 						Global.Emulator.SystemId);
 
-			DirectoryInfo di = new DirectoryInfo(path);
+			var di = new DirectoryInfo(path);
 
 			if (!di.Exists)
 			{
