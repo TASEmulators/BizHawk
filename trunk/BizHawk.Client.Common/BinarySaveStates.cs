@@ -18,7 +18,11 @@ namespace BizHawk.Client.Common
 		Movieheader,
 		Comments,
 		Subtitles,
-		SyncSettings
+		SyncSettings,
+
+		// TasMovie
+		LagLog,
+		Greenzone
 	}
 
 	public class BinaryStateFileNames
@@ -48,6 +52,10 @@ namespace BizHawk.Client.Common
 			LumpNames[BinaryStateLump.Comments] = "Comments";
 			LumpNames[BinaryStateLump.Subtitles] = "Subtitles";
 			LumpNames[BinaryStateLump.SyncSettings] = "SyncSettings";
+
+			// TasMovie
+			LumpNames[BinaryStateLump.LagLog] = "LagLog";
+			LumpNames[BinaryStateLump.Greenzone] = "GreenZone";
 		}
 
 		public static string Get(BinaryStateLump lump)

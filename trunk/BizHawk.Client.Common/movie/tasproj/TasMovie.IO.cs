@@ -1,7 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.IOExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -24,6 +27,8 @@ namespace BizHawk.Client.Common
 				bs.PutLump(BinaryStateLump.SyncSettings, tw => tw.WriteLine(SyncSettingsJson));
 
 				bs.PutLump(BinaryStateLump.Input, tw => tw.WriteLine(RawInputLog()));
+
+				bs.PutLump(BinaryStateLump.LagLog, (BinaryWriter bw) => bw.Write(LagLog.ToByteArray()));
 
 				if (StartsFromSavestate)
 				{
@@ -118,6 +123,12 @@ namespace BizHawk.Client.Common
 					ExtractInputLog(tr, out errorMessage);
 				});
 
+				bl.GetLump(BinaryStateLump.LagLog, true, delegate(BinaryReader br)
+				{
+					var bytes = br.BaseStream.ReadAllBytes();
+					LagLog = bytes.ToBools().ToList();
+				});
+
 				if (StartsFromSavestate)
 				{
 					bl.GetCoreState(
@@ -136,7 +147,13 @@ namespace BizHawk.Client.Common
 
 		private void ClearTasprojExtrasBeforeLoad()
 		{
-			// TODO
+			LagLog.Clear();
+			StateManager.Clear();
+		}
+
+		private void RestoreLagLog(byte[] buffer)
+		{
+
 		}
 	}
 }
