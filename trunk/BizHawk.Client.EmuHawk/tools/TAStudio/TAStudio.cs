@@ -44,8 +44,6 @@ namespace BizHawk.Client.EmuHawk
 				return _map;
 			}
 		}
-		
-		#region API
 
 		public TAStudio()
 		{
@@ -74,6 +72,8 @@ namespace BizHawk.Client.EmuHawk
 			TasView.InputPaintingMode = Global.Config.TAStudioDrawInput;
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
 		}
+
+		#region IToolForm implementation
 
 		public bool AskSave()
 		{
@@ -244,7 +244,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var kvp in ColumnNames)
 			{
-				AddColumn(kvp.Key, kvp.Value, 20);
+				AddColumn(kvp.Key, kvp.Value, 20 * kvp.Value.Length);
 			}
 		}
 

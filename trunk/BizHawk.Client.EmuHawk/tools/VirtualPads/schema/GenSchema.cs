@@ -331,6 +331,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 		}
+
 		public static PadSchema Activator(int controller)
 		{
 			return new PadSchema
@@ -409,6 +410,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 		}
+
 		public static PadSchema XE1AP(int controller)
 		{
 			return new PadSchema
@@ -476,6 +478,5 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 		}
-
 	}
 }
