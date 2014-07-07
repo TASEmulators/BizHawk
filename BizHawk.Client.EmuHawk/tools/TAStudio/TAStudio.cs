@@ -212,17 +212,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			SetUpColumns();
-			//LoadConfigSettings();
+			LoadConfigSettings();
 		}
 
 		private void EngageTasStudio(TasMovie newMovie = null)
 		{
 			GlobalWin.OSD.AddMessage("TAStudio engaged");
 			Global.MovieSession.Movie = newMovie ?? new TasMovie();
-			
+
 			_tas = Global.MovieSession.Movie as TasMovie;
 			_tas.StartNewRecording();
-			GlobalWin.MainForm.StartNewMovie(_tas, true, true);
+			GlobalWin.MainForm.StartNewMovie(_tas, record: true);
 		}
 
 		private void StartNewSession()
@@ -231,7 +231,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GlobalWin.OSD.AddMessage("new TAStudio session started");
 				_tas.StartNewRecording();
-				GlobalWin.MainForm.StartNewMovie(_tas, true, true);
+				GlobalWin.MainForm.StartNewMovie(_tas, record: true);
 				TasView.ItemCount = _tas.InputLogLength;
 			}
 		}
