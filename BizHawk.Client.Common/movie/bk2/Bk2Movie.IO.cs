@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common
 			Write(backupName);
 		}
 
-		public bool Load()
+		public virtual bool Load()
 		{
 			var file = new FileInfo(Filename);
 			if (!file.Exists)
@@ -137,7 +137,7 @@ namespace BizHawk.Client.Common
 			return Load();
 		}
 
-		private void Write(string fn)
+		protected virtual void Write(string fn)
 		{
 			var file = new FileInfo(fn);
 			if (!file.Directory.Exists)
@@ -171,7 +171,7 @@ namespace BizHawk.Client.Common
 			Changes = false;
 		}
 
-		private void ClearBeforeLoad()
+		protected void ClearBeforeLoad()
 		{
 			Header.Clear();
 			_log.Clear();

@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace BizHawk.Client.Common
 {
-	public class MovieRecord
+	public class TasMovieRecord
 	{
 		public byte[] State { get; set; }
 		public bool Lagged { get; set; }

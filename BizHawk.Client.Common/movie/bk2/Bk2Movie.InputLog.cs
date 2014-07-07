@@ -263,7 +263,7 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		private StringBuilder RawInputLog()
+		protected StringBuilder RawInputLog()
 		{
 			var lg = new Bk2LogEntryGenerator(_logKey);
 			lg.SetSource(Global.MovieOutputHardpoint);

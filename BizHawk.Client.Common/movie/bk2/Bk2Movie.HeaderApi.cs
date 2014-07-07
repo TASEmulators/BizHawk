@@ -169,7 +169,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private string CommentsString()
+		protected string CommentsString()
 		{
 			var sb = new StringBuilder();
 
