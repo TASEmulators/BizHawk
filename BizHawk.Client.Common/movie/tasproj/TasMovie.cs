@@ -9,13 +9,11 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public class TasMovie : Bk2Movie
+	public sealed partial class TasMovie : Bk2Movie
 	{
-		public TasMovie(string path)
-			: base(path)
-		{
+		private readonly List<bool> LagLog = new List<bool>();
 
-		}
+		public TasMovie(string path) : base(path) { }
 
 		public TasMovie()
 			: base()
@@ -25,10 +23,7 @@ namespace BizHawk.Client.Common
 
 		public override string PreferredExtension
 		{
-			get
-			{
-				return Extension;
-			}
+			get { return Extension; }
 		}
 
 		public new const string Extension = "tasproj";
@@ -37,14 +32,15 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				// TODO
-				return new MovieRecord("", false);
+				return new MovieRecord // TODO
+				{
+					State = null,
+					LogEntry = "",
+					Lagged = false
+				};
 			}
 		}
 
-		public void SetBoolButton(int index, string button, bool value)
-		{
-			// TODO
-		}
+		// _state = (byte[])Global.Emulator.SaveStateBinary().Clone();
 	}
 }
