@@ -1894,16 +1894,23 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.DisplayInput ^= true;
 		}
 
-		private static void ToggleReadOnly()
+		private void ToggleReadOnly()
 		{
-			if (Global.MovieSession.Movie.IsActive)
+			if (IsSlave)
 			{
-				Global.MovieSession.ReadOnly ^= true;
-				GlobalWin.OSD.AddMessage(Global.MovieSession.ReadOnly ? "Movie read-only mode" : "Movie read+write mode");
+				_master.ToggleReadOnly();
 			}
 			else
 			{
-				GlobalWin.OSD.AddMessage("No movie active");
+				if (Global.MovieSession.Movie.IsActive)
+				{
+					Global.MovieSession.ReadOnly ^= true;
+					GlobalWin.OSD.AddMessage(Global.MovieSession.ReadOnly ? "Movie read-only mode" : "Movie read+write mode");
+				}
+				else
+				{
+					GlobalWin.OSD.AddMessage("No movie active");
+				}
 			}
 		}
 
@@ -3304,7 +3311,21 @@ namespace BizHawk.Client.EmuHawk
 			ProfileFirstBootLabel.Visible = false;
 		}
 
-		
+		// TODO: move me
+		private IControlMainform _master;
+		public void RelinquishControl(IControlMainform master)
+		{
+			_master = master;
+		}
 
+		private bool IsSlave
+		{
+			get { return _master != null; }
+		}
+
+		public void TakeControl()
+		{
+			_master = null;
+		}
 	}
 }
