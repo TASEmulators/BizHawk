@@ -12,6 +12,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public void StartNewMovie(IMovie movie, bool record)
 		{
+			movie.Load();
 			if (movie.SystemID != Global.Emulator.SystemId)
 			{
 				GlobalWin.OSD.AddMessage("Movie does not match the currently loaded system, unable to load");
@@ -36,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!record)
 			{
-				Global.MovieSession.MovieLoad();
+				Global.MovieSession.MovieLoad(); // TODO this loads it a 2nd time, ugh
 			}
 
 			try
