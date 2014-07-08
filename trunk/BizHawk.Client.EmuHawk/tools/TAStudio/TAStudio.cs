@@ -180,6 +180,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Tastudio_Load(object sender, EventArgs e)
 		{
+			// Start Scenario 1: A regular movie is active
 			if (Global.MovieSession.Movie.IsActive && !(Global.MovieSession.Movie is TasMovie))
 			{
 				var result = MessageBox.Show("In order to use Tastudio, a new project must be created from the current movie\nThe current movie will be saved and closed, and a new project file will be created\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
@@ -196,16 +197,22 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 			}
+
+			// Start Scenario 2: A tasproj is already active
 			else if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie is TasMovie)
 			{
 				_tas = Global.MovieSession.Movie as TasMovie;
 			}
+
+			// Start Scenario 3: No movie, but user wants to autload their last project
 			else if (Global.Config.AutoloadTAStudioProject)
 			{
 				Global.MovieSession.Movie = new TasMovie();
 				_tas = Global.MovieSession.Movie as TasMovie;
 				LoadFileFromRecent(Global.Config.RecentTas[0]);
 			}
+
+			// Start Scenario 4: No movie, default behavior of engaging tastudio with a new default project
 			else
 			{
 				EngageTasStudio();
@@ -219,17 +226,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.OSD.AddMessage("TAStudio engaged");
 			Global.MovieSession.Movie = newMovie ?? new TasMovie();
-
 			_tas = Global.MovieSession.Movie as TasMovie;
-			_tas.StartNewRecording();
-			GlobalWin.MainForm.StartNewMovie(_tas, record: true);
+			StartNewSession();
 		}
 
 		private void StartNewSession()
 		{
 			if (AskSave())
 			{
-				GlobalWin.OSD.AddMessage("new TAStudio session started");
 				_tas.StartNewRecording();
 				GlobalWin.MainForm.StartNewMovie(_tas, record: true);
 				TasView.ItemCount = _tas.InputLogLength;
@@ -374,6 +378,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewTasMenuItem_Click(object sender, EventArgs e)
 		{
+			GlobalWin.OSD.AddMessage("new TAStudio session started");
 			StartNewSession();
 		}
 

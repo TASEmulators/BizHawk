@@ -41,5 +41,12 @@ namespace BizHawk.Client.Common
 				};
 			}
 		}
+
+		public override void StartNewRecording()
+		{
+			LagLog.Clear();
+			StateManager.Clear();
+			base.StartNewRecording();
+		}
 	}
 }
