@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common
 			get { return _mode == Moviemode.Finished; }
 		}
 
-		public void StartNewRecording()
+		public virtual void StartNewRecording()
 		{
 			_mode = Moviemode.Record;
 			if (Global.Config.EnableBackupMovies && _makeBackup && _log.Any())
