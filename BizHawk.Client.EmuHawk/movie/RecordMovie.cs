@@ -85,9 +85,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				// Header
 				movieToRecord.PopulateWithDefaultHeaderValues(AuthorBox.Text);
-
 				movieToRecord.Save();
 				GlobalWin.MainForm.StartNewMovie(movieToRecord, true);
 

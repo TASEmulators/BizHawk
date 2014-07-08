@@ -56,11 +56,8 @@ namespace BizHawk.Client.EmuHawk
 				if (AskSave())
 				{
 					SaveConfigSettings();
-					GlobalWin.OSD.AddMessage("TAStudio Disengaged");
-					if (Global.MovieSession.Movie is TasMovie)
-					{
-						GlobalWin.MainForm.StopMovie(saveChanges: false);
-					}
+					GlobalWin.MainForm.StopMovie(saveChanges: true);
+					DisengageTastudio();
 				}
 				else
 				{
@@ -186,10 +183,7 @@ namespace BizHawk.Client.EmuHawk
 				var result = MessageBox.Show("In order to use Tastudio, a new project must be created from the current movie\nThe current movie will be saved and closed, and a new project file will be created\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 				if (result == DialogResult.OK)
 				{
-					Global.MovieSession.Movie.Save();
-					var newMovie = Global.MovieSession.Movie.ToTasMovie();
-					Global.MovieSession.Movie.Stop();
-					EngageTasStudio(newMovie);
+					ConvertCurrentMovieToTasproj();
 				}
 				else
 				{
@@ -201,48 +195,93 @@ namespace BizHawk.Client.EmuHawk
 			// Start Scenario 2: A tasproj is already active
 			else if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie is TasMovie)
 			{
-				_tas = Global.MovieSession.Movie as TasMovie;
+				// Nothing to do
 			}
 
 			// Start Scenario 3: No movie, but user wants to autload their last project
 			else if (Global.Config.AutoloadTAStudioProject)
 			{
-				Global.MovieSession.Movie = new TasMovie();
-				_tas = Global.MovieSession.Movie as TasMovie;
-				LoadFileFromRecent(Global.Config.RecentTas[0]);
+				LoadProject(Global.Config.RecentTas.MostRecent);
 			}
 
 			// Start Scenario 4: No movie, default behavior of engaging tastudio with a new default project
 			else
 			{
-				EngageTasStudio();
+				NewTasMovie();
+				StartSessionFromTasMovie();
 			}
 
+			EngageTastudio();
 			SetUpColumns();
 			LoadConfigSettings();
 		}
 
-		private void EngageTasStudio(TasMovie newMovie = null)
+		private void ConvertCurrentMovieToTasproj()
 		{
-			GlobalWin.OSD.AddMessage("TAStudio engaged");
-
-			Global.MovieSession.Movie = newMovie ?? new TasMovie();
-			if (newMovie == null)
-			{
-				Global.MovieSession.Movie.PopulateWithDefaultHeaderValues();
-			}
-
-			_tas = Global.MovieSession.Movie as TasMovie;
-			StartNewSession();
+			Global.MovieSession.Movie.Save();
+			Global.MovieSession.Movie = Global.MovieSession.Movie.ToTasMovie();
+			Global.MovieSession.Movie.Save();
 		}
 
-		private void StartNewSession()
+		private void EngageTastudio()
+		{
+			GlobalWin.OSD.AddMessage("TAStudio engaged");
+			_tas = Global.MovieSession.Movie as TasMovie;
+		}
+
+		private void DisengageTastudio()
+		{
+			GlobalWin.OSD.AddMessage("TAStudio disengaged");
+			Global.MovieSession.Movie = MovieService.DefaultInstance;
+		}
+
+		private void NewTasMovie()
+		{
+			Global.MovieSession.Movie = new TasMovie();
+			_tas = Global.MovieSession.Movie as TasMovie;
+			_tas.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
+			_tas.PopulateWithDefaultHeaderValues();
+		}
+
+		private static string DefaultTasProjName()
+		{
+			return Path.Combine(
+				PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
+				PathManager.FilesystemSafeName(Global.Game) + "." + TasMovie.Extension);
+		}
+
+		private void StartSessionFromTasMovie()
 		{
 			if (AskSave())
 			{
 				GlobalWin.MainForm.StartNewMovie(_tas, record: true);
 				TasView.ItemCount = _tas.InputLogLength;
 			}
+		}
+
+		public void LoadProject(string path)
+		{
+			if (AskSave())
+			{
+				NewTasMovie();
+				_tas.Filename = path;
+
+				var loadResult = Global.MovieSession.MovieLoad();
+				if (!loadResult)
+				{
+					ToolHelpers.HandleLoadError(Global.Config.RecentTas, path);
+				}
+				else
+				{
+					Global.Config.RecentTas.Add(path);
+					RefreshDialog();
+				}
+			}
+		}
+
+		private void RefreshDialog()
+		{
+			TasView.ItemCount = _tas.InputLogLength;
 		}
 
 		private void SetUpColumns()
@@ -294,24 +333,6 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.TAStudioSettings.Wndy = Location.Y;
 			Global.Config.TAStudioSettings.Width = Right - Left;
 			Global.Config.TAStudioSettings.Height = Bottom - Top;
-		}
-
-		public void LoadFileFromRecent(string path)
-		{
-			if (AskSave())
-			{
-				_tas.Filename = path;
-				var loadResult = _tas.Load(); // TODO: Global.MovieSession.MovieLoad() needs to be called in order to set up the Movie adapter properly
-				if (!loadResult)
-				{
-					ToolHelpers.HandleLoadError(Global.Config.RecentTas, path);
-				}
-				else
-				{
-					Global.Config.RecentTas.Add(path);
-					TasView.ItemCount = _tas.InputLogLength;
-				}
-			}
 		}
 
 		private void GoToFrame(int frame)
@@ -377,14 +398,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentSubMenu.DropDownItems.Clear();
 			RecentSubMenu.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentTas, LoadFileFromRecent)
+				ToolHelpers.GenerateRecentMenu(Global.Config.RecentTas, LoadProject)
 			);
 		}
 
 		private void NewTasMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.OSD.AddMessage("new TAStudio session started");
-			StartNewSession();
+			StartSessionFromTasMovie();
 		}
 
 		private void OpenTasMenuItem_Click(object sender, EventArgs e)
