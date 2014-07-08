@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 
 
 			//If a movie is already loaded, save it before starting a new movie
-			if (Global.MovieSession.Movie.IsActive)
+			if (Global.MovieSession.Movie.IsActive && !string.IsNullOrEmpty(Global.MovieSession.Movie.Filename))
 			{
 				Global.MovieSession.Movie.Save();
 			}
