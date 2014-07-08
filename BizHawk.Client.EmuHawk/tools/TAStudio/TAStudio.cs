@@ -10,7 +10,7 @@ using BizHawk.Client.Common.MovieConversionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class TAStudio : Form, IToolForm
+	public partial class TAStudio : Form, IToolForm, IControlMainform
 	{
 		// TODO: UI flow that conveniently allows to start from savestate
 		private const string MarkerColumnName = "MarkerColumn";
@@ -129,6 +129,15 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		#region IControlMainform implementation
+
+		public void ToggleReadOnly()
+		{
+			GlobalWin.OSD.AddMessage("TAStudio does not allow manual readonly toggle");
+		}
+
+		#endregion
+
 		private void TasView_QueryItemBkColor(int index, int column, ref Color color)
 		{
 			var record = _tas[index];
@@ -227,12 +236,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.OSD.AddMessage("TAStudio engaged");
 			_tas = Global.MovieSession.Movie as TasMovie;
+			GlobalWin.MainForm.RelinquishControl(this);
 		}
 
 		private void DisengageTastudio()
 		{
 			GlobalWin.OSD.AddMessage("TAStudio disengaged");
 			Global.MovieSession.Movie = MovieService.DefaultInstance;
+			GlobalWin.MainForm.TakeControl();
 		}
 
 		private void NewTasMovie()
