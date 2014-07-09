@@ -16,7 +16,6 @@ namespace BizHawk.Client.EmuHawk
 		private const string MarkerColumnName = "MarkerColumn";
 		private const string FrameColumnName = "FrameColumn";
 
-		private readonly TasMovieMarkerList _markers = new TasMovieMarkerList();
 		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
 
 		private int _defaultWidth;
@@ -29,20 +28,11 @@ namespace BizHawk.Client.EmuHawk
 		private bool _startMarkerDrag;
 		private bool _startFrameDrag;
 
-		private Dictionary<string, string> _map = null;
-		private Dictionary<string, string> ColumnNames
+		private Dictionary<string, string> GenerateColumnNames()
 		{
-			get
-			{
-				if (_map == null)
-				{
-					var lg = new Bk2LogEntryGenerator(string.Empty);
-					lg.SetSource(Global.MovieSession.MovieControllerAdapter);
-					_map = lg.Map();
-				}
-
-				return _map;
-			}
+			var lg = Global.MovieSession.LogGeneratorInstance();
+			lg.SetSource(Global.MovieSession.MovieControllerAdapter);
+			return (lg as Bk2LogEntryGenerator).Map();
 		}
 
 		public TAStudio()
@@ -73,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 		private void TasView_QueryItemBkColor(int index, int column, ref Color color)
 		{
 			var record = _tas[index];
-			if (_markers.CurrentFrame == index + 1)
+			if (Global.Emulator.Frame == index + 1)
 			{
 				color = Color.LightBlue;
 			}
@@ -96,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (columnName == MarkerColumnName)
 				{
-					text = _markers.CurrentFrame == index + 1 ? ">" : string.Empty;
+					text = Global.Emulator.Frame == index + 1 ? ">" : string.Empty;
 				}
 				else if (columnName == FrameColumnName)
 				{
@@ -233,7 +223,7 @@ namespace BizHawk.Client.EmuHawk
 			AddColumn(MarkerColumnName, string.Empty, 18);
 			AddColumn(FrameColumnName, "Frame#", 68);
 
-			foreach (var kvp in ColumnNames)
+			foreach (var kvp in GenerateColumnNames())
 			{
 				AddColumn(kvp.Key, kvp.Value, 20 * kvp.Value.Length);
 			}

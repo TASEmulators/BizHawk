@@ -82,47 +82,8 @@ namespace BizHawk.Client.Common
 		}
 	}
 
-	/// <summary>
-	/// Specialized Marker that represents the currently emulated frame
-	/// Frame always points to Global.Emulator.Frame, and setting it isn't possible
-	/// </summary>
-	public class CurrentFrameMarker : TasMovieMarker
-	{
-		public CurrentFrameMarker()
-			: base(0)
-		{
-
-		}
-
-		public override int Frame
-		{
-			get { return Global.Emulator.Frame; }
-		}
-
-		public override string Message
-		{
-			get { return string.Empty; }
-			set { return; }
-		}
-	}
-
 	public class TasMovieMarkerList : List<TasMovieMarker>
 	{
-		private readonly CurrentFrameMarker _current;
-		public TasMovieMarkerList()
-			: base()
-		{
-			_current = new CurrentFrameMarker();
-		}
-
-		public CurrentFrameMarker CurrentFrame
-		{
-			get
-			{
-				return _current;
-			}
-		}
-
 		public override string ToString()
 		{
 			StringBuilder sb = new StringBuilder();

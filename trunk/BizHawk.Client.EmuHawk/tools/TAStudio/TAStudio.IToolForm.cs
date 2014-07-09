@@ -9,6 +9,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
+			SetUpColumns();
+
 			if (!IsHandleCreated || IsDisposed)
 			{
 				return;
@@ -35,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool AskSave()
 		{
-			if (_tas.Changes)
+			if (_tas != null && _tas.Changes)
 			{
 				GlobalWin.Sound.StopSound();
 				var result = MessageBox.Show("Save Changes?", "Tastudio", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
