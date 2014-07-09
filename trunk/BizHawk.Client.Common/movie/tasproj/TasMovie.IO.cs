@@ -29,6 +29,7 @@ namespace BizHawk.Client.Common
 				bs.PutLump(BinaryStateLump.Input, tw => tw.WriteLine(RawInputLog()));
 
 				bs.PutLump(BinaryStateLump.LagLog, (BinaryWriter bw) => bw.Write(LagLog.ToByteArray()));
+				bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
 
 				if (StartsFromSavestate)
 				{
@@ -127,6 +128,18 @@ namespace BizHawk.Client.Common
 				{
 					var bytes = br.BaseStream.ReadAllBytes();
 					LagLog = bytes.ToBools().ToList();
+				});
+
+				bl.GetLump(BinaryStateLump.Markers, true, delegate(TextReader tr)
+				{
+					string line;
+					while ((line = tr.ReadLine()) != null)
+					{
+						if (!string.IsNullOrWhiteSpace(line))
+						{
+							Markers.Add(new TasMovieMarker(line));
+						}
+					}
 				});
 
 				if (StartsFromSavestate)

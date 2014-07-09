@@ -8,7 +8,6 @@ namespace BizHawk.Client.Common
 {
 	public partial class TasMovie
 	{
-		// TODO: all these
 		public override void RecordFrame(int frame, Emulation.Common.IController source)
 		{
 			base.RecordFrame(frame, source);
@@ -30,6 +29,7 @@ namespace BizHawk.Client.Common
 
 			LagLog.RemoveRange(frame + 2, LagLog.Count - frame - 1);
 			StateManager.Invalidate(frame + 1);
+			// TODO: Markers? What does taseditor do?
 		}
 
 		public override void PokeFrame(int frame, Emulation.Common.IController source)

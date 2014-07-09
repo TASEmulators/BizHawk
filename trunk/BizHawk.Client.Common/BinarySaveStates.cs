@@ -22,7 +22,8 @@ namespace BizHawk.Client.Common
 
 		// TasMovie
 		LagLog,
-		Greenzone
+		Greenzone,
+		Markers
 	}
 
 	public class BinaryStateFileNames
@@ -56,6 +57,7 @@ namespace BizHawk.Client.Common
 			// TasMovie
 			LumpNames[BinaryStateLump.LagLog] = "LagLog";
 			LumpNames[BinaryStateLump.Greenzone] = "GreenZone";
+			LumpNames[BinaryStateLump.Markers] = "Markers";
 		}
 
 		public static string Get(BinaryStateLump lump)

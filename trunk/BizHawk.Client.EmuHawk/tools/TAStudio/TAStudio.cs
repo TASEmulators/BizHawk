@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		private const string MarkerColumnName = "MarkerColumn";
 		private const string FrameColumnName = "FrameColumn";
 
-		private readonly MarkerList _markers = new MarkerList();
+		private readonly TasMovieMarkerList _markers = new TasMovieMarkerList();
 		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
 
 		private int _defaultWidth;
