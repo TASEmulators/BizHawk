@@ -87,6 +87,10 @@ namespace BizHawk.Client.EmuHawk
 			this.OsdInBranchScreenshotsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
 			this.AutopauseAtEndOfMovieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.MetaSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.HeaderMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.CommentsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SubtitlesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SettingsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoloadProjectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -118,6 +122,7 @@ namespace BizHawk.Client.EmuHawk
             this.FileSubMenu,
             this.editToolStripMenuItem,
             this.ConfigSubMenu,
+            this.MetaSubMenu,
             this.SettingsSubMenu,
             this.HelpSubMenu});
 			this.TASMenu.Location = new System.Drawing.Point(0, 0);
@@ -189,7 +194,7 @@ namespace BizHawk.Client.EmuHawk
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(57, 6);
 			// 
 			// toolStripSeparator1
 			// 
@@ -566,6 +571,37 @@ namespace BizHawk.Client.EmuHawk
 			this.AutopauseAtEndOfMovieMenuItem.Size = new System.Drawing.Size(288, 22);
 			this.AutopauseAtEndOfMovieMenuItem.Text = "Autopause at end of Movie";
 			// 
+			// MetaSubMenu
+			// 
+			this.MetaSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.HeaderMenuItem,
+            this.CommentsMenuItem,
+            this.SubtitlesMenuItem});
+			this.MetaSubMenu.Name = "MetaSubMenu";
+			this.MetaSubMenu.Size = new System.Drawing.Size(69, 20);
+			this.MetaSubMenu.Text = "&Metadata";
+			// 
+			// HeaderMenuItem
+			// 
+			this.HeaderMenuItem.Enabled = false;
+			this.HeaderMenuItem.Name = "HeaderMenuItem";
+			this.HeaderMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.HeaderMenuItem.Text = "&Header...";
+			// 
+			// CommentsMenuItem
+			// 
+			this.CommentsMenuItem.Name = "CommentsMenuItem";
+			this.CommentsMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.CommentsMenuItem.Text = "&Comments...";
+			this.CommentsMenuItem.Click += new System.EventHandler(this.CommentsMenuItem_Click);
+			// 
+			// SubtitlesMenuItem
+			// 
+			this.SubtitlesMenuItem.Name = "SubtitlesMenuItem";
+			this.SubtitlesMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.SubtitlesMenuItem.Text = "&Subtitles...";
+			this.SubtitlesMenuItem.Click += new System.EventHandler(this.SubtitlesMenuItem_Click);
+			// 
 			// SettingsSubMenu
 			// 
 			this.SettingsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -837,5 +873,9 @@ namespace BizHawk.Client.EmuHawk
 		private BookmarksBranchesBox TasBookmarksBranchesBox;
 		private System.Windows.Forms.ToolStripStatusLabel SplicerStatusLabel;
 		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem MetaSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem HeaderMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem CommentsMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SubtitlesMenuItem;
 	}
 }
