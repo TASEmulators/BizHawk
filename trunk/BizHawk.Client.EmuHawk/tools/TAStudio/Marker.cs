@@ -8,7 +8,7 @@ using BizHawk.Client.Common;
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
-	/// Represents a TasStudio Marker
+	/// Represents a TasMovie Marker
 	/// A marker is a tagged frame with a message
 	/// </summary>
 	public class Marker
@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 
 	/// <summary>
 	/// Specialized Marker that represents the currently emulated frame
-	/// Frame always points to Global.Emulator.Frame, and settings it isn't possible
+	/// Frame always points to Global.Emulator.Frame, and setting it isn't possible
 	/// </summary>
 	public class CurrentFrameMarker : Marker
 	{
