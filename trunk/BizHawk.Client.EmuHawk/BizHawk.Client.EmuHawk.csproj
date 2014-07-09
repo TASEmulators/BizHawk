@@ -835,6 +835,14 @@
     <Compile Include="tools\TAStudio\LuaBox.Designer.cs">
       <DependentUpon>LuaBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\TAStudio\TAStudio.IControlMainForm.cs">
+      <DependentUpon>TAStudio.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\TAStudio.IToolForm.cs">
+      <DependentUpon>TAStudio.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="tools\TAStudio\Marker.cs" />
     <Compile Include="tools\TAStudio\MarkerControl.cs">
       <SubType>UserControl</SubType>
