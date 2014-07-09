@@ -879,6 +879,10 @@
     <Compile Include="tools\TAStudio\TAStudio.Designer.cs">
       <DependentUpon>TAStudio.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\TAStudio\TAStudio.ListView.cs">
+      <DependentUpon>TAStudio.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="tools\TI83\TI83KeyPad.cs">
       <SubType>Form</SubType>
     </Compile>
