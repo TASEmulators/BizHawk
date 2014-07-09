@@ -13,6 +13,7 @@ namespace BizHawk.Client.Common
 	{
 		private List<bool> LagLog = new List<bool>();
 		private readonly TasStateManager StateManager = new TasStateManager();
+		private readonly TasMovieMarkerList Markers = new TasMovieMarkerList();
 
 		public TasMovie(string path) : base(path) { }
 
@@ -46,7 +47,18 @@ namespace BizHawk.Client.Common
 		{
 			LagLog.Clear();
 			StateManager.Clear();
+			Markers.Clear();
 			base.StartNewRecording();
+		}
+
+		public void Marker(int frame, string message)
+		{
+			Markers.Add(frame, message);
+		}
+
+		public void DeleteMarker(int frame)
+		{
+			Markers.Remove(frame);
 		}
 	}
 }

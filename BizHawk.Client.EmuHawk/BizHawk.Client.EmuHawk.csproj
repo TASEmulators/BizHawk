@@ -843,7 +843,6 @@
       <DependentUpon>TAStudio.cs</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="tools\TAStudio\Marker.cs" />
     <Compile Include="tools\TAStudio\MarkerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
