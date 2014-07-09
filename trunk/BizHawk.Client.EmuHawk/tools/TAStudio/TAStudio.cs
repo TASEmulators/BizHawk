@@ -424,6 +424,24 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		#region Metadata
+
+		private void CommentsMenuItem_Click(object sender, EventArgs e)
+		{
+			var form = new EditCommentsForm();
+			form.GetMovie(_tas);
+			form.ShowDialog();
+		}
+
+		private void SubtitlesMenuItem_Click(object sender, EventArgs e)
+		{
+			var form = new EditSubtitlesForm { ReadOnly = true };
+			form.GetMovie(Global.MovieSession.Movie);
+			form.ShowDialog();
+		}
+
+		#endregion
+
 		#region Settings Menu
 
 		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
