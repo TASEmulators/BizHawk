@@ -145,6 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			EngageTastudio();
 			SetUpColumns();
 			LoadConfigSettings();
+			RefreshDialog();
 		}
 
 		private void ConvertCurrentMovieToTasproj()
@@ -187,8 +188,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (AskSave())
 			{
-				GlobalWin.MainForm.StartNewMovie(_tas, record: true);
-				TasView.ItemCount = _tas.InputLogLength;
+				GlobalWin.MainForm.StartNewMovie(_tas, record: false);
+				RefreshDialog();
 			}
 		}
 
@@ -196,19 +197,21 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (AskSave())
 			{
-				NewTasMovie();
-				_tas.Filename = path;
+				var movie = new TasMovie
+				{
+					Filename = path
+				};
 
-				var loadResult = Global.MovieSession.MovieLoad();
-				if (!loadResult)
+				var file = new FileInfo(path);
+				if (!file.Exists)
 				{
 					ToolHelpers.HandleLoadError(Global.Config.RecentTas, path);
 				}
-				else
-				{
-					Global.Config.RecentTas.Add(path);
-					RefreshDialog();
-				}
+
+				GlobalWin.MainForm.StartNewMovie(movie, record: false);
+				_tas = Global.MovieSession.Movie as TasMovie;
+				Global.Config.RecentTas.Add(path);
+				RefreshDialog();
 			}
 		}
 
@@ -351,7 +354,7 @@ namespace BizHawk.Client.EmuHawk
 					_tas.Filename = file.FullName;
 					_tas.Load();
 					Global.Config.RecentTas.Add(_tas.Filename);
-					TasView.ItemCount = _tas.InputLogLength;
+					RefreshDialog();
 					MessageStatusLabel.Text = Path.GetFileName(_tas.Filename) + " loaded.";
 				}
 			}
