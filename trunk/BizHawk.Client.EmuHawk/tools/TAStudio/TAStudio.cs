@@ -93,7 +93,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				NewTasMovie();
-				StartSessionFromTasMovie();
+				GlobalWin.MainForm.StartNewMovie(_tas, record: true);
 			}
 
 			EngageTastudio();
@@ -279,7 +279,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			ToBk2MenuItem.Enabled = 
+			ToBk2MenuItem.Enabled =
 				SaveTASMenuItem.Enabled =
 				!string.IsNullOrWhiteSpace(_tas.Filename);
 		}
@@ -344,7 +344,7 @@ namespace BizHawk.Client.EmuHawk
 			var bk2 = _tas.ToBk2();
 			bk2.Save();
 			MessageStatusLabel.Text = Path.GetFileName(bk2.Filename) + " created.";
-			
+
 		}
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
