@@ -41,7 +41,18 @@ namespace BizHawk.Client.Common
 
 		public bool this[string button]
 		{
-			get { return MyBoolButtons[button]; }
+			get
+			{
+				return MyBoolButtons[button];
+			}
+
+			set
+			{
+				if (MyBoolButtons.ContainsKey(button))
+				{
+					MyBoolButtons[button] = value;
+				}
+			}
 		}
 
 		public bool IsPressed(string button)

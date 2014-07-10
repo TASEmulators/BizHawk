@@ -84,5 +84,44 @@ namespace BizHawk.Client.Common
 
 			return "!";
 		}
+
+		public void ToggleBoolState(int frame, string buttonName)
+		{
+			if (frame < _log.Count)
+			{
+				var adapter = GetInputState(frame) as Bk2ControllerAdapter;
+				adapter[buttonName] = !adapter.IsPressed(buttonName);
+
+				var lg = LogGeneratorInstance();
+				lg.SetSource(adapter);
+				_log[frame] = lg.GenerateLogEntry();
+				Changes = true;
+			}
+		}
+
+		public void SetBoolState(int frame, string buttonName, bool val)
+		{
+			if (frame < _log.Count)
+			{
+				var adapter = GetInputState(frame) as Bk2ControllerAdapter;
+				var old = adapter[buttonName];
+				adapter[buttonName] = val;
+
+				var lg = LogGeneratorInstance();
+				lg.SetSource(adapter);
+				_log[frame] = lg.GenerateLogEntry();
+
+				if (old != val)
+				{
+					Changes = true;
+				}
+			}
+		}
+
+		public bool BoolIsPressed(int frame, string buttonName)
+		{
+			var adapter = GetInputState(frame) as Bk2ControllerAdapter;
+			return adapter.IsPressed(buttonName);
+		}
 	}
 }
