@@ -163,8 +163,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public void StopMovie(bool saveChanges = true)
 		{
-			Global.MovieSession.StopMovie(saveChanges);
-			SetMainformMovieInfo();
+			if (IsSlave && _master.WantsToCOntrolStopMovie)
+			{
+				_master.StopMovie();
+			}
+			else
+			{
+				Global.MovieSession.StopMovie(saveChanges);
+				SetMainformMovieInfo();
+			}
 		}
 	}
 }
