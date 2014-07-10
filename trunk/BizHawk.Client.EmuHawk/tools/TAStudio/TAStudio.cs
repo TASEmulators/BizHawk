@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 
 		// Input Painting
 		private string _startDrawColumn = string.Empty;
-		//private bool _startOn;
+		private bool _startOn;
 		private bool _startMarkerDrag;
 		private bool _startFrameDrag;
 

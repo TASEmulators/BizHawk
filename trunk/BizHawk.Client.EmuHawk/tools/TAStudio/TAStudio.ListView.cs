@@ -82,11 +82,18 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					//_tas.ToggleButton(TasView.PointedCell.Row.Value, TasView.PointedCell.Column);
-					TasView.Refresh();
+					var frame = TasView.PointedCell.Row.Value;
+					var buttonName = TasView.PointedCell.Column;
 
-					_startDrawColumn = TasView.PointedCell.Column;
-					//_startOn = _tas.IsPressed(TasView.PointedCell.Row.Value, TasView.PointedCell.Column);
+					// TODO: if float, store the original value and copy that on cell chaned
+					if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
+					{
+						_tas.ToggleBoolState(TasView.PointedCell.Row.Value, TasView.PointedCell.Column);
+						TasView.Refresh();
+
+						_startDrawColumn = TasView.PointedCell.Column;
+						_startOn = _tas.BoolIsPressed(frame, buttonName);
+					}
 				}
 			}
 		}
@@ -131,7 +138,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (TasView.IsPaintDown && e.NewCell.Row.HasValue && !string.IsNullOrEmpty(_startDrawColumn))
 			{
-				//_tas.SetBoolButton(e.NewCell.Row.Value, _startDrawColumn, /*_startOn*/ false); // Notice it uses new row, old column, you can only paint across a single column
+				_tas.SetBoolState(e.NewCell.Row.Value, _startDrawColumn, _startOn); // Notice it uses new row, old column, you can only paint across a single column
 				TasView.Refresh();
 			}
 		}

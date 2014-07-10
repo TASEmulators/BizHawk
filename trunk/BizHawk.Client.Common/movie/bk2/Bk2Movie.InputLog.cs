@@ -8,7 +8,7 @@ namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie
 	{
-		private readonly List<string> _log = new List<string>();
+		protected readonly List<string> _log = new List<string>();
 		private string _logKey = string.Empty;
 
 		public string GetInputLog()
