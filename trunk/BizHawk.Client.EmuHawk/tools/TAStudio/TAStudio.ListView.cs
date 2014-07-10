@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 		private void TasView_QueryItemBkColor(int index, int column, ref Color color)
 		{
 			var record = _tas[index];
-			if (Global.Emulator.Frame == index + 1)
+			if (Global.Emulator.Frame == index)
 			{
 				color = Color.LightBlue;
 			}
@@ -46,11 +46,11 @@ namespace BizHawk.Client.EmuHawk
 
 				if (columnName == MarkerColumnName)
 				{
-					text = Global.Emulator.Frame == index + 1 ? ">" : string.Empty;
+					text = Global.Emulator.Frame == index ? ">" : string.Empty;
 				}
 				else if (columnName == FrameColumnName)
 				{
-					text = (index + 1).ToString().PadLeft(5, '0');
+					text = (index).ToString().PadLeft(5, '0');
 				}
 				else
 				{
