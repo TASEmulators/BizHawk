@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace BizHawk.Client.Common
@@ -75,6 +77,51 @@ namespace BizHawk.Client.Common
 		public void Clear()
 		{
 			States.Clear();
+		}
+
+		public byte[] ToArray()
+		{
+			MemoryStream ms = new MemoryStream();
+			var bytes = BitConverter.GetBytes(States.Count);
+			ms.Write(bytes, 0, bytes.Length);
+			foreach (var kvp in States.OrderBy(s => s.Key))
+			{
+				var frame = BitConverter.GetBytes(kvp.Key);
+				ms.Write(frame, 0, frame.Length);
+
+				var stateLen = BitConverter.GetBytes(kvp.Value.Length);
+				ms.Write(stateLen, 0, stateLen.Length);
+				ms.Write(kvp.Value, 0, kvp.Value.Length);
+			}
+
+			return ms.ToArray();
+		}
+
+		// Map:
+		// 4 bytes - total savestate count
+		//[Foreach state]
+		// 4 bytes - frame
+		// 4 bytes - length of savestate
+		// 0 - n savestate
+		public void FromArray(byte[] bytes)
+		{
+			var position = 0;
+			var stateCount = BitConverter.ToInt32(bytes, 0);
+			position += 4;
+			for (int i = 0; i < stateCount; i++)
+			{
+				var frame = BitConverter.ToInt32(bytes, position);
+				position += 4;
+				var stateLen = BitConverter.ToInt32(bytes, position);
+				position += 4;
+				var state = bytes
+					.Skip(position)
+					.Take(stateLen)
+					.ToArray();
+
+				position += stateLen;
+				States.Add(frame, state);
+			}
 		}
 	}
 }

@@ -28,6 +28,7 @@ namespace BizHawk.Client.Common
 
 				bs.PutLump(BinaryStateLump.Input, tw => tw.WriteLine(RawInputLog()));
 
+				bs.PutLump(BinaryStateLump.Greenzone, (BinaryWriter bw) => bw.Write(StateManager.ToArray()));
 				bs.PutLump(BinaryStateLump.LagLog, (BinaryWriter bw) => bw.Write(LagLog.ToByteArray()));
 				bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
 
@@ -124,24 +125,6 @@ namespace BizHawk.Client.Common
 					ExtractInputLog(tr, out errorMessage);
 				});
 
-				bl.GetLump(BinaryStateLump.LagLog, true, delegate(BinaryReader br)
-				{
-					var bytes = br.BaseStream.ReadAllBytes();
-					LagLog = bytes.ToBools().ToList();
-				});
-
-				bl.GetLump(BinaryStateLump.Markers, true, delegate(TextReader tr)
-				{
-					string line;
-					while ((line = tr.ReadLine()) != null)
-					{
-						if (!string.IsNullOrWhiteSpace(line))
-						{
-							Markers.Add(new TasMovieMarker(line));
-						}
-					}
-				});
-
 				if (StartsFromSavestate)
 				{
 					bl.GetCoreState(
@@ -154,6 +137,30 @@ namespace BizHawk.Client.Common
 							TextSavestate = tr.ReadToEnd();
 						});
 				}
+
+				// TasMovie enhanced information
+				bl.GetLump(BinaryStateLump.LagLog, false, delegate(BinaryReader br)
+				{
+					var bytes = br.BaseStream.ReadAllBytes();
+					LagLog = bytes.ToBools().ToList();
+				});
+
+				bl.GetLump(BinaryStateLump.Greenzone, false, delegate(BinaryReader br)
+				{
+					StateManager.FromArray(br.BaseStream.ReadAllBytes());
+				});
+
+				bl.GetLump(BinaryStateLump.Markers, false, delegate(TextReader tr)
+				{
+					string line;
+					while ((line = tr.ReadLine()) != null)
+					{
+						if (!string.IsNullOrWhiteSpace(line))
+						{
+							Markers.Add(new TasMovieMarker(line));
+						}
+					}
+				});
 			}
 			return true;
 		}
