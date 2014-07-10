@@ -237,6 +237,11 @@ namespace BizHawk.Client.EmuHawk
 				= SaveMovieMenuItem.Enabled
 				= Global.MovieSession.Movie.IsActive;
 
+			PlayMovieMenuItem.Enabled =
+				RecordMovieMenuItem.Enabled =
+				RecentMovieSubMenu.Enabled =
+				!Global.MovieSession.Movie.IsActive;
+
 			ReadonlyMenuItem.Checked = Global.MovieSession.ReadOnly;
 			AutomaticallyBackupMoviesMenuItem.Checked = Global.Config.EnableBackupMovies;
 			FullMovieLoadstatesMenuItem.Checked = Global.Config.VBAStyleMovieLoadState;
@@ -251,11 +256,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RecentMovieSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			RecentMenuItem.DropDownItems.Clear();
-			RecentMenuItem.DropDownItems.AddRange(
+			RecentMovieSubMenu.DropDownItems.Clear();
+			RecentMovieSubMenu.DropDownItems.AddRange(
 				ToolHelpers.GenerateRecentMenu(Global.Config.RecentMovies, LoadMoviesFromRecent)
 			);
-			RecentMenuItem.DropDownItems.Add(
+			RecentMovieSubMenu.DropDownItems.Add(
 				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentMovies)
 			);
 		}
