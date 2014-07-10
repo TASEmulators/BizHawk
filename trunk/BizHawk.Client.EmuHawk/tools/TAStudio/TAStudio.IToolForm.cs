@@ -33,6 +33,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
+
+			if (_tas != null)
+			{
+				RefreshDialog();
+			}
 		}
 
 		public bool AskSave()
