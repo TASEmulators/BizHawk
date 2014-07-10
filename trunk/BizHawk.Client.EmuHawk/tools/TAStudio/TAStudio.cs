@@ -460,31 +460,5 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#endregion
-
-		#region Classes
-
-		public class TasClipboardEntry
-		{
-			private readonly Dictionary<string, bool> _buttons;
-			private readonly int _frame;
-
-			public TasClipboardEntry(int frame, Dictionary<string, bool> buttons)
-			{
-				_frame = frame;
-				_buttons = buttons;
-			}
-
-			public int Frame
-			{
-				get { return _frame; }
-			}
-
-			public Dictionary<string, bool> Buttons
-			{
-				get { return _buttons; }
-			}
-		}
-
-		#endregion
 	}
 }

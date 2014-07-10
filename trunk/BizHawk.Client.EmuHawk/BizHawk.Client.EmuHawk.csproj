@@ -883,6 +883,7 @@
       <DependentUpon>TAStudio.cs</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="tools\TAStudio\TAStudioClipboard.cs" />
     <Compile Include="tools\TI83\TI83KeyPad.cs">
       <SubType>Form</SubType>
     </Compile>
