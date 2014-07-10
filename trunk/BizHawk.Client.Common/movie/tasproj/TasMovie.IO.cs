@@ -28,7 +28,13 @@ namespace BizHawk.Client.Common
 
 				bs.PutLump(BinaryStateLump.Input, tw => tw.WriteLine(RawInputLog()));
 
-				bs.PutLump(BinaryStateLump.Greenzone, (BinaryWriter bw) => bw.Write(StateManager.ToArray()));
+				
+				bs.PutLump(BinaryStateLump.GreenzoneSettings, tw => tw.WriteLine(StateManager.Settings.ToString()));
+				if (StateManager.Settings.SaveGreenzone)
+				{
+					bs.PutLump(BinaryStateLump.Greenzone, (BinaryWriter bw) => bw.Write(StateManager.ToArray()));
+				}
+
 				bs.PutLump(BinaryStateLump.LagLog, (BinaryWriter bw) => bw.Write(LagLog.ToByteArray()));
 				bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
 
@@ -145,10 +151,18 @@ namespace BizHawk.Client.Common
 					LagLog = bytes.ToBools().ToList();
 				});
 
-				bl.GetLump(BinaryStateLump.Greenzone, false, delegate(BinaryReader br)
+				bl.GetLump(BinaryStateLump.GreenzoneSettings, false, delegate(TextReader tr)
 				{
-					StateManager.FromArray(br.BaseStream.ReadAllBytes());
+					StateManager.Settings.PopulateFromString(tr.ReadToEnd());
 				});
+
+				if (StateManager.Settings.SaveGreenzone)
+				{
+					bl.GetLump(BinaryStateLump.Greenzone, false, delegate(BinaryReader br)
+					{
+						StateManager.FromArray(br.BaseStream.ReadAllBytes());
+					});
+				}
 
 				bl.GetLump(BinaryStateLump.Markers, false, delegate(TextReader tr)
 				{

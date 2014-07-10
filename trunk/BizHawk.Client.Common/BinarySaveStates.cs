@@ -23,6 +23,7 @@ namespace BizHawk.Client.Common
 		// TasMovie
 		LagLog,
 		Greenzone,
+		GreenzoneSettings,
 		Markers
 	}
 
@@ -57,6 +58,7 @@ namespace BizHawk.Client.Common
 			// TasMovie
 			LumpNames[BinaryStateLump.LagLog] = "LagLog";
 			LumpNames[BinaryStateLump.Greenzone] = "GreenZone";
+			LumpNames[BinaryStateLump.GreenzoneSettings] = "GreenZoneSettings";
 			LumpNames[BinaryStateLump.Markers] = "Markers";
 		}
 
