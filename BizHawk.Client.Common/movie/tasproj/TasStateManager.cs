@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace BizHawk.Client.Common
 {
@@ -12,6 +14,13 @@ namespace BizHawk.Client.Common
 	public class TasStateManager
 	{
 		private readonly Dictionary<int, byte[]> States = new Dictionary<int, byte[]>();
+
+		public TasStateManager()
+		{
+			Settings = new ManagerSettings();
+		}
+
+		public ManagerSettings Settings { get; set; }
 
 		/// <summary>
 		/// Retrieves the savestate for the given frame,
@@ -45,6 +54,11 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
+				if (Used + state.Length >= Settings.Cap)
+				{
+					States.Remove(0);
+				}
+
 				States.Add(frame, state);
 			}
 		}
@@ -121,6 +135,55 @@ namespace BizHawk.Client.Common
 
 				position += stateLen;
 				States.Add(frame, state);
+			}
+		}
+
+		private int Used
+		{
+			get
+			{
+				return States.Sum(s => s.Value.Length);
+			}
+		}
+
+		public class ManagerSettings
+		{
+			public ManagerSettings()
+			{
+				SaveGreenzone = true;
+				Capacitymb = 512;
+			}
+
+			/// <summary>
+			/// Whether or not to save greenzone information to disk
+			/// </summary>
+			public bool SaveGreenzone { get; set; }
+
+			/// <summary>
+			/// The total amount of memory to devote to greenzone in megabytes
+			/// </summary>
+			public int Capacitymb { get; set; }
+
+			public int Cap
+			{
+				get { return Capacitymb * 1024 * 1024; }
+			}
+
+			public override string ToString()
+			{
+				StringBuilder sb = new StringBuilder();
+
+				sb.AppendLine(SaveGreenzone.ToString());
+				sb.AppendLine(Capacitymb.ToString());
+
+				return sb.ToString();
+			}
+
+			public void PopulateFromString(string settings)
+			{
+				var lines = settings.Split(new [] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+				SaveGreenzone = bool.Parse(lines[0]);
+				Capacitymb = int.Parse(lines[1]);
 			}
 		}
 	}
