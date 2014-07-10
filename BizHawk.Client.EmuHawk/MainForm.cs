@@ -1896,7 +1896,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleReadOnly()
 		{
-			if (IsSlave)
+			if (IsSlave && _master.WantsToControlReadOnly)
 			{
 				_master.ToggleReadOnly();
 			}

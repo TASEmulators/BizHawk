@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 				if (AskSave())
 				{
 					SaveConfigSettings();
-					GlobalWin.MainForm.StopMovie(saveChanges: true);
+					GlobalWin.MainForm.StopMovie(saveChanges: false);
 					DisengageTastudio();
 				}
 				else
@@ -138,11 +138,12 @@ namespace BizHawk.Client.EmuHawk
 				PathManager.FilesystemSafeName(Global.Game) + "." + TasMovie.Extension);
 		}
 
-		private void StartSessionFromTasMovie()
+		private void StartNewTasMovie()
 		{
 			if (AskSave())
 			{
-				GlobalWin.MainForm.StartNewMovie(_tas, record: false);
+				NewTasMovie();
+				GlobalWin.MainForm.StartNewMovie(_tas, record: true);
 				RefreshDialog();
 			}
 		}
@@ -295,7 +296,7 @@ namespace BizHawk.Client.EmuHawk
 		private void NewTasMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.OSD.AddMessage("new TAStudio session started");
-			StartSessionFromTasMovie();
+			StartNewTasMovie();
 		}
 
 		private void OpenTasMenuItem_Click(object sender, EventArgs e)
