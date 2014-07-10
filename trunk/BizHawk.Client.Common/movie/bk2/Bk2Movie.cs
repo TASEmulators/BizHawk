@@ -96,7 +96,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string GetInput(int frame)
+		public virtual string GetInput(int frame)
 		{
 			if (frame < FrameCount && frame >= 0)
 			{

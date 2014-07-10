@@ -123,5 +123,15 @@ namespace BizHawk.Client.Common
 			var adapter = GetInputState(frame) as Bk2ControllerAdapter;
 			return adapter.IsPressed(buttonName);
 		}
+
+		public override string GetInput(int frame)
+		{
+			if (Global.Emulator.Frame == frame && !StateManager.HasState(frame))
+			{
+				StateManager.Capture();
+			}
+
+			return base.GetInput(frame);
+		}
 	}
 }
