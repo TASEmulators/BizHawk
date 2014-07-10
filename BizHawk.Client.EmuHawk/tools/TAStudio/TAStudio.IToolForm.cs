@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				TasView.ensureVisible(Global.Emulator.Frame - 1);
+				TasView.ensureVisible(Global.Emulator.Frame);
 			}
 		}
 
