@@ -47,6 +47,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public bool HasState(int frame)
+		{
+			return States.ContainsKey(frame);
+		}
+
 		/// <summary>
 		/// Clears out all savestates after the given frame number
 		/// </summary>
