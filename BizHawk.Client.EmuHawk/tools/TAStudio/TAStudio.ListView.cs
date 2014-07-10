@@ -32,7 +32,6 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var columnName = TasView.Columns[column].Name;
-				//var columnText = TasView.Columns[column].Text;
 
 				if (columnName == MarkerColumnName)
 				{
@@ -44,9 +43,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					//Serialize TODO
-					//text = _tas[index].IsPressed(columnName) ? columnText : string.Empty;
-					text = string.Empty;
+					text = _tas.DisplayValue(index, columnName);
 				}
 			}
 			catch (Exception ex)

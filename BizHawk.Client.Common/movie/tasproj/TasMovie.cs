@@ -60,5 +60,29 @@ namespace BizHawk.Client.Common
 		{
 			Markers.Remove(frame);
 		}
+
+		private readonly Bk2MnemonicConstants Mnemonics = new Bk2MnemonicConstants();
+		/// <summary>
+		/// Returns the mnemonic value for boolean buttons, and actual value for floats,
+		/// for a given frame and button
+		/// </summary>
+		public string DisplayValue(int frame, string buttonName)
+		{
+			var adapter = GetInputState(frame);
+
+			if (adapter.Type.BoolButtons.Contains(buttonName))
+			{
+				return adapter.IsPressed(buttonName) ?
+					Mnemonics[buttonName].ToString() :
+					string.Empty;
+			}
+
+			if (adapter.Type.FloatControls.Contains(buttonName))
+			{
+				adapter.GetFloat(buttonName);
+			}
+
+			return "!";
+		}
 	}
 }
