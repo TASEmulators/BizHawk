@@ -17,13 +17,24 @@ namespace BizHawk.Client.EmuHawk
 			{
 				color = Color.LightBlue;
 			}
-			else if (!record.HasState)
-			{
-				color = BackColor;
-			}
 			else
 			{
-				color = record.Lagged ? Color.Pink : Color.LightGreen;
+				if (record.Lagged.HasValue)
+				{
+					if (record.Lagged.Value)
+					{
+						color = record.HasState ? Color.LightGreen :
+							Color.FromArgb(Color.LightGreen.ToArgb() + 0x00111100);
+					}
+					else
+					{
+						color = record.HasState ? Color.Pink : Color.LightPink;
+					}
+				}
+				else
+				{
+					color = Color.White;
+				}
 			}
 		}
 

@@ -38,7 +38,7 @@ namespace BizHawk.Client.Common
 				{
 					State = StateManager[index],
 					LogEntry = GetInput(index),
-					Lagged = (index < LagLog.Count) ? LagLog[index] : false
+					Lagged = (index < LagLog.Count) ? LagLog[index] : (bool?)null
 				};
 			}
 		}
