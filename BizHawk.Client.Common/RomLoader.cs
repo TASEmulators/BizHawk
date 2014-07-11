@@ -220,7 +220,7 @@ namespace BizHawk.Client.Common
 						{
 							case "GEN":
 								var genesis = new GPGX(
-										nextComm, null, disc, "GEN", GetCoreSyncSettings<GPGX>());
+										nextComm, null, disc, "GEN", GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
 										nextEmulator = genesis;
 								break;
 							case "SAT":
@@ -335,7 +335,7 @@ namespace BizHawk.Client.Common
 								nextEmulator = new PCEngine(nextComm, game, rom.RomData, GetCoreSettings<PCEngine>(), GetCoreSyncSettings<PCEngine>());
 								break;
 							case "GEN":
-								nextEmulator = new GPGX(nextComm, rom.RomData, null, "GEN", GetCoreSyncSettings<GPGX>());
+								nextEmulator = new GPGX(nextComm, rom.RomData, null, "GEN", GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
 								break;
 							case "TI83":
 								nextEmulator = new TI83(nextComm, game, rom.RomData, GetCoreSettings<TI83>());
