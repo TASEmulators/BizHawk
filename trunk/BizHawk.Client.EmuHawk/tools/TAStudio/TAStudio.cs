@@ -421,6 +421,7 @@ namespace BizHawk.Client.EmuHawk
 			_tas.RemoveFrames(list);
 
 			SetSplicer();
+			TasView.DeselectAll();
 			RefreshDialog();
 		}
 
@@ -434,6 +435,20 @@ namespace BizHawk.Client.EmuHawk
 				_tas.ClearFrame(frame);
 			}
 
+			RefreshDialog();
+		}
+
+		private void DeleteFramesMenuItem_Click(object sender, EventArgs e)
+		{
+			_tasClipboard.Clear();
+			var list = TasView.SelectedIndices
+				.OfType<int>()
+				.ToArray();
+
+			_tas.RemoveFrames(list);
+
+			SetSplicer();
+			TasView.DeselectAll();
 			RefreshDialog();
 		}
 
@@ -535,6 +550,14 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region Dialog Events
+
+		private void TAStudio_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Delete)
+			{
+				DeleteFramesMenuItem_Click(null, null);
+			}
+		}
 
 		protected override void OnShown(EventArgs e)
 		{
