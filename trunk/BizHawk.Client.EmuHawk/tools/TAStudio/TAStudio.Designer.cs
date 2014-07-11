@@ -67,17 +67,13 @@ namespace BizHawk.Client.EmuHawk
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.TruncateMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ConfigSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.ProjectOptionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SetMaxUndoLevelsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SetGreenzoneCapacityMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
-			this.EnableGreenzoningMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutofirePatternSkipsLagMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoadjustInputMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
 			this.DrawInputByDraggingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CombineConsecutiveRecordingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.Use1PKeysMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.UseInputKeysItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.BindMarkersToInputMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -89,6 +85,7 @@ namespace BizHawk.Client.EmuHawk
 			this.AutopauseAtEndOfMovieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MetaSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.HeaderMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.GreenzoneSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CommentsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SubtitlesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SettingsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -416,17 +413,13 @@ namespace BizHawk.Client.EmuHawk
 			// ConfigSubMenu
 			// 
 			this.ConfigSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ProjectOptionsMenuItem,
             this.SetMaxUndoLevelsMenuItem,
-            this.SetGreenzoneCapacityMenuItem,
             this.toolStripSeparator9,
-            this.EnableGreenzoningMenuItem,
             this.AutofirePatternSkipsLagMenuItem,
             this.AutoadjustInputMenuItem,
             this.toolStripSeparator11,
             this.DrawInputByDraggingMenuItem,
             this.CombineConsecutiveRecordingsMenuItem,
-            this.Use1PKeysMenuItem,
             this.UseInputKeysItem,
             this.toolStripSeparator4,
             this.BindMarkersToInputMenuItem,
@@ -441,13 +434,6 @@ namespace BizHawk.Client.EmuHawk
 			this.ConfigSubMenu.Text = "&Config";
 			this.ConfigSubMenu.DropDownOpened += new System.EventHandler(this.ConfigSubMenu_DropDownOpened);
 			// 
-			// ProjectOptionsMenuItem
-			// 
-			this.ProjectOptionsMenuItem.Enabled = false;
-			this.ProjectOptionsMenuItem.Name = "ProjectOptionsMenuItem";
-			this.ProjectOptionsMenuItem.Size = new System.Drawing.Size(288, 22);
-			this.ProjectOptionsMenuItem.Text = "&Project file saving options";
-			// 
 			// SetMaxUndoLevelsMenuItem
 			// 
 			this.SetMaxUndoLevelsMenuItem.Enabled = false;
@@ -455,24 +441,10 @@ namespace BizHawk.Client.EmuHawk
 			this.SetMaxUndoLevelsMenuItem.Size = new System.Drawing.Size(288, 22);
 			this.SetMaxUndoLevelsMenuItem.Text = "Set max Undo Levels";
 			// 
-			// SetGreenzoneCapacityMenuItem
-			// 
-			this.SetGreenzoneCapacityMenuItem.Enabled = false;
-			this.SetGreenzoneCapacityMenuItem.Name = "SetGreenzoneCapacityMenuItem";
-			this.SetGreenzoneCapacityMenuItem.Size = new System.Drawing.Size(288, 22);
-			this.SetGreenzoneCapacityMenuItem.Text = "Set Greenzone capacity";
-			// 
 			// toolStripSeparator9
 			// 
 			this.toolStripSeparator9.Name = "toolStripSeparator9";
 			this.toolStripSeparator9.Size = new System.Drawing.Size(285, 6);
-			// 
-			// EnableGreenzoningMenuItem
-			// 
-			this.EnableGreenzoningMenuItem.Enabled = false;
-			this.EnableGreenzoningMenuItem.Name = "EnableGreenzoningMenuItem";
-			this.EnableGreenzoningMenuItem.Size = new System.Drawing.Size(288, 22);
-			this.EnableGreenzoningMenuItem.Text = "Enable Greenzoning";
 			// 
 			// AutofirePatternSkipsLagMenuItem
 			// 
@@ -506,13 +478,6 @@ namespace BizHawk.Client.EmuHawk
 			this.CombineConsecutiveRecordingsMenuItem.Name = "CombineConsecutiveRecordingsMenuItem";
 			this.CombineConsecutiveRecordingsMenuItem.Size = new System.Drawing.Size(288, 22);
 			this.CombineConsecutiveRecordingsMenuItem.Text = "Combine consecutive Recordings/Draws";
-			// 
-			// Use1PKeysMenuItem
-			// 
-			this.Use1PKeysMenuItem.Enabled = false;
-			this.Use1PKeysMenuItem.Name = "Use1PKeysMenuItem";
-			this.Use1PKeysMenuItem.Size = new System.Drawing.Size(288, 22);
-			this.Use1PKeysMenuItem.Text = "Use 1P keys for all single Recordings";
 			// 
 			// UseInputKeysItem
 			// 
@@ -575,6 +540,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.MetaSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.HeaderMenuItem,
+            this.GreenzoneSettingsMenuItem,
             this.CommentsMenuItem,
             this.SubtitlesMenuItem});
 			this.MetaSubMenu.Name = "MetaSubMenu";
@@ -584,21 +550,28 @@ namespace BizHawk.Client.EmuHawk
 			// HeaderMenuItem
 			// 
 			this.HeaderMenuItem.Name = "HeaderMenuItem";
-			this.HeaderMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.HeaderMenuItem.Size = new System.Drawing.Size(184, 22);
 			this.HeaderMenuItem.Text = "&Header...";
 			this.HeaderMenuItem.Click += new System.EventHandler(this.HeaderMenuItem_Click);
+			// 
+			// GreenzoneSettingsMenuItem
+			// 
+			this.GreenzoneSettingsMenuItem.Name = "GreenzoneSettingsMenuItem";
+			this.GreenzoneSettingsMenuItem.Size = new System.Drawing.Size(184, 22);
+			this.GreenzoneSettingsMenuItem.Text = "&Greenzone Settings...";
+			this.GreenzoneSettingsMenuItem.Click += new System.EventHandler(this.GreenzoneSettingsMenuItem_Click);
 			// 
 			// CommentsMenuItem
 			// 
 			this.CommentsMenuItem.Name = "CommentsMenuItem";
-			this.CommentsMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.CommentsMenuItem.Size = new System.Drawing.Size(184, 22);
 			this.CommentsMenuItem.Text = "&Comments...";
 			this.CommentsMenuItem.Click += new System.EventHandler(this.CommentsMenuItem_Click);
 			// 
 			// SubtitlesMenuItem
 			// 
 			this.SubtitlesMenuItem.Name = "SubtitlesMenuItem";
-			this.SubtitlesMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.SubtitlesMenuItem.Size = new System.Drawing.Size(184, 22);
 			this.SubtitlesMenuItem.Text = "&Subtitles...";
 			this.SubtitlesMenuItem.Click += new System.EventHandler(this.SubtitlesMenuItem_Click);
 			// 
@@ -837,21 +810,17 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem SelectBetweenMarkersMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ReselectClipboardMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-		private System.Windows.Forms.ToolStripMenuItem ProjectOptionsMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
 		private System.Windows.Forms.ToolStripMenuItem HelpSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem EnableTooltipsMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
 		private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SetMaxUndoLevelsMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SetGreenzoneCapacityMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem EnableGreenzoningMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AutofirePatternSkipsLagMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AutoadjustInputMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
 		private System.Windows.Forms.ToolStripMenuItem DrawInputByDraggingMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem CombineConsecutiveRecordingsMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem Use1PKeysMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem UseInputKeysItem;
 		private System.Windows.Forms.ToolStripMenuItem BindMarkersToInputMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem EmptyNewMarkerNotesMenuItem;
@@ -877,5 +846,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem HeaderMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem CommentsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SubtitlesMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem GreenzoneSettingsMenuItem;
 	}
 }

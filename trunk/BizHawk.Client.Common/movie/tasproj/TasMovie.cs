@@ -133,5 +133,10 @@ namespace BizHawk.Client.Common
 
 			return base.GetInput(frame);
 		}
+
+		public TasStateManager.ManagerSettings GreenzoneSettings
+		{
+			get { return StateManager.Settings;  }
+		}
 	}
 }

@@ -396,6 +396,12 @@ namespace BizHawk.Client.EmuHawk
 
 		}
 
+		private void GreenzoneSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			new GreenzoneSettings(_tas.GreenzoneSettings).Show();
+			UpdateChangesIndicator();
+		}
+
 		private void CommentsMenuItem_Click(object sender, EventArgs e)
 		{
 			var form = new EditCommentsForm();
