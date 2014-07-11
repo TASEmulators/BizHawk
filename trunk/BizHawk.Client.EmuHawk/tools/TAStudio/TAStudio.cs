@@ -360,16 +360,16 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		#region Config
+		#region Edit
 
-		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
+		private void DeselectMenuItem_Click(object sender, EventArgs e)
 		{
-			DrawInputByDraggingMenuItem.Checked = Global.Config.TAStudioDrawInput;
+			TasView.DeselectAll();
 		}
 
-		private void DrawInputByDraggingMenuItem_Click(object sender, EventArgs e)
+		private void SelectAllMenuItem_Click(object sender, EventArgs e)
 		{
-			TasView.InputPaintingMode = Global.Config.TAStudioDrawInput ^= true;
+			TasView.SelectAll();
 		}
 
 		private void CopyMenuItem_Click(object sender, EventArgs e)
@@ -389,6 +389,20 @@ namespace BizHawk.Client.EmuHawk
 			Clipboard.SetDataObject(sb.ToString());
 
 			SetSplicer();
+		}
+
+		#endregion
+
+		#region Config
+
+		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			DrawInputByDraggingMenuItem.Checked = Global.Config.TAStudioDrawInput;
+		}
+
+		private void DrawInputByDraggingMenuItem_Click(object sender, EventArgs e)
+		{
+			TasView.InputPaintingMode = Global.Config.TAStudioDrawInput ^= true;
 		}
 
 		#endregion

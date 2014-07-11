@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 			this.SelectionRedoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.DeselectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SelectAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SelectBetweenMarkersMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ReselectClipboardMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
@@ -227,7 +227,7 @@ namespace BizHawk.Client.EmuHawk
             this.SelectionRedoMenuItem,
             this.toolStripSeparator5,
             this.DeselectMenuItem,
-            this.selectAllToolStripMenuItem,
+            this.SelectAllMenuItem,
             this.SelectBetweenMarkersMenuItem,
             this.ReselectClipboardMenuItem,
             this.toolStripSeparator7,
@@ -286,17 +286,18 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// DeselectMenuItem
 			// 
-			this.DeselectMenuItem.Enabled = false;
 			this.DeselectMenuItem.Name = "DeselectMenuItem";
 			this.DeselectMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.DeselectMenuItem.Text = "Deselect";
+			this.DeselectMenuItem.Click += new System.EventHandler(this.DeselectMenuItem_Click);
 			// 
-			// selectAllToolStripMenuItem
+			// SelectAllMenuItem
 			// 
-			this.selectAllToolStripMenuItem.Enabled = false;
-			this.selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
-			this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.selectAllToolStripMenuItem.Text = "Select &All";
+			this.SelectAllMenuItem.Name = "SelectAllMenuItem";
+			this.SelectAllMenuItem.ShortcutKeyDisplayString = "Ctrl+A";
+			this.SelectAllMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.SelectAllMenuItem.Text = "Select &All";
+			this.SelectAllMenuItem.Click += new System.EventHandler(this.SelectAllMenuItem_Click);
 			// 
 			// SelectBetweenMarkersMenuItem
 			// 
@@ -793,7 +794,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem DeleteFramesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ClearMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem InsertNumFramesMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SelectAllMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
 		private System.Windows.Forms.ToolStripMenuItem TruncateMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem CopyMenuItem;
