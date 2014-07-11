@@ -21,6 +21,7 @@ namespace BizHawk.Client.EmuHawk
 		private void TasView_QueryItemBkColor(int index, int column, ref Color color)
 		{
 			var record = _tas[index];
+			var columnName = TasView.Columns[column].Name;
 			if (Global.Emulator.Frame == index)
 			{
 				color = Color.LightBlue;
@@ -41,7 +42,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					color = Color.White;
+					color = (columnName == MarkerColumnName || columnName == FrameColumnName) ?
+						Color.White :
+						SystemColors.ControlLight;
 				}
 			}
 		}

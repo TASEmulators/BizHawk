@@ -3,12 +3,13 @@ using System.IO;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
 	public partial class TasMovie
 	{
-		public override void RecordFrame(int frame, Emulation.Common.IController source)
+		public override void RecordFrame(int frame, IController source)
 		{
 			base.RecordFrame(frame, source);
 
@@ -32,7 +33,7 @@ namespace BizHawk.Client.Common
 			// TODO: Markers? What does taseditor do?
 		}
 
-		public override void PokeFrame(int frame, Emulation.Common.IController source)
+		public override void PokeFrame(int frame, IController source)
 		{
 			base.PokeFrame(frame, source);
 
@@ -43,23 +44,20 @@ namespace BizHawk.Client.Common
 		public override void ClearFrame(int frame)
 		{
 			base.ClearFrame(frame);
-
-			LagLog.RemoveRange(frame + 1, LagLog.Count - frame - 1);
-			StateManager.Invalidate(frame + 1);
+			InvalidateAfter(frame);
 		}
 
 		public void RemoveFrames(int[] frames)
 		{
 			if (frames.Any())
 			{
-				var truncateStatesTo = frames.Min(x => x);
+				var invalidateAfter = frames.Min(x => x);
 				foreach (var frame in frames.OrderByDescending(x => x)) // Removin them in reverse order allows us to remove by index;
 				{
 					_log.RemoveAt(frame);
 				}
 
-				StateManager.Invalidate(truncateStatesTo);
-				Changes = true;
+				InvalidateAfter(invalidateAfter);
 			}
 		}
 	}

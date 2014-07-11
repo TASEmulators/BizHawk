@@ -424,6 +424,19 @@ namespace BizHawk.Client.EmuHawk
 			RefreshDialog();
 		}
 
+		private void ClearMenuItem_Click(object sender, EventArgs e)
+		{
+			var list = TasView.SelectedIndices
+				.OfType<int>();
+
+			foreach (var frame in list)
+			{
+				_tas.ClearFrame(frame);
+			}
+
+			RefreshDialog();
+		}
+
 		#endregion
 
 		#region Config

@@ -66,6 +66,20 @@ namespace BizHawk.Client.Common
 			Markers.Remove(frame);
 		}
 
+		/// <summary>
+		/// Removes lag log and greenzone after this frame
+		/// </summary>
+		private void InvalidateAfter(int frame)
+		{
+			if (frame < LagLog.Count)
+			{
+				LagLog.RemoveRange(frame + 1, LagLog.Count - frame - 1);
+			}
+
+			StateManager.Invalidate(frame + 1);
+			Changes = true; // TODO check if this actually removed anyting before flagging changes
+		}
+
 		private readonly Bk2MnemonicConstants Mnemonics = new Bk2MnemonicConstants();
 		/// <summary>
 		/// Returns the mnemonic value for boolean buttons, and actual value for floats,
@@ -101,6 +115,7 @@ namespace BizHawk.Client.Common
 				lg.SetSource(adapter);
 				_log[frame] = lg.GenerateLogEntry();
 				Changes = true;
+				InvalidateAfter(frame);
 			}
 		}
 
@@ -118,6 +133,7 @@ namespace BizHawk.Client.Common
 
 				if (old != val)
 				{
+					InvalidateAfter(frame);
 					Changes = true;
 				}
 			}
@@ -137,6 +153,7 @@ namespace BizHawk.Client.Common
 
 				if (old != val)
 				{
+					InvalidateAfter(frame);
 					Changes = true;
 				}
 			}

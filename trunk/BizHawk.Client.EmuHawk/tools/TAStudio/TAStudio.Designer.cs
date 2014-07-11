@@ -360,17 +360,18 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// ClearMenuItem
 			// 
-			this.ClearMenuItem.Enabled = false;
 			this.ClearMenuItem.Name = "ClearMenuItem";
-			this.ClearMenuItem.ShortcutKeyDisplayString = "Del";
+			this.ClearMenuItem.ShortcutKeyDisplayString = "";
+			this.ClearMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Delete)));
 			this.ClearMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.ClearMenuItem.Text = "Clear";
+			this.ClearMenuItem.Click += new System.EventHandler(this.ClearMenuItem_Click);
 			// 
 			// DeleteFramesMenuItem
 			// 
 			this.DeleteFramesMenuItem.Enabled = false;
 			this.DeleteFramesMenuItem.Name = "DeleteFramesMenuItem";
-			this.DeleteFramesMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Delete)));
+			this.DeleteFramesMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
 			this.DeleteFramesMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.DeleteFramesMenuItem.Text = "&Delete";
 			// 
