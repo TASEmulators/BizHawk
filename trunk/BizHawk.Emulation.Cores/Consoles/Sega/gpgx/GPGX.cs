@@ -5,6 +5,7 @@ using System.Text;
 
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Common;
 
 using System.Runtime.InteropServices;
 
@@ -50,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Mouse
 		};
 
-		public GPGX(CoreComm NextComm, byte[] romfile, DiscSystem.Disc CD, string romextension, object SyncSettings)
+		public GPGX(CoreComm NextComm, byte[] romfile, DiscSystem.Disc CD, string romextension, object Settings, object SyncSettings)
 		{
 			// three or six button?
 			// http://www.sega-16.com/forum/showthread.php?4398-Forgotten-Worlds-giving-you-GAME-OVER-immediately-Fix-inside&highlight=forgotten%20worlds
@@ -64,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			try
 			{
-				this._SyncSettings = (GPGXSyncSettings)SyncSettings ?? GPGXSyncSettings.GetDefaults();
+				_SyncSettings = (GPGXSyncSettings)SyncSettings ?? new GPGXSyncSettings();
 
 				CoreComm = NextComm;
 				if (AttachedCore != null)
@@ -152,6 +153,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				if (CD != null)
 					CoreComm.UsesDriveLed = true;
+
+				PutSettings(Settings ?? new GPGXSettings());
 
 				InitMemCallbacks();
 				KillMemCallbacks();
@@ -736,10 +739,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		#region Settings
 
 		GPGXSyncSettings _SyncSettings;
+		GPGXSettings _Settings;
 
-		public object GetSettings() { return null; }
+		public object GetSettings() { return _Settings.Clone(); }
 		public object GetSyncSettings() { return _SyncSettings.Clone(); }
-		public bool PutSettings(object o) { return false; }
+		public bool PutSettings(object o)
+		{
+			_Settings = (GPGXSettings)o;
+			LibGPGX.gpgx_set_draw_mask(_Settings.GetDrawMask());
+			return false;
+		}
 		public bool PutSyncSettings(object o)
 		{
 			bool ret;
@@ -747,6 +756,38 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			ret = GPGXSyncSettings.NeedsReboot(_SyncSettings, n);
 			_SyncSettings = n;
 			return ret;
+		}
+
+		public class GPGXSettings
+		{
+			[Description("True to draw BG layer A")]
+			[DefaultValue(true)]
+			public bool DrawBGA { get; set; }
+			[Description("True to draw BG layer B")]
+			[DefaultValue(true)]
+			public bool DrawBGB { get; set; }
+			[Description("True to draw BG layer W")]
+			[DefaultValue(true)]
+			public bool DrawBGW { get; set; }
+
+			public GPGXSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+
+			public GPGXSettings Clone()
+			{
+				return (GPGXSettings)MemberwiseClone();
+			}
+
+			public LibGPGX.DrawMask GetDrawMask()
+			{
+				LibGPGX.DrawMask ret = 0;
+				if (DrawBGA) ret |= LibGPGX.DrawMask.BGA;
+				if (DrawBGB) ret |= LibGPGX.DrawMask.BGB;
+				if (DrawBGW) ret |= LibGPGX.DrawMask.BGW;
+				return ret;
+			}
 		}
 
 		public class GPGXSyncSettings
@@ -763,14 +804,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			public GPGXSyncSettings()
 			{
-				UseSixButton = true;
-				ControlType = ControlType.Normal;
-				Region = LibGPGX.Region.Autodetect;
-			}
-
-			public static GPGXSyncSettings GetDefaults()
-			{
-				return new GPGXSyncSettings();
+				SettingsUtil.SetDefaultValues(this);
 			}
 
 			public GPGXSyncSettings Clone()
