@@ -21,6 +21,7 @@ namespace BizHawk.Client.EmuHawk
 		private int _defaultWidth;
 		private int _defaultHeight;
 		private TasMovie _tas;
+		private bool _originalRewindStatus; // The client rewind status before TAStudio was engaged (used to restore when disengaged)
 
 		private Dictionary<string, string> GenerateColumnNames()
 		{
@@ -108,6 +109,8 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddMessage("TAStudio engaged");
 			_tas = Global.MovieSession.Movie as TasMovie;
 			GlobalWin.MainForm.RelinquishControl(this);
+			_originalRewindStatus = Global.Rewinder.RewindActive;
+			GlobalWin.MainForm.EnableRewind(false);
 		}
 
 		private void DisengageTastudio()
@@ -115,6 +118,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddMessage("TAStudio disengaged");
 			Global.MovieSession.Movie = MovieService.DefaultInstance;
 			GlobalWin.MainForm.TakeControl();
+			GlobalWin.MainForm.EnableRewind(_originalRewindStatus);
 		}
 
 		private void NewTasMovie()

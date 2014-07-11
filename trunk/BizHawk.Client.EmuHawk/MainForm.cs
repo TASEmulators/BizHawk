@@ -2501,6 +2501,7 @@ namespace BizHawk.Client.EmuHawk
 				runFrame = true;
 			}
 
+			bool isRewinding = false;
 			if (Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind) 
 				&& !Global.MovieSession.Movie.IsRecording) // Rewind isn't "bulletproof" and can desync a recoridng movie!
 			{
@@ -2508,6 +2509,7 @@ namespace BizHawk.Client.EmuHawk
 				suppressCaptureRewind = true;
 
 				runFrame = Global.Rewinder.Count != 0;
+				isRewinding = true;
 			}
 
 			if (UpdateFrame)
@@ -2556,7 +2558,18 @@ namespace BizHawk.Client.EmuHawk
 				if (updateFpsString)
 				{
 					var fps_string = _runloopLastFps + " fps";
-					if (isTurboing)
+					if (isRewinding)
+					{
+						if (isTurboing || isFastForwarding)
+						{
+							fps_string += " <<<<";
+						}
+						else
+						{
+							fps_string += " <<";
+						}
+					}
+					else if (isTurboing)
 					{
 						fps_string += " >>>>";
 					}
@@ -3256,6 +3269,20 @@ namespace BizHawk.Client.EmuHawk
 		private static void ProcessMovieImport(string fn)
 		{
 			MovieImport.ProcessMovieImport(fn, ShowConversionError, GlobalWin.OSD.AddMessage);
+		}
+
+		public void EnableRewind(bool enabled)
+		{
+			if (enabled)
+			{
+				Global.Rewinder.RewindActive = true;
+				GlobalWin.OSD.AddMessage("Rewind enabled");
+			}
+			else
+			{
+				Global.Rewinder.RewindActive = false;
+				GlobalWin.OSD.AddMessage("Rewind suspended");
+			}
 		}
 
 		#endregion
