@@ -70,6 +70,35 @@ namespace BizHawk.Client.Common
 			InvalidateAfter(frame);
 		}
 
+		public void InsertInput(int frame, IEnumerable<IController> inputStates)
+		{
+			var lg = LogGeneratorInstance();
+			
+			var inputLog = new List<string>();
+
+			foreach (var input in inputStates)
+			{
+				lg.SetSource(input);
+				inputLog.Add(lg.GenerateLogEntry());
+			}
+			
+			InsertInput(frame, inputLog);
+		}
+
+		public void CopyOverInput(int frame, IEnumerable<IController> inputStates)
+		{
+			var lg = LogGeneratorInstance();
+			var states = inputStates.ToList();
+			for (int i = 0; i < states.Count; i++)
+			{
+				lg.SetSource(states[i]);
+				_log[frame + i] = lg.GenerateLogEntry();
+			}
+
+			Changes = true;
+			InvalidateAfter(frame);
+		}
+
 		public void InsertEmptyFrame(int frame)
 		{
 			var lg = LogGeneratorInstance();
