@@ -2501,29 +2501,18 @@ namespace BizHawk.Client.EmuHawk
 				runFrame = true;
 			}
 
-			// TODO: mostly likely this will need to be whacked, if not then refactor
-			var returnToRecording = Global.MovieSession.Movie.IsRecording;
-			if (Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind))
+			if (Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind) 
+				&& !Global.MovieSession.Movie.IsRecording) // Rewind isn't "bulletproof" and can desync a recoridng movie!
 			{
 				Global.Rewinder.Rewind(1);
 				suppressCaptureRewind = true;
 
 				runFrame = Global.Rewinder.Count != 0;
-
-				// we don't want to capture input when rewinding, even in record mode
-				if (Global.MovieSession.Movie.IsRecording)
-				{
-					Global.MovieSession.Movie.SwitchToPlay();
-				}
 			}
 
 			if (UpdateFrame)
 			{
 				runFrame = true;
-				if (Global.MovieSession.Movie.IsRecording)
-				{
-					Global.MovieSession.Movie.SwitchToPlay();
-				}
 			}
 
 			var genSound = false;
@@ -2632,21 +2621,11 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.ClientControls["Rewind"] || PressRewind)
 			{
 				UpdateToolsAfter();
-				if (returnToRecording)
-				{
-					Global.MovieSession.Movie.SwitchToRecord();
-				}
-
 				PressRewind = false;
 			}
 
 			if (UpdateFrame)
 			{
-				if (returnToRecording)
-				{
-					Global.MovieSession.Movie.SwitchToRecord();
-				}
-
 				UpdateFrame = false;
 			}
 
