@@ -347,11 +347,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// CutMenuItem
 			// 
-			this.CutMenuItem.Enabled = false;
 			this.CutMenuItem.Name = "CutMenuItem";
 			this.CutMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
 			this.CutMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.CutMenuItem.Text = "&Cut";
+			this.CutMenuItem.Click += new System.EventHandler(this.CutMenuItem_Click);
 			// 
 			// toolStripSeparator8
 			// 
