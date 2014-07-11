@@ -330,20 +330,20 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// PasteMenuItem
 			// 
-			this.PasteMenuItem.Enabled = false;
 			this.PasteMenuItem.Name = "PasteMenuItem";
 			this.PasteMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
 			this.PasteMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.PasteMenuItem.Text = "&Paste";
+			this.PasteMenuItem.Click += new System.EventHandler(this.PasteMenuItem_Click);
 			// 
 			// PasteInsertMenuItem
 			// 
-			this.PasteInsertMenuItem.Enabled = false;
 			this.PasteInsertMenuItem.Name = "PasteInsertMenuItem";
 			this.PasteInsertMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.V)));
 			this.PasteInsertMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.PasteInsertMenuItem.Text = "&Paste Insert";
+			this.PasteInsertMenuItem.Click += new System.EventHandler(this.PasteInsertMenuItem_Click);
 			// 
 			// CutMenuItem
 			// 

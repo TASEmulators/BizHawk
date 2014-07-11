@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -29,6 +30,39 @@ namespace BizHawk.Client.EmuHawk
 			var lg = Global.MovieSession.LogGeneratorInstance();
 			lg.SetSource(Global.MovieSession.MovieControllerAdapter);
 			return (lg as Bk2LogEntryGenerator).Map();
+		}
+
+		// Indices Helpers
+		private int FirstSelectedIndex
+		{
+			get
+			{
+				return TasView.SelectedIndices
+					.OfType<int>()
+					.OrderBy(frame => frame)
+					.First();
+			}
+		}
+
+		private int LastSelectedIndex
+		{
+			get
+			{
+				return TasView.SelectedIndices
+					.OfType<int>()
+					.OrderBy(frame => frame)
+					.Last();
+			}
+		}
+
+		private IEnumerable SelectedIndices
+		{
+			get
+			{
+				return TasView.SelectedIndices
+					.OfType<int>()
+					.OrderBy(frame => frame);
+			}
 		}
 
 		public TAStudio()
@@ -388,7 +422,7 @@ namespace BizHawk.Client.EmuHawk
 			var sb = new StringBuilder();
 			for (var i = 0; i < list.Count; i++)
 			{
-				var input = _tas.GetInputState(i);
+				var input = _tas.GetInputState(list[i]);
 				_tasClipboard.Add(new TasClipboardEntry(list[i], input));
 				var lg = _tas.LogGeneratorInstance();
 				lg.SetSource(input);
@@ -398,6 +432,30 @@ namespace BizHawk.Client.EmuHawk
 			Clipboard.SetDataObject(sb.ToString());
 
 			SetSplicer();
+		}
+
+		private void PasteMenuItem_Click(object sender, EventArgs e)
+		{
+			// TODO: if highlighting 2 rows and pasting 3, only paste 2 of them
+			// FCEUX Taseditor does't do this, but I think it is the expected behavior in editor programs
+			if (_tasClipboard.Any())
+			{
+				_tas.CopyOverInput(FirstSelectedIndex, _tasClipboard.Select(x => x.ControllerState));
+			}
+
+			RefreshDialog();
+		}
+
+		private void PasteInsertMenuItem_Click(object sender, EventArgs e)
+		{
+			// TODO: if highlighting 2 rows and pasting 3, only paste 2 of them
+			// FCEUX Taseditor does't do this, but I think it is the expected behavior in editor programs
+			if (_tasClipboard.Any())
+			{
+				_tas.InsertInput(FirstSelectedIndex, _tasClipboard.Select(x => x.ControllerState));
+			}
+
+			RefreshDialog();
 		}
 
 		private void CutMenuItem_Click(object sender, EventArgs e)
