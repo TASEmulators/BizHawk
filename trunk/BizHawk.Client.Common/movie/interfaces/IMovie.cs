@@ -58,7 +58,6 @@ namespace BizHawk.Client.Common
 		string Hash { get; set; }
 		string Author { get; set; }
 		string Core { get; set; }
-		string Platform { get; set; }
 		string EmulatorVersion { get; set; }
 		string FirmwareHash { get; set; }
 		string BoardName { get; set; }

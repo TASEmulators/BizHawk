@@ -583,10 +583,10 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// HeaderMenuItem
 			// 
-			this.HeaderMenuItem.Enabled = false;
 			this.HeaderMenuItem.Name = "HeaderMenuItem";
 			this.HeaderMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.HeaderMenuItem.Text = "&Header...";
+			this.HeaderMenuItem.Click += new System.EventHandler(this.HeaderMenuItem_Click);
 			// 
 			// CommentsMenuItem
 			// 

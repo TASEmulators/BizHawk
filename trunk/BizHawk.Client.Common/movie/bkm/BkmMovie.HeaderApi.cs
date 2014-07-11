@@ -70,12 +70,6 @@ namespace BizHawk.Client.Common
 			set { Header[HeaderKeys.CORE] = value; }
 		}
 
-		public string Platform
-		{
-			get { return Header[HeaderKeys.PLATFORM]; }
-			set { Header[HeaderKeys.PLATFORM] = value; }
-		}
-
 		public string BoardName
 		{
 			get { return Header[HeaderKeys.BOARDNAME]; }

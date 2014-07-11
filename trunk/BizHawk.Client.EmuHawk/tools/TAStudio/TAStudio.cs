@@ -274,6 +274,11 @@ namespace BizHawk.Client.EmuHawk
 			Owner = Global.Config.TAStudioSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
+		private void UpdateChangesIndicator()
+		{
+			// TODO
+		}
+
 		#region Events
 
 		#region File Menu
@@ -383,6 +388,13 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region Metadata
+
+		private void HeaderMenuItem_Click(object sender, EventArgs e)
+		{
+			new MovieHeaderEditor(_tas).Show();
+			UpdateChangesIndicator();
+
+		}
 
 		private void CommentsMenuItem_Click(object sender, EventArgs e)
 		{

@@ -19,7 +19,14 @@ namespace BizHawk.Client.Common
 		public string SyncSettingsJson
 		{
 			get { return _syncSettingsJson; }
-			set { _syncSettingsJson = value; }
+			set
+			{
+				if (_syncSettingsJson != value)
+				{
+					Changes = true;
+					_syncSettingsJson = value;
+				}
+			}
 		}
 
 		public ulong Rerecords
@@ -36,7 +43,11 @@ namespace BizHawk.Client.Common
 
 			set
 			{
-				Header[HeaderKeys.RERECORDS] = value.ToString();
+				if (Header[HeaderKeys.RERECORDS] != value.ToString())
+				{
+					Changes = true;
+					Header[HeaderKeys.RERECORDS] = value.ToString();
+				}
 			}
 		}
 
@@ -79,7 +90,11 @@ namespace BizHawk.Client.Common
 
 			set
 			{
-				Header[HeaderKeys.GAMENAME] = value;
+				if (Header[HeaderKeys.GAMENAME] != value)
+				{
+					Changes = true;
+					Header[HeaderKeys.GAMENAME] = value;
+				}
 			}
 		}
 
@@ -97,50 +112,90 @@ namespace BizHawk.Client.Common
 
 			set
 			{
-				Header[HeaderKeys.PLATFORM] = value;
+				if (Header[HeaderKeys.PLATFORM] != value)
+				{
+					Changes = true;
+					Header[HeaderKeys.PLATFORM] = value;
+				}
 			}
 		}
 
 		public string Hash
 		{
 			get { return Header[HeaderKeys.SHA1]; }
-			set { Header[HeaderKeys.SHA1] = value; }
+			set
+			{
+				if (Header[HeaderKeys.SHA1] != value)
+				{
+					Changes = true;
+					Header[HeaderKeys.SHA1] = value;
+				}
+			}
 		}
 
 		public string Author
 		{
 			get { return Header[HeaderKeys.AUTHOR]; }
-			set { Header[HeaderKeys.AUTHOR] = value; }
+			set
+			{
+				if (Header[HeaderKeys.AUTHOR] != value)
+				{
+					Changes = true;
+					Header[HeaderKeys.AUTHOR] = value;
+				}
+			}
 		}
 
 		public string Core
 		{
 			get { return Header[HeaderKeys.CORE]; }
-			set { Header[HeaderKeys.CORE] = value; }
-		}
-
-		public string Platform
-		{
-			get { return Header[HeaderKeys.PLATFORM]; }
-			set { Header[HeaderKeys.PLATFORM] = value; }
+			set
+			{
+				if (Header[HeaderKeys.CORE] != value)
+				{
+					Changes = true;
+					Header[HeaderKeys.CORE] = value;
+				}
+			}
 		}
 
 		public string BoardName
 		{
 			get { return Header[HeaderKeys.BOARDNAME]; }
-			set { Header[HeaderKeys.BOARDNAME] = value; }
+			set
+			{
+				if (Header[HeaderKeys.BOARDNAME] != value)
+				{
+					Changes = true;
+					Header[HeaderKeys.BOARDNAME] = value;
+				}
+			}
 		}
 
 		public string EmulatorVersion
 		{
 			get { return Header[HeaderKeys.EMULATIONVERSION]; }
-			set { Header[HeaderKeys.EMULATIONVERSION] = value; }
+			set
+			{
+				if (Header[HeaderKeys.EMULATIONVERSION] != value)
+				{
+					Changes = true;
+					Header[HeaderKeys.EMULATIONVERSION] = value;
+				}
+			}
 		}
 
 		public string FirmwareHash
 		{
 			get { return Header[HeaderKeys.FIRMWARESHA1]; }
-			set { Header[HeaderKeys.FIRMWARESHA1] = value; }
+			set
+			{
+				if (Header[HeaderKeys.FIRMWARESHA1] != value)
+				{
+					Changes = true;
+					Header[HeaderKeys.FIRMWARESHA1] = value;
+				}
+			}
 		}
 
 		private int? LoopOffset
