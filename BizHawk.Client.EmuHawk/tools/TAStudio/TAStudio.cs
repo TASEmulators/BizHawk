@@ -22,12 +22,6 @@ namespace BizHawk.Client.EmuHawk
 		private int _defaultHeight;
 		private TasMovie _tas;
 
-		// Input Painting
-		private string _startDrawColumn = string.Empty;
-		private bool _startOn;
-		private bool _startMarkerDrag;
-		private bool _startFrameDrag;
-
 		private Dictionary<string, string> GenerateColumnNames()
 		{
 			var lg = Global.MovieSession.LogGeneratorInstance();

@@ -8,6 +8,12 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio
 	{
+		// Input Painting
+		private string _startDrawColumn = string.Empty;
+		private bool _boolPaintState;
+		private bool _startMarkerDrag;
+		private bool _startFrameDrag;
+
 		#region Query callbacks
 
 		private void TasView_QueryItemBkColor(int index, int column, ref Color color)
@@ -92,7 +98,7 @@ namespace BizHawk.Client.EmuHawk
 						TasView.Refresh();
 
 						_startDrawColumn = TasView.PointedCell.Column;
-						_startOn = _tas.BoolIsPressed(frame, buttonName);
+						_boolPaintState = _tas.BoolIsPressed(frame, buttonName);
 					}
 				}
 			}
@@ -107,6 +113,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_PointedCellChanged(object sender, TasListView.CellEventArgs e)
 		{
+			int startVal, endVal;
+			if (e.OldCell.Row.Value < e.NewCell.Row.Value)
+			{
+				startVal = e.OldCell.Row.Value;
+				endVal = e.NewCell.Row.Value;
+			}
+			else
+			{
+				startVal = e.NewCell.Row.Value;
+				endVal = e.OldCell.Row.Value;
+			}
+
 			if (_startMarkerDrag)
 			{
 				if (e.NewCell.Row.HasValue)
@@ -118,18 +136,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (e.OldCell.Row.HasValue && e.NewCell.Row.HasValue)
 				{
-					int startVal, endVal;
-					if (e.OldCell.Row.Value < e.NewCell.Row.Value)
-					{
-						startVal = e.OldCell.Row.Value;
-						endVal = e.NewCell.Row.Value;
-					}
-					else
-					{
-						startVal = e.NewCell.Row.Value;
-						endVal = e.OldCell.Row.Value;
-					}
-
 					for (var i = startVal + 1; i <= endVal; i++)
 					{
 						TasView.SelectItem(i, true);
@@ -138,8 +144,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (TasView.IsPaintDown && e.NewCell.Row.HasValue && !string.IsNullOrEmpty(_startDrawColumn))
 			{
-				_tas.SetBoolState(e.NewCell.Row.Value, _startDrawColumn, _startOn); // Notice it uses new row, old column, you can only paint across a single column
-				TasView.Refresh();
+				if (e.OldCell.Row.HasValue && e.NewCell.Row.HasValue)
+				{
+					for (var i = startVal; i < endVal; i++)
+					{
+						_tas.SetBoolState(i, _startDrawColumn, _boolPaintState); // Notice it uses new row, old column, you can only paint across a single column
+					}
+					TasView.Refresh();
+				}
 			}
 		}
 
