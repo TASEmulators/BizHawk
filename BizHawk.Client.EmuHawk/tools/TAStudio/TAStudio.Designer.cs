@@ -309,11 +309,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// ReselectClipboardMenuItem
 			// 
-			this.ReselectClipboardMenuItem.Enabled = false;
 			this.ReselectClipboardMenuItem.Name = "ReselectClipboardMenuItem";
 			this.ReselectClipboardMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.B)));
 			this.ReselectClipboardMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.ReselectClipboardMenuItem.Text = "Reselect Clipboard";
+			this.ReselectClipboardMenuItem.Click += new System.EventHandler(this.ReselectClipboardMenuItem_Click);
 			// 
 			// toolStripSeparator7
 			// 
