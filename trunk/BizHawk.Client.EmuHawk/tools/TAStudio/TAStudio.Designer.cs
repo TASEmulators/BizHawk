@@ -377,20 +377,20 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// CloneMenuItem
 			// 
-			this.CloneMenuItem.Enabled = false;
 			this.CloneMenuItem.Name = "CloneMenuItem";
 			this.CloneMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Insert)));
 			this.CloneMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.CloneMenuItem.Text = "&Clone";
+			this.CloneMenuItem.Click += new System.EventHandler(this.CloneMenuItem_Click);
 			// 
 			// InsertFrameMenuItem
 			// 
-			this.InsertFrameMenuItem.Enabled = false;
 			this.InsertFrameMenuItem.Name = "InsertFrameMenuItem";
 			this.InsertFrameMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.Insert)));
 			this.InsertFrameMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.InsertFrameMenuItem.Text = "&Insert";
+			this.InsertFrameMenuItem.Click += new System.EventHandler(this.InsertFrameMenuItem_Click);
 			// 
 			// InsertNumFramesMenuItem
 			// 

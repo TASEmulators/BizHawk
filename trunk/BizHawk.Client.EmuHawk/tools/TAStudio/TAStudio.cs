@@ -452,6 +452,37 @@ namespace BizHawk.Client.EmuHawk
 			RefreshDialog();
 		}
 
+		private void CloneMenuItem_Click(object sender, EventArgs e)
+		{
+			var framesToInsert = TasView.SelectedIndices
+				.OfType<int>()
+				.OrderBy(frame => frame)
+				.ToList();
+
+			var insertionFrame = framesToInsert.Last() + 1;
+
+			var inputLog = new List<string>();
+			foreach (var frame in framesToInsert)
+			{
+				inputLog.Add(_tas.GetInput(frame));
+			}
+
+			_tas.InsertInput(insertionFrame, inputLog);
+
+			RefreshDialog();
+		}
+
+		private void InsertFrameMenuItem_Click(object sender, EventArgs e)
+		{
+			var insertionFrame = TasView.SelectedIndices
+				.OfType<int>()
+				.Last() + 1;
+
+			_tas.InsertEmptyFrame(insertionFrame);
+
+			RefreshDialog();
+		}
+
 		#endregion
 
 		#region Config
