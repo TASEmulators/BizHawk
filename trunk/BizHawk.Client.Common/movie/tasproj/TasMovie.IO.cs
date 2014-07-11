@@ -176,6 +176,8 @@ namespace BizHawk.Client.Common
 					}
 				});
 			}
+
+			Changes = false;
 			return true;
 		}
 

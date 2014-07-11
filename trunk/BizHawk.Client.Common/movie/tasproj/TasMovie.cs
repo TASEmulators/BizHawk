@@ -43,6 +43,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public void ClearChanges()
+		{
+			Changes = false;
+		}
+
 		public override void StartNewRecording()
 		{
 			LagLog.Clear();

@@ -127,6 +127,7 @@ namespace BizHawk.Client.EmuHawk
 			_tas = Global.MovieSession.Movie as TasMovie;
 			_tas.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
 			_tas.PopulateWithDefaultHeaderValues();
+			_tas.ClearChanges();
 		}
 
 		private static string DefaultTasProjName()
