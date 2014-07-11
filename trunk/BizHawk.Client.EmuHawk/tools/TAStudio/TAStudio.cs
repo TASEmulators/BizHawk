@@ -372,6 +372,15 @@ namespace BizHawk.Client.EmuHawk
 			TasView.SelectAll();
 		}
 
+		private void ReselectClipboardMenuItem_Click(object sender, EventArgs e)
+		{
+			TasView.DeselectAll();
+			foreach (var item in _tasClipboard)
+			{
+				TasView.SelectItem(item.Frame, true);
+			}
+		}
+
 		private void CopyMenuItem_Click(object sender, EventArgs e)
 		{
 			_tasClipboard.Clear();
@@ -380,7 +389,7 @@ namespace BizHawk.Client.EmuHawk
 			for (var i = 0; i < list.Count; i++)
 			{
 				var input = _tas.GetInputState(i);
-				_tasClipboard.Add(new TasClipboardEntry(i, input));
+				_tasClipboard.Add(new TasClipboardEntry(list[i], input));
 				var lg = _tas.LogGeneratorInstance();
 				lg.SetSource(input);
 				sb.AppendLine(lg.GenerateLogEntry());
