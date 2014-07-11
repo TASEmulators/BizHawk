@@ -173,7 +173,9 @@ namespace BizHawk.Client.Common
 
 		public virtual void ClearFrame(int frame)
 		{
-			SetFrameAt(frame, LogGeneratorInstance().EmptyEntry);
+			var lg = LogGeneratorInstance();
+			lg.SetSource(Global.MovieSession.MovieControllerInstance());
+			SetFrameAt(frame, lg.EmptyEntry);
 			Changes = true;
 		}
 
