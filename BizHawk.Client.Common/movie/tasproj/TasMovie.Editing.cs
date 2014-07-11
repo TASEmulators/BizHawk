@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -57,8 +58,26 @@ namespace BizHawk.Client.Common
 					_log.RemoveAt(frame);
 				}
 
+				Changes = true;
 				InvalidateAfter(invalidateAfter);
 			}
+		}
+
+		public void InsertInput(int frame, IEnumerable<string> inputLog)
+		{
+			_log.InsertRange(frame, inputLog);
+			Changes = true;
+			InvalidateAfter(frame);
+		}
+
+		public void InsertEmptyFrame(int frame)
+		{
+			var lg = LogGeneratorInstance();
+			lg.SetSource(Global.MovieSession.MovieControllerInstance());
+			_log.Insert(frame, lg.EmptyEntry);
+
+			Changes = true;
+			InvalidateAfter(frame - 1);
 		}
 	}
 }
