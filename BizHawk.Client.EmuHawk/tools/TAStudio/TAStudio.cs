@@ -400,6 +400,30 @@ namespace BizHawk.Client.EmuHawk
 			SetSplicer();
 		}
 
+		private void CutMenuItem_Click(object sender, EventArgs e)
+		{
+			_tasClipboard.Clear();
+			var list = TasView.SelectedIndices
+				.OfType<int>()
+				.ToArray();
+			var sb = new StringBuilder();
+			for (var i = 0; i < list.Length; i++)
+			{
+				var input = _tas.GetInputState(i);
+				_tasClipboard.Add(new TasClipboardEntry(list[i], input));
+				var lg = _tas.LogGeneratorInstance();
+				lg.SetSource(input);
+				sb.AppendLine(lg.GenerateLogEntry());
+			}
+
+			Clipboard.SetDataObject(sb.ToString());
+
+			_tas.RemoveFrames(list);
+
+			SetSplicer();
+			RefreshDialog();
+		}
+
 		#endregion
 
 		#region Config

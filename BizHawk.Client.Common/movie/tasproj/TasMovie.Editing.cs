@@ -47,5 +47,20 @@ namespace BizHawk.Client.Common
 			LagLog.RemoveRange(frame + 1, LagLog.Count - frame - 1);
 			StateManager.Invalidate(frame + 1);
 		}
+
+		public void RemoveFrames(int[] frames)
+		{
+			if (frames.Any())
+			{
+				var truncateStatesTo = frames.Min(x => x);
+				foreach (var frame in frames.OrderByDescending(x => x)) // Removin them in reverse order allows us to remove by index;
+				{
+					_log.RemoveAt(frame);
+				}
+
+				StateManager.Invalidate(truncateStatesTo);
+				Changes = true;
+			}
+		}
 	}
 }
