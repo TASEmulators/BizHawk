@@ -9,8 +9,10 @@ namespace BizHawk.Client.EmuHawk
 	public partial class TAStudio
 	{
 		// Input Painting
-		private string _startDrawColumn = string.Empty;
+		private string _startBoolDrawColumn = string.Empty;
+		private string _startFloatDrawColumn = string.Empty;
 		private bool _boolPaintState;
+		private float _floatPaintState;
 		private bool _startMarkerDrag;
 		private bool _startFrameDrag;
 
@@ -97,8 +99,13 @@ namespace BizHawk.Client.EmuHawk
 						_tas.ToggleBoolState(TasView.PointedCell.Row.Value, TasView.PointedCell.Column);
 						TasView.Refresh();
 
-						_startDrawColumn = TasView.PointedCell.Column;
+						_startBoolDrawColumn = TasView.PointedCell.Column;
 						_boolPaintState = _tas.BoolIsPressed(frame, buttonName);
+					}
+					else
+					{
+						_startFloatDrawColumn = TasView.PointedCell.Column;
+						_floatPaintState = _tas.GetFloatValue(frame, buttonName);
 					}
 				}
 			}
@@ -108,7 +115,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_startMarkerDrag = false;
 			_startFrameDrag = false;
-			_startDrawColumn = string.Empty;
+			_startBoolDrawColumn = string.Empty;
+			_startFloatDrawColumn = string.Empty;
+			_floatPaintState = 0;
 		}
 
 		private void TasView_PointedCellChanged(object sender, TasListView.CellEventArgs e)
@@ -142,14 +151,27 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
-			else if (TasView.IsPaintDown && e.NewCell.Row.HasValue && !string.IsNullOrEmpty(_startDrawColumn))
+			else if (TasView.IsPaintDown && e.NewCell.Row.HasValue && !string.IsNullOrEmpty(_startBoolDrawColumn))
 			{
 				if (e.OldCell.Row.HasValue && e.NewCell.Row.HasValue)
 				{
 					for (var i = startVal; i < endVal; i++)
 					{
-						_tas.SetBoolState(i, _startDrawColumn, _boolPaintState); // Notice it uses new row, old column, you can only paint across a single column
+						_tas.SetBoolState(i, _startBoolDrawColumn, _boolPaintState); // Notice it uses new row, old column, you can only paint across a single column
 					}
+
+					TasView.Refresh();
+				}
+			}
+			else if (TasView.IsPaintDown && e.NewCell.Row.HasValue && !string.IsNullOrEmpty(_startFloatDrawColumn))
+			{
+				if (e.OldCell.Row.HasValue && e.NewCell.Row.HasValue)
+				{
+					for (var i = startVal; i < endVal; i++)
+					{
+						_tas.SetFloatState(i, _startFloatDrawColumn, _floatPaintState); // Notice it uses new row, old column, you can only paint across a single column
+					}
+
 					TasView.Refresh();
 				}
 			}

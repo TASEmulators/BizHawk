@@ -79,7 +79,7 @@ namespace BizHawk.Client.Common
 
 			if (adapter.Type.FloatControls.Contains(buttonName))
 			{
-				adapter.GetFloat(buttonName);
+				return adapter.GetFloat(buttonName).ToString();
 			}
 
 			return "!";
@@ -118,10 +118,35 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public void SetFloatState(int frame, string buttonName, float val)
+		{
+			if (frame < _log.Count)
+			{
+				var adapter = GetInputState(frame) as Bk2ControllerAdapter;
+				var old = adapter.GetFloat(buttonName);
+				adapter.SetFloat(buttonName, val);
+
+				var lg = LogGeneratorInstance();
+				lg.SetSource(adapter);
+				_log[frame] = lg.GenerateLogEntry();
+
+				if (old != val)
+				{
+					Changes = true;
+				}
+			}
+		}
+
 		public bool BoolIsPressed(int frame, string buttonName)
 		{
 			var adapter = GetInputState(frame) as Bk2ControllerAdapter;
 			return adapter.IsPressed(buttonName);
+		}
+
+		public float GetFloatValue(int frame, string buttonName)
+		{
+			var adapter = GetInputState(frame) as Bk2ControllerAdapter;
+			return adapter.GetFloat(buttonName);
 		}
 
 		public override string GetInput(int frame)

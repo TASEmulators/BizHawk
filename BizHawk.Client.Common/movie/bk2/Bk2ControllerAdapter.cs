@@ -157,6 +157,11 @@ namespace BizHawk.Client.Common
 
 		#endregion
 
+		public void SetFloat(string buttonName, float value)
+		{
+			MyFloatControls[buttonName] = value;
+		}
+
 		public class Bk2ControllerDefinition : ControllerDefinition
 		{
 			public Bk2ControllerDefinition()
