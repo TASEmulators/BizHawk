@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
+using System.Text;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -375,11 +376,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_tasClipboard.Clear();
 			var list = TasView.SelectedIndices;
+			var sb = new StringBuilder();
 			for (var i = 0; i < list.Count; i++)
 			{
-				//Serialize TODO
-				//_tasClipboard.Add(new TasClipboardEntry(list[i], _tas[i].Buttons));
+				var input = _tas.GetInputState(i);
+				_tasClipboard.Add(new TasClipboardEntry(i, input));
+				var lg = _tas.LogGeneratorInstance();
+				lg.SetSource(input);
+				sb.AppendLine(lg.GenerateLogEntry());
 			}
+
+			Clipboard.SetDataObject(sb.ToString());
 
 			SetSplicer();
 		}
