@@ -369,11 +369,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// DeleteFramesMenuItem
 			// 
-			this.DeleteFramesMenuItem.Enabled = false;
 			this.DeleteFramesMenuItem.Name = "DeleteFramesMenuItem";
 			this.DeleteFramesMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
 			this.DeleteFramesMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.DeleteFramesMenuItem.Text = "&Delete";
+			this.DeleteFramesMenuItem.Click += new System.EventHandler(this.DeleteFramesMenuItem_Click);
 			// 
 			// CloneMenuItem
 			// 
@@ -761,6 +761,7 @@ namespace BizHawk.Client.EmuHawk
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "TAStudio";
 			this.Load += new System.EventHandler(this.Tastudio_Load);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TAStudio_KeyDown);
 			this.TASMenu.ResumeLayout(false);
 			this.TASMenu.PerformLayout();
 			this.TasStatusStrip.ResumeLayout(false);
