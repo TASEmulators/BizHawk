@@ -801,19 +801,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SavestateTypeMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			SavestateTypeDefaultMenuItem.Checked = false;
-			SavestateBinaryMenuItem.Checked = false;
-			SavestateTextMenuItem.Checked = false;
-			switch (Global.Config.SaveStateType)
-			{
-				case Config.SaveStateTypeE.Binary: SavestateBinaryMenuItem.Checked = true; break;
-				case Config.SaveStateTypeE.Text: SavestateTextMenuItem.Checked = true; break;
-				case Config.SaveStateTypeE.Default: SavestateTypeDefaultMenuItem.Checked = true; break;
-			}
-		}
-
 		private void CoresSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
@@ -985,21 +972,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config.Input_Hotkey_OverrideOptions = 2;
 			UpdateKeyPriorityIcon();
-		}
-
-		private void SavestateTypeDefaultMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveStateType = Config.SaveStateTypeE.Default;
-		}
-
-		private void SavestateBinaryMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveStateType = Config.SaveStateTypeE.Binary;
-		}
-
-		private void SavestateTextMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveStateType = Config.SaveStateTypeE.Text;
 		}
 
 		private void GBInSGBMenuItem_Click(object sender, EventArgs e)
