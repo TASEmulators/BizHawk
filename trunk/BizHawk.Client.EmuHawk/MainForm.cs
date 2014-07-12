@@ -73,6 +73,7 @@ namespace BizHawk.Client.EmuHawk
 			ret.RequestGLContext = () => GlobalWin.GLManager.CreateGLContext();
 			ret.ActivateGLContext = (gl) => GlobalWin.GLManager.Activate((GLManager.ContextRef)gl);
 			ret.DeactivateGLContext = () => GlobalWin.GLManager.Deactivate();
+			ret.DispSnowyNullEmulator = () => Global.Config.DispSnowyNullEmulator;
 			return ret;
 		}
 
@@ -904,8 +905,11 @@ namespace BizHawk.Client.EmuHawk
 					//(this could be determined with more work; other side affects of the fullscreen mode include: corrupted taskbar, no modal boxes on top of GL control, no screenshots)
 					//At any rate, we can solve this by adding a 1px black border around the GL control
 					//Please note: It is important to do this before resizing things, otherwise momentarily a GL control without WS_BORDER will be at the magic dimensions and cause the flakeout
-					Padding = new Padding(1);
-					BackColor = Color.Black;
+					if (Global.Config.DispFullscreenHacks)
+					{
+						Padding = new Padding(1);
+						BackColor = Color.Black;
+					}
 				#endif
 
 				_windowedLocation = Location;
@@ -926,6 +930,7 @@ namespace BizHawk.Client.EmuHawk
 				WindowState = FormWindowState.Normal;
 
 				#if WINDOWS
+					//do this even if DispFullscreenHacks arent enabled, to restore it in case it changed underneath us or something
 					Padding = new Padding(0);
 					//it's important that we set the form color back to this, because the statusbar icons blend onto the mainform, not onto the statusbar--
 					//so we need the statusbar and mainform backdrop color to match

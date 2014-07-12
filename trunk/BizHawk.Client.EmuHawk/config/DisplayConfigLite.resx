@@ -117,4 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="label1.Text" xml:space="preserve">
+    <value>For Windows operating systems &gt;= Vista, with some video cards, the monitors may flicker when going 'windowed fullscreen' while the system disobeys us and goes actual fullscreen instead. This hack prevents that, but may increase frame latency.</value>
+  </data>
 </root>

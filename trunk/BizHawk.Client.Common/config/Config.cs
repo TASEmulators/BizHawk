@@ -178,6 +178,8 @@ namespace BizHawk.Client.Common
 		public bool DispFixAspectRatio = true;
 		public bool DispFixScaleInteger = true;
 		public bool DispObeyAR = true;
+		public bool DispFullscreenHacks = true;
+		public bool DispSnowyNullEmulator = true;
 
 		// Sound options
 		public bool SoundEnabled = true;
