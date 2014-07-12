@@ -28,9 +28,9 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DisplayConfigLite));
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.btnOk = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.lblUserFilterName = new System.Windows.Forms.Label();
 			this.btnSelectUserFilter = new System.Windows.Forms.Button();
@@ -48,17 +48,23 @@
 			this.rbUseRaw = new System.Windows.Forms.RadioButton();
 			this.rbUseSystem = new System.Windows.Forms.RadioButton();
 			this.grpARSelection = new System.Windows.Forms.GroupBox();
+			this.checkFullscreenHacks = new System.Windows.Forms.CheckBox();
+			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.checkSnowyNullEmulator = new System.Windows.Forms.CheckBox();
+			this.label1 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			this.grpFinalFilter.SuspendLayout();
 			this.grpARSelection.SuspendLayout();
+			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// btnCancel
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(288, 314);
+			this.btnCancel.Location = new System.Drawing.Point(510, 250);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 5;
@@ -68,22 +74,13 @@
 			// btnOk
 			// 
 			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOk.Location = new System.Drawing.Point(207, 314);
+			this.btnOk.Location = new System.Drawing.Point(429, 250);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(75, 23);
 			this.btnOk.TabIndex = 4;
 			this.btnOk.Text = "OK";
 			this.btnOk.UseVisualStyleBackColor = true;
 			this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(12, 9);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(269, 13);
-			this.label1.TabIndex = 6;
-			this.label1.Text = "This is a staging ground for more complex configuration.";
 			// 
 			// groupBox1
 			// 
@@ -94,7 +91,7 @@
 			this.groupBox1.Controls.Add(this.rbNone);
 			this.groupBox1.Controls.Add(this.rbScanlines);
 			this.groupBox1.Controls.Add(this.rbHq2x);
-			this.groupBox1.Location = new System.Drawing.Point(12, 34);
+			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(173, 132);
 			this.groupBox1.TabIndex = 7;
@@ -177,7 +174,7 @@
 			// checkLetterbox
 			// 
 			this.checkLetterbox.AutoSize = true;
-			this.checkLetterbox.Location = new System.Drawing.Point(12, 176);
+			this.checkLetterbox.Location = new System.Drawing.Point(12, 154);
 			this.checkLetterbox.Name = "checkLetterbox";
 			this.checkLetterbox.Size = new System.Drawing.Size(173, 17);
 			this.checkLetterbox.TabIndex = 8;
@@ -188,7 +185,7 @@
 			// checkPadInteger
 			// 
 			this.checkPadInteger.AutoSize = true;
-			this.checkPadInteger.Location = new System.Drawing.Point(21, 276);
+			this.checkPadInteger.Location = new System.Drawing.Point(21, 254);
 			this.checkPadInteger.Name = "checkPadInteger";
 			this.checkPadInteger.Size = new System.Drawing.Size(248, 17);
 			this.checkPadInteger.TabIndex = 9;
@@ -201,7 +198,7 @@
 			this.grpFinalFilter.Controls.Add(this.rbFinalFilterBicubic);
 			this.grpFinalFilter.Controls.Add(this.rbFinalFilterNone);
 			this.grpFinalFilter.Controls.Add(this.rbFinalFilterBilinear);
-			this.grpFinalFilter.Location = new System.Drawing.Point(191, 34);
+			this.grpFinalFilter.Location = new System.Drawing.Point(191, 12);
 			this.grpFinalFilter.Name = "grpFinalFilter";
 			this.grpFinalFilter.Size = new System.Drawing.Size(173, 132);
 			this.grpFinalFilter.TabIndex = 8;
@@ -269,12 +266,62 @@
 			// 
 			this.grpARSelection.Controls.Add(this.rbUseRaw);
 			this.grpARSelection.Controls.Add(this.rbUseSystem);
-			this.grpARSelection.Location = new System.Drawing.Point(21, 199);
+			this.grpARSelection.Location = new System.Drawing.Point(21, 177);
 			this.grpARSelection.Name = "grpARSelection";
 			this.grpARSelection.Size = new System.Drawing.Size(264, 71);
 			this.grpARSelection.TabIndex = 13;
 			this.grpARSelection.TabStop = false;
 			this.grpARSelection.Text = "Aspect Ratio Selection";
+			// 
+			// checkFullscreenHacks
+			// 
+			this.checkFullscreenHacks.AutoSize = true;
+			this.checkFullscreenHacks.Location = new System.Drawing.Point(6, 19);
+			this.checkFullscreenHacks.Name = "checkFullscreenHacks";
+			this.checkFullscreenHacks.Size = new System.Drawing.Size(191, 17);
+			this.checkFullscreenHacks.TabIndex = 14;
+			this.checkFullscreenHacks.Text = "Enable Windows Fullscreen Hacks";
+			this.checkFullscreenHacks.UseVisualStyleBackColor = true;
+			// 
+			// groupBox2
+			// 
+			this.groupBox2.Controls.Add(this.label2);
+			this.groupBox2.Controls.Add(this.checkSnowyNullEmulator);
+			this.groupBox2.Controls.Add(this.label1);
+			this.groupBox2.Controls.Add(this.checkFullscreenHacks);
+			this.groupBox2.Location = new System.Drawing.Point(370, 12);
+			this.groupBox2.Name = "groupBox2";
+			this.groupBox2.Size = new System.Drawing.Size(217, 224);
+			this.groupBox2.TabIndex = 15;
+			this.groupBox2.TabStop = false;
+			this.groupBox2.Text = "Misc.";
+			// 
+			// checkSnowyNullEmulator
+			// 
+			this.checkSnowyNullEmulator.AutoSize = true;
+			this.checkSnowyNullEmulator.Location = new System.Drawing.Point(6, 142);
+			this.checkSnowyNullEmulator.Name = "checkSnowyNullEmulator";
+			this.checkSnowyNullEmulator.Size = new System.Drawing.Size(159, 17);
+			this.checkSnowyNullEmulator.TabIndex = 16;
+			this.checkSnowyNullEmulator.Text = "Enable Snowy Null Emulator";
+			this.checkSnowyNullEmulator.UseVisualStyleBackColor = true;
+			// 
+			// label1
+			// 
+			this.label1.Location = new System.Drawing.Point(7, 42);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(204, 102);
+			this.label1.TabIndex = 15;
+			this.label1.Text = resources.GetString("label1.Text");
+			// 
+			// label2
+			// 
+			this.label2.Location = new System.Drawing.Point(7, 167);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(204, 45);
+			this.label2.TabIndex = 17;
+			this.label2.Text = "Some people think the whitenoise is a great idea, and some people don\'t. Enabling" +
+    " this displays an Oxoo instead.";
 			// 
 			// DisplayConfigLite
 			// 
@@ -282,13 +329,13 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(375, 349);
+			this.ClientSize = new System.Drawing.Size(597, 285);
+			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.grpARSelection);
 			this.Controls.Add(this.grpFinalFilter);
 			this.Controls.Add(this.checkPadInteger);
 			this.Controls.Add(this.checkLetterbox);
 			this.Controls.Add(this.groupBox1);
-			this.Controls.Add(this.label1);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnOk);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -302,6 +349,8 @@
 			this.grpFinalFilter.PerformLayout();
 			this.grpARSelection.ResumeLayout(false);
 			this.grpARSelection.PerformLayout();
+			this.groupBox2.ResumeLayout(false);
+			this.groupBox2.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -311,7 +360,6 @@
 
 		private System.Windows.Forms.Button btnCancel;
 		private System.Windows.Forms.Button btnOk;
-		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.RadioButton rbNone;
 		private System.Windows.Forms.RadioButton rbScanlines;
@@ -329,5 +377,10 @@
 		private System.Windows.Forms.RadioButton rbUseRaw;
 		private System.Windows.Forms.RadioButton rbUseSystem;
 		private System.Windows.Forms.GroupBox grpARSelection;
+		private System.Windows.Forms.CheckBox checkFullscreenHacks;
+		private System.Windows.Forms.GroupBox groupBox2;
+		private System.Windows.Forms.CheckBox checkSnowyNullEmulator;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label label1;
 	}
 }

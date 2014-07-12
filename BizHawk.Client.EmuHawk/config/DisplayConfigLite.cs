@@ -37,6 +37,8 @@ namespace BizHawk.Client.EmuHawk.config
 			checkPadInteger.Checked = Global.Config.DispFixScaleInteger;
 			rbUseSystem.Checked = Global.Config.DispObeyAR;
 			rbUseRaw.Checked = !Global.Config.DispObeyAR;
+			checkFullscreenHacks.Checked = Global.Config.DispFullscreenHacks;
+			checkSnowyNullEmulator.Checked = Global.Config.DispSnowyNullEmulator;
 
 			RefreshAspectRatioOptions();
 		}
@@ -63,6 +65,8 @@ namespace BizHawk.Client.EmuHawk.config
 			Global.Config.DispFixAspectRatio = checkLetterbox.Checked;
 			Global.Config.DispFixScaleInteger = checkPadInteger.Checked;
 			Global.Config.DispObeyAR = rbUseSystem.Checked;
+			Global.Config.DispFullscreenHacks = checkFullscreenHacks.Checked;
+			Global.Config.DispSnowyNullEmulator = checkSnowyNullEmulator.Checked;
 
 			Global.Config.DispUserFilterPath = PathSelection;
 			GlobalWin.DisplayManager.RefreshUserShader();
