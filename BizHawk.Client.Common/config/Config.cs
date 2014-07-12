@@ -97,7 +97,6 @@ namespace BizHawk.Client.Common
 		public bool FirstBoot = true;
 
 		public enum SaveStateTypeE { Default, Binary, Text };
-		public SaveStateTypeE SaveStateType = SaveStateTypeE.Default;
 
 		// N64
 		public bool N64UseCircularAnalogConstraint = true;
@@ -124,6 +123,13 @@ namespace BizHawk.Client.Common
 		public int Rewind_BufferSize = 128; //in mb
 		public bool Rewind_OnDisk = false;
 		public bool Rewind_IsThreaded = false;
+
+		// Savestate settings
+		public SaveStateTypeE SaveStateType = SaveStateTypeE.Default;
+		public const int DefaultSaveStateCompressionLevelNormal = 5;
+		public int SaveStateCompressionLevelNormal = DefaultSaveStateCompressionLevelNormal;
+		public const int DefaultSaveStateCompressionLevelRewind = 0;//this isnt actually used yet 
+		public int SaveStateCompressionLevelRewind = DefaultSaveStateCompressionLevelRewind;//this isnt actually used yet 
 
 		/// <summary>use vsync.  if VSyncThrottle = false, this will try to use vsync without throttling to it</summary>
 		public bool VSync = false;

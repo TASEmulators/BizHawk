@@ -245,7 +245,7 @@ namespace BizHawk.Client.Common
 					IsStreamOwner = false,
 					UseZip64 = UseZip64.Off
 				};
-			_zip.SetLevel(5);
+			_zip.SetLevel(Global.Config.SaveStateCompressionLevelNormal);
 
 			if (stateVersionTag)
 			{
@@ -256,7 +256,10 @@ namespace BizHawk.Client.Common
 		public void PutLump(BinaryStateLump lump, Action<Stream> callback)
 		{
 			var name = BinaryStateFileNames.Get(lump);
-			var e = new ZipEntry(name) {CompressionMethod = CompressionMethod.Deflated};
+			var e = new ZipEntry(name);
+			if (Global.Config.SaveStateCompressionLevelNormal == 0)
+				e.CompressionMethod = CompressionMethod.Stored;
+			else e.CompressionMethod = CompressionMethod.Deflated;
 			_zip.PutNextEntry(e);
 			callback(_zip);
 			_zip.CloseEntry();

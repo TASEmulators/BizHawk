@@ -167,10 +167,6 @@
 			this.BothHkAndControllerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.InputOverHkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.HkOverInputMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SavestateTypeSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.SavestateTypeDefaultMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SavestateBinaryMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SavestateTextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CoresSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBInSGBMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NesInQuickNESMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1261,7 +1257,6 @@
             this.toolStripSeparator9,
             this.SpeedSkipSubMenu,
             this.KeyPrioritySubMenu,
-            this.SavestateTypeSubMenu,
             this.CoresSubMenu,
             this.toolStripSeparator10,
             this.SaveConfigMenuItem,
@@ -1339,8 +1334,8 @@
 			// 
 			this.RewindOptionsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Previous;
 			this.RewindOptionsMenuItem.Name = "RewindOptionsMenuItem";
-			this.RewindOptionsMenuItem.Size = new System.Drawing.Size(159, 22);
-			this.RewindOptionsMenuItem.Text = "&Rewind...";
+			this.RewindOptionsMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.RewindOptionsMenuItem.Text = "&Rewind && States...";
 			this.RewindOptionsMenuItem.Click += new System.EventHandler(this.RewindOptionsMenuItem_Click);
 			// 
 			// extensionsToolStripMenuItem
@@ -1586,38 +1581,6 @@
 			this.HkOverInputMenuItem.Size = new System.Drawing.Size(229, 22);
 			this.HkOverInputMenuItem.Text = "Hotkeys override Input";
 			this.HkOverInputMenuItem.Click += new System.EventHandler(this.HkOverInputMenuItem_Click);
-			// 
-			// SavestateTypeSubMenu
-			// 
-			this.SavestateTypeSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.SavestateTypeDefaultMenuItem,
-            this.SavestateBinaryMenuItem,
-            this.SavestateTextMenuItem});
-			this.SavestateTypeSubMenu.Name = "SavestateTypeSubMenu";
-			this.SavestateTypeSubMenu.Size = new System.Drawing.Size(159, 22);
-			this.SavestateTypeSubMenu.Text = "Savestate Type";
-			this.SavestateTypeSubMenu.DropDownOpened += new System.EventHandler(this.SavestateTypeMenuItem_DropDownOpened);
-			// 
-			// SavestateTypeDefaultMenuItem
-			// 
-			this.SavestateTypeDefaultMenuItem.Name = "SavestateTypeDefaultMenuItem";
-			this.SavestateTypeDefaultMenuItem.Size = new System.Drawing.Size(112, 22);
-			this.SavestateTypeDefaultMenuItem.Text = "Default";
-			this.SavestateTypeDefaultMenuItem.Click += new System.EventHandler(this.SavestateTypeDefaultMenuItem_Click);
-			// 
-			// SavestateBinaryMenuItem
-			// 
-			this.SavestateBinaryMenuItem.Name = "SavestateBinaryMenuItem";
-			this.SavestateBinaryMenuItem.Size = new System.Drawing.Size(112, 22);
-			this.SavestateBinaryMenuItem.Text = "Binary";
-			this.SavestateBinaryMenuItem.Click += new System.EventHandler(this.SavestateBinaryMenuItem_Click);
-			// 
-			// SavestateTextMenuItem
-			// 
-			this.SavestateTextMenuItem.Name = "SavestateTextMenuItem";
-			this.SavestateTextMenuItem.Size = new System.Drawing.Size(112, 22);
-			this.SavestateTextMenuItem.Text = "Text";
-			this.SavestateTextMenuItem.Click += new System.EventHandler(this.SavestateTextMenuItem_Click);
 			// 
 			// CoresSubMenu
 			// 
@@ -3099,27 +3062,6 @@
 			this.SavestateTypeContextSubMenu.Text = "Savestate Type";
 			this.SavestateTypeContextSubMenu.DropDownOpened += new System.EventHandler(this.SavestateTypeContextSubMenu_DropDownOpened);
 			// 
-			// SavestateTypeDefaultContextMenuItem
-			// 
-			this.SavestateTypeDefaultContextMenuItem.Name = "SavestateTypeDefaultContextMenuItem";
-			this.SavestateTypeDefaultContextMenuItem.Size = new System.Drawing.Size(112, 22);
-			this.SavestateTypeDefaultContextMenuItem.Text = "Default";
-			this.SavestateTypeDefaultContextMenuItem.Click += new System.EventHandler(this.SavestateTypeDefaultMenuItem_Click);
-			// 
-			// SavestateBinaryContextMenuItem
-			// 
-			this.SavestateBinaryContextMenuItem.Name = "SavestateBinaryContextMenuItem";
-			this.SavestateBinaryContextMenuItem.Size = new System.Drawing.Size(112, 22);
-			this.SavestateBinaryContextMenuItem.Text = "Binary";
-			this.SavestateBinaryContextMenuItem.Click += new System.EventHandler(this.SavestateBinaryMenuItem_Click);
-			// 
-			// SavestateTextContextMenuItem
-			// 
-			this.SavestateTextContextMenuItem.Name = "SavestateTextContextMenuItem";
-			this.SavestateTextContextMenuItem.Size = new System.Drawing.Size(112, 22);
-			this.SavestateTextContextMenuItem.Text = "Text";
-			this.SavestateTextContextMenuItem.Click += new System.EventHandler(this.SavestateTextMenuItem_Click);
-			// 
 			// CoreSelectionContextSubMenu
 			// 
 			this.CoreSelectionContextSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -3491,10 +3433,6 @@
 		private System.Windows.Forms.ToolStripMenuItem CreateDualGbXmlMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem N64SubMenu;
 		private System.Windows.Forms.ToolStripMenuItem N64PluginSettingsMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SavestateTypeSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem SavestateTypeDefaultMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SavestateBinaryMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SavestateTextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SaturnSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem SaturnPreferencesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ConfigContextMenuItem;
