@@ -142,6 +142,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.OSD.AddMessage("TAStudio engaged");
 			_tas = Global.MovieSession.Movie as TasMovie;
+			GlobalWin.MainForm.PauseEmulator();
 			GlobalWin.MainForm.RelinquishControl(this);
 			_originalRewindStatus = Global.Rewinder.RewindActive;
 			GlobalWin.MainForm.EnableRewind(false);
