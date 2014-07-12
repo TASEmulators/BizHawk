@@ -407,10 +407,10 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// TruncateMenuItem
 			// 
-			this.TruncateMenuItem.Enabled = false;
 			this.TruncateMenuItem.Name = "TruncateMenuItem";
 			this.TruncateMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.TruncateMenuItem.Text = "&Truncate Movie";
+			this.TruncateMenuItem.Click += new System.EventHandler(this.TruncateMenuItem_Click);
 			// 
 			// ConfigSubMenu
 			// 

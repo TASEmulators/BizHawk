@@ -29,8 +29,17 @@ namespace BizHawk.Client.Common
 		{
 			base.Truncate(frame);
 
-			LagLog.RemoveRange(frame + 2, LagLog.Count - frame - 1);
+			if (frame < LagLog.Count)
+			{
+				LagLog.RemoveRange(frame + 2, LagLog.Count - frame - 1);
+			}
+
 			StateManager.Invalidate(frame + 1);
+
+			if (frame < _log.Count - 1)
+			{
+				Changes = true;
+			}
 			// TODO: Markers? What does taseditor do?
 		}
 

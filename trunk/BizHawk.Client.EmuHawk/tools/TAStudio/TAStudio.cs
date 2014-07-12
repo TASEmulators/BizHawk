@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -55,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private IEnumerable SelectedIndices
+		private IEnumerable<int> SelectedIndices
 		{
 			get
 			{
@@ -461,9 +460,7 @@ namespace BizHawk.Client.EmuHawk
 		private void CutMenuItem_Click(object sender, EventArgs e)
 		{
 			_tasClipboard.Clear();
-			var list = TasView.SelectedIndices
-				.OfType<int>()
-				.ToArray();
+			var list = SelectedIndices.ToArray();
 			var sb = new StringBuilder();
 			for (var i = 0; i < list.Length; i++)
 			{
@@ -485,10 +482,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearMenuItem_Click(object sender, EventArgs e)
 		{
-			var list = TasView.SelectedIndices
-				.OfType<int>();
-
-			foreach (var frame in list)
+			foreach (var frame in SelectedIndices)
 			{
 				_tas.ClearFrame(frame);
 			}
@@ -499,12 +493,7 @@ namespace BizHawk.Client.EmuHawk
 		private void DeleteFramesMenuItem_Click(object sender, EventArgs e)
 		{
 			_tasClipboard.Clear();
-			var list = TasView.SelectedIndices
-				.OfType<int>()
-				.ToArray();
-
-			_tas.RemoveFrames(list);
-
+			_tas.RemoveFrames(SelectedIndices.ToArray());
 			SetSplicer();
 			TasView.DeselectAll();
 			RefreshDialog();
@@ -512,14 +501,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CloneMenuItem_Click(object sender, EventArgs e)
 		{
-			var framesToInsert = TasView.SelectedIndices
-				.OfType<int>()
-				.OrderBy(frame => frame)
-				.ToList();
-
-			var insertionFrame = framesToInsert.Last() + 1;
-
+			var framesToInsert = SelectedIndices.ToList();
+			var insertionFrame = LastSelectedIndex + 1;
 			var inputLog = new List<string>();
+
 			foreach (var frame in framesToInsert)
 			{
 				inputLog.Add(_tas.GetInput(frame));
@@ -532,14 +517,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertFrameMenuItem_Click(object sender, EventArgs e)
 		{
-			var insertionFrame = TasView.SelectedIndices
-				.OfType<int>()
-				.Last() + 1;
-
-			_tas.InsertEmptyFrame(insertionFrame);
-
+			_tas.InsertEmptyFrame(LastSelectedIndex + 1);
 			RefreshDialog();
 		}
+
+		private void TruncateMenuItem_Click(object sender, EventArgs e)
+		{
+			_tas.Truncate(LastSelectedIndex + 1);
+			RefreshDialog();
+		}
+
 
 		#endregion
 
