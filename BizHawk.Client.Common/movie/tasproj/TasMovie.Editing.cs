@@ -108,11 +108,15 @@ namespace BizHawk.Client.Common
 			InvalidateAfter(frame);
 		}
 
-		public void InsertEmptyFrame(int frame)
+		public void InsertEmptyFrame(int frame, int count = 1)
 		{
 			var lg = LogGeneratorInstance();
 			lg.SetSource(Global.MovieSession.MovieControllerInstance());
-			_log.Insert(frame, lg.EmptyEntry);
+
+			for (int i = 0; i < count; i++)
+			{
+				_log.Insert(frame, lg.EmptyEntry);
+			}
 
 			Changes = true;
 			InvalidateAfter(frame - 1);

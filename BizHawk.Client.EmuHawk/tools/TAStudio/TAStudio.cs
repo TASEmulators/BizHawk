@@ -417,21 +417,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CopyMenuItem_Click(object sender, EventArgs e)
 		{
-			_tasClipboard.Clear();
-			var list = TasView.SelectedIndices;
-			var sb = new StringBuilder();
-			for (var i = 0; i < list.Count; i++)
+			if (SelectedIndices.Any())
 			{
-				var input = _tas.GetInputState(list[i]);
-				_tasClipboard.Add(new TasClipboardEntry(list[i], input));
-				var lg = _tas.LogGeneratorInstance();
-				lg.SetSource(input);
-				sb.AppendLine(lg.GenerateLogEntry());
+				_tasClipboard.Clear();
+				var list = TasView.SelectedIndices;
+				var sb = new StringBuilder();
+				for (var i = 0; i < list.Count; i++)
+				{
+					var input = _tas.GetInputState(list[i]);
+					_tasClipboard.Add(new TasClipboardEntry(list[i], input));
+					var lg = _tas.LogGeneratorInstance();
+					lg.SetSource(input);
+					sb.AppendLine(lg.GenerateLogEntry());
+				}
+
+				Clipboard.SetDataObject(sb.ToString());
+
+				SetSplicer();
 			}
-
-			Clipboard.SetDataObject(sb.ToString());
-
-			SetSplicer();
 		}
 
 		private void PasteMenuItem_Click(object sender, EventArgs e)
@@ -441,44 +444,43 @@ namespace BizHawk.Client.EmuHawk
 			if (_tasClipboard.Any())
 			{
 				_tas.CopyOverInput(FirstSelectedIndex, _tasClipboard.Select(x => x.ControllerState));
+				RefreshDialog();
 			}
-
-			RefreshDialog();
 		}
 
 		private void PasteInsertMenuItem_Click(object sender, EventArgs e)
 		{
-			// TODO: if highlighting 2 rows and pasting 3, only paste 2 of them
-			// FCEUX Taseditor does't do this, but I think it is the expected behavior in editor programs
 			if (_tasClipboard.Any())
 			{
 				_tas.InsertInput(FirstSelectedIndex, _tasClipboard.Select(x => x.ControllerState));
+				RefreshDialog();
 			}
-
-			RefreshDialog();
 		}
 
 		private void CutMenuItem_Click(object sender, EventArgs e)
 		{
-			_tasClipboard.Clear();
-			var list = SelectedIndices.ToArray();
-			var sb = new StringBuilder();
-			for (var i = 0; i < list.Length; i++)
+			if (SelectedIndices.Any())
 			{
-				var input = _tas.GetInputState(i);
-				_tasClipboard.Add(new TasClipboardEntry(list[i], input));
-				var lg = _tas.LogGeneratorInstance();
-				lg.SetSource(input);
-				sb.AppendLine(lg.GenerateLogEntry());
+				_tasClipboard.Clear();
+				var list = SelectedIndices.ToArray();
+				var sb = new StringBuilder();
+				for (var i = 0; i < list.Length; i++)
+				{
+					var input = _tas.GetInputState(i);
+					_tasClipboard.Add(new TasClipboardEntry(list[i], input));
+					var lg = _tas.LogGeneratorInstance();
+					lg.SetSource(input);
+					sb.AppendLine(lg.GenerateLogEntry());
+				}
+
+				Clipboard.SetDataObject(sb.ToString());
+
+				_tas.RemoveFrames(list);
+
+				SetSplicer();
+				TasView.DeselectAll();
+				RefreshDialog();
 			}
-
-			Clipboard.SetDataObject(sb.ToString());
-
-			_tas.RemoveFrames(list);
-
-			SetSplicer();
-			TasView.DeselectAll();
-			RefreshDialog();
 		}
 
 		private void ClearMenuItem_Click(object sender, EventArgs e)
@@ -493,39 +495,66 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DeleteFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			_tasClipboard.Clear();
-			_tas.RemoveFrames(SelectedIndices.ToArray());
-			SetSplicer();
-			TasView.DeselectAll();
-			RefreshDialog();
+			if (SelectedIndices.Any())
+			{
+				_tasClipboard.Clear();
+				_tas.RemoveFrames(SelectedIndices.ToArray());
+				SetSplicer();
+				TasView.DeselectAll();
+				RefreshDialog();
+			}
 		}
 
 		private void CloneMenuItem_Click(object sender, EventArgs e)
 		{
-			var framesToInsert = SelectedIndices.ToList();
-			var insertionFrame = LastSelectedIndex + 1;
-			var inputLog = new List<string>();
-
-			foreach (var frame in framesToInsert)
+			if (SelectedIndices.Any())
 			{
-				inputLog.Add(_tas.GetInput(frame));
+				var framesToInsert = SelectedIndices.ToList();
+				var insertionFrame = LastSelectedIndex + 1;
+				var inputLog = new List<string>();
+
+				foreach (var frame in framesToInsert)
+				{
+					inputLog.Add(_tas.GetInput(frame));
+				}
+
+				_tas.InsertInput(insertionFrame, inputLog);
+
+				RefreshDialog();
 			}
-
-			_tas.InsertInput(insertionFrame, inputLog);
-
-			RefreshDialog();
 		}
 
 		private void InsertFrameMenuItem_Click(object sender, EventArgs e)
 		{
-			_tas.InsertEmptyFrame(LastSelectedIndex + 1);
+			if (SelectedIndices.Any())
+			{
+				_tas.InsertEmptyFrame(LastSelectedIndex + 1);
+				RefreshDialog();
+			}
+		}
+
+		private void InsertNumFramesMenuItem_Click(object sender, EventArgs e)
+		{
+			if (SelectedIndices.Any())
+			{
+				var framesPrompt = new FramesPrompt();
+				var result = framesPrompt.ShowDialog();
+				if (result == DialogResult.OK)
+				{
+					_tas.InsertEmptyFrame(LastSelectedIndex + 1, framesPrompt.Frames);
+				}
+			}
+
 			RefreshDialog();
 		}
 
 		private void TruncateMenuItem_Click(object sender, EventArgs e)
 		{
-			_tas.Truncate(LastSelectedIndex + 1);
-			RefreshDialog();
+			if (SelectedIndices.Any())
+			{
+				_tas.Truncate(LastSelectedIndex + 1);
+				RefreshDialog();
+			}
 		}
 
 
