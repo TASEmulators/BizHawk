@@ -113,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Start Scenario 3: No movie, but user wants to autload their last project
-			else if (Global.Config.AutoloadTAStudioProject)
+			else if (Global.Config.AutoloadTAStudioProject && !string.IsNullOrEmpty(Global.Config.RecentTas.MostRecent))
 			{
 				LoadProject(Global.Config.RecentTas.MostRecent);
 			}
@@ -208,6 +208,15 @@ namespace BizHawk.Client.EmuHawk
 		private void RefreshDialog()
 		{
 			TasView.ItemCount = _tas.InputLogLength;
+		}
+
+		// TODO: a better name
+		private void GoToLastEmulatedFrameIfNecessary(int frame)
+		{
+			if (frame <= _tas.LastEmulatedFrame)
+			{
+				GoToFrame(_tas.LastEmulatedFrame);
+			}
 		}
 
 		private void SetUpColumns()
@@ -365,6 +374,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_tas.Save();
 				MessageStatusLabel.Text = Path.GetFileName(_tas.Filename) + " saved.";
+				Global.Config.RecentTas.Add(_tas.Filename);
 			}
 		}
 
@@ -477,6 +487,7 @@ namespace BizHawk.Client.EmuHawk
 				Clipboard.SetDataObject(sb.ToString());
 
 				_tas.RemoveFrames(list);
+
 
 				SetSplicer();
 				TasView.DeselectAll();

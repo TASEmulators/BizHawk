@@ -9,8 +9,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			SetUpColumns();
-
 			if (!IsHandleCreated || IsDisposed)
 			{
 				return;

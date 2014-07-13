@@ -100,6 +100,7 @@ namespace BizHawk.Client.EmuHawk
 					if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
 					{
 						_tas.ToggleBoolState(TasView.PointedCell.Row.Value, TasView.PointedCell.Column);
+						GoToLastEmulatedFrameIfNecessary(TasView.PointedCell.Row.Value);
 						TasView.Refresh();
 
 						_startBoolDrawColumn = TasView.PointedCell.Column;

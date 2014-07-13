@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class TasStateManager
 	{
-		private readonly Dictionary<int, byte[]> States = new Dictionary<int, byte[]>();
+		private readonly SortedDictionary<int, byte[]> States = new SortedDictionary<int, byte[]>();
 
 		public TasStateManager()
 		{
@@ -144,6 +144,11 @@ namespace BizHawk.Client.Common
 			{
 				return States.Sum(s => s.Value.Length);
 			}
+		}
+
+		public KeyValuePair<int, byte[]> Last
+		{
+			get { return States.Last(); }
 		}
 
 		public class ManagerSettings
