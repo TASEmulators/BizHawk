@@ -12,7 +12,11 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public void StartNewMovie(IMovie movie, bool record)
 		{
-			movie.Load();
+			if (!record) // The semantics of record is that we are starting a new movie, and even wiping a pre-existing movie with the same path, but non-record means we are loading an existing movie into playback mode
+			{
+				movie.Load();
+			}
+
 			if (movie.SystemID != Global.Emulator.SystemId)
 			{
 				GlobalWin.OSD.AddMessage("Movie does not match the currently loaded system, unable to load");
