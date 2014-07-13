@@ -205,7 +205,6 @@ namespace BizHawk.Client.Common
 				return _log[getframe];
 			}
 
-			Finish();
 			return string.Empty;
 		}
 

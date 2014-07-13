@@ -85,15 +85,9 @@ namespace BizHawk.Client.Common
 			_mode = Moviemode.Inactive;
 		}
 
-		/// <summary>
-		/// If a movie is in playback mode, this will set it to movie finished
-		/// </summary>
-		private void Finish()
+		public void FinishedMode()
 		{
-			if (_mode == Moviemode.Play)
-			{
-				_mode = Moviemode.Finished;
-			}
+			_mode = Moviemode.Finished;
 		}
 	}
 }

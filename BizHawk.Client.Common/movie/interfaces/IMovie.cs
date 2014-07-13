@@ -157,6 +157,11 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		void SwitchToPlay();
 
+		/// <summary>
+		/// Tells the movie to go into "Finished" mode, where the user resumes control of input but the movie is still loaded in memory
+		/// </summary>
+		void FinishedMode();
+
 		#endregion
 
 		#region Editing API

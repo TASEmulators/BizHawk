@@ -69,12 +69,9 @@ namespace BizHawk.Client.Common
 			_mode = Moviemode.Inactive;
 		}
 
-		protected void Finish()
+		public void FinishedMode()
 		{
-			if (_mode == Moviemode.Play)
-			{
-				_mode = Moviemode.Finished;
-			}
+			_mode = Moviemode.Finished;
 		}
 	}
 }
