@@ -96,36 +96,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public virtual string GetInput(int frame)
-		{
-			if (frame < FrameCount && frame >= 0)
-			{
-
-				int getframe;
-
-				if (LoopOffset.HasValue)
-				{
-					if (frame < _log.Count)
-					{
-						getframe = frame;
-					}
-					else
-					{
-						getframe = ((frame - LoopOffset.Value) % (_log.Count - LoopOffset.Value)) + LoopOffset.Value;
-					}
-				}
-				else
-				{
-					getframe = frame;
-				}
-
-				return _log[getframe];
-			}
-
-			Finish();
-			return string.Empty;
-		}
-
 		public IController GetInputState(int frame)
 		{
 			if (frame < FrameCount && frame >= 0)

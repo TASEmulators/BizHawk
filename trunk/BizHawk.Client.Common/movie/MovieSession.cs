@@ -103,12 +103,12 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void LatchInputFromLog()
 		{
-			var input = Movie.GetInput(Global.Emulator.Frame);
+			var input = Movie.GetInputState(Global.Emulator.Frame);
 
 			// Attempting to get a frame past the end of a movie changes the mode to finished
 			if (!Movie.IsFinished)
 			{
-				MovieControllerAdapter.SetControllersAsMnemonic(input);
+				MovieControllerAdapter.LatchFromSource(input);
 			}
 		}
 

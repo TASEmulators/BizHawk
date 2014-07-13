@@ -198,7 +198,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private int? LoopOffset
+		protected int? LoopOffset
 		{
 			get
 			{

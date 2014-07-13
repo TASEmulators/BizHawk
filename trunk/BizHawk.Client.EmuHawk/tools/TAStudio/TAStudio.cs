@@ -527,7 +527,7 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (var frame in framesToInsert)
 				{
-					inputLog.Add(_tas.GetInput(frame));
+					inputLog.Add(_tas.GetInputLogEntry(frame));
 				}
 
 				_tas.InsertInput(insertionFrame, inputLog);
