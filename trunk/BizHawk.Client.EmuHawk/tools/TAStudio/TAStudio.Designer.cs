@@ -107,6 +107,7 @@ namespace BizHawk.Client.EmuHawk
 			this.MessageStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.SplicerStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.TasPlaybackBox = new BizHawk.Client.EmuHawk.PlaybackBox();
+			this.MarkerControl = new BizHawk.Client.EmuHawk.MarkerControl();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.SuspendLayout();
@@ -735,11 +736,20 @@ namespace BizHawk.Client.EmuHawk
 			this.TasPlaybackBox.Size = new System.Drawing.Size(204, 120);
 			this.TasPlaybackBox.TabIndex = 5;
 			// 
+			// MarkerControl
+			// 
+			this.MarkerControl.Location = new System.Drawing.Point(302, 151);
+			this.MarkerControl.Markers = null;
+			this.MarkerControl.Name = "MarkerControl";
+			this.MarkerControl.Size = new System.Drawing.Size(204, 215);
+			this.MarkerControl.TabIndex = 6;
+			// 
 			// TAStudio
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(506, 519);
+			this.Controls.Add(this.MarkerControl);
 			this.Controls.Add(this.TasPlaybackBox);
 			this.Controls.Add(this.TasStatusStrip);
 			this.Controls.Add(this.TASMenu);
@@ -839,5 +849,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem CommentsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SubtitlesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GreenzoneSettingsMenuItem;
+		private MarkerControl MarkerControl;
 	}
 }

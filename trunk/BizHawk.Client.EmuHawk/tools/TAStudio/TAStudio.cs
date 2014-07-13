@@ -145,6 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm.PauseEmulator();
 			GlobalWin.MainForm.RelinquishControl(this);
 			_originalRewindStatus = Global.Rewinder.RewindActive;
+			MarkerControl.Markers = _tas.Markers;
 			GlobalWin.MainForm.EnableRewind(false);
 		}
 

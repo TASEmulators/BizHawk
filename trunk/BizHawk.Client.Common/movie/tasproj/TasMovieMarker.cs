@@ -121,5 +121,21 @@ namespace BizHawk.Client.Common
 				this.Remove(existingItem);
 			}
 		}
+
+		public TasMovieMarker Previous(int currentFrame)
+		{
+			return this
+				.Where(m => m.Frame < currentFrame)
+				.OrderBy(m => m.Frame)
+				.Last();
+		}
+
+		public TasMovieMarker Next(int currentFrame)
+		{
+			return this
+				.Where(m => m.Frame > currentFrame)
+				.OrderBy(m => m.Frame)
+				.First();
+		}
 	}
 }
