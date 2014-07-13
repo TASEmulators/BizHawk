@@ -192,14 +192,6 @@ namespace BizHawk.Client.Common
 		void Truncate(int frame);
 
 		/// <summary>
-		/// Gets a single frame of input from the movie at the given frame
-		/// The input will be in the same format as represented in the input log when saved as a file
-		/// </summary>
-		/// <param name="frame">The frame of input to be retrieved</param>
-		/// <returns>a string representation of a log entry from the input log file itself</returns>
-		string GetInput(int frame);
-
-		/// <summary>
 		/// Gets a single frame of input via a controller state
 		/// </summary>
 		/// <param name="frame">The frame of input to be retrieved</param>
