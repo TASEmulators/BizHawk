@@ -106,7 +106,6 @@ namespace BizHawk.Client.Common
 				return adapter;
 			}
 
-			Finish();
 			return null;
 		}
 
