@@ -36,6 +36,11 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
+				if (index == 9)
+				{
+					int zzz = 0;
+				}
+
 				return new TasMovieRecord
 				{
 					State = StateManager[index],
@@ -168,6 +173,11 @@ namespace BizHawk.Client.Common
 			if (Global.Emulator.Frame == frame && !StateManager.HasState(frame))
 			{
 				StateManager.Capture();
+			}
+
+			if (Global.Emulator.Frame == frame && frame >= LagLog.Count)
+			{
+				LagLog.Add(Global.Emulator.IsLagFrame);
 			}
 
 			return base.GetInput(frame);
