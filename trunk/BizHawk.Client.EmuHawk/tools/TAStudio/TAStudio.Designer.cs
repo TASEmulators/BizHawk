@@ -107,7 +107,6 @@ namespace BizHawk.Client.EmuHawk
 			this.MessageStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.SplicerStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.TasPlaybackBox = new BizHawk.Client.EmuHawk.PlaybackBox();
-			this.TasBookmarksBranchesBox = new BizHawk.Client.EmuHawk.BookmarksBranchesBox();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.SuspendLayout();
@@ -736,20 +735,11 @@ namespace BizHawk.Client.EmuHawk
 			this.TasPlaybackBox.Size = new System.Drawing.Size(204, 120);
 			this.TasPlaybackBox.TabIndex = 5;
 			// 
-			// TasBookmarksBranchesBox
-			// 
-			this.TasBookmarksBranchesBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.TasBookmarksBranchesBox.Location = new System.Drawing.Point(302, 151);
-			this.TasBookmarksBranchesBox.Name = "TasBookmarksBranchesBox";
-			this.TasBookmarksBranchesBox.Size = new System.Drawing.Size(204, 343);
-			this.TasBookmarksBranchesBox.TabIndex = 7;
-			// 
 			// TAStudio
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(506, 519);
-			this.Controls.Add(this.TasBookmarksBranchesBox);
 			this.Controls.Add(this.TasPlaybackBox);
 			this.Controls.Add(this.TasStatusStrip);
 			this.Controls.Add(this.TASMenu);
@@ -842,7 +832,6 @@ namespace BizHawk.Client.EmuHawk
 		private StatusStripEx TasStatusStrip;
 		private System.Windows.Forms.ToolStripStatusLabel MessageStatusLabel;
 		private PlaybackBox TasPlaybackBox;
-		private BookmarksBranchesBox TasBookmarksBranchesBox;
 		private System.Windows.Forms.ToolStripStatusLabel SplicerStatusLabel;
 		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MetaSubMenu;
