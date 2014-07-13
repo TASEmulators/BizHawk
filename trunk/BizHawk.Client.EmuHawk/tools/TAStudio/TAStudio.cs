@@ -215,7 +215,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (frame <= _tas.LastEmulatedFrame)
 			{
-				GoToFrame(_tas.LastEmulatedFrame);
+				GoToFrame(frame);
 			}
 		}
 
