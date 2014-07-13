@@ -885,12 +885,6 @@
     <Compile Include="tools\TAStudio\RecorderBox.Designer.cs">
       <DependentUpon>RecorderBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\TAStudio\SplicerBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\SplicerBox.Designer.cs">
-      <DependentUpon>SplicerBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\TAStudio\TAStudio.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1290,9 +1284,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\RecorderBox.resx">
       <DependentUpon>RecorderBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\SplicerBox.resx">
-      <DependentUpon>SplicerBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\TAStudio.resx">
       <DependentUpon>TAStudio.cs</DependentUpon>
