@@ -121,6 +121,8 @@ namespace BizHawk.Emulation.Common
 
 		public void GetSamples(short[] samples)
 		{
+			if (!CoreComm.DispSnowyNullEmulator())
+				return;
 			if (xmas)
 				pleg.Generate(samples);
 		}
