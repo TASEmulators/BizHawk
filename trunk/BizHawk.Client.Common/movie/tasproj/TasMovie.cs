@@ -177,5 +177,13 @@ namespace BizHawk.Client.Common
 		{
 			get { return StateManager.Settings;  }
 		}
+
+		public int LastEmulatedFrame
+		{
+			get
+			{
+				return StateManager.Last.Key;
+			}
+		}
 	}
 }
