@@ -96,7 +96,6 @@ namespace BizHawk.Client.EmuHawk
 					var frame = TasView.PointedCell.Row.Value;
 					var buttonName = TasView.PointedCell.Column;
 
-					// TODO: if float, store the original value and copy that on cell chaned
 					if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
 					{
 						_tas.ToggleBoolState(TasView.PointedCell.Row.Value, TasView.PointedCell.Column);
@@ -162,6 +161,7 @@ namespace BizHawk.Client.EmuHawk
 					for (var i = startVal; i < endVal; i++)
 					{
 						_tas.SetBoolState(i, _startBoolDrawColumn, _boolPaintState); // Notice it uses new row, old column, you can only paint across a single column
+						GoToLastEmulatedFrameIfNecessary(TasView.PointedCell.Row.Value);
 					}
 
 					TasView.Refresh();
@@ -174,6 +174,7 @@ namespace BizHawk.Client.EmuHawk
 					for (var i = startVal; i < endVal; i++)
 					{
 						_tas.SetFloatState(i, _startFloatDrawColumn, _floatPaintState); // Notice it uses new row, old column, you can only paint across a single column
+						GoToLastEmulatedFrameIfNecessary(TasView.PointedCell.Row.Value);
 					}
 
 					TasView.Refresh();
