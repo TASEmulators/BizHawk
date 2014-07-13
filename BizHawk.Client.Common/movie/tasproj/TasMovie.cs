@@ -14,15 +14,13 @@ namespace BizHawk.Client.Common
 		private List<bool> LagLog = new List<bool>();
 		private readonly TasStateManager StateManager = new TasStateManager();
 
-		public TasMovie(string path) : base(path)
-		{
-			Markers = new TasMovieMarkerList();
-		}
+		public TasMovie(string path) : base(path) { }
 
 		public TasMovie()
 			: base()
 		{
-			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0"; 
+			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
+			Markers = new TasMovieMarkerList();
 		}
 
 		public override string PreferredExtension
