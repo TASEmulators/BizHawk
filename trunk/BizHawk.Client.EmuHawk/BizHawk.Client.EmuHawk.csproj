@@ -823,6 +823,12 @@
     <Compile Include="tools\TAStudio\BookmarksBranchesBox.Designer.cs">
       <DependentUpon>BookmarksBranchesBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\TAStudio\FramesPrompt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\FramesPrompt.Designer.cs">
+      <DependentUpon>FramesPrompt.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\TAStudio\GreenzoneSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1257,6 +1263,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\BookmarksBranchesBox.resx">
       <DependentUpon>BookmarksBranchesBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\TAStudio\FramesPrompt.resx">
+      <DependentUpon>FramesPrompt.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\GreenzoneSettings.resx">
       <DependentUpon>GreenzoneSettings.cs</DependentUpon>

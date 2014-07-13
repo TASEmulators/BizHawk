@@ -394,11 +394,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// InsertNumFramesMenuItem
 			// 
-			this.InsertNumFramesMenuItem.Enabled = false;
 			this.InsertNumFramesMenuItem.Name = "InsertNumFramesMenuItem";
 			this.InsertNumFramesMenuItem.ShortcutKeyDisplayString = "Ins";
 			this.InsertNumFramesMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.InsertNumFramesMenuItem.Text = "Insert # of Frames";
+			this.InsertNumFramesMenuItem.Click += new System.EventHandler(this.InsertNumFramesMenuItem_Click);
 			// 
 			// toolStripSeparator6
 			// 
