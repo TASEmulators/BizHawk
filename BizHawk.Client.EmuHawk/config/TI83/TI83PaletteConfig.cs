@@ -90,7 +90,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DefaultsBtn_Click(object sender, EventArgs e)
 		{
-			var s = TI83.TI83Settings.GetDefaults();
+			var s = new TI83.TI83Settings();
 			BackgroundPanel.BackColor = Color.FromArgb((int)s.BGColor);
 			ForeGroundPanel.BackColor = Color.FromArgb((int)s.ForeColor);
 		}

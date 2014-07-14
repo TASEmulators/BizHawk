@@ -18,6 +18,11 @@ namespace BizHawk.Common
 
 		private static IDictionary<Type, DefaultValueSetter> DefaultValueSetters = new ConcurrentDictionary<Type, DefaultValueSetter>();
 
+		/// <summary>
+		/// set all properties (not fields!) of obj with a DefaultValueAttribute to that value
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="obj">the obj to act on</param>
 		public static void SetDefaultValues<T>(T obj)
 		{
 			DefaultValueSetter f;
