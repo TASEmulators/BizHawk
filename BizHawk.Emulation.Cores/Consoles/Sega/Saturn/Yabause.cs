@@ -707,7 +707,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 		#endregion
 
-		SaturnSyncSettings SyncSettings;
+		public SaturnSyncSettings SyncSettings;
 
 		public object GetSettings() { return null; }
 		public object GetSyncSettings() { return SyncSettings.Clone(); }
