@@ -12,10 +12,16 @@ namespace BizHawk.Client.Common
 		private int _currentMemoryDomain; // Main memory by default probably (index 0 is currently always main memory but may never be)
 
 		public MemoryLuaLibrary(Lua lua)
-			: base(lua) { }
+			: base(lua)
+		{
+			_currentMemoryDomain = Global.Emulator.MemoryDomains.IndexOf(Global.Emulator.MemoryDomains.MainMemory);
+		}
 
 		public MemoryLuaLibrary(Lua lua, Action<string> logOutputCallback)
-			: base(lua, logOutputCallback) { }
+			: base(lua, logOutputCallback)
+		{
+			_currentMemoryDomain = Global.Emulator.MemoryDomains.IndexOf(Global.Emulator.MemoryDomains.MainMemory);
+		}
 
 		public override string Name { get { return "memory"; } }
 
