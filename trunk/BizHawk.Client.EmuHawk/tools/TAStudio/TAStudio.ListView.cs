@@ -15,6 +15,7 @@ namespace BizHawk.Client.EmuHawk
 		private float _floatPaintState;
 		private bool _startMarkerDrag;
 		private bool _startFrameDrag;
+		private bool _rightMouseHeld = false;
 
 		#region Query callbacks
 
@@ -83,34 +84,41 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.PointedCell.Row.HasValue && !string.IsNullOrEmpty(TasView.PointedCell.Column))
 			{
-				if (TasView.PointedCell.Column == MarkerColumnName)
+				if (e.Button == MouseButtons.Left)
 				{
-					_startMarkerDrag = true;
-					GoToFrame(TasView.PointedCell.Row.Value - 1);
-				}
-				else if (TasView.PointedCell.Column == FrameColumnName)
-				{
-					_startFrameDrag = true;
-				}
-				else
-				{
-					var frame = TasView.PointedCell.Row.Value;
-					var buttonName = TasView.PointedCell.Column;
-
-					if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
+					if (TasView.PointedCell.Column == MarkerColumnName)
 					{
-						_tas.ToggleBoolState(TasView.PointedCell.Row.Value, TasView.PointedCell.Column);
-						GoToLastEmulatedFrameIfNecessary(TasView.PointedCell.Row.Value);
-						TasView.Refresh();
-
-						_startBoolDrawColumn = TasView.PointedCell.Column;
-						_boolPaintState = _tas.BoolIsPressed(frame, buttonName);
+						_startMarkerDrag = true;
+						GoToFrame(TasView.PointedCell.Row.Value - 1);
+					}
+					else if (TasView.PointedCell.Column == FrameColumnName)
+					{
+						_startFrameDrag = true;
 					}
 					else
 					{
-						_startFloatDrawColumn = TasView.PointedCell.Column;
-						_floatPaintState = _tas.GetFloatValue(frame, buttonName);
+						var frame = TasView.PointedCell.Row.Value;
+						var buttonName = TasView.PointedCell.Column;
+
+						if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
+						{
+							_tas.ToggleBoolState(TasView.PointedCell.Row.Value, TasView.PointedCell.Column);
+							GoToLastEmulatedFrameIfNecessary(TasView.PointedCell.Row.Value);
+							TasView.Refresh();
+
+							_startBoolDrawColumn = TasView.PointedCell.Column;
+							_boolPaintState = _tas.BoolIsPressed(frame, buttonName);
+						}
+						else
+						{
+							_startFloatDrawColumn = TasView.PointedCell.Column;
+							_floatPaintState = _tas.GetFloatValue(frame, buttonName);
+						}
 					}
+				}
+				else if (e.Button == MouseButtons.Right)
+				{
+					_rightMouseHeld = true;
 				}
 			}
 		}
@@ -122,6 +130,7 @@ namespace BizHawk.Client.EmuHawk
 			_startBoolDrawColumn = string.Empty;
 			_startFloatDrawColumn = string.Empty;
 			_floatPaintState = 0;
+			_rightMouseHeld = false;
 		}
 
 		private void TasView_PointedCellChanged(object sender, TasListView.CellEventArgs e)
@@ -179,6 +188,21 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					TasView.Refresh();
+				}
+			}
+		}
+
+		private void TasView_MouseWheel(object sender, MouseEventArgs e)
+		{
+			if (_rightMouseHeld)
+			{
+				if (e.Delta < 0)
+				{
+					GoToFrame(Global.Emulator.Frame);
+				}
+				else
+				{
+					GoToFrame(Global.Emulator.Frame - 2);
 				}
 			}
 		}

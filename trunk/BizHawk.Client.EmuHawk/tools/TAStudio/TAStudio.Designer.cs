@@ -692,6 +692,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.View = System.Windows.Forms.View.Details;
 			this.TasView.SelectedIndexChanged += new System.EventHandler(this.TasView_SelectedIndexChanged);
 			this.TasView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDown);
+			this.TasView.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseWheel);
 			this.TasView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseUp);
 			// 
 			// Frame
