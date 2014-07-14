@@ -92,7 +92,9 @@ namespace BizHawk.Client.EmuHawk
 				Movie = MovieService.DefaultInstance,
 				MovieControllerAdapter = MovieService.DefaultInstance.LogGeneratorInstance().MovieControllerAdapter,
 				MessageCallback = GlobalWin.OSD.AddMessage,
-				AskYesNoCallback = StateErrorAskUser
+				AskYesNoCallback = StateErrorAskUser,
+				PauseCallback = PauseEmulator,
+				ModeChangedCallback = SetMainformMovieInfo
 			};
 
 			new AutoResetEvent(false);

@@ -34,7 +34,9 @@ namespace BizHawk.Client.EmuHawk
 				Movie = movie,
 				MovieControllerAdapter = movie.LogGeneratorInstance().MovieControllerAdapter,
 				MessageCallback = GlobalWin.OSD.AddMessage,
-				AskYesNoCallback = StateErrorAskUser
+				AskYesNoCallback = StateErrorAskUser,
+				PauseCallback = PauseEmulator,
+				ModeChangedCallback = SetMainformMovieInfo
 			};
 
 			InputManager.RewireInputChain();

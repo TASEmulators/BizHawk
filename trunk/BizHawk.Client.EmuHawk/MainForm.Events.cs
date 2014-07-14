@@ -265,6 +265,14 @@ namespace BizHawk.Client.EmuHawk
 			);
 		}
 
+		private void MovieEndSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			MovieEndFinishMenuItem.Checked = Global.Config.MovieEndAction == MovieEndAction.Finish;
+			MovieEndRecordMenuItem.Checked = Global.Config.MovieEndAction == MovieEndAction.Record;
+			MovieEndStopMenuItem.Checked = Global.Config.MovieEndAction == MovieEndAction.Stop;
+			MovieEndPauseMenuItem.Checked = Global.Config.MovieEndAction == MovieEndAction.Pause;
+		}
+
 		private void AVSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RecordAVMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Record A/V"].Bindings;
@@ -497,14 +505,34 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.VBAStyleMovieLoadState ^= true;
 		}
 
+		private void MovieEndFinishMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.MovieEndAction = MovieEndAction.Finish;
+		}
+
+		private void MovieEndRecordMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.MovieEndAction = MovieEndAction.Record;
+		}
+
+		private void MovieEndStopMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.MovieEndAction = MovieEndAction.Stop;
+		}
+
+		private void MovieEndPauseMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.MovieEndAction = MovieEndAction.Pause;
+		}
+
 		private void RecordAVMenuItem_Click(object sender, EventArgs e)
 		{
-			this.RecordAv();
+			RecordAv();
 		}
 
 		private void StopAVMenuItem_Click(object sender, EventArgs e)
 		{
-			this.StopAv();
+			StopAv();
 		}
 
 		private void SynclessRecordingMenuItem_Click(object sender, EventArgs e)

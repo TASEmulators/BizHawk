@@ -98,6 +98,8 @@ namespace BizHawk.Client.Common
 
 		public enum SaveStateTypeE { Default, Binary, Text };
 
+		public MovieEndAction MovieEndAction = MovieEndAction.Finish;
+
 		// N64
 		public bool N64UseCircularAnalogConstraint = true;
 
