@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					throw new Exception("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
 
 				// set real default colors (before anyone mucks with them at all)
-				PutSettings(Settings ?? GambatteSettings.GetDefaults());
+				PutSettings(Settings ?? new GambatteSettings());
 
 				InitSound();
 
@@ -1006,20 +1006,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public class GambatteSettings
 		{
-			public int[] GBPalette;
-			public GBColors.ColorType CGBColors;
-
-			public static GambatteSettings GetDefaults()
-			{
-				var ret = new GambatteSettings();
-				ret.GBPalette = new[]
+			private static readonly int[] DefaultPalette = new[]
 				{
 					10798341, 8956165, 1922333, 337157,
 					10798341, 8956165, 1922333, 337157,
 					10798341, 8956165, 1922333, 337157
 				};
-				ret.CGBColors = GBColors.ColorType.gambatte;
-				return ret;
+
+			public int[] GBPalette;
+			public GBColors.ColorType CGBColors;
+
+			public GambatteSettings()
+			{
+				GBPalette = (int[])DefaultPalette.Clone();
+				CGBColors = GBColors.ColorType.gambatte;
 			}
 
 			public GambatteSettings Clone()

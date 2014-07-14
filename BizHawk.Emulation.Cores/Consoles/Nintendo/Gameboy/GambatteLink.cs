@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom, object Settings, object SyncSettings, bool deterministic)
 		{
-			GambatteLinkSettings _Settings = (GambatteLinkSettings)Settings ?? GambatteLinkSettings.GetDefaults();
+			GambatteLinkSettings _Settings = (GambatteLinkSettings)Settings ?? new GambatteLinkSettings();
 			GambatteLinkSyncSettings _SyncSettings = (GambatteLinkSyncSettings)SyncSettings ?? new GambatteLinkSyncSettings();
 
 			CoreComm = comm;
@@ -449,18 +449,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public object GetSettings()
 		{
 			return new GambatteLinkSettings
-			{
-				L = (Gameboy.GambatteSettings)L.GetSettings(),
-				R = (Gameboy.GambatteSettings)R.GetSettings()
-			};
+			(
+				(Gameboy.GambatteSettings)L.GetSettings(),
+				(Gameboy.GambatteSettings)R.GetSettings()
+			);
 		}
 		public object GetSyncSettings()
 		{
 			return new GambatteLinkSyncSettings
-			{
-				L = (Gameboy.GambatteSyncSettings)L.GetSyncSettings(),
-				R = (Gameboy.GambatteSyncSettings)R.GetSyncSettings()
-			};
+			(
+				(Gameboy.GambatteSyncSettings)L.GetSyncSettings(),
+				(Gameboy.GambatteSyncSettings)R.GetSyncSettings()
+			);
 		}
 		public bool PutSettings(object o)
 		{
@@ -478,24 +478,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			public Gameboy.GambatteSettings L;
 			public Gameboy.GambatteSettings R;
 
-			public static GambatteLinkSettings GetDefaults()
+			public GambatteLinkSettings()
 			{
-				return new GambatteLinkSettings
-				{
-					L = Gameboy.GambatteSettings.GetDefaults(),
-					R = Gameboy.GambatteSettings.GetDefaults()
-				};
+				L = new Gameboy.GambatteSettings();
+				R = new Gameboy.GambatteSettings();
+			}
+
+			public GambatteLinkSettings(Gameboy.GambatteSettings L, Gameboy.GambatteSettings R)
+			{
+				this.L = L;
+				this.R = R;
 			}
 
 			public GambatteLinkSettings Clone()
 			{
-				return new GambatteLinkSettings
-				{
-					L = L.Clone(),
-					R = R.Clone()
-				};
+				return new GambatteLinkSettings(L.Clone(), R.Clone());
 			}
 		}
+
 		public class GambatteLinkSyncSettings
 		{
 			public Gameboy.GambatteSyncSettings L;
@@ -507,13 +507,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				R = new Gameboy.GambatteSyncSettings();
 			}
 
+			public GambatteLinkSyncSettings(Gameboy.GambatteSyncSettings L, Gameboy.GambatteSyncSettings R)
+			{
+				this.L = L;
+				this.R = R;
+			}
+
 			public GambatteLinkSyncSettings Clone()
 			{
-				return new GambatteLinkSyncSettings
-				{
-					L = L.Clone(),
-					R = R.Clone()
-				};
+				return new GambatteLinkSyncSettings(L.Clone(), R.Clone());
 			}
 		}
 
