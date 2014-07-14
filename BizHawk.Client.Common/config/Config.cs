@@ -431,6 +431,10 @@ namespace BizHawk.Client.Common
 		public ToolDialogSettings PceCdlSettings = new ToolDialogSettings();
 		public RecentFiles RecentPceCdlFiles = new RecentFiles(8);
 
+		// PCE Sound Debugger settings
+		public ToolDialogSettings PceSoundDebuggerSettings = new ToolDialogSettings();
+		public bool PceSoundDebuggerAutoload = false;
+
 		#region Cheats Dialog
 
 		public ToolDialogSettings CheatsSettings = new ToolDialogSettings();

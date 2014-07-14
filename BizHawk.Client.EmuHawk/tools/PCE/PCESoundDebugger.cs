@@ -35,6 +35,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			for (int i = 0; i < lvChEn.Items.Count; i++)
 				lvChEn.Items[i].Checked = true;
+
+			RefreshFloatingWindowControl();
+			base.OnShown(e);
 		}
 
 		public void UpdateValues()
@@ -280,7 +283,45 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PCESoundDebugger_Load(object sender, EventArgs e)
 		{
-
+			TopMost = Global.Config.PceSoundDebuggerSettings.TopMost;
+			if (Global.Config.PceSoundDebuggerSettings.UseWindowPosition)
+			{
+				Location = Global.Config.PceSoundDebuggerSettings.WindowPosition;
+			}
 		}
+
+		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			AutoloadMenuItem.Checked = Global.Config.PceSoundDebuggerAutoload;
+			SaveWindowPositionMenuItem.Checked = Global.Config.PceSoundDebuggerSettings.SaveWindowPosition;
+			TopMostMenuItem.Checked = Global.Config.PceSoundDebuggerSettings.TopMost;
+			FloatingWindowMenuItem.Checked = Global.Config.PceSoundDebuggerSettings.FloatingWindow;
+		}
+
+		private void AutoloadMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.PceSoundDebuggerAutoload ^= true;
+		}
+
+		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.PceSoundDebuggerSettings.SaveWindowPosition ^= true;
+		}
+
+		private void TopMostMenuItem_Click(object sender, EventArgs e)
+		{
+			TopMost = Global.Config.PceSoundDebuggerSettings.TopMost ^= true;
+		}
+
+		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.PceSoundDebuggerSettings.FloatingWindow ^= true;
+			RefreshFloatingWindowControl();
+		}
+
+		private void RefreshFloatingWindowControl()
+		{
+			Owner = Global.Config.PceSoundDebuggerSettings.FloatingWindow ? null : GlobalWin.MainForm;
+		} 
 	}
 }

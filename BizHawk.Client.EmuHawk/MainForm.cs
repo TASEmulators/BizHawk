@@ -401,6 +401,11 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Load<PCECDL>();
 			}
 
+			if (Global.Config.PceSoundDebuggerAutoload && Global.Emulator is PCEngine)
+			{
+				GlobalWin.Tools.Load<PCESoundDebugger>();
+			}
+
 			if (Global.Config.GenVdpAutoLoad && Global.Emulator is GPGX)
 			{
 				GlobalWin.Tools.Load<GenVDPViewer>();

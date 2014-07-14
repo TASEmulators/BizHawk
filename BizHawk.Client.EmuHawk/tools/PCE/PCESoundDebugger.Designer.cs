@@ -64,6 +64,7 @@
             "-",
             "-",
             "-"}, -1);
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PCESoundDebugger));
 			this.btnExport = new System.Windows.Forms.Button();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.lvPsgWaveforms = new System.Windows.Forms.ListView();
@@ -74,13 +75,20 @@
 			this.lvChEn = new System.Windows.Forms.ListView();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.lvChannels = new System.Windows.Forms.ListView();
-			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.SoundMenuStrip = new MenuStripEx();
+			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.TopMostMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
+			this.SoundMenuStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// btnExport
@@ -96,13 +104,12 @@
 			// 
 			// groupBox1
 			// 
-			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox1.Controls.Add(this.lvPsgWaveforms);
 			this.groupBox1.Controls.Add(this.btnReset);
 			this.groupBox1.Controls.Add(this.btnExport);
-			this.groupBox1.Location = new System.Drawing.Point(12, 187);
+			this.groupBox1.Location = new System.Drawing.Point(12, 232);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(603, 340);
 			this.groupBox1.TabIndex = 1;
@@ -155,7 +162,7 @@
 			// 
 			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox2.Controls.Add(this.lvChEn);
-			this.groupBox2.Location = new System.Drawing.Point(621, 6);
+			this.groupBox2.Location = new System.Drawing.Point(621, 51);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(165, 175);
 			this.groupBox2.TabIndex = 2;
@@ -193,7 +200,7 @@
 			this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox3.Controls.Add(this.lvChannels);
-			this.groupBox3.Location = new System.Drawing.Point(12, 4);
+			this.groupBox3.Location = new System.Drawing.Point(12, 49);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(603, 177);
 			this.groupBox3.TabIndex = 3;
@@ -228,10 +235,9 @@
 			this.lvChannels.UseCompatibleStateImageBehavior = false;
 			this.lvChannels.View = System.Windows.Forms.View.Details;
 			// 
-			// columnHeader1
+			// columnHeader5
 			// 
-			this.columnHeader1.Text = "Status";
-			this.columnHeader1.Width = 259;
+			this.columnHeader5.Text = "Channel";
 			// 
 			// columnHeader3
 			// 
@@ -241,25 +247,83 @@
 			// 
 			this.columnHeader4.Text = "Pitch";
 			// 
-			// columnHeader5
+			// columnHeader1
 			// 
-			this.columnHeader5.Text = "Channel";
+			this.columnHeader1.Text = "Status";
+			this.columnHeader1.Width = 259;
+			// 
+			// SoundMenuStrip
+			// 
+			this.SoundMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.OptionsSubMenu});
+			this.SoundMenuStrip.Location = new System.Drawing.Point(0, 0);
+			this.SoundMenuStrip.Name = "SoundMenuStrip";
+			this.SoundMenuStrip.Size = new System.Drawing.Size(787, 24);
+			this.SoundMenuStrip.TabIndex = 4;
+			this.SoundMenuStrip.Text = "menuStrip1";
+			// 
+			// OptionsSubMenu
+			// 
+			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.AutoloadMenuItem,
+            this.SaveWindowPositionMenuItem,
+            this.TopMostMenuItem,
+            this.FloatingWindowMenuItem});
+			this.OptionsSubMenu.Name = "OptionsSubMenu";
+			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
+			this.OptionsSubMenu.Text = "&Options";
+			this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
+			// 
+			// AutoloadMenuItem
+			// 
+			this.AutoloadMenuItem.Name = "AutoloadMenuItem";
+			this.AutoloadMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.AutoloadMenuItem.Text = "&Autoload";
+			this.AutoloadMenuItem.Click += new System.EventHandler(this.AutoloadMenuItem_Click);
+			// 
+			// SaveWindowPositionMenuItem
+			// 
+			this.SaveWindowPositionMenuItem.Name = "SaveWindowPositionMenuItem";
+			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.SaveWindowPositionMenuItem.Text = "Save Window Position";
+			this.SaveWindowPositionMenuItem.Click += new System.EventHandler(this.SaveWindowPositionMenuItem_Click);
+			// 
+			// TopMostMenuItem
+			// 
+			this.TopMostMenuItem.Name = "TopMostMenuItem";
+			this.TopMostMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.TopMostMenuItem.Text = "Always on Top";
+			this.TopMostMenuItem.Click += new System.EventHandler(this.TopMostMenuItem_Click);
+			// 
+			// FloatingWindowMenuItem
+			// 
+			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
+			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.FloatingWindowMenuItem.Text = "Floating Window";
+			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
 			// 
 			// PCESoundDebugger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(787, 535);
+			this.ClientSize = new System.Drawing.Size(787, 580);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
+			this.Controls.Add(this.SoundMenuStrip);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.MainMenuStrip = this.SoundMenuStrip;
 			this.Name = "PCESoundDebugger";
-			this.Text = "PCESoundDebugger";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.Text = "Sound Debugger";
 			this.Load += new System.EventHandler(this.PCESoundDebugger_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
+			this.SoundMenuStrip.ResumeLayout(false);
+			this.SoundMenuStrip.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -279,5 +343,11 @@
 		private System.Windows.Forms.ColumnHeader columnHeader3;
 		private System.Windows.Forms.ColumnHeader columnHeader4;
 		private System.Windows.Forms.ColumnHeader columnHeader1;
+		private MenuStripEx SoundMenuStrip;
+		private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem AutoloadMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SaveWindowPositionMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem TopMostMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
 	}
 }
