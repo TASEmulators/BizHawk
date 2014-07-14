@@ -274,7 +274,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				return (N64SyncSettings)Global.Config.GetCoreSyncSettings<N64>();
+				return (N64SyncSettings)Global.Config.GetCoreSyncSettings<N64>()
+					?? new N64SyncSettings();
 			}
 		}
 
@@ -298,7 +299,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				return (LibsnesCore.SnesSyncSettings)Global.Config.GetCoreSyncSettings<LibsnesCore>();
+				return (LibsnesCore.SnesSyncSettings)Global.Config.GetCoreSyncSettings<LibsnesCore>()
+					?? new LibsnesCore.SnesSyncSettings() ;
 			}
 		}
 
@@ -322,7 +324,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				return (Yabause.SaturnSyncSettings)Global.Config.GetCoreSyncSettings<Yabause>();
+				return (Yabause.SaturnSyncSettings)Global.Config.GetCoreSyncSettings<Yabause>()
+					?? new Yabause.SaturnSyncSettings();
 			}
 		}
 
@@ -346,7 +349,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				return (GPGX.GPGXSyncSettings)Global.Config.GetCoreSyncSettings<GPGX>();
+				return (GPGX.GPGXSyncSettings)Global.Config.GetCoreSyncSettings<GPGX>()
+					?? new GPGX.GPGXSyncSettings();
 			}
 		}
 
@@ -370,7 +374,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				return (SMS.SMSSyncSettings)Global.Config.GetCoreSyncSettings<SMS>();
+				return (SMS.SMSSyncSettings)Global.Config.GetCoreSyncSettings<SMS>()
+					?? new SMS.SMSSyncSettings();
 			}
 		}
 
@@ -394,7 +399,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				return (ColecoVision.ColecoSyncSettings)Global.Config.GetCoreSyncSettings<ColecoVision>();
+				return (ColecoVision.ColecoSyncSettings)Global.Config.GetCoreSyncSettings<ColecoVision>()
+					?? new ColecoVision.ColecoSyncSettings();
 			}
 		}
 
@@ -409,6 +415,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.PutCoreSyncSettings<ColecoVision>(s);
 			}
 		}
+
 		private static Atari2600.A2600SyncSettings GetA2600SyncSettings()
 		{
 			if (Global.Emulator is Atari2600)
@@ -417,7 +424,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				return (Atari2600.A2600SyncSettings)Global.Config.GetCoreSyncSettings<Atari2600>();
+				return (Atari2600.A2600SyncSettings)Global.Config.GetCoreSyncSettings<Atari2600>()
+					?? new Atari2600.A2600SyncSettings();
 			}
 		}
 
