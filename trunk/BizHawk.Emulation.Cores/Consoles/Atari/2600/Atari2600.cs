@@ -26,8 +26,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			Ram = new byte[128];
 			CoreComm = comm;
-			Settings = (A2600Settings)settings ?? A2600Settings.GetDefaults();
-			SyncSettings = (A2600SyncSettings)syncSettings ?? A2600SyncSettings.GetDefaults();
+			Settings = (A2600Settings)settings ?? new A2600Settings();
+			SyncSettings = (A2600SyncSettings)syncSettings ?? new A2600SyncSettings();
 
 			var domains = new List<MemoryDomain>
 			{

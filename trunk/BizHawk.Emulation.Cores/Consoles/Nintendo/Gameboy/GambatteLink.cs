@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom, object Settings, object SyncSettings, bool deterministic)
 		{
 			GambatteLinkSettings _Settings = (GambatteLinkSettings)Settings ?? GambatteLinkSettings.GetDefaults();
-			GambatteLinkSyncSettings _SyncSettings = (GambatteLinkSyncSettings)SyncSettings ?? GambatteLinkSyncSettings.GetDefaults();
+			GambatteLinkSyncSettings _SyncSettings = (GambatteLinkSyncSettings)SyncSettings ?? new GambatteLinkSyncSettings();
 
 			CoreComm = comm;
 			L = new Gameboy(new CoreComm(comm.ShowMessage, comm.Notify), leftinfo, leftrom, _Settings.L, _SyncSettings.L, deterministic);
@@ -501,13 +501,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			public Gameboy.GambatteSyncSettings L;
 			public Gameboy.GambatteSyncSettings R;
 
-			public static GambatteLinkSyncSettings GetDefaults()
+			public GambatteLinkSyncSettings()
 			{
-				return new GambatteLinkSyncSettings
-				{
-					L = Gameboy.GambatteSyncSettings.GetDefaults(),
-					R = Gameboy.GambatteSyncSettings.GetDefaults()
-				};
+				L = new Gameboy.GambatteSyncSettings();
+				R = new Gameboy.GambatteSyncSettings();
 			}
 
 			public GambatteLinkSyncSettings Clone()

@@ -5,6 +5,7 @@ using System.IO;
 
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Common;
 
 using Newtonsoft.Json;
 
@@ -112,18 +113,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			try
 			{
-				this.SyncSettings = (GambatteSyncSettings)SyncSettings ?? GambatteSyncSettings.GetDefaults();
+				this._SyncSettings = (GambatteSyncSettings)SyncSettings ?? new GambatteSyncSettings();
 				// copy over non-loadflag syncsettings now; they won't take effect if changed later
-				zerotime = (uint)this.SyncSettings.RTCInitialTime;
-				real_rtc_time = DeterministicEmulation ? false : this.SyncSettings.RealTimeRTC;
+				zerotime = (uint)this._SyncSettings.RTCInitialTime;
+				real_rtc_time = DeterministicEmulation ? false : this._SyncSettings.RealTimeRTC;
 
 				LibGambatte.LoadFlags flags = 0;
 
-				if (this.SyncSettings.ForceDMG)
+				if (this._SyncSettings.ForceDMG)
 					flags |= LibGambatte.LoadFlags.FORCE_DMG;
-				if (this.SyncSettings.GBACGB)
+				if (this._SyncSettings.GBACGB)
 					flags |= LibGambatte.LoadFlags.GBA_CGB;
-				if (this.SyncSettings.MulticartCompat)
+				if (this._SyncSettings.MulticartCompat)
 					flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
 
 				if (LibGambatte.gambatte_load(GambatteState, romdata, (uint)romdata.Length, GetCurrentTime(), flags) != 0)
@@ -971,18 +972,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region Settings
 
-		GambatteSettings Settings;
-		GambatteSyncSettings SyncSettings;
+		GambatteSettings _Settings;
+		GambatteSyncSettings _SyncSettings;
 
-		public object GetSettings() { return Settings.Clone(); }
-		public object GetSyncSettings() { return SyncSettings.Clone(); }
+		public object GetSettings() { return _Settings.Clone(); }
+		public object GetSyncSettings() { return _SyncSettings.Clone(); }
 		public bool PutSettings(object o)
 		{
-			Settings = (GambatteSettings)o;
+			_Settings = (GambatteSettings)o;
 			if (IsCGBMode())
-				SetCGBColors(Settings.CGBColors);
+				SetCGBColors(_Settings.CGBColors);
 			else
-				ChangeDMGColors(Settings.GBPalette);
+				ChangeDMGColors(_Settings.GBPalette);
 			return false;
 		}
 
@@ -990,16 +991,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			var s = (GambatteSyncSettings)o;
 			bool ret;
-			if (s.ForceDMG != SyncSettings.ForceDMG ||
-				s.GBACGB != SyncSettings.GBACGB ||
-				s.MulticartCompat != SyncSettings.MulticartCompat ||
-				s.RealTimeRTC != SyncSettings.RealTimeRTC ||
-				s.RTCInitialTime != SyncSettings.RTCInitialTime)
+			if (s.ForceDMG != _SyncSettings.ForceDMG ||
+				s.GBACGB != _SyncSettings.GBACGB ||
+				s.MulticartCompat != _SyncSettings.MulticartCompat ||
+				s.RealTimeRTC != _SyncSettings.RealTimeRTC ||
+				s.RTCInitialTime != _SyncSettings.RTCInitialTime)
 				ret = true;
 			else
 				ret = false;
 
-			SyncSettings = s;
+			_SyncSettings = s;
 			return ret;
 		}
 
@@ -1053,21 +1054,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[JsonIgnore]
 			int _RTCInitialTime;
 
-			public static GambatteSyncSettings GetDefaults()
+			public GambatteSyncSettings()
 			{
-				return new GambatteSyncSettings
-				{
-					ForceDMG = false,
-					GBACGB = false,
-					MulticartCompat = false,
-					RealTimeRTC = false,
-					_RTCInitialTime = 0
-				};
+				SettingsUtil.SetDefaultValues(this);
 			}
 
 			public GambatteSyncSettings Clone()
 			{
-				// this does include anonymous backing fields for auto properties
 				return (GambatteSyncSettings)MemberwiseClone();
 			}
 		}
