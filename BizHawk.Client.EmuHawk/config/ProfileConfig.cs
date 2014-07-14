@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 				//If custom profile, check all the checkboxes
 				//Save to config.ini
 			}
-			
+
 			DialogResult = DialogResult.OK;
 			Close();
 		}
@@ -68,43 +68,43 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.RewindEnabledSmall = true;
 
 				// N64
-				var n64Settings = GetN64SyncSettings();
+				var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
 				n64Settings.RspType = N64SyncSettings.RSPTYPE.Rsp_Hle;
 				n64Settings.CoreType = N64SyncSettings.CORETYPE.Dynarec;
 				Global.Config.N64UseCircularAnalogConstraint = true;
-				PutN64SyncSettings(n64Settings);
+				PutSyncSettings<N64>(n64Settings);
 
 				// SNES
-				var snesSettings = GetSnesSyncSettings();
+				var snesSettings = GetSyncSettings<LibsnesCore, LibsnesCore.SnesSyncSettings>();
 				snesSettings.Profile = "Performance";
-				PutSnesSyncSettings(snesSettings);
+				PutSyncSettings<LibsnesCore>(snesSettings);
 
 				//Saturn
-				var saturnSettings = GetSaturnSyncSettings();
+				var saturnSettings = GetSyncSettings<Yabause, Yabause.SaturnSyncSettings>();
 				saturnSettings.SkipBios = false;
-				PutSaturnSyncSettings(saturnSettings);
+				PutSyncSettings<Yabause>(saturnSettings);
 
 				//Genesis
-				var genesisSettings = GetGenesisSyncSettings();
+				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
 				genesisSettings.Region = LibGPGX.Region.Autodetect;
-				PutGenesisSyncSettings(genesisSettings);
+				PutSyncSettings<GPGX>(genesisSettings);
 
 				//SMS
-				var smsSettings = GetSMSSyncSettings();
+				var smsSettings = GetSyncSettings<SMS, SMS.SMSSyncSettings>();
 				smsSettings.UseBIOS = false;
-				PutSMSSyncSettings(smsSettings);
+				PutSyncSettings<SMS>(smsSettings);
 
 				//Coleco
-				var colecoSettings = GetColecoVisionSyncSettings();
+				var colecoSettings = GetSyncSettings<ColecoVision, ColecoVision.ColecoSyncSettings>();
 				colecoSettings.SkipBiosIntro = false;
-				PutColecoVisionSyncSettings(colecoSettings);
+				PutSyncSettings<ColecoVision>(colecoSettings);
 
 				//A2600
-				var a2600Settings = GetA2600SyncSettings();
+				var a2600Settings = GetSyncSettings<Atari2600, Atari2600.A2600SyncSettings>();
 				a2600Settings.FastScBios = true;
 				a2600Settings.LeftDifficulty = false;
 				a2600Settings.RightDifficulty = false;
-				PutA2600SyncSettings(a2600Settings);
+				PutSyncSettings<Atari2600>(a2600Settings);
 
 				// NES
 				Global.Config.NES_InQuickNES = true;
@@ -122,43 +122,43 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.RewindEnabledSmall = true;
 
 				// N64
-				var n64Settings = GetN64SyncSettings();
+				var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
 				n64Settings.RspType = N64SyncSettings.RSPTYPE.Rsp_Z64_hlevideo;
 				n64Settings.CoreType = N64SyncSettings.CORETYPE.Pure_Interpret;
 				Global.Config.N64UseCircularAnalogConstraint = true;
-				PutN64SyncSettings(n64Settings);
+				PutSyncSettings<N64>(n64Settings);
 
 				// SNES
-				var snesSettings = GetSnesSyncSettings();
+				var snesSettings = GetSyncSettings<LibsnesCore, LibsnesCore.SnesSyncSettings>();
 				snesSettings.Profile = "Compatibility";
-				PutSnesSyncSettings(snesSettings);
+				PutSyncSettings<LibsnesCore>(snesSettings);
 
 				// Saturn
-				var saturnSettings = GetSaturnSyncSettings();
+				var saturnSettings = GetSyncSettings<Yabause, Yabause.SaturnSyncSettings>();
 				saturnSettings.SkipBios = false;
-				PutSaturnSyncSettings(saturnSettings);
+				PutSyncSettings<Yabause>(saturnSettings);
 
 				// Genesis
-				var genesisSettings = GetGenesisSyncSettings();
+				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
 				genesisSettings.Region = LibGPGX.Region.Autodetect;
-				PutGenesisSyncSettings(genesisSettings);
+				PutSyncSettings<GPGX>(genesisSettings);
 
 				// SMS
-				var smsSettings = GetSMSSyncSettings();
+				var smsSettings = GetSyncSettings<SMS, SMS.SMSSyncSettings>();
 				smsSettings.UseBIOS = false;
-				PutSMSSyncSettings(smsSettings);
+				PutSyncSettings<SMS>(smsSettings);
 
 				// Coleco
-				var colecoSettings = GetColecoVisionSyncSettings();
+				var colecoSettings = GetSyncSettings<ColecoVision, ColecoVision.ColecoSyncSettings>();
 				colecoSettings.SkipBiosIntro = false;
-				PutColecoVisionSyncSettings(colecoSettings);
+				PutSyncSettings<ColecoVision>(colecoSettings);
 
 				// A2600
-				var a2600Settings = GetA2600SyncSettings();
+				var a2600Settings = GetSyncSettings<Atari2600, Atari2600.A2600SyncSettings>();
 				a2600Settings.FastScBios = false;
 				a2600Settings.LeftDifficulty = true;
 				a2600Settings.RightDifficulty = true;
-				PutA2600SyncSettings(a2600Settings);
+				PutSyncSettings<Atari2600>(a2600Settings);
 
 				// NES
 				Global.Config.NES_InQuickNES = true;
@@ -179,43 +179,43 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.RewindEnabledSmall = false;
 
 				// N64
-				var n64Settings = GetN64SyncSettings();
+				var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
 				n64Settings.RspType = N64SyncSettings.RSPTYPE.Rsp_Z64_hlevideo;
 				n64Settings.CoreType = N64SyncSettings.CORETYPE.Pure_Interpret;
 				Global.Config.N64UseCircularAnalogConstraint = false;
-				PutN64SyncSettings(n64Settings);
+				PutSyncSettings<N64>(n64Settings);
 
 				// SNES
-				var snesSettings = GetSnesSyncSettings();
+				var snesSettings = GetSyncSettings<LibsnesCore, LibsnesCore.SnesSyncSettings>();
 				snesSettings.Profile = "Compatibility";
-				PutSnesSyncSettings(snesSettings);
+				PutSyncSettings<LibsnesCore>(snesSettings);
 
 				// Saturn
-				var saturnSettings = GetSaturnSyncSettings();
+				var saturnSettings = GetSyncSettings<Yabause, Yabause.SaturnSyncSettings>();
 				saturnSettings.SkipBios = true;
-				PutSaturnSyncSettings(saturnSettings);
+				PutSyncSettings<Yabause>(saturnSettings);
 
 				// Genesis
-				var genesisSettings = GetGenesisSyncSettings();
+				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
 				genesisSettings.Region = LibGPGX.Region.Autodetect;
-				PutGenesisSyncSettings(genesisSettings);
+				PutSyncSettings<GPGX>(genesisSettings);
 
 				// SMS
-				var smsSettings = GetSMSSyncSettings();
+				var smsSettings = GetSyncSettings<SMS, SMS.SMSSyncSettings>();
 				smsSettings.UseBIOS = false;
-				PutSMSSyncSettings(smsSettings);
+				PutSyncSettings<SMS>(smsSettings);
 
 				// Coleco
-				var colecoSettings = GetColecoVisionSyncSettings();
+				var colecoSettings = GetSyncSettings<ColecoVision, ColecoVision.ColecoSyncSettings>();
 				colecoSettings.SkipBiosIntro = true;
-				PutColecoVisionSyncSettings(colecoSettings);
+				PutSyncSettings<ColecoVision>(colecoSettings);
 
 				// A2600
-				var a2600Settings = GetA2600SyncSettings();
+				var a2600Settings = GetSyncSettings<Atari2600, Atari2600.A2600SyncSettings>();
 				a2600Settings.FastScBios = false;
 				a2600Settings.LeftDifficulty = true;
 				a2600Settings.RightDifficulty = true;
-				PutA2600SyncSettings(a2600Settings);
+				PutSyncSettings<Atari2600>(a2600Settings);
 
 				// NES
 				Global.Config.NES_InQuickNES = true;
@@ -265,6 +265,45 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Core specific Config setting helpers
 
+		private static TSetting GetSyncSettings<TEmulator, TSetting>()
+			where TSetting : class, new()
+			where TEmulator : BizHawk.Emulation.Common.IEmulator
+		{
+			// should we complain if we get a successful object from the config file, but it is the wrong type?
+			return Global.Emulator.GetSyncSettings() as TSetting
+				?? Global.Config.GetCoreSyncSettings<TEmulator>() as TSetting
+				?? new TSetting(); // guaranteed to give sensible defaults
+		}
+
+		private static TSetting GetSettings<TEmulator, TSetting>()
+			where TSetting : class, new()
+			where TEmulator : BizHawk.Emulation.Common.IEmulator
+		{
+			// should we complain if we get a successful object from the config file, but it is the wrong type?
+			return Global.Emulator.GetSettings() as TSetting
+				?? Global.Config.GetCoreSettings<TEmulator>() as TSetting
+				?? new TSetting(); // guaranteed to give sensible defaults
+		}
+
+		private static void PutSettings<TEmulator>(object o)
+			where TEmulator : BizHawk.Emulation.Common.IEmulator
+		{
+			if (Global.Emulator is TEmulator)
+				Global.Emulator.PutSettings(o);
+			else
+				Global.Config.PutCoreSettings<TEmulator>(o);
+		}
+
+		private static void PutSyncSettings<TEmulator>(object o)
+			where TEmulator : BizHawk.Emulation.Common.IEmulator
+		{
+			if (Global.Emulator is TEmulator)
+				GlobalWin.MainForm.PutCoreSyncSettings(o);
+			else
+				Global.Config.PutCoreSyncSettings<TEmulator>(o);
+		}
+
+		/*
 		// Unfortunatley there is not yet a generic way to match a sync setting object with its core implementation, so we need a bunch of these
 		private static N64SyncSettings GetN64SyncSettings()
 		{
@@ -440,6 +479,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.PutCoreSyncSettings<Atari2600>(s);
 			}
 		}
+		*/
 		#endregion
 	}
 }
