@@ -20,10 +20,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class ProfileConfig : Form
 	{
-		// TODO:
-		// Save the profile selected to Global.Config (Casual is the default)
-		// Default the dropdown to the current profile selected instead of empty
-
 		public ProfileConfig()
 		{
 			InitializeComponent();
@@ -34,6 +30,21 @@ namespace BizHawk.Client.EmuHawk
 			if (!VersionInfo.DeveloperBuild)
 			{
 				ProfileSelectComboBox.Items.Remove("Custom Profile");
+			}
+
+			switch (Global.Config.SelectedProfile)
+			{
+				default:
+				case Config.ClientProfile.Custom: // For now
+				case Config.ClientProfile.Casual:
+					ProfileSelectComboBox.SelectedItem = "Casual Gaming";
+					break;
+				case Config.ClientProfile.Longplay:
+					ProfileSelectComboBox.SelectedItem = "Longplays";
+					break;
+				case Config.ClientProfile.Tas:
+					ProfileSelectComboBox.SelectedItem = "Tool-assisted Speedruns";
+					break;
 			}
 		}
 
@@ -208,6 +219,21 @@ namespace BizHawk.Client.EmuHawk
 			{
 				//Disabled for now
 				//DisplayProfileSettingBoxes(true);
+			}
+
+			switch(ProfileSelectComboBox.SelectedItem.ToString())
+			{
+				default:
+				case "Custom Profile": // For now
+				case "Casual Gaming":
+					Global.Config.SelectedProfile = Config.ClientProfile.Casual;
+					break;
+				case "Longplays":
+					Global.Config.SelectedProfile = Config.ClientProfile.Longplay;
+					break;
+				case "Tool-assisted Speedruns":
+					Global.Config.SelectedProfile = Config.ClientProfile.Tas;
+					break;
 			}
 
 			DialogResult = DialogResult.OK;

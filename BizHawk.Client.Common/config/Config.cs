@@ -100,6 +100,17 @@ namespace BizHawk.Client.Common
 
 		public MovieEndAction MovieEndAction = MovieEndAction.Finish;
 
+		public enum ClientProfile
+		{
+			Unknown = 0,
+			Casual = 1,
+			Longplay = 2,
+			Tas = 3,
+			Custom = 99
+		}
+
+		public ClientProfile SelectedProfile = ClientProfile.Unknown;
+
 		// N64
 		public bool N64UseCircularAnalogConstraint = true;
 
