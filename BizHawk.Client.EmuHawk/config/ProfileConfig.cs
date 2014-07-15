@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
@@ -248,7 +245,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisplayProfileSettingBoxes(bool cProfile)
 		{
-			if (cProfile == true)
+			if (cProfile)
 			{
 				ProfileDialogHelpTexBox.Location = new Point(217, 12);
 				ProfileDialogHelpTexBox.Size = new Size(165, 126);
@@ -257,7 +254,7 @@ namespace BizHawk.Client.EmuHawk
 				AllowUDLRCheckBox.Visible = true;
 				GeneralOptionsLabel.Visible = true;
 			}
-			else if (cProfile == false)
+			else
 			{
 				ProfileDialogHelpTexBox.Location = new Point(184, 12);
 				ProfileDialogHelpTexBox.Size = new Size(198, 126);
@@ -282,11 +279,9 @@ namespace BizHawk.Client.EmuHawk
 			ProfileDialogHelpTexBox.Text = "All Up+Down or Left+Right: \r\n * Useful for TASing \r\n * Unchecked for Casual Gaming \r\n * Unknown for longplays";
 		}
 
-		#region Core specific Config setting helpers
-
 		private static TSetting GetSyncSettings<TEmulator, TSetting>()
 			where TSetting : class, new()
-			where TEmulator : BizHawk.Emulation.Common.IEmulator
+			where TEmulator : IEmulator
 		{
 			// should we complain if we get a successful object from the config file, but it is the wrong type?
 			return Global.Emulator.GetSyncSettings() as TSetting
@@ -296,7 +291,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static TSetting GetSettings<TEmulator, TSetting>()
 			where TSetting : class, new()
-			where TEmulator : BizHawk.Emulation.Common.IEmulator
+			where TEmulator : IEmulator
 		{
 			// should we complain if we get a successful object from the config file, but it is the wrong type?
 			return Global.Emulator.GetSettings() as TSetting
@@ -305,200 +300,29 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private static void PutSettings<TEmulator>(object o)
-			where TEmulator : BizHawk.Emulation.Common.IEmulator
+			where TEmulator : IEmulator
 		{
 			if (Global.Emulator is TEmulator)
+			{
 				Global.Emulator.PutSettings(o);
+			}
 			else
+			{
 				Global.Config.PutCoreSettings<TEmulator>(o);
+			}
 		}
 
 		private static void PutSyncSettings<TEmulator>(object o)
-			where TEmulator : BizHawk.Emulation.Common.IEmulator
+			where TEmulator : IEmulator
 		{
 			if (Global.Emulator is TEmulator)
+			{
 				GlobalWin.MainForm.PutCoreSyncSettings(o);
+			}
 			else
+			{
 				Global.Config.PutCoreSyncSettings<TEmulator>(o);
-		}
-
-		/*
-		// Unfortunatley there is not yet a generic way to match a sync setting object with its core implementation, so we need a bunch of these
-		private static N64SyncSettings GetN64SyncSettings()
-		{
-			if (Global.Emulator is N64)
-			{
-				return (N64SyncSettings)Global.Emulator.GetSyncSettings();
-			}
-			else
-			{
-				return (N64SyncSettings)Global.Config.GetCoreSyncSettings<N64>()
-					?? new N64SyncSettings();
 			}
 		}
-
-		private static void PutN64SyncSettings(N64SyncSettings s)
-		{
-			if (Global.Emulator is N64)
-			{
-				GlobalWin.MainForm.PutCoreSyncSettings(s);
-			}
-			else
-			{
-				Global.Config.PutCoreSyncSettings<N64>(s);
-			}
-		}
-
-		private static LibsnesCore.SnesSyncSettings GetSnesSyncSettings()
-		{
-			if (Global.Emulator is LibsnesCore)
-			{
-				return (LibsnesCore.SnesSyncSettings)Global.Emulator.GetSyncSettings();
-			}
-			else
-			{
-				return (LibsnesCore.SnesSyncSettings)Global.Config.GetCoreSyncSettings<LibsnesCore>()
-					?? new LibsnesCore.SnesSyncSettings() ;
-			}
-		}
-
-		private static void PutSnesSyncSettings(LibsnesCore.SnesSyncSettings s)
-		{
-			if (Global.Emulator is LibsnesCore)
-			{
-				GlobalWin.MainForm.PutCoreSyncSettings(s);
-			}
-			else
-			{
-				Global.Config.PutCoreSyncSettings<LibsnesCore>(s);
-			}
-		}
-
-		private static Yabause.SaturnSyncSettings GetSaturnSyncSettings()
-		{
-			if (Global.Emulator is Yabause)
-			{
-				return (Yabause.SaturnSyncSettings)Global.Emulator.GetSyncSettings();
-			}
-			else
-			{
-				return (Yabause.SaturnSyncSettings)Global.Config.GetCoreSyncSettings<Yabause>()
-					?? new Yabause.SaturnSyncSettings();
-			}
-		}
-
-		private static void PutSaturnSyncSettings(Yabause.SaturnSyncSettings s)
-		{
-			if (Global.Emulator is Yabause)
-			{
-				GlobalWin.MainForm.PutCoreSyncSettings(s);
-			}
-			else
-			{
-				Global.Config.PutCoreSyncSettings<Yabause>(s);
-			}
-		}
-
-		private static GPGX.GPGXSyncSettings GetGenesisSyncSettings()
-		{
-			if (Global.Emulator is GPGX)
-			{
-				return (GPGX.GPGXSyncSettings)Global.Emulator.GetSyncSettings();
-			}
-			else
-			{
-				return (GPGX.GPGXSyncSettings)Global.Config.GetCoreSyncSettings<GPGX>()
-					?? new GPGX.GPGXSyncSettings();
-			}
-		}
-
-		private static void PutGenesisSyncSettings(GPGX.GPGXSyncSettings s)
-		{
-			if (Global.Emulator is GPGX)
-			{
-				GlobalWin.MainForm.PutCoreSyncSettings(s);
-			}
-			else
-			{
-				Global.Config.PutCoreSyncSettings<GPGX>(s);
-			}
-		}
-
-		private static SMS.SMSSyncSettings GetSMSSyncSettings()
-		{
-			if (Global.Emulator is SMS)
-			{
-				return (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
-			}
-			else
-			{
-				return (SMS.SMSSyncSettings)Global.Config.GetCoreSyncSettings<SMS>()
-					?? new SMS.SMSSyncSettings();
-			}
-		}
-
-		private static void PutSMSSyncSettings(SMS.SMSSyncSettings s)
-		{
-			if (Global.Emulator is SMS)
-			{
-				GlobalWin.MainForm.PutCoreSyncSettings(s);
-			}
-			else
-			{
-				Global.Config.PutCoreSyncSettings<SMS>(s);
-			}
-		}
-
-		private static ColecoVision.ColecoSyncSettings GetColecoVisionSyncSettings()
-		{
-			if (Global.Emulator is ColecoVision)
-			{
-				return (ColecoVision.ColecoSyncSettings)Global.Emulator.GetSyncSettings();
-			}
-			else
-			{
-				return (ColecoVision.ColecoSyncSettings)Global.Config.GetCoreSyncSettings<ColecoVision>()
-					?? new ColecoVision.ColecoSyncSettings();
-			}
-		}
-
-		private static void PutColecoVisionSyncSettings(ColecoVision.ColecoSyncSettings s)
-		{
-			if (Global.Emulator is ColecoVision)
-			{
-				GlobalWin.MainForm.PutCoreSyncSettings(s);
-			}
-			else
-			{
-				Global.Config.PutCoreSyncSettings<ColecoVision>(s);
-			}
-		}
-
-		private static Atari2600.A2600SyncSettings GetA2600SyncSettings()
-		{
-			if (Global.Emulator is Atari2600)
-			{
-				return (Atari2600.A2600SyncSettings)Global.Emulator.GetSyncSettings();
-			}
-			else
-			{
-				return (Atari2600.A2600SyncSettings)Global.Config.GetCoreSyncSettings<Atari2600>()
-					?? new Atari2600.A2600SyncSettings();
-			}
-		}
-
-		private static void PutA2600SyncSettings(Atari2600.A2600SyncSettings s)
-		{
-			if (Global.Emulator is Atari2600)
-			{
-				GlobalWin.MainForm.PutCoreSyncSettings(s);
-			}
-			else
-			{
-				Global.Config.PutCoreSyncSettings<Atari2600>(s);
-			}
-		}
-		*/
-		#endregion
 	}
 }
