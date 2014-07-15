@@ -36,11 +36,6 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (index == 9)
-				{
-					int zzz = 0;
-				}
-
 				return new TasMovieRecord
 				{
 					State = StateManager[index],
