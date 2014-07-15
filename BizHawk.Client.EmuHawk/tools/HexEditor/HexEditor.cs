@@ -1479,9 +1479,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var inputPrompt = new InputPrompt { Text = "Go to Address", StartLocation = GetPromptPoint() };
 			inputPrompt.SetMessage("Enter a hexadecimal value");
-			inputPrompt.ShowHawkDialog();
+			var result = inputPrompt.ShowHawkDialog();
 
-			if (inputPrompt.UserOk && inputPrompt.UserText.IsHex())
+			if (result == DialogResult.OK && inputPrompt.UserText.IsHex())
 			{
 				GoToAddress(int.Parse(inputPrompt.UserText, NumberStyles.HexNumber));
 			}

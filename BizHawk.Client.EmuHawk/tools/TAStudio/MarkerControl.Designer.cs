@@ -28,10 +28,22 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.AddBtn = new System.Windows.Forms.Button();
 			this.MarkerView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.SuspendLayout();
+			// 
+			// AddBtn
+			// 
+			this.AddBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.AddBtn.Location = new System.Drawing.Point(157, 214);
+			this.AddBtn.Name = "AddBtn";
+			this.AddBtn.Size = new System.Drawing.Size(44, 23);
+			this.AddBtn.TabIndex = 6;
+			this.AddBtn.Text = "Add";
+			this.AddBtn.UseVisualStyleBackColor = true;
+			this.AddBtn.Click += new System.EventHandler(this.AddBtn_Click);
 			// 
 			// MarkerView
 			// 
@@ -72,9 +84,10 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.AddBtn);
 			this.Controls.Add(this.MarkerView);
 			this.Name = "MarkerControl";
-			this.Size = new System.Drawing.Size(204, 215);
+			this.Size = new System.Drawing.Size(204, 241);
 			this.Load += new System.EventHandler(this.MarkerControl_Load);
 			this.ResumeLayout(false);
 
@@ -85,6 +98,7 @@
 		private VirtualListView MarkerView;
 		public System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.ColumnHeader columnHeader2;
+		private System.Windows.Forms.Button AddBtn;
 
 	}
 }

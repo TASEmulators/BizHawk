@@ -286,8 +286,8 @@ namespace BizHawk.Client.EmuHawk
 			prompt.SetInitialValue(Global.Config.TraceLoggerMaxLines.ToString());
 			prompt.TextInputType = InputPrompt.InputType.Unsigned;
 			prompt.StartLocation = GetPromptPoint();
-			prompt.ShowDialog();
-			if (prompt.UserOk)
+			var result = prompt.ShowHawkDialog();
+			if (result == DialogResult.OK)
 			{
 				var max = int.Parse(prompt.UserText);
 				if (max > 0)

@@ -61,16 +61,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static bool operator ==(TasMovieMarker a, TasMovieMarker b)
-		{
-			return a.Frame == b.Frame;
-		}
-
-		public static bool operator !=(TasMovieMarker a, TasMovieMarker b)
-		{
-			return a.Frame != b.Frame;
-		}
-
 		public static bool operator ==(TasMovieMarker marker, int frame)
 		{
 			return marker.Frame == frame;
@@ -125,9 +115,9 @@ namespace BizHawk.Client.Common
 		public TasMovieMarker Previous(int currentFrame)
 		{
 			return this
-				.Where(m => m.Frame < currentFrame)
+				.Where(m => m.Frame <= currentFrame)
 				.OrderBy(m => m.Frame)
-				.Last();
+				.LastOrDefault();
 		}
 
 		public TasMovieMarker Next(int currentFrame)
@@ -135,7 +125,7 @@ namespace BizHawk.Client.Common
 			return this
 				.Where(m => m.Frame > currentFrame)
 				.OrderBy(m => m.Frame)
-				.First();
+				.FirstOrDefault();
 		}
 	}
 }
