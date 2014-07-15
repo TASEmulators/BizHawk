@@ -23,7 +23,6 @@ namespace BizHawk.Client.EmuHawk
 		// TODO:
 		// Save the profile selected to Global.Config (Casual is the default)
 		// Default the dropdown to the current profile selected instead of empty
-		// Put save logic in the Ok button click, not the profile selected change event!
 
 		public ProfileConfig()
 		{
@@ -32,30 +31,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ProfileConfig_Load(object sender, EventArgs e)
 		{
+			if (!VersionInfo.DeveloperBuild)
+			{
+				ProfileSelectComboBox.Items.Remove("Custom Profile");
+			}
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			/* Saving logic goes here */
-			if (ProfileSelectComboBox.SelectedIndex == 3)
-			{
-				//If custom profile, check all the checkboxes
-				//Save to config.ini
-			}
-
-			DialogResult = DialogResult.OK;
-			Close();
-		}
-
-		private void CancelBtn_Click(object sender, EventArgs e)
-		{
-			DialogResult = DialogResult.Cancel;
-			Close();
-		}
-
-		private void ProfileSelectComboBox_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (ProfileSelectComboBox.SelectedIndex == 0) //Casual Gaming
+			if (ProfileSelectComboBox.SelectedIndex == 0) // Casual Gaming
 			{
 				DisplayProfileSettingBoxes(false);
 				Global.Config.SaveLargeScreenshotWithStates = false;
@@ -109,7 +93,7 @@ namespace BizHawk.Client.EmuHawk
 				// NES
 				Global.Config.NES_InQuickNES = true;
 			}
-			else if (ProfileSelectComboBox.SelectedIndex == 2) //Long Plays
+			else if (ProfileSelectComboBox.SelectedIndex == 2) // Long Plays
 			{
 				DisplayProfileSettingBoxes(false);
 				Global.Config.SaveLargeScreenshotWithStates = false;
@@ -163,7 +147,7 @@ namespace BizHawk.Client.EmuHawk
 				// NES
 				Global.Config.NES_InQuickNES = true;
 			}
-			else if (ProfileSelectComboBox.SelectedIndex == 1) //TAS
+			else if (ProfileSelectComboBox.SelectedIndex == 1) // TAS
 			{
 				DisplayProfileSettingBoxes(false);
 
@@ -225,6 +209,15 @@ namespace BizHawk.Client.EmuHawk
 				//Disabled for now
 				//DisplayProfileSettingBoxes(true);
 			}
+
+			DialogResult = DialogResult.OK;
+			Close();
+		}
+
+		private void CancelBtn_Click(object sender, EventArgs e)
+		{
+			DialogResult = DialogResult.Cancel;
+			Close();
 		}
 
 		private void DisplayProfileSettingBoxes(bool cProfile)
