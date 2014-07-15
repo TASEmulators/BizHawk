@@ -14,6 +14,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class MarkerControl : UserControl
 	{
 		public TasMovieMarkerList Markers {get; set; }
+		public Action AddCallback { get; set; }
 
 		public MarkerControl()
 		{
@@ -34,7 +35,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MarkerView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			
+			var prev = Markers.Previous(Global.Emulator.Frame);
+
+			if (prev != null)
+			{
+				if (index == Markers.IndexOf(prev))
+				{
+					color = Color.LightGreen;
+				}
+			}
 		}
 
 		private void MarkerView_QueryItemText(int index, int column, out string text)
@@ -49,6 +58,21 @@ namespace BizHawk.Client.EmuHawk
 			{
 				text = Markers[index].Message;
 			}
+		}
+
+		private void AddBtn_Click(object sender, EventArgs e)
+		{
+			AddCallback();
+		}
+
+		public new void Refresh()
+		{
+			if (MarkerView != null && Markers != null)
+			{
+				MarkerView.ItemCount = Markers.Count;
+			}
+
+			base.Refresh();
 		}
 	}
 }

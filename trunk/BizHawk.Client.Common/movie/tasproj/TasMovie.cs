@@ -21,6 +21,7 @@ namespace BizHawk.Client.Common
 		{
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
 			Markers = new TasMovieMarkerList();
+			Markers.Add(0, StartsFromSavestate ? "Savestate" : "Power on");
 		}
 
 		public override string PreferredExtension
@@ -56,6 +57,8 @@ namespace BizHawk.Client.Common
 			StateManager.Clear();
 			Markers.Clear();
 			base.StartNewRecording();
+
+			Markers.Add(0, StartsFromSavestate ? "Savestate" : "Power on");
 		}
 
 		/// <summary>

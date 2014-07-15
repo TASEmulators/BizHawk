@@ -68,6 +68,7 @@ namespace BizHawk.Client.EmuHawk
 		public TAStudio()
 		{
 			InitializeComponent();
+			MarkerControl.AddCallback = CallAddMarkerPopUp;
 			TasView.QueryItemText += TasView_QueryItemText;
 			TasView.QueryItemBkColor += TasView_QueryItemBkColor;
 			TasView.VirtualMode = true;
@@ -212,6 +213,10 @@ namespace BizHawk.Client.EmuHawk
 		private void RefreshDialog()
 		{
 			TasView.ItemCount = _tas.InputLogLength;
+			if (MarkerControl != null)
+			{
+				MarkerControl.Refresh();
+			}
 		}
 
 		// TODO: a better name
@@ -288,7 +293,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Emulator.FrameAdvance(true);
 				GlobalWin.DisplayManager.NeedsToPaint = true;
 				TasView.ensureVisible(frame);
-				TasView.Refresh();
+				RefreshDialog();
 			}
 			else
 			{
@@ -320,6 +325,26 @@ namespace BizHawk.Client.EmuHawk
 		private void RefreshFloatingWindowControl()
 		{
 			Owner = Global.Config.TAStudioSettings.FloatingWindow ? null : GlobalWin.MainForm;
+		}
+
+		private void CallAddMarkerPopUp()
+		{
+			InputPrompt i = new InputPrompt
+			{
+				Text = "Marker for frame " + Global.Emulator.Frame,
+				TextInputType = InputPrompt.InputType.Text
+			};
+
+			i.SetMessage("Enter a message");
+			var result = i.ShowHawkDialog();
+
+			if (result == DialogResult.OK)
+			{
+				_tas.Markers.Add(Global.Emulator.Frame, i.UserText);
+				MarkerControl.Refresh();
+			}
+
+			MarkerControl.Refresh();
 		}
 
 		private void UpdateChangesIndicator()
