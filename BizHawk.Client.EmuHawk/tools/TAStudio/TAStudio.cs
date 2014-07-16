@@ -437,6 +437,23 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Edit
 
+        private void EditSubMenu_DropDownOpened(object sender, EventArgs e)
+        {
+			DeselectMenuItem.Enabled =
+			CopyMenuItem.Enabled =
+			CutMenuItem.Enabled =
+			ClearMenuItem.Enabled =
+			DeleteFramesMenuItem.Enabled =
+			CloneMenuItem.Enabled =
+			TruncateMenuItem.Enabled =
+				SelectedIndices.Any();
+
+			ReselectClipboardMenuItem.Enabled =
+				PasteMenuItem.Enabled =
+				PasteInsertMenuItem.Enabled =
+				_tasClipboard.Any();
+        }
+
 		private void DeselectMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView.DeselectAll();
@@ -568,23 +585,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertFrameMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SelectedIndices.Any())
-			{
-				_tas.InsertEmptyFrame(LastSelectedIndex + 1);
-				RefreshDialog();
-			}
+			var insertionFrame = SelectedIndices.Any() ? LastSelectedIndex + 1 : 0;
+			_tas.InsertEmptyFrame(insertionFrame);
+			RefreshDialog();
 		}
 
 		private void InsertNumFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SelectedIndices.Any())
+			var insertionFrame = SelectedIndices.Any() ? LastSelectedIndex + 1 : 0;
+			var framesPrompt = new FramesPrompt();
+			var result = framesPrompt.ShowDialog();
+			if (result == DialogResult.OK)
 			{
-				var framesPrompt = new FramesPrompt();
-				var result = framesPrompt.ShowDialog();
-				if (result == DialogResult.OK)
-				{
-					_tas.InsertEmptyFrame(LastSelectedIndex + 1, framesPrompt.Frames);
-				}
+				_tas.InsertEmptyFrame(insertionFrame, framesPrompt.Frames);
 			}
 
 			RefreshDialog();
