@@ -17,35 +17,85 @@ namespace BizHawk.Client.EmuHawk
 		private bool _startFrameDrag;
 		private bool _rightMouseHeld = false;
 
+		private Color CurrentFrame_FrameCol = Color.FromArgb(0xCFEDFC);
+		private Color CurrentFrame_InputLog = Color.FromArgb(0xB5E7F7);
+
+		private Color GreenZone_FrameCol = Color.FromArgb(0xDDFFDD);
+		private Color GreenZone_InputLog = Color.FromArgb(0xC4F7C8);
+
+		private Color LagZone_FrameCol = Color.FromArgb(0xFFDCDD);
+		private Color LagZone_InputLog = Color.FromArgb(0xF0D0D2);
+
+		private Color NoState_GreenZone_FrameCol = Color.FromArgb(0xF9FFF9);
+		private Color NoState_GreenZone_InputLog = Color.FromArgb(0xE0FBE0);
+
+		private Color NoState_LagZone_FrameCol = Color.FromArgb(0xFFE9E9);
+		private Color NoState_LagZone_InputLog = Color.FromArgb(0xF0D0D2);
+
+		private Color Marker_FrameCol = Color.FromArgb(0xF7FFC9);
+
 		#region Query callbacks
 
 		private void TasView_QueryItemBkColor(int index, int column, ref Color color)
 		{
 			var record = _tas[index];
 			var columnName = TasView.Columns[column].Name;
-			if (Global.Emulator.Frame == index)
+
+			if (columnName == MarkerColumnName)
 			{
-				color = Color.LightBlue;
+				color = Color.White;
 			}
-			else
+			else if (columnName == FrameColumnName)
 			{
-				if (record.Lagged.HasValue)
+				if (Global.Emulator.Frame == index)
+				{
+					color = CurrentFrame_FrameCol;
+				}
+				else if (_tas.Markers.IsMarker(index))
+				{
+					color = Marker_FrameCol;
+				}
+				else if (record.Lagged.HasValue)
 				{
 					if (record.Lagged.Value)
 					{
-						color = record.HasState ? Color.LightGreen :
-							Color.FromArgb(Color.LightGreen.ToArgb() + 0x00111100);
+						color = record.HasState ? GreenZone_FrameCol : NoState_GreenZone_FrameCol;
 					}
 					else
 					{
-						color = record.HasState ? Color.Pink : Color.LightPink;
+						color = record.HasState ? LagZone_FrameCol : NoState_LagZone_InputLog;
 					}
 				}
 				else
 				{
-					color = (columnName == MarkerColumnName || columnName == FrameColumnName) ?
-						Color.White :
-						SystemColors.ControlLight;
+					color = Color.White;
+				}
+			}
+			else
+			{
+				if (Global.Emulator.Frame == index)
+				{
+					color = CurrentFrame_InputLog;
+				}
+				else
+				{
+					if (record.Lagged.HasValue)
+					{
+						if (record.Lagged.Value)
+						{
+							color = record.HasState ? GreenZone_InputLog : NoState_GreenZone_InputLog;
+						}
+						else
+						{
+							color = record.HasState ? LagZone_InputLog : NoState_LagZone_InputLog;
+						}
+					}
+					else
+					{
+						color = (columnName == MarkerColumnName || columnName == FrameColumnName) ?
+							Color.White :
+							SystemColors.ControlLight;
+					}
 				}
 			}
 		}
