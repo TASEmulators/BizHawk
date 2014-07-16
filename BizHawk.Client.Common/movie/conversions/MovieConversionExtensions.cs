@@ -75,6 +75,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				bk2.AppendFrame(input);
 			}
 
+			bk2.Save();
 			return bk2;
 		}
 
