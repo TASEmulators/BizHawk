@@ -29,6 +29,7 @@
 		private void InitializeComponent()
 		{
 			this.AddBtn = new System.Windows.Forms.Button();
+			this.RemoveBtn = new System.Windows.Forms.Button();
 			this.MarkerView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -44,6 +45,18 @@
 			this.AddBtn.Text = "Add";
 			this.AddBtn.UseVisualStyleBackColor = true;
 			this.AddBtn.Click += new System.EventHandler(this.AddBtn_Click);
+			// 
+			// RemoveBtn
+			// 
+			this.RemoveBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.RemoveBtn.Enabled = false;
+			this.RemoveBtn.Location = new System.Drawing.Point(3, 214);
+			this.RemoveBtn.Name = "RemoveBtn";
+			this.RemoveBtn.Size = new System.Drawing.Size(58, 23);
+			this.RemoveBtn.TabIndex = 7;
+			this.RemoveBtn.Text = "Remove";
+			this.RemoveBtn.UseVisualStyleBackColor = true;
+			this.RemoveBtn.Click += new System.EventHandler(this.RemoveBtn_Click);
 			// 
 			// MarkerView
 			// 
@@ -69,6 +82,7 @@
 			this.MarkerView.TabStop = false;
 			this.MarkerView.UseCompatibleStateImageBehavior = false;
 			this.MarkerView.View = System.Windows.Forms.View.Details;
+			this.MarkerView.SelectedIndexChanged += new System.EventHandler(this.MarkerView_SelectedIndexChanged);
 			// 
 			// columnHeader1
 			// 
@@ -84,6 +98,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.RemoveBtn);
 			this.Controls.Add(this.AddBtn);
 			this.Controls.Add(this.MarkerView);
 			this.Name = "MarkerControl";
@@ -99,6 +114,7 @@
 		public System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.ColumnHeader columnHeader2;
 		private System.Windows.Forms.Button AddBtn;
+		private System.Windows.Forms.Button RemoveBtn;
 
 	}
 }
