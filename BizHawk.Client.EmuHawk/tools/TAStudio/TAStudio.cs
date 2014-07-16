@@ -68,6 +68,7 @@ namespace BizHawk.Client.EmuHawk
 		public TAStudio()
 		{
 			InitializeComponent();
+			MarkerControl.Tastudio = this;
 			TasView.QueryItemText += TasView_QueryItemText;
 			TasView.QueryItemBkColor += TasView_QueryItemBkColor;
 			TasView.VirtualMode = true;

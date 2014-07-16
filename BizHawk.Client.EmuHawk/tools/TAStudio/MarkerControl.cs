@@ -15,11 +15,10 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public TasMovieMarkerList Markers {get; set; }
 
-		private readonly TAStudio _tastudio;
+		public TAStudio Tastudio { get; set; }
 
-		public MarkerControl(TAStudio tastudio)
+		public MarkerControl()
 		{
-			_tastudio = tastudio;
 			InitializeComponent();
 			MarkerView.QueryItemBkColor += MarkerView_QueryItemBkColor;
 			MarkerView.QueryItemText += MarkerView_QueryItemText;
@@ -64,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddBtn_Click(object sender, EventArgs e)
 		{
-			_tastudio.CallAddMarkerPopUp();
+			Tastudio.CallAddMarkerPopUp();
 		}
 
 		public new void Refresh()
@@ -85,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RemoveBtn_Click(object sender, EventArgs e)
 		{
 			SelectedMarkers.ForEach(i => Markers.Remove(i));
-			_tastudio.RefreshDialog();
+			Tastudio.RefreshDialog();
 		}
 
 		private IEnumerable<int> SelectedIndices
