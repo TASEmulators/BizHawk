@@ -18,7 +18,9 @@ namespace BizHawk.Client.Common
 
 			if (Path.GetExtension(path).EndsWith("bkm"))
 			{
-				return new BkmMovie(path).ToBk2();
+				var bkm = new BkmMovie(path);
+				bkm.Load();
+				return bkm.ToBk2();
 			}
 
 			// Default to bk2
