@@ -14,10 +14,12 @@ namespace BizHawk.Client.EmuHawk
 	public partial class MarkerControl : UserControl
 	{
 		public TasMovieMarkerList Markers {get; set; }
-		public Action<int?> AddCallback { get; set; }
 
-		public MarkerControl()
+		private readonly TAStudio _tastudio;
+
+		public MarkerControl(TAStudio tastudio)
 		{
+			_tastudio = tastudio;
 			InitializeComponent();
 			MarkerView.QueryItemBkColor += MarkerView_QueryItemBkColor;
 			MarkerView.QueryItemText += MarkerView_QueryItemText;
@@ -41,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (index == Markers.IndexOf(prev))
 				{
-					color = Color.LightGreen;
+					color = Color.FromArgb(0xE0FBE0);
 				}
 			}
 		}
@@ -62,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddBtn_Click(object sender, EventArgs e)
 		{
-			AddCallback(null);
+			_tastudio.CallAddMarkerPopUp();
 		}
 
 		public new void Refresh()
@@ -73,6 +75,36 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			base.Refresh();
+		}
+
+		private void MarkerView_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			RemoveBtn.Enabled = SelectedIndices.Any();
+		}
+
+		private void RemoveBtn_Click(object sender, EventArgs e)
+		{
+			SelectedMarkers.ForEach(i => Markers.Remove(i));
+			_tastudio.RefreshDialog();
+		}
+
+		private IEnumerable<int> SelectedIndices
+		{
+			get
+			{
+				return MarkerView.SelectedIndices
+					.OfType<int>();
+			}
+		}
+
+		private List<TasMovieMarker> SelectedMarkers
+		{
+			get
+			{
+				return SelectedIndices
+					.Select(index => Markers[index])
+					.ToList();
+			}
 		}
 	}
 }

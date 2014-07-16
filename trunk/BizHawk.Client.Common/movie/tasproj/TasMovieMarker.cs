@@ -76,7 +76,7 @@ namespace BizHawk.Client.Common
 	{
 		public override string ToString()
 		{
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 			foreach (var marker in this)
 			{
 				sb.AppendLine(marker.ToString());

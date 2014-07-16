@@ -68,7 +68,6 @@ namespace BizHawk.Client.EmuHawk
 		public TAStudio()
 		{
 			InitializeComponent();
-			MarkerControl.AddCallback = CallAddMarkerPopUp;
 			TasView.QueryItemText += TasView_QueryItemText;
 			TasView.QueryItemBkColor += TasView_QueryItemBkColor;
 			TasView.VirtualMode = true;
@@ -210,7 +209,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void RefreshDialog()
+		public void RefreshDialog()
 		{
 			TasView.ItemCount = _tas.InputLogLength;
 			if (MarkerControl != null)
@@ -327,7 +326,7 @@ namespace BizHawk.Client.EmuHawk
 			Owner = Global.Config.TAStudioSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
-		private void CallAddMarkerPopUp(int? frame = null)
+		public void CallAddMarkerPopUp(int? frame = null)
 		{
 			var markerFrame = frame ?? TasView.LastSelectedIndex ?? Global.Emulator.Frame;
 			InputPrompt i = new InputPrompt

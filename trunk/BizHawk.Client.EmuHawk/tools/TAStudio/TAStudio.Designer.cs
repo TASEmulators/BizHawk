@@ -107,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 			this.MessageStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.SplicerStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.TasPlaybackBox = new BizHawk.Client.EmuHawk.PlaybackBox();
-			this.MarkerControl = new BizHawk.Client.EmuHawk.MarkerControl();
+			this.MarkerControl = new BizHawk.Client.EmuHawk.MarkerControl(this);
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.SuspendLayout();
@@ -740,7 +740,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// MarkerControl
 			// 
-			this.MarkerControl.AddCallback = null;
 			this.MarkerControl.Location = new System.Drawing.Point(302, 151);
 			this.MarkerControl.Markers = null;
 			this.MarkerControl.Name = "MarkerControl";
