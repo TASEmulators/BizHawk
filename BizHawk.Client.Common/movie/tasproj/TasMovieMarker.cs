@@ -127,5 +127,10 @@ namespace BizHawk.Client.Common
 				.OrderBy(m => m.Frame)
 				.FirstOrDefault();
 		}
+
+		public bool IsMarker(int frame)
+		{
+			return this.Any(m => m == frame);
+		}
 	}
 }
