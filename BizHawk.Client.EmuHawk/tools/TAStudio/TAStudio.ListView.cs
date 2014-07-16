@@ -17,35 +17,52 @@ namespace BizHawk.Client.EmuHawk
 		private bool _startFrameDrag;
 		private bool _rightMouseHeld = false;
 
-		private Color CurrentFrame_FrameCol = Color.FromArgb(0xCFEDFC);
-		private Color CurrentFrame_InputLog = Color.FromArgb(0xB5E7F7);
+		private readonly Color CurrentFrame_FrameCol = Color.FromArgb(0xCFEDFC);
+		private readonly Color CurrentFrame_InputLog = Color.FromArgb(0xB5E7F7);
 
-		private Color GreenZone_FrameCol = Color.FromArgb(0xDDFFDD);
-		private Color GreenZone_InputLog = Color.FromArgb(0xC4F7C8);
+		private readonly Color GreenZone_FrameCol = Color.FromArgb(0xDDFFDD);
+		private readonly Color GreenZone_InputLog = Color.FromArgb(0xC4F7C8);
 
-		private Color LagZone_FrameCol = Color.FromArgb(0xFFDCDD);
-		private Color LagZone_InputLog = Color.FromArgb(0xF0D0D2);
+		private readonly Color LagZone_FrameCol = Color.FromArgb(0xFFDCDD);
+		private readonly Color LagZone_InputLog = Color.FromArgb(0xF0D0D2);
 
-		private Color NoState_GreenZone_FrameCol = Color.FromArgb(0xF9FFF9);
-		private Color NoState_GreenZone_InputLog = Color.FromArgb(0xE0FBE0);
+		private readonly Color NoState_GreenZone_FrameCol = Color.FromArgb(0xF9FFF9);
+		private readonly Color NoState_GreenZone_InputLog = Color.FromArgb(0xE0FBE0);
 
-		private Color NoState_LagZone_FrameCol = Color.FromArgb(0xFFE9E9);
-		private Color NoState_LagZone_InputLog = Color.FromArgb(0xF0D0D2);
+		private readonly Color NoState_LagZone_FrameCol = Color.FromArgb(0xFFE9E9);
+		private readonly Color NoState_LagZone_InputLog = Color.FromArgb(0xF0D0D2);
 
-		private Color Marker_FrameCol = Color.FromArgb(0xF7FFC9);
+		private readonly Color Marker_FrameCol = Color.FromArgb(0xF7FFC9);
 
 		#region Query callbacks
 
 		private void TasView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			var record = _tas[index];
 			var columnName = TasView.Columns[column].Name;
 
+			// Marker Column is white regardless
 			if (columnName == MarkerColumnName)
 			{
 				color = Color.White;
+				return;
 			}
-			else if (columnName == FrameColumnName)
+
+			// "pending" frame logic
+			if (index == Global.Emulator.Frame && index == _tas.InputLogLength)
+			{
+				if (columnName == FrameColumnName)
+				{
+					color = CurrentFrame_FrameCol;
+				}
+
+				color = CurrentFrame_InputLog;
+
+				return;
+			}
+
+			var record = _tas[index];
+
+			if (columnName == FrameColumnName)
 			{
 				if (Global.Emulator.Frame == index)
 				{
@@ -104,6 +121,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
+				text = string.Empty;
 				var columnName = TasView.Columns[column].Name;
 
 				if (columnName == MarkerColumnName)
@@ -116,7 +134,16 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					text = _tas.DisplayValue(index, columnName);
+					if (index < _tas.InputLogLength)
+					{
+						text = _tas.DisplayValue(index, columnName);
+					}
+					else if (Global.Emulator.Frame == _tas.InputLogLength) // In this situation we have a "pending" frame for the user to click
+					{
+						text = TasMovie.CreateDisplayValueForButton(
+							Global.ClickyVirtualPadController,
+							columnName);
+					}
 				}
 			}
 			catch (Exception ex)
@@ -152,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 
 						if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
 						{
-							_tas.ToggleBoolState(TasView.PointedCell.Row.Value, TasView.PointedCell.Column);
+							ToggleBoolState(TasView.PointedCell.Row.Value, TasView.PointedCell.Column);
 							GoToLastEmulatedFrameIfNecessary(TasView.PointedCell.Row.Value);
 							TasView.Refresh();
 
@@ -170,6 +197,34 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_rightMouseHeld = true;
 				}
+			}
+		}
+
+		// TODO: move me
+		// Sets either the pending frame or the tas input log
+		private void ToggleBoolState(int frame, string buttonName)
+		{
+			if (frame < _tas.InputLogLength)
+			{
+				_tas.ToggleBoolState(frame, buttonName);
+			}
+			else if (frame == Global.Emulator.Frame && frame == _tas.InputLogLength)
+			{
+				Global.ClickyVirtualPadController.Toggle(buttonName);
+			}
+		}
+
+		// TODO: move me
+		// Sets either the pending frame or the tas input log
+		private void SetBoolState(int frame, string buttonName, bool value)
+		{
+			if (frame < _tas.InputLogLength)
+			{
+				_tas.SetBoolState(frame, buttonName, value);
+			}
+			else if (frame == Global.Emulator.Frame && frame == _tas.InputLogLength)
+			{
+				Global.ClickyVirtualPadController.SetBool(buttonName, value);
 			}
 		}
 
@@ -245,7 +300,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					for (var i = startVal; i < endVal; i++)
 					{
-						_tas.SetBoolState(i, _startBoolDrawColumn, _boolPaintState); // Notice it uses new row, old column, you can only paint across a single column
+						SetBoolState(i, _startBoolDrawColumn, _boolPaintState); // Notice it uses new row, old column, you can only paint across a single column
 						GoToLastEmulatedFrameIfNecessary(TasView.PointedCell.Row.Value);
 					}
 
@@ -258,8 +313,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					for (var i = startVal; i < endVal; i++)
 					{
-						_tas.SetFloatState(i, _startFloatDrawColumn, _floatPaintState); // Notice it uses new row, old column, you can only paint across a single column
-						GoToLastEmulatedFrameIfNecessary(TasView.PointedCell.Row.Value);
+						if (i < _tas.InputLogLength) // TODO: how do we really want to handle the user setting the float state of the pending frame?
+						{
+							_tas.SetFloatState(i, _startFloatDrawColumn, _floatPaintState); // Notice it uses new row, old column, you can only paint across a single column
+							GoToLastEmulatedFrameIfNecessary(TasView.PointedCell.Row.Value);
+						}
 					}
 
 					TasView.Refresh();

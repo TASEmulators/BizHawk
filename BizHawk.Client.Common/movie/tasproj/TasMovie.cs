@@ -83,11 +83,17 @@ namespace BizHawk.Client.Common
 		public string DisplayValue(int frame, string buttonName)
 		{
 			var adapter = GetInputState(frame);
+			return CreateDisplayValueForButton(adapter, buttonName);
+		}
+
+		public static string CreateDisplayValueForButton(IController adapter, string buttonName)
+		{
+			var mnemonics = new Bk2MnemonicConstants();
 
 			if (adapter.Type.BoolButtons.Contains(buttonName))
 			{
 				return adapter.IsPressed(buttonName) ?
-					Mnemonics[buttonName].ToString() :
+					mnemonics[buttonName].ToString() :
 					string.Empty;
 			}
 
@@ -215,7 +221,12 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return StateManager.Last.Key;
+				if (StateManager.StateCount > 0)
+				{
+					return StateManager.Last.Key;
+				}
+
+				return 0;
 			}
 		}
 	}
