@@ -183,6 +183,31 @@ namespace BizHawk.Client.EmuHawk
 			_rightMouseHeld = false;
 		}
 
+		private void TasView_MouseWheel(object sender, MouseEventArgs e)
+		{
+			if (_rightMouseHeld)
+			{
+				if (e.Delta < 0)
+				{
+					GoToFrame(Global.Emulator.Frame);
+				}
+				else
+				{
+					GoToFrame(Global.Emulator.Frame - 2);
+				}
+			}
+		}
+
+		private void TasView_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			if (TasView.PointedCell.Row.HasValue &&
+				!string.IsNullOrEmpty(TasView.PointedCell.Column) &&
+				TasView.PointedCell.Column == FrameColumnName)
+			{
+				CallAddMarkerPopUp(TasView.PointedCell.Row.Value);
+			}
+		}
+
 		private void TasView_PointedCellChanged(object sender, TasListView.CellEventArgs e)
 		{
 			int startVal, endVal;
@@ -238,21 +263,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					TasView.Refresh();
-				}
-			}
-		}
-
-		private void TasView_MouseWheel(object sender, MouseEventArgs e)
-		{
-			if (_rightMouseHeld)
-			{
-				if (e.Delta < 0)
-				{
-					GoToFrame(Global.Emulator.Frame);
-				}
-				else
-				{
-					GoToFrame(Global.Emulator.Frame - 2);
 				}
 			}
 		}
