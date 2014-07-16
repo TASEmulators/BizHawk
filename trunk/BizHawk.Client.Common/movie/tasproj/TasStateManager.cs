@@ -146,6 +146,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public int StateCount
+		{
+			get
+			{
+				return States.Count;
+			}
+		}
+
 		public KeyValuePair<int, byte[]> Last
 		{
 			get { return States.Last(); }

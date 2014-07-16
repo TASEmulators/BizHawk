@@ -212,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RefreshDialog()
 		{
-			TasView.ItemCount = _tas.InputLogLength;
+			TasView.ItemCount = _tas.InputLogLength + 1;
 			if (MarkerControl != null)
 			{
 				MarkerControl.Refresh();
@@ -222,9 +222,12 @@ namespace BizHawk.Client.EmuHawk
 		// TODO: a better name
 		private void GoToLastEmulatedFrameIfNecessary(int frame)
 		{
-			if (frame <= _tas.LastEmulatedFrame)
+			if (frame != Global.Emulator.Frame) // Don't go to a frame if you are already on it!
 			{
-				GoToFrame(frame);
+				if (frame <= _tas.LastEmulatedFrame)
+				{
+					GoToFrame(frame);
+				}
 			}
 		}
 

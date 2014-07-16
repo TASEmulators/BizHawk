@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			TasView.ItemCount = _tas.InputLogLength;
+			RefreshDialog();
 			if (_tas.IsRecording)
 			{
 				TasView.ensureVisible(_tas.InputLogLength - 1);
