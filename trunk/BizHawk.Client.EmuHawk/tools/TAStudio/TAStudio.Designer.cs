@@ -691,6 +691,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.UseCompatibleStateImageBehavior = false;
 			this.TasView.View = System.Windows.Forms.View.Details;
 			this.TasView.SelectedIndexChanged += new System.EventHandler(this.TasView_SelectedIndexChanged);
+			this.TasView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDoubleClick);
 			this.TasView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDown);
 			this.TasView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseUp);
 			this.TasView.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseWheel);
@@ -739,6 +740,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// MarkerControl
 			// 
+			this.MarkerControl.AddCallback = null;
 			this.MarkerControl.Location = new System.Drawing.Point(302, 151);
 			this.MarkerControl.Markers = null;
 			this.MarkerControl.Name = "MarkerControl";

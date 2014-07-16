@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
@@ -13,7 +14,23 @@ namespace BizHawk.Client.EmuHawk
 			// Convenience hack
 			public override string ToString()
 			{
-				return String.IsNullOrEmpty(Column) ? "?" : Column + " - " + (Row.HasValue ? Row.ToString() : "?");
+				return string.IsNullOrEmpty(Column) ? "?" : Column + " - " + (Row.HasValue ? Row.ToString() : "?");
+			}
+		}
+
+		public int? LastSelectedIndex
+		{
+			get
+			{
+				if (SelectedIndices.Count > 0)
+				{
+					return SelectedIndices
+						.OfType<int>()
+						.OrderBy(x => x)
+						.Last();
+				}
+
+				return null;
 			}
 		}
 

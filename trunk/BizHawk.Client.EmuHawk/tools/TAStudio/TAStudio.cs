@@ -327,11 +327,12 @@ namespace BizHawk.Client.EmuHawk
 			Owner = Global.Config.TAStudioSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
-		private void CallAddMarkerPopUp()
+		private void CallAddMarkerPopUp(int? frame = null)
 		{
+			var markerFrame = frame ?? TasView.LastSelectedIndex ?? Global.Emulator.Frame;
 			InputPrompt i = new InputPrompt
 			{
-				Text = "Marker for frame " + Global.Emulator.Frame,
+				Text = "Marker for frame " + markerFrame,
 				TextInputType = InputPrompt.InputType.Text
 			};
 
@@ -340,7 +341,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result == DialogResult.OK)
 			{
-				_tas.Markers.Add(Global.Emulator.Frame, i.UserText);
+				_tas.Markers.Add(markerFrame, i.UserText);
 				MarkerControl.Refresh();
 			}
 

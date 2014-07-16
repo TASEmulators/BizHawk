@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class MarkerControl : UserControl
 	{
 		public TasMovieMarkerList Markers {get; set; }
-		public Action AddCallback { get; set; }
+		public Action<int?> AddCallback { get; set; }
 
 		public MarkerControl()
 		{
@@ -62,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddBtn_Click(object sender, EventArgs e)
 		{
-			AddCallback();
+			AddCallback(null);
 		}
 
 		public new void Refresh()
