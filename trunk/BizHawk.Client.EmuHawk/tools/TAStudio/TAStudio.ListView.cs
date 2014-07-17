@@ -330,6 +330,18 @@ namespace BizHawk.Client.EmuHawk
 			SetSplicer();
 		}
 
+		private void TasView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Left) // Ctrl + Left
+			{
+				GoToPreviousMarker();
+			}
+			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Right) // Ctrl + Left
+			{
+				GoToNextMarker();
+			}
+		}
+
 		#endregion
 	}
 }

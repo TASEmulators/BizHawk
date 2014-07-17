@@ -693,6 +693,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.UseCompatibleStateImageBehavior = false;
 			this.TasView.View = System.Windows.Forms.View.Details;
 			this.TasView.SelectedIndexChanged += new System.EventHandler(this.TasView_SelectedIndexChanged);
+			this.TasView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TasView_KeyDown);
 			this.TasView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDoubleClick);
 			this.TasView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDown);
 			this.TasView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseUp);
@@ -739,6 +740,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TasPlaybackBox.Name = "TasPlaybackBox";
 			this.TasPlaybackBox.Size = new System.Drawing.Size(204, 120);
 			this.TasPlaybackBox.TabIndex = 5;
+			this.TasPlaybackBox.Tastudio = null;
 			// 
 			// MarkerControl
 			// 
@@ -767,7 +769,6 @@ namespace BizHawk.Client.EmuHawk
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "TAStudio";
 			this.Load += new System.EventHandler(this.Tastudio_Load);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TAStudio_KeyDown);
 			this.TASMenu.ResumeLayout(false);
 			this.TASMenu.PerformLayout();
 			this.TasStatusStrip.ResumeLayout(false);
