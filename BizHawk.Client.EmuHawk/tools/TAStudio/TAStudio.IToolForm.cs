@@ -23,6 +23,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				TasView.ensureVisible(Global.Emulator.Frame);
 			}
+
+			if (StopFrame.HasValue && Global.Emulator.Frame == StopFrame.Value)
+			{
+				GlobalWin.MainForm.PauseEmulator();
+				StopFrame = null;
+			}
 		}
 
 		public void Restart()
