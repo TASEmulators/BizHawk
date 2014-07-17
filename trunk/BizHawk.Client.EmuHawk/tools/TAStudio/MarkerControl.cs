@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MarkerView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			var prev = Markers.Previous(Global.Emulator.Frame);
+			var prev = Markers.PreviousOrCurrent(Global.Emulator.Frame);
 
 			if (prev != null)
 			{
