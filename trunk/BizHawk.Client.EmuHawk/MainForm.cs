@@ -3144,6 +3144,7 @@ namespace BizHawk.Client.EmuHawk
 				UpdateStatusSlots();
 				UpdateCoreStatusBarButton();
 				UpdateDumpIcon();
+				SetMainformMovieInfo();
 
 				Global.Rewinder.CaptureRewindState();
 
