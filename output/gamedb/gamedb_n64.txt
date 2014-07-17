@@ -180,7 +180,7 @@ BBEB7B7A92A68B17CA72DCB9D7FB16F7B771C4F6	G	Doraemon - Nobita to 3tsu no Seireise
 4B187360E1999556662C28B65DD179432EC61F9A	G	Doraemon 2 - Nobita to Hikari no Shinden (Japan)	N64		SaveType=EEPROM_16K
 DD9BA0F6CFC10C3B78401CC55D06AD534F39D5B1	G	Doraemon 3 - Nobita no Machi SOS! (Japan)	N64		SaveType=EEPROM_16K
 E106DFF7146F72415337C96DEB14F630E1580EFB	G	Doubutsu no Mori (Japan)	N64
-A130D3622CE40E0158DB2DA4247101F6E92206FC	G	Dr. Mario 64 (USA)	N64		RiceEnableHacksForGame=2;RiceFastTextureCRC=2;RiceTextureScaleHack=true;RiceFrameBufferOption=7;RiceRenderToTextureOption=3;Glide_fix_tex_coord=256;Glide_fb_optimize_write=true;Glide_filtering=0;Glide_fb_smart=true;Glide64mk2_fb_smart=true
+A130D3622CE40E0158DB2DA4247101F6E92206FC	G	Dr. Mario 64 (USA)	N64		RiceEnableHacksForGame=2;RiceFastTextureCRC=2;RiceTextureScaleHack=true;RiceFrameBufferOption=7;RiceRenderToTextureOption=3;Glide_fix_tex_coord=256;Glide_fb_optimize_write=true;Glide_filtering=0;Glide_fb_smart=true;Glide_fog=true;Glide_buff_clear=true;Glide_swapmode=1;Glide_fb_clear=false;Glide_fb_read_alpha=false;Glide64mk2_fb_smart=true;Glide64mk2_fb_hires=false;Glide64mk2_read_back_to_screen=1
 EFBDBCB499A3D8A37613CA1D94528016BDBF5735	G	Dragon Sword 64 (USA) (Proto)	N64
 061B7956C3AADDDC6FDC11AAB885F95A71B7F463	G	Dual Heroes (Europe)	N64		Glide64mk2_filtering=1
 CFD5992BCC3E0D90966D8A6FC6E0813E75473B14	G	Dual Heroes (Japan)	N64		Glide64mk2_filtering=1
