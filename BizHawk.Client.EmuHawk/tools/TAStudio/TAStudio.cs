@@ -449,9 +449,10 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Edit
 
-        private void EditSubMenu_DropDownOpened(object sender, EventArgs e)
-        {
+		private void EditSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
 			DeselectMenuItem.Enabled =
+			SelectBetweenMarkersMenuItem.Enabled =
 			CopyMenuItem.Enabled =
 			CutMenuItem.Enabled =
 			ClearMenuItem.Enabled =
@@ -464,7 +465,7 @@ namespace BizHawk.Client.EmuHawk
 				PasteMenuItem.Enabled =
 				PasteInsertMenuItem.Enabled =
 				_tasClipboard.Any();
-        }
+		}
 
 		private void DeselectMenuItem_Click(object sender, EventArgs e)
 		{
@@ -474,6 +475,23 @@ namespace BizHawk.Client.EmuHawk
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView.SelectAll();
+		}
+
+		private void SelectBetweenMarkersMenuItem_Click(object sender, EventArgs e)
+		{
+			if (SelectedIndices.Any())
+			{
+				var prevMarker = _tas.Markers.Previous(LastSelectedIndex);
+				var nextMarker = _tas.Markers.Next(LastSelectedIndex);
+
+				int prev = prevMarker != null ? prevMarker.Frame : 0;
+				int next = nextMarker != null ? nextMarker.Frame : _tas.InputLogLength;
+
+				for (int i = prev; i < next; i++)
+				{
+					TasView.SelectItem(i, true);
+				}
+			}
 		}
 
 		private void ReselectClipboardMenuItem_Click(object sender, EventArgs e)

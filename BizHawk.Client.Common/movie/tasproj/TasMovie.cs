@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 		{
 			StateManager = new TasStateManager(this);
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
-			Markers = new TasMovieMarkerList();
+			Markers = new TasMovieMarkerList(this);
 			Markers.Add(0, StartsFromSavestate ? "Savestate" : "Power on");
 		}
 
