@@ -355,9 +355,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void GoToPreviousMarker()
 		{
-			var prevMarker = _tas.Markers.Previous(Global.Emulator.Frame);
-			var prev = prevMarker != null ? prevMarker.Frame : 0;
-			GoToFrame(prev);
+			if (Global.Emulator.Frame > 0)
+			{
+				var prevMarker = _tas.Markers.Previous(Global.Emulator.Frame);
+				var prev = prevMarker != null ? prevMarker.Frame : 0;
+				GoToFrame(prev);
+			}
 		}
 
 		public void GoToPreviousFrame()
