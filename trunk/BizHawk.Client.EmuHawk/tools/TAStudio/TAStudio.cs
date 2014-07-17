@@ -605,8 +605,18 @@ namespace BizHawk.Client.EmuHawk
 			// FCEUX Taseditor does't do this, but I think it is the expected behavior in editor programs
 			if (_tasClipboard.Any())
 			{
+				var needsToRollback = !(FirstSelectedIndex > Global.Emulator.Frame);
+
 				_tas.CopyOverInput(FirstSelectedIndex, _tasClipboard.Select(x => x.ControllerState));
-				RefreshDialog();
+
+				if (needsToRollback)
+				{
+					GoToFrame(FirstSelectedIndex);
+				}
+				else
+				{
+					RefreshDialog();
+				}
 			}
 		}
 
@@ -614,8 +624,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_tasClipboard.Any())
 			{
+				var needsToRollback = !(FirstSelectedIndex > Global.Emulator.Frame);
+
 				_tas.InsertInput(FirstSelectedIndex, _tasClipboard.Select(x => x.ControllerState));
-				RefreshDialog();
+
+				if (needsToRollback)
+				{
+					GoToFrame(FirstSelectedIndex);
+				}
+				else
+				{
+					RefreshDialog();
+				}
 			}
 		}
 
@@ -623,6 +643,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedIndices.Any())
 			{
+				var needsToRollback = !(FirstSelectedIndex > Global.Emulator.Frame);
+				var rollBackFrame = FirstSelectedIndex;
+
 				_tasClipboard.Clear();
 				var list = SelectedIndices.ToArray();
 				var sb = new StringBuilder();
@@ -636,35 +659,64 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				Clipboard.SetDataObject(sb.ToString());
-
 				_tas.RemoveFrames(list);
-
-
 				SetSplicer();
 				TasView.DeselectAll();
-				RefreshDialog();
+
+				if (needsToRollback)
+				{
+					GoToFrame(rollBackFrame);
+				}
+				else
+				{
+					RefreshDialog();
+				}
 			}
 		}
 
 		private void ClearMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach (var frame in SelectedIndices)
+			if (SelectedIndices.Any())
 			{
-				_tas.ClearFrame(frame);
-			}
+				var needsToRollback = !(FirstSelectedIndex > Global.Emulator.Frame);
+				var rollBackFrame = FirstSelectedIndex;
 
-			RefreshDialog();
+				foreach (var frame in SelectedIndices)
+				{
+					_tas.ClearFrame(frame);
+				}
+
+				if (needsToRollback)
+				{
+					GoToFrame(rollBackFrame);
+				}
+				else
+				{
+					RefreshDialog();
+				}
+			}
 		}
 
 		private void DeleteFramesMenuItem_Click(object sender, EventArgs e)
 		{
 			if (SelectedIndices.Any())
 			{
+				var needsToRollback = !(FirstSelectedIndex > Global.Emulator.Frame);
+				var rollBackFrame = FirstSelectedIndex;
+
 				_tasClipboard.Clear();
 				_tas.RemoveFrames(SelectedIndices.ToArray());
 				SetSplicer();
 				TasView.DeselectAll();
-				RefreshDialog();
+
+				if (needsToRollback)
+				{
+					GoToFrame(rollBackFrame);
+				}
+				else
+				{
+					RefreshDialog();
+				}
 			}
 		}
 
@@ -674,6 +726,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var framesToInsert = SelectedIndices.ToList();
 				var insertionFrame = LastSelectedIndex + 1;
+				var needsToRollback = !(insertionFrame > Global.Emulator.Frame);
 				var inputLog = new List<string>();
 
 				foreach (var frame in framesToInsert)
@@ -683,20 +736,39 @@ namespace BizHawk.Client.EmuHawk
 
 				_tas.InsertInput(insertionFrame, inputLog);
 
-				RefreshDialog();
+				if (needsToRollback)
+				{
+					GoToFrame(insertionFrame);
+				}
+				else
+				{
+					RefreshDialog();
+				}
 			}
 		}
 
 		private void InsertFrameMenuItem_Click(object sender, EventArgs e)
 		{
 			var insertionFrame = SelectedIndices.Any() ? LastSelectedIndex + 1 : 0;
+			var needsToRollback = !(insertionFrame > Global.Emulator.Frame);
+
 			_tas.InsertEmptyFrame(insertionFrame);
-			RefreshDialog();
+
+			if (needsToRollback)
+			{
+				GoToFrame(insertionFrame);
+			}
+			else
+			{
+				RefreshDialog();
+			}
 		}
 
 		private void InsertNumFramesMenuItem_Click(object sender, EventArgs e)
 		{
 			var insertionFrame = SelectedIndices.Any() ? LastSelectedIndex + 1 : 0;
+			var needsToRollback = !(insertionFrame > Global.Emulator.Frame);
+
 			var framesPrompt = new FramesPrompt();
 			var result = framesPrompt.ShowDialog();
 			if (result == DialogResult.OK)
@@ -704,15 +776,33 @@ namespace BizHawk.Client.EmuHawk
 				_tas.InsertEmptyFrame(insertionFrame, framesPrompt.Frames);
 			}
 
-			RefreshDialog();
+			if (needsToRollback)
+			{
+				GoToFrame(insertionFrame);
+			}
+			else
+			{
+				RefreshDialog();
+			}
 		}
 
 		private void TruncateMenuItem_Click(object sender, EventArgs e)
 		{
 			if (SelectedIndices.Any())
 			{
+				var rollbackFrame = LastSelectedIndex + 1;
+				var needsToRollback = !(rollbackFrame > Global.Emulator.Frame);
+
 				_tas.Truncate(LastSelectedIndex + 1);
-				RefreshDialog();
+
+				if (needsToRollback)
+				{
+					GoToFrame(rollbackFrame);
+				}
+				else
+				{
+					RefreshDialog();
+				}
 			}
 		}
 
