@@ -3062,7 +3062,8 @@ namespace BizHawk.Client.EmuHawk
 			// the new settings objects
 			CommitCoreSettingsToConfig(); // adelikat: I Think by reordering things, this isn't necessary anymore
 			CloseGame();
-			Global.Emulator.Dispose();
+			
+			//Global.Emulator.Dispose(); // CloseGame() already killed and disposed the emulator; this is killing the new one; that's bad
 
 			var nextComm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals(nextComm);
@@ -3241,6 +3242,8 @@ namespace BizHawk.Client.EmuHawk
 			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
+
+			RewireSound();
 
 			// adelikat: TODO: Ugly hack! But I don't know a way around this yet.
 			if (!(Global.MovieSession.Movie is TasMovie))
