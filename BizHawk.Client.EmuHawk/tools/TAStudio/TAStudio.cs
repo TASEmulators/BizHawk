@@ -679,7 +679,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-
 		#endregion
 
 		#region Config
@@ -778,14 +777,6 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region Dialog Events
-
-		private void TAStudio_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Delete)
-			{
-				DeleteFramesMenuItem_Click(null, null);
-			}
-		}
 
 		protected override void OnShown(EventArgs e)
 		{
