@@ -253,7 +253,7 @@ namespace BizHawk.Client.EmuHawk
 			this.UndoMenuItem.Enabled = false;
 			this.UndoMenuItem.Name = "UndoMenuItem";
 			this.UndoMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-			this.UndoMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.UndoMenuItem.Size = new System.Drawing.Size(272, 22);
 			this.UndoMenuItem.Text = "&Undo";
 			// 
 			// RedoMenuItem
@@ -261,7 +261,7 @@ namespace BizHawk.Client.EmuHawk
 			this.RedoMenuItem.Enabled = false;
 			this.RedoMenuItem.Name = "RedoMenuItem";
 			this.RedoMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-			this.RedoMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.RedoMenuItem.Size = new System.Drawing.Size(272, 22);
 			this.RedoMenuItem.Text = "&Redo";
 			// 
 			// SelectionUndoMenuItem
@@ -269,7 +269,7 @@ namespace BizHawk.Client.EmuHawk
 			this.SelectionUndoMenuItem.Enabled = false;
 			this.SelectionUndoMenuItem.Name = "SelectionUndoMenuItem";
 			this.SelectionUndoMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-			this.SelectionUndoMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.SelectionUndoMenuItem.Size = new System.Drawing.Size(272, 22);
 			this.SelectionUndoMenuItem.Text = "Selection Undo";
 			// 
 			// SelectionRedoMenuItem
@@ -277,18 +277,18 @@ namespace BizHawk.Client.EmuHawk
 			this.SelectionRedoMenuItem.Enabled = false;
 			this.SelectionRedoMenuItem.Name = "SelectionRedoMenuItem";
 			this.SelectionRedoMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
-			this.SelectionRedoMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.SelectionRedoMenuItem.Size = new System.Drawing.Size(272, 22);
 			this.SelectionRedoMenuItem.Text = "Selection Redo";
 			// 
 			// toolStripSeparator5
 			// 
 			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(237, 6);
+			this.toolStripSeparator5.Size = new System.Drawing.Size(269, 6);
 			// 
 			// DeselectMenuItem
 			// 
 			this.DeselectMenuItem.Name = "DeselectMenuItem";
-			this.DeselectMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.DeselectMenuItem.Size = new System.Drawing.Size(272, 22);
 			this.DeselectMenuItem.Text = "Deselect";
 			this.DeselectMenuItem.Click += new System.EventHandler(this.DeselectMenuItem_Click);
 			// 
@@ -296,36 +296,37 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.SelectAllMenuItem.Name = "SelectAllMenuItem";
 			this.SelectAllMenuItem.ShortcutKeyDisplayString = "Ctrl+A";
-			this.SelectAllMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.SelectAllMenuItem.Size = new System.Drawing.Size(272, 22);
 			this.SelectAllMenuItem.Text = "Select &All";
 			this.SelectAllMenuItem.Click += new System.EventHandler(this.SelectAllMenuItem_Click);
 			// 
 			// SelectBetweenMarkersMenuItem
 			// 
-			this.SelectBetweenMarkersMenuItem.Enabled = false;
 			this.SelectBetweenMarkersMenuItem.Name = "SelectBetweenMarkersMenuItem";
-			this.SelectBetweenMarkersMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-			this.SelectBetweenMarkersMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.SelectBetweenMarkersMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.A)));
+			this.SelectBetweenMarkersMenuItem.Size = new System.Drawing.Size(272, 22);
 			this.SelectBetweenMarkersMenuItem.Text = "Select between Markers";
+			this.SelectBetweenMarkersMenuItem.Click += new System.EventHandler(this.SelectBetweenMarkersMenuItem_Click);
 			// 
 			// ReselectClipboardMenuItem
 			// 
 			this.ReselectClipboardMenuItem.Name = "ReselectClipboardMenuItem";
 			this.ReselectClipboardMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.B)));
-			this.ReselectClipboardMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.ReselectClipboardMenuItem.Size = new System.Drawing.Size(272, 22);
 			this.ReselectClipboardMenuItem.Text = "Reselect Clipboard";
 			this.ReselectClipboardMenuItem.Click += new System.EventHandler(this.ReselectClipboardMenuItem_Click);
 			// 
 			// toolStripSeparator7
 			// 
 			this.toolStripSeparator7.Name = "toolStripSeparator7";
-			this.toolStripSeparator7.Size = new System.Drawing.Size(237, 6);
+			this.toolStripSeparator7.Size = new System.Drawing.Size(269, 6);
 			// 
 			// CopyMenuItem
 			// 
 			this.CopyMenuItem.Name = "CopyMenuItem";
 			this.CopyMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-			this.CopyMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.CopyMenuItem.Size = new System.Drawing.Size(272, 22);
 			this.CopyMenuItem.Text = "Copy";
 			this.CopyMenuItem.Click += new System.EventHandler(this.CopyMenuItem_Click);
 			// 
@@ -333,7 +334,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.PasteMenuItem.Name = "PasteMenuItem";
 			this.PasteMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-			this.PasteMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.PasteMenuItem.Size = new System.Drawing.Size(272, 22);
 			this.PasteMenuItem.Text = "&Paste";
 			this.PasteMenuItem.Click += new System.EventHandler(this.PasteMenuItem_Click);
 			// 
@@ -342,7 +343,7 @@ namespace BizHawk.Client.EmuHawk
 			this.PasteInsertMenuItem.Name = "PasteInsertMenuItem";
 			this.PasteInsertMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.V)));
-			this.PasteInsertMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.PasteInsertMenuItem.Size = new System.Drawing.Size(272, 22);
 			this.PasteInsertMenuItem.Text = "&Paste Insert";
 			this.PasteInsertMenuItem.Click += new System.EventHandler(this.PasteInsertMenuItem_Click);
 			// 
@@ -350,21 +351,21 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.CutMenuItem.Name = "CutMenuItem";
 			this.CutMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-			this.CutMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.CutMenuItem.Size = new System.Drawing.Size(272, 22);
 			this.CutMenuItem.Text = "&Cut";
 			this.CutMenuItem.Click += new System.EventHandler(this.CutMenuItem_Click);
 			// 
 			// toolStripSeparator8
 			// 
 			this.toolStripSeparator8.Name = "toolStripSeparator8";
-			this.toolStripSeparator8.Size = new System.Drawing.Size(237, 6);
+			this.toolStripSeparator8.Size = new System.Drawing.Size(269, 6);
 			// 
 			// ClearMenuItem
 			// 
 			this.ClearMenuItem.Name = "ClearMenuItem";
 			this.ClearMenuItem.ShortcutKeyDisplayString = "";
 			this.ClearMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Delete)));
-			this.ClearMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.ClearMenuItem.Size = new System.Drawing.Size(272, 22);
 			this.ClearMenuItem.Text = "Clear";
 			this.ClearMenuItem.Click += new System.EventHandler(this.ClearMenuItem_Click);
 			// 
@@ -372,7 +373,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.DeleteFramesMenuItem.Name = "DeleteFramesMenuItem";
 			this.DeleteFramesMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-			this.DeleteFramesMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.DeleteFramesMenuItem.Size = new System.Drawing.Size(272, 22);
 			this.DeleteFramesMenuItem.Text = "&Delete";
 			this.DeleteFramesMenuItem.Click += new System.EventHandler(this.DeleteFramesMenuItem_Click);
 			// 
@@ -380,7 +381,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.CloneMenuItem.Name = "CloneMenuItem";
 			this.CloneMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Insert)));
-			this.CloneMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.CloneMenuItem.Size = new System.Drawing.Size(272, 22);
 			this.CloneMenuItem.Text = "&Clone";
 			this.CloneMenuItem.Click += new System.EventHandler(this.CloneMenuItem_Click);
 			// 
@@ -389,7 +390,7 @@ namespace BizHawk.Client.EmuHawk
 			this.InsertFrameMenuItem.Name = "InsertFrameMenuItem";
 			this.InsertFrameMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.Insert)));
-			this.InsertFrameMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.InsertFrameMenuItem.Size = new System.Drawing.Size(272, 22);
 			this.InsertFrameMenuItem.Text = "&Insert";
 			this.InsertFrameMenuItem.Click += new System.EventHandler(this.InsertFrameMenuItem_Click);
 			// 
@@ -397,19 +398,19 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.InsertNumFramesMenuItem.Name = "InsertNumFramesMenuItem";
 			this.InsertNumFramesMenuItem.ShortcutKeyDisplayString = "Ins";
-			this.InsertNumFramesMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.InsertNumFramesMenuItem.Size = new System.Drawing.Size(272, 22);
 			this.InsertNumFramesMenuItem.Text = "Insert # of Frames";
 			this.InsertNumFramesMenuItem.Click += new System.EventHandler(this.InsertNumFramesMenuItem_Click);
 			// 
 			// toolStripSeparator6
 			// 
 			this.toolStripSeparator6.Name = "toolStripSeparator6";
-			this.toolStripSeparator6.Size = new System.Drawing.Size(237, 6);
+			this.toolStripSeparator6.Size = new System.Drawing.Size(269, 6);
 			// 
 			// TruncateMenuItem
 			// 
 			this.TruncateMenuItem.Name = "TruncateMenuItem";
-			this.TruncateMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.TruncateMenuItem.Size = new System.Drawing.Size(272, 22);
 			this.TruncateMenuItem.Text = "&Truncate Movie";
 			this.TruncateMenuItem.Click += new System.EventHandler(this.TruncateMenuItem_Click);
 			// 
