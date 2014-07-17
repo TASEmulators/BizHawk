@@ -25,6 +25,8 @@ namespace BizHawk.Client.EmuHawk
 		private bool _originalRewindStatus; // The client rewind status before TAStudio was engaged (used to restore when disengaged)
 		private MovieEndAction _originalEndAction; // The movie end behavior selected by the user (that is overridden by TAStudio)
 
+		private int? StopFrame = null; // This is the frame Tastudio 
+
 		private Dictionary<string, string> GenerateColumnNames()
 		{
 			var lg = Global.MovieSession.LogGeneratorInstance();
@@ -292,25 +294,60 @@ namespace BizHawk.Client.EmuHawk
 			// If near a greenzone item, load and emulate
 			// Do capturing and recording as needed
 
-			var goToFrame = frame == 0 ? 0 : frame - 1;
-
-			if (_tas[goToFrame].HasState) // Go back 1 frame and emulate
+			if (frame < _tas.InputLogLength)
 			{
-				_tas.SwitchToPlay();
-				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_tas[goToFrame].State.ToArray())));
-
-				if (goToFrame > 0) // We can't emulate up to frame 0!
+				if (frame < Global.Emulator.Frame) // We are rewinding
 				{
-					Global.Emulator.FrameAdvance(true);
-				}
+					var goToFrame = frame == 0 ? 0 : frame - 1;
 
-				GlobalWin.DisplayManager.NeedsToPaint = true;
-				TasView.ensureVisible(frame);
-				RefreshDialog();
+					if (_tas[goToFrame].HasState) // Go back 1 frame and emulate
+					{
+						_tas.SwitchToPlay();
+						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_tas[goToFrame].State.ToArray())));
+
+						if (goToFrame > 0) // We can't emulate up to frame 0!
+						{
+							Global.Emulator.FrameAdvance(true);
+						}
+
+						GlobalWin.DisplayManager.NeedsToPaint = true;
+						TasView.ensureVisible(frame);
+						RefreshDialog();
+					}
+					else
+					{
+						_tas.SwitchToPlay();
+						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_tas[_tas.LastEmulatedFrame].State.ToArray())));
+						GlobalWin.MainForm.UnpauseEmulator();
+						StopFrame = frame;
+						// TODO: if turbo seek, ramp up the speed
+					}
+				}
+				else // We are going foward
+				{
+					var goToFrame = frame - 1;
+					if (_tas[goToFrame].HasState) // Can we go directly there?
+					{
+						_tas.SwitchToPlay();
+						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_tas[goToFrame].State.ToArray())));
+						Global.Emulator.FrameAdvance(true);
+						GlobalWin.DisplayManager.NeedsToPaint = true;
+						TasView.ensureVisible(frame);
+						RefreshDialog();
+					}
+					else // TODO: this assume that there are no "gaps", instead of last emulated frame, we should do last frame from X
+					{
+						_tas.SwitchToPlay();
+						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_tas[_tas.LastEmulatedFrame].State.ToArray())));
+						GlobalWin.MainForm.UnpauseEmulator();
+						StopFrame = frame;
+						// TODO: if turbo seek, ramp up the speed
+					}
+				}
 			}
-			else
+			else // Emulate to a future frame
 			{
-				// Find the earliest frame before this state
+				// TODO
 			}
 		}
 
