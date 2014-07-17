@@ -68,6 +68,7 @@ namespace BizHawk.Client.EmuHawk
 		public TAStudio()
 		{
 			InitializeComponent();
+			TasPlaybackBox.Tastudio = this;
 			MarkerControl.Tastudio = this;
 			TasView.QueryItemText += TasView_QueryItemText;
 			TasView.QueryItemBkColor += TasView_QueryItemBkColor;
@@ -313,6 +314,42 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		#region Playback Controls
+
+		public void GoToPreviousMarker()
+		{
+			var prevMarker = _tas.Markers.Previous(Global.Emulator.Frame);
+			var prev = prevMarker != null ? prevMarker.Frame : 0;
+			GoToFrame(prev);
+		}
+
+		public void GoToPreviousFrame()
+		{
+			if (Global.Emulator.Frame > 0)
+			{
+				GoToFrame(Global.Emulator.Frame - 1);
+			}
+		}
+
+		public void TogglePause()
+		{
+			GlobalWin.MainForm.PauseEmulator();
+		}
+
+		public void GoToNextFrame()
+		{
+			GoToFrame(Global.Emulator.Frame + 1);
+		}
+
+		public void GoToNextMarker()
+		{
+			var nextMarker = _tas.Markers.Next(Global.Emulator.Frame);
+			var next = nextMarker != null ? nextMarker.Frame : _tas.InputLogLength - 1;
+			GoToFrame(next);
+		}
+
+		#endregion
+
 		private void SetSplicer()
 		{
 			// TODO: columns selected
@@ -481,7 +518,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedIndices.Any())
 			{
-				var prevMarker = _tas.Markers.Previous(LastSelectedIndex);
+				var prevMarker = _tas.Markers.PreviousOrCurrent(LastSelectedIndex);
 				var nextMarker = _tas.Markers.Next(LastSelectedIndex);
 
 				int prev = prevMarker != null ? prevMarker.Frame : 0;

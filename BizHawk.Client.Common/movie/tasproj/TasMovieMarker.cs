@@ -122,6 +122,14 @@ namespace BizHawk.Client.Common
 		public TasMovieMarker Previous(int currentFrame)
 		{
 			return this
+				.Where(m => m.Frame < currentFrame)
+				.OrderBy(m => m.Frame)
+				.LastOrDefault();
+		}
+
+		public TasMovieMarker PreviousOrCurrent(int currentFrame)
+		{
+			return this
 				.Where(m => m.Frame <= currentFrame)
 				.OrderBy(m => m.Frame)
 				.LastOrDefault();
