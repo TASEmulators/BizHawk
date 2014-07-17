@@ -627,7 +627,7 @@ namespace BizHawk.Client.EmuHawk
 				Glide_decrease_fillrect_edge.Checked = Global.Game.GetBool("Glide_decrease_fillrect_edge", false);
 				Glide_detect_cpu_write.Checked = Global.Game.GetBool("Glide_detect_cpu_write", false);
 				Glide_fb_clear.Checked = Global.Game.GetBool("Glide_fb_clear", false);
-				Glide_fb_hires.Checked = Global.Game.GetBool("Glide_fb_clear", true);
+				Glide_fb_hires.Checked = Global.Game.GetBool("Glide_fb_hires", true);
 				Glide_fb_read_alpha.Checked = Global.Game.GetBool("Glide_fb_read_alpha", false);
 				Glide_fb_smart.Checked = Global.Game.GetBool("Glide_fb_smart", false);
 				Glide_fillcolor_fix.Checked = Global.Game.GetBool("Glide_fillcolor_fix", false);
