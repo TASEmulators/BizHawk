@@ -12,13 +12,14 @@ namespace BizHawk.Client.Common
 	public sealed partial class TasMovie : Bk2Movie
 	{
 		private List<bool> LagLog = new List<bool>();
-		private readonly TasStateManager StateManager = new TasStateManager();
+		private readonly TasStateManager StateManager;
 
 		public TasMovie(string path) : base(path) { }
 
 		public TasMovie()
 			: base()
 		{
+			StateManager = new TasStateManager(this);
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
 			Markers = new TasMovieMarkerList();
 			Markers.Add(0, StartsFromSavestate ? "Savestate" : "Power on");
@@ -228,6 +229,14 @@ namespace BizHawk.Client.Common
 
 				return 0;
 			}
+		}
+
+		/// <summary>
+		/// Captures the current frame into the greenzone
+		/// </summary>
+		public void CaptureCurrentState()
+		{
+			StateManager.Capture();
 		}
 	}
 }

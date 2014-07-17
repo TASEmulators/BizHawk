@@ -125,6 +125,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				NewTasMovie();
 				GlobalWin.MainForm.StartNewMovie(_tas, record: true);
+				_tas.CaptureCurrentState();
 			}
 
 			EngageTastudio();
@@ -289,11 +290,19 @@ namespace BizHawk.Client.EmuHawk
 			// If in greenzone, loadstate
 			// If near a greenzone item, load and emulate
 			// Do capturing and recording as needed
-			if (_tas[frame - 1].HasState) // Go back 1 frame and emulate
+
+			var goToFrame = frame == 0 ? 0 : frame - 1;
+
+			if (_tas[goToFrame].HasState) // Go back 1 frame and emulate
 			{
 				_tas.SwitchToPlay();
-				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_tas[frame].State.ToArray())));
-				Global.Emulator.FrameAdvance(true);
+				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_tas[goToFrame].State.ToArray())));
+
+				if (goToFrame > 0) // We can't emulate up to frame 0!
+				{
+					Global.Emulator.FrameAdvance(true);
+				}
+
 				GlobalWin.DisplayManager.NeedsToPaint = true;
 				TasView.ensureVisible(frame);
 				RefreshDialog();
