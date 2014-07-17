@@ -347,7 +347,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else // Emulate to a future frame
 			{
-				// TODO
+				// TODO: get the last greenzone frame and go there
+				_tas.SwitchToPlay(); // TODO: stop copy/pasting this logic
+				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_tas[_tas.LastEmulatedFrame].State.ToArray())));
+				GlobalWin.MainForm.UnpauseEmulator();
+				StopFrame = frame;
+				// TODO: if turbo seek, ramp up the speed
 			}
 		}
 
