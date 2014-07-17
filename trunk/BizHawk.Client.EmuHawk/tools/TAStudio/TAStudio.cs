@@ -333,7 +333,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void TogglePause()
 		{
-			GlobalWin.MainForm.PauseEmulator();
+			GlobalWin.MainForm.TogglePause();
 		}
 
 		public void GoToNextFrame()
