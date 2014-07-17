@@ -15,8 +15,11 @@ namespace BizHawk.Client.Common
 	{
 		private readonly SortedDictionary<int, byte[]> States = new SortedDictionary<int, byte[]>();
 
-		public TasStateManager()
+		private readonly TasMovie _movie;
+
+		public TasStateManager(TasMovie movie)
 		{
+			_movie = movie;
 			Settings = new ManagerSettings();
 		}
 
@@ -31,6 +34,11 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
+				if (frame == 0 && _movie.StartsFromSavestate)
+				{
+					return _movie.BinarySavestate;
+				}
+
 				if (States.ContainsKey(frame))
 				{
 					return States[frame];
