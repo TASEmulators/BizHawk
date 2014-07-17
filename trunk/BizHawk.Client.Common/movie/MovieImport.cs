@@ -123,6 +123,10 @@ namespace BizHawk.Client.Common
 					case ".ZMV":
 						m = ImportZMV(path, out errorMsg, out warningMsg);
 						break;
+					case ".BKM":
+						m.Filename = path;
+						m.Load();
+						break;
 				}
 			}
 			catch (Exception except)
