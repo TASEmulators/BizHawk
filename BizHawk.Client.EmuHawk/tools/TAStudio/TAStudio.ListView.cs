@@ -159,6 +159,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_MouseDown(object sender, MouseEventArgs e)
 		{
+			if (e.Button == MouseButtons.Middle)
+			{
+				TogglePause();
+				return;
+			}
+
 			if (TasView.PointedCell.Row.HasValue && !string.IsNullOrEmpty(TasView.PointedCell.Column))
 			{
 				if (e.Button == MouseButtons.Left)
