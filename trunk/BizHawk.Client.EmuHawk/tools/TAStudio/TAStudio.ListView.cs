@@ -246,15 +246,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_MouseWheel(object sender, MouseEventArgs e)
 		{
-			if (_rightMouseHeld)
+			if (_rightMouseHeld && TasView.PointedCell.Row.HasValue)
 			{
 				if (e.Delta < 0)
 				{
-					GoToFrame(Global.Emulator.Frame);
+					GoToFrame(Global.Emulator.Frame + 1);
 				}
 				else
 				{
-					GoToFrame(Global.Emulator.Frame - 2);
+					GoToFrame(Global.Emulator.Frame - 1);
 				}
 			}
 		}
