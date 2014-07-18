@@ -15,7 +15,6 @@ namespace BizHawk.Client.EmuHawk
 		private float _floatPaintState;
 		private bool _startMarkerDrag;
 		private bool _startFrameDrag;
-		private bool _rightMouseHeld = false;
 
 		private readonly Color CurrentFrame_FrameCol = Color.FromArgb(0xCFEDFC);
 		private readonly Color CurrentFrame_InputLog = Color.FromArgb(0xB5E7F7);
@@ -199,10 +198,6 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 				}
-				else if (e.Button == MouseButtons.Right)
-				{
-					_rightMouseHeld = true;
-				}
 			}
 		}
 
@@ -241,12 +236,11 @@ namespace BizHawk.Client.EmuHawk
 			_startBoolDrawColumn = string.Empty;
 			_startFloatDrawColumn = string.Empty;
 			_floatPaintState = 0;
-			_rightMouseHeld = false;
 		}
 
 		private void TasView_MouseWheel(object sender, MouseEventArgs e)
 		{
-			if (_rightMouseHeld && TasView.PointedCell.Row.HasValue)
+			if (TasView.RightButtonHeld && TasView.PointedCell.Row.HasValue)
 			{
 				if (e.Delta < 0)
 				{

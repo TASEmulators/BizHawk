@@ -18,6 +18,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public bool RightButtonHeld { get; set; }
+
 		public int? LastSelectedIndex
 		{
 			get
@@ -127,16 +129,24 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			if (InputPaintingMode)
+			if (e.Button == MouseButtons.Left && InputPaintingMode)
 			{
 				IsPaintDown = true;
 			}
+
+			if (e.Button == MouseButtons.Right)
+			{
+				RightButtonHeld = true;
+			}
+
 			base.OnMouseDown(e);
 		}
 
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			IsPaintDown = false;
+			RightButtonHeld = false;
+
 			base.OnMouseUp(e);
 		}
 	}
