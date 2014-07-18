@@ -281,7 +281,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (e.NewCell.Row.HasValue)
 				{
-					GoToFrame(e.NewCell.Row.Value - 1);
+					GoToFrame(e.NewCell.Row.Value);
 				}
 			}
 			else if (_startFrameDrag)
