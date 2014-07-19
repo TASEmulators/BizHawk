@@ -403,13 +403,9 @@ namespace BizHawk.Client.Common
 								nextEmulator = c64;
 								break;
 							case "GBA":
-								if (VersionInfo.DeveloperBuild)
-								{
-									var gba = new GBA(nextComm);
-									gba.Load(rom.RomData);
-									nextEmulator = gba;
-								}
-
+								var gba = new GBA(nextComm);
+								gba.Load(rom.RomData);
+								nextEmulator = gba;
 								break;
 							case "N64":
 								nextEmulator = new N64(nextComm, game, rom.RomData,
