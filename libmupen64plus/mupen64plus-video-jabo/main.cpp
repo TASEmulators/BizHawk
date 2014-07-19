@@ -45,6 +45,13 @@ static int l_PluginInit = 0;
 HMODULE JaboDLL;
 HWND hWnd_jabo;
 
+HMODULE D3D8Dll;
+
+typedef void (*ptr_D3D8_SetRenderingCallback)(void (*callback)(int));
+ptr_D3D8_SetRenderingCallback D3D8_SetRenderingCallback = NULL;
+typedef void (*ptr_D3D8_ReadScreen)(void *dest, int *width, int *height);
+ptr_D3D8_ReadScreen D3D8_ReadScreen = NULL;
+
 void setup_jabo_functions()
 {
 	JaboDLL = LoadLibrary("Jabotard_Direct3D8.dll");
@@ -66,6 +73,13 @@ void setup_jabo_functions()
 		OldAPI::UpdateScreen = (OldAPI::ptr_UpdateScreen)GetProcAddress(JaboDLL,"UpdateScreen");
 		OldAPI::DllConfig = (OldAPI::ptr_DllConfig)GetProcAddress(JaboDLL,"DllConfig");
 		OldAPI::GetDllInfo = (OldAPI::ptr_GetDllInfo)GetProcAddress(JaboDLL,"GetDllInfo");
+	}
+
+	D3D8Dll = LoadLibrary("D3D8.dll");
+	if (D3D8Dll != NULL)
+	{
+		D3D8_SetRenderingCallback = (ptr_D3D8_SetRenderingCallback)GetProcAddress(D3D8Dll,"SetRenderingCallback");
+		D3D8_ReadScreen = (ptr_D3D8_ReadScreen)GetProcAddress(D3D8Dll,"ReadScreen");
 	}
 }
 
@@ -250,6 +264,7 @@ EXPORT int CALL InitiateGFX(GFX_INFO Gfx_Info)
 	blah.CheckInterrupts = Gfx_Info.CheckInterrupts;
 
 	OldAPI::InitiateGFX(blah);
+	OldAPI::DllConfig(hWnd_jabo);
 
     return(TRUE);
 }
@@ -300,6 +315,10 @@ EXPORT void CALL ViWidthChanged(void)
 EXPORT void CALL ReadScreen2(void *dest, int *width, int *height, int bFront)
 {
 	LOG("API WRAPPER:\t ReadScreen2")
+	if (D3D8_ReadScreen != NULL)
+	{
+		D3D8_ReadScreen(dest, width, height);
+	}
 	//*width = 800;
 	//*height = 600;
 }
@@ -308,6 +327,10 @@ EXPORT void CALL ReadScreen2(void *dest, int *width, int *height, int bFront)
 EXPORT void CALL SetRenderingCallback(void (*callback)(int))
 {
 	LOG("API WRAPPER:\t SetRenderingCallback")
+	if (D3D8_SetRenderingCallback != NULL)
+	{
+		D3D8_SetRenderingCallback(callback);
+	}
 }
 
 // IMPLEMENT LATER?
