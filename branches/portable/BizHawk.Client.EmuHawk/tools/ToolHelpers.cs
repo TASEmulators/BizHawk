@@ -160,12 +160,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public static FileInfo GetCdlFileFromUser(string currentFile)
 		{
-			var ofd = new OpenFileDialog
-			{
-				Filter = "Code Data Logger Files (*.cdl)|*.cdl|All Files|*.*",
-				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null),
-				RestoreDirectory = true
-			};
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
+			ofd.Filter = "Code Data Logger Files (*.cdl)|*.cdl|All Files|*.*";
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null);
+			ofd.RestoreDirectory = true;
 
 			if (!string.IsNullOrWhiteSpace(currentFile))
 			{

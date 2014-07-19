@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk.config
 
 		private void btnSelectUserFilter_Click(object sender, EventArgs e)
 		{
-			var ofd = new OpenFileDialog();
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
 			ofd.Filter = ".CGP (*.cgp)|*.cgp";
 			ofd.FileName = PathSelection;
 			if (ofd.ShowDialog() == DialogResult.OK)

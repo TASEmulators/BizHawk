@@ -399,7 +399,7 @@ namespace BizHawk.Client.EmuHawk
 		public string OpenFile(string fileName = null, string initialDirectory = null, string filter = "All files (*.*)|*.*")
 		{
 			// filterext format ex: "Image Files(*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*"
-			var openFileDialog1 = new OpenFileDialog();
+			var openFileDialog1 = HawkDialogFactory.CreateOpenFileDialog();
 			if (initialDirectory != null)
 			{
 				openFileDialog1.InitialDirectory = initialDirectory;
