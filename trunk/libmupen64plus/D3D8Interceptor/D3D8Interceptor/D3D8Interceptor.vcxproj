@@ -102,9 +102,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\d3d8Wrapper.cpp" />
-    <ClCompile Include="..\Direct3D8Device8Functions.cpp" />
+    <ClCompile Include="..\Direct3DDevice8Functions.cpp" />
     <ClCompile Include="..\Direct3D8Functions.cpp" />
-    <ClCompile Include="..\Direct3DBaseTextureFunctions.cpp" />
+    <ClCompile Include="..\Direct3DBaseTexture8Functions.cpp" />
     <ClCompile Include="..\Direct3DCubeTexture8Functions.cpp" />
     <ClCompile Include="..\Direct3DIndexBuffer8Functions.cpp" />
     <ClCompile Include="..\Direct3DResource8Functions.cpp" />
