@@ -1,4 +1,8 @@
-﻿namespace BizHawk.Client.Common.MovieConversionExtensions
+﻿using System;
+using BizHawk.Common.ReflectionExtensions;
+using BizHawk.Emulation.Common;
+
+namespace BizHawk.Client.Common.MovieConversionExtensions
 {
 	public static class MovieConversionExtensions
 	{
@@ -71,7 +75,50 @@
 				bk2.AppendFrame(input);
 			}
 
+			bk2.Save();
 			return bk2;
+		}
+
+		// TODO: This doesn't really belong here, but not sure where to put it
+		public static void PopulateWithDefaultHeaderValues(this IMovie movie, string author = null)
+		{
+			movie.Author = author ?? Global.Config.DefaultAuthor;
+			movie.EmulatorVersion = VersionInfo.GetEmuVersion();
+			movie.SystemID = Global.Game.System;
+
+			movie.SyncSettingsJson = ConfigService.SaveWithType(Global.Emulator.GetSyncSettings());
+
+			if (Global.Game != null)
+			{
+				movie.GameName = PathManager.FilesystemSafeName(Global.Game);
+				movie.Hash = Global.Game.Hash;
+				if (Global.Game.FirmwareHash != null)
+				{
+					movie.FirmwareHash = Global.Game.FirmwareHash;
+				}
+			}
+			else
+			{
+				movie.GameName = "NULL";
+			}
+
+			if (Global.Emulator.BoardName != null)
+			{
+				movie.BoardName = Global.Emulator.BoardName;
+			}
+
+			if (Global.Emulator.HasPublicProperty("DisplayType"))
+			{
+				var region = Global.Emulator.GetPropertyValue("DisplayType");
+				if ((DisplayType)region == DisplayType.PAL)
+				{
+					movie.HeaderEntries.Add(HeaderKeys.PAL, "1");
+				}
+			}
+
+			movie.Core = ((CoreAttributes)Attribute
+				.GetCustomAttribute(Global.Emulator.GetType(), typeof(CoreAttributes)))
+				.CoreName;
 		}
 	}
 }

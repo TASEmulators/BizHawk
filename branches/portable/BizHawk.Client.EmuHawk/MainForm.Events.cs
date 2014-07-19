@@ -237,6 +237,11 @@ namespace BizHawk.Client.EmuHawk
 				= SaveMovieMenuItem.Enabled
 				= Global.MovieSession.Movie.IsActive;
 
+			PlayMovieMenuItem.Enabled =
+				RecordMovieMenuItem.Enabled =
+				RecentMovieSubMenu.Enabled =
+				!Global.MovieSession.Movie.IsActive;
+
 			ReadonlyMenuItem.Checked = Global.MovieSession.ReadOnly;
 			AutomaticallyBackupMoviesMenuItem.Checked = Global.Config.EnableBackupMovies;
 			FullMovieLoadstatesMenuItem.Checked = Global.Config.VBAStyleMovieLoadState;
@@ -251,13 +256,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RecentMovieSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			RecentMenuItem.DropDownItems.Clear();
-			RecentMenuItem.DropDownItems.AddRange(
+			RecentMovieSubMenu.DropDownItems.Clear();
+			RecentMovieSubMenu.DropDownItems.AddRange(
 				ToolHelpers.GenerateRecentMenu(Global.Config.RecentMovies, LoadMoviesFromRecent)
 			);
-			RecentMenuItem.DropDownItems.Add(
+			RecentMovieSubMenu.DropDownItems.Add(
 				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentMovies)
 			);
+		}
+
+		private void MovieEndSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			MovieEndFinishMenuItem.Checked = Global.Config.MovieEndAction == MovieEndAction.Finish;
+			MovieEndRecordMenuItem.Checked = Global.Config.MovieEndAction == MovieEndAction.Record;
+			MovieEndStopMenuItem.Checked = Global.Config.MovieEndAction == MovieEndAction.Stop;
+			MovieEndPauseMenuItem.Checked = Global.Config.MovieEndAction == MovieEndAction.Pause;
 		}
 
 		private void AVSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -443,7 +456,7 @@ namespace BizHawk.Client.EmuHawk
 			ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
 			ofd.Multiselect = true;
 			ofd.Filter = FormatFilter(
-				"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.ymv;*.zmv;",
+					"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.ymv;*.zmv;*.bkm",
 				"FCEUX", "*.fm2",
 				"PCEjin/Mednafen", "*.mc2;*.mcm",
 				"Dega", "*.mmv",
@@ -455,9 +468,10 @@ namespace BizHawk.Client.EmuHawk
 				"VirtuaNES", "*.vmv",
 				"Nintendulator", "*.nmv",
 				"Snes9x", "*.smv",
-				"Yabause", "*.ymv",
+					"Yabause", "*.ymv",
 				"ZSNES", "*.zmv",
-				"All Files", "*.*");
+					"BizHawk Bkm", "*.bkm",
+					"All Files", "*.*");
 			ofd.RestoreDirectory = false;
 
 			var result = ofd.ShowHawkDialog();
@@ -490,14 +504,34 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.VBAStyleMovieLoadState ^= true;
 		}
 
+		private void MovieEndFinishMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.MovieEndAction = MovieEndAction.Finish;
+		}
+
+		private void MovieEndRecordMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.MovieEndAction = MovieEndAction.Record;
+		}
+
+		private void MovieEndStopMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.MovieEndAction = MovieEndAction.Stop;
+		}
+
+		private void MovieEndPauseMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.MovieEndAction = MovieEndAction.Pause;
+		}
+
 		private void RecordAVMenuItem_Click(object sender, EventArgs e)
 		{
-			this.RecordAv();
+			RecordAv();
 		}
 
 		private void StopAVMenuItem_Click(object sender, EventArgs e)
 		{
-			this.StopAv();
+			StopAv();
 		}
 
 		private void SynclessRecordingMenuItem_Click(object sender, EventArgs e)
@@ -794,19 +828,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SavestateTypeMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			SavestateTypeDefaultMenuItem.Checked = false;
-			SavestateBinaryMenuItem.Checked = false;
-			SavestateTextMenuItem.Checked = false;
-			switch (Global.Config.SaveStateType)
-			{
-				case Config.SaveStateTypeE.Binary: SavestateBinaryMenuItem.Checked = true; break;
-				case Config.SaveStateTypeE.Text: SavestateTextMenuItem.Checked = true; break;
-				case Config.SaveStateTypeE.Default: SavestateTypeDefaultMenuItem.Checked = true; break;
-			}
-		}
-
 		private void CoresSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
@@ -978,21 +999,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config.Input_Hotkey_OverrideOptions = 2;
 			UpdateKeyPriorityIcon();
-		}
-
-		private void SavestateTypeDefaultMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveStateType = Config.SaveStateTypeE.Default;
-		}
-
-		private void SavestateBinaryMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveStateType = Config.SaveStateTypeE.Binary;
-		}
-
-		private void SavestateTextMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveStateType = Config.SaveStateTypeE.Text;
 		}
 
 		private void GBInSGBMenuItem_Click(object sender, EventArgs e)

@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common
 			get { return _mode == Moviemode.Finished; }
 		}
 
-		public void StartNewRecording()
+		public virtual void StartNewRecording()
 		{
 			_mode = Moviemode.Record;
 			if (Global.Config.EnableBackupMovies && _makeBackup && _log.Any())
@@ -69,12 +69,9 @@ namespace BizHawk.Client.Common
 			_mode = Moviemode.Inactive;
 		}
 
-		private void Finish()
+		public void FinishedMode()
 		{
-			if (_mode == Moviemode.Play)
-			{
-				_mode = Moviemode.Finished;
-			}
+			_mode = Moviemode.Finished;
 		}
 	}
 }

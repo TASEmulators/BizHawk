@@ -3,8 +3,9 @@ using System.IO;
 using System.Windows.Forms;
 
 using BizHawk.Common.ReflectionExtensions;
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Client.Common;
+using BizHawk.Client.Common.MovieConversionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -84,46 +85,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				// Header
-
-				movieToRecord.Author = AuthorBox.Text;
-				movieToRecord.EmulatorVersion = VersionInfo.GetEmuVersion();
-				movieToRecord.Platform = Global.Game.System;
-
-				movieToRecord.SyncSettingsJson = ConfigService.SaveWithType(Global.Emulator.GetSyncSettings());
-
-				if (Global.Game != null)
-				{
-					movieToRecord.GameName = PathManager.FilesystemSafeName(Global.Game);
-					movieToRecord.Hash = Global.Game.Hash;
-					if (Global.Game.FirmwareHash != null)
-					{
-						movieToRecord.FirmwareHash = Global.Game.FirmwareHash;
-					}
-				}
-				else
-				{
-					movieToRecord.GameName = "NULL";
-				}
-
-				if (Global.Emulator.BoardName != null)
-				{
-					movieToRecord.BoardName = Global.Emulator.BoardName;
-				}
-
-				if (Global.Emulator.HasPublicProperty("DisplayType"))
-				{
-					var region = Global.Emulator.GetPropertyValue("DisplayType");
-					if ((DisplayType)region == DisplayType.PAL)
-					{
-						movieToRecord.HeaderEntries.Add(HeaderKeys.PAL, "1");
-					}
-				}
-
-				movieToRecord.Core = ((CoreAttributes)Attribute
-					.GetCustomAttribute(Global.Emulator.GetType(), typeof(CoreAttributes)))
-					.CoreName;
-
+				movieToRecord.PopulateWithDefaultHeaderValues(AuthorBox.Text);
 				movieToRecord.Save();
 				GlobalWin.MainForm.StartNewMovie(movieToRecord, true);
 

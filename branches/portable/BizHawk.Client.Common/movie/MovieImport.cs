@@ -123,6 +123,10 @@ namespace BizHawk.Client.Common
 					case ".ZMV":
 						m = ImportZMV(path, out errorMsg, out warningMsg);
 						break;
+					case ".BKM":
+						m.Filename = path;
+						m.Load();
+						break;
 				}
 			}
 			catch (Exception except)
@@ -930,7 +934,7 @@ namespace BizHawk.Client.Common
 				fs.Close();
 				return null;
 			}
-			m.Header[HeaderKeys.PLATFORM] = "Genesis";
+			m.Header[HeaderKeys.PLATFORM] = "GEN";
 			// 00F ASCII-encoded GMV file format version. The most recent is 'A'. (?)
 			string version = r.ReadStringFixedAscii(1);
 			m.Comments.Add(MOVIEORIGIN + " .GMV version " + version);

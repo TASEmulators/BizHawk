@@ -215,6 +215,11 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.Load<PceBgViewer>();
 		}
 
+		private void PceSoundDebuggerButton_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<PCESoundDebugger>();
+		}
+
 		private void GbaGpuViewerToolBarItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<GBAGPUView>();

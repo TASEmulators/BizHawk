@@ -111,6 +111,7 @@ namespace BizHawk.Client.Common
 				BinarySavestate = Convert.FromBase64String(Header.SavestateBinaryBase64Blob);
 
 			Loaded = true;
+			_changes = false;
 			return true;
 		}
 
@@ -258,6 +259,8 @@ namespace BizHawk.Client.Common
 					}
 				}
 			}
+
+			_changes = false;
 		}
 	}
 }

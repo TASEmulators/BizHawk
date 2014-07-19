@@ -79,7 +79,6 @@
 			this.ProfileSelectComboBox.Name = "ProfileSelectComboBox";
 			this.ProfileSelectComboBox.Size = new System.Drawing.Size(156, 21);
 			this.ProfileSelectComboBox.TabIndex = 2;
-			this.ProfileSelectComboBox.SelectedIndexChanged += new System.EventHandler(this.ProfileSelectComboBox_SelectedIndexChanged);
 			// 
 			// SaveScreenshotStatesCheckBox
 			// 

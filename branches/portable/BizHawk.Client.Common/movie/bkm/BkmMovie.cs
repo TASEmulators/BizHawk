@@ -75,36 +75,6 @@ namespace BizHawk.Client.Common
 
 		#region Public Log Editing
 
-		public string GetInput(int frame)
-		{
-			if (frame < FrameCount && frame >= 0)
-			{
-
-				int getframe;
-
-				if (_loopOffset.HasValue)
-				{
-					if (frame < _log.Count)
-					{
-						getframe = frame;
-					}
-					else
-					{
-						getframe = ((frame - _loopOffset.Value) % (_log.Count - _loopOffset.Value)) + _loopOffset.Value;
-					}
-				}
-				else
-				{
-					getframe = frame;
-				}
-
-				return _log[getframe];
-			}
-
-			Finish();
-			return string.Empty;
-		}
-
 		public IController GetInputState(int frame)
 		{
 			if (frame < FrameCount && frame >= 0)
@@ -136,7 +106,6 @@ namespace BizHawk.Client.Common
 				return adapter;
 			}
 
-			Finish();
 			return null;
 		}
 

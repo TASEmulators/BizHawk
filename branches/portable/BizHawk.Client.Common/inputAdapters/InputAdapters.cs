@@ -66,6 +66,18 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public void SetBool(string button, bool value)
+		{
+			if (value)
+			{
+				_pressed.Remove(button);
+			}
+			else
+			{
+				_pressed.Add(button);
+			}
+		}
+
 		private readonly HashSet<string> _pressed = new HashSet<string>();
 	}
 

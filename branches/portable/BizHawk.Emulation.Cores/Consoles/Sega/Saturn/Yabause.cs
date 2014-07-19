@@ -781,7 +781,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			}
 			public SaturnSyncSettings()
 			{
-				SettingsUtil.SetDefaultValues<SaturnSyncSettings>(this);
+				SettingsUtil.SetDefaultValues(this);
 			}
 		}
 	}

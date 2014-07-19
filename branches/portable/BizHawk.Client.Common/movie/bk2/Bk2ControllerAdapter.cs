@@ -41,7 +41,18 @@ namespace BizHawk.Client.Common
 
 		public bool this[string button]
 		{
-			get { return MyBoolButtons[button]; }
+			get
+			{
+				return MyBoolButtons[button];
+			}
+
+			set
+			{
+				if (MyBoolButtons.ContainsKey(button))
+				{
+					MyBoolButtons[button] = value;
+				}
+			}
 		}
 
 		public bool IsPressed(string button)
@@ -145,6 +156,11 @@ namespace BizHawk.Client.Common
 		}
 
 		#endregion
+
+		public void SetFloat(string buttonName, float value)
+		{
+			MyFloatControls[buttonName] = value;
+		}
 
 		public class Bk2ControllerDefinition : ControllerDefinition
 		{

@@ -5,6 +5,8 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
+	public enum MovieEndAction { Stop, Pause, Record, Finish }
+
 	public class MovieSession
 	{
 		private readonly MultitrackRecording _multiTrack = new MultitrackRecording();
@@ -22,6 +24,16 @@ namespace BizHawk.Client.Common
 		public bool ReadOnly { get; set; }
 		public Action<string> MessageCallback { get; set; }
 		public Func<string, string, bool> AskYesNoCallback { get; set; }
+
+		/// <summary>
+		/// Required
+		/// </summary>
+		public Action PauseCallback { get; set; }
+
+		/// <summary>
+		/// Required
+		/// </summary>
+		public Action ModeChangedCallback { get; set; }
 
 		/// <summary>
 		/// Simply shortens the verbosity necessary otherwise
@@ -103,19 +115,44 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void LatchInputFromLog()
 		{
-			var input = Movie.GetInput(Global.Emulator.Frame);
-
-			// Attempting to get a frame past the end of a movie changes the mode to finished
-			if (!Movie.IsFinished)
+			if (Global.Emulator.Frame < Movie.InputLogLength - (Global.Config.MovieEndAction == MovieEndAction.Pause ? 1 : 0)) // Pause logic is a hack for now
 			{
-				MovieControllerAdapter.SetControllersAsMnemonic(input);
+				var input = Movie.GetInputState(Global.Emulator.Frame);
+				MovieControllerAdapter.LatchFromSource(input);
+			}
+			else
+			{
+				HandlePlaybackEnd();
 			}
 		}
 
-		public void MovieLoad()
+		private void HandlePlaybackEnd()
 		{
-			Movie.Load();
+			// TODO: mainform callback to update on mode change
+			switch(Global.Config.MovieEndAction)
+			{
+				case MovieEndAction.Stop:
+					Movie.Stop();
+					break;
+				case MovieEndAction.Record:
+					Movie.SwitchToRecord();
+					break;
+				case MovieEndAction.Pause:
+					PauseCallback(); // TODO: one frame ago
+					break;
+				default:
+				case MovieEndAction.Finish:
+					Movie.FinishedMode();
+					break;
+			}
+
+			ModeChangedCallback();
+		}
+
+		public bool MovieLoad()
+		{
 			MovieControllerAdapter = Movie.LogGeneratorInstance().MovieControllerAdapter;
+			return Movie.Load();
 		}
 
 		public void StopMovie(bool saveChanges = true)

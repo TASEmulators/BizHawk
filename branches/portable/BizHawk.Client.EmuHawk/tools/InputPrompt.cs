@@ -14,12 +14,10 @@ namespace BizHawk.Client.EmuHawk
 		public InputPrompt()
 		{
 			InitializeComponent();
-			UserText = string.Empty;
 			StartLocation = new Point(-1, -1);
 		}
 
 		public enum InputType { Hex, Unsigned, Signed, Text }
-		public bool UserOk { get; set; } // Will be true if the user selects Ok
 		public string UserText { get; set; } // What the user selected
 		public Point StartLocation { get; set; }
 		public InputType TextInputType { get; set; }
@@ -54,14 +52,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Ok_Click(object sender, EventArgs e)
 		{
-			UserOk = true;
+			DialogResult = DialogResult.OK;
 			UserText = PromptBox.Text;
 			Close();
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			UserOk = false;
+			DialogResult = DialogResult.Cancel;
 			Close();
 		}
 

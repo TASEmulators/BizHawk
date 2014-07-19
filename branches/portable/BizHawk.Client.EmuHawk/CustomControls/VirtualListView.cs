@@ -813,6 +813,24 @@ namespace BizHawk.Client.EmuHawk
 			this.EndUpdate();
 		}
 
+		public void DeselectAll()
+		{
+			this.BeginUpdate();
+			SelectAllInProgress = true;
+
+			for (var i = 0; i < _itemCount; i++)
+			{
+				if (i == _itemCount - 1)
+				{
+					SelectAllInProgress = false;
+				}
+
+				this.SelectItem(i, false);
+			}
+
+			this.EndUpdate();
+		}
+
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) // Select All

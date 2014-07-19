@@ -8,7 +8,7 @@ namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie
 	{
-		private readonly List<string> _log = new List<string>();
+		protected readonly List<string> _log = new List<string>();
 		private string _logKey = string.Empty;
 
 		public string GetInputLog()
@@ -263,7 +263,7 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		private StringBuilder RawInputLog()
+		protected StringBuilder RawInputLog()
 		{
 			var lg = new Bk2LogEntryGenerator(_logKey);
 			lg.SetSource(Global.MovieOutputHardpoint);

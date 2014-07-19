@@ -495,6 +495,7 @@
     <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\GamePad360.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\Input.cs" />
+    <Compile Include="IControlMainform.cs" />
     <Compile Include="JumpLists.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="LogConsole.cs" />
     <Compile Include="LogWindow.cs">
@@ -820,6 +821,24 @@
     <Compile Include="tools\TAStudio\BookmarksBranchesBox.Designer.cs">
       <DependentUpon>BookmarksBranchesBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\TAStudio\FramesPrompt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\FramesPrompt.Designer.cs">
+      <DependentUpon>FramesPrompt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\TAStudio\GreenzoneSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\GreenzoneSettings.Designer.cs">
+      <DependentUpon>GreenzoneSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\TAStudio\HeaderEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\HeaderEditor.Designer.cs">
+      <DependentUpon>HeaderEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\TAStudio\HistoryBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -832,7 +851,14 @@
     <Compile Include="tools\TAStudio\LuaBox.Designer.cs">
       <DependentUpon>LuaBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\TAStudio\Marker.cs" />
+    <Compile Include="tools\TAStudio\TAStudio.IControlMainForm.cs">
+      <DependentUpon>TAStudio.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\TAStudio.IToolForm.cs">
+      <DependentUpon>TAStudio.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="tools\TAStudio\MarkerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -857,18 +883,17 @@
     <Compile Include="tools\TAStudio\RecorderBox.Designer.cs">
       <DependentUpon>RecorderBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\TAStudio\SplicerBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\SplicerBox.Designer.cs">
-      <DependentUpon>SplicerBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\TAStudio\TAStudio.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="tools\TAStudio\TAStudio.Designer.cs">
       <DependentUpon>TAStudio.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\TAStudio\TAStudio.ListView.cs">
+      <DependentUpon>TAStudio.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\TAStudioClipboard.cs" />
     <Compile Include="tools\TI83\TI83KeyPad.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1231,6 +1256,15 @@
     <EmbeddedResource Include="tools\TAStudio\BookmarksBranchesBox.resx">
       <DependentUpon>BookmarksBranchesBox.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="tools\TAStudio\FramesPrompt.resx">
+      <DependentUpon>FramesPrompt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\TAStudio\GreenzoneSettings.resx">
+      <DependentUpon>GreenzoneSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\TAStudio\HeaderEditor.resx">
+      <DependentUpon>HeaderEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\HistoryBox.resx">
       <DependentUpon>HistoryBox.cs</DependentUpon>
     </EmbeddedResource>
@@ -1248,9 +1282,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\RecorderBox.resx">
       <DependentUpon>RecorderBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\SplicerBox.resx">
-      <DependentUpon>SplicerBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\TAStudio.resx">
       <DependentUpon>TAStudio.cs</DependentUpon>

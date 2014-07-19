@@ -34,6 +34,10 @@ static uint32_t bitmap_data_[1024 * 512];
 static int16 soundbuffer[4096];
 static int nsamples;
 
+int cinterface_render_bga = 1;
+int cinterface_render_bgb = 1;
+int cinterface_render_bgw = 1;
+
 #define GPGX_EX __declspec(dllexport)
 
 static int vwidth;
@@ -529,6 +533,13 @@ GPGX_EX void gpgx_set_mem_callback(void (*read)(unsigned), void (*write)(unsigne
 	biz_readcb = read;
 	biz_writecb = write;
 	biz_execcb = exec;
+}
+
+GPGX_EX void gpgx_set_draw_mask(int mask)
+{
+	cinterface_render_bga = !!(mask & 1);
+	cinterface_render_bgb = !!(mask & 2);
+	cinterface_render_bgw = !!(mask & 4);
 }
 
 typedef struct

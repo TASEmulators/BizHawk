@@ -277,5 +277,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int gpgx_getregs([Out] RegisterInfo[] regs);
+
+		[Flags]
+		public enum DrawMask : int
+		{
+			BGA = 1,
+			BGB = 2,
+			BGW = 4
+		}
+
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gpgx_set_draw_mask(DrawMask mask);
 	}
 }

@@ -9,6 +9,8 @@ namespace BizHawk.Client.Common
 	public class Bk2LogEntryGenerator : ILogEntryGenerator
 	{
 		private readonly Bk2MnemonicConstants Mnemonics = new Bk2MnemonicConstants();
+		private readonly Bk2FloatConstants FloatLookup = new Bk2FloatConstants();
+
 		private IController _source;
 		private readonly string _logKey = string.Empty;
 
@@ -95,7 +97,14 @@ namespace BizHawk.Client.Common
 			{
 				foreach (var button in group)
 				{
-					dict.Add(button, Mnemonics[button].ToString()); // TODO: floats should be a float lookup that returns a string, floats by convention should always be more than one character to distinguish from boolean input
+					if (_source.Type.BoolButtons.Contains(button))
+					{
+						dict.Add(button, Mnemonics[button].ToString());
+					}
+					else if (_source.Type.FloatControls.Contains(button))
+					{
+						dict.Add(button, FloatLookup[button]);
+					}
 				}
 			}
 

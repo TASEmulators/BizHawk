@@ -73,6 +73,7 @@ namespace BizHawk.Client.EmuHawk
 			ret.RequestGLContext = () => GlobalWin.GLManager.CreateGLContext();
 			ret.ActivateGLContext = (gl) => GlobalWin.GLManager.Activate((GLManager.ContextRef)gl);
 			ret.DeactivateGLContext = () => GlobalWin.GLManager.Deactivate();
+			ret.DispSnowyNullEmulator = () => Global.Config.DispSnowyNullEmulator;
 			return ret;
 		}
 
@@ -91,7 +92,9 @@ namespace BizHawk.Client.EmuHawk
 				Movie = MovieService.DefaultInstance,
 				MovieControllerAdapter = MovieService.DefaultInstance.LogGeneratorInstance().MovieControllerAdapter,
 				MessageCallback = GlobalWin.OSD.AddMessage,
-				AskYesNoCallback = StateErrorAskUser
+				AskYesNoCallback = StateErrorAskUser,
+				PauseCallback = PauseEmulator,
+				ModeChangedCallback = SetMainformMovieInfo
 			};
 
 			new AutoResetEvent(false);
@@ -402,6 +405,11 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.RecentPceCdlFiles.AutoLoad && Global.Emulator is PCEngine)
 			{
 				GlobalWin.Tools.Load<PCECDL>();
+			}
+
+			if (Global.Config.PceSoundDebuggerAutoload && Global.Emulator is PCEngine)
+			{
+				GlobalWin.Tools.Load<PCESoundDebugger>();
 			}
 
 			if (Global.Config.GenVdpAutoLoad && Global.Emulator is GPGX)
@@ -920,8 +928,11 @@ namespace BizHawk.Client.EmuHawk
 					//(this could be determined with more work; other side affects of the fullscreen mode include: corrupted taskbar, no modal boxes on top of GL control, no screenshots)
 					//At any rate, we can solve this by adding a 1px black border around the GL control
 					//Please note: It is important to do this before resizing things, otherwise momentarily a GL control without WS_BORDER will be at the magic dimensions and cause the flakeout
-					Padding = new Padding(1);
-					BackColor = Color.Black;
+					if (Global.Config.DispFullscreenHacks)
+					{
+						Padding = new Padding(1);
+						BackColor = Color.Black;
+					}
 				#endif
 
 				_windowedLocation = Location;
@@ -942,6 +953,7 @@ namespace BizHawk.Client.EmuHawk
 				WindowState = FormWindowState.Normal;
 
 				#if WINDOWS
+					//do this even if DispFullscreenHacks arent enabled, to restore it in case it changed underneath us or something
 					Padding = new Padding(0);
 					//it's important that we set the form color back to this, because the statusbar icons blend onto the mainform, not onto the statusbar--
 					//so we need the statusbar and mainform backdrop color to match
@@ -1909,16 +1921,23 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.DisplayInput ^= true;
 		}
 
-		private static void ToggleReadOnly()
+		private void ToggleReadOnly()
 		{
-			if (Global.MovieSession.Movie.IsActive)
+			if (IsSlave && _master.WantsToControlReadOnly)
 			{
-				Global.MovieSession.ReadOnly ^= true;
-				GlobalWin.OSD.AddMessage(Global.MovieSession.ReadOnly ? "Movie read-only mode" : "Movie read+write mode");
+				_master.ToggleReadOnly();
 				}
 				else
 				{
-				GlobalWin.OSD.AddMessage("No movie active");
+				if (Global.MovieSession.Movie.IsActive)
+				{
+					Global.MovieSession.ReadOnly ^= true;
+					GlobalWin.OSD.AddMessage(Global.MovieSession.ReadOnly ? "Movie read-only mode" : "Movie read+write mode");
+				}
+				else
+				{
+					GlobalWin.OSD.AddMessage("No movie active");
+				}
 			}
 		}
 
@@ -2509,29 +2528,20 @@ namespace BizHawk.Client.EmuHawk
 				runFrame = true;
 			}
 
-			// TODO: mostly likely this will need to be whacked, if not then refactor
-			var returnToRecording = Global.MovieSession.Movie.IsRecording;
-			if (Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind))
+			bool isRewinding = false;
+			if (Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind) 
+				&& !Global.MovieSession.Movie.IsRecording) // Rewind isn't "bulletproof" and can desync a recoridng movie!
 			{
 				Global.Rewinder.Rewind(1);
 				suppressCaptureRewind = true;
 
 				runFrame = Global.Rewinder.Count != 0;
-
-				// we don't want to capture input when rewinding, even in record mode
-				if (Global.MovieSession.Movie.IsRecording)
-				{
-					Global.MovieSession.Movie.SwitchToPlay();
-				}
+				isRewinding = true;
 			}
 
 			if (UpdateFrame)
 			{
 				runFrame = true;
-				if (Global.MovieSession.Movie.IsRecording)
-				{
-					Global.MovieSession.Movie.SwitchToPlay();
-				}
 			}
 
 			var genSound = false;
@@ -2575,7 +2585,18 @@ namespace BizHawk.Client.EmuHawk
 				if (updateFpsString)
 				{
 					var fps_string = _runloopLastFps + " fps";
-					if (isTurboing)
+					if (isRewinding)
+					{
+						if (isTurboing || isFastForwarding)
+						{
+							fps_string += " <<<<";
+						}
+						else
+						{
+							fps_string += " <<";
+						}
+					}
+					else if (isTurboing)
 					{
 						fps_string += " >>>>";
 					}
@@ -2640,21 +2661,11 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.ClientControls["Rewind"] || PressRewind)
 			{
 				UpdateToolsAfter();
-				if (returnToRecording)
-				{
-					Global.MovieSession.Movie.SwitchToRecord();
-				}
-
 				PressRewind = false;
 			}
 
 			if (UpdateFrame)
 			{
-				if (returnToRecording)
-				{
-					Global.MovieSession.Movie.SwitchToRecord();
-				}
-
 				UpdateFrame = false;
 			}
 
@@ -3066,7 +3077,8 @@ namespace BizHawk.Client.EmuHawk
 			// the new settings objects
 			CommitCoreSettingsToConfig(); // adelikat: I Think by reordering things, this isn't necessary anymore
 			CloseGame();
-			Global.Emulator.Dispose();
+			
+			//Global.Emulator.Dispose(); // CloseGame() already killed and disposed the emulator; this is killing the new one; that's bad
 
 			var nextComm = CreateCoreComm();
 				CoreFileProvider.SyncCoreCommInputSignals(nextComm);
@@ -3150,6 +3162,7 @@ namespace BizHawk.Client.EmuHawk
 				UpdateStatusSlots();
 				UpdateCoreStatusBarButton();
 				UpdateDumpIcon();
+				SetMainformMovieInfo();
 
 				Global.Rewinder.CaptureRewindState();
 
@@ -3247,6 +3260,8 @@ namespace BizHawk.Client.EmuHawk
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
 
+			RewireSound();
+
 			// adelikat: TODO: Ugly hack! But I don't know a way around this yet.
 			if (!(Global.MovieSession.Movie is TasMovie))
 			{
@@ -3289,6 +3304,20 @@ namespace BizHawk.Client.EmuHawk
 			MovieImport.ProcessMovieImport(fn, ShowConversionError, GlobalWin.OSD.AddMessage);
 		}
 
+		public void EnableRewind(bool enabled)
+		{
+			if (enabled)
+			{
+				Global.Rewinder.RewindActive = true;
+				GlobalWin.OSD.AddMessage("Rewind enabled");
+			}
+			else
+			{
+				Global.Rewinder.RewindActive = false;
+				GlobalWin.OSD.AddMessage("Rewind suspended");
+			}
+		}
+
 		#endregion
 
 		private void GBcoreSettingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3321,7 +3350,21 @@ namespace BizHawk.Client.EmuHawk
 			ProfileFirstBootLabel.Visible = false;
 	}
 
-		
+		// TODO: move me
+		private IControlMainform _master;
+		public void RelinquishControl(IControlMainform master)
+		{
+			_master = master;
+		}
 
+		private bool IsSlave
+		{
+			get { return _master != null; }
+		}
+
+		public void TakeControl()
+		{
+			_master = null;
+		}
 	}
 }

@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.Common
 
 		public string BoardName { get { return null; } }
 
+		bool frameBufferClear = true;
 		private readonly int[] frameBuffer = new int[256 * 192];
 		private readonly Random rand = new Random();
 		public CoreComm CoreComm { get; private set; }
@@ -46,14 +47,23 @@ namespace BizHawk.Emulation.Common
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			if (render == false) return;
-			for (int i = 0; i < 256 * 192; i++)
+			if (!CoreComm.DispSnowyNullEmulator())
 			{
-				byte b = (byte)rand.Next();
-				if (xmas)
-					frameBuffer[i] = Colors.ARGB(b, (byte)(255 - b), 0, 255);
-				else
-					frameBuffer[i] = Colors.Luminosity((byte) rand.Next());
+				if (frameBufferClear) return;
+				frameBufferClear = true;
+				Array.Clear(frameBuffer, 0, 256 * 192);
+				return;
 			}
+			frameBufferClear = false;
+			if (xmas)
+				for (int i = 0; i < 256 * 192; i++)
+				{
+					byte b = (byte)rand.Next();
+					frameBuffer[i] = Colors.ARGB(b, (byte)(255 - b), 0, 255);
+				}
+			else 
+				for (int i = 0; i < 256 * 192; i++)
+					frameBuffer[i] = Colors.Luminosity((byte) rand.Next());
 		}
 		public ControllerDefinition ControllerDefinition { get { return NullController; } }
 		public IController Controller { get; set; }
@@ -99,6 +109,8 @@ namespace BizHawk.Emulation.Common
 		{
 			nsamp = 735;
 			samples = sampbuff;
+			if (!CoreComm.DispSnowyNullEmulator())
+				return;
 			if (xmas)
 				pleg.Generate(samples);
 		}
@@ -109,6 +121,8 @@ namespace BizHawk.Emulation.Common
 
 		public void GetSamples(short[] samples)
 		{
+			if (!CoreComm.DispSnowyNullEmulator())
+				return;
 			if (xmas)
 				pleg.Generate(samples);
 		}

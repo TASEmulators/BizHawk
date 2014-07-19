@@ -10,17 +10,21 @@ namespace BizHawk.Client.EmuHawk
 {
 	partial class MainForm
 	{
-		public void StartNewMovie(IMovie movie, bool record, bool fromTastudio = false) //TasStudio flag is a hack for now
+		public void StartNewMovie(IMovie movie, bool record)
 		{
+			if (!record) // The semantics of record is that we are starting a new movie, and even wiping a pre-existing movie with the same path, but non-record means we are loading an existing movie into playback mode
+			{
+				movie.Load();
+			}
+
 			if (movie.SystemID != Global.Emulator.SystemId)
 			{
 				GlobalWin.OSD.AddMessage("Movie does not match the currently loaded system, unable to load");
 				return;
 			}
 
-
 			//If a movie is already loaded, save it before starting a new movie
-			if (!fromTastudio && Global.MovieSession.Movie.IsActive)
+			if (Global.MovieSession.Movie.IsActive && !string.IsNullOrEmpty(Global.MovieSession.Movie.Filename))
 			{
 				Global.MovieSession.Movie.Save();
 			}
@@ -30,14 +34,16 @@ namespace BizHawk.Client.EmuHawk
 				Movie = movie,
 				MovieControllerAdapter = movie.LogGeneratorInstance().MovieControllerAdapter,
 				MessageCallback = GlobalWin.OSD.AddMessage,
-				AskYesNoCallback = StateErrorAskUser
+				AskYesNoCallback = StateErrorAskUser,
+				PauseCallback = PauseEmulator,
+				ModeChangedCallback = SetMainformMovieInfo
 			};
 
 			InputManager.RewireInputChain();
 
 			if (!record)
 			{
-				Global.MovieSession.MovieLoad();
+				Global.MovieSession.MovieLoad(); // TODO this loads it a 2nd time, ugh
 			}
 
 			try
@@ -80,10 +86,7 @@ namespace BizHawk.Client.EmuHawk
 				this._syncSettingsHack = null;
 			}
 
-			if (!fromTastudio)
-			{
-				Global.Config.RecentMovies.Add(movie.Filename);
-			}
+			Global.Config.RecentMovies.Add(movie.Filename);
 
 			if (Global.MovieSession.Movie.StartsFromSavestate)
 			{
@@ -93,25 +96,17 @@ namespace BizHawk.Client.EmuHawk
 					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.BinarySavestate, false)));
 			}
 
-			if (!fromTastudio)
+			if (record)
 			{
-				if (record)
-				{
-					Global.MovieSession.Movie.StartNewRecording();
-					Global.MovieSession.ReadOnly = false;
-				}
-				else
-				{
-					Global.MovieSession.Movie.StartNewPlayback();
-				}
+				Global.MovieSession.Movie.StartNewRecording();
+				Global.MovieSession.ReadOnly = false;
+			}
+			else
+			{
+				Global.MovieSession.Movie.StartNewPlayback();
 			}
 
 			SetMainformMovieInfo();
-
-			if (!fromTastudio)
-			{
-				GlobalWin.Tools.Restart<TAStudio>();
-			}
 
 			GlobalWin.Tools.Restart<VirtualpadTool>();
 			GlobalWin.DisplayManager.NeedsToPaint = true;
@@ -174,8 +169,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public void StopMovie(bool saveChanges = true)
 		{
-			Global.MovieSession.StopMovie(saveChanges);
-			SetMainformMovieInfo();
+			if (IsSlave && _master.WantsToCOntrolStopMovie)
+			{
+				_master.StopMovie();
+			}
+			else
+			{
+				Global.MovieSession.StopMovie(saveChanges);
+				SetMainformMovieInfo();
+			}
 		}
 	}
 }

@@ -128,9 +128,13 @@ namespace BizHawk.Client.Common
 					}
 				},
 				{
-					"TI-83",
+					"TI83",
 					new Dictionary<string, char>
 					{
+						{ "UP", 'U'},
+						{ "DOWN", 'D'},
+						{ "LEFT", 'L'},
+						{ "RIGHT", 'R'},
 						{ "DOT", '`' },
 						{ "ON", 'O' },
 						{ "ENTER", '=' },

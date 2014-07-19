@@ -34,7 +34,7 @@ namespace BizHawk.Client.Common
 		public virtual string PreferredExtension { get { return Extension; } }
 		public const string Extension = "bk2";
 
-		public bool Changes { get; private set; }
+		public bool Changes { get; protected set; }
 		public bool IsCountingRerecords { get; set; }
 
 		public ILogEntryGenerator LogGeneratorInstance()
@@ -70,7 +70,7 @@ namespace BizHawk.Client.Common
 			Changes = true;
 		}
 
-		public void RecordFrame(int frame, IController source)
+		public virtual void RecordFrame(int frame, IController source)
 		{
 			if (Global.Config.VBAStyleMovieLoadState)
 			{
@@ -87,43 +87,13 @@ namespace BizHawk.Client.Common
 			Changes = true;
 		}
 
-		public void Truncate(int frame)
+		public virtual void Truncate(int frame)
 		{
 			if (frame < _log.Count)
 			{
 				_log.RemoveRange(frame, _log.Count - frame);
 				Changes = true;
 			}
-		}
-
-		public string GetInput(int frame)
-		{
-			if (frame < FrameCount && frame >= 0)
-			{
-
-				int getframe;
-
-				if (LoopOffset.HasValue)
-				{
-					if (frame < _log.Count)
-					{
-						getframe = frame;
-					}
-					else
-					{
-						getframe = ((frame - LoopOffset.Value) % (_log.Count - LoopOffset.Value)) + LoopOffset.Value;
-					}
-				}
-				else
-				{
-					getframe = frame;
-				}
-
-				return _log[getframe];
-			}
-
-			Finish();
-			return string.Empty;
 		}
 
 		public IController GetInputState(int frame)
@@ -158,11 +128,10 @@ namespace BizHawk.Client.Common
 				return adapter;
 			}
 
-			Finish();
 			return null;
 		}
 
-		public void PokeFrame(int frame, IController source)
+		public virtual void PokeFrame(int frame, IController source)
 		{
 			var lg = LogGeneratorInstance();
 			lg.SetSource(source);
@@ -171,9 +140,12 @@ namespace BizHawk.Client.Common
 			SetFrameAt(frame, lg.GenerateLogEntry());
 		}
 
-		public void ClearFrame(int frame)
+		public virtual void ClearFrame(int frame)
 		{
-			SetFrameAt(frame, LogGeneratorInstance().EmptyEntry);
+			var lg = LogGeneratorInstance();
+			lg.SetSource(Global.MovieSession.MovieControllerInstance());
+			SetFrameAt(frame, lg.EmptyEntry);
+			Changes = true;
 		}
 
 		#endregion

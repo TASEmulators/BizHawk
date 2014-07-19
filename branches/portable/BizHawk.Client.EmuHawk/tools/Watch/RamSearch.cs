@@ -914,9 +914,9 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.SelectedIndices.Clear();
 			var prompt = new InputPrompt { Text = "Go to Address", StartLocation = GetPromptPoint() };
 			prompt.SetMessage("Enter a hexadecimal value");
-			prompt.ShowHawkDialog();
+			var result = prompt.ShowHawkDialog();
 
-			if (prompt.UserOk)
+			if (result == DialogResult.OK)
 			{
 				if (prompt.UserText.IsHex())
 				{

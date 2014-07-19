@@ -112,6 +112,7 @@
     <Compile Include="movie\bk2\Bk2ControllerAdapter.cs" />
     <Compile Include="movie\bk2\Bk2Header.cs" />
     <Compile Include="movie\bk2\Bk2LogEntryGenerator.cs" />
+    <Compile Include="movie\bk2\Bk2FloatConstants.cs" />
     <Compile Include="movie\bk2\Bk2MnemonicConstants.cs" />
     <Compile Include="movie\bk2\Bk2Movie.cs" />
     <Compile Include="movie\bk2\Bk2Movie.HeaderApi.cs" />
@@ -139,9 +140,12 @@
     <Compile Include="movie\PlatformFrameRates.cs" />
     <Compile Include="movie\Subtitle.cs" />
     <Compile Include="movie\SubtitleList.cs" />
-    <Compile Include="movie\tasproj\MovieRecord.cs" />
-    <Compile Include="movie\tasproj\MovieRecordList.cs" />
+    <Compile Include="movie\tasproj\TasMovie.Editing.cs" />
+    <Compile Include="movie\tasproj\TasMovie.IO.cs" />
     <Compile Include="movie\tasproj\TasMovie.cs" />
+    <Compile Include="movie\tasproj\TasMovieMarker.cs" />
+    <Compile Include="movie\tasproj\TasStateManager.cs" />
+    <Compile Include="movie\tasproj\TasMovieRecord.cs" />
     <Compile Include="NESGameGenieEncoderDecoder.cs" />
     <Compile Include="PathManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

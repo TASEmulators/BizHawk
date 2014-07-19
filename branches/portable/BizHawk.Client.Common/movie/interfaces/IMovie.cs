@@ -58,7 +58,6 @@ namespace BizHawk.Client.Common
 		string Hash { get; set; }
 		string Author { get; set; }
 		string Core { get; set; }
-		string Platform { get; set; }
 		string EmulatorVersion { get; set; }
 		string FirmwareHash { get; set; }
 		string BoardName { get; set; }
@@ -158,6 +157,11 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		void SwitchToPlay();
 
+		/// <summary>
+		/// Tells the movie to go into "Finished" mode, where the user resumes control of input but the movie is still loaded in memory
+		/// </summary>
+		void FinishedMode();
+
 		#endregion
 
 		#region Editing API
@@ -191,14 +195,6 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <param name="frame">The frame at which to truncate</param>
 		void Truncate(int frame);
-
-		/// <summary>
-		/// Gets a single frame of input from the movie at the given frame
-		/// The input will be in the same format as represented in the input log when saved as a file
-		/// </summary>
-		/// <param name="frame">The frame of input to be retrieved</param>
-		/// <returns>a string representation of a log entry from the input log file itself</returns>
-		string GetInput(int frame);
 
 		/// <summary>
 		/// Gets a single frame of input via a controller state

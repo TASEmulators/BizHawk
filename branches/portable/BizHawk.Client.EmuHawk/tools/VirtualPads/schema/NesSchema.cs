@@ -510,7 +510,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				DisplayName = "Zapper",
+				DisplayName = "Tablet",
 				IsConsole = false,
 				DefaultSize = new Size(356, 260),
 				MaxSize = new Size(356, 260),
