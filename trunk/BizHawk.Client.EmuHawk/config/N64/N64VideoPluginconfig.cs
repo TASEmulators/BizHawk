@@ -101,6 +101,7 @@ namespace BizHawk.Client.EmuHawk
 				case "Rice": ss.VidPlugin = PLUGINTYPE.RICE; break;
 				case "Glide64": ss.VidPlugin = PLUGINTYPE.GLIDE; break;
 				case "Glide64mk2": ss.VidPlugin = PLUGINTYPE.GLIDE64MK2; break;
+				case "Jabo 1.6.1": ss.VidPlugin = PLUGINTYPE.JABO; break;
 			}
 
 			//Rice
@@ -358,6 +359,7 @@ namespace BizHawk.Client.EmuHawk
 				case PLUGINTYPE.GLIDE64MK2: PluginComboBox.Text = "Glide64mk2"; break;
 				case PLUGINTYPE.GLIDE: PluginComboBox.Text = "Glide64"; break;
 				case PLUGINTYPE.RICE: PluginComboBox.Text = "Rice"; break;
+				case PLUGINTYPE.JABO: PluginComboBox.Text = "Jabo 1.6.1"; break;
 			}
 
 			//Rice
