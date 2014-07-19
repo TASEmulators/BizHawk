@@ -155,6 +155,7 @@ namespace BizHawk.Client.EmuHawk
 			MarkerControl.Markers = _tas.Markers;
 			GlobalWin.MainForm.EnableRewind(false);
 			Global.Config.MovieEndAction = MovieEndAction.Record;
+			GlobalWin.MainForm.SetMainformMovieInfo();
 		}
 
 		private void DisengageTastudio()
@@ -164,6 +165,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm.TakeControl();
 			GlobalWin.MainForm.EnableRewind(_originalRewindStatus);
 			Global.Config.MovieEndAction = _originalEndAction;
+			GlobalWin.MainForm.SetMainformMovieInfo();
 		}
 
 		private void NewTasMovie()

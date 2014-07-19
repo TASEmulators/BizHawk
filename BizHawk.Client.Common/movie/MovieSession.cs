@@ -180,6 +180,8 @@ namespace BizHawk.Client.Common
 				Output(message);
 				ReadOnly = true;
 			}
+
+			ModeChangedCallback();
 		}
 
 		public void HandleMovieSaveState(TextWriter writer)
