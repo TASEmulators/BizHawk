@@ -84,7 +84,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 		{
 			movie.Author = author ?? Global.Config.DefaultAuthor;
 			movie.EmulatorVersion = VersionInfo.GetEmuVersion();
-			movie.SystemID = Global.Game.System;
+			movie.SystemID = Global.Emulator.SystemId;
 
 			movie.SyncSettingsJson = ConfigService.SaveWithType(Global.Emulator.GetSyncSettings());
 
