@@ -453,6 +453,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GlobalWin.DisplayManager.NeedsToPaint = true;
 			};
+
+			SetMainformMovieInfo();
 		}
 
 		public void ProgramRunLoop()
