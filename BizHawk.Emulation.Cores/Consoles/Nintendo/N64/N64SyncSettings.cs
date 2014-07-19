@@ -61,6 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public N64RicePluginSettings RicePlugin = new N64RicePluginSettings();
 		public N64GlidePluginSettings GlidePlugin = new N64GlidePluginSettings();
 		public N64Glide64mk2PluginSettings Glide64mk2Plugin = new N64Glide64mk2PluginSettings();
+		public N64JaboPluginSettings JaboPlugin = new N64JaboPluginSettings();
 
 		public N64SyncSettings Clone()
 		{
@@ -72,6 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				RicePlugin = RicePlugin.Clone(),
 				GlidePlugin = GlidePlugin.Clone(),
 				Glide64mk2Plugin = Glide64mk2Plugin.Clone(),
+				JaboPlugin = JaboPlugin.Clone(),
 				Controllers = System.Array.ConvertAll(Controllers, a => a.Clone())
 			};
 		}
@@ -87,6 +89,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				case PLUGINTYPE.GLIDE: ips = GlidePlugin.Clone(); break;
 				case PLUGINTYPE.GLIDE64MK2: ips = Glide64mk2Plugin.Clone(); break;
 				case PLUGINTYPE.RICE: ips = RicePlugin.Clone(); break;
+				case PLUGINTYPE.JABO: ips = JaboPlugin.Clone(); break;
 			}
 			ips.FillPerGameHacks(game);
 			ret.Parameters = ips.GetPluginSettings();
@@ -94,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		}
 	}
 
-	public enum PLUGINTYPE { RICE, GLIDE, GLIDE64MK2 };
+	public enum PLUGINTYPE { RICE, GLIDE, GLIDE64MK2, JABO };
 
 	public interface IPluginSettings
 	{
@@ -465,6 +468,39 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public N64Glide64mk2PluginSettings Clone()
 		{
 			return (N64Glide64mk2PluginSettings)MemberwiseClone();
+		}
+	}
+
+	public class N64JaboPluginSettings : IPluginSettings
+	{
+		[JsonIgnore]
+		public PLUGINTYPE PluginType
+		{
+			get { return PLUGINTYPE.JABO; }
+		}
+
+		public void FillPerGameHacks(GameInfo game)
+		{
+
+		}
+
+		public Dictionary<string, object> GetPluginSettings()
+		{
+			//TODO: deal witn the game depedent settings
+			var dictionary = new Dictionary<string, object>();
+			var members = this.GetType().GetFields();
+			foreach (var member in members)
+			{
+				var field = this.GetType().GetField(member.Name).GetValue(this);
+				dictionary.Add(member.Name, field);
+			}
+
+			return dictionary;
+		}
+
+		public N64JaboPluginSettings Clone()
+		{
+			return (N64JaboPluginSettings)MemberwiseClone();
 		}
 	}
 
