@@ -102,6 +102,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\d3d8Wrapper.cpp" />
+    <ClCompile Include="..\Direct3D8Device8Functions.cpp" />
+    <ClCompile Include="..\Direct3D8Functions.cpp" />
+    <ClCompile Include="..\Direct3DBaseTextureFunctions.cpp" />
+    <ClCompile Include="..\Direct3DCubeTexture8Functions.cpp" />
+    <ClCompile Include="..\Direct3DIndexBuffer8Functions.cpp" />
+    <ClCompile Include="..\Direct3DResource8Functions.cpp" />
+    <ClCompile Include="..\Direct3DSurface8Functions.cpp" />
+    <ClCompile Include="..\Direct3DSwapChain8Functions.cpp" />
+    <ClCompile Include="..\Direct3DTexture8Functions.cpp" />
+    <ClCompile Include="..\Direct3DVertexBuffer8Functions.cpp" />
+    <ClCompile Include="..\Direct3DVolume8Functions.cpp" />
+    <ClCompile Include="..\Direct3DVolumeTexture8Functions.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
