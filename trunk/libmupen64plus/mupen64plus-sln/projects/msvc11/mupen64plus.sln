@@ -18,6 +18,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mupen64plus-video-jabo", ".
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mupen64plus-video-glide64", "..\..\..\mupen64plus-video-glide64\projects\msvc10\mupen64plus-video-glide64.vcxproj", "{F3E6138A-C318-4020-B408-A9A24D8B3DE7}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "D3D8Interceptor", "..\..\..\D3D8Interceptor\D3D8Interceptor\D3D8Interceptor.vcxproj", "{4CC85A3A-8E85-45DB-8941-2E2E18FC9A53}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -60,6 +62,10 @@ Global
 		{F3E6138A-C318-4020-B408-A9A24D8B3DE7}.Debug|Win32.Build.0 = Debug|Win32
 		{F3E6138A-C318-4020-B408-A9A24D8B3DE7}.Release|Win32.ActiveCfg = Release|Win32
 		{F3E6138A-C318-4020-B408-A9A24D8B3DE7}.Release|Win32.Build.0 = Release|Win32
+		{4CC85A3A-8E85-45DB-8941-2E2E18FC9A53}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4CC85A3A-8E85-45DB-8941-2E2E18FC9A53}.Debug|Win32.Build.0 = Debug|Win32
+		{4CC85A3A-8E85-45DB-8941-2E2E18FC9A53}.Release|Win32.ActiveCfg = Release|Win32
+		{4CC85A3A-8E85-45DB-8941-2E2E18FC9A53}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
