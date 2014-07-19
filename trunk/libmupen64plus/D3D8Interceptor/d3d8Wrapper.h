@@ -1,9 +1,13 @@
-//#include <windows.h>
-#include <objidl.h>
-//#include <gdiplus.h>
-//using namespace Gdiplus;
-//#pragma comment (lib,"Gdiplus.lib")
+#pragma once
+
+#include <iostream>
+#include <fstream>
 #include "PointerSet.h"
+
+#pragma comment(linker, "/EXPORT:Direct3DCreate8=_Direct3DCreate8@4")
+
+//#define LOG(x) { std::ofstream myfile; myfile.open ("d3d8_wrapper_log.txt", std::ios::app); myfile << x << "\n"; myfile.close(); }
+#define LOG(x) 
 
 #define TESTDLL_API __declspec(dllexport) 
 
@@ -511,6 +515,8 @@ extern "C"
 		
 
 		typedef D3D8Base::IDirect3D8* (WINAPI *D3DCREATE)(UINT);
-		D3D8Wrapper::IDirect3D8* WINAPI Direct3DCreate8(UINT Version);
+		IDirect3D8* WINAPI Direct3DCreate8(UINT Version);
+		extern IDirect3DDevice8 *last_device;
+		extern void (*rendering_callback)( int );
 	}
 }
