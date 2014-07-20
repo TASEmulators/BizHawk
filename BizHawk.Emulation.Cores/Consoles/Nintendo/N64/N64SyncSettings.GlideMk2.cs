@@ -63,48 +63,176 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				get { return PluginType.GLIDE64MK2; }
 			}
 
+			[DefaultValue(true)]
+			[DisplayName("WrpFBO")]
 			public bool wrpFBO { get; set; }
+
+			[DefaultValue(0)]
+			[DisplayName("Card ID")]
 			public int card_id { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Use Sts1 Only")]
 			public bool use_sts1_only { get; set; }
+
+			[DefaultValue(true)]
+			[DisplayName("Optimize Text Rectangle")]
 			public bool optimize_texrect { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Increase Text Rectangle Edge")]
 			public bool increase_texrect_edge { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Ignore Aux Copy")]
 			public bool ignore_aux_copy { get; set; }
+
+			[DefaultValue(true)]
+			[DisplayName("High Res Buffer Clear")]
 			public bool hires_buf_clear { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Force Micro Check")]
 			public bool force_microcheck { get; set; }
+
+			[DefaultValue(true)]
+			[DisplayName("Fog")]
 			public bool fog { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Fb Smart")]
 			public bool fb_smart { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Fb Read Alpha")]
 			public bool fb_read_alpha { get; set; }
+
+			[DefaultValue(true)]
+			[DisplayName("Fb High Res")]
 			public bool fb_hires { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Detect CPU Write")]
 			public bool detect_cpu_write { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Decrease Fill Rectangle Edge")]
 			public bool decrease_fillrect_edge { get; set; }
+
+			[DefaultValue(true)]
+			[DisplayName("Buffer Clear")]
 			public bool buff_clear { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Alt Text Size")]
 			public bool alt_tex_size { get; set; }
+
+			[DefaultValue(1)]
+			[DisplayName("Swap Mode")]
 			public int swapmode { get; set; }
+
+			[DefaultValue(1041204192)]
+			[DisplayName("Stipple Pattern")]
 			public int stipple_pattern { get; set; }
+
+			[DefaultValue(2)]
+			[DisplayName("Stipple Mode")]
 			public int stipple_mode { get; set; }
+
+			[DefaultValue(0)]
+			[DisplayName("LOD Mode")]
 			public int lodmode { get; set; }
+
+			[DefaultValue(0)]
+			[DisplayName("Filtering")]
 			public int filtering { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Wrap Anisotropic")]
 			public bool wrpAnisotropic { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Correct Viewport")]
 			public bool correct_viewport { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Force Calc Sphere")]
 			public bool force_calc_sphere { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Pal230")]
 			public bool pal230 { get; set; }
+
+			[DefaultValue(true)]
+			[DisplayName("Texture Correction")]
 			public bool texture_correction { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("N64 Z Scale")]
 			public bool n64_z_scale { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Old Style Adither")]
 			public bool old_style_adither { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Z Mode Compare Less")]
 			public bool zmode_compare_less { get; set; }
+
+			[DefaultValue(true)]
+			[DisplayName("Adjust Aspect")]
 			public bool adjust_aspect { get; set; }
+
+			[DefaultValue(true)]
+			[DisplayName("Clip Z Max")]
 			public bool clip_zmax { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Clip Z Min")]
 			public bool clip_zmin { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Force Quad 3D")]
 			public bool force_quad3d { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Useless is Useless")]
 			public bool useless_is_useless { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Fb Read Always")]
 			public bool fb_read_always { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Fb Get Info")]
 			public bool fb_get_info { get; set; }
+
+			[DefaultValue(true)]
+			[DisplayName("Fb Render")]
 			public bool fb_render { get; set; }
+
+			[DefaultValue(0)]
+			[DisplayName("Aspect Mode")]
 			public int aspectmode { get; set; }
+
+			[DefaultValue(1)]
+			[DisplayName("Fb CRC Mode")]
 			public int fb_crc_mode { get; set; }
+
+			[DefaultValue(true)]
+			[DisplayName("Fast CRC")]
 			public bool fast_crc { get; set; }
+
+			[DefaultValue(0)]
+			[DisplayName("Use Default Hacks")]
 			public bool UseDefaultHacks { get; set; }
+
+			[DefaultValue(0)]
+			[DisplayName("Enable Hacks for Game")]
 			public int enable_hacks_for_game { get; set; }
+
+			[DefaultValue(0)]
+			[DisplayName("Read Back to Screen")]
 			public int read_back_to_screen { get; set; }
 
 			public N64Glide64mk2PluginSettings Clone()
