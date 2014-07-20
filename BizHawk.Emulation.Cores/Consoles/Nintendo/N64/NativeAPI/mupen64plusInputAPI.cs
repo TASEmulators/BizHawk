@@ -93,7 +93,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 				OnRumbleChange(Control, on);
 		}
 
-		public void SetM64PControllerPakType(int controller, N64ControllerSettings.N64ControllerPakType type)
+		public void SetM64PControllerPakType(int controller, N64SyncSettings.N64ControllerSettings.N64ControllerPakType type)
 		{
 			InpSetControllerPakType(controller, (int)type);
 		}
