@@ -39,23 +39,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			}
 
-			public Dictionary<string, object> GetPluginSettings()
-			{
-				//TODO: deal witn the game depedent settings
-				var dictionary = new Dictionary<string, object>();
-				var members = this.GetType().GetMembers();
-				foreach (var member in members)
-				{
-					if (member.MemberType == MemberTypes.Property)
-					{
-						var field = this.GetType().GetProperty(member.Name).GetValue(this, null);
-						dictionary.Add(member.Name, field);
-					}
-				}
-
-				return dictionary;
-			}
-
 			[DefaultValue(ANISOTROPIC_FILTERING_LEVEL.FourTimes)]
 			[DisplayName("Anisotropic filtering")]
 			[Description("Anisotropic filtering level")]

@@ -3,6 +3,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 using Newtonsoft.Json;
 using System.ComponentModel;
+using System.Reflection;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
@@ -113,7 +114,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 	public interface IPluginSettings
 	{
 		PluginType GetPluginType();
-		Dictionary<string, object> GetPluginSettings();
 		void FillPerGameHacks(GameInfo game);
+	}
+
+	public static class PluginExtensions
+	{
+		public static Dictionary<string, object> GetPluginSettings(this IPluginSettings plugin)
+		{
+			// TODO: deal witn the game depedent settings
+			var dictionary = new Dictionary<string, object>();
+			var members = plugin.GetType().GetMembers();
+			foreach (var member in members)
+			{
+				if (member.MemberType == MemberTypes.Property)
+				{
+					var field = plugin.GetType().GetProperty(member.Name).GetValue(plugin, null);
+					dictionary.Add(member.Name, field);
+				}
+			}
+
+			return dictionary;
+		}
 	}
 }
