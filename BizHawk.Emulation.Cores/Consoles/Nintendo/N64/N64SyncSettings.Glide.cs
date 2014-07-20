@@ -12,42 +12,42 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		{
 			public N64GlidePluginSettings()
 			{
-				WFMode = 1;
-				WireFrame = false;
-				CardId = 0;
-				FlameCorona = false;
-				UCode = 2;
-				AutodetectUCode = true;
-				MotionBlur = false;
-				FbReadAlways = false;
-				UnkAsRed = false;
-				FilterCache = false;
-				FastCRC = false;
-				DisableAuxBuf = false;
-				Fbo = false;
-				NoGlsl = true;
-				NoDitheredAlpha = true;
-				TexFilter = 0;
-				FbRender = false;
-				WrapBigTex = false;
-				UseSts1Only = false;
-				SoftDepthCompare = false;
+				wfmode = 1;
+				wireframe = false;
+				card_id = 0;
+				flame_corona = false;
+				ucode = 2;
+				autodetect_ucode = true;
+				motionblur = false;
+				fb_read_always = false;
+				unk_as_red = false;
+				filter_cache = false;
+				fast_crc = false;
+				disable_auxbuf = false;
+				fbo = false;
+				noglsl = true;
+				noditheredalpha = true;
+				tex_filter = 0;
+				fb_render = false;
+				wrap_big_tex = false;
+				use_sts1_only = false;
+				soft_depth_compare = false;
 				PPL = false;
-				FbOptimizeWrite = false;
-				FbOptimizeTexRect = true;
-				IncreaseTexRectEdge = false;
-				IncreasePrimDepth = false;
-				FbIgnorePrevious = false;
-				FbIgnoreAuxCopy = false;
-				FbHiResBufClear = true;
-				ForceMicroCheck = false;
-				ForceDepthCompare = false;
-				Fog = true;
-				FillColorFix = false;
-				FbSmart = false;
-				FbReadAlpha = false;
-				FbGetInfo = false;
-				FbHiRes = true;
+				fb_optimize_write = false;
+				fb_optimize_texrect = true;
+				increase_texrect_edge = false;
+				increase_primdepth = false;
+				fb_ignore_previous = false;
+				fb_ignore_aux_copy = false;
+				fb_hires_buf_clear = true;
+				force_microcheck = false;
+				force_depth_compare = false;
+				fog = true;
+				fillcolor_fix = false;
+				fb_smart = false;
+				fb_read_alpha = false;
+				fb_get_info = false;
+				fb_hires = true;
 				fb_clear = false;
 				detect_cpu_write = false;
 				decrease_fillrect_edge = false;
@@ -71,84 +71,84 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			[DefaultValue(1)]
 			[DisplayName("Wire Frame Mode")]
 			[Description("0=Normal colors, 1=Vertex colors, 2=Red only")]
-			public int WFMode { get; set; }
+			public int wfmode { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Wire Frame Display")]
-			public bool WireFrame { get; set; }
+			public bool wireframe { get; set; }
 
 			[DefaultValue(0)]
 			[DisplayName("Card ID")]
-			public int CardId { get; set; }
+			public int card_id { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Zelda corona fix")]
-			public bool FlameCorona { get; set; }
+			public bool flame_corona { get; set; }
 
 			[DefaultValue(2)]
 			[DisplayName("Force microcode")]
-			public int UCode { get; set; }
+			public int ucode { get; set; }
 
 			[DefaultValue(true)]
 			[DisplayName("Auto-detect microcode")]
-			public bool AutodetectUCode { get; set; }
+			public bool autodetect_ucode { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Motion Blur")]
-			public bool MotionBlur { get; set; }
+			public bool motionblur { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Framebuffer read every frame")]
-			public bool FbReadAlways { get; set; }
+			public bool fb_read_always { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Display unknown combines as red")]
-			public bool UnkAsRed { get; set; }
+			public bool unk_as_red { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Filter Cache")]
-			public bool FilterCache { get; set; }
+			public bool filter_cache { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Fast CRC")]
-			public bool FastCRC { get; set; }
+			public bool fast_crc { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Disable Aux Buffer")]
-			public bool DisableAuxBuf { get; set; }
+			public bool disable_auxbuf { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Use framebuffer objects")]
-			public bool Fbo { get; set; }
+			public bool fbo { get; set; }
 
 			[DefaultValue(true)]
 			[DisplayName("Disable GLSL combiners")]
-			public bool NoGlsl { get; set; }
+			public bool noglsl { get; set; }
 
 			[DefaultValue(true)]
 			[DisplayName("Disable dithered alpha")]
-			public bool NoDitheredAlpha { get; set; }
+			public bool noditheredalpha { get; set; }
 
 			[DefaultValue(0)]
 			[DisplayName("Texture Filter")]
 			[Description("0=None, 1=Blur edges, 2=Super 2xSai, 3=Hq2x, 4=Hq4x")]
-			public int TexFilter { get; set; }
+			public int tex_filter { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Framebuffer Render")] 
-			public bool FbRender { get; set; }
+			public bool fb_render { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Wrap textures too big for tmem")]
-			public bool WrapBigTex { get; set; }
+			public bool wrap_big_tex { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Use Sts1 Only")]
-			public bool UseSts1Only { get; set; }
+			public bool use_sts1_only { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Soft Depth Compare")]
-			public bool SoftDepthCompare { get; set; }
+			public bool soft_depth_compare { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("PPL")]
@@ -156,63 +156,63 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			[DefaultValue(false)]
 			[DisplayName("Framebuffer Optimize Write")]
-			public bool FbOptimizeWrite { get; set; }
+			public bool fb_optimize_write { get; set; }
 
 			[DefaultValue(true)]
 			[DisplayName("Framebuffer Optimize Texture Rectangle")]
-			public bool FbOptimizeTexRect { get; set; }
+			public bool fb_optimize_texrect { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Increase Texture Rectangle Edge")]
-			public bool IncreaseTexRectEdge { get; set; }
+			public bool increase_texrect_edge { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Increase Prim Depth")]
-			public bool IncreasePrimDepth { get; set; }
+			public bool increase_primdepth { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Framebuffer Ignore Previous")]
-			public bool FbIgnorePrevious { get; set; }
+			public bool fb_ignore_previous { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Framebuffer Ignore Aux Copy")]
-			public bool FbIgnoreAuxCopy { get; set; }
+			public bool fb_ignore_aux_copy { get; set; }
 
 			[DefaultValue(true)]
 			[DisplayName("Framebuffer High Resolution Buffer Clear")]
-			public bool FbHiResBufClear { get; set; }
+			public bool fb_hires_buf_clear { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Force Mirco Check")]
-			public bool ForceMicroCheck { get; set; }
+			public bool force_microcheck { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Force Depth Compare")]
-			public bool ForceDepthCompare { get; set; }
+			public bool force_depth_compare { get; set; }
 
 			[DefaultValue(true)]
 			[DisplayName("Fog Enabled")]
-			public bool Fog { get; set; }
+			public bool fog { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Fill Color Fix")]
-			public bool FillColorFix { get; set; }
+			public bool fillcolor_fix { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Smart Framebuffer")]
-			public bool FbSmart { get; set; }
+			public bool fb_smart { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Framebuffer Read Alpha")]
-			public bool FbReadAlpha { get; set; }
+			public bool fb_read_alpha { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Get Framebuffer Info")]
-			public bool FbGetInfo { get; set; }
+			public bool fb_get_info { get; set; }
 
 			[DefaultValue(true)]
 			[DisplayName("High Res Framebuffer")]
-			public bool FbHiRes { get; set; }
+			public bool fb_hires { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Clear Framebuffer")]
@@ -303,24 +303,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 					decrease_fillrect_edge = game.GetBool("Glide_decrease_fillrect_edge", false);
 					detect_cpu_write = game.GetBool("Glide_detect_cpu_write", false);
 					fb_clear = game.GetBool("Glide_fb_clear", false);
-					FbHiRes = game.GetBool("Glide_fb_clear", true);
-					FbReadAlpha = game.GetBool("Glide_fb_read_alpha", false);
-					FbSmart = game.GetBool("Glide_fb_smart", false);
-					FillColorFix = game.GetBool("Glide_fillcolor_fix", false);
-					Fog = game.GetBool("Glide_fog", true);
-					ForceDepthCompare = game.GetBool("Glide_force_depth_compare", false);
-					ForceMicroCheck = game.GetBool("Glide_force_microcheck", false);
-					FbHiResBufClear = game.GetBool("Glide_fb_hires_buf_clear", true);
-					FbIgnoreAuxCopy = game.GetBool("Glide_fb_ignore_aux_copy", false);
-					FbIgnorePrevious = game.GetBool("Glide_fb_ignore_previous", false);
-					IncreasePrimDepth = game.GetBool("Glide_increase_primdepth", false);
-					IncreaseTexRectEdge = game.GetBool("Glide_increase_texrect_edge", false);
-					FbOptimizeTexRect = game.GetBool("Glide_fb_optimize_texrect", true);
-					FbOptimizeWrite = game.GetBool("Glide_fb_optimize_write", false);
+					fb_hires = game.GetBool("Glide_fb_clear", true);
+					fb_read_alpha = game.GetBool("Glide_fb_read_alpha", false);
+					fb_smart = game.GetBool("Glide_fb_smart", false);
+					fillcolor_fix = game.GetBool("Glide_fillcolor_fix", false);
+					fog = game.GetBool("Glide_fog", true);
+					force_depth_compare = game.GetBool("Glide_force_depth_compare", false);
+					force_microcheck = game.GetBool("Glide_force_microcheck", false);
+					fb_hires_buf_clear = game.GetBool("Glide_fb_hires_buf_clear", true);
+					fb_ignore_aux_copy = game.GetBool("Glide_fb_ignore_aux_copy", false);
+					fb_ignore_previous = game.GetBool("Glide_fb_ignore_previous", false);
+					increase_primdepth = game.GetBool("Glide_increase_primdepth", false);
+					increase_texrect_edge = game.GetBool("Glide_increase_texrect_edge", false);
+					fb_optimize_texrect = game.GetBool("Glide_fb_optimize_texrect", true);
+					fb_optimize_write = game.GetBool("Glide_fb_optimize_write", false);
 					PPL = game.GetBool("Glide_PPL", false);
-					SoftDepthCompare = game.GetBool("Glide_soft_depth_compare", false);
-					UseSts1Only = game.GetBool("Glide_use_sts1_only", false);
-					WrapBigTex = game.GetBool("Glide_wrap_big_tex", false);
+					soft_depth_compare = game.GetBool("Glide_soft_depth_compare", false);
+					use_sts1_only = game.GetBool("Glide_use_sts1_only", false);
+					wrap_big_tex = game.GetBool("Glide_wrap_big_tex", false);
 
 					depth_bias = game.GetInt("Glide_depth_bias", 20);
 					filtering = game.GetInt("Glide_filtering", 1);
