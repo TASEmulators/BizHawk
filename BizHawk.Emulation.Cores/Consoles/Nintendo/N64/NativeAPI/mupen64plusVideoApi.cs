@@ -47,16 +47,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			switch (settings.Plugin)
 			{
 				default:
-				case PLUGINTYPE.RICE:
+				case PluginType.RICE:
 					videoplugin = "mupen64plus-video-rice.dll";
 					break;
-				case PLUGINTYPE.GLIDE:
+				case PluginType.GLIDE:
 					videoplugin = "mupen64plus-video-glide64.dll";
 					break;
-				case PLUGINTYPE.GLIDE64MK2:
+				case PluginType.GLIDE64MK2:
 					videoplugin = "mupen64plus-video-glide64mk2.dll";
 					break;
-				case PLUGINTYPE.JABO:
+				case PluginType.JABO:
 					videoplugin = "mupen64plus-video-jabo.dll";
 					break;
 			}
@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 	public class VideoPluginSettings
 	{
-		public PLUGINTYPE Plugin;
+		public PluginType Plugin;
 		//public Dictionary<string, int> IntParameters = new Dictionary<string,int>();
 		//public Dictionary<string, string> StringParameters = new Dictionary<string,string>();
 
@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		public int Height;
 		public int Width;
 
-		public VideoPluginSettings(PLUGINTYPE Plugin, int Width, int Height)
+		public VideoPluginSettings(PluginType Plugin, int Width, int Height)
 		{
 			this.Plugin = Plugin;
 			this.Width = Width;

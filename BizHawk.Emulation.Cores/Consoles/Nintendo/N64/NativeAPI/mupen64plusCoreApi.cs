@@ -475,15 +475,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		public void set_video_parameters(VideoPluginSettings video_settings)
 		{
 			IntPtr video_plugin_section = IntPtr.Zero;
-			if (video_settings.Plugin == PLUGINTYPE.RICE)
+			if (video_settings.Plugin == PluginType.RICE)
 			{
 				m64pConfigOpenSection("Video-Rice", ref video_plugin_section);
 			}
-			else if (video_settings.Plugin == PLUGINTYPE.GLIDE)
+			else if (video_settings.Plugin == PluginType.GLIDE)
 			{
 				m64pConfigOpenSection("Video-Glide64", ref video_plugin_section);
 			}
-			else if (video_settings.Plugin == PLUGINTYPE.GLIDE64MK2)
+			else if (video_settings.Plugin == PluginType.GLIDE64MK2)
 			{
 				m64pConfigOpenSection("Video-Glide64mk2", ref video_plugin_section);
 			}
