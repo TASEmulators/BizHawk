@@ -87,139 +87,186 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 
 			[DefaultValue(0)]
-			[DisplayName("Frame Buffer Setting")]
+			[DisplayName("Frame Buffer Emulation")]
+			// 0=ROM default, 1=disable
 			public int FrameBufferSetting { get; set; }
 
 			[DefaultValue(0)]
-			[DisplayName("Frame Buffer Write Back Control")]
+			[DisplayName("Frame Buffer Wrie Back Control")]
+			// Frequency to write back the frame buffer
+			// 0=every frame, 1=every other frame, etc
 			public int FrameBufferWriteBackControl { get; set; }
 
 			[DefaultValue(0)]
-			[DisplayName("Frame Buffer Write Back Control")]
+			[DisplayName("Render-to-texture emulation")]
+			// 0=none, 1=ignore, 2=normal, 3=write back, 4=write back and reload
 			public int RenderToTexture { get; set; }
 
 			[DefaultValue(4)]
 			[DisplayName("Screen Update Setting")]
+			// Control when the screen will be updated
+			// 0=ROM default, 1=VI origin update, 2=VI origin change,
+			// 3=CI change, 4=first CI change, 5=first primitive draw,
+			// 6=before screen clear, 7=after screen drawn
 			public int ScreenUpdateSetting { get; set; }
 
 			[DefaultValue(2)]
 			[DisplayName("Mip Mapping")]
+			// 0=no, 1=nearest, 2=bilinear, 3=trilinear
 			public int Mipmapping { get; set; }
 
 			[DefaultValue(0)]
 			[DisplayName("Fog Method")]
+			// 0=Disable, 1=Enable n64 choose, 2=Force Fog
 			public int FogMethod { get; set; }
 
 			[DefaultValue(0)]
 			[DisplayName("Force Texture Filter")]
+			// Force to use texture filtering or not
+			// 0=auto: n64 choose, 1=force no filtering, 2=force filtering
 			public int ForceTextureFilter { get; set; }
 
 			[DefaultValue(0)]
-			[DisplayName("Texture Enhancement")]
+			[DisplayName("Primary texture enhancement filter")]
+			// 0=None, 1=2X, 2=2XSAI, 3=HQ2X, 4=LQ2X, 5=HQ4X, 6=Sharpen, 7=Sharpen More, 8=External, 9=Mirrored
 			public int TextureEnhancement { get; set; }
 
 			[DefaultValue(0)]
-			[DisplayName("Texture Enhancement Control")]
+			[DisplayName("Secondary texture enhancement filter")]
+			// 0 = none, 1-4 = filtered
 			public int TextureEnhancementControl { get; set; }
 
 			[DefaultValue(0)]
 			[DisplayName("Texture Quality")]
+			// Color bit depth to use for textures
+			// 0=default, 1=32 bits, 2=16 bits
 			public int TextureQuality { get; set; }
 
 			[DefaultValue(16)]
 			[DisplayName("OpenGL Depth Buffer Setting")]
+			// Z-buffer depth (only 16 or 32)
 			public int OpenGLDepthBufferSetting { get; set; }
 
 			[DefaultValue(0)]
-			[DisplayName("Multi-sampling")]
+			[DisplayName("Enable/Disable MultiSampling")]
+			// 0=off, 2,4,8,16=quality
 			public int MultiSampling { get; set; }
 
 			[DefaultValue(0)]
 			[DisplayName("Color Quality")]
+			// Color bit depth for rendering window
+			// 0=32 bits, 1=16 bits
 			public int ColorQuality { get; set; }
 
 			[DefaultValue(0)]
 			[DisplayName("OpenGL Render Setting")]
+			// OpenGL level to support
+			// 0=auto, 1=OGL_1.1, 2=OGL_1.2, 3=OGL_1.3, 4=OGL_1.4,
+			// 5=OGL_1.4_V2, 6=OGL_TNT2, 7=NVIDIA_OGL, 8=OGL_FRAGMENT_PROGRAM
 			public int OpenGLRenderSetting { get; set; }
 
 			[DefaultValue(0)]
-			[DisplayName("Anisotropic Filter")]
+			[DisplayName("Anisotropic Filtering")]
+			// Enable/Disable Anisotropic Filtering for Mipmapping
+			// 0=no filtering, 2-16=quality
+			//This is uneffective if Mipmapping is 0. If the given value is to high to
+			// be supported by your graphic card, the value will be the highest value
+			//your graphic card can support. Better result with Trilinear filtering
 			public int AnisotropicFiltering { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Normal Alpha Blender")]
+			// Force to use normal alpha blender
 			public bool NormalAlphaBlender { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Fast Texture Loading")]
+			// Use a faster algorithm to speed up texture loading and CRC computation
 			public bool FastTextureLoading { get; set; }
 
 			[DefaultValue(true)]
 			[DisplayName("Accurate Texture Mapping")]
+			// Use different texture coordinate clamping code
 			public bool AccurateTextureMapping { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("In N64 Resolution")]
+			// Force emulated frame buffers to be in N64 native resolution
 			public bool InN64Resolution { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Save VRAM")]
+			// Try to reduce Video RAM usage (should never be used)
 			public bool SaveVRAM { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Double Size for Small Texture Buffer")]
+			// Enable this option to have better render-to-texture quality
 			public bool DoubleSizeForSmallTxtrBuf { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Default Combiner Disable")]
+			// Force to use normal color combiner
 			public bool DefaultCombinerDisable { get; set; }
 
 			[DefaultValue(true)]
 			[DisplayName("Enable Hacks")]
+			// Enable game-specific settings from INI file
 			public bool EnableHacks { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("WinFrame Mode")]
+			// If enabled, graphics will be drawn in WinFrame mode instead of solid and texture mode
 			public bool WinFrameMode { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Full TMEM Emulation")]
+			// N64 Texture Memory Full Emulation (may fix some games, may break others)
 			public bool FullTMEMEmulation { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("OpenGL Vertex Clipper")]
+			// Enable vertex clipper for fog operations
 			public bool OpenGLVertexClipper { get; set; }
 
 			[DefaultValue(true)]
 			[DisplayName("Enable SSE")]
+			//Enable/Disable SSE optimizations for capable CPUs
 			public bool EnableSSE { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Enable Vertex Shader")]
+			// Use GPU vertex shader
 			public bool EnableVertexShader { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Skip Frame")]
+			// If this option is enabled, the plugin will skip every other frame
 			public bool SkipFrame { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Text Rect Only")]
+			// If enabled, texture enhancement will be done only for TxtRect ucode
 			public bool TexRectOnly { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Small Texture Only")]
+			// If enabled, texture enhancement will be done only for textures width+height<=128
 			public bool SmallTextureOnly { get; set; }
 
 			[DefaultValue(true)]
 			[DisplayName("Load Hi Res CRC Only")]
+			// Select hi-resolution textures based only on the CRC and ignore format+size information (Glide64 compatibility)
 			public bool LoadHiResCRCOnly { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Load Hi Res Textures")]
+			// Enable hi-resolution texture file loading
 			public bool LoadHiResTextures { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Dump Textures to Files")]
+			// Enable texture dumping
 			public bool DumpTexturesToFiles { get; set; }
 
 			[DefaultValue(true)]

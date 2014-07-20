@@ -59,13 +59,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 
 			[JsonIgnore]
+			[DisplayName("Plugin Type")]
 			public PluginType PluginType
 			{
 				get { return PluginType.GLIDE64MK2; }
 			}
 
 			[DefaultValue(true)]
-			[DisplayName("WrpFBO")]
+			[DisplayName("Wrapper FBO")]
 			public bool wrpFBO { get; set; }
 
 			[DefaultValue(0)]
@@ -77,11 +78,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			public bool use_sts1_only { get; set; }
 
 			[DefaultValue(true)]
-			[DisplayName("Optimize Text Rectangle")]
+			[DisplayName("Optimize Texture Rectangle")]
 			public bool optimize_texrect { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Increase Text Rectangle Edge")]
+			[DisplayName("Increase Texture Rectangle Edge")]
 			public bool increase_texrect_edge { get; set; }
 
 			[DefaultValue(false)]
@@ -97,23 +98,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			public bool force_microcheck { get; set; }
 
 			[DefaultValue(true)]
-			[DisplayName("Fog")]
+			[DisplayName("Fog Enabled")]
 			public bool fog { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Fb Smart")]
+			[DisplayName("Smart Framebuffer")]
 			public bool fb_smart { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Fb Read Alpha")]
+			[DisplayName("Framebuffer Read Alpha")]
 			public bool fb_read_alpha { get; set; }
 
 			[DefaultValue(true)]
-			[DisplayName("Fb High Res")]
+			[DisplayName("High Res Framebuffer")]
 			public bool fb_hires { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Detect CPU Write")]
+			[DisplayName("Detect CPU Writes")]
 			public bool detect_cpu_write { get; set; }
 
 			[DefaultValue(false)]
@@ -125,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			public bool buff_clear { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Alt Text Size")]
+			[DisplayName("Alt Texture Size")]
 			public bool alt_tex_size { get; set; }
 
 			[DefaultValue(1)]
@@ -141,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			public int stipple_mode { get; set; }
 
 			[DefaultValue(0)]
-			[DisplayName("LOD Mode")]
+			[DisplayName("LOD Calcuation")]
 			public int lodmode { get; set; }
 
 			[DefaultValue(0)]
@@ -149,7 +150,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			public int filtering { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Wrap Anisotropic")]
+			[DisplayName("Wrapper Anisotropic Filtering")]
 			public bool wrpAnisotropic { get; set; }
 
 			[DefaultValue(false)]
@@ -201,15 +202,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			public bool useless_is_useless { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Fb Read Always")]
+			[DisplayName("Framebuffer read every frame")]
 			public bool fb_read_always { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Fb Get Info")]
+			[DisplayName("Get Framebuffer Info")]
 			public bool fb_get_info { get; set; }
 
 			[DefaultValue(true)]
-			[DisplayName("Fb Render")]
+			[DisplayName("Framebuffer Render")]
 			public bool fb_render { get; set; }
 
 			[DefaultValue(0)]
@@ -217,7 +218,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			public int aspectmode { get; set; }
 
 			[DefaultValue(1)]
-			[DisplayName("Fb CRC Mode")]
+			[DisplayName("Framebuffer CRC Mode")]
 			public int fb_crc_mode { get; set; }
 
 			[DefaultValue(true)]
