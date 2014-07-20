@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			[DefaultValue(1)]
 			[DisplayName("Wire Frame Mode")]
-			//0=Normal colors, 1=Vertex colors, 2=Red only
+			[Description("0=Normal colors, 1=Vertex colors, 2=Red only")]
 			public int WFMode { get; set; }
 
 			[DefaultValue(false)]
@@ -139,12 +139,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			[DefaultValue(0)]
 			[DisplayName("Texture Filter")]
-			//0=None, 1=Blur edges, 2=Super 2xSai, 3=Hq2x, 4=Hq4x
+			[Description("0=None, 1=Blur edges, 2=Super 2xSai, 3=Hq2x, 4=Hq4x")]
 			public int TexFilter { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Framebuffer Render")] 
-			//Framebuffer Depth Render in main.cpp?
 			public bool FbRender { get; set; }
 
 			[DefaultValue(false)]
@@ -253,7 +252,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			[DefaultValue(1)]
 			[DisplayName("Buffer swapping method")]
-			//0=Old, 1=New, 2=Hybrid
+			[Description("0=Old, 1=New, 2=Hybrid")]
 			public int swapmode { get; set; }
 
 			[DefaultValue(1041204192)]
@@ -282,7 +281,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			[DefaultValue(0)]
 			[DisplayName("LOD calculation")]
-			//0=Off, 1=Fast, 2=Precise
+			[Description("0=Off, 1=Fast, 2=Precise")]
 			public int lodmode { get; set; }
 
 			[DefaultValue(0)]
@@ -291,7 +290,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			[DefaultValue(1)]
 			[DisplayName("Filtering Mode")]
-			//0=None, 1=Force bilinear, 2=Force point-sampled
+			[Description("0=None, 1=Force bilinear, 2=Force point-sampled")]
 			public int filtering { get; set; }
 
 			[DefaultValue(20)]
