@@ -69,64 +69,226 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 
 			[JsonIgnore]
+			[Description("Plugin Type")]
 			public PluginType PluginType
 			{
 				get { return PluginType.GLIDE; }
 			}
 
+			[DefaultValue(1)]
+			[DisplayName("WR Mode")]
 			public int WFMode { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Wire Frame")]
 			public bool WireFrame { get; set; }
+
+			[DefaultValue(0)]
+			[DisplayName("Card ID")]
 			public int CardId { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Flame Corona")]
 			public bool FlameCorona { get; set; }
+
+			[DefaultValue(2)]
+			[DisplayName("UCode")]
 			public int UCode { get; set; }
+
+			[DefaultValue(true)]
+			[DisplayName("Auto Detect UCode")]
 			public bool AutodetectUCode { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Motion Blur")]
 			public bool MotionBlur { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Fb Read Always")]
 			public bool FbReadAlways { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Unk As Red")]
 			public bool UnkAsRed { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Filter Cache")]
 			public bool FilterCache { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Fast CRC")]
 			public bool FastCRC { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Disable Aux Buffer")]
 			public bool DisableAuxBuf { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Fbo")]
 			public bool Fbo { get; set; }
+
+			[DefaultValue(true)]
+			[DisplayName("No Glsl")]
 			public bool NoGlsl { get; set; }
+
+			[DefaultValue(true)]
+			[DisplayName("No Dithered Alpha")]
 			public bool NoDitheredAlpha { get; set; }
+
+			[DefaultValue(0)]
+			[DisplayName("Text Filter")]
 			public int TexFilter { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Fb Render")]
 			public bool FbRender { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Wrap Big Text")]
 			public bool WrapBigTex { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Use Sts1 Only")]
 			public bool UseSts1Only { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Soft Depth Compare")]
 			public bool SoftDepthCompare { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("PPL")]
 			public bool PPL { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Fb Optimize Write")]
 			public bool FbOptimizeWrite { get; set; }
+
+			[DefaultValue(true)]
+			[DisplayName("Fb Optimize Text Rectangle")]
 			public bool FbOptimizeTexRect { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Increase Text Rectangle Edge")]
 			public bool IncreaseTexRectEdge { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Increase Prim Depth")]
 			public bool IncreasePrimDepth { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Fb Ignore Previous")]
 			public bool FbIgnorePrevious { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Fb Ignore Aux Copy")]
 			public bool FbIgnoreAuxCopy { get; set; }
+
+			[DefaultValue(true)]
+			[DisplayName("Fb High Resolution Buffer Clear")]
 			public bool FbHiResBufClear { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Force Mirco Check")]
 			public bool ForceMicroCheck { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Force Depth Compare")]
 			public bool ForceDepthCompare { get; set; }
+
+			[DefaultValue(true)]
+			[DisplayName("Fog")]
 			public bool Fog { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Fill Color Fix")]
 			public bool FillColorFix { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Fb Smart")]
 			public bool FbSmart { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Fb Read Alpha")]
 			public bool FbReadAlpha { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Fb Get Info")]
 			public bool FbGetInfo { get; set; }
+
+			[DefaultValue(true)]
+			[DisplayName("Fb High Res")]
 			public bool FbHiRes { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Fb Clear")]
 			public bool fb_clear { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Detect CPU Write")]
 			public bool detect_cpu_write { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Decrease Fill Rect Edge")]
 			public bool decrease_fillrect_edge { get; set; }
+
+			[DefaultValue(true)]
+			[DisplayName("Buffer Clear")]
 			public bool buff_clear { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Alt Text Size")]
 			public bool alt_tex_size { get; set; }
+
+			[DefaultValue(true)]
+			[DisplayName("Use Default Hacks")]
 			public bool UseDefaultHacks { get; set; }
+
+			[DefaultValue(0)]
+			[DisplayName("Enable Hacks for Game")]
 			public int enable_hacks_for_game { get; set; }
+
+			[DefaultValue(1)]
+			[DisplayName("Swap Mode")]
 			public int swapmode { get; set; }
+
+			[DefaultValue(1041204192)]
+			[DisplayName("Stipple Pattern")]
 			public int stipple_pattern { get; set; }
+
+			[DefaultValue(2)]
+			[DisplayName("Stipple Mode")]
 			public int stipple_mode { get; set; }
+
+			[DefaultValue(100000)]
+			[DisplayName("Y Scale")]
 			public int scale_y { get; set; }
+
+			[DefaultValue(100000)]
+			[DisplayName("X Scale")]
 			public int scale_x { get; set; }
+
+			[DefaultValue(0)]
+			[DisplayName("Y Offset")]
 			public int offset_y { get; set; }
+
+			[DefaultValue(0)]
+			[DisplayName("X Offset")]
 			public int offset_x { get; set; }
+
+			[DefaultValue(0)]
+			[DisplayName("LOD Mode")]
 			public int lodmode { get; set; }
+
+			[DefaultValue(0)]
+			[DisplayName("Fix Text Coordinates")]
 			public int fix_tex_coord { get; set; }
+
+			[DefaultValue(1)]
+			[DisplayName("Filtering")]
 			public int filtering { get; set; }
+
+			[DefaultValue(20)]
+			[DisplayName("Depth Bias")]
 			public int depth_bias { get; set; }
 
 			public N64GlidePluginSettings Clone()
