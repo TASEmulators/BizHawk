@@ -52,14 +52,11 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 			float widthScale = (float)targetWidth / sourceWidth;
 			float heightScale = (float)targetHeight / sourceHeight;
-			//zero 22-may-2014 - added this to combat problem where nes would default to having sidebars
-			if (Global.Config.DispFixScaleInteger)
-			{
-				widthScale = (float)targetWidth / textureSize.Width;
-				heightScale = (float)targetHeight / textureSize.Height;
-			}
-			
-			if (maintainAspect)
+
+			if (maintainAspect 
+				//zero 20-jul-2014 - hacks upon hacks, this function needs rewriting
+				&& !maintainInteger
+				)
 			{
 				if (widthScale > heightScale) widthScale = heightScale;
 				if (heightScale > widthScale) heightScale = widthScale;
@@ -67,73 +64,72 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 			if (maintainInteger)
 			{
-				//don't distort the original texture
-				float apparentWidth = sourceWidth * widthScale;
-				float apparentHeight = sourceHeight * heightScale;
-				widthScale = (apparentWidth / textureWidth);
-				heightScale = (apparentHeight / textureHeight);
+				//just totally different code
+				//apply the zooming algorithm (pasted and reworked, for now)
 
-				//zero 27-may-2014 - no longer relevant, but this is sneaky, so leaving it as a reminder for now
-				//prevent dysfunctional reduction to 0x
-				//if (widthScale == 0) widthScale = 1;
-				//if (heightScale == 0) heightScale = 1;
-			
-			REDO:
+				Vector2 VS = new Vector2(virtualWidth, virtualHeight);
+				Vector2 BS = new Vector2(textureWidth, textureHeight);
+				Vector2 AR = Vector2.Divide(VS, BS);
+				float target_par = (AR.X / AR.Y);
+				Vector2 PS = new Vector2(1, 1); //this would malfunction for AR <= 0.5 or AR >= 2.0
 
-				apparentWidth = textureWidth * widthScale;
-				apparentHeight = textureHeight * heightScale;
-
-				//in case we've exaggerated the aspect ratio too far beyond the goal by our blunt integerizing, heres a chance to fix it by reducing one of the dimensions
-				float goalAr = ((float)virtualWidth)/virtualHeight;
-				float haveAr = apparentWidth / apparentHeight;
-				if (widthScale>1)
+				for(;;)
 				{
-					//try truncating this scale, or reducing it by 1 if it's already truncated
-					float floored = (float)Math.Floor(widthScale);
-					float next;
-					if (widthScale == floored)
-						next = widthScale - 1;
-					else next = floored;
-
-					float tryAnotherAR = (next*textureWidth)/(heightScale*textureHeight);
-					if(Math.Abs(tryAnotherAR-goalAr) < Math.Abs(haveAr-goalAr))
+					//TODO - would be good not to run this per frame....
+					Vector2[] trials = new[] {
+								PS + new Vector2(1, 0),
+								PS + new Vector2(0, 1),
+								PS + new Vector2(1, 1)
+							};
+					bool[] trials_limited = new bool[3] { false,false,false};
+					int bestIndex = -1;
+					float bestValue = 1000.0f;
+					for (int t = 0; t < trials.Length; t++)
 					{
-						widthScale = next;
-						goto REDO;
+						Vector2 vTrial = trials[t];
+						trials_limited[t] = false;
+
+						//check whether this is going to exceed our allotted area
+						int test_vw = (int)(vTrial.X * textureWidth);
+						int test_vh = (int)(vTrial.Y * textureHeight);
+						if (test_vw > targetWidth) trials_limited[t] = true;
+						if (test_vh > targetHeight) trials_limited[t] = true;
+
+						//I.
+						float test_ar = vTrial.X / vTrial.Y;
+
+						//II.
+						//Vector2 calc = Vector2.Multiply(trials[t], VS);
+						//float test_ar = calc.X / calc.Y;
+
+						//not clear which approach is superior
+						float deviation_linear = Math.Abs(test_ar - target_par);
+						float deviation_geom = test_ar / target_par;
+						if (deviation_geom < 1) deviation_geom = 1.0f / deviation_geom;
+
+						float value = deviation_linear;
+						if (value < bestValue)
+						{
+							bestIndex = t;
+							bestValue = value;
+						}
 					}
-				}
-				if (heightScale > 1)
-				{
-					//try truncating this scale, or reducing it by 1 if it's already truncated
-					float floored = (float)Math.Floor(heightScale);
-					float next;
-					if (heightScale == floored)
-						next = heightScale - 1;
-					else next = floored;
 
-					float tryAnotherAR = (widthScale*textureWidth) / (next*textureHeight);
-					if (Math.Abs(tryAnotherAR - goalAr) < Math.Abs(haveAr - goalAr))
-					{
-						heightScale = next;
-						goto REDO;
-					}
+					//last result was best, so bail out
+					if (bestIndex == -1)
+						break;
+
+					//if the winner ran off the edge, bail out
+					if (trials_limited[bestIndex])
+						break;
+
+					PS = trials[bestIndex];
 				}
 
-				//we're not allowed to get out of here with non-integer scales, so if that's happened, back in for another loop we go
-				if (Math.Floor(heightScale) != heightScale && heightScale >= 1)
-				{
-					heightScale = (float)Math.Floor(heightScale);
-					goto REDO;
-				}
-				if (Math.Floor(widthScale) != widthScale && widthScale >= 1)
-				{
-					widthScale = (float)Math.Floor(widthScale);
-					goto REDO;
-				}
-				
-
-				vw = (int)(widthScale * textureWidth);
-				vh = (int)(heightScale * textureHeight);
+				vw = (int)(PS.X * textureWidth);
+				vh = (int)(PS.Y * textureHeight);
+				widthScale = PS.X;
+				heightScale = PS.Y;
 			}
 			else
 			{
@@ -141,7 +137,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 				vh = (int)(heightScale * sourceHeight);
 			}
 
-
+			//determine letterboxing parameters
 			vx = (targetWidth - vw) / 2;
 			vy = (targetHeight - vh) / 2;
 			WidthScale = widthScale;
