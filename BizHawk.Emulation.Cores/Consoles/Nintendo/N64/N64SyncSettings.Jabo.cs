@@ -3,6 +3,7 @@ using System.ComponentModel;
 using Newtonsoft.Json;
 
 using BizHawk.Emulation.Common;
+using System.Reflection;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
@@ -43,11 +44,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			{
 				//TODO: deal witn the game depedent settings
 				var dictionary = new Dictionary<string, object>();
-				var members = this.GetType().GetFields();
+				var members = this.GetType().GetMembers();
 				foreach (var member in members)
 				{
-					var field = this.GetType().GetField(member.Name).GetValue(this);
-					dictionary.Add(member.Name, field);
+					if (member.MemberType == MemberTypes.Property)
+					{
+						var field = this.GetType().GetProperty(member.Name).GetValue(this, null);
+						dictionary.Add(member.Name, field);
+					}
 				}
 
 				return dictionary;
