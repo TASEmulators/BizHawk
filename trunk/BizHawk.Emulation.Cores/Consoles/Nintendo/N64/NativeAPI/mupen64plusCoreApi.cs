@@ -507,6 +507,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 				{
 					value = (bool)video_settings.Parameters[Parameter] ? 1 : 0;
 				}
+				else if (video_settings.Parameters[Parameter] is Enum)
+				{
+					value = (int)video_settings.Parameters[Parameter];
+				}
 				m64pConfigSetParameter(video_plugin_section, Parameter, m64p_type.M64TYPE_INT, ref value);
 			}
 		}
