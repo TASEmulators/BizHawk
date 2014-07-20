@@ -17,6 +17,8 @@ namespace BizHawk.Client.EmuHawk
 			IsAvailable = false;
 			try
 			{
+				//don't remove this code. it's important to catch errors on systems with broken xinput installs.
+				var test = new SlimDX.XInput.Controller(UserIndex.One).IsConnected;
 				IsAvailable = true;
 			}
 			catch { }
