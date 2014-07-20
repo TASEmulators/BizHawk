@@ -406,12 +406,17 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public class Settings
 		{
+			[DisplayName("Background Layer")]
 			[Description("True to display the selected layer.")]
 			[DefaultValue(true)]
 			public bool EnableBG { get; set; }
+
+			[DisplayName("Foreground Layer")]
 			[Description("True to display the selected layer.")]
 			[DefaultValue(true)]
 			public bool EnableFG { get; set; }
+
+			[DisplayName("Sprites Layer")]
 			[Description("True to display the selected layer.")]
 			[DefaultValue(true)]
 			public bool EnableSprites { get; set; }
@@ -438,6 +443,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public class SyncSettings
 		{
+			[DisplayName("Initial Time")]
 			[Description("Initial time of emulation.  Only relevant when UseRealTime is false.")]
 			[DefaultValue(typeof(DateTime), "2010-01-01")]
 			public DateTime InitialTime { get; set; }
@@ -450,6 +456,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			[DefaultValue(true)]
 			public bool Color { get; set; }
 
+			[DisplayName("Use RealTime")]
 			[Description("If true, RTC clock will be based off of real time instead of emulated time.  Ignored (set to false) when recording a movie.")]
 			[DefaultValue(false)]
 			public bool UseRealTime { get; set; }
@@ -462,6 +469,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			[DefaultValue(BizSwan.Language.Japanese)]
 			public BizSwan.Language Language { get; set; }
 
+			[DisplayName("Blood Type")]
 			[Description("Your blood type.  Stored in EEPROM and used by some games.")]
 			[DefaultValue(BizSwan.Bloodtype.AB)]
 			public BizSwan.Bloodtype BloodType { get; set; }
