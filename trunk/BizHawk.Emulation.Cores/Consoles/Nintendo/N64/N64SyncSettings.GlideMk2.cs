@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using Newtonsoft.Json;
 
 using BizHawk.Emulation.Common;
 using System.Reflection;
@@ -56,13 +55,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				UseDefaultHacks = true;
 				enable_hacks_for_game = 0;
 				read_back_to_screen = 0;
-			}
-
-			[JsonIgnore]
-			[DisplayName("Plugin Type")]
-			public PluginType PluginType
-			{
-				get { return PluginType.GLIDE64MK2; }
 			}
 
 			[DefaultValue(true)]
@@ -284,6 +276,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 					read_back_to_screen = game.GetInt("Glide64mk2_read_back_to_screen", 0);
 					fast_crc = game.GetBool("Glide64mk2_fast_crc", true);
 				}
+			}
+
+			public PluginType GetPluginType()
+			{
+				return PluginType.GlideMk2;
 			}
 
 			public Dictionary<string, object> GetPluginSettings()

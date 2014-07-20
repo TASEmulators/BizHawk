@@ -96,10 +96,10 @@ namespace BizHawk.Client.EmuHawk
 			s.VideoSizeY = Int32.Parse(strArr[1].Trim());
 			switch (PluginComboBox.Text)
 			{
-				case "Rice": ss.VidPlugin = PluginType.RICE; break;
-				case "Glide64": ss.VidPlugin = PluginType.GLIDE; break;
-				case "Glide64mk2": ss.VidPlugin = PluginType.GLIDE64MK2; break;
-				case "Jabo 1.6.1": ss.VidPlugin = PluginType.JABO; break;
+				case "Rice": ss.VidPlugin = PluginType.Rice; break;
+				case "Glide64": ss.VidPlugin = PluginType.Glide; break;
+				case "Glide64mk2": ss.VidPlugin = PluginType.GlideMk2; break;
+				case "Jabo 1.6.1": ss.VidPlugin = PluginType.Jabo; break;
 			}
 
 			//Rice
@@ -321,13 +321,13 @@ namespace BizHawk.Client.EmuHawk
 			ss.Glide64mk2Plugin.fast_crc = Glide64mk2_fast_crc.Checked;
 
 
-			ss.CoreType = CoreTypeDropdown.SelectedItem
+			ss.Core = CoreTypeDropdown.SelectedItem
 				.ToString()
-				.GetEnumFromDescription<N64SyncSettings.CORETYPE>();
+				.GetEnumFromDescription<N64SyncSettings.CoreType>();
 
-			ss.RspType = RspTypeDropdown.SelectedItem
+			ss.Rsp = RspTypeDropdown.SelectedItem
 				.ToString()
-				.GetEnumFromDescription<N64SyncSettings.RSPTYPE>();
+				.GetEnumFromDescription<N64SyncSettings.RspType>();
 
 			PutSettings(s);
 			PutSyncSettings(ss);
@@ -338,8 +338,8 @@ namespace BizHawk.Client.EmuHawk
 			var s = GetSettings();
 			var ss = GetSyncSettings();
 
-			CoreTypeDropdown.PopulateFromEnum<N64SyncSettings.CORETYPE>(ss.CoreType);
-			RspTypeDropdown.PopulateFromEnum<N64SyncSettings.RSPTYPE>(ss.RspType);
+			CoreTypeDropdown.PopulateFromEnum<N64SyncSettings.CoreType>(ss.Core);
+			RspTypeDropdown.PopulateFromEnum<N64SyncSettings.RspType>(ss.Rsp);
 
 			//Load Variables
 			//Global
@@ -354,10 +354,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 			switch (ss.VidPlugin)
 			{
-				case PluginType.GLIDE64MK2: PluginComboBox.Text = "Glide64mk2"; break;
-				case PluginType.GLIDE: PluginComboBox.Text = "Glide64"; break;
-				case PluginType.RICE: PluginComboBox.Text = "Rice"; break;
-				case PluginType.JABO: PluginComboBox.Text = "Jabo 1.6.1"; break;
+				case PluginType.GlideMk2: PluginComboBox.Text = "Glide64mk2"; break;
+				case PluginType.Glide: PluginComboBox.Text = "Glide64"; break;
+				case PluginType.Rice: PluginComboBox.Text = "Rice"; break;
+				case PluginType.Jabo: PluginComboBox.Text = "Jabo 1.6.1"; break;
 			}
 
 			//Rice

@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			StartThreadLoop();
 
 			var videosettings = _syncSettings.GetVPS(game, _settings.VideoSizeX, _settings.VideoSizeY);
-			var coreType = _syncSettings.CoreType;
+			var coreType = _syncSettings.Core;
 
 			//zero 19-apr-2014 - added this to solve problem with SDL initialization corrupting the main thread (I think) and breaking subsequent emulators (for example, NES)
 			//not sure why this works... if we put the plugin initializations in here, we get deadlocks in some SDL initialization. doesnt make sense to me...
@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			_inputProvider = new N64Input(api, comm, this._syncSettings.Controllers);
 
 
-			string rsp = _syncSettings.RspType == N64SyncSettings.RSPTYPE.Rsp_Hle ?
+			string rsp = _syncSettings.Rsp == N64SyncSettings.RspType.Rsp_Hle ?
 				"mupen64plus-rsp-hle.dll" :
 				"mupen64plus-rsp-z64-hlevideo.dll";
 

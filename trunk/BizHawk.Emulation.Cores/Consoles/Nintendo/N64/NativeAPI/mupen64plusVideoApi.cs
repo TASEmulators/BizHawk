@@ -47,16 +47,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			switch (settings.Plugin)
 			{
 				default:
-				case PluginType.RICE:
+				case PluginType.Rice:
 					videoplugin = "mupen64plus-video-rice.dll";
 					break;
-				case PluginType.GLIDE:
+				case PluginType.Glide:
 					videoplugin = "mupen64plus-video-glide64.dll";
 					break;
-				case PluginType.GLIDE64MK2:
+				case PluginType.GlideMk2:
 					videoplugin = "mupen64plus-video-glide64mk2.dll";
 					break;
-				case PluginType.JABO:
+				case PluginType.Jabo:
 					videoplugin = "mupen64plus-video-jabo.dll";
 					break;
 			}
