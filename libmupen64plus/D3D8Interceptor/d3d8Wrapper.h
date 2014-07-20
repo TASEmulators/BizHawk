@@ -312,8 +312,6 @@ extern "C"
 			static ThreadSafePointerSet	m_List;
 		public:
 
-			STDMETHOD_(ULONG,Release)(THIS);
-
 			IDirect3DTexture8(D3D8Base::IDirect3DTexture8*);
 
 			static D3D8Wrapper::IDirect3DTexture8* GetTexture(D3D8Base::IDirect3DTexture8*);
