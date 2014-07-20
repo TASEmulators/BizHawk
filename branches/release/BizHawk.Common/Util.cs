@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
+using BizHawk.Common.BufferExtensions;
+
 namespace BizHawk.Common
 {
 	public static unsafe class Util
@@ -16,47 +18,7 @@ namespace BizHawk.Common
 			HexConvPtr = (char*)HexConvHandle.AddrOfPinnedObject().ToPointer();
 		}
 
-		public static bool FindBytes(byte[] array, byte[] pattern)
-		{
-			int fidx = 0;
-			int result = Array.FindIndex(array, 0, array.Length, (byte b) =>
-			{
-				fidx = (b == pattern[fidx]) ? fidx + 1 : 0;
-				return (fidx == pattern.Length);
-			});
-
-			return (result >= pattern.Length - 1);
-		}
-
 		public static char* HexConvPtr { get; set; }
-
-		public static string Hash_MD5(byte[] data, int offset, int len)
-		{
-			using (var md5 = System.Security.Cryptography.MD5.Create())
-			{
-				md5.ComputeHash(data, offset, len);
-				return BytesToHexString(md5.Hash);
-			}
-		}
-
-		public static string Hash_MD5(byte[] data)
-		{
-			return Hash_MD5(data, 0, data.Length);
-		}
-
-		public static string Hash_SHA1(byte[] data, int offset, int len)
-		{
-			using (var sha1 = System.Security.Cryptography.SHA1.Create())
-			{
-				sha1.ComputeHash(data, offset, len);
-				return BytesToHexString(sha1.Hash);
-			}
-		}
-
-		public static string Hash_SHA1(byte[] data)
-		{
-			return Hash_SHA1(data, 0, data.Length);
-		}
 
 		public static bool IsPowerOfTwo(int x)
 		{
@@ -79,50 +41,6 @@ namespace BizHawk.Common
 			}
 
 			return 0;
-		}
-
-		// Read bytes from a BinaryReader and translate them into the UTF-8 string they represent.
-		public static string ReadStringFixedAscii(this BinaryReader r, int bytes)
-		{
-			var read = new byte[bytes];
-			for (var b = 0; b < bytes; b++)
-			{
-				read[b] = r.ReadByte();
-			}
-
-			return Encoding.UTF8.GetString(read);
-		}
-
-		public static string ReadStringAsciiZ(this BinaryReader r)
-		{
-			var sb = new StringBuilder();
-			for (;;)
-			{
-				int b = r.ReadByte();
-				if (b <= 0)
-				{
-					break;
-				}
-
-				sb.Append((char)b);
-			}
-
-			return sb.ToString();
-		}
-
-		/// <summary>
-		/// Converts bytes to an uppercase string of hex numbers in upper case without any spacing or anything
-		/// //could be extension method
-		/// </summary>
-		public static string BytesToHexString(byte[] bytes)
-		{
-			var sb = new StringBuilder();
-			foreach (var b in bytes)
-			{
-				sb.AppendFormat("{0:X2}", b);
-			}
-
-			return sb.ToString();
 		}
 
 		// Could be extension method
@@ -354,33 +272,6 @@ namespace BizHawk.Common
 			}
 		}
 
-		public static byte[] ReadAllBytes(Stream stream)
-		{
-			const int BUFF_SIZE = 4096;
-			var buffer = new byte[BUFF_SIZE];
-
-			int bytesRead = 0;
-			var inStream = new BufferedStream(stream);
-			var outStream = new MemoryStream();
-
-			while ((bytesRead = inStream.Read(buffer, 0, BUFF_SIZE)) > 0)
-			{
-				outStream.Write(buffer, 0, bytesRead);
-			}
-
-			return outStream.ToArray();
-		}
-
-		public static byte BinToBCD(this byte v)
-		{
-			return (byte)(((v / 10) * 16) + (v % 10));
-		}
-
-		public static byte BCDtoBin(this byte v)
-		{
-			return (byte)(((v / 16) * 10) + (v % 16));
-		}
-
 		public static string FormatFileSize(long filesize)
 		{
 			decimal size = filesize;
@@ -446,24 +337,6 @@ namespace BizHawk.Common
 			}
 
 			return true;
-		}
-
-		public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key)
-		{
-			TValue ret;
-			dict.TryGetValue(key, out ret);
-			return ret;
-		}
-
-		public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue defaultvalue)
-		{
-			TValue ret;
-			if (!dict.TryGetValue(key, out ret))
-			{
-				return defaultvalue;
-			}
-			
-			return ret;
 		}
 	}
 

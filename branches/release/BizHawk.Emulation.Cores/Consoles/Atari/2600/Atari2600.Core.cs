@@ -1,6 +1,9 @@
 ﻿using System;
 
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
+using BizHawk.Common.BufferExtensions;
+
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
 
@@ -310,8 +313,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				string.Format(
 					"{0}\r\nSHA1:{1}\r\nMD5:{2}\r\nMapper Impl \"{3}\"",
 					this._game.Name,
-					Util.Hash_SHA1(Rom),
-					Util.Hash_MD5(Rom),
+					Rom.HashSHA1(),
+					Rom.HashMD5(),
 					_mapper.GetType());
 		}
 

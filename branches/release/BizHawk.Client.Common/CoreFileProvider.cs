@@ -48,14 +48,12 @@ namespace BizHawk.Client.Common
 					"Couldn't find required firmware \"{0}:{1}\".  This is fatal{2}", sysID, firmwareID, msg != null ? ": " + msg : ".");
 				throw new Exception(fullmsg);
 			}
-			else
+
+			if (msg != null)
 			{
-				if (msg != null)
-				{
-					var fullmsg = String.Format(
-						"Couldn't find firmware \"{0}:{1}\".  Will attempt to continue: {2}", sysID, firmwareID, msg);
-					_showWarning(fullmsg);
-				}
+				var fullmsg = String.Format(
+					"Couldn't find firmware \"{0}:{1}\".  Will attempt to continue: {2}", sysID, firmwareID, msg);
+				_showWarning(fullmsg);
 			}
 		}
 

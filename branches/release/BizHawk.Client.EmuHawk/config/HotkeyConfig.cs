@@ -18,6 +18,19 @@ namespace BizHawk.Client.EmuHawk
 			{
 				IDB_SAVE.Focus(); // A very dirty hack to avoid https://code.google.com/p/bizhawk/issues/detail?id=161
 			};
+
+		}
+
+		protected override void OnActivated(EventArgs e)
+		{
+			base.OnActivated(e);
+			Input.Instance.ControlInputFocus(this, Input.InputFocus.Mouse, true);
+		}
+
+		protected override void OnDeactivate(EventArgs e)
+		{
+			base.OnDeactivate(e);
+			Input.Instance.ControlInputFocus(this, Input.InputFocus.Mouse, false);
 		}
 
 		private void NewHotkeyWindow_Load(object sender, EventArgs e)

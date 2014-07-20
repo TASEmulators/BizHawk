@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Collections.Concurrent;
@@ -11,16 +9,20 @@ namespace BizHawk.Common
 {
 	public class SettingsUtil
 	{
-		private class DefaultValueSetter
+		private sealed class DefaultValueSetter
 		{
 			public Action<object, object[]> SetDefaultValues;
-			public Type Type;
 			public object[] DefaultValues;
 		}
 
 
 		private static IDictionary<Type, DefaultValueSetter> DefaultValueSetters = new ConcurrentDictionary<Type, DefaultValueSetter>();
 
+		/// <summary>
+		/// set all properties (not fields!) of obj with a DefaultValueAttribute to that value
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="obj">the obj to act on</param>
 		public static void SetDefaultValues<T>(T obj)
 		{
 			DefaultValueSetter f;
@@ -74,7 +76,6 @@ namespace BizHawk.Common
 			return new DefaultValueSetter
 			{
 				SetDefaultValues = (Action<object, object[]>)dyn.CreateDelegate(typeof(Action<object, object[]>)),
-				Type = t,
 				DefaultValues = DefaultValues.ToArray()
 			};
 		}

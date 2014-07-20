@@ -20,6 +20,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GuiOptions_Load(object sender, EventArgs e)
 		{
+			StartFullScreenCheckbox.Checked = Global.Config.StartFullscreen;
 			StartPausedCheckbox.Checked = Global.Config.StartPaused;
 			PauseWhenMenuActivatedCheckbox.Checked = Global.Config.PauseWhenMenuActivated;
 			EnableContextMenuCheckbox.Checked = Global.Config.ShowContextMenu;
@@ -63,6 +64,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
+			Global.Config.StartFullscreen = StartFullScreenCheckbox.Checked;
 			Global.Config.StartPaused = StartPausedCheckbox.Checked;
 			Global.Config.PauseWhenMenuActivated = PauseWhenMenuActivatedCheckbox.Checked;
 			Global.Config.ShowContextMenu = EnableContextMenuCheckbox.Checked;

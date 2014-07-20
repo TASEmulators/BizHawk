@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
 
 //main apis for emulator core routine use
 
@@ -297,7 +297,7 @@ namespace BizHawk.Emulation.DiscSystem
 				for (int s = 0; s < 512 && s < track.length_aba; s++)
 					ReadABA_2352(track.Indexes[1].aba + s, buffer, s * 2352);
 
-				return Util.Hash_MD5(buffer, 0, lba_len * 2352);
+				return buffer.HashMD5(0, lba_len * 2352);
 			}
 			return "no data track found";
 		}

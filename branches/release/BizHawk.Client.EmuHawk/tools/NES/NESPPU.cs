@@ -274,8 +274,8 @@ namespace BizHawk.Client.EmuHawk
 				SpriteView.sprites.UnlockBits(bmpdata2);
 				SpriteView.Refresh();
 
-				HandleSpriteViewMouseMove(SpriteView.PointToClient(Control.MousePosition));
-				HandlePaletteViewMouseMove(PaletteView.PointToClient(Control.MousePosition));
+				HandleSpriteViewMouseMove(SpriteView.PointToClient(MousePosition));
+				HandlePaletteViewMouseMove(PaletteView.PointToClient(MousePosition));
 			}
 		}
 

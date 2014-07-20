@@ -88,6 +88,7 @@
 			this.RecentRomsNumeric = new System.Windows.Forms.NumericUpDown();
 			this.label11 = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.StartFullScreenCheckbox = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage3.SuspendLayout();
@@ -144,6 +145,7 @@
 			// 
 			// tabPage1
 			// 
+			this.tabPage1.Controls.Add(this.StartFullScreenCheckbox);
 			this.tabPage1.Controls.Add(this.label14);
 			this.tabPage1.Controls.Add(this.label3);
 			this.tabPage1.Controls.Add(this.SingleInstanceModeCheckbox);
@@ -844,6 +846,16 @@
 			this.label11.TabIndex = 0;
 			this.label11.Text = "Roms";
 			// 
+			// StartFullScreenCheckbox
+			// 
+			this.StartFullScreenCheckbox.AutoSize = true;
+			this.StartFullScreenCheckbox.Location = new System.Drawing.Point(104, 100);
+			this.StartFullScreenCheckbox.Name = "StartFullScreenCheckbox";
+			this.StartFullScreenCheckbox.Size = new System.Drawing.Size(107, 17);
+			this.StartFullScreenCheckbox.TabIndex = 13;
+			this.StartFullScreenCheckbox.Text = "Start in fullscreen";
+			this.StartFullScreenCheckbox.UseVisualStyleBackColor = true;
+			// 
 			// EmuHawkOptions
 			// 
 			this.AcceptButton = this.OkBtn;
@@ -942,5 +954,6 @@
 		private System.Windows.Forms.CheckBox SaveLargeScreenshotsCheckbox;
 		private System.Windows.Forms.NumericUpDown BigScreenshotNumeric;
 		private System.Windows.Forms.Label KbLabel;
+		private System.Windows.Forms.CheckBox StartFullScreenCheckbox;
 	}
 }

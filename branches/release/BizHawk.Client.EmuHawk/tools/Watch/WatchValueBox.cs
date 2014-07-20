@@ -2,8 +2,9 @@
 using System.Globalization;
 using System.Windows.Forms;
 
+using BizHawk.Common.StringExtensions;
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
-using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -270,7 +271,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case Watch.DisplayType.Binary:
-					if (!InputValidate.IsBinary(e.KeyChar))
+					if (!e.KeyChar.IsBinary())
 					{
 						e.Handled = true;
 					}
@@ -278,35 +279,35 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case Watch.DisplayType.FixedPoint_12_4:
 				case Watch.DisplayType.FixedPoint_20_12:
-					if (!InputValidate.IsFixedPoint(e.KeyChar))
+					if (!e.KeyChar.IsFixedPoint())
 					{
 						e.Handled = true;
 					}
 
 					break;
 				case Watch.DisplayType.Float:
-					if (!InputValidate.IsFloat(e.KeyChar))
+					if (!e.KeyChar.IsFloat())
 					{
 						e.Handled = true;
 					}
 
 					break;
 				case Watch.DisplayType.Hex:
-					if (!InputValidate.IsHex(e.KeyChar))
+					if (!e.KeyChar.IsHex())
 					{
 						e.Handled = true;
 					}
 
 					break;
 				case Watch.DisplayType.Signed:
-					if (!InputValidate.IsSigned(e.KeyChar))
+					if (!e.KeyChar.IsSigned())
 					{
 						e.Handled = true;
 					}
 
 					break;
 				case Watch.DisplayType.Unsigned:
-					if (!InputValidate.IsUnsigned(e.KeyChar))
+					if (!e.KeyChar.IsUnsigned())
 					{
 						e.Handled = true;
 					}
@@ -532,6 +533,31 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ResetText();
 			}
+
+			switch (_type)
+			{
+				case Watch.DisplayType.Signed:
+					Text = Text.OnlySigned();
+					break;
+				case Watch.DisplayType.Unsigned:
+					Text = Text.OnlyUnsigned();
+					break;
+				case Watch.DisplayType.Binary:
+					Text = Text.OnlyBinary();
+					break;
+				case Watch.DisplayType.Hex:
+					Text = Text.OnlyHex();
+					break;
+				case Watch.DisplayType.FixedPoint_12_4:
+				case Watch.DisplayType.FixedPoint_20_12:
+					Text = Text.OnlyFixedPoint();
+					break;
+				case Watch.DisplayType.Float:
+					Text = Text.OnlyFloat();
+					break;
+			}
+
+			base.OnTextChanged(e);
 		}
 
 		public int? ToRawInt()
@@ -548,24 +574,60 @@ namespace BizHawk.Client.EmuHawk
 
 			switch (_type)
 			{
-				default:
 				case Watch.DisplayType.Signed:
-					return int.Parse(Text);
+					if (Text.IsSigned())
+					{
+						return int.Parse(Text);
+					}
+
+					break;
 				case Watch.DisplayType.Unsigned:
-					return (int)uint.Parse(Text);
+					if (Text.IsUnsigned())
+					{
+						return (int)uint.Parse(Text);
+					}
+
+					break;
 				case Watch.DisplayType.Binary:
-					return Convert.ToInt32(Text, 2);
+					if (Text.IsBinary())
+					{
+						return Convert.ToInt32(Text, 2);
+					}
+
+					break;
 				case Watch.DisplayType.Hex:
-					return int.Parse(Text, NumberStyles.HexNumber);
+					if (Text.IsHex())
+					{
+						return int.Parse(Text, NumberStyles.HexNumber);
+					}
+
+					break;
 				case Watch.DisplayType.FixedPoint_12_4:
-					return (int)(double.Parse(Text) * 16.0);
+					if (Text.IsFixedPoint())
+					{
+						return (int)(double.Parse(Text) * 16.0);
+					}
+
+					break;
 				case Watch.DisplayType.FixedPoint_20_12:
-					return (int)(double.Parse(Text) * 4096.0);
+					if (Text.IsFixedPoint())
+					{
+						return (int)(double.Parse(Text) * 4096.0);
+					}
+
+					break;
 				case Watch.DisplayType.Float:
-					float val = float.Parse(Text);
-					var bytes = BitConverter.GetBytes(val);
-					return BitConverter.ToInt32(bytes, 0);
+					if (Text.IsFloat())
+					{
+						float val = float.Parse(Text);
+						var bytes = BitConverter.GetBytes(val);
+						return BitConverter.ToInt32(bytes, 0);
+					}
+
+					break;
 			}
+
+			return 0;
 		}
 
 		public void SetFromRawInt(int? val)

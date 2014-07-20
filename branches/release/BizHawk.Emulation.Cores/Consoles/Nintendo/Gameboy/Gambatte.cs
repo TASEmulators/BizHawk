@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 
-using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Common;
+
 using Newtonsoft.Json;
-using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -111,25 +113,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			try
 			{
-				this.SyncSettings = (GambatteSyncSettings)SyncSettings ?? GambatteSyncSettings.GetDefaults();
+				this._SyncSettings = (GambatteSyncSettings)SyncSettings ?? new GambatteSyncSettings();
 				// copy over non-loadflag syncsettings now; they won't take effect if changed later
-				zerotime = (uint)this.SyncSettings.RTCInitialTime;
-				real_rtc_time = DeterministicEmulation ? false : this.SyncSettings.RealTimeRTC;
+				zerotime = (uint)this._SyncSettings.RTCInitialTime;
+				real_rtc_time = DeterministicEmulation ? false : this._SyncSettings.RealTimeRTC;
 
 				LibGambatte.LoadFlags flags = 0;
 
-				if (this.SyncSettings.ForceDMG)
+				if (this._SyncSettings.ForceDMG)
 					flags |= LibGambatte.LoadFlags.FORCE_DMG;
-				if (this.SyncSettings.GBACGB)
+				if (this._SyncSettings.GBACGB)
 					flags |= LibGambatte.LoadFlags.GBA_CGB;
-				if (this.SyncSettings.MulticartCompat)
+				if (this._SyncSettings.MulticartCompat)
 					flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
 
 				if (LibGambatte.gambatte_load(GambatteState, romdata, (uint)romdata.Length, GetCurrentTime(), flags) != 0)
 					throw new Exception("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
 
 				// set real default colors (before anyone mucks with them at all)
-				PutSettings(Settings ?? GambatteSettings.GetDefaults());
+				PutSettings(Settings ?? new GambatteSettings());
 
 				InitSound();
 
@@ -145,8 +147,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				CoreComm.RomStatusDetails = string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
 					game.Name,
-					Util.Hash_SHA1(romdata), Util.Hash_MD5(romdata)
-					);
+					romdata.HashSHA1(),
+					romdata.HashMD5());
+
+				{
+					byte[] buff = new byte[32];
+					LibGambatte.gambatte_romtitle(GambatteState, buff);
+					string romname = System.Text.Encoding.ASCII.GetString(buff);
+					Console.WriteLine("Core reported rom name: {0}", romname);
+				}
 
 				TimeCallback = new LibGambatte.RTCCallback(GetCurrentTime);
 				LibGambatte.gambatte_setrtccallback(GambatteState, TimeCallback);
@@ -963,18 +972,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region Settings
 
-		GambatteSettings Settings;
-		GambatteSyncSettings SyncSettings;
+		GambatteSettings _Settings;
+		GambatteSyncSettings _SyncSettings;
 
-		public object GetSettings() { return Settings.Clone(); }
-		public object GetSyncSettings() { return SyncSettings.Clone(); }
+		public object GetSettings() { return _Settings.Clone(); }
+		public object GetSyncSettings() { return _SyncSettings.Clone(); }
 		public bool PutSettings(object o)
 		{
-			Settings = (GambatteSettings)o;
+			_Settings = (GambatteSettings)o;
 			if (IsCGBMode())
-				SetCGBColors(Settings.CGBColors);
+				SetCGBColors(_Settings.CGBColors);
 			else
-				ChangeDMGColors(Settings.GBPalette);
+				ChangeDMGColors(_Settings.GBPalette);
 			return false;
 		}
 
@@ -982,35 +991,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			var s = (GambatteSyncSettings)o;
 			bool ret;
-			if (s.ForceDMG != SyncSettings.ForceDMG ||
-				s.GBACGB != SyncSettings.GBACGB ||
-				s.MulticartCompat != SyncSettings.MulticartCompat ||
-				s.RealTimeRTC != SyncSettings.RealTimeRTC ||
-				s.RTCInitialTime != SyncSettings.RTCInitialTime)
+			if (s.ForceDMG != _SyncSettings.ForceDMG ||
+				s.GBACGB != _SyncSettings.GBACGB ||
+				s.MulticartCompat != _SyncSettings.MulticartCompat ||
+				s.RealTimeRTC != _SyncSettings.RealTimeRTC ||
+				s.RTCInitialTime != _SyncSettings.RTCInitialTime)
 				ret = true;
 			else
 				ret = false;
 
-			SyncSettings = s;
+			_SyncSettings = s;
 			return ret;
 		}
 
 		public class GambatteSettings
 		{
-			public int[] GBPalette;
-			public GBColors.ColorType CGBColors;
-
-			public static GambatteSettings GetDefaults()
-			{
-				var ret = new GambatteSettings();
-				ret.GBPalette = new[]
+			private static readonly int[] DefaultPalette = new[]
 				{
 					10798341, 8956165, 1922333, 337157,
 					10798341, 8956165, 1922333, 337157,
 					10798341, 8956165, 1922333, 337157
 				};
-				ret.CGBColors = GBColors.ColorType.gambatte;
-				return ret;
+
+			public int[] GBPalette;
+			public GBColors.ColorType CGBColors;
+
+			public GambatteSettings()
+			{
+				GBPalette = (int[])DefaultPalette.Clone();
+				CGBColors = GBColors.ColorType.gambatte;
 			}
 
 			public GambatteSettings Clone()
@@ -1023,18 +1032,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public class GambatteSyncSettings
 		{
+			[DisplayName("Force DMG Mode")]
 			[Description("Force the game to run on DMG hardware, even if it's detected as a CGB game.  Relevant for games that are \"CGB Enhanced\" but do not require CGB.")]
 			[DefaultValue(false)]
 			public bool ForceDMG { get; set; }
+
+			[DisplayName("CGB in GBA")]
 			[Description("Emulate GBA hardware running a CGB game, instead of CGB hardware.  Relevant only for titles that detect the presense of a GBA, such as Shantae.")]
 			[DefaultValue(false)]
 			public bool GBACGB { get; set; }
+
+			[DisplayName("Multicart Compatibility")]
 			[Description("Use special compatibility hacks for certain multicart games.  Relevant only for specific multicarts.")]
 			[DefaultValue(false)]
 			public bool MulticartCompat { get; set; }
+
+			[DisplayName("Realtime RTC")]
 			[Description("If true, the real time clock in MBC3 games will reflect real time, instead of emulated time.  Ignored (treated as false) when a movie is recording.")]
 			[DefaultValue(false)]
 			public bool RealTimeRTC { get; set; }
+
+			[DisplayName("RTC Initial Time")]
 			[Description("Set the initial RTC time in terms of elapsed seconds.  Only used when RealTimeRTC is false.")]
 			[DefaultValue(0)]
 			public int RTCInitialTime
@@ -1042,24 +1060,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				get { return _RTCInitialTime; }
 				set { _RTCInitialTime = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
 			}
+
 			[JsonIgnore]
 			int _RTCInitialTime;
 
-			public static GambatteSyncSettings GetDefaults()
+			public GambatteSyncSettings()
 			{
-				return new GambatteSyncSettings
-				{
-					ForceDMG = false,
-					GBACGB = false,
-					MulticartCompat = false,
-					RealTimeRTC = false,
-					_RTCInitialTime = 0
-				};
+				SettingsUtil.SetDefaultValues(this);
 			}
 
 			public GambatteSyncSettings Clone()
 			{
-				// this does include anonymous backing fields for auto properties
 				return (GambatteSyncSettings)MemberwiseClone();
 			}
 		}

@@ -280,12 +280,12 @@ namespace MDFN_IEN_WSWAN
 		if (wsCartROM)
 		{
 			std::free(wsCartROM);
-			wsCartROM = 0;
+			wsCartROM = nullptr;
 		}
 		if (wsSRAM)
 		{
 			std::free(wsSRAM);
-			wsSRAM = 0;
+			wsSRAM = nullptr;
 		}
 	}
 	

@@ -4,9 +4,11 @@ using System.IO;
 using System.Collections.Generic;
 
 using BizHawk.Common;
-using BizHawk.Emulation.Common;
-//TODO - redo all timekeeping in terms of master clock
+using BizHawk.Common.BufferExtensions;
 
+using BizHawk.Emulation.Common;
+
+//TODO - redo all timekeeping in terms of master clock
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	[CoreAttributes(
@@ -469,7 +471,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public unsafe void Init(GameInfo gameInfo, byte[] rom, byte[] fdsbios = null)
+		public void Init(GameInfo gameInfo, byte[] rom, byte[] fdsbios = null)
 		{
 			LoadReport = new StringWriter();
 			LoadWriteLine("------");
@@ -502,7 +504,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else if (file.Take(4).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("FDS\x1A"))
 				|| file.Take(4).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("\x01*NI")))
 			{
-				// there's not much else to do with FDS images other than to feed them to the board
+				// danger!  this is a different codepath with an early return.  accordingly, some
+				// code is duplicated twice...
+
+				// FDS roms are just fed to the board, we don't do much else with them
 				origin = EDetectionOrigin.FDS;
 				LoadWriteLine("Found FDS header.");
 				if (fdsbios == null)
@@ -512,6 +517,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				fdsboard.biosrom = fdsbios;
 				fdsboard.SetDiskImage(rom);
 				fdsboard.Create(this);
+				// at the moment, FDS doesn't use the IRVs, but it could at some point in the future
+				fdsboard.InitialRegisterValues = InitialMapperRegisterValues;
 				fdsboard.Configure(origin);
 
 				board = fdsboard;
@@ -524,7 +531,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				board.PostConfigure();
 
+				Console.WriteLine("Using NTSC display type for FDS disk image");
+				_display_type = Common.DisplayType.NTSC;
+
 				HardReset();
+
 				return;
 			}
 			else
@@ -537,9 +548,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				//now that we know we have an iNES header, we can try to ignore it.
 
-				hash_sha1 = "sha1:" + Util.Hash_SHA1(file, 16, file.Length - 16);
+				hash_sha1 = "sha1:" + file.HashSHA1(16, file.Length - 16);
 				hash_sha1_several.Add(hash_sha1);
-				hash_md5 = "md5:" + Util.Hash_MD5(file, 16, file.Length - 16);
+				hash_md5 = "md5:" + file.HashMD5(16, file.Length - 16);
 
 				LoadWriteLine("Found iNES header:");
 				LoadWriteLine(iNesHeaderInfo.ToString());
@@ -563,10 +574,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					msTemp.Write(file, 16 + 16 * 1024, iNesHeaderInfo.chr_size * 1024); //add chr
 					msTemp.Flush();
 					var bytes = msTemp.ToArray();
-					var hash = "sha1:" + Util.Hash_SHA1(bytes, 0, bytes.Length);
+					var hash = "sha1:" + bytes.HashSHA1(0, bytes.Length);
 					LoadWriteLine("  PRG (8KB) + CHR hash: {0}", hash);
 					hash_sha1_several.Add(hash);
-					hash = "md5:" + Util.Hash_MD5(bytes, 0, bytes.Length);
+					hash = "md5:" + bytes.HashMD5(0, bytes.Length);
 					LoadWriteLine("  PRG (8KB) + CHR hash:  {0}", hash);
 				}
 			}
@@ -745,6 +756,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				board.VROM = unif.GetCHR();
 			}
 
+			// IF YOU DO ANYTHING AT ALL BELOW THIS LINE, MAKE SURE THE APPROPRIATE CHANGE IS MADE TO FDS (if applicable)
+
 			//create the vram and wram if necessary
 			if (cart.wram_size != 0)
 				board.WRAM = new byte[cart.wram_size * 1024];
@@ -783,7 +796,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			HardReset();
 		}
 
-		NESSyncSettings.Region DetectRegion(string system)
+		static NESSyncSettings.Region DetectRegion(string system)
 		{
 			switch (system)
 			{

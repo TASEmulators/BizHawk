@@ -11,9 +11,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	class AnalogBindPanel : UserControl
 	{
-		Dictionary<string, BizHawk.Client.Common.Config.AnalogBind> RealConfigObject;
+		Dictionary<string, Config.AnalogBind> RealConfigObject;
 
-		public AnalogBindPanel(Dictionary<string, BizHawk.Client.Common.Config.AnalogBind> RealConfigObject, List<string> RealConfigButtons = null)
+		public AnalogBindPanel(Dictionary<string, Config.AnalogBind> RealConfigObject, List<string> RealConfigButtons = null)
 			:base()
 		{
 			this.RealConfigObject = RealConfigObject;
@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 		/// save to config
 		/// </summary>
 		/// <param name="SaveConfigObject">if non-null, save to possibly different config object than originally initialized from</param>
-		public void Save(Dictionary<string, BizHawk.Client.Common.Config.AnalogBind> SaveConfigObject = null)
+		public void Save(Dictionary<string, Config.AnalogBind> SaveConfigObject = null)
 		{
 			var saveto = SaveConfigObject ?? RealConfigObject;
 			foreach (Control c in Controls)

@@ -5,14 +5,43 @@ namespace BizHawk.Client.Common
 {
 	public class ToolDialogSettings
 	{
+		private int? _wndx = null;
+		private int? _wndy = null;
+
 		public ToolDialogSettings()
 		{
 			SaveWindowPosition = true;
 			FloatingWindow = true;
 		}
 
-		public int? Wndx { get; set; }
-		public int? Wndy { get; set; }
+		[JsonIgnore]
+		public int? Wndx
+		{
+			get { return _wndx; }
+			set
+			{
+				if (value != -32000)
+				{
+					_wndx = value;
+				}
+				
+			}
+		}
+
+		[JsonIgnore]
+		public int? Wndy
+		{
+			get { return _wndy; }
+			set
+			{
+				if (value != -32000)
+				{
+					_wndy = value;
+				}
+
+			}
+		}
+
 		public int? Width { get; set; }
 		public int? Height { get; set; }
 
@@ -25,7 +54,8 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return SaveWindowPosition && Wndx.HasValue && Wndy.HasValue;
+				return SaveWindowPosition && Wndx.HasValue && Wndy.HasValue
+					&& Wndx != -32000 && Wndy != -32000; // Windows OS annoyance, this is saved if the tool was minimized when closing
 			}
 		}
 

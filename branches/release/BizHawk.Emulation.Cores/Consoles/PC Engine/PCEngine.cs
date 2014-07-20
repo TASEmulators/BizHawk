@@ -4,8 +4,11 @@ using System.Globalization;
 using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
+
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Components;
+
 using BizHawk.Emulation.Cores.Components.H6280;
 using BizHawk.Emulation.DiscSystem;
 
@@ -61,7 +64,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		// 21,477,270  Machine clocks / sec
 		//  7,159,090  Cpu cycles / sec
 
-		public PCEngine(CoreComm comm, GameInfo game, byte[] rom, object Settings)
+		public PCEngine(CoreComm comm, GameInfo game, byte[] rom, object Settings, object syncSettings)
 		{
 			CoreComm = comm;
 			CoreComm.CpuTraceAvailable = true;
@@ -78,12 +81,14 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					break;
 			}
 			this.Settings = (PCESettings)Settings ?? new PCESettings();
+			_syncSettings = (PCESyncSettings)syncSettings ?? new PCESyncSettings();
 			Init(game, rom);
+			SetControllerButtons();
 		}
 
 		public string BoardName { get { return null; } }
 
-		public PCEngine(CoreComm comm, GameInfo game, Disc disc, object Settings)
+		public PCEngine(CoreComm comm, GameInfo game, Disc disc, object Settings, object syncSettings)
 		{
 			CoreComm = comm;
 			CoreComm.CpuTraceAvailable = true;
@@ -92,6 +97,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			Type = NecSystemType.TurboCD;
 			this.disc = disc;
 			this.Settings = (PCESettings)Settings ?? new PCESettings();
+			_syncSettings = (PCESyncSettings)syncSettings ?? new PCESyncSettings();
 
 			GameInfo biosInfo;
 			byte[] rom = CoreComm.CoreFileProvider.GetFirmwareWithGameInfo("PCECD", "Bios", true, out biosInfo,
@@ -128,11 +134,12 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				throw new Exception();
 			}
 
-			game.FirmwareHash = Util.Hash_SHA1(rom);
+			game.FirmwareHash = rom.HashSHA1();
 
 			Init(game, rom);
 			// the default RomStatusDetails don't do anything with Disc
 			CoreComm.RomStatusDetails = string.Format("{0}\r\nDisk partial hash:{1}", game.Name, disc.GetHash());
+			SetControllerButtons();
 		}
 
 		void Init(GameInfo game, byte[] rom)
@@ -557,9 +564,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		}
 
 		public PCESettings Settings;
+		private PCESyncSettings _syncSettings;
 
 		public object GetSettings() { return Settings.Clone(); }
-		public object GetSyncSettings() { return null; }
+		public object GetSyncSettings() { return _syncSettings; }
 		public bool PutSettings(object o)
 		{
 			PCESettings n = (PCESettings)o;
@@ -571,8 +579,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				ret = false;
 
 			Settings = n;
+			SetControllerButtons();
 			return ret;
 		}
+
 		public bool PutSyncSettings(object o) { return false; }
 
 		public class PCESettings
@@ -590,6 +600,28 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			public PCESettings Clone()
 			{
 				return (PCESettings)MemberwiseClone();
+			}
+		}
+
+		public class PCESyncSettings
+		{
+			public ControllerSetting[] Controllers = 
+			{
+				new ControllerSetting { IsConnected = true },
+				new ControllerSetting { IsConnected = false },
+				new ControllerSetting { IsConnected = false },
+				new ControllerSetting { IsConnected = false },
+				new ControllerSetting { IsConnected = false }
+			};
+
+			public PCESyncSettings Clone()
+			{
+				return (PCESyncSettings)MemberwiseClone();
+			}
+
+			public class ControllerSetting
+			{
+				public bool IsConnected { get; set; }
 			}
 		}
 	}

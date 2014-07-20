@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using BizHawk.Emulation.Common;
-using System.Runtime.InteropServices;
-using BizHawk.Common;
 using System.ComponentModel;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+
 using Newtonsoft.Json;
+
+using BizHawk.Common.BufferExtensions;
+using BizHawk.Emulation.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
@@ -81,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					BoardName = mappername;
 					CoreComm.VsyncNum = 39375000;
 					CoreComm.VsyncDen = 655171;
-					PutSettings(Settings ?? QuickNESSettings.GetDefaults());
+					PutSettings(Settings ?? new QuickNESSettings());
 				}
 				catch
 				{
@@ -388,6 +391,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		{
 			[DefaultValue(8)]
 			[Description("Set the number of sprites visible per line.  0 hides all sprites, 8 behaves like a normal NES, and 64 is maximum.")]
+			[DisplayName("Visbile Sprites")]
 			public int NumSprites
 			{
 				get { return _NumSprites; }
@@ -398,10 +402,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 			[DefaultValue(false)]
 			[Description("Clip the left and right 8 pixels of the display, which sometimes contain nametable garbage.")]
+			[DisplayName("Clip Left and Right")]
 			public bool ClipLeftAndRight { get; set; }
 
 			[DefaultValue(false)]
 			[Description("Clip the top and bottom 8 pixels of the display, which sometimes contain nametable garbage.")]
+			[DisplayName("Clip Top and Bottom")]
 			public bool ClipTopAndBottom { get; set; }
 
 			[Browsable(false)]
@@ -427,15 +433,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				ret._Palette = (byte[])_Palette.Clone();
 				return ret;
 			}
-			public static QuickNESSettings GetDefaults()
+			public QuickNESSettings()
 			{
-				return new QuickNESSettings
-				{
-					NumSprites = 8,
-					ClipLeftAndRight = false,
-					ClipTopAndBottom = true,
-					_Palette = GetDefaultColors()
-				};
+				SettingsUtil.SetDefaultValues(this);
+				SetDefaultColors();
 			}
 
 			public void SetNesHawkPalette(int[,] pal)
@@ -468,8 +469,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			}
 		}
 
-		QuickNESSettings Settings = QuickNESSettings.GetDefaults();
+		QuickNESSettings _Settings;
 
+		// what is this for?
 		public class QuickNESSyncSettings
 		{
 			public QuickNESSyncSettings Clone()
@@ -480,7 +482,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public object GetSettings()
 		{
-			return Settings.Clone();
+			return _Settings.Clone();
 		}
 
 		public object GetSyncSettings()
@@ -490,8 +492,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public bool PutSettings(object o)
 		{
-			Settings = (QuickNESSettings)o;
-			LibQuickNES.qn_set_sprite_limit(Context, Settings.NumSprites);
+			_Settings = (QuickNESSettings)o;
+			LibQuickNES.qn_set_sprite_limit(Context, _Settings.NumSprites);
 			RecalculateCrops();
 			return false;
 		}
@@ -529,8 +531,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		void RecalculateCrops()
 		{
-			cropright = cropleft = Settings.ClipLeftAndRight ? 8 : 0;
-			cropbottom = croptop = Settings.ClipTopAndBottom ? 8 : 0;
+			cropright = cropleft = _Settings.ClipLeftAndRight ? 8 : 0;
+			cropbottom = croptop = _Settings.ClipTopAndBottom ? 8 : 0;
 			BufferWidth = 256 - cropleft - cropright;
 			BufferHeight = 240 - croptop - cropbottom;
 		}
@@ -543,7 +545,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		void Blit()
 		{
-			LibQuickNES.qn_blit(Context, VideoOutputH.AddrOfPinnedObject(), Settings.Palette, cropleft, croptop, cropright, cropbottom);
+			LibQuickNES.qn_blit(Context, VideoOutputH.AddrOfPinnedObject(), _Settings.Palette, cropleft, croptop, cropright, cropbottom);
 		}
 
 		public IVideoProvider VideoProvider { get { return this; } }

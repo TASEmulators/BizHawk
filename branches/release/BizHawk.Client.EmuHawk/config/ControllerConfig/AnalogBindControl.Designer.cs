@@ -63,11 +63,11 @@
 			// trackBarSensitivity
 			// 
 			this.trackBarSensitivity.LargeChange = 20;
-			this.trackBarSensitivity.Location = new System.Drawing.Point(267, 3);
+			this.trackBarSensitivity.Location = new System.Drawing.Point(267, 21);
 			this.trackBarSensitivity.Maximum = 20;
 			this.trackBarSensitivity.Minimum = -20;
 			this.trackBarSensitivity.Name = "trackBarSensitivity";
-			this.trackBarSensitivity.Size = new System.Drawing.Size(104, 42);
+			this.trackBarSensitivity.Size = new System.Drawing.Size(104, 45);
 			this.trackBarSensitivity.SmallChange = 10;
 			this.trackBarSensitivity.TabIndex = 2;
 			this.trackBarSensitivity.TickFrequency = 10;
@@ -76,7 +76,7 @@
 			// labelSensitivity
 			// 
 			this.labelSensitivity.AutoSize = true;
-			this.labelSensitivity.Location = new System.Drawing.Point(166, 6);
+			this.labelSensitivity.Location = new System.Drawing.Point(166, 25);
 			this.labelSensitivity.Name = "labelSensitivity";
 			this.labelSensitivity.Size = new System.Drawing.Size(95, 13);
 			this.labelSensitivity.TabIndex = 3;
@@ -100,7 +100,7 @@
 			// 
 			this.trackBarDeadzone.Location = new System.Drawing.Point(267, 51);
 			this.trackBarDeadzone.Name = "trackBarDeadzone";
-			this.trackBarDeadzone.Size = new System.Drawing.Size(104, 42);
+			this.trackBarDeadzone.Size = new System.Drawing.Size(104, 45);
 			this.trackBarDeadzone.TabIndex = 5;
 			this.trackBarDeadzone.TickFrequency = 2;
 			this.trackBarDeadzone.ValueChanged += new System.EventHandler(this.trackBarDeadzone_ValueChanged);

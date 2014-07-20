@@ -2,9 +2,10 @@
 using System.Threading;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 
-using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
@@ -123,6 +124,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			RefreshMemoryCallbacks();
 
 			api.AsyncExecuteEmulator();
+			SetControllerButtons();
 		}
 
 		public void Dispose()
@@ -534,7 +536,54 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public bool PutSyncSettings(object o)
 		{
 			_syncSettings = (N64SyncSettings)o;
+			SetControllerButtons();
 			return true;
+		}
+
+		private void SetControllerButtons()
+		{
+			ControllerDefinition.BoolButtons.Clear();
+			ControllerDefinition.FloatControls.Clear();
+
+			ControllerDefinition.BoolButtons.AddRange(new[]
+			{
+				"Reset",
+				"Power"
+			});
+
+			for (int i = 0; i < 4; i++)
+			{
+				if (_syncSettings.Controllers[i].IsConnected)
+				{
+					ControllerDefinition.BoolButtons.AddRange(new []
+					{
+						"P" + (i + 1) + " A Up",
+						"P" + (i + 1) + " A Down",
+						"P" + (i + 1) + " A Left",
+						"P" + (i + 1) + " A Right",
+						"P" + (i + 1) + " DPad U",
+						"P" + (i + 1) + " DPad D",
+						"P" + (i + 1) + " DPad L",
+						"P" + (i + 1) + " DPad R",
+						"P" + (i + 1) + " Start",
+						"P" + (i + 1) + " Z",
+						"P" + (i + 1) + " B",
+						"P" + (i + 1) + " A",
+						"P" + (i + 1) + " C Up",
+						"P" + (i + 1) + " C Down",
+						"P" + (i + 1) + " C Right",
+						"P" + (i + 1) + " C Left",
+						"P" + (i + 1) + " L",
+						"P" + (i + 1) + " R", 
+					});
+
+					ControllerDefinition.FloatControls.AddRange(new[]
+					{
+						"P" + (i + 1) + " X Axis",
+						"P" + (i + 1) + " Y Axis",
+					});
+				}
+			}
 		}
 
 		#endregion

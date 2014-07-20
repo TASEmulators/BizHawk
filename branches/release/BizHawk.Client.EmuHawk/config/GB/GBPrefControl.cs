@@ -25,8 +25,8 @@ namespace BizHawk.Client.EmuHawk.config.GB
 
 		public void PutSettings(Gameboy.GambatteSettings s, Gameboy.GambatteSyncSettings ss)
 		{
-			this.s = s ?? Gameboy.GambatteSettings.GetDefaults();
-			this.ss = ss ?? Gameboy.GambatteSyncSettings.GetDefaults();
+			this.s = s ?? new Gameboy.GambatteSettings();
+			this.ss = ss ?? new Gameboy.GambatteSyncSettings();
 			propertyGrid1.SelectedObject = this.ss;
 		}
 

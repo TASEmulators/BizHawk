@@ -197,7 +197,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!_gameGenieTable.ContainsKey(char.ToUpper(e.KeyChar)))
 			{
-				if (Control.ModifierKeys != Keys.None)
+				if (ModifierKeys != Keys.None)
 				{
 					return;
 				}

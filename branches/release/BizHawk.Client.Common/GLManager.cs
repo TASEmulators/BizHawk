@@ -1,12 +1,5 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-using BizHawk.Common;
-using BizHawk.Emulation.Common;
-
 using BizHawk.Bizware.BizwareGL;
-using BizHawk.Bizware.BizwareGL.Drivers.OpenTK;
+
 
 namespace BizHawk.Client.Common
 {
@@ -17,21 +10,21 @@ namespace BizHawk.Client.Common
 	{
 		public GLManager()
 		{
-			int zzz = 9;
+
 		}
 
 		public ContextRef CreateGLContext()
 		{
-			var ret = new ContextRef()
+			var ret = new ContextRef
 			{
-				gl = new BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK()
+				gl = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK()
 			};
 			return ret;
 		}
 
 		public ContextRef GetContextForGraphicsControl(GraphicsControl gc)
 		{
-			return new ContextRef()
+			return new ContextRef
 			{
 				gc = gc
 			};
@@ -42,7 +35,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public ContextRef GetContextForIGL(IGL gl)
 		{
-			return new ContextRef()
+			return new ContextRef
 			{
 				gl = gl
 			};

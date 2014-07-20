@@ -5,6 +5,9 @@ using System.Windows.Forms;
 using System.ComponentModel;
 using System.Security.Permissions;
 
+//I believe this code is from http://support.microsoft.com/kb/306285
+//The license is assumed to be effectively public domain.
+//I saw a version of it with at least one bug fixed at https://github.com/slavat/MailSystem.NET/blob/master/Queuing%20System/ActiveQLibrary/CustomControl/FolderBrowser.cs
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -156,6 +159,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// Convert to a string.
+				SelectedPath = sb.ToString();
 			}
 			finally
 			{

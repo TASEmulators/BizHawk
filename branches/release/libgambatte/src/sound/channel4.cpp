@@ -150,12 +150,6 @@ void Channel4::Lfsr::resetCounters(const unsigned long oldCc) {
 	SoundUnit::resetCounters(oldCc);
 }
 
-void Channel4::Lfsr::saveState(SaveState &state, const unsigned long cc) {
-	updateBackupCounter(cc);
-	state.spu.ch4.lfsr.counter = backupCounter;
-	state.spu.ch4.lfsr.reg = reg;
-}
-
 void Channel4::Lfsr::loadState(const SaveState &state) {
 	counter = backupCounter = std::max(state.spu.ch4.lfsr.counter, state.spu.cycleCounter);
 	reg = state.spu.ch4.lfsr.reg;
@@ -247,15 +241,6 @@ void Channel4::reset() {
 
 void Channel4::init(const bool cgb) {
 	lengthCounter.init(cgb);
-}
-
-void Channel4::saveState(SaveState &state) {
-	lfsr.saveState(state, cycleCounter);
-	envelopeUnit.saveState(state.spu.ch4.env);
-	lengthCounter.saveState(state.spu.ch4.lcounter);
-	
-	state.spu.ch4.nr4 = nr4;
-	state.spu.ch4.master = master;
 }
 
 void Channel4::loadState(const SaveState &state) {

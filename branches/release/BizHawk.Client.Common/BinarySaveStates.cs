@@ -13,7 +13,18 @@ namespace BizHawk.Client.Common
 		Framebuffer,
 		Input,
 		CorestateText,
-		Movieheader
+
+		// Only for movies they probably shoudln't be leaching this stuff
+		Movieheader,
+		Comments,
+		Subtitles,
+		SyncSettings,
+
+		// TasMovie
+		LagLog,
+		Greenzone,
+		GreenzoneSettings,
+		Markers
 	}
 
 	public class BinaryStateFileNames
@@ -38,6 +49,17 @@ namespace BizHawk.Client.Common
 			LumpNames[BinaryStateLump.Input] = "Input Log";
 			LumpNames[BinaryStateLump.CorestateText] = "CoreText";
 			LumpNames[BinaryStateLump.Movieheader] = "Header";
+
+			// Only for movies they probably shoudln't be leaching this stuff
+			LumpNames[BinaryStateLump.Comments] = "Comments";
+			LumpNames[BinaryStateLump.Subtitles] = "Subtitles";
+			LumpNames[BinaryStateLump.SyncSettings] = "SyncSettings";
+
+			// TasMovie
+			LumpNames[BinaryStateLump.LagLog] = "LagLog";
+			LumpNames[BinaryStateLump.Greenzone] = "GreenZone";
+			LumpNames[BinaryStateLump.GreenzoneSettings] = "GreenZoneSettings";
+			LumpNames[BinaryStateLump.Markers] = "Markers";
 		}
 
 		public static string Get(BinaryStateLump lump)
@@ -94,7 +116,7 @@ namespace BizHawk.Client.Common
 			Console.WriteLine("Read a zipstate of version {0}", _ver);
 		}
 
-		public static BinaryStateLoader LoadAndDetect(string filename)
+		public static BinaryStateLoader LoadAndDetect(string filename, bool isMovieLoad = false)
 		{
 			var ret = new BinaryStateLoader();
 
@@ -116,7 +138,8 @@ namespace BizHawk.Client.Common
 			try
 			{
 				ret._zip = new ZipFile(filename);
-				if (!ret.GetLump(BinaryStateLump.Versiontag, false, ret.ReadVersion))
+
+				if (!isMovieLoad && !ret.GetLump(BinaryStateLump.Versiontag, false, ret.ReadVersion))
 				{
 					ret._zip.Close();
 					return null;
@@ -215,22 +238,28 @@ namespace BizHawk.Client.Common
 		/// 
 		/// </summary>
 		/// <param name="s">not closed when finished!</param>
-		public BinaryStateSaver(Stream s)
+		public BinaryStateSaver(Stream s, bool stateVersionTag = true) // stateVersionTag is a hack for reusing this for movie code
 		{
 			_zip = new ZipOutputStream(s)
 				{
 					IsStreamOwner = false,
 					UseZip64 = UseZip64.Off
 				};
-			_zip.SetLevel(5);
+			_zip.SetLevel(Global.Config.SaveStateCompressionLevelNormal);
 
-			PutLump(BinaryStateLump.Versiontag, WriteVersion);	
+			if (stateVersionTag)
+			{
+				PutLump(BinaryStateLump.Versiontag, WriteVersion);
+			}
 		}
 
 		public void PutLump(BinaryStateLump lump, Action<Stream> callback)
 		{
 			var name = BinaryStateFileNames.Get(lump);
-			var e = new ZipEntry(name) {CompressionMethod = CompressionMethod.Deflated};
+			var e = new ZipEntry(name);
+			if (Global.Config.SaveStateCompressionLevelNormal == 0)
+				e.CompressionMethod = CompressionMethod.Stored;
+			else e.CompressionMethod = CompressionMethod.Deflated;
 			_zip.PutNextEntry(e);
 			callback(_zip);
 			_zip.CloseEntry();

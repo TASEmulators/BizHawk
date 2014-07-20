@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
@@ -257,7 +257,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			// 3E cart bankswitching is triggered by storing the bank number
 			// in address 3E using 'STA $3E', commonly followed by an
 			// immediate mode LDA
-			return Util.FindBytes(rom, new byte[] { 0x85, 0x3E, 0xA9, 0x00 }); // STA $3E; LDA #$00
+			return rom.FindBytes(new byte[] { 0x85, 0x3E, 0xA9, 0x00 }); // STA $3E; LDA #$00
 		}
 
 		private static bool IsProbably3F(byte[] rom)
@@ -443,12 +443,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private static bool ContainsAny(byte[] rom, IEnumerable<byte[]> signatures)
 		{
-			return signatures.Any(signature => Util.FindBytes(rom, signature));
+			return signatures.Any(signature => rom.FindBytes(signature));
 		}
 
 		private static bool ContainsAll(byte[] rom, IEnumerable<byte[]> signatures)
 		{
-			return signatures.All(signature => Util.FindBytes(rom, signature));
+			return signatures.All(signature => rom.FindBytes(signature));
 		}
 	}
 }

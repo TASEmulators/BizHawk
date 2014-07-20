@@ -67,6 +67,7 @@ namespace BizHawk.Client.Common
 		public bool PauseWhenMenuActivated = true;
 		public bool SaveWindowPosition = true;
 		public bool StartPaused = false;
+		public bool StartFullscreen = false;
 		public int MainWndx = -1; // Negative numbers will be ignored
 		public int MainWndy = -1;
 		public bool RunInBackground = true;
@@ -90,13 +91,25 @@ namespace BizHawk.Client.Common
 		public bool AutoLoadLastSaveSlot = false;
 		public bool WIN32_CONSOLE = true;
 		public bool SkipLagFrame = false;
-		public string MovieExtension = "bkm";
 		public bool SupressAskSave = false;
 		public bool AVI_CaptureOSD = false;
 		public bool Screenshot_CaptureOSD = false;
+		public bool FirstBoot = true;
 
 		public enum SaveStateTypeE { Default, Binary, Text };
-		public SaveStateTypeE SaveStateType = SaveStateTypeE.Default;
+
+		public MovieEndAction MovieEndAction = MovieEndAction.Finish;
+
+		public enum ClientProfile
+		{
+			Unknown = 0,
+			Casual = 1,
+			Longplay = 2,
+			Tas = 3,
+			Custom = 99
+		}
+
+		public ClientProfile SelectedProfile = ClientProfile.Unknown;
 
 		// N64
 		public bool N64UseCircularAnalogConstraint = true;
@@ -123,6 +136,13 @@ namespace BizHawk.Client.Common
 		public int Rewind_BufferSize = 128; //in mb
 		public bool Rewind_OnDisk = false;
 		public bool Rewind_IsThreaded = false;
+
+		// Savestate settings
+		public SaveStateTypeE SaveStateType = SaveStateTypeE.Default;
+		public const int DefaultSaveStateCompressionLevelNormal = 5;
+		public int SaveStateCompressionLevelNormal = DefaultSaveStateCompressionLevelNormal;
+		public const int DefaultSaveStateCompressionLevelRewind = 0;//this isnt actually used yet 
+		public int SaveStateCompressionLevelRewind = DefaultSaveStateCompressionLevelRewind;//this isnt actually used yet 
 
 		/// <summary>use vsync.  if VSyncThrottle = false, this will try to use vsync without throttling to it</summary>
 		public bool VSync = false;
@@ -171,6 +191,8 @@ namespace BizHawk.Client.Common
 		public bool DispFixAspectRatio = true;
 		public bool DispFixScaleInteger = true;
 		public bool DispObeyAR = true;
+		public bool DispFullscreenHacks = true;
+		public bool DispSnowyNullEmulator = true;
 
 		// Sound options
 		public bool SoundEnabled = true;
@@ -196,6 +218,7 @@ namespace BizHawk.Client.Common
 		// RamWatch Settings
 		public ToolDialogSettings RamWatchSettings = new ToolDialogSettings();
 		public RecentFiles RecentWatches = new RecentFiles(8);
+		public bool RamWatchShowAddressColumn = true;
 		public bool RamWatchShowChangeColumn = true;
 		public bool RamWatchShowPrevColumn = false;
 		public bool RamWatchShowDiffColumn = false;
@@ -419,6 +442,10 @@ namespace BizHawk.Client.Common
 		public ToolDialogSettings PceCdlSettings = new ToolDialogSettings();
 		public RecentFiles RecentPceCdlFiles = new RecentFiles(8);
 
+		// PCE Sound Debugger settings
+		public ToolDialogSettings PceSoundDebuggerSettings = new ToolDialogSettings();
+		public bool PceSoundDebuggerAutoload = false;
+
 		#region Cheats Dialog
 
 		public ToolDialogSettings CheatsSettings = new ToolDialogSettings();
@@ -521,8 +548,7 @@ namespace BizHawk.Client.Common
 		public bool MoviePlaybackPokeMode = false;
 
 		//Play Movie Dialog
-		public bool PlayMovie_IncludeSubdir = true;
-		public bool PlayMovie_ShowStateFiles = false;
+		public bool PlayMovie_IncludeSubdir = false;
 		public bool PlayMovie_MatchHash = false;
 
 		//TI83

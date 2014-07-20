@@ -3,6 +3,8 @@ using System.Linq;
 using System.IO;
 using System.Reflection;
 
+using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
@@ -175,8 +177,8 @@ namespace BizHawk.Client.Common
 			int x = NumParentDirectories(path);
 			if (x > 0)
 			{
-				int y = StringHelpers.HowMany(path, "..\\");
-				int z = StringHelpers.HowMany(workingpath, "\\");
+				int y = path.HowMany("..\\");
+				int z = workingpath.HowMany("\\");
 				if (y >= z)
 				{
 					//Return drive letter only, working path must be absolute?
@@ -191,10 +193,10 @@ namespace BizHawk.Client.Common
 		public static int NumParentDirectories(string path)
 		{
 			// determine the number of parent directories in path and return result
-			int x = StringHelpers.HowMany(path, '\\');
+			int x = path.HowMany('\\');
 			if (x > 0)
 			{
-				return StringHelpers.HowMany(path, "..\\");
+				return path.HowMany("..\\");
 			}
 
 			return 0;
@@ -237,6 +239,14 @@ namespace BizHawk.Client.Common
 			// zero 22-jul-2012 - i dont think this is used the same way it used to. game.Name shouldnt be a path, so this stuff is illogical.
 			// if game.Name is a path, then someone shouldve made it not-a-path already.
 			// return Path.Combine(Path.GetDirectoryName(filesystemSafeName), Path.GetFileNameWithoutExtension(filesystemSafeName));
+
+			// adelikat:
+			// This hack is to prevent annoying things like Super Mario Bros..bk2
+			if (filesystemSafeName.EndsWith("."))
+			{
+				return filesystemSafeName.Remove(filesystemSafeName.Length - 1, 1);
+			}
+
 			return filesystemSafeName;
 		}
 

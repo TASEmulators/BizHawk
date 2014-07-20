@@ -2,7 +2,8 @@
 using System.Globalization;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
+using BizHawk.Common.StringExtensions;
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -30,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 		public void SetHexProperties(int domainSize)
 		{
 			_maxSize = domainSize - 1;
-			MaxLength = IntHelpers.GetNumDigits(_maxSize.Value);
+			MaxLength = _maxSize.Value.NumHexDigits();
 			_addressFormatStr = "{0:X" + MaxLength + "}";
 			
 			ResetText();
@@ -58,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 			
-			if (!InputValidate.IsHex(e.KeyChar))
+			if (!e.KeyChar.IsHex())
 			{
 				e.Handled = true;
 			}
@@ -68,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.KeyCode == Keys.Up)
 			{
-				if (InputValidate.IsHex(Text) && !string.IsNullOrEmpty(_addressFormatStr))
+				if (Text.IsHex() && !string.IsNullOrEmpty(_addressFormatStr))
 				{
 					var val = (uint)ToRawInt();
 
@@ -86,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.KeyCode == Keys.Down)
 			{
-				if (InputValidate.IsHex(Text) && !string.IsNullOrEmpty(_addressFormatStr))
+				if (Text.IsHex() && !string.IsNullOrEmpty(_addressFormatStr))
 				{
 					var val = (uint)ToRawInt();
 					if (val == 0)
@@ -156,7 +157,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 			
-			if (!InputValidate.IsUnsigned(e.KeyChar))
+			if (!e.KeyChar.IsUnsigned())
 			{
 				e.Handled = true;
 			}
@@ -171,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.KeyCode == Keys.Up)
 			{
-				if (InputValidate.IsUnsigned(Text))
+				if (Text.IsHex())
 				{
 					var val = (uint)ToRawInt();
 					if (val == uint.MaxValue)
@@ -188,7 +189,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.KeyCode == Keys.Down)
 			{
-				if (InputValidate.IsUnsigned(Text))
+				if (Text.IsHex())
 				{
 					var val = (uint)ToRawInt();
 
@@ -212,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnTextChanged(EventArgs e)
 		{
-			if (string.IsNullOrWhiteSpace(Text))
+			if (string.IsNullOrWhiteSpace(Text) || !Text.IsHex())
 			{
 				ResetText();
 			}
@@ -222,7 +223,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int? ToRawInt()
 		{
-			if (string.IsNullOrWhiteSpace(Text))
+			if (string.IsNullOrWhiteSpace(Text) || !Text.IsHex())
 			{
 				if (Nullable)
 				{

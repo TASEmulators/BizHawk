@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Common.Components
 {
@@ -27,6 +26,8 @@ namespace BizHawk.Emulation.Common.Components
 		}
 
 		public PSGChannel[] Channels = new PSGChannel[8];
+
+		public bool[] UserMute = new bool[8];
 
 		public byte VoiceLatch;
 		private byte WaveTableWriteOffset;
@@ -99,7 +100,10 @@ namespace BizHawk.Emulation.Common.Components
 					Channels[VoiceLatch].Enabled = (value & 0x80) != 0;
 					Channels[VoiceLatch].DDA = (value & 0x40) != 0;
 					if (Channels[VoiceLatch].Enabled == false && Channels[VoiceLatch].DDA)
+					{
+						//for the soudn debugger, this might be a useful indication that a new note has begun.. but not for sure
 						WaveTableWriteOffset = 0;
+					}
 					break;
 				case 5: // Panning
 					Channels[VoiceLatch].Panning = value;
@@ -157,7 +161,10 @@ namespace BizHawk.Emulation.Common.Components
 		void MixSamples(short[] samples, int start, int len)
 		{
 			for (int i = 0; i < 6; i++)
+			{
+				if (UserMute[i]) continue;
 				MixChannel(samples, start, len, Channels[i]);
+			}
 		}
 
 		void MixChannel(short[] samples, int start, int len, PSGChannel channel)

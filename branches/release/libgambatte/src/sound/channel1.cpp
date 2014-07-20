@@ -90,13 +90,6 @@ void Channel1::SweepUnit::reset() {
 	counter = COUNTER_DISABLED;
 }
 
-void Channel1::SweepUnit::saveState(SaveState &state) const {
-	state.spu.ch1.sweep.counter = counter;
-	state.spu.ch1.sweep.shadow = shadow;
-	state.spu.ch1.sweep.nr0 = nr0;
-	state.spu.ch1.sweep.negging = negging;
-}
-
 void Channel1::SweepUnit::loadState(const SaveState &state) {
 	counter = std::max(state.spu.ch1.sweep.counter, state.spu.cycleCounter);
 	shadow = state.spu.ch1.sweep.shadow;
@@ -200,17 +193,6 @@ void Channel1::reset() {
 
 void Channel1::init(const bool cgb) {
 	lengthCounter.init(cgb);
-}
-
-void Channel1::saveState(SaveState &state) {
-	sweepUnit.saveState(state);
-	dutyUnit.saveState(state.spu.ch1.duty, cycleCounter);
-	envelopeUnit.saveState(state.spu.ch1.env);
-	lengthCounter.saveState(state.spu.ch1.lcounter);
-	
-	state.spu.cycleCounter = cycleCounter;
-	state.spu.ch1.nr4 = nr4;
-	state.spu.ch1.master = master;
 }
 
 void Channel1::loadState(const SaveState &state) {

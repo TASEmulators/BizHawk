@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VirtualpadToolbarItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.Load<VirtualPadForm>();
+			GlobalWin.Tools.Load<VirtualpadTool>();
 		}
 
 		private void SNESGameGenieToolbarItem_Click(object sender, EventArgs e)
@@ -213,6 +213,11 @@ namespace BizHawk.Client.EmuHawk
 		private void PceBgViewerToolbarItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<PceBgViewer>();
+		}
+
+		private void PceSoundDebuggerButton_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<PCESoundDebugger>();
 		}
 
 		private void GbaGpuViewerToolBarItem_Click(object sender, EventArgs e)

@@ -8,9 +8,12 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
+using BizHawk.Common.StringExtensions;
+using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -353,7 +356,7 @@ namespace BizHawk.Client.EmuHawk
 				if (file.IsArchive)
 				{
 					var stream = file.GetStream();
-					return Util.ReadAllBytes(stream);
+					return stream.ReadAllBytes();
 				}
 				
 				return File.ReadAllBytes(path);
@@ -1375,7 +1378,7 @@ namespace BizHawk.Client.EmuHawk
 			if (data != null && data.GetDataPresent(DataFormats.Text))
 			{
 				var clipboardRaw = (string)data.GetData(DataFormats.Text);
-				var hex = InputValidate.DoHexString(clipboardRaw);
+				var hex = clipboardRaw.OnlyHex();
 
 				var numBytes = hex.Length / 2;
 				for (var i = 0; i < numBytes; i++)
@@ -1476,9 +1479,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var inputPrompt = new InputPrompt { Text = "Go to Address", StartLocation = GetPromptPoint() };
 			inputPrompt.SetMessage("Enter a hexadecimal value");
-			inputPrompt.ShowHawkDialog();
+			var result = inputPrompt.ShowHawkDialog();
 
-			if (inputPrompt.UserOk && InputValidate.IsHex(inputPrompt.UserText))
+			if (result == DialogResult.OK && inputPrompt.UserText.IsHex())
 			{
 				GoToAddress(int.Parse(inputPrompt.UserText, NumberStyles.HexNumber));
 			}

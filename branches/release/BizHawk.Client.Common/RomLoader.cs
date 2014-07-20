@@ -220,7 +220,7 @@ namespace BizHawk.Client.Common
 						{
 							case "GEN":
 								var genesis = new GPGX(
-										nextComm, null, disc, "GEN", GetCoreSettings<GPGX>());
+										nextComm, null, disc, "GEN", GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
 										nextEmulator = genesis;
 								break;
 							case "SAT":
@@ -236,7 +236,7 @@ namespace BizHawk.Client.Common
 								break;
 							case "PCE":
 							case "PCECD":
-								nextEmulator = new PCEngine(nextComm, game, disc, GetCoreSettings<PCEngine>());
+								nextEmulator = new PCEngine(nextComm, game, disc, GetCoreSettings<PCEngine>(), GetCoreSyncSettings<PCEngine>());
 								break;
 						}
 					}
@@ -332,10 +332,10 @@ namespace BizHawk.Client.Common
 							case "PCE":
 							case "PCECD":
 							case "SGX":
-								nextEmulator = new PCEngine(nextComm, game, rom.RomData, GetCoreSettings<PCEngine>());
+								nextEmulator = new PCEngine(nextComm, game, rom.RomData, GetCoreSettings<PCEngine>(), GetCoreSyncSettings<PCEngine>());
 								break;
 							case "GEN":
-								nextEmulator = new GPGX(nextComm, rom.RomData, null, "GEN", GetCoreSyncSettings<GPGX>());
+								nextEmulator = new GPGX(nextComm, rom.RomData, null, "GEN", GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
 								break;
 							case "TI83":
 								nextEmulator = new TI83(nextComm, game, rom.RomData, GetCoreSettings<TI83>());
@@ -403,13 +403,9 @@ namespace BizHawk.Client.Common
 								nextEmulator = c64;
 								break;
 							case "GBA":
-								if (VersionInfo.DeveloperBuild)
-								{
-									var gba = new GBA(nextComm);
-									gba.Load(rom.RomData);
-									nextEmulator = gba;
-								}
-
+								var gba = new GBA(nextComm);
+								gba.Load(rom.RomData);
+								nextEmulator = gba;
 								break;
 							case "N64":
 								nextEmulator = new N64(nextComm, game, rom.RomData,

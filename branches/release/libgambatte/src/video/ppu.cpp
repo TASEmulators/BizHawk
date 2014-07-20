@@ -1475,38 +1475,6 @@ PPUPriv::PPUPriv(NextM0Time &nextM0Time, const unsigned char *const oamram, cons
 	std::memset(spwordList, 0, sizeof spwordList);
 }
 
-static void saveSpriteList(const PPUPriv &p, SaveState &ss) {
-	for (unsigned i = 0; i < 10; ++i) {
-		ss.ppu.spAttribList[i] = p.spriteList[i].attrib;
-		ss.ppu.spByte0List[i] = p.spwordList[i] & 0xFF;
-		ss.ppu.spByte1List[i] = p.spwordList[i] >> 8;
-	}
-	
-	ss.ppu.nextSprite    = p.nextSprite;
-	ss.ppu.currentSprite = p.currentSprite;
-}
-
-void PPU::saveState(SaveState &ss) const {
-	p_.spriteMapper.saveState(ss);
-	ss.ppu.videoCycles = p_.lcdc & 0x80 ? p_.lyCounter.frameCycles(p_.now) : 0;
-	ss.ppu.xpos = p_.xpos;
-	ss.ppu.endx = p_.endx;
-	ss.ppu.reg0 = p_.reg0;
-	ss.ppu.reg1 = p_.reg1;
-	ss.ppu.tileword = p_.tileword;
-	ss.ppu.ntileword = p_.ntileword;
-	ss.ppu.attrib = p_.attrib;
-	ss.ppu.nattrib = p_.nattrib;
-	ss.ppu.winDrawState = p_.winDrawState;
-	ss.ppu.winYPos = p_.winYPos;
-	ss.ppu.oldWy = p_.wy2;
-	ss.ppu.wscx = p_.wscx;
-	ss.ppu.weMaster = p_.weMaster;
-	saveSpriteList(p_, ss);
-	ss.ppu.state = p_.nextCallPtr->id;
-	ss.ppu.lastM0Time = p_.now - p_.lastM0Time;
-}
-
 namespace {
 
 template<class T, class K, std::size_t start, std::size_t len>

@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 //todo - display details on the current resolution status
@@ -15,9 +9,18 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class FirmwaresConfigInfo : Form
 	{
+
+		public const int idIdeal = 0;
+		public const int idAcceptable = 1;
+		public const int idUnacceptable = 2;
+		public const int idBad = 3;
+
 		public FirmwaresConfigInfo()
 		{
 			InitializeComponent();
+
+			//prep imagelist for listview with 4 item states for (ideal, acceptable, unacceptable, bad)
+			imageList1.Images.AddRange(new[] { Properties.Resources.GreenCheck, Properties.Resources.Freeze, Properties.Resources.thumbsdown, Properties.Resources.ExclamationRed });
 		}
 
 		private void lvOptions_KeyDown(object sender, KeyEventArgs e)
@@ -41,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void lvOptions_MouseClick(object sender, MouseEventArgs e)
 		{
-			if (e.Button == System.Windows.Forms.MouseButtons.Right && lvOptions.GetItemAt(e.X, e.Y) != null)
+			if (e.Button == MouseButtons.Right && lvOptions.GetItemAt(e.X, e.Y) != null)
 				lvmiOptionsContextMenuStrip.Show(lvOptions, e.Location);
 		}
 	}

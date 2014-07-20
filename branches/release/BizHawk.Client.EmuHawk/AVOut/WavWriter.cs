@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-using BizHawk.Common;
+using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -202,6 +202,7 @@ namespace BizHawk.Client.EmuHawk
 		public void AddFrame(IVideoProvider source) { }
 		public void SetMovieParameters(int fpsnum, int fpsden) { }
 		public void SetVideoParameters(int width, int height) { }
+		public void SetFrame(int frame) { }
 
 		class WavWriterVToken : IDisposable
 		{

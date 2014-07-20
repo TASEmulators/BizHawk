@@ -14,6 +14,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PlayMovie : Form
 	{
+		private readonly PlatformFrameRates PlatformFrameRates = new PlatformFrameRates();
+
 		private List<IMovie> _movieList = new List<IMovie>();
 		private bool _sortReverse;
 		private string _sortedCol;
@@ -36,7 +38,6 @@ namespace BizHawk.Client.EmuHawk
 		private void PlayMovie_Load(object sender, EventArgs e)
 		{
 			IncludeSubDirectories.Checked = Global.Config.PlayMovie_IncludeSubdir;
-			ShowStateFiles.Checked = Global.Config.PlayMovie_ShowStateFiles;
 			MatchHashCheckBox.Checked = Global.Config.PlayMovie_MatchHash;
 			ScanFiles();
 			PreHighlightMovie();
@@ -52,17 +53,17 @@ namespace BizHawk.Client.EmuHawk
 
 			if (column == 1) // System
 			{
-				text = _movieList[index].Header.SystemID;
+				text = _movieList[index].SystemID;
 			}
 
 			if (column == 2) // Game
 			{
-				text = _movieList[index].Header.GameName;
+				text = _movieList[index].GameName;
 			}
 
 			if (column == 3) // Time
 			{
-				text = _movieList[index].Time.ToString(@"hh\:mm\:ss\.fff");
+				text = PlatformFrameRates.MovieTime(_movieList[index]).ToString(@"hh\:mm\:ss\.fff");
 			}
 		}
 
@@ -72,27 +73,6 @@ namespace BizHawk.Client.EmuHawk
 			if (indices.Count > 0) // Import file if necessary
 			{
 				GlobalWin.MainForm.StartNewMovie(_movieList[MovieView.SelectedIndices[0]], false);
-			}
-		}
-
-		private void AddStateToList(string filename)
-		{
-			using (var file = new HawkFile(filename))
-			{
-				if (file.Exists)
-				{
-					if (!IsDuplicateOf(filename).HasValue)
-					{
-						var movie = new Movie(file.CanonicalFullPath);
-						movie.Load(); // State files will have to load everything unfortunately
-						if (movie.FrameCount > 0)
-						{
-							_movieList.Add(movie);
-							_sortReverse = false;
-							_sortedCol = string.Empty;
-						}
-					}
-				}
 			}
 		}
 
@@ -144,16 +124,16 @@ namespace BizHawk.Client.EmuHawk
 			return null;
 		}
 
-		private Movie PreLoadMovieFile(HawkFile hf, bool force)
+		private IMovie PreLoadMovieFile(HawkFile hf, bool force)
 		{
-			var movie = new Movie(hf.CanonicalFullPath);
+			var movie = MovieService.Get(hf.CanonicalFullPath);
 
 			try
 			{
-				movie.PreLoadText(hf);
+				movie.PreLoadHeaderAndLength(hf);
 
 				// Don't do this from browse
-				if (movie.Header[HeaderKeys.SHA1] == Global.Game.Hash ||
+				if (movie.Hash == Global.Game.Hash ||
 					Global.Config.PlayMovie_MatchHash == false || force)
 				{
 					return movie;
@@ -187,7 +167,7 @@ namespace BizHawk.Client.EmuHawk
 			// Pull out matching names
 			for (var i = 0; i < _movieList.Count; i++)
 			{
-				if (PathManager.FilesystemSafeName(Global.Game) == _movieList[i].Header.GameName)
+				if (PathManager.FilesystemSafeName(Global.Game) == _movieList[i].GameName)
 				{
 					indices.Add(i);
 				}
@@ -208,9 +188,12 @@ namespace BizHawk.Client.EmuHawk
 			var tas = new List<int>();
 			for (var i = 0; i < indices.Count; i++)
 			{
-				if (Path.GetExtension(_movieList[indices[i]].Filename).ToUpper() == "." + Global.Config.MovieExtension)
+				foreach (var ext in MovieService.MovieExtensions)
 				{
-					tas.Add(i);
+					if (Path.GetExtension(_movieList[indices[i]].Filename).ToUpper() == "." + ext)
+					{
+						tas.Add(i);
+					}
 				}
 			}
 
@@ -277,11 +260,8 @@ namespace BizHawk.Client.EmuHawk
 						dpTodo.Enqueue(subdir);
 
 				//add movies
-				fpTodo.AddRange(Directory.GetFiles(dp, "*." + Global.Config.MovieExtension));
-				
-				//add states if requested
-				if (Global.Config.PlayMovie_ShowStateFiles)
-					fpTodo.AddRange(Directory.GetFiles(dp, "*.state"));
+				fpTodo.AddRange(Directory.GetFiles(dp, "*." + MovieService.DefaultExtension));
+				fpTodo.AddRange(Directory.GetFiles(dp, "*." + TasMovie.Extension));
 			}
 
 			//in parallel, scan each movie
@@ -320,7 +300,7 @@ namespace BizHawk.Client.EmuHawk
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 
 			filePaths
-				.Where(path => Path.GetExtension(path) == "." + Global.Config.MovieExtension)
+				.Where(path => MovieService.MovieExtensions.Contains(Path.GetExtension(path).Replace(".", "")))
 				.ToList()
 				.ForEach(path => AddMovieToList(path, force: true));
 
@@ -339,9 +319,9 @@ namespace BizHawk.Client.EmuHawk
 					{
 						copyStr
 							.Append(_movieList[index].Filename).Append('\t')
-							.Append(_movieList[index].Header.SystemID).Append('\t')
-							.Append(_movieList[index].Header.GameName).Append('\t')
-							.Append(_movieList[index].Time.ToString(@"hh\:mm\:ss\.fff"))
+							.Append(_movieList[index].SystemID).Append('\t')
+							.Append(_movieList[index].GameName).Append('\t')
+							.Append(PlatformFrameRates.MovieTime(_movieList[index]).ToString(@"hh\:mm\:ss\.fff"))
 							.AppendLine();
 
 						Clipboard.SetDataObject(copyStr.ToString());
@@ -371,8 +351,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						_movieList = _movieList
 							.OrderByDescending(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.Header.SystemID)
-							.ThenBy(x => x.Header.GameName)
+							.ThenBy(x => x.SystemID)
+							.ThenBy(x => x.GameName)
 							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
@@ -380,8 +360,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						_movieList = _movieList
 							.OrderBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.Header.SystemID)
-							.ThenBy(x => x.Header.GameName)
+							.ThenBy(x => x.SystemID)
+							.ThenBy(x => x.GameName)
 							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
@@ -390,18 +370,18 @@ namespace BizHawk.Client.EmuHawk
 					if (_sortReverse)
 					{
 						_movieList = _movieList
-							.OrderByDescending(x => x.Header.SystemID)
+							.OrderByDescending(x => x.SystemID)
 							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.Header.GameName)
+							.ThenBy(x => x.GameName)
 							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
 					else
 					{
 						_movieList = _movieList
-							.OrderBy(x => x.Header.SystemID)
+							.OrderBy(x => x.SystemID)
 							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.Header.GameName)
+							.ThenBy(x => x.GameName)
 							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
@@ -410,18 +390,18 @@ namespace BizHawk.Client.EmuHawk
 					if (_sortReverse)
 					{
 						_movieList = _movieList
-							.OrderByDescending(x => x.Header.GameName)
+							.OrderByDescending(x => x.GameName)
 							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.Header.SystemID)
+							.ThenBy(x => x.SystemID)
 							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
 					else
 					{
 						_movieList = _movieList
-							.OrderBy(x => x.Header.GameName)
+							.OrderBy(x => x.GameName)
 							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.Header.SystemID)
+							.ThenBy(x => x.SystemID)
 							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
@@ -432,7 +412,7 @@ namespace BizHawk.Client.EmuHawk
 						_movieList = _movieList
 							.OrderByDescending(x => x.FrameCount)
 							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.Header.SystemID)
+							.ThenBy(x => x.SystemID)
 							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
@@ -441,8 +421,8 @@ namespace BizHawk.Client.EmuHawk
 						_movieList = _movieList
 							.OrderBy(x => x.FrameCount)
 							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.Header.SystemID)
-							.ThenBy(x => x.Header.GameName)
+							.ThenBy(x => x.SystemID)
+							.ThenBy(x => x.GameName)
 							.ToList();
 					}
 					break;
@@ -468,7 +448,7 @@ namespace BizHawk.Client.EmuHawk
 			var firstIndex = MovieView.SelectedIndices[0];
 			MovieView.ensureVisible(firstIndex);
 
-			foreach (var kvp in _movieList[firstIndex].Header)
+			foreach (var kvp in _movieList[firstIndex].HeaderEntries)
 			{
 				var item = new ListViewItem(kvp.Key);
 				item.SubItems.Add(kvp.Value);
@@ -482,12 +462,6 @@ namespace BizHawk.Client.EmuHawk
 						{
 							item.BackColor = Color.Pink;
 							toolTip1.SetToolTip(DetailsView, "Current SHA1: " + Global.Game.Hash);
-						}
-						break;
-					case HeaderKeys.MOVIEVERSION:
-						if (kvp.Value != HeaderKeys.MovieVersion1)
-						{
-							item.BackColor = Color.Yellow;
 						}
 						break;
 					case HeaderKeys.EMULATIONVERSION:
@@ -509,14 +483,24 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var FpsItem = new ListViewItem("Fps");
-			FpsItem.SubItems.Add(string.Format("{0:0.#######}", _movieList[firstIndex].Fps));
+			FpsItem.SubItems.Add(string.Format("{0:0.#######}", Fps(_movieList[firstIndex])));
 			DetailsView.Items.Add(FpsItem);
 
 			var FramesItem = new ListViewItem("Frames");
 			FramesItem.SubItems.Add(_movieList[firstIndex].FrameCount.ToString());
 			DetailsView.Items.Add(FramesItem);
-			CommentsBtn.Enabled = _movieList[firstIndex].Header.Comments.Any();
-			SubtitlesBtn.Enabled = _movieList[firstIndex].Header.Subtitles.Any();
+			CommentsBtn.Enabled = _movieList[firstIndex].Comments.Any();
+			SubtitlesBtn.Enabled = _movieList[firstIndex].Subtitles.Any();
+		}
+
+		public double Fps(IMovie movie)
+		{
+			var system = movie.HeaderEntries[HeaderKeys.PLATFORM];
+			var pal = movie.HeaderEntries.ContainsKey(HeaderKeys.PAL) &&
+					movie.HeaderEntries[HeaderKeys.PAL] == "1";
+
+			return new PlatformFrameRates()[system, pal];
+			
 		}
 
 		private void EditMenuItem_Click(object sender, EventArgs e)
@@ -628,7 +612,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ofd = new OpenFileDialog
 			{
-				Filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*",
+				Filter = "Movie Files (*." + MovieService.DefaultExtension + ")|*." + MovieService.DefaultExtension +
+					"|TAS project Files (*." + TasMovie.Extension + ")|*." + TasMovie.Extension +
+					"|All Files|*.*",
 				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null)
 			};
 
@@ -639,22 +625,6 @@ namespace BizHawk.Client.EmuHawk
 				if (!file.Exists)
 				{
 					return;
-				}
-
-				if (file.Extension.ToUpper() == "STATE")
-				{
-					var movie = new Movie(file.FullName);
-					movie.Load(); // State files will have to load everything unfortunately
-					if (movie.FrameCount == 0)
-					{
-						MessageBox.Show(
-							"No input log detected in this savestate, aborting",
-							"Can not load file",
-							MessageBoxButtons.OK,
-							MessageBoxIcon.Hand);
-
-						return;
-					}
 				}
 
 				int? index = AddMovieToList(ofd.FileName, true);
@@ -677,13 +647,6 @@ namespace BizHawk.Client.EmuHawk
 		private void IncludeSubDirectories_CheckedChanged(object sender, EventArgs e)
 		{
 			Global.Config.PlayMovie_IncludeSubdir = IncludeSubDirectories.Checked;
-			ScanFiles();
-			PreHighlightMovie();
-		}
-
-		private void ShowStateFiles_CheckedChanged(object sender, EventArgs e)
-		{
-			Global.Config.PlayMovie_ShowStateFiles = ShowStateFiles.Checked;
 			ScanFiles();
 			PreHighlightMovie();
 		}

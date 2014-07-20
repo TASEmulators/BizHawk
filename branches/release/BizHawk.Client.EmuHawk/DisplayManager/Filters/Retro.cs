@@ -269,7 +269,6 @@ namespace BizHawk.Client.EmuHawk.Filters
 						shader.Pipeline[kvp.Key].Set((float)kvp.Value);
 				}
 
-			var outDisposition = FindOutput().SurfaceDisposition;
 			var input = InputTexture;
 			if (SP.InputFilterLinear)
 				InputTexture.SetFilterLinear();

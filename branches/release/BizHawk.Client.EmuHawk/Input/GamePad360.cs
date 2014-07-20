@@ -17,17 +17,16 @@ namespace BizHawk.Client.EmuHawk
 			IsAvailable = false;
 			try
 			{
-				var test = new SlimDX.XInput.Controller(UserIndex.One).IsConnected;
 				IsAvailable = true;
 			}
 			catch { }
 
 			if (!IsAvailable) return;
 
-			var c1 = new SlimDX.XInput.Controller(UserIndex.One);
-			var c2 = new SlimDX.XInput.Controller(UserIndex.Two);
-			var c3 = new SlimDX.XInput.Controller(UserIndex.Three);
-			var c4 = new SlimDX.XInput.Controller(UserIndex.Four);
+			var c1 = new Controller(UserIndex.One);
+			var c2 = new Controller(UserIndex.Two);
+			var c3 = new Controller(UserIndex.Three);
+			var c4 = new Controller(UserIndex.Four);
 
 			if (c1.IsConnected) Devices.Add(new GamePad360(c1));
 			if (c2.IsConnected) Devices.Add(new GamePad360(c2));
@@ -44,10 +43,10 @@ namespace BizHawk.Client.EmuHawk
 
 		// ********************************** Instance Members **********************************
 
-		readonly SlimDX.XInput.Controller controller;
+		readonly Controller controller;
 		State state;
 
-		GamePad360(SlimDX.XInput.Controller c)
+		GamePad360(Controller c)
 		{
 			controller = c;
 			InitializeButtons();
