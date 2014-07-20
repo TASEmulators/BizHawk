@@ -4,10 +4,43 @@ extern "C"
 {
 	namespace D3D8Wrapper
 	{
+		ThreadSafePointerSet D3D8Wrapper::IDirect3DTexture8::m_List;
+
 		D3D8Wrapper::IDirect3DTexture8::IDirect3DTexture8(D3D8Base::IDirect3DTexture8* pTexture) : IDirect3DBaseTexture8((D3D8Base::IDirect3DBaseTexture8*) pTexture)
 		{
-			LOG("IDirect3DBaseTexture8");
+			LOG("IDirect3DTexture8");
 			m_pD3D = pTexture;
+		}
+
+		D3D8Wrapper::IDirect3DTexture8* D3D8Wrapper::IDirect3DTexture8::GetTexture(D3D8Base::IDirect3DTexture8* pTexture)
+		{
+			D3D8Wrapper::IDirect3DTexture8* p = (D3D8Wrapper::IDirect3DTexture8*) m_List.GetDataPtr(pTexture);
+			if( p == NULL )
+			{
+				p = new D3D8Wrapper::IDirect3DTexture8(pTexture);
+				LOG("IDirect3DTexture8::GetTexture " << pTexture << " created new " << p)
+				m_List.AddMember(pTexture, p);
+				return p;
+			}
+    
+			p->m_ulRef++;
+			LOG("IDirect3DTexture8::GetTexture " << pTexture << " found existing " << p)
+			return p;
+		}
+
+		STDMETHODIMP_(ULONG) D3D8Wrapper::IDirect3DTexture8::Release(THIS)
+		{
+			LOG("IDirect3DTexture8::Release " << this);
+			m_pUnk->Release();
+
+			ULONG ulRef = --m_ulRef;
+			if(ulRef == 0)
+			{
+				m_List.DeleteMember(GetResource());
+				delete this;
+				return 0;
+			}
+			return ulRef;
 		}
 
 

@@ -45,12 +45,16 @@ static int l_PluginInit = 0;
 HMODULE JaboDLL;
 HWND hWnd_jabo;
 
+HANDLE window_thread = NULL;
+
 HMODULE D3D8Dll;
 
 typedef void (*ptr_D3D8_SetRenderingCallback)(void (*callback)(int));
 ptr_D3D8_SetRenderingCallback D3D8_SetRenderingCallback = NULL;
 typedef void (*ptr_D3D8_ReadScreen)(void *dest, int *width, int *height);
 ptr_D3D8_ReadScreen D3D8_ReadScreen = NULL;
+typedef void (*ptr_D3D8_CloseDLL)();
+ptr_D3D8_CloseDLL D3D8_CloseDLL = NULL;
 
 void setup_jabo_functions()
 {
@@ -80,6 +84,7 @@ void setup_jabo_functions()
 	{
 		D3D8_SetRenderingCallback = (ptr_D3D8_SetRenderingCallback)GetProcAddress(D3D8Dll,"SetRenderingCallback");
 		D3D8_ReadScreen = (ptr_D3D8_ReadScreen)GetProcAddress(D3D8Dll,"ReadScreen");
+		D3D8_CloseDLL = (ptr_D3D8_CloseDLL)GetProcAddress(D3D8Dll,"CloseDLL");
 	}
 }
 
@@ -146,6 +151,11 @@ EXPORT m64p_error CALL PluginShutdown(void)
 {
 	LOG("API WRAPPER:\t PluginShutdown")
 	OldAPI::CloseDLL();
+
+	TerminateThread(window_thread,0);
+	D3D8_CloseDLL();
+	FreeLibrary(D3D8Dll);
+	FreeLibrary(JaboDLL);
 
     if (!l_PluginInit)
         return M64ERR_NOT_INIT;
@@ -416,7 +426,7 @@ BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call,LPVOID lpReser
 {
 	if(ul_reason_for_call==DLL_PROCESS_ATTACH) {
 		inj_hModule = hModule;
-		CreateThread(0, NULL, ThreadProc, (LPVOID)"Window Title", NULL, NULL);
+		window_thread = CreateThread(0, NULL, ThreadProc, (LPVOID)"Window Title", NULL, NULL);
 	}
 	return TRUE;
 }

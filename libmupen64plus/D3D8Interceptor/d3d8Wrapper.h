@@ -82,19 +82,15 @@ extern "C"
 			D3D8Base::IDirect3D8*		m_pD3D;
 			static ThreadSafePointerSet	m_List;
 		public:
-			STDMETHOD(QueryInterface)(THIS_ REFIID riid, void** ppvObj)
-			{
-				return E_FAIL;
-			}
-			inline D3D8Base::IDirect3D8* GetDirect3D8() { return m_pD3D; }
-
-			static IDirect3D8* GetDirect3D(D3D8Base::IDirect3D8* pD3D);
-			
 			IDirect3D8(D3D8Base::IDirect3D8*);
+
+			inline D3D8Base::IDirect3D8* GetDirect3D8() { return m_pD3D; }
+			static IDirect3D8* GetDirect3D(D3D8Base::IDirect3D8* pD3D);
+
+			/*** IDirect3DUnknown methods ***/
 			STDMETHOD_(ULONG,Release)(THIS);
 
 			/*** IDirect3D8 methods ***/
-			
 			STDMETHOD(RegisterSoftwareDevice)(THIS_ void* pInitializeFunction);
 			STDMETHOD_(UINT, GetAdapterCount)(THIS);
 			STDMETHOD(GetAdapterIdentifier)(THIS_ UINT Adapter,DWORD Flags,D3D8Base::D3DADAPTER_IDENTIFIER8* pIdentifier);
@@ -108,7 +104,6 @@ extern "C"
 			STDMETHOD(GetDeviceCaps)(THIS_ UINT Adapter,D3D8Base::D3DDEVTYPE DeviceType,D3D8Base::D3DCAPS8* pCaps);
 			STDMETHOD_(HMONITOR, GetAdapterMonitor)(THIS_ UINT Adapter);
 			STDMETHOD(CreateDevice)(THIS_ UINT Adapter,D3D8Base::D3DDEVTYPE DeviceType,HWND hFocusWindow,DWORD BehaviorFlags,D3D8Base::D3DPRESENT_PARAMETERS* pPresentationParameters,D3D8Wrapper::IDirect3DDevice8** ppReturnedDeviceInterface);
-			
 		};
 
 		class IDirect3DDevice8 : public IDirect3DUnknown
@@ -317,7 +312,11 @@ extern "C"
 			static ThreadSafePointerSet	m_List;
 		public:
 
+			STDMETHOD_(ULONG,Release)(THIS);
+
 			IDirect3DTexture8(D3D8Base::IDirect3DTexture8*);
+
+			static D3D8Wrapper::IDirect3DTexture8* GetTexture(D3D8Base::IDirect3DTexture8*);
 
 			//D3D8Base::IDirect3DTexture8* getReal2();
 
