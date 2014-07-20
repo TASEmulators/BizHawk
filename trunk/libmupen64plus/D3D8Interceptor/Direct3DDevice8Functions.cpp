@@ -20,7 +20,6 @@ extern "C"
 			{
 				p = new D3D8Wrapper::IDirect3DDevice8(pDevice);
 				m_List.AddMember(pDevice, p);
-				last_device = p;
 				return p;
 			}
 
@@ -251,7 +250,7 @@ extern "C"
 
 			HRESULT hr = m_pDevice->CreateTexture(Width,Height,Levels,Usage,Format,Pool,&fd);//ppTexture);
 
-			D3D8Wrapper::IDirect3DTexture8* f = new D3D8Wrapper::IDirect3DTexture8(fd);
+			D3D8Wrapper::IDirect3DTexture8* f = D3D8Wrapper::IDirect3DTexture8::GetTexture(fd);
 
 			*ppTexture = f;
 

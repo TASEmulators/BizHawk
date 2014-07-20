@@ -7,7 +7,6 @@ HMODULE hD3D;
 ThreadSafePointerSet D3D8Wrapper::IDirect3DDevice8::m_List;
 ThreadSafePointerSet D3D8Wrapper::IDirect3DResource8::m_List;
 ThreadSafePointerSet D3D8Wrapper::IDirect3DBaseTexture8::m_List;
-ThreadSafePointerSet D3D8Wrapper::IDirect3DTexture8::m_List;
 ThreadSafePointerSet D3D8Wrapper::IDirect3DVolumeTexture8::m_List;
 ThreadSafePointerSet D3D8Wrapper::IDirect3DCubeTexture8::m_List;
 ThreadSafePointerSet D3D8Wrapper::IDirect3DVertexBuffer8::m_List;
@@ -15,9 +14,6 @@ ThreadSafePointerSet D3D8Wrapper::IDirect3DIndexBuffer8::m_List;
 ThreadSafePointerSet D3D8Wrapper::IDirect3DSurface8::m_List;
 ThreadSafePointerSet D3D8Wrapper::IDirect3DVolume8::m_List;
 ThreadSafePointerSet D3D8Wrapper::IDirect3DSwapChain8::m_List;
-
-
-
 
 extern "C"
 {
@@ -28,26 +24,31 @@ extern "C"
 
 		D3D8Wrapper::IDirect3D8* WINAPI Direct3DCreate8(UINT Version)
 		{
-			LOG("I'M IN UR VIDJA GAME");
+			// Get the real DLL path
+			// Might be unsafe
+			CHAR dll_path[1024];
+			GetSystemDirectory(dll_path,1024);
+			strcat(dll_path,"\\d3d8.dll");
 
-			hD3D = LoadLibrary("C:\\Windows\\SysWOW64\\d3d8.dll");
+			hD3D = LoadLibrary(dll_path);
 
 			D3D8Wrapper::D3DCREATE pCreate = (D3D8Wrapper::D3DCREATE)GetProcAddress(hD3D, "Direct3DCreate8");
 
-			// Contains our real object
+			// Use the real Direct3DCreate8 to make the base object
 			D3D8Base::IDirect3D8* pD3D = pCreate(D3D_SDK_VERSION);
 
+			// Wrap the object
 			D3D8Wrapper::IDirect3D8* fD3D = D3D8Wrapper::IDirect3D8::GetDirect3D(pD3D);
 
-			MessageBox(NULL, "", "HAX", MB_OK);
-			return fD3D; //D3D8Base::Direct3DCreate8(Version);
+			return fD3D;
 		}
 	}
 
 
-
-
-
+	__declspec(dllexport) void __cdecl CloseDLL()
+	{
+		FreeLibrary(hD3D);
+	}
 	
 	__declspec(dllexport) void __cdecl SetRenderingCallback(void (*callback)(int))
 	{

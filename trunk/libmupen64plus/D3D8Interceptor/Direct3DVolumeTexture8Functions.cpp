@@ -6,7 +6,7 @@ extern "C"
 	{
 		D3D8Wrapper::IDirect3DVolumeTexture8::IDirect3DVolumeTexture8(D3D8Base::IDirect3DVolumeTexture8* pTexture) : IDirect3DBaseTexture8((D3D8Base::IDirect3DBaseTexture8*) pTexture)
 		{
-			LOG("IDirect3DBaseTexture8");
+			LOG("IDirect3DVolumeTexture8");
 			m_pD3D = pTexture;
 		}
 
