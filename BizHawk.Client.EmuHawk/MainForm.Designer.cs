@@ -366,6 +366,7 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.newPluginConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -2465,6 +2466,7 @@
 			// 
 			this.N64SubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.N64PluginSettingsMenuItem,
+            this.newPluginConfigToolStripMenuItem,
             this.N64ControllerSettingsMenuItem,
             this.toolStripSeparator23,
             this.N64CircularAnalogRangeMenuItem});
@@ -3203,6 +3205,13 @@
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
 			// 
+			// newPluginConfigToolStripMenuItem
+			// 
+			this.newPluginConfigToolStripMenuItem.Name = "newPluginConfigToolStripMenuItem";
+			this.newPluginConfigToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+			this.newPluginConfigToolStripMenuItem.Text = "New Plugin Config";
+			this.newPluginConfigToolStripMenuItem.Click += new System.EventHandler(this.newPluginConfigToolStripMenuItem_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -3580,6 +3589,7 @@
 		private System.Windows.Forms.ToolStripMenuItem MovieEndRecordMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MovieEndStopMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MovieEndPauseMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem newPluginConfigToolStripMenuItem;
 	}
 }
 

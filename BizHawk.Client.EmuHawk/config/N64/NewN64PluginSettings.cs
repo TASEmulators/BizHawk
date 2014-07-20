@@ -30,6 +30,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveBtn_Click(object sender, EventArgs e)
 		{
+			var video_settings = VideoResolutionComboBox.SelectedItem.ToString();
+			var strArr = video_settings.Split('x');
+			s.VideoSizeX = int.Parse(strArr[0].Trim());
+			s.VideoSizeY = int.Parse(strArr[1].Trim());
+
+			ss.CoreType = CoreTypeDropdown.SelectedItem
+				.ToString()
+				.GetEnumFromDescription<N64SyncSettings.CORETYPE>();
+
+			ss.RspType = RspTypeDropdown.SelectedItem
+				.ToString()
+				.GetEnumFromDescription<N64SyncSettings.RSPTYPE>();
+
+			ss.VidPlugin = PluginComboBox.SelectedItem
+				.ToString()
+				.GetEnumFromDescription<PLUGINTYPE>();
+
 			PutSettings(s);
 			PutSyncSettings(ss);
 
