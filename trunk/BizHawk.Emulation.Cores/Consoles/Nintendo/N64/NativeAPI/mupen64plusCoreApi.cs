@@ -487,6 +487,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			{
 				m64pConfigOpenSection("Video-Glide64mk2", ref video_plugin_section);
 			}
+			else if (video_settings.Plugin == PluginType.JABO)
+			{
+				m64pConfigOpenSection("Video-Jabo", ref video_plugin_section);
+			}
 			else
 			{
 				return;
