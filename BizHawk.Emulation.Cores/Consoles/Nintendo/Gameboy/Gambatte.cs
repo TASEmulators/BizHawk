@@ -1032,18 +1032,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public class GambatteSyncSettings
 		{
+			[DisplayName("Force DMG Mode")]
 			[Description("Force the game to run on DMG hardware, even if it's detected as a CGB game.  Relevant for games that are \"CGB Enhanced\" but do not require CGB.")]
 			[DefaultValue(false)]
 			public bool ForceDMG { get; set; }
+
+			[DisplayName("CGB in GBA")]
 			[Description("Emulate GBA hardware running a CGB game, instead of CGB hardware.  Relevant only for titles that detect the presense of a GBA, such as Shantae.")]
 			[DefaultValue(false)]
 			public bool GBACGB { get; set; }
+
+			[DisplayName("Multicart Compatibility")]
 			[Description("Use special compatibility hacks for certain multicart games.  Relevant only for specific multicarts.")]
 			[DefaultValue(false)]
 			public bool MulticartCompat { get; set; }
+
+			[DisplayName("Realtime RTC")]
 			[Description("If true, the real time clock in MBC3 games will reflect real time, instead of emulated time.  Ignored (treated as false) when a movie is recording.")]
 			[DefaultValue(false)]
 			public bool RealTimeRTC { get; set; }
+
+			[DisplayName("RTC Initial Time")]
 			[Description("Set the initial RTC time in terms of elapsed seconds.  Only used when RealTimeRTC is false.")]
 			[DefaultValue(0)]
 			public int RTCInitialTime
@@ -1051,6 +1060,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				get { return _RTCInitialTime; }
 				set { _RTCInitialTime = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
 			}
+
 			[JsonIgnore]
 			int _RTCInitialTime;
 
