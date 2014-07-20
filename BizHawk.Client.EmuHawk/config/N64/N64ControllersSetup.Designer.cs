@@ -115,9 +115,11 @@
 			this.Controls.Add(this.OkBtn);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "N64ControllersSetup";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "N64 Controller Settings";
+			this.Text = "Controller Settings";
 			this.Load += new System.EventHandler(this.N64ControllersSetup_Load);
 			this.ResumeLayout(false);
 

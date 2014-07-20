@@ -51,7 +51,6 @@ public:
 	
 	long runFor(unsigned long cycles);
 	void setStatePtrs(SaveState &state);
-	void saveState(SaveState &state);
 	void loadState(const SaveState &state);
 	
 	void loadSavedata(const char *data) { memory.loadSavedata(data); }
@@ -64,7 +63,7 @@ public:
 		memory.setVideoBuffer(videoBuf, pitch);
 	}
 	
-	void setInputGetter(InputGetter *getInput) {
+	void setInputGetter(unsigned (*getInput)()) {
 		memory.setInputGetter(getInput);
 	}
 

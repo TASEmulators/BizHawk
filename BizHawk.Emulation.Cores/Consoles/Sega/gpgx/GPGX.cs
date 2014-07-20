@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Common;
 
 using System.Runtime.InteropServices;
 
@@ -20,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		"",
 		isPorted: true,
 		isReleased: true,
-		portedVersion: "r580",
+		portedVersion: "r874",
 		portedUrl: "https://code.google.com/p/genplus-gx/"
 		)]
 	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider
@@ -38,7 +39,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		LibGPGX.InputData input = new LibGPGX.InputData();
 
-		// still working out what all the possibilities are here
 		public enum ControlType
 		{
 			None,
@@ -47,10 +47,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Xea1p,
 			Activator,
 			Teamplayer,
-			Wayplay
+			Wayplay,
+			Mouse
 		};
 
-		public GPGX(CoreComm NextComm, byte[] romfile, DiscSystem.Disc CD, string romextension, object SyncSettings)
+		public GPGX(CoreComm NextComm, byte[] romfile, DiscSystem.Disc CD, string romextension, object Settings, object SyncSettings)
 		{
 			// three or six button?
 			// http://www.sega-16.com/forum/showthread.php?4398-Forgotten-Worlds-giving-you-GAME-OVER-immediately-Fix-inside&highlight=forgotten%20worlds
@@ -64,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			try
 			{
-				this.SyncSettings = (GPGXSyncSettings)SyncSettings ?? GPGXSyncSettings.GetDefaults();
+				_SyncSettings = (GPGXSyncSettings)SyncSettings ?? new GPGXSyncSettings();
 
 				CoreComm = NextComm;
 				if (AttachedCore != null)
@@ -82,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				LibGPGX.INPUT_SYSTEM system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
 				LibGPGX.INPUT_SYSTEM system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
 
-				switch (this.SyncSettings.ControlType)
+				switch (this._SyncSettings.ControlType)
 				{
 					case ControlType.None:
 					default:
@@ -109,10 +110,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_WAYPLAY;
 						system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_WAYPLAY;
 						break;
+					case ControlType.Mouse:
+						system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_MD_GAMEPAD;
+						// seems like mouse in port 1 would be supported, but not both at the same time
+						system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_MOUSE;
+						break;
 				}
 
 
-				if (!LibGPGX.gpgx_init(romextension, LoadCallback, this.SyncSettings.UseSixButton, system_a, system_b, this.SyncSettings.Region))
+				if (!LibGPGX.gpgx_init(romextension, LoadCallback, this._SyncSettings.UseSixButton, system_a, system_b, this._SyncSettings.Region))
 					throw new Exception("gpgx_init() failed");
 
 				{
@@ -147,6 +153,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				if (CD != null)
 					CoreComm.UsesDriveLed = true;
+
+				PutSettings(Settings ?? new GPGXSettings());
 
 				InitMemCallbacks();
 				KillMemCallbacks();
@@ -340,6 +348,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			ControllerDefinition = ControlConverter.ControllerDef;
 		}
 
+		public LibGPGX.INPUT_DEVICE[] GetDevices()
+		{
+			return (LibGPGX.INPUT_DEVICE[])input.dev.Clone();
+		}
+
 		// core callback for input
 		void input_callback()
 		{
@@ -361,6 +374,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			if (!LibGPGX.gpgx_get_control(input, inputsize))
 				throw new Exception("gpgx_get_control() failed!");
 
+			ControlConverter.ScreenWidth = vwidth;
+			ControlConverter.ScreenHeight = vheight;
 			ControlConverter.Convert(Controller, input);
 
 			if (!LibGPGX.gpgx_put_control(input, inputsize))
@@ -723,42 +738,83 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		#region Settings
 
-		GPGXSyncSettings SyncSettings;
+		GPGXSyncSettings _SyncSettings;
+		GPGXSettings _Settings;
 
-		public object GetSettings() { return null; }
-		public object GetSyncSettings() { return SyncSettings.Clone(); }
-		public bool PutSettings(object o) { return false; }
+		public object GetSettings() { return _Settings.Clone(); }
+		public object GetSyncSettings() { return _SyncSettings.Clone(); }
+		public bool PutSettings(object o)
+		{
+			_Settings = (GPGXSettings)o;
+			LibGPGX.gpgx_set_draw_mask(_Settings.GetDrawMask());
+			return false;
+		}
 		public bool PutSyncSettings(object o)
 		{
 			bool ret;
 			var n = (GPGXSyncSettings)o;
-			ret = GPGXSyncSettings.NeedsReboot(SyncSettings, n);
-			SyncSettings = n;
+			ret = GPGXSyncSettings.NeedsReboot(_SyncSettings, n);
+			_SyncSettings = n;
 			return ret;
+		}
+
+		public class GPGXSettings
+		{
+			[DisplayName("Background Layer A")]
+			[Description("True to draw BG layer A")]
+			[DefaultValue(true)]
+			public bool DrawBGA { get; set; }
+
+			[DisplayName("Background Layer B")]
+			[Description("True to draw BG layer B")]
+			[DefaultValue(true)]
+			public bool DrawBGB { get; set; }
+
+			[DisplayName("Background Layer W")]
+			[Description("True to draw BG layer W")]
+			[DefaultValue(true)]
+			public bool DrawBGW { get; set; }
+
+			public GPGXSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+
+			public GPGXSettings Clone()
+			{
+				return (GPGXSettings)MemberwiseClone();
+			}
+
+			public LibGPGX.DrawMask GetDrawMask()
+			{
+				LibGPGX.DrawMask ret = 0;
+				if (DrawBGA) ret |= LibGPGX.DrawMask.BGA;
+				if (DrawBGB) ret |= LibGPGX.DrawMask.BGB;
+				if (DrawBGW) ret |= LibGPGX.DrawMask.BGW;
+				return ret;
+			}
 		}
 
 		public class GPGXSyncSettings
 		{
+			[DisplayName("Use Six Button Controllers")]
 			[Description("Controls the type of any attached normal controllers; six button controllers are used if true, otherwise three button controllers.  Some games don't work correctly with six button controllers.  Not relevant if other controller types are connected.")]
 			[DefaultValue(true)]
 			public bool UseSixButton { get; set; }
+
+			[DisplayName("Control Type")]
 			[Description("Sets the type of controls that are plugged into the console.  Some games will automatically load with a different control type.")]
 			[DefaultValue(ControlType.Normal)]
 			public ControlType ControlType { get; set; }
+
+			[DisplayName("Autodetect Region")]
 			[Description("Sets the region of the emulated console.  Many games can run on multiple regions and will behave differently on different ones.  Some games may require a particular region.")]
 			[DefaultValue(LibGPGX.Region.Autodetect)]
 			public LibGPGX.Region Region { get; set; }
 
 			public GPGXSyncSettings()
 			{
-				UseSixButton = true;
-				ControlType = ControlType.Normal;
-				Region = LibGPGX.Region.Autodetect;
-			}
-
-			public static GPGXSyncSettings GetDefaults()
-			{
-				return new GPGXSyncSettings();
+				SettingsUtil.SetDefaultValues(this);
 			}
 
 			public GPGXSyncSettings Clone()

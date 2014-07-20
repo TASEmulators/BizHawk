@@ -33,8 +33,8 @@ namespace BizHawk.Client.EmuHawk.config.GB
 			gbPrefControl1.GetSettings(out sl, out ssl);
 			gbPrefControl2.GetSettings(out sr, out ssr);
 
-			s = new GambatteLink.GambatteLinkSettings { L = sl, R = sr };
-			ss = new GambatteLink.GambatteLinkSyncSettings { L = ssl, R = ssr };
+			s = new GambatteLink.GambatteLinkSettings(sl, sr);
+			ss = new GambatteLink.GambatteLinkSyncSettings(ssl, ssr);
 		}
 
 		public static void DoDGBPrefsDialog(IWin32Window owner)
@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk.config.GB
 				dlg.gbPrefControl1.ColorGameBoy = emu.IsCGBMode(false);
 				dlg.gbPrefControl2.ColorGameBoy = emu.IsCGBMode(true);
 
-				if (dlg.ShowDialog(owner) == System.Windows.Forms.DialogResult.OK)
+				if (dlg.ShowDialog(owner) == DialogResult.OK)
 				{
 					dlg.GetSettings(out s, out ss);
 					Global.Emulator.PutSettings(s);

@@ -61,7 +61,6 @@
 			this.PlaybackGroupBox.TabIndex = 0;
 			this.PlaybackGroupBox.TabStop = false;
 			this.PlaybackGroupBox.Text = "Playback";
-			this.PlaybackGroupBox.Enter += new System.EventHandler(this.PlaybackGroupBox_Enter);
 			// 
 			// AutoRestoreCheckbox
 			// 
@@ -107,53 +106,53 @@
 			// 
 			// NextMarkerButton
 			// 
-			this.NextMarkerButton.Enabled = false;
 			this.NextMarkerButton.Location = new System.Drawing.Point(154, 19);
 			this.NextMarkerButton.Name = "NextMarkerButton";
 			this.NextMarkerButton.Size = new System.Drawing.Size(38, 23);
 			this.NextMarkerButton.TabIndex = 4;
 			this.NextMarkerButton.Text = ">>";
 			this.NextMarkerButton.UseVisualStyleBackColor = true;
+			this.NextMarkerButton.Click += new System.EventHandler(this.NextMarkerButton_Click);
 			// 
 			// FrameAdvanceButton
 			// 
-			this.FrameAdvanceButton.Enabled = false;
 			this.FrameAdvanceButton.Location = new System.Drawing.Point(117, 19);
 			this.FrameAdvanceButton.Name = "FrameAdvanceButton";
 			this.FrameAdvanceButton.Size = new System.Drawing.Size(38, 23);
 			this.FrameAdvanceButton.TabIndex = 3;
 			this.FrameAdvanceButton.Text = ">";
 			this.FrameAdvanceButton.UseVisualStyleBackColor = true;
+			this.FrameAdvanceButton.Click += new System.EventHandler(this.FrameAdvanceButton_Click);
 			// 
 			// PauseButton
 			// 
-			this.PauseButton.Enabled = false;
 			this.PauseButton.Location = new System.Drawing.Point(80, 19);
 			this.PauseButton.Name = "PauseButton";
 			this.PauseButton.Size = new System.Drawing.Size(38, 23);
 			this.PauseButton.TabIndex = 2;
 			this.PauseButton.Text = "| |";
 			this.PauseButton.UseVisualStyleBackColor = true;
+			this.PauseButton.Click += new System.EventHandler(this.PauseButton_Click);
 			// 
 			// RewindButton
 			// 
-			this.RewindButton.Enabled = false;
 			this.RewindButton.Location = new System.Drawing.Point(43, 19);
 			this.RewindButton.Name = "RewindButton";
 			this.RewindButton.Size = new System.Drawing.Size(38, 23);
 			this.RewindButton.TabIndex = 1;
 			this.RewindButton.Text = "<";
 			this.RewindButton.UseVisualStyleBackColor = true;
+			this.RewindButton.Click += new System.EventHandler(this.RewindButton_Click);
 			// 
 			// PreviousMarkerButton
 			// 
-			this.PreviousMarkerButton.Enabled = false;
 			this.PreviousMarkerButton.Location = new System.Drawing.Point(6, 19);
 			this.PreviousMarkerButton.Name = "PreviousMarkerButton";
 			this.PreviousMarkerButton.Size = new System.Drawing.Size(38, 23);
 			this.PreviousMarkerButton.TabIndex = 0;
 			this.PreviousMarkerButton.Text = "<<";
 			this.PreviousMarkerButton.UseVisualStyleBackColor = true;
+			this.PreviousMarkerButton.Click += new System.EventHandler(this.PreviousMarkerButton_Click);
 			// 
 			// PlaybackBox
 			// 

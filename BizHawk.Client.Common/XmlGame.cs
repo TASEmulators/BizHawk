@@ -5,6 +5,8 @@ using System.Linq;
 using System.Xml;
 
 using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
+using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -62,7 +64,7 @@ namespace BizHawk.Client.Common
 
 								f.Unbind();
 								f.BindArchiveMember(ai);
-								data = Util.ReadAllBytes(f.GetStream());
+								data = f.GetStream().ReadAllBytes();
 							}
 							else
 							{
@@ -93,7 +95,7 @@ namespace BizHawk.Client.Common
 						}
 					}
 
-					ret.GI.Hash = Util.Hash_SHA1(HashStream.GetBuffer(), 0, (int)HashStream.Length);
+					ret.GI.Hash = HashStream.GetBuffer().HashSHA1(0, (int)HashStream.Length);
 					HashStream.Close();
 					if (OriginalIndex != null)
 					{

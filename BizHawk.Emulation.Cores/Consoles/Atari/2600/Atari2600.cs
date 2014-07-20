@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
@@ -25,8 +26,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			Ram = new byte[128];
 			CoreComm = comm;
-			Settings = (A2600Settings)settings ?? A2600Settings.GetDefaults();
-			SyncSettings = (A2600SyncSettings)syncSettings ?? A2600SyncSettings.GetDefaults();
+			Settings = (A2600Settings)settings ?? new A2600Settings();
+			SyncSettings = (A2600SyncSettings)syncSettings ?? new A2600SyncSettings();
 
 			var domains = new List<MemoryDomain>
 			{
@@ -165,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				Name = _game.Name,
 				System = "A26",
 				MetaData = "m=" + _mapper.GetType().ToString().Split('.').ToList().Last(),
-				Hash = Util.Hash_SHA1(Rom),
+				Hash = Rom.HashSHA1(),
 				Region = _game.Region,
 				Status = RomStatus.Unknown
 			};

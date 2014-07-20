@@ -213,6 +213,37 @@
       "P2 Trigger": "NumberPad1, J1 B4, X1 Y",
       "P2 Trigger 2": "NumberPad3, J1 B3, X1 B"
     },
+    "Atari 7800 Joystick Controller": {
+      "Power": "",
+      "Reset": "D, J1 B9, X1 Back",
+      "Select": "S, J1 B10, X1 Start",
+      "Pause": "",
+      "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
+      "P1 Down": "DownArrow, J1 POV1D, X1 DpadDown, X1 LStickDown",
+      "P1 Left": "LeftArrow, J1 POV1L, X1 DpadLeft, X1 LStickLeft",
+      "P1 Right": "RightArrow, J1 POV1R, X1 DpadRight, X1 LStickRight",
+      "P1 Trigger": "Z, J1 B1, X1 X",
+      "P1 Trigger 2": "X, J1 B2, X1 A",
+      "P2 Up": "NumberPad8, J1 RotationZ-, X1 RStickUp",
+      "P2 Down": "NumberPad2, J1 RotationZ+, X1 RStickDown",
+      "P2 Left": "NumberPad4, J1 Z-, X1 RStickLeft",
+      "P2 Right": "NumberPad6, J1 Z+, X1 RStickRight",
+      "P2 Trigger": "NumberPad1, J1 B4, X1 Y"
+    },
+    "Atari 7800 Light Gun Controller": {
+      "Power": "",
+      "Reset": "D, J1 B9, X1 Back",
+      "Select": "S, J1 B10, X1 Start",
+      "Pause": "",
+      "P1 Trigger": "WMouse L"
+    },
+    "Atari 7800 Paddle Controller": {
+      "Power": "",
+      "Reset": "D, J1 B9, X1 Back",
+      "Select": "S, J1 B10, X1 Start",
+      "Pause": "",
+      "P2 Trigger": "NumberPad1, J1 B4, X1 Y"
+    },
     "Commodore 64 Controller": {
       "P1 Up": "NumberPad8, J1 POV1U, X1 DpadUp, X1 LStickUp",
       "P1 Down": "NumberPad2, J1 POV1D, X1 DpadDown, X1 LStickDown",
@@ -369,7 +400,7 @@
       "P1 B2": "X, J1 B1, X1 X",
       "P1 B1": "Z, J1 B2, X1 A",
       "P1 Select": "V, J1 B9, X1 Back",
-      "P1 Run": "C, J1 B10, X1 Start",
+      "P1 Run": "Return, J1 B10, X1 Start",
       "P2 Up": "",
       "P2 Down": "",
       "P2 Left": "",
@@ -410,17 +441,17 @@
       "P1 Right": "RightArrow, J1 POV1R, X1 DpadRight, X1 LStickRight",
       "P1 L": "Z, J1 B5, X1 LeftShoulder",
       "P1 R": "X, J1 B6, X1 RightShoulder",
-      "P1 Key1": "NumberPad1, J1 B1, X1 X",
-      "P1 Key2": "NumberPad2, J1 B2, X1 A",
-      "P1 Key3": "NumberPad3, J1 B3, X1 B",
-      "P1 Key4": "NumberPad4, J1 B4, X1 Y",
-      "P1 Key5": "NumberPad5, J1 RotationZ-, X1 RStickUp",
-      "P1 Key6": "NumberPad6, J1 RotationZ+, X1 RStickDown",
-      "P1 Key7": "NumberPad7, J1 Z-, X1 RStickLeft",
-      "P1 Key8": "NumberPad8, J1 Z+, X1 RStickRight",
-      "P1 Key9": "NumberPad9, J1 B11, X1 LeftThumb",
+      "P1 Key 1": "NumberPad1, J1 B1, X1 X",
+      "P1 Key 2": "NumberPad2, J1 B2, X1 A",
+      "P1 Key 3": "NumberPad3, J1 B3, X1 B",
+      "P1 Key 4": "NumberPad4, J1 B4, X1 Y",
+      "P1 Key 5": "NumberPad5, J1 RotationZ-, X1 RStickUp",
+      "P1 Key 6": "NumberPad6, J1 RotationZ+, X1 RStickDown",
+      "P1 Key 7": "NumberPad7, J1 Z-, X1 RStickLeft",
+      "P1 Key 8": "NumberPad8, J1 Z+, X1 RStickRight",
+      "P1 Key 9": "NumberPad9, J1 B11, X1 LeftThumb",
       "P1 Star": "NumberPadEnter, J1 B9, X1 Back",
-      "P1 Key0": "NumberPad0, J1 B12, X1 RightThumb",
+      "P1 Key 0": "NumberPad0, J1 B12, X1 RightThumb",
       "P1 Pound": "NumberPadPeriod, J1 B10, X1 Start",
       "P2 Up": "",
       "P2 Down": "",
@@ -456,6 +487,16 @@
       "P2 Right": "",
       "P2 B1": "",
       "P2 B2": ""
+    },
+    "GG Controller": {
+      "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
+      "P1 Down": "DownArrow, J1 POV1D, X1 DpadDown, X1 LStickDown",
+      "P1 Left": "LeftArrow, J1 POV1L, X1 DpadLeft, X1 LStickLeft",
+      "P1 Right": "RightArrow, J1 POV1R, X1 DpadRight, X1 LStickRight",
+      "P1 B1": "Z, J1 B1, X1 X",
+      "P1 B2": "X, J1 B2, X1 A",
+      "Reset": "J1 B9, X1 Back",
+      "P1 Start": "Return, J1 B10, X1 Start"
     },
     "Dual Gameboy Controller": {
       "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
@@ -554,6 +595,12 @@
       "P2 Y": "",
       "P2 Z": "",
       "P2 Mode": "",
+      "P2 Lightgun Trigger": "WMouse L",
+      "P2 Lightgun Start": "NumberPad5",
+      "P2 Mouse Left": "WMouse L",
+      "P2 Mouse Center": "WMouse M",
+      "P2 Mouse Right": "WMouse R",
+      "P2 Mouse Start": "NumberPad5",
       "Power": "",
       "Reset": ""
     },
@@ -789,6 +836,25 @@
         "Deadzone": 0.0
       }
     },
+    "Atari 7800 Paddle Controller": {
+      "P1 Paddle": {
+        "Value": "WMouse X",
+        "Mult": 1.0,
+        "Deadzone": 0.0
+      }
+    },
+    "Atari 7800 Light Gun Controller": {
+      "P1 VPos": {
+        "Value": "WMouse Y",
+        "Mult": 1.0,
+        "Deadzone": 0.0
+      },
+      "P1 HPos": {
+        "Value": "WMouse X",
+        "Mult": 1.0,
+        "Deadzone": 0.0
+      }
+    },
     "Nintento 64 Controller": {
       "P1 X Axis": {
         "Value": "J1 X",
@@ -831,7 +897,28 @@
         "Deadzone": 0.1
       }
     },
-    "GPGX Genesis Controller": {},
+    "GPGX Genesis Controller": {
+      "P2 Lightgun X": {
+        "Value": "WMouse X",
+        "Mult": 1.0,
+        "Deadzone": 0.0
+      },
+      "P2 Lightgun Y": {
+        "Value": "WMouse Y",
+        "Mult": 1.0,
+        "Deadzone": 0.0
+      },
+      "P2 Mouse X": {
+        "Value": "WMouse X",
+        "Mult": 1.0,
+        "Deadzone": 0.0
+      },
+      "P2 Mouse Y": {
+        "Value": "WMouse Y",
+        "Mult": 1.0,
+        "Deadzone": 0.0
+      },
+    },
     "WonderSwan Controller": {}
   }
 }

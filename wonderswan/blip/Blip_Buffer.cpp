@@ -30,7 +30,7 @@ Blip_Buffer::Blip_Buffer()
 {
 	factor_       = (blip_u64)ULLONG_MAX;
 	offset_       = 0;
-	buffer_       = 0;
+	buffer_       = nullptr;
 	buffer_size_  = 0;
 	sample_rate_  = 0;
 	reader_accum_ = 0;
@@ -127,7 +127,7 @@ Blip_Buffer::blargg_err_t Blip_Buffer::set_sample_rate( long new_rate, int msec 
 	
 	clear();
 	
-	return 0; // success
+	return nullptr; // success
 }
 
 blip_resampled_time_t Blip_Buffer::clock_rate_factor( long rate ) const
@@ -202,7 +202,7 @@ void Blip_Buffer::remove_samples( long count )
 
 Blip_Synth_Fast_::Blip_Synth_Fast_()
 {
-	buf = 0;
+	buf = nullptr;
 	last_amp = 0;
 	delta_factor = 0;
 }
@@ -220,7 +220,7 @@ Blip_Synth_::Blip_Synth_( short* p, int w ) :
 {
 	volume_unit_ = 0.0;
 	kernel_unit = 0;
-	buf = 0;
+	buf = nullptr;
 	last_amp = 0;
 	delta_factor = 0;
 }

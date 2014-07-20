@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Common;
+using BizHawk.Common.ReflectionExtensions;
 
 namespace BizHawk.Client.EmuHawk.ControlExtensions
 {
@@ -20,9 +21,9 @@ namespace BizHawk.Client.EmuHawk.ControlExtensions
 
 			box.Items.Clear();
 			box.Items.AddRange(
-				EnumHelper.GetDescriptions<T>()
+				typeof(T).GetEnumDescriptions()
 				.ToArray());
-			box.SelectedItem = EnumHelper.GetDescription(enumVal);
+			box.SelectedItem = enumVal.GetDescription();
 		}
 	}
 }

@@ -4,6 +4,8 @@ using System.IO;
 using System.Collections.Generic;
 
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
+
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80;
 
@@ -347,7 +349,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		public TI83(CoreComm comm, GameInfo game, byte[] rom, object Settings)
 		{
-			PutSettings(Settings ?? TI83Settings.GetDefaults());
+			PutSettings(Settings ?? new TI83Settings());
 
 			CoreComm = comm;
 			cpu.ReadMemory = ReadMemory;
@@ -982,13 +984,8 @@ namespace BizHawk.Emulation.Cores.Calculators
 			public uint BGColor = 0x889778;
 			public uint ForeColor = 0x36412D;
 
-			public static TI83Settings GetDefaults()
+			public TI83Settings()
 			{
-				return new TI83Settings
-				{
-					BGColor = 0x889778,
-					ForeColor = 0x36412D
-				};
 			}
 
 			public TI83Settings Clone()

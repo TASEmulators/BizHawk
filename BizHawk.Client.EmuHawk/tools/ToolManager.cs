@@ -347,11 +347,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public VirtualPadForm VirtualPad
+		public VirtualpadTool VirtualPad
 		{
 			get
 			{
-				var tool = _tools.FirstOrDefault(x => x is VirtualPadForm);
+				var tool = _tools.FirstOrDefault(x => x is VirtualpadTool);
 				if (tool != null)
 				{
 					if (tool.IsDisposed)
@@ -360,11 +360,11 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						return tool as VirtualPadForm;
+						return tool as VirtualpadTool;
 					}
 				}
 
-				var newTool = new VirtualPadForm();
+				var newTool = new VirtualpadTool();
 				_tools.Add(newTool);
 				return newTool;
 			}

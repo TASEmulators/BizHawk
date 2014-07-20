@@ -110,8 +110,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Global.cs" />
-    <Compile Include="helpers\InputValidate.cs" />
-    <Compile Include="InputManager.cs" />
+    <Compile Include="inputAdapters\BitwiseAdapters.cs" />
+    <Compile Include="inputAdapters\InputAdapterExtensions.cs" />
+    <Compile Include="inputAdapters\InputAdapters.cs" />
+    <Compile Include="inputAdapters\InputManager.cs" />
     <Compile Include="IPS.cs" />
     <Compile Include="KeyTurbo.cs" />
     <Compile Include="lua\EmuLuaLibrary.Bit.cs" />
@@ -133,36 +135,48 @@
     <Compile Include="lua\LuaLibraryBase.cs" />
     <Compile Include="lua\LuaMemoryBase.cs" />
     <Compile Include="lua\NamedLuaFunction.cs" />
+    <Compile Include="movie\bk2\Bk2ControllerAdapter.cs" />
+    <Compile Include="movie\bk2\Bk2Header.cs" />
+    <Compile Include="movie\bk2\Bk2LogEntryGenerator.cs" />
+    <Compile Include="movie\bk2\Bk2FloatConstants.cs" />
+    <Compile Include="movie\bk2\Bk2MnemonicConstants.cs" />
+    <Compile Include="movie\bk2\Bk2Movie.cs" />
+    <Compile Include="movie\bk2\Bk2Movie.HeaderApi.cs" />
+    <Compile Include="movie\bk2\Bk2Movie.InputLog.cs" />
+    <Compile Include="movie\bk2\Bk2Movie.IO.cs" />
+    <Compile Include="movie\bk2\Bk2Movie.ModeApi.cs" />
+    <Compile Include="movie\bkm\BkmControllerAdapter.cs" />
+    <Compile Include="movie\bkm\BkmHeader.cs" />
+    <Compile Include="movie\bkm\BkmLogEntryGenerator.cs" />
+    <Compile Include="movie\bkm\BkmMnemonicConstants.cs" />
+    <Compile Include="movie\bkm\BkmMovie.cs" />
+    <Compile Include="movie\bkm\BkmMovie.HeaderApi.cs" />
+    <Compile Include="movie\bkm\BkmMovie.InputLog.cs" />
+    <Compile Include="movie\bkm\BkmMovie.IO.cs" />
+    <Compile Include="movie\bkm\BkmMovie.ModeApi.cs" />
+    <Compile Include="movie\conversions\MovieConversionExtensions.cs" />
     <Compile Include="movie\HeaderKeys.cs" />
-    <Compile Include="movie\IMovie.cs" />
-    <Compile Include="movie\IMovieHeader.cs" />
-    <Compile Include="movie\InputAdapters.cs" />
-    <Compile Include="movie\MnemonicGenerators\BooleanControllerMnemonicGenerator.cs" />
-    <Compile Include="movie\MnemonicGenerators\IMnemonicGenerator.cs" />
-    <Compile Include="movie\MnemonicGenerators\IMnemonicPorts.cs" />
-    <Compile Include="movie\MnemonicGenerators\MnemonicGeneratorFactory.cs" />
-    <Compile Include="movie\MnemonicGenerators\NesMnemonicGenerator.cs" />
-    <Compile Include="movie\MnemonicsGenerator.cs" />
-    <Compile Include="movie\Movie.cs" />
-    <Compile Include="movie\MovieHeader.cs" />
+    <Compile Include="movie\interfaces\ILogEntryGenerator.cs" />
+    <Compile Include="movie\interfaces\IMovie.cs" />
+    <Compile Include="movie\interfaces\IMovieController.cs" />
     <Compile Include="movie\MovieImport.cs" />
-    <Compile Include="movie\MovieLog.cs" />
-    <Compile Include="movie\MovieMnemonics.cs" />
-    <Compile Include="movie\MovieRecord.cs" />
-    <Compile Include="movie\MovieRecordList.cs" />
+    <Compile Include="movie\MovieService.cs" />
     <Compile Include="movie\MovieSession.cs" />
     <Compile Include="movie\MultitrackRecording.cs" />
-    <Compile Include="movie\MnemonicsLookupTable.cs" />
     <Compile Include="movie\PlatformFrameRates.cs" />
     <Compile Include="movie\Subtitle.cs" />
     <Compile Include="movie\SubtitleList.cs" />
-    <Compile Include="movie\TasMovie.cs" />
+    <Compile Include="movie\tasproj\TasMovie.Editing.cs" />
+    <Compile Include="movie\tasproj\TasMovie.IO.cs" />
+    <Compile Include="movie\tasproj\TasMovie.cs" />
+    <Compile Include="movie\tasproj\TasMovieMarker.cs" />
+    <Compile Include="movie\tasproj\TasStateManager.cs" />
+    <Compile Include="movie\tasproj\TasMovieRecord.cs" />
     <Compile Include="NESGameGenieEncoderDecoder.cs" />
     <Compile Include="PathManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\svnrev.cs" />
     <Compile Include="RecentFiles.cs" />
-    <Compile Include="helpers\StringHelpers.cs" />
     <Compile Include="rewind\Rewinder.cs" />
     <Compile Include="rewind\RewindThreader.cs" />
     <Compile Include="rewind\StreamBlobDatabase.cs" />
@@ -205,6 +219,7 @@
       <Name>BizHawk.Bizware.BizwareGL</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>

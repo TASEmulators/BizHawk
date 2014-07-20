@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 
-using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 
 // IDEA: put filesizes in DB too. then scans can go real quick by only scanning filesizes that match (and then scanning filesizes that dont match, in case of an emergency)
@@ -81,7 +81,7 @@ namespace BizHawk.Client.Common
 					fs.Read(buffer, 0, (int)len);
 				}
 
-				rff.Hash = Util.Hash_SHA1(buffer, 0, (int)len);
+				rff.Hash = buffer.HashSHA1(0, (int)len);
 				dict[rff.Hash] = rff;
 				_files.Add(rff);
 				return rff;
@@ -128,7 +128,7 @@ namespace BizHawk.Client.Common
 				var fr1 = fr;
 				var options =
 					from fo in FirmwareDatabase.FirmwareOptions
-					where fo.systemId == fr1.systemId && fo.firmwareId == fr1.firmwareId
+					where fo.systemId == fr1.systemId && fo.firmwareId == fr1.firmwareId && fo.IsAcceptableOrIdeal
 					select fo;
 
 				// try each option

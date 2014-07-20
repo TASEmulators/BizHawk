@@ -43,6 +43,11 @@
 #include "md_ntsc.h"
 #include "sms_ntsc.h"
 
+// layer toggle
+extern int cinterface_render_bga;
+extern int cinterface_render_bgb;
+extern int cinterface_render_bgw;
+
 /*** NTSC Filters ***/
 extern md_ntsc_t *md_ntsc;
 extern sms_ntsc_t *sms_ntsc;
@@ -1526,7 +1531,10 @@ void render_bg_m5(int line)
 #endif
 
   /* Plane B name table */
-  uint32 *nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
+  uint32 *nt;
+  if (cinterface_render_bgb)
+  {
+  nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
 
   /* Pattern row index */
   v_line = (v_line & 7) << 3;
@@ -1550,6 +1558,11 @@ void render_bg_m5(int line)
     atbuf = nt[index & pf_col_mask];
     DRAW_COLUMN(atbuf, v_line)
   }
+  }
+  else
+  {
+	  memset(&linebuf[0][0], 0, 512);
+  }
 
   if (w == (line >= a))
   {
@@ -1565,7 +1578,7 @@ void render_bg_m5(int line)
   }
 
   /* Plane A */
-  if (a)
+  if (a && cinterface_render_bga)
   {
     /* Plane A width */
     start = clip[0].left;
@@ -1621,9 +1634,13 @@ void render_bg_m5(int line)
     start = clip[1].left;
     end   = clip[1].right;
   }
+  else if (!cinterface_render_bga)
+  {
+	  memset(&linebuf[1][0], 0, 512);
+  }
 
   /* Window */
-  if (w)
+  if (w && cinterface_render_bgw)
   {
     /* Window name table */
     nt = (uint32 *)&vram[ntwb | ((line >> 3) << (6 + (reg[12] & 1)))];
@@ -1685,6 +1702,8 @@ void render_bg_m5_vs(int line)
     yscroll = vs[19] & (vs[19] >> 16);
   }
 
+  if (cinterface_render_bgb)
+  {
   if(shift)
   {
     /* Plane B vertical scroll */
@@ -1726,7 +1745,12 @@ void render_bg_m5_vs(int line)
     atbuf = nt[index & pf_col_mask];
     DRAW_COLUMN(atbuf, v_line)
   }
-  
+  }
+  else
+  {
+	  memset(&linebuf[0][0], 0, 512);
+  }
+
   if (w == (line >= a))
   {
     /* Window takes up entire line */
@@ -1741,7 +1765,7 @@ void render_bg_m5_vs(int line)
   }
 
   /* Plane A */
-  if (a)
+  if (a && cinterface_render_bga)
   {
     /* Plane A width */
     start = clip[0].left;
@@ -1811,9 +1835,13 @@ void render_bg_m5_vs(int line)
     start = clip[1].left;
     end   = clip[1].right;
   }
+  else if (!cinterface_render_bga)
+  {
+	  memset(&linebuf[1][0], 0, 512);
+  }
 
   /* Window */
-  if (w)
+  if (w && cinterface_render_bgw)
   {
     /* Window name table */
     nt = (uint32 *)&vram[ntwb | ((line >> 3) << (6 + (reg[12] & 1)))];
@@ -1868,7 +1896,10 @@ void render_bg_m5_im2(int line)
 #endif
 
   /* Plane B name table */
-  uint32 *nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
+  uint32 *nt;
+  if (cinterface_render_bgb)
+  {
+  nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
 
   /* Pattern row index */
   v_line = (((v_line & 7) << 1) | odd) << 3;
@@ -1892,6 +1923,11 @@ void render_bg_m5_im2(int line)
     atbuf = nt[index & pf_col_mask];
     DRAW_COLUMN_IM2(atbuf, v_line)
   }
+  }
+  else
+  {
+	  memset(&linebuf[0][0], 0, 512);
+  }
 
   if (w == (line >= a))
   {
@@ -1907,7 +1943,7 @@ void render_bg_m5_im2(int line)
   }
 
   /* Plane A */
-  if (a)
+  if (a && cinterface_render_bga)
   {
     /* Plane A width */
     start = clip[0].left;
@@ -1963,9 +1999,13 @@ void render_bg_m5_im2(int line)
     start = clip[1].left;
     end   = clip[1].right;
   }
+  else if (!cinterface_render_bga)
+  {
+	  memset(&linebuf[1][0], 0, 512);
+  }
 
   /* Window */
-  if (w)
+  if (w && cinterface_render_bgw)
   {
     /* Window name table */
     nt = (uint32 *)&vram[ntwb | ((line >> 3) << (6 + (reg[12] & 1)))];
@@ -2028,6 +2068,8 @@ void render_bg_m5_im2_vs(int line)
     yscroll = (vs[19] >> 1) & (vs[19] >> 17);
   }
 
+  if (cinterface_render_bgb)
+  {
   if(shift)
   {
     /* Plane B vertical scroll */
@@ -2069,6 +2111,11 @@ void render_bg_m5_im2_vs(int line)
     atbuf = nt[index & pf_col_mask];
     DRAW_COLUMN_IM2(atbuf, v_line)
   }
+  }
+  else
+  {
+	  memset(&linebuf[0][0], 0, 512);
+  }
 
   if (w == (line >= a))
   {
@@ -2084,7 +2131,7 @@ void render_bg_m5_im2_vs(int line)
   }
 
   /* Plane A */
-  if (a)
+  if (a && cinterface_render_bga)
   {
     /* Plane A width */
     start = clip[0].left;
@@ -2154,9 +2201,13 @@ void render_bg_m5_im2_vs(int line)
     start = clip[1].left;
     end   = clip[1].right;
   }
+  else if (!cinterface_render_bga)
+  {
+	  memset(&linebuf[1][0], 0, 512);
+  }
 
   /* Window */
-  if (w)
+  if (w && cinterface_render_bgw)
   {
     /* Window name table */
     nt = (uint32 *)&vram[ntwb | ((line >> 3) << (6 + (reg[12] & 1)))];
@@ -3811,44 +3862,50 @@ void parse_satb_m5(int line)
 
   do
   {
-    /* Read Y position & size from internal SAT */
+    /* Read Y position from internal SAT cache */
     ypos = (q[link] >> im2_flag) & 0x1FF;
-    size = q[link + 1] >> 8;
 
-    /* Sprite height */
-    height = 8 + ((size & 3) << 3);
-
-    /* Y range */
-    ypos = line - ypos;
-
-    /* Sprite is visble on this line ? */
-    if ((ypos >= 0) && (ypos < height))
+    /* Check if sprite Y position has been reached */
+    if (line >= ypos)
     {
-      /* Sprite overflow */
-      if (count == max)
+      /* Read sprite size from internal SAT cache */
+      size = q[link + 1] >> 8;
+
+      /* Sprite height */
+      height = 8 + ((size & 3) << 3);
+
+      /* Y range */
+      ypos = line - ypos;
+
+      /* Check if sprite is visible on current line */
+      if (ypos < height)
       {
-        status |= 0x40;
-        break;
+        /* Sprite overflow */
+        if (count == max)
+        {
+          status |= 0x40;
+          break;
+        }
+
+        /* Update sprite list (only name, attribute & xpos are parsed from VRAM) */ 
+        object_info->attr  = p[link + 2];
+        object_info->xpos  = p[link + 3] & 0x1ff;
+        object_info->ypos  = ypos;
+        object_info->size  = size & 0x0f; 
+
+        /* Increment Sprite count */
+        ++count;
+
+        /* Next sprite entry */
+        object_info++;
       }
-
-      /* Update sprite list (only name, attribute & xpos are parsed from VRAM) */ 
-      object_info->attr  = p[link + 2];
-      object_info->xpos  = p[link + 3] & 0x1ff;
-      object_info->ypos  = ypos;
-      object_info->size  = size & 0x0f; 
-
-      /* Increment Sprite count */
-      ++count;
-
-      /* Next sprite entry */
-      object_info++;
     }
 
-    /* Read link data from internal SAT */ 
+    /* Read link data from internal SAT cache */ 
     link = (q[link + 1] & 0x7F) << 2;
 
-    /* Last sprite */
-    if (link == 0) break;
+    /* Stop parsing if link data points to first entry (#0) or after the last entry (#64 in H32 mode, #80 in H40 mode) */
+    if ((link == 0) || (link >= bitmap.viewport.w)) break;
   }
   while (--total);
 

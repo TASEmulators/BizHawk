@@ -245,33 +245,8 @@ static int MatchJoyCommand(const SDL_Event *event, eJoyCommand cmd)
 */
 static int SDLCALL event_sdl_filter(void *userdata, SDL_Event *event)
 {
-    int cmd, action;
-
     switch(event->type)
     {
-        // user clicked on window close button
-        case SDL_QUIT:
-            main_stop();
-            break;
-
-        case SDL_KEYDOWN:
-#if SDL_VERSION_ATLEAST(1,3,0)
-            if (event->key.repeat)
-                return 0;
-
-            event_sdl_keydown(event->key.keysym.scancode, event->key.keysym.mod);
-#else
-            event_sdl_keydown(event->key.keysym.sym, event->key.keysym.mod);
-#endif
-            return 0;
-        case SDL_KEYUP:
-#if SDL_VERSION_ATLEAST(1,3,0)
-            event_sdl_keyup(event->key.keysym.scancode, event->key.keysym.mod);
-#else
-            event_sdl_keyup(event->key.keysym.sym, event->key.keysym.mod);
-#endif
-            return 0;
-
 #if SDL_VERSION_ATLEAST(2,0,0)
         case SDL_WINDOWEVENT:
             switch (event->window.event) {
@@ -292,49 +267,13 @@ static int SDLCALL event_sdl_filter(void *userdata, SDL_Event *event)
             break;
 #endif
 
-        // if joystick action is detected, check if it's mapped to a special function
+        // Ignore key events
         case SDL_JOYAXISMOTION:
         case SDL_JOYBUTTONDOWN:
         case SDL_JOYBUTTONUP:
         case SDL_JOYHATMOTION:
-            for (cmd = 0; cmd < NumJoyCommands; cmd++)
-            {
-                action = MatchJoyCommand(event, (eJoyCommand) cmd);
-                if (action == 1) /* command was just activated (button down, etc) */
-                {
-                    if (cmd == joyFullscreen)
-                        gfx.changeWindow();
-                    else if (cmd == joyStop)
-                        main_stop();
-                    else if (cmd == joyPause)
-                        main_toggle_pause();
-                    else if (cmd == joySave)
-                        main_state_save(1, NULL); /* save in mupen64plus format using current slot */
-                    else if (cmd == joyLoad)
-                        main_state_load(NULL); /* load using current slot */
-                    else if (cmd == joyIncrement)
-                        main_state_inc_slot();
-                    else if (cmd == joyScreenshot)
-                        main_take_next_screenshot();
-                    else if (cmd == joyMute)
-                        main_volume_mute();
-                    else if (cmd == joyDecrease)
-                        main_volume_down();
-                    else if (cmd == joyIncrease)
-                        main_volume_up();
-                    else if (cmd == joyForward)
-                        main_set_fastforward(1);
-                    else if (cmd == joyGameshark)
-                        event_set_gameshark(1);
-                }
-                else if (action == -1) /* command was just de-activated (button up, etc) */
-                {
-                    if (cmd == joyForward)
-                        main_set_fastforward(0);
-                    else if (cmd == joyGameshark)
-                        event_set_gameshark(0);
-                }
-            }
+		case SDL_KEYDOWN:
+		case SDL_KEYUP:
 
             return 0;
             break;
@@ -487,70 +426,12 @@ static int get_saveslot_from_keysym(int keysym)
 
 void event_sdl_keydown(int keysym, int keymod)
 {
-    int slot;
-
-    /* check for the only 2 hard-coded key commands: Alt-enter for fullscreen and 0-9 for save state slot */
-    if (keysym == SDL_SCANCODE_RETURN && keymod & (KMOD_LALT | KMOD_RALT))
-        gfx.changeWindow();
-    else if ((slot = get_saveslot_from_keysym(keysym)) >= 0)
-        main_state_set_slot(slot);
-    /* check all of the configurable commands */
-    else if (keysym == sdl_keysym2native(ConfigGetParamInt(l_CoreEventsConfig, kbdStop)))
-        main_stop();
-    else if (keysym == sdl_keysym2native(ConfigGetParamInt(l_CoreEventsConfig, kbdFullscreen)))
-        gfx.changeWindow();
-    else if (keysym == sdl_keysym2native(ConfigGetParamInt(l_CoreEventsConfig, kbdSave)))
-        main_state_save(0, NULL); /* save in mupen64plus format using current slot */
-    else if (keysym == sdl_keysym2native(ConfigGetParamInt(l_CoreEventsConfig, kbdLoad)))
-        main_state_load(NULL); /* load using current slot */
-    else if (keysym == sdl_keysym2native(ConfigGetParamInt(l_CoreEventsConfig, kbdIncrement)))
-        main_state_inc_slot();
-    else if (keysym == sdl_keysym2native(ConfigGetParamInt(l_CoreEventsConfig, kbdReset)))
-        reset_soft();
-    else if (keysym == sdl_keysym2native(ConfigGetParamInt(l_CoreEventsConfig, kbdSpeeddown)))
-        main_speeddown(5);
-    else if (keysym == sdl_keysym2native(ConfigGetParamInt(l_CoreEventsConfig, kbdSpeedup)))
-        main_speedup(5);
-    else if (keysym == sdl_keysym2native(ConfigGetParamInt(l_CoreEventsConfig, kbdScreenshot)))
-        main_take_next_screenshot();    /* screenshot will be taken at the end of frame rendering */
-    else if (keysym == sdl_keysym2native(ConfigGetParamInt(l_CoreEventsConfig, kbdPause)))
-        main_toggle_pause();
-    else if (keysym == sdl_keysym2native(ConfigGetParamInt(l_CoreEventsConfig, kbdMute)))
-        main_volume_mute();
-    else if (keysym == sdl_keysym2native(ConfigGetParamInt(l_CoreEventsConfig, kbdIncrease)))
-        main_volume_up();
-    else if (keysym == sdl_keysym2native(ConfigGetParamInt(l_CoreEventsConfig, kbdDecrease)))
-        main_volume_down();
-    else if (keysym == sdl_keysym2native(ConfigGetParamInt(l_CoreEventsConfig, kbdForward)))
-        main_set_fastforward(1);
-    else if (keysym == sdl_keysym2native(ConfigGetParamInt(l_CoreEventsConfig, kbdAdvance)))
-        main_advance_one();
-    else if (keysym == sdl_keysym2native(ConfigGetParamInt(l_CoreEventsConfig, kbdGameshark)))
-        event_set_gameshark(1);
-    else
-    {
-        /* pass all other keypresses to the input plugin */
-        input.keyDown(keymod, keysym);
-    }
-
+    input.keyDown(keymod, keysym);
 }
 
 void event_sdl_keyup(int keysym, int keymod)
 {
-    if (keysym == sdl_keysym2native(ConfigGetParamInt(l_CoreEventsConfig, kbdStop)))
-    {
-        return;
-    }
-    else if (keysym == sdl_keysym2native(ConfigGetParamInt(l_CoreEventsConfig, kbdForward)))
-    {
-        main_set_fastforward(0);
-    }
-    else if (keysym == sdl_keysym2native(ConfigGetParamInt(l_CoreEventsConfig, kbdGameshark)))
-    {
-        event_set_gameshark(0);
-    }
-    else input.keyUp(keymod, keysym);
-
+	input.keyUp(keymod, keysym);
 }
 
 int event_gameshark_active(void)

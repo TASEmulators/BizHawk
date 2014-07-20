@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
+
 using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Emulation.Common
 {
@@ -215,13 +217,13 @@ namespace BizHawk.Emulation.Common
 				return new GameInfo(cgi);
 			}
 
-			hash = Util.Hash_MD5(romData);
+			hash = romData.HashMD5();
 			if (db.TryGetValue(hash, out cgi))
 			{
 				return new GameInfo(cgi);
 			}
 
-			hash = Util.Hash_SHA1(romData);
+			hash = romData.HashSHA1();
 			if (db.TryGetValue(hash, out cgi))
 			{
 				return new GameInfo(cgi);
@@ -238,7 +240,7 @@ namespace BizHawk.Emulation.Common
 			Console.WriteLine(
 				"Game was not in DB. CRC: {0:X8} MD5: {1}",
 				CRC32.Calculate(romData),
-				Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(romData)));
+				System.Security.Cryptography.MD5.Create().ComputeHash(romData).BytesToHexString());
 
 			var ext = Path.GetExtension(fileName).ToUpperInvariant();
 

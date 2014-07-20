@@ -5,23 +5,78 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
+	public enum MovieEndAction { Stop, Pause, Record, Finish }
+
 	public class MovieSession
 	{
 		private readonly MultitrackRecording _multiTrack = new MultitrackRecording();
-		private readonly MovieControllerAdapter _movieControllerAdapter = new MovieControllerAdapter();
 
 		public MovieSession()
 		{
 			ReadOnly = true;
+			MovieControllerAdapter = MovieService.DefaultInstance.LogGeneratorInstance().MovieControllerAdapter;
 		}
 
 		public MultitrackRecording MultiTrack { get { return _multiTrack; } }
-		public MovieControllerAdapter MovieControllerAdapter { get { return _movieControllerAdapter; } }
+		public IMovieController MovieControllerAdapter{ get; set; }
 
 		public IMovie Movie { get; set; }
 		public bool ReadOnly { get; set; }
 		public Action<string> MessageCallback { get; set; }
 		public Func<string, string, bool> AskYesNoCallback { get; set; }
+
+		/// <summary>
+		/// Required
+		/// </summary>
+		public Action PauseCallback { get; set; }
+
+		/// <summary>
+		/// Required
+		/// </summary>
+		public Action ModeChangedCallback { get; set; }
+
+		/// <summary>
+		/// Simply shortens the verbosity necessary otherwise
+		/// </summary>
+		/// <returns></returns>
+		public ILogEntryGenerator LogGeneratorInstance()
+		{
+			return Movie.LogGeneratorInstance();
+		}
+
+		public IMovieController MovieControllerInstance()
+		{
+			var adapter = Movie.LogGeneratorInstance().MovieControllerAdapter;
+			adapter.Type = MovieControllerAdapter.Type;
+			return adapter;
+		}
+
+		// Convenience property that gets the controller state from the movie for the most recent frame
+		public IController CurrentInput
+		{
+			get
+			{
+				if (Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished && Global.Emulator.Frame > 0)
+				{
+					return Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1);
+				}
+
+				return null;
+			}
+		}
+
+		public IController PreviousFrame
+		{
+			get
+			{
+				if (Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished && Global.Emulator.Frame > 1)
+				{
+					return Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 2);
+				}
+
+				return null;
+			}
+		}
 
 		private void Output(string message)
 		{
@@ -29,20 +84,6 @@ namespace BizHawk.Client.Common
 			{
 				MessageCallback(message);
 			}
-		}
-
-		public static bool IsValidMovieExtension(string ext)
-		{
-			if (ext.ToUpper() == "." + Global.Config.MovieExtension)
-			{
-				return true;
-			}
-			else if (ext.ToUpper() == ".TAS" || ext.ToUpper() == ".BKM")
-			{
-				return true;
-			}
-
-			return false;
 		}
 
 		public void LatchMultitrackPlayerInput(IController playerSource, MultitrackRewiringControllerAdapter rewiredSource)
@@ -61,12 +102,12 @@ namespace BizHawk.Client.Common
 				rewiredSource.PlayerSource = -1;
 			}
 
-			_movieControllerAdapter.LatchPlayerFromSource(rewiredSource, _multiTrack.CurrentPlayer);
+			MovieControllerAdapter.LatchPlayerFromSource(rewiredSource, _multiTrack.CurrentPlayer);
 		}
 
 		public void LatchInputFromPlayer(IController source)
 		{
-			_movieControllerAdapter.LatchFromSource(source);
+			MovieControllerAdapter.LatchFromSource(source);
 		}
 
 		/// <summary>
@@ -74,13 +115,44 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void LatchInputFromLog()
 		{
-			var input = Movie.GetInput(Global.Emulator.Frame);
-
-			// Attempting to get a frame past the end of a movie changes the mode to finished
-			if (!Movie.IsFinished)
+			if (Global.Emulator.Frame < Movie.InputLogLength - (Global.Config.MovieEndAction == MovieEndAction.Pause ? 1 : 0)) // Pause logic is a hack for now
 			{
-				_movieControllerAdapter.SetControllersAsMnemonic(input);
+				var input = Movie.GetInputState(Global.Emulator.Frame);
+				MovieControllerAdapter.LatchFromSource(input);
 			}
+			else
+			{
+				HandlePlaybackEnd();
+			}
+		}
+
+		private void HandlePlaybackEnd()
+		{
+			// TODO: mainform callback to update on mode change
+			switch(Global.Config.MovieEndAction)
+			{
+				case MovieEndAction.Stop:
+					Movie.Stop();
+					break;
+				case MovieEndAction.Record:
+					Movie.SwitchToRecord();
+					break;
+				case MovieEndAction.Pause:
+					PauseCallback(); // TODO: one frame ago
+					break;
+				default:
+				case MovieEndAction.Finish:
+					Movie.FinishedMode();
+					break;
+			}
+
+			ModeChangedCallback();
+		}
+
+		public bool MovieLoad()
+		{
+			MovieControllerAdapter = Movie.LogGeneratorInstance().MovieControllerAdapter;
+			return Movie.Load();
 		}
 
 		public void StopMovie(bool saveChanges = true)
@@ -108,6 +180,8 @@ namespace BizHawk.Client.Common
 				Output(message);
 				ReadOnly = true;
 			}
+
+			ModeChangedCallback();
 		}
 
 		public void HandleMovieSaveState(TextWriter writer)
@@ -160,9 +234,9 @@ namespace BizHawk.Client.Common
 					else if (Global.Config.MoviePlaybackPokeMode)
 					{
 						LatchInputFromPlayer(Global.MovieInputSourceAdapter);
-						var mg = new MnemonicsGenerator();
-						mg.SetSource(Global.MovieOutputHardpoint);
-						if (!mg.IsEmpty)
+						var lg = Movie.LogGeneratorInstance();
+						lg.SetSource(Global.MovieOutputHardpoint);
+						if (!lg.IsEmpty)
 						{
 							LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 							Movie.PokeFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
@@ -281,6 +355,37 @@ namespace BizHawk.Client.Common
 			}
 
 			return true;
+		}
+
+		public void ToggleMultitrack()
+		{
+			if (Movie.IsActive)
+			{
+
+				if (Global.Config.VBAStyleMovieLoadState)
+				{
+					MessageCallback("Multi-track can not be used in Full Movie Loadstates mode");
+				}
+				else
+				{
+					Global.MovieSession.MultiTrack.IsActive = !Global.MovieSession.MultiTrack.IsActive;
+					if (Global.MovieSession.MultiTrack.IsActive)
+					{
+						MessageCallback("MultiTrack Enabled");
+						MultiTrack.CurrentState = "Recording None";
+					}
+					else
+					{
+						MessageCallback("MultiTrack Disabled");
+					}
+
+					Global.MovieSession.MultiTrack.SelectNone();
+				}
+			}
+			else
+			{
+				MessageCallback("MultiTrack cannot be enabled while not recording.");
+			}
 		}
 	}
 }

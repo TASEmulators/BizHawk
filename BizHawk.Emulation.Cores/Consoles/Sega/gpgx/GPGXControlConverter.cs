@@ -53,12 +53,55 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		static CName[] Mouse =
 		{
-			new CName("Left", LibGPGX.INPUT_KEYS.INPUT_MOUSE_LEFT),
-			new CName("Center", LibGPGX.INPUT_KEYS.INPUT_MOUSE_CENTER),
-			new CName("Right", LibGPGX.INPUT_KEYS.INPUT_MOUSE_RIGHT),
+			new CName("Mouse Left", LibGPGX.INPUT_KEYS.INPUT_MOUSE_LEFT),
+			new CName("Mouse Center", LibGPGX.INPUT_KEYS.INPUT_MOUSE_CENTER),
+			new CName("Mouse Right", LibGPGX.INPUT_KEYS.INPUT_MOUSE_RIGHT),
+			new CName("Mouse Start", LibGPGX.INPUT_KEYS.INPUT_MOUSE_START),
 		};
 
-		static ControllerDefinition.FloatRange FullShort = new ControllerDefinition.FloatRange(-32767, 0, 32767);
+		static CName[] Lightgun =
+		{
+			new CName("Lightgun Trigger", LibGPGX.INPUT_KEYS.INPUT_MENACER_TRIGGER),
+			new CName("Lightgun Start", LibGPGX.INPUT_KEYS.INPUT_MENACER_START),
+		};
+
+		static CName[] Activator = 
+		{
+			new CName("1L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_1L),
+			new CName("1U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_1U),
+			new CName("2L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_2L),
+			new CName("2U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_2U),
+			new CName("3L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_3L),
+			new CName("3U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_3U),
+			new CName("4L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_4L),
+			new CName("4U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_4U),
+			new CName("5L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_5L),
+			new CName("5U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_5U),
+			new CName("6L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_6L),
+			new CName("6U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_6U),
+			new CName("7L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_7L),
+			new CName("7U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_7U),
+			new CName("8L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_8L),
+			new CName("8U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_8U),
+		};
+
+		static CName[] XEA1P =
+		{
+			new CName("XE A", LibGPGX.INPUT_KEYS.INPUT_XE_A),
+			new CName("XE B", LibGPGX.INPUT_KEYS.INPUT_XE_B),
+			new CName("XE C", LibGPGX.INPUT_KEYS.INPUT_XE_C),
+			new CName("XE D", LibGPGX.INPUT_KEYS.INPUT_XE_D),
+			new CName("XE Start", LibGPGX.INPUT_KEYS.INPUT_XE_START),
+			new CName("XE Select", LibGPGX.INPUT_KEYS.INPUT_XE_SELECT),
+			new CName("XE E1", LibGPGX.INPUT_KEYS.INPUT_XE_E1),
+			new CName("XE E2", LibGPGX.INPUT_KEYS.INPUT_XE_E2),
+		};
+
+		static ControllerDefinition.FloatRange MouseRange = new ControllerDefinition.FloatRange(-256, 0, 255);
+		// lightgun needs to be transformed to match the current screen resolution
+		static ControllerDefinition.FloatRange LightgunRange = new ControllerDefinition.FloatRange(0, 5000, 10000);
+
+		static ControllerDefinition.FloatRange XEA1PRange = new ControllerDefinition.FloatRange(-128, 0, 127);
 
 		LibGPGX.InputData target = null;
 		IController source = null;
@@ -84,16 +127,51 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		void DoMouseAnalog(int idx, int player)
 		{
-			string NX = string.Format("P{0} X", player);
-			string NY = string.Format("P{0} Y", player);
+			string NX = string.Format("P{0} Mouse X", player);
+			string NY = string.Format("P{0} Mouse Y", player);
 			ControllerDef.FloatControls.Add(NX);
 			ControllerDef.FloatControls.Add(NY);
-			ControllerDef.FloatRanges.Add(FullShort);
-			ControllerDef.FloatRanges.Add(FullShort);
+			ControllerDef.FloatRanges.Add(MouseRange);
+			ControllerDef.FloatRanges.Add(MouseRange);
 			Converts.Add(delegate()
 			{
 				target.analog[(2 * idx) + 0] = (short)source.GetFloat(NX);
 				target.analog[(2 * idx) + 1] = (short)source.GetFloat(NY);
+			});
+		}
+
+		void DoLightgunAnalog(int idx, int player)
+		{
+			string NX = string.Format("P{0} Lightgun X", player);
+			string NY = string.Format("P{0} Lightgun Y", player);
+			ControllerDef.FloatControls.Add(NX);
+			ControllerDef.FloatControls.Add(NY);
+			ControllerDef.FloatRanges.Add(LightgunRange);
+			ControllerDef.FloatRanges.Add(LightgunRange);
+			Converts.Add(delegate()
+			{
+				target.analog[(2 * idx) + 0] = (short)(source.GetFloat(NX) / 10000.0f * (ScreenWidth - 1));
+				target.analog[(2 * idx) + 1] = (short)(source.GetFloat(NY) / 10000.0f * (ScreenHeight - 1));
+			});
+		}
+
+		void DoXEA1PAnalog(int idx, int player)
+		{
+			string NX = string.Format("P{0} Stick X", player);
+			string NY = string.Format("P{0} Stick Y", player);
+			string NZ = string.Format("P{0} Stick Z", player);
+			ControllerDef.FloatControls.Add(NX);
+			ControllerDef.FloatControls.Add(NY);
+			ControllerDef.FloatControls.Add(NZ);
+			ControllerDef.FloatRanges.Add(XEA1PRange);
+			ControllerDef.FloatRanges.Add(XEA1PRange);
+			ControllerDef.FloatRanges.Add(XEA1PRange);
+			Converts.Add(delegate()
+			{
+				target.analog[(2 * idx) + 0] = (short)(source.GetFloat(NX));
+				target.analog[(2 * idx) + 1] = (short)(source.GetFloat(NY));
+				// +2 is correct in how gpgx internally does this
+				target.analog[(2 * idx) + 2] = (short)(source.GetFloat(NZ));
 			});
 		}
 
@@ -131,8 +209,31 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						break;
 					case LibGPGX.INPUT_DEVICE.DEVICE_NONE:
 						break;
+					case LibGPGX.INPUT_DEVICE.DEVICE_LIGHTGUN:
+						// supports menacers and justifiers
+						AddToController(i, player, Lightgun);
+						DoLightgunAnalog(i, player);
+						player++;
+						break;
+					case LibGPGX.INPUT_DEVICE.DEVICE_PAD2B:
+					case LibGPGX.INPUT_DEVICE.DEVICE_PADDLE:
+					case LibGPGX.INPUT_DEVICE.DEVICE_SPORTSPAD:
+					case LibGPGX.INPUT_DEVICE.DEVICE_TEREBI:
+						throw new Exception("Master System only device?  Something went wrong.");
+					case LibGPGX.INPUT_DEVICE.DEVICE_ACTIVATOR:
+						AddToController(i, player, Activator);
+						player++;
+						break;
+					case LibGPGX.INPUT_DEVICE.DEVICE_XE_A1P:
+						AddToController(i, player, XEA1P);
+						DoXEA1PAnalog(i, player);
+						player++;
+						break;
+					case LibGPGX.INPUT_DEVICE.DEVICE_PICO:
+						// PICO isn't finished on the unmanaged side either
+						throw new Exception("Sega PICO not implemented yet!");
 					default:
-						throw new Exception("Unhandled control device!  Something needs to be implemented first.");
+						throw new Exception("Unknown Genesis control device!  Something went wrong.");
 				}
 			}
 
@@ -149,6 +250,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			this.source = null;
 			this.target = null;
 		}
+
+		/// <summary>
+		/// must be set for proper lightgun operation
+		/// </summary>
+		public int ScreenWidth { get; set; }
+		/// <summary>
+		/// must be set for proper lightgun operation
+		/// </summary>
+		public int ScreenHeight { get; set; }
 
 	}
 }

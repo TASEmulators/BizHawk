@@ -67,6 +67,8 @@ namespace BizHawk.Emulation.Common
 		public Func<object> RequestGLContext;
 		public Action<object> ActivateGLContext;
 		public Action DeactivateGLContext; //this shouldnt be necessary.. frontend should be changing context before it does anything.. but for now..
+
+		public Func<bool> DispSnowyNullEmulator;
 	}
 
 	public class TraceBuffer

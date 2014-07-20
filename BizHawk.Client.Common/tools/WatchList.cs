@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Common.NumberExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -35,7 +37,7 @@ namespace BizHawk.Client.Common
 			{
 				if (_domain != null)
 				{
-					return "{0:X" + IntHelpers.GetNumDigits(this._domain.Size - 1) + "}";
+					return "{0:X" + (_domain.Size - 1).NumHexDigits() + "}";
 				}
 
 				return string.Empty;
@@ -443,7 +445,7 @@ namespace BizHawk.Client.Common
 						continue;
 					}
 
-					var numColumns = StringHelpers.HowMany(line, '\t');
+					var numColumns = line.HowMany('\t');
 					int startIndex;
 					if (numColumns == 5)
 					{

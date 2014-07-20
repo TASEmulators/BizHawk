@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
@@ -55,6 +56,38 @@ namespace BizHawk.Client.Common
 
 				return 60.0;
 			}
+		}
+
+		public TimeSpan MovieTime(IMovie movie)
+		{
+			var dblseconds = GetSeconds(movie);
+			var seconds = (int)(dblseconds % 60);
+			var days = seconds / 86400;
+			var hours = seconds / 3600;
+			var minutes = (seconds / 60) % 60;
+			var milliseconds = (int)((dblseconds - seconds) * 1000);
+			return new TimeSpan(days, hours, minutes, seconds, milliseconds);
+		}
+
+		private double Fps(IMovie movie)
+		{
+			var system = movie.HeaderEntries[HeaderKeys.PLATFORM];
+			var pal = movie.HeaderEntries.ContainsKey(HeaderKeys.PAL) &&
+				movie.HeaderEntries[HeaderKeys.PAL] == "1";
+
+				return this[system, pal];
+		}
+
+		private double GetSeconds(IMovie movie)
+		{
+			double frames = movie.InputLogLength;
+
+			if (frames < 1)
+			{
+				return 0;
+			}
+
+			return frames / Fps(movie);
 		}
 	}
 }

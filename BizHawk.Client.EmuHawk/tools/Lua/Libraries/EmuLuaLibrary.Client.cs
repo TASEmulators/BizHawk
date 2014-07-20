@@ -49,18 +49,9 @@ namespace BizHawk.Client.EmuHawk
 			"enablerewind",
 			"Sets whether or not the rewind feature is enabled"
 		)]
-		public static void EnableRewind(bool enabled)
+		public void EnableRewind(bool enabled)
 		{
-			if (enabled)
-			{
-				Global.Rewinder.RewindActive = true;
-				GlobalWin.OSD.AddMessage("Rewind enabled");
-			}
-			else
-			{
-				Global.Rewinder.RewindActive = false;
-				GlobalWin.OSD.AddMessage("Rewind suspended");
-			}
+			GlobalWin.MainForm.EnableRewind(enabled);
 		}
 
 		[LuaMethodAttributes(

@@ -53,14 +53,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public N64ControllerSettings[] Controllers = 
 		{
 			new N64ControllerSettings(),
-			new N64ControllerSettings(),
-			new N64ControllerSettings(),
-			new N64ControllerSettings()
+			new N64ControllerSettings { IsConnected = false },
+			new N64ControllerSettings { IsConnected = false },
+			new N64ControllerSettings { IsConnected = false },
 		};
 
 		public N64RicePluginSettings RicePlugin = new N64RicePluginSettings();
 		public N64GlidePluginSettings GlidePlugin = new N64GlidePluginSettings();
 		public N64Glide64mk2PluginSettings Glide64mk2Plugin = new N64Glide64mk2PluginSettings();
+		public N64JaboPluginSettings JaboPlugin = new N64JaboPluginSettings();
 
 		public N64SyncSettings Clone()
 		{
@@ -72,6 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				RicePlugin = RicePlugin.Clone(),
 				GlidePlugin = GlidePlugin.Clone(),
 				Glide64mk2Plugin = Glide64mk2Plugin.Clone(),
+				JaboPlugin = JaboPlugin.Clone(),
 				Controllers = System.Array.ConvertAll(Controllers, a => a.Clone())
 			};
 		}
@@ -87,6 +89,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				case PLUGINTYPE.GLIDE: ips = GlidePlugin.Clone(); break;
 				case PLUGINTYPE.GLIDE64MK2: ips = Glide64mk2Plugin.Clone(); break;
 				case PLUGINTYPE.RICE: ips = RicePlugin.Clone(); break;
+				case PLUGINTYPE.JABO: ips = JaboPlugin.Clone(); break;
 			}
 			ips.FillPerGameHacks(game);
 			ret.Parameters = ips.GetPluginSettings();
@@ -94,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		}
 	}
 
-	public enum PLUGINTYPE { RICE, GLIDE, GLIDE64MK2 };
+	public enum PLUGINTYPE { RICE, GLIDE, GLIDE64MK2, JABO };
 
 	public interface IPluginSettings
 	{
@@ -468,6 +471,137 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		}
 	}
 
+	public class N64JaboPluginSettings : IPluginSettings
+	{
+		[JsonIgnore]
+		public PLUGINTYPE PluginType
+		{
+			get { return PLUGINTYPE.JABO; }
+		}
+
+		public void FillPerGameHacks(GameInfo game)
+		{
+
+		}
+
+		public Dictionary<string, object> GetPluginSettings()
+		{
+			//TODO: deal witn the game depedent settings
+			var dictionary = new Dictionary<string, object>();
+			var members = this.GetType().GetFields();
+			foreach (var member in members)
+			{
+				var field = this.GetType().GetField(member.Name).GetValue(this);
+				dictionary.Add(member.Name, field);
+			}
+
+			return dictionary;
+		}
+
+		public enum ANISOTROPIC_FILTERING_LEVEL
+		{
+			[Description("Off")]
+			off = 0,
+
+			[Description("2X")]
+			two_times = 1,
+
+			[Description("4X")]
+			four_times = 2,
+
+			[Description("8X")]
+			eight_times = 3,
+
+			[Description("16X")]
+			sixteen_times = 4
+		}
+		[DefaultValue(ANISOTROPIC_FILTERING_LEVEL.four_times)]
+		[Description("Anisotropic filtering level")]
+		//[DisplayName("Anisotropic filtering")]
+		public ANISOTROPIC_FILTERING_LEVEL anisotropic_level = ANISOTROPIC_FILTERING_LEVEL.four_times;
+
+		[DefaultValue(100)]
+		[Description("Brightness level, 100%-190%")]
+		//[DisplayName("Brightness")]
+		public int brightness = 100;
+
+		[DefaultValue(false)]
+		[Description("Enables Super2xSal textures")]
+		//[DisplayName("Super2xSal textures")]
+		public bool super2xsal = false;
+
+		[DefaultValue(false)]
+		[Description("Always use texture filter")]
+		//[DisplayName("Always use texture filter")]
+		public bool texture_filter = false;
+
+		[DefaultValue(false)]
+		[Description("Adjust game aspect ratio to match yours")]
+		//[DisplayName("Adjust game aspect ratio to match yours")]
+		public bool adjust_aspect_ratio = false;
+
+		[DefaultValue(false)]
+		[Description("Use legacy pixel pipeline")]
+		//[DisplayName("Use legacy pixel pipeline")]
+		public bool legacy_pixel_pipeline = false;
+
+		[DefaultValue(false)]
+		[Description("Force alpha blending")]
+		//[DisplayName("Force alpha blending")]
+		public bool alpha_blending = false;
+
+		[DefaultValue(false)]
+		[Description("Wireframe rendering")]
+		//[DisplayName("Wireframe rendering")]
+		public bool wireframe = false;
+
+		[DefaultValue(false)]
+		[Description("Use Direct3D transformation pipeline")]
+		//[DisplayName("Use Direct3D transformation pipeline")]
+		public bool direct3d_transformation_pipeline = false;
+
+		[DefaultValue(false)]
+		[Description("Force Z Compare")]
+		//[DisplayName("Force Z Compare")]
+		public bool z_compare = false;
+
+		[DefaultValue(false)]
+		[Description("Copy framebuffer to RDRAM")]
+		//[DisplayName("Copy framebuffer to RDRAM")]
+		public bool copy_framebuffer = false;
+
+		[DefaultValue(-1)]
+		[Description("Emulated Width")]
+		//[DisplayName("Emulated Width")]
+		public int resolution_width = -1;
+
+		[DefaultValue(-1)]
+		[Description("Emulated Height")]
+		//[DisplayName("Emulated Height")]
+		public int resolution_height = -1;
+
+		public enum DIRECT3D_CLEAR_MODE
+		{
+			[Description("Default")]
+			def = 0,
+
+			[Description("Only Per Frame")]
+			per_frame = 1,
+
+			[Description("Always")]
+			always = 2
+		}
+		[DefaultValue(DIRECT3D_CLEAR_MODE.def)]
+		[Description("Direct3D Clear Mode")]
+		//[DisplayName("Direct3D Clear Mode")]
+		public DIRECT3D_CLEAR_MODE clear_mode = DIRECT3D_CLEAR_MODE.def;
+
+		public N64JaboPluginSettings Clone()
+		{
+			return (N64JaboPluginSettings)MemberwiseClone();
+		}
+	}
+
 	public class N64ControllerSettings
 	{
 		/// <summary>
@@ -490,7 +624,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		}
 
 		[JsonIgnore]
-		private N64ControllerPakType _type = N64ControllerPakType.MEMORY_CARD;
+		private N64ControllerPakType _type = N64ControllerPakType.NO_PAK;
 
 		/// <summary>
 		/// Type of the pak inserted in the controller

@@ -38,7 +38,7 @@ class Memory {
 	void (*writeCallback)(unsigned);
 	void (*execCallback)(unsigned);
 
-	InputGetter *getInput;
+	unsigned (*getInput)();
 	unsigned long divLastUpdate;
 	unsigned long lastOamDmaUpdate;
 	
@@ -87,7 +87,6 @@ public:
 	const char * romTitle() const { return cart.romTitle(); }
 
 	void setStatePtrs(SaveState &state);
-	unsigned long saveState(SaveState &state, unsigned long cc);
 	void loadState(const SaveState &state/*, unsigned long oldCc*/);
 	void loadSavedata(const char *data) { cart.loadSavedata(data); }
 	int saveSavedataLength() {return cart.saveSavedataLength(); }
@@ -160,7 +159,7 @@ public:
 
 	int loadROM(const char *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat);
 
-	void setInputGetter(InputGetter *getInput) {
+	void setInputGetter(unsigned (*getInput)()) {
 		this->getInput = getInput;
 	}
 

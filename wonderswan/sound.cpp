@@ -336,7 +336,7 @@ namespace MDFN_IEN_WSWAN
 			if(sbuf[i])
 			{
 				delete sbuf[i];
-				sbuf[i] = 0;
+				sbuf[i] = nullptr;
 			}
 		}
 

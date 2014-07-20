@@ -39,22 +39,6 @@ namespace BizHawk.Common
 	}
 
 	/// <summary>
-	/// A dictionary that contains a name parameter, which is required
-	/// </summary>
-	[Serializable]
-	public class NamedDictionary<K, V> : Dictionary<K, V>
-	{
-		public NamedDictionary(string name)
-		{
-			Name = name;
-		}
-
-		public string Name { get; private set; }
-
-		protected NamedDictionary(SerializationInfo info, StreamingContext context) : base(info, context) { }
-	}
-
-	/// <summary>
 	/// a Dictionary-of-lists with key K and values List&lt;V&gt;
 	/// </summary>
 	[Serializable]

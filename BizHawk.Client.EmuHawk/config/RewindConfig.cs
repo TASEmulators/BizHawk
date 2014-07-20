@@ -62,6 +62,12 @@ namespace BizHawk.Client.EmuHawk
 			MediumStateUpDown.Value = medium_state_size_kb;
 			LargeStateTrackbar.Value = large_state_size_kb;
 			LargeStateUpDown.Value = large_state_size_kb;
+
+			nudCompression.Value = Global.Config.SaveStateCompressionLevelNormal;
+
+			rbStatesDefault.Checked = Global.Config.SaveStateType == Config.SaveStateTypeE.Default;
+			rbStatesBinary.Checked = Global.Config.SaveStateType == Config.SaveStateTypeE.Binary;
+			rbStatesText.Checked = Global.Config.SaveStateType == Config.SaveStateTypeE.Text;
 		}
 
 		private void SetStateSize()
@@ -132,6 +138,12 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.Rewind_LargeStateSize = (int)(LargeStateUpDown.Value * 1024);
 			Global.Config.Rewind_OnDisk = DiskBufferCheckbox.Checked;
 			Global.Config.Rewind_BufferSize = (int)BufferSizeUpDown.Value;
+			Global.Config.SaveStateCompressionLevelNormal = (int)nudCompression.Value;
+
+			if (rbStatesDefault.Checked) Global.Config.SaveStateType = Config.SaveStateTypeE.Default;
+			if (rbStatesBinary.Checked) Global.Config.SaveStateType = Config.SaveStateTypeE.Binary;
+			if (rbStatesText.Checked) Global.Config.SaveStateType = Config.SaveStateTypeE.Text;
+
 			if (Global.Config.Rewind_IsThreaded != RewindIsThreadedCheckbox.Checked)
 			{
 				GlobalWin.MainForm.FlagNeedsReboot();
@@ -322,5 +334,28 @@ namespace BizHawk.Client.EmuHawk
 		{
 			CalculateEstimates();
 		}
+
+		private void trackBar1_ValueChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void nudCompression_ValueChanged(object sender, EventArgs e)
+		{
+			trackBarCompression.Value = (int)(sender as NumericUpDown).Value;
+		}
+
+		private void trackBarCompression_ValueChanged(object sender, EventArgs e)
+		{
+			//TODO - make a UserControl which is trackbar and NUD combined
+			nudCompression.Value = (sender as TrackBar).Value;
+		}
+
+		private void btnResetCompression_Click(object sender, EventArgs e)
+		{
+			nudCompression.Value = Config.DefaultSaveStateCompressionLevelNormal;
+
+		}
+
 	}
 }

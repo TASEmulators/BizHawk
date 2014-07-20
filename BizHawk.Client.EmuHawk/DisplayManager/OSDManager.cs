@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Collections.Generic;
 
 using BizHawk.Client.Common;
-
+using BizHawk.Client.Common.InputAdapterExtensions;
 using BizHawk.Bizware.BizwareGL;
 
 namespace BizHawk.Client.EmuHawk
@@ -43,7 +43,6 @@ namespace BizHawk.Client.EmuHawk
 	public class OSDManager
 	{
 		public string FPS { get; set; }
-		public string MT { get; set; }
 		public IBlitterFont MessageFont;
 
 		public void Dispose()
@@ -56,8 +55,8 @@ namespace BizHawk.Client.EmuHawk
 			MessageFont = blitter.GetFontType("MessageFont");
 		}
 
-		public System.Drawing.Color FixedMessagesColor { get { return System.Drawing.Color.FromArgb(Global.Config.MessagesColor); } }
-		public System.Drawing.Color FixedAlertMessageColor { get { return System.Drawing.Color.FromArgb(Global.Config.AlertMessageColor); } }
+		public Color FixedMessagesColor { get { return Color.FromArgb(Global.Config.MessagesColor); } }
+		public Color FixedAlertMessageColor { get { return Color.FromArgb(Global.Config.AlertMessageColor); } }
 
 		public OSDManager()
 		{
@@ -223,28 +222,31 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputStrMovie()
 		{
-			var sb = new StringBuilder(Global.MovieSession.Movie.GetInput(Global.Emulator.Frame));
-			sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
-			return sb.ToString();
+			var lg = Global.MovieSession.LogGeneratorInstance();
+			lg.SetSource(Global.MovieSession.MovieControllerAdapter);
+
+			return lg.GenerateInputDisplay();
 		}
 
 		public string InputStrImmediate()
 		{
-			var mg = new MnemonicsGenerator();
-			mg.SetSource(Global.AutofireStickyXORAdapter);
+			var lg = Global.MovieSession.LogGeneratorInstance();
+			lg.SetSource(Global.AutofireStickyXORAdapter);
 
-			var sb = new StringBuilder(mg.GetControllersAsMnemonic());
-			sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
-			return sb.ToString();
+			return lg.GenerateInputDisplay();
 		}
 
 		public string InputPrevious()
 		{
-			if (Global.MovieSession.Movie.IsActive)
+			if (Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished)
 			{
-				var sb = new StringBuilder(Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
-				sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
-				return sb.ToString();
+				var lg = Global.MovieSession.LogGeneratorInstance();
+				var state = Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1);
+				if (state != null)
+				{
+					lg.SetSource(state);
+					return lg.GenerateInputDisplay();
+				}
 			}
 
 			return string.Empty;
@@ -252,26 +254,16 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputStrOrAll()
 		{
-			var m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
+			var m = (Global.MovieSession.Movie.IsActive && 
+				!Global.MovieSession.Movie.IsFinished &&
+				Global.Emulator.Frame > 0) ?
+				Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1) :
+				Global.MovieSession.MovieControllerInstance();
 
-			if (Global.MovieSession.Movie.IsActive)
-			{
-				m.SetControllersAsMnemonic(
-					Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
-			}
+			var lg = Global.MovieSession.LogGeneratorInstance();
 
-			var orAdaptor = new ORAdapter()
-			{
-				Source = Global.AutofireStickyXORAdapter,
-				SourceOr = m
-			};
-
-			var mg = new MnemonicsGenerator();
-			mg.SetSource(orAdaptor);
-
-			var sb = new StringBuilder(mg.GetControllersAsMnemonic());
-			sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
-			return sb.ToString();
+			lg.SetSource(Global.AutofireStickyXORAdapter.Or(m));
+			return lg.GenerateInputDisplay();
 		}
 
 		public string InputStrSticky()
@@ -282,36 +274,25 @@ namespace BizHawk.Client.EmuHawk
 				SourceStickyOr = Global.AutofireStickyXORAdapter
 			};
 
-			var mg = new MnemonicsGenerator();
-			mg.SetSource(stickyOr);
-			var sb = new StringBuilder(mg.GetControllersAsMnemonic());
-			sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
-			return sb.ToString();
+			var lg = Global.MovieSession.LogGeneratorInstance();
+			lg.SetSource(stickyOr);
+
+			return lg.GenerateInputDisplay();
 		}
 
 		public string MakeIntersectImmediatePrevious()
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				var m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
-				m.SetControllersAsMnemonic(
-					Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
+				var m = Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished ?
+					Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1) :
+					Global.MovieSession.MovieControllerInstance();
 
-				var andAdaptor = new AndAdapter
-				{
-					Source = Global.AutofireStickyXORAdapter,
-					SourceAnd = m
-				};
-
-				var mg = new MnemonicsGenerator();
-				mg.SetSource(andAdaptor);
-
-				var sb = new StringBuilder(mg.GetControllersAsMnemonic());
-				sb.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
-				return sb.ToString();
+				var lg = Global.MovieSession.LogGeneratorInstance();
+				lg.SetSource(Global.AutofireStickyXORAdapter.And(m));
+				return lg.GenerateInputDisplay();
 			}
 
-			// TODO: track previous input even when not movie recording
 			return string.Empty;
 		}
 
@@ -319,7 +300,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				return "Rerecord Count: " + Global.MovieSession.Movie.Header.Rerecords;
+				return "Rerecord Count: " + Global.MovieSession.Movie.Rerecords;
 			}
 			
 			return string.Empty;
@@ -391,10 +372,10 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.MovieSession.MultiTrack.IsActive)
 			{
-				float x = GetX(g, Global.Config.DispMultix, Global.Config.DispMultianchor, MT);
-				float y = GetY(g, Global.Config.DispMultiy, Global.Config.DispMultianchor, MT);
+				float x = GetX(g, Global.Config.DispMultix, Global.Config.DispMultianchor, Global.MovieSession.MultiTrack.CurrentState);
+				float y = GetY(g, Global.Config.DispMultiy, Global.Config.DispMultianchor, Global.MovieSession.MultiTrack.CurrentState);
 
-				DrawOsdMessage(g, MT, FixedMessagesColor, x, y);
+				DrawOsdMessage(g, Global.MovieSession.MultiTrack.CurrentState, FixedMessagesColor, x, y);
 			}
 
 			if (Global.Config.DisplayFPS && FPS != null)
@@ -452,7 +433,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.MovieSession.Movie.IsActive && Global.Config.DisplaySubtitles)
 			{
-				var subList = Global.MovieSession.Movie.Header.Subtitles.GetSubtitles(Global.Emulator.Frame);
+				var subList = Global.MovieSession.Movie.Subtitles.GetSubtitles(Global.Emulator.Frame);
 
 				foreach (var sub in subList)
 				{

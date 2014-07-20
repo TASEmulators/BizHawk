@@ -35,6 +35,7 @@
 			this.HelpBtn = new System.Windows.Forms.Button();
 			this.label2 = new System.Windows.Forms.Label();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.label1 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
@@ -116,6 +117,15 @@
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Board Properties";
 			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(12, 50);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(362, 13);
+			this.label1.TabIndex = 14;
+			this.label1.Text = "Region Override will be ignored when playing Famicom Disk System games.";
+			// 
 			// NESSyncSettingsForm
 			// 
 			this.AcceptButton = this.OkBtn;
@@ -123,6 +133,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.CancelBtn;
 			this.ClientSize = new System.Drawing.Size(373, 376);
+			this.Controls.Add(this.label1);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.comboBox1);
@@ -150,5 +161,6 @@
 		private System.Windows.Forms.Button HelpBtn;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.Label label1;
 	}
 }

@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-using BizHawk.Client.EmuHawk.ControlExtensions;
-using BizHawk.Client.Common;
+using BizHawk.Common.StringExtensions;
+using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Cores.Nintendo.N64;
+using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.ControlExtensions;
+
+
 using BizHawk.Common;
-
-
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -99,6 +101,7 @@ namespace BizHawk.Client.EmuHawk
 				case "Rice": ss.VidPlugin = PLUGINTYPE.RICE; break;
 				case "Glide64": ss.VidPlugin = PLUGINTYPE.GLIDE; break;
 				case "Glide64mk2": ss.VidPlugin = PLUGINTYPE.GLIDE64MK2; break;
+				case "Jabo 1.6.1": ss.VidPlugin = PLUGINTYPE.JABO; break;
 			}
 
 			//Rice
@@ -157,12 +160,12 @@ namespace BizHawk.Client.EmuHawk
 			ss.RicePlugin.FastLoadTile = RiceFastLoadTile_CB.Checked;
 			ss.RicePlugin.UseSmallerTexture = RiceUseSmallerTexture_CB.Checked;
 
-			if (InputValidate.IsSigned(RiceVIWidth_Text.Text))
+			if (RiceVIWidth_Text.Text.IsSigned())
 				ss.RicePlugin.VIWidth = int.Parse(RiceVIWidth_Text.Text);
 			else
 				ss.RicePlugin.VIWidth = -1;
 
-			if (InputValidate.IsSigned(RiceVIHeight_Text.Text))
+			if (RiceVIHeight_Text.Text.IsSigned())
 				ss.RicePlugin.VIHeight = int.Parse(RiceVIHeight_Text.Text);
 			else
 				ss.RicePlugin.VIHeight = -1;
@@ -204,19 +207,19 @@ namespace BizHawk.Client.EmuHawk
 			ss.GlidePlugin.fb_get_info = Glide_fb_get_info.Checked;
 
 			ss.GlidePlugin.offset_x =
-				InputValidate.IsSigned(Glide_offset_x.Text) ? 
+				Glide_offset_x.Text.IsSigned() ? 
 				int.Parse(Glide_offset_x.Text) : 0;
 
 			ss.GlidePlugin.offset_y =
-				InputValidate.IsSigned(Glide_offset_y.Text) ? 
+				Glide_offset_y.Text.IsSigned() ? 
 				int.Parse(Glide_offset_y.Text) : 0;
 
 			ss.GlidePlugin.scale_x =
-				InputValidate.IsSigned(Glide_scale_x.Text) ? 
+				Glide_scale_x.Text.IsSigned() ? 
 				int.Parse(Glide_scale_x.Text) : 100000;
 
 			ss.GlidePlugin.scale_y =
-				InputValidate.IsSigned(Glide_scale_y.Text) ?
+				Glide_scale_y.Text.IsSigned() ?
 				int.Parse(Glide_scale_y.Text) : 100000;
 
 			ss.GlidePlugin.UseDefaultHacks = GlideUseDefaultHacks1.Checked || GlideUseDefaultHacks2.Checked;
@@ -245,22 +248,22 @@ namespace BizHawk.Client.EmuHawk
 			ss.GlidePlugin.wrap_big_tex = Glide_wrap_big_tex.Checked;
 
 			ss.GlidePlugin.depth_bias =
-				InputValidate.IsSigned(Glide_depth_bias.Text) ?
+				Glide_depth_bias.Text.IsSigned() ?
 				int.Parse(Glide_depth_bias.Text) : 20;
 
 			ss.GlidePlugin.filtering = Glide_filtering.SelectedIndex;
 
-			ss.GlidePlugin.fix_tex_coord = InputValidate.IsSigned(Glide_fix_tex_coord.Text) ?
+			ss.GlidePlugin.fix_tex_coord = Glide_fix_tex_coord.Text.IsSigned() ?
 				int.Parse(Glide_fix_tex_coord.Text) : 0;
 
 			ss.GlidePlugin.lodmode = Glide_lodmode.SelectedIndex;
 
 			ss.GlidePlugin.stipple_mode =
-				InputValidate.IsSigned(Glide_stipple_mode.Text) ?
+				Glide_stipple_mode.Text.IsSigned() ?
 				int.Parse(Glide_stipple_mode.Text) : 2;
 
 			ss.GlidePlugin.stipple_pattern =
-				InputValidate.IsSigned(Glide_stipple_pattern.Text) ?
+				Glide_stipple_pattern.Text.IsSigned() ?
 				int.Parse(Glide_stipple_pattern.Text) : 1041204192;
 
 			ss.GlidePlugin.swapmode = Glide_swapmode.SelectedIndex;
@@ -291,11 +294,11 @@ namespace BizHawk.Client.EmuHawk
 			ss.Glide64mk2Plugin.swapmode = Glide64mk2_swapmode.SelectedIndex;
 
 			ss.Glide64mk2Plugin.stipple_pattern =
-				InputValidate.IsSigned(Glide64mk2_stipple_pattern.Text) ?
+				Glide64mk2_stipple_pattern.Text.IsSigned() ?
 				int.Parse(Glide64mk2_stipple_pattern.Text) : 1041204192;
 
 			ss.Glide64mk2Plugin.stipple_mode =
-				InputValidate.IsSigned(Glide64mk2_stipple_mode.Text) ?
+				Glide64mk2_stipple_mode.Text.IsSigned() ?
 				int.Parse(Glide64mk2_stipple_mode.Text) : 2;
 
 			ss.Glide64mk2Plugin.lodmode = Glide64mk2_lodmode.SelectedIndex;
@@ -320,11 +323,13 @@ namespace BizHawk.Client.EmuHawk
 			ss.Glide64mk2Plugin.fast_crc = Glide64mk2_fast_crc.Checked;
 
 
-			ss.CoreType = EnumHelper.GetValueFromDescription<N64SyncSettings.CORETYPE>(
-				CoreTypeDropdown.SelectedItem.ToString());
+			ss.CoreType = CoreTypeDropdown.SelectedItem
+				.ToString()
+				.GetEnumFromDescription<N64SyncSettings.CORETYPE>();
 
-			ss.RspType = EnumHelper.GetValueFromDescription<N64SyncSettings.RSPTYPE>(
-				RspTypeDropdown.SelectedItem.ToString());
+			ss.RspType = RspTypeDropdown.SelectedItem
+				.ToString()
+				.GetEnumFromDescription<N64SyncSettings.RSPTYPE>();
 
 			PutSettings(s);
 			PutSyncSettings(ss);
@@ -354,6 +359,7 @@ namespace BizHawk.Client.EmuHawk
 				case PLUGINTYPE.GLIDE64MK2: PluginComboBox.Text = "Glide64mk2"; break;
 				case PLUGINTYPE.GLIDE: PluginComboBox.Text = "Glide64"; break;
 				case PLUGINTYPE.RICE: PluginComboBox.Text = "Rice"; break;
+				case PLUGINTYPE.JABO: PluginComboBox.Text = "Jabo 1.6.1"; break;
 			}
 
 			//Rice
@@ -623,7 +629,7 @@ namespace BizHawk.Client.EmuHawk
 				Glide_decrease_fillrect_edge.Checked = Global.Game.GetBool("Glide_decrease_fillrect_edge", false);
 				Glide_detect_cpu_write.Checked = Global.Game.GetBool("Glide_detect_cpu_write", false);
 				Glide_fb_clear.Checked = Global.Game.GetBool("Glide_fb_clear", false);
-				Glide_fb_hires.Checked = Global.Game.GetBool("Glide_fb_clear", true);
+				Glide_fb_hires.Checked = Global.Game.GetBool("Glide_fb_hires", true);
 				Glide_fb_read_alpha.Checked = Global.Game.GetBool("Glide_fb_read_alpha", false);
 				Glide_fb_smart.Checked = Global.Game.GetBool("Glide_fb_smart", false);
 				Glide_fillcolor_fix.Checked = Global.Game.GetBool("Glide_fillcolor_fix", false);
@@ -707,7 +713,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int GetIntFromDB(string parameter, int defaultVal)
 		{
-			if (Global.Game.OptionPresent(parameter) && InputValidate.IsUnsigned(Global.Game.OptionValue(parameter)))
+			if (Global.Game.OptionPresent(parameter) && Global.Game.OptionValue(parameter).IsUnsigned())
 			{
 				return int.Parse(Global.Game.OptionValue(parameter));
 			}

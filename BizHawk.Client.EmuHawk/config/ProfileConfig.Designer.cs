@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProfileConfig));
 			this.OkBtn = new System.Windows.Forms.Button();
 			this.CancelBtn = new System.Windows.Forms.Button();
 			this.ProfileSelectComboBox = new System.Windows.Forms.ComboBox();
@@ -65,7 +66,7 @@
 			this.CancelBtn.UseVisualStyleBackColor = true;
 			this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
 			// 
-			// comboBox1
+			// ProfileSelectComboBox
 			// 
 			this.ProfileSelectComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.ProfileSelectComboBox.FormattingEnabled = true;
@@ -75,16 +76,15 @@
             "Longplays",
             "Custom Profile"});
 			this.ProfileSelectComboBox.Location = new System.Drawing.Point(22, 20);
-			this.ProfileSelectComboBox.Name = "comboBox1";
+			this.ProfileSelectComboBox.Name = "ProfileSelectComboBox";
 			this.ProfileSelectComboBox.Size = new System.Drawing.Size(156, 21);
 			this.ProfileSelectComboBox.TabIndex = 2;
-			this.ProfileSelectComboBox.SelectedIndexChanged += new System.EventHandler(this.ProfileSelectComboBox_SelectedIndexChanged);
 			// 
-			// checkBox1
+			// SaveScreenshotStatesCheckBox
 			// 
 			this.SaveScreenshotStatesCheckBox.AutoSize = true;
 			this.SaveScreenshotStatesCheckBox.Location = new System.Drawing.Point(12, 67);
-			this.SaveScreenshotStatesCheckBox.Name = "checkBox1";
+			this.SaveScreenshotStatesCheckBox.Name = "SaveScreenshotStatesCheckBox";
 			this.SaveScreenshotStatesCheckBox.Size = new System.Drawing.Size(166, 17);
 			this.SaveScreenshotStatesCheckBox.TabIndex = 4;
 			this.SaveScreenshotStatesCheckBox.Text = "Save Screenshot With States";
@@ -92,11 +92,11 @@
 			this.SaveScreenshotStatesCheckBox.Visible = false;
 			this.SaveScreenshotStatesCheckBox.MouseHover += new System.EventHandler(this.SaveScreenshotStatesCheckBox_MouseHover);
 			// 
-			// checkBox2
+			// SaveLargeScreenshotStatesCheckBox
 			// 
 			this.SaveLargeScreenshotStatesCheckBox.AutoSize = true;
 			this.SaveLargeScreenshotStatesCheckBox.Location = new System.Drawing.Point(12, 90);
-			this.SaveLargeScreenshotStatesCheckBox.Name = "checkBox2";
+			this.SaveLargeScreenshotStatesCheckBox.Name = "SaveLargeScreenshotStatesCheckBox";
 			this.SaveLargeScreenshotStatesCheckBox.Size = new System.Drawing.Size(196, 17);
 			this.SaveLargeScreenshotStatesCheckBox.TabIndex = 5;
 			this.SaveLargeScreenshotStatesCheckBox.Text = "Save Large Screenshot With States";
@@ -104,11 +104,11 @@
 			this.SaveLargeScreenshotStatesCheckBox.Visible = false;
 			this.SaveLargeScreenshotStatesCheckBox.MouseHover += new System.EventHandler(this.SaveLargeScreenshotStatesCheckBox_MouseHover);
 			// 
-			// checkBox3
+			// AllowUDLRCheckBox
 			// 
 			this.AllowUDLRCheckBox.AutoSize = true;
 			this.AllowUDLRCheckBox.Location = new System.Drawing.Point(12, 113);
-			this.AllowUDLRCheckBox.Name = "checkBox3";
+			this.AllowUDLRCheckBox.Name = "AllowUDLRCheckBox";
 			this.AllowUDLRCheckBox.Size = new System.Drawing.Size(111, 17);
 			this.AllowUDLRCheckBox.TabIndex = 6;
 			this.AllowUDLRCheckBox.Text = "Allow U+D or L+R";
@@ -116,10 +116,10 @@
 			this.AllowUDLRCheckBox.Visible = false;
 			this.AllowUDLRCheckBox.MouseHover += new System.EventHandler(this.AllowUDLRCheckBox_MouseHover);
 			// 
-			// richTextBox1
+			// ProfileDialogHelpTexBox
 			// 
 			this.ProfileDialogHelpTexBox.Location = new System.Drawing.Point(184, 12);
-			this.ProfileDialogHelpTexBox.Name = "richTextBox1";
+			this.ProfileDialogHelpTexBox.Name = "ProfileDialogHelpTexBox";
 			this.ProfileDialogHelpTexBox.ReadOnly = true;
 			this.ProfileDialogHelpTexBox.Size = new System.Drawing.Size(198, 126);
 			this.ProfileDialogHelpTexBox.TabIndex = 8;
@@ -135,12 +135,12 @@
 			this.label1.TabIndex = 9;
 			this.label1.Text = "Profile Options";
 			// 
-			// label2
+			// GeneralOptionsLabel
 			// 
 			this.GeneralOptionsLabel.AutoSize = true;
 			this.GeneralOptionsLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.GeneralOptionsLabel.Location = new System.Drawing.Point(9, 51);
-			this.GeneralOptionsLabel.Name = "label2";
+			this.GeneralOptionsLabel.Name = "GeneralOptionsLabel";
 			this.GeneralOptionsLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
 			this.GeneralOptionsLabel.Size = new System.Drawing.Size(83, 13);
 			this.GeneralOptionsLabel.TabIndex = 10;
@@ -201,8 +201,8 @@
 			this.Controls.Add(this.ProfileSelectComboBox);
 			this.Controls.Add(this.CancelBtn);
 			this.Controls.Add(this.OkBtn);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "ProfileConfig";
-			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Profile Config";
 			this.Load += new System.EventHandler(this.ProfileConfig_Load);

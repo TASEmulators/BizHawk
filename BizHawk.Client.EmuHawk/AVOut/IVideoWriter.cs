@@ -33,6 +33,11 @@ namespace BizHawk.Client.EmuHawk
 		void CloseFile();
 
 		/// <summary>
+		/// tells which emulation frame we're on. Happens before AddFrame() or AddSamples()
+		/// </summary>
+		void SetFrame(int frame);
+
+		/// <summary>
 		/// adds a frame to the stream
 		/// </summary>
 		void AddFrame(IVideoProvider source);
@@ -111,7 +116,8 @@ namespace BizHawk.Client.EmuHawk
 				new WavWriterV(),
 				new FFmpegWriter(),
 				new NutWriter(),
-				new GifWriter()
+				new GifWriter(),
+				new SynclessRecorder()
 			};
 			return ret;
 		}

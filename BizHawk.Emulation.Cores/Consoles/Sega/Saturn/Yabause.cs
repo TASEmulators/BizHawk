@@ -7,6 +7,7 @@ using System.IO;
 using System.ComponentModel;
 
 using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
 
@@ -30,8 +31,8 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			BoolButtons =
 			{	
 				"Power", "Reset",
-				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Start", "P1 Z", "P1 Y", "P1 X", "P1 C", "P1 B", "P1 A", "P1 L", "P1 R",
-				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Start", "P2 Z", "P2 Y", "P2 X", "P2 C", "P2 B", "P2 A", "P2 L", "P2 R",
+				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Start", "P1 A", "P1 B", "P1 C", "P1 X", "P1 Y", "P1 Z", "P1 L", "P1 R",
+				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Start", "P2 A", "P2 B", "P2 C", "P2 X", "P2 Y", "P2 Z", "P2 L", "P2 R",
 			}
 		};
 
@@ -728,44 +729,53 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 		public class SaturnSyncSettings
 		{
+			[DisplayName("Open GL Mode")]
 			[Description("Use OpenGL mode for rendering instead of software.")]
 			[DefaultValue(false)]
 			public bool UseGL { get; set; }
 
+			[DisplayName("Display Factor")]
 			[Description("In OpenGL mode, the internal resolution as a multiple of the normal internal resolution (1x, 2x, 3x, 4x).  Ignored in software mode or when a custom resolution is used.")]
 			[DefaultValue(1)]
 			public int DispFactor { get { return _DispFactor; } set { _DispFactor = Math.Max(1, Math.Min(value, 4)); } }
 			[JsonIgnore]
 			private int _DispFactor;
 
+			[DisplayName("Display Free")]
 			[Description("In OpenGL mode, set to true to use a custom resolution and ignore DispFactor.")]
 			[DefaultValue(false)]
 			public bool DispFree { get; set; }
 
+			[DisplayName("DispFree Final Width")]
 			[Description("In OpenGL mode and when DispFree is true, the width of the final resolution.")]
 			[DefaultValue(640)]
 			public int GLW { get { return _GLW; } set { _GLW = Math.Max(320, Math.Min(value, 2048)); } }
 			[JsonIgnore]
 			private int _GLW;
 
+			[DisplayName("DispFree Final Height")]
 			[Description("In OpenGL mode and when DispFree is true, the height of the final resolution.")]
 			[DefaultValue(480)]
 			public int GLH { get { return _GLH; } set { _GLH = Math.Max(224, Math.Min(value, 1024)); } }
 			[JsonIgnore]
 			private int _GLH;
 
+			[DisplayName("Ram Cart Type")]
 			[Description("The type of the attached RAM cart.  Most games will not use this.")]
 			[DefaultValue(LibYabause.CartType.NONE)]
 			public LibYabause.CartType CartType { get; set; }
 
+			[DisplayName("Skip BIOS")]
 			[Description("Skip the Bios Intro screen.")]
 			[DefaultValue(false)]
 			public bool SkipBios { get; set; }
 
+			[DisplayName("Use RealTime RTC")]
 			[Description("If true, the real time clock will reflect real time, instead of emulated time.  Ignored (forced to false) when a movie is recording.")]
 			[DefaultValue(false)]
 			public bool RealTimeRTC { get; set; }
 
+			[DisplayName("RTC intiial time")]
 			[Description("Set the initial RTC time.  Only used when RealTimeRTC is false.")]
 			[DefaultValue(typeof(DateTime), "2010-01-01")]
 			public DateTime RTCInitialTime { get; set; }
@@ -780,7 +790,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			}
 			public SaturnSyncSettings()
 			{
-				SettingsUtil.SetDefaultValues<SaturnSyncSettings>(this);
+				SettingsUtil.SetDefaultValues(this);
 			}
 		}
 	}

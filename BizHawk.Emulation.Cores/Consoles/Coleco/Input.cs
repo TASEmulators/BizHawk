@@ -11,13 +11,13 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			{
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right",
 				"P1 L", "P1 R",
-				"P1 Key0", "P1 Key1", "P1 Key2", "P1 Key3", "P1 Key4", "P1 Key5",
-				"P1 Key6", "P1 Key7", "P1 Key8", "P1 Key9", "P1 Star", "P1 Pound",
+				"P1 Key 0", "P1 Key 1", "P1 Key 2", "P1 Key 3", "P1 Key 4", "P1 Key 5",
+				"P1 Key 6", "P1 Key 7", "P1 Key 8", "P1 Key 9", "P1 Star", "P1 Pound",
 
 				"P2 Up", "P2 Down", "P2 Left", "P2 Right",
 				"P2 L", "P2 R",
-				"P2 Key0", "P2 Key1", "P2 Key2", "P2 Key3", "P2 Key4", "P2 Key5",
-				"P2 Key6", "P2 Key7", "P2 Key8", "P2 Key9", "P2 Star", "P2 Pound"
+				"P2 Key 0", "P2 Key 1", "P2 Key 2", "P2 Key 3", "P2 Key 4", "P2 Key 5",
+				"P2 Key 6", "P2 Key 7", "P2 Key 8", "P2 Key 9", "P2 Star", "P2 Pound"
 			}
 		};
 
@@ -47,20 +47,20 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				byte retval = 0;
 
 				//                                   0x00;
-				if (Controller["P1 Key8"]) retval = 0x01;
-				if (Controller["P1 Key4"]) retval = 0x02;
-				if (Controller["P1 Key5"]) retval = 0x03;
+				if (Controller["P1 Key 8"]) retval = 0x01;
+				if (Controller["P1 Key 4"]) retval = 0x02;
+				if (Controller["P1 Key 5"]) retval = 0x03;
 				//                                   0x04;
-				if (Controller["P1 Key7"]) retval = 0x05;
+				if (Controller["P1 Key 7"]) retval = 0x05;
 				if (Controller["P1 Pound"]) retval = 0x06;
-				if (Controller["P1 Key2"]) retval = 0x07;
+				if (Controller["P1 Key 2"]) retval = 0x07;
 				//                                   0x08;
 				if (Controller["P1 Star"]) retval = 0x09;
-				if (Controller["P1 Key0"]) retval = 0x0A;
-				if (Controller["P1 Key9"]) retval = 0x0B;
-				if (Controller["P1 Key3"]) retval = 0x0C;
-				if (Controller["P1 Key1"]) retval = 0x0D;
-				if (Controller["P1 Key6"]) retval = 0x0E;
+				if (Controller["P1 Key 0"]) retval = 0x0A;
+				if (Controller["P1 Key 9"]) retval = 0x0B;
+				if (Controller["P1 Key 3"]) retval = 0x0C;
+				if (Controller["P1 Key 1"]) retval = 0x0D;
+				if (Controller["P1 Key 6"]) retval = 0x0E;
 
 				if (Controller["P1 R"] == false) retval |= 0x40;
 				retval |= 0x30; // always set these bits

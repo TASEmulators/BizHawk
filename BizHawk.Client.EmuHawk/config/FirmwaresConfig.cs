@@ -44,6 +44,7 @@ namespace BizHawk.Client.EmuHawk
 				{ "C64", "C64" },
 				{ "GEN", "Genesis" },
 				{ "SMS", "Sega Master System" },
+				{ "PSX", "Sony PlayStation" }
 			};
 
 		public string TargetSystem = null;
@@ -80,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 
 			//prep imagelist for listview with 3 item states for {idUnsure, idMissing, idOk}
-			imageList1.Images.AddRange(new[] { EmuHawk.Properties.Resources.RetroQuestion, EmuHawk.Properties.Resources.ExclamationRed, EmuHawk.Properties.Resources.GreenCheck });
+			imageList1.Images.AddRange(new[] { Properties.Resources.RetroQuestion, Properties.Resources.ExclamationRed, Properties.Resources.GreenCheck });
 
 			listviewSorter = new ListViewSorter(this, -1);
 		}
@@ -254,7 +255,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void tbbOrganize_Click(object sender, EventArgs e)
 		{
-			if (System.Windows.Forms.MessageBox.Show(this, "This is going to move/rename every automatically-selected firmware file under your configured firmwares directory to match our recommended organizational scheme (which is not super great right now). Proceed?", "Firmwares Organization Confirm", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.Cancel)
+			if (MessageBox.Show(this, "This is going to move/rename every automatically-selected firmware file under your configured firmwares directory to match our recommended organizational scheme (which is not super great right now). Proceed?", "Firmwares Organization Confirm", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
 			  return;
 
 			Manager.DoScanAndResolve();
@@ -298,7 +299,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void lvFirmwares_MouseClick(object sender, MouseEventArgs e)
 		{
-			if (e.Button == System.Windows.Forms.MouseButtons.Right && lvFirmwares.GetItemAt(e.X, e.Y) != null)
+			if (e.Button == MouseButtons.Right && lvFirmwares.GetItemAt(e.X, e.Y) != null)
 				lvFirmwaresContextMenuStrip.Show(lvFirmwares, e.Location);
 		}
 
@@ -309,7 +310,7 @@ namespace BizHawk.Client.EmuHawk
 				ofd.InitialDirectory = currSelectorDir;
 				ofd.RestoreDirectory = true;
 
-				if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+				if (ofd.ShowDialog() == DialogResult.OK)
 				{
 					//remember the location we selected this firmware from, maybe there are others
 					currSelectorDir = Path.GetDirectoryName(ofd.FileName);
@@ -356,21 +357,33 @@ namespace BizHawk.Client.EmuHawk
 				ListViewItem olvi = new ListViewItem();
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
+				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				var ff = FirmwareDatabase.FirmwareFilesByHash[o.hash];
+				if (o.status == FirmwareDatabase.FirmwareOptionStatus.Ideal)
+					olvi.ImageIndex = FirmwaresConfigInfo.idIdeal;
+				if (o.status == FirmwareDatabase.FirmwareOptionStatus.Acceptable)
+					olvi.ImageIndex = FirmwaresConfigInfo.idAcceptable;
+				if (o.status == FirmwareDatabase.FirmwareOptionStatus.Unacceptable)
+					olvi.ImageIndex = FirmwaresConfigInfo.idUnacceptable;
+				if (o.status == FirmwareDatabase.FirmwareOptionStatus.Bad)
+					olvi.ImageIndex = FirmwaresConfigInfo.idBad;
 				olvi.SubItems[0].Text = o.hash;
 				olvi.SubItems[0].Font = fixedFont;
 				olvi.SubItems[1].Text = ff.recommendedName;
 				olvi.SubItems[1].Font = this.Font; //why doesnt this work?
 				olvi.SubItems[2].Text = ff.descr;
 				olvi.SubItems[2].Font = this.Font; //why doesnt this work?
+				olvi.SubItems[3].Text = ff.info;
+				olvi.SubItems[3].Font = this.Font; //why doesnt this work?
 				fciDialog.lvOptions.Items.Add(olvi);
 			}
 
 			fciDialog.lvOptions.AutoResizeColumn(0, ColumnHeaderAutoResizeStyle.ColumnContent);
 			fciDialog.lvOptions.AutoResizeColumn(1, ColumnHeaderAutoResizeStyle.ColumnContent);
 			fciDialog.lvOptions.AutoResizeColumn(2, ColumnHeaderAutoResizeStyle.ColumnContent);
+			fciDialog.lvOptions.AutoResizeColumn(3, ColumnHeaderAutoResizeStyle.ColumnContent);
 
-			fciDialog.ShowDialog();
+			fciDialog.ShowDialog(this);
 		}
 
 		private void lvFirmwaresContextMenuStrip_Opening(object sender, CancelEventArgs e)

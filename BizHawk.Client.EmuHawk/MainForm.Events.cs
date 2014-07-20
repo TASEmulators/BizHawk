@@ -14,6 +14,7 @@ using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Client.EmuHawk.config.NES;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -236,6 +237,11 @@ namespace BizHawk.Client.EmuHawk
 				= SaveMovieMenuItem.Enabled
 				= Global.MovieSession.Movie.IsActive;
 
+			PlayMovieMenuItem.Enabled =
+				RecordMovieMenuItem.Enabled =
+				RecentMovieSubMenu.Enabled =
+				!Global.MovieSession.Movie.IsActive;
+
 			ReadonlyMenuItem.Checked = Global.MovieSession.ReadOnly;
 			AutomaticallyBackupMoviesMenuItem.Checked = Global.Config.EnableBackupMovies;
 			FullMovieLoadstatesMenuItem.Checked = Global.Config.VBAStyleMovieLoadState;
@@ -250,13 +256,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RecentMovieSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			RecentMenuItem.DropDownItems.Clear();
-			RecentMenuItem.DropDownItems.AddRange(
+			RecentMovieSubMenu.DropDownItems.Clear();
+			RecentMovieSubMenu.DropDownItems.AddRange(
 				ToolHelpers.GenerateRecentMenu(Global.Config.RecentMovies, LoadMoviesFromRecent)
 			);
-			RecentMenuItem.DropDownItems.Add(
+			RecentMovieSubMenu.DropDownItems.Add(
 				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentMovies)
 			);
+		}
+
+		private void MovieEndSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			MovieEndFinishMenuItem.Checked = Global.Config.MovieEndAction == MovieEndAction.Finish;
+			MovieEndRecordMenuItem.Checked = Global.Config.MovieEndAction == MovieEndAction.Record;
+			MovieEndStopMenuItem.Checked = Global.Config.MovieEndAction == MovieEndAction.Stop;
+			MovieEndPauseMenuItem.Checked = Global.Config.MovieEndAction == MovieEndAction.Pause;
 		}
 
 		private void AVSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -374,12 +388,56 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RecordMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadRecordMovieDialog();
+			if (!Global.Emulator.Attributes().Released)
+			{
+				var result = MessageBox.Show
+					(this, "Thanks for using Bizhawk!  The emulation core you have selected " +
+					"is currently BETA-status.  We appreciate your help in testing Bizhawk. " +
+					"You can record a movie on this core if you'd like to, but expect to " +
+					"encounter bugs and sync problems.  Continue?", "BizHawk", MessageBoxButtons.YesNo);
+
+				if (result != DialogResult.Yes)
+				{
+					return;
+				}
+			}
+			else if (Global.Emulator is LibsnesCore)
+			{
+				var ss = (LibsnesCore.SnesSyncSettings)Global.Emulator.GetSyncSettings();
+				if (ss.Profile == "Performance" && !Global.Config.DontAskPerformanceCoreRecordingNag)
+				{
+					var box = new MsgBox(
+						"While the performance core is faster, it is recommended that you use the Compatibility profile when recording movies for better accuracy and stability\n\nSwitch to Compatibility?",
+						"Stability Warning",
+						MessageBoxIcon.Warning);
+
+					box.SetButtons(
+						new[] { "Switch", "Continue", "Cancel" },
+						new[] { DialogResult.Yes, DialogResult.No, DialogResult.Cancel });
+					box.SetCheckbox("Don't ask me again");
+					box.MaximumSize = new Size(450, 350);
+					box.SetMessageToAutoSize();
+					var result = box.ShowDialog();
+					Global.Config.DontAskPerformanceCoreRecordingNag = box.CheckboxChecked;
+
+					if (result == DialogResult.Yes)
+					{
+						ss.Profile = "Compatibility";
+						Global.Emulator.PutSyncSettings(ss);
+					}
+					else if (result == DialogResult.Cancel)
+					{
+						return;
+					}
+				}
+			}
+
+			new RecordMovie().ShowDialog();
 		}
 
 		private void PlayMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadPlayMovieDialog();
+			new PlayMovie().ShowDialog();
 		}
 
 		private void StopMovieMenuItem_Click(object sender, EventArgs e)
@@ -399,7 +457,7 @@ namespace BizHawk.Client.EmuHawk
 				InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId),
 				Multiselect = true,
 				Filter = FormatFilter(
-					"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.ymv;*.zmv;",
+					"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.ymv;*.zmv;*.bkm",
 					"FCEUX", "*.fm2",
 					"PCEjin/Mednafen", "*.mc2;*.mcm",
 					"Dega", "*.mmv",
@@ -411,8 +469,9 @@ namespace BizHawk.Client.EmuHawk
 					"VirtuaNES", "*.vmv",
 					"Nintendulator", "*.nmv",
 					"Snes9x", "*.smv",
-                    "Yabause", "*.ymv",
+					"Yabause", "*.ymv",
 					"ZSNES", "*.zmv",
+					"BizHawk Bkm", "*.bkm",
 					"All Files", "*.*"),
 				RestoreDirectory = false
 			};
@@ -447,14 +506,39 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.VBAStyleMovieLoadState ^= true;
 		}
 
+		private void MovieEndFinishMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.MovieEndAction = MovieEndAction.Finish;
+		}
+
+		private void MovieEndRecordMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.MovieEndAction = MovieEndAction.Record;
+		}
+
+		private void MovieEndStopMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.MovieEndAction = MovieEndAction.Stop;
+		}
+
+		private void MovieEndPauseMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.MovieEndAction = MovieEndAction.Pause;
+		}
+
 		private void RecordAVMenuItem_Click(object sender, EventArgs e)
 		{
-			this.RecordAv();
+			RecordAv();
 		}
 
 		private void StopAVMenuItem_Click(object sender, EventArgs e)
 		{
-			this.StopAv();
+			StopAv();
+		}
+
+		private void SynclessRecordingMenuItem_Click(object sender, EventArgs e)
+		{
+			new SynclessRecordingTools().Run();
 		}
 
 		private void CaptureOSDMenuItem_Click(object sender, EventArgs e)
@@ -746,19 +830,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SavestateTypeMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			SavestateTypeDefaultMenuItem.Checked = false;
-			SavestateBinaryMenuItem.Checked = false;
-			SavestateTextMenuItem.Checked = false;
-			switch (Global.Config.SaveStateType)
-			{
-				case Config.SaveStateTypeE.Binary: SavestateBinaryMenuItem.Checked = true; break;
-				case Config.SaveStateTypeE.Text: SavestateTextMenuItem.Checked = true; break;
-				case Config.SaveStateTypeE.Default: SavestateTypeDefaultMenuItem.Checked = true; break;
-			}
-		}
-
 		private void CoresSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
@@ -932,21 +1003,6 @@ namespace BizHawk.Client.EmuHawk
 			UpdateKeyPriorityIcon();
 		}
 
-		private void SavestateTypeDefaultMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveStateType = Config.SaveStateTypeE.Default;
-		}
-
-		private void SavestateBinaryMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveStateType = Config.SaveStateTypeE.Binary;
-		}
-
-		private void SavestateTextMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveStateType = Config.SaveStateTypeE.Text;
-		}
-
 		private void GBInSGBMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GB_AsSGB ^= true;
@@ -1037,7 +1093,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VirtualPadMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.Load<VirtualPadForm>();
+			GlobalWin.Tools.Load<VirtualpadTool>();
 		}
 
 		private void CheatsMenuItem_Click(object sender, EventArgs e)
@@ -1056,7 +1112,7 @@ namespace BizHawk.Client.EmuHawk
 			using (var dlg = new DualGBXMLCreator())
 			{
 				var result = dlg.ShowDialog(this);
-				if (result == System.Windows.Forms.DialogResult.OK)
+				if (result == DialogResult.OK)
 				{
 					GlobalWin.OSD.AddMessage("XML File saved");
 				}
@@ -1179,9 +1235,29 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var s = (PCEngine.PCESettings)Global.Emulator.GetSettings();
 
+			PceControllerSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
+
 			PCEAlwaysPerformSpriteLimitMenuItem.Checked = s.SpriteLimit;
 			PCEAlwaysEqualizeVolumesMenuItem.Checked = s.EqualizeVolume;
 			PCEArcadeCardRewindEnableMenuItem.Checked = s.ArcadeCardRewindHack;
+		}
+
+		private void PceControllerSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			if (new PCEControllerConfig().ShowDialog() == DialogResult.OK)
+			{
+				GlobalWin.MainForm.FlagNeedsReboot();
+				GlobalWin.OSD.AddMessage("Controller settings saved but a core reboot is required");
+			}
+			else
+			{
+				GlobalWin.OSD.AddMessage("Controller settings aborted");
+			}
+		}
+
+		private void PCEGraphicsSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			new PCEGraphicsConfig().ShowDialog();
 		}
 
 		private void PCEBGViewerMenuItem_Click(object sender, EventArgs e)
@@ -1192,6 +1268,11 @@ namespace BizHawk.Client.EmuHawk
 		private void PceTileViewerMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<PCETileViewer>();
+		}
+
+		private void PceSoundDebuggerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<PCESoundDebugger>();
 		}
 
 		private void CodeDataLoggerMenuItem_Click(object sender, EventArgs e)
@@ -1218,11 +1299,6 @@ namespace BizHawk.Client.EmuHawk
 			var s = (PCEngine.PCESettings)Global.Emulator.GetSettings();
 			s.ArcadeCardRewindHack ^= true;
 			PutCoreSettings(s);
-		}
-
-		private void PCEGraphicsSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			new PCEGraphicsConfig().ShowDialog();
 		}
 
 		#endregion
@@ -1417,7 +1493,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var Message = String.Format("Invalid file format. Reason: {0} \nForce transfer? This may cause the calculator to crash.", ex.Message);
 
-					if (MessageBox.Show(Message, "Upload Failed", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+					if (MessageBox.Show(Message, "Upload Failed", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == DialogResult.Yes)
 					{
 						(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), false);
 					}
@@ -1714,7 +1790,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DGBsettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			BizHawk.Client.EmuHawk.config.GB.DGBPrefs.DoDGBPrefsDialog(this);
+			config.GB.DGBPrefs.DoDGBPrefsDialog(this);
 		}
 
 		#endregion
@@ -1797,7 +1873,7 @@ namespace BizHawk.Client.EmuHawk
 				SaveMovieContextMenuItem.Visible =
 				Global.MovieSession.Movie.IsActive;
 
-			BackupMovieContextMenuItem.Visible = Global.MovieSession.Movie is Movie && Global.MovieSession.Movie.IsActive;
+			BackupMovieContextMenuItem.Visible = Global.MovieSession.Movie.IsActive;
 
 			StopNoSaveContextMenuItem.Visible = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.Changes;
 
@@ -1884,8 +1960,10 @@ namespace BizHawk.Client.EmuHawk
 		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
 		{
 			var result = new config.DisplayConfigLite().ShowDialog();
-			if (result == System.Windows.Forms.DialogResult.OK)
+			if (result == DialogResult.OK)
+			{
 				FrameBufferResized();
+			}
 		}
 
 		private void CoreSelectionContextSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1906,11 +1984,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BackupMovieContextMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.MovieSession.Movie is Movie)
-			{
-				GlobalWin.OSD.AddMessage("Backup movie saved.");
-				(Global.MovieSession.Movie as Movie).SaveBackup();
-			}
+			Global.MovieSession.Movie.SaveBackup();
+			GlobalWin.OSD.AddMessage("Backup movie saved.");
 		}
 
 		private void ViewSubtitlesContextMenuItem_Click(object sender, EventArgs e)
@@ -1931,9 +2006,9 @@ namespace BizHawk.Client.EmuHawk
 
 			int index = -1;
 			var sub = new Subtitle();
-			for (int x = 0; x < Global.MovieSession.Movie.Header.Subtitles.Count; x++)
+			for (int x = 0; x < Global.MovieSession.Movie.Subtitles.Count; x++)
 			{
-				sub = Global.MovieSession.Movie.Header.Subtitles[x];
+				sub = Global.MovieSession.Movie.Subtitles[x];
 				if (Global.Emulator.Frame == sub.Frame)
 				{
 					index = x;
@@ -1952,10 +2027,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (index >= 0)
 				{
-					Global.MovieSession.Movie.Header.Subtitles.RemoveAt(index);
+					Global.MovieSession.Movie.Subtitles.RemoveAt(index);
 				}
 
-				Global.MovieSession.Movie.Header.Subtitles.Add(subForm.Sub);
+				Global.MovieSession.Movie.Subtitles.Add(subForm.Sub);
 			}
 		}
 
@@ -2156,7 +2231,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show("Exception on drag and drop:\n" + ex.ToString());
+				MessageBox.Show("Exception on drag and drop:\n" + ex);
 			}
 		}
 
@@ -2191,9 +2266,9 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.LuaConsole.LoadLuaSession(filePaths[0]);
 				}
 			}
-			else if (MovieSession.IsValidMovieExtension(ext))
+			else if (MovieService.IsValidMovieExtension(ext))
 			{
-				StartNewMovie(new Movie(filePaths[0]), false);
+				StartNewMovie(MovieService.Get(filePaths[0]), false);
 			}
 			else if (ext.ToUpper() == ".STATE")
 			{
@@ -2231,19 +2306,20 @@ namespace BizHawk.Client.EmuHawk
 				string errorMsg;
 				string warningMsg;
 				var movie = MovieImport.ImportFile(filePaths[0], out errorMsg, out warningMsg);
-				if (!String.IsNullOrEmpty(errorMsg))
+				if (!string.IsNullOrEmpty(errorMsg))
 				{
 					MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 				else
 				{
-					//fix movie extension to something palatable for these purposes. 
-					//for instance, something which doesnt clobber movies you already may have had.
-					//i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
-					movie.Filename += ".autoimported." + Global.Config.MovieExtension;
+					// fix movie extension to something palatable for these purposes. 
+					// for instance, something which doesnt clobber movies you already may have had.
+					// i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
+					movie.Filename = Path.ChangeExtension(movie.Filename, ".autoimported." + MovieService.DefaultExtension);
 					movie.Save();
 					StartNewMovie(movie, false);
 				}
+
 				GlobalWin.OSD.AddMessage(warningMsg);
 			}
 			else

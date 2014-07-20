@@ -53,6 +53,7 @@
 
 inline void blargg_verify_byte_order()
 {
+#ifndef NDEBUG
 	#if BLARGG_BIG_ENDIAN
 		volatile int i = 1;
 		assert( *(volatile char*) &i == 0 );
@@ -60,6 +61,7 @@ inline void blargg_verify_byte_order()
 		volatile int i = 1;
 		assert( *(volatile char*) &i != 0 );
 	#endif
+#endif
 }
 
 inline unsigned get_le16( void const* p ) {
