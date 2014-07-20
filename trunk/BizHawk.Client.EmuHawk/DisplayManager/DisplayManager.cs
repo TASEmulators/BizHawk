@@ -291,18 +291,101 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public Size CalculateClientSize(IVideoProvider videoProvider, int zoom)
 		{
-			var fvp = new FakeVideoProvider ();
-			fvp.BufferWidth = videoProvider.BufferWidth;
-			fvp.BufferHeight = videoProvider.BufferHeight;
-			fvp.VirtualWidth = videoProvider.VirtualWidth;
-			fvp.VirtualHeight = videoProvider.VirtualHeight;
+			int bufferWidth = videoProvider.BufferWidth;
+			int bufferHeight = videoProvider.BufferHeight;
+			int virtualWidth = videoProvider.VirtualWidth;
+			int virtualHeight = videoProvider.VirtualHeight;
+
+			//test
+			//Console.WriteLine("DISPZOOM " + zoom);
+
+			//old stuff
+			var fvp = new FakeVideoProvider();
+			fvp.BufferWidth = bufferWidth;
+			fvp.BufferHeight = bufferHeight;
+			fvp.VirtualWidth = virtualWidth;
+			fvp.VirtualHeight = virtualHeight;
 
 			Size chain_outsize = new Size(fvp.BufferWidth * zoom, fvp.BufferHeight * zoom);
 
-			//zero 27-may-2014 - this code is now slightly suspicious.. but no proof we need to get rid of it
-			//zero 02-jun-2014 - now, I suspect it is more important
-			if (Global.Config.DispObeyAR && Global.Config.DispFixAspectRatio)
-			  chain_outsize = new Size(fvp.VirtualWidth * zoom, fvp.VirtualHeight * zoom);
+			bool ar_active = Global.Config.DispFixAspectRatio;
+			bool ar_system = Global.Config.DispObeyAR;
+			bool ar_unity = !ar_system;
+			bool ar_integer = Global.Config.DispFixScaleInteger;
+
+			if (ar_active)
+			{
+				if (ar_system)
+				{
+					if (ar_integer)
+					{
+						Vector2 VS = new Vector2(virtualWidth, virtualHeight);
+						Vector2 BS = new Vector2(bufferWidth, bufferHeight);
+						Vector2 AR = Vector2.Divide(VS, BS);
+						float target_par = (AR.X / AR.Y);
+						Vector2 PS = new Vector2(1, 1); //this would malfunction for AR <= 0.5 or AR >= 2.0
+
+						//here's how we define zooming, in this case:
+						//make sure each step is an increment of zoom for at least one of the dimensions (or maybe both of them)
+						//look for the increment which helps the AR the best
+						//TODO - this cant possibly support scale factors like 1.5x
+						//TODO - also, this might be messing up zooms and stuff, we might need to run this on the output size of the filter chain
+						for (int i = 1; i < zoom;i++)
+						{
+							//would not be good to run this per frame, but it seems to only run when the resolution changes, etc.
+							Vector2[] trials = new [] {
+								PS + new Vector2(1, 0),
+								PS + new Vector2(0, 1),
+								PS + new Vector2(1, 1)
+							};
+							int bestIndex = -1;
+							float bestValue = 1000.0f;
+							for (int t = 0; t < trials.Length; t++)
+							{
+								//I.
+								float test_ar = trials[t].X / trials[t].Y;
+
+								//II.
+								//Vector2 calc = Vector2.Multiply(trials[t], VS);
+								//float test_ar = calc.X / calc.Y;
+								
+								//not clear which approach is superior
+								float deviation_linear = Math.Abs(test_ar - target_par);
+								float deviation_geom = test_ar / target_par;
+								if (deviation_geom < 1) deviation_geom = 1.0f / deviation_geom;
+
+								float value = deviation_linear;
+								if (value < bestValue)
+								{
+									bestIndex = t;
+									bestValue = value;
+								}
+							}
+							//is it possible to get here without selecting one? doubtful.
+							PS = trials[bestIndex];
+						}
+
+						chain_outsize = new Size((int)(bufferWidth * PS.X), (int)(bufferHeight * PS.Y));
+					}
+					else
+					{
+						//obey the AR, but allow free scaling: just zoom the virtual size
+						chain_outsize = new Size(virtualWidth * zoom, virtualHeight * zoom);
+					}
+				}
+				else
+				{
+					//ar_unity:
+					//just choose to zoom the buffer (make no effort to incorporate AR)
+					chain_outsize = new Size(bufferWidth * zoom, bufferHeight * zoom);
+				}
+			}
+			else
+			{
+				//!ar_active:
+				//just choose to zoom the buffer (make no effort to incorporate AR)
+				chain_outsize = new Size(bufferWidth * zoom, bufferHeight * zoom);
+			}
 
 			var job = new JobInfo
 			{
@@ -313,20 +396,8 @@ namespace BizHawk.Client.EmuHawk
 			var filterProgram = UpdateSourceInternal(job);
 
 			var size = filterProgram.Filters[filterProgram.Filters.Count - 1].FindOutput().SurfaceFormat.Size;
-			
-			//zero 22-may-2014 - added this to combat problem where nes would default to having sidebars
-			//this would use the actual chain output size. this is undesireable, in the following scenario:
-			//load a nes game at 2x with system-preferred and integer AR enabled, and there will be sidebars.
-			//the sidebars were created by this, so we can peek into it and remove the sidebars.
-			//Only do this if integer fixing is enabled, since only in that case do we have discardable sidebars.
-			//Otherwise discarding the 'sidebars' would result in cropping image. 
-			//This is getting complicated..
-			if (Global.Config.DispFixScaleInteger)
-			{
-				var fp = filterProgram["presentation"] as Filters.FinalPresentation;
-				size = fp.GetContentSize();
-			}
 
+			Console.WriteLine("Selecting size " + size.ToString());
 			return size;
 		}
 

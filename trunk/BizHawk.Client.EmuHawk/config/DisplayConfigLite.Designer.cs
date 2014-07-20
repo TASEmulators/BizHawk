@@ -255,10 +255,10 @@
 			this.rbUseSystem.AutoSize = true;
 			this.rbUseSystem.Location = new System.Drawing.Point(6, 42);
 			this.rbUseSystem.Name = "rbUseSystem";
-			this.rbUseSystem.Size = new System.Drawing.Size(167, 17);
+			this.rbUseSystem.Size = new System.Drawing.Size(320, 17);
 			this.rbUseSystem.TabIndex = 12;
 			this.rbUseSystem.TabStop = true;
-			this.rbUseSystem.Text = "Use system\'s recommendation";
+			this.rbUseSystem.Text = "Use system\'s recommendation (e.g. 2x1 pixels, for better AR fit)";
 			this.rbUseSystem.UseVisualStyleBackColor = true;
 			this.rbUseSystem.CheckedChanged += new System.EventHandler(this.rbUseSystem_CheckedChanged);
 			// 
@@ -268,7 +268,7 @@
 			this.grpARSelection.Controls.Add(this.rbUseSystem);
 			this.grpARSelection.Location = new System.Drawing.Point(21, 177);
 			this.grpARSelection.Name = "grpARSelection";
-			this.grpARSelection.Size = new System.Drawing.Size(264, 71);
+			this.grpARSelection.Size = new System.Drawing.Size(342, 71);
 			this.grpARSelection.TabIndex = 13;
 			this.grpARSelection.TabStop = false;
 			this.grpARSelection.Text = "Aspect Ratio Selection";
