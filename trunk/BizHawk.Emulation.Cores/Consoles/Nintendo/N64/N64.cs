@@ -484,25 +484,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			MakeMemoryDomain("EEPROM", mupen64plusApi.N64_MEMORY.EEPROM, MemoryDomain.Endian.Little);
 
 			if (_syncSettings.Controllers[0].IsConnected &&
-				_syncSettings.Controllers[0].PakType == N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
+				_syncSettings.Controllers[0].PakType == N64SyncSettings.N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
 			{
 				MakeMemoryDomain("Mempak 1", mupen64plusApi.N64_MEMORY.MEMPAK1, MemoryDomain.Endian.Little);
 			}
 
 			if (_syncSettings.Controllers[1].IsConnected &&
-				_syncSettings.Controllers[1].PakType == N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
+				_syncSettings.Controllers[1].PakType == N64SyncSettings.N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
 			{
 				MakeMemoryDomain("Mempak 2", mupen64plusApi.N64_MEMORY.MEMPAK2, MemoryDomain.Endian.Little);
 			}
 
 			if (_syncSettings.Controllers[2].IsConnected &&
-				_syncSettings.Controllers[2].PakType == N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
+				_syncSettings.Controllers[2].PakType == N64SyncSettings.N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
 			{
 				MakeMemoryDomain("Mempak 3", mupen64plusApi.N64_MEMORY.MEMPAK3, MemoryDomain.Endian.Little);
 			}
 
 			if (_syncSettings.Controllers[3].IsConnected &&
-				_syncSettings.Controllers[3].PakType == N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
+				_syncSettings.Controllers[3].PakType == N64SyncSettings.N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
 			{
 				MakeMemoryDomain("Mempak 4", mupen64plusApi.N64_MEMORY.MEMPAK4, MemoryDomain.Endian.Little);
 			}

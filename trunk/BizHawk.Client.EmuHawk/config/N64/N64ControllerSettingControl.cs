@@ -62,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public N64ControllerSettings.N64ControllerPakType PakType
+		public N64SyncSettings.N64ControllerSettings.N64ControllerPakType PakType
 		{
 			get
 			{
@@ -70,10 +70,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return PakTypeDropdown.SelectedItem
 						.ToString()
-						.GetEnumFromDescription<N64ControllerSettings.N64ControllerPakType>();
+						.GetEnumFromDescription<N64SyncSettings.N64ControllerSettings.N64ControllerPakType>();
 				}
 
-				return N64ControllerSettings.N64ControllerPakType.NO_PAK;
+				return N64SyncSettings.N64ControllerSettings.N64ControllerPakType.NO_PAK;
 			}
 
 			set

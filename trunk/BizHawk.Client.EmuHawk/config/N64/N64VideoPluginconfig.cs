@@ -96,10 +96,10 @@ namespace BizHawk.Client.EmuHawk
 			s.VideoSizeY = Int32.Parse(strArr[1].Trim());
 			switch (PluginComboBox.Text)
 			{
-				case "Rice": ss.VidPlugin = PluginType.Rice; break;
-				case "Glide64": ss.VidPlugin = PluginType.Glide; break;
-				case "Glide64mk2": ss.VidPlugin = PluginType.GlideMk2; break;
-				case "Jabo 1.6.1": ss.VidPlugin = PluginType.Jabo; break;
+				case "Rice": ss.VideoPlugin = PluginType.Rice; break;
+				case "Glide64": ss.VideoPlugin = PluginType.Glide; break;
+				case "Glide64mk2": ss.VideoPlugin = PluginType.GlideMk2; break;
+				case "Jabo 1.6.1": ss.VideoPlugin = PluginType.Jabo; break;
 			}
 
 			//Rice
@@ -352,7 +352,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				VideoResolutionComboBox.SelectedIndex = index;
 			}
-			switch (ss.VidPlugin)
+			switch (ss.VideoPlugin)
 			{
 				case PluginType.GlideMk2: PluginComboBox.Text = "Glide64mk2"; break;
 				case PluginType.Glide: PluginComboBox.Text = "Glide64"; break;
