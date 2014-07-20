@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
+using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ControlExtensions;
-
-
-using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
