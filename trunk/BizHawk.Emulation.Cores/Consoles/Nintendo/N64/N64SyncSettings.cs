@@ -97,7 +97,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		}
 	}
 
-	public enum PLUGINTYPE { RICE, GLIDE, GLIDE64MK2, JABO };
+	public enum PLUGINTYPE
+	{
+		[Description("Rice")]
+		RICE,
+
+		[Description("Glide64")]
+		GLIDE,
+
+		[Description("Glide64 mk2")]
+		GLIDE64MK2,
+
+		[Description("Jabo")]
+		JABO
+	}
 
 	public interface IPluginSettings
 	{
@@ -108,7 +121,76 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 	public class N64RicePluginSettings : IPluginSettings
 	{
+		public N64RicePluginSettings()
+		{
+			FrameBufferSetting = 0;
+			FrameBufferWriteBackControl = 0;
+			RenderToTexture = 0;
+			ScreenUpdateSetting = 4;
+			Mipmapping = 2;
+			FogMethod = 0;
+			ForceTextureFilter = 0;
+			TextureEnhancement = 0;
+			TextureEnhancementControl = 0;
+			TextureQuality = 0;
+			OpenGLDepthBufferSetting = 16;
+			MultiSampling = 0;
+			ColorQuality = 0;
+			OpenGLRenderSetting = 0;
+			AnisotropicFiltering = 0;
+
+			NormalAlphaBlender = false;
+			FastTextureLoading = false;
+			AccurateTextureMapping = true;
+			InN64Resolution = false;
+			SaveVRAM = false;
+			DoubleSizeForSmallTxtrBuf = false;
+			DefaultCombinerDisable = false;
+			EnableHacks = true;
+			WinFrameMode = false;
+			FullTMEMEmulation = false;
+			OpenGLVertexClipper = false;
+			EnableSSE = true;
+			EnableVertexShader = false;
+			SkipFrame = false;
+			TexRectOnly = false;
+			SmallTextureOnly = false;
+			LoadHiResCRCOnly = true;
+			LoadHiResTextures = false;
+			DumpTexturesToFiles = false;
+
+			UseDefaultHacks = true;
+			DisableTextureCRC = false;
+			DisableCulling = false;
+			IncTexRectEdge = false;
+			ZHack = false;
+			TextureScaleHack = false;
+			PrimaryDepthHack = false;
+			Texture1Hack = false;
+			FastLoadTile = false;
+			UseSmallerTexture = false;
+			VIWidth = -1;
+			VIHeight = -1;
+			UseCIWidthAndRatio = 0;
+			FullTMEM = 0;
+			TxtSizeMethod2 = false;
+			EnableTxtLOD = false;
+			FastTextureCRC = 0;
+			EmulateClear = false;
+			ForceScreenClear = false;
+			AccurateTextureMappingHack = 0;
+			NormalBlender = 0;
+			DisableBlender = false;
+			ForceDepthBuffer = false;
+			DisableObjBG = false;
+			FrameBufferOption = 0;
+			RenderToTextureOption = 0;
+			ScreenUpdateSettingHack = 0;
+			EnableHacksForGame = 0;
+		}
+
 		[JsonIgnore]
+		[Description("Plugin Type")]
 		public PLUGINTYPE PluginType
 		{
 			get { return PLUGINTYPE.RICE; }
@@ -162,70 +244,70 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			return dictionary;
 		}
 
-		public int FrameBufferSetting = 0;
-		public int FrameBufferWriteBackControl = 0;
-		public int RenderToTexture = 0;
-		public int ScreenUpdateSetting = 4;
-		public int Mipmapping = 2;
-		public int FogMethod = 0;
-		public int ForceTextureFilter = 0;
-		public int TextureEnhancement = 0;
-		public int TextureEnhancementControl = 0;
-		public int TextureQuality = 0;
-		public int OpenGLDepthBufferSetting = 16;
-		public int MultiSampling = 0;
-		public int ColorQuality = 0;
-		public int OpenGLRenderSetting = 0;
-		public int AnisotropicFiltering = 0;
+		public int FrameBufferSetting { get; set; }
+		public int FrameBufferWriteBackControl { get; set; }
+		public int RenderToTexture { get; set; }
+		public int ScreenUpdateSetting { get; set; }
+		public int Mipmapping { get; set; }
+		public int FogMethod { get; set; }
+		public int ForceTextureFilter { get; set; }
+		public int TextureEnhancement { get; set; }
+		public int TextureEnhancementControl { get; set; }
+		public int TextureQuality { get; set; }
+		public int OpenGLDepthBufferSetting { get; set; }
+		public int MultiSampling { get; set; }
+		public int ColorQuality { get; set; }
+		public int OpenGLRenderSetting { get; set; }
+		public int AnisotropicFiltering { get; set; }
 
-		public bool NormalAlphaBlender = false;
-		public bool FastTextureLoading = false;
-		public bool AccurateTextureMapping = true;
-		public bool InN64Resolution = false;
-		public bool SaveVRAM = false;
-		public bool DoubleSizeForSmallTxtrBuf = false;
-		public bool DefaultCombinerDisable = false;
-		public bool EnableHacks = true;
-		public bool WinFrameMode = false;
-		public bool FullTMEMEmulation = false;
-		public bool OpenGLVertexClipper = false;
-		public bool EnableSSE = true;
-		public bool EnableVertexShader = false;
-		public bool SkipFrame = false;
-		public bool TexRectOnly = false;
-		public bool SmallTextureOnly = false;
-		public bool LoadHiResCRCOnly = true;
-		public bool LoadHiResTextures = false;
-		public bool DumpTexturesToFiles = false;
+		public bool NormalAlphaBlender { get; set; }
+		public bool FastTextureLoading { get; set; }
+		public bool AccurateTextureMapping { get; set; }
+		public bool InN64Resolution { get; set; }
+		public bool SaveVRAM { get; set; }
+		public bool DoubleSizeForSmallTxtrBuf { get; set; }
+		public bool DefaultCombinerDisable { get; set; }
+		public bool EnableHacks { get; set; }
+		public bool WinFrameMode { get; set; }
+		public bool FullTMEMEmulation { get; set; }
+		public bool OpenGLVertexClipper { get; set; }
+		public bool EnableSSE { get; set; }
+		public bool EnableVertexShader { get; set; }
+		public bool SkipFrame { get; set; }
+		public bool TexRectOnly { get; set; }
+		public bool SmallTextureOnly { get; set; }
+		public bool LoadHiResCRCOnly { get; set; }
+		public bool LoadHiResTextures { get; set; }
+		public bool DumpTexturesToFiles { get; set; }
 
-		public bool UseDefaultHacks = true;
-		public bool DisableTextureCRC = false;
-		public bool DisableCulling = false;
-		public bool IncTexRectEdge = false;
-		public bool ZHack = false;
-		public bool TextureScaleHack = false;
-		public bool PrimaryDepthHack = false;
-		public bool Texture1Hack = false;
-		public bool FastLoadTile = false;
-		public bool UseSmallerTexture = false;
-		public int VIWidth = -1;
-		public int VIHeight = -1;
-		public int UseCIWidthAndRatio = 0;
-		public int FullTMEM = 0;
-		public bool TxtSizeMethod2 = false;
-		public bool EnableTxtLOD = false;
-		public int FastTextureCRC = 0;
-		public bool EmulateClear = false;
-		public bool ForceScreenClear = false;
-		public int AccurateTextureMappingHack = 0;
-		public int NormalBlender = 0;
-		public bool DisableBlender = false;
-		public bool ForceDepthBuffer = false;
-		public bool DisableObjBG = false;
-		public int FrameBufferOption = 0;
-		public int RenderToTextureOption = 0;
-		public int ScreenUpdateSettingHack = 0;
-		public int EnableHacksForGame = 0;
+		public bool UseDefaultHacks { get; set; }
+		public bool DisableTextureCRC { get; set; }
+		public bool DisableCulling { get; set; }
+		public bool IncTexRectEdge { get; set; }
+		public bool ZHack { get; set; }
+		public bool TextureScaleHack { get; set; }
+		public bool PrimaryDepthHack { get; set; }
+		public bool Texture1Hack { get; set; }
+		public bool FastLoadTile { get; set; }
+		public bool UseSmallerTexture { get; set; }
+		public int VIWidth { get; set; }
+		public int VIHeight { get; set; }
+		public int UseCIWidthAndRatio { get; set; }
+		public int FullTMEM { get; set; }
+		public bool TxtSizeMethod2 { get; set; }
+		public bool EnableTxtLOD { get; set; }
+		public int FastTextureCRC { get; set; }
+		public bool EmulateClear { get; set; }
+		public bool ForceScreenClear { get; set; }
+		public int AccurateTextureMappingHack { get; set; }
+		public int NormalBlender { get; set; }
+		public bool DisableBlender { get; set; }
+		public bool ForceDepthBuffer { get; set; }
+		public bool DisableObjBG { get; set; }
+		public int FrameBufferOption { get; set; }
+		public int RenderToTextureOption { get; set; }
+		public int ScreenUpdateSettingHack { get; set; }
+		public int EnableHacksForGame { get; set; }
 
 		public N64RicePluginSettings Clone()
 		{
@@ -235,6 +317,64 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 	public class N64GlidePluginSettings : IPluginSettings
 	{
+		public N64GlidePluginSettings()
+		{
+			wfmode = 1;
+			wireframe = false;
+			card_id = 0;
+			flame_corona = false;
+			ucode = 2;
+			autodetect_ucode = true;
+			motionblur = false;
+			fb_read_always = false;
+			unk_as_red = false;
+			filter_cache = false;
+			fast_crc = false;
+			disable_auxbuf = false;
+			fbo = false;
+			noglsl = true;
+			noditheredalpha = true;
+			tex_filter = 0;
+			fb_render = false;
+			wrap_big_tex = false;
+			use_sts1_only = false;
+			soft_depth_compare = false;
+			PPL = false;
+			fb_optimize_write = false;
+			fb_optimize_texrect = true;
+			increase_texrect_edge = false;
+			increase_primdepth = false;
+			fb_ignore_previous = false;
+			fb_ignore_aux_copy = false;
+			fb_hires_buf_clear = true;
+			force_microcheck = false;
+			force_depth_compare = false;
+			fog = true;
+			fillcolor_fix = false;
+			fb_smart = false;
+			fb_read_alpha = false;
+			fb_get_info = false;
+			fb_hires = true;
+			fb_clear = false;
+			detect_cpu_write = false;
+			decrease_fillrect_edge = false;
+			buff_clear = true;
+			alt_tex_size = false;
+			UseDefaultHacks = true;
+			enable_hacks_for_game = 0;
+			swapmode = 1;
+			stipple_pattern = 1041204192;
+			stipple_mode = 2;
+			scale_y = 100000;
+			scale_x = 100000;
+			offset_y = 0;
+			offset_x = 0;
+			lodmode = 0;
+			fix_tex_coord = 0;
+			filtering = 1;
+			depth_bias = 20;
+		}
+
 		[JsonIgnore]
 		public PLUGINTYPE PluginType
 		{
@@ -295,60 +435,60 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			return dictionary;
 		}
 
-		public int wfmode = 1;
-		public bool wireframe = false;
-		public int card_id = 0;
-		public bool flame_corona = false;
-		public int ucode = 2;
-		public bool autodetect_ucode = true;
-		public bool motionblur = false;
-		public bool fb_read_always = false;
-		public bool unk_as_red = false;
-		public bool filter_cache = false;
-		public bool fast_crc = false;
-		public bool disable_auxbuf = false;
-		public bool fbo = false;
-		public bool noglsl = true;
-		public bool noditheredalpha = true;
-		public int tex_filter = 0;
-		public bool fb_render = false;
-		public bool wrap_big_tex = false;
-		public bool use_sts1_only = false;
-		public bool soft_depth_compare = false;
-		public bool PPL = false;
-		public bool fb_optimize_write = false;
-		public bool fb_optimize_texrect = true;
-		public bool increase_texrect_edge = false;
-		public bool increase_primdepth = false;
-		public bool fb_ignore_previous = false;
-		public bool fb_ignore_aux_copy = false;
-		public bool fb_hires_buf_clear = true;
-		public bool force_microcheck = false;
-		public bool force_depth_compare = false;
-		public bool fog = true;
-		public bool fillcolor_fix = false;
-		public bool fb_smart = false;
-		public bool fb_read_alpha = false;
-		public bool fb_get_info = false;
-		public bool fb_hires = true;
-		public bool fb_clear = false;
-		public bool detect_cpu_write = false;
-		public bool decrease_fillrect_edge = false;
-		public bool buff_clear = true;
-		public bool alt_tex_size = false;
-		public bool UseDefaultHacks = true;
-		public int enable_hacks_for_game = 0;
-		public int swapmode = 1;
-		public int stipple_pattern = 1041204192;
-		public int stipple_mode = 2;
-		public int scale_y = 100000;
-		public int scale_x = 100000;
-		public int offset_y = 0;
-		public int offset_x = 0;
-		public int lodmode = 0;
-		public int fix_tex_coord = 0;
-		public int filtering = 1;
-		public int depth_bias = 20;
+		public int wfmode { get; set; }
+		public bool wireframe { get; set; }
+		public int card_id { get; set; }
+		public bool flame_corona { get; set; }
+		public int ucode { get; set; }
+		public bool autodetect_ucode { get; set; }
+		public bool motionblur { get; set; }
+		public bool fb_read_always { get; set; }
+		public bool unk_as_red { get; set; }
+		public bool filter_cache { get; set; }
+		public bool fast_crc { get; set; }
+		public bool disable_auxbuf { get; set; }
+		public bool fbo { get; set; }
+		public bool noglsl { get; set; }
+		public bool noditheredalpha { get; set; }
+		public int tex_filter { get; set; }
+		public bool fb_render { get; set; }
+		public bool wrap_big_tex { get; set; }
+		public bool use_sts1_only { get; set; }
+		public bool soft_depth_compare { get; set; }
+		public bool PPL { get; set; }
+		public bool fb_optimize_write { get; set; }
+		public bool fb_optimize_texrect { get; set; }
+		public bool increase_texrect_edge { get; set; }
+		public bool increase_primdepth { get; set; }
+		public bool fb_ignore_previous { get; set; }
+		public bool fb_ignore_aux_copy { get; set; }
+		public bool fb_hires_buf_clear { get; set; }
+		public bool force_microcheck { get; set; }
+		public bool force_depth_compare { get; set; }
+		public bool fog { get; set; }
+		public bool fillcolor_fix { get; set; }
+		public bool fb_smart { get; set; }
+		public bool fb_read_alpha { get; set; }
+		public bool fb_get_info { get; set; }
+		public bool fb_hires { get; set; }
+		public bool fb_clear { get; set; }
+		public bool detect_cpu_write { get; set; }
+		public bool decrease_fillrect_edge { get; set; }
+		public bool buff_clear { get; set; }
+		public bool alt_tex_size { get; set; }
+		public bool UseDefaultHacks { get; set; }
+		public int enable_hacks_for_game { get; set; }
+		public int swapmode { get; set; }
+		public int stipple_pattern { get; set; }
+		public int stipple_mode { get; set; }
+		public int scale_y { get; set; }
+		public int scale_x { get; set; }
+		public int offset_y { get; set; }
+		public int offset_x { get; set; }
+		public int lodmode { get; set; }
+		public int fix_tex_coord { get; set; }
+		public int filtering { get; set; }
+		public int depth_bias { get; set; }
 
 		public N64GlidePluginSettings Clone()
 		{
@@ -358,6 +498,53 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 	public class N64Glide64mk2PluginSettings : IPluginSettings
 	{
+		public N64Glide64mk2PluginSettings()
+		{
+			wrpFBO = true;
+			card_id = 0;
+			use_sts1_only = false;
+			optimize_texrect = true;
+			increase_texrect_edge = false;
+			ignore_aux_copy = false;
+			hires_buf_clear = true;
+			force_microcheck = false;
+			fog = true;
+			fb_smart = false;
+			fb_read_alpha = false;
+			fb_hires = true;
+			detect_cpu_write = false;
+			decrease_fillrect_edge = false;
+			buff_clear = true;
+			alt_tex_size = false;
+			swapmode = 1;
+			stipple_pattern = 1041204192;
+			stipple_mode = 2;
+			lodmode = 0;
+			filtering = 0;
+			wrpAnisotropic = false;
+			correct_viewport = false;
+			force_calc_sphere = false;
+			pal230 = false;
+			texture_correction = true;
+			n64_z_scale = false;
+			old_style_adither = false;
+			zmode_compare_less = false;
+			adjust_aspect = true;
+			clip_zmax = true;
+			clip_zmin = false;
+			force_quad3d = false;
+			useless_is_useless = false;
+			fb_read_always = false;
+			fb_get_info = false;
+			fb_render = true;
+			aspectmode = 0;
+			fb_crc_mode = 1;
+			fast_crc = true;
+			UseDefaultHacks = true;
+			enable_hacks_for_game = 0;
+			read_back_to_screen = 0;
+		}
+
 		[JsonIgnore]
 		public PLUGINTYPE PluginType
 		{
@@ -421,49 +608,49 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			return dictionary;
 		}
 
-		public bool wrpFBO = true;
-		public int card_id = 0;
-		public bool use_sts1_only = false;
-		public bool optimize_texrect = true;
-		public bool increase_texrect_edge = false;
-		public bool ignore_aux_copy = false;
-		public bool hires_buf_clear = true;
-		public bool force_microcheck = false;
-		public bool fog = true;
-		public bool fb_smart = false;
-		public bool fb_read_alpha = false;
-		public bool fb_hires = true;
-		public bool detect_cpu_write = false;
-		public bool decrease_fillrect_edge = false;
-		public bool buff_clear = true;
-		public bool alt_tex_size = false;
-		public int swapmode = 1;
-		public int stipple_pattern = 1041204192;
-		public int stipple_mode = 2;
-		public int lodmode = 0;
-		public int filtering = 0;
-		public bool wrpAnisotropic = false;
-		public bool correct_viewport = false;
-		public bool force_calc_sphere = false;
-		public bool pal230 = false;
-		public bool texture_correction = true;
-		public bool n64_z_scale = false;
-		public bool old_style_adither = false;
-		public bool zmode_compare_less = false;
-		public bool adjust_aspect = true;
-		public bool clip_zmax = true;
-		public bool clip_zmin = false;
-		public bool force_quad3d = false;
-		public bool useless_is_useless = false;
-		public bool fb_read_always = false;
-		public bool fb_get_info = false;
-		public bool fb_render = true;
-		public int aspectmode = 0;
-		public int fb_crc_mode = 1;
-		public bool fast_crc = true;
-		public bool UseDefaultHacks = true;
-		public int enable_hacks_for_game = 0;
-		public int read_back_to_screen = 0;
+		public bool wrpFBO { get; set; }
+		public int card_id { get; set; }
+		public bool use_sts1_only { get; set; }
+		public bool optimize_texrect { get; set; }
+		public bool increase_texrect_edge { get; set; }
+		public bool ignore_aux_copy { get; set; }
+		public bool hires_buf_clear { get; set; }
+		public bool force_microcheck { get; set; }
+		public bool fog { get; set; }
+		public bool fb_smart { get; set; }
+		public bool fb_read_alpha { get; set; }
+		public bool fb_hires { get; set; }
+		public bool detect_cpu_write { get; set; }
+		public bool decrease_fillrect_edge { get; set; }
+		public bool buff_clear { get; set; }
+		public bool alt_tex_size { get; set; }
+		public int swapmode { get; set; }
+		public int stipple_pattern { get; set; }
+		public int stipple_mode { get; set; }
+		public int lodmode { get; set; }
+		public int filtering { get; set; }
+		public bool wrpAnisotropic { get; set; }
+		public bool correct_viewport { get; set; }
+		public bool force_calc_sphere { get; set; }
+		public bool pal230 { get; set; }
+		public bool texture_correction { get; set; }
+		public bool n64_z_scale { get; set; }
+		public bool old_style_adither { get; set; }
+		public bool zmode_compare_less { get; set; }
+		public bool adjust_aspect { get; set; }
+		public bool clip_zmax { get; set; }
+		public bool clip_zmin { get; set; }
+		public bool force_quad3d { get; set; }
+		public bool useless_is_useless { get; set; }
+		public bool fb_read_always { get; set; }
+		public bool fb_get_info { get; set; }
+		public bool fb_render { get; set; }
+		public int aspectmode { get; set; }
+		public int fb_crc_mode { get; set; }
+		public bool fast_crc { get; set; }
+		public bool UseDefaultHacks { get; set; }
+		public int enable_hacks_for_game { get; set; }
+		public int read_back_to_screen { get; set; }
 
 		public N64Glide64mk2PluginSettings Clone()
 		{
@@ -473,6 +660,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 	public class N64JaboPluginSettings : IPluginSettings
 	{
+		public N64JaboPluginSettings()
+		{
+			anisotropic_level = ANISOTROPIC_FILTERING_LEVEL.four_times;
+			brightness = 100;
+			super2xsal = false;
+			texture_filter = false;
+			adjust_aspect_ratio = false;
+			legacy_pixel_pipeline = false;
+			alpha_blending = false;
+			wireframe = false;
+			direct3d_transformation_pipeline = false;
+			z_compare = false;
+			copy_framebuffer = false;
+			resolution_width = -1;
+			resolution_height = -1;
+			clear_mode = DIRECT3D_CLEAR_MODE.def;
+		}
+
 		[JsonIgnore]
 		public PLUGINTYPE PluginType
 		{
@@ -515,70 +720,71 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			[Description("16X")]
 			sixteen_times = 4
 		}
+
 		[DefaultValue(ANISOTROPIC_FILTERING_LEVEL.four_times)]
 		[Description("Anisotropic filtering level")]
 		//[DisplayName("Anisotropic filtering")]
-		public ANISOTROPIC_FILTERING_LEVEL anisotropic_level = ANISOTROPIC_FILTERING_LEVEL.four_times;
+		public ANISOTROPIC_FILTERING_LEVEL anisotropic_level { get; set; }
 
 		[DefaultValue(100)]
 		[Description("Brightness level, 100%-190%")]
 		//[DisplayName("Brightness")]
-		public int brightness = 100;
+		public int brightness { get; set; }
 
 		[DefaultValue(false)]
 		[Description("Enables Super2xSal textures")]
 		//[DisplayName("Super2xSal textures")]
-		public bool super2xsal = false;
+		public bool super2xsal { get; set; }
 
 		[DefaultValue(false)]
 		[Description("Always use texture filter")]
 		//[DisplayName("Always use texture filter")]
-		public bool texture_filter = false;
+		public bool texture_filter { get; set; }
 
 		[DefaultValue(false)]
 		[Description("Adjust game aspect ratio to match yours")]
 		//[DisplayName("Adjust game aspect ratio to match yours")]
-		public bool adjust_aspect_ratio = false;
+		public bool adjust_aspect_ratio { get; set; }
 
 		[DefaultValue(false)]
 		[Description("Use legacy pixel pipeline")]
 		//[DisplayName("Use legacy pixel pipeline")]
-		public bool legacy_pixel_pipeline = false;
+		public bool legacy_pixel_pipeline { get; set; }
 
 		[DefaultValue(false)]
 		[Description("Force alpha blending")]
 		//[DisplayName("Force alpha blending")]
-		public bool alpha_blending = false;
+		public bool alpha_blending { get; set; }
 
 		[DefaultValue(false)]
 		[Description("Wireframe rendering")]
 		//[DisplayName("Wireframe rendering")]
-		public bool wireframe = false;
+		public bool wireframe { get; set; }
 
 		[DefaultValue(false)]
 		[Description("Use Direct3D transformation pipeline")]
 		//[DisplayName("Use Direct3D transformation pipeline")]
-		public bool direct3d_transformation_pipeline = false;
+		public bool direct3d_transformation_pipeline { get; set; }
 
 		[DefaultValue(false)]
 		[Description("Force Z Compare")]
 		//[DisplayName("Force Z Compare")]
-		public bool z_compare = false;
+		public bool z_compare { get; set; }
 
 		[DefaultValue(false)]
 		[Description("Copy framebuffer to RDRAM")]
 		//[DisplayName("Copy framebuffer to RDRAM")]
-		public bool copy_framebuffer = false;
+		public bool copy_framebuffer { get; set; }
 
 		[DefaultValue(-1)]
 		[Description("Emulated Width")]
 		//[DisplayName("Emulated Width")]
-		public int resolution_width = -1;
+		public int resolution_width { get; set; }
 
 		[DefaultValue(-1)]
 		[Description("Emulated Height")]
 		//[DisplayName("Emulated Height")]
-		public int resolution_height = -1;
+		public int resolution_height { get; set; }
 
 		public enum DIRECT3D_CLEAR_MODE
 		{
@@ -594,7 +800,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		[DefaultValue(DIRECT3D_CLEAR_MODE.def)]
 		[Description("Direct3D Clear Mode")]
 		//[DisplayName("Direct3D Clear Mode")]
-		public DIRECT3D_CLEAR_MODE clear_mode = DIRECT3D_CLEAR_MODE.def;
+		public DIRECT3D_CLEAR_MODE clear_mode { get; set; }
 
 		public N64JaboPluginSettings Clone()
 		{

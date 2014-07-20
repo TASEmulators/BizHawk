@@ -1739,7 +1739,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void N64PluginSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (new N64VideoPluginconfig().ShowDialog() == DialogResult.OK)
+			//if (new N64VideoPluginconfig().ShowDialog() == DialogResult.OK)
+			if (new NewN64PluginSettings().ShowDialog() == DialogResult.OK)
 			{
 				GlobalWin.MainForm.FlagNeedsReboot();
 				GlobalWin.OSD.AddMessage("Plugin settings saved but a core reboot is required");
