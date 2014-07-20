@@ -14,6 +14,7 @@
 
 #include "main.h"
 #include "typedefs.h"
+#include "Config.h"	
 
 #define LOG(x) { std::ofstream myfile; myfile.open ("jabo_wrapper_log.txt", std::ios::app); myfile << x << "\n"; myfile.close(); }
 
@@ -37,6 +38,19 @@ namespace OldAPI
 	ptr_GetDllInfo GetDllInfo = NULL;
 }
 
+ptr_ConfigOpenSection      ConfigOpenSection = NULL;
+ptr_ConfigSetParameter     ConfigSetParameter = NULL;
+ptr_ConfigGetParameter     ConfigGetParameter = NULL;
+ptr_ConfigGetParameterHelp ConfigGetParameterHelp = NULL;
+ptr_ConfigSetDefaultInt    ConfigSetDefaultInt = NULL;
+ptr_ConfigSetDefaultFloat  ConfigSetDefaultFloat = NULL;
+ptr_ConfigSetDefaultBool   ConfigSetDefaultBool = NULL;
+ptr_ConfigSetDefaultString ConfigSetDefaultString = NULL;
+ptr_ConfigGetParamInt      ConfigGetParamInt = NULL;
+ptr_ConfigGetParamFloat    ConfigGetParamFloat = NULL;
+ptr_ConfigGetParamBool     ConfigGetParamBool = NULL;
+ptr_ConfigGetParamString   ConfigGetParamString = NULL;
+
 /* local variables */
 static void (*l_DebugCallback)(void *, int, const char *) = NULL;
 static void *l_DebugCallContext = NULL;
@@ -55,6 +69,9 @@ typedef void (*ptr_D3D8_ReadScreen)(void *dest, int *width, int *height);
 ptr_D3D8_ReadScreen D3D8_ReadScreen = NULL;
 typedef void (*ptr_D3D8_CloseDLL)();
 ptr_D3D8_CloseDLL D3D8_CloseDLL = NULL;
+
+DWORD old_options;
+DWORD old_initflags;
 
 void setup_jabo_functions()
 {
@@ -141,6 +158,18 @@ EXPORT m64p_error CALL PluginStartup(m64p_dynlib_handle CoreLibHandle, void *Con
                 VERSION_PRINTF_SPLIT(ConfigAPIVersion), VERSION_PRINTF_SPLIT(CONFIG_API_VERSION));
         return M64ERR_INCOMPATIBLE;
     }
+
+	ConfigOpenSection = (ptr_ConfigOpenSection) GetProcAddress(CoreLibHandle, "ConfigOpenSection");
+    ConfigSetParameter = (ptr_ConfigSetParameter) GetProcAddress(CoreLibHandle, "ConfigSetParameter");
+    ConfigGetParameter = (ptr_ConfigGetParameter) GetProcAddress(CoreLibHandle, "ConfigGetParameter");
+    ConfigSetDefaultInt = (ptr_ConfigSetDefaultInt) GetProcAddress(CoreLibHandle, "ConfigSetDefaultInt");
+    ConfigSetDefaultFloat = (ptr_ConfigSetDefaultFloat) GetProcAddress(CoreLibHandle, "ConfigSetDefaultFloat");
+    ConfigSetDefaultBool = (ptr_ConfigSetDefaultBool) GetProcAddress(CoreLibHandle, "ConfigSetDefaultBool");
+    ConfigSetDefaultString = (ptr_ConfigSetDefaultString) GetProcAddress(CoreLibHandle, "ConfigSetDefaultString");
+    ConfigGetParamInt = (ptr_ConfigGetParamInt) GetProcAddress(CoreLibHandle, "ConfigGetParamInt");
+    ConfigGetParamFloat = (ptr_ConfigGetParamFloat) GetProcAddress(CoreLibHandle, "ConfigGetParamFloat");
+    ConfigGetParamBool = (ptr_ConfigGetParamBool) GetProcAddress(CoreLibHandle, "ConfigGetParamBool");
+    ConfigGetParamString = (ptr_ConfigGetParamString) GetProcAddress(CoreLibHandle, "ConfigGetParamString");
 
     l_PluginInit = 1;
     return M64ERR_SUCCESS;
@@ -233,6 +262,138 @@ EXPORT int CALL InitiateGFX(GFX_INFO Gfx_Info)
 {
 	LOG("API WRAPPER:\t InitiateGFX")
 
+	Config_Open();
+
+	SETTINGS settings;
+	settings.anisotropic_level = (int)Config_ReadInt("anisotropic_level","ANISOTROPIC_FILTERING_LEVEL",0,TRUE,FALSE);
+	settings.brightness = (int)Config_ReadInt("brightness","Brightness level",0,TRUE,FALSE);
+	settings.antialiasing_level = (int)Config_ReadInt("antialiasing_level","Antialiasing level",0,TRUE,FALSE);
+	settings.super2xsal = (BOOL)Config_ReadInt("super2xsal","Enables Super2xSal textures",FALSE);
+	settings.texture_filter = (BOOL)Config_ReadInt("texture_filter","Always use texture filter",FALSE);
+	settings.adjust_aspect_ratio = (BOOL)Config_ReadInt("adjust_aspect_ratio","Adjust game aspect ratio to match yours",FALSE);
+	settings.legacy_pixel_pipeline = (BOOL)Config_ReadInt("legacy_pixel_pipeline","Use legacy pixel pipeline",FALSE);
+	settings.alpha_blending = (BOOL)Config_ReadInt("alpha_blending","Force alpha blending",FALSE);
+	settings.wireframe = (BOOL)Config_ReadInt("wireframe","Wireframe rendering",FALSE);
+	settings.direct3d_transformation_pipeline = (BOOL)Config_ReadInt("direct3d_transformation_pipeline","Use Direct3D transformation pipeline",FALSE);
+	settings.z_compare = (BOOL)Config_ReadInt("z_compare","Force Z Compare",FALSE);
+	settings.copy_framebuffer = (BOOL)Config_ReadInt("copy_framebuffer","Copy framebuffer to RDRAM",FALSE);
+	settings.resolution_width = (int)Config_ReadInt("resolution_width","Emulated Width",-1,TRUE,FALSE);
+	settings.resolution_height = (int)Config_ReadInt("resolution_height","Emulated Height",-1,TRUE,FALSE);
+	settings.clear_mode = (int)Config_ReadInt("clear_mode","Direct3D Clear Mode Height",0,TRUE,FALSE);
+
+	DWORD new_options_val = 0;
+	if (settings.copy_framebuffer == TRUE) { new_options_val |= 0x20000000; }
+	if (settings.z_compare == TRUE) { new_options_val |= 0x10000000; }
+	if (settings.legacy_pixel_pipeline == TRUE) { new_options_val |= 0x08000000; }
+	if (settings.alpha_blending == TRUE) { new_options_val |= 0x04000000; }
+	if (settings.adjust_aspect_ratio == TRUE) { new_options_val |= 0x02000000; }
+	if (settings.texture_filter == TRUE) { new_options_val |= 0x01000000; }
+	if (settings.super2xsal == TRUE) { new_options_val |= 0x00001000; }
+	new_options_val |= (((settings.brightness - 100) / 3) & 0x1F) << 19;
+	switch (settings.antialiasing_level)
+	{
+		case 1: new_options_val |= 0x00004004; break;
+		case 2: new_options_val |= 0x00008004; break;
+		case 3: new_options_val |= 0x00010004; break;
+	}
+	switch (settings.anisotropic_level)
+	{
+		case 1: new_options_val |= 0x00000024; break;
+		case 2: new_options_val |= 0x00000044; break;
+		case 3: new_options_val |= 0x00000084; break;
+		case 4: new_options_val |= 0x00000104; break;
+	}
+
+	// Force 800x600 for now
+	new_options_val |= 0x00000004;
+
+	DWORD new_initflags_val = 0x00e00000;
+	if (settings.direct3d_transformation_pipeline == true) { new_initflags_val = 0x00a00000; }
+
+
+
+
+	HKEY mainkey;
+	if (RegOpenKeyEx(HKEY_CURRENT_USER,"Software\\JaboSoft\\Project64 DLL\\Direct3D8 1.6.1",0,KEY_READ,&mainkey) != ERROR_SUCCESS)
+	{
+		// key doesn't exist, so we need to create it first
+		//LOG("Main key doesn't exist");
+		if (RegCreateKeyEx(HKEY_CURRENT_USER,"Software\\JaboSoft\\Project64 DLL\\Direct3D8 1.6.1",NULL,NULL,NULL,KEY_READ,NULL,&mainkey,NULL) != ERROR_SUCCESS)
+		{
+			// Couldn't create the key
+			//LOG("Couldn't make main key");
+			return (FALSE);
+		}
+	}
+
+	// key now exists, try to find the Options Value
+	DWORD type;
+	DWORD cbData;
+	int options_value;
+	LSTATUS result = RegQueryValueEx(mainkey, "Options", NULL, &type, (LPBYTE)&options_value, &cbData);
+	if (result != ERROR_SUCCESS)
+	{
+		if (result == ERROR_FILE_NOT_FOUND)
+		{
+			options_value = 0;
+		}
+		else
+		{
+			RegCloseKey(mainkey);
+			//LOG("error opening options value");
+			return (FALSE);
+		}
+	}
+
+	// Found it, save the value
+	old_options = options_value;
+
+	// now try to find the Direct3D init flags subkey Value
+	int initflags_value;
+	result = RegQueryValueEx(mainkey, "Direct3D8.InitFlags", NULL, &type, (LPBYTE)&initflags_value, &cbData);
+	if (result != ERROR_SUCCESS)
+	{
+		if (result == ERROR_FILE_NOT_FOUND)
+		{
+			initflags_value = 0x00e00000;
+		}
+		else
+		{
+			RegCloseKey(mainkey);
+			//LOG("error opening options value");
+			return (FALSE);
+		}
+	}
+
+	// Found it, save it
+	old_initflags = initflags_value;
+
+	RegCloseKey(mainkey);
+
+	// Reopen the key for writing
+	if (RegOpenKeyEx(HKEY_CURRENT_USER,"Software\\JaboSoft\\Project64 DLL\\Direct3D8 1.6.1",0,KEY_WRITE,&mainkey) != ERROR_SUCCESS)
+	{
+		//LOG("failure to open key for write. ...what");
+		return (FALSE);
+	}
+
+	// Store our options value
+	DWORD new_val = new_options_val;
+	if (RegSetValueEx(mainkey, "Options", NULL, REG_DWORD, (BYTE *)&new_val, 4) != ERROR_SUCCESS)
+	{
+		//LOG("couldn't write options value. wat");
+	}
+
+	// Store our init flags value
+	new_val = new_initflags_val;
+	if (RegSetValueEx(mainkey, "Direct3D8.InitFlags", NULL, REG_DWORD, (BYTE *)&new_val, 4) != ERROR_SUCCESS)
+	{
+		//LOG("couldn't write init flags value. wat");
+	}
+
+	RegCloseKey(mainkey);
+
+
 	OldAPI::GFX_INFO blah;
 
 	blah.hWnd = hWnd_jabo;
@@ -274,7 +435,7 @@ EXPORT int CALL InitiateGFX(GFX_INFO Gfx_Info)
 	blah.CheckInterrupts = Gfx_Info.CheckInterrupts;
 
 	OldAPI::InitiateGFX(blah);
-	OldAPI::DllConfig(hWnd_jabo);
+	//OldAPI::DllConfig(hWnd_jabo);
 
     return(TRUE);
 }
