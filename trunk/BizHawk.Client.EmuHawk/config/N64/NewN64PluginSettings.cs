@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 
 			ss.VidPlugin = PluginComboBox.SelectedItem
 				.ToString()
-				.GetEnumFromDescription<PLUGINTYPE>();
+				.GetEnumFromDescription<PluginType>();
 
 			PutSettings(s);
 			PutSyncSettings(ss);
@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 
 			CoreTypeDropdown.PopulateFromEnum<N64SyncSettings.CORETYPE>(ss.CoreType);
 			RspTypeDropdown.PopulateFromEnum<N64SyncSettings.RSPTYPE>(ss.RspType);
-			PluginComboBox.PopulateFromEnum<PLUGINTYPE>(ss.VidPlugin);
+			PluginComboBox.PopulateFromEnum<PluginType>(ss.VidPlugin);
 
 			var video_setting = s.VideoSizeX
 						+ " x "
