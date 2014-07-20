@@ -77,11 +77,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 
 			[DefaultValue(1)]
-			[DisplayName("WR Mode")]
+			[DisplayName("Wire Frame Mode")]
+			//0=Normal colors, 1=Vertex colors, 2=Red only
 			public int WFMode { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Wire Frame")]
+			[DisplayName("Wire Frame Display")]
 			public bool WireFrame { get; set; }
 
 			[DefaultValue(0)]
@@ -89,15 +90,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			public int CardId { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Flame Corona")]
+			[DisplayName("Zelda corona fix")]
 			public bool FlameCorona { get; set; }
 
 			[DefaultValue(2)]
-			[DisplayName("UCode")]
+			[DisplayName("Force microcode")]
 			public int UCode { get; set; }
 
 			[DefaultValue(true)]
-			[DisplayName("Auto Detect UCode")]
+			[DisplayName("Auto-detect microcode")]
 			public bool AutodetectUCode { get; set; }
 
 			[DefaultValue(false)]
@@ -105,11 +106,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			public bool MotionBlur { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Fb Read Always")]
+			[DisplayName("Framebuffer read every frame")]
 			public bool FbReadAlways { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Unk As Red")]
+			[DisplayName("Display unknown combines as red")]
 			public bool UnkAsRed { get; set; }
 
 			[DefaultValue(false)]
@@ -125,27 +126,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			public bool DisableAuxBuf { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Fbo")]
+			[DisplayName("Use framebuffer objects")]
 			public bool Fbo { get; set; }
 
 			[DefaultValue(true)]
-			[DisplayName("No Glsl")]
+			[DisplayName("Disable GLSL combiners")]
 			public bool NoGlsl { get; set; }
 
 			[DefaultValue(true)]
-			[DisplayName("No Dithered Alpha")]
+			[DisplayName("Disable dithered alpha")]
 			public bool NoDitheredAlpha { get; set; }
 
 			[DefaultValue(0)]
-			[DisplayName("Text Filter")]
+			[DisplayName("Texture Filter")]
+			//0=None, 1=Blur edges, 2=Super 2xSai, 3=Hq2x, 4=Hq4x
 			public int TexFilter { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Fb Render")]
+			[DisplayName("Framebuffer Render")] 
+			//Framebuffer Depth Render in main.cpp?
 			public bool FbRender { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Wrap Big Text")]
+			[DisplayName("Wrap textures too big for tmem")]
 			public bool WrapBigTex { get; set; }
 
 			[DefaultValue(false)]
@@ -161,15 +164,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			public bool PPL { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Fb Optimize Write")]
+			[DisplayName("Framebuffer Optimize Write")]
 			public bool FbOptimizeWrite { get; set; }
 
 			[DefaultValue(true)]
-			[DisplayName("Fb Optimize Text Rectangle")]
+			[DisplayName("Framebuffer Optimize Texture Rectangle")]
 			public bool FbOptimizeTexRect { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Increase Text Rectangle Edge")]
+			[DisplayName("Increase Texture Rectangle Edge")]
 			public bool IncreaseTexRectEdge { get; set; }
 
 			[DefaultValue(false)]
@@ -177,15 +180,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			public bool IncreasePrimDepth { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Fb Ignore Previous")]
+			[DisplayName("Framebuffer Ignore Previous")]
 			public bool FbIgnorePrevious { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Fb Ignore Aux Copy")]
+			[DisplayName("Framebuffer Ignore Aux Copy")]
 			public bool FbIgnoreAuxCopy { get; set; }
 
 			[DefaultValue(true)]
-			[DisplayName("Fb High Resolution Buffer Clear")]
+			[DisplayName("Framebuffer High Resolution Buffer Clear")]
 			public bool FbHiResBufClear { get; set; }
 
 			[DefaultValue(false)]
@@ -197,7 +200,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			public bool ForceDepthCompare { get; set; }
 
 			[DefaultValue(true)]
-			[DisplayName("Fog")]
+			[DisplayName("Fog Enabled")]
 			public bool Fog { get; set; }
 
 			[DefaultValue(false)]
@@ -205,27 +208,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			public bool FillColorFix { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Fb Smart")]
+			[DisplayName("Smart Framebuffer")]
 			public bool FbSmart { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Fb Read Alpha")]
+			[DisplayName("Framebuffer Read Alpha")]
 			public bool FbReadAlpha { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Fb Get Info")]
+			[DisplayName("Get Framebuffer Info")]
 			public bool FbGetInfo { get; set; }
 
 			[DefaultValue(true)]
-			[DisplayName("Fb High Res")]
+			[DisplayName("High Res Framebuffer")]
 			public bool FbHiRes { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Fb Clear")]
+			[DisplayName("Clear Framebuffer")]
 			public bool fb_clear { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Detect CPU Write")]
+			[DisplayName("Detect CPU Writes")]
 			public bool detect_cpu_write { get; set; }
 
 			[DefaultValue(false)]
@@ -233,7 +236,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			public bool decrease_fillrect_edge { get; set; }
 
 			[DefaultValue(true)]
-			[DisplayName("Buffer Clear")]
+			[DisplayName("Buffer Clear on Every Frame")]
 			public bool buff_clear { get; set; }
 
 			[DefaultValue(false)]
@@ -249,7 +252,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			public int enable_hacks_for_game { get; set; }
 
 			[DefaultValue(1)]
-			[DisplayName("Swap Mode")]
+			[DisplayName("Buffer swapping method")]
+			//0=Old, 1=New, 2=Hybrid
 			public int swapmode { get; set; }
 
 			[DefaultValue(1041204192)]
@@ -277,7 +281,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			public int offset_x { get; set; }
 
 			[DefaultValue(0)]
-			[DisplayName("LOD Mode")]
+			[DisplayName("LOD calculation")]
+			//0=Off, 1=Fast, 2=Precise
 			public int lodmode { get; set; }
 
 			[DefaultValue(0)]
@@ -285,11 +290,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			public int fix_tex_coord { get; set; }
 
 			[DefaultValue(1)]
-			[DisplayName("Filtering")]
+			[DisplayName("Filtering Mode")]
+			//0=None, 1=Force bilinear, 2=Force point-sampled
 			public int filtering { get; set; }
 
 			[DefaultValue(20)]
-			[DisplayName("Depth Bias")]
+			[DisplayName("Depth bias level")]
 			public int depth_bias { get; set; }
 
 			public N64GlidePluginSettings Clone()
