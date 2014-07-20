@@ -355,81 +355,12 @@ static void copy_configlist_active_to_saved(void)
     }
 }
 
-static m64p_error write_configlist_file(void)
-{
-    config_section *curr_section;
-    const char *configpath;
-    char *filepath;
-    FILE *fPtr;
-
-    /* get the full pathname to the config file and try to open it */
-    configpath = ConfigGetUserConfigPath();
-    if (configpath == NULL)
-        return M64ERR_FILES;
-
-    filepath = combinepath(configpath, MUPEN64PLUS_CFG_NAME);
-    if (filepath == NULL)
-        return M64ERR_NO_MEMORY;
-
-    fPtr = fopen(filepath, "wb"); 
-    if (fPtr == NULL)
-    {
-        DebugMessage(M64MSG_ERROR, "Couldn't open configuration file '%s' for writing.", filepath);
-        free(filepath);
-        return M64ERR_FILES;
-    }
-    free(filepath);
-
-    /* write out header */
-    fprintf(fPtr, "# Mupen64Plus Configuration File\n");
-    fprintf(fPtr, "# This file is automatically read and written by the Mupen64Plus Core library\n");
-
-    /* write out all of the config parameters from the Saved list */
-    curr_section = l_ConfigListSaved;
-    while (curr_section != NULL)
-    {
-        config_var *curr_var = curr_section->first_var;
-        fprintf(fPtr, "\n[%s]\n\n", curr_section->name);
-        while (curr_var != NULL)
-        {
-            if (curr_var->comment != NULL && strlen(curr_var->comment) > 0)
-                fprintf(fPtr, "# %s\n", curr_var->comment);
-            if (curr_var->type == M64TYPE_INT)
-                fprintf(fPtr, "%s = %i\n", curr_var->name, curr_var->val.integer);
-            else if (curr_var->type == M64TYPE_FLOAT)
-                fprintf(fPtr, "%s = %f\n", curr_var->name, curr_var->val.number);
-            else if (curr_var->type == M64TYPE_BOOL && curr_var->val.integer)
-                fprintf(fPtr, "%s = True\n", curr_var->name);
-            else if (curr_var->type == M64TYPE_BOOL && !curr_var->val.integer)
-                fprintf(fPtr, "%s = False\n", curr_var->name);
-            else if (curr_var->type == M64TYPE_STRING && curr_var->val.string != NULL)
-                fprintf(fPtr, "%s = \"%s\"\n", curr_var->name, curr_var->val.string);
-            curr_var = curr_var->next;
-        }
-        fprintf(fPtr, "\n");
-        curr_section = curr_section->next;
-    }
-
-    fclose(fPtr);
-    return M64ERR_SUCCESS;
-}
-
 /* ----------------------------------------------------------- */
 /* these functions are only to be used within the Core library */
 /* ----------------------------------------------------------- */
 
 m64p_error ConfigInit(const char *ConfigDirOverride, const char *DataDirOverride)
 {
-    m64p_error rval;
-    const char *configpath = NULL;
-    char *filepath;
-    long filelen;
-    FILE *fPtr;
-    char *configtext;
-
-    config_section *current_section = NULL;
-    char *line, *end, *lastcomment;
-
     if (l_ConfigInit)
         return M64ERR_ALREADY_INIT;
     l_ConfigInit = 1;
@@ -450,121 +381,11 @@ m64p_error ConfigInit(const char *ConfigDirOverride, const char *DataDirOverride
             return M64ERR_NO_MEMORY;
     }
 
-    /* get the full pathname to the config file and try to open it */
-    configpath = ConfigGetUserConfigPath();
-    if (configpath == NULL)
-        return M64ERR_FILES;
-
-    filepath = combinepath(configpath, MUPEN64PLUS_CFG_NAME);
-    if (filepath == NULL)
-        return M64ERR_NO_MEMORY;
-
-    fPtr = fopen(filepath, "rb");
-    if (fPtr == NULL)
-    {
-        DebugMessage(M64MSG_INFO, "Couldn't open configuration file '%s'.  Using defaults.", filepath);
-        free(filepath);
-        l_SaveConfigOnExit = 1; /* auto-save the config file so that the defaults will be saved to disk */
-        return M64ERR_SUCCESS;
-    }
-    free(filepath);
-
-    /* read the entire config file */
-    fseek(fPtr, 0L, SEEK_END);
-    filelen = ftell(fPtr);
-    fseek(fPtr, 0L, SEEK_SET);
-
-    configtext = (char *) malloc(filelen + 1);
-    if (configtext == NULL)
-    {
-        fclose(fPtr);
-        return M64ERR_NO_MEMORY;
-    }
-    if (fread(configtext, 1, filelen, fPtr) != filelen)
-    {
-        free(configtext);
-        fclose(fPtr);
-        return M64ERR_FILES;
-    }
-    fclose(fPtr);
-
-    /* parse the file data */
-    current_section = NULL;
-    line = configtext;
-    end = configtext + filelen;
-    lastcomment = NULL;
-    *end = 0;
-    while (line < end)
-    {
-        ini_line l = ini_parse_line(&line);
-        switch (l.type)
-        {
-            case INI_COMMENT:
-                lastcomment = l.value;
-                break;
-
-            case INI_SECTION:
-                rval = ConfigOpenSection(l.name, (m64p_handle *) &current_section);
-                if (rval != M64ERR_SUCCESS)
-                {
-                    free(configtext);
-                    return rval;
-                }
-                lastcomment = NULL;
-                break;
-
-            case INI_PROPERTY:
-                if (l.value[0] == '"' && l.value[strlen(l.value)-1] == '"')
-                {
-                    l.value++;
-                    l.value[strlen(l.value)-1] = 0;
-                    ConfigSetDefaultString((m64p_handle) current_section, l.name, l.value, lastcomment);
-                }
-                else if (osal_insensitive_strcmp(l.value, "false") == 0)
-                {
-                    ConfigSetDefaultBool((m64p_handle) current_section, l.name, 0, lastcomment);
-                }
-                else if (osal_insensitive_strcmp(l.value, "true") == 0)
-                {
-                    ConfigSetDefaultBool((m64p_handle) current_section, l.name, 1, lastcomment);
-                }
-                else if (is_numeric(l.value))
-                {
-                    int val_int = (int) strtol(l.value, NULL, 10);
-                    float val_float = (float) strtod(l.value, NULL);
-                    if ((val_float - val_int) != 0.0)
-                        ConfigSetDefaultFloat((m64p_handle) current_section, l.name, val_float, lastcomment);
-                    else
-                        ConfigSetDefaultInt((m64p_handle) current_section, l.name, val_int, lastcomment);
-                }
-                else
-                {
-                    /* assume that it's a string */
-                    ConfigSetDefaultString((m64p_handle) current_section, l.name, l.value, lastcomment);
-                }
-                lastcomment = NULL;
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    /* release memory used for config file text */
-    free(configtext);
-
-    /* duplicate the entire config data list, to store a copy of the list which represents the state of the file on disk */
-    copy_configlist_active_to_saved();
-
     return M64ERR_SUCCESS;
 }
 
 m64p_error ConfigShutdown(void)
 {
-    /* first, save the file if necessary */
-    if (l_SaveConfigOnExit)
-        ConfigSaveFile();
-
     /* reset the initialized flag */
     if (!l_ConfigInit)
         return M64ERR_NOT_INIT;
@@ -813,51 +634,17 @@ EXPORT m64p_error CALL ConfigSaveFile(void)
     if (!l_ConfigInit)
         return M64ERR_NOT_INIT;
 
-    /* copy the active config list to the saved config list */
-    copy_configlist_active_to_saved();
-
-    /* write the saved config list out to a file */
-    return (write_configlist_file());
+	return M64ERR_SUCCESS;
 }
 
 EXPORT m64p_error CALL ConfigSaveSection(const char *SectionName)
 {
-    config_section *curr_section, *new_section;
-    config_section **insertion_point;
-
     if (!l_ConfigInit)
         return M64ERR_NOT_INIT;
     if (SectionName == NULL || strlen(SectionName) < 1)
         return M64ERR_INPUT_ASSERT;
 
-    /* walk through the Active section list, looking for a case-insensitive name match */
-    curr_section = find_section(l_ConfigListActive, SectionName);
-    if (curr_section == NULL)
-        return M64ERR_INPUT_NOT_FOUND;
-
-    /* duplicate this section */
-    new_section = section_deepcopy(curr_section);
-    if (new_section == NULL)
-        return M64ERR_NO_MEMORY;
-
-    /* update config section that's in the Saved list with the new one */
-    insertion_point = find_alpha_section_link(&l_ConfigListSaved, SectionName);
-    if (*insertion_point != NULL && osal_insensitive_strcmp((*insertion_point)->name, SectionName) == 0)
-    {
-        /* the section exists in the saved list and will be replaced */
-        new_section->next = (*insertion_point)->next;
-        delete_section(*insertion_point);
-        *insertion_point = new_section;
-    }
-    else
-    {
-        /* the section didn't exist in the saved list and has to be inserted */
-        new_section->next = *insertion_point;
-        *insertion_point = new_section;
-    }
-
-    /* write the saved config list out to a file */
-    return (write_configlist_file());
+	return M64ERR_SUCCESS;
 }
 
 EXPORT m64p_error CALL ConfigRevertChanges(const char *SectionName)
