@@ -5,7 +5,6 @@ D3D8Base::LPDIRECT3D8 g_D3D=NULL;
 HMODULE hD3D;
 
 ThreadSafePointerSet D3D8Wrapper::IDirect3DDevice8::m_List;
-ThreadSafePointerSet D3D8Wrapper::IDirect3DResource8::m_List;
 ThreadSafePointerSet D3D8Wrapper::IDirect3DBaseTexture8::m_List;
 ThreadSafePointerSet D3D8Wrapper::IDirect3DVolumeTexture8::m_List;
 ThreadSafePointerSet D3D8Wrapper::IDirect3DCubeTexture8::m_List;

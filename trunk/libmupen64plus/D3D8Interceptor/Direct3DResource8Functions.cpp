@@ -4,6 +4,8 @@ extern "C"
 {
 	namespace D3D8Wrapper
 	{
+		ThreadSafePointerSet D3D8Wrapper::IDirect3DResource8::m_List;
+
 		D3D8Wrapper::IDirect3DResource8::IDirect3DResource8(D3D8Base::IDirect3DResource8* pResource) : IDirect3DUnknown((IUnknown*) pResource)
 		{
 			LOG("IDirect3DResource8 from base " << pResource << " made " << this);
