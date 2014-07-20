@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using Newtonsoft.Json;
+using System.Reflection;
 
 using BizHawk.Emulation.Common;
-using System.Reflection;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
@@ -67,13 +66,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				fix_tex_coord = 0;
 				filtering = 1;
 				depth_bias = 20;
-			}
-
-			[JsonIgnore]
-			[Description("Plugin Type")]
-			public PluginType PluginType
-			{
-				get { return PluginType.GLIDE; }
 			}
 
 			[DefaultValue(1)]
@@ -340,6 +332,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 					swapmode = game.GetInt("Glide_swapmode", 1);
 					enable_hacks_for_game = game.GetInt("Glide_enable_hacks_for_game", 0);
 				}
+			}
+
+			public PluginType GetPluginType()
+			{
+				return PluginType.Glide;
 			}
 
 			public Dictionary<string, object> GetPluginSettings()

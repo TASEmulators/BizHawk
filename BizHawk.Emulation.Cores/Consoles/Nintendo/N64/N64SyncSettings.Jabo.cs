@@ -29,10 +29,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				clear_mode = DIRECT3D_CLEAR_MODE.def;
 			}
 
-			[JsonIgnore]
-			public PluginType PluginType
+			public PluginType GetPluginType()
 			{
-				get { return PluginType.JABO; }
+				return PluginType.Jabo;
 			}
 
 			public void FillPerGameHacks(GameInfo game)

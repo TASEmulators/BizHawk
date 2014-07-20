@@ -8,9 +8,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	public partial class N64SyncSettings
 	{
-		public CORETYPE CoreType = CORETYPE.Dynarec;
+		public CoreType Core = CoreType.Dynarec;
 
-		public enum CORETYPE
+		public enum CoreType
 		{
 			[Description("Pure Interpreter")]
 			Pure_Interpret = 0,
@@ -22,9 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			Dynarec = 2,
 		}
 
-		public RSPTYPE RspType = RSPTYPE.Rsp_Hle;
-
-		public enum RSPTYPE
+		public enum RspType
 		{
 			[Description("Hle")]
 			Rsp_Hle = 0,
@@ -33,7 +31,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			Rsp_Z64_hlevideo = 1
 		}
 
-		public PluginType VidPlugin = PluginType.RICE;
+		public PluginType VidPlugin = PluginType.Rice;
+		public RspType Rsp = RspType.Rsp_Hle;
 
 		public N64ControllerSettings[] Controllers = 
 		{
@@ -52,8 +51,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		{
 			return new N64SyncSettings
 			{
-				CoreType = CoreType,
-				RspType = RspType,
+				Core = Core,
+				Rsp = Rsp,
 				VidPlugin = VidPlugin,
 				RicePlugin = RicePlugin.Clone(),
 				GlidePlugin = GlidePlugin.Clone(),
@@ -71,10 +70,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			switch (VidPlugin)
 			{
 				// clone so per game hacks don't overwrite our settings object
-				case PluginType.GLIDE: ips = GlidePlugin.Clone(); break;
-				case PluginType.GLIDE64MK2: ips = Glide64mk2Plugin.Clone(); break;
-				case PluginType.RICE: ips = RicePlugin.Clone(); break;
-				case PluginType.JABO: ips = JaboPlugin.Clone(); break;
+				case PluginType.Glide: ips = GlidePlugin.Clone(); break;
+				case PluginType.GlideMk2: ips = Glide64mk2Plugin.Clone(); break;
+				case PluginType.Rice: ips = RicePlugin.Clone(); break;
+				case PluginType.Jabo: ips = JaboPlugin.Clone(); break;
 			}
 			ips.FillPerGameHacks(game);
 			ret.Parameters = ips.GetPluginSettings();
@@ -85,21 +84,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 	public enum PluginType
 	{
 		[Description("Rice")]
-		RICE,
+		Rice,
 
 		[Description("Glide64")]
-		GLIDE,
+		Glide,
 
 		[Description("Glide64 mk2")]
-		GLIDE64MK2,
+		GlideMk2,
 
 		[Description("Jabo")]
-		JABO
+		Jabo
 	}
 
 	public interface IPluginSettings
 	{
-		PluginType PluginType { get; }
+		PluginType GetPluginType();
 		Dictionary<string, object> GetPluginSettings();
 		void FillPerGameHacks(GameInfo game);
 	}

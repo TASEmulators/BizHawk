@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using Newtonsoft.Json;
 
 using BizHawk.Emulation.Common;
 using System.Reflection;
@@ -77,13 +76,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				RenderToTextureOption = 0;
 				ScreenUpdateSettingHack = 0;
 				EnableHacksForGame = 0;
-			}
-
-			[JsonIgnore]
-			[Description("Plugin Type")]
-			public PluginType PluginType
-			{
-				get { return PluginType.RICE; }
 			}
 
 			[DefaultValue(0)]
@@ -401,6 +393,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 					ScreenUpdateSettingHack = game.GetInt("RiceScreenUpdateSettingHack", 0);
 					EnableHacksForGame = game.GetInt("RiceEnableHacksForGame", 0);
 				}
+			}
+
+			public PluginType GetPluginType()
+			{
+				return PluginType.Rice;
 			}
 
 			public Dictionary<string, object> GetPluginSettings()
