@@ -44,6 +44,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			[Description("Anisotropic filtering level")]
 			public ANISOTROPIC_FILTERING_LEVEL anisotropic_level { get; set; }
 
+			[DefaultValue(ANTIALIASING_LEVEL.Off)]
+			[DisplayName("Full-Scene Antialiasing")]
+			[Description("Full-Scene Antialiasing level")]
+			public ANTIALIASING_LEVEL antialiasing_level { get; set; }
+
 			[DefaultValue(100)]
 			[DisplayName("Brightness")]
 			[Description("Brightness level, 100%-190%")]
@@ -125,6 +130,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 				[Description("16X")]
 				SixteenTimes = 4
+			}
+
+			public enum ANTIALIASING_LEVEL
+			{
+				[Description("Off")]
+				Off = 0,
+
+				[Description("2X")]
+				TwoTimes = 1,
+
+				[Description("4X")]
+				FourTimes = 2,
+
+				[Description("8X")]
+				EightTimes = 3
 			}
 
 			public enum Direct3DClearMode
