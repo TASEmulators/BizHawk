@@ -32,6 +32,7 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(N64VideoPluginconfig));
 			this.N64plugintabcontrol = new System.Windows.Forms.TabControl();
 			this.N64vpluginglobaltab = new System.Windows.Forms.TabPage();
+			this.jaboStatusLabel = new System.Windows.Forms.Label();
 			this.label49 = new System.Windows.Forms.Label();
 			this.RspTypeDropdown = new System.Windows.Forms.ComboBox();
 			this.label48 = new System.Windows.Forms.Label();
@@ -271,11 +272,12 @@
 			this.label58 = new System.Windows.Forms.Label();
 			this.Glide64mk2_filtering = new System.Windows.Forms.ComboBox();
 			this.Glide64mk2_UseDefaultHacks2 = new System.Windows.Forms.CheckBox();
+			this.JaboTab = new System.Windows.Forms.TabPage();
+			this.JaboPropertyGrid = new System.Windows.Forms.PropertyGrid();
 			this.SaveButton = new System.Windows.Forms.Button();
 			this.CancelBT = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.JaboTab = new System.Windows.Forms.TabPage();
-			this.JaboPropertyGrid = new System.Windows.Forms.PropertyGrid();
+			this.jaboStatusDetailLabel = new System.Windows.Forms.Label();
 			this.N64plugintabcontrol.SuspendLayout();
 			this.N64vpluginglobaltab.SuspendLayout();
 			this.RiceTabPage.SuspendLayout();
@@ -317,6 +319,8 @@
 			// 
 			// N64vpluginglobaltab
 			// 
+			this.N64vpluginglobaltab.Controls.Add(this.jaboStatusDetailLabel);
+			this.N64vpluginglobaltab.Controls.Add(this.jaboStatusLabel);
 			this.N64vpluginglobaltab.Controls.Add(this.label49);
 			this.N64vpluginglobaltab.Controls.Add(this.RspTypeDropdown);
 			this.N64vpluginglobaltab.Controls.Add(this.label48);
@@ -333,6 +337,15 @@
 			this.N64vpluginglobaltab.TabIndex = 0;
 			this.N64vpluginglobaltab.Text = "Global";
 			this.N64vpluginglobaltab.UseVisualStyleBackColor = true;
+			// 
+			// jaboStatusLabel
+			// 
+			this.jaboStatusLabel.AutoSize = true;
+			this.jaboStatusLabel.Location = new System.Drawing.Point(10, 137);
+			this.jaboStatusLabel.Name = "jaboStatusLabel";
+			this.jaboStatusLabel.Size = new System.Drawing.Size(63, 13);
+			this.jaboStatusLabel.TabIndex = 19;
+			this.jaboStatusLabel.Text = "Jabo Status";
 			// 
 			// label49
 			// 
@@ -390,7 +403,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(10, 164);
+			this.label2.Location = new System.Drawing.Point(10, 201);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(87, 13);
 			this.label2.TabIndex = 13;
@@ -414,7 +427,7 @@
             "1600 x 1200",
             "1920 x 1440",
             "2048 x 1536"});
-			this.VideoResolutionComboBox.Location = new System.Drawing.Point(13, 180);
+			this.VideoResolutionComboBox.Location = new System.Drawing.Point(13, 217);
 			this.VideoResolutionComboBox.Name = "VideoResolutionComboBox";
 			this.VideoResolutionComboBox.Size = new System.Drawing.Size(136, 21);
 			this.VideoResolutionComboBox.TabIndex = 10;
@@ -432,6 +445,7 @@
 			this.PluginComboBox.Name = "PluginComboBox";
 			this.PluginComboBox.Size = new System.Drawing.Size(173, 21);
 			this.PluginComboBox.TabIndex = 5;
+			this.PluginComboBox.SelectedIndexChanged += new System.EventHandler(this.PluginComboBox_SelectedIndexChanged);
 			// 
 			// label1
 			// 
@@ -3212,6 +3226,26 @@
 			this.Glide64mk2_UseDefaultHacks2.UseVisualStyleBackColor = true;
 			this.Glide64mk2_UseDefaultHacks2.CheckedChanged += new System.EventHandler(this.Glide64mk2_UseDefaultHacks2_CheckedChanged);
 			// 
+			// JaboTab
+			// 
+			this.JaboTab.Controls.Add(this.JaboPropertyGrid);
+			this.JaboTab.Location = new System.Drawing.Point(4, 22);
+			this.JaboTab.Name = "JaboTab";
+			this.JaboTab.Size = new System.Drawing.Size(572, 343);
+			this.JaboTab.TabIndex = 7;
+			this.JaboTab.Text = "Jabo";
+			this.JaboTab.UseVisualStyleBackColor = true;
+			// 
+			// JaboPropertyGrid
+			// 
+			this.JaboPropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.JaboPropertyGrid.Location = new System.Drawing.Point(0, 0);
+			this.JaboPropertyGrid.Name = "JaboPropertyGrid";
+			this.JaboPropertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
+			this.JaboPropertyGrid.Size = new System.Drawing.Size(572, 343);
+			this.JaboPropertyGrid.TabIndex = 4;
+			this.JaboPropertyGrid.ToolbarVisible = false;
+			// 
 			// SaveButton
 			// 
 			this.SaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -3243,25 +3277,14 @@
 			this.toolTip1.ReshowDelay = 100;
 			this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 			// 
-			// JaboTab
+			// jaboStatusDetailLabel
 			// 
-			this.JaboTab.Controls.Add(this.JaboPropertyGrid);
-			this.JaboTab.Location = new System.Drawing.Point(4, 22);
-			this.JaboTab.Name = "JaboTab";
-			this.JaboTab.Size = new System.Drawing.Size(572, 343);
-			this.JaboTab.TabIndex = 7;
-			this.JaboTab.Text = "Jabo";
-			this.JaboTab.UseVisualStyleBackColor = true;
-			// 
-			// JaboPropertyGrid
-			// 
-			this.JaboPropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.JaboPropertyGrid.Location = new System.Drawing.Point(0, 0);
-			this.JaboPropertyGrid.Name = "JaboPropertyGrid";
-			this.JaboPropertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-			this.JaboPropertyGrid.Size = new System.Drawing.Size(572, 343);
-			this.JaboPropertyGrid.TabIndex = 4;
-			this.JaboPropertyGrid.ToolbarVisible = false;
+			this.jaboStatusDetailLabel.AutoSize = true;
+			this.jaboStatusDetailLabel.Location = new System.Drawing.Point(10, 160);
+			this.jaboStatusDetailLabel.Name = "jaboStatusDetailLabel";
+			this.jaboStatusDetailLabel.Size = new System.Drawing.Size(91, 13);
+			this.jaboStatusDetailLabel.TabIndex = 20;
+			this.jaboStatusDetailLabel.Text = "Jabo Status detail";
 			// 
 			// N64VideoPluginconfig
 			// 
@@ -3564,5 +3587,7 @@
 		private System.Windows.Forms.ComboBox RspTypeDropdown;
 		private System.Windows.Forms.TabPage JaboTab;
 		private System.Windows.Forms.PropertyGrid JaboPropertyGrid;
+		private System.Windows.Forms.Label jaboStatusLabel;
+		private System.Windows.Forms.Label jaboStatusDetailLabel;
 	}
 }
