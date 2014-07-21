@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
-			Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
+			SetWindowText();
 
 			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
 
@@ -1177,6 +1177,49 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Private methods
 
+		private static string DisplayNameForSystem(string system)
+		{
+			if (system == "NULL")
+			{
+				//Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
+				//return;
+			}
+
+			var str = Global.SystemInfo.DisplayName;
+
+			if (VersionInfo.DeveloperBuild)
+			{
+				str += " (interim)";
+			}
+
+			return str;
+		}
+
+		private void SetWindowText()
+		{
+			if (Global.Emulator is NullEmulator)
+			{
+				Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
+				return;
+			}
+
+			var str = Global.SystemInfo.DisplayName;
+
+			if (VersionInfo.DeveloperBuild)
+			{
+				str += " (interim)";
+			}
+
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				Text = str + " - " + Global.Game.Name + " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
+			}
+			else
+			{
+				Text = str + " - " + Global.Game.Name;
+			}
+		}
+
 		private void ClearAutohold()
 		{
 			ClearHolds();
@@ -1449,18 +1492,6 @@ namespace BizHawk.Client.EmuHawk
 					wonderSwanToolStripMenuItem.Visible = true;
 					break;
 			}
-		}
-
-		private static string DisplayNameForSystem(string system)
-		{
-			var str = Global.SystemInfo.DisplayName;
-
-			if (VersionInfo.DeveloperBuild)
-			{
-				str += " (interim)";
-			}
-
-			return str;
 		}
 
 		private static void InitControls()
@@ -3098,7 +3129,7 @@ namespace BizHawk.Client.EmuHawk
 					Global.Game.Status = nes.RomStatus;
 				}
 
-				Text = DisplayNameForSystem(loader.Game.System) + " - " + Global.Game.Name;
+				SetWindowText();
 
 				Global.Rewinder.ResetRewindBuffer();
 
