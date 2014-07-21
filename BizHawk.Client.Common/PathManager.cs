@@ -219,7 +219,7 @@ namespace BizHawk.Client.Common
 				return Environment.SpecialFolder.Recent.ToString();
 			}
 
-			var path = Global.Config.PathEntries[sysID, "ROM"] ?? Global.Config.PathEntries[sysID, "Base"];
+			var path = Global.Config.PathEntries[sysID, "ROM"] ?? Global.Config.PathEntries["Global", "ROM"] ?? Global.Config.PathEntries[sysID, "Base"];
 
 			return MakeAbsolutePath(path.Path, sysID);
 		}
