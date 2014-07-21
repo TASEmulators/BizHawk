@@ -274,6 +274,8 @@
 			this.SaveButton = new System.Windows.Forms.Button();
 			this.CancelBT = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.JaboTab = new System.Windows.Forms.TabPage();
+			this.JaboPropertyGrid = new System.Windows.Forms.PropertyGrid();
 			this.N64plugintabcontrol.SuspendLayout();
 			this.N64vpluginglobaltab.SuspendLayout();
 			this.RiceTabPage.SuspendLayout();
@@ -294,6 +296,7 @@
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
 			this.tabPage3.SuspendLayout();
+			this.JaboTab.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// N64plugintabcontrol
@@ -305,6 +308,7 @@
 			this.N64plugintabcontrol.Controls.Add(this.RiceTabPage);
 			this.N64plugintabcontrol.Controls.Add(this.Glide64TabPage);
 			this.N64plugintabcontrol.Controls.Add(this.Glide64mk2TabPage);
+			this.N64plugintabcontrol.Controls.Add(this.JaboTab);
 			this.N64plugintabcontrol.Location = new System.Drawing.Point(-2, -2);
 			this.N64plugintabcontrol.Name = "N64plugintabcontrol";
 			this.N64plugintabcontrol.SelectedIndex = 0;
@@ -3239,6 +3243,26 @@
 			this.toolTip1.ReshowDelay = 100;
 			this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 			// 
+			// JaboTab
+			// 
+			this.JaboTab.Controls.Add(this.JaboPropertyGrid);
+			this.JaboTab.Location = new System.Drawing.Point(4, 22);
+			this.JaboTab.Name = "JaboTab";
+			this.JaboTab.Size = new System.Drawing.Size(572, 343);
+			this.JaboTab.TabIndex = 7;
+			this.JaboTab.Text = "Jabo";
+			this.JaboTab.UseVisualStyleBackColor = true;
+			// 
+			// JaboPropertyGrid
+			// 
+			this.JaboPropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.JaboPropertyGrid.Location = new System.Drawing.Point(0, 0);
+			this.JaboPropertyGrid.Name = "JaboPropertyGrid";
+			this.JaboPropertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
+			this.JaboPropertyGrid.Size = new System.Drawing.Size(572, 343);
+			this.JaboPropertyGrid.TabIndex = 4;
+			this.JaboPropertyGrid.ToolbarVisible = false;
+			// 
 			// N64VideoPluginconfig
 			// 
 			this.AcceptButton = this.SaveButton;
@@ -3287,6 +3311,7 @@
 			this.tabPage2.PerformLayout();
 			this.tabPage3.ResumeLayout(false);
 			this.tabPage3.PerformLayout();
+			this.JaboTab.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -3537,5 +3562,7 @@
 		private System.Windows.Forms.ComboBox CoreTypeDropdown;
 		private System.Windows.Forms.Label label49;
 		private System.Windows.Forms.ComboBox RspTypeDropdown;
+		private System.Windows.Forms.TabPage JaboTab;
+		private System.Windows.Forms.PropertyGrid JaboPropertyGrid;
 	}
 }
