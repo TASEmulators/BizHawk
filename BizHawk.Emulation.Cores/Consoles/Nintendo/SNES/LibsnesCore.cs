@@ -327,7 +327,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			else return api.CMD_load_cartridge_super_game_boy(CurrLoadParams.rom_xml, CurrLoadParams.rom_data, CurrLoadParams.rom_size, CurrLoadParams.dmg_xml, CurrLoadParams.dmg_data, CurrLoadParams.dmg_size);
 		}
 
-		public void Load(GameInfo game, byte[] romData, bool DeterministicEmulation, byte[] xmlData)
+		public void Load(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData)
 		{
 			byte[] sgbRomData = null;
 			if (game["SGB"])
@@ -433,7 +433,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			SetupMemoryDomains(romData,sgbRomData);
 
-			this.DeterministicEmulation = DeterministicEmulation;
+			DeterministicEmulation = deterministicEmulation;
 			if (DeterministicEmulation) // save frame-0 savestate now
 			{
 				MemoryStream ms = new MemoryStream();
@@ -719,10 +719,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public string BoardName { get; private set; }
 
+		// adelikat: Nasty hack to force new business logic.  Compatibility (and Accuracy when fully supported) will ALWAYS be in deterministic mode,
+		// a consequence is a permanent performance hit to the compatibility core
+		// Perormance will NEVER be in deterministic mode (and the client side logic will prohibit movie recording on it)
 		public bool DeterministicEmulation
 		{
-			get;
-			private set;
+			get { return SyncSettings.Profile == "Compatibility" || SyncSettings.Profile == "Accuracy"; }
+			private set {  /* Do nothing */ }
 		}
 
 
@@ -955,7 +958,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			if (profile != SyncSettings.Profile)
 			{
-				throw new InvalidOperationException("You've attempted to load a savestate made using a different SNES profile than your current configuration. We COULD automatically switch for you, but we havent done that yet. This error is to make sure you know that this isnt going to work right now.");
+				throw new InvalidOperationException(string.Format("You've attempted to load a savestate made using a different SNES profile ({0}) than your current configuration ({1}). We COULD automatically switch for you, but we havent done that yet. This error is to make sure you know that this isnt going to work right now.", profile, SyncSettings.Profile));
 			}
 		}
 

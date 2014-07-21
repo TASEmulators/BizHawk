@@ -88,6 +88,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveSettings()
 		{
+			if (!VersionInfo.DeveloperBuild)
+			{
+				PluginComboBox.Items.Remove("Jabo 1.6.1");
+			}
+
 			var s = GetSettings();
 			var ss = GetSyncSettings();
 
@@ -101,7 +106,13 @@ namespace BizHawk.Client.EmuHawk
 				case "Rice": ss.VidPlugin = PLUGINTYPE.RICE; break;
 				case "Glide64": ss.VidPlugin = PLUGINTYPE.GLIDE; break;
 				case "Glide64mk2": ss.VidPlugin = PLUGINTYPE.GLIDE64MK2; break;
-				case "Jabo 1.6.1": ss.VidPlugin = PLUGINTYPE.JABO; break;
+				case "Jabo 1.6.1":
+					if (VersionInfo.DeveloperBuild)
+					{
+						PluginComboBox.Text = "Jabo 1.6.1";
+					}
+
+					break;
 			}
 
 			//Rice
