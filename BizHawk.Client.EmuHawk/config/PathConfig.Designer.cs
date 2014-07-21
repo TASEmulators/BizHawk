@@ -35,9 +35,6 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.SpecialCommandsBtn = new System.Windows.Forms.Button();
 			this.RecentForROMs = new System.Windows.Forms.CheckBox();
-			this.BasePathBox = new System.Windows.Forms.TextBox();
-			this.BrowseBase = new System.Windows.Forms.Button();
-			this.BaseDescription = new System.Windows.Forms.Label();
 			this.DefaultsBtn = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
@@ -66,14 +63,14 @@
 			// 
 			// PathTabControl
 			// 
-			this.PathTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-			| System.Windows.Forms.AnchorStyles.Left)
-			| System.Windows.Forms.AnchorStyles.Right)));
-			this.PathTabControl.Location = new System.Drawing.Point(12, 84);
+			this.PathTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.PathTabControl.Location = new System.Drawing.Point(12, 41);
 			this.PathTabControl.Multiline = true;
 			this.PathTabControl.Name = "PathTabControl";
 			this.PathTabControl.SelectedIndex = 0;
-			this.PathTabControl.Size = new System.Drawing.Size(615, 321);
+			this.PathTabControl.Size = new System.Drawing.Size(615, 364);
 			this.PathTabControl.TabIndex = 2;
 			// 
 			// SaveBtn
@@ -91,7 +88,7 @@
 			// 
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(527, 52);
+			this.label1.Location = new System.Drawing.Point(527, 19);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(97, 13);
 			this.label1.TabIndex = 210;
@@ -101,7 +98,7 @@
 			// 
 			this.SpecialCommandsBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SpecialCommandsBtn.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Help;
-			this.SpecialCommandsBtn.Location = new System.Drawing.Point(496, 47);
+			this.SpecialCommandsBtn.Location = new System.Drawing.Point(496, 14);
 			this.SpecialCommandsBtn.Name = "SpecialCommandsBtn";
 			this.SpecialCommandsBtn.Size = new System.Drawing.Size(26, 23);
 			this.SpecialCommandsBtn.TabIndex = 209;
@@ -111,43 +108,13 @@
 			// RecentForROMs
 			// 
 			this.RecentForROMs.AutoSize = true;
-			this.RecentForROMs.Location = new System.Drawing.Point(12, 51);
+			this.RecentForROMs.Location = new System.Drawing.Point(12, 18);
 			this.RecentForROMs.Name = "RecentForROMs";
 			this.RecentForROMs.Size = new System.Drawing.Size(184, 17);
 			this.RecentForROMs.TabIndex = 207;
 			this.RecentForROMs.Text = "Always use recent path for ROMs";
 			this.RecentForROMs.UseVisualStyleBackColor = true;
 			this.RecentForROMs.CheckedChanged += new System.EventHandler(this.RecentForROMs_CheckedChanged);
-			// 
-			// BasePathBox
-			// 
-			this.BasePathBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-			| System.Windows.Forms.AnchorStyles.Right)));
-			this.BasePathBox.Location = new System.Drawing.Point(12, 15);
-			this.BasePathBox.Name = "BasePathBox";
-			this.BasePathBox.Size = new System.Drawing.Size(510, 20);
-			this.BasePathBox.TabIndex = 205;
-			// 
-			// BrowseBase
-			// 
-			this.BrowseBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.BrowseBase.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
-			this.BrowseBase.Location = new System.Drawing.Point(530, 14);
-			this.BrowseBase.Name = "BrowseBase";
-			this.BrowseBase.Size = new System.Drawing.Size(26, 23);
-			this.BrowseBase.TabIndex = 206;
-			this.BrowseBase.UseVisualStyleBackColor = true;
-			this.BrowseBase.Click += new System.EventHandler(this.BrowseBase_Click);
-			// 
-			// BaseDescription
-			// 
-			this.BaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.BaseDescription.AutoSize = true;
-			this.BaseDescription.Location = new System.Drawing.Point(563, 19);
-			this.BaseDescription.Name = "BaseDescription";
-			this.BaseDescription.Size = new System.Drawing.Size(64, 13);
-			this.BaseDescription.TabIndex = 208;
-			this.BaseDescription.Text = "Global Base";
 			// 
 			// DefaultsBtn
 			// 
@@ -171,9 +138,6 @@
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.SpecialCommandsBtn);
 			this.Controls.Add(this.RecentForROMs);
-			this.Controls.Add(this.BasePathBox);
-			this.Controls.Add(this.BrowseBase);
-			this.Controls.Add(this.BaseDescription);
 			this.Controls.Add(this.SaveBtn);
 			this.Controls.Add(this.PathTabControl);
 			this.Controls.Add(this.Cancel);
@@ -198,9 +162,6 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button SpecialCommandsBtn;
 		private System.Windows.Forms.CheckBox RecentForROMs;
-		private System.Windows.Forms.TextBox BasePathBox;
-		private System.Windows.Forms.Button BrowseBase;
-		private System.Windows.Forms.Label BaseDescription;
 		private System.Windows.Forms.Button DefaultsBtn;
 	}
 }

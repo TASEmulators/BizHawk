@@ -146,7 +146,7 @@ namespace BizHawk.Client.Common
 				return new List<PathEntry>
 				{
 					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Base", Path = ".", Ordinal = 1 },
-					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Base ROM", Path = ".", Ordinal = 2 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "ROM", Path = ".", Ordinal = 2 },
 					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Firmware", Path = Path.Combine(".", "Firmware"), Ordinal = 3 },
 					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Movies", Path = Path.Combine(".", "Movies"), Ordinal = 4 },
 					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Movie backups", Path = Path.Combine(".", "Movies", "backup"), Ordinal = 5 },
