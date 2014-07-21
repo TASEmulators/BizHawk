@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 			new AutoResetEvent(false);
 			Icon = Properties.Resources.logo;
 			InitializeComponent();
-			Global.Game = GameInfo.GetNullGame();
+			Global.Game = GameInfo.NullInstance;
 			if (Global.Config.ShowLogWindow)
 			{
 				LogConsole.ShowConsole();
@@ -312,11 +312,11 @@ namespace BizHawk.Client.EmuHawk
 				ToggleFullscreen();
 			}
 
-			if (cmdLoadState != null && Global.Game != null)
+			if (cmdLoadState != null && !Global.Game.IsNullInstance)
 			{
 				LoadQuickSave("QuickSave" + cmdLoadState);
 			}
-			else if (Global.Config.AutoLoadLastSaveSlot && Global.Game != null)
+			else if (Global.Config.AutoLoadLastSaveSlot && !Global.Game.IsNullInstance)
 			{
 				LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
 			}
@@ -1406,7 +1406,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var system = string.Empty;
 
-			if (Global.Game != null)
+			if (!Global.Game.IsNullInstance)
 			{
 				system = Global.Game.System;
 			}
@@ -3294,7 +3294,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.CoreComm = CreateCoreComm();
 				CoreFileProvider.SyncCoreCommInputSignals();
 				Global.Emulator = new NullEmulator(Global.CoreComm);
-				Global.Game = GameInfo.GetNullGame();
+				Global.Game = GameInfo.NullInstance;
 
 				GlobalWin.Tools.Restart();
 
