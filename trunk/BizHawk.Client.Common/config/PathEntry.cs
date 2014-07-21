@@ -134,7 +134,7 @@ namespace BizHawk.Client.Common
 		public string LogPathFragment { get { return Global.Config.PathEntries["Global", "Debug Logs"].Path; } }
 		public string FirmwaresPathFragment { get { return Global.Config.PathEntries["Global", "Firmware"].Path; } }
 		public string AvPathFragment { get { return Global.Config.PathEntries["Global", "A/V Dumps"].Path; } }
-		
+		public string GlobalRomFragment { get { return Global.Config.PathEntries["Global", "ROM"].Path; } }
 
 		//this one is special
 		public string GlobalBaseFragment { get { return Global.Config.PathEntries["Global", "Base"].Path; } }
