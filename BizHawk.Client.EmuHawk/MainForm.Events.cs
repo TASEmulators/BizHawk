@@ -1750,19 +1750,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void newPluginConfigToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (new NewN64PluginSettings().ShowDialog() == DialogResult.OK)
-			{
-				GlobalWin.MainForm.FlagNeedsReboot();
-				GlobalWin.OSD.AddMessage("Plugin settings saved but a core reboot is required");
-			}
-			else
-			{
-				GlobalWin.OSD.AddMessage("Plugin settings aborted");
-			}
-		}
-
 		private void N64ControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (new N64ControllersSetup().ShowDialog() == DialogResult.OK)

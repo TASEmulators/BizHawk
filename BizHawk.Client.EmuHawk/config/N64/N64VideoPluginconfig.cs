@@ -14,6 +14,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class N64VideoPluginconfig : Form
 	{
+		N64Settings s;
+		N64SyncSettings ss;
+
 		public N64VideoPluginconfig()
 		{
 			InitializeComponent();
@@ -86,14 +89,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveSettings()
 		{
-			var s = GetSettings();
-			var ss = GetSyncSettings();
-
-			//Global
+			// Global
 			var video_settings = VideoResolutionComboBox.SelectedItem.ToString();
 			var strArr = video_settings.Split('x');
-			s.VideoSizeX = Int32.Parse(strArr[0].Trim());
-			s.VideoSizeY = Int32.Parse(strArr[1].Trim());
+			s.VideoSizeX = int.Parse(strArr[0].Trim());
+			s.VideoSizeY = int.Parse(strArr[1].Trim());
 			switch (PluginComboBox.Text)
 			{
 				case "Rice": ss.VideoPlugin = PluginType.Rice; break;
@@ -102,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 				case "Jabo 1.6.1": ss.VideoPlugin = PluginType.Jabo; break;
 			}
 
-			//Rice
+			// Rice
 			ss.RicePlugin.NormalAlphaBlender = RiceNormalAlphaBlender_CB.Checked;
 			ss.RicePlugin.FastTextureLoading = RiceFastTextureLoading_CB.Checked;
 			ss.RicePlugin.AccurateTextureMapping = RiceAccurateTextureMapping_CB.Checked;
@@ -335,14 +335,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void N64VideoPluginconfig_Load(object sender, EventArgs e)
 		{
-			var s = GetSettings();
-			var ss = GetSyncSettings();
+			s = GetSettings();
+			ss = GetSyncSettings();
 
 			CoreTypeDropdown.PopulateFromEnum<N64SyncSettings.CoreType>(ss.Core);
 			RspTypeDropdown.PopulateFromEnum<N64SyncSettings.RspType>(ss.Rsp);
 
-			//Load Variables
-			//Global
+			JaboPropertyGrid.SelectedObject = ss.JaboPlugin;
+
 			var video_setting = s.VideoSizeX
 						+ " x "
 						+ s.VideoSizeY;
