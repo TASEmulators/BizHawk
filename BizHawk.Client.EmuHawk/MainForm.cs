@@ -447,14 +447,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			UpdateStatusSlots();
+			SetMainformMovieInfo();
 
 			//TODO POOP
 			GlobalWin.PresentationPanel.Control.Paint += (o, e) =>
 			{
 				GlobalWin.DisplayManager.NeedsToPaint = true;
 			};
-
-			SetMainformMovieInfo();
 		}
 
 		public void ProgramRunLoop()
