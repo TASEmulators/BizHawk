@@ -955,7 +955,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			if (profile != SyncSettings.Profile)
 			{
-				throw new InvalidOperationException("You've attempted to load a savestate made using a different SNES profile than your current configuration. We COULD automatically switch for you, but we havent done that yet. This error is to make sure you know that this isnt going to work right now.");
+				throw new InvalidOperationException(string.Format("You've attempted to load a savestate made using a different SNES profile ({0}) than your current configuration ({1}). We COULD automatically switch for you, but we havent done that yet. This error is to make sure you know that this isnt going to work right now.", profile, SyncSettings.Profile));
 			}
 		}
 
