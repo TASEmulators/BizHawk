@@ -335,6 +335,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void N64VideoPluginconfig_Load(object sender, EventArgs e)
 		{
+			if (!VersionInfo.DeveloperBuild)
+			{
+				PluginComboBox.Items.Remove("Jabo 1.6.1");
+			}
+
 			s = GetSettings();
 			ss = GetSyncSettings();
 
@@ -354,10 +359,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 			switch (ss.VideoPlugin)
 			{
-				case PluginType.GlideMk2: PluginComboBox.Text = "Glide64mk2"; break;
-				case PluginType.Glide: PluginComboBox.Text = "Glide64"; break;
-				case PluginType.Rice: PluginComboBox.Text = "Rice"; break;
-				case PluginType.Jabo: PluginComboBox.Text = "Jabo 1.6.1"; break;
+				case PluginType.GlideMk2:
+					PluginComboBox.Text = "Glide64mk2";
+					break;
+				case PluginType.Glide:
+					PluginComboBox.Text = "Glide64";
+					break;
+				case PluginType.Rice:
+					PluginComboBox.Text = "Rice";
+					break;
+				case PluginType.Jabo:
+					if (VersionInfo.DeveloperBuild)
+					{
+						PluginComboBox.Text = "Jabo 1.6.1";
+					}
+
+					break;
 			}
 
 			//Rice
