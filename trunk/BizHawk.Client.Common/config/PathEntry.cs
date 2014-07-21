@@ -135,6 +135,7 @@ namespace BizHawk.Client.Common
 		public string FirmwaresPathFragment { get { return Global.Config.PathEntries["Global", "Firmware"].Path; } }
 		public string AvPathFragment { get { return Global.Config.PathEntries["Global", "A/V Dumps"].Path; } }
 		
+
 		//this one is special
 		public string GlobalBaseFragment { get { return Global.Config.PathEntries["Global", "Base"].Path; } }
 
@@ -144,15 +145,15 @@ namespace BizHawk.Client.Common
 			{
 				return new List<PathEntry>
 				{
-					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Movies", Path = Path.Combine(".", "Movies"), Ordinal = 0 },
-					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Movie backups", Path = Path.Combine(".", "Movies", "backup"), Ordinal = 1 },
-					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Lua", Path = Path.Combine(".", "Lua"), Ordinal = 2 },
-					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Watch (.wch)", Path = ".", Ordinal = 3 },
-					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "A/V Dumps", Path = ".", Ordinal = 4 },
-					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Debug Logs", Path = ".", Ordinal = 5 },
-					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Firmware", Path = Path.Combine(".", "Firmware"), Ordinal = 6 },
-					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Base ROM", Path = ".", Ordinal = 6 },
-					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Base", Path = ".", Ordinal = 6 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Base", Path = ".", Ordinal = 1 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Base ROM", Path = ".", Ordinal = 2 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Firmware", Path = Path.Combine(".", "Firmware"), Ordinal = 3 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Movies", Path = Path.Combine(".", "Movies"), Ordinal = 4 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Movie backups", Path = Path.Combine(".", "Movies", "backup"), Ordinal = 5 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Lua", Path = Path.Combine(".", "Lua"), Ordinal = 6 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Watch (.wch)", Path = ".", Ordinal = 7 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "A/V Dumps", Path = ".", Ordinal = 8 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Debug Logs", Path = ".", Ordinal = 9 },
 
 					new PathEntry { System = "INTV", SystemDisplayName="Intellivision", Type = "Base", Path = Path.Combine(".", "Intellivision"), Ordinal = 0 },
 					new PathEntry { System = "INTV", SystemDisplayName="Intellivision", Type = "ROM", Path = ".", Ordinal = 1 },

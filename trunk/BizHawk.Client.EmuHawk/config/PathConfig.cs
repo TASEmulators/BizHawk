@@ -143,6 +143,30 @@ namespace BizHawk.Client.EmuHawk
 					if (t.Name.Contains("Global") && path.Type == "Firmware")
 					{
 						infoPadding = 26;
+
+						var firmwareButton = new Button
+						{
+							Name = "Global",
+							Text = String.Empty,
+							Image = Properties.Resources.Help,
+							Location = new Point(115, _y - 1),
+							Width = 26,
+							Anchor = AnchorStyles.Top | AnchorStyles.Right
+						};
+
+						firmwareButton.Click += delegate
+						{
+							if (Owner is FirmwaresConfig)
+							{
+								MessageBox.Show("C-C-C-Combo Breaker!", "Nice try, but");
+								return;
+							}
+
+							var f = new FirmwaresConfig { TargetSystem = "Global" };
+							f.ShowDialog(this);
+						};
+
+						t.Controls.Add(firmwareButton);
 					}
 
 					var label = new Label
@@ -165,33 +189,6 @@ namespace BizHawk.Client.EmuHawk
 				if (systemDisplayName == "PCE") // Hack
 				{
 					sys = "PCECD";
-				}
-
-				if (t.Name.Contains("Global"))
-				{
-					var firmwareButton = new Button
-					{
-						Name = sys,
-						Text = String.Empty,
-						Image = Properties.Resources.Help,
-						Location = new Point(115, 253),
-						Width = 26,
-						Anchor = AnchorStyles.Top | AnchorStyles.Right
-					};
-
-					firmwareButton.Click += delegate
-					{
-						if (Owner is FirmwaresConfig)
-						{
-							MessageBox.Show("C-C-C-Combo Breaker!", "Nice try, but");
-							return;
-						}
-
-						var f = new FirmwaresConfig { TargetSystem = sys };
-						f.ShowDialog(this);
-					};
-
-					t.Controls.Add(firmwareButton);
 				}
 
 				tabPages.Add(t);
