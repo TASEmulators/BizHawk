@@ -45,17 +45,25 @@ namespace BizHawk.Emulation.Common
 			return ret;
 		}
 
-		public static GameInfo GetNullGame()
+		public static GameInfo NullInstance
 		{
-			return new GameInfo
+			get
 			{
-				Name = "Null",
-				System = "NULL",
-				Hash = "",
-				Region = "",
-				Status = RomStatus.GoodDump,
-				NotInDatabase = false
-			};
+				return new GameInfo
+				{
+					Name = "Null",
+					System = "NULL",
+					Hash = "",
+					Region = "",
+					Status = RomStatus.GoodDump,
+					NotInDatabase = false
+				};
+			}
+		}
+
+		public bool IsNullInstance
+		{
+			get { return System == "NULL"; }
 		}
 
 		internal GameInfo(CompactGameInfo cgi)
