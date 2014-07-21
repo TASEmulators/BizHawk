@@ -16,22 +16,22 @@ namespace BizHawk.Client.EmuHawk
 		private bool _startMarkerDrag;
 		private bool _startFrameDrag;
 
-		private readonly Color CurrentFrame_FrameCol = Color.FromArgb(0xCFEDFC);
-		private readonly Color CurrentFrame_InputLog = Color.FromArgb(0xB5E7F7);
+		public static Color CurrentFrame_FrameCol = Color.FromArgb(0xCFEDFC);
+		public static Color CurrentFrame_InputLog = Color.FromArgb(0xB5E7F7);
 
-		private readonly Color GreenZone_FrameCol = Color.FromArgb(0xDDFFDD);
-		private readonly Color GreenZone_InputLog = Color.FromArgb(0xC4F7C8);
+		public static Color GreenZone_FrameCol = Color.FromArgb(0xDDFFDD);
+		public static Color GreenZone_InputLog = Color.FromArgb(0xC4F7C8);
 
-		private readonly Color LagZone_FrameCol = Color.FromArgb(0xFFDCDD);
-		private readonly Color LagZone_InputLog = Color.FromArgb(0xF0D0D2);
+		public static Color LagZone_FrameCol = Color.FromArgb(0xFFDCDD);
+		public static Color LagZone_InputLog = Color.FromArgb(0xF0D0D2);
 
-		private readonly Color NoState_GreenZone_FrameCol = Color.FromArgb(0xF9FFF9);
-		private readonly Color NoState_GreenZone_InputLog = Color.FromArgb(0xE0FBE0);
+		public static Color NoState_GreenZone_FrameCol = Color.FromArgb(0xF9FFF9);
+		public static Color NoState_GreenZone_InputLog = Color.FromArgb(0xE0FBE0);
 
-		private readonly Color NoState_LagZone_FrameCol = Color.FromArgb(0xFFE9E9);
-		private readonly Color NoState_LagZone_InputLog = Color.FromArgb(0xF0D0D2);
+		public static Color NoState_LagZone_FrameCol = Color.FromArgb(0xFFE9E9);
+		public static Color NoState_LagZone_InputLog = Color.FromArgb(0xF0D0D2);
 
-		private readonly Color Marker_FrameCol = Color.FromArgb(0xF7FFC9);
+		public static Color Marker_FrameCol = Color.FromArgb(0xF7FFC9);
 
 		#region Query callbacks
 

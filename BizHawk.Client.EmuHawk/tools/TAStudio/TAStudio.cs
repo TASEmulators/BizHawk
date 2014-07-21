@@ -67,6 +67,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public TasMovie CurrentMovie
+		{
+			get { return _tas; }
+		}
+
 		public TAStudio()
 		{
 			InitializeComponent();
