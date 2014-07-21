@@ -52,7 +52,6 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadSettings()
 		{
 			RecentForROMs.Checked = Global.Config.UseRecentForROMs;
-			BasePathBox.Text = Global.Config.PathEntries.GlobalBaseFragment;
 
 			DoTabs(Global.Config.PathEntries.ToList());
 			SetDefaultFocusedTab();
@@ -221,7 +220,6 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveSettings()
 		{
 			Global.Config.UseRecentForROMs = RecentForROMs.Checked;
-			Global.Config.PathEntries["Global", "Base"].Path = BasePathBox.Text;
 
 			foreach (var t in AllPathBoxes)
 			{
@@ -282,20 +280,6 @@ namespace BizHawk.Client.EmuHawk
 		private void RecentForROMs_CheckedChanged(object sender, EventArgs e)
 		{
 			DoRomToggle();
-		}
-
-		private void BrowseBase_Click(object sender, EventArgs e)
-		{
-			var f = new FolderBrowserDialog
-			{
-				Description = "Set the directory for the base global path",
-				SelectedPath = PathManager.MakeAbsolutePath(BasePathBox.Text, null)
-			};
-			var result = f.ShowDialog();
-			if (result == DialogResult.OK)
-			{
-				BasePathBox.Text = f.SelectedPath;
-			}
 		}
 
 		private void SpecialCommandsBtn_Click(object sender, EventArgs e)
