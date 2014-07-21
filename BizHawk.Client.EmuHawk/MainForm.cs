@@ -3187,6 +3187,10 @@ namespace BizHawk.Client.EmuHawk
 
 				RewireSound();
 				ToolHelpers.UpdateCheatRelatedTools(null, null);
+				if (Global.Config.AutoLoadLastSaveSlot && _stateSlots.HasSlot(Global.Config.SaveSlot))
+				{
+					LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
+				}
 				return true;
 			}
 			else
