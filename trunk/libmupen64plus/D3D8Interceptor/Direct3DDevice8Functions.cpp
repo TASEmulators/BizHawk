@@ -190,7 +190,7 @@ extern "C"
 
 			rendering_callback(0);
 
-			hr = m_pDevice->Present(pSourceRect,pDestRect,hDestWindowOverride,pDirtyRegion);
+			//hr = m_pDevice->Present(pSourceRect,pDestRect,hDestWindowOverride,pDirtyRegion);
 
 			LOG(hr);
 			return hr;
