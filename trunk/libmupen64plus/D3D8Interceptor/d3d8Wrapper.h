@@ -6,8 +6,8 @@
 
 #pragma comment(linker, "/EXPORT:Direct3DCreate8=_Direct3DCreate8@4")
 
-//#define LOG(x) { std::ofstream myfile; myfile.open ("d3d8_wrapper_log.txt", std::ios::app); myfile << x << "\n"; myfile.close(); }
-#define LOG(x) 
+#define LOG(x) { std::ofstream myfile; myfile.open ("d3d8_wrapper_log.txt", std::ios::app); myfile << x << "\n"; myfile.close(); }
+//#define LOG(x) 
 
 #define TESTDLL_API __declspec(dllexport) 
 
@@ -260,10 +260,6 @@ extern "C"
 			
 			IDirect3DResource8(D3D8Base::IDirect3DResource8*);
 
-			IDirect3DResource8(D3D8Wrapper::IDirect3DResource8*);
-
-			D3D8Base::IDirect3DResource8* getReal();
-
 			STDMETHOD(GetDevice)(THIS_ D3D8Wrapper::IDirect3DDevice8** ppDevice);
 			STDMETHOD(SetPrivateData)(THIS_ REFGUID refguid,CONST void* pData,DWORD SizeOfData,DWORD Flags);
 			STDMETHOD(GetPrivateData)(THIS_ REFGUID refguid,void* pData,DWORD* pSizeOfData);
@@ -285,9 +281,7 @@ extern "C"
 
 			IDirect3DBaseTexture8(D3D8Base::IDirect3DBaseTexture8*);
 
-			IDirect3DBaseTexture8(D3D8Wrapper::IDirect3DBaseTexture8*);
-
-			D3D8Base::IDirect3DBaseTexture8* getReal2();
+			inline D3D8Base::IDirect3DBaseTexture8* GetBaseTexture() { return m_pD3D; }
 
 			/*
 			STDMETHOD(GetDevice)(THIS_ IDirect3DDevice8** ppDevice) PURE;
@@ -315,9 +309,6 @@ extern "C"
 			IDirect3DTexture8(D3D8Base::IDirect3DTexture8*);
 
 			static D3D8Wrapper::IDirect3DTexture8* GetTexture(D3D8Base::IDirect3DTexture8*);
-
-			//D3D8Base::IDirect3DTexture8* getReal2();
-
 
 			/*
 			STDMETHOD(GetDevice)(THIS_ IDirect3DDevice8** ppDevice) PURE;
@@ -413,7 +404,7 @@ extern "C"
 
 			IDirect3DVertexBuffer8(D3D8Base::IDirect3DVertexBuffer8*);
 
-			D3D8Base::IDirect3DVertexBuffer8* getReal2();
+			inline D3D8Base::IDirect3DVertexBuffer8* GetVertexBuffer() { return m_pD3D; }
 
 			/*
 			STDMETHOD(GetDevice)(THIS_ IDirect3DDevice8** ppDevice) PURE;
@@ -441,7 +432,7 @@ extern "C"
 
 			IDirect3DIndexBuffer8(D3D8Base::IDirect3DIndexBuffer8*);
 
-			D3D8Base::IDirect3DIndexBuffer8* getReal2();
+			inline D3D8Base::IDirect3DIndexBuffer8* GetIndexBuffer() { return m_pD3D; }
 
 			/*
 			STDMETHOD(GetDevice)(THIS_ IDirect3DDevice8** ppDevice) PURE;
@@ -470,12 +461,10 @@ extern "C"
 
 			IDirect3DSurface8(D3D8Base::IDirect3DSurface8*);
 			static IDirect3DSurface8* GetSurface(D3D8Base::IDirect3DSurface8* pSurface);
-			inline D3D8Base::IDirect3DSurface8* GetSurface8() { return m_pD3D; }
+			inline D3D8Base::IDirect3DSurface8* GetSurface() { return m_pD3D; }
 
 			/*** IDirect3DUnknown methods ***/
 			STDMETHOD_(ULONG, Release)(THIS);
-
-			D3D8Base::IDirect3DSurface8* getReal();
 
 			STDMETHOD(GetDevice)(THIS_ D3D8Wrapper::IDirect3DDevice8** ppDevice);
 			STDMETHOD(SetPrivateData)(THIS_ REFGUID refguid,CONST void* pData,DWORD SizeOfData,DWORD Flags);

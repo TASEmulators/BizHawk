@@ -36,7 +36,7 @@ extern "C"
 			ULONG ulRef = --m_ulRef;
 			if(ulRef == 0)
 			{
-				m_List.DeleteMember(GetSurface8());
+				m_List.DeleteMember(GetSurface());
 				delete this;
 				return 0;
 			}

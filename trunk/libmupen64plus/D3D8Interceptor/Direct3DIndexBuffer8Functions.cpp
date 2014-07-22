@@ -10,12 +10,6 @@ extern "C"
 			m_pD3D = pTexture;
 		}
 
-		D3D8Base::IDirect3DIndexBuffer8* D3D8Wrapper::IDirect3DIndexBuffer8::getReal2()
-		{
-			LOG("IDirect3DIndexBuffer8::getReal2");
-			return m_pD3D;
-		}
-
 		/*STDMETHOD(Lock)(THIS_ UINT OffsetToLock,UINT SizeToLock,BYTE** ppbData,DWORD Flags) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DIndexBuffer8::Lock(UINT OffsetToLock,UINT SizeToLock,BYTE** ppbData,DWORD Flags)
 		{

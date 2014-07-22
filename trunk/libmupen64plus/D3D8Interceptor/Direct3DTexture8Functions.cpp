@@ -50,7 +50,7 @@ extern "C"
 			*ppSurfaceLevel = f;
 
 			LOG(f);
-			LOG(f->GetSurface8());
+			LOG(f->GetSurface());
 			LOG(hr);
 
 			return hr;
