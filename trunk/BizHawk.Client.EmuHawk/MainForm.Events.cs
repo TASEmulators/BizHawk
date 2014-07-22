@@ -575,6 +575,18 @@ namespace BizHawk.Client.EmuHawk
 			TakeScreenshotToClipboard();
 		}
 
+		private void ScreenshotClientClipboardMenuItem_Click(object sender, EventArgs e)
+		{
+			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider, Global.Config.Screenshot_CaptureOSD))
+			{
+				bb.Normalize(true);
+				using (var img = bb.ToSysdrawingBitmap())
+					Clipboard.SetImage(img);
+			}
+
+			GlobalWin.OSD.AddMessage("Screenshot (client) saved to clipboard.");
+		}
+
 		private void ScreenshotCaptureOSDMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.Screenshot_CaptureOSD ^= true;

@@ -816,7 +816,7 @@ namespace BizHawk.Client.EmuHawk
 					Clipboard.SetImage(img);
 			}
 
-			GlobalWin.OSD.AddMessage("Screenshot saved to clipboard.");
+			GlobalWin.OSD.AddMessage("Screenshot (raw) saved to clipboard.");
 		}
 
 		public void TakeScreenshot()
@@ -1600,44 +1600,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static unsafe BitmapBuffer MakeScreenshotImage()
 		{
-			//var video = Global.Emulator.VideoProvider;
-			//var image = new Bitmap(video.BufferWidth, video.BufferHeight, PixelFormat.Format32bppArgb);
 			return new BitmapBuffer(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight, Global.Emulator.VideoProvider.GetVideoBuffer());
-
-			//this is all rotten.
-			//among other things, cores are required to set 0xFF000000 themselves
-			// TODO - replace with BitmapBuffer
-			//var framebuf = video.GetVideoBuffer();
-			//var bmpdata = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-			//int* ptr = (int*)bmpdata.Scan0.ToPointer();
-			//int stride = bmpdata.Stride / 4;
-			//for (int y = 0; y < video.BufferHeight; y++)
-			//{
-			//  for (int x = 0; x < video.BufferWidth; x++)
-			//  {
-			//    int col = framebuf[(y * video.BufferWidth) + x];
-
-			//    if (Global.Emulator is TI83)
-			//    {
-			//      if (col == 0)
-			//      {
-			//        col = Color.Black.ToArgb();
-			//      }
-			//      else
-			//      {
-			//        col = Color.White.ToArgb();
-			//      }
-			//    }
-
-			//    // make opaque
-			//    col |= unchecked((int)0xff000000);
-
-			//    ptr[(y * stride) + x] = col;
-			//  }
-			//}
-
-			//image.UnlockBits(bmpdata);
-			//return image;
 		}
 
 		private void SaveStateAs()
@@ -2044,7 +2007,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private BitmapBuffer CaptureOSD()
 		{
-			var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider);
+			var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider,true);
 			bb.Normalize(true);
 			return bb;
 		}
@@ -3385,5 +3348,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_master = null;
 		}
+
+	
 	}
 }
