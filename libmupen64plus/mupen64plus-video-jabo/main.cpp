@@ -75,7 +75,7 @@ DWORD old_initflags;
 
 void setup_jabo_functions()
 {
-	JaboDLL = LoadLibrary("Jabotard_Direct3D8.dll");
+	JaboDLL = LoadLibrary("Jabo_Direct3D8_patched.dll");
 
 	if (JaboDLL != NULL)
 	{
