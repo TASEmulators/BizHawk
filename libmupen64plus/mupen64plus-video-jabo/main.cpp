@@ -17,7 +17,8 @@
 #include "typedefs.h"
 #include "Config.h"	
 
-#define LOG(x) { std::ofstream myfile; myfile.open ("jabo_wrapper_log.txt", std::ios::app); myfile << x << "\n"; myfile.close(); }
+//#define LOG(x) { std::ofstream myfile; myfile.open ("jabo_wrapper_log.txt", std::ios::app); myfile << x << "\n"; myfile.close(); }
+#define LOG(x)
 
 namespace OldAPI
 {
@@ -576,7 +577,7 @@ DWORD WINAPI ThreadProc( LPVOID lpParam )
 	char *pString = (char *)(lpParam);
 	RegisterDLLWindowClass("InjectedDLLWindowClass");
 	hWnd_jabo = CreateWindowEx (0, "InjectedDLLWindowClass", pString, WS_OVERLAPPEDWINDOW, 300, 300, 400, 300, NULL, NULL,inj_hModule, NULL );
-	ShowWindow (hWnd_jabo, SW_SHOWNORMAL);
+	ShowWindow (hWnd_jabo, SW_HIDE);
     while (GetMessage (&messages, NULL, 0, 0))
     {
 		TranslateMessage(&messages);
