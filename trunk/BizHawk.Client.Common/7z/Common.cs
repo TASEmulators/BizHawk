@@ -395,7 +395,6 @@ Dispatcher == null
         /// <summary>
         /// Gets the current library features.
         /// </summary>
-        [CLSCompliant(false)]
         public static LibraryFeature CurrentLibraryFeatures
         {
             get
@@ -581,7 +580,6 @@ Dispatcher == null
         /// <summary>
         /// Gets or sets index of the file in the archive file table.
         /// </summary>
-        [CLSCompliant(false)]
         public int Index { get; set; }
 
         /// <summary>
@@ -607,19 +605,16 @@ Dispatcher == null
         /// <summary>
         /// Gets or sets size of the file (unpacked).
         /// </summary>
-        [CLSCompliant(false)]
         public ulong Size { get; set; }
 
         /// <summary>
         /// Gets or sets CRC checksum of the file.
         /// </summary>
-        [CLSCompliant(false)]
         public uint Crc { get; set; }
 
         /// <summary>
         /// Gets or sets file attributes.
         /// </summary>
-        [CLSCompliant(false)]
         public uint Attributes { get; set; }
 
         /// <summary>
