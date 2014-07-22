@@ -129,7 +129,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		FilterProgram BuildDefaultChain(Size chain_insize, Size chain_outsize)
+		FilterProgram BuildDefaultChain(Size chain_insize, Size chain_outsize, bool includeOSD)
 		{
 			//select user special FX shader chain
 			Dictionary<string, object> selectedChainProperties = new Dictionary<string, object>();
@@ -150,6 +150,8 @@ namespace BizHawk.Client.EmuHawk
 			Filters.OSD fOSD = new Filters.OSD();
 			fOSD.RenderCallback = () =>
 			{
+				if (!includeOSD)
+					return;
 				var size = fOSD.FindInput().SurfaceFormat.Size;
 				Renderer.Begin(size.Width, size.Height);
 				MyBlitter myBlitter = new MyBlitter(this);
@@ -195,7 +197,10 @@ namespace BizHawk.Client.EmuHawk
 			AppendLuaLayer(chain, "native");
 
 			//and OSD goes on top of that
-			chain.AddFilter(fOSD, "osd");
+			//TODO - things break if this isnt present (the final presentation filter gets messed up)
+			//so, always include it (we'll handle this flag in the callback to do no rendering)
+			//if (includeOSD)
+				chain.AddFilter(fOSD, "osd");
 
 			return chain;
 		}
@@ -256,19 +261,21 @@ namespace BizHawk.Client.EmuHawk
 			{
 				videoProvider = videoProvider,
 				simulate = false,
-				chain_outsize = GraphicsControl.Size
+				chain_outsize = GraphicsControl.Size,
+				includeOSD = true
 			};
 			UpdateSourceInternal(job);
 		}
 
-		public BitmapBuffer RenderOffscreen(IVideoProvider videoProvider)
+		public BitmapBuffer RenderOffscreen(IVideoProvider videoProvider, bool includeOSD)
 		{
 			var job = new JobInfo
 			{
 				videoProvider = videoProvider,
 				simulate = false,
 				chain_outsize = GraphicsControl.Size,
-				offscreen = true
+				offscreen = true,
+				includeOSD = includeOSD
 			};
 			UpdateSourceInternal(job);
 			return job.offscreenBB;
@@ -391,7 +398,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				videoProvider = fvp,
 				simulate = true,
-				chain_outsize = chain_outsize
+				chain_outsize = chain_outsize,
 			};
 			var filterProgram = UpdateSourceInternal(job);
 
@@ -408,6 +415,7 @@ namespace BizHawk.Client.EmuHawk
 			public Size chain_outsize;
 			public bool offscreen;
 			public BitmapBuffer offscreenBB;
+			public bool includeOSD;
 		}
 
 		FilterProgram UpdateSourceInternal(JobInfo job)
@@ -468,7 +476,7 @@ TESTEROO:
 			//build the default filter chain and set it up with services filters will need
 			Size chain_insize = new Size(bufferWidth, bufferHeight);
 
-			var filterProgram = BuildDefaultChain(chain_insize, chain_outsize);
+			var filterProgram = BuildDefaultChain(chain_insize, chain_outsize, job.includeOSD);
 			filterProgram.GuiRenderer = Renderer;
 			filterProgram.GL = GL;
 
