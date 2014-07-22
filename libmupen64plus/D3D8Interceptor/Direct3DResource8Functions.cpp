@@ -12,12 +12,6 @@ extern "C"
 			m_pD3D = pResource;
 		}
 
-		D3D8Wrapper::IDirect3DResource8::IDirect3DResource8(D3D8Wrapper::IDirect3DResource8* pResource) : IDirect3DUnknown((IUnknown*) pResource)
-		{
-			LOG("IDirect3DResource8 from wrapped " << pResource << " made " << this);
-			m_pD3D = pResource->getReal();
-		}
-
 		D3D8Wrapper::IDirect3DResource8* D3D8Wrapper::IDirect3DResource8::GetResource(D3D8Base::IDirect3DResource8* pSwapChain)
 		{
 			D3D8Wrapper::IDirect3DResource8* p = (D3D8Wrapper::IDirect3DResource8*) m_List.GetDataPtr(pSwapChain);
@@ -47,12 +41,6 @@ extern "C"
 				return 0;
 			}
 			return ulRef;
-		}
-
-		D3D8Base::IDirect3DResource8* D3D8Wrapper::IDirect3DResource8::getReal()
-		{
-			LOG("IDirect3DResource8::getReal");
-			return m_pD3D;
 		}
 
 		/*STDMETHOD(GetDevice)(THIS_ IDirect3DDevice8** ppDevice) PURE;*/
