@@ -17,7 +17,7 @@ typedef struct {
   BOOL adjust_aspect_ratio;
   BOOL legacy_pixel_pipeline;
   BOOL alpha_blending;
-  BOOL wireframe;
+//  BOOL wireframe;
   BOOL direct3d_transformation_pipeline;
   BOOL z_compare;
   BOOL copy_framebuffer;

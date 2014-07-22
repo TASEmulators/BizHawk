@@ -340,7 +340,10 @@ EXPORT int CALL InitiateGFX(GFX_INFO Gfx_Info)
 	settings.adjust_aspect_ratio = (BOOL)Config_ReadInt("adjust_aspect_ratio","Adjust game aspect ratio to match yours",FALSE);
 	settings.legacy_pixel_pipeline = (BOOL)Config_ReadInt("legacy_pixel_pipeline","Use legacy pixel pipeline",FALSE);
 	settings.alpha_blending = (BOOL)Config_ReadInt("alpha_blending","Force alpha blending",FALSE);
-	settings.wireframe = (BOOL)Config_ReadInt("wireframe","Wireframe rendering",FALSE);
+
+	// As far as I can tell there is no way to apply this setting without opening the dll config window
+	//settings.wireframe = (BOOL)Config_ReadInt("wireframe","Wireframe rendering",FALSE);
+
 	settings.direct3d_transformation_pipeline = (BOOL)Config_ReadInt("direct3d_transformation_pipeline","Use Direct3D transformation pipeline",FALSE);
 	settings.z_compare = (BOOL)Config_ReadInt("z_compare","Force Z Compare",FALSE);
 	settings.copy_framebuffer = (BOOL)Config_ReadInt("copy_framebuffer","Copy framebuffer to RDRAM",FALSE);
@@ -422,7 +425,6 @@ EXPORT int CALL InitiateGFX(GFX_INFO Gfx_Info)
 	blah.CheckInterrupts = Gfx_Info.CheckInterrupts;
 
 	OldAPI::InitiateGFX(blah);
-	//OldAPI::DllConfig(hWnd_jabo);
 
     return(TRUE);
 }
@@ -477,8 +479,6 @@ EXPORT void CALL ReadScreen2(void *dest, int *width, int *height, int bFront)
 	{
 		D3D8_ReadScreen(dest, width, height);
 	}
-	//*width = 800;
-	//*height = 600;
 }
 
 // TODO

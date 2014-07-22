@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				adjust_aspect_ratio = false;
 				legacy_pixel_pipeline = false;
 				alpha_blending = false;
-				wireframe = false;
+				//wireframe = false;
 				direct3d_transformation_pipeline = false;
 				z_compare = false;
 				copy_framebuffer = false;
@@ -79,10 +79,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			[Description("Force alpha blending")]
 			public bool alpha_blending { get; set; }
 
-			[DefaultValue(false)]
-			[DisplayName("Wireframe rendering")]
-			[Description("Wireframe rendering")]
-			public bool wireframe { get; set; }
+			// As far as I can tell there is no way to apply this setting without opening the dll config window
+			//[DefaultValue(false)]
+			//[DisplayName("Wireframe rendering")]
+			//[Description("Wireframe rendering")]
+			//public bool wireframe { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Use Direct3D trans pipeline")]
