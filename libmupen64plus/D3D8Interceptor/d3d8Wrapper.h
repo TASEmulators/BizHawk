@@ -6,8 +6,8 @@
 
 #pragma comment(linker, "/EXPORT:Direct3DCreate8=_Direct3DCreate8@4")
 
-#define LOG(x) { std::ofstream myfile; myfile.open ("d3d8_wrapper_log.txt", std::ios::app); myfile << x << "\n"; myfile.close(); }
-//#define LOG(x) 
+//#define LOG(x) { std::ofstream myfile; myfile.open ("d3d8_wrapper_log.txt", std::ios::app); myfile << x << "\n"; myfile.close(); }
+#define LOG(x) 
 
 #define TESTDLL_API __declspec(dllexport) 
 
