@@ -39,9 +39,18 @@ namespace SevenZip
     /// 7-zip library low-level wrapper.
     /// </summary>
     internal static class SevenZipLibraryManager
-    {        
-#if !WINCE && !MONO
+    {
         /// <summary>
+        /// Synchronization root for all locking.
+        /// </summary>
+        private static readonly object _syncRoot = new object();
+
+#if !WINCE && !MONO
+
+				//zero 07-jul-2014 - no sense for this industrial strength enterprise bullshit. lets just hack it to our needs.
+				//NOTE - I think we hacked this originally.. it was this way from the initial commit, perhaps it had already been modified for our use
+			
+				/// <summary>
         /// Path to the 7-zip dll.
         /// </summary>
         /// <remarks>7zxa.dll supports only decoding from .7z archives.
@@ -52,7 +61,8 @@ namespace SevenZip
         /// 7z.dll (from the 7-zip distribution) supports every InArchiveFormat for encoding and decoding.
         /// </remarks>
         //private static string _libraryFileName = ConfigurationManager.AppSettings["7zLocation"] ?? Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "7z.dll");
-		private static string _libraryFileName = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "7z.dll");
+				private static string _libraryFileName = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "7z.dll");
+
 #endif
 #if WINCE 		
         private static string _libraryFileName =
@@ -68,9 +78,9 @@ namespace SevenZip
         /// </summary>
         private static LibraryFeature? _features;
 
-		private static Dictionary<object, Dictionary<InArchiveFormat, IInArchive>> _inArchives;
+        private static Dictionary<object, Dictionary<InArchiveFormat, IInArchive>> _inArchives;
 #if COMPRESS
-		private static Dictionary<object, Dictionary<OutArchiveFormat, IOutArchive>> _outArchives;
+        private static Dictionary<object, Dictionary<OutArchiveFormat, IOutArchive>> _outArchives;
 #endif
         private static int _totalUsers;
 
@@ -120,6 +130,8 @@ namespace SevenZip
         /// <param name="format">Archive format</param>
         public static void LoadLibrary(object user, Enum format)
         {
+    lock (_syncRoot)
+                {
             if (_inArchives == null
 #if COMPRESS
                 || _outArchives == null
@@ -149,6 +161,7 @@ namespace SevenZip
                     throw new SevenZipLibraryException("library is invalid.");
                 }
             }
+}
 #endif
             if (format is InArchiveFormat)
             {
@@ -164,6 +177,7 @@ namespace SevenZip
 #endif
             throw new ArgumentException(
                 "Enum " + format + " is not a valid archive format attribute!");
+
         }
 
         /*/// <summary>
@@ -192,30 +206,32 @@ namespace SevenZip
         {
             get
             {
-                if (!_modifyCapabale.HasValue)
+                lock (_syncRoot)
                 {
+                    if (!_modifyCapabale.HasValue)
+                    {
 #if !WINCE && !MONO
-                    FileVersionInfo dllVersionInfo = FileVersionInfo.GetVersionInfo(_libraryFileName);
-                    _modifyCapabale = dllVersionInfo.FileMajorPart >= 9;
+                        FileVersionInfo dllVersionInfo = FileVersionInfo.GetVersionInfo(_libraryFileName);
+                        _modifyCapabale = dllVersionInfo.FileMajorPart >= 9;
 #else
                     _modifyCapabale = true;
-#endif                    
+#endif
+                    }
+                    return _modifyCapabale.Value;
                 }
-                return _modifyCapabale.Value;
             }
         }
-		
 		//static readonly string Namespace = Assembly.GetExecutingAssembly().GetManifestResourceNames()[0].Split('.')[0];
 		static readonly string Namespace = "BizHawk"; //Remove dirty hack above
 
         private static string GetResourceString(string str)
-        {			
-			return Namespace + ".arch." + str;
+        {
+            return Namespace + ".arch." + str;
         }
 
         private static bool ExtractionBenchmark(string archiveFileName, Stream outStream,
             ref LibraryFeature? features, LibraryFeature testedFeature)
-        {			
+        {
             var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
                     GetResourceString(archiveFileName));
             try
@@ -225,7 +241,7 @@ namespace SevenZip
                     extr.ExtractFile(0, outStream);
                 }
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return false;
             }
@@ -239,7 +255,7 @@ namespace SevenZip
         {
             try
             {
-                var compr = new SevenZipCompressor {ArchiveFormat = format, CompressionMethod = method};
+                var compr = new SevenZipCompressor { ArchiveFormat = format, CompressionMethod = method };
                 compr.CompressStream(inStream, outStream);
             }
             catch (Exception)
@@ -254,93 +270,96 @@ namespace SevenZip
         {
             get
             {
-                if (_features != null && _features.HasValue)
+                lock (_syncRoot)
                 {
-                    return _features.Value;
-                }
-                _features = LibraryFeature.None;
-                #region Benchmark
-                #region Extraction features
-                using (var outStream = new MemoryStream())
-                {
-                    ExtractionBenchmark("Test.lzma.7z", outStream, ref _features, LibraryFeature.Extract7z);
-                    ExtractionBenchmark("Test.lzma2.7z", outStream, ref _features, LibraryFeature.Extract7zLZMA2);
-                    int i = 0;
-                    if (ExtractionBenchmark("Test.bzip2.7z", outStream, ref _features, _features.Value))
+                    if (_features != null && _features.HasValue)
                     {
-                        i++;
+                        return _features.Value;
                     }
-                    if (ExtractionBenchmark("Test.ppmd.7z", outStream, ref _features, _features.Value))
-                    {
-                        i++;
-                        if (i == 2 && (_features & LibraryFeature.Extract7z) != 0 &&
-                            (_features & LibraryFeature.Extract7zLZMA2) != 0)
-                        {
-                            _features |= LibraryFeature.Extract7zAll;
-                        }
-                    }
-                    ExtractionBenchmark("Test.rar", outStream, ref _features, LibraryFeature.ExtractRar);
-                    ExtractionBenchmark("Test.tar", outStream, ref _features, LibraryFeature.ExtractTar);
-                    ExtractionBenchmark("Test.txt.bz2", outStream, ref _features, LibraryFeature.ExtractBzip2);
-                    ExtractionBenchmark("Test.txt.gz", outStream, ref _features, LibraryFeature.ExtractGzip);
-                    ExtractionBenchmark("Test.txt.xz", outStream, ref _features, LibraryFeature.ExtractXz);
-                    ExtractionBenchmark("Test.zip", outStream, ref _features, LibraryFeature.ExtractZip);
-                }
-                #endregion
-                #region Compression features
-                using (var inStream = new MemoryStream())
-                {
-                    inStream.Write(Encoding.UTF8.GetBytes("Test"), 0, 4);
+                    _features = LibraryFeature.None;
+                    #region Benchmark
+                    #region Extraction features
                     using (var outStream = new MemoryStream())
                     {
-                        CompressionBenchmark(inStream, outStream, 
-                            OutArchiveFormat.SevenZip, CompressionMethod.Lzma,
-                            ref _features, LibraryFeature.Compress7z);
-                        CompressionBenchmark(inStream, outStream,
-                            OutArchiveFormat.SevenZip, CompressionMethod.Lzma2,
-                            ref _features, LibraryFeature.Compress7zLZMA2);
+                        ExtractionBenchmark("Test.lzma.7z", outStream, ref _features, LibraryFeature.Extract7z);
+                        ExtractionBenchmark("Test.lzma2.7z", outStream, ref _features, LibraryFeature.Extract7zLZMA2);
                         int i = 0;
-                        if (CompressionBenchmark(inStream, outStream,
-                            OutArchiveFormat.SevenZip, CompressionMethod.BZip2,
-                            ref _features, _features.Value))
+                        if (ExtractionBenchmark("Test.bzip2.7z", outStream, ref _features, _features.Value))
                         {
                             i++;
                         }
-                        if (CompressionBenchmark(inStream, outStream,
-                            OutArchiveFormat.SevenZip, CompressionMethod.Ppmd,
-                            ref _features, _features.Value))
+                        if (ExtractionBenchmark("Test.ppmd.7z", outStream, ref _features, _features.Value))
                         {
                             i++;
-                            if (i == 2 && (_features & LibraryFeature.Compress7z) != 0 &&
-                            (_features & LibraryFeature.Compress7zLZMA2) != 0)
+                            if (i == 2 && (_features & LibraryFeature.Extract7z) != 0 &&
+                                (_features & LibraryFeature.Extract7zLZMA2) != 0)
                             {
-                                _features |= LibraryFeature.Compress7zAll;
+                                _features |= LibraryFeature.Extract7zAll;
                             }
                         }
-                        CompressionBenchmark(inStream, outStream,
-                            OutArchiveFormat.Zip, CompressionMethod.Default,
-                            ref _features, LibraryFeature.CompressZip);
-                        CompressionBenchmark(inStream, outStream,
-                            OutArchiveFormat.BZip2, CompressionMethod.Default,
-                            ref _features, LibraryFeature.CompressBzip2);
-                        CompressionBenchmark(inStream, outStream,
-                            OutArchiveFormat.GZip, CompressionMethod.Default,
-                            ref _features, LibraryFeature.CompressGzip);
-                        CompressionBenchmark(inStream, outStream,
-                            OutArchiveFormat.Tar, CompressionMethod.Default,
-                            ref _features, LibraryFeature.CompressTar);
-                        CompressionBenchmark(inStream, outStream,
-                            OutArchiveFormat.XZ, CompressionMethod.Default,
-                            ref _features, LibraryFeature.CompressXz);                   
+                        ExtractionBenchmark("Test.rar", outStream, ref _features, LibraryFeature.ExtractRar);
+                        ExtractionBenchmark("Test.tar", outStream, ref _features, LibraryFeature.ExtractTar);
+                        ExtractionBenchmark("Test.txt.bz2", outStream, ref _features, LibraryFeature.ExtractBzip2);
+                        ExtractionBenchmark("Test.txt.gz", outStream, ref _features, LibraryFeature.ExtractGzip);
+                        ExtractionBenchmark("Test.txt.xz", outStream, ref _features, LibraryFeature.ExtractXz);
+                        ExtractionBenchmark("Test.zip", outStream, ref _features, LibraryFeature.ExtractZip);
                     }
+                    #endregion
+                    #region Compression features
+                    using (var inStream = new MemoryStream())
+                    {
+                        inStream.Write(Encoding.UTF8.GetBytes("Test"), 0, 4);
+                        using (var outStream = new MemoryStream())
+                        {
+                            CompressionBenchmark(inStream, outStream,
+                                OutArchiveFormat.SevenZip, CompressionMethod.Lzma,
+                                ref _features, LibraryFeature.Compress7z);
+                            CompressionBenchmark(inStream, outStream,
+                                OutArchiveFormat.SevenZip, CompressionMethod.Lzma2,
+                                ref _features, LibraryFeature.Compress7zLZMA2);
+                            int i = 0;
+                            if (CompressionBenchmark(inStream, outStream,
+                                OutArchiveFormat.SevenZip, CompressionMethod.BZip2,
+                                ref _features, _features.Value))
+                            {
+                                i++;
+                            }
+                            if (CompressionBenchmark(inStream, outStream,
+                                OutArchiveFormat.SevenZip, CompressionMethod.Ppmd,
+                                ref _features, _features.Value))
+                            {
+                                i++;
+                                if (i == 2 && (_features & LibraryFeature.Compress7z) != 0 &&
+                                (_features & LibraryFeature.Compress7zLZMA2) != 0)
+                                {
+                                    _features |= LibraryFeature.Compress7zAll;
+                                }
+                            }
+                            CompressionBenchmark(inStream, outStream,
+                                OutArchiveFormat.Zip, CompressionMethod.Default,
+                                ref _features, LibraryFeature.CompressZip);
+                            CompressionBenchmark(inStream, outStream,
+                                OutArchiveFormat.BZip2, CompressionMethod.Default,
+                                ref _features, LibraryFeature.CompressBzip2);
+                            CompressionBenchmark(inStream, outStream,
+                                OutArchiveFormat.GZip, CompressionMethod.Default,
+                                ref _features, LibraryFeature.CompressGzip);
+                            CompressionBenchmark(inStream, outStream,
+                                OutArchiveFormat.Tar, CompressionMethod.Default,
+                                ref _features, LibraryFeature.CompressTar);
+                            CompressionBenchmark(inStream, outStream,
+                                OutArchiveFormat.XZ, CompressionMethod.Default,
+                                ref _features, LibraryFeature.CompressXz);
+                        }
+                    }
+                    #endregion
+                    #endregion
+                    if (ModifyCapable && (_features.Value & LibraryFeature.Compress7z) != 0)
+                    {
+                        _features |= LibraryFeature.Modify;
+                    }
+                    return _features.Value;
                 }
-                #endregion
-                #endregion
-                if (ModifyCapable && (_features.Value & LibraryFeature.Compress7z) != 0)
-                {
-                    _features |= LibraryFeature.Modify;
-                }
-                return _features.Value;
             }
         }
 
@@ -355,7 +374,9 @@ namespace SevenZip
             var sp = new SecurityPermission(SecurityPermissionFlag.UnmanagedCode);
             sp.Demand();
 #endif
-            if (_modulePtr != IntPtr.Zero)
+            lock (_syncRoot)
+			{
+                if (_modulePtr != IntPtr.Zero)
             {
                 if (format is InArchiveFormat)
                 {
@@ -417,6 +438,7 @@ namespace SevenZip
                     }
                 }
             }
+			}
         }
 
         /// <summary>
@@ -426,10 +448,8 @@ namespace SevenZip
         /// <param name="user">Archive format user.</param>
         public static IInArchive InArchive(InArchiveFormat format, object user)
         {
-#if !WINCE && !MONO
-            lock (_libraryFileName)
+            lock (_syncRoot)
             {
-#endif
                 if (_inArchives[user][format] == null)
                 {
 #if !WINCE && !MONO
@@ -453,7 +473,7 @@ namespace SevenZip
                         throw new SevenZipLibraryException();
                     }
 #endif
-					object result;					
+                    object result;
                     Guid interfaceId =
 #if !WINCE && !MONO
  typeof(IInArchive).GUID;
@@ -478,10 +498,10 @@ namespace SevenZip
                     InitUserInFormat(user, format);									
                     _inArchives[user][format] = result as IInArchive;
                 }
+                return _inArchives[user][format];
 #if !WINCE && !MONO
             }
 #endif
-                return _inArchives[user][format];
         }
 
 #if COMPRESS
@@ -492,10 +512,8 @@ namespace SevenZip
         /// <param name="user">Archive format user.</param>
         public static IOutArchive OutArchive(OutArchiveFormat format, object user)
         {
-#if !WINCE && !MONO
-            lock (_libraryFileName)
+            lock (_syncRoot)
             {
-#endif
                 if (_outArchives[user][format] == null)
                 {
 #if !WINCE && !MONO
@@ -539,10 +557,11 @@ namespace SevenZip
                     InitUserOutFormat(user, format);
                     _outArchives[user][format] = result as IOutArchive;
                 }
+                return _outArchives[user][format];
 #if !WINCE && !MONO
             }
 #endif
-                return _outArchives[user][format];
+
         }
 #endif
 #if !WINCE && !MONO

@@ -780,7 +780,7 @@ namespace SevenZip
 
         private void IntEventArgsHandler(object sender, IntEventArgs e)
         {
-            lock (this)
+            lock (_files)
             {
                 var pold = (byte) ((_bytesWrittenOld*100)/_bytesCount);
                 _bytesWritten += e.Value;
