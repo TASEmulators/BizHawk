@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
@@ -44,6 +46,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		public mupen64plusVideoApi(mupen64plusApi core, VideoPluginSettings settings)
 		{
 			string videoplugin;
+			bool jaboReady = false;
 			switch (settings.Plugin)
 			{
 				default:
@@ -58,6 +61,41 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 					break;
 				case PluginType.Jabo:
 					videoplugin = "mupen64plus-video-jabo.dll";
+					
+					if (File.Exists("dll\\Jabo_Direct3D8_patched.dll"))
+					{
+						byte[] hash = MD5.Create().ComputeHash(File.ReadAllBytes("dll\\Jabo_Direct3D8_patched.dll"));
+						string hash_string = BitConverter.ToString(hash).Replace("-", "");
+						if (hash_string == "F4D6E624489CD88C68A5850426D4D70E")
+						{
+							jaboReady = true;
+						}
+					}
+
+					if (!jaboReady && File.Exists("dll\\Jabo_Direct3D8.dll"))
+					{
+						byte[] hash = MD5.Create().ComputeHash(File.ReadAllBytes("dll\\Jabo_Direct3D8.dll"));
+						string hash_string = BitConverter.ToString(hash).Replace("-", "");
+						if (hash_string == "4F353AA71E7455B81205D8EC0AA339E1")
+						{
+							byte[] jaboDLL = File.ReadAllBytes("dll\\Jabo_Direct3D8.dll");
+							jaboDLL[583] = 0xA0;
+							jaboDLL[623] = 0xA0;
+							jaboDLL[663] = 0xA0;
+							jaboDLL[703] = 0xA0;
+							jaboDLL[743] = 0xA0;
+							jaboDLL[783] = 0xA0;
+							jaboDLL[823] = 0xA0;
+							jaboDLL[863] = 0xA0;
+							File.WriteAllBytes("dll\\Jabo_Direct3D8_patched.dll", jaboDLL);
+							jaboReady = true;
+						}
+					}
+
+					if (!jaboReady)
+					{
+						throw new InvalidOperationException(string.Format("Error: Jabo dll was not found. please copy Jabo_Direct3D8.dll from a Project64 v1.6.1 installation into Bizhawk's dll directory."));
+					}
 					break;
 			}
 
