@@ -35,7 +35,18 @@ namespace SevenZip
         private FileInfo _fileInfo;
         private Dictionary<string, InStreamWrapper> _wrappers = 
             new Dictionary<string, InStreamWrapper>();
-        public readonly List<string> VolumeFileNames = new List<string>();
+        private readonly List<string> _volumeFileNames = new List<string>();
+
+        /// <summary>
+        /// Gets the list of volume file names.
+        /// </summary>
+        public IList<string> VolumeFileNames
+        {
+            get
+            {
+                return _volumeFileNames;
+            }
+        }
 
         /// <summary>
         /// Performs the common initialization.
@@ -46,7 +57,21 @@ namespace SevenZip
             if (!String.IsNullOrEmpty(fileName))
             {
                 _fileInfo = new FileInfo(fileName);
-                VolumeFileNames.Add(fileName);
+                _volumeFileNames.Add(fileName);
+                if (fileName.EndsWith("001"))
+                {
+                    int index = 2;
+                    var baseName = fileName.Substring(0, fileName.Length - 3);
+                    var volName = baseName + (index > 99 ? index.ToString() : 
+                        index > 9 ? "0" + index : "00" + index);
+                    while (File.Exists(volName))
+                    {
+                        _volumeFileNames.Add(volName);
+                        index++;
+                        volName = baseName + (index > 99 ? index.ToString() :
+                        index > 9 ? "0" + index : "00" + index);
+                    }
+                }
             }
         }
 
@@ -127,7 +152,7 @@ namespace SevenZip
                     return 1;
                 }
             }
-            VolumeFileNames.Add(name);
+            _volumeFileNames.Add(name);
             if (_wrappers.ContainsKey(name))
             {
                 inStream = _wrappers[name];

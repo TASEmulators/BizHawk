@@ -33,8 +33,14 @@ using SevenZip.Mono.COM;
 namespace SevenZip
 {
     /// <summary>
-    /// Class for extracting and getting information about 7-zip archives
+    /// Class to unpack data from archives supported by 7-Zip.
     /// </summary>
+    /// <example>
+    /// using (var extr = new SevenZipExtractor(@"C:\Test.7z"))
+    /// {
+    ///     extr.ExtractArchive(@"C:\TestDirectory");
+    /// }
+    /// </example>
     public sealed partial class SevenZipExtractor
 #if UNMANAGED
         : SevenZipBase, IDisposable
@@ -54,10 +60,14 @@ namespace SevenZip
         private bool? _isSolid;
         private bool _opened;
         private bool _disposed;
-        private InArchiveFormat _format;
+        private InArchiveFormat _format = (InArchiveFormat)(-1);
         private ReadOnlyCollection<ArchiveFileInfo> _archiveFileInfoCollection;
         private ReadOnlyCollection<ArchiveProperty> _archiveProperties;
-        private ReadOnlyCollection<string> _volumeFileNames;  
+        private ReadOnlyCollection<string> _volumeFileNames;
+        /// <summary>
+        /// This is used to lock possible Dispose() calls.
+        /// </summary>
+        private bool _asynchronousDisposeLock;
 
         #region Constructors
         /// <summary>
@@ -67,8 +77,11 @@ namespace SevenZip
         private void Init(string archiveFullName)
         {
             _fileName = archiveFullName;
-            bool isExecutable;
-            _format = FileChecker.CheckSignature(archiveFullName, out _offset, out isExecutable);
+            bool isExecutable = false;
+            if ((int)_format == -1)
+            {
+                _format = FileChecker.CheckSignature(archiveFullName, out _offset, out isExecutable);
+            }
             PreserveDirectoryStructure = true;
             SevenZipLibraryManager.LoadLibrary(this, _format);
             try
@@ -107,8 +120,11 @@ namespace SevenZip
         private void Init(Stream stream)
         {
             ValidateStream(stream);
-            bool isExecutable;
-            _format = FileChecker.CheckSignature(stream, out _offset, out isExecutable);
+            bool isExecutable = false;
+            if ((int)_format == -1)
+            {
+                _format = FileChecker.CheckSignature(stream, out _offset, out isExecutable);
+            }            
             PreserveDirectoryStructure = true;
             SevenZipLibraryManager.LoadLibrary(this, _format);
             try
@@ -155,11 +171,38 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Initializes a new instance of SevenZipExtractor class
+        /// Initializes a new instance of SevenZipExtractor class.
         /// </summary>
-        /// <param name="archiveFullName">The archive full file name</param>
+        /// <param name="archiveStream">The stream to read the archive from.
+        /// Use SevenZipExtractor(string) to extract from disk, though it is not necessary.</param>
+        /// <param name="format">Manual archive format setup. You SHOULD NOT normally specify it this way.
+        /// Instead, use SevenZipExtractor(Stream archiveStream), that constructor
+        /// automatically detects the archive format.</param>
+        public SevenZipExtractor(Stream archiveStream, InArchiveFormat format)
+        {
+            _format = format;
+            Init(archiveStream);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of SevenZipExtractor class.
+        /// </summary>
+        /// <param name="archiveFullName">The archive full file name.</param>
         public SevenZipExtractor(string archiveFullName)
         {
+            Init(archiveFullName);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of SevenZipExtractor class.
+        /// </summary>
+        /// <param name="archiveFullName">The archive full file name.</param>
+        /// <param name="format">Manual archive format setup. You SHOULD NOT normally specify it this way.
+        /// Instead, use SevenZipExtractor(string archiveFullName), that constructor
+        /// automatically detects the archive format.</param>
+        public SevenZipExtractor(string archiveFullName, InArchiveFormat format)
+        {
+            _format = format;
             Init(archiveFullName);
         }
 
@@ -177,13 +220,42 @@ namespace SevenZip
         /// <summary>
         /// Initializes a new instance of SevenZipExtractor class.
         /// </summary>
+        /// <param name="archiveFullName">The archive full file name.</param>
+        /// <param name="password">Password for an encrypted archive.</param>
+        /// <param name="format">Manual archive format setup. You SHOULD NOT normally specify it this way.
+        /// Instead, use SevenZipExtractor(string archiveFullName, string password), that constructor
+        /// automatically detects the archive format.</param>
+        public SevenZipExtractor(string archiveFullName, string password, InArchiveFormat format)
+            : base(password)
+        {
+            _format = format;
+            Init(archiveFullName);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of SevenZipExtractor class.
+        /// </summary>
         /// <param name="archiveStream">The stream to read the archive from.</param>
         /// <param name="password">Password for an encrypted archive.</param>
         /// <remarks>The archive format is guessed by the signature.</remarks>
-        public SevenZipExtractor(
-            Stream archiveStream, string password)
+        public SevenZipExtractor(Stream archiveStream, string password)
             : base(password)
         {
+            Init(archiveStream);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of SevenZipExtractor class.
+        /// </summary>
+        /// <param name="archiveStream">The stream to read the archive from.</param>
+        /// <param name="password">Password for an encrypted archive.</param>
+        /// <param name="format">Manual archive format setup. You SHOULD NOT normally specify it this way.
+        /// Instead, use SevenZipExtractor(Stream archiveStream, string password), that constructor
+        /// automatically detects the archive format.</param>
+        public SevenZipExtractor(Stream archiveStream, string password, InArchiveFormat format)
+            : base(password)
+        {
+            _format = format;
             Init(archiveStream);
         }
 
@@ -251,17 +323,15 @@ namespace SevenZip
                 {
                     GetArchiveInfo(true);
                 }
-                if (_isSolid != null)
-                {
-                    return _isSolid.Value;
-                }
-                throw new SevenZipException("_isSolid == null");
+                Debug.Assert(_isSolid != null);
+                return _isSolid.Value;
             }
         }
 
         /// <summary>
         /// Gets the number of files in the archive
         /// </summary>
+        [CLSCompliant(false)]
         public uint FilesCount
         {
             get
@@ -271,11 +341,8 @@ namespace SevenZip
                 {
                     GetArchiveInfo(true);
                 }
-                if (_filesCount != null)
-                {
-                    return _filesCount.Value;
-                }
-                throw new SevenZipException("_filesCount == null");
+                Debug.Assert(_filesCount != null);
+                return _filesCount.Value;                
             }
         }
 
@@ -292,7 +359,7 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Gets or sets the value indicatin whether to preserve the directory structure of extracted files.
+        /// Gets or sets the value indicating whether to preserve the directory structure of extracted files.
         /// </summary>
         public bool PreserveDirectoryStructure { get; set; }
         #endregion                
@@ -343,7 +410,8 @@ namespace SevenZip
             }
             else
             {
-                if (!_fileName.EndsWith(".001", StringComparison.OrdinalIgnoreCase))
+                if (!_fileName.EndsWith(".001", StringComparison.OrdinalIgnoreCase)
+                    || (_volumeFileNames.Count == 1))
                 {
                     _archiveStream = new InStreamWrapper(
                         new ArchiveEmulationStreamProxy(new FileStream(
@@ -692,6 +760,10 @@ namespace SevenZip
             _archiveFileData = null;
             _archiveProperties = null;
             _archiveFileInfoCollection = null;
+						if (_inStream != null)
+						{
+							_inStream.Dispose();
+						}
             _inStream = null;
             if (_openCallback != null)
             {
@@ -726,6 +798,11 @@ namespace SevenZip
         /// </summary>
         public void Dispose()
         {
+            if (_asynchronousDisposeLock)
+            {
+                throw new InvalidOperationException("SevenZipExtractor instance must not be disposed " +
+                    "while making an asynchronous method call.");
+            }
             if (!_disposed)
             {                
                 CommonDispose();
@@ -916,6 +993,7 @@ namespace SevenZip
                 {
                     _archive.Close();
                 }
+                ((InStreamWrapper)_archiveStream).Dispose();
                 _archiveStream = null;
                 _opened = false;
             }
