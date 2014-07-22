@@ -22,6 +22,7 @@ namespace SevenZip
     /// The set of features supported by the library.
     /// </summary>
     [Flags]
+    [CLSCompliant(false)]
     public enum LibraryFeature : uint
     {
         /// <summary>
