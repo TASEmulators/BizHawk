@@ -4,6 +4,8 @@ using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
+#pragma warning disable 618
+
 namespace BizHawk.Client.Common
 {
 	public static class ConfigService
