@@ -16,10 +16,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class N64VideoPluginconfig : Form
 	{
-		N64Settings s;
-		N64SyncSettings ss;
+		private N64Settings s;
+		private N64SyncSettings ss;
 
-		enum JaboStatus
+		private enum JaboStatus
 		{
 			NotReady,
 			ReadyToPatch,
@@ -28,7 +28,9 @@ namespace BizHawk.Client.EmuHawk
 			WrongVersion16
 		};
 
-		JaboStatus currentJaboStatus = JaboStatus.NotReady;
+		private JaboStatus currentJaboStatus = JaboStatus.NotReady;
+		private string previousPluginSelection = string.Empty;
+		private bool programmaticallyChangingPluginComboBox = false;
 
 		public N64VideoPluginconfig()
 		{
@@ -919,6 +921,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PluginComboBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			if (programmaticallyChangingPluginComboBox)
+			{
+				return;
+			}
+
 			if (PluginComboBox.Text == "Jabo 1.6.1")
 			{
 				if (currentJaboStatus == JaboStatus.Ready || currentJaboStatus == JaboStatus.ReadyToPatch)
@@ -941,6 +948,10 @@ namespace BizHawk.Client.EmuHawk
 					{
 						jaboStatusLabel.Text = "You are NOT ready to use Jabo. Bizhawk requires Jabo Direct3D8 v1.6.1, but found v2.0 instead.";
 					}
+
+					programmaticallyChangingPluginComboBox = true;
+					PluginComboBox.SelectedItem = previousPluginSelection;
+					programmaticallyChangingPluginComboBox = false;
 				}
 			}
 			else
@@ -948,6 +959,8 @@ namespace BizHawk.Client.EmuHawk
 				jaboStatusLabel.Text = "";
 				jaboStatusDetailLabel.Text = "";
 			}
+
+			previousPluginSelection = PluginComboBox.SelectedItem.ToString();
 		}
 
 	}
