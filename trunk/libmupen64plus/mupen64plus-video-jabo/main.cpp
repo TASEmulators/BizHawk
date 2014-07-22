@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 
 #define M64P_PLUGIN_PROTOTYPES 1
 #include "m64p_types.h"
@@ -170,6 +171,30 @@ BOOL writeOptionsInitflags(DWORD options_val, DWORD initflags_val)
 	return(TRUE);
 }
 
+void createRDBFile(unsigned char * header, int resolution_width, int resolution_height, int clear_mode)
+{
+	std::ofstream rdbFile;
+	rdbFile.open("Project64.rdb", std::ios::trunc | std::ios::out);
+
+	// File can't seem to have data on the first line. It has to be a comment or blank
+	rdbFile << "\n";
+
+	rdbFile << "[";
+
+	rdbFile << std::hex << std::setfill('0') << std::setw(2) << std::uppercase;
+	rdbFile << (int)header[16] << (int)header[17] << (int)header[18] << (int)header[19];
+	rdbFile << "-";
+	rdbFile << (int)header[20] << (int)header[21] << (int)header[22] << (int)header[23];
+	rdbFile << "-C:";
+	rdbFile << (int)header[62] << "]\n";
+
+	rdbFile << std::dec << std::nouppercase;
+	rdbFile << "Clear Frame=" << clear_mode << "\n";
+	rdbFile << "Resolution Width=" << resolution_width << "\n";
+	rdbFile << "Resolution Height=" << resolution_height << "\n";
+	rdbFile.close();
+}
+
 /* Global functions */
 static void DebugMessage(int level, const char *message, ...)
 {
@@ -269,6 +294,8 @@ EXPORT int CALL RomOpen(void)
 {
 	LOG("API WRAPPER:\t RomOpen")
 	OldAPI::RomOpen();
+
+	remove("Project64.rdb");
 
     if (!l_PluginInit)
         return 0;
@@ -383,6 +410,8 @@ EXPORT int CALL InitiateGFX(GFX_INFO Gfx_Info)
 	readOptionsInitflags(&old_options,&old_initflags);
 
 	writeOptionsInitflags(new_options_val,new_initflags_val);
+
+	createRDBFile(Gfx_Info.HEADER, settings.resolution_height, settings.resolution_width, settings.clear_mode);
 
 	OldAPI::GFX_INFO blah;
 
