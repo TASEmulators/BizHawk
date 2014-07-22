@@ -49,20 +49,20 @@ namespace BizHawk.Client.EmuHawk
 		void writeheaders()
 		{
 			file.Write(Encoding.ASCII.GetBytes("RIFF")); // ChunkID
-			file.Write((UInt32)0); // ChunkSize
+			file.Write((uint)0); // ChunkSize
 			file.Write(Encoding.ASCII.GetBytes("WAVE")); // Format
 
 			file.Write(Encoding.ASCII.GetBytes("fmt ")); // SubchunkID
-			file.Write((UInt32)16); // SubchunkSize
-			file.Write((UInt16)1); // AudioFormat (PCM)
-			file.Write((UInt16)numchannels); // NumChannels
-			file.Write((UInt32)samplerate); // SampleRate
-			file.Write((UInt32)(samplerate * numchannels * 2)); // ByteRate
-			file.Write((UInt16)(numchannels * 2)); // BlockAlign
-			file.Write((UInt16)16); // BitsPerSample
+			file.Write((uint)16); // SubchunkSize
+			file.Write((ushort)1); // AudioFormat (PCM)
+			file.Write((ushort)numchannels); // NumChannels
+			file.Write((uint)samplerate); // SampleRate
+			file.Write((uint)(samplerate * numchannels * 2)); // ByteRate
+			file.Write((ushort)(numchannels * 2)); // BlockAlign
+			file.Write((ushort)16); // BitsPerSample
 
 			file.Write(Encoding.ASCII.GetBytes("data")); // SubchunkID
-			file.Write((UInt32)0); // SubchunkSize
+			file.Write((uint)0); // SubchunkSize
 		}
 
 		/// <summary>
@@ -76,9 +76,9 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				file.Seek(4, SeekOrigin.Begin);
-				file.Write((UInt32)(36 + numbytes));
+				file.Write((uint)(36 + numbytes));
 				file.Seek(40, SeekOrigin.Begin);
-				file.Write((UInt32)(numbytes));
+				file.Write((uint)(numbytes));
 			}
 			catch (NotSupportedException)
 			{	// unseekable; oh well
@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// close current underlying stream
 		/// </summary>
-		void closecurrent ()
+		void closecurrent()
 		{
 			if (file != null)
 			{
@@ -102,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 		/// open a new underlying stream
 		/// </summary>
 		/// <param name="next"></param>
-		void opencurrent (Stream next)
+		void opencurrent(Stream next)
 		{
 			file = new BinaryWriter(next, Encoding.ASCII);
 			numbytes = 0;
@@ -116,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 		public void writesamples(short[] samples)
 		{
 			file.Write(samples);
-			numbytes += (UInt64)(samples.Length * sizeof(short));
+			numbytes += (ulong)(samples.Length * sizeof(short));
 
 			// try splitting if we can
 			if (numbytes >= splitpoint && filechain != null)
@@ -190,7 +190,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!filechain.MoveNext())
 				throw new ArgumentException("Iterator was empty!");
 			opencurrent(ss.Current);
-		}   
+		}
 	}
 
 	/// <summary>
@@ -251,7 +251,7 @@ namespace BizHawk.Client.EmuHawk
 			int counter = 1;
 			while (true)
 			{
-				yield return new FileStream (Path.Combine(dir, baseName) + "_" + counter + ext, FileMode.Create);
+				yield return new FileStream(Path.Combine(dir, baseName) + "_" + counter + ext, FileMode.Create);
 				counter++;
 			}
 		}
