@@ -495,9 +495,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				unif = new Unif(new MemoryStream(file));
 				LoadWriteLine("Found UNIF header:");
-				LoadWriteLine(unif.GetCartInfo());
+				LoadWriteLine(unif.CartInfo);
 				LoadWriteLine("Since this is UNIF we can confidently parse PRG/CHR banks to hash.");
-				hash_sha1 = unif.GetCartInfo().sha1;
+				hash_sha1 = unif.CartInfo.sha1;
 				hash_sha1_several.Add(hash_sha1);
 				LoadWriteLine("headerless rom hash: {0}", hash_sha1);
 			}
@@ -603,8 +603,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 					else if (unif != null)
 					{
-						if (choice.prg_size == -1) choice.prg_size = unif.GetCartInfo().prg_size;
-						if (choice.chr_size == -1) choice.chr_size = unif.GetCartInfo().chr_size;
+						if (choice.prg_size == -1) choice.prg_size = unif.CartInfo.prg_size;
+						if (choice.chr_size == -1) choice.chr_size = unif.CartInfo.chr_size;
 						// unif has no wram\vram sizes; hope the board impl can figure it out...
 						if (choice.vram_size == -1) choice.vram_size = 0;
 						if (choice.wram_size == -1) choice.wram_size = 0;
@@ -633,7 +633,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (unif != null)
 				{
 					LoadWriteLine("Using information from UNIF header");
-					choice = unif.GetCartInfo();
+					choice = unif.CartInfo;
 					origin = EDetectionOrigin.UNIF;
 				}
 				if (iNesHeaderInfo != null)
@@ -752,8 +752,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				board.ROM = unif.GetPRG();
-				board.VROM = unif.GetCHR();
+				board.ROM = unif.PRG;
+				board.VROM = unif.CHR;
 			}
 
 			// IF YOU DO ANYTHING AT ALL BELOW THIS LINE, MAKE SURE THE APPROPRIATE CHANGE IS MADE TO FDS (if applicable)
