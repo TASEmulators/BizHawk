@@ -82,6 +82,7 @@
 			this.MarkerView.TabStop = false;
 			this.MarkerView.UseCompatibleStateImageBehavior = false;
 			this.MarkerView.View = System.Windows.Forms.View.Details;
+			this.MarkerView.ItemActivate += new System.EventHandler(this.MarkerView_ItemActivate);
 			this.MarkerView.SelectedIndexChanged += new System.EventHandler(this.MarkerView_SelectedIndexChanged);
 			// 
 			// columnHeader1

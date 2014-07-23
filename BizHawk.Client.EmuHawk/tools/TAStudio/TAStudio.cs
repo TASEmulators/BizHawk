@@ -293,6 +293,11 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.TAStudioSettings.Height = Bottom - Top;
 		}
 
+		public void GoToMarker(TasMovieMarker marker)
+		{
+			GoToFrame(marker.Frame);
+		}
+
 		private void GoToFrame(int frame)
 		{
 			// If past greenzone, emulate and capture states
