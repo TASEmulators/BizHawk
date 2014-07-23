@@ -415,7 +415,8 @@ extern "C"
 			LOG("SetRenderTarget");
 			LOG(pRenderTarget);
 			LOG(pNewZStencil);
-			HRESULT hr = m_pDevice->SetRenderTarget(pRenderTarget->GetSurface(),pNewZStencil->GetSurface());
+			//HRESULT hr = m_pDevice->SetRenderTarget(pRenderTarget->GetSurface(),pNewZStencil->GetSurface());
+			HRESULT hr = m_pDevice->SetRenderTarget(render_surface->GetSurface(),pNewZStencil->GetSurface());
 
 			/*if (this->rTarget != NULL)
 			{
