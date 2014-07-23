@@ -390,16 +390,16 @@ EXPORT int CALL InitiateGFX(GFX_INFO Gfx_Info)
 	new_options_val |= (((settings.brightness - 100) / 3) & 0x1F) << 19;
 	switch (settings.antialiasing_level)
 	{
-		case 1: new_options_val |= 0x00004004; break;
-		case 2: new_options_val |= 0x00008004; break;
-		case 3: new_options_val |= 0x00010004; break;
+		case 1: new_options_val |= 0x00004000; break;
+		case 2: new_options_val |= 0x00008000; break;
+		case 3: new_options_val |= 0x00010000; break;
 	}
 	switch (settings.anisotropic_level)
 	{
-		case 1: new_options_val |= 0x00000024; break;
-		case 2: new_options_val |= 0x00000044; break;
-		case 3: new_options_val |= 0x00000084; break;
-		case 4: new_options_val |= 0x00000104; break;
+		case 1: new_options_val |= 0x00000020; break;
+		case 2: new_options_val |= 0x00000040; break;
+		case 3: new_options_val |= 0x00000080; break;
+		case 4: new_options_val |= 0x00000100; break;
 	}
 
 	// Force 800x600 for now
