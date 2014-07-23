@@ -19,6 +19,7 @@ extern "C"
 	namespace D3D8Wrapper
 	{	
 		IDirect3DDevice8 *last_device = NULL;
+		IDirect3DSurface8 *render_surface = NULL;
 		void (*rendering_callback)( int );
 
 		D3D8Wrapper::IDirect3D8* WINAPI Direct3DCreate8(UINT Version)
@@ -64,13 +65,13 @@ extern "C"
 		}
 
 		// get back buffer (surface)
-		D3D8Base::IDirect3DSurface8 *backbuffer;
-		D3D8Wrapper::last_device->GetD3D8Device()->GetBackBuffer(0,D3D8Base::D3DBACKBUFFER_TYPE_MONO,&backbuffer);
+		//D3D8Base::IDirect3DSurface8 *backbuffer;
+		//D3D8Wrapper::last_device->GetD3D8Device()->GetBackBuffer(0,D3D8Base::D3DBACKBUFFER_TYPE_MONO,&backbuffer);
 
 		// surface...
 		// make a D3DSURFACE_DESC, pass to GetDesc
 		D3D8Base::D3DSURFACE_DESC desc;
-		backbuffer->GetDesc(&desc);
+		D3D8Wrapper::render_surface->GetDesc(&desc);
 
 		// get out height/width
 		*width = desc.Width;
@@ -88,7 +89,7 @@ extern "C"
 		
 			// make a D3DLOCKED_RECT, pass to LockRect
 			D3D8Base::D3DLOCKED_RECT locked;
-			backbuffer->LockRect(&locked,&entire_buffer,D3DLOCK_READONLY);
+			HRESULT hr = D3D8Wrapper::render_surface->LockRect(&locked,&entire_buffer,D3DLOCK_READONLY);
 
 			// read out pBits from the LOCKED_RECT
 			int from_row = desc.Height - 1;
@@ -102,11 +103,11 @@ extern "C"
 			}
 
 			// unlock rect
-			backbuffer->UnlockRect();
+			D3D8Wrapper::render_surface->UnlockRect();
 		}
 
 		// release the surface
-		backbuffer->Release();
+		//backbuffer->Release();
 		
 		// we're done, maybe?
 	}
