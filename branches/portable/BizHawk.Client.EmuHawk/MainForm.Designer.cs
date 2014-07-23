@@ -319,7 +319,6 @@
 			this.KeyPriorityStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.CoreNameStatusBarButton = new System.Windows.Forms.ToolStripStatusLabel();
 			this.ProfileFirstBootLabel = new System.Windows.Forms.ToolStripStatusLabel();
-			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.MainFormContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.OpenRomContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LoadLastRomContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -2637,8 +2636,7 @@
             this.CheatStatusButton,
             this.KeyPriorityStatusLabel,
             this.CoreNameStatusBarButton,
-            this.ProfileFirstBootLabel,
-            this.toolStripStatusLabel1});
+            this.ProfileFirstBootLabel});
 			this.MainStatusBar.Location = new System.Drawing.Point(0, 386);
 			this.MainStatusBar.Name = "MainStatusBar";
 			this.MainStatusBar.ShowItemToolTips = true;
@@ -2833,12 +2831,6 @@
 			this.ProfileFirstBootLabel.ToolTipText = "Set up your profile before use";
 			this.ProfileFirstBootLabel.Visible = false;
 			this.ProfileFirstBootLabel.Click += new System.EventHandler(this.ProfileFirstBootLabel_Click);
-			// 
-			// toolStripStatusLabel1
-			// 
-			this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-			this.toolStripStatusLabel1.Size = new System.Drawing.Size(109, 17);
-			this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
 			// 
 			// MainFormContextMenu
 			// 
@@ -3609,8 +3601,7 @@
 		private System.Windows.Forms.ToolStripMenuItem MovieEndRecordMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MovieEndStopMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MovieEndPauseMenuItem;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
-				private System.Windows.Forms.ToolStripMenuItem ScreenshotClientClipboardMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ScreenshotClientClipboardMenuItem;
 	}
 }
 
