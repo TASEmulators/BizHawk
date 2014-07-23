@@ -3091,6 +3091,18 @@ namespace BizHawk.Client.EmuHawk
 
 					Global.Game.Status = nes.RomStatus;
 				}
+				else if (loader.LoadedEmulator is QuickNES)
+				{
+					var qns = loader.LoadedEmulator as QuickNES;
+					if (!string.IsNullOrWhiteSpace(qns.BootGodName))
+					{
+						Global.Game.Name = qns.BootGodName;
+					}
+					if (qns.BootGodStatus.HasValue)
+					{
+						Global.Game.Status = qns.BootGodStatus.Value;
+					}
+				}
 
 				SetWindowText();
 
