@@ -32,6 +32,7 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " X Axis",
+						MaxValue = 127,
 						DisplayName = "",
 						Location = new Point(6, 14),
 						Type = PadSchema.PadInputType.AnalogStick

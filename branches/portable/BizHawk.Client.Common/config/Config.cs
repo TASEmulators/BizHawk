@@ -58,7 +58,6 @@ namespace BizHawk.Client.Common
 		#endif
 
 		// General Client Settings
-		public bool DontAskPerformanceCoreRecordingNag = false;
 		public int Input_Hotkey_OverrideOptions = 0;
 		public bool StackOSDMessages = true;
 		public int TargetZoomFactor = 2;

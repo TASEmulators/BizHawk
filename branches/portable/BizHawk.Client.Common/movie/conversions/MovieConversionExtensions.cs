@@ -1,6 +1,7 @@
 ﻿using System;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.Common.MovieConversionExtensions
 {
@@ -84,7 +85,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 		{
 			movie.Author = author ?? Global.Config.DefaultAuthor;
 			movie.EmulatorVersion = VersionInfo.GetEmuVersion();
-			movie.SystemID = Global.Game.System;
+			movie.SystemID = Global.Emulator.SystemId;
 
 			movie.SyncSettingsJson = ConfigService.SaveWithType(Global.Emulator.GetSyncSettings());
 
@@ -114,6 +115,11 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				{
 					movie.HeaderEntries.Add(HeaderKeys.PAL, "1");
 				}
+			}
+
+			if (Global.Emulator is Gameboy && (Global.Emulator as Gameboy).IsCGBMode())
+			{
+				movie.HeaderEntries.Add("IsCGBMode", "1");
 			}
 
 			movie.Core = ((CoreAttributes)Attribute

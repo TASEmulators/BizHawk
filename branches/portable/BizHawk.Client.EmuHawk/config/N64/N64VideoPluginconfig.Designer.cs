@@ -32,6 +32,9 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(N64VideoPluginconfig));
 			this.N64plugintabcontrol = new System.Windows.Forms.TabControl();
 			this.N64vpluginglobaltab = new System.Windows.Forms.TabPage();
+			this.jaboStatusLabel = new System.Windows.Forms.Label();
+			this.label49 = new System.Windows.Forms.Label();
+			this.RspTypeDropdown = new System.Windows.Forms.ComboBox();
 			this.label48 = new System.Windows.Forms.Label();
 			this.CoreTypeDropdown = new System.Windows.Forms.ComboBox();
 			this.label47 = new System.Windows.Forms.Label();
@@ -269,11 +272,12 @@
 			this.label58 = new System.Windows.Forms.Label();
 			this.Glide64mk2_filtering = new System.Windows.Forms.ComboBox();
 			this.Glide64mk2_UseDefaultHacks2 = new System.Windows.Forms.CheckBox();
+			this.JaboTab = new System.Windows.Forms.TabPage();
+			this.JaboPropertyGrid = new System.Windows.Forms.PropertyGrid();
 			this.SaveButton = new System.Windows.Forms.Button();
 			this.CancelBT = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.label49 = new System.Windows.Forms.Label();
-			this.RspTypeDropdown = new System.Windows.Forms.ComboBox();
+			this.jaboStatusDetailLabel = new System.Windows.Forms.Label();
 			this.N64plugintabcontrol.SuspendLayout();
 			this.N64vpluginglobaltab.SuspendLayout();
 			this.RiceTabPage.SuspendLayout();
@@ -294,6 +298,7 @@
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
 			this.tabPage3.SuspendLayout();
+			this.JaboTab.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// N64plugintabcontrol
@@ -305,6 +310,7 @@
 			this.N64plugintabcontrol.Controls.Add(this.RiceTabPage);
 			this.N64plugintabcontrol.Controls.Add(this.Glide64TabPage);
 			this.N64plugintabcontrol.Controls.Add(this.Glide64mk2TabPage);
+			this.N64plugintabcontrol.Controls.Add(this.JaboTab);
 			this.N64plugintabcontrol.Location = new System.Drawing.Point(-2, -2);
 			this.N64plugintabcontrol.Name = "N64plugintabcontrol";
 			this.N64plugintabcontrol.SelectedIndex = 0;
@@ -313,6 +319,8 @@
 			// 
 			// N64vpluginglobaltab
 			// 
+			this.N64vpluginglobaltab.Controls.Add(this.jaboStatusDetailLabel);
+			this.N64vpluginglobaltab.Controls.Add(this.jaboStatusLabel);
 			this.N64vpluginglobaltab.Controls.Add(this.label49);
 			this.N64vpluginglobaltab.Controls.Add(this.RspTypeDropdown);
 			this.N64vpluginglobaltab.Controls.Add(this.label48);
@@ -329,6 +337,37 @@
 			this.N64vpluginglobaltab.TabIndex = 0;
 			this.N64vpluginglobaltab.Text = "Global";
 			this.N64vpluginglobaltab.UseVisualStyleBackColor = true;
+			// 
+			// jaboStatusLabel
+			// 
+			this.jaboStatusLabel.AutoSize = true;
+			this.jaboStatusLabel.Location = new System.Drawing.Point(10, 137);
+			this.jaboStatusLabel.Name = "jaboStatusLabel";
+			this.jaboStatusLabel.Size = new System.Drawing.Size(63, 13);
+			this.jaboStatusLabel.TabIndex = 19;
+			this.jaboStatusLabel.Text = "Jabo Status";
+			// 
+			// label49
+			// 
+			this.label49.AutoSize = true;
+			this.label49.Location = new System.Drawing.Point(206, 13);
+			this.label49.Name = "label49";
+			this.label49.Size = new System.Drawing.Size(58, 13);
+			this.label49.TabIndex = 18;
+			this.label49.Text = "Rsp Plugin";
+			// 
+			// RspTypeDropdown
+			// 
+			this.RspTypeDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.RspTypeDropdown.FormattingEnabled = true;
+			this.RspTypeDropdown.Items.AddRange(new object[] {
+            "Pure Interpreter",
+            "Interpreter",
+            "DynaRec"});
+			this.RspTypeDropdown.Location = new System.Drawing.Point(209, 29);
+			this.RspTypeDropdown.Name = "RspTypeDropdown";
+			this.RspTypeDropdown.Size = new System.Drawing.Size(136, 21);
+			this.RspTypeDropdown.TabIndex = 17;
 			// 
 			// label48
 			// 
@@ -364,7 +403,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(10, 164);
+			this.label2.Location = new System.Drawing.Point(10, 201);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(87, 13);
 			this.label2.TabIndex = 13;
@@ -388,7 +427,7 @@
             "1600 x 1200",
             "1920 x 1440",
             "2048 x 1536"});
-			this.VideoResolutionComboBox.Location = new System.Drawing.Point(13, 180);
+			this.VideoResolutionComboBox.Location = new System.Drawing.Point(13, 217);
 			this.VideoResolutionComboBox.Name = "VideoResolutionComboBox";
 			this.VideoResolutionComboBox.Size = new System.Drawing.Size(136, 21);
 			this.VideoResolutionComboBox.TabIndex = 10;
@@ -400,11 +439,13 @@
 			this.PluginComboBox.Items.AddRange(new object[] {
             "Rice",
             "Glide64",
-            "Glide64mk2"});
+            "Glide64mk2",
+            "Jabo 1.6.1"});
 			this.PluginComboBox.Location = new System.Drawing.Point(13, 91);
 			this.PluginComboBox.Name = "PluginComboBox";
 			this.PluginComboBox.Size = new System.Drawing.Size(173, 21);
 			this.PluginComboBox.TabIndex = 5;
+			this.PluginComboBox.SelectedIndexChanged += new System.EventHandler(this.PluginComboBox_SelectedIndexChanged);
 			// 
 			// label1
 			// 
@@ -3185,6 +3226,26 @@
 			this.Glide64mk2_UseDefaultHacks2.UseVisualStyleBackColor = true;
 			this.Glide64mk2_UseDefaultHacks2.CheckedChanged += new System.EventHandler(this.Glide64mk2_UseDefaultHacks2_CheckedChanged);
 			// 
+			// JaboTab
+			// 
+			this.JaboTab.Controls.Add(this.JaboPropertyGrid);
+			this.JaboTab.Location = new System.Drawing.Point(4, 22);
+			this.JaboTab.Name = "JaboTab";
+			this.JaboTab.Size = new System.Drawing.Size(572, 343);
+			this.JaboTab.TabIndex = 7;
+			this.JaboTab.Text = "Jabo";
+			this.JaboTab.UseVisualStyleBackColor = true;
+			// 
+			// JaboPropertyGrid
+			// 
+			this.JaboPropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.JaboPropertyGrid.Location = new System.Drawing.Point(0, 0);
+			this.JaboPropertyGrid.Name = "JaboPropertyGrid";
+			this.JaboPropertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
+			this.JaboPropertyGrid.Size = new System.Drawing.Size(572, 343);
+			this.JaboPropertyGrid.TabIndex = 4;
+			this.JaboPropertyGrid.ToolbarVisible = false;
+			// 
 			// SaveButton
 			// 
 			this.SaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -3216,27 +3277,14 @@
 			this.toolTip1.ReshowDelay = 100;
 			this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 			// 
-			// label49
+			// jaboStatusDetailLabel
 			// 
-			this.label49.AutoSize = true;
-			this.label49.Location = new System.Drawing.Point(206, 13);
-			this.label49.Name = "label49";
-			this.label49.Size = new System.Drawing.Size(58, 13);
-			this.label49.TabIndex = 18;
-			this.label49.Text = "Rsp Plugin";
-			// 
-			// RspTypeDropdown
-			// 
-			this.RspTypeDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.RspTypeDropdown.FormattingEnabled = true;
-			this.RspTypeDropdown.Items.AddRange(new object[] {
-            "Pure Interpreter",
-            "Interpreter",
-            "DynaRec"});
-			this.RspTypeDropdown.Location = new System.Drawing.Point(209, 29);
-			this.RspTypeDropdown.Name = "RspTypeDropdown";
-			this.RspTypeDropdown.Size = new System.Drawing.Size(136, 21);
-			this.RspTypeDropdown.TabIndex = 17;
+			this.jaboStatusDetailLabel.AutoSize = true;
+			this.jaboStatusDetailLabel.Location = new System.Drawing.Point(10, 160);
+			this.jaboStatusDetailLabel.Name = "jaboStatusDetailLabel";
+			this.jaboStatusDetailLabel.Size = new System.Drawing.Size(91, 13);
+			this.jaboStatusDetailLabel.TabIndex = 20;
+			this.jaboStatusDetailLabel.Text = "Jabo Status detail";
 			// 
 			// N64VideoPluginconfig
 			// 
@@ -3286,6 +3334,7 @@
 			this.tabPage2.PerformLayout();
 			this.tabPage3.ResumeLayout(false);
 			this.tabPage3.PerformLayout();
+			this.JaboTab.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -3536,5 +3585,9 @@
 		private System.Windows.Forms.ComboBox CoreTypeDropdown;
 		private System.Windows.Forms.Label label49;
 		private System.Windows.Forms.ComboBox RspTypeDropdown;
+		private System.Windows.Forms.TabPage JaboTab;
+		private System.Windows.Forms.PropertyGrid JaboPropertyGrid;
+		private System.Windows.Forms.Label jaboStatusLabel;
+		private System.Windows.Forms.Label jaboStatusDetailLabel;
 	}
 }

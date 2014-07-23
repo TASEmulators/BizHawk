@@ -397,6 +397,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		{
 			[DefaultValue(8)]
 			[Description("Set the number of sprites visible per line.  0 hides all sprites, 8 behaves like a normal NES, and 64 is maximum.")]
+			[DisplayName("Visbile Sprites")]
 			public int NumSprites
 			{
 				get { return _NumSprites; }
@@ -407,10 +408,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 			[DefaultValue(false)]
 			[Description("Clip the left and right 8 pixels of the display, which sometimes contain nametable garbage.")]
+			[DisplayName("Clip Left and Right")]
 			public bool ClipLeftAndRight { get; set; }
 
 			[DefaultValue(false)]
 			[Description("Clip the top and bottom 8 pixels of the display, which sometimes contain nametable garbage.")]
+			[DisplayName("Clip Top and Bottom")]
 			public bool ClipTopAndBottom { get; set; }
 
 			[Browsable(false)]

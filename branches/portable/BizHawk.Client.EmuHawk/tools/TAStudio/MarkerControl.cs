@@ -38,13 +38,30 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var prev = Markers.PreviousOrCurrent(Global.Emulator.Frame);
 
-			if (prev != null)
+			if (prev != null && index == Markers.IndexOf(prev))
 			{
-				if (index == Markers.IndexOf(prev))
+				color = TAStudio.Marker_FrameCol;
+			}
+			else if (index < Tastudio.CurrentMovie.InputLogLength)
+			{
+				var record = Tastudio.CurrentMovie[index];
+				if (record.HasState && record.Lagged.HasValue)
 				{
-					color = Color.FromArgb(0xE0FBE0);
+					if (record.Lagged.Value)
+					{
+						color = column == 0 ? TAStudio.LagZone_FrameCol : TAStudio.LagZone_InputLog;
+					}
+					else
+					{
+						color = column == 0 ? TAStudio.GreenZone_FrameCol : TAStudio.GreenZone_InputLog;
+					}
+				}
+				else
+				{
+					color = Color.White;
 				}
 			}
+			
 		}
 
 		private void MarkerView_QueryItemText(int index, int column, out string text)

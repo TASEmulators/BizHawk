@@ -1,5 +1,7 @@
 #pragma once
 
+#include <objidl.h>
+
 const UINT PointerSetHashSize = 128;
 
 struct PointerLinkedList

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 
 #define M64P_PLUGIN_PROTOTYPES 1
 #include "m64p_types.h"
@@ -14,8 +15,10 @@
 
 #include "main.h"
 #include "typedefs.h"
+#include "Config.h"	
 
-#define LOG(x) { std::ofstream myfile; myfile.open ("jabo_wrapper_log.txt", std::ios::app); myfile << x << "\n"; myfile.close(); }
+//#define LOG(x) { std::ofstream myfile; myfile.open ("jabo_wrapper_log.txt", std::ios::app); myfile << x << "\n"; myfile.close(); }
+#define LOG(x)
 
 namespace OldAPI
 {
@@ -37,6 +40,19 @@ namespace OldAPI
 	ptr_GetDllInfo GetDllInfo = NULL;
 }
 
+ptr_ConfigOpenSection      ConfigOpenSection = NULL;
+ptr_ConfigSetParameter     ConfigSetParameter = NULL;
+ptr_ConfigGetParameter     ConfigGetParameter = NULL;
+ptr_ConfigGetParameterHelp ConfigGetParameterHelp = NULL;
+ptr_ConfigSetDefaultInt    ConfigSetDefaultInt = NULL;
+ptr_ConfigSetDefaultFloat  ConfigSetDefaultFloat = NULL;
+ptr_ConfigSetDefaultBool   ConfigSetDefaultBool = NULL;
+ptr_ConfigSetDefaultString ConfigSetDefaultString = NULL;
+ptr_ConfigGetParamInt      ConfigGetParamInt = NULL;
+ptr_ConfigGetParamFloat    ConfigGetParamFloat = NULL;
+ptr_ConfigGetParamBool     ConfigGetParamBool = NULL;
+ptr_ConfigGetParamString   ConfigGetParamString = NULL;
+
 /* local variables */
 static void (*l_DebugCallback)(void *, int, const char *) = NULL;
 static void *l_DebugCallContext = NULL;
@@ -45,16 +61,23 @@ static int l_PluginInit = 0;
 HMODULE JaboDLL;
 HWND hWnd_jabo;
 
+HANDLE window_thread = NULL;
+
 HMODULE D3D8Dll;
 
 typedef void (*ptr_D3D8_SetRenderingCallback)(void (*callback)(int));
 ptr_D3D8_SetRenderingCallback D3D8_SetRenderingCallback = NULL;
 typedef void (*ptr_D3D8_ReadScreen)(void *dest, int *width, int *height);
 ptr_D3D8_ReadScreen D3D8_ReadScreen = NULL;
+typedef void (*ptr_D3D8_CloseDLL)();
+ptr_D3D8_CloseDLL D3D8_CloseDLL = NULL;
+
+DWORD old_options;
+DWORD old_initflags;
 
 void setup_jabo_functions()
 {
-	JaboDLL = LoadLibrary("Jabotard_Direct3D8.dll");
+	JaboDLL = LoadLibrary("Jabo_Direct3D8_patched.dll");
 
 	if (JaboDLL != NULL)
 	{
@@ -80,7 +103,97 @@ void setup_jabo_functions()
 	{
 		D3D8_SetRenderingCallback = (ptr_D3D8_SetRenderingCallback)GetProcAddress(D3D8Dll,"SetRenderingCallback");
 		D3D8_ReadScreen = (ptr_D3D8_ReadScreen)GetProcAddress(D3D8Dll,"ReadScreen");
+		D3D8_CloseDLL = (ptr_D3D8_CloseDLL)GetProcAddress(D3D8Dll,"CloseDLL");
 	}
+}
+
+BOOL readOptionsInitflags (DWORD* options_val, DWORD* initflags_val)
+{
+	HKEY mainkey;
+	if (RegOpenKeyEx(HKEY_CURRENT_USER,"Software\\JaboSoft\\Project64 DLL\\Direct3D8 1.6.1",0,KEY_READ,&mainkey) != ERROR_SUCCESS)
+	{
+		// key doesn't exist, so we need to create it first
+		if (RegCreateKeyEx(HKEY_CURRENT_USER,"Software\\JaboSoft\\Project64 DLL\\Direct3D8 1.6.1",NULL,NULL,NULL,KEY_READ,NULL,&mainkey,NULL) != ERROR_SUCCESS)
+		{
+			// Couldn't create the key
+			return (FALSE);
+		}
+	}
+
+	// Key exists, try to find the Options Value
+	DWORD type;
+	DWORD cbData;
+	int options_value;
+	LSTATUS result = RegQueryValueEx(mainkey, "Options", NULL, &type, (LPBYTE)&options_value, &cbData);
+	if (result != ERROR_SUCCESS)
+	{
+		options_value = 0;
+	}
+	*options_val = options_value;
+
+	// Try to find the Direct3D init flags subkey Value
+	int initflags_value;
+	result = RegQueryValueEx(mainkey, "Direct3D8.InitFlags", NULL, &type, (LPBYTE)&initflags_value, &cbData);
+	if (result != ERROR_SUCCESS)
+	{
+		initflags_value = 0x00e00000;
+	}
+	*initflags_val = initflags_value;
+
+	RegCloseKey(mainkey);
+	return(TRUE);
+}
+
+BOOL writeOptionsInitflags(DWORD options_val, DWORD initflags_val)
+{
+	// Open the key for writing
+	HKEY mainkey;
+	if (RegOpenKeyEx(HKEY_CURRENT_USER,"Software\\JaboSoft\\Project64 DLL\\Direct3D8 1.6.1",0,KEY_WRITE,&mainkey) != ERROR_SUCCESS)
+	{
+		//LOG("Failure to open key for write");
+		return (FALSE);
+	}
+
+	// Store our options value
+	DWORD new_val = options_val;
+	if (RegSetValueEx(mainkey, "Options", NULL, REG_DWORD, (BYTE *)&new_val, 4) != ERROR_SUCCESS)
+	{
+		//LOG("Couldn't write options value");
+	}
+
+	// Store our init flags value
+	new_val = initflags_val;
+	if (RegSetValueEx(mainkey, "Direct3D8.InitFlags", NULL, REG_DWORD, (BYTE *)&new_val, 4) != ERROR_SUCCESS)
+	{
+		//LOG("Couldn't write init flags value");
+	}
+
+	RegCloseKey(mainkey);
+	return(TRUE);
+}
+
+void createRDBFile(unsigned char * header, int resolution_width, int resolution_height, int clear_mode)
+{
+	std::ofstream rdbFile;
+	rdbFile.open("Project64.rdb", std::ios::trunc | std::ios::out);
+
+	// File can't seem to have data on the first line. It has to be a comment or blank
+	rdbFile << "\n";
+
+	rdbFile << "[";
+
+	rdbFile << std::hex << std::setfill('0') << std::setw(2) << std::uppercase;
+	rdbFile << (int)header[16] << (int)header[17] << (int)header[18] << (int)header[19];
+	rdbFile << "-";
+	rdbFile << (int)header[20] << (int)header[21] << (int)header[22] << (int)header[23];
+	rdbFile << "-C:";
+	rdbFile << (int)header[62] << "]\n";
+
+	rdbFile << std::dec << std::nouppercase;
+	rdbFile << "Clear Frame=" << clear_mode << "\n";
+	rdbFile << "Resolution Width=" << resolution_width << "\n";
+	rdbFile << "Resolution Height=" << resolution_height << "\n";
+	rdbFile.close();
 }
 
 /* Global functions */
@@ -137,6 +250,18 @@ EXPORT m64p_error CALL PluginStartup(m64p_dynlib_handle CoreLibHandle, void *Con
         return M64ERR_INCOMPATIBLE;
     }
 
+	ConfigOpenSection = (ptr_ConfigOpenSection) GetProcAddress(CoreLibHandle, "ConfigOpenSection");
+    ConfigSetParameter = (ptr_ConfigSetParameter) GetProcAddress(CoreLibHandle, "ConfigSetParameter");
+    ConfigGetParameter = (ptr_ConfigGetParameter) GetProcAddress(CoreLibHandle, "ConfigGetParameter");
+    ConfigSetDefaultInt = (ptr_ConfigSetDefaultInt) GetProcAddress(CoreLibHandle, "ConfigSetDefaultInt");
+    ConfigSetDefaultFloat = (ptr_ConfigSetDefaultFloat) GetProcAddress(CoreLibHandle, "ConfigSetDefaultFloat");
+    ConfigSetDefaultBool = (ptr_ConfigSetDefaultBool) GetProcAddress(CoreLibHandle, "ConfigSetDefaultBool");
+    ConfigSetDefaultString = (ptr_ConfigSetDefaultString) GetProcAddress(CoreLibHandle, "ConfigSetDefaultString");
+    ConfigGetParamInt = (ptr_ConfigGetParamInt) GetProcAddress(CoreLibHandle, "ConfigGetParamInt");
+    ConfigGetParamFloat = (ptr_ConfigGetParamFloat) GetProcAddress(CoreLibHandle, "ConfigGetParamFloat");
+    ConfigGetParamBool = (ptr_ConfigGetParamBool) GetProcAddress(CoreLibHandle, "ConfigGetParamBool");
+    ConfigGetParamString = (ptr_ConfigGetParamString) GetProcAddress(CoreLibHandle, "ConfigGetParamString");
+
     l_PluginInit = 1;
     return M64ERR_SUCCESS;
 }
@@ -146,6 +271,13 @@ EXPORT m64p_error CALL PluginShutdown(void)
 {
 	LOG("API WRAPPER:\t PluginShutdown")
 	OldAPI::CloseDLL();
+
+	TerminateThread(window_thread,0);
+	D3D8_CloseDLL();
+	FreeLibrary(D3D8Dll);
+	FreeLibrary(JaboDLL);
+
+	writeOptionsInitflags(old_options,old_initflags);
 
     if (!l_PluginInit)
         return M64ERR_NOT_INIT;
@@ -163,6 +295,8 @@ EXPORT int CALL RomOpen(void)
 {
 	LOG("API WRAPPER:\t RomOpen")
 	OldAPI::RomOpen();
+
+	remove("Project64.rdb");
 
     if (!l_PluginInit)
         return 0;
@@ -223,6 +357,63 @@ EXPORT int CALL InitiateGFX(GFX_INFO Gfx_Info)
 {
 	LOG("API WRAPPER:\t InitiateGFX")
 
+	Config_Open();
+
+	SETTINGS settings;
+	settings.anisotropic_level = (int)Config_ReadInt("anisotropic_level","ANISOTROPIC_FILTERING_LEVEL",0,TRUE,FALSE);
+	settings.brightness = (int)Config_ReadInt("brightness","Brightness level",0,TRUE,FALSE);
+	settings.antialiasing_level = (int)Config_ReadInt("antialiasing_level","Antialiasing level",0,TRUE,FALSE);
+	settings.super2xsal = (BOOL)Config_ReadInt("super2xsal","Enables Super2xSal textures",FALSE);
+	settings.texture_filter = (BOOL)Config_ReadInt("texture_filter","Always use texture filter",FALSE);
+	settings.adjust_aspect_ratio = (BOOL)Config_ReadInt("adjust_aspect_ratio","Adjust game aspect ratio to match yours",FALSE);
+	settings.legacy_pixel_pipeline = (BOOL)Config_ReadInt("legacy_pixel_pipeline","Use legacy pixel pipeline",FALSE);
+	settings.alpha_blending = (BOOL)Config_ReadInt("alpha_blending","Force alpha blending",FALSE);
+
+	// As far as I can tell there is no way to apply this setting without opening the dll config window
+	//settings.wireframe = (BOOL)Config_ReadInt("wireframe","Wireframe rendering",FALSE);
+
+	settings.direct3d_transformation_pipeline = (BOOL)Config_ReadInt("direct3d_transformation_pipeline","Use Direct3D transformation pipeline",FALSE);
+	settings.z_compare = (BOOL)Config_ReadInt("z_compare","Force Z Compare",FALSE);
+	settings.copy_framebuffer = (BOOL)Config_ReadInt("copy_framebuffer","Copy framebuffer to RDRAM",FALSE);
+	settings.resolution_width = (int)Config_ReadInt("resolution_width","Emulated Width",-1,TRUE,FALSE);
+	settings.resolution_height = (int)Config_ReadInt("resolution_height","Emulated Height",-1,TRUE,FALSE);
+	settings.clear_mode = (int)Config_ReadInt("clear_mode","Direct3D Clear Mode Height",0,TRUE,FALSE);
+
+	DWORD new_options_val = 0;
+	if (settings.copy_framebuffer == TRUE) { new_options_val |= 0x20000000; }
+	if (settings.z_compare == TRUE) { new_options_val |= 0x10000000; }
+	if (settings.legacy_pixel_pipeline == TRUE) { new_options_val |= 0x08000000; }
+	if (settings.alpha_blending == TRUE) { new_options_val |= 0x04000000; }
+	if (settings.adjust_aspect_ratio == TRUE) { new_options_val |= 0x02000000; }
+	if (settings.texture_filter == TRUE) { new_options_val |= 0x01000000; }
+	if (settings.super2xsal == TRUE) { new_options_val |= 0x00001000; }
+	new_options_val |= (((settings.brightness - 100) / 3) & 0x1F) << 19;
+	switch (settings.antialiasing_level)
+	{
+		case 1: new_options_val |= 0x00004004; break;
+		case 2: new_options_val |= 0x00008004; break;
+		case 3: new_options_val |= 0x00010004; break;
+	}
+	switch (settings.anisotropic_level)
+	{
+		case 1: new_options_val |= 0x00000024; break;
+		case 2: new_options_val |= 0x00000044; break;
+		case 3: new_options_val |= 0x00000084; break;
+		case 4: new_options_val |= 0x00000104; break;
+	}
+
+	// Force 800x600 for now
+	new_options_val |= 0x00000004;
+
+	DWORD new_initflags_val = 0x00e00000;
+	if (settings.direct3d_transformation_pipeline == TRUE) { new_initflags_val = 0x00a00000; }
+
+	readOptionsInitflags(&old_options,&old_initflags);
+
+	writeOptionsInitflags(new_options_val,new_initflags_val);
+
+	createRDBFile(Gfx_Info.HEADER, settings.resolution_height, settings.resolution_width, settings.clear_mode);
+
 	OldAPI::GFX_INFO blah;
 
 	blah.hWnd = hWnd_jabo;
@@ -264,7 +455,6 @@ EXPORT int CALL InitiateGFX(GFX_INFO Gfx_Info)
 	blah.CheckInterrupts = Gfx_Info.CheckInterrupts;
 
 	OldAPI::InitiateGFX(blah);
-	OldAPI::DllConfig(hWnd_jabo);
 
     return(TRUE);
 }
@@ -319,8 +509,6 @@ EXPORT void CALL ReadScreen2(void *dest, int *width, int *height, int bFront)
 	{
 		D3D8_ReadScreen(dest, width, height);
 	}
-	//*width = 800;
-	//*height = 600;
 }
 
 // TODO
@@ -378,6 +566,8 @@ BOOL RegisterDLLWindowClass(char szClassName[])
     
     if (!RegisterClassEx (&wc))
 		return 0;
+
+	return 0;
 }
 
 //The new thread
@@ -387,7 +577,7 @@ DWORD WINAPI ThreadProc( LPVOID lpParam )
 	char *pString = (char *)(lpParam);
 	RegisterDLLWindowClass("InjectedDLLWindowClass");
 	hWnd_jabo = CreateWindowEx (0, "InjectedDLLWindowClass", pString, WS_OVERLAPPEDWINDOW, 300, 300, 400, 300, NULL, NULL,inj_hModule, NULL );
-	ShowWindow (hWnd_jabo, SW_SHOWNORMAL);
+	ShowWindow (hWnd_jabo, SW_HIDE);
     while (GetMessage (&messages, NULL, 0, 0))
     {
 		TranslateMessage(&messages);
@@ -416,7 +606,7 @@ BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call,LPVOID lpReser
 {
 	if(ul_reason_for_call==DLL_PROCESS_ATTACH) {
 		inj_hModule = hModule;
-		CreateThread(0, NULL, ThreadProc, (LPVOID)"Window Title", NULL, NULL);
+		window_thread = CreateThread(0, NULL, ThreadProc, (LPVOID)"Window Title", NULL, NULL);
 	}
 	return TRUE;
 }

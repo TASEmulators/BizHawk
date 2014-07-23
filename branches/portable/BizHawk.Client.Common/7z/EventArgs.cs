@@ -20,6 +20,17 @@ using System.IO;
 namespace SevenZip
 {
     /// <summary>
+    /// The definition of the interface which supports the cancellation of a process.
+    /// </summary>
+    public interface ICancellable
+    {
+        /// <summary>
+        /// Gets or sets whether to stop the current archive operation.
+        /// </summary>
+        bool Cancel { get; set; }
+    }
+
+    /// <summary>
     /// EventArgs for storing PercentDone property.
     /// </summary>
     public class PercentDoneEventArgs : EventArgs
@@ -50,12 +61,7 @@ namespace SevenZip
             {
                 return _percentDone;
             }
-        }
-
-        /// <summary>
-        /// Gets or sets whether to stop the current archive operation.
-        /// </summary>
-        public bool Cancel { get; set; }
+        }        
 
         /// <summary>
         /// Converts a [0, 1] rate to its percent equivalent.
@@ -107,7 +113,7 @@ namespace SevenZip
     /// <summary>
     /// EventArgs used to report the file information which is going to be packed.
     /// </summary>
-    public sealed class FileInfoEventArgs : PercentDoneEventArgs
+    public sealed class FileInfoEventArgs : PercentDoneEventArgs, ICancellable
     {
         private readonly ArchiveFileInfo _fileInfo;
 
@@ -121,6 +127,11 @@ namespace SevenZip
         {
             _fileInfo = fileInfo;
         }
+
+        /// <summary>
+        /// Gets or sets whether to stop the current archive operation.
+        /// </summary>
+        public bool Cancel { get; set; }
 
         /// <summary>
         /// Gets the corresponding FileInfo to the event.
@@ -145,6 +156,7 @@ namespace SevenZip
         /// Initializes a new instance of the OpenEventArgs class
         /// </summary>
         /// <param name="totalSize">Size of unpacked archive data</param>
+        [CLSCompliant(false)]
         public OpenEventArgs(ulong totalSize)
         {
             _totalSize = totalSize;
@@ -153,6 +165,7 @@ namespace SevenZip
         /// <summary>
         /// Gets the size of unpacked archive data
         /// </summary>
+        [CLSCompliant(false)]
         public ulong TotalSize
         {
             get
@@ -193,7 +206,7 @@ namespace SevenZip
     /// <summary>
     /// EventArgs class which stores the file name.
     /// </summary>
-    public sealed class FileNameEventArgs : PercentDoneEventArgs
+    public sealed class FileNameEventArgs : PercentDoneEventArgs, ICancellable
     {
         private readonly string _fileName;
 
@@ -207,6 +220,11 @@ namespace SevenZip
         {
             _fileName = fileName;
         }
+
+        /// <summary>
+        /// Gets or sets whether to stop the current archive operation.
+        /// </summary>
+        public bool Cancel { get; set; }
 
         /// <summary>
         /// Gets the file name.

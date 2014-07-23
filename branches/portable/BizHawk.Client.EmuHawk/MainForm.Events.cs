@@ -3,8 +3,8 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.ColecoVision;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
@@ -13,8 +13,10 @@ using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
+
+using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.config.NES;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
+using BizHawk.Client.EmuHawk.CustomControls;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -404,21 +406,20 @@ namespace BizHawk.Client.EmuHawk
 			else if (Global.Emulator is LibsnesCore)
 			{
 				var ss = (LibsnesCore.SnesSyncSettings)Global.Emulator.GetSyncSettings();
-				if (ss.Profile == "Performance" && !Global.Config.DontAskPerformanceCoreRecordingNag)
+				if (ss.Profile == "Performance")
 				{
 					var box = new MsgBox(
-						"While the performance core is faster, it is recommended that you use the Compatibility profile when recording movies for better accuracy and stability\n\nSwitch to Compatibility?",
+						"While the performance core is faster, it is not stable enough for movie recording\n\nSwitch to Compatibility?",
 						"Stability Warning",
 						MessageBoxIcon.Warning);
 
 					box.SetButtons(
-						new[] { "Switch", "Continue", "Cancel" },
-						new[] { DialogResult.Yes, DialogResult.No, DialogResult.Cancel });
-					box.SetCheckbox("Don't ask me again");
+						new[] { "Switch", "Cancel" },
+						new[] { DialogResult.Yes, DialogResult.Cancel });
+					
 					box.MaximumSize = new Size(450, 350);
 					box.SetMessageToAutoSize();
 					var result = box.ShowDialog();
-					Global.Config.DontAskPerformanceCoreRecordingNag = box.CheckboxChecked;
 
 					if (result == DialogResult.Yes)
 					{
@@ -570,6 +571,18 @@ namespace BizHawk.Client.EmuHawk
 		private void ScreenshotClipboardMenuItem_Click(object sender, EventArgs e)
 		{
 			TakeScreenshotToClipboard();
+		}
+
+		private void ScreenshotClientClipboardMenuItem_Click(object sender, EventArgs e)
+		{
+			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider, Global.Config.Screenshot_CaptureOSD))
+			{
+				bb.Normalize(true);
+				using (var img = bb.ToSysdrawingBitmap())
+					Clipboard.SetImage(img);
+			}
+
+			GlobalWin.OSD.AddMessage("Screenshot (client) saved to clipboard.");
 		}
 
 		private void ScreenshotCaptureOSDMenuItem_Click(object sender, EventArgs e)
@@ -762,7 +775,6 @@ namespace BizHawk.Client.EmuHawk
 		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ControllersMenuItem.Enabled = !(Global.Emulator is NullEmulator);
-			ProfilesMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
 
 		private void FrameSkipMenuItem_DropDownOpened(object sender, EventArgs e)

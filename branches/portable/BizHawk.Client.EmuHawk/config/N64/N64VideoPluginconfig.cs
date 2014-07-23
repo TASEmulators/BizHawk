@@ -3,19 +3,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
+using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ControlExtensions;
-
-
-using BizHawk.Common;
+using System.IO;
+using System.Security.Cryptography;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class N64VideoPluginconfig : Form
 	{
+		private N64Settings s;
+		private N64SyncSettings ss;
+
+		private enum JaboStatus
+		{
+			NotReady,
+			ReadyToPatch,
+			Ready,
+			WrongVersion21,
+			WrongVersion16
+		};
+
+		private JaboStatus currentJaboStatus = JaboStatus.NotReady;
+		private string previousPluginSelection = string.Empty;
+		private bool programmaticallyChangingPluginComboBox = false;
+
 		public N64VideoPluginconfig()
 		{
 			InitializeComponent();
@@ -88,22 +104,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveSettings()
 		{
-			var s = GetSettings();
-			var ss = GetSyncSettings();
-
-			//Global
+			// Global
 			var video_settings = VideoResolutionComboBox.SelectedItem.ToString();
 			var strArr = video_settings.Split('x');
-			s.VideoSizeX = Int32.Parse(strArr[0].Trim());
-			s.VideoSizeY = Int32.Parse(strArr[1].Trim());
+			s.VideoSizeX = int.Parse(strArr[0].Trim());
+			s.VideoSizeY = int.Parse(strArr[1].Trim());
 			switch (PluginComboBox.Text)
 			{
-				case "Rice": ss.VidPlugin = PLUGINTYPE.RICE; break;
-				case "Glide64": ss.VidPlugin = PLUGINTYPE.GLIDE; break;
-				case "Glide64mk2": ss.VidPlugin = PLUGINTYPE.GLIDE64MK2; break;
+				case "Rice": ss.VideoPlugin = PluginType.Rice; break;
+				case "Glide64": ss.VideoPlugin = PluginType.Glide; break;
+				case "Glide64mk2": ss.VideoPlugin = PluginType.GlideMk2; break;
+				case "Jabo 1.6.1": ss.VideoPlugin = PluginType.Jabo; break;
 			}
 
-			//Rice
+			// Rice
 			ss.RicePlugin.NormalAlphaBlender = RiceNormalAlphaBlender_CB.Checked;
 			ss.RicePlugin.FastTextureLoading = RiceFastTextureLoading_CB.Checked;
 			ss.RicePlugin.AccurateTextureMapping = RiceAccurateTextureMapping_CB.Checked;
@@ -322,13 +336,13 @@ namespace BizHawk.Client.EmuHawk
 			ss.Glide64mk2Plugin.fast_crc = Glide64mk2_fast_crc.Checked;
 
 
-			ss.CoreType = CoreTypeDropdown.SelectedItem
+			ss.Core = CoreTypeDropdown.SelectedItem
 				.ToString()
-				.GetEnumFromDescription<N64SyncSettings.CORETYPE>();
+				.GetEnumFromDescription<N64SyncSettings.CoreType>();
 
-			ss.RspType = RspTypeDropdown.SelectedItem
+			ss.Rsp = RspTypeDropdown.SelectedItem
 				.ToString()
-				.GetEnumFromDescription<N64SyncSettings.RSPTYPE>();
+				.GetEnumFromDescription<N64SyncSettings.RspType>();
 
 			PutSettings(s);
 			PutSyncSettings(ss);
@@ -336,14 +350,54 @@ namespace BizHawk.Client.EmuHawk
 
 		private void N64VideoPluginconfig_Load(object sender, EventArgs e)
 		{
-			var s = GetSettings();
-			var ss = GetSyncSettings();
+			if (!VersionInfo.DeveloperBuild)
+			{
+				PluginComboBox.Items.Remove("Jabo 1.6.1");
+			}
 
-			CoreTypeDropdown.PopulateFromEnum<N64SyncSettings.CORETYPE>(ss.CoreType);
-			RspTypeDropdown.PopulateFromEnum<N64SyncSettings.RSPTYPE>(ss.RspType);
+			if (File.Exists("dll\\Jabo_Direct3D8_patched.dll"))
+			{
+				byte[] hash = MD5.Create().ComputeHash(File.ReadAllBytes("dll\\Jabo_Direct3D8_patched.dll"));
+				string hash_string = BitConverter.ToString(hash).Replace("-", "");
+				if (hash_string == "F4D6E624489CD88C68A5850426D4D70E")
+				{
+					// jabo is ready to go
+					currentJaboStatus = JaboStatus.Ready;
+				}
+			}
+			else if (File.Exists("dll\\Jabo_Direct3D8.dll"))
+			{
+				byte[] hash = MD5.Create().ComputeHash(File.ReadAllBytes("dll\\Jabo_Direct3D8.dll"));
+				string hash_string = BitConverter.ToString(hash).Replace("-", "");
+				if (hash_string == "4F353AA71E7455B81205D8EC0AA339E1")
+				{
+					// jabo will be patched when a rom is loaded. user is ready to go
+					currentJaboStatus = JaboStatus.ReadyToPatch;
+				}
+				else if (hash_string == "4A4173928ED33735157A8D8CD14D4C9C")
+				{
+					// wrong jabo installed (2.0)
+					currentJaboStatus = JaboStatus.WrongVersion21;
+				}
+				else if (hash_string == "FF57F60C58EDE6364B980EDCB311873B")
+				{
+					// wrong jabo installed (1.6)
+					currentJaboStatus = JaboStatus.WrongVersion16;
+				}
+				else
+				{
+					// this is not the right file
+				}
+			}
 
-			//Load Variables
-			//Global
+			s = GetSettings();
+			ss = GetSyncSettings();
+
+			CoreTypeDropdown.PopulateFromEnum<N64SyncSettings.CoreType>(ss.Core);
+			RspTypeDropdown.PopulateFromEnum<N64SyncSettings.RspType>(ss.Rsp);
+
+			JaboPropertyGrid.SelectedObject = ss.JaboPlugin;
+
 			var video_setting = s.VideoSizeX
 						+ " x "
 						+ s.VideoSizeY;
@@ -353,11 +407,24 @@ namespace BizHawk.Client.EmuHawk
 			{
 				VideoResolutionComboBox.SelectedIndex = index;
 			}
-			switch (ss.VidPlugin)
+			switch (ss.VideoPlugin)
 			{
-				case PLUGINTYPE.GLIDE64MK2: PluginComboBox.Text = "Glide64mk2"; break;
-				case PLUGINTYPE.GLIDE: PluginComboBox.Text = "Glide64"; break;
-				case PLUGINTYPE.RICE: PluginComboBox.Text = "Rice"; break;
+				case PluginType.GlideMk2:
+					PluginComboBox.Text = "Glide64mk2";
+					break;
+				case PluginType.Glide:
+					PluginComboBox.Text = "Glide64";
+					break;
+				case PluginType.Rice:
+					PluginComboBox.Text = "Rice";
+					break;
+				case PluginType.Jabo:
+					if (VersionInfo.DeveloperBuild)
+					{
+						PluginComboBox.Text = "Jabo 1.6.1";
+					}
+
+					break;
 			}
 
 			//Rice
@@ -850,6 +917,50 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Glide64mk2_UseDefaultHacks1.Checked = Glide64mk2_UseDefaultHacks2.Checked;
 			UpdateGlide64mk2HacksSection();
+		}
+
+		private void PluginComboBox_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (programmaticallyChangingPluginComboBox)
+			{
+				return;
+			}
+
+			if (PluginComboBox.Text == "Jabo 1.6.1")
+			{
+				if (currentJaboStatus == JaboStatus.Ready || currentJaboStatus == JaboStatus.ReadyToPatch)
+				{
+					jaboStatusLabel.Text = "You are ready to use Jabo.";
+					jaboStatusDetailLabel.Text = "";
+				}
+				else
+				{
+					jaboStatusDetailLabel.Text = "To use Jabo please copy Jabo_Direct3D8.dll from a Project64 v1.6.1 installation into Bizhawk's dll directory.";
+					if (currentJaboStatus == JaboStatus.NotReady)
+					{
+						jaboStatusLabel.Text = "You are NOT ready to use Jabo.";
+					}
+					else if (currentJaboStatus == JaboStatus.WrongVersion16)
+					{
+						jaboStatusLabel.Text = "You are NOT ready to use Jabo. Bizhawk requires Jabo Direct3D8 v1.6.1, but found v1.6 instead.";
+					}
+					else if (currentJaboStatus == JaboStatus.WrongVersion21)
+					{
+						jaboStatusLabel.Text = "You are NOT ready to use Jabo. Bizhawk requires Jabo Direct3D8 v1.6.1, but found v2.0 instead.";
+					}
+
+					programmaticallyChangingPluginComboBox = true;
+					PluginComboBox.SelectedItem = previousPluginSelection;
+					programmaticallyChangingPluginComboBox = false;
+				}
+			}
+			else
+			{
+				jaboStatusLabel.Text = "";
+				jaboStatusDetailLabel.Text = "";
+			}
+
+			previousPluginSelection = PluginComboBox.SelectedItem.ToString();
 		}
 
 	}

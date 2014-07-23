@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
-			Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
+			SetWindowText();
 
 			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
 
@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 			new AutoResetEvent(false);
 			Icon = Properties.Resources.logo;
 			InitializeComponent();
-			Global.Game = GameInfo.GetNullGame();
+			Global.Game = GameInfo.NullInstance;
 			if (Global.Config.ShowLogWindow)
 			{
 				LogConsole.ShowConsole();
@@ -318,11 +318,11 @@ namespace BizHawk.Client.EmuHawk
 				ToggleFullscreen();
 			}
 
-			if (cmdLoadState != null && Global.Game != null)
+			if (cmdLoadState != null && !Global.Game.IsNullInstance)
 			{
 				LoadQuickSave("QuickSave" + cmdLoadState);
 			}
-			else if (Global.Config.AutoLoadLastSaveSlot && Global.Game != null)
+			else if (Global.Config.AutoLoadLastSaveSlot && !Global.Game.IsNullInstance)
 			{
 				LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
 			}
@@ -453,6 +453,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			UpdateStatusSlots();
+			SetMainformMovieInfo();
 
 			//TODO POOP
 			GlobalWin.PresentationPanel.Control.Paint += (o, e) =>
@@ -831,7 +832,7 @@ namespace BizHawk.Client.EmuHawk
 					Clipboard.SetImage(img);
 			}
 
-			GlobalWin.OSD.AddMessage("Screenshot saved to clipboard.");
+			GlobalWin.OSD.AddMessage("Screenshot (raw) saved to clipboard.");
 		}
 
 		public void TakeScreenshot()
@@ -1192,6 +1193,49 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Private methods
 
+		private static string DisplayNameForSystem(string system)
+		{
+			if (system == "NULL")
+			{
+				//Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
+				//return;
+			}
+
+			var str = Global.SystemInfo.DisplayName;
+
+			if (VersionInfo.DeveloperBuild)
+			{
+				str += " (interim)";
+			}
+
+			return str;
+		}
+
+		private void SetWindowText()
+		{
+			if (Global.Emulator is NullEmulator)
+			{
+				Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
+				return;
+			}
+
+			var str = Global.SystemInfo.DisplayName;
+
+			if (VersionInfo.DeveloperBuild)
+			{
+				str += " (interim)";
+			}
+
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				Text = str + " - " + Global.Game.Name + " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
+			}
+			else
+			{
+				Text = str + " - " + Global.Game.Name;
+			}
+		}
+
 		private void ClearAutohold()
 		{
 			ClearHolds();
@@ -1378,7 +1422,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var system = string.Empty;
 
-			if (Global.Game != null)
+			if (!Global.Game.IsNullInstance)
 			{
 				system = Global.Game.System;
 			}
@@ -1464,18 +1508,6 @@ namespace BizHawk.Client.EmuHawk
 					wonderSwanToolStripMenuItem.Visible = true;
 					break;
 			}
-		}
-
-		private static string DisplayNameForSystem(string system)
-		{
-			var str = Global.SystemInfo.DisplayName;
-
-			if (VersionInfo.DeveloperBuild)
-			{
-				str += " (interim)";
-			}
-
-			return str;
 		}
 
 		private static void InitControls()
@@ -1584,44 +1616,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static unsafe BitmapBuffer MakeScreenshotImage()
 		{
-			//var video = Global.Emulator.VideoProvider;
-			//var image = new Bitmap(video.BufferWidth, video.BufferHeight, PixelFormat.Format32bppArgb);
 			return new BitmapBuffer(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight, Global.Emulator.VideoProvider.GetVideoBuffer());
-
-			//this is all rotten.
-			//among other things, cores are required to set 0xFF000000 themselves
-			// TODO - replace with BitmapBuffer
-			//var framebuf = video.GetVideoBuffer();
-			//var bmpdata = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-			//int* ptr = (int*)bmpdata.Scan0.ToPointer();
-			//int stride = bmpdata.Stride / 4;
-			//for (int y = 0; y < video.BufferHeight; y++)
-			//{
-			//  for (int x = 0; x < video.BufferWidth; x++)
-			//  {
-			//    int col = framebuf[(y * video.BufferWidth) + x];
-
-			//    if (Global.Emulator is TI83)
-			//    {
-			//      if (col == 0)
-			//      {
-			//        col = Color.Black.ToArgb();
-			//      }
-			//      else
-			//      {
-			//        col = Color.White.ToArgb();
-			//      }
-			//    }
-
-			//    // make opaque
-			//    col |= unchecked((int)0xff000000);
-
-			//    ptr[(y * stride) + x] = col;
-			//  }
-			//}
-
-			//image.UnlockBits(bmpdata);
-			//return image;
 		}
 
 		private void SaveStateAs()
@@ -2027,7 +2022,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private BitmapBuffer CaptureOSD()
 		{
-			var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider);
+			var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider,true);
 			bb.Normalize(true);
 			return bb;
 		}
@@ -3112,7 +3107,7 @@ namespace BizHawk.Client.EmuHawk
 					Global.Game.Status = nes.RomStatus;
 				}
 
-				Text = DisplayNameForSystem(loader.Game.System) + " - " + Global.Game.Name;
+				SetWindowText();
 
 				Global.Rewinder.ResetRewindBuffer();
 
@@ -3172,6 +3167,10 @@ namespace BizHawk.Client.EmuHawk
 
 				RewireSound();
 				ToolHelpers.UpdateCheatRelatedTools(null, null);
+				if (Global.Config.AutoLoadLastSaveSlot && _stateSlots.HasSlot(Global.Config.SaveSlot))
+				{
+					LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
+				}
 				return true;
 			}
 			else
@@ -3279,7 +3278,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.CoreComm = CreateCoreComm();
 				CoreFileProvider.SyncCoreCommInputSignals();
 				Global.Emulator = new NullEmulator(Global.CoreComm);
-				Global.Game = GameInfo.GetNullGame();
+				Global.Game = GameInfo.NullInstance;
 
 				GlobalWin.Tools.Restart();
 
@@ -3366,5 +3365,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_master = null;
 		}
+
+	
 	}
 }
