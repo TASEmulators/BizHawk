@@ -543,14 +543,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public class BootGodDB
 		{
+			static object staticsyncroot = new object();
+			object syncroot = new object();
+
 			bool validate = true;
 
-			public static BootGodDB Instance;
-			public static Func<byte[]> GetDatabaseBytes;
+			private static BootGodDB _Instance;
+			public static BootGodDB Instance
+			{
+				get { lock (staticsyncroot) { return _Instance; } }
+			}
+			private static Func<byte[]> _GetDatabaseBytes;
+			public static Func<byte[]> GetDatabaseBytes
+			{
+				set { lock (staticsyncroot) { _GetDatabaseBytes = value; } }
+			}
 			public static void Initialize()
 			{
-				if(Instance == null) 
-					Instance = new BootGodDB();
+				lock (staticsyncroot)
+				{
+					if (_Instance == null)
+						_Instance = new BootGodDB();
+				}
 			}
 			int ParseSize(string str)
 			{
@@ -571,7 +585,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				//in anticipation of any slowness annoying people, and just for shits and giggles, i made a super fast parser
 				int state=0;
-				var xmlreader = XmlReader.Create(new MemoryStream(GetDatabaseBytes()));
+				var xmlreader = XmlReader.Create(new MemoryStream(_GetDatabaseBytes()));
 				CartInfo currCart = null;
 				string currName = null;
 				while (xmlreader.Read())
@@ -655,16 +669,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							break;
 					}
 				} //end xmlreader loop
-
-
 			}
 
 			Bag<string, CartInfo> sha1_table = new Bag<string, CartInfo>();
 
 			public List<CartInfo> Identify(string sha1)
 			{
-				if (!sha1_table.ContainsKey(sha1)) return new List<CartInfo>();
-				return sha1_table[sha1];
+				lock (syncroot)
+				{
+					if (!sha1_table.ContainsKey(sha1))
+						return new List<CartInfo>();
+					else
+						return sha1_table[sha1];
+				}
 			}
 		}
 	}

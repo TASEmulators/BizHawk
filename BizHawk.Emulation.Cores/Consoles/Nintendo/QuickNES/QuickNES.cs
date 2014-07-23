@@ -57,7 +57,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		static QuickNES()
 		{
 			LibQuickNES.qn_setup_mappers();
-			Emulation.Cores.Nintendo.NES.NES.BootGodDB.Initialize();
 		}
 
 		public QuickNES(CoreComm nextComm, byte[] Rom, object Settings)
@@ -396,6 +395,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		void ComputeBootGod()
 		{
 			// inefficient, sloppy, etc etc
+			Emulation.Cores.Nintendo.NES.NES.BootGodDB.Initialize(); 
 			var chrrom = MemoryDomains["CHR VROM"];
 			var prgrom = MemoryDomains["PRG ROM"];
 
