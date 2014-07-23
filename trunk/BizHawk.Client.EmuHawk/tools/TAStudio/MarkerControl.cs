@@ -122,5 +122,10 @@ namespace BizHawk.Client.EmuHawk
 					.ToList();
 			}
 		}
+
+		private void MarkerView_ItemActivate(object sender, EventArgs e)
+		{
+			Tastudio.GoToMarker(SelectedMarkers.First());
+		}
 	}
 }
