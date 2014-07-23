@@ -19,6 +19,14 @@ namespace BizHawk.Client.EmuHawk
 				[Out] out bool wow64Process
 		);
 
+		[DllImport("kernel32.dll")]
+		public static extern IntPtr LoadLibrary(string dllToLoad);
+		[DllImport("kernel32.dll")]
+		public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
+		[DllImport("kernel32.dll")]
+		public static extern bool FreeLibrary(IntPtr hModule);
+
+
 		static bool InternalCheckIsWow64()
 		{
 			if ((Environment.OSVersion.Version.Major == 5 && Environment.OSVersion.Version.Minor >= 1) ||
