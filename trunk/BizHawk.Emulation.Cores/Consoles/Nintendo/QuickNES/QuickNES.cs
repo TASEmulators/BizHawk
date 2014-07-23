@@ -57,6 +57,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		static QuickNES()
 		{
 			LibQuickNES.qn_setup_mappers();
+			Emulation.Cores.Nintendo.NES.NES.BootGodDB.Initialize();
 		}
 
 		public QuickNES(CoreComm nextComm, byte[] Rom, object Settings)
@@ -85,6 +86,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					CoreComm.VsyncNum = 39375000;
 					CoreComm.VsyncDen = 655171;
 					PutSettings(Settings ?? new QuickNESSettings());
+
+					ComputeBootGod();
 				}
 				catch
 				{
@@ -381,6 +384,44 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		public void SetCpuRegister(string register, int value)
 		{
 			throw new NotImplementedException();
+		}
+
+		#endregion
+
+		#region bootgod
+
+		public RomStatus? BootGodStatus { get; private set; }
+		public string BootGodName { get; private set; }
+
+		void ComputeBootGod()
+		{
+			// inefficient, sloppy, etc etc
+			var chrrom = MemoryDomains["CHR VROM"];
+			var prgrom = MemoryDomains["PRG ROM"];
+
+			var ms = new System.IO.MemoryStream();
+			for (int i = 0; i < prgrom.Size; i++)
+				ms.WriteByte(prgrom.PeekByte(i));
+			if (chrrom != null)
+				for (int i = 0; i < chrrom.Size; i++)
+					ms.WriteByte(chrrom.PeekByte(i));
+
+			string sha1 = BizHawk.Common.BufferExtensions.BufferExtensions.HashSHA1(ms.ToArray());
+			Console.WriteLine("Hash for BootGod: {0}", sha1);
+			sha1 = "sha1:" + sha1; // huh?
+			var carts = Emulation.Cores.Nintendo.NES.NES.BootGodDB.Instance.Identify(sha1);
+			if (carts.Count > 0)
+			{
+				Console.WriteLine("BootGod entry found: {0}", carts[0].name);
+				BootGodStatus = RomStatus.GoodDump;
+				BootGodName = carts[0].name;
+			}
+			else
+			{
+				Console.WriteLine("No BootGod entry found.");
+				BootGodStatus = null;
+				BootGodName = null;
+			}
 		}
 
 		#endregion
