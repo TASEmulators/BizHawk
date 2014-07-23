@@ -482,6 +482,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool RunLoopCore()
 		{
+			if (_exit)
+			{
+				Shutdown();
+				return false;
+			}
 			Input.Instance.Update();
 
 			// handle events and dispatch as a hotkey action, or a hotkey button, or an input button
@@ -512,10 +517,10 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.LuaConsole.ResumeScripts(false);
 			}
 
-				if (Global.Config.DisplayInput) // Input display wants to update even while paused
-				{
-					GlobalWin.DisplayManager.NeedsToPaint = true;
-				}
+			if (Global.Config.DisplayInput) // Input display wants to update even while paused
+			{
+				GlobalWin.DisplayManager.NeedsToPaint = true;
+			}
 
 			StepRunLoop_Core();
 			StepRunLoop_Throttle();
@@ -526,11 +531,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			CheckMessages();
-			if (_exit)
-			{
-				Shutdown();
-				return false;
-			}
 			return true;
 		}
 
