@@ -55,18 +55,13 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				messageCallback(Path.GetFileName(fn) + " imported as " + "Movies\\" +
-								Path.GetFileName(fn) + "." + Global.MovieSession.Movie.PreferredExtension);
+				messageCallback(Path.GetFileName(fn) + " imported as " + m.Filename);
 			}
 
 			if (!Directory.Exists(d))
 			{
 				Directory.CreateDirectory(d);
 			}
-
-			var outPath = Path.Combine(d, Path.GetFileName(fn) + "." + Global.MovieSession.Movie.PreferredExtension);
-			m.Filename = outPath;
-			m.Save();
 		}
 
 		// Attempt to import another type of movie file into a movie object.
@@ -953,7 +948,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				controllers.Type.Name = "Genesis 3-Button Controller";
+				controllers.Type.Name = "GPGX 3-Button Controller";
 			}
 			// 016 special flags (Version A and up only)
 			byte flags = r.ReadByte();
