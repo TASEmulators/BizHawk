@@ -135,7 +135,15 @@ namespace BizHawk.Client.Common
 
 			if (ControlType == "GPGX Genesis Controller")
 			{
-				SetGensis6ControllersAsMnemonic(mnemonic);
+				if (IsGenesis6Button())
+				{
+					SetGenesis6ControllersAsMnemonic(mnemonic);
+				}
+				else
+				{
+					SetGenesis3ControllersAsMnemonic(mnemonic);
+				}
+
 				return;
 			}
 
@@ -242,6 +250,11 @@ namespace BizHawk.Client.Common
 		private readonly WorkingDictionary<string, bool> MyBoolButtons = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, float> MyFloatControls = new WorkingDictionary<string, float>();
 
+		private bool IsGenesis6Button()
+		{
+			return this.Type.BoolButtons.Contains("P1 X");
+		}
+
 		private void Force(string button, bool state)
 		{
 			MyBoolButtons[button] = state;
@@ -273,7 +286,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private void SetGensis6ControllersAsMnemonic(string mnemonic)
+		private void SetGenesis6ControllersAsMnemonic(string mnemonic)
 		{
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
 			MyBoolButtons.Clear();
@@ -308,6 +321,47 @@ namespace BizHawk.Client.Common
 
 				int start = 3;
 				foreach (string button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
+				{
+					Force("P" + player + " " + button, c[srcindex + start++]);
+				}
+			}
+		}
+
+		private void SetGenesis3ControllersAsMnemonic(string mnemonic)
+		{
+			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			MyBoolButtons.Clear();
+
+			if (mnemonic.Length < 2)
+			{
+				return;
+			}
+
+			if (mnemonic[1] == 'P')
+			{
+				Force("Power", true);
+			}
+			else if (mnemonic[1] != '.' && mnemonic[1] != '0')
+			{
+				Force("Reset", true);
+			}
+
+			if (mnemonic.Length < 9)
+			{
+				return;
+			}
+
+			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[ControlType]; player++)
+			{
+				int srcindex = (player - 1) * (BkmMnemonicConstants.BUTTONS["GPGX 3-Button Controller"].Count + 1);
+
+				if (mnemonic.Length < srcindex + 3 + BkmMnemonicConstants.BUTTONS["GPGX 3-Button Controller"].Count - 1)
+				{
+					return;
+				}
+
+				int start = 3;
+				foreach (string button in BkmMnemonicConstants.BUTTONS["GPGX 3-Button Controller"].Keys)
 				{
 					Force("P" + player + " " + button, c[srcindex + start++]);
 				}

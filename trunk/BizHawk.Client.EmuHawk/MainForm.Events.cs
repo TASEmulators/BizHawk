@@ -2327,8 +2327,6 @@ namespace BizHawk.Client.EmuHawk
 					// fix movie extension to something palatable for these purposes. 
 					// for instance, something which doesnt clobber movies you already may have had.
 					// i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
-					movie.Filename = Path.ChangeExtension(movie.Filename, ".autoimported." + MovieService.DefaultExtension);
-					movie.Save();
 					StartNewMovie(movie, false);
 				}
 

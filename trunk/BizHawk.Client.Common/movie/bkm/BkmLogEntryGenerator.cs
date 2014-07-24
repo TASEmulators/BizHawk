@@ -72,6 +72,11 @@ namespace BizHawk.Client.Common
 				return GetGeneis6ButtonControllersAsMnemonic();
 			}
 
+			if (_controlType == "GPGX 3-Button Controller")
+			{
+				return GetGeneis3ButtonControllersAsMnemonic();
+			}
+
 			var input = new StringBuilder("|");
 
 			if (_controlType == "PC Engine Controller")
@@ -526,6 +531,38 @@ namespace BizHawk.Client.Common
 		}
 
 		private string GetGeneis6ButtonControllersAsMnemonic()
+		{
+			var input = new StringBuilder("|");
+
+			if (IsBasePressed("Power"))
+			{
+				input.Append(BkmMnemonicConstants.COMMANDS[_controlType]["Power"]);
+			}
+			else if (IsBasePressed("Reset"))
+			{
+				input.Append(BkmMnemonicConstants.COMMANDS[_controlType]["Reset"]);
+			}
+			else
+			{
+				input.Append('.');
+			}
+
+			input.Append("|");
+			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[_controlType]; player++)
+			{
+				foreach (var button in BkmMnemonicConstants.BUTTONS[_controlType].Keys)
+				{
+					input.Append(IsBasePressed("P" + player + " " + button) ? BkmMnemonicConstants.BUTTONS[_controlType][button] : ".");
+				}
+
+				input.Append("|");
+			}
+
+			input.Append("|");
+			return input.ToString();
+		}
+
+		private string GetGeneis3ButtonControllersAsMnemonic()
 		{
 			var input = new StringBuilder("|");
 
