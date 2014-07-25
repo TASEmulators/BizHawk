@@ -312,6 +312,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GoToNextMarker();
 			}
+			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Ctrl + Up
+			{
+				GoToPreviousFrame();
+			}
+			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Ctrl + Down
+			{
+				GoToNextFrame();
+			}
 		}
 
 		#endregion
