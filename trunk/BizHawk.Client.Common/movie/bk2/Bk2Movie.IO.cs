@@ -111,9 +111,9 @@ namespace BizHawk.Client.Common
 				if (StartsFromSavestate)
 				{
 					bl.GetCoreState(
-						delegate(BinaryReader br)
+						delegate(BinaryReader br, long length)
 						{
-							BinarySavestate = br.ReadBytes((int)br.BaseStream.Length);
+							BinarySavestate = br.ReadBytes((int)length);
 						},
 						delegate(TextReader tr)
 						{
