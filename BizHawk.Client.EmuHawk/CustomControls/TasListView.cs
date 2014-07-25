@@ -149,5 +149,28 @@ namespace BizHawk.Client.EmuHawk
 
 			base.OnMouseUp(e);
 		}
+
+		protected override void OnMouseWheel(MouseEventArgs e)
+		{
+			if (RightButtonHeld)
+			{
+				DoRightMouseScroll(this, e);
+			}
+			else
+			{
+				base.OnMouseWheel(e);
+			}
+		}
+
+		public delegate void RightMouseScrollEventHandler(object sender, MouseEventArgs e);
+		public event RightMouseScrollEventHandler RightMouseScrolled;
+
+		private void DoRightMouseScroll(object sender, MouseEventArgs e)
+		{
+			if (RightMouseScrolled != null)
+			{
+				RightMouseScrolled(sender, e);
+			}
+		}
 	}
 }

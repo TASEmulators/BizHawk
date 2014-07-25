@@ -459,6 +459,34 @@ namespace BizHawk.Client.EmuHawk
 			// TODO
 		}
 
+		// TODO: move me
+		// Sets either the pending frame or the tas input log
+		private void ToggleBoolState(int frame, string buttonName)
+		{
+			if (frame < _tas.InputLogLength)
+			{
+				_tas.ToggleBoolState(frame, buttonName);
+			}
+			else if (frame == Global.Emulator.Frame && frame == _tas.InputLogLength)
+			{
+				Global.ClickyVirtualPadController.Toggle(buttonName);
+			}
+		}
+
+		// TODO: move me
+		// Sets either the pending frame or the tas input log
+		private void SetBoolState(int frame, string buttonName, bool value)
+		{
+			if (frame < _tas.InputLogLength)
+			{
+				_tas.SetBoolState(frame, buttonName, value);
+			}
+			else if (frame == Global.Emulator.Frame && frame == _tas.InputLogLength)
+			{
+				Global.ClickyVirtualPadController.SetBool(buttonName, value);
+			}
+		}
+
 		#region Events
 
 		#region File Menu
