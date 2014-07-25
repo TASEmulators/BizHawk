@@ -243,6 +243,19 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void FastUpdate()
+		{
+			if (_searches.Count > 0)
+			{
+				_searches.Update();
+
+				if (_autoSearch)
+				{
+					DoSearch();
+				}
+			}
+		}
+
 		public void Restart()
 		{
 			if (!IsHandleCreated || IsDisposed)

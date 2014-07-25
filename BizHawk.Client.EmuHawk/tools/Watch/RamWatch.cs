@@ -240,6 +240,40 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void FastUpdate()
+		{
+			if (_paused)
+			{
+				return;
+			}
+
+			if ((!IsHandleCreated || IsDisposed) && !Global.Config.DisplayRamWatch)
+			{
+				return;
+			}
+
+			if (_watches.Any())
+			{
+				_watches.UpdateValues();
+
+				if (Global.Config.DisplayRamWatch)
+				{
+					for (var i = 0; i < _watches.Count; i++)
+					{
+						var frozen = !_watches[i].IsSeparator && Global.CheatList.IsActive(_watches[i].Domain, _watches[i].Address ?? 0);
+						GlobalWin.OSD.AddGUIText(
+							_watches[i].ToString(),
+							Global.Config.DispRamWatchx,
+							Global.Config.DispRamWatchy + (i * 14),
+							Color.Black,
+							frozen ? Color.Cyan : Color.White,
+							0
+						);
+					}
+				}
+			}
+		}
+
 		#endregion
 
 		#region Private Methods

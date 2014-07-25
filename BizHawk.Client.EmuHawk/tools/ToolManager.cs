@@ -252,6 +252,32 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void FastUpdateBefore()
+		{
+			var beforeList = _tools.Where(x => x.UpdateBefore);
+			foreach (var tool in beforeList)
+			{
+				if (!tool.IsDisposed ||
+					(tool is RamWatch && Global.Config.DisplayRamWatch)) // Ram Watch hack, on screen display should run even if Ram Watch is closed
+				{
+					tool.FastUpdate();
+				}
+			}
+		}
+
+		public void FastUpdateAfter()
+		{
+			var afterList = _tools.Where(x => !x.UpdateBefore);
+			foreach (var tool in afterList)
+			{
+				if (!tool.IsDisposed ||
+					(tool is RamWatch && Global.Config.DisplayRamWatch)) // Ram Watch hack, on screen display should run even if Ram Watch is closed
+				{
+					tool.FastUpdate();
+				}
+			}
+		}
+
 		// Note: Referencing these properties creates an instance of the tool and persists it.  They should be referenced by type if this is not desired
 		#region Tools
 

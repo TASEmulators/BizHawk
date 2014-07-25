@@ -46,6 +46,11 @@ namespace BizHawk.Client.EmuHawk
 			UpdateDisplay();
 		}
 
+		public void FastUpdate()
+		{
+			// TODO
+		}
+
 		public void Restart()
 		{
 			if (Global.Emulator is PCEngine)

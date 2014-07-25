@@ -46,6 +46,10 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewSPPal.Refresh();
 		}
 
+		public void FastUpdate()
+		{
+			// Do nothing
+		}
 
 		unsafe static void Draw16x16(byte* src, int* dest, int pitch, int* pal)
 		{

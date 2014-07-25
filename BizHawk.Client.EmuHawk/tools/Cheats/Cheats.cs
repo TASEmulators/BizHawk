@@ -70,7 +70,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			// Do nothing;
+			// Do nothing
+		}
+
+		public void FastUpdate()
+		{
+			// Do nothing
 		}
 
 		public void Restart()

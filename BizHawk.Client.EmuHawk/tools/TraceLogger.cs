@@ -90,6 +90,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void FastUpdate()
+		{
+			// TODO: think more about this logic
+			if (!ToWindowRadio.Checked)
+			{
+				LogToFile();
+			}
+		}
+
+
 		public void Restart()
 		{
 			if (!IsHandleCreated || IsDisposed)

@@ -718,6 +718,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void FastUpdate()
+		{
+			// Do nothing
+		}
+
 		private void GBAGPUView_Load(object sender, EventArgs e)
 		{
 			Restart();

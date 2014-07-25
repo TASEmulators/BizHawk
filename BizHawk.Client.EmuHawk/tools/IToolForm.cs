@@ -6,7 +6,14 @@
 		/// Will be called by the client anytime an Update needs to occur, such as after an emulated frame, a loadstate, or a related dialog has made a relevant change
 		/// </summary>
 		void UpdateValues();
-		
+
+		/// <summary>
+		/// Will be called by the client when performance is critical,
+		/// The tool should only do the minimum to still function,
+		/// Drawing should not occur if possible, during a fast update
+		/// </summary>
+		void FastUpdate();
+
 		/// <summary>
 		/// Will be called anytime the dialog needs to be restarted, such as when a new ROM is loaded
 		/// The tool implementing this needs to account for a Game and Core change
