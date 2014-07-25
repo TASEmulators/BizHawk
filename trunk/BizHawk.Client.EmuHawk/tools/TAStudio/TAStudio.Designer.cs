@@ -697,7 +697,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDoubleClick);
 			this.TasView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDown);
 			this.TasView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseUp);
-			this.TasView.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseWheel);
+			this.TasView.RightMouseScrolled += new TasListView.RightMouseScrollEventHandler(this.TasView_MouseWheel);
 			// 
 			// Frame
 			// 
