@@ -76,7 +76,15 @@ namespace BizHawk.Client.EmuHawk
 			Owner = Global.Config.LuaSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
-		public void UpdateValues() { }
+		public void UpdateValues()
+		{
+			// Do nothing
+		}
+
+		public void FastUpdate()
+		{
+			// Do nothing
+		}
 
 		public LuaConsole Get() { return this; }
 

@@ -31,6 +31,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void FastUpdate()
+		{
+			// TODO: think more about this
+
+			if (StopFrame.HasValue && Global.Emulator.Frame == StopFrame.Value)
+			{
+				GlobalWin.MainForm.PauseEmulator();
+				StopFrame = null;
+			}
+		}
+
 		public void Restart()
 		{
 			if (!IsHandleCreated || IsDisposed)

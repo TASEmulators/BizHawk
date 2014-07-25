@@ -198,6 +198,16 @@ namespace BizHawk.Client.EmuHawk
 			Pads.ForEach(pad => pad.Refresh());
 		}
 
+		public void FastUpdate()
+		{
+			// TODO: SetPrevious logic should go here too or that will get out of whack
+
+			if (!Readonly && !Global.Config.VirtualPadSticky)
+			{
+				Pads.ForEach(pad => pad.Clear());
+			}
+		}
+
 		#endregion
 
 		#region Events

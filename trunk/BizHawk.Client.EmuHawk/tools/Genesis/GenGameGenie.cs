@@ -80,6 +80,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void FastUpdate()
+		{
+			// Do nothing
+		}
+
 		public GenGameGenie()
 		{
 			InitializeComponent();

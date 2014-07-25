@@ -65,6 +65,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void FastUpdate()
+		{
+			// Do nothing
+		}
+
 		private void UpdateDebugView()
 		{
 			DebugView.BlazingFast = true;

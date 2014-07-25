@@ -110,6 +110,11 @@ namespace BizHawk.Client.EmuHawk
 			AddressLabel.Text = GenerateAddressString();
 		}
 
+		public void FastUpdate()
+		{
+			// Do nothing
+		}
+
 		public void Restart()
 		{
 			if (!IsHandleCreated || IsDisposed)

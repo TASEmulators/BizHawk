@@ -2551,6 +2551,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					GlobalWin.Tools.UpdateToolsBefore();
 				}
+				else
+				{
+					GlobalWin.Tools.FastUpdateBefore();
+				}
 
 				_runloopFps++;
 
@@ -2635,6 +2639,10 @@ namespace BizHawk.Client.EmuHawk
 				if (!isTurboing)
 				{
 					UpdateToolsAfter();
+				}
+				else
+				{
+					GlobalWin.Tools.FastUpdateAfter();
 				}
 			}
 

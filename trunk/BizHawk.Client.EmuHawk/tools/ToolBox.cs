@@ -39,6 +39,11 @@ namespace BizHawk.Client.EmuHawk
 		public bool UpdateBefore { get { return false; } }
 		public void UpdateValues() { }
 
+		public void FastUpdate()
+		{
+			// Do nothing
+		}
+
 		public void Restart()
 		{
 			SetTools();
