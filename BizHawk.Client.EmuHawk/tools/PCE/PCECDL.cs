@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FastUpdate()
 		{
-			// TODO
+			// Do nothing
 		}
 
 		public void Restart()
