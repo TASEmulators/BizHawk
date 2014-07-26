@@ -76,7 +76,7 @@
 			// clearAllToolStripMenuItem
 			// 
 			this.clearAllToolStripMenuItem.Name = "clearAllToolStripMenuItem";
-			this.clearAllToolStripMenuItem.ShortcutKeyDisplayString = "Shift+Del";
+			this.clearAllToolStripMenuItem.ShortcutKeyDisplayString = "Del";
 			this.clearAllToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
 			this.clearAllToolStripMenuItem.Text = "Clear All";
 			this.clearAllToolStripMenuItem.Click += new System.EventHandler(this.ClearAllMenuItem_Click);
@@ -182,15 +182,15 @@
 			// ClearAllMenuItem
 			// 
 			this.ClearAllMenuItem.Name = "ClearAllMenuItem";
-			this.ClearAllMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.Delete)));
-			this.ClearAllMenuItem.Size = new System.Drawing.Size(174, 22);
+			this.ClearAllMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
+			this.ClearAllMenuItem.Size = new System.Drawing.Size(142, 22);
 			this.ClearAllMenuItem.Text = "&Clear All";
 			this.ClearAllMenuItem.Click += new System.EventHandler(this.ClearAllMenuItem_Click);
 			// 
 			// StickyMenuItem
 			// 
 			this.StickyMenuItem.Name = "StickyMenuItem";
-			this.StickyMenuItem.Size = new System.Drawing.Size(174, 22);
+			this.StickyMenuItem.Size = new System.Drawing.Size(142, 22);
 			this.StickyMenuItem.Text = "Sticky";
 			this.StickyMenuItem.Click += new System.EventHandler(this.StickyMenuItem_Click);
 			// 
