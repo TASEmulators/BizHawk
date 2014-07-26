@@ -158,6 +158,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int MidX { get { return (int)((MaxX + 0.5) / 2); } }
 		private int MidY { get { return (int)((MaxY + 0.5) / 2); } }
+
 		private void AnalogControlPanel_Paint(object sender, PaintEventArgs e)
 		{
 			unchecked
@@ -247,10 +248,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Clear()
 		{
-			X = Y = 0;
-			HasValue = false;
-			DoClearCallback();
-			Refresh();
+			if (X != 0 || Y != 0 || HasValue)
+			{
+				X = Y = 0;
+				HasValue = false;
+				DoClearCallback();
+				Refresh();
+			}
 		}
 
 		public void Set(IController controller)
