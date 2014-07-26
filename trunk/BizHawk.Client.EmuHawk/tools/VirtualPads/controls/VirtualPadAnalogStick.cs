@@ -154,13 +154,28 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (AnalogStick.HasValue)
 			{
-				ManualX.Value = AnalogStick.X;
-				ManualY.Value = AnalogStick.Y;
+				// Setting .Value of a numeric causes a draw, so avoid it unless necessary
+				if (ManualX.Value != AnalogStick.X)
+				{
+					ManualX.Value = AnalogStick.X;
+				}
+
+				if (ManualY.Value != AnalogStick.Y)
+				{
+					ManualY.Value = AnalogStick.Y;
+				}
 			}
 			else
 			{
-				ManualX.Value = 0;
-				ManualY.Value = 0;
+				if (ManualX.Value != 0)
+				{
+					ManualX.Value = 0;
+				}
+
+				if (ManualY.Value != 0)
+				{
+					ManualY.Value = 0;
+				}
 			}
 		}
 
