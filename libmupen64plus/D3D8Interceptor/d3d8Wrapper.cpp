@@ -91,15 +91,18 @@ extern "C"
 			D3D8Base::D3DLOCKED_RECT locked;
 			HRESULT hr = D3D8Wrapper::render_surface->LockRect(&locked,&entire_buffer,D3DLOCK_READONLY);
 
-			// read out pBits from the LOCKED_RECT
-			int from_row = desc.Height - 1;
-			for (int dest_row = 0; dest_row < desc.Height; dest_row++)
+			//UNACCEPTABLE CODE: hardcode a buffer for doing one memcpy from vram
+			//this prevents irregular access and speeds up the copying on some systems
+			static char buffer[1024*1024*4];
+			memcpy(buffer,(char*)locked.pBits,locked.Pitch * desc.Height);
+
+			//this loop was reversed from the original.
+			//it should be faster anyway if anything since the reading can be prefetched forwardly.
+			int dest_row = desc.Height - 1;
+			for (int from_row = 0; from_row < desc.Height; from_row++)
 			{
-				for (int col = 0; col < desc.Width*4; col++)
-				{
-					((char *)dest)[dest_row * desc.Width * 4 + col] = ((char *)locked.pBits)[from_row * desc.Width * 4 + col];
-				}
-				from_row--;
+				memcpy((char*)dest + (dest_row * desc.Width*4),(char*)buffer + from_row * locked.Pitch, desc.Width*4);
+				dest_row--;
 			}
 
 			// unlock rect
