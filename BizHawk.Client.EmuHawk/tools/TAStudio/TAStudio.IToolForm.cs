@@ -24,10 +24,11 @@ namespace BizHawk.Client.EmuHawk
 				TasView.ensureVisible(Global.Emulator.Frame);
 			}
 
-			if (StopFrame.HasValue && Global.Emulator.Frame == StopFrame.Value)
+			if (GlobalWin.MainForm.PauseOnFrame.HasValue &&
+				Global.Emulator.Frame == GlobalWin.MainForm.PauseOnFrame.Value)
 			{
 				GlobalWin.MainForm.PauseEmulator();
-				StopFrame = null;
+				GlobalWin.MainForm.PauseOnFrame = null;
 			}
 		}
 
@@ -35,10 +36,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// TODO: think more about this
 
-			if (StopFrame.HasValue && Global.Emulator.Frame == StopFrame.Value)
+			if (GlobalWin.MainForm.PauseOnFrame.HasValue &&
+				Global.Emulator.Frame == GlobalWin.MainForm.PauseOnFrame.Value)
 			{
 				GlobalWin.MainForm.PauseEmulator();
-				StopFrame = null;
+				GlobalWin.MainForm.PauseOnFrame = null;
 			}
 		}
 
