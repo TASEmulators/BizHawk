@@ -13,6 +13,11 @@ namespace BizHawk.Client.EmuHawk
 		private readonly PadSchema _schema;
 		private bool _readOnly;
 
+		public void UpdateValues()
+		{
+			PadControls.ForEach(c => c.UpdateValues());
+		}
+
 		private List<IVirtualPadControl> PadControls
 		{
 			get

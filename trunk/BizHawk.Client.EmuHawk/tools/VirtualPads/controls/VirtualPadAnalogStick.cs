@@ -46,6 +46,12 @@ namespace BizHawk.Client.EmuHawk
 
 		#region IVirtualPadControl Implementation
 
+		public void UpdateValues()
+		{
+			// Nothing to do
+			// This tool already draws as necessary
+		}
+
 		public void Set(IController controller)
 		{
 			AnalogStick.Set(controller);
