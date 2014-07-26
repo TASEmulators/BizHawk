@@ -131,6 +131,10 @@ extern "C"
 			D3D8Base::IDirect3DDevice8* base_device = NULL;
 
 			HRESULT hr = m_pD3D->CreateDevice(Adapter,DeviceType,hFocusWindow,BehaviorFlags,pPresentationParameters,&base_device);
+			if(FAILED(hr))
+			{
+				return hr;
+			}
 
 			// Wrap the real object
 			D3D8Wrapper::IDirect3DDevice8* f = D3D8Wrapper::IDirect3DDevice8::GetDirect3DDevice(base_device);
