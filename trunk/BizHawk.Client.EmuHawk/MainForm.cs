@@ -554,6 +554,8 @@ namespace BizHawk.Client.EmuHawk
 		public bool UpdateFrame = false;
 		public bool EmulatorPaused { get; private set; }
 
+		public int? PauseOnFrame { get; set; } // If set, upon completion of this frame, the client wil pause
+
 		// TODO: SystemInfo should be able to do this
 		// Because we don't have enough places where we list SystemID's
 		public Dictionary<string, string> SupportedPlatforms

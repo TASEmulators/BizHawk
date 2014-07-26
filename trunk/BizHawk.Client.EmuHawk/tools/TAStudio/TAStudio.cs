@@ -25,8 +25,6 @@ namespace BizHawk.Client.EmuHawk
 		private bool _originalRewindStatus; // The client rewind status before TAStudio was engaged (used to restore when disengaged)
 		private MovieEndAction _originalEndAction; // The movie end behavior selected by the user (that is overridden by TAStudio)
 
-		private int? StopFrame = null; // This is the frame Tastudio 
-
 		private Dictionary<string, string> GenerateColumnNames()
 		{
 			var lg = Global.MovieSession.LogGeneratorInstance();
@@ -331,7 +329,7 @@ namespace BizHawk.Client.EmuHawk
 						_tas.SwitchToPlay();
 						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_tas[_tas.LastEmulatedFrame].State.ToArray())));
 						GlobalWin.MainForm.UnpauseEmulator();
-						StopFrame = frame;
+						GlobalWin.MainForm.PauseOnFrame = frame;
 						// TODO: if turbo seek, ramp up the speed
 					}
 				}
@@ -352,7 +350,7 @@ namespace BizHawk.Client.EmuHawk
 						_tas.SwitchToPlay();
 						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_tas[_tas.LastEmulatedFrame].State.ToArray())));
 						GlobalWin.MainForm.UnpauseEmulator();
-						StopFrame = frame;
+						GlobalWin.MainForm.PauseOnFrame = frame;
 						// TODO: if turbo seek, ramp up the speed
 					}
 				}
@@ -363,7 +361,7 @@ namespace BizHawk.Client.EmuHawk
 				_tas.SwitchToPlay(); // TODO: stop copy/pasting this logic
 				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_tas[_tas.LastEmulatedFrame].State.ToArray())));
 				GlobalWin.MainForm.UnpauseEmulator();
-				StopFrame = frame;
+				GlobalWin.MainForm.PauseOnFrame = frame;
 				// TODO: if turbo seek, ramp up the speed
 			}
 		}
