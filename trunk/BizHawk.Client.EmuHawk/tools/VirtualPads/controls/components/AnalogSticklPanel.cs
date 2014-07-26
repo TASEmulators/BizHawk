@@ -3,6 +3,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using System;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -85,6 +86,16 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Bitmap Dot = new Bitmap(7, 7);
 		private readonly Bitmap GrayDot = new Bitmap(7, 7);
 
+		public Action ClearCallback { get; set; }
+
+		private void DoClearCallback()
+		{
+			if (ClearCallback != null)
+			{
+				ClearCallback();
+			}
+		}
+
 		public AnalogStickPanel()
 		{
 			Size = new Size(MaxX + 1, MaxY + 1);
@@ -133,11 +144,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return ret;
-		}
-
-		protected override void OnMouseClick(MouseEventArgs e)
-		{
-			SetAnalog();
 		}
 
 		private void SetAnalog()
@@ -243,6 +249,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			X = Y = 0;
 			HasValue = false;
+			DoClearCallback();
 			Refresh();
 		}
 
