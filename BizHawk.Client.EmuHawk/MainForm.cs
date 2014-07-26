@@ -3300,6 +3300,7 @@ namespace BizHawk.Client.EmuHawk
 				_stateSlots.Clear();
 				UpdateDumpIcon();
 				UpdateCoreStatusBarButton();
+				ClearHolds();
 				ToolHelpers.UpdateCheatRelatedTools(null, null);
 			}
 		}

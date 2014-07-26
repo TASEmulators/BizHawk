@@ -342,6 +342,7 @@ namespace BizHawk.Client.Common
 		public void ClearStickies()
 		{
 			stickySet.Clear();
+			_floatSet.Clear();
 		}
 
 		public void MassToggleStickyState(List<string> buttons)
