@@ -15,6 +15,7 @@ namespace BizHawk.Client.EmuHawk
 		public VirtualPadAnalogStick()
 		{
 			InitializeComponent();
+			AnalogStick.ClearCallback = SetNumericsFromAnalog;
 			RangeX = 127;
 			RangeY = 127;
 		}
@@ -149,6 +150,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ManualX.Value = AnalogStick.X;
 				ManualY.Value = AnalogStick.Y;
+			}
+			else
+			{
+				ManualX.Value = 0;
+				ManualY.Value = 0;
 			}
 		}
 
