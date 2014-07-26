@@ -54,6 +54,7 @@
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.LastFrameCheckbox = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -237,7 +238,7 @@
 			// StopOnFrameCheckbox
 			// 
 			this.StopOnFrameCheckbox.AutoSize = true;
-			this.StopOnFrameCheckbox.Location = new System.Drawing.Point(342, 368);
+			this.StopOnFrameCheckbox.Location = new System.Drawing.Point(342, 357);
 			this.StopOnFrameCheckbox.Name = "StopOnFrameCheckbox";
 			this.StopOnFrameCheckbox.Size = new System.Drawing.Size(95, 17);
 			this.StopOnFrameCheckbox.TabIndex = 57;
@@ -249,7 +250,7 @@
 			// 
 			this.StopOnFrameTextBox.ByteSize = BizHawk.Client.Common.Watch.WatchSize.Byte;
 			this.StopOnFrameTextBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.StopOnFrameTextBox.Location = new System.Drawing.Point(438, 366);
+			this.StopOnFrameTextBox.Location = new System.Drawing.Point(438, 355);
 			this.StopOnFrameTextBox.MaxLength = 3;
 			this.StopOnFrameTextBox.Name = "StopOnFrameTextBox";
 			this.StopOnFrameTextBox.Nullable = true;
@@ -310,6 +311,17 @@
 			this.columnHeader4.Text = "Length (est.)";
 			this.columnHeader4.Width = 82;
 			// 
+			// LastFrameCheckbox
+			// 
+			this.LastFrameCheckbox.AutoSize = true;
+			this.LastFrameCheckbox.Location = new System.Drawing.Point(342, 375);
+			this.LastFrameCheckbox.Name = "LastFrameCheckbox";
+			this.LastFrameCheckbox.Size = new System.Drawing.Size(75, 17);
+			this.LastFrameCheckbox.TabIndex = 59;
+			this.LastFrameCheckbox.Text = "Last frame";
+			this.LastFrameCheckbox.UseVisualStyleBackColor = true;
+			this.LastFrameCheckbox.CheckedChanged += new System.EventHandler(this.LastFrameCheckbox_CheckedChanged);
+			// 
 			// PlayMovie
 			// 
 			this.AcceptButton = this.OK;
@@ -317,6 +329,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
 			this.ClientSize = new System.Drawing.Size(774, 398);
+			this.Controls.Add(this.LastFrameCheckbox);
 			this.Controls.Add(this.StopOnFrameTextBox);
 			this.Controls.Add(this.StopOnFrameCheckbox);
 			this.Controls.Add(this.MatchHashCheckBox);
@@ -370,5 +383,6 @@
 		private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
 		private System.Windows.Forms.CheckBox StopOnFrameCheckbox;
 		private WatchValueBox StopOnFrameTextBox;
+		private System.Windows.Forms.CheckBox LastFrameCheckbox;
 	}
 }
