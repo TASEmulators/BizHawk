@@ -662,6 +662,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Run();
 			Global.MovieSession.ReadOnly = ReadOnlyCheckBox.Checked;
+
+			if (StopOnFrameCheckbox.Checked && StopOnFrameTextBox.ToRawInt().HasValue)
+			{
+				GlobalWin.MainForm.PauseOnFrame = StopOnFrameTextBox.ToRawInt();
+			}
+
 			Close();
 		}
 
@@ -670,7 +676,25 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
+		
+
 		#endregion
+
+		private bool _programmaticallyChangingStopFrameCheckbox = false;
+		private void StopOnFrameCheckbox_CheckedChanged(object sender, EventArgs e)
+		{
+			if (!_programmaticallyChangingStopFrameCheckbox)
+			{
+				StopOnFrameTextBox.Focus();
+			}
+		}
+
+		private void StopOnFrameTextBox_TextChanged_1(object sender, EventArgs e)
+		{
+			_programmaticallyChangingStopFrameCheckbox = true;
+			StopOnFrameCheckbox.Checked = !string.IsNullOrWhiteSpace(StopOnFrameTextBox.Text);
+			_programmaticallyChangingStopFrameCheckbox = false;
+		}
 
 		#endregion
 	}

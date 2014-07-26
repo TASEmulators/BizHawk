@@ -2646,6 +2646,12 @@ namespace BizHawk.Client.EmuHawk
 				{
 					GlobalWin.Tools.FastUpdateAfter();
 				}
+
+				if (PauseOnFrame.HasValue && Global.Emulator.Frame == PauseOnFrame.Value)
+				{
+					PauseEmulator();
+					PauseOnFrame = null;
+				}
 			}
 
 			if (Global.ClientControls["Rewind"] || PressRewind)
