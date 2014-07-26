@@ -116,7 +116,6 @@ namespace BizHawk.Client.EmuHawk
 		public void SetPrevious(IController previous)
 		{
 			AnalogStick.SetPrevious(previous);
-			Refresh();
 		}
 
 		private void ManualX_ValueChanged(object sender, EventArgs e)
