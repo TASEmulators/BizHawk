@@ -36,6 +36,14 @@ namespace BizHawk.Client.EmuHawk
 
 		#region IVirtualPadControl Implementation
 
+		public void UpdateValues()
+		{
+			if (AnalogTrackBar.Value != (int)Global.StickyXORAdapter.GetFloat(Name))
+			{
+				RefreshWidgets();
+			}
+		}
+
 		public void Clear()
 		{
 			Global.StickyXORAdapter.Unset(Name);
@@ -168,7 +176,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		protected override void OnPaint(PaintEventArgs e)
+		private void RefreshWidgets()
 		{
 			if (!_isSet)
 			{
@@ -177,7 +185,10 @@ namespace BizHawk.Client.EmuHawk
 				ValueLabel.Text = AnalogTrackBar.Value.ToString();
 				_programmaticallyChangingValue = false;
 			}
-
+		}
+		protected override void OnPaint(PaintEventArgs e)
+		{
+			RefreshWidgets();
 			base.OnPaint(e);
 		}
 	}

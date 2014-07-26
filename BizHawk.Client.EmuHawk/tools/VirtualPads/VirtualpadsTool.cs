@@ -195,7 +195,7 @@ namespace BizHawk.Client.EmuHawk
 				Pads.ForEach(pad => pad.Clear());
 			}
 
-			Pads.ForEach(pad => pad.Refresh());
+			Pads.ForEach(pad => pad.UpdateValues());
 		}
 
 		public void FastUpdate()

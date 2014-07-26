@@ -35,6 +35,11 @@ namespace BizHawk.Client.EmuHawk
 
 		#region IVirtualPadControl Implementation
 
+		public void UpdateValues()
+		{
+			TargetPanel.Refresh();
+		}
+
 		public void Clear()
 		{
 			Global.StickyXORAdapter.Unset(XName);
