@@ -686,18 +686,19 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.ItemCount = 0;
 			this.TasView.Location = new System.Drawing.Point(8, 27);
 			this.TasView.Name = "TasView";
+			this.TasView.RightButtonHeld = false;
 			this.TasView.SelectAllInProgress = false;
 			this.TasView.selectedItem = -1;
 			this.TasView.Size = new System.Drawing.Size(288, 471);
 			this.TasView.TabIndex = 1;
 			this.TasView.UseCompatibleStateImageBehavior = false;
 			this.TasView.View = System.Windows.Forms.View.Details;
+			this.TasView.RightMouseScrolled += new BizHawk.Client.EmuHawk.TasListView.RightMouseScrollEventHandler(this.TasView_MouseWheel);
 			this.TasView.SelectedIndexChanged += new System.EventHandler(this.TasView_SelectedIndexChanged);
 			this.TasView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TasView_KeyDown);
 			this.TasView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDoubleClick);
 			this.TasView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDown);
 			this.TasView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseUp);
-			this.TasView.RightMouseScrolled += new TasListView.RightMouseScrollEventHandler(this.TasView_MouseWheel);
 			// 
 			// Frame
 			// 
@@ -738,14 +739,14 @@ namespace BizHawk.Client.EmuHawk
 			this.TasPlaybackBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.TasPlaybackBox.Location = new System.Drawing.Point(302, 25);
 			this.TasPlaybackBox.Name = "TasPlaybackBox";
-			this.TasPlaybackBox.Size = new System.Drawing.Size(204, 120);
+			this.TasPlaybackBox.Size = new System.Drawing.Size(204, 98);
 			this.TasPlaybackBox.TabIndex = 5;
 			this.TasPlaybackBox.Tastudio = null;
 			// 
 			// MarkerControl
 			// 
 			this.MarkerControl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.MarkerControl.Location = new System.Drawing.Point(302, 151);
+			this.MarkerControl.Location = new System.Drawing.Point(302, 129);
 			this.MarkerControl.Markers = null;
 			this.MarkerControl.Name = "MarkerControl";
 			this.MarkerControl.Size = new System.Drawing.Size(204, 215);
