@@ -235,7 +235,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				WatchListView.BlazingFast = true;
-				WatchListView.Refresh();
+				WatchListView.ItemCount = _watches.Count;
 				WatchListView.BlazingFast = false;
 			}
 		}
