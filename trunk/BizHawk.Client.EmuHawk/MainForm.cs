@@ -33,6 +33,8 @@ using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.DiscSystem;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 
+using BizHawk.Client.EmuHawk.WinFormExtensions;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class MainForm : Form

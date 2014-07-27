@@ -13,6 +13,8 @@ using BizHawk.Common.StringExtensions;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
 
+using BizHawk.Client.EmuHawk.WinFormExtensions;
+
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
