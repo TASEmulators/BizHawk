@@ -48,7 +48,13 @@ namespace BizHawk.Client.EmuHawk
 			if (_tas != null && _tas.Changes)
 			{
 				GlobalWin.Sound.StopSound();
-				var result = MessageBox.Show("Save Changes?", "Tastudio", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
+				var result = MessageBox.Show(
+					"Save Changes?",
+					"Tastudio",
+					MessageBoxButtons.YesNoCancel,
+					MessageBoxIcon.Question,
+					MessageBoxDefaultButton.Button3);
+
 				GlobalWin.Sound.StartSound();
 				if (result == DialogResult.Yes)
 				{
@@ -56,6 +62,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (result == DialogResult.No)
 				{
+					_tas.ClearChanges();
 					return true;
 				}
 				else if (result == DialogResult.Cancel)
