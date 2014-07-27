@@ -94,6 +94,7 @@ namespace BizHawk.Client.Common
 		public bool AVI_CaptureOSD = false;
 		public bool Screenshot_CaptureOSD = false;
 		public bool FirstBoot = true;
+		public bool TurboSeek = true; // When PauseOnFrame is set, this will decide whether the client goes into turbo mode or not
 
 		public enum SaveStateTypeE { Default, Binary, Text };
 
@@ -509,10 +510,10 @@ namespace BizHawk.Client.Common
 
 		// TAStudio Dialog
 		public ToolDialogSettings TAStudioSettings = new ToolDialogSettings();
+		public RecentFiles RecentTas = new RecentFiles(8);
 		public bool AutoloadTAStudio = false;
 		public bool AutoloadTAStudioProject = false;
 		public bool TAStudioDrawInput = true;
-		public RecentFiles RecentTas = new RecentFiles(8);
 
 		// VirtualPad Dialog
 		public ToolDialogSettings VirtualPadSettings = new ToolDialogSettings();

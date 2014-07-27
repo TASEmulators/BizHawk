@@ -15,9 +15,23 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public TAStudio Tastudio { get; set; }
 
+		public bool TurboSeek
+		{
+			get
+			{
+				return Global.Config.TurboSeek;
+			}
+
+			set
+			{
+				TurboSeekCheckbox.Checked = Global.Config.TurboSeek = value;
+			}
+		}
+
 		public PlaybackBox()
 		{
 			InitializeComponent();
+			TurboSeekCheckbox.Checked = Global.Config.TurboSeek;
 		}
 
 		private void PreviousMarkerButton_Click(object sender, EventArgs e)
@@ -43,6 +57,11 @@ namespace BizHawk.Client.EmuHawk
 		private void NextMarkerButton_Click(object sender, EventArgs e)
 		{
 			Tastudio.GoToNextMarker();
+		}
+
+		private void TurboSeekCheckbox_CheckedChanged(object sender, EventArgs e)
+		{
+			Global.Config.TurboSeek ^= true;
 		}
 	}
 }

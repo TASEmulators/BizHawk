@@ -556,7 +556,25 @@ namespace BizHawk.Client.EmuHawk
 		public bool UpdateFrame = false;
 		public bool EmulatorPaused { get; private set; }
 
-		public int? PauseOnFrame { get; set; } // If set, upon completion of this frame, the client wil pause
+		private int? _pauseOnFrame;
+		private bool _forceTurbo = false;
+		public int? PauseOnFrame // If set, upon completion of this frame, the client wil pause
+		{
+			get { return _pauseOnFrame; }
+			set
+			{
+				_pauseOnFrame = value;
+				_forceTurbo = _pauseOnFrame.HasValue && Global.Config.TurboSeek;
+			}
+		} 
+
+		public bool IsTurboing
+		{
+			get
+			{
+				return Global.ClientControls["Turbo"] || _forceTurbo;
+			}
+		}
 
 		// TODO: SystemInfo should be able to do this
 		// Because we don't have enough places where we list SystemID's
@@ -1560,7 +1578,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SyncThrottle()
 		{
 			var fastforward = Global.ClientControls["Fast Forward"] || FastForward;
-			var superfastforward = Global.ClientControls["Turbo"];
+			var superfastforward = IsTurboing;
 			Global.ForceNoThrottle = _unthrottled || fastforward;
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
@@ -2532,8 +2550,7 @@ namespace BizHawk.Client.EmuHawk
 			var coreskipaudio = false;
 			if (runFrame)
 			{
-				var isFastForwarding = Global.ClientControls["Fast Forward"] || Global.ClientControls["Turbo"];
-				var isTurboing = Global.ClientControls["Turbo"];
+				var isFastForwarding = Global.ClientControls["Fast Forward"] || IsTurboing;
 				var updateFpsString = _runloopLastFf != isFastForwarding;
 				_runloopLastFf = isFastForwarding;
 
@@ -2551,7 +2568,7 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.LuaConsole.LuaImp.CallFrameBeforeEvent();
 				}
 
-				if (!isTurboing)
+				if (!IsTurboing)
 				{
 					GlobalWin.Tools.UpdateToolsBefore();
 				}
@@ -2575,7 +2592,7 @@ namespace BizHawk.Client.EmuHawk
 					var fps_string = _runloopLastFps + " fps";
 					if (isRewinding)
 					{
-						if (isTurboing || isFastForwarding)
+						if (IsTurboing || isFastForwarding)
 						{
 							fps_string += " <<<<";
 						}
@@ -2584,7 +2601,7 @@ namespace BizHawk.Client.EmuHawk
 							fps_string += " <<";
 						}
 					}
-					else if (isTurboing)
+					else if (IsTurboing)
 					{
 						fps_string += " >>>>";
 					}
@@ -2612,7 +2629,7 @@ namespace BizHawk.Client.EmuHawk
 
 				Global.MovieSession.HandleMovieOnFrameLoop();
 
-				coreskipaudio = Global.ClientControls["Turbo"] && _currAviWriter == null;
+				coreskipaudio = IsTurboing && _currAviWriter == null;
 
 				{
 					bool render = !_throttle.skipnextframe || _currAviWriter != null;
@@ -2640,7 +2657,7 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.LuaConsole.LuaImp.CallFrameAfterEvent();
 				}
 
-				if (!isTurboing)
+				if (!IsTurboing)
 				{
 					UpdateToolsAfter();
 				}
@@ -3303,6 +3320,8 @@ namespace BizHawk.Client.EmuHawk
 				UpdateDumpIcon();
 				UpdateCoreStatusBarButton();
 				ClearHolds();
+				PauseOnFrame = null;
+				_forceTurbo = false;
 				ToolHelpers.UpdateCheatRelatedTools(null, null);
 			}
 		}

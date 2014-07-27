@@ -30,7 +30,6 @@
 		{
 			this.PlaybackGroupBox = new System.Windows.Forms.GroupBox();
 			this.AutoRestoreCheckbox = new System.Windows.Forms.CheckBox();
-			this.SeekProgressBar = new System.Windows.Forms.ProgressBar();
 			this.TurboSeekCheckbox = new System.Windows.Forms.CheckBox();
 			this.FollowCursorCheckbox = new System.Windows.Forms.CheckBox();
 			this.NextMarkerButton = new System.Windows.Forms.Button();
@@ -47,7 +46,6 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.PlaybackGroupBox.Controls.Add(this.AutoRestoreCheckbox);
-			this.PlaybackGroupBox.Controls.Add(this.SeekProgressBar);
 			this.PlaybackGroupBox.Controls.Add(this.TurboSeekCheckbox);
 			this.PlaybackGroupBox.Controls.Add(this.FollowCursorCheckbox);
 			this.PlaybackGroupBox.Controls.Add(this.NextMarkerButton);
@@ -57,7 +55,7 @@
 			this.PlaybackGroupBox.Controls.Add(this.PreviousMarkerButton);
 			this.PlaybackGroupBox.Location = new System.Drawing.Point(3, 3);
 			this.PlaybackGroupBox.Name = "PlaybackGroupBox";
-			this.PlaybackGroupBox.Size = new System.Drawing.Size(198, 114);
+			this.PlaybackGroupBox.Size = new System.Drawing.Size(198, 90);
 			this.PlaybackGroupBox.TabIndex = 0;
 			this.PlaybackGroupBox.TabStop = false;
 			this.PlaybackGroupBox.Text = "Playback";
@@ -66,32 +64,23 @@
 			// 
 			this.AutoRestoreCheckbox.AutoSize = true;
 			this.AutoRestoreCheckbox.Enabled = false;
-			this.AutoRestoreCheckbox.Location = new System.Drawing.Point(10, 87);
+			this.AutoRestoreCheckbox.Location = new System.Drawing.Point(10, 69);
 			this.AutoRestoreCheckbox.Name = "AutoRestoreCheckbox";
 			this.AutoRestoreCheckbox.Size = new System.Drawing.Size(141, 17);
 			this.AutoRestoreCheckbox.TabIndex = 8;
 			this.AutoRestoreCheckbox.Text = "Auto-restore last position";
 			this.AutoRestoreCheckbox.UseVisualStyleBackColor = true;
 			// 
-			// SeekProgressBar
-			// 
-			this.SeekProgressBar.Enabled = false;
-			this.SeekProgressBar.Location = new System.Drawing.Point(6, 71);
-			this.SeekProgressBar.Name = "SeekProgressBar";
-			this.SeekProgressBar.Size = new System.Drawing.Size(186, 10);
-			this.SeekProgressBar.TabIndex = 7;
-			this.SeekProgressBar.Value = 100;
-			// 
 			// TurboSeekCheckbox
 			// 
 			this.TurboSeekCheckbox.AutoSize = true;
-			this.TurboSeekCheckbox.Enabled = false;
 			this.TurboSeekCheckbox.Location = new System.Drawing.Point(103, 48);
 			this.TurboSeekCheckbox.Name = "TurboSeekCheckbox";
 			this.TurboSeekCheckbox.Size = new System.Drawing.Size(80, 17);
 			this.TurboSeekCheckbox.TabIndex = 6;
 			this.TurboSeekCheckbox.Text = "Turbo seek";
 			this.TurboSeekCheckbox.UseVisualStyleBackColor = true;
+			this.TurboSeekCheckbox.CheckedChanged += new System.EventHandler(this.TurboSeekCheckbox_CheckedChanged);
 			// 
 			// FollowCursorCheckbox
 			// 
@@ -160,7 +149,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.PlaybackGroupBox);
 			this.Name = "PlaybackBox";
-			this.Size = new System.Drawing.Size(204, 120);
+			this.Size = new System.Drawing.Size(204, 96);
 			this.PlaybackGroupBox.ResumeLayout(false);
 			this.PlaybackGroupBox.PerformLayout();
 			this.ResumeLayout(false);
@@ -176,7 +165,6 @@
 		private System.Windows.Forms.Button RewindButton;
 		private System.Windows.Forms.Button PreviousMarkerButton;
 		private System.Windows.Forms.CheckBox AutoRestoreCheckbox;
-		private System.Windows.Forms.ProgressBar SeekProgressBar;
 		private System.Windows.Forms.CheckBox TurboSeekCheckbox;
 		private System.Windows.Forms.CheckBox FollowCursorCheckbox;
 	}
