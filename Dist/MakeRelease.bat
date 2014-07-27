@@ -21,7 +21,7 @@ rmdir /s /q temp\lua
 svn export ..\output\lua temp\Lua
 
 cd temp
-zip -X -9 -r ..\BizHawk.zip .
+..\zip -X -9 -r ..\BizHawk.zip .
 cd ..
 
 rmdir /s /q temp
