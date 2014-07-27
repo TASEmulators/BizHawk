@@ -144,7 +144,7 @@ extern "C"
 			D3D8Base::IDirect3DSurface8 *f2 = NULL;
 
 			// make a new render target
-			HRESULT hr2 = base_device->CreateRenderTarget(pPresentationParameters->BackBufferWidth,pPresentationParameters->BackBufferHeight,D3D8Base::D3DFMT_X8R8G8B8,pPresentationParameters->MultiSampleType,TRUE,&f2);
+			HRESULT hr2 = base_device->CreateRenderTarget(pPresentationParameters->BackBufferWidth,pPresentationParameters->BackBufferHeight,D3D8Base::D3DFMT_X8R8G8B8,pPresentationParameters->MultiSampleType,FALSE,&f2);
 			render_surface = D3D8Wrapper::IDirect3DSurface8::GetSurface(f2);
 
 			// Return our wrapped object
