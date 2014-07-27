@@ -1463,6 +1463,10 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\YellowUp.png" />
+    <None Include="images\YellowRight.png" />
+    <None Include="images\YellowLeft.png" />
+    <None Include="images\YellowDown.png" />
     <None Include="images\user_blue.png" />
     <None Include="images\thumbsdown.png" />
     <None Include="images\monitor.png" />
