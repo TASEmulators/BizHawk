@@ -31,14 +31,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					new PadSchema.ButtonScema
 					{
-						Name = "P" + controller + " X Axis",
-						MaxValue = 127,
-						DisplayName = "",
-						Location = new Point(6, 14),
-						Type = PadSchema.PadInputType.AnalogStick
-					},
-					new PadSchema.ButtonScema
-					{
 						Name = "P" + controller + " DPad U",
 						DisplayName = "",
 						Icon = Properties.Resources.BlueUp,
@@ -138,6 +130,14 @@ namespace BizHawk.Client.EmuHawk
 						Icon = Properties.Resources.YellowRight,
 						Location = new Point(194, 189),
 						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " X Axis",
+						MaxValue = 127,
+						DisplayName = "",
+						Location = new Point(6, 14),
+						Type = PadSchema.PadInputType.AnalogStick
 					}
 				}
 			};
