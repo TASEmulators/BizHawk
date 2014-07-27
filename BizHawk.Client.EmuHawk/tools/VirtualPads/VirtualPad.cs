@@ -111,6 +111,14 @@ namespace BizHawk.Client.EmuHawk
 			PadControls.ForEach(p => p.Clear());
 		}
 
+		public void ClearBoolean()
+		{
+			PadControls
+				.OfType<VirtualPadButton>()
+				.ToList()
+				.ForEach(p => p.Clear());
+		}
+
 		public void Set(IController controller)
 		{
 			PadControls.ForEach(c => c.Set(controller));
