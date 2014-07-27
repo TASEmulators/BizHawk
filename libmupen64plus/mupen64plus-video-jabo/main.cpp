@@ -355,7 +355,7 @@ EXPORT void CALL ChangeWindow (void)
 // NOTE: NEW GFX_INFO vs old
 EXPORT int CALL InitiateGFX(GFX_INFO Gfx_Info)
 {
-	while (hWnd_jabo == NULL);
+	while(hWnd_jabo == NULL) { Sleep(1); }
 	LOG("API WRAPPER:\t InitiateGFX")
 
 	Config_Open();
