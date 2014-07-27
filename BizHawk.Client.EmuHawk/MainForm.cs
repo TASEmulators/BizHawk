@@ -557,22 +557,34 @@ namespace BizHawk.Client.EmuHawk
 		public bool EmulatorPaused { get; private set; }
 
 		private int? _pauseOnFrame;
-		private bool _forceTurbo = false;
 		public int? PauseOnFrame // If set, upon completion of this frame, the client wil pause
 		{
 			get { return _pauseOnFrame; }
 			set
 			{
 				_pauseOnFrame = value;
-				_forceTurbo = _pauseOnFrame.HasValue && Global.Config.TurboSeek;
+				SetPauseStatusbarIcon();
 			}
-		} 
+		}
+
+		public bool IsSeeking
+		{
+			get { return PauseOnFrame.HasValue; }
+		}
+
+		public bool IsTurboSeeking
+		{
+			get
+			{
+				return PauseOnFrame.HasValue && Global.Config.TurboSeek;
+			}
+		}
 
 		public bool IsTurboing
 		{
 			get
 			{
-				return Global.ClientControls["Turbo"] || _forceTurbo;
+				return Global.ClientControls["Turbo"] || IsTurboSeeking;
 			}
 		}
 
@@ -828,6 +840,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			EmulatorPaused ^= true;
 			SetPauseStatusbarIcon();
+
+			// TODO: have tastudio set a pause status change callback, or take control over pause
+			if (GlobalWin.Tools.Has<TAStudio>())
+			{
+				GlobalWin.Tools.UpdateValues<TAStudio>();
+			}
 		}
 
 		public void TakeScreenshotToClipboard()
@@ -1560,7 +1578,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetPauseStatusbarIcon()
 		{
-			if (EmulatorPaused)
+			if (IsTurboing)
+			{
+				PauseStatusButton.Image = Properties.Resources.Lightning;
+				PauseStatusButton.Visible = true;
+				PauseStatusButton.ToolTipText = "Emulator is turbo seeking to frame " + PauseOnFrame.Value + " click to stop seek";
+			}
+			else if (PauseOnFrame.HasValue)
+			{
+				PauseStatusButton.Image = Properties.Resources.YellowRight;
+				PauseStatusButton.Visible = true;
+				PauseStatusButton.ToolTipText = "Emulator is playing to frame " + PauseOnFrame.Value + " click to stop seek";
+			}
+			else if (EmulatorPaused)
 			{
 				PauseStatusButton.Image = Properties.Resources.Pause;
 				PauseStatusButton.Visible = true;
@@ -2666,7 +2696,7 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.FastUpdateAfter();
 				}
 
-				if (PauseOnFrame.HasValue && Global.Emulator.Frame == PauseOnFrame.Value)
+				if (IsSeeking && Global.Emulator.Frame == PauseOnFrame.Value)
 				{
 					PauseEmulator();
 					PauseOnFrame = null;
@@ -3321,7 +3351,6 @@ namespace BizHawk.Client.EmuHawk
 				UpdateCoreStatusBarButton();
 				ClearHolds();
 				PauseOnFrame = null;
-				_forceTurbo = false;
 				ToolHelpers.UpdateCheatRelatedTools(null, null);
 			}
 		}

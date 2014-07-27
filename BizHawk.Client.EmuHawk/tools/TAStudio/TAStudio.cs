@@ -357,7 +357,6 @@ namespace BizHawk.Client.EmuHawk
 						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_tas[_tas.LastEmulatedFrame].State.ToArray())));
 						GlobalWin.MainForm.UnpauseEmulator();
 						GlobalWin.MainForm.PauseOnFrame = frame;
-						// TODO: if turbo seek, ramp up the speed
 					}
 				}
 			}
@@ -368,8 +367,9 @@ namespace BizHawk.Client.EmuHawk
 				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_tas[_tas.LastEmulatedFrame].State.ToArray())));
 				GlobalWin.MainForm.UnpauseEmulator();
 				GlobalWin.MainForm.PauseOnFrame = frame;
-				// TODO: if turbo seek, ramp up the speed
 			}
+
+			RefreshDialog();
 		}
 
 		#region Playback Controls
