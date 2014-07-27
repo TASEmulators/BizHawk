@@ -8,7 +8,7 @@ using BizHawk.Common.StringExtensions;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Client.Common;
-using BizHawk.Client.EmuHawk.ControlExtensions;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 using System.IO;
 using System.Security.Cryptography;
 

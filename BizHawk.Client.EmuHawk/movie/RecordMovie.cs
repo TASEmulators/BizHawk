@@ -7,6 +7,8 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 
+using BizHawk.Client.EmuHawk.WinFormExtensions;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class RecordMovie : Form

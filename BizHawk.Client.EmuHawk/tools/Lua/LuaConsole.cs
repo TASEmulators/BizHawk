@@ -7,9 +7,11 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
+using LuaInterface;
+
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
-using LuaInterface;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {

@@ -479,7 +479,6 @@
     <Compile Include="CustomControls\ToolStripEx.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControls\Util.cs" />
     <Compile Include="CustomControls\ViewportPanel.cs">
       <SubType>Component</SubType>
     </Compile>
