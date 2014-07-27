@@ -64,10 +64,6 @@ extern "C"
 			return;
 		}
 
-		// get back buffer (surface)
-		//D3D8Base::IDirect3DSurface8 *backbuffer;
-		//D3D8Wrapper::last_device->GetD3D8Device()->GetBackBuffer(0,D3D8Base::D3DBACKBUFFER_TYPE_MONO,&backbuffer);
-
 		// surface...
 		// make a D3DSURFACE_DESC, pass to GetDesc
 		D3D8Base::D3DSURFACE_DESC desc;
@@ -87,10 +83,18 @@ extern "C"
 			entire_buffer.right = desc.Width;
 			entire_buffer.bottom = desc.Height;
 
-			//X8R8G8B8 or fail -- A8R8G8B8 will malfunction (is it because the source surface format isnt matching?)
+			//resolve rendertarget to a system memory texture, for locking
+			//TODO! UNACCEPTABLE CODE! THIS IS HORRIBLE!
+			//X8R8G8B8 or fail -- A8R8G8B8 will malfunction (is it because the source surface format isnt matching? I think so)
 			static D3D8Wrapper::IDirect3DTexture8* tex = NULL;
-			if(!tex)
+			static RECT texRect;
+			if(!tex || (texRect.right != entire_buffer.right) || (texRect.bottom != entire_buffer.bottom))
+			{
+				if(tex)
+					tex->Release();
+				texRect = entire_buffer;
 				D3D8Wrapper::last_device->CreateTexture(desc.Width, desc.Height, 1, 0, D3D8Base::D3DFMT_X8R8G8B8, D3D8Base::D3DPOOL_SYSTEMMEM, &tex);
+			}
 
 			D3D8Wrapper::IDirect3DSurface8* surf;
 			tex->GetSurfaceLevel(0,&surf);
@@ -102,6 +106,8 @@ extern "C"
 
 			//this loop was reversed from the original.
 			//it should be faster anyway if anything since the reading can be prefetched forwardly.
+			//TODO - allow bizhawk to handle flipped images.... nonetheless, it might not handle images with unusual pitches, although maybe we should consider that.
+			//so this code will probably remain for quite some time
 			int dest_row = desc.Height - 1;
 			for (int from_row = 0; from_row < desc.Height; from_row++)
 			{
