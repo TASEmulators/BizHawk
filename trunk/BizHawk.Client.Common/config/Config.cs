@@ -94,7 +94,18 @@ namespace BizHawk.Client.Common
 		public bool AVI_CaptureOSD = false;
 		public bool Screenshot_CaptureOSD = false;
 		public bool FirstBoot = true;
-		public bool TurboSeek = true; // When PauseOnFrame is set, this will decide whether the client goes into turbo mode or not
+
+		//public bool TurboSeek = true; // When PauseOnFrame is set, this will decide whether the client goes into turbo mode or not
+
+		private bool _turboSeek;
+		public bool TurboSeek
+		{
+			get { return _turboSeek; }
+			set
+			{
+				_turboSeek = value;
+			}
+		}
 
 		public enum SaveStateTypeE { Default, Binary, Text };
 

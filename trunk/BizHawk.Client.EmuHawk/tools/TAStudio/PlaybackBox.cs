@@ -13,6 +13,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PlaybackBox : UserControl
 	{
+		private bool _programmaticallyChangingSeekBox = false;
+
 		public TAStudio Tastudio { get; set; }
 
 		public bool TurboSeek
@@ -31,7 +33,9 @@ namespace BizHawk.Client.EmuHawk
 		public PlaybackBox()
 		{
 			InitializeComponent();
+			_programmaticallyChangingSeekBox = true;
 			TurboSeekCheckbox.Checked = Global.Config.TurboSeek;
+			_programmaticallyChangingSeekBox = false;
 		}
 
 		private void PreviousMarkerButton_Click(object sender, EventArgs e)
@@ -61,7 +65,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TurboSeekCheckbox_CheckedChanged(object sender, EventArgs e)
 		{
-			Global.Config.TurboSeek ^= true;
+			if (!_programmaticallyChangingSeekBox)
+			{
+				Global.Config.TurboSeek ^= true;
+			}
 		}
 	}
 }
