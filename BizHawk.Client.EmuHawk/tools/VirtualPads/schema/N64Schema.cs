@@ -114,29 +114,29 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " C Up",
-						DisplayName = "cU",
+						Icon = Properties.Resources.YellowUp,
 						Location = new Point(147, 235),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " C Down",
-						DisplayName = "cD",
-						Location = new Point(147, 281),
+						Icon = Properties.Resources.YellowDown,
+						Location = new Point(147, 256),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " C Left",
-						DisplayName = "cL",
-						Location = new Point(129, 258),
+						Icon = Properties.Resources.YellowLeft,
+						Location = new Point(126, 249),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " C Right",
-						DisplayName = "cR",
-						Location = new Point(164, 258),
+						Icon = Properties.Resources.YellowRight,
+						Location = new Point(168, 249),
 						Type = PadSchema.PadInputType.Boolean
 					}
 				}
