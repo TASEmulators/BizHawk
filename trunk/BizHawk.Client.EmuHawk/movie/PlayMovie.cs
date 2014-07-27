@@ -42,6 +42,7 @@ namespace BizHawk.Client.EmuHawk
 			MatchHashCheckBox.Checked = Global.Config.PlayMovie_MatchHash;
 			ScanFiles();
 			PreHighlightMovie();
+			TurboCheckbox.Checked = Global.Config.TurboSeek;
 		}
 
 		private void MovieView_QueryItemText(int index, int column, out string text)
@@ -661,6 +662,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Ok_Click(object sender, EventArgs e)
 		{
+			Global.Config.TurboSeek = TurboCheckbox.Checked;
 			Run();
 			Global.MovieSession.ReadOnly = ReadOnlyCheckBox.Checked;
 
