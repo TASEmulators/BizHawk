@@ -225,7 +225,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RefreshDialog()
 		{
+			TasView.BlazingFast = true;
 			TasView.ItemCount = _tas.InputLogLength + 1;
+			TasView.BlazingFast = false;
 			if (MarkerControl != null)
 			{
 				MarkerControl.Refresh();
