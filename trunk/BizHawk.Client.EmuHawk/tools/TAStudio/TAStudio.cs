@@ -149,6 +149,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EngageTastudio()
 		{
+			GlobalWin.MainForm.PauseOnFrame = null;
 			GlobalWin.OSD.AddMessage("TAStudio engaged");
 			_tas = Global.MovieSession.Movie as TasMovie;
 			GlobalWin.MainForm.PauseEmulator();
@@ -163,6 +164,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisengageTastudio()
 		{
+			GlobalWin.MainForm.PauseOnFrame = null;
 			GlobalWin.OSD.AddMessage("TAStudio disengaged");
 			Global.MovieSession.Movie = MovieService.DefaultInstance;
 			GlobalWin.MainForm.TakeControl();
