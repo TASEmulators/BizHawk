@@ -10,10 +10,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class NESGraphicsConfig : Form
 	{
-		//TODO:
-		//Allow selection of palette file from archive
-		//Hotkeys for BG & Sprite display toggle
-		//NTSC filter settings? Hue, Tint (This should probably be a multiclient thing, not a nes specific thing?)
+		// TODO:
+		// Allow selection of palette file from archive
+		// Hotkeys for BG & Sprite display toggle
+		// NTSC filter settings? Hue, Tint (This should probably be a client thing, not a nes specific thing?)
 
 		private NES nes;
 		private NES.NESSettings settings;
