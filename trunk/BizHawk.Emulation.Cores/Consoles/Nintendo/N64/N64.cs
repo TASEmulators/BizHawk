@@ -166,7 +166,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		private void StartThreadLoop()
 		{
-			new Thread(ThreadLoop).Start();
+			var thread = new Thread(ThreadLoop);
+			//will this solve the hanging process problem?
+			thread.IsBackground = true;
+			thread.Start();
 		}
 
 		private void EndThreadLoop()
