@@ -146,30 +146,33 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (_searches.Count > 0 && column == 0)
+			if (column == 0)
 			{
-				var nextColor = Color.White;
+				if (_searches.Count > 0 && column == 0)
+				{
+					var nextColor = Color.White;
 
-				var isCheat = Global.CheatList.IsActive(_settings.Domain, _searches[index].Address ?? 0);
-				var isWeeded = Global.Config.RamSearchPreviewMode && !_forcePreviewClear && _searches.Preview(_searches[index].Address ?? 0);
+					var isCheat = Global.CheatList.IsActive(_settings.Domain, _searches[index].Address ?? 0);
+					var isWeeded = Global.Config.RamSearchPreviewMode && !_forcePreviewClear && _searches.Preview(_searches[index].Address ?? 0);
 
-				if (_searches[index].Address.Value >= _searches[index].Domain.Size)
-				{
-					nextColor = Color.PeachPuff;
-				}
-				else if (isCheat)
-				{
-					nextColor = isWeeded ? Color.Lavender : Color.LightCyan;
-				}
-				else
-				{
-					if (isWeeded)
+					if (_searches[index].Address.Value >= _searches[index].Domain.Size)
 					{
-						nextColor = Color.Pink;
+						nextColor = Color.PeachPuff;
 					}
-				}
+					else if (isCheat)
+					{
+						nextColor = isWeeded ? Color.Lavender : Color.LightCyan;
+					}
+					else
+					{
+						if (isWeeded)
+						{
+							nextColor = Color.Pink;
+						}
+					}
 
-				color = nextColor;
+					color = nextColor;
+				}
 			}
 		}
 
@@ -239,7 +242,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				_forcePreviewClear = false;
+				WatchListView.BlazingFast = true;
 				WatchListView.ItemCount = _searches.Count;
+				WatchListView.BlazingFast = false;
 			}
 		}
 
