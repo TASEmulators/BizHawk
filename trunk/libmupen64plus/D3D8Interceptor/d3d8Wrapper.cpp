@@ -86,27 +86,32 @@ extern "C"
 			entire_buffer.top = 0;
 			entire_buffer.right = desc.Width;
 			entire_buffer.bottom = desc.Height;
-		
+
+			//X8R8G8B8 or fail -- A8R8G8B8 will malfunction (is it because the source surface format isnt matching?)
+			static D3D8Wrapper::IDirect3DTexture8* tex = NULL;
+			if(!tex)
+				D3D8Wrapper::last_device->CreateTexture(desc.Width, desc.Height, 1, 0, D3D8Base::D3DFMT_X8R8G8B8, D3D8Base::D3DPOOL_SYSTEMMEM, &tex);
+
+			D3D8Wrapper::IDirect3DSurface8* surf;
+			tex->GetSurfaceLevel(0,&surf);
+			HRESULT hr = D3D8Wrapper::last_device->CopyRects(D3D8Wrapper::render_surface,NULL,0,surf,NULL);
+
 			// make a D3DLOCKED_RECT, pass to LockRect
 			D3D8Base::D3DLOCKED_RECT locked;
-			HRESULT hr = D3D8Wrapper::render_surface->LockRect(&locked,&entire_buffer,D3DLOCK_READONLY);
-
-			//UNACCEPTABLE CODE: hardcode a buffer for doing one memcpy from vram
-			//this prevents irregular access and speeds up the copying on some systems
-			static char buffer[1024*1024*4];
-			memcpy(buffer,(char*)locked.pBits,locked.Pitch * desc.Height);
+			hr = surf->LockRect(&locked,&entire_buffer,D3DLOCK_READONLY);
 
 			//this loop was reversed from the original.
 			//it should be faster anyway if anything since the reading can be prefetched forwardly.
 			int dest_row = desc.Height - 1;
 			for (int from_row = 0; from_row < desc.Height; from_row++)
 			{
-				memcpy((char*)dest + (dest_row * desc.Width*4),(char*)buffer + from_row * locked.Pitch, desc.Width*4);
+				memcpy((char*)dest + (dest_row * desc.Width*4),(char*)locked.pBits + from_row * locked.Pitch, desc.Width*4);
 				dest_row--;
 			}
 
 			// unlock rect
-			D3D8Wrapper::render_surface->UnlockRect();
+			surf->UnlockRect();
+			surf->Release();
 		}
 
 		// release the surface
