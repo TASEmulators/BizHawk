@@ -74,6 +74,7 @@
 			// 
 			// ToWikiMarkupButton
 			// 
+			this.ToWikiMarkupButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.ToWikiMarkupButton.Location = new System.Drawing.Point(493, 309);
 			this.ToWikiMarkupButton.Name = "ToWikiMarkupButton";
 			this.ToWikiMarkupButton.Size = new System.Drawing.Size(138, 23);
