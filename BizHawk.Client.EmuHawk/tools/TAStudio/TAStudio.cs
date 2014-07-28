@@ -443,15 +443,15 @@ namespace BizHawk.Client.EmuHawk
 			InputPrompt i = new InputPrompt
 			{
 				Text = "Marker for frame " + markerFrame,
-				TextInputType = InputPrompt.InputType.Text
+				TextInputType = InputPrompt.InputType.Text,
+				Message = "Enter a message"
 			};
 
-			i.SetMessage("Enter a message");
 			var result = i.ShowHawkDialog();
 
 			if (result == DialogResult.OK)
 			{
-				_tas.Markers.Add(markerFrame, i.UserText);
+				_tas.Markers.Add(markerFrame, i.PromptText);
 				MarkerControl.Refresh();
 			}
 
