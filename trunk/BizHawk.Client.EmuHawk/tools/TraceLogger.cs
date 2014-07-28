@@ -288,16 +288,15 @@ namespace BizHawk.Client.EmuHawk
 			var prompt = new InputPrompt
 			{
 				StartLocation = this.ChildPointToScreen(TraceView),
-				TextInputType = InputPrompt.InputType.Unsigned
+				TextInputType = InputPrompt.InputType.Unsigned,
+				Message = "Max lines to display in the window",
+				InitialValue = Global.Config.TraceLoggerMaxLines.ToString()
 			};
-
-			prompt.SetMessage("Max lines to display in the window");
-			prompt.SetInitialValue(Global.Config.TraceLoggerMaxLines.ToString());
 
 			var result = prompt.ShowHawkDialog();
 			if (result == DialogResult.OK)
 			{
-				var max = int.Parse(prompt.UserText);
+				var max = int.Parse(prompt.PromptText);
 				if (max > 0)
 				{
 					Global.Config.TraceLoggerMaxLines = max;

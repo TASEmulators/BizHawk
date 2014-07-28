@@ -934,17 +934,17 @@ namespace BizHawk.Client.EmuHawk
 			var prompt = new InputPrompt
 			{
 				Text = "Go to Address",
-				StartLocation = this.ChildPointToScreen(WatchListView)
+				StartLocation = this.ChildPointToScreen(WatchListView),
+				Message = "Enter a hexadecimal value"
 			};
 
-			prompt.SetMessage("Enter a hexadecimal value");
 			var result = prompt.ShowHawkDialog();
 
 			if (result == DialogResult.OK)
 			{
-				if (prompt.UserText.IsHex())
+				if (prompt.PromptText.IsHex())
 				{
-					var addr = int.Parse(prompt.UserText, NumberStyles.HexNumber);
+					var addr = int.Parse(prompt.PromptText, NumberStyles.HexNumber);
 					WatchListView.SelectItem(addr, true);
 					WatchListView.ensureVisible();
 				}
