@@ -63,13 +63,13 @@
 			// AutoRestoreCheckbox
 			// 
 			this.AutoRestoreCheckbox.AutoSize = true;
-			this.AutoRestoreCheckbox.Enabled = false;
 			this.AutoRestoreCheckbox.Location = new System.Drawing.Point(10, 69);
 			this.AutoRestoreCheckbox.Name = "AutoRestoreCheckbox";
 			this.AutoRestoreCheckbox.Size = new System.Drawing.Size(141, 17);
 			this.AutoRestoreCheckbox.TabIndex = 8;
 			this.AutoRestoreCheckbox.Text = "Auto-restore last position";
 			this.AutoRestoreCheckbox.UseVisualStyleBackColor = true;
+			this.AutoRestoreCheckbox.CheckedChanged += new System.EventHandler(this.AutoRestoreCheckbox_CheckedChanged);
 			// 
 			// TurboSeekCheckbox
 			// 
