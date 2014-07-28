@@ -252,19 +252,6 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm.UpdateCheatStatus();
 		}
 
-		public static void FreezeAddress(IEnumerable<Watch> watches)
-		{
-			Global.CheatList.AddRange(
-				watches
-				.Where(w => !w.IsSeparator)
-				.Select(w => new Cheat(w, w.Value ?? 0)));
-		}
-
-		public static void UnfreezeAddress(IEnumerable<Watch> watches)
-		{
-			Global.CheatList.RemoveRange(watches.Where(watch => !watch.IsSeparator));
-		}
-
 		public static void ViewInHexEditor(MemoryDomain domain, IEnumerable<int> addresses, Watch.WatchSize size)
 		{
 			GlobalWin.Tools.Load<HexEditor>();
