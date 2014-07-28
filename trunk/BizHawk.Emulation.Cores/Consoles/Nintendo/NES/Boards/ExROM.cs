@@ -712,7 +712,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				irq_counter++;
 				if (irq_counter == irq_target)
 				{
-					Console.WriteLine("IRQ @{0}", irq_target);
 					irq_pending = true;
 					SyncIRQ();
 				}
