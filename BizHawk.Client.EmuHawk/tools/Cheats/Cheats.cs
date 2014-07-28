@@ -9,7 +9,9 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Sega.Genesis;
+
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -235,15 +237,15 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadColumnInfo()
 		{
 			CheatListView.Columns.Clear();
-			ToolHelpers.AddColumn(CheatListView, NAME, Global.Config.CheatsColumnShow[NAME], GetColumnWidth(NAME));
-			ToolHelpers.AddColumn(CheatListView, ADDRESS, Global.Config.CheatsColumnShow[ADDRESS], GetColumnWidth(ADDRESS));
-			ToolHelpers.AddColumn(CheatListView, VALUE, Global.Config.CheatsColumnShow[VALUE], GetColumnWidth(VALUE));
-			ToolHelpers.AddColumn(CheatListView, COMPARE, Global.Config.CheatsColumnShow[COMPARE], GetColumnWidth(COMPARE));
-			ToolHelpers.AddColumn(CheatListView, ON, Global.Config.CheatsColumnShow[ON], GetColumnWidth(ON));
-			ToolHelpers.AddColumn(CheatListView, DOMAIN, Global.Config.CheatsColumnShow[DOMAIN], GetColumnWidth(DOMAIN));
-			ToolHelpers.AddColumn(CheatListView, SIZE, Global.Config.CheatsColumnShow[SIZE], GetColumnWidth(SIZE));
-			ToolHelpers.AddColumn(CheatListView, ENDIAN, Global.Config.CheatsColumnShow[ENDIAN], GetColumnWidth(ENDIAN));
-			ToolHelpers.AddColumn(CheatListView, TYPE, Global.Config.CheatsColumnShow[TYPE], GetColumnWidth(TYPE));
+			CheatListView.AddColumn(NAME, Global.Config.CheatsColumnShow[NAME], GetColumnWidth(NAME));
+			CheatListView.AddColumn(ADDRESS, Global.Config.CheatsColumnShow[ADDRESS], GetColumnWidth(ADDRESS));
+			CheatListView.AddColumn(VALUE, Global.Config.CheatsColumnShow[VALUE], GetColumnWidth(VALUE));
+			CheatListView.AddColumn(COMPARE, Global.Config.CheatsColumnShow[COMPARE], GetColumnWidth(COMPARE));
+			CheatListView.AddColumn(ON, Global.Config.CheatsColumnShow[ON], GetColumnWidth(ON));
+			CheatListView.AddColumn(DOMAIN, Global.Config.CheatsColumnShow[DOMAIN], GetColumnWidth(DOMAIN));
+			CheatListView.AddColumn(SIZE, Global.Config.CheatsColumnShow[SIZE], GetColumnWidth(SIZE));
+			CheatListView.AddColumn(ENDIAN, Global.Config.CheatsColumnShow[ENDIAN], GetColumnWidth(ENDIAN));
+			CheatListView.AddColumn(TYPE, Global.Config.CheatsColumnShow[TYPE], GetColumnWidth(TYPE));
 
 			ColumnPositions();
 		}

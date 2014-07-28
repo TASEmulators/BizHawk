@@ -205,23 +205,6 @@ namespace BizHawk.Client.EmuHawk
 			return new FileInfo(sfd.FileName);
 		}
 
-		public static IEnumerable<ToolStripItem> GenerateMemoryDomainMenuItems(Action<string> setCallback, string selectedDomain = "", int? maxSize = null)
-		{
-			var items = new List<ToolStripMenuItem>();
-
-			foreach (var domain in Global.Emulator.MemoryDomains)
-			{
-				var name = domain.Name;
-				var item = new ToolStripMenuItem { Text = name };
-				item.Click += (o, ev) => setCallback(name);
-				item.Checked = name == selectedDomain;
-				item.Enabled = !(maxSize.HasValue && domain.Size > maxSize.Value);
-				items.Add(item);
-			}
-
-			return items;
-		}
-
 		public static void PopulateMemoryDomainDropdown(ref ComboBox dropdown, MemoryDomain startDomain)
 		{
 			dropdown.Items.Clear();
@@ -256,24 +239,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.Tools.Load<HexEditor>();
 			GlobalWin.Tools.HexEditor.SetToAddresses(addresses, domain, size);
-		}
-
-		public static void AddColumn(ListView listView, string columnName, bool enabled, int columnWidth)
-		{
-			if (enabled)
-			{
-				if (listView.Columns[columnName] == null)
-				{
-					var column = new ColumnHeader
-					{
-						Name = columnName,
-						Text = columnName.Replace("Column", string.Empty),
-						Width = columnWidth,
-					};
-
-					listView.Columns.Add(column);
-				}
-			}
 		}
 	}
 }

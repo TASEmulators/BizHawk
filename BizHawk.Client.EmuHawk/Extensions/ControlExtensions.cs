@@ -34,6 +34,24 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 		{
 			control.Invoke(action);
 		}
+
+		public static void AddColumn(this ListView listView, string columnName, bool enabled, int columnWidth)
+		{
+			if (enabled)
+			{
+				if (listView.Columns[columnName] == null)
+				{
+					var column = new ColumnHeader
+					{
+						Name = columnName,
+						Text = columnName.Replace("Column", string.Empty),
+						Width = columnWidth,
+					};
+
+					listView.Columns.Add(column);
+				}
+			}
+		}
 	}
 
 	public static class FormExtensions
