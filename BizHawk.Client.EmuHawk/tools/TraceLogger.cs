@@ -152,13 +152,6 @@ namespace BizHawk.Client.EmuHawk
 			TraceView.ItemCount = _instructions.Count;
 		}
 
-		private Point GetPromptPoint()
-		{
-			return PointToScreen(
-				new Point(TraceView.Location.X + 30, TraceView.Location.Y + 30)
-			);
-		}
-
 		private void SetTracerBoxTitle()
 		{
 			if (Global.CoreComm.Tracer.Enabled)
@@ -292,11 +285,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MaxLinesMenuItem_Click(object sender, EventArgs e)
 		{
-			var prompt = new InputPrompt();
+			var prompt = new InputPrompt
+			{
+				StartLocation = this.ChildPointToScreen(TraceView),
+				TextInputType = InputPrompt.InputType.Unsigned
+			};
+
 			prompt.SetMessage("Max lines to display in the window");
 			prompt.SetInitialValue(Global.Config.TraceLoggerMaxLines.ToString());
-			prompt.TextInputType = InputPrompt.InputType.Unsigned;
-			prompt.StartLocation = GetPromptPoint();
+
 			var result = prompt.ShowHawkDialog();
 			if (result == DialogResult.OK)
 			{

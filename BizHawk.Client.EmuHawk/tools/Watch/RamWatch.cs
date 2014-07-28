@@ -335,7 +335,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var we = new WatchEditor
 				{
-					InitialLocation = GetPromptPoint(),
+					InitialLocation = this.ChildPointToScreen(WatchListView)
 				};
 
 				we.SetWatch(_watches.Domain, SelectedWatches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit);
@@ -394,11 +394,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return width;
-		}
-
-		private Point GetPromptPoint()
-		{
-			return PointToScreen(new Point(WatchListView.Location.X, WatchListView.Location.Y));
 		}
 
 		private void LoadColumnInfo()
@@ -723,7 +718,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var we = new WatchEditor
 			{
-				InitialLocation = GetPromptPoint()
+				InitialLocation = this.ChildPointToScreen(WatchListView)
 			};
 			we.SetWatch(_watches.Domain);
 			we.ShowHawkDialog();
@@ -769,7 +764,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var poke = new RamPoke
 				{
-					InitialLocation = GetPromptPoint()
+					InitialLocation = this.ChildPointToScreen(WatchListView)
 				};
 
 				poke.SetWatch(SelectedWatches);

@@ -679,12 +679,6 @@ namespace BizHawk.Client.EmuHawk
 			_domainMenuItems.Add(rom_item);
 		}
 
-		private Point GetPromptPoint()
-		{
-			return PointToScreen(
-				new Point(MemoryViewerBox.Location.X + 30, MemoryViewerBox.Location.Y + 30));
-		}
-
 		private void ClearNibbles()
 		{
 			for (var i = 0; i < 8; i++)
@@ -1483,7 +1477,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GoToAddressMenuItem_Click(object sender, EventArgs e)
 		{
-			var inputPrompt = new InputPrompt { Text = "Go to Address", StartLocation = GetPromptPoint() };
+			var inputPrompt = new InputPrompt
+			{
+				Text = "Go to Address",
+				StartLocation = this.ChildPointToScreen(MemoryViewerBox)
+			};
 			inputPrompt.SetMessage("Enter a hexadecimal value");
 			var result = inputPrompt.ShowHawkDialog();
 
