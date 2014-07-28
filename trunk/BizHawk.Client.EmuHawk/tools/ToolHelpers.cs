@@ -318,10 +318,10 @@ namespace BizHawk.Client.EmuHawk
 			Global.CheatList.RemoveRange(watches.Where(watch => !watch.IsSeparator));
 		}
 
-		public static void ViewInHexEditor(MemoryDomain domain, IEnumerable<int> addresses)
+		public static void ViewInHexEditor(MemoryDomain domain, IEnumerable<int> addresses, Watch.WatchSize size)
 		{
 			GlobalWin.Tools.Load<HexEditor>();
-			GlobalWin.Tools.HexEditor.SetToAddresses(addresses, domain);
+			GlobalWin.Tools.HexEditor.SetToAddresses(addresses, domain, size);
 		}
 
 		public static void AddColumn(ListView listView, string columnName, bool enabled, int columnWidth)

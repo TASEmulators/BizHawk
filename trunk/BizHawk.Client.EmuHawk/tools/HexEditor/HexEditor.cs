@@ -139,8 +139,10 @@ namespace BizHawk.Client.EmuHawk
 			AddressLabel.Text = GenerateAddressString();
 		}
 
-		public void SetToAddresses(IEnumerable<int> addresses, MemoryDomain domain)
+		public void SetToAddresses(IEnumerable<int> addresses, MemoryDomain domain, Watch.WatchSize size)
 		{
+			_dataSize = (int)size;
+			SetDataSize(_dataSize);
 			var addrList = addresses.ToList();
 			if (addrList.Any())
 			{
