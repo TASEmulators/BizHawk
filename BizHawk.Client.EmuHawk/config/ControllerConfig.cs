@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -416,9 +417,9 @@ namespace BizHawk.Client.EmuHawk
 				(c as AnalogBindControl).Unbind_Click(null, null);
 			}
 
-			if (c.Controls.Count > 0)
+			if (c.Controls().Any())
 			{
-				foreach (Control child in c.Controls.OfType<Control>())
+				foreach (Control child in c.Controls())
 				{
 					ClearWidgetAndChildren(child);
 				}
@@ -427,7 +428,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearBtn_Click(object sender, EventArgs e)
 		{
-			foreach (var c in Controls.OfType<Control>())
+			foreach (var c in this.Controls())
 			{
 				ClearWidgetAndChildren(c);
 			}

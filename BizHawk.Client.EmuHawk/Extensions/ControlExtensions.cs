@@ -58,6 +58,29 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 		{
 			return control.PointToScreen(new Point(child.Location.X, child.Location.Y));
 		}
+
+		#region Enumerable to Enumerable<T>
+
+		/// <summary>
+		/// Converts the outdated IEnumerable Controls property to a IEnumerable<T> like .NET should have done a long time ago
+		/// </summary>
+		public static IEnumerable<Control> Controls(this Control control)
+		{
+			return control.Controls
+				.OfType<Control>();
+		}
+
+		public static IEnumerable<TabPage> TabPages(this TabControl tabControl)
+		{
+			return tabControl.TabPages.Cast<TabPage>();
+		}
+
+		public static IEnumerable<int> SelectedIndices(this ListView listView)
+		{
+			return listView.SelectedIndices.Cast<int>();
+		}
+
+		#endregion
 	}
 
 	public static class FormExtensions

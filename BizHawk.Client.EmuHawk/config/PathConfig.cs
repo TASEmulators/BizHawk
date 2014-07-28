@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -25,8 +26,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var core in coresToHide)
 			{
 				PathTabControl.TabPages.Remove(
-					AllTabPages.FirstOrDefault(x => x.Name == core) ?? new TabPage()
-					);
+					PathTabControl.TabPages().FirstOrDefault(x => x.Name == core) ?? new TabPage());
 			}
 		}
 
@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 
 					var btn = new Button
 					{
-						Text = String.Empty,
+						Text = string.Empty,
 						Image = Properties.Resources.OpenFile,
 						Location = new Point(widgetOffset, _y - 1),
 						Width = buttonWidth,
@@ -257,16 +257,11 @@ namespace BizHawk.Client.EmuHawk
 				var allPathControls = new List<Control>();
 				foreach (TabPage tp in PathTabControl.TabPages)
 				{
-					allPathControls.AddRange(tp.Controls.OfType<Control>());
+					allPathControls.AddRange(tp.Controls());
 				}
 
 				return allPathControls;
 			}
-		}
-
-		private IEnumerable<TabPage> AllTabPages
-		{
-			get { return PathTabControl.TabPages.Cast<TabPage>(); }
 		}
 
 		#region Events
