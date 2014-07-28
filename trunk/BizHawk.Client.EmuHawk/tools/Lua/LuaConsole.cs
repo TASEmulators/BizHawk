@@ -558,12 +558,6 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		private Point GetPromptPoint()
-		{
-			return PointToScreen(
-				new Point(LuaListView.Location.X + 30, LuaListView.Location.Y + 30));
-		}
-
 		private static void UpdateRegisteredFunctionsDialog()
 		{
 			foreach (var form in Application.OpenForms.OfType<LuaRegisteredFunctionsList>())
@@ -880,8 +874,10 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!alreadyOpen)
 				{
-					var form = new LuaRegisteredFunctionsList { StartLocation = GetPromptPoint() };
-					form.Show();
+					new LuaRegisteredFunctionsList
+					{
+						StartLocation = this.ChildPointToScreen(LuaListView)
+					}.Show();
 				}
 			}
 		}

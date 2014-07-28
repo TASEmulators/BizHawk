@@ -868,20 +868,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private Point GetPromptPoint()
-		{
-			return PointToScreen(new Point(WatchListView.Location.X, WatchListView.Location.Y));
-		}
-
 		private void PokeAddress()
 		{
 			if (SelectedIndices.Any())
 			{
-				var poke = new RamPoke();
-				var watches = SelectedIndices.Select(t => _searches[t]).ToList();
-				poke.SetWatch(watches);
-				poke.InitialLocation = GetPromptPoint();
+				var poke = new RamPoke
+				{
+					InitialLocation = this.ChildPointToScreen(WatchListView)
+				};
+
+				poke.SetWatch(SelectedIndices.Select(t => _searches[t]).ToList());
 				poke.ShowHawkDialog();
+
 				UpdateValues();
 			}
 		}
@@ -933,7 +931,12 @@ namespace BizHawk.Client.EmuHawk
 		private void GoToSpecifiedAddress()
 		{
 			WatchListView.SelectedIndices.Clear();
-			var prompt = new InputPrompt { Text = "Go to Address", StartLocation = GetPromptPoint() };
+			var prompt = new InputPrompt
+			{
+				Text = "Go to Address",
+				StartLocation = this.ChildPointToScreen(WatchListView)
+			};
+
 			prompt.SetMessage("Enter a hexadecimal value");
 			var result = prompt.ShowHawkDialog();
 
