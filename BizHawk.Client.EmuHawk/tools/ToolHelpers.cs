@@ -205,22 +205,6 @@ namespace BizHawk.Client.EmuHawk
 			return new FileInfo(sfd.FileName);
 		}
 
-		public static void PopulateMemoryDomainDropdown(ref ComboBox dropdown, MemoryDomain startDomain)
-		{
-			dropdown.Items.Clear();
-			if (Global.Emulator.MemoryDomains.Count > 0)
-			{
-				foreach (var domain in Global.Emulator.MemoryDomains)
-				{
-					var result = dropdown.Items.Add(domain.ToString());
-					if (domain.Name == startDomain.Name)
-					{
-						dropdown.SelectedIndex = result;
-					}
-				}
-			}
-		}
-
 		public static void UpdateCheatRelatedTools(object sender, CheatCollection.CheatListEventArgs e)
 		{
 			GlobalWin.Tools.UpdateValues<RamWatch>();
