@@ -694,6 +694,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.UseCompatibleStateImageBehavior = false;
 			this.TasView.View = System.Windows.Forms.View.Details;
 			this.TasView.RightMouseScrolled += new BizHawk.Client.EmuHawk.TasListView.RightMouseScrollEventHandler(this.TasView_MouseWheel);
+			this.TasView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.TasView_ColumnClick);
 			this.TasView.SelectedIndexChanged += new System.EventHandler(this.TasView_SelectedIndexChanged);
 			this.TasView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TasView_KeyDown);
 			this.TasView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDoubleClick);

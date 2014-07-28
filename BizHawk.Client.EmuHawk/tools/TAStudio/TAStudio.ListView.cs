@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -155,6 +157,28 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region Events
+
+		private void TasView_ColumnClick(object sender, ColumnClickEventArgs e)
+		{
+			if (TasView.SelectedIndices().Any())
+			{
+				var columnName = TasView.Columns[e.Column].Name;
+
+				if (columnName == FrameColumnName)
+				{
+					// TODO: add marker to LastSelectedIndex
+				}
+				else if (columnName != MarkerColumnName) // TODO: what about float?
+				{
+					foreach (var index in TasView.SelectedIndices())
+					{
+						ToggleBoolState(index, columnName);
+					}
+
+					RefreshDialog();
+				}
+			}
+		}
 
 		private void TasView_MouseDown(object sender, MouseEventArgs e)
 		{
