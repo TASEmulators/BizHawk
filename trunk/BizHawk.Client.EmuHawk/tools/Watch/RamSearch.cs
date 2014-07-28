@@ -1243,11 +1243,11 @@ namespace BizHawk.Client.EmuHawk
 			var allCheats = SelectedWatches.All(x => Global.CheatList.IsActive(x.Domain, x.Address ?? 0));
 			if (allCheats)
 			{
-				ToolHelpers.UnfreezeAddress(SelectedWatches);
+				SelectedWatches.UnfreezeAll();
 			}
 			else
 			{
-				ToolHelpers.FreezeAddress(SelectedWatches);
+				SelectedWatches.FreezeAll();
 			}
 		}
 

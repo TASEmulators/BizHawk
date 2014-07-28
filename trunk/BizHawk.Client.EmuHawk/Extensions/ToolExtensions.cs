@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Linq;
 
 using BizHawk.Client.Common;
 
@@ -54,6 +55,19 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 			}
 
 			GlobalWin.Sound.StartSound();
+		}
+
+		public static void FreezeAll(this IEnumerable<Watch> watches)
+		{
+			Global.CheatList.AddRange(
+				watches
+				.Where(w => !w.IsSeparator)
+				.Select(w => new Cheat(w, w.Value ?? 0)));
+		}
+
+		public static void UnfreezeAll(this IEnumerable<Watch> watches)
+		{
+			Global.CheatList.RemoveRange(watches.Where(watch => !watch.IsSeparator));
 		}
 	}
 }
