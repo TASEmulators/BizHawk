@@ -2070,7 +2070,18 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (_domain.ToString() == cheat.Domain.Name)
 					{
-						var rect = new Rectangle(GetAddressCoordinates(cheat.Address ?? 0), new Size(15 * (int)cheat.Size, fontHeight));
+						var gaps = (int)cheat.Size - (int)_dataSize;
+
+						if (cheat.Size == Watch.WatchSize.DWord && _dataSize == 2)
+						{
+							gaps -= 1;
+						}
+
+						if (gaps < 0) { gaps = 0; }
+						
+						var width = (15 * (int)cheat.Size) + (gaps * 7);
+
+						var rect = new Rectangle(GetAddressCoordinates(cheat.Address ?? 0), new Size(width, fontHeight));
 						e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
 						e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexFreezeColor), rect);
 					}
