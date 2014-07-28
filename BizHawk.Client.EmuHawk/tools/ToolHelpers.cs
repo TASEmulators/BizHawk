@@ -205,54 +205,6 @@ namespace BizHawk.Client.EmuHawk
 			return new FileInfo(sfd.FileName);
 		}
 
-		public static ToolStripMenuItem GenerateAutoLoadItem(RecentFiles recent)
-		{
-			var auto = new ToolStripMenuItem { Text = "&Autoload", Checked = recent.AutoLoad };
-			auto.Click += (o, ev) => recent.ToggleAutoLoad();
-			return auto;
-		}
-
-		public static ToolStripItem[] GenerateRecentMenu(RecentFiles recent, Action<string> loadFileCallback)
-		{
-			var items = new List<ToolStripItem>();
-
-			if (recent.Empty)
-			{
-				var none = new ToolStripMenuItem { Enabled = false, Text = "None" };
-				items.Add(none);
-			}
-			else
-			{
-				foreach (var filename in recent)
-				{
-					var temp = filename;
-					var item = new ToolStripMenuItem { Text = temp };
-					item.Click += (o, ev) => loadFileCallback(temp);
-					items.Add(item);
-				}
-			}
-
-			items.Add(new ToolStripSeparator());
-
-			var clearitem = new ToolStripMenuItem { Text = "&Clear" };
-			clearitem.Click += (o, ev) => recent.Clear();
-			items.Add(clearitem);
-
-			return items.ToArray();
-		}
-
-		public static void HandleLoadError(RecentFiles recent, string path)
-		{
-			GlobalWin.Sound.StopSound();
-			var result = MessageBox.Show("Could not open " + path + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
-			if (result == DialogResult.Yes)
-			{
-				recent.Remove(path);
-			}
-
-			GlobalWin.Sound.StartSound();
-		}
-
 		public static IEnumerable<ToolStripItem> GenerateMemoryDomainMenuItems(Action<string> setCallback, string selectedDomain = "", int? maxSize = null)
 		{
 			var items = new List<ToolStripMenuItem>();
@@ -306,11 +258,6 @@ namespace BizHawk.Client.EmuHawk
 				watches
 				.Where(w => !w.IsSeparator)
 				.Select(w => new Cheat(w, w.Value ?? 0)));
-
-			//foreach (var watch in watches.Where(watch => !watch.IsSeparator))
-			//{
-			//	Global.CheatList.Add(new Cheat(watch, watch.Value ?? 0));
-			//}
 		}
 
 		public static void UnfreezeAddress(IEnumerable<Watch> watches)

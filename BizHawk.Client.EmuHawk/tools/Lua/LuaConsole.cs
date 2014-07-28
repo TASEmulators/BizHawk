@@ -12,6 +12,7 @@ using LuaInterface;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -510,7 +511,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!_luaList.LoadLuaSession(path))
 				{
-					ToolHelpers.HandleLoadError(Global.Config.RecentLuaSession, path);
+					Global.Config.RecentLuaSession.HandleLoadError(path);
 				}
 				else
 				{
@@ -584,14 +585,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentSessionsSubMenu.DropDownItems.Clear();
 			RecentSessionsSubMenu.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentLuaSession, LoadSessionFromRecent));
+				Global.Config.RecentLuaSession.RecentMenu(LoadSessionFromRecent));
 		}
 
 		private void RecentScriptsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentScriptsSubMenu.DropDownItems.Clear();
 			RecentScriptsSubMenu.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentLua, LoadLuaFromRecent));
+				Global.Config.RecentLua.RecentMenu(LoadLuaFromRecent));
 		}
 
 		private void NewSessionMenuItem_Click(object sender, EventArgs e)

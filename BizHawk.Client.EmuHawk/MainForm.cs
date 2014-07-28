@@ -34,6 +34,7 @@ using BizHawk.Emulation.DiscSystem;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1564,7 +1565,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				ToolHelpers.HandleLoadError(Global.Config.RecentMovies, path);
+				Global.Config.RecentMovies.HandleLoadError(path);
 			}
 		}
 
@@ -1572,7 +1573,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!LoadRom(rom))
 			{
-				ToolHelpers.HandleLoadError(Global.Config.RecentRoms, rom);
+				Global.Config.RecentRoms.HandleLoadError(rom);
 			}
 		}
 

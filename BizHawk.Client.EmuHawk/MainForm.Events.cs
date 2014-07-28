@@ -18,6 +18,7 @@ using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.config.NES;
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -41,11 +42,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentRomSubMenu.DropDownItems.Clear();
 			RecentRomSubMenu.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentRoms, LoadRomFromRecent)
-			);
-			RecentRomSubMenu.DropDownItems.Add(
-				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentRoms)
-			);
+				Global.Config.RecentRoms.RecentMenu(LoadRomFromRecent, true));
 		}
 
 		private void SaveStateSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -261,11 +258,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentMovieSubMenu.DropDownItems.Clear();
 			RecentMovieSubMenu.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentMovies, LoadMoviesFromRecent)
-			);
-			RecentMovieSubMenu.DropDownItems.Add(
-				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentMovies)
-			);
+				Global.Config.RecentMovies.RecentMenu(LoadMoviesFromRecent, true));
 		}
 
 		private void MovieEndSubMenu_DropDownOpened(object sender, EventArgs e)

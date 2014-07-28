@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -145,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 				var load_result = _watches.Load(path, append: false);
 				if (!load_result)
 				{
-					ToolHelpers.HandleLoadError(Global.Config.RecentWatches, path);
+					Global.Config.RecentWatches.HandleLoadError(path);
 				}
 				else
 				{
@@ -684,11 +685,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentSubMenu.DropDownItems.Clear();
 			RecentSubMenu.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentWatches, LoadFileFromRecent)
-			);
-			RecentSubMenu.DropDownItems.Add(
-				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentWatches)
-			);
+				Global.Config.RecentWatches.RecentMenu(LoadFileFromRecent, true));
 		}
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)

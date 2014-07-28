@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Sega.Genesis;
+using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -102,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 				var loadResult = Global.CheatList.Load(path, append: false);
 				if (!loadResult)
 				{
-					ToolHelpers.HandleLoadError(Global.Config.RecentWatches, path);
+					Global.Config.RecentWatches.HandleLoadError(path);
 				}
 				else
 				{
@@ -467,8 +468,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentSubMenu.DropDownItems.Clear();
 			RecentSubMenu.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentCheats, LoadFileFromRecent)
-			);
+				Global.Config.RecentCheats.RecentMenu(LoadFileFromRecent));
 		}
 
 		private void NewMenuItem_Click(object sender, EventArgs e)
