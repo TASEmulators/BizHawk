@@ -844,6 +844,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
 			NesInQuickNESMenuItem.Checked = Global.Config.NES_InQuickNES;
+			SnesWithSnes9xMenuItem.Checked = Global.Config.SNES_InSnes9x;
+
+			SnesWithSnes9xMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
 
 		private void ControllersMenuItem_Click(object sender, EventArgs e)
@@ -1022,6 +1025,12 @@ namespace BizHawk.Client.EmuHawk
 		private void NesInQuickNESMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.NES_InQuickNES ^= true;
+			FlagNeedsReboot();
+		}
+
+		private void SnesWithSnes9xMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SNES_InSnes9x ^= true;
 			FlagNeedsReboot();
 		}
 

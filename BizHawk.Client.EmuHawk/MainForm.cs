@@ -3436,7 +3436,5 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_master = null;
 		}
-
-	
 	}
 }

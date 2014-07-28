@@ -305,7 +305,12 @@ namespace BizHawk.Client.Common
 						switch (game.System)
 						{
 							case "SNES":
-								if (true)
+								if (Global.Config.SNES_InSnes9x)
+								{
+									var snes = new Emulation.Cores.Nintendo.SNES9X.Snes9x(nextComm, rom.FileData);
+									nextEmulator = snes;
+								}
+								else
 								{
 									// need to get rid of this hack at some point
 									((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", String.Empty)); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
@@ -314,11 +319,6 @@ namespace BizHawk.Client.Common
 									var romData = isXml ? null : rom.FileData;
 									var xmlData = isXml ? rom.FileData : null;
 									snes.Load(game, romData, Deterministic, xmlData);
-								}
-								else
-								{
-									var snes = new Emulation.Cores.Nintendo.SNES9X.Snes9x(nextComm, rom.FileData);
-									nextEmulator = snes;
 								}
 
 								break;
