@@ -404,13 +404,13 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadColumnInfo()
 		{
 			WatchListView.Columns.Clear();
-			ToolHelpers.AddColumn(WatchListView, WatchList.ADDRESS, Global.Config.RamWatchShowAddressColumn, GetColumnWidth(WatchList.ADDRESS));
-			ToolHelpers.AddColumn(WatchListView, WatchList.VALUE, true, GetColumnWidth(WatchList.VALUE));
-			ToolHelpers.AddColumn(WatchListView, WatchList.PREV, Global.Config.RamWatchShowPrevColumn, GetColumnWidth(WatchList.PREV));
-			ToolHelpers.AddColumn(WatchListView, WatchList.CHANGES, Global.Config.RamWatchShowChangeColumn, GetColumnWidth(WatchList.CHANGES));
-			ToolHelpers.AddColumn(WatchListView, WatchList.DIFF, Global.Config.RamWatchShowDiffColumn, GetColumnWidth(WatchList.DIFF));
-			ToolHelpers.AddColumn(WatchListView, WatchList.DOMAIN, Global.Config.RamWatchShowDomainColumn, GetColumnWidth(WatchList.DOMAIN));
-			ToolHelpers.AddColumn(WatchListView, WatchList.NOTES, true, GetColumnWidth(WatchList.NOTES));
+			WatchListView.AddColumn(WatchList.ADDRESS, Global.Config.RamWatchShowAddressColumn, GetColumnWidth(WatchList.ADDRESS));
+			WatchListView.AddColumn(WatchList.VALUE, true, GetColumnWidth(WatchList.VALUE));
+			WatchListView.AddColumn(WatchList.PREV, Global.Config.RamWatchShowPrevColumn, GetColumnWidth(WatchList.PREV));
+			WatchListView.AddColumn(WatchList.CHANGES, Global.Config.RamWatchShowChangeColumn, GetColumnWidth(WatchList.CHANGES));
+			WatchListView.AddColumn(WatchList.DIFF, Global.Config.RamWatchShowDiffColumn, GetColumnWidth(WatchList.DIFF));
+			WatchListView.AddColumn(WatchList.DOMAIN, Global.Config.RamWatchShowDomainColumn, GetColumnWidth(WatchList.DOMAIN));
+			WatchListView.AddColumn(WatchList.NOTES, true, GetColumnWidth(WatchList.NOTES));
 
 			ColumnPositions();
 		}
@@ -714,7 +714,9 @@ namespace BizHawk.Client.EmuHawk
 		private void MemoryDomainsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			MemoryDomainsSubMenu.DropDownItems.Clear();
-			MemoryDomainsSubMenu.DropDownItems.AddRange(ToolHelpers.GenerateMemoryDomainMenuItems(SetMemoryDomain, _watches.Domain.Name).ToArray());
+			MemoryDomainsSubMenu.DropDownItems.AddRange(
+				Global.Emulator.MemoryDomains.MenuItems(SetMemoryDomain, _watches.Domain.Name)
+				.ToArray());
 		}
 
 		private void NewWatchMenuItem_Click(object sender, EventArgs e)

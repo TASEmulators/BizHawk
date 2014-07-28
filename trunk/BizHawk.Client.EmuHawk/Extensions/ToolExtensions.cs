@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq;
 
+using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk.ToolExtensions
@@ -68,6 +69,23 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 		public static void UnfreezeAll(this IEnumerable<Watch> watches)
 		{
 			Global.CheatList.RemoveRange(watches.Where(watch => !watch.IsSeparator));
+		}
+
+		public static IEnumerable<ToolStripItem> MenuItems(this MemoryDomainList domains, Action<string> setCallback, string selected = "", int? maxSize = null)
+		{
+			foreach (var domain in domains)
+			{
+				var name = domain.Name;
+				var item = new ToolStripMenuItem
+				{
+					Text = name,
+					Enabled = !(maxSize.HasValue && domain.Size > maxSize.Value),
+					Checked = name == selected
+				};
+				item.Click += (o, ev) => setCallback(name);
+
+				yield return item;
+			}
 		}
 	}
 }

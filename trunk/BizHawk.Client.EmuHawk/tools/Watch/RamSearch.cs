@@ -586,11 +586,11 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadColumnInfo()
 		{
 			WatchListView.Columns.Clear();
-			ToolHelpers.AddColumn(WatchListView, WatchList.ADDRESS, true, GetColumnWidth(WatchList.ADDRESS));
-			ToolHelpers.AddColumn(WatchListView, WatchList.VALUE, true, GetColumnWidth(WatchList.VALUE));
-			ToolHelpers.AddColumn(WatchListView, WatchList.PREV, Global.Config.RamSearchShowPrevColumn, GetColumnWidth(WatchList.PREV));
-			ToolHelpers.AddColumn(WatchListView, WatchList.CHANGES, Global.Config.RamSearchShowChangeColumn, GetColumnWidth(WatchList.CHANGES));
-			ToolHelpers.AddColumn(WatchListView, WatchList.DIFF, Global.Config.RamSearchShowDiffColumn, GetColumnWidth(WatchList.DIFF));
+			WatchListView.AddColumn(WatchList.ADDRESS, true, GetColumnWidth(WatchList.ADDRESS));
+			WatchListView.AddColumn(WatchList.VALUE, true, GetColumnWidth(WatchList.VALUE));
+			WatchListView.AddColumn(WatchList.PREV, Global.Config.RamSearchShowPrevColumn, GetColumnWidth(WatchList.PREV));
+			WatchListView.AddColumn(WatchList.CHANGES, Global.Config.RamSearchShowChangeColumn, GetColumnWidth(WatchList.CHANGES));
+			WatchListView.AddColumn(WatchList.DIFF, Global.Config.RamSearchShowDiffColumn, GetColumnWidth(WatchList.DIFF));
 
 			ColumnPositions();
 		}
@@ -1045,7 +1045,9 @@ namespace BizHawk.Client.EmuHawk
 		private void MemoryDomainsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			MemoryDomainsSubMenu.DropDownItems.Clear();
-			MemoryDomainsSubMenu.DropDownItems.AddRange(ToolHelpers.GenerateMemoryDomainMenuItems(SetMemoryDomain, _searches.Domain.Name, MaxSupportedSize).ToArray());
+			MemoryDomainsSubMenu.DropDownItems.AddRange(
+				Global.Emulator.MemoryDomains.MenuItems(SetMemoryDomain, _searches.Domain.Name, MaxSupportedSize)
+				.ToArray());
 		}
 
 		private void SizeSubMenu_DropDownOpened(object sender, EventArgs e)
