@@ -1507,15 +1507,23 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "SNES":
 				case "SGB":
-					if ((Global.Emulator as LibsnesCore).IsSGB)
+					// TODO: fix SNES9x here
+					if (Global.Emulator is LibsnesCore)
 					{
-						SNESSubMenu.Text = "&SGB";
+						if ((Global.Emulator as LibsnesCore).IsSGB)
+						{
+							SNESSubMenu.Text = "&SGB";
+						}
+						else
+						{
+							SNESSubMenu.Text = "&SNES";
+						}
+						SNESSubMenu.Visible = true;
 					}
 					else
 					{
-						SNESSubMenu.Text = "&SNES";
+						SNESSubMenu.Visible = false;
 					}
-					SNESSubMenu.Visible = true;
 					break;
 				case "Coleco":
 					ColecoSubMenu.Visible = true;
