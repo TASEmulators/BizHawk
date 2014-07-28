@@ -17,6 +17,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public TAStudio Tastudio { get; set; }
 
+		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
 		public bool TurboSeek
 		{
 			get
