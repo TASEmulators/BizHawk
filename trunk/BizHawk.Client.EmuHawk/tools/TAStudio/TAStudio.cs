@@ -10,6 +10,7 @@ using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -213,7 +214,7 @@ namespace BizHawk.Client.EmuHawk
 				var file = new FileInfo(path);
 				if (!file.Exists)
 				{
-					ToolHelpers.HandleLoadError(Global.Config.RecentTas, path);
+					Global.Config.RecentTas.HandleLoadError(path);
 				}
 
 				GlobalWin.MainForm.StartNewMovie(movie, record: false);
@@ -505,8 +506,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentSubMenu.DropDownItems.Clear();
 			RecentSubMenu.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentTas, LoadProject)
-			);
+				Global.Config.RecentTas.RecentMenu(LoadProject));
 		}
 
 		private void NewTasMenuItem_Click(object sender, EventArgs e)

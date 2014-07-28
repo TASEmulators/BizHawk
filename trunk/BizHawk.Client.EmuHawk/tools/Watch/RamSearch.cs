@@ -14,6 +14,7 @@ using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
 
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -555,7 +556,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!file.Exists)
 			{
-				ToolHelpers.HandleLoadError(Global.Config.RecentSearches, path);
+				Global.Config.RecentSearches.HandleLoadError(path);
 			}
 			else
 			{
@@ -962,8 +963,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentSubMenu.DropDownItems.Clear();
 			RecentSubMenu.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentSearches, LoadFileFromRecent)
-			);
+				Global.Config.RecentSearches.RecentMenu(LoadFileFromRecent));
 		}
 
 		private void OpenMenuItem_Click(object sender, EventArgs e)

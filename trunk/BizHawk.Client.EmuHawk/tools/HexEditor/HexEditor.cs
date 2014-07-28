@@ -15,6 +15,7 @@ using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1336,7 +1337,7 @@ namespace BizHawk.Client.EmuHawk
 			var result = LoadTable(path);
 			if (!result)
 			{
-				ToolHelpers.HandleLoadError(Global.Config.RecentTables, path);
+				Global.Config.RecentTables.HandleLoadError(path);
 			}
 			else
 			{
@@ -1349,10 +1350,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentTablesSubMenu.DropDownItems.Clear();
 			RecentTablesSubMenu.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentTables, LoadFileFromRecent));
-
-			RecentTablesSubMenu.DropDownItems.Add(
-				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentTables));
+				Global.Config.RecentTables.RecentMenu(LoadFileFromRecent, true));
 		}
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
