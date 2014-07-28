@@ -1456,7 +1456,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedWatches.Any())
 			{
-				ToolHelpers.ViewInHexEditor(_searches.Domain, SelectedWatches.Select(x => x.Address ?? 0));
+				ToolHelpers.ViewInHexEditor(_searches.Domain, SelectedWatches.Select(x => x.Address ?? 0), SelectedSize);
 			}
 		}
 
@@ -1466,6 +1466,23 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.Refresh();
 		}
 
+		private Watch.WatchSize SelectedSize
+		{
+			get
+			{
+				switch (SizeDropdown.SelectedIndex)
+				{
+					default:
+					case 0:
+						return Watch.WatchSize.Byte;
+					case 1:
+						return Watch.WatchSize.Word;
+					case 2:
+						return Watch.WatchSize.DWord;
+				}
+			}
+		}
+
 		private void SizeDropdown_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (_dropdownDontfire)
@@ -1473,18 +1490,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			switch (SizeDropdown.SelectedIndex)
-			{
-				case 0:
-					SetSize(Watch.WatchSize.Byte);
-					break;
-				case 1:
-					SetSize(Watch.WatchSize.Word);
-					break;
-				case 2:
-					SetSize(Watch.WatchSize.DWord);
-					break;
-			}
+			SetSize(SelectedSize);
 		}
 
 		private void DisplayTypeDropdown_SelectedIndexChanged(object sender, EventArgs e)
