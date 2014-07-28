@@ -34,7 +34,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 			_programmaticallyChangingSeekBox = true;
-			TurboSeekCheckbox.Checked = Global.Config.TurboSeek;
+			if (Global.Config != null) // A check needed for the designer
+			{
+				TurboSeekCheckbox.Checked = Global.Config.TurboSeek;
+			}
 			_programmaticallyChangingSeekBox = false;
 		}
 
