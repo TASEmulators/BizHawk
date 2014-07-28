@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PlaybackBox : UserControl
 	{
-		private bool _programmaticallyChangingSeekBox = false;
+		private bool _programmaticallyChangingValue = false;
 
 		public TAStudio Tastudio { get; set; }
 
@@ -31,15 +31,30 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		public bool AutoRestore
+		{
+			get
+			{
+				return Global.Config.TAStudioAutoRestoreLastPosition;
+			}
+
+			set
+			{
+				AutoRestoreCheckbox.Checked = Global.Config.TAStudioAutoRestoreLastPosition = value;
+			}
+		}
+
 		public PlaybackBox()
 		{
 			InitializeComponent();
-			_programmaticallyChangingSeekBox = true;
+			_programmaticallyChangingValue = true;
 			if (Global.Config != null) // A check needed for the designer
 			{
 				TurboSeekCheckbox.Checked = Global.Config.TurboSeek;
+				AutoRestoreCheckbox.Checked = Global.Config.TAStudioAutoRestoreLastPosition;
 			}
-			_programmaticallyChangingSeekBox = false;
+			_programmaticallyChangingValue = false;
 		}
 
 		private void PreviousMarkerButton_Click(object sender, EventArgs e)
@@ -69,9 +84,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TurboSeekCheckbox_CheckedChanged(object sender, EventArgs e)
 		{
-			if (!_programmaticallyChangingSeekBox)
+			if (!_programmaticallyChangingValue)
 			{
 				Global.Config.TurboSeek ^= true;
+			}
+		}
+
+		private void AutoRestoreCheckbox_CheckedChanged(object sender, EventArgs e)
+		{
+			if (!_programmaticallyChangingValue)
+			{
+				Global.Config.TAStudioAutoRestoreLastPosition ^= true;
 			}
 		}
 	}
