@@ -98,7 +98,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_mode = mode;
-			ToolHelpers.PopulateMemoryDomainDropdown(ref DomainDropDown, domain ?? Global.Emulator.MemoryDomains.MainMemory);
+
+			DomainDropDown.Items.Clear();
+			DomainDropDown.Items.AddRange(Global.Emulator.MemoryDomains
+				.Select(d => d.ToString())
+				.ToArray());
+			DomainDropDown.SelectedItem = Global.Emulator.MemoryDomains.MainMemory.ToString();
+
 			SetTitle();
 		}
 

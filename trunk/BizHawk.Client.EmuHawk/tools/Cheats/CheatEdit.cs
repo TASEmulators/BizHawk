@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -28,9 +29,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheatEdit_Load(object sender, EventArgs e)
 		{
-			if (Global.Emulator != null)
+			if (Global.Emulator != null) // the designer needs this check
 			{
-				ToolHelpers.PopulateMemoryDomainDropdown(ref DomainDropDown, Global.Emulator.MemoryDomains.MainMemory);
+				DomainDropDown.Items.Clear();
+				DomainDropDown.Items.AddRange(Global.Emulator.MemoryDomains
+					.Select(d => d.ToString())
+					.ToArray());
+				DomainDropDown.SelectedItem = Global.Emulator.MemoryDomains.MainMemory.ToString();
 			}
 
 			SetFormToDefault();
