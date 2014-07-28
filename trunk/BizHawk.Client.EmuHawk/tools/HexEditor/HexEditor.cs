@@ -574,7 +574,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.CheatList.IsActive(_domain, address))
 			{
-				return Global.CheatList[_domain, address].Value.Value;
+				return Global.CheatList.GetCheatValue(_domain, address, (Watch.WatchSize)_dataSize ).Value;
 			}
 
 			switch (_dataSize)
