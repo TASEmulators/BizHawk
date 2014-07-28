@@ -59,14 +59,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore { get { return true; } }
 
-		private IEnumerable<int> SelectedIndices
-		{
-			get { return LuaListView.SelectedIndices.Cast<int>(); }
-		}
-
 		private IEnumerable<LuaFile> SelectedItems
 		{
-			get { return SelectedIndices.Select(index => _luaList[index]); }
+			get { return LuaListView.SelectedIndices().Select(index => _luaList[index]); }
 		}
 
 		private IEnumerable<LuaFile> SelectedFiles
@@ -654,7 +649,7 @@ namespace BizHawk.Client.EmuHawk
 			RemoveScriptMenuItem.Enabled =
 				MoveUpMenuItem.Enabled =
 				MoveDownMenuItem.Enabled =
-				SelectedIndices.Any();
+				LuaListView.SelectedIndices().Any();
 
 			SelectAllMenuItem.Enabled = _luaList.Any();
 			StopAllScriptsMenuItem.Enabled = _luaList.Any(script => script.Enabled);
@@ -783,7 +778,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertSeparatorMenuItem_Click(object sender, EventArgs e)
 		{
-			var indices = SelectedIndices.ToList();
+			var indices = LuaListView.SelectedIndices().ToList();
 			if (indices.Any() && indices.Last() < _luaList.Count)
 			{
 				_luaList.Insert(indices.Last(), LuaFile.SeparatorInstance);
@@ -798,7 +793,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MoveUpMenuItem_Click(object sender, EventArgs e)
 		{
-			var indices = SelectedIndices.ToList();
+			var indices = LuaListView.SelectedIndices().ToList();
 			if (indices.Count == 0 || indices[0] == 0)
 			{
 				return;
@@ -824,7 +819,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MoveDownMenuItem_Click(object sender, EventArgs e)
 		{
-			var indices = SelectedIndices.ToList();
+			var indices = LuaListView.SelectedIndices().ToList();
 			if (indices.Count == 0 || indices.Last() == _luaList.Count - 1)
 			{
 				return;

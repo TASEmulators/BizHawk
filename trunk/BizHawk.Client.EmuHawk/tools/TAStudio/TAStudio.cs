@@ -58,16 +58,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private IEnumerable<int> SelectedIndices
-		{
-			get
-			{
-				return TasView.SelectedIndices
-					.OfType<int>()
-					.OrderBy(frame => frame);
-			}
-		}
-
 		public TasMovie CurrentMovie
 		{
 			get { return _tas; }
@@ -584,7 +574,7 @@ namespace BizHawk.Client.EmuHawk
 			DeleteFramesMenuItem.Enabled =
 			CloneMenuItem.Enabled =
 			TruncateMenuItem.Enabled =
-				SelectedIndices.Any();
+				TasView.SelectedIndices().Any();
 
 			ReselectClipboardMenuItem.Enabled =
 				PasteMenuItem.Enabled =
@@ -604,7 +594,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SelectBetweenMarkersMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SelectedIndices.Any())
+			if (TasView.SelectedIndices().Any())
 			{
 				var prevMarker = _tas.Markers.PreviousOrCurrent(LastSelectedIndex);
 				var nextMarker = _tas.Markers.Next(LastSelectedIndex);
@@ -630,7 +620,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CopyMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SelectedIndices.Any())
+			if (TasView.SelectedIndices().Any())
 			{
 				_tasClipboard.Clear();
 				var list = TasView.SelectedIndices;
@@ -692,13 +682,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CutMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SelectedIndices.Any())
+			if (TasView.SelectedIndices().Any())
 			{
 				var needsToRollback = !(FirstSelectedIndex > Global.Emulator.Frame);
 				var rollBackFrame = FirstSelectedIndex;
 
 				_tasClipboard.Clear();
-				var list = SelectedIndices.ToArray();
+				var list = TasView.SelectedIndices().ToArray();
 				var sb = new StringBuilder();
 				for (var i = 0; i < list.Length; i++)
 				{
@@ -727,12 +717,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SelectedIndices.Any())
+			if (TasView.SelectedIndices().Any())
 			{
 				var needsToRollback = !(FirstSelectedIndex > Global.Emulator.Frame);
 				var rollBackFrame = FirstSelectedIndex;
 
-				foreach (var frame in SelectedIndices)
+				foreach (var frame in TasView.SelectedIndices())
 				{
 					_tas.ClearFrame(frame);
 				}
@@ -750,13 +740,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DeleteFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SelectedIndices.Any())
+			if (TasView.SelectedIndices().Any())
 			{
 				var needsToRollback = !(FirstSelectedIndex > Global.Emulator.Frame);
 				var rollBackFrame = FirstSelectedIndex;
 
 				_tasClipboard.Clear();
-				_tas.RemoveFrames(SelectedIndices.ToArray());
+				_tas.RemoveFrames(TasView.SelectedIndices().ToArray());
 				SetSplicer();
 				TasView.DeselectAll();
 
@@ -773,9 +763,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CloneMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SelectedIndices.Any())
+			if (TasView.SelectedIndices().Any())
 			{
-				var framesToInsert = SelectedIndices.ToList();
+				var framesToInsert = TasView.SelectedIndices().ToList();
 				var insertionFrame = LastSelectedIndex + 1;
 				var needsToRollback = !(insertionFrame > Global.Emulator.Frame);
 				var inputLog = new List<string>();
@@ -800,7 +790,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertFrameMenuItem_Click(object sender, EventArgs e)
 		{
-			var insertionFrame = SelectedIndices.Any() ? LastSelectedIndex + 1 : 0;
+			var insertionFrame = TasView.SelectedIndices().Any() ? LastSelectedIndex + 1 : 0;
 			var needsToRollback = !(insertionFrame > Global.Emulator.Frame);
 
 			_tas.InsertEmptyFrame(insertionFrame);
@@ -817,7 +807,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertNumFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			var insertionFrame = SelectedIndices.Any() ? LastSelectedIndex + 1 : 0;
+			var insertionFrame = TasView.SelectedIndices().Any() ? LastSelectedIndex + 1 : 0;
 			var needsToRollback = !(insertionFrame > Global.Emulator.Frame);
 
 			var framesPrompt = new FramesPrompt();
@@ -839,7 +829,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TruncateMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SelectedIndices.Any())
+			if (TasView.SelectedIndices().Any())
 			{
 				var rollbackFrame = LastSelectedIndex + 1;
 				var needsToRollback = !(rollbackFrame > Global.Emulator.Frame);
