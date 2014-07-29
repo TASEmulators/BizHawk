@@ -5,6 +5,8 @@ using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Nintendo.SNES9X;
+using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -48,10 +50,11 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				var quicknesName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(QuickNES), typeof(CoreAttributes))).CoreName;
-				var neshawkName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(NES), typeof(CoreAttributes))).CoreName;
 				if (!record && Global.Emulator.SystemId == "NES") // For NES we need special logic since the movie will drive which core to load
 				{
+					var quicknesName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(QuickNES), typeof(CoreAttributes))).CoreName;
+					var neshawkName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(NES), typeof(CoreAttributes))).CoreName;
+
 					// If either is specified use that, else use whatever is currently set
 					if (Global.MovieSession.Movie.Core == quicknesName)
 					{
@@ -60,6 +63,20 @@ namespace BizHawk.Client.EmuHawk
 					else if (Global.MovieSession.Movie.Core == neshawkName)
 					{
 						Global.Config.NES_InQuickNES = false;
+					}
+				}
+				else if (!record && Global.Emulator.SystemId == "SNES") // ditto with snes9x vs bsnes
+				{
+					var snes9xName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(Snes9x), typeof(CoreAttributes))).CoreName;
+					var bsnesName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(LibsnesCore), typeof(CoreAttributes))).CoreName;
+
+					if (Global.MovieSession.Movie.Core == snes9xName)
+					{
+						Global.Config.SNES_InSnes9x = true;
+					}
+					else
+					{
+						Global.Config.SNES_InSnes9x = false;
 					}
 				}
 
