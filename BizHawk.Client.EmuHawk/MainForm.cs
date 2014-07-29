@@ -18,7 +18,6 @@ using BizHawk.Bizware.BizwareGL;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
-using BizHawk.Emulation.Cores.Atari.Atari7800;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
@@ -28,14 +27,12 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
-using BizHawk.Emulation.Cores.Sega.Saturn;
-using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.DiscSystem;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
-using BizHawk.Emulation.Cores.Nintendo.SNES9X;
+using BizHawk.Client.EmuHawk.CoreExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -2450,62 +2447,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			CoreNameStatusBarButton.Visible = true;
-			CoreAttributes attributes = Global.Emulator.Attributes();
+			var attributes = Global.Emulator.Attributes();
 
-			CoreNameStatusBarButton.Text =
-				(!attributes.Released ? "(Experimental) " : string.Empty) +
-				attributes.CoreName;
-
+			CoreNameStatusBarButton.Text = Global.Emulator.DisplayName();
+			CoreNameStatusBarButton.Image = Global.Emulator.Icon();
 			CoreNameStatusBarButton.ToolTipText = attributes.Ported ? "(ported) " : string.Empty;
-
-			if (!attributes.Ported)
-			{
-				CoreNameStatusBarButton.Image = Properties.Resources.CorpHawkSmall;
-			}
-			else
-			{
-				if (Global.Emulator is QuickNES)
-				{
-					CoreNameStatusBarButton.Image = Properties.Resources.QuickNes;
-				}
-				else if (Global.Emulator is LibsnesCore)
-				{
-					CoreNameStatusBarButton.Image = Properties.Resources.bsnes;
-					CoreNameStatusBarButton.Text += " (" + ((LibsnesCore.SnesSyncSettings)Global.Emulator.GetSyncSettings()).Profile + ")";
-				}
-				else if (Global.Emulator is Yabause)
-				{
-					CoreNameStatusBarButton.Image = Properties.Resources.yabause;
-				}
-				else if (Global.Emulator is Atari7800)
-				{
-					CoreNameStatusBarButton.Image = Properties.Resources.emu7800;
-				}
-				else if (Global.Emulator is GBA)
-				{
-					CoreNameStatusBarButton.Image = Properties.Resources.meteor;
-				}
-				else if (Global.Emulator is GPGX)
-				{
-					CoreNameStatusBarButton.Image = Properties.Resources.genplus;
-				}
-				else if (Global.Emulator is PSP)
-				{
-					CoreNameStatusBarButton.Image = Properties.Resources.ppsspp;
-				}
-				else if (Global.Emulator is Gameboy)
-				{
-					CoreNameStatusBarButton.Image = Properties.Resources.gambatte;
-				}
-				else if (Global.Emulator is Snes9x)
-				{
-					CoreNameStatusBarButton.Image = Properties.Resources.snes9x;
-				}
-				else
-				{
-					CoreNameStatusBarButton.Image = null;
-				}
-			}
 		}
 
 		#endregion
