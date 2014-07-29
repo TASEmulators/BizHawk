@@ -1218,12 +1218,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private static string DisplayNameForSystem(string system)
 		{
-			if (system == "NULL")
-			{
-				//Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
-				//return;
-			}
-
 			var str = Global.SystemInfo.DisplayName;
 
 			if (VersionInfo.DeveloperBuild)
