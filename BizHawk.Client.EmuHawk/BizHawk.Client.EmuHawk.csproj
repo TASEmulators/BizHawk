@@ -1463,6 +1463,7 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\snes9x.png" />
     <None Include="images\YellowUp.png" />
     <None Include="images\YellowRight.png" />
     <None Include="images\YellowLeft.png" />

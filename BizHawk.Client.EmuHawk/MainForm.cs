@@ -35,6 +35,7 @@ using BizHawk.Emulation.Cores.Nintendo.N64;
 
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -2495,6 +2496,10 @@ namespace BizHawk.Client.EmuHawk
 				else if (Global.Emulator is Gameboy)
 				{
 					CoreNameStatusBarButton.Image = Properties.Resources.gambatte;
+				}
+				else if (Global.Emulator is Snes9x)
+				{
+					CoreNameStatusBarButton.Image = Properties.Resources.snes9x;
 				}
 				else
 				{
