@@ -305,7 +305,7 @@ namespace BizHawk.Client.Common
 						switch (game.System)
 						{
 							case "SNES":
-								if (Global.Config.SNES_InSnes9x)
+								if (Global.Config.SNES_InSnes9x && VersionInfo.DeveloperBuild)
 								{
 									var snes = new Emulation.Cores.Nintendo.SNES9X.Snes9x(nextComm, rom.FileData);
 									nextEmulator = snes;
