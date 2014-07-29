@@ -2302,7 +2302,7 @@
 			this.GBcoreSettingsToolStripMenuItem.Name = "GBcoreSettingsToolStripMenuItem";
 			this.GBcoreSettingsToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.GBcoreSettingsToolStripMenuItem.Text = "Settings...";
-			this.GBcoreSettingsToolStripMenuItem.Click += new System.EventHandler(this.GBcoreSettingsToolStripMenuItem_Click);
+			this.GBcoreSettingsToolStripMenuItem.Click += new System.EventHandler(this.GBCoreSettingsMenuItem_Click);
 			// 
 			// LoadGBInSGBMenuItem
 			// 
@@ -2593,7 +2593,7 @@
 			this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
 			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
 			this.settingsToolStripMenuItem.Text = "&Settings...";
-			this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
+			this.settingsToolStripMenuItem.Click += new System.EventHandler(this.WondersawnSettingsMenuItem_Click);
 			// 
 			// HelpSubMenu
 			// 

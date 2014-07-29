@@ -3335,36 +3335,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		private void GBcoreSettingsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			config.GB.GBPrefs.DoGBPrefsDialog(this);
-		}
-
-		private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "WonderSwan Settings");
-		}
-
-		private void ProfilesMenuItem_Click(object sender, EventArgs e)
-		{
-			if (new ProfileConfig().ShowDialog() == DialogResult.OK)
-			{
-				GlobalWin.OSD.AddMessage("Profile settings saved");
-			}
-			else
-			{
-				GlobalWin.OSD.AddMessage("Profile config aborted");
-			}
-		}
-
-		private void ProfileFirstBootLabel_Click(object sender, EventArgs e)
-		{
-			var profileForm = new ProfileConfig();
-			profileForm.ShowDialog();
-			Global.Config.FirstBoot = false;
-			ProfileFirstBootLabel.Visible = false;
-		}
-
 		// TODO: move me
 		private IControlMainform _master;
 		public void RelinquishControl(IControlMainform master)
