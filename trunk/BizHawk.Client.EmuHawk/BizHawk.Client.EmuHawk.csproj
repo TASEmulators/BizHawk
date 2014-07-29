@@ -1575,7 +1575,6 @@
     <Content Include="config\ControllerImages\N64.png" />
     <Content Include="config\ControllerImages\SaturnController.jpg" />
     <None Include="images\addWatch.ico" />
-    <None Include="images\alt_about_image.gif" />
     <None Include="images\gba-icon.png" />
     <None Include="images\checkbox.png" />
     <None Include="images\Erase.png" />
