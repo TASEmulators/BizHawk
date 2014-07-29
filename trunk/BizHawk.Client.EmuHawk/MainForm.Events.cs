@@ -911,6 +911,18 @@ namespace BizHawk.Client.EmuHawk
 			new EmuHawkOptions().ShowDialog();
 		}
 
+		private void ProfilesMenuItem_Click(object sender, EventArgs e)
+		{
+			if (new ProfileConfig().ShowDialog() == DialogResult.OK)
+			{
+				GlobalWin.OSD.AddMessage("Profile settings saved");
+			}
+			else
+			{
+				GlobalWin.OSD.AddMessage("Profile config aborted");
+			}
+		}
+
 		private void ClickThrottleMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.ClockThrottle ^= true;
@@ -1567,6 +1579,11 @@ namespace BizHawk.Client.EmuHawk
 			LoadGBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
 		}
 
+		private void GBCoreSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			config.GB.GBPrefs.DoGBPrefsDialog(this);
+		}
+
 		private void GBForceDMGMenuItem_Click(object sender, EventArgs e)
 		{
 			var s = (Gameboy.GambatteSyncSettings)Global.Emulator.GetSyncSettings();
@@ -1824,6 +1841,15 @@ namespace BizHawk.Client.EmuHawk
 		private void GenesisSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Genesis Settings");
+		}
+
+		#endregion
+
+		#region Wondersawn
+
+		private void WondersawnSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "WonderSwan Settings");
 		}
 
 		#endregion
@@ -2151,6 +2177,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GlobalWin.Tools.Load<Cheats>();
 			}
+		}
+
+		private void ProfileFirstBootLabel_Click(object sender, EventArgs e)
+		{
+			var profileForm = new ProfileConfig();
+			profileForm.ShowDialog();
+			Global.Config.FirstBoot = false;
+			ProfileFirstBootLabel.Visible = false;
 		}
 
 		#endregion
