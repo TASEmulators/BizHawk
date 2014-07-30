@@ -182,13 +182,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (ffmpeg.HasExited)
 				throw new Exception("unexpected ffmpeg death:\n" + ffmpeg_geterror());
-			var a = source.GetVideoBuffer();
-			var b = new byte[a.Length * sizeof (int)];
-			Buffer.BlockCopy(a, 0, b, 0, b.Length);
 
+			var video = source.GetVideoBuffer();
 			try
 			{
-				muxer.writevideoframe(b);
+				muxer.WriteVideoFrame(video);
 			}
 			catch
 			{
@@ -260,7 +258,7 @@ namespace BizHawk.Client.EmuHawk
 				throw new Exception("unexpected ffmpeg death:\n" + ffmpeg_geterror());
 			try
 			{
-				muxer.writeaudioframe(samples);
+				muxer.WriteAudioFrame(samples);
 			}
 			catch
 			{
