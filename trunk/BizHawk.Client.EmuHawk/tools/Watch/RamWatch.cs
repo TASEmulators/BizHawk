@@ -237,8 +237,30 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				WatchListView.BlazingFast = true;
+				WatchListView.UseCustomBackground = NeedsBackground;
 				WatchListView.ItemCount = _watches.Count;
 				WatchListView.BlazingFast = false;
+			}
+		}
+
+		private bool NeedsBackground
+		{
+			get
+			{
+				foreach(var watch in _watches)
+				{
+					if (Global.CheatList.IsActive(_watches.Domain, watch.Address ?? 0))
+					{
+						return true;
+					}
+
+					if (watch.IsOutOfRange)
+					{
+						return true;
+					}
+				}
+
+				return false;
 			}
 		}
 

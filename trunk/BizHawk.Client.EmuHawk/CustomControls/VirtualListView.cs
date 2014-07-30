@@ -434,6 +434,8 @@ namespace BizHawk.Client.EmuHawk
 			View = View.Details;
 			Sorting = SortOrder.None;
 
+			UseCustomBackground = true;
+
 			ptrlvhti = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(LvHitTestInfo)));
 
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
@@ -625,7 +627,7 @@ namespace BizHawk.Client.EmuHawk
 							OnCustomDrawNotice(ref m);
 							messageProcessed = true;
 
-							if (QueryItemBkColor == null)
+							if (QueryItemBkColor == null || !UseCustomBackground)
 							{
 								m.Result = (IntPtr)0;
 							}
@@ -674,6 +676,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public bool BlazingFast { get; set; }
+		public bool UseCustomBackground { get; set; }
 
 		protected ListViewItem GetItem(int idx) 
 		{
