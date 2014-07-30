@@ -422,6 +422,8 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		public int LineHeight { get; private set; }
+
 		#region Constructors
 
 		/// <summary>
@@ -441,6 +443,8 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			SetStyle(ControlStyles.Opaque, true);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+
+			var LineHeight = this.Font.Height + 5;
 		}
 
 		~VirtualListView() 
