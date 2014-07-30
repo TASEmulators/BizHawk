@@ -624,6 +624,12 @@ namespace BizHawk.Client.EmuHawk
 						case (int)Notices.NM_CUSTOMDRAW:
 							OnCustomDrawNotice(ref m);
 							messageProcessed = true;
+
+							if (QueryItemBkColor == null)
+							{
+								m.Result = (IntPtr)0;
+							}
+
 							break;
 						case (int)ListViewNotices.LVN_GETDISPINFOW:
 							OnDispInfoNotice(ref m, false);
