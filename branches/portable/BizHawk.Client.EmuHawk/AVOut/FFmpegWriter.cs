@@ -5,6 +5,7 @@ using System.Diagnostics;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -78,11 +79,7 @@ namespace BizHawk.Client.EmuHawk
 		void OpenFileSegment()
 		{
 			ffmpeg = new Process();
-#if WINDOWS
-			ffmpeg.StartInfo.FileName = System.IO.Path.Combine(PathManager.GetBasePathAbsolute(), "dll", "ffmpeg.exe");
-#else
-			ffmpeg.StartInfo.FileName = "ffmpeg"; // expecting native version to be in path
-#endif
+			ffmpeg.StartInfo.FileName = FFMpeg.FFMpegPath;
 
 			string filename = String.Format("{0}_{1,4:D4}{2}", baseName, segment, ext);
 
