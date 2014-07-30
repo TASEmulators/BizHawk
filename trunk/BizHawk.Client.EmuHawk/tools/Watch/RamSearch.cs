@@ -233,6 +233,18 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Public
 
+		/// <summary>
+		/// This should be called anytime the search list changes
+		/// </summary>
+		private void UpdateList()
+		{
+			WatchListView.ItemCount = _searches.Count;
+			SetTotal();
+		}
+
+		/// <summary>
+		/// This should only be called when the values of the list need an update such as after a poke or emulation occured
+		/// </summary>
 		public void UpdateValues()
 		{
 			if (_searches.Count > 0)
@@ -246,7 +258,7 @@ namespace BizHawk.Client.EmuHawk
 
 				_forcePreviewClear = false;
 				WatchListView.BlazingFast = true;
-				WatchListView.ItemCount = _searches.Count;
+				WatchListView.Invalidate();
 				WatchListView.BlazingFast = false;
 			}
 		}
@@ -300,8 +312,7 @@ namespace BizHawk.Client.EmuHawk
 				RemoveRamWatchesFromList();
 			}
 
-			SetTotal();
-			WatchListView.ItemCount = _searches.Count;
+			UpdateList();
 			ToggleSearchDependentToolBarItems();
 			SetReboot(false);
 			MessageLabel.Text = string.Empty;
@@ -513,8 +524,7 @@ namespace BizHawk.Client.EmuHawk
 			_searches.CompareTo = Compare;
 
 			var removed = _searches.DoSearch();
-			SetTotal();
-			WatchListView.ItemCount = _searches.Count;
+			UpdateList();
 			SetRemovedMessage(removed);
 			ToggleSearchDependentToolBarItems();
 			_forcePreviewClear = true;
@@ -808,8 +818,7 @@ namespace BizHawk.Client.EmuHawk
 				SetRemovedMessage(indices.Count);
 				_searches.RemoveRange(indices);
 
-				WatchListView.ItemCount = _searches.Count;
-				SetTotal();
+				UpdateList();
 				WatchListView.SelectedIndices.Clear();
 				ToggleSearchDependentToolBarItems();
 			}
@@ -841,8 +850,7 @@ namespace BizHawk.Client.EmuHawk
 					MessageLabel.Text = file.Name + " loaded";
 				}
 
-				WatchListView.ItemCount = _searches.Count;
-				SetTotal();
+				UpdateList();
 				Global.Config.RecentSearches.Add(file.FullName);
 
 				if (!append && !truncate)
@@ -880,7 +888,7 @@ namespace BizHawk.Client.EmuHawk
 				poke.SetWatch(SelectedIndices.Select(t => _searches[t]).ToList());
 				poke.ShowHawkDialog();
 
-				UpdateValues();
+				UpdateList();
 			}
 		}
 
@@ -889,8 +897,7 @@ namespace BizHawk.Client.EmuHawk
 			if (GlobalWin.Tools.Has<RamWatch>())
 			{
 				_searches.RemoveSmallWatchRange(GlobalWin.Tools.RamWatch.Watches);
-				WatchListView.ItemCount = _searches.Count;
-				SetTotal();
+				UpdateList();
 			}
 		}
 
@@ -1190,8 +1197,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_searches.CanUndo)
 			{
 				_searches.Undo();
-				SetTotal();
-				WatchListView.ItemCount = _searches.Count;
+				UpdateList();
 				ToggleSearchDependentToolBarItems();
 				_forcePreviewClear = true;
 				UpdateUndoToolBarButtons();
@@ -1203,8 +1209,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_searches.CanRedo)
 			{
 				_searches.Redo();
-				SetTotal();
-				WatchListView.ItemCount = _searches.Count;
+				UpdateList();
 				ToggleSearchDependentToolBarItems();
 				_forcePreviewClear = true;
 				UpdateUndoToolBarButtons();
@@ -1512,10 +1517,7 @@ namespace BizHawk.Client.EmuHawk
 
 			SetRemovedMessage(outOfRangeAddresses.Count);
 
-			//_searches.RemoveRange(outOfRangeAddresses); Remove TODO
-
-			WatchListView.ItemCount = _searches.Count;
-			SetTotal();
+			UpdateList();
 			ToggleSearchDependentToolBarItems();
 		}
 
