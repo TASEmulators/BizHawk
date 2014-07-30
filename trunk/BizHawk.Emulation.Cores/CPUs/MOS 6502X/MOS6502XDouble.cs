@@ -10,12 +10,13 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 	/// maintains a managed 6502X and an unmanaged 6502X, running them alongside and ensuring consistency
 	/// by taking savestates every cycle (!).  slow.
 	/// </summary>
+	/*
 	public class MOS6502XDouble
 	{
 		readonly MOS6502X m;
 		readonly MOS6502X_CPP n;
 
-		public MOS6502XDouble(Action<System.Runtime.InteropServices.GCHandle> DisposeBuilder)
+		public MOS6502XDouble()
 		{
 			m = new MOS6502X(DisposeBuilder);
 			n = new MOS6502X_CPP(DisposeBuilder);
@@ -43,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			{
 				writes.Enqueue(value);
 				WriteMemory(addr, value);
-			}, DisposeBuilder);
+			});
 			n.SetCallbacks(
 			delegate(ushort addr)
 			{
@@ -237,4 +238,5 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		public string Disassemble(ushort pc, out int bytesToAdvance) { bytesToAdvance = 1; return "FOOBAR"; }
 
 	}
+	*/
 }
