@@ -110,8 +110,6 @@ namespace BizHawk.Client.EmuHawk
 
 			_throttle = new Throttle();
 
-			FFMpeg.FFMpegPath = PathManager.MakeProgramRelativePath(Global.Config.FFMpegPath);
-
 			Global.CheatList = new CheatCollection();
 			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
 

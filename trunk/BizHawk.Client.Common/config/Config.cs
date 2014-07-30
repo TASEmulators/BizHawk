@@ -52,8 +52,6 @@ namespace BizHawk.Client.Common
 		// BIOS Paths
 		public Dictionary<string, string> FirmwareUserSpecifications = new Dictionary<string, string>(); // key: sysid+firmwareId; value: absolute path
 
-		public string FFMpegPath = "%exe%/dll/ffmpeg.exe";
-
 		// General Client Settings
 		public int Input_Hotkey_OverrideOptions = 0;
 		public bool StackOSDMessages = true;
