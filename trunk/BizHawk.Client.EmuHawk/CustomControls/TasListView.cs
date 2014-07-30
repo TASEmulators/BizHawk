@@ -69,8 +69,8 @@ namespace BizHawk.Client.EmuHawk
 				break;
 			}
 
-			var headerHeight = 24; //Are these always true? Don't know, is there a way to programmatically determine them?
-			var rowHeight = 18;
+			var rowHeight = this.LineHeight + 5; // 5 and 6 work here for me, but are they always dependable, how can I get the padding?
+			var headerHeight = rowHeight + 6;
 
 			newRow = ((y - headerHeight) / rowHeight) + this.VScrollPos;
 			if (newRow >= ItemCount)
