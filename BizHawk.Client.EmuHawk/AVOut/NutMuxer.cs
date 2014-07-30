@@ -15,6 +15,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		// this code isn't really any good for general purpose nut creation
 
+		#region binary write helpers
 
 		/// <summary>
 		/// variable length value, unsigned
@@ -100,6 +101,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			stream.Write(b, 0, 8);
 		}
+
 		/// <summary>
 		/// big endian 32 bit unsigned
 		/// </summary>
@@ -115,6 +117,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			stream.Write(b, 0, 4);
 		}
+
 		/// <summary>
 		/// big endian 32 bit unsigned
 		/// </summary>
@@ -130,6 +133,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 			stream.Write(b, 0, 4);
 		}
+
+		#endregion
+
+		#region CRC calculator
 
 		static readonly uint[] CRCtable = new uint[]
 		{
@@ -156,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 			return crc;
 		}
 
-
+		#endregion
 
 		/// <summary>
 		/// writes a single packet out, including checksums
@@ -264,6 +271,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		#region fields
 
 		/// <summary>
 		/// stores basic AV parameters
@@ -320,6 +328,9 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		Queue<NutFrame> audioqueue;
 
+		#endregion
+
+		#region header writers
 
 		/// <summary>
 		/// write out the main header
@@ -408,6 +419,8 @@ namespace BizHawk.Client.EmuHawk
 
 			header.Flush();
 		}
+
+		#endregion
 
 		/// <summary>
 		/// stores a single frame with syncpoint, in mux-ready form
@@ -502,14 +515,6 @@ namespace BizHawk.Client.EmuHawk
 				return left >= right;
 			}
 
-
-			static NutFrame()
-			{
-				//dbg = new StreamWriter(".\\nutframe.txt", false);
-			}
-
-			//static StreamWriter dbg;
-
 			/// <summary>
 			/// write out frame, with syncpoint and all headers
 			/// </summary>
@@ -519,9 +524,7 @@ namespace BizHawk.Client.EmuHawk
 				dest.Write(data, 0, data.Length);
 				//dbg.WriteLine(string.Format("{0},{1},{2}", pts, ptsnum, ptsden));
 			}
-
 		}
-
 
 		/// <summary>
 		/// write a video frame to the stream
@@ -539,9 +542,6 @@ namespace BizHawk.Client.EmuHawk
 			while (audioqueue.Count > 0 && f >= audioqueue.Peek())
 				audioqueue.Dequeue().WriteData(output);
 		}
-
-
-
 
 		/// <summary>
 		/// write an audio frame to the stream
@@ -629,4 +629,3 @@ namespace BizHawk.Client.EmuHawk
 		}
 	}
 }
-
