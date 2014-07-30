@@ -238,7 +238,7 @@ namespace BizHawk.Client.EmuHawk
 
 				WatchListView.BlazingFast = true;
 				WatchListView.UseCustomBackground = NeedsBackground;
-				WatchListView.ItemCount = _watches.Count;
+				WatchListView.Invalidate();
 				WatchListView.BlazingFast = false;
 			}
 		}
