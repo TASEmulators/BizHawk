@@ -217,7 +217,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 
 			if (bios == null)
 			{
-				throw new InvalidDataException("The BIOS corresponding to the region of the game you loaded is required to run Atari 7800 games.");
+				throw new MissingFirmwareException("The BIOS corresponding to the region of the game you loaded is required to run Atari 7800 games.");
 			}
 
 			HardReset();
