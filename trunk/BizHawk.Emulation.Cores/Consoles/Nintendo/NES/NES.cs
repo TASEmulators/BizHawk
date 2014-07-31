@@ -511,7 +511,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				origin = EDetectionOrigin.FDS;
 				LoadWriteLine("Found FDS header.");
 				if (fdsbios == null)
-					throw new Exception("Missing FDS Bios!");
+					throw new MissingFirmwareException("Missing FDS Bios");
 				cart = new CartInfo();
 				var fdsboard = new FDS();
 				fdsboard.biosrom = fdsbios;

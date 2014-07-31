@@ -29,6 +29,8 @@ namespace BizHawk.Client.Common
 {
 	public class RomLoader
 	{
+		public enum LoadErrorType { Unknown, MissingFirmware, XML }
+
 		// helper methods for the settings events
 		private object GetCoreSettings<T>()
 			where T : IEmulator
@@ -70,14 +72,16 @@ namespace BizHawk.Client.Common
 		public class RomErrorArgs : EventArgs
 		{
 			// TODO: think about naming here, what to pass, a lot of potential good information about what went wrong could go here!
-			public RomErrorArgs(string message, string systemId)
+			public RomErrorArgs(string message, string systemId, LoadErrorType type)
 			{
 				Message = message;
 				AttemptedCoreLoad = systemId;
+				Type = type;
 			}
 
 			public string Message { get; private set; }
 			public string AttemptedCoreLoad { get; private set; }
+			public LoadErrorType Type { get; private set; }
 		}
 
 		public class SettingsLoadArgs : EventArgs
@@ -112,11 +116,11 @@ namespace BizHawk.Client.Common
 			return null;
 		}
 
-		private void ThrowLoadError(string message, string systemId)
+		private void DoLoadErrorCallback(string message, string systemId, LoadErrorType type = LoadErrorType.Unknown)
 		{
 			if (OnLoadError != null)
 			{
-				OnLoadError(this, new RomErrorArgs(message, systemId));
+				OnLoadError(this, new RomErrorArgs(message, systemId, type));
 			}
 		}
 
@@ -270,7 +274,7 @@ namespace BizHawk.Client.Common
 						}
 						catch (Exception ex)
 						{
-							ThrowLoadError(ex.ToString(), "XMLGame Load Error"); // TODO: don't pass in XMLGame Load Error as a system ID
+							DoLoadErrorCallback(ex.ToString(), "DGB", LoadErrorType.XML);
 							return false;
 						}
 					}
@@ -387,7 +391,7 @@ namespace BizHawk.Client.Common
 									catch
 									{
 										// failed to load SGB bios.  to avoid catch-22, disable SGB mode
-										ThrowLoadError("Failed to load a GB rom in SGB mode.  Disabling SGB Mode.", game.System);
+										DoLoadErrorCallback("Failed to load a GB rom in SGB mode.  Disabling SGB Mode.", game.System);
 										Global.Config.GB_AsSGB = false;
 										throw;
 									}
@@ -433,7 +437,7 @@ namespace BizHawk.Client.Common
 
 					if (nextEmulator == null)
 					{
-						ThrowLoadError("No core could load the rom.", null);
+						DoLoadErrorCallback("No core could load the rom.", null);
 						return false;
 					}
 				}
@@ -450,9 +454,13 @@ namespace BizHawk.Client.Common
 					{
 						return LoadRom(path, nextComm, forceAccurateCore: true);
 					}
+					else if (ex is MissingFirmwareException)
+					{
+						DoLoadErrorCallback(ex.Message, system, LoadErrorType.MissingFirmware);
+					}
 					else
 					{
-						ThrowLoadError("A core accepted the rom, but threw an exception while loading it:\n\n" + ex, system);
+						DoLoadErrorCallback("A core accepted the rom, but threw an exception while loading it:\n\n" + ex, system);
 					}
 
 					return false;
