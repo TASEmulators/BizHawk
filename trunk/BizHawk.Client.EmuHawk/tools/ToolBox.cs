@@ -93,6 +93,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			NesDebuggerToolbarItem.Visible = VersionInfo.DeveloperBuild && Global.Emulator.SystemId == "NES";
+
+			TAStudioToolbarItem.Visible = VersionInfo.DeveloperBuild;
 		}
 
 		private void SetSize()
