@@ -1031,19 +1031,31 @@ namespace BizHawk.Client.EmuHawk
 		private void GBInSGBMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GB_AsSGB ^= true;
-			FlagNeedsReboot();
+
+			if (!(Global.Emulator is NullEmulator))
+			{
+				FlagNeedsReboot();
+			}
 		}
 
 		private void NesInQuickNESMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.NES_InQuickNES ^= true;
-			FlagNeedsReboot();
+
+			if (!(Global.Emulator is NullEmulator))
+			{
+				FlagNeedsReboot();
+			}
 		}
 
 		private void SnesWithSnes9xMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SNES_InSnes9x ^= true;
-			FlagNeedsReboot();
+
+			if (!(Global.Emulator is NullEmulator))
+			{
+				FlagNeedsReboot();
+			}
 		}
 
 		private void N64VideoPluginSettingsMenuItem_Click(object sender, EventArgs e)
@@ -1778,8 +1790,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (new N64VideoPluginconfig().ShowDialog() == DialogResult.OK)
 			{
-				GlobalWin.MainForm.FlagNeedsReboot();
-				GlobalWin.OSD.AddMessage("Plugin settings saved but a core reboot is required");
+				if (Global.Emulator is NullEmulator)
+				{
+					GlobalWin.OSD.AddMessage("Plugin settings saved");
+				}
+				else
+				{
+					GlobalWin.MainForm.FlagNeedsReboot();
+					GlobalWin.OSD.AddMessage("Plugin settings saved but a core reboot is required");
+				}
 			}
 			else
 			{
