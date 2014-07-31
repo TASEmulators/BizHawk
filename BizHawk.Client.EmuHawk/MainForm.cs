@@ -3021,11 +3021,28 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ShowLoadError(object sender, RomLoader.RomErrorArgs e)
 		{
-			string title = "load error";
-			if (e.AttemptedCoreLoad != null)
-				title = e.AttemptedCoreLoad + " load error";
+			if (e.Type == RomLoader.LoadErrorType.MissingFirmware)
+			{
+				var result = MessageBox.Show(
+					"You are missing the needed firmware files to load this Rom\n\nWould you like to open the firmware manager now and configure your firmwares?",
+					e.Message,
+					MessageBoxButtons.YesNo,
+					MessageBoxIcon.Error);
+				if (result == DialogResult.Yes)
+				{
+					FirmwaresMenuItem_Click(null, null);
+				}
+			}
+			else
+			{
+				string title = "load error";
+				if (e.AttemptedCoreLoad != null)
+				{
+					title = e.AttemptedCoreLoad + " load error";
+				}
 
-			MessageBox.Show(this, e.Message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show(this, e.Message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 		}
 
 		private void NotifyCoreComm(string message)
