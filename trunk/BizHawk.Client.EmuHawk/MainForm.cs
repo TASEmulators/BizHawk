@@ -3290,13 +3290,6 @@ namespace BizHawk.Client.EmuHawk
 			Global.AutoFireController = Global.AutofireNullControls;
 
 			RewireSound();
-
-			// adelikat: TODO: Ugly hack! But I don't know a way around this yet.
-			if (!(Global.MovieSession.Movie is TasMovie))
-			{
-				Global.MovieSession.Movie.Stop();
-			}
-
 			RebootStatusBarIcon.Visible = false;
 		}
 
