@@ -300,6 +300,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CloseRomMenuItem_Click(object sender, EventArgs e)
 		{
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				Global.MovieSession.Movie.Stop();
+			}
+
 			CloseRom();
 		}
 
@@ -2365,7 +2370,7 @@ namespace BizHawk.Client.EmuHawk
 
 			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))
 			{
-				//tries to open a legacy movie format as if it were a BKM, by importing it
+				//tries to open a legacy movie format by importing it
 				if (CurrentlyOpenRom == null)
 				{
 					OpenRom();
