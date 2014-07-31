@@ -3187,6 +3187,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
+				UpdateCoreStatusBarButton();
 				return false;
 			}
 		}
