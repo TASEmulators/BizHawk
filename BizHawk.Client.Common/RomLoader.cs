@@ -448,8 +448,7 @@ namespace BizHawk.Client.Common
 					// Specific hack here, as we get more cores of the same system, this isn't scalable
 					if (ex is LibQuickNES.UnsupportedMapperException)
 					{
-						LoadRom(path, nextComm, forceAccurateCore: true);
-						return true;
+						return LoadRom(path, nextComm, forceAccurateCore: true);
 					}
 					else
 					{
