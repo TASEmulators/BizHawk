@@ -20,24 +20,28 @@ namespace BizHawk.Client.EmuHawk
 		public class ReusableBufferPool<T>
 		{
 			private List<T[]> _available = new List<T[]>();
-			private List<T[]> _inuse = new List<T[]>();
+			private ICollection<T[]> _inuse = new HashSet<T[]>();
 
-			private readonly int maxstored;
+			private readonly int _capacity;
 
-			public ReusableBufferPool(int maxstored)
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <param name="capacity">total number of buffers to keep around</param>
+			public ReusableBufferPool(int capacity)
 			{
-				this.maxstored = maxstored;
+				_capacity = capacity;
 			}
 
 			private T[] GetBufferInternal(int length, bool zerofill, Func<T[], bool> criteria)
 			{
-				if (_inuse.Count == maxstored)
+				if (_inuse.Count == _capacity)
 					throw new InvalidOperationException();
 
 				T[] candidate = _available.FirstOrDefault(criteria);
 				if (candidate == null)
 				{
-					if (_available.Count + _inuse.Count == maxstored)
+					if (_available.Count + _inuse.Count == _capacity)
 					{
 						// out of space! should not happen often
 						Console.WriteLine("Purging");
@@ -67,9 +71,8 @@ namespace BizHawk.Client.EmuHawk
 
 			public void ReleaseBuffer(T[] buffer)
 			{
-				if (!_inuse.Contains(buffer))
+				if (!_inuse.Remove(buffer))
 					throw new ArgumentException();
-				_inuse.Remove(buffer);
 				_available.Add(buffer);
 			}
 		}
