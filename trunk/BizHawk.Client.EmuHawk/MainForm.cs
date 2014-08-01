@@ -1577,7 +1577,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetPauseStatusbarIcon()
 		{
-			if (IsTurboing)
+			if (IsTurboSeeking)
 			{
 				PauseStatusButton.Image = Properties.Resources.Lightning;
 				PauseStatusButton.Visible = true;
