@@ -3215,7 +3215,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
+				// TODO: put all these in a single method or something
+				HandlePlatformMenus();
+				_stateSlots.Clear();
+				UpdateStatusSlots();
 				UpdateCoreStatusBarButton();
+				UpdateDumpIcon();
+				SetMainformMovieInfo();
+				SetWindowText();
 				return false;
 			}
 		}
