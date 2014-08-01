@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -582,6 +583,11 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
+		}
+
+		public void FastUpdate()
+		{
+			// Do nothing
 		}
 
 		#endregion

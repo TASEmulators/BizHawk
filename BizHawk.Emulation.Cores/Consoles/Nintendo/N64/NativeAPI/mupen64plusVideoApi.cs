@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
@@ -44,20 +46,61 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		public mupen64plusVideoApi(mupen64plusApi core, VideoPluginSettings settings)
 		{
 			string videoplugin;
+			bool jaboReady = false;
 			switch (settings.Plugin)
 			{
 				default:
-				case PLUGINTYPE.RICE:
+				case PluginType.Rice:
 					videoplugin = "mupen64plus-video-rice.dll";
 					break;
-				case PLUGINTYPE.GLIDE:
+				case PluginType.Glide:
 					videoplugin = "mupen64plus-video-glide64.dll";
 					break;
-				case PLUGINTYPE.GLIDE64MK2:
+				case PluginType.GlideMk2:
 					videoplugin = "mupen64plus-video-glide64mk2.dll";
 					break;
-				case PLUGINTYPE.JABO:
+				case PluginType.Jabo:
 					videoplugin = "mupen64plus-video-jabo.dll";
+
+					//THIS IS HORRIBLE! PATH MUST BE PASSED IN SOME OTHER WAY
+					string dllDir = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "dll");
+					string rawPath = Path.Combine(dllDir, "Jabo_Direct3D8.dll");
+					string patchedPath = Path.Combine(dllDir, "Jabo_Direct3D8_patched.dll");
+
+					if (File.Exists(patchedPath))
+					{
+						byte[] hash = MD5.Create().ComputeHash(File.ReadAllBytes(patchedPath));
+						string hash_string = BitConverter.ToString(hash).Replace("-", "");
+						if (hash_string == "F4D6E624489CD88C68A5850426D4D70E")
+						{
+							jaboReady = true;
+						}
+					}
+
+					if (!jaboReady && File.Exists(rawPath))
+					{
+						byte[] hash = MD5.Create().ComputeHash(File.ReadAllBytes(rawPath));
+						string hash_string = BitConverter.ToString(hash).Replace("-", "");
+						if (hash_string == "4F353AA71E7455B81205D8EC0AA339E1")
+						{
+							byte[] jaboDLL = File.ReadAllBytes(rawPath);
+							jaboDLL[583] = 0xA0;
+							jaboDLL[623] = 0xA0;
+							jaboDLL[663] = 0xA0;
+							jaboDLL[703] = 0xA0;
+							jaboDLL[743] = 0xA0;
+							jaboDLL[783] = 0xA0;
+							jaboDLL[823] = 0xA0;
+							jaboDLL[863] = 0xA0;
+							File.WriteAllBytes(patchedPath, jaboDLL);
+							jaboReady = true;
+						}
+					}
+
+					if (!jaboReady)
+					{
+						throw new InvalidOperationException(string.Format("Error: Jabo dll was not found. please copy Jabo_Direct3D8.dll from a Project64 v1.6.1 installation into Bizhawk's dll directory."));
+					}
 					break;
 			}
 
@@ -114,7 +157,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 	public class VideoPluginSettings
 	{
-		public PLUGINTYPE Plugin;
+		public PluginType Plugin;
 		//public Dictionary<string, int> IntParameters = new Dictionary<string,int>();
 		//public Dictionary<string, string> StringParameters = new Dictionary<string,string>();
 
@@ -122,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		public int Height;
 		public int Width;
 
-		public VideoPluginSettings(PLUGINTYPE Plugin, int Width, int Height)
+		public VideoPluginSettings(PluginType Plugin, int Width, int Height)
 		{
 			this.Plugin = Plugin;
 			this.Width = Width;

@@ -91,7 +91,7 @@
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(277, 13);
             this.label4.TabIndex = 4;
-            this.label4.Text = "Sets the path of the executable (BizHawk.MultiClient.exe)";
+            this.label4.Text = "Sets the path of the executable (EmuHawk.exe)";
             // 
             // label5
             // 

@@ -7,12 +7,13 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 
+using BizHawk.Client.EmuHawk.WinFormExtensions;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class RecordMovie : Form
 	{
-		// TODO
-		// Allow relative paths in record textbox
+		// TODO - Allow relative paths in record textbox
 		public RecordMovie()
 		{
 			InitializeComponent();
@@ -20,24 +21,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private string MakePath()
 		{
-			if (RecordBox.Text.Length == 0)
-			{
-				return string.Empty;
-			}
-
 			var path = RecordBox.Text;
-			if (path.LastIndexOf(Path.DirectorySeparatorChar) == -1)
+
+			if (!string.IsNullOrWhiteSpace(path))
 			{
-				if (path[0] != Path.DirectorySeparatorChar)
+				if (path.LastIndexOf(Path.DirectorySeparatorChar) == -1)
 				{
-					path = path.Insert(0, Path.DirectorySeparatorChar.ToString());
-				}
+					if (path[0] != Path.DirectorySeparatorChar)
+					{
+						path = path.Insert(0, Path.DirectorySeparatorChar.ToString());
+					}
 
-				path = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null) + path;
+					path = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null) + path;
 
-				if (path[path.Length - 4] != '.') // If no file extension, add movie extension
-				{
-					path += "." + Global.MovieSession.Movie.PreferredExtension;
+					if (path[path.Length - 4] != '.') // If no file extension, add movie extension
+					{
+						path += "." + Global.MovieSession.Movie.PreferredExtension;
+					}
 				}
 			}
 			

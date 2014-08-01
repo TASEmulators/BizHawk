@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -25,8 +26,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var core in coresToHide)
 			{
 				PathTabControl.TabPages.Remove(
-					AllTabPages.FirstOrDefault(x => x.Name == core) ?? new TabPage()
-					);
+					PathTabControl.TabPages().FirstOrDefault(x => x.Name == core) ?? new TabPage());
 			}
 		}
 
@@ -52,7 +52,6 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadSettings()
 		{
 			RecentForROMs.Checked = Global.Config.UseRecentForROMs;
-			BasePathBox.Text = Global.Config.PathEntries.GlobalBaseFragment;
 
 			DoTabs(Global.Config.PathEntries.ToList());
 			SetDefaultFocusedTab();
@@ -123,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 
 					var btn = new Button
 					{
-						Text = String.Empty,
+						Text = string.Empty,
 						Image = Properties.Resources.OpenFile,
 						Location = new Point(widgetOffset, _y - 1),
 						Width = buttonWidth,
@@ -143,6 +142,30 @@ namespace BizHawk.Client.EmuHawk
 					if (t.Name.Contains("Global") && path.Type == "Firmware")
 					{
 						infoPadding = 26;
+
+						var firmwareButton = new Button
+						{
+							Name = "Global",
+							Text = String.Empty,
+							Image = Properties.Resources.Help,
+							Location = new Point(115, _y - 1),
+							Width = 26,
+							Anchor = AnchorStyles.Top | AnchorStyles.Right
+						};
+
+						firmwareButton.Click += delegate
+						{
+							if (Owner is FirmwaresConfig)
+							{
+								MessageBox.Show("C-C-C-Combo Breaker!", "Nice try, but");
+								return;
+							}
+
+							var f = new FirmwaresConfig { TargetSystem = "Global" };
+							f.ShowDialog(this);
+						};
+
+						t.Controls.Add(firmwareButton);
 					}
 
 					var label = new Label
@@ -165,33 +188,6 @@ namespace BizHawk.Client.EmuHawk
 				if (systemDisplayName == "PCE") // Hack
 				{
 					sys = "PCECD";
-				}
-
-				if (t.Name.Contains("Global"))
-				{
-					var firmwareButton = new Button
-					{
-						Name = sys,
-						Text = String.Empty,
-						Image = Properties.Resources.Help,
-						Location = new Point(115, 253),
-						Width = 26,
-						Anchor = AnchorStyles.Top | AnchorStyles.Right
-					};
-
-					firmwareButton.Click += delegate
-					{
-						if (Owner is FirmwaresConfig)
-						{
-							MessageBox.Show("C-C-C-Combo Breaker!", "Nice try, but");
-							return;
-						}
-
-						var f = new FirmwaresConfig { TargetSystem = sys };
-						f.ShowDialog(this);
-					};
-
-					t.Controls.Add(firmwareButton);
 				}
 
 				tabPages.Add(t);
@@ -224,7 +220,6 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveSettings()
 		{
 			Global.Config.UseRecentForROMs = RecentForROMs.Checked;
-			Global.Config.PathEntries["Global", "Base"].Path = BasePathBox.Text;
 
 			foreach (var t in AllPathBoxes)
 			{
@@ -262,16 +257,11 @@ namespace BizHawk.Client.EmuHawk
 				var allPathControls = new List<Control>();
 				foreach (TabPage tp in PathTabControl.TabPages)
 				{
-					allPathControls.AddRange(tp.Controls.OfType<Control>());
+					allPathControls.AddRange(tp.Controls());
 				}
 
 				return allPathControls;
 			}
-		}
-
-		private IEnumerable<TabPage> AllTabPages
-		{
-			get { return PathTabControl.TabPages.Cast<TabPage>(); }
 		}
 
 		#region Events
@@ -285,20 +275,6 @@ namespace BizHawk.Client.EmuHawk
 		private void RecentForROMs_CheckedChanged(object sender, EventArgs e)
 		{
 			DoRomToggle();
-		}
-
-		private void BrowseBase_Click(object sender, EventArgs e)
-		{
-			var f = new FolderBrowserDialog
-			{
-				Description = "Set the directory for the base global path",
-				SelectedPath = PathManager.MakeAbsolutePath(BasePathBox.Text, null)
-			};
-			var result = f.ShowDialog();
-			if (result == DialogResult.OK)
-			{
-				BasePathBox.Text = f.SelectedPath;
-			}
 		}
 
 		private void SpecialCommandsBtn_Click(object sender, EventArgs e)

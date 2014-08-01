@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 		void OnLoadError(object sender, RomLoader.RomErrorArgs e)
 		{
 			current.Status = Result.EStatus.ErrorOnLoad;
-			current.Messages.Add(string.Format("OnLoadError: {0}, {1}", e.AttemptedCoreLoad, e.Message));
+			current.Messages.Add(string.Format("OnLoadError: {0}, {1}, {2}", e.AttemptedCoreLoad, e.Message, e.Type.ToString()));
 		}
 
 		void CommMessage(string msg)

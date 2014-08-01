@@ -56,6 +56,7 @@ namespace BizHawk.Client.Common
 
 				{ "Select", 's' },
 				{ "Start", 'S' },
+				{ "Run", 'R' },
 
 				{ "L", 'l' },
 				{ "R", 'r' },

@@ -13,6 +13,11 @@ namespace BizHawk.Client.EmuHawk
 		private readonly PadSchema _schema;
 		private bool _readOnly;
 
+		public void UpdateValues()
+		{
+			PadControls.ForEach(c => c.UpdateValues());
+		}
+
 		private List<IVirtualPadControl> PadControls
 		{
 			get
@@ -104,6 +109,14 @@ namespace BizHawk.Client.EmuHawk
 		public void Clear()
 		{
 			PadControls.ForEach(p => p.Clear());
+		}
+
+		public void ClearBoolean()
+		{
+			PadControls
+				.OfType<VirtualPadButton>()
+				.ToList()
+				.ForEach(p => p.Clear());
 		}
 
 		public void Set(IController controller)

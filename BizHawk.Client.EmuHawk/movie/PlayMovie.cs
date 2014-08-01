@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -41,6 +42,7 @@ namespace BizHawk.Client.EmuHawk
 			MatchHashCheckBox.Checked = Global.Config.PlayMovie_MatchHash;
 			ScanFiles();
 			PreHighlightMovie();
+			TurboCheckbox.Checked = Global.Config.TurboSeek;
 		}
 
 		private void MovieView_QueryItemText(int index, int column, out string text)
@@ -660,8 +662,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Ok_Click(object sender, EventArgs e)
 		{
+			Global.Config.TurboSeek = TurboCheckbox.Checked;
 			Run();
 			Global.MovieSession.ReadOnly = ReadOnlyCheckBox.Checked;
+
+			if (StopOnFrameCheckbox.Checked && 
+				(StopOnFrameTextBox.ToRawInt().HasValue || LastFrameCheckbox.Checked))
+			{
+				if (LastFrameCheckbox.Checked)
+				{
+					GlobalWin.MainForm.PauseOnFrame = Global.MovieSession.Movie.InputLogLength;
+				}
+				else
+				{
+					GlobalWin.MainForm.PauseOnFrame = StopOnFrameTextBox.ToRawInt();
+				}
+			}
+
 			Close();
 		}
 
@@ -671,6 +688,34 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
+
+		private bool _programmaticallyChangingStopFrameCheckbox = false;
+		private void StopOnFrameCheckbox_CheckedChanged(object sender, EventArgs e)
+		{
+			if (!_programmaticallyChangingStopFrameCheckbox)
+			{
+				StopOnFrameTextBox.Focus();
+			}
+		}
+
+		private void StopOnFrameTextBox_TextChanged_1(object sender, EventArgs e)
+		{
+			_programmaticallyChangingStopFrameCheckbox = true;
+			StopOnFrameCheckbox.Checked = !string.IsNullOrWhiteSpace(StopOnFrameTextBox.Text);
+			_programmaticallyChangingStopFrameCheckbox = false;
+		}
+
+		private void LastFrameCheckbox_CheckedChanged(object sender, EventArgs e)
+		{
+			if (LastFrameCheckbox.Checked == true)
+			{
+				_programmaticallyChangingStopFrameCheckbox = true;
+				StopOnFrameCheckbox.Checked = true;
+				_programmaticallyChangingStopFrameCheckbox = false;
+			}
+
+			StopOnFrameTextBox.Enabled = !LastFrameCheckbox.Checked;
+		}
 
 		#endregion
 	}

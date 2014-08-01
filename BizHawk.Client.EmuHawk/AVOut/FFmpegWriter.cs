@@ -77,31 +77,38 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		void OpenFileSegment()
 		{
-			ffmpeg = new Process();
+			try
+			{
+				ffmpeg = new Process();
 #if WINDOWS
-			ffmpeg.StartInfo.FileName = System.IO.Path.Combine(PathManager.GetBasePathAbsolute(), "dll", "ffmpeg.exe");
+				ffmpeg.StartInfo.FileName = System.IO.Path.Combine(PathManager.GetBasePathAbsolute(), "dll", "ffmpeg.exe");
 #else
-			ffmpeg.StartInfo.FileName = "ffmpeg"; // expecting native version to be in path
+				ffmpeg.StartInfo.FileName = "ffmpeg"; // expecting native version to be in path
 #endif
 
-			string filename = String.Format("{0}_{1,4:D4}{2}", baseName, segment, ext);
+				string filename = String.Format("{0}_{1,4:D4}{2}", baseName, segment, ext);
+				ffmpeg.StartInfo.Arguments = String.Format("-y -f nut -i - {1} \"{0}\"", filename, token.commandline);
+				ffmpeg.StartInfo.CreateNoWindow = true;
 
-			ffmpeg.StartInfo.Arguments = String.Format("-y -f nut -i - {1} \"{0}\"", filename, token.commandline);
+				// ffmpeg sends informative display to stderr, and nothing to stdout
+				ffmpeg.StartInfo.RedirectStandardError = true;
+				ffmpeg.StartInfo.RedirectStandardInput = true;
+				ffmpeg.StartInfo.UseShellExecute = false;
 
-			ffmpeg.StartInfo.CreateNoWindow = true;
+				commandline = "ffmpeg " + ffmpeg.StartInfo.Arguments;
 
-			// ffmpeg sends informative display to stderr, and nothing to stdout
-			ffmpeg.StartInfo.RedirectStandardError = true;
-			ffmpeg.StartInfo.RedirectStandardInput = true;
-			ffmpeg.StartInfo.UseShellExecute = false;
+				ffmpeg.ErrorDataReceived += new DataReceivedEventHandler(StderrHandler);
 
-			commandline = "ffmpeg " + ffmpeg.StartInfo.Arguments;
+				stderr = new Queue<string>(consolebuffer);
 
-			ffmpeg.ErrorDataReceived += new DataReceivedEventHandler(StderrHandler);
-
-			stderr = new Queue<string>(consolebuffer);
-
-			ffmpeg.Start();
+				ffmpeg.Start();
+			}
+			catch
+			{
+				ffmpeg.Dispose();
+				ffmpeg = null;
+				throw;
+			}
 			ffmpeg.BeginErrorReadLine();
 
 			muxer = new NutMuxer(width, height, fpsnum, fpsden, sampleRate, channels, ffmpeg.StandardInput.BaseStream);
@@ -132,6 +139,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// how long should we wait here?
 			ffmpeg.WaitForExit(20000);
+			ffmpeg.Dispose();
 			ffmpeg = null;
 			stderr = null;
 			commandline = null;
@@ -174,13 +182,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (ffmpeg.HasExited)
 				throw new Exception("unexpected ffmpeg death:\n" + ffmpeg_geterror());
-			var a = source.GetVideoBuffer();
-			var b = new byte[a.Length * sizeof (int)];
-			Buffer.BlockCopy(a, 0, b, 0, b.Length);
 
+			var video = source.GetVideoBuffer();
 			try
 			{
-				muxer.writevideoframe(b);
+				muxer.WriteVideoFrame(video);
 			}
 			catch
 			{
@@ -252,7 +258,7 @@ namespace BizHawk.Client.EmuHawk
 				throw new Exception("unexpected ffmpeg death:\n" + ffmpeg_geterror());
 			try
 			{
-				muxer.writeaudioframe(samples);
+				muxer.WriteAudioFrame(samples);
 			}
 			catch
 			{
@@ -268,7 +274,6 @@ namespace BizHawk.Client.EmuHawk
 			this.sampleRate = sampleRate;
 			this.channels = channels;
 		}
-
 
 		public override string ToString()
 		{

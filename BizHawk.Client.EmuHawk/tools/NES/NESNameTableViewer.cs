@@ -70,6 +70,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void FastUpdate()
+		{
+			// Do nothing
+		}
+
 		#endregion
 
 		private unsafe void DrawTile(int* dst, int pitch, byte* pal, byte* tile, int* finalpal)

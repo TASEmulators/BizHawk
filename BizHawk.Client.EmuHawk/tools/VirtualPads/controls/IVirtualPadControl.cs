@@ -9,6 +9,8 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		void Clear();
 
+		void UpdateValues();
+
 		/// <summary>
 		/// Sets the state of the control based on the given controller state
 		/// </summary>

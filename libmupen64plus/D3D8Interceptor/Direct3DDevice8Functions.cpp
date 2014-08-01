@@ -20,7 +20,6 @@ extern "C"
 			{
 				p = new D3D8Wrapper::IDirect3DDevice8(pDevice);
 				m_List.AddMember(pDevice, p);
-				last_device = p;
 				return p;
 			}
 
@@ -41,12 +40,6 @@ extern "C"
 				return NULL;
 			}
 			return ulRef;
-		}
-
-
-		D3D8Base::IDirect3DSurface8* D3D8Wrapper::IDirect3DSurface8::getReal()
-		{
-			return m_pD3D;
 		}
 
 		
@@ -124,7 +117,7 @@ extern "C"
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetCursorProperties(UINT XHotSpot,UINT YHotSpot,D3D8Wrapper::IDirect3DSurface8* pCursorBitmap)
 		{
 			LOG("SetCursorProperties");
-			HRESULT hr = m_pDevice->SetCursorProperties(XHotSpot,YHotSpot,pCursorBitmap->GetSurface8());
+			HRESULT hr = m_pDevice->SetCursorProperties(XHotSpot,YHotSpot,pCursorBitmap->GetSurface());
 
 			return hr;
 		}
@@ -197,7 +190,7 @@ extern "C"
 
 			rendering_callback(0);
 
-			hr = m_pDevice->Present(pSourceRect,pDestRect,hDestWindowOverride,pDirtyRegion);
+			//hr = m_pDevice->Present(pSourceRect,pDestRect,hDestWindowOverride,pDirtyRegion);
 
 			LOG(hr);
 			return hr;
@@ -251,7 +244,7 @@ extern "C"
 
 			HRESULT hr = m_pDevice->CreateTexture(Width,Height,Levels,Usage,Format,Pool,&fd);//ppTexture);
 
-			D3D8Wrapper::IDirect3DTexture8* f = new D3D8Wrapper::IDirect3DTexture8(fd);
+			D3D8Wrapper::IDirect3DTexture8* f = D3D8Wrapper::IDirect3DTexture8::GetTexture(fd);
 
 			*ppTexture = f;
 
@@ -375,26 +368,26 @@ extern "C"
 		{
 			LOG("CopyRects");
 			LOG(pSourceSurface);
-			LOG(pSourceSurface->getReal());
+			LOG(pSourceSurface->GetSurface());
 			LOG(pDestinationSurface);
-			LOG(pDestinationSurface->getReal());
+			LOG(pDestinationSurface->GetSurface());
 
-			if (pSourceSurface->m_ulRef == 0 || (pSourceSurface->GetSurface8()) == (pDestinationSurface->GetSurface8()))
+			if (pSourceSurface->m_ulRef == 0 || (pSourceSurface->GetSurface()) == (pDestinationSurface->GetSurface()))
 			{
 				LOG("WTF");
 				return D3DERR_INVALIDCALL;
 			}
 
-			HRESULT hr = m_pDevice->CopyRects(pSourceSurface->GetSurface8(),pSourceRectsArray,cRects,pDestinationSurface->GetSurface8(),pDestPointsArray);
+			HRESULT hr = m_pDevice->CopyRects(pSourceSurface->GetSurface(),pSourceRectsArray,cRects,pDestinationSurface->GetSurface(),pDestPointsArray);
 
 			LOG("Back??");
 
 			LOG(hr);
 
 			LOG(pSourceSurface);
-			LOG(pSourceSurface->getReal());
+			LOG(pSourceSurface->GetSurface());
 			LOG(pDestinationSurface);
-			LOG(pDestinationSurface->getReal());
+			LOG(pDestinationSurface->GetSurface());
 			return hr;
 		}
 
@@ -402,7 +395,7 @@ extern "C"
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::UpdateTexture(D3D8Wrapper::IDirect3DBaseTexture8* pSourceTexture,D3D8Wrapper::IDirect3DBaseTexture8* pDestinationTexture)
 		{
 			LOG("UpdateTexture");
-			HRESULT hr = m_pDevice->UpdateTexture(pSourceTexture->getReal2(),pDestinationTexture->getReal2());
+			HRESULT hr = m_pDevice->UpdateTexture(pSourceTexture->GetBaseTexture(),pDestinationTexture->GetBaseTexture());
 
 			return hr;
 		}
@@ -411,7 +404,7 @@ extern "C"
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetFrontBuffer(D3D8Wrapper::IDirect3DSurface8* pDestSurface)
 		{
 			LOG("GetFrontBuffer");
-			HRESULT hr = m_pDevice->GetFrontBuffer(pDestSurface->GetSurface8());
+			HRESULT hr = m_pDevice->GetFrontBuffer(pDestSurface->GetSurface());
 
 			return hr;
 		}
@@ -422,7 +415,8 @@ extern "C"
 			LOG("SetRenderTarget");
 			LOG(pRenderTarget);
 			LOG(pNewZStencil);
-			HRESULT hr = m_pDevice->SetRenderTarget(pRenderTarget->GetSurface8(),pNewZStencil->GetSurface8());
+			//HRESULT hr = m_pDevice->SetRenderTarget(pRenderTarget->GetSurface(),pNewZStencil->GetSurface());
+			HRESULT hr = m_pDevice->SetRenderTarget(render_surface->GetSurface(),pNewZStencil->GetSurface());
 
 			/*if (this->rTarget != NULL)
 			{
@@ -548,27 +542,8 @@ extern "C"
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetViewport(CONST D3D8Base::D3DVIEWPORT8* pViewport)
 		{
 			LOG("SetViewport");
-			LOG(pViewport);
-			if (pViewport != NULL)
-			{
-				LOG(pViewport->X);
-				LOG(pViewport->Y);
-				LOG(pViewport->Width);
-				LOG(pViewport->Height);
-				LOG(pViewport->MinZ);
-				LOG(pViewport->MaxZ);
-			}
 
-			D3D8Base::D3DVIEWPORT8 blah;
-			blah.X = 0;
-			blah.Y = 0;
-			blah.Width = 800;
-			blah.Height = 600;
-			blah.MinZ = 0;
-			blah.MaxZ = 1;
-
-			//HRESULT hr = m_pDevice->SetViewport(pViewport);
-			HRESULT hr = m_pDevice->SetViewport(&blah);
+			HRESULT hr = m_pDevice->SetViewport(pViewport);
 			LOG(hr);
 			return hr;
 		}
@@ -785,9 +760,9 @@ extern "C"
 			}
 			else
 			{
-				LOG(pTexture->getReal());
-				LOG(pTexture->getReal2());
-				HRESULT hr = m_pDevice->SetTexture(Stage,pTexture->getReal2());
+				LOG(pTexture->GetResource());
+				LOG(pTexture->GetBaseTexture());
+				HRESULT hr = m_pDevice->SetTexture(Stage,pTexture->GetBaseTexture());
 
 				return hr;
 			}
@@ -905,7 +880,7 @@ extern "C"
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::ProcessVertices(UINT SrcStartIndex,UINT DestIndex,UINT VertexCount,D3D8Wrapper::IDirect3DVertexBuffer8* pDestBuffer,DWORD Flags)
 		{
 			LOG("ProcessVertices");
-			HRESULT hr = m_pDevice->ProcessVertices(SrcStartIndex,DestIndex,VertexCount,pDestBuffer->getReal2(),Flags);
+			HRESULT hr = m_pDevice->ProcessVertices(SrcStartIndex,DestIndex,VertexCount,pDestBuffer->GetVertexBuffer(),Flags);
 
 			return hr;
 		}
@@ -986,7 +961,7 @@ extern "C"
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetStreamSource(UINT StreamNumber,D3D8Wrapper::IDirect3DVertexBuffer8* pStreamData,UINT Stride)
 		{
 			LOG("SetStreamSource");
-			HRESULT hr = m_pDevice->SetStreamSource(StreamNumber,pStreamData->getReal2(),Stride);
+			HRESULT hr = m_pDevice->SetStreamSource(StreamNumber,pStreamData->GetVertexBuffer(),Stride);
 
 			return hr;
 		}
@@ -1011,7 +986,7 @@ extern "C"
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetIndices(D3D8Wrapper::IDirect3DIndexBuffer8* pIndexData,UINT BaseVertexIndex)
 		{
 			LOG("SetIndices");
-			HRESULT hr = m_pDevice->SetIndices(pIndexData->getReal2(),BaseVertexIndex);
+			HRESULT hr = m_pDevice->SetIndices(pIndexData->GetIndexBuffer(),BaseVertexIndex);
 
 			return hr;
 		}

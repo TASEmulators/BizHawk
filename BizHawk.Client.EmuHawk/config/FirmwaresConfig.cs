@@ -11,9 +11,10 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 //notes: eventually, we intend to have a "firmware acquisition interface" exposed to the emulator cores.
-//it will be implemented by the multiclient, and use firmware keys to fetch the firmware content.
+//it will be implemented by emuhawk, and use firmware keys to fetch the firmware content.
 //however, for now, the cores are using strings from the config class. so we have the `configMember` which is 
 //used by reflection to set the configuration for firmwares which were found
 

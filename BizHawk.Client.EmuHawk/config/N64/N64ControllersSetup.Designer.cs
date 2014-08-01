@@ -66,7 +66,7 @@
 			this.ControllerSetting4.IsConnected = false;
 			this.ControllerSetting4.Location = new System.Drawing.Point(12, 114);
 			this.ControllerSetting4.Name = "ControllerSetting4";
-			this.ControllerSetting4.PakType = BizHawk.Emulation.Cores.Nintendo.N64.N64ControllerSettings.N64ControllerPakType.NO_PAK;
+			this.ControllerSetting4.PakType = BizHawk.Emulation.Cores.Nintendo.N64.N64SyncSettings.N64ControllerSettings.N64ControllerPakType.NO_PAK;
 			this.ControllerSetting4.Size = new System.Drawing.Size(291, 28);
 			this.ControllerSetting4.TabIndex = 5;
 			// 
@@ -76,7 +76,7 @@
 			this.ControllerSetting3.IsConnected = false;
 			this.ControllerSetting3.Location = new System.Drawing.Point(12, 80);
 			this.ControllerSetting3.Name = "ControllerSetting3";
-			this.ControllerSetting3.PakType = BizHawk.Emulation.Cores.Nintendo.N64.N64ControllerSettings.N64ControllerPakType.NO_PAK;
+			this.ControllerSetting3.PakType = BizHawk.Emulation.Cores.Nintendo.N64.N64SyncSettings.N64ControllerSettings.N64ControllerPakType.NO_PAK;
 			this.ControllerSetting3.Size = new System.Drawing.Size(291, 28);
 			this.ControllerSetting3.TabIndex = 4;
 			// 
@@ -86,7 +86,7 @@
 			this.ControllerSetting2.IsConnected = false;
 			this.ControllerSetting2.Location = new System.Drawing.Point(12, 46);
 			this.ControllerSetting2.Name = "ControllerSetting2";
-			this.ControllerSetting2.PakType = BizHawk.Emulation.Cores.Nintendo.N64.N64ControllerSettings.N64ControllerPakType.NO_PAK;
+			this.ControllerSetting2.PakType = BizHawk.Emulation.Cores.Nintendo.N64.N64SyncSettings.N64ControllerSettings.N64ControllerPakType.NO_PAK;
 			this.ControllerSetting2.Size = new System.Drawing.Size(291, 28);
 			this.ControllerSetting2.TabIndex = 3;
 			// 
@@ -96,7 +96,7 @@
 			this.ControllerSetting1.IsConnected = false;
 			this.ControllerSetting1.Location = new System.Drawing.Point(12, 12);
 			this.ControllerSetting1.Name = "ControllerSetting1";
-			this.ControllerSetting1.PakType = BizHawk.Emulation.Cores.Nintendo.N64.N64ControllerSettings.N64ControllerPakType.NO_PAK;
+			this.ControllerSetting1.PakType = BizHawk.Emulation.Cores.Nintendo.N64.N64SyncSettings.N64ControllerSettings.N64ControllerPakType.NO_PAK;
 			this.ControllerSetting1.Size = new System.Drawing.Size(291, 28);
 			this.ControllerSetting1.TabIndex = 2;
 			// 

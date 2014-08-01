@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 		};
 
-		public N64Input(mupen64plusApi core, CoreComm comm, N64ControllerSettings[] controllerSettings)
+		public N64Input(mupen64plusApi core, CoreComm comm, N64SyncSettings.N64ControllerSettings[] controllerSettings)
 		{
 			api = new mupen64plusInputApi(core);
 			CoreComm = comm;
@@ -154,7 +154,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// </summary>
 		/// <param name="controller">Id of the controller</param>
 		/// <param name="type">Type to which the controller pak is set. Currently only NO_PAK and MEMORY_CARD are supported</param>
-		public void SetControllerPakType(int controller, N64ControllerSettings.N64ControllerPakType type)
+		public void SetControllerPakType(int controller, N64SyncSettings.N64ControllerSettings.N64ControllerPakType type)
 		{
 			api.SetM64PControllerPakType(controller, type);
 		}

@@ -983,6 +983,7 @@ void debug_keys ()
 
 void output (float x, float y, int scale, const char *fmt, ...)
 {
+  /*
   va_list ap;
   va_start(ap,fmt);
   vsprintf(out_buf, fmt, ap);
@@ -1017,4 +1018,5 @@ void output (float x, float y, int scale, const char *fmt, ...)
 
     x+=8;
   }
+  */
 }

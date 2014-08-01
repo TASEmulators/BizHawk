@@ -6,8 +6,24 @@ extern "C"
 	{
 		D3D8Wrapper::IDirect3DTexture8::IDirect3DTexture8(D3D8Base::IDirect3DTexture8* pTexture) : IDirect3DBaseTexture8((D3D8Base::IDirect3DBaseTexture8*) pTexture)
 		{
-			LOG("IDirect3DBaseTexture8");
+			LOG("IDirect3DTexture8");
 			m_pD3D = pTexture;
+		}
+
+		D3D8Wrapper::IDirect3DTexture8* D3D8Wrapper::IDirect3DTexture8::GetTexture(D3D8Base::IDirect3DTexture8* pTexture)
+		{
+			D3D8Wrapper::IDirect3DTexture8* p = (D3D8Wrapper::IDirect3DTexture8*) D3D8Wrapper::IDirect3DResource8::m_List.GetDataPtr(pTexture);
+			if( p == NULL )
+			{
+				p = new D3D8Wrapper::IDirect3DTexture8(pTexture);
+				LOG("IDirect3DTexture8::GetTexture " << pTexture << " created new " << p)
+				D3D8Wrapper::IDirect3DResource8::m_List.AddMember(pTexture, p);
+				return p;
+			}
+    
+			p->m_ulRef++;
+			LOG("IDirect3DTexture8::GetTexture " << pTexture << " found existing " << p)
+			return p;
 		}
 
 
@@ -34,7 +50,7 @@ extern "C"
 			*ppSurfaceLevel = f;
 
 			LOG(f);
-			LOG(f->GetSurface8());
+			LOG(f->GetSurface());
 			LOG(hr);
 
 			return hr;

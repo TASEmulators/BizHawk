@@ -475,17 +475,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		public void set_video_parameters(VideoPluginSettings video_settings)
 		{
 			IntPtr video_plugin_section = IntPtr.Zero;
-			if (video_settings.Plugin == PLUGINTYPE.RICE)
+			if (video_settings.Plugin == PluginType.Rice)
 			{
 				m64pConfigOpenSection("Video-Rice", ref video_plugin_section);
 			}
-			else if (video_settings.Plugin == PLUGINTYPE.GLIDE)
+			else if (video_settings.Plugin == PluginType.Glide)
 			{
 				m64pConfigOpenSection("Video-Glide64", ref video_plugin_section);
 			}
-			else if (video_settings.Plugin == PLUGINTYPE.GLIDE64MK2)
+			else if (video_settings.Plugin == PluginType.GlideMk2)
 			{
 				m64pConfigOpenSection("Video-Glide64mk2", ref video_plugin_section);
+			}
+			else if (video_settings.Plugin == PluginType.Jabo)
+			{
+				m64pConfigOpenSection("Video-Jabo", ref video_plugin_section);
 			}
 			else
 			{
@@ -502,6 +506,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 				else if (video_settings.Parameters[Parameter].GetType() == typeof(bool))
 				{
 					value = (bool)video_settings.Parameters[Parameter] ? 1 : 0;
+				}
+				else if (video_settings.Parameters[Parameter] is Enum)
+				{
+					value = (int)video_settings.Parameters[Parameter];
 				}
 				m64pConfigSetParameter(video_plugin_section, Parameter, m64p_type.M64TYPE_INT, ref value);
 			}

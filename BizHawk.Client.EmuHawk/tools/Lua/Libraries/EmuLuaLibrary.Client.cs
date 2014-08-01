@@ -140,7 +140,7 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public static void OpenRom(string path)
 		{
-			GlobalWin.MainForm.LoadRom(path);
+			GlobalWin.MainForm.StopMovieThenLoadRom(path);
 		}
 
 		[LuaMethodAttributes(
@@ -217,7 +217,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"screenshot",
-			"if a parameter is passed it will function as the Screenshot As menu item of the multiclient, else it will function as the Screenshot menu item"
+			"if a parameter is passed it will function as the Screenshot As menu item of EmuHawk, else it will function as the Screenshot menu item"
 		)]
 		public static void Screenshot(string path = null)
 		{
@@ -233,7 +233,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"screenshottoclipboard",
-			"Performs the same function as the multiclient's Screenshot To Clipboard menu item"
+			"Performs the same function as EmuHawk's Screenshot To Clipboard menu item"
 		)]
 		public static void ScreenshotToClipboard()
 		{

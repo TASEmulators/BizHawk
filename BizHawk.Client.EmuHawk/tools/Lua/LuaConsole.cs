@@ -7,9 +7,12 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
+using LuaInterface;
+
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
-using LuaInterface;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -56,14 +59,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore { get { return true; } }
 
-		private IEnumerable<int> SelectedIndices
-		{
-			get { return LuaListView.SelectedIndices.Cast<int>(); }
-		}
-
 		private IEnumerable<LuaFile> SelectedItems
 		{
-			get { return SelectedIndices.Select(index => _luaList[index]); }
+			get { return LuaListView.SelectedIndices().Select(index => _luaList[index]); }
 		}
 
 		private IEnumerable<LuaFile> SelectedFiles
@@ -76,7 +74,15 @@ namespace BizHawk.Client.EmuHawk
 			Owner = Global.Config.LuaSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
-		public void UpdateValues() { }
+		public void UpdateValues()
+		{
+			// Do nothing
+		}
+
+		public void FastUpdate()
+		{
+			// Do nothing
+		}
 
 		public LuaConsole Get() { return this; }
 
@@ -500,7 +506,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!_luaList.LoadLuaSession(path))
 				{
-					ToolHelpers.HandleLoadError(Global.Config.RecentLuaSession, path);
+					Global.Config.RecentLuaSession.HandleLoadError(path);
 				}
 				else
 				{
@@ -547,12 +553,6 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		private Point GetPromptPoint()
-		{
-			return PointToScreen(
-				new Point(LuaListView.Location.X + 30, LuaListView.Location.Y + 30));
-		}
-
 		private static void UpdateRegisteredFunctionsDialog()
 		{
 			foreach (var form in Application.OpenForms.OfType<LuaRegisteredFunctionsList>())
@@ -574,14 +574,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentSessionsSubMenu.DropDownItems.Clear();
 			RecentSessionsSubMenu.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentLuaSession, LoadSessionFromRecent));
+				Global.Config.RecentLuaSession.RecentMenu(LoadSessionFromRecent));
 		}
 
 		private void RecentScriptsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentScriptsSubMenu.DropDownItems.Clear();
 			RecentScriptsSubMenu.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentLua, LoadLuaFromRecent));
+				Global.Config.RecentLua.RecentMenu(LoadLuaFromRecent));
 		}
 
 		private void NewSessionMenuItem_Click(object sender, EventArgs e)
@@ -649,7 +649,7 @@ namespace BizHawk.Client.EmuHawk
 			RemoveScriptMenuItem.Enabled =
 				MoveUpMenuItem.Enabled =
 				MoveDownMenuItem.Enabled =
-				SelectedIndices.Any();
+				LuaListView.SelectedIndices().Any();
 
 			SelectAllMenuItem.Enabled = _luaList.Any();
 			StopAllScriptsMenuItem.Enabled = _luaList.Any(script => script.Enabled);
@@ -778,7 +778,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertSeparatorMenuItem_Click(object sender, EventArgs e)
 		{
-			var indices = SelectedIndices.ToList();
+			var indices = LuaListView.SelectedIndices().ToList();
 			if (indices.Any() && indices.Last() < _luaList.Count)
 			{
 				_luaList.Insert(indices.Last(), LuaFile.SeparatorInstance);
@@ -793,7 +793,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MoveUpMenuItem_Click(object sender, EventArgs e)
 		{
-			var indices = SelectedIndices.ToList();
+			var indices = LuaListView.SelectedIndices().ToList();
 			if (indices.Count == 0 || indices[0] == 0)
 			{
 				return;
@@ -819,7 +819,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MoveDownMenuItem_Click(object sender, EventArgs e)
 		{
-			var indices = SelectedIndices.ToList();
+			var indices = LuaListView.SelectedIndices().ToList();
 			if (indices.Count == 0 || indices.Last() == _luaList.Count - 1)
 			{
 				return;
@@ -869,8 +869,10 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!alreadyOpen)
 				{
-					var form = new LuaRegisteredFunctionsList { StartLocation = GetPromptPoint() };
-					form.Show();
+					new LuaRegisteredFunctionsList
+					{
+						StartLocation = this.ChildPointToScreen(LuaListView)
+					}.Show();
 				}
 			}
 		}

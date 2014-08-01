@@ -6,22 +6,9 @@ extern "C"
 	{
 		D3D8Wrapper::IDirect3DBaseTexture8::IDirect3DBaseTexture8(D3D8Base::IDirect3DBaseTexture8* pTexture) : IDirect3DResource8((D3D8Base::IDirect3DResource8*) pTexture)
 		{
-			LOG("IDirect3DBaseTexture8 -- 1");
+			LOG("IDirect3DBaseTexture8");
 			m_pD3D = pTexture;
 		}
-
-		D3D8Wrapper::IDirect3DBaseTexture8::IDirect3DBaseTexture8(D3D8Wrapper::IDirect3DBaseTexture8* pTexture) : IDirect3DResource8((D3D8Wrapper::IDirect3DResource8*) pTexture)
-		{
-			LOG("IDirect3DBaseTexture8 -- 2");
-			m_pD3D = pTexture->getReal2();
-		}
-
-		D3D8Base::IDirect3DBaseTexture8* D3D8Wrapper::IDirect3DBaseTexture8::getReal2()
-		{
-			LOG("IDirect3DBaseTexture8::getReal2");
-			return m_pD3D;
-		}
-
 
 		/*STDMETHOD_(DWORD, SetLOD)(THIS_ DWORD LODNew) PURE;*/
 		STDMETHODIMP_(DWORD) D3D8Wrapper::IDirect3DBaseTexture8::SetLOD(DWORD LODNew)

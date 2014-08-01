@@ -686,18 +686,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (NES.ppu.ppur.status.cycle != 336)
 				return;
-			if (!NES.ppu.reg_2001.PPUON)
-				return;
 
 			int sl = NES.ppu.ppur.status.sl + 1;
 
-			//not a visible scanline
-			if (sl >= 241)
+			if (!NES.ppu.reg_2001.PPUON || sl >= 241)
 			{
+				// whenever rendering is off for any reason (vblank or forced disable
+				// the irq counter resets, as well as the inframe flag (easily verifiable from software)
 				in_frame = false;
+				irq_counter = 0;
+				irq_pending = false;
+				SyncIRQ();
 				return;
 			}
-	
+
 			if (!in_frame)
 			{
 				in_frame = true;

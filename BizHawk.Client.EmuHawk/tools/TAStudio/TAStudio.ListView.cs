@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -16,22 +18,22 @@ namespace BizHawk.Client.EmuHawk
 		private bool _startMarkerDrag;
 		private bool _startFrameDrag;
 
-		private readonly Color CurrentFrame_FrameCol = Color.FromArgb(0xCFEDFC);
-		private readonly Color CurrentFrame_InputLog = Color.FromArgb(0xB5E7F7);
+		public static Color CurrentFrame_FrameCol = Color.FromArgb(0xCFEDFC);
+		public static Color CurrentFrame_InputLog = Color.FromArgb(0xB5E7F7);
 
-		private readonly Color GreenZone_FrameCol = Color.FromArgb(0xDDFFDD);
-		private readonly Color GreenZone_InputLog = Color.FromArgb(0xC4F7C8);
+		public static Color GreenZone_FrameCol = Color.FromArgb(0xDDFFDD);
+		public static Color GreenZone_InputLog = Color.FromArgb(0xC4F7C8);
 
-		private readonly Color LagZone_FrameCol = Color.FromArgb(0xFFDCDD);
-		private readonly Color LagZone_InputLog = Color.FromArgb(0xF0D0D2);
+		public static Color LagZone_FrameCol = Color.FromArgb(0xFFDCDD);
+		public static Color LagZone_InputLog = Color.FromArgb(0xF0D0D2);
 
-		private readonly Color NoState_GreenZone_FrameCol = Color.FromArgb(0xF9FFF9);
-		private readonly Color NoState_GreenZone_InputLog = Color.FromArgb(0xE0FBE0);
+		public static Color NoState_GreenZone_FrameCol = Color.FromArgb(0xF9FFF9);
+		public static Color NoState_GreenZone_InputLog = Color.FromArgb(0xE0FBE0);
 
-		private readonly Color NoState_LagZone_FrameCol = Color.FromArgb(0xFFE9E9);
-		private readonly Color NoState_LagZone_InputLog = Color.FromArgb(0xF0D0D2);
+		public static Color NoState_LagZone_FrameCol = Color.FromArgb(0xFFE9E9);
+		public static Color NoState_LagZone_InputLog = Color.FromArgb(0xF0D0D2);
 
-		private readonly Color Marker_FrameCol = Color.FromArgb(0xF7FFC9);
+		public static Color Marker_FrameCol = Color.FromArgb(0xF7FFC9);
 
 		#region Query callbacks
 
@@ -156,6 +158,28 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Events
 
+		private void TasView_ColumnClick(object sender, ColumnClickEventArgs e)
+		{
+			if (TasView.SelectedIndices().Any())
+			{
+				var columnName = TasView.Columns[e.Column].Name;
+
+				if (columnName == FrameColumnName)
+				{
+					// TODO: add marker to LastSelectedIndex
+				}
+				else if (columnName != MarkerColumnName) // TODO: what about float?
+				{
+					foreach (var index in TasView.SelectedIndices())
+					{
+						ToggleBoolState(index, columnName);
+					}
+
+					RefreshDialog();
+				}
+			}
+		}
+
 		private void TasView_MouseDown(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Middle)
@@ -198,34 +222,6 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 				}
-			}
-		}
-
-		// TODO: move me
-		// Sets either the pending frame or the tas input log
-		private void ToggleBoolState(int frame, string buttonName)
-		{
-			if (frame < _tas.InputLogLength)
-			{
-				_tas.ToggleBoolState(frame, buttonName);
-			}
-			else if (frame == Global.Emulator.Frame && frame == _tas.InputLogLength)
-			{
-				Global.ClickyVirtualPadController.Toggle(buttonName);
-			}
-		}
-
-		// TODO: move me
-		// Sets either the pending frame or the tas input log
-		private void SetBoolState(int frame, string buttonName, bool value)
-		{
-			if (frame < _tas.InputLogLength)
-			{
-				_tas.SetBoolState(frame, buttonName, value);
-			}
-			else if (frame == Global.Emulator.Frame && frame == _tas.InputLogLength)
-			{
-				Global.ClickyVirtualPadController.SetBool(buttonName, value);
 			}
 		}
 
@@ -339,6 +335,14 @@ namespace BizHawk.Client.EmuHawk
 			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Right) // Ctrl + Left
 			{
 				GoToNextMarker();
+			}
+			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Ctrl + Up
+			{
+				GoToPreviousFrame();
+			}
+			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Ctrl + Down
+			{
+				GoToNextFrame();
 			}
 		}
 
