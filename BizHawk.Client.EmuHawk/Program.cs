@@ -83,6 +83,14 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.GLManager = new GLManager();
 			GlobalWin.CR_GL = GlobalWin.GLManager.GetContextForIGL(GlobalWin.GL);
 
+			//WHY do we have to do this? some intel graphics drivers (ig7icd64.dll 10.18.10.3304 on an unknown chip on win8.1) are calling SetDllDirectory() for the process, which ruins stuff.
+			//The relevant initialization happened just before in "create IGL context".
+			//It isn't clear whether we need the earlier SetDllDirectory(), but I think we do.
+			//note: this is pasted instead of being put in a static method due to this initialization code being sensitive to things like that, and not wanting to cause it to break
+			//pasting should be safe (not affecting the jit order of things)
+			string dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
+			SetDllDirectory(dllDir);
+
 			try
 			{
 #if WINDOWS
@@ -158,7 +166,7 @@ namespace BizHawk.Client.EmuHawk
 		//declared here instead of a more usual place to avoid dependencies on the more usual place
 #if WINDOWS
 		[DllImport("kernel32.dll", SetLastError = true)]
-		static extern bool SetDllDirectory(string lpPathName);
+		static extern uint SetDllDirectory(string lpPathName);
 
 		[DllImport("kernel32.dll", EntryPoint = "DeleteFileW", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true)]
 		static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)]string lpFileName);
