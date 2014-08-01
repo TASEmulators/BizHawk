@@ -259,19 +259,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			return exePath;
 		}
 
-		public LibsnesCore(CoreComm comm, object Settings, object SyncSettings)
-		{
-			this.Settings = (SnesSettings)Settings ?? new SnesSettings();
-			this.SyncSettings = (SnesSyncSettings)SyncSettings ?? new SnesSyncSettings();
-			CoreComm = comm;
-
-			api = new LibsnesApi(GetExePath());
-			api.CMD_init();
-			api.ReadHook = ReadHook;
-			api.ExecHook = ExecHook;
-			api.WriteHook = WriteHook;
-		}
-
 		void ReadHook(uint addr)
 		{
 			CoreComm.MemoryCallbackSystem.CallRead(addr);
@@ -327,15 +314,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			else return api.CMD_load_cartridge_super_game_boy(CurrLoadParams.rom_xml, CurrLoadParams.rom_data, CurrLoadParams.rom_size, CurrLoadParams.dmg_xml, CurrLoadParams.dmg_data, CurrLoadParams.dmg_size);
 		}
 
-		public void Load(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData)
+		public LibsnesCore(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData, CoreComm comm, object Settings, object SyncSettings)
 		{
 			byte[] sgbRomData = null;
 			if (game["SGB"])
 			{
+				if ((romData[0x143] & 0xc0) == 0xc0)
+					throw new CGBNotSupportedException();
 				sgbRomData = CoreComm.CoreFileProvider.GetFirmware("SNES", "Rom_SGB", true, "SGB Rom is required for SGB emulation.");
 				game.FirmwareHash = sgbRomData.HashSHA1();
 			}
-	
+
+			this.Settings = (SnesSettings)Settings ?? new SnesSettings();
+			this.SyncSettings = (SnesSyncSettings)SyncSettings ?? new SnesSyncSettings();
+			CoreComm = comm;
+
+			api = new LibsnesApi(GetExePath());
+			api.CMD_init();
+			api.ReadHook = ReadHook;
+			api.ExecHook = ExecHook;
+			api.WriteHook = WriteHook;
+
 			ScanlineHookManager = new MyScanlineHookManager(this);
 
 			api.CMD_init();
