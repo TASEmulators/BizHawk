@@ -111,6 +111,8 @@ namespace BizHawk.Client.EmuHawk
 					Global.Emulator.LoadStateText(new StringReader(Global.MovieSession.Movie.TextSavestate));
 				else
 					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.BinarySavestate, false)));
+
+				Global.Emulator.ResetCounters();
 			}
 
 			if (record)
