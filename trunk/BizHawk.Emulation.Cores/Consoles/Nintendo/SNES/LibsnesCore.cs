@@ -316,6 +316,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public LibsnesCore(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData, CoreComm comm, object Settings, object SyncSettings)
 		{
+			CoreComm = comm;
 			byte[] sgbRomData = null;
 			if (game["SGB"])
 			{
@@ -327,7 +328,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			this.Settings = (SnesSettings)Settings ?? new SnesSettings();
 			this.SyncSettings = (SnesSyncSettings)SyncSettings ?? new SnesSyncSettings();
-			CoreComm = comm;
 
 			api = new LibsnesApi(GetExePath());
 			api.CMD_init();
