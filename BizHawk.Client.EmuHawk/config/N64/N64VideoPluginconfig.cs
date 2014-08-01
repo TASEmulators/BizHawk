@@ -353,6 +353,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!VersionInfo.DeveloperBuild)
 			{
 				PluginComboBox.Items.Remove("Jabo 1.6.1");
+                N64plugintabcontrol.TabPages.Remove(JaboTab);
 			}
 
 			if (File.Exists("dll\\Jabo_Direct3D8_patched.dll"))
