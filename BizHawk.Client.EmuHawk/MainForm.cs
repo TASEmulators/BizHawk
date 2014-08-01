@@ -262,7 +262,7 @@ namespace BizHawk.Client.EmuHawk
 			if (cmdRom != null)
 			{
 				// Commandline should always override auto-load
-				LoadRom(cmdRom);
+				StopMovieThenLoadRom(cmdRom);
 				if (Global.Game == null)
 				{
 					MessageBox.Show("Failed to load " + cmdRom + " specified on commandline");
@@ -818,7 +818,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RebootCore()
 		{
-			LoadRom(CurrentlyOpenRom);
+			StopMovieThenLoadRom(CurrentlyOpenRom);
 		}
 
 		public void PauseEmulator()
@@ -1569,7 +1569,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadRomFromRecent(string rom)
 		{
-			if (!LoadRom(rom))
+			if (!StopMovieThenLoadRom(rom))
 			{
 				Global.Config.RecentRoms.HandleLoadError(rom);
 			}
@@ -1830,7 +1830,7 @@ namespace BizHawk.Client.EmuHawk
 			var file = new FileInfo(ofd.FileName);
 			Global.Config.LastRomPath = file.DirectoryName;
 			_lastOpenRomFilter = ofd.FilterIndex;
-			LoadRom(file.FullName);
+			StopMovieThenLoadRom(file.FullName);
 		}
 
 		private void CoreSyncSettings(object sender, RomLoader.SettingsLoadArgs e)
@@ -3059,6 +3059,17 @@ namespace BizHawk.Client.EmuHawk
 
 			platformChooser.ShowDialog();
 			return platformChooser.PlatformChoice;
+		}
+
+		// TODO: a better name for this method, but this is the one that should be called, in general
+		public bool StopMovieThenLoadRom(string path, bool? deterministicemulation = null)
+		{
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				Global.MovieSession.Movie.Stop();
+			}
+
+			return LoadRom(path, deterministicemulation);
 		}
 
 		// Still needs a good bit of refactoring
