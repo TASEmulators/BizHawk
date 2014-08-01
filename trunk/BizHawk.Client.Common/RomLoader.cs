@@ -225,7 +225,7 @@ namespace BizHawk.Client.Common
 							case "GEN":
 								var genesis = new GPGX(
 										nextComm, null, disc, "GEN", GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
-										nextEmulator = genesis;
+								nextEmulator = genesis;
 								break;
 							case "SAT":
 								nextEmulator = new Yabause(nextComm, disc, GetCoreSyncSettings<Yabause>());
@@ -318,11 +318,10 @@ namespace BizHawk.Client.Common
 								{
 									// need to get rid of this hack at some point
 									((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", String.Empty)); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
-									var snes = new LibsnesCore(nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
-									nextEmulator = snes;
 									var romData = isXml ? null : rom.FileData;
 									var xmlData = isXml ? rom.FileData : null;
-									snes.Load(game, romData, Deterministic, xmlData);
+									var snes = new LibsnesCore(game, romData, Deterministic, xmlData, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
+									nextEmulator = snes;
 								}
 
 								break;
@@ -333,8 +332,8 @@ namespace BizHawk.Client.Common
 								break;
 							case "A26":
 								nextEmulator = new Atari2600(
-									nextComm, 
-									game, 
+									nextComm,
+									game,
 									rom.FileData,
 									GetCoreSettings<Atari2600>(),
 									GetCoreSyncSettings<Atari2600>());
@@ -384,9 +383,8 @@ namespace BizHawk.Client.Common
 									{
 										game.System = "SNES";
 										game.AddOption("SGB");
-										var snes = new LibsnesCore(nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
+										var snes = new LibsnesCore(game, rom.FileData, Deterministic, null, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
 										nextEmulator = snes;
-										snes.Load(game, rom.FileData, Deterministic, null);
 									}
 									catch
 									{
@@ -450,7 +448,7 @@ namespace BizHawk.Client.Common
 					}
 
 					// Specific hack here, as we get more cores of the same system, this isn't scalable
-					if (ex is LibQuickNES.UnsupportedMapperException)
+					if (ex is UnsupportedMapperException)
 					{
 						return LoadRom(path, nextComm, forceAccurateCore: true);
 					}

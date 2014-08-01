@@ -9,4 +9,26 @@ namespace BizHawk.Emulation.Common
 
 		}
 	}
+
+	public class UnsupportedMapperException : InvalidOperationException
+	{
+		public UnsupportedMapperException(string message)
+			: base(message)
+		{
+
+		}
+	}
+
+	public class CGBNotSupportedException : Exception
+	{
+		public CGBNotSupportedException()
+			: base("Core does not support CGB only games!")
+		{
+		}
+
+		public CGBNotSupportedException(string message)
+			: base(message)
+		{
+		}
+	}
 }

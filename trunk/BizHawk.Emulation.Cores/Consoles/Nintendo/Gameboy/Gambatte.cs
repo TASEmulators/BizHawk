@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			GambatteState = LibGambatte.gambatte_create();
 
 			if (GambatteState == IntPtr.Zero)
-				throw new Exception("gambatte_create() returned null???");
+				throw new InvalidOperationException("gambatte_create() returned null???");
 
 			try
 			{
@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
 
 				if (LibGambatte.gambatte_load(GambatteState, romdata, (uint)romdata.Length, GetCurrentTime(), flags) != 0)
-					throw new Exception("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
+					throw new InvalidOperationException("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
 
 				// set real default colors (before anyone mucks with them at all)
 				PutSettings(Settings ?? new GambatteSettings());
@@ -352,7 +352,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		static void ThrowExceptionForBadRom(byte[] romdata)
 		{
 			if (romdata.Length < 0x148)
-				throw new Exception("ROM is far too small to be a valid GB\\GBC rom!");
+				throw new ArgumentException("ROM is far too small to be a valid GB\\GBC rom!");
 
 			switch (romdata[0x147])
 			{
@@ -365,9 +365,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				case 0x08: break;
 				case 0x09: break;
 
-				case 0x0b: throw new Exception("\"MM01\" Mapper not supported!");
-				case 0x0c: throw new Exception("\"MM01\" Mapper not supported!");
-				case 0x0d: throw new Exception("\"MM01\" Mapper not supported!");
+				case 0x0b: throw new UnsupportedMapperException("\"MM01\" Mapper not supported!");
+				case 0x0c: throw new UnsupportedMapperException("\"MM01\" Mapper not supported!");
+				case 0x0d: throw new UnsupportedMapperException("\"MM01\" Mapper not supported!");
 
 				case 0x0f: break;
 				case 0x10: break;
@@ -375,9 +375,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				case 0x12: break;
 				case 0x13: break;
 
-				case 0x15: throw new Exception("\"MBC4\" Mapper not supported!");
-				case 0x16: throw new Exception("\"MBC4\" Mapper not supported!");
-				case 0x17: throw new Exception("\"MBC4\" Mapper not supported!");
+				case 0x15: throw new UnsupportedMapperException("\"MBC4\" Mapper not supported!");
+				case 0x16: throw new UnsupportedMapperException("\"MBC4\" Mapper not supported!");
+				case 0x17: throw new UnsupportedMapperException("\"MBC4\" Mapper not supported!");
 
 				case 0x19: break;
 				case 0x1a: break;
@@ -386,14 +386,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				case 0x1d: break; // rumble
 				case 0x1e: break; // rumble
 
-				case 0x20: throw new Exception("\"MBC6\" Mapper not supported!");
-				case 0x22: throw new Exception("\"MBC7\" Mapper not supported!");
+				case 0x20: throw new UnsupportedMapperException("\"MBC6\" Mapper not supported!");
+				case 0x22: throw new UnsupportedMapperException("\"MBC7\" Mapper not supported!");
 
-				case 0xfc: throw new Exception("\"Pocket Camera\" Mapper not supported!");
-				case 0xfd: throw new Exception("\"Bandai TAMA5\" Mapper not supported!");
-				case 0xfe: throw new Exception("\"HuC3\" Mapper not supported!");
+				case 0xfc: throw new UnsupportedMapperException("\"Pocket Camera\" Mapper not supported!");
+				case 0xfd: throw new UnsupportedMapperException("\"Bandai TAMA5\" Mapper not supported!");
+				case 0xfe: throw new UnsupportedMapperException("\"HuC3\" Mapper not supported!");
 				case 0xff: break;
-				default: throw new Exception(string.Format("Unknown mapper: {0:x2}", romdata[0x147]));
+				default: throw new UnsupportedMapperException(string.Format("Unknown mapper: {0:x2}", romdata[0x147]));
 			}
 			return;
 		}
