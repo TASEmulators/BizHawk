@@ -233,7 +233,7 @@ namespace BizHawk.Client.EmuHawk
 
 			void this_StartupNextInstance(object sender, StartupNextInstanceEventArgs e)
 			{
-				(MainForm as MainForm).LoadRom(e.CommandLine[0]);
+				(MainForm as MainForm).StopMovieThenLoadRom(e.CommandLine[0]);
 			}
 
 			protected override void OnCreateMainForm()

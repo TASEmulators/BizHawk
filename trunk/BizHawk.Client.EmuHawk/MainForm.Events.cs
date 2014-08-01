@@ -2377,7 +2377,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					LoadRom(CurrentlyOpenRom);
+					StopMovieThenLoadRom(CurrentlyOpenRom);
 				}
 
 				string errorMsg;
@@ -2399,7 +2399,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				LoadRom(filePaths[0]);
+				StopMovieThenLoadRom(filePaths[0]);
 			}
 		}
 

@@ -140,7 +140,7 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public static void OpenRom(string path)
 		{
-			GlobalWin.MainForm.LoadRom(path);
+			GlobalWin.MainForm.StopMovieThenLoadRom(path);
 		}
 
 		[LuaMethodAttributes(

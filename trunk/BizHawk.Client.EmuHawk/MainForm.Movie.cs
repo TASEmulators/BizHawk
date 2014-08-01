@@ -158,7 +158,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				LoadRom(CurrentlyOpenRom);
+				StopMovieThenLoadRom(CurrentlyOpenRom);
 				if (Global.MovieSession.Movie.StartsFromSavestate)
 				{
 					// TODO: why does this code exist twice??
