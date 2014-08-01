@@ -18,7 +18,6 @@ using BizHawk.Bizware.BizwareGL;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
-using BizHawk.Emulation.Cores.Atari.Atari7800;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
@@ -28,10 +27,12 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
-using BizHawk.Emulation.Cores.Sega.Saturn;
-using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.DiscSystem;
 using BizHawk.Emulation.Cores.Nintendo.N64;
+
+using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Client.EmuHawk.CoreExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -100,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 			new AutoResetEvent(false);
 			Icon = Properties.Resources.logo;
 			InitializeComponent();
-			Global.Game = GameInfo.GetNullGame();
+			Global.Game = GameInfo.NullInstance;
 			if (Global.Config.ShowLogWindow)
 			{
 				LogConsole.ShowConsole();
@@ -108,8 +109,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_throttle = new Throttle();
-
-			FFMpeg.FFMpegPath = PathManager.MakeProgramRelativePath(Global.Config.FFMpegPath);
 
 			Global.CheatList = new CheatCollection();
 			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
@@ -263,7 +262,7 @@ namespace BizHawk.Client.EmuHawk
 			if (cmdRom != null)
 			{
 				// Commandline should always override auto-load
-				LoadRom(cmdRom);
+				StopMovieThenLoadRom(cmdRom);
 				if (Global.Game == null)
 				{
 					MessageBox.Show("Failed to load " + cmdRom + " specified on commandline");
@@ -312,11 +311,11 @@ namespace BizHawk.Client.EmuHawk
 				ToggleFullscreen();
 			}
 
-			if (cmdLoadState != null && Global.Game != null)
+			if (cmdLoadState != null && !Global.Game.IsNullInstance)
 			{
 				LoadQuickSave("QuickSave" + cmdLoadState);
 			}
-			else if (Global.Config.AutoLoadLastSaveSlot && Global.Game != null)
+			else if (Global.Config.AutoLoadLastSaveSlot && !Global.Game.IsNullInstance)
 			{
 				LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
 			}
@@ -554,6 +553,38 @@ namespace BizHawk.Client.EmuHawk
 		public bool UpdateFrame = false;
 		public bool EmulatorPaused { get; private set; }
 
+		private int? _pauseOnFrame;
+		public int? PauseOnFrame // If set, upon completion of this frame, the client wil pause
+		{
+			get { return _pauseOnFrame; }
+			set
+			{
+				_pauseOnFrame = value;
+				SetPauseStatusbarIcon();
+			}
+		}
+
+		public bool IsSeeking
+		{
+			get { return PauseOnFrame.HasValue; }
+		}
+
+		public bool IsTurboSeeking
+		{
+			get
+			{
+				return PauseOnFrame.HasValue && Global.Config.TurboSeek;
+			}
+		}
+
+		public bool IsTurboing
+		{
+			get
+			{
+				return Global.ClientControls["Turbo"] || IsTurboSeeking;
+			}
+		}
+
 		// TODO: SystemInfo should be able to do this
 		// Because we don't have enough places where we list SystemID's
 		public Dictionary<string, string> SupportedPlatforms
@@ -787,7 +818,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RebootCore()
 		{
-			LoadRom(CurrentlyOpenRom);
+			StopMovieThenLoadRom(CurrentlyOpenRom);
 		}
 
 		public void PauseEmulator()
@@ -806,6 +837,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			EmulatorPaused ^= true;
 			SetPauseStatusbarIcon();
+
+			// TODO: have tastudio set a pause status change callback, or take control over pause
+			if (GlobalWin.Tools.Has<TAStudio>())
+			{
+				GlobalWin.Tools.UpdateValues<TAStudio>();
+			}
 		}
 
 		public void TakeScreenshotToClipboard()
@@ -816,7 +853,7 @@ namespace BizHawk.Client.EmuHawk
 					Clipboard.SetImage(img);
 			}
 
-			GlobalWin.OSD.AddMessage("Screenshot saved to clipboard.");
+			GlobalWin.OSD.AddMessage("Screenshot (raw) saved to clipboard.");
 		}
 
 		public void TakeScreenshot()
@@ -1179,12 +1216,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private static string DisplayNameForSystem(string system)
 		{
-			if (system == "NULL")
-			{
-				//Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
-				//return;
-			}
-
 			var str = Global.SystemInfo.DisplayName;
 
 			if (VersionInfo.DeveloperBuild)
@@ -1406,7 +1437,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var system = string.Empty;
 
-			if (Global.Game != null)
+			if (!Global.Game.IsNullInstance)
 			{
 				system = Global.Game.System;
 			}
@@ -1466,15 +1497,23 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "SNES":
 				case "SGB":
-					if ((Global.Emulator as LibsnesCore).IsSGB)
+					// TODO: fix SNES9x here
+					if (Global.Emulator is LibsnesCore)
 					{
-						SNESSubMenu.Text = "&SGB";
+						if ((Global.Emulator as LibsnesCore).IsSGB)
+						{
+							SNESSubMenu.Text = "&SGB";
+						}
+						else
+						{
+							SNESSubMenu.Text = "&SNES";
+						}
+						SNESSubMenu.Visible = true;
 					}
 					else
 					{
-						SNESSubMenu.Text = "&SNES";
+						SNESSubMenu.Visible = false;
 					}
-					SNESSubMenu.Visible = true;
 					break;
 				case "Coleco":
 					ColecoSubMenu.Visible = true;
@@ -1524,21 +1563,33 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				ToolHelpers.HandleLoadError(Global.Config.RecentMovies, path);
+				Global.Config.RecentMovies.HandleLoadError(path);
 			}
 		}
 
 		private void LoadRomFromRecent(string rom)
 		{
-			if (!LoadRom(rom))
+			if (!StopMovieThenLoadRom(rom))
 			{
-				ToolHelpers.HandleLoadError(Global.Config.RecentRoms, rom);
+				Global.Config.RecentRoms.HandleLoadError(rom);
 			}
 		}
 
 		private void SetPauseStatusbarIcon()
 		{
-			if (EmulatorPaused)
+			if (IsTurboSeeking)
+			{
+				PauseStatusButton.Image = Properties.Resources.Lightning;
+				PauseStatusButton.Visible = true;
+				PauseStatusButton.ToolTipText = "Emulator is turbo seeking to frame " + PauseOnFrame.Value + " click to stop seek";
+			}
+			else if (PauseOnFrame.HasValue)
+			{
+				PauseStatusButton.Image = Properties.Resources.YellowRight;
+				PauseStatusButton.Visible = true;
+				PauseStatusButton.ToolTipText = "Emulator is playing to frame " + PauseOnFrame.Value + " click to stop seek";
+			}
+			else if (EmulatorPaused)
 			{
 				PauseStatusButton.Image = Properties.Resources.Pause;
 				PauseStatusButton.Visible = true;
@@ -1556,7 +1607,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SyncThrottle()
 		{
 			var fastforward = Global.ClientControls["Fast Forward"] || FastForward;
-			var superfastforward = Global.ClientControls["Turbo"];
+			var superfastforward = IsTurboing;
 			Global.ForceNoThrottle = _unthrottled || fastforward;
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
@@ -1600,44 +1651,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static unsafe BitmapBuffer MakeScreenshotImage()
 		{
-			//var video = Global.Emulator.VideoProvider;
-			//var image = new Bitmap(video.BufferWidth, video.BufferHeight, PixelFormat.Format32bppArgb);
 			return new BitmapBuffer(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight, Global.Emulator.VideoProvider.GetVideoBuffer());
-
-			//this is all rotten.
-			//among other things, cores are required to set 0xFF000000 themselves
-			// TODO - replace with BitmapBuffer
-			//var framebuf = video.GetVideoBuffer();
-			//var bmpdata = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-			//int* ptr = (int*)bmpdata.Scan0.ToPointer();
-			//int stride = bmpdata.Stride / 4;
-			//for (int y = 0; y < video.BufferHeight; y++)
-			//{
-			//  for (int x = 0; x < video.BufferWidth; x++)
-			//  {
-			//    int col = framebuf[(y * video.BufferWidth) + x];
-
-			//    if (Global.Emulator is TI83)
-			//    {
-			//      if (col == 0)
-			//      {
-			//        col = Color.Black.ToArgb();
-			//      }
-			//      else
-			//      {
-			//        col = Color.White.ToArgb();
-			//      }
-			//    }
-
-			//    // make opaque
-			//    col |= unchecked((int)0xff000000);
-
-			//    ptr[(y * stride) + x] = col;
-			//  }
-			//}
-
-			//image.UnlockBits(bmpdata);
-			//return image;
 		}
 
 		private void SaveStateAs()
@@ -1816,7 +1830,7 @@ namespace BizHawk.Client.EmuHawk
 			var file = new FileInfo(ofd.FileName);
 			Global.Config.LastRomPath = file.DirectoryName;
 			_lastOpenRomFilter = ofd.FilterIndex;
-			LoadRom(file.FullName);
+			StopMovieThenLoadRom(file.FullName);
 		}
 
 		private void CoreSyncSettings(object sender, RomLoader.SettingsLoadArgs e)
@@ -2044,7 +2058,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private BitmapBuffer CaptureOSD()
 		{
-			var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider);
+			var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider,true);
 			bb.Normalize(true);
 			return bb;
 		}
@@ -2425,58 +2439,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			CoreNameStatusBarButton.Visible = true;
-			CoreAttributes attributes = Global.Emulator.Attributes();
+			var attributes = Global.Emulator.Attributes();
 
-			CoreNameStatusBarButton.Text =
-				(!attributes.Released ? "(Experimental) " : string.Empty) +
-				attributes.CoreName;
-
+			CoreNameStatusBarButton.Text = Global.Emulator.DisplayName();
+			CoreNameStatusBarButton.Image = Global.Emulator.Icon();
 			CoreNameStatusBarButton.ToolTipText = attributes.Ported ? "(ported) " : string.Empty;
-
-			if (!attributes.Ported)
-			{
-				CoreNameStatusBarButton.Image = Properties.Resources.CorpHawkSmall;
-			}
-			else
-			{
-				if (Global.Emulator is QuickNES)
-				{
-					CoreNameStatusBarButton.Image = Properties.Resources.QuickNes;
-				}
-				else if (Global.Emulator is LibsnesCore)
-				{
-					CoreNameStatusBarButton.Image = Properties.Resources.bsnes;
-					CoreNameStatusBarButton.Text += " (" + ((LibsnesCore.SnesSyncSettings)Global.Emulator.GetSyncSettings()).Profile + ")";
-				}
-				else if (Global.Emulator is Yabause)
-				{
-					CoreNameStatusBarButton.Image = Properties.Resources.yabause;
-				}
-				else if (Global.Emulator is Atari7800)
-				{
-					CoreNameStatusBarButton.Image = Properties.Resources.emu7800;
-				}
-				else if (Global.Emulator is GBA)
-				{
-					CoreNameStatusBarButton.Image = Properties.Resources.meteor;
-				}
-				else if (Global.Emulator is GPGX)
-				{
-					CoreNameStatusBarButton.Image = Properties.Resources.genplus;
-				}
-				else if (Global.Emulator is PSP)
-				{
-					CoreNameStatusBarButton.Image = Properties.Resources.ppsspp;
-				}
-				else if (Global.Emulator is Gameboy)
-				{
-					CoreNameStatusBarButton.Image = Properties.Resources.gambatte;
-				}
-				else
-				{
-					CoreNameStatusBarButton.Image = null;
-				}
-			}
 		}
 
 		#endregion
@@ -2565,8 +2532,7 @@ namespace BizHawk.Client.EmuHawk
 			var coreskipaudio = false;
 			if (runFrame)
 			{
-				var isFastForwarding = Global.ClientControls["Fast Forward"] || Global.ClientControls["Turbo"];
-				var isTurboing = Global.ClientControls["Turbo"];
+				var isFastForwarding = Global.ClientControls["Fast Forward"] || IsTurboing;
 				var updateFpsString = _runloopLastFf != isFastForwarding;
 				_runloopLastFf = isFastForwarding;
 
@@ -2584,9 +2550,13 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.LuaConsole.LuaImp.CallFrameBeforeEvent();
 				}
 
-				if (!isTurboing)
+				if (!IsTurboing)
 				{
 					GlobalWin.Tools.UpdateToolsBefore();
+				}
+				else
+				{
+					GlobalWin.Tools.FastUpdateBefore();
 				}
 
 				_runloopFps++;
@@ -2604,7 +2574,7 @@ namespace BizHawk.Client.EmuHawk
 					var fps_string = _runloopLastFps + " fps";
 					if (isRewinding)
 					{
-						if (isTurboing || isFastForwarding)
+						if (IsTurboing || isFastForwarding)
 						{
 							fps_string += " <<<<";
 						}
@@ -2613,7 +2583,7 @@ namespace BizHawk.Client.EmuHawk
 							fps_string += " <<";
 						}
 					}
-					else if (isTurboing)
+					else if (IsTurboing)
 					{
 						fps_string += " >>>>";
 					}
@@ -2641,7 +2611,7 @@ namespace BizHawk.Client.EmuHawk
 
 				Global.MovieSession.HandleMovieOnFrameLoop();
 
-				coreskipaudio = Global.ClientControls["Turbo"] && _currAviWriter == null;
+				coreskipaudio = IsTurboing && _currAviWriter == null;
 
 				{
 					bool render = !_throttle.skipnextframe || _currAviWriter != null;
@@ -2669,9 +2639,19 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.LuaConsole.LuaImp.CallFrameAfterEvent();
 				}
 
-				if (!isTurboing)
+				if (!IsTurboing)
 				{
 					UpdateToolsAfter();
+				}
+				else
+				{
+					GlobalWin.Tools.FastUpdateAfter();
+				}
+
+				if (IsSeeking && Global.Emulator.Frame == PauseOnFrame.Value)
+				{
+					PauseEmulator();
+					PauseOnFrame = null;
 				}
 			}
 
@@ -3041,11 +3021,28 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ShowLoadError(object sender, RomLoader.RomErrorArgs e)
 		{
-			string title = "load error";
-			if (e.AttemptedCoreLoad != null)
-				title = e.AttemptedCoreLoad + " load error";
+			if (e.Type == RomLoader.LoadErrorType.MissingFirmware)
+			{
+				var result = MessageBox.Show(
+					"You are missing the needed firmware files to load this Rom\n\nWould you like to open the firmware manager now and configure your firmwares?",
+					e.Message,
+					MessageBoxButtons.YesNo,
+					MessageBoxIcon.Error);
+				if (result == DialogResult.Yes)
+				{
+					FirmwaresMenuItem_Click(null, null);
+				}
+			}
+			else
+			{
+				string title = "load error";
+				if (e.AttemptedCoreLoad != null)
+				{
+					title = e.AttemptedCoreLoad + " load error";
+				}
 
-			MessageBox.Show(this, e.Message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show(this, e.Message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 		}
 
 		private void NotifyCoreComm(string message)
@@ -3062,6 +3059,17 @@ namespace BizHawk.Client.EmuHawk
 
 			platformChooser.ShowDialog();
 			return platformChooser.PlatformChoice;
+		}
+
+		// TODO: a better name for this method, but this is the one that should be called, in general
+		public bool StopMovieThenLoadRom(string path, bool? deterministicemulation = null)
+		{
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				Global.MovieSession.Movie.Stop();
+			}
+
+			return LoadRom(path, deterministicemulation);
 		}
 
 		// Still needs a good bit of refactoring
@@ -3128,6 +3136,18 @@ namespace BizHawk.Client.EmuHawk
 
 					Global.Game.Status = nes.RomStatus;
 				}
+				else if (loader.LoadedEmulator is QuickNES)
+				{
+					var qns = loader.LoadedEmulator as QuickNES;
+					if (!string.IsNullOrWhiteSpace(qns.BootGodName))
+					{
+						Global.Game.Name = qns.BootGodName;
+					}
+					if (qns.BootGodStatus.HasValue)
+					{
+						Global.Game.Status = qns.BootGodStatus.Value;
+					}
+				}
 
 				SetWindowText();
 
@@ -3187,10 +3207,22 @@ namespace BizHawk.Client.EmuHawk
 
 				RewireSound();
 				ToolHelpers.UpdateCheatRelatedTools(null, null);
+				if (Global.Config.AutoLoadLastSaveSlot && _stateSlots.HasSlot(Global.Config.SaveSlot))
+				{
+					LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
+				}
 				return true;
 			}
 			else
 			{
+				// TODO: put all these in a single method or something
+				HandlePlatformMenus();
+				_stateSlots.Clear();
+				UpdateStatusSlots();
+				UpdateCoreStatusBarButton();
+				UpdateDumpIcon();
+				SetMainformMovieInfo();
+				SetWindowText();
 				return false;
 			}
 		}
@@ -3276,13 +3308,6 @@ namespace BizHawk.Client.EmuHawk
 			Global.AutoFireController = Global.AutofireNullControls;
 
 			RewireSound();
-
-			// adelikat: TODO: Ugly hack! But I don't know a way around this yet.
-			if (!(Global.MovieSession.Movie is TasMovie))
-			{
-				Global.MovieSession.Movie.Stop();
-			}
-
 			RebootStatusBarIcon.Visible = false;
 		}
 
@@ -3294,7 +3319,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.CoreComm = CreateCoreComm();
 				CoreFileProvider.SyncCoreCommInputSignals();
 				Global.Emulator = new NullEmulator(Global.CoreComm);
-				Global.Game = GameInfo.GetNullGame();
+				Global.Game = GameInfo.NullInstance;
 
 				GlobalWin.Tools.Restart();
 
@@ -3305,6 +3330,8 @@ namespace BizHawk.Client.EmuHawk
 				_stateSlots.Clear();
 				UpdateDumpIcon();
 				UpdateCoreStatusBarButton();
+				ClearHolds();
+				PauseOnFrame = null;
 				ToolHelpers.UpdateCheatRelatedTools(null, null);
 			}
 		}
@@ -3334,36 +3361,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
-
-		private void GBcoreSettingsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			config.GB.GBPrefs.DoGBPrefsDialog(this);
-		}
-
-		private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "WonderSwan Settings");
-		}
-
-		private void ProfilesMenuItem_Click(object sender, EventArgs e)
-		{
-			if (new ProfileConfig().ShowDialog() == DialogResult.OK)
-			{
-				GlobalWin.OSD.AddMessage("Profile settings saved");
-			}
-			else
-			{
-				GlobalWin.OSD.AddMessage("Profile config aborted");
-			}
-		}
-
-		private void ProfileFirstBootLabel_Click(object sender, EventArgs e)
-		{
-			var profileForm = new ProfileConfig();
-			profileForm.ShowDialog();
-			Global.Config.FirstBoot = false;
-			ProfileFirstBootLabel.Visible = false;
-		}
 
 		// TODO: move me
 		private IControlMainform _master;

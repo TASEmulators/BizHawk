@@ -67,7 +67,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ClearVirtualPadHolds()
 		{
-			Pads.ForEach(pad => pad.Clear());
+			if (Global.Config.VirtualPadClearClearsAnalog)
+			{
+				Pads.ForEach(pad => pad.Clear());
+			}
+			else
+			{
+				Pads.ForEach(pad => pad.ClearBoolean());
+			}
 		}
 
 		public void BumpAnalogValue(int? x, int? y) // TODO: multi-player
@@ -195,7 +202,17 @@ namespace BizHawk.Client.EmuHawk
 				Pads.ForEach(pad => pad.Clear());
 			}
 
-			Pads.ForEach(pad => pad.Refresh());
+			Pads.ForEach(pad => pad.UpdateValues());
+		}
+
+		public void FastUpdate()
+		{
+			// TODO: SetPrevious logic should go here too or that will get out of whack
+
+			if (!Readonly && !Global.Config.VirtualPadSticky)
+			{
+				Pads.ForEach(pad => pad.Clear());
+			}
 		}
 
 		#endregion
@@ -210,6 +227,12 @@ namespace BizHawk.Client.EmuHawk
 			SaveWindowPositionMenuItem.Checked = Global.Config.VirtualPadSettings.SaveWindowPosition;
 			AlwaysOnTopMenuItem.Checked = Global.Config.VirtualPadSettings.TopMost;
 			FloatingWindowMenuItem.Checked = Global.Config.VirtualPadSettings.FloatingWindow;
+			ClearClearsAnalogInputMenuItem.Checked = Global.Config.VirtualPadClearClearsAnalog;
+		}
+
+		private void ClearClearsAnalogInputMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.VirtualPadClearClearsAnalog ^= true;
 		}
 
 		private void AutoloadMenuItem_Click(object sender, EventArgs e)
@@ -241,7 +264,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.VirtualPadSettings.SaveWindowPosition = true;
 			Global.Config.VirtualPadSettings.TopMost = TopMost = false;
 			Global.Config.VirtualPadSettings.FloatingWindow = false;
-			Global.Config.VirtualPadMultiplayerMode = false;
+			Global.Config.VirtualPadClearClearsAnalog = false;
 		}
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)

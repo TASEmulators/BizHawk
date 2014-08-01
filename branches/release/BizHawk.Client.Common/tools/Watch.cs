@@ -202,6 +202,14 @@ namespace BizHawk.Client.Common
 
 		public void ClearChangeCount() { _changecount = 0; }
 
+		public bool IsOutOfRange
+		{
+			get
+			{
+				return !IsSeparator && Address.Value >= Domain.Size;
+			}
+		}
+
 		public string Notes { get { return _notes; } set { _notes = value; } }
 
 		public static Watch GenerateWatch(MemoryDomain domain, int address, WatchSize size, DisplayType type, string notes, bool bigEndian)

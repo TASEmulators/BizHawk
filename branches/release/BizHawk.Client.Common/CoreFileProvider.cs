@@ -46,7 +46,7 @@ namespace BizHawk.Client.Common
 			{
 				var fullmsg = String.Format(
 					"Couldn't find required firmware \"{0}:{1}\".  This is fatal{2}", sysID, firmwareID, msg != null ? ": " + msg : ".");
-				throw new Exception(fullmsg);
+				throw new MissingFirmwareException(fullmsg);
 			}
 
 			if (msg != null)

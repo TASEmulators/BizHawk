@@ -49,7 +49,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\output\dll\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE;VS2010</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -59,9 +59,8 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EMU7800, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\BizHawk.MultiClient\output\dll\EMU7800.dll</HintPath>
+    <Reference Include="EMU7800">
+      <HintPath>..\References\EMU7800.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
@@ -241,6 +240,12 @@
     <Compile Include="Consoles\Nintendo\GBA\LibMeteor.cs" />
     <Compile Include="Consoles\Nintendo\GBA\Meteor.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64Input.cs" />
+    <Compile Include="Consoles\Nintendo\N64\N64Settings.cs" />
+    <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.Controller.cs" />
+    <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.Glide.cs" />
+    <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.GlideMk2.cs" />
+    <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.Jabo.cs" />
+    <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.Rice.cs" />
     <Compile Include="Consoles\Nintendo\N64\NativeApi\mupen64plusAudioApi.cs" />
     <Compile Include="Consoles\Nintendo\N64\NativeApi\mupen64plusCoreApi.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64.cs" />
@@ -428,6 +433,8 @@
     <Compile Include="Consoles\Nintendo\QuickNES\LibQuickNES.cs" />
     <Compile Include="Consoles\Nintendo\QuickNES\Nes_NTSC_Colors.cs" />
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.cs" />
+    <Compile Include="Consoles\Nintendo\SNES9X\LibSnes9x.cs" />
+    <Compile Include="Consoles\Nintendo\SNES9X\Snes9x.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi_BRK.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi_CMD.cs" />

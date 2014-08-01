@@ -134,9 +134,9 @@ namespace BizHawk.Client.Common
 				if (StartsFromSavestate)
 				{
 					bl.GetCoreState(
-						delegate(BinaryReader br)
+						delegate(BinaryReader br, long length)
 						{
-							BinarySavestate = br.ReadBytes((int)br.BaseStream.Length);
+							BinarySavestate = br.ReadBytes((int)length);
 						},
 						delegate(TextReader tr)
 						{
@@ -145,10 +145,9 @@ namespace BizHawk.Client.Common
 				}
 
 				// TasMovie enhanced information
-				bl.GetLump(BinaryStateLump.LagLog, false, delegate(BinaryReader br)
+				bl.GetLump(BinaryStateLump.LagLog, false, delegate(BinaryReader br, long length)
 				{
-					var bytes = br.BaseStream.ReadAllBytes();
-					LagLog = bytes.ToBools().ToList();
+					LagLog = br.ReadBytes((int)length).ToBools().ToList();
 				});
 
 				bl.GetLump(BinaryStateLump.GreenzoneSettings, false, delegate(TextReader tr)
@@ -158,9 +157,9 @@ namespace BizHawk.Client.Common
 
 				if (StateManager.Settings.SaveGreenzone)
 				{
-					bl.GetLump(BinaryStateLump.Greenzone, false, delegate(BinaryReader br)
+					bl.GetLump(BinaryStateLump.Greenzone, false, delegate(BinaryReader br, long length)
 					{
-						StateManager.FromArray(br.BaseStream.ReadAllBytes());
+						StateManager.FromArray(br.ReadBytes((int)length));
 					});
 				}
 

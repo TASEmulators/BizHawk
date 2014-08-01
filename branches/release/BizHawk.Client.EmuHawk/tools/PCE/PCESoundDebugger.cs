@@ -146,6 +146,11 @@ namespace BizHawk.Client.EmuHawk
 			lvChannels.EndUpdate();
 		}
 
+		public void FastUpdate()
+		{
+			// Todo
+		}
+
 		class PSGEntry
 		{
 			public int index;

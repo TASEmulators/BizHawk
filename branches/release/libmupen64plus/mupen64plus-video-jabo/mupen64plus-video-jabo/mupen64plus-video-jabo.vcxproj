@@ -90,11 +90,14 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Config.h" />
     <ClInclude Include="..\jabo_api.h" />
+    <ClInclude Include="..\m64p.h" />
     <ClInclude Include="..\main.h" />
     <ClInclude Include="..\typedefs.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\config.cpp" />
     <ClCompile Include="..\main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

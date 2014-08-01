@@ -5,9 +5,7 @@ D3D8Base::LPDIRECT3D8 g_D3D=NULL;
 HMODULE hD3D;
 
 ThreadSafePointerSet D3D8Wrapper::IDirect3DDevice8::m_List;
-ThreadSafePointerSet D3D8Wrapper::IDirect3DResource8::m_List;
 ThreadSafePointerSet D3D8Wrapper::IDirect3DBaseTexture8::m_List;
-ThreadSafePointerSet D3D8Wrapper::IDirect3DTexture8::m_List;
 ThreadSafePointerSet D3D8Wrapper::IDirect3DVolumeTexture8::m_List;
 ThreadSafePointerSet D3D8Wrapper::IDirect3DCubeTexture8::m_List;
 ThreadSafePointerSet D3D8Wrapper::IDirect3DVertexBuffer8::m_List;
@@ -16,38 +14,41 @@ ThreadSafePointerSet D3D8Wrapper::IDirect3DSurface8::m_List;
 ThreadSafePointerSet D3D8Wrapper::IDirect3DVolume8::m_List;
 ThreadSafePointerSet D3D8Wrapper::IDirect3DSwapChain8::m_List;
 
-
-
-
 extern "C"
 {
 	namespace D3D8Wrapper
 	{	
 		IDirect3DDevice8 *last_device = NULL;
+		IDirect3DSurface8 *render_surface = NULL;
 		void (*rendering_callback)( int );
 
 		D3D8Wrapper::IDirect3D8* WINAPI Direct3DCreate8(UINT Version)
 		{
-			LOG("I'M IN UR VIDJA GAME");
+			// Get the real DLL path
+			// Might be unsafe
+			CHAR dll_path[1024];
+			GetSystemDirectory(dll_path,1024);
+			strcat(dll_path,"\\d3d8.dll");
 
-			hD3D = LoadLibrary("C:\\Windows\\SysWOW64\\d3d8.dll");
+			hD3D = LoadLibrary(dll_path);
 
 			D3D8Wrapper::D3DCREATE pCreate = (D3D8Wrapper::D3DCREATE)GetProcAddress(hD3D, "Direct3DCreate8");
 
-			// Contains our real object
+			// Use the real Direct3DCreate8 to make the base object
 			D3D8Base::IDirect3D8* pD3D = pCreate(D3D_SDK_VERSION);
 
+			// Wrap the object
 			D3D8Wrapper::IDirect3D8* fD3D = D3D8Wrapper::IDirect3D8::GetDirect3D(pD3D);
 
-			MessageBox(NULL, "", "HAX", MB_OK);
-			return fD3D; //D3D8Base::Direct3DCreate8(Version);
+			return fD3D;
 		}
 	}
 
 
-
-
-
+	__declspec(dllexport) void __cdecl CloseDLL()
+	{
+		FreeLibrary(hD3D);
+	}
 	
 	__declspec(dllexport) void __cdecl SetRenderingCallback(void (*callback)(int))
 	{
@@ -63,14 +64,10 @@ extern "C"
 			return;
 		}
 
-		// get back buffer (surface)
-		D3D8Base::IDirect3DSurface8 *backbuffer;
-		D3D8Wrapper::last_device->GetD3D8Device()->GetBackBuffer(0,D3D8Base::D3DBACKBUFFER_TYPE_MONO,&backbuffer);
-
 		// surface...
 		// make a D3DSURFACE_DESC, pass to GetDesc
 		D3D8Base::D3DSURFACE_DESC desc;
-		backbuffer->GetDesc(&desc);
+		D3D8Wrapper::render_surface->GetDesc(&desc);
 
 		// get out height/width
 		*width = desc.Width;
@@ -85,28 +82,46 @@ extern "C"
 			entire_buffer.top = 0;
 			entire_buffer.right = desc.Width;
 			entire_buffer.bottom = desc.Height;
-		
+
+			//resolve rendertarget to a system memory texture, for locking
+			//TODO! UNACCEPTABLE CODE! THIS IS HORRIBLE!
+			//X8R8G8B8 or fail -- A8R8G8B8 will malfunction (is it because the source surface format isnt matching? I think so)
+			static D3D8Wrapper::IDirect3DTexture8* tex = NULL;
+			static RECT texRect;
+			if(!tex || (texRect.right != entire_buffer.right) || (texRect.bottom != entire_buffer.bottom))
+			{
+				if(tex)
+					tex->Release();
+				texRect = entire_buffer;
+				D3D8Wrapper::last_device->CreateTexture(desc.Width, desc.Height, 1, 0, D3D8Base::D3DFMT_X8R8G8B8, D3D8Base::D3DPOOL_SYSTEMMEM, &tex);
+			}
+
+			D3D8Wrapper::IDirect3DSurface8* surf;
+			tex->GetSurfaceLevel(0,&surf);
+			HRESULT hr = D3D8Wrapper::last_device->CopyRects(D3D8Wrapper::render_surface,NULL,0,surf,NULL);
+
 			// make a D3DLOCKED_RECT, pass to LockRect
 			D3D8Base::D3DLOCKED_RECT locked;
-			backbuffer->LockRect(&locked,&entire_buffer,D3DLOCK_READONLY);
+			hr = surf->LockRect(&locked,&entire_buffer,D3DLOCK_READONLY);
 
-			// read out pBits from the LOCKED_RECT
-			int from_row = desc.Height - 1;
-			for (int dest_row = 0; dest_row < desc.Height; dest_row++)
+			//this loop was reversed from the original.
+			//it should be faster anyway if anything since the reading can be prefetched forwardly.
+			//TODO - allow bizhawk to handle flipped images.... nonetheless, it might not handle images with unusual pitches, although maybe we should consider that.
+			//so this code will probably remain for quite some time
+			int dest_row = desc.Height - 1;
+			for (int from_row = 0; from_row < desc.Height; from_row++)
 			{
-				for (int col = 0; col < desc.Width*4; col++)
-				{
-					((char *)dest)[dest_row * desc.Width * 4 + col] = ((char *)locked.pBits)[from_row * desc.Width * 4 + col];
-				}
-				from_row--;
+				memcpy((char*)dest + (dest_row * desc.Width*4),(char*)locked.pBits + from_row * locked.Pitch, desc.Width*4);
+				dest_row--;
 			}
 
 			// unlock rect
-			backbuffer->UnlockRect();
+			surf->UnlockRect();
+			surf->Release();
 		}
 
 		// release the surface
-		backbuffer->Release();
+		//backbuffer->Release();
 		
 		// we're done, maybe?
 	}

@@ -6,6 +6,12 @@ extern "C"
 	{
 		ThreadSafePointerSet IDirect3D8::m_List;
 
+		D3D8Wrapper::IDirect3D8::IDirect3D8(D3D8Base::IDirect3D8* real) : D3D8Wrapper::IDirect3DUnknown((IUnknown*) real)
+		{
+			m_pD3D = real;
+		}
+
+		// Tries to find the real object in the pointer set, or creates a new wrapped object
 		D3D8Wrapper::IDirect3D8* D3D8Wrapper::IDirect3D8::GetDirect3D(D3D8Base::IDirect3D8* pD3D)
 		{
 			D3D8Wrapper::IDirect3D8* p = (D3D8Wrapper::IDirect3D8*) m_List.GetDataPtr(pD3D);
@@ -20,10 +26,8 @@ extern "C"
 			return p;
 		} 
 
-
 		STDMETHODIMP_(ULONG) D3D8Wrapper::IDirect3D8::Release(THIS)
 		{
-
 			m_pUnk->Release();
 
 			ULONG ulRef = --m_ulRef;
@@ -37,16 +41,12 @@ extern "C"
 			return ulRef;
 		} 
 
-		D3D8Wrapper::IDirect3D8::IDirect3D8(D3D8Base::IDirect3D8* real) : D3D8Wrapper::IDirect3DUnknown((IUnknown*) real)
-		{
-			m_pD3D = real;
-		}
+
 
 		STDMETHODIMP D3D8Wrapper::IDirect3D8::GetAdapterDisplayMode(THIS_ UINT Adapter,D3D8Base::D3DDISPLAYMODE* pMode)
 		{
-			LOG("displaymode");
-			HRESULT hr = m_pD3D->GetAdapterDisplayMode(Adapter, pMode);
-			return hr;
+			LOG("IDirect3D8::GetAdapterDisplayMode");
+			return m_pD3D->GetAdapterDisplayMode(Adapter, pMode);
 		}
 
 		
@@ -54,129 +54,101 @@ extern "C"
 		
 		STDMETHODIMP D3D8Wrapper::IDirect3D8::RegisterSoftwareDevice(void* pInitializeFunction)
 		{
-			LOG("RegisterSoftwareDevice");
-			HRESULT hr = m_pD3D->RegisterSoftwareDevice(pInitializeFunction);
-
-			return hr;
+			LOG("IDirect3D8::RegisterSoftwareDevice");
+			return m_pD3D->RegisterSoftwareDevice(pInitializeFunction);
 		}
 		
 		STDMETHODIMP_(UINT) D3D8Wrapper::IDirect3D8::GetAdapterCount(THIS)
 		{
-			LOG("GetAdapterCount");
+			LOG("IDirect3D8::GetAdapterCount");
 			return m_pD3D->GetAdapterCount();
 		}
 
 		
 		STDMETHODIMP D3D8Wrapper::IDirect3D8::GetAdapterIdentifier(UINT Adapter,DWORD Flags,D3D8Base::D3DADAPTER_IDENTIFIER8* pIdentifier)
 		{
-			LOG("GetAdapterIdentifier");
-			HRESULT hr = m_pD3D->GetAdapterIdentifier(Adapter,Flags,pIdentifier);
-
-			return hr;
+			LOG("IDirect3D8::GetAdapterIdentifier");
+			return m_pD3D->GetAdapterIdentifier(Adapter,Flags,pIdentifier);
 		}
 
 		
 		STDMETHODIMP_(UINT) D3D8Wrapper::IDirect3D8::GetAdapterModeCount(UINT Adapter)
 		{
-			LOG("GetAdapterModeCount");
+			LOG("IDirect3D8::GetAdapterModeCount");
 			return m_pD3D->GetAdapterModeCount(Adapter);
 		}
 		
 		STDMETHODIMP D3D8Wrapper::IDirect3D8::EnumAdapterModes(UINT Adapter,UINT Mode,D3D8Base::D3DDISPLAYMODE* pMode)
 		{
-			LOG("EnumAdapterModes");
-			HRESULT hr = m_pD3D->EnumAdapterModes(Adapter,Mode,pMode);
-
-			return hr;
+			LOG("IDirect3D8::EnumAdapterModes");
+			return m_pD3D->EnumAdapterModes(Adapter,Mode,pMode);
 		}
 
 		
 		STDMETHODIMP D3D8Wrapper::IDirect3D8::CheckDeviceType(UINT Adapter,D3D8Base::D3DDEVTYPE CheckType,D3D8Base::D3DFORMAT DisplayFormat,D3D8Base::D3DFORMAT BackBufferFormat,BOOL Windowed)
 		{
-			LOG("CheckDeviceType");
-			HRESULT hr = m_pD3D->CheckDeviceType(Adapter,CheckType,DisplayFormat,BackBufferFormat,Windowed);
-
-			return hr;
+			LOG("IDirect3D8::CheckDeviceType");
+			return m_pD3D->CheckDeviceType(Adapter,CheckType,DisplayFormat,BackBufferFormat,Windowed);
 		}
 
 		
 		STDMETHODIMP D3D8Wrapper::IDirect3D8::CheckDeviceFormat(UINT Adapter,D3D8Base::D3DDEVTYPE DeviceType,D3D8Base::D3DFORMAT AdapterFormat,DWORD Usage,D3D8Base::D3DRESOURCETYPE RType,D3D8Base::D3DFORMAT CheckFormat)
 		{
-			LOG("CheckDeviceFormat");
-			HRESULT hr = m_pD3D->CheckDeviceFormat(Adapter,DeviceType,AdapterFormat,Usage,RType,CheckFormat);
-
-			return hr;
+			LOG("IDirect3D8::CheckDeviceFormat");
+			return m_pD3D->CheckDeviceFormat(Adapter,DeviceType,AdapterFormat,Usage,RType,CheckFormat);
 		}
 
 		
 		STDMETHODIMP D3D8Wrapper::IDirect3D8::CheckDeviceMultiSampleType(UINT Adapter,D3D8Base::D3DDEVTYPE DeviceType,D3D8Base::D3DFORMAT SurfaceFormat,BOOL Windowed,D3D8Base::D3DMULTISAMPLE_TYPE MultiSampleType)
 		{
-			LOG("CheckDeviceMultiSampleType");
-			HRESULT hr = m_pD3D->CheckDeviceMultiSampleType(Adapter,DeviceType,SurfaceFormat,Windowed,MultiSampleType);
-
-			return hr;
+			LOG("IDirect3D8::CheckDeviceMultiSampleType");
+			return m_pD3D->CheckDeviceMultiSampleType(Adapter,DeviceType,SurfaceFormat,Windowed,MultiSampleType);
 		}
 
 		
 		STDMETHODIMP D3D8Wrapper::IDirect3D8::CheckDepthStencilMatch(UINT Adapter,D3D8Base::D3DDEVTYPE DeviceType,D3D8Base::D3DFORMAT AdapterFormat,D3D8Base::D3DFORMAT RenderTargetFormat,D3D8Base::D3DFORMAT DepthStencilFormat)
 		{
-			LOG("CheckDepthStencilMatch");
-			HRESULT hr = m_pD3D->CheckDepthStencilMatch(Adapter,DeviceType,AdapterFormat,RenderTargetFormat,DepthStencilFormat);
-
-			return hr;
+			LOG("IDirect3D8::CheckDepthStencilMatch");
+			return m_pD3D->CheckDepthStencilMatch(Adapter,DeviceType,AdapterFormat,RenderTargetFormat,DepthStencilFormat);
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3D8::GetDeviceCaps(UINT Adapter,D3D8Base::D3DDEVTYPE DeviceType,D3D8Base::D3DCAPS8* pCaps)
 		{
-			LOG("GetDeviceCaps");
-			HRESULT hr = m_pD3D->GetDeviceCaps(Adapter,DeviceType,pCaps);
-
-			return hr;
+			LOG("IDirect3D8::GetDeviceCaps");
+			return m_pD3D->GetDeviceCaps(Adapter,DeviceType,pCaps);
 		}
 
 		STDMETHODIMP_(HMONITOR) D3D8Wrapper::IDirect3D8::GetAdapterMonitor(UINT Adapter)
 		{
-			LOG("GetAdapterMonitor");
+			LOG("IDirect3D8::GetAdapterMonitor");
 			return m_pD3D->GetAdapterMonitor(Adapter);
 		}
 		
 
 		STDMETHODIMP D3D8Wrapper::IDirect3D8::CreateDevice(UINT Adapter,D3D8Base::D3DDEVTYPE DeviceType,HWND hFocusWindow,DWORD BehaviorFlags,D3D8Base::D3DPRESENT_PARAMETERS* pPresentationParameters,D3D8Wrapper::IDirect3DDevice8** ppReturnedDeviceInterface)
 		{
-			LOG("createdevice");
-			LOG(pPresentationParameters);
-			if (pPresentationParameters != NULL)
+			LOG("IDirect3D8::CreateDevice");
+			D3D8Base::IDirect3DDevice8* base_device = NULL;
+
+			HRESULT hr = m_pD3D->CreateDevice(Adapter,DeviceType,hFocusWindow,BehaviorFlags,pPresentationParameters,&base_device);
+			if(FAILED(hr))
 			{
-				LOG(pPresentationParameters->BackBufferWidth);
-				LOG(pPresentationParameters->BackBufferHeight);
-				LOG(pPresentationParameters->BackBufferFormat);
-				LOG(pPresentationParameters->BackBufferCount);
-				LOG(pPresentationParameters->MultiSampleType);
-				LOG(pPresentationParameters->SwapEffect);
-				LOG(pPresentationParameters->hDeviceWindow);
-				LOG(pPresentationParameters->Windowed);
-				LOG(pPresentationParameters->EnableAutoDepthStencil);
-				LOG(pPresentationParameters->Flags);
-				LOG(pPresentationParameters->FullScreen_RefreshRateInHz);
-				LOG(pPresentationParameters->FullScreen_PresentationInterval);
+				return hr;
 			}
-			
-			D3D8Base::IDirect3DDevice8* fd = NULL;
 
-			D3D8Base::IDirect3DDevice8** fdp = &fd;
+			// Wrap the real object
+			D3D8Wrapper::IDirect3DDevice8* f = D3D8Wrapper::IDirect3DDevice8::GetDirect3DDevice(base_device);
 
-			LOG(fd);
+			last_device = f;
 
-			HRESULT hr = m_pD3D->CreateDevice(Adapter,DeviceType,hFocusWindow,BehaviorFlags,pPresentationParameters,fdp);//(D3D8Base::IDirect3DDevice8**)ppReturnedDeviceInterface);
-			LOG(fd);
-			LOG(hr);
+			D3D8Base::IDirect3DSurface8 *f2 = NULL;
 
+			// make a new render target
+			HRESULT hr2 = base_device->CreateRenderTarget(pPresentationParameters->BackBufferWidth,pPresentationParameters->BackBufferHeight,D3D8Base::D3DFMT_X8R8G8B8,pPresentationParameters->MultiSampleType,FALSE,&f2);
+			render_surface = D3D8Wrapper::IDirect3DSurface8::GetSurface(f2);
 
-			D3D8Wrapper::IDirect3DDevice8* f = D3D8Wrapper::IDirect3DDevice8::GetDirect3DDevice(fd);
-
-			*ppReturnedDeviceInterface = f;//(D3D8Wrapper::IDirect3DDevice8*)fd;
-
-			//hr = D3DERR_NOTAVAILABLE;
+			// Return our wrapped object
+			*ppReturnedDeviceInterface = f;
 
 			return hr;
 		} 

@@ -21,6 +21,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void FastUpdate()
+		{
+			// Do nothing
+		}
+
 		public void Restart()
 		{
 			if (!(Global.Emulator is NES))

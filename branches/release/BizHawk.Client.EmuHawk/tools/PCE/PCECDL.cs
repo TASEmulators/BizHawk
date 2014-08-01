@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Components.H6280;
 using BizHawk.Emulation.Cores.PCEngine;
+using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -44,6 +45,11 @@ namespace BizHawk.Client.EmuHawk
 		public void UpdateValues()
 		{
 			UpdateDisplay();
+		}
+
+		public void FastUpdate()
+		{
+			// Do nothing
 		}
 
 		public void Restart()
@@ -170,9 +176,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentSubMenu.DropDownItems.Clear();
 			RecentSubMenu.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentPceCdlFiles, LoadFile));
-			RecentSubMenu.DropDownItems.Add(
-				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentPceCdlFiles));
+				Global.Config.RecentPceCdlFiles.RecentMenu(LoadFile, true));
 		}
 
 		private void NewMenuItem_Click(object sender, EventArgs e)

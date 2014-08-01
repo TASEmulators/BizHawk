@@ -47,6 +47,8 @@
 			this.PadsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.ClearAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.StickyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+			this.ClearClearsAnalogInputMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PadBoxContextMenu.SuspendLayout();
 			this.PadMenu.SuspendLayout();
 			this.SuspendLayout();
@@ -70,21 +72,21 @@
             this.clearAllToolStripMenuItem,
             this.StickyContextMenuItem});
 			this.PadBoxContextMenu.Name = "PadBoxContextMenu";
-			this.PadBoxContextMenu.Size = new System.Drawing.Size(175, 70);
+			this.PadBoxContextMenu.Size = new System.Drawing.Size(143, 48);
 			this.PadBoxContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.PadBoxContextMenu_Opening);
 			// 
 			// clearAllToolStripMenuItem
 			// 
 			this.clearAllToolStripMenuItem.Name = "clearAllToolStripMenuItem";
-			this.clearAllToolStripMenuItem.ShortcutKeyDisplayString = "Shift+Del";
-			this.clearAllToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+			this.clearAllToolStripMenuItem.ShortcutKeyDisplayString = "Del";
+			this.clearAllToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
 			this.clearAllToolStripMenuItem.Text = "Clear All";
 			this.clearAllToolStripMenuItem.Click += new System.EventHandler(this.ClearAllMenuItem_Click);
 			// 
 			// StickyContextMenuItem
 			// 
 			this.StickyContextMenuItem.Name = "StickyContextMenuItem";
-			this.StickyContextMenuItem.Size = new System.Drawing.Size(174, 22);
+			this.StickyContextMenuItem.Size = new System.Drawing.Size(142, 22);
 			this.StickyContextMenuItem.Text = "Sticky";
 			this.StickyContextMenuItem.Click += new System.EventHandler(this.StickyMenuItem_Click);
 			// 
@@ -103,6 +105,8 @@
 			// OptionsSubMenu
 			// 
 			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ClearClearsAnalogInputMenuItem,
+            this.toolStripSeparator3,
             this.AutoloadMenuItem,
             this.SaveWindowPositionMenuItem,
             this.AlwaysOnTopMenuItem,
@@ -119,53 +123,53 @@
 			// AutoloadMenuItem
 			// 
 			this.AutoloadMenuItem.Name = "AutoloadMenuItem";
-			this.AutoloadMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.AutoloadMenuItem.Size = new System.Drawing.Size(206, 22);
 			this.AutoloadMenuItem.Text = "&Autoload";
 			this.AutoloadMenuItem.Click += new System.EventHandler(this.AutoloadMenuItem_Click);
 			// 
 			// SaveWindowPositionMenuItem
 			// 
 			this.SaveWindowPositionMenuItem.Name = "SaveWindowPositionMenuItem";
-			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(206, 22);
 			this.SaveWindowPositionMenuItem.Text = "&Save Window Position";
 			this.SaveWindowPositionMenuItem.Click += new System.EventHandler(this.SaveWindowPositionMenuItem_Click);
 			// 
 			// AlwaysOnTopMenuItem
 			// 
 			this.AlwaysOnTopMenuItem.Name = "AlwaysOnTopMenuItem";
-			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(206, 22);
 			this.AlwaysOnTopMenuItem.Text = "Always On Top";
 			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
 			// 
 			// FloatingWindowMenuItem
 			// 
 			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
-			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(206, 22);
 			this.FloatingWindowMenuItem.Text = "Floating Window";
 			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(196, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(203, 6);
 			// 
 			// RestoreDefaultSettingsMenuItem
 			// 
 			this.RestoreDefaultSettingsMenuItem.Name = "RestoreDefaultSettingsMenuItem";
-			this.RestoreDefaultSettingsMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.RestoreDefaultSettingsMenuItem.Size = new System.Drawing.Size(206, 22);
 			this.RestoreDefaultSettingsMenuItem.Text = "Restore Default Settings";
 			this.RestoreDefaultSettingsMenuItem.Click += new System.EventHandler(this.RestoreDefaultSettingsMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(196, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(203, 6);
 			// 
 			// ExitMenuItem
 			// 
 			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.ExitMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.ExitMenuItem.Size = new System.Drawing.Size(206, 22);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
@@ -182,17 +186,29 @@
 			// ClearAllMenuItem
 			// 
 			this.ClearAllMenuItem.Name = "ClearAllMenuItem";
-			this.ClearAllMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.Delete)));
-			this.ClearAllMenuItem.Size = new System.Drawing.Size(174, 22);
+			this.ClearAllMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
+			this.ClearAllMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.ClearAllMenuItem.Text = "&Clear All";
 			this.ClearAllMenuItem.Click += new System.EventHandler(this.ClearAllMenuItem_Click);
 			// 
 			// StickyMenuItem
 			// 
 			this.StickyMenuItem.Name = "StickyMenuItem";
-			this.StickyMenuItem.Size = new System.Drawing.Size(174, 22);
+			this.StickyMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.StickyMenuItem.Text = "Sticky";
 			this.StickyMenuItem.Click += new System.EventHandler(this.StickyMenuItem_Click);
+			// 
+			// toolStripSeparator3
+			// 
+			this.toolStripSeparator3.Name = "toolStripSeparator3";
+			this.toolStripSeparator3.Size = new System.Drawing.Size(203, 6);
+			// 
+			// ClearClearsAnalogInputMenuItem
+			// 
+			this.ClearClearsAnalogInputMenuItem.Name = "ClearClearsAnalogInputMenuItem";
+			this.ClearClearsAnalogInputMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.ClearClearsAnalogInputMenuItem.Text = "&Clear clears Analog Input";
+			this.ClearClearsAnalogInputMenuItem.Click += new System.EventHandler(this.ClearClearsAnalogInputMenuItem_Click);
 			// 
 			// VirtualpadTool
 			// 
@@ -232,5 +248,7 @@
 		private System.Windows.Forms.ContextMenuStrip PadBoxContextMenu;
 		private System.Windows.Forms.ToolStripMenuItem clearAllToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem StickyContextMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ClearClearsAnalogInputMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 	}
 }

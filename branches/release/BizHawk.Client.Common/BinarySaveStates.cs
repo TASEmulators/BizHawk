@@ -100,10 +100,10 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private void ReadVersion(Stream s)
+		private void ReadVersion(Stream s, long length)
 		{
 			// the "BizState 1.0" tag contains an integer in it describing the sub version.
-			if (s.Length == 0)
+			if (length == 0)
 			{
 				_ver = new Version(1, 0, 0); // except for the first release, which doesn't
 			}
@@ -160,7 +160,7 @@ namespace BizHawk.Client.Common
 		/// <param name="abort">true to throw exception on failure</param>
 		/// <param name="callback">function to call with the desired stream</param>
 		/// <returns>true if callback was called and stream was loaded</returns>
-		public bool GetLump(BinaryStateLump lump, bool abort, Action<Stream> callback)
+		public bool GetLump(BinaryStateLump lump, bool abort, Action<Stream, long> callback)
 		{
 			var name = BinaryStateFileNames.Get(lump);
 			var e = _zip.GetEntry(name);
@@ -168,7 +168,7 @@ namespace BizHawk.Client.Common
 			{
 				using (var zs = _zip.GetInputStream(e))
 				{
-					callback(zs);
+					callback(zs, e.Size);
 				}
 
 				return true;
@@ -184,26 +184,45 @@ namespace BizHawk.Client.Common
 
 		public bool GetLump(BinaryStateLump lump, bool abort, Action<BinaryReader> callback)
 		{
-			return GetLump(lump, abort, delegate(Stream s)
+			return GetLump(lump, abort, delegate(Stream s, long unused)
 			{
 				var br = new BinaryReader(s);
 				callback(br);
 			});
 		}
 
+		public bool GetLump(BinaryStateLump lump, bool abort, Action<BinaryReader, long> callback)
+		{
+			return GetLump(lump, abort, delegate(Stream s, long length)
+			{
+				var br = new BinaryReader(s);
+				callback(br, length);
+			});
+		}
+
 		public bool GetLump(BinaryStateLump lump, bool abort, Action<TextReader> callback)
 		{
-			return GetLump(lump, abort, delegate(Stream s)
+			return GetLump(lump, abort, delegate(Stream s, long unused)
 			{
 				var tr = new StreamReader(s);
 				callback(tr);
 			});
 		}
 
+		/*
 		/// <summary>
 		/// load binary state, or text state if binary state lump doesn't exist
 		/// </summary>
 		public void GetCoreState(Action<Stream> callbackBinary, Action<Stream> callbackText)
+		{
+			if (!GetLump(BinaryStateLump.Corestate, false, callbackBinary)
+			    && !GetLump(BinaryStateLump.CorestateText, false, callbackText))
+			{
+				throw new Exception("Couldn't find Binary or Text savestate");
+			}
+		}*/
+
+		public void GetCoreState(Action<BinaryReader, long> callbackBinary, Action<TextReader> callbackText)
 		{
 			if (!GetLump(BinaryStateLump.Corestate, false, callbackBinary)
 			    && !GetLump(BinaryStateLump.CorestateText, false, callbackText))
@@ -215,7 +234,7 @@ namespace BizHawk.Client.Common
 		public void GetCoreState(Action<BinaryReader> callbackBinary, Action<TextReader> callbackText)
 		{
 			if (!GetLump(BinaryStateLump.Corestate, false, callbackBinary)
-			    && !GetLump(BinaryStateLump.CorestateText, false, callbackText))
+				&& !GetLump(BinaryStateLump.CorestateText, false, callbackText))
 			{
 				throw new Exception("Couldn't find Binary or Text savestate");
 			}

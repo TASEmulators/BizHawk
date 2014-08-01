@@ -8,6 +8,8 @@ using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -144,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 				var load_result = _watches.Load(path, append: false);
 				if (!load_result)
 				{
-					ToolHelpers.HandleLoadError(Global.Config.RecentWatches, path);
+					Global.Config.RecentWatches.HandleLoadError(path);
 				}
 				else
 				{
@@ -235,8 +237,64 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				WatchListView.BlazingFast = true;
-				WatchListView.Refresh();
+				WatchListView.UseCustomBackground = NeedsBackground;
+				WatchListView.Invalidate();
 				WatchListView.BlazingFast = false;
+			}
+		}
+
+		private bool NeedsBackground
+		{
+			get
+			{
+				foreach(var watch in _watches)
+				{
+					if (Global.CheatList.IsActive(_watches.Domain, watch.Address ?? 0))
+					{
+						return true;
+					}
+
+					if (watch.IsOutOfRange)
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
+		}
+
+		public void FastUpdate()
+		{
+			if (_paused)
+			{
+				return;
+			}
+
+			if ((!IsHandleCreated || IsDisposed) && !Global.Config.DisplayRamWatch)
+			{
+				return;
+			}
+
+			if (_watches.Any())
+			{
+				_watches.UpdateValues();
+
+				if (Global.Config.DisplayRamWatch)
+				{
+					for (var i = 0; i < _watches.Count; i++)
+					{
+						var frozen = !_watches[i].IsSeparator && Global.CheatList.IsActive(_watches[i].Domain, _watches[i].Address ?? 0);
+						GlobalWin.OSD.AddGUIText(
+							_watches[i].ToString(),
+							Global.Config.DispRamWatchx,
+							Global.Config.DispRamWatchy + (i * 14),
+							Color.Black,
+							frozen ? Color.Cyan : Color.White,
+							0
+						);
+					}
+				}
 			}
 		}
 
@@ -299,7 +357,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var we = new WatchEditor
 				{
-					InitialLocation = GetPromptPoint(),
+					InitialLocation = this.ChildPointToScreen(WatchListView)
 				};
 
 				we.SetWatch(_watches.Domain, SelectedWatches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit);
@@ -360,21 +418,16 @@ namespace BizHawk.Client.EmuHawk
 			return width;
 		}
 
-		private Point GetPromptPoint()
-		{
-			return PointToScreen(new Point(WatchListView.Location.X, WatchListView.Location.Y));
-		}
-
 		private void LoadColumnInfo()
 		{
 			WatchListView.Columns.Clear();
-			ToolHelpers.AddColumn(WatchListView, WatchList.ADDRESS, Global.Config.RamWatchShowAddressColumn, GetColumnWidth(WatchList.ADDRESS));
-			ToolHelpers.AddColumn(WatchListView, WatchList.VALUE, true, GetColumnWidth(WatchList.VALUE));
-			ToolHelpers.AddColumn(WatchListView, WatchList.PREV, Global.Config.RamWatchShowPrevColumn, GetColumnWidth(WatchList.PREV));
-			ToolHelpers.AddColumn(WatchListView, WatchList.CHANGES, Global.Config.RamWatchShowChangeColumn, GetColumnWidth(WatchList.CHANGES));
-			ToolHelpers.AddColumn(WatchListView, WatchList.DIFF, Global.Config.RamWatchShowDiffColumn, GetColumnWidth(WatchList.DIFF));
-			ToolHelpers.AddColumn(WatchListView, WatchList.DOMAIN, Global.Config.RamWatchShowDomainColumn, GetColumnWidth(WatchList.DOMAIN));
-			ToolHelpers.AddColumn(WatchListView, WatchList.NOTES, true, GetColumnWidth(WatchList.NOTES));
+			WatchListView.AddColumn(WatchList.ADDRESS, Global.Config.RamWatchShowAddressColumn, GetColumnWidth(WatchList.ADDRESS));
+			WatchListView.AddColumn(WatchList.VALUE, true, GetColumnWidth(WatchList.VALUE));
+			WatchListView.AddColumn(WatchList.PREV, Global.Config.RamWatchShowPrevColumn, GetColumnWidth(WatchList.PREV));
+			WatchListView.AddColumn(WatchList.CHANGES, Global.Config.RamWatchShowChangeColumn, GetColumnWidth(WatchList.CHANGES));
+			WatchListView.AddColumn(WatchList.DIFF, Global.Config.RamWatchShowDiffColumn, GetColumnWidth(WatchList.DIFF));
+			WatchListView.AddColumn(WatchList.DOMAIN, Global.Config.RamWatchShowDomainColumn, GetColumnWidth(WatchList.DOMAIN));
+			WatchListView.AddColumn(WatchList.NOTES, true, GetColumnWidth(WatchList.NOTES));
 
 			ColumnPositions();
 		}
@@ -649,11 +702,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentSubMenu.DropDownItems.Clear();
 			RecentSubMenu.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentWatches, LoadFileFromRecent)
-			);
-			RecentSubMenu.DropDownItems.Add(
-				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentWatches)
-			);
+				Global.Config.RecentWatches.RecentMenu(LoadFileFromRecent, true));
 		}
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
@@ -682,14 +731,16 @@ namespace BizHawk.Client.EmuHawk
 		private void MemoryDomainsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			MemoryDomainsSubMenu.DropDownItems.Clear();
-			MemoryDomainsSubMenu.DropDownItems.AddRange(ToolHelpers.GenerateMemoryDomainMenuItems(SetMemoryDomain, _watches.Domain.Name).ToArray());
+			MemoryDomainsSubMenu.DropDownItems.AddRange(
+				Global.Emulator.MemoryDomains.MenuItems(SetMemoryDomain, _watches.Domain.Name)
+				.ToArray());
 		}
 
 		private void NewWatchMenuItem_Click(object sender, EventArgs e)
 		{
 			var we = new WatchEditor
 			{
-				InitialLocation = GetPromptPoint()
+				InitialLocation = this.ChildPointToScreen(WatchListView)
 			};
 			we.SetWatch(_watches.Domain);
 			we.ShowHawkDialog();
@@ -735,7 +786,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var poke = new RamPoke
 				{
-					InitialLocation = GetPromptPoint()
+					InitialLocation = this.ChildPointToScreen(WatchListView)
 				};
 
 				poke.SetWatch(SelectedWatches);
@@ -752,11 +803,11 @@ namespace BizHawk.Client.EmuHawk
 			var allCheats = SelectedWatches.All(x => Global.CheatList.IsActive(x.Domain, x.Address ?? 0));
 			if (allCheats)
 			{
-				ToolHelpers.UnfreezeAddress(SelectedWatches);
+				SelectedWatches.UnfreezeAll();
 			}
 			else
 			{
-				ToolHelpers.FreezeAddress(SelectedWatches);
+				SelectedWatches.FreezeAll();
 			}
 		}
 
@@ -1095,11 +1146,11 @@ namespace BizHawk.Client.EmuHawk
 
 				if (selected.Select(x => x.Domain).Distinct().Count() > 1)
 				{
-					ToolHelpers.ViewInHexEditor(selected[0].Domain, new List<int> { selected.First().Address ?? 0 });
+					ToolHelpers.ViewInHexEditor(selected[0].Domain, new List<int> { selected.First().Address ?? 0 }, selected.First().Size);
 				}
 				else
 				{
-					ToolHelpers.ViewInHexEditor(selected[0].Domain, selected.Select(x => x.Address ?? 0));
+					ToolHelpers.ViewInHexEditor(selected.First().Domain, selected.Select(x => x.Address ?? 0), selected.First().Size);
 				}
 			}
 		}

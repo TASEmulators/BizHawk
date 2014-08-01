@@ -17,6 +17,8 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.config.NES;
 using BizHawk.Client.EmuHawk.CustomControls;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -40,11 +42,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentRomSubMenu.DropDownItems.Clear();
 			RecentRomSubMenu.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentRoms, LoadRomFromRecent)
-			);
-			RecentRomSubMenu.DropDownItems.Add(
-				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentRoms)
-			);
+				Global.Config.RecentRoms.RecentMenu(LoadRomFromRecent, true));
 		}
 
 		private void SaveStateSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -260,11 +258,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentMovieSubMenu.DropDownItems.Clear();
 			RecentMovieSubMenu.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentMovies, LoadMoviesFromRecent)
-			);
-			RecentMovieSubMenu.DropDownItems.Add(
-				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentMovies)
-			);
+				Global.Config.RecentMovies.RecentMenu(LoadMoviesFromRecent, true));
 		}
 
 		private void MovieEndSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -306,6 +300,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CloseRomMenuItem_Click(object sender, EventArgs e)
 		{
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				Global.MovieSession.Movie.Stop();
+			}
+
 			CloseRom();
 		}
 
@@ -575,6 +574,18 @@ namespace BizHawk.Client.EmuHawk
 			TakeScreenshotToClipboard();
 		}
 
+		private void ScreenshotClientClipboardMenuItem_Click(object sender, EventArgs e)
+		{
+			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider, Global.Config.Screenshot_CaptureOSD))
+			{
+				bb.Normalize(true);
+				using (var img = bb.ToSysdrawingBitmap())
+					Clipboard.SetImage(img);
+			}
+
+			GlobalWin.OSD.AddMessage("Screenshot (client) saved to clipboard.");
+		}
+
 		private void ScreenshotCaptureOSDMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.Screenshot_CaptureOSD ^= true;
@@ -612,7 +623,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PauseMenuItem_Click(object sender, EventArgs e)
 		{
-			if (EmulatorPaused)
+			if (IsTurboSeeking || IsSeeking)
+			{
+				PauseOnFrame = null;
+			}
+			else if (EmulatorPaused)
 			{
 				UnpauseEmulator();
 			}
@@ -834,6 +849,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
 			NesInQuickNESMenuItem.Checked = Global.Config.NES_InQuickNES;
+			SnesWithSnes9xMenuItem.Checked = Global.Config.SNES_InSnes9x;
+
+			SnesWithSnes9xMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
 
 		private void ControllersMenuItem_Click(object sender, EventArgs e)
@@ -896,6 +914,18 @@ namespace BizHawk.Client.EmuHawk
 		private void CustomizeMenuItem_Click(object sender, EventArgs e)
 		{
 			new EmuHawkOptions().ShowDialog();
+		}
+
+		private void ProfilesMenuItem_Click(object sender, EventArgs e)
+		{
+			if (new ProfileConfig().ShowDialog() == DialogResult.OK)
+			{
+				GlobalWin.OSD.AddMessage("Profile settings saved");
+			}
+			else
+			{
+				GlobalWin.OSD.AddMessage("Profile config aborted");
+			}
 		}
 
 		private void ClickThrottleMenuItem_Click(object sender, EventArgs e)
@@ -1006,13 +1036,31 @@ namespace BizHawk.Client.EmuHawk
 		private void GBInSGBMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GB_AsSGB ^= true;
-			FlagNeedsReboot();
+
+			if (!(Global.Emulator is NullEmulator))
+			{
+				FlagNeedsReboot();
+			}
 		}
 
 		private void NesInQuickNESMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.NES_InQuickNES ^= true;
-			FlagNeedsReboot();
+
+			if (!(Global.Emulator is NullEmulator))
+			{
+				FlagNeedsReboot();
+			}
+		}
+
+		private void SnesWithSnes9xMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SNES_InSnes9x ^= true;
+
+			if (!(Global.Emulator is NullEmulator))
+			{
+				FlagNeedsReboot();
+			}
 		}
 
 		private void N64VideoPluginSettingsMenuItem_Click(object sender, EventArgs e)
@@ -1548,6 +1596,11 @@ namespace BizHawk.Client.EmuHawk
 			LoadGBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
 		}
 
+		private void GBCoreSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			config.GB.GBPrefs.DoGBPrefsDialog(this);
+		}
+
 		private void GBForceDMGMenuItem_Click(object sender, EventArgs e)
 		{
 			var s = (Gameboy.GambatteSyncSettings)Global.Emulator.GetSyncSettings();
@@ -1742,8 +1795,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (new N64VideoPluginconfig().ShowDialog() == DialogResult.OK)
 			{
-				GlobalWin.MainForm.FlagNeedsReboot();
-				GlobalWin.OSD.AddMessage("Plugin settings saved but a core reboot is required");
+				if (Global.Emulator is NullEmulator)
+				{
+					GlobalWin.OSD.AddMessage("Plugin settings saved");
+				}
+				else
+				{
+					GlobalWin.MainForm.FlagNeedsReboot();
+					GlobalWin.OSD.AddMessage("Plugin settings saved but a core reboot is required");
+				}
 			}
 			else
 			{
@@ -1805,6 +1865,15 @@ namespace BizHawk.Client.EmuHawk
 		private void GenesisSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Genesis Settings");
+		}
+
+		#endregion
+
+		#region Wondersawn
+
+		private void WondersawnSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "WonderSwan Settings");
 		}
 
 		#endregion
@@ -2134,6 +2203,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void ProfileFirstBootLabel_Click(object sender, EventArgs e)
+		{
+			var profileForm = new ProfileConfig();
+			profileForm.ShowDialog();
+			Global.Config.FirstBoot = false;
+			ProfileFirstBootLabel.Visible = false;
+		}
+
 		#endregion
 
 		#region Form Events
@@ -2293,14 +2370,14 @@ namespace BizHawk.Client.EmuHawk
 
 			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))
 			{
-				//tries to open a legacy movie format as if it were a BKM, by importing it
+				//tries to open a legacy movie format by importing it
 				if (CurrentlyOpenRom == null)
 				{
 					OpenRom();
 				}
 				else
 				{
-					LoadRom(CurrentlyOpenRom);
+					StopMovieThenLoadRom(CurrentlyOpenRom);
 				}
 
 				string errorMsg;
@@ -2315,8 +2392,6 @@ namespace BizHawk.Client.EmuHawk
 					// fix movie extension to something palatable for these purposes. 
 					// for instance, something which doesnt clobber movies you already may have had.
 					// i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
-					movie.Filename = Path.ChangeExtension(movie.Filename, ".autoimported." + MovieService.DefaultExtension);
-					movie.Save();
 					StartNewMovie(movie, false);
 				}
 
@@ -2324,7 +2399,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				LoadRom(filePaths[0]);
+				StopMovieThenLoadRom(filePaths[0]);
 			}
 		}
 

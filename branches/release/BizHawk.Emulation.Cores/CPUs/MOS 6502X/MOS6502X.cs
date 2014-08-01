@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 {
 	public sealed partial class MOS6502X
 	{
-		public MOS6502X(Action<System.Runtime.InteropServices.GCHandle> DisposeBuilder = null)
+		public MOS6502X()
 		{
 			InitOpcodeHandlers();
 			Reset();
@@ -188,8 +188,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			Func<ushort, byte> ReadMemory,
 			Func<ushort, byte> DummyReadMemory,
 			Func<ushort, byte> PeekMemory,
-			Action<ushort, byte> WriteMemory,
-			Action<System.Runtime.InteropServices.GCHandle> DisposeBuilder
+			Action<ushort, byte> WriteMemory
 		)
 		{
 			this.ReadMemory = ReadMemory;

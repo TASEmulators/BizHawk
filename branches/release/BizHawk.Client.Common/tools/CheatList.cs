@@ -193,6 +193,11 @@ namespace BizHawk.Client.Common
 			return _cheatList.Any(c => c == cheat);
 		}
 
+		public bool Contains(MemoryDomain domain, int address)
+		{
+			return _cheatList.Any(c => c.Domain == domain && c.Address == address);
+		}
+
 		public void CopyTo(Cheat[] array, int arrayIndex)
 		{
 			_cheatList.CopyTo(array, arrayIndex);
@@ -266,6 +271,52 @@ namespace BizHawk.Client.Common
 			}
 
 			return activeCheat.GetByteVal(addr);
+		}
+
+		/// <summary>
+		/// Returns the value of a given cheat, or a partial value of a multi-byte cheat
+		/// Note that address + size MUST NOT exceed the range of the cheat or undefined behavior will occur
+		/// </summary>
+		/// <param name="addr">The starting address for which you will get the number of bytes
+		/// <param name="size">The number of bytes of the cheat to return</param>
+		/// <returns>The value, or null if it can't resolve the address with a given cheat</returns>
+		public int? GetCheatValue(MemoryDomain domain, int addr, Watch.WatchSize size)
+		{
+			var activeCheat = _cheatList.FirstOrDefault(cheat => cheat.Contains(addr));
+			if (activeCheat == (Cheat)null)
+			{
+				return null;
+			}
+
+			switch (activeCheat.Size)
+			{
+				default:
+				case Watch.WatchSize.Byte:
+					return activeCheat.Value;
+				case Watch.WatchSize.Word:
+					if (size == Watch.WatchSize.Byte)
+					{
+						return GetByteValue(domain, addr);
+					}
+
+					return activeCheat.Value;
+				case Watch.WatchSize.DWord:
+					if (size == Watch.WatchSize.Byte)
+					{
+						return GetByteValue(domain, addr);
+					}
+					else if (size == Watch.WatchSize.Word)
+					{
+						if (activeCheat.Address == addr)
+						{
+							return (activeCheat.Value.Value >> 16) & 0xFFFF;
+						}
+
+						return activeCheat.Value.Value & 0xFFFF;
+					}
+
+					return activeCheat.Value;
+			}
 		}
 
 		public void SaveOnClose()

@@ -343,6 +343,12 @@
     <Compile Include="config\N64\N64VideoPluginconfig.Designer.cs">
       <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\N64\NewN64PluginSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\N64\NewN64PluginSettings.Designer.cs">
+      <DependentUpon>NewN64PluginSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\NES\DataTableDictionaryBind.cs" />
     <Compile Include="config\NES\NesControllerSettings.cs">
       <SubType>Form</SubType>
@@ -473,7 +479,6 @@
     <Compile Include="CustomControls\ToolStripEx.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControls\Util.cs" />
     <Compile Include="CustomControls\ViewportPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -493,6 +498,8 @@
     <Compile Include="DisplayManager\SwappableDisplaySurfaceSet.cs" />
     <Compile Include="DisplayManager\TextureFrugalizer.cs" />
     <Compile Include="Extensions\ControlExtensions.cs" />
+    <Compile Include="Extensions\CoreExtensions.cs" />
+    <Compile Include="Extensions\ToolExtensions.cs" />
     <Compile Include="GlobalWin.cs" />
     <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\GamePad360.cs" />
@@ -1079,6 +1086,9 @@
     <EmbeddedResource Include="config\N64\N64VideoPluginconfig.resx">
       <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="config\N64\NewN64PluginSettings.resx">
+      <DependentUpon>NewN64PluginSettings.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="config\NES\NesControllerSettings.resx">
       <DependentUpon>NesControllerSettings.cs</DependentUpon>
     </EmbeddedResource>
@@ -1454,6 +1464,11 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\snes9x.png" />
+    <None Include="images\YellowUp.png" />
+    <None Include="images\YellowRight.png" />
+    <None Include="images\YellowLeft.png" />
+    <None Include="images\YellowDown.png" />
     <None Include="images\user_blue.png" />
     <None Include="images\thumbsdown.png" />
     <None Include="images\monitor.png" />
@@ -1561,7 +1576,6 @@
     <Content Include="config\ControllerImages\N64.png" />
     <Content Include="config\ControllerImages\SaturnController.jpg" />
     <None Include="images\addWatch.ico" />
-    <None Include="images\alt_about_image.gif" />
     <None Include="images\gba-icon.png" />
     <None Include="images\checkbox.png" />
     <None Include="images\Erase.png" />

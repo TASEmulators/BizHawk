@@ -14,6 +14,8 @@ using BizHawk.Common.StringExtensions;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -110,6 +112,11 @@ namespace BizHawk.Client.EmuHawk
 			AddressLabel.Text = GenerateAddressString();
 		}
 
+		public void FastUpdate()
+		{
+			// Do nothing
+		}
+
 		public void Restart()
 		{
 			if (!IsHandleCreated || IsDisposed)
@@ -133,8 +140,10 @@ namespace BizHawk.Client.EmuHawk
 			AddressLabel.Text = GenerateAddressString();
 		}
 
-		public void SetToAddresses(IEnumerable<int> addresses, MemoryDomain domain)
+		public void SetToAddresses(IEnumerable<int> addresses, MemoryDomain domain, Watch.WatchSize size)
 		{
+			_dataSize = (int)size;
+			SetDataSize(_dataSize);
 			var addrList = addresses.ToList();
 			if (addrList.Any())
 			{
@@ -568,7 +577,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.CheatList.IsActive(_domain, address))
 			{
-				return Global.CheatList[_domain, address].Value.Value;
+				return Global.CheatList.GetCheatValue(_domain, address, (Watch.WatchSize)_dataSize ).Value;
 			}
 
 			switch (_dataSize)
@@ -668,12 +677,6 @@ namespace BizHawk.Client.EmuHawk
 			rom_item.Click += (o, ev) => SetMemoryDomain(999); // 999 will denote File on Disk
 			MemoryDomainsMenuItem.DropDownItems.Add(rom_item);
 			_domainMenuItems.Add(rom_item);
-		}
-
-		private Point GetPromptPoint()
-		{
-			return PointToScreen(
-				new Point(MemoryViewerBox.Location.X + 30, MemoryViewerBox.Location.Y + 30));
 		}
 
 		private void ClearNibbles()
@@ -1328,7 +1331,7 @@ namespace BizHawk.Client.EmuHawk
 			var result = LoadTable(path);
 			if (!result)
 			{
-				ToolHelpers.HandleLoadError(Global.Config.RecentTables, path);
+				Global.Config.RecentTables.HandleLoadError(path);
 			}
 			else
 			{
@@ -1341,10 +1344,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentTablesSubMenu.DropDownItems.Clear();
 			RecentTablesSubMenu.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentTables, LoadFileFromRecent));
-
-			RecentTablesSubMenu.DropDownItems.Add(
-				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentTables));
+				Global.Config.RecentTables.RecentMenu(LoadFileFromRecent, true));
 		}
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
@@ -1477,13 +1477,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GoToAddressMenuItem_Click(object sender, EventArgs e)
 		{
-			var inputPrompt = new InputPrompt { Text = "Go to Address", StartLocation = GetPromptPoint() };
-			inputPrompt.SetMessage("Enter a hexadecimal value");
+			var inputPrompt = new InputPrompt
+			{
+				Text = "Go to Address",
+				StartLocation = this.ChildPointToScreen(MemoryViewerBox),
+				Message = "Enter a hexadecimal value"
+			};
+
 			var result = inputPrompt.ShowHawkDialog();
 
-			if (result == DialogResult.OK && inputPrompt.UserText.IsHex())
+			if (result == DialogResult.OK && inputPrompt.PromptText.IsHex())
 			{
-				GoToAddress(int.Parse(inputPrompt.UserText, NumberStyles.HexNumber));
+				GoToAddress(int.Parse(inputPrompt.PromptText, NumberStyles.HexNumber));
 			}
 
 			AddressLabel.Text = GenerateAddressString();
@@ -2064,7 +2069,18 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (_domain.ToString() == cheat.Domain.Name)
 					{
-						var rect = new Rectangle(GetAddressCoordinates(cheat.Address ?? 0), new Size(15 * (int)cheat.Size, fontHeight));
+						var gaps = (int)cheat.Size - (int)_dataSize;
+
+						if (cheat.Size == Watch.WatchSize.DWord && _dataSize == 2)
+						{
+							gaps -= 1;
+						}
+
+						if (gaps < 0) { gaps = 0; }
+						
+						var width = (15 * (int)cheat.Size) + (gaps * 7);
+
+						var rect = new Rectangle(GetAddressCoordinates(cheat.Address ?? 0), new Size(width, fontHeight));
 						e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
 						e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexFreezeColor), rect);
 					}

@@ -39,6 +39,11 @@ namespace BizHawk.Client.EmuHawk
 		public bool UpdateBefore { get { return false; } }
 		public void UpdateValues() { }
 
+		public void FastUpdate()
+		{
+			// Do nothing
+		}
+
 		public void Restart()
 		{
 			SetTools();
@@ -88,6 +93,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			NesDebuggerToolbarItem.Visible = VersionInfo.DeveloperBuild && Global.Emulator.SystemId == "NES";
+
+			TAStudioToolbarItem.Visible = VersionInfo.DeveloperBuild;
 		}
 
 		private void SetSize()

@@ -61,8 +61,8 @@ namespace BizHawk.Client.EmuHawk
 
 				// N64
 				var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
-				n64Settings.RspType = N64SyncSettings.RSPTYPE.Rsp_Hle;
-				n64Settings.CoreType = N64SyncSettings.CORETYPE.Dynarec;
+				n64Settings.Rsp = N64SyncSettings.RspType.Rsp_Hle;
+				n64Settings.Core = N64SyncSettings.CoreType.Dynarec;
 				Global.Config.N64UseCircularAnalogConstraint = true;
 				PutSyncSettings<N64>(n64Settings);
 
@@ -115,8 +115,8 @@ namespace BizHawk.Client.EmuHawk
 
 				// N64
 				var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
-				n64Settings.RspType = N64SyncSettings.RSPTYPE.Rsp_Z64_hlevideo;
-				n64Settings.CoreType = N64SyncSettings.CORETYPE.Pure_Interpret;
+				n64Settings.Rsp = N64SyncSettings.RspType.Rsp_Z64_hlevideo;
+				n64Settings.Core = N64SyncSettings.CoreType.Pure_Interpret;
 				Global.Config.N64UseCircularAnalogConstraint = true;
 				PutSyncSettings<N64>(n64Settings);
 
@@ -172,8 +172,8 @@ namespace BizHawk.Client.EmuHawk
 
 				// N64
 				var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
-				n64Settings.RspType = N64SyncSettings.RSPTYPE.Rsp_Z64_hlevideo;
-				n64Settings.CoreType = N64SyncSettings.CORETYPE.Pure_Interpret;
+				n64Settings.Rsp = N64SyncSettings.RspType.Rsp_Z64_hlevideo;
+				n64Settings.Core = N64SyncSettings.CoreType.Pure_Interpret;
 				Global.Config.N64UseCircularAnalogConstraint = false;
 				PutSyncSettings<N64>(n64Settings);
 

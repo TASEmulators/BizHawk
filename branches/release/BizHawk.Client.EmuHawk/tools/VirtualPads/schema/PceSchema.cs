@@ -58,14 +58,14 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "P" + controller + " B",
+						Name = "P" + controller + " B2",
 						DisplayName = "II",
 						Location = new Point(122, 34),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "P" + controller + " A",
+						Name = "P" + controller + " B1",
 						DisplayName = "I",
 						Location = new Point(146, 34),
 						Type = PadSchema.PadInputType.Boolean
@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "P" + controller + " Start",
+						Name = "P" + controller + " Run",
 						DisplayName = "R",
 						Location = new Point(74, 34),
 						Type = PadSchema.PadInputType.Boolean

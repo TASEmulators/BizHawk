@@ -82,19 +82,15 @@ extern "C"
 			D3D8Base::IDirect3D8*		m_pD3D;
 			static ThreadSafePointerSet	m_List;
 		public:
-			STDMETHOD(QueryInterface)(THIS_ REFIID riid, void** ppvObj)
-			{
-				return E_FAIL;
-			}
-			inline D3D8Base::IDirect3D8* GetDirect3D8() { return m_pD3D; }
-
-			static IDirect3D8* GetDirect3D(D3D8Base::IDirect3D8* pD3D);
-			
 			IDirect3D8(D3D8Base::IDirect3D8*);
+
+			inline D3D8Base::IDirect3D8* GetDirect3D8() { return m_pD3D; }
+			static IDirect3D8* GetDirect3D(D3D8Base::IDirect3D8* pD3D);
+
+			/*** IDirect3DUnknown methods ***/
 			STDMETHOD_(ULONG,Release)(THIS);
 
 			/*** IDirect3D8 methods ***/
-			
 			STDMETHOD(RegisterSoftwareDevice)(THIS_ void* pInitializeFunction);
 			STDMETHOD_(UINT, GetAdapterCount)(THIS);
 			STDMETHOD(GetAdapterIdentifier)(THIS_ UINT Adapter,DWORD Flags,D3D8Base::D3DADAPTER_IDENTIFIER8* pIdentifier);
@@ -108,7 +104,6 @@ extern "C"
 			STDMETHOD(GetDeviceCaps)(THIS_ UINT Adapter,D3D8Base::D3DDEVTYPE DeviceType,D3D8Base::D3DCAPS8* pCaps);
 			STDMETHOD_(HMONITOR, GetAdapterMonitor)(THIS_ UINT Adapter);
 			STDMETHOD(CreateDevice)(THIS_ UINT Adapter,D3D8Base::D3DDEVTYPE DeviceType,HWND hFocusWindow,DWORD BehaviorFlags,D3D8Base::D3DPRESENT_PARAMETERS* pPresentationParameters,D3D8Wrapper::IDirect3DDevice8** ppReturnedDeviceInterface);
-			
 		};
 
 		class IDirect3DDevice8 : public IDirect3DUnknown
@@ -265,10 +260,6 @@ extern "C"
 			
 			IDirect3DResource8(D3D8Base::IDirect3DResource8*);
 
-			IDirect3DResource8(D3D8Wrapper::IDirect3DResource8*);
-
-			D3D8Base::IDirect3DResource8* getReal();
-
 			STDMETHOD(GetDevice)(THIS_ D3D8Wrapper::IDirect3DDevice8** ppDevice);
 			STDMETHOD(SetPrivateData)(THIS_ REFGUID refguid,CONST void* pData,DWORD SizeOfData,DWORD Flags);
 			STDMETHOD(GetPrivateData)(THIS_ REFGUID refguid,void* pData,DWORD* pSizeOfData);
@@ -290,9 +281,7 @@ extern "C"
 
 			IDirect3DBaseTexture8(D3D8Base::IDirect3DBaseTexture8*);
 
-			IDirect3DBaseTexture8(D3D8Wrapper::IDirect3DBaseTexture8*);
-
-			D3D8Base::IDirect3DBaseTexture8* getReal2();
+			inline D3D8Base::IDirect3DBaseTexture8* GetBaseTexture() { return m_pD3D; }
 
 			/*
 			STDMETHOD(GetDevice)(THIS_ IDirect3DDevice8** ppDevice) PURE;
@@ -319,8 +308,7 @@ extern "C"
 
 			IDirect3DTexture8(D3D8Base::IDirect3DTexture8*);
 
-			//D3D8Base::IDirect3DTexture8* getReal2();
-
+			static D3D8Wrapper::IDirect3DTexture8* GetTexture(D3D8Base::IDirect3DTexture8*);
 
 			/*
 			STDMETHOD(GetDevice)(THIS_ IDirect3DDevice8** ppDevice) PURE;
@@ -416,7 +404,7 @@ extern "C"
 
 			IDirect3DVertexBuffer8(D3D8Base::IDirect3DVertexBuffer8*);
 
-			D3D8Base::IDirect3DVertexBuffer8* getReal2();
+			inline D3D8Base::IDirect3DVertexBuffer8* GetVertexBuffer() { return m_pD3D; }
 
 			/*
 			STDMETHOD(GetDevice)(THIS_ IDirect3DDevice8** ppDevice) PURE;
@@ -444,7 +432,7 @@ extern "C"
 
 			IDirect3DIndexBuffer8(D3D8Base::IDirect3DIndexBuffer8*);
 
-			D3D8Base::IDirect3DIndexBuffer8* getReal2();
+			inline D3D8Base::IDirect3DIndexBuffer8* GetIndexBuffer() { return m_pD3D; }
 
 			/*
 			STDMETHOD(GetDevice)(THIS_ IDirect3DDevice8** ppDevice) PURE;
@@ -473,12 +461,10 @@ extern "C"
 
 			IDirect3DSurface8(D3D8Base::IDirect3DSurface8*);
 			static IDirect3DSurface8* GetSurface(D3D8Base::IDirect3DSurface8* pSurface);
-			inline D3D8Base::IDirect3DSurface8* GetSurface8() { return m_pD3D; }
+			inline D3D8Base::IDirect3DSurface8* GetSurface() { return m_pD3D; }
 
 			/*** IDirect3DUnknown methods ***/
 			STDMETHOD_(ULONG, Release)(THIS);
-
-			D3D8Base::IDirect3DSurface8* getReal();
 
 			STDMETHOD(GetDevice)(THIS_ D3D8Wrapper::IDirect3DDevice8** ppDevice);
 			STDMETHOD(SetPrivateData)(THIS_ REFGUID refguid,CONST void* pData,DWORD SizeOfData,DWORD Flags);
@@ -517,6 +503,7 @@ extern "C"
 		typedef D3D8Base::IDirect3D8* (WINAPI *D3DCREATE)(UINT);
 		IDirect3D8* WINAPI Direct3DCreate8(UINT Version);
 		extern IDirect3DDevice8 *last_device;
+		extern IDirect3DSurface8 *render_surface;
 		extern void (*rendering_callback)( int );
 	}
 }

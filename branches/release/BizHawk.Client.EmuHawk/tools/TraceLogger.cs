@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -90,6 +91,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void FastUpdate()
+		{
+			// TODO: think more about this logic
+			if (!ToWindowRadio.Checked)
+			{
+				LogToFile();
+			}
+		}
+
+
 		public void Restart()
 		{
 			if (!IsHandleCreated || IsDisposed)
@@ -139,13 +150,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			TraceView.ItemCount = _instructions.Count;
-		}
-
-		private Point GetPromptPoint()
-		{
-			return PointToScreen(
-				new Point(TraceView.Location.X + 30, TraceView.Location.Y + 30)
-			);
 		}
 
 		private void SetTracerBoxTitle()
@@ -281,15 +285,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MaxLinesMenuItem_Click(object sender, EventArgs e)
 		{
-			var prompt = new InputPrompt();
-			prompt.SetMessage("Max lines to display in the window");
-			prompt.SetInitialValue(Global.Config.TraceLoggerMaxLines.ToString());
-			prompt.TextInputType = InputPrompt.InputType.Unsigned;
-			prompt.StartLocation = GetPromptPoint();
+			var prompt = new InputPrompt
+			{
+				StartLocation = this.ChildPointToScreen(TraceView),
+				TextInputType = InputPrompt.InputType.Unsigned,
+				Message = "Max lines to display in the window",
+				InitialValue = Global.Config.TraceLoggerMaxLines.ToString()
+			};
+
 			var result = prompt.ShowHawkDialog();
 			if (result == DialogResult.OK)
 			{
-				var max = int.Parse(prompt.UserText);
+				var max = int.Parse(prompt.PromptText);
 				if (max > 0)
 				{
 					Global.Config.TraceLoggerMaxLines = max;

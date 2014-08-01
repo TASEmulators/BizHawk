@@ -10,6 +10,9 @@ using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Sega.Genesis;
 
+using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class Cheats : Form, IToolForm
@@ -70,7 +73,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			// Do nothing;
+			// Do nothing
+		}
+
+		public void FastUpdate()
+		{
+			// Do nothing
 		}
 
 		public void Restart()
@@ -97,7 +105,7 @@ namespace BizHawk.Client.EmuHawk
 				var loadResult = Global.CheatList.Load(path, append: false);
 				if (!loadResult)
 				{
-					ToolHelpers.HandleLoadError(Global.Config.RecentWatches, path);
+					Global.Config.RecentWatches.HandleLoadError(path);
 				}
 				else
 				{
@@ -229,15 +237,15 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadColumnInfo()
 		{
 			CheatListView.Columns.Clear();
-			ToolHelpers.AddColumn(CheatListView, NAME, Global.Config.CheatsColumnShow[NAME], GetColumnWidth(NAME));
-			ToolHelpers.AddColumn(CheatListView, ADDRESS, Global.Config.CheatsColumnShow[ADDRESS], GetColumnWidth(ADDRESS));
-			ToolHelpers.AddColumn(CheatListView, VALUE, Global.Config.CheatsColumnShow[VALUE], GetColumnWidth(VALUE));
-			ToolHelpers.AddColumn(CheatListView, COMPARE, Global.Config.CheatsColumnShow[COMPARE], GetColumnWidth(COMPARE));
-			ToolHelpers.AddColumn(CheatListView, ON, Global.Config.CheatsColumnShow[ON], GetColumnWidth(ON));
-			ToolHelpers.AddColumn(CheatListView, DOMAIN, Global.Config.CheatsColumnShow[DOMAIN], GetColumnWidth(DOMAIN));
-			ToolHelpers.AddColumn(CheatListView, SIZE, Global.Config.CheatsColumnShow[SIZE], GetColumnWidth(SIZE));
-			ToolHelpers.AddColumn(CheatListView, ENDIAN, Global.Config.CheatsColumnShow[ENDIAN], GetColumnWidth(ENDIAN));
-			ToolHelpers.AddColumn(CheatListView, TYPE, Global.Config.CheatsColumnShow[TYPE], GetColumnWidth(TYPE));
+			CheatListView.AddColumn(NAME, Global.Config.CheatsColumnShow[NAME], GetColumnWidth(NAME));
+			CheatListView.AddColumn(ADDRESS, Global.Config.CheatsColumnShow[ADDRESS], GetColumnWidth(ADDRESS));
+			CheatListView.AddColumn(VALUE, Global.Config.CheatsColumnShow[VALUE], GetColumnWidth(VALUE));
+			CheatListView.AddColumn(COMPARE, Global.Config.CheatsColumnShow[COMPARE], GetColumnWidth(COMPARE));
+			CheatListView.AddColumn(ON, Global.Config.CheatsColumnShow[ON], GetColumnWidth(ON));
+			CheatListView.AddColumn(DOMAIN, Global.Config.CheatsColumnShow[DOMAIN], GetColumnWidth(DOMAIN));
+			CheatListView.AddColumn(SIZE, Global.Config.CheatsColumnShow[SIZE], GetColumnWidth(SIZE));
+			CheatListView.AddColumn(ENDIAN, Global.Config.CheatsColumnShow[ENDIAN], GetColumnWidth(ENDIAN));
+			CheatListView.AddColumn(TYPE, Global.Config.CheatsColumnShow[TYPE], GetColumnWidth(TYPE));
 
 			ColumnPositions();
 		}
@@ -462,8 +470,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentSubMenu.DropDownItems.Clear();
 			RecentSubMenu.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentCheats, LoadFileFromRecent)
-			);
+				Global.Config.RecentCheats.RecentMenu(LoadFileFromRecent));
 		}
 
 		private void NewMenuItem_Click(object sender, EventArgs e)
@@ -868,11 +875,11 @@ namespace BizHawk.Client.EmuHawk
 
 				if (selected.Select(x => x.Domain).Distinct().Count() > 1)
 				{
-					ToolHelpers.ViewInHexEditor(selected[0].Domain, new List<int> { selected.First().Address ?? 0 });
+					ToolHelpers.ViewInHexEditor(selected[0].Domain, new List<int> { selected.First().Address ?? 0 }, selected.First().Size);
 				}
 				else
 				{
-					ToolHelpers.ViewInHexEditor(selected[0].Domain, selected.Select(x => x.Address ?? 0));
+					ToolHelpers.ViewInHexEditor(selected.First().Domain, selected.Select(x => x.Address ?? 0), selected.First().Size);
 				}
 			}
 		}

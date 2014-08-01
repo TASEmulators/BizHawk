@@ -212,6 +212,17 @@ namespace BizHawk.Client.Common
 			return MakeAbsolutePath(Global.Config.PathEntries.LuaPathFragment, null);
 		}
 
+		// Decides if a path is non-empty, not . and not .\
+		private static bool PathIsSet(string path)
+		{
+			if (!string.IsNullOrWhiteSpace(path))
+			{
+				return path != "." && path != ".\\";
+			}
+
+			return false;
+		}
+
 		public static string GetRomsPath(string sysID)
 		{
 			if (Global.Config.UseRecentForROMs)
@@ -219,7 +230,17 @@ namespace BizHawk.Client.Common
 				return Environment.SpecialFolder.Recent.ToString();
 			}
 
-			var path = Global.Config.PathEntries[sysID, "ROM"] ?? Global.Config.PathEntries[sysID, "Base"];
+			var path = Global.Config.PathEntries[sysID, "ROM"];
+
+			if (path == null || !PathIsSet(path.Path))
+			{
+				path = Global.Config.PathEntries["Global", "ROM"];
+
+				if (path != null && PathIsSet(path.Path))
+				{
+					return MakeAbsolutePath(path.Path, null);
+				}
+			}
 
 			return MakeAbsolutePath(path.Path, sysID);
 		}

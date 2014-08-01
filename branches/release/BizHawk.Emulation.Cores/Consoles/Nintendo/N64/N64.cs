@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			StartThreadLoop();
 
 			var videosettings = _syncSettings.GetVPS(game, _settings.VideoSizeX, _settings.VideoSizeY);
-			var coreType = _syncSettings.CoreType;
+			var coreType = _syncSettings.Core;
 
 			//zero 19-apr-2014 - added this to solve problem with SDL initialization corrupting the main thread (I think) and breaking subsequent emulators (for example, NES)
 			//not sure why this works... if we put the plugin initializations in here, we get deadlocks in some SDL initialization. doesnt make sense to me...
@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			_inputProvider = new N64Input(api, comm, this._syncSettings.Controllers);
 
 
-			string rsp = _syncSettings.RspType == N64SyncSettings.RSPTYPE.Rsp_Hle ?
+			string rsp = _syncSettings.Rsp == N64SyncSettings.RspType.Rsp_Hle ?
 				"mupen64plus-rsp-hle.dll" :
 				"mupen64plus-rsp-z64-hlevideo.dll";
 
@@ -166,7 +166,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		private void StartThreadLoop()
 		{
-			new Thread(ThreadLoop).Start();
+			var thread = new Thread(ThreadLoop);
+			//will this solve the hanging process problem?
+			thread.IsBackground = true;
+			thread.Start();
 		}
 
 		private void EndThreadLoop()
@@ -484,25 +487,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			MakeMemoryDomain("EEPROM", mupen64plusApi.N64_MEMORY.EEPROM, MemoryDomain.Endian.Little);
 
 			if (_syncSettings.Controllers[0].IsConnected &&
-				_syncSettings.Controllers[0].PakType == N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
+				_syncSettings.Controllers[0].PakType == N64SyncSettings.N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
 			{
 				MakeMemoryDomain("Mempak 1", mupen64plusApi.N64_MEMORY.MEMPAK1, MemoryDomain.Endian.Little);
 			}
 
 			if (_syncSettings.Controllers[1].IsConnected &&
-				_syncSettings.Controllers[1].PakType == N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
+				_syncSettings.Controllers[1].PakType == N64SyncSettings.N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
 			{
 				MakeMemoryDomain("Mempak 2", mupen64plusApi.N64_MEMORY.MEMPAK2, MemoryDomain.Endian.Little);
 			}
 
 			if (_syncSettings.Controllers[2].IsConnected &&
-				_syncSettings.Controllers[2].PakType == N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
+				_syncSettings.Controllers[2].PakType == N64SyncSettings.N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
 			{
 				MakeMemoryDomain("Mempak 3", mupen64plusApi.N64_MEMORY.MEMPAK3, MemoryDomain.Endian.Little);
 			}
 
 			if (_syncSettings.Controllers[3].IsConnected &&
-				_syncSettings.Controllers[3].PakType == N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
+				_syncSettings.Controllers[3].PakType == N64SyncSettings.N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
 			{
 				MakeMemoryDomain("Mempak 4", mupen64plusApi.N64_MEMORY.MEMPAK4, MemoryDomain.Endian.Little);
 			}

@@ -4,16 +4,12 @@ extern "C"
 {
 	namespace D3D8Wrapper
 	{
+		ThreadSafePointerSet D3D8Wrapper::IDirect3DResource8::m_List;
+
 		D3D8Wrapper::IDirect3DResource8::IDirect3DResource8(D3D8Base::IDirect3DResource8* pResource) : IDirect3DUnknown((IUnknown*) pResource)
 		{
-			LOG("IDirect3DResource8");
+			LOG("IDirect3DResource8 from base " << pResource << " made " << this);
 			m_pD3D = pResource;
-		}
-
-		D3D8Wrapper::IDirect3DResource8::IDirect3DResource8(D3D8Wrapper::IDirect3DResource8* pResource) : IDirect3DUnknown((IUnknown*) pResource)
-		{
-			LOG("IDirect3DResource8 -- 2");
-			m_pD3D = pResource->getReal();
 		}
 
 		D3D8Wrapper::IDirect3DResource8* D3D8Wrapper::IDirect3DResource8::GetResource(D3D8Base::IDirect3DResource8* pSwapChain)
@@ -22,16 +18,19 @@ extern "C"
 			if( p == NULL )
 			{
 				p = new D3D8Wrapper::IDirect3DResource8(pSwapChain);
+				LOG("IDirect3DResource8::GetResource " << pSwapChain << " created new " << p)
 				m_List.AddMember(pSwapChain, p);
 				return p;
 			}
     
 			p->m_ulRef++;
+			LOG("IDirect3DResource8::GetResource " << pSwapChain << " found existing " << p)
 			return p;
 		}
 
 		STDMETHODIMP_(ULONG) D3D8Wrapper::IDirect3DResource8::Release(THIS)
 		{
+			LOG("IDirect3DResource8::Release " << this);
 			m_pUnk->Release();
 
 			ULONG ulRef = --m_ulRef;
@@ -42,12 +41,6 @@ extern "C"
 				return 0;
 			}
 			return ulRef;
-		}
-
-		D3D8Base::IDirect3DResource8* D3D8Wrapper::IDirect3DResource8::getReal()
-		{
-			LOG("IDirect3DResource8::getReal");
-			return m_pD3D;
 		}
 
 		/*STDMETHOD(GetDevice)(THIS_ IDirect3DDevice8** ppDevice) PURE;*/

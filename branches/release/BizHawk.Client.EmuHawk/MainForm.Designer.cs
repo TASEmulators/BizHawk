@@ -101,6 +101,7 @@
 			this.ScreenshotMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ScreenshotAsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ScreenshotClipboardMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ScreenshotClientClipboardMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator20 = new System.Windows.Forms.ToolStripSeparator();
 			this.ScreenshotCaptureOSDMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
@@ -175,6 +176,7 @@
 			this.CoresSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBInSGBMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NesInQuickNESMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SnesWithSnes9xMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.N64VideoPluginSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
@@ -1032,6 +1034,7 @@
             this.ScreenshotMenuItem,
             this.ScreenshotAsMenuItem,
             this.ScreenshotClipboardMenuItem,
+            this.ScreenshotClientClipboardMenuItem,
             this.toolStripSeparator20,
             this.ScreenshotCaptureOSDMenuItem1});
 			this.ScreenshotSubMenu.Name = "ScreenshotSubMenu";
@@ -1043,14 +1046,14 @@
 			// 
 			this.ScreenshotMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.camera;
 			this.ScreenshotMenuItem.Name = "ScreenshotMenuItem";
-			this.ScreenshotMenuItem.Size = new System.Drawing.Size(245, 22);
+			this.ScreenshotMenuItem.Size = new System.Drawing.Size(317, 22);
 			this.ScreenshotMenuItem.Text = "Screenshot";
 			this.ScreenshotMenuItem.Click += new System.EventHandler(this.ScreenshotMenuItem_Click);
 			// 
 			// ScreenshotAsMenuItem
 			// 
 			this.ScreenshotAsMenuItem.Name = "ScreenshotAsMenuItem";
-			this.ScreenshotAsMenuItem.Size = new System.Drawing.Size(245, 22);
+			this.ScreenshotAsMenuItem.Size = new System.Drawing.Size(317, 22);
 			this.ScreenshotAsMenuItem.Text = "Screenshot As...";
 			this.ScreenshotAsMenuItem.Click += new System.EventHandler(this.ScreenshotAsMenuItem_Click);
 			// 
@@ -1058,19 +1061,28 @@
 			// 
 			this.ScreenshotClipboardMenuItem.Name = "ScreenshotClipboardMenuItem";
 			this.ScreenshotClipboardMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-			this.ScreenshotClipboardMenuItem.Size = new System.Drawing.Size(245, 22);
-			this.ScreenshotClipboardMenuItem.Text = "Screenshot -> Clipboard";
+			this.ScreenshotClipboardMenuItem.Size = new System.Drawing.Size(317, 22);
+			this.ScreenshotClipboardMenuItem.Text = "Screenshot (raw) -> Clipboard";
 			this.ScreenshotClipboardMenuItem.Click += new System.EventHandler(this.ScreenshotClipboardMenuItem_Click);
+			// 
+			// ScreenshotClientClipboardMenuItem
+			// 
+			this.ScreenshotClientClipboardMenuItem.Name = "ScreenshotClientClipboardMenuItem";
+			this.ScreenshotClientClipboardMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.C)));
+			this.ScreenshotClientClipboardMenuItem.Size = new System.Drawing.Size(317, 22);
+			this.ScreenshotClientClipboardMenuItem.Text = "Screenshot (client) -> Clipboard";
+			this.ScreenshotClientClipboardMenuItem.Click += new System.EventHandler(this.ScreenshotClientClipboardMenuItem_Click);
 			// 
 			// toolStripSeparator20
 			// 
 			this.toolStripSeparator20.Name = "toolStripSeparator20";
-			this.toolStripSeparator20.Size = new System.Drawing.Size(242, 6);
+			this.toolStripSeparator20.Size = new System.Drawing.Size(314, 6);
 			// 
 			// ScreenshotCaptureOSDMenuItem1
 			// 
 			this.ScreenshotCaptureOSDMenuItem1.Name = "ScreenshotCaptureOSDMenuItem1";
-			this.ScreenshotCaptureOSDMenuItem1.Size = new System.Drawing.Size(245, 22);
+			this.ScreenshotCaptureOSDMenuItem1.Size = new System.Drawing.Size(317, 22);
 			this.ScreenshotCaptureOSDMenuItem1.Text = "Capture OSD";
 			this.ScreenshotCaptureOSDMenuItem1.Click += new System.EventHandler(this.ScreenshotCaptureOSDMenuItem_Click);
 			// 
@@ -1633,6 +1645,7 @@
 			this.CoresSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.GBInSGBMenuItem,
             this.NesInQuickNESMenuItem,
+            this.SnesWithSnes9xMenuItem,
             this.toolStripSeparator8,
             this.N64VideoPluginSettingsMenuItem});
 			this.CoresSubMenu.Name = "CoresSubMenu";
@@ -1651,8 +1664,15 @@
 			// 
 			this.NesInQuickNESMenuItem.Name = "NesInQuickNESMenuItem";
 			this.NesInQuickNESMenuItem.Size = new System.Drawing.Size(210, 22);
-			this.NesInQuickNESMenuItem.Text = "NES in QuickNES";
+			this.NesInQuickNESMenuItem.Text = "NES with QuickNES";
 			this.NesInQuickNESMenuItem.Click += new System.EventHandler(this.NesInQuickNESMenuItem_Click);
+			// 
+			// SnesWithSnes9xMenuItem
+			// 
+			this.SnesWithSnes9xMenuItem.Name = "SnesWithSnes9xMenuItem";
+			this.SnesWithSnes9xMenuItem.Size = new System.Drawing.Size(210, 22);
+			this.SnesWithSnes9xMenuItem.Text = "SNES with Snes9x";
+			this.SnesWithSnes9xMenuItem.Click += new System.EventHandler(this.SnesWithSnes9xMenuItem_Click);
 			// 
 			// toolStripSeparator8
 			// 
@@ -2282,7 +2302,7 @@
 			this.GBcoreSettingsToolStripMenuItem.Name = "GBcoreSettingsToolStripMenuItem";
 			this.GBcoreSettingsToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.GBcoreSettingsToolStripMenuItem.Text = "Settings...";
-			this.GBcoreSettingsToolStripMenuItem.Click += new System.EventHandler(this.GBcoreSettingsToolStripMenuItem_Click);
+			this.GBcoreSettingsToolStripMenuItem.Click += new System.EventHandler(this.GBCoreSettingsMenuItem_Click);
 			// 
 			// LoadGBInSGBMenuItem
 			// 
@@ -2573,7 +2593,7 @@
 			this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
 			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
 			this.settingsToolStripMenuItem.Text = "&Settings...";
-			this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
+			this.settingsToolStripMenuItem.Click += new System.EventHandler(this.WondersawnSettingsMenuItem_Click);
 			// 
 			// HelpSubMenu
 			// 
@@ -2720,6 +2740,7 @@
 			this.Slot1StatusButton.Name = "Slot1StatusButton";
 			this.Slot1StatusButton.Size = new System.Drawing.Size(13, 17);
 			this.Slot1StatusButton.Text = "1";
+			this.Slot1StatusButton.ToolTipText = "Save slot 1";
 			this.Slot1StatusButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SlotStatusButtons_MouseUp);
 			// 
 			// Slot2StatusButton
@@ -2727,6 +2748,7 @@
 			this.Slot2StatusButton.Name = "Slot2StatusButton";
 			this.Slot2StatusButton.Size = new System.Drawing.Size(13, 17);
 			this.Slot2StatusButton.Text = "2";
+			this.Slot2StatusButton.ToolTipText = "Save slot 2";
 			this.Slot2StatusButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SlotStatusButtons_MouseUp);
 			// 
 			// Slot3StatusButton
@@ -2734,6 +2756,7 @@
 			this.Slot3StatusButton.Name = "Slot3StatusButton";
 			this.Slot3StatusButton.Size = new System.Drawing.Size(13, 17);
 			this.Slot3StatusButton.Text = "3";
+			this.Slot3StatusButton.ToolTipText = "Save slot 3";
 			this.Slot3StatusButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SlotStatusButtons_MouseUp);
 			// 
 			// Slot4StatusButton
@@ -2741,6 +2764,7 @@
 			this.Slot4StatusButton.Name = "Slot4StatusButton";
 			this.Slot4StatusButton.Size = new System.Drawing.Size(13, 17);
 			this.Slot4StatusButton.Text = "4";
+			this.Slot4StatusButton.ToolTipText = "Save slot 4";
 			this.Slot4StatusButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SlotStatusButtons_MouseUp);
 			// 
 			// Slot5StatusButton
@@ -2748,6 +2772,7 @@
 			this.Slot5StatusButton.Name = "Slot5StatusButton";
 			this.Slot5StatusButton.Size = new System.Drawing.Size(13, 17);
 			this.Slot5StatusButton.Text = "5";
+			this.Slot5StatusButton.ToolTipText = "Save slot 5";
 			this.Slot5StatusButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SlotStatusButtons_MouseUp);
 			// 
 			// Slot6StatusButton
@@ -2755,6 +2780,7 @@
 			this.Slot6StatusButton.Name = "Slot6StatusButton";
 			this.Slot6StatusButton.Size = new System.Drawing.Size(13, 17);
 			this.Slot6StatusButton.Text = "6";
+			this.Slot6StatusButton.ToolTipText = "Save slot 6";
 			this.Slot6StatusButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SlotStatusButtons_MouseUp);
 			// 
 			// Slot7StatusButton
@@ -2762,6 +2788,7 @@
 			this.Slot7StatusButton.Name = "Slot7StatusButton";
 			this.Slot7StatusButton.Size = new System.Drawing.Size(13, 17);
 			this.Slot7StatusButton.Text = "7";
+			this.Slot7StatusButton.ToolTipText = "Save slot 7";
 			this.Slot7StatusButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SlotStatusButtons_MouseUp);
 			// 
 			// Slot8StatusButton
@@ -2769,6 +2796,7 @@
 			this.Slot8StatusButton.Name = "Slot8StatusButton";
 			this.Slot8StatusButton.Size = new System.Drawing.Size(13, 17);
 			this.Slot8StatusButton.Text = "8";
+			this.Slot8StatusButton.ToolTipText = "Save slot 8";
 			this.Slot8StatusButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SlotStatusButtons_MouseUp);
 			// 
 			// Slot9StatusButton
@@ -2776,6 +2804,7 @@
 			this.Slot9StatusButton.Name = "Slot9StatusButton";
 			this.Slot9StatusButton.Size = new System.Drawing.Size(13, 17);
 			this.Slot9StatusButton.Text = "9";
+			this.Slot9StatusButton.ToolTipText = "Save slot 9";
 			this.Slot9StatusButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SlotStatusButtons_MouseUp);
 			// 
 			// Slot0StatusButton
@@ -2783,6 +2812,7 @@
 			this.Slot0StatusButton.Name = "Slot0StatusButton";
 			this.Slot0StatusButton.Size = new System.Drawing.Size(13, 17);
 			this.Slot0StatusButton.Text = "0";
+			this.Slot0StatusButton.ToolTipText = "Save slot 0";
 			this.Slot0StatusButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SlotStatusButtons_MouseUp);
 			// 
 			// CheatStatusButton
@@ -3580,6 +3610,8 @@
 		private System.Windows.Forms.ToolStripMenuItem MovieEndRecordMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MovieEndStopMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MovieEndPauseMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ScreenshotClientClipboardMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SnesWithSnes9xMenuItem;
 	}
 }
 

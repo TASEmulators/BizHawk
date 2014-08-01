@@ -31,14 +31,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					new PadSchema.ButtonScema
 					{
-						Name = "P" + controller + " X Axis",
-						MaxValue = 127,
-						DisplayName = "",
-						Location = new Point(6, 14),
-						Type = PadSchema.PadInputType.AnalogStick
-					},
-					new PadSchema.ButtonScema
-					{
 						Name = "P" + controller + " DPad U",
 						DisplayName = "",
 						Icon = Properties.Resources.BlueUp,
@@ -80,64 +72,72 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = "P" + controller + " R",
 						DisplayName = "R",
-						Location = new Point(172, 150),
+						Location = new Point(191, 150),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " Z",
 						DisplayName = "Z",
-						Location = new Point(74, 245),
+						Location = new Point(81, 234),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " Start",
 						DisplayName = "S",
-						Location = new Point(87, 157),
+						Location = new Point(81, 211),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " B",
 						DisplayName = "B",
-						Location = new Point(83, 195),
+						Location = new Point(127, 211),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " A",
 						DisplayName = "A",
-						Location = new Point(113, 206),
+						Location = new Point(138, 234),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " C Up",
-						DisplayName = "cU",
-						Location = new Point(147, 235),
+						Icon = Properties.Resources.YellowUp,
+						Location = new Point(173, 175),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " C Down",
-						DisplayName = "cD",
-						Location = new Point(147, 281),
+						Icon = Properties.Resources.YellowDown,
+						Location = new Point(173, 196),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " C Left",
-						DisplayName = "cL",
-						Location = new Point(129, 258),
+						Icon = Properties.Resources.YellowLeft,
+						Location = new Point(152, 189),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " C Right",
-						DisplayName = "cR",
-						Location = new Point(164, 258),
+						Icon = Properties.Resources.YellowRight,
+						Location = new Point(194, 189),
 						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " X Axis",
+						MaxValue = 127,
+						DisplayName = "",
+						Location = new Point(6, 14),
+						Type = PadSchema.PadInputType.AnalogStick
 					}
 				}
 			};
