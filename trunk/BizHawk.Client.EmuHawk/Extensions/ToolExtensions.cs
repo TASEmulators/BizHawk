@@ -53,10 +53,17 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 		public static void HandleLoadError(this RecentFiles recent, string path)
 		{
 			GlobalWin.Sound.StopSound();
-			var result = MessageBox.Show("Could not open " + path + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
-			if (result == DialogResult.Yes)
+			if (recent.Frozen)
 			{
-				recent.Remove(path);
+				var result = MessageBox.Show("Could not open " + path, "File not found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+			else
+			{
+				var result = MessageBox.Show("Could not open " + path + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+				if (result == DialogResult.Yes)
+				{
+					recent.Remove(path);
+				}
 			}
 
 			GlobalWin.Sound.StartSound();
