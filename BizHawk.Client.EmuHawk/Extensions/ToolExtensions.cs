@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 
 			items.Add(new ToolStripSeparator());
 
-			var clearitem = new ToolStripMenuItem { Text = "&Clear" };
+			var clearitem = new ToolStripMenuItem { Text = "&Clear", Enabled = !recent.Frozen };
 			clearitem.Click += (o, ev) => recent.Clear();
 			items.Add(clearitem);
 
