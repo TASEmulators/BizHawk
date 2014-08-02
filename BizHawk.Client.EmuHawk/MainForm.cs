@@ -3089,7 +3089,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					ChooseArchive = LoadArhiveChooser,
 					ChoosePlatform = ChoosePlatformForRom,
-					Deterministic = deterministic
+					Deterministic = deterministic,
+					MessageCallback = GlobalWin.OSD.AddMessage
 				};
 
 			loader.OnLoadError += ShowLoadError;
