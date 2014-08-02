@@ -300,11 +300,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CloseRomMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.MovieSession.Movie.IsActive)
-			{
-				Global.MovieSession.Movie.Stop();
-			}
-
 			CloseRom();
 		}
 
@@ -2377,7 +2372,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					StopMovieThenLoadRom(CurrentlyOpenRom);
+					LoadRom(CurrentlyOpenRom);
 				}
 
 				string errorMsg;
@@ -2399,7 +2394,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				StopMovieThenLoadRom(filePaths[0]);
+				LoadRom(filePaths[0]);
 			}
 		}
 

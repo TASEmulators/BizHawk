@@ -169,7 +169,7 @@ namespace BizHawk.Client.EmuHawk
 
 				DialogResult = DialogResult.OK;
 				Close();
-				GlobalWin.MainForm.StopMovieThenLoadRom(textBoxOutputDir.Text);
+				GlobalWin.MainForm.LoadRom(textBoxOutputDir.Text);
 			}
 		}
 

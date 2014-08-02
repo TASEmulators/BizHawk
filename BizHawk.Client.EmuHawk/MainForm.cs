@@ -262,7 +262,7 @@ namespace BizHawk.Client.EmuHawk
 			if (cmdRom != null)
 			{
 				// Commandline should always override auto-load
-				StopMovieThenLoadRom(cmdRom);
+				LoadRom(cmdRom);
 				if (Global.Game == null)
 				{
 					MessageBox.Show("Failed to load " + cmdRom + " specified on commandline");
@@ -818,7 +818,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RebootCore()
 		{
-			StopMovieThenLoadRom(CurrentlyOpenRom);
+			LoadRom(CurrentlyOpenRom);
 		}
 
 		public void PauseEmulator()
@@ -1208,8 +1208,6 @@ namespace BizHawk.Client.EmuHawk
 		// Resources
 		Bitmap StatusBarDiskLightOnImage, StatusBarDiskLightOffImage;
 
-		private object _syncSettingsHack;
-
 		#endregion
 
 		#region Private methods
@@ -1569,7 +1567,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadRomFromRecent(string rom)
 		{
-			if (!StopMovieThenLoadRom(rom))
+			if (!LoadRom(rom))
 			{
 				Global.Config.RecentRoms.HandleLoadError(rom);
 			}
@@ -1833,7 +1831,7 @@ namespace BizHawk.Client.EmuHawk
 			var file = new FileInfo(ofd.FileName);
 			Global.Config.LastRomPath = file.DirectoryName;
 			_lastOpenRomFilter = ofd.FilterIndex;
-			StopMovieThenLoadRom(file.FullName);
+			LoadRom(file.FullName);
 		}
 
 		private void CoreSyncSettings(object sender, RomLoader.SettingsLoadArgs e)
@@ -1842,7 +1840,7 @@ namespace BizHawk.Client.EmuHawk
 			// A movie is loaded, then load rom is called, which closes the current rom which closes the current movie (which is the movie just loaded)
 			// As such the movie is "inactive".  So instead we load the movie and populate the _syncSettingsHack
 			// Then let the rom logic work its magic, then use it here, as such it will be null unless a movie invoked the load rom call
-			e.Settings = _syncSettingsHack ?? Global.Config.GetCoreSyncSettings(e.Core);
+			e.Settings = Global.MovieSession.SyncSettingsHack ?? Global.Config.GetCoreSyncSettings(e.Core);
 		}
 
 		private static void CoreSettings(object sender, RomLoader.SettingsLoadArgs e)
@@ -3024,6 +3022,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ShowLoadError(object sender, RomLoader.RomErrorArgs e)
 		{
+			Global.MovieSession.SyncSettingsHack = null; // ensure subsequent calls to LoadRom won't get the settings object created here
+
 			if (e.Type == RomLoader.LoadErrorType.MissingFirmware)
 			{
 				var result = MessageBox.Show(
@@ -3064,17 +3064,6 @@ namespace BizHawk.Client.EmuHawk
 			return platformChooser.PlatformChoice;
 		}
 
-		// TODO: a better name for this method, but this is the one that should be called, in general
-		public bool StopMovieThenLoadRom(string path, bool? deterministicemulation = null)
-		{
-			if (Global.MovieSession.Movie.IsActive)
-			{
-				Global.MovieSession.Movie.Stop();
-			}
-
-			return LoadRom(path, deterministicemulation);
-		}
-
 		// Still needs a good bit of refactoring
 		public bool LoadRom(string path, bool? deterministicemulation = null)
 		{
@@ -3097,7 +3086,6 @@ namespace BizHawk.Client.EmuHawk
 				};
 
 			loader.OnLoadError += ShowLoadError;
-
 			loader.OnLoadSettings += CoreSettings;
 			loader.OnLoadSyncSettings += CoreSyncSettings;
 
@@ -3106,8 +3094,6 @@ namespace BizHawk.Client.EmuHawk
 			// the new settings objects
 			CommitCoreSettingsToConfig(); // adelikat: I Think by reordering things, this isn't necessary anymore
 			CloseGame();
-			
-			//Global.Emulator.Dispose(); // CloseGame() already killed and disposed the emulator; this is killing the new one; that's bad
 
 			var nextComm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals(nextComm);
@@ -3116,12 +3102,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result)
 			{
-				if (loader.LoadedEmulator is TI83)
+				if (loader.LoadedEmulator is TI83 && Global.Config.TI83autoloadKeyPad)
 				{
-					if (Global.Config.TI83autoloadKeyPad)
-					{
-						GlobalWin.Tools.Load<TI83KeyPad>();
-					}
+					GlobalWin.Tools.Load<TI83KeyPad>();
 				}
 
 				Global.Emulator = loader.LoadedEmulator;
@@ -3153,8 +3136,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				SetWindowText();
-
 				Global.Rewinder.ResetRewindBuffer();
 
 				if (Global.Emulator.CoreComm.RomStatusDetails == null && loader.Rom != null)
@@ -3180,7 +3161,9 @@ namespace BizHawk.Client.EmuHawk
 
 				Global.Config.RecentRoms.Add(loader.CanonicalFullPath);
 				JumpLists.AddRecentItem(loader.CanonicalFullPath);
-				if (File.Exists(PathManager.SaveRamPath(loader.Game)))
+
+				// Don't load Save Ram if a movie is being loaded
+				if (!Global.MovieSession.MovieIsQueued && File.Exists(PathManager.SaveRamPath(loader.Game)))
 				{
 					LoadSaveRam();
 				}
@@ -3195,6 +3178,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
+				SetWindowText();
 				CurrentlyOpenRom = loader.CanonicalFullPath;
 				HandlePlatformMenus();
 				_stateSlots.Clear();
@@ -3303,6 +3287,11 @@ namespace BizHawk.Client.EmuHawk
 			StopAv();
 
 			CommitCoreSettingsToConfig();
+			if (Global.MovieSession.Movie.IsActive) // Note: this must be called after CommitCoreSettingsToConfig()
+			{
+				StopMovie(true);
+			}
+
 
 			Global.Emulator.Dispose();
 			Global.CoreComm = CreateCoreComm();
