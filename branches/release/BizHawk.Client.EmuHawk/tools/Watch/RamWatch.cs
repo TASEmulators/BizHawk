@@ -249,6 +249,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach(var watch in _watches)
 				{
+					if (watch.IsSeparator)
+					{
+						return true;
+					}
+
 					if (Global.CheatList.IsActive(_watches.Domain, watch.Address ?? 0))
 					{
 						return true;

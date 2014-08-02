@@ -221,7 +221,18 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					_watch.Poke(GetStringForPulse(_val));
+					switch(_watch.Size)
+					{
+						case Watch.WatchSize.Byte:
+							_watch.Poke((_watch as ByteWatch).FormatValue((byte)_val));
+							break;
+						case Watch.WatchSize.Word:
+							_watch.Poke((_watch as WordWatch).FormatValue((ushort)_val));
+							break;
+						case Watch.WatchSize.DWord:
+							_watch.Poke((_watch as DWordWatch).FormatValue((uint)_val));
+							break;
+					}
 				}
 			}
 		}
