@@ -1662,6 +1662,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var sfd = new SaveFileDialog();
+            sfd.AddExtension = true;
+            sfd.DefaultExt = "State";
+            sfd.Filter = "Save States (*.State)|*.State|All Files|*.*";
 			var path = PathManager.GetSaveStatePath(Global.Game);
 			sfd.InitialDirectory = path;
 			sfd.FileName = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave0.State";
