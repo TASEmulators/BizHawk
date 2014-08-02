@@ -20,6 +20,11 @@ namespace BizHawk.Client.Common
 		public int MAX_RECENT_FILES { get; set; }
 		public bool AutoLoad { get; set; }
 
+		/// <summary>
+		/// If true, the list can not change, or be cleared
+		/// </summary>
+		public bool Frozen { get; set; }
+
 		[JsonIgnore]
 		public bool Empty
 		{
@@ -66,33 +71,44 @@ namespace BizHawk.Client.Common
 
 		public void Clear()
 		{
-			recentlist.Clear();
+			if (!Frozen)
+			{
+				recentlist.Clear();
+			}
 		}
 
 		public void Add(string newFile)
 		{
-			Remove(newFile);
-			recentlist.Insert(0, newFile);
-
-			if (recentlist.Count > MAX_RECENT_FILES)
+			if (!Frozen)
 			{
-				recentlist.Remove(recentlist.Last());
+				Remove(newFile);
+				recentlist.Insert(0, newFile);
+
+				if (recentlist.Count > MAX_RECENT_FILES)
+				{
+					recentlist.Remove(recentlist.Last());
+				}
 			}
 		}
 
 		public bool Remove(string newFile)
 		{
-			var removed = false;
-			foreach (var recent in recentlist.ToList())
+			if (!Frozen)
 			{
-				if (string.Compare(newFile, recent, StringComparison.CurrentCultureIgnoreCase) == 0)
+				var removed = false;
+				foreach (var recent in recentlist.ToList())
 				{
-					recentlist.Remove(newFile); // intentionally keeps iterating after this to remove duplicate instances, though those should never exist in the first place
-					removed = true;
+					if (string.Compare(newFile, recent, StringComparison.CurrentCultureIgnoreCase) == 0)
+					{
+						recentlist.Remove(newFile); // intentionally keeps iterating after this to remove duplicate instances, though those should never exist in the first place
+						removed = true;
+					}
 				}
+
+				return removed;
 			}
 
-			return removed;
+			return false;
 		}
 
 		public List<string> GetRecentListTruncated(int length)

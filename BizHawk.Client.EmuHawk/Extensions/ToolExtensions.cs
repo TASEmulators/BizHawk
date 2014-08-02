@@ -36,6 +36,10 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 			clearitem.Click += (o, ev) => recent.Clear();
 			items.Add(clearitem);
 
+			var freezeitem = new ToolStripMenuItem { Text = recent.Frozen ? "&Unfreeze" : "&Freeze" };
+			freezeitem.Click += (o, ev) => recent.Frozen ^= true;
+			items.Add(freezeitem);
+
 			if (autoload)
 			{
 				var auto = new ToolStripMenuItem { Text = "&Autoload", Checked = recent.AutoLoad };
