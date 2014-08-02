@@ -61,6 +61,17 @@ namespace BizHawk.Client.Common
 
 		}
 
+		// For not throwing errors but simply outputing information to the screen
+		public Action<string> MessageCallback { get; set; }
+
+		private void DoMessageCallback(string message)
+		{
+			if (MessageCallback != null)
+			{
+				MessageCallback(message);
+			}
+		}
+
 		// TODO: reconsider the need for exposing these;
 		public IEmulator LoadedEmulator { get; private set; }
 		public GameInfo Game { get; private set; }
@@ -388,8 +399,8 @@ namespace BizHawk.Client.Common
 									}
 									catch
 									{
-										// failed to load SGB bios.  to avoid catch-22, disable SGB mode
-										DoLoadErrorCallback("Failed to load a GB rom in SGB mode.  Disabling SGB Mode.", game.System);
+										// failed to load SGB bios or game does not support SGB mode. 
+										// To avoid catch-22, disable SGB mode
 										Global.Config.GB_AsSGB = false;
 										throw;
 									}
@@ -455,6 +466,12 @@ namespace BizHawk.Client.Common
 					else if (ex is MissingFirmwareException)
 					{
 						DoLoadErrorCallback(ex.Message, system, LoadErrorType.MissingFirmware);
+					}
+					else if (ex is CGBNotSupportedException)
+					{
+						// Note: GB as SGB was set to false by this point, otherwise we would want to do it here
+						DoMessageCallback("Failed to load a GB rom in SGB mode.  Disabling SGB Mode.");
+						return LoadRom(path, nextComm);
 					}
 					else
 					{
