@@ -111,11 +111,6 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		public List<string> GetRecentListTruncated(int length)
-		{
-			return recentlist.Select(t => t.Substring(0, length)).ToList();
-		}
-
 		public void ToggleAutoLoad()
 		{
 			AutoLoad ^= true;
