@@ -1836,11 +1836,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CoreSyncSettings(object sender, RomLoader.SettingsLoadArgs e)
 		{
-			// _syncSetting solely exists because of a bad and confusing workflow
-			// A movie is loaded, then load rom is called, which closes the current rom which closes the current movie (which is the movie just loaded)
-			// As such the movie is "inactive".  So instead we load the movie and populate the _syncSettingsHack
-			// Then let the rom logic work its magic, then use it here, as such it will be null unless a movie invoked the load rom call
-			e.Settings = Global.MovieSession.SyncSettingsHack ?? Global.Config.GetCoreSyncSettings(e.Core);
+			if (Global.MovieSession.QueuedMovie != null)
+			{
+				e.Settings = ConfigService.LoadWithType(Global.MovieSession.QueuedMovie.SyncSettingsJson);
+			}
+			else
+			{
+				e.Settings = Global.Config.GetCoreSyncSettings(e.Core);
+			}
+
 		}
 
 		private static void CoreSettings(object sender, RomLoader.SettingsLoadArgs e)
@@ -3022,8 +3026,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ShowLoadError(object sender, RomLoader.RomErrorArgs e)
 		{
-			Global.MovieSession.SyncSettingsHack = null; // ensure subsequent calls to LoadRom won't get the settings object created here
-
 			if (e.Type == RomLoader.LoadErrorType.MissingFirmware)
 			{
 				var result = MessageBox.Show(

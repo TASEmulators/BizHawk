@@ -35,9 +35,6 @@ namespace BizHawk.Client.Common
 			get { return QueuedMovie != null; }
 		}
 
-		//TODO: this shouldn't be a hack anymore, the contents of this should be reliably in QueuedMovie
-		public object SyncSettingsHack { get; set; }
-
 		public MultitrackRecording MultiTrack { get { return _multiTrack; } }
 		public IMovieController MovieControllerAdapter{ get; set; }
 
@@ -480,12 +477,6 @@ namespace BizHawk.Client.Common
 				{
 					Global.Config.SNES_InSnes9x = false;
 				}
-			}
-
-			var s = Global.MovieSession.Movie.SyncSettingsJson;
-			if (!string.IsNullOrWhiteSpace(s))
-			{
-				SyncSettingsHack = ConfigService.LoadWithType(s);
 			}
 
 			if (record) // This is a hack really, we need to set the movie to its propert state so that it will be considered active later
