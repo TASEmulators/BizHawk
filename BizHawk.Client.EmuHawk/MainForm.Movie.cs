@@ -67,34 +67,12 @@ namespace BizHawk.Client.EmuHawk
 			SetWindowText();
 		}
 
-		// Movie Refactor TODO: this needs to be considered, and adapated to the queue system
 		public void RestartMovie()
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				LoadRom(CurrentlyOpenRom);
-				if (Global.MovieSession.Movie.StartsFromSavestate)
-				{
-					// TODO: why does this code exist twice??
-
-					if (Global.MovieSession.Movie.TextSavestate != null)
-					{
-						Global.Emulator.LoadStateText(new StringReader(Global.MovieSession.Movie.TextSavestate));
-					}
-					else
-					{
-						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.BinarySavestate, false)));
-					}
-
-					//var state = Convert.FromBase64String(Global.MovieSession.Movie.SavestateBinaryBase64Blob);
-					//Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(state)));
-					Global.Emulator.ResetCounters();
-				}
-
-				Global.MovieSession.Movie.StartNewPlayback();
-				SetMainformMovieInfo();
+				GlobalWin.MainForm.StartNewMovie(Global.MovieSession.Movie, true);
 				GlobalWin.OSD.AddMessage("Replaying movie file in read-only mode");
-				Global.MovieSession.ReadOnly = true;
 			}
 		}
 
