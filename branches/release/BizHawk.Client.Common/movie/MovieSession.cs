@@ -2,6 +2,12 @@
 using System.IO;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
+using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Nintendo.SNES9X;
+using BizHawk.Emulation.Cores.Nintendo.SNES;
+
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -15,6 +21,18 @@ namespace BizHawk.Client.Common
 		{
 			ReadOnly = true;
 			MovieControllerAdapter = MovieService.DefaultInstance.LogGeneratorInstance().MovieControllerAdapter;
+		}
+
+		/// <summary>
+		/// When initializing a movie, it will be stored here until Rom processes have been completed, then it will be moved to the Movie property
+		/// If an existing movie is still active, it will remain in the Movie property while the new movie is queued
+		/// </summary>
+		public IMovie QueuedMovie { get; set; }
+
+		// This wrapper but the logic could change, don't make the client code understand these details
+		public bool MovieIsQueued
+		{
+			get { return QueuedMovie != null; }
 		}
 
 		public MultitrackRecording MultiTrack { get { return _multiTrack; } }
@@ -149,6 +167,7 @@ namespace BizHawk.Client.Common
 			ModeChangedCallback();
 		}
 
+		// Movie Refactor TODO: delete me, any code calling this is poorly designed
 		public bool MovieLoad()
 		{
 			MovieControllerAdapter = Movie.LogGeneratorInstance().MovieControllerAdapter;
@@ -386,6 +405,90 @@ namespace BizHawk.Client.Common
 			{
 				MessageCallback("MultiTrack cannot be enabled while not recording.");
 			}
+		}
+
+		// Movie Load Refactor TODO: a better name
+		/// <summary>
+		/// Sets the Movie property with the QueuedMovie, clears the queued movie, and starts the new movie
+		/// </summary>
+		public void RunQueuedMovie(bool recordMode)
+		{
+			Movie = QueuedMovie;
+			QueuedMovie = null;
+
+			if (Movie.IsRecording)
+			{
+				Movie.StartNewRecording();
+				ReadOnly = false;
+			}
+			else
+			{
+				Movie.StartNewPlayback();
+			}
+		}
+
+		public void QueueNewMovie(IMovie movie, bool record)
+		{
+			if (!record) // The semantics of record is that we are starting a new movie, and even wiping a pre-existing movie with the same path, but non-record means we are loading an existing movie into playback mode
+			{
+				movie.Load();
+				if (movie.SystemID != Global.Emulator.SystemId)
+				{
+					MessageCallback("Movie does not match the currently loaded system, unable to load");
+					return;
+				}
+			}
+
+			//If a movie is already loaded, save it before starting a new movie
+			if (Global.MovieSession.Movie.IsActive && !string.IsNullOrEmpty(Global.MovieSession.Movie.Filename))
+			{
+				Global.MovieSession.Movie.Save();
+			}
+
+			// Note: this populates MovieControllerAdapter's Type with the approparite controller
+			// Don't set it to a movie instance of the adapter or you will lose the definition!
+			InputManager.RewireInputChain();
+
+			if (!record && Global.Emulator.SystemId == "NES") // For NES we need special logic since the movie will drive which core to load
+			{
+				var quicknesName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(QuickNES), typeof(CoreAttributes))).CoreName;
+				var neshawkName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(NES), typeof(CoreAttributes))).CoreName;
+
+				// If either is specified use that, else use whatever is currently set
+				if (Global.MovieSession.Movie.Core == quicknesName)
+				{
+					Global.Config.NES_InQuickNES = true;
+				}
+				else if (Global.MovieSession.Movie.Core == neshawkName)
+				{
+					Global.Config.NES_InQuickNES = false;
+				}
+			}
+			else if (!record && Global.Emulator.SystemId == "SNES") // ditto with snes9x vs bsnes
+			{
+				var snes9xName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(Snes9x), typeof(CoreAttributes))).CoreName;
+				var bsnesName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(LibsnesCore), typeof(CoreAttributes))).CoreName;
+
+				if (Global.MovieSession.Movie.Core == snes9xName)
+				{
+					Global.Config.SNES_InSnes9x = true;
+				}
+				else
+				{
+					Global.Config.SNES_InSnes9x = false;
+				}
+			}
+
+			if (record) // This is a hack really, we need to set the movie to its propert state so that it will be considered active later
+			{
+				movie.SwitchToRecord();
+			}
+			else
+			{
+				movie.SwitchToPlay();
+			}
+
+			QueuedMovie = movie;
 		}
 	}
 }
