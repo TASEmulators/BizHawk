@@ -14,116 +14,27 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public void StartNewMovie(IMovie movie, bool record)
 		{
-			if (!record) // The semantics of record is that we are starting a new movie, and even wiping a pre-existing movie with the same path, but non-record means we are loading an existing movie into playback mode
-			{
-				movie.Load();
-			}
+			Global.MovieSession.QueueNewMovie(movie, record);
 
-			if (movie.SystemID != Global.Emulator.SystemId)
-			{
-				GlobalWin.OSD.AddMessage("Movie does not match the currently loaded system, unable to load");
-				return;
-			}
-
-			//If a movie is already loaded, save it before starting a new movie
-			if (Global.MovieSession.Movie.IsActive && !string.IsNullOrEmpty(Global.MovieSession.Movie.Filename))
-			{
-				Global.MovieSession.Movie.Save();
-			}
-
-			Global.MovieSession = new MovieSession
-			{
-				Movie = movie,
-				MovieControllerAdapter = movie.LogGeneratorInstance().MovieControllerAdapter,
-				MessageCallback = GlobalWin.OSD.AddMessage,
-				AskYesNoCallback = StateErrorAskUser,
-				PauseCallback = PauseEmulator,
-				ModeChangedCallback = SetMainformMovieInfo
-			};
-
-			InputManager.RewireInputChain();
-
-			if (!record)
-			{
-				Global.MovieSession.MovieLoad(); // TODO this loads it a 2nd time, ugh
-			}
-
-			try
-			{
-				if (!record && Global.Emulator.SystemId == "NES") // For NES we need special logic since the movie will drive which core to load
-				{
-					var quicknesName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(QuickNES), typeof(CoreAttributes))).CoreName;
-					var neshawkName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(NES), typeof(CoreAttributes))).CoreName;
-
-					// If either is specified use that, else use whatever is currently set
-					if (Global.MovieSession.Movie.Core == quicknesName)
-					{
-						Global.Config.NES_InQuickNES = true;
-					}
-					else if (Global.MovieSession.Movie.Core == neshawkName)
-					{
-						Global.Config.NES_InQuickNES = false;
-					}
-				}
-				else if (!record && Global.Emulator.SystemId == "SNES") // ditto with snes9x vs bsnes
-				{
-					var snes9xName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(Snes9x), typeof(CoreAttributes))).CoreName;
-					var bsnesName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(LibsnesCore), typeof(CoreAttributes))).CoreName;
-
-					if (Global.MovieSession.Movie.Core == snes9xName)
-					{
-						Global.Config.SNES_InSnes9x = true;
-					}
-					else
-					{
-						Global.Config.SNES_InSnes9x = false;
-					}
-				}
-
-				var s = Global.MovieSession.Movie.SyncSettingsJson;
-				if (!string.IsNullOrWhiteSpace(s))
-				{
-					_syncSettingsHack = ConfigService.LoadWithType(s);
-				}
-
-				if (record) // This is a hack really, we need to set the movie to its propert state so that it will be considered active later
-				{
-					Global.MovieSession.Movie.SwitchToRecord();
-				}
-				else
-				{
-					Global.MovieSession.Movie.SwitchToRecord();
-				}
-
-				LoadRom(GlobalWin.MainForm.CurrentlyOpenRom);
-			}
-			finally
-			{
-				// ensure subsequent calls to LoadRom won't get the settings object created here
-				this._syncSettingsHack = null;
-			}
+			LoadRom(GlobalWin.MainForm.CurrentlyOpenRom);
 
 			Global.Config.RecentMovies.Add(movie.Filename);
 
 			if (Global.MovieSession.Movie.StartsFromSavestate)
 			{
 				if (Global.MovieSession.Movie.TextSavestate != null)
+				{
 					Global.Emulator.LoadStateText(new StringReader(Global.MovieSession.Movie.TextSavestate));
+				}
 				else
+				{
 					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.BinarySavestate, false)));
+				}
 
 				Global.Emulator.ResetCounters();
 			}
 
-			if (record)
-			{
-				Global.MovieSession.Movie.StartNewRecording();
-				Global.MovieSession.ReadOnly = false;
-			}
-			else
-			{
-				Global.MovieSession.Movie.StartNewPlayback();
-			}
+			Global.MovieSession.RunQueuedMovie(record);
 
 			SetMainformMovieInfo();
 			UpdateStatusSlots();
@@ -156,11 +67,12 @@ namespace BizHawk.Client.EmuHawk
 			SetWindowText();
 		}
 
+		// Movie Refactor TODO: this needs to be considered, and adapated to the queue system
 		public void RestartMovie()
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				StopMovieThenLoadRom(CurrentlyOpenRom);
+				LoadRom(CurrentlyOpenRom);
 				if (Global.MovieSession.Movie.StartsFromSavestate)
 				{
 					// TODO: why does this code exist twice??
