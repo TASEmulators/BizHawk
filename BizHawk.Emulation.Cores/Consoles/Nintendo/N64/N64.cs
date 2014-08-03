@@ -238,8 +238,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public bool IsLagFrame
 		{
-			get { return !_inputProvider.LastFrameInputPolled; }
-			set { _inputProvider.LastFrameInputPolled = !value; }
+			get
+			{
+				if (_syncSettings.UseMupenStyleLag)
+				{
+					return !IsVIFrame;
+				}
+
+				return !_inputProvider.LastFrameInputPolled;
+			}
+
+			set
+			{
+				if (_syncSettings.UseMupenStyleLag)
+				{
+					IsVIFrame = !value;
+				}
+				else
+				{
+					_inputProvider.LastFrameInputPolled = !value;
+				}
+			}
 		}
 
 		public bool IsVIFrame
