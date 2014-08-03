@@ -1787,8 +1787,8 @@ namespace BizHawk.Client.EmuHawk
 
 			N64CircularAnalogRangeMenuItem.Checked = Global.Config.N64UseCircularAnalogConstraint;
 
-			var ss = (N64SyncSettings)Global.Emulator.GetSyncSettings();
-			MupenStyleLagMenuItem.Checked = ss.UseMupenStyleLag;
+			var s = (N64Settings)Global.Emulator.GetSettings();
+			MupenStyleLagMenuItem.Checked = s.UseMupenStyleLag;
 		}
 
 		private void N64PluginSettingsMenuItem_Click(object sender, EventArgs e)
@@ -1831,9 +1831,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MupenStyleLagMenuItem_Click(object sender, EventArgs e)
 		{
-			var ss = (N64SyncSettings)Global.Emulator.GetSyncSettings();
-			ss.UseMupenStyleLag ^= true;
-			Global.Emulator.PutSyncSettings(ss);
+			var s = (N64Settings)Global.Emulator.GetSettings();
+			s.UseMupenStyleLag ^= true;
+			Global.Emulator.PutSettings(s);
 		}
 
 		#endregion
