@@ -19,14 +19,8 @@ namespace BizHawk.Client.EmuHawk
 		private N64Settings s;
 		private N64SyncSettings ss;
 
-		private enum JaboStatus
-		{
-			NotReady,
-			ReadyToPatch,
-			Ready,
-			WrongVersion21,
-			WrongVersion16
-		};
+		private N64JaboManager.JaboStatus currentJaboStatus = N64JaboManager.JaboStatus.NotReady;
+
 
 		string[] validResolutions = {
 										"320 x 240",
@@ -59,7 +53,6 @@ namespace BizHawk.Client.EmuHawk
 											"1380 x 768"
 										};
 
-		private JaboStatus currentJaboStatus = JaboStatus.NotReady;
 		private string previousPluginSelection = string.Empty;
 		private bool programmaticallyChangingPluginComboBox = false;
 
@@ -387,40 +380,9 @@ namespace BizHawk.Client.EmuHawk
                 N64plugintabcontrol.TabPages.Remove(JaboTab);
 			}
 
-			if (File.Exists("dll\\Jabo_Direct3D8_patched.dll"))
-			{
-				byte[] hash = MD5.Create().ComputeHash(File.ReadAllBytes("dll\\Jabo_Direct3D8_patched.dll"));
-				string hash_string = BitConverter.ToString(hash).Replace("-", "");
-				if (hash_string == "F4D6E624489CD88C68A5850426D4D70E")
-				{
-					// jabo is ready to go
-					currentJaboStatus = JaboStatus.Ready;
-				}
-			}
-			else if (File.Exists("dll\\Jabo_Direct3D8.dll"))
-			{
-				byte[] hash = MD5.Create().ComputeHash(File.ReadAllBytes("dll\\Jabo_Direct3D8.dll"));
-				string hash_string = BitConverter.ToString(hash).Replace("-", "");
-				if (hash_string == "4F353AA71E7455B81205D8EC0AA339E1")
-				{
-					// jabo will be patched when a rom is loaded. user is ready to go
-					currentJaboStatus = JaboStatus.ReadyToPatch;
-				}
-				else if (hash_string == "4A4173928ED33735157A8D8CD14D4C9C")
-				{
-					// wrong jabo installed (2.0)
-					currentJaboStatus = JaboStatus.WrongVersion21;
-				}
-				else if (hash_string == "FF57F60C58EDE6364B980EDCB311873B")
-				{
-					// wrong jabo installed (1.6)
-					currentJaboStatus = JaboStatus.WrongVersion16;
-				}
-				else
-				{
-					// this is not the right file
-				}
-			}
+			N64JaboManager manager = new N64JaboManager();
+			manager.Scan();
+			currentJaboStatus = manager.Status;
 
 			s = GetSettings();
 			ss = GetSyncSettings();
@@ -971,7 +933,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (PluginComboBox.Text == "Jabo 1.6.1")
 			{
-				if (currentJaboStatus == JaboStatus.Ready || currentJaboStatus == JaboStatus.ReadyToPatch)
+				if (currentJaboStatus == N64JaboManager.JaboStatus.Ready || currentJaboStatus == N64JaboManager.JaboStatus.ReadyToPatch)
 				{
 					jaboStatusLabel.Text = "You are ready to use Jabo.";
 					jaboStatusDetailLabel.Text = "";
@@ -983,15 +945,15 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					jaboStatusDetailLabel.Text = "To use Jabo please copy Jabo_Direct3D8.dll from a Project64 v1.6.1 installation into Bizhawk's dll directory.";
-					if (currentJaboStatus == JaboStatus.NotReady)
+					if (currentJaboStatus == N64JaboManager.JaboStatus.NotReady)
 					{
 						jaboStatusLabel.Text = "You are NOT ready to use Jabo.";
 					}
-					else if (currentJaboStatus == JaboStatus.WrongVersion16)
+					else if (currentJaboStatus == N64JaboManager.JaboStatus.WrongVersion16)
 					{
 						jaboStatusLabel.Text = "You are NOT ready to use Jabo. Bizhawk requires Jabo Direct3D8 v1.6.1, but found v1.6 instead.";
 					}
-					else if (currentJaboStatus == JaboStatus.WrongVersion21)
+					else if (currentJaboStatus == N64JaboManager.JaboStatus.WrongVersion21)
 					{
 						jaboStatusLabel.Text = "You are NOT ready to use Jabo. Bizhawk requires Jabo Direct3D8 v1.6.1, but found v2.0 instead.";
 					}
