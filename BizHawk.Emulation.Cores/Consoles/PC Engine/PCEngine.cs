@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					Type = NecSystemType.SuperGrafx;
 					break;
 			}
-			this.Settings = (PCESettings)Settings ?? new PCESettings();
+			this._settings = (PCESettings)Settings ?? new PCESettings();
 			_syncSettings = (PCESyncSettings)syncSettings ?? new PCESyncSettings();
 			Init(game, rom);
 			SetControllerButtons();
@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			systemid = "PCECD";
 			Type = NecSystemType.TurboCD;
 			this.disc = disc;
-			this.Settings = (PCESettings)Settings ?? new PCESettings();
+			this._settings = (PCESettings)Settings ?? new PCESettings();
 			_syncSettings = (PCESyncSettings)syncSettings ?? new PCESyncSettings();
 
 			GameInfo biosInfo;
@@ -238,7 +238,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			{
 				ArcadeRam = new byte[0x200000];
 				ArcadeCard = true;
-				ArcadeCardRewindHack = Settings.ArcadeCardRewindHack;
+				ArcadeCardRewindHack = _settings.ArcadeCardRewindHack;
 				for (int i = 0; i < 4; i++)
 					ArcadePage[i] = new ArcadeCardPage();
 			}
@@ -261,7 +261,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (game["AdpcmVol"])
 				ADPCM.MaxVolume = int.Parse(game.OptionValue("AdpcmVol"));
 			// the gamedb can also force equalizevolumes on
-			if (TurboCD && (Settings.EqualizeVolume || game["EqualizeVolumes"] || game.NotInDatabase))
+			if (TurboCD && (_settings.EqualizeVolume || game["EqualizeVolumes"] || game.NotInDatabase))
 				SoundMixer.EqualizeVolumes();
 
 			// Ok, yes, HBlankPeriod's only purpose is game-specific hax.
@@ -331,7 +331,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		void CheckSpriteLimit()
 		{
-			bool spriteLimit = ForceSpriteLimit | Settings.SpriteLimit;
+			bool spriteLimit = ForceSpriteLimit | _settings.SpriteLimit;
 			VDC1.PerformSpriteLimit = spriteLimit;
 			if (VDC2 != null)
 				VDC2.PerformSpriteLimit = spriteLimit;
@@ -563,22 +563,22 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				disc.Dispose();
 		}
 
-		public PCESettings Settings;
+		public PCESettings _settings;
 		private PCESyncSettings _syncSettings;
 
-		public object GetSettings() { return Settings.Clone(); }
-		public object GetSyncSettings() { return _syncSettings; }
+		public object GetSettings() { return _settings.Clone(); }
+		public object GetSyncSettings() { return _syncSettings.Clone(); }
 		public bool PutSettings(object o)
 		{
 			PCESettings n = (PCESettings)o;
 			bool ret;
-			if (n.ArcadeCardRewindHack != Settings.ArcadeCardRewindHack ||
-				n.EqualizeVolume != Settings.EqualizeVolume)
+			if (n.ArcadeCardRewindHack != _settings.ArcadeCardRewindHack ||
+				n.EqualizeVolume != _settings.EqualizeVolume)
 				ret = true;
 			else
 				ret = false;
 
-			Settings = n;
+			_settings = n;
 			SetControllerButtons();
 			return ret;
 		}
@@ -616,7 +616,12 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			public PCESyncSettings Clone()
 			{
-				return (PCESyncSettings)MemberwiseClone();
+				var ret = new PCESyncSettings();
+				for (int i = 0; i < Controllers.Length; i++)
+				{
+					ret.Controllers[i].IsConnected = Controllers[i].IsConnected;
+				}
+				return ret;
 			}
 
 			public class ControllerSetting

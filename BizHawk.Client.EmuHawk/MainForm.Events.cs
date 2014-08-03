@@ -1288,14 +1288,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PceControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (new PCEControllerConfig().ShowDialog() == DialogResult.OK)
+			using (var dlg = new PCEControllerConfig())
 			{
-				GlobalWin.MainForm.FlagNeedsReboot();
-				GlobalWin.OSD.AddMessage("Controller settings saved but a core reboot is required");
-			}
-			else
-			{
-				GlobalWin.OSD.AddMessage("Controller settings aborted");
+				dlg.ShowDialog();
 			}
 		}
 
