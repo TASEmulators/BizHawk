@@ -13,6 +13,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		{
 			public N64JaboPluginSettings()
 			{
+				UseDefaultHacks = true;
+
 				anisotropic_level = ANISOTROPIC_FILTERING_LEVEL.FourTimes;
 				antialiasing_level = ANTIALIASING_LEVEL.Off;
 				brightness = 100;
@@ -40,8 +42,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			public void FillPerGameHacks(GameInfo game)
 			{
-
+				if (UseDefaultHacks)
+				{
+					resolution_width = game.GetInt("Jabo_resolution_width", -1);
+					resolution_height = game.GetInt("resolution_height", -1);
+					clear_mode = (Direct3DClearMode)game.GetInt("clear_mode", (int)Direct3DClearMode.Default);
+				}
 			}
+
+			public bool UseDefaultHacks { get; set; }
 
 			[DefaultValue(ANISOTROPIC_FILTERING_LEVEL.FourTimes)]
 			[DisplayName("Anisotropic filtering")]
