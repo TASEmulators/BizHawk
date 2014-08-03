@@ -591,7 +591,7 @@ DWORD WINAPI ThreadProc( LPVOID lpParam )
 	char *pString = (char *)(lpParam);
 	RegisterDLLWindowClass("InjectedDLLWindowClass");
 	hWnd_jabo = CreateWindowEx (0, "InjectedDLLWindowClass", pString, WS_OVERLAPPEDWINDOW, 300, 300, 400, 300, NULL, NULL,inj_hModule, NULL );
-	ShowWindow (hWnd_jabo, SW_NORMAL);
+	ShowWindow (hWnd_jabo, SW_HIDE);
     while (GetMessage (&messages, NULL, 0, 0))
     {
 		TranslateMessage(&messages);
