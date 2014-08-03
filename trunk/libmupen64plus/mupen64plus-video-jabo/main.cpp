@@ -403,8 +403,21 @@ EXPORT int CALL InitiateGFX(GFX_INFO Gfx_Info)
 		case 4: new_options_val |= 0x00000100; break;
 	}
 
-	// Force 800x600 for now
-	new_options_val |= 0x00000004;
+	int width, height;
+	Config_ReadScreenResolution(&width,&height);
+	if (width == 320 && height == 240) { new_options_val |= 0x00000000; }
+	else if (width == 400 && height == 300) { new_options_val |= 0x00000001; } 
+	else if (width == 512 && height == 384) { new_options_val |= 0x00000002; } 
+	else if (width == 640 && height == 480) { new_options_val |= 0x00000003; } 
+	else if (width == 800 && height == 600) { new_options_val |= 0x00000004; } 
+	else if (width == 1024 && height == 768) { new_options_val |= 0x00000005; } 
+	else if (width == 1152 && height == 864) { new_options_val |= 0x00000006; } 
+	else if (width == 1280 && height == 960) { new_options_val |= 0x00000007; } 
+	else if (width == 1600 && height == 1200) { new_options_val |= 0x00000008; } 
+	else if (width == 848 && height == 480) { new_options_val |= 0x00000009; } 
+	else if (width == 1024 && height == 576) { new_options_val |= 0x0000000a; } 
+	else if (width == 1380 && height == 768) { new_options_val |= 0x0000000b; } 
+	else { /* will pick 320x240 */ }
 
 	DWORD new_initflags_val = 0x00e00000;
 	if (settings.direct3d_transformation_pipeline == TRUE) { new_initflags_val = 0x00a00000; }
@@ -578,7 +591,7 @@ DWORD WINAPI ThreadProc( LPVOID lpParam )
 	char *pString = (char *)(lpParam);
 	RegisterDLLWindowClass("InjectedDLLWindowClass");
 	hWnd_jabo = CreateWindowEx (0, "InjectedDLLWindowClass", pString, WS_OVERLAPPEDWINDOW, 300, 300, 400, 300, NULL, NULL,inj_hModule, NULL );
-	ShowWindow (hWnd_jabo, SW_HIDE);
+	ShowWindow (hWnd_jabo, SW_NORMAL);
     while (GetMessage (&messages, NULL, 0, 0))
     {
 		TranslateMessage(&messages);
