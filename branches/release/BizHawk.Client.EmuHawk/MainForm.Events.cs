@@ -9,6 +9,7 @@ using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.ColecoVision;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
@@ -16,6 +17,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.config.NES;
+
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
@@ -1784,6 +1786,9 @@ namespace BizHawk.Client.EmuHawk
 				!Global.MovieSession.Movie.IsActive;
 
 			N64CircularAnalogRangeMenuItem.Checked = Global.Config.N64UseCircularAnalogConstraint;
+
+			var s = (N64Settings)Global.Emulator.GetSettings();
+			MupenStyleLagMenuItem.Checked = s.UseMupenStyleLag;
 		}
 
 		private void N64PluginSettingsMenuItem_Click(object sender, EventArgs e)
@@ -1822,6 +1827,13 @@ namespace BizHawk.Client.EmuHawk
 		private void N64CircularAnalogRangeMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.N64UseCircularAnalogConstraint ^= true;
+		}
+
+		private void MupenStyleLagMenuItem_Click(object sender, EventArgs e)
+		{
+			var s = (N64Settings)Global.Emulator.GetSettings();
+			s.UseMupenStyleLag ^= true;
+			Global.Emulator.PutSettings(s);
 		}
 
 		#endregion
