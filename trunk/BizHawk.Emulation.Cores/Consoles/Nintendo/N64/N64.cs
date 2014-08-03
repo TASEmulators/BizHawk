@@ -248,7 +248,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				return !_inputProvider.LastFrameInputPolled;
 			}
 
-			set
+			internal set
 			{
 				if (_settings.UseMupenStyleLag)
 				{
@@ -264,7 +264,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public bool IsVIFrame
 		{
 			get { return _videoProvider.IsVIFrame; }
-			set { _videoProvider.IsVIFrame = value; }
+			internal set { _videoProvider.IsVIFrame = value; }
 		}
 
 		public void ResetCounters()
