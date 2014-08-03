@@ -1800,8 +1800,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					GlobalWin.MainForm.FlagNeedsReboot();
-					GlobalWin.OSD.AddMessage("Plugin settings saved but a core reboot is required");
+					// Do nothing, Reboot is being flagged already if they chaned anything
 				}
 			}
 			else
