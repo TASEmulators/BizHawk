@@ -142,6 +142,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Jabo
+			ss.JaboPlugin.clear_mode = JaboClearModeDropDown.SelectedItem
+				.ToString()
+				.GetEnumFromDescription<N64SyncSettings.N64JaboPluginSettings.Direct3DClearMode>();
+
 			ss.JaboPlugin.anisotropic_level = JaboAnisotropicFilteringLevelDropdown.SelectedItem
 				.ToString()
 				.GetEnumFromDescription<N64SyncSettings.N64JaboPluginSettings.ANISOTROPIC_FILTERING_LEVEL>();
@@ -440,6 +444,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Jabo
+			JaboUseForGameCheckbox.Checked = ss.JaboPlugin.UseDefaultHacks;
+			JaboClearModeDropDown
+				.PopulateFromEnum<N64SyncSettings.N64JaboPluginSettings.Direct3DClearMode>(ss.JaboPlugin.clear_mode);
+
 			JaboAnisotropicFilteringLevelDropdown
 				.PopulateFromEnum<N64SyncSettings.N64JaboPluginSettings.ANISOTROPIC_FILTERING_LEVEL>(ss.JaboPlugin.anisotropic_level);
 			JaboAntialiasingLevelDropdown
@@ -1055,6 +1063,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			previousPluginSelection = PluginComboBox.SelectedItem.ToString();
+		}
+
+		private void JaboUseForGameCheckbox_CheckedChanged(object sender, EventArgs e)
+		{
+			JaboPerGameHacksGroupBox.Controls
+				.OfType<Control>()
+				.ToList()
+				.ForEach(c => c.Enabled = !JaboUseForGameCheckbox.Checked);
 		}
 
 	}
