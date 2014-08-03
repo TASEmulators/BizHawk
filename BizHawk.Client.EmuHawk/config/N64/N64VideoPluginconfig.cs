@@ -28,6 +28,37 @@ namespace BizHawk.Client.EmuHawk
 			WrongVersion16
 		};
 
+		string[] validResolutions = {
+										"320 x 240",
+										"400 x 300",
+										"480 x 360",
+										"512 x 384",
+										"640 x 480",
+										"800 x 600",
+										"1024 x 768",
+										"1152 x 864",
+										"1280 x 960",
+										"1400 x 1050",
+										"1600 x 1200",
+										"1920 x 1440",
+										"2048 x 1536" 
+									};
+
+		string[] validResolutionsJabo = {
+											"320 x 240",
+											"400 x 300",
+											"512 x 384",
+											"640 x 480",
+											"800 x 600",
+											"1024 x 768",
+											"1152 x 864",
+											"1280 x 960",
+											"1600 x 1200",
+											"848 x 480",
+											"1024 x 576",
+											"1380 x 768"
+										};
+
 		private JaboStatus currentJaboStatus = JaboStatus.NotReady;
 		private string previousPluginSelection = string.Empty;
 		private bool programmaticallyChangingPluginComboBox = false;
@@ -398,16 +429,7 @@ namespace BizHawk.Client.EmuHawk
 			RspTypeDropdown.PopulateFromEnum<N64SyncSettings.RspType>(ss.Rsp);
 
 			JaboPropertyGrid.SelectedObject = ss.JaboPlugin;
-
-			var video_setting = s.VideoSizeX
-						+ " x "
-						+ s.VideoSizeY;
-
-			var index = VideoResolutionComboBox.Items.IndexOf(video_setting);
-			if (index >= 0)
-			{
-				VideoResolutionComboBox.SelectedIndex = index;
-			}
+			
 			switch (ss.VideoPlugin)
 			{
 				case PluginType.GlideMk2:
@@ -426,6 +448,16 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					break;
+			}
+
+			var video_setting = s.VideoSizeX
+						+ " x "
+						+ s.VideoSizeY;
+
+			var index = VideoResolutionComboBox.Items.IndexOf(video_setting);
+			if (index >= 0)
+			{
+				VideoResolutionComboBox.SelectedIndex = index;
 			}
 
 			//Rice
@@ -927,12 +959,26 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			if (VideoResolutionComboBox.SelectedItem == null)
+			{
+				VideoResolutionComboBox.SelectedIndex = 0;
+			}
+
+			var oldResolution = VideoResolutionComboBox.SelectedItem.ToString();
+			var strArr = oldResolution.Split('x');
+			int OldSizeX = int.Parse(strArr[0].Trim());
+			int OldSizeY = int.Parse(strArr[1].Trim());
+
 			if (PluginComboBox.Text == "Jabo 1.6.1")
 			{
 				if (currentJaboStatus == JaboStatus.Ready || currentJaboStatus == JaboStatus.ReadyToPatch)
 				{
 					jaboStatusLabel.Text = "You are ready to use Jabo.";
 					jaboStatusDetailLabel.Text = "";
+
+					// Change resolution list to jabo
+					VideoResolutionComboBox.Items.Clear();
+					VideoResolutionComboBox.Items.AddRange(validResolutionsJabo);
 				}
 				else
 				{
@@ -959,6 +1005,59 @@ namespace BizHawk.Client.EmuHawk
 			{
 				jaboStatusLabel.Text = "";
 				jaboStatusDetailLabel.Text = "";
+
+				// Change resolution list to the rest
+				VideoResolutionComboBox.Items.Clear();
+				VideoResolutionComboBox.Items.AddRange(validResolutions);
+			}
+
+			// If the given resolution is in the table, pick it.
+			// Otherwise find a best fit
+			var index = VideoResolutionComboBox.Items.IndexOf(oldResolution);
+			if (index >= 0)
+			{
+				VideoResolutionComboBox.SelectedIndex = index;
+			}
+			else
+			{
+				int bestFit = -1;
+				for (int i = 0; i < VideoResolutionComboBox.Items.Count; i++)
+				{
+					string option = (string)VideoResolutionComboBox.Items[i];
+					strArr = option.Split('x');
+					int newSizeX = int.Parse(strArr[0].Trim());
+					int newSizeY = int.Parse(strArr[1].Trim());
+					if (OldSizeX < newSizeX || OldSizeX == newSizeX && OldSizeY < newSizeY)
+					{
+						if (i == 0)
+						{
+							bestFit  = 0;
+							break;
+						}
+						else
+						{
+							bestFit = i - 1;
+							break;
+						}
+					}
+				}
+
+				if (bestFit < 0)
+				{
+					if (PluginComboBox.Text == "Jabo 1.6.1")
+					{
+						// Pick 8 to avoid picking the widescreen resolutions
+						VideoResolutionComboBox.SelectedIndex = 8;
+					}
+					else
+					{
+						VideoResolutionComboBox.SelectedIndex = VideoResolutionComboBox.Items.Count - 1;
+					}
+				}
+				else
+				{
+					VideoResolutionComboBox.SelectedIndex = bestFit;
+				}
 			}
 
 			previousPluginSelection = PluginComboBox.SelectedItem.ToString();
