@@ -29,8 +29,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			JaboPlugin = new N64JaboPluginSettings();
 		}
 
-		public bool UseMupenStyleLag { get; set; }
-
 		public CoreType Core { get; set; }
 		public RspType Rsp { get; set; }
 		public PluginType VideoPlugin  { get; set; }

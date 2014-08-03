@@ -240,7 +240,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		{
 			get
 			{
-				if (_syncSettings.UseMupenStyleLag)
+				if (_settings.UseMupenStyleLag)
 				{
 					return !IsVIFrame;
 				}
@@ -250,7 +250,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			set
 			{
-				if (_syncSettings.UseMupenStyleLag)
+				if (_settings.UseMupenStyleLag)
 				{
 					IsVIFrame = !value;
 				}
