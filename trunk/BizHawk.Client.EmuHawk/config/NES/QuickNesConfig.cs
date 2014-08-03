@@ -11,7 +11,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 
-namespace BizHawk.Client.EmuHawk.config.NES
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class QuickNesConfig : Form
 	{
