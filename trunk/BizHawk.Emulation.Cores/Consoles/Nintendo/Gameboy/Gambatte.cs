@@ -990,16 +990,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public bool PutSyncSettings(object o)
 		{
 			var s = (GambatteSyncSettings)o;
-			bool ret;
-			if (s.ForceDMG != _SyncSettings.ForceDMG ||
-				s.GBACGB != _SyncSettings.GBACGB ||
-				s.MulticartCompat != _SyncSettings.MulticartCompat ||
-				s.RealTimeRTC != _SyncSettings.RealTimeRTC ||
-				s.RTCInitialTime != _SyncSettings.RTCInitialTime)
-				ret = true;
-			else
-				ret = false;
-
+			bool ret = GambatteSyncSettings.NeedsReboot(_SyncSettings, s);
 			_SyncSettings = s;
 			return ret;
 		}
@@ -1072,6 +1063,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			public GambatteSyncSettings Clone()
 			{
 				return (GambatteSyncSettings)MemberwiseClone();
+			}
+
+			public static bool NeedsReboot(GambatteSyncSettings x, GambatteSyncSettings y)
+			{
+				return !DeepEquality.DeepEquals(x, y);
 			}
 		}
 

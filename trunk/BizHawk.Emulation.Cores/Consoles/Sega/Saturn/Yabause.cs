@@ -739,18 +739,23 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			[DefaultValue(1)]
 			public int DispFactor { get { return _DispFactor; } set { _DispFactor = Math.Max(1, Math.Min(value, 4)); } }
 			[JsonIgnore]
+			[DeepEqualsIgnore]
 			private int _DispFactor;
 
 			[DisplayName("Display Free")]
 			[Description("In OpenGL mode, set to true to use a custom resolution and ignore DispFactor.")]
 			[DefaultValue(false)]
-			public bool DispFree { get; set; }
+			public bool DispFree { get { return _DispFree; } set { _DispFree = value; } }
+			[JsonIgnore]
+			[DeepEqualsIgnore]
+			private bool _DispFree;
 
 			[DisplayName("DispFree Final Width")]
 			[Description("In OpenGL mode and when DispFree is true, the width of the final resolution.")]
 			[DefaultValue(640)]
 			public int GLW { get { return _GLW; } set { _GLW = Math.Max(320, Math.Min(value, 2048)); } }
 			[JsonIgnore]
+			[DeepEqualsIgnore]
 			private int _GLW;
 
 			[DisplayName("DispFree Final Height")]
@@ -758,6 +763,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			[DefaultValue(480)]
 			public int GLH { get { return _GLH; } set { _GLH = Math.Max(224, Math.Min(value, 1024)); } }
 			[JsonIgnore]
+			[DeepEqualsIgnore]
 			private int _GLH;
 
 			[DisplayName("Ram Cart Type")]
@@ -782,7 +788,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 			public static bool NeedsReboot(SaturnSyncSettings x, SaturnSyncSettings y)
 			{
-				return x.UseGL != y.UseGL || x.CartType != y.CartType || x.SkipBios != y.SkipBios || x.RealTimeRTC != y.RealTimeRTC || x.RTCInitialTime != y.RTCInitialTime;
+				return !DeepEquality.DeepEquals(x, y);
 			}
 			public SaturnSyncSettings Clone()
 			{

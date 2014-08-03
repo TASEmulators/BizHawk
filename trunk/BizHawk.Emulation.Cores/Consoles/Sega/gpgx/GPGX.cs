@@ -824,7 +824,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			public static bool NeedsReboot(GPGXSyncSettings x, GPGXSyncSettings y)
 			{
-				return x.UseSixButton != y.UseSixButton || x.ControlType != y.ControlType || x.Region != y.Region;
+				return !DeepEquality.DeepEquals(x, y);
 			}
 		}
 
