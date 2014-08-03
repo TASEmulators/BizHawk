@@ -1172,11 +1172,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public static bool NeedsReboot(NESControlSettings x, NESControlSettings y)
 		{
-			return
-				x.Famicom != y.Famicom ||
-				x.FamicomExpPort != y.FamicomExpPort ||
-				x.NesLeftPort != y.NesLeftPort ||
-				x.NesRightPort != y.NesRightPort;
+			return !DeepEquality.DeepEquals(x, y);
 		}
 
 		public NESControlSettings Clone()
