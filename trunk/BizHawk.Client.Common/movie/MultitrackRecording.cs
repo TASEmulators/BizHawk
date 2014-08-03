@@ -2,29 +2,55 @@
 {
 	public class MultitrackRecording
 	{
+		public void Restart()
+		{
+			IsActive = false;
+			CurrentPlayer = 0;
+			RecordAll = false;
+		}
+
 		public bool IsActive { get; set; }
 
-		public int CurrentPlayer { get; set; }
+		public int CurrentPlayer{ get; set; }
 
 		public bool RecordAll { get; set; }
 
 		/// <summary>
 		/// A user friendly multitrack status
 		/// </summary>
-		public string CurrentState { get; set; }
+		public string CurrentState
+		{
+			get
+			{
+				if (!IsActive)
+				{
+					return string.Empty;
+				}
+
+				if (RecordAll)
+				{
+					return "Recording All";
+				}
+
+				if (CurrentPlayer == 0)
+				{
+					return "Recording None";
+				}
+
+				return "Recording Player " + CurrentPlayer;
+			}
+		}
 
 		public void SelectAll()
 		{
 			CurrentPlayer = 0;
 			RecordAll = true;
-			CurrentState = "Recording All";
 		}
 
 		public void SelectNone()
 		{
 			RecordAll = false;
 			CurrentPlayer = 0;
-			CurrentState = "Recording None";
 		}
 
 		public void Increment()
@@ -35,8 +61,6 @@
 			{
 				CurrentPlayer = 1;
 			}
-
-			CurrentState = "Recording Player " + CurrentPlayer;
 		}
 
 		public void Decrement()
@@ -47,8 +71,6 @@
 			{
 				CurrentPlayer = Global.Emulator.ControllerDefinition.PlayerCount;
 			}
-
-			CurrentState = "Recording Player " + CurrentPlayer;
 		}
 	}
 }
