@@ -141,6 +141,25 @@ namespace BizHawk.Client.EmuHawk
 				case "Jabo 1.6.1": ss.VideoPlugin = PluginType.Jabo; break;
 			}
 
+			// Jabo
+			ss.JaboPlugin.anisotropic_level = JaboAnisotropicFilteringLevelDropdown.SelectedItem
+				.ToString()
+				.GetEnumFromDescription<N64SyncSettings.N64JaboPluginSettings.ANISOTROPIC_FILTERING_LEVEL>();
+
+			ss.JaboPlugin.antialiasing_level = JaboAntialiasingLevelDropdown.SelectedItem
+				.ToString()
+				.GetEnumFromDescription<N64SyncSettings.N64JaboPluginSettings.ANTIALIASING_LEVEL>();
+
+			ss.JaboPlugin.brightness = (int)JaboBrightnessBox.Value;
+			ss.JaboPlugin.super2xsal = JaboSuper2xsalCheckbox.Checked;
+			ss.JaboPlugin.texture_filter = JaboTextureFilterCheckbox.Checked;
+			ss.JaboPlugin.adjust_aspect_ratio = JaboAdjustAspectRatioCheckbox.Checked;
+			ss.JaboPlugin.legacy_pixel_pipeline = JaboLegacyPixelPipelineCheckbox.Checked;
+			ss.JaboPlugin.alpha_blending = JaboAlphaBlendingCheckbox.Checked;
+			ss.JaboPlugin.direct3d_transformation_pipeline = JaboDirect3DPipelineCheckbox.Checked;
+			ss.JaboPlugin.z_compare = JaboZCompareCheckbox.Checked;
+			ss.JaboPlugin.copy_framebuffer = JaboCopyFrameBufferCheckbox.Checked;
+
 			// Rice
 			ss.RicePlugin.NormalAlphaBlender = RiceNormalAlphaBlender_CB.Checked;
 			ss.RicePlugin.FastTextureLoading = RiceFastTextureLoading_CB.Checked;
@@ -390,8 +409,6 @@ namespace BizHawk.Client.EmuHawk
 			CoreTypeDropdown.PopulateFromEnum<N64SyncSettings.CoreType>(ss.Core);
 			RspTypeDropdown.PopulateFromEnum<N64SyncSettings.RspType>(ss.Rsp);
 
-			JaboPropertyGrid.SelectedObject = ss.JaboPlugin;
-			
 			switch (ss.VideoPlugin)
 			{
 				case PluginType.GlideMk2:
@@ -421,6 +438,21 @@ namespace BizHawk.Client.EmuHawk
 			{
 				VideoResolutionComboBox.SelectedIndex = index;
 			}
+
+			// Jabo
+			JaboAnisotropicFilteringLevelDropdown
+				.PopulateFromEnum<N64SyncSettings.N64JaboPluginSettings.ANISOTROPIC_FILTERING_LEVEL>(ss.JaboPlugin.anisotropic_level);
+			JaboAntialiasingLevelDropdown
+				.PopulateFromEnum<N64SyncSettings.N64JaboPluginSettings.ANTIALIASING_LEVEL>(ss.JaboPlugin.antialiasing_level);
+			JaboBrightnessBox.Value = ss.JaboPlugin.brightness;
+			JaboSuper2xsalCheckbox.Checked = ss.JaboPlugin.super2xsal;
+			JaboTextureFilterCheckbox.Checked = ss.JaboPlugin.texture_filter;
+			JaboAdjustAspectRatioCheckbox.Checked = ss.JaboPlugin.adjust_aspect_ratio;
+			JaboLegacyPixelPipelineCheckbox.Checked = ss.JaboPlugin.legacy_pixel_pipeline;
+			JaboAlphaBlendingCheckbox.Checked = ss.JaboPlugin.alpha_blending;
+			JaboDirect3DPipelineCheckbox.Checked = ss.JaboPlugin.direct3d_transformation_pipeline;
+			JaboZCompareCheckbox.Checked = ss.JaboPlugin.z_compare;
+			JaboCopyFrameBufferCheckbox.Checked = ss.JaboPlugin.copy_framebuffer;
 
 			//Rice
 			RiceNormalAlphaBlender_CB.Checked = ss.RicePlugin.NormalAlphaBlender;
