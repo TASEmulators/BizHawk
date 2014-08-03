@@ -200,6 +200,7 @@ namespace BizHawk.Client.Common
 				ReadOnly = true;
 			}
 
+			MultiTrack.Restart();
 			ModeChangedCallback();
 		}
 
@@ -391,7 +392,6 @@ namespace BizHawk.Client.Common
 					if (Global.MovieSession.MultiTrack.IsActive)
 					{
 						MessageCallback("MultiTrack Enabled");
-						MultiTrack.CurrentState = "Recording None";
 					}
 					else
 					{
@@ -415,6 +415,7 @@ namespace BizHawk.Client.Common
 		{
 			Movie = QueuedMovie;
 			QueuedMovie = null;
+			MultiTrack.Restart();
 
 			if (Movie.IsRecording)
 			{
