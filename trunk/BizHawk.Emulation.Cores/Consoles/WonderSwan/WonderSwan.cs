@@ -508,7 +508,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
 			{
-				return x != y;
+				return !DeepEquality.DeepEquals(x, y);
 			}
 		}
 
