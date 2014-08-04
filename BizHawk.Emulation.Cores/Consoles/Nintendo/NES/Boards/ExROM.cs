@@ -251,7 +251,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			//wish this logic could be smaller..
 			//how does this KNOW that its in 8x16 sprites? the pattern of reads... emulate it that way..
-			if (NES.ppu.reg_2000.obj_size_16)
+			if (NES.ppu.reg_2000.obj_size_16
+				//zero 03-aug-2014 - added this to fix Uchuu Keibitai SDF. The game reads NT entries from CHR rom while PPU is disabled.
+				//obviously we have enormous numbers of bugs springing from our terrible emulation of ppu-disabled states, but this does the job for fixing this one
+				&& NES.ppu.reg_2001.show_obj 
+				)
 			{
 				if (NES.ppu.ppuphase == NES.PPU.PPUPHASE.OBJ)
 					bank_1k = a_banks_1k[bank_1k];
