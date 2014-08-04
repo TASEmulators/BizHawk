@@ -24,10 +24,41 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		)]
 	public class Gameboy : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
+		#region ALL SAVESTATEABLE STATE GOES HERE
+
 		/// <summary>
 		/// internal gambatte state
 		/// </summary>
 		internal IntPtr GambatteState = IntPtr.Zero;
+
+		public int Frame { get; set; }
+		public int LagCount { get; set; }
+		public bool IsLagFrame { get; private set; }
+
+		// all cycle counts are relative to a 2*1024*1024 mhz refclock
+
+		/// <summary>
+		/// total cycles actually executed
+		/// </summary>
+		private ulong _cycleCount = 0;
+
+		/// <summary>
+		/// number of extra cycles we overran in the last frame
+		/// </summary>
+		private uint frameOverflow = 0;
+		public ulong CycleCount { get { return _cycleCount; } }
+
+		#endregion
+
+		/// <summary>
+		/// the nominal length of one frame
+		/// </summary>
+		private const uint TICKSINFRAME = 35112;
+
+		/// <summary>
+		/// number of ticks per second
+		/// </summary>
+		private const uint TICKSPERSECOND = 2097152;
 
 		/// <summary>
 		/// keep a copy of the input callback delegate so it doesn't get GCed
@@ -169,6 +200,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 		}
 
+		#region controller
+
 		public static readonly ControllerDefinition GbController = new ControllerDefinition
 		{
 			Name = "Gameboy Controller",
@@ -191,6 +224,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			IsLagFrame = false;
 			return CurrentButtons;
 		}
+
+		#endregion
+
+		#region debug
 
 		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
@@ -225,6 +262,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			return (LibGambatte.gambatte_iscgb(GambatteState));
 		}
+
+		#endregion
 
 		internal void FrameAdvancePrep()
 		{
@@ -273,39 +312,49 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				endofframecallback(LibGambatte.gambatte_cpuread(GambatteState, 0xff40));
 		}
 
-		private ulong _cycleCount = 0;
-		private uint frameOverflow = 0;
-		private const uint TICKSINFRAME = 35112;
-
-		public ulong CycleCount { get { return _cycleCount; } }
-
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			FrameAdvancePrep();
-			while (true)
+			if (_SyncSettings.EqualLengthFrames)
 			{
-				uint samplesEmitted = TICKSINFRAME - frameOverflow; // according to gambatte docs, this is the nominal length of a frame in 2mhz clocks
-				System.Diagnostics.Debug.Assert(samplesEmitted * 2 <= soundbuff.Length);
+				while (true)
+				{
+					// target number of samples to emit: length of 1 frame minus whatever overflow
+					uint samplesEmitted = TICKSINFRAME - frameOverflow;
+					System.Diagnostics.Debug.Assert(samplesEmitted * 2 <= soundbuff.Length);
+					if (LibGambatte.gambatte_runfor(GambatteState, soundbuff, ref samplesEmitted) > 0)
+						LibGambatte.gambatte_blitto(GambatteState, VideoBuffer, 160);
+
+					// account for actual number of samples emitted
+					_cycleCount += (ulong)samplesEmitted;
+					frameOverflow += samplesEmitted;
+
+					if (rendersound)
+					{
+						ProcessSound((int)samplesEmitted);
+					}
+
+					if (frameOverflow >= TICKSINFRAME)
+					{
+						frameOverflow -= TICKSINFRAME;
+						break;
+					}
+				}
+			}
+			else
+			{
+				// target number of samples to emit: always 59.7fps
+				// runfor() always ends after creating a video frame, so sync-up is guaranteed
+				// when the display has been off, some frames can be markedly shorter than expected
+				uint samplesEmitted = TICKSINFRAME;
 				if (LibGambatte.gambatte_runfor(GambatteState, soundbuff, ref samplesEmitted) > 0)
 					LibGambatte.gambatte_blitto(GambatteState, VideoBuffer, 160);
 
 				_cycleCount += (ulong)samplesEmitted;
-				frameOverflow += samplesEmitted;
-
+				frameOverflow = 0;
 				if (rendersound)
 				{
-					soundbuffcontains = (int)samplesEmitted;
-					ProcessSound();
-				}
-				else
-				{
-					soundbuffcontains = 0;
-				}
-
-				if (frameOverflow >= TICKSINFRAME)
-				{
-					frameOverflow -= TICKSINFRAME;
-					break;
+					ProcessSound((int)samplesEmitted);
 				}
 			}
 
@@ -313,8 +362,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				ProcessSoundEnd();
 
 			FrameAdvancePost();
-
-			//DebugStates(); // for maximum fun only
 		}
 
 		static string MapperName(byte[] romdata)
@@ -398,16 +445,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			return;
 		}
 
-		public int Frame { get; set; }
-
-		public int LagCount { get; set; }
-
-		public bool IsLagFrame { get; private set; }
-
-		public string SystemId
-		{
-			get { return "GB"; }
-		}
+		public string SystemId { get { return "GB"; } }
 
 		public string BoardName { get; private set; }
 
@@ -472,6 +510,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			Frame = 0;
 			LagCount = 0;
 			IsLagFrame = false;
+			// reset frame counters is meant to "re-zero" emulation time wherever it was
+			// so these should be reset as well
+			_cycleCount = 0;
+			frameOverflow = 0;
 		}
 
 		#region savestates
@@ -582,19 +624,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public bool BinarySaveStatesPreferred { get { return true; } }
 
-		/*
-		void DebugStates()
-		{
-			var sd = new StateDebug();
-			var Save = new LibGambatte.DataFunction(sd.Save);
-			var Load = new LibGambatte.DataFunction(sd.Load);
-			var EnterSection = new LibGambatte.SectionFunction(sd.EnterSection);
-			var ExitSection = new LibGambatte.SectionFunction(sd.ExitSection);
-
-			LibGambatte.gambatte_newstatesave_ex(GambatteState, Save, EnterSection, ExitSection);
-			LibGambatte.gambatte_newstateload_ex(GambatteState, Load, EnterSection, ExitSection);
-		}*/
-
 		#endregion
 
 		#region memorycallback
@@ -626,8 +655,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			LibGambatte.gambatte_setwritecallback(GambatteState, writecb);
 			LibGambatte.gambatte_setexeccallback(GambatteState, execcb);
 		}
-
-
 
 		#endregion
 
@@ -726,6 +753,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		#endregion
 
 		#region ppudebug
+
 		public bool GetGPUMemoryAreas(out IntPtr vram, out IntPtr bgpal, out IntPtr sppal, out IntPtr oam)
 		{
 			IntPtr _vram = IntPtr.Zero;
@@ -878,11 +906,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <summary>
 		/// sample pairs before resampling
 		/// </summary>
-		short[] soundbuff = new short[(35112 + 2064) * 2 * 4];
-		/// <summary>
-		/// how many sample pairs are in soundbuff
-		/// </summary>
-		int soundbuffcontains = 0;
+		short[] soundbuff = new short[(35112 + 2064) * 2];
 
 		int soundoutbuffcontains = 0;
 
@@ -894,9 +918,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		BlipBuffer blipL, blipR;
 		uint blipAccumulate;
 
-		private void ProcessSound()
+		private void ProcessSound(int nsamp)
 		{
-			for (uint i = 0; i < soundbuffcontains; i++)
+			for (uint i = 0; i < nsamp; i++)
 			{
 				int curr = soundbuff[i * 2];
 
@@ -917,19 +941,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				blipAccumulate++;
 			}
-
-			soundbuffcontains = 0;
 		}
 
 		private void ProcessSoundEnd()
 		{
-			blipL.EndFrame((uint)blipAccumulate);
-			blipR.EndFrame((uint)blipAccumulate);
+			blipL.EndFrame(blipAccumulate);
+			blipR.EndFrame(blipAccumulate);
 			blipAccumulate = 0;
 
 			soundoutbuffcontains = blipL.SamplesAvailable();
 			if (soundoutbuffcontains != blipR.SamplesAvailable())
-				throw new Exception("Audio processing error");
+				throw new InvalidOperationException("Audio processing error");
 
 			blipL.ReadSamplesLeft(soundoutbuff, soundoutbuffcontains);
 			blipR.ReadSamplesRight(soundoutbuff, soundoutbuffcontains);
@@ -938,9 +960,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		void InitSound()
 		{
 			blipL = new BlipBuffer(1024);
-			blipL.SetRates(2097152, 44100);
+			blipL.SetRates(TICKSPERSECOND, 44100);
 			blipR = new BlipBuffer(1024);
-			blipR.SetRates(2097152, 44100);
+			blipR.SetRates(TICKSPERSECOND, 44100);
 		}
 
 		void DisposeSound()
@@ -959,7 +981,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public void DiscardSamples()
 		{
-			soundbuffcontains = 0;
+			soundoutbuffcontains = 0;
 		}
 
 		public void GetSamples(out short[] samples, out int nsamp)
@@ -1051,9 +1073,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				get { return _RTCInitialTime; }
 				set { _RTCInitialTime = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
 			}
-
 			[JsonIgnore]
 			int _RTCInitialTime;
+
+			[DisplayName("Equal Length Frames")]
+			[Description("When false, emulation frames sync to vblank.  Only useful for high level TASing.")]
+			[DefaultValue(true)]
+			public bool EqualLengthFrames { get { return _EqualLengthFrames; } set { _EqualLengthFrames = value; } }
+			[JsonIgnore]
+			[DeepEqualsIgnore]
+			private bool _EqualLengthFrames;
 
 			public GambatteSyncSettings()
 			{
