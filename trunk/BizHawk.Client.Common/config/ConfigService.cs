@@ -59,13 +59,17 @@ namespace BizHawk.Client.Common
 		public static void Save(string filepath, object config)
 		{
 			var file = new FileInfo(filepath);
-			if (file.Exists && !file.IsReadOnly)
+			try
 			{
 				using (var writer = file.CreateText())
 				{
 					var w = new JsonTextWriter(writer) { Formatting = Formatting.Indented };
 					Serializer.Serialize(w, config);
 				}
+			}
+			catch
+			{
+				/* Eat it */
 			}
 		}
 
