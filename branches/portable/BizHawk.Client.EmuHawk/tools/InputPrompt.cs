@@ -9,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// A simple form that prompts the user for a single line of input
 	/// </summary>
-	public partial class InputPrompt : Form
+    public partial class InputPrompt : Form, IHasShowDialog
 	{
 		public InputPrompt()
 		{
@@ -18,28 +18,25 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public enum InputType { Hex, Unsigned, Signed, Text }
-		public string UserText { get; set; } // What the user selected
+
 		public Point StartLocation { get; set; }
 		public InputType TextInputType { get; set; }
 
-		public void SetMessage(string message)
+		public string Message
 		{
-			PromptLabel.Text = message;
+			get { return PromptLabel.Text; }
+			set { PromptLabel.Text = value ?? string.Empty; }
 		}
 
-		public void SetCasing(CharacterCasing casing)
+		public string InitialValue
 		{
-			PromptBox.CharacterCasing = casing;
+			get { return PromptBox.Text; }
+			set { PromptBox.Text = value ?? string.Empty; }
 		}
 
-		public void SetInitialValue(string value)
+		public string PromptText
 		{
-			PromptBox.Text = value;
-		}
-
-		public void SetTitle(string value)
-		{
-			Text = value;
+			get { return PromptBox.Text ?? string.Empty; }
 		}
 
 		private void InputPrompt_Load(object sender, EventArgs e)
@@ -53,7 +50,6 @@ namespace BizHawk.Client.EmuHawk
 		private void Ok_Click(object sender, EventArgs e)
 		{
 			DialogResult = DialogResult.OK;
-			UserText = PromptBox.Text;
 			Close();
 		}
 

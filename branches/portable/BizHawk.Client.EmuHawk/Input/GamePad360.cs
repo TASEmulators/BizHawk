@@ -17,9 +17,17 @@ namespace BizHawk.Client.EmuHawk
 			IsAvailable = false;
 			try
 			{
-				//don't remove this code. it's important to catch errors on systems with broken xinput installs.
-				var test = new SlimDX.XInput.Controller(UserIndex.One).IsConnected;
-				IsAvailable = true;
+				//some users wont even have xinput installed. in order to avoid spurious exceptions and possible instability, check for the library first
+				IntPtr lib = Win32.LoadLibrary("xinput1_3.dll");
+				if (lib != IntPtr.Zero)
+				{
+					Win32.FreeLibrary(lib);
+					
+					//don't remove this code. it's important to catch errors on systems with broken xinput installs.
+					//(probably, checking for the library was adequate, but lets not get rid of this anyway)
+					var test = new SlimDX.XInput.Controller(UserIndex.One).IsConnected;
+					IsAvailable = true;
+				}
 			}
 			catch { }
 

@@ -8,7 +8,7 @@ using BizHawk.Common.StringExtensions;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Client.Common;
-using BizHawk.Client.EmuHawk.ControlExtensions;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 using System.IO;
 using System.Security.Cryptography;
 
@@ -353,6 +353,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!VersionInfo.DeveloperBuild)
 			{
 				PluginComboBox.Items.Remove("Jabo 1.6.1");
+                N64plugintabcontrol.TabPages.Remove(JaboTab);
 			}
 
 			if (File.Exists("dll\\Jabo_Direct3D8_patched.dll"))

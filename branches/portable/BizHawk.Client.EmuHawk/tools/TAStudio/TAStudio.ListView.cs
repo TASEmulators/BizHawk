@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -156,6 +158,28 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Events
 
+		private void TasView_ColumnClick(object sender, ColumnClickEventArgs e)
+		{
+			if (TasView.SelectedIndices().Any())
+			{
+				var columnName = TasView.Columns[e.Column].Name;
+
+				if (columnName == FrameColumnName)
+				{
+					// TODO: add marker to LastSelectedIndex
+				}
+				else if (columnName != MarkerColumnName) // TODO: what about float?
+				{
+					foreach (var index in TasView.SelectedIndices())
+					{
+						ToggleBoolState(index, columnName);
+					}
+
+					RefreshDialog();
+				}
+			}
+		}
+
 		private void TasView_MouseDown(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Middle)
@@ -198,34 +222,6 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 				}
-			}
-		}
-
-		// TODO: move me
-		// Sets either the pending frame or the tas input log
-		private void ToggleBoolState(int frame, string buttonName)
-		{
-			if (frame < _tas.InputLogLength)
-			{
-				_tas.ToggleBoolState(frame, buttonName);
-			}
-			else if (frame == Global.Emulator.Frame && frame == _tas.InputLogLength)
-			{
-				Global.ClickyVirtualPadController.Toggle(buttonName);
-			}
-		}
-
-		// TODO: move me
-		// Sets either the pending frame or the tas input log
-		private void SetBoolState(int frame, string buttonName, bool value)
-		{
-			if (frame < _tas.InputLogLength)
-			{
-				_tas.SetBoolState(frame, buttonName, value);
-			}
-			else if (frame == Global.Emulator.Frame && frame == _tas.InputLogLength)
-			{
-				Global.ClickyVirtualPadController.SetBool(buttonName, value);
 			}
 		}
 
@@ -339,6 +335,14 @@ namespace BizHawk.Client.EmuHawk
 			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Right) // Ctrl + Left
 			{
 				GoToNextMarker();
+			}
+			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Ctrl + Up
+			{
+				GoToPreviousFrame();
+			}
+			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Ctrl + Down
+			{
+				GoToNextFrame();
 			}
 		}
 

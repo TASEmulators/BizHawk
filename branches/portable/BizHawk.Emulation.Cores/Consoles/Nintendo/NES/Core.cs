@@ -13,12 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public partial class NES : IEmulator
 	{
 		//hardware/state
-		// any of the 3 cpus are drop in replacements
 		public MOS6502X cpu;
-		//public MOS6502X_CPP cpu;
-		//public MOS6502XDouble cpu;
-		// dispose list as the native core can't keep track of its own stuff
-		List<System.Runtime.InteropServices.GCHandle> DisposeList = new List<System.Runtime.InteropServices.GCHandle>();
 		int cpu_accumulate; //cpu timekeeper
 		public PPU ppu;
 		public APU apu;
@@ -75,14 +70,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void Dispose()
 		{
-			if (magicSoundProvider != null) magicSoundProvider.Dispose();
+			if (magicSoundProvider != null)
+				magicSoundProvider.Dispose();
 			magicSoundProvider = null;
-			if (DisposeList != null)
-			{
-				foreach (var h in DisposeList)
-					h.Free();
-				DisposeList = null;
-			}
 		}
 
 		class MagicSoundProvider : ISoundProvider, ISyncSoundProvider, IDisposable
@@ -169,10 +159,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void HardReset()
 		{
-			cpu = new MOS6502X((h) => DisposeList.Add(h));
-			//cpu = new MOS6502X_CPP((h) => DisposeList.Add(h));
-			//cpu = new MOS6502XDouble((h) => DisposeList.Add(h));
-			cpu.SetCallbacks(ReadMemory, ReadMemory, PeekMemory, WriteMemory, (h) => DisposeList.Add(h));
+			cpu = new MOS6502X();
+			cpu.SetCallbacks(ReadMemory, ReadMemory, PeekMemory, WriteMemory);
 
 			cpu.BCD_Enabled = false;
 			cpu.OnExecFetch = ExecFetch;

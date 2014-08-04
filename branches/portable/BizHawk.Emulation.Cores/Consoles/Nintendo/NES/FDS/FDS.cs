@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			if (biosrom == null || biosrom.Length != 8192)
-				throw new Exception("FDS bios image needed!");
+				throw new MissingFirmwareException("FDS bios image needed!");
 
 			Cart.vram_size = 8;
 			Cart.wram_size = 32;

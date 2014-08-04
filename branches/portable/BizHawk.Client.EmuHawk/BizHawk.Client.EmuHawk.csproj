@@ -477,7 +477,6 @@
     <Compile Include="CustomControls\ToolStripEx.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControls\Util.cs" />
     <Compile Include="CustomControls\ViewportPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -497,6 +496,8 @@
     <Compile Include="DisplayManager\SwappableDisplaySurfaceSet.cs" />
     <Compile Include="DisplayManager\TextureFrugalizer.cs" />
     <Compile Include="Extensions\ControlExtensions.cs" />
+    <Compile Include="Extensions\CoreExtensions.cs" />
+    <Compile Include="Extensions\ToolExtensions.cs" />
     <Compile Include="GlobalWin.cs" />
     <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\GamePad360.cs" Condition=" '$(OS)' == 'Windows_NT' " />
@@ -1465,6 +1466,11 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\snes9x.png" />
+    <None Include="images\YellowUp.png" />
+    <None Include="images\YellowRight.png" />
+    <None Include="images\YellowLeft.png" />
+    <None Include="images\YellowDown.png" />
     <None Include="images\user_blue.png" />
     <None Include="images\thumbsdown.png" />
     <None Include="images\monitor.png" />
@@ -1572,7 +1578,6 @@
     <Content Include="config\ControllerImages\N64.png" />
     <Content Include="config\ControllerImages\SaturnController.jpg" />
     <None Include="images\addWatch.ico" />
-    <None Include="images\alt_about_image.gif" />
     <None Include="images\gba-icon.png" />
     <None Include="images\checkbox.png" />
     <None Include="images\Erase.png" />

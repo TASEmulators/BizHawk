@@ -78,13 +78,13 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		void OpenFileSegment()
 		{
+			try
+			{
 			ffmpeg = new Process();
 			ffmpeg.StartInfo.FileName = FFMpeg.FFMpegPath;
 
 			string filename = String.Format("{0}_{1,4:D4}{2}", baseName, segment, ext);
-
 			ffmpeg.StartInfo.Arguments = String.Format("-y -f nut -i - {1} \"{0}\"", filename, token.commandline);
-
 			ffmpeg.StartInfo.CreateNoWindow = true;
 
 			// ffmpeg sends informative display to stderr, and nothing to stdout
@@ -99,6 +99,13 @@ namespace BizHawk.Client.EmuHawk
 			stderr = new Queue<string>(consolebuffer);
 
 			ffmpeg.Start();
+			}
+			catch
+			{
+				ffmpeg.Dispose();
+				ffmpeg = null;
+				throw;
+			}
 			ffmpeg.BeginErrorReadLine();
 
 			muxer = new NutMuxer(width, height, fpsnum, fpsden, sampleRate, channels, ffmpeg.StandardInput.BaseStream);
@@ -129,6 +136,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// how long should we wait here?
 			ffmpeg.WaitForExit(20000);
+			ffmpeg.Dispose();
 			ffmpeg = null;
 			stderr = null;
 			commandline = null;
@@ -171,13 +179,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (ffmpeg.HasExited)
 				throw new Exception("unexpected ffmpeg death:\n" + ffmpeg_geterror());
-			var a = source.GetVideoBuffer();
-			var b = new byte[a.Length * sizeof (int)];
-			Buffer.BlockCopy(a, 0, b, 0, b.Length);
 
+			var video = source.GetVideoBuffer();
 			try
 			{
-				muxer.writevideoframe(b);
+				muxer.WriteVideoFrame(video);
 			}
 			catch
 			{
@@ -249,7 +255,7 @@ namespace BizHawk.Client.EmuHawk
 				throw new Exception("unexpected ffmpeg death:\n" + ffmpeg_geterror());
 			try
 			{
-				muxer.writeaudioframe(samples);
+				muxer.WriteAudioFrame(samples);
 			}
 			catch
 			{
@@ -265,7 +271,6 @@ namespace BizHawk.Client.EmuHawk
 			this.sampleRate = sampleRate;
 			this.channels = channels;
 		}
-
 
 		public override string ToString()
 		{

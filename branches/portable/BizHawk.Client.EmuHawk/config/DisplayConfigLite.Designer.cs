@@ -50,9 +50,9 @@
 			this.grpARSelection = new System.Windows.Forms.GroupBox();
 			this.checkFullscreenHacks = new System.Windows.Forms.CheckBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.label2 = new System.Windows.Forms.Label();
 			this.checkSnowyNullEmulator = new System.Windows.Forms.CheckBox();
 			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			this.grpFinalFilter.SuspendLayout();
@@ -131,7 +131,7 @@
 			// 
 			this.tbScanlineIntensity.LargeChange = 32;
 			this.tbScanlineIntensity.Location = new System.Drawing.Point(83, 55);
-			this.tbScanlineIntensity.Maximum = 255;
+			this.tbScanlineIntensity.Maximum = 256;
 			this.tbScanlineIntensity.Name = "tbScanlineIntensity";
 			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 42);
 			this.tbScanlineIntensity.TabIndex = 3;
@@ -296,6 +296,15 @@
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Misc.";
 			// 
+			// label2
+			// 
+			this.label2.Location = new System.Drawing.Point(7, 167);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(204, 45);
+			this.label2.TabIndex = 17;
+			this.label2.Text = "Some people think the whitenoise is a great idea, and some people don\'t. Enabling" +
+    " this displays an Oxoo instead.";
+			// 
 			// checkSnowyNullEmulator
 			// 
 			this.checkSnowyNullEmulator.AutoSize = true;
@@ -313,15 +322,6 @@
 			this.label1.Size = new System.Drawing.Size(204, 102);
 			this.label1.TabIndex = 15;
 			this.label1.Text = resources.GetString("label1.Text");
-			// 
-			// label2
-			// 
-			this.label2.Location = new System.Drawing.Point(7, 167);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(204, 45);
-			this.label2.TabIndex = 17;
-			this.label2.Text = "Some people think the whitenoise is a great idea, and some people don\'t. Enabling" +
-    " this displays an Oxoo instead.";
 			// 
 			// DisplayConfigLite
 			// 

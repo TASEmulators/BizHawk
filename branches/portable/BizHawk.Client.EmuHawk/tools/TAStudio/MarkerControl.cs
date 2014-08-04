@@ -31,7 +31,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			Refresh();
+			MarkerView.BlazingFast = true;
+			MarkerView.ItemCount = Tastudio.CurrentMovie.Markers.Count;
+			MarkerView.BlazingFast = false;
 		}
 
 		private void MarkerView_QueryItemBkColor(int index, int column, ref Color color)
@@ -121,6 +123,11 @@ namespace BizHawk.Client.EmuHawk
 					.Select(index => Markers[index])
 					.ToList();
 			}
+		}
+
+		private void MarkerView_ItemActivate(object sender, EventArgs e)
+		{
+			Tastudio.GoToMarker(SelectedMarkers.First());
 		}
 	}
 }

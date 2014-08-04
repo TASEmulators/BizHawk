@@ -9,6 +9,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		private int[] frameBuffer;
 		private mupen64plusVideoApi api;
 
+		public bool IsVIFrame;
+
 		/// <summary>
 		/// Creates N64 Video system with mupen64plus backend
 		/// </summary>
@@ -26,6 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			);
 
 			core.BeforeRender += DoVideoFrame;
+			core.BeforeRender += () => { IsVIFrame = true; };
 		}
 
 		public int[] GetVideoBuffer()

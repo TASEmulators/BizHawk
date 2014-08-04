@@ -36,6 +36,13 @@ namespace BizHawk.Client.Common
 				}
 			},
 			{
+				"GPGX 3-Button Controller", new Dictionary<string, string>
+				{
+					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"A", "A"}, {"B", "B"},
+					{"C", "C"}, {"Start", "S"},
+				}
+			},
+			{
 				"NES Controller", new Dictionary<string, string>
 				{
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Select", "s"}, {"Start", "S"}, {"B", "B"},
@@ -150,13 +157,15 @@ namespace BizHawk.Client.Common
 			{"TI83 Controller", new Dictionary<string, string>()},
 			{"Nintento 64 Controller", new Dictionary<string, string> {{"Power", "P"}, {"Reset", "r"}}},
 			{"Saturn Controller", new Dictionary<string, string> {{"Power", "P"}, {"Reset", "r"}}},
+			{"GPGX 3-Button Controller", new Dictionary<string, string> {{"Power", "P"}, {"Reset", "r"}}},
 		};
 
 		public static readonly Dictionary<string, int> PLAYERS = new Dictionary<string, int>
 		{
 			{"Gameboy Controller", 1}, {"GBA Controller", 1}, {"Genesis 3-Button Controller", 2}, {"GPGX Genesis Controller", 2}, {"NES Controller", 4},
 			{"SNES Controller", 4}, {"PC Engine Controller", 5}, {"SMS Controller", 2}, {"TI83 Controller", 1}, {"Atari 2600 Basic Controller", 2}, {"Atari 7800 ProLine Joystick Controller", 2},
-			{"ColecoVision Basic Controller", 2}, {"Commodore 64 Controller", 2}, {"Nintento 64 Controller", 4}, {"Saturn Controller", 2}
+			{"ColecoVision Basic Controller", 2}, {"Commodore 64 Controller", 2}, {"Nintento 64 Controller", 4}, {"Saturn Controller", 2},
+			{"GPGX 3-Button Controller", 2}
 		};
 
 		// just experimenting with different possibly more painful ways to handle mnemonics

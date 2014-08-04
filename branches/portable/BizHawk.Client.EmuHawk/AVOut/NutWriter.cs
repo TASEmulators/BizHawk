@@ -75,15 +75,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (source.BufferHeight != height || source.BufferWidth != width)
 				SetVideoParameters(source.BufferWidth, source.BufferHeight);
-			var a = source.GetVideoBuffer();
-			var b = new byte[a.Length * sizeof(int)];
-			Buffer.BlockCopy(a, 0, b, 0, b.Length);
-			current.writevideoframe(b);
+			current.WriteVideoFrame(source.GetVideoBuffer());
 		}
 
 		public void AddSamples(short[] samples)
 		{
-			current.writeaudioframe(samples);
+			current.WriteAudioFrame(samples);
 		}
 
 

@@ -503,6 +503,7 @@ extern "C"
 		typedef D3D8Base::IDirect3D8* (WINAPI *D3DCREATE)(UINT);
 		IDirect3D8* WINAPI Direct3DCreate8(UINT Version);
 		extern IDirect3DDevice8 *last_device;
+		extern IDirect3DSurface8 *render_surface;
 		extern void (*rendering_callback)( int );
 	}
 }

@@ -102,6 +102,7 @@ namespace BizHawk.Client.Common
 			else
 			{
 				base.Add(item);
+				this.Sort((m1, m2) => m1.Frame.CompareTo(m2.Frame));
 			}
 		}
 
@@ -110,13 +111,21 @@ namespace BizHawk.Client.Common
 			Add(new TasMovieMarker(frame, message));
 		}
 
-		public void Remove(int frame)
+		public new void AddRange(IEnumerable<TasMovieMarker> collection)
 		{
-			var existingItem = this.FirstOrDefault(m => m.Frame == frame);
-			if (existingItem != null)
-			{
-				this.Remove(existingItem);
-			}
+			base.AddRange(collection);
+		}
+
+		public new void Insert(int index, TasMovieMarker item)
+		{
+			base.Insert(index, item);
+			this.Sort((m1, m2) => m1.Frame.CompareTo(m2.Frame));
+		}
+
+		public new void InsertRange(int index, IEnumerable<TasMovieMarker> collection)
+		{
+			base.InsertRange(index, collection);
+			this.Sort((m1, m2) => m1.Frame.CompareTo(m2.Frame));
 		}
 
 		public TasMovieMarker Previous(int currentFrame)

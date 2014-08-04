@@ -131,11 +131,21 @@ extern "C"
 			D3D8Base::IDirect3DDevice8* base_device = NULL;
 
 			HRESULT hr = m_pD3D->CreateDevice(Adapter,DeviceType,hFocusWindow,BehaviorFlags,pPresentationParameters,&base_device);
+			if(FAILED(hr))
+			{
+				return hr;
+			}
 
 			// Wrap the real object
 			D3D8Wrapper::IDirect3DDevice8* f = D3D8Wrapper::IDirect3DDevice8::GetDirect3DDevice(base_device);
 
 			last_device = f;
+
+			D3D8Base::IDirect3DSurface8 *f2 = NULL;
+
+			// make a new render target
+			HRESULT hr2 = base_device->CreateRenderTarget(pPresentationParameters->BackBufferWidth,pPresentationParameters->BackBufferHeight,D3D8Base::D3DFMT_X8R8G8B8,pPresentationParameters->MultiSampleType,FALSE,&f2);
+			render_surface = D3D8Wrapper::IDirect3DSurface8::GetSurface(f2);
 
 			// Return our wrapped object
 			*ppReturnedDeviceInterface = f;

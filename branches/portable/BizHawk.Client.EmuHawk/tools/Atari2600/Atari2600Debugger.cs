@@ -207,6 +207,11 @@ namespace BizHawk.Client.EmuHawk
 			_programmaticUpdateOfRegisterBoxes = false;
 		}
 
+		public void FastUpdate()
+		{
+			/* TODO */
+		}
+
 		private void UpdateTraceLog()
 		{
 			var instructions = Global.CoreComm.Tracer.TakeContents().Split('\n');

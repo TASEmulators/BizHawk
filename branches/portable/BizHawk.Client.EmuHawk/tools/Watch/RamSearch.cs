@@ -13,6 +13,9 @@ using BizHawk.Common.StringExtensions;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
 
+using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Client.EmuHawk.ToolExtensions;
+
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
@@ -146,30 +149,33 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (_searches.Count > 0 && column == 0)
+			if (column == 0)
 			{
-				var nextColor = Color.White;
+				if (_searches.Count > 0 && column == 0)
+				{
+					var nextColor = Color.White;
 
-				var isCheat = Global.CheatList.IsActive(_settings.Domain, _searches[index].Address ?? 0);
-				var isWeeded = Global.Config.RamSearchPreviewMode && !_forcePreviewClear && _searches.Preview(_searches[index].Address ?? 0);
+					var isCheat = Global.CheatList.IsActive(_settings.Domain, _searches[index].Address ?? 0);
+					var isWeeded = Global.Config.RamSearchPreviewMode && !_forcePreviewClear && _searches.Preview(_searches[index].Address ?? 0);
 
-				if (_searches[index].Address.Value >= _searches[index].Domain.Size)
-				{
-					nextColor = Color.PeachPuff;
-				}
-				else if (isCheat)
-				{
-					nextColor = isWeeded ? Color.Lavender : Color.LightCyan;
-				}
-				else
-				{
-					if (isWeeded)
+					if (_searches[index].Address.Value >= _searches[index].Domain.Size)
 					{
-						nextColor = Color.Pink;
+						nextColor = Color.PeachPuff;
 					}
-				}
+					else if (isCheat)
+					{
+						nextColor = isWeeded ? Color.Lavender : Color.LightCyan;
+					}
+					else
+					{
+						if (isWeeded)
+						{
+							nextColor = Color.Pink;
+						}
+					}
 
-				color = nextColor;
+					color = nextColor;
+				}
 			}
 		}
 
@@ -227,6 +233,18 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Public
 
+		/// <summary>
+		/// This should be called anytime the search list changes
+		/// </summary>
+		private void UpdateList()
+		{
+			WatchListView.ItemCount = _searches.Count;
+			SetTotal();
+		}
+
+		/// <summary>
+		/// This should only be called when the values of the list need an update such as after a poke or emulation occured
+		/// </summary>
 		public void UpdateValues()
 		{
 			if (_searches.Count > 0)
@@ -239,7 +257,22 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				_forcePreviewClear = false;
-				WatchListView.Refresh();
+				WatchListView.BlazingFast = true;
+				WatchListView.Invalidate();
+				WatchListView.BlazingFast = false;
+			}
+		}
+
+		public void FastUpdate()
+		{
+			if (_searches.Count > 0)
+			{
+				_searches.Update();
+
+				if (_autoSearch)
+				{
+					DoSearch();
+				}
 			}
 		}
 
@@ -279,8 +312,7 @@ namespace BizHawk.Client.EmuHawk
 				RemoveRamWatchesFromList();
 			}
 
-			SetTotal();
-			WatchListView.ItemCount = _searches.Count;
+			UpdateList();
 			ToggleSearchDependentToolBarItems();
 			SetReboot(false);
 			MessageLabel.Text = string.Empty;
@@ -492,8 +524,7 @@ namespace BizHawk.Client.EmuHawk
 			_searches.CompareTo = Compare;
 
 			var removed = _searches.DoSearch();
-			SetTotal();
-			WatchListView.ItemCount = _searches.Count;
+			UpdateList();
 			SetRemovedMessage(removed);
 			ToggleSearchDependentToolBarItems();
 			_forcePreviewClear = true;
@@ -535,7 +566,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!file.Exists)
 			{
-				ToolHelpers.HandleLoadError(Global.Config.RecentSearches, path);
+				Global.Config.RecentSearches.HandleLoadError(path);
 			}
 			else
 			{
@@ -565,11 +596,11 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadColumnInfo()
 		{
 			WatchListView.Columns.Clear();
-			ToolHelpers.AddColumn(WatchListView, WatchList.ADDRESS, true, GetColumnWidth(WatchList.ADDRESS));
-			ToolHelpers.AddColumn(WatchListView, WatchList.VALUE, true, GetColumnWidth(WatchList.VALUE));
-			ToolHelpers.AddColumn(WatchListView, WatchList.PREV, Global.Config.RamSearchShowPrevColumn, GetColumnWidth(WatchList.PREV));
-			ToolHelpers.AddColumn(WatchListView, WatchList.CHANGES, Global.Config.RamSearchShowChangeColumn, GetColumnWidth(WatchList.CHANGES));
-			ToolHelpers.AddColumn(WatchListView, WatchList.DIFF, Global.Config.RamSearchShowDiffColumn, GetColumnWidth(WatchList.DIFF));
+			WatchListView.AddColumn(WatchList.ADDRESS, true, GetColumnWidth(WatchList.ADDRESS));
+			WatchListView.AddColumn(WatchList.VALUE, true, GetColumnWidth(WatchList.VALUE));
+			WatchListView.AddColumn(WatchList.PREV, Global.Config.RamSearchShowPrevColumn, GetColumnWidth(WatchList.PREV));
+			WatchListView.AddColumn(WatchList.CHANGES, Global.Config.RamSearchShowChangeColumn, GetColumnWidth(WatchList.CHANGES));
+			WatchListView.AddColumn(WatchList.DIFF, Global.Config.RamSearchShowDiffColumn, GetColumnWidth(WatchList.DIFF));
 
 			ColumnPositions();
 		}
@@ -787,8 +818,7 @@ namespace BizHawk.Client.EmuHawk
 				SetRemovedMessage(indices.Count);
 				_searches.RemoveRange(indices);
 
-				WatchListView.ItemCount = _searches.Count;
-				SetTotal();
+				UpdateList();
 				WatchListView.SelectedIndices.Clear();
 				ToggleSearchDependentToolBarItems();
 			}
@@ -820,8 +850,7 @@ namespace BizHawk.Client.EmuHawk
 					MessageLabel.Text = file.Name + " loaded";
 				}
 
-				WatchListView.ItemCount = _searches.Count;
-				SetTotal();
+				UpdateList();
 				Global.Config.RecentSearches.Add(file.FullName);
 
 				if (!append && !truncate)
@@ -847,21 +876,19 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private Point GetPromptPoint()
-		{
-			return PointToScreen(new Point(WatchListView.Location.X, WatchListView.Location.Y));
-		}
-
 		private void PokeAddress()
 		{
 			if (SelectedIndices.Any())
 			{
-				var poke = new RamPoke();
-				var watches = SelectedIndices.Select(t => _searches[t]).ToList();
-				poke.SetWatch(watches);
-				poke.InitialLocation = GetPromptPoint();
+				var poke = new RamPoke
+				{
+					InitialLocation = this.ChildPointToScreen(WatchListView)
+				};
+
+				poke.SetWatch(SelectedIndices.Select(t => _searches[t]).ToList());
 				poke.ShowHawkDialog();
-				UpdateValues();
+
+				UpdateList();
 			}
 		}
 
@@ -870,8 +897,7 @@ namespace BizHawk.Client.EmuHawk
 			if (GlobalWin.Tools.Has<RamWatch>())
 			{
 				_searches.RemoveSmallWatchRange(GlobalWin.Tools.RamWatch.Watches);
-				WatchListView.ItemCount = _searches.Count;
-				SetTotal();
+				UpdateList();
 			}
 		}
 
@@ -912,15 +938,20 @@ namespace BizHawk.Client.EmuHawk
 		private void GoToSpecifiedAddress()
 		{
 			WatchListView.SelectedIndices.Clear();
-			var prompt = new InputPrompt { Text = "Go to Address", StartLocation = GetPromptPoint() };
-			prompt.SetMessage("Enter a hexadecimal value");
+			var prompt = new InputPrompt
+			{
+				Text = "Go to Address",
+				StartLocation = this.ChildPointToScreen(WatchListView),
+				Message = "Enter a hexadecimal value"
+			};
+
 			var result = prompt.ShowHawkDialog();
 
 			if (result == DialogResult.OK)
 			{
-				if (prompt.UserText.IsHex())
+				if (prompt.PromptText.IsHex())
 				{
-					var addr = int.Parse(prompt.UserText, NumberStyles.HexNumber);
+					var addr = int.Parse(prompt.PromptText, NumberStyles.HexNumber);
 					WatchListView.SelectItem(addr, true);
 					WatchListView.ensureVisible();
 				}
@@ -942,8 +973,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentSubMenu.DropDownItems.Clear();
 			RecentSubMenu.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentSearches, LoadFileFromRecent)
-			);
+				Global.Config.RecentSearches.RecentMenu(LoadFileFromRecent));
 		}
 
 		private void OpenMenuItem_Click(object sender, EventArgs e)
@@ -1025,7 +1055,9 @@ namespace BizHawk.Client.EmuHawk
 		private void MemoryDomainsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			MemoryDomainsSubMenu.DropDownItems.Clear();
-			MemoryDomainsSubMenu.DropDownItems.AddRange(ToolHelpers.GenerateMemoryDomainMenuItems(SetMemoryDomain, _searches.Domain.Name, MaxSupportedSize).ToArray());
+			MemoryDomainsSubMenu.DropDownItems.AddRange(
+				Global.Emulator.MemoryDomains.MenuItems(SetMemoryDomain, _searches.Domain.Name, MaxSupportedSize)
+				.ToArray());
 		}
 
 		private void SizeSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1165,8 +1197,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_searches.CanUndo)
 			{
 				_searches.Undo();
-				SetTotal();
-				WatchListView.ItemCount = _searches.Count;
+				UpdateList();
 				ToggleSearchDependentToolBarItems();
 				_forcePreviewClear = true;
 				UpdateUndoToolBarButtons();
@@ -1178,8 +1209,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_searches.CanRedo)
 			{
 				_searches.Redo();
-				SetTotal();
-				WatchListView.ItemCount = _searches.Count;
+				UpdateList();
 				ToggleSearchDependentToolBarItems();
 				_forcePreviewClear = true;
 				UpdateUndoToolBarButtons();
@@ -1223,11 +1253,11 @@ namespace BizHawk.Client.EmuHawk
 			var allCheats = SelectedWatches.All(x => Global.CheatList.IsActive(x.Domain, x.Address ?? 0));
 			if (allCheats)
 			{
-				ToolHelpers.UnfreezeAddress(SelectedWatches);
+				SelectedWatches.UnfreezeAll();
 			}
 			else
 			{
-				ToolHelpers.FreezeAddress(SelectedWatches);
+				SelectedWatches.FreezeAll();
 			}
 		}
 
@@ -1436,7 +1466,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedWatches.Any())
 			{
-				ToolHelpers.ViewInHexEditor(_searches.Domain, SelectedWatches.Select(x => x.Address ?? 0));
+				ToolHelpers.ViewInHexEditor(_searches.Domain, SelectedWatches.Select(x => x.Address ?? 0), SelectedSize);
 			}
 		}
 
@@ -1446,6 +1476,23 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.Refresh();
 		}
 
+		private Watch.WatchSize SelectedSize
+		{
+			get
+			{
+				switch (SizeDropdown.SelectedIndex)
+				{
+					default:
+					case 0:
+						return Watch.WatchSize.Byte;
+					case 1:
+						return Watch.WatchSize.Word;
+					case 2:
+						return Watch.WatchSize.DWord;
+				}
+			}
+		}
+
 		private void SizeDropdown_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (_dropdownDontfire)
@@ -1453,18 +1500,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			switch (SizeDropdown.SelectedIndex)
-			{
-				case 0:
-					SetSize(Watch.WatchSize.Byte);
-					break;
-				case 1:
-					SetSize(Watch.WatchSize.Word);
-					break;
-				case 2:
-					SetSize(Watch.WatchSize.DWord);
-					break;
-			}
+			SetSize(SelectedSize);
 		}
 
 		private void DisplayTypeDropdown_SelectedIndexChanged(object sender, EventArgs e)
@@ -1481,10 +1517,7 @@ namespace BizHawk.Client.EmuHawk
 
 			SetRemovedMessage(outOfRangeAddresses.Count);
 
-			//_searches.RemoveRange(outOfRangeAddresses); Remove TODO
-
-			WatchListView.ItemCount = _searches.Count;
-			SetTotal();
+			UpdateList();
 			ToggleSearchDependentToolBarItems();
 		}
 

@@ -51,11 +51,6 @@ namespace BizHawk.Client.Common
 
 		// BIOS Paths
 		public Dictionary<string, string> FirmwareUserSpecifications = new Dictionary<string, string>(); // key: sysid+firmwareId; value: absolute path
-		#if WINDOWS
-		public string FFMpegPath = "%exe%/dll/ffmpeg.exe";
-		#else
-		public string FFMpegPath = "dll/ffmpeg";
-		#endif
 
 		// General Client Settings
 		public int Input_Hotkey_OverrideOptions = 0;
@@ -97,6 +92,18 @@ namespace BizHawk.Client.Common
 		public bool AVI_CaptureOSD = false;
 		public bool Screenshot_CaptureOSD = false;
 		public bool FirstBoot = true;
+
+		//public bool TurboSeek = true; // When PauseOnFrame is set, this will decide whether the client goes into turbo mode or not
+
+		private bool _turboSeek;
+		public bool TurboSeek
+		{
+			get { return _turboSeek; }
+			set
+			{
+				_turboSeek = value;
+			}
+		}
 
 		public enum SaveStateTypeE { Default, Binary, Text };
 
@@ -512,17 +519,18 @@ namespace BizHawk.Client.Common
 
 		// TAStudio Dialog
 		public ToolDialogSettings TAStudioSettings = new ToolDialogSettings();
+		public RecentFiles RecentTas = new RecentFiles(8);
 		public bool AutoloadTAStudio = false;
 		public bool AutoloadTAStudioProject = false;
 		public bool TAStudioDrawInput = true;
-		public RecentFiles RecentTas = new RecentFiles(8);
+		public bool TAStudioAutoRestoreLastPosition = false;
 
 		// VirtualPad Dialog
 		public ToolDialogSettings VirtualPadSettings = new ToolDialogSettings();
 		public bool VirtualPadsUpdatePads = true;
 		public bool AutoloadVirtualPad = false;
 		public bool VirtualPadSticky = true;
-		public bool VirtualPadMultiplayerMode = false;
+		public bool VirtualPadClearClearsAnalog = false;
 
 		// NES Game Genie Encoder/Decoder
 		public ToolDialogSettings NesGGSettings = new ToolDialogSettings();
@@ -551,7 +559,7 @@ namespace BizHawk.Client.Common
 
 		//Play Movie Dialog
 		public bool PlayMovie_IncludeSubdir = false;
-		public bool PlayMovie_MatchHash = false;
+		public bool PlayMovie_MatchHash = true;
 
 		//TI83
 		public ToolDialogSettings TI83KeypadSettings = new ToolDialogSettings();
@@ -594,6 +602,7 @@ namespace BizHawk.Client.Common
 		// it hasn't been absorbed into the new system
 		public bool GB_AsSGB = false;
 		public bool NES_InQuickNES = true;
+		public bool SNES_InSnes9x = true;
 
 		// LuaWriter Settings
 		public int LuaDefaultTextColor = -16777216;

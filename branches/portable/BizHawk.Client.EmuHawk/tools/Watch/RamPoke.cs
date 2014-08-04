@@ -8,7 +8,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class RamPoke : Form
+    public partial class RamPoke : Form, IHasShowDialog
 	{
 		// TODO: don't use textboxes as labels
 		private List<Watch> _watchList = new List<Watch>();

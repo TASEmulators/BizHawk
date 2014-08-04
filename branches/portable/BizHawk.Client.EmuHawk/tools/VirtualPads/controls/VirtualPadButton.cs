@@ -36,6 +36,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void UpdateValues()
+		{
+			// Nothing to do
+			// This tool already draws as necessary
+		}
+
 		public void Set(IController controller)
 		{
 			var newVal = controller.IsPressed(Name);

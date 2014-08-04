@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -54,7 +54,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\output\dll\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE;VS2010</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -69,6 +69,9 @@
     </CustomCommands>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EMU7800">
+      <HintPath>..\References\EMU7800.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -443,6 +446,8 @@
     <Compile Include="Consoles\Nintendo\QuickNES\LibQuickNES.cs" />
     <Compile Include="Consoles\Nintendo\QuickNES\Nes_NTSC_Colors.cs" />
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.cs" />
+    <Compile Include="Consoles\Nintendo\SNES9X\LibSnes9x.cs" />
+    <Compile Include="Consoles\Nintendo\SNES9X\Snes9x.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi_BRK.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi_CMD.cs" />

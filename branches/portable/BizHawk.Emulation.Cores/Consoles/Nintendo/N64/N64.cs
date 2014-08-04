@@ -166,7 +166,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		private void StartThreadLoop()
 		{
-			new Thread(ThreadLoop).Start();
+			var thread = new Thread(ThreadLoop);
+			//will this solve the hanging process problem?
+			thread.IsBackground = true;
+			thread.Start();
 		}
 
 		private void EndThreadLoop()
@@ -176,6 +179,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{
+			IsVIFrame = false;
+
 			_audioProvider.RenderSound = rendersound;
 
 			if (Controller["Reset"])
@@ -233,8 +238,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public bool IsLagFrame
 		{
-			get { return !_inputProvider.LastFrameInputPolled; }
-			set { _inputProvider.LastFrameInputPolled = !value; }
+			get
+			{
+				if (_settings.UseMupenStyleLag)
+				{
+					return !IsVIFrame;
+				}
+
+				return !_inputProvider.LastFrameInputPolled;
+			}
+
+			set
+			{
+				if (_settings.UseMupenStyleLag)
+				{
+					IsVIFrame = !value;
+				}
+				else
+				{
+					_inputProvider.LastFrameInputPolled = !value;
+				}
+			}
+		}
+
+		public bool IsVIFrame
+		{
+			get { return _videoProvider.IsVIFrame; }
+			set { _videoProvider.IsVIFrame = value; }
 		}
 
 		public void ResetCounters()

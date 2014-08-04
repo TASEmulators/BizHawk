@@ -422,6 +422,8 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		public int LineHeight { get; private set; }
+
 		#region Constructors
 
 		/// <summary>
@@ -435,11 +437,15 @@ namespace BizHawk.Client.EmuHawk
 			Sorting = SortOrder.None;
 			RetrieveVirtualItem += (sender, e) => { e.Item = GetItem(e.ItemIndex); };
 
+			UseCustomBackground = true;
+
 			ptrlvhti = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(LvHitTestInfo)));
 
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			SetStyle(ControlStyles.Opaque, true);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+
+			var LineHeight = this.Font.Height + 5;
 		}
 
 		~VirtualListView() 
@@ -632,6 +638,12 @@ namespace BizHawk.Client.EmuHawk
 		case (int)Notices.NM_CUSTOMDRAW:
 		OnCustomDrawNotice(ref m);
 		messageProcessed = true;
+
+							if (QueryItemBkColor == null || !UseCustomBackground)
+							{
+								m.Result = (IntPtr)0;
+							}
+
 		break;
 		case (int)ListViewNotices.LVN_GETDISPINFOW:
 		OnDispInfoNotice(ref m, false);
@@ -682,6 +694,7 @@ namespace BizHawk.Client.EmuHawk
 		#endif
 
 		public bool BlazingFast { get; set; }
+		public bool UseCustomBackground { get; set; }
 
 		protected ListViewItem GetItem(int idx) 
 		{

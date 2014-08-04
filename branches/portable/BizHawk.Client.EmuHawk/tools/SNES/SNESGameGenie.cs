@@ -77,6 +77,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void FastUpdate()
+		{
+			// Do nothing
+		}
+
 		#endregion
 
 		private void SnesGGDecode(string code, ref int val, ref int add)
