@@ -5,6 +5,9 @@ using System.Drawing.Imaging;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using System.Text;
+using System;
+using BizHawk.Client.EmuHawk.CustomControls;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -22,10 +25,10 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-			SetStyle(ControlStyles.Opaque, true);
+			//SetStyle(ControlStyles.Opaque, true);
 			Size = new Size(256, 224);
 			BackColor = Color.Transparent;
-			Paint += NameTableViewer_Paint;
+			//Paint += NameTableViewer_Paint;
 		}
 
 		public enum WhichNametable
@@ -34,6 +37,41 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public WhichNametable Which = WhichNametable.NT_ALL;
+
+		protected override void OnPaint(PaintEventArgs e)
+		{
+			
+			using (var ntr = new NativeTextRenderer(e.Graphics))
+			{
+				for (int y = 0; y < 16; y++)
+				{
+					StringBuilder sb = new StringBuilder();
+					Random r = new Random((int)DateTime.Now.Ticks);
+					for (int i = 0; i < 64; i++)
+					{
+						sb.Append((char)r.Next(0, 255));
+					}
+
+					ntr.DrawString(sb.ToString(), this.Font, Color.Black, new Point(15, y * 30));
+					//e.Graphics.DrawString(sb.ToString(), this.Font, Brushes.Black, new Point(15, y * 30));
+				}
+			}
+			
+			/*
+			for (int y = 0; y < 16; y++)
+			{
+				StringBuilder sb = new StringBuilder();
+				Random r = new Random((int)DateTime.Now.Ticks);
+				for (int i = 0; i < 64; i++)
+				{
+					sb.Append((char)r.Next(0, 255));
+				}
+
+				e.Graphics.DrawString(sb.ToString(), this.Font, Brushes.Black, new Point(15, y * 30));
+			}
+			 */
+			//base.OnPaint(e);
+		}
 
 		private void NameTableViewer_Paint(object sender, PaintEventArgs e)
 		{
