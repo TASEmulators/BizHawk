@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_nes = Global.Emulator as NES;
 			RefreshRate.Value = Global.Config.NESNameTableRefreshRate;
-			Generate(true);
+			//Generate(true);
 		}
 
 		#region Public API
@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Emulator is NES)
 			{
 				_nes = Global.Emulator as NES;
-				Generate(true);
+				//Generate(true);
 			}
 			else
 			{
@@ -62,7 +62,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Emulator is NES)
 			{
-				(Global.Emulator as NES).ppu.NTViewCallback = _callback;
+				//(Global.Emulator as NES).ppu.NTViewCallback = _callback;
+				NameTableView.Invalidate();
 			}
 			else
 			{
