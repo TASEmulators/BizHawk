@@ -42,6 +42,17 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		#endregion
 
+		public NativeTextRenderer(System.Windows.Forms.Control c)
+		{
+			_c = c;
+			_hdc = GetDC(c.Handle);
+		}
+
+		System.Windows.Forms.Control _c;
+			[DllImport("user32.dll")]
+		private static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
+		[DllImport("user32.dll")]
+		private static extern IntPtr GetDC(IntPtr hWnd);
 
 		/// <summary>      
 		/// Init.      
@@ -50,14 +61,14 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		{
 			_g = g;
 
-			var clip = _g.Clip.GetHrgn(_g);
+			//var clip = _g.Clip.GetHrgn(_g);
 
 			_hdc = _g.GetHdc();
 			SetBkMode(_hdc, 1);
 
-			SelectClipRgn(_hdc, clip);
+			//SelectClipRgn(_hdc, clip);
 
-			DeleteObject(clip);
+			//DeleteObject(clip);
 		}
 
 		/// <summary>      
@@ -108,10 +119,13 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// <param name="point">the  location to start string draw (top-left)</param>      
 		public void DrawString(String str, Font font, Color color, Point point)
 		{
+			TextOut(_hdc, point.X, point.Y, str, str.Length);
+		}
+
+		public void PrepDrawString(String str, Font font, Color color, Point point)
+		{
 			SetFont(font);
 			SetTextColor(color);
-
-			TextOut(_hdc, point.X, point.Y, str, str.Length);
 		}
 
 		/// <summary>      
@@ -137,6 +151,12 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// </summary>      
 		public void Dispose()
 		{
+			if (_c != null)
+			{
+				ReleaseDC(_c.Handle, _hdc);
+				_hdc = IntPtr.Zero;
+			}
+
 			if (_hdc != IntPtr.Zero)
 			{
 				SelectClipRgn(_hdc, IntPtr.Zero);
@@ -199,6 +219,14 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			int rgb = (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R;
 			SetTextColor(_hdc, rgb);
 		}
+
+		public void DrawRectangle(int nLeftRect,int nTopRect,int nRightRect,int nBottomRect)
+		{
+			Rectangle(_hdc, nLeftRect, nTopRect, nRightRect, nBottomRect);
+		}
+
+		[DllImport("gdi32.dll")]
+		private static extern int  Rectangle(IntPtr hdc,int nLeftRect,int nTopRect,int nRightRect,int nBottomRect);
 
 		[DllImport("gdi32.dll")]
 		private static extern int SetBkMode(IntPtr hdc, int mode);

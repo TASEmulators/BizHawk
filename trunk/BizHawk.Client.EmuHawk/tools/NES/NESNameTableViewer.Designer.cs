@@ -91,7 +91,6 @@
 			// 
 			// NameTableView
 			// 
-			this.NameTableView.BackColor = System.Drawing.Color.Transparent;
 			this.NameTableView.ContextMenuStrip = this.contextMenuStrip1;
 			this.NameTableView.Location = new System.Drawing.Point(6, 19);
 			this.NameTableView.Name = "NameTableView";
