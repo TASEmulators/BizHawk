@@ -23,11 +23,11 @@ namespace BizHawk.Client.EmuHawk
 			Nametables = new Bitmap(pSize.Width, pSize.Height);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
-			SetStyle(ControlStyles.DoubleBuffer, true);
-			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-			//SetStyle(ControlStyles.Opaque, true);
+			SetStyle(ControlStyles.DoubleBuffer, false);
+		//	SetStyle(ControlStyles.SupportsTransparentBackColor, false);
+			SetStyle(ControlStyles.Opaque, true);
 			Size = new Size(256, 224);
-			BackColor = Color.Transparent;
+			//BackColor = Color.Transparent;
 			//Paint += NameTableViewer_Paint;
 		}
 
@@ -38,38 +38,43 @@ namespace BizHawk.Client.EmuHawk
 
 		public WhichNametable Which = WhichNametable.NT_ALL;
 
-		protected override void OnPaint(PaintEventArgs e)
+
+		protected override void OnPaintBackground(PaintEventArgs pevent)
 		{
 			
-			using (var ntr = new NativeTextRenderer(e.Graphics))
-			{
-				for (int y = 0; y < 16; y++)
-				{
-					StringBuilder sb = new StringBuilder();
-					Random r = new Random((int)DateTime.Now.Ticks);
-					for (int i = 0; i < 64; i++)
-					{
-						sb.Append((char)r.Next(0, 255));
-					}
+		}
+		protected override void OnPaint(PaintEventArgs e)
+		{
+			var font = this.Font;
 
-					ntr.DrawString(sb.ToString(), this.Font, Color.Black, new Point(15, y * 30));
-					//e.Graphics.DrawString(sb.ToString(), this.Font, Brushes.Black, new Point(15, y * 30));
-				}
-			}
-			
-			/*
-			for (int y = 0; y < 16; y++)
-			{
-				StringBuilder sb = new StringBuilder();
-				Random r = new Random((int)DateTime.Now.Ticks);
-				for (int i = 0; i < 64; i++)
-				{
-					sb.Append((char)r.Next(0, 255));
-				}
 
-				e.Graphics.DrawString(sb.ToString(), this.Font, Brushes.Black, new Point(15, y * 30));
+			StringBuilder sb = new StringBuilder(128);
+			Random r = new Random((int)DateTime.Now.Ticks);
+			for (int i = 0; i < 64; i++)
+			{
+				sb.Append((char)r.Next('a', 'z'));
 			}
-			 */
+			string junk = sb.ToString();
+
+
+			using (var ntr = new NativeTextRenderer(this))
+			{
+			  ntr.PrepDrawString(junk, font, Color.Black, new Point(0, 0));
+			  ntr.DrawRectangle(0, 0, ClientRectangle.Right, ClientRectangle.Bottom);
+			  for (int y = 0; y < 16; y++)
+			  {
+			    ntr.DrawString(junk, font, Color.Black, new Point(15, y * 30));
+			    //e.Graphics.DrawString(sb.ToString(), this.Font, Brushes.Black, new Point(15, y * 30));
+			  }
+			}
+
+
+			//e.Graphics.FillRectangle(Brushes.White, ClientRectangle);
+			//for (int y = 0; y < 16; y++)
+			//{
+			//  e.Graphics.DrawString(junk, font, Brushes.Black, new Point(15, y * 30));
+			//}
+			 
 			//base.OnPaint(e);
 		}
 
