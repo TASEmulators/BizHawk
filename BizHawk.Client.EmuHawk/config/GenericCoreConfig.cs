@@ -32,6 +32,9 @@ namespace BizHawk.Client.EmuHawk
 				propertyGrid2.SelectedObject = ss;
 			else
 				tabControl1.TabPages.Remove(tabPage2);
+
+			if (Global.MovieSession.Movie.IsActive)
+				propertyGrid2.Enabled = false; // disable changes to sync setting when movie, so as not to confuse user
 		}
 
 		private void button1_Click(object sender, EventArgs e)
