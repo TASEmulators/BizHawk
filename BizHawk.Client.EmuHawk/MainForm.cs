@@ -370,6 +370,11 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Load<TAStudio>();
 			}
 
+			if (Global.Config.AutoloadExperimentalTAStudio)
+			{
+				GlobalWin.Tools.Load<TasStudioExperiment>();
+			}
+
 			if (Global.Config.AutoloadVirtualPad)
 			{
 				GlobalWin.Tools.Load<VirtualpadTool>();
