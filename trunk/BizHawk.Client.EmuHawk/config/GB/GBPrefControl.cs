@@ -21,6 +21,8 @@ namespace BizHawk.Client.EmuHawk.config.GB
 
 		[Browsable(false)]
 		public bool ColorGameBoy { get; set; }
+		[Browsable(false)]
+		public bool SyncSettingsChanged { get; private set; }
 
 		Gameboy.GambatteSettings s;
 		Gameboy.GambatteSyncSettings ss;
@@ -52,6 +54,9 @@ namespace BizHawk.Client.EmuHawk.config.GB
 				ColorChooserForm.DoColorChooserFormDialog(this.ParentForm, s);
 		}
 
-
+		private void propertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+		{
+			SyncSettingsChanged = true;
+		}
 	}
 }

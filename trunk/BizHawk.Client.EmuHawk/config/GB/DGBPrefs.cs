@@ -37,6 +37,14 @@ namespace BizHawk.Client.EmuHawk.config.GB
 			ss = new GambatteLink.GambatteLinkSyncSettings(ssl, ssr);
 		}
 
+		private bool SyncSettingsChanged
+		{
+			get
+			{
+				return gbPrefControl1.SyncSettingsChanged || gbPrefControl2.SyncSettingsChanged;
+			}
+		}
+
 		public static void DoDGBPrefsDialog(IWin32Window owner)
 		{
 			var s = (GambatteLink.GambatteLinkSettings)Global.Emulator.GetSettings();
@@ -54,7 +62,8 @@ namespace BizHawk.Client.EmuHawk.config.GB
 				{
 					dlg.GetSettings(out s, out ss);
 					Global.Emulator.PutSettings(s);
-					GlobalWin.MainForm.PutCoreSyncSettings(ss);
+					if (dlg.SyncSettingsChanged)
+						GlobalWin.MainForm.PutCoreSyncSettings(ss);
 				}
 			}
 		}
