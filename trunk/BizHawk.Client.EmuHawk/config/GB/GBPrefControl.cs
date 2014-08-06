@@ -6,7 +6,9 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk.config.GB
 {
@@ -28,6 +30,7 @@ namespace BizHawk.Client.EmuHawk.config.GB
 			this.s = s ?? new Gameboy.GambatteSettings();
 			this.ss = ss ?? new Gameboy.GambatteSyncSettings();
 			propertyGrid1.SelectedObject = this.ss;
+			propertyGrid1.Enabled = !Global.MovieSession.Movie.IsActive;
 		}
 
 		public void GetSettings(out Gameboy.GambatteSettings s, out Gameboy.GambatteSyncSettings ss)
@@ -38,7 +41,7 @@ namespace BizHawk.Client.EmuHawk.config.GB
 
 		private void buttonDefaults_Click(object sender, EventArgs e)
 		{
-			PutSettings(null, null);
+			PutSettings(null, Global.MovieSession.Movie.IsActive ? ss : null);
 		}
 
 		private void buttonPalette_Click(object sender, EventArgs e)
