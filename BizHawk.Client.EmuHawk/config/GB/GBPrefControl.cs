@@ -44,6 +44,8 @@ namespace BizHawk.Client.EmuHawk.config.GB
 		private void buttonDefaults_Click(object sender, EventArgs e)
 		{
 			PutSettings(null, Global.MovieSession.Movie.IsActive ? ss : null);
+			if (!Global.MovieSession.Movie.IsActive)
+				SyncSettingsChanged = true;
 		}
 
 		private void buttonPalette_Click(object sender, EventArgs e)
