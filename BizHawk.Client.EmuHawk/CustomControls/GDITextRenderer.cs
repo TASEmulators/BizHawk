@@ -215,7 +215,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			SetBkColor(_hdc, rgb);
 		}
 
-		public void DrawRectangle(int nLeftRect,int nTopRect,int nRightRect,int nBottomRect)
+		public void DrawRectangle(int nLeftRect, int nTopRect, int nRightRect, int nBottomRect)
 		{
 			Rectangle(_hdc, nLeftRect, nTopRect, nRightRect, nBottomRect);
 		}
@@ -228,9 +228,9 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		private IntPtr _brush = IntPtr.Zero;
 
-		public void FillRectangle(int nLeftRect,int nTopRect,int nRightRect,int nBottomRect)
+		public void FillRectangle(int x,int y, int w, int h)
 		{
-			var r = new GDIRect(new Rectangle(nLeftRect, nTopRect, nRightRect, nBottomRect));
+			var r = new GDIRect(new Rectangle(x, y, x + w, y + h));
 			FillRect(_hdc, ref r, _brush);
 		}
 
@@ -285,7 +285,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		[DllImport("gdi32.dll")]
 		private static extern int Rectangle(IntPtr hdc, int nLeftRect, int nTopRect, int nRightRect, int nBottomRect);
 
-		[DllImport("gdi32.dll")]
+		[DllImport("user32.dll")]
 		private static extern int FillRect(IntPtr hDC, [In] ref GDIRect lprc, IntPtr hbr);
 
 		[DllImport("gdi32.dll")]

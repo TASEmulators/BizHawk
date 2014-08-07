@@ -134,11 +134,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var start = StartBg;
 
-			//ntr.SetBrush(Color.White);
-			ntr.SetBrush(Color.Aqua);
-			ntr.DrawRectangle(start.X, start.Y, Width, Height);
-			
-			ntr.FillRectangle(start.X, start.Y, Width-50, Height-50);
+
+			//ntr.SetBrush(Color.White); 
+			ntr.DrawRectangle(StartBg.X, StartBg.Y, Width, Height);
+
+			//ntr.SetBrush(Color.Aqua);
+			//ntr.FillRectangle(start.X, start.Y, 50, 50);
 
 			if (HorizontalOrientation)
 			{
