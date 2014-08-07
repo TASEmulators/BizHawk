@@ -6,17 +6,27 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Client.EmuHawk.CustomControls;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public class InputRoll : Control
 	{
 		public InputRoll()
 		{
+			CellPadding = 3;
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+			this.Font = new Font("Courier New", 8);
 		}
 
 		#region Properties
+
+		/// <summary>
+		/// Gets or sets the amount of padding on the text inside a cell
+		/// </summary>
+		[DefaultValue(3)]
+		public int CellPadding { get; set; }
 
 		// TODO: remove this, it is put here for more convenient replacing of a virtuallistview in tools with the need to refactor code
 		public bool VirtualMode { get; set; }
@@ -45,7 +55,10 @@ namespace BizHawk.Client.EmuHawk
 		[Category("Behavior")]
 		public bool AllowColumnReorder { get; set; }
 
-		// TODO: don't expose to the designer
+		/// <summary>
+		/// Column data
+		/// </summary>
+		[Category("Behavior")]
 		public RollColumns Columns { get; set; }
 
 		#endregion
@@ -93,9 +106,50 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Paint
 
+		private void DrawColumnBg(GDIRenderer ntr, PaintEventArgs e)
+		{
+			if (HorizontalOrientation)
+			{
+
+			}
+			else
+			{
+
+			}
+		}
+
+		private void DrawBg(GDIRenderer ntr, PaintEventArgs e)
+		{
+			var start = StartBg;
+
+			ntr.DrawRectangle(StartBg.X, StartBg.Y, Width, Height);
+
+			if (HorizontalOrientation)
+			{
+
+			}
+			else
+			{
+
+			}
+		}
+
 		protected override void OnPaintBackground(PaintEventArgs pevent)
 		{
-			base.OnPaintBackground(pevent);
+			using (var ntr = new GDIRenderer(this))
+			{
+				if (NeedToUpdateColumn() && Columns.Any())
+				{
+					DrawColumnBg(ntr, pevent);
+				}
+
+				if (NeedToUpdateBg())
+				{
+					DrawBg(ntr, pevent);
+				}
+			}
+
+			//base.OnPaintBackground(pevent);
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
@@ -123,7 +177,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool NeedToUpdateColumn()
 		{
-			return true;// TODO
+			return true; // TODO
 		}
 
 		private bool NeedToUpdateText()
@@ -141,11 +195,35 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
+		private Point StartBg
+		{
+			get
+			{
+				if (Columns.Any())
+				{
+					if (HorizontalOrientation)
+					{
+						var x = (Columns.Max(c => c.Text.Length) * TextWidth) + CellPadding;
+						var y = TextHeight + CellPadding;
+						return new Point(x, y);
+					}
+					else
+					{
+						var x = 0;
+						var y = TextHeight + CellPadding;
+						return new Point(x, y);
+					}
+				}
+
+				return new Point(0, 0);
+			}
+		}
+
 		private int TextHeight
 		{
 			get
 			{
-				return 13; // TODO
+				return this.Font.Height;
 			}
 		}
 
@@ -153,7 +231,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				return 15; // TODO
+				return 15;
 			}
 		}
 
@@ -175,21 +253,27 @@ namespace BizHawk.Client.EmuHawk
 
 	public class RollColumns : List<RollColumn>
 	{
-		public void Add(string name, string text, int width)
+		public void Add(string name, string text, int width, RollColumn.InputType type = RollColumn.InputType.Boolean)
 		{
 			Add(new RollColumn
 			{
 				Name = name,
 				Text = text,
-				Width = width
+				Width = width,
+				Type = type
 			});
 		}
 	}
 
+	
+
 	public class RollColumn
 	{
+		public enum InputType { Boolean, Float }
+
 		public int Width { get; set; }
 		public string Name { get; set; }
 		public string Text { get; set; }
+		public InputType Type { get; set; }
 	}
 }

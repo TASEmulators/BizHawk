@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 	/// Wrapper for GDI  text rendering functions<br/>      
 	/// This class is  not thread-safe as GDI function should be called from the UI thread.      
 	///  </summary>      
-	public sealed class NativeTextRenderer : IDisposable
+	public sealed class GDIRenderer : IDisposable
 	{
 		#region Fields and Consts
 
@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		#endregion
 
-		public NativeTextRenderer(System.Windows.Forms.Control c)
+		public GDIRenderer(System.Windows.Forms.Control c)
 		{
 			_c = c;
 			_hdc = GetDC(c.Handle);
@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// <summary>      
 		/// Init.      
 		/// </summary>      
-		public NativeTextRenderer(Graphics g)
+		public GDIRenderer(Graphics g)
 		{
 			_g = g;
 
