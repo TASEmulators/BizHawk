@@ -24,6 +24,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+            InputView.Refresh();
 		}
 
 		public void FastUpdate()
