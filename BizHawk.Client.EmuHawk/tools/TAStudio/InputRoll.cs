@@ -12,12 +12,16 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class InputRoll : Control
 	{
+		private readonly RollColumns _columns = new RollColumns();
 		public InputRoll()
 		{
 			CellPadding = 3;
-			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+			//SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+			//SetStyle(ControlStyles.Opaque, true);
 			this.Font = new Font("Courier New", 8);
+			BackColor = Color.Transparent;
 		}
 
 		#region Properties
@@ -59,7 +63,13 @@ namespace BizHawk.Client.EmuHawk
 		/// Column data
 		/// </summary>
 		[Category("Behavior")]
-		public RollColumns Columns { get; set; }
+		public RollColumns Columns
+		{
+			get
+			{
+				return _columns;
+			}
+		}
 
 		#endregion
 
@@ -154,6 +164,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
+			
 			base.OnPaint(e);
 		}
 
