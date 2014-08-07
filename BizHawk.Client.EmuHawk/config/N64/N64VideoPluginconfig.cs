@@ -163,6 +163,8 @@ namespace BizHawk.Client.EmuHawk
 			ss.JaboPlugin.direct3d_transformation_pipeline = JaboDirect3DPipelineCheckbox.Checked;
 			ss.JaboPlugin.z_compare = JaboZCompareCheckbox.Checked;
 			ss.JaboPlugin.copy_framebuffer = JaboCopyFrameBufferCheckbox.Checked;
+			ss.JaboPlugin.resolution_width = JaboResolutionWidthBox.ToRawInt().Value;
+			ss.JaboPlugin.resolution_height = JaboResolutionHeightBox.ToRawInt().Value;
 
 			// Rice
 			ss.RicePlugin.NormalAlphaBlender = RiceNormalAlphaBlender_CB.Checked;
@@ -461,6 +463,8 @@ namespace BizHawk.Client.EmuHawk
 			JaboDirect3DPipelineCheckbox.Checked = ss.JaboPlugin.direct3d_transformation_pipeline;
 			JaboZCompareCheckbox.Checked = ss.JaboPlugin.z_compare;
 			JaboCopyFrameBufferCheckbox.Checked = ss.JaboPlugin.copy_framebuffer;
+			JaboResolutionWidthBox.Text = ss.JaboPlugin.resolution_width.ToString();
+			JaboResolutionHeightBox.Text = ss.JaboPlugin.resolution_height.ToString();
 
 			//Rice
 			RiceNormalAlphaBlender_CB.Checked = ss.RicePlugin.NormalAlphaBlender;
