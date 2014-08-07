@@ -120,7 +120,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (HorizontalOrientation)
 			{
-
+				
+				//HorizontalOrientedColumnWidth
+				//ntr.DrawRectangle
 			}
 			else
 			{
@@ -132,7 +134,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var start = StartBg;
 
-			ntr.DrawRectangle(StartBg.X, StartBg.Y, Width, Height);
+			//ntr.SetBrush(Color.White);
+			ntr.SetBrush(Color.Aqua);
+			ntr.DrawRectangle(start.X, start.Y, Width, Height);
+			
+			ntr.FillRectangle(start.X, start.Y, Width-50, Height-50);
 
 			if (HorizontalOrientation)
 			{
@@ -214,19 +220,27 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (HorizontalOrientation)
 					{
-						var x = (Columns.Max(c => c.Text.Length) * TextWidth) + CellPadding;
+						var x = HorizontalOrientedColumnWidth;
 						var y = TextHeight + CellPadding;
 						return new Point(x, y);
 					}
 					else
 					{
 						var x = 0;
-						var y = TextHeight + CellPadding;
+						var y = TextHeight + (CellPadding * 2);
 						return new Point(x, y);
 					}
 				}
 
 				return new Point(0, 0);
+			}
+		}
+
+		private int HorizontalOrientedColumnWidth
+		{
+			get
+			{
+				return (Columns.Max(c => c.Text.Length) * TextWidth) + (CellPadding * 2);
 			}
 		}
 
@@ -264,7 +278,7 @@ namespace BizHawk.Client.EmuHawk
 
 	public class RollColumns : List<RollColumn>
 	{
-		public void Add(string name, string text, int width, RollColumn.InputType type = RollColumn.InputType.Boolean)
+		public void Add(string name, string text, int width, RollColumn.InputType type = RollColumn.InputType.Text)
 		{
 			Add(new RollColumn
 			{
@@ -280,7 +294,7 @@ namespace BizHawk.Client.EmuHawk
 
 	public class RollColumn
 	{
-		public enum InputType { Boolean, Float }
+		public enum InputType { Boolean, Float, Text }
 
 		public int Width { get; set; }
 		public string Name { get; set; }

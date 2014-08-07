@@ -55,7 +55,69 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasStudioExperiment_Load(object sender, EventArgs e)
 		{
-
+			InputView.Columns.AddRange(new []
+			{
+				new RollColumn
+				{
+					Name = "MarkerColumn",
+					Text = "",
+					Width = 40,
+				},
+				new RollColumn
+				{
+					Name = "FrameColumn",
+					Text = "Frame",
+					Width = 50,
+				},
+				new RollColumn
+				{
+					Name = "P1 Up",
+					Text = "U",
+					Width = 23,
+				},
+				new RollColumn
+				{
+					Name = "P1 Down",
+					Text = "D",
+					Width = 23,
+				},
+				new RollColumn
+				{
+					Name = "P1 Left",
+					Text = "L",
+					Width = 23,
+				},
+				new RollColumn
+				{
+					Name = "P1 Right",
+					Text = "R",
+					Width = 23,
+				},
+				new RollColumn
+				{
+					Name = "P1 Select",
+					Text = "s",
+					Width = 23,
+				},
+				new RollColumn
+				{
+					Name = "P1 Start",
+					Text = "S",
+					Width = 23,
+				},
+				new RollColumn
+				{
+					Name = "P1 B",
+					Text = "B",
+					Width = 23,
+				},
+				new RollColumn
+				{
+					Name = "P1 A",
+					Text = "A",
+					Width = 23,
+				},
+			});
 		}
 
 		private void settingsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
