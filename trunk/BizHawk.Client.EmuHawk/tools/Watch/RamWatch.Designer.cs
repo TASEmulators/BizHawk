@@ -57,17 +57,19 @@
 			this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-			this.NewWatchStripButton1 = new System.Windows.Forms.ToolStripButton();
-			this.EditWatchToolStripButton1 = new System.Windows.Forms.ToolStripButton();
+			this.newWatchToolStripButton = new System.Windows.Forms.ToolStripButton();
+			this.editWatchToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.cutToolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.ClearChangeCountstoolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.DuplicateWatchToolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.PoketoolStripButton2 = new System.Windows.Forms.ToolStripButton();
-			this.FreezetoolStripButton2 = new System.Windows.Forms.ToolStripButton();
-			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+			this.clearChangeCountsToolStripButton = new System.Windows.Forms.ToolStripButton();
+			this.duplicateWatchToolStripButton = new System.Windows.Forms.ToolStripButton();
+			this.pokeToolStripButton = new System.Windows.Forms.ToolStripButton();
+			this.freezeToolStripButton = new System.Windows.Forms.ToolStripButton();
+			this.seperatorToolStripButton = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+			this.moveUpToolStripButton = new System.Windows.Forms.ToolStripButton();
+			this.moveDownToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-			this.MoveUpStripButton1 = new System.Windows.Forms.ToolStripButton();
-			this.MoveDownStripButton1 = new System.Windows.Forms.ToolStripButton();
+			this.pauseToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.menuStrip1 = new MenuStripEx();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.NewListMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -122,8 +124,6 @@
 			this.DiffColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.DomainColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.NotesColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.PauseToolbarButton = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.ListViewContextMenu.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
@@ -334,19 +334,19 @@
             this.openToolStripButton,
             this.saveToolStripButton,
             this.toolStripSeparator,
-            this.NewWatchStripButton1,
-            this.EditWatchToolStripButton1,
+            this.newWatchToolStripButton,
+            this.editWatchToolStripButton,
             this.cutToolStripButton,
-            this.ClearChangeCountstoolStripButton,
-            this.DuplicateWatchToolStripButton,
-            this.PoketoolStripButton2,
-            this.FreezetoolStripButton2,
-            this.toolStripButton1,
+            this.clearChangeCountsToolStripButton,
+            this.duplicateWatchToolStripButton,
+            this.pokeToolStripButton,
+            this.freezeToolStripButton,
+            this.seperatorToolStripButton,
             this.toolStripSeparator6,
-            this.MoveUpStripButton1,
-            this.MoveDownStripButton1,
+            this.moveUpToolStripButton,
+            this.moveDownToolStripButton,
             this.toolStripSeparator5,
-            this.PauseToolbarButton});
+            this.pauseToolStripButton});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip1.Name = "toolStrip1";
 			this.toolStrip1.Size = new System.Drawing.Size(364, 25);
@@ -389,26 +389,26 @@
 			this.toolStripSeparator.Name = "toolStripSeparator";
 			this.toolStripSeparator.Size = new System.Drawing.Size(6, 25);
 			// 
-			// NewWatchStripButton1
+			// newWatchToolStripButton
 			// 
-			this.NewWatchStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.NewWatchStripButton1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.addWatch;
-			this.NewWatchStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.NewWatchStripButton1.Name = "NewWatchStripButton1";
-			this.NewWatchStripButton1.Size = new System.Drawing.Size(23, 22);
-			this.NewWatchStripButton1.Text = "New Watch";
-			this.NewWatchStripButton1.ToolTipText = "New Watch";
-			this.NewWatchStripButton1.Click += new System.EventHandler(this.NewWatchMenuItem_Click);
+			this.newWatchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.newWatchToolStripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.addWatch;
+			this.newWatchToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.newWatchToolStripButton.Name = "newWatchToolStripButton";
+			this.newWatchToolStripButton.Size = new System.Drawing.Size(23, 22);
+			this.newWatchToolStripButton.Text = "New Watch";
+			this.newWatchToolStripButton.ToolTipText = "New Watch";
+			this.newWatchToolStripButton.Click += new System.EventHandler(this.NewWatchMenuItem_Click);
 			// 
-			// EditWatchToolStripButton1
+			// editWatchToolStripButton
 			// 
-			this.EditWatchToolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.EditWatchToolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("EditWatchToolStripButton1.Image")));
-			this.EditWatchToolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.EditWatchToolStripButton1.Name = "EditWatchToolStripButton1";
-			this.EditWatchToolStripButton1.Size = new System.Drawing.Size(23, 22);
-			this.EditWatchToolStripButton1.Text = "Edit Watch";
-			this.EditWatchToolStripButton1.Click += new System.EventHandler(this.EditWatchMenuItem_Click);
+			this.editWatchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.editWatchToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("editWatchToolStripButton.Image")));
+			this.editWatchToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.editWatchToolStripButton.Name = "editWatchToolStripButton";
+			this.editWatchToolStripButton.Size = new System.Drawing.Size(23, 22);
+			this.editWatchToolStripButton.Text = "Edit Watch";
+			this.editWatchToolStripButton.Click += new System.EventHandler(this.EditWatchMenuItem_Click);
 			// 
 			// cutToolStripButton
 			// 
@@ -421,83 +421,98 @@
 			this.cutToolStripButton.ToolTipText = "Remove Watch";
 			this.cutToolStripButton.Click += new System.EventHandler(this.RemoveWatchMenuItem_Click);
 			// 
-			// ClearChangeCountstoolStripButton
+			// clearChangeCountsToolStripButton
 			// 
-			this.ClearChangeCountstoolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.ClearChangeCountstoolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("ClearChangeCountstoolStripButton.Image")));
-			this.ClearChangeCountstoolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.ClearChangeCountstoolStripButton.Name = "ClearChangeCountstoolStripButton";
-			this.ClearChangeCountstoolStripButton.Size = new System.Drawing.Size(23, 22);
-			this.ClearChangeCountstoolStripButton.Text = "C";
-			this.ClearChangeCountstoolStripButton.ToolTipText = "Clear Change Counts";
-			this.ClearChangeCountstoolStripButton.Click += new System.EventHandler(this.ClearChangeCountsMenuItem_Click);
+			this.clearChangeCountsToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.clearChangeCountsToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("clearChangeCountsToolStripButton.Image")));
+			this.clearChangeCountsToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.clearChangeCountsToolStripButton.Name = "clearChangeCountsToolStripButton";
+			this.clearChangeCountsToolStripButton.Size = new System.Drawing.Size(23, 22);
+			this.clearChangeCountsToolStripButton.Text = "C";
+			this.clearChangeCountsToolStripButton.ToolTipText = "Clear Change Counts";
+			this.clearChangeCountsToolStripButton.Click += new System.EventHandler(this.ClearChangeCountsMenuItem_Click);
 			// 
-			// DuplicateWatchToolStripButton
+			// duplicateWatchToolStripButton
 			// 
-			this.DuplicateWatchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.DuplicateWatchToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("DuplicateWatchToolStripButton.Image")));
-			this.DuplicateWatchToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.DuplicateWatchToolStripButton.Name = "DuplicateWatchToolStripButton";
-			this.DuplicateWatchToolStripButton.Size = new System.Drawing.Size(23, 22);
-			this.DuplicateWatchToolStripButton.Text = "Duplicate Watch";
-			this.DuplicateWatchToolStripButton.Click += new System.EventHandler(this.DuplicateWatchMenuItem_Click);
+			this.duplicateWatchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.duplicateWatchToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("duplicateWatchToolStripButton.Image")));
+			this.duplicateWatchToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.duplicateWatchToolStripButton.Name = "duplicateWatchToolStripButton";
+			this.duplicateWatchToolStripButton.Size = new System.Drawing.Size(23, 22);
+			this.duplicateWatchToolStripButton.Text = "Duplicate Watch";
+			this.duplicateWatchToolStripButton.Click += new System.EventHandler(this.DuplicateWatchMenuItem_Click);
 			// 
-			// PoketoolStripButton2
+			// pokeToolStripButton
 			// 
-			this.PoketoolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.PoketoolStripButton2.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
-			this.PoketoolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.PoketoolStripButton2.Name = "PoketoolStripButton2";
-			this.PoketoolStripButton2.Size = new System.Drawing.Size(23, 22);
-			this.PoketoolStripButton2.Text = "toolStripButton2";
-			this.PoketoolStripButton2.ToolTipText = "Poke address";
-			this.PoketoolStripButton2.Click += new System.EventHandler(this.PokeAddressMenuItem_Click);
+			this.pokeToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.pokeToolStripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
+			this.pokeToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.pokeToolStripButton.Name = "pokeToolStripButton";
+			this.pokeToolStripButton.Size = new System.Drawing.Size(23, 22);
+			this.pokeToolStripButton.Text = "toolStripButton2";
+			this.pokeToolStripButton.ToolTipText = "Poke address";
+			this.pokeToolStripButton.Click += new System.EventHandler(this.PokeAddressMenuItem_Click);
 			// 
-			// FreezetoolStripButton2
+			// freezeToolStripButton
 			// 
-			this.FreezetoolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.FreezetoolStripButton2.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
-			this.FreezetoolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.FreezetoolStripButton2.Name = "FreezetoolStripButton2";
-			this.FreezetoolStripButton2.Size = new System.Drawing.Size(23, 22);
-			this.FreezetoolStripButton2.Text = "Freeze Address";
-			this.FreezetoolStripButton2.Click += new System.EventHandler(this.FreezeAddressMenuItem_Click);
+			this.freezeToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.freezeToolStripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
+			this.freezeToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.freezeToolStripButton.Name = "freezeToolStripButton";
+			this.freezeToolStripButton.Size = new System.Drawing.Size(23, 22);
+			this.freezeToolStripButton.Text = "Freeze Address";
+			this.freezeToolStripButton.Click += new System.EventHandler(this.FreezeAddressMenuItem_Click);
 			// 
-			// toolStripButton1
+			// seperatorToolStripButton
 			// 
-			this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButton1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.InsertSeparator;
-			this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton1.Name = "toolStripButton1";
-			this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
-			this.toolStripButton1.Text = "-";
-			this.toolStripButton1.ToolTipText = "Insert Separator";
-			this.toolStripButton1.Click += new System.EventHandler(this.InsertSeparatorMenuItem_Click);
+			this.seperatorToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.seperatorToolStripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.InsertSeparator;
+			this.seperatorToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.seperatorToolStripButton.Name = "seperatorToolStripButton";
+			this.seperatorToolStripButton.Size = new System.Drawing.Size(23, 22);
+			this.seperatorToolStripButton.Text = "-";
+			this.seperatorToolStripButton.ToolTipText = "Insert Separator";
+			this.seperatorToolStripButton.Click += new System.EventHandler(this.InsertSeparatorMenuItem_Click);
+			// 
+			// toolStripSeparator6
+			// 
+			this.toolStripSeparator6.Name = "toolStripSeparator6";
+			this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
+			// 
+			// moveUpToolStripButton
+			// 
+			this.moveUpToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.moveUpToolStripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveUp;
+			this.moveUpToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.moveUpToolStripButton.Name = "moveUpToolStripButton";
+			this.moveUpToolStripButton.Size = new System.Drawing.Size(23, 22);
+			this.moveUpToolStripButton.Text = "Move Up";
+			this.moveUpToolStripButton.Click += new System.EventHandler(this.MoveUpMenuItem_Click);
+			// 
+			// moveDownToolStripButton
+			// 
+			this.moveDownToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.moveDownToolStripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveDown;
+			this.moveDownToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.moveDownToolStripButton.Name = "moveDownToolStripButton";
+			this.moveDownToolStripButton.Size = new System.Drawing.Size(23, 22);
+			this.moveDownToolStripButton.Text = "Move Down";
+			this.moveDownToolStripButton.Click += new System.EventHandler(this.MoveDownMenuItem_Click);
 			// 
 			// toolStripSeparator5
 			// 
 			this.toolStripSeparator5.Name = "toolStripSeparator5";
 			this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
 			// 
-			// MoveUpStripButton1
+			// pauseToolStripButton
 			// 
-			this.MoveUpStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.MoveUpStripButton1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveUp;
-			this.MoveUpStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.MoveUpStripButton1.Name = "MoveUpStripButton1";
-			this.MoveUpStripButton1.Size = new System.Drawing.Size(23, 22);
-			this.MoveUpStripButton1.Text = "Move Up";
-			this.MoveUpStripButton1.Click += new System.EventHandler(this.MoveUpMenuItem_Click);
-			// 
-			// MoveDownStripButton1
-			// 
-			this.MoveDownStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.MoveDownStripButton1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveDown;
-			this.MoveDownStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.MoveDownStripButton1.Name = "MoveDownStripButton1";
-			this.MoveDownStripButton1.Size = new System.Drawing.Size(23, 22);
-			this.MoveDownStripButton1.Text = "Move Down";
-			this.MoveDownStripButton1.Click += new System.EventHandler(this.MoveDownMenuItem_Click);
+			this.pauseToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.pauseToolStripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Pause;
+			this.pauseToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.pauseToolStripButton.Name = "pauseToolStripButton";
+			this.pauseToolStripButton.Size = new System.Drawing.Size(23, 20);
+			this.pauseToolStripButton.Text = "Pause";
+			this.pauseToolStripButton.Click += new System.EventHandler(this.PauseMenuItem_Click);
 			// 
 			// menuStrip1
 			// 
@@ -925,6 +940,7 @@
 			this.WatchListView.Size = new System.Drawing.Size(332, 281);
 			this.WatchListView.TabIndex = 2;
 			this.WatchListView.UseCompatibleStateImageBehavior = false;
+			this.WatchListView.UseCustomBackground = true;
 			this.WatchListView.View = System.Windows.Forms.View.Details;
 			this.WatchListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.WatchListView_ColumnClick);
 			this.WatchListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamWatch_DragDrop);
@@ -976,21 +992,6 @@
 			this.NotesColumn.Name = "NotesColumn";
 			this.NotesColumn.Text = "Notes";
 			this.NotesColumn.Width = 128;
-			// 
-			// PauseToolbarButton
-			// 
-			this.PauseToolbarButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.PauseToolbarButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Pause;
-			this.PauseToolbarButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.PauseToolbarButton.Name = "PauseToolbarButton";
-			this.PauseToolbarButton.Size = new System.Drawing.Size(23, 22);
-			this.PauseToolbarButton.Text = "Pause";
-			this.PauseToolbarButton.Click += new System.EventHandler(this.PauseMenuItem_Click);
-			// 
-			// toolStripSeparator6
-			// 
-			this.toolStripSeparator6.Name = "toolStripSeparator6";
-			this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
 			// 
 			// RamWatch
 			// 
@@ -1078,17 +1079,17 @@
 		private System.Windows.Forms.ToolStripButton openToolStripButton;
 		private System.Windows.Forms.ToolStripButton saveToolStripButton;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
-		private System.Windows.Forms.ToolStripButton NewWatchStripButton1;
-		private System.Windows.Forms.ToolStripButton EditWatchToolStripButton1;
+		private System.Windows.Forms.ToolStripButton newWatchToolStripButton;
+		private System.Windows.Forms.ToolStripButton editWatchToolStripButton;
 		private System.Windows.Forms.ToolStripButton cutToolStripButton;
-		private System.Windows.Forms.ToolStripButton ClearChangeCountstoolStripButton;
-		private System.Windows.Forms.ToolStripButton DuplicateWatchToolStripButton;
-		private System.Windows.Forms.ToolStripButton PoketoolStripButton2;
-		private System.Windows.Forms.ToolStripButton FreezetoolStripButton2;
-		private System.Windows.Forms.ToolStripButton toolStripButton1;
+		private System.Windows.Forms.ToolStripButton clearChangeCountsToolStripButton;
+		private System.Windows.Forms.ToolStripButton duplicateWatchToolStripButton;
+		private System.Windows.Forms.ToolStripButton pokeToolStripButton;
+		private System.Windows.Forms.ToolStripButton freezeToolStripButton;
+		private System.Windows.Forms.ToolStripButton seperatorToolStripButton;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-		private System.Windows.Forms.ToolStripButton MoveUpStripButton1;
-		private System.Windows.Forms.ToolStripButton MoveDownStripButton1;
+		private System.Windows.Forms.ToolStripButton moveUpToolStripButton;
+		private System.Windows.Forms.ToolStripButton moveDownToolStripButton;
 		private System.Windows.Forms.Label WatchCountLabel;
         private System.Windows.Forms.Label MemDomainLabel;
 		private System.Windows.Forms.ToolStripSeparator Separator2;
@@ -1118,7 +1119,7 @@
 		private System.Windows.Forms.ToolStripMenuItem ShowAddressMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem PauseMenuItem;
-		private System.Windows.Forms.ToolStripButton PauseToolbarButton;
+		private System.Windows.Forms.ToolStripButton pauseToolStripButton;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
 	}
 }
