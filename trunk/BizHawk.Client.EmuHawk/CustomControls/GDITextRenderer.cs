@@ -49,26 +49,15 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		}
 
 		System.Windows.Forms.Control _c;
-			[DllImport("user32.dll")]
-		private static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
-		[DllImport("user32.dll")]
-		private static extern IntPtr GetDC(IntPtr hWnd);
 
-		/// <summary>      
-		/// Init.      
-		/// </summary>      
+		/// <summary>
+		/// Init.
+		/// </summary>
 		public GDIRenderer(Graphics g)
 		{
 			_g = g;
-
-			//var clip = _g.Clip.GetHrgn(_g);
-
 			_hdc = _g.GetHdc();
 			SetBkMode(_hdc, 1);
-
-			//SelectClipRgn(_hdc, clip);
-
-			//DeleteObject(clip);
 		}
 
 		/// <summary>      
@@ -214,10 +203,16 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// <summary>      
 		/// Set the text color of the device  context.      
 		/// </summary>      
-		private void SetTextColor(Color color)
+		public void SetTextColor(Color color)
 		{
 			int rgb = (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R;
 			SetTextColor(_hdc, rgb);
+		}
+
+		public void SetBackgroundColor(Color color)
+		{
+			int rgb = (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R;
+			SetBkColor(_hdc, rgb);
 		}
 
 		public void DrawRectangle(int nLeftRect,int nTopRect,int nRightRect,int nBottomRect)
@@ -225,8 +220,73 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			Rectangle(_hdc, nLeftRect, nTopRect, nRightRect, nBottomRect);
 		}
 
+		public void SetBrush(Color color)
+		{
+			int rgb = (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R;
+			_brush = CreateSolidBrush(rgb);
+		}
+
+		private IntPtr _brush = IntPtr.Zero;
+
+		public void FillRectangle(int nLeftRect,int nTopRect,int nRightRect,int nBottomRect)
+		{
+			var r = new GDIRect(new Rectangle(nLeftRect, nTopRect, nRightRect, nBottomRect));
+			FillRect(_hdc, ref r, _brush);
+		}
+
+		// ReSharper disable NotAccessedField.Local
+		private struct Rect
+		{
+			private int _left;
+			private int _top;
+			private int _right;
+			private int _bottom;
+
+			public Rect(Rectangle r)
+			{
+				_left = r.Left;
+				_top = r.Top;
+				_bottom = r.Bottom;
+				_right = r.Right;
+			}
+		}
+		// ReSharper restore NotAccessedField.Local
+
+		private struct GDIRect
+		{
+			private int left;
+			private int top;
+			private int right;
+			private int bottom;
+
+			public GDIRect(Rectangle r)
+			{
+				left = r.Left;
+				top = r.Top;
+				bottom = r.Bottom;
+				right = r.Right;
+			}
+		}
+
+		
+
+		#endregion
+
+
+
+		#region Imports
+
+		[DllImport("user32.dll")]
+		private static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
+
+		[DllImport("user32.dll")]
+		private static extern IntPtr GetDC(IntPtr hWnd);
+
 		[DllImport("gdi32.dll")]
-		private static extern int  Rectangle(IntPtr hdc,int nLeftRect,int nTopRect,int nRightRect,int nBottomRect);
+		private static extern int Rectangle(IntPtr hdc, int nLeftRect, int nTopRect, int nRightRect, int nBottomRect);
+
+		[DllImport("gdi32.dll")]
+		private static extern int FillRect(IntPtr hDC, [In] ref GDIRect lprc, IntPtr hbr);
 
 		[DllImport("gdi32.dll")]
 		private static extern int SetBkMode(IntPtr hdc, int mode);
@@ -236,6 +296,9 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		[DllImport("gdi32.dll")]
 		private static extern int SetTextColor(IntPtr hdc, int color);
+
+		[DllImport("gdi32.dll")]
+		private static extern int SetBkColor(IntPtr hdc, int color);
 
 		[DllImport("gdi32.dll", EntryPoint = "GetTextExtentPoint32W")]
 		private static extern int GetTextExtentPoint32(IntPtr hdc, [MarshalAs(UnmanagedType.LPWStr)] string str, int len, ref Size size);
@@ -255,23 +318,8 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		[DllImport("gdi32.dll")]
 		private static extern bool DeleteObject(IntPtr hObject);
 
-		// ReSharper disable NotAccessedField.Local      
-		private struct Rect
-		{
-			private int _left;
-			private int _top;
-			private int _right;
-			private int _bottom;
-
-			public Rect(Rectangle r)
-			{
-				_left = r.Left;
-				_top = r.Top;
-				_bottom = r.Bottom;
-				_right = r.Right;
-			}
-		}
-		// ReSharper restore NotAccessedField.Local      
+		[DllImport("gdi32.dll")]
+		private static extern IntPtr CreateSolidBrush(int color);
 
 		#endregion
 	}
