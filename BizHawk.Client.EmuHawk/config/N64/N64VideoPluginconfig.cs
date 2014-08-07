@@ -142,6 +142,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Jabo
+			ss.JaboPlugin.UseDefaultHacks = JaboUseForGameCheckbox.Checked;
+
 			ss.JaboPlugin.clear_mode = JaboClearModeDropDown.SelectedItem
 				.ToString()
 				.GetEnumFromDescription<N64SyncSettings.N64JaboPluginSettings.Direct3DClearMode>();
@@ -449,6 +451,10 @@ namespace BizHawk.Client.EmuHawk
 			JaboUseForGameCheckbox.Checked = ss.JaboPlugin.UseDefaultHacks;
 			JaboClearModeDropDown
 				.PopulateFromEnum<N64SyncSettings.N64JaboPluginSettings.Direct3DClearMode>(ss.JaboPlugin.clear_mode);
+			JaboResolutionWidthBox.Text = ss.JaboPlugin.resolution_width.ToString();
+			JaboResolutionHeightBox.Text = ss.JaboPlugin.resolution_height.ToString();
+
+			JaboUpdateHacksSection();
 
 			JaboAnisotropicFilteringLevelDropdown
 				.PopulateFromEnum<N64SyncSettings.N64JaboPluginSettings.ANISOTROPIC_FILTERING_LEVEL>(ss.JaboPlugin.anisotropic_level);
@@ -463,8 +469,7 @@ namespace BizHawk.Client.EmuHawk
 			JaboDirect3DPipelineCheckbox.Checked = ss.JaboPlugin.direct3d_transformation_pipeline;
 			JaboZCompareCheckbox.Checked = ss.JaboPlugin.z_compare;
 			JaboCopyFrameBufferCheckbox.Checked = ss.JaboPlugin.copy_framebuffer;
-			JaboResolutionWidthBox.Text = ss.JaboPlugin.resolution_width.ToString();
-			JaboResolutionHeightBox.Text = ss.JaboPlugin.resolution_height.ToString();
+			
 
 			//Rice
 			RiceNormalAlphaBlender_CB.Checked = ss.RicePlugin.NormalAlphaBlender;
@@ -1075,6 +1080,18 @@ namespace BizHawk.Client.EmuHawk
 				.OfType<Control>()
 				.ToList()
 				.ForEach(c => c.Enabled = !JaboUseForGameCheckbox.Checked);
+
+			JaboUpdateHacksSection();
+		}
+
+		private void JaboUpdateHacksSection()
+		{
+			if (JaboUseForGameCheckbox.Checked)
+			{
+				JaboResolutionWidthBox.Text = GetIntFromDB("Jabo_Resolution_Width", -1).ToString();
+				JaboResolutionHeightBox.Text = GetIntFromDB("Jabo_Resolution_Height", -1).ToString();
+				JaboClearModeDropDown.SelectedItem = ((N64SyncSettings.N64JaboPluginSettings.Direct3DClearMode)GetIntFromDB("Jabo_Clear_Mode", 0)).GetDescription();
+			}
 		}
 
 	}

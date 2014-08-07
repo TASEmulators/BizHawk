@@ -44,9 +44,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			{
 				if (UseDefaultHacks)
 				{
-					resolution_width = game.GetInt("Jabo_resolution_width", -1);
-					resolution_height = game.GetInt("resolution_height", -1);
-					clear_mode = (Direct3DClearMode)game.GetInt("clear_mode", (int)Direct3DClearMode.Default);
+					resolution_width = game.GetInt("Jabo_Resolution_Width", -1);
+					resolution_height = game.GetInt("Jabo_Resolution_Height", -1);
+					clear_mode = (Direct3DClearMode)game.GetInt("Jabo_Clear_Mode", (int)Direct3DClearMode.Default);
 				}
 			}
 
