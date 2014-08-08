@@ -237,9 +237,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			// write extra copy of stuff we don't use
 			writer.WriteLine();
 			writer.WriteLine("Frame {0}", Frame);
-
-			// debug
-			//Console.WriteLine(Util.Hash_SHA1(SaveStateBinary()));
 		}
 
 		public void LoadStateText(TextReader reader)
@@ -290,6 +287,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
+			if (ms.Position != savebuff2.Length)
+				throw new InvalidOperationException();
 			ms.Close();
 			return savebuff2;
 		}

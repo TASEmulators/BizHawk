@@ -21,6 +21,8 @@
 
 #include "constarrays.h"
 
+#include "newstate.h"
+
 #define INLINE
 
 class Gigazoid
@@ -430,10 +432,6 @@ typedef struct
 	int bits;
 	int state;
 	u8 data[12];
-	// reserved variables for future
-	u8 reserved[12];
-	bool reserved2;
-	u32 reserved3;
 } RTCCLOCKDATA;
 
 RTCCLOCKDATA rtcClockData;
@@ -527,40 +525,32 @@ bool rtcWrite(u32 address, u16 value)
 									break;
 								case 0x65:
 									{
-										struct tm *newtime;
-										time_t long_time;
-
-										time( &long_time );                /* Get time as long integer. */
-										newtime = localtime( &long_time ); /* Convert to local time. */
-
+										tm newtime;
+										GetTime(newtime);
 										rtcClockData.dataLen = 7;
-										rtcClockData.data[0] = toBCD(newtime->tm_year);
-										rtcClockData.data[1] = toBCD(newtime->tm_mon+1);
-										rtcClockData.data[2] = toBCD(newtime->tm_mday);
-										rtcClockData.data[3] = toBCD(newtime->tm_wday);
-										rtcClockData.data[4] = toBCD(newtime->tm_hour);
-										rtcClockData.data[5] = toBCD(newtime->tm_min);
-										rtcClockData.data[6] = toBCD(newtime->tm_sec);
+										rtcClockData.data[0] = toBCD(newtime.tm_year);
+										rtcClockData.data[1] = toBCD(newtime.tm_mon+1);
+										rtcClockData.data[2] = toBCD(newtime.tm_mday);
+										rtcClockData.data[3] = toBCD(newtime.tm_wday);
+										rtcClockData.data[4] = toBCD(newtime.tm_hour);
+										rtcClockData.data[5] = toBCD(newtime.tm_min);
+										rtcClockData.data[6] = toBCD(newtime.tm_sec);
 										rtcClockData.state = DATA;
 									}
 									break;
 								case 0x67:
 									{
-										struct tm *newtime;
-										time_t long_time;
-
-										time( &long_time );                /* Get time as long integer. */
-										newtime = localtime( &long_time ); /* Convert to local time. */
-
+										tm newtime;
+										GetTime(newtime);
 										rtcClockData.dataLen = 3;
-										rtcClockData.data[0] = toBCD(newtime->tm_hour);
-										rtcClockData.data[1] = toBCD(newtime->tm_min);
-										rtcClockData.data[2] = toBCD(newtime->tm_sec);
+										rtcClockData.data[0] = toBCD(newtime.tm_hour);
+										rtcClockData.data[1] = toBCD(newtime.tm_min);
+										rtcClockData.data[2] = toBCD(newtime.tm_sec);
 										rtcClockData.state = DATA;
 									}
 									break;
 								default:
-									systemMessage(0, "Unknown RTC command %02x", rtcClockData.command);
+									//systemMessage(0, "Unknown RTC command %02x", rtcClockData.command);
 									rtcClockData.state = IDLE;
 									break;
 							}
@@ -619,6 +609,33 @@ void rtcReset (void)
 	rtcClockData.state = IDLE;
 }
 
+void GetTime(tm &times)
+{
+	time_t t = RTCUseRealTime ? time(nullptr) : RTCTime;
+	#if defined _MSC_VER
+	gmtime_s(&times, &t);
+	#elif defined __MINGW32__
+	tm *tmp = gmtime(&t);
+	times = *tmp;		
+	#elif defined __GNUC__
+	gmtime_r(&t, &times);
+	#endif
+}
+
+uint64_t RTCTime;
+int RTCTicks;
+bool RTCUseRealTime;
+
+void AdvanceRTC(int ticks)
+{
+	RTCTicks += ticks;
+	while (RTCTicks >= 16777216)
+	{
+		RTCTicks -= 16777216;
+		RTCTime++;
+	}
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // END MEMORY.CPP
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -660,6 +677,19 @@ void rtcReset (void)
 class Blip_Buffer
 {
 	public:
+	template<bool isReader>void SyncState(NewState *ns)
+	{
+		NSS(clock_rate_);
+		NSS(length_);
+		NSS(sample_rate_);
+		NSS(factor_);
+		NSS(offset_);
+		// int32_t *buffer_; shouldn't need to save
+		NSS(buffer_size_);
+		NSS(reader_accum_);
+
+	}
+
 		Blip_Buffer::Blip_Buffer()
 		{
 		   factor_       = INT_MAX;
@@ -743,11 +773,11 @@ class Blip_Buffer
 class Blip_Synth
 {
 	public:
-	Blip_Buffer* buf;
 	int delta_factor;
 
-	Blip_Synth()
+	template<bool isReader>void SyncState(NewState *ns)
 	{
+		NSS(delta_factor);
 	}
 
 	void volume( double v ) { delta_factor = int ((v * 1.0) * (1L << BLIP_SAMPLE_BITS) + 0.5); }
@@ -776,9 +806,6 @@ class Blip_Synth
 			offset_resampled( t * buf->factor_ + buf->offset_, delta, buf );
 	}
 	void offset_inline( int32_t t, int delta, Blip_Buffer* buf ) const {
-		offset_resampled( t * buf->factor_ + buf->offset_, delta, buf );
-	}
-	void offset_inline( int32_t t, int delta ) const {
 		offset_resampled( t * buf->factor_ + buf->offset_, delta, buf );
 	}
 };
@@ -812,6 +839,25 @@ class Gb_Osc
 	int length_ctr;			/* length counter*/
 	unsigned phase;			/* waveform phase (or equivalent)*/
 	bool enabled;			/* internal enabled flag*/
+
+	template<bool isReader>void SyncState(NewState *ns)
+	{
+		EBS(output, -1);
+		EVS(output, outputs[0], 0);
+		EVS(output, outputs[1], 1);
+		EVS(output, outputs[2], 2);
+		EVS(output, outputs[3], 3);
+		EES(output, nullptr);
+
+		NSS(mode);
+		NSS(dac_off_amp);
+		NSS(last_amp);
+
+		NSS(delay);
+		NSS(length_ctr);
+		NSS(phase);
+		NSS(enabled);
+	}
 
 	void Gb_Osc::clock_length()
 	{
@@ -873,6 +919,14 @@ class Gb_Env : public Gb_Osc
 	int  env_delay;
 	int  volume;
 	bool env_enabled;
+
+	template<bool isReader>void SyncState(NewState *ns)
+	{
+		Gb_Osc::SyncState<isReader>(ns);
+		NSS(env_delay);
+		NSS(volume);
+		NSS(env_enabled);
+	}
 
 	void Gb_Env::clock_envelope()
 	{
@@ -961,7 +1015,12 @@ class Gb_Env : public Gb_Osc
 
 class Gb_Square : public Gb_Env
 {
-	public:
+public:
+	template<bool isReader>void SyncState(NewState *ns)
+	{
+		Gb_Env::SyncState<isReader>(ns);
+	}
+
 	bool Gb_Square::write_register( int frame_phase, int reg, int old_data, int data )
 	{
 			bool result = Gb_Env::write_register( frame_phase, reg, old_data, data );
@@ -1065,6 +1124,15 @@ class Gb_Sweep_Square : public Gb_Square
 	bool sweep_enabled;
 	bool sweep_neg;
 
+	template<bool isReader>void SyncState(NewState *ns)
+	{
+		Gb_Square::SyncState<isReader>(ns);
+		NSS(sweep_freq);
+		NSS(sweep_delay);
+		NSS(sweep_enabled);
+		NSS(sweep_neg);
+	}
+
 	void Gb_Sweep_Square::clock_sweep()
 	{
 			if ( --sweep_delay <= 0 )
@@ -1127,6 +1195,12 @@ class Gb_Noise : public Gb_Env
 {
 	public:
 	int divider; /* noise has more complex frequency divider setup*/
+
+	template<bool isReader>void SyncState(NewState *ns)
+	{
+		Gb_Env::SyncState<isReader>(ns);
+		NSS(divider);
+	}
 
 	/* Quickly runs LFSR for a large number of clocks. For use when noise is generating*/
 	/* no sound.*/
@@ -1313,6 +1387,13 @@ class Gb_Wave : public Gb_Osc
 	int sample_buf;		/* last wave RAM byte read (hardware has this as well)*/
 	int agb_mask;		/* 0xFF if AGB features enabled, 0 otherwise*/
 	uint8_t* wave_ram;	/* 32 bytes (64 nybbles), stored in APU*/
+
+	template<bool isReader>void SyncState(NewState *ns)
+	{
+		Gb_Osc::SyncState<isReader>(ns);
+		NSS(sample_buf);
+		NSS(agb_mask);
+	}
 
 	INLINE void Gb_Wave::write_register( int frame_phase, int reg, int old_data, int data )
 	{
@@ -1505,15 +1586,29 @@ int soundTicksUp; // counts up from 0 being the last time the blips were emptied
 
 int soundEnableFlag; //   = 0x3ff; /* emulator channels enabled*/
 
-typedef struct
+struct gba_pcm_t
 {
 	int last_amp;
 	int last_time;
 	int shift;
 	Blip_Buffer* output;
-} gba_pcm_t;
 
-typedef struct
+	template<bool isReader>void SyncState(NewState *ns, Gigazoid *g)
+	{
+		NSS(last_amp);
+		NSS(last_time);
+		NSS(shift);
+
+		// tricky
+		EBS(output, -1);
+		EVS(output, &g->bufs_buffer[0], 0);
+		EVS(output, &g->bufs_buffer[1], 1);
+		EVS(output, &g->bufs_buffer[2], 2);
+		EES(output, nullptr);
+	}
+};
+
+struct gba_pcm_fifo_t
 {
 	bool enabled;
 	uint8_t   fifo [32];
@@ -1524,7 +1619,20 @@ typedef struct
 	int     which;
 	int  timer;
 	gba_pcm_t pcm;
-} gba_pcm_fifo_t;
+
+	template<bool isReader>void SyncState(NewState *ns, Gigazoid *g)
+	{
+		NSS(enabled);
+		NSS(fifo);
+		NSS(count);
+		NSS(dac);
+		NSS(readIndex);
+		NSS(writeIndex);
+		NSS(which);
+		NSS(timer);
+		SSS_HACKY(pcm, g);
+	}
+};
 
 gba_pcm_fifo_t   pcm [2];
 
@@ -1618,44 +1726,25 @@ struct gb_apu_t
 	Gb_Noise        noise;
 	Blip_Synth	good_synth;
 	Blip_Synth	med_synth;
+
+	template<bool isReader>void SyncState(NewState *ns)
+	{
+		NSS(reduce_clicks_);
+		NSS(regs);
+		NSS(last_time);
+		NSS(frame_time);
+		NSS(frame_period);
+		NSS(frame_phase);
+		NSS(volume_);
+		SSS(square1);
+		SSS(square2);
+		SSS(wave);
+		SSS(noise);
+
+		SSS(good_synth);
+		SSS(med_synth);
+	}
 } gb_apu;
-
-// Format of save state. Should be stable across versions of the library,
-// with earlier versions properly opening later save states. Includes some
-// room for expansion so the state size shouldn't increase.
-struct gb_apu_state_t
-{
-	// Values stored as plain int so your code can read/write them easily.
-	// Structure can NOT be written to disk, since format is not portable.
-	typedef int val_t;
-
-	enum { format0 = 0x50414247 };
-
-	val_t format;   // format of all following data
-	val_t version;  // later versions just add fields to end
-
-	unsigned char regs [0x40];
-	val_t frame_time;
-	val_t frame_phase;
-
-	val_t sweep_freq;
-	val_t sweep_delay;
-	val_t sweep_enabled;
-	val_t sweep_neg;
-	val_t noise_divider;
-	val_t wave_buf;
-
-	val_t delay      [4];
-	val_t length_ctr [4];
-	val_t phase      [4];
-	val_t enabled    [4];
-
-	val_t env_delay   [3];
-	val_t env_volume  [3];
-	val_t env_enabled [3];
-
-	val_t unused  [13]; // for future expansion
-};
 
 #define VOL_REG 0xFF24
 #define STEREO_REG 0xFF25
@@ -8956,9 +9045,6 @@ bool CPUReadBatteryFile(const char *fileName)
 	return true;
 }
 */
-void CPUCleanUp (void)
-{
-}
 
 int CPULoadRom(const u8 *romfile, const u32 romfilelen)
 {
@@ -8984,9 +9070,6 @@ int CPULoadRom(const u8 *romfile, const u32 romfilelen)
 		WRITE16LE(temp, (i >> 1) & 0xFFFF);
 		temp++;
 	}
-
-
-
 
 
 	flashInit();
@@ -12557,6 +12640,8 @@ updateLoop:
 
 			soundTicksUp += clockTicks;
 
+			AdvanceRTC(clockTicks);
+
 			if(graphics.lcdTicks <= 0)
 			{
 				if(io_registers[REG_DISPSTAT] & 1)
@@ -12997,10 +13082,6 @@ void systemDrawScreen (void)
 // TODO: fix up RTC so this is used
 //uint32_t systemGetClock (void) { return 0; }
 
-void systemMessage(const char *, ...)
-{
-}
-
 // called at regular intervals on sound clock
 void systemOnWriteDataToSoundBuffer(int16_t * finalWave, int length)
 {
@@ -13011,6 +13092,225 @@ void systemOnWriteDataToSoundBuffer(int16_t * finalWave, int length)
 }
 
 public:
+
+template<bool isReader>void SyncState(NewState *ns)
+{
+	NSS(flashSaveMemory);
+	NSS(flashState);
+	NSS(flashReadState);
+	NSS(flashSize);
+	NSS(flashDeviceID);
+	NSS(flashManufacturerID);
+	NSS(flashBank);
+
+	NSS(eepromMode);
+	NSS(eepromByte);
+	NSS(eepromBits);
+	NSS(eepromAddress);
+	NSS(eepromData);
+	NSS(eepromBuffer);
+	NSS(eepromInUse);
+	NSS(eepromSize);
+
+	NSS(rtcClockData);
+	NSS(rtcEnabled);
+	NSS(RTCTime);
+	NSS(RTCTicks);
+	NSS(RTCUseRealTime);
+
+	NSS(soundTicksUp);
+	NSS(soundEnableFlag);
+	SSS_HACKY(pcm[0], this);
+	SSS_HACKY(pcm[1], this);
+	SSS(pcm_synth);
+
+	SSS(bufs_buffer[0]);
+	SSS(bufs_buffer[1]);
+	SSS(bufs_buffer[2]);
+	NSS(mixer_samples_read);
+
+	SSS(gb_apu);
+
+	NSS(cpuNextEvent);
+	NSS(holdState);
+	NSS(cpuPrefetch);
+	NSS(cpuTotalTicks);
+	NSS(memoryWait);
+	NSS(memoryWaitSeq);
+	NSS(memoryWait32);
+	NSS(memoryWaitSeq32);
+	NSS(biosProtected);
+	NSS(cpuBitsSet);
+
+	NSS(N_FLAG);
+	NSS(C_FLAG);
+	NSS(Z_FLAG);
+	NSS(V_FLAG);
+	NSS(armState);
+	NSS(armIrqEnable);
+	NSS(armMode);
+
+	NSS(io_registers);
+
+	NSS(MOSAIC);
+
+	NSS(BG2X_L);
+	NSS(BG2X_H);
+	NSS(BG2Y_L);
+	NSS(BG2Y_H);
+	NSS(BG3X_L);
+	NSS(BG3X_H);
+	NSS(BG3Y_L);
+	NSS(BG3Y_H);
+	NSS(BLDMOD);
+	NSS(COLEV);
+	NSS(COLY);
+	NSS(DM0SAD_L);
+	NSS(DM0SAD_H);
+	NSS(DM0DAD_L);
+	NSS(DM0DAD_H);
+	NSS(DM0CNT_L);
+	NSS(DM0CNT_H);
+	NSS(DM1SAD_L);
+	NSS(DM1SAD_H);
+	NSS(DM1DAD_L);
+	NSS(DM1DAD_H);
+	NSS(DM1CNT_L);
+	NSS(DM1CNT_H);
+	NSS(DM2SAD_L);
+	NSS(DM2SAD_H);
+	NSS(DM2DAD_L);
+	NSS(DM2DAD_H);
+	NSS(DM2CNT_L);
+	NSS(DM2CNT_H);
+	NSS(DM3SAD_L);
+	NSS(DM3SAD_H);
+	NSS(DM3DAD_L);
+	NSS(DM3DAD_H);
+	NSS(DM3CNT_L);
+	NSS(DM3CNT_H);
+
+	NSS(timerOnOffDelay);
+	NSS(timer0Value);
+	NSS(dma0Source);
+	NSS(dma0Dest);
+	NSS(dma1Source);
+	NSS(dma1Dest);
+	NSS(dma2Source);
+	NSS(dma2Dest);
+	NSS(dma3Source);
+	NSS(dma3Dest);
+
+	EBS(cpuSaveGameFunc, 0);
+	EVS(cpuSaveGameFunc, &Gigazoid::flashWrite, 1);
+	EVS(cpuSaveGameFunc, &Gigazoid::sramWrite, 2);
+	EVS(cpuSaveGameFunc, &Gigazoid::flashSaveDecide, 3);
+	EVS(cpuSaveGameFunc, &Gigazoid::flashDelayedWrite, 4);
+	EVS(cpuSaveGameFunc, &Gigazoid::sramDelayedWrite, 5);
+	EES(cpuSaveGameFunc, nullptr);
+
+	NSS(fxOn);
+	NSS(windowOn);
+	NSS(cpuDmaTicksToUpdate);
+	NSS(IRQTicks);
+	NSS(intState);
+
+	NSS(bus);
+	NSS(graphics);
+
+	// map; // values never change
+
+	NSS(clockTicks);
+
+	NSS(romSize);
+	NSS(line);
+	NSS(gfxInWin);
+	NSS(lineOBJpixleft);
+	NSS(joy);
+
+	NSS(gfxBG2Changed);
+	NSS(gfxBG3Changed);
+
+	NSS(gfxBG2X);
+	NSS(gfxBG2Y);
+	NSS(gfxBG3X);
+	NSS(gfxBG3Y);
+
+	NSS(ioReadable);
+	NSS(gbaSaveType);
+
+	NSS(stopState);
+
+	NSS(timer0On);
+	NSS(timer0Ticks);
+	NSS(timer0Reload);
+	NSS(timer0ClockReload);
+	NSS(timer1Value);
+	NSS(timer1On);
+	NSS(timer1Ticks);
+	NSS(timer1Reload);
+	NSS(timer1ClockReload);
+	NSS(timer2Value);
+	NSS(timer2On);
+	NSS(timer2Ticks);
+	NSS(timer2Reload);
+	NSS(timer2ClockReload);
+	NSS(timer3Value);
+	NSS(timer3On);
+	NSS(timer3Ticks);
+	NSS(timer3Reload);
+	NSS(timer3ClockReload);
+
+	NSS(saveType);
+	NSS(skipBios);
+	NSS(cpuIsMultiBoot);
+	NSS(cpuSaveType);
+	NSS(enableRtc);
+	NSS(mirroringEnable);
+	NSS(skipSaveGameBattery);
+
+	NSS(cpuDmaCount);
+
+	NSS(internalRAM);
+	NSS(workRAM);
+	NSS(vram);
+	NSS(pix);
+	NSS(oam);
+	NSS(ioMem);
+
+	NSS(cpuSramEnabled);
+	NSS(cpuFlashEnabled);
+	NSS(cpuEEPROMEnabled);
+	NSS(cpuEEPROMSensorEnabled);
+
+	EBS(renderLine, 0);
+	EVS(renderLine, &Gigazoid::mode0RenderLine, 0x01);
+	EVS(renderLine, &Gigazoid::mode0RenderLineNoWindow, 0x02);
+	EVS(renderLine, &Gigazoid::mode0RenderLineAll, 0x03);
+	EVS(renderLine, &Gigazoid::mode1RenderLine, 0x11);
+	EVS(renderLine, &Gigazoid::mode1RenderLineNoWindow, 0x12);
+	EVS(renderLine, &Gigazoid::mode1RenderLineAll, 0x13);
+	EVS(renderLine, &Gigazoid::mode2RenderLine, 0x21);
+	EVS(renderLine, &Gigazoid::mode2RenderLineNoWindow, 0x22);
+	EVS(renderLine, &Gigazoid::mode2RenderLineAll, 0x23);
+	EVS(renderLine, &Gigazoid::mode3RenderLine, 0x31);
+	EVS(renderLine, &Gigazoid::mode3RenderLineNoWindow, 0x32);
+	EVS(renderLine, &Gigazoid::mode3RenderLineAll, 0x33);
+	EVS(renderLine, &Gigazoid::mode4RenderLine, 0x41);
+	EVS(renderLine, &Gigazoid::mode4RenderLineNoWindow, 0x42);
+	EVS(renderLine, &Gigazoid::mode4RenderLineAll, 0x43);
+	EVS(renderLine, &Gigazoid::mode5RenderLine, 0x51);
+	EVS(renderLine, &Gigazoid::mode5RenderLineNoWindow, 0x52);
+	EVS(renderLine, &Gigazoid::mode5RenderLineAll, 0x53);
+	EES(renderLine, nullptr);
+
+	NSS(render_line_all_enabled);
+
+	// address_lut; // values never change
+	
+	NSS(lagged);
+}
+
 	Gigazoid()
 	{
 		Gigazoid_Init();
@@ -13018,7 +13318,6 @@ public:
 
 	~Gigazoid()
 	{
-		CPUCleanUp(); // todo: check me!
 	}
 
 	bool LoadRom(const u8 *romfile, const u32 romfilelen, const u8 *biosfile, const u32 biosfilelen)
@@ -13044,7 +13343,9 @@ public:
 
 		CPUInit(biosfile, biosfilelen);
 		CPUReset();
-		soundReset();
+		
+		// CPUReset already calls this, but if that were to change
+		// soundReset();
 		
 		return true;
 	}
@@ -13110,5 +13411,39 @@ EXPORT int FrameAdvance(Gigazoid *g, int input, u32 *videobuffer, s16 *audiobuff
 {
 	return g->FrameAdvance(input, videobuffer, audiobuffer, numsamp);
 }
+
+EXPORT int BinStateSize(Gigazoid *g)
+{
+	NewStateDummy dummy;
+	g->SyncState<false>(&dummy);
+	return dummy.GetLength();
+}
+
+EXPORT int BinStateSave(Gigazoid *g, char *data, int length)
+{
+	NewStateExternalBuffer saver(data, length);
+	g->SyncState<false>(&saver);
+	return !saver.Overflow() && saver.GetLength() == length;
+}
+	
+EXPORT int BinStateLoad(Gigazoid *g, const char *data, int length)
+{
+	NewStateExternalBuffer loader(const_cast<char *>(data), length);
+	g->SyncState<true>(&loader);
+	return !loader.Overflow() && loader.GetLength() == length;
+}
+
+EXPORT void TxtStateSave(Gigazoid *g, FPtrs *ff)
+{
+	NewStateExternalFunctions saver(ff);
+	g->SyncState<false>(&saver);
+}
+
+EXPORT void TxtStateLoad(Gigazoid *g, FPtrs *ff)
+{
+	NewStateExternalFunctions loader(ff);
+	g->SyncState<true>(&loader);
+}
+
 
 #include "optable.inc"
