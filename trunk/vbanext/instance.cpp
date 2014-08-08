@@ -12505,7 +12505,7 @@ void CPUInterrupt(void)
 void CPULoop (void)
 {
 	bus.busPrefetchCount = 0;
-	int ticks = 50000;
+	int ticks = 300000;
 	int timerOverflow = 0;
 	// variable used by the CPU core
 	cpuTotalTicks = 0;
@@ -12514,6 +12514,7 @@ void CPULoop (void)
 	if(cpuNextEvent > ticks)
 		cpuNextEvent = ticks;
 
+	bool framedone = false;
 
 	do
 	{
@@ -12641,6 +12642,7 @@ updateLoop:
 						systemDrawScreen();
 
 						process_sound_tick_fn();
+						framedone = true;
 					}
 
 					UPDATE_REG(0x04, io_registers[REG_DISPSTAT]);
@@ -12916,7 +12918,7 @@ updateLoop:
 			if(cpuNextEvent > ticks)
 				cpuNextEvent = ticks;
 
-			if(ticks <= 0)
+			if(ticks <= 0 || framedone)
 				break;
 
 		}
