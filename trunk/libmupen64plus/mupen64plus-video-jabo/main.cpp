@@ -59,7 +59,6 @@ static void *l_DebugCallContext = NULL;
 static int l_PluginInit = 0;
 
 HMODULE JaboDLL;
-HWND hWnd_jabo;
 
 HANDLE window_thread = NULL;
 
@@ -355,7 +354,6 @@ EXPORT void CALL ChangeWindow (void)
 // NOTE: NEW GFX_INFO vs old
 EXPORT int CALL InitiateGFX(GFX_INFO Gfx_Info)
 {
-	while(hWnd_jabo == NULL) { Sleep(1); }
 	LOG("API WRAPPER:\t InitiateGFX")
 
 	Config_Open();
@@ -430,7 +428,7 @@ EXPORT int CALL InitiateGFX(GFX_INFO Gfx_Info)
 
 	OldAPI::GFX_INFO blah;
 
-	blah.hWnd = hWnd_jabo;
+	blah.hWnd = GetDesktopWindow();
 	blah.hStatusBar = NULL;
 	blah.MemoryBswaped = true;
 
@@ -552,75 +550,4 @@ EXPORT void CALL FBGetFrameBufferInfo(void *p)
 {
 	LOG("API WRAPPER:\t FBGetFrameBufferInfo")
     //FrameBufferInfo * pinfo = (FrameBufferInfo *)p;
-}
-
-
-
-/* Simple Window code */
-
-HINSTANCE  inj_hModule;          //Injected Modules Handle
-
-//WndProc for the new window
-LRESULT CALLBACK DLLWindowProc (HWND, UINT, WPARAM, LPARAM);
-
-//Register our windows Class
-BOOL RegisterDLLWindowClass(char szClassName[])
-{
-    WNDCLASSEX wc;
-
-	ZeroMemory(&wc, sizeof(WNDCLASSEX));
-
-    wc.cbSize = sizeof (WNDCLASSEX);
-	wc.style = CS_HREDRAW | CS_VREDRAW;
-	wc.lpfnWndProc = DLLWindowProc;
-	wc.hInstance =  inj_hModule;
-	wc.hCursor = LoadCursor (NULL, IDC_ARROW);
-	wc.hbrBackground = (HBRUSH) COLOR_WINDOW;
-    wc.lpszClassName = szClassName;
-    
-    if (!RegisterClassEx (&wc))
-		return 0;
-
-	return 0;
-}
-
-//The new thread
-DWORD WINAPI ThreadProc( LPVOID lpParam )
-{
-    MSG messages;
-	char *pString = (char *)(lpParam);
-	RegisterDLLWindowClass("InjectedDLLWindowClass");
-	hWnd_jabo = CreateWindowEx (0, "InjectedDLLWindowClass", pString, WS_OVERLAPPEDWINDOW, 300, 300, 400, 300, NULL, NULL,inj_hModule, NULL );
-	ShowWindow (hWnd_jabo, SW_HIDE);
-    while (GetMessage (&messages, NULL, 0, 0))
-    {
-		TranslateMessage(&messages);
-        DispatchMessage(&messages);
-    }
-    return 1;
-}
-
-//Our new windows proc
-LRESULT CALLBACK DLLWindowProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    switch (message)
-    {
-		case WM_COMMAND:
-               break;
-		case WM_DESTROY:
-			PostQuitMessage (0);
-			break;
-		default:
-			return DefWindowProc (hwnd, message, wParam, lParam);
-    }
-    return 0;
-}
-
-BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call,LPVOID lpReserved)
-{
-	if(ul_reason_for_call==DLL_PROCESS_ATTACH) {
-		inj_hModule = hModule;
-		window_thread = CreateThread(0, NULL, ThreadProc, (LPVOID)"Window Title", NULL, NULL);
-	}
-	return TRUE;
 }
