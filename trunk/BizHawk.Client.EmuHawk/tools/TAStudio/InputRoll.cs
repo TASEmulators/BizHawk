@@ -12,7 +12,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class InputRoll : Control
 	{
+		private readonly GDIRenderer gdi;
 		private readonly RollColumns _columns = new RollColumns();
+		
 		public InputRoll()
 		{
 			CellPadding = 3;
@@ -22,6 +24,8 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.Opaque, true);
 			this.Font = new Font("Courier New", 8);
 			//BackColor = Color.Transparent;
+
+			gdi = new GDIRenderer(this);
 		}
 
 		#region Properties
@@ -152,11 +156,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var start = StartBg;
 
-
 			ntr.SetBrush(Color.White); 
 			ntr.FillRectangle(StartBg.X, StartBg.Y, Width, Height);
-
-			//ntr.SetBrush(Color.Aqua);
 			ntr.DrawRectangle(StartBg.X, StartBg.Y, Width, Height);
 
 			if (HorizontalOrientation)
@@ -171,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnPaintBackground(PaintEventArgs pevent)
 		{
-
+			// Do nothing, and this should never be called
 		}
 
 		private void DrawColumnText(GDIRenderer ntr, PaintEventArgs e)
@@ -196,24 +197,21 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		
+
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			using (var ntr = new GDIRenderer(this))
+			// Header
+			if (Columns.Any())
 			{
-				// Header
-				if (Columns.Any())
-				{
-					DrawColumnBg(ntr, e);
-					DrawColumnText(ntr, e);
-				}
-
-				// Background
-				DrawBg(ntr, e);
-
-				// ForeGround
+				DrawColumnBg(gdi, e);
+				DrawColumnText(gdi, e);
 			}
 
-			//base.OnPaint(e);
+			// Background
+			DrawBg(gdi, e);
+
+			// ForeGround
 		}
 
 		#endregion
