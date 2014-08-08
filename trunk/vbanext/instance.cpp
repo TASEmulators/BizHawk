@@ -31,48 +31,6 @@ class Gigazoid
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*============================================================
-	UTIL
-============================================================ */
-
-static int utilGetSize(int size)
-{
-	int res = 1;
-
-	while(res < size)
-		res <<= 1;
-
-	return res;
-}
-
-/* Not endian safe, but VBA itself doesn't seem to care */
-void utilWriteIntMem(uint8_t *& data, int val)
-{
-	memcpy(data, &val, sizeof(int));
-	data += sizeof(int);
-}
-
-void utilWriteMem(uint8_t *& data, const void *in_data, unsigned size)
-{
-	memcpy(data, in_data, size);
-	data += size;
-}
-
-int utilReadIntMem(const uint8_t *& data)
-{
-	int res;
-
-	memcpy(&res, data, sizeof(int));
-	data += sizeof(int);
-	return res;
-}
-
-void utilReadMem(void *buf, const uint8_t *& data, unsigned size)
-{
-	memcpy(buf, data, size);
-	data += size;
-}
-
-/*============================================================
 	FLASH
 ============================================================ */
 
@@ -661,16 +619,6 @@ void rtcReset (void)
 	rtcClockData.state = IDLE;
 }
 
-void rtcSaveGameMem(uint8_t *& data)
-{
-	utilWriteMem(data, &rtcClockData, sizeof(rtcClockData));
-}
-
-void rtcReadGameMem(const uint8_t *& data)
-{
-	utilReadMem(&rtcClockData, data, sizeof(rtcClockData));
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // END MEMORY.CPP
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -701,7 +649,7 @@ void rtcReadGameMem(const uint8_t *& data)
 #define NR52 0x84
 
 /* 1/100th of a second */
-#define SOUND_CLOCK_TICKS_ 167772 
+//#define SOUND_CLOCK_TICKS_ 167772 
 #define SOUNDVOLUME 0.5f
 #define SOUNDVOLUME_ -1
 
@@ -726,8 +674,7 @@ class Blip_Buffer
 
 		Blip_Buffer::~Blip_Buffer()
 		{
-		   if (buffer_)
-			  free(buffer_);
+			free(buffer_);
 		}
 
 		void Blip_Buffer::clear( void)
@@ -785,7 +732,7 @@ class Blip_Buffer
 		long sample_rate_;	/* Current output sample rate*/
 		uint32_t factor_;
 		uint32_t offset_;
-		int32_t * buffer_;
+		int32_t *buffer_;
 		int32_t buffer_size_;
 		int32_t reader_accum_;
 	private:
@@ -1550,10 +1497,11 @@ class Gb_Wave : public Gb_Osc
 	INLINE CLASS FUNCS
 ============================================================ */
 
-int16_t   soundFinalWave [1600];
+int16_t   soundFinalWave [2048];
 static const long  soundSampleRate = 44100; //    = 22050;
-int   SOUND_CLOCK_TICKS; //  = SOUND_CLOCK_TICKS_;
-int   soundTicks; //         = SOUND_CLOCK_TICKS_;
+//int   SOUND_CLOCK_TICKS; //  = SOUND_CLOCK_TICKS_;
+//int   soundTicks; //         = SOUND_CLOCK_TICKS_;
+int soundTicksUp; // counts up from 0 being the last time the blips were emptied
 
 int soundEnableFlag; //   = 0x3ff; /* emulator channels enabled*/
 
@@ -1624,7 +1572,7 @@ void gba_pcm_apply_control( int pcm_idx, int idx )
 	if ( pcm[pcm_idx].pcm.output != out )
 	{
 		if ( pcm[pcm_idx].pcm.output )
-			pcm_synth.offset( SOUND_CLOCK_TICKS - soundTicks, -pcm[pcm_idx].pcm.last_amp, pcm[pcm_idx].pcm.output );
+			pcm_synth.offset( soundTicksUp, -pcm[pcm_idx].pcm.last_amp, pcm[pcm_idx].pcm.output );
 		pcm[pcm_idx].pcm.last_amp = 0;
 		pcm[pcm_idx].pcm.output = out;
 	}
@@ -2211,7 +2159,7 @@ void pcm_fifo_write_control( int data, int data2)
 
 	if(pcm[0].pcm.output)
 	{
-		int time = SOUND_CLOCK_TICKS -  soundTicks;
+		int time = soundTicksUp;
 
 		pcm[0].dac = (int8_t)pcm[0].dac >> pcm[0].pcm.shift;
 		int delta = pcm[0].dac - pcm[0].pcm.last_amp;
@@ -2240,7 +2188,7 @@ void pcm_fifo_write_control( int data, int data2)
 
 	if(pcm[1].pcm.output)
 	{
-		int time = SOUND_CLOCK_TICKS -  soundTicks;
+		int time = soundTicksUp;
 
 		pcm[1].dac = (int8_t)pcm[1].dac >> pcm[1].pcm.shift;
 		int delta = pcm[1].dac - pcm[1].pcm.last_amp;
@@ -2327,7 +2275,7 @@ void gba_pcm_fifo_timer_overflowed( unsigned pcm_idx )
 
 	if(pcm[pcm_idx].pcm.output)
 	{
-		int time = SOUND_CLOCK_TICKS -  soundTicks;
+		int time = soundTicksUp;
 
 		pcm[pcm_idx].dac = (int8_t)pcm[pcm_idx].dac >> pcm[pcm_idx].pcm.shift;
 		int delta = pcm[pcm_idx].dac - pcm[pcm_idx].pcm.last_amp;
@@ -2345,7 +2293,7 @@ void soundEvent_u8_parallel(int gb_addr[], uint32_t address[], uint8_t data[])
 	for(uint32_t i = 0; i < 2; i++)
 	{
 		ioMem[address[i]] = data[i];
-		gb_apu_write_register( SOUND_CLOCK_TICKS -  soundTicks, gb_addr[i], data[i] );
+		gb_apu_write_register( soundTicksUp, gb_addr[i], data[i] );
 
 		if ( address[i] == NR52 )
 		{
@@ -2359,7 +2307,7 @@ void soundEvent_u8_parallel(int gb_addr[], uint32_t address[], uint8_t data[])
 void soundEvent_u8(int gb_addr, uint32_t address, uint8_t data)
 {
 	ioMem[address] = data;
-	gb_apu_write_register( SOUND_CLOCK_TICKS -  soundTicks, gb_addr, data );
+	gb_apu_write_register( soundTicksUp, gb_addr, data );
 
 	if ( address == NR52 )
 	{
@@ -2429,32 +2377,34 @@ void soundTimerOverflow(int timer)
 void process_sound_tick_fn (void)
 {
 	// Run sound hardware to present
-	pcm[0].pcm.last_time -= SOUND_CLOCK_TICKS;
+	pcm[0].pcm.last_time -= soundTicksUp;
 	if ( pcm[0].pcm.last_time < -2048 )
 		pcm[0].pcm.last_time = -2048;
 
-	pcm[1].pcm.last_time -= SOUND_CLOCK_TICKS;
+	pcm[1].pcm.last_time -= soundTicksUp;
 	if ( pcm[1].pcm.last_time < -2048 )
 		pcm[1].pcm.last_time = -2048;
 
 	/* Emulates sound hardware up to a specified time, ends current time
 	frame, then starts a new frame at time 0 */
 
-	if(SOUND_CLOCK_TICKS > gb_apu.last_time)
-		gb_apu_run_until_( SOUND_CLOCK_TICKS );
+	if(soundTicksUp > gb_apu.last_time)
+		gb_apu_run_until_( soundTicksUp );
 
-	gb_apu.frame_time -= SOUND_CLOCK_TICKS;
-	gb_apu.last_time -= SOUND_CLOCK_TICKS;
+	gb_apu.frame_time -= soundTicksUp;
+	gb_apu.last_time -= soundTicksUp;
 
-	bufs_buffer[2].offset_ += SOUND_CLOCK_TICKS * bufs_buffer[2].factor_;
-	bufs_buffer[1].offset_ += SOUND_CLOCK_TICKS * bufs_buffer[1].factor_;
-	bufs_buffer[0].offset_ += SOUND_CLOCK_TICKS * bufs_buffer[0].factor_;
+	bufs_buffer[2].offset_ += soundTicksUp * bufs_buffer[2].factor_;
+	bufs_buffer[1].offset_ += soundTicksUp * bufs_buffer[1].factor_;
+	bufs_buffer[0].offset_ += soundTicksUp * bufs_buffer[0].factor_;
 
 
 	// dump all the samples available
 	// VBA will only ever store 1 frame worth of samples
 	int numSamples = stereo_buffer_read_samples( (int16_t*) soundFinalWave, stereo_buffer_samples_avail());
 	systemOnWriteDataToSoundBuffer(soundFinalWave, numSamples);
+
+	soundTicksUp = 0;
 }
 
 void apply_muting (void)
@@ -2495,7 +2445,7 @@ void remake_stereo_buffer (void)
 
 	stereo_buffer_clear();
 
-	soundTicks = SOUND_CLOCK_TICKS;
+	soundTicksUp = 0;
 
 	apply_muting();
 
@@ -2512,18 +2462,14 @@ void soundReset (void)
 
 	stereo_buffer_clear();
 
-	soundTicks = SOUND_CLOCK_TICKS;
-	//End of Reset APU
-
-	SOUND_CLOCK_TICKS = SOUND_CLOCK_TICKS_;
-	soundTicks        = SOUND_CLOCK_TICKS_;
+	soundTicksUp = 0;
 
 	// Sound Event (NR52)
 	int gb_addr = table[NR52 - 0x60];
 	if ( gb_addr )
 	{
 		ioMem[NR52] = 0x80;
-		gb_apu_write_register( SOUND_CLOCK_TICKS -  soundTicks, gb_addr, 0x80 );
+		gb_apu_write_register( soundTicksUp, gb_addr, 0x80 );
 
 		gba_pcm_apply_control(0, 0 );
 		gba_pcm_apply_control(1, 1 );
@@ -2570,9 +2516,6 @@ void soundSetSampleRate(long sampleRate)
     cpuPrefetch[1] = CPUReadHalfWordQuick(bus.armNextPC+2);\
   }
  
-#ifdef USE_SWITICKS
-extern int SWITicks;
-#endif
 int cpuNextEvent; // = 0;
 bool holdState; // = false;
 uint32_t cpuPrefetch[2];
@@ -2891,6 +2834,8 @@ INLINE u32 CPUReadMemory(u32 address)
 			break;
 		case 0x04:
 			/* I/O registers */
+			if (address == 0x4000130)
+				lagged = false;
 			if((address < 0x4000400) && ioReadable[address & 0x3fc])
 			{
 				if(ioReadable[(address & 0x3fc) + 2])
@@ -2975,6 +2920,9 @@ INLINE u32 CPUReadHalfWord(u32 address)
 			value = READ16LE(((u16 *)&internalRAM[address & 0x7ffe]));
 			break;
 		case 4:
+			if (address == 0x4000130)
+				lagged = false;
+
 			if((address < 0x4000400) && ioReadable[address & 0x3fe])
 			{
 				value =  READ16LE(((u16 *)&ioMem[address & 0x3fe]));
@@ -3071,6 +3019,9 @@ INLINE u8 CPUReadByte(u32 address)
 		case 3:
 			return internalRAM[address & 0x7fff];
 		case 4:
+			if (address == 0x4000130 || address == 0x4000131)
+				lagged = false;
+
 			if((address < 0x4000400) && ioReadable[address & 0x3ff])
 				return ioMem[address & 0x3ff];
 			else goto unreadable;
@@ -5602,11 +5553,7 @@ int armExecute (void)
 
 		cpuTotalTicks += clockTicks;
 
-#ifdef USE_SWITICKS
-	} while (cpuTotalTicks<cpuNextEvent && armState && !holdState && !SWITicks);
-#else
 } while ((cpuTotalTicks < cpuNextEvent) & armState & ~holdState);
-#endif
 	return 1;
 }
 
@@ -7135,12 +7082,7 @@ int thumbExecute (void)
 
 		cpuTotalTicks += clockTicks;
 
-
-#ifdef USE_SWITICKS
-	} while (cpuTotalTicks < cpuNextEvent && !armState && !holdState && !SWITicks);
-#else
 } while ((cpuTotalTicks < cpuNextEvent) & ~armState & ~holdState);
-#endif
 	return 1;
 }
 
@@ -8840,18 +8782,14 @@ bool skipSaveGameBattery;
 
 int cpuDmaCount;
 
-uint8_t *bios;
-uint8_t *rom;
-uint8_t *internalRAM;
-uint8_t *workRAM;
-uint8_t *vram;
-u16 *pix;
-uint8_t *oam;
-uint8_t *ioMem;
-
-#ifdef USE_SWITICKS
-int SWITicks = 0;
-#endif
+uint8_t bios[0x4000];
+uint8_t rom[0x2000000];
+uint8_t internalRAM[0x8000];
+uint8_t workRAM[0x40000];
+uint8_t vram[0x20000];
+u16 pix[2 * PIX_BUFFER_SCREEN_WIDTH * 160];
+uint8_t oam[0x400];
+uint8_t ioMem[0x400];
 
 bool cpuSramEnabled; // = true;
 bool cpuFlashEnabled; // = true;
@@ -8866,9 +8804,6 @@ INLINE int CPUUpdateTicks (void)
 {
 	int cpuLoopTicks = graphics.lcdTicks;
 
-	if(soundTicks < cpuLoopTicks)
-		cpuLoopTicks = soundTicks;
-
 	if(timer0On && (timer0Ticks < cpuLoopTicks))
 		cpuLoopTicks = timer0Ticks;
 
@@ -8880,14 +8815,6 @@ INLINE int CPUUpdateTicks (void)
 
 	if(timer3On && !(io_registers[REG_TM3CNT] & 4) && (timer3Ticks < cpuLoopTicks))
 		cpuLoopTicks = timer3Ticks;
-
-#ifdef USE_SWITICKS
-	if (SWITicks)
-	{
-		if (SWITicks < cpuLoopTicks)
-			cpuLoopTicks = SWITicks;
-	}
-#endif
 
 	if (IRQTicks)
 	{
@@ -9031,50 +8958,6 @@ bool CPUReadBatteryFile(const char *fileName)
 */
 void CPUCleanUp (void)
 {
-	if(rom != NULL) {
-		free(rom);
-		rom = NULL;
-	}
-
-	if(vram != NULL) {
-		free(vram);
-		vram = NULL;
-	}
-
-	if(graphics.paletteRAM != NULL) {
-		free(graphics.paletteRAM);
-		graphics.paletteRAM = NULL;
-	}
-
-	if(internalRAM != NULL) {
-		free(internalRAM);
-		internalRAM = NULL;
-	}
-
-	if(workRAM != NULL) {
-		free(workRAM);
-		workRAM = NULL;
-	}
-
-	if(bios != NULL) {
-		free(bios);
-		bios = NULL;
-	}
-
-	if(pix != NULL) {
-		free(pix);
-		pix = NULL;
-	}
-
-	if(oam != NULL) {
-		free(oam);
-		oam = NULL;
-	}
-
-	if(ioMem != NULL) {
-		free(ioMem);
-		ioMem = NULL;
-	}
 }
 
 int CPULoadRom(const u8 *romfile, const u32 romfilelen)
@@ -9090,20 +8973,6 @@ int CPULoadRom(const u8 *romfile, const u32 romfilelen)
 			return 0;
 	}
 
-	romSize = 0x2000000;
-	if(rom != NULL)
-		CPUCleanUp();
-
-	rom = (uint8_t *)malloc(0x2000000);
-
-	if(rom == NULL)
-		return 0;
-
-	workRAM = (uint8_t *)calloc(1, 0x40000);
-
-	if(workRAM == NULL)
-		return 0;
-
 	uint8_t *whereToLoad = cpuIsMultiBoot ? workRAM : rom;
 	
 	memcpy(whereToLoad, romfile, romfilelen);
@@ -9116,41 +8985,9 @@ int CPULoadRom(const u8 *romfile, const u32 romfilelen)
 		temp++;
 	}
 
-	bios = (uint8_t *)calloc(1,0x4000);
-	if(bios == NULL) {
-		CPUCleanUp();
-		return 0;
-	}
-	internalRAM = (uint8_t *)calloc(1,0x8000);
-	if(internalRAM == NULL) {
-		CPUCleanUp();
-		return 0;
-	}
-	graphics.paletteRAM = (uint8_t *)calloc(1,0x400);
-	if(graphics.paletteRAM == NULL) {
-		CPUCleanUp();
-		return 0;
-	}
-	vram = (uint8_t *)calloc(1, 0x20000);
-	if(vram == NULL) {
-		CPUCleanUp();
-		return 0;
-	}
-	oam = (uint8_t *)calloc(1, 0x400);
-	if(oam == NULL) {
-		CPUCleanUp();
-		return 0;
-	}
-	pix = (u16 *)calloc(1, 4 * PIX_BUFFER_SCREEN_WIDTH * 160);
-	if(pix == NULL) {
-		CPUCleanUp();
-		return 0;
-	}
-	ioMem = (uint8_t *)calloc(1, 0x400);
-	if(ioMem == NULL) {
-		CPUCleanUp();
-		return 0;
-	}
+
+
+
 
 	flashInit();
 	eepromInit();
@@ -12637,10 +12474,6 @@ void CPUReset (void)
 	}
 
 	ARM_PREFETCH;
-
-#ifdef USE_SWITICKS
-	SWITicks = 0;
-#endif
 }
 
 void CPUInterrupt(void)
@@ -12672,7 +12505,7 @@ void CPUInterrupt(void)
 void CPULoop (void)
 {
 	bus.busPrefetchCount = 0;
-	int ticks = 250000;
+	int ticks = 50000;
 	int timerOverflow = 0;
 	// variable used by the CPU core
 	cpuTotalTicks = 0;
@@ -12707,15 +12540,6 @@ void CPULoop (void)
 		if(cpuTotalTicks >= cpuNextEvent) {
 			int remainingTicks = cpuTotalTicks - cpuNextEvent;
 
-#ifdef USE_SWITICKS
-			if (SWITicks)
-			{
-				SWITicks-=clockTicks;
-				if (SWITicks<0)
-					SWITicks = 0;
-			}
-#endif
-
 			clockTicks = cpuNextEvent;
 			cpuTotalTicks = 0;
 
@@ -12729,6 +12553,8 @@ updateLoop:
 			}
 
 			graphics.lcdTicks -= clockTicks;
+
+			soundTicksUp += clockTicks;
 
 			if(graphics.lcdTicks <= 0)
 			{
@@ -12813,6 +12639,8 @@ updateLoop:
 						}
 						CPUCheckDMA(1, 0x0f);
 						systemDrawScreen();
+
+						process_sound_tick_fn();
 					}
 
 					UPDATE_REG(0x04, io_registers[REG_DISPSTAT]);
@@ -12852,12 +12680,9 @@ updateLoop:
 			// we shouldn't be doing sound in stop state, but we lose synchronization
 			// if sound is disabled, so in stop state, soundTick will just produce
 			// mute sound
-			soundTicks -= clockTicks;
-			if(!soundTicks)
-			{
-				process_sound_tick_fn();
-				soundTicks += SOUND_CLOCK_TICKS;
-			}
+
+			// moving this may have consequences; we'll see
+			//soundTicksUp += clockTicks;
 
 			if(!stopState) {
 				if(timer0On) {
@@ -12976,7 +12801,7 @@ updateLoop:
 				cpuDmaTicksToUpdate -= clockTicks;
 				if(cpuDmaTicksToUpdate < 0)
 					cpuDmaTicksToUpdate = 0;
-				goto updateLoop;
+				goto skipIRQ;
 			}
 
 			if(io_registers[REG_IF] && (io_registers[REG_IME] & 1) && armIrqEnable)
@@ -13012,15 +12837,10 @@ updateLoop:
 							stopState = false;
 						}
 					}
-
-#ifdef USE_SWITICKS
-					// Stops the SWI Ticks emulation if an IRQ is executed
-					//(to avoid problems with nested IRQ/SWI)
-					if (SWITicks)
-						SWITicks = 0;
-#endif
 				}
 			}
+
+			skipIRQ:
 
 			if(remainingTicks > 0) {
 				if(remainingTicks > cpuNextEvent)
@@ -13125,11 +12945,8 @@ void Gigazoid_Init()
 
 	rtcEnabled = false;
 
-	// this is fixed now
+	// this is constant now
 	// soundSampleRate    = 22050;
-
-	SOUND_CLOCK_TICKS  = SOUND_CLOCK_TICKS_;
-	soundTicks         = SOUND_CLOCK_TICKS_;
 
 	soundEnableFlag   = 0x3ff; /* emulator channels enabled*/
 
@@ -13155,12 +12972,13 @@ void Gigazoid_Init()
 	#undef ARRAYINIT
 }
 
-bool systemVideoFrameDone;
 u32 *systemVideoFrameDest;
+s16 *systemAudioFrameDest;
+int *systemAudioFrameSamp;
+bool lagged;
 
 void systemDrawScreen (void)
 {
-	systemVideoFrameDone = true;
 	// upconvert 555->888 (TODO: BETTER)
 	for (int i = 0; i < 240 * 160; i++)
 	{
@@ -13171,19 +12989,24 @@ void systemDrawScreen (void)
 			input << 3 & 0xf8;
 		systemVideoFrameDest[i] = output;
 	}
+	systemVideoFrameDest = nullptr;
 }
 
 // TODO: fix up RTC so this is used
 //uint32_t systemGetClock (void) { return 0; }
-
-// TODO joypad: set "joy" lower 0x3ff
 
 void systemMessage(const char *, ...)
 {
 }
 
 // called at regular intervals on sound clock
-void systemOnWriteDataToSoundBuffer(int16_t * finalWave, int length) { }
+void systemOnWriteDataToSoundBuffer(int16_t * finalWave, int length)
+{
+	memcpy(systemAudioFrameDest, finalWave, length * 2);
+	systemAudioFrameDest = nullptr;
+	*systemAudioFrameSamp = length / 2;
+	systemAudioFrameSamp = nullptr;
+}
 
 public:
 	Gigazoid()
@@ -13229,16 +13052,18 @@ public:
 		CPUReset();
 	}
 
-	void FrameAdvance(int input, u32 *videobuffer)
+	bool FrameAdvance(int input, u32 *videobuffer, s16 *audiobuffer, int *numsamp)
 	{
 		joy = input;
-		systemVideoFrameDone = false;
 		systemVideoFrameDest = videobuffer;
+		systemAudioFrameDest = audiobuffer;
+		systemAudioFrameSamp = numsamp;
+		lagged = true;
 		do
 		{
 			CPULoop();
-		} while (!systemVideoFrameDone);
-		systemVideoFrameDest = nullptr;
+		} while (systemVideoFrameDest);
+		return lagged;
 	}
 
 }; // class Gigazoid
@@ -13275,12 +13100,13 @@ EXPORT int LoadRom(Gigazoid *g, const u8 *romfile, const u32 romfilelen, const u
 
 EXPORT void Reset(Gigazoid *g)
 {
+	// TODO: this calls a soundreset that seems to remake some buffers.  that seems like it should be fixed?
 	g->Reset();
 }
 
-EXPORT void FrameAdvance(Gigazoid *g, int input, u32 *videobuffer)
+EXPORT int FrameAdvance(Gigazoid *g, int input, u32 *videobuffer, s16 *audiobuffer, int *numsamp)
 {
-	g->FrameAdvance(input, videobuffer);
+	return g->FrameAdvance(input, videobuffer, audiobuffer, numsamp);
 }
 
 #include "optable.inc"

@@ -132,7 +132,7 @@ typedef struct
 
 typedef struct
 {
-	uint8_t * paletteRAM;
+	uint8_t paletteRAM[0x400];
 	int layerEnable;
 	int layerEnableDelay;
 	int lcdTicks;

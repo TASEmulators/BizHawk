@@ -65,7 +65,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		/// <param name="g"></param>
 		/// <param name="input"></param>
 		/// <param name="videobuffer">240x160 packed argb32</param>
+		/// <param name="audiobuffer">buffer to recieve stereo audio</param>
+		/// <param name="numsamp">number of samples created</param>
+		/// <returns>true if lagged</returns>
 		[DllImport(dllname, CallingConvention = cc)]
-		public static extern void FrameAdvance(IntPtr g, Buttons input, int[] videobuffer);
+		public static extern bool FrameAdvance(IntPtr g, Buttons input, int[] videobuffer, short[] audiobuffer, out int numsamp);
 	}
 }

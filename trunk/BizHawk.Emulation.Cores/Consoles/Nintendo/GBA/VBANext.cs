@@ -50,8 +50,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			if (Controller["Power"])
 				LibVBANext.Reset(Core);
 
-			IsLagFrame = false; // todo
-			LibVBANext.FrameAdvance(Core, GetButtons(), videobuff);
+			IsLagFrame = LibVBANext.FrameAdvance(Core, GetButtons(), videobuff, soundbuff, out numsamp);
 
 			if (IsLagFrame)
 				LagCount++;
@@ -225,6 +224,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		#region SoundProvider
 
 		short[] soundbuff = new short[2048];
+		int numsamp;
 
 		public ISoundProvider SoundProvider { get { return null; } }
 		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
@@ -233,9 +233,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void GetSamples(out short[] samples, out int nsamp)
 		{
-			// TODO
 			samples = soundbuff;
-			nsamp = 735;
+			nsamp = numsamp;
 		}
 
 		public void DiscardSamples()
