@@ -118,15 +118,33 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DrawColumnBg(GDIRenderer ntr, PaintEventArgs e)
 		{
+			ntr.SetBrush(SystemColors.ControlLight);
+			
 			if (HorizontalOrientation)
 			{
-				
-				//HorizontalOrientedColumnWidth
-				//ntr.DrawRectangle
+				var colWidth = HorizontalOrientedColumnWidth;
+				ntr.DrawRectangle(0, 0, colWidth, Height - 2);
+				ntr.FillRectangle(1, 1, colWidth - 1, Height - 3);
+
+				int start = 0;
+				foreach (var column in Columns)
+				{
+					start += CellHeight;
+					ntr.Line(0, start, colWidth, start);
+					
+				}
 			}
 			else
 			{
+				ntr.DrawRectangle(0, 0, Width - 2, CellHeight);
+				ntr.FillRectangle(1, 1, Width - 3, CellHeight - 1);
 
+				int start = 0;
+				foreach (var column in Columns)
+				{
+					start += column.Width;
+					ntr.Line(start, 0, start, CellHeight);
+				}
 			}
 		}
 
@@ -135,11 +153,11 @@ namespace BizHawk.Client.EmuHawk
 			var start = StartBg;
 
 
-			//ntr.SetBrush(Color.White); 
-			ntr.DrawRectangle(StartBg.X, StartBg.Y, Width, Height);
+			ntr.SetBrush(Color.White); 
+			ntr.FillRectangle(StartBg.X, StartBg.Y, Width, Height);
 
 			//ntr.SetBrush(Color.Aqua);
-			//ntr.FillRectangle(start.X, start.Y, 50, 50);
+			ntr.DrawRectangle(StartBg.X, StartBg.Y, Width, Height);
 
 			if (HorizontalOrientation)
 			{
@@ -169,10 +187,39 @@ namespace BizHawk.Client.EmuHawk
 			//base.OnPaintBackground(pevent);
 		}
 
+		private void DrawColumnText(GDIRenderer ntr, PaintEventArgs e)
+		{
+			if (HorizontalOrientation)
+			{
+				int start = 0;
+				foreach (var column in Columns)
+				{
+					ntr.DrawString(column.Text, this.Font, Color.Black, new Point(CellPadding, start + CellPadding));
+					start += CellHeight;
+				}
+			}
+			else
+			{
+				int start = 0;
+				foreach(var column in Columns)
+				{
+					ntr.DrawString(column.Text, this.Font, Color.Black, new Point(start + CellPadding, CellPadding));
+					start += column.Width;
+				}
+			}
+		}
+
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			
-			base.OnPaint(e);
+			using (var ntr = new GDIRenderer(this))
+			{
+				if (NeedToUpdateColumn() && Columns.Any())
+				{
+					DrawColumnText(ntr, e);
+				}
+			}
+
+			//base.OnPaint(e);
 		}
 
 		#endregion
@@ -222,13 +269,13 @@ namespace BizHawk.Client.EmuHawk
 					if (HorizontalOrientation)
 					{
 						var x = HorizontalOrientedColumnWidth;
-						var y = TextHeight + CellPadding;
+						var y = 0;
 						return new Point(x, y);
 					}
 					else
 					{
 						var x = 0;
-						var y = TextHeight + (CellPadding * 2);
+						var y = CellHeight;
 						return new Point(x, y);
 					}
 				}
@@ -245,11 +292,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private int TextHeight
+		private int CellHeight
 		{
 			get
 			{
-				return this.Font.Height;
+				return this.Font.Height + (CellPadding * 2);
 			}
 		}
 
@@ -270,7 +317,7 @@ namespace BizHawk.Client.EmuHawk
 					return Width / TextWidth > ItemCount;
 				}
 
-				return Height / TextHeight > ItemCount;
+				return Height / CellHeight > ItemCount;
 			}
 		}
 

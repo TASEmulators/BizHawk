@@ -234,6 +234,17 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			FillRect(_hdc, ref r, _brush);
 		}
 
+		public void SetPenPosition(int x, int y)
+		{
+			MoveToEx(_hdc, x, y, IntPtr.Zero);
+		}
+
+		public void Line(int x1, int y1, int x2, int y2)
+		{
+			MoveToEx(_hdc, x1, y1, IntPtr.Zero);
+			LineTo(_hdc, x2, y2);
+		}
+
 		// ReSharper disable NotAccessedField.Local
 		private struct Rect
 		{
@@ -268,7 +279,17 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			}
 		}
 
-		
+		private struct GDIPoint
+		{
+			private int x;
+			private int y;
+
+			private GDIPoint(int x, int y)
+			{
+				this.x = x;
+				this.y = y;
+			}
+		}
 
 		#endregion
 
@@ -320,6 +341,12 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		[DllImport("gdi32.dll")]
 		private static extern IntPtr CreateSolidBrush(int color);
+
+		[DllImport("gdi32.dll")]
+		private static extern IntPtr MoveToEx(IntPtr hdc, int x, int y, IntPtr point);
+
+		[DllImport("gdi32.dll")]
+		private static extern IntPtr LineTo(IntPtr hdc, int nXEnd, int nYEnd);
 
 		#endregion
 	}
