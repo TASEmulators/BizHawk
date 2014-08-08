@@ -422,9 +422,17 @@ namespace BizHawk.Client.Common
 								nextEmulator = c64;
 								break;
 							case "GBA":
-								var gba = new GBA(nextComm);
-								gba.Load(rom.RomData);
-								nextEmulator = gba;
+								if (false)
+								{
+									var gba = new GBA(nextComm);
+									gba.Load(rom.RomData);
+									nextEmulator = gba;
+								}
+								else
+								{
+									var gba = new VBANext(rom.RomData, nextComm);
+									nextEmulator = gba;
+								}
 								break;
 							case "N64":
 								nextEmulator = new N64(nextComm, game, rom.RomData,

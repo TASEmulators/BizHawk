@@ -238,7 +238,9 @@
     <Compile Include="Consoles\Nintendo\Gameboy\GBColors.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\LibGambatte.cs" />
     <Compile Include="Consoles\Nintendo\GBA\LibMeteor.cs" />
+    <Compile Include="Consoles\Nintendo\GBA\LibVBANext.cs" />
     <Compile Include="Consoles\Nintendo\GBA\Meteor.cs" />
+    <Compile Include="Consoles\Nintendo\GBA\VBANext.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64Input.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64JaboManager.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64Settings.cs" />
