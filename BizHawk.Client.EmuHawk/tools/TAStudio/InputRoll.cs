@@ -19,9 +19,9 @@ namespace BizHawk.Client.EmuHawk
 			//SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-			//SetStyle(ControlStyles.Opaque, true);
+			SetStyle(ControlStyles.Opaque, true);
 			this.Font = new Font("Courier New", 8);
-			BackColor = Color.Transparent;
+			//BackColor = Color.Transparent;
 		}
 
 		#region Properties
@@ -171,20 +171,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnPaintBackground(PaintEventArgs pevent)
 		{
-			using (var ntr = new GDIRenderer(this))
-			{
-				if (NeedToUpdateColumn() && Columns.Any())
-				{
-					DrawColumnBg(ntr, pevent);
-				}
 
-				if (NeedToUpdateBg())
-				{
-					DrawBg(ntr, pevent);
-				}
-			}
-
-			//base.OnPaintBackground(pevent);
 		}
 
 		private void DrawColumnText(GDIRenderer ntr, PaintEventArgs e)
@@ -213,10 +200,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using (var ntr = new GDIRenderer(this))
 			{
-				if (NeedToUpdateColumn() && Columns.Any())
+				// Header
+				if (Columns.Any())
 				{
+					DrawColumnBg(ntr, e);
 					DrawColumnText(ntr, e);
 				}
+
+				// Background
+				DrawBg(ntr, e);
+
+				// ForeGround
 			}
 
 			//base.OnPaint(e);
@@ -239,21 +233,6 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region Helpers
-
-		private bool NeedToUpdateColumn()
-		{
-			return true; // TODO
-		}
-
-		private bool NeedToUpdateText()
-		{
-			return true;
-		}
-
-		private bool NeedToUpdateBg()
-		{
-			return true;
-		}
 
 		private bool NeedToUpdateScrollbar()
 		{
@@ -337,8 +316,6 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 	}
-
-	
 
 	public class RollColumn
 	{
