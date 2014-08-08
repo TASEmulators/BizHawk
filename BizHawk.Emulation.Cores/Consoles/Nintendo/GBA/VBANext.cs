@@ -7,6 +7,7 @@ using System.IO;
 
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
+using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
@@ -32,6 +33,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			{
 				if (!LibVBANext.LoadRom(Core, romfile, (uint)romfile.Length, biosfile, (uint)biosfile.Length))
 					throw new InvalidOperationException("LoadRom() returned false!");
+
+				CoreComm.VsyncNum = 262144;
+				CoreComm.VsyncDen = 4389;
+				CoreComm.NominalWidth = 240;
+				CoreComm.NominalHeight = 160;
+
+				savebuff = new byte[LibVBANext.BinStateSize(Core)];
+				savebuff2 = new byte[savebuff.Length + 13];
 			}
 			catch
 			{
@@ -118,25 +127,84 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		#region SaveStates
 
+		JsonSerializer ser = new JsonSerializer() { Formatting = Formatting.Indented };
+		byte[] savebuff;
+		byte[] savebuff2;
+
+		class TextStateData
+		{
+			public int Frame;
+			public int LagCount;
+			public bool IsLagFrame;
+		}
+
 		public void SaveStateText(TextWriter writer)
 		{
+			var s = new TextState<TextStateData>();
+			s.Prepare();
+			var ff = s.GetFunctionPointersSave();
+			LibVBANext.TxtStateSave(Core, ref ff);
+			s.ExtraData.IsLagFrame = IsLagFrame;
+			s.ExtraData.LagCount = LagCount;
+			s.ExtraData.Frame = Frame;
+
+			ser.Serialize(writer, s);
+			// write extra copy of stuff we don't use
+			writer.WriteLine();
+			writer.WriteLine("Frame {0}", Frame);
+
+			//Console.WriteLine(BizHawk.Common.BufferExtensions.BufferExtensions.HashSHA1(SaveStateBinary()));
 		}
 
 		public void LoadStateText(TextReader reader)
 		{
+			var s = (TextState<TextStateData>)ser.Deserialize(reader, typeof(TextState<TextStateData>));
+			s.Prepare();
+			var ff = s.GetFunctionPointersLoad();
+			LibVBANext.TxtStateLoad(Core, ref ff);
+			IsLagFrame = s.ExtraData.IsLagFrame;
+			LagCount = s.ExtraData.LagCount;
+			Frame = s.ExtraData.Frame;
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
+			if (!LibVBANext.BinStateSave(Core, savebuff, savebuff.Length))
+				throw new InvalidOperationException("Core's BinStateSave() returned false!");
+			writer.Write(savebuff.Length);
+			writer.Write(savebuff);
+
+			// other variables
+			writer.Write(IsLagFrame);
+			writer.Write(LagCount);
+			writer.Write(Frame);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
+			int length = reader.ReadInt32();
+			if (length != savebuff.Length)
+				throw new InvalidOperationException("Save buffer size mismatch!");
+			reader.Read(savebuff, 0, length);
+			if (!LibVBANext.BinStateLoad(Core, savebuff, savebuff.Length))
+				throw new InvalidOperationException("Core's BinStateLoad() returned false!");
+
+			// other variables
+			IsLagFrame = reader.ReadBoolean();
+			LagCount = reader.ReadInt32();
+			Frame = reader.ReadInt32();
 		}
 
 		public byte[] SaveStateBinary()
 		{
-			return new byte[16];
+			var ms = new MemoryStream(savebuff2, true);
+			var bw = new BinaryWriter(ms);
+			SaveStateBinary(bw);
+			bw.Flush();
+			if (ms.Position != savebuff2.Length)
+				throw new InvalidOperationException();
+			ms.Close();
+			return savebuff2;
 		}
 
 		public bool BinarySaveStatesPreferred

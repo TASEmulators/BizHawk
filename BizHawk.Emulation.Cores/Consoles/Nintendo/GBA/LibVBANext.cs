@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
@@ -70,5 +71,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		/// <returns>true if lagged</returns>
 		[DllImport(dllname, CallingConvention = cc)]
 		public static extern bool FrameAdvance(IntPtr g, Buttons input, int[] videobuffer, short[] audiobuffer, out int numsamp);
+
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern int BinStateSize(IntPtr g);
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern bool BinStateSave(IntPtr g, byte[] data, int length);
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern bool BinStateLoad(IntPtr g, byte[] data, int length);
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern void TxtStateSave(IntPtr g, [In]ref TextStateFPtrs ff);
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern void TxtStateLoad(IntPtr g, [In]ref TextStateFPtrs ff);
 	}
 }
