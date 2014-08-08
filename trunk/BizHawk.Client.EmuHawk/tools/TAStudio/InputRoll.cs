@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 	public class InputRoll : Control
 	{
 		private readonly GDIRenderer gdi;
-		private readonly RollColumns _columns = new RollColumns();
+		private readonly RollColumns Columns = new RollColumns();
 		
 		public InputRoll()
 		{
@@ -63,18 +63,6 @@ namespace BizHawk.Client.EmuHawk
 		[Category("Behavior")]
 		public bool AllowColumnReorder { get; set; }
 
-		/// <summary>
-		/// Column data
-		/// </summary>
-		[Category("Behavior")]
-		public RollColumns Columns
-		{
-			get
-			{
-				return _columns;
-			}
-		}
-
 		#endregion
 
 		#region Event Handlers
@@ -114,6 +102,18 @@ namespace BizHawk.Client.EmuHawk
 		public string UserSettingsSerialized()
 		{
 			return string.Empty; // TODO
+		}
+
+		public void AddColumns(IEnumerable<RollColumn> columns)
+		{
+			Columns.AddRange(columns);
+			ColumnChanged();
+		}
+
+		public void AddColumn(RollColumn column)
+		{
+			Columns.Add(column);
+			ColumnChanged();
 		}
 
 		#endregion
@@ -296,6 +296,12 @@ namespace BizHawk.Client.EmuHawk
 
 				return Height / CellHeight > ItemCount;
 			}
+		}
+
+		private bool NeedToReDrawColumn = false;
+		private void ColumnChanged()
+		{
+			NeedToReDrawColumn = true;
 		}
 
 		#endregion

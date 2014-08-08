@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasStudioExperiment_Load(object sender, EventArgs e)
 		{
-			InputView.Columns.AddRange(new []
+			InputView.AddColumns(new []
 			{
 				new RollColumn
 				{
