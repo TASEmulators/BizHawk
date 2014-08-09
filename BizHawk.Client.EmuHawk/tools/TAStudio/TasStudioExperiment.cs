@@ -24,6 +24,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			Watches.UpdateValues();
 			InputView.Invalidate();
 		}
 
@@ -48,18 +49,59 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		private readonly WatchList Watches = new WatchList(Global.Emulator.MemoryDomains.MainMemory);
+		Random r;
+
 		public TasStudioExperiment()
 		{
 			InitializeComponent();
 			InputView.QueryItemText += TasView_QueryItemText;
 			InputView.QueryItemBkColor += TasView_QueryItemBkColor;
-			
+			r = new Random((int)DateTime.Now.Ticks);
 		}
 
 		private void TasView_QueryItemText(int index, int column, out string text)
 		{
-			Random r = new Random((int)DateTime.Now.Ticks);
-			text = r.NextDouble() > .5 ? "_" : "";
+			
+			//text = r.NextDouble() > .5 ? "_" : "";
+
+			text = string.Empty;
+
+			if (index >= Watches.ItemCount || Watches[index].IsSeparator)
+			{
+				return;
+			}
+
+			//var columnName = InputView.Columns[column].Name;
+
+			switch (column)
+			{
+				case 0:
+					text = Watches[index].AddressString;
+					break;
+				case 1:
+					text = Watches[index].ValueString;
+					break;
+				case 2:
+					text = Watches[index].PreviousStr;
+					break;
+				case 3:
+					if (!Watches[index].IsSeparator)
+					{
+						text = Watches[index].ChangeCount.ToString();
+					}
+
+					break;
+				case 4:
+					text = Watches[index].Diff;
+					break;
+				case 5:
+					text = Watches[index].Domain.Name;
+					break;
+				case 6:
+					text = Watches[index].Notes;
+					break;
+			}
 		}
 
 		private void TasView_QueryItemBkColor(int index, int column, ref Color color)
@@ -69,6 +111,59 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasStudioExperiment_Load(object sender, EventArgs e)
 		{
+			for (int i = 0; i < 20; i++)
+			{
+				Watches.Add(new ByteWatch(Watches.Domain, 0x0057, Watch.DisplayType.Signed, false, "Speed"));
+			}
+
+			InputView.AddColumns(new[]
+			{
+				new RollColumn
+				{
+					Group = "",
+					Name = "Address",
+					Text = "Address"
+				},
+				new RollColumn
+				{
+					Group = "",
+					Name = "Value",
+					Text = "Value"
+				},
+				new RollColumn
+				{
+					Group = "",
+					Name = "Prev",
+					Text = "Prev"
+				},
+				new RollColumn
+				{
+					Group = "",
+					Name = "Changes",
+					Text = "Changes"
+				},
+				new RollColumn
+				{
+					Group = "",
+					Name = "Domain",
+					Text = "Domain"
+				},
+				new RollColumn
+				{
+					Group = "",
+					Name = "Diff",
+					Text = "Diff"
+				},
+				new RollColumn
+				{
+					Group = "",
+					Name = "Notes",
+					Text = "Notes"
+				},
+			});
+
+
+			/*
 			InputView.AddColumns(new []
 			{
 				new RollColumn
@@ -142,6 +237,7 @@ namespace BizHawk.Client.EmuHawk
 					Type = RollColumn.InputType.Boolean
 				},
 			});
+			 */
 		}
 
 		private void settingsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
