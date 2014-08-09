@@ -51,6 +51,20 @@ namespace BizHawk.Client.EmuHawk
 		public TasStudioExperiment()
 		{
 			InitializeComponent();
+			InputView.QueryItemText += TasView_QueryItemText;
+			InputView.QueryItemBkColor += TasView_QueryItemBkColor;
+			
+		}
+
+		private void TasView_QueryItemText(int index, int column, out string text)
+		{
+			Random r = new Random((int)DateTime.Now.Ticks);
+			text = r.NextDouble() > .5 ? "_" : "";
+		}
+
+		private void TasView_QueryItemBkColor(int index, int column, ref Color color)
+		{
+
 		}
 
 		private void TasStudioExperiment_Load(object sender, EventArgs e)

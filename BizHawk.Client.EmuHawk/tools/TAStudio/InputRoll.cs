@@ -34,6 +34,12 @@ namespace BizHawk.Client.EmuHawk
 			_charSize = Gdi.MeasureString("A", this.Font);
 		}
 
+		protected override void Dispose(bool disposing)
+		{
+			Gdi.Dispose();
+			base.Dispose(disposing);
+		}
+
 		#region Properties
 
 		/// <summary>
@@ -233,7 +239,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		
+		private void DrawData(GDIRenderer gdi, PaintEventArgs e)
+		{
+
+		}
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
@@ -250,6 +259,7 @@ namespace BizHawk.Client.EmuHawk
 			DrawBg(Gdi, e);
 
 			// ForeGround
+			DrawData(Gdi, e);
 		}
 
 		#endregion
