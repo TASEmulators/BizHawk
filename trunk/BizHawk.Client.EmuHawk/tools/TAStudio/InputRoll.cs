@@ -82,18 +82,18 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Retrieve the background color for a Listview cell (item and subitem).
 		/// </summary>
-		/// <param name="item">Listview item (row).</param>
-		/// <param name="subItem">Listview subitem (column).</param>
+		/// <param name="index">Listview item (row).</param>
+		/// <param name="column">Listview subitem (column).</param>
 		/// <param name="color">Background color to use</param>
-		public delegate void QueryItemBkColorHandler(int item, int subItem, ref Color color);
+		public delegate void QueryItemBkColorHandler(int index, int column, ref Color color);
 
 		/// <summary>
 		/// Retrieve the text for a Listview cell (item and subitem).
 		/// </summary>
-		/// <param name="item">Listview item (row).</param>
-		/// <param name="subItem">Listview subitem (column).</param>
+		/// <param name="index">Listview item (row).</param>
+		/// <param name="column">Listview subitem (column).</param>
 		/// <param name="text">Text to display.</param>
-		public delegate void QueryItemTextHandler(int item, int subItem, out string text);
+		public delegate void QueryItemTextHandler(int index, int column, out string text);
 
 		/// <summary>
 		/// Fire the QueryItemBkColor event which requests the background color for the passed Listview cell
@@ -241,7 +241,31 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DrawData(GDIRenderer gdi, PaintEventArgs e)
 		{
+			if (QueryItemText != null)
+			{
+				if (HorizontalOrientation)
+				{
 
+				}
+				else
+				{
+					var visibleRows = (Height / CellHeight) - 1;
+					for (int i = 1; i < visibleRows; i++)
+					{
+						int x = 1;
+						for (int j = 0; j < Columns.Count; j++)
+						{
+							string text;
+							var point = new Point(x + CellPadding, i * CellHeight);
+							QueryItemText(i, j, out text);
+							
+							gdi.PrepDrawString(text, this.Font, this.ForeColor, point);
+							gdi.DrawString(text, this.Font, point);
+							x += CalcWidth(Columns[j]);
+						}
+					}
+				}
+			}
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
