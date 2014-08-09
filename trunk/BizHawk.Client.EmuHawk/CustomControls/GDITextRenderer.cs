@@ -50,6 +50,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		public void NewHdc(IntPtr hdc)
 		{
+			ReleaseDC(_c.Handle, _hdc);
 			_hdc = hdc;
 			SetBkMode(_hdc, (int)BkModes.TRANSPARENT);
 		}
