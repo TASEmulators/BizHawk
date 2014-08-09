@@ -231,11 +231,11 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		public void SetBrush(Color color)
 		{
 			int rgb = (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R;
+			DeleteObject(_brush);
 			_brush = CreateSolidBrush(rgb);
 		}
 
 		private IntPtr _brush = IntPtr.Zero;
-		private IntPtr _pen = IntPtr.Zero;
 
 		public void FillRectangle(int x,int y, int w, int h)
 		{
