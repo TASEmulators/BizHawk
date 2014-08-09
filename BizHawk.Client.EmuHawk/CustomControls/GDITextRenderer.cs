@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		public void NewHdc(IntPtr hdc)
 		{
 			_hdc = hdc;
-			SetBkMode(_hdc, (int)BkModes.OPAQUE);
+			SetBkMode(_hdc, (int)BkModes.TRANSPARENT);
 		}
 
 		System.Windows.Forms.Control _c;
