@@ -214,7 +214,9 @@ namespace BizHawk.Client.EmuHawk
 				int start = 0;
 				foreach (var column in Columns)
 				{
-					gdi.DrawString(column.Text, this.Font, Color.Black, new Point(CellPadding, start + CellPadding));
+					var point = new Point(CellPadding, start + CellPadding);
+					gdi.PrepDrawString(column.Text, this.Font, this.ForeColor, point);
+					gdi.DrawString(column.Text, this.Font, point);
 					start += CellHeight;
 				}
 			}
@@ -225,7 +227,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var point = new Point(start + CellPadding, CellPadding);
 					gdi.PrepDrawString(column.Text, this.Font, this.ForeColor, point);
-					gdi.DrawString(column.Text, this.Font, Color.Black, point);
+					gdi.DrawString(column.Text, this.Font, point);
 					start += CalcWidth(column);
 				}
 			}
@@ -235,6 +237,8 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
+			Gdi.NewHdc(e.Graphics.GetHdc());
+
 			// Header
 			if (Columns.Any())
 			{

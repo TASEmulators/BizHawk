@@ -48,6 +48,12 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			_hdc = GetDC(c.Handle);
 		}
 
+		public void NewHdc(IntPtr hdc)
+		{
+			_hdc = hdc;
+			SetBkMode(_hdc, (int)BkModes.OPAQUE);
+		}
+
 		System.Windows.Forms.Control _c;
 
 		/// <summary>
@@ -57,7 +63,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		{
 			_g = g;
 			_hdc = _g.GetHdc();
-			SetBkMode(_hdc, 1);
+			SetBkMode(_hdc, (int)BkModes.OPAQUE);
 		}
 
 		/// <summary>      
@@ -106,7 +112,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// <param name="font">the  font to use to draw the string</param>      
 		/// <param name="color">the  text color to set</param>      
 		/// <param name="point">the  location to start string draw (top-left)</param>      
-		public void DrawString(String str, Font font, Color color, Point point)
+		public void DrawString(String str, Font font, Point point)
 		{
 			TextOut(_hdc, point.X, point.Y, str, str.Length);
 		}
@@ -425,5 +431,11 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		SYSTEM_FIXED_FONT =   16,
 		DC_BRUSH =            18,
 		DC_PEN =              19,
+	}
+
+	public enum BkModes
+	{
+		TRANSPARENT = 1,
+		OPAQUE = 2
 	}
 }
