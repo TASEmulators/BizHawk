@@ -12,9 +12,12 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class InputRoll : Control
 	{
-		private readonly GDIRenderer gdi;
+		private readonly GDIRenderer Gdi;
 		private readonly RollColumns Columns = new RollColumns();
-		
+
+		private bool NeedToReDrawColumn = false;
+		private int _horizontalOrientedColumnWidth = 0;
+
 		public InputRoll()
 		{
 			CellPadding = 3;
@@ -25,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 			this.Font = new Font("Courier New", 8);
 			//BackColor = Color.Transparent;
 
-			gdi = new GDIRenderer(this);
+			Gdi = new GDIRenderer(this);
 		}
 
 		#region Properties
@@ -120,45 +123,44 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Paint
 
-		private void DrawColumnBg(GDIRenderer ntr, PaintEventArgs e)
+		private void DrawColumnBg(GDIRenderer gdi, PaintEventArgs e)
 		{
-			ntr.SetBrush(SystemColors.ControlLight);
-			
+			gdi.SetBrush(SystemColors.ControlLight);
+
 			if (HorizontalOrientation)
 			{
-				var colWidth = HorizontalOrientedColumnWidth;
-				ntr.DrawRectangle(0, 0, colWidth, Height - 2);
-				ntr.FillRectangle(1, 1, colWidth - 1, Height - 3);
+				var colWidth = _horizontalOrientedColumnWidth;
+				gdi.DrawRectangle(0, 0, colWidth, Height - 2);
+				gdi.FillRectangle(1, 1, colWidth - 1, Height - 3);
 
 				int start = 0;
 				foreach (var column in Columns)
 				{
 					start += CellHeight;
-					ntr.Line(0, start, colWidth, start);
-					
+					gdi.Line(0, start, colWidth, start);
 				}
 			}
 			else
 			{
-				ntr.DrawRectangle(0, 0, Width - 2, CellHeight);
-				ntr.FillRectangle(1, 1, Width - 3, CellHeight - 1);
+				gdi.DrawRectangle(0, 0, Width - 2, CellHeight);
+				gdi.FillRectangle(1, 1, Width - 3, CellHeight - 1);
 
 				int start = 0;
 				foreach (var column in Columns)
 				{
 					start += column.Width;
-					ntr.Line(start, 0, start, CellHeight);
+					gdi.Line(start, 0, start, CellHeight);
 				}
 			}
 		}
 
 		private void DrawBg(GDIRenderer ntr, PaintEventArgs e)
 		{
-			var start = StartBg;
+			var start = StartBg();
 
-			ntr.SetBrush(Color.White); 
-			ntr.FillRectangle(StartBg.X, StartBg.Y, Width, Height);
-			ntr.DrawRectangle(StartBg.X, StartBg.Y, Width, Height);
+			ntr.SetBrush(Color.White);
+			ntr.FillRectangle(start.X, start.Y, Width, Height);
+			ntr.DrawRectangle(start.X, start.Y, Width, Height);
 
 			if (HorizontalOrientation)
 			{
@@ -175,23 +177,25 @@ namespace BizHawk.Client.EmuHawk
 			// Do nothing, and this should never be called
 		}
 
-		private void DrawColumnText(GDIRenderer ntr, PaintEventArgs e)
+		private void DrawColumnText(GDIRenderer gdi, PaintEventArgs e)
 		{
 			if (HorizontalOrientation)
 			{
 				int start = 0;
 				foreach (var column in Columns)
 				{
-					ntr.DrawString(column.Text, this.Font, Color.Black, new Point(CellPadding, start + CellPadding));
+					gdi.DrawString(column.Text, this.Font, Color.Black, new Point(CellPadding, start + CellPadding));
 					start += CellHeight;
 				}
 			}
 			else
 			{
-				int start = 0;
+				int start = CellPadding;
 				foreach(var column in Columns)
 				{
-					ntr.DrawString(column.Text, this.Font, Color.Black, new Point(start + CellPadding, CellPadding));
+					var point = new Point(start + CellPadding, CellPadding);
+					gdi.PrepDrawString(column.Text, this.Font, this.ForeColor, point);
+					gdi.DrawString(column.Text, this.Font, Color.Black, point);
 					start += column.Width;
 				}
 			}
@@ -204,12 +208,12 @@ namespace BizHawk.Client.EmuHawk
 			// Header
 			if (Columns.Any())
 			{
-				DrawColumnBg(gdi, e);
-				DrawColumnText(gdi, e);
+				DrawColumnBg(Gdi, e);
+				DrawColumnText(Gdi, e);
 			}
 
 			// Background
-			DrawBg(gdi, e);
+			DrawBg(Gdi, e);
 
 			// ForeGround
 		}
@@ -237,36 +241,25 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		private Point StartBg
+		private Point StartBg()
 		{
-			get
+			if (Columns.Any())
 			{
-				if (Columns.Any())
+				if (HorizontalOrientation)
 				{
-					if (HorizontalOrientation)
-					{
-						var x = HorizontalOrientedColumnWidth;
-						var y = 0;
-						return new Point(x, y);
-					}
-					else
-					{
-						var x = 0;
-						var y = CellHeight;
-						return new Point(x, y);
-					}
+					var x = _horizontalOrientedColumnWidth;
+					var y = 0;
+					return new Point(x, y);
 				}
-
-				return new Point(0, 0);
+				else
+				{
+					var x = 0;
+					var y = CellHeight;
+					return new Point(x, y);
+				}
 			}
-		}
 
-		private int HorizontalOrientedColumnWidth
-		{
-			get
-			{
-				return (Columns.Max(c => c.Text.Length) * TextWidth) + (CellPadding * 2);
-			}
+			return new Point(0, 0);
 		}
 
 		private int CellHeight
@@ -298,10 +291,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool NeedToReDrawColumn = false;
 		private void ColumnChanged()
 		{
 			NeedToReDrawColumn = true;
+			_horizontalOrientedColumnWidth = (Columns.Max(c => c.Text.Length) * TextWidth) + (CellPadding * 2);
 		}
 
 		#endregion
