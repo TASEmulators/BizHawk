@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Watches.UpdateValues();
-			InputView.Invalidate();
+			InputView.Refresh();
 		}
 
 		public void FastUpdate()
