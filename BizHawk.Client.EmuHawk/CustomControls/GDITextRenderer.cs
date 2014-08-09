@@ -220,6 +220,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			Rectangle(_hdc, nLeftRect, nTopRect, nRightRect, nBottomRect);
 		}
 
+		// TODO: use the "current brush" instead of grabbing a new one
 		public void SetBrush(Color color)
 		{
 			int rgb = (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R;
@@ -227,6 +228,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		}
 
 		private IntPtr _brush = IntPtr.Zero;
+		private IntPtr _pen = IntPtr.Zero;
 
 		public void FillRectangle(int x,int y, int w, int h)
 		{
@@ -237,6 +239,13 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		public void SetPenPosition(int x, int y)
 		{
 			MoveToEx(_hdc, x, y, IntPtr.Zero);
+		}
+
+		public void SetSolidPen(Color color)
+		{
+			int rgb = (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R;
+			SelectObject(_hdc, GetStockObject((int)PaintObjects.DC_PEN));
+			SetDCPenColor(_hdc, rgb);
 		}
 
 		public void Line(int x1, int y1, int x2, int y2)
@@ -293,8 +302,6 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		#endregion
 
-
-
 		#region Imports
 
 		[DllImport("user32.dll")]
@@ -343,10 +350,19 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		private static extern IntPtr CreateSolidBrush(int color);
 
 		[DllImport("gdi32.dll")]
+		private static extern IntPtr CreatePen(int fnPenStyle, int nWidth, int color);
+
+		[DllImport("gdi32.dll")]
 		private static extern IntPtr MoveToEx(IntPtr hdc, int x, int y, IntPtr point);
 
 		[DllImport("gdi32.dll")]
 		private static extern IntPtr LineTo(IntPtr hdc, int nXEnd, int nYEnd);
+
+		[DllImport("gdi32.dll")]
+		private static extern IntPtr GetStockObject(int fnObject);
+
+		[DllImport("gdi32.dll")]
+		private static extern IntPtr SetDCPenColor(IntPtr hdc, int crColor);
 
 		#endregion
 	}
@@ -380,5 +396,34 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		NoFullWidthCharBreak = 0x00080000,
 		HidePrefix = 0x00100000,
 		ProfixOnly = 0x00200000,
-	}      
+	}
+
+	[Flags]
+	public enum PenStyles
+	{
+		PS_SOLID = 0x00000000
+		// TODO
+	}
+
+	public enum PaintObjects
+	{
+		WHITE_BRUSH =         0,
+		LTGRAY_BRUSH =        1,
+		GRAY_BRUSH =          2,
+		DKGRAY_BRUSH =        3,
+		BLACK_BRUSH =         4,
+		NULL_BRUSH =          5,
+		WHITE_PEN =           6,
+		BLACK_PEN =           7,
+		NULL_PEN =            8,
+		OEM_FIXED_FONT =      10,
+		ANSI_FIXED_FONT =     11,
+		ANSI_VAR_FONT =       12,
+		SYSTEM_FONT =         13,
+		DEVICE_DEFAULT_FONT = 14,
+		DEFAULT_PALETTE =     15,
+		SYSTEM_FIXED_FONT =   16,
+		DC_BRUSH =            18,
+		DC_PEN =              19,
+	}
 }

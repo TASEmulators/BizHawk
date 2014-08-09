@@ -59,63 +59,73 @@ namespace BizHawk.Client.EmuHawk
 			{
 				new RollColumn
 				{
+					Group = "Core",
 					Name = "MarkerColumn",
 					Text = "",
-					Width = 40,
+					Width = 23,
 				},
 				new RollColumn
 				{
+					Group = "Core",
 					Name = "FrameColumn",
 					Text = "Frame",
 					Width = 50,
 				},
 				new RollColumn
 				{
+					Group = "P1",
 					Name = "P1 Up",
 					Text = "U",
-					Width = 23,
+					Type = RollColumn.InputType.Boolean
 				},
 				new RollColumn
 				{
+					Group = "P1",
 					Name = "P1 Down",
 					Text = "D",
-					Width = 23,
+					Type = RollColumn.InputType.Boolean
 				},
 				new RollColumn
 				{
+					Group = "P1",
 					Name = "P1 Left",
 					Text = "L",
-					Width = 23,
+					Type = RollColumn.InputType.Boolean
 				},
 				new RollColumn
 				{
+					Group = "P1",
 					Name = "P1 Right",
 					Text = "R",
-					Width = 23,
+					Type = RollColumn.InputType.Boolean
 				},
 				new RollColumn
 				{
+					Group = "P1",
 					Name = "P1 Select",
 					Text = "s",
-					Width = 23,
+					Type = RollColumn.InputType.Boolean
 				},
 				new RollColumn
 				{
+					Group = "P1",
 					Name = "P1 Start",
 					Text = "S",
-					Width = 23,
+					Type = RollColumn.InputType.Boolean
 				},
 				new RollColumn
 				{
+					Group = "P1",
 					Name = "P1 B",
 					Text = "B",
-					Width = 23,
+					Type = RollColumn.InputType.Boolean
 				},
 				new RollColumn
 				{
+					Group = "P1",
 					Name = "P1 A",
 					Text = "A",
-					Width = 23,
+					Type = RollColumn.InputType.Boolean
 				},
 			});
 		}
