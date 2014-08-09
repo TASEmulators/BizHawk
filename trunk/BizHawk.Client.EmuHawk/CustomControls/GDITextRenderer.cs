@@ -147,6 +147,14 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// </summary>      
 		public void Dispose()
 		{
+			foreach (var brush in BrushCache)
+			{
+				if (brush.Value != IntPtr.Zero)
+				{
+					DeleteObject(brush.Value);
+				}
+			}
+
 			if (_c != null)
 			{
 				ReleaseDC(_c.Handle, _hdc);
@@ -160,7 +168,6 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 				_hdc = IntPtr.Zero;
 			}
 		}
-
 
 		#region Private methods
 
@@ -230,17 +237,28 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		// TODO: use the "current brush" instead of grabbing a new one
 		public void SetBrush(Color color)
 		{
-			int rgb = (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R;
-			DeleteObject(_brush);
-			_brush = CreateSolidBrush(rgb);
+			if (BrushCache.ContainsKey(color))
+			{
+				_currentBrush = BrushCache[color];
+			}
+			else
+			{
+				int rgb = (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R;
+				var newBrush = CreateSolidBrush(rgb);
+				BrushCache.Add(color, newBrush);
+				_currentBrush = newBrush;
+			}
 		}
 
-		private IntPtr _brush = IntPtr.Zero;
+		//private IntPtr _brush = IntPtr.Zero;
+
+		Dictionary<Color, IntPtr> BrushCache = new Dictionary<Color, IntPtr>();
+		private IntPtr _currentBrush = IntPtr.Zero;
 
 		public void FillRectangle(int x,int y, int w, int h)
 		{
 			var r = new GDIRect(new Rectangle(x, y, x + w, y + h));
-			FillRect(_hdc, ref r, _brush);
+			FillRect(_hdc, ref r, _currentBrush);
 		}
 
 		public void SetPenPosition(int x, int y)
