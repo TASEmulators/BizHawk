@@ -6,14 +6,14 @@ extern "C"
 	{
 		D3D8Wrapper::IDirect3DCubeTexture8::IDirect3DCubeTexture8(D3D8Base::IDirect3DCubeTexture8* pTexture) : IDirect3DBaseTexture8((D3D8Base::IDirect3DBaseTexture8*) pTexture)
 		{
-			LOG("IDirect3DCubeTexture8");
+			LOG("IDirect3DCubeTexture8( " << pTexture << " )\n");
 			m_pD3D = pTexture;
 		}
 
 		/*STDMETHOD(GetLevelDesc)(THIS_ UINT Level,D3D8Base::D3DSURFACE_DESC *pDesc) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DCubeTexture8::GetLevelDesc(UINT Level,D3D8Base::D3DSURFACE_DESC *pDesc)
 		{
-			LOG("IDirect3DCubeTexture8::GetLevelDesc");
+			LOG("IDirect3DCubeTexture8::GetLevelDesc( " << pDesc << " )\n");
 			HRESULT hr = m_pD3D->GetLevelDesc(Level,pDesc);
 
 			return hr;
@@ -22,7 +22,7 @@ extern "C"
 		/*STDMETHOD(GetCubeMapSurface)(THIS_ D3D8Base::D3DCUBEMAP_FACES FaceType,UINT Level,D3D8Wrapper::IDirect3DSurface8** ppCubeMapSurface) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DCubeTexture8::GetCubeMapSurface(D3D8Base::D3DCUBEMAP_FACES FaceType,UINT Level,D3D8Wrapper::IDirect3DSurface8** ppCubeMapSurface)
 		{
-			LOG("IDirect3DCubeTexture8::GetCubeMapSurface");
+			LOG("IDirect3DCubeTexture8::GetCubeMapSurface( " << FaceType << " , " << Level << " , " << ppCubeMapSurface << " )\n");
 
 			D3D8Base::IDirect3DSurface8* fd = NULL;
 
@@ -38,7 +38,7 @@ extern "C"
 		/*STDMETHOD(LockRect)(THIS_ D3D8Base::D3DCUBEMAP_FACES FaceType,UINT Level,D3D8Base::D3DLOCKED_RECT* pLockedRect,CONST RECT* pRect,DWORD Flags) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DCubeTexture8::LockRect(D3D8Base::D3DCUBEMAP_FACES FaceType,UINT Level,D3D8Base::D3DLOCKED_RECT* pLockedRect,CONST RECT* pRect,DWORD Flags)
 		{
-			LOG("IDirect3DCubeTexture8::LockRect");
+			LOG("IDirect3DCubeTexture8::LockRect( " << FaceType << " , " << Level << " , " << pLockedRect << " , " << pRect << " , " << Flags << " )\n");
 			HRESULT hr = m_pD3D->LockRect(FaceType,Level,pLockedRect,pRect,Flags);
 
 			return hr;
@@ -47,7 +47,7 @@ extern "C"
 		/*STDMETHOD(UnlockRect)(THIS_ D3D8Base::D3DCUBEMAP_FACES FaceType,UINT Level) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DCubeTexture8::UnlockRect(D3D8Base::D3DCUBEMAP_FACES FaceType,UINT Level)
 		{
-			LOG("IDirect3DCubeTexture8::UnlockRect");
+			LOG("IDirect3DCubeTexture8::UnlockRect( " << FaceType << " , " << Level << " )\n");
 			HRESULT hr = m_pD3D->UnlockRect(FaceType,Level);
 
 			return hr;
@@ -56,7 +56,7 @@ extern "C"
 		/*STDMETHOD(AddDirtyRect)(THIS_ D3D8Base::D3DCUBEMAP_FACES FaceType,CONST RECT* pDirtyRect) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DCubeTexture8::AddDirtyRect(D3D8Base::D3DCUBEMAP_FACES FaceType,CONST RECT* pDirtyRect)
 		{
-			LOG("IDirect3DCubeTexture8::AddDirtyRect");
+			LOG("IDirect3DCubeTexture8::AddDirtyRect( " << FaceType << " , " << pDirtyRect << " )\n");
 			HRESULT hr = m_pD3D->AddDirtyRect(FaceType,pDirtyRect);
 
 			return hr;

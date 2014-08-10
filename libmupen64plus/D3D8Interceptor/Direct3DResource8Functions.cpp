@@ -8,29 +8,30 @@ extern "C"
 
 		D3D8Wrapper::IDirect3DResource8::IDirect3DResource8(D3D8Base::IDirect3DResource8* pResource) : IDirect3DUnknown((IUnknown*) pResource)
 		{
-			LOG("IDirect3DResource8 from base " << pResource << " made " << this);
+			LOG("IDirect3DResource8::IDirect3DResource8( " << pResource << " )\n");
 			m_pD3D = pResource;
 		}
 
 		D3D8Wrapper::IDirect3DResource8* D3D8Wrapper::IDirect3DResource8::GetResource(D3D8Base::IDirect3DResource8* pSwapChain)
 		{
+			LOG("IDirect3DResource8::GetResource( " << pSwapChain << " )\n");
 			D3D8Wrapper::IDirect3DResource8* p = (D3D8Wrapper::IDirect3DResource8*) m_List.GetDataPtr(pSwapChain);
 			if( p == NULL )
 			{
 				p = new D3D8Wrapper::IDirect3DResource8(pSwapChain);
-				LOG("IDirect3DResource8::GetResource " << pSwapChain << " created new " << p)
+				//LOG("IDirect3DResource8::GetResource " << pSwapChain << " created new " << p << "\n")
 				m_List.AddMember(pSwapChain, p);
 				return p;
 			}
     
 			p->m_ulRef++;
-			LOG("IDirect3DResource8::GetResource " << pSwapChain << " found existing " << p)
+			//LOG("IDirect3DResource8::GetResource " << pSwapChain << " found existing " << p << "\n")
 			return p;
 		}
 
 		STDMETHODIMP_(ULONG) D3D8Wrapper::IDirect3DResource8::Release(THIS)
 		{
-			LOG("IDirect3DResource8::Release " << this);
+			LOG("IDirect3DResource8::Release( " << this << " )\n");
 			m_pUnk->Release();
 
 			ULONG ulRef = --m_ulRef;
@@ -46,7 +47,7 @@ extern "C"
 		/*STDMETHOD(GetDevice)(THIS_ IDirect3DDevice8** ppDevice) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DResource8::GetDevice(D3D8Wrapper::IDirect3DDevice8** ppDevice)
 		{
-			LOG("IDirect3DResource8::GetDevice");
+			LOG("IDirect3DResource8::GetDevice( " << ppDevice << " )\n");
 			D3D8Base::IDirect3DDevice8* fd = NULL;
 
 			HRESULT hr = m_pD3D->GetDevice(&fd);//ppDevice);
@@ -61,7 +62,7 @@ extern "C"
 		/*STDMETHOD(SetPrivateData)(THIS_ REFGUID refguid,CONST void* pData,DWORD SizeOfData,DWORD Flags) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DResource8::SetPrivateData(REFGUID refguid,CONST void* pData,DWORD SizeOfData,DWORD Flags)
 		{
-			LOG("IDirect3DResource8::SetPrivateData");
+			LOG("IDirect3DResource8::SetPrivateData( " << &refguid << " , " << pData << " , " << SizeOfData << " , " << Flags << " )\n");
 			HRESULT hr = m_pD3D->SetPrivateData(refguid,pData,SizeOfData,Flags);
 
 			return hr;
@@ -70,7 +71,7 @@ extern "C"
 		/*STDMETHOD(GetPrivateData)(THIS_ REFGUID refguid,void* pData,DWORD* pSizeOfData) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DResource8::GetPrivateData(REFGUID refguid,void* pData,DWORD* pSizeOfData)
 		{
-			LOG("IDirect3DResource8::GetPrivateData");
+			LOG("IDirect3DResource8::GetPrivateData( " << &refguid << " , " << pData << " , " << pSizeOfData << " )\n");
 			HRESULT hr = m_pD3D->GetPrivateData(refguid,pData,pSizeOfData);
 
 			return hr;
@@ -79,7 +80,7 @@ extern "C"
 		/*STDMETHOD(FreePrivateData)(THIS_ REFGUID refguid) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DResource8::FreePrivateData(REFGUID refguid)
 		{
-			LOG("IDirect3DResource8::FreePrivateData");
+			LOG("IDirect3DResource8::FreePrivateData( " << &refguid << " )\n");
 			HRESULT hr = m_pD3D->FreePrivateData(refguid);
 
 			return hr;
@@ -88,28 +89,28 @@ extern "C"
 		/*STDMETHOD_(DWORD, SetPriority)(THIS_ DWORD PriorityNew) PURE;*/
 		STDMETHODIMP_(DWORD) D3D8Wrapper::IDirect3DResource8::SetPriority(DWORD PriorityNew)
 		{
-			LOG("IDirect3DResource8::SetPriority");
+			LOG("IDirect3DResource8::SetPriority( " << PriorityNew << " )\n");
 			return m_pD3D->SetPriority(PriorityNew);
 		}
 
 		/*STDMETHOD_(DWORD, GetPriority)(THIS) PURE;*/
 		STDMETHODIMP_(DWORD) D3D8Wrapper::IDirect3DResource8::GetPriority()
 		{
-			LOG("IDirect3DResource8::GetPriority");
+			LOG("IDirect3DResource8::GetPriority()\n");
 			return m_pD3D->GetPriority();
 		}
 
 		/*STDMETHOD_(void, PreLoad)(THIS) PURE;*/
 		STDMETHODIMP_(void) D3D8Wrapper::IDirect3DResource8::PreLoad()
 		{
-			LOG("IDirect3DResource8::PreLoad");
+			LOG("IDirect3DResource8::PreLoad()\n");
 			return m_pD3D->PreLoad();
 		}
 
 		/*STDMETHOD_(D3DRESOURCETYPE, GetType)(THIS) PURE;*/
 		STDMETHODIMP_(D3D8Base::D3DRESOURCETYPE) D3D8Wrapper::IDirect3DResource8::GetType()
 		{
-			LOG("IDirect3DResource8::GetType");
+			LOG("IDirect3DResource8::GetType()\n");
 			return m_pD3D->GetType();
 		}
 	}

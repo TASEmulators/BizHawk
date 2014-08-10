@@ -2,7 +2,7 @@
 
 D3D8Base::LPDIRECT3D8 g_D3D=NULL;
 
-HMODULE hD3D;
+HMODULE realDLL;
 
 ThreadSafePointerSet D3D8Wrapper::IDirect3DDevice8::m_List;
 ThreadSafePointerSet D3D8Wrapper::IDirect3DBaseTexture8::m_List;
@@ -24,30 +24,30 @@ extern "C"
 
 		D3D8Wrapper::IDirect3D8* WINAPI Direct3DCreate8(UINT Version)
 		{
-			// Get the real DLL path
+			// Get the real DLL path from the system directory
 			// Might be unsafe
 			CHAR dll_path[1024];
 			GetSystemDirectory(dll_path,1024);
 			strcat(dll_path,"\\d3d8.dll");
 
-			hD3D = LoadLibrary(dll_path);
+			realDLL = LoadLibrary(dll_path);
 
-			D3D8Wrapper::D3DCREATE pCreate = (D3D8Wrapper::D3DCREATE)GetProcAddress(hD3D, "Direct3DCreate8");
+			D3D8Wrapper::D3DCREATE realDirect3DCreate8 = (D3D8Wrapper::D3DCREATE)GetProcAddress(realDLL, "Direct3DCreate8");
 
 			// Use the real Direct3DCreate8 to make the base object
-			D3D8Base::IDirect3D8* pD3D = pCreate(D3D_SDK_VERSION);
+			D3D8Base::IDirect3D8* realD3D = realDirect3DCreate8(D3D_SDK_VERSION);
 
 			// Wrap the object
-			D3D8Wrapper::IDirect3D8* fD3D = D3D8Wrapper::IDirect3D8::GetDirect3D(pD3D);
+			D3D8Wrapper::IDirect3D8* wrappedD3D = D3D8Wrapper::IDirect3D8::GetDirect3D(realD3D);
 
-			return fD3D;
+			return wrappedD3D;
 		}
 	}
 
 
 	__declspec(dllexport) void __cdecl CloseDLL()
 	{
-		FreeLibrary(hD3D);
+		FreeLibrary(realDLL);
 	}
 	
 	__declspec(dllexport) void __cdecl SetRenderingCallback(void (*callback)(int))
