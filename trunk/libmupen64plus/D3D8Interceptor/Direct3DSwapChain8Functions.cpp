@@ -6,12 +6,13 @@ extern "C"
 	{
 		D3D8Wrapper::IDirect3DSwapChain8::IDirect3DSwapChain8(D3D8Base::IDirect3DSwapChain8* pSwapChain) : IDirect3DUnknown((IUnknown*) pSwapChain)
 		{
-			LOG("IDirect3DSwapChain8");
+			LOG("IDirect3DSwapChain8::IDirect3DSwapChain8( " << pSwapChain << " )\n");
 			m_pD3D = pSwapChain;
 		}
 
 		D3D8Wrapper::IDirect3DSwapChain8* D3D8Wrapper::IDirect3DSwapChain8::GetSwapChain(D3D8Base::IDirect3DSwapChain8* pSwapChain)
 		{
+			LOG("IDirect3DSwapChain8::GetSwapChain( " << pSwapChain << " )\n");
 			D3D8Wrapper::IDirect3DSwapChain8* p = (D3D8Wrapper::IDirect3DSwapChain8*) m_List.GetDataPtr(pSwapChain);
 			if( p == NULL )
 			{
@@ -26,6 +27,7 @@ extern "C"
 
 		STDMETHODIMP_(ULONG) D3D8Wrapper::IDirect3DSwapChain8::Release(THIS)
 		{
+			LOG("IDirect3DSwapChain8::Release( " << this << " )\n");
 			m_pUnk->Release();
 
 			ULONG ulRef = --m_ulRef;
@@ -40,7 +42,7 @@ extern "C"
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DSwapChain8::Present(CONST RECT* pSourceRect,CONST RECT* pDestRect,HWND hDestWindowOverride,CONST RGNDATA* pDirtyRegion)
 		{
-			LOG("IDirect3DSwapChain8::Present");
+			LOG("IDirect3DSwapChain8::Present( " << pSourceRect << " , " << pDestRect << " , " << hDestWindowOverride << " , " << pDirtyRegion << " )\n");
 			HRESULT hr = m_pD3D->Present(pSourceRect,pDestRect,hDestWindowOverride,pDirtyRegion);
 
 			return hr;
@@ -48,7 +50,7 @@ extern "C"
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DSwapChain8::GetBackBuffer(UINT BackBuffer,D3D8Base::D3DBACKBUFFER_TYPE Type,D3D8Wrapper::IDirect3DSurface8** ppBackBuffer)
 		{
-			LOG("IDirect3DSwapChain8::GetBackBuffer");
+			LOG("IDirect3DSwapChain8::GetBackBuffer( " << BackBuffer << " , " << Type << " , " << ppBackBuffer << " )\n");
 
 			D3D8Base::IDirect3DSurface8* fd = NULL;
 

@@ -6,8 +6,13 @@
 
 #pragma comment(linker, "/EXPORT:Direct3DCreate8=_Direct3DCreate8@4")
 
-//#define LOG(x) { std::ofstream myfile; myfile.open ("d3d8_wrapper_log.txt", std::ios::app); myfile << x << "\n"; myfile.close(); }
+//#define LOGGING 1
+
+#ifdef LOGGING
+#define LOG(x) { std::ofstream myfile; myfile.open ("d3d8_wrapper_log.txt", std::ios::app); myfile << x; myfile.close(); }
+#else
 #define LOG(x) 
+#endif
 
 #define TESTDLL_API __declspec(dllexport) 
 
@@ -111,9 +116,6 @@ extern "C"
 		protected:
 			D3D8Base::IDirect3DDevice8*  m_pDevice;
 			static ThreadSafePointerSet	m_List;
-
-			D3D8Wrapper::IDirect3DSurface8 * rTarget;
-			D3D8Wrapper::IDirect3DSurface8 * zStencil;
 		public:
 			STDMETHOD(QueryInterface)(THIS_ REFIID riid, void** ppvObj)
 			{
