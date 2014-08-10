@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.EmuHawk.CustomControls;
@@ -22,21 +21,21 @@ namespace BizHawk.Client.EmuHawk
 		public InputRoll()
 		{
 			CellPadding = 3;
-			//SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+			CurrentCell = null;
+			Font = new Font("Courier New", 8);  // Only support fixed width
+
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			SetStyle(ControlStyles.Opaque, true);
-			this.Font = new Font("Courier New", 8);  // Only support fixed width
-			//BackColor = Color.Transparent;
 
 			Gdi = new GDIRenderer();
 
 			using (var g = CreateGraphics())
-				using(var LCK = Gdi.LockGraphics(g))
-					_charSize = Gdi.MeasureString("A", this.Font);
-
-			CurrentCell = null;
+			using (var LCK = Gdi.LockGraphics(g))
+			{
+				_charSize = Gdi.MeasureString("A", this.Font);
+			}
 		}
 
 		protected override void Dispose(bool disposing)
@@ -51,6 +50,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Gets or sets the amount of padding on the text inside a cell
 		/// </summary>
 		[DefaultValue(3)]
+		[Category("Behavior")]
 		public int CellPadding { get; set; }
 
 		// TODO: remove this, it is put here for more convenient replacing of a virtuallistview in tools with the need to refactor code
@@ -85,32 +85,34 @@ namespace BizHawk.Client.EmuHawk
 		#region Event Handlers
 
 		/// <summary>
-		/// Retrieve the background color for a Listview cell (item and subitem).
-		/// </summary>
-		/// <param name="index">Listview item (row).</param>
-		/// <param name="column">Listview subitem (column).</param>
-		/// <param name="color">Background color to use</param>
-		public delegate void QueryItemBkColorHandler(int index, int column, ref Color color);
-
-		/// <summary>
-		/// Retrieve the text for a Listview cell (item and subitem).
-		/// </summary>
-		/// <param name="index">Listview item (row).</param>
-		/// <param name="column">Listview subitem (column).</param>
-		/// <param name="text">Text to display.</param>
-		public delegate void QueryItemTextHandler(int index, int column, out string text);
-
-		/// <summary>
-		/// Fire the QueryItemBkColor event which requests the background color for the passed Listview cell
-		/// </summary>
-		[Category("Virtual")] // TODO: can I make these up?
-		public event QueryItemBkColorHandler QueryItemBkColor;
-
-		/// <summary>
 		/// Fire the QueryItemText event which requests the text for the passed Listview cell.
 		/// </summary>
 		[Category("Virtual")]
 		public event QueryItemTextHandler QueryItemText;
+
+		/// <summary>
+		/// Fire the QueryItemBkColor event which requests the background color for the passed Listview cell
+		/// </summary>
+		[Category("Virtual")]
+		public event QueryItemBkColorHandler QueryItemBkColor;
+
+		/// <summary>
+		/// Fires when the mouse moves from one cell to another (including column header cells)
+		/// </summary>
+		[Category("Mouse")]
+		public event CellChangeEventHandler PointedCellChanged;
+
+		/// <summary>
+		/// Retrieve the text for a cell
+		/// </summary>
+		public delegate void QueryItemTextHandler(int index, int column, out string text);
+
+		/// <summary>
+		/// Retrieve the background color for a cell
+		/// </summary>
+		public delegate void QueryItemBkColorHandler(int index, int column, ref Color color);
+
+		public delegate void CellChangeEventHandler(object sender, CellEventArgs e);
 
 		public class CellEventArgs
 		{
@@ -123,11 +125,6 @@ namespace BizHawk.Client.EmuHawk
 			public Cell OldCell { get; private set; }
 			public Cell NewCell { get; private set; }
 		}
-
-		public delegate void CellChangeEventHandler(object sender, CellEventArgs e);
-
-		[Category("Mouse")] // TODO: is this the correct name?
-		public event CellChangeEventHandler PointedCellChanged;
 
 		#endregion
 
@@ -157,60 +154,151 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Paint
 
-		private void DrawColumnBg(GDIRenderer gdi, PaintEventArgs e)
+		protected override void OnPaint(PaintEventArgs e)
 		{
-			gdi.SetBrush(SystemColors.ControlLight);
-			gdi.SetSolidPen(Color.Black);
+			using (var LCK = Gdi.LockGraphics(e.Graphics))
+			{
+				// Header
+				if (Columns.Any())
+				{
+					DrawColumnBg(e);
+					DrawColumnText(e);
+				}
+
+				// Background
+				DrawBg(e);
+
+				// ForeGround
+				DrawData(e);
+			}
+		}
+
+		protected override void OnPaintBackground(PaintEventArgs pevent)
+		{
+			// Do nothing, and this should never be called
+		}
+
+		private void DrawColumnText(PaintEventArgs e)
+		{
+			if (HorizontalOrientation)
+			{
+				int start = 0;
+				Gdi.PrepDrawString(this.Font, this.ForeColor);
+				foreach (var column in Columns)
+				{
+					var point = new Point(CellPadding, start + CellPadding);
+					Gdi.DrawString(column.Text, point);
+					start += CellHeight;
+				}
+			}
+			else
+			{
+				int start = CellPadding;
+				Gdi.PrepDrawString(this.Font, this.ForeColor);
+				foreach (var column in Columns)
+				{
+					var point = new Point(start + CellPadding, CellPadding);
+					Gdi.DrawString(column.Text, point);
+					start += CalcWidth(column);
+				}
+			}
+		}
+
+		private void DrawData(PaintEventArgs e)
+		{
+			if (QueryItemText != null)
+			{
+				if (HorizontalOrientation)
+				{
+					var visibleRows = (Width - _horizontalOrientedColumnWidth) / CellWidth;
+					Gdi.PrepDrawString(this.Font, this.ForeColor);
+					for (int i = 0; i < visibleRows; i++)
+					{
+						for (int j = 0; j < Columns.Count; j++)
+						{
+							string text;
+							int x = _horizontalOrientedColumnWidth + CellPadding + (CellWidth * i);
+							int y = j * CellHeight;
+							var point = new Point(x, y);
+							QueryItemText(i, j, out text);
+							Gdi.DrawString(text, point);
+						}
+					}
+				}
+				else
+				{
+					var visibleRows = (Height / CellHeight) - 1;
+					Gdi.PrepDrawString(this.Font, this.ForeColor);
+					for (int i = 1; i < visibleRows; i++)
+					{
+						int x = 1;
+						for (int j = 0; j < Columns.Count; j++)
+						{
+							string text;
+							var point = new Point(x + CellPadding, i * CellHeight);
+							QueryItemText(i, j, out text);
+							Gdi.DrawString(text, point);
+							x += CalcWidth(Columns[j]);
+						}
+					}
+				}
+			}
+		}
+
+		private void DrawColumnBg(PaintEventArgs e)
+		{
+			Gdi.SetBrush(SystemColors.ControlLight);
+			Gdi.SetSolidPen(Color.Black);
 
 			if (HorizontalOrientation)
 			{
-				var colWidth = _horizontalOrientedColumnWidth;
-				gdi.DrawRectangle(0, 0, colWidth, Height);
+				Gdi.DrawRectangle(0, 0, _horizontalOrientedColumnWidth, Height);
+				Gdi.FillRectangle(1, 1, _horizontalOrientedColumnWidth - 3, Height - 3);
 
 				int start = 0;
 				foreach (var column in Columns)
 				{
 					start += CellHeight;
-					gdi.Line(1, start, colWidth - 1, start);
+					Gdi.Line(1, start, _horizontalOrientedColumnWidth - 1, start);
 				}
 			}
 			else
 			{
-				gdi.DrawRectangle(0, 0, Width, CellHeight);
-				gdi.FillRectangle(1, 1, Width - 3, CellHeight - 3);
+				Gdi.DrawRectangle(0, 0, Width, CellHeight);
+				Gdi.FillRectangle(1, 1, Width - 3, CellHeight - 3);
 
 				int start = 0;
 				foreach (var column in Columns)
 				{
 					start += CalcWidth(column);
-					gdi.Line(start, 0, start, CellHeight);
+					Gdi.Line(start, 0, start, CellHeight);
 				}
 			}
 		}
 
-		private void DrawBg(GDIRenderer gdi, PaintEventArgs e)
+		private void DrawBg(PaintEventArgs e)
 		{
 			var startPoint = StartBg();
 
-			gdi.SetBrush(Color.White);
-			gdi.SetSolidPen(Color.Black);
-			gdi.FillRectangle(startPoint.X, startPoint.Y, Width, Height);
-			gdi.DrawRectangle(startPoint.X, startPoint.Y, Width, Height);
+			Gdi.SetBrush(Color.White);
+			Gdi.SetSolidPen(Color.Black);
+			Gdi.FillRectangle(startPoint.X, startPoint.Y, Width, Height);
+			Gdi.DrawRectangle(startPoint.X, startPoint.Y, Width, Height);
 
-			gdi.SetSolidPen(SystemColors.ControlLight);
+			Gdi.SetSolidPen(SystemColors.ControlLight);
 			if (HorizontalOrientation)
 			{
 				// Columns
 				for (int i = 1; i < Width / CellWidth; i++)
 				{
 					var x = _horizontalOrientedColumnWidth + (i * CellWidth);
-					gdi.Line(x, 1, x, Columns.Count * CellHeight);
+					Gdi.Line(x, 1, x, Columns.Count * CellHeight);
 				}
 
 				// Rows
 				for (int i = 1; i < Columns.Count + 1; i++)
 				{
-					gdi.Line(_horizontalOrientedColumnWidth, i * CellHeight, Width - 2, i * CellHeight);
+					Gdi.Line(_horizontalOrientedColumnWidth, i * CellHeight, Width - 2, i * CellHeight);
 				}
 			}
 			else
@@ -221,106 +309,14 @@ namespace BizHawk.Client.EmuHawk
 				foreach (var column in Columns)
 				{
 					x += CalcWidth(column);
-					gdi.Line(x, y, x, Height - 1);
+					Gdi.Line(x, y, x, Height - 1);
 				}
 
 				// Rows
 				for (int i = 2; i < Height / CellHeight; i++)
 				{
-					gdi.Line(1, (i * CellHeight) + 1, Width - 2, (i * CellHeight) + 1);
+					Gdi.Line(1, (i * CellHeight) + 1, Width - 2, (i * CellHeight) + 1);
 				}
-			}
-		}
-
-		protected override void OnPaintBackground(PaintEventArgs pevent)
-		{
-			// Do nothing, and this should never be called
-		}
-
-		private void DrawColumnText(GDIRenderer gdi, PaintEventArgs e)
-		{
-			if (HorizontalOrientation)
-			{
-				int start = 0;
-				gdi.PrepDrawString(this.Font, this.ForeColor);
-				foreach (var column in Columns)
-				{
-					var point = new Point(CellPadding, start + CellPadding);
-					gdi.DrawString(column.Text, point);
-					start += CellHeight;
-				}
-			}
-			else
-			{
-				int start = CellPadding;
-				gdi.PrepDrawString(this.Font, this.ForeColor);
-				foreach(var column in Columns)
-				{
-					var point = new Point(start + CellPadding, CellPadding);
-					gdi.DrawString(column.Text, point);
-					start += CalcWidth(column);
-				}
-			}
-		}
-
-		private void DrawData(GDIRenderer gdi, PaintEventArgs e)
-		{
-			if (QueryItemText != null)
-			{
-				if (HorizontalOrientation)
-				{
-					var visibleRows = (Width - _horizontalOrientedColumnWidth) / CellWidth;
-					gdi.PrepDrawString(this.Font, this.ForeColor);
-					for (int i = 0; i < visibleRows; i++)
-					{
-						for (int j = 0; j < Columns.Count; j++)
-						{
-							string text;
-							int x = _horizontalOrientedColumnWidth + CellPadding + (CellWidth * i);
-							int y = j * CellHeight;
-							var point = new Point(x, y);
-							QueryItemText(i, j, out text);
-							gdi.DrawString(text, point);
-						}
-					}
-				}
-				else
-				{
-					var visibleRows = (Height / CellHeight) - 1;
-					gdi.PrepDrawString(this.Font, this.ForeColor);
-					for (int i = 1; i < visibleRows; i++)
-					{
-						int x = 1;
-						for (int j = 0; j < Columns.Count; j++)
-						{
-							string text;
-							var point = new Point(x + CellPadding, i * CellHeight);
-							QueryItemText(i, j, out text);
-							gdi.DrawString(text, point);
-							x += CalcWidth(Columns[j]);
-						}
-					}
-				}
-			}
-		}
-
-		static int ctr;
-		protected override void OnPaint(PaintEventArgs e)
-		{
-			using (var LCK = Gdi.LockGraphics(e.Graphics))
-			{
-				// Header
-				if (Columns.Any())
-				{
-					DrawColumnBg(Gdi, e);
-					DrawColumnText(Gdi, e);
-				}
-
-				// Background
-				DrawBg(Gdi, e);
-
-				// ForeGround
-				DrawData(Gdi, e);
 			}
 		}
 
@@ -338,6 +334,33 @@ namespace BizHawk.Client.EmuHawk
 
 			base.OnKeyDown(e);
 		}
+
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+			CalculatePointedCell(e.X, e.Y);
+			base.OnMouseMove(e);
+		}
+
+		protected override void OnMouseEnter(EventArgs e)
+		{
+			CurrentCell = new Cell
+			{
+				Column = null,
+				RowIndex = null
+			};
+
+			base.OnMouseEnter(e);
+		}
+
+		protected override void OnMouseLeave(EventArgs e)
+		{
+			CurrentCell = null;
+			base.OnMouseLeave(e);
+		}
+
+		#endregion
+
+		#region Helpers
 
 		private void CalculatePointedCell(int x, int y)
 		{
@@ -390,41 +413,13 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
-			
-			if (newCell != CurrentCell)
+
+			if (!newCell.Equals(CurrentCell))
 			{
 				CellChanged(CurrentCell, newCell);
 				CurrentCell = newCell;
 			}
-
 		}
-
-		protected override void OnMouseMove(MouseEventArgs e)
-		{
-			CalculatePointedCell(e.X, e.Y);
-			base.OnMouseMove(e);
-		}
-
-		protected override void OnMouseEnter(EventArgs e)
-		{
-			CurrentCell = new Cell
-			{
-				Column = null,
-				RowIndex = null
-			};
-
-			base.OnMouseEnter(e);
-		}
-
-		protected override void OnMouseLeave(EventArgs e)
-		{
-			CurrentCell = null;
-			base.OnMouseLeave(e);
-		}
-
-		#endregion
-
-		#region Helpers
 
 		private void CellChanged(Cell oldCell, Cell newCell)
 		{
@@ -439,6 +434,7 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
+		// TODO: Calculate this on Orientation change instead of call it every time
 		private Point StartBg()
 		{
 			if (Columns.Any())
@@ -451,15 +447,15 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var x = 0;
 					var y = CellHeight - 1;
-					return new Point(x, y);
+					return new Point(0, y);
 				}
 			}
 
 			return new Point(0, 0);
 		}
 
+		// TODO: calculate this on Cell Padding change instead of calculate it every time
 		private int CellHeight
 		{
 			get
@@ -468,6 +464,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		// TODO: calculate this on Cell Padding change instead of calculate it every time
 		private int CellWidth
 		{
 			get
@@ -496,6 +493,7 @@ namespace BizHawk.Client.EmuHawk
 			_horizontalOrientedColumnWidth = (text * _charSize.Width) + (CellPadding * 2);
 		}
 
+		// On Column Change calculate this for every column
 		private int CalcWidth(RollColumn col)
 		{
 			return col.Width ?? ((col.Text.Length * _charSize.Width) + (CellPadding * 4));
