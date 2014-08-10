@@ -63,5 +63,22 @@ namespace BizHawk.Client.EmuHawk
 		{
 
 		}
+
+		private void buttonDefaults_Click(object sender, EventArgs e)
+		{
+			// the new config objects guarantee that the default constructor gives a default-settings object
+			if (s != null)
+			{
+				s = Activator.CreateInstance(s.GetType());
+				propertyGrid1.SelectedObject = s;
+			}
+			if (ss != null)
+			{
+				ss = Activator.CreateInstance(ss.GetType());
+				propertyGrid2.SelectedObject = ss;
+				syncsettingschanged = true;
+			}
+
+		}
 	}
 }

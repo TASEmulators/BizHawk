@@ -35,6 +35,7 @@
 			this.propertyGrid2 = new System.Windows.Forms.PropertyGrid();
 			this.button1 = new System.Windows.Forms.Button();
 			this.button2 = new System.Windows.Forms.Button();
+			this.buttonDefaults = new System.Windows.Forms.Button();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -118,6 +119,17 @@
 			this.button2.Text = "Cancel";
 			this.button2.UseVisualStyleBackColor = true;
 			// 
+			// buttonDefaults
+			// 
+			this.buttonDefaults.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonDefaults.Location = new System.Drawing.Point(12, 349);
+			this.buttonDefaults.Name = "buttonDefaults";
+			this.buttonDefaults.Size = new System.Drawing.Size(75, 23);
+			this.buttonDefaults.TabIndex = 3;
+			this.buttonDefaults.Text = "Defaults";
+			this.buttonDefaults.UseVisualStyleBackColor = true;
+			this.buttonDefaults.Click += new System.EventHandler(this.buttonDefaults_Click);
+			// 
 			// GenericCoreConfig
 			// 
 			this.AcceptButton = this.button1;
@@ -125,6 +137,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.button2;
 			this.ClientSize = new System.Drawing.Size(344, 384);
+			this.Controls.Add(this.buttonDefaults);
 			this.Controls.Add(this.button2);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.tabControl1);
@@ -148,5 +161,6 @@
 		private System.Windows.Forms.PropertyGrid propertyGrid2;
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.Button button2;
+		private System.Windows.Forms.Button buttonDefaults;
 	}
 }
