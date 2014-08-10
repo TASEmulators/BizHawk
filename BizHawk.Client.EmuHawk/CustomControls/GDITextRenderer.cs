@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// <summary>      
 		/// The wrapped WinForms graphics object      
 		/// </summary>      
-		private readonly Graphics _g;
+		private Graphics _g;
 
 		/// <summary>      
 		/// the initialized HDC used      
@@ -42,28 +42,36 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		#endregion
 
-		public GDIRenderer(System.Windows.Forms.Control c)
+		public class GdiGraphicsLock : IDisposable
 		{
-			_c = c;
-			_hdc = GetDC(c.Handle);
+			public GdiGraphicsLock(GDIRenderer gdi)
+			{
+				this.gdi = gdi;
+			}
+
+			public void Dispose()
+			{
+				gdi._g.ReleaseHdc(gdi._hdc);
+				gdi._hdc = IntPtr.Zero;
+				gdi._g = null;
+			}
+
+			GDIRenderer gdi;
 		}
 
-		public void NewHdc(IntPtr hdc)
+		public GdiGraphicsLock LockGraphics(Graphics g)
 		{
-			ReleaseDC(_c.Handle, _hdc);
-			_hdc = hdc;
+			_g = g;
+			_hdc = g.GetHdc();
 			SetBkMode(_hdc, (int)BkModes.TRANSPARENT);
+			return new GdiGraphicsLock(this);
 		}
-
-		System.Windows.Forms.Control _c;
 
 		/// <summary>
 		/// Init.
 		/// </summary>
-		public GDIRenderer(Graphics g)
+		public GDIRenderer()
 		{
-			_g = g;
-			_hdc = _g.GetHdc();
 			SetBkMode(_hdc, (int)BkModes.OPAQUE);
 		}
 
@@ -155,18 +163,8 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 				}
 			}
 
-			if (_c != null)
-			{
-				ReleaseDC(_c.Handle, _hdc);
-				_hdc = IntPtr.Zero;
-			}
-
-			if (_hdc != IntPtr.Zero)
-			{
-				SelectClipRgn(_hdc, IntPtr.Zero);
-				_g.ReleaseHdc(_hdc);
-				_hdc = IntPtr.Zero;
-			}
+			System.Diagnostics.Debug.Assert(_hdc == IntPtr.Zero, "Disposed a GDIRenderer while it held an HDC");
+			System.Diagnostics.Debug.Assert(_g == null, "Disposed a GDIRenderer while it held a Graphics");
 		}
 
 		#region Private methods
