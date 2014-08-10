@@ -308,6 +308,7 @@ namespace BizHawk.Client.EmuHawk
 			if (e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.R) // Ctrl + R
 			{
 				HorizontalOrientation ^= true;
+				Refresh();
 			}
 
 			base.OnKeyDown(e);

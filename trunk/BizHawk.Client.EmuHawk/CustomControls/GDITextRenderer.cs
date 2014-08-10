@@ -335,6 +335,12 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		[DllImport("user32.dll")]
 		private static extern IntPtr GetDC(IntPtr hWnd);
 
+		[DllImport("user32.dll")]
+		private static extern IntPtr BeginPaint(IntPtr hWnd, ref IntPtr lpPaint);
+
+		[DllImport("user32.dll")]
+		private static extern IntPtr EndPaint(IntPtr hWnd, IntPtr lpPaint);
+
 		[DllImport("gdi32.dll")]
 		private static extern int Rectangle(IntPtr hdc, int nLeftRect, int nTopRect, int nRightRect, int nBottomRect);
 
