@@ -63,8 +63,9 @@ namespace BizHawk.Client.EmuHawk
 		private void TasView_QueryItemText(int index, int column, out string text)
 		{
 			
-			//text = r.NextDouble() > .5 ? "_" : "";
+			text = r.NextDouble() > .5 ? "_" : "";
 
+			/*
 			text = string.Empty;
 
 			if (index >= Watches.ItemCount || Watches[index].IsSeparator)
@@ -102,6 +103,7 @@ namespace BizHawk.Client.EmuHawk
 					text = Watches[index].Notes;
 					break;
 			}
+			*/
 		}
 
 		private void TasView_QueryItemBkColor(int index, int column, ref Color color)
@@ -111,6 +113,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasStudioExperiment_Load(object sender, EventArgs e)
 		{
+			/*
 			for (int i = 0; i < 20; i++)
 			{
 				Watches.Add(new ByteWatch(Watches.Domain, 0x0057, Watch.DisplayType.Signed, false, "Speed"));
@@ -161,9 +164,9 @@ namespace BizHawk.Client.EmuHawk
 					Text = "Notes"
 				},
 			});
+			*/
 
-
-			/*
+			
 			InputView.AddColumns(new []
 			{
 				new RollColumn
@@ -237,7 +240,6 @@ namespace BizHawk.Client.EmuHawk
 					Type = RollColumn.InputType.Boolean
 				},
 			});
-			 */
 		}
 
 		private void settingsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
