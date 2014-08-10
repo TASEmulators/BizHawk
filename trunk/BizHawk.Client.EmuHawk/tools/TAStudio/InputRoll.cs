@@ -166,7 +166,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var colWidth = _horizontalOrientedColumnWidth;
 				gdi.DrawRectangle(0, 0, colWidth, Height);
-				gdi.FillRectangle(1, 1, colWidth - 3, Height - 3);
 
 				int start = 0;
 				foreach (var column in Columns)
@@ -243,22 +242,22 @@ namespace BizHawk.Client.EmuHawk
 			if (HorizontalOrientation)
 			{
 				int start = 0;
+				gdi.PrepDrawString(this.Font, this.ForeColor);
 				foreach (var column in Columns)
 				{
 					var point = new Point(CellPadding, start + CellPadding);
-					gdi.PrepDrawString(column.Text, this.Font, this.ForeColor, point);
-					gdi.DrawString(column.Text, this.Font, point);
+					gdi.DrawString(column.Text, point);
 					start += CellHeight;
 				}
 			}
 			else
 			{
 				int start = CellPadding;
+				gdi.PrepDrawString(this.Font, this.ForeColor);
 				foreach(var column in Columns)
 				{
 					var point = new Point(start + CellPadding, CellPadding);
-					gdi.PrepDrawString(column.Text, this.Font, this.ForeColor, point);
-					gdi.DrawString(column.Text, this.Font, point);
+					gdi.DrawString(column.Text, point);
 					start += CalcWidth(column);
 				}
 			}
@@ -271,6 +270,7 @@ namespace BizHawk.Client.EmuHawk
 				if (HorizontalOrientation)
 				{
 					var visibleRows = (Width - _horizontalOrientedColumnWidth) / CellWidth;
+					gdi.PrepDrawString(this.Font, this.ForeColor);
 					for (int i = 0; i < visibleRows; i++)
 					{
 						for (int j = 0; j < Columns.Count; j++)
@@ -280,14 +280,14 @@ namespace BizHawk.Client.EmuHawk
 							int y = j * CellHeight;
 							var point = new Point(x, y);
 							QueryItemText(i, j, out text);
-							gdi.PrepDrawString(text, this.Font, this.ForeColor, point);
-							gdi.DrawString(text, this.Font, point);
+							gdi.DrawString(text, point);
 						}
 					}
 				}
 				else
 				{
 					var visibleRows = (Height / CellHeight) - 1;
+					gdi.PrepDrawString(this.Font, this.ForeColor);
 					for (int i = 1; i < visibleRows; i++)
 					{
 						int x = 1;
@@ -296,9 +296,7 @@ namespace BizHawk.Client.EmuHawk
 							string text;
 							var point = new Point(x + CellPadding, i * CellHeight);
 							QueryItemText(i, j, out text);
-							
-							gdi.PrepDrawString(text, this.Font, this.ForeColor, point);
-							gdi.DrawString(text, this.Font, point);
+							gdi.DrawString(text, point);
 							x += CalcWidth(Columns[j]);
 						}
 					}

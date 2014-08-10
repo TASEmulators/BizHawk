@@ -121,12 +121,12 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// <param name="font">the  font to use to draw the string</param>      
 		/// <param name="color">the  text color to set</param>      
 		/// <param name="point">the  location to start string draw (top-left)</param>      
-		public void DrawString(String str, Font font, Point point)
+		public void DrawString(String str, Point point)
 		{
 			TextOut(_hdc, point.X, point.Y, str, str.Length);
 		}
 
-		public void PrepDrawString(String str, Font font, Color color, Point point)
+		public void PrepDrawString(Font font, Color color)
 		{
 			SetFont(font);
 			SetTextColor(color);
