@@ -24,14 +24,18 @@ namespace BizHawk.Client.EmuHawk
 			CellPadding = 3;
 			//SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			SetStyle(ControlStyles.Opaque, true);
 			this.Font = new Font("Courier New", 8);  // Only support fixed width
 			//BackColor = Color.Transparent;
 
-			Gdi = new GDIRenderer(this);
+			Gdi = new GDIRenderer();
 
-			_charSize = Gdi.MeasureString("A", this.Font);
+			using (var g = CreateGraphics())
+				using(var LCK = Gdi.LockGraphics(g))
+					_charSize = Gdi.MeasureString("A", this.Font);
+
 			CurrentCell = null;
 		}
 
@@ -302,22 +306,24 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		static int ctr;
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			Gdi.NewHdc(e.Graphics.GetHdc());
-
-			// Header
-			if (Columns.Any())
+			using (var LCK = Gdi.LockGraphics(e.Graphics))
 			{
-				DrawColumnBg(Gdi, e);
-				DrawColumnText(Gdi, e);
+				// Header
+				if (Columns.Any())
+				{
+					DrawColumnBg(Gdi, e);
+					DrawColumnText(Gdi, e);
+				}
+
+				// Background
+				DrawBg(Gdi, e);
+
+				// ForeGround
+				DrawData(Gdi, e);
 			}
-
-			// Background
-			DrawBg(Gdi, e);
-
-			// ForeGround
-			DrawData(Gdi, e);
 		}
 
 		#endregion
