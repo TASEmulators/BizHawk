@@ -245,7 +245,20 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (HorizontalOrientation)
 				{
-
+					var visibleRows = (Width - _horizontalOrientedColumnWidth) / CellWidth;
+					for (int i = 0; i < visibleRows; i++)
+					{
+						for (int j = 0; j < Columns.Count; j++)
+						{
+							string text;
+							int x = _horizontalOrientedColumnWidth + CellPadding + (CellWidth * i);
+							int y = j * CellHeight;
+							var point = new Point(x, y);
+							QueryItemText(i, j, out text);
+							gdi.PrepDrawString(text, this.Font, this.ForeColor, point);
+							gdi.DrawString(text, this.Font, point);
+						}
+					}
 				}
 				else
 				{
