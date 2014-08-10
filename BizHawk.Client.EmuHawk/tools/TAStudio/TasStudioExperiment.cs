@@ -251,5 +251,20 @@ namespace BizHawk.Client.EmuHawk
 		{
 
 		}
+
+		private void InputView_PointedCellChanged(object sender, InputRoll.CellEventArgs e)
+		{
+			if (e.NewCell == null)
+			{
+				CurrentCellLabel.Text = "None";
+			}
+			else
+			{
+				string column = e.NewCell.Column != null ? e.NewCell.Column.Text : "None";
+				string row = e.NewCell.RowIndex.HasValue ? e.NewCell.RowIndex.Value.ToString() : "None";
+
+				CurrentCellLabel.Text = string.Format("Column: {0} RowIndex: {1}", column, row);
+			}
+		}
 	}
 }

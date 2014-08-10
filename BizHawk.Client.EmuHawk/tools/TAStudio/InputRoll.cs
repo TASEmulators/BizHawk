@@ -32,6 +32,7 @@ namespace BizHawk.Client.EmuHawk
 			Gdi = new GDIRenderer(this);
 
 			_charSize = Gdi.MeasureString("A", this.Font);
+			CurrentCell = null;
 		}
 
 		protected override void Dispose(bool disposing)
@@ -107,9 +108,29 @@ namespace BizHawk.Client.EmuHawk
 		[Category("Virtual")]
 		public event QueryItemTextHandler QueryItemText;
 
+		public class CellEventArgs
+		{
+			public CellEventArgs(Cell oldCell, Cell newCell)
+			{
+				OldCell = oldCell;
+				NewCell = newCell;
+			}
+
+			public Cell OldCell { get; private set; }
+			public Cell NewCell { get; private set; }
+		}
+
+		public delegate void CellChangeEventHandler(object sender, CellEventArgs e);
+
+		[Category("Mouse")] // TODO: is this the correct name?
+		public event CellChangeEventHandler PointedCellChanged;
+
 		#endregion
 
 		#region Public Methods
+
+		// TODO: designer ignore
+		public Cell CurrentCell { get; set; }
 
 		public string UserSettingsSerialized()
 		{
@@ -314,9 +335,100 @@ namespace BizHawk.Client.EmuHawk
 			base.OnKeyDown(e);
 		}
 
+		private void CalculatePointedCell(int x, int y)
+		{
+			var newCell = new Cell();
+
+			// If pointing to a column header
+			if (Columns.Any())
+			{
+				if (HorizontalOrientation)
+				{
+					if (x < _horizontalOrientedColumnWidth)
+					{
+						newCell.RowIndex = null;
+					}
+					else
+					{
+						newCell.RowIndex = (x - _horizontalOrientedColumnWidth) / CellWidth;
+					}
+
+					int colIndex = (y / CellHeight);
+					if (colIndex >= 0 && colIndex < Columns.Count)
+					{
+						newCell.Column = Columns[colIndex];
+					}
+				}
+				else
+				{
+					if (y < CellHeight)
+					{
+						newCell.RowIndex = null;
+					}
+					else
+					{
+						newCell.RowIndex = (y / CellHeight) - 1;
+					}
+
+					int start = 0;
+					//for (int i = 0; i < Columns.Count; i++)
+					foreach (var column in Columns)
+					{
+						if (x > start)
+						{
+							start += CalcWidth(column);
+							if (x <= start)
+							{
+								newCell.Column = column;
+								break;
+							}
+						}
+					}
+				}
+			}
+			
+			if (newCell != CurrentCell)
+			{
+				CellChanged(CurrentCell, newCell);
+				CurrentCell = newCell;
+			}
+
+		}
+
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+			CalculatePointedCell(e.X, e.Y);
+			base.OnMouseMove(e);
+		}
+
+		protected override void OnMouseEnter(EventArgs e)
+		{
+			CurrentCell = new Cell
+			{
+				Column = null,
+				RowIndex = null
+			};
+
+			base.OnMouseEnter(e);
+		}
+
+		protected override void OnMouseLeave(EventArgs e)
+		{
+			CurrentCell = null;
+			base.OnMouseLeave(e);
+		}
+
 		#endregion
 
 		#region Helpers
+
+		private void CellChanged(Cell oldCell, Cell newCell)
+		{
+			if (PointedCellChanged != null)
+			{
+				PointedCellChanged(this, new CellEventArgs(oldCell, newCell));
+			}
+		}
 
 		private bool NeedToUpdateScrollbar()
 		{
@@ -421,5 +533,35 @@ namespace BizHawk.Client.EmuHawk
 		public string Name { get; set; }
 		public string Text { get; set; }
 		public InputType Type { get; set; }
+	}
+
+	public class Cell
+	{
+		public RollColumn Column { get; set; }
+		public int? RowIndex { get; set; }
+
+		public Cell() { }
+
+		public Cell(Cell cell)
+		{
+			Column = cell.Column;
+			RowIndex = cell.RowIndex;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj is Cell)
+			{
+				var cell = obj as Cell;
+				return this.Column == cell.Column && this.RowIndex == cell.RowIndex;
+			}
+			
+			return base.Equals(obj);
+		}
+
+		public override int GetHashCode()
+		{
+			return Column.GetHashCode() + RowIndex.GetHashCode();
+		}
 	}
 }
