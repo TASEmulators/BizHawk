@@ -282,7 +282,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Gdi.SetBrush(Color.White);
 			Gdi.SetSolidPen(Color.Black);
-			Gdi.FillRectangle(startPoint.X, startPoint.Y, Width, Height);
+
 			Gdi.DrawRectangle(startPoint.X, startPoint.Y, Width, Height);
 
 			Gdi.SetSolidPen(SystemColors.ControlLight);
