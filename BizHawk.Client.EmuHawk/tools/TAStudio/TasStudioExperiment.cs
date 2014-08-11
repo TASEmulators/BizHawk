@@ -60,9 +60,17 @@ namespace BizHawk.Client.EmuHawk
 			r = new Random((int)DateTime.Now.Ticks);
 		}
 
+		private int? columnClicked = null;
+
 		private void TasView_QueryItemText(int index, int column, out string text)
 		{
-			
+
+			if (columnClicked.HasValue && column == columnClicked)
+			{
+				text = "!";
+				return;
+			}
+
 			text = r.NextDouble() > .5 ? "_" : "";
 
 			/*
@@ -267,6 +275,13 @@ namespace BizHawk.Client.EmuHawk
 
 				CurrentCellLabel.Text = string.Format("Column: {0} RowIndex: {1}", column, row);
 			}
+		}
+
+		private void InputView_ColumnClick(object sender, ColumnClickEventArgs e)
+		{
+			var column = InputView.GetColumn(e.Column);
+			columnClicked = e.Column;
+			InputView.Refresh();
 		}
 	}
 }
