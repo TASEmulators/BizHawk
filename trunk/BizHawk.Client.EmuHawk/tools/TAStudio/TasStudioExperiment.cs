@@ -108,7 +108,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_QueryItemBkColor(int index, int column, ref Color color)
 		{
+			var test = r.NextDouble() > .5;
+			//var test = index == 2 && column == 2;
 
+			color = test ? Color.LightCyan : Color.White;
 		}
 
 		private void TasStudioExperiment_Load(object sender, EventArgs e)
@@ -121,43 +124,43 @@ namespace BizHawk.Client.EmuHawk
 
 			InputView.AddColumns(new[]
 			{
-				new RollColumn
+				new InputRoll.RollColumn
 				{
 					Group = "",
 					Name = "Address",
 					Text = "Address"
 				},
-				new RollColumn
+				new InputRoll.RollColumn
 				{
 					Group = "",
 					Name = "Value",
 					Text = "Value"
 				},
-				new RollColumn
+				new InputRoll.RollColumn
 				{
 					Group = "",
 					Name = "Prev",
 					Text = "Prev"
 				},
-				new RollColumn
+				new InputRoll.RollColumn
 				{
 					Group = "",
 					Name = "Changes",
 					Text = "Changes"
 				},
-				new RollColumn
+				new InputRoll.RollColumn
 				{
 					Group = "",
 					Name = "Domain",
 					Text = "Domain"
 				},
-				new RollColumn
+				new InputRoll.RollColumn
 				{
 					Group = "",
 					Name = "Diff",
 					Text = "Diff"
 				},
-				new RollColumn
+				new InputRoll.RollColumn
 				{
 					Group = "",
 					Name = "Notes",
@@ -166,78 +169,77 @@ namespace BizHawk.Client.EmuHawk
 			});
 			*/
 
-			
 			InputView.AddColumns(new []
 			{
-				new RollColumn
+				new InputRoll.RollColumn
 				{
 					Group = "Core",
 					Name = "MarkerColumn",
 					Text = "",
 					Width = 23,
 				},
-				new RollColumn
+				new InputRoll.RollColumn
 				{
 					Group = "Core",
 					Name = "FrameColumn",
 					Text = "Frame",
 					Width = 50,
 				},
-				new RollColumn
+				new InputRoll.RollColumn
 				{
 					Group = "P1",
 					Name = "P1 Up",
 					Text = "U",
-					Type = RollColumn.InputType.Boolean
+					Type = InputRoll.RollColumn.InputType.Boolean
 				},
-				new RollColumn
+				new InputRoll.RollColumn
 				{
 					Group = "P1",
 					Name = "P1 Down",
 					Text = "D",
-					Type = RollColumn.InputType.Boolean
+					Type = InputRoll.RollColumn.InputType.Boolean
 				},
-				new RollColumn
+				new InputRoll.RollColumn
 				{
 					Group = "P1",
 					Name = "P1 Left",
 					Text = "L",
-					Type = RollColumn.InputType.Boolean
+					Type = InputRoll.RollColumn.InputType.Boolean
 				},
-				new RollColumn
+				new InputRoll.RollColumn
 				{
 					Group = "P1",
 					Name = "P1 Right",
 					Text = "R",
-					Type = RollColumn.InputType.Boolean
+					Type = InputRoll.RollColumn.InputType.Boolean
 				},
-				new RollColumn
+				new InputRoll.RollColumn
 				{
 					Group = "P1",
 					Name = "P1 Select",
 					Text = "s",
-					Type = RollColumn.InputType.Boolean
+					Type = InputRoll.RollColumn.InputType.Boolean
 				},
-				new RollColumn
+				new InputRoll.RollColumn
 				{
 					Group = "P1",
 					Name = "P1 Start",
 					Text = "S",
-					Type = RollColumn.InputType.Boolean
+					Type = InputRoll.RollColumn.InputType.Boolean
 				},
-				new RollColumn
+				new InputRoll.RollColumn
 				{
 					Group = "P1",
 					Name = "P1 B",
 					Text = "B",
-					Type = RollColumn.InputType.Boolean
+					Type = InputRoll.RollColumn.InputType.Boolean
 				},
-				new RollColumn
+				new InputRoll.RollColumn
 				{
 					Group = "P1",
 					Name = "P1 A",
 					Text = "A",
-					Type = RollColumn.InputType.Boolean
+					Type = InputRoll.RollColumn.InputType.Boolean
 				},
 			});
 		}

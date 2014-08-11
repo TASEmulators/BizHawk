@@ -252,20 +252,20 @@ namespace BizHawk.Client.EmuHawk
 
 			if (HorizontalOrientation)
 			{
-				Gdi.DrawRectangle(0, 0, _horizontalOrientedColumnWidth, Height);
-				Gdi.FillRectangle(1, 1, _horizontalOrientedColumnWidth - 3, Height - 3);
+				Gdi.DrawRectangle(0, 0, _horizontalOrientedColumnWidth + 1, Height);
+				Gdi.FillRectangle(1, 1, _horizontalOrientedColumnWidth, Height - 3);
 
 				int start = 0;
 				foreach (var column in Columns)
 				{
 					start += CellHeight;
-					Gdi.Line(1, start, _horizontalOrientedColumnWidth - 1, start);
+					Gdi.Line(1, start, _horizontalOrientedColumnWidth, start);
 				}
 			}
 			else
 			{
 				Gdi.DrawRectangle(0, 0, Width, CellHeight);
-				Gdi.FillRectangle(1, 1, Width - 3, CellHeight - 3);
+				Gdi.FillRectangle(1, 1, Width - 2, CellHeight);
 
 				int start = 0;
 				foreach (var column in Columns)
@@ -291,21 +291,21 @@ namespace BizHawk.Client.EmuHawk
 				// Columns
 				for (int i = 1; i < Width / CellWidth; i++)
 				{
-					var x = _horizontalOrientedColumnWidth + (i * CellWidth);
+					var x = _horizontalOrientedColumnWidth + 1 + (i * CellWidth);
 					Gdi.Line(x, 1, x, Columns.Count * CellHeight);
 				}
 
 				// Rows
 				for (int i = 1; i < Columns.Count + 1; i++)
 				{
-					Gdi.Line(_horizontalOrientedColumnWidth, i * CellHeight, Width - 2, i * CellHeight);
+					Gdi.Line(_horizontalOrientedColumnWidth + 1, i * CellHeight, Width - 2, i * CellHeight);
 				}
 			}
 			else
 			{
 				// Columns
 				int x = 0;
-				int y = CellHeight;
+				int y = CellHeight + 1;
 				foreach (var column in Columns)
 				{
 					x += CalcWidth(column);
@@ -316,6 +316,55 @@ namespace BizHawk.Client.EmuHawk
 				for (int i = 2; i < Height / CellHeight; i++)
 				{
 					Gdi.Line(1, (i * CellHeight) + 1, Width - 2, (i * CellHeight) + 1);
+				}
+			}
+
+			// Do background callback
+			if (QueryItemBkColor != null)
+			{
+				if (HorizontalOrientation)
+				{
+					var visibleRows = (Width - _horizontalOrientedColumnWidth) / CellWidth;
+					for (int i = 0; i < visibleRows; i++)
+					{
+						for (int j = 0; j < Columns.Count; j++)
+						{
+							Color color = Color.White;
+							QueryItemBkColor(i, j, ref color);
+
+							if (color != Color.White) // An easy optimization, don't draw unless the user specified something other than the default
+							{
+								Gdi.SetBrush(color);
+								Gdi.FillRectangle(
+									_horizontalOrientedColumnWidth + (i * CellWidth) + 2,
+									(j * CellHeight) + 1,
+									CellWidth - 1,
+									CellHeight - 1);
+							}
+						}
+					}
+				}
+				else
+				{
+					var visibleRows = (Height / CellHeight) - 1;
+					for (int i = 1; i < visibleRows; i++)
+					{
+						int x = 1;
+						for (int j = 0; j < Columns.Count; j++)
+						{
+							Color color = Color.White;
+							QueryItemBkColor(i, j, ref color);
+
+							var width = CalcWidth(Columns[j]);
+							if (color != Color.White) // An easy optimization, don't draw unless the user specified something other than the default
+							{
+								Gdi.SetBrush(color);
+								Gdi.FillRectangle(x, (i * CellHeight) + 2, width - 1, CellHeight - 1);
+							}
+
+							x += width;
+						}
+					}
 				}
 			}
 		}
@@ -441,13 +490,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (HorizontalOrientation)
 				{
-					var x = _horizontalOrientedColumnWidth - 1;
+					var x = _horizontalOrientedColumnWidth;
 					var y = 0;
 					return new Point(x, y);
 				}
 				else
 				{
-					var y = CellHeight - 1;
+					var y = CellHeight;
 					return new Point(0, y);
 				}
 			}
@@ -500,70 +549,74 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
-	}
 
-	public class RollColumns : List<RollColumn>
-	{
-		public void Add(string name, string text, int width, RollColumn.InputType type = RollColumn.InputType.Text)
-		{
-			Add(new RollColumn
-			{
-				Name = name,
-				Text = text,
-				Width = width,
-				Type = type
-			});
-		}
+		#region Classes
 
-		public IEnumerable<string> Groups
+		public class RollColumns : List<RollColumn>
 		{
-			get
+			public void Add(string name, string text, int width, RollColumn.InputType type = RollColumn.InputType.Text)
 			{
-				return this
-					.Select(x => x.Group)
-					.Distinct();
+				Add(new RollColumn
+				{
+					Name = name,
+					Text = text,
+					Width = width,
+					Type = type
+				});
+			}
+
+			public IEnumerable<string> Groups
+			{
+				get
+				{
+					return this
+						.Select(x => x.Group)
+						.Distinct();
+				}
 			}
 		}
-	}
 
-	public class RollColumn
-	{
-		public enum InputType { Boolean, Float, Text, Image }
-
-		public string Group { get; set; }
-		public int? Width { get; set; }
-		public string Name { get; set; }
-		public string Text { get; set; }
-		public InputType Type { get; set; }
-	}
-
-	public class Cell
-	{
-		public RollColumn Column { get; set; }
-		public int? RowIndex { get; set; }
-
-		public Cell() { }
-
-		public Cell(Cell cell)
+		public class RollColumn
 		{
-			Column = cell.Column;
-			RowIndex = cell.RowIndex;
+			public enum InputType { Boolean, Float, Text, Image }
+
+			public string Group { get; set; }
+			public int? Width { get; set; }
+			public string Name { get; set; }
+			public string Text { get; set; }
+			public InputType Type { get; set; }
 		}
 
-		public override bool Equals(object obj)
+		public class Cell
 		{
-			if (obj is Cell)
+			public RollColumn Column { get; set; }
+			public int? RowIndex { get; set; }
+
+			public Cell() { }
+
+			public Cell(Cell cell)
 			{
-				var cell = obj as Cell;
-				return this.Column == cell.Column && this.RowIndex == cell.RowIndex;
+				Column = cell.Column;
+				RowIndex = cell.RowIndex;
 			}
-			
-			return base.Equals(obj);
+
+			public override bool Equals(object obj)
+			{
+				if (obj is Cell)
+				{
+					var cell = obj as Cell;
+					return this.Column == cell.Column && this.RowIndex == cell.RowIndex;
+				}
+
+				return base.Equals(obj);
+			}
+
+			public override int GetHashCode()
+			{
+				return Column.GetHashCode() + RowIndex.GetHashCode();
+			}
 		}
 
-		public override int GetHashCode()
-		{
-			return Column.GetHashCode() + RowIndex.GetHashCode();
-		}
+		#endregion
 	}
 }
