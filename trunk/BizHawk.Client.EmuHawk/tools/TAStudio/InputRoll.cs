@@ -14,7 +14,6 @@ namespace BizHawk.Client.EmuHawk
 		private readonly GDIRenderer Gdi;
 		private readonly RollColumns Columns = new RollColumns();
 
-		private bool NeedToReDrawColumn = false;
 		private int _horizontalOrientedColumnWidth = 0;
 		private Size _charSize;
 
@@ -102,6 +101,9 @@ namespace BizHawk.Client.EmuHawk
 		[Category("Mouse")]
 		public event CellChangeEventHandler PointedCellChanged;
 
+		[Category("Action")]
+		public event ColumnClickEventHandler ColumnClick;
+
 		/// <summary>
 		/// Retrieve the text for a cell
 		/// </summary>
@@ -113,6 +115,8 @@ namespace BizHawk.Client.EmuHawk
 		public delegate void QueryItemBkColorHandler(int index, int column, ref Color color);
 
 		public delegate void CellChangeEventHandler(object sender, CellEventArgs e);
+
+		public delegate void ColumnClickEventHandler(object sender, ColumnClickEventArgs e);
 
 		public class CellEventArgs
 		{
@@ -153,6 +157,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Columns.Add(column);
 			ColumnChanged();
+		}
+
+		public RollColumn GetColumn(int index)
+		{
+			return Columns[index];
 		}
 
 		#endregion
@@ -470,6 +479,16 @@ namespace BizHawk.Client.EmuHawk
 			base.OnMouseLeave(e);
 		}
 
+		protected override void OnMouseClick(MouseEventArgs e)
+		{
+			if (IsHoveringOnColumnCell)
+			{
+				ColumnClickEvent(ColumnAtX(e.X));
+			}
+
+			base.OnMouseClick(e);
+		}
+
 		#endregion
 
 		#region Helpers
@@ -558,6 +577,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void ColumnClickEvent(RollColumn column)
+		{
+			if (ColumnClick != null)
+			{
+				ColumnClick(this, new ColumnClickEventArgs(Columns.IndexOf(column)));
+			}
+		}
+
 		private bool NeedToUpdateScrollbar()
 		{
 			return true;
@@ -617,7 +644,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColumnChanged()
 		{
-			NeedToReDrawColumn = true;
 			var text = Columns.Max(c => c.Text.Length);
 			_horizontalOrientedColumnWidth = (text * _charSize.Width) + (CellPadding * 2);
 		}
@@ -626,6 +652,21 @@ namespace BizHawk.Client.EmuHawk
 		private int CalcWidth(RollColumn col)
 		{
 			return col.Width ?? ((col.Text.Length * _charSize.Width) + (CellPadding * 4));
+		}
+
+		private RollColumn ColumnAtX(int x)
+		{
+			int start = 0;
+			foreach (var column in Columns)
+			{
+				start += CalcWidth(column);
+				if (start > x)
+				{
+					return column;
+				}
+			}
+
+			return null;
 		}
 
 		#endregion

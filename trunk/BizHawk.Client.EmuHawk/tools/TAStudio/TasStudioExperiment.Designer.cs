@@ -31,9 +31,9 @@
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.InputView = new BizHawk.Client.EmuHawk.InputRoll();
 			this.label1 = new System.Windows.Forms.Label();
 			this.CurrentCellLabel = new System.Windows.Forms.Label();
+			this.InputView = new BizHawk.Client.EmuHawk.InputRoll();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -63,25 +63,6 @@
 			this.autoloadToolStripMenuItem.Text = "Autoload";
 			this.autoloadToolStripMenuItem.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
 			// 
-			// InputView
-			// 
-			this.InputView.AllowColumnReorder = false;
-			this.InputView.AllowColumnResize = false;
-			this.InputView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.InputView.CurrentCell = null;
-			this.InputView.Font = new System.Drawing.Font("Courier New", 8F);
-			this.InputView.HorizontalOrientation = false;
-			this.InputView.ItemCount = 0;
-			this.InputView.Location = new System.Drawing.Point(12, 103);
-			this.InputView.Name = "InputView";
-			this.InputView.Size = new System.Drawing.Size(380, 303);
-			this.InputView.TabIndex = 1;
-			this.InputView.Text = "inputRoll1";
-			this.InputView.VirtualMode = false;
-			this.InputView.PointedCellChanged += new BizHawk.Client.EmuHawk.InputRoll.CellChangeEventHandler(this.InputView_PointedCellChanged);
-			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
@@ -99,6 +80,25 @@
 			this.CurrentCellLabel.Size = new System.Drawing.Size(35, 13);
 			this.CurrentCellLabel.TabIndex = 3;
 			this.CurrentCellLabel.Text = "label2";
+			// 
+			// InputView
+			// 
+			this.InputView.AllowColumnReorder = false;
+			this.InputView.AllowColumnResize = false;
+			this.InputView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.InputView.Font = new System.Drawing.Font("Courier New", 8F);
+			this.InputView.HorizontalOrientation = false;
+			this.InputView.ItemCount = 0;
+			this.InputView.Location = new System.Drawing.Point(12, 103);
+			this.InputView.Name = "InputView";
+			this.InputView.Size = new System.Drawing.Size(380, 303);
+			this.InputView.TabIndex = 1;
+			this.InputView.Text = "inputRoll1";
+			this.InputView.VirtualMode = false;
+			this.InputView.PointedCellChanged += new BizHawk.Client.EmuHawk.InputRoll.CellChangeEventHandler(this.InputView_PointedCellChanged);
+			this.InputView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.InputView_ColumnClick);
 			// 
 			// TasStudioExperiment
 			// 
