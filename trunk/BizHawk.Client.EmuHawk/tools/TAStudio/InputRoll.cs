@@ -192,7 +192,18 @@ namespace BizHawk.Client.EmuHawk
 				foreach (var column in Columns)
 				{
 					var point = new Point(CellPadding, start + CellPadding);
-					Gdi.DrawString(column.Text, point);
+
+					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
+					{
+						Gdi.PrepDrawString(this.Font, SystemColors.HighlightText);
+						Gdi.DrawString(column.Text, point);
+						Gdi.PrepDrawString(this.Font, this.ForeColor);
+					}
+					else
+					{
+						Gdi.DrawString(column.Text, point);
+					}
+
 					start += CellHeight;
 				}
 			}
@@ -203,7 +214,18 @@ namespace BizHawk.Client.EmuHawk
 				foreach (var column in Columns)
 				{
 					var point = new Point(start + CellPadding, CellPadding);
-					Gdi.DrawString(column.Text, point);
+
+					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
+					{
+						Gdi.PrepDrawString(this.Font, SystemColors.HighlightText);
+						Gdi.DrawString(column.Text, point);
+						Gdi.PrepDrawString(this.Font, this.ForeColor);
+					}
+					else
+					{
+						Gdi.DrawString(column.Text, point);
+					}
+
 					start += CalcWidth(column);
 				}
 			}
@@ -277,6 +299,41 @@ namespace BizHawk.Client.EmuHawk
 				{
 					start += CalcWidth(column);
 					Gdi.Line(start, 0, start, CellHeight);
+				}
+			}
+
+			// If the user is hovering over a column
+			if (IsHoveringOnColumnCell)
+			{
+				if (HorizontalOrientation)
+				{
+					for (int i = 0; i < Columns.Count; i++)
+					{
+						if (Columns[i] == CurrentCell.Column)
+						{
+							Gdi.SetBrush(SystemColors.Highlight);
+							Gdi.FillRectangle(
+								1,
+								(i * CellHeight) + 1,
+								_horizontalOrientedColumnWidth - 1,
+								CellHeight - 1);
+						}
+					}
+				}
+				else
+				{
+					int start = 0;
+					for (int i = 0; i < Columns.Count; i++)
+					{
+						var width = CalcWidth(Columns[i]);
+						if (Columns[i] == CurrentCell.Column)
+						{
+							Gdi.SetBrush(SystemColors.Highlight);
+							Gdi.FillRectangle(start + 1, 1, width - 1, CellHeight - 1);
+						}
+
+						start += width;
+					}
 				}
 			}
 		}
@@ -409,6 +466,7 @@ namespace BizHawk.Client.EmuHawk
 		protected override void OnMouseLeave(EventArgs e)
 		{
 			CurrentCell = null;
+			Refresh();
 			base.OnMouseLeave(e);
 		}
 
@@ -416,8 +474,19 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Helpers
 
+		private bool IsHoveringOnColumnCell
+		{
+			get
+			{
+				return CurrentCell != null &&
+					CurrentCell.Column != null &&
+					!CurrentCell.RowIndex.HasValue;
+			}
+		}
+
 		private void CalculatePointedCell(int x, int y)
 		{
+			bool wasHoveringColumnCell = IsHoveringOnColumnCell;
 			var newCell = new Cell();
 
 			// If pointing to a column header
@@ -472,6 +541,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CellChanged(CurrentCell, newCell);
 				CurrentCell = newCell;
+
+				if (IsHoveringOnColumnCell ||
+					(wasHoveringColumnCell && !IsHoveringOnColumnCell))
+				{
+					Refresh();
+				}
 			}
 		}
 
