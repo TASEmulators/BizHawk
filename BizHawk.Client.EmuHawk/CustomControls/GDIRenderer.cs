@@ -165,7 +165,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		public void FillRectangle(int x, int y, int w, int h)
 		{
-			var r = new GDIRect(new Rectangle(x, y, x + w, y + h));
+			var r = new GDIRect(new Rectangle(x, y, w, h));
 			FillRect(_hdc, ref r, _currentBrush);
 		}
 
