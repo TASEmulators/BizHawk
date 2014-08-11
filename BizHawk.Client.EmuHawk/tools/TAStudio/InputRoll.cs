@@ -79,6 +79,12 @@ namespace BizHawk.Client.EmuHawk
 		[Category("Behavior")]
 		public bool AllowColumnReorder { get; set; }
 
+		/// <summary>
+		/// Indicates whether the entire row will always be selected 
+		/// </summary>
+		[Category("Appearance")]
+		public bool FullRowSelect { get; set; }
+
 		#endregion
 
 		#region Event Handlers
@@ -145,6 +151,21 @@ namespace BizHawk.Client.EmuHawk
 		public string UserSettingsSerialized()
 		{
 			return string.Empty; // TODO
+		}
+
+		[Browsable(false)]
+		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		public int VisibleRows
+		{
+			get
+			{
+				if (HorizontalOrientation)
+				{
+					return (Width - _horizontalOrientedColumnWidth) / CellWidth;
+				}
+
+				return (Height / CellHeight) - 1;
+			}
 		}
 
 		public void AddColumns(IEnumerable<RollColumn> columns)
