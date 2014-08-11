@@ -128,10 +128,15 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		#region Public Methods
+		#region Api
 
-		// TODO: designer ignore
+		[Browsable(false)]
+		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
 		public Cell CurrentCell { get; set; }
+
+		[Browsable(false)]
+		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		public bool UseCustomBackground { get; set; }
 
 		public string UserSettingsSerialized()
 		{
@@ -320,7 +325,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Do background callback
-			if (QueryItemBkColor != null)
+			if (QueryItemBkColor != null && UseCustomBackground)
 			{
 				if (HorizontalOrientation)
 				{
