@@ -39,6 +39,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				CoreComm.NominalWidth = 240;
 				CoreComm.NominalHeight = 160;
 
+				GameCode = Encoding.ASCII.GetString(romfile, 0xac, 4);
+				Console.WriteLine("Game code \"{0}\"", GameCode);
+
 				savebuff = new byte[LibVBANext.BinStateSize(Core)];
 				savebuff2 = new byte[savebuff.Length + 13];
 			}
@@ -80,11 +83,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			IsLagFrame = false;
 		}
 
-		public string BoardName
-		{
-			// could we do something useful here?
-			get { return "BAMBOOZLED!"; }
-		}
+		public string BoardName { get { return null; } }
+		/// <summary>
+		/// set in the ROM internal header
+		/// </summary>
+		public string GameCode { get; private set; }
 
 		public CoreComm CoreComm { get; private set; }
 
