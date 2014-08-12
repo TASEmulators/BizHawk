@@ -13,6 +13,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly GDIRenderer Gdi;
 		private readonly RollColumns Columns = new RollColumns();
+		private readonly List<Cell> SelectedItems = new List<Cell>();
 
 		private int _horizontalOrientedColumnWidth = 0;
 		private Size _charSize;
@@ -183,6 +184,18 @@ namespace BizHawk.Client.EmuHawk
 		public RollColumn GetColumn(int index)
 		{
 			return Columns[index];
+		}
+
+		[Browsable(false)]
+		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		public IEnumerable<int> SelectedIndices
+		{
+			get
+			{
+				return SelectedItems
+					.Where(cell => cell.RowIndex.HasValue)
+					.Select(cell => cell.RowIndex.Value);
+			}
 		}
 
 		#endregion
@@ -506,6 +519,20 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ColumnClickEvent(ColumnAtX(e.X));
 			}
+			else if (IsHoveringOnDataCell)
+			{
+				if (ModifierKeys.HasFlag(Keys.Control) || ModifierKeys.HasFlag(Keys.Shift))
+				{
+					MessageBox.Show("Multiselect options have not yet been implemented");
+				}
+				else
+				{
+					SelectedItems.Add(CurrentCell);
+				}
+
+				// TODO: selected index changed event
+				Refresh();
+			}
 
 			base.OnMouseClick(e);
 		}
@@ -521,6 +548,16 @@ namespace BizHawk.Client.EmuHawk
 				return CurrentCell != null &&
 					CurrentCell.Column != null &&
 					!CurrentCell.RowIndex.HasValue;
+			}
+		}
+
+		private bool IsHoveringOnDataCell
+		{
+			get
+			{
+				return CurrentCell != null &&
+					CurrentCell.Column != null &&
+					CurrentCell.RowIndex.HasValue;
 			}
 		}
 
