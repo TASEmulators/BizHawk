@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 	{
 		IntPtr Core;
 
-		public VBANext(byte[] romfile, CoreComm nextComm)
+		public VBANext(byte[] romfile, CoreComm nextComm, GameInfo gi)
 		{
 			CoreComm = nextComm;
 			byte[] biosfile = CoreComm.CoreFileProvider.GetFirmware("GBA", "Bios", true, "GBA bios file is mandatory.");
@@ -26,12 +26,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			if (biosfile.Length != 16 * 1024)
 				throw new ArgumentException("BIOS file is not exactly 16K!");
 
+			LibVBANext.FrontEndSettings FES;
+			FES.saveType = (LibVBANext.FrontEndSettings.SaveType)gi.GetInt("saveType", 0);
+			FES.flashSize = (LibVBANext.FrontEndSettings.FlashSize)gi.GetInt("flashSize", 0x10000);
+			FES.enableRtc = gi.GetInt("enableRtc", 0) != 0;
+			FES.mirroringEnable = gi.GetInt("mirroringEnable", 0) != 0;
+			FES.skipBios = false; // todo: hook me up as a syncsetting
+
 			Core = LibVBANext.Create();
 			if (Core == IntPtr.Zero)
 				throw new InvalidOperationException("Create() returned nullptr!");
 			try
 			{
-				if (!LibVBANext.LoadRom(Core, romfile, (uint)romfile.Length, biosfile, (uint)biosfile.Length))
+				if (!LibVBANext.LoadRom(Core, romfile, (uint)romfile.Length, biosfile, (uint)biosfile.Length, ref FES))
 					throw new InvalidOperationException("LoadRom() returned false!");
 
 				CoreComm.VsyncNum = 262144;
@@ -51,9 +58,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				throw;
 			}
 		}
-
-
-
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{

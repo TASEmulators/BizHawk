@@ -1,6 +1,15 @@
 #ifndef INSTANCE_H
 #define INSTANCE_H
 
+struct FrontEndSettings
+{
+	int cpuSaveType; // [0auto] 1eeprom 2sram 3flash 4eeprom+sensor 5none
+	int	flashSize; // [0x10000] 0x20000
+	int	enableRtc; // [false] true
+	int mirroringEnable; // [false] true
+	int skipBios; // [false] true
+};
+
 #define FLASH_128K_SZ 0x20000
 
 #define EEPROM_IDLE           0

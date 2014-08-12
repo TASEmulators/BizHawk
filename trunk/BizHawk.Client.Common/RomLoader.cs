@@ -424,13 +424,13 @@ namespace BizHawk.Client.Common
 							case "GBA":
 								if (false)
 								{
-									var gba = new GBA(nextComm);
+									var gba = new GBA(nextComm); // meteor
 									gba.Load(rom.RomData);
 									nextEmulator = gba;
 								}
 								else
 								{
-									var gba = new VBANext(rom.RomData, nextComm);
+									var gba = new VBANext(rom.RomData, nextComm, game);
 									nextEmulator = gba;
 								}
 								break;

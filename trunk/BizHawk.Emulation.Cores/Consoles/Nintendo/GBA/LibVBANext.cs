@@ -27,6 +27,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			L = 512
 		}
 
+		[StructLayout(LayoutKind.Sequential)]
+		public struct FrontEndSettings
+		{
+			public enum SaveType : int
+			{
+				auto = 0,
+				eeprom = 1,
+				sram = 2,
+				flash = 3,
+				eeprom_sensor = 4,
+				none = 5
+			}
+			public enum FlashSize : int
+			{
+				small = 0x10000,
+				big = 0x20000
+			}
+			public SaveType saveType;
+			public FlashSize flashSize;
+			public bool enableRtc;
+			public bool mirroringEnable;
+			public bool skipBios;
+
+			public static FrontEndSettings GetDefaults()
+			{
+				return new FrontEndSettings
+				{
+					flashSize = FlashSize.big
+				};
+			}
+		}
+
 		/// <summary>
 		/// create a new context
 		/// </summary>
@@ -51,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		/// <param name="biosfilelen"></param>
 		/// <returns>success</returns>
 		[DllImport(dllname, CallingConvention = cc)]
-		public static extern bool LoadRom(IntPtr g, byte[] romfile, uint romfilelen, byte[] biosfile, uint biosfilelen);
+		public static extern bool LoadRom(IntPtr g, byte[] romfile, uint romfilelen, byte[] biosfile, uint biosfilelen, [In]ref FrontEndSettings settings);
 
 		/// <summary>
 		/// hard reset
@@ -82,5 +114,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public static extern void TxtStateSave(IntPtr g, [In]ref TextStateFPtrs ff);
 		[DllImport(dllname, CallingConvention = cc)]
 		public static extern void TxtStateLoad(IntPtr g, [In]ref TextStateFPtrs ff);
+
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern int SaveRamSize(IntPtr g);
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern bool SaveRamSave(IntPtr g, byte[] data, int length);
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern bool SaveRamLoad(IntPtr g, byte[] data, int length);
+
 	}
 }
