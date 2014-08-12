@@ -604,7 +604,7 @@ namespace BizHawk.Client.Common
 		// it hasn't been absorbed into the new system
 		public bool GB_AsSGB = false;
 		public bool NES_InQuickNES = true;
-		public bool SNES_InSnes9x = true;
+		public bool SNES_InSnes9x = false;
 
 		// LuaWriter Settings
 		public int LuaDefaultTextColor = -16777216;
