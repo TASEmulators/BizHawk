@@ -2,6 +2,7 @@
 #include <time.h>
 #include <cstdlib>
 #include <cstring>
+#include <algorithm>
 
 #include <stdint.h>
 #include <limits.h>
@@ -48,12 +49,7 @@ class Gigazoid
 #define FLASH_PROGRAM            8
 #define FLASH_SETBANK            9
 
-#ifdef __LIBRETRO__
-extern uint8_t libretro_save_buf[0x20000 + 0x2000];
-uint8_t *flashSaveMemory = libretro_save_buf;
-#else
 uint8_t flashSaveMemory[FLASH_128K_SZ];
-#endif
 
 int flashState; // = FLASH_READ_ARRAY;
 int flashReadState; // = FLASH_READ_ARRAY;
@@ -64,11 +60,7 @@ int flashBank; // = 0;
 
 void flashInit (void)
 {
-#ifdef __LIBRETRO__
-	memset(flashSaveMemory, 0xff, 0x20000);
-#else
 	memset(flashSaveMemory, 0xff, sizeof(flashSaveMemory));
-#endif
 }
 
 void flashReset()
@@ -76,22 +68,6 @@ void flashReset()
 	flashState = FLASH_READ_ARRAY;
 	flashReadState = FLASH_READ_ARRAY;
 	flashBank = 0;
-}
-
-void flashSetSize(int size)
-{
-	if(size == 0x10000) {
-		flashDeviceID = 0x1b;
-		flashManufacturerID = 0x32;
-	} else {
-		flashDeviceID = 0x13; //0x09;
-		flashManufacturerID = 0x62; //0xc2;
-	}
-	// Added to make 64k saves compatible with 128k ones
-	// (allow wrongfuly set 64k saves to work for Pokemon games)
-	if ((size == 0x20000) && (flashSize == 0x10000))
-		memcpy((uint8_t *)(flashSaveMemory+0x10000), (uint8_t *)(flashSaveMemory), 0x10000);
-	flashSize = size;
 }
 
 uint8_t flashRead(uint32_t address)
@@ -122,22 +98,12 @@ uint8_t flashRead(uint32_t address)
 
 void flashSaveDecide(uint32_t address, uint8_t byte)
 {
-	if(address == 0x0e005555) {
-		saveType = 2;
+	if (address == 0x0e005555)
 		cpuSaveGameFunc = &Gigazoid::flashWrite;
-	} else {
-		saveType = 1;
+	else
 		cpuSaveGameFunc = &Gigazoid::sramWrite;
-	}
 
 	(this->*cpuSaveGameFunc)(address, byte);
-}
-
-void flashDelayedWrite(uint32_t address, uint8_t byte)
-{
-  saveType = 2;
-  cpuSaveGameFunc = &Gigazoid::flashWrite;
-  flashWrite(address, byte);
 }
 
 void flashWrite(uint32_t address, uint8_t byte)
@@ -243,13 +209,7 @@ int eepromByte; // = 0;
 int eepromBits; // = 0;
 int eepromAddress; // = 0;
 
-#ifdef __LIBRETRO__
-// Workaround for broken-by-design GBA save semantics.
-extern u8 libretro_save_buf[0x20000 + 0x2000];
-u8 *eepromData = libretro_save_buf + 0x20000;
-#else
 u8 eepromData[0x2000];
-#endif
 
 u8 eepromBuffer[16];
 bool eepromInUse; // = false;
@@ -257,11 +217,7 @@ int eepromSize; // = 512;
 
 void eepromInit (void)
 {
-#ifdef __LIBRETRO__
-	memset(eepromData, 255, 0x2000);
-#else
 	memset(eepromData, 255, sizeof(eepromData));
-#endif
 }
 
 void eepromReset (void)
@@ -401,16 +357,13 @@ u8 sramRead(u32 address)
 	return flashSaveMemory[address & 0xFFFF];
 }
 
-void sramDelayedWrite(u32 address, u8 byte)
-{
-	saveType = 1;
-	cpuSaveGameFunc = &Gigazoid::sramWrite;
-	sramWrite(address, byte);
-}
-
 void sramWrite(u32 address, u8 byte)
 {
 	flashSaveMemory[address & 0xFFFF] = byte;
+}
+
+void dummyWrite(u32 address, u8 byte)
+{
 }
 
 /*============================================================
@@ -437,32 +390,19 @@ typedef struct
 RTCCLOCKDATA rtcClockData;
 bool rtcEnabled; // = false;
 
-void rtcEnable(bool e)
-{
-	rtcEnabled = e;
-}
-
-bool rtcIsEnabled (void)
-{
-	return rtcEnabled;
-}
-
 u16 rtcRead(u32 address)
 {
-	if(rtcEnabled)
+	switch(address)
 	{
-		switch(address)
-		{
-			case 0x80000c8:
-				return rtcClockData.byte2;
-			case 0x80000c6:
-				return rtcClockData.byte1;
-			case 0x80000c4:
-				return rtcClockData.byte0;
-		}
+		case 0x80000c8:
+			return rtcClockData.byte2;
+		case 0x80000c6:
+			return rtcClockData.byte1;
+		case 0x80000c4:
+			return rtcClockData.byte0;
+		default:
+			return 0;
 	}
-
-	return READ16LE((&rom[address & 0x1FFFFFE]));
 }
 
 static u8 toBCD(u8 value)
@@ -2764,7 +2704,6 @@ int gfxBG3X;
 int gfxBG3Y;
 
 bool ioReadable[0x400];
-int gbaSaveType; // used to remember the save type on reset
 
 //int gfxLastVCOUNT = 0;
 
@@ -3054,7 +2993,7 @@ INLINE u32 CPUReadHalfWord(u32 address)
 		case 10:
 		case 11:
 		case 12:
-			if(address == 0x80000c4 || address == 0x80000c6 || address == 0x80000c8)
+			if(rtcEnabled && (address == 0x80000c4 || address == 0x80000c6 || address == 0x80000c8))
 				value = rtcRead(address);
 			else
 				value = READ16LE(((u16 *)&rom[address & 0x1FFFFFE]));
@@ -3194,14 +3133,11 @@ INLINE void CPUWriteMemory(u32 address, u32 value)
 			WRITE32LE(((u32 *)&oam[address & 0x3fc]), value);
 			break;
 		case 0x0D:
-			if(cpuEEPROMEnabled) {
+			if (cpuEEPROMEnabled)
 				eepromWrite(value);
-				break;
-			}
 			break;
 		case 0x0E:
-			if((!eepromInUse) | cpuSramEnabled | cpuFlashEnabled)
-				(this->*cpuSaveGameFunc)(address, (u8)value);
+			(this->*cpuSaveGameFunc)(address, (u8)value);
 			break;
 		default:
 			break;
@@ -3247,8 +3183,7 @@ INLINE void CPUWriteHalfWord(u32 address, u16 value)
 				eepromWrite((u8)value);
 			break;
 		case 14:
-			if((!eepromInUse) | cpuSramEnabled | cpuFlashEnabled)
-				(this->*cpuSaveGameFunc)(address, (u8)value);
+			(this->*cpuSaveGameFunc)(address, (u8)value);
 			break;
 		default:
 			break;
@@ -3362,11 +3297,8 @@ INLINE void CPUWriteByte(u32 address, u8 b)
 				eepromWrite(b);
 			break;
 		case 14:
-			if ((saveType != 5) && ((!eepromInUse) | cpuSramEnabled | cpuFlashEnabled))
-			{
-				(this->*cpuSaveGameFunc)(address, b);
-				break;
-			}
+			(this->*cpuSaveGameFunc)(address, b);
+			break;
 		default:
 			break;
 	}
@@ -8860,14 +8792,14 @@ INLINE u32 gfxDecreaseBrightness(u32 color, int coeff)
 /*============================================================
 	GBA.CPP
 ============================================================ */
-int saveType;
 static const bool useBios = true;
 bool skipBios;
-bool cpuIsMultiBoot;
-int cpuSaveType;
+// it's a few bytes in the linkscript to make a multiboot image work in normal boot as well,
+// and most of the ones i've seen have done that, so this is not terribly useful
+static const bool cpuIsMultiBoot = false;
+int cpuSaveType; // used only in init() to set up function pointers
 bool enableRtc;
 bool mirroringEnable;
-bool skipSaveGameBattery;
 
 int cpuDmaCount;
 
@@ -8880,10 +8812,8 @@ u16 pix[2 * PIX_BUFFER_SCREEN_WIDTH * 160];
 uint8_t oam[0x400];
 uint8_t ioMem[0x400];
 
-bool cpuSramEnabled; // = true;
-bool cpuFlashEnabled; // = true;
-bool cpuEEPROMEnabled; // = true;
-bool cpuEEPROMSensorEnabled; // = false;
+bool cpuEEPROMEnabled; // true to process writes to EEPROM at 0dxxxxxx
+bool cpuEEPROMSensorEnabled; // eeprom motion sensor?  code is mostly disabled
 
 #ifndef LSB_FIRST
 bool cpuBiosSwapped = false;
@@ -8954,97 +8884,6 @@ INLINE int CPUUpdateTicks (void)
       if (graphics.layerEnableDelay == 1) \
           graphics.layerEnable = io_registers[REG_DISPCNT]; \
   }
-
-// TODO: Batteryram stuffs
-/*
-bool CPUWriteBatteryFile(const char *fileName)
-{
-	if(gbaSaveType == 0)
-	{
-		if(eepromInUse)
-			gbaSaveType = 3;
-		else
-			switch(saveType)
-			{
-				case 1:
-					gbaSaveType = 1;
-					break;
-				case 2:
-					gbaSaveType = 2;
-					break;
-			}
-	}
-
-	if((gbaSaveType) && (gbaSaveType!=5))
-	{
-		FILE *file = fopen(fileName, "wb");
-
-		if(!file) {
-			systemMessage("Error creating file %s", fileName);
-			return false;
-		}
-
-		// only save if Flash/Sram in use or EEprom in use
-		if(gbaSaveType != 3) {
-			if(gbaSaveType == 2) {
-				if(fwrite(flashSaveMemory, 1, flashSize, file) != (size_t)flashSize) {
-					fclose(file);
-					return false;
-				}
-			} else {
-				if(fwrite(flashSaveMemory, 1, 0x10000, file) != 0x10000) {
-					fclose(file);
-					return false;
-				}
-			}
-		} else {
-			if(fwrite(eepromData, 1, eepromSize, file) != (size_t)eepromSize) {
-				fclose(file);
-				return false;
-			}
-		}
-		fclose(file);
-	}
-	return true;
-}
-
-bool CPUReadBatteryFile(const char *fileName)
-{
-	FILE *file = fopen(fileName, "rb");
-
-	if(!file)
-		return false;
-
-	// check file size to know what we should read
-	fseek(file, 0, SEEK_END);
-
-	long size = ftell(file);
-	fseek(file, 0, SEEK_SET);
-
-	if(size == 512 || size == 0x2000) {
-		if(fread(eepromData, 1, size, file) != (size_t)size) {
-			fclose(file);
-			return false;
-		}
-	} else {
-		if(size == 0x20000) {
-			if(fread(flashSaveMemory, 1, 0x20000, file) != 0x20000) {
-				fclose(file);
-				return false;
-			}
-			flashSetSize(0x20000);
-		} else {
-			if(fread(flashSaveMemory, 1, 0x10000, file) != 0x10000) {
-				fclose(file);
-				return false;
-			}
-			flashSetSize(0x10000);
-		}
-	}
-	fclose(file);
-	return true;
-}
-*/
 
 int CPULoadRom(const u8 *romfile, const u32 romfilelen)
 {
@@ -12155,17 +11994,41 @@ void CPUUpdateRegister(uint32_t address, uint16_t value)
 
 void CPUInit(const u8 *biosfile, const u32 biosfilelen)
 {
-#ifndef LSB_FIRST
-	if(!cpuBiosSwapped) {
-		for(unsigned int i = 0; i < sizeof(myROM)/4; i++) {
-			WRITE32LE(&myROM[i], myROM[i]);
-		}
-		cpuBiosSwapped = true;
+	eepromInUse = false;
+	switch(cpuSaveType)
+	{
+		case 0: // automatic
+		default:
+			cpuEEPROMEnabled = true;
+			cpuEEPROMSensorEnabled = false;
+			cpuSaveGameFunc = &Gigazoid::flashSaveDecide; // EEPROM usage is automatically detected
+			break;
+		case 1: // EEPROM
+			cpuEEPROMEnabled = true;
+			cpuEEPROMSensorEnabled = false;
+			cpuSaveGameFunc = &Gigazoid::dummyWrite; // EEPROM usage is automatically detected
+			break;
+		case 2: // SRAM
+			cpuEEPROMEnabled = false;
+			cpuEEPROMSensorEnabled = false;
+			cpuSaveGameFunc = &Gigazoid::sramWrite;
+			break;
+		case 3: // FLASH
+			cpuEEPROMEnabled = false;
+			cpuEEPROMSensorEnabled = false;
+			cpuSaveGameFunc = &Gigazoid::flashWrite;
+			break;
+		case 4: // EEPROM+Sensor
+			cpuEEPROMEnabled = true;
+			cpuEEPROMSensorEnabled = true;
+			cpuSaveGameFunc = &Gigazoid::dummyWrite; // EEPROM usage is automatically detected
+			break;
+		case 5: // NONE
+			cpuEEPROMEnabled = false;
+			cpuEEPROMSensorEnabled = false;
+			cpuSaveGameFunc = &Gigazoid::dummyWrite;
+			break;
 	}
-#endif
-	gbaSaveType = 0;
-	eepromInUse = 0;
-	saveType = 0;
 
 	memcpy(bios, biosfile, 16384);
 
@@ -12225,6 +12088,7 @@ void CPUInit(const u8 *biosfile, const u32 biosfilelen)
 	for(i = 0x304; i < 0x400; i++)
 		ioReadable[i] = false;
 
+	// what is this?
 	if(romSize < 0x1fe2000) {
 		*((uint16_t *)&rom[0x1fe209c]) = 0xdffa; // SWI 0xFA
 		*((uint16_t *)&rom[0x1fe209e]) = 0x4770; // BX LR
@@ -12259,29 +12123,14 @@ void CPUInit(const u8 *biosfile, const u32 biosfilelen)
 	address_lut[0x32] = &io_registers[REG_BG3PB];
 	address_lut[0x34] = &io_registers[REG_BG3PC];
 	address_lut[0x36] = &io_registers[REG_BG3PD];
-        address_lut[0x40] = &io_registers[REG_WIN0H];
-        address_lut[0x42] = &io_registers[REG_WIN1H];
-        address_lut[0x44] = &io_registers[REG_WIN0V];
-        address_lut[0x46] = &io_registers[REG_WIN1V];
+	address_lut[0x40] = &io_registers[REG_WIN0H];
+	address_lut[0x42] = &io_registers[REG_WIN1H];
+	address_lut[0x44] = &io_registers[REG_WIN0V];
+	address_lut[0x46] = &io_registers[REG_WIN1V];
 }
 
 void CPUReset (void)
 {
-	if(gbaSaveType == 0)
-	{
-		if(eepromInUse)
-			gbaSaveType = 3;
-		else
-			switch(saveType)
-			{
-				case 1:
-					gbaSaveType = 1;
-					break;
-				case 2:
-					gbaSaveType = 2;
-					break;
-			}
-	}
 	rtcReset();
 	memset(&bus.reg[0], 0, sizeof(bus.reg));	// clean registers
 	memset(oam, 0, 0x400);				// clean OAM
@@ -12450,11 +12299,9 @@ void CPUReset (void)
 	dma2Dest = 0;
 	dma3Source = 0;
 	dma3Dest = 0;
-	cpuSaveGameFunc = &Gigazoid::flashSaveDecide;
 	renderLine = &Gigazoid::mode0RenderLine;
 	fxOn = false;
 	windowOn = false;
-	saveType = 0;
 	graphics.layerEnable = io_registers[REG_DISPCNT];
 
 	memset(line[0], -1, 240 * sizeof(u32));
@@ -12505,57 +12352,9 @@ void CPUReset (void)
 		BIOS_RegisterRamReset(0xfe);
 	else if(!useBios && !cpuIsMultiBoot)
 		BIOS_RegisterRamReset(0xff);
+	else if (skipBios)
+		BIOS_RegisterRamReset(0xff); // ??
 		
-	switch(cpuSaveType) {
-		case 0: // automatic
-			cpuSramEnabled = true;
-			cpuFlashEnabled = true;
-			cpuEEPROMEnabled = true;
-			cpuEEPROMSensorEnabled = false;
-			saveType = gbaSaveType = 0;
-			break;
-		case 1: // EEPROM
-			cpuSramEnabled = false;
-			cpuFlashEnabled = false;
-			cpuEEPROMEnabled = true;
-			cpuEEPROMSensorEnabled = false;
-			saveType = gbaSaveType = 3;
-			// EEPROM usage is automatically detected
-			break;
-		case 2: // SRAM
-			cpuSramEnabled = true;
-			cpuFlashEnabled = false;
-			cpuEEPROMEnabled = false;
-			cpuEEPROMSensorEnabled = false;
-			cpuSaveGameFunc = &Gigazoid::sramDelayedWrite; // to insure we detect the write
-			saveType = gbaSaveType = 1;
-			break;
-		case 3: // FLASH
-			cpuSramEnabled = false;
-			cpuFlashEnabled = true;
-			cpuEEPROMEnabled = false;
-			cpuEEPROMSensorEnabled = false;
-			cpuSaveGameFunc = &Gigazoid::flashDelayedWrite; // to insure we detect the write
-			saveType = gbaSaveType = 2;
-			break;
-		case 4: // EEPROM+Sensor
-			cpuSramEnabled = false;
-			cpuFlashEnabled = false;
-			cpuEEPROMEnabled = true;
-			cpuEEPROMSensorEnabled = true;
-			// EEPROM usage is automatically detected
-			saveType = gbaSaveType = 3;
-			break;
-		case 5: // NONE
-			cpuSramEnabled = false;
-			cpuFlashEnabled = false;
-			cpuEEPROMEnabled = false;
-			cpuEEPROMSensorEnabled = false;
-			// no save at all
-			saveType = gbaSaveType = 5;
-			break;
-	}
-
 	ARM_PREFETCH;
 }
 
@@ -13030,8 +12829,6 @@ void Gigazoid_Init()
 	eepromInUse = false;
 	eepromSize = 512;
 
-	rtcEnabled = false;
-
 	// this is constant now
 	// soundSampleRate    = 22050;
 
@@ -13041,14 +12838,6 @@ void Gigazoid_Init()
 	armIrqEnable = true;
 	armMode = 0x1f;
 
-	romSize = 0x2000000;
-
-	cpuSramEnabled = true;
-	cpuFlashEnabled = true;
-	cpuEEPROMEnabled = true;
-	cpuEEPROMSensorEnabled = false;
-
-	cpuSaveGameFunc = &Gigazoid::flashSaveDecide;
 	renderLine = &Gigazoid::mode0RenderLine;
 
 	#define ARRAYINIT(n) memcpy((n), (n##_init), sizeof(n))
@@ -13205,8 +12994,7 @@ template<bool isReader>void SyncState(NewState *ns)
 	EVS(cpuSaveGameFunc, &Gigazoid::flashWrite, 1);
 	EVS(cpuSaveGameFunc, &Gigazoid::sramWrite, 2);
 	EVS(cpuSaveGameFunc, &Gigazoid::flashSaveDecide, 3);
-	EVS(cpuSaveGameFunc, &Gigazoid::flashDelayedWrite, 4);
-	EVS(cpuSaveGameFunc, &Gigazoid::sramDelayedWrite, 5);
+	EVS(cpuSaveGameFunc, &Gigazoid::dummyWrite, 4);
 	EES(cpuSaveGameFunc, nullptr);
 
 	NSS(fxOn);
@@ -13237,7 +13025,6 @@ template<bool isReader>void SyncState(NewState *ns)
 	NSS(gfxBG3Y);
 
 	NSS(ioReadable);
-	NSS(gbaSaveType);
 
 	NSS(stopState);
 
@@ -13261,13 +13048,10 @@ template<bool isReader>void SyncState(NewState *ns)
 	NSS(timer3Reload);
 	NSS(timer3ClockReload);
 
-	NSS(saveType);
 	NSS(skipBios);
-	NSS(cpuIsMultiBoot);
 	NSS(cpuSaveType);
 	NSS(enableRtc);
 	NSS(mirroringEnable);
-	NSS(skipSaveGameBattery);
 
 	NSS(cpuDmaCount);
 
@@ -13278,8 +13062,6 @@ template<bool isReader>void SyncState(NewState *ns)
 	NSS(oam);
 	NSS(ioMem);
 
-	NSS(cpuSramEnabled);
-	NSS(cpuFlashEnabled);
 	NSS(cpuEEPROMEnabled);
 	NSS(cpuEEPROMSensorEnabled);
 
@@ -13311,6 +13093,63 @@ template<bool isReader>void SyncState(NewState *ns)
 	NSS(lagged);
 }
 
+// load a legacy battery ram file to a place where it might work, who knows
+void LoadLegacyBatteryRam(const u8 *data, int len)
+{
+	std::memcpy(eepromData, data, std::min<int>(len, sizeof(eepromData)));
+	std::memcpy(flashSaveMemory, data, std::min<int>(len, sizeof(flashSaveMemory)));
+	if (len <= 0x10000)
+	{
+		// can salvage broken pokeymans saves in some cases
+		std::memcpy(flashSaveMemory + 0x10000, data, std::min<int>(len, 0x10000));
+	}
+}
+
+template<bool isReader>bool SyncBatteryRam(NewState *ns)
+{
+	// if we were given a positive ID from the gamedb, we can choose to save/load only that type
+	// else, we save\load everything -- even if we used our knowledge of the current state to
+	// save only what was needed, we'd have to save that metadata as well for load
+
+	// since we may get other people's crap, try to detect that here
+	char batteryramid[16];
+	if (!isReader)
+	{
+		std::memcpy(batteryramid, "BIZVBANEXTBATTRY", 16);
+	}
+	NSS(batteryramid);
+	if (isReader)
+	{
+		if (std::memcmp(batteryramid, "BIZVBANEXTBATTRY", 16) != 0)
+			return false;
+	}
+
+	switch (cpuSaveType)
+	{
+	default:
+	case 0: // auto
+		NSS(flashSaveMemory);
+		NSS(eepromData);
+		break;
+	case 1:
+	case 4: // eeprom
+		PSS(eepromData, eepromSize);
+		break;
+	case 2: // sram
+		// should only be 32K, but vba uses 64K as a stand-in for both SRAM (guess no game ever checks mirroring?),
+		// and for 64K flash where the program never issues any flash commands
+		PSS(flashSaveMemory, 0x10000);
+		break;
+	case 3: // flash
+		PSS(flashSaveMemory, flashSize);
+		break;
+	case 5: // none
+		break;
+	}
+
+	return true;
+}
+
 	Gigazoid()
 	{
 		Gigazoid_Init();
@@ -13320,25 +13159,31 @@ template<bool isReader>void SyncState(NewState *ns)
 	{
 	}
 
-	bool LoadRom(const u8 *romfile, const u32 romfilelen, const u8 *biosfile, const u32 biosfilelen)
+	bool LoadRom(const u8 *romfile, const u32 romfilelen, const u8 *biosfile, const u32 biosfilelen, const FrontEndSettings &settings)
 	{
 		if (biosfilelen != 16384)
 			return false;
 
-		// todo: set cpuismultiboot
 		if (!CPULoadRom(romfile, romfilelen))
 			return false;
 
-		// todo: populate these 4 variables from a syncsetting or a gamedb (vba_over.ini)
-		cpuSaveType = 0;
-		flashSize = 0x10000;
-		enableRtc = false;
-		mirroringEnable = false;
+		cpuSaveType = settings.cpuSaveType;
+		flashSize = settings.flashSize;
+		enableRtc = settings.enableRtc;
+		mirroringEnable = settings.mirroringEnable;
+		skipBios = settings.skipBios;
 
-		if(flashSize == 0x10000 || flashSize == 0x20000)
-			flashSetSize(flashSize);
-		if(enableRtc)
-			rtcEnable(enableRtc);
+		if(flashSize == 0x10000)
+		{
+			flashDeviceID = 0x1b;
+			flashManufacturerID = 0x32;
+		}
+		else
+		{
+			flashDeviceID = 0x13; //0x09;
+			flashManufacturerID = 0x62; //0xc2;
+		}
+
 		doMirroring(mirroringEnable);
 
 		CPUInit(biosfile, biosfilelen);
@@ -13396,9 +13241,9 @@ EXPORT void Destroy(Gigazoid *g)
 	delete g;
 }
 
-EXPORT int LoadRom(Gigazoid *g, const u8 *romfile, const u32 romfilelen, const u8 *biosfile, const u32 biosfilelen)
+EXPORT int LoadRom(Gigazoid *g, const u8 *romfile, const u32 romfilelen, const u8 *biosfile, const u32 biosfilelen, const FrontEndSettings *settings)
 {
-	return g->LoadRom(romfile, romfilelen, biosfile, biosfilelen);
+	return g->LoadRom(romfile, romfilelen, biosfile, biosfilelen, *settings);
 }
 
 EXPORT void Reset(Gigazoid *g)
@@ -13410,6 +13255,35 @@ EXPORT void Reset(Gigazoid *g)
 EXPORT int FrameAdvance(Gigazoid *g, int input, u32 *videobuffer, s16 *audiobuffer, int *numsamp)
 {
 	return g->FrameAdvance(input, videobuffer, audiobuffer, numsamp);
+}
+
+EXPORT int SaveRamSize(Gigazoid *g)
+{
+	NewStateDummy dummy;
+	g->SyncBatteryRam<false>(&dummy);
+	return dummy.GetLength();
+}
+
+EXPORT int SaveRamSave(Gigazoid *g, char *data, int length)
+{
+	NewStateExternalBuffer saver(data, length);
+	g->SyncBatteryRam<false>(&saver);
+	return !saver.Overflow() && saver.GetLength() == length;
+}
+
+EXPORT int SaveRamLoad(Gigazoid *g, const char *data, int length)
+{
+	NewStateExternalBuffer loader(const_cast<char *>(data), length);
+	if (g->SyncBatteryRam<true>(&loader))
+	{
+		return !loader.Overflow() && loader.GetLength() == length;
+	}
+	else
+	{
+		// couldn't find the magic signature at the top, so try a salvage load
+		g->LoadLegacyBatteryRam(reinterpret_cast<const u8*>(data), length);
+		return true;
+	}
 }
 
 EXPORT int BinStateSize(Gigazoid *g)
