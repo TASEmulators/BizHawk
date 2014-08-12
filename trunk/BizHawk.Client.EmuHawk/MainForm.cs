@@ -479,7 +479,6 @@ namespace BizHawk.Client.EmuHawk
 					(Global.Emulator is N64 && Global.Config.N64UseCircularAnalogConstraint) ? "Natural Circle" : null);
 
 				Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
-				Global.ActiveController.Overrides(Global.LuaAndAdaptor);
 				Global.AutoFireController.LatchFromPhysical(Global.ControllerInputCoalescer);
 
 				if (Global.ClientControls["Autohold"])
@@ -491,6 +490,9 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
 				}
+
+                // autohold/autofire must not be affected by the following inputs
+                Global.ActiveController.Overrides(Global.LuaAndAdaptor);
 
 				if (GlobalWin.Tools.Has<LuaConsole>())
 				{
