@@ -378,5 +378,27 @@ namespace BizHawk.Client.Common
 
 			return false;
 		}
+
+		/// <summary>
+		/// Don't only valid system ids to system ID, pathType is ROM, Screenshot, etc
+		/// Returns the desired path, if does not exist, returns platform base, else it returns base
+		/// </summary>
+		/// <param name="pathType"></param>
+		/// <param name="systemID"></param>
+		public PathEntry GetPathEntryWIthFallback(string pathType, string systemID)
+		{
+			var entry = Global.Config.PathEntries[systemID, pathType];
+			if (entry == null)
+			{
+				entry = Global.Config.PathEntries[systemID, "Base"];
+			}
+
+			if (entry == null)
+			{
+				entry = Global.Config.PathEntries["Global", "Base"];
+			}
+
+			return entry;
+		}
 	}
 }
