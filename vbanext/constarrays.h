@@ -3,6 +3,8 @@
 
 static float const apu_vols [4] = { -0.25f, -0.5f, -1.0f, -0.25f };
 
+static const int daysinmonth[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+
 static const int table [0x40] =
 {
 		0xFF10,     0,0xFF11,0xFF12,0xFF13,0xFF14,     0,     0,

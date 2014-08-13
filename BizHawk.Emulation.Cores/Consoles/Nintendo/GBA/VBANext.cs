@@ -8,6 +8,8 @@ using System.IO;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using Newtonsoft.Json;
+using System.ComponentModel;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
@@ -16,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 	{
 		IntPtr Core;
 
-		public VBANext(byte[] romfile, CoreComm nextComm, GameInfo gi)
+		public VBANext(byte[] romfile, CoreComm nextComm, GameInfo gi, bool deterministic, object _SS)
 		{
 			CoreComm = nextComm;
 			byte[] biosfile = CoreComm.CoreFileProvider.GetFirmware("GBA", "Bios", true, "GBA bios file is mandatory.");
@@ -26,19 +28,36 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			if (biosfile.Length != 16 * 1024)
 				throw new ArgumentException("BIOS file is not exactly 16K!");
 
-			LibVBANext.FrontEndSettings FES;
+			LibVBANext.FrontEndSettings FES = new LibVBANext.FrontEndSettings();
 			FES.saveType = (LibVBANext.FrontEndSettings.SaveType)gi.GetInt("saveType", 0);
 			FES.flashSize = (LibVBANext.FrontEndSettings.FlashSize)gi.GetInt("flashSize", 0x10000);
 			FES.enableRtc = gi.GetInt("enableRtc", 0) != 0;
 			FES.mirroringEnable = gi.GetInt("mirroringEnable", 0) != 0;
-			FES.skipBios = false; // todo: hook me up as a syncsetting
+
+			_SyncSettings = (SyncSettings)_SS ?? new SyncSettings();
+			DeterministicEmulation = deterministic;
+
+			FES.skipBios = _SyncSettings.SkipBios;
+			FES.RTCUseRealTime = _SyncSettings.RTCUseRealTime;
+			FES.RTCwday = (int)_SyncSettings.RTCInitialDay;
+			FES.RTCyear = _SyncSettings.RTCInitialTime.Year % 100;
+			FES.RTCmonth = _SyncSettings.RTCInitialTime.Month - 1;
+			FES.RTCmday = _SyncSettings.RTCInitialTime.Day;
+			FES.RTChour = _SyncSettings.RTCInitialTime.Hour;
+			FES.RTCmin = _SyncSettings.RTCInitialTime.Minute;
+			FES.RTCsec = _SyncSettings.RTCInitialTime.Second;
+			if (DeterministicEmulation)
+			{
+				FES.skipBios = false;
+				FES.RTCUseRealTime = false;
+			}
 
 			Core = LibVBANext.Create();
 			if (Core == IntPtr.Zero)
 				throw new InvalidOperationException("Create() returned nullptr!");
 			try
 			{
-				if (!LibVBANext.LoadRom(Core, romfile, (uint)romfile.Length, biosfile, (uint)biosfile.Length, ref FES))
+				if (!LibVBANext.LoadRom(Core, romfile, (uint)romfile.Length, biosfile, (uint)biosfile.Length, FES))
 					throw new InvalidOperationException("LoadRom() returned false!");
 
 				CoreComm.VsyncNum = 262144;
@@ -78,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public string SystemId { get { return "GBA"; } }
 
-		public bool DeterministicEmulation { get { return true; } }
+		public bool DeterministicEmulation { get; private set; }
 
 		public void ResetCounters()
 		{
@@ -108,25 +127,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public byte[] CloneSaveRam()
 		{
-			return new byte[16];
+			byte[] data = new byte[LibVBANext.SaveRamSize(Core)];
+			if (!LibVBANext.SaveRamSave(Core, data, data.Length))
+				throw new InvalidOperationException("SaveRamSave() failed!");
+			return data;
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
+			// internally, we try to salvage bad-sized saverams
+			if (!LibVBANext.SaveRamLoad(Core, data, data.Length))
+				throw new InvalidOperationException("SaveRamLoad() failed!");
 		}
 
 		public void ClearSaveRam()
 		{
+			throw new NotImplementedException();
 		}
 
 		public bool SaveRamModified
 		{
 			get
 			{
-				return false;
+				return LibVBANext.SaveRamSize(Core) != 0;
 			}
 			set
 			{
+				throw new InvalidOperationException();
 			}
 		}
 
@@ -249,8 +276,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public object GetSyncSettings()
 		{
-			return null;
+			return _SyncSettings.Clone();
 		}
+
+		SyncSettings _SyncSettings;
+
 
 		public bool PutSettings(object o)
 		{
@@ -259,7 +289,58 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public bool PutSyncSettings(object o)
 		{
-			return false;
+			var s = (SyncSettings)o;
+			bool ret = SyncSettings.NeedsReboot(s, _SyncSettings);
+			_SyncSettings = s;
+			return ret;
+		}
+
+		public class SyncSettings
+		{
+			[DisplayName("Skip BIOS")]
+			[Description("Skips the BIOS intro.  A BIOS file is still required.  Forced to false for movie recording.")]
+			[DefaultValue(false)]
+			public bool SkipBios { get; set; }
+			[DisplayName("RTC Use Real Time")]
+			[Description("Causes the internal clock to reflect your system clock.  Only relevant when a game has an RTC chip.  Forced to false for movie recording.")]
+			[DefaultValue(true)]
+			public bool RTCUseRealTime { get; set; }
+
+			[DisplayName("RTC Initial Time")]
+			[Description("The initial time of emulation.  Only relevant when a game has an RTC chip and \"RTC Use Real Time\" is false.")]
+			[DefaultValue(typeof(DateTime), "2010-01-01")]
+			public DateTime RTCInitialTime { get; set; }
+
+			public enum DayOfWeek
+			{
+				Sunday = 0,
+				Monday,
+				Tuesday,
+				Wednesday,
+				Thursday,
+				Friday,
+				Saturday
+			}
+
+			[DisplayName("RTC Initial Day")]
+			[Description("The day of the week to go with \"RTC Initial Time\".  Due to peculiarities in the RTC chip, this can be set indepedently of the year, month, and day of month.")]
+			[DefaultValue(DayOfWeek.Friday)]
+			public DayOfWeek RTCInitialDay { get; set; }
+
+			public SyncSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+
+			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
+			{
+				return !DeepEquality.DeepEquals(x, y);
+			}
+
+			public SyncSettings Clone()
+			{
+				return (SyncSettings)MemberwiseClone();
+			}
 		}
 
 		#endregion
