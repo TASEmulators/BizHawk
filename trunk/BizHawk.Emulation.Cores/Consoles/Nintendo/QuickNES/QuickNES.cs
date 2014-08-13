@@ -158,8 +158,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				if (IsLagFrame)
 					LagCount++;
 
-				Blit();
-				DrainAudio();
+				if (render)
+					Blit();
+				if (rendersound)
+					DrainAudio();
 			}
 		}
 
