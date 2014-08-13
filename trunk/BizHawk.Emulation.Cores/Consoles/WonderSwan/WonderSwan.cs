@@ -392,7 +392,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				CoreComm.MemoryCallbackSystem.HasWrites ? WriteCallbackD : null,
 				CoreComm.MemoryCallbackSystem.HasExecutes ? ExecCallbackD : null);
 			BizSwan.bizswan_setbuttoncallback(Core,
-				CoreComm.InputCallback.Has ? ButtonCallbackD : null);
+				CoreComm.InputCallback.Any() ? ButtonCallbackD : null);
 		}
 
 		#endregion

@@ -135,11 +135,6 @@ namespace BizHawk.Emulation.Common
 				this.Remove(action);
 			}
 		}
-
-		public bool Has
-		{
-			get { return this.Any(); }
-		}
 	}
 
 	public class MemoryCallbackSystem
