@@ -74,7 +74,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 					InitSaveRamBuff();
 					InitSaveStateBuff();
-					InitVideo();
 					InitAudio();
 					InitMemoryDomains();
 
@@ -536,6 +535,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			_Settings = (QuickNESSettings)o;
 			LibQuickNES.qn_set_sprite_limit(Context, _Settings.NumSprites);
 			RecalculateCrops();
+			CalculatePalette();
 			return false;
 		}
 
@@ -553,17 +553,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				LibQuickNES.qn_delete(Context);
 				Context = IntPtr.Zero;
 			}
-			if (VideoOutput != null)
-			{
-				VideoOutputH.Free();
-				VideoOutput = null;
-			}
 		}
 
 		#region VideoProvider
 
-		int[] VideoOutput;
-		GCHandle VideoOutputH;
+		int[] VideoOutput = new int[256 * 240];
+		int[] VideoPalette = new int[512];
 
 		int cropleft = 0;
 		int cropright = 0;
@@ -578,15 +573,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			BufferHeight = 240 - croptop - cropbottom;
 		}
 
-		void InitVideo()
+		void CalculatePalette()
 		{
-			VideoOutput = new int[256 * 240];
-			VideoOutputH = GCHandle.Alloc(VideoOutput, GCHandleType.Pinned);
+			for (int i = 0; i < 512; i++)
+			{
+				VideoPalette[i] =
+					_Settings.Palette[i * 3] << 16 |
+					_Settings.Palette[i * 3 + 1] << 8 |
+					_Settings.Palette[i * 3 + 2] |
+					unchecked((int)0xff000000);
+			}
 		}
 
 		void Blit()
 		{
-			LibQuickNES.qn_blit(Context, VideoOutputH.AddrOfPinnedObject(), _Settings.Palette, cropleft, croptop, cropright, cropbottom);
+			LibQuickNES.qn_blit(Context, VideoOutput, VideoPalette, cropleft, croptop, cropright, cropbottom);
 		}
 
 		public IVideoProvider VideoProvider { get { return this; } }
