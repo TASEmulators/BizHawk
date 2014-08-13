@@ -514,8 +514,8 @@
       "P2 Right": "NumberPad6, J1 Z+, X1 RStickRight",
       "P2 Start": "RightBracket, J1 B5, X1 LeftShoulder",
       "P2 Select": "LeftBracket, J1 B6, X1 RightShoulder",
-      "P2 B": "V, J1 B4, X1 Y",
-      "P2 A": "C, J1 B3, X1 B",
+      "P2 B": "C, J1 B4, X1 Y",
+      "P2 A": "V, J1 B3, X1 B",
       "P2 Power": ""
     },
     "TI83 Controller": {
