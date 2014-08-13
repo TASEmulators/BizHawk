@@ -424,7 +424,7 @@ bool rtcWrite(u32 address, u16 value)
 		rtcClockData.byte1 = (u8)value; // read/write
 	else if(address == 0x80000c4)
 	{
-		if(rtcClockData.byte2 & 1)
+		if(rtcClockData.byte2 & 1) // enable
 		{
 			if(rtcClockData.state == IDLE && rtcClockData.byte0 == 1 && value == 5)
 			{
@@ -549,20 +549,104 @@ void rtcReset (void)
 	rtcClockData.state = IDLE;
 }
 
+// guarantees predictable results regardless of stdlib
+// could be modified later to better match internal quirks of
+// the RTC chip actually used
+struct
+{
+	int year; // 00..99
+	int month; // 00..11
+	int mday; // 01..31
+	int wday; // 00..06
+	int hour; // 00..23
+	int min; // 00..59
+	int sec; // 00..59
+
+	template<bool isReader>void SyncState(NewState *ns)
+	{
+		NSS(year);
+		NSS(month);
+		NSS(mday);
+		NSS(wday);
+		NSS(hour);
+		NSS(min);
+		NSS(sec);
+	}
+
+private:
+	int DaysInMonth()
+	{
+		// gba rtc doesn't understand 100/400 exceptions
+		int result = daysinmonth[month];
+		if (month == 1 && year % 4 == 0)
+			result++;
+		return result;
+	}
+
+public:
+	void Increment()
+	{
+		sec++;
+		if (sec >= 60)
+		{
+			sec = 0;
+			min++;
+			if (min >= 60)
+			{
+				min = 0;
+				hour++;
+				if (hour >= 24)
+				{
+					hour = 0;
+					wday++;
+					if (wday >= 7)
+						wday = 0;
+					mday++;
+					if (mday >= DaysInMonth())
+					{
+						mday = 1;
+						month++;
+						if (month >= 12)
+						{
+							month = 0;
+							year++;
+							if (year >= 100)
+								year = 0;
+						}
+					}
+				}
+			}
+		}
+	}
+
+} rtcInternalTime;
+
 void GetTime(tm &times)
 {
-	time_t t = RTCUseRealTime ? time(nullptr) : RTCTime;
-	#if defined _MSC_VER
-	gmtime_s(&times, &t);
-	#elif defined __MINGW32__
-	tm *tmp = gmtime(&t);
-	times = *tmp;		
-	#elif defined __GNUC__
-	gmtime_r(&t, &times);
-	#endif
+	if (RTCUseRealTime)
+	{
+		time_t t = time(nullptr);
+		#if defined _MSC_VER
+		gmtime_s(&times, &t);
+		#elif defined __MINGW32__
+		tm *tmp = gmtime(&t);
+		times = *tmp;		
+		#elif defined __GNUC__
+		gmtime_r(&t, &times);
+		#endif
+	}
+	else
+	{
+		times.tm_hour = rtcInternalTime.hour;
+		times.tm_mday = rtcInternalTime.mday;
+		times.tm_min = rtcInternalTime.min;
+		times.tm_mon = rtcInternalTime.month;
+		times.tm_sec = rtcInternalTime.sec;
+		times.tm_wday = rtcInternalTime.wday;
+		times.tm_year = rtcInternalTime.year;
+	}
 }
 
-uint64_t RTCTime;
 int RTCTicks;
 bool RTCUseRealTime;
 
@@ -572,7 +656,7 @@ void AdvanceRTC(int ticks)
 	while (RTCTicks >= 16777216)
 	{
 		RTCTicks -= 16777216;
-		RTCTime++;
+		rtcInternalTime.Increment();
 	}
 }
 
@@ -12903,7 +12987,7 @@ template<bool isReader>void SyncState(NewState *ns)
 
 	NSS(rtcClockData);
 	NSS(rtcEnabled);
-	NSS(RTCTime);
+	SSS(rtcInternalTime);
 	NSS(RTCTicks);
 	NSS(RTCUseRealTime);
 
@@ -13172,6 +13256,15 @@ template<bool isReader>bool SyncBatteryRam(NewState *ns)
 		enableRtc = settings.enableRtc;
 		mirroringEnable = settings.mirroringEnable;
 		skipBios = settings.skipBios;
+
+		RTCUseRealTime = settings.RTCuseRealTime;
+		rtcInternalTime.hour = settings.RTChour;
+		rtcInternalTime.mday = settings.RTCmday;
+		rtcInternalTime.min = settings.RTCmin;
+		rtcInternalTime.month = settings.RTCmonth;
+		rtcInternalTime.sec = settings.RTCsec;
+		rtcInternalTime.wday = settings.RTCwday;
+		rtcInternalTime.year = settings.RTCyear;
 
 		if(flashSize == 0x10000)
 		{

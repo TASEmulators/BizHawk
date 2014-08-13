@@ -8,6 +8,16 @@ struct FrontEndSettings
 	int	enableRtc; // [false] true
 	int mirroringEnable; // [false] true
 	int skipBios; // [false] true
+
+	int RTCuseRealTime;
+	int RTCyear; // 00..99
+	int RTCmonth; // 00..11
+	int RTCmday; // 01..31
+	int RTCwday; // 00..06
+	int RTChour; // 00..23
+	int RTCmin; // 00..59
+	int RTCsec; // 00..59
+
 };
 
 #define FLASH_128K_SZ 0x20000

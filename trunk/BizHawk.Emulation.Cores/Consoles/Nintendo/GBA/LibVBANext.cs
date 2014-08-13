@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public struct FrontEndSettings
+		public class FrontEndSettings
 		{
 			public enum SaveType : int
 			{
@@ -45,18 +45,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				big = 0x20000
 			}
 			public SaveType saveType;
-			public FlashSize flashSize;
+			public FlashSize flashSize = FlashSize.big;
 			public bool enableRtc;
 			public bool mirroringEnable;
 			public bool skipBios;
 
-			public static FrontEndSettings GetDefaults()
-			{
-				return new FrontEndSettings
-				{
-					flashSize = FlashSize.big
-				};
-			}
+			public bool RTCUseRealTime = true;
+			public int RTCyear; // 00..99
+			public int RTCmonth; // 00..11
+			public int RTCmday; // 01..31
+			public int RTCwday; // 00..06
+			public int RTChour; // 00..23
+			public int RTCmin; // 00..59
+			public int RTCsec; // 00..59
 		}
 
 		/// <summary>
@@ -83,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		/// <param name="biosfilelen"></param>
 		/// <returns>success</returns>
 		[DllImport(dllname, CallingConvention = cc)]
-		public static extern bool LoadRom(IntPtr g, byte[] romfile, uint romfilelen, byte[] biosfile, uint biosfilelen, [In]ref FrontEndSettings settings);
+		public static extern bool LoadRom(IntPtr g, byte[] romfile, uint romfilelen, byte[] biosfile, uint biosfilelen, [In]FrontEndSettings settings);
 
 		/// <summary>
 		/// hard reset

@@ -3381,5 +3381,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_master = null;
 		}
+
+		private void GBAcoresettingsToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "Gameboy Advance Settings");
+		}
 	}
 }

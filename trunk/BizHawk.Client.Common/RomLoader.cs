@@ -430,7 +430,7 @@ namespace BizHawk.Client.Common
 								}
 								else
 								{
-									var gba = new VBANext(rom.RomData, nextComm, game);
+									var gba = new VBANext(rom.RomData, nextComm, game, Deterministic, GetCoreSyncSettings<VBANext>());
 									nextEmulator = gba;
 								}
 								break;
