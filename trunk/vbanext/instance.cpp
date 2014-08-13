@@ -8882,7 +8882,6 @@ bool skipBios;
 // and most of the ones i've seen have done that, so this is not terribly useful
 static const bool cpuIsMultiBoot = false;
 int cpuSaveType; // used only in init() to set up function pointers
-bool enableRtc;
 bool mirroringEnable;
 
 int cpuDmaCount;
@@ -13134,7 +13133,6 @@ template<bool isReader>void SyncState(NewState *ns)
 
 	NSS(skipBios);
 	NSS(cpuSaveType);
-	NSS(enableRtc);
 	NSS(mirroringEnable);
 
 	NSS(cpuDmaCount);
@@ -13253,7 +13251,7 @@ template<bool isReader>bool SyncBatteryRam(NewState *ns)
 
 		cpuSaveType = settings.cpuSaveType;
 		flashSize = settings.flashSize;
-		enableRtc = settings.enableRtc;
+		rtcEnabled = settings.enableRtc;
 		mirroringEnable = settings.mirroringEnable;
 		skipBios = settings.skipBios;
 

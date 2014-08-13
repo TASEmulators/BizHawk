@@ -31,8 +31,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			LibVBANext.FrontEndSettings FES = new LibVBANext.FrontEndSettings();
 			FES.saveType = (LibVBANext.FrontEndSettings.SaveType)gi.GetInt("saveType", 0);
 			FES.flashSize = (LibVBANext.FrontEndSettings.FlashSize)gi.GetInt("flashSize", 0x10000);
-			FES.enableRtc = gi.GetInt("enableRtc", 0) != 0;
-			FES.mirroringEnable = gi.GetInt("mirroringEnable", 0) != 0;
+			FES.enableRtc = gi.GetInt("rtcEnabled", 0) != 0;
+			FES.mirroringEnable = gi.GetInt("mirroringEnabled", 0) != 0;
+
+			Console.WriteLine("GameDB loaded settings: saveType={0}, flashSize={1}, rtcEnabled={2}, mirroringEnabled={3}",
+				FES.saveType, FES.flashSize, FES.enableRtc, FES.mirroringEnable);
 
 			_SyncSettings = (SyncSettings)_SS ?? new SyncSettings();
 			DeterministicEmulation = deterministic;
