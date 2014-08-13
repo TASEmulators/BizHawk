@@ -185,11 +185,11 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		byte[] saverambuff;
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			if (!BizSwan.bizswan_saveramsave(Core, saverambuff, saverambuff.Length))
 				throw new InvalidOperationException("bizswan_saveramsave() returned false!");
-			return saverambuff;
+			return (byte[])saverambuff.Clone();
 		}
 
 		public void StoreSaveRam(byte[] data)

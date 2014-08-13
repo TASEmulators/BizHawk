@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 			Console.WriteLine("SaveRAM enabled. Start: ${0:X6} End: ${1:X6} Length: ${2:X} Mode: {3}", SaveRamStartOffset, SaveRamEndOffset, SaveRamLength, RH_SRamInterpretation());
 		}
 
-		public byte[] ReadSaveRam() { return (byte[])SaveRAM.Clone(); }
+		public byte[] CloneSaveRam() { return (byte[])SaveRAM.Clone(); }
 		public void StoreSaveRam(byte[] data) { Array.Copy(data, SaveRAM, data.Length); }
 		public void ClearSaveRam() { SaveRAM = new byte[SaveRAM.Length]; }
 

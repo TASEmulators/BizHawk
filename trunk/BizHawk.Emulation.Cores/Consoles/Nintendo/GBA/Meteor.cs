@@ -105,7 +105,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		#region saveram
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			if (disposed)
 				throw new ObjectDisposedException(this.GetType().ToString());

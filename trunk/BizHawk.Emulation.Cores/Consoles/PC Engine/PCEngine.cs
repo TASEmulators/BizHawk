@@ -357,7 +357,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public string Region { get; set; }
 		public bool DeterministicEmulation { get { return true; } }
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			if (BRAM != null)
 				return (byte[])BRAM.Clone();

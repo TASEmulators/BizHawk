@@ -276,7 +276,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public bool DeterministicEmulation { get { return false; } }
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			return api.SaveSaveram();
 		}

@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			SyncState(new Serializer(reader));
 		}
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			return null;
 		}

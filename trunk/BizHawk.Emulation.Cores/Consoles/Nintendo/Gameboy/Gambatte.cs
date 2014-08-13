@@ -453,7 +453,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region saveram
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			int length = LibGambatte.gambatte_savesavedatalength(GambatteState);
 

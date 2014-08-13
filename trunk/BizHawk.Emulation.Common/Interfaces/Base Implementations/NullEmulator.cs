@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Common
 		public int LagCount { get { return 0; } set { return; } }
 		public bool IsLagFrame { get { return false; } }
 
-		public byte[] ReadSaveRam() { return null; }
+		public byte[] CloneSaveRam() { return null; }
 		public void StoreSaveRam(byte[] data) { }
 		public void ClearSaveRam() { }
 		public bool DeterministicEmulation { get { return true; } }

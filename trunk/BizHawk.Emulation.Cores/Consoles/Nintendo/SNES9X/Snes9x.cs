@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 		#region saveram
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			return new byte[0];
 		}

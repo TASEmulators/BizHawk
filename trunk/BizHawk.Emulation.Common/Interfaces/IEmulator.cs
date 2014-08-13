@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// return a copy of the saveram.  editing it won't do you any good unless you later call StoreSaveRam()
 		/// </summary>
-		byte[] ReadSaveRam();
+		byte[] CloneSaveRam();
 
 		/// <summary>
 		/// store new saveram to the emu core.  the data should be the same size as the return from ReadSaveRam()

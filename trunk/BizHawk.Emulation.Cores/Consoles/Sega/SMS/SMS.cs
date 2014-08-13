@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public byte[] BiosRom;
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			if (SaveRAM != null)
 				return (byte[])SaveRAM.Clone();
