@@ -76,7 +76,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using (var ofd = new OpenFileDialog())
 			{
-				ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["GB", "Palettes"].Path, "GB");
+				//Lets use the Dual Gameboy ROM path then the Global ROM path for this.  Disabled due to errors in handling an invalid path.
+				//ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["DGB", "ROM"].Path, "DGB") ?? PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global_NULL", "ROM"].Path, "Global_NULL");
+				//Global ROM Path Only
+				ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global_NULL", "ROM"].Path, "Global_NULL");
 				ofd.Filter = "GB Roms (*.gb,*.gbc)|*.gb;*.gbc|All Files|*.*";
 				ofd.RestoreDirectory = true;
 				var result = ofd.ShowDialog(this);
