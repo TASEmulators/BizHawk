@@ -1354,7 +1354,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var oldram = Global.Emulator.ReadSaveRam();
+					var oldram = Global.Emulator.CloneSaveRam();
 					if (oldram == null)
 					{
 						// we're eating this one now.  the possible negative consequence is that a user could lose
@@ -1401,7 +1401,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var writer = new BinaryWriter(new FileStream(path, FileMode.Create, FileAccess.Write));
-			var saveram = Global.Emulator.ReadSaveRam();
+			var saveram = Global.Emulator.CloneSaveRam();
 
 			writer.Write(saveram, 0, saveram.Length);
 			writer.Close();

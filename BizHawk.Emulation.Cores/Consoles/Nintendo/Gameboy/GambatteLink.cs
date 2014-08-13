@@ -231,10 +231,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region saveram
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
-			byte[] lb = L.ReadSaveRam();
-			byte[] rb = R.ReadSaveRam();
+			byte[] lb = L.CloneSaveRam();
+			byte[] rb = R.CloneSaveRam();
 			byte[] ret = new byte[lb.Length + rb.Length];
 			Buffer.BlockCopy(lb, 0, ret, 0, lb.Length);
 			Buffer.BlockCopy(rb, 0, ret, lb.Length, rb.Length);
@@ -243,8 +243,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public void StoreSaveRam(byte[] data)
 		{
-			byte[] lb = new byte[L.ReadSaveRam().Length];
-			byte[] rb = new byte[R.ReadSaveRam().Length];
+			byte[] lb = new byte[L.CloneSaveRam().Length];
+			byte[] rb = new byte[R.CloneSaveRam().Length];
 			Buffer.BlockCopy(data, 0, lb, 0, lb.Length);
 			Buffer.BlockCopy(data, lb.Length, rb, 0, rb.Length);
 			L.StoreSaveRam(lb);

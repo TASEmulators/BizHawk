@@ -412,11 +412,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		byte[] DisposedSaveRam = null;
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			if (disposed)
 			{
-				return DisposedSaveRam ?? new byte[0];
+				if (DisposedSaveRam != null)
+				{
+					return (byte[])DisposedSaveRam.Clone();
+				}
+				else
+				{
+					return new byte[0];
+				}
 			}
 			else
 			{
@@ -652,7 +659,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (AttachedCore != this)
 					throw new Exception();
 				if (SaveRamModified)
-					DisposedSaveRam = ReadSaveRam();
+					DisposedSaveRam = CloneSaveRam();
 				KillMemCallbacks();
 				AttachedCore = null;
 				disposed = true;

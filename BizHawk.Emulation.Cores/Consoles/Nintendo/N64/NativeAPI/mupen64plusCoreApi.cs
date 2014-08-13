@@ -577,7 +577,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			{
 				if (saveram_backup != null)
 				{
-					return saveram_backup;
+					return (byte[])saveram_backup.Clone();
 				}
 				else
 				{

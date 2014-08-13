@@ -106,7 +106,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		#region SaveRam
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			return new byte[16];
 		}

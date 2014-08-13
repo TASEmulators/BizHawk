@@ -308,11 +308,18 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 		#region saveram
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			if (Disposed)
 			{
-				return DisposedSaveRam ?? new byte[0];
+				if (DisposedSaveRam != null)
+				{
+					return (byte[])DisposedSaveRam.Clone();
+				}
+				else
+				{
+					return new byte[0];
+				}
 			}
 			else
 			{
@@ -554,7 +561,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			{
 				ActivateGL();
 				if (SaveRamModified)
-					DisposedSaveRam = ReadSaveRam();
+					DisposedSaveRam = CloneSaveRam();
 				LibYabause.libyabause_setvidbuff(IntPtr.Zero);
 				LibYabause.libyabause_setsndbuff(IntPtr.Zero);
 				LibYabause.libyabause_deinit();

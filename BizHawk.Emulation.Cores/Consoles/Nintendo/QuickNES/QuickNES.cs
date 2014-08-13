@@ -190,10 +190,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			SaveRamBuff = new byte[size];
 		}
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			LibQuickNES.ThrowStringError(LibQuickNES.qn_battery_ram_save(Context, SaveRamBuff, SaveRamBuff.Length));
-			return SaveRamBuff;
+			return (byte[])SaveRamBuff.Clone();
 		}
 
 		public void StoreSaveRam(byte[] data)
