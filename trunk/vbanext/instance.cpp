@@ -13187,47 +13187,63 @@ void LoadLegacyBatteryRam(const u8 *data, int len)
 	}
 }
 
+bool HasBatteryRam()
+{
+	return cpuSaveType != 5;
+}
+
 template<bool isReader>bool SyncBatteryRam(NewState *ns)
 {
 	// if we were given a positive ID from the gamedb, we can choose to save/load only that type
 	// else, we save\load everything -- even if we used our knowledge of the current state to
 	// save only what was needed, we'd have to save that metadata as well for load
 
-	// since we may get other people's crap, try to detect that here
-	char batteryramid[16];
-	if (!isReader)
-	{
-		std::memcpy(batteryramid, "BIZVBANEXTBATTRY", 16);
-	}
+	// file id detection
+	char batteryramid[8];
+	std::memcpy(batteryramid, "GBABATT\0", 8);
 	NSS(batteryramid);
-	if (isReader)
-	{
-		if (std::memcmp(batteryramid, "BIZVBANEXTBATTRY", 16) != 0)
-			return false;
-	}
+	if (std::memcmp(batteryramid, "GBABATT\0", 8) != 0)
+		return false;
 
+	int flashFileSize;
+	int eepromFileSize;
+
+	// when writing, try to figure out the sizes as smartly as we can
 	switch (cpuSaveType)
 	{
 	default:
 	case 0: // auto
-		NSS(flashSaveMemory);
-		NSS(eepromData);
+		flashFileSize = 0x20000;
+		eepromFileSize = 0x2000;
 		break;
 	case 1:
 	case 4: // eeprom
-		PSS(eepromData, eepromSize);
+		flashFileSize = 0;
+		eepromFileSize = eepromSize;
 		break;
 	case 2: // sram
 		// should only be 32K, but vba uses 64K as a stand-in for both SRAM (guess no game ever checks mirroring?),
 		// and for 64K flash where the program never issues any flash commands
-		PSS(flashSaveMemory, 0x10000);
+		flashFileSize = 0x10000;
+		eepromFileSize = 0;
 		break;
 	case 3: // flash
-		PSS(flashSaveMemory, flashSize);
+		flashFileSize = flashSize;
+		eepromFileSize = 0;
 		break;
 	case 5: // none
+		flashFileSize = 0;
+		eepromFileSize = 0;
 		break;
 	}
+	NSS(flashFileSize);
+	NSS(eepromFileSize);
+	// when reading, cap to allowable limits.  any save file with numbers larger than this is not legal.
+	flashFileSize = std::min<int>(flashFileSize, sizeof(flashSaveMemory));
+	eepromFileSize = std::min<int>(eepromFileSize, sizeof(eepromData));
+
+	PSS(flashSaveMemory, flashFileSize);
+	PSS(eepromData, eepromFileSize);
 
 	return true;
 }
@@ -13350,30 +13366,51 @@ EXPORT int FrameAdvance(Gigazoid *g, int input, u32 *videobuffer, s16 *audiobuff
 
 EXPORT int SaveRamSize(Gigazoid *g)
 {
-	NewStateDummy dummy;
-	g->SyncBatteryRam<false>(&dummy);
-	return dummy.GetLength();
+	if (g->HasBatteryRam())
+	{
+		NewStateDummy dummy;
+		g->SyncBatteryRam<false>(&dummy);
+		return dummy.GetLength();
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 EXPORT int SaveRamSave(Gigazoid *g, char *data, int length)
 {
-	NewStateExternalBuffer saver(data, length);
-	g->SyncBatteryRam<false>(&saver);
-	return !saver.Overflow() && saver.GetLength() == length;
+	if (g->HasBatteryRam())
+	{
+		NewStateExternalBuffer saver(data, length);
+		g->SyncBatteryRam<false>(&saver);
+		return !saver.Overflow() && saver.GetLength() == length;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 EXPORT int SaveRamLoad(Gigazoid *g, const char *data, int length)
 {
-	NewStateExternalBuffer loader(const_cast<char *>(data), length);
-	if (g->SyncBatteryRam<true>(&loader))
+	if (g->HasBatteryRam())
 	{
-		return !loader.Overflow() && loader.GetLength() == length;
+		NewStateExternalBuffer loader(const_cast<char *>(data), length);
+		if (g->SyncBatteryRam<true>(&loader))
+		{
+			return !loader.Overflow() && loader.GetLength() == length;
+		}
+		else
+		{
+			// couldn't find the magic signature at the top, so try a salvage load
+			g->LoadLegacyBatteryRam(reinterpret_cast<const u8*>(data), length);
+			return true;
+		}
 	}
 	else
 	{
-		// couldn't find the magic signature at the top, so try a salvage load
-		g->LoadLegacyBatteryRam(reinterpret_cast<const u8*>(data), length);
-		return true;
+		return false;
 	}
 }
 
