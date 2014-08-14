@@ -53,7 +53,21 @@ namespace BizHawk.Client.EmuHawk
 					bmp.SetPixel(i, j, col);
 				}
 			}
+
+			if (pictureBox1.Image != null) pictureBox1.Image.Dispose();
 			pictureBox1.Image = bmp;
+		}
+
+		protected override void OnClosed(EventArgs e)
+		{
+			base.OnClosed(e);
+			
+			if (pictureBox1.Image != null)
+			{
+				pictureBox1.Image.Dispose();
+				pictureBox1.Image = null;
+			}
+
 		}
 
 		private void buttonPal_Click(object sender, EventArgs e)
