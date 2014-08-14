@@ -433,7 +433,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		{
 			[DefaultValue(8)]
 			[Description("Set the number of sprites visible per line.  0 hides all sprites, 8 behaves like a normal NES, and 64 is maximum.")]
-			[DisplayName("Visbile Sprites")]
+			[DisplayName("Visible Sprites")]
 			public int NumSprites
 			{
 				get { return _NumSprites; }
