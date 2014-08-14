@@ -424,51 +424,108 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			// Do background callback
 			if (QueryItemBkColor != null && UseCustomBackground)
 			{
-				if (HorizontalOrientation)
-				{
-					var visibleRows = (Width - _horizontalOrientedColumnWidth) / CellWidth;
-					for (int i = 0; i < visibleRows; i++)
-					{
-						for (int j = 0; j < Columns.Count; j++)
-						{
-							Color color = Color.White;
-							QueryItemBkColor(i, j, ref color);
+				DoBackGroundCallback(e);
+			}
 
-							if (color != Color.White) // An easy optimization, don't draw unless the user specified something other than the default
-							{
-								Gdi.SetBrush(color);
-								Gdi.FillRectangle(
-									_horizontalOrientedColumnWidth + (i * CellWidth) + 2,
-									(j * CellHeight) + 1,
-									CellWidth - 1,
-									CellHeight - 1);
-							}
+			if (SelectedItems.Any())
+			{
+				DoSelectionBG(e);
+			}
+			
+		}
+
+		private void DoSelectionBG(PaintEventArgs e)
+		{
+			foreach(var cell in SelectedItems)
+			{
+				DrawCellBG(SystemColors.Highlight, cell);
+			}
+		}
+
+		private void DrawCellBG(Color color, Cell cell)
+		{
+			int x = 0,
+				y = 0,
+				w = 0,
+				h = 0;
+
+			if (HorizontalOrientation)
+			{
+				x = (cell.RowIndex.Value * CellWidth) + 2 + _horizontalOrientedColumnWidth;
+				w = CellWidth - 1;
+				y = (CellHeight * Columns.IndexOf(cell.Column)) + 1; // We can't draw without row and column, so assume they exist and fail catastrophically if they don't
+				h = CellHeight - 1;
+			}
+			else
+			{
+				foreach (var column in Columns)
+				{
+					if (cell.Column == column)
+					{
+						w = CalcWidth(column) - 1;
+						break;
+					}
+					else
+					{
+						x += CalcWidth(column);
+					}
+				}
+
+				x += 1;
+				y = (CellHeight * (cell.RowIndex.Value + 1)) + 2; // We can't draw without row and column, so assume they exist and fail catastrophically if they don't
+				h = CellHeight - 1;
+			}
+
+			Gdi.SetBrush(color);
+			Gdi.FillRectangle(x, y, w, h);
+		}
+
+		private void DoBackGroundCallback(PaintEventArgs e)
+		{
+			if (HorizontalOrientation)
+			{
+				var visibleRows = (Width - _horizontalOrientedColumnWidth) / CellWidth;
+				for (int i = 0; i < visibleRows; i++)
+				{
+					for (int j = 0; j < Columns.Count; j++)
+					{
+						Color color = Color.White;
+						QueryItemBkColor(i, j, ref color);
+
+						// TODO: refactor to use DrawCellBG
+						if (color != Color.White) // An easy optimization, don't draw unless the user specified something other than the default
+						{
+							Gdi.SetBrush(color);
+							Gdi.FillRectangle(
+								_horizontalOrientedColumnWidth + (i * CellWidth) + 2,
+								(j * CellHeight) + 1,
+								CellWidth - 1,
+								CellHeight - 1);
 						}
 					}
 				}
-				else
+			}
+			else
+			{
+				var visibleRows = (Height / CellHeight) - 1;
+				for (int i = 1; i < visibleRows; i++)
 				{
-					var visibleRows = (Height / CellHeight) - 1;
-					for (int i = 1; i < visibleRows; i++)
+					int x = 1;
+					for (int j = 0; j < Columns.Count; j++)
 					{
-						int x = 1;
-						for (int j = 0; j < Columns.Count; j++)
+						Color color = Color.White;
+						QueryItemBkColor(i, j, ref color);
+
+						var width = CalcWidth(Columns[j]);
+						if (color != Color.White) // An easy optimization, don't draw unless the user specified something other than the default
 						{
-							Color color = Color.White;
-							QueryItemBkColor(i, j, ref color);
-
-							var width = CalcWidth(Columns[j]);
-							if (color != Color.White) // An easy optimization, don't draw unless the user specified something other than the default
-							{
-								Gdi.SetBrush(color);
-								Gdi.FillRectangle(x, (i * CellHeight) + 2, width - 1, CellHeight - 1);
-							}
-
-							x += width;
+							Gdi.SetBrush(color);
+							Gdi.FillRectangle(x, (i * CellHeight) + 2, width - 1, CellHeight - 1);
 						}
+
+						x += width;
 					}
 				}
 			}
@@ -521,12 +578,31 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (IsHoveringOnDataCell)
 			{
-				if (ModifierKeys.HasFlag(Keys.Control) || ModifierKeys.HasFlag(Keys.Shift))
+				// Alt+Click
+				if (ModifierKeys.HasFlag(Keys.Shift) && !ModifierKeys.HasFlag(Keys.Control) && !ModifierKeys.HasFlag(Keys.Alt))
 				{
-					MessageBox.Show("Multiselect options have not yet been implemented");
+					MessageBox.Show("Alt click logic is not yet implemented");
+				}
+				// Shift Click
+				else if (ModifierKeys.HasFlag(Keys.Shift) && !ModifierKeys.HasFlag(Keys.Control) && !ModifierKeys.HasFlag(Keys.Alt))
+				{
+					if (SelectedItems.Any())
+					{
+						MessageBox.Show("Shift click logic is not yet implemented");
+					}
+					else
+					{
+						SelectedItems.Add(CurrentCell);
+					}
+				}
+				// Ctrl Click
+				else if (ModifierKeys.HasFlag(Keys.Control) && !ModifierKeys.HasFlag(Keys.Shift) && !ModifierKeys.HasFlag(Keys.Alt))
+				{
+					SelectedItems.Add(CurrentCell);
 				}
 				else
 				{
+					SelectedItems.Clear();
 					SelectedItems.Add(CurrentCell);
 				}
 
