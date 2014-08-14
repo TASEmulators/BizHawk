@@ -58,6 +58,8 @@ namespace BizHawk.Client.EmuHawk
 			InputView.QueryItemText += TasView_QueryItemText;
 			InputView.QueryItemBkColor += TasView_QueryItemBkColor;
 			r = new Random((int)DateTime.Now.Ticks);
+			InputView.FullRowSelect = true;
+			InputView.MultiSelect = false;
 		}
 
 		private int? columnClicked = null;
@@ -282,6 +284,11 @@ namespace BizHawk.Client.EmuHawk
 			var column = InputView.GetColumn(e.Column);
 			columnClicked = e.Column;
 			InputView.Refresh();
+		}
+
+		private void InputView_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			OutputLabel.Text = string.Join(",", InputView.SelectedIndices.ToArray());
 		}
 	}
 }

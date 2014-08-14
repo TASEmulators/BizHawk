@@ -510,7 +510,7 @@
 			this.pauseToolStripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Pause;
 			this.pauseToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.pauseToolStripButton.Name = "pauseToolStripButton";
-			this.pauseToolStripButton.Size = new System.Drawing.Size(23, 20);
+			this.pauseToolStripButton.Size = new System.Drawing.Size(23, 22);
 			this.pauseToolStripButton.Text = "Pause";
 			this.pauseToolStripButton.Click += new System.EventHandler(this.PauseMenuItem_Click);
 			// 
