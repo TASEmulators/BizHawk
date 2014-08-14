@@ -84,7 +84,15 @@ namespace BizHawk.Client.EmuHawk
 		/// Indicates whether the entire row will always be selected 
 		/// </summary>
 		[Category("Appearance")]
+		[DefaultValue(false)]
 		public bool FullRowSelect { get; set; }
+
+		/// <summary>
+		/// Allows multiple items to be selected
+		/// </summary>
+		[Category("Behavior")]
+		[DefaultValue(true)]
+		public bool MultiSelect { get; set; }
 
 		#endregion
 
@@ -108,8 +116,17 @@ namespace BizHawk.Client.EmuHawk
 		[Category("Mouse")]
 		public event CellChangeEventHandler PointedCellChanged;
 
+		/// <summary>
+		/// Occurs when a column header is clicked
+		/// </summary>
 		[Category("Action")]
 		public event ColumnClickEventHandler ColumnClick;
+
+		/// <summary>
+		/// Occurs whenever the 'SelectedItems' property for this control changes
+		/// </summary>
+		[Category("Behavior")]
+		public event SelectedIndexChangedHandler SelectedIndexChanged;
 
 		/// <summary>
 		/// Retrieve the text for a cell
@@ -124,6 +141,8 @@ namespace BizHawk.Client.EmuHawk
 		public delegate void CellChangeEventHandler(object sender, CellEventArgs e);
 
 		public delegate void ColumnClickEventHandler(object sender, ColumnClickEventArgs e);
+
+		public delegate void SelectedIndexChangedHandler(object sender, EventArgs e);
 
 		public class CellEventArgs
 		{
@@ -194,7 +213,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return SelectedItems
 					.Where(cell => cell.RowIndex.HasValue)
-					.Select(cell => cell.RowIndex.Value);
+					.Select(cell => cell.RowIndex.Value)
+					.Distinct();
 			}
 		}
 
@@ -578,13 +598,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (IsHoveringOnDataCell)
 			{
-				// Alt+Click
-				if (ModifierKeys.HasFlag(Keys.Shift) && !ModifierKeys.HasFlag(Keys.Control) && !ModifierKeys.HasFlag(Keys.Alt))
+				if (ModifierKeys == Keys.Alt)
 				{
 					MessageBox.Show("Alt click logic is not yet implemented");
 				}
-				// Shift Click
-				else if (ModifierKeys.HasFlag(Keys.Shift) && !ModifierKeys.HasFlag(Keys.Control) && !ModifierKeys.HasFlag(Keys.Alt))
+				else if (ModifierKeys == Keys.Shift)
 				{
 					if (SelectedItems.Any())
 					{
@@ -592,21 +610,19 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						SelectedItems.Add(CurrentCell);
+						SelectCell(CurrentCell);
 					}
 				}
-				// Ctrl Click
-				else if (ModifierKeys.HasFlag(Keys.Control) && !ModifierKeys.HasFlag(Keys.Shift) && !ModifierKeys.HasFlag(Keys.Alt))
+				else if (ModifierKeys == Keys.Control)
 				{
-					SelectedItems.Add(CurrentCell);
+					SelectCell(CurrentCell);
 				}
 				else
 				{
 					SelectedItems.Clear();
-					SelectedItems.Add(CurrentCell);
+					SelectCell(CurrentCell);
 				}
 
-				// TODO: selected index changed event
 				Refresh();
 			}
 
@@ -616,6 +632,32 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region Helpers
+
+		private void SelectCell(Cell cell)
+		{
+			if (!MultiSelect)
+			{
+				SelectedItems.Clear();
+			}
+
+			if (FullRowSelect)
+			{
+				foreach (var column in Columns)
+				{
+					SelectedItems.Add(new Cell
+					{
+						RowIndex = cell.RowIndex,
+						Column = column
+					});
+				}
+			}
+			else
+			{
+				SelectedItems.Add(CurrentCell);
+			}
+
+			SelectedIndexChanged(this, new EventArgs());
+		}
 
 		private bool IsHoveringOnColumnCell
 		{

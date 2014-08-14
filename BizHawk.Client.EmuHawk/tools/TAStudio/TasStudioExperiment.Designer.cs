@@ -34,6 +34,7 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.CurrentCellLabel = new System.Windows.Forms.Label();
 			this.InputView = new BizHawk.Client.EmuHawk.InputRoll();
+			this.OutputLabel = new System.Windows.Forms.Label();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -92,6 +93,7 @@
 			this.InputView.HorizontalOrientation = false;
 			this.InputView.ItemCount = 0;
 			this.InputView.Location = new System.Drawing.Point(12, 103);
+			this.InputView.MultiSelect = false;
 			this.InputView.Name = "InputView";
 			this.InputView.Size = new System.Drawing.Size(380, 303);
 			this.InputView.TabIndex = 1;
@@ -99,12 +101,23 @@
 			this.InputView.VirtualMode = false;
 			this.InputView.PointedCellChanged += new BizHawk.Client.EmuHawk.InputRoll.CellChangeEventHandler(this.InputView_PointedCellChanged);
 			this.InputView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.InputView_ColumnClick);
+			this.InputView.SelectedIndexChanged += new BizHawk.Client.EmuHawk.InputRoll.SelectedIndexChangedHandler(this.InputView_SelectedIndexChanged);
+			// 
+			// OutputLabel
+			// 
+			this.OutputLabel.AutoSize = true;
+			this.OutputLabel.Location = new System.Drawing.Point(12, 51);
+			this.OutputLabel.Name = "OutputLabel";
+			this.OutputLabel.Size = new System.Drawing.Size(35, 13);
+			this.OutputLabel.TabIndex = 4;
+			this.OutputLabel.Text = "label2";
 			// 
 			// TasStudioExperiment
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(404, 418);
+			this.Controls.Add(this.OutputLabel);
 			this.Controls.Add(this.CurrentCellLabel);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.InputView);
@@ -128,5 +141,6 @@
 		private InputRoll InputView;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label CurrentCellLabel;
+		private System.Windows.Forms.Label OutputLabel;
 	}
 }
