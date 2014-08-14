@@ -8881,7 +8881,7 @@ bool skipBios;
 // it's a few bytes in the linkscript to make a multiboot image work in normal boot as well,
 // and most of the ones i've seen have done that, so this is not terribly useful
 static const bool cpuIsMultiBoot = false;
-int cpuSaveType; // used only in init() to set up function pointers
+int cpuSaveType; // used only in init() to set up function pointers and for save file determination
 bool mirroringEnable;
 
 int cpuDmaCount;

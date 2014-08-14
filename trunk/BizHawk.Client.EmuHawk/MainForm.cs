@@ -1347,8 +1347,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				byte[] sram;
 
-				// GBA core might not know how big the saveram ought to be, so just send it the whole file
-				if (Global.Emulator is GBA)
+				// GBA meteor core might not know how big the saveram ought to be, so just send it the whole file
+				// GBA vba-next core will try to eat anything, regardless of size
+				if (Global.Emulator is GBA || Global.Emulator is VBANext)
 				{
 					sram = File.ReadAllBytes(PathManager.SaveRamPath(Global.Game));
 				}
@@ -1362,6 +1363,7 @@ namespace BizHawk.Client.EmuHawk
 						// MessageBox.Show("Error: tried to load saveram, but core would not accept it?");
 						return;
 					}
+					// why do we silently truncate\pad here instead of warning\erroring?
 					sram = new byte[oldram.Length];
 					using (var reader = new BinaryReader(
 							new FileStream(PathManager.SaveRamPath(Global.Game), FileMode.Open, FileAccess.Read)))
