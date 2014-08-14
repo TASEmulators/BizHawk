@@ -22,12 +22,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			/// <summary>
-			/// Loads a simple 192 byte (64 entry RGB888) palette which is FCEUX format (and probably other emulators as well)
+			/// Loads a simple 192 byte (64 entry RGB888) or 1536 byte (64*8 = 512 entry) palette which is FCEUX format (and probably other emulators as well)
+			/// The 512-entry format is new and backwards compatible. (actually, the 512-entry format extra data isnt used yet, I just edited this to support the larger quicknes file i committed)
 			/// </summary>
-			/// <param name="fileContents">192 bytes, the contents of the palette file</param>
+			/// <param name="fileContents">192 or 1536 bytes, the contents of the palette file</param>
 			public static int[,] Load_FCEUX_Palette(byte[] fileContents)
 			{
-				if (fileContents.Length != 192) return null;
+				//'validate' file, solely by length
+				if (fileContents.Length == 1536) { }
+				else if (fileContents.Length != 192) return null;
+
 				int[,] ret = new int[64, 3];
 				int i = 0;
 				for (int c = 0; c < 64; c++)
