@@ -243,27 +243,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			if (data == IntPtr.Zero)
 				throw new Exception("libmeteor_getmemoryarea() returned NULL??");
 
-			MemoryDomain md = new MemoryDomain(name, size, MemoryDomain.Endian.Little,
-				delegate(int addr)
-				{
-					unsafe
-					{
-						byte* d = (byte*)data;
-						if (addr < 0 || addr >= size)
-							throw new IndexOutOfRangeException();
-						return d[addr];
-					}
-				},
-				delegate(int addr, byte val)
-				{
-					unsafe
-					{
-						byte* d = (byte*)data;
-						if (addr < 0 || addr >= size)
-							throw new IndexOutOfRangeException();
-						d[addr] = val;
-					}
-				});
+			MemoryDomain md = MemoryDomain.FromIntPtr(name, size, MemoryDomain.Endian.Little, data);
 			_MemoryDomains.Add(md);
 		}
 

@@ -315,23 +315,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				if (size == 0)
 					continue;
 				string sname = Marshal.PtrToStringAnsi(name);
-				byte *p = (byte*)data;
-				mmd.Add(new MemoryDomain(
-					sname,
-					size,
-					MemoryDomain.Endian.Little,
-					delegate(int addr)
-					{
-						if (addr < 0 || addr >= size)
-							throw new ArgumentOutOfRangeException();
-						return p[addr];
-					},
-					delegate(int addr, byte value)
-					{
-						if (addr < 0 || addr >= size)
-							throw new ArgumentOutOfRangeException();
-						p[addr] = value;
-					}));
+				mmd.Add(MemoryDomain.FromIntPtr(sname, size, MemoryDomain.Endian.Little, data));
 			}
 			MemoryDomains = new MemoryDomainList(mmd, 0);
 		}
