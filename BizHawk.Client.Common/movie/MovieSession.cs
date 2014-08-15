@@ -435,8 +435,11 @@ namespace BizHawk.Client.Common
 				movie.Load();
 				if (movie.SystemID != Global.Emulator.SystemId)
 				{
-					MessageCallback("Movie does not match the currently loaded system, unable to load");
-					return;
+					// MessageCallback() is too weak for this.  it's a basically fatal error; QueuedMovie never gets set, and we get other exceptions later
+					// that don't make it clear what actually went wrong
+					throw new InvalidOperationException("Movie does not match the currently loaded system, unable to load");
+					//MessageCallback("Movie does not match the currently loaded system, unable to load");
+					//return;
 				}
 			}
 
