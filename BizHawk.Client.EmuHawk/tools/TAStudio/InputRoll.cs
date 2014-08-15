@@ -15,6 +15,16 @@ namespace BizHawk.Client.EmuHawk
 		private readonly RollColumns Columns = new RollColumns();
 		private readonly List<Cell> SelectedItems = new List<Cell>();
 
+		private readonly VScrollBar VBar = new VScrollBar
+		{
+			Visible = false
+		};
+
+		private readonly HScrollBar HBar = new HScrollBar
+		{
+			Visible = false
+		};
+
 		private int _horizontalOrientedColumnWidth = 0;
 		private Size _charSize;
 
@@ -805,16 +815,29 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool NeedsScrollbar
+		private bool NeedsVScrollbar
 		{
 			get
 			{
 				if (HorizontalOrientation)
 				{
-					return Width / CellWidth > ItemCount;
+					return Columns.Count > Height / CellHeight;
 				}
 
-				return Height / CellHeight > ItemCount;
+				return ItemCount > Height / CellHeight;
+			}
+		}
+
+		private bool NeedsHScrollbar
+		{
+			get
+			{
+				if (HorizontalOrientation)
+				{
+					return ItemCount > (Width - _horizontalOrientedColumnWidth) / CellWidth;
+				}
+
+				return Columns.Sum(column => CalcWidth(column)) > Width;
 			}
 		}
 
