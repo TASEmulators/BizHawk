@@ -86,7 +86,12 @@ namespace BizHawk.Client.Common
 			using (JsonTextReader jr = new JsonTextReader(tr))
 			{
 				TypeNameEncapsulator tne = (TypeNameEncapsulator)Serializer.Deserialize(jr, typeof(TypeNameEncapsulator));
-				return tne.o;
+				// in the case of trying to deserialize nothing, tne will be nothing
+				// we want to return nothing
+				if (tne != null)
+					return tne.o;
+				else
+					return null;
 			}
 		}
 
