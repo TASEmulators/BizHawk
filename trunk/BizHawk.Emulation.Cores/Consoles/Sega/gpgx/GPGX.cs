@@ -582,23 +582,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (area == IntPtr.Zero || pname == IntPtr.Zero || size == 0)
 					continue;
 				string name = Marshal.PtrToStringAnsi(pname);
-				byte* p = (byte*)area;
 
-				mm.Add(new MemoryDomain(name, size, MemoryDomain.Endian.Unknown,
-					delegate(int addr)
-					{
-						if (addr < 0 || addr >= size)
-							throw new ArgumentOutOfRangeException();
-						return p[addr];
-					},
-					delegate(int addr, byte val)
-					{
-						if (addr < 0 || addr >= size)
-							throw new ArgumentOutOfRangeException();
-						p[addr] = val;
-					}));
+				mm.Add(MemoryDomain.FromIntPtr(name, size, MemoryDomain.Endian.Unknown, area));
 			}
-
 			MemoryDomains = new MemoryDomainList(mm, 0);
 		}
 

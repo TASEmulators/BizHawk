@@ -689,7 +689,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region MemoryDomains
 
-		unsafe void CreateMemoryDomain(LibGambatte.MemoryAreas which, string name)
+		void CreateMemoryDomain(LibGambatte.MemoryAreas which, string name)
 		{
 			IntPtr data = IntPtr.Zero;
 			int length = 0;
@@ -702,21 +702,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			if (data == IntPtr.Zero && length > 0)
 				throw new Exception("bad return from gambatte_getmemoryarea()");
 
-			byte* ptr = (byte*)data;
-
-			_MemoryDomains.Add(new MemoryDomain(name, length, MemoryDomain.Endian.Little,
-				delegate(int addr)
-				{
-					if (addr < 0 || addr >= length)
-						throw new ArgumentOutOfRangeException();
-					return ptr[addr];
-				},
-				delegate(int addr, byte val)
-				{
-					if (addr < 0 || addr >= length)
-						throw new ArgumentOutOfRangeException();
-					ptr[addr] = val;
-				}));
+			_MemoryDomains.Add(MemoryDomain.FromIntPtr(name, length, MemoryDomain.Endian.Little, data));
 		}
 
 		void InitMemoryDomains()

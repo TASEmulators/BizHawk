@@ -25,6 +25,41 @@ namespace BizHawk.Emulation.Common
 			PokeByte = pokeByte;
 		}
 
+		/// <summary>
+		/// create a memorydomain that references an unmanaged memory block
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="size"></param>
+		/// <param name="endian"></param>
+		/// <param name="data">must remain valid as long as the MemoryDomain exists!</param>
+		/// <returns></returns>
+		public unsafe static MemoryDomain FromIntPtr(string name, int size, Endian endian, IntPtr data)
+		{
+			if (data == IntPtr.Zero)
+				throw new ArgumentNullException("data");
+			if (size <= 0)
+				throw new ArgumentOutOfRangeException("size");
+			byte *p = (byte*) data;
+			return new MemoryDomain
+			(
+				name,
+				size,
+				endian,
+				delegate(int addr)
+				{
+					if (addr < 0 || addr >= size)
+						throw new ArgumentOutOfRangeException();
+					return p[addr];
+				},
+				delegate(int addr, byte val)
+				{
+					if (addr < 0 || addr >= size)
+						throw new ArgumentOutOfRangeException();
+					p[addr] = val;
+				}
+			);
+		}
+
 		public MemoryDomain() { }
 
 		public override string ToString()
