@@ -2382,6 +2382,7 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.UpdateToolsBefore(fromLua);
 				UpdateToolsAfter(fromLua);
 				UpdateToolsLoadstate();
+				Global.AutoFireController.ClearStarts();
 				GlobalWin.OSD.AddMessage("Loaded state: " + userFriendlyStateName);
 
 				if (GlobalWin.Tools.Has<LuaConsole>())

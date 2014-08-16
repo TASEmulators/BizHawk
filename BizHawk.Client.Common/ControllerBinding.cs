@@ -248,6 +248,11 @@ namespace BizHawk.Client.Common
 			return _buttons[button];
 		}
 
+		public void ClearStarts()
+		{
+			_buttonStarts.Clear();
+		}
+
 		public float GetFloat(string name) { throw new NotImplementedException(); }
 
 		// look for bindings which are activated by the supplied physical button.
