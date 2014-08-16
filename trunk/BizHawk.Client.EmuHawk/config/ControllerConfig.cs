@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 			return new AnalogBindPanel(settings, buttons) { Dock = DockStyle.Fill };
 		}
 
-		private static void LoadToPanel<T>(Control dest, string controllerName, IEnumerable<string> controllerButtons, IDictionary<string, Dictionary<string, T>> settingsblock, T defaultvalue, PanelCreator<T> createpanel)
+		private static void LoadToPanel<T>(Control dest, string controllerName, IList<string> controllerButtons, IDictionary<string, Dictionary<string, T>> settingsblock, T defaultvalue, PanelCreator<T> createpanel)
 		{
 			Dictionary<string, T> settings;
 			if (!settingsblock.TryGetValue(controllerName, out settings))
@@ -96,7 +96,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (settings.Keys.Count == 0)
+			if (controllerButtons.Count == 0)
 			{
 				return;
 			}
@@ -130,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 				buckets[i].Add(button);
 			}
 
-			if (buckets[0].Count == settings.Keys.Count)
+			if (buckets[0].Count == controllerButtons.Count)
 			{
 				// everything went into bucket 0, so make no tabs at all
 				dest.Controls.Add(createpanel(settings, null, dest.Size));
@@ -311,16 +311,6 @@ namespace BizHawk.Client.EmuHawk
 		private void NewControllerConfig_Load(object sender, EventArgs e)
 		{
 			Text = _theDefinition.Name + " Configuration";
-
-			if (!AnalogControlsTab.Controls
-				.OfType<TabControl>()
-				.First()
-				.Controls
-				.OfType<Control>()
-				.Any())
-			{
-				tabControl1.TabPages.Remove(AnalogControlsTab);
-			}
 		}
 
 		private static TabControl GetTabControl(IEnumerable controls)
