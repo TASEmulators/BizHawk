@@ -15,12 +15,11 @@ namespace BizHawk.Client.Common
 
 	public class MovieSession
 	{
-		private readonly MultitrackRecording _multiTrack = new MultitrackRecording();
-
 		public MovieSession()
 		{
 			ReadOnly = true;
 			MovieControllerAdapter = MovieService.DefaultInstance.LogGeneratorInstance().MovieControllerAdapter;
+			MultiTrack = new MultitrackRecording();
 		}
 
 		/// <summary>
@@ -35,7 +34,7 @@ namespace BizHawk.Client.Common
 			get { return QueuedMovie != null; }
 		}
 
-		public MultitrackRecording MultiTrack { get { return _multiTrack; } }
+		public MultitrackRecording MultiTrack { get; private set; }
 		public IMovieController MovieControllerAdapter{ get; set; }
 
 		public IMovie Movie { get; set; }
@@ -74,9 +73,9 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished && Global.Emulator.Frame > 0)
+				if (Movie.IsActive && !Movie.IsFinished && Global.Emulator.Frame > 0)
 				{
-					return Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1);
+					return Movie.GetInputState(Global.Emulator.Frame - 1);
 				}
 
 				return null;
@@ -87,9 +86,9 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished && Global.Emulator.Frame > 1)
+				if (Movie.IsActive && !Movie.IsFinished && Global.Emulator.Frame > 1)
 				{
-					return Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 2);
+					return Movie.GetInputState(Global.Emulator.Frame - 2);
 				}
 
 				return null;
@@ -106,11 +105,11 @@ namespace BizHawk.Client.Common
 
 		public void LatchMultitrackPlayerInput(IController playerSource, MultitrackRewiringControllerAdapter rewiredSource)
 		{
-			if (_multiTrack.IsActive)
+			if (MultiTrack.IsActive)
 			{
 				rewiredSource.PlayerSource = 1;
-				rewiredSource.PlayerTargetMask = 1 << _multiTrack.CurrentPlayer;
-				if (_multiTrack.RecordAll)
+				rewiredSource.PlayerTargetMask = 1 << MultiTrack.CurrentPlayer;
+				if (MultiTrack.RecordAll)
 				{
 					rewiredSource.PlayerTargetMask = unchecked((int)0xFFFFFFFF);
 				}
@@ -120,7 +119,7 @@ namespace BizHawk.Client.Common
 				rewiredSource.PlayerSource = -1;
 			}
 
-			MovieControllerAdapter.LatchPlayerFromSource(rewiredSource, _multiTrack.CurrentPlayer);
+			MovieControllerAdapter.LatchPlayerFromSource(rewiredSource, MultiTrack.CurrentPlayer);
 		}
 
 		public void LatchInputFromPlayer(IController source)
@@ -270,7 +269,7 @@ namespace BizHawk.Client.Common
 			}
 			else if (Movie.IsRecording)
 			{
-				if (_multiTrack.IsActive)
+				if (MultiTrack.IsActive)
 				{
 					LatchMultitrackPlayerInput(Global.MovieInputSourceAdapter, Global.MultitrackRewiringControllerAdapter);
 				}
@@ -381,24 +380,15 @@ namespace BizHawk.Client.Common
 		{
 			if (Movie.IsActive)
 			{
-
 				if (Global.Config.VBAStyleMovieLoadState)
 				{
 					MessageCallback("Multi-track can not be used in Full Movie Loadstates mode");
 				}
 				else
 				{
-					Global.MovieSession.MultiTrack.IsActive = !Global.MovieSession.MultiTrack.IsActive;
-					if (Global.MovieSession.MultiTrack.IsActive)
-					{
-						MessageCallback("MultiTrack Enabled");
-					}
-					else
-					{
-						MessageCallback("MultiTrack Disabled");
-					}
-
-					Global.MovieSession.MultiTrack.SelectNone();
+					MultiTrack.IsActive ^= true;
+					MultiTrack.SelectNone();
+					MessageCallback(MultiTrack.IsActive ? "MultiTrack Enabled" : "MultiTrack Disabled");
 				}
 			}
 			else
