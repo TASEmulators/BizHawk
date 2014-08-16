@@ -319,28 +319,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 				if (data != IntPtr.Zero && size > 0 && name != IntPtr.Zero)
 				{
-					byte* p = (byte*)data;
-
-					mm.Add(new MemoryDomain
-					(
-						Marshal.PtrToStringAnsi(name),
-						size,
-						MemoryDomain.Endian.Unknown,
-						delegate(int addr)
-						{
-							if (addr < 0 || addr >= size)
-								throw new ArgumentOutOfRangeException();
-							return p[addr];
-						},
-						delegate(int addr, byte val)
-						{
-							if (!writable)
-								return;
-							if (addr < 0 || addr >= size)
-								throw new ArgumentOutOfRangeException();
-							p[addr] = val;
-						}
-					));
+					mm.Add(MemoryDomain.FromIntPtr(Marshal.PtrToStringAnsi(name), size, MemoryDomain.Endian.Little, data, writable));
 				}
 			}
 			// add system bus

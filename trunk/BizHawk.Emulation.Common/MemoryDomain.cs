@@ -32,8 +32,9 @@ namespace BizHawk.Emulation.Common
 		/// <param name="size"></param>
 		/// <param name="endian"></param>
 		/// <param name="data">must remain valid as long as the MemoryDomain exists!</param>
+		/// <param name="writable">if false, writes will be ignored</param>
 		/// <returns></returns>
-		public unsafe static MemoryDomain FromIntPtr(string name, int size, Endian endian, IntPtr data)
+		public unsafe static MemoryDomain FromIntPtr(string name, int size, Endian endian, IntPtr data, bool writable = true)
 		{
 			if (data == IntPtr.Zero)
 				throw new ArgumentNullException("data");
@@ -53,14 +54,15 @@ namespace BizHawk.Emulation.Common
 				},
 				delegate(int addr, byte val)
 				{
-					if (addr < 0 || addr >= size)
-						throw new ArgumentOutOfRangeException();
-					p[addr] = val;
+					if (writable)
+					{
+						if (addr < 0 || addr >= size)
+							throw new ArgumentOutOfRangeException();
+						p[addr] = val;
+					}
 				}
 			);
 		}
-
-		public MemoryDomain() { }
 
 		public override string ToString()
 		{

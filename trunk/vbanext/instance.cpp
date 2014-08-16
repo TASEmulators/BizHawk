@@ -13321,6 +13321,27 @@ template<bool isReader>bool SyncBatteryRam(NewState *ns)
 		return lagged;
 	}
 
+	void FillMemoryAreas(MemoryAreas &mem)
+	{
+		mem.bios = bios;
+		mem.iwram = internalRAM;
+		mem.ewram = workRAM;
+		mem.palram = graphics.paletteRAM;
+		mem.mmio = ioMem;
+		mem.rom = rom;
+		mem.vram = vram;
+		mem.oam = oam;
+	}
+
+	void BusWrite(u32 addr, u8 val)
+	{
+		CPUWriteByte(addr, val);
+	}
+	u8 BusRead(u32 addr)
+	{
+		return CPUReadByte(addr);
+	}
+
 }; // class Gigazoid
 
 // zeroing mem operators: these are very important
@@ -13447,5 +13468,19 @@ EXPORT void TxtStateLoad(Gigazoid *g, FPtrs *ff)
 	g->SyncState<true>(&loader);
 }
 
+EXPORT void GetMemoryAreas(Gigazoid *g, MemoryAreas *mem)
+{
+	g->FillMemoryAreas(*mem);
+}
+
+EXPORT void SystemBusWrite(Gigazoid *g, u32 addr, u8 val)
+{
+	g->BusWrite(addr, val);
+}
+
+EXPORT u8 SystemBusRead(Gigazoid *g, u32 addr)
+{
+	return g->BusRead(addr);
+}
 
 #include "optable.inc"
