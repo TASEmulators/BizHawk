@@ -122,6 +122,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public static extern bool SaveRamSave(IntPtr g, byte[] data, int length);
 		[DllImport(dllname, CallingConvention = cc)]
 		public static extern bool SaveRamLoad(IntPtr g, byte[] data, int length);
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern void GetMemoryAreas(IntPtr g, [Out]MemoryAreas mem);
 
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern void SystemBusWrite(IntPtr g, int addr, byte val);
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern byte SystemBusRead(IntPtr g, int addr);
+
+
+		[StructLayout(LayoutKind.Sequential)]
+		public class MemoryAreas
+		{
+			public IntPtr bios;
+			public IntPtr iwram;
+			public IntPtr ewram;
+			public IntPtr palram;
+			public IntPtr vram;
+			public IntPtr oam;
+			public IntPtr rom;
+			public IntPtr mmio;
+		}
 	}
 }

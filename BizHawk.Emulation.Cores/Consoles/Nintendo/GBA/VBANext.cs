@@ -73,6 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 				savebuff = new byte[LibVBANext.BinStateSize(Core)];
 				savebuff2 = new byte[savebuff.Length + 13];
+				InitMemoryDomains();
 			}
 			catch
 			{
@@ -253,10 +254,37 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		#region Debugging
 
-		public MemoryDomainList MemoryDomains
+		void InitMemoryDomains()
 		{
-			get { return MemoryDomainList.GetDummyList(); }
+			var mm = new List<MemoryDomain>();
+			var s = new LibVBANext.MemoryAreas();
+			var l = MemoryDomain.Endian.Little;
+			LibVBANext.GetMemoryAreas(Core, s);
+			mm.Add(MemoryDomain.FromIntPtr("IWRAM", 32 * 1024, l, s.iwram));
+			mm.Add(MemoryDomain.FromIntPtr("EWRAM", 256 * 1024, l, s.ewram));
+			mm.Add(MemoryDomain.FromIntPtr("BIOS", 16 * 1024, l, s.bios, false));
+			mm.Add(MemoryDomain.FromIntPtr("PALRAM", 1024, l, s.palram, false));
+			mm.Add(MemoryDomain.FromIntPtr("VRAM", 96 * 1024, l, s.vram));
+			mm.Add(MemoryDomain.FromIntPtr("OAM", 1024, l, s.oam));
+			mm.Add(MemoryDomain.FromIntPtr("ROM", 32 * 1024 * 1024, l, s.rom));
+			
+			mm.Add(new MemoryDomain("BUS", 0x10000000, l,
+				delegate(int addr)
+				{
+					if (addr < 0 || addr >= 0x10000000)
+						throw new ArgumentOutOfRangeException();
+					return LibVBANext.SystemBusRead(Core, addr);
+				},
+				delegate(int addr, byte val)
+				{
+					if (addr < 0 || addr >= 0x10000000)
+						throw new ArgumentOutOfRangeException();
+					LibVBANext.SystemBusWrite(Core, addr, val);
+				}));
+			MemoryDomains = new MemoryDomainList(mm, 0);
 		}
+
+		public MemoryDomainList MemoryDomains { get; private set; }
 
 		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{

@@ -20,6 +20,18 @@ struct FrontEndSettings
 
 };
 
+struct MemoryAreas
+{
+	void *bios;
+	void *iwram;
+	void *ewram;
+	void *palram;
+	void *vram;
+	void *oam;
+	void *rom;
+	void *mmio;
+};
+
 #define FLASH_128K_SZ 0x20000
 
 #define EEPROM_IDLE           0
