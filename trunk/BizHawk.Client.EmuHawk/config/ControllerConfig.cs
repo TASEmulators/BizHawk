@@ -173,6 +173,8 @@ namespace BizHawk.Client.EmuHawk
 
 			SetControllerPicture(def.Name);
 
+			var analog = tabControl1.TabPages[0];
+
 			ResumeLayout();
 		}
 
@@ -181,13 +183,13 @@ namespace BizHawk.Client.EmuHawk
 			IDictionary<string, Dictionary<string, string>> autofire,
 			IDictionary<string, Dictionary<string, Config.AnalogBind>> analog)
 		{
-			LoadToPanel(tabPage1, _theDefinition.Name, _theDefinition.BoolButtons, normal, string.Empty, CreateNormalPanel);
-			LoadToPanel(tabPage2, _theDefinition.Name, _theDefinition.BoolButtons, autofire, string.Empty, CreateNormalPanel);
-			LoadToPanel(tabPage3, _theDefinition.Name, _theDefinition.FloatControls, analog, new Config.AnalogBind(string.Empty, 1.0f, 0.1f), CreateAnalogPanel);
+			LoadToPanel(NormalControlsTab, _theDefinition.Name, _theDefinition.BoolButtons, normal, string.Empty, CreateNormalPanel);
+			LoadToPanel(AutofireControlsTab, _theDefinition.Name, _theDefinition.BoolButtons, autofire, string.Empty, CreateNormalPanel);
+			LoadToPanel(AnalogControlsTab, _theDefinition.Name, _theDefinition.FloatControls, analog, new Config.AnalogBind(string.Empty, 1.0f, 0.1f), CreateAnalogPanel);
 
-			if (tabPage3.Controls.Count == 0)
+			if (AnalogControlsTab.Controls.Count == 0)
 			{
-				tabControl1.TabPages.Remove(tabPage3);
+				tabControl1.TabPages.Remove(AnalogControlsTab);
 			}
 		}
 
@@ -255,16 +257,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Save()
 		{
-			ActOnControlCollection<ControllerConfigPanel>(tabPage1, c => c.Save(Global.Config.AllTrollers[_theDefinition.Name]));
-			ActOnControlCollection<ControllerConfigPanel>(tabPage2, c => c.Save(Global.Config.AllTrollersAutoFire[_theDefinition.Name]));
-			ActOnControlCollection<AnalogBindPanel>(tabPage3, c => c.Save(Global.Config.AllTrollersAnalog[_theDefinition.Name]));
+			ActOnControlCollection<ControllerConfigPanel>(NormalControlsTab, c => c.Save(Global.Config.AllTrollers[_theDefinition.Name]));
+			ActOnControlCollection<ControllerConfigPanel>(AutofireControlsTab, c => c.Save(Global.Config.AllTrollersAutoFire[_theDefinition.Name]));
+			ActOnControlCollection<AnalogBindPanel>(AnalogControlsTab, c => c.Save(Global.Config.AllTrollersAnalog[_theDefinition.Name]));
 		}
 
 		private void SaveToDefaults(ControlDefaults cd)
 		{
-			ActOnControlCollection<ControllerConfigPanel>(tabPage1, c => c.Save(cd.AllTrollers[_theDefinition.Name]));
-			ActOnControlCollection<ControllerConfigPanel>(tabPage2, c => c.Save(cd.AllTrollersAutoFire[_theDefinition.Name]));
-			ActOnControlCollection<AnalogBindPanel>(tabPage3, c => c.Save(cd.AllTrollersAnalog[_theDefinition.Name]));
+			ActOnControlCollection<ControllerConfigPanel>(NormalControlsTab, c => c.Save(cd.AllTrollers[_theDefinition.Name]));
+			ActOnControlCollection<ControllerConfigPanel>(AutofireControlsTab, c => c.Save(cd.AllTrollersAutoFire[_theDefinition.Name]));
+			ActOnControlCollection<AnalogBindPanel>(AnalogControlsTab, c => c.Save(cd.AllTrollersAnalog[_theDefinition.Name]));
 		}
 
 		private static void ActOnControlCollection<T>(Control c, Action<T> proc)
@@ -309,6 +311,16 @@ namespace BizHawk.Client.EmuHawk
 		private void NewControllerConfig_Load(object sender, EventArgs e)
 		{
 			Text = _theDefinition.Name + " Configuration";
+
+			if (!AnalogControlsTab.Controls
+				.OfType<TabControl>()
+				.First()
+				.Controls
+				.OfType<Control>()
+				.Any())
+			{
+				tabControl1.TabPages.Remove(AnalogControlsTab);
+			}
 		}
 
 		private static TabControl GetTabControl(IEnumerable controls)
@@ -329,9 +341,9 @@ namespace BizHawk.Client.EmuHawk
 			tabControl1.SuspendLayout();
 
 			var wasTabbedMain = tabControl1.SelectedTab.Name;
-			var tb1 = GetTabControl(tabPage1.Controls);
-			var tb2 = GetTabControl(tabPage2.Controls);
-			var tb3 = GetTabControl(tabPage3.Controls);
+			var tb1 = GetTabControl(NormalControlsTab.Controls);
+			var tb2 = GetTabControl(AutofireControlsTab.Controls);
+			var tb3 = GetTabControl(AnalogControlsTab.Controls);
 			int? wasTabbedPage1 = null;
 			int? wasTabbedPage2 = null;
 			int? wasTabbedPage3 = null;
@@ -340,9 +352,9 @@ namespace BizHawk.Client.EmuHawk
 			if (tb2 != null && tb2.SelectedTab != null) { wasTabbedPage2 = tb2.SelectedIndex; }
 			if (tb3 != null && tb3.SelectedTab != null) { wasTabbedPage3 = tb3.SelectedIndex; }
 
-			tabPage1.Controls.Clear();
-			tabPage2.Controls.Clear();
-			tabPage3.Controls.Clear();
+			NormalControlsTab.Controls.Clear();
+			AutofireControlsTab.Controls.Clear();
+			AnalogControlsTab.Controls.Clear();
 
 			// load panels directly from the default config.
 			// this means that the changes are NOT committed.  so "Cancel" works right and you
@@ -354,7 +366,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (wasTabbedPage1.HasValue)
 			{
-				var newTb1 = GetTabControl(tabPage1.Controls);
+				var newTb1 = GetTabControl(NormalControlsTab.Controls);
 				if (newTb1 != null)
 				{
 					newTb1.SelectTab(wasTabbedPage1.Value);
@@ -363,7 +375,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (wasTabbedPage2.HasValue)
 			{
-				var newTb2 = GetTabControl(tabPage2.Controls);
+				var newTb2 = GetTabControl(AutofireControlsTab.Controls);
 				if (newTb2 != null)
 				{
 					newTb2.SelectTab(wasTabbedPage2.Value);
@@ -372,7 +384,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (wasTabbedPage3.HasValue)
 			{
-				var newTb3 = GetTabControl(tabPage3.Controls);
+				var newTb3 = GetTabControl(AnalogControlsTab.Controls);
 				if (newTb3 != null)
 				{
 					newTb3.SelectTab(wasTabbedPage3.Value);
