@@ -41,6 +41,7 @@ namespace BizHawk.Client.EmuHawk
 				if (AskSave())
 				{
 					SaveConfigSettings();
+					GlobalWin.DisplayManager.ClearLuaSurfaces();
 				}
 				else
 				{
