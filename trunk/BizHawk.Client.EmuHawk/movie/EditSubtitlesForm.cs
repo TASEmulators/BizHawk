@@ -4,6 +4,8 @@ using System.Windows.Forms;
 using System.Globalization;
 
 using BizHawk.Client.Common;
+using System.IO;
+using System.Text;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -166,5 +168,96 @@ namespace BizHawk.Client.EmuHawk
 				ChangeRow(s.Sub, SubGrid.SelectedRows[0].Index);
 			}
 		}
+
+        private void Export_Click(object sender, EventArgs e)
+        {
+            var form = new SaveFileDialog();
+            form.AddExtension = true;
+            form.Filter = "SubRip Files (*.srt)|*.srt|All files (*.*)|*.*";
+
+            var result = form.ShowDialog();
+            var fileName = form.FileName;
+
+            form.Dispose();
+
+            if (result != System.Windows.Forms.DialogResult.OK)
+                return;
+
+            var system = _selectedMovie.HeaderEntries[HeaderKeys.PLATFORM];
+            var pal = _selectedMovie.HeaderEntries.ContainsKey(HeaderKeys.PAL)
+                && _selectedMovie.HeaderEntries[HeaderKeys.PAL] == "1";
+            var pfr = new PlatformFrameRates();
+            double fps = 1;
+
+            try
+            {
+                fps = pfr[system, pal];
+            }
+            catch
+            {
+                MessageBox.Show(
+                    "Could not determine movie fps, export failed.",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                    );
+
+                return;
+            }
+
+            int index = 0;
+
+            var sb = new StringBuilder();
+
+            foreach (var subtitle in _selectedMovie.Subtitles)
+            {
+                // Subtitle index
+                index++;
+
+                sb.Append(index.ToString());
+                sb.Append("\r\n");
+
+                // Frame timing
+                double start = (double)subtitle.Frame;
+                double end = (double)(subtitle.Frame + subtitle.Duration);
+
+                int startTime = (int)(start * 1000 / fps);
+                int endTime = (int)(end * 1000 / fps);
+
+                var startString = string.Format(
+                    "{0:d2}:{1:d2}:{2:d2},{3:d3}",
+                    startTime / 3600000,
+                    (startTime / 60000) % 60,
+                    (startTime / 1000) % 60,
+                    startTime % 1000
+                    );
+
+                var endString = string.Format(
+                    "{0:d2}:{1:d2}:{2:d2},{3:d3}",
+                    endTime / 3600000,
+                    (endTime / 60000) % 60,
+                    (endTime / 1000) % 60,
+                    endTime % 1000
+                    );
+
+                sb.Append(startString);
+                sb.Append(" --> ");
+                sb.Append(endString);
+                sb.Append("\r\n");
+
+                // TODO: Positioning
+
+                // TODO: Color
+
+                // Message text
+                sb.Append(subtitle.Message);
+                sb.Append("\r\n");
+
+                // Seperator
+                sb.Append("\r\n");
+            }
+
+            File.WriteAllText(form.FileName, sb.ToString());
+        }
 	}
 }
