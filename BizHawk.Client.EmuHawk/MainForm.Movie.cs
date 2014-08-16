@@ -20,15 +20,15 @@ namespace BizHawk.Client.EmuHawk
 
 			Global.Config.RecentMovies.Add(movie.Filename);
 
-			if (Global.MovieSession.Movie.StartsFromSavestate)
+			if (movie.StartsFromSavestate)
 			{
-				if (Global.MovieSession.Movie.TextSavestate != null)
+				if (movie.TextSavestate != null)
 				{
-					Global.Emulator.LoadStateText(new StringReader(Global.MovieSession.Movie.TextSavestate));
+					Global.Emulator.LoadStateText(new StringReader(movie.TextSavestate));
 				}
 				else
 				{
-					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.BinarySavestate, false)));
+					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(movie.BinarySavestate, false)));
 				}
 
 				Global.Emulator.ResetCounters();
