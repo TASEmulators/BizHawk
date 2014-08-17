@@ -12935,6 +12935,7 @@ void Gigazoid_Init()
 }
 
 u32 *systemVideoFrameDest;
+u32 *systemVideoFramePalette;
 s16 *systemAudioFrameDest;
 int *systemAudioFrameSamp;
 bool lagged;
@@ -12948,17 +12949,18 @@ void systemDrawScreen (void)
 	for (int i = 0; i < 240 * 160; i++)
 	{
 		u32 input = pix[i];
+		/*
 		u32 output = 0xff000000 |
 			input << 9 & 0xf80000 |
 			input << 6 & 0xf800 |
 			input << 3 & 0xf8;
+		*/
+		u32 output = systemVideoFramePalette[input];
 		systemVideoFrameDest[i] = output;
 	}
 	systemVideoFrameDest = nullptr;
+	systemVideoFramePalette = nullptr;
 }
-
-// TODO: fix up RTC so this is used
-//uint32_t systemGetClock (void) { return 0; }
 
 // called at regular intervals on sound clock
 void systemOnWriteDataToSoundBuffer(int16_t * finalWave, int length)
@@ -13313,10 +13315,11 @@ template<bool isReader>bool SyncBatteryRam(NewState *ns)
 		CPUReset();
 	}
 
-	bool FrameAdvance(int input, u32 *videobuffer, s16 *audiobuffer, int *numsamp)
+	bool FrameAdvance(int input, u32 *videobuffer, s16 *audiobuffer, int *numsamp, u32 *videopalette)
 	{
 		joy = input;
 		systemVideoFrameDest = videobuffer;
+		systemVideoFramePalette = videopalette;
 		systemAudioFrameDest = audiobuffer;
 		systemAudioFrameSamp = numsamp;
 		lagged = true;
@@ -13397,9 +13400,9 @@ EXPORT void Reset(Gigazoid *g)
 	g->Reset();
 }
 
-EXPORT int FrameAdvance(Gigazoid *g, int input, u32 *videobuffer, s16 *audiobuffer, int *numsamp)
+EXPORT int FrameAdvance(Gigazoid *g, int input, u32 *videobuffer, s16 *audiobuffer, int *numsamp, u32 *videopalette)
 {
-	return g->FrameAdvance(input, videobuffer, audiobuffer, numsamp);
+	return g->FrameAdvance(input, videobuffer, audiobuffer, numsamp, videopalette);
 }
 
 EXPORT int SaveRamSize(Gigazoid *g)

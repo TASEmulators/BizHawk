@@ -127,6 +127,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public static int[] GetLut(ColorType c)
 		{
+			int[] ret = new int[32768];
+			GetLut(c, ret);
+			return ret;
+		}
+
+		public static void GetLut(ColorType c, int[] dest, int offset = 0)
+		{
 			Func<Triple, Triple> f = null;
 			switch (c)
 			{
@@ -137,13 +144,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				case ColorType.vbabgbold: f = OldVBAColor; break;
 				case ColorType.gba: f = GBAColor; break;
 			}
-			int[] ret = new int[32768];
 			int i = 0;
 			for (int b = 0; b < 32; b++)
 				for (int g = 0; g < 32; g++)
 					for (int r = 0; r < 32; r++)
-						ret[i++] = f(new Triple(r, g, b)).ToARGB32();
-			return ret;
+						dest[offset + i++] = f(new Triple(r, g, b)).ToARGB32();
 		}
 	}
 }

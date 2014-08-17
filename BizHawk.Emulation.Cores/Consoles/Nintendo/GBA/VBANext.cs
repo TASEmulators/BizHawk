@@ -74,6 +74,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				savebuff = new byte[LibVBANext.BinStateSize(Core)];
 				savebuff2 = new byte[savebuff.Length + 13];
 				InitMemoryDomains();
+
+				// todo: hook me up as a setting
+				SetupColors();
 			}
 			catch
 			{
@@ -89,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			if (Controller["Power"])
 				LibVBANext.Reset(Core);
 
-			IsLagFrame = LibVBANext.FrameAdvance(Core, GetButtons(), videobuff, soundbuff, out numsamp);
+			IsLagFrame = LibVBANext.FrameAdvance(Core, GetButtons(), videobuff, soundbuff, out numsamp, videopalette);
 
 			if (IsLagFrame)
 				LagCount++;
@@ -430,6 +433,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		#region VideoProvider
 
 		int[] videobuff = new int[240 * 160];
+		int[] videopalette = new int[65536];
 
 		public IVideoProvider VideoProvider { get { return this; } }
 		public int[] GetVideoBuffer() { return videobuff; }
@@ -438,6 +442,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public int BufferWidth { get { return 240; } }
 		public int BufferHeight { get { return 160; } }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
+
+		void SetupColors()
+		{
+			int[] tmp = BizHawk.Emulation.Cores.Nintendo.Gameboy.GBColors.GetLut(Gameboy.GBColors.ColorType.vivid);
+			// reorder
+			for (int i = 0; i < 32768; i++)
+			{
+				int j = i & 0x3e0 | (i & 0x1f) << 10 | i >> 10 & 0x1f;
+				videopalette[i] = tmp[j];
+			}
+			// duplicate
+			Array.Copy(videopalette, 0, videopalette, 32768, 32768);
+		}
 
 		#endregion
 
