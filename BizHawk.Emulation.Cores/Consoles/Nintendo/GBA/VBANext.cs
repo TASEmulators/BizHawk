@@ -317,6 +317,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 						throw new ArgumentOutOfRangeException();
 					LibVBANext.SystemBusWrite(Core, addr, val);
 				}));
+			// special combined ram memory domain
+			{
+				var ew = mm[1];
+				var iw = mm[0];
+				MemoryDomain cr = new MemoryDomain("Combined WRAM", (256 + 32) * 1024, MemoryDomain.Endian.Little,
+					delegate(int addr)
+					{
+						if (addr < 0 || addr >= (256 + 32) * 1024)
+							throw new IndexOutOfRangeException();
+						if (addr >= 256 * 1024)
+							return iw.PeekByte(addr & 32767);
+						else
+							return ew.PeekByte(addr);
+					},
+					delegate(int addr, byte val)
+					{
+						if (addr < 0 || addr >= (256 + 32) * 1024)
+							throw new IndexOutOfRangeException();
+						if (addr >= 256 * 1024)
+							iw.PokeByte(addr & 32767, val);
+						else
+							ew.PokeByte(addr, val);
+					});
+				mm.Add(cr);
+			}
 			MemoryDomains = new MemoryDomainList(mm, 0);
 		}
 
