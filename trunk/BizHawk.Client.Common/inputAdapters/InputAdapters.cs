@@ -540,43 +540,6 @@ namespace BizHawk.Client.Common
 		}
 	}
 
-	public class ButtonNameParser
-	{
-		public static ButtonNameParser Parse(string button)
-		{
-			// See if we're being asked for a button that we know how to rewire
-			var parts = button.Split(' ');
-			
-			if (parts.Length < 2)
-			{
-				return null;
-			}
-
-			if (parts[0][0] != 'P')
-			{
-				return null;
-			}
-
-			int player;
-			if (!int.TryParse(parts[0].Substring(1), out player))
-			{
-				return null;
-			}
-			else
-			{
-				return new ButtonNameParser { PlayerNum = player, ButtonPart = button.Substring(parts[0].Length + 1) };
-			}
-		}
-
-		public int PlayerNum { get; set; }
-		public string ButtonPart { get; private set; }
-
-		public override string ToString()
-		{
-			return string.Format("P{0} {1}", PlayerNum, ButtonPart);
-		}
-	}
-
 	/// <summary>
 	/// Used to pass into an Override method to manage the logic overriding input
 	/// This only works with bool buttons!
