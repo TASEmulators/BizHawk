@@ -12548,6 +12548,8 @@ updateLoop:
 							io_registers[REG_IF] |= 2;
 							UPDATE_REG(0x202, io_registers[REG_IF]);
 						}
+						if (scanlineCallback && scanlineCallbackLine == io_registers[REG_VCOUNT])
+							scanlineCallback();
 					}
 
 					if(io_registers[REG_VCOUNT] >= 228)
@@ -12565,7 +12567,6 @@ updateLoop:
 					// if in H-Blank, leave it and move to drawing mode
 					io_registers[REG_VCOUNT] += 1;
 					UPDATE_REG(0x06, io_registers[REG_VCOUNT]);
-
 					graphics.lcdTicks += 1008;
 					io_registers[REG_DISPSTAT] &= 0xFFFD;
 					if(io_registers[REG_VCOUNT] == 160)
@@ -12643,6 +12644,8 @@ updateLoop:
 						io_registers[REG_IF] |= 2;
 						UPDATE_REG(0x202, io_registers[REG_IF]);
 					}
+					if (scanlineCallback && scanlineCallbackLine == io_registers[REG_VCOUNT])
+						scanlineCallback();
 				}
 			}
 
@@ -12935,6 +12938,9 @@ u32 *systemVideoFrameDest;
 s16 *systemAudioFrameDest;
 int *systemAudioFrameSamp;
 bool lagged;
+
+void (*scanlineCallback)();
+int scanlineCallbackLine;
 
 void systemDrawScreen (void)
 {
@@ -13342,6 +13348,17 @@ template<bool isReader>bool SyncBatteryRam(NewState *ns)
 		return CPUReadByte(addr);
 	}
 
+	void SetScanlineCallback(void (*cb)(), int scanline)
+	{
+		// the sequence of calls in a frame will be:
+		// 160,161,...,227,0,1,...,160
+		// calls coincide with entering hblank, or something like that
+		if (scanline < 0 || scanline > 227)
+			cb = nullptr;
+		scanlineCallback = cb;
+		scanlineCallbackLine = scanline;
+	}
+
 }; // class Gigazoid
 
 // zeroing mem operators: these are very important
@@ -13481,6 +13498,11 @@ EXPORT void SystemBusWrite(Gigazoid *g, u32 addr, u8 val)
 EXPORT u8 SystemBusRead(Gigazoid *g, u32 addr)
 {
 	return g->BusRead(addr);
+}
+
+EXPORT void SetScanlineCallback(Gigazoid *g, void (*cb)(), int scanline)
+{
+	g->SetScanlineCallback(cb, scanline);
 }
 
 #include "optable.inc"

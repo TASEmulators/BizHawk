@@ -130,6 +130,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		[DllImport(dllname, CallingConvention = cc)]
 		public static extern byte SystemBusRead(IntPtr g, int addr);
 
+		[UnmanagedFunctionPointer(cc)]
+		public delegate void StandardCallback();
+
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern void SetScanlineCallback(IntPtr g, StandardCallback cb, int scanline);
+
 
 		[StructLayout(LayoutKind.Sequential)]
 		public class MemoryAreas
