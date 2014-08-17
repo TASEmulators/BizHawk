@@ -1,24 +1,15 @@
 ﻿namespace BizHawk.Client.Common
 {
-	public class MultitrackRecording
+	public class MultitrackRecorder
 	{
-		public void Restart()
-		{
-			IsActive = false;
-			CurrentPlayer = 0;
-			RecordAll = false;
-		}
-
 		public bool IsActive { get; set; }
-
 		public int CurrentPlayer{ get; set; }
-
 		public bool RecordAll { get; set; }
 
 		/// <summary>
 		/// A user friendly multitrack status
 		/// </summary>
-		public string CurrentState
+		public string Status
 		{
 			get
 			{
@@ -39,6 +30,13 @@
 
 				return "Recording Player " + CurrentPlayer;
 			}
+		}
+
+		public void Restart()
+		{
+			IsActive = false;
+			CurrentPlayer = 0;
+			RecordAll = false;
 		}
 
 		public void SelectAll()

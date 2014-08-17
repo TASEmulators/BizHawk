@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 		{
 			ReadOnly = true;
 			MovieControllerAdapter = MovieService.DefaultInstance.LogGeneratorInstance().MovieControllerAdapter;
-			MultiTrack = new MultitrackRecording();
+			MultiTrack = new MultitrackRecorder();
 		}
 
 		/// <summary>
@@ -34,7 +34,7 @@ namespace BizHawk.Client.Common
 			get { return QueuedMovie != null; }
 		}
 
-		public MultitrackRecording MultiTrack { get; private set; }
+		public MultitrackRecorder MultiTrack { get; private set; }
 		public IMovieController MovieControllerAdapter{ get; set; }
 
 		public IMovie Movie { get; set; }
@@ -136,6 +136,10 @@ namespace BizHawk.Client.Common
 			{
 				var input = Movie.GetInputState(Global.Emulator.Frame);
 				MovieControllerAdapter.LatchFromSource(input);
+				if (MultiTrack.IsActive)
+				{
+					Global.MultitrackRewiringControllerAdapter.Source = MovieControllerAdapter;
+				}
 			}
 			else
 			{
