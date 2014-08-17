@@ -2,6 +2,13 @@
 {
 	public class MultitrackRecorder
 	{
+		public MultitrackRecorder()
+		{
+			Restart();
+		}
+
+		public MultitrackRewiringControllerAdapter MultitrackRewiringAdapter { get; private set; }
+
 		public bool IsActive { get; set; }
 		public int CurrentPlayer{ get; set; }
 		public bool RecordAll { get; set; }
@@ -37,6 +44,7 @@
 			IsActive = false;
 			CurrentPlayer = 0;
 			RecordAll = false;
+			MultitrackRewiringAdapter = new MultitrackRewiringControllerAdapter();
 		}
 
 		public void SelectAll()
