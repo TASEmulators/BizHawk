@@ -4,16 +4,6 @@ D3D8Base::LPDIRECT3D8 g_D3D=NULL;
 
 HMODULE realDLL;
 
-ThreadSafePointerSet D3D8Wrapper::IDirect3DDevice8::m_List;
-ThreadSafePointerSet D3D8Wrapper::IDirect3DBaseTexture8::m_List;
-ThreadSafePointerSet D3D8Wrapper::IDirect3DVolumeTexture8::m_List;
-ThreadSafePointerSet D3D8Wrapper::IDirect3DCubeTexture8::m_List;
-ThreadSafePointerSet D3D8Wrapper::IDirect3DVertexBuffer8::m_List;
-ThreadSafePointerSet D3D8Wrapper::IDirect3DIndexBuffer8::m_List;
-ThreadSafePointerSet D3D8Wrapper::IDirect3DSurface8::m_List;
-ThreadSafePointerSet D3D8Wrapper::IDirect3DVolume8::m_List;
-ThreadSafePointerSet D3D8Wrapper::IDirect3DSwapChain8::m_List;
-
 extern "C"
 {
 	namespace D3D8Wrapper
@@ -109,7 +99,7 @@ extern "C"
 			//TODO - allow bizhawk to handle flipped images.... nonetheless, it might not handle images with unusual pitches, although maybe we should consider that.
 			//so this code will probably remain for quite some time
 			int dest_row = desc.Height - 1;
-			for (int from_row = 0; from_row < desc.Height; from_row++)
+			for (UINT from_row = 0; from_row < desc.Height; from_row++)
 			{
 				memcpy((char*)dest + (dest_row * desc.Width*4),(char*)locked.pBits + from_row * locked.Pitch, desc.Width*4);
 				dest_row--;
