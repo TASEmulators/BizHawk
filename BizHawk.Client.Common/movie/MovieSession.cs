@@ -113,13 +113,15 @@ namespace BizHawk.Client.Common
 				{
 					rewiredSource.PlayerTargetMask = unchecked((int)0xFFFFFFFF);
 				}
-			}
-			else
-			{
-				rewiredSource.PlayerSource = -1;
-			}
 
-			MovieControllerAdapter.LatchPlayerFromSource(rewiredSource, MultiTrack.CurrentPlayer);
+				if (Movie.InputLogLength > Global.Emulator.Frame)
+				{
+					var input = Movie.GetInputState(Global.Emulator.Frame);
+					MovieControllerAdapter.LatchFromSource(input);
+				}
+
+				MovieControllerAdapter.LatchPlayerFromSource(rewiredSource, MultiTrack.CurrentPlayer);
+			}
 		}
 
 		public void LatchInputFromPlayer(IController source)
