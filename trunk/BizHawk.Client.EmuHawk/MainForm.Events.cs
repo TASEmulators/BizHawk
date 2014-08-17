@@ -385,6 +385,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RecordMovieMenuItem_Click(object sender, EventArgs e)
 		{
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				return;
+			}
+
 			if (!Global.Emulator.Attributes().Released)
 			{
 				var result = MessageBox.Show
@@ -433,7 +438,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PlayMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			new PlayMovie().ShowDialog();
+			if (!Global.MovieSession.Movie.IsActive)
+			{
+				new PlayMovie().ShowDialog();
+			}
 		}
 
 		private void StopMovieMenuItem_Click(object sender, EventArgs e)
