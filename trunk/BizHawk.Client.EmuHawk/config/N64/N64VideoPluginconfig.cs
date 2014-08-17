@@ -1090,7 +1090,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				JaboResolutionWidthBox.Text = GetIntFromDB("Jabo_Resolution_Width", -1).ToString();
 				JaboResolutionHeightBox.Text = GetIntFromDB("Jabo_Resolution_Height", -1).ToString();
-				JaboClearModeDropDown.SelectedItem = ((N64SyncSettings.N64JaboPluginSettings.Direct3DClearMode)GetIntFromDB("Jabo_Clear_Mode", 0)).GetDescription();
+				JaboClearModeDropDown.SelectedItem = ((N64SyncSettings.N64JaboPluginSettings.Direct3DClearMode)GetIntFromDB("Jabo_Clear_Frame", 0)).GetDescription();
 			}
 		}
 
