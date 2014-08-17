@@ -1,4 +1,5 @@
-﻿using BizHawk.Emulation.Common;
+﻿using System.Collections.Generic;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -8,8 +9,6 @@ namespace BizHawk.Client.Common
 		{
 			Restart();
 		}
-
-		public MultitrackRewiringControllerAdapter MultitrackRewiringAdapter { get; private set; }
 
 		public bool IsActive { get; set; }
 		public int CurrentPlayer{ get; set; }
@@ -46,7 +45,6 @@ namespace BizHawk.Client.Common
 			IsActive = false;
 			CurrentPlayer = 0;
 			RecordAll = false;
-			MultitrackRewiringAdapter = new MultitrackRewiringControllerAdapter();
 		}
 
 		public void SelectAll()

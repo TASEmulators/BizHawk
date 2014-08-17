@@ -138,7 +138,7 @@ namespace BizHawk.Client.Common
 				MovieControllerAdapter.LatchFromSource(input);
 				if (MultiTrack.IsActive)
 				{
-					MultiTrack.MultitrackRewiringAdapter.Source = MovieControllerAdapter;
+					Global.MultitrackRewiringAdapter.Source = MovieControllerAdapter;
 				}
 			}
 			else
@@ -275,7 +275,7 @@ namespace BizHawk.Client.Common
 			{
 				if (MultiTrack.IsActive)
 				{
-					LatchMultitrackPlayerInput(Global.MovieInputSourceAdapter, MultiTrack.MultitrackRewiringAdapter);
+					LatchMultitrackPlayerInput(Global.MovieInputSourceAdapter, Global.MultitrackRewiringAdapter);
 				}
 				else
 				{
