@@ -87,15 +87,31 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class MultitrackRewiringControllerAdapter : IController
 	{
+		public MultitrackRewiringControllerAdapter()
+		{
+			PlayerSource = 1;
+		}
+
 		public IController Source { get; set; }
-		public int PlayerSource = 1;
-		public int PlayerTargetMask = 0;
+		public int PlayerSource { get; set; }
+		public int PlayerTargetMask { get; set; }
 
 		public ControllerDefinition Type { get { return Source.Type; } }
-		public bool this[string button] { get { return IsPressed(button); } }
 
-		// floats can be player number remapped just like boolbuttons
-		public float GetFloat(string name) { return Source.GetFloat(RemapButtonName(name)); }
+		public bool this[string button]
+		{
+			get { return IsPressed(button); }
+		}
+
+		public bool IsPressed(string button)
+		{
+			return Source.IsPressed(RemapButtonName(button));
+		}
+
+		public float GetFloat(string button)
+		{
+			return Source.GetFloat(RemapButtonName(button));
+		}
 
 		private string RemapButtonName(string button)
 		{
@@ -125,10 +141,46 @@ namespace BizHawk.Client.Common
 			bnp.PlayerNum = PlayerSource;
 			return bnp.ToString();
 		}
+	}
 
-		public bool IsPressed(string button)
+	public class ButtonNameParser
+	{
+		public static ButtonNameParser Parse(string button)
 		{
-			return Source.IsPressed(RemapButtonName(button));
+			// See if we're being asked for a button that we know how to rewire
+			var parts = button.Split(' ');
+
+			if (parts.Length < 2)
+			{
+				return null;
+			}
+
+			if (parts[0][0] != 'P')
+			{
+				return null;
+			}
+
+			int player;
+			if (!int.TryParse(parts[0].Substring(1), out player))
+			{
+				return null;
+			}
+			else
+			{
+				return new ButtonNameParser
+				{
+					PlayerNum = player,
+					ButtonPart = button.Substring(parts[0].Length + 1)
+				};
+			}
+		}
+
+		public int PlayerNum { get; set; }
+		public string ButtonPart { get; private set; }
+
+		public override string ToString()
+		{
+			return string.Format("P{0} {1}", PlayerNum, ButtonPart);
 		}
 	}
 }
