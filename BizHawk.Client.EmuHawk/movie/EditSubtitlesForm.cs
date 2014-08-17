@@ -171,6 +171,7 @@ namespace BizHawk.Client.EmuHawk
 
         private void Export_Click(object sender, EventArgs e)
         {
+            // Get file to save as
             var form = new SaveFileDialog();
             form.AddExtension = true;
             form.Filter = "SubRip Files (*.srt)|*.srt|All files (*.*)|*.*";
@@ -183,6 +184,7 @@ namespace BizHawk.Client.EmuHawk
             if (result != System.Windows.Forms.DialogResult.OK)
                 return;
 
+            // Fetch fps
             var system = _selectedMovie.HeaderEntries[HeaderKeys.PLATFORM];
             var pal = _selectedMovie.HeaderEntries.ContainsKey(HeaderKeys.PAL)
                 && _selectedMovie.HeaderEntries[HeaderKeys.PAL] == "1";
@@ -205,59 +207,15 @@ namespace BizHawk.Client.EmuHawk
                 return;
             }
 
-            int index = 0;
+            // Create string and write to file
+            var str = _selectedMovie.Subtitles.ToSubRip(fps);
+            File.WriteAllText(fileName, str);
 
-            var sb = new StringBuilder();
-
-            foreach (var subtitle in _selectedMovie.Subtitles)
-            {
-                // Subtitle index
-                index++;
-
-                sb.Append(index.ToString());
-                sb.Append("\r\n");
-
-                // Frame timing
-                double start = (double)subtitle.Frame;
-                double end = (double)(subtitle.Frame + subtitle.Duration);
-
-                int startTime = (int)(start * 1000 / fps);
-                int endTime = (int)(end * 1000 / fps);
-
-                var startString = string.Format(
-                    "{0:d2}:{1:d2}:{2:d2},{3:d3}",
-                    startTime / 3600000,
-                    (startTime / 60000) % 60,
-                    (startTime / 1000) % 60,
-                    startTime % 1000
-                    );
-
-                var endString = string.Format(
-                    "{0:d2}:{1:d2}:{2:d2},{3:d3}",
-                    endTime / 3600000,
-                    (endTime / 60000) % 60,
-                    (endTime / 1000) % 60,
-                    endTime % 1000
-                    );
-
-                sb.Append(startString);
-                sb.Append(" --> ");
-                sb.Append(endString);
-                sb.Append("\r\n");
-
-                // TODO: Positioning
-
-                // TODO: Color
-
-                // Message text
-                sb.Append(subtitle.Message);
-                sb.Append("\r\n");
-
-                // Seperator
-                sb.Append("\r\n");
-            }
-
-            File.WriteAllText(form.FileName, sb.ToString());
+            // Display success
+            MessageBox.Show(
+                string.Format("Subtitles succesfully exported to {0}.", fileName),
+                "Success"
+                );
         }
 	}
 }
