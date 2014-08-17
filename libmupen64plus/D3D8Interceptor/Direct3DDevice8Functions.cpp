@@ -4,25 +4,27 @@ extern "C"
 {
 	namespace D3D8Wrapper
 	{
-		D3D8Wrapper::IDirect3DDevice8::IDirect3DDevice8(D3D8Base::IDirect3DDevice8* pDevice) : IDirect3DUnknown((IUnknown*) pDevice)
+		ThreadSafePointerSet IDirect3DDevice8::m_List;
+
+		D3D8Wrapper::IDirect3DDevice8::IDirect3DDevice8(D3D8Base::IDirect3DDevice8* realDevice) : IDirect3DUnknown((IUnknown*) realDevice)
 		{
-			LOG("IDirect3DDevice8::IDirect3DDevice8( " << pDevice << " )\n");
-			m_pDevice = pDevice;
+			LOG("IDirect3DDevice8::IDirect3DDevice8( " << realDevice << " )\n");
+			m_pDevice = realDevice;
 		}
 
-		D3D8Wrapper::IDirect3DDevice8* D3D8Wrapper::IDirect3DDevice8::GetDirect3DDevice(D3D8Base::IDirect3DDevice8* pDevice)
+		D3D8Wrapper::IDirect3DDevice8* D3D8Wrapper::IDirect3DDevice8::GetDirect3DDevice(D3D8Base::IDirect3DDevice8* realDevice)
 		{
-			LOG("IDirect3DDevice8::GetDirect3DDevice( " << pDevice << " )\n");
-			D3D8Wrapper::IDirect3DDevice8* p = (D3D8Wrapper::IDirect3DDevice8*) m_List.GetDataPtr(pDevice);
-			if(p == NULL)
+			LOG("IDirect3DDevice8::GetDirect3DDevice( " << realDevice << " )\n");
+			D3D8Wrapper::IDirect3DDevice8* wrappedDevice = (D3D8Wrapper::IDirect3DDevice8*) m_List.GetDataPtr(realDevice);
+			if(wrappedDevice == NULL)
 			{
-				p = new D3D8Wrapper::IDirect3DDevice8(pDevice);
-				m_List.AddMember(pDevice, p);
-				return p;
+				wrappedDevice = new D3D8Wrapper::IDirect3DDevice8(realDevice);
+				m_List.AddMember(realDevice, wrappedDevice);
+				return wrappedDevice;
 			}
 
-			p->m_ulRef++;
-			return p;
+			wrappedDevice->m_ulRef++;
+			return wrappedDevice;
 		} 
 
 		STDMETHODIMP_(ULONG) D3D8Wrapper::IDirect3DDevice8::Release(THIS)
@@ -318,34 +320,24 @@ extern "C"
 			
 			if (pSourceSurface->m_ulRef == 0 || (pSourceSurface->GetSurface()) == (pDestinationSurface->GetSurface()))
 			{
-				LOG("WTF\n");
 				return D3DERR_INVALIDCALL;
 			}
 
-			HRESULT hr = m_pDevice->CopyRects(pSourceSurface->GetSurface(),pSourceRectsArray,cRects,pDestinationSurface->GetSurface(),pDestPointsArray);
-
-			return hr;
+			return m_pDevice->CopyRects(pSourceSurface->GetSurface(),pSourceRectsArray,cRects,pDestinationSurface->GetSurface(),pDestPointsArray);
 		}
 
-		/*STDMETHOD(UpdateTexture)(THIS_ D3D8Base::IDirect3DBaseTexture8* pSourceTexture,D3D8Base::IDirect3DBaseTexture8* pDestinationTexture) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::UpdateTexture(D3D8Wrapper::IDirect3DBaseTexture8* pSourceTexture,D3D8Wrapper::IDirect3DBaseTexture8* pDestinationTexture)
 		{
 			LOG("IDirect3DDevice8::UpdateTexture( " << pSourceTexture << " , " << pDestinationTexture << " )\n");
-			HRESULT hr = m_pDevice->UpdateTexture(pSourceTexture->GetBaseTexture(),pDestinationTexture->GetBaseTexture());
-
-			return hr;
+			return m_pDevice->UpdateTexture(pSourceTexture->GetBaseTexture(),pDestinationTexture->GetBaseTexture());
 		}
 
-		/*STDMETHOD(GetFrontBuffer)(THIS_ D3D8Base::IDirect3DSurface8* pDestSurface) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetFrontBuffer(D3D8Wrapper::IDirect3DSurface8* pDestSurface)
 		{
 			LOG("IDirect3DDevice8::GetFrontBuffer( " << pDestSurface << " )\n");
-			HRESULT hr = m_pDevice->GetFrontBuffer(pDestSurface->GetSurface());
-
-			return hr;
+			return m_pDevice->GetFrontBuffer(pDestSurface->GetSurface());
 		}
 
-		/*STDMETHOD(SetRenderTarget)(THIS_ D3D8Base::IDirect3DSurface8* pRenderTarget,D3D8Base::IDirect3DSurface8* pNewZStencil) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetRenderTarget(D3D8Wrapper::IDirect3DSurface8* pRenderTarget,D3D8Wrapper::IDirect3DSurface8* pNewZStencil)
 		{
 			LOG("IDirect3DDevice8::SetRenderTarget( " << pRenderTarget << " , " << pNewZStencil << " )\n");
@@ -359,57 +351,48 @@ extern "C"
 			return hr;
 		}
 
-		/*STDMETHOD(GetRenderTarget)(THIS_ D3D8Base::IDirect3DSurface8** ppRenderTarget) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetRenderTarget(D3D8Wrapper::IDirect3DSurface8** ppRenderTarget)
 		{
 			LOG("IDirect3DDevice8::GetRenderTarget( " << ppRenderTarget << " )\n");
 
-			D3D8Base::IDirect3DSurface8* fd = NULL;
+			D3D8Base::IDirect3DSurface8* realD3D = NULL;
 
-			HRESULT hr = m_pDevice->GetRenderTarget(&fd);//ppRenderTarget);
+			HRESULT hr = m_pDevice->GetRenderTarget(&realD3D);
 
-			D3D8Wrapper::IDirect3DSurface8* f = D3D8Wrapper::IDirect3DSurface8::GetSurface(fd);
+			D3D8Wrapper::IDirect3DSurface8* wrappedD3D = D3D8Wrapper::IDirect3DSurface8::GetSurface(realD3D);
 
-			*ppRenderTarget = f;
+			*ppRenderTarget = wrappedD3D;
 
 			return hr;
 		}
 
-		/*STDMETHOD(GetDepthStencilSurface)(THIS_ D3D8Base::IDirect3DSurface8** ppZStencilSurface) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetDepthStencilSurface(D3D8Wrapper::IDirect3DSurface8** ppZStencilSurface)
 		{
 			LOG("IDirect3DDevice8::GetDepthStencilSurface( " << ppZStencilSurface << " )\n");
 
-			D3D8Base::IDirect3DSurface8* fd = NULL;
+			D3D8Base::IDirect3DSurface8* realD3D = NULL;
 
-			HRESULT hr = m_pDevice->GetDepthStencilSurface(&fd);//ppZStencilSurface);
+			HRESULT hr = m_pDevice->GetDepthStencilSurface(&realD3D);
 
-			D3D8Wrapper::IDirect3DSurface8* f = D3D8Wrapper::IDirect3DSurface8::GetSurface(fd);
+			D3D8Wrapper::IDirect3DSurface8* wrappedD3D = D3D8Wrapper::IDirect3DSurface8::GetSurface(realD3D);
 
-			*ppZStencilSurface = f;
+			*ppZStencilSurface = wrappedD3D;
 
 			return hr;
 		}
 
-		/*STDMETHOD(BeginScene)(THIS) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::BeginScene()
 		{
 			LOG("IDirect3DDevice8::BeginScene()\n");
-			HRESULT hr = m_pDevice->BeginScene();
-
-			return hr;
+			return m_pDevice->BeginScene();
 		}
 
-		/*STDMETHOD(EndScene)(THIS) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::EndScene()
 		{
 			LOG("IDirect3DDevice8::EndScene()\n");
-			HRESULT hr = m_pDevice->EndScene();
-
-			return hr;
+			return m_pDevice->EndScene();
 		}
 
-		/*STDMETHOD(Clear)(THIS_ DWORD Count,CONST D3D8Base::D3DRECT* pRects,DWORD Flags,D3D8Base::D3DCOLOR Color,float Z,DWORD Stencil) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::Clear(DWORD Count,CONST D3D8Base::D3DRECT* pRects,DWORD Flags,D3D8Base::D3DCOLOR Color,float Z,DWORD Stencil)
 		{
 #ifdef LOGGING
@@ -421,48 +404,33 @@ extern "C"
 			LOG(" , " << Flags << " , " << Color << " , " << Z << " , " << Stencil << " )\n");
 #endif			
 
-			HRESULT hr = m_pDevice->Clear(Count,pRects,Flags,Color,Z,Stencil);
-
-			return hr;
+			return m_pDevice->Clear(Count,pRects,Flags,Color,Z,Stencil);
 		}
 
-		/*STDMETHOD(SetTransform)(THIS_ D3D8Base::D3DTRANSFORMSTATETYPE State,CONST D3D8Base::D3DMATRIX* pMatrix) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetTransform(D3D8Base::D3DTRANSFORMSTATETYPE State,CONST D3D8Base::D3DMATRIX* pMatrix)
 		{
 			LOG("IDirect3DDevice8::SetTransform( " << State << " , " << pMatrix << " )\n");
-			HRESULT hr = m_pDevice->SetTransform(State,pMatrix);
-
-			return hr;
+			return m_pDevice->SetTransform(State,pMatrix);
 		}
 
-		/*STDMETHOD(GetTransform)(THIS_ D3D8Base::D3DTRANSFORMSTATETYPE State,D3D8Base::D3DMATRIX* pMatrix) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetTransform(D3D8Base::D3DTRANSFORMSTATETYPE State,D3D8Base::D3DMATRIX* pMatrix)
 		{
 			LOG("IDirect3DDevice8::GetTransform( " << State << " , " << pMatrix << " )\n");
-			HRESULT hr = m_pDevice->GetTransform(State,pMatrix);
-
-			return hr;
+			return m_pDevice->GetTransform(State,pMatrix);
 		}
 
-		/*STDMETHOD(MultiplyTransform)(THIS_ D3D8Base::D3DTRANSFORMSTATETYPE,CONST D3D8Base::D3DMATRIX*) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::MultiplyTransform(D3D8Base::D3DTRANSFORMSTATETYPE foo,CONST D3D8Base::D3DMATRIX* bar)
 		{
 			LOG("IDirect3DDevice8::MultiplyTransform( " << foo << " , " << bar << " )\n");
-			HRESULT hr = m_pDevice->MultiplyTransform(foo, bar);
-
-			return hr;
+			return m_pDevice->MultiplyTransform(foo, bar);
 		}
 
-		/*STDMETHOD(SetViewport)(THIS_ CONST D3D8Base::D3DVIEWPORT8* pViewport) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetViewport(CONST D3D8Base::D3DVIEWPORT8* pViewport)
 		{
 			LOG("IDirect3DDevice8::SetViewport( " << pViewport << " )\n");
-
-			HRESULT hr = m_pDevice->SetViewport(pViewport);
-			return hr;
+			return m_pDevice->SetViewport(pViewport);
 		}
 
-		/*STDMETHOD(GetViewport)(THIS_ D3D8Base::D3DVIEWPORT8* pViewport) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetViewport(D3D8Base::D3DVIEWPORT8* pViewport)
 		{
 #ifdef LOGGING
@@ -473,191 +441,132 @@ extern "C"
 			}
 			LOG(" )\n");
 #endif
-			HRESULT hr = m_pDevice->GetViewport(pViewport);
-
-			return hr;
+			return m_pDevice->GetViewport(pViewport);
 		}
 
-		/*STDMETHOD(SetMaterial)(THIS_ CONST D3D8Base::D3DMATERIAL8* pMaterial) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetMaterial(CONST D3D8Base::D3DMATERIAL8* pMaterial)
 		{
 			LOG("IDirect3DDevice8::SetMaterial( " << pMaterial << " )\n");
-			HRESULT hr = m_pDevice->SetMaterial(pMaterial);
-
-			return hr;
+			return m_pDevice->SetMaterial(pMaterial);
 		}
 
-		/*STDMETHOD(GetMaterial)(THIS_ D3D8Base::D3DMATERIAL8* pMaterial) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetMaterial(D3D8Base::D3DMATERIAL8* pMaterial)
 		{
 			LOG("IDirect3DDevice8::GetMaterial( " << pMaterial << " )\n");
-			HRESULT hr = m_pDevice->GetMaterial(pMaterial);
-
-			return hr;
+			return m_pDevice->GetMaterial(pMaterial);
 		}
 
-		/*STDMETHOD(SetLight)(THIS_ DWORD Index,CONST D3D8Base::D3DLIGHT8*) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetLight(DWORD Index,CONST D3D8Base::D3DLIGHT8* foo)
 		{
 			LOG("IDirect3DDevice8::SetLight( " << Index << " , " << foo << " )\n");
-			HRESULT hr = m_pDevice->SetLight(Index,foo);
-
-			return hr;
+			return m_pDevice->SetLight(Index,foo);
 		}
 
-		/*STDMETHOD(GetLight)(THIS_ DWORD Index,D3D8Base::D3DLIGHT8*) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetLight(DWORD Index,D3D8Base::D3DLIGHT8* foo)
 		{
 			LOG("IDirect3DDevice8::GetLight( " << Index << " , " << foo << " )\n");
-			HRESULT hr = m_pDevice->GetLight(Index,foo);
-
-			return hr;
+			return m_pDevice->GetLight(Index,foo);
 		}
 
-		/*STDMETHOD(LightEnable)(THIS_ DWORD Index,BOOL Enable) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::LightEnable(DWORD Index,BOOL Enable)
 		{
 			LOG("IDirect3DDevice8::LightEnable( " << Index << " , " << Enable << " )\n");
-			HRESULT hr = m_pDevice->LightEnable(Index,Enable);
-
-			return hr;
+			return m_pDevice->LightEnable(Index,Enable);
 		}
 
-		/*STDMETHOD(GetLightEnable)(THIS_ DWORD Index,BOOL* pEnable) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetLightEnable(DWORD Index,BOOL* pEnable)
 		{
 			LOG("IDirect3DDevice8::GetLightEnable( " << Index << " , " << pEnable << " )\n");
-			HRESULT hr = m_pDevice->GetLightEnable(Index,pEnable);
-
-			return hr;
+			return m_pDevice->GetLightEnable(Index,pEnable);
 		}
 
-		/*STDMETHOD(SetClipPlane)(THIS_ DWORD Index,CONST float* pPlane) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetClipPlane(DWORD Index,CONST float* pPlane)
 		{
 			LOG("IDirect3DDevice8::SetClipPlane( " << Index << " , " << pPlane << " )\n");
-			HRESULT hr = m_pDevice->SetClipPlane(Index,pPlane);
-
-			return hr;
+			return m_pDevice->SetClipPlane(Index,pPlane);
 		}
 
-		/*STDMETHOD(GetClipPlane)(THIS_ DWORD Index,float* pPlane) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetClipPlane(DWORD Index,float* pPlane)
 		{
 			LOG("IDirect3DDevice8::GetClipPlane( " << Index << " , " << pPlane << " )\n");
-			HRESULT hr = m_pDevice->GetClipPlane(Index,pPlane);
-
-			return hr;
+			return m_pDevice->GetClipPlane(Index,pPlane);
 		}
 
-		/*STDMETHOD(SetRenderState)(THIS_ D3D8Base::D3DRENDERSTATETYPE State,DWORD Value) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetRenderState(D3D8Base::D3DRENDERSTATETYPE State,DWORD Value)
 		{
 			LOG("IDirect3DDevice8::SetRenderState( " << State << " , " << Value << " )\n");
-
-			HRESULT hr = m_pDevice->SetRenderState(State,Value);
-
-			return hr;
+			return m_pDevice->SetRenderState(State,Value);
 		}
 
-		/*STDMETHOD(GetRenderState)(THIS_ D3D8Base::D3DRENDERSTATETYPE State,DWORD* pValue) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetRenderState(D3D8Base::D3DRENDERSTATETYPE State,DWORD* pValue)
 		{
 			LOG("IDirect3DDevice8::GetRenderState( " << State << " , " << pValue << " )\n");
-			HRESULT hr = m_pDevice->GetRenderState(State,pValue);
-
-			return hr;
+			return m_pDevice->GetRenderState(State,pValue);
 		}
 
-		/*STDMETHOD(BeginStateBlock)(THIS) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::BeginStateBlock()
 		{
 			LOG("IDirect3DDevice8::BeginStateBlock()\n");
-			HRESULT hr = m_pDevice->BeginStateBlock();
-
-			return hr;
+			return m_pDevice->BeginStateBlock();
 		}
 
-		/*STDMETHOD(EndStateBlock)(THIS_ DWORD* pToken) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::EndStateBlock(DWORD* pToken)
 		{
 			LOG("IDirect3DDevice8::EndStateBlock( " << pToken << " )\n");
-			HRESULT hr = m_pDevice->EndStateBlock(pToken);
-
-			return hr;
+			return m_pDevice->EndStateBlock(pToken);
 		}
 
-		/*STDMETHOD(ApplyStateBlock)(THIS_ DWORD Token) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::ApplyStateBlock(DWORD Token)
 		{
 			LOG("IDirect3DDevice8::ApplyStateBlock( " << Token << " )\n");
-			HRESULT hr = m_pDevice->ApplyStateBlock(Token);
-
-			return hr;
+			return m_pDevice->ApplyStateBlock(Token);
 		}
 
-		/*STDMETHOD(CaptureStateBlock)(THIS_ DWORD Token) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::CaptureStateBlock(DWORD Token)
 		{
 			LOG("IDirect3DDevice8::CaptureStateBlock( " << Token << " )\n");
-			HRESULT hr = m_pDevice->CaptureStateBlock(Token);
-
-			return hr;
+			return m_pDevice->CaptureStateBlock(Token);
 		}
 
-		/*STDMETHOD(DeleteStateBlock)(THIS_ DWORD Token) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::DeleteStateBlock(DWORD Token)
 		{
 			LOG("IDirect3DDevice8::DeleteStateBlock( " << Token << " )\n");
-			HRESULT hr = m_pDevice->DeleteStateBlock(Token);
-
-			return hr;
+			return m_pDevice->DeleteStateBlock(Token);
 		}
 
-		/*STDMETHOD(CreateStateBlock)(THIS_ D3D8Base::D3DSTATEBLOCKTYPE Type,DWORD* pToken) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::CreateStateBlock(D3D8Base::D3DSTATEBLOCKTYPE Type,DWORD* pToken)
 		{
 			LOG("IDirect3DDevice8::CreateStateBlock( " << Type << " , " << pToken << " )\n");
-			HRESULT hr = m_pDevice->CreateStateBlock(Type,pToken);
-
-			return hr;
+			return m_pDevice->CreateStateBlock(Type,pToken);
 		}
 
-		/*STDMETHOD(SetClipStatus)(THIS_ CONST D3D8Base::D3DCLIPSTATUS8* pClipStatus) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetClipStatus(CONST D3D8Base::D3DCLIPSTATUS8* pClipStatus)
 		{
 			LOG("IDirect3DDevice8::SetClipStatus( " << pClipStatus << " )\n");
-			HRESULT hr = m_pDevice->SetClipStatus(pClipStatus);
-
-			return hr;
+			return m_pDevice->SetClipStatus(pClipStatus);
 		}
 
-		/*STDMETHOD(GetClipStatus)(THIS_ D3D8Base::D3DCLIPSTATUS8* pClipStatus) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetClipStatus(D3D8Base::D3DCLIPSTATUS8* pClipStatus)
 		{
 			LOG("IDirect3DDevice8::GetClipStatus( " << pClipStatus << " )\n");
-			HRESULT hr = m_pDevice->GetClipStatus(pClipStatus);
-
-			return hr;
+			return m_pDevice->GetClipStatus(pClipStatus);
 		}
 
-		/*STDMETHOD(GetTexture)(THIS_ DWORD Stage,D3D8Base::IDirect3DBaseTexture8** ppTexture) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetTexture(DWORD Stage,D3D8Wrapper::IDirect3DBaseTexture8** ppTexture)
 		{
 			LOG("IDirect3DDevice8::GetTexture( " << Stage << " , " << ppTexture << " )\n");
 
-			D3D8Base::IDirect3DBaseTexture8* fd = NULL;
+			D3D8Base::IDirect3DBaseTexture8* realD3D = NULL;
 
-			HRESULT hr = m_pDevice->GetTexture(Stage,&fd);//ppTexture);
+			HRESULT hr = m_pDevice->GetTexture(Stage,&realD3D);//ppTexture);
 
-			D3D8Wrapper::IDirect3DBaseTexture8* f = new D3D8Wrapper::IDirect3DBaseTexture8(fd);
+			D3D8Wrapper::IDirect3DBaseTexture8* wrappedD3D = new D3D8Wrapper::IDirect3DBaseTexture8(realD3D);
 
-			*ppTexture = f;
+			*ppTexture = wrappedD3D;
 
 			return hr;
 		}
 
-		/*STDMETHOD(SetTexture)(THIS_ DWORD Stage,D3D8Base::IDirect3DBaseTexture8* pTexture) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetTexture(DWORD Stage,D3D8Wrapper::IDirect3DBaseTexture8* pTexture)
 		{
 			LOG("IDirect3DDevice8::SetTexture( " << Stage << " , " << pTexture << " )\n");
@@ -668,341 +577,236 @@ extern "C"
 			}
 			else
 			{
-				//LOG(pTexture->GetResource() << "\n");
-				//LOG(pTexture->GetBaseTexture() << "\n");
-				HRESULT hr = m_pDevice->SetTexture(Stage,pTexture->GetBaseTexture());
-
-				return hr;
+				return m_pDevice->SetTexture(Stage,pTexture->GetBaseTexture());
 			}
 		}
 
-		/*STDMETHOD(GetTextureStageState)(THIS_ DWORD Stage,D3D8Base::D3DTEXTURESTAGESTATETYPE Type,DWORD* pValue) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetTextureStageState(DWORD Stage,D3D8Base::D3DTEXTURESTAGESTATETYPE Type,DWORD* pValue)
 		{
 			LOG("IDirect3DDevice8::GetTextureStageState( " << Stage << " , " << Type << " , " << pValue << " )\n");
-			HRESULT hr = m_pDevice->GetTextureStageState(Stage,Type,pValue);
-
-			return hr;
+			return m_pDevice->GetTextureStageState(Stage,Type,pValue);
 		}
 
-		/*STDMETHOD(SetTextureStageState)(THIS_ DWORD Stage,D3D8Base::D3DTEXTURESTAGESTATETYPE Type,DWORD Value) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetTextureStageState(DWORD Stage,D3D8Base::D3DTEXTURESTAGESTATETYPE Type,DWORD Value)
 		{
 			LOG("IDirect3DDevice8::SetTextureStageState( " << Stage << " , " << Type << " , " << Value << " )\n");
-			HRESULT hr = m_pDevice->SetTextureStageState(Stage,Type,Value);
-
-			return hr;
+			return m_pDevice->SetTextureStageState(Stage,Type,Value);
 		}
 
-		/*STDMETHOD(ValidateDevice)(THIS_ DWORD* pNumPasses) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::ValidateDevice(DWORD* pNumPasses)
 		{
 			LOG("IDirect3DDevice8::ValidateDevice( " << pNumPasses << " )\n");
-			HRESULT hr = m_pDevice->ValidateDevice(pNumPasses);
-
-			return hr;
+			return m_pDevice->ValidateDevice(pNumPasses);
 		}
 
-		/*STDMETHOD(GetInfo)(THIS_ DWORD DevInfoID,void* pDevInfoStruct,DWORD DevInfoStructSize) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetInfo(DWORD DevInfoID,void* pDevInfoStruct,DWORD DevInfoStructSize)
 		{
 			LOG("IDirect3DDevice8::GetInfo( " << DevInfoID << " , " << pDevInfoStruct << " , " << DevInfoStructSize << " )\n");
-			HRESULT hr = m_pDevice->GetInfo(DevInfoID,pDevInfoStruct,DevInfoStructSize);
-
-			return hr;
+			return m_pDevice->GetInfo(DevInfoID,pDevInfoStruct,DevInfoStructSize);
 		}
 
-		/*STDMETHOD(SetPaletteEntries)(THIS_ UINT PaletteNumber,CONST PALETTEENTRY* pEntries) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetPaletteEntries(UINT PaletteNumber,CONST PALETTEENTRY* pEntries)
 		{
 			LOG("IDirect3DDevice8::SetPaletteEntries( " << PaletteNumber << " , " << pEntries << " )\n");
-			HRESULT hr = m_pDevice->SetPaletteEntries(PaletteNumber,pEntries);
-
-			return hr;
+			return m_pDevice->SetPaletteEntries(PaletteNumber,pEntries);
 		}
 
-		/*STDMETHOD(GetPaletteEntries)(THIS_ UINT PaletteNumber,PALETTEENTRY* pEntries) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetPaletteEntries(UINT PaletteNumber,PALETTEENTRY* pEntries)
 		{
 			LOG("IDirect3DDevice8::GetPaletteEntries( " << PaletteNumber << " , " << pEntries << " )\n");
-			HRESULT hr = m_pDevice->GetPaletteEntries(PaletteNumber,pEntries);
-
-			return hr;
+			return m_pDevice->GetPaletteEntries(PaletteNumber,pEntries);
 		}
 
-		/*STDMETHOD(SetCurrentTexturePalette)(THIS_ UINT PaletteNumber) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetCurrentTexturePalette(UINT PaletteNumber)
 		{
 			LOG("IDirect3DDevice8::SetCurrentTexturePalette( " << PaletteNumber << " )\n");
-			HRESULT hr = m_pDevice->SetCurrentTexturePalette(PaletteNumber);
-
-			return hr;
+			return m_pDevice->SetCurrentTexturePalette(PaletteNumber);
 		}
 
-		/*STDMETHOD(GetCurrentTexturePalette)(THIS_ UINT *PaletteNumber) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetCurrentTexturePalette(UINT *PaletteNumber)
 		{
 			LOG("IDirect3DDevice8::GetCurrentTexturePalette( " << PaletteNumber << " )\n");
-			HRESULT hr = m_pDevice->GetCurrentTexturePalette(PaletteNumber);
-
-			return hr;
+			return m_pDevice->GetCurrentTexturePalette(PaletteNumber);
 		}
 
-		/*STDMETHOD(DrawPrimitive)(THIS_ D3D8Base::D3DPRIMITIVETYPE PrimitiveType,UINT StartVertex,UINT PrimitiveCount) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::DrawPrimitive(D3D8Base::D3DPRIMITIVETYPE PrimitiveType,UINT StartVertex,UINT PrimitiveCount)
 		{
 			LOG("IDirect3DDevice8::DrawPrimitive( " << PrimitiveType << " , " << StartVertex << " , " << PrimitiveCount << " )\n");
-			HRESULT hr = m_pDevice->DrawPrimitive(PrimitiveType,StartVertex,PrimitiveCount);
-
-			return hr;
+			return m_pDevice->DrawPrimitive(PrimitiveType,StartVertex,PrimitiveCount);
 		}
 
-		/*STDMETHOD(DrawIndexedPrimitive)(THIS_ D3D8Base::D3DPRIMITIVETYPE,UINT minIndex,UINT NumVertices,UINT startIndex,UINT primCount) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::DrawIndexedPrimitive(D3D8Base::D3DPRIMITIVETYPE PrimitiveType,UINT minIndex,UINT NumVertices,UINT startIndex,UINT primCount)
 		{
 			LOG("IDirect3DDevice8::DrawIndexedPrimitive( " << PrimitiveType << " , " << minIndex << " , " << NumVertices << " , " << startIndex << " , " << primCount << " )\n");
-			HRESULT hr = m_pDevice->DrawIndexedPrimitive(PrimitiveType,minIndex,NumVertices,startIndex,primCount);
-
-			return hr;
+			return m_pDevice->DrawIndexedPrimitive(PrimitiveType,minIndex,NumVertices,startIndex,primCount);
 		}
 
-		/*STDMETHOD(DrawPrimitiveUP)(THIS_ D3D8Base::D3DPRIMITIVETYPE PrimitiveType,UINT PrimitiveCount,CONST void* pVertexStreamZeroData,UINT VertexStreamZeroStride) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::DrawPrimitiveUP(D3D8Base::D3DPRIMITIVETYPE PrimitiveType,UINT PrimitiveCount,CONST void* pVertexStreamZeroData,UINT VertexStreamZeroStride)
 		{
 			LOG("IDirect3DDevice8::DrawPrimitiveUP( " << PrimitiveType << " , " << PrimitiveCount << " , " << pVertexStreamZeroData << " , " << VertexStreamZeroStride << " )\n");
-			HRESULT hr = m_pDevice->DrawPrimitiveUP(PrimitiveType,PrimitiveCount,pVertexStreamZeroData,VertexStreamZeroStride);
-
-			return hr;
+			return m_pDevice->DrawPrimitiveUP(PrimitiveType,PrimitiveCount,pVertexStreamZeroData,VertexStreamZeroStride);
 		}
 
-		/*STDMETHOD(DrawIndexedPrimitiveUP)(THIS_ D3D8Base::D3DPRIMITIVETYPE PrimitiveType,UINT MinVertexIndex,UINT NumVertexIndices,UINT PrimitiveCount,CONST void* pIndexData,D3D8Base::D3DFORMAT IndexDataFormat,CONST void* pVertexStreamZeroData,UINT VertexStreamZeroStride) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::DrawIndexedPrimitiveUP(D3D8Base::D3DPRIMITIVETYPE PrimitiveType,UINT MinVertexIndex,UINT NumVertexIndices,UINT PrimitiveCount,CONST void* pIndexData,D3D8Base::D3DFORMAT IndexDataFormat,CONST void* pVertexStreamZeroData,UINT VertexStreamZeroStride)
 		{
 			LOG("IDirect3DDevice8::DrawIndexedPrimitiveUP( " << PrimitiveType << " , " << MinVertexIndex << " , " << NumVertexIndices << " , " << PrimitiveCount << " , " << pIndexData << " , " << IndexDataFormat << " , " << pVertexStreamZeroData << " , " << VertexStreamZeroStride << " )\n");
-			HRESULT hr = m_pDevice->DrawIndexedPrimitiveUP(PrimitiveType,MinVertexIndex,NumVertexIndices,PrimitiveCount,pIndexData,IndexDataFormat,pVertexStreamZeroData,VertexStreamZeroStride);
-
-			return hr;
+			return m_pDevice->DrawIndexedPrimitiveUP(PrimitiveType,MinVertexIndex,NumVertexIndices,PrimitiveCount,pIndexData,IndexDataFormat,pVertexStreamZeroData,VertexStreamZeroStride);
 		}
 
-		/*STDMETHOD(ProcessVertices)(THIS_ UINT SrcStartIndex,UINT DestIndex,UINT VertexCount,D3D8Base::IDirect3DVertexBuffer8* pDestBuffer,DWORD Flags) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::ProcessVertices(UINT SrcStartIndex,UINT DestIndex,UINT VertexCount,D3D8Wrapper::IDirect3DVertexBuffer8* pDestBuffer,DWORD Flags)
 		{
 			LOG("IDirect3DDevice8::ProcessVertices( " << SrcStartIndex << " , " << DestIndex << " , " << VertexCount << " , " << pDestBuffer << " , " << Flags << " )\n");
-			HRESULT hr = m_pDevice->ProcessVertices(SrcStartIndex,DestIndex,VertexCount,pDestBuffer->GetVertexBuffer(),Flags);
-
-			return hr;
+			return m_pDevice->ProcessVertices(SrcStartIndex,DestIndex,VertexCount,pDestBuffer->GetVertexBuffer(),Flags);
 		}
 
-		/*STDMETHOD(CreateVertexShader)(THIS_ CONST DWORD* pDeclaration,CONST DWORD* pFunction,DWORD* pHandle,DWORD Usage) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::CreateVertexShader(CONST DWORD* pDeclaration,CONST DWORD* pFunction,DWORD* pHandle,DWORD Usage)
 		{
 			LOG("IDirect3DDevice8::CreateVertexShader( " << pDeclaration << " , " << pFunction << " , " << pHandle << " , " << Usage << " )\n");
-			HRESULT hr = m_pDevice->CreateVertexShader(pDeclaration,pFunction,pHandle,Usage);
-
-			return hr;
+			return m_pDevice->CreateVertexShader(pDeclaration,pFunction,pHandle,Usage);
 		}
 
-		/*STDMETHOD(SetVertexShader)(THIS_ DWORD Handle) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetVertexShader(DWORD Handle)
 		{
 			LOG("IDirect3DDevice8::SetVertexShader( " << Handle << " )\n");
-			HRESULT hr = m_pDevice->SetVertexShader(Handle);
-
-			return hr;
+			return m_pDevice->SetVertexShader(Handle);
 		}
 
-		/*STDMETHOD(GetVertexShader)(THIS_ DWORD* pHandle) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetVertexShader(DWORD* pHandle)
 		{
 			LOG("IDirect3DDevice8::GetVertexShader( " << pHandle << " )\n");
-			HRESULT hr = m_pDevice->GetVertexShader(pHandle);
-
-			return hr;
+			return m_pDevice->GetVertexShader(pHandle);
 		}
 
-		/*STDMETHOD(DeleteVertexShader)(THIS_ DWORD Handle) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::DeleteVertexShader(DWORD Handle)
 		{
 			LOG("IDirect3DDevice8::DeleteVertexShader( " << Handle << " )\n");
-			HRESULT hr = m_pDevice->DeleteVertexShader(Handle);
-
-			return hr;
+			return m_pDevice->DeleteVertexShader(Handle);
 		}
 
-		/*STDMETHOD(SetVertexShaderConstant)(THIS_ DWORD Register,CONST void* pConstantData,DWORD ConstantCount) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetVertexShaderConstant(DWORD Register,CONST void* pConstantData,DWORD ConstantCount)
 		{
 			LOG("IDirect3DDevice8::SetVertexShaderConstant( " << Register << " , " << pConstantData << " , " << ConstantCount << " )\n");
-			HRESULT hr = m_pDevice->SetVertexShaderConstant(Register,pConstantData,ConstantCount);
-
-			return hr;
+			return m_pDevice->SetVertexShaderConstant(Register,pConstantData,ConstantCount);
 		}
 
-		/*STDMETHOD(GetVertexShaderConstant)(THIS_ DWORD Register,void* pConstantData,DWORD ConstantCount) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetVertexShaderConstant(DWORD Register,void* pConstantData,DWORD ConstantCount)
 		{
 			LOG("IDirect3DDevice8::GetVertexShaderConstant( " << Register << " , " << pConstantData << " , " << ConstantCount << " )\n");
-			HRESULT hr = m_pDevice->GetVertexShaderConstant(Register,pConstantData,ConstantCount);
-
-			return hr;
+			return m_pDevice->GetVertexShaderConstant(Register,pConstantData,ConstantCount);
 		}
 
-		/*STDMETHOD(GetVertexShaderDeclaration)(THIS_ DWORD Handle,void* pData,DWORD* pSizeOfData) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetVertexShaderDeclaration(DWORD Handle,void* pData,DWORD* pSizeOfData)
 		{
 			LOG("IDirect3DDevice8::GetVertexShaderDeclaration( " << Handle << " , " << pData << " , " << pSizeOfData << " )\n");
-			HRESULT hr = m_pDevice->GetVertexShaderDeclaration(Handle,pData,pSizeOfData);
-
-			return hr;
+			return m_pDevice->GetVertexShaderDeclaration(Handle,pData,pSizeOfData);
 		}
 
-		/*STDMETHOD(GetVertexShaderFunction)(THIS_ DWORD Handle,void* pData,DWORD* pSizeOfData) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetVertexShaderFunction(DWORD Handle,void* pData,DWORD* pSizeOfData)
 		{
 			LOG("IDirect3DDevice8::GetVertexShaderFunction( " << Handle << " , " << pData << " , " << pSizeOfData << " )\n");
-			HRESULT hr = m_pDevice->GetVertexShaderFunction(Handle,pData,pSizeOfData);
-
-			return hr;
+			return m_pDevice->GetVertexShaderFunction(Handle,pData,pSizeOfData);
 		}
 
-		/*STDMETHOD(SetStreamSource)(THIS_ UINT StreamNumber,D3D8Base::IDirect3DVertexBuffer8* pStreamData,UINT Stride) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetStreamSource(UINT StreamNumber,D3D8Wrapper::IDirect3DVertexBuffer8* pStreamData,UINT Stride)
 		{
 			LOG("IDirect3DDevice8::SetStreamSource( " << StreamNumber << " , " << pStreamData << " , " << Stride << " )\n");
-			HRESULT hr = m_pDevice->SetStreamSource(StreamNumber,pStreamData->GetVertexBuffer(),Stride);
-
-			return hr;
+			return m_pDevice->SetStreamSource(StreamNumber,pStreamData->GetVertexBuffer(),Stride);
 		}
 
-		/*STDMETHOD(GetStreamSource)(THIS_ UINT StreamNumber,D3D8Base::IDirect3DVertexBuffer8** ppStreamData,UINT* pStride) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetStreamSource(UINT StreamNumber,D3D8Wrapper::IDirect3DVertexBuffer8** ppStreamData,UINT* pStride)
 		{
 			LOG("IDirect3DDevice8::GetStreamSource( " << StreamNumber << " , " << ppStreamData << " , " << pStride << " )\n");
 
-			D3D8Base::IDirect3DVertexBuffer8* fd = NULL;
+			D3D8Base::IDirect3DVertexBuffer8* realD3D = NULL;
 
-			HRESULT hr = m_pDevice->GetStreamSource(StreamNumber,&fd,pStride);//ppStreamData,pStride);
+			HRESULT hr = m_pDevice->GetStreamSource(StreamNumber,&realD3D,pStride);
 
-			D3D8Wrapper::IDirect3DVertexBuffer8* f = new D3D8Wrapper::IDirect3DVertexBuffer8(fd);
+			D3D8Wrapper::IDirect3DVertexBuffer8* wrappedD3D = new D3D8Wrapper::IDirect3DVertexBuffer8(realD3D);
 
-			*ppStreamData = f;
+			*ppStreamData = wrappedD3D;
 
 			return hr;
 		}
 
-		/*STDMETHOD(SetIndices)(THIS_ D3D8Base::IDirect3DIndexBuffer8* pIndexData,UINT BaseVertexIndex) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetIndices(D3D8Wrapper::IDirect3DIndexBuffer8* pIndexData,UINT BaseVertexIndex)
 		{
 			LOG("IDirect3DDevice8::SetIndices( " << pIndexData << " , " << BaseVertexIndex << " )\n");
-			HRESULT hr = m_pDevice->SetIndices(pIndexData->GetIndexBuffer(),BaseVertexIndex);
-
-			return hr;
+			return m_pDevice->SetIndices(pIndexData->GetIndexBuffer(),BaseVertexIndex);
 		}
 
-		/*STDMETHOD(GetIndices)(THIS_ D3D8Base::IDirect3DIndexBuffer8** ppIndexData,UINT* pBaseVertexIndex) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetIndices(D3D8Wrapper::IDirect3DIndexBuffer8** ppIndexData,UINT* pBaseVertexIndex)
 		{
 			LOG("IDirect3DDevice8::GetIndices( " << ppIndexData << " , " << pBaseVertexIndex << " )\n");
 
-			D3D8Base::IDirect3DIndexBuffer8* fd = NULL;
+			D3D8Base::IDirect3DIndexBuffer8* realD3D = NULL;
 
-			HRESULT hr = m_pDevice->GetIndices(&fd,pBaseVertexIndex);// ppIndexData,pBaseVertexIndex);
+			HRESULT hr = m_pDevice->GetIndices(&realD3D,pBaseVertexIndex);// ppIndexData,pBaseVertexIndex);
 
-			D3D8Wrapper::IDirect3DIndexBuffer8* f = new D3D8Wrapper::IDirect3DIndexBuffer8(fd);
+			D3D8Wrapper::IDirect3DIndexBuffer8* wrappedD3D = new D3D8Wrapper::IDirect3DIndexBuffer8(realD3D);
 
-			*ppIndexData = f;
+			*ppIndexData = wrappedD3D;
 
 			return hr;
 		}
 
-		/*STDMETHOD(CreatePixelShader)(THIS_ CONST DWORD* pFunction,DWORD* pHandle) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::CreatePixelShader(CONST DWORD* pFunction,DWORD* pHandle)
 		{
 			LOG("IDirect3DDevice8::CreatePixelShader( " << pFunction << " , " << pHandle << " )\n");
-			HRESULT hr = m_pDevice->CreatePixelShader(pFunction,pHandle);
-
-			return hr;
+			return m_pDevice->CreatePixelShader(pFunction,pHandle);
 		}
 
-		/*STDMETHOD(SetPixelShader)(THIS_ DWORD Handle) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetPixelShader(DWORD Handle)
 		{
 			LOG("IDirect3DDevice8::SetPixelShader( " << Handle << " )\n");
-			HRESULT hr = m_pDevice->SetPixelShader(Handle);
-
-			return hr;
+			return m_pDevice->SetPixelShader(Handle);
 		}
 
-		/*STDMETHOD(GetPixelShader)(THIS_ DWORD* pHandle) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetPixelShader(DWORD* pHandle)
 		{
 			LOG("IDirect3DDevice8::GetPixelShader( " << pHandle << " )\n");
-			HRESULT hr = m_pDevice->GetPixelShader(pHandle);
-
-			return hr;
+			return m_pDevice->GetPixelShader(pHandle);
 		}
 
-		/*STDMETHOD(DeletePixelShader)(THIS_ DWORD Handle) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::DeletePixelShader(DWORD Handle)
 		{
 			LOG("IDirect3DDevice8::DeletePixelShader( " << Handle << " )\n");
-			HRESULT hr = m_pDevice->DeletePixelShader(Handle);
-
-			return hr;
+			return m_pDevice->DeletePixelShader(Handle);
 		}
 
-		/*STDMETHOD(SetPixelShaderConstant)(THIS_ DWORD Register,CONST void* pConstantData,DWORD ConstantCount) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetPixelShaderConstant(DWORD Register,CONST void* pConstantData,DWORD ConstantCount)
 		{
 			LOG("IDirect3DDevice8::SetPixelShaderConstant( " << Register << " , " << pConstantData << " , " << ConstantCount << " )\n");
-			HRESULT hr = m_pDevice->SetPixelShaderConstant(Register,pConstantData,ConstantCount);
-
-			return hr;
+			return m_pDevice->SetPixelShaderConstant(Register,pConstantData,ConstantCount);
 		}
 
-		/*STDMETHOD(GetPixelShaderConstant)(THIS_ DWORD Register,void* pConstantData,DWORD ConstantCount) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetPixelShaderConstant(DWORD Register,void* pConstantData,DWORD ConstantCount)
 		{
 			LOG("IDirect3DDevice8::GetPixelShaderConstant( " << Register << " , " << pConstantData << " , " << ConstantCount << " )\n");
-			HRESULT hr = m_pDevice->GetPixelShaderConstant(Register,pConstantData,ConstantCount);
-
-			return hr;
+			return m_pDevice->GetPixelShaderConstant(Register,pConstantData,ConstantCount);
 		}
 
-		/*STDMETHOD(GetPixelShaderFunction)(THIS_ DWORD Handle,void* pData,DWORD* pSizeOfData) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetPixelShaderFunction(DWORD Handle,void* pData,DWORD* pSizeOfData)
 		{
 			LOG("IDirect3DDevice8::GetPixelShaderFunction( " << Handle << " , " << pData << " , " << pSizeOfData << " )\n");
-			HRESULT hr = m_pDevice->GetPixelShaderFunction(Handle,pData,pSizeOfData);
-
-			return hr;
+			return m_pDevice->GetPixelShaderFunction(Handle,pData,pSizeOfData);
 		}
 
-		/*STDMETHOD(DrawRectPatch)(THIS_ UINT Handle,CONST float* pNumSegs,CONST D3D8Base::D3DRECTPATCH_INFO* pRectPatchInfo) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::DrawRectPatch(UINT Handle,CONST float* pNumSegs,CONST D3D8Base::D3DRECTPATCH_INFO* pRectPatchInfo)
 		{
 			LOG("IDirect3DDevice8::DrawRectPatch( " << Handle << " , " << pNumSegs << " , " << pRectPatchInfo << " )\n");
-			HRESULT hr = m_pDevice->DrawRectPatch(Handle,pNumSegs,pRectPatchInfo);
-
-			return hr;
+			return m_pDevice->DrawRectPatch(Handle,pNumSegs,pRectPatchInfo);
 		}
 
-		/*STDMETHOD(DrawTriPatch)(THIS_ UINT Handle,CONST float* pNumSegs,CONST D3D8Base::D3DTRIPATCH_INFO* pTriPatchInfo) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::DrawTriPatch(UINT Handle,CONST float* pNumSegs,CONST D3D8Base::D3DTRIPATCH_INFO* pTriPatchInfo)
 		{
 			LOG("IDirect3DDevice8::DrawTriPatch( " << Handle << " , " << pNumSegs << " , " << pTriPatchInfo << " )\n");
-			HRESULT hr = m_pDevice->DrawTriPatch(Handle,pNumSegs,pTriPatchInfo);
-
-			return hr;
+			return m_pDevice->DrawTriPatch(Handle,pNumSegs,pTriPatchInfo);
 		}
 
-		/*STDMETHOD(DeletePatch)(THIS_ UINT Handle) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::DeletePatch(UINT Handle)
 		{
 			LOG("IDirect3DDevice8::DeletePatch( " << Handle << " )\n");
-			HRESULT hr = m_pDevice->DeletePatch(Handle);
-
-			return hr;
+			return m_pDevice->DeletePatch(Handle);
 		}
 	}
 }

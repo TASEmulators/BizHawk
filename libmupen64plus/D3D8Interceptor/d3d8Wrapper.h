@@ -14,8 +14,6 @@
 #define LOG(x) 
 #endif
 
-#define TESTDLL_API __declspec(dllexport) 
-
 namespace D3D8Base
 {
 	#include "d3d8base/d3d8.h"
@@ -129,9 +127,7 @@ extern "C"
 			/*** IDirect3DUnknown methods ***/
 			STDMETHOD_(ULONG,Release)(THIS);
 
-
 			IDirect3DDevice8(D3D8Base::IDirect3DDevice8*);
-
 
 			/*** IDirect3DDevice8 methods ***/
 			STDMETHOD(TestCooperativeLevel)(THIS);
@@ -285,16 +281,6 @@ extern "C"
 
 			inline D3D8Base::IDirect3DBaseTexture8* GetBaseTexture() { return m_pD3D; }
 
-			/*
-			STDMETHOD(GetDevice)(THIS_ IDirect3DDevice8** ppDevice) PURE;
-			STDMETHOD(SetPrivateData)(THIS_ REFGUID refguid,CONST void* pData,DWORD SizeOfData,DWORD Flags) PURE;
-			STDMETHOD(GetPrivateData)(THIS_ REFGUID refguid,void* pData,DWORD* pSizeOfData) PURE;
-			STDMETHOD(FreePrivateData)(THIS_ REFGUID refguid) PURE;
-			STDMETHOD_(DWORD, SetPriority)(THIS_ DWORD PriorityNew) PURE;
-			STDMETHOD_(DWORD, GetPriority)(THIS) PURE;
-			STDMETHOD_(void, PreLoad)(THIS) PURE;
-			STDMETHOD_(D3D8Base::D3DRESOURCETYPE, GetType)(THIS) PURE;
-			*/
 			STDMETHOD_(DWORD, SetLOD)(THIS_ DWORD LODNew);
 			STDMETHOD_(DWORD, GetLOD)(THIS);
 			STDMETHOD_(DWORD, GetLevelCount)(THIS);
@@ -311,20 +297,6 @@ extern "C"
 			IDirect3DTexture8(D3D8Base::IDirect3DTexture8*);
 
 			static D3D8Wrapper::IDirect3DTexture8* GetTexture(D3D8Base::IDirect3DTexture8*);
-
-			/*
-			STDMETHOD(GetDevice)(THIS_ IDirect3DDevice8** ppDevice) PURE;
-			STDMETHOD(SetPrivateData)(THIS_ REFGUID refguid,CONST void* pData,DWORD SizeOfData,DWORD Flags) PURE;
-			STDMETHOD(GetPrivateData)(THIS_ REFGUID refguid,void* pData,DWORD* pSizeOfData) PURE;
-			STDMETHOD(FreePrivateData)(THIS_ REFGUID refguid) PURE;
-			STDMETHOD_(DWORD, SetPriority)(THIS_ DWORD PriorityNew) PURE;
-			STDMETHOD_(DWORD, GetPriority)(THIS) PURE;
-			STDMETHOD_(void, PreLoad)(THIS) PURE;
-			STDMETHOD_(D3DRESOURCETYPE, GetType)(THIS) PURE;
-			STDMETHOD_(DWORD, SetLOD)(THIS_ DWORD LODNew) PURE;
-			STDMETHOD_(DWORD, GetLOD)(THIS) PURE;
-			STDMETHOD_(DWORD, GetLevelCount)(THIS) PURE;
-			*/
 
 			STDMETHOD(GetLevelDesc)(THIS_ UINT Level,D3D8Base::D3DSURFACE_DESC *pDesc);
 			STDMETHOD(GetSurfaceLevel)(THIS_ UINT Level,D3D8Wrapper::IDirect3DSurface8** ppSurfaceLevel);
@@ -344,20 +316,6 @@ extern "C"
 
 			IDirect3DVolumeTexture8(D3D8Base::IDirect3DVolumeTexture8*);
 
-			/*
-			STDMETHOD(GetDevice)(THIS_ IDirect3DDevice8** ppDevice) PURE;
-			STDMETHOD(SetPrivateData)(THIS_ REFGUID refguid,CONST void* pData,DWORD SizeOfData,DWORD Flags) PURE;
-			STDMETHOD(GetPrivateData)(THIS_ REFGUID refguid,void* pData,DWORD* pSizeOfData) PURE;
-			STDMETHOD(FreePrivateData)(THIS_ REFGUID refguid) PURE;
-			STDMETHOD_(DWORD, SetPriority)(THIS_ DWORD PriorityNew) PURE;
-			STDMETHOD_(DWORD, GetPriority)(THIS) PURE;
-			STDMETHOD_(void, PreLoad)(THIS) PURE;
-			STDMETHOD_(D3DRESOURCETYPE, GetType)(THIS) PURE;
-			STDMETHOD_(DWORD, SetLOD)(THIS_ DWORD LODNew) PURE;
-			STDMETHOD_(DWORD, GetLOD)(THIS) PURE;
-			STDMETHOD_(DWORD, GetLevelCount)(THIS) PURE;
-			*/
-
 			STDMETHOD(GetLevelDesc)(THIS_ UINT Level,D3D8Base::D3DVOLUME_DESC *pDesc);
 			STDMETHOD(GetVolumeLevel)(THIS_ UINT Level,D3D8Wrapper::IDirect3DVolume8** ppVolumeLevel);
 			STDMETHOD(LockBox)(THIS_ UINT Level,D3D8Base::D3DLOCKED_BOX* pLockedVolume,CONST D3D8Base::D3DBOX* pBox,DWORD Flags);
@@ -376,19 +334,6 @@ extern "C"
 
 			IDirect3DCubeTexture8(D3D8Base::IDirect3DCubeTexture8*);
 
-			/*
-			STDMETHOD(GetDevice)(THIS_ IDirect3DDevice8** ppDevice) PURE;
-			STDMETHOD(SetPrivateData)(THIS_ REFGUID refguid,CONST void* pData,DWORD SizeOfData,DWORD Flags) PURE;
-			STDMETHOD(GetPrivateData)(THIS_ REFGUID refguid,void* pData,DWORD* pSizeOfData) PURE;
-			STDMETHOD(FreePrivateData)(THIS_ REFGUID refguid) PURE;
-			STDMETHOD_(DWORD, SetPriority)(THIS_ DWORD PriorityNew) PURE;
-			STDMETHOD_(DWORD, GetPriority)(THIS) PURE;
-			STDMETHOD_(void, PreLoad)(THIS) PURE;
-			STDMETHOD_(D3DRESOURCETYPE, GetType)(THIS) PURE;
-			STDMETHOD_(DWORD, SetLOD)(THIS_ DWORD LODNew) PURE;
-			STDMETHOD_(DWORD, GetLOD)(THIS) PURE;
-			STDMETHOD_(DWORD, GetLevelCount)(THIS) PURE;
-			*/
 			STDMETHOD(GetLevelDesc)(THIS_ UINT Level,D3D8Base::D3DSURFACE_DESC *pDesc);
 			STDMETHOD(GetCubeMapSurface)(THIS_ D3D8Base::D3DCUBEMAP_FACES FaceType,UINT Level,D3D8Wrapper::IDirect3DSurface8** ppCubeMapSurface);
 			STDMETHOD(LockRect)(THIS_ D3D8Base::D3DCUBEMAP_FACES FaceType,UINT Level,D3D8Base::D3DLOCKED_RECT* pLockedRect,CONST RECT* pRect,DWORD Flags);
@@ -408,16 +353,6 @@ extern "C"
 
 			inline D3D8Base::IDirect3DVertexBuffer8* GetVertexBuffer() { return m_pD3D; }
 
-			/*
-			STDMETHOD(GetDevice)(THIS_ IDirect3DDevice8** ppDevice) PURE;
-			STDMETHOD(SetPrivateData)(THIS_ REFGUID refguid,CONST void* pData,DWORD SizeOfData,DWORD Flags) PURE;
-			STDMETHOD(GetPrivateData)(THIS_ REFGUID refguid,void* pData,DWORD* pSizeOfData) PURE;
-			STDMETHOD(FreePrivateData)(THIS_ REFGUID refguid) PURE;
-			STDMETHOD_(DWORD, SetPriority)(THIS_ DWORD PriorityNew) PURE;
-			STDMETHOD_(DWORD, GetPriority)(THIS) PURE;
-			STDMETHOD_(void, PreLoad)(THIS) PURE;
-			STDMETHOD_(D3DRESOURCETYPE, GetType)(THIS) PURE;
-			*/
 			STDMETHOD(Lock)(THIS_ UINT OffsetToLock,UINT SizeToLock,BYTE** ppbData,DWORD Flags);
 			STDMETHOD(Unlock)(THIS);
 			STDMETHOD(GetDesc)(THIS_ D3D8Base::D3DVERTEXBUFFER_DESC *pDesc);
@@ -436,16 +371,6 @@ extern "C"
 
 			inline D3D8Base::IDirect3DIndexBuffer8* GetIndexBuffer() { return m_pD3D; }
 
-			/*
-			STDMETHOD(GetDevice)(THIS_ IDirect3DDevice8** ppDevice) PURE;
-			STDMETHOD(SetPrivateData)(THIS_ REFGUID refguid,CONST void* pData,DWORD SizeOfData,DWORD Flags) PURE;
-			STDMETHOD(GetPrivateData)(THIS_ REFGUID refguid,void* pData,DWORD* pSizeOfData) PURE;
-			STDMETHOD(FreePrivateData)(THIS_ REFGUID refguid) PURE;
-			STDMETHOD_(DWORD, SetPriority)(THIS_ DWORD PriorityNew) PURE;
-			STDMETHOD_(DWORD, GetPriority)(THIS) PURE;
-			STDMETHOD_(void, PreLoad)(THIS) PURE;
-			STDMETHOD_(D3DRESOURCETYPE, GetType)(THIS) PURE;
-			*/
 			STDMETHOD(Lock)(THIS_ UINT OffsetToLock,UINT SizeToLock,BYTE** ppbData,DWORD Flags);
 			STDMETHOD(Unlock)(THIS);
 			STDMETHOD(GetDesc)(THIS_ D3D8Base::D3DINDEXBUFFER_DESC *pDesc);
