@@ -54,5 +54,17 @@ namespace BizHawk.Client.Common
 			
 			return false;
 		}
+
+        public string ToSubRip(double fps)
+        {
+            int index = 1;
+
+            var sb = new StringBuilder();
+
+            foreach (var subtitle in this)
+                sb.Append(subtitle.ToSubRip(index++, fps));
+
+            return sb.ToString();
+        }
 	}
 }
