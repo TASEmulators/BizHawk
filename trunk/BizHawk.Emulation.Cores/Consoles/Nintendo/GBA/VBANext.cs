@@ -14,7 +14,7 @@ using BizHawk.Common;
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	[CoreAttributes("VBA-Next", "TODO", true, false, "cd508312a29ed8c29dacac1b11c2dce56c338a54", "https://github.com/libretro/vba-next")]
-	public class VBANext : IEmulator, IVideoProvider, ISyncSoundProvider
+	public class VBANext : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable
 	{
 		IntPtr Core;
 
@@ -253,6 +253,39 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		#endregion
 
 		#region Debugging
+
+		LibVBANext.StandardCallback scanlinecb;
+
+		GBAGPUMemoryAreas IGBAGPUViewable.GetMemoryAreas()
+		{
+			var s = new LibVBANext.MemoryAreas();
+			LibVBANext.GetMemoryAreas(Core, s);
+			return new GBAGPUMemoryAreas
+			{
+				mmio = s.mmio,
+				oam = s.oam,
+				palram = s.palram,
+				vram = s.vram
+			};
+		}
+
+		void IGBAGPUViewable.SetScanlineCallback(Action callback, int scanline)
+		{
+			if (scanline < 0 || scanline > 227)
+			{
+				throw new ArgumentOutOfRangeException("Scanline must be in [0, 227]!");
+			}
+			if (callback == null)
+			{
+				scanlinecb = null;
+				LibVBANext.SetScanlineCallback(Core, scanlinecb, 0);
+			}
+			else
+			{
+				scanlinecb = new LibVBANext.StandardCallback(callback);
+				LibVBANext.SetScanlineCallback(Core, scanlinecb, scanline);
+			}
+		}
 
 		void InitMemoryDomains()
 		{
