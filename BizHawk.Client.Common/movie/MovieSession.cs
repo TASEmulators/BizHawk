@@ -382,18 +382,18 @@ namespace BizHawk.Client.Common
 			{
 				if (Global.Config.VBAStyleMovieLoadState)
 				{
-					MessageCallback("Multi-track can not be used in Full Movie Loadstates mode");
+					Output("Multi-track can not be used in Full Movie Loadstates mode");
 				}
 				else
 				{
 					MultiTrack.IsActive ^= true;
 					MultiTrack.SelectNone();
-					MessageCallback(MultiTrack.IsActive ? "MultiTrack Enabled" : "MultiTrack Disabled");
+					Output(MultiTrack.IsActive ? "MultiTrack Enabled" : "MultiTrack Disabled");
 				}
 			}
 			else
 			{
-				MessageCallback("MultiTrack cannot be enabled while not recording.");
+				Output("MultiTrack cannot be enabled while not recording.");
 			}
 		}
 
@@ -425,11 +425,7 @@ namespace BizHawk.Client.Common
 				movie.Load();
 				if (movie.SystemID != Global.Emulator.SystemId)
 				{
-					// MessageCallback() is too weak for this.  it's a basically fatal error; QueuedMovie never gets set, and we get other exceptions later
-					// that don't make it clear what actually went wrong
 					throw new InvalidOperationException("Movie does not match the currently loaded system, unable to load");
-					//MessageCallback("Movie does not match the currently loaded system, unable to load");
-					//return;
 				}
 			}
 
