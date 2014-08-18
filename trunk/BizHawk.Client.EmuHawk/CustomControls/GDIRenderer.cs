@@ -206,6 +206,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 			_bitHDC = CreateCompatibleDC(_hdc);
 			_bitMap = CreateCompatibleBitmap(_hdc, width, height);
+			SelectObject(_bitHDC, _bitMap);
 		}
 
 		public void EndOffScreenBitmap()
@@ -222,7 +223,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		public void CopyToScreen()
 		{
-			BitBlt(_bitMap, 0, 0, _bitW, _bitH, _hdc, 0, 0, 0x00CC0020);
+			BitBlt(_hdc, 0, 0, _bitW, _bitH, _bitHDC, 0, 0, 0x00CC0020);
 		}
 
 		#endregion
@@ -343,8 +344,9 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		[DllImport("gdi32.dll")]
 		private static extern IntPtr CreateCompatibleBitmap(IntPtr hdc, int width, int height);
 
-		[DllImport("gdi32.dll")]
-		private static extern void BitBlt(IntPtr sourceHdc, int x, int y, int w, int h, IntPtr destinationHDc, int destinationX, int destinationY, int copyType);
+		[DllImport("gdi32.dll", EntryPoint = "BitBlt", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		static extern bool BitBlt([In] IntPtr hdc, int nXDest, int nYDest, int nWidth, int nHeight, [In] IntPtr hdcSrc, int nXSrc, int nYSrc, int dwRop);
 
 		#endregion
 
