@@ -2415,10 +2415,16 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SaveState(string path, string userFriendlyStateName, bool fromLua)
 		{
-			SavestateManager.SaveStateFile(path, userFriendlyStateName);
+			try
+			{
+				SavestateManager.SaveStateFile(path, userFriendlyStateName);
 
-			GlobalWin.OSD.AddMessage("Saved state: " + userFriendlyStateName);
-
+				GlobalWin.OSD.AddMessage("Saved state: " + userFriendlyStateName);
+			}
+			catch (IOException)
+			{
+				GlobalWin.OSD.AddMessage("Unable to save state " + path);
+			}
 			if (!fromLua)
 			{
 				UpdateStatusSlots();
