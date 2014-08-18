@@ -66,14 +66,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_QueryItemText(int index, int column, out string text)
 		{
-
+			text = "";
 			if (columnClicked.HasValue && column == columnClicked)
 			{
 				text = "!";
 				return;
 			}
 
-			text = r.NextDouble() > .5 ? "_" : "";
+			if (index < InputView.ItemCount)
+			{
+				text = r.NextDouble() > .5 ? "_" : "";
+			}
 
 			/*
 			text = string.Empty;
@@ -252,6 +255,8 @@ namespace BizHawk.Client.EmuHawk
 					Type = InputRoll.RollColumn.InputType.Boolean
 				},
 			});
+
+			InputView.ItemCount = 20;
 		}
 
 		private void settingsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)

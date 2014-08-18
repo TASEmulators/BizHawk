@@ -15,21 +15,30 @@ namespace BizHawk.Client.EmuHawk
 		private readonly RollColumns Columns = new RollColumns();
 		private readonly List<Cell> SelectedItems = new List<Cell>();
 
-		private readonly VScrollBar VBar = new VScrollBar
-		{
-			Visible = false
-		};
+		private readonly VScrollBar VBar;
 
-		private readonly HScrollBar HBar = new HScrollBar
-		{
-			Visible = false
-		};
+		private readonly HScrollBar HBar;
 
 		private int _horizontalOrientedColumnWidth = 0;
+		private int _itemCount = 0;
 		private Size _charSize;
 
 		public InputRoll()
 		{
+			VBar = new VScrollBar
+			{
+				Location = new Point(Width - 16, 0),
+				Visible = false,
+				Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom
+			};
+
+			HBar = new HScrollBar
+			{
+				Location = new Point(0, Height - 16),
+				Visible = false,
+				Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
+			};
+
 			CellPadding = 3;
 			CurrentCell = null;
 			Font = new Font("Courier New", 8);  // Only support fixed width
@@ -46,6 +55,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_charSize = Gdi.MeasureString("A", this.Font);
 			}
+
+			this.Controls.Add(VBar);
+			this.Controls.Add(HBar);
+			RecalculateScrollBars();
 		}
 
 		protected override void Dispose(bool disposing)
@@ -76,7 +89,19 @@ namespace BizHawk.Client.EmuHawk
 		/// Gets or sets the sets the virtual number of items to be displayed.
 		/// </summary>
 		[Category("Behavior")]
-		public int ItemCount { get; set; }
+		public int ItemCount
+		{
+			get
+			{
+				return _itemCount;
+			}
+
+			set
+			{
+				_itemCount = value;
+				RecalculateScrollBars();
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets the sets the columns can be resized
@@ -234,6 +259,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
+			VBar.Location = new Point(Width - 16, 0);
 			using (var LCK = Gdi.LockGraphics(e.Graphics))
 			{
 				Gdi.StartOffScreenBitmap(Width, Height);
@@ -646,7 +672,56 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		#region Change Events
+
+		protected override void OnResize(EventArgs e)
+		{
+			RecalculateScrollBars();
+			base.OnResize(e);
+			Refresh();
+		}
+
+		#endregion
+
 		#region Helpers
+
+		private void RecalculateScrollBars()
+		{
+			if (NeedsVScrollbar)
+			{
+				VBar.Visible = true;
+				if (HorizontalOrientation)
+				{
+					VBar.Maximum = Columns.Count;
+				}
+				else
+				{
+					VBar.Maximum = ItemCount;
+				}
+			}
+			else
+			{
+				VBar.Visible = false;
+			}
+
+			if (NeedsHScrollbar)
+			{
+				HBar.Visible = true;
+				if (HorizontalOrientation)
+				{
+					HBar.Maximum = ItemCount;
+				}
+				else
+				{
+					HBar.Maximum = Columns.Count;
+				}
+			}
+			else
+			{
+				HBar.Visible = false;
+			}
+		}
+
 
 		private void SelectCell(Cell cell)
 		{
