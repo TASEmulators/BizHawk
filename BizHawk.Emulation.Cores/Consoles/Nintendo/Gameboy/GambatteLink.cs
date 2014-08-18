@@ -7,6 +7,8 @@ using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 
+using Newtonsoft.Json;
+
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	[CoreAttributes(
@@ -291,20 +293,61 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region savestates
 
+		JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
+
+		private class DGBSerialized
+		{
+			public TextState<Gameboy.TextStateData> L;
+			public TextState<Gameboy.TextStateData> R;
+			// other data
+			public bool IsLagFrame;
+			public int LagCount;
+			public int Frame;
+			public int overflowL;
+			public int overflowR;
+			public int LatchL;
+			public int LatchR;
+			public bool cableconnected;
+			public bool cablediscosignal;
+		}
+
 		public void SaveStateText(TextWriter writer)
 		{
-			var temp = SaveStateBinary();
-			temp.SaveAsHex(writer);
+			var s = new DGBSerialized
+			{
+				L = L.SaveState(),
+				R = R.SaveState(),
+				IsLagFrame = IsLagFrame,
+				LagCount = LagCount,
+				Frame = Frame,
+				overflowL = overflowL,
+				overflowR = overflowR,
+				LatchL = LatchL,
+				LatchR = LatchR,
+				cableconnected = cableconnected,
+				cablediscosignal = cablediscosignal
+			};
+			ser.Serialize(writer, s);
 			// write extra copy of stuff we don't use
+			// is this needed anymore??
+			writer.WriteLine();
 			writer.WriteLine("Frame {0}", Frame);
 		}
 
 		public void LoadStateText(TextReader reader)
 		{
-			string hex = reader.ReadLine();
-			byte[] state = new byte[hex.Length / 2];
-			state.ReadFromHex(hex);
-			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
+			var s = (DGBSerialized)ser.Deserialize(reader, typeof(DGBSerialized));
+			L.LoadState(s.L);
+			R.LoadState(s.R);
+			IsLagFrame = s.IsLagFrame;
+			LagCount = s.LagCount;
+			Frame = s.Frame;
+			overflowL = s.overflowL;
+			overflowR = s.overflowR;
+			LatchL = s.LatchL;
+			LatchR = s.LatchR;
+			cableconnected = s.cableconnected;
+			cablediscosignal = s.cablediscosignal;
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
