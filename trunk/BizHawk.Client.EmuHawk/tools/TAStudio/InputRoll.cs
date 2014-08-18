@@ -236,6 +236,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using (var LCK = Gdi.LockGraphics(e.Graphics))
 			{
+				Gdi.StartOffScreenBitmap(Width, Height);
+
 				// Header
 				if (Columns.Any())
 				{
@@ -248,6 +250,9 @@ namespace BizHawk.Client.EmuHawk
 
 				// ForeGround
 				DrawData(e);
+
+				Gdi.CopyToScreen();
+				Gdi.EndOffScreenBitmap();
 			}
 		}
 

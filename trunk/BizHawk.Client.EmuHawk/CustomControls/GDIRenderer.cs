@@ -52,6 +52,8 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 				}
 			}
 
+			EndOffScreenBitmap();
+
 			System.Diagnostics.Debug.Assert(_hdc == IntPtr.Zero, "Disposed a GDIRenderer while it held an HDC");
 			System.Diagnostics.Debug.Assert(_g == null, "Disposed a GDIRenderer while it held a Graphics");
 		}
@@ -80,7 +82,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			SetFont(font);
 
 			var size = new Size();
-			GetTextExtentPoint32(_hdc, str, str.Length, ref size);
+			GetTextExtentPoint32(CurrentHDC, str, str.Length, ref size);
 			return size;
 		}
 
@@ -98,7 +100,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			SetFont(font);
 
 			var size = new Size();
-			GetTextExtentExPoint(_hdc, str, str.Length, (int)Math.Round(maxWidth), CharFit, CharFitWidth, ref size);
+			GetTextExtentExPoint(CurrentHDC, str, str.Length, (int)Math.Round(maxWidth), CharFit, CharFitWidth, ref size);
 			charFit = CharFit[0];
 			charFitWidth = charFit > 0 ? CharFitWidth[charFit - 1] : 0;
 			return size;
@@ -106,7 +108,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		public void DrawString(string str, Point point)
 		{
-			TextOut(_hdc, point.X, point.Y, str, str.Length);
+			TextOut(CurrentHDC, point.X, point.Y, str, str.Length);
 		}
 
 		public void PrepDrawString(Font font, Color color)
@@ -125,7 +127,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			SetTextColor(color);
 
 			var rect2 = new Rect(rect);
-			DrawText(_hdc, str, str.Length, ref  rect2, (uint)flags);
+			DrawText(CurrentHDC, str, str.Length, ref  rect2, (uint)flags);
 		}
 
 		/// <summary>
@@ -134,18 +136,18 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		public void SetTextColor(Color color)
 		{
 			int rgb = (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R;
-			SetTextColor(_hdc, rgb);
+			SetTextColor(CurrentHDC, rgb);
 		}
 
 		public void SetBackgroundColor(Color color)
 		{
 			int rgb = (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R;
-			SetBkColor(_hdc, rgb);
+			SetBkColor(CurrentHDC, rgb);
 		}
 
 		public void DrawRectangle(int nLeftRect, int nTopRect, int nRightRect, int nBottomRect)
 		{
-			Rectangle(_hdc, nLeftRect, nTopRect, nRightRect, nBottomRect);
+			Rectangle(CurrentHDC, nLeftRect, nTopRect, nRightRect, nBottomRect);
 		}
 
 		public void SetBrush(Color color)
@@ -166,25 +168,61 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		public void FillRectangle(int x, int y, int w, int h)
 		{
 			var r = new GDIRect(new Rectangle(x, y, w, h));
-			FillRect(_hdc, ref r, _currentBrush);
+			FillRect(CurrentHDC, ref r, _currentBrush);
 		}
 
 		public void SetPenPosition(int x, int y)
 		{
-			MoveToEx(_hdc, x, y, IntPtr.Zero);
+			MoveToEx(CurrentHDC, x, y, IntPtr.Zero);
 		}
 
 		public void SetSolidPen(Color color)
 		{
 			int rgb = (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R;
-			SelectObject(_hdc, GetStockObject((int)PaintObjects.DC_PEN));
-			SetDCPenColor(_hdc, rgb);
+			SelectObject(CurrentHDC, GetStockObject((int)PaintObjects.DC_PEN));
+			SetDCPenColor(CurrentHDC, rgb);
 		}
 
 		public void Line(int x1, int y1, int x2, int y2)
 		{
-			MoveToEx(_hdc, x1, y1, IntPtr.Zero);
-			LineTo(_hdc, x2, y2);
+			MoveToEx(CurrentHDC, x1, y1, IntPtr.Zero);
+			LineTo(CurrentHDC, x2, y2);
+		}
+
+		private IntPtr CurrentHDC
+		{
+			get { return _bitHDC != IntPtr.Zero ? _bitHDC : _hdc; }
+		}
+
+		private IntPtr _bitMap = IntPtr.Zero; // TODO: dispose of this guy
+		private IntPtr _bitHDC = IntPtr.Zero; // TODO: dispose of this guy
+		private int _bitW;
+		private int _bitH;
+
+		public void StartOffScreenBitmap(int width, int height)
+		{
+			_bitW = width;
+			_bitH = height;
+
+			_bitHDC = CreateCompatibleDC(_hdc);
+			_bitMap = CreateCompatibleBitmap(_hdc, width, height);
+		}
+
+		public void EndOffScreenBitmap()
+		{
+			_bitW = 0;
+			_bitH = 0;
+			
+			DeleteObject(_bitMap);
+			DeleteObject(_bitHDC);
+
+			_bitHDC = IntPtr.Zero;
+			_bitMap = IntPtr.Zero;
+		}
+
+		public void CopyToScreen()
+		{
+			BitBlt(_bitMap, 0, 0, _bitW, _bitH, _hdc, 0, 0, 0x00CC0020);
 		}
 
 		#endregion
@@ -298,6 +336,15 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		[DllImport("gdi32.dll")]
 		private static extern IntPtr SetDCPenColor(IntPtr hdc, int crColor);
+
+		[DllImport("gdi32.dll")]
+		private static extern IntPtr CreateCompatibleDC(IntPtr hdc);
+
+		[DllImport("gdi32.dll")]
+		private static extern IntPtr CreateCompatibleBitmap(IntPtr hdc, int width, int height);
+
+		[DllImport("gdi32.dll")]
+		private static extern void BitBlt(IntPtr sourceHdc, int x, int y, int w, int h, IntPtr destinationHDc, int destinationX, int destinationY, int copyType);
 
 		#endregion
 
