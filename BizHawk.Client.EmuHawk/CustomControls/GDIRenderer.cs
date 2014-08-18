@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		public GDIRenderer()
 		{
-			SetBkMode(_hdc, (int)BkModes.OPAQUE);
+			SetBkMode(_hdc, BkModes.OPAQUE);
 		}
 
 		public void Dispose()
@@ -69,7 +69,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		{
 			_g = g;
 			_hdc = g.GetHdc();
-			SetBkMode(_hdc, (int)BkModes.TRANSPARENT);
+			SetBkMode(_hdc, BkModes.TRANSPARENT);
 			return new GdiGraphicsLock(this);
 		}
 
@@ -207,7 +207,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			_bitHDC = CreateCompatibleDC(_hdc);
 			_bitMap = CreateCompatibleBitmap(_hdc, width, height);
 			SelectObject(_bitHDC, _bitMap);
-			SetBkMode(_bitHDC, (int)BkModes.TRANSPARENT);
+			SetBkMode(_bitHDC, BkModes.TRANSPARENT);
 		}
 
 		public void EndOffScreenBitmap()
@@ -292,7 +292,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		private static extern int FillRect(IntPtr hdc, [In] ref GDIRect lprc, IntPtr hbr);
 
 		[DllImport("gdi32.dll")]
-		private static extern int SetBkMode(IntPtr hdc, int mode);
+		private static extern int SetBkMode(IntPtr hdc, BkModes mode);
 
 		[DllImport("gdi32.dll")]
 		private static extern int SelectObject(IntPtr hdc, IntPtr hgdiObj);
@@ -474,7 +474,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			DC_PEN = 19,
 		}
 
-		public enum BkModes
+		public enum BkModes : int
 		{
 			TRANSPARENT = 1,
 			OPAQUE = 2
