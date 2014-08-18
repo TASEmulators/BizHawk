@@ -518,24 +518,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region savestates
 
-		byte[] newsavebuff;
+		byte[] savebuff;
+		byte[] savebuff2;
 
 		void NewSaveCoreSetBuff()
 		{
-			newsavebuff = new byte[LibGambatte.gambatte_newstatelen(GambatteState)];
-		}
-
-		byte[] NewSaveCoreBinary()
-		{
-			if (!LibGambatte.gambatte_newstatesave(GambatteState, newsavebuff, newsavebuff.Length))
-				throw new Exception("gambatte_newstatesave() returned false");
-			return newsavebuff;
-		}
-
-		void NewLoadCoreBinary(byte[] data)
-		{
-			if (!LibGambatte.gambatte_newstateload(GambatteState, data, data.Length))
-				throw new Exception("gambatte_newstateload() returned false");
+			savebuff = new byte[LibGambatte.gambatte_newstatelen(GambatteState)];
+			savebuff2 = new byte[savebuff.Length + 4 + 21];
 		}
 
 		JsonSerializer ser = new JsonSerializer() { Formatting = Formatting.Indented };
@@ -583,11 +572,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public void SaveStateBinary(System.IO.BinaryWriter writer)
 		{
-			//byte[] data = SaveCoreBinary();
-			byte[] data = NewSaveCoreBinary();
+			if (!LibGambatte.gambatte_newstatesave(GambatteState, savebuff, savebuff.Length))
+				throw new Exception("gambatte_newstatesave() returned false");
 
-			writer.Write(data.Length);
-			writer.Write(data);
+			writer.Write(savebuff.Length);
+			writer.Write(savebuff);
 
 			// other variables
 			writer.Write(IsLagFrame);
@@ -600,10 +589,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public void LoadStateBinary(System.IO.BinaryReader reader)
 		{
 			int length = reader.ReadInt32();
-			byte[] data = reader.ReadBytes(length);
+			if (length != savebuff.Length)
+				throw new InvalidOperationException("Savestate buffer size mismatch!");
 
-			//LoadCoreBinary(data);
-			NewLoadCoreBinary(data);
+			reader.Read(savebuff, 0, savebuff.Length);
+
+			if (!LibGambatte.gambatte_newstateload(GambatteState, savebuff, savebuff.Length))
+				throw new Exception("gambatte_newstateload() returned false");
 
 			// other variables
 			IsLagFrame = reader.ReadBoolean();
@@ -615,11 +607,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public byte[] SaveStateBinary()
 		{
-			MemoryStream ms = new MemoryStream();
+			MemoryStream ms = new MemoryStream(savebuff2);
 			BinaryWriter bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
-			return ms.ToArray();
+			if (ms.Position != savebuff2.Length)
+				throw new InvalidOperationException();
+			ms.Close();
+			return savebuff2;
 		}
 
 		public bool BinarySaveStatesPreferred { get { return true; } }
@@ -698,11 +693,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				throw new Exception("gambatte_getmemoryarea() failed!");
 
 			// if length == 0, it's an empty block; (usually rambank on some carts); that's ok
-			// TODO: when length == 0, should we simply not add the memory domain at all?
-			if (data == IntPtr.Zero && length > 0)
-				throw new Exception("bad return from gambatte_getmemoryarea()");
-
-			_MemoryDomains.Add(MemoryDomain.FromIntPtr(name, length, MemoryDomain.Endian.Little, data));
+			if (data != IntPtr.Zero && length > 0)
+				_MemoryDomains.Add(MemoryDomain.FromIntPtr(name, length, MemoryDomain.Endian.Little, data));
 		}
 
 		void InitMemoryDomains()
