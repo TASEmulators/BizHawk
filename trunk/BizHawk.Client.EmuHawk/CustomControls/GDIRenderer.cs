@@ -207,6 +207,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			_bitHDC = CreateCompatibleDC(_hdc);
 			_bitMap = CreateCompatibleBitmap(_hdc, width, height);
 			SelectObject(_bitHDC, _bitMap);
+			SetBkMode(_bitHDC, (int)BkModes.TRANSPARENT);
 		}
 
 		public void EndOffScreenBitmap()
