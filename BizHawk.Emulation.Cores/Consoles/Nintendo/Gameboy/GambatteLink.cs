@@ -19,34 +19,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	{
 		bool disposed = false;
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
-		{
-			var left = L.GetCpuFlagsAndRegisters()
-				.Select(reg => new KeyValuePair<string, int>("Left " + reg.Key, reg.Value));
-
-			var right = R.GetCpuFlagsAndRegisters()
-				.Select(reg => new KeyValuePair<string, int>("Right " + reg.Key, reg.Value));
-
-			return left.Union(right).ToList().ToDictionary(pair => pair.Key, pair => pair.Value);
-		}
-
-		public void SetCpuRegister(string register, int value)
-		{
-			if (register.StartsWith("Left "))
-			{
-				L.SetCpuRegister(register.Replace("Left ", ""), value);
-			}
-			else if (register.StartsWith("Right "))
-			{
-				R.SetCpuRegister(register.Replace("Right ", ""), value);
-			}
-		}
-
 		Gameboy L;
 		Gameboy R;
 		// counter to ensure we do 35112 samples per frame
 		int overflowL = 0;
 		int overflowR = 0;
+		/// <summary>if true, the link cable is currently connected</summary>
+		bool cableconnected = true;
+		/// <summary>if true, the link cable toggle signal is currently asserted</summary>
+		bool cablediscosignal = false;
 
 		const int SampPerFrame = 35112;
 
@@ -57,6 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			return right ? R.IsCGBMode() : L.IsCGBMode();
 		}
+		public bool LinkCableConnected { get { return cableconnected; } }
 
 		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom, object Settings, object SyncSettings, bool deterministic)
 		{
@@ -110,6 +92,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 A", "P1 B", "P1 Select", "P1 Start", "P1 Power",
 				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 A", "P2 B", "P2 Select", "P2 Start", "P2 Power",
+				"Toggle Cable"
 			}
 		};
 
@@ -131,6 +114,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						RCont.Set(s.Replace("P2 ", ""));
 				}
 			}
+			bool cablediscosignal_new = Controller["Toggle Cable"];
+			if (cablediscosignal_new && !cablediscosignal)
+			{
+				cableconnected ^= true;
+				Console.WriteLine("Cable connect status to {0}", cableconnected);
+			}
+			cablediscosignal = cablediscosignal_new;
 
 			Frame++;
 			L.FrameAdvancePrep();
@@ -174,7 +164,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 									LibGambatte.gambatte_blitto(R.GambatteState, rightvbuff, pitch);
 								nR += (int)nsamp;
 							}
-							// poll link cable statuses
+
+							// poll link cable statuses, but not when the cable is disconnected
+							if (!cableconnected)
+								continue;
 
 							if (LibGambatte.gambatte_linkstatus(L.GambatteState, 256) != 0) // ClockTrigger
 							{
@@ -192,7 +185,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 								LibGambatte.gambatte_linkstatus(L.GambatteState, ro & 0xff); // ShiftIn
 								LibGambatte.gambatte_linkstatus(R.GambatteState, lo & 0xff); // ShiftIn
 							}
-
 						}
 						overflowL = nL - SampPerFrame;
 						overflowR = nR - SampPerFrame;
@@ -228,6 +220,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public bool DeterministicEmulation { get { return L.DeterministicEmulation && R.DeterministicEmulation; } }
 
 		public string BoardName { get { return L.BoardName + '|' + R.BoardName; } }
+
+		public void ResetCounters()
+		{
+			Frame = 0;
+			LagCount = 0;
+			IsLagFrame = false;
+		}
+
+		public CoreComm CoreComm { get; private set; }
+
+		public void Dispose()
+		{
+			if (!disposed)
+			{
+				L.Dispose();
+				L = null;
+				R.Dispose();
+				R = null;
+				blip_left.Dispose();
+				blip_left = null;
+				blip_right.Dispose();
+				blip_right = null;
+
+				disposed = true;
+			}
+		}
 
 		#region saveram
 
@@ -271,13 +289,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#endregion
 
-		public void ResetCounters()
-		{
-			Frame = 0;
-			LagCount = 0;
-			IsLagFrame = false;
-		}
-
 		#region savestates
 
 		public void SaveStateText(TextWriter writer)
@@ -308,6 +319,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			writer.Write(overflowR);
 			writer.Write(LatchL);
 			writer.Write(LatchR);
+			writer.Write(cableconnected);
+			writer.Write(cablediscosignal);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
@@ -322,6 +335,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			overflowR = reader.ReadInt32();
 			LatchL = reader.ReadInt32();
 			LatchR = reader.ReadInt32();
+			cableconnected = reader.ReadBoolean();
+			cablediscosignal = reader.ReadBoolean();
 		}
 
 		public byte[] SaveStateBinary()
@@ -337,9 +352,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#endregion
 
-		public CoreComm CoreComm { get; private set; }
+		#region debugging
 
 		public MemoryDomainList MemoryDomains { get; private set; }
+
+		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		{
+			var left = L.GetCpuFlagsAndRegisters()
+				.Select(reg => new KeyValuePair<string, int>("Left " + reg.Key, reg.Value));
+
+			var right = R.GetCpuFlagsAndRegisters()
+				.Select(reg => new KeyValuePair<string, int>("Right " + reg.Key, reg.Value));
+
+			return left.Union(right).ToList().ToDictionary(pair => pair.Key, pair => pair.Value);
+		}
+
+		public void SetCpuRegister(string register, int value)
+		{
+			if (register.StartsWith("Left "))
+			{
+				L.SetCpuRegister(register.Replace("Left ", ""), value);
+			}
+			else if (register.StartsWith("Right "))
+			{
+				R.SetCpuRegister(register.Replace("Right ", ""), value);
+			}
+		}
 
 		void SetMemoryDomains()
 		{
@@ -353,22 +391,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			MemoryDomains = new MemoryDomainList(mm);
 		}
 
-		public void Dispose()
-		{
-			if (!disposed)
-			{
-				L.Dispose();
-				L = null;
-				R.Dispose();
-				R = null;
-				blip_left.Dispose();
-				blip_left = null;
-				blip_right.Dispose();
-				blip_right = null;
-
-				disposed = true;
-			}
-		}
+		#endregion
 
 		#region VideoProvider
 
@@ -446,6 +469,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#endregion
 
+		#region settings
+
 		public object GetSettings()
 		{
 			return new GambatteLinkSettings
@@ -518,6 +543,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				return new GambatteLinkSyncSettings(L.Clone(), R.Clone());
 			}
 		}
+
+		#endregion
 
 	}
 }
