@@ -59,6 +59,7 @@ namespace BizHawk.Client.EmuHawk
 			this.Controls.Add(VBar);
 			this.Controls.Add(HBar);
 			RecalculateScrollBars();
+			Columns.ChangedCallback = ColumnChangedCallback;
 		}
 
 		protected override void Dispose(bool disposing)
@@ -685,6 +686,11 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Helpers
 
+		private void ColumnChangedCallback()
+		{
+			RecalculateScrollBars();
+		}
+
 		private void RecalculateScrollBars()
 		{
 			if (NeedsVScrollbar)
@@ -692,11 +698,11 @@ namespace BizHawk.Client.EmuHawk
 				VBar.Visible = true;
 				if (HorizontalOrientation)
 				{
-					VBar.Maximum = Columns.Count;
+					VBar.Maximum = (Columns.Count * CellHeight) - Height;
 				}
 				else
 				{
-					VBar.Maximum = ItemCount;
+					VBar.Maximum = (ItemCount * CellHeight) - Height;
 				}
 			}
 			else
@@ -709,11 +715,11 @@ namespace BizHawk.Client.EmuHawk
 				HBar.Visible = true;
 				if (HorizontalOrientation)
 				{
-					HBar.Maximum = ItemCount;
+					HBar.Maximum = (ItemCount * CellHeight) - Height;
 				}
 				else
 				{
-					HBar.Maximum = Columns.Count;
+					HBar.Maximum = (Columns.Count * CellHeight) - Height;
 				}
 			}
 			else
@@ -954,15 +960,96 @@ namespace BizHawk.Client.EmuHawk
 
 		public class RollColumns : List<RollColumn>
 		{
-			public void Add(string name, string text, int width, RollColumn.InputType type = RollColumn.InputType.Text)
+			public Action ChangedCallback { get; set; }
+
+			private void DoChangeCallback()
 			{
-				Add(new RollColumn
+				if (ChangedCallback != null)
 				{
-					Name = name,
-					Text = text,
-					Width = width,
-					Type = type
-				});
+					ChangedCallback();
+				}
+			}
+
+			public new void Add(RollColumn column)
+			{
+				if (this.Any(c => c.Name == column.Name))
+				{
+					throw new InvalidOperationException("A column with this name already exists.");
+				}
+
+				base.Add(column);
+				ChangedCallback();
+			}
+
+			public new void AddRange(IEnumerable<RollColumn> collection)
+			{
+				foreach(var column in collection)
+				{
+					if (this.Any(c => c.Name == column.Name))
+					{
+						throw new InvalidOperationException("A column with this name already exists.");
+					}
+				}
+
+				base.AddRange(collection);
+				ChangedCallback();
+			}
+
+			public new void Insert(int index, RollColumn column)
+			{
+				if (this.Any(c => c.Name == column.Name))
+				{
+					throw new InvalidOperationException("A column with this name already exists.");
+				}
+
+				base.Insert(index, column);
+				ChangedCallback();
+			}
+
+			public new void InsertRange(int index, IEnumerable<RollColumn> collection)
+			{
+				foreach (var column in collection)
+				{
+					if (this.Any(c => c.Name == column.Name))
+					{
+						throw new InvalidOperationException("A column with this name already exists.");
+					}
+				}
+
+				base.InsertRange(index, collection);
+				ChangedCallback();
+			}
+
+			public new bool Remove(RollColumn column)
+			{
+				var result = base.Remove(column);
+				ChangedCallback();
+				return result;
+			}
+
+			public new int RemoveAll(Predicate<RollColumn> match)
+			{
+				var result = base.RemoveAll(match);
+				ChangedCallback();
+				return result;
+			}
+
+			public new void RemoveAt(int index)
+			{
+				base.RemoveAt(index);
+				ChangedCallback();
+			}
+
+			public new void RemoveRange(int index, int count)
+			{
+				base.RemoveRange(index, count);
+				ChangedCallback();
+			}
+
+			public new void Clear()
+			{
+				base.Clear();
+				ChangedCallback();
 			}
 
 			public IEnumerable<string> Groups
