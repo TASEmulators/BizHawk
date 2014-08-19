@@ -75,18 +75,5 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.OSD.AddMessage("Replaying movie file in read-only mode");
 			}
 		}
-
-		public void StopMovie(bool saveChanges = true)
-		{
-			if (IsSlave && _master.WantsToCOntrolStopMovie)
-			{
-				_master.StopMovie();
-			}
-			else
-			{
-				Global.MovieSession.StopMovie(saveChanges);
-				SetMainformMovieInfo();
-			}
-		}
 	}
 }

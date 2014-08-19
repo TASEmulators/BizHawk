@@ -1966,26 +1966,6 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.DisplayInput ^= true;
 		}
 
-		private void ToggleReadOnly()
-		{
-			if (IsSlave && _master.WantsToControlReadOnly)
-			{
-				_master.ToggleReadOnly();
-			}
-			else
-			{
-				if (Global.MovieSession.Movie.IsActive)
-				{
-					Global.MovieSession.ReadOnly ^= true;
-					GlobalWin.OSD.AddMessage(Global.MovieSession.ReadOnly ? "Movie read-only mode" : "Movie read+write mode");
-				}
-				else
-				{
-					GlobalWin.OSD.AddMessage("No movie active");
-				}
-			}
-		}
-
 		private static void VolumeUp()
 		{
 			Global.Config.SoundVolume += 10;
@@ -3085,7 +3065,7 @@ namespace BizHawk.Client.EmuHawk
 		// Still needs a good bit of refactoring
 		public bool LoadRom(string path, bool? deterministicemulation = null)
 		{
-			// If deterministic emulation is passed in, respect that value regardless, else determine a good value (currently that simply means movies require detemrinistic emulaton)
+			// If deterministic emulation is passed in, respect that value regardless, else determine a good value (currently that simply means movies require deterministic emulaton)
 			bool deterministic = deterministicemulation.HasValue ?
 				deterministicemulation.Value :
 				Global.MovieSession.Movie.IsActive;
@@ -3372,26 +3352,64 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		// TODO: move me
-		private IControlMainform _master;
+        #region Tool Control API
+
+        // TODO: move me
+        public IControlMainform master { get; private set; }
 		public void RelinquishControl(IControlMainform master)
 		{
-			_master = master;
+			this.master = master;
 		}
+
+        private void ToggleReadOnly()
+        {
+            if (IsSlave && master.WantsToControlReadOnly)
+            {
+                master.ToggleReadOnly();
+            }
+            else
+            {
+                if (Global.MovieSession.Movie.IsActive)
+                {
+                    Global.MovieSession.ReadOnly ^= true;
+                    GlobalWin.OSD.AddMessage(Global.MovieSession.ReadOnly ? "Movie read-only mode" : "Movie read+write mode");
+                }
+                else
+                {
+                    GlobalWin.OSD.AddMessage("No movie active");
+                }
+            }
+        }
+
+        public void StopMovie(bool saveChanges = true)
+        {
+            if (IsSlave && master.WantsToControlStopMovie)
+            {
+                master.StopMovie();
+            }
+            else
+            {
+                Global.MovieSession.StopMovie(saveChanges);
+                SetMainformMovieInfo();
+                UpdateStatusSlots();
+            }
+        }
 
 		private bool IsSlave
 		{
-			get { return _master != null; }
+			get { return master != null; }
 		}
 
-		public void TakeControl()
+		public void TakeBackControl()
 		{
-			_master = null;
+			master = null;
 		}
 
 		private void GBAcoresettingsToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Gameboy Advance Settings");
-		}
-	}
+        }
+
+        #endregion
+    }
 }

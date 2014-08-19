@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// "pending" frame logic
-			if (index == Global.Emulator.Frame && index == _tas.InputLogLength)
+			if (index == Global.Emulator.Frame && index == _currentTasMovie.InputLogLength)
 			{
 				if (columnName == FrameColumnName)
 				{
@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var record = _tas[index];
+			var record = _currentTasMovie[index];
 
 			if (columnName == FrameColumnName)
 			{
@@ -69,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					color = CurrentFrame_FrameCol;
 				}
-				else if (_tas.Markers.IsMarker(index))
+				else if (_currentTasMovie.Markers.IsMarker(index))
 				{
 					color = Marker_FrameCol;
 				}
@@ -135,11 +135,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					if (index < _tas.InputLogLength)
+					if (index < _currentTasMovie.InputLogLength)
 					{
-						text = _tas.DisplayValue(index, columnName);
+						text = _currentTasMovie.DisplayValue(index, columnName);
 					}
-					else if (Global.Emulator.Frame == _tas.InputLogLength) // In this situation we have a "pending" frame for the user to click
+					else if (Global.Emulator.Frame == _currentTasMovie.InputLogLength) // In this situation we have a "pending" frame for the user to click
 					{
 						text = TasMovie.CreateDisplayValueForButton(
 							Global.ClickyVirtualPadController,
@@ -213,12 +213,12 @@ namespace BizHawk.Client.EmuHawk
 							TasView.Refresh();
 
 							_startBoolDrawColumn = TasView.PointedCell.Column;
-							_boolPaintState = _tas.BoolIsPressed(frame, buttonName);
+							_boolPaintState = _currentTasMovie.BoolIsPressed(frame, buttonName);
 						}
 						else
 						{
 							_startFloatDrawColumn = TasView.PointedCell.Column;
-							_floatPaintState = _tas.GetFloatValue(frame, buttonName);
+							_floatPaintState = _currentTasMovie.GetFloatValue(frame, buttonName);
 						}
 					}
 				}
@@ -309,9 +309,9 @@ namespace BizHawk.Client.EmuHawk
 				{
 					for (var i = startVal; i < endVal; i++)
 					{
-						if (i < _tas.InputLogLength) // TODO: how do we really want to handle the user setting the float state of the pending frame?
+						if (i < _currentTasMovie.InputLogLength) // TODO: how do we really want to handle the user setting the float state of the pending frame?
 						{
-							_tas.SetFloatState(i, _startFloatDrawColumn, _floatPaintState); // Notice it uses new row, old column, you can only paint across a single column
+							_currentTasMovie.SetFloatState(i, _startFloatDrawColumn, _floatPaintState); // Notice it uses new row, old column, you can only paint across a single column
 							GoToLastEmulatedFrameIfNecessary(TasView.PointedCell.Row.Value);
 						}
 					}

@@ -8,7 +8,7 @@
 			GlobalWin.OSD.AddMessage("TAStudio does not allow manual readonly toggle");
 		}
 
-		public bool WantsToCOntrolStopMovie { get { return true; } }
+		public bool WantsToControlStopMovie { get { return true; } }
 		public void StopMovie()
 		{
 			this.Focus();
