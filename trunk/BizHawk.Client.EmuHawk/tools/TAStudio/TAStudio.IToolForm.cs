@@ -5,8 +5,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio : IToolForm
 	{
-		public bool UpdateBefore { get { return false; } }
-
 		public void UpdateValues()
 		{
 			if (!IsHandleCreated || IsDisposed)
@@ -15,9 +13,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			RefreshDialog();
-			if (_tas.IsRecording)
+			if (_currentTasMovie.IsRecording)
 			{
-				TasView.ensureVisible(_tas.InputLogLength - 1);
+				TasView.ensureVisible(_currentTasMovie.InputLogLength - 1);
 			}
 			else
 			{
@@ -37,15 +35,16 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (_tas != null)
+			if (_currentTasMovie != null)
 			{
 				RefreshDialog();
 			}
 		}
 
-		public bool AskSave()
+
+		public bool AskSaveChanges()
 		{
-			if (_tas != null && _tas.Changes)
+			if (_currentTasMovie != null && _currentTasMovie.Changes)
 			{
 				GlobalWin.Sound.StopSound();
 				var result = MessageBox.Show(
@@ -62,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (result == DialogResult.No)
 				{
-					_tas.ClearChanges();
+					_currentTasMovie.ClearChanges();
 					return true;
 				}
 				else if (result == DialogResult.Cancel)
@@ -73,5 +72,7 @@ namespace BizHawk.Client.EmuHawk
 
 			return true;
 		}
+
+		public bool UpdateBefore { get { return false; } }
 	}
 }

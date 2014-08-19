@@ -96,7 +96,7 @@ namespace BizHawk.Client.EmuHawk
 			get { return false; }
 		}
 
-		public bool AskSave()
+		public bool AskSaveChanges()
 		{
 			return true;
 		}

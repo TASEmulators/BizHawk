@@ -105,7 +105,7 @@ namespace BizHawk.Client.EmuHawk
 			CdlTextbox.Lines = lines.ToArray();
 		}
 
-		public bool AskSave()
+		public bool AskSaveChanges()
 		{
 			return true;
 		}

@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateValues();
 		}
 
-		public bool AskSave()
+		public bool AskSaveChanges()
 		{
 			return true;
 		}
