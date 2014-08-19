@@ -72,6 +72,7 @@ namespace BizHawk.Client.EmuHawk
 		public TAStudio()
 		{
 			InitializeComponent();
+			WantsToControlStopMovie = true;
 			TasPlaybackBox.Tastudio = this;
 			MarkerControl.Tastudio = this;
 			TasView.QueryItemText += TasView_QueryItemText;
@@ -137,7 +138,9 @@ namespace BizHawk.Client.EmuHawk
 			if (AskSaveChanges())
 			{
 				NewTasMovie();
+				WantsToControlStopMovie = false;
 				GlobalWin.MainForm.StartNewMovie(_currentTasMovie, record: true);
+				WantsToControlStopMovie = true;
 				RefreshDialog();
 			}
 		}
@@ -157,7 +160,9 @@ namespace BizHawk.Client.EmuHawk
 					Global.Config.RecentTas.HandleLoadError(path);
 				}
 
+				WantsToControlStopMovie = false;
 				GlobalWin.MainForm.StartNewMovie(movie, record: false);
+				WantsToControlStopMovie = true;
 				_currentTasMovie = Global.MovieSession.Movie as TasMovie;
 				Global.Config.RecentTas.Add(path);
 				RefreshDialog();
