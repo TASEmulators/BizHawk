@@ -38,33 +38,44 @@ namespace BizHawk.Client.Common
 		public const string Movieheader = "Header";
 		*/
 
-		private static readonly Dictionary<BinaryStateLump, string> LumpNames;
+		private static readonly Dictionary<BinaryStateLump, string> ReadNames;
+		private static readonly Dictionary<BinaryStateLump, string> WriteNames;
 
+		static void AddLumpName(BinaryStateLump token, string name)
+		{
+			ReadNames[token] = Path.GetFileNameWithoutExtension(name);
+			WriteNames[token] = name;
+		}
 		static BinaryStateFileNames()
 		{
-			LumpNames = new Dictionary<BinaryStateLump, string>();
-			LumpNames[BinaryStateLump.Versiontag] = "BizState 1.0";
-			LumpNames[BinaryStateLump.Corestate] = "Core";
-			LumpNames[BinaryStateLump.Framebuffer] = "Framebuffer";
-			LumpNames[BinaryStateLump.Input] = "Input Log";
-			LumpNames[BinaryStateLump.CorestateText] = "CoreText";
-			LumpNames[BinaryStateLump.Movieheader] = "Header";
+			ReadNames = new Dictionary<BinaryStateLump, string>();
+			WriteNames = new Dictionary<BinaryStateLump, string>();
+			AddLumpName(BinaryStateLump.Versiontag, "BizState 1.0");
+			AddLumpName(BinaryStateLump.Corestate, "Core");
+			AddLumpName(BinaryStateLump.Framebuffer, "Framebuffer");
+			AddLumpName(BinaryStateLump.Input, "Input Log.txt");
+			AddLumpName(BinaryStateLump.CorestateText, "CoreText.txt");
+			AddLumpName(BinaryStateLump.Movieheader, "Header.txt");
 
 			// Only for movies they probably shoudln't be leaching this stuff
-			LumpNames[BinaryStateLump.Comments] = "Comments";
-			LumpNames[BinaryStateLump.Subtitles] = "Subtitles";
-			LumpNames[BinaryStateLump.SyncSettings] = "SyncSettings";
+			AddLumpName(BinaryStateLump.Comments, "Comments.txt");
+			AddLumpName(BinaryStateLump.Subtitles, "Subtitles.txt");
+			AddLumpName(BinaryStateLump.SyncSettings, "SyncSettings.json");
 
 			// TasMovie
-			LumpNames[BinaryStateLump.LagLog] = "LagLog";
-			LumpNames[BinaryStateLump.Greenzone] = "GreenZone";
-			LumpNames[BinaryStateLump.GreenzoneSettings] = "GreenZoneSettings";
-			LumpNames[BinaryStateLump.Markers] = "Markers";
+			AddLumpName(BinaryStateLump.LagLog, "LagLog");
+			AddLumpName(BinaryStateLump.Greenzone, "GreenZone");
+			AddLumpName(BinaryStateLump.GreenzoneSettings, "GreenZoneSettings.txt");
+			AddLumpName(BinaryStateLump.Markers, "Markers.txt");
 		}
 
-		public static string Get(BinaryStateLump lump)
+		public static string GetReadName(BinaryStateLump lump)
 		{
-			return LumpNames[lump];
+			return ReadNames[lump];
+		}
+		public static string GetWriteName(BinaryStateLump lump)
+		{
+			return WriteNames[lump];
 		}
 	}
 
@@ -76,6 +87,7 @@ namespace BizHawk.Client.Common
 		private ZipFile _zip;
 		private Version _ver;
 		private bool _isDisposed;
+		private Dictionary<string, ZipEntry> _entriesbyname;
 
 		private BinaryStateLoader()
 		{
@@ -116,6 +128,15 @@ namespace BizHawk.Client.Common
 			Console.WriteLine("Read a zipstate of version {0}", _ver);
 		}
 
+		private void PopulateEntries()
+		{
+			_entriesbyname = new Dictionary<string, ZipEntry>();
+			foreach (ZipEntry z in _zip)
+			{
+				_entriesbyname.Add(Path.GetFileNameWithoutExtension(z.Name), z);
+			}
+		}
+
 		public static BinaryStateLoader LoadAndDetect(string filename, bool isMovieLoad = false)
 		{
 			var ret = new BinaryStateLoader();
@@ -138,7 +159,7 @@ namespace BizHawk.Client.Common
 			try
 			{
 				ret._zip = new ZipFile(filename);
-
+				ret.PopulateEntries();
 				if (!isMovieLoad && !ret.GetLump(BinaryStateLump.Versiontag, false, ret.ReadVersion))
 				{
 					ret._zip.Close();
@@ -162,9 +183,9 @@ namespace BizHawk.Client.Common
 		/// <returns>true if callback was called and stream was loaded</returns>
 		public bool GetLump(BinaryStateLump lump, bool abort, Action<Stream, long> callback)
 		{
-			var name = BinaryStateFileNames.Get(lump);
-			var e = _zip.GetEntry(name);
-			if (e != null)
+			string name = BinaryStateFileNames.GetReadName(lump);
+			ZipEntry e;
+			if (_entriesbyname.TryGetValue(name, out e))
 			{
 				using (var zs = _zip.GetInputStream(e))
 				{
@@ -208,19 +229,6 @@ namespace BizHawk.Client.Common
 				callback(tr);
 			});
 		}
-
-		/*
-		/// <summary>
-		/// load binary state, or text state if binary state lump doesn't exist
-		/// </summary>
-		public void GetCoreState(Action<Stream> callbackBinary, Action<Stream> callbackText)
-		{
-			if (!GetLump(BinaryStateLump.Corestate, false, callbackBinary)
-			    && !GetLump(BinaryStateLump.CorestateText, false, callbackText))
-			{
-				throw new Exception("Couldn't find Binary or Text savestate");
-			}
-		}*/
 
 		public void GetCoreState(Action<BinaryReader, long> callbackBinary, Action<TextReader> callbackText)
 		{
@@ -274,7 +282,7 @@ namespace BizHawk.Client.Common
 
 		public void PutLump(BinaryStateLump lump, Action<Stream> callback)
 		{
-			var name = BinaryStateFileNames.Get(lump);
+			var name = BinaryStateFileNames.GetWriteName(lump);
 			var e = new ZipEntry(name);
 			if (Global.Config.SaveStateCompressionLevelNormal == 0)
 				e.CompressionMethod = CompressionMethod.Stored;
