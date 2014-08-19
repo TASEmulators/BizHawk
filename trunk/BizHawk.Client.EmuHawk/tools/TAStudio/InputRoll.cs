@@ -58,6 +58,10 @@ namespace BizHawk.Client.EmuHawk
 
 			this.Controls.Add(VBar);
 			this.Controls.Add(HBar);
+
+			VBar.ValueChanged += VerticalBar_ValueChanged;
+			HBar.ValueChanged += HorizontalBar_ValueChanged;
+
 			RecalculateScrollBars();
 			Columns.ChangedCallback = ColumnChangedCallback;
 		}
@@ -342,7 +346,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (HorizontalOrientation)
 				{
-					var visibleRows = (Width - _horizontalOrientedColumnWidth) / CellWidth;
+					var visibleRows = ((Width - _horizontalOrientedColumnWidth) / CellWidth) + 1;
+					if (visibleRows >= ItemCount)
+					{
+						visibleRows = ItemCount;
+					}
+
 					Gdi.PrepDrawString(this.Font, this.ForeColor);
 					for (int i = 0; i < visibleRows; i++)
 					{
@@ -359,7 +368,12 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var visibleRows = (Height / CellHeight) - 1;
+					var visibleRows = (Height / CellHeight);
+					if (visibleRows >= ItemCount)
+					{
+						visibleRows = ItemCount;
+					}
+
 					Gdi.PrepDrawString(this.Font, this.ForeColor);
 					for (int i = 1; i < visibleRows; i++)
 					{
@@ -449,7 +463,6 @@ namespace BizHawk.Client.EmuHawk
 
 			Gdi.SetBrush(Color.White);
 			Gdi.SetSolidPen(Color.Black);
-
 			Gdi.DrawRectangle(startPoint.X, startPoint.Y, Width, Height);
 
 			Gdi.SetSolidPen(SystemColors.ControlLight);
@@ -459,7 +472,13 @@ namespace BizHawk.Client.EmuHawk
 				for (int i = 1; i < Width / CellWidth; i++)
 				{
 					var x = _horizontalOrientedColumnWidth + 1 + (i * CellWidth);
-					Gdi.Line(x, 1, x, Columns.Count * CellHeight);
+					var y2 = (Columns.Count * CellHeight) - 1;
+					if (y2 > Height)
+					{
+						y2 = Height - 2;
+					}
+
+					Gdi.Line(x, 1, x, y2);
 				}
 
 				// Rows
@@ -480,7 +499,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// Rows
-				for (int i = 2; i < Height / CellHeight; i++)
+				for (int i = 2; i < (Height / CellHeight) + 1; i++)
 				{
 					Gdi.Line(1, (i * CellHeight) + 1, Width - 2, (i * CellHeight) + 1);
 				}
@@ -495,7 +514,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DoSelectionBG(e);
 			}
-			
 		}
 
 		private void DoSelectionBG(PaintEventArgs e)
@@ -686,6 +704,16 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Helpers
 
+		private void VerticalBar_ValueChanged(object sender, EventArgs e)
+		{
+			Refresh();
+		}
+
+		private void HorizontalBar_ValueChanged(object sender, EventArgs e)
+		{
+			Refresh();
+		}
+
 		private void ColumnChangedCallback()
 		{
 			RecalculateScrollBars();
@@ -698,11 +726,11 @@ namespace BizHawk.Client.EmuHawk
 				VBar.Visible = true;
 				if (HorizontalOrientation)
 				{
-					VBar.Maximum = (Columns.Count * CellHeight) - Height;
+					VBar.Maximum = ((Columns.Count * CellHeight) - Height) / CellHeight;
 				}
 				else
 				{
-					VBar.Maximum = (ItemCount * CellHeight) - Height;
+					VBar.Maximum = ((ItemCount * CellHeight) - Height) / CellHeight;
 				}
 			}
 			else
@@ -715,11 +743,11 @@ namespace BizHawk.Client.EmuHawk
 				HBar.Visible = true;
 				if (HorizontalOrientation)
 				{
-					HBar.Maximum = (ItemCount * CellHeight) - Height;
+					HBar.Maximum = (Columns.Sum(c => CalcWidth(c)) - Width) / CellWidth;
 				}
 				else
 				{
-					HBar.Maximum = (Columns.Count * CellHeight) - Height;
+					HBar.Maximum = ((ItemCount * CellWidth) - Width) / CellWidth;
 				}
 			}
 			else
