@@ -62,6 +62,7 @@
     <Compile Include="Buffer.cs" />
     <Compile Include="Colors.cs" />
     <Compile Include="CustomCollections.cs" />
+    <Compile Include="DeepEquality.cs" />
     <Compile Include="Extensions\BufferExtensions.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\IOExtensions.cs" />

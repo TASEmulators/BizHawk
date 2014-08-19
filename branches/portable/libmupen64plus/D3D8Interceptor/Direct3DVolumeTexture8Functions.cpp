@@ -4,62 +4,49 @@ extern "C"
 {
 	namespace D3D8Wrapper
 	{
-		D3D8Wrapper::IDirect3DVolumeTexture8::IDirect3DVolumeTexture8(D3D8Base::IDirect3DVolumeTexture8* pTexture) : IDirect3DBaseTexture8((D3D8Base::IDirect3DBaseTexture8*) pTexture)
+		D3D8Wrapper::IDirect3DVolumeTexture8::IDirect3DVolumeTexture8(D3D8Base::IDirect3DVolumeTexture8* realVolumeTexture) : IDirect3DBaseTexture8((D3D8Base::IDirect3DBaseTexture8*) realVolumeTexture)
 		{
-			LOG("IDirect3DVolumeTexture8");
-			m_pD3D = pTexture;
+			LOG("IDirect3DVolumeTexture8( " << realVolumeTexture << " )\n");
+			m_pD3D = realVolumeTexture;
 		}
 
-		/*STDMETHOD(GetLevelDesc)(THIS_ UINT Level,D3D8Base::D3DVOLUME_DESC *pDesc) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DVolumeTexture8::GetLevelDesc(UINT Level,D3D8Base::D3DVOLUME_DESC *pDesc)
 		{
-			LOG("IDirect3DVolumeTexture8::GetLevelDesc");
-			HRESULT hr = m_pD3D->GetLevelDesc(Level,pDesc);
-
-			return hr;
+			LOG("IDirect3DVolumeTexture8::GetLevelDesc( " << Level << " , " << pDesc << " )\n");
+			return m_pD3D->GetLevelDesc(Level,pDesc);
 		}
 
-		/*STDMETHOD(GetVolumeLevel)(THIS_ UINT Level,IDirect3DVolume8** ppVolumeLevel) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DVolumeTexture8::GetVolumeLevel(UINT Level,D3D8Wrapper::IDirect3DVolume8** ppVolumeLevel)
 		{
-			LOG("IDirect3DVolumeTexture8::GetVolumeLevel");
+			LOG("IDirect3DVolumeTexture8::GetVolumeLevel( " << Level << " , " << ppVolumeLevel << " )\n");
 
-			D3D8Base::IDirect3DVolume8* fd = NULL;
+			D3D8Base::IDirect3DVolume8* realD3D = NULL;
 
-			HRESULT hr = m_pD3D->GetVolumeLevel(Level,&fd);//ppVolumeLevel);
+			HRESULT hr = m_pD3D->GetVolumeLevel(Level,&realD3D);
 
-			D3D8Wrapper::IDirect3DVolume8* f = new D3D8Wrapper::IDirect3DVolume8(fd);
+			D3D8Wrapper::IDirect3DVolume8* wrappedD3D = new D3D8Wrapper::IDirect3DVolume8(realD3D);
 
-			*ppVolumeLevel = f;
+			*ppVolumeLevel = wrappedD3D;
 
 			return hr;
 		}
 
-		/*STDMETHOD(LockBox)(THIS_ UINT Level,D3D8Base::D3DLOCKED_BOX* pLockedVolume,CONST D3D8Base::D3DBOX* pBox,DWORD Flags) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DVolumeTexture8::LockBox(UINT Level,D3D8Base::D3DLOCKED_BOX* pLockedVolume,CONST D3D8Base::D3DBOX* pBox,DWORD Flags)
 		{
-			LOG("IDirect3DVolumeTexture8::LockBox");
-			HRESULT hr = m_pD3D->LockBox(Level,pLockedVolume,pBox,Flags);
-
-			return hr;
+			LOG("IDirect3DVolumeTexture8::LockBox( " << Level << " , " << pLockedVolume << " , " << pBox << " , " << Flags << " )\n");
+			return m_pD3D->LockBox(Level,pLockedVolume,pBox,Flags);
 		}
 
-		/*STDMETHOD(UnlockBox)(THIS_ UINT Level) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DVolumeTexture8::UnlockBox(UINT Level)
 		{
-			LOG("IDirect3DVolumeTexture8::UnlockBox");
-			HRESULT hr = m_pD3D->UnlockBox(Level);
-
-			return hr;
+			LOG("IDirect3DVolumeTexture8::UnlockBox( " << Level << " )\n");
+			return m_pD3D->UnlockBox(Level);
 		}
 
-		/*STDMETHOD(AddDirtyBox)(THIS_ CONST D3D8Base::D3DBOX* pDirtyBox) PURE;*/
 		STDMETHODIMP D3D8Wrapper::IDirect3DVolumeTexture8::AddDirtyBox(CONST D3D8Base::D3DBOX* pDirtyBox)
 		{
-			LOG("IDirect3DVolumeTexture8::AddDirtyBox");
-			HRESULT hr = m_pD3D->AddDirtyBox(pDirtyBox);
-
-			return hr;
+			LOG("IDirect3DVolumeTexture8::AddDirtyBox( " << pDirtyBox << " )\n");
+			return m_pD3D->AddDirtyBox(pDirtyBox);
 		}
 	}
 }

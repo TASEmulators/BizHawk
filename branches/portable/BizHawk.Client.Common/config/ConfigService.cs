@@ -62,10 +62,17 @@ namespace BizHawk.Client.Common
 		public static void Save(string filepath, object config)
 		{
 			var file = new FileInfo(filepath);
-			using (var writer = file.CreateText())
+			try
 			{
-				var w = new JsonTextWriter(writer) { Formatting = Formatting.Indented };
-				Serializer.Serialize(w, config);
+				using (var writer = file.CreateText())
+				{
+					var w = new JsonTextWriter(writer) { Formatting = Formatting.Indented };
+					Serializer.Serialize(w, config);
+				}
+			}
+			catch
+			{
+				/* Eat it */
 			}
 		}
 
@@ -82,7 +89,12 @@ namespace BizHawk.Client.Common
 			using (JsonTextReader jr = new JsonTextReader(tr))
 			{
 				TypeNameEncapsulator tne = (TypeNameEncapsulator)Serializer.Deserialize(jr, typeof(TypeNameEncapsulator));
-				return tne.o;
+				// in the case of trying to deserialize nothing, tne will be nothing
+				// we want to return nothing
+				if (tne != null)
+					return tne.o;
+				else
+					return null;
 			}
 		}
 

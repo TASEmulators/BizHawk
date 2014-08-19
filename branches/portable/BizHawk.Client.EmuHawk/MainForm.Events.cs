@@ -16,7 +16,6 @@ using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 
 using BizHawk.Client.Common;
-using BizHawk.Client.EmuHawk.config.NES;
 
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
@@ -386,6 +385,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RecordMovieMenuItem_Click(object sender, EventArgs e)
 		{
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				return;
+			}
+
 			if (!Global.Emulator.Attributes().Released)
 			{
 				var result = MessageBox.Show
@@ -434,7 +438,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PlayMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			new PlayMovie().ShowDialog();
+			if (!Global.MovieSession.Movie.IsActive)
+			{
+				new PlayMovie().ShowDialog();
+			}
 		}
 
 		private void StopMovieMenuItem_Click(object sender, EventArgs e)
@@ -1287,14 +1294,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PceControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (new PCEControllerConfig().ShowDialog() == DialogResult.OK)
+			using (var dlg = new PCEControllerConfig())
 			{
-				GlobalWin.MainForm.FlagNeedsReboot();
-				GlobalWin.OSD.AddMessage("Controller settings saved but a core reboot is required");
-			}
-			else
-			{
-				GlobalWin.OSD.AddMessage("Controller settings aborted");
+				dlg.ShowDialog();
 			}
 		}
 
@@ -1799,8 +1801,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					GlobalWin.MainForm.FlagNeedsReboot();
-					GlobalWin.OSD.AddMessage("Plugin settings saved but a core reboot is required");
+					// Do nothing, Reboot is being flagged already if they chaned anything
 				}
 			}
 			else

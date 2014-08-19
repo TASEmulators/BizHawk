@@ -323,7 +323,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			if (board is FDS)
 				return (board as FDS).ReadSaveRam();

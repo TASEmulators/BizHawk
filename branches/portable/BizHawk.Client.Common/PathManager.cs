@@ -34,10 +34,10 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static string DefaultIniPath
 		{
-			get 
+			get
 			{
 				return MakeProgramRelativePath("config.ini");
-			} 
+			}
 		}
 
 		/// <summary>
@@ -52,7 +52,7 @@ namespace BizHawk.Client.Common
 			}
 
 			if (Global.Config.PathEntries.GlobalBaseFragment.Length >= 5
-			    && Global.Config.PathEntries.GlobalBaseFragment.Substring(0, 5) == "%exe%")
+				&& Global.Config.PathEntries.GlobalBaseFragment.Substring(0, 5) == "%exe%")
 			{
 				return GetExeDirectoryAbsolute();
 			}
@@ -65,11 +65,11 @@ namespace BizHawk.Client.Common
 				}
 
 				if (Global.Config.PathEntries.GlobalBaseFragment.Length == 2 &&
-				    Global.Config.PathEntries.GlobalBaseFragment == ".\\")
+					Global.Config.PathEntries.GlobalBaseFragment == ".\\")
 				{
 					return GetExeDirectoryAbsolute();
 				}
-				
+
 				var tmp = Global.Config.PathEntries.GlobalBaseFragment.Remove(0, 1);
 				tmp = tmp.Insert(0, GetExeDirectoryAbsolute());
 				return tmp;
@@ -120,7 +120,7 @@ namespace BizHawk.Client.Common
 				{
 					return GetExeDirectoryAbsolute();
 				}
-				
+
 				var tmp = path.Remove(0, 5);
 				tmp = tmp.Insert(0, GetExeDirectoryAbsolute());
 				return tmp;
@@ -138,7 +138,7 @@ namespace BizHawk.Client.Common
 				{
 					return GetBasePathAbsolute();
 				}
-				
+
 				if (path[0] == '.')
 				{
 					path = path.Remove(0, 1);
@@ -156,7 +156,7 @@ namespace BizHawk.Client.Common
 				{
 					return path;
 				}
-				
+
 				// file:\ is an acceptable path as well, and what FileBrowserDialog returns
 				if (path.Length >= 6 && path.Substring(0, 6) == "file:\\")
 				{
@@ -280,7 +280,7 @@ namespace BizHawk.Client.Common
 			}
 
 			var pathEntry = Global.Config.PathEntries[game.System, "Save RAM"] ??
-			                Global.Config.PathEntries[game.System, "Base"];
+							Global.Config.PathEntries[game.System, "Base"];
 
 			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name) + ".SaveRAM";
 		}
@@ -288,7 +288,7 @@ namespace BizHawk.Client.Common
 		public static string GetSaveStatePath(GameInfo game)
 		{
 			var pathEntry = Global.Config.PathEntries[game.System, "Savestates"] ??
-			                Global.Config.PathEntries[game.System, "Base"];
+							Global.Config.PathEntries[game.System, "Base"];
 
 			return MakeAbsolutePath(pathEntry.Path, game.System);
 		}
@@ -315,7 +315,7 @@ namespace BizHawk.Client.Common
 			}
 
 			var pathEntry = Global.Config.PathEntries[game.System, "Savestates"] ??
-			                Global.Config.PathEntries[game.System, "Base"];
+							Global.Config.PathEntries[game.System, "Base"];
 
 			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name);
 		}
@@ -323,7 +323,7 @@ namespace BizHawk.Client.Common
 		public static string GetCheatsPath(GameInfo game)
 		{
 			var pathEntry = Global.Config.PathEntries[game.System, "Cheats"] ??
-			                Global.Config.PathEntries[game.System, "Base"];
+							Global.Config.PathEntries[game.System, "Base"];
 
 			return MakeAbsolutePath(pathEntry.Path, game.System);
 		}
@@ -333,7 +333,7 @@ namespace BizHawk.Client.Common
 			var name = FilesystemSafeName(game);
 
 			var pathEntry = Global.Config.PathEntries[game.System, "Screenshots"] ??
-			                Global.Config.PathEntries[game.System, "Base"];
+							Global.Config.PathEntries[game.System, "Base"];
 
 			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name);
 		}
@@ -355,7 +355,7 @@ namespace BizHawk.Client.Common
 			{
 				return absolutePath.Replace(parentPath, ".");
 			}
-			
+
 			return absolutePath;
 		}
 
@@ -377,6 +377,28 @@ namespace BizHawk.Client.Common
 			}
 
 			return false;
+		}
+
+		/// <summary>
+		/// Don't only valid system ids to system ID, pathType is ROM, Screenshot, etc
+		/// Returns the desired path, if does not exist, returns platform base, else it returns base
+		/// </summary>
+		/// <param name="pathType"></param>
+		/// <param name="systemID"></param>
+		public static PathEntry GetPathEntryWithFallback(string pathType, string systemID)
+		{
+			var entry = Global.Config.PathEntries[systemID, pathType];
+			if (entry == null)
+			{
+				entry = Global.Config.PathEntries[systemID, "Base"];
+			}
+
+			if (entry == null)
+			{
+				entry = Global.Config.PathEntries["Global", "Base"];
+			}
+
+			return entry;
 		}
 	}
 }

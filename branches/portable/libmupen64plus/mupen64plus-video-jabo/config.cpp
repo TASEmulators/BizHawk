@@ -25,6 +25,12 @@ int Config_ReadScreenInt(const char *itemname)
     return ConfigGetParamInt(video_general_section, itemname);
 }
 
+void Config_ReadScreenResolution(int * width, int * height)
+{
+    *width = ConfigGetParamInt(video_general_section, "ScreenWidth");
+    *height = ConfigGetParamInt(video_general_section, "ScreenHeight");
+}
+
 BOOL Config_ReadInt(const char *itemname, const char *desc, int def_value, int create, int isBoolean)
 {
     //VLOG("Getting value %s", itemname);

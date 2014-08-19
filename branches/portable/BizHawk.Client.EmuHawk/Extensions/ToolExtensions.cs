@@ -32,9 +32,13 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 
 			items.Add(new ToolStripSeparator());
 
-			var clearitem = new ToolStripMenuItem { Text = "&Clear" };
+			var clearitem = new ToolStripMenuItem { Text = "&Clear", Enabled = !recent.Frozen };
 			clearitem.Click += (o, ev) => recent.Clear();
 			items.Add(clearitem);
+
+			var freezeitem = new ToolStripMenuItem { Text = recent.Frozen ? "&Unfreeze" : "&Freeze" };
+			freezeitem.Click += (o, ev) => recent.Frozen ^= true;
+			items.Add(freezeitem);
 
 			if (autoload)
 			{
@@ -49,10 +53,17 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 		public static void HandleLoadError(this RecentFiles recent, string path)
 		{
 			GlobalWin.Sound.StopSound();
-			var result = MessageBox.Show("Could not open " + path + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
-			if (result == DialogResult.Yes)
+			if (recent.Frozen)
 			{
-				recent.Remove(path);
+				var result = MessageBox.Show("Could not open " + path, "File not found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+			else
+			{
+				var result = MessageBox.Show("Could not open " + path + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+				if (result == DialogResult.Yes)
+				{
+					recent.Remove(path);
+				}
 			}
 
 			GlobalWin.Sound.StartSound();

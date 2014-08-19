@@ -5,6 +5,7 @@
 
 BOOL Config_Open();
 int Config_ReadInt(const char *itemname, const char *desc, int def_value, BOOL create=TRUE, BOOL isBoolean=TRUE);
+void Config_ReadScreenResolution(int * width, int * height);
 
 
 #endif /* CONFIG_H */

@@ -4,6 +4,8 @@ using System.Windows.Forms;
 using System.Globalization;
 
 using BizHawk.Client.Common;
+using System.IO;
+using System.Text;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -166,5 +168,54 @@ namespace BizHawk.Client.EmuHawk
 				ChangeRow(s.Sub, SubGrid.SelectedRows[0].Index);
 			}
 		}
+
+        private void Export_Click(object sender, EventArgs e)
+        {
+            // Get file to save as
+            var form = new SaveFileDialog();
+            form.AddExtension = true;
+            form.Filter = "SubRip Files (*.srt)|*.srt|All files (*.*)|*.*";
+
+            var result = form.ShowDialog();
+            var fileName = form.FileName;
+
+            form.Dispose();
+
+            if (result != System.Windows.Forms.DialogResult.OK)
+                return;
+
+            // Fetch fps
+            var system = _selectedMovie.HeaderEntries[HeaderKeys.PLATFORM];
+            var pal = _selectedMovie.HeaderEntries.ContainsKey(HeaderKeys.PAL)
+                && _selectedMovie.HeaderEntries[HeaderKeys.PAL] == "1";
+            var pfr = new PlatformFrameRates();
+            double fps = 1;
+
+            try
+            {
+                fps = pfr[system, pal];
+            }
+            catch
+            {
+                MessageBox.Show(
+                    "Could not determine movie fps, export failed.",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                    );
+
+                return;
+            }
+
+            // Create string and write to file
+            var str = _selectedMovie.Subtitles.ToSubRip(fps);
+            File.WriteAllText(fileName, str);
+
+            // Display success
+            MessageBox.Show(
+                string.Format("Subtitles succesfully exported to {0}.", fileName),
+                "Success"
+                );
+        }
 	}
 }

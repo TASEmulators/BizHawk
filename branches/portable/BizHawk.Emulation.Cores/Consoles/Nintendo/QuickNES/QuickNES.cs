@@ -80,7 +80,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 					InitSaveRamBuff();
 					InitSaveStateBuff();
-					InitVideo();
 					InitAudio();
 					InitMemoryDomains();
 
@@ -165,8 +164,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				if (IsLagFrame)
 					LagCount++;
 
-				Blit();
-				DrainAudio();
+				if (render)
+					Blit();
+				if (rendersound)
+					DrainAudio();
 			}
 		}
 
@@ -195,10 +196,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			SaveRamBuff = new byte[size];
 		}
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			LibQuickNES.ThrowStringError(LibQuickNES.qn_battery_ram_save(Context, SaveRamBuff, SaveRamBuff.Length));
-			return SaveRamBuff;
+			return (byte[])SaveRamBuff.Clone();
 		}
 
 		public void StoreSaveRam(byte[] data)
@@ -324,28 +325,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 				if (data != IntPtr.Zero && size > 0 && name != IntPtr.Zero)
 				{
-					byte* p = (byte*)data;
-
-					mm.Add(new MemoryDomain
-					(
-						Marshal.PtrToStringAnsi(name),
-						size,
-						MemoryDomain.Endian.Unknown,
-						delegate(int addr)
-						{
-							if (addr < 0 || addr >= size)
-								throw new ArgumentOutOfRangeException();
-							return p[addr];
-						},
-						delegate(int addr, byte val)
-						{
-							if (!writable)
-								return;
-							if (addr < 0 || addr >= size)
-								throw new ArgumentOutOfRangeException();
-							p[addr] = val;
-						}
-					));
+					mm.Add(MemoryDomain.FromIntPtr(Marshal.PtrToStringAnsi(name), size, MemoryDomain.Endian.Little, data, writable));
 				}
 			}
 			// add system bus
@@ -438,7 +418,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		{
 			[DefaultValue(8)]
 			[Description("Set the number of sprites visible per line.  0 hides all sprites, 8 behaves like a normal NES, and 64 is maximum.")]
-			[DisplayName("Visbile Sprites")]
+			[DisplayName("Visible Sprites")]
 			public int NumSprites
 			{
 				get { return _NumSprites; }
@@ -542,6 +522,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			_Settings = (QuickNESSettings)o;
 			LibQuickNES.qn_set_sprite_limit(Context, _Settings.NumSprites);
 			RecalculateCrops();
+			CalculatePalette();
 			return false;
 		}
 
@@ -559,17 +540,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				LibQuickNES.qn_delete(Context);
 				Context = IntPtr.Zero;
 			}
-			if (VideoOutput != null)
-			{
-				VideoOutputH.Free();
-				VideoOutput = null;
-			}
 		}
 
 		#region VideoProvider
 
-		int[] VideoOutput;
-		GCHandle VideoOutputH;
+		int[] VideoOutput = new int[256 * 240];
+		int[] VideoPalette = new int[512];
 
 		int cropleft = 0;
 		int cropright = 0;
@@ -584,15 +560,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			BufferHeight = 240 - croptop - cropbottom;
 		}
 
-		void InitVideo()
+		void CalculatePalette()
 		{
-			VideoOutput = new int[256 * 240];
-			VideoOutputH = GCHandle.Alloc(VideoOutput, GCHandleType.Pinned);
+			for (int i = 0; i < 512; i++)
+			{
+				VideoPalette[i] =
+					_Settings.Palette[i * 3] << 16 |
+					_Settings.Palette[i * 3 + 1] << 8 |
+					_Settings.Palette[i * 3 + 2] |
+					unchecked((int)0xff000000);
+			}
 		}
 
 		void Blit()
 		{
-			LibQuickNES.qn_blit(Context, VideoOutputH.AddrOfPinnedObject(), _Settings.Palette, cropleft, croptop, cropright, cropbottom);
+			LibQuickNES.qn_blit(Context, VideoOutput, VideoPalette, cropleft, croptop, cropright, cropbottom);
 		}
 
 		public IVideoProvider VideoProvider { get { return this; } }

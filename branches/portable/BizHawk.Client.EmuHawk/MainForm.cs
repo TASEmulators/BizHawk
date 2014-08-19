@@ -379,6 +379,11 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Load<TAStudio>();
 			}
 
+			if (Global.Config.AutoloadExperimentalTAStudio)
+			{
+				GlobalWin.Tools.Load<TasStudioExperiment>();
+			}
+
 			if (Global.Config.AutoloadVirtualPad)
 			{
 				GlobalWin.Tools.Load<VirtualpadTool>();
@@ -501,7 +506,6 @@ namespace BizHawk.Client.EmuHawk
 					(Global.Emulator is N64 && Global.Config.N64UseCircularAnalogConstraint) ? "Natural Circle" : null);
 
 			Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
-				Global.ActiveController.Overrides(Global.LuaAndAdaptor);
 			Global.AutoFireController.LatchFromPhysical(Global.ControllerInputCoalescer);
 
 			if (Global.ClientControls["Autohold"])
@@ -513,6 +517,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
 			}
+
+                // autohold/autofire must not be affected by the following inputs
+                Global.ActiveController.Overrides(Global.LuaAndAdaptor);
 
 			if (GlobalWin.Tools.Has<LuaConsole>())
 			{
@@ -1359,14 +1366,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				byte[] sram;
 
-				// GBA core might not know how big the saveram ought to be, so just send it the whole file
-				if (Global.Emulator is GBA)
+				// GBA meteor core might not know how big the saveram ought to be, so just send it the whole file
+				// GBA vba-next core will try to eat anything, regardless of size
+				if (Global.Emulator is GBA || Global.Emulator is VBANext)
 				{
 					sram = File.ReadAllBytes(PathManager.SaveRamPath(Global.Game));
 				}
 				else
 				{
-					var oldram = Global.Emulator.ReadSaveRam();
+					var oldram = Global.Emulator.CloneSaveRam();
 					if (oldram == null)
 					{
 						// we're eating this one now.  the possible negative consequence is that a user could lose
@@ -1374,6 +1382,7 @@ namespace BizHawk.Client.EmuHawk
 						// MessageBox.Show("Error: tried to load saveram, but core would not accept it?");
 						return;
 					}
+					// why do we silently truncate\pad here instead of warning\erroring?
 					sram = new byte[oldram.Length];
 					using (var reader = new BinaryReader(
 							new FileStream(PathManager.SaveRamPath(Global.Game), FileMode.Open, FileAccess.Read)))
@@ -1413,7 +1422,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var writer = new BinaryWriter(new FileStream(path, FileMode.Create, FileAccess.Write));
-			var saveram = Global.Emulator.ReadSaveRam();
+			var saveram = Global.Emulator.CloneSaveRam();
 
 			writer.Write(saveram, 0, saveram.Length);
 			writer.Close();
@@ -1791,7 +1800,7 @@ namespace BizHawk.Client.EmuHawk
 			if (VersionInfo.DeveloperBuild)
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.cue;*.exe;*.gb;*.gbc;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.cue;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;%ARCH%",
 					"Music Files", "*.psf;*.sid",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;*.fds;%ARCH%",
@@ -1805,6 +1814,7 @@ namespace BizHawk.Client.EmuHawk
 					"Atari 7800", "*.a78;*.bin;%ARCH%",
 					"Genesis", "*.gen;*.smd;*.bin;*.md;*.cue;%ARCH%",
 					"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
+					"Gameboy Advance", "*.gba;%ARCH%",
 					"Colecovision", "*.col;%ARCH%",
 					"Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
 					"PSX Executables (very experimental)", "*.exe",
@@ -2390,6 +2400,7 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.UpdateToolsBefore(fromLua);
 				UpdateToolsAfter(fromLua);
 				UpdateToolsLoadstate();
+				Global.AutoFireController.ClearStarts();
 				GlobalWin.OSD.AddMessage("Loaded state: " + userFriendlyStateName);
 
 				if (GlobalWin.Tools.Has<LuaConsole>())
@@ -2422,10 +2433,16 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SaveState(string path, string userFriendlyStateName, bool fromLua)
 		{
+			try
+			{
 			SavestateManager.SaveStateFile(path, userFriendlyStateName);
 
 			GlobalWin.OSD.AddMessage("Saved state: " + userFriendlyStateName);
-
+			}
+			catch (IOException)
+			{
+				GlobalWin.OSD.AddMessage("Unable to save state " + path);
+			}
 			if (!fromLua)
 			{
 				UpdateStatusSlots();
@@ -3393,5 +3410,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_master = null;
 		}
+
+		private void GBAcoresettingsToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "Gameboy Advance Settings");
+	}
 	}
 }

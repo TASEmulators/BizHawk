@@ -249,7 +249,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.EndSection();
 		}
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			return null;
 		}

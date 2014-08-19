@@ -372,10 +372,10 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.MovieSession.MultiTrack.IsActive)
 			{
-				float x = GetX(g, Global.Config.DispMultix, Global.Config.DispMultianchor, Global.MovieSession.MultiTrack.CurrentState);
-				float y = GetY(g, Global.Config.DispMultiy, Global.Config.DispMultianchor, Global.MovieSession.MultiTrack.CurrentState);
+				float x = GetX(g, Global.Config.DispMultix, Global.Config.DispMultianchor, Global.MovieSession.MultiTrack.Status);
+				float y = GetY(g, Global.Config.DispMultiy, Global.Config.DispMultianchor, Global.MovieSession.MultiTrack.Status);
 
-				DrawOsdMessage(g, Global.MovieSession.MultiTrack.CurrentState, FixedMessagesColor, x, y);
+				DrawOsdMessage(g, Global.MovieSession.MultiTrack.Status, FixedMessagesColor, x, y);
 			}
 
 			if (Global.Config.DisplayFPS && FPS != null)

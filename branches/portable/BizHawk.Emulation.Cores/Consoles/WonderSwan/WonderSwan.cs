@@ -185,11 +185,11 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		byte[] saverambuff;
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			if (!BizSwan.bizswan_saveramsave(Core, saverambuff, saverambuff.Length))
 				throw new InvalidOperationException("bizswan_saveramsave() returned false!");
-			return saverambuff;
+			return (byte[])saverambuff.Clone();
 		}
 
 		public void StoreSaveRam(byte[] data)
@@ -237,9 +237,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			// write extra copy of stuff we don't use
 			writer.WriteLine();
 			writer.WriteLine("Frame {0}", Frame);
-
-			// debug
-			//Console.WriteLine(Util.Hash_SHA1(SaveStateBinary()));
 		}
 
 		public void LoadStateText(TextReader reader)
@@ -290,6 +287,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
+			if (ms.Position != savebuff2.Length)
+				throw new InvalidOperationException();
 			ms.Close();
 			return savebuff2;
 		}
@@ -316,23 +315,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				if (size == 0)
 					continue;
 				string sname = Marshal.PtrToStringAnsi(name);
-				byte *p = (byte*)data;
-				mmd.Add(new MemoryDomain(
-					sname,
-					size,
-					MemoryDomain.Endian.Little,
-					delegate(int addr)
-					{
-						if (addr < 0 || addr >= size)
-							throw new ArgumentOutOfRangeException();
-						return p[addr];
-					},
-					delegate(int addr, byte value)
-					{
-						if (addr < 0 || addr >= size)
-							throw new ArgumentOutOfRangeException();
-						p[addr] = value;
-					}));
+				mmd.Add(MemoryDomain.FromIntPtr(sname, size, MemoryDomain.Endian.Little, data));
 			}
 			MemoryDomains = new MemoryDomainList(mmd, 0);
 		}
@@ -393,7 +376,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				CoreComm.MemoryCallbackSystem.HasWrites ? WriteCallbackD : null,
 				CoreComm.MemoryCallbackSystem.HasExecutes ? ExecCallbackD : null);
 			BizSwan.bizswan_setbuttoncallback(Core,
-				CoreComm.InputCallback.Has ? ButtonCallbackD : null);
+				CoreComm.InputCallback.Any() ? ButtonCallbackD : null);
 		}
 
 		#endregion
@@ -508,7 +491,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
 			{
-				return x != y;
+				return !DeepEquality.DeepEquals(x, y);
 			}
 		}
 

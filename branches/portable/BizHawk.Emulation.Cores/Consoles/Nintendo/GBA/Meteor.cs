@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		isPorted: true,
 		isReleased: false
 		)]
-	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider
+	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable
 	{
 		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
@@ -83,8 +83,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				LibMeteor.libmeteor_frameadvance();
 			if (IsLagFrame)
 				LagCount++;
-			if (EndOfFrameCallback != null)
-				EndOfFrameCallback();
 		}
 
 		public int Frame { get; private set; }
@@ -105,8 +103,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		#region saveram
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
+			throw new Exception("This needs to be fixed to match the VBANext Core!");
+#if false
 			if (disposed)
 				throw new ObjectDisposedException(this.GetType().ToString());
 			if (!LibMeteor.libmeteor_hassaveram())
@@ -119,14 +119,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			Marshal.Copy(data, ret, 0, (int)size);
 			LibMeteor.libmeteor_savesaveram_destroy(data);
 			return ret;
+#endif
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
+			throw new Exception("This needs to be fixed to match the VBANext Core!");
+#if false
 			if (disposed)
 				throw new ObjectDisposedException(this.GetType().ToString());
 			if (!LibMeteor.libmeteor_loadsaveram(data, (uint)data.Length))
 				throw new Exception("libmeteor_loadsaveram() returned false!");
+#endif
 		}
 
 		public void ClearSaveRam()
@@ -237,27 +241,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			if (data == IntPtr.Zero)
 				throw new Exception("libmeteor_getmemoryarea() returned NULL??");
 
-			MemoryDomain md = new MemoryDomain(name, size, MemoryDomain.Endian.Little,
-				delegate(int addr)
-				{
-					unsafe
-					{
-						byte* d = (byte*)data;
-						if (addr < 0 || addr >= size)
-							throw new IndexOutOfRangeException();
-						return d[addr];
-					}
-				},
-				delegate(int addr, byte val)
-				{
-					unsafe
-					{
-						byte* d = (byte*)data;
-						if (addr < 0 || addr >= size)
-							throw new IndexOutOfRangeException();
-						d[addr] = val;
-					}
-				});
+			MemoryDomain md = MemoryDomain.FromIntPtr(name, size, MemoryDomain.Endian.Little, data);
 			_MemoryDomains.Add(md);
 		}
 
@@ -318,22 +302,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			}
 
 			MemoryDomains = new MemoryDomainList(_MemoryDomains);
-		}
-
-		public void GetGPUMemoryAreas(out IntPtr vram, out IntPtr palram, out IntPtr oam, out IntPtr mmio)
-		{
-			IntPtr _vram = LibMeteor.libmeteor_getmemoryarea(LibMeteor.MemoryArea.vram);
-			IntPtr _palram = LibMeteor.libmeteor_getmemoryarea(LibMeteor.MemoryArea.palram);
-			IntPtr _oam = LibMeteor.libmeteor_getmemoryarea(LibMeteor.MemoryArea.oam);
-			IntPtr _mmio = LibMeteor.libmeteor_getmemoryarea(LibMeteor.MemoryArea.io);
-
-			if (_vram == IntPtr.Zero || _palram == IntPtr.Zero || _oam == IntPtr.Zero || _mmio == IntPtr.Zero)
-				throw new Exception("libmeteor_getmemoryarea() failed!");
-
-			vram = _vram;
-			palram = _palram;
-			oam = _oam;
-			mmio = _mmio;
 		}
 
 		#endregion
@@ -452,39 +420,44 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			CoreComm.Tracer.Put(msg);
 		}
 
-		Action EndOfFrameCallback = null;
-		LibMeteor.ScanlineCallback scanlinecb = null;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="callback">null to cancel</param>
-		/// <param name="scanline">0-227, null = end of frame</param>
-		public void SetScanlineCallback(Action callback, int? scanline)
+		GBAGPUMemoryAreas IGBAGPUViewable.GetMemoryAreas()
 		{
-			if (callback == null)
+			IntPtr _vram = LibMeteor.libmeteor_getmemoryarea(LibMeteor.MemoryArea.vram);
+			IntPtr _palram = LibMeteor.libmeteor_getmemoryarea(LibMeteor.MemoryArea.palram);
+			IntPtr _oam = LibMeteor.libmeteor_getmemoryarea(LibMeteor.MemoryArea.oam);
+			IntPtr _mmio = LibMeteor.libmeteor_getmemoryarea(LibMeteor.MemoryArea.io);
+
+			if (_vram == IntPtr.Zero || _palram == IntPtr.Zero || _oam == IntPtr.Zero || _mmio == IntPtr.Zero)
+				throw new Exception("libmeteor_getmemoryarea() failed!");
+
+			return new GBAGPUMemoryAreas
 			{
-				LibMeteor.libmeteor_setscanlinecallback(null, 400);
-				EndOfFrameCallback = null;
-				scanlinecb = null;
-			}
-			else if (scanline == null)
-			{
-				LibMeteor.libmeteor_setscanlinecallback(null, 400);
-				EndOfFrameCallback = callback;
-				scanlinecb = null;
-			}
-			else if (scanline >= 0 && scanline <= 227)
-			{
-				scanlinecb = new LibMeteor.ScanlineCallback(callback);
-				LibMeteor.libmeteor_setscanlinecallback(scanlinecb, (int)scanline);
-				EndOfFrameCallback = null;
-			}
-			else
+				vram = _vram,
+				palram = _palram,
+				oam = _oam,
+				mmio = _mmio
+			};
+		}
+
+		void IGBAGPUViewable.SetScanlineCallback(Action callback, int scanline)
+		{
+			if (scanline < 0 || scanline > 227)
 			{
 				throw new ArgumentOutOfRangeException("Scanline must be in [0, 227]!");
 			}
+			if (callback == null)
+			{
+				scanlinecb = null;
+				LibMeteor.libmeteor_setscanlinecallback(null, 0);
+			}
+			else
+			{
+				scanlinecb = new LibMeteor.ScanlineCallback(callback);
+				LibMeteor.libmeteor_setscanlinecallback(scanlinecb, scanline);
+			}
 		}
+
+		LibMeteor.ScanlineCallback scanlinecb = null;
 
 		void Init()
 		{

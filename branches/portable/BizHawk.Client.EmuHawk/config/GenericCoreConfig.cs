@@ -32,6 +32,9 @@ namespace BizHawk.Client.EmuHawk
 				propertyGrid2.SelectedObject = ss;
 			else
 				tabControl1.TabPages.Remove(tabPage2);
+
+			if (Global.MovieSession.Movie.IsActive)
+				propertyGrid2.Enabled = false; // disable changes to sync setting when movie, so as not to confuse user
 		}
 
 		private void button1_Click(object sender, EventArgs e)
@@ -58,6 +61,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GenericCoreConfig_Load(object sender, EventArgs e)
 		{
+
+		}
+
+		private void buttonDefaults_Click(object sender, EventArgs e)
+		{
+			// the new config objects guarantee that the default constructor gives a default-settings object
+			if (s != null)
+			{
+				s = Activator.CreateInstance(s.GetType());
+				propertyGrid1.SelectedObject = s;
+			}
+			if (ss != null)
+			{
+				ss = Activator.CreateInstance(ss.GetType());
+				propertyGrid2.SelectedObject = ss;
+				syncsettingschanged = true;
+			}
 
 		}
 	}

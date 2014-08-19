@@ -154,7 +154,7 @@ namespace BizHawk.Client.Common
 
 			using (var file = new HawkFile())
 			{
-				var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64", "WS", "WSC" };
+				var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64", "WS", "WSC", "GBA" };
 
 				// lets not use this unless we need to
 				// file.NonArchiveExtensions = romExtensions;
@@ -422,9 +422,17 @@ namespace BizHawk.Client.Common
 								nextEmulator = c64;
 								break;
 							case "GBA":
-								var gba = new GBA(nextComm);
-								gba.Load(rom.RomData);
-								nextEmulator = gba;
+								if (false)
+								{
+									var gba = new GBA(nextComm); // meteor
+									gba.Load(rom.RomData);
+									nextEmulator = gba;
+								}
+								else
+								{
+									var gba = new VBANext(rom.RomData, nextComm, game, Deterministic, GetCoreSyncSettings<VBANext>());
+									nextEmulator = gba;
+								}
 								break;
 							case "N64":
 								nextEmulator = new N64(nextComm, game, rom.RomData,

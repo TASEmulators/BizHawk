@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -51,6 +52,7 @@ namespace BizHawk.Client.EmuHawk
 					var index = int.Parse(c.Name.Replace("Controller", ""));
 					pceSettings.Controllers[index].IsConnected = c.Checked;
 				});
+			GlobalWin.MainForm.PutCoreSyncSettings(pceSettings);
 			DialogResult = DialogResult.OK;
 			Close();
 		}

@@ -412,11 +412,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		byte[] DisposedSaveRam = null;
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			if (disposed)
 			{
-				return DisposedSaveRam ?? new byte[0];
+				if (DisposedSaveRam != null)
+				{
+					return (byte[])DisposedSaveRam.Clone();
+				}
+				else
+				{
+					return new byte[0];
+				}
 			}
 			else
 			{
@@ -575,23 +582,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (area == IntPtr.Zero || pname == IntPtr.Zero || size == 0)
 					continue;
 				string name = Marshal.PtrToStringAnsi(pname);
-				byte* p = (byte*)area;
 
-				mm.Add(new MemoryDomain(name, size, MemoryDomain.Endian.Unknown,
-					delegate(int addr)
-					{
-						if (addr < 0 || addr >= size)
-							throw new ArgumentOutOfRangeException();
-						return p[addr];
-					},
-					delegate(int addr, byte val)
-					{
-						if (addr < 0 || addr >= size)
-							throw new ArgumentOutOfRangeException();
-						p[addr] = val;
-					}));
+				mm.Add(MemoryDomain.FromIntPtr(name, size, MemoryDomain.Endian.Unknown, area));
 			}
-
 			MemoryDomains = new MemoryDomainList(mm, 0);
 		}
 
@@ -652,7 +645,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (AttachedCore != this)
 					throw new Exception();
 				if (SaveRamModified)
-					DisposedSaveRam = ReadSaveRam();
+					DisposedSaveRam = CloneSaveRam();
 				KillMemCallbacks();
 				AttachedCore = null;
 				disposed = true;
@@ -824,7 +817,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			public static bool NeedsReboot(GPGXSyncSettings x, GPGXSyncSettings y)
 			{
-				return x.UseSixButton != y.UseSixButton || x.ControlType != y.ControlType || x.Region != y.Region;
+				return !DeepEquality.DeepEquals(x, y);
 			}
 		}
 
