@@ -63,6 +63,12 @@ namespace BizHawk.Client.EmuHawk
 			get { return _tas; }
 		}
 
+		private void TastudioToStopMovie()
+		{
+			Global.MovieSession.StopMovie(false);
+			GlobalWin.MainForm.SetMainformMovieInfo();
+		}
+
 		public TAStudio()
 		{
 			InitializeComponent();
@@ -76,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 				if (AskSave())
 				{
 					SaveConfigSettings();
-					GlobalWin.MainForm.StopMovie(saveChanges: false);
+					TastudioToStopMovie();
 					DisengageTastudio();
 				}
 				else
