@@ -67,6 +67,8 @@ namespace BizHawk.Client.EmuHawk
 		private void TasView_QueryItemText(int index, int column, out string text)
 		{
 			text = "";
+
+			/*
 			if (columnClicked.HasValue && column == columnClicked)
 			{
 				text = "!";
@@ -78,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 				text = r.NextDouble() > .5 ? "_" : "";
 			}
 
-			/*
+			
 			text = string.Empty;
 
 			if (index >= Watches.ItemCount || Watches[index].IsSeparator)
@@ -87,36 +89,42 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			//var columnName = InputView.Columns[column].Name;
-
-			switch (column)
-			{
-				case 0:
-					text = Watches[index].AddressString;
-					break;
-				case 1:
-					text = Watches[index].ValueString;
-					break;
-				case 2:
-					text = Watches[index].PreviousStr;
-					break;
-				case 3:
-					if (!Watches[index].IsSeparator)
-					{
-						text = Watches[index].ChangeCount.ToString();
-					}
-
-					break;
-				case 4:
-					text = Watches[index].Diff;
-					break;
-				case 5:
-					text = Watches[index].Domain.Name;
-					break;
-				case 6:
-					text = Watches[index].Notes;
-					break;
-			}
 			*/
+			try
+			{
+				switch (column)
+				{
+					case 0:
+						text = Watches[index].AddressString;
+						break;
+					case 1:
+						text = Watches[index].ValueString;
+						break;
+					case 2:
+						text = Watches[index].PreviousStr;
+						break;
+					case 3:
+						if (!Watches[index].IsSeparator)
+						{
+							text = Watches[index].ChangeCount.ToString();
+						}
+
+						break;
+					case 4:
+						text = Watches[index].Diff;
+						break;
+					case 5:
+						text = Watches[index].Domain.Name;
+						break;
+					case 6:
+						text = Watches[index].Notes;
+						break;
+				}
+			}
+			catch (Exception ex)
+			{
+				var message = ex.Message;
+			}
 		}
 
 		private void TasView_QueryItemBkColor(int index, int column, ref Color color)
@@ -129,11 +137,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasStudioExperiment_Load(object sender, EventArgs e)
 		{
-			/*
-			for (int i = 0; i < 20; i++)
+			
+			for (int i = 0; i < 10; i++)
 			{
-				Watches.Add(new ByteWatch(Watches.Domain, 0x0057, Watch.DisplayType.Signed, false, "Speed"));
+				Watches.Add(new ByteWatch(Watches.Domain, i, Watch.DisplayType.Signed, false, "Speed"));
 			}
+
+			InputView.ItemCount = Watches.Count;
 
 			InputView.AddColumns(new[]
 			{
@@ -180,8 +190,8 @@ namespace BizHawk.Client.EmuHawk
 					Text = "Notes"
 				},
 			});
-			*/
 
+			/*
 			InputView.AddColumns(new []
 			{
 				new InputRoll.RollColumn
@@ -257,6 +267,7 @@ namespace BizHawk.Client.EmuHawk
 			});
 
 			InputView.ItemCount = 20;
+			*/
 		}
 
 		private void settingsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
