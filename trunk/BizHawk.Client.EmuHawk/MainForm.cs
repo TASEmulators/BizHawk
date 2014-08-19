@@ -450,7 +450,6 @@ namespace BizHawk.Client.EmuHawk
 				RecordAv(cmdDumpType, cmdDumpName);
 			}
 
-			UpdateStatusSlots();
 			SetMainformMovieInfo();
 
 			//TODO POOP
@@ -3201,7 +3200,6 @@ namespace BizHawk.Client.EmuHawk
 				CurrentlyOpenRom = loader.CanonicalFullPath;
 				HandlePlatformMenus();
 				_stateSlots.Clear();
-				UpdateStatusSlots();
 				UpdateCoreStatusBarButton();
 				UpdateDumpIcon();
 				SetMainformMovieInfo();

@@ -37,7 +37,6 @@ namespace BizHawk.Client.EmuHawk
 			Global.MovieSession.RunQueuedMovie(record);
 
 			SetMainformMovieInfo();
-			UpdateStatusSlots();
 
 			GlobalWin.Tools.Restart<VirtualpadTool>();
 			GlobalWin.DisplayManager.NeedsToPaint = true;
@@ -65,6 +64,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			SetWindowText();
+			UpdateStatusSlots();
 		}
 
 		public void RestartMovie()
@@ -86,7 +86,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.MovieSession.StopMovie(saveChanges);
 				SetMainformMovieInfo();
-				UpdateStatusSlots();
 			}
 		}
 	}
