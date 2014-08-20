@@ -2515,7 +2515,7 @@ namespace BizHawk.Client.EmuHawk
 
 			bool isRewinding = false;
 			if (Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind) 
-				&& !Global.MovieSession.Movie.IsRecording) // Rewind isn't "bulletproof" and can desync a recoridng movie!
+				&& !Global.MovieSession.Movie.IsRecording) // Rewind isn't "bulletproof" and can desync a recording movie!
 			{
 				Global.Rewinder.Rewind(1);
 				suppressCaptureRewind = true;
