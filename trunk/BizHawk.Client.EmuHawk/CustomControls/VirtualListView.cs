@@ -444,7 +444,7 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.Opaque, true);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 
-			var LineHeight = this.Font.Height + 5;
+			LineHeight = this.Font.Height + 5;
 		}
 
 		~VirtualListView() 

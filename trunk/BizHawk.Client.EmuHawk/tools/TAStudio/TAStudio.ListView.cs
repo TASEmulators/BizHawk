@@ -195,7 +195,7 @@ namespace BizHawk.Client.EmuHawk
 					if (TasView.PointedCell.Column == MarkerColumnName)
 					{
 						_startMarkerDrag = true;
-						GoToFrame(TasView.PointedCell.Row.Value - 1);
+						GoToFrame(TasView.PointedCell.Row.Value);
 					}
 					else if (TasView.PointedCell.Column == FrameColumnName)
 					{
