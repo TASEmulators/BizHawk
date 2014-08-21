@@ -74,6 +74,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				savebuff = new byte[LibVBANext.BinStateSize(Core)];
 				savebuff2 = new byte[savebuff.Length + 13];
 				InitMemoryDomains();
+				InitRegisters();
 
 				// todo: hook me up as a setting
 				SetupColors();
@@ -347,14 +348,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public MemoryDomainList MemoryDomains { get; private set; }
 
+		VBARegisterHelper regs;
+
+		void InitRegisters()
+		{
+			regs = new VBARegisterHelper(Core);
+		}
+
 		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
-			throw new NotImplementedException();
+			return regs.GetAllRegisters();
 		}
 
 		public void SetCpuRegister(string register, int value)
 		{
-			throw new NotImplementedException();
+			regs.SetRegister(register, value);
 		}
 
 		#endregion

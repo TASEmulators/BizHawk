@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		/// <param name="g"></param>
 		[DllImport(dllname, CallingConvention = cc)]
 		public static extern void Reset(IntPtr g);
-		
+
 		/// <summary>
 		/// frame advance
 		/// </summary>
@@ -137,6 +137,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		[DllImport(dllname, CallingConvention = cc)]
 		public static extern void SetScanlineCallback(IntPtr g, StandardCallback cb, int scanline);
 
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern IntPtr GetRegisters(IntPtr g);
 
 		[StructLayout(LayoutKind.Sequential)]
 		public class MemoryAreas
@@ -149,6 +151,57 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			public IntPtr oam;
 			public IntPtr rom;
 			public IntPtr mmio;
+		}
+
+		// this isn't used directly at the moment.  but it could be used for something eventually...
+		[StructLayout(LayoutKind.Sequential)]
+		public class Registers
+		{
+			public int R0;
+			public int R1;
+			public int R2;
+			public int R3;
+			public int R4;
+			public int R5;
+			public int R6;
+			public int R7;
+			public int R8;
+			public int R9;
+			public int R10;
+			public int R11;
+			public int R12;
+			public int R13;
+			public int R14;
+			public int R15;
+			public int CPSR;
+			public int SPSR;
+			public int R13_IRQ;
+			public int R14_IRQ;
+			public int SPSR_IRQ;
+			public int _unk0; // what are these???
+			public int _unk1;
+			public int _unk2;
+			public int _unk3;
+			public int _unk4;
+			public int R13_USR;
+			public int R14_USR;
+			public int R13_SVC;
+			public int R14_SVC;
+			public int SPSR_SVC;
+			public int R13_ABT;
+			public int R14_ABT;
+			public int SPSR_ABT;
+			public int R13_UND;
+			public int R14_UND;
+			public int SPSR_UND;
+			public int R8_FIQ;
+			public int R9_FIQ;
+			public int R10_FIQ;
+			public int R11_FIQ;
+			public int R12_FIQ;
+			public int R13_FIQ;
+			public int R14_FIQ;
+			public int SPSR_FIQ;
 		}
 	}
 }
