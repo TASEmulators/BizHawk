@@ -285,7 +285,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 				else // We are going foward
-				{
+				{ 
 					var goToFrame = frame - 1;
 					if (_currentTasMovie[goToFrame].HasState) // Can we go directly there?
 					{
@@ -294,7 +294,6 @@ namespace BizHawk.Client.EmuHawk
 						Global.Emulator.FrameAdvance(true);
 						GlobalWin.DisplayManager.NeedsToPaint = true;
 						TasView.ensureVisible(frame);
-						RefreshDialog();
 					}
 					else // TODO: this assume that there are no "gaps", instead of last emulated frame, we should do last frame from X
 					{
@@ -963,7 +962,6 @@ namespace BizHawk.Client.EmuHawk
         }
 
 		#endregion
-
 
 		#endregion
 	}

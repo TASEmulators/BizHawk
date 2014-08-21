@@ -326,6 +326,11 @@ namespace BizHawk.Client.EmuHawk
 			SetSplicer();
 		}
 
+        private void TasView_VirtualItemsSelectionRangeChanged(object sender, ListViewVirtualItemsSelectionRangeChangedEventArgs e)
+        {
+            SetSplicer();
+        }
+
 		private void TasView_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Left) // Ctrl + Left
