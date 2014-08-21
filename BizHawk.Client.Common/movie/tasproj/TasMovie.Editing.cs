@@ -25,13 +25,17 @@ namespace BizHawk.Client.Common
 			StateManager.Capture();
 		}
 
+        /// <summary>
+        /// Truncate all frames including starting frame to end of movie.
+        /// </summary>
+        /// <param name="frame">First frame to be truncated.</param>
 		public override void Truncate(int frame)
 		{
 			base.Truncate(frame);
 
 			if (frame < LagLog.Count)
 			{
-				LagLog.RemoveRange(frame + 2, LagLog.Count - frame - 1);
+				LagLog.RemoveRange(frame, LagLog.Count - frame - 1);
 			}
 
 			StateManager.Invalidate(frame + 1);
