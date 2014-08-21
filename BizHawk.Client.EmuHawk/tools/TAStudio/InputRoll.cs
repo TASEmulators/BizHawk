@@ -29,14 +29,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Location = new Point(Width - 16, 0),
 				Visible = false,
-				Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom
+				Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom,
+				SmallChange = 1,
+				LargeChange = 5
 			};
 
 			HBar = new HScrollBar
 			{
 				Location = new Point(0, Height - 16),
 				Visible = false,
-				Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
+				Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
+				SmallChange = 1,
+				LargeChange = 5
 			};
 
 			CellPadding = 3;
@@ -723,15 +727,26 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (NeedsVScrollbar)
 			{
-				VBar.Visible = true;
+				
+				int max;
+
 				if (HorizontalOrientation)
 				{
-					VBar.Maximum = ((Columns.Count * CellHeight) - Height) / CellHeight;
+					max = (((Columns.Count * CellHeight) - Height) / CellHeight) + 1;
 				}
 				else
 				{
-					VBar.Maximum = ((ItemCount * CellHeight) - Height) / CellHeight;
+					max = (((ItemCount * CellHeight) - Height) / CellHeight) + 1;
 				}
+
+				if (VBar.Value > max)
+				{
+					VBar.Value = max;
+				}
+
+				VBar.Maximum = max + VBar.LargeChange; // TODO: why can't it be 1?
+				VBar.Size = new Size(VBar.Width, Height);
+				VBar.Visible = true;
 			}
 			else
 			{
