@@ -704,6 +704,21 @@ namespace BizHawk.Client.EmuHawk
 				QueryItem(idx, out item);
 			}
 
+#if !WINDOWS
+			if (QueryItemText != null)
+			{
+				//This is needed for Mono, which doesn't have any of the magic drawing stuff that windows has
+				string text = string.Empty;
+				QueryItemText(idx, 0, out text);
+				item = new ListViewItem(){ Text = text };
+				int colCount = this.Columns.Count;
+				for(int x=1; x<colCount; x++){
+					QueryItemText(idx, x, out text);
+					item.SubItems.Add(text);
+				}
+			}
+#endif
+
 			if (item == null) 
 			{
 				throw new ArgumentException("cannot find item " + idx + " via QueryItem event");
