@@ -25,10 +25,10 @@ namespace BizHawk.Client.Common
 			StateManager.Capture();
 		}
 
-        /// <summary>
-        /// Truncate all frames including starting frame to end of movie.
-        /// </summary>
-        /// <param name="frame">First frame to be truncated.</param>
+		/// <summary>
+		/// Truncate all frames including starting frame to end of movie.
+		/// </summary>
+		/// <param name="frame">First frame to be truncated.</param>
 		public override void Truncate(int frame)
 		{
 			base.Truncate(frame);
@@ -46,7 +46,7 @@ namespace BizHawk.Client.Common
 			}
 
 			//Taseditor deletes markers that are in truncated portion of movie.
-            Markers.TruncateAt(frame);
+			Markers.TruncateAt(frame);
 		}
 
 		public override void PokeFrame(int frame, IController source)
