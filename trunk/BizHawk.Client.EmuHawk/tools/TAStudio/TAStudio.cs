@@ -583,6 +583,7 @@ namespace BizHawk.Client.EmuHawk
 					var input = _currentTasMovie.GetInputState(list[i]);
 					_tasClipboard.Add(new TasClipboardEntry(list[i], input));
 					var lg = _currentTasMovie.LogGeneratorInstance();
+					lg.SetSource(input);
 					sb.AppendLine(lg.GenerateLogEntry());
 				}
 
@@ -904,62 +905,62 @@ namespace BizHawk.Client.EmuHawk
 			base.OnShown(e);
 		}
 
-        private void Tastudio_Load(object sender, EventArgs e)
-        {
-            // Start Scenario 1: A regular movie is active
-            if (Global.MovieSession.Movie.IsActive && !(Global.MovieSession.Movie is TasMovie))
-            {
-                var result = MessageBox.Show("In order to use Tastudio, a new project must be created from the current movie\nThe current movie will be saved and closed, and a new project file will be created\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-                if (result == DialogResult.OK)
-                {
-                    ConvertCurrentMovieToTasproj();
-                }
-                else
-                {
-                    Close();
-                    return;
-                }
-            }
+		private void Tastudio_Load(object sender, EventArgs e)
+		{
+			// Start Scenario 1: A regular movie is active
+			if (Global.MovieSession.Movie.IsActive && !(Global.MovieSession.Movie is TasMovie))
+			{
+				var result = MessageBox.Show("In order to use Tastudio, a new project must be created from the current movie\nThe current movie will be saved and closed, and a new project file will be created\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+				if (result == DialogResult.OK)
+				{
+					ConvertCurrentMovieToTasproj();
+				}
+				else
+				{
+					Close();
+					return;
+				}
+			}
 
-            // Start Scenario 2: A tasproj is already active
-            else if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie is TasMovie)
-            {
-                // Nothing to do
-            }
+			// Start Scenario 2: A tasproj is already active
+			else if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie is TasMovie)
+			{
+				// Nothing to do
+			}
 
-            // Start Scenario 3: No movie, but user wants to autload their last project
-            else if (Global.Config.AutoloadTAStudioProject && !string.IsNullOrEmpty(Global.Config.RecentTas.MostRecent))
-            {
-                LoadProject(Global.Config.RecentTas.MostRecent);
-            }
+			// Start Scenario 3: No movie, but user wants to autload their last project
+			else if (Global.Config.AutoloadTAStudioProject && !string.IsNullOrEmpty(Global.Config.RecentTas.MostRecent))
+			{
+				LoadProject(Global.Config.RecentTas.MostRecent);
+			}
 
-            // Start Scenario 4: No movie, default behavior of engaging tastudio with a new default project
-            else
-            {
-                NewTasMovie();
-                GlobalWin.MainForm.StartNewMovie(_currentTasMovie, record: true);
-                _currentTasMovie.CaptureCurrentState();
-            }
+			// Start Scenario 4: No movie, default behavior of engaging tastudio with a new default project
+			else
+			{
+				NewTasMovie();
+				GlobalWin.MainForm.StartNewMovie(_currentTasMovie, record: true);
+				_currentTasMovie.CaptureCurrentState();
+			}
 
-            EngageTastudio();
-            SetUpColumns();
-            LoadConfigSettings();
-            RefreshDialog();
-        }
+			EngageTastudio();
+			SetUpColumns();
+			LoadConfigSettings();
+			RefreshDialog();
+		}
 
-        private void Tastudio_Closing(object sender, FormClosingEventArgs e)
-        {
-            if (AskSaveChanges())
-            {
-                SaveConfigSettings();
-                GlobalWin.MainForm.StopMovie(saveChanges: false);
-                DisengageTastudio();
-            }
-            else
-            {
-                e.Cancel = true;
-            }
-        }
+		private void Tastudio_Closing(object sender, FormClosingEventArgs e)
+		{
+			if (AskSaveChanges())
+			{
+				SaveConfigSettings();
+				GlobalWin.MainForm.StopMovie(saveChanges: false);
+				DisengageTastudio();
+			}
+			else
+			{
+				e.Cancel = true;
+			}
+		}
 
 		#endregion
 
