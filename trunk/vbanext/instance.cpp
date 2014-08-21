@@ -3492,8 +3492,6 @@ void BIOS_SoftReset (void)
 	}
 }
 
-#define BIOS_GET_BIOS_CHECKSUM()	bus.reg[0].I=0xBAAE187F;
-
 #define BIOS_REGISTER_RAM_RESET() BIOS_RegisterRamReset(bus.reg[0].I);
 
 #define CPU_UPDATE_CPSR() \
@@ -13362,6 +13360,11 @@ template<bool isReader>bool SyncBatteryRam(NewState *ns)
 		scanlineCallbackLine = scanline;
 	}
 
+	uint32_t *GetRegisters()
+	{
+		return &bus.reg[0].I;
+	}
+
 }; // class Gigazoid
 
 // zeroing mem operators: these are very important
@@ -13506,6 +13509,11 @@ EXPORT u8 SystemBusRead(Gigazoid *g, u32 addr)
 EXPORT void SetScanlineCallback(Gigazoid *g, void (*cb)(), int scanline)
 {
 	g->SetScanlineCallback(cb, scanline);
+}
+
+EXPORT u32 *GetRegisters(Gigazoid *g)
+{
+	return g->GetRegisters();
 }
 
 #include "optable.inc"
