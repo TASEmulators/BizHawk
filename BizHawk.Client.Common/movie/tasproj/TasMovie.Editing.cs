@@ -44,7 +44,9 @@ namespace BizHawk.Client.Common
 			{
 				Changes = true;
 			}
-			// TODO: Markers? What does taseditor do?
+
+			//Taseditor deletes markers that are in truncated portion of movie.
+            Markers.TruncateAt(frame);
 		}
 
 		public override void PokeFrame(int frame, IController source)

@@ -72,6 +72,7 @@ namespace BizHawk.Client.Common
 		}
 	}
 
+    //Add functions as needed
 	public class TasMovieMarkerList : List<TasMovieMarker>
 	{
 		private readonly TasMovie _movie;
@@ -127,6 +128,24 @@ namespace BizHawk.Client.Common
 			base.InsertRange(index, collection);
 			this.Sort((m1, m2) => m1.Frame.CompareTo(m2.Frame));
 		}
+
+        /// <summary>
+        /// Deletes all markers at or below the given start frame.
+        /// </summary>
+        /// <param name="startFrame">The first frame for markers to be deleted.</param>
+        /// <returns>Number of markers deleted.</returns>
+        public int TruncateAt(int startFrame)
+        {
+            int deletedCount = 0;
+            for (int i = Count - 1; i > -1; i--)
+            {
+                if(this[i].Frame >= startFrame){
+                    RemoveAt(i);
+                    deletedCount++;
+                }
+            }
+            return deletedCount;
+        }
 
 		public TasMovieMarker Previous(int currentFrame)
 		{
