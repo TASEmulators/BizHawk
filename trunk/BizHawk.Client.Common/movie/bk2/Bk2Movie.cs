@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common
 		public virtual void Truncate(int frame)
 		{
 			// This is a bad way to do multitrack logic, pass the info in instead of going to the global
-			// and it is weird for Truncte to possibly not truncate
+			// and it is weird for Truncate to possibly not truncate
 			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
 				if (frame < _log.Count)
