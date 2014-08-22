@@ -73,13 +73,13 @@ namespace BizHawk.Client.Common
 			}
 
 			StateManager.Invalidate(frame + 1);
-			Changes = true; // TODO check if this actually removed anyting before flagging changes
+			Changes = true; // TODO check if this actually removed anything before flagging changes
 		}
 
 		private readonly Bk2MnemonicConstants Mnemonics = new Bk2MnemonicConstants();
 		/// <summary>
 		/// Returns the mnemonic value for boolean buttons, and actual value for floats,
-		/// for a given frame and button
+		/// for a given frame and button.
 		/// </summary>
 		public string DisplayValue(int frame, string buttonName)
 		{
