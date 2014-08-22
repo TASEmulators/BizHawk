@@ -201,7 +201,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						_startFrameDrag = true;
 					}
-					else
+					else//User changed input
 					{
 						var frame = TasView.PointedCell.Row.Value;
 						var buttonName = TasView.PointedCell.Column;
@@ -211,6 +211,12 @@ namespace BizHawk.Client.EmuHawk
 							ToggleBoolState(TasView.PointedCell.Row.Value, TasView.PointedCell.Column);
 							GoToLastEmulatedFrameIfNecessary(TasView.PointedCell.Row.Value);
 							TasView.Refresh();
+
+							if (Global.Config.TAStudioAutoRestoreLastPosition)
+							{
+								GlobalWin.MainForm.UnpauseEmulator();
+								GlobalWin.MainForm.PauseOnFrame = Global.Emulator.Frame;
+							}
 
 							_startBoolDrawColumn = TasView.PointedCell.Column;
 							_boolPaintState = _currentTasMovie.BoolIsPressed(frame, buttonName);
