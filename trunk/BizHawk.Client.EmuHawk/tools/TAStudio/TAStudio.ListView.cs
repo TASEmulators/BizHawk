@@ -22,10 +22,14 @@ namespace BizHawk.Client.EmuHawk
 		public static Color CurrentFrame_InputLog = Color.FromArgb(0xB5E7F7);
 
 		public static Color GreenZone_FrameCol = Color.FromArgb(0xDDFFDD);
+		public static Color GreenZone_Invalidated_FrameCol = Color.FromArgb(0xFFFFFF);
 		public static Color GreenZone_InputLog = Color.FromArgb(0xC4F7C8);
+		public static Color GreenZone_Invalidated_InputLog = Color.FromArgb(0xE0FBE0);
 
 		public static Color LagZone_FrameCol = Color.FromArgb(0xFFDCDD);
+		public static Color LagZone_Invalidated_FrameCol = Color.FromArgb(0xFFE9E9);
 		public static Color LagZone_InputLog = Color.FromArgb(0xF0D0D2);
+		public static Color LagZone_Invalidated_InputLog = Color.FromArgb(0xF7E5E5);
 
 		public static Color NoState_GreenZone_FrameCol = Color.FromArgb(0xF9FFF9);
 		public static Color NoState_GreenZone_InputLog = Color.FromArgb(0xE0FBE0);
