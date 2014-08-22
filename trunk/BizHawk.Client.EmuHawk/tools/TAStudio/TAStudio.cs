@@ -390,7 +390,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Text = "Marker for frame " + markerFrame,
 				TextInputType = InputPrompt.InputType.Text,
-				Message = "Enter a message"
+				Message = "Enter a message",
+				InitialValue = _currentTasMovie.Markers.IsMarker(markerFrame) ? _currentTasMovie.Markers.PreviousOrCurrent(markerFrame).Message : ""
 			};
 
 			var result = i.ShowHawkDialog();
