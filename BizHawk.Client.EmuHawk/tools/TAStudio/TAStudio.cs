@@ -141,6 +141,7 @@ namespace BizHawk.Client.EmuHawk
 				WantsToControlStopMovie = false;
 				GlobalWin.MainForm.StartNewMovie(_currentTasMovie, record: true);
 				WantsToControlStopMovie = true;
+				Text = "TAStudio - " + _currentTasMovie.Name;
 				RefreshDialog();
 			}
 		}
@@ -165,6 +166,7 @@ namespace BizHawk.Client.EmuHawk
 				WantsToControlStopMovie = true;
 				_currentTasMovie = Global.MovieSession.Movie as TasMovie;
 				Global.Config.RecentTas.Add(path);
+				Text = "TAStudio - " + _currentTasMovie.Name;
 				RefreshDialog();
 			}
 		}
