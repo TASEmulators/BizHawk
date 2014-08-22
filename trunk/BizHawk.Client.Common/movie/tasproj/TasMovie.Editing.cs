@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 				Changes = true;
 			}
 
-			//Taseditor deletes markers that are in truncated portion of movie.
+			//TAS Editor deletes markers that are in truncated portion of movie.
 			Markers.TruncateAt(frame);
 		}
 
