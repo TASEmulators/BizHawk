@@ -35,10 +35,10 @@ namespace BizHawk.Client.Common
 
 			if (frame < LagLog.Count)
 			{
-				LagLog.RemoveRange(frame, LagLog.Count - frame - 1);
+				LagLog.RemoveRange(frame, LagLog.Count - frame);
 			}
 
-			StateManager.Invalidate(frame + 1);
+			StateManager.Invalidate(frame);
 
 			if (frame < _log.Count - 1)
 			{

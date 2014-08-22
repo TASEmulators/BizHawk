@@ -29,7 +29,20 @@ namespace BizHawk.Client.Common
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0.0";
 		}
 
-		public string Filename { get; set; }
+		private string _filename;
+
+		public string Filename
+		{
+			get { return _filename; }
+			set
+			{
+				_filename = value;
+				int index = Filename.LastIndexOf("\\");
+				Name = Filename.Substring(index + 1, Filename.Length - index - 1);
+			}
+		}
+
+		public string Name { get; private set; }
 
 		public virtual string PreferredExtension { get { return Extension; } }
 		public const string Extension = "bk2";
