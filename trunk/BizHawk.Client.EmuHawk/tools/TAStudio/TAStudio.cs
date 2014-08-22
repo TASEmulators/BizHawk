@@ -276,7 +276,6 @@ namespace BizHawk.Client.EmuHawk
 
 						GlobalWin.DisplayManager.NeedsToPaint = true;
 						TasView.ensureVisible(frame);
-						RefreshDialog();
 					}
 					else
 					{
@@ -401,8 +400,6 @@ namespace BizHawk.Client.EmuHawk
 				_currentTasMovie.Markers.Add(markerFrame, i.PromptText);
 				MarkerControl.Refresh();
 			}
-
-			MarkerControl.Refresh();
 		}
 
 		private void UpdateChangesIndicator()

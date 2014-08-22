@@ -51,11 +51,11 @@ namespace BizHawk.Client.EmuHawk
 		public bool InputPaintingMode { get; set; }
 		public bool IsPaintDown { get; private set; }
 
-        /// <summary>
-        /// Calculates the column name and row number that the point (x, y) lies in.
-        /// </summary>
-        /// <param name="x">X coordinate</param>
-        /// <param name="y">Y coordinate</param>
+		/// <summary>
+		/// Calculates the column name and row number that the point (x, y) lies in.
+		/// </summary>
+		/// <param name="x">X coordinate</param>
+		/// <param name="y">Y coordinate</param>
 		private void CalculatePointedCell(int x, int y)
 		{
 			int? newRow;
@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 				break;
 			}
 
-            var rowHeight = this.LineHeight;// 5 (in VirtualListView) and 6 work here for me, but are they always dependable, how can I get the padding?
+			var rowHeight = this.LineHeight;// 5 (in VirtualListView) and 6 work here for me, but are they always dependable, how can I get the padding?
 			var headerHeight = rowHeight + 6;
 
 			newRow = ((y - headerHeight) / rowHeight) + this.VScrollPos;
