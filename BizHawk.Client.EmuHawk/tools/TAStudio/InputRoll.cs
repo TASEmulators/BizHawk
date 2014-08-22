@@ -11,6 +11,30 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class InputRoll : Control
 	{
+		// TODO: temporary hack for debugging and testing, sould be removed before being "shipped"
+		public int ScrollPos
+		{
+			get
+			{
+				if (HorizontalOrientation)
+				{
+					if (NeedsHScrollbar)
+					{
+						return HBar.Value;
+					}
+
+					return 0;
+				}
+
+				if (NeedsVScrollbar)
+				{
+					return VBar.Value;
+				}
+
+				return 0;
+			}
+		}
+
 		private readonly GDIRenderer Gdi;
 		private readonly RollColumns Columns = new RollColumns();
 		private readonly List<Cell> SelectedItems = new List<Cell>();
@@ -372,21 +396,25 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var visibleRows = (Height / CellHeight);
-					if (visibleRows >= ItemCount)
+					int startIndex = VBar.Value;
+					int endIndex = startIndex + (Height / CellHeight);
+					
+					if (endIndex >= ItemCount)
 					{
-						visibleRows = ItemCount;
+						endIndex = ItemCount;
 					}
 
+					int range = endIndex - startIndex;
+
 					Gdi.PrepDrawString(this.Font, this.ForeColor);
-					for (int i = 1; i < visibleRows; i++)
+					for (int i = 0; i < range; i++)
 					{
 						int x = 1;
 						for (int j = 0; j < Columns.Count; j++)
 						{
 							string text;
-							var point = new Point(x + CellPadding, i * CellHeight);
-							QueryItemText(i, j, out text);
+							var point = new Point(x + CellPadding, (i + 1) * CellHeight); // +1 accounts for the column header
+							QueryItemText(i + startIndex, j, out text);
 							Gdi.DrawString(text, point);
 							x += CalcWidth(Columns[j]);
 						}
@@ -770,7 +798,6 @@ namespace BizHawk.Client.EmuHawk
 				HBar.Visible = false;
 			}
 		}
-
 
 		private void SelectCell(Cell cell)
 		{

@@ -35,6 +35,8 @@
 			this.CurrentCellLabel = new System.Windows.Forms.Label();
 			this.InputView = new BizHawk.Client.EmuHawk.InputRoll();
 			this.OutputLabel = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
+			this.ScrollBarValueTable = new System.Windows.Forms.Label();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -112,11 +114,31 @@
 			this.OutputLabel.TabIndex = 4;
 			this.OutputLabel.Text = "label2";
 			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(12, 28);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(76, 13);
+			this.label2.TabIndex = 5;
+			this.label2.Text = "Scroll Position:";
+			// 
+			// ScrollBarValueTable
+			// 
+			this.ScrollBarValueTable.AutoSize = true;
+			this.ScrollBarValueTable.Location = new System.Drawing.Point(94, 28);
+			this.ScrollBarValueTable.Name = "ScrollBarValueTable";
+			this.ScrollBarValueTable.Size = new System.Drawing.Size(76, 13);
+			this.ScrollBarValueTable.TabIndex = 6;
+			this.ScrollBarValueTable.Text = "Scroll Position:";
+			// 
 			// TasStudioExperiment
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(404, 418);
+			this.Controls.Add(this.ScrollBarValueTable);
+			this.Controls.Add(this.label2);
 			this.Controls.Add(this.OutputLabel);
 			this.Controls.Add(this.CurrentCellLabel);
 			this.Controls.Add(this.label1);
@@ -142,5 +164,7 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label CurrentCellLabel;
 		private System.Windows.Forms.Label OutputLabel;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label ScrollBarValueTable;
 	}
 }
