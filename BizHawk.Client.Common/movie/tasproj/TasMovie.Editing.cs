@@ -113,7 +113,11 @@ namespace BizHawk.Client.Common
 			Changes = true;
 			InvalidateAfter(frame);
 		}
-
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="frame">Adds frame at this position, shifting all the rest down.</param>
+		/// <param name="count">The number of frames to insert at the particular frame.</param>
 		public void InsertEmptyFrame(int frame, int count = 1)
 		{
 			var lg = LogGeneratorInstance();
