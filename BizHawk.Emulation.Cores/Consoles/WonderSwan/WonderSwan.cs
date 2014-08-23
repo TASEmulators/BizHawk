@@ -85,20 +85,21 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		#endregion
 
-		public WonderSwan(CoreComm comm, byte[] rom, bool deterministicEmulation, object Settings, object SyncSettings)
+		[CoreConstructor("WSWAN")]
+		public WonderSwan(CoreComm comm, byte[] rom, bool deterministic, object Settings, object SyncSettings)
 		{
 			CoreComm = comm;
 			_Settings = (Settings)Settings ?? new Settings();
 			_SyncSettings = (SyncSettings)SyncSettings ?? new SyncSettings();
 			
-			DeterministicEmulation = deterministicEmulation; // when true, remember to force the RTC flag!
+			DeterministicEmulation = deterministic; // when true, remember to force the RTC flag!
 			Core = BizSwan.bizswan_new();
 			if (Core == IntPtr.Zero)
 				throw new InvalidOperationException("bizswan_new() returned NULL!");
 			try
 			{
 				var ss = _SyncSettings.GetNativeSettings();
-				if (deterministicEmulation)
+				if (deterministic)
 					ss.userealtime = false;
 
 				bool rotate = false;

@@ -43,7 +43,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public ControllerDefinition ControllerDefinition { get { return GBAController; } }
 		public IController Controller { get; set; }
 
-		public GBA(CoreComm comm)
+		[CoreConstructor("GBA")]
+		public GBA(CoreComm comm, byte[] rom)
 		{
 			CoreComm = comm;
 			comm.VsyncNum = 262144;
@@ -52,10 +53,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			comm.TraceHeader = "   -Addr--- -Opcode- -Instruction------------------- -R0----- -R1----- -R2----- -R3----- -R4----- -R5----- -R6----- -R7----- -R8----- -R9----- -R10---- -R11---- -R12---- -R13(SP) -R14(LR) -R15(PC) -CPSR--- -SPSR---";
 			comm.NominalWidth = 240;
 			comm.NominalHeight = 160;
-		}
 
-		public void Load(byte[] rom)
-		{
 			byte[] bios = CoreComm.CoreFileProvider.GetFirmware("GBA", "Bios", true, "GBA bios file is mandatory.");
 
 			if (bios.Length != 16384)
