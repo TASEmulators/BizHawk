@@ -87,7 +87,6 @@ namespace BizHawk.Client.EmuHawk
 		[Category("Behavior")]
 		public int CellPadding { get; set; }
 
-		// TODO: implement this
 		/// <summary>
 		/// Displays grid lines around cells
 		/// </summary>
@@ -653,43 +652,46 @@ namespace BizHawk.Client.EmuHawk
 			Gdi.SetSolidPen(Color.Black);
 			Gdi.DrawRectangle(startPoint.X, startPoint.Y, Width, Height);
 
-			Gdi.SetSolidPen(SystemColors.ControlLight);
-			if (HorizontalOrientation)
+			if (GridLines)
 			{
-				// Columns
-				for (int i = 1; i < Width / CellWidth; i++)
+				Gdi.SetSolidPen(SystemColors.ControlLight);
+				if (HorizontalOrientation)
 				{
-					var x = _horizontalOrientedColumnWidth + 1 + (i * CellWidth);
-					var y2 = (_columns.Count * CellHeight) - 1;
-					if (y2 > Height)
+					// Columns
+					for (int i = 1; i < Width / CellWidth; i++)
 					{
-						y2 = Height - 2;
+						var x = _horizontalOrientedColumnWidth + 1 + (i * CellWidth);
+						var y2 = (_columns.Count * CellHeight) - 1;
+						if (y2 > Height)
+						{
+							y2 = Height - 2;
+						}
+
+						Gdi.Line(x, 1, x, y2);
 					}
 
-					Gdi.Line(x, 1, x, y2);
+					// Rows
+					for (int i = 1; i < _columns.Count + 1; i++)
+					{
+						Gdi.Line(_horizontalOrientedColumnWidth + 1, i * CellHeight, Width - 2, i * CellHeight);
+					}
 				}
+				else
+				{
+					// Columns
+					int x = 0;
+					int y = CellHeight + 1;
+					foreach (var column in _columns)
+					{
+						x += CalcWidth(column);
+						Gdi.Line(x, y, x, Height - 1);
+					}
 
-				// Rows
-				for (int i = 1; i < _columns.Count + 1; i++)
-				{
-					Gdi.Line(_horizontalOrientedColumnWidth + 1, i * CellHeight, Width - 2, i * CellHeight);
-				}
-			}
-			else
-			{
-				// Columns
-				int x = 0;
-				int y = CellHeight + 1;
-				foreach (var column in _columns)
-				{
-					x += CalcWidth(column);
-					Gdi.Line(x, y, x, Height - 1);
-				}
-
-				// Rows
-				for (int i = 2; i < (Height / CellHeight) + 1; i++)
-				{
-					Gdi.Line(1, (i * CellHeight) + 1, Width - 2, (i * CellHeight) + 1);
+					// Rows
+					for (int i = 2; i < (Height / CellHeight) + 1; i++)
+					{
+						Gdi.Line(1, (i * CellHeight) + 1, Width - 2, (i * CellHeight) + 1);
+					}
 				}
 			}
 
