@@ -1480,6 +1480,7 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\noconnect_16x16.png" />
     <None Include="images\snes9x.png" />
     <None Include="images\YellowUp.png" />
     <None Include="images\YellowRight.png" />
@@ -1602,6 +1603,7 @@
     <None Include="images\dual.png" />
     <None Include="config\ControllerImages\WonderSwanColor.png" />
     <None Include="images\alt_about_image.png" />
+    <None Include="images\connect_16x16.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />
