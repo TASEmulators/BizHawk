@@ -232,6 +232,15 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 				}
+				else if (e.Button == MouseButtons.Right)
+				{
+					var frame = TasView.PointedCell.Row.Value;
+					var buttonName = TasView.PointedCell.Column;
+					if (TasView.SelectedIndices.IndexOf(frame) != -1 && (buttonName == MarkerColumnName || buttonName == FrameColumnName))
+					{
+						RightClickMenu.Show(TasView, e.X, e.Y);
+					}
+				}
 			}
 		}
 
