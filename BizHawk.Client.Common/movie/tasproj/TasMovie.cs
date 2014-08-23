@@ -65,6 +65,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Removes lag log and greenzone after this frame
 		/// </summary>
+		/// <param name="frame">The last frame that can be valid.</param>
 		private void InvalidateAfter(int frame)
 		{
 			if (frame < LagLog.Count)

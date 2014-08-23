@@ -286,8 +286,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 				else // We are going foward
-				{ 
-					var goToFrame = frame - 1;
+				{
+					var goToFrame = frame == 0 ? 0 : frame - 1;
 					if (_currentTasMovie[goToFrame].HasState) // Can we go directly there?
 					{
 						_currentTasMovie.SwitchToPlay();
@@ -743,8 +743,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertFrameMenuItem_Click(object sender, EventArgs e)
 		{
-			var insertionFrame = TasView.SelectedIndices().Any() ? LastSelectedIndex + 1 : 0;
-			var needsToRollback = !(insertionFrame > Global.Emulator.Frame);
+			var insertionFrame = TasView.SelectedIndices().Any() ? FirstSelectedIndex : 0;
+			bool needsToRollback = insertionFrame <= Global.Emulator.Frame;
 
 			_currentTasMovie.InsertEmptyFrame(insertionFrame);
 
@@ -760,8 +760,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertNumFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			var insertionFrame = TasView.SelectedIndices().Any() ? LastSelectedIndex + 1 : 0;
-			var needsToRollback = !(insertionFrame > Global.Emulator.Frame);
+			var insertionFrame = TasView.SelectedIndices().Any() ? FirstSelectedIndex : 0;
+			bool needsToRollback = insertionFrame <= Global.Emulator.Frame;
 
 			var framesPrompt = new FramesPrompt();
 			var result = framesPrompt.ShowDialog();
