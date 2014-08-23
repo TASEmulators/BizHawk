@@ -12,7 +12,6 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			RefreshDialog();
 			if (_currentTasMovie.IsRecording)
 			{
 				TasView.ensureVisible(_currentTasMovie.InputLogLength - 1);
@@ -21,6 +20,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				TasView.ensureVisible(Global.Emulator.Frame);
 			}
+
+			RefreshDialog();
 		}
 
 		public void FastUpdate()

@@ -192,27 +192,27 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (TasView.CurrentCell.RowIndex.HasValue && !string.IsNullOrEmpty(TasView.CurrentCell.Column))
+			if (TasView.CurrentCell.RowIndex.HasValue && TasView.CurrentCell.Column != null)
 			{
 				if (e.Button == MouseButtons.Left)
 				{
-					if (TasView.CurrentCell.Column == MarkerColumnName)
+					if (TasView.CurrentCell.Column.Name == MarkerColumnName)
 					{
 						_startMarkerDrag = true;
 						GoToFrame(TasView.CurrentCell.RowIndex.Value);
 					}
-					else if (TasView.CurrentCell.Column == FrameColumnName)
+					else if (TasView.CurrentCell.Column.Name == FrameColumnName)
 					{
 						_startFrameDrag = true;
 					}
 					else//User changed input
 					{
 						var frame = TasView.CurrentCell.RowIndex.Value;
-						var buttonName = TasView.CurrentCell.Column;
+						var buttonName = TasView.CurrentCell.Column.Name;
 
 						if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
 						{
-							ToggleBoolState(TasView.CurrentCell.RowIndex.Value, TasView.CurrentCell.Column);
+							ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
 							GoToLastEmulatedFrameIfNecessary(TasView.CurrentCell.RowIndex.Value);
 							TasView.Refresh();
 
@@ -222,12 +222,12 @@ namespace BizHawk.Client.EmuHawk
 								GlobalWin.MainForm.PauseOnFrame = Global.Emulator.Frame;
 							}
 
-							_startBoolDrawColumn = TasView.CurrentCell.Column;
+							_startBoolDrawColumn = buttonName;
 							_boolPaintState = _currentTasMovie.BoolIsPressed(frame, buttonName);
 						}
 						else
 						{
-							_startFloatDrawColumn = TasView.CurrentCell.Column;
+							_startFloatDrawColumn = buttonName;
 							_floatPaintState = _currentTasMovie.GetFloatValue(frame, buttonName);
 						}
 					}
@@ -235,7 +235,7 @@ namespace BizHawk.Client.EmuHawk
 				else if (e.Button == MouseButtons.Right)
 				{
 					var frame = TasView.CurrentCell.RowIndex.Value;
-					var buttonName = TasView.CurrentCell.Column;
+					var buttonName = TasView.CurrentCell.Column.Name;
 					if (TasView.SelectedIndices.IndexOf(frame) != -1 && (buttonName == MarkerColumnName || buttonName == FrameColumnName))
 					{
 						//Disable the option to remove markers if no markers are selected (FCUEX does this).
@@ -273,15 +273,24 @@ namespace BizHawk.Client.EmuHawk
 		private void TasView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
 			if (TasView.CurrentCell.RowIndex.HasValue &&
-				!string.IsNullOrEmpty(TasView.CurrentCell.Column) &&
-				TasView.CurrentCell.Column == FrameColumnName)
+				TasView.CurrentCell != null &&
+				TasView.CurrentCell.Column.Name == FrameColumnName)
 			{
 				CallAddMarkerPopUp(TasView.CurrentCell.RowIndex.Value);
 			}
 		}
 
-		private void TasView_PointedCellChanged(object sender, TasListView.CellEventArgs e)
+		private void TasView_PointedCellChanged(object sender, InputRoll.CellEventArgs e)
 		{
+			// TODO: think about nullability
+			// For now return if a null because this happens OnEnter which doesn't have any of the below behaviors yet?
+			// Most of these are stupid but I got annoyed at null crashes
+			if (e.OldCell == null || e.OldCell.Column == null || e.OldCell.RowIndex == null ||
+				e.NewCell == null || e.NewCell.RowIndex == null || e.NewCell.Column == null)
+			{
+				return;
+			}
+
 			int startVal, endVal;
 			if (e.OldCell.RowIndex.Value < e.NewCell.RowIndex.Value)
 			{
@@ -343,11 +352,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void TasView_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			SetSplicer();
-		}
-
-		private void TasView_VirtualItemsSelectionRangeChanged(object sender, ListViewVirtualItemsSelectionRangeChangedEventArgs e)
 		{
 			SetSplicer();
 		}
