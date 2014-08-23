@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common
 		public virtual string PreferredExtension { get { return Extension; } }
 		public const string Extension = "bk2";
 
-		public bool Changes { get; protected set; }
+		public virtual bool Changes { get; protected set; }
 		public bool IsCountingRerecords { get; set; }
 
 		public ILogEntryGenerator LogGeneratorInstance()

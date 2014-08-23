@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
@@ -96,6 +97,7 @@ namespace BizHawk.Client.EmuHawk
 		private void NewTasMovie()
 		{
 			Global.MovieSession.Movie = new TasMovie();
+			_currentTasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
 			_currentTasMovie = Global.MovieSession.Movie as TasMovie;
 			_currentTasMovie.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
 			_currentTasMovie.PopulateWithDefaultHeaderValues();
@@ -126,10 +128,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (AskSaveChanges())
 			{
-				var movie = new TasMovie
+				var movie = new TasMovie()
 				{
 					Filename = path
 				};
+				movie.PropertyChanged += TasMovie_OnPropertyChanged;
 
 				var file = new FileInfo(path);
 				if (!file.Exists)
@@ -287,7 +290,15 @@ namespace BizHawk.Client.EmuHawk
 				_currentTasMovie.SwitchToPlay(); // TODO: stop copy/pasting this logic
 				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_currentTasMovie[_currentTasMovie.LastEmulatedFrame].State.ToArray())));
 				GlobalWin.MainForm.UnpauseEmulator();
-				GlobalWin.MainForm.PauseOnFrame = frame;
+				if(Global.Config.TAStudioAutoPause)
+				{
+					GlobalWin.MainForm.PauseOnFrame = _currentTasMovie.LastEmulatedFrame;
+				}
+				else
+				{
+					GlobalWin.MainForm.PauseOnFrame = frame;
+				}
+				
 			}
 
 			RefreshDialog();
@@ -337,18 +348,18 @@ namespace BizHawk.Client.EmuHawk
 			// TODO: columns selected
 			// TODO: clipboard
 			var list = TasView.SelectedIndices;
-			string message;
+			string message = "Selected: ";
 
 			if (list.Count > 0)
 			{
-				message = list.Count + " rows, 0 col, clipboard: ";
+				message += list.Count + " rows 0 col, Clipboard: ";
 			}
 			else
 			{
-				message = list.Count + " selected: none, clipboard: ";
+				message += list.Count + " none, Clipboard: ";
 			}
 
-			message += _tasClipboard.Any() ? _tasClipboard.Count.ToString() : "empty";
+			message += _tasClipboard.Any() ? _tasClipboard.Count.ToString() + " rows 0 col": "empty";
 
 			SplicerStatusLabel.Text = message;
 		}
@@ -798,12 +809,18 @@ namespace BizHawk.Client.EmuHawk
 		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			DrawInputByDraggingMenuItem.Checked = Global.Config.TAStudioDrawInput;
+			AutopauseAtEndOfMovieMenuItem.Checked = Global.Config.TAStudioAutoPause;
 		}
 
 		private void DrawInputByDraggingMenuItem_Click(object sender, EventArgs e)
 		{
 			// TOOD: integrate this logic into input roll, have it save and load through its own load/save settings methods, Global.Config.TAStudioDrawInput will go away
 			TasView.InputPaintingMode = Global.Config.TAStudioDrawInput ^= true;
+		}
+
+		private void AutopauseAtEndMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.TAStudioAutoPause ^= true;
 		}
 
 		#endregion
@@ -951,6 +968,20 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				e.Cancel = true;
+			}
+		}
+
+		//This method is called everytime the Changes property is toggled on a TasMovie instance.
+		private void TasMovie_OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			if (_currentTasMovie.Changes)
+			{
+				
+				Text += "*";
+			}
+			else
+			{
+				Text = Text.Replace("*", "");
 			}
 		}
 
