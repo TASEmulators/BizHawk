@@ -102,8 +102,8 @@
 			this.InputView.Text = "inputRoll1";
 			this.InputView.VirtualMode = false;
 			this.InputView.PointedCellChanged += new BizHawk.Client.EmuHawk.InputRoll.CellChangeEventHandler(this.InputView_PointedCellChanged);
-			this.InputView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.InputView_ColumnClick);
-			this.InputView.SelectedIndexChanged += new BizHawk.Client.EmuHawk.InputRoll.SelectedIndexChangedHandler(this.InputView_SelectedIndexChanged);
+			this.InputView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.InputView_ColumnClick);
+			this.InputView.SelectedIndexChanged += new System.EventHandler(this.InputView_SelectedIndexChanged);
 			// 
 			// OutputLabel
 			// 
