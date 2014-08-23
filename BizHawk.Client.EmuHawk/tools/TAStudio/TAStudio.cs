@@ -97,8 +97,8 @@ namespace BizHawk.Client.EmuHawk
 		private void NewTasMovie()
 		{
 			Global.MovieSession.Movie = new TasMovie();
-			_currentTasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
 			_currentTasMovie = Global.MovieSession.Movie as TasMovie;
+			_currentTasMovie.PropertyChanged += new PropertyChangedEventHandler(this.TasMovie_OnPropertyChanged);
 			_currentTasMovie.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
 			_currentTasMovie.PopulateWithDefaultHeaderValues();
 			_currentTasMovie.ClearChanges();
