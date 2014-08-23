@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.EmuHawk.CustomControls;
+using System.Collections;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -67,6 +68,7 @@ namespace BizHawk.Client.EmuHawk
 				LargeChange = 5
 			};
 
+			GridLines = true;
 			CellPadding = 3;
 			CurrentCell = null;
 			Font = new Font("Courier New", 8);  // Only support fixed width
@@ -109,10 +111,21 @@ namespace BizHawk.Client.EmuHawk
 		[Category("Behavior")]
 		public int CellPadding { get; set; }
 
-		// TODO: remove these, it is put here for more convenient replacing of a virtuallistview in tools with the need to refactor code
+		// TODO: remove these, it is put here for more convenient replacing of a virtuallistview in tools and minimize the amount of code to refactor, but these properties are useless
 		public bool VirtualMode { get; set; }
 		public bool BlazingFast { get; set; }
+		public bool SelectAllInProgress { get; set; }
+		public System.Windows.Forms.View View { get; set; }
+		public int selectedItem { get; set; }
 		// ********************************************************
+
+		// TODO: implement this
+		/// <summary>
+		/// Displays grid lines around cells
+		/// </summary>
+		[Category("Appearance")]
+		[DefaultValue(true)]
+		public bool GridLines { get; set; }
 
 		/// <summary>
 		/// Gets or sets whether the control is horizontal or vertical
@@ -176,6 +189,23 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		[Category("Behavior")]
 		public RollColumns Columns { get { return _columns; } }
+
+		public void SelectAll()
+		{
+			var oldFullRowVal = FullRowSelect;
+			FullRowSelect = true;
+			for (int i = 0; i < ItemCount; i++)
+			{
+				SelectItem(i, true);
+			}
+
+			FullRowSelect = oldFullRowVal;
+		}
+
+		public void DeselectAll()
+		{
+			SelectedItems.Clear();
+		}
 
 		#endregion
 
@@ -250,6 +280,27 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region Api
+
+		// TODO: rename this, it is named this for legacy support from VirtualListVIew
+		public void SelectItem(int index, bool val)
+		{
+			if (_columns.Any())
+			{
+				if (val)
+				{
+					SelectCell(new Cell
+					{
+						RowIndex = index,
+						Column = _columns[0]
+					});
+				}
+				else
+				{
+					var items = SelectedItems.Where(i => i.RowIndex == index);
+					SelectedItems.RemoveAll(x => items.Contains(x));
+				}
+			}
+		}
 
 		[Browsable(false)]
 		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
@@ -373,16 +424,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		// TODO: make IEnumerable, IList is for legacy support
 		[Browsable(false)]
 		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
-		public IEnumerable<int> SelectedIndices
+		public IList<int> SelectedIndices
 		{
 			get
 			{
 				return SelectedItems
 					.Where(cell => cell.RowIndex.HasValue)
 					.Select(cell => cell.RowIndex.Value)
-					.Distinct();
+					.Distinct()
+					.ToList();
 			}
 		}
 
@@ -1176,6 +1229,28 @@ namespace BizHawk.Client.EmuHawk
 
 		public class RollColumns : List<RollColumn>
 		{
+			// For legacy support
+			public void Add(ColumnHeader column)
+			{
+				Add(new RollColumn
+				{
+					Group = "",
+					Width = column.Width,
+					Name = column.Name,
+					Text = column.Text,
+					Type = RollColumn.InputType.Text,
+				});
+			}
+
+			// For legacy support
+			public void AddRange(ColumnHeader[] columns)
+			{
+				foreach (var column in columns)
+				{
+					Add(column); // TODO: this fires the change event each time, convert to an AddRange Call
+				}
+			}
+
 			public RollColumn this[string name]
 			{
 				get

@@ -80,6 +80,12 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 			return listView.SelectedIndices.Cast<int>();
 		}
 
+		// TODO: remove me
+		public static IEnumerable<int> SelectedIndices(this InputRoll listView)
+		{
+			return listView.SelectedIndices;
+		}
+
 		#endregion
 	}
 
