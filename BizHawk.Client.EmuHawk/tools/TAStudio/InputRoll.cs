@@ -324,26 +324,6 @@ namespace BizHawk.Client.EmuHawk
 			return string.Empty; // TODO
 		}
 
-		// TODO: remove
-		public void AddColumns(IEnumerable<RollColumn> columns)
-		{
-			_columns.AddRange(columns);
-			ColumnChanged();
-		}
-
-		// TODO: remove
-		public void AddColumn(RollColumn column)
-		{
-			_columns.Add(column);
-			ColumnChanged();
-		}
-
-		// TODO: remove
-		public RollColumn GetColumn(int index)
-		{
-			return _columns[index];
-		}
-
 		/// <summary>
 		/// Gets or sets the first visiable row index, if scrolling is needed
 		/// </summary>
@@ -1231,28 +1211,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public class RollColumns : List<RollColumn>
 		{
-			// For legacy support
-			public void Add(ColumnHeader column)
-			{
-				Add(new RollColumn
-				{
-					Group = "",
-					Width = column.Width,
-					Name = column.Name,
-					Text = column.Text,
-					Type = RollColumn.InputType.Text,
-				});
-			}
-
-			// For legacy support
-			public void AddRange(ColumnHeader[] columns)
-			{
-				foreach (var column in columns)
-				{
-					Add(column); // TODO: this fires the change event each time, convert to an AddRange Call
-				}
-			}
-
 			public RollColumn this[string name]
 			{
 				get

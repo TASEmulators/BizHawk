@@ -189,7 +189,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.Columns[columnName] == null)
 			{
-				var column = new ColumnHeader
+				var column = new InputRoll.RollColumn
 				{
 					Name = columnName,
 					Text = columnText,

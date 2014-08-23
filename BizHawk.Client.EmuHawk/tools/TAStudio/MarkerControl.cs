@@ -20,6 +20,21 @@ namespace BizHawk.Client.EmuHawk
 		public MarkerControl()
 		{
 			InitializeComponent();
+			
+			var col1 = new InputRoll.RollColumn()
+			{
+				Name = "FrameColumn",
+				Text = "Frame",
+				Width = 64,
+			};
+			var col2 = new InputRoll.RollColumn()
+			{
+				Name = "LabelColumn",
+				Text = "Label",
+				Width = 113,
+			};
+			MarkerView.Columns.AddRange(new InputRoll.RollColumn[]{col1, col2});
+
 			MarkerView.QueryItemBkColor += MarkerView_QueryItemBkColor;
 			MarkerView.QueryItemText += MarkerView_QueryItemText;
 		}
