@@ -35,29 +35,6 @@ namespace BizHawk.Client.EmuHawk
 			return (lg as Bk2LogEntryGenerator).Map();
 		}
 
-		// Indices Helpers
-		private int FirstSelectedIndex
-		{
-			get
-			{
-				return TasView.SelectedIndices
-					.OfType<int>()
-					.OrderBy(frame => frame)
-					.First();
-			}
-		}
-
-		private int LastSelectedIndex
-		{
-			get
-			{
-				return TasView.SelectedIndices
-					.OfType<int>()
-					.OrderBy(frame => frame)
-					.Last();
-			}
-		}
-
 		public TasMovie CurrentMovie
 		{
 			get { return _currentTasMovie; }
@@ -77,7 +54,6 @@ namespace BizHawk.Client.EmuHawk
 			MarkerControl.Tastudio = this;
 			TasView.QueryItemText += TasView_QueryItemText;
 			TasView.QueryItemBkColor += TasView_QueryItemBkColor;
-			TasView.VirtualMode = true;
 
 			TopMost = Global.Config.TAStudioSettings.TopMost;
 			TasView.InputPaintingMode = Global.Config.TAStudioDrawInput;
@@ -173,10 +149,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RefreshDialog()
 		{
-			TasView.BlazingFast = true;
 			TasView.ItemCount = _currentTasMovie.InputLogLength + 1;
 			TasView.Refresh();
-			TasView.BlazingFast = false;
+
 			if (MarkerControl != null)
 			{
 				MarkerControl.Refresh();
@@ -276,7 +251,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						GlobalWin.DisplayManager.NeedsToPaint = true;
-						TasView.ensureVisible(frame);
+						TasView.LastVisibleIndex = frame;
 					}
 					else//Goto last emulated frame, then unpause until we reach frame
 					{
@@ -295,7 +270,7 @@ namespace BizHawk.Client.EmuHawk
 						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_currentTasMovie[goToFrame].State.ToArray())));
 						Global.Emulator.FrameAdvance(true);
 						GlobalWin.DisplayManager.NeedsToPaint = true;
-						TasView.ensureVisible(frame);
+						TasView.LastVisibleIndex = frame;
 					}
 					else // TODO: this assume that there are no "gaps", instead of last emulated frame, we should do last frame from X
 					{
@@ -529,7 +504,7 @@ namespace BizHawk.Client.EmuHawk
 			DeleteFramesMenuItem.Enabled =
 			CloneMenuItem.Enabled =
 			TruncateMenuItem.Enabled =
-				TasView.SelectedIndices().Any();
+				TasView.SelectedIndices.Any();
 			ReselectClipboardMenuItem.Enabled =
 				PasteMenuItem.Enabled =
 				PasteInsertMenuItem.Enabled =
@@ -548,10 +523,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SelectBetweenMarkersMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedIndices().Any())
+			if (TasView.SelectedIndices.Any())
 			{
-				var prevMarker = _currentTasMovie.Markers.PreviousOrCurrent(LastSelectedIndex);
-				var nextMarker = _currentTasMovie.Markers.Next(LastSelectedIndex);
+				var prevMarker = _currentTasMovie.Markers.PreviousOrCurrent(TasView.LastSelectedIndex.Value);
+				var nextMarker = _currentTasMovie.Markers.Next(TasView.LastSelectedIndex.Value);
 
 				int prev = prevMarker != null ? prevMarker.Frame : 0;
 				int next = nextMarker != null ? nextMarker.Frame : _currentTasMovie.InputLogLength;
@@ -574,7 +549,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CopyMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedIndices().Any())
+			if (TasView.SelectedIndices.Any())
 			{
 				_tasClipboard.Clear();
 				var list = TasView.SelectedIndices;
@@ -600,13 +575,13 @@ namespace BizHawk.Client.EmuHawk
 			// FCEUX Taseditor does't do this, but I think it is the expected behavior in editor programs
 			if (_tasClipboard.Any())
 			{
-				var needsToRollback = !(FirstSelectedIndex > Global.Emulator.Frame);
+				var needsToRollback = !(TasView.FirstSelectedIndex > Global.Emulator.Frame);
 
-				_currentTasMovie.CopyOverInput(FirstSelectedIndex, _tasClipboard.Select(x => x.ControllerState));
+				_currentTasMovie.CopyOverInput(TasView.FirstSelectedIndex.Value, _tasClipboard.Select(x => x.ControllerState));
 
 				if (needsToRollback)
 				{
-					GoToFrame(FirstSelectedIndex);
+					GoToFrame(TasView.FirstSelectedIndex.Value);
 				}
 				else
 				{
@@ -619,13 +594,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_tasClipboard.Any())
 			{
-				var needsToRollback = !(FirstSelectedIndex > Global.Emulator.Frame);
+				var needsToRollback = !(TasView.FirstSelectedIndex > Global.Emulator.Frame);
 
-				_currentTasMovie.InsertInput(FirstSelectedIndex, _tasClipboard.Select(x => x.ControllerState));
+				_currentTasMovie.InsertInput(TasView.FirstSelectedIndex.Value, _tasClipboard.Select(x => x.ControllerState));
 
 				if (needsToRollback)
 				{
-					GoToFrame(FirstSelectedIndex);
+					GoToFrame(TasView.FirstSelectedIndex.Value);
 				}
 				else
 				{
@@ -636,13 +611,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CutMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedIndices().Any())
+			if (TasView.SelectedIndices.Any())
 			{
-				var needsToRollback = !(FirstSelectedIndex > Global.Emulator.Frame);
-				var rollBackFrame = FirstSelectedIndex;
+				var needsToRollback = !(TasView.FirstSelectedIndex.Value > Global.Emulator.Frame);
+				var rollBackFrame = TasView.FirstSelectedIndex.Value;
 
 				_tasClipboard.Clear();
-				var list = TasView.SelectedIndices().ToArray();
+				var list = TasView.SelectedIndices.ToArray();
 				var sb = new StringBuilder();
 				for (var i = 0; i < list.Length; i++)
 				{
@@ -671,12 +646,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedIndices().Any())
+			if (TasView.SelectedIndices.Any())
 			{
-				var needsToRollback = !(FirstSelectedIndex > Global.Emulator.Frame);
-				var rollBackFrame = FirstSelectedIndex;
+				var needsToRollback = !(TasView.FirstSelectedIndex > Global.Emulator.Frame);
+				var rollBackFrame = TasView.FirstSelectedIndex.Value;
 
-				foreach (var frame in TasView.SelectedIndices())
+				foreach (var frame in TasView.SelectedIndices)
 				{
 					_currentTasMovie.ClearFrame(frame);
 				}
@@ -694,13 +669,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DeleteFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedIndices().Any())
+			if (TasView.SelectedIndices.Any())
 			{
-				var needsToRollback = !(FirstSelectedIndex > Global.Emulator.Frame);
-				var rollBackFrame = FirstSelectedIndex;
+				var needsToRollback = !(TasView.FirstSelectedIndex > Global.Emulator.Frame);
+				var rollBackFrame = TasView.FirstSelectedIndex.Value;
 
 				_tasClipboard.Clear();
-				_currentTasMovie.RemoveFrames(TasView.SelectedIndices().ToArray());
+				_currentTasMovie.RemoveFrames(TasView.SelectedIndices.ToArray());
 				SetSplicer();
 				TasView.DeselectAll();
 
@@ -717,10 +692,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CloneMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedIndices().Any())
+			if (TasView.SelectedIndices.Any())
 			{
-				var framesToInsert = TasView.SelectedIndices().ToList();
-				var insertionFrame = LastSelectedIndex + 1;
+				var framesToInsert = TasView.SelectedIndices.ToList();
+				var insertionFrame = TasView.LastSelectedIndex.Value + 1;
 				var needsToRollback = !(insertionFrame > Global.Emulator.Frame);
 				var inputLog = new List<string>();
 
@@ -744,7 +719,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertFrameMenuItem_Click(object sender, EventArgs e)
 		{
-			var insertionFrame = TasView.SelectedIndices().Any() ? FirstSelectedIndex : 0;
+			var insertionFrame = TasView.SelectedIndices.Any() ? TasView.FirstSelectedIndex.Value : 0;
 			bool needsToRollback = insertionFrame <= Global.Emulator.Frame;
 
 			_currentTasMovie.InsertEmptyFrame(insertionFrame);
@@ -761,7 +736,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertNumFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			var insertionFrame = TasView.SelectedIndices().Any() ? FirstSelectedIndex : 0;
+			var insertionFrame = TasView.SelectedIndices.Any() ? TasView.FirstSelectedIndex.Value : 0;
 			bool needsToRollback = insertionFrame <= Global.Emulator.Frame;
 
 			var framesPrompt = new FramesPrompt();
@@ -783,12 +758,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TruncateMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedIndices().Any())
+			if (TasView.SelectedIndices.Any())
 			{
-				var rollbackFrame = LastSelectedIndex + 1;
+				var rollbackFrame = TasView.LastSelectedIndex.Value + 1;
 				var needsToRollback = !(rollbackFrame > Global.Emulator.Frame);
 
-				_currentTasMovie.Truncate(LastSelectedIndex + 1);
+				_currentTasMovie.Truncate(rollbackFrame);
 
 				if (needsToRollback)
 				{
@@ -803,7 +778,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetMarkersMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach(int index in TasView.SelectedIndices())
+			foreach(int index in TasView.SelectedIndices)
 			{
 				CallAddMarkerPopUp(index);
 			}
@@ -812,7 +787,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RemoveMarkersMenuItem_Click(object sender, EventArgs e)
 		{
 
-			_currentTasMovie.Markers.RemoveAll(m => TasView.SelectedIndices().Contains(m.Frame));
+			_currentTasMovie.Markers.RemoveAll(m => TasView.SelectedIndices.Contains(m.Frame));
 			RefreshDialog();
 		}
 

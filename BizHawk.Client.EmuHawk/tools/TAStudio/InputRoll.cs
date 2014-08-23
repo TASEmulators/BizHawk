@@ -87,20 +87,6 @@ namespace BizHawk.Client.EmuHawk
 		[Category("Behavior")]
 		public int CellPadding { get; set; }
 
-		// TODO: remove these, it is put here for more convenient replacing of a virtuallistview in tools and minimize the amount of code to refactor, but these properties are useless
-		public bool VirtualMode { get; set; }
-		public bool BlazingFast { get; set; }
-		public bool SelectAllInProgress { get; set; }
-		public System.Windows.Forms.View View { get; set; }
-		public int selectedItem { get; set; }
-
-		public void ensureVisible(int val)
-		{
-			LastVisibleIndex = val;
-		}
-
-		// ********************************************************
-
 		// TODO: implement this
 		/// <summary>
 		/// Displays grid lines around cells
@@ -277,6 +263,23 @@ namespace BizHawk.Client.EmuHawk
 					var items = SelectedItems.Where(i => i.RowIndex == index);
 					SelectedItems.RemoveAll(x => items.Contains(x));
 				}
+			}
+		}
+
+		[Browsable(false)]
+		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		public int? FirstSelectedIndex
+		{
+			get
+			{
+				if (SelectedIndices.Any())
+				{
+					return SelectedIndices
+						.OrderBy(x => x)
+						.First();
+				}
+
+				return null;
 			}
 		}
 

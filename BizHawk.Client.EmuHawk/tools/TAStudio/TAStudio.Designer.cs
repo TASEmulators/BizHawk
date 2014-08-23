@@ -695,7 +695,6 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.TasView.BlazingFast = false;
 			this.TasView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Frame,
             this.Log});
@@ -707,12 +706,9 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.Location = new System.Drawing.Point(8, 27);
 			this.TasView.Name = "TasView";
 			this.TasView.RightButtonHeld = false;
-			this.TasView.SelectAllInProgress = false;
-			this.TasView.selectedItem = -1;
 			this.TasView.Size = new System.Drawing.Size(288, 471);
 			this.TasView.TabIndex = 1;
 			this.TasView.UseCustomBackground = true;
-			this.TasView.View = System.Windows.Forms.View.Details;
 			this.TasView.RightMouseScrolled += new BizHawk.Client.EmuHawk.InputRoll.RightMouseScrollEventHandler(this.TasView_MouseWheel);
 			this.TasView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.TasView_ColumnClick);
 			this.TasView.SelectedIndexChanged += new System.EventHandler(this.TasView_SelectedIndexChanged);
