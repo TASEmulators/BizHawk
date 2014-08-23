@@ -10,6 +10,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// mupen64 DLL Api
 		/// </summary>
 		private mupen64plusAudioApi api;
+
+		private mupen64plusApi coreAPI;
+
 		/// <summary>
 		/// Buffer for audio data
 		/// </summary>
@@ -48,7 +51,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			Resampler = new SpeexResampler(6, SamplingRate, 44100,
 				SamplingRate, 44100);
 
-			core.VInterrupt += DoAudioFrame;
+			coreAPI = core;
+			coreAPI.VInterrupt += DoAudioFrame;
 		}
 
 		/// <summary>
@@ -75,6 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public void Dispose()
 		{
+			coreAPI.VInterrupt -= DoAudioFrame;
 			if(Resampler != null)
 				Resampler.Dispose();
 			Resampler = null;

@@ -8,6 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 	{
 		private int[] frameBuffer;
 		private mupen64plusVideoApi api;
+		private mupen64plusApi coreAPI;
 
 		public bool IsVIFrame;
 
@@ -27,8 +28,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				height > videosettings.Height ? height : videosettings.Height
 			);
 
-			core.BeforeRender += DoVideoFrame;
-			core.BeforeRender += () => { IsVIFrame = true; };
+			coreAPI = core;
+			coreAPI.BeforeRender += DoVideoFrame;
+			coreAPI.BeforeRender += () => { IsVIFrame = true; };
 		}
 
 		public int[] GetVideoBuffer()
@@ -72,6 +74,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public void Dispose()
 		{
+			coreAPI.BeforeRender -= DoVideoFrame;
 			api = null;
 		}
 	}
