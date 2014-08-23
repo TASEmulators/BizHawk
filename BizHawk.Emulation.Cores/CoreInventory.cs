@@ -60,7 +60,6 @@ namespace BizHawk.Emulation.Cores
 				CoreComm comm,
 				GameInfo game,
 				byte[] rom,
-				Disc cd,
 				bool deterministic,
 				object settings,
 				object syncsettings
@@ -70,7 +69,6 @@ namespace BizHawk.Emulation.Cores
 				bp(o, "comm", comm);
 				bp(o, "game", game);
 				bp(o, "rom", rom);
-				bp(o, "cd", cd);
 				bp(o, "deterministic", deterministic);
 				bp(o, "settings", settings);
 				bp(o, "syncsettings", syncsettings);
