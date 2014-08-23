@@ -233,13 +233,13 @@ namespace BizHawk.Client.EmuHawk
 		/// Occurs when a column header is clicked
 		/// </summary>
 		[Category("Action")]
-		public event ColumnClickEventHandler ColumnClick;
+		public event System.Windows.Forms.ColumnClickEventHandler ColumnClick;
 
 		/// <summary>
 		/// Occurs whenever the 'SelectedItems' property for this control changes
 		/// </summary>
 		[Category("Behavior")]
-		public event SelectedIndexChangedHandler SelectedIndexChanged;
+		public event System.EventHandler SelectedIndexChanged;
 
 		/// <summary>
 		/// Occurs whenever the mouse wheel is scrolled while the right mouse button is held
@@ -258,10 +258,6 @@ namespace BizHawk.Client.EmuHawk
 		public delegate void QueryItemBkColorHandler(int index, int column, ref Color color);
 
 		public delegate void CellChangeEventHandler(object sender, CellEventArgs e);
-
-		public delegate void ColumnClickEventHandler(object sender, ColumnClickEventArgs e);
-
-		public delegate void SelectedIndexChangedHandler(object sender, EventArgs e);
 
 		public delegate void RightMouseScrollEventHandler(object sender, MouseEventArgs e);
 
