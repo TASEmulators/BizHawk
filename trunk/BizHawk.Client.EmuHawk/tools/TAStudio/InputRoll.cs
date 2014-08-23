@@ -162,6 +162,13 @@ namespace BizHawk.Client.EmuHawk
 		[DefaultValue(true)]
 		public bool MultiSelect { get; set; }
 
+		/// <summary>
+		/// Gets or sets whether or not the control is in input painting mode
+		/// </summary>
+		[Category("Behavior")]
+		[DefaultValue(false)]
+		public bool InputPaintingMode { get; set; }
+
 		#endregion
 
 		#region Event Handlers
@@ -197,6 +204,12 @@ namespace BizHawk.Client.EmuHawk
 		public event SelectedIndexChangedHandler SelectedIndexChanged;
 
 		/// <summary>
+		/// Occurs whenever the mouse wheel is scrolled while the right mouse button is held
+		/// </summary>
+		[Category("Behavior")]
+		public event RightMouseScrollEventHandler RightMouseScrolled;
+
+		/// <summary>
 		/// Retrieve the text for a cell
 		/// </summary>
 		public delegate void QueryItemTextHandler(int index, int column, out string text);
@@ -211,6 +224,8 @@ namespace BizHawk.Client.EmuHawk
 		public delegate void ColumnClickEventHandler(object sender, ColumnClickEventArgs e);
 
 		public delegate void SelectedIndexChangedHandler(object sender, EventArgs e);
+
+		public delegate void RightMouseScrollEventHandler(object sender, MouseEventArgs e);
 
 		public class CellEventArgs
 		{
@@ -234,7 +249,19 @@ namespace BizHawk.Client.EmuHawk
 
 		[Browsable(false)]
 		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		public Cell LastCell { get; set; }
+
+		[Browsable(false)]
+		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		public bool IsPaintDown { get; set; }
+
+		[Browsable(false)]
+		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
 		public bool UseCustomBackground { get; set; }
+
+		[Browsable(false)]
+		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		public bool RightButtonHeld { get; set; }
 
 		public string UserSettingsSerialized()
 		{
@@ -681,6 +708,7 @@ namespace BizHawk.Client.EmuHawk
 		protected override void OnMouseLeave(EventArgs e)
 		{
 			CurrentCell = null;
+			IsPaintDown = false;
 			Refresh();
 			base.OnMouseLeave(e);
 		}
@@ -724,6 +752,41 @@ namespace BizHawk.Client.EmuHawk
 			base.OnMouseClick(e);
 		}
 
+		protected override void OnMouseDown(MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left && InputPaintingMode)
+			{
+				IsPaintDown = true;
+			}
+
+			if (e.Button == MouseButtons.Right)
+			{
+				RightButtonHeld = true;
+			}
+
+			base.OnMouseDown(e);
+		}
+
+		protected override void OnMouseUp(MouseEventArgs e)
+		{
+			IsPaintDown = false;
+			RightButtonHeld = false;
+
+			base.OnMouseUp(e);
+		}
+
+		protected override void OnMouseWheel(MouseEventArgs e)
+		{
+			if (RightButtonHeld)
+			{
+				DoRightMouseScroll(this, e);
+			}
+			else
+			{
+				base.OnMouseWheel(e);
+			}
+		}
+
 		#endregion
 
 		#region Change Events
@@ -738,6 +801,14 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region Helpers
+
+		private void DoRightMouseScroll(object sender, MouseEventArgs e)
+		{
+			if (RightMouseScrolled != null)
+			{
+				RightMouseScrolled(sender, e);
+			}
+		}
 
 		private void VerticalBar_ValueChanged(object sender, EventArgs e)
 		{
@@ -904,6 +975,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!newCell.Equals(CurrentCell))
 			{
 				CellChanged(CurrentCell, newCell);
+				LastCell = CurrentCell;
 				CurrentCell = newCell;
 
 				if (IsHoveringOnColumnCell ||
