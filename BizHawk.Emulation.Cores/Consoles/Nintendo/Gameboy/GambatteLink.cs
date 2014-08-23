@@ -40,7 +40,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			return right ? R.IsCGBMode() : L.IsCGBMode();
 		}
-		public bool LinkCableConnected { get { return cableconnected; } }
 
 		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom, object Settings, object SyncSettings, bool deterministic)
 		{
@@ -65,6 +64,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			comm.CpuTraceAvailable = false; // TODO
 			comm.NominalWidth = L.CoreComm.NominalWidth + R.CoreComm.NominalWidth;
 			comm.NominalHeight = L.CoreComm.NominalHeight;
+			comm.UsesLinkCable = true;
+			comm.LinkConnected = true;
 
 			Frame = 0;
 			LagCount = 0;
@@ -121,6 +122,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				cableconnected ^= true;
 				Console.WriteLine("Cable connect status to {0}", cableconnected);
+				CoreComm.LinkConnected = cableconnected;
 			}
 			cablediscosignal = cablediscosignal_new;
 
