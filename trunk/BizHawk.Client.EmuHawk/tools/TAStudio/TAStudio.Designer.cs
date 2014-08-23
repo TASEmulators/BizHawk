@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 			this.EnableTooltipsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.TasView = new BizHawk.Client.EmuHawk.TasListView();
+			this.TasView = new InputRoll();
 			this.Frame = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Log = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.TasStatusStrip = new StatusStripEx();
@@ -711,13 +711,11 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.selectedItem = -1;
 			this.TasView.Size = new System.Drawing.Size(288, 471);
 			this.TasView.TabIndex = 1;
-			this.TasView.UseCompatibleStateImageBehavior = false;
 			this.TasView.UseCustomBackground = true;
 			this.TasView.View = System.Windows.Forms.View.Details;
-			this.TasView.RightMouseScrolled += new BizHawk.Client.EmuHawk.TasListView.RightMouseScrollEventHandler(this.TasView_MouseWheel);
+			this.TasView.RightMouseScrolled += new BizHawk.Client.EmuHawk.InputRoll.RightMouseScrollEventHandler(this.TasView_MouseWheel);
 			this.TasView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.TasView_ColumnClick);
 			this.TasView.SelectedIndexChanged += new System.EventHandler(this.TasView_SelectedIndexChanged);
-			this.TasView.VirtualItemsSelectionRangeChanged += new System.Windows.Forms.ListViewVirtualItemsSelectionRangeChangedEventHandler(this.TasView_VirtualItemsSelectionRangeChanged);
 			this.TasView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TasView_KeyDown);
 			this.TasView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDoubleClick);
 			this.TasView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDown);
@@ -942,7 +940,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem EditSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem ConfigSubMenu;
-		private TasListView TasView;
+		private InputRoll TasView;
 		private System.Windows.Forms.ColumnHeader Log;
 		private System.Windows.Forms.ToolStripMenuItem RecentSubMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;

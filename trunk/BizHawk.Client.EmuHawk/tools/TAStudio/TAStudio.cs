@@ -175,6 +175,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			TasView.BlazingFast = true;
 			TasView.ItemCount = _currentTasMovie.InputLogLength + 1;
+			TasView.Refresh();
 			TasView.BlazingFast = false;
 			if (MarkerControl != null)
 			{
