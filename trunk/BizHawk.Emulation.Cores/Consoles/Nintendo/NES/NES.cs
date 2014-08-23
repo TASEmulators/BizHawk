@@ -22,6 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		static readonly bool USE_DATABASE = true;
 		public RomStatus RomStatus;
 
+		[CoreConstructor("NES")]
 		public NES(CoreComm comm, GameInfo game, byte[] rom, object Settings, object SyncSettings)
 		{
 			byte[] fdsbios = comm.CoreFileProvider.GetFirmware("NES", "Bios_FDS", false);

@@ -51,14 +51,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Mouse
 		};
 
-		public GPGX(CoreComm NextComm, byte[] romfile, DiscSystem.Disc CD, string romextension, object Settings, object SyncSettings)
+		[CoreConstructor("GEN")]
+		public GPGX(CoreComm comm, byte[] rom, DiscSystem.Disc CD, object Settings, object SyncSettings)
 		{
+			// this can influence some things internally
+			string romextension = "GEN";
+
 			// three or six button?
 			// http://www.sega-16.com/forum/showthread.php?4398-Forgotten-Worlds-giving-you-GAME-OVER-immediately-Fix-inside&highlight=forgotten%20worlds
 
 			//hack, don't use
 			//romfile = File.ReadAllBytes(@"D:\encodes\bizhawksrc\output\SANIC CD\PierSolar (E).bin");
-			if (romfile != null && romfile.Length > 16 * 1024 * 1024)
+			if (rom != null && rom.Length > 16 * 1024 * 1024)
 			{
 				throw new InvalidOperationException("ROM too big!  Did you try to load a CD as a ROM?");
 			}
@@ -67,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			{
 				_SyncSettings = (GPGXSyncSettings)SyncSettings ?? new GPGXSyncSettings();
 
-				CoreComm = NextComm;
+				CoreComm = comm;
 				if (AttachedCore != null)
 				{
 					AttachedCore.Dispose();
@@ -77,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				LoadCallback = new LibGPGX.load_archive_cb(load_archive);
 
-				this.romfile = romfile;
+				this.romfile = rom;
 				this.CD = CD;
 
 				LibGPGX.INPUT_SYSTEM system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;

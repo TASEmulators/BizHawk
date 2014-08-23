@@ -18,26 +18,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 	{
 		IntPtr Core;
 
-		public VBANext(byte[] romfile, CoreComm nextComm, GameInfo gi, bool deterministic, object _SS)
+		[CoreConstructor("GBA")]
+		public VBANext(byte[] rom, CoreComm comm, GameInfo game, bool deterministic, object syncsettings)
 		{
-			CoreComm = nextComm;
+			CoreComm = comm;
 			byte[] biosfile = CoreComm.CoreFileProvider.GetFirmware("GBA", "Bios", true, "GBA bios file is mandatory.");
 
-			if (romfile.Length > 32 * 1024 * 1024)
+			if (rom.Length > 32 * 1024 * 1024)
 				throw new ArgumentException("ROM is too big to be a GBA ROM!");
 			if (biosfile.Length != 16 * 1024)
 				throw new ArgumentException("BIOS file is not exactly 16K!");
 
 			LibVBANext.FrontEndSettings FES = new LibVBANext.FrontEndSettings();
-			FES.saveType = (LibVBANext.FrontEndSettings.SaveType)gi.GetInt("saveType", 0);
-			FES.flashSize = (LibVBANext.FrontEndSettings.FlashSize)gi.GetInt("flashSize", 0x10000);
-			FES.enableRtc = gi.GetInt("rtcEnabled", 0) != 0;
-			FES.mirroringEnable = gi.GetInt("mirroringEnabled", 0) != 0;
+			FES.saveType = (LibVBANext.FrontEndSettings.SaveType)game.GetInt("saveType", 0);
+			FES.flashSize = (LibVBANext.FrontEndSettings.FlashSize)game.GetInt("flashSize", 0x10000);
+			FES.enableRtc = game.GetInt("rtcEnabled", 0) != 0;
+			FES.mirroringEnable = game.GetInt("mirroringEnabled", 0) != 0;
 
 			Console.WriteLine("GameDB loaded settings: saveType={0}, flashSize={1}, rtcEnabled={2}, mirroringEnabled={3}",
 				FES.saveType, FES.flashSize, FES.enableRtc, FES.mirroringEnable);
 
-			_SyncSettings = (SyncSettings)_SS ?? new SyncSettings();
+			_SyncSettings = (SyncSettings)syncsettings ?? new SyncSettings();
 			DeterministicEmulation = deterministic;
 
 			FES.skipBios = _SyncSettings.SkipBios;
@@ -60,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				throw new InvalidOperationException("Create() returned nullptr!");
 			try
 			{
-				if (!LibVBANext.LoadRom(Core, romfile, (uint)romfile.Length, biosfile, (uint)biosfile.Length, FES))
+				if (!LibVBANext.LoadRom(Core, rom, (uint)rom.Length, biosfile, (uint)biosfile.Length, FES))
 					throw new InvalidOperationException("LoadRom() returned false!");
 
 				CoreComm.VsyncNum = 262144;
@@ -68,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				CoreComm.NominalWidth = 240;
 				CoreComm.NominalHeight = 160;
 
-				GameCode = Encoding.ASCII.GetString(romfile, 0xac, 4);
+				GameCode = Encoding.ASCII.GetString(rom, 0xac, 4);
 				Console.WriteLine("Game code \"{0}\"", GameCode);
 
 				savebuff = new byte[LibVBANext.BinStateSize(Core)];

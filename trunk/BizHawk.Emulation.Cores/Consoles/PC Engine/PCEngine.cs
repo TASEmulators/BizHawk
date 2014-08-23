@@ -64,6 +64,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		// 21,477,270  Machine clocks / sec
 		//  7,159,090  Cpu cycles / sec
 
+		[CoreConstructor("PCE", "SGX")]
 		public PCEngine(CoreComm comm, GameInfo game, byte[] rom, object Settings, object syncSettings)
 		{
 			CoreComm = comm;

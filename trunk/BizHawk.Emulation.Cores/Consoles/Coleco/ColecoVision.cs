@@ -31,6 +31,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public SN76489 PSG;
 		public byte[] Ram = new byte[1024];
 
+		[CoreConstructor("Coleco")]
 		public ColecoVision(CoreComm comm, GameInfo game, byte[] rom, object SyncSettings)
 		{
 			CoreComm = comm;
