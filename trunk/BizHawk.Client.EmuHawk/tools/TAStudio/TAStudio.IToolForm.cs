@@ -14,11 +14,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_currentTasMovie.IsRecording)
 			{
-				TasView.ensureVisible(_currentTasMovie.InputLogLength - 1);
+				TasView.LastVisibleIndex = _currentTasMovie.InputLogLength - 1;
 			}
 			else
 			{
-				TasView.ensureVisible(Global.Emulator.Frame);
+				TasView.LastVisibleIndex = Global.Emulator.Frame;
 			}
 
 			RefreshDialog();
