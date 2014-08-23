@@ -48,6 +48,9 @@ namespace BizHawk.Emulation.Common
 		public bool DriveLED = false;
 		public bool UsesDriveLed = false;
 
+		public bool LinkConnected = false;
+		public bool UsesLinkCable = false;
+
 		/// <summary>
 		/// show a message.  reasonably annoying (dialog box), shouldn't be used most of the time
 		/// </summary>

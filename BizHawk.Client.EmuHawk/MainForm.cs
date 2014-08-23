@@ -54,12 +54,15 @@ namespace BizHawk.Client.EmuHawk
 			RebootStatusBarIcon.Visible = false;
 			StatusBarDiskLightOnImage = Properties.Resources.LightOn;
 			StatusBarDiskLightOffImage = Properties.Resources.LightOff;
+			LinkCableOn = Properties.Resources.connect_16x16;
+			LinkCableOff = Properties.Resources.noconnect_16x16;
 			UpdateCoreStatusBarButton();
 			if (Global.Config.FirstBoot == true)
 			{
 				ProfileFirstBootLabel.Visible = true;
 			}
-				
+
+			HandleToggleLightAndLink();
 		}
 
 		static MainForm()
@@ -1213,6 +1216,7 @@ namespace BizHawk.Client.EmuHawk
 
 		// Resources
 		Bitmap StatusBarDiskLightOnImage, StatusBarDiskLightOffImage;
+		Bitmap LinkCableOn, LinkCableOff;
 
 		#endregion
 
@@ -1272,7 +1276,7 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateToolsAfter(bool fromLua = false)
 		{
 			GlobalWin.Tools.UpdateToolsAfter(fromLua);
-			HandleToggleLight();
+			HandleToggleLightAndLink();
 		}
 
 		public void UpdateDumpIcon()
@@ -2252,7 +2256,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void HandleToggleLight()
+		private void HandleToggleLightAndLink()
 		{
 			if (MainStatusBar.Visible)
 			{
@@ -2272,6 +2276,25 @@ namespace BizHawk.Client.EmuHawk
 					if (LedLightStatusLabel.Visible)
 					{
 						LedLightStatusLabel.Visible = false;
+					}
+				}
+
+				if (Global.Emulator.CoreComm.UsesLinkCable)
+				{
+					if (!LinkConnectStatusBarButton.Visible)
+					{
+						LinkConnectStatusBarButton.Visible = true;
+					}
+
+					LinkConnectStatusBarButton.Image = Global.Emulator.CoreComm.LinkConnected
+						? LinkCableOn
+						: LinkCableOff;
+				}
+				else
+				{
+					if (LinkConnectStatusBarButton.Visible)
+					{
+						LinkConnectStatusBarButton.Visible = false;
 					}
 				}
 			}
@@ -2445,6 +2468,9 @@ namespace BizHawk.Client.EmuHawk
 			CoreNameStatusBarButton.Text = Global.Emulator.DisplayName();
 			CoreNameStatusBarButton.Image = Global.Emulator.Icon();
 			CoreNameStatusBarButton.ToolTipText = attributes.Ported ? "(ported) " : string.Empty;
+
+			// Let's also do the link icon here too since they both would be updated under the same circumstances
+
 		}
 
 		#endregion
@@ -3411,5 +3437,10 @@ namespace BizHawk.Client.EmuHawk
         }
 
         #endregion
+
+		private void LinkConnectStatusBarButton_Click(object sender, EventArgs e)
+		{
+			// TODO: it would be cool if clicking this toggled the state
+		}
     }
 }
