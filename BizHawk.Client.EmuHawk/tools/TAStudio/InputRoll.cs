@@ -171,6 +171,12 @@ namespace BizHawk.Client.EmuHawk
 		[DefaultValue(false)]
 		public bool InputPaintingMode { get; set; }
 
+		/// <summary>
+		/// The columns shown
+		/// </summary>
+		[Category("Behavior")]
+		public RollColumns Columns { get { return _columns; } }
+
 		#endregion
 
 		#region Event Handlers
@@ -1107,6 +1113,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public class RollColumns : List<RollColumn>
 		{
+			public RollColumn this[string name]
+			{
+				get
+				{
+					return this.SingleOrDefault(column => column.Name == name);
+				}
+			}
+			
 			public Action ChangedCallback { get; set; }
 
 			private void DoChangeCallback()
