@@ -12,6 +12,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			if (_currentTasMovie == null)
+			{
+				return;
+			}
+
 			if (_currentTasMovie.IsRecording)
 			{
 				TasView.LastVisibleIndex = _currentTasMovie.InputLogLength - 1;
