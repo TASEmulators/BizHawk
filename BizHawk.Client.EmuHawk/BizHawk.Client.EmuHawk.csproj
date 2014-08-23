@@ -1150,6 +1150,9 @@
     <EmbeddedResource Include="CustomControls\QuickProgressPopup.resx">
       <DependentUpon>QuickProgressPopup.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControls\TasListView.resx">
+      <DependentUpon>TasListView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
