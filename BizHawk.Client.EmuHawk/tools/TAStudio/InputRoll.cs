@@ -93,6 +93,12 @@ namespace BizHawk.Client.EmuHawk
 		public bool SelectAllInProgress { get; set; }
 		public System.Windows.Forms.View View { get; set; }
 		public int selectedItem { get; set; }
+
+		public void ensureVisible(int val)
+		{
+			LastVisibleIndex = val;
+		}
+
 		// ********************************************************
 
 		// TODO: implement this
@@ -375,6 +381,25 @@ namespace BizHawk.Client.EmuHawk
 				{
 					VBar.Value = value;
 				}
+			}
+		}
+
+		public int LastVisibleIndex
+		{
+			get
+			{
+				return ScrollPosition + VisibleRows;
+			}
+
+			set
+			{
+				int i = value - VisibleRows;
+				if (i < 0)
+				{
+					i = 0;
+				}
+
+				ScrollPosition = 0;
 			}
 		}
 
