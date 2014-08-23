@@ -555,10 +555,10 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// AutopauseAtEndOfMovieMenuItem
 			// 
-			this.AutopauseAtEndOfMovieMenuItem.Enabled = false;
 			this.AutopauseAtEndOfMovieMenuItem.Name = "AutopauseAtEndOfMovieMenuItem";
 			this.AutopauseAtEndOfMovieMenuItem.Size = new System.Drawing.Size(288, 22);
 			this.AutopauseAtEndOfMovieMenuItem.Text = "Autopause at end of Movie";
+			this.AutopauseAtEndOfMovieMenuItem.Click += new System.EventHandler(this.AutopauseAtEndMenuItem_Click);
 			// 
 			// MetaSubMenu
 			// 

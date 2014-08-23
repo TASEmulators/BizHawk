@@ -523,6 +523,7 @@ namespace BizHawk.Client.Common
 		public bool AutoloadTAStudio = false;
 		public bool AutoloadTAStudioProject = false;
 		public bool TAStudioDrawInput = true;
+		public bool TAStudioAutoPause = true;
 		public bool TAStudioAutoRestoreLastPosition = false;
 
 		public bool AutoloadExperimentalTAStudio = false;
