@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Watches.UpdateValues();
 			InputView.Refresh();
-			ScrollBarValueTable.Text = InputView.ScrollPos.ToString();
+			ScrollBarValueTable.Text = InputView.ScrollPosition.ToString();
 		}
 
 		public void FastUpdate()
