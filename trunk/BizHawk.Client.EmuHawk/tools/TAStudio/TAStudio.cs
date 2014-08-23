@@ -800,6 +800,21 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void SetMarkersMenuItem_Click(object sender, EventArgs e)
+		{
+			foreach(int index in TasView.SelectedIndices())
+			{
+				CallAddMarkerPopUp(index);
+			}
+		}
+
+		private void RemoveMarkersMenuItem_Click(object sender, EventArgs e)
+		{
+
+			_currentTasMovie.Markers.RemoveAll(m => TasView.SelectedIndices().Contains(m.Frame));
+			RefreshDialog();
+		}
+
 		#endregion
 
 		#region Config

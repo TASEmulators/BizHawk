@@ -799,17 +799,17 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// SetMarkersContextMenuItem
 			// 
-			this.SetMarkersContextMenuItem.Enabled = false;
 			this.SetMarkersContextMenuItem.Name = "SetMarkersContextMenuItem";
 			this.SetMarkersContextMenuItem.Size = new System.Drawing.Size(272, 22);
 			this.SetMarkersContextMenuItem.Text = "Set Markers";
+			this.SetMarkersContextMenuItem.Click += new System.EventHandler(this.SetMarkersMenuItem_Click);
 			// 
 			// RemoveMarkersContextMenuItem
 			// 
-			this.RemoveMarkersContextMenuItem.Enabled = false;
 			this.RemoveMarkersContextMenuItem.Name = "RemoveMarkersContextMenuItem";
 			this.RemoveMarkersContextMenuItem.Size = new System.Drawing.Size(272, 22);
 			this.RemoveMarkersContextMenuItem.Text = "Remove Markers";
+			this.RemoveMarkersContextMenuItem.Click += new System.EventHandler(this.RemoveMarkersMenuItem_Click);
 			// 
 			// toolStripSeparator15
 			// 
