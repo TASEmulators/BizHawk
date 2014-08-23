@@ -864,12 +864,6 @@
     <Compile Include="tools\TAStudio\LuaBox.Designer.cs">
       <DependentUpon>LuaBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\TAStudio\TasStudioExperiment.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\TasStudioExperiment.Designer.cs">
-      <DependentUpon>TasStudioExperiment.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\TAStudio\TAStudio.IControlMainForm.cs">
       <DependentUpon>TAStudio.cs</DependentUpon>
       <SubType>Form</SubType>
@@ -1307,9 +1301,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\RecorderBox.resx">
       <DependentUpon>RecorderBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\TasStudioExperiment.resx">
-      <DependentUpon>TasStudioExperiment.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\TAStudio.resx">
       <DependentUpon>TAStudio.cs</DependentUpon>
