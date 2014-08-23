@@ -99,7 +99,14 @@ extern "C"
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetCursorProperties(UINT XHotSpot,UINT YHotSpot,D3D8Wrapper::IDirect3DSurface8* pCursorBitmap)
 		{
 			LOG("IDirect3DDevice8::SetCursorProperties( " << XHotSpot << " , " << YHotSpot << " , " << pCursorBitmap << " )\n");
-			return m_pDevice->SetCursorProperties(XHotSpot,YHotSpot,pCursorBitmap->GetSurface());
+			if (pCursorBitmap == NULL)
+			{
+				return m_pDevice->SetCursorProperties(XHotSpot,YHotSpot,NULL);
+			}
+			else
+			{
+				return m_pDevice->SetCursorProperties(XHotSpot,YHotSpot,pCursorBitmap->GetSurface());
+			}
 		}
 
 		STDMETHODIMP_(void) D3D8Wrapper::IDirect3DDevice8::SetCursorPosition(int X,int Y,DWORD Flags)
@@ -317,25 +324,72 @@ extern "C"
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::CopyRects(D3D8Wrapper::IDirect3DSurface8* pSourceSurface,CONST RECT* pSourceRectsArray,UINT cRects,D3D8Wrapper::IDirect3DSurface8* pDestinationSurface,CONST POINT* pDestPointsArray)
 		{
 			LOG("IDirect3DDevice8::CopyRects( " << pSourceSurface << " , " << pSourceRectsArray << " , " << cRects << " , " << pDestinationSurface << " , " << pDestPointsArray << " )\n");
-			
-			if (pSourceSurface->m_ulRef == 0 || (pSourceSurface->GetSurface()) == (pDestinationSurface->GetSurface()))
+
+			D3D8Base::IDirect3DSurface8* source;
+			if (pSourceSurface == NULL)
+			{
+				source = NULL;
+			}
+			else
+			{
+				source = pSourceSurface->GetSurface();
+			}
+
+			D3D8Base::IDirect3DSurface8* destination;
+			if (pDestinationSurface == NULL)
+			{
+				destination = NULL;
+			}
+			else
+			{
+				destination = pDestinationSurface->GetSurface();
+			}
+
+			if (pSourceSurface->m_ulRef == 0 || source == destination)
 			{
 				return D3DERR_INVALIDCALL;
 			}
 
-			return m_pDevice->CopyRects(pSourceSurface->GetSurface(),pSourceRectsArray,cRects,pDestinationSurface->GetSurface(),pDestPointsArray);
+			return m_pDevice->CopyRects(source,pSourceRectsArray,cRects,destination,pDestPointsArray);
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::UpdateTexture(D3D8Wrapper::IDirect3DBaseTexture8* pSourceTexture,D3D8Wrapper::IDirect3DBaseTexture8* pDestinationTexture)
 		{
 			LOG("IDirect3DDevice8::UpdateTexture( " << pSourceTexture << " , " << pDestinationTexture << " )\n");
-			return m_pDevice->UpdateTexture(pSourceTexture->GetBaseTexture(),pDestinationTexture->GetBaseTexture());
+			D3D8Base::IDirect3DBaseTexture8* source;
+			if (pSourceTexture == NULL)
+			{
+				source = NULL;
+			}
+			else
+			{
+				source = pSourceTexture->GetBaseTexture();
+			}
+
+			D3D8Base::IDirect3DBaseTexture8* destination;
+			if (pDestinationTexture == NULL)
+			{
+				destination = NULL;
+			}
+			else
+			{
+				destination = pDestinationTexture->GetBaseTexture();
+			}
+
+			return m_pDevice->UpdateTexture(source,destination);
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetFrontBuffer(D3D8Wrapper::IDirect3DSurface8* pDestSurface)
 		{
 			LOG("IDirect3DDevice8::GetFrontBuffer( " << pDestSurface << " )\n");
-			return m_pDevice->GetFrontBuffer(pDestSurface->GetSurface());
+			if (pDestSurface == NULL)
+			{
+				return m_pDevice->GetFrontBuffer(NULL);
+			}
+			else
+			{
+				return m_pDevice->GetFrontBuffer(pDestSurface->GetSurface());
+			}
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetRenderTarget(D3D8Wrapper::IDirect3DSurface8* pRenderTarget,D3D8Wrapper::IDirect3DSurface8* pNewZStencil)
@@ -656,7 +710,14 @@ extern "C"
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::ProcessVertices(UINT SrcStartIndex,UINT DestIndex,UINT VertexCount,D3D8Wrapper::IDirect3DVertexBuffer8* pDestBuffer,DWORD Flags)
 		{
 			LOG("IDirect3DDevice8::ProcessVertices( " << SrcStartIndex << " , " << DestIndex << " , " << VertexCount << " , " << pDestBuffer << " , " << Flags << " )\n");
-			return m_pDevice->ProcessVertices(SrcStartIndex,DestIndex,VertexCount,pDestBuffer->GetVertexBuffer(),Flags);
+			if (pDestBuffer == NULL)
+			{
+				return m_pDevice->ProcessVertices(SrcStartIndex,DestIndex,VertexCount,NULL,Flags);
+			}
+			else
+			{
+				return m_pDevice->ProcessVertices(SrcStartIndex,DestIndex,VertexCount,pDestBuffer->GetVertexBuffer(),Flags);
+			}
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::CreateVertexShader(CONST DWORD* pDeclaration,CONST DWORD* pFunction,DWORD* pHandle,DWORD Usage)
@@ -710,7 +771,14 @@ extern "C"
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetStreamSource(UINT StreamNumber,D3D8Wrapper::IDirect3DVertexBuffer8* pStreamData,UINT Stride)
 		{
 			LOG("IDirect3DDevice8::SetStreamSource( " << StreamNumber << " , " << pStreamData << " , " << Stride << " )\n");
-			return m_pDevice->SetStreamSource(StreamNumber,pStreamData->GetVertexBuffer(),Stride);
+			if (pStreamData == NULL)
+			{
+				return m_pDevice->SetStreamSource(StreamNumber,NULL,Stride);
+			}
+			else
+			{
+				return m_pDevice->SetStreamSource(StreamNumber,pStreamData->GetVertexBuffer(),Stride);
+			}
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetStreamSource(UINT StreamNumber,D3D8Wrapper::IDirect3DVertexBuffer8** ppStreamData,UINT* pStride)
@@ -731,7 +799,14 @@ extern "C"
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::SetIndices(D3D8Wrapper::IDirect3DIndexBuffer8* pIndexData,UINT BaseVertexIndex)
 		{
 			LOG("IDirect3DDevice8::SetIndices( " << pIndexData << " , " << BaseVertexIndex << " )\n");
-			return m_pDevice->SetIndices(pIndexData->GetIndexBuffer(),BaseVertexIndex);
+			if (pIndexData == NULL)
+			{
+				return m_pDevice->SetIndices(NULL,BaseVertexIndex);
+			}
+			else
+			{
+				return m_pDevice->SetIndices(pIndexData->GetIndexBuffer(),BaseVertexIndex);
+			}
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetIndices(D3D8Wrapper::IDirect3DIndexBuffer8** ppIndexData,UINT* pBaseVertexIndex)
