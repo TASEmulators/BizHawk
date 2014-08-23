@@ -12,30 +12,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class InputRoll : Control
 	{
-		// TODO: temporary hack for debugging and testing, sould be removed before being "shipped"
-		public int ScrollPos
-		{
-			get
-			{
-				if (HorizontalOrientation)
-				{
-					if (NeedsHScrollbar)
-					{
-						return HBar.Value;
-					}
-
-					return 0;
-				}
-
-				if (NeedsVScrollbar)
-				{
-					return VBar.Value;
-				}
-
-				return 0;
-			}
-		}
-
 		private readonly GDIRenderer Gdi;
 		private readonly RollColumns _columns = new RollColumns();
 		private readonly List<Cell> SelectedItems = new List<Cell>();
