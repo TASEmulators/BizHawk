@@ -374,14 +374,17 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (HorizontalOrientation)
 				{
-					var visibleRows = ((Width - _horizontalOrientedColumnWidth) / CellWidth) + 1;
-					if (visibleRows >= ItemCount)
+					int startIndex = NeedsHScrollbar ? HBar.Value : 0;
+					int endIndex = startIndex + (Width / CellWidth);
+					if (endIndex >= ItemCount)
 					{
-						visibleRows = ItemCount;
+						endIndex = ItemCount;
 					}
 
+					int range = endIndex - startIndex;
+
 					Gdi.PrepDrawString(this.Font, this.ForeColor);
-					for (int i = 0; i < visibleRows; i++)
+					for (int i = 0; i < range; i++)
 					{
 						for (int j = 0; j < Columns.Count; j++)
 						{
@@ -389,14 +392,14 @@ namespace BizHawk.Client.EmuHawk
 							int x = _horizontalOrientedColumnWidth + CellPadding + (CellWidth * i);
 							int y = j * CellHeight;
 							var point = new Point(x, y);
-							QueryItemText(i, j, out text);
+							QueryItemText(i + startIndex, j, out text);
 							Gdi.DrawString(text, point);
 						}
 					}
 				}
 				else
 				{
-					int startIndex = VBar.Value;
+					int startIndex = NeedsVScrollbar ? VBar.Value : 0;
 					int endIndex = startIndex + (Height / CellHeight);
 					
 					if (endIndex >= ItemCount)
