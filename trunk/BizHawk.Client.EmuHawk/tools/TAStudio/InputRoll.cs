@@ -253,6 +253,23 @@ namespace BizHawk.Client.EmuHawk
 
 		[Browsable(false)]
 		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		public int? LastSelectedIndex
+		{
+			get
+			{
+				if (SelectedIndices.Any())
+				{
+					return SelectedIndices
+						.OrderBy(x => x)
+						.Last();
+				}
+
+				return null;
+			}
+		}
+
+		[Browsable(false)]
+		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
 		public Cell CurrentCell { get; set; }
 
 		[Browsable(false)]
@@ -276,6 +293,71 @@ namespace BizHawk.Client.EmuHawk
 			return string.Empty; // TODO
 		}
 
+		// TODO: remove
+		public void AddColumns(IEnumerable<RollColumn> columns)
+		{
+			_columns.AddRange(columns);
+			ColumnChanged();
+		}
+
+		// TODO: remove
+		public void AddColumn(RollColumn column)
+		{
+			_columns.Add(column);
+			ColumnChanged();
+		}
+
+		// TODO: remove
+		public RollColumn GetColumn(int index)
+		{
+			return _columns[index];
+		}
+
+		/// <summary>
+		/// Gets or sets the first visiable row index, if scrolling is needed
+		/// </summary>
+		[Browsable(false)]
+		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		public int ScrollPosition
+		{
+			get
+			{
+				if (HorizontalOrientation)
+				{
+					if (NeedsHScrollbar)
+					{
+						return HBar.Value;
+					}
+				}
+
+				if (NeedsVScrollbar)
+				{
+					return VBar.Value;
+				}
+
+				return 0;
+			}
+
+			set
+			{
+				if (HorizontalOrientation)
+				{
+					if (NeedsHScrollbar)
+					{
+						HBar.Value = value;
+					}
+				}
+
+				if (NeedsVScrollbar)
+				{
+					VBar.Value = value;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Returns the number of rows currently visible
+		/// </summary>
 		[Browsable(false)]
 		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
 		public int VisibleRows
@@ -289,23 +371,6 @@ namespace BizHawk.Client.EmuHawk
 
 				return (Height / CellHeight) - 1;
 			}
-		}
-
-		public void AddColumns(IEnumerable<RollColumn> columns)
-		{
-			_columns.AddRange(columns);
-			ColumnChanged();
-		}
-
-		public void AddColumn(RollColumn column)
-		{
-			_columns.Add(column);
-			ColumnChanged();
-		}
-
-		public RollColumn GetColumn(int index)
-		{
-			return _columns[index];
 		}
 
 		[Browsable(false)]
@@ -636,8 +701,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (HorizontalOrientation)
 			{
-				var visibleRows = (Width - _horizontalOrientedColumnWidth) / CellWidth;
-				for (int i = 0; i < visibleRows; i++)
+				for (int i = 0; i < VisibleRows; i++)
 				{
 					for (int j = 0; j < _columns.Count; j++)
 					{
@@ -659,8 +723,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				var visibleRows = (Height / CellHeight) - 1;
-				for (int i = 1; i < visibleRows; i++)
+				for (int i = 1; i < VisibleRows; i++)
 				{
 					int x = 1;
 					for (int j = 0; j < _columns.Count; j++)
@@ -1233,6 +1296,31 @@ namespace BizHawk.Client.EmuHawk
 			public string Name { get; set; }
 			public string Text { get; set; }
 			public InputType Type { get; set; }
+
+			public static bool operator ==(RollColumn column, string name)
+			{
+				return column.Name == name;
+			}
+
+			public static bool operator !=(RollColumn column, string name)
+			{
+				return column.Name != name;
+			}
+
+			public override int GetHashCode()
+			{
+				return Name.GetHashCode();
+			}
+
+			public override bool Equals(object obj)
+			{
+				if (obj is string)
+				{
+					return Name == (string)obj;
+				}
+
+				return base.Equals(obj);
+			}
 		}
 
 		public class Cell
