@@ -44,6 +44,7 @@ namespace BizHawk.Client.EmuHawk
 				LargeChange = 5
 			};
 
+			UseCustomBackground = true;
 			GridLines = true;
 			CellPadding = 3;
 			CurrentCell = null;
