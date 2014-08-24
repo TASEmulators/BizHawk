@@ -424,7 +424,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			[DisplayName("Skip BIOS")]
 			[Description("Skips the BIOS intro.  A BIOS file is still required.  Forced to false for movie recording.")]
-			[DefaultValue(false)]
+			[DefaultValue(true)]
 			public bool SkipBios { get; set; }
 			[DisplayName("RTC Use Real Time")]
 			[Description("Causes the internal clock to reflect your system clock.  Only relevant when a game has an RTC chip.  Forced to false for movie recording.")]
