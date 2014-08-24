@@ -16,7 +16,15 @@ namespace BizHawk.Client.Common
 		private readonly TasStateManager StateManager;
 		public TasMovieMarkerList Markers { get; set; }
 
-		public TasMovie(string path) : base(path) { }
+		public TasMovie(string path) : base(path)
+		{
+			// TODO: how to call the default constructor AND the base(path) constructor?  And is base(path) calling base() ?
+			StateManager = new TasStateManager(this);
+			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
+			Markers = new TasMovieMarkerList(this);
+			Markers.CollectionChanged += Markers_CollectionChanged;
+			Markers.Add(0, StartsFromSavestate ? "Savestate" : "Power on");
+		}
 
 		public TasMovie()
 			: base()
