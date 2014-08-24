@@ -21,6 +21,21 @@ namespace BizHawk.Client.Common
 		{
 			_movie = movie;
 			Settings = new ManagerSettings();
+
+			var cap = Settings.Cap;
+
+			int limit = 0;
+			if (Global.Emulator != null)
+			{
+				var stateSize = Global.Emulator.SaveStateBinary().Length;
+
+				if (stateSize > 0)
+				{
+					limit = cap / stateSize;
+				}
+			}
+
+			States = new SortedList<int, byte[]>(limit);
 		}
 
 		public ManagerSettings Settings { get; set; }
