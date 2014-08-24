@@ -22,10 +22,14 @@ namespace BizHawk.Client.EmuHawk
 		public static Color CurrentFrame_InputLog = Color.FromArgb(0xB5E7F7);
 
 		public static Color GreenZone_FrameCol = Color.FromArgb(0xDDFFDD);
+		public static Color GreenZone_Invalidated_FrameCol = Color.FromArgb(0xFFFFFF);
 		public static Color GreenZone_InputLog = Color.FromArgb(0xC4F7C8);
+		public static Color GreenZone_Invalidated_InputLog = Color.FromArgb(0xE0FBE0);
 
 		public static Color LagZone_FrameCol = Color.FromArgb(0xFFDCDD);
+		public static Color LagZone_Invalidated_FrameCol = Color.FromArgb(0xFFE9E9);
 		public static Color LagZone_InputLog = Color.FromArgb(0xF0D0D2);
+		public static Color LagZone_Invalidated_InputLog = Color.FromArgb(0xF7E5E5);
 
 		public static Color NoState_GreenZone_FrameCol = Color.FromArgb(0xF9FFF9);
 		public static Color NoState_GreenZone_InputLog = Color.FromArgb(0xE0FBE0);
@@ -49,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// "pending" frame logic
-			if (index == Global.Emulator.Frame && index == _tas.InputLogLength)
+			if (index == Global.Emulator.Frame && index == _currentTasMovie.InputLogLength)
 			{
 				if (columnName == FrameColumnName)
 				{
@@ -61,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var record = _tas[index];
+			var record = _currentTasMovie[index];
 
 			if (columnName == FrameColumnName)
 			{
@@ -69,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					color = CurrentFrame_FrameCol;
 				}
-				else if (_tas.Markers.IsMarker(index))
+				else if (_currentTasMovie.Markers.IsMarker(index))
 				{
 					color = Marker_FrameCol;
 				}
@@ -135,11 +139,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					if (index < _tas.InputLogLength)
+					if (index < _currentTasMovie.InputLogLength)
 					{
-						text = _tas.DisplayValue(index, columnName);
+						text = _currentTasMovie.DisplayValue(index, columnName);
 					}
-					else if (Global.Emulator.Frame == _tas.InputLogLength) // In this situation we have a "pending" frame for the user to click
+					else if (Global.Emulator.Frame == _currentTasMovie.InputLogLength) // In this situation we have a "pending" frame for the user to click
 					{
 						text = TasMovie.CreateDisplayValueForButton(
 							Global.ClickyVirtualPadController,
@@ -160,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
-			if (TasView.SelectedIndices().Any())
+			if (TasView.SelectedIndices.Any())
 			{
 				var columnName = TasView.Columns[e.Column].Name;
 
@@ -170,7 +174,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (columnName != MarkerColumnName) // TODO: what about float?
 				{
-					foreach (var index in TasView.SelectedIndices())
+					foreach (var index in TasView.SelectedIndices)
 					{
 						ToggleBoolState(index, columnName);
 					}
@@ -188,38 +192,55 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (TasView.PointedCell.Row.HasValue && !string.IsNullOrEmpty(TasView.PointedCell.Column))
+			if (TasView.CurrentCell.RowIndex.HasValue && TasView.CurrentCell.Column != null)
 			{
 				if (e.Button == MouseButtons.Left)
 				{
-					if (TasView.PointedCell.Column == MarkerColumnName)
+					if (TasView.CurrentCell.Column.Name == MarkerColumnName)
 					{
 						_startMarkerDrag = true;
-						GoToFrame(TasView.PointedCell.Row.Value - 1);
+						GoToFrame(TasView.CurrentCell.RowIndex.Value);
 					}
-					else if (TasView.PointedCell.Column == FrameColumnName)
+					else if (TasView.CurrentCell.Column.Name == FrameColumnName)
 					{
 						_startFrameDrag = true;
 					}
-					else
+					else//User changed input
 					{
-						var frame = TasView.PointedCell.Row.Value;
-						var buttonName = TasView.PointedCell.Column;
+						var frame = TasView.CurrentCell.RowIndex.Value;
+						var buttonName = TasView.CurrentCell.Column.Name;
 
 						if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
 						{
-							ToggleBoolState(TasView.PointedCell.Row.Value, TasView.PointedCell.Column);
-							GoToLastEmulatedFrameIfNecessary(TasView.PointedCell.Row.Value);
+							ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
+							GoToLastEmulatedFrameIfNecessary(TasView.CurrentCell.RowIndex.Value);
 							TasView.Refresh();
 
-							_startBoolDrawColumn = TasView.PointedCell.Column;
-							_boolPaintState = _tas.BoolIsPressed(frame, buttonName);
+							if (Global.Config.TAStudioAutoRestoreLastPosition)
+							{
+								GlobalWin.MainForm.UnpauseEmulator();
+								GlobalWin.MainForm.PauseOnFrame = Global.Emulator.Frame;
+							}
+
+							_startBoolDrawColumn = buttonName;
+							_boolPaintState = _currentTasMovie.BoolIsPressed(frame, buttonName);
 						}
 						else
 						{
-							_startFloatDrawColumn = TasView.PointedCell.Column;
-							_floatPaintState = _tas.GetFloatValue(frame, buttonName);
+							_startFloatDrawColumn = buttonName;
+							_floatPaintState = _currentTasMovie.GetFloatValue(frame, buttonName);
 						}
+					}
+				}
+				else if (e.Button == MouseButtons.Right)
+				{
+					var frame = TasView.CurrentCell.RowIndex.Value;
+					var buttonName = TasView.CurrentCell.Column.Name;
+					if (TasView.SelectedIndices.IndexOf(frame) != -1 && (buttonName == MarkerColumnName || buttonName == FrameColumnName))
+					{
+						//Disable the option to remove markers if no markers are selected (FCUEX does this).
+						RemoveMarkersContextMenuItem.Enabled = _currentTasMovie.Markers.Any(m => TasView.SelectedIndices.Contains(m.Frame));
+						RightClickMenu.Show(TasView, e.X, e.Y);
 					}
 				}
 			}
@@ -236,7 +257,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_MouseWheel(object sender, MouseEventArgs e)
 		{
-			if (TasView.RightButtonHeld && TasView.PointedCell.Row.HasValue)
+			if (TasView.RightButtonHeld && TasView.CurrentCell.RowIndex.HasValue)
 			{
 				if (e.Delta < 0)
 				{
@@ -251,38 +272,47 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			if (TasView.PointedCell.Row.HasValue &&
-				!string.IsNullOrEmpty(TasView.PointedCell.Column) &&
-				TasView.PointedCell.Column == FrameColumnName)
+			if (TasView.CurrentCell.RowIndex.HasValue &&
+				TasView.CurrentCell != null &&
+				TasView.CurrentCell.Column.Name == FrameColumnName)
 			{
-				CallAddMarkerPopUp(TasView.PointedCell.Row.Value);
+				CallAddMarkerPopUp(TasView.CurrentCell.RowIndex.Value);
 			}
 		}
 
-		private void TasView_PointedCellChanged(object sender, TasListView.CellEventArgs e)
+		private void TasView_PointedCellChanged(object sender, InputRoll.CellEventArgs e)
 		{
-			int startVal, endVal;
-			if (e.OldCell.Row.Value < e.NewCell.Row.Value)
+			// TODO: think about nullability
+			// For now return if a null because this happens OnEnter which doesn't have any of the below behaviors yet?
+			// Most of these are stupid but I got annoyed at null crashes
+			if (e.OldCell == null || e.OldCell.Column == null || e.OldCell.RowIndex == null ||
+				e.NewCell == null || e.NewCell.RowIndex == null || e.NewCell.Column == null)
 			{
-				startVal = e.OldCell.Row.Value;
-				endVal = e.NewCell.Row.Value;
+				return;
+			}
+
+			int startVal, endVal;
+			if (e.OldCell.RowIndex.Value < e.NewCell.RowIndex.Value)
+			{
+				startVal = e.OldCell.RowIndex.Value;
+				endVal = e.NewCell.RowIndex.Value;
 			}
 			else
 			{
-				startVal = e.NewCell.Row.Value;
-				endVal = e.OldCell.Row.Value;
+				startVal = e.NewCell.RowIndex.Value;
+				endVal = e.OldCell.RowIndex.Value;
 			}
 
 			if (_startMarkerDrag)
 			{
-				if (e.NewCell.Row.HasValue)
+				if (e.NewCell.RowIndex.HasValue)
 				{
-					GoToFrame(e.NewCell.Row.Value);
+					GoToFrame(e.NewCell.RowIndex.Value);
 				}
 			}
 			else if (_startFrameDrag)
 			{
-				if (e.OldCell.Row.HasValue && e.NewCell.Row.HasValue)
+				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
 					for (var i = startVal + 1; i <= endVal; i++)
 					{
@@ -290,29 +320,29 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
-			else if (TasView.IsPaintDown && e.NewCell.Row.HasValue && !string.IsNullOrEmpty(_startBoolDrawColumn))
+			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startBoolDrawColumn))
 			{
-				if (e.OldCell.Row.HasValue && e.NewCell.Row.HasValue)
+				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
 					for (var i = startVal; i < endVal; i++)
 					{
 						SetBoolState(i, _startBoolDrawColumn, _boolPaintState); // Notice it uses new row, old column, you can only paint across a single column
-						GoToLastEmulatedFrameIfNecessary(TasView.PointedCell.Row.Value);
+						GoToLastEmulatedFrameIfNecessary(TasView.CurrentCell.RowIndex.Value);
 					}
 
 					TasView.Refresh();
 				}
 			}
-			else if (TasView.IsPaintDown && e.NewCell.Row.HasValue && !string.IsNullOrEmpty(_startFloatDrawColumn))
+			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startFloatDrawColumn))
 			{
-				if (e.OldCell.Row.HasValue && e.NewCell.Row.HasValue)
+				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
 					for (var i = startVal; i < endVal; i++)
 					{
-						if (i < _tas.InputLogLength) // TODO: how do we really want to handle the user setting the float state of the pending frame?
+						if (i < _currentTasMovie.InputLogLength) // TODO: how do we really want to handle the user setting the float state of the pending frame?
 						{
-							_tas.SetFloatState(i, _startFloatDrawColumn, _floatPaintState); // Notice it uses new row, old column, you can only paint across a single column
-							GoToLastEmulatedFrameIfNecessary(TasView.PointedCell.Row.Value);
+							_currentTasMovie.SetFloatState(i, _startFloatDrawColumn, _floatPaintState); // Notice it uses new row, old column, you can only paint across a single column
+							GoToLastEmulatedFrameIfNecessary(TasView.CurrentCell.RowIndex.Value);
 						}
 					}
 

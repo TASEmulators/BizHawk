@@ -11,6 +11,15 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 		{
 			var newFilename = old.Filename + "." +  TasMovie.Extension;
 			var tas = new TasMovie(newFilename);
+
+			for (var i = 0; i < old.InputLogLength; i++)
+			{
+				var input = old.GetInputState(i);
+				tas.AppendFrame(input);
+			}
+
+			old.Truncate(0); // Trying to minimize ram usage
+
 			tas.HeaderEntries.Clear();
 			foreach (var kvp in old.HeaderEntries)
 			{
@@ -34,11 +43,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			tas.TextSavestate = old.TextSavestate;
 			tas.BinarySavestate = old.BinarySavestate;
 
-			for (var i = 0; i < old.InputLogLength; i++)
-			{
-				var input = old.GetInputState(i);
-				tas.AppendFrame(input);
-			}
+			
 
 			return tas;
 		}
@@ -47,6 +52,15 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 		{
 			var newFilename = old.Filename + "." + Bk2Movie.Extension;
 			var bk2 = new Bk2Movie(newFilename);
+
+			for (var i = 0; i < old.InputLogLength; i++)
+			{
+				var input = old.GetInputState(i);
+				bk2.AppendFrame(input);
+			}
+
+			old.Truncate(0); // Trying to minimize ram usage
+
 			bk2.HeaderEntries.Clear();
 			foreach(var kvp in old.HeaderEntries)
 			{
@@ -69,12 +83,6 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 
 			bk2.TextSavestate = old.TextSavestate;
 			bk2.BinarySavestate = old.BinarySavestate;
-
-			for (var i = 0; i < old.InputLogLength; i++)
-			{
-				var input = old.GetInputState(i);
-				bk2.AppendFrame(input);
-			}
 
 			bk2.Save();
 			return bk2;

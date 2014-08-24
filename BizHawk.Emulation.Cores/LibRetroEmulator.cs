@@ -8,6 +8,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores
 {
+	[CoreAttributes("DEBUG ONLY DON'T USE", "natt")]
 	public unsafe class LibRetroEmulator : IEmulator, IVideoProvider
 	{
 		#region callbacks
@@ -243,7 +244,7 @@ namespace BizHawk.Emulation.Cores
 
 		byte[] saverambuff = new byte[0];
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			int size = (int)retro.retro_get_memory_size(LibRetro.RETRO_MEMORY.SAVE_RAM);
 			if (saverambuff.Length != size)
@@ -254,7 +255,7 @@ namespace BizHawk.Emulation.Cores
 				throw new Exception("retro_get_memory_data(RETRO_MEMORY_SAVE_RAM) returned NULL");
 
 			Marshal.Copy(src, saverambuff, 0, size);
-			return saverambuff;
+			return (byte[])saverambuff.Clone();
 		}
 
 		public void StoreSaveRam(byte[] data)

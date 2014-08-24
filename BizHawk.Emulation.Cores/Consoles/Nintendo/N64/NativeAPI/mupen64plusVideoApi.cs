@@ -42,7 +42,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		private delegate Int32 GetScreenTextureID();
 		GetScreenTextureID GFXGetScreenTextureID;
 
-
 		public mupen64plusVideoApi(mupen64plusApi core, VideoPluginSettings settings)
 		{
 			string videoplugin;
@@ -62,45 +61,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 				case PluginType.Jabo:
 					videoplugin = "mupen64plus-video-jabo.dll";
 
-					//THIS IS HORRIBLE! PATH MUST BE PASSED IN SOME OTHER WAY
-					string dllDir = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "dll");
-					string rawPath = Path.Combine(dllDir, "Jabo_Direct3D8.dll");
-					string patchedPath = Path.Combine(dllDir, "Jabo_Direct3D8_patched.dll");
+					N64JaboManager manager = new N64JaboManager();
+					manager.Scan();
+					if (manager.Status == N64JaboManager.JaboStatus.ReadyToPatch)
+						manager.Patch();
+					if(manager.Status != N64JaboManager.JaboStatus.Ready)
+						throw new FileNotFoundException(string.Format("Error: Jabo dll was not found. please copy Jabo_Direct3D8.dll from a Project64 v1.6.1 installation into Bizhawk's dll directory."));
 
-					if (File.Exists(patchedPath))
-					{
-						byte[] hash = MD5.Create().ComputeHash(File.ReadAllBytes(patchedPath));
-						string hash_string = BitConverter.ToString(hash).Replace("-", "");
-						if (hash_string == "F4D6E624489CD88C68A5850426D4D70E")
-						{
-							jaboReady = true;
-						}
-					}
-
-					if (!jaboReady && File.Exists(rawPath))
-					{
-						byte[] hash = MD5.Create().ComputeHash(File.ReadAllBytes(rawPath));
-						string hash_string = BitConverter.ToString(hash).Replace("-", "");
-						if (hash_string == "4F353AA71E7455B81205D8EC0AA339E1")
-						{
-							byte[] jaboDLL = File.ReadAllBytes(rawPath);
-							jaboDLL[583] = 0xA0;
-							jaboDLL[623] = 0xA0;
-							jaboDLL[663] = 0xA0;
-							jaboDLL[703] = 0xA0;
-							jaboDLL[743] = 0xA0;
-							jaboDLL[783] = 0xA0;
-							jaboDLL[823] = 0xA0;
-							jaboDLL[863] = 0xA0;
-							File.WriteAllBytes(patchedPath, jaboDLL);
-							jaboReady = true;
-						}
-					}
-
-					if (!jaboReady)
-					{
-						throw new InvalidOperationException(string.Format("Error: Jabo dll was not found. please copy Jabo_Direct3D8.dll from a Project64 v1.6.1 installation into Bizhawk's dll directory."));
-					}
 					break;
 			}
 

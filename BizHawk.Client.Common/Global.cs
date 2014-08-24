@@ -15,12 +15,6 @@ namespace BizHawk.Client.Common
 		public static FirmwareManager FirmwareManager;
 		public static Rewinder Rewinder;
 
-		//Movie
-
-		/// <summary>
-		/// the global MovieSession can use this to deal with multitrack player remapping (should this be here? maybe it should be in MovieSession)
-		/// </summary>
-		public static MultitrackRewiringControllerAdapter MultitrackRewiringControllerAdapter = new MultitrackRewiringControllerAdapter();
 		public static MovieSession MovieSession = new MovieSession();
 
 		/// <summary>
@@ -34,6 +28,7 @@ namespace BizHawk.Client.Common
 		//the movie will be spliced inbetween these if it is present
 		public static CopyControllerAdapter MovieInputSourceAdapter = new CopyControllerAdapter();
 		public static CopyControllerAdapter MovieOutputHardpoint = new CopyControllerAdapter();
+		public static MultitrackRewiringControllerAdapter MultitrackRewiringAdapter = new MultitrackRewiringControllerAdapter();
 
 		//dont take my word for it, since the final word is actually in RewireInputChain, but here is a guide...
 		//user -> Input -> ActiveController -> UDLR -> StickyXORPlayerInputAdapter -> TurboAdapter(TBD) -> Lua(?TBD?) -> ..

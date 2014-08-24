@@ -35,24 +35,31 @@ namespace BizHawk.Client.Common
 		private object GetCoreSettings<T>()
 			where T : IEmulator
 		{
-			var e = new SettingsLoadArgs(typeof(T));
-			if (OnLoadSettings != null)
-			{
-				OnLoadSettings(this, e);
-			}
-
-			return e.Settings;
+			return GetCoreSettings(typeof(T));
 		}
 
 		private object GetCoreSyncSettings<T>()
 			where T : IEmulator
 		{
-			var e = new SettingsLoadArgs(typeof(T));
+			return GetCoreSyncSettings(typeof(T));
+		}
+
+		private object GetCoreSettings(Type t)
+		{
+			var e = new SettingsLoadArgs(t);
+			if (OnLoadSettings != null)
+			{
+				OnLoadSettings(this, e);
+			}
+			return e.Settings;
+		}
+		private object GetCoreSyncSettings(Type t)
+		{
+			var e = new SettingsLoadArgs(t);
 			if (OnLoadSyncSettings != null)
 			{
 				OnLoadSyncSettings(this, e);
 			}
-
 			return e.Settings;
 		}
 
@@ -154,7 +161,7 @@ namespace BizHawk.Client.Common
 
 			using (var file = new HawkFile())
 			{
-				var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64", "WS", "WSC" };
+				var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64", "WS", "WSC", "GBA" };
 
 				// lets not use this unless we need to
 				// file.NonArchiveExtensions = romExtensions;
@@ -235,7 +242,7 @@ namespace BizHawk.Client.Common
 						{
 							case "GEN":
 								var genesis = new GPGX(
-										nextComm, null, disc, "GEN", GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
+										nextComm, null, disc, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
 								nextEmulator = genesis;
 								break;
 							case "SAT":
@@ -317,13 +324,19 @@ namespace BizHawk.Client.Common
 							isXml = true;
 						}
 
+
+						CoreInventory.Core core = null;
+
 						switch (game.System)
 						{
+							default:
+								core = CoreInventory.Instance[game.System];
+								break;
+
 							case "SNES":
 								if (Global.Config.SNES_InSnes9x && VersionInfo.DeveloperBuild)
 								{
-									var snes = new Emulation.Cores.Nintendo.SNES9X.Snes9x(nextComm, rom.FileData);
-									nextEmulator = snes;
+									core = CoreInventory.Instance["SNES", "Snes9x"];
 								}
 								else
 								{
@@ -336,43 +349,14 @@ namespace BizHawk.Client.Common
 								}
 
 								break;
-							case "SMS":
-							case "SG":
-							case "GG":
-								nextEmulator = new SMS(nextComm, game, rom.RomData, GetCoreSettings<SMS>(), GetCoreSyncSettings<SMS>());
-								break;
-							case "A26":
-								nextEmulator = new Atari2600(
-									nextComm,
-									game,
-									rom.FileData,
-									GetCoreSettings<Atari2600>(),
-									GetCoreSyncSettings<Atari2600>());
-								break;
-							case "PCE":
-							case "PCECD":
-							case "SGX":
-								nextEmulator = new PCEngine(nextComm, game, rom.RomData, GetCoreSettings<PCEngine>(), GetCoreSyncSettings<PCEngine>());
-								break;
-							case "GEN":
-								nextEmulator = new GPGX(nextComm, rom.RomData, null, "GEN", GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
-								break;
-							case "TI83":
-								nextEmulator = new TI83(nextComm, game, rom.RomData, GetCoreSettings<TI83>());
-								break;
 							case "NES":
 								if (!Global.Config.NES_InQuickNES || forceAccurateCore)
 								{
-									nextEmulator = new NES(
-										nextComm,
-										game,
-										rom.FileData,
-										GetCoreSettings<NES>(),
-										GetCoreSyncSettings<NES>());
+									core = CoreInventory.Instance["NES", "NesHawk"];
 								}
 								else
 								{
-									nextEmulator = new QuickNES(nextComm, rom.FileData, GetCoreSettings<QuickNES>());
+									core = CoreInventory.Instance["NES", "QuickNes"];
 								}
 
 								break;
@@ -380,13 +364,7 @@ namespace BizHawk.Client.Common
 							case "GBC":
 								if (!Global.Config.GB_AsSGB)
 								{
-									nextEmulator = new Gameboy(
-										nextComm,
-										game,
-										rom.FileData,
-										GetCoreSettings<Gameboy>(),
-										GetCoreSyncSettings<Gameboy>(),
-										Deterministic);
+									core = CoreInventory.Instance["GB", "Gambatte"];
 								}
 								else
 								{
@@ -407,12 +385,6 @@ namespace BizHawk.Client.Common
 								}
 
 								break;
-							case "Coleco":
-								nextEmulator = new ColecoVision(nextComm, game, rom.RomData, GetCoreSyncSettings<ColecoVision>());
-								break;
-							case "INTV":
-								nextEmulator = new Intellivision(nextComm, game, rom.RomData);
-								break;
 							case "A78":
 								var gamedbpath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "EMU7800.csv");
 								nextEmulator = new Atari7800(nextComm, game, rom.RomData, gamedbpath);
@@ -422,17 +394,8 @@ namespace BizHawk.Client.Common
 								nextEmulator = c64;
 								break;
 							case "GBA":
-								var gba = new GBA(nextComm);
-								gba.Load(rom.RomData);
-								nextEmulator = gba;
-								break;
-							case "N64":
-								nextEmulator = new N64(nextComm, game, rom.RomData,
-									GetCoreSettings<N64>(), GetCoreSyncSettings<N64>());
-								break;
-							case "WSWAN":
-								nextEmulator = new WonderSwan(nextComm, rom.RomData, Deterministic,
-									GetCoreSettings<WonderSwan>(), GetCoreSyncSettings<WonderSwan>());
+								//core = CoreInventory.Instance["GBA", "Meteor"];
+								core = CoreInventory.Instance["GBA", "VBA-Next"];
 								break;
 							case "DEBUG":
 								if (VersionInfo.DeveloperBuild)
@@ -441,6 +404,12 @@ namespace BizHawk.Client.Common
 								}
 
 								break;
+						}
+
+						if (core != null)
+						{
+							// use coreinventory
+							nextEmulator = core.Create(nextComm, game, rom.RomData, Deterministic, GetCoreSettings(core.Type), GetCoreSyncSettings(core.Type));
 						}
 					}
 

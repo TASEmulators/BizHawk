@@ -46,6 +46,7 @@ namespace BizHawk.Client.Common
 			_resolutionDictionary.TryGetValue(record, out resolved);
 
 			// couldnt find it! do a scan and resolve to try harder
+			// NOTE: this could result in bad performance in some cases if the scanning happens repeatedly..
 			if (resolved == null && first)
 			{
 				DoScanAndResolve();

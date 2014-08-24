@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.VirtualMode = true;
 			Closing += (o, e) =>
 			{
-				if (AskSave())
+				if (AskSaveChanges())
 				{
 					SaveConfigSettings();
 				}
@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 			Changes();
 		}
 
-		public bool AskSave()
+		public bool AskSaveChanges()
 		{
 			if (_watches.Changes)
 			{
@@ -138,7 +138,7 @@ namespace BizHawk.Client.EmuHawk
 			var ask_result = true;
 			if (_watches.Changes)
 			{
-				ask_result = AskSave();
+				ask_result = AskSaveChanges();
 			}
 
 			if (ask_result)
@@ -166,7 +166,7 @@ namespace BizHawk.Client.EmuHawk
 				var result = true;
 				if (_watches.Changes)
 				{
-					result = AskSave();
+					result = AskSaveChanges();
 				}
 
 				if (result)
@@ -461,7 +461,7 @@ namespace BizHawk.Client.EmuHawk
 			var result = true;
 			if (_watches.Changes)
 			{
-				result = AskSave();
+				result = AskSaveChanges();
 			}
 
 			if (result || suppressAsk)
@@ -581,7 +581,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			ErrorIconButton.Visible = _watches.Any(watch => (watch.Address ?? 0) >= watch.Domain.Size);
+			ErrorIconButton.Visible = _watches.Where(watch => !watch.IsSeparator).Any(watch => (watch.Address ?? 0) >= watch.Domain.Size);
 
 			MessageLabel.Text = message;
 		}

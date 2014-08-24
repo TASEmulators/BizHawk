@@ -347,6 +347,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			}
 		}
 
+		[CoreConstructor("TI83")]
 		public TI83(CoreComm comm, GameInfo game, byte[] rom, object Settings)
 		{
 			PutSettings(Settings ?? new TI83Settings());
@@ -523,7 +524,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		public bool DeterministicEmulation { get { return true; } }
 
-		public byte[] ReadSaveRam() { return null; }
+		public byte[] CloneSaveRam() { return null; }
 		public void StoreSaveRam(byte[] data) { }
 		public void ClearSaveRam() { }
 		public bool SaveRamModified

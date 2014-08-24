@@ -20,15 +20,15 @@ namespace BizHawk.Client.EmuHawk
 
 			Global.Config.RecentMovies.Add(movie.Filename);
 
-			if (Global.MovieSession.Movie.StartsFromSavestate)
+			if (movie.StartsFromSavestate)
 			{
-				if (Global.MovieSession.Movie.TextSavestate != null)
+				if (movie.TextSavestate != null)
 				{
-					Global.Emulator.LoadStateText(new StringReader(Global.MovieSession.Movie.TextSavestate));
+					Global.Emulator.LoadStateText(new StringReader(movie.TextSavestate));
 				}
 				else
 				{
-					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.BinarySavestate, false)));
+					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(movie.BinarySavestate, false)));
 				}
 
 				Global.Emulator.ResetCounters();
@@ -37,7 +37,6 @@ namespace BizHawk.Client.EmuHawk
 			Global.MovieSession.RunQueuedMovie(record);
 
 			SetMainformMovieInfo();
-			UpdateStatusSlots();
 
 			GlobalWin.Tools.Restart<VirtualpadTool>();
 			GlobalWin.DisplayManager.NeedsToPaint = true;
@@ -65,6 +64,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			SetWindowText();
+			UpdateStatusSlots();
 		}
 
 		public void RestartMovie()
@@ -73,20 +73,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GlobalWin.MainForm.StartNewMovie(Global.MovieSession.Movie, true);
 				GlobalWin.OSD.AddMessage("Replaying movie file in read-only mode");
-			}
-		}
-
-		public void StopMovie(bool saveChanges = true)
-		{
-			if (IsSlave && _master.WantsToCOntrolStopMovie)
-			{
-				_master.StopMovie();
-			}
-			else
-			{
-				Global.MovieSession.StopMovie(saveChanges);
-				SetMainformMovieInfo();
-				UpdateStatusSlots();
 			}
 		}
 	}

@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Public
 
-		public bool AskSave() { return true; }
+		public bool AskSaveChanges() { return true; }
 
 		public bool UpdateBefore { get { return false; } }
 		

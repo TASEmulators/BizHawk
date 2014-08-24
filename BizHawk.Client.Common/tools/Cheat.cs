@@ -297,6 +297,11 @@ namespace BizHawk.Client.Common
 			if (!IsSeparator)
 			{
 				_val++;
+				if (_val > _watch.MaxValue)
+				{
+					_val = 0;
+				}
+
 				Pulse();
 				Changes();
 			}
@@ -307,6 +312,11 @@ namespace BizHawk.Client.Common
 			if (!IsSeparator)
 			{
 				_val--;
+				if ((uint)_val > _watch.MaxValue)
+				{
+					_val = (int)_watch.MaxValue;
+				}
+
 				Pulse();
 				Changes();
 			}

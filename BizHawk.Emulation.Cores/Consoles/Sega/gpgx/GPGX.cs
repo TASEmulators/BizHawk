@@ -51,14 +51,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Mouse
 		};
 
-		public GPGX(CoreComm NextComm, byte[] romfile, DiscSystem.Disc CD, string romextension, object Settings, object SyncSettings)
+		[CoreConstructor("GEN")]
+		public GPGX(CoreComm comm, byte[] rom, object Settings, object SyncSettings)
+			:this(comm, rom, null, Settings, SyncSettings)
 		{
+		}
+
+		public GPGX(CoreComm comm, byte[] rom, DiscSystem.Disc CD, object Settings, object SyncSettings)
+		{
+			// this can influence some things internally
+			string romextension = "GEN";
+
 			// three or six button?
 			// http://www.sega-16.com/forum/showthread.php?4398-Forgotten-Worlds-giving-you-GAME-OVER-immediately-Fix-inside&highlight=forgotten%20worlds
 
 			//hack, don't use
 			//romfile = File.ReadAllBytes(@"D:\encodes\bizhawksrc\output\SANIC CD\PierSolar (E).bin");
-			if (romfile != null && romfile.Length > 16 * 1024 * 1024)
+			if (rom != null && rom.Length > 16 * 1024 * 1024)
 			{
 				throw new InvalidOperationException("ROM too big!  Did you try to load a CD as a ROM?");
 			}
@@ -67,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			{
 				_SyncSettings = (GPGXSyncSettings)SyncSettings ?? new GPGXSyncSettings();
 
-				CoreComm = NextComm;
+				CoreComm = comm;
 				if (AttachedCore != null)
 				{
 					AttachedCore.Dispose();
@@ -77,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				LoadCallback = new LibGPGX.load_archive_cb(load_archive);
 
-				this.romfile = romfile;
+				this.romfile = rom;
 				this.CD = CD;
 
 				LibGPGX.INPUT_SYSTEM system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
@@ -412,11 +421,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		byte[] DisposedSaveRam = null;
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			if (disposed)
 			{
-				return DisposedSaveRam ?? new byte[0];
+				if (DisposedSaveRam != null)
+				{
+					return (byte[])DisposedSaveRam.Clone();
+				}
+				else
+				{
+					return new byte[0];
+				}
 			}
 			else
 			{
@@ -575,23 +591,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (area == IntPtr.Zero || pname == IntPtr.Zero || size == 0)
 					continue;
 				string name = Marshal.PtrToStringAnsi(pname);
-				byte* p = (byte*)area;
 
-				mm.Add(new MemoryDomain(name, size, MemoryDomain.Endian.Unknown,
-					delegate(int addr)
-					{
-						if (addr < 0 || addr >= size)
-							throw new ArgumentOutOfRangeException();
-						return p[addr];
-					},
-					delegate(int addr, byte val)
-					{
-						if (addr < 0 || addr >= size)
-							throw new ArgumentOutOfRangeException();
-						p[addr] = val;
-					}));
+				mm.Add(MemoryDomain.FromIntPtr(name, size, MemoryDomain.Endian.Unknown, area));
 			}
-
 			MemoryDomains = new MemoryDomainList(mm, 0);
 		}
 
@@ -652,7 +654,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (AttachedCore != this)
 					throw new Exception();
 				if (SaveRamModified)
-					DisposedSaveRam = ReadSaveRam();
+					DisposedSaveRam = CloneSaveRam();
 				KillMemCallbacks();
 				AttachedCore = null;
 				disposed = true;
@@ -824,7 +826,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			public static bool NeedsReboot(GPGXSyncSettings x, GPGXSyncSettings y)
 			{
-				return x.UseSixButton != y.UseSixButton || x.ControlType != y.ControlType || x.Region != y.Region;
+				return !DeepEquality.DeepEquals(x, y);
 			}
 		}
 

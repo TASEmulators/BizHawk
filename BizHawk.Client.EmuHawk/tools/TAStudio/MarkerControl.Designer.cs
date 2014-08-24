@@ -30,9 +30,7 @@
 		{
 			this.AddBtn = new System.Windows.Forms.Button();
 			this.RemoveBtn = new System.Windows.Forms.Button();
-			this.MarkerView = new BizHawk.Client.EmuHawk.VirtualListView();
-			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.MarkerView = new BizHawk.Client.EmuHawk.InputRoll();
 			this.SuspendLayout();
 			// 
 			// AddBtn
@@ -60,40 +58,23 @@
 			// 
 			// MarkerView
 			// 
+			this.MarkerView.AllowColumnReorder = false;
+			this.MarkerView.AllowColumnResize = false;
 			this.MarkerView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.MarkerView.BlazingFast = false;
-			this.MarkerView.CheckBoxes = true;
-			this.MarkerView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2});
 			this.MarkerView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MarkerView.FullRowSelect = true;
-			this.MarkerView.GridLines = true;
-			this.MarkerView.HideSelection = false;
+			this.MarkerView.HorizontalOrientation = false;
 			this.MarkerView.ItemCount = 0;
+			this.MarkerView.LastVisibleIndex = 9;
 			this.MarkerView.Location = new System.Drawing.Point(3, 0);
+			this.MarkerView.MultiSelect = false;
 			this.MarkerView.Name = "MarkerView";
-			this.MarkerView.SelectAllInProgress = false;
-			this.MarkerView.selectedItem = -1;
 			this.MarkerView.Size = new System.Drawing.Size(198, 209);
 			this.MarkerView.TabIndex = 5;
 			this.MarkerView.TabStop = false;
-			this.MarkerView.UseCompatibleStateImageBehavior = false;
-			this.MarkerView.View = System.Windows.Forms.View.Details;
-			this.MarkerView.ItemActivate += new System.EventHandler(this.MarkerView_ItemActivate);
 			this.MarkerView.SelectedIndexChanged += new System.EventHandler(this.MarkerView_SelectedIndexChanged);
-			// 
-			// columnHeader1
-			// 
-			this.columnHeader1.Text = "Frame";
-			this.columnHeader1.Width = 64;
-			// 
-			// columnHeader2
-			// 
-			this.columnHeader2.Text = "Label";
-			this.columnHeader2.Width = 113;
 			// 
 			// MarkerControl
 			// 
@@ -111,9 +92,7 @@
 
 		#endregion
 
-		private VirtualListView MarkerView;
-		public System.Windows.Forms.ColumnHeader columnHeader1;
-		private System.Windows.Forms.ColumnHeader columnHeader2;
+		private InputRoll MarkerView;
 		private System.Windows.Forms.Button AddBtn;
 		private System.Windows.Forms.Button RemoveBtn;
 

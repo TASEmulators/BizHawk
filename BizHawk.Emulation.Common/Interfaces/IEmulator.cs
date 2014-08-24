@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// return a copy of the saveram.  editing it won't do you any good unless you later call StoreSaveRam()
 		/// </summary>
-		byte[] ReadSaveRam();
+		byte[] CloneSaveRam();
 
 		/// <summary>
 		/// store new saveram to the emu core.  the data should be the same size as the return from ReadSaveRam()
@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.Common
 		void StoreSaveRam(byte[] data);
 
 		/// <summary>
-		/// reset saveram to a standard initial state
+		/// reset saveram to a standard initial state.  this probably shouldn't be used; instantiate a new core to clear persistent things.
 		/// </summary>
 		void ClearSaveRam();
 
@@ -159,16 +159,18 @@ namespace BizHawk.Emulation.Common
 		// (if those are null, default settings are to be used)
 
 		/// <summary>
-		/// get the current core settings, excepting movie settings.  should be a clone of the active in-core object, and changes to the return
-		/// should not affect emulation (unless the object is later passed to PutSettings)
+		/// get the current core settings, excepting movie settings.  should be a clone of the active in-core object.
+		/// VERY IMPORTANT: changes to the object returned by this function SHOULD NOT have any effect on emulation
+		/// (unless the object is later passed to PutSettings)
 		/// </summary>
 		/// <returns>a json-serializable object</returns>
 		object GetSettings();
 
 		/// <summary>
 		/// get the current core settings that affect movie sync.  these go in movie 2.0 files, so don't make the JSON too extravagant, please
-		/// should be a clone of the active in-core object, and changes to the return
-		/// should not affect emulation (unless the object is later passed to PutSyncSettings)
+		/// should be a clone of the active in-core object.
+		/// VERY IMPORTANT: changes to the object returned by this function MUST NOT have any effect on emulation
+		/// (unless the object is later passed to PutSyncSettings)
 		/// </summary>
 		/// <returns>a json-serializable object</returns>
 		object GetSyncSettings();
@@ -177,14 +179,15 @@ namespace BizHawk.Emulation.Common
 		/// change the core settings, excepting movie settings
 		/// </summary>
 		/// <param name="o">an object of the same type as the return for GetSettings</param>
-		/// <returns>true if a core reboot will be required to implement these</returns>
+		/// <returns>true if a core reboot will be required to make the changes effective</returns>
 		bool PutSettings(object o);
 
 		/// <summary>
 		/// changes the movie-sync relevant settings.  THIS SHOULD NEVER BE CALLED WHILE RECORDING
+		/// if it is called while recording, the core need not guarantee continued determinism
 		/// </summary>
 		/// <param name="o">an object of the same type as the return for GetSyncSettings</param>
-		/// <returns>true if a core reboot will be required to implement these</returns>
+		/// <returns>true if a core reboot will be required to make the changes effective</returns>
 		bool PutSyncSettings(object o);
 	}
 

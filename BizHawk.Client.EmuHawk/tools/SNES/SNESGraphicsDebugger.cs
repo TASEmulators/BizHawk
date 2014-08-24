@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 		List<DisplayTypeItem> displayTypeItems = new List<DisplayTypeItem>();
 
 		public bool UpdateBefore { get { return false; } }
-		public bool AskSave() { return true; }
+		public bool AskSaveChanges() { return true; }
 
 		public void Restart()
 		{

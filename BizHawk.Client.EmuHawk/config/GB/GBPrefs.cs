@@ -31,7 +31,8 @@ namespace BizHawk.Client.EmuHawk.config.GB
 				{
 					dlg.gbPrefControl1.GetSettings(out s, out ss);
 					Global.Emulator.PutSettings(s);
-					GlobalWin.MainForm.PutCoreSyncSettings(ss);
+					if (dlg.gbPrefControl1.SyncSettingsChanged)
+						GlobalWin.MainForm.PutCoreSyncSettings(ss);
 				}
 			}
 		}

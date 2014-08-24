@@ -6,10 +6,11 @@ using System.Text;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using System.ComponentModel;
 
 namespace BizHawk.Client.Common
 {
-	public sealed partial class TasMovie : Bk2Movie
+	public sealed partial class TasMovie : Bk2Movie, INotifyPropertyChanged
 	{
 		private List<bool> LagLog = new List<bool>();
 		private readonly TasStateManager StateManager;
@@ -28,6 +29,36 @@ namespace BizHawk.Client.Common
 		public override string PreferredExtension
 		{
 			get { return Extension; }
+		}
+
+		#region OnPropertyChanged Event
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		private bool _changes;
+		public override bool Changes
+		{
+			get { return _changes; }
+			protected set
+			{
+				if (_changes != value)
+				{
+					_changes = value;
+					OnPropertyChanged("Changes");
+				}
+			}
+		}
+
+		#endregion
+
+		//This event is Raised ony when Changes is TOGGLED.
+		private void OnPropertyChanged(string propertyName)
+		{
+			if (PropertyChanged != null)
+			{
+				//Raising the event when FirstName or LastName property value changed
+				PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			}
 		}
 
 		public new const string Extension = "tasproj";
@@ -62,9 +93,15 @@ namespace BizHawk.Client.Common
 			Markers.Add(0, StartsFromSavestate ? "Savestate" : "Power on");
 		}
 
+		public override void SwitchToPlay()
+		{
+			_mode = Moviemode.Play;
+		}
+
 		/// <summary>
 		/// Removes lag log and greenzone after this frame
 		/// </summary>
+		/// <param name="frame">The last frame that can be valid.</param>
 		private void InvalidateAfter(int frame)
 		{
 			if (frame < LagLog.Count)
@@ -73,13 +110,13 @@ namespace BizHawk.Client.Common
 			}
 
 			StateManager.Invalidate(frame + 1);
-			Changes = true; // TODO check if this actually removed anyting before flagging changes
+			Changes = true; // TODO check if this actually removed anything before flagging changes
 		}
 
 		private readonly Bk2MnemonicConstants Mnemonics = new Bk2MnemonicConstants();
 		/// <summary>
 		/// Returns the mnemonic value for boolean buttons, and actual value for floats,
-		/// for a given frame and button
+		/// for a given frame and button.
 		/// </summary>
 		public string DisplayValue(int frame, string buttonName)
 		{

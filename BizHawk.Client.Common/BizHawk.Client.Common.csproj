@@ -39,9 +39,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="LuaInterface, Version=2.0.4.24551, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\output\dll\LuaInterface.dll</HintPath>
+    <Reference Include="LuaInterface">
+      <HintPath>..\References\LuaInterface.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

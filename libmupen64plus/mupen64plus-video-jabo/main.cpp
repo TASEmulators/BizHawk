@@ -59,7 +59,6 @@ static void *l_DebugCallContext = NULL;
 static int l_PluginInit = 0;
 
 HMODULE JaboDLL;
-HWND hWnd_jabo;
 
 HANDLE window_thread = NULL;
 
@@ -355,7 +354,6 @@ EXPORT void CALL ChangeWindow (void)
 // NOTE: NEW GFX_INFO vs old
 EXPORT int CALL InitiateGFX(GFX_INFO Gfx_Info)
 {
-	while(hWnd_jabo == NULL) { Sleep(1); }
 	LOG("API WRAPPER:\t InitiateGFX")
 
 	Config_Open();
@@ -403,8 +401,21 @@ EXPORT int CALL InitiateGFX(GFX_INFO Gfx_Info)
 		case 4: new_options_val |= 0x00000100; break;
 	}
 
-	// Force 800x600 for now
-	new_options_val |= 0x00000004;
+	int width, height;
+	Config_ReadScreenResolution(&width,&height);
+	if (width == 320 && height == 240) { new_options_val |= 0x00000000; }
+	else if (width == 400 && height == 300) { new_options_val |= 0x00000001; } 
+	else if (width == 512 && height == 384) { new_options_val |= 0x00000002; } 
+	else if (width == 640 && height == 480) { new_options_val |= 0x00000003; } 
+	else if (width == 800 && height == 600) { new_options_val |= 0x00000004; } 
+	else if (width == 1024 && height == 768) { new_options_val |= 0x00000005; } 
+	else if (width == 1152 && height == 864) { new_options_val |= 0x00000006; } 
+	else if (width == 1280 && height == 960) { new_options_val |= 0x00000007; } 
+	else if (width == 1600 && height == 1200) { new_options_val |= 0x00000008; } 
+	else if (width == 848 && height == 480) { new_options_val |= 0x00000009; } 
+	else if (width == 1024 && height == 576) { new_options_val |= 0x0000000a; } 
+	else if (width == 1380 && height == 768) { new_options_val |= 0x0000000b; } 
+	else { /* will pick 320x240 */ }
 
 	DWORD new_initflags_val = 0x00e00000;
 	if (settings.direct3d_transformation_pipeline == TRUE) { new_initflags_val = 0x00a00000; }
@@ -417,7 +428,7 @@ EXPORT int CALL InitiateGFX(GFX_INFO Gfx_Info)
 
 	OldAPI::GFX_INFO blah;
 
-	blah.hWnd = hWnd_jabo;
+	blah.hWnd = GetDesktopWindow();
 	blah.hStatusBar = NULL;
 	blah.MemoryBswaped = true;
 
@@ -539,75 +550,4 @@ EXPORT void CALL FBGetFrameBufferInfo(void *p)
 {
 	LOG("API WRAPPER:\t FBGetFrameBufferInfo")
     //FrameBufferInfo * pinfo = (FrameBufferInfo *)p;
-}
-
-
-
-/* Simple Window code */
-
-HINSTANCE  inj_hModule;          //Injected Modules Handle
-
-//WndProc for the new window
-LRESULT CALLBACK DLLWindowProc (HWND, UINT, WPARAM, LPARAM);
-
-//Register our windows Class
-BOOL RegisterDLLWindowClass(char szClassName[])
-{
-    WNDCLASSEX wc;
-
-	ZeroMemory(&wc, sizeof(WNDCLASSEX));
-
-    wc.cbSize = sizeof (WNDCLASSEX);
-	wc.style = CS_HREDRAW | CS_VREDRAW;
-	wc.lpfnWndProc = DLLWindowProc;
-	wc.hInstance =  inj_hModule;
-	wc.hCursor = LoadCursor (NULL, IDC_ARROW);
-	wc.hbrBackground = (HBRUSH) COLOR_WINDOW;
-    wc.lpszClassName = szClassName;
-    
-    if (!RegisterClassEx (&wc))
-		return 0;
-
-	return 0;
-}
-
-//The new thread
-DWORD WINAPI ThreadProc( LPVOID lpParam )
-{
-    MSG messages;
-	char *pString = (char *)(lpParam);
-	RegisterDLLWindowClass("InjectedDLLWindowClass");
-	hWnd_jabo = CreateWindowEx (0, "InjectedDLLWindowClass", pString, WS_OVERLAPPEDWINDOW, 300, 300, 400, 300, NULL, NULL,inj_hModule, NULL );
-	ShowWindow (hWnd_jabo, SW_HIDE);
-    while (GetMessage (&messages, NULL, 0, 0))
-    {
-		TranslateMessage(&messages);
-        DispatchMessage(&messages);
-    }
-    return 1;
-}
-
-//Our new windows proc
-LRESULT CALLBACK DLLWindowProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    switch (message)
-    {
-		case WM_COMMAND:
-               break;
-		case WM_DESTROY:
-			PostQuitMessage (0);
-			break;
-		default:
-			return DefWindowProc (hwnd, message, wParam, lParam);
-    }
-    return 0;
-}
-
-BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call,LPVOID lpReserved)
-{
-	if(ul_reason_for_call==DLL_PROCESS_ATTACH) {
-		inj_hModule = hModule;
-		window_thread = CreateThread(0, NULL, ThreadProc, (LPVOID)"Window Title", NULL, NULL);
-	}
-	return TRUE;
 }

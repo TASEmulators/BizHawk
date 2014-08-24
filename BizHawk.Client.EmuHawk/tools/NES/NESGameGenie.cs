@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 		public int? Value { get { return _value; } }
 		public int? Compare { get { return _compare; } }
 
-		public bool AskSave() { return true; }
+		public bool AskSaveChanges() { return true; }
 		public bool UpdateBefore { get { return false; } }
 		public void Restart()
 		{
