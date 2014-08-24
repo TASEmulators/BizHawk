@@ -14,6 +14,7 @@ namespace BizHawk.Client.Common
 	{
 		private List<bool> LagLog = new List<bool>();
 		private readonly TasStateManager StateManager;
+		public TasMovieMarkerList Markers { get; set; }
 
 		public TasMovie(string path) : base(path) { }
 
@@ -23,6 +24,7 @@ namespace BizHawk.Client.Common
 			StateManager = new TasStateManager(this);
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
 			Markers = new TasMovieMarkerList(this);
+			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, StartsFromSavestate ? "Savestate" : "Power on");
 		}
 
@@ -31,7 +33,7 @@ namespace BizHawk.Client.Common
 			get { return Extension; }
 		}
 
-		#region OnPropertyChanged Event
+		#region Events and Handlers 
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -49,8 +51,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		#endregion
-
 		//This event is Raised ony when Changes is TOGGLED.
 		private void OnPropertyChanged(string propertyName)
 		{
@@ -61,9 +61,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public new const string Extension = "tasproj";
+		void Markers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			Changes = true;
+		}
 
-		public TasMovieMarkerList Markers { get; set; }
+		#endregion
+
+		public new const string Extension = "tasproj";
 
 		public TasMovieRecord this[int index]
 		{

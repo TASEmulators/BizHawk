@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 
@@ -72,7 +74,6 @@ namespace BizHawk.Client.Common
 		}
 	}
 
-	//Add functions as needed
 	public class TasMovieMarkerList : List<TasMovieMarker>
 	{
 		private readonly TasMovie _movie;
@@ -80,6 +81,17 @@ namespace BizHawk.Client.Common
 		public TasMovieMarkerList(TasMovie movie)
 		{
 			_movie = movie;
+		}
+
+		public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+		private void OnListChanged(NotifyCollectionChangedAction action)
+		{
+			if (CollectionChanged != null)
+			{
+				//TODO Allow different types
+				CollectionChanged.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+			}
 		}
 
 		public override string ToString()
@@ -98,12 +110,17 @@ namespace BizHawk.Client.Common
 			var existingItem = this.FirstOrDefault(m => m.Frame == item.Frame);
 			if (existingItem != null)
 			{
-				existingItem.Message = item.Message;
+				if (existingItem.Message != item.Message)
+				{
+					existingItem.Message = item.Message;
+					OnListChanged(NotifyCollectionChangedAction.Replace);
+				}
 			}
 			else
 			{
 				base.Add(item);
 				this.Sort((m1, m2) => m1.Frame.CompareTo(m2.Frame));
+				OnListChanged(NotifyCollectionChangedAction.Add);
 			}
 		}
 
@@ -114,19 +131,39 @@ namespace BizHawk.Client.Common
 
 		public new void AddRange(IEnumerable<TasMovieMarker> collection)
 		{
-			base.AddRange(collection);
+			foreach(TasMovieMarker m in collection){
+				Add(m);
+			}
 		}
 
 		public new void Insert(int index, TasMovieMarker item)
 		{
 			base.Insert(index, item);
 			this.Sort((m1, m2) => m1.Frame.CompareTo(m2.Frame));
+			OnListChanged(NotifyCollectionChangedAction.Add);
 		}
 
 		public new void InsertRange(int index, IEnumerable<TasMovieMarker> collection)
 		{
 			base.InsertRange(index, collection);
 			this.Sort((m1, m2) => m1.Frame.CompareTo(m2.Frame));
+			OnListChanged(NotifyCollectionChangedAction.Add);
+		}
+
+		public new void Remove(TasMovieMarker item)
+		{
+			base.Remove(item);
+			OnListChanged(NotifyCollectionChangedAction.Remove);
+		}
+
+		public new int RemoveAll(Predicate<TasMovieMarker> match)
+		{
+			int removeCount = base.RemoveAll(match);
+			if (removeCount > 0)
+			{
+				OnListChanged(NotifyCollectionChangedAction.Remove);
+			}
+			return removeCount;
 		}
 
 		/// <summary>
@@ -143,6 +180,10 @@ namespace BizHawk.Client.Common
 					RemoveAt(i);
 					deletedCount++;
 				}
+			}
+			if (deletedCount > 0)
+			{
+				OnListChanged(NotifyCollectionChangedAction.Remove);
 			}
 			return deletedCount;
 		}
