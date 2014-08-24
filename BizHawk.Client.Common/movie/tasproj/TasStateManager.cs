@@ -58,7 +58,7 @@ namespace BizHawk.Client.Common
 
 			if (States.ContainsKey(frame))
 			{
-				States[frame] = state;
+				States.Add(frame, state);
 			}
 			else
 			{
