@@ -381,7 +381,7 @@ namespace BizHawk.Client.EmuHawk
 					i = 0;
 				}
 
-				ScrollPosition = 0;
+				ScrollPosition = i;
 			}
 		}
 
