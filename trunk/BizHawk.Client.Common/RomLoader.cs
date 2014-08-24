@@ -394,14 +394,8 @@ namespace BizHawk.Client.Common
 								nextEmulator = c64;
 								break;
 							case "GBA":
-								if (false)
-								{
-									core = CoreInventory.Instance["GBA", "Meteor"];
-								}
-								else
-								{
-									core = CoreInventory.Instance["GBA", "VBA-Next"];
-								}
+								//core = CoreInventory.Instance["GBA", "Meteor"];
+								core = CoreInventory.Instance["GBA", "VBA-Next"];
 								break;
 							case "DEBUG":
 								if (VersionInfo.DeveloperBuild)
