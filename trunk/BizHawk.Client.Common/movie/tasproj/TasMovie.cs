@@ -274,7 +274,7 @@ namespace BizHawk.Client.Common
 			{
 				if (StateManager.StateCount > 0)
 				{
-					return StateManager.Last.Key;
+					return StateManager.LastKey;
 				}
 
 				return 0;

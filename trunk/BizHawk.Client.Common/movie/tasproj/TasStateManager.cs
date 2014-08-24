@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class TasStateManager
 	{
-		private readonly SortedDictionary<int, byte[]> States = new SortedDictionary<int, byte[]>();
+		private readonly SortedList<int, byte[]> States = new SortedList<int, byte[]>();
 
 		private readonly TasMovie _movie;
 
@@ -64,10 +64,12 @@ namespace BizHawk.Client.Common
 			{
 				if (Used + state.Length >= Settings.Cap)
 				{
-					States.Remove(0);
+					Used -= States.ElementAt(0).Value.Length;
+					States.RemoveAt(0);
 				}
 
 				States.Add(frame, state);
+				Used += state.Length;
 			}
 		}
 
@@ -81,15 +83,14 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void Invalidate(int frame)
 		{
+			if (States.Count == 0)
+				return;
 			// TODO be more efficient, this could get slow
-			var toRemove = States
-				.Where(x => x.Key > frame)
-				.Select(x => x.Key)
-				.ToList();
-
-			foreach (var f in toRemove)
+			while (LastKey >= frame)
 			{
-				States.Remove(f);
+				var state = States[LastKey];
+				Used -= state.Length;
+				States.RemoveAt(States.Count - 1);
 			}
 		}
 
@@ -99,6 +100,7 @@ namespace BizHawk.Client.Common
 		public void Clear()
 		{
 			States.Clear();
+			Used = 0;
 		}
 
 		public byte[] ToArray()
@@ -106,7 +108,7 @@ namespace BizHawk.Client.Common
 			MemoryStream ms = new MemoryStream();
 			var bytes = BitConverter.GetBytes(States.Count);
 			ms.Write(bytes, 0, bytes.Length);
-			foreach (var kvp in States.OrderBy(s => s.Key))
+			foreach (var kvp in States)
 			{
 				var frame = BitConverter.GetBytes(kvp.Key);
 				ms.Write(frame, 0, frame.Length);
@@ -143,15 +145,14 @@ namespace BizHawk.Client.Common
 
 				position += stateLen;
 				States.Add(frame, state);
+				Used += state.Length;
 			}
 		}
 
 		private int Used
 		{
-			get
-			{
-				return States.Sum(s => s.Value.Length);
-			}
+			get;
+			set;
 		}
 
 		public int StateCount
@@ -162,9 +163,16 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public KeyValuePair<int, byte[]> Last
+		public int LastKey
 		{
-			get { return States.Last(); }
+			get
+			{
+				var kk = States.Keys;
+				int index = kk.Count;
+				if (index == 0)
+					return 0;
+				return kk[index - 1];
+			}
 		}
 
 		public class ManagerSettings
