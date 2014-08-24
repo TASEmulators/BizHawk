@@ -59,7 +59,7 @@ namespace BizHawk.Client.Common
 		{
 			if (saveChanges)
 			{
-				if (_mode == Moviemode.Record || Changes)
+				if (_mode == Moviemode.Record || (IsActive && Changes))
 				{
 					Save();
 				}
