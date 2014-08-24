@@ -76,6 +76,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				savebuff2 = new byte[savebuff.Length + 13];
 				InitMemoryDomains();
 				InitRegisters();
+				InitCallbacks();
 
 				// todo: hook me up as a setting
 				SetupColors();
@@ -93,6 +94,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			if (Controller["Power"])
 				LibVBANext.Reset(Core);
+
+			SyncCallbacks();
 
 			IsLagFrame = LibVBANext.FrameAdvance(Core, GetButtons(), videobuff, soundbuff, out numsamp, videopalette);
 
@@ -258,6 +261,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		#endregion
 
 		#region Debugging
+
+		LibVBANext.StandardCallback padcb;
+		LibVBANext.AddressCallback fetchcb;
+		LibVBANext.AddressCallback readcb;
+		LibVBANext.AddressCallback writecb;
+
+		void InitCallbacks()
+		{
+			padcb = new LibVBANext.StandardCallback(() => CoreComm.InputCallback.Call());
+			fetchcb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallExecute(addr));
+			readcb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallRead(addr));
+			writecb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallWrite(addr));
+		}
+
+		void SyncCallbacks()
+		{
+			LibVBANext.SetPadCallback(Core, CoreComm.InputCallback.Any() ? padcb : null);
+			LibVBANext.SetFetchCallback(Core, CoreComm.MemoryCallbackSystem.HasExecutes ? fetchcb : null);
+			LibVBANext.SetReadCallback(Core, CoreComm.MemoryCallbackSystem.HasReads ? readcb : null);
+			LibVBANext.SetWriteCallback(Core, CoreComm.MemoryCallbackSystem.HasWrites ? writecb : null);
+		}
 
 		LibVBANext.StandardCallback scanlinecb;
 

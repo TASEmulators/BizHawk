@@ -140,6 +140,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		[DllImport(dllname, CallingConvention = cc)]
 		public static extern IntPtr GetRegisters(IntPtr g);
 
+		[UnmanagedFunctionPointer(cc)]
+		public delegate void AddressCallback(uint addr);
+
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern void SetPadCallback(IntPtr g, StandardCallback cb);
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern void SetFetchCallback(IntPtr g, AddressCallback cb);
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern void SetReadCallback(IntPtr g, AddressCallback cb);
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern void SetWriteCallback(IntPtr g, AddressCallback cb);
+
+
 		[StructLayout(LayoutKind.Sequential)]
 		public class MemoryAreas
 		{
