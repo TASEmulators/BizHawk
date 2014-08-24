@@ -39,6 +39,7 @@
 			this.SaveAsTextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.LoadTableFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.CloseTableFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RecentTablesSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.noneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -93,7 +94,6 @@
 			this.HexScrollBar = new System.Windows.Forms.VScrollBar();
 			this.AddressesLabel = new System.Windows.Forms.Label();
 			this.Header = new System.Windows.Forms.Label();
-			this.CloseTableFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.HexMenuStrip.SuspendLayout();
 			this.ViewerContextMenuStrip.SuspendLayout();
 			this.MemoryViewerBox.SuspendLayout();
@@ -166,6 +166,13 @@
 			this.LoadTableFileMenuItem.Size = new System.Drawing.Size(229, 22);
 			this.LoadTableFileMenuItem.Text = "&Load .tbl file";
 			this.LoadTableFileMenuItem.Click += new System.EventHandler(this.LoadTableFileMenuItem_Click);
+			// 
+			// CloseTableFileMenuItem
+			// 
+			this.CloseTableFileMenuItem.Name = "CloseTableFileMenuItem";
+			this.CloseTableFileMenuItem.Size = new System.Drawing.Size(229, 22);
+			this.CloseTableFileMenuItem.Text = "Close .tbl file";
+			this.CloseTableFileMenuItem.Click += new System.EventHandler(this.CloseTableFileMenuItem_Click);
 			// 
 			// RecentTablesSubMenu
 			// 
@@ -632,13 +639,6 @@
 			this.Header.TabIndex = 2;
 			this.Header.Text = "label1";
 			// 
-			// CloseTableFileMenuItem
-			// 
-			this.CloseTableFileMenuItem.Name = "CloseTableFileMenuItem";
-			this.CloseTableFileMenuItem.Size = new System.Drawing.Size(229, 22);
-			this.CloseTableFileMenuItem.Text = "Close .tbl file";
-			this.CloseTableFileMenuItem.Click += new System.EventHandler(this.CloseTableFileMenuItem_Click);
-			// 
 			// HexEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -652,7 +652,7 @@
 			this.MinimumSize = new System.Drawing.Size(360, 180);
 			this.Name = "HexEditor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "HexEditor";
+			this.Text = "Hex Editor";
 			this.Load += new System.EventHandler(this.HexEditor_Load);
 			this.ResizeEnd += new System.EventHandler(this.HexEditor_ResizeEnd);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HexEditor_KeyDown);

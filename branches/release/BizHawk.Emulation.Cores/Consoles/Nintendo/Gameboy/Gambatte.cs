@@ -24,10 +24,41 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		)]
 	public class Gameboy : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
+		#region ALL SAVESTATEABLE STATE GOES HERE
+
 		/// <summary>
 		/// internal gambatte state
 		/// </summary>
 		internal IntPtr GambatteState = IntPtr.Zero;
+
+		public int Frame { get; set; }
+		public int LagCount { get; set; }
+		public bool IsLagFrame { get; private set; }
+
+		// all cycle counts are relative to a 2*1024*1024 mhz refclock
+
+		/// <summary>
+		/// total cycles actually executed
+		/// </summary>
+		private ulong _cycleCount = 0;
+
+		/// <summary>
+		/// number of extra cycles we overran in the last frame
+		/// </summary>
+		private uint frameOverflow = 0;
+		public ulong CycleCount { get { return _cycleCount; } }
+
+		#endregion
+
+		/// <summary>
+		/// the nominal length of one frame
+		/// </summary>
+		private const uint TICKSINFRAME = 35112;
+
+		/// <summary>
+		/// number of ticks per second
+		/// </summary>
+		private const uint TICKSPERSECOND = 2097152;
 
 		/// <summary>
 		/// keep a copy of the input callback delegate so it doesn't get GCed
@@ -89,7 +120,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#endregion
 
-		public Gameboy(CoreComm comm, GameInfo game, byte[] romdata, object Settings, object SyncSettings, bool deterministic)
+		[CoreConstructor("GB", "GBC")]
+		public Gameboy(CoreComm comm, GameInfo game, byte[] rom, object Settings, object SyncSettings, bool deterministic)
 		{
 			CoreComm = comm;
 
@@ -101,8 +133,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			comm.NominalWidth = 160;
 			comm.NominalHeight = 144;
 
-			ThrowExceptionForBadRom(romdata);
-			BoardName = MapperName(romdata);
+			ThrowExceptionForBadRom(rom);
+			BoardName = MapperName(rom);
 
 			DeterministicEmulation = deterministic;
 
@@ -127,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				if (this._SyncSettings.MulticartCompat)
 					flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
 
-				if (LibGambatte.gambatte_load(GambatteState, romdata, (uint)romdata.Length, GetCurrentTime(), flags) != 0)
+				if (LibGambatte.gambatte_load(GambatteState, rom, (uint)rom.Length, GetCurrentTime(), flags) != 0)
 					throw new InvalidOperationException("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
 
 				// set real default colors (before anyone mucks with them at all)
@@ -147,8 +179,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				CoreComm.RomStatusDetails = string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
 					game.Name,
-					romdata.HashSHA1(),
-					romdata.HashMD5());
+					rom.HashSHA1(),
+					rom.HashMD5());
 
 				{
 					byte[] buff = new byte[32];
@@ -168,6 +200,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				throw;
 			}
 		}
+
+		#region controller
 
 		public static readonly ControllerDefinition GbController = new ControllerDefinition
 		{
@@ -191,6 +225,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			IsLagFrame = false;
 			return CurrentButtons;
 		}
+
+		#endregion
+
+		#region debug
 
 		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
@@ -225,6 +263,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			return (LibGambatte.gambatte_iscgb(GambatteState));
 		}
+
+		#endregion
 
 		internal void FrameAdvancePrep()
 		{
@@ -273,39 +313,49 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				endofframecallback(LibGambatte.gambatte_cpuread(GambatteState, 0xff40));
 		}
 
-		private ulong _cycleCount = 0;
-		private uint frameOverflow = 0;
-		private const uint TICKSINFRAME = 35112;
-
-		public ulong CycleCount { get { return _cycleCount; } }
-
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			FrameAdvancePrep();
-			while (true)
+			if (_SyncSettings.EqualLengthFrames)
 			{
-				uint samplesEmitted = TICKSINFRAME - frameOverflow; // according to gambatte docs, this is the nominal length of a frame in 2mhz clocks
-				System.Diagnostics.Debug.Assert(samplesEmitted * 2 <= soundbuff.Length);
+				while (true)
+				{
+					// target number of samples to emit: length of 1 frame minus whatever overflow
+					uint samplesEmitted = TICKSINFRAME - frameOverflow;
+					System.Diagnostics.Debug.Assert(samplesEmitted * 2 <= soundbuff.Length);
+					if (LibGambatte.gambatte_runfor(GambatteState, soundbuff, ref samplesEmitted) > 0)
+						LibGambatte.gambatte_blitto(GambatteState, VideoBuffer, 160);
+
+					// account for actual number of samples emitted
+					_cycleCount += (ulong)samplesEmitted;
+					frameOverflow += samplesEmitted;
+
+					if (rendersound)
+					{
+						ProcessSound((int)samplesEmitted);
+					}
+
+					if (frameOverflow >= TICKSINFRAME)
+					{
+						frameOverflow -= TICKSINFRAME;
+						break;
+					}
+				}
+			}
+			else
+			{
+				// target number of samples to emit: always 59.7fps
+				// runfor() always ends after creating a video frame, so sync-up is guaranteed
+				// when the display has been off, some frames can be markedly shorter than expected
+				uint samplesEmitted = TICKSINFRAME;
 				if (LibGambatte.gambatte_runfor(GambatteState, soundbuff, ref samplesEmitted) > 0)
 					LibGambatte.gambatte_blitto(GambatteState, VideoBuffer, 160);
 
 				_cycleCount += (ulong)samplesEmitted;
-				frameOverflow += samplesEmitted;
-
+				frameOverflow = 0;
 				if (rendersound)
 				{
-					soundbuffcontains = (int)samplesEmitted;
-					ProcessSound();
-				}
-				else
-				{
-					soundbuffcontains = 0;
-				}
-
-				if (frameOverflow >= TICKSINFRAME)
-				{
-					frameOverflow -= TICKSINFRAME;
-					break;
+					ProcessSound((int)samplesEmitted);
 				}
 			}
 
@@ -313,8 +363,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				ProcessSoundEnd();
 
 			FrameAdvancePost();
-
-			//DebugStates(); // for maximum fun only
 		}
 
 		static string MapperName(byte[] romdata)
@@ -398,16 +446,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			return;
 		}
 
-		public int Frame { get; set; }
-
-		public int LagCount { get; set; }
-
-		public bool IsLagFrame { get; private set; }
-
-		public string SystemId
-		{
-			get { return "GB"; }
-		}
+		public string SystemId { get { return "GB"; } }
 
 		public string BoardName { get; private set; }
 
@@ -415,7 +454,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region saveram
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			int length = LibGambatte.gambatte_savesavedatalength(GambatteState);
 
@@ -472,34 +511,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			Frame = 0;
 			LagCount = 0;
 			IsLagFrame = false;
+			// reset frame counters is meant to "re-zero" emulation time wherever it was
+			// so these should be reset as well
+			_cycleCount = 0;
+			frameOverflow = 0;
 		}
 
 		#region savestates
 
-		byte[] newsavebuff;
+		byte[] savebuff;
+		byte[] savebuff2;
 
 		void NewSaveCoreSetBuff()
 		{
-			newsavebuff = new byte[LibGambatte.gambatte_newstatelen(GambatteState)];
+			savebuff = new byte[LibGambatte.gambatte_newstatelen(GambatteState)];
+			savebuff2 = new byte[savebuff.Length + 4 + 21];
 		}
 
-		byte[] NewSaveCoreBinary()
-		{
-			if (!LibGambatte.gambatte_newstatesave(GambatteState, newsavebuff, newsavebuff.Length))
-				throw new Exception("gambatte_newstatesave() returned false");
-			return newsavebuff;
-		}
-
-		void NewLoadCoreBinary(byte[] data)
-		{
-			if (!LibGambatte.gambatte_newstateload(GambatteState, data, data.Length))
-				throw new Exception("gambatte_newstateload() returned false");
-		}
-
-		JsonSerializer ser = new JsonSerializer() { Formatting = Formatting.Indented };
+		JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
 
 		// other data in the text state besides core
-		class TextStateData
+		internal class TextStateData
 		{
 			public int Frame;
 			public int LagCount;
@@ -508,7 +540,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			public uint frameOverflow;
 		}
 
-		public void SaveStateText(System.IO.TextWriter writer)
+		internal TextState<TextStateData> SaveState()
 		{
 			var s = new TextState<TextStateData>();
 			s.Prepare();
@@ -519,16 +551,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			s.ExtraData.Frame = Frame;
 			s.ExtraData.frameOverflow = frameOverflow;
 			s.ExtraData._cycleCount = _cycleCount;
-
-			ser.Serialize(writer, s);
-			// write extra copy of stuff we don't use
-			writer.WriteLine();
-			writer.WriteLine("Frame {0}", Frame);
+			return s;
 		}
 
-		public void LoadStateText(System.IO.TextReader reader)
+		internal void LoadState(TextState<TextStateData> s)
 		{
-			var s = (TextState<TextStateData>)ser.Deserialize(reader, typeof(TextState<TextStateData>));
 			s.Prepare();
 			var ff = s.GetFunctionPointersLoad();
 			LibGambatte.gambatte_newstateload_ex(GambatteState, ref ff);
@@ -539,13 +566,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			_cycleCount = s.ExtraData._cycleCount;
 		}
 
+		public void SaveStateText(System.IO.TextWriter writer)
+		{
+			var s = SaveState();
+			ser.Serialize(writer, s);
+			// write extra copy of stuff we don't use
+			writer.WriteLine();
+			writer.WriteLine("Frame {0}", Frame);
+		}
+
+		public void LoadStateText(System.IO.TextReader reader)
+		{
+			var s = (TextState<TextStateData>)ser.Deserialize(reader, typeof(TextState<TextStateData>));
+			LoadState(s);
+		}
+
 		public void SaveStateBinary(System.IO.BinaryWriter writer)
 		{
-			//byte[] data = SaveCoreBinary();
-			byte[] data = NewSaveCoreBinary();
+			if (!LibGambatte.gambatte_newstatesave(GambatteState, savebuff, savebuff.Length))
+				throw new Exception("gambatte_newstatesave() returned false");
 
-			writer.Write(data.Length);
-			writer.Write(data);
+			writer.Write(savebuff.Length);
+			writer.Write(savebuff);
 
 			// other variables
 			writer.Write(IsLagFrame);
@@ -558,10 +600,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public void LoadStateBinary(System.IO.BinaryReader reader)
 		{
 			int length = reader.ReadInt32();
-			byte[] data = reader.ReadBytes(length);
+			if (length != savebuff.Length)
+				throw new InvalidOperationException("Savestate buffer size mismatch!");
 
-			//LoadCoreBinary(data);
-			NewLoadCoreBinary(data);
+			reader.Read(savebuff, 0, savebuff.Length);
+
+			if (!LibGambatte.gambatte_newstateload(GambatteState, savebuff, savebuff.Length))
+				throw new Exception("gambatte_newstateload() returned false");
 
 			// other variables
 			IsLagFrame = reader.ReadBoolean();
@@ -573,27 +618,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public byte[] SaveStateBinary()
 		{
-			MemoryStream ms = new MemoryStream();
+			MemoryStream ms = new MemoryStream(savebuff2);
 			BinaryWriter bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
-			return ms.ToArray();
+			if (ms.Position != savebuff2.Length)
+				throw new InvalidOperationException();
+			ms.Close();
+			return savebuff2;
 		}
 
 		public bool BinarySaveStatesPreferred { get { return true; } }
-
-		/*
-		void DebugStates()
-		{
-			var sd = new StateDebug();
-			var Save = new LibGambatte.DataFunction(sd.Save);
-			var Load = new LibGambatte.DataFunction(sd.Load);
-			var EnterSection = new LibGambatte.SectionFunction(sd.EnterSection);
-			var ExitSection = new LibGambatte.SectionFunction(sd.ExitSection);
-
-			LibGambatte.gambatte_newstatesave_ex(GambatteState, Save, EnterSection, ExitSection);
-			LibGambatte.gambatte_newstateload_ex(GambatteState, Load, EnterSection, ExitSection);
-		}*/
 
 		#endregion
 
@@ -626,8 +661,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			LibGambatte.gambatte_setwritecallback(GambatteState, writecb);
 			LibGambatte.gambatte_setexeccallback(GambatteState, execcb);
 		}
-
-
 
 		#endregion
 
@@ -662,7 +695,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region MemoryDomains
 
-		unsafe void CreateMemoryDomain(LibGambatte.MemoryAreas which, string name)
+		void CreateMemoryDomain(LibGambatte.MemoryAreas which, string name)
 		{
 			IntPtr data = IntPtr.Zero;
 			int length = 0;
@@ -671,25 +704,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				throw new Exception("gambatte_getmemoryarea() failed!");
 
 			// if length == 0, it's an empty block; (usually rambank on some carts); that's ok
-			// TODO: when length == 0, should we simply not add the memory domain at all?
-			if (data == IntPtr.Zero && length > 0)
-				throw new Exception("bad return from gambatte_getmemoryarea()");
-
-			byte* ptr = (byte*)data;
-
-			_MemoryDomains.Add(new MemoryDomain(name, length, MemoryDomain.Endian.Little,
-				delegate(int addr)
-				{
-					if (addr < 0 || addr >= length)
-						throw new ArgumentOutOfRangeException();
-					return ptr[addr];
-				},
-				delegate(int addr, byte val)
-				{
-					if (addr < 0 || addr >= length)
-						throw new ArgumentOutOfRangeException();
-					ptr[addr] = val;
-				}));
+			if (data != IntPtr.Zero && length > 0)
+				_MemoryDomains.Add(MemoryDomain.FromIntPtr(name, length, MemoryDomain.Endian.Little, data));
 		}
 
 		void InitMemoryDomains()
@@ -726,6 +742,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		#endregion
 
 		#region ppudebug
+
 		public bool GetGPUMemoryAreas(out IntPtr vram, out IntPtr bgpal, out IntPtr sppal, out IntPtr oam)
 		{
 			IntPtr _vram = IntPtr.Zero;
@@ -878,11 +895,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <summary>
 		/// sample pairs before resampling
 		/// </summary>
-		short[] soundbuff = new short[(35112 + 2064) * 2 * 4];
-		/// <summary>
-		/// how many sample pairs are in soundbuff
-		/// </summary>
-		int soundbuffcontains = 0;
+		short[] soundbuff = new short[(35112 + 2064) * 2];
 
 		int soundoutbuffcontains = 0;
 
@@ -894,9 +907,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		BlipBuffer blipL, blipR;
 		uint blipAccumulate;
 
-		private void ProcessSound()
+		private void ProcessSound(int nsamp)
 		{
-			for (uint i = 0; i < soundbuffcontains; i++)
+			for (uint i = 0; i < nsamp; i++)
 			{
 				int curr = soundbuff[i * 2];
 
@@ -917,19 +930,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				blipAccumulate++;
 			}
-
-			soundbuffcontains = 0;
 		}
 
 		private void ProcessSoundEnd()
 		{
-			blipL.EndFrame((uint)blipAccumulate);
-			blipR.EndFrame((uint)blipAccumulate);
+			blipL.EndFrame(blipAccumulate);
+			blipR.EndFrame(blipAccumulate);
 			blipAccumulate = 0;
 
 			soundoutbuffcontains = blipL.SamplesAvailable();
 			if (soundoutbuffcontains != blipR.SamplesAvailable())
-				throw new Exception("Audio processing error");
+				throw new InvalidOperationException("Audio processing error");
 
 			blipL.ReadSamplesLeft(soundoutbuff, soundoutbuffcontains);
 			blipR.ReadSamplesRight(soundoutbuff, soundoutbuffcontains);
@@ -938,9 +949,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		void InitSound()
 		{
 			blipL = new BlipBuffer(1024);
-			blipL.SetRates(2097152, 44100);
+			blipL.SetRates(TICKSPERSECOND, 44100);
 			blipR = new BlipBuffer(1024);
-			blipR.SetRates(2097152, 44100);
+			blipR.SetRates(TICKSPERSECOND, 44100);
 		}
 
 		void DisposeSound()
@@ -959,7 +970,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public void DiscardSamples()
 		{
-			soundbuffcontains = 0;
+			soundoutbuffcontains = 0;
 		}
 
 		public void GetSamples(out short[] samples, out int nsamp)
@@ -990,16 +1001,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public bool PutSyncSettings(object o)
 		{
 			var s = (GambatteSyncSettings)o;
-			bool ret;
-			if (s.ForceDMG != _SyncSettings.ForceDMG ||
-				s.GBACGB != _SyncSettings.GBACGB ||
-				s.MulticartCompat != _SyncSettings.MulticartCompat ||
-				s.RealTimeRTC != _SyncSettings.RealTimeRTC ||
-				s.RTCInitialTime != _SyncSettings.RTCInitialTime)
-				ret = true;
-			else
-				ret = false;
-
+			bool ret = GambatteSyncSettings.NeedsReboot(_SyncSettings, s);
 			_SyncSettings = s;
 			return ret;
 		}
@@ -1060,9 +1062,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				get { return _RTCInitialTime; }
 				set { _RTCInitialTime = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
 			}
-
 			[JsonIgnore]
 			int _RTCInitialTime;
+
+			[DisplayName("Equal Length Frames")]
+			[Description("When false, emulation frames sync to vblank.  Only useful for high level TASing.")]
+			[DefaultValue(true)]
+			public bool EqualLengthFrames { get { return _EqualLengthFrames; } set { _EqualLengthFrames = value; } }
+			[JsonIgnore]
+			[DeepEqualsIgnore]
+			private bool _EqualLengthFrames;
 
 			public GambatteSyncSettings()
 			{
@@ -1072,6 +1081,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			public GambatteSyncSettings Clone()
 			{
 				return (GambatteSyncSettings)MemberwiseClone();
+			}
+
+			public static bool NeedsReboot(GambatteSyncSettings x, GambatteSyncSettings y)
+			{
+				return !DeepEquality.DeepEquals(x, y);
 			}
 		}
 

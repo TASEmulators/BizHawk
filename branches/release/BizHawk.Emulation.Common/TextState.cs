@@ -22,6 +22,14 @@ namespace BizHawk.Emulation.Common
 		{
 			public Dictionary<string, byte[]> Data = new Dictionary<string, byte[]>();
 			public Dictionary<string, Node> Objects = new Dictionary<string, Node>();
+			public bool ShouldSerializeData()
+			{
+				return Data.Count > 0;
+			}
+			public bool ShouldSerializeObjects()
+			{
+				return Objects.Count > 0;
+			}
 		}
 
 		public Node Root = new Node();

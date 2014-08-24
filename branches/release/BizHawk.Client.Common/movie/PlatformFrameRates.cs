@@ -33,7 +33,8 @@ namespace BizHawk.Client.Common
 				{ "GB", 262144.0 / 4389.0 }, //59.7275005696
 				{ "GBC", 262144.0 / 4389.0 }, //59.7275005696
 				{ "GBA", 262144.0 / 4389.0 }, //59.7275005696 
-
+				{ "GEN", 53693175 / (3420.0 * 262) },
+				{ "GEN_PAL", 53203424 / (3420.0 * 313) },
 				// while the number of scanlines per frame is software controlled and variable, we
 				// enforce exactly 262 (NTSC) 312 (PAL) per reference time frame
 				{ "A26", 315000000.0 / 88.0 / 262.0 / 228.0 }, // 59.922751013550531429197560173856

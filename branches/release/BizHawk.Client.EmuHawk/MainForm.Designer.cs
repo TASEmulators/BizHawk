@@ -262,6 +262,8 @@
 			this.GBGameGenieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBASubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.GbaGpuViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator33 = new System.Windows.Forms.ToolStripSeparator();
+			this.GBAcoresettingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.SNESSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SNESDisplayMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SnesBg1MenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -284,6 +286,7 @@
 			this.N64ControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator23 = new System.Windows.Forms.ToolStripSeparator();
 			this.N64CircularAnalogRangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.MupenStyleLagMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaturnSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaturnPreferencesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DGBSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -321,6 +324,7 @@
 			this.KeyPriorityStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.CoreNameStatusBarButton = new System.Windows.Forms.ToolStripStatusLabel();
 			this.ProfileFirstBootLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.LinkConnectStatusBarButton = new System.Windows.Forms.ToolStripStatusLabel();
 			this.MainFormContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.OpenRomContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LoadLastRomContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -368,7 +372,6 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.MupenStyleLagMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -433,7 +436,7 @@
 			// 
 			this.OpenRomMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.OpenRomMenuItem.Name = "OpenRomMenuItem";
-			this.OpenRomMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.OpenRomMenuItem.Size = new System.Drawing.Size(140, 22);
 			this.OpenRomMenuItem.Text = "Open ROM";
 			this.OpenRomMenuItem.Click += new System.EventHandler(this.OpenRomMenuItem_Click);
 			// 
@@ -443,27 +446,27 @@
             this.toolStripSeparator3});
 			this.RecentRomSubMenu.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
 			this.RecentRomSubMenu.Name = "RecentRomSubMenu";
-			this.RecentRomSubMenu.Size = new System.Drawing.Size(152, 22);
+			this.RecentRomSubMenu.Size = new System.Drawing.Size(140, 22);
 			this.RecentRomSubMenu.Text = "Recent ROM";
 			this.RecentRomSubMenu.DropDownOpened += new System.EventHandler(this.RecentRomMenuItem_DropDownOpened);
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(57, 6);
 			// 
 			// CloseRomMenuItem
 			// 
 			this.CloseRomMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Close;
 			this.CloseRomMenuItem.Name = "CloseRomMenuItem";
-			this.CloseRomMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.CloseRomMenuItem.Size = new System.Drawing.Size(140, 22);
 			this.CloseRomMenuItem.Text = "&Close ROM";
 			this.CloseRomMenuItem.Click += new System.EventHandler(this.CloseRomMenuItem_Click);
 			// 
 			// toolStripMenuItem1
 			// 
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(137, 6);
 			// 
 			// SaveStateSubMenu
 			// 
@@ -481,7 +484,7 @@
             this.toolStripSeparator6,
             this.SaveNamedStateMenuItem});
 			this.SaveStateSubMenu.Name = "SaveStateSubMenu";
-			this.SaveStateSubMenu.Size = new System.Drawing.Size(152, 22);
+			this.SaveStateSubMenu.Size = new System.Drawing.Size(140, 22);
 			this.SaveStateSubMenu.Text = "Save State";
 			this.SaveStateSubMenu.DropDownOpened += new System.EventHandler(this.SaveStateSubMenu_DropDownOpened);
 			// 
@@ -585,7 +588,7 @@
             this.toolStripSeparator21,
             this.AutoloadLastSlotMenuItem});
 			this.LoadStateSubMenu.Name = "LoadStateSubMenu";
-			this.LoadStateSubMenu.Size = new System.Drawing.Size(152, 22);
+			this.LoadStateSubMenu.Size = new System.Drawing.Size(140, 22);
 			this.LoadStateSubMenu.Text = "Load State";
 			this.LoadStateSubMenu.DropDownOpened += new System.EventHandler(this.LoadStateSubMenu_DropDownOpened);
 			// 
@@ -702,7 +705,7 @@
             this.SaveToCurrentSlotMenuItem,
             this.LoadCurrentSlotMenuItem});
 			this.SaveSlotSubMenu.Name = "SaveSlotSubMenu";
-			this.SaveSlotSubMenu.Size = new System.Drawing.Size(152, 22);
+			this.SaveSlotSubMenu.Size = new System.Drawing.Size(140, 22);
 			this.SaveSlotSubMenu.Text = "SaveSlot";
 			this.SaveSlotSubMenu.DropDownOpened += new System.EventHandler(this.SaveSlotSubMenu_DropDownOpened);
 			// 
@@ -814,7 +817,7 @@
 			// toolStripMenuItem2
 			// 
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-			this.toolStripMenuItem2.Size = new System.Drawing.Size(149, 6);
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(137, 6);
 			// 
 			// MovieSubMenu
 			// 
@@ -834,7 +837,7 @@
             this.FullMovieLoadstatesMenuItem,
             this.MovieEndSubMenu});
 			this.MovieSubMenu.Name = "MovieSubMenu";
-			this.MovieSubMenu.Size = new System.Drawing.Size(152, 22);
+			this.MovieSubMenu.Size = new System.Drawing.Size(140, 22);
 			this.MovieSubMenu.Text = "Movie";
 			this.MovieSubMenu.DropDownOpened += new System.EventHandler(this.MovieSubMenu_DropDownOpened);
 			// 
@@ -990,7 +993,7 @@
             this.CaptureOSDMenuItem,
             this.SynclessRecordingMenuItem});
 			this.AVSubMenu.Name = "AVSubMenu";
-			this.AVSubMenu.Size = new System.Drawing.Size(152, 22);
+			this.AVSubMenu.Size = new System.Drawing.Size(140, 22);
 			this.AVSubMenu.Text = "AVI/WAV";
 			this.AVSubMenu.DropDownOpened += new System.EventHandler(this.AVSubMenu_DropDownOpened);
 			// 
@@ -1039,7 +1042,7 @@
             this.toolStripSeparator20,
             this.ScreenshotCaptureOSDMenuItem1});
 			this.ScreenshotSubMenu.Name = "ScreenshotSubMenu";
-			this.ScreenshotSubMenu.Size = new System.Drawing.Size(152, 22);
+			this.ScreenshotSubMenu.Size = new System.Drawing.Size(140, 22);
 			this.ScreenshotSubMenu.Text = "Screenshot";
 			this.ScreenshotSubMenu.DropDownOpening += new System.EventHandler(this.ScreenshotSubMenu_DropDownOpening);
 			// 
@@ -1090,13 +1093,13 @@
 			// toolStripSeparator4
 			// 
 			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator4.Size = new System.Drawing.Size(137, 6);
 			// 
 			// ExitMenuItem
 			// 
 			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.ExitMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.ExitMenuItem.Size = new System.Drawing.Size(140, 22);
 			this.ExitMenuItem.Text = "Exit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
@@ -2334,7 +2337,9 @@
 			// GBASubMenu
 			// 
 			this.GBASubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.GbaGpuViewerMenuItem});
+            this.GbaGpuViewerMenuItem,
+            this.toolStripSeparator33,
+            this.GBAcoresettingsToolStripMenuItem1});
 			this.GBASubMenu.Name = "GBASubMenu";
 			this.GBASubMenu.Size = new System.Drawing.Size(42, 19);
 			this.GBASubMenu.Text = "GBA";
@@ -2345,6 +2350,18 @@
 			this.GbaGpuViewerMenuItem.Size = new System.Drawing.Size(135, 22);
 			this.GbaGpuViewerMenuItem.Text = "GPU Viewer";
 			this.GbaGpuViewerMenuItem.Click += new System.EventHandler(this.GbaGpuViewerMenuItem_Click);
+			// 
+			// toolStripSeparator33
+			// 
+			this.toolStripSeparator33.Name = "toolStripSeparator33";
+			this.toolStripSeparator33.Size = new System.Drawing.Size(132, 6);
+			// 
+			// GBAcoresettingsToolStripMenuItem1
+			// 
+			this.GBAcoresettingsToolStripMenuItem1.Name = "GBAcoresettingsToolStripMenuItem1";
+			this.GBAcoresettingsToolStripMenuItem1.Size = new System.Drawing.Size(135, 22);
+			this.GBAcoresettingsToolStripMenuItem1.Text = "&Settings...";
+			this.GBAcoresettingsToolStripMenuItem1.Click += new System.EventHandler(this.GBAcoresettingsToolStripMenuItem1_Click);
 			// 
 			// SNESSubMenu
 			// 
@@ -2523,6 +2540,13 @@
 			this.N64CircularAnalogRangeMenuItem.Text = "Circular Analog Range";
 			this.N64CircularAnalogRangeMenuItem.Click += new System.EventHandler(this.N64CircularAnalogRangeMenuItem_Click);
 			// 
+			// MupenStyleLagMenuItem
+			// 
+			this.MupenStyleLagMenuItem.Name = "MupenStyleLagMenuItem";
+			this.MupenStyleLagMenuItem.Size = new System.Drawing.Size(192, 22);
+			this.MupenStyleLagMenuItem.Text = "&Mupen style Lag";
+			this.MupenStyleLagMenuItem.Click += new System.EventHandler(this.MupenStyleLagMenuItem_Click);
+			// 
 			// SaturnSubMenu
 			// 
 			this.SaturnSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -2656,7 +2680,8 @@
             this.CheatStatusButton,
             this.KeyPriorityStatusLabel,
             this.CoreNameStatusBarButton,
-            this.ProfileFirstBootLabel});
+            this.ProfileFirstBootLabel,
+            this.LinkConnectStatusBarButton});
 			this.MainStatusBar.Location = new System.Drawing.Point(0, 386);
 			this.MainStatusBar.Name = "MainStatusBar";
 			this.MainStatusBar.ShowItemToolTips = true;
@@ -2851,6 +2876,16 @@
 			this.ProfileFirstBootLabel.ToolTipText = "Set up your profile before use";
 			this.ProfileFirstBootLabel.Visible = false;
 			this.ProfileFirstBootLabel.Click += new System.EventHandler(this.ProfileFirstBootLabel_Click);
+			// 
+			// LinkConnectStatusBarButton
+			// 
+			this.LinkConnectStatusBarButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.LinkConnectStatusBarButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.connect_16x16;
+			this.LinkConnectStatusBarButton.Name = "LinkConnectStatusBarButton";
+			this.LinkConnectStatusBarButton.Size = new System.Drawing.Size(16, 17);
+			this.LinkConnectStatusBarButton.Text = "Link connection is currently enabled";
+			this.LinkConnectStatusBarButton.ToolTipText = "Link connection is currently enabled";
+			this.LinkConnectStatusBarButton.Click += new System.EventHandler(this.LinkConnectStatusBarButton_Click);
 			// 
 			// MainFormContextMenu
 			// 
@@ -3235,13 +3270,6 @@
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
 			// 
-			// MupenStyleLagMenuItem
-			// 
-			this.MupenStyleLagMenuItem.Name = "MupenStyleLagMenuItem";
-			this.MupenStyleLagMenuItem.Size = new System.Drawing.Size(192, 22);
-			this.MupenStyleLagMenuItem.Text = "&Mupen style Lag";
-			this.MupenStyleLagMenuItem.Click += new System.EventHandler(this.MupenStyleLagMenuItem_Click);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -3622,6 +3650,9 @@
 		private System.Windows.Forms.ToolStripMenuItem ScreenshotClientClipboardMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SnesWithSnes9xMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MupenStyleLagMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator33;
+		private System.Windows.Forms.ToolStripMenuItem GBAcoresettingsToolStripMenuItem1;
+		private System.Windows.Forms.ToolStripStatusLabel LinkConnectStatusBarButton;
 	}
 }
 

@@ -39,7 +39,6 @@
 			this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
 			this.radioButtonManual = new System.Windows.Forms.RadioButton();
 			this.radioButtonScanline = new System.Windows.Forms.RadioButton();
-			this.radioButtonFrame = new System.Windows.Forms.RadioButton();
 			this.labelClipboard = new System.Windows.Forms.Label();
 			this.timerMessage = new System.Windows.Forms.Timer(this.components);
 			this.groupBox1.SuspendLayout();
@@ -90,7 +89,6 @@
 			this.groupBox1.Controls.Add(this.hScrollBar1);
 			this.groupBox1.Controls.Add(this.radioButtonManual);
 			this.groupBox1.Controls.Add(this.radioButtonScanline);
-			this.groupBox1.Controls.Add(this.radioButtonFrame);
 			this.groupBox1.Location = new System.Drawing.Point(15, 220);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(134, 133);
@@ -140,17 +138,6 @@
 			this.radioButtonScanline.Text = "Scanline";
 			this.radioButtonScanline.UseVisualStyleBackColor = true;
 			this.radioButtonScanline.CheckedChanged += new System.EventHandler(this.radioButtonScanline_CheckedChanged);
-			// 
-			// radioButtonFrame
-			// 
-			this.radioButtonFrame.AutoSize = true;
-			this.radioButtonFrame.Location = new System.Drawing.Point(6, 19);
-			this.radioButtonFrame.Name = "radioButtonFrame";
-			this.radioButtonFrame.Size = new System.Drawing.Size(54, 17);
-			this.radioButtonFrame.TabIndex = 0;
-			this.radioButtonFrame.Text = "Frame";
-			this.radioButtonFrame.UseVisualStyleBackColor = true;
-			this.radioButtonFrame.CheckedChanged += new System.EventHandler(this.radioButtonFrame_CheckedChanged);
 			// 
 			// labelClipboard
 			// 
@@ -205,7 +192,6 @@
 		private System.Windows.Forms.HScrollBar hScrollBar1;
 		private System.Windows.Forms.RadioButton radioButtonManual;
 		private System.Windows.Forms.RadioButton radioButtonScanline;
-		private System.Windows.Forms.RadioButton radioButtonFrame;
 		private System.Windows.Forms.Label labelClipboard;
 		private System.Windows.Forms.Timer timerMessage;
 

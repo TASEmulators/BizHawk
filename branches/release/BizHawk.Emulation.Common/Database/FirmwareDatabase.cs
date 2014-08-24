@@ -30,7 +30,15 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("5A140136A16D1D83E4FF32A19409CA376A8DF874", "A78", "Bios_PAL", "7800PALBIOS.bin", "PAL Bios");
 			FirmwareAndOption("A3AF676991391A6DD716C79022D4947206B78164", "A78", "Bios_HSC", "7800highscore.bin", "Highscore Bios");
 			FirmwareAndOption("45BEDC4CBDEAC66C7DF59E9E599195C778D86A92", "Coleco", "Bios", "ColecoBios.bin", "Bios");
-			FirmwareAndOption("300C20DF6731A33952DED8C436F7F186D25D3492", "GBA", "Bios", "gbabios.rom", "Bios");
+
+			{
+				var GBA_JDebug = File("AA98A2AD32B86106340665D1222D7D973A1361C7", "gbabios.rom", "Bios (J Debug)");
+				var GBA_Normal = File("300C20DF6731A33952DED8C436F7F186D25D3492", "gbabios.rom", "Bios (World");
+				Firmware("GBA", "Bios", "Bios");
+				Option("GBA", "Bios", GBA_Normal);
+				Option("GBA", "Bios", GBA_JDebug);
+			}
+
 			//FirmwareAndOption("24F67BDEA115A2C847C8813A262502EE1607B7DF", "NDS", "Bios_Arm7", "biosnds7.rom", "ARM7 Bios");
 			//FirmwareAndOption("BFAAC75F101C135E32E2AAF541DE6B1BE4C8C62D", "NDS", "Bios_Arm9", "biosnds9.rom", "ARM9 Bios");
 			FirmwareAndOption("5A65B922B562CB1F57DAB51B73151283F0E20C7A", "INTV", "EROM", "erom.bin", "Executive Rom");
@@ -98,13 +106,13 @@ namespace BizHawk.Emulation.Common
 			Option("GEN", "CD_BIOS_JP", jp_mcd1_9111);
 			Option("GEN", "CD_BIOS_JP", jp_mcd1_9112);
 			Option("GEN", "CD_BIOS_US", us_scd1_9210);
-			Option("GEN", "CD_BIOS_US", us_scd2_9303);	
+			Option("GEN", "CD_BIOS_US", us_scd2_9303);
 
 			// SMS
 			var sms_us_13 = File("C315672807D8DDB8D91443729405C766DD95CAE7", "sms_us_1.3.sms", "SMS BIOS 1.3 (USA, Europe)");
 			var sms_jp_21 = File("A8C1B39A2E41137835EDA6A5DE6D46DD9FADBAF2", "sms_jp_2.1.sms", "SMS BIOS 2.1 (Japan)");
 			var sms_us_1b = File("29091FF60EF4C22B1EE17AA21E0E75BAC6B36474", "sms_us_1.0b.sms", "SMS BIOS 1.0 (USA) (Proto)");
-			var sms_m404  = File("4A06C8E66261611DCE0305217C42138B71331701", "sms_m404.sms", "SMS BIOS (USA) (M404) (Proto)");
+			var sms_m404 = File("4A06C8E66261611DCE0305217C42138B71331701", "sms_m404.sms", "SMS BIOS (USA) (M404) (Proto)");
 
 			Firmware("SMS", "Export", "SMS Bios (USA/Export)");
 			Firmware("SMS", "Japan", "SMS Bios (Japan)");
@@ -145,11 +153,11 @@ namespace BizHawk.Emulation.Common
 			var ps2_50j = File("D7D6BE084F51354BC951D8FA2D8D912AA70ABC5E", "ps2-50j.bin", "PSX BIOS (Version 5.0 10/27/00 J)", "Found on a PS2 [p].");
 
 			ps_22j_bad.bad = ps_30e_bad.bad = true;
-				
+
 			Firmware("PSX", "U", "BIOS (U)");
 			Firmware("PSX", "J", "BIOS (J)");
 			Firmware("PSX", "E", "BIOS (E)");
-	
+
 			Option("PSX", "U", ps_30a);
 			Option("PSX", "J", ps_30j);
 			Option("PSX", "E", ps_30e);

@@ -32,6 +32,7 @@
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.btnOk = new System.Windows.Forms.Button();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.lblScanlines = new System.Windows.Forms.Label();
 			this.lblUserFilterName = new System.Windows.Forms.Label();
 			this.btnSelectUserFilter = new System.Windows.Forms.Button();
 			this.rbUser = new System.Windows.Forms.RadioButton();
@@ -84,6 +85,7 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.lblScanlines);
 			this.groupBox1.Controls.Add(this.lblUserFilterName);
 			this.groupBox1.Controls.Add(this.btnSelectUserFilter);
 			this.groupBox1.Controls.Add(this.rbUser);
@@ -97,6 +99,16 @@
 			this.groupBox1.TabIndex = 7;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Scaling Filter";
+			// 
+			// lblScanlines
+			// 
+			this.lblScanlines.AutoSize = true;
+			this.lblScanlines.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblScanlines.Location = new System.Drawing.Point(104, 39);
+			this.lblScanlines.Name = "lblScanlines";
+			this.lblScanlines.Size = new System.Drawing.Size(15, 13);
+			this.lblScanlines.TabIndex = 11;
+			this.lblScanlines.Text = "%";
 			// 
 			// lblUserFilterName
 			// 
@@ -133,10 +145,12 @@
 			this.tbScanlineIntensity.Location = new System.Drawing.Point(83, 55);
 			this.tbScanlineIntensity.Maximum = 256;
 			this.tbScanlineIntensity.Name = "tbScanlineIntensity";
-			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 42);
+			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 45);
 			this.tbScanlineIntensity.TabIndex = 3;
 			this.tbScanlineIntensity.TickFrequency = 32;
 			this.tbScanlineIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+			this.tbScanlineIntensity.Scroll += new System.EventHandler(this.tbScanlineIntensity_Scroll);
+			this.tbScanlineIntensity.ValueChanged += new System.EventHandler(this.tbScanlineIntensity_Scroll);
 			// 
 			// rbNone
 			// 
@@ -382,5 +396,6 @@
 		private System.Windows.Forms.CheckBox checkSnowyNullEmulator;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label lblScanlines;
 	}
 }

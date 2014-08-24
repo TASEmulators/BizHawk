@@ -55,9 +55,11 @@ namespace BizHawk.Client.EmuHawk
 			public int Frames; // number of frames successfully run
 			public int LaggedFrames; // number of those that were lagged
 
+			public string BoardName; // iemulator's board name return (could be null!)
+
 			public void DumpToTW(System.IO.TextWriter tw)
 			{
-				tw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}", Filename, Fullname, CoreType, Status, Frames, LaggedFrames);
+				tw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}", Filename, Fullname, CoreType, Status, Frames, LaggedFrames, GI.Hash, BoardName);
 			}
 		}
 
@@ -158,6 +160,12 @@ namespace BizHawk.Client.EmuHawk
 				current.GI = ldr.Game;
 				current.CoreType = emu.GetType();
 				emu.Controller = new Controller(emu.ControllerDefinition);
+				current.BoardName = emu.BoardName;
+				// hack
+				if (emu is Emulation.Cores.Nintendo.GBA.VBANext)
+				{
+					current.BoardName = (emu as Emulation.Cores.Nintendo.GBA.VBANext).GameCode;
+				}
 
 				current.Frames = 0;
 				current.LaggedFrames = 0;

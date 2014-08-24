@@ -47,6 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// <param name="game">Game information of game to load</param>
 		/// <param name="rom">Rom that should be loaded</param>
 		/// <param name="SyncSettings">N64SyncSettings object</param>
+		[CoreConstructor("N64")]
 		public N64(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
 			int SaveType = 0;
@@ -248,7 +249,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				return !_inputProvider.LastFrameInputPolled;
 			}
 
-			set
+			internal set
 			{
 				if (_settings.UseMupenStyleLag)
 				{
@@ -264,7 +265,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public bool IsVIFrame
 		{
 			get { return _videoProvider.IsVIFrame; }
-			set { _videoProvider.IsVIFrame = value; }
+			internal set { _videoProvider.IsVIFrame = value; }
 		}
 
 		public void ResetCounters()
@@ -276,7 +277,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public bool DeterministicEmulation { get { return false; } }
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			return api.SaveSaveram();
 		}

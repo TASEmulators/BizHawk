@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		private int _frame = 0;
 
 		#region saveram
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			return (byte[])hsram.Clone();
 		}

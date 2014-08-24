@@ -69,9 +69,9 @@
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\References\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="LuaInterface, Version=2.0.4.24551, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="LuaInterface, Version=2.0.4.35439, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\output\dll\LuaInterface.dll</HintPath>
+      <HintPath>..\References\LuaInterface.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" Condition=" '$(OS)' == 'Windows_NT' " />
     <Reference Include="Newtonsoft.Json">
@@ -443,6 +443,7 @@
     <Compile Include="CustomControls\FolderBrowserDialogEx.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CustomControls\GDIRenderer.cs" />
     <Compile Include="CustomControls\HexTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -854,6 +855,9 @@
     <Compile Include="tools\TAStudio\HistoryBox.Designer.cs">
       <DependentUpon>HistoryBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\TAStudio\InputRoll.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\TAStudio\LuaBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1139,6 +1143,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControls\QuickProgressPopup.resx">
       <DependentUpon>QuickProgressPopup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControls\TasListView.resx">
+      <DependentUpon>TasListView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -1464,6 +1471,7 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\noconnect_16x16.png" />
     <None Include="images\snes9x.png" />
     <None Include="images\YellowUp.png" />
     <None Include="images\YellowRight.png" />
@@ -1586,6 +1594,7 @@
     <None Include="images\dual.png" />
     <None Include="config\ControllerImages\WonderSwanColor.png" />
     <None Include="images\alt_about_image.png" />
+    <None Include="images\connect_16x16.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

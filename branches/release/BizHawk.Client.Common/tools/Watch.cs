@@ -52,6 +52,8 @@ namespace BizHawk.Client.Common
 		public abstract string ValueString { get; }
 		public abstract WatchSize Size { get; }
 
+		public abstract uint MaxValue { get; }
+
 		public abstract int? Previous { get; }
 		public abstract string PreviousStr { get; }
 		public abstract void ResetPrevious();
@@ -400,6 +402,11 @@ namespace BizHawk.Client.Common
 
 		public override string Diff { get { return string.Empty; } }
 
+		public override uint MaxValue
+		{
+			get { return 0; }
+		}
+
 		public override void Update() { return; }
 	}
 
@@ -486,6 +493,11 @@ namespace BizHawk.Client.Common
 					DisplayType.Unsigned, DisplayType.Signed, DisplayType.Hex, DisplayType.Binary
 				};
 			}
+		}
+
+		public override uint MaxValue
+		{
+			get { return byte.MaxValue; }
 		}
 
 		public string FormatValue(byte val)
@@ -643,6 +655,11 @@ namespace BizHawk.Client.Common
 		{
 			_previous = prev;
 			_changecount = changeCount;
+		}
+
+		public override uint MaxValue
+		{
+			get { return ushort.MaxValue; }
 		}
 
 		public override int? Value
@@ -884,6 +901,11 @@ namespace BizHawk.Client.Common
 					DisplayType.Unsigned, DisplayType.Signed, DisplayType.Hex, DisplayType.FixedPoint_20_12, DisplayType.Float
 				};
 			}
+		}
+
+		public override uint MaxValue
+		{
+			get { return uint.MaxValue; }
 		}
 
 		public override string ValueString

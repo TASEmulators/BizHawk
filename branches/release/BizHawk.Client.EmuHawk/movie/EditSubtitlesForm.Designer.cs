@@ -38,6 +38,7 @@
             this.Length = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DispColor = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Message = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Export = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.SubGrid)).BeginInit();
             this.SuspendLayout();
             // 
@@ -45,9 +46,10 @@
             // 
             this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Cancel.Location = new System.Drawing.Point(485, 216);
+            this.Cancel.Location = new System.Drawing.Point(647, 266);
+            this.Cancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Cancel.Name = "Cancel";
-            this.Cancel.Size = new System.Drawing.Size(75, 23);
+            this.Cancel.Size = new System.Drawing.Size(100, 28);
             this.Cancel.TabIndex = 0;
             this.Cancel.Text = "&Cancel";
             this.Cancel.UseVisualStyleBackColor = true;
@@ -56,9 +58,10 @@
             // OK
             // 
             this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.OK.Location = new System.Drawing.Point(404, 216);
+            this.OK.Location = new System.Drawing.Point(539, 266);
+            this.OK.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.OK.Name = "OK";
-            this.OK.Size = new System.Drawing.Size(75, 23);
+            this.OK.Size = new System.Drawing.Size(100, 28);
             this.OK.TabIndex = 1;
             this.OK.Text = "&Ok";
             this.OK.UseVisualStyleBackColor = true;
@@ -78,9 +81,10 @@
             this.Length,
             this.DispColor,
             this.Message});
-            this.SubGrid.Location = new System.Drawing.Point(12, 12);
+            this.SubGrid.Location = new System.Drawing.Point(16, 15);
+            this.SubGrid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.SubGrid.Name = "SubGrid";
-            this.SubGrid.Size = new System.Drawing.Size(548, 198);
+            this.SubGrid.Size = new System.Drawing.Size(731, 244);
             this.SubGrid.TabIndex = 2;
             this.SubGrid.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.SubGrid_MouseDoubleClick);
             // 
@@ -133,18 +137,30 @@
             this.Message.Name = "Message";
             this.Message.ToolTipText = "What will be displayed";
             // 
+            // Export
+            // 
+            this.Export.Location = new System.Drawing.Point(16, 266);
+            this.Export.Name = "Export";
+            this.Export.Size = new System.Drawing.Size(125, 28);
+            this.Export.TabIndex = 3;
+            this.Export.Text = "&Export to SubRip";
+            this.Export.UseVisualStyleBackColor = true;
+            this.Export.Click += new System.EventHandler(this.Export_Click);
+            // 
             // EditSubtitlesForm
             // 
             this.AcceptButton = this.OK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel;
-            this.ClientSize = new System.Drawing.Size(572, 251);
+            this.ClientSize = new System.Drawing.Size(763, 309);
+            this.Controls.Add(this.Export);
             this.Controls.Add(this.SubGrid);
             this.Controls.Add(this.OK);
             this.Controls.Add(this.Cancel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(188, 121);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.MinimumSize = new System.Drawing.Size(245, 139);
             this.Name = "EditSubtitlesForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Edit Subtitles";
@@ -165,5 +181,6 @@
 		private System.Windows.Forms.DataGridViewTextBoxColumn Length;
 		private System.Windows.Forms.DataGridViewTextBoxColumn DispColor;
 		private System.Windows.Forms.DataGridViewTextBoxColumn Message;
+        private System.Windows.Forms.Button Export;
 	}
 }

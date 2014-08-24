@@ -121,8 +121,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// </summary>
 		int modtablepos;
 		//4089
-		int mastervol_num;
-		int mastervol_den;
+		int mastervol_num = 1;
+		int mastervol_den = 1;
 		/// <summary>
 		/// channel silenced and waveram writable
 		/// </summary>

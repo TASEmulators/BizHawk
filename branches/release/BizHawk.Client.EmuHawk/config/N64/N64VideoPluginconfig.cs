@@ -19,16 +19,40 @@ namespace BizHawk.Client.EmuHawk
 		private N64Settings s;
 		private N64SyncSettings ss;
 
-		private enum JaboStatus
-		{
-			NotReady,
-			ReadyToPatch,
-			Ready,
-			WrongVersion21,
-			WrongVersion16
-		};
+		private N64JaboManager.JaboStatus currentJaboStatus = N64JaboManager.JaboStatus.NotReady;
 
-		private JaboStatus currentJaboStatus = JaboStatus.NotReady;
+
+		string[] validResolutions = {
+										"320 x 240",
+										"400 x 300",
+										"480 x 360",
+										"512 x 384",
+										"640 x 480",
+										"800 x 600",
+										"1024 x 768",
+										"1152 x 864",
+										"1280 x 960",
+										"1400 x 1050",
+										"1600 x 1200",
+										"1920 x 1440",
+										"2048 x 1536" 
+									};
+
+		string[] validResolutionsJabo = {
+											"320 x 240",
+											"400 x 300",
+											"512 x 384",
+											"640 x 480",
+											"800 x 600",
+											"1024 x 768",
+											"1152 x 864",
+											"1280 x 960",
+											"1600 x 1200",
+											"848 x 480",
+											"1024 x 576",
+											"1380 x 768"
+										};
+
 		private string previousPluginSelection = string.Empty;
 		private bool programmaticallyChangingPluginComboBox = false;
 
@@ -116,6 +140,33 @@ namespace BizHawk.Client.EmuHawk
 				case "Glide64mk2": ss.VideoPlugin = PluginType.GlideMk2; break;
 				case "Jabo 1.6.1": ss.VideoPlugin = PluginType.Jabo; break;
 			}
+
+			// Jabo
+			ss.JaboPlugin.UseDefaultHacks = JaboUseForGameCheckbox.Checked;
+
+			ss.JaboPlugin.clear_mode = JaboClearModeDropDown.SelectedItem
+				.ToString()
+				.GetEnumFromDescription<N64SyncSettings.N64JaboPluginSettings.Direct3DClearMode>();
+
+			ss.JaboPlugin.anisotropic_level = JaboAnisotropicFilteringLevelDropdown.SelectedItem
+				.ToString()
+				.GetEnumFromDescription<N64SyncSettings.N64JaboPluginSettings.ANISOTROPIC_FILTERING_LEVEL>();
+
+			ss.JaboPlugin.antialiasing_level = JaboAntialiasingLevelDropdown.SelectedItem
+				.ToString()
+				.GetEnumFromDescription<N64SyncSettings.N64JaboPluginSettings.ANTIALIASING_LEVEL>();
+
+			ss.JaboPlugin.brightness = (int)JaboBrightnessBox.Value;
+			ss.JaboPlugin.super2xsal = JaboSuper2xsalCheckbox.Checked;
+			ss.JaboPlugin.texture_filter = JaboTextureFilterCheckbox.Checked;
+			ss.JaboPlugin.adjust_aspect_ratio = JaboAdjustAspectRatioCheckbox.Checked;
+			ss.JaboPlugin.legacy_pixel_pipeline = JaboLegacyPixelPipelineCheckbox.Checked;
+			ss.JaboPlugin.alpha_blending = JaboAlphaBlendingCheckbox.Checked;
+			ss.JaboPlugin.direct3d_transformation_pipeline = JaboDirect3DPipelineCheckbox.Checked;
+			ss.JaboPlugin.z_compare = JaboZCompareCheckbox.Checked;
+			ss.JaboPlugin.copy_framebuffer = JaboCopyFrameBufferCheckbox.Checked;
+			ss.JaboPlugin.resolution_width = JaboResolutionWidthBox.ToRawInt().Value;
+			ss.JaboPlugin.resolution_height = JaboResolutionHeightBox.ToRawInt().Value;
 
 			// Rice
 			ss.RicePlugin.NormalAlphaBlender = RiceNormalAlphaBlender_CB.Checked;
@@ -356,40 +407,9 @@ namespace BizHawk.Client.EmuHawk
                 N64plugintabcontrol.TabPages.Remove(JaboTab);
 			}
 
-			if (File.Exists("dll\\Jabo_Direct3D8_patched.dll"))
-			{
-				byte[] hash = MD5.Create().ComputeHash(File.ReadAllBytes("dll\\Jabo_Direct3D8_patched.dll"));
-				string hash_string = BitConverter.ToString(hash).Replace("-", "");
-				if (hash_string == "F4D6E624489CD88C68A5850426D4D70E")
-				{
-					// jabo is ready to go
-					currentJaboStatus = JaboStatus.Ready;
-				}
-			}
-			else if (File.Exists("dll\\Jabo_Direct3D8.dll"))
-			{
-				byte[] hash = MD5.Create().ComputeHash(File.ReadAllBytes("dll\\Jabo_Direct3D8.dll"));
-				string hash_string = BitConverter.ToString(hash).Replace("-", "");
-				if (hash_string == "4F353AA71E7455B81205D8EC0AA339E1")
-				{
-					// jabo will be patched when a rom is loaded. user is ready to go
-					currentJaboStatus = JaboStatus.ReadyToPatch;
-				}
-				else if (hash_string == "4A4173928ED33735157A8D8CD14D4C9C")
-				{
-					// wrong jabo installed (2.0)
-					currentJaboStatus = JaboStatus.WrongVersion21;
-				}
-				else if (hash_string == "FF57F60C58EDE6364B980EDCB311873B")
-				{
-					// wrong jabo installed (1.6)
-					currentJaboStatus = JaboStatus.WrongVersion16;
-				}
-				else
-				{
-					// this is not the right file
-				}
-			}
+			N64JaboManager manager = new N64JaboManager();
+			manager.Scan();
+			currentJaboStatus = manager.Status;
 
 			s = GetSettings();
 			ss = GetSyncSettings();
@@ -397,7 +417,13 @@ namespace BizHawk.Client.EmuHawk
 			CoreTypeDropdown.PopulateFromEnum<N64SyncSettings.CoreType>(ss.Core);
 			RspTypeDropdown.PopulateFromEnum<N64SyncSettings.RspType>(ss.Rsp);
 
-			JaboPropertyGrid.SelectedObject = ss.JaboPlugin;
+			switch (ss.VideoPlugin)
+			{
+				case PluginType.GlideMk2: PluginComboBox.Text = "Glide64mk2"; break;
+				case PluginType.Glide: PluginComboBox.Text = "Glide64"; break;
+				case PluginType.Rice: PluginComboBox.Text = "Rice"; break;
+				case PluginType.Jabo: PluginComboBox.Text = "Jabo 1.6.1"; break;
+			}
 
 			var video_setting = s.VideoSizeX
 						+ " x "
@@ -408,13 +434,30 @@ namespace BizHawk.Client.EmuHawk
 			{
 				VideoResolutionComboBox.SelectedIndex = index;
 			}
-			switch (ss.VideoPlugin)
-			{
-				case PluginType.GlideMk2: PluginComboBox.Text = "Glide64mk2"; break;
-				case PluginType.Glide: PluginComboBox.Text = "Glide64"; break;
-				case PluginType.Rice: PluginComboBox.Text = "Rice"; break;
-				case PluginType.Jabo: PluginComboBox.Text = "Jabo 1.6.1"; break;
-			}
+
+			// Jabo
+			JaboUseForGameCheckbox.Checked = ss.JaboPlugin.UseDefaultHacks;
+			JaboClearModeDropDown
+				.PopulateFromEnum<N64SyncSettings.N64JaboPluginSettings.Direct3DClearMode>(ss.JaboPlugin.clear_mode);
+			JaboResolutionWidthBox.Text = ss.JaboPlugin.resolution_width.ToString();
+			JaboResolutionHeightBox.Text = ss.JaboPlugin.resolution_height.ToString();
+
+			JaboUpdateHacksSection();
+
+			JaboAnisotropicFilteringLevelDropdown
+				.PopulateFromEnum<N64SyncSettings.N64JaboPluginSettings.ANISOTROPIC_FILTERING_LEVEL>(ss.JaboPlugin.anisotropic_level);
+			JaboAntialiasingLevelDropdown
+				.PopulateFromEnum<N64SyncSettings.N64JaboPluginSettings.ANTIALIASING_LEVEL>(ss.JaboPlugin.antialiasing_level);
+			JaboBrightnessBox.Value = ss.JaboPlugin.brightness;
+			JaboSuper2xsalCheckbox.Checked = ss.JaboPlugin.super2xsal;
+			JaboTextureFilterCheckbox.Checked = ss.JaboPlugin.texture_filter;
+			JaboAdjustAspectRatioCheckbox.Checked = ss.JaboPlugin.adjust_aspect_ratio;
+			JaboLegacyPixelPipelineCheckbox.Checked = ss.JaboPlugin.legacy_pixel_pipeline;
+			JaboAlphaBlendingCheckbox.Checked = ss.JaboPlugin.alpha_blending;
+			JaboDirect3DPipelineCheckbox.Checked = ss.JaboPlugin.direct3d_transformation_pipeline;
+			JaboZCompareCheckbox.Checked = ss.JaboPlugin.z_compare;
+			JaboCopyFrameBufferCheckbox.Checked = ss.JaboPlugin.copy_framebuffer;
+			
 
 			//Rice
 			RiceNormalAlphaBlender_CB.Checked = ss.RicePlugin.NormalAlphaBlender;
@@ -915,25 +958,39 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			if (VideoResolutionComboBox.SelectedItem == null)
+			{
+				VideoResolutionComboBox.SelectedIndex = 0;
+			}
+
+			var oldResolution = VideoResolutionComboBox.SelectedItem.ToString();
+			var strArr = oldResolution.Split('x');
+			int OldSizeX = int.Parse(strArr[0].Trim());
+			int OldSizeY = int.Parse(strArr[1].Trim());
+
 			if (PluginComboBox.Text == "Jabo 1.6.1")
 			{
-				if (currentJaboStatus == JaboStatus.Ready || currentJaboStatus == JaboStatus.ReadyToPatch)
+				if (currentJaboStatus == N64JaboManager.JaboStatus.Ready || currentJaboStatus == N64JaboManager.JaboStatus.ReadyToPatch)
 				{
 					jaboStatusLabel.Text = "You are ready to use Jabo.";
 					jaboStatusDetailLabel.Text = "";
+
+					// Change resolution list to jabo
+					VideoResolutionComboBox.Items.Clear();
+					VideoResolutionComboBox.Items.AddRange(validResolutionsJabo);
 				}
 				else
 				{
 					jaboStatusDetailLabel.Text = "To use Jabo please copy Jabo_Direct3D8.dll from a Project64 v1.6.1 installation into Bizhawk's dll directory.";
-					if (currentJaboStatus == JaboStatus.NotReady)
+					if (currentJaboStatus == N64JaboManager.JaboStatus.NotReady)
 					{
 						jaboStatusLabel.Text = "You are NOT ready to use Jabo.";
 					}
-					else if (currentJaboStatus == JaboStatus.WrongVersion16)
+					else if (currentJaboStatus == N64JaboManager.JaboStatus.WrongVersion16)
 					{
 						jaboStatusLabel.Text = "You are NOT ready to use Jabo. Bizhawk requires Jabo Direct3D8 v1.6.1, but found v1.6 instead.";
 					}
-					else if (currentJaboStatus == JaboStatus.WrongVersion21)
+					else if (currentJaboStatus == N64JaboManager.JaboStatus.WrongVersion21)
 					{
 						jaboStatusLabel.Text = "You are NOT ready to use Jabo. Bizhawk requires Jabo Direct3D8 v1.6.1, but found v2.0 instead.";
 					}
@@ -947,9 +1004,82 @@ namespace BizHawk.Client.EmuHawk
 			{
 				jaboStatusLabel.Text = "";
 				jaboStatusDetailLabel.Text = "";
+
+				// Change resolution list to the rest
+				VideoResolutionComboBox.Items.Clear();
+				VideoResolutionComboBox.Items.AddRange(validResolutions);
+			}
+
+			// If the given resolution is in the table, pick it.
+			// Otherwise find a best fit
+			var index = VideoResolutionComboBox.Items.IndexOf(oldResolution);
+			if (index >= 0)
+			{
+				VideoResolutionComboBox.SelectedIndex = index;
+			}
+			else
+			{
+				int bestFit = -1;
+				for (int i = 0; i < VideoResolutionComboBox.Items.Count; i++)
+				{
+					string option = (string)VideoResolutionComboBox.Items[i];
+					strArr = option.Split('x');
+					int newSizeX = int.Parse(strArr[0].Trim());
+					int newSizeY = int.Parse(strArr[1].Trim());
+					if (OldSizeX < newSizeX || OldSizeX == newSizeX && OldSizeY < newSizeY)
+					{
+						if (i == 0)
+						{
+							bestFit  = 0;
+							break;
+						}
+						else
+						{
+							bestFit = i - 1;
+							break;
+						}
+					}
+				}
+
+				if (bestFit < 0)
+				{
+					if (PluginComboBox.Text == "Jabo 1.6.1")
+					{
+						// Pick 8 to avoid picking the widescreen resolutions
+						VideoResolutionComboBox.SelectedIndex = 8;
+					}
+					else
+					{
+						VideoResolutionComboBox.SelectedIndex = VideoResolutionComboBox.Items.Count - 1;
+					}
+				}
+				else
+				{
+					VideoResolutionComboBox.SelectedIndex = bestFit;
+				}
 			}
 
 			previousPluginSelection = PluginComboBox.SelectedItem.ToString();
+		}
+
+		private void JaboUseForGameCheckbox_CheckedChanged(object sender, EventArgs e)
+		{
+			JaboPerGameHacksGroupBox.Controls
+				.OfType<Control>()
+				.ToList()
+				.ForEach(c => c.Enabled = !JaboUseForGameCheckbox.Checked);
+
+			JaboUpdateHacksSection();
+		}
+
+		private void JaboUpdateHacksSection()
+		{
+			if (JaboUseForGameCheckbox.Checked)
+			{
+				JaboResolutionWidthBox.Text = GetIntFromDB("Jabo_Resolution_Width", -1).ToString();
+				JaboResolutionHeightBox.Text = GetIntFromDB("Jabo_Resolution_Height", -1).ToString();
+				JaboClearModeDropDown.SelectedItem = ((N64SyncSettings.N64JaboPluginSettings.Direct3DClearMode)GetIntFromDB("Jabo_Clear_Frame", 0)).GetDescription();
+			}
 		}
 
 	}

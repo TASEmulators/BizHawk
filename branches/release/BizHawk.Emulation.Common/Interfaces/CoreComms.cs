@@ -48,6 +48,9 @@ namespace BizHawk.Emulation.Common
 		public bool DriveLED = false;
 		public bool UsesDriveLed = false;
 
+		public bool LinkConnected = false;
+		public bool UsesLinkCable = false;
+
 		/// <summary>
 		/// show a message.  reasonably annoying (dialog box), shouldn't be used most of the time
 		/// </summary>
@@ -118,43 +121,23 @@ namespace BizHawk.Emulation.Common
 		private bool logging;
 	}
 
-	public class InputCallbackSystem
+	public class InputCallbackSystem : List<Action>
 	{
-		private readonly List<Action> _list = new List<Action>();
-		
-		public void Add(Action action)
-		{
-			_list.Add(action);
-		}
-
 		public void Call()
 		{
-			foreach (var action in _list)
+			foreach (var action in this)
 			{
 				action();
 			}
-		}
-
-		public void Remove(Action action)
-		{
-			_list.Remove(action);
 		}
 
 		public void RemoveAll(IEnumerable<Action> actions)
 		{
 			foreach (var action in actions)
 			{
-				_list.Remove(action);
+				this.Remove(action);
 			}
 		}
-
-		public void Clear()
-		{
-			_list.Clear();
-		}
-
-		// why was this missing?
-		public bool Has { get { return _list.Any(); } }
 	}
 
 	public class MemoryCallbackSystem

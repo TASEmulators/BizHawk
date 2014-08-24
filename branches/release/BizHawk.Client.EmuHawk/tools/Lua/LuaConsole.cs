@@ -38,9 +38,10 @@ namespace BizHawk.Client.EmuHawk
 			LuaImp = new EmuLuaLibrary(this);
 			Closing += (o, e) =>
 			{
-				if (AskSave())
+				if (AskSaveChanges())
 				{
 					SaveConfigSettings();
+					GlobalWin.DisplayManager.ClearLuaSurfaces();
 				}
 				else
 				{
@@ -499,7 +500,7 @@ namespace BizHawk.Client.EmuHawk
 			var doload = true;
 			if (_luaList.Changes)
 			{
-				doload = AskSave();
+				doload = AskSaveChanges();
 			}
 
 			if (doload)
@@ -517,7 +518,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public bool AskSave()
+		public bool AskSaveChanges()
 		{
 			if (_luaList.Changes)
 			{
@@ -586,7 +587,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewSessionMenuItem_Click(object sender, EventArgs e)
 		{
-			var result = !_luaList.Changes || AskSave();
+			var result = !_luaList.Changes || AskSaveChanges();
 
 			if (result)
 			{

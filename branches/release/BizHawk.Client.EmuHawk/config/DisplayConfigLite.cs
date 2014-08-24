@@ -7,7 +7,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
@@ -32,7 +31,7 @@ namespace BizHawk.Client.EmuHawk.config
 			rbFinalFilterBilinear.Checked = Global.Config.DispFinalFilter == 1;
 			rbFinalFilterBicubic.Checked = Global.Config.DispFinalFilter == 2;
 
-			tbScanlineIntensity.Value = Global.Config.TargetScanlineFilterIntensity;
+			tbScanlineIntensity.Value = Global.Config.TargetScanlineFilterIntensity; 
 			checkLetterbox.Checked = Global.Config.DispFixAspectRatio;
 			checkPadInteger.Checked = Global.Config.DispFixScaleInteger;
 			rbUseSystem.Checked = Global.Config.DispObeyAR;
@@ -118,6 +117,14 @@ namespace BizHawk.Client.EmuHawk.config
 			checkPadInteger.Enabled = checkLetterbox.Checked;
 		}
 
+		public void tbScanlineIntensity_Scroll(object sender, EventArgs e)
+		{
+			Global.Config.TargetScanlineFilterIntensity = tbScanlineIntensity.Value;
+			int scanlines = Global.Config.TargetScanlineFilterIntensity;
+			float percentage = (float) scanlines / 255 * 100;
+			if (percentage > 100) percentage = 100;
+			lblScanlines.Text = String.Format("{0:F2}", percentage) + "%";
+		}
 
 	}
 }

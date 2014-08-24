@@ -61,14 +61,14 @@ namespace BizHawk.Client.EmuHawk
 
 				var movieToRecord = MovieService.Get(path);
 
+				var fileInfo = new FileInfo(path);
+				if (!fileInfo.Exists)
+				{
+					Directory.CreateDirectory(fileInfo.DirectoryName);
+				}
+
 				if (StartFromCombo.SelectedItem.ToString() == "Now")
 				{
-					var fileInfo = new FileInfo(path);
-					if (!fileInfo.Exists)
-					{
-						Directory.CreateDirectory(fileInfo.DirectoryName);
-					}
-
 					movieToRecord.StartsFromSavestate = true;
 
 					if (Global.Emulator.BinarySaveStatesPreferred)

@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public byte[] BiosRom;
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			if (SaveRAM != null)
 				return (byte[])SaveRAM.Clone();
@@ -92,6 +92,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public DisplayType DisplayType { get; set; }
 		public bool DeterministicEmulation { get { return true; } }
 
+		[CoreConstructor("SMS", "SG", "GG")]
 		public SMS(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
 			Settings = (SMSSettings)settings ?? new SMSSettings();

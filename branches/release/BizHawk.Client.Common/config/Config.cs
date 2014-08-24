@@ -523,7 +523,10 @@ namespace BizHawk.Client.Common
 		public bool AutoloadTAStudio = false;
 		public bool AutoloadTAStudioProject = false;
 		public bool TAStudioDrawInput = true;
+		public bool TAStudioAutoPause = true;
 		public bool TAStudioAutoRestoreLastPosition = false;
+
+		public bool AutoloadExperimentalTAStudio = false;
 
 		// VirtualPad Dialog
 		public ToolDialogSettings VirtualPadSettings = new ToolDialogSettings();
@@ -602,7 +605,7 @@ namespace BizHawk.Client.Common
 		// it hasn't been absorbed into the new system
 		public bool GB_AsSGB = false;
 		public bool NES_InQuickNES = true;
-		public bool SNES_InSnes9x = true;
+		public bool SNES_InSnes9x = false;
 
 		// LuaWriter Settings
 		public int LuaDefaultTextColor = -16777216;

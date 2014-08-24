@@ -22,6 +22,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private int _lagcount;
 		private int _frame;
 
+		[CoreConstructor("A26")]
 		public Atari2600(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
 			Ram = new byte[128];
@@ -249,7 +250,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.EndSection();
 		}
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			return null;
 		}

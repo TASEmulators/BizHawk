@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class GBAGPUView : Form, IToolForm
 	{
-		GBA gba;
+		IGBAGPUViewable gba;
 
 		// emulator memory areas
 		private IntPtr vram;
@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 
 		MobileDetailView memory;
 
-		public bool AskSave() { return true; }
+		public bool AskSaveChanges() { return true; }
 		public bool UpdateBefore { get { return true; } }
 
 		public GBAGPUView()
@@ -37,9 +37,8 @@ namespace BizHawk.Client.EmuHawk
 			ColorConversion = new int[65536];
 			Buffer.BlockCopy(tmp, 0, ColorConversion, 0, sizeof(int) * tmp.Length);
 			Buffer.BlockCopy(tmp, 0, ColorConversion, sizeof(int) * tmp.Length, sizeof(int) * tmp.Length);
-
+			radioButtonManual.Checked = true;
 			GenerateWidgets();
-			radioButtonFrame.Checked = true;
 			hScrollBar1_ValueChanged(null, null);
 			RecomputeRefresh();
 		}
@@ -680,10 +679,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			gba = Global.Emulator as GBA;
+			gba = Global.Emulator as IGBAGPUViewable;
 			if (gba != null)
 			{
-				gba.GetGPUMemoryAreas(out vram, out palram, out oam, out mmio);
+				var mem = gba.GetMemoryAreas();
+				vram = mem.vram;
+				palram = mem.palram;
+				oam = mem.oam;
+				mmio = mem.mmio;
 			}
 			else
 			{
@@ -702,17 +705,13 @@ namespace BizHawk.Client.EmuHawk
 				if (_cbscanlineEmu != _cbscanline)
 				{
 					_cbscanlineEmu = _cbscanline;
-					if (_cbscanline == -2) // manual, do nothing
+					if (!_cbscanline.HasValue) // manual, deactivate callback
 					{
-						gba.SetScanlineCallback(null, null);
-					}
-					else if (_cbscanline == -1) // end of frame
-					{
-						gba.SetScanlineCallback(DrawEverything, null);
+						gba.SetScanlineCallback(null, 0);
 					}
 					else
 					{
-						gba.SetScanlineCallback(DrawEverything, _cbscanline);
+						gba.SetScanlineCallback(DrawEverything, _cbscanline.Value);
 					}
 				}
 			}
@@ -751,18 +750,12 @@ namespace BizHawk.Client.EmuHawk
 
 		#region refresh control
 
-		private int _cbscanline;
-		private int _cbscanlineEmu = 500;
+		private int? _cbscanline = null;
+		private int? _cbscanlineEmu = 500;
 
 		private void RecomputeRefresh()
 		{
-			if (radioButtonFrame.Checked)
-			{
-				hScrollBar1.Enabled = false;
-				buttonRefresh.Enabled = false;
-				_cbscanline = -1;
-			}
-			else if (radioButtonScanline.Checked)
+			if (radioButtonScanline.Checked)
 			{
 				hScrollBar1.Enabled = true;
 				buttonRefresh.Enabled = false;
@@ -772,7 +765,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				hScrollBar1.Enabled = false;
 				buttonRefresh.Enabled = true;
-				_cbscanline = -2;
+				_cbscanline = null;
 			}
 		}
 
@@ -808,7 +801,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (gba != null)
 			{
-				gba.SetScanlineCallback(null, null);
+				gba.SetScanlineCallback(null, 0);
 				gba = null;
 			}
 		}

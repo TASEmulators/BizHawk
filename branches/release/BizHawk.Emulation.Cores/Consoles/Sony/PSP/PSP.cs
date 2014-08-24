@@ -149,7 +149,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 			get { return true; }
 		}
 
-		public byte[] ReadSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			return new byte[0];
 		}

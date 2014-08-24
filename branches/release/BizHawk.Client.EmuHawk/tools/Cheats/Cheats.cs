@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			Closing += (o, e) =>
 			{
-				if (AskSave())
+				if (AskSaveChanges())
 				{
 					SaveConfigSettings();
 				}
@@ -99,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadFileFromRecent(string path)
 		{
-			var askResult = !Global.CheatList.Changes || AskSave();
+			var askResult = !Global.CheatList.Changes || AskSaveChanges();
 			if (askResult)
 			{
 				var loadResult = Global.CheatList.Load(path, append: false);
@@ -123,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 				: Path.GetFileName(Global.CheatList.CurrentFileName) + (Global.CheatList.Changes ? " *" : string.Empty);
 		}
 
-		public bool AskSave()
+		public bool AskSaveChanges()
 		{
 			if (Global.CheatList.Changes)
 			{
@@ -155,7 +155,7 @@ namespace BizHawk.Client.EmuHawk
 				var result = true;
 				if (Global.CheatList.Changes)
 				{
-					result = AskSave();
+					result = AskSaveChanges();
 				}
 
 				if (result)
@@ -433,7 +433,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StartNewList()
 		{
-			var result = !Global.CheatList.Changes || AskSave();
+			var result = !Global.CheatList.Changes || AskSaveChanges();
 			if (result)
 			{
 				Global.CheatList.NewList(ToolManager.GenerateDefaultCheatFilename());
@@ -445,7 +445,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewList()
 		{
-			var result = !Global.CheatList.Changes || AskSave();
+			var result = !Global.CheatList.Changes || AskSaveChanges();
 			if (result)
 			{
 				StartNewList();

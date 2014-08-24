@@ -31,11 +31,12 @@ namespace BizHawk.Client.EmuHawk
 				CapacityNumeric.Maximum;
 
 			SavestateSizeLabel.Text = Math.Round(_stateSizeMb, 2).ToString() + " mb";
+			CapacityNumeric_ValueChanged(null, null);
 		}
 
-		private decimal MaxStatesInCapacity
+		private ulong MaxStatesInCapacity
 		{
-			get { return CapacityNumeric.Value / _stateSizeMb;  }
+			get { return (ulong)Math.Floor(CapacityNumeric.Value / _stateSizeMb);  }
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
@@ -54,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CapacityNumeric_ValueChanged(object sender, EventArgs e)
 		{
-			NumStatesLabel.Text = Math.Round(MaxStatesInCapacity, 2).ToString();
+			NumStatesLabel.Text = MaxStatesInCapacity.ToString();
 		}
 	}
 }

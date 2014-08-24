@@ -231,7 +231,14 @@ namespace BizHawk.Client.Common
 						{ "DPad L", 'L' },
 						{ "DPad R", 'R' },
 					}
-				}
+				},
+				{
+					"DGB",
+					new Dictionary<string, char>
+					{
+						{ "Toggle Cable", 'L' },
+					}
+				}	
 			};
 	}
 }

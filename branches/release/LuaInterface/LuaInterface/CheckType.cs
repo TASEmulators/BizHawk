@@ -263,7 +263,7 @@ namespace LuaInterface
 			{
 				if (LuaDLL.lua_isnumber(luaState, stackPos))
 				{
-					Color retVal = Color.FromArgb((int)LuaDLL.lua_tonumber(luaState, stackPos));
+					Color retVal = Color.FromArgb((int)(long)LuaDLL.lua_tonumber(luaState, stackPos));
 					return retVal;
 				}
 				else if (LuaDLL.lua_isstring(luaState, stackPos))
