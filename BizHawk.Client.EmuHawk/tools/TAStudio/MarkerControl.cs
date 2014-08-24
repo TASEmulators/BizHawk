@@ -97,6 +97,7 @@ namespace BizHawk.Client.EmuHawk
 		private void AddBtn_Click(object sender, EventArgs e)
 		{
 			Tastudio.CallAddMarkerPopUp();
+			MarkerView_SelectedIndexChanged(sender, e);
 		}
 
 		public new void Refresh()
@@ -111,13 +112,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MarkerView_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			RemoveBtn.Enabled = SelectedIndices.Any();
+			RemoveBtn.Enabled = SelectedIndices.Any(i => i < Markers.Count);
 		}
 
 		private void RemoveBtn_Click(object sender, EventArgs e)
 		{
 			SelectedMarkers.ForEach(i => Markers.Remove(i));
 			Tastudio.RefreshDialog();
+			MarkerView_SelectedIndexChanged(sender, e);
 		}
 
 		private IEnumerable<int> SelectedIndices
