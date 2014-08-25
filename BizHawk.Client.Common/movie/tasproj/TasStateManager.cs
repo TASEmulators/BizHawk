@@ -131,7 +131,7 @@ namespace BizHawk.Client.Common
 
 		public void Load(BinaryReader br)
 		{
-			// ARE WE SUPPOSED TO CLEAR FIRST???
+			States.Clear();
 			int nstates = br.ReadInt32();
 			for (int i = 0; i < nstates; i++)
 			{
