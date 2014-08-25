@@ -797,7 +797,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveMarkersMenuItem_Click(object sender, EventArgs e)
 		{
-
 			_currentTasMovie.Markers.RemoveAll(m => TasView.SelectedIndices.Contains(m.Frame));
 			RefreshDialog();
 		}

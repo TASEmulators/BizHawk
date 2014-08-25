@@ -401,12 +401,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void N64VideoPluginconfig_Load(object sender, EventArgs e)
 		{
-			if (!VersionInfo.DeveloperBuild)
-			{
-				PluginComboBox.Items.Remove("Jabo 1.6.1");
-                N64plugintabcontrol.TabPages.Remove(JaboTab);
-			}
-
 			N64JaboManager manager = new N64JaboManager();
 			manager.Scan();
 			currentJaboStatus = manager.Status;
@@ -419,10 +413,18 @@ namespace BizHawk.Client.EmuHawk
 
 			switch (ss.VideoPlugin)
 			{
-				case PluginType.GlideMk2: PluginComboBox.Text = "Glide64mk2"; break;
-				case PluginType.Glide: PluginComboBox.Text = "Glide64"; break;
-				case PluginType.Rice: PluginComboBox.Text = "Rice"; break;
-				case PluginType.Jabo: PluginComboBox.Text = "Jabo 1.6.1"; break;
+				case PluginType.GlideMk2:
+					PluginComboBox.Text = "Glide64mk2";
+					break;
+				case PluginType.Glide:
+					PluginComboBox.Text = "Glide64";
+					break;
+				case PluginType.Rice:
+					PluginComboBox.Text = "Rice";
+					break;
+				case PluginType.Jabo:
+					PluginComboBox.Text = "Jabo 1.6.1";
+					break;
 			}
 
 			var video_setting = s.VideoSizeX

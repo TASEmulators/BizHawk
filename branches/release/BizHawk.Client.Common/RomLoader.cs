@@ -427,6 +427,11 @@ namespace BizHawk.Client.Common
 						system = game.System;
 					}
 
+					// all of the specific exceptions we're trying to catch here aren't expected to have inner exceptions,
+					// so drill down in case we got a TargetInvocationException or something like that
+					while (ex.InnerException != null)
+						ex = ex.InnerException;
+
 					// Specific hack here, as we get more cores of the same system, this isn't scalable
 					if (ex is UnsupportedMapperException)
 					{
