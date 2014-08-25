@@ -172,15 +172,19 @@ extern "C"
 		{
 			LOG("IDirect3DDevice8::GetBackBuffer( " << BackBuffer << " , " << Type << " , " << ppBackBuffer << " ) [ " << this << " ]\n");
 
+			/*
 			D3D8Base::IDirect3DSurface8* realD3D = NULL;
 
 			HRESULT hr = m_pDevice->GetBackBuffer(BackBuffer,Type,&realD3D);
 
 			D3D8Wrapper::IDirect3DSurface8* wrappedD3D = D3D8Wrapper::IDirect3DSurface8::GetSurface(realD3D);
+			*/
 
-			*ppBackBuffer = wrappedD3D;
+			// Return a pointer to our render surface, not the back buffer
+			*ppBackBuffer = render_surface;// wrappedD3D;
+			render_surface->m_ulRef++;
 
-			return hr;
+			return S_OK;
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DDevice8::GetRasterStatus(D3D8Base::D3DRASTER_STATUS* pRasterStatus)
