@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common
 				bs.PutLump(BinaryStateLump.GreenzoneSettings, tw => tw.WriteLine(StateManager.Settings.ToString()));
 				if (StateManager.Settings.SaveGreenzone)
 				{
-					bs.PutLump(BinaryStateLump.Greenzone, (BinaryWriter bw) => bw.Write(StateManager.ToArray()));
+					bs.PutLump(BinaryStateLump.Greenzone, (BinaryWriter bw) => StateManager.Save(bw));
 				}
 
 				bs.PutLump(BinaryStateLump.LagLog, (BinaryWriter bw) => bw.Write(LagLog.ToByteArray()));
@@ -159,7 +159,7 @@ namespace BizHawk.Client.Common
 				{
 					bl.GetLump(BinaryStateLump.Greenzone, false, delegate(BinaryReader br, long length)
 					{
-						StateManager.FromArray(br.ReadBytes((int)length));
+						StateManager.Load(br);
 					});
 				}
 

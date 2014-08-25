@@ -18,11 +18,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private byte[] GetFirmware(string name, int length)
 		{
-			byte[] result = new byte[length];
-			using (Stream source = CoreComm.CoreFileProvider.OpenFirmware("C64", name))
-			{
-				source.Read(result, 0, length);
-			}
+			byte[] result = CoreComm.CoreFileProvider.GetFirmware("C64", name, true);
+			if (result.Length != length)
+				throw new MissingFirmwareException(string.Format("Firmware {0} was {1} bytes, should be {2} bytes", name, result.Length, length));
 			return result;
 		}
 
