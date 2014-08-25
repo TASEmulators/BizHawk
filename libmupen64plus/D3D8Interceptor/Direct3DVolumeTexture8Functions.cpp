@@ -12,13 +12,13 @@ extern "C"
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DVolumeTexture8::GetLevelDesc(UINT Level,D3D8Base::D3DVOLUME_DESC *pDesc)
 		{
-			LOG("IDirect3DVolumeTexture8::GetLevelDesc( " << Level << " , " << pDesc << " )\n");
+			LOG("IDirect3DVolumeTexture8::GetLevelDesc( " << Level << " , " << pDesc << " ) [ " << this << " ]\n");
 			return m_pD3D->GetLevelDesc(Level,pDesc);
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DVolumeTexture8::GetVolumeLevel(UINT Level,D3D8Wrapper::IDirect3DVolume8** ppVolumeLevel)
 		{
-			LOG("IDirect3DVolumeTexture8::GetVolumeLevel( " << Level << " , " << ppVolumeLevel << " )\n");
+			LOG("IDirect3DVolumeTexture8::GetVolumeLevel( " << Level << " , " << ppVolumeLevel << " ) [ " << this << " ]\n");
 
 			D3D8Base::IDirect3DVolume8* realD3D = NULL;
 
@@ -33,19 +33,19 @@ extern "C"
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DVolumeTexture8::LockBox(UINT Level,D3D8Base::D3DLOCKED_BOX* pLockedVolume,CONST D3D8Base::D3DBOX* pBox,DWORD Flags)
 		{
-			LOG("IDirect3DVolumeTexture8::LockBox( " << Level << " , " << pLockedVolume << " , " << pBox << " , " << Flags << " )\n");
+			LOG("IDirect3DVolumeTexture8::LockBox( " << Level << " , " << pLockedVolume << " , " << pBox << " , " << Flags << " ) [ " << this << " ]\n");
 			return m_pD3D->LockBox(Level,pLockedVolume,pBox,Flags);
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DVolumeTexture8::UnlockBox(UINT Level)
 		{
-			LOG("IDirect3DVolumeTexture8::UnlockBox( " << Level << " )\n");
+			LOG("IDirect3DVolumeTexture8::UnlockBox( " << Level << " ) [ " << this << " ]\n");
 			return m_pD3D->UnlockBox(Level);
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DVolumeTexture8::AddDirtyBox(CONST D3D8Base::D3DBOX* pDirtyBox)
 		{
-			LOG("IDirect3DVolumeTexture8::AddDirtyBox( " << pDirtyBox << " )\n");
+			LOG("IDirect3DVolumeTexture8::AddDirtyBox( " << pDirtyBox << " ) [ " << this << " ]\n");
 			return m_pD3D->AddDirtyBox(pDirtyBox);
 		}
 	}

@@ -29,7 +29,7 @@ extern "C"
 
 		STDMETHODIMP_(ULONG) D3D8Wrapper::IDirect3DSurface8::Release(THIS)
 		{
-			LOG("IDirect3DSurface8::Release( " << this << " )\n");
+			LOG("IDirect3DSurface8::Release() [ " << this << " ]\n");
 			m_pUnk->Release();
 
 			ULONG ulRef = --m_ulRef;
@@ -44,7 +44,7 @@ extern "C"
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DSurface8::GetDevice(D3D8Wrapper::IDirect3DDevice8** ppDevice)
 		{
-			LOG("IDirect3DSurface8::GetDevice( " << ppDevice << " )\n");
+			LOG("IDirect3DSurface8::GetDevice( " << ppDevice << " ) [ " << this << " ]\n");
 
 			D3D8Base::IDirect3DDevice8* realD3D = NULL;
 
@@ -59,31 +59,31 @@ extern "C"
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DSurface8::SetPrivateData(REFGUID refguid,CONST void* pData,DWORD SizeOfData,DWORD Flags)
 		{
-			LOG("IDirect3DSurface8::SetPrivateData( " << &refguid << " , " << pData << " , " << SizeOfData << " , " << Flags << " )\n");
+			LOG("IDirect3DSurface8::SetPrivateData( " << &refguid << " , " << pData << " , " << SizeOfData << " , " << Flags << " ) [ " << this << " ]\n");
 			return m_pD3D->SetPrivateData(refguid,pData,SizeOfData,Flags);
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DSurface8::GetPrivateData(REFGUID refguid,void* pData,DWORD* pSizeOfData)
 		{
-			LOG("IDirect3DSurface8::GetPrivateData( " << &refguid << " , " << pData << " , " << pSizeOfData << " )\n");
+			LOG("IDirect3DSurface8::GetPrivateData( " << &refguid << " , " << pData << " , " << pSizeOfData << " ) [ " << this << " ]\n");
 			return m_pD3D->GetPrivateData(refguid,pData,pSizeOfData);
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DSurface8::FreePrivateData(REFGUID refguid)
 		{
-			LOG("IDirect3DSurface8::FreePrivateData( " << &refguid << " )\n");
+			LOG("IDirect3DSurface8::FreePrivateData( " << &refguid << " ) [ " << this << " ]\n");
 			return m_pD3D->FreePrivateData(refguid);
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DSurface8::GetContainer(REFIID riid,void** ppContainer)
 		{
-			LOG("IDirect3DSurface8::GetContainer( " << &riid << " , " << ppContainer << " )\n");
+			LOG("IDirect3DSurface8::GetContainer( " << &riid << " , " << ppContainer << " ) [ " << this << " ]\n");
 			return m_pD3D->GetContainer(riid,ppContainer);
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DSurface8::GetDesc(D3D8Base::D3DSURFACE_DESC *pDesc)
 		{
-			LOG("IDirect3DSurface8::GetDesc( " << pDesc << " )\n");
+			LOG("IDirect3DSurface8::GetDesc( " << pDesc << " ) [ " << this << " ]\n");
 			return m_pD3D->GetDesc(pDesc);
 		}
 
@@ -95,14 +95,14 @@ extern "C"
 			{
 				LOG("{ " << pRect->left << " , " << pRect->top << " , " << pRect->right << " , " << pRect->bottom << " }");		
 			}
-			LOG(" , " << Flags << " )\n");
+			LOG(" , " << Flags << " ) [ " << this << " ]\n");
 #endif
 			return m_pD3D->LockRect(pLockedRect,pRect,Flags);
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DSurface8::UnlockRect()
 		{
-			LOG("IDirect3DSurface8::UnlockRect()\n");
+			LOG("IDirect3DSurface8::UnlockRect() [ " << this << " ]\n");
 			return m_pD3D->UnlockRect();
 		}
 	}

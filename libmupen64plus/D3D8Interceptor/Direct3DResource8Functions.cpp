@@ -29,7 +29,7 @@ extern "C"
 
 		STDMETHODIMP_(ULONG) D3D8Wrapper::IDirect3DResource8::Release(THIS)
 		{
-			LOG("IDirect3DResource8::Release( " << this << " )\n");
+			LOG("IDirect3DResource8::Release() [ " << this << " ]\n");
 			m_pUnk->Release();
 
 			ULONG ulRef = --m_ulRef;
@@ -44,7 +44,7 @@ extern "C"
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DResource8::GetDevice(D3D8Wrapper::IDirect3DDevice8** ppDevice)
 		{
-			LOG("IDirect3DResource8::GetDevice( " << ppDevice << " )\n");
+			LOG("IDirect3DResource8::GetDevice( " << ppDevice << " ) [ " << this << " ]\n");
 			D3D8Base::IDirect3DDevice8* realD3D = NULL;
 
 			HRESULT hr = m_pD3D->GetDevice(&realD3D);
@@ -58,43 +58,43 @@ extern "C"
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DResource8::SetPrivateData(REFGUID refguid,CONST void* pData,DWORD SizeOfData,DWORD Flags)
 		{
-			LOG("IDirect3DResource8::SetPrivateData( " << &refguid << " , " << pData << " , " << SizeOfData << " , " << Flags << " )\n");
+			LOG("IDirect3DResource8::SetPrivateData( " << &refguid << " , " << pData << " , " << SizeOfData << " , " << Flags << " ) [ " << this << " ]\n");
 			return m_pD3D->SetPrivateData(refguid,pData,SizeOfData,Flags);
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DResource8::GetPrivateData(REFGUID refguid,void* pData,DWORD* pSizeOfData)
 		{
-			LOG("IDirect3DResource8::GetPrivateData( " << &refguid << " , " << pData << " , " << pSizeOfData << " )\n");
+			LOG("IDirect3DResource8::GetPrivateData( " << &refguid << " , " << pData << " , " << pSizeOfData << " ) [ " << this << " ]\n");
 			return m_pD3D->GetPrivateData(refguid,pData,pSizeOfData);
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DResource8::FreePrivateData(REFGUID refguid)
 		{
-			LOG("IDirect3DResource8::FreePrivateData( " << &refguid << " )\n");
+			LOG("IDirect3DResource8::FreePrivateData( " << &refguid << " ) [ " << this << " ]\n");
 			return m_pD3D->FreePrivateData(refguid);
 		}
 
 		STDMETHODIMP_(DWORD) D3D8Wrapper::IDirect3DResource8::SetPriority(DWORD PriorityNew)
 		{
-			LOG("IDirect3DResource8::SetPriority( " << PriorityNew << " )\n");
+			LOG("IDirect3DResource8::SetPriority( " << PriorityNew << " ) [ " << this << " ]\n");
 			return m_pD3D->SetPriority(PriorityNew);
 		}
 
 		STDMETHODIMP_(DWORD) D3D8Wrapper::IDirect3DResource8::GetPriority()
 		{
-			LOG("IDirect3DResource8::GetPriority()\n");
+			LOG("IDirect3DResource8::GetPriority() [ " << this << " ]\n");
 			return m_pD3D->GetPriority();
 		}
 
 		STDMETHODIMP_(void) D3D8Wrapper::IDirect3DResource8::PreLoad()
 		{
-			LOG("IDirect3DResource8::PreLoad()\n");
+			LOG("IDirect3DResource8::PreLoad() [ " << this << " ]\n");
 			return m_pD3D->PreLoad();
 		}
 
 		STDMETHODIMP_(D3D8Base::D3DRESOURCETYPE) D3D8Wrapper::IDirect3DResource8::GetType()
 		{
-			LOG("IDirect3DResource8::GetType()\n");
+			LOG("IDirect3DResource8::GetType() [ " << this << " ]\n");
 			return m_pD3D->GetType();
 		}
 	}
