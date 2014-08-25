@@ -27,13 +27,13 @@ extern "C"
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DTexture8::GetLevelDesc(UINT Level,D3D8Base::D3DSURFACE_DESC *pDesc)
 		{
-			LOG("IDirect3DTexture8::GetLevelDesc( " << Level << " , " << pDesc << " )\n");
+			LOG("IDirect3DTexture8::GetLevelDesc( " << Level << " , " << pDesc << " ) [ " << this << " ]\n");
 			return m_pD3D->GetLevelDesc(Level,pDesc);
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DTexture8::GetSurfaceLevel(UINT Level,D3D8Wrapper::IDirect3DSurface8** ppSurfaceLevel)
 		{
-			LOG("IDirect3DTexture8::GetSurfaceLevel( " << Level << " , " << ppSurfaceLevel << " )\n");
+			LOG("IDirect3DTexture8::GetSurfaceLevel( " << Level << " , " << ppSurfaceLevel << " ) [ " << this << " ]\n");
 
 			D3D8Base::IDirect3DSurface8* realD3D = NULL;
 
@@ -48,19 +48,19 @@ extern "C"
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DTexture8::LockRect(UINT Level,D3D8Base::D3DLOCKED_RECT* pLockedRect,CONST RECT* pRect,DWORD Flags)
 		{
-			LOG("IDirect3DTexture8::LockRect( " << Level << " , " << pLockedRect << " , " << pRect << " , " << Flags << " )\n");
+			LOG("IDirect3DTexture8::LockRect( " << Level << " , " << pLockedRect << " , " << pRect << " , " << Flags << " ) [ " << this << " ]\n");
 			return m_pD3D->LockRect(Level,pLockedRect,pRect,Flags);
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DTexture8::UnlockRect(UINT Level)
 		{
-			LOG("IDirect3DTexture8::UnlockRect()\n");
+			LOG("IDirect3DTexture8::UnlockRect() [ " << this << " ]\n");
 			return m_pD3D->UnlockRect(Level);
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DTexture8::AddDirtyRect(CONST RECT* pDirtyRect)
 		{
-			LOG("IDirect3DTexture8::AddDirtyRect( " << pDirtyRect << " )\n");
+			LOG("IDirect3DTexture8::AddDirtyRect( " << pDirtyRect << " ) [ " << this << " ]\n");
 			return m_pD3D->AddDirtyRect(pDirtyRect);
 		}
 	}
