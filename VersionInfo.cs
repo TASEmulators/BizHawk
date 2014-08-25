@@ -1,6 +1,6 @@
 static class VersionInfo
 {
-	public const string MAINVERSION = "1.7.5";
+	public const string MAINVERSION = "1.8.0";
 	public static string RELEASEDATE = "August 30, 2014";
 	public static bool DeveloperBuild = false;
 
