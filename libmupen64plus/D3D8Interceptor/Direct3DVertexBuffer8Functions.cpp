@@ -12,19 +12,19 @@ extern "C"
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DVertexBuffer8::Lock(UINT OffsetToLock,UINT SizeToLock,BYTE** ppbData,DWORD Flags)
 		{
-			LOG("IDirect3DVertexBuffer8::Lock( " << OffsetToLock << " , " << SizeToLock << " , " << ppbData << " , " << Flags << " )\n");
+			LOG("IDirect3DVertexBuffer8::Lock( " << OffsetToLock << " , " << SizeToLock << " , " << ppbData << " , " << Flags << " ) [ " << this << " ]\n");
 			return m_pD3D->Lock(OffsetToLock,SizeToLock,ppbData,Flags);
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DVertexBuffer8::Unlock()
 		{
-			LOG("IDirect3DVertexBuffer8::Unlock()\n");
+			LOG("IDirect3DVertexBuffer8::Unlock() [ " << this << " ]\n");
 			return m_pD3D->Unlock();
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DVertexBuffer8::GetDesc(D3D8Base::D3DVERTEXBUFFER_DESC *pDesc)
 		{
-			LOG("IDirect3DVertexBuffer8::GetDesc( " << pDesc << " )\n");
+			LOG("IDirect3DVertexBuffer8::GetDesc( " << pDesc << " ) [ " << this << " ]\n");
 			return m_pD3D->GetDesc(pDesc);
 		}
 	}

@@ -27,43 +27,43 @@ extern "C"
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DVolume8::SetPrivateData(REFGUID refguid,CONST void* pData,DWORD SizeOfData,DWORD Flags)
 		{
-			LOG("IDirect3DVolume8::SetPrivateData( " << &refguid << " , " << pData << " , " << SizeOfData << " , " << Flags << " )\n");
+			LOG("IDirect3DVolume8::SetPrivateData( " << &refguid << " , " << pData << " , " << SizeOfData << " , " << Flags << " ) [ " << this << " ]\n");
 			return m_pD3D->SetPrivateData(refguid,pData,SizeOfData,Flags);
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DVolume8::GetPrivateData(REFGUID refguid,void* pData,DWORD* pSizeOfData)
 		{
-			LOG("IDirect3DVolume8::GetPrivateData( " << &refguid << " , " << pData << " , " << pSizeOfData << " )\n");
+			LOG("IDirect3DVolume8::GetPrivateData( " << &refguid << " , " << pData << " , " << pSizeOfData << " ) [ " << this << " ]\n");
 			return m_pD3D->GetPrivateData(refguid,pData,pSizeOfData);
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DVolume8::FreePrivateData(REFGUID refguid)
 		{
-			LOG("IDirect3DVolume8::FreePrivateData( " << &refguid << " )\n");
+			LOG("IDirect3DVolume8::FreePrivateData( " << &refguid << " ) [ " << this << " ]\n");
 			return m_pD3D->FreePrivateData(refguid);
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DVolume8::GetContainer(REFIID riid,void** ppContainer)
 		{
-			LOG("IDirect3DVolume8::GetContainer( " << &riid << " , " << ppContainer << " )\n");
+			LOG("IDirect3DVolume8::GetContainer( " << &riid << " , " << ppContainer << " ) [ " << this << " ]\n");
 			return m_pD3D->GetContainer(riid,ppContainer);
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DVolume8::GetDesc(D3D8Base::D3DVOLUME_DESC *pDesc)
 		{
-			LOG("IDirect3DVolume8::GetDesc( " << pDesc << " )\n");
+			LOG("IDirect3DVolume8::GetDesc( " << pDesc << " ) [ " << this << " ]\n");
 			return m_pD3D->GetDesc(pDesc);
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DVolume8::LockBox(D3D8Base::D3DLOCKED_BOX * pLockedVolume,CONST D3D8Base::D3DBOX* pBox,DWORD Flags)
 		{
-			LOG("IDirect3DVolume8::LockBox( " << pLockedVolume << " , " << pBox << " , " << Flags << " )\n");
+			LOG("IDirect3DVolume8::LockBox( " << pLockedVolume << " , " << pBox << " , " << Flags << " ) [ " << this << " ]\n");
 			return m_pD3D->LockBox(pLockedVolume,pBox,Flags);
 		}
 
 		STDMETHODIMP D3D8Wrapper::IDirect3DVolume8::UnlockBox()
 		{
-			LOG("IDirect3DVolume8::UnlockBox()\n");
+			LOG("IDirect3DVolume8::UnlockBox() [ " << this << " ]\n");
 			return m_pD3D->UnlockBox();
 		}
 	}
