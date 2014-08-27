@@ -1808,7 +1808,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.col;*.rom;*.cue;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.col;*.rom;*.cue;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;*.fds;%ARCH%",
 					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
