@@ -3090,7 +3090,8 @@ namespace BizHawk.Client.EmuHawk
 			// If deterministic emulation is passed in, respect that value regardless, else determine a good value (currently that simply means movies require deterministic emulaton)
 			bool deterministic = deterministicemulation.HasValue ?
 				deterministicemulation.Value :
-				Global.MovieSession.Movie.IsActive;
+				Global.MovieSession.QueuedMovie != null;
+				//Global.MovieSession.Movie.IsActive;
 			
 			if (!GlobalWin.Tools.AskSave())
 			{
