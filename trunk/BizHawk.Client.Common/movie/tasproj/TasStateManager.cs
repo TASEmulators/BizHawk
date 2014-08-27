@@ -65,26 +65,40 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Requests that the current emulator state be captured 
+		/// Unless force is true, the state may or may not be captured depending on the logic employed by "greenzone" management
 		/// </summary>
-		public void Capture()
+		public void Capture(bool force = false)
 		{
-			var frame = Global.Emulator.Frame;
-			var state = (byte[])Global.Emulator.SaveStateBinary().Clone();
-
-			if (States.ContainsKey(frame))
+			bool shouldCapture = false;
+			if (force)
 			{
-				States[frame] = state;
+				shouldCapture = force;
 			}
 			else
 			{
-				if (Used + state.Length >= Settings.Cap)
-				{
-					Used -= States.ElementAt(0).Value.Length;
-					States.RemoveAt(0);
-				}
+				shouldCapture = Global.Emulator.Frame % 2 > 0;
+			}
 
-				States.Add(frame, state);
-				Used += state.Length;
+			if (shouldCapture)
+			{
+				var frame = Global.Emulator.Frame;
+				var state = (byte[])Global.Emulator.SaveStateBinary().Clone();
+
+				if (States.ContainsKey(frame))
+				{
+					States[frame] = state;
+				}
+				else
+				{
+					if (Used + state.Length >= Settings.Cap)
+					{
+						Used -= States.ElementAt(0).Value.Length;
+						States.RemoveAt(0);
+					}
+
+					States.Add(frame, state);
+					Used += state.Length;
+				}
 			}
 		}
 
