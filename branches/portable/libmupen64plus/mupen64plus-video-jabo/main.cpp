@@ -60,8 +60,6 @@ static int l_PluginInit = 0;
 
 HMODULE JaboDLL;
 
-HANDLE window_thread = NULL;
-
 HMODULE D3D8Dll;
 
 typedef void (*ptr_D3D8_SetRenderingCallback)(void (*callback)(int));
@@ -213,8 +211,8 @@ static void DebugMessage(int level, const char *message, ...)
 }
 
 #pragma region (De-)Initialization
+
 /* Mupen64Plus plugin functions */
-// TODO
 EXPORT m64p_error CALL PluginStartup(m64p_dynlib_handle CoreLibHandle, void *Context,
                                    void (*DebugCallback)(void *, int, const char *))
 {
@@ -265,13 +263,11 @@ EXPORT m64p_error CALL PluginStartup(m64p_dynlib_handle CoreLibHandle, void *Con
     return M64ERR_SUCCESS;
 }
 
-// TODO
 EXPORT m64p_error CALL PluginShutdown(void)
 {
 	LOG("API WRAPPER:\t PluginShutdown")
 	OldAPI::CloseDLL();
 
-	TerminateThread(window_thread,0);
 	D3D8_CloseDLL();
 	FreeLibrary(D3D8Dll);
 	FreeLibrary(JaboDLL);
@@ -289,7 +285,6 @@ EXPORT m64p_error CALL PluginShutdown(void)
     return M64ERR_SUCCESS;
 }
 
-// TODO
 EXPORT int CALL RomOpen(void)
 {
 	LOG("API WRAPPER:\t RomOpen")
@@ -303,7 +298,6 @@ EXPORT int CALL RomOpen(void)
     return 1;
 }
 
-// TODO
 EXPORT void CALL RomClosed( void )
 {
 	LOG("API WRAPPER:\t RomClosed")
@@ -513,7 +507,6 @@ EXPORT void CALL ViWidthChanged(void)
 	OldAPI::ViWidthChanged();
 }
 
-// TODO
 EXPORT void CALL ReadScreen2(void *dest, int *width, int *height, int bFront)
 {
 	LOG("API WRAPPER:\t ReadScreen2")
@@ -523,7 +516,6 @@ EXPORT void CALL ReadScreen2(void *dest, int *width, int *height, int bFront)
 	}
 }
 
-// TODO
 EXPORT void CALL SetRenderingCallback(void (*callback)(int))
 {
 	LOG("API WRAPPER:\t SetRenderingCallback")

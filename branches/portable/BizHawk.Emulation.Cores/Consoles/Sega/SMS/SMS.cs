@@ -92,6 +92,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public DisplayType DisplayType { get; set; }
 		public bool DeterministicEmulation { get { return true; } }
 
+		[CoreConstructor("SMS", "SG", "GG")]
 		public SMS(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
 			Settings = (SMSSettings)settings ?? new SMSSettings();
@@ -195,7 +196,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					Port3E = 0xF7;
 
 				if (BiosRom == null && game["RequireBios"])
-					CoreComm.Notify("BIOS image not available. This game requires BIOS to function.");
+					throw new MissingFirmwareException("BIOS image not available. This game requires BIOS to function.");
 				if (SyncSettings.UseBIOS && BiosRom == null)
 					CoreComm.Notify("BIOS was selected, but rom image not available. BIOS not enabled.");
 			}

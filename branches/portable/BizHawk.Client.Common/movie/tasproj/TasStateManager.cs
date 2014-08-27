@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class TasStateManager
 	{
-		private readonly SortedDictionary<int, byte[]> States = new SortedDictionary<int, byte[]>();
+		private readonly SortedList<int, byte[]> States = new SortedList<int, byte[]>();
 
 		private readonly TasMovie _movie;
 
@@ -21,6 +21,21 @@ namespace BizHawk.Client.Common
 		{
 			_movie = movie;
 			Settings = new ManagerSettings();
+
+			var cap = Settings.Cap;
+
+			int limit = 0;
+			if (Global.Emulator != null)
+			{
+				var stateSize = Global.Emulator.SaveStateBinary().Length;
+
+				if (stateSize > 0)
+				{
+					limit = cap / stateSize;
+				}
+			}
+
+			States = new SortedList<int, byte[]>(limit);
 		}
 
 		public ManagerSettings Settings { get; set; }
@@ -64,10 +79,12 @@ namespace BizHawk.Client.Common
 			{
 				if (Used + state.Length >= Settings.Cap)
 				{
-					States.Remove(0);
+					Used -= States.ElementAt(0).Value.Length;
+					States.RemoveAt(0);
 				}
 
 				States.Add(frame, state);
+				Used += state.Length;
 			}
 		}
 
@@ -81,15 +98,14 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void Invalidate(int frame)
 		{
+			if (States.Count == 0)
+				return;
 			// TODO be more efficient, this could get slow
-			var toRemove = States
-				.Where(x => x.Key > frame)
-				.Select(x => x.Key)
-				.ToList();
-
-			foreach (var f in toRemove)
+			while (LastKey >= frame)
 			{
-				States.Remove(f);
+				var state = States[LastKey];
+				Used -= state.Length;
+				States.RemoveAt(States.Count - 1);
 			}
 		}
 
@@ -99,25 +115,34 @@ namespace BizHawk.Client.Common
 		public void Clear()
 		{
 			States.Clear();
+			Used = 0;
 		}
 
-		public byte[] ToArray()
+		public void Save(BinaryWriter bw)
 		{
-			MemoryStream ms = new MemoryStream();
-			var bytes = BitConverter.GetBytes(States.Count);
-			ms.Write(bytes, 0, bytes.Length);
-			foreach (var kvp in States.OrderBy(s => s.Key))
+			bw.Write(States.Count);
+			foreach (var kvp in States)
 			{
-				var frame = BitConverter.GetBytes(kvp.Key);
-				ms.Write(frame, 0, frame.Length);
-
-				var stateLen = BitConverter.GetBytes(kvp.Value.Length);
-				ms.Write(stateLen, 0, stateLen.Length);
-				ms.Write(kvp.Value, 0, kvp.Value.Length);
+				bw.Write(kvp.Key);
+				bw.Write(kvp.Value.Length);
+				bw.Write(kvp.Value);
 			}
-
-			return ms.ToArray();
 		}
+
+		public void Load(BinaryReader br)
+		{
+			States.Clear();
+			int nstates = br.ReadInt32();
+			for (int i = 0; i < nstates; i++)
+			{
+				int frame = br.ReadInt32();
+				int len = br.ReadInt32();
+				byte[] data = br.ReadBytes(len);
+				States.Add(frame, data);
+				Used += len;
+			}
+		}
+
 
 		// Map:
 		// 4 bytes - total savestate count
@@ -125,33 +150,11 @@ namespace BizHawk.Client.Common
 		// 4 bytes - frame
 		// 4 bytes - length of savestate
 		// 0 - n savestate
-		public void FromArray(byte[] bytes)
-		{
-			var position = 0;
-			var stateCount = BitConverter.ToInt32(bytes, 0);
-			position += 4;
-			for (int i = 0; i < stateCount; i++)
-			{
-				var frame = BitConverter.ToInt32(bytes, position);
-				position += 4;
-				var stateLen = BitConverter.ToInt32(bytes, position);
-				position += 4;
-				var state = bytes
-					.Skip(position)
-					.Take(stateLen)
-					.ToArray();
-
-				position += stateLen;
-				States.Add(frame, state);
-			}
-		}
 
 		private int Used
 		{
-			get
-			{
-				return States.Sum(s => s.Value.Length);
-			}
+			get;
+			set;
 		}
 
 		public int StateCount
@@ -162,9 +165,16 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public KeyValuePair<int, byte[]> Last
+		public int LastKey
 		{
-			get { return States.Last(); }
+			get
+			{
+				var kk = States.Keys;
+				int index = kk.Count;
+				if (index == 0)
+					return 0;
+				return kk[index - 1];
+			}
 		}
 
 		public class ManagerSettings

@@ -64,6 +64,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		// 21,477,270  Machine clocks / sec
 		//  7,159,090  Cpu cycles / sec
 
+		[CoreConstructor("PCE", "SGX")]
 		public PCEngine(CoreComm comm, GameInfo game, byte[] rom, object Settings, object syncSettings)
 		{
 			CoreComm = comm;
@@ -579,11 +580,17 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				ret = false;
 
 			_settings = n;
-			SetControllerButtons();
 			return ret;
 		}
 
-		public bool PutSyncSettings(object o) { return false; }
+		public bool PutSyncSettings(object o)
+		{
+			var newsyncsettings =  (PCESyncSettings)o;
+			bool ret = PCESyncSettings.NeedsReboot(newsyncsettings, _syncSettings);
+			_syncSettings = newsyncsettings;
+			// SetControllerButtons(); // not safe to change the controller during emulation, so instead make it a reboot event
+			return ret;
+		}
 
 		public class PCESettings
 		{
@@ -627,6 +634,16 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			public class ControllerSetting
 			{
 				public bool IsConnected { get; set; }
+			}
+
+			public static bool NeedsReboot(PCESyncSettings x, PCESyncSettings y)
+			{
+				for (int i = 0; i < x.Controllers.Length; i++)
+				{
+					if (x.Controllers[i].IsConnected != y.Controllers[i].IsConnected)
+						return true;
+				}
+				return false;
 			}
 		}
 	}

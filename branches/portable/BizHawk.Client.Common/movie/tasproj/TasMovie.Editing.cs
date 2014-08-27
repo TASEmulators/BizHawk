@@ -25,22 +25,28 @@ namespace BizHawk.Client.Common
 			StateManager.Capture();
 		}
 
+		/// <summary>
+		/// Truncate all frames including starting frame to end of movie.
+		/// </summary>
+		/// <param name="frame">First frame to be truncated.</param>
 		public override void Truncate(int frame)
 		{
 			base.Truncate(frame);
 
 			if (frame < LagLog.Count)
 			{
-				LagLog.RemoveRange(frame + 2, LagLog.Count - frame - 1);
+				LagLog.RemoveRange(frame, LagLog.Count - frame);
 			}
 
-			StateManager.Invalidate(frame + 1);
+			StateManager.Invalidate(frame);
 
 			if (frame < _log.Count - 1)
 			{
 				Changes = true;
 			}
-			// TODO: Markers? What does taseditor do?
+
+			//TAS Editor deletes markers that are in truncated portion of movie.
+			Markers.TruncateAt(frame);
 		}
 
 		public override void PokeFrame(int frame, IController source)
@@ -107,7 +113,11 @@ namespace BizHawk.Client.Common
 			Changes = true;
 			InvalidateAfter(frame);
 		}
-
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="frame">Adds frame at this position, shifting all the rest down.</param>
+		/// <param name="count">The number of frames to insert at the particular frame.</param>
 		public void InsertEmptyFrame(int frame, int count = 1)
 		{
 			var lg = LogGeneratorInstance();

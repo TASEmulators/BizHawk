@@ -347,6 +347,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			}
 		}
 
+		[CoreConstructor("TI83")]
 		public TI83(CoreComm comm, GameInfo game, byte[] rom, object Settings)
 		{
 			PutSettings(Settings ?? new TI83Settings());

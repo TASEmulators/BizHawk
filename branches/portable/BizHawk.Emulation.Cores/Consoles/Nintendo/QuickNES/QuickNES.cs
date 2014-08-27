@@ -65,11 +65,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			LibQuickNES.qn_setup_mappers();
 		}
 
-		public QuickNES(CoreComm nextComm, byte[] Rom, object Settings)
+		[CoreConstructor("NES")]
+		public QuickNES(CoreComm comm, byte[] Rom, object Settings)
 		{
 			using (FP.Save())
 			{
-				CoreComm = nextComm;
+				CoreComm = comm;
 
 				Context = LibQuickNES.qn_new();
 				if (Context == IntPtr.Zero)

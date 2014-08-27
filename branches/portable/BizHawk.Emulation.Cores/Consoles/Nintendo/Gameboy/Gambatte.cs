@@ -120,7 +120,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#endregion
 
-		public Gameboy(CoreComm comm, GameInfo game, byte[] romdata, object Settings, object SyncSettings, bool deterministic)
+		[CoreConstructor("GB", "GBC")]
+		public Gameboy(CoreComm comm, GameInfo game, byte[] rom, object Settings, object SyncSettings, bool deterministic)
 		{
 			CoreComm = comm;
 
@@ -132,8 +133,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			comm.NominalWidth = 160;
 			comm.NominalHeight = 144;
 
-			ThrowExceptionForBadRom(romdata);
-			BoardName = MapperName(romdata);
+			ThrowExceptionForBadRom(rom);
+			BoardName = MapperName(rom);
 
 			DeterministicEmulation = deterministic;
 
@@ -158,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				if (this._SyncSettings.MulticartCompat)
 					flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
 
-				if (LibGambatte.gambatte_load(GambatteState, romdata, (uint)romdata.Length, GetCurrentTime(), flags) != 0)
+				if (LibGambatte.gambatte_load(GambatteState, rom, (uint)rom.Length, GetCurrentTime(), flags) != 0)
 					throw new InvalidOperationException("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
 
 				// set real default colors (before anyone mucks with them at all)
@@ -178,8 +179,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				CoreComm.RomStatusDetails = string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
 					game.Name,
-					romdata.HashSHA1(),
-					romdata.HashMD5());
+					rom.HashSHA1(),
+					rom.HashMD5());
 
 				{
 					byte[] buff = new byte[32];

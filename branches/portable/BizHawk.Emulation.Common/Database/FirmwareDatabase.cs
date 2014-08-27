@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Common
 
 			{
 				var GBA_JDebug = File("AA98A2AD32B86106340665D1222D7D973A1361C7", "gbabios.rom", "Bios (J Debug)");
-				var GBA_Normal = File("300C20DF6731A33952DED8C436F7F186D25D3492", "gbabios.rom", "Bios (World");
+				var GBA_Normal = File("300C20DF6731A33952DED8C436F7F186D25D3492", "gbabios.rom", "Bios (World)");
 				Firmware("GBA", "Bios", "Bios");
 				Option("GBA", "Bios", GBA_Normal);
 				Option("GBA", "Bios", GBA_JDebug);

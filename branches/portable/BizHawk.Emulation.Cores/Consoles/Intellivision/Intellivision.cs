@@ -64,6 +64,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			}
 		}
 
+		[CoreConstructor("INTV")]
 		public Intellivision(CoreComm comm, GameInfo game, byte[] rom)
 		{
 			CoreComm = comm;

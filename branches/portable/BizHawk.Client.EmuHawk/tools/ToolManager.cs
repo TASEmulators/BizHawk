@@ -158,7 +158,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return _tools
-				.Select(tool => tool.AskSave())
+				.Select(tool => tool.AskSaveChanges())
 				.All(result => result);
 		}
 
@@ -176,7 +176,7 @@ namespace BizHawk.Client.EmuHawk
 			var tool = _tools.FirstOrDefault(x => x is T);
 			if (tool != null)
 			{
-				return tool.AskSave();
+				return tool.AskSaveChanges();
 			}
 			else
 			{

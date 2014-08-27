@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 			public DisasmOp(int s, string m) { size = s; mnemonic = m; }
 		}
 
-		public bool AskSave() { return true; }
+		public bool AskSaveChanges() { return true; }
 		public bool UpdateBefore { get { return true; } }
 
 		public NESDebugger()

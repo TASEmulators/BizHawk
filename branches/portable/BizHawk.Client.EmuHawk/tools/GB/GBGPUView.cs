@@ -53,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public bool AskSave() { return true; }
+		public bool AskSaveChanges() { return true; }
 		public bool UpdateBefore { get { return true; } }
 
 		public GBGPUView()

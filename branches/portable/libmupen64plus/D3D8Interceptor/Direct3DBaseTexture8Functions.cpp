@@ -12,19 +12,19 @@ extern "C"
 
 		STDMETHODIMP_(DWORD) D3D8Wrapper::IDirect3DBaseTexture8::SetLOD(DWORD LODNew)
 		{
-			LOG("IDirect3DBaseTexture8::SetLOD( " << LODNew << " )\n");
+			LOG("IDirect3DBaseTexture8::SetLOD( " << LODNew << " ) [ " << this << " ]\n");
 			return m_pD3D->SetLOD(LODNew);
 		}
 
 		STDMETHODIMP_(DWORD) D3D8Wrapper::IDirect3DBaseTexture8::GetLOD()
 		{
-			LOG("IDirect3DBaseTexture8::GetLOD()\n");
+			LOG("IDirect3DBaseTexture8::GetLOD() [ " << this << " ]\n");
 			return m_pD3D->GetLOD();
 		}
 
 		STDMETHODIMP_(DWORD) D3D8Wrapper::IDirect3DBaseTexture8::GetLevelCount()
 		{
-			LOG("IDirect3DBaseTexture8::GetLevelCount()\n");
+			LOG("IDirect3DBaseTexture8::GetLevelCount() [ " << this << " ]\n");
 			return m_pD3D->GetLevelCount();
 		}
 	}

@@ -27,12 +27,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		{
 		}
 
-		public Snes9x(CoreComm NextComm, byte[] rom)
+		[CoreConstructor("SNES")]
+		public Snes9x(CoreComm comm, byte[] rom)
 		{
 			if (!LibSnes9x.debug_init(rom, rom.Length))
 				throw new Exception();
 
-			CoreComm = NextComm;
+			CoreComm = comm;
 		}
 
 		public void FrameAdvance(bool render, bool rendersound = true)

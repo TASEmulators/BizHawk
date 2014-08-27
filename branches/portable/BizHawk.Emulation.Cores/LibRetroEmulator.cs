@@ -8,6 +8,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores
 {
+	[CoreAttributes("DEBUG ONLY DON'T USE", "natt")]
 	public unsafe class LibRetroEmulator : IEmulator, IVideoProvider
 	{
 		#region callbacks

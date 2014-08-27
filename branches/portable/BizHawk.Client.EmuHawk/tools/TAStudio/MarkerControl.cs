@@ -20,6 +20,21 @@ namespace BizHawk.Client.EmuHawk
 		public MarkerControl()
 		{
 			InitializeComponent();
+			
+			var col1 = new InputRoll.RollColumn()
+			{
+				Name = "FrameColumn",
+				Text = "Frame",
+				Width = 64,
+			};
+			var col2 = new InputRoll.RollColumn()
+			{
+				Name = "LabelColumn",
+				Text = "Label",
+				Width = 113,
+			};
+			MarkerView.Columns.AddRange(new InputRoll.RollColumn[]{col1, col2});
+
 			MarkerView.QueryItemBkColor += MarkerView_QueryItemBkColor;
 			MarkerView.QueryItemText += MarkerView_QueryItemText;
 		}
@@ -31,9 +46,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			MarkerView.BlazingFast = true;
 			MarkerView.ItemCount = Tastudio.CurrentMovie.Markers.Count;
-			MarkerView.BlazingFast = false;
+			MarkerView.Refresh();
 		}
 
 		private void MarkerView_QueryItemBkColor(int index, int column, ref Color color)
@@ -83,6 +97,7 @@ namespace BizHawk.Client.EmuHawk
 		private void AddBtn_Click(object sender, EventArgs e)
 		{
 			Tastudio.CallAddMarkerPopUp();
+			MarkerView_SelectedIndexChanged(sender, e);
 		}
 
 		public new void Refresh()
@@ -97,13 +112,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MarkerView_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			RemoveBtn.Enabled = SelectedIndices.Any();
+			RemoveBtn.Enabled = SelectedIndices.Any(i => i < Markers.Count);
 		}
 
 		private void RemoveBtn_Click(object sender, EventArgs e)
 		{
 			SelectedMarkers.ForEach(i => Markers.Remove(i));
 			Tastudio.RefreshDialog();
+			MarkerView_SelectedIndexChanged(sender, e);
 		}
 
 		private IEnumerable<int> SelectedIndices

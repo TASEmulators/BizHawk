@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 
 		MobileDetailView memory;
 
-		public bool AskSave() { return true; }
+		public bool AskSaveChanges() { return true; }
 		public bool UpdateBefore { get { return true; } }
 
 		public GBAGPUView()
@@ -649,8 +649,9 @@ namespace BizHawk.Client.EmuHawk
 			sptiles256 = MakeMBVWidget("Sprite Tiles (8bpp)", 128, 256);
 			bgtiles16 = MakeMBVWidget("Background Tiles (4bpp)", 512, 256);
 			bgtiles256 = MakeMBVWidget("Background Tiles (8bpp)", 256, 256);
-			MakeMDVWidget("Details", 128, 192);
-			memory = MakeMDVWidget("Details - Memory", 128, 192);
+			// todo: finish these
+			// MakeMDVWidget("Details", 128, 192);
+			// memory = MakeMDVWidget("Details - Memory", 128, 192);
 			listBoxWidgets.EndUpdate();
 
 			foreach (var f in listBoxWidgets.Items)
@@ -687,6 +688,9 @@ namespace BizHawk.Client.EmuHawk
 				palram = mem.palram;
 				oam = mem.oam;
 				mmio = mem.mmio;
+
+				_cbscanlineEmu = 500; // force an update
+				UpdateValues();
 			}
 			else
 			{

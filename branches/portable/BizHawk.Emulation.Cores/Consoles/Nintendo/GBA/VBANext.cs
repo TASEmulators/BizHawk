@@ -13,31 +13,32 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
-	[CoreAttributes("VBA-Next", "TODO", true, false, "cd508312a29ed8c29dacac1b11c2dce56c338a54", "https://github.com/libretro/vba-next")]
+	[CoreAttributes("VBA-Next", "many authors", true, true, "cd508312a29ed8c29dacac1b11c2dce56c338a54", "https://github.com/libretro/vba-next")]
 	public class VBANext : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable
 	{
 		IntPtr Core;
 
-		public VBANext(byte[] romfile, CoreComm nextComm, GameInfo gi, bool deterministic, object _SS)
+		[CoreConstructor("GBA")]
+		public VBANext(byte[] rom, CoreComm comm, GameInfo game, bool deterministic, object syncsettings)
 		{
-			CoreComm = nextComm;
+			CoreComm = comm;
 			byte[] biosfile = CoreComm.CoreFileProvider.GetFirmware("GBA", "Bios", true, "GBA bios file is mandatory.");
 
-			if (romfile.Length > 32 * 1024 * 1024)
+			if (rom.Length > 32 * 1024 * 1024)
 				throw new ArgumentException("ROM is too big to be a GBA ROM!");
 			if (biosfile.Length != 16 * 1024)
 				throw new ArgumentException("BIOS file is not exactly 16K!");
 
 			LibVBANext.FrontEndSettings FES = new LibVBANext.FrontEndSettings();
-			FES.saveType = (LibVBANext.FrontEndSettings.SaveType)gi.GetInt("saveType", 0);
-			FES.flashSize = (LibVBANext.FrontEndSettings.FlashSize)gi.GetInt("flashSize", 0x10000);
-			FES.enableRtc = gi.GetInt("rtcEnabled", 0) != 0;
-			FES.mirroringEnable = gi.GetInt("mirroringEnabled", 0) != 0;
+			FES.saveType = (LibVBANext.FrontEndSettings.SaveType)game.GetInt("saveType", 0);
+			FES.flashSize = (LibVBANext.FrontEndSettings.FlashSize)game.GetInt("flashSize", 0x10000);
+			FES.enableRtc = game.GetInt("rtcEnabled", 0) != 0;
+			FES.mirroringEnable = game.GetInt("mirroringEnabled", 0) != 0;
 
 			Console.WriteLine("GameDB loaded settings: saveType={0}, flashSize={1}, rtcEnabled={2}, mirroringEnabled={3}",
 				FES.saveType, FES.flashSize, FES.enableRtc, FES.mirroringEnable);
 
-			_SyncSettings = (SyncSettings)_SS ?? new SyncSettings();
+			_SyncSettings = (SyncSettings)syncsettings ?? new SyncSettings();
 			DeterministicEmulation = deterministic;
 
 			FES.skipBios = _SyncSettings.SkipBios;
@@ -60,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				throw new InvalidOperationException("Create() returned nullptr!");
 			try
 			{
-				if (!LibVBANext.LoadRom(Core, romfile, (uint)romfile.Length, biosfile, (uint)biosfile.Length, FES))
+				if (!LibVBANext.LoadRom(Core, rom, (uint)rom.Length, biosfile, (uint)biosfile.Length, FES))
 					throw new InvalidOperationException("LoadRom() returned false!");
 
 				CoreComm.VsyncNum = 262144;
@@ -68,12 +69,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				CoreComm.NominalWidth = 240;
 				CoreComm.NominalHeight = 160;
 
-				GameCode = Encoding.ASCII.GetString(romfile, 0xac, 4);
+				GameCode = Encoding.ASCII.GetString(rom, 0xac, 4);
 				Console.WriteLine("Game code \"{0}\"", GameCode);
 
 				savebuff = new byte[LibVBANext.BinStateSize(Core)];
 				savebuff2 = new byte[savebuff.Length + 13];
 				InitMemoryDomains();
+				InitRegisters();
+				InitCallbacks();
 
 				// todo: hook me up as a setting
 				SetupColors();
@@ -91,6 +94,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			if (Controller["Power"])
 				LibVBANext.Reset(Core);
+
+			SyncCallbacks();
 
 			IsLagFrame = LibVBANext.FrameAdvance(Core, GetButtons(), videobuff, soundbuff, out numsamp, videopalette);
 
@@ -257,6 +262,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		#region Debugging
 
+		LibVBANext.StandardCallback padcb;
+		LibVBANext.AddressCallback fetchcb;
+		LibVBANext.AddressCallback readcb;
+		LibVBANext.AddressCallback writecb;
+
+		void InitCallbacks()
+		{
+			padcb = new LibVBANext.StandardCallback(() => CoreComm.InputCallback.Call());
+			fetchcb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallExecute(addr));
+			readcb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallRead(addr));
+			writecb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallWrite(addr));
+		}
+
+		void SyncCallbacks()
+		{
+			LibVBANext.SetPadCallback(Core, CoreComm.InputCallback.Any() ? padcb : null);
+			LibVBANext.SetFetchCallback(Core, CoreComm.MemoryCallbackSystem.HasExecutes ? fetchcb : null);
+			LibVBANext.SetReadCallback(Core, CoreComm.MemoryCallbackSystem.HasReads ? readcb : null);
+			LibVBANext.SetWriteCallback(Core, CoreComm.MemoryCallbackSystem.HasWrites ? writecb : null);
+		}
+
 		LibVBANext.StandardCallback scanlinecb;
 
 		GBAGPUMemoryAreas IGBAGPUViewable.GetMemoryAreas()
@@ -347,14 +373,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public MemoryDomainList MemoryDomains { get; private set; }
 
+		VBARegisterHelper regs;
+
+		void InitRegisters()
+		{
+			regs = new VBARegisterHelper(Core);
+		}
+
 		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
-			throw new NotImplementedException();
+			return regs.GetAllRegisters();
 		}
 
 		public void SetCpuRegister(string register, int value)
 		{
-			throw new NotImplementedException();
+			regs.SetRegister(register, value);
 		}
 
 		#endregion
@@ -391,7 +424,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			[DisplayName("Skip BIOS")]
 			[Description("Skips the BIOS intro.  A BIOS file is still required.  Forced to false for movie recording.")]
-			[DefaultValue(false)]
+			[DefaultValue(true)]
 			public bool SkipBios { get; set; }
 			[DisplayName("RTC Use Real Time")]
 			[Description("Causes the internal clock to reflect your system clock.  Only relevant when a game has an RTC chip.  Forced to false for movie recording.")]

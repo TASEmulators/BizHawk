@@ -255,6 +255,7 @@
     <Compile Include="Consoles\Nintendo\GBA\LibVBANext.cs" />
     <Compile Include="Consoles\Nintendo\GBA\Meteor.cs" />
     <Compile Include="Consoles\Nintendo\GBA\VBANext.cs" />
+    <Compile Include="Consoles\Nintendo\GBA\VBARegisterHelper.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64Input.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64JaboManager.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64Settings.cs" />
@@ -494,6 +495,7 @@
     <Compile Include="Consoles\Sony\PSX\Octoshock.cs" />
     <Compile Include="Consoles\WonderSwan\BizSwan.cs" />
     <Compile Include="Consoles\WonderSwan\WonderSwan.cs" />
+    <Compile Include="CoreInventory.cs" />
     <Compile Include="CPUs\68000\Diassembler.cs" />
     <Compile Include="CPUs\68000\Instructions\BitArithemetic.cs" />
     <Compile Include="CPUs\68000\Instructions\DataMovement.cs" />

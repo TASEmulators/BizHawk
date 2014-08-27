@@ -401,12 +401,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void N64VideoPluginconfig_Load(object sender, EventArgs e)
 		{
-			if (!VersionInfo.DeveloperBuild)
-			{
-				PluginComboBox.Items.Remove("Jabo 1.6.1");
-                N64plugintabcontrol.TabPages.Remove(JaboTab);
-			}
-
 			N64JaboManager manager = new N64JaboManager();
 			manager.Scan();
 			currentJaboStatus = manager.Status;
@@ -429,11 +423,7 @@ namespace BizHawk.Client.EmuHawk
 					PluginComboBox.Text = "Rice";
 					break;
 				case PluginType.Jabo:
-					if (VersionInfo.DeveloperBuild)
-					{
-						PluginComboBox.Text = "Jabo 1.6.1";
-					}
-
+					PluginComboBox.Text = "Jabo 1.6.1";
 					break;
 			}
 

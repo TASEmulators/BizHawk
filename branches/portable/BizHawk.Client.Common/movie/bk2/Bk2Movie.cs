@@ -29,12 +29,25 @@ namespace BizHawk.Client.Common
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0.0";
 		}
 
-		public string Filename { get; set; }
+		private string _filename;
+
+		public string Filename
+		{
+			get { return _filename; }
+			set
+			{
+				_filename = value;
+				int index = Filename.LastIndexOf("\\");
+				Name = Filename.Substring(index + 1, Filename.Length - index - 1);
+			}
+		}
+
+		public string Name { get; private set; }
 
 		public virtual string PreferredExtension { get { return Extension; } }
 		public const string Extension = "bk2";
 
-		public bool Changes { get; protected set; }
+		public virtual bool Changes { get; protected set; }
 		public bool IsCountingRerecords { get; set; }
 
 		public ILogEntryGenerator LogGeneratorInstance()
@@ -90,7 +103,7 @@ namespace BizHawk.Client.Common
 		public virtual void Truncate(int frame)
 		{
 			// This is a bad way to do multitrack logic, pass the info in instead of going to the global
-			// and it is weird for Truncte to possibly not truncate
+			// and it is weird for Truncate to possibly not truncate
 			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
 				if (frame < _log.Count)

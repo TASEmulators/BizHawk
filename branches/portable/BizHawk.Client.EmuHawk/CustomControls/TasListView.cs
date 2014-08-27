@@ -8,13 +8,13 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public class Cell
 		{
-			public int? Row;
+			public int? RowIndex;
 			public string Column;
 
 			// Convenience hack
 			public override string ToString()
 			{
-				return string.IsNullOrEmpty(Column) ? "?" : Column + " - " + (Row.HasValue ? Row.ToString() : "?");
+				return string.IsNullOrEmpty(Column) ? "?" : Column + " - " + (RowIndex.HasValue ? RowIndex.ToString() : "?");
 			}
 		}
 
@@ -37,13 +37,13 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private Cell _currentPointedCell = new Cell();
-		public Cell PointedCell
+		public Cell CurrentCell
 		{
 			get { return _currentPointedCell; }
 		}
 
 		private Cell _lastPointedCell = new Cell();
-		public Cell LastPointedCell
+		public Cell LastCell
 		{
 			get { return _lastPointedCell; }
 		}
@@ -51,6 +51,11 @@ namespace BizHawk.Client.EmuHawk
 		public bool InputPaintingMode { get; set; }
 		public bool IsPaintDown { get; private set; }
 
+		/// <summary>
+		/// Calculates the column name and row number that the point (x, y) lies in.
+		/// </summary>
+		/// <param name="x">X coordinate</param>
+		/// <param name="y">Y coordinate</param>
 		private void CalculatePointedCell(int x, int y)
 		{
 			int? newRow;
@@ -69,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 				break;
 			}
 
-			var rowHeight = this.LineHeight + 5; // 5 and 6 work here for me, but are they always dependable, how can I get the padding?
+			var rowHeight = this.LineHeight;// 5 (in VirtualListView) and 6 work here for me, but are they always dependable, how can I get the padding?
 			var headerHeight = rowHeight + 6;
 
 			newRow = ((y - headerHeight) / rowHeight) + this.VScrollPos;
@@ -78,15 +83,15 @@ namespace BizHawk.Client.EmuHawk
 				newRow = null;
 			}
 
-			if (newColumn != PointedCell.Column || newRow != PointedCell.Row)
+			if (newColumn != CurrentCell.Column || newRow != CurrentCell.RowIndex)
 			{
-				LastPointedCell.Column = PointedCell.Column;
-				LastPointedCell.Row = PointedCell.Row;
+				LastCell.Column = CurrentCell.Column;
+				LastCell.RowIndex = CurrentCell.RowIndex;
 
-				PointedCell.Column = newColumn;
-				PointedCell.Row = newRow;
+				CurrentCell.Column = newColumn;
+				CurrentCell.RowIndex = newRow;
 
-				CellChanged(LastPointedCell, PointedCell);
+				CellChanged(LastCell, CurrentCell);
 			}
 		}
 
@@ -116,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 		protected override void OnMouseLeave(EventArgs e)
 		{
 			_currentPointedCell.Column = String.Empty;
-			_currentPointedCell.Row = null;
+			_currentPointedCell.RowIndex = null;
 			IsPaintDown = false;
 			base.OnMouseLeave(e);
 		}

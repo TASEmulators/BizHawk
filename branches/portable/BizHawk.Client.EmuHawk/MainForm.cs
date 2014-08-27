@@ -54,12 +54,15 @@ namespace BizHawk.Client.EmuHawk
 			RebootStatusBarIcon.Visible = false;
 			StatusBarDiskLightOnImage = Properties.Resources.LightOn;
 			StatusBarDiskLightOffImage = Properties.Resources.LightOff;
+			LinkCableOn = Properties.Resources.connect_16x16;
+			LinkCableOff = Properties.Resources.noconnect_16x16;
 			UpdateCoreStatusBarButton();
 			if (Global.Config.FirstBoot == true)
 			{
 				ProfileFirstBootLabel.Visible = true;
 		}
-				
+
+			HandleToggleLightAndLink();
 		}
 
 		static MainForm()
@@ -379,11 +382,6 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Load<TAStudio>();
 			}
 
-			if (Global.Config.AutoloadExperimentalTAStudio)
-			{
-				GlobalWin.Tools.Load<TasStudioExperiment>();
-			}
-
 			if (Global.Config.AutoloadVirtualPad)
 			{
 				GlobalWin.Tools.Load<VirtualpadTool>();
@@ -459,7 +457,6 @@ namespace BizHawk.Client.EmuHawk
 				RecordAv(cmdDumpType, cmdDumpName);
 			}
 
-			UpdateStatusSlots();
 			SetMainformMovieInfo();
 
 			//TODO POOP
@@ -1233,6 +1230,7 @@ namespace BizHawk.Client.EmuHawk
 
 		// Resources
 		Bitmap StatusBarDiskLightOnImage, StatusBarDiskLightOffImage;
+		Bitmap LinkCableOn, LinkCableOff;
 
 		#endregion
 
@@ -1292,7 +1290,7 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateToolsAfter(bool fromLua = false)
 		{
 			GlobalWin.Tools.UpdateToolsAfter(fromLua);
-			HandleToggleLight();
+			HandleToggleLightAndLink();
 		}
 
 		public void UpdateDumpIcon()
@@ -1822,18 +1820,19 @@ namespace BizHawk.Client.EmuHawk
 					"Commodore 64 (experimental)", "*.prg; *.d64, *.g64; *.crt;%ARCH%",
 					"SID Commodore 64 Music File", "*.sid;%ARCH%",
 					"Nintendo 64", "*.z64;*.v64;*.n64",
-					"WonderSawn", "*.ws;*.wsc;%ARCH%",
+					"WonderSwan", "*.ws;*.wsc;%ARCH%",
 					"All Files", "*.*");
 			}
 			else
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.col;*.rom;*.cue;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.col;*.rom;*.cue;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;*.fds;%ARCH%",
 					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
 					"Nintendo 64", "*.z64;*.v64;*.n64",
 					"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
+					"Gameboy Advance", "*.gba;%ARCH%",
 					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
 					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
 					"Atari 2600", "*.a26;%ARCH%",
@@ -1843,7 +1842,7 @@ namespace BizHawk.Client.EmuHawk
 					"Archive Files", "%ARCH%",
 					"Savestate", "*.state",
 					"Genesis", "*.gen;*.md;*.smd;*.bin;*.cue;%ARCH%",
-					"WonderSawn", "*.ws;*.wsc;%ARCH%",
+					"WonderSwan", "*.ws;*.wsc;%ARCH%",
 					"All Files", "*.*");
 			}
 
@@ -1983,26 +1982,6 @@ namespace BizHawk.Client.EmuHawk
 		private static void ToggleInputDisplay()
 		{
 			Global.Config.DisplayInput ^= true;
-		}
-
-		private void ToggleReadOnly()
-		{
-			if (IsSlave && _master.WantsToControlReadOnly)
-			{
-				_master.ToggleReadOnly();
-				}
-				else
-				{
-				if (Global.MovieSession.Movie.IsActive)
-				{
-					Global.MovieSession.ReadOnly ^= true;
-					GlobalWin.OSD.AddMessage(Global.MovieSession.ReadOnly ? "Movie read-only mode" : "Movie read+write mode");
-				}
-				else
-				{
-					GlobalWin.OSD.AddMessage("No movie active");
-				}
-			}
 		}
 
 		private static void VolumeUp()
@@ -2291,7 +2270,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void HandleToggleLight()
+		private void HandleToggleLightAndLink()
 		{
 			if (MainStatusBar.Visible)
 			{
@@ -2311,6 +2290,25 @@ namespace BizHawk.Client.EmuHawk
 					if (LedLightStatusLabel.Visible)
 					{
 						LedLightStatusLabel.Visible = false;
+					}
+				}
+
+				if (Global.Emulator.CoreComm.UsesLinkCable)
+				{
+					if (!LinkConnectStatusBarButton.Visible)
+					{
+						LinkConnectStatusBarButton.Visible = true;
+			}
+
+					LinkConnectStatusBarButton.Image = Global.Emulator.CoreComm.LinkConnected
+						? LinkCableOn
+						: LinkCableOff;
+		}
+				else
+				{
+					if (LinkConnectStatusBarButton.Visible)
+					{
+						LinkConnectStatusBarButton.Visible = false;
 					}
 				}
 			}
@@ -2484,6 +2482,9 @@ namespace BizHawk.Client.EmuHawk
 			CoreNameStatusBarButton.Text = Global.Emulator.DisplayName();
 			CoreNameStatusBarButton.Image = Global.Emulator.Icon();
 			CoreNameStatusBarButton.ToolTipText = attributes.Ported ? "(ported) " : string.Empty;
+
+			// Let's also do the link icon here too since they both would be updated under the same circumstances
+
 			}
 
 		#endregion
@@ -2554,7 +2555,7 @@ namespace BizHawk.Client.EmuHawk
 
 			bool isRewinding = false;
 			if (Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind) 
-				&& !Global.MovieSession.Movie.IsRecording) // Rewind isn't "bulletproof" and can desync a recoridng movie!
+				&& !Global.MovieSession.Movie.IsRecording) // Rewind isn't "bulletproof" and can desync a recording movie!
 			{
 				Global.Rewinder.Rewind(1);
 				suppressCaptureRewind = true;
@@ -3104,7 +3105,7 @@ namespace BizHawk.Client.EmuHawk
 		// Still needs a good bit of refactoring
 		public bool LoadRom(string path, bool? deterministicemulation = null)
 		{
-			// If deterministic emulation is passed in, respect that value regardless, else determine a good value (currently that simply means movies require detemrinistic emulaton)
+			// If deterministic emulation is passed in, respect that value regardless, else determine a good value (currently that simply means movies require deterministic emulaton)
 			bool deterministic = deterministicemulation.HasValue ?
 				deterministicemulation.Value :
 				Global.MovieSession.Movie.IsActive;
@@ -3221,7 +3222,6 @@ namespace BizHawk.Client.EmuHawk
 				CurrentlyOpenRom = loader.CanonicalFullPath;
 				HandlePlatformMenus();
 				_stateSlots.Clear();
-				UpdateStatusSlots();
 				UpdateCoreStatusBarButton();
 				UpdateDumpIcon();
 				SetMainformMovieInfo();
@@ -3394,26 +3394,69 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+        #region Tool Control API
+
 		// TODO: move me
-		private IControlMainform _master;
+        public IControlMainform master { get; private set; }
 		public void RelinquishControl(IControlMainform master)
 		{
-			_master = master;
+			this.master = master;
 		}
+
+        private void ToggleReadOnly()
+        {
+            if (IsSlave && master.WantsToControlReadOnly)
+            {
+                master.ToggleReadOnly();
+            }
+            else
+            {
+                if (Global.MovieSession.Movie.IsActive)
+                {
+                    Global.MovieSession.ReadOnly ^= true;
+                    GlobalWin.OSD.AddMessage(Global.MovieSession.ReadOnly ? "Movie read-only mode" : "Movie read+write mode");
+                }
+                else
+                {
+                    GlobalWin.OSD.AddMessage("No movie active");
+                }
+            }
+        }
+
+        public void StopMovie(bool saveChanges = true)
+        {
+            if (IsSlave && master.WantsToControlStopMovie)
+            {
+                master.StopMovie();
+            }
+            else
+            {
+                Global.MovieSession.StopMovie(saveChanges);
+                SetMainformMovieInfo();
+                UpdateStatusSlots();
+            }
+        }
 
 		private bool IsSlave
 		{
-			get { return _master != null; }
+			get { return master != null; }
 		}
 
-		public void TakeControl()
+		public void TakeBackControl()
 		{
-			_master = null;
+			master = null;
 		}
 
 		private void GBAcoresettingsToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Gameboy Advance Settings");
 	}
+
+        #endregion
+
+		private void LinkConnectStatusBarButton_Click(object sender, EventArgs e)
+		{
+			// TODO: it would be cool if clicking this toggled the state
 	}
+    }
 }

@@ -313,6 +313,16 @@ namespace BizHawk.Client.EmuHawk.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap connect_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("connect_16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap console16x16 {
             get {
                 object obj = ResourceManager.GetObject("console16x16", resourceCulture);
@@ -826,6 +836,16 @@ namespace BizHawk.Client.EmuHawk.Properties {
         internal static System.Drawing.Bitmap NewFile {
             get {
                 object obj = ResourceManager.GetObject("NewFile", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap noconnect_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("noconnect_16x16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

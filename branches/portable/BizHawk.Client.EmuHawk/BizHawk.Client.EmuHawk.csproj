@@ -866,12 +866,6 @@
     <Compile Include="tools\TAStudio\LuaBox.Designer.cs">
       <DependentUpon>LuaBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\TAStudio\TasStudioExperiment.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\TasStudioExperiment.Designer.cs">
-      <DependentUpon>TasStudioExperiment.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\TAStudio\TAStudio.IControlMainForm.cs">
       <DependentUpon>TAStudio.cs</DependentUpon>
       <SubType>Form</SubType>
@@ -1152,6 +1146,9 @@
     <EmbeddedResource Include="CustomControls\QuickProgressPopup.resx">
       <DependentUpon>QuickProgressPopup.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControls\TasListView.resx">
+      <DependentUpon>TasListView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -1306,9 +1303,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\RecorderBox.resx">
       <DependentUpon>RecorderBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\TasStudioExperiment.resx">
-      <DependentUpon>TasStudioExperiment.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\TAStudio.resx">
       <DependentUpon>TAStudio.cs</DependentUpon>
@@ -1483,6 +1477,7 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\noconnect_16x16.png" />
     <None Include="images\snes9x.png" />
     <None Include="images\YellowUp.png" />
     <None Include="images\YellowRight.png" />
@@ -1605,6 +1600,7 @@
     <None Include="images\dual.png" />
     <None Include="config\ControllerImages\WonderSwanColor.png" />
     <None Include="images\alt_about_image.png" />
+    <None Include="images\connect_16x16.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

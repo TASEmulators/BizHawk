@@ -2922,6 +2922,9 @@ int timer3ClockReload  ;
 
 INLINE u32 CPUReadMemory(u32 address)
 {
+	if (readCallback)
+		readCallback(address);
+
 	u32 value;
 	switch(address >> 24)
 	{
@@ -2947,7 +2950,11 @@ INLINE u32 CPUReadMemory(u32 address)
 		case 0x04:
 			/* I/O registers */
 			if (address == 0x4000130)
+			{
+				if (padCallback)
+					padCallback();
 				lagged = false;
+			}
 			if((address < 0x4000400) && ioReadable[address & 0x3fc])
 			{
 				if(ioReadable[(address & 0x3fc) + 2])
@@ -3010,8 +3017,10 @@ unreadable:
 
 INLINE u32 CPUReadHalfWord(u32 address)
 {
-	u32 value;
+	if (readCallback)
+		readCallback(address);
 
+	u32 value;
 	switch(address >> 24)
 	{
 		case 0:
@@ -3033,7 +3042,11 @@ INLINE u32 CPUReadHalfWord(u32 address)
 			break;
 		case 4:
 			if (address == 0x4000130)
+			{
+				if (padCallback)
+					padCallback();
 				lagged = false;
+			}
 
 			if((address < 0x4000400) && ioReadable[address & 0x3fe])
 			{
@@ -3115,6 +3128,9 @@ INLINE u16 CPUReadHalfWordSigned(u32 address)
 
 INLINE u8 CPUReadByte(u32 address)
 {
+	if (readCallback)
+		readCallback(address);
+
 	switch(address >> 24)
 	{
 		case 0:
@@ -3132,7 +3148,11 @@ INLINE u8 CPUReadByte(u32 address)
 			return internalRAM[address & 0x7fff];
 		case 4:
 			if (address == 0x4000130 || address == 0x4000131)
+			{
+				if (padCallback)
+					padCallback();
 				lagged = false;
+			}
 
 			if((address < 0x4000400) && ioReadable[address & 0x3ff])
 				return ioMem[address & 0x3ff];
@@ -3185,6 +3205,9 @@ unreadable:
 
 INLINE void CPUWriteMemory(u32 address, u32 value)
 {
+	if (writeCallback)
+		writeCallback(address);
+
 	switch(address >> 24)
 	{
 		case 0x02:
@@ -3230,6 +3253,9 @@ INLINE void CPUWriteMemory(u32 address, u32 value)
 
 INLINE void CPUWriteHalfWord(u32 address, u16 value)
 {
+	if (writeCallback)
+		writeCallback(address);
+
 	switch(address >> 24)
 	{
 		case 2:
@@ -3276,6 +3302,9 @@ INLINE void CPUWriteHalfWord(u32 address, u16 value)
 
 INLINE void CPUWriteByte(u32 address, u8 b)
 {
+	if (writeCallback)
+		writeCallback(address);
+
 	switch(address >> 24)
 	{
 		case 2:
@@ -3491,8 +3520,6 @@ void BIOS_SoftReset (void)
 		bus.reg[15].I = 0x08000004;
 	}
 }
-
-#define BIOS_GET_BIOS_CHECKSUM()	bus.reg[0].I=0xBAAE187F;
 
 #define BIOS_REGISTER_RAM_RESET() BIOS_RegisterRamReset(bus.reg[0].I);
 
@@ -5578,6 +5605,8 @@ int armExecute (void)
 		int oldArmNextPC = bus.armNextPC;
 
 		bus.armNextPC = bus.reg[15].I;
+		if (fetchCallback)
+			fetchCallback(bus.armNextPC);
 		bus.reg[15].I += 4;
 		ARM_PREFETCH_NEXT;
 
@@ -6471,7 +6500,9 @@ DEFINE_IMM3_INSN(SUB_RD_RS_O3,1E)
 	if (bus.busPrefetchCount == 0)
 		bus.busPrefetch = bus.busPrefetchEnable;
 	u32 address = (bus.reg[15].I & 0xFFFFFFFC) + ((opcode & 0xFF) << 2);
-	bus.reg[regist].I = CPUReadMemoryQuick(address);
+	// why quick?
+	// bus.reg[regist].I = CPUReadMemoryQuick(address);
+	bus.reg[regist].I = CPUReadMemory(address);
 	bus.busPrefetchCount=0;
 	int dataticks_value = DATATICKS_ACCESS_32BIT(address);
 	DATATICKS_ACCESS_BUS_PREFETCH(address, dataticks_value);
@@ -6666,7 +6697,9 @@ DEFINE_IMM3_INSN(SUB_RD_RS_O3,1E)
 	if (bus.busPrefetchCount == 0)
 		bus.busPrefetch = bus.busPrefetchEnable;
 	u32 address = bus.reg[13].I + ((opcode&255)<<2);
-	bus.reg[regist].I = CPUReadMemoryQuick(address);
+	// why quick?
+	// bus.reg[regist].I = CPUReadMemoryQuick(address);
+	bus.reg[regist].I = CPUReadMemory(address);
 	int dataticks_value = DATATICKS_ACCESS_32BIT(address);
 	DATATICKS_ACCESS_BUS_PREFETCH(address, dataticks_value);
 	clockTicks = 3 + dataticks_value + codeTicksAccess(bus.armNextPC, BITS_16);
@@ -7171,6 +7204,9 @@ int thumbExecute (void)
 		u32 oldArmNextPC = bus.armNextPC;
 
 		bus.armNextPC = bus.reg[15].I;
+		if (fetchCallback)
+			fetchCallback(bus.armNextPC);
+
 		bus.reg[15].I += 2;
 		THUMB_PREFETCH_NEXT;
 
@@ -12943,6 +12979,12 @@ bool lagged;
 void (*scanlineCallback)();
 int scanlineCallbackLine;
 
+void (*fetchCallback)(u32 addr);
+void (*writeCallback)(u32 addr);
+void (*readCallback)(u32 addr);
+
+void (*padCallback)();
+
 void systemDrawScreen (void)
 {
 	// upconvert 555->888 (TODO: BETTER)
@@ -13362,6 +13404,35 @@ template<bool isReader>bool SyncBatteryRam(NewState *ns)
 		scanlineCallbackLine = scanline;
 	}
 
+	uint32_t *GetRegisters()
+	{
+		return &bus.reg[0].I;
+	}
+
+	void SetPadCallback(void (*cb)())
+	{
+		// before each read of the pad regs
+		padCallback = cb;
+	}
+
+	void SetFetchCallback(void (*cb)(u32 addr))
+	{
+		// before each opcode fetch
+		fetchCallback = cb;
+	}
+
+	void SetReadCallback(void (*cb)(u32 addr))
+	{
+		// before each read, not including opcodes, including pad regs
+		readCallback = cb;
+	}
+
+	void SetWriteCallback(void (*cb)(u32 addr))
+	{
+		// before each write
+		writeCallback = cb;
+	}
+
 }; // class Gigazoid
 
 // zeroing mem operators: these are very important
@@ -13507,5 +13578,16 @@ EXPORT void SetScanlineCallback(Gigazoid *g, void (*cb)(), int scanline)
 {
 	g->SetScanlineCallback(cb, scanline);
 }
+
+EXPORT u32 *GetRegisters(Gigazoid *g)
+{
+	return g->GetRegisters();
+}
+
+EXPORT void SetPadCallback(Gigazoid *g, void (*cb)()) { g->SetPadCallback(cb); }
+EXPORT void SetFetchCallback(Gigazoid *g, void (*cb)(u32 addr)) { g->SetFetchCallback(cb); }
+EXPORT void SetReadCallback(Gigazoid *g, void (*cb)(u32 addr)) { g->SetReadCallback(cb); }
+EXPORT void SetWriteCallback(Gigazoid *g, void (*cb)(u32 addr)) { g->SetWriteCallback(cb); }
+
 
 #include "optable.inc"

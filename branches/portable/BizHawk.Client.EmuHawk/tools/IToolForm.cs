@@ -26,7 +26,7 @@
 		/// Return false to tell the client to back out of an action (such as closing the emulator)
 		/// </summary>
 		/// <returns></returns>
-		bool AskSave();
+		bool AskSaveChanges();
 
 
 		/// <summary>
