@@ -1802,7 +1802,7 @@ namespace BizHawk.Client.EmuHawk
 					"Commodore 64 (experimental)", "*.prg; *.d64, *.g64; *.crt;%ARCH%",
 					"SID Commodore 64 Music File", "*.sid;%ARCH%",
 					"Nintendo 64", "*.z64;*.v64;*.n64",
-					"WonderSawn", "*.ws;*.wsc;%ARCH%",
+					"WonderSwan", "*.ws;*.wsc;%ARCH%",
 					"All Files", "*.*");
 			}
 			else
@@ -1814,6 +1814,7 @@ namespace BizHawk.Client.EmuHawk
 					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
 					"Nintendo 64", "*.z64;*.v64;*.n64",
 					"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
+					"Gameboy Advance", "*.gba;%ARCH%",
 					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
 					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
 					"Atari 2600", "*.a26;%ARCH%",
@@ -1823,7 +1824,7 @@ namespace BizHawk.Client.EmuHawk
 					"Archive Files", "%ARCH%",
 					"Savestate", "*.state",
 					"Genesis", "*.gen;*.md;*.smd;*.bin;*.cue;%ARCH%",
-					"WonderSawn", "*.ws;*.wsc;%ARCH%",
+					"WonderSwan", "*.ws;*.wsc;%ARCH%",
 					"All Files", "*.*");
 			}
 
