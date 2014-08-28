@@ -2544,7 +2544,7 @@
 			// 
 			this.MupenStyleLagMenuItem.Name = "MupenStyleLagMenuItem";
 			this.MupenStyleLagMenuItem.Size = new System.Drawing.Size(192, 22);
-			this.MupenStyleLagMenuItem.Text = "&Mupen style Lag";
+			this.MupenStyleLagMenuItem.Text = "&Non-VI Lag Frames";
 			this.MupenStyleLagMenuItem.Click += new System.EventHandler(this.MupenStyleLagMenuItem_Click);
 			// 
 			// SaturnSubMenu
