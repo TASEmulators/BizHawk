@@ -1,7 +1,7 @@
 static class VersionInfo
 {
 	public const string MAINVERSION = "1.8.1";
-	public static string RELEASEDATE = "August 30, 2014";
+	public static string RELEASEDATE = "August 31, 2014";
 	public static bool DeveloperBuild = false;
 
 	public static string GetEmuVersion()
