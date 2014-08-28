@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			FES.RTCsec = _SyncSettings.RTCInitialTime.Second;
 			if (DeterministicEmulation)
 			{
-				FES.skipBios = false;
+				// FES.skipBios = false; // this is OK; it is deterministic and probably accurate
 				FES.RTCUseRealTime = false;
 			}
 
@@ -423,7 +423,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public class SyncSettings
 		{
 			[DisplayName("Skip BIOS")]
-			[Description("Skips the BIOS intro.  A BIOS file is still required.  Forced to false for movie recording.")]
+			[Description("Skips the BIOS intro.  A BIOS file is still required.")]
 			[DefaultValue(true)]
 			public bool SkipBios { get; set; }
 			[DisplayName("RTC Use Real Time")]

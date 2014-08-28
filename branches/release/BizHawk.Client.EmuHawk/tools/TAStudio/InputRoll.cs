@@ -356,16 +356,22 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (NeedsHScrollbar)
 					{
+						_programmaticallyUpdatingScrollBarValues = true;
 						HBar.Value = value;
+						_programmaticallyUpdatingScrollBarValues = false;
 					}
 				}
 
 				if (NeedsVScrollbar)
 				{
+					_programmaticallyUpdatingScrollBarValues = true;
 					VBar.Value = value;
+					_programmaticallyUpdatingScrollBarValues = false;
 				}
 			}
 		}
+
+		private bool _programmaticallyUpdatingScrollBarValues = false;
 
 		public int LastVisibleIndex
 		{
@@ -919,12 +925,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VerticalBar_ValueChanged(object sender, EventArgs e)
 		{
-			Refresh();
+			if (!_programmaticallyUpdatingScrollBarValues)
+			{
+				Refresh();
+			}
 		}
 
 		private void HorizontalBar_ValueChanged(object sender, EventArgs e)
 		{
-			Refresh();
+			if (!_programmaticallyUpdatingScrollBarValues)
+			{
+				Refresh();
+			}
 		}
 
 		private void ColumnChangedCallback()
@@ -950,7 +962,9 @@ namespace BizHawk.Client.EmuHawk
 
 				if (VBar.Value > max)
 				{
+					_programmaticallyUpdatingScrollBarValues = true;
 					VBar.Value = max;
+					_programmaticallyUpdatingScrollBarValues = false;
 				}
 
 				VBar.Maximum = max + VBar.LargeChange; // TODO: why can't it be 1?
