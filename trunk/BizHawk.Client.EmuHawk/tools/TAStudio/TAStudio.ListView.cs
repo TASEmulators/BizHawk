@@ -216,12 +216,6 @@ namespace BizHawk.Client.EmuHawk
 							GoToLastEmulatedFrameIfNecessary(TasView.CurrentCell.RowIndex.Value);
 							TasView.Refresh();
 
-							if (Global.Config.TAStudioAutoRestoreLastPosition)
-							{
-								GlobalWin.MainForm.UnpauseEmulator();
-								GlobalWin.MainForm.PauseOnFrame = Global.Emulator.Frame;
-							}
-
 							_startBoolDrawColumn = buttonName;
 							_boolPaintState = _currentTasMovie.BoolIsPressed(frame, buttonName);
 						}
