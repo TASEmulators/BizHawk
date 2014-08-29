@@ -17,6 +17,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public TAStudio Tastudio { get; set; }
 
+		[Browsable(false)]
 		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
 		public bool TurboSeek
 		{
@@ -31,6 +32,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[Browsable(false)]
 		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
 		public bool AutoRestore
 		{
