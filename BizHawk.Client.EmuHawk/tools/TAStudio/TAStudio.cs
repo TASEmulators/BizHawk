@@ -66,6 +66,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.MovieSession.Movie.Save();
 			Global.MovieSession.Movie = Global.MovieSession.Movie.ToTasMovie();
 			Global.MovieSession.Movie.Save();
+			Global.MovieSession.Movie.SwitchToRecord();
 		}
 
 		private void EngageTastudio()
