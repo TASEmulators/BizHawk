@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (Global.Emulator.Frame == _currentTasMovie.InputLogLength) // In this situation we have a "pending" frame for the user to click
 					{
-						text = TasMovie.CreateDisplayValueForButton(
+						text = _currentTasMovie.CreateDisplayValueForButton(
 							Global.ClickyVirtualPadController,
 							columnName);
 					}

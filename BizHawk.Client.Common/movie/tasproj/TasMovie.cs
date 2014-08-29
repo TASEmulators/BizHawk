@@ -12,6 +12,7 @@ namespace BizHawk.Client.Common
 {
 	public sealed partial class TasMovie : Bk2Movie, INotifyPropertyChanged
 	{
+		private readonly Bk2MnemonicConstants MnemonicConstants = new Bk2MnemonicConstants();
 		private List<bool> LagLog = new List<bool>();
 		private readonly TasStateManager StateManager;
 		public TasMovieMarkerList Markers { get; set; }
@@ -137,14 +138,12 @@ namespace BizHawk.Client.Common
 			return CreateDisplayValueForButton(adapter, buttonName);
 		}
 
-		public static string CreateDisplayValueForButton(IController adapter, string buttonName)
+		public string CreateDisplayValueForButton(IController adapter, string buttonName)
 		{
-			var mnemonics = new Bk2MnemonicConstants();
-
 			if (adapter.Type.BoolButtons.Contains(buttonName))
 			{
 				return adapter.IsPressed(buttonName) ?
-					mnemonics[buttonName].ToString() :
+					MnemonicConstants[buttonName].ToString() :
 					string.Empty;
 			}
 
