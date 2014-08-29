@@ -44,12 +44,6 @@ namespace BizHawk.Client.EmuHawk
 			
 		}
 
-		public void UpdateValues()
-		{
-			MarkerView.ItemCount = Tastudio.CurrentMovie.Markers.Count;
-			MarkerView.Refresh();
-		}
-
 		private void MarkerView_QueryItemBkColor(int index, int column, ref Color color)
 		{
 			var prev = Markers.PreviousOrCurrent(Global.Emulator.Frame);
@@ -100,14 +94,14 @@ namespace BizHawk.Client.EmuHawk
 			MarkerView_SelectedIndexChanged(sender, e);
 		}
 
-		public new void Refresh()
+		public void UpdateValues()
 		{
 			if (MarkerView != null && Markers != null)
 			{
 				MarkerView.ItemCount = Markers.Count;
 			}
 
-			base.Refresh();
+			MarkerView.Refresh();
 		}
 
 		private void MarkerView_SelectedIndexChanged(object sender, EventArgs e)

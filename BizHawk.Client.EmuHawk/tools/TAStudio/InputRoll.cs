@@ -743,12 +743,21 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (HorizontalOrientation)
 			{
-				for (int i = 0; i < VisibleRows; i++)
+				int startIndex = NeedsHScrollbar ? HBar.Value : 0;
+				int endIndex = startIndex + (Width / CellWidth);
+				if (endIndex >= ItemCount)
+				{
+					endIndex = ItemCount;
+				}
+
+				int range = endIndex - startIndex;
+
+				for (int i = 0; i < range; i++)
 				{
 					for (int j = 0; j < _columns.Count; j++)
 					{
 						Color color = Color.White;
-						QueryItemBkColor(i, j, ref color);
+						QueryItemBkColor(i + startIndex, j, ref color);
 
 						// TODO: refactor to use DrawCellBG
 						if (color != Color.White) // An easy optimization, don't draw unless the user specified something other than the default
@@ -765,19 +774,29 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				for (int i = 1; i < VisibleRows; i++)
+				int startIndex = NeedsVScrollbar ? VBar.Value : 0;
+				int endIndex = startIndex + (Height / CellHeight);
+
+				if (endIndex >= ItemCount)
+				{
+					endIndex = ItemCount;
+				}
+
+				int range = endIndex - startIndex;
+
+				for (int i = 0; i < range; i++)
 				{
 					int x = 1;
 					for (int j = 0; j < _columns.Count; j++)
 					{
 						Color color = Color.White;
-						QueryItemBkColor(i, j, ref color);
+						QueryItemBkColor(i + startIndex, j, ref color);
 
 						var width = CalcWidth(_columns[j]);
 						if (color != Color.White) // An easy optimization, don't draw unless the user specified something other than the default
 						{
 							Gdi.SetBrush(color);
-							Gdi.FillRectangle(x, (i * CellHeight) + 2, width - 1, CellHeight - 1);
+							Gdi.FillRectangle(x, ((i + 1) * CellHeight) + 2, width - 1, CellHeight - 1);
 						}
 
 						x += width;

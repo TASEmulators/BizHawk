@@ -157,7 +157,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (MarkerControl != null)
 			{
-				MarkerControl.Refresh();
+				MarkerControl.UpdateValues();
 			}
 		}
 
@@ -385,7 +385,7 @@ namespace BizHawk.Client.EmuHawk
 			if (result == DialogResult.OK)
 			{
 				_currentTasMovie.Markers.Add(markerFrame, i.PromptText);
-				MarkerControl.Refresh();
+				MarkerControl.UpdateValues();
 			}
 		}
 
