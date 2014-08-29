@@ -173,9 +173,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (frame != Global.Emulator.Frame) // Don't go to a frame if you are already on it!
 			{
+				var restoreFrame = Global.Emulator.Frame;
+
 				if (frame <= _currentTasMovie.LastEmulatedFrame)
 				{
 					GoToFrame(frame);
+
+					if (Global.Config.TAStudioAutoRestoreLastPosition)
+					{
+						GlobalWin.MainForm.UnpauseEmulator();
+						GlobalWin.MainForm.PauseOnFrame = restoreFrame;
+					}
 				}
 			}
 		}
