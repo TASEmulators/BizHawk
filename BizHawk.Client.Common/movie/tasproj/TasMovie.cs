@@ -133,8 +133,27 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public string DisplayValue(int frame, string buttonName)
 		{
+			if (UseInputCache && InputStateCache.ContainsKey(frame))
+			{
+				return CreateDisplayValueForButton(InputStateCache[frame], buttonName);
+			}
+
 			var adapter = GetInputState(frame);
+
+			if (UseInputCache)
+			{
+				InputStateCache.Add(frame, adapter);
+			}
+
 			return CreateDisplayValueForButton(adapter, buttonName);
+		}
+
+		private readonly Dictionary<int, IController> InputStateCache = new Dictionary<int, IController>();
+
+		public bool UseInputCache { get; set; }
+		public void FlushInputCache()
+		{
+			InputStateCache.Clear();
 		}
 
 		public string CreateDisplayValueForButton(IController adapter, string buttonName)
