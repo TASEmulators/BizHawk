@@ -532,7 +532,10 @@ namespace BizHawk.Client.EmuHawk
 							int y = j * CellHeight;
 							var point = new Point(x, y);
 							QueryItemText(i + startIndex, j, out text);
-							Gdi.DrawString(text, point);
+							if (!string.IsNullOrWhiteSpace(text))
+							{
+								Gdi.DrawString(text, point);
+							}
 						}
 					}
 				}
@@ -557,7 +560,11 @@ namespace BizHawk.Client.EmuHawk
 							string text;
 							var point = new Point(x + CellPadding, (i + 1) * CellHeight); // +1 accounts for the column header
 							QueryItemText(i + startIndex, j, out text);
-							Gdi.DrawString(text, point);
+							if (!string.IsNullOrWhiteSpace(text))
+							{
+								Gdi.DrawString(text, point);
+							}
+
 							x += CalcWidth(_columns[j]);
 						}
 					}
