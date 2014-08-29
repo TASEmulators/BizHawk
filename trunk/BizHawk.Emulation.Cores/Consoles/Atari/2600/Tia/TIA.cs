@@ -894,6 +894,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			else if (maskedAddr == 0x0A) // CTRLPF
 			{
 				_playField.Reflect = (value & 0x01) != 0;
+                _playField.Score = (value & 0x02) != 0;
 				_playField.Priority = (value & 0x04) != 0;
 
 				_ball.Size = (byte)((value & 0x30) >> 4);
