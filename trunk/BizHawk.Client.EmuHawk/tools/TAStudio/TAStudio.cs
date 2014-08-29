@@ -153,8 +153,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RefreshDialog()
 		{
+			_currentTasMovie.FlushInputCache();
+			_currentTasMovie.UseInputCache = true;
+
 			TasView.ItemCount = _currentTasMovie.InputLogLength + 1;
 			TasView.Refresh();
+
+			_currentTasMovie.FlushInputCache();
+			_currentTasMovie.UseInputCache = false;
 
 			if (MarkerControl != null)
 			{
