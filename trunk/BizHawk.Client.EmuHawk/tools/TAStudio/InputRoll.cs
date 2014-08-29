@@ -852,45 +852,6 @@ namespace BizHawk.Client.EmuHawk
 			base.OnMouseLeave(e);
 		}
 
-		protected override void OnMouseClick(MouseEventArgs e)
-		{
-			if (IsHoveringOnColumnCell)
-			{
-				ColumnClickEvent(ColumnAtX(e.X));
-			}
-			else if (IsHoveringOnDataCell)
-			{
-				if (ModifierKeys == Keys.Alt)
-				{
-					MessageBox.Show("Alt click logic is not yet implemented");
-				}
-				else if (ModifierKeys == Keys.Shift)
-				{
-					if (SelectedItems.Any())
-					{
-						MessageBox.Show("Shift click logic is not yet implemented");
-					}
-					else
-					{
-						SelectCell(CurrentCell);
-					}
-				}
-				else if (ModifierKeys == Keys.Control)
-				{
-					SelectCell(CurrentCell);
-				}
-				else
-				{
-					SelectedItems.Clear();
-					SelectCell(CurrentCell);
-				}
-
-				Refresh();
-			}
-
-			base.OnMouseClick(e);
-		}
-
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Left && InputPaintingMode)
@@ -901,6 +862,43 @@ namespace BizHawk.Client.EmuHawk
 			if (e.Button == MouseButtons.Right)
 			{
 				RightButtonHeld = true;
+			}
+
+			if (e.Button == MouseButtons.Left)
+			{
+				if (IsHoveringOnColumnCell)
+				{
+					ColumnClickEvent(ColumnAtX(e.X));
+				}
+				else if (IsHoveringOnDataCell)
+				{
+					if (ModifierKeys == Keys.Alt)
+					{
+						MessageBox.Show("Alt click logic is not yet implemented");
+					}
+					else if (ModifierKeys == Keys.Shift)
+					{
+						if (SelectedItems.Any())
+						{
+							MessageBox.Show("Shift click logic is not yet implemented");
+						}
+						else
+						{
+							SelectCell(CurrentCell);
+						}
+					}
+					else if (ModifierKeys == Keys.Control)
+					{
+						SelectCell(CurrentCell);
+					}
+					else
+					{
+						SelectedItems.Clear();
+						SelectCell(CurrentCell);
+					}
+
+					Refresh();
+				}
 			}
 
 			base.OnMouseDown(e);
