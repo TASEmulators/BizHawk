@@ -308,9 +308,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
-					for (var i = startVal + 1; i <= endVal; i++)
+					for (var i = startVal; i < endVal; i++)
 					{
 						TasView.SelectItem(i, true);
+						TasView.Refresh();
 					}
 				}
 			}

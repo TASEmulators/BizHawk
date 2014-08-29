@@ -59,6 +59,7 @@ namespace BizHawk.Client.EmuHawk
 			TopMost = Global.Config.TAStudioSettings.TopMost;
 			TasView.InputPaintingMode = Global.Config.TAStudioDrawInput;
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
+			TasView.MultiSelect = true;
 		}
 
 		private void ConvertCurrentMovieToTasproj()
