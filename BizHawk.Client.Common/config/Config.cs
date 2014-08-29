@@ -526,8 +526,6 @@ namespace BizHawk.Client.Common
 		public bool TAStudioAutoPause = true;
 		public bool TAStudioAutoRestoreLastPosition = false;
 
-		public bool AutoloadExperimentalTAStudio = false;
-
 		// VirtualPad Dialog
 		public ToolDialogSettings VirtualPadSettings = new ToolDialogSettings();
 		public bool VirtualPadsUpdatePads = true;
