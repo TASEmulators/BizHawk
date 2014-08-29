@@ -591,7 +591,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				Gdi.DrawRectangle(0, 0, Width, CellHeight);
+				Gdi.DrawRectangle(0, 0, Width, CellHeight + 1);
 				Gdi.FillRectangle(1, 1, Width - 2, CellHeight);
 
 				int start = 0;
@@ -646,6 +646,11 @@ namespace BizHawk.Client.EmuHawk
 			Gdi.SetSolidPen(Color.Black);
 			Gdi.DrawRectangle(startPoint.X, startPoint.Y, Width, Height);
 
+			if (QueryItemBkColor != null && UseCustomBackground)
+			{
+				DoBackGroundCallback(e);
+			}
+
 			if (GridLines)
 			{
 				Gdi.SetSolidPen(SystemColors.ControlLight);
@@ -687,11 +692,6 @@ namespace BizHawk.Client.EmuHawk
 						Gdi.Line(1, (i * CellHeight) + 1, Width - 2, (i * CellHeight) + 1);
 					}
 				}
-			}
-
-			if (QueryItemBkColor != null && UseCustomBackground)
-			{
-				DoBackGroundCallback(e);
 			}
 
 			if (SelectedItems.Any())
