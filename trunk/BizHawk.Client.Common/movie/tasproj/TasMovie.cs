@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 {
 	public sealed partial class TasMovie : Bk2Movie, INotifyPropertyChanged
 	{
-		private readonly Bk2MnemonicConstants MnemonicConstants = new Bk2MnemonicConstants();
+		private readonly Bk2MnemonicConstants Mnemonics = new Bk2MnemonicConstants();
 		private List<bool> LagLog = new List<bool>();
 		private readonly TasStateManager StateManager;
 		public TasMovieMarkerList Markers { get; set; }
@@ -127,7 +127,6 @@ namespace BizHawk.Client.Common
 			Changes = true; // TODO check if this actually removed anything before flagging changes
 		}
 
-		private readonly Bk2MnemonicConstants Mnemonics = new Bk2MnemonicConstants();
 		/// <summary>
 		/// Returns the mnemonic value for boolean buttons, and actual value for floats,
 		/// for a given frame and button.
@@ -143,7 +142,7 @@ namespace BizHawk.Client.Common
 			if (adapter.Type.BoolButtons.Contains(buttonName))
 			{
 				return adapter.IsPressed(buttonName) ?
-					MnemonicConstants[buttonName].ToString() :
+					Mnemonics[buttonName].ToString() :
 					string.Empty;
 			}
 
