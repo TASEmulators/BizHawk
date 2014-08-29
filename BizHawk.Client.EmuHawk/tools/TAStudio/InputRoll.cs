@@ -914,6 +914,31 @@ namespace BizHawk.Client.EmuHawk
 			base.OnMouseUp(e);
 		}
 
+		private void IncrementScrollBar(ScrollBar bar, bool increment)
+		{
+			int newVal;
+			if (increment)
+			{
+				newVal = bar.Value + bar.SmallChange;
+				if (newVal > bar.Maximum)
+				{
+					newVal = bar.Maximum;
+				}
+			}
+			else
+			{
+				newVal = bar.Value - bar.SmallChange;
+				if (newVal < 0)
+				{
+					newVal = 0;
+				}
+			}
+
+			_programmaticallyUpdatingScrollBarValues = true;
+			bar.Value = newVal;
+			_programmaticallyUpdatingScrollBarValues = false;
+		}
+
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
 			if (RightButtonHeld)
@@ -922,7 +947,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				base.OnMouseWheel(e);
+				if (HorizontalOrientation)
+				{
+					IncrementScrollBar(HBar, e.Delta < 0);
+				}
+				else
+				{
+					IncrementScrollBar(VBar, e.Delta < 0);
+				}
+
+				Refresh();
 			}
 		}
 
