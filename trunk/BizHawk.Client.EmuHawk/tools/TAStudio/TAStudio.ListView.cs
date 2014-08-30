@@ -164,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
-			if (TasView.SelectedIndices.Any())
+			if (TasView.SelectedRows.Any())
 			{
 				var columnName = TasView.Columns[e.Column].Name;
 
@@ -174,7 +174,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (columnName != MarkerColumnName) // TODO: what about float?
 				{
-					foreach (var index in TasView.SelectedIndices)
+					foreach (var index in TasView.SelectedRows)
 					{
 						ToggleBoolState(index, columnName);
 					}
@@ -230,10 +230,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var frame = TasView.CurrentCell.RowIndex.Value;
 					var buttonName = TasView.CurrentCell.Column.Name;
-					if (TasView.SelectedIndices.IndexOf(frame) != -1 && (buttonName == MarkerColumnName || buttonName == FrameColumnName))
+					if (TasView.SelectedRows.IndexOf(frame) != -1 && (buttonName == MarkerColumnName || buttonName == FrameColumnName))
 					{
 						//Disable the option to remove markers if no markers are selected (FCUEX does this).
-						RemoveMarkersContextMenuItem.Enabled = _currentTasMovie.Markers.Any(m => TasView.SelectedIndices.Contains(m.Frame));
+						RemoveMarkersContextMenuItem.Enabled = _currentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame));
 						RightClickMenu.Show(TasView, e.X, e.Y);
 					}
 				}

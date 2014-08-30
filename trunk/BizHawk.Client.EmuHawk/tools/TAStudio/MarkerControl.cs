@@ -98,7 +98,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (MarkerView != null && Markers != null)
 			{
-				MarkerView.ItemCount = Markers.Count;
+				MarkerView.RowCount = Markers.Count;
 			}
 
 			MarkerView.Refresh();
@@ -120,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				return MarkerView.SelectedIndices
+				return MarkerView.SelectedRows
 					.OfType<int>();
 			}
 		}
