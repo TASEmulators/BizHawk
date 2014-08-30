@@ -299,6 +299,14 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
+		/// For the given frame, returns a savestate that is that frame or before it, as close as possible to it
+		/// </summary>
+		public byte[] GetStateClosestToFrame(int frame)
+		{
+			return StateManager.GetStateClosestToFrame(frame);
+		}
+
+		/// <summary>
 		/// Captures the current frame into the greenzone
 		/// </summary>
 		public void CaptureCurrentState()
