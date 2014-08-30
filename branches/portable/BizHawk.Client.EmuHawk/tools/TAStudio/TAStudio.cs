@@ -973,7 +973,7 @@ namespace BizHawk.Client.EmuHawk
 		//This method is called everytime the Changes property is toggled on a TasMovie instance.
 		private void TasMovie_OnPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			if (_currentTasMovie.Changes)
+			if (_currentTasMovie != null && _currentTasMovie.Changes)
 			{
 				
 				Text += "*";

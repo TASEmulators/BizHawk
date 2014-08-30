@@ -1460,10 +1460,14 @@ namespace BizHawk.Client.EmuHawk
 		private void HandlePlatformMenus()
 		{
 			var system = string.Empty;
-
 			if (!Global.Game.IsNullInstance)
 			{
-				system = Global.Game.System;
+                //New Code
+				//We use SystemID as that has the system we are playing on.
+                system = Global.Emulator.SystemId;
+                //Old Code below.
+                //system = Global.Game.System;
+
 			}
 
 			TI83SubMenu.Visible = false;
@@ -1524,15 +1528,15 @@ namespace BizHawk.Client.EmuHawk
 					// TODO: fix SNES9x here
 					if (Global.Emulator is LibsnesCore)
 					{
-					if ((Global.Emulator as LibsnesCore).IsSGB)
-					{
-						SNESSubMenu.Text = "&SGB";
-					}
-					else
-					{
-						SNESSubMenu.Text = "&SNES";
-					}
-					SNESSubMenu.Visible = true;
+                        if ((Global.Emulator as LibsnesCore).IsSGB)
+                        {
+                            SNESSubMenu.Text = "&SGB";
+                        }
+                        else
+                        {
+                            SNESSubMenu.Text = "&SNES";
+                        }
+                        SNESSubMenu.Visible = true;
 					}
 					else
 					{
@@ -3108,7 +3112,8 @@ namespace BizHawk.Client.EmuHawk
 			// If deterministic emulation is passed in, respect that value regardless, else determine a good value (currently that simply means movies require deterministic emulaton)
 			bool deterministic = deterministicemulation.HasValue ?
 				deterministicemulation.Value :
-				Global.MovieSession.Movie.IsActive;
+				Global.MovieSession.QueuedMovie != null;
+				//Global.MovieSession.Movie.IsActive;
 			
 			if (!GlobalWin.Tools.AskSave())
 			{
@@ -3132,10 +3137,9 @@ namespace BizHawk.Client.EmuHawk
 			// the new settings objects
 			CommitCoreSettingsToConfig(); // adelikat: I Think by reordering things, this isn't necessary anymore
 			CloseGame();
-
+            
 			var nextComm = CreateCoreComm();
 				CoreFileProvider.SyncCoreCommInputSignals(nextComm);
-
 			var result = loader.LoadRom(path, nextComm);
 
 			if (result)
@@ -3242,6 +3246,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
+                //This shows up if there's a problem                
 				// TODO: put all these in a single method or something
 				HandlePlatformMenus();
 				_stateSlots.Clear();
@@ -3307,6 +3312,8 @@ namespace BizHawk.Client.EmuHawk
 
 		// whats the difference between these two methods??
 		// its very tricky. rename to be more clear or combine them.
+        // This gets called whenever a core related thing is changed.
+        // Like reboot core.
 		private void CloseGame(bool clearSram = false)
 		{
 			if (clearSram)
@@ -3330,21 +3337,20 @@ namespace BizHawk.Client.EmuHawk
 			{
 				StopMovie(true);
 			}
-
-
 			Global.Emulator.Dispose();
 			Global.CoreComm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals();
 			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
-
 			RewireSound();
 			RebootStatusBarIcon.Visible = false;
 		}
 
 		public void CloseRom(bool clearSram = false)
 		{
+            //This gets called after Close Game gets called.
+            //Tested with NESHawk and SMB3 (U)
 			if (GlobalWin.Tools.AskSave())
 			{
 				CloseGame(clearSram);
@@ -3354,7 +3360,6 @@ namespace BizHawk.Client.EmuHawk
 				Global.Game = GameInfo.NullInstance;
 
 				GlobalWin.Tools.Restart();
-
 				RewireSound();
 				Global.Rewinder.ResetRewindBuffer();
 				Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
