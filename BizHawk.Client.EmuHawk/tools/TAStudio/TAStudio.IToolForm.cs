@@ -7,23 +7,18 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public void UpdateValues()
 		{
-			if (!IsHandleCreated || IsDisposed)
-			{
-				return;
-			}
-
-			if (_currentTasMovie == null)
+			if (!IsHandleCreated || IsDisposed || _currentTasMovie == null)
 			{
 				return;
 			}
 
 			if (_currentTasMovie.IsRecording)
 			{
-				TasView.LastVisibleIndex = _currentTasMovie.InputLogLength - 1;
+				TasView.LastVisibleRow = _currentTasMovie.InputLogLength - 1;
 			}
 			else
 			{
-				TasView.LastVisibleIndex = Global.Emulator.Frame;
+				TasView.LastVisibleRow = Global.Emulator.Frame;
 			}
 
 			RefreshDialog();
