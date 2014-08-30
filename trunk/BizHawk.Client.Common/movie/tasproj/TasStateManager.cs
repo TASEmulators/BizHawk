@@ -74,6 +74,14 @@ namespace BizHawk.Client.Common
 			{
 				shouldCapture = force;
 			}
+			else if (Global.Emulator.Frame == 0) // For now, long term, TasMovie should have a .StartState property, and a tasproj file for the start state in non-savestate anchored movies
+			{
+				shouldCapture = true;
+			}
+			else if (_movie.Markers.IsMarker(Global.Emulator.Frame))
+			{
+				shouldCapture = true; // Markers shoudl always get priority
+			}
 			else
 			{
 				shouldCapture = Global.Emulator.Frame % 2 > 0;
@@ -157,6 +165,10 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public byte[] GetStateClosestToFrame(int frame)
+		{
+			return States.LastOrDefault(state => state.Key < frame).Value;
+		}
 
 		// Map:
 		// 4 bytes - total savestate count
