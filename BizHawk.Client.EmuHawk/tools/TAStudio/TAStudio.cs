@@ -272,10 +272,15 @@ namespace BizHawk.Client.EmuHawk
 						GlobalWin.DisplayManager.NeedsToPaint = true;
 						TasView.LastVisibleIndex = frame;
 					}
-					else//Goto last emulated frame, then unpause until we reach frame
+					else // Get as close as we can then emulate there
 					{
 						_currentTasMovie.SwitchToPlay();
-						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_currentTasMovie[_currentTasMovie.LastEmulatedFrame].State.ToArray())));
+						var closestState = _currentTasMovie.GetStateClosestToFrame(frame);
+						if (closestState != null)
+						{
+							Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(closestState.ToArray())));
+						}
+
 						GlobalWin.MainForm.UnpauseEmulator();
 						GlobalWin.MainForm.PauseOnFrame = frame;
 					}
@@ -291,10 +296,15 @@ namespace BizHawk.Client.EmuHawk
 						GlobalWin.DisplayManager.NeedsToPaint = true;
 						TasView.LastVisibleIndex = frame;
 					}
-					else // TODO: this assume that there are no "gaps", instead of last emulated frame, we should do last frame from X
+					else
 					{
 						_currentTasMovie.SwitchToPlay();
-						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_currentTasMovie[_currentTasMovie.LastEmulatedFrame].State.ToArray())));
+						var closestState = _currentTasMovie.GetStateClosestToFrame(frame);
+						if (closestState != null)
+						{
+							Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(closestState.ToArray())));
+						}
+
 						GlobalWin.MainForm.UnpauseEmulator();
 						GlobalWin.MainForm.PauseOnFrame = frame;
 					}
