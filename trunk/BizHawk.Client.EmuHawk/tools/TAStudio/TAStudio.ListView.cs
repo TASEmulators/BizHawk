@@ -67,6 +67,11 @@ namespace BizHawk.Client.EmuHawk
 
 			var record = _currentTasMovie[index];
 
+			if (!(record.Lagged ?? false))
+			{
+				int zzz = 0;
+			}
+
 			if (columnName == FrameColumnName)
 			{
 				if (Global.Emulator.Frame == index)
@@ -81,11 +86,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (record.Lagged.Value)
 					{
-						color = record.HasState ? GreenZone_FrameCol : NoState_GreenZone_FrameCol;
+						color = record.HasState ? LagZone_FrameCol : NoState_LagZone_InputLog;
 					}
 					else
 					{
-						color = record.HasState ? LagZone_FrameCol : NoState_LagZone_InputLog;
+						color = record.HasState ? GreenZone_FrameCol : NoState_GreenZone_FrameCol;
 					}
 				}
 				else
@@ -105,11 +110,12 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (record.Lagged.Value)
 						{
-							color = record.HasState ? GreenZone_InputLog : NoState_GreenZone_InputLog;
+							color = record.HasState ? LagZone_InputLog : NoState_LagZone_InputLog;
+							
 						}
 						else
 						{
-							color = record.HasState ? LagZone_InputLog : NoState_LagZone_InputLog;
+							color = record.HasState ? GreenZone_InputLog : NoState_GreenZone_InputLog;
 						}
 					}
 					else
