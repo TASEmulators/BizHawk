@@ -277,7 +277,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.CurrentCell.RowIndex.HasValue &&
 				TasView.CurrentCell != null &&
-				TasView.CurrentCell.Column.Name == FrameColumnName)
+				TasView.CurrentCell.Column.Name == FrameColumnName &&
+				e.Button == MouseButtons.Left)
 			{
 				CallAddMarkerPopUp(TasView.CurrentCell.RowIndex.Value);
 			}
