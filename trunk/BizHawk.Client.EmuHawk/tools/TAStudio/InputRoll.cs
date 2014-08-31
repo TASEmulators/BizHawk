@@ -32,24 +32,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public InputRoll()
 		{
-			//TODO Figure out how to use the width and height properties of the scrollbars instead of 17
-			VBar = new VScrollBar
-			{
-				Location = new Point(Width - 17, 0),
-				Visible = false,
-				Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom,
-				SmallChange = 1,
-				LargeChange = 5
-			};
-
-			HBar = new HScrollBar
-			{
-				Location = new Point(0, Height - 17),
-				Visible = false,
-				Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
-				SmallChange = 1,
-				LargeChange = 20
-			};
 
 			UseCustomBackground = true;
 			GridLines = true;
@@ -69,6 +51,25 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_charSize = Gdi.MeasureString("A", this.Font);
 			}
+
+			//TODO Figure out how to use the width and height properties of the scrollbars instead of 17
+			VBar = new VScrollBar
+			{
+				Location = new Point(Width - 17, 0),
+				Visible = false,
+				Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom,
+				SmallChange = CellHeight,
+				LargeChange = CellHeight * 20
+			};
+
+			HBar = new HScrollBar
+			{
+				Location = new Point(0, Height - 17),
+				Visible = false,
+				Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
+				SmallChange = 1,
+				LargeChange = 20
+			};
 
 			this.Controls.Add(VBar);
 			this.Controls.Add(HBar);
@@ -122,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>
-		/// Gets or sets the sets the virtual number of rows to be displayed.
+		/// Gets or sets the sets the virtual number of rows to be displayed. Does not include the column header row.
 		/// </summary>
 		[Category("Behavior")]
 		public int RowCount
@@ -377,7 +378,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (NeedsVScrollbar)
 				{
-					return VBar.Value;
+					return VBar.Value / CellHeight;
 				}
 
 				return 0;
@@ -398,7 +399,7 @@ namespace BizHawk.Client.EmuHawk
 				if (NeedsVScrollbar)
 				{
 					_programmaticallyUpdatingScrollBarValues = true;
-					VBar.Value = value;
+					VBar.Value = value * CellHeight;
 					_programmaticallyUpdatingScrollBarValues = false;
 				}
 			}
@@ -424,7 +425,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>
-		/// Returns the number of rows currently visible
+		/// Returns the number of rows currently visible including partially visible rows.
 		/// </summary>
 		[Browsable(false)]
 		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
@@ -437,7 +438,7 @@ namespace BizHawk.Client.EmuHawk
 					//return (Width - _horizontalOrientedColumnWidth) / CellWidth;
 				}
 
-				return (Height / CellHeight) - 1;
+				return (int)Math.Ceiling((Decimal)DrawHeight / CellHeight) - 1;
 			}
 		}
 
@@ -483,7 +484,6 @@ namespace BizHawk.Client.EmuHawk
 
 				// ForeGround
 				DrawData(e);
-
 
 				Gdi.CopyToScreen();
 				Gdi.EndOffScreenBitmap();
@@ -574,8 +574,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					int startRow = NeedsVScrollbar ? VBar.Value : 0;
-					int endRow = startRow + VisibleRows;
+					int startRow = FirstVisibleRow;
+					int endRow = LastVisibleRow;
 					
 					if (endRow >= RowCount)
 					{
@@ -860,22 +860,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				int startIndex = NeedsVScrollbar ? VBar.Value : 0;
-				int endIndex = startIndex + (Height / CellHeight);
+				int startRow = FirstVisibleRow;
+				int endRow = LastVisibleRow;
 
-				if (endIndex >= RowCount)
+				if (endRow >= RowCount)
 				{
-					endIndex = RowCount;
+					endRow = RowCount;
 				}
 
-				int range = endIndex - startIndex;
+				int range = endRow - startRow;
 
 				for (int i = 0; i < range; i++)//Vertical
 				{
 					for (int j = 0; j < _columns.Count; j++)//Horizontal
 					{
 						Color color = Color.White;
-						QueryItemBkColor(i + startIndex, j, ref color);
+						QueryItemBkColor(i + startRow, j, ref color);
 						if (color != Color.White) // An easy optimization, don't draw unless the user specified something other than the default
 						{
 							var cell = new Cell()
@@ -1151,7 +1151,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					VBar.Maximum = (((RowCount * CellHeight) - Height) / CellHeight) + VBar.LargeChange;
+					VBar.Maximum = ((RowCount + 1) * CellHeight) - DrawHeight + VBar.LargeChange - 1;
 				}
 
 				VBar.Size = new Size(VBar.Width, Height);
@@ -1335,7 +1335,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						newCell.RowIndex = (y / CellHeight) + VBar.Value - 1;
+						newCell.RowIndex = (y + VBar.Value) / CellHeight - 1;
 					}
 
 					newCell.Column = ColumnAtX(x);
@@ -1459,6 +1459,11 @@ namespace BizHawk.Client.EmuHawk
 
 			return null;
 		}
+
+		//private int RowsToPixels(int index, int rowDimension)
+		//{
+		//	return index * rowDimension;
+		//}
 
 		#endregion
 
