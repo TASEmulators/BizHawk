@@ -23,7 +23,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly HScrollBar HBar;
 
-		private int _horizontalOrientedColumnWidth = 0;
 		private bool _horizontalOrientation = false;
 		private bool _programmaticallyUpdatingScrollBarValues = false;
 
@@ -51,6 +50,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_charSize = Gdi.MeasureString("A", this.Font);
 			}
+
+			UpdateCellSize();
+			ColumnWidth = CellWidth;
+			ColumnHeight = CellHeight + 5;
 
 			//TODO Figure out how to use the width and height properties of the scrollbars instead of 17
 			VBar = new VScrollBar
@@ -435,9 +438,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (HorizontalOrientation)
 				{
-					//return (Width - _horizontalOrientedColumnWidth) / CellWidth;
+					return (Width - ColumnWidth) / CellWidth;
 				}
-
 				return (int)Math.Ceiling((Decimal)DrawHeight / CellHeight) - 1;
 			}
 		}
@@ -561,16 +563,16 @@ namespace BizHawk.Client.EmuHawk
 						for (int j = 0; j < _columns.Count; j++)
 						{
 							string text;
-							int x = _horizontalOrientedColumnWidth + CellPadding + (CellWidth * i);
+							int x = ColumnWidth + CellPadding + (CellWidth * i);
 							int y = j * CellHeight;
 							var point = new Point(x, y);
 							QueryItemText(i + startIndex, j, out text);
 							if (!string.IsNullOrWhiteSpace(text))
 							{
-							Gdi.DrawString(text, point);
+								Gdi.DrawString(text, point);
+							}
 						}
 					}
-				}
 				}
 				else
 				{
@@ -591,7 +593,7 @@ namespace BizHawk.Client.EmuHawk
 						for (int j = 0; j < _columns.Count; j++)//Horizontal
 						{
 							string text;
-							var point = new Point(_columns[j].Left.Value + xPadding, ((i + 1) * CellHeight) + CellPadding); //i + 1 accounts for the column header
+							var point = new Point(_columns[j].Left.Value + xPadding, RowsToPixels(i));
 							QueryItemText(i + startRow, j, out text);
 							if (!string.IsNullOrWhiteSpace(text))
 							{
@@ -610,38 +612,36 @@ namespace BizHawk.Client.EmuHawk
 
 			if (HorizontalOrientation)
 			{
-				Gdi.DrawRectangle(0, 0, _horizontalOrientedColumnWidth + 1, Height);
-				Gdi.FillRectangle(1, 1, _horizontalOrientedColumnWidth, Height - 3);
+				Gdi.DrawRectangle(0, 0, ColumnWidth + 1, Height);
+				Gdi.FillRectangle(1, 1, ColumnWidth, Height - 3);
 
 				int start = 0;
 				foreach (var column in _columns)
 				{
 					start += CellHeight;
-					Gdi.Line(1, start, _horizontalOrientedColumnWidth, start);
+					Gdi.Line(1, start, ColumnWidth, start);
 				}
 			}
 			else
 			{
+				int bottomEdge = RowsToPixels(0);
 				//Gray column box and black line underneath
-				Gdi.FillRectangle(0, 0, Width + 1, CellHeight + 1);
+				Gdi.FillRectangle(0, 0, Width + 1, bottomEdge + 1);
 				Gdi.Line(0, 0, TotalColWidth.Value + 1, 0);
-				Gdi.Line(0, CellHeight + 1, TotalColWidth.Value + 1, CellHeight + 1);
+				Gdi.Line(0, bottomEdge, TotalColWidth.Value + 1, bottomEdge);
 
 				//Vertical black seperators
 				for (int i = 0; i < _columns.Count; i++)
 				{
 					int pos = _columns[i].Left.Value - HBar.Value;
-					if (pos >= 0)
-					{
-						Gdi.Line(pos, 0, pos, CellHeight + 1);
-					}
+					Gdi.Line(pos, 0, pos, bottomEdge);
 				}
 
-				//Draw right most line
+				////Draw right most line
 				if (_columns.Any())
 				{
 					int right = TotalColWidth.Value - HBar.Value;
-					Gdi.Line(right, 0, right, CellHeight + 1);
+					Gdi.Line(right, 0, right, bottomEdge);
 				}
 			}
 
@@ -668,7 +668,7 @@ namespace BizHawk.Client.EmuHawk
 								Gdi.FillRectangle(
 								1,
 								(i * CellHeight) + 1,
-								_horizontalOrientedColumnWidth - 1,
+								ColumnWidth - 1,
 								CellHeight - 1);
 							}
 							else//Only Left side visible
@@ -676,7 +676,7 @@ namespace BizHawk.Client.EmuHawk
 								Gdi.FillRectangle(
 								1,
 								(i * CellHeight) + 1,
-								_horizontalOrientedColumnWidth - 1,
+								ColumnWidth - 1,
 								CellHeight - 1);
 							}
 						}
@@ -687,7 +687,7 @@ namespace BizHawk.Client.EmuHawk
 								Gdi.FillRectangle(
 									1,
 									(i * CellHeight) + 1,
-									_horizontalOrientedColumnWidth - 1,
+									ColumnWidth - 1,
 									CellHeight - 1);
 							}
 							else//Not Visible
@@ -743,7 +743,7 @@ namespace BizHawk.Client.EmuHawk
 					// Columns
 					for (int i = 1; i < Width / CellWidth; i++)
 					{
-						var x = _horizontalOrientedColumnWidth + 1 + (i * CellWidth);
+						var x = ColumnWidth + 1 + (i * CellWidth);
 						var y2 = (_columns.Count * CellHeight) - 1;
 						if (y2 > Height)
 						{
@@ -756,13 +756,13 @@ namespace BizHawk.Client.EmuHawk
 					// Rows
 					for (int i = 1; i < _columns.Count + 1; i++)
 					{
-						Gdi.Line(_horizontalOrientedColumnWidth + 1, i * CellHeight, Width - 2, i * CellHeight);
+						Gdi.Line(ColumnWidth + 1, i * CellHeight, Width - 2, i * CellHeight);
 					}
 				}
 				else
 				{
 					// Columns
-					int y = CellHeight + 2;
+					int y = ColumnHeight + 1;
 					foreach (var column in _columns)
 					{
 						int x = column.Left.Value - HBar.Value;
@@ -770,13 +770,13 @@ namespace BizHawk.Client.EmuHawk
 					}
 					if (_columns.Any())
 					{
-						Gdi.Line(TotalColWidth.Value, y, TotalColWidth.Value, Height - 1);
+						Gdi.Line(TotalColWidth.Value - HBar.Value, y, TotalColWidth.Value - HBar.Value, Height - 1);
 					}
 
 					// Rows
-					for (int i = 2; i < (Height / CellHeight) + 1; i++)
+					for (int i = 1; i < VisibleRows + 1; i++)
 					{
-						Gdi.Line(0, (i * CellHeight) + 1, Width + 1, (i * CellHeight) + 1);
+						Gdi.Line(0, RowsToPixels(i), Width + 1, RowsToPixels(i));
 					}
 				}
 			}
@@ -815,7 +815,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (HorizontalOrientation)
 			{
-				x = (cell.RowIndex.Value * CellWidth) + 2 + _horizontalOrientedColumnWidth;
+				x = RowsToPixels(cell.RowIndex.Value) + 2;
 				w = CellWidth - 1;
 				y = (CellHeight * _columns.IndexOf(cell.Column)) + 1; // We can't draw without row and column, so assume they exist and fail catastrophically if they don't
 				h = CellHeight - 1;
@@ -825,11 +825,11 @@ namespace BizHawk.Client.EmuHawk
 				w = cell.Column.Width.Value - 1;
 				x = cell.Column.Left.Value - HBar.Value + 1;
 
-				y = (CellHeight * (cell.RowIndex.Value + 1)) + 2; // We can't draw without row and column, so assume they exist and fail catastrophically if they don't
+				y = RowsToPixels(cell.RowIndex.Value) + 1; // We can't draw without row and column, so assume they exist and fail catastrophically if they don't
 				h = CellHeight - 1;
 			}
 
-			if (x > DrawWidth || y > DrawHeight) { return; }//Don't d
+			if (x > DrawWidth || y > DrawHeight) { return; }//Don't draw if off screen.
 
 			Gdi.SetBrush(color);
 			Gdi.FillRectangle(x, y, w, h);
@@ -1014,7 +1014,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 		private void IncrementScrollBar(ScrollBar bar, bool increment)
-			{
+		{
 			int newVal;
 			if (increment)
 			{
@@ -1022,13 +1022,13 @@ namespace BizHawk.Client.EmuHawk
 				if (newVal > bar.Maximum)
 				{
 					newVal = bar.Maximum;
+				}
 			}
-		}
 			else
 			{
 				newVal = bar.Value - bar.SmallChange;
 				if (newVal < 0)
-		{
+				{
 					newVal = 0;
 				}
 			}
@@ -1131,6 +1131,10 @@ namespace BizHawk.Client.EmuHawk
 		private void ColumnChangedCallback()
 		{
 			RecalculateScrollBars();
+			if (_columns.Any())
+			{
+				ColumnWidth = _columns.Max(c => c.Width.Value) + CellPadding * 4;
+			}
 		}
 
 		#endregion
@@ -1146,7 +1150,7 @@ namespace BizHawk.Client.EmuHawk
 			if (HorizontalOrientation)
 			{
 				NeedsVScrollbar =  _columns.Count > DrawHeight / CellHeight;
-				NeedsHScrollbar = RowCount > (DrawWidth - _horizontalOrientedColumnWidth) / CellWidth;
+				NeedsHScrollbar = RowCount > (DrawWidth - ColumnWidth) / CellWidth;
 			}
 			else
 			{
@@ -1164,7 +1168,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					VBar.Maximum = ((RowCount + 1) * CellHeight) - DrawHeight + VBar.LargeChange - 1;
+					VBar.Maximum = RowsToPixels(RowCount + 1) - DrawHeight + VBar.LargeChange - 1;
 				}
 
 				VBar.Size = new Size(VBar.Width, Height);
@@ -1183,7 +1187,7 @@ namespace BizHawk.Client.EmuHawk
 				HBar.Visible = true;
 				if (HorizontalOrientation)
 				{
-					HBar.Maximum = ((RowCount * _horizontalOrientedColumnWidth)) / CellWidth + HBar.LargeChange - 1;//TODO test this
+					HBar.Maximum = ((RowCount * ColumnWidth)) / CellWidth + HBar.LargeChange - 1;//TODO test this
 				}
 				else
 				{
@@ -1324,13 +1328,13 @@ namespace BizHawk.Client.EmuHawk
 				if (HorizontalOrientation)
 				{
 					//TODO: Test this branch
-					if (x < _horizontalOrientedColumnWidth)
+					if (x < ColumnWidth)
 					{
 						newCell.RowIndex = null;
 					}
 					else
 					{
-						newCell.RowIndex = (x - _horizontalOrientedColumnWidth) / CellWidth;
+						newCell.RowIndex = PixelsToRows(x);
 					}
 
 					int colIndex = (y / CellHeight);
@@ -1348,7 +1352,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						newCell.RowIndex = (y + VBar.Value) / CellHeight - 1;
+						newCell.RowIndex = PixelsToRows(x);
 					}
 
 					newCell.Column = ColumnAtX(x);
@@ -1365,13 +1369,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (HorizontalOrientation)
 				{
-					var x = _horizontalOrientedColumnWidth;
+					var x = ColumnWidth;
 					var y = 0;
 					return new Point(x, y);
 				}
 				else
 				{
-					var y = CellHeight;
+					var y = ColumnHeight;
 					return new Point(0, y);
 				}
 			}
@@ -1385,30 +1389,6 @@ namespace BizHawk.Client.EmuHawk
 			gdi.Line(x + width, y, x + width, y + height);
 			gdi.Line(x + width, y + height, x, y + height);
 			gdi.Line(x, y + height, x, y);
-		}
-
-		// TODO: calculate this on Cell Padding change instead of calculate it every time
-		/// <summary>
-		/// The height of a cell. Only can be changed by changing the Font or CellPadding.
-		/// </summary>
-		private int CellHeight
-		{
-			get
-			{
-				return _charSize.Height + (CellPadding * 2);
-			}
-		}
-
-		// TODO: calculate this on Cell Padding change instead of calculate it every time
-		/// <summary>
-		/// The width of a cell. Only can be changed by changing the Font or CellPadding.
-		/// </summary>
-		private int CellWidth
-		{
-			get
-			{
-				return _charSize.Width + (CellPadding * 4); // Double the padding for horizontal because it looks better
-			}
 		}
 
 		/// <summary>
@@ -1425,7 +1405,7 @@ namespace BizHawk.Client.EmuHawk
 		//private void ColumnChanged()
 		//{
 		//	var text = _columns.Max(c => c.Text.Length);
-		//	_horizontalOrientedColumnWidth = (text * _charSize.Width) + (CellPadding * 2);
+		//	ColumnWidth = (text * _charSize.Width) + (CellPadding * 2);
 		//}
 
 		/// <summary>
@@ -1473,10 +1453,63 @@ namespace BizHawk.Client.EmuHawk
 			return null;
 		}
 
-		//private int RowsToPixels(int index, int rowDimension)
-		//{
-		//	return index * rowDimension;
-		//}
+		/// <summary>
+		/// Converts a row number to a horizontal or vertical coordinate.
+		/// </summary>
+		/// <param name="pixels">A row number.</param>
+		/// <returns>A vertical coordinate if Vertical Oriented, otherwise a horizontal coordinate.</returns>
+		private int RowsToPixels(int index)
+		{
+			if (_horizontalOrientation)
+			{
+				return index * CellWidth + ColumnWidth;
+			}
+			return index * CellHeight + ColumnHeight;
+		}
+
+		/// <summary>
+		/// Converts a horizontal or vertical coordinate to a row number.
+		/// </summary>
+		/// <param name="pixels">A vertical coordinate if Vertical Oriented, otherwise a horizontal coordinate.</param>
+		/// <returns>A row number between 0 and VisibleRows if it is a Datarow, otherwise a negative number if above all Datarows.</returns>
+		private int PixelsToRows(int pixels)
+		{
+			if (_horizontalOrientation)
+			{
+				return (pixels - ColumnWidth) / CellWidth;
+			}
+			return (pixels - ColumnHeight) / CellHeight;
+		}
+
+		/// <summary>
+		/// The width of the largest column cell in Horizontal Orientation
+		/// </summary>
+		private int ColumnWidth { get; set; }
+
+		/// <summary>
+		/// The height of a column cell in Vertical Orientation.
+		/// </summary>
+		private int ColumnHeight { get; set; }
+
+		//Cell defaults
+		/// <summary>
+		/// The width of a cell in Horizontal Orientation. Only can be changed by changing the Font or CellPadding.
+		/// </summary>
+		private int CellWidth { get; set; }
+
+		/// <summary>
+		/// The height of a cell in Vertical Orientation. Only can be changed by changing the Font or CellPadding.
+		/// </summary>
+		private int CellHeight { get; set; }
+
+		/// <summary>
+		/// Call when _charSize or CellPadding is changed.
+		/// </summary>
+		private void UpdateCellSize()
+		{
+			CellHeight = _charSize.Height + CellPadding * 2;
+			CellWidth  = _charSize.Width  + CellPadding * 4; // Double the padding for horizontal because it looks better
+		}
 
 		#endregion
 
