@@ -265,7 +265,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					GoToFrame(Global.Emulator.Frame - 1);
+					if (Global.Emulator.Frame > 0)
+					{
+						GoToFrame(Global.Emulator.Frame - 1);
+					}
 				}
 			}
 		}
