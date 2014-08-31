@@ -244,6 +244,20 @@ namespace BizHawk.Client.EmuHawk
 			GoToFrame(marker.Frame);
 		}
 
+
+		private void StartAtNearestFrameAndEmulate(int frame)
+		{
+			_currentTasMovie.SwitchToPlay();
+			var closestState = _currentTasMovie.GetStateClosestToFrame(frame);
+			if (closestState != null)
+			{
+				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(closestState.ToArray())));
+			}
+
+			GlobalWin.MainForm.PauseOnFrame = frame;
+			GlobalWin.MainForm.UnpauseEmulator();
+		}
+
 		private void GoToFrame(int frame)
 		{
 			// If past greenzone, emulate and capture states
@@ -273,15 +287,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else // Get as close as we can then emulate there
 					{
-						_currentTasMovie.SwitchToPlay();
-						var closestState = _currentTasMovie.GetStateClosestToFrame(frame);
-						if (closestState != null)
-						{
-							Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(closestState.ToArray())));
-						}
-
-						GlobalWin.MainForm.UnpauseEmulator();
-						GlobalWin.MainForm.PauseOnFrame = frame;
+						StartAtNearestFrameAndEmulate(frame);
+						return;
 					}
 				}
 				else // We are going foward
@@ -297,22 +304,15 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						_currentTasMovie.SwitchToPlay();
-						var closestState = _currentTasMovie.GetStateClosestToFrame(frame);
-						if (closestState != null)
-						{
-							Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(closestState.ToArray())));
-						}
-
-						GlobalWin.MainForm.UnpauseEmulator();
-						GlobalWin.MainForm.PauseOnFrame = frame;
+						StartAtNearestFrameAndEmulate(frame);
+						return;
 					}
 				}
 			}
 			else // Emulate to a future frame
 			{
 				// TODO: get the last greenzone frame and go there
-				_currentTasMovie.SwitchToPlay(); // TODO: stop copy/pasting this logic
+				_currentTasMovie.SwitchToPlay();
 				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_currentTasMovie[_currentTasMovie.LastEmulatedFrame].State.ToArray())));
 				GlobalWin.MainForm.UnpauseEmulator();
 				if(Global.Config.TAStudioAutoPause)

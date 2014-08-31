@@ -26,7 +26,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FastUpdate()
 		{
-			// TODO: think more about this
+			if (!IsHandleCreated || IsDisposed || _currentTasMovie == null)
+			{
+				return;
+			}
+
+			if (_currentTasMovie.IsRecording)
+			{
+				TasView.LastVisibleRow = _currentTasMovie.InputLogLength - 1;
+			}
+			else
+			{
+				TasView.LastVisibleRow = Global.Emulator.Frame;
+			}
 		}
 
 		public void Restart()
