@@ -565,6 +565,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_pauseOnFrame = value;
 				SetPauseStatusbarIcon();
+
+				if (value == null) // TODO: make an Event handler instead, but the logic here is that after turbo seeking, tools will want to do a real update when the emulator finally pauses
+				{
+					GlobalWin.Tools.UpdateToolsBefore();
+					GlobalWin.Tools.UpdateToolsAfter();
+				}
 			}
 		}
 
