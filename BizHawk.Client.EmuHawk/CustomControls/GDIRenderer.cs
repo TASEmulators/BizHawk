@@ -194,8 +194,8 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			get { return _bitHDC != IntPtr.Zero ? _bitHDC : _hdc; }
 		}
 
-		private IntPtr _bitMap = IntPtr.Zero; // TODO: dispose of this guy
-		private IntPtr _bitHDC = IntPtr.Zero; // TODO: dispose of this guy
+		private IntPtr _bitMap = IntPtr.Zero;
+		private IntPtr _bitHDC = IntPtr.Zero;
 		private int _bitW;
 		private int _bitH;
 
