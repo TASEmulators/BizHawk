@@ -591,7 +591,7 @@ namespace BizHawk.Client.EmuHawk
 						for (int j = 0; j < _columns.Count; j++)//Horizontal
 						{
 							string text;
-							var point = new Point(_columns[j].Left.Value + xPadding, (i + 1) * CellHeight); //i + 1 accounts for the column header
+							var point = new Point(_columns[j].Left.Value + xPadding, ((i + 1) * CellHeight) + CellPadding); //i + 1 accounts for the column header
 							QueryItemText(i + startRow, j, out text);
 							if (!string.IsNullOrWhiteSpace(text))
 							{
