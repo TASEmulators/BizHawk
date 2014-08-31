@@ -571,7 +571,7 @@ namespace BizHawk.Client.EmuHawk
 
 				for (int i = prev; i < next; i++)
 				{
-					TasView.SelectItem(i, true);
+					TasView.SelectRow(i, true);
 				}
 			}
 		}
@@ -581,7 +581,7 @@ namespace BizHawk.Client.EmuHawk
 			TasView.DeselectAll();
 			foreach (var item in _tasClipboard)
 			{
-				TasView.SelectItem(item.Frame, true);
+				TasView.SelectRow(item.Frame, true);
 			}
 		}
 

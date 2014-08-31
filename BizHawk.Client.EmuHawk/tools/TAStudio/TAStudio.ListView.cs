@@ -316,7 +316,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					for (var i = startVal; i < endVal; i++)
 					{
-						TasView.SelectItem(i, true);
+						TasView.SelectRow(i, true);
 						TasView.Refresh();
 					}
 				}
