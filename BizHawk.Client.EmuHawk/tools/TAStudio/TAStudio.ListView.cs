@@ -198,7 +198,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (TasView.CurrentCell.RowIndex.HasValue && TasView.CurrentCell.Column != null)
+			if (TasView.CurrentCell != null && TasView.CurrentCell.RowIndex.HasValue && TasView.CurrentCell.Column != null)
 			{
 				if (e.Button == MouseButtons.Left)
 				{
