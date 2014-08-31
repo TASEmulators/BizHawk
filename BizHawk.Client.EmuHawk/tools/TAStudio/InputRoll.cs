@@ -791,10 +791,21 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach(var cell in SelectedItems)
 			{
-				DrawCellBG(SystemColors.Highlight, cell);
+				var relativeCell = new Cell()
+				{
+					RowIndex = cell.RowIndex - FirstVisibleRow,
+					Column = cell.Column,
+					CurrentText = cell.CurrentText
+				};
+				DrawCellBG(SystemColors.Highlight, relativeCell);
 			}
 		}
 
+		/// <summary>
+		/// Given a cell with rowindex inbetween 0 and VisibleRows, it draws the background color specified. Do not call with absolute rowindices.
+		/// </summary>
+		/// <param name="color"></param>
+		/// <param name="cell"></param>
 		private void DrawCellBG(Color color, Cell cell)
 		{
 			int x = 0,
@@ -817,6 +828,8 @@ namespace BizHawk.Client.EmuHawk
 				y = (CellHeight * (cell.RowIndex.Value + 1)) + 2; // We can't draw without row and column, so assume they exist and fail catastrophically if they don't
 				h = CellHeight - 1;
 			}
+
+			if (x > DrawWidth || y > DrawHeight) { return; }//Don't d
 
 			Gdi.SetBrush(color);
 			Gdi.FillRectangle(x, y, w, h);
@@ -896,7 +909,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
-			if (e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.R) // Ctrl + R
+			if (e.Control && !e.Alt && e.Shift && e.KeyCode == Keys.R) // Ctrl + Shift + R
 			{
 				HorizontalOrientation ^= true;
 				Refresh();
