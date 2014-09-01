@@ -30,34 +30,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			Settings = (A2600Settings)settings ?? new A2600Settings();
 			SyncSettings = (A2600SyncSettings)syncSettings ?? new A2600SyncSettings();
 
-			var domains = new List<MemoryDomain>
-			{
-				new MemoryDomain(
-					"Main RAM",
-					128,
-					MemoryDomain.Endian.Little,
-					addr => Ram[addr],
-					(addr, value) => Ram[addr] = value),
-				new MemoryDomain(
-					"TIA",
-					16,
-					MemoryDomain.Endian.Little,
-					addr => _tia.ReadMemory((ushort)addr, true),
-					(addr, value) => this._tia.WriteMemory((ushort)addr, value)),
-				new MemoryDomain(
-					"PIA",
-					1024,
-					MemoryDomain.Endian.Little,
-					addr => M6532.ReadMemory((ushort)addr, true),
-					(addr, value) => M6532.WriteMemory((ushort)addr, value)),
-				new MemoryDomain(
-					"System Bus",
-					8192,
-					MemoryDomain.Endian.Little,
-					addr => _mapper.PeekMemory((ushort) addr),
-					(addr, value) => _mapper.PokeMemory((ushort) addr, value)) 
-			};
-
 			CoreComm.CpuTraceAvailable = true;
 			Rom = rom;
 			_game = game;
@@ -69,28 +41,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			Console.WriteLine("Game uses mapper " + game.GetOptionsDict()["m"]);
 			RebootCore();
-
-			if (_mapper is mDPC) // TODO: also mDPCPlus
-			{
-				domains.Add(new MemoryDomain(
-					"DPC",
-					2048,
-					MemoryDomain.Endian.Little,
-					addr => (_mapper as mDPC).DspData[addr],
-					(addr, value) => (_mapper as mDPC).DspData[addr] = value));
-			}
-
-			if (_mapper.HasCartRam)
-			{
-				domains.Add(new MemoryDomain(
-					"Cart Ram",
-					_mapper.CartRam.Len,
-					MemoryDomain.Endian.Little,
-					addr => _mapper.CartRam[addr],
-					(addr, value) => _mapper.CartRam[addr] = value));
-			}
-
-			MemoryDomains = new MemoryDomainList(domains);
+			SetupMemoryDomains();
 		}
 
 		public string SystemId { get { return "A26"; } }
@@ -131,8 +82,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public A2600Settings Settings { get; private set; }
 
 		public A2600SyncSettings SyncSettings { get; private set; }
-
-		public MemoryDomainList MemoryDomains { get; private set; }
 
 		public static readonly ControllerDefinition Atari2600ControllerDefinition = new ControllerDefinition
 		{
