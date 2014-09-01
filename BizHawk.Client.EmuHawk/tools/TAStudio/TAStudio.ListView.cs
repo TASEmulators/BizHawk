@@ -392,6 +392,9 @@ namespace BizHawk.Client.EmuHawk
 			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Ctrl + Down
 			{
 				GoToNextFrame();
+			}else if (e.Control && !e.Alt && e.Shift && e.KeyCode == Keys.R) // Ctrl + Shift + R
+			{
+				TasView.HorizontalOrientation ^= true;
 			}
 		}
 
