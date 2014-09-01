@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 
 		MobileBmpView bg0, bg1, bg2, bg3, bgpal, sppal, sprites, bgtiles16, bgtiles256, sptiles16, sptiles256;
 
-		MobileDetailView memory;
+		// MobileDetailView memory;
 
 		public bool AskSaveChanges() { return true; }
 		public bool UpdateBefore { get { return true; } }
