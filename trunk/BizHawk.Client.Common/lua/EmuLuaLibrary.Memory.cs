@@ -38,7 +38,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (Global.Emulator.HasMemoryDomains()) // IMemoryDomains TODO: don't register memory libraries if core is not IMemoryDomains
+				if (Global.Emulator.HasMemoryDomains())
 				{
 					return (Global.Emulator as IMemoryDomains).MemoryDomains[_currentMemoryDomain];
 				}

@@ -304,7 +304,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					using (var fs = new FileStream(sfd.FileName, FileMode.Create, FileAccess.Write))
 					{
-						_cdl.Disassemble(fs, (Global.Emulator as IMemoryDomains).MemoryDomains); // IMemoryDomains TODO: don't expose this dialog unless core implmements IMemoryDomains
+						_cdl.Disassemble(fs, (Global.Emulator as IMemoryDomains).MemoryDomains);
 					}
 				}
 			}

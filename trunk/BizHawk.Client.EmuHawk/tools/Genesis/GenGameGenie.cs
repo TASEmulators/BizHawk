@@ -357,7 +357,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var watch = Watch.GenerateWatch(
-				(Global.Emulator as IMemoryDomains).MemoryDomains["MD CART"], // IMemoryDomains TODO: don't expose this dialog unless the core implements IMemoryDomains
+				(Global.Emulator as IMemoryDomains).MemoryDomains["MD CART"],
 				address,
 				Watch.WatchSize.Word,
 				Watch.DisplayType.Hex,

@@ -231,7 +231,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!string.IsNullOrWhiteSpace(AddressBox.Text) && !string.IsNullOrWhiteSpace(ValueBox.Text))
 			{
 				var watch = Watch.GenerateWatch(
-					(Global.Emulator as IMemoryDomains).MemoryDomains["System Bus"], // IMemoryDomains TODO: Don't expose this dialog if core does not implement IMemoryDomains
+					(Global.Emulator as IMemoryDomains).MemoryDomains["System Bus"],
 					AddressBox.ToRawInt().Value,
 					Watch.WatchSize.Byte,
 					Watch.DisplayType.Hex,
