@@ -275,7 +275,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				var watch = Watch.GenerateWatch(
-					(Global.Emulator as IMemoryDomains).MemoryDomains["BUS"], // IMemoryDomains TODO: don't expose this dialog if not implementing this interface
+					(Global.Emulator as IMemoryDomains).MemoryDomains["BUS"],
 					address,
 					Watch.WatchSize.Byte,
 					Watch.DisplayType.Hex,
