@@ -25,6 +25,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool _horizontalOrientation = false;
 		private bool _programmaticallyUpdatingScrollBarValues = false;
+		private int _maxCharactersInHorizontal = 1;
 
 		private int _rowCount = 0;
 		private Size _charSize;
@@ -48,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 			using (var g = CreateGraphics())
 			using (var LCK = Gdi.LockGraphics(g))
 			{
-				_charSize = Gdi.MeasureString("A", this.Font);
+				_charSize = Gdi.MeasureString("A", this.Font);//TODO make this a property so changing it updates other values.
 			}
 
 			UpdateCellSize();
@@ -352,6 +353,22 @@ namespace BizHawk.Client.EmuHawk
 		[Browsable(false)]
 		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
 		public int DrawWidth { get; private set; }
+
+		/// <summary>
+		/// Sets the width of data cells when in Horizontal orientation.
+		/// </summary>
+		/// <param name="maxLength">The maximum number of characters the column will support in Horizontal orientation.</param>
+		public int MaxCharactersInHorizontal{
+			get
+			{
+				return _maxCharactersInHorizontal;
+			} 
+			set
+			{
+				_maxCharactersInHorizontal = value;
+				UpdateCellSize();
+			}
+		}
 
 		[Browsable(false)]
 		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
@@ -819,14 +836,15 @@ namespace BizHawk.Client.EmuHawk
 				w = CellWidth - 1;
 				y = (CellHeight * _columns.IndexOf(cell.Column)) + 1; // We can't draw without row and column, so assume they exist and fail catastrophically if they don't
 				h = CellHeight - 1;
+				if (x < ColumnWidth) { return; }
 			}
 			else
 			{
 				w = cell.Column.Width.Value - 1;
 				x = cell.Column.Left.Value - HBar.Value + 1;
-
 				y = RowsToPixels(cell.RowIndex.Value) + 1; // We can't draw without row and column, so assume they exist and fail catastrophically if they don't
 				h = CellHeight - 1;
+				if (y < ColumnHeight) { return; }
 			}
 
 			if (x > DrawWidth || y > DrawHeight) { return; }//Don't draw if off screen.
@@ -907,20 +925,15 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Mouse and Key Events
 
-		protected override void OnKeyDown(KeyEventArgs e)
-		{
-			if (e.Control && !e.Alt && e.Shift && e.KeyCode == Keys.R) // Ctrl + Shift + R
-			{
-				HorizontalOrientation ^= true;
-				Refresh();
-			}
-
-			base.OnKeyDown(e);
-		}
+		//protected override void OnKeyDown(KeyEventArgs e)
+		//{
+		//	base.OnKeyDown(e);
+		//}
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			var newCell = CalculatePointedCell(e.X, e.Y);
+			newCell.RowIndex += FirstVisibleRow;
 			if (!newCell.Equals(CurrentCell))
 			{
 				CellChanged(newCell);
@@ -966,40 +979,40 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			if (e.Button == MouseButtons.Left)
-		{
-			if (IsHoveringOnColumnCell)
 			{
-				ColumnClickEvent(ColumnAtX(e.X));
-			}
-			else if (IsHoveringOnDataCell)
-			{
-				if (ModifierKeys == Keys.Alt)
+				if (IsHoveringOnColumnCell)
 				{
-					MessageBox.Show("Alt click logic is not yet implemented");
+					ColumnClickEvent(ColumnAtX(e.X));
 				}
-				else if (ModifierKeys == Keys.Shift)
+				else if (IsHoveringOnDataCell)
 				{
-					if (SelectedItems.Any())
+					if (ModifierKeys == Keys.Alt)
 					{
-						MessageBox.Show("Shift click logic is not yet implemented");
+						MessageBox.Show("Alt click logic is not yet implemented");
 					}
-					else
+					else if (ModifierKeys == Keys.Shift)
+					{
+						if (SelectedItems.Any())
+						{
+							MessageBox.Show("Shift click logic is not yet implemented");
+						}
+						else
+						{
+							SelectCell(CurrentCell);
+						}
+					}
+					else if (ModifierKeys == Keys.Control)
 					{
 						SelectCell(CurrentCell);
 					}
-				}
-				else if (ModifierKeys == Keys.Control)
-				{
-					SelectCell(CurrentCell);
-				}
-				else
-				{
-					SelectedItems.Clear();
-					SelectCell(CurrentCell);
-				}
+					else
+					{
+						SelectedItems.Clear();
+						SelectCell(CurrentCell);
+					}
 
-				Refresh();
-			}
+					Refresh();
+				}
 			}
 
 			base.OnMouseDown(e);
@@ -1095,6 +1108,7 @@ namespace BizHawk.Client.EmuHawk
 			HBar.Value =   temp.Value;
 			HBar.Maximum = temp.Maximum;
 			HBar.Minimum = temp.Minimum;
+			Refresh();
 		}
 
 		/// <summary>
@@ -1315,9 +1329,10 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Finds the specific cell that contains the (x, y) coordinate.
 		/// </summary>
+		/// <remarks>The row number that it returns will be between 0 and VisibleRows, NOT the absolute row number.</remarks>
 		/// <param name="x">X coordinate point.</param>
 		/// <param name="y">Y coordinate point.</param>
-		/// <returns>The cell with row number and RollColumn reference, both of which can be null.</returns>
+		/// <returns>The cell with row number and RollColumn reference, both of which can be null. </returns>
 		private Cell CalculatePointedCell(int x, int y)
 		{
 			var newCell = new Cell();
@@ -1503,12 +1518,12 @@ namespace BizHawk.Client.EmuHawk
 		private int CellHeight { get; set; }
 
 		/// <summary>
-		/// Call when _charSize or CellPadding is changed.
+		/// Call when _charSize, MaxCharactersInHorizontal, or CellPadding is changed.
 		/// </summary>
 		private void UpdateCellSize()
 		{
 			CellHeight = _charSize.Height + CellPadding * 2;
-			CellWidth  = _charSize.Width  + CellPadding * 4; // Double the padding for horizontal because it looks better
+			CellWidth  = _charSize.Width * MaxCharactersInHorizontal + CellPadding * 4; // Double the padding for horizontal because it looks better
 		}
 
 		#endregion

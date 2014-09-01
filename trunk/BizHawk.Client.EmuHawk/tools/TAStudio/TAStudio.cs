@@ -60,6 +60,7 @@ namespace BizHawk.Client.EmuHawk
 			TasView.InputPaintingMode = Global.Config.TAStudioDrawInput;
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
 			TasView.MultiSelect = true;
+			TasView.MaxCharactersInHorizontal = 5;
 		}
 
 		private void ConvertCurrentMovieToTasproj()
