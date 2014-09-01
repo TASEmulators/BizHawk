@@ -137,7 +137,21 @@ namespace BizHawk.Client.EmuHawk
 
 				if (columnName == MarkerColumnName)
 				{
-					text = Global.Emulator.Frame == index ? ">" : string.Empty;
+					if(Global.Emulator.Frame == index)
+					{
+						if(TasView.HorizontalOrientation)
+						{
+							text = " V";
+						}
+						else
+						{
+							text = ">";
+						}
+					}
+					else
+					{
+						text = string.Empty;
+					}
 				}
 				else if (columnName == FrameColumnName)
 				{
