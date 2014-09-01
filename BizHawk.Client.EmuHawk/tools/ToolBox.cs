@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using BizHawk.Client.Common;
+
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
@@ -11,6 +12,8 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
+
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -51,6 +54,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetTools()
 		{
+			HexEditorToolbarItem.Visible =
+				RamWatchToolbarItem.Visible =
+				RamSearchToolbarItem.Visible =
+				CheatsToolBarItem.Visible =
+				Global.Emulator.HasMemoryDomains();
+
 			NesPPUToolbarItem.Visible =
 				NesDebuggerToolbarItem.Visible =
 				NesNameTableToolbarItem.Visible =
@@ -70,6 +79,7 @@ namespace BizHawk.Client.EmuHawk
 			PceCdlToolbarItem.Visible =
 				PceBgViewerToolbarItem.Visible =
 				PceTileToolbarItem.Visible =
+				PceSoundDebuggerButton.Visible =
 				Global.Emulator is PCEngine;
 			
 			GBGameGenieToolbarItem.Visible = 

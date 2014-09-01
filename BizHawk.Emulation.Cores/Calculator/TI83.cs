@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 		isPorted: false,
 		isReleased: true
 		)]
-	public class TI83 : IEmulator
+	public class TI83 : IEmulator, IMemoryDomains
 	{
 		//hardware
 		private readonly Z80A cpu = new Z80A();

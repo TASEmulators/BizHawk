@@ -13,6 +13,7 @@ using BizHawk.Common.NumberExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
@@ -55,8 +56,11 @@ namespace BizHawk.Client.EmuHawk
 		private bool _bigEndian;
 		private int _dataSize;
 
+		private readonly MemoryDomainList MemoryDomains;
+
 		public HexEditor()
 		{
+			MemoryDomains = ((IMemoryDomains)Global.Emulator).MemoryDomains; // The cast is intentional, we want a specific cast error, not an eventual null reference error
 			InitializeComponent();
 			AddressesLabel.BackColor = Color.Transparent;
 			LoadConfigSettings();
@@ -119,6 +123,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
+			if (!Global.Emulator.HasMemoryDomains())
+			{
+				Close();
+			}
+
 			if (!IsHandleCreated || IsDisposed)
 			{
 				return;
@@ -311,11 +320,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static int? GetDomainInt(string name)
+		private int? GetDomainInt(string name)
 		{
-			for (var i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
+			for (var i = 0; i < MemoryDomains.Count; i++)
 			{
-				if (Global.Emulator.MemoryDomains[i].Name == name)
+				if (MemoryDomains[i].Name == name)
 				{
 					return i;
 				}
@@ -628,9 +637,9 @@ namespace BizHawk.Client.EmuHawk
 				// <zeromus> THIS IS HORRIBLE.
 				SetMemoryDomain(_romDomain);
 			}
-			else if (pos < Global.Emulator.MemoryDomains.Count)
+			else if (pos < MemoryDomains.Count)
 			{
-				SetMemoryDomain(Global.Emulator.MemoryDomains[pos]);
+				SetMemoryDomain(MemoryDomains[pos]);
 			}
 
 			SetHeader();
@@ -650,11 +659,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			MemoryDomainsMenuItem.DropDownItems.Clear();
 
-			for (var i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
+			for (var i = 0; i < MemoryDomains.Count; i++)
 			{
-				if (Global.Emulator.MemoryDomains[i].Size > 0)
+				if (MemoryDomains[i].Size > 0)
 				{
-					var str = Global.Emulator.MemoryDomains[i].ToString();
+					var str = MemoryDomains[i].ToString();
 					var item = new ToolStripMenuItem { Text = str };
 					{
 						var temp = i;

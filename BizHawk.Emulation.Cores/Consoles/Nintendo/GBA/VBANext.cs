@@ -14,7 +14,7 @@ using BizHawk.Common;
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	[CoreAttributes("VBA-Next", "many authors", true, true, "cd508312a29ed8c29dacac1b11c2dce56c338a54", "https://github.com/libretro/vba-next")]
-	public class VBANext : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable
+	public class VBANext : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, IMemoryDomains
 	{
 		IntPtr Core;
 

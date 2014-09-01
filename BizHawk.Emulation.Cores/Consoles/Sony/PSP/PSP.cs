@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		isPorted: true,
 		isReleased: false
 		)]
-	public class PSP : IEmulator, IVideoProvider, ISyncSoundProvider
+	public class PSP : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains
 	{
 		public static readonly ControllerDefinition PSPController = new ControllerDefinition
 		{

@@ -67,11 +67,6 @@ namespace BizHawk.Client.EmuHawk
 
 			var record = _currentTasMovie[index];
 
-			if (!(record.Lagged ?? false))
-			{
-				int zzz = 0;
-			}
-
 			if (columnName == FrameColumnName)
 			{
 				if (Global.Emulator.Frame == index)

@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		isPorted: false,
 		isReleased: true
 		)]
-	public sealed partial class SMS : IEmulator
+	public sealed partial class SMS : IEmulator, IMemoryDomains
 	{
 		// Constants
 		public const int BankSize = 16384;

@@ -1101,13 +1101,17 @@ namespace BizHawk.Client.EmuHawk
 			VirtualPadMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Virtual Pad"].Bindings;
 			TraceLoggerMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Trace Logger"].Bindings;
 			TraceLoggerMenuItem.Enabled = Global.Emulator.CoreComm.CpuTraceAvailable;
+
+			TAStudioMenuItem.Enabled =
+				VirtualPadMenuItem.Enabled =
+				!(Global.Emulator is NullEmulator);
+
 			CheatsMenuItem.Enabled =
 				HexEditorMenuItem.Enabled =
 				RamSearchMenuItem.Enabled =
 				RamWatchMenuItem.Enabled =
-				TAStudioMenuItem.Enabled =
-				VirtualPadMenuItem.Enabled =
-				!(Global.Emulator is NullEmulator);
+				Global.Emulator.HasMemoryDomains();
+
 			batchRunnerToolStripMenuItem.Visible = VersionInfo.DeveloperBuild;
 
 			TAStudioMenuItem.Visible = VersionInfo.DeveloperBuild;

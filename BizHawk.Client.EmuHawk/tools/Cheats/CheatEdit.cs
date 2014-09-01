@@ -9,6 +9,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class CheatEdit : UserControl
 	{
+		public IMemoryDomains Core { get; set; }
+
 		public CheatEdit()
 		{
 			InitializeComponent();
@@ -32,10 +34,10 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Emulator != null) // the designer needs this check
 			{
 				DomainDropDown.Items.Clear();
-				DomainDropDown.Items.AddRange(Global.Emulator.MemoryDomains
+				DomainDropDown.Items.AddRange(Core.MemoryDomains
 					.Select(d => d.ToString())
 					.ToArray());
-				DomainDropDown.SelectedItem = Global.Emulator.MemoryDomains.MainMemory.ToString();
+				DomainDropDown.SelectedItem = Core.MemoryDomains.MainMemory.ToString();
 			}
 
 			SetFormToDefault();
@@ -89,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Emulator != null)
 			{
-				AddressBox.SetHexProperties(Global.Emulator.MemoryDomains.MainMemory.Size);
+				AddressBox.SetHexProperties(Core.MemoryDomains.MainMemory.Size);
 			}
 
 			ValueBox.ByteSize = 
@@ -112,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 			SetTypeSelected(Watch.DisplayType.Hex);
 
 			CheckFormState();
-			CompareBox.Text = String.Empty; // TODO: A needed hack until WatchValueBox.ToRawInt() becomes nullable
+			CompareBox.Text = string.Empty; // TODO: A needed hack until WatchValueBox.ToRawInt() becomes nullable
 			_loading = false;
 		}
 
@@ -200,7 +202,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!_loading)
 			{
-				var domain = Global.Emulator.MemoryDomains[DomainDropDown.SelectedItem.ToString()];
+				var domain = Core.MemoryDomains[DomainDropDown.SelectedItem.ToString()];
 				AddressBox.SetHexProperties(domain.Size);
 			}
 		}
@@ -276,13 +278,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				var domain = Global.Emulator.MemoryDomains[DomainDropDown.SelectedItem.ToString()];
+				var domain = Core.MemoryDomains[DomainDropDown.SelectedItem.ToString()];
 				var address = AddressBox.ToRawInt().Value;
 				//var address = AddressBox.ToRawInt() ?? 0;
 				if (address < domain.Size)
 				{
 					var watch = Watch.GenerateWatch(
-						Global.Emulator.MemoryDomains[DomainDropDown.SelectedItem.ToString()],
+						Core.MemoryDomains[DomainDropDown.SelectedItem.ToString()],
 						AddressBox.ToRawInt().Value,
 						GetCurrentSize(),
 						Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString()),

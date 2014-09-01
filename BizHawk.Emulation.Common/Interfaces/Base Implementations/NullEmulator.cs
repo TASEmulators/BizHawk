@@ -26,12 +26,6 @@ namespace BizHawk.Emulation.Common
 		public NullEmulator(CoreComm comm)
 		{
 			CoreComm = comm;
-			var domains = new MemoryDomainList(
-				new List<MemoryDomain>
-				{
-					new MemoryDomain("Main RAM", 1, MemoryDomain.Endian.Little, addr => 0, (a, v) => { })
-				});
-			memoryDomains = new MemoryDomainList(domains);
 
 			var d = DateTime.Now;
 			xmas = d.Month == 12 && d.Day >= 17 && d.Day <= 27;
@@ -89,8 +83,7 @@ namespace BizHawk.Emulation.Common
 		public int BufferWidth { get { return 256; } }
 		public int BufferHeight { get { return 192; } }
 		public int BackgroundColor { get { return 0; } }
-		private readonly MemoryDomainList memoryDomains;
-		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
+
 		public void Dispose() { }
 
 		public Dictionary<string, int> GetCpuFlagsAndRegisters()
