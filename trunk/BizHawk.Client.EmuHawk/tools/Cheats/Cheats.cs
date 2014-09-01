@@ -6,10 +6,12 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Sega.Genesis;
 
+using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 
@@ -45,11 +47,16 @@ namespace BizHawk.Client.EmuHawk
 		private string _sortedColumn = string.Empty;
 		private bool _sortReverse;
 
+		private readonly IMemoryDomains Core;
+
 		public bool UpdateBefore { get { return false; } }
 
 		public Cheats()
 		{
+			Core = (IMemoryDomains)Global.Emulator; // Cast is intentional in order to get a cast excpetion rather than a null reference exception later
 			InitializeComponent();
+			CheatEditor.Core = Core;
+
 			Closing += (o, e) =>
 			{
 				if (AskSaveChanges())
@@ -83,6 +90,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
+			if (!Global.Emulator.HasMemoryDomains())
+			{
+				Close();
+			}
+
 			StartNewList();
 		}
 

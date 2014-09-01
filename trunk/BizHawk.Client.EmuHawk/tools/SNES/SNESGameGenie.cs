@@ -4,8 +4,9 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -274,7 +275,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				var watch = Watch.GenerateWatch(
-					Global.Emulator.MemoryDomains["BUS"],
+					(Global.Emulator as IMemoryDomains).MemoryDomains["BUS"], // IMemoryDomains TODO: don't expose this dialog if not implementing this interface
 					address,
 					Watch.WatchSize.Byte,
 					Watch.DisplayType.Hex,

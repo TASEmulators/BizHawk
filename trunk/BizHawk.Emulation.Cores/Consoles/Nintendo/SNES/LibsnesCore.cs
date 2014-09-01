@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		portedVersion: "v87",
 		portedUrl: "http://byuu.org/"
 		)]
-	public unsafe class LibsnesCore : IEmulator, IVideoProvider
+	public unsafe class LibsnesCore : IEmulator, IVideoProvider, IMemoryDomains
 	{
 		public bool IsSGB { get; private set; }
 

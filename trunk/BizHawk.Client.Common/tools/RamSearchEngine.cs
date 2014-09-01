@@ -19,13 +19,14 @@ namespace BizHawk.Client.Common
 		private ComparisonOperator _operator = ComparisonOperator.Equal;
 
 		private List<IMiniWatch> _watchList = new List<IMiniWatch>();
-		private readonly Settings _settings = new Settings();
+		private readonly Settings _settings;
 		private readonly UndoHistory<IMiniWatch> _history = new UndoHistory<IMiniWatch>(true);
 		private bool _keepHistory = true;
 		private bool _isSorted = true; // Tracks whether or not the list is sorted by address, if it is, binary search can be used for finding watches
 
 		public RamSearchEngine(Settings settings)
 		{
+			_settings = new Settings((IMemoryDomains)Global.Emulator);
 			_settings.Mode = settings.Mode;
 			_settings.Domain = settings.Domain;
 			_settings.Size = settings.Size;
@@ -1160,6 +1161,20 @@ namespace BizHawk.Client.Common
 
 		public class Settings
 		{
+			public Settings(IMemoryDomains core)
+			{
+				BigEndian = core.MemoryDomains.MainMemory.EndianType == MemoryDomain.Endian.Big;
+				Size = (Watch.WatchSize)Global.SystemInfo.ByteSize;
+				Type = Watch.DisplayType.Unsigned;
+				Mode = core.MemoryDomains.MainMemory.Size > (1024 * 1024) ?
+					SearchMode.Fast :
+					SearchMode.Detailed;
+
+				Domain = core.MemoryDomains.MainMemory;
+				CheckMisAligned = false;
+				PreviousType = Watch.PreviousType.LastSearch;
+			}
+
 			/*Require restart*/
 			public enum SearchMode { Fast, Detailed }
 
@@ -1172,20 +1187,6 @@ namespace BizHawk.Client.Common
 			public Watch.DisplayType Type { get; set; }
 			public bool BigEndian { get; set; }
 			public Watch.PreviousType PreviousType { get; set; }
-
-			public Settings()
-			{
-				BigEndian = Global.Emulator.MemoryDomains.MainMemory.EndianType == MemoryDomain.Endian.Big;
-				Size = (Watch.WatchSize)Global.SystemInfo.ByteSize;
-				Type = Watch.DisplayType.Unsigned;
-				Mode = Global.Emulator.MemoryDomains.MainMemory.Size > (1024 * 1024) ?
-					SearchMode.Fast :
-					SearchMode.Detailed;
-
-				Domain = Global.Emulator.MemoryDomains.MainMemory;
-				CheckMisAligned = false;
-				PreviousType = Watch.PreviousType.LastSearch;
-			}
 		}
 
 		#endregion

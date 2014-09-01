@@ -12,6 +12,7 @@ namespace BizHawk.Client.Common
 {
 	public class WatchList : IList<Watch>
 	{
+		private readonly IMemoryDomains Core;
 		private List<Watch> _watchList = new List<Watch>();
 		private MemoryDomain _domain;
 		private string _currentFilename = string.Empty;
@@ -24,8 +25,9 @@ namespace BizHawk.Client.Common
 		public const string DOMAIN = "DomainColumn";
 		public const string NOTES = "NotesColumn";
 
-		public WatchList(MemoryDomain domain)
+		public WatchList(IMemoryDomains core, MemoryDomain domain)
 		{
+			Core = core;
 			_domain = domain;
 		}
 		
@@ -471,7 +473,7 @@ namespace BizHawk.Client.Common
 
 					// Temporary, rename if kept
 					int addr;
-					var memDomain = Global.Emulator.MemoryDomains.MainMemory;
+					var memDomain = Core.MemoryDomains.MainMemory;
 
 					var temp = line.Substring(0, line.IndexOf('\t'));
 					try
@@ -509,7 +511,7 @@ namespace BizHawk.Client.Common
 						startIndex = line.IndexOf('\t') + 1;
 						line = line.Substring(startIndex, line.Length - startIndex);   // Domain
 						temp = line.Substring(0, line.IndexOf('\t'));
-						memDomain = Global.Emulator.MemoryDomains[temp] ?? Global.Emulator.MemoryDomains.MainMemory;
+						memDomain = Core.MemoryDomains[temp] ?? Core.MemoryDomains.MainMemory;
 					}
 
 					startIndex = line.IndexOf('\t') + 1;
@@ -523,10 +525,10 @@ namespace BizHawk.Client.Common
 							type,
 							notes,
 							bigEndian));
-					_domain = Global.Emulator.MemoryDomains[domain];
+					_domain = Core.MemoryDomains[domain];
 				}
 
-				Domain = Global.Emulator.MemoryDomains[domain] ?? Global.Emulator.MemoryDomains.MainMemory;
+				Domain = Core.MemoryDomains[domain] ?? Core.MemoryDomains.MainMemory;
 				_currentFilename = path;
 			}
 

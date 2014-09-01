@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		portedVersion: "2.0",
 		portedUrl: "https://code.google.com/p/mupen64plus/"
 		)]
-	public class N64 : IEmulator
+	public class N64 : IEmulator, IMemoryDomains
 	{
 		private readonly N64Input _inputProvider;
 		private readonly N64VideoProvider _videoProvider;

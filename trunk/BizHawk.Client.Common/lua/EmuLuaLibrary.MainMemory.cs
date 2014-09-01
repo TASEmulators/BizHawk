@@ -3,6 +3,7 @@ using System.ComponentModel;
 
 using LuaInterface;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -19,7 +20,19 @@ namespace BizHawk.Client.Common
 
 		protected override MemoryDomain Domain
 		{
-			get { return Global.Emulator.MemoryDomains.MainMemory; }
+			get
+			{
+				if (Global.Emulator.HasMemoryDomains())
+				{
+					return (Global.Emulator as IMemoryDomains).MemoryDomains.MainMemory;
+				}
+				else
+				{
+					var error = string.Format("Error: {0} does not implement memory domains", Global.Emulator.Attributes().CoreName);
+					Log(error);
+					throw new NotImplementedException(error);
+				}
+			}
 		}
 
 		#region Unique Library Methods

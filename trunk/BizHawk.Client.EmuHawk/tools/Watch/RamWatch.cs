@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
+
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
@@ -26,7 +29,9 @@ namespace BizHawk.Client.EmuHawk
 			{ WatchList.NOTES, 128 },
 		};
 
-		private readonly WatchList _watches = new WatchList(Global.Emulator.MemoryDomains.MainMemory);
+		private readonly WatchList _watches;
+		private readonly IMemoryDomains Core;
+
 
 		private int _defaultWidth;
 		private int _defaultHeight;
@@ -36,6 +41,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public RamWatch()
 		{
+			Core = (IMemoryDomains)Global.Emulator; // Cast is intentional, better to get a cast exception than a null reference exception later
+			_watches = new WatchList(Core, Core.MemoryDomains.MainMemory);
 			InitializeComponent();
 			WatchListView.QueryItemText += WatchListView_QueryItemText;
 			WatchListView.QueryItemBkColor += WatchListView_QueryItemBkColor;
@@ -186,6 +193,11 @@ namespace BizHawk.Client.EmuHawk
 			if ((!IsHandleCreated || IsDisposed) && !Global.Config.DisplayRamWatch)
 			{
 				return;
+			}
+
+			if (!Global.Emulator.HasMemoryDomains())
+			{
+				Close();
 			}
 
 			if (!string.IsNullOrWhiteSpace(_watches.CurrentFileName))
@@ -556,7 +568,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetMemoryDomain(string name)
 		{
-			_watches.Domain = Global.Emulator.MemoryDomains[name];
+			_watches.Domain = Core.MemoryDomains[name];
 			SetPlatformAndMemoryDomainLabel();
 			Update();
 		}
@@ -737,7 +749,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			MemoryDomainsSubMenu.DropDownItems.Clear();
 			MemoryDomainsSubMenu.DropDownItems.AddRange(
-				Global.Emulator.MemoryDomains.MenuItems(SetMemoryDomain, _watches.Domain.Name)
+				Core.MemoryDomains.MenuItems(SetMemoryDomain, _watches.Domain.Name)
 				.ToArray());
 		}
 
