@@ -1352,7 +1352,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						newCell.RowIndex = PixelsToRows(x);
+						newCell.RowIndex = PixelsToRows(y);
 					}
 
 					newCell.Column = ColumnAtX(x);
