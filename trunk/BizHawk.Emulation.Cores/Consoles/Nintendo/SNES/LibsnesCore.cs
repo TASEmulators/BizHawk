@@ -981,7 +981,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			if (data.Length != size)
 				throw new Exception("Libsnes internal savestate size mismatch!");
 			api.CMD_init();
-			LoadCurrent(); //need to make sure chip roms are reloaded
+			//zero 01-sep-2014 - this approach isn't being used anymore, it's too slow!
+			//LoadCurrent(); //need to make sure chip roms are reloaded
 			fixed (byte* pbuf = &data[0])
 				api.CMD_unserialize(new IntPtr(pbuf), size);
 		}
