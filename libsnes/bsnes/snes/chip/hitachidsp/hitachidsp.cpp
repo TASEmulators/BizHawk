@@ -9,6 +9,10 @@ namespace SNES {
 #include "serialization.cpp"
 HitachiDSP hitachidsp;
 
+//zero 01-sep-2014 - dont clobber these when reconstructing!
+unsigned HitachiDSP::frequency;
+uint24 HitachiDSP::dataROM[1024];
+
 void HitachiDSP::Enter() { hitachidsp.enter(); }
 
 void HitachiDSP::enter() {
