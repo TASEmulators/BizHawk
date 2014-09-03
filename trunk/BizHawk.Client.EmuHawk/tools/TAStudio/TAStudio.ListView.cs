@@ -41,6 +41,26 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Query callbacks
 
+		private void TasView_QueryItemIcon(int index, int column, ref Bitmap bitmap)
+		{
+			var columnName = TasView.Columns[column].Name;
+
+			if (columnName == MarkerColumnName)
+			{
+				if (Global.Emulator.Frame == index)
+				{
+					if (TasView.HorizontalOrientation)
+					{
+						bitmap = Properties.Resources.te_arrow; // TODO: horizontal version
+					}
+					else
+					{
+						bitmap = Properties.Resources.te_arrow;
+					}
+				}
+			}
+		}
+
 		private void TasView_QueryItemBkColor(int index, int column, ref Color color)
 		{
 			var columnName = TasView.Columns[column].Name;
@@ -136,11 +156,11 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if(TasView.HorizontalOrientation)
 						{
-							text = " V";
+							//text = " V";
 						}
 						else
 						{
-							text = ">";
+							//text = ">";
 						}
 					}
 					else

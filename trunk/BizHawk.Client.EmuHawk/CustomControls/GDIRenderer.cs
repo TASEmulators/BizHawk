@@ -62,22 +62,15 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		#region Api
 
-		// TODO: extension method
-		private static byte[] ImageToByte(Image img)
-		{
-			ImageConverter converter = new ImageConverter();
-			return (byte[])converter.ConvertTo(img, typeof(byte[]));
-		}
-
 		/// <summary>
 		/// Draw a bitmap object at the given position
 		/// </summary>
-		public void DrawBitmap(Bitmap bitmap, int x, int y)
+		public void DrawBitmap(Bitmap bitmap, Point point)
 		{
 			IntPtr hbmp = bitmap.GetHbitmap();
 			var bitHDC = CreateCompatibleDC(CurrentHDC);
 			IntPtr old = new IntPtr(SelectObject(bitHDC, hbmp));
-			BitBlt(CurrentHDC, x, y, bitmap.Width, bitmap.Height, bitHDC, 0, 0, 0xCC0020);
+			BitBlt(CurrentHDC, point.X, point.Y, bitmap.Width, bitmap.Height, bitHDC, 0, 0, 0xCC0020);
 			SelectObject(bitHDC, old);
 			DeleteDC(bitHDC);
 		}

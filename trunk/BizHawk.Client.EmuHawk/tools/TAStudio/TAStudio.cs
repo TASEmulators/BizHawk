@@ -55,6 +55,7 @@ namespace BizHawk.Client.EmuHawk
 			MarkerControl.Tastudio = this;
 			TasView.QueryItemText += TasView_QueryItemText;
 			TasView.QueryItemBkColor += TasView_QueryItemBkColor;
+			TasView.QueryItemIcon += TasView_QueryItemIcon;
 
 			TopMost = Global.Config.TAStudioSettings.TopMost;
 			TasView.InputPaintingMode = Global.Config.TAStudioDrawInput;
