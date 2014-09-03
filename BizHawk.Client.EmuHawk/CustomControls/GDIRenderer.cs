@@ -74,15 +74,16 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// </summary>
 		public void DrawBitmap(Bitmap bitmap, int x, int y)
 		{
+			IntPtr hbmp = bitmap.GetHbitmap();
 			var bitHDC = CreateCompatibleDC(CurrentHDC);
-			var hbitmap = CreateCompatibleBitmap(CurrentHDC, bitmap.Width, bitmap.Height);
 
-			SelectObject(bitHDC, hbitmap);
-			SetBkMode(bitHDC, BkModes.TRANSPARENT);
+			IntPtr old = new IntPtr(SelectObject(bitHDC, hbmp));
+			//SetBkMode(bitHDC, BkModes.TRANSPARENT);
 
-			var bytes = ImageToByte(bitmap);
-			SetBitmapBits(hbitmap, (uint)bytes.Length, bytes);
+			BitBlt(CurrentHDC, x, y, bitmap.Width, bitmap.Height, bitHDC, 0, 0, 0xCC0020);
 
+			SelectObject(bitHDC, old);
+			DeleteDC(bitHDC);
 		}
 
 		/// <summary>
@@ -364,6 +365,9 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		[DllImport("gdi32.dll")]
 		private static extern IntPtr CreateCompatibleDC(IntPtr hdc);
+
+		[DllImport("gdi32.dll", EntryPoint = "DeleteDC")]
+		public static extern bool DeleteDC([In] IntPtr hdc);
 
 		[DllImport("gdi32.dll")]
 		private static extern IntPtr CreateCompatibleBitmap(IntPtr hdc, int width, int height);
