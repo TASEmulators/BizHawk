@@ -500,8 +500,6 @@ namespace BizHawk.Client.EmuHawk
 				//Foreground
 				DrawData(e);
 
-				Gdi.DrawBitmap(Properties.Resources.te_arrow, 1, 1);
-
 				Gdi.CopyToScreen();
 				Gdi.EndOffScreenBitmap();
 			}
