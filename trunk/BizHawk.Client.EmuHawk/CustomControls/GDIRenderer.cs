@@ -62,6 +62,29 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		#region Api
 
+		// TODO: extension method
+		private static byte[] ImageToByte(Image img)
+		{
+			ImageConverter converter = new ImageConverter();
+			return (byte[])converter.ConvertTo(img, typeof(byte[]));
+		}
+
+		/// <summary>
+		/// Draw a bitmap object at the given position
+		/// </summary>
+		public void DrawBitmap(Bitmap bitmap, int x, int y)
+		{
+			var bitHDC = CreateCompatibleDC(CurrentHDC);
+			var hbitmap = CreateCompatibleBitmap(CurrentHDC, bitmap.Width, bitmap.Height);
+
+			SelectObject(bitHDC, hbitmap);
+			SetBkMode(bitHDC, BkModes.TRANSPARENT);
+
+			var bytes = ImageToByte(bitmap);
+			SetBitmapBits(hbitmap, (uint)bytes.Length, bytes);
+
+		}
+
 		/// <summary>
 		/// Required to use before calling drawing methods
 		/// </summary>
@@ -348,6 +371,9 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		[DllImport("gdi32.dll", EntryPoint = "BitBlt", SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		static extern bool BitBlt([In] IntPtr hdc, int nXDest, int nYDest, int nWidth, int nHeight, [In] IntPtr hdcSrc, int nXSrc, int nYSrc, int dwRop);
+
+		[DllImport("gdi32.dll")]
+		static extern int SetBitmapBits(IntPtr hbmp, uint cBytes, byte[] lpBits);
 
 		#endregion
 
