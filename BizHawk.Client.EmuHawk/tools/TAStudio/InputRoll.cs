@@ -205,16 +205,22 @@ namespace BizHawk.Client.EmuHawk
 		#region Event Handlers
 
 		/// <summary>
-		/// Fire the QueryItemText event which requests the text for the passed Listview cell.
+		/// Fire the QueryItemText event which requests the text for the passed cell
 		/// </summary>
 		[Category("Virtual")]
 		public event QueryItemTextHandler QueryItemText;
 
 		/// <summary>
-		/// Fire the QueryItemBkColor event which requests the background color for the passed Listview cell
+		/// Fire the QueryItemBkColor event which requests the background color for the passed cell
 		/// </summary>
 		[Category("Virtual")]
 		public event QueryItemBkColorHandler QueryItemBkColor;
+
+		/// <summary>
+		/// Fire the QueryItemIconHandler event which requests an icon for a given cell
+		/// </summary>
+		[Category("Virtual")]
+		public event QueryItemIconHandler QueryItemIcon;
 
 		/// <summary>
 		/// Fires when the mouse moves from one cell to another (including column header cells)
@@ -249,6 +255,11 @@ namespace BizHawk.Client.EmuHawk
 		/// Retrieve the background color for a cell
 		/// </summary>
 		public delegate void QueryItemBkColorHandler(int index, int column, ref Color color);
+
+		/// <summary>
+		/// Retrive the image for a given cell
+		/// </summary>
+		public delegate void QueryItemIconHandler(int index, int column, ref Bitmap icon);
 
 		public delegate void CellChangeEventHandler(object sender, CellEventArgs e);
 
@@ -602,10 +613,24 @@ namespace BizHawk.Client.EmuHawk
 							}
 							string text;
 							var point = new Point(col.Left.Value + xPadding, RowsToPixels(i));
-							QueryItemText(i + startRow, j, out text);
-							if (!string.IsNullOrWhiteSpace(text))
+
+							Bitmap image = null;
+							if (QueryItemIcon != null)
 							{
-								Gdi.DrawString(text, point);
+								QueryItemIcon(i + startRow, j, ref image);
+							}
+
+							if (image != null)
+							{
+								Gdi.DrawBitmap(image, point);
+							}
+							else
+							{
+								QueryItemText(i + startRow, j, out text);
+								if (!string.IsNullOrWhiteSpace(text))
+								{
+									Gdi.DrawString(text, point);
+								}
 							}
 						}
 					}
