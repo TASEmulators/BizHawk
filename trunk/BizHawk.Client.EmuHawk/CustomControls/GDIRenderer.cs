@@ -76,12 +76,8 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		{
 			IntPtr hbmp = bitmap.GetHbitmap();
 			var bitHDC = CreateCompatibleDC(CurrentHDC);
-
 			IntPtr old = new IntPtr(SelectObject(bitHDC, hbmp));
-			//SetBkMode(bitHDC, BkModes.TRANSPARENT);
-
 			BitBlt(CurrentHDC, x, y, bitmap.Width, bitmap.Height, bitHDC, 0, 0, 0xCC0020);
-
 			SelectObject(bitHDC, old);
 			DeleteDC(bitHDC);
 		}
