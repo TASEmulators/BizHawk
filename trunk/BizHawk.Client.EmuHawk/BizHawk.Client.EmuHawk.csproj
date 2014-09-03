@@ -1471,6 +1471,9 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\tastudio\te_green_blue_arrow.bmp" />
+    <None Include="images\tastudio\te_green_arrow.bmp" />
+    <None Include="images\tastudio\te_arrow.bmp" />
     <None Include="images\noconnect_16x16.png" />
     <None Include="images\snes9x.png" />
     <None Include="images\YellowUp.png" />
