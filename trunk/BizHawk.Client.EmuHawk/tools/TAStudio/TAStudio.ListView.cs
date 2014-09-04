@@ -51,11 +51,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (TasView.HorizontalOrientation)
 					{
-						bitmap = Properties.Resources.te_arrow; // TODO: horizontal version
+						bitmap = Properties.Resources.ts_v_arrow_blue;
 					}
 					else
 					{
-						bitmap = Properties.Resources.te_arrow;
+						bitmap = Properties.Resources.ts_h_arrow_blue;
 					}
 				}
 			}
