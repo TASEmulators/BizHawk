@@ -1798,7 +1798,7 @@ namespace BizHawk.Client.EmuHawk
 			MupenStyleLagMenuItem.Checked = s.UseMupenStyleLag;
 
 			var ss = (N64SyncSettings)Global.Emulator.GetSyncSettings();
-			N64ExpansionSlotMenuItem.Checked = ss.DisableExpansionSlot;
+			N64ExpansionSlotMenuItem.Checked = !ss.DisableExpansionSlot;
 		}
 
 		private void N64PluginSettingsMenuItem_Click(object sender, EventArgs e)
