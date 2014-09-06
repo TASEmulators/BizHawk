@@ -106,7 +106,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			//not sure why this works... if we put the plugin initializations in here, we get deadlocks in some SDL initialization. doesnt make sense to me...
 			RunThreadAction(() =>
 			{
-				api = new mupen64plusApi(this, rom, videosettings, SaveType, (int)coreType);
+				api = new mupen64plusApi(this, rom, videosettings, SaveType, (int)coreType, _syncSettings.DisableExpansionSlot);
 			});
 
 			// Order is important because the register with the mupen core

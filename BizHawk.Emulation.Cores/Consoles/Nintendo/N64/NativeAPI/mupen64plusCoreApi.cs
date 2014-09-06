@@ -348,7 +348,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		// DLL handles
 		public IntPtr CoreDll { get; private set; }
 
-		public mupen64plusApi(N64 bizhawkCore, byte[] rom, VideoPluginSettings video_settings, int SaveType, int CoreType)
+		public mupen64plusApi(N64 bizhawkCore, byte[] rom, VideoPluginSettings video_settings, int SaveType, int CoreType, bool DisableExpansionSlot)
 		{
 			// There can only be one core (otherwise breaks mupen64plus)
 			if (AttachedCore != null)
@@ -367,6 +367,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			// Start up the core
 			m64p_error result = m64pCoreStartup(0x20001, "", "", "Core",
 				null, "", IntPtr.Zero);
+
+			// Set the savetype if needed
+			if (DisableExpansionSlot)
+			{
+				IntPtr core_section = IntPtr.Zero;
+				int disable = 1;
+				m64pConfigOpenSection("Core", ref core_section);
+				m64pConfigSetParameter(core_section, "DisableExtraMem", m64p_type.M64TYPE_INT, ref disable);
+			}
 
 			// Set the savetype if needed
 			if (SaveType != 0)
