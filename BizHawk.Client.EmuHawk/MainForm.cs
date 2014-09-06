@@ -1889,7 +1889,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				GlobalWin.OSD.AddMessage("Attempt to change sync-relevant setings while recording BLOCKED.");
+				GlobalWin.OSD.AddMessage("Attempt to change sync-relevant settings while recording BLOCKED.");
 			}
 			else if (Global.Emulator.PutSyncSettings(o))
 			{
