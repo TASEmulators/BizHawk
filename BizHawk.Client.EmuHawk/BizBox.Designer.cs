@@ -43,6 +43,7 @@
 			this.label27 = new System.Windows.Forms.Label();
 			this.label37 = new System.Windows.Forms.Label();
 			this.CoreInfoPanel = new System.Windows.Forms.Panel();
+			this.textBox1 = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -50,7 +51,7 @@
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.OK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.OK.Location = new System.Drawing.Point(361, 549);
+			this.OK.Location = new System.Drawing.Point(361, 504);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 0;
@@ -72,7 +73,7 @@
 			// 
 			this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabel1.AutoSize = true;
-			this.linkLabel1.Location = new System.Drawing.Point(236, 553);
+			this.linkLabel1.Location = new System.Drawing.Point(245, 509);
 			this.linkLabel1.Name = "linkLabel1";
 			this.linkLabel1.Size = new System.Drawing.Size(102, 13);
 			this.linkLabel1.TabIndex = 2;
@@ -180,8 +181,21 @@
 			this.CoreInfoPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.CoreInfoPanel.Location = new System.Drawing.Point(12, 180);
 			this.CoreInfoPanel.Name = "CoreInfoPanel";
-			this.CoreInfoPanel.Size = new System.Drawing.Size(423, 363);
+			this.CoreInfoPanel.Size = new System.Drawing.Size(423, 276);
 			this.CoreInfoPanel.TabIndex = 14;
+			// 
+			// textBox1
+			// 
+			this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBox1.Location = new System.Drawing.Point(13, 462);
+			this.textBox1.Multiline = true;
+			this.textBox1.Name = "textBox1";
+			this.textBox1.ReadOnly = true;
+			this.textBox1.Size = new System.Drawing.Size(423, 33);
+			this.textBox1.TabIndex = 16;
+			this.textBox1.Text = "jabo_direct3d8_patched.dll is distributed with the special permission of the auth" +
+    "or.";
 			// 
 			// BizBox
 			// 
@@ -189,7 +203,8 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.OK;
-			this.ClientSize = new System.Drawing.Size(448, 581);
+			this.ClientSize = new System.Drawing.Size(448, 536);
+			this.Controls.Add(this.textBox1);
 			this.Controls.Add(this.CoreInfoPanel);
 			this.Controls.Add(this.label37);
 			this.Controls.Add(this.label27);
@@ -232,5 +247,6 @@
 		private System.Windows.Forms.Label label27;
 		private System.Windows.Forms.Label label37;
 		private System.Windows.Forms.Panel CoreInfoPanel;
+		private System.Windows.Forms.TextBox textBox1;
 	}
 }
