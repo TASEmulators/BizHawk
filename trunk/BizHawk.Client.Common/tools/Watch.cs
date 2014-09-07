@@ -230,7 +230,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static Watch GenerateWatch(MemoryDomain domain, int address, WatchSize size, DisplayType type, bool bigendian, int prev, int changecount)
+		public static Watch GenerateWatch(MemoryDomain domain, int address, WatchSize size, DisplayType type, bool bigendian, long prev, int changecount)
 		{
 			switch (size)
 			{

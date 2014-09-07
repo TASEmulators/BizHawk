@@ -13,7 +13,8 @@ namespace BizHawk.Client.Common
 		public enum ComparisonOperator { Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual, DifferentBy }
 		public enum Compare { Previous, SpecificValue, SpecificAddress, Changes, Difference }
 		
-		private int? _differentBy;
+		private int? _differentBy; //zero 07-sep-2014 - this isnt ideal. but dont bother changing it (to a long, for instance) until it can support floats. maybe store it as a double here.
+
 		private Compare _compareTo = Compare.Previous;
 		private long? _compareValue;
 		private ComparisonOperator _operator = ComparisonOperator.Equal;
@@ -860,36 +861,15 @@ namespace BizHawk.Client.Common
 				default:
 				case Watch.WatchSize.Byte:
 					var theByte = _settings.Domain.PeekByte(addr % Domain.Size);
-					if (_settings.Type == Watch.DisplayType.Signed)
-					{
-						return (sbyte)theByte;
-					}
-					else
-					{
-						return theByte;
-					}
+					return theByte;
 
 				case Watch.WatchSize.Word:
 					var theWord = _settings.Domain.PeekWord(addr % Domain.Size, _settings.BigEndian);
-					if (_settings.Type == Watch.DisplayType.Signed)
-					{
-						return (short)theWord;
-					}
-					else
-					{
-						return theWord;
-					}
+					return theWord;
 
 				case Watch.WatchSize.DWord:
 					var theDWord = _settings.Domain.PeekDWord(addr % Domain.Size, _settings.BigEndian);
-					if (_settings.Type == Watch.DisplayType.Signed)
-					{
-						return (int)theDWord;
-					}
-					else
-					{
-						return theDWord;
-					}
+					return theDWord;
 			}
 		}
 
@@ -912,7 +892,7 @@ namespace BizHawk.Client.Common
 		public interface IMiniWatch
 		{
 			int Address { get; }
-			int Previous { get; }
+			long Previous { get; }
 			void SetPreviousToCurrent(MemoryDomain domain, bool bigendian);
 		}
 
@@ -935,7 +915,7 @@ namespace BizHawk.Client.Common
 				_previous = domain.PeekByte(Address % domain.Size);
 			}
 
-			public int Previous
+			public long Previous
 			{
 				get { return _previous; }
 			}
@@ -957,7 +937,7 @@ namespace BizHawk.Client.Common
 				_previous = domain.PeekWord(Address % domain.Size, bigEndian);
 			}
 
-			public int Previous
+			public long Previous
 			{
 				get { return _previous; }
 			}
@@ -979,9 +959,9 @@ namespace BizHawk.Client.Common
 				_previous = domain.PeekDWord(Address % domain.Size, bigEndian);
 			}
 
-			public int Previous
+			public long Previous
 			{
-				get { return (int)_previous; }
+				get { return _previous; }
 			}
 
 			public void SetPreviousToCurrent(MemoryDomain domain, bool bigendian)
@@ -1009,7 +989,7 @@ namespace BizHawk.Client.Common
 				_previous = _prevFrame = domain.PeekByte(Address % domain.Size);
 			}
 
-			public int Previous
+			public long Previous
 			{
 				get { return _previous; }
 			}
@@ -1066,7 +1046,7 @@ namespace BizHawk.Client.Common
 				_previous = _prevFrame = domain.PeekWord(Address % domain.Size, bigendian);
 			}
 
-			public int Previous
+			public long Previous
 			{
 				get { return _previous; }
 			}
@@ -1122,7 +1102,7 @@ namespace BizHawk.Client.Common
 				_previous = _prevFrame = domain.PeekDWord(Address % domain.Size, bigendian);
 			}
 
-			public int Previous
+			public long Previous
 			{
 				get { return (int)_previous; }
 			}
