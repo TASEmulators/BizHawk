@@ -21,6 +21,9 @@ rmdir /s /q temp\lua
 svn export ..\output\lua temp\Lua
 
 cd temp
+upx -d dll\*.dll
+upx -d dll\*.exe
+upx -d *.exe
 ..\zip -X -9 -r ..\BizHawk.zip .
 cd ..
 
