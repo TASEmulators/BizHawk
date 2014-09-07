@@ -61,6 +61,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			_syncSettings = (N64SyncSettings)syncSettings ?? new N64SyncSettings();
 			_settings = (N64Settings)settings ?? new N64Settings();
 
+
+			if (game.OptionValue("expansionpak") != null && game.OptionValue("expansionpak") == "1")
+			{
+				_syncSettings.DisableExpansionSlot = false;
+			}
+
 			byte country_code = rom[0x3E];
 			switch (country_code)
 			{
