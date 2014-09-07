@@ -474,7 +474,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		#region Memory Domains
 
-		private MemoryDomain MakeMemoryDomain(string name, mupen64plusApi.N64_MEMORY id, MemoryDomain.Endian endian)
+		private MemoryDomain MakeMemoryDomain(string name, mupen64plusApi.N64_MEMORY id, MemoryDomain.Endian endian, bool swizzled = false)
 		{
 			int size = api.get_memory_size(id);
 
@@ -486,28 +486,53 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			IntPtr memPtr = api.get_memory_ptr(id);
 
-			var md = new MemoryDomain(
-				name,
-				size,
-				endian,
-				delegate(int addr)
+			Func<int, byte> peekByte;
+			Action<int, byte> pokeByte;
+
+			if (swizzled)
+			{
+				peekByte = delegate(int addr)
 				{
 					if (addr < 0 || addr >= size)
 					{
 						throw new ArgumentOutOfRangeException();
 					}
 
-					return Marshal.ReadByte(memPtr, addr);
-				},
-				delegate(int addr, byte val)
+					return Marshal.ReadByte(memPtr, (addr ^ 3));
+				};
+				pokeByte = delegate(int addr, byte val)
 				{
 					if (addr < 0 || addr >= size)
 					{
 						throw new ArgumentOutOfRangeException();
 					}
 
-					Marshal.WriteByte(memPtr + addr, val);
-				});
+					Marshal.WriteByte(memPtr, (addr ^ 3), val);
+				};
+			}
+			else
+			{
+				peekByte = delegate(int addr)
+				{
+					if (addr < 0 || addr >= size)
+					{
+						throw new ArgumentOutOfRangeException();
+					}
+
+					return Marshal.ReadByte(memPtr, (addr));
+				};
+				pokeByte = delegate(int addr, byte val)
+				{
+					if (addr < 0 || addr >= size)
+					{
+						throw new ArgumentOutOfRangeException();
+					}
+
+					Marshal.WriteByte(memPtr, (addr), val);
+				};
+			}
+
+			var md = new MemoryDomain(name, size, endian, peekByte, pokeByte);
 
 			_memoryDomains.Add(md);
 
@@ -516,7 +541,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		private void InitMemoryDomains()
 		{
-			MakeMemoryDomain("RDRAM", mupen64plusApi.N64_MEMORY.RDRAM, MemoryDomain.Endian.Little);
+			//zero 07-sep-2014 - made RDRAM big endian domain, but none others. others need to be studied individually.
+			MakeMemoryDomain("RDRAM", mupen64plusApi.N64_MEMORY.RDRAM, MemoryDomain.Endian.Big, true);
+
 			MakeMemoryDomain("PI Register", mupen64plusApi.N64_MEMORY.PI_REG, MemoryDomain.Endian.Little);
 			MakeMemoryDomain("SI Register", mupen64plusApi.N64_MEMORY.SI_REG, MemoryDomain.Endian.Little);
 			MakeMemoryDomain("VI Register", mupen64plusApi.N64_MEMORY.VI_REG, MemoryDomain.Endian.Little);
