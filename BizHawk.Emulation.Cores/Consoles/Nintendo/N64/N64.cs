@@ -327,8 +327,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			byte[] data = SaveStatePrivateBuff;
 			int bytes_used = api.SaveState(data);
 
-			writer.Write(data.Length);
-			writer.Write(data);
+			writer.Write(bytes_used);
+			writer.Write(data, 0, bytes_used);
 
 			byte[] saveram = api.SaveSaveram();
 			writer.Write(saveram);
@@ -346,6 +346,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			int length = reader.ReadInt32();
+			if ((_syncSettings.DisableExpansionSlot && length >= 16788288) || (!_syncSettings.DisableExpansionSlot && length < 16788288))
+			{
+				throw new SavestateSizeMismatchException("Wrong N64 savestate size");
+			}
+
 			reader.Read(SaveStatePrivateBuff, 0, length);
 			byte[] data = SaveStatePrivateBuff;
 
