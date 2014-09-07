@@ -45,7 +45,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		public mupen64plusVideoApi(mupen64plusApi core, VideoPluginSettings settings)
 		{
 			string videoplugin;
-			bool jaboReady = false;
 			switch (settings.Plugin)
 			{
 				default:
@@ -60,14 +59,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 					break;
 				case PluginType.Jabo:
 					videoplugin = "mupen64plus-video-jabo.dll";
-
-					N64JaboManager manager = new N64JaboManager();
-					manager.Scan();
-					if (manager.Status == N64JaboManager.JaboStatus.ReadyToPatch)
-						manager.Patch();
-					if(manager.Status != N64JaboManager.JaboStatus.Ready)
-						throw new FileNotFoundException(string.Format("Error: Jabo dll was not found. please copy Jabo_Direct3D8.dll from a Project64 v1.6.1 installation into Bizhawk's dll directory."));
-
 					break;
 			}
 

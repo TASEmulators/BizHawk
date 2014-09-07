@@ -19,9 +19,6 @@ namespace BizHawk.Client.EmuHawk
 		private N64Settings s;
 		private N64SyncSettings ss;
 
-		private N64JaboManager.JaboStatus currentJaboStatus = N64JaboManager.JaboStatus.NotReady;
-
-
 		string[] validResolutions = {
 										"320 x 240",
 										"400 x 300",
@@ -401,10 +398,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void N64VideoPluginconfig_Load(object sender, EventArgs e)
 		{
-			N64JaboManager manager = new N64JaboManager();
-			manager.Scan();
-			currentJaboStatus = manager.Status;
-
 			s = GetSettings();
 			ss = GetSyncSettings();
 
@@ -972,41 +965,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (PluginComboBox.Text == "Jabo 1.6.1")
 			{
-				if (currentJaboStatus == N64JaboManager.JaboStatus.Ready || currentJaboStatus == N64JaboManager.JaboStatus.ReadyToPatch)
-				{
-					jaboStatusLabel.Text = "You are ready to use Jabo.";
-					jaboStatusDetailLabel.Text = "";
-
-					// Change resolution list to jabo
-					VideoResolutionComboBox.Items.Clear();
-					VideoResolutionComboBox.Items.AddRange(validResolutionsJabo);
-				}
-				else
-				{
-					jaboStatusDetailLabel.Text = "To use Jabo please copy Jabo_Direct3D8.dll from a Project64 v1.6.1 installation into Bizhawk's dll directory.";
-					if (currentJaboStatus == N64JaboManager.JaboStatus.NotReady)
-					{
-						jaboStatusLabel.Text = "You are NOT ready to use Jabo.";
-					}
-					else if (currentJaboStatus == N64JaboManager.JaboStatus.WrongVersion16)
-					{
-						jaboStatusLabel.Text = "You are NOT ready to use Jabo. Bizhawk requires Jabo Direct3D8 v1.6.1, but found v1.6 instead.";
-					}
-					else if (currentJaboStatus == N64JaboManager.JaboStatus.WrongVersion21)
-					{
-						jaboStatusLabel.Text = "You are NOT ready to use Jabo. Bizhawk requires Jabo Direct3D8 v1.6.1, but found v2.0 instead.";
-					}
-
-					programmaticallyChangingPluginComboBox = true;
-					PluginComboBox.SelectedItem = previousPluginSelection;
-					programmaticallyChangingPluginComboBox = false;
-				}
+				// Change resolution list to jabo
+				VideoResolutionComboBox.Items.Clear();
+				VideoResolutionComboBox.Items.AddRange(validResolutionsJabo);
 			}
 			else
 			{
-				jaboStatusLabel.Text = "";
-				jaboStatusDetailLabel.Text = "";
-
 				// Change resolution list to the rest
 				VideoResolutionComboBox.Items.Clear();
 				VideoResolutionComboBox.Items.AddRange(validResolutions);
