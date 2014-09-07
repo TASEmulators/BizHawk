@@ -32,8 +32,6 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(N64VideoPluginconfig));
 			this.N64plugintabcontrol = new System.Windows.Forms.TabControl();
 			this.N64vpluginglobaltab = new System.Windows.Forms.TabPage();
-			this.jaboStatusDetailLabel = new System.Windows.Forms.Label();
-			this.jaboStatusLabel = new System.Windows.Forms.Label();
 			this.label49 = new System.Windows.Forms.Label();
 			this.RspTypeDropdown = new System.Windows.Forms.ComboBox();
 			this.label48 = new System.Windows.Forms.Label();
@@ -275,6 +273,10 @@
 			this.Glide64mk2_UseDefaultHacks2 = new System.Windows.Forms.CheckBox();
 			this.JaboTab = new System.Windows.Forms.TabPage();
 			this.JaboPerGameHacksGroupBox = new System.Windows.Forms.GroupBox();
+			this.JaboResolutionHeightBox = new BizHawk.Client.EmuHawk.WatchValueBox();
+			this.JaboResolutionWidthBox = new BizHawk.Client.EmuHawk.WatchValueBox();
+			this.label71 = new System.Windows.Forms.Label();
+			this.label70 = new System.Windows.Forms.Label();
 			this.JaboClearModeDropDown = new System.Windows.Forms.ComboBox();
 			this.label69 = new System.Windows.Forms.Label();
 			this.JaboUseForGameCheckbox = new System.Windows.Forms.CheckBox();
@@ -304,10 +306,6 @@
 			this.SaveButton = new System.Windows.Forms.Button();
 			this.CancelBT = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.label70 = new System.Windows.Forms.Label();
-			this.label71 = new System.Windows.Forms.Label();
-			this.JaboResolutionWidthBox = new BizHawk.Client.EmuHawk.WatchValueBox();
-			this.JaboResolutionHeightBox = new BizHawk.Client.EmuHawk.WatchValueBox();
 			this.N64plugintabcontrol.SuspendLayout();
 			this.N64vpluginglobaltab.SuspendLayout();
 			this.RiceTabPage.SuspendLayout();
@@ -351,8 +349,6 @@
 			// 
 			// N64vpluginglobaltab
 			// 
-			this.N64vpluginglobaltab.Controls.Add(this.jaboStatusDetailLabel);
-			this.N64vpluginglobaltab.Controls.Add(this.jaboStatusLabel);
 			this.N64vpluginglobaltab.Controls.Add(this.label49);
 			this.N64vpluginglobaltab.Controls.Add(this.RspTypeDropdown);
 			this.N64vpluginglobaltab.Controls.Add(this.label48);
@@ -369,24 +365,6 @@
 			this.N64vpluginglobaltab.TabIndex = 0;
 			this.N64vpluginglobaltab.Text = "Global";
 			this.N64vpluginglobaltab.UseVisualStyleBackColor = true;
-			// 
-			// jaboStatusDetailLabel
-			// 
-			this.jaboStatusDetailLabel.AutoSize = true;
-			this.jaboStatusDetailLabel.Location = new System.Drawing.Point(10, 160);
-			this.jaboStatusDetailLabel.Name = "jaboStatusDetailLabel";
-			this.jaboStatusDetailLabel.Size = new System.Drawing.Size(91, 13);
-			this.jaboStatusDetailLabel.TabIndex = 20;
-			this.jaboStatusDetailLabel.Text = "Jabo Status detail";
-			// 
-			// jaboStatusLabel
-			// 
-			this.jaboStatusLabel.AutoSize = true;
-			this.jaboStatusLabel.Location = new System.Drawing.Point(10, 137);
-			this.jaboStatusLabel.Name = "jaboStatusLabel";
-			this.jaboStatusLabel.Size = new System.Drawing.Size(63, 13);
-			this.jaboStatusLabel.TabIndex = 19;
-			this.jaboStatusLabel.Text = "Jabo Status";
 			// 
 			// label49
 			// 
@@ -3316,6 +3294,50 @@
 			this.JaboPerGameHacksGroupBox.TabStop = false;
 			this.JaboPerGameHacksGroupBox.Text = "Per game settings";
 			// 
+			// JaboResolutionHeightBox
+			// 
+			this.JaboResolutionHeightBox.ByteSize = BizHawk.Client.Common.Watch.WatchSize.Byte;
+			this.JaboResolutionHeightBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.JaboResolutionHeightBox.Location = new System.Drawing.Point(127, 90);
+			this.JaboResolutionHeightBox.MaxLength = 4;
+			this.JaboResolutionHeightBox.Name = "JaboResolutionHeightBox";
+			this.JaboResolutionHeightBox.Nullable = false;
+			this.JaboResolutionHeightBox.Size = new System.Drawing.Size(52, 20);
+			this.JaboResolutionHeightBox.TabIndex = 34;
+			this.JaboResolutionHeightBox.Text = "0";
+			this.JaboResolutionHeightBox.Type = BizHawk.Client.Common.Watch.DisplayType.Signed;
+			// 
+			// JaboResolutionWidthBox
+			// 
+			this.JaboResolutionWidthBox.ByteSize = BizHawk.Client.Common.Watch.WatchSize.Byte;
+			this.JaboResolutionWidthBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.JaboResolutionWidthBox.Location = new System.Drawing.Point(127, 60);
+			this.JaboResolutionWidthBox.MaxLength = 4;
+			this.JaboResolutionWidthBox.Name = "JaboResolutionWidthBox";
+			this.JaboResolutionWidthBox.Nullable = false;
+			this.JaboResolutionWidthBox.Size = new System.Drawing.Size(52, 20);
+			this.JaboResolutionWidthBox.TabIndex = 33;
+			this.JaboResolutionWidthBox.Text = "0";
+			this.JaboResolutionWidthBox.Type = BizHawk.Client.Common.Watch.DisplayType.Signed;
+			// 
+			// label71
+			// 
+			this.label71.AutoSize = true;
+			this.label71.Location = new System.Drawing.Point(15, 94);
+			this.label71.Name = "label71";
+			this.label71.Size = new System.Drawing.Size(91, 13);
+			this.label71.TabIndex = 32;
+			this.label71.Text = "Resolution Height";
+			// 
+			// label70
+			// 
+			this.label70.AutoSize = true;
+			this.label70.Location = new System.Drawing.Point(15, 64);
+			this.label70.Name = "label70";
+			this.label70.Size = new System.Drawing.Size(88, 13);
+			this.label70.TabIndex = 31;
+			this.label70.Text = "Resolution Width";
+			// 
 			// JaboClearModeDropDown
 			// 
 			this.JaboClearModeDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -3600,50 +3622,6 @@
 			this.toolTip1.IsBalloon = true;
 			this.toolTip1.ReshowDelay = 100;
 			this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-			// 
-			// label70
-			// 
-			this.label70.AutoSize = true;
-			this.label70.Location = new System.Drawing.Point(15, 64);
-			this.label70.Name = "label70";
-			this.label70.Size = new System.Drawing.Size(88, 13);
-			this.label70.TabIndex = 31;
-			this.label70.Text = "Resolution Width";
-			// 
-			// label71
-			// 
-			this.label71.AutoSize = true;
-			this.label71.Location = new System.Drawing.Point(15, 94);
-			this.label71.Name = "label71";
-			this.label71.Size = new System.Drawing.Size(91, 13);
-			this.label71.TabIndex = 32;
-			this.label71.Text = "Resolution Height";
-			// 
-			// JaboResolutionWidthBox
-			// 
-			this.JaboResolutionWidthBox.ByteSize = BizHawk.Client.Common.Watch.WatchSize.Byte;
-			this.JaboResolutionWidthBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.JaboResolutionWidthBox.Location = new System.Drawing.Point(127, 60);
-			this.JaboResolutionWidthBox.MaxLength = 4;
-			this.JaboResolutionWidthBox.Name = "JaboResolutionWidthBox";
-			this.JaboResolutionWidthBox.Nullable = false;
-			this.JaboResolutionWidthBox.Size = new System.Drawing.Size(52, 20);
-			this.JaboResolutionWidthBox.TabIndex = 33;
-			this.JaboResolutionWidthBox.Text = "0";
-			this.JaboResolutionWidthBox.Type = BizHawk.Client.Common.Watch.DisplayType.Signed;
-			// 
-			// JaboResolutionHeightBox
-			// 
-			this.JaboResolutionHeightBox.ByteSize = BizHawk.Client.Common.Watch.WatchSize.Byte;
-			this.JaboResolutionHeightBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.JaboResolutionHeightBox.Location = new System.Drawing.Point(127, 90);
-			this.JaboResolutionHeightBox.MaxLength = 4;
-			this.JaboResolutionHeightBox.Name = "JaboResolutionHeightBox";
-			this.JaboResolutionHeightBox.Nullable = false;
-			this.JaboResolutionHeightBox.Size = new System.Drawing.Size(52, 20);
-			this.JaboResolutionHeightBox.TabIndex = 34;
-			this.JaboResolutionHeightBox.Text = "0";
-			this.JaboResolutionHeightBox.Type = BizHawk.Client.Common.Watch.DisplayType.Signed;
 			// 
 			// N64VideoPluginconfig
 			// 
@@ -3949,8 +3927,6 @@
 		private System.Windows.Forms.Label label49;
 		private System.Windows.Forms.ComboBox RspTypeDropdown;
 		private System.Windows.Forms.TabPage JaboTab;
-		private System.Windows.Forms.Label jaboStatusLabel;
-		private System.Windows.Forms.Label jaboStatusDetailLabel;
 		private System.Windows.Forms.Label label51;
 		private System.Windows.Forms.ComboBox JaboAnisotropicFilteringLevelDropdown;
 		private System.Windows.Forms.Label label57;
