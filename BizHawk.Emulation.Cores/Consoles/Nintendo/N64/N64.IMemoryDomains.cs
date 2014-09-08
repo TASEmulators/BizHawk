@@ -113,6 +113,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				MakeMemoryDomain("Mempak 4", mupen64plusApi.N64_MEMORY.MEMPAK4, MemoryDomain.Endian.Little);
 			}
 
+
+			Func<int, byte> peekByte;
+			Action<int, byte> pokeByte;
+
+			peekByte = delegate(int addr)
+				{
+					return api.m64p_read_memory_8((uint)addr);
+				};
+				pokeByte = delegate(int addr, byte val)
+				{
+					api.m64p_write_memory_8((uint)addr, val);
+				};
+
+			_memoryDomains.Add(new MemoryDomain
+				(
+					name: "Sytem Bus",
+					size: int.MaxValue,
+					endian: MemoryDomain.Endian.Big,
+					peekByte: peekByte,
+					pokeByte: pokeByte
+				));
+
 			MemoryDomains = new MemoryDomainList(_memoryDomains);
 		}
 	}
