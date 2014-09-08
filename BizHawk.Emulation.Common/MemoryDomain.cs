@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Common
 				throw new ArgumentNullException("data");
 			if (size <= 0)
 				throw new ArgumentOutOfRangeException("size");
-			byte *p = (byte*) data;
+			byte* p = (byte*)data;
 			return new MemoryDomain
 			(
 				name,
@@ -59,6 +59,45 @@ namespace BizHawk.Emulation.Common
 						if (addr < 0 || addr >= size)
 							throw new ArgumentOutOfRangeException();
 						p[addr] = val;
+					}
+				}
+			);
+		}
+
+		/// <summary>
+		/// create a memorydomain that references an unmanaged memory block with 16 bit swaps
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="size"></param>
+		/// <param name="endian"></param>
+		/// <param name="data">must remain valid as long as the MemoryDomain exists!</param>
+		/// <param name="writable">if false, writes will be ignored</param>
+		/// <returns></returns>
+		public unsafe static MemoryDomain FromIntPtrSwap16(string name, int size, Endian endian, IntPtr data, bool writable = true)
+		{
+			if (data == IntPtr.Zero)
+				throw new ArgumentNullException("data");
+			if (size <= 0)
+				throw new ArgumentOutOfRangeException("size");
+			byte* p = (byte*)data;
+			return new MemoryDomain
+			(
+				name,
+				size,
+				endian,
+				delegate(int addr)
+				{
+					if (addr < 0 || addr >= size)
+						throw new ArgumentOutOfRangeException();
+					return p[addr ^ 1];
+				},
+				delegate(int addr, byte val)
+				{
+					if (writable)
+					{
+						if (addr < 0 || addr >= size)
+							throw new ArgumentOutOfRangeException();
+						p[addr ^ 1] = val;
 					}
 				}
 			);
