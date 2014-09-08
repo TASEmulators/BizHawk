@@ -1009,6 +1009,47 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public CoreComm CoreComm { get; private set; }
 
+		// works for WRAM, garbage for anything else
+		static int? FakeBusMap(int addr)
+		{
+			addr &= 0xffffff;
+			int bank = addr >> 16;
+			if (bank == 0x7e || bank == 0x7f)
+				return addr & 0x1ffff;
+			bank &= 0x7f;
+			int low = addr & 0xffff;
+			if (bank < 0x40 && low < 0x2000)
+				return low;
+			return null;
+		}
+
+		unsafe void MakeFakeBus()
+		{
+			int size = api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.WRAM);
+			if (size != 0x20000)
+				throw new InvalidOperationException();
+
+			byte* blockptr = api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.WRAM);
+
+			var md = new MemoryDomain("BUS", 0x1000000, MemoryDomain.Endian.Little,
+				(addr) =>
+				{
+					var a = FakeBusMap(addr);
+					if (a.HasValue)
+						return blockptr[a.Value];
+					else
+						return 0;
+				},
+				(addr, val) =>
+				{
+					var a = FakeBusMap(addr);
+					if (a.HasValue)
+						blockptr[a.Value] = val;
+				});			
+			_memoryDomains.Add(md);
+		}
+
+
 		// ----- Client Debugging API stuff -----
 		unsafe MemoryDomain MakeMemoryDomain(string name, LibsnesApi.SNES_MEMORY id, MemoryDomain.Endian endian)
 		{
@@ -1093,10 +1134,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				MakeMemoryDomain("APURAM", LibsnesApi.SNES_MEMORY.APURAM, MemoryDomain.Endian.Little);
 
 				if (!DeterministicEmulation)
+				{
 					_memoryDomains.Add(new MemoryDomain("BUS", 0x1000000, MemoryDomain.Endian.Little,
 						(addr) => api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr),
 						(addr, val) => api.QUERY_poke(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr, val)));
-
+				}
+				else
+				{
+					// limited function bus
+					MakeFakeBus();
+				}
 			}
 
 			MemoryDomains = new MemoryDomainList(_memoryDomains);
