@@ -428,12 +428,23 @@ void write_memory_16(uint32 addr, uint16 value)
     write_memory_8(addr + 1, value & 0xFF); //then again, it works unaligned
 }
 
+
+EXPORT uint8 CALL biz_read_memory(uint32 addr)
+{
+	return read_memory_8(addr);
+}
+
 uint8 read_memory_8(uint32 addr)
 {
     uint32 word;
     
     word = read_memory_32(addr & ~3);
     return (word >> ((3 - (addr & 3)) * 8)) & 0xFF;
+}
+
+EXPORT void CALL biz_write_memory(uint32 addr, uint8 value)
+{
+	write_memory_8(addr, value);
 }
 
 void write_memory_8(uint32 addr, uint8 value)
