@@ -491,6 +491,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			m64pSetWriteCallback = (SetWriteCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "SetWriteCallback"), typeof(SetWriteCallback));
 
 			m64pGetRegisters = (GetRegisters)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "GetRegisters"), typeof(GetRegisters));
+
+			m64p_read_memory_8 = (biz_read_memory)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "biz_read_memory"), typeof(biz_read_memory));
+			m64p_write_memory_8 = (biz_write_memory)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "biz_write_memory"), typeof(biz_write_memory));
 		}
 
 		/// <summary>
