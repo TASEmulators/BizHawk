@@ -10,6 +10,11 @@ namespace BizHawk.Emulation.Common
 		public enum Endian { Big, Little, Unknown }
 
 		public readonly string Name;
+
+		/// <summary>
+		/// Special note: if this is 0, the memorydomain is 0x100000000 (full 32bits) in size.
+		/// This was judged to be less of a mess than using a bunch of longs everywhere.
+		/// </summary>
 		public readonly int Size;
 		public readonly Endian EndianType;
 
