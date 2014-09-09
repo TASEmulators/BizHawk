@@ -129,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			_memoryDomains.Add(new MemoryDomain
 				(
 					name: "Sytem Bus",
-					size: int.MaxValue,
+					size: 0, //special case for full 32bit memorydomain
 					endian: MemoryDomain.Endian.Big,
 					peekByte: peekByte,
 					pokeByte: pokeByte

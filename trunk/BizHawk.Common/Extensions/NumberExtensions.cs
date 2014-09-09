@@ -60,6 +60,12 @@ namespace BizHawk.Common.NumberExtensions
 		/// </summary>
 		public static int NumHexDigits(this int i)
 		{
+			//now this is a bit of a trick. if it was less than 0, it mustve been >= 0x80000000 and so takes all 8 digits
+			if (i < 0)
+			{
+				return 8;
+			}
+
 			if (i < 0x100)
 			{
 				return 2;

@@ -661,6 +661,9 @@ namespace BizHawk.Client.EmuHawk
 
 			for (var i = 0; i < MemoryDomains.Count; i++)
 			{
+				//zero 09-sep-2014 - what cases would have a MemoryDomain of size 0? 
+				//1. unspecified malfunctions (please specify)
+				//2. full 32bit memorydomains
 				if (MemoryDomains[i].Size > 0)
 				{
 					var str = MemoryDomains[i].ToString();
