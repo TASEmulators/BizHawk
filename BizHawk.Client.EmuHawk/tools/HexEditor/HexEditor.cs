@@ -41,6 +41,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _maxRow;
 
+		private long _domainSize;
 		private MemoryDomain _domain = new MemoryDomain(
 			"NULL", 1024, MemoryDomain.Endian.Little, addr => 0, delegate(int a, byte v) { v = 0; });
 
@@ -200,7 +201,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				startByte = 0;
 			}
-			else if (_addressHighlighted >= (_domain.Size - 1 - numByte))
+			else if (_addressHighlighted >= (_domainSize - 1 - numByte))
 			{
 				startByte = 0;
 			}
@@ -209,7 +210,7 @@ namespace BizHawk.Client.EmuHawk
 				startByte = _addressHighlighted + _dataSize;
 			}
 
-			for (var i = startByte; i < (_domain.Size - numByte); i++)
+			for (var i = startByte; i < (_domainSize - numByte); i++)
 			{
 				var ramblock = new StringBuilder();
 				for (var j = 0; j < numByte; j++)
@@ -254,7 +255,7 @@ namespace BizHawk.Client.EmuHawk
 			int startByte;
 			if (_addressHighlighted == -1)
 			{
-				startByte = _domain.Size - _dataSize;
+				startByte = (int)(_domainSize - _dataSize);
 			}
 			else
 			{
@@ -381,7 +382,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static int GetNumDigits(int i)
+		private static int GetNumDigits(long i)
 		{
 			if (i <= 0x10000)
 			{
@@ -510,7 +511,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_row = i + HexScrollBar.Value;
 				_addr = _row << 4;
-				if (_addr >= _domain.Size)
+				if (_addr >= _domainSize)
 				{
 					break;
 				}
@@ -538,14 +539,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_row = i + HexScrollBar.Value;
 				_addr = _row << 4;
-				if (_addr >= _domain.Size)
+				if (_addr >= _domainSize)
 				{
 					break;
 				}
 
 				for (var j = 0; j < 16; j += _dataSize)
 				{
-					if (_addr + j + _dataSize <= _domain.Size)
+					if (_addr + j + _dataSize <= _domainSize)
 					{
 						rowStr.AppendFormat(_digitFormatString, MakeValue(_addr + j));
 					}
@@ -563,7 +564,7 @@ namespace BizHawk.Client.EmuHawk
 				rowStr.Append("  | ");
 				for (var k = 0; k < 16; k++)
 				{
-					if (_addr + k < _domain.Size)
+					if (_addr + k < _domainSize)
 					{
 						rowStr.Append(Remap(MakeByte(_addr + k)));
 					}
@@ -604,8 +605,14 @@ namespace BizHawk.Client.EmuHawk
 		private void SetMemoryDomain(MemoryDomain d)
 		{
 			_domain = d;
+
+			//store domain size separately as a long, to apply 0-hack
+			_domainSize = _domain.Size;
+			if (_domainSize == 0)
+				_domainSize = 0x100000000;
+
 			_bigEndian = d.EndianType == MemoryDomain.Endian.Big;
-			_maxRow = _domain.Size / 2;
+			_maxRow = (int)(_domainSize / 2);
 			SetUpScrollBar();
 			if (0 >= HexScrollBar.Minimum && 0 <= HexScrollBar.Maximum)
 			{
@@ -651,7 +658,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateGroupBoxTitle()
 		{
-			var addressesString = "0x" + string.Format("{0:X8}", _domain.Size / _dataSize).TrimStart('0');
+			var addressesString = "0x" + string.Format("{0:X8}", _domainSize / _dataSize).TrimStart('0');
 			MemoryViewerBox.Text = Global.Emulator.SystemId + " " + _domain + "  -  " + addressesString + " addresses";
 		}
 
@@ -661,26 +668,22 @@ namespace BizHawk.Client.EmuHawk
 
 			for (var i = 0; i < MemoryDomains.Count; i++)
 			{
-				//zero 09-sep-2014 - what cases would have a MemoryDomain of size 0? 
-				//1. unspecified malfunctions (please specify)
-				//2. full 32bit memorydomains
-				if (MemoryDomains[i].Size > 0)
+				//zero 11-sep-2014 - historically, memorydomains of size zero were ignored.
+				//now, they'll be confused with a 32bit memorydomain. hope that's not a problem.
+				var str = MemoryDomains[i].ToString();
+				var item = new ToolStripMenuItem { Text = str };
 				{
-					var str = MemoryDomains[i].ToString();
-					var item = new ToolStripMenuItem { Text = str };
-					{
-						var temp = i;
-						item.Click += (o, ev) => SetMemoryDomain(temp);
-					}
-
-					if (i == 0)
-					{
-						SetMemoryDomain(i);
-					}
-
-					MemoryDomainsMenuItem.DropDownItems.Add(item);
-					_domainMenuItems.Add(item);
+					var temp = i;
+					item.Click += (o, ev) => SetMemoryDomain(temp);
 				}
+
+				if (i == 0)
+				{
+					SetMemoryDomain(i);
+				}
+
+				MemoryDomainsMenuItem.DropDownItems.Add(item);
+				_domainMenuItems.Add(item);
 			}
 
 			// Add File on Disk memory domain
@@ -706,9 +709,9 @@ namespace BizHawk.Client.EmuHawk
 				address = 0;
 			}
 
-			if (address >= _domain.Size)
+			if (address >= _domainSize)
 			{
-				address = _domain.Size - 1;
+				address = (int)(_domainSize - 1);
 			}
 
 			SetHighlighted(address);
@@ -725,9 +728,9 @@ namespace BizHawk.Client.EmuHawk
 				address = 0;
 			}
 
-			if (address >= _domain.Size)
+			if (address >= _domainSize)
 			{
-				address = _domain.Size - 1;
+				address = (int)(_domainSize - 1);
 			}
 
 			if (!IsVisible(address))
@@ -780,7 +783,7 @@ namespace BizHawk.Client.EmuHawk
 					break;
 			}
 
-			_numDigits = GetNumDigits(_domain.Size);
+			_numDigits = GetNumDigits(_domainSize);
 			_numDigitsStr = "{0:X" + _numDigits + "}  ";
 		}
 
@@ -879,7 +882,7 @@ namespace BizHawk.Client.EmuHawk
 			var file = new FileInfo(path);
 			using (var binWriter = new BinaryWriter(File.Open(file.FullName, FileMode.Create)))
 			{
-				for (var i = 0; i < _domain.Size; i++)
+				for (var i = 0; i < _domainSize; i++)
 				{
 					binWriter.Write(_domain.PeekByte(i));
 				}
@@ -940,7 +943,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SetUpScrollBar()
 		{
 			_rowsVisible = (MemoryViewerBox.Height - (fontHeight * 2) - (fontHeight / 2)) / fontHeight;
-			var totalRows = (_domain.Size + 15) / 16;
+			var totalRows = (int)((_domainSize + 15) / 16);
 
 			if (totalRows < _rowsVisible)
 			{
@@ -999,7 +1002,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoShiftClick()
 		{
-			if (_addressOver >= 0 && _addressOver < _domain.Size)
+			if (_addressOver >= 0 && _addressOver < _domainSize)
 			{
 				_secondaryHighlightedAddresses.Clear();
 				if (_addressOver < _addressHighlighted)
@@ -1098,7 +1101,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddToSecondaryHighlights(int address)
 		{
-			if (address >= 0 && address < _domain.Size)
+			if (address >= 0 && address < _domainSize)
 			{
 				_secondaryHighlightedAddresses.Add(address);
 			}
@@ -1295,7 +1298,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var sb = new StringBuilder();
 
-					for (var i = 0; i < _domain.Size / 16; i++)
+					for (var i = 0; i < _domainSize / 16; i++)
 					{
 						for (var j = 0; j < 16; j++)
 						{
@@ -1811,7 +1814,7 @@ namespace BizHawk.Client.EmuHawk
 
 					break;
 				case Keys.End:
-					newHighlighted = _domain.Size - _dataSize;
+					newHighlighted = (int)(_domainSize - _dataSize);
 					if (e.Modifiers == Keys.Shift)
 					{
 						for (var i = _addressHighlighted; i < newHighlighted; i++)
