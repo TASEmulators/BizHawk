@@ -52,8 +52,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		};
 
 		[CoreConstructor("GEN")]
-		public GPGX(CoreComm comm, byte[] rom, object Settings, object SyncSettings)
-			:this(comm, rom, null, Settings, SyncSettings)
+		public GPGX(CoreComm comm, byte[] file, object Settings, object SyncSettings)
+			:this(comm, file, null, Settings, SyncSettings)
 		{
 		}
 

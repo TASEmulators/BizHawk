@@ -19,12 +19,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		IntPtr Core;
 
 		[CoreConstructor("GBA")]
-		public VBANext(byte[] rom, CoreComm comm, GameInfo game, bool deterministic, object syncsettings)
+		public VBANext(byte[] file, CoreComm comm, GameInfo game, bool deterministic, object syncsettings)
 		{
 			CoreComm = comm;
 			byte[] biosfile = CoreComm.CoreFileProvider.GetFirmware("GBA", "Bios", true, "GBA bios file is mandatory.");
 
-			if (rom.Length > 32 * 1024 * 1024)
+			if (file.Length > 32 * 1024 * 1024)
 				throw new ArgumentException("ROM is too big to be a GBA ROM!");
 			if (biosfile.Length != 16 * 1024)
 				throw new ArgumentException("BIOS file is not exactly 16K!");
@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				throw new InvalidOperationException("Create() returned nullptr!");
 			try
 			{
-				if (!LibVBANext.LoadRom(Core, rom, (uint)rom.Length, biosfile, (uint)biosfile.Length, FES))
+				if (!LibVBANext.LoadRom(Core, file, (uint)file.Length, biosfile, (uint)biosfile.Length, FES))
 					throw new InvalidOperationException("LoadRom() returned false!");
 
 				CoreComm.VsyncNum = 262144;
@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				CoreComm.NominalWidth = 240;
 				CoreComm.NominalHeight = 160;
 
-				GameCode = Encoding.ASCII.GetString(rom, 0xac, 4);
+				GameCode = Encoding.ASCII.GetString(file, 0xac, 4);
 				Console.WriteLine("Game code \"{0}\"", GameCode);
 
 				savebuff = new byte[LibVBANext.BinStateSize(Core)];
