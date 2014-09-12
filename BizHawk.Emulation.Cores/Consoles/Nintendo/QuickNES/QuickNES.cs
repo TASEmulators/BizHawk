@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		}
 
 		[CoreConstructor("NES")]
-		public QuickNES(CoreComm comm, byte[] Rom, object Settings)
+		public QuickNES(CoreComm comm, byte[] file, object Settings)
 		{
 			using (FP.Save())
 			{
@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					throw new InvalidOperationException("qn_new() returned NULL");
 				try
 				{
-					LibQuickNES.ThrowStringError(LibQuickNES.qn_loadines(Context, Rom, Rom.Length));
+					LibQuickNES.ThrowStringError(LibQuickNES.qn_loadines(Context, file, file.Length));
 
 					InitSaveRamBuff();
 					InitSaveStateBuff();
