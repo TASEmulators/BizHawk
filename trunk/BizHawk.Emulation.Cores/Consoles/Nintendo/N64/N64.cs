@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// <param name="rom">Rom that should be loaded</param>
 		/// <param name="syncSettings">N64SyncSettings object</param>
 		[CoreConstructor("N64")]
-		public N64(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
+		public N64(CoreComm comm, GameInfo game, byte[] file, object settings, object syncSettings)
 		{
 			int SaveType = 0;
 			if (game.OptionValue("SaveType") == "EEPROM_16K")
@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				_syncSettings.DisableExpansionSlot = false;
 			}
 
-			byte country_code = rom[0x3E];
+			byte country_code = file[0x3E];
 			switch (country_code)
 			{
 				// PAL codes
@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			//not sure why this works... if we put the plugin initializations in here, we get deadlocks in some SDL initialization. doesnt make sense to me...
 			RunThreadAction(() =>
 			{
-				api = new mupen64plusApi(this, rom, videosettings, SaveType, (int)coreType, _syncSettings.DisableExpansionSlot);
+				api = new mupen64plusApi(this, file, videosettings, SaveType, (int)coreType, _syncSettings.DisableExpansionSlot);
 			});
 
 			// Order is important because the register with the mupen core
