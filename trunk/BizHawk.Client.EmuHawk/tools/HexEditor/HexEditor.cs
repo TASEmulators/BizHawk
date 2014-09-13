@@ -2216,9 +2216,20 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		bool _programmaticallyChangingValue = false;
 		private void HexScrollBar_ValueChanged(object sender, EventArgs e)
 		{
-			UpdateValues();
+			if (!_programmaticallyChangingValue)
+			{
+				if (HexScrollBar.Value < 0)
+				{
+					_programmaticallyChangingValue = true;
+					HexScrollBar.Value = 0;
+					_programmaticallyChangingValue = false;
+				}
+
+				UpdateValues();
+			}
 		}
 
 		protected override void OnShown(EventArgs e)
