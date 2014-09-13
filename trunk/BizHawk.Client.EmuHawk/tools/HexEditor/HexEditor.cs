@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _bigEndian;
 		private int _dataSize;
 
-		private readonly MemoryDomainList MemoryDomains;
+		private MemoryDomainList MemoryDomains;
 
 		public HexEditor()
 		{
@@ -67,7 +67,6 @@ namespace BizHawk.Client.EmuHawk
 			fontWidth = (int)font.Size;
 			fontHeight = font.Height + 1;
 
-			MemoryDomains = ((IMemoryDomains)Global.Emulator).MemoryDomains; // The cast is intentional, we want a specific cast error, not an eventual null reference error
 			InitializeComponent();
 			AddressesLabel.BackColor = Color.Transparent;
 			LoadConfigSettings();
@@ -79,6 +78,8 @@ namespace BizHawk.Client.EmuHawk
 			AddressLabel.Font = font;
 
 			TopMost = Global.Config.HexEditorSettings.TopMost;
+
+			Restart();
 		}
 
 		private int? HighlightedAddress
@@ -132,15 +133,20 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
+			MemoryDomains = null;
+
 			if (!Global.Emulator.HasMemoryDomains())
 			{
 				Close();
 			}
 
+
 			if (!IsHandleCreated || IsDisposed)
 			{
 				return;
 			}
+
+			MemoryDomains = ((IMemoryDomains)Global.Emulator).MemoryDomains; // The cast is intentional, we want a specific cast error, not an eventual null reference error
 
 			var theDomain = _domain.Name.ToLower() == "file on disk" ? 999 : GetDomainInt(_domain.Name);
 
@@ -456,6 +462,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HexEditor_Load(object sender, EventArgs e)
 		{
+			Restart();
+
 			_defaultWidth = Size.Width;     // Save these first so that the user can restore to its original size
 			_defaultHeight = Size.Height;
 
