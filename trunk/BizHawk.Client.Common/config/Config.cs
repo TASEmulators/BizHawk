@@ -115,6 +115,7 @@ namespace BizHawk.Client.Common
 			Casual = 1,
 			Longplay = 2,
 			Tas = 3,
+			N64Tas = 4,
 			Custom = 99
 		}
 
