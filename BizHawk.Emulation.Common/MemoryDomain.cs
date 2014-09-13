@@ -214,5 +214,21 @@ namespace BizHawk.Emulation.Common
 				return this[_mainMemoryIndex];
 			}
 		}
+
+		public bool HasSystemBus
+		{
+			get
+			{
+				return this.Any(x => x.Name == "System Bus" || x.Name == "BUS"); // Have to account for "BUS" because some developers don't like consistency!
+			}
+		}
+
+		public MemoryDomain SystemBus
+		{
+			get
+			{
+				return this.FirstOrDefault(x => x.Name == "System Bus" || x.Name == "BUS");
+			}
+		}
 	}
 }

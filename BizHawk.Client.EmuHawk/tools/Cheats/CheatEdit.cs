@@ -37,7 +37,15 @@ namespace BizHawk.Client.EmuHawk
 				DomainDropDown.Items.AddRange(Core.MemoryDomains
 					.Select(d => d.ToString())
 					.ToArray());
-				DomainDropDown.SelectedItem = Core.MemoryDomains.MainMemory.ToString();
+
+				if (Core.MemoryDomains.HasSystemBus)
+				{
+					DomainDropDown.SelectedItem = Core.MemoryDomains.SystemBus.ToString();
+				}
+				else
+				{
+					DomainDropDown.SelectedItem = Core.MemoryDomains.MainMemory.ToString();
+				}
 			}
 
 			SetFormToDefault();
