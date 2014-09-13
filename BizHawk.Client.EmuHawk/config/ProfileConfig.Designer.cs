@@ -73,6 +73,7 @@
 			this.ProfileSelectComboBox.Items.AddRange(new object[] {
             "Casual Gaming",
             "Tool-assisted Speedruns",
+            "N64 Tool-assisted Speedruns",
             "Longplays",
             "Custom Profile"});
 			this.ProfileSelectComboBox.Location = new System.Drawing.Point(22, 20);
