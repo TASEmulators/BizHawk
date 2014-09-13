@@ -2,8 +2,6 @@
 {
 	partial class HexEditor
 	{
-		private const int fontHeight = 14;
-
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
