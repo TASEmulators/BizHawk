@@ -22,8 +22,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class HexEditor : Form, IToolForm
 	{
-		private readonly int FontWidth;
-		private readonly int FontHeight;
+		private bool fontSizeSet = false;
+		private int fontWidth;
+		private int fontHeight;
 
 		private readonly List<ToolStripMenuItem> _domainMenuItems = new List<ToolStripMenuItem>();
 		private readonly char[] _nibbles = { 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G' };    // G = off 0-9 & A-F are acceptable values
@@ -63,8 +64,8 @@ namespace BizHawk.Client.EmuHawk
 		public HexEditor()
 		{
 			var font = new Font("Courier New", 8);
-			FontWidth = (int)font.Size;
-			FontHeight = font.Height + 1;
+			fontWidth = (int)font.Size;
+			fontHeight = font.Height + 1;
 
 			MemoryDomains = ((IMemoryDomains)Global.Emulator).MemoryDomains; // The cast is intentional, we want a specific cast error, not an eventual null reference error
 			InitializeComponent();
@@ -949,7 +950,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetUpScrollBar()
 		{
-			_rowsVisible = (MemoryViewerBox.Height - (FontHeight * 2) - (FontHeight / 2)) / FontHeight;
+			_rowsVisible = (MemoryViewerBox.Height - (fontHeight * 2) - (fontHeight / 2)) / fontHeight;
 			var totalRows = (int)((_domainSize + 15) / 16);
 
 			if (totalRows < _rowsVisible)
@@ -970,29 +971,16 @@ namespace BizHawk.Client.EmuHawk
 
 			// Scroll value determines the first row
 			var i = HexScrollBar.Value;
-			var rowoffset = y / FontHeight;
+			var rowoffset = y / fontHeight;
 			i += rowoffset;
-			int colWidth;
-			switch (_dataSize)
-			{
-				default:
-				case 1:
-					colWidth = 3;
-					break;
-				case 2:
-					colWidth = 5;
-					break;
-				case 4:
-					colWidth = 9;
-					break;
-			}
+			int colWidth = _dataSize * 2 + 1;
 
-			var column = x / (FontWidth * colWidth);
+			var column = x / (fontWidth * colWidth);
 
 			var start = GetTextOffset() - 50;
 			if (x > start)
 			{
-				column = (x - start) / (FontWidth / _dataSize);
+				column = (x - start) / (fontWidth / _dataSize);
 			}
 
 			if (i >= 0 && i <= _maxRow && column >= 0 && column < (16 / _dataSize))
@@ -1038,13 +1026,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private Point GetAddressCoordinates(int address)
 		{
-			var extra = (address % _dataSize) * FontWidth * 2;
-			var xOffset = AddressesLabel.Location.X + FontWidth / 2;
+			var extra = (address % _dataSize) * fontWidth * 2;
+			var xOffset = AddressesLabel.Location.X + fontWidth / 2;
 			var yOffset = AddressesLabel.Location.Y;
 
 			return new Point(
-				(((address % 16) / _dataSize) * (FontWidth * (_dataSize * 2 + 1))) + xOffset + extra,
-				(((address / 16) - HexScrollBar.Value) * FontHeight) + yOffset
+				(((address % 16) / _dataSize) * (fontWidth * (_dataSize * 2 + 1))) + xOffset + extra,
+				(((address / 16) - HexScrollBar.Value) * fontHeight) + yOffset
 				);
 		}
 
@@ -1056,15 +1044,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private int GetTextOffset()
 		{
-			int start = (16 / _dataSize) * (FontWidth * (_dataSize * 2 + 1));
-			start += AddressesLabel.Location.X + FontWidth / 2;
-			start += FontWidth * 4;
+			int start = (16 / _dataSize) * (fontWidth * (_dataSize * 2 + 1));
+			start += AddressesLabel.Location.X + fontWidth / 2;
+			start += fontWidth * 4;
 			return start;
 		}
 
 		private int GetTextX(int address)
 		{
-			return GetTextOffset() + ((address % 16) * FontWidth);
+			return GetTextOffset() + ((address % 16) * fontWidth);
 		}
 
 		private bool HasNibbles()
@@ -2068,6 +2056,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MemoryViewerBox_Paint(object sender, PaintEventArgs e)
 		{
+			// Update font size
+			if (!fontSizeSet)
+			{
+				fontSizeSet = true;
+				var fontSize = e.Graphics.MeasureString("x", AddressesLabel.Font);
+				fontWidth = (int)Math.Round(fontSize.Width / 1.5);
+				fontHeight = (int)Math.Round(fontSize.Height);
+			}
+
 			var activeCheats = Global.CheatList.Where(x => x.Enabled);
 			foreach (var cheat in activeCheats)
 			{
@@ -2084,9 +2081,9 @@ namespace BizHawk.Client.EmuHawk
 
 						if (gaps < 0) { gaps = 0; }
 						
-						var width = (15 * (int)cheat.Size) + (gaps * 7);
+						var width = (fontWidth * 2 * (int)cheat.Size) + (gaps * fontWidth);
 
-						var rect = new Rectangle(GetAddressCoordinates(cheat.Address ?? 0), new Size(width, FontHeight));
+						var rect = new Rectangle(GetAddressCoordinates(cheat.Address ?? 0), new Size(width, fontHeight));
 						e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
 						e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexFreezeColor), rect);
 					}
@@ -2099,10 +2096,10 @@ namespace BizHawk.Client.EmuHawk
 				var textX = GetTextX(_addressHighlighted);
 				var textpoint = new Point(textX, point.Y);
 
-				var rect = new Rectangle(point, new Size(15 * _dataSize + (NeedsExtra(_addressHighlighted) ? FontWidth : 0), FontHeight));
+				var rect = new Rectangle(point, new Size(fontWidth * 2 * _dataSize + (NeedsExtra(_addressHighlighted) ? fontWidth : 0), fontHeight));
 				e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
 
-				var textrect = new Rectangle(textpoint, new Size(8 * _dataSize, FontHeight));
+				var textrect = new Rectangle(textpoint, new Size(fontWidth * _dataSize, fontHeight));
 
 				if (Global.CheatList.IsActive(_domain, _addressHighlighted))
 				{
@@ -2122,10 +2119,10 @@ namespace BizHawk.Client.EmuHawk
 				var textX = GetTextX(address);
 				var textpoint = new Point(textX, point.Y);
 
-				var rect = new Rectangle(point, new Size(15 * _dataSize, FontHeight));
+				var rect = new Rectangle(point, new Size(fontWidth * 2 * _dataSize, fontHeight));
 				e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
 
-				var textrect = new Rectangle(textpoint, new Size(8, FontHeight));
+				var textrect = new Rectangle(textpoint, new Size(fontWidth, fontHeight));
 
 				if (Global.CheatList.IsActive(_domain, address))
 				{
