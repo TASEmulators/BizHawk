@@ -1002,14 +1002,14 @@ namespace BizHawk.Client.EmuHawk
 				_secondaryHighlightedAddresses.Clear();
 				if (_addressOver < _addressHighlighted)
 				{
-					for (var x = _addressOver; x < _addressHighlighted; x++)
+					for (var x = _addressOver; x < _addressHighlighted; x += _dataSize)
 					{
 						_secondaryHighlightedAddresses.Add(x);
 					}
 				}
 				else if (_addressOver > _addressHighlighted)
 				{
-					for (var x = _addressHighlighted + _dataSize; x <= _addressOver; x++)
+					for (var x = _addressHighlighted + _dataSize; x <= _addressOver; x += _dataSize)
 					{
 						_secondaryHighlightedAddresses.Add(x);
 					}
@@ -1027,7 +1027,7 @@ namespace BizHawk.Client.EmuHawk
 		private Point GetAddressCoordinates(int address)
 		{
 			var extra = (address % _dataSize) * fontWidth * 2;
-			var xOffset = AddressesLabel.Location.X + fontWidth / 2;
+			var xOffset = AddressesLabel.Location.X + fontWidth / 2 - 2;
 			var yOffset = AddressesLabel.Location.Y;
 
 			return new Point(
@@ -1044,7 +1044,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int GetTextOffset()
 		{
-			int start = (16 / _dataSize) * (fontWidth * (_dataSize * 2 + 1));
+			int start = (16 / _dataSize) * fontWidth * (_dataSize * 2 + 1);
 			start += AddressesLabel.Location.X + fontWidth / 2;
 			start += fontWidth * 4;
 			return start;
@@ -1201,9 +1201,9 @@ namespace BizHawk.Client.EmuHawk
 
 			var numToHighlight = (value.Length / addrLength) - 1;
 
-			for (var i = 0; i < numToHighlight; i++)
+			for (var i = 0; i < numToHighlight; i += _dataSize)
 			{
-				_secondaryHighlightedAddresses.Add(found + 1 + i);
+				_secondaryHighlightedAddresses.Add(found + _dataSize + i);
 			}
 		}
 
@@ -1667,7 +1667,7 @@ namespace BizHawk.Client.EmuHawk
 					newHighlighted = _addressHighlighted - 16;
 					if (e.Modifiers == Keys.Shift)
 					{
-						for (var i = newHighlighted + 1; i <= _addressHighlighted; i++)
+						for (var i = newHighlighted + _dataSize; i <= _addressHighlighted; i += _dataSize)
 						{
 							AddToSecondaryHighlights(i);
 						}
@@ -1685,7 +1685,7 @@ namespace BizHawk.Client.EmuHawk
 					newHighlighted = _addressHighlighted + 16;
 					if (e.Modifiers == Keys.Shift)
 					{
-						for (var i = newHighlighted - 16; i < newHighlighted; i++)
+						for (var i = _addressHighlighted; i < newHighlighted; i += _dataSize)
 						{
 							AddToSecondaryHighlights(i);
 						}
@@ -1731,7 +1731,7 @@ namespace BizHawk.Client.EmuHawk
 					newHighlighted = _addressHighlighted - (_rowsVisible * 16);
 					if (e.Modifiers == Keys.Shift)
 					{
-						for (var i = newHighlighted + 1; i <= _addressHighlighted; i++)
+						for (var i = newHighlighted + 1; i <= _addressHighlighted; i += _dataSize)
 						{
 							AddToSecondaryHighlights(i);
 						}
@@ -1749,7 +1749,7 @@ namespace BizHawk.Client.EmuHawk
 					newHighlighted = _addressHighlighted + (_rowsVisible * 16);
 					if (e.Modifiers == Keys.Shift)
 					{
-						for (var i = _addressHighlighted + 1; i < newHighlighted; i++)
+						for (var i = _addressHighlighted + 1; i < newHighlighted; i += _dataSize)
 						{
 							AddToSecondaryHighlights(i);
 						}
@@ -1778,7 +1778,7 @@ namespace BizHawk.Client.EmuHawk
 				case Keys.Home:
 					if (e.Modifiers == Keys.Shift)
 					{
-						for (var i = 1; i <= _addressHighlighted; i++)
+						for (var i = 1; i <= _addressHighlighted; i += _dataSize)
 						{
 							AddToSecondaryHighlights(i);
 						}
@@ -1796,7 +1796,7 @@ namespace BizHawk.Client.EmuHawk
 					newHighlighted = (int)(_domainSize - _dataSize);
 					if (e.Modifiers == Keys.Shift)
 					{
-						for (var i = _addressHighlighted; i < newHighlighted; i++)
+						for (var i = _addressHighlighted; i < newHighlighted; i += _dataSize)
 						{
 							AddToSecondaryHighlights(i);
 						}
@@ -2056,13 +2056,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MemoryViewerBox_Paint(object sender, PaintEventArgs e)
 		{
-			// Update font size
+			// Update font size, as drawing width seems system-dependent.
 			if (!fontSizeSet)
 			{
 				fontSizeSet = true;
 				var fontSize = e.Graphics.MeasureString("x", AddressesLabel.Font);
 				fontWidth = (int)Math.Round(fontSize.Width / 1.5);
-				fontHeight = (int)Math.Round(fontSize.Height);
 			}
 
 			var activeCheats = Global.CheatList.Where(x => x.Enabled);
@@ -2092,11 +2091,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_addressHighlighted >= 0 && IsVisible(_addressHighlighted))
 			{
+				// Create a slight offset to increase rectangle sizes
 				var point = GetAddressCoordinates(_addressHighlighted);
 				var textX = GetTextX(_addressHighlighted);
 				var textpoint = new Point(textX, point.Y);
 
-				var rect = new Rectangle(point, new Size(fontWidth * 2 * _dataSize + (NeedsExtra(_addressHighlighted) ? fontWidth : 0), fontHeight));
+				var rect = new Rectangle(point, new Size(fontWidth * 2 * _dataSize + (NeedsExtra(_addressHighlighted) ? fontWidth : 0) + 2, fontHeight));
 				e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
 
 				var textrect = new Rectangle(textpoint, new Size(fontWidth * _dataSize, fontHeight));
@@ -2119,10 +2119,10 @@ namespace BizHawk.Client.EmuHawk
 				var textX = GetTextX(address);
 				var textpoint = new Point(textX, point.Y);
 
-				var rect = new Rectangle(point, new Size(fontWidth * 2 * _dataSize, fontHeight));
+				var rect = new Rectangle(point, new Size(fontWidth * 2 * _dataSize + 2, fontHeight));
 				e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
 
-				var textrect = new Rectangle(textpoint, new Size(fontWidth, fontHeight));
+				var textrect = new Rectangle(textpoint, new Size(fontWidth * _dataSize, fontHeight));
 
 				if (Global.CheatList.IsActive(_domain, address))
 				{
