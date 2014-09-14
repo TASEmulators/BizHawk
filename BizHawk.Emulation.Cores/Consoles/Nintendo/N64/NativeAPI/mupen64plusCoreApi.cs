@@ -112,7 +112,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			MEMPAK1,
 			MEMPAK2,
 			MEMPAK3,
-			MEMPAK4
+			MEMPAK4,
+
+			THE_ROM
 		}
 
 		// Core Specifc functions

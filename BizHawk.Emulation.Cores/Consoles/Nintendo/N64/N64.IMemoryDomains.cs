@@ -81,6 +81,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			//zero 07-sep-2014 - made RDRAM big endian domain, but none others. others need to be studied individually.
 			MakeMemoryDomain("RDRAM", mupen64plusApi.N64_MEMORY.RDRAM, MemoryDomain.Endian.Big, true);
 
+			MakeMemoryDomain("ROM", mupen64plusApi.N64_MEMORY.THE_ROM, MemoryDomain.Endian.Big, true);
+
 			MakeMemoryDomain("PI Register", mupen64plusApi.N64_MEMORY.PI_REG, MemoryDomain.Endian.Little);
 			MakeMemoryDomain("SI Register", mupen64plusApi.N64_MEMORY.SI_REG, MemoryDomain.Endian.Little);
 			MakeMemoryDomain("VI Register", mupen64plusApi.N64_MEMORY.VI_REG, MemoryDomain.Endian.Little);
