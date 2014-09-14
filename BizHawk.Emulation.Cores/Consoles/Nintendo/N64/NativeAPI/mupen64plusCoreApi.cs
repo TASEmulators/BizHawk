@@ -566,7 +566,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		public void frame_advance()
 		{
 			m64pCoreDoCommandPtr(m64p_command.M64CMD_ADVANCE_FRAME, 0, IntPtr.Zero);
-			m64pFrameComplete.WaitOne();
+
+			//the way we should be able to do it:
+			//m64pFrameComplete.WaitOne();
+			
+			//however. since this is probably an STAThread, this call results in message pumps running.
+			//those message pumps are only supposed to respond to critical COM stuff, but in fact they interfere with other things.
+			//so here are two workaround methods.
+
+			//method 1.
+			//BizHawk.Common.Win32ThreadHacks.HackyPinvokeWaitOne(m64pFrameComplete);
+
+			//method 2.
+			BizHawk.Common.Win32ThreadHacks.HackyComWaitOne(m64pFrameComplete);
 		}
 
 		public int SaveState(byte[] buffer)
