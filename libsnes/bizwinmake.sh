@@ -1,3 +1,3 @@
 #!/bin/sh
 
-./bizwinmakeone.sh 32 compatibility
+./bizwinmakeone.sh 32 performance
