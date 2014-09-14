@@ -298,13 +298,25 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public Size CalculateClientSize(IVideoProvider videoProvider, int zoom)
 		{
+			bool ar_active = Global.Config.DispFixAspectRatio;
+			bool ar_system = Global.Config.DispManagerAR == Config.EDispManagerAR.System;
+			bool ar_custom = Global.Config.DispManagerAR == Config.EDispManagerAR.Custom;
+			bool ar_correct = ar_system || ar_custom;
+			bool ar_unity = !ar_correct;
+			bool ar_integer = Global.Config.DispFixScaleInteger;
+
 			int bufferWidth = videoProvider.BufferWidth;
 			int bufferHeight = videoProvider.BufferHeight;
 			int virtualWidth = videoProvider.VirtualWidth;
 			int virtualHeight = videoProvider.VirtualHeight;
 
-			//test
-			//Console.WriteLine("DISPZOOM " + zoom);
+			if (ar_custom)
+			{
+				virtualWidth = Global.Config.DispCustomUserARWidth;
+				virtualHeight = Global.Config.DispCustomUserARHeight;
+			}
+
+			//Console.WriteLine("DISPZOOM " + zoom); //test
 
 			//old stuff
 			var fvp = new FakeVideoProvider();
@@ -315,14 +327,9 @@ namespace BizHawk.Client.EmuHawk
 
 			Size chain_outsize = new Size(fvp.BufferWidth * zoom, fvp.BufferHeight * zoom);
 
-			bool ar_active = Global.Config.DispFixAspectRatio;
-			bool ar_system = Global.Config.DispObeyAR;
-			bool ar_unity = !ar_system;
-			bool ar_integer = Global.Config.DispFixScaleInteger;
-
 			if (ar_active)
 			{
-				if (ar_system)
+				if (ar_correct)
 				{
 					if (ar_integer)
 					{
@@ -429,10 +436,18 @@ namespace BizHawk.Client.EmuHawk
 			int vw = videoProvider.BufferWidth;
 			int vh = videoProvider.BufferHeight;
 
-			if (Global.Config.DispObeyAR && Global.Config.DispFixAspectRatio)
+			if (Global.Config.DispFixAspectRatio)
 			{
-			  vw = videoProvider.VirtualWidth;
-			  vh = videoProvider.VirtualHeight;
+				if (Global.Config.DispManagerAR == Config.EDispManagerAR.System)
+				{
+					vw = videoProvider.VirtualWidth;
+					vh = videoProvider.VirtualHeight;
+				}
+				if (Global.Config.DispManagerAR == Config.EDispManagerAR.Custom)
+				{
+					vw = Global.Config.DispCustomUserARWidth;
+					vh = Global.Config.DispCustomUserARHeight;
+				}
 			}
 
 			int[] videoBuffer = videoProvider.GetVideoBuffer();

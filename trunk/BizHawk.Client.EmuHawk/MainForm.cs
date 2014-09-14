@@ -166,14 +166,21 @@ namespace BizHawk.Client.EmuHawk
 
 			ResizeBegin += (o, e) =>
 			{
+				_inResizeLoop = true;
 				if (GlobalWin.Sound != null)
 				{
 					GlobalWin.Sound.StopSound();
 				}
 			};
 
+			Resize += (o, e) =>
+			{
+				SetWindowText();
+			};
+
 			ResizeEnd += (o, e) =>
 			{
+				_inResizeLoop = false;
 				if (GlobalWin.PresentationPanel != null)
 				{
 					GlobalWin.PresentationPanel.Resized = true;
@@ -1200,6 +1207,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _runloopFrameadvance;
 		private DateTime _runloopSecond;
 		private bool _runloopLastFf;
+		private bool _inResizeLoop;
 
 		private readonly Throttle _throttle;
 		private bool _unthrottled;
@@ -1237,13 +1245,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetWindowText()
 		{
-			if (Global.Emulator is NullEmulator)
+			string str = "";
+			
+			if (_inResizeLoop)
 			{
-				Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
-				return;
+				var size = GlobalWin.PresentationPanel.NativeSize;
+				str = str + string.Format("({0}x{1}) - ", size.Width, size.Height);
 			}
 
-			var str = Global.SystemInfo.DisplayName;
+			if (Global.Emulator is NullEmulator)
+			{
+				str = str + "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
+			}
+			else
+			{
+				str = str + Global.SystemInfo.DisplayName;
+			}
 
 			if (VersionInfo.DeveloperBuild)
 			{
@@ -1252,12 +1269,14 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				Text = str + " - " + Global.Game.Name + " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
+				str = str + " - " + Global.Game.Name + " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
 			}
 			else
 			{
-				Text = str + " - " + Global.Game.Name;
+				str = str + " - " + Global.Game.Name;
 			}
+
+			Text = str;
 		}
 
 		private void ClearAutohold()

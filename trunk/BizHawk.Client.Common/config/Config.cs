@@ -105,6 +105,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public enum EDispManagerAR { None, System, Custom };
+
 		public enum SaveStateTypeE { Default, Binary, Text };
 
 		public MovieEndAction MovieEndAction = MovieEndAction.Finish;
@@ -200,9 +202,12 @@ namespace BizHawk.Client.Common
 		public bool DispBlurry = false; // make display look ugly
 		public bool DispFixAspectRatio = true;
 		public bool DispFixScaleInteger = true;
-		public bool DispObeyAR = true;
 		public bool DispFullscreenHacks = true;
 		public bool DispSnowyNullEmulator = true;
+
+		public EDispManagerAR DispManagerAR = EDispManagerAR.System; 
+		public int DispCustomUserARWidth = 1;
+		public int DispCustomUserARHeight = 1;
 
 		// Sound options
 		public bool SoundEnabled = true;

@@ -54,6 +54,11 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.checkSnowyNullEmulator = new System.Windows.Forms.CheckBox();
 			this.label1 = new System.Windows.Forms.Label();
+			this.rbUseCustom = new System.Windows.Forms.RadioButton();
+			this.txtCustomARWidth = new System.Windows.Forms.TextBox();
+			this.label3 = new System.Windows.Forms.Label();
+			this.txtCustomARHeight = new System.Windows.Forms.TextBox();
+			this.label4 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			this.grpFinalFilter.SuspendLayout();
@@ -65,7 +70,7 @@
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(510, 250);
+			this.btnCancel.Location = new System.Drawing.Point(544, 297);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 5;
@@ -75,7 +80,7 @@
 			// btnOk
 			// 
 			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOk.Location = new System.Drawing.Point(429, 250);
+			this.btnOk.Location = new System.Drawing.Point(463, 297);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(75, 23);
 			this.btnOk.TabIndex = 4;
@@ -95,7 +100,7 @@
 			this.groupBox1.Controls.Add(this.rbHq2x);
 			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(173, 132);
+			this.groupBox1.Size = new System.Drawing.Size(193, 132);
 			this.groupBox1.TabIndex = 7;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Scaling Filter";
@@ -145,7 +150,7 @@
 			this.tbScanlineIntensity.Location = new System.Drawing.Point(83, 55);
 			this.tbScanlineIntensity.Maximum = 256;
 			this.tbScanlineIntensity.Name = "tbScanlineIntensity";
-			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 45);
+			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 42);
 			this.tbScanlineIntensity.TabIndex = 3;
 			this.tbScanlineIntensity.TickFrequency = 32;
 			this.tbScanlineIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
@@ -199,7 +204,7 @@
 			// checkPadInteger
 			// 
 			this.checkPadInteger.AutoSize = true;
-			this.checkPadInteger.Location = new System.Drawing.Point(21, 254);
+			this.checkPadInteger.Location = new System.Drawing.Point(21, 290);
 			this.checkPadInteger.Name = "checkPadInteger";
 			this.checkPadInteger.Size = new System.Drawing.Size(248, 17);
 			this.checkPadInteger.TabIndex = 9;
@@ -212,9 +217,9 @@
 			this.grpFinalFilter.Controls.Add(this.rbFinalFilterBicubic);
 			this.grpFinalFilter.Controls.Add(this.rbFinalFilterNone);
 			this.grpFinalFilter.Controls.Add(this.rbFinalFilterBilinear);
-			this.grpFinalFilter.Location = new System.Drawing.Point(191, 12);
+			this.grpFinalFilter.Location = new System.Drawing.Point(211, 12);
 			this.grpFinalFilter.Name = "grpFinalFilter";
-			this.grpFinalFilter.Size = new System.Drawing.Size(173, 132);
+			this.grpFinalFilter.Size = new System.Drawing.Size(187, 132);
 			this.grpFinalFilter.TabIndex = 8;
 			this.grpFinalFilter.TabStop = false;
 			this.grpFinalFilter.Text = "Final Filter";
@@ -267,22 +272,27 @@
 			// rbUseSystem
 			// 
 			this.rbUseSystem.AutoSize = true;
-			this.rbUseSystem.Location = new System.Drawing.Point(6, 42);
+			this.rbUseSystem.Location = new System.Drawing.Point(26, 58);
 			this.rbUseSystem.Name = "rbUseSystem";
-			this.rbUseSystem.Size = new System.Drawing.Size(320, 17);
+			this.rbUseSystem.Size = new System.Drawing.Size(167, 17);
 			this.rbUseSystem.TabIndex = 12;
 			this.rbUseSystem.TabStop = true;
-			this.rbUseSystem.Text = "Use system\'s recommendation (e.g. 2x1 pixels, for better AR fit)";
+			this.rbUseSystem.Text = "Use system\'s recommendation";
 			this.rbUseSystem.UseVisualStyleBackColor = true;
 			this.rbUseSystem.CheckedChanged += new System.EventHandler(this.rbUseSystem_CheckedChanged);
 			// 
 			// grpARSelection
 			// 
+			this.grpARSelection.Controls.Add(this.label4);
+			this.grpARSelection.Controls.Add(this.txtCustomARHeight);
+			this.grpARSelection.Controls.Add(this.label3);
+			this.grpARSelection.Controls.Add(this.txtCustomARWidth);
+			this.grpARSelection.Controls.Add(this.rbUseCustom);
 			this.grpARSelection.Controls.Add(this.rbUseRaw);
 			this.grpARSelection.Controls.Add(this.rbUseSystem);
 			this.grpARSelection.Location = new System.Drawing.Point(21, 177);
 			this.grpARSelection.Name = "grpARSelection";
-			this.grpARSelection.Size = new System.Drawing.Size(342, 71);
+			this.grpARSelection.Size = new System.Drawing.Size(377, 107);
 			this.grpARSelection.TabIndex = 13;
 			this.grpARSelection.TabStop = false;
 			this.grpARSelection.Text = "Aspect Ratio Selection";
@@ -303,16 +313,16 @@
 			this.groupBox2.Controls.Add(this.checkSnowyNullEmulator);
 			this.groupBox2.Controls.Add(this.label1);
 			this.groupBox2.Controls.Add(this.checkFullscreenHacks);
-			this.groupBox2.Location = new System.Drawing.Point(370, 12);
+			this.groupBox2.Location = new System.Drawing.Point(404, 12);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(217, 224);
+			this.groupBox2.Size = new System.Drawing.Size(217, 272);
 			this.groupBox2.TabIndex = 15;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Misc.";
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(7, 167);
+			this.label2.Location = new System.Drawing.Point(7, 190);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(204, 45);
 			this.label2.TabIndex = 17;
@@ -322,7 +332,7 @@
 			// checkSnowyNullEmulator
 			// 
 			this.checkSnowyNullEmulator.AutoSize = true;
-			this.checkSnowyNullEmulator.Location = new System.Drawing.Point(6, 142);
+			this.checkSnowyNullEmulator.Location = new System.Drawing.Point(6, 165);
 			this.checkSnowyNullEmulator.Name = "checkSnowyNullEmulator";
 			this.checkSnowyNullEmulator.Size = new System.Drawing.Size(159, 17);
 			this.checkSnowyNullEmulator.TabIndex = 16;
@@ -333,9 +343,52 @@
 			// 
 			this.label1.Location = new System.Drawing.Point(7, 42);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(204, 102);
+			this.label1.Size = new System.Drawing.Size(204, 117);
 			this.label1.TabIndex = 15;
 			this.label1.Text = resources.GetString("label1.Text");
+			// 
+			// rbUseCustom
+			// 
+			this.rbUseCustom.AutoSize = true;
+			this.rbUseCustom.Location = new System.Drawing.Point(26, 80);
+			this.rbUseCustom.Name = "rbUseCustom";
+			this.rbUseCustom.Size = new System.Drawing.Size(107, 17);
+			this.rbUseCustom.TabIndex = 13;
+			this.rbUseCustom.TabStop = true;
+			this.rbUseCustom.Text = "Use custom Size:";
+			this.rbUseCustom.UseVisualStyleBackColor = true;
+			// 
+			// txtCustomARWidth
+			// 
+			this.txtCustomARWidth.Location = new System.Drawing.Point(134, 79);
+			this.txtCustomARWidth.Name = "txtCustomARWidth";
+			this.txtCustomARWidth.Size = new System.Drawing.Size(72, 20);
+			this.txtCustomARWidth.TabIndex = 14;
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(212, 84);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(12, 13);
+			this.label3.TabIndex = 12;
+			this.label3.Text = "x";
+			// 
+			// txtCustomARHeight
+			// 
+			this.txtCustomARHeight.Location = new System.Drawing.Point(230, 79);
+			this.txtCustomARHeight.Name = "txtCustomARHeight";
+			this.txtCustomARHeight.Size = new System.Drawing.Size(72, 20);
+			this.txtCustomARHeight.TabIndex = 15;
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(23, 41);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(257, 13);
+			this.label4.TabIndex = 12;
+			this.label4.Text = "Allow pixel distortion (e.g. 2x1 pixels, for better AR fit):";
 			// 
 			// DisplayConfigLite
 			// 
@@ -343,7 +396,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(597, 285);
+			this.ClientSize = new System.Drawing.Size(631, 332);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.grpARSelection);
 			this.Controls.Add(this.grpFinalFilter);
@@ -397,5 +450,10 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label lblScanlines;
+		private System.Windows.Forms.TextBox txtCustomARHeight;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.TextBox txtCustomARWidth;
+		private System.Windows.Forms.RadioButton rbUseCustom;
+		private System.Windows.Forms.Label label4;
 	}
 }
