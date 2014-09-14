@@ -269,7 +269,9 @@ typedef enum {
   MEMPAK1,
   MEMPAK2,
   MEMPAK3,
-  MEMPAK4
+  MEMPAK4,
+
+	THE_ROM,
 } m64p_dbg_memptr_type;
 
 typedef enum {
