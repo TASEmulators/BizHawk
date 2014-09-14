@@ -114,7 +114,7 @@ namespace BizHawk.Client.Common
 
 			string prefix;
 
-			//TODO - someone please say what in the heck " C " is supposed to mean
+			//" C " is for N64 "P1 C Up" and the like, which should not be subject to mutexing
 
 			if (button.Contains("Down") && !button.Contains(" C "))
 			{
