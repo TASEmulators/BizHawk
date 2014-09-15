@@ -331,6 +331,10 @@ namespace BizHawk.Emulation.Common
 				case ".WSC":
 					game.System = "WSWAN";
 					break;
+
+				case ".LNX":
+					game.System = "LYNX";
+					break;
 			}
 
 			game.Name = Path.GetFileNameWithoutExtension(fileName).Replace('_', ' ');

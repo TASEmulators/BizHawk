@@ -223,6 +223,8 @@
     <Compile Include="Consoles\Atari\7800\Atari7800.Core.cs" />
     <Compile Include="Consoles\Atari\7800\Atari7800.cs" />
     <Compile Include="Consoles\Atari\7800\Atari7800Control.cs" />
+    <Compile Include="Consoles\Atari\lynx\LibLynx.cs" />
+    <Compile Include="Consoles\Atari\lynx\Lynx.cs" />
     <Compile Include="Consoles\Coleco\ColecoVision.cs" />
     <Compile Include="Consoles\Coleco\Input.cs" />
     <Compile Include="Consoles\Coleco\MemoryMap.cs" />
