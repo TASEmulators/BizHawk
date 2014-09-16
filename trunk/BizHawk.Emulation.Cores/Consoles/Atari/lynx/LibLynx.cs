@@ -22,6 +22,20 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		public static extern void Reset(IntPtr s);
 
 		[DllImport(dllname, CallingConvention = cc)]
-		public static extern void Advance(IntPtr s, int buttons, int[] vbuff, short[] sbuff, ref int sbuffsize);
+		public static extern void Advance(IntPtr s, Buttons buttons, int[] vbuff, short[] sbuff, ref int sbuffsize);
+
+		[Flags]
+		public enum Buttons : ushort
+		{
+			Up = 0x0080,
+			Down = 0x0040,
+			Left = 0x0010,
+			Right = 0x0020,
+			Option_1 = 0x008,
+			Option_2 = 0x004,
+			B = 0x002,
+			A = 0x001,
+			Pause = 0x100,
+		}
 	}
 }

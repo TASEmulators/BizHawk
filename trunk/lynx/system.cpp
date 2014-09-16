@@ -158,27 +158,31 @@ void CSystem::Advance(int buttons, uint32 *vbuff, int16 *sbuff, int &sbuffsize)
 	// this check needs to occur at least once every 250 million cycles or better
 	mMikie->CheckWrap();
 
-
 	SetButtonData(buttons);
 
 	uint32 start = gSystemCycleCount;
+
+	// nominal timer values are div16 for prescalar, 158 for line timer, and 104 for frame timer
+	// reloads are actually +1 due to the way the hardware works
+	// so this is a frame, theoretically
+	uint32 target = gSystemCycleCount + 16 * 105 * 159 - frameoverflow;
 
 	// audio start frame
 	mMikie->startTS = start;
 
 	mMikie->mpDisplayCurrent = vbuff;
 
-	// go to next frame end, or no more than 200,000 cycles to avoid exploding the output buffer (was set at 60ms limit)
-	while (mMikie->mpDisplayCurrent && gSystemCycleCount - start < 200000)
-	// while (gSystemCycleCount - start < 700000) // what's the magic significance?
+	while (gSystemCycleCount < target)
+	//while (mMikie->mpDisplayCurrent && gSystemCycleCount - start < 800000)
 	{
-		Update();
+		Update(target);
 	}
 
 	// total cycles executed is now gSystemCycleCount - start
-	mMikie->mikbuf.end_frame((gSystemCycleCount - start) >> 2);
-	sbuffsize = mMikie->mikbuf.read_samples(sbuff, sbuffsize) / 2;
+	frameoverflow = gSystemCycleCount - target;
 
+	mMikie->mikbuf.end_frame((gSystemCycleCount - start) >> 2);
+	sbuffsize = mMikie->mikbuf.read_samples(sbuff, sbuffsize);
 }
 
 

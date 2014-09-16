@@ -121,10 +121,10 @@ public:
 public:
 	void Reset() MDFN_COLD;
 
-	inline void Update()
+	inline void Update(uint32 targetclock)
 	{
 		// Only update if there is a predicted timer event
-		if(gSystemCycleCount>=gNextTimerEvent)
+		if(gSystemCycleCount >= gNextTimerEvent)
 		{
 			mMikie->Update();
 		}
@@ -135,7 +135,7 @@ public:
 		// If the CPU is asleep then skip to the next timer event
 		if(gSystemCPUSleep)
 		{
-			gSystemCycleCount=gNextTimerEvent;
+			gSystemCycleCount = std::min(gNextTimerEvent, targetclock);
 		}
 	}
 
@@ -192,11 +192,9 @@ public:
 	// Miscellaneous
 	void	SetButtonData(uint32 data) {mSusie->SetButtonData(data);};
 	uint32	GetButtonData() {return mSusie->GetButtonData();};
-	void	SetCycleBreakpoint(uint32 breakpoint) {mCycleCountBreakpoint=breakpoint;};
 	uint8*	GetRamPointer() {return mRam->GetRamPointer();};
 
 public:
-	uint32			mCycleCountBreakpoint;
 	CLynxBase		*mMemoryHandlers[SYSTEM_SIZE];
 	CCart			*mCart;
 	CRom			*mRom;
@@ -210,11 +208,13 @@ public:
 	uint32			gSuzieDoneTime;
 	uint32			gSystemCycleCount;
 	uint32			gNextTimerEvent;
-	//uint32			gCPUBootAddress;
 	uint32			gSystemIRQ;
 	uint32			gSystemNMI;
 	uint32			gSystemCPUSleep;
 	uint32			gSystemHalt;
+
+	// frame overflow detection
+	int frameoverflow;
 };
 
 #endif

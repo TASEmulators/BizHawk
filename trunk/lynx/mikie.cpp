@@ -406,7 +406,6 @@ uint32 CMikie::DisplayRenderLine()
 {
 	uint32 work_done=0;
 
-	if(!mpDisplayCurrent) return 0;
 	if(!mDISPCTL_DMAEnable) return 0;
 	//	if(mLynxLine&0x80000000) return 0;
 
