@@ -80,10 +80,12 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 					case 0x80000: pagesize0 = 0x800; break;
 
 					case 0x30000: pagesize0 = 0x200; pagesize1 = 0x100; break;
+					case 0x50000: pagesize0 = 0x400; pagesize1 = 0x100; break;
 					case 0x60000: pagesize0 = 0x400; pagesize1 = 0x200; break;
+					case 0x90000: pagesize0 = 0x800; pagesize1 = 0x100; break;
+					case 0xa0000: pagesize0 = 0x800; pagesize1 = 0x200; break;
 					case 0xc0000: pagesize0 = 0x800; pagesize1 = 0x400; break;
 					case 0x100000: pagesize0 = 0x800; pagesize1 = 0x800; break;
-
 				}
 				Console.WriteLine("Auto-guessed banking options {0} {1}", pagesize0, pagesize1);
 			}
@@ -91,7 +93,8 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			Core = LibLynx.Create(realfile, realfile.Length, bios, bios.Length, pagesize0, pagesize1, false);
 			try
 			{
-				// ...
+				CoreComm.VsyncNum = 16000000; // 16.00 mhz refclock
+				CoreComm.VsyncDen = 16 * 105 * 159;
 			}
 			catch
 			{
@@ -103,14 +106,12 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
 			Frame++;
-
 			if (Controller["Power"])
 				LibLynx.Reset(Core);
 
 			int samples = soundbuff.Length;
-			LibLynx.Advance(Core, 0, videobuff, soundbuff, ref samples);
-			numsamp = samples;
-			Console.WriteLine(numsamp);
+			LibLynx.Advance(Core, GetButtons(), videobuff, soundbuff, ref samples);
+			numsamp = samples / 2; // sound provider wants number of sample pairs
 		}
 
 		public int Frame { get; private set; }
@@ -156,8 +157,30 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		#region Controller
 
-		public ControllerDefinition ControllerDefinition { get { return NullEmulator.NullController; } }
+		private static readonly ControllerDefinition LynxTroller = new ControllerDefinition
+		{
+			Name = "Lynx Controller",
+			BoolButtons = { "Up", "Down", "Left", "Right", "A", "B", "Option 1", "Option 2", "Pause", "Power" },
+		};
+
+		public ControllerDefinition ControllerDefinition { get { return LynxTroller; } }
 		public IController Controller { get; set; }
+
+		LibLynx.Buttons GetButtons()
+		{
+			LibLynx.Buttons ret = 0;
+			if (Controller["A"]) ret |= LibLynx.Buttons.A;
+			if (Controller["B"]) ret |= LibLynx.Buttons.B;
+			if (Controller["Up"]) ret |= LibLynx.Buttons.Up;
+			if (Controller["Down"]) ret |= LibLynx.Buttons.Down;
+			if (Controller["Left"]) ret |= LibLynx.Buttons.Left;
+			if (Controller["Right"]) ret |= LibLynx.Buttons.Right;
+			if (Controller["Pause"]) ret |= LibLynx.Buttons.Pause;
+			if (Controller["Option 1"]) ret |= LibLynx.Buttons.Option_1;
+			if (Controller["Option 2"]) ret |= LibLynx.Buttons.Option_2;
+
+			return ret;
+		}
 
 		#endregion
 
@@ -239,7 +262,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		#region SoundProvider
 
-		short[] soundbuff = new short[1000000]; // todo: make this smaller once frame loop is resolved
+		short[] soundbuff = new short[2048];
 		int numsamp;
 
 		public ISoundProvider SoundProvider { get { return null; } }
