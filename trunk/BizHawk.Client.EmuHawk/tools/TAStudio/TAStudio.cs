@@ -77,6 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm.PauseOnFrame = null;
 			GlobalWin.OSD.AddMessage("TAStudio engaged");
 			_currentTasMovie = Global.MovieSession.Movie as TasMovie;
+			SetTextProperty();
 			GlobalWin.MainForm.PauseEmulator();
 			GlobalWin.MainForm.RelinquishControl(this);
 			_originalRewindStatus = Global.Rewinder.RewindActive;
@@ -123,12 +124,12 @@ namespace BizHawk.Client.EmuHawk
 				WantsToControlStopMovie = false;
 				GlobalWin.MainForm.StartNewMovie(_currentTasMovie, record: true);
 				WantsToControlStopMovie = true;
-				SetTExtProperty();
+				SetTextProperty();
 				RefreshDialog();
 			}
 		}
 
-		private void SetTExtProperty()
+		private void SetTextProperty()
 		{
 			var text = "TAStudio";
 			if (_currentTasMovie != null)
@@ -1013,7 +1014,7 @@ namespace BizHawk.Client.EmuHawk
 		//This method is called everytime the Changes property is toggled on a TasMovie instance.
 		private void TasMovie_OnPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			SetTExtProperty();
+			SetTextProperty();
 		}
 
 		#endregion
