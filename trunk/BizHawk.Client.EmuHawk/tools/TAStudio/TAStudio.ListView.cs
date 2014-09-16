@@ -47,7 +47,18 @@ namespace BizHawk.Client.EmuHawk
 
 			if (columnName == MarkerColumnName)
 			{
-				if (Global.Emulator.Frame == index)
+				if (index == Global.Emulator.Frame && index == GlobalWin.MainForm.PauseOnFrame)
+				{
+					if (TasView.HorizontalOrientation)
+					{
+						bitmap = Properties.Resources.ts_v_arrow_green_blue;
+					}
+					else
+					{
+						bitmap = Properties.Resources.ts_h_arrow_green_blue;
+					}
+				}
+				else if (index == Global.Emulator.Frame)
 				{
 					if (TasView.HorizontalOrientation)
 					{
@@ -56,6 +67,17 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						bitmap = Properties.Resources.ts_h_arrow_blue;
+					}
+				}
+				else if (index == GlobalWin.MainForm.PauseOnFrame)
+				{
+					if (TasView.HorizontalOrientation)
+					{
+						bitmap = Properties.Resources.ts_v_arrow_green;
+					}
+					else
+					{
+						bitmap = Properties.Resources.ts_h_arrow_green;
 					}
 				}
 			}
