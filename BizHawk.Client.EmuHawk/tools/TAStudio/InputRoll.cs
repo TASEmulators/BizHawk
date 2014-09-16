@@ -1165,6 +1165,7 @@ namespace BizHawk.Client.EmuHawk
 					VBar.Maximum = RowsToPixels(RowCount + 1) - DrawHeight + VBar.LargeChange - 1;
 				}
 
+				VBar.Location = new Point(Width - 17, 0);
 				VBar.Size = new Size(VBar.Width, Height);
 				VBar.Visible = true;
 			}
