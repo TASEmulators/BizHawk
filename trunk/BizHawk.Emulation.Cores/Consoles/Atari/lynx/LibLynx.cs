@@ -27,8 +27,8 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		[Flags]
 		public enum Buttons : ushort
 		{
-			Up = 0x0080,
-			Down = 0x0040,
+			Up = 0x0040,
+			Down = 0x0080,
 			Left = 0x0010,
 			Right = 0x0020,
 			Option_1 = 0x008,
