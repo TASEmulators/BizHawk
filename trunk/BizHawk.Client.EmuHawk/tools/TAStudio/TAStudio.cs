@@ -123,9 +123,20 @@ namespace BizHawk.Client.EmuHawk
 				WantsToControlStopMovie = false;
 				GlobalWin.MainForm.StartNewMovie(_currentTasMovie, record: true);
 				WantsToControlStopMovie = true;
-				Text = "TAStudio - " + _currentTasMovie.Name;
+				SetTExtProperty();
 				RefreshDialog();
 			}
+		}
+
+		private void SetTExtProperty()
+		{
+			var text = "TAStudio";
+			if (_currentTasMovie != null)
+			{
+				text += " - " + _currentTasMovie.Name + (_currentTasMovie.Changes ? "*" : "");
+			}
+
+			Text = text;
 		}
 
 		public void LoadProject(string path)
@@ -1002,15 +1013,7 @@ namespace BizHawk.Client.EmuHawk
 		//This method is called everytime the Changes property is toggled on a TasMovie instance.
 		private void TasMovie_OnPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			if (_currentTasMovie != null && _currentTasMovie.Changes)
-			{
-				
-				Text += "*";
-			}
-			else
-			{
-				Text = Text.Replace("*", "");
-			}
+			SetTExtProperty();
 		}
 
 		#endregion
