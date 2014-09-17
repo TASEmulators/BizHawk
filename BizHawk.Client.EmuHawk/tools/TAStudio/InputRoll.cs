@@ -463,9 +463,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (HorizontalOrientation)
 				{
-					return (int)Math.Ceiling((Decimal)(DrawWidth - ColumnWidth) / CellWidth);
+					var width = DrawWidth - (NeedsVScrollbar ? VBar.Width : 0);
+
+					return (int)Math.Floor((decimal)(width - ColumnWidth) / CellWidth);
 				}
-				return (int)Math.Ceiling((Decimal)DrawHeight / CellHeight) - 1;
+
+				var height = DrawHeight - (NeedsHScrollbar ? HBar.Height : 0);
+
+				return (int)((decimal)height / CellHeight);
 			}
 		}
 
