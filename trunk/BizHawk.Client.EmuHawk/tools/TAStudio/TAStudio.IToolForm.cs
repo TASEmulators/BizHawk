@@ -5,6 +5,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio : IToolForm
 	{
+		public bool UpdateBefore { get { return false; } }
+
 		public void UpdateValues()
 		{
 			if (!IsHandleCreated || IsDisposed || _currentTasMovie == null)
@@ -12,15 +14,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (_currentTasMovie.IsRecording)
-			{
-				TasView.LastVisibleRow = _currentTasMovie.InputLogLength - 1;
-			}
-			else
-			{
-				TasView.LastVisibleRow = Global.Emulator.Frame;
-			}
-
+			SetVisibleIndex();
 			RefreshDialog();
 		}
 
@@ -31,14 +25,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (_currentTasMovie.IsRecording)
-			{
-				TasView.LastVisibleRow = _currentTasMovie.InputLogLength - 1;
-			}
-			else
-			{
-				TasView.LastVisibleRow = Global.Emulator.Frame;
-			}
+			SetVisibleIndex();
 		}
 
 		public void Restart()
@@ -86,6 +73,16 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		public bool UpdateBefore { get { return false; } }
+		private void SetVisibleIndex()
+		{
+			int indexThatMustBeVisible = _currentTasMovie.IsRecording
+				? _currentTasMovie.InputLogLength
+				: Global.Emulator.Frame + 1;
+
+			if (!TasView.IsVisible(indexThatMustBeVisible))
+			{
+				TasView.LastVisibleRow = indexThatMustBeVisible;
+			}
+		}
 	}
 }

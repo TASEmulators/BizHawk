@@ -452,6 +452,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public bool IsVisible(int index)
+		{
+			return (index >= FirstVisibleRow) && (index <= LastVisibleRow);
+		}
+
 		/// <summary>
 		/// Gets the number of rows currently visible including partially visible rows.
 		/// </summary>
@@ -465,12 +470,12 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var width = DrawWidth - (NeedsVScrollbar ? VBar.Width : 0);
 
-					return (int)Math.Floor((decimal)(width - ColumnWidth) / CellWidth);
+					return (int)((width - ColumnWidth) / CellWidth);
 				}
 
 				var height = DrawHeight - (NeedsHScrollbar ? HBar.Height : 0);
 
-				return (int)((decimal)height / CellHeight);
+				return (int)height / CellHeight;
 			}
 		}
 
