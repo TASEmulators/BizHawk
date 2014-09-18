@@ -157,7 +157,14 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				WantsToControlStopMovie = false;
-				GlobalWin.MainForm.StartNewMovie(movie, record: false);
+
+				var shouldRecord = false;
+				if (Global.MovieSession.Movie.InputLogLength == 0) // An unusual but possible edge case
+				{
+					shouldRecord = true;
+				}
+
+				GlobalWin.MainForm.StartNewMovie(movie, record: shouldRecord);
 				WantsToControlStopMovie = true;
 				_currentTasMovie = Global.MovieSession.Movie as TasMovie;
 				Global.Config.RecentTas.Add(path);
@@ -170,7 +177,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_currentTasMovie.FlushInputCache();
 			_currentTasMovie.UseInputCache = true;
-			TasView.RowCount = _currentTasMovie.InputLogLength + 1 + (_currentTasMovie.IsRecording ? 1 : 0); // adelikat: Hack! Add 1 in record mode for now, in reality I think we have to make TasStudio be UpdateBefore = false
+			TasView.RowCount = _currentTasMovie.InputLogLength + 1;
 			TasView.Refresh();
 
 			_currentTasMovie.FlushInputCache();
