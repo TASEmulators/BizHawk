@@ -174,25 +174,11 @@ namespace BizHawk.Client.EmuHawk
 
 				if (columnName == MarkerColumnName)
 				{
-					if(Global.Emulator.Frame == index)
-					{
-						if(TasView.HorizontalOrientation)
-						{
-							//text = " V";
-						}
-						else
-						{
-							//text = ">";
-						}
-					}
-					else
-					{
-						text = string.Empty;
-					}
+					// Do nothing
 				}
 				else if (columnName == FrameColumnName)
 				{
-					text = (index).ToString().PadLeft(5, '0');
+					text = (index).ToString().PadLeft(_currentTasMovie.InputLogLength.ToString().Length, '0');
 				}
 				else
 				{
