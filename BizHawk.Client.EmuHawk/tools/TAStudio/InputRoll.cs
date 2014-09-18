@@ -632,7 +632,7 @@ namespace BizHawk.Client.EmuHawk
 
 							if (image != null)
 							{
-								Gdi.DrawBitmap(image, new Point(col.Left.Value, point.Y + 1),true);
+								Gdi.DrawBitmap(image, new Point(col.Left.Value, point.Y + CellPadding),true);
 							}
 							else
 							{
