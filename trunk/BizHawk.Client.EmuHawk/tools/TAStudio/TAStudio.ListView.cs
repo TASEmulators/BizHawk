@@ -260,7 +260,16 @@ namespace BizHawk.Client.EmuHawk
 							TasView.Refresh();
 
 							_startBoolDrawColumn = buttonName;
-							_boolPaintState = _currentTasMovie.BoolIsPressed(frame, buttonName);
+
+							if (frame < _currentTasMovie.InputLogLength)
+							{
+								_boolPaintState = _currentTasMovie.BoolIsPressed(frame, buttonName);
+							}
+							else
+							{
+								Global.ClickyVirtualPadController.IsPressed(buttonName);
+							}
+							
 						}
 						else
 						{
