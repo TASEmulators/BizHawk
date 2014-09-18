@@ -41,6 +41,48 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Query callbacks
 
+		private void TasView_QueryItemIcon(int index, int column, ref Bitmap bitmap)
+		{
+			var columnName = TasView.Columns[column].Name;
+
+			if (columnName == MarkerColumnName)
+			{
+				if (index == Global.Emulator.Frame && index == GlobalWin.MainForm.PauseOnFrame)
+				{
+					if (TasView.HorizontalOrientation)
+					{
+						bitmap = Properties.Resources.ts_v_arrow_green_blue;
+					}
+					else
+					{
+						bitmap = Properties.Resources.ts_h_arrow_green_blue;
+					}
+				}
+				else if (index == Global.Emulator.Frame)
+				{
+					if (TasView.HorizontalOrientation)
+					{
+						bitmap = Properties.Resources.ts_v_arrow_blue;
+					}
+					else
+					{
+						bitmap = Properties.Resources.ts_h_arrow_blue;
+					}
+				}
+				else if (index == GlobalWin.MainForm.PauseOnFrame)
+				{
+					if (TasView.HorizontalOrientation)
+					{
+						bitmap = Properties.Resources.ts_v_arrow_green;
+					}
+					else
+					{
+						bitmap = Properties.Resources.ts_h_arrow_green;
+					}
+				}
+			}
+		}
+
 		private void TasView_QueryItemBkColor(int index, int column, ref Color color)
 		{
 			var columnName = TasView.Columns[column].Name;
@@ -81,11 +123,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (record.Lagged.Value)
 					{
-						color = record.HasState ? GreenZone_FrameCol : NoState_GreenZone_FrameCol;
+						color = record.HasState ? LagZone_FrameCol : NoState_LagZone_InputLog;
 					}
 					else
 					{
-						color = record.HasState ? LagZone_FrameCol : NoState_LagZone_InputLog;
+						color = record.HasState ? GreenZone_FrameCol : NoState_GreenZone_FrameCol;
 					}
 				}
 				else
@@ -105,11 +147,12 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (record.Lagged.Value)
 						{
-							color = record.HasState ? GreenZone_InputLog : NoState_GreenZone_InputLog;
+							color = record.HasState ? LagZone_InputLog : NoState_LagZone_InputLog;
+							
 						}
 						else
 						{
-							color = record.HasState ? LagZone_InputLog : NoState_LagZone_InputLog;
+							color = record.HasState ? GreenZone_InputLog : NoState_GreenZone_InputLog;
 						}
 					}
 					else
@@ -131,7 +174,21 @@ namespace BizHawk.Client.EmuHawk
 
 				if (columnName == MarkerColumnName)
 				{
-					text = Global.Emulator.Frame == index ? ">" : string.Empty;
+					if(Global.Emulator.Frame == index)
+					{
+						if(TasView.HorizontalOrientation)
+						{
+							//text = " V";
+						}
+						else
+						{
+							//text = ">";
+						}
+					}
+					else
+					{
+						text = string.Empty;
+					}
 				}
 				else if (columnName == FrameColumnName)
 				{
@@ -145,7 +202,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (Global.Emulator.Frame == _currentTasMovie.InputLogLength) // In this situation we have a "pending" frame for the user to click
 					{
-						text = TasMovie.CreateDisplayValueForButton(
+						text = _currentTasMovie.CreateDisplayValueForButton(
 							Global.ClickyVirtualPadController,
 							columnName);
 					}
@@ -164,7 +221,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
-			if (TasView.SelectedIndices.Any())
+			if (TasView.SelectedRows.Any())
 			{
 				var columnName = TasView.Columns[e.Column].Name;
 
@@ -174,7 +231,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (columnName != MarkerColumnName) // TODO: what about float?
 				{
-					foreach (var index in TasView.SelectedIndices)
+					foreach (var index in TasView.SelectedRows)
 					{
 						ToggleBoolState(index, columnName);
 					}
@@ -192,7 +249,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (TasView.CurrentCell.RowIndex.HasValue && TasView.CurrentCell.Column != null)
+			if (TasView.CurrentCell != null && TasView.CurrentCell.RowIndex.HasValue && TasView.CurrentCell.Column != null)
 			{
 				if (e.Button == MouseButtons.Left)
 				{
@@ -216,12 +273,6 @@ namespace BizHawk.Client.EmuHawk
 							GoToLastEmulatedFrameIfNecessary(TasView.CurrentCell.RowIndex.Value);
 							TasView.Refresh();
 
-							if (Global.Config.TAStudioAutoRestoreLastPosition)
-							{
-								GlobalWin.MainForm.UnpauseEmulator();
-								GlobalWin.MainForm.PauseOnFrame = Global.Emulator.Frame;
-							}
-
 							_startBoolDrawColumn = buttonName;
 							_boolPaintState = _currentTasMovie.BoolIsPressed(frame, buttonName);
 						}
@@ -236,10 +287,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var frame = TasView.CurrentCell.RowIndex.Value;
 					var buttonName = TasView.CurrentCell.Column.Name;
-					if (TasView.SelectedIndices.IndexOf(frame) != -1 && (buttonName == MarkerColumnName || buttonName == FrameColumnName))
+					if (TasView.SelectedRows.IndexOf(frame) != -1 && (buttonName == MarkerColumnName || buttonName == FrameColumnName))
 					{
 						//Disable the option to remove markers if no markers are selected (FCUEX does this).
-						RemoveMarkersContextMenuItem.Enabled = _currentTasMovie.Markers.Any(m => TasView.SelectedIndices.Contains(m.Frame));
+						RemoveMarkersContextMenuItem.Enabled = _currentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame));
 						RightClickMenu.Show(TasView, e.X, e.Y);
 					}
 				}
@@ -265,7 +316,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					GoToFrame(Global.Emulator.Frame - 1);
+					if (Global.Emulator.Frame > 0)
+					{
+						GoToFrame(Global.Emulator.Frame - 1);
+					}
 				}
 			}
 		}
@@ -274,7 +328,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.CurrentCell.RowIndex.HasValue &&
 				TasView.CurrentCell != null &&
-				TasView.CurrentCell.Column.Name == FrameColumnName)
+				TasView.CurrentCell.Column.Name == FrameColumnName &&
+				e.Button == MouseButtons.Left)
 			{
 				CallAddMarkerPopUp(TasView.CurrentCell.RowIndex.Value);
 			}
@@ -314,9 +369,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
-					for (var i = startVal + 1; i <= endVal; i++)
+					for (var i = startVal; i < endVal; i++)
 					{
-						TasView.SelectItem(i, true);
+						TasView.SelectRow(i, true);
+						TasView.Refresh();
 					}
 				}
 			}
@@ -373,6 +429,9 @@ namespace BizHawk.Client.EmuHawk
 			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Ctrl + Down
 			{
 				GoToNextFrame();
+			}else if (e.Control && !e.Alt && e.Shift && e.KeyCode == Keys.R) // Ctrl + Shift + R
+			{
+				TasView.HorizontalOrientation ^= true;
 			}
 		}
 

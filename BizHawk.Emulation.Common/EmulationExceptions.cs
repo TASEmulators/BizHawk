@@ -31,4 +31,13 @@ namespace BizHawk.Emulation.Common
 		{
 		}
 	}
+
+	public class SavestateSizeMismatchException : InvalidOperationException
+	{
+		public SavestateSizeMismatchException(string message)
+			: base(message)
+		{
+
+		}
+	}
 }

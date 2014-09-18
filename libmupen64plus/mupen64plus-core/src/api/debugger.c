@@ -38,6 +38,7 @@
 #include "debugger/debugger.h"
 #include "memory/memory.h"
 #include "r4300/r4300.h"
+#include "main/rom.h"
 
 extern unsigned int op; /* this is in r4300/pure_interp.c */
 
@@ -231,6 +232,9 @@ EXPORT void * CALL DebugMemGetPointer(m64p_dbg_memptr_type mem_ptr_type)
             return mempack[2];
 		case MEMPAK4:
             return mempack[3];
+
+		case THE_ROM:
+			return rom;
         default:
             DebugMessage(M64MSG_ERROR, "Bug: DebugMemGetPointer() called with invalid m64p_dbg_memptr_type");
             return NULL;
@@ -264,6 +268,9 @@ EXPORT int CALL MemGetSize(m64p_dbg_memptr_type mem_ptr_type)
             return 0x8000;
 		case MEMPAK4:
             return 0x8000;
+
+		case THE_ROM:
+			return rom_size;
         default:
             DebugMessage(M64MSG_ERROR, "Bug: MemGetSize() called with invalid m64p_dbg_memptr_type");
             return NULL;

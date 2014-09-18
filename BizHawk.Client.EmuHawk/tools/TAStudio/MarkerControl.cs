@@ -20,20 +20,22 @@ namespace BizHawk.Client.EmuHawk
 		public MarkerControl()
 		{
 			InitializeComponent();
-			
-			var col1 = new InputRoll.RollColumn()
+
+			MarkerView.Columns.AddRange(new InputRoll.RollColumn[]
 			{
-				Name = "FrameColumn",
-				Text = "Frame",
-				Width = 64,
-			};
-			var col2 = new InputRoll.RollColumn()
-			{
-				Name = "LabelColumn",
-				Text = "Label",
-				Width = 113,
-			};
-			MarkerView.Columns.AddRange(new InputRoll.RollColumn[]{col1, col2});
+				new InputRoll.RollColumn
+				{
+					Name = "FrameColumn",
+					Text = "Frame",
+					Width = 64
+				},
+				new InputRoll.RollColumn
+				{
+					Name = "LabelColumn",
+					Text = "Label",
+					Width = 133
+				}
+			});
 
 			MarkerView.QueryItemBkColor += MarkerView_QueryItemBkColor;
 			MarkerView.QueryItemText += MarkerView_QueryItemText;
@@ -42,12 +44,6 @@ namespace BizHawk.Client.EmuHawk
 		private void MarkerControl_Load(object sender, EventArgs e)
 		{
 			
-		}
-
-		public void UpdateValues()
-		{
-			MarkerView.ItemCount = Tastudio.CurrentMovie.Markers.Count;
-			MarkerView.Refresh();
 		}
 
 		private void MarkerView_QueryItemBkColor(int index, int column, ref Color color)
@@ -100,14 +96,14 @@ namespace BizHawk.Client.EmuHawk
 			MarkerView_SelectedIndexChanged(sender, e);
 		}
 
-		public new void Refresh()
+		public void UpdateValues()
 		{
 			if (MarkerView != null && Markers != null)
 			{
-				MarkerView.ItemCount = Markers.Count;
+				MarkerView.RowCount = Markers.Count;
 			}
 
-			base.Refresh();
+			MarkerView.Refresh();
 		}
 
 		private void MarkerView_SelectedIndexChanged(object sender, EventArgs e)
@@ -126,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				return MarkerView.SelectedIndices
+				return MarkerView.SelectedRows
 					.OfType<int>();
 			}
 		}

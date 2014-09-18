@@ -62,6 +62,7 @@
     <Compile Include="Interfaces\IController.cs" />
     <Compile Include="Interfaces\ICoreFileProvider.cs" />
     <Compile Include="Interfaces\IEmulator.cs" />
+    <Compile Include="Interfaces\IMemoryDomains.cs" />
     <Compile Include="Interfaces\ISoundProvider.cs" />
     <Compile Include="Interfaces\ISyncSoundProvider.cs" />
     <Compile Include="Interfaces\IVideoProvider.cs" />

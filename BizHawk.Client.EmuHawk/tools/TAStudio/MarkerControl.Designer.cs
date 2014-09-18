@@ -66,8 +66,8 @@
 			this.MarkerView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MarkerView.FullRowSelect = true;
 			this.MarkerView.HorizontalOrientation = false;
-			this.MarkerView.ItemCount = 0;
-			this.MarkerView.LastVisibleIndex = 9;
+			this.MarkerView.RowCount = 0;
+			this.MarkerView.LastVisibleRow = 9;
 			this.MarkerView.Location = new System.Drawing.Point(3, 0);
 			this.MarkerView.MultiSelect = false;
 			this.MarkerView.Name = "MarkerView";

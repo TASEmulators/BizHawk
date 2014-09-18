@@ -1,9 +1,12 @@
 //ARMv3 (ARM6)
 
 struct ArmDSP : public Coprocessor {
-  uint8 *firmware;
-  uint8 *programROM;
-  uint8 *dataROM;
+  
+	//zero 01-sep-2014 - dont clobber these when reconstructing!
+	static uint8 *firmware;
+  static uint8 *programROM;
+  static uint8 *dataROM;
+
   uint8 *programRAM;
 
   #include "registers.hpp"

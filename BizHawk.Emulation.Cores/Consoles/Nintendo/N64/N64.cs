@@ -2,8 +2,6 @@
 using System.Threading;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
 
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
@@ -19,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		portedVersion: "2.0",
 		portedUrl: "https://code.google.com/p/mupen64plus/"
 		)]
-	public class N64 : IEmulator
+	public partial class N64 : IEmulator, IMemoryDomains
 	{
 		private readonly N64Input _inputProvider;
 		private readonly N64VideoProvider _videoProvider;
@@ -39,16 +37,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		private Action _pendingThreadAction;
 
-
 		/// <summary>
 		/// Create mupen64plus Emulator
 		/// </summary>
 		/// <param name="comm">Core communication object</param>
 		/// <param name="game">Game information of game to load</param>
 		/// <param name="rom">Rom that should be loaded</param>
-		/// <param name="SyncSettings">N64SyncSettings object</param>
+		/// <param name="syncSettings">N64SyncSettings object</param>
 		[CoreConstructor("N64")]
-		public N64(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
+		public N64(CoreComm comm, GameInfo game, byte[] file, object settings, object syncSettings)
 		{
 			int SaveType = 0;
 			if (game.OptionValue("SaveType") == "EEPROM_16K")
@@ -61,7 +58,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			_syncSettings = (N64SyncSettings)syncSettings ?? new N64SyncSettings();
 			_settings = (N64Settings)settings ?? new N64Settings();
 
-			byte country_code = rom[0x3E];
+
+			if (game.OptionValue("expansionpak") != null && game.OptionValue("expansionpak") == "1")
+			{
+				_syncSettings.DisableExpansionSlot = false;
+			}
+
+			byte country_code = file[0x3E];
 			switch (country_code)
 			{
 				// PAL codes
@@ -106,7 +109,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			//not sure why this works... if we put the plugin initializations in here, we get deadlocks in some SDL initialization. doesnt make sense to me...
 			RunThreadAction(() =>
 			{
-				api = new mupen64plusApi(this, rom, videosettings, SaveType, (int)coreType);
+				api = new mupen64plusApi(this, file, videosettings, SaveType, (int)coreType, _syncSettings.DisableExpansionSlot);
 			});
 
 			// Order is important because the register with the mupen core
@@ -167,10 +170,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		private void StartThreadLoop()
 		{
-			var thread = new Thread(ThreadLoop);
-			//will this solve the hanging process problem?
-			thread.IsBackground = true;
-			thread.Start();
+			var thread = new Thread(ThreadLoop) { IsBackground = true };
+			thread.Start(); // will this solve the hanging process problem?
 		}
 
 		private void EndThreadLoop()
@@ -321,8 +322,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			byte[] data = SaveStatePrivateBuff;
 			int bytes_used = api.SaveState(data);
 
-			writer.Write(data.Length);
-			writer.Write(data);
+			writer.Write(bytes_used);
+			writer.Write(data, 0, bytes_used);
 
 			byte[] saveram = api.SaveSaveram();
 			writer.Write(saveram);
@@ -340,6 +341,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			int length = reader.ReadInt32();
+			if ((_syncSettings.DisableExpansionSlot && length >= 16788288) || (!_syncSettings.DisableExpansionSlot && length < 16788288))
+			{
+				throw new SavestateSizeMismatchException("Wrong N64 savestate size");
+			}
+
 			reader.Read(SaveStatePrivateBuff, 0, length);
 			byte[] data = SaveStatePrivateBuff;
 
@@ -458,91 +464,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			api.setReadCallback(readcb);
 			api.setWriteCallback(writecb);
 		}
-
-		#endregion
-
-		#region Memory Domains
-
-		private MemoryDomain MakeMemoryDomain(string name, mupen64plusApi.N64_MEMORY id, MemoryDomain.Endian endian)
-		{
-			int size = api.get_memory_size(id);
-
-			//if this type of memory isnt available, dont make the memory domain
-			if (size == 0)
-			{
-				return null;
-			}
-
-			IntPtr memPtr = api.get_memory_ptr(id);
-
-			var md = new MemoryDomain(
-				name,
-				size,
-				endian,
-				delegate(int addr)
-				{
-					if (addr < 0 || addr >= size)
-					{
-						throw new ArgumentOutOfRangeException();
-					}
-
-					return Marshal.ReadByte(memPtr, addr);
-				},
-				delegate(int addr, byte val)
-				{
-					if (addr < 0 || addr >= size)
-					{
-						throw new ArgumentOutOfRangeException();
-					}
-
-					Marshal.WriteByte(memPtr + addr, val);
-				});
-
-			_memoryDomains.Add(md);
-
-			return md;
-		}
-
-		private void InitMemoryDomains()
-		{
-			MakeMemoryDomain("RDRAM", mupen64plusApi.N64_MEMORY.RDRAM, MemoryDomain.Endian.Little);
-			MakeMemoryDomain("PI Register", mupen64plusApi.N64_MEMORY.PI_REG, MemoryDomain.Endian.Little);
-			MakeMemoryDomain("SI Register", mupen64plusApi.N64_MEMORY.SI_REG, MemoryDomain.Endian.Little);
-			MakeMemoryDomain("VI Register", mupen64plusApi.N64_MEMORY.VI_REG, MemoryDomain.Endian.Little);
-			MakeMemoryDomain("RI Register", mupen64plusApi.N64_MEMORY.RI_REG, MemoryDomain.Endian.Little);
-			MakeMemoryDomain("AI Register", mupen64plusApi.N64_MEMORY.AI_REG, MemoryDomain.Endian.Little);
-
-			MakeMemoryDomain("EEPROM", mupen64plusApi.N64_MEMORY.EEPROM, MemoryDomain.Endian.Little);
-
-			if (_syncSettings.Controllers[0].IsConnected &&
-				_syncSettings.Controllers[0].PakType == N64SyncSettings.N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
-			{
-				MakeMemoryDomain("Mempak 1", mupen64plusApi.N64_MEMORY.MEMPAK1, MemoryDomain.Endian.Little);
-			}
-
-			if (_syncSettings.Controllers[1].IsConnected &&
-				_syncSettings.Controllers[1].PakType == N64SyncSettings.N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
-			{
-				MakeMemoryDomain("Mempak 2", mupen64plusApi.N64_MEMORY.MEMPAK2, MemoryDomain.Endian.Little);
-			}
-
-			if (_syncSettings.Controllers[2].IsConnected &&
-				_syncSettings.Controllers[2].PakType == N64SyncSettings.N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
-			{
-				MakeMemoryDomain("Mempak 3", mupen64plusApi.N64_MEMORY.MEMPAK3, MemoryDomain.Endian.Little);
-			}
-
-			if (_syncSettings.Controllers[3].IsConnected &&
-				_syncSettings.Controllers[3].PakType == N64SyncSettings.N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
-			{
-				MakeMemoryDomain("Mempak 4", mupen64plusApi.N64_MEMORY.MEMPAK4, MemoryDomain.Endian.Little);
-			}
-
-			MemoryDomains = new MemoryDomainList(_memoryDomains);
-		}
-
-		private List<MemoryDomain> _memoryDomains = new List<MemoryDomain>();
-		public MemoryDomainList MemoryDomains { get; private set; }
 
 		#endregion
 

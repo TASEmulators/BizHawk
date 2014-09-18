@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		isPorted: false,
 		isReleased: true
 		)]
-	public sealed partial class ColecoVision : IEmulator
+	public sealed partial class ColecoVision : IEmulator, IMemoryDomains
 	{
 		// ROM
 		public byte[] RomData;

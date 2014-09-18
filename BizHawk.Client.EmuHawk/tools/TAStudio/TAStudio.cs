@@ -55,10 +55,13 @@ namespace BizHawk.Client.EmuHawk
 			MarkerControl.Tastudio = this;
 			TasView.QueryItemText += TasView_QueryItemText;
 			TasView.QueryItemBkColor += TasView_QueryItemBkColor;
+			TasView.QueryItemIcon += TasView_QueryItemIcon;
 
 			TopMost = Global.Config.TAStudioSettings.TopMost;
 			TasView.InputPaintingMode = Global.Config.TAStudioDrawInput;
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
+			TasView.MultiSelect = true;
+			TasView.MaxCharactersInHorizontal = 5;
 		}
 
 		private void ConvertCurrentMovieToTasproj()
@@ -66,6 +69,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.MovieSession.Movie.Save();
 			Global.MovieSession.Movie = Global.MovieSession.Movie.ToTasMovie();
 			Global.MovieSession.Movie.Save();
+			Global.MovieSession.Movie.SwitchToRecord();
 		}
 
 		private void EngageTastudio()
@@ -73,6 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm.PauseOnFrame = null;
 			GlobalWin.OSD.AddMessage("TAStudio engaged");
 			_currentTasMovie = Global.MovieSession.Movie as TasMovie;
+			SetTextProperty();
 			GlobalWin.MainForm.PauseEmulator();
 			GlobalWin.MainForm.RelinquishControl(this);
 			_originalRewindStatus = Global.Rewinder.RewindActive;
@@ -119,9 +124,20 @@ namespace BizHawk.Client.EmuHawk
 				WantsToControlStopMovie = false;
 				GlobalWin.MainForm.StartNewMovie(_currentTasMovie, record: true);
 				WantsToControlStopMovie = true;
-				Text = "TAStudio - " + _currentTasMovie.Name;
+				SetTextProperty();
 				RefreshDialog();
 			}
+		}
+
+		private void SetTextProperty()
+		{
+			var text = "TAStudio";
+			if (_currentTasMovie != null)
+			{
+				text += " - " + _currentTasMovie.Name + (_currentTasMovie.Changes ? "*" : "");
+			}
+
+			Text = text;
 		}
 
 		public void LoadProject(string path)
@@ -152,12 +168,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RefreshDialog()
 		{
-			TasView.ItemCount = _currentTasMovie.InputLogLength + 1;
+			_currentTasMovie.FlushInputCache();
+			_currentTasMovie.UseInputCache = true;
+			TasView.RowCount = _currentTasMovie.InputLogLength + 1;
 			TasView.Refresh();
+
+			_currentTasMovie.FlushInputCache();
+			_currentTasMovie.UseInputCache = false;
 
 			if (MarkerControl != null)
 			{
-				MarkerControl.Refresh();
+				MarkerControl.UpdateValues();
 			}
 		}
 
@@ -166,9 +187,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (frame != Global.Emulator.Frame) // Don't go to a frame if you are already on it!
 			{
+				var restoreFrame = Global.Emulator.Frame;
+
 				if (frame <= _currentTasMovie.LastEmulatedFrame)
 				{
 					GoToFrame(frame);
+
+					if (Global.Config.TAStudioAutoRestoreLastPosition)
+					{
+						GlobalWin.MainForm.UnpauseEmulator();
+						GlobalWin.MainForm.PauseOnFrame = restoreFrame;
+					}
 				}
 			}
 		}
@@ -229,6 +258,20 @@ namespace BizHawk.Client.EmuHawk
 			GoToFrame(marker.Frame);
 		}
 
+
+		private void StartAtNearestFrameAndEmulate(int frame)
+		{
+			_currentTasMovie.SwitchToPlay();
+			var closestState = _currentTasMovie.GetStateClosestToFrame(frame);
+			if (closestState != null)
+			{
+				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(closestState.ToArray())));
+			}
+
+			GlobalWin.MainForm.PauseOnFrame = frame;
+			GlobalWin.MainForm.UnpauseEmulator();
+		}
+
 		private void GoToFrame(int frame)
 		{
 			// If past greenzone, emulate and capture states
@@ -254,14 +297,12 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						GlobalWin.DisplayManager.NeedsToPaint = true;
-						TasView.LastVisibleIndex = frame;
+						TasView.LastVisibleRow = frame;
 					}
-					else//Goto last emulated frame, then unpause until we reach frame
+					else // Get as close as we can then emulate there
 					{
-						_currentTasMovie.SwitchToPlay();
-						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_currentTasMovie[_currentTasMovie.LastEmulatedFrame].State.ToArray())));
-						GlobalWin.MainForm.UnpauseEmulator();
-						GlobalWin.MainForm.PauseOnFrame = frame;
+						StartAtNearestFrameAndEmulate(frame);
+						return;
 					}
 				}
 				else // We are going foward
@@ -273,21 +314,19 @@ namespace BizHawk.Client.EmuHawk
 						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_currentTasMovie[goToFrame].State.ToArray())));
 						Global.Emulator.FrameAdvance(true);
 						GlobalWin.DisplayManager.NeedsToPaint = true;
-						TasView.LastVisibleIndex = frame;
+						TasView.LastVisibleRow = frame;
 					}
-					else // TODO: this assume that there are no "gaps", instead of last emulated frame, we should do last frame from X
+					else
 					{
-						_currentTasMovie.SwitchToPlay();
-						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_currentTasMovie[_currentTasMovie.LastEmulatedFrame].State.ToArray())));
-						GlobalWin.MainForm.UnpauseEmulator();
-						GlobalWin.MainForm.PauseOnFrame = frame;
+						StartAtNearestFrameAndEmulate(frame);
+						return;
 					}
 				}
 			}
 			else // Emulate to a future frame
 			{
 				// TODO: get the last greenzone frame and go there
-				_currentTasMovie.SwitchToPlay(); // TODO: stop copy/pasting this logic
+				_currentTasMovie.SwitchToPlay();
 				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_currentTasMovie[_currentTasMovie.LastEmulatedFrame].State.ToArray())));
 				GlobalWin.MainForm.UnpauseEmulator();
 				if(Global.Config.TAStudioAutoPause)
@@ -347,7 +386,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// TODO: columns selected
 			// TODO: clipboard
-			var list = TasView.SelectedIndices;
+			var list = TasView.SelectedRows;
 			string message = "Selected: ";
 
 			if (list.Count > 0)
@@ -385,7 +424,7 @@ namespace BizHawk.Client.EmuHawk
 			if (result == DialogResult.OK)
 			{
 				_currentTasMovie.Markers.Add(markerFrame, i.PromptText);
-				MarkerControl.Refresh();
+				MarkerControl.UpdateValues();
 			}
 		}
 
@@ -515,7 +554,7 @@ namespace BizHawk.Client.EmuHawk
 			DeleteFramesMenuItem.Enabled =
 			CloneMenuItem.Enabled =
 			TruncateMenuItem.Enabled =
-				TasView.SelectedIndices.Any();
+				TasView.SelectedRows.Any();
 			ReselectClipboardMenuItem.Enabled =
 				PasteMenuItem.Enabled =
 				PasteInsertMenuItem.Enabled =
@@ -525,16 +564,18 @@ namespace BizHawk.Client.EmuHawk
 		private void DeselectMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView.DeselectAll();
+			TasView.Refresh();
 		}
 
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView.SelectAll();
+			TasView.Refresh();
 		}
 
 		private void SelectBetweenMarkersMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedIndices.Any())
+			if (TasView.SelectedRows.Any())
 			{
 				var prevMarker = _currentTasMovie.Markers.PreviousOrCurrent(TasView.LastSelectedIndex.Value);
 				var nextMarker = _currentTasMovie.Markers.Next(TasView.LastSelectedIndex.Value);
@@ -544,7 +585,7 @@ namespace BizHawk.Client.EmuHawk
 
 				for (int i = prev; i < next; i++)
 				{
-					TasView.SelectItem(i, true);
+					TasView.SelectRow(i, true);
 				}
 			}
 		}
@@ -554,16 +595,16 @@ namespace BizHawk.Client.EmuHawk
 			TasView.DeselectAll();
 			foreach (var item in _tasClipboard)
 			{
-				TasView.SelectItem(item.Frame, true);
+				TasView.SelectRow(item.Frame, true);
 			}
 		}
 
 		private void CopyMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedIndices.Any())
+			if (TasView.SelectedRows.Any())
 			{
 				_tasClipboard.Clear();
-				var list = TasView.SelectedIndices;
+				var list = TasView.SelectedRows;
 				var sb = new StringBuilder();
 				for (var i = 0; i < list.Count; i++)
 				{
@@ -622,13 +663,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CutMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedIndices.Any())
+			if (TasView.SelectedRows.Any())
 			{
 				var needsToRollback = !(TasView.FirstSelectedIndex.Value > Global.Emulator.Frame);
 				var rollBackFrame = TasView.FirstSelectedIndex.Value;
 
 				_tasClipboard.Clear();
-				var list = TasView.SelectedIndices.ToArray();
+				var list = TasView.SelectedRows.ToArray();
 				var sb = new StringBuilder();
 				for (var i = 0; i < list.Length; i++)
 				{
@@ -657,12 +698,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedIndices.Any())
+			if (TasView.SelectedRows.Any())
 			{
 				var needsToRollback = !(TasView.FirstSelectedIndex > Global.Emulator.Frame);
 				var rollBackFrame = TasView.FirstSelectedIndex.Value;
 
-				foreach (var frame in TasView.SelectedIndices)
+				foreach (var frame in TasView.SelectedRows)
 				{
 					_currentTasMovie.ClearFrame(frame);
 				}
@@ -680,13 +721,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DeleteFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedIndices.Any())
+			if (TasView.SelectedRows.Any())
 			{
 				var needsToRollback = !(TasView.FirstSelectedIndex > Global.Emulator.Frame);
 				var rollBackFrame = TasView.FirstSelectedIndex.Value;
 
 				_tasClipboard.Clear();
-				_currentTasMovie.RemoveFrames(TasView.SelectedIndices.ToArray());
+				_currentTasMovie.RemoveFrames(TasView.SelectedRows.ToArray());
 				SetSplicer();
 				TasView.DeselectAll();
 
@@ -703,9 +744,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CloneMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedIndices.Any())
+			if (TasView.SelectedRows.Any())
 			{
-				var framesToInsert = TasView.SelectedIndices.ToList();
+				var framesToInsert = TasView.SelectedRows.ToList();
 				var insertionFrame = TasView.LastSelectedIndex.Value + 1;
 				var needsToRollback = !(insertionFrame > Global.Emulator.Frame);
 				var inputLog = new List<string>();
@@ -730,7 +771,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertFrameMenuItem_Click(object sender, EventArgs e)
 		{
-			var insertionFrame = TasView.SelectedIndices.Any() ? TasView.FirstSelectedIndex.Value : 0;
+			var insertionFrame = TasView.SelectedRows.Any() ? TasView.FirstSelectedIndex.Value : 0;
 			bool needsToRollback = insertionFrame <= Global.Emulator.Frame;
 
 			_currentTasMovie.InsertEmptyFrame(insertionFrame);
@@ -747,7 +788,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertNumFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			var insertionFrame = TasView.SelectedIndices.Any() ? TasView.FirstSelectedIndex.Value : 0;
+			var insertionFrame = TasView.SelectedRows.Any() ? TasView.FirstSelectedIndex.Value : 0;
 			bool needsToRollback = insertionFrame <= Global.Emulator.Frame;
 
 			var framesPrompt = new FramesPrompt();
@@ -769,7 +810,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TruncateMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedIndices.Any())
+			if (TasView.SelectedRows.Any())
 			{
 				var rollbackFrame = TasView.LastSelectedIndex.Value + 1;
 				var needsToRollback = !(rollbackFrame > Global.Emulator.Frame);
@@ -789,7 +830,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetMarkersMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach(int index in TasView.SelectedIndices)
+			foreach(int index in TasView.SelectedRows)
 			{
 				CallAddMarkerPopUp(index);
 			}
@@ -797,7 +838,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveMarkersMenuItem_Click(object sender, EventArgs e)
 		{
-			_currentTasMovie.Markers.RemoveAll(m => TasView.SelectedIndices.Contains(m.Frame));
+			_currentTasMovie.Markers.RemoveAll(m => TasView.SelectedRows.Contains(m.Frame));
 			RefreshDialog();
 		}
 
@@ -973,15 +1014,7 @@ namespace BizHawk.Client.EmuHawk
 		//This method is called everytime the Changes property is toggled on a TasMovie instance.
 		private void TasMovie_OnPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			if (_currentTasMovie.Changes)
-			{
-				
-				Text += "*";
-			}
-			else
-			{
-				Text = Text.Replace("*", "");
-			}
+			SetTextProperty();
 		}
 
 		#endregion

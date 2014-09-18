@@ -371,7 +371,6 @@ namespace BizHawk.Emulation.Cores
 
 		void SetupDebuggingStuff()
 		{
-			MemoryDomains = MemoryDomainList.GetDummyList();
 		}
 
 		public MemoryDomainList MemoryDomains { get; private set; }

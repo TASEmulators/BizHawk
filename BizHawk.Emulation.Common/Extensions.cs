@@ -8,5 +8,10 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 		{
 			return (CoreAttributes)Attribute.GetCustomAttribute(core.GetType(), typeof(CoreAttributes));
 		}
+
+		public static bool HasMemoryDomains(this IEmulator core)
+		{
+			return core is IMemoryDomains;
+		}
 	}
 }

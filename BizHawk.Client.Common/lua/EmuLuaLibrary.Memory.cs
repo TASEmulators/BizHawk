@@ -3,6 +3,7 @@ using System.ComponentModel;
 
 using LuaInterface;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -14,20 +15,40 @@ namespace BizHawk.Client.Common
 		public MemoryLuaLibrary(Lua lua)
 			: base(lua)
 		{
-			_currentMemoryDomain = Global.Emulator.MemoryDomains.IndexOf(Global.Emulator.MemoryDomains.MainMemory);
+			if (Global.Emulator.HasMemoryDomains())
+			{
+				var domains = (Global.Emulator as IMemoryDomains).MemoryDomains;
+				_currentMemoryDomain = domains.IndexOf(domains.MainMemory);
+			}
 		}
 
 		public MemoryLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback)
 		{
-			_currentMemoryDomain = Global.Emulator.MemoryDomains.IndexOf(Global.Emulator.MemoryDomains.MainMemory);
+			if (Global.Emulator.HasMemoryDomains())
+			{
+				var domains = (Global.Emulator as IMemoryDomains).MemoryDomains;
+				_currentMemoryDomain = domains.IndexOf(domains.MainMemory);
+			}
 		}
 
 		public override string Name { get { return "memory"; } }
 
 		protected override MemoryDomain Domain
 		{
-			get { return Global.Emulator.MemoryDomains[_currentMemoryDomain]; }
+			get
+			{
+				if (Global.Emulator.HasMemoryDomains())
+				{
+					return (Global.Emulator as IMemoryDomains).MemoryDomains[_currentMemoryDomain];
+				}
+				else
+				{
+					var error = string.Format("Error: {0} does not implement memory domains", Global.Emulator.Attributes().CoreName);
+					Log(error);
+					throw new NotImplementedException(error);
+				}
+			}
 		}
 
 		#region Unique Library Methods
@@ -39,9 +60,9 @@ namespace BizHawk.Client.Common
 		public LuaTable GetMemoryDomainList()
 		{
 			var table = Lua.NewTable();
-			for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
+			for (int i = 0; i < DomainList.Count; i++)
 			{
-				table[i] = Global.Emulator.MemoryDomains[i].Name;
+				table[i] = DomainList[i].Name;
 			}
 
 			return table;
@@ -71,9 +92,9 @@ namespace BizHawk.Client.Common
 		)]
 		public bool UseMemoryDomain(string domain)
 		{
-			for (var i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
+			for (var i = 0; i < DomainList.Count; i++)
 			{
-				if (Global.Emulator.MemoryDomains[i].Name == domain)
+				if (DomainList[i].Name == domain)
 				{
 					_currentMemoryDomain = i;
 					return true;
