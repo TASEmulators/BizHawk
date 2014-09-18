@@ -1593,7 +1593,10 @@ class Gb_Wave : public Gb_Osc
 	/* Wave index that would be accessed, or -1 if no access would occur*/
 	int Gb_Wave::access( unsigned addr ) const
 	{
-		addr = (phase & BANK_SIZE_MIN_ONE) >> 1;
+		//if ( mode != MODE_AGB )
+		//{
+		//	addr = (phase & BANK_SIZE_MIN_ONE) >> 1;
+		//}
 		return addr & 0x0F;
 	}
 };

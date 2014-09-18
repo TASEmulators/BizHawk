@@ -174,32 +174,44 @@ namespace BizHawk.Client.Common
 
 		protected byte GetByte()
 		{
-			return _domain.PeekByte(_address % _domain.Size);
+			if (_domain.Size == 0)
+				return _domain.PeekByte(_address);
+			else return _domain.PeekByte(_address % _domain.Size);
 		}
 
 		protected ushort GetWord()
 		{
-			return _domain.PeekWord(_address % _domain.Size, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+			if (_domain.Size == 0)
+				return _domain.PeekWord(_address, _bigEndian);
+			else return _domain.PeekWord(_address % _domain.Size, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
 		}
 
 		protected uint GetDWord()
 		{
-			return _domain.PeekDWord(_address % _domain.Size, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+			if(_domain.Size == 0)
+				return _domain.PeekDWord(_address, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+			else return _domain.PeekDWord(_address % _domain.Size, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
 		}
 
 		protected void PokeByte(byte val)
 		{
-			_domain.PokeByte(_address % _domain.Size, val);
+			if(_domain.Size == 0)
+				_domain.PokeByte(_address, val);
+			else _domain.PokeByte(_address % _domain.Size, val);
 		}
 
 		protected void PokeWord(ushort val)
 		{
-			_domain.PokeWord(_address % _domain.Size, val, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+			if (_domain.Size == 0)
+				_domain.PokeWord(_address, val, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+			else _domain.PokeWord(_address % _domain.Size, val, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
 		}
 
 		protected void PokeDWord(uint val)
 		{
-			_domain.PokeDWord(_address % _domain.Size, val, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+			if (_domain.Size == 0)
+				_domain.PokeDWord(_address, val, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+			else _domain.PokeDWord(_address % _domain.Size, val, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
 		}
 
 		public void ClearChangeCount() { _changecount = 0; }
@@ -208,7 +220,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return !IsSeparator && Address.Value >= Domain.Size;
+				return !IsSeparator && (Domain.Size != 0 && Address.Value >= Domain.Size);
 			}
 		}
 
@@ -230,7 +242,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static Watch GenerateWatch(MemoryDomain domain, int address, WatchSize size, DisplayType type, bool bigendian, int prev, int changecount)
+		public static Watch GenerateWatch(MemoryDomain domain, int address, WatchSize size, DisplayType type, bool bigendian, long prev, int changecount)
 		{
 			switch (size)
 			{

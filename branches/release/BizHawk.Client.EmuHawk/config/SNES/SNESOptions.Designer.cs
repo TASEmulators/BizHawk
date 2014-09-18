@@ -38,13 +38,14 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.cbDoubleSize = new System.Windows.Forms.CheckBox();
 			this.lblDoubleSize = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// btnOk
 			// 
 			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOk.Location = new System.Drawing.Point(136, 254);
+			this.btnOk.Location = new System.Drawing.Point(136, 277);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(75, 23);
 			this.btnOk.TabIndex = 0;
@@ -56,7 +57,7 @@
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(217, 254);
+			this.btnCancel.Location = new System.Drawing.Point(217, 277);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 1;
@@ -77,12 +78,13 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.label2);
 			this.groupBox1.Controls.Add(this.rbAccuracy);
 			this.groupBox1.Controls.Add(this.rbPerformance);
 			this.groupBox1.Controls.Add(this.rbCompatibility);
 			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(277, 90);
+			this.groupBox1.Size = new System.Drawing.Size(277, 108);
 			this.groupBox1.TabIndex = 3;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Core Selection";
@@ -90,6 +92,7 @@
 			// rbAccuracy
 			// 
 			this.rbAccuracy.AutoSize = true;
+			this.rbAccuracy.Enabled = false;
 			this.rbAccuracy.Location = new System.Drawing.Point(6, 65);
 			this.rbAccuracy.Name = "rbAccuracy";
 			this.rbAccuracy.Size = new System.Drawing.Size(224, 17);
@@ -113,7 +116,7 @@
 			// cbRingbuf
 			// 
 			this.cbRingbuf.AutoSize = true;
-			this.cbRingbuf.Location = new System.Drawing.Point(17, 112);
+			this.cbRingbuf.Location = new System.Drawing.Point(19, 134);
 			this.cbRingbuf.Name = "cbRingbuf";
 			this.cbRingbuf.Size = new System.Drawing.Size(115, 17);
 			this.cbRingbuf.TabIndex = 4;
@@ -122,7 +125,7 @@
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(33, 132);
+			this.label1.Location = new System.Drawing.Point(35, 154);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(254, 45);
 			this.label1.TabIndex = 5;
@@ -131,7 +134,7 @@
 			// cbDoubleSize
 			// 
 			this.cbDoubleSize.AutoSize = true;
-			this.cbDoubleSize.Location = new System.Drawing.Point(16, 167);
+			this.cbDoubleSize.Location = new System.Drawing.Point(18, 189);
 			this.cbDoubleSize.Name = "cbDoubleSize";
 			this.cbDoubleSize.Size = new System.Drawing.Size(178, 17);
 			this.cbDoubleSize.TabIndex = 6;
@@ -141,7 +144,7 @@
 			// 
 			// lblDoubleSize
 			// 
-			this.lblDoubleSize.Location = new System.Drawing.Point(34, 188);
+			this.lblDoubleSize.Location = new System.Drawing.Point(36, 210);
 			this.lblDoubleSize.Name = "lblDoubleSize";
 			this.lblDoubleSize.Size = new System.Drawing.Size(254, 57);
 			this.lblDoubleSize.TabIndex = 7;
@@ -149,13 +152,21 @@
     "orce the SNES output to stay double-size always. NOTE: The Accuracy core runs as" +
     " if this is selected.\r\n";
 			// 
+			// label2
+			// 
+			this.label2.Location = new System.Drawing.Point(72, 85);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(136, 21);
+			this.label2.TabIndex = 8;
+			this.label2.Text = "NOT SUPPORTED YET!";
+			// 
 			// SNESOptions
 			// 
 			this.AcceptButton = this.btnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(304, 289);
+			this.ClientSize = new System.Drawing.Size(304, 312);
 			this.Controls.Add(this.lblDoubleSize);
 			this.Controls.Add(this.cbDoubleSize);
 			this.Controls.Add(this.label1);
@@ -190,5 +201,6 @@
 		private System.Windows.Forms.CheckBox cbDoubleSize;
 		private System.Windows.Forms.Label lblDoubleSize;
 		private System.Windows.Forms.RadioButton rbAccuracy;
+		private System.Windows.Forms.Label label2;
 	}
 }

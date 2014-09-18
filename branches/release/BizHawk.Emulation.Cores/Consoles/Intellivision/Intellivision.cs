@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		isPorted: false,
 		isReleased: false
 		)]
-	public sealed partial class Intellivision : IEmulator
+	public sealed partial class Intellivision : IEmulator, IMemoryDomains
 	{
 		byte[] Rom;
 		GameInfo Game;

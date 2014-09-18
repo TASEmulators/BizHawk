@@ -63,6 +63,26 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		#region Api
 
 		/// <summary>
+		/// Draw a bitmap object at the given position
+		/// </summary>
+		public void DrawBitmap(Bitmap bitmap, Point point, bool blend = false)
+		{
+			IntPtr hbmp = bitmap.GetHbitmap();
+			var bitHDC = CreateCompatibleDC(CurrentHDC);
+			IntPtr old = new IntPtr(SelectObject(bitHDC, hbmp));
+			if (blend)
+			{
+				AlphaBlend(CurrentHDC, point.X, point.Y, bitmap.Width, bitmap.Height, bitHDC, 0, 0, bitmap.Width, bitmap.Height, new BLENDFUNCTION(AC_SRC_OVER, 0, 0xff, AC_SRC_ALPHA));
+			}
+			else
+			{
+				BitBlt(CurrentHDC, point.X, point.Y, bitmap.Width, bitmap.Height, bitHDC, 0, 0, 0xCC0020);
+			}
+			SelectObject(bitHDC, old);
+			DeleteDC(bitHDC);
+		}
+
+		/// <summary>
 		/// Required to use before calling drawing methods
 		/// </summary>
 		public GdiGraphicsLock LockGraphics(Graphics g)
@@ -194,8 +214,8 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			get { return _bitHDC != IntPtr.Zero ? _bitHDC : _hdc; }
 		}
 
-		private IntPtr _bitMap = IntPtr.Zero; // TODO: dispose of this guy
-		private IntPtr _bitHDC = IntPtr.Zero; // TODO: dispose of this guy
+		private IntPtr _bitMap = IntPtr.Zero;
+		private IntPtr _bitHDC = IntPtr.Zero;
 		private int _bitW;
 		private int _bitH;
 
@@ -342,12 +362,41 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		[DllImport("gdi32.dll")]
 		private static extern IntPtr CreateCompatibleDC(IntPtr hdc);
 
+		[DllImport("gdi32.dll", EntryPoint = "DeleteDC")]
+		public static extern bool DeleteDC([In] IntPtr hdc);
+
 		[DllImport("gdi32.dll")]
 		private static extern IntPtr CreateCompatibleBitmap(IntPtr hdc, int width, int height);
 
 		[DllImport("gdi32.dll", EntryPoint = "BitBlt", SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		static extern bool BitBlt([In] IntPtr hdc, int nXDest, int nYDest, int nWidth, int nHeight, [In] IntPtr hdcSrc, int nXSrc, int nYSrc, int dwRop);
+
+		[DllImport("gdi32.dll", EntryPoint = "GdiAlphaBlend")]
+		static extern bool AlphaBlend(IntPtr hdcDest, int nXOriginDest, int nYOriginDest, int nWidthDest, int nHeightDest, IntPtr hdcSrc, int nXOriginSrc, int nYOriginSrc, int nWidthSrc, int nHeightSrc, BLENDFUNCTION blendFunction);
+		
+		[StructLayout(LayoutKind.Sequential)]
+		public struct BLENDFUNCTION
+		{
+			byte BlendOp;
+			byte BlendFlags;
+			byte SourceConstantAlpha;
+			byte AlphaFormat;
+
+			public BLENDFUNCTION(byte op, byte flags, byte alpha, byte format)
+			{
+				BlendOp = op;
+				BlendFlags = flags;
+				SourceConstantAlpha = alpha;
+				AlphaFormat = format;
+			}
+		}
+
+		const byte AC_SRC_OVER = 0x00;
+		const byte AC_SRC_ALPHA = 0x01;
+
+		[DllImport("gdi32.dll")]
+		static extern int SetBitmapBits(IntPtr hbmp, uint cBytes, byte[] lpBits);
 
 		#endregion
 

@@ -451,11 +451,11 @@ namespace BizHawk.Client.Common
 				var neshawkName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(NES), typeof(CoreAttributes))).CoreName;
 
 				// If either is specified use that, else use whatever is currently set
-				if (Global.MovieSession.Movie.Core == quicknesName)
+				if (movie.Core == quicknesName)
 				{
 					Global.Config.NES_InQuickNES = true;
 				}
-				else if (Global.MovieSession.Movie.Core == neshawkName)
+				else if (movie.Core == neshawkName)
 				{
 					Global.Config.NES_InQuickNES = false;
 				}
@@ -465,7 +465,7 @@ namespace BizHawk.Client.Common
 				var snes9xName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(Snes9x), typeof(CoreAttributes))).CoreName;
 				var bsnesName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(LibsnesCore), typeof(CoreAttributes))).CoreName;
 
-				if (Global.MovieSession.Movie.Core == snes9xName)
+				if (movie.Core == snes9xName)
 				{
 					Global.Config.SNES_InSnes9x = true;
 				}

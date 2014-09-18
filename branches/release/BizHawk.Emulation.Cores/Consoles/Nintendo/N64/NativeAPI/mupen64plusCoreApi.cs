@@ -112,7 +112,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			MEMPAK1,
 			MEMPAK2,
 			MEMPAK3,
-			MEMPAK4
+			MEMPAK4,
+
+			THE_ROM
 		}
 
 		// Core Specifc functions
@@ -260,6 +262,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		delegate m64p_error CoreDoCommandRenderCallback(m64p_command Command, int ParamInt, RenderCallback ParamPtr);
 		CoreDoCommandRenderCallback m64pCoreDoCommandRenderCallback;
 
+		/// <summary>
+		/// Reads from the "system bus"
+		/// </summary>
+		/// <returns></returns>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate byte biz_read_memory(uint addr);
+		public biz_read_memory m64p_read_memory_8;
+
+		/// <summary>
+		/// Writes to the "system bus"
+		/// </summary>
+		/// <returns></returns>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void biz_write_memory(uint addr, byte value);
+		public biz_write_memory m64p_write_memory_8;
+
 		// These are common for all four plugins
 
 		/// <summary>
@@ -348,7 +366,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		// DLL handles
 		public IntPtr CoreDll { get; private set; }
 
-		public mupen64plusApi(N64 bizhawkCore, byte[] rom, VideoPluginSettings video_settings, int SaveType, int CoreType)
+		public mupen64plusApi(N64 bizhawkCore, byte[] rom, VideoPluginSettings video_settings, int SaveType, int CoreType, bool DisableExpansionSlot)
 		{
 			// There can only be one core (otherwise breaks mupen64plus)
 			if (AttachedCore != null)
@@ -367,6 +385,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			// Start up the core
 			m64p_error result = m64pCoreStartup(0x20001, "", "", "Core",
 				null, "", IntPtr.Zero);
+
+			// Set the savetype if needed
+			if (DisableExpansionSlot)
+			{
+				IntPtr core_section = IntPtr.Zero;
+				int disable = 1;
+				m64pConfigOpenSection("Core", ref core_section);
+				m64pConfigSetParameter(core_section, "DisableExtraMem", m64p_type.M64TYPE_INT, ref disable);
+			}
 
 			// Set the savetype if needed
 			if (SaveType != 0)
@@ -466,6 +493,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			m64pSetWriteCallback = (SetWriteCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "SetWriteCallback"), typeof(SetWriteCallback));
 
 			m64pGetRegisters = (GetRegisters)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "GetRegisters"), typeof(GetRegisters));
+
+			m64p_read_memory_8 = (biz_read_memory)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "biz_read_memory"), typeof(biz_read_memory));
+			m64p_write_memory_8 = (biz_write_memory)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "biz_write_memory"), typeof(biz_write_memory));
 		}
 
 		/// <summary>
@@ -538,7 +568,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		public void frame_advance()
 		{
 			m64pCoreDoCommandPtr(m64p_command.M64CMD_ADVANCE_FRAME, 0, IntPtr.Zero);
-			m64pFrameComplete.WaitOne();
+
+			//the way we should be able to do it:
+			//m64pFrameComplete.WaitOne();
+			
+			//however. since this is probably an STAThread, this call results in message pumps running.
+			//those message pumps are only supposed to respond to critical COM stuff, but in fact they interfere with other things.
+			//so here are two workaround methods.
+
+			//method 1.
+			//BizHawk.Common.Win32ThreadHacks.HackyPinvokeWaitOne(m64pFrameComplete);
+
+			//method 2.
+			BizHawk.Common.Win32ThreadHacks.HackyComWaitOne(m64pFrameComplete);
 		}
 
 		public int SaveState(byte[] buffer)

@@ -1101,13 +1101,17 @@ namespace BizHawk.Client.EmuHawk
 			VirtualPadMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Virtual Pad"].Bindings;
 			TraceLoggerMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Trace Logger"].Bindings;
 			TraceLoggerMenuItem.Enabled = Global.Emulator.CoreComm.CpuTraceAvailable;
+
+			TAStudioMenuItem.Enabled =
+				VirtualPadMenuItem.Enabled =
+				!(Global.Emulator is NullEmulator);
+
 			CheatsMenuItem.Enabled =
 				HexEditorMenuItem.Enabled =
 				RamSearchMenuItem.Enabled =
 				RamWatchMenuItem.Enabled =
-				TAStudioMenuItem.Enabled =
-				VirtualPadMenuItem.Enabled =
-				!(Global.Emulator is NullEmulator);
+				Global.Emulator.HasMemoryDomains();
+
 			batchRunnerToolStripMenuItem.Visible = VersionInfo.DeveloperBuild;
 
 			TAStudioMenuItem.Visible = VersionInfo.DeveloperBuild;
@@ -1785,12 +1789,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			N64PluginSettingsMenuItem.Enabled =
 				N64ControllerSettingsMenuItem.Enabled =
+				N64ExpansionSlotMenuItem.Enabled = 
 				!Global.MovieSession.Movie.IsActive;
 
 			N64CircularAnalogRangeMenuItem.Checked = Global.Config.N64UseCircularAnalogConstraint;
 
 			var s = (N64Settings)Global.Emulator.GetSettings();
 			MupenStyleLagMenuItem.Checked = s.UseMupenStyleLag;
+
+			var ss = (N64SyncSettings)Global.Emulator.GetSyncSettings();
+			N64ExpansionSlotMenuItem.Checked = !ss.DisableExpansionSlot;
 		}
 
 		private void N64PluginSettingsMenuItem_Click(object sender, EventArgs e)
@@ -1835,6 +1843,14 @@ namespace BizHawk.Client.EmuHawk
 			var s = (N64Settings)Global.Emulator.GetSettings();
 			s.UseMupenStyleLag ^= true;
 			Global.Emulator.PutSettings(s);
+		}
+
+		private void N64ExpansionSlotMenuItem_Click(object sender, EventArgs e)
+		{
+			var ss = (N64SyncSettings)Global.Emulator.GetSyncSettings();
+			ss.DisableExpansionSlot ^= true;
+			Global.Emulator.PutSyncSettings(ss);
+			FlagNeedsReboot();
 		}
 
 		#endregion

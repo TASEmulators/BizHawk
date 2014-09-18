@@ -14,6 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			VideoPlugin = PluginType.Rice;
 			Core = CoreType.Dynarec;
 			Rsp = RspType.Rsp_Hle;
+			DisableExpansionSlot = true;
 
 			Controllers = new []
 			{
@@ -33,6 +34,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public RspType Rsp { get; set; }
 		public PluginType VideoPlugin  { get; set; }
 
+		public bool DisableExpansionSlot { get; set; }
+
 		public N64ControllerSettings[] Controllers { get; private set; }
 
 		public N64RicePluginSettings RicePlugin { get; private set; }
@@ -47,6 +50,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				Core = Core,
 				Rsp = Rsp,
 				VideoPlugin = VideoPlugin,
+				DisableExpansionSlot = DisableExpansionSlot,
 				RicePlugin = RicePlugin.Clone(),
 				GlidePlugin = GlidePlugin.Clone(),
 				Glide64mk2Plugin = Glide64mk2Plugin.Clone(),

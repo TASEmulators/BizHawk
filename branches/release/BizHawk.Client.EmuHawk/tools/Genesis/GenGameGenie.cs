@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
 #pragma warning disable 675 //TOOD: fix the potential problem this is masking
@@ -356,7 +357,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var watch = Watch.GenerateWatch(
-				Global.Emulator.MemoryDomains["MD CART"],
+				(Global.Emulator as IMemoryDomains).MemoryDomains["MD CART"],
 				address,
 				Watch.WatchSize.Word,
 				Watch.DisplayType.Hex,

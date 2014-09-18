@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		portedVersion: "SVN 344",
 		portedUrl: "http://gambatte.sourceforge.net/"
 		)]
-	public class Gameboy : IEmulator, IVideoProvider, ISyncSoundProvider
+	public class Gameboy : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains
 	{
 		#region ALL SAVESTATEABLE STATE GOES HERE
 
@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		#endregion
 
 		[CoreConstructor("GB", "GBC")]
-		public Gameboy(CoreComm comm, GameInfo game, byte[] rom, object Settings, object SyncSettings, bool deterministic)
+		public Gameboy(CoreComm comm, GameInfo game, byte[] file, object Settings, object SyncSettings, bool deterministic)
 		{
 			CoreComm = comm;
 
@@ -133,8 +133,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			comm.NominalWidth = 160;
 			comm.NominalHeight = 144;
 
-			ThrowExceptionForBadRom(rom);
-			BoardName = MapperName(rom);
+			ThrowExceptionForBadRom(file);
+			BoardName = MapperName(file);
 
 			DeterministicEmulation = deterministic;
 
@@ -159,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				if (this._SyncSettings.MulticartCompat)
 					flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
 
-				if (LibGambatte.gambatte_load(GambatteState, rom, (uint)rom.Length, GetCurrentTime(), flags) != 0)
+				if (LibGambatte.gambatte_load(GambatteState, file, (uint)file.Length, GetCurrentTime(), flags) != 0)
 					throw new InvalidOperationException("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
 
 				// set real default colors (before anyone mucks with them at all)
@@ -179,8 +179,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				CoreComm.RomStatusDetails = string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
 					game.Name,
-					rom.HashSHA1(),
-					rom.HashMD5());
+					file.HashSHA1(),
+					file.HashMD5());
 
 				{
 					byte[] buff = new byte[32];

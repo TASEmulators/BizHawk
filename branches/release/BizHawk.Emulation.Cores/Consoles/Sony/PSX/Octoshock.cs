@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		isPorted: true,
 		isReleased: false
 		)]
-	public unsafe class Octoshock : IEmulator, IVideoProvider, ISoundProvider
+	public unsafe class Octoshock : IEmulator, IVideoProvider, ISoundProvider, IMemoryDomains
 	{
 		public string SystemId { get { return "NULL"; } }
 		public static readonly ControllerDefinition NullController = new ControllerDefinition { Name = "Null Controller" };

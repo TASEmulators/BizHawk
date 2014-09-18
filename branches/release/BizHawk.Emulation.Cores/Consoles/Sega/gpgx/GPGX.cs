@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		portedVersion: "r874",
 		portedUrl: "https://code.google.com/p/genplus-gx/"
 		)]
-	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider
+	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, IMemoryDomains
 	{
 		static GPGX AttachedCore = null;
 
@@ -52,8 +52,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		};
 
 		[CoreConstructor("GEN")]
-		public GPGX(CoreComm comm, byte[] rom, object Settings, object SyncSettings)
-			:this(comm, rom, null, Settings, SyncSettings)
+		public GPGX(CoreComm comm, byte[] file, object Settings, object SyncSettings)
+			:this(comm, file, null, Settings, SyncSettings)
 		{
 		}
 
@@ -592,7 +592,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					continue;
 				string name = Marshal.PtrToStringAnsi(pname);
 
-				mm.Add(MemoryDomain.FromIntPtr(name, size, MemoryDomain.Endian.Unknown, area));
+				mm.Add(MemoryDomain.FromIntPtrSwap16(name, size, MemoryDomain.Endian.Big, area));
 			}
 			MemoryDomains = new MemoryDomainList(mm, 0);
 		}

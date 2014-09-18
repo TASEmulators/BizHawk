@@ -34,10 +34,18 @@ namespace BizHawk.Client.EmuHawk.config
 			tbScanlineIntensity.Value = Global.Config.TargetScanlineFilterIntensity; 
 			checkLetterbox.Checked = Global.Config.DispFixAspectRatio;
 			checkPadInteger.Checked = Global.Config.DispFixScaleInteger;
-			rbUseSystem.Checked = Global.Config.DispObeyAR;
-			rbUseRaw.Checked = !Global.Config.DispObeyAR;
 			checkFullscreenHacks.Checked = Global.Config.DispFullscreenHacks;
 			checkSnowyNullEmulator.Checked = Global.Config.DispSnowyNullEmulator;
+
+			if (Global.Config.DispManagerAR == Config.EDispManagerAR.None)
+				rbUseRaw.Checked = true;
+			else if (Global.Config.DispManagerAR == Config.EDispManagerAR.System)
+				rbUseSystem.Checked = true;
+			else if (Global.Config.DispManagerAR == Config.EDispManagerAR.Custom)
+				rbUseCustom.Checked = true;
+
+			txtCustomARWidth.Text = Global.Config.DispCustomUserARWidth.ToString();
+			txtCustomARHeight.Text = Global.Config.DispCustomUserARHeight.ToString();
 
 			RefreshAspectRatioOptions();
 		}
@@ -63,9 +71,18 @@ namespace BizHawk.Client.EmuHawk.config
 			Global.Config.TargetScanlineFilterIntensity = tbScanlineIntensity.Value;
 			Global.Config.DispFixAspectRatio = checkLetterbox.Checked;
 			Global.Config.DispFixScaleInteger = checkPadInteger.Checked;
-			Global.Config.DispObeyAR = rbUseSystem.Checked;
 			Global.Config.DispFullscreenHacks = checkFullscreenHacks.Checked;
 			Global.Config.DispSnowyNullEmulator = checkSnowyNullEmulator.Checked;
+
+			if (rbUseRaw.Checked)
+				Global.Config.DispManagerAR = Config.EDispManagerAR.None;
+			else if (rbUseSystem.Checked)
+				Global.Config.DispManagerAR = Config.EDispManagerAR.System;
+			else if (rbUseCustom.Checked)
+				Global.Config.DispManagerAR = Config.EDispManagerAR.Custom;
+
+			int.TryParse(txtCustomARWidth.Text, out Global.Config.DispCustomUserARWidth);
+			int.TryParse(txtCustomARHeight.Text, out Global.Config.DispCustomUserARHeight);
 
 			Global.Config.DispUserFilterPath = PathSelection;
 			GlobalWin.DisplayManager.RefreshUserShader();

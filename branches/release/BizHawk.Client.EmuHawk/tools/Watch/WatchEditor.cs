@@ -14,6 +14,8 @@ namespace BizHawk.Client.EmuHawk
 		public enum Mode { New, Duplicate, Edit };
 		
 		private readonly List<Watch> _watchList = new List<Watch>();
+		private readonly IMemoryDomains Core;
+
 		private Mode _mode = Mode.New;
 		private bool _loading = true;
 
@@ -26,6 +28,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public WatchEditor()
 		{
+			Core = (IMemoryDomains)Global.Emulator;
 			_changedDisplayType = false;
 			InitializeComponent();
 		}
@@ -100,10 +103,10 @@ namespace BizHawk.Client.EmuHawk
 			_mode = mode;
 
 			DomainDropDown.Items.Clear();
-			DomainDropDown.Items.AddRange(Global.Emulator.MemoryDomains
+			DomainDropDown.Items.AddRange(Core.MemoryDomains
 				.Select(d => d.ToString())
 				.ToArray());
-			DomainDropDown.SelectedItem = Global.Emulator.MemoryDomains.MainMemory.ToString();
+			DomainDropDown.SelectedItem = Core.MemoryDomains.MainMemory.ToString();
 
 			SetTitle();
 		}
@@ -129,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!_loading)
 			{
-				var domain = Global.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
+				var domain = Core.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
 				if (domain != null)
 				{
 					AddressBox.SetHexProperties(domain.Size);
@@ -188,8 +191,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var domain = Global.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString()) ??
-						 Global.Emulator.MemoryDomains.MainMemory;
+			var domain = Core.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString()) ??
+						 Core.MemoryDomains.MainMemory;
 			BigEndianCheckBox.Checked = domain.EndianType == MemoryDomain.Endian.Big;
 		}
 
@@ -209,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case Mode.New:
-					var domain = Global.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
+					var domain = Core.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
 					var address = AddressBox.ToRawInt() ?? 0;
 					var notes = NotesBox.Text;
 					var type = Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString());

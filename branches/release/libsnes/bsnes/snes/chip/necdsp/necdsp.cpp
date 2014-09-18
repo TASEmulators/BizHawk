@@ -8,6 +8,13 @@ namespace SNES {
 #include "serialization.cpp"
 NECDSP necdsp;
 
+//zero 01-sep-2014 - dont clobber these when reconstructing!
+unsigned NECDSP::frequency;
+uint24 NECDSP::programROM[16384];
+uint16 NECDSP::dataROM[2048];
+unsigned NECDSP::programROMSize;
+unsigned NECDSP::dataROMSize;
+
 void NECDSP::Enter() { necdsp.enter(); }
 
 void NECDSP::enter() {

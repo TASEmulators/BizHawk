@@ -698,10 +698,10 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TasView.FullRowSelect = true;
 			this.TasView.HorizontalOrientation = false;
-			this.TasView.ItemCount = 0;
-			this.TasView.LastVisibleIndex = 22;
+			this.TasView.RowCount = 0;
+			this.TasView.LastVisibleRow = 22;
 			this.TasView.Location = new System.Drawing.Point(8, 27);
-			this.TasView.MultiSelect = false;
+			this.TasView.MultiSelect = true;
 			this.TasView.Name = "TasView";
 			this.TasView.Size = new System.Drawing.Size(288, 471);
 			this.TasView.TabIndex = 1;

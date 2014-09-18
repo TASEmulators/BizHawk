@@ -176,6 +176,7 @@
     <Compile Include="Computers\Commodore64\Tape\VIC1530.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs" />
+    <Compile Include="Consoles\Atari\2600\Atari2600.IMemoryDomains.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.RomHeuristics.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Settings.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\m0840.cs" />
@@ -222,6 +223,8 @@
     <Compile Include="Consoles\Atari\7800\Atari7800.Core.cs" />
     <Compile Include="Consoles\Atari\7800\Atari7800.cs" />
     <Compile Include="Consoles\Atari\7800\Atari7800Control.cs" />
+    <Compile Include="Consoles\Atari\lynx\LibLynx.cs" />
+    <Compile Include="Consoles\Atari\lynx\Lynx.cs" />
     <Compile Include="Consoles\Coleco\ColecoVision.cs" />
     <Compile Include="Consoles\Coleco\Input.cs" />
     <Compile Include="Consoles\Coleco\MemoryMap.cs" />
@@ -243,8 +246,8 @@
     <Compile Include="Consoles\Nintendo\GBA\Meteor.cs" />
     <Compile Include="Consoles\Nintendo\GBA\VBANext.cs" />
     <Compile Include="Consoles\Nintendo\GBA\VBARegisterHelper.cs" />
+    <Compile Include="Consoles\Nintendo\N64\N64.IMemoryDomains.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64Input.cs" />
-    <Compile Include="Consoles\Nintendo\N64\N64JaboManager.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64Settings.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.Controller.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.Glide.cs" />

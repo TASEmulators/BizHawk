@@ -222,8 +222,9 @@ void snes_init(void) {
 	//force everything to get initialized, even though it probably already is
 	SNES::interface();
 
+	//zero 01-sep-2014 - this is too slow. made rewind totally boring. made other edits to firmware chips to preserve their roms instead
 	//zero 22-may-2014 - why not this too, for the sake of completeness? 
-	reconstruct(&SNES::cartridge);
+	//reconstruct(&SNES::cartridge);
 
 	//zero 01-dec-2012 - due to systematic variable initialization fails in bsnes components, these reconstructions are necessary,
 	//and the previous comment here which called this paranoid has been removed.

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -230,7 +231,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!string.IsNullOrWhiteSpace(AddressBox.Text) && !string.IsNullOrWhiteSpace(ValueBox.Text))
 			{
 				var watch = Watch.GenerateWatch(
-					Global.Emulator.MemoryDomains["System Bus"],
+					(Global.Emulator as IMemoryDomains).MemoryDomains["System Bus"],
 					AddressBox.ToRawInt().Value,
 					Watch.WatchSize.Byte,
 					Watch.DisplayType.Hex,

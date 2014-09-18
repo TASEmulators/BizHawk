@@ -372,6 +372,7 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.N64ExpansionSlotMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -2506,7 +2507,8 @@
             this.N64ControllerSettingsMenuItem,
             this.toolStripSeparator23,
             this.N64CircularAnalogRangeMenuItem,
-            this.MupenStyleLagMenuItem});
+            this.MupenStyleLagMenuItem,
+            this.N64ExpansionSlotMenuItem});
 			this.N64SubMenu.Name = "N64SubMenu";
 			this.N64SubMenu.Size = new System.Drawing.Size(40, 19);
 			this.N64SubMenu.Text = "N64";
@@ -3270,6 +3272,13 @@
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
 			// 
+			// N64ExpansionSlotMenuItem
+			// 
+			this.N64ExpansionSlotMenuItem.Name = "N64ExpansionSlotMenuItem";
+			this.N64ExpansionSlotMenuItem.Size = new System.Drawing.Size(192, 22);
+			this.N64ExpansionSlotMenuItem.Text = "&Use Expansion Slot";
+			this.N64ExpansionSlotMenuItem.Click += new System.EventHandler(this.N64ExpansionSlotMenuItem_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -3653,6 +3662,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator33;
 		private System.Windows.Forms.ToolStripMenuItem GBAcoresettingsToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripStatusLabel LinkConnectStatusBarButton;
+		private System.Windows.Forms.ToolStripMenuItem N64ExpansionSlotMenuItem;
 	}
 }
 

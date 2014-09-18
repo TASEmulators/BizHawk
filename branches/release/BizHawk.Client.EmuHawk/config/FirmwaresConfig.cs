@@ -45,7 +45,8 @@ namespace BizHawk.Client.EmuHawk
 				{ "C64", "C64" },
 				{ "GEN", "Genesis" },
 				{ "SMS", "Sega Master System" },
-				{ "PSX", "Sony PlayStation" }
+				{ "PSX", "Sony PlayStation" },
+				{ "LYNX", "Atari Lynx" },
 			};
 
 		public string TargetSystem = null;
