@@ -170,7 +170,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_currentTasMovie.FlushInputCache();
 			_currentTasMovie.UseInputCache = true;
-			TasView.RowCount = _currentTasMovie.InputLogLength + 1;
+			TasView.RowCount = _currentTasMovie.InputLogLength + 1 + (_currentTasMovie.IsRecording ? 1 : 0); // adelikat: Hack! Add 1 in record mode for now, in reality I think we have to make TasStudio be UpdateBefore = false
 			TasView.Refresh();
 
 			_currentTasMovie.FlushInputCache();
