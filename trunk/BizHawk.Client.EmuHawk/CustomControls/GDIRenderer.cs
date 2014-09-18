@@ -65,12 +65,19 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// <summary>
 		/// Draw a bitmap object at the given position
 		/// </summary>
-		public void DrawBitmap(Bitmap bitmap, Point point)
+		public void DrawBitmap(Bitmap bitmap, Point point, bool blend = false)
 		{
 			IntPtr hbmp = bitmap.GetHbitmap();
 			var bitHDC = CreateCompatibleDC(CurrentHDC);
 			IntPtr old = new IntPtr(SelectObject(bitHDC, hbmp));
-			BitBlt(CurrentHDC, point.X, point.Y, bitmap.Width, bitmap.Height, bitHDC, 0, 0, 0xCC0020);
+			if (blend)
+			{
+				AlphaBlend(CurrentHDC, point.X, point.Y, bitmap.Width, bitmap.Height, bitHDC, 0, 0, bitmap.Width, bitmap.Height, new BLENDFUNCTION(AC_SRC_OVER, 0, 0xff, AC_SRC_ALPHA));
+			}
+			else
+			{
+				BitBlt(CurrentHDC, point.X, point.Y, bitmap.Width, bitmap.Height, bitHDC, 0, 0, 0xCC0020);
+			}
 			SelectObject(bitHDC, old);
 			DeleteDC(bitHDC);
 		}
@@ -364,6 +371,29 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		[DllImport("gdi32.dll", EntryPoint = "BitBlt", SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		static extern bool BitBlt([In] IntPtr hdc, int nXDest, int nYDest, int nWidth, int nHeight, [In] IntPtr hdcSrc, int nXSrc, int nYSrc, int dwRop);
+
+		[DllImport("gdi32.dll", EntryPoint = "GdiAlphaBlend")]
+		static extern bool AlphaBlend(IntPtr hdcDest, int nXOriginDest, int nYOriginDest, int nWidthDest, int nHeightDest, IntPtr hdcSrc, int nXOriginSrc, int nYOriginSrc, int nWidthSrc, int nHeightSrc, BLENDFUNCTION blendFunction);
+		
+		[StructLayout(LayoutKind.Sequential)]
+		public struct BLENDFUNCTION
+		{
+			byte BlendOp;
+			byte BlendFlags;
+			byte SourceConstantAlpha;
+			byte AlphaFormat;
+
+			public BLENDFUNCTION(byte op, byte flags, byte alpha, byte format)
+			{
+				BlendOp = op;
+				BlendFlags = flags;
+				SourceConstantAlpha = alpha;
+				AlphaFormat = format;
+			}
+		}
+
+		const byte AC_SRC_OVER = 0x00;
+		const byte AC_SRC_ALPHA = 0x01;
 
 		[DllImport("gdi32.dll")]
 		static extern int SetBitmapBits(IntPtr hbmp, uint cBytes, byte[] lpBits);
