@@ -1024,6 +1024,11 @@ namespace BizHawk.Client.EmuHawk
 			SetTextProperty();
 		}
 
+		private void RightClickMenu_Opened(object sender, EventArgs e)
+		{
+			RemoveMarkersContextMenuItem.Enabled = _currentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame)); // Disable the option to remove markers if no markers are selected (FCUEX does this).
+		}
+
 		#endregion
 
 		#endregion

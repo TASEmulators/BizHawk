@@ -286,8 +286,6 @@ namespace BizHawk.Client.EmuHawk
 					var buttonName = TasView.CurrentCell.Column.Name;
 					if (TasView.SelectedRows.IndexOf(frame) != -1 && (buttonName == MarkerColumnName || buttonName == FrameColumnName))
 					{
-						//Disable the option to remove markers if no markers are selected (FCUEX does this).
-						RemoveMarkersContextMenuItem.Enabled = _currentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame));
 						RightClickMenu.Show(TasView, e.X, e.Y);
 					}
 				}

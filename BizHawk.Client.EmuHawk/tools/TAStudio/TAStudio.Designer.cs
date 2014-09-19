@@ -698,11 +698,11 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TasView.FullRowSelect = true;
 			this.TasView.HorizontalOrientation = false;
-			this.TasView.RowCount = 0;
-			this.TasView.LastVisibleRow = 22;
+			this.TasView.LastVisibleRow = 23;
 			this.TasView.Location = new System.Drawing.Point(8, 27);
-			this.TasView.MultiSelect = true;
+			this.TasView.MaxCharactersInHorizontal = 1;
 			this.TasView.Name = "TasView";
+			this.TasView.RowCount = 0;
 			this.TasView.Size = new System.Drawing.Size(288, 471);
 			this.TasView.TabIndex = 1;
 			this.TasView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.TasView_ColumnClick);
@@ -776,7 +776,8 @@ namespace BizHawk.Client.EmuHawk
             this.toolStripSeparator18,
             this.TruncateContextMenuItem});
 			this.RightClickMenu.Name = "RightClickMenu";
-			this.RightClickMenu.Size = new System.Drawing.Size(273, 270);
+			this.RightClickMenu.Size = new System.Drawing.Size(273, 292);
+			this.RightClickMenu.Opened += new System.EventHandler(this.RightClickMenu_Opened);
 			// 
 			// SetMarkersContextMenuItem
 			// 
