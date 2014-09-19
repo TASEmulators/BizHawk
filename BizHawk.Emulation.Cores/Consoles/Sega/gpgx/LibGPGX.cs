@@ -265,6 +265,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gpgx_get_vdp_view([Out] VDPView view);
 
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gpgx_poke_vram(int addr, byte value);
+
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gpgx_flush_vram();
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct RegisterInfo
 		{
