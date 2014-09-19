@@ -124,9 +124,7 @@
 			this.ProfileDialogHelpTexBox.ReadOnly = true;
 			this.ProfileDialogHelpTexBox.Size = new System.Drawing.Size(198, 154);
 			this.ProfileDialogHelpTexBox.TabIndex = 8;
-			this.ProfileDialogHelpTexBox.Text = "Options:\nCasual Gaming - All about performance!\n\nTool-Assisted Speedruns - Maximu" +
-    "m Accuracy!\n\nN64 Tool-assisted Speedruns - Maximum Accuracy for N64 Recording!\n\n" +
-    "Longplays - Stability is the key!";
+			this.ProfileDialogHelpTexBox.Text = resources.GetString("ProfileDialogHelpTexBox.Text");
 			// 
 			// label1
 			// 
