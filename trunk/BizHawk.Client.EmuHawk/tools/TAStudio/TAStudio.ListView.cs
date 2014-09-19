@@ -213,7 +213,9 @@ namespace BizHawk.Client.EmuHawk
 
 				if (columnName == FrameColumnName)
 				{
-					// TODO: add marker to LastSelectedIndex
+					_currentTasMovie.Markers.Add(TasView.LastSelectedIndex.Value, "");
+					RefreshDialog();
+					
 				}
 				else if (columnName != MarkerColumnName) // TODO: what about float?
 				{
