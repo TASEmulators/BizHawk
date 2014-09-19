@@ -1260,20 +1260,20 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				str = str + Global.SystemInfo.DisplayName;
-			}
 
-			if (VersionInfo.DeveloperBuild)
-			{
-				str += " (interim)";
-			}
+				if (VersionInfo.DeveloperBuild)
+				{
+					str += " (interim)";
+				}
 
-			if (Global.MovieSession.Movie.IsActive)
-			{
-				str = str + " - " + Global.Game.Name + " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
-			}
-			else
-			{
-				str = str + " - " + Global.Game.Name;
+				if (Global.MovieSession.Movie.IsActive)
+				{
+					str = str + " - " + Global.Game.Name + " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
+				}
+				else
+				{
+					str = str + " - " + Global.Game.Name;
+				}
 			}
 
 			Text = str;
