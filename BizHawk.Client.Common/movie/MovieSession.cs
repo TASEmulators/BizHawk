@@ -248,46 +248,58 @@ namespace BizHawk.Client.Common
 			{
 				LatchInputFromLog();
 
-				// Movie may go into finished mode as a result from latching
-				if (!Movie.IsFinished)
+				if (Movie.IsRecording) // The movie end situation can cause the switch to record mode, in that case we need to capture some input for this frame
 				{
-					if (Global.ClientControls["Scrub Input"])
+					HandleFrameLoopForRecordMode();
+				}
+				else
+				{
+					// Movie may go into finished mode as a result from latching
+					if (!Movie.IsFinished)
 					{
-						LatchInputFromPlayer(Global.MovieInputSourceAdapter);
-						ClearFrame();
-					}
-					else if (Global.Config.MoviePlaybackPokeMode)
-					{
-						LatchInputFromPlayer(Global.MovieInputSourceAdapter);
-						var lg = Movie.LogGeneratorInstance();
-						lg.SetSource(Global.MovieOutputHardpoint);
-						if (!lg.IsEmpty)
+						if (Global.ClientControls["Scrub Input"])
 						{
 							LatchInputFromPlayer(Global.MovieInputSourceAdapter);
-							Movie.PokeFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+							ClearFrame();
 						}
-						else
+						else if (Global.Config.MoviePlaybackPokeMode)
 						{
-							LatchInputFromLog();
+							LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+							var lg = Movie.LogGeneratorInstance();
+							lg.SetSource(Global.MovieOutputHardpoint);
+							if (!lg.IsEmpty)
+							{
+								LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+								Movie.PokeFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+							}
+							else
+							{
+								LatchInputFromLog();
+							}
 						}
 					}
 				}
 			}
 			else if (Movie.IsRecording)
 			{
-				if (MultiTrack.IsActive)
-				{
-					LatchMultitrackPlayerInput(Global.MovieInputSourceAdapter, Global.MultitrackRewiringAdapter);
-				}
-				else
-				{
-					LatchInputFromPlayer(Global.MovieInputSourceAdapter);
-				}
-
-				// the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
-				// this has been wired to Global.MovieOutputHardpoint in RewireInputChain
-				Movie.RecordFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+				HandleFrameLoopForRecordMode();
 			}
+		}
+
+		private void HandleFrameLoopForRecordMode()
+		{
+			if (MultiTrack.IsActive)
+			{
+				LatchMultitrackPlayerInput(Global.MovieInputSourceAdapter, Global.MultitrackRewiringAdapter);
+			}
+			else
+			{
+				LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+			}
+
+			// the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
+			// this has been wired to Global.MovieOutputHardpoint in RewireInputChain
+			Movie.RecordFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
 		}
 
 		public bool HandleMovieLoadState(string path)
