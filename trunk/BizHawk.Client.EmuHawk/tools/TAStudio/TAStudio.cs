@@ -334,9 +334,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// TODO: get the last greenzone frame and go there
 				_currentTasMovie.SwitchToPlay();
-				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_currentTasMovie[_currentTasMovie.LastEmulatedFrame].State.ToArray())));
+
+				if (_currentTasMovie.LastEmulatedFrame > 0)
+				{
+					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_currentTasMovie[_currentTasMovie.LastEmulatedFrame].State.ToArray())));
+				}
+
 				GlobalWin.MainForm.UnpauseEmulator();
-				if(Global.Config.TAStudioAutoPause)
+				if (Global.Config.TAStudioAutoPause)
 				{
 					GlobalWin.MainForm.PauseOnFrame = _currentTasMovie.LastEmulatedFrame;
 				}
@@ -344,7 +349,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					GlobalWin.MainForm.PauseOnFrame = frame;
 				}
-				
 			}
 
 			RefreshDialog();
