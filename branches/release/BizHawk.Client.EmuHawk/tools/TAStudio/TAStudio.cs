@@ -157,7 +157,14 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				WantsToControlStopMovie = false;
-				GlobalWin.MainForm.StartNewMovie(movie, record: false);
+
+				var shouldRecord = false;
+				if (Global.MovieSession.Movie.InputLogLength == 0) // An unusual but possible edge case
+				{
+					shouldRecord = true;
+				}
+
+				GlobalWin.MainForm.StartNewMovie(movie, record: shouldRecord);
 				WantsToControlStopMovie = true;
 				_currentTasMovie = Global.MovieSession.Movie as TasMovie;
 				Global.Config.RecentTas.Add(path);
