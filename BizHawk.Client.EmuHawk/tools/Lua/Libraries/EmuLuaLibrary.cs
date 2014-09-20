@@ -49,6 +49,13 @@ namespace BizHawk.Client.EmuHawk
 			Docs.Clear();
 			_caller = passed.Get();
 
+
+			var tt = typeof(TastudioLuaLibrary);
+			var mm = typeof(MainMemoryLuaLibrary);
+
+			var tatt = tt.GetCustomAttributes(typeof(LuaLibraryAttributes), false);
+			var matt = mm.GetCustomAttributes(typeof(LuaLibraryAttributes), false);
+
 			// Register lua libraries
 			var libs = Assembly
 				.Load("BizHawk.Client.Common")
@@ -67,9 +74,19 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var lib in libs)
 			{
-				var instance = (LuaLibraryBase)Activator.CreateInstance(lib, _lua);
-				instance.LuaRegister(lib, Docs);
-				Libraries.Add(lib, instance);
+				bool addLibrary = true;
+				var attributes = lib.GetCustomAttributes(typeof(LuaLibraryAttributes), false);
+				if (attributes.Any())
+				{
+					addLibrary = VersionInfo.DeveloperBuild || (attributes.First() as LuaLibraryAttributes).Released;
+				}
+
+				if (addLibrary)
+				{
+					var instance = (LuaLibraryBase)Activator.CreateInstance(lib, _lua);
+					instance.LuaRegister(lib, Docs);
+					Libraries.Add(lib, instance);
+				}
 			}
 
 			_lua.RegisterFunction("print", this, GetType().GetMethod("Print"));
