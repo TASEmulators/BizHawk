@@ -1292,55 +1292,58 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="cell">The cell to select.</param>
 		private void SelectCell(Cell cell, bool toggle = false)
 		{
-			if (!MultiSelect)
+			if (cell.RowIndex.HasValue && cell.RowIndex < RowCount)
 			{
-				SelectedItems.Clear();
-			}
-
-			if (FullRowSelect)
-			{
-				if (toggle && SelectedItems.Any(x => x.RowIndex.HasValue && x.RowIndex == cell.RowIndex))
+				if (!MultiSelect)
 				{
-					var items = SelectedItems
-						.Where(x => x.RowIndex.HasValue && x.RowIndex == cell.RowIndex)
-						.ToList();
-
-					foreach (var item in items)
-					{
-						SelectedItems.Remove(item);
-					}
+					SelectedItems.Clear();
 				}
-				else
+
+				if (FullRowSelect)
 				{
-					foreach (var column in _columns)
+					if (toggle && SelectedItems.Any(x => x.RowIndex.HasValue && x.RowIndex == cell.RowIndex))
 					{
-						SelectedItems.Add(new Cell
+						var items = SelectedItems
+							.Where(x => x.RowIndex.HasValue && x.RowIndex == cell.RowIndex)
+							.ToList();
+
+						foreach (var item in items)
 						{
-							RowIndex = cell.RowIndex,
-							Column = column
-						});
+							SelectedItems.Remove(item);
+						}
 					}
-				}
-			}
-			else
-			{
-				if (toggle && SelectedItems.Any(x => x.RowIndex.HasValue && x.RowIndex == cell.RowIndex))
-				{
-					var item = SelectedItems
-						.FirstOrDefault(x => x.Equals(cell));
-
-					if (item != null)
+					else
 					{
-						SelectedItems.Remove(item);
+						foreach (var column in _columns)
+						{
+							SelectedItems.Add(new Cell
+							{
+								RowIndex = cell.RowIndex,
+								Column = column
+							});
+						}
 					}
 				}
 				else
 				{
-					SelectedItems.Add(CurrentCell);
-				}
-			}
+					if (toggle && SelectedItems.Any(x => x.RowIndex.HasValue && x.RowIndex == cell.RowIndex))
+					{
+						var item = SelectedItems
+							.FirstOrDefault(x => x.Equals(cell));
 
-			SelectedIndexChanged(this, new EventArgs());
+						if (item != null)
+						{
+							SelectedItems.Remove(item);
+						}
+					}
+					else
+					{
+						SelectedItems.Add(CurrentCell);
+					}
+				}
+
+				SelectedIndexChanged(this, new EventArgs());
+			}
 		}
 
 		/// <summary>
