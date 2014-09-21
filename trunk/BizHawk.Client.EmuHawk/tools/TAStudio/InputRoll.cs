@@ -964,7 +964,65 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (SelectedItems.Any())
 						{
-							MessageBox.Show("Shift click logic is not yet implemented");
+							if (FullRowSelect)
+							{
+								var selected = SelectedItems.Any(c => c.RowIndex.HasValue && CurrentCell.RowIndex.HasValue && c.RowIndex == CurrentCell.RowIndex);
+
+								if (!selected)
+								{
+									var rowIndices = SelectedItems
+										.Where(c => c.RowIndex.HasValue)
+										.Select(c => c.RowIndex ?? -1)
+										.Where(c => c >= 0) // Hack to avoid possible Nullable exceptions
+										.Distinct();
+
+
+									var firstIndex = rowIndices.Min();
+									var lastIndex = rowIndices.Max();
+
+									if (CurrentCell.RowIndex.Value < firstIndex)
+									{
+										for (int i = CurrentCell.RowIndex.Value; i < firstIndex; i++)
+										{
+											SelectCell(new Cell
+												{
+													RowIndex = i,
+													Column = CurrentCell.Column
+												});
+										}
+									}
+									else if (CurrentCell.RowIndex.Value > lastIndex)
+									{
+										for (int i = lastIndex + 1; i <= CurrentCell.RowIndex.Value; i++)
+										{
+											SelectCell(new Cell
+											{
+												RowIndex = i,
+												Column = CurrentCell.Column
+											});
+										}
+									}
+									else // Somewhere in between, a scenario that can happen with ctrl-clicking, find the previous and highlight from there
+									{
+										var nearest = rowIndices
+											.Where(x => x < CurrentCell.RowIndex.Value)
+											.Max();
+
+										for (int i = nearest + 1; i <= CurrentCell.RowIndex.Value; i++)
+										{
+											SelectCell(new Cell
+											{
+												RowIndex = i,
+												Column = CurrentCell.Column
+											});
+										}
+									}
+								}
+							}
+							else
+							{
+								MessageBox.Show("Shift click logic for individual cells has not yet implemented");
+							}
 						}
 						else
 						{
