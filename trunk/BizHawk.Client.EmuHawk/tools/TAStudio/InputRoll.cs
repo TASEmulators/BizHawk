@@ -899,11 +899,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Mouse and Key Events
 
-		//protected override void OnKeyDown(KeyEventArgs e)
-		//{
-		//	base.OnKeyDown(e);
-		//}
-
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			var newCell = CalculatePointedCell(e.X, e.Y);
@@ -978,7 +973,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (ModifierKeys == Keys.Control)
 					{
-						SelectCell(CurrentCell);
+						SelectCell(CurrentCell, toggle: true);
 					}
 					else
 					{
@@ -1237,7 +1232,7 @@ namespace BizHawk.Client.EmuHawk
 		/// If FullRowSelect is enabled, selects all cells in the row that contains the given cell. Otherwise only given cell is added.
 		/// </summary>
 		/// <param name="cell">The cell to select.</param>
-		private void SelectCell(Cell cell)
+		private void SelectCell(Cell cell, bool toggle = false)
 		{
 			if (!MultiSelect)
 			{
@@ -1246,18 +1241,45 @@ namespace BizHawk.Client.EmuHawk
 
 			if (FullRowSelect)
 			{
-				foreach (var column in _columns)
+				if (toggle && SelectedItems.Any(x => x.RowIndex.HasValue && x.RowIndex == cell.RowIndex))
 				{
-					SelectedItems.Add(new Cell
+					var items = SelectedItems
+						.Where(x => x.RowIndex.HasValue && x.RowIndex == cell.RowIndex)
+						.ToList();
+
+					foreach (var item in items)
 					{
-						RowIndex = cell.RowIndex,
-						Column = column
-					});
+						SelectedItems.Remove(item);
+					}
+				}
+				else
+				{
+					foreach (var column in _columns)
+					{
+						SelectedItems.Add(new Cell
+						{
+							RowIndex = cell.RowIndex,
+							Column = column
+						});
+					}
 				}
 			}
 			else
 			{
-				SelectedItems.Add(CurrentCell);
+				if (toggle && SelectedItems.Any(x => x.RowIndex.HasValue && x.RowIndex == cell.RowIndex))
+				{
+					var item = SelectedItems
+						.FirstOrDefault(x => x.Equals(cell));
+
+					if (item != null)
+					{
+						SelectedItems.Remove(item);
+					}
+				}
+				else
+				{
+					SelectedItems.Add(CurrentCell);
+				}
 			}
 
 			SelectedIndexChanged(this, new EventArgs());
