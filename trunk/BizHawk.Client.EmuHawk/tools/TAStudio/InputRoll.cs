@@ -1257,6 +1257,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
+					VBar.Location = new Point(0, Height - 17);
 					HBar.Size = new Size(Width, HBar.Height);
 				}
 			}
