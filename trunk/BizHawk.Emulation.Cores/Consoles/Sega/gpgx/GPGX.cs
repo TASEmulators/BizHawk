@@ -153,7 +153,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				SetControllerDefinition();
 
 				// pull the default video size from the core
-				update_video();
+				update_video_initial();
 
 				SetMemoryDomains();
 
@@ -730,6 +730,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public int BufferWidth { get { return vwidth; } }
 		public int BufferHeight { get { return vheight; } }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
+
+		void update_video_initial()
+		{
+			// hack: you should call update_video() here, but that gives you 256x192 on frame 0
+			// and we know that we only use GPGX to emulate genesis games that will always be 320x224 immediately afterwards
+			
+			// so instead, just assume a 320x224 size now; if that happens to be wrong, it'll be fixed soon enough.
+
+			vwidth = 320;
+			vheight = 224;
+			vidbuff = new int[vwidth * vheight];
+			for (int i = 0; i < vidbuff.Length; i++)
+				vidbuff[i] = unchecked((int)0xff000000);
+		}
 
 		unsafe void update_video()
 		{
