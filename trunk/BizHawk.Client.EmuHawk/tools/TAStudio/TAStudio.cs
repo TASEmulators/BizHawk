@@ -190,20 +190,27 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// TODO: a better name
+		/// <summary>
+		/// Only goes to go to the frame if it is an event before current emulation, otherwise it is just a future event that can freely be edited
+		/// </summary>
 		private void GoToLastEmulatedFrameIfNecessary(int frame)
 		{
 			if (frame != Global.Emulator.Frame) // Don't go to a frame if you are already on it!
 			{
 				var restoreFrame = Global.Emulator.Frame;
 
-				if (frame <= _currentTasMovie.LastEmulatedFrame)
+				if (frame <= Global.Emulator.Frame)
 				{
 					GoToFrame(frame);
+				}
 
-					if (Global.Config.TAStudioAutoRestoreLastPosition)
+				if (Global.Config.TAStudioAutoRestoreLastPosition)
+				{
+					if (restoreFrame > Global.Emulator.Frame) // Don't unpause if we are already on the desired frame, else runaway seek
 					{
-						GlobalWin.MainForm.UnpauseEmulator();
-						GlobalWin.MainForm.PauseOnFrame = restoreFrame;
+
+					GlobalWin.MainForm.UnpauseEmulator();
+					GlobalWin.MainForm.PauseOnFrame = restoreFrame;
 					}
 				}
 			}
