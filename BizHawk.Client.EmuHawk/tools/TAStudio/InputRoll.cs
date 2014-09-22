@@ -622,7 +622,7 @@ namespace BizHawk.Client.EmuHawk
 								continue;
 							}
 							string text;
-							var point = new Point(col.Left.Value + xPadding, RowsToPixels(i));
+							var point = new Point(col.Left.Value + xPadding, RowsToPixels(i) + CellPadding);
 
 							Bitmap image = null;
 							if (QueryItemIcon != null)
@@ -632,7 +632,7 @@ namespace BizHawk.Client.EmuHawk
 
 							if (image != null)
 							{
-								Gdi.DrawBitmap(image, new Point(col.Left.Value, point.Y + CellPadding),true);
+								Gdi.DrawBitmap(image, new Point(col.Left.Value, point.Y + CellPadding), true);
 							}
 							else
 							{
