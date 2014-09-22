@@ -233,7 +233,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						_startFrameDrag = true;
 					}
-					else//User changed input
+					else // User changed input
 					{
 						var frame = TasView.CurrentCell.RowIndex.Value;
 						var buttonName = TasView.CurrentCell.Column.Name;
@@ -242,7 +242,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
 							GoToLastEmulatedFrameIfNecessary(TasView.CurrentCell.RowIndex.Value);
-							TasView.Refresh();
+							UpdateValues();
 
 							_startBoolDrawColumn = buttonName;
 

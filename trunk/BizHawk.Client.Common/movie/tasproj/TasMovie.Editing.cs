@@ -21,7 +21,6 @@ namespace BizHawk.Client.Common
 
 			LagLog.Add(Global.Emulator.IsLagFrame);
 
-			StateManager.Invalidate(frame);
 			StateManager.Capture();
 		}
 

@@ -123,11 +123,20 @@ namespace BizHawk.Client.Common
 			if (States.Count > 0 && frame > 0) // Never invalidate frame 0, TODO: Only if movie is a power-on movie should we keep frame 0, check this
 			{
 				// TODO be more efficient, this could get slow
-				while (LastKey >= frame)
+				//while (LastKey >= frame)
+				//{
+				//	var state = States[LastKey];
+				//	Used -= state.Length;
+				//	States.RemoveAt(States.Count - 1);
+				//}
+
+				var statesToRemove = States
+					.Where(x => x.Key >= frame)
+					.ToList();
+				foreach (var state in statesToRemove)
 				{
-					var state = States[LastKey];
-					Used -= state.Length;
-					States.RemoveAt(States.Count - 1);
+					Used -= state.Value.Length;
+					States.Remove(state.Key);
 				}
 			}
 		}
