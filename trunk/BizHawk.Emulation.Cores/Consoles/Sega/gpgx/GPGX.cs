@@ -599,13 +599,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						{
 							if (addr < 0 || addr >= 65536)
 								throw new ArgumentOutOfRangeException();
-							return p[addr];
+							return p[addr ^ 1];
 						},
 						delegate(int addr, byte val)
 						{
 							if (addr < 0 || addr >= 65536)
 								throw new ArgumentOutOfRangeException();
-							LibGPGX.gpgx_poke_vram(addr, val);
+							LibGPGX.gpgx_poke_vram(addr ^ 1, val);
 						}));
 				}
 				else
