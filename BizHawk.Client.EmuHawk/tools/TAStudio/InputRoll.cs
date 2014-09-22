@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 
 			UpdateCellSize();
 			ColumnWidth = CellWidth;
-			ColumnHeight = CellHeight + 5;
+			ColumnHeight = CellHeight + 2;
 
 			//TODO Figure out how to use the width and height properties of the scrollbars instead of 17
 			VBar = new VScrollBar
