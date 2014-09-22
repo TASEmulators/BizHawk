@@ -576,7 +576,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		//TODO Centering text is buggy and only implemented for Horizontal Orientation
 		private void DrawData(PaintEventArgs e)
 		{
 			if (QueryItemText != null)
@@ -706,7 +705,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						Gdi.SetBrush(SystemColors.Highlight);
-						Gdi.FillRectangle(1, i * CellHeight + 1, ColumnWidth - 1, CellHeight - 1);
+						Gdi.FillRectangle(1, i * CellHeight + 1, ColumnWidth - 1, ColumnHeight - 1);
 					}
 				}
 				else
@@ -722,7 +721,7 @@ namespace BizHawk.Client.EmuHawk
 							int left = _columns[i].Left.Value - HBar.Value;
 							int width = _columns[i].Right.Value - HBar.Value - left;
 							Gdi.SetBrush(SystemColors.Highlight);
-							Gdi.FillRectangle(left + 1, 1, width - 1, CellHeight - 1);
+							Gdi.FillRectangle(left + 1, 1, width - 1, ColumnHeight - 1);
 						}
 					}
 				}
