@@ -1043,6 +1043,11 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		private void TasView_MouseEnter(object sender, EventArgs e)
+		{
+			TasView.Focus();
+		}
+
 		#endregion
 	}
 }
