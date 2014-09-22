@@ -1008,6 +1008,7 @@ namespace BizHawk.Client.EmuHawk
 				NewTasMovie();
 				GlobalWin.MainForm.StartNewMovie(_currentTasMovie, record: true);
 				_currentTasMovie.CaptureCurrentState();
+				_currentTasMovie.SwitchToRecord();
 			}
 
 			EngageTastudio();
