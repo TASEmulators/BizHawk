@@ -102,4 +102,7 @@ extern unsigned int vdp_hvc_r(unsigned int cycles);
 extern void vdp_test_w(unsigned int data);
 extern int vdp_68k_irq_ack(int int_level);
 
+void write_vram_byte(int addr, uint8 val);
+void flush_vram_cache(void);
+
 #endif /* _VDP_H_ */

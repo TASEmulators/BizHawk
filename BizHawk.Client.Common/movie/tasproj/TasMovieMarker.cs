@@ -216,5 +216,10 @@ namespace BizHawk.Client.Common
 		{
 			return this.Any(m => m == frame);
 		}
+
+		public TasMovieMarker Get(int frame)
+		{
+			return this.FirstOrDefault(m => m == frame);
+		}
 	}
 }

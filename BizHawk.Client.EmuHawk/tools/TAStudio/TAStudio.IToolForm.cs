@@ -25,6 +25,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			TasView.RowCount = _currentTasMovie.InputLogLength + 1;
 			SetVisibleIndex();
 		}
 

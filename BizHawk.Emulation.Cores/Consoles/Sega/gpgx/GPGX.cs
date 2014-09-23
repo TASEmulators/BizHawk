@@ -591,8 +591,27 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (area == IntPtr.Zero || pname == IntPtr.Zero || size == 0)
 					continue;
 				string name = Marshal.PtrToStringAnsi(pname);
-
-				mm.Add(MemoryDomain.FromIntPtrSwap16(name, size, MemoryDomain.Endian.Big, area));
+				if (name == "VRAM")
+				{
+					byte* p = (byte*)area;
+					mm.Add(new MemoryDomain(name, size, MemoryDomain.Endian.Unknown,
+						delegate(int addr)
+						{
+							if (addr < 0 || addr >= 65536)
+								throw new ArgumentOutOfRangeException();
+							return p[addr ^ 1];
+						},
+						delegate(int addr, byte val)
+						{
+							if (addr < 0 || addr >= 65536)
+								throw new ArgumentOutOfRangeException();
+							LibGPGX.gpgx_poke_vram(addr ^ 1, val);
+						}));
+				}
+				else
+				{
+					mm.Add(MemoryDomain.FromIntPtrSwap16(name, size, MemoryDomain.Endian.Big, area));
+				}
 			}
 			MemoryDomains = new MemoryDomainList(mm, 0);
 		}
@@ -619,6 +638,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public void UpdateVDPViewContext(LibGPGX.VDPView view)
 		{
 			LibGPGX.gpgx_get_vdp_view(view);
+			LibGPGX.gpgx_flush_vram(); // fully regenerate internal caches as needed
 		}
 
 		LibGPGX.mem_cb ExecCallback;
