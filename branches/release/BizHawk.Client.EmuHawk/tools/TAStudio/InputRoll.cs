@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 
 			UpdateCellSize();
 			ColumnWidth = CellWidth;
-			ColumnHeight = CellHeight + 5;
+			ColumnHeight = CellHeight + 2;
 
 			//TODO Figure out how to use the width and height properties of the scrollbars instead of 17
 			VBar = new VScrollBar
@@ -576,7 +576,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		//TODO Centering text is buggy and only implemented for Horizontal Orientation
 		private void DrawData(PaintEventArgs e)
 		{
 			if (QueryItemText != null)
@@ -622,7 +621,7 @@ namespace BizHawk.Client.EmuHawk
 								continue;
 							}
 							string text;
-							var point = new Point(col.Left.Value + xPadding, RowsToPixels(i));
+							var point = new Point(col.Left.Value + xPadding, RowsToPixels(i) + CellPadding);
 
 							Bitmap image = null;
 							if (QueryItemIcon != null)
@@ -632,7 +631,7 @@ namespace BizHawk.Client.EmuHawk
 
 							if (image != null)
 							{
-								Gdi.DrawBitmap(image, new Point(col.Left.Value, point.Y + CellPadding),true);
+								Gdi.DrawBitmap(image, new Point(col.Left.Value, point.Y + CellPadding), true);
 							}
 							else
 							{
@@ -706,7 +705,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						Gdi.SetBrush(SystemColors.Highlight);
-						Gdi.FillRectangle(1, i * CellHeight + 1, ColumnWidth - 1, CellHeight - 1);
+						Gdi.FillRectangle(1, i * CellHeight + 1, ColumnWidth - 1, ColumnHeight - 1);
 					}
 				}
 				else
@@ -722,7 +721,7 @@ namespace BizHawk.Client.EmuHawk
 							int left = _columns[i].Left.Value - HBar.Value;
 							int width = _columns[i].Right.Value - HBar.Value - left;
 							Gdi.SetBrush(SystemColors.Highlight);
-							Gdi.FillRectangle(left + 1, 1, width - 1, CellHeight - 1);
+							Gdi.FillRectangle(left + 1, 1, width - 1, ColumnHeight - 1);
 						}
 					}
 				}
@@ -899,11 +898,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Mouse and Key Events
 
-		//protected override void OnKeyDown(KeyEventArgs e)
-		//{
-		//	base.OnKeyDown(e);
-		//}
-
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			var newCell = CalculatePointedCell(e.X, e.Y);
@@ -969,7 +963,65 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (SelectedItems.Any())
 						{
-							MessageBox.Show("Shift click logic is not yet implemented");
+							if (FullRowSelect)
+							{
+								var selected = SelectedItems.Any(c => c.RowIndex.HasValue && CurrentCell.RowIndex.HasValue && c.RowIndex == CurrentCell.RowIndex);
+
+								if (!selected)
+								{
+									var rowIndices = SelectedItems
+										.Where(c => c.RowIndex.HasValue)
+										.Select(c => c.RowIndex ?? -1)
+										.Where(c => c >= 0) // Hack to avoid possible Nullable exceptions
+										.Distinct();
+
+
+									var firstIndex = rowIndices.Min();
+									var lastIndex = rowIndices.Max();
+
+									if (CurrentCell.RowIndex.Value < firstIndex)
+									{
+										for (int i = CurrentCell.RowIndex.Value; i < firstIndex; i++)
+										{
+											SelectCell(new Cell
+												{
+													RowIndex = i,
+													Column = CurrentCell.Column
+												});
+										}
+									}
+									else if (CurrentCell.RowIndex.Value > lastIndex)
+									{
+										for (int i = lastIndex + 1; i <= CurrentCell.RowIndex.Value; i++)
+										{
+											SelectCell(new Cell
+											{
+												RowIndex = i,
+												Column = CurrentCell.Column
+											});
+										}
+									}
+									else // Somewhere in between, a scenario that can happen with ctrl-clicking, find the previous and highlight from there
+									{
+										var nearest = rowIndices
+											.Where(x => x < CurrentCell.RowIndex.Value)
+											.Max();
+
+										for (int i = nearest + 1; i <= CurrentCell.RowIndex.Value; i++)
+										{
+											SelectCell(new Cell
+											{
+												RowIndex = i,
+												Column = CurrentCell.Column
+											});
+										}
+									}
+								}
+							}
+							else
+							{
+								MessageBox.Show("Shift click logic for individual cells has not yet implemented");
+							}
 						}
 						else
 						{
@@ -978,7 +1030,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (ModifierKeys == Keys.Control)
 					{
-						SelectCell(CurrentCell);
+						SelectCell(CurrentCell, toggle: true);
 					}
 					else
 					{
@@ -1204,6 +1256,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
+					VBar.Location = new Point(0, Height - 17);
 					HBar.Size = new Size(Width, HBar.Height);
 				}
 			}
@@ -1237,30 +1290,60 @@ namespace BizHawk.Client.EmuHawk
 		/// If FullRowSelect is enabled, selects all cells in the row that contains the given cell. Otherwise only given cell is added.
 		/// </summary>
 		/// <param name="cell">The cell to select.</param>
-		private void SelectCell(Cell cell)
+		private void SelectCell(Cell cell, bool toggle = false)
 		{
-			if (!MultiSelect)
+			if (cell.RowIndex.HasValue && cell.RowIndex < RowCount)
 			{
-				SelectedItems.Clear();
-			}
-
-			if (FullRowSelect)
-			{
-				foreach (var column in _columns)
+				if (!MultiSelect)
 				{
-					SelectedItems.Add(new Cell
-					{
-						RowIndex = cell.RowIndex,
-						Column = column
-					});
+					SelectedItems.Clear();
 				}
-			}
-			else
-			{
-				SelectedItems.Add(CurrentCell);
-			}
 
-			SelectedIndexChanged(this, new EventArgs());
+				if (FullRowSelect)
+				{
+					if (toggle && SelectedItems.Any(x => x.RowIndex.HasValue && x.RowIndex == cell.RowIndex))
+					{
+						var items = SelectedItems
+							.Where(x => x.RowIndex.HasValue && x.RowIndex == cell.RowIndex)
+							.ToList();
+
+						foreach (var item in items)
+						{
+							SelectedItems.Remove(item);
+						}
+					}
+					else
+					{
+						foreach (var column in _columns)
+						{
+							SelectedItems.Add(new Cell
+							{
+								RowIndex = cell.RowIndex,
+								Column = column
+							});
+						}
+					}
+				}
+				else
+				{
+					if (toggle && SelectedItems.Any(x => x.RowIndex.HasValue && x.RowIndex == cell.RowIndex))
+					{
+						var item = SelectedItems
+							.FirstOrDefault(x => x.Equals(cell));
+
+						if (item != null)
+						{
+							SelectedItems.Remove(item);
+						}
+					}
+					else
+					{
+						SelectedItems.Add(CurrentCell);
+					}
+				}
+
+				SelectedIndexChanged(this, new EventArgs());
+			}
 		}
 
 		/// <summary>

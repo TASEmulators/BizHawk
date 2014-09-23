@@ -334,17 +334,29 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// TODO: get the last greenzone frame and go there
 				_currentTasMovie.SwitchToPlay();
-				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_currentTasMovie[_currentTasMovie.LastEmulatedFrame].State.ToArray())));
-				GlobalWin.MainForm.UnpauseEmulator();
-				if(Global.Config.TAStudioAutoPause)
+
+
+				var shouldLoadstate = true;
+				// Some situations it is silly to load a state
+				if (frame - Global.Emulator.Frame == 1)
 				{
-					GlobalWin.MainForm.PauseOnFrame = _currentTasMovie.LastEmulatedFrame;
+					shouldLoadstate = false;
+				}
+
+				if (_currentTasMovie.LastEmulatedFrame > 0 && shouldLoadstate)
+				{
+					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_currentTasMovie[_currentTasMovie.LastEmulatedFrame].State.ToArray())));
+				}
+
+				GlobalWin.MainForm.UnpauseEmulator();
+				if (Global.Config.TAStudioAutoPause && frame < _currentTasMovie.InputLogLength)
+				{
+					GlobalWin.MainForm.PauseOnFrame = _currentTasMovie.InputLogLength;
 				}
 				else
 				{
 					GlobalWin.MainForm.PauseOnFrame = frame;
 				}
-				
 			}
 
 			RefreshDialog();
@@ -996,6 +1008,7 @@ namespace BizHawk.Client.EmuHawk
 				NewTasMovie();
 				GlobalWin.MainForm.StartNewMovie(_currentTasMovie, record: true);
 				_currentTasMovie.CaptureCurrentState();
+				_currentTasMovie.SwitchToRecord();
 			}
 
 			EngageTastudio();
@@ -1024,7 +1037,17 @@ namespace BizHawk.Client.EmuHawk
 			SetTextProperty();
 		}
 
+		private void RightClickMenu_Opened(object sender, EventArgs e)
+		{
+			RemoveMarkersContextMenuItem.Enabled = _currentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame)); // Disable the option to remove markers if no markers are selected (FCUEX does this).
+		}
+
 		#endregion
+
+		private void TasView_MouseEnter(object sender, EventArgs e)
+		{
+			TasView.Focus();
+		}
 
 		#endregion
 	}
