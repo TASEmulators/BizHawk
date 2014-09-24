@@ -254,7 +254,7 @@
 			this.StopOnFrameTextBox.ByteSize = BizHawk.Client.Common.Watch.WatchSize.Byte;
 			this.StopOnFrameTextBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.StopOnFrameTextBox.Location = new System.Drawing.Point(438, 355);
-			this.StopOnFrameTextBox.MaxLength = 3;
+			this.StopOnFrameTextBox.MaxLength = 8;
 			this.StopOnFrameTextBox.Name = "StopOnFrameTextBox";
 			this.StopOnFrameTextBox.Nullable = true;
 			this.StopOnFrameTextBox.Size = new System.Drawing.Size(54, 20);
@@ -286,6 +286,7 @@
 			this.MovieView.Size = new System.Drawing.Size(480, 322);
 			this.MovieView.TabIndex = 5;
 			this.MovieView.UseCompatibleStateImageBehavior = false;
+			this.MovieView.UseCustomBackground = true;
 			this.MovieView.View = System.Windows.Forms.View.Details;
 			this.MovieView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.MovieView_ColumnClick);
 			this.MovieView.SelectedIndexChanged += new System.EventHandler(this.MovieView_SelectedIndexChanged);

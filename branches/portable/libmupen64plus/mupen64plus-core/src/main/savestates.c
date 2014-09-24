@@ -483,7 +483,14 @@ EXPORT int CALL savestates_load_bkm(char * curr)
     size_t savestateSize;
     unsigned char *savestateData;
 
-    char *queue = curr + 16788288;
+	int hasExpansion;
+
+    char *queue;
+
+	hasExpansion = !(ConfigGetParamInt(g_CoreConfig, "DisableExtraMem"));
+	savestateSize = hasExpansion ? 16788288 : 12593984;
+	queue = curr + savestateSize;
+
 	curr += 44;
 
     // Parse savestate
@@ -595,7 +602,7 @@ EXPORT int CALL savestates_load_bkm(char * curr)
     dps_register.dps_buftest_addr = GETDATA(curr, unsigned int);
     dps_register.dps_buftest_data = GETDATA(curr, unsigned int);
 
-    COPYARRAY(rdram, curr, unsigned int, 0x800000/4);
+    COPYARRAY(rdram, curr, unsigned int, (hasExpansion ? 0x800000 : 0x400000) /4);
     COPYARRAY(SP_DMEM, curr, unsigned int, 0x1000/4);
     COPYARRAY(SP_IMEM, curr, unsigned int, 0x1000/4);
     COPYARRAY(PIF_RAM, curr, unsigned char, 0x40);
@@ -1446,10 +1453,21 @@ EXPORT int CALL savestates_save_bkm(char *curr)
     int queuelength;
 	int savestate_size;
 
+	int hasExpansion;
+
     queuelength = save_eventqueue_infos(queue);
 
+	hasExpansion = !(ConfigGetParamInt(g_CoreConfig, "DisableExtraMem"));
+
     // Allocate memory for the save state data
-    savestate_size = 16788288 + queuelength;
+	if (hasExpansion)
+	{
+		savestate_size = 16788288 + queuelength;
+	}
+	else
+	{
+		savestate_size = 12593984 + queuelength;
+	}
 
     // Write the save state data to memory
     PUTARRAY(savestate_magic, curr, unsigned char, 8);
@@ -1602,7 +1620,7 @@ EXPORT int CALL savestates_save_bkm(char *curr)
     PUTDATA(curr, unsigned int, dps_register.dps_buftest_addr);
     PUTDATA(curr, unsigned int, dps_register.dps_buftest_data);
 
-    PUTARRAY(rdram, curr, unsigned int, 0x800000/4);
+    PUTARRAY(rdram, curr, unsigned int, (hasExpansion ? 0x800000 : 0x400000) / 4);
     PUTARRAY(SP_DMEM, curr, unsigned int, 0x1000/4);
     PUTARRAY(SP_IMEM, curr, unsigned int, 0x1000/4);
     PUTARRAY(PIF_RAM, curr, unsigned char, 0x40);

@@ -5,33 +5,28 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio : IToolForm
 	{
+		public bool UpdateBefore { get { return false; } }
+
 		public void UpdateValues()
 		{
-			if (!IsHandleCreated || IsDisposed)
+			if (!IsHandleCreated || IsDisposed || _currentTasMovie == null)
 			{
 				return;
 			}
 
-			if (_currentTasMovie == null)
-			{
-				return;
-			}
-
-			if (_currentTasMovie.IsRecording)
-			{
-				TasView.LastVisibleIndex = _currentTasMovie.InputLogLength - 1;
-			}
-			else
-			{
-				TasView.LastVisibleIndex = Global.Emulator.Frame;
-			}
-
+			SetVisibleIndex();
 			RefreshDialog();
 		}
 
 		public void FastUpdate()
 		{
-			// TODO: think more about this
+			if (!IsHandleCreated || IsDisposed || _currentTasMovie == null)
+			{
+				return;
+			}
+
+			TasView.RowCount = _currentTasMovie.InputLogLength + 1;
+			SetVisibleIndex();
 		}
 
 		public void Restart()
@@ -79,6 +74,16 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		public bool UpdateBefore { get { return false; } }
+		private void SetVisibleIndex()
+		{
+			int indexThatMustBeVisible = _currentTasMovie.IsRecording
+				? _currentTasMovie.InputLogLength
+				: Global.Emulator.Frame + 1;
+
+			if (!TasView.IsVisible(indexThatMustBeVisible))
+			{
+				TasView.LastVisibleRow = indexThatMustBeVisible;
+			}
+		}
 	}
 }

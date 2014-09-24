@@ -180,6 +180,28 @@ static void (*const dma_func[16])(unsigned int length) =
 };
 
 
+void write_vram_byte(int addr, uint8 val)
+{
+	uint8 *p;
+	addr &= 0xffff;
+	p = &vram[addr];
+	if (*p != val)
+	{
+		int name;
+		*p = val;
+		MARK_BG_DIRTY(addr);
+	}
+}
+
+void flush_vram_cache(void)
+{
+    if (bg_list_index)
+    {
+		update_bg_pattern_cache(bg_list_index);
+		bg_list_index = 0;
+    }
+}
+
 /*--------------------------------------------------------------------------*/
 /* Init, reset, context functions                                           */
 /*--------------------------------------------------------------------------*/

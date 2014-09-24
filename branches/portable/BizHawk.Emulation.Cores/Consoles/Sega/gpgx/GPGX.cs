@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		portedVersion: "r874",
 		portedUrl: "https://code.google.com/p/genplus-gx/"
 		)]
-	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider
+	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, IMemoryDomains
 	{
 		static GPGX AttachedCore = null;
 
@@ -52,8 +52,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		};
 
 		[CoreConstructor("GEN")]
-		public GPGX(CoreComm comm, byte[] rom, object Settings, object SyncSettings)
-			:this(comm, rom, null, Settings, SyncSettings)
+		public GPGX(CoreComm comm, byte[] file, object Settings, object SyncSettings)
+			:this(comm, file, null, Settings, SyncSettings)
 		{
 		}
 
@@ -153,7 +153,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				SetControllerDefinition();
 
 				// pull the default video size from the core
-				update_video();
+				update_video_initial();
 
 				SetMemoryDomains();
 
@@ -591,8 +591,27 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (area == IntPtr.Zero || pname == IntPtr.Zero || size == 0)
 					continue;
 				string name = Marshal.PtrToStringAnsi(pname);
-
-				mm.Add(MemoryDomain.FromIntPtr(name, size, MemoryDomain.Endian.Unknown, area));
+				if (name == "VRAM")
+				{
+					byte* p = (byte*)area;
+					mm.Add(new MemoryDomain(name, size, MemoryDomain.Endian.Unknown,
+						delegate(int addr)
+						{
+							if (addr < 0 || addr >= 65536)
+								throw new ArgumentOutOfRangeException();
+							return p[addr ^ 1];
+						},
+						delegate(int addr, byte val)
+						{
+							if (addr < 0 || addr >= 65536)
+								throw new ArgumentOutOfRangeException();
+							LibGPGX.gpgx_poke_vram(addr ^ 1, val);
+						}));
+				}
+				else
+				{
+					mm.Add(MemoryDomain.FromIntPtrSwap16(name, size, MemoryDomain.Endian.Big, area));
+				}
 			}
 			MemoryDomains = new MemoryDomainList(mm, 0);
 		}
@@ -619,6 +638,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public void UpdateVDPViewContext(LibGPGX.VDPView view)
 		{
 			LibGPGX.gpgx_get_vdp_view(view);
+			LibGPGX.gpgx_flush_vram(); // fully regenerate internal caches as needed
 		}
 
 		LibGPGX.mem_cb ExecCallback;
@@ -710,6 +730,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public int BufferWidth { get { return vwidth; } }
 		public int BufferHeight { get { return vheight; } }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
+
+		void update_video_initial()
+		{
+			// hack: you should call update_video() here, but that gives you 256x192 on frame 0
+			// and we know that we only use GPGX to emulate genesis games that will always be 320x224 immediately afterwards
+			
+			// so instead, just assume a 320x224 size now; if that happens to be wrong, it'll be fixed soon enough.
+
+			vwidth = 320;
+			vheight = 224;
+			vidbuff = new int[vwidth * vheight];
+			for (int i = 0; i < vidbuff.Length; i++)
+				vidbuff[i] = unchecked((int)0xff000000);
+		}
 
 		unsafe void update_video()
 		{

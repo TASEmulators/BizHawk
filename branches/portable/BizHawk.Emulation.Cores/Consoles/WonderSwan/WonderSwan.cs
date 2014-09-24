@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
 	[CoreAttributes("Cygne/Mednafen", "Dox", true, true, "0.9.34.1", "http://mednafen.sourceforge.net/")]
-	public class WonderSwan : IEmulator, IVideoProvider, ISyncSoundProvider
+	public class WonderSwan : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains
 	{
 		#region Controller
 
@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		#endregion
 
 		[CoreConstructor("WSWAN")]
-		public WonderSwan(CoreComm comm, byte[] rom, bool deterministic, object Settings, object SyncSettings)
+		public WonderSwan(CoreComm comm, byte[] file, bool deterministic, object Settings, object SyncSettings)
 		{
 			CoreComm = comm;
 			_Settings = (Settings)Settings ?? new Settings();
@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 				bool rotate = false;
 
-				if (!BizSwan.bizswan_load(Core, rom, rom.Length, ref ss, ref rotate))
+				if (!BizSwan.bizswan_load(Core, file, file.Length, ref ss, ref rotate))
 					throw new InvalidOperationException("bizswan_load() returned FALSE!");
 
 				// for future uses of ClearSaveRam(), it's important that we save this

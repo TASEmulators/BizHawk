@@ -4,8 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
+
+using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
@@ -205,16 +207,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void UpdateCheatRelatedTools(object sender, CheatCollection.CheatListEventArgs e)
 		{
-			GlobalWin.Tools.UpdateValues<RamWatch>();
-			GlobalWin.Tools.UpdateValues<RamSearch>();
-			GlobalWin.Tools.UpdateValues<HexEditor>();
-
-			if (GlobalWin.Tools.Has<Cheats>())
+			if (Global.Emulator.HasMemoryDomains())
 			{
-				GlobalWin.Tools.Cheats.UpdateDialog();
-			}
+				GlobalWin.Tools.UpdateValues<RamWatch>();
+				GlobalWin.Tools.UpdateValues<RamSearch>();
+				GlobalWin.Tools.UpdateValues<HexEditor>();
 
-			GlobalWin.MainForm.UpdateCheatStatus();
+				if (GlobalWin.Tools.Has<Cheats>())
+				{
+					GlobalWin.Tools.Cheats.UpdateDialog();
+				}
+
+				GlobalWin.MainForm.UpdateCheatStatus();
+			}
 		}
 
 		public static void ViewInHexEditor(MemoryDomain domain, IEnumerable<int> addresses, Watch.WatchSize size)

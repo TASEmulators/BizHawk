@@ -19,9 +19,11 @@ del BizHawk.zip
 
 rmdir /s /q temp\lua
 svn export ..\output\lua temp\Lua
-del temp\dll\jabo_direct3d8*.dll
 
 cd temp
+upx -d dll\*.dll
+upx -d dll\*.exe
+upx -d *.exe
 ..\zip -X -9 -r ..\BizHawk.zip .
 cd ..
 

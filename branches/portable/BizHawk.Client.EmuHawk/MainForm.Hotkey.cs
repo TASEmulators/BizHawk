@@ -1,4 +1,5 @@
 ﻿using BizHawk.Client.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -287,10 +288,16 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.LoadRamWatch(true);
 					break;
 				case "Ram Search":
-					GlobalWin.Tools.Load<RamSearch>();
+					if (Global.Emulator.HasMemoryDomains())
+					{
+						GlobalWin.Tools.Load<RamSearch>();
+					}
 					break;
 				case "Hex Editor":
-					GlobalWin.Tools.Load<HexEditor>();
+					if (Global.Emulator.HasMemoryDomains())
+					{
+						GlobalWin.Tools.Load<HexEditor>();
+					}
 					break;
 				case "Trace Logger":
 					GlobalWin.Tools.LoadTraceLogger();
@@ -299,7 +306,10 @@ namespace BizHawk.Client.EmuHawk
 					OpenLuaConsole();
 					break;
 				case "Cheats":
-					GlobalWin.Tools.Load<Cheats>();
+					if (Global.Emulator.HasMemoryDomains())
+					{
+						GlobalWin.Tools.Load<Cheats>();
+					}
 					break;
 				case "TAStudio":
 					GlobalWin.Tools.Load<TAStudio>();

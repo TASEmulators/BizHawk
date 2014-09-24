@@ -175,14 +175,21 @@ namespace BizHawk.Client.EmuHawk
 
 			ResizeBegin += (o, e) =>
 			{
+				_inResizeLoop = true;
 				if (GlobalWin.Sound != null)
 				{
 					GlobalWin.Sound.StopSound();
 				}
 			};
 
+			Resize += (o, e) =>
+			{
+				SetWindowText();
+			};
+
 			ResizeEnd += (o, e) =>
 			{
+				_inResizeLoop = false;
 				if (GlobalWin.PresentationPanel != null)
 				{
 					GlobalWin.PresentationPanel.Resized = true;
@@ -584,6 +591,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_pauseOnFrame = value;
 				SetPauseStatusbarIcon();
+
+				if (value == null) // TODO: make an Event handler instead, but the logic here is that after turbo seeking, tools will want to do a real update when the emulator finally pauses
+				{
+					GlobalWin.Tools.UpdateToolsBefore();
+					GlobalWin.Tools.UpdateToolsAfter();
+				}
 			}
 		}
 
@@ -1213,6 +1226,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _runloopFrameadvance;
 		private DateTime _runloopSecond;
 		private bool _runloopLastFf;
+		private bool _inResizeLoop;
 
 		private readonly Throttle _throttle;
 		private bool _unthrottled;
@@ -1250,27 +1264,38 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetWindowText()
 		{
+			string str = "";
+			
+			if (_inResizeLoop)
+			{
+				var size = GlobalWin.PresentationPanel.NativeSize;
+				str = str + string.Format("({0}x{1}) - ", size.Width, size.Height);
+			}
+
 			if (Global.Emulator is NullEmulator)
 			{
-				Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
-				return;
-			}
-
-			var str = Global.SystemInfo.DisplayName;
-
-			if (VersionInfo.DeveloperBuild)
-			{
-				str += " (interim)";
-			}
-
-			if (Global.MovieSession.Movie.IsActive)
-			{
-				Text = str + " - " + Global.Game.Name + " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
+				str = str + "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
 			}
 			else
 			{
-				Text = str + " - " + Global.Game.Name;
+				str = str + Global.SystemInfo.DisplayName;
+
+				if (VersionInfo.DeveloperBuild)
+				{
+					str += " (interim)";
+				}
+
+				if (Global.MovieSession.Movie.IsActive)
+				{
+					str = str + " - " + Global.Game.Name + " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
+				}
+				else
+				{
+					str = str + " - " + Global.Game.Name;
+				}
 			}
+
+			Text = str;
 		}
 
 		private void ClearAutohold()
@@ -1901,7 +1926,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				GlobalWin.OSD.AddMessage("Attempt to change sync-relevant setings while recording BLOCKED.");
+				GlobalWin.OSD.AddMessage("Attempt to change sync-relevant settings while recording BLOCKED.");
 			}
 			else if (Global.Emulator.PutSyncSettings(o))
 			{
@@ -2178,6 +2203,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				newp = 200;
 			}
+			else if (oldp < 300)
+			{
+				newp = 300;
+			}
 			else if (oldp < 400)
 			{
 				newp = 400;
@@ -2190,9 +2219,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				newp = 1600;
 			}
-			else
+			else if (oldp < 3200)
 			{
 				newp = 3200;
+			}
+			else
+			{
+				newp = 6400;
 			}
 
 			SetSpeedPercent(newp);
@@ -2209,7 +2242,11 @@ namespace BizHawk.Client.EmuHawk
 			var oldp = Global.Config.SpeedPercent;
 			int newp;
 
-			if (oldp > 1600)
+			if (oldp > 3200)
+			{
+				newp = 3200;
+			}
+			else if (oldp > 1600)
 			{
 				newp = 1600;
 			}
@@ -2220,6 +2257,10 @@ namespace BizHawk.Client.EmuHawk
 			else if (oldp > 400)
 			{
 				newp = 400;
+			}
+			else if (oldp > 300)
+			{
+				newp = 300;
 			}
 			else if (oldp > 200)
 			{
@@ -2514,7 +2555,7 @@ namespace BizHawk.Client.EmuHawk
 			double frameAdvanceTimestampDelta = (now - _frameAdvanceTimestamp).TotalMilliseconds;
 			bool frameProgressTimeElapsed = Global.Config.FrameProgressDelayMs < frameAdvanceTimestampDelta;
 
-			if (Global.Config.SkipLagFrame && Global.Emulator.IsLagFrame && frameProgressTimeElapsed)
+			if (Global.Config.SkipLagFrame && Global.Emulator.IsLagFrame && frameProgressTimeElapsed && Global.Emulator.Frame > 0)
 			{
 				runFrame = true;
 			}

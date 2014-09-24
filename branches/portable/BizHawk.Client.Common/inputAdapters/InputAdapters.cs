@@ -114,19 +114,36 @@ namespace BizHawk.Client.Common
 
 			string prefix;
 
+			//" C " is for N64 "P1 C Up" and the like, which should not be subject to mutexing
+
 			if (button.Contains("Down") && !button.Contains(" C "))
 			{
 				prefix = button.GetPrecedingString("Down");
 				if (Source.IsPressed(prefix + "Up"))
-				{
 					return false;
-				}
 			}
+
+			if (button.Contains("Up") && !button.Contains(" C "))
+			{
+				prefix = button.GetPrecedingString("Up");
+				if (Source.IsPressed(prefix + "Down"))
+					return false;
+			}
+
 
 			if (button.Contains("Right") && !button.Contains(" C "))
 			{
 				prefix = button.GetPrecedingString("Right");
 				if (Source.IsPressed(prefix + "Left"))
+				{
+					return false;
+				}
+			}
+
+			if (button.Contains("Left") && !button.Contains(" C "))
+			{
+				prefix = button.GetPrecedingString("Left");
+				if (Source.IsPressed(prefix + "Right"))
 				{
 					return false;
 				}

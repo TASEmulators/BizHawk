@@ -82,6 +82,7 @@
     <Compile Include="SwitcherStream.cs" />
     <Compile Include="UndoHistory.cs" />
     <Compile Include="Util.cs" />
+    <Compile Include="Win32Hacks.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

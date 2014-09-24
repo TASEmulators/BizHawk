@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		isPorted: true,
 		isReleased: false
 		)]
-	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable
+	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, IMemoryDomains
 	{
 		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public IController Controller { get; set; }
 
 		[CoreConstructor("GBA")]
-		public GBA(CoreComm comm, byte[] rom)
+		public GBA(CoreComm comm, byte[] file)
 		{
 			CoreComm = comm;
 			comm.VsyncNum = 262144;
@@ -58,12 +58,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			if (bios.Length != 16384)
 				throw new InvalidDataException("GBA bios must be exactly 16384 bytes!");
-			if (rom.Length > 32 * 1024 * 1024)
+			if (file.Length > 32 * 1024 * 1024)
 				throw new InvalidDataException("Rom file is too big!  No GBA game is larger than 32MB");
 			Init();
 			LibMeteor.libmeteor_hardreset();
 			LibMeteor.libmeteor_loadbios(bios, (uint)bios.Length);
-			LibMeteor.libmeteor_loadrom(rom, (uint)rom.Length);
+			LibMeteor.libmeteor_loadrom(file, (uint)file.Length);
 
 			SetUpMemoryDomains();
 		}

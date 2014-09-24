@@ -42,6 +42,9 @@ namespace BizHawk.Client.EmuHawk
 				case Config.ClientProfile.Tas:
 					ProfileSelectComboBox.SelectedItem = "Tool-assisted Speedruns";
 					break;
+				case Config.ClientProfile.N64Tas:
+					ProfileSelectComboBox.SelectedItem = "N64 Tool-assisted Speedruns";
+					break;
 			}
 		}
 
@@ -58,6 +61,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.RewindEnabledLarge = false;
 				Global.Config.RewindEnabledMedium = false;
 				Global.Config.RewindEnabledSmall = true;
+				Global.Config.SkipLagFrame = false;
 
 				// N64
 				var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
@@ -101,13 +105,14 @@ namespace BizHawk.Client.EmuHawk
 				// NES
 				Global.Config.NES_InQuickNES = true;
 			}
-			else if (ProfileSelectComboBox.SelectedIndex == 2) // Long Plays
+			else if (ProfileSelectComboBox.SelectedIndex == 3) // Long Plays
 			{
 				DisplayProfileSettingBoxes(false);
 				Global.Config.SaveLargeScreenshotWithStates = false;
 				Global.Config.SaveScreenshotWithStates = false;
 				Global.Config.AllowUD_LR = false;
 				Global.Config.BackupSavestates = false;
+				Global.Config.SkipLagFrame = false;
 
 				Global.Config.RewindEnabledLarge = false;
 				Global.Config.RewindEnabledMedium = false;
@@ -164,6 +169,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.SaveScreenshotWithStates = true;
 				Global.Config.AllowUD_LR = true;
 				Global.Config.BackupSavestates = true;
+				Global.Config.SkipLagFrame = false;
 
 				// Rewind
 				Global.Config.RewindEnabledLarge = false;
@@ -212,7 +218,65 @@ namespace BizHawk.Client.EmuHawk
 				// NES
 				Global.Config.NES_InQuickNES = true;
 			}
-			else if (ProfileSelectComboBox.SelectedIndex == 3) //custom
+			else if (ProfileSelectComboBox.SelectedIndex == 2) // N64 TAS
+			{
+				DisplayProfileSettingBoxes(false);
+
+				// General
+				Global.Config.SaveLargeScreenshotWithStates = true;
+				Global.Config.SaveScreenshotWithStates = true;
+				Global.Config.AllowUD_LR = true;
+				Global.Config.BackupSavestates = true;
+				Global.Config.SkipLagFrame = true;
+
+				// Rewind
+				Global.Config.RewindEnabledLarge = false;
+				Global.Config.RewindEnabledMedium = false;
+				Global.Config.RewindEnabledSmall = false;
+
+				// N64
+				var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
+				n64Settings.Rsp = N64SyncSettings.RspType.Rsp_Z64_hlevideo;
+				n64Settings.Core = N64SyncSettings.CoreType.Pure_Interpret;
+				Global.Config.N64UseCircularAnalogConstraint = false;
+				PutSyncSettings<N64>(n64Settings);
+
+				// SNES
+				var snesSettings = GetSyncSettings<LibsnesCore, LibsnesCore.SnesSyncSettings>();
+				snesSettings.Profile = "Compatibility";
+				PutSyncSettings<LibsnesCore>(snesSettings);
+
+				// Saturn
+				var saturnSettings = GetSyncSettings<Yabause, Yabause.SaturnSyncSettings>();
+				saturnSettings.SkipBios = true;
+				PutSyncSettings<Yabause>(saturnSettings);
+
+				// Genesis
+				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
+				genesisSettings.Region = LibGPGX.Region.Autodetect;
+				PutSyncSettings<GPGX>(genesisSettings);
+
+				// SMS
+				var smsSettings = GetSyncSettings<SMS, SMS.SMSSyncSettings>();
+				smsSettings.UseBIOS = false;
+				PutSyncSettings<SMS>(smsSettings);
+
+				// Coleco
+				var colecoSettings = GetSyncSettings<ColecoVision, ColecoVision.ColecoSyncSettings>();
+				colecoSettings.SkipBiosIntro = true;
+				PutSyncSettings<ColecoVision>(colecoSettings);
+
+				// A2600
+				var a2600Settings = GetSyncSettings<Atari2600, Atari2600.A2600SyncSettings>();
+				a2600Settings.FastScBios = false;
+				a2600Settings.LeftDifficulty = true;
+				a2600Settings.RightDifficulty = true;
+				PutSyncSettings<Atari2600>(a2600Settings);
+
+				// NES
+				Global.Config.NES_InQuickNES = true;
+			}
+			else if (ProfileSelectComboBox.SelectedIndex == 4) //custom
 			{
 				//Disabled for now
 				//DisplayProfileSettingBoxes(true);
@@ -230,6 +294,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "Tool-assisted Speedruns":
 					Global.Config.SelectedProfile = Config.ClientProfile.Tas;
+					break;
+				case "N64 Tool-assisted Speedruns":
+					Global.Config.SelectedProfile = Config.ClientProfile.N64Tas;
 					break;
 			}
 

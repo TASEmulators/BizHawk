@@ -307,6 +307,16 @@ GPGX_EX void gpgx_sram_commitwrite(void)
 	}
 }
 
+GPGX_EX void gpgx_poke_vram(int addr, uint8 val)
+{
+	write_vram_byte(addr, val);
+}
+
+GPGX_EX void gpgx_flush_vram(void)
+{
+	flush_vram_cache();
+}
+
 GPGX_EX const char* gpgx_get_memdom(int which, void **area, int *size)
 {
 	if (!area || !size)

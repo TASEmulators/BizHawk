@@ -10,6 +10,11 @@ namespace BizHawk.Emulation.Common
 		public enum Endian { Big, Little, Unknown }
 
 		public readonly string Name;
+
+		/// <summary>
+		/// Special note: if this is 0, the memorydomain is 0x100000000 (full 32bits) in size.
+		/// This was judged to be less of a mess than using a bunch of longs everywhere.
+		/// </summary>
 		public readonly int Size;
 		public readonly Endian EndianType;
 
@@ -40,7 +45,7 @@ namespace BizHawk.Emulation.Common
 				throw new ArgumentNullException("data");
 			if (size <= 0)
 				throw new ArgumentOutOfRangeException("size");
-			byte *p = (byte*) data;
+			byte* p = (byte*)data;
 			return new MemoryDomain
 			(
 				name,
@@ -59,6 +64,45 @@ namespace BizHawk.Emulation.Common
 						if (addr < 0 || addr >= size)
 							throw new ArgumentOutOfRangeException();
 						p[addr] = val;
+					}
+				}
+			);
+		}
+
+		/// <summary>
+		/// create a memorydomain that references an unmanaged memory block with 16 bit swaps
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="size"></param>
+		/// <param name="endian"></param>
+		/// <param name="data">must remain valid as long as the MemoryDomain exists!</param>
+		/// <param name="writable">if false, writes will be ignored</param>
+		/// <returns></returns>
+		public unsafe static MemoryDomain FromIntPtrSwap16(string name, int size, Endian endian, IntPtr data, bool writable = true)
+		{
+			if (data == IntPtr.Zero)
+				throw new ArgumentNullException("data");
+			if (size <= 0)
+				throw new ArgumentOutOfRangeException("size");
+			byte* p = (byte*)data;
+			return new MemoryDomain
+			(
+				name,
+				size,
+				endian,
+				delegate(int addr)
+				{
+					if (addr < 0 || addr >= size)
+						throw new ArgumentOutOfRangeException();
+					return p[addr ^ 1];
+				},
+				delegate(int addr, byte val)
+				{
+					if (writable)
+					{
+						if (addr < 0 || addr >= size)
+							throw new ArgumentOutOfRangeException();
+						p[addr ^ 1] = val;
 					}
 				}
 			);
@@ -142,18 +186,6 @@ namespace BizHawk.Emulation.Common
 
 	public class MemoryDomainList : ReadOnlyCollection<MemoryDomain>
 	{
-		/// <summary>
-		/// creates a minimal valid MemoryDomainList that does nothing
-		/// </summary>
-		/// <returns></returns>
-		public static MemoryDomainList GetDummyList()
-		{
-			MemoryDomain dummy = new MemoryDomain("Dummy", 256, MemoryDomain.Endian.Little, (a) => 0, (a, v) => { });
-			List<MemoryDomain> tmp = new List<MemoryDomain>(1);
-			tmp.Add(dummy);
-			return new MemoryDomainList(tmp, 0);
-		}
-
 		private readonly int _mainMemoryIndex;
 
 		public MemoryDomainList(IList<MemoryDomain> domains) 
@@ -180,6 +212,22 @@ namespace BizHawk.Emulation.Common
 			get
 			{
 				return this[_mainMemoryIndex];
+			}
+		}
+
+		public bool HasSystemBus
+		{
+			get
+			{
+				return this.Any(x => x.Name == "System Bus" || x.Name == "BUS"); // Have to account for "BUS" because some developers don't like consistency!
+			}
+		}
+
+		public MemoryDomain SystemBus
+		{
+			get
+			{
+				return this.FirstOrDefault(x => x.Name == "System Bus" || x.Name == "BUS");
 			}
 		}
 	}

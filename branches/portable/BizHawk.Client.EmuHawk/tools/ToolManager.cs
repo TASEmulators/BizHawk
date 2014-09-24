@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public bool Has<T>() where T : IToolForm
 		{
-			return _tools.Any(x => x is T);
+			return _tools.Any(x => x is T && !x.IsDisposed);
 		}
 
 		/// <summary>

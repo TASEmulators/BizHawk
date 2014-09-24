@@ -346,7 +346,8 @@ namespace BizHawk.Client.EmuHawk
 			int? x = null,
 			int? y = null,
 			int? width = null,
-			int? height = null)
+			int? height = null,
+			bool fixedWidth = false)
 		{
 			var form = GetForm(formHandle);
 			if (form == null)
@@ -355,6 +356,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var label = new Label();
+			if (fixedWidth)
+			{
+				label.Font = new Font("Courier New", 8);
+			}
+
 			SetText(label, caption);
 			form.Controls.Add(label);
 

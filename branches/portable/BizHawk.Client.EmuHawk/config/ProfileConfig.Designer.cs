@@ -73,6 +73,7 @@
 			this.ProfileSelectComboBox.Items.AddRange(new object[] {
             "Casual Gaming",
             "Tool-assisted Speedruns",
+            "N64 Tool-assisted Speedruns",
             "Longplays",
             "Custom Profile"});
 			this.ProfileSelectComboBox.Location = new System.Drawing.Point(22, 20);
@@ -121,10 +122,9 @@
 			this.ProfileDialogHelpTexBox.Location = new System.Drawing.Point(184, 12);
 			this.ProfileDialogHelpTexBox.Name = "ProfileDialogHelpTexBox";
 			this.ProfileDialogHelpTexBox.ReadOnly = true;
-			this.ProfileDialogHelpTexBox.Size = new System.Drawing.Size(198, 126);
+			this.ProfileDialogHelpTexBox.Size = new System.Drawing.Size(198, 154);
 			this.ProfileDialogHelpTexBox.TabIndex = 8;
-			this.ProfileDialogHelpTexBox.Text = "Options:\nCasual Gaming - All about performance!\n\nTool-Assisted Speedruns - Maximu" +
-    "m Accuracy!\n\nLongplays - Stability is the key!";
+			this.ProfileDialogHelpTexBox.Text = resources.GetString("ProfileDialogHelpTexBox.Text");
 			// 
 			// label1
 			// 

@@ -88,6 +88,10 @@ namespace BizHawk.Client.Common
 							catch (EndOfStreamException) { }
 						});
 				}
+				catch
+				{
+					return false;
+				}
 				finally
 				{
 					bl.Dispose();

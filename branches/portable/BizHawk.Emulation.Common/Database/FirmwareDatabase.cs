@@ -39,6 +39,9 @@ namespace BizHawk.Emulation.Common
 				Option("GBA", "Bios", GBA_JDebug);
 			}
 
+			FirmwareAndOption("E4ED47FAE31693E016B081C6BDA48DA5B70D7CCB", "LYNX", "Boot", "lynxboot.img", "Boot Rom");
+
+
 			//FirmwareAndOption("24F67BDEA115A2C847C8813A262502EE1607B7DF", "NDS", "Bios_Arm7", "biosnds7.rom", "ARM7 Bios");
 			//FirmwareAndOption("BFAAC75F101C135E32E2AAF541DE6B1BE4C8C62D", "NDS", "Bios_Arm9", "biosnds9.rom", "ARM9 Bios");
 			FirmwareAndOption("5A65B922B562CB1F57DAB51B73151283F0E20C7A", "INTV", "EROM", "erom.bin", "Executive Rom");

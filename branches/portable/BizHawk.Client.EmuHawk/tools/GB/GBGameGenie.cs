@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -295,7 +296,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				var watch = Watch.GenerateWatch(
-					Global.Emulator.MemoryDomains["System Bus"],
+					(Global.Emulator as IMemoryDomains).MemoryDomains["System Bus"],
 					address,
 					Watch.WatchSize.Byte,
 					Watch.DisplayType.Hex,

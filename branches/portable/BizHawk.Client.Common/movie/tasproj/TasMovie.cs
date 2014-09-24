@@ -12,6 +12,7 @@ namespace BizHawk.Client.Common
 {
 	public sealed partial class TasMovie : Bk2Movie, INotifyPropertyChanged
 	{
+		private readonly Bk2MnemonicConstants Mnemonics = new Bk2MnemonicConstants();
 		private List<bool> LagLog = new List<bool>();
 		private readonly TasStateManager StateManager;
 		public TasMovieMarkerList Markers { get; set; }
@@ -126,25 +127,41 @@ namespace BizHawk.Client.Common
 			Changes = true; // TODO check if this actually removed anything before flagging changes
 		}
 
-		private readonly Bk2MnemonicConstants Mnemonics = new Bk2MnemonicConstants();
 		/// <summary>
 		/// Returns the mnemonic value for boolean buttons, and actual value for floats,
 		/// for a given frame and button.
 		/// </summary>
 		public string DisplayValue(int frame, string buttonName)
 		{
+			if (UseInputCache && InputStateCache.ContainsKey(frame))
+			{
+				return CreateDisplayValueForButton(InputStateCache[frame], buttonName);
+			}
+
 			var adapter = GetInputState(frame);
+
+			if (UseInputCache)
+			{
+				InputStateCache.Add(frame, adapter);
+			}
+
 			return CreateDisplayValueForButton(adapter, buttonName);
 		}
 
-		public static string CreateDisplayValueForButton(IController adapter, string buttonName)
-		{
-			var mnemonics = new Bk2MnemonicConstants();
+		private readonly Dictionary<int, IController> InputStateCache = new Dictionary<int, IController>();
 
+		public bool UseInputCache { get; set; }
+		public void FlushInputCache()
+		{
+			InputStateCache.Clear();
+		}
+
+		public string CreateDisplayValueForButton(IController adapter, string buttonName)
+		{
 			if (adapter.Type.BoolButtons.Contains(buttonName))
 			{
 				return adapter.IsPressed(buttonName) ?
-					mnemonics[buttonName].ToString() :
+					Mnemonics[buttonName].ToString() :
 					string.Empty;
 			}
 
@@ -279,6 +296,14 @@ namespace BizHawk.Client.Common
 
 				return 0;
 			}
+		}
+
+		/// <summary>
+		/// For the given frame, returns a savestate that is that frame or before it, as close as possible to it
+		/// </summary>
+		public byte[] GetStateClosestToFrame(int frame)
+		{
+			return StateManager.GetStateClosestToFrame(frame);
 		}
 
 		/// <summary>
