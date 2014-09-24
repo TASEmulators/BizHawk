@@ -35,7 +35,8 @@ namespace BizHawk.Client.EmuHawk
 
 			UseCustomBackground = true;
 			GridLines = true;
-			CellPadding = 3;
+			CellWidthPadding = 3;
+			CellHeightPadding = 1;
 			CurrentCell = null;
 			Font = new Font("Courier New", 8);  // Only support fixed width
 
@@ -95,11 +96,18 @@ namespace BizHawk.Client.EmuHawk
 		#region Properties
 
 		/// <summary>
-		/// Gets or sets the amount of padding on the text inside a cell
+		/// Gets or sets the amount of left and right padding on the text inside a cell
 		/// </summary>
 		[DefaultValue(3)]
 		[Category("Behavior")]
-		public int CellPadding { get; set; }
+		public int CellWidthPadding { get; set; }
+
+		/// <summary>
+		/// Gets or sets the amount of top and bottom padding on the text inside a cell
+		/// </summary>
+		[DefaultValue(1)]
+		[Category("Behavior")]
+		public int CellHeightPadding { get; set; }
 
 		/// <summary>
 		/// Displays grid lines around cells
@@ -539,7 +547,7 @@ namespace BizHawk.Client.EmuHawk
 				Gdi.PrepDrawString(this.Font, this.ForeColor);
 				foreach (var column in _columns)
 				{
-					var point = new Point(CellPadding, start + CellPadding);
+					var point = new Point(CellWidthPadding, start + CellHeightPadding);
 
 					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
 					{
@@ -560,7 +568,7 @@ namespace BizHawk.Client.EmuHawk
 				Gdi.PrepDrawString(this.Font, this.ForeColor);
 				foreach (var column in _columns)
 				{
-					var point = new Point(column.Left.Value + 2* CellPadding - HBar.Value, CellPadding);//TODO: fix this CellPadding issue (2 * CellPadding vs just CellPadding)
+					var point = new Point(column.Left.Value + 2 * CellWidthPadding - HBar.Value, CellHeightPadding); // TODO: fix this CellPadding issue (2 * CellPadding vs just CellPadding)
 
 					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
 					{
@@ -595,7 +603,7 @@ namespace BizHawk.Client.EmuHawk
 
 							//Center Text
 							int x = RowsToPixels(i) + (CellWidth - text.Length * _charSize.Width) / 2;
-							int y = j * CellHeight + CellPadding;
+							int y = (j * CellHeight) + CellHeightPadding;
 							var point = new Point(x, y);
 							if (!string.IsNullOrWhiteSpace(text))
 							{
@@ -610,7 +618,7 @@ namespace BizHawk.Client.EmuHawk
 					int range = Math.Min(LastVisibleRow, RowCount - 1) - startRow + 1;
 
 					Gdi.PrepDrawString(this.Font, this.ForeColor);
-					int xPadding = CellPadding + 1 - HBar.Value;
+					int xPadding = CellWidthPadding + 1 - HBar.Value;
 					for (int i = 0; i < range; i++)//Vertical
 					{
 						for (int j = 0; j < _columns.Count; j++)//Horizontal
@@ -621,7 +629,7 @@ namespace BizHawk.Client.EmuHawk
 								continue;
 							}
 							string text;
-							var point = new Point(col.Left.Value + xPadding, RowsToPixels(i) + CellPadding);
+							var point = new Point(col.Left.Value + xPadding, RowsToPixels(i) + CellHeightPadding);
 
 							Bitmap image = null;
 							if (QueryItemIcon != null)
@@ -631,7 +639,7 @@ namespace BizHawk.Client.EmuHawk
 
 							if (image != null)
 							{
-								Gdi.DrawBitmap(image, new Point(col.Left.Value, point.Y + CellPadding), true);
+								Gdi.DrawBitmap(image, new Point(col.Left.Value, point.Y + CellHeightPadding), true);
 							}
 							else
 							{
@@ -1188,7 +1196,7 @@ namespace BizHawk.Client.EmuHawk
 			RecalculateScrollBars();
 			if (_columns.Any())
 			{
-				ColumnWidth = _columns.Max(c => c.Width.Value) + CellPadding * 4;
+				ColumnWidth = _columns.Max(c => c.Width.Value) + CellWidthPadding * 4;
 			}
 		}
 
@@ -1493,7 +1501,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <returns>The new width of the RollColumn object.</returns>
 		private int UpdateWidth(RollColumn col)
 		{
-			col.Width = ((col.Text.Length * _charSize.Width) + (CellPadding * 4));
+			col.Width = ((col.Text.Length * _charSize.Width) + (CellWidthPadding * 4));
 			return col.Width.Value;
 		}
 
@@ -1584,8 +1592,8 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void UpdateCellSize()
 		{
-			CellHeight = _charSize.Height + CellPadding * 2;
-			CellWidth  = _charSize.Width * MaxCharactersInHorizontal + CellPadding * 4; // Double the padding for horizontal because it looks better
+			CellHeight = _charSize.Height + CellHeightPadding * 2;
+			CellWidth  = _charSize.Width * MaxCharactersInHorizontal + CellWidthPadding * 4; // Double the padding for horizontal because it looks better
 		}
 
 		#endregion
