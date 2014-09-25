@@ -732,7 +732,15 @@ namespace BizHawk.Client.EmuHawk
 							continue;
 						}
 
-						Gdi.SetBrush(SystemColors.Highlight);
+						if (CurrentCell.Column.Emphasis)
+						{
+							Gdi.SetBrush(Add(SystemColors.Highlight, 0x00222222));
+						}
+						else
+						{
+							Gdi.SetBrush(SystemColors.Highlight);
+						}
+
 						Gdi.FillRectangle(1, i * CellHeight + 1, ColumnWidth - 1, ColumnHeight - 1);
 					}
 				}
@@ -748,12 +756,29 @@ namespace BizHawk.Client.EmuHawk
 							}
 							int left = _columns[i].Left.Value - HBar.Value;
 							int width = _columns[i].Right.Value - HBar.Value - left;
-							Gdi.SetBrush(SystemColors.Highlight);
+
+							if (CurrentCell.Column.Emphasis)
+							{
+								Gdi.SetBrush(Add(SystemColors.Highlight, 0x00550000));
+							}
+							else
+							{
+								Gdi.SetBrush(SystemColors.Highlight);
+							}
+
 							Gdi.FillRectangle(left + 1, 1, width - 1, ColumnHeight - 1);
 						}
 					}
 				}
 			}
+		}
+
+		// TODO: Make into an extension method
+		private Color Add(Color color, int val)
+		{
+			var col = color.ToArgb();
+			col += val;
+			return Color.FromArgb(col);
 		}
 
 		//TODO refactor this and DoBackGroundCallback functions.
