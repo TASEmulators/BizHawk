@@ -218,6 +218,8 @@ namespace BizHawk.Client.EmuHawk
 			column.Emphasis ^= true;
 
 			Global.StickyXORAdapter.SetSticky(column.Name, column.Emphasis);
+
+			TasView.Refresh();
 		}
 
 		private void TasView_MouseDown(object sender, MouseEventArgs e)
