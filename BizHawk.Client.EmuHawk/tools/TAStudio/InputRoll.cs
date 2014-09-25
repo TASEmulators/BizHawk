@@ -483,7 +483,7 @@ namespace BizHawk.Client.EmuHawk
 
 				var height = DrawHeight - (NeedsHScrollbar ? HBar.Height : 0);
 
-				return (int)height / CellHeight;
+				return ((int)height / CellHeight) - 1; // adelikat: -1 to compensate for what this math should be doing anyway, TODO: figure out why it doesn't work without it?
 			}
 		}
 
