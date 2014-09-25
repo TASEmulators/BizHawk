@@ -329,7 +329,8 @@ namespace BizHawk.Client.EmuHawk
 						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_currentTasMovie[goToFrame].State.ToArray())));
 						Global.Emulator.FrameAdvance(true);
 						GlobalWin.DisplayManager.NeedsToPaint = true;
-						TasView.LastVisibleRow = frame;
+
+						SetVisibleIndex(frame);
 					}
 					else
 					{
