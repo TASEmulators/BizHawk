@@ -74,15 +74,18 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		private void SetVisibleIndex()
+		private void SetVisibleIndex(int? indexThatMustBeVisible = null)
 		{
-			int indexThatMustBeVisible = _currentTasMovie.IsRecording
-				? _currentTasMovie.InputLogLength
-				: Global.Emulator.Frame + 1;
-
-			if (!TasView.IsVisible(indexThatMustBeVisible))
+			if (!indexThatMustBeVisible.HasValue)
 			{
-				TasView.LastVisibleRow = indexThatMustBeVisible;
+				indexThatMustBeVisible = _currentTasMovie.IsRecording
+					? _currentTasMovie.InputLogLength
+					: Global.Emulator.Frame + 1;
+			}
+
+			if (!TasView.IsVisible(indexThatMustBeVisible.Value))
+			{
+				TasView.LastVisibleRow = indexThatMustBeVisible.Value;
 			}
 		}
 	}
