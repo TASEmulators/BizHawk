@@ -148,7 +148,9 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Filename = path
 				};
+
 				movie.PropertyChanged += TasMovie_OnPropertyChanged;
+				movie.Load();
 
 				var file = new FileInfo(path);
 				if (!file.Exists)
@@ -159,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 				WantsToControlStopMovie = false;
 
 				var shouldRecord = false;
-				if (Global.MovieSession.Movie.InputLogLength == 0) // An unusual but possible edge case
+				if (movie.InputLogLength == 0) // An unusual but possible edge case
 				{
 					shouldRecord = true;
 				}
