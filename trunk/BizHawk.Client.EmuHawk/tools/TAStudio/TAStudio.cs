@@ -310,7 +310,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						GlobalWin.DisplayManager.NeedsToPaint = true;
-						TasView.LastVisibleRow = frame;
+						SetVisibleIndex(frame);
 					}
 					else // Get as close as we can then emulate there
 					{
