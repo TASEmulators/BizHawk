@@ -212,6 +212,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void TasView_ColumnRightClick(object sender, ColumnClickEventArgs e)
+		{
+			var column = TasView.Columns[e.Column];
+			column.Emphasis ^= true;
+
+			Global.StickyXORAdapter.SetSticky(column.Name, column.Emphasis);
+		}
+
 		private void TasView_MouseDown(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Middle)

@@ -243,6 +243,12 @@ namespace BizHawk.Client.EmuHawk
 		public event System.Windows.Forms.ColumnClickEventHandler ColumnClick;
 
 		/// <summary>
+		/// Occurs when a column header is right-clicked
+		/// </summary>
+		[Category("Action")]
+		public event System.Windows.Forms.ColumnClickEventHandler ColumnRightClick;
+
+		/// <summary>
 		/// Occurs whenever the 'SelectedItems' property for this control changes
 		/// </summary>
 		[Category("Behavior")]
@@ -703,13 +709,14 @@ namespace BizHawk.Client.EmuHawk
 			// Emphasis
 			foreach (var column in Columns.Where(c => c.Emphasis))
 			{
+				Gdi.SetBrush(SystemColors.ActiveBorder);
 				if (HorizontalOrientation)
 				{
-
+					Gdi.FillRectangle(1, Columns.IndexOf(column) * CellHeight + 1, ColumnWidth - 1, ColumnHeight - 1);
 				}
 				else
 				{
-
+					Gdi.FillRectangle(column.Left.Value + 1, 1, column.Width.Value - 1, ColumnHeight - 1);
 				}
 			}
 
@@ -748,6 +755,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
+
 		//TODO refactor this and DoBackGroundCallback functions.
 		/// <summary>
 		/// Draw Gridlines and background colors using QueryItemBkColor.
@@ -965,7 +973,14 @@ namespace BizHawk.Client.EmuHawk
 
 			if (e.Button == MouseButtons.Right)
 			{
-				RightButtonHeld = true;
+				if (IsHoveringOnColumnCell)
+				{
+					ColumnRightClickEvent(ColumnAtX(e.X));
+				}
+				else
+				{
+					RightButtonHeld = true;
+				}
 			}
 
 			if (e.Button == MouseButtons.Left)
@@ -1133,6 +1148,14 @@ namespace BizHawk.Client.EmuHawk
 			if (ColumnClick != null)
 			{
 				ColumnClick(this, new ColumnClickEventArgs(_columns.IndexOf(column)));
+			}
+		}
+
+		private void ColumnRightClickEvent(RollColumn column)
+		{
+			if (ColumnRightClick != null)
+			{
+				ColumnRightClick(this, new ColumnClickEventArgs(_columns.IndexOf(column)));
 			}
 		}
 
