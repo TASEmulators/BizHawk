@@ -208,9 +208,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (restoreFrame > Global.Emulator.Frame) // Don't unpause if we are already on the desired frame, else runaway seek
 					{
-
-					GlobalWin.MainForm.UnpauseEmulator();
-					GlobalWin.MainForm.PauseOnFrame = restoreFrame;
+						GlobalWin.MainForm.UnpauseEmulator();
+						GlobalWin.MainForm.PauseOnFrame = restoreFrame;
 					}
 				}
 			}

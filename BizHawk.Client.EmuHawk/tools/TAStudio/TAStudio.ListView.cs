@@ -242,7 +242,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
 							GoToLastEmulatedFrameIfNecessary(TasView.CurrentCell.RowIndex.Value);
-							UpdateValues();
+							RefreshDialog();
 
 							_startBoolDrawColumn = buttonName;
 
