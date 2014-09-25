@@ -489,6 +489,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void SetColumnsFromCurrentStickies()
+		{
+			foreach (var column in TasView.Columns)
+			{
+				if (Global.StickyXORAdapter.IsSticky(column.Name))
+				{
+					column.Emphasis = true;
+				}
+			}
+		}
+
 		#region Events
 
 		#region File Menu
@@ -1023,6 +1034,7 @@ namespace BizHawk.Client.EmuHawk
 			EngageTastudio();
 			SetUpColumns();
 			LoadConfigSettings();
+			SetColumnsFromCurrentStickies();
 			RefreshDialog();
 		}
 
