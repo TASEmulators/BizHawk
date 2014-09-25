@@ -481,7 +481,7 @@ namespace BizHawk.Client.EmuHawk
 					return (int)((width - ColumnWidth) / CellWidth);
 				}
 
-				var height = DrawHeight - (NeedsHScrollbar ? HBar.Height : 0);
+				var height = DrawHeight - (NeedsHScrollbar ? HBar.Height : (CellHeight -1));
 
 				return ((int)height / CellHeight) - 1; // adelikat: -1 to compensate for what this math should be doing anyway, TODO: figure out why it doesn't work without it?
 			}
@@ -697,6 +697,19 @@ namespace BizHawk.Client.EmuHawk
 				{
 					int right = TotalColWidth.Value - HBar.Value;
 					Gdi.Line(right, 0, right, bottomEdge);
+				}
+			}
+
+			// Emphasis
+			foreach (var column in Columns.Where(c => c.Emphasis))
+			{
+				if (HorizontalOrientation)
+				{
+
+				}
+				else
+				{
+
 				}
 			}
 
@@ -1741,6 +1754,11 @@ namespace BizHawk.Client.EmuHawk
 			public string Name { get; set; }
 			public string Text { get; set; }
 			public InputType Type { get; set; }
+
+			/// <summary>
+			/// Column will be drawn with an emphasized look, if true
+			/// </summary>
+			public bool Emphasis { get; set; }
 		}
 
 		/// <summary>
