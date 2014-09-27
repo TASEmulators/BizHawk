@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
@@ -581,6 +582,16 @@ namespace BizHawk.Client.Common
 						break;
 				}
 
+				if (Global.CheatList.Contains(Domain, _address))
+				{
+					var cheat = Global.CheatList.FirstOrDefault(c => c.Address == _address && c.Domain == Domain);
+					if (cheat != (Cheat)null)
+					{
+						cheat.PokeValue(val);
+						return true;
+					}
+				}
+
 				PokeByte(val);
 				return true;
 			}
@@ -802,6 +813,16 @@ namespace BizHawk.Client.Common
 						break;
 				}
 
+				if (Global.CheatList.Contains(Domain, _address))
+				{
+					var cheat = Global.CheatList.FirstOrDefault(c => c.Address == _address && c.Domain == Domain);
+					if (cheat != (Cheat)null)
+					{
+						cheat.PokeValue(val);
+						return true;
+					}
+				}
+
 				PokeWord(val);
 				return true;
 			}
@@ -1014,6 +1035,16 @@ namespace BizHawk.Client.Common
 						}
 
 						break;
+				}
+
+				if (Global.CheatList.Contains(Domain, _address))
+				{
+					var cheat = Global.CheatList.FirstOrDefault(c => c.Address == _address && c.Domain == Domain);
+					if (cheat != (Cheat)null)
+					{
+						cheat.PokeValue((int)val);
+						return true;
+					}
 				}
 
 				PokeDWord(val);
