@@ -55,7 +55,7 @@ namespace BizHawk.Client.Common
 			Save();
 		}
 
-		public bool Stop(bool saveChanges = true)
+		public virtual bool Stop(bool saveChanges = true)
 		{
 			bool saved = false;
 			if (saveChanges)
