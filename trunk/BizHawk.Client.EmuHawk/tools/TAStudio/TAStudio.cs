@@ -26,7 +26,6 @@ namespace BizHawk.Client.EmuHawk
 		private int _defaultWidth;
 		private int _defaultHeight;
 		private TasMovie _currentTasMovie;
-		private bool _originalRewindStatus; // The client rewind status before TAStudio was engaged (used to restore when disengaged)
 		private MovieEndAction _originalEndAction; // The movie end behavior selected by the user (that is overridden by TAStudio)
 
 		private Dictionary<string, string> GenerateColumnNames()
@@ -80,10 +79,9 @@ namespace BizHawk.Client.EmuHawk
 			SetTextProperty();
 			GlobalWin.MainForm.PauseEmulator();
 			GlobalWin.MainForm.RelinquishControl(this);
-			_originalRewindStatus = Global.Rewinder.RewindActive;
 			_originalEndAction = Global.Config.MovieEndAction;
 			MarkerControl.Markers = _currentTasMovie.Markers;
-			GlobalWin.MainForm.EnableRewind(false);
+			GlobalWin.MainForm.ClearRewindData();
 			Global.Config.MovieEndAction = MovieEndAction.Record;
 			GlobalWin.MainForm.SetMainformMovieInfo();
 		}
@@ -94,7 +92,6 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddMessage("TAStudio disengaged");
 			Global.MovieSession.Movie = MovieService.DefaultInstance;
 			GlobalWin.MainForm.TakeBackControl();
-			GlobalWin.MainForm.EnableRewind(_originalRewindStatus);
 			Global.Config.MovieEndAction = _originalEndAction;
 			GlobalWin.MainForm.SetMainformMovieInfo();
 		}
