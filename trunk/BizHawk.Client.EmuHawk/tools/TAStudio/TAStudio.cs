@@ -203,13 +203,18 @@ namespace BizHawk.Client.EmuHawk
 					GoToFrame(frame);
 				}
 
-				if (Global.Config.TAStudioAutoRestoreLastPosition)
+				DoAutoRestore(restoreFrame);
+			}
+		}
+
+		private void DoAutoRestore(int restoreFrame)
+		{
+			if (Global.Config.TAStudioAutoRestoreLastPosition)
+			{
+				if (restoreFrame > Global.Emulator.Frame) // Don't unpause if we are already on the desired frame, else runaway seek
 				{
-					if (restoreFrame > Global.Emulator.Frame) // Don't unpause if we are already on the desired frame, else runaway seek
-					{
-						GlobalWin.MainForm.UnpauseEmulator();
-						GlobalWin.MainForm.PauseOnFrame = restoreFrame;
-					}
+					GlobalWin.MainForm.UnpauseEmulator();
+					GlobalWin.MainForm.PauseOnFrame = restoreFrame;
 				}
 			}
 		}
@@ -669,7 +674,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (needsToRollback)
 				{
-					GoToFrame(TasView.FirstSelectedIndex.Value);
+					GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
 				}
 				else
 				{
@@ -688,7 +693,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (needsToRollback)
 				{
-					GoToFrame(TasView.FirstSelectedIndex.Value);
+					GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
 				}
 				else
 				{
@@ -723,7 +728,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (needsToRollback)
 				{
-					GoToFrame(rollBackFrame);
+					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
 				}
 				else
 				{
@@ -746,7 +751,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (needsToRollback)
 				{
-					GoToFrame(rollBackFrame);
+					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
 				}
 				else
 				{
@@ -769,7 +774,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (needsToRollback)
 				{
-					GoToFrame(rollBackFrame);
+					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
 				}
 				else
 				{
@@ -796,7 +801,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (needsToRollback)
 				{
-					GoToFrame(insertionFrame);
+					GoToLastEmulatedFrameIfNecessary(insertionFrame);
 				}
 				else
 				{
@@ -814,7 +819,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (needsToRollback)
 			{
-				GoToFrame(insertionFrame);
+				GoToLastEmulatedFrameIfNecessary(insertionFrame);
 			}
 			else
 			{
@@ -836,7 +841,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (needsToRollback)
 			{
-				GoToFrame(insertionFrame);
+				GoToLastEmulatedFrameIfNecessary(insertionFrame);
 			}
 			else
 			{
