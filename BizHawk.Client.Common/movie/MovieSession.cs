@@ -443,7 +443,11 @@ namespace BizHawk.Client.Common
 				movie.Load();
 				if (movie.SystemID != Global.Emulator.SystemId)
 				{
-					throw new InvalidOperationException("Movie does not match the currently loaded system, unable to load");
+					throw new MoviePlatformMismatchException(
+						string.Format(
+						"Movie system Id ({0}) does not match the currently loaded platform ({1}), unable to load",
+						movie.SystemID,
+						Global.Emulator.SystemId));
 				}
 			}
 
