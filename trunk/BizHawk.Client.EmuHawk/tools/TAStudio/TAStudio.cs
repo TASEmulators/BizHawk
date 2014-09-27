@@ -282,11 +282,22 @@ namespace BizHawk.Client.EmuHawk
 			var closestState = _currentTasMovie.GetStateClosestToFrame(frame);
 			if (closestState != null)
 			{
-				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(closestState.ToArray())));
+				LoadState(closestState.ToArray());
+				
 			}
 
 			GlobalWin.MainForm.PauseOnFrame = frame;
 			GlobalWin.MainForm.UnpauseEmulator();
+		}
+
+		private void LoadState(byte[] state)
+		{
+			Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(state)));
+
+			_hackyDontUpdate = true;
+			GlobalWin.Tools.UpdateBefore();
+			GlobalWin.Tools.UpdateAfter();
+			_hackyDontUpdate = false;
 		}
 
 		private void GoToFrame(int frame)
@@ -306,7 +317,7 @@ namespace BizHawk.Client.EmuHawk
 					if (_currentTasMovie[goToFrame].HasState) // Go back 1 frame and emulate to get the display (we don't store that)
 					{
 						_currentTasMovie.SwitchToPlay();
-						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_currentTasMovie[goToFrame].State.ToArray())));
+						LoadState(_currentTasMovie[goToFrame].State.ToArray());
 
 						if (frame > 0) // We can't emulate up to frame 0!
 						{
@@ -356,7 +367,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (_currentTasMovie.LastEmulatedFrame > 0 && shouldLoadstate)
 				{
-					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_currentTasMovie[_currentTasMovie.LastEmulatedFrame].State.ToArray())));
+					LoadState(_currentTasMovie[_currentTasMovie.LastEmulatedFrame].State.ToArray());
 				}
 
 				GlobalWin.MainForm.UnpauseEmulator();

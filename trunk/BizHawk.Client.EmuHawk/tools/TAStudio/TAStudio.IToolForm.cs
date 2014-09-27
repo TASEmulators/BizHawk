@@ -7,9 +7,16 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public bool UpdateBefore { get { return false; } }
 
+		private bool _hackyDontUpdate = false;
+
 		public void UpdateValues()
 		{
 			if (!IsHandleCreated || IsDisposed || _currentTasMovie == null)
+			{
+				return;
+			}
+
+			if (_hackyDontUpdate)
 			{
 				return;
 			}
