@@ -195,8 +195,8 @@ namespace BizHawk.Client.Common
 
 			if (Movie.IsActive)
 			{
-				Movie.Stop(saveChanges);
-				if (saveChanges)
+				var result = Movie.Stop(saveChanges);
+				if (result)
 				{
 					Output(Path.GetFileName(Movie.Filename) + " written to disk.");
 				}
