@@ -306,13 +306,23 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Global.Config.RecentMovies.AutoLoad && !Global.Config.RecentMovies.Empty)
 			{
-				if (Global.Game == null)
+				if (Global.Game.IsNullInstance)
 				{
 					OpenRom();
 				}
-				else
+
+				// If user picked a game, then do the autoload logic
+				if (!Global.Game.IsNullInstance)
 				{
-					StartNewMovie(MovieService.Get(Global.Config.RecentMovies.MostRecent), false);
+
+					if (File.Exists(Global.Config.RecentMovies.MostRecent))
+					{
+						StartNewMovie(MovieService.Get(Global.Config.RecentMovies.MostRecent), false);
+					}
+					else
+					{
+						Global.Config.RecentMovies.HandleLoadError(Global.Config.RecentMovies.MostRecent);
+					}
 				}
 			}
 
