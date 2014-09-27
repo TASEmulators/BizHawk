@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
@@ -14,7 +15,15 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public void StartNewMovie(IMovie movie, bool record)
 		{
-			Global.MovieSession.QueueNewMovie(movie, record);
+			try
+			{
+				Global.MovieSession.QueueNewMovie(movie, record);
+			}
+			catch (MoviePlatformMismatchException ex)
+			{
+				MessageBox.Show(this, ex.Message, "Movie/Platform Mismatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
 
 			LoadRom(GlobalWin.MainForm.CurrentlyOpenRom);
 
