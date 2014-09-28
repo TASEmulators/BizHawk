@@ -137,7 +137,7 @@ namespace BizHawk.Client.EmuHawk
 			Text = text;
 		}
 
-		public void LoadProject(string path)
+		public bool LoadProject(string path)
 		{
 			if (AskSaveChanges())
 			{
@@ -163,13 +163,21 @@ namespace BizHawk.Client.EmuHawk
 					shouldRecord = true;
 				}
 
-				GlobalWin.MainForm.StartNewMovie(movie, record: shouldRecord);
+				var result = GlobalWin.MainForm.StartNewMovie(movie, record: shouldRecord);
+				if (!result)
+				{
+					return false;
+				}
+
 				WantsToControlStopMovie = true;
 				_currentTasMovie = Global.MovieSession.Movie as TasMovie;
 				Global.Config.RecentTas.Add(path);
 				Text = "TAStudio - " + _currentTasMovie.Name;
 				RefreshDialog();
+				return true;
 			}
+
+			return false;
 		}
 
 		public void RefreshDialog()
@@ -528,7 +536,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentSubMenu.DropDownItems.Clear();
 			RecentSubMenu.DropDownItems.AddRange(
-				Global.Config.RecentTas.RecentMenu(LoadProject));
+				Global.Config.RecentTas.RecentMenu(DummyLoadProject));
+		}
+
+		private void DummyLoadProject(string path)
+		{
+			LoadProject(path);
 		}
 
 		private void NewTasMenuItem_Click(object sender, EventArgs e)
@@ -1032,16 +1045,17 @@ namespace BizHawk.Client.EmuHawk
 			// Start Scenario 3: No movie, but user wants to autload their last project
 			else if (Global.Config.AutoloadTAStudioProject && !string.IsNullOrEmpty(Global.Config.RecentTas.MostRecent))
 			{
-				LoadProject(Global.Config.RecentTas.MostRecent);
+				var result = LoadProject(Global.Config.RecentTas.MostRecent);
+				if (!result)
+				{
+					Scenario4();
+				}
 			}
 
 			// Start Scenario 4: No movie, default behavior of engaging tastudio with a new default project
 			else
 			{
-				NewTasMovie();
-				GlobalWin.MainForm.StartNewMovie(_currentTasMovie, record: true);
-				_currentTasMovie.CaptureCurrentState();
-				_currentTasMovie.SwitchToRecord();
+				Scenario4();
 			}
 
 			EngageTastudio();
@@ -1049,6 +1063,14 @@ namespace BizHawk.Client.EmuHawk
 			LoadConfigSettings();
 			SetColumnsFromCurrentStickies();
 			RefreshDialog();
+		}
+
+		private void Scenario4()
+		{
+			NewTasMovie();
+			GlobalWin.MainForm.StartNewMovie(_currentTasMovie, record: true);
+			_currentTasMovie.CaptureCurrentState();
+			_currentTasMovie.SwitchToRecord();
 		}
 
 		private void Tastudio_Closing(object sender, FormClosingEventArgs e)
