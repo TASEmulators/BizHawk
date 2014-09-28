@@ -29,8 +29,8 @@ namespace BizHawk.Client.EmuHawk
 			{ WatchList.NOTES, 128 },
 		};
 
-		private readonly WatchList _watches;
-		private readonly IMemoryDomains Core;
+		private WatchList _watches;
+		private IMemoryDomains _core;
 
 
 		private int _defaultWidth;
@@ -41,8 +41,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public RamWatch()
 		{
-			Core = (IMemoryDomains)Global.Emulator; // Cast is intentional, better to get a cast exception than a null reference exception later
-			_watches = new WatchList(Core, Core.MemoryDomains.MainMemory);
+			_core = (IMemoryDomains)Global.Emulator; // Cast is intentional, better to get a cast exception than a null reference exception later
+			_watches = new WatchList(_core, _core.MemoryDomains.MainMemory);
 			InitializeComponent();
 			WatchListView.QueryItemText += WatchListView_QueryItemText;
 			WatchListView.QueryItemBkColor += WatchListView_QueryItemBkColor;
@@ -200,13 +200,17 @@ namespace BizHawk.Client.EmuHawk
 				Close();
 			}
 
+			_core = (IMemoryDomains)Global.Emulator; // Cast is intentional, better to get a cast exception than a null reference exception later
+
 			if (!string.IsNullOrWhiteSpace(_watches.CurrentFileName))
 			{
 				_watches.Reload();
 				UpdateStatusBar();
+				_watches.RefreshDomans(_core, _core.MemoryDomains.MainMemory);
 			}
 			else
 			{
+				_watches = new WatchList(_core, _core.MemoryDomains.MainMemory);
 				NewWatchList(true);
 			}
 		}
@@ -568,7 +572,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetMemoryDomain(string name)
 		{
-			_watches.Domain = Core.MemoryDomains[name];
+			_watches.Domain = _core.MemoryDomains[name];
 			SetPlatformAndMemoryDomainLabel();
 			Update();
 		}
@@ -749,7 +753,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			MemoryDomainsSubMenu.DropDownItems.Clear();
 			MemoryDomainsSubMenu.DropDownItems.AddRange(
-				Core.MemoryDomains.MenuItems(SetMemoryDomain, _watches.Domain.Name)
+				_core.MemoryDomains.MenuItems(SetMemoryDomain, _watches.Domain.Name)
 				.ToArray());
 		}
 
