@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool _dropdownDontfire; // Used as a hack to get around lame .net dropdowns, there's no way to set their index without firing the selectedindexchanged event!
 
-		private readonly IMemoryDomains Core;
+		private IMemoryDomains _core;
 
 		public const int MaxDetailedSize = 1024 * 1024; // 1mb, semi-arbituary decision, sets the size to check for and automatically switch to fast mode for the user
 		public const int MaxSupportedSize = 1024 * 1024 * 64; // 64mb, semi-arbituary decision, sets the maximum size ram search will support (as it will crash beyond this)
@@ -69,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public RamSearch()
 		{
-			Core = (IMemoryDomains)Global.Emulator; // Cast is intentional, better to get a cast exception than a more amibious null reference exception later
+			_core = (IMemoryDomains)Global.Emulator; // Cast is intentional, better to get a cast exception than a more amibious null reference exception later
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			_sortedColumn = string.Empty;
 			_sortReverse = false;
 
-			_settings = new RamSearchEngine.Settings(Core);
+			_settings = new RamSearchEngine.Settings(_core);
 			_searches = new RamSearchEngine(_settings);
 
 			TopMost = Global.Config.RamSearchSettings.TopMost;
@@ -124,7 +124,7 @@ namespace BizHawk.Client.EmuHawk
 			SpecificValueBox.Type = _settings.Type;
 
 			MessageLabel.Text = string.Empty;
-			SpecificAddressBox.MaxLength = (Core.MemoryDomains.MainMemory.Size - 1).NumHexDigits();
+			SpecificAddressBox.MaxLength = (_core.MemoryDomains.MainMemory.Size - 1).NumHexDigits();
 			HardSetSizeDropDown(_settings.Size);
 			PopulateTypeDropDown();
 			HardSetDisplayTypeDropDown(_settings.Type);
@@ -294,7 +294,8 @@ namespace BizHawk.Client.EmuHawk
 				Close();
 			}
 
-			_settings.Domain = Core.MemoryDomains.MainMemory;
+			_core = (IMemoryDomains)Global.Emulator; // Cast is intentional, better to get a cast exception than a more amibious null reference exception later
+			_settings.Domain = _core.MemoryDomains.MainMemory;
 			MessageLabel.Text = "Search restarted";
 			DoDomainSizeCheck();
 			NewSearch();
@@ -587,7 +588,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetMemoryDomain(string name)
 		{
-			_settings.Domain = Core.MemoryDomains[name];
+			_settings.Domain = _core.MemoryDomains[name];
 			SetReboot(true);
 			SpecificAddressBox.MaxLength = (_settings.Domain.Size - 1).NumHexDigits();
 			DoDomainSizeCheck();
@@ -844,7 +845,7 @@ namespace BizHawk.Client.EmuHawk
 					_currentFileName = file.FullName;
 				}
 
-				var watches = new WatchList(Core, _settings.Domain);
+				var watches = new WatchList(_core, _settings.Domain);
 				watches.Load(file.FullName, append);
 
 				var watchList = watches.Where(x => !x.IsSeparator);
@@ -1000,7 +1001,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!string.IsNullOrWhiteSpace(_currentFileName))
 			{
-				var watches = new WatchList(Core, _settings.Domain) { CurrentFileName = _currentFileName };
+				var watches = new WatchList(_core, _settings.Domain) { CurrentFileName = _currentFileName };
 				for (var i = 0; i < _searches.Count; i++)
 				{
 					watches.Add(_searches[i]);
@@ -1028,7 +1029,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveAsMenuItem_Click(object sender, EventArgs e)
 		{
-			var watches = new WatchList(Core, _settings.Domain) { CurrentFileName = _currentFileName };
+			var watches = new WatchList(_core, _settings.Domain) { CurrentFileName = _currentFileName };
 			for (var i = 0; i < _searches.Count; i++)
 			{
 				watches.Add(_searches[i]);
@@ -1067,7 +1068,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			MemoryDomainsSubMenu.DropDownItems.Clear();
 			MemoryDomainsSubMenu.DropDownItems.AddRange(
-				Core.MemoryDomains.MenuItems(SetMemoryDomain, _searches.Domain.Name, MaxSupportedSize)
+				_core.MemoryDomains.MenuItems(SetMemoryDomain, _searches.Domain.Name, MaxSupportedSize)
 				.ToArray());
 		}
 
@@ -1381,7 +1382,7 @@ namespace BizHawk.Client.EmuHawk
 					{ "DiffColumn", -1 },
 				};
 
-			_settings = new RamSearchEngine.Settings(Core);
+			_settings = new RamSearchEngine.Settings(_core);
 			if (_settings.Mode == RamSearchEngine.Settings.SearchMode.Fast)
 			{
 				SetToFastMode();
