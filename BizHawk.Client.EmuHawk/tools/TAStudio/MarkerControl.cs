@@ -13,8 +13,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MarkerControl : UserControl
 	{
-		public TasMovieMarkerList Markers {get; set; }
-
 		public TAStudio Tastudio { get; set; }
 
 		public MarkerControl()
@@ -48,9 +46,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MarkerView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			var prev = Markers.PreviousOrCurrent(Global.Emulator.Frame);
+			var prev = Tastudio.CurrentMovie.Markers.PreviousOrCurrent(Global.Emulator.Frame);
 
-			if (prev != null && index == Markers.IndexOf(prev))
+			if (prev != null && index == Tastudio.CurrentMovie.Markers.IndexOf(prev))
 			{
 				color = TAStudio.Marker_FrameCol;
 			}
@@ -82,11 +80,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (column == 0)
 			{
-				text = Markers[index].Frame.ToString();
+				text = Tastudio.CurrentMovie.Markers[index].Frame.ToString();
 			}
 			else if (column == 1)
 			{
-				text = Markers[index].Message;
+				text = Tastudio.CurrentMovie.Markers[index].Message;
 			}
 		}
 
@@ -98,9 +96,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			if (MarkerView != null && Markers != null)
+			if (MarkerView != null &&
+				Tastudio != null &&
+				Tastudio.CurrentMovie != null &&
+				Tastudio.CurrentMovie.Markers != null)
 			{
-				MarkerView.RowCount = Markers.Count;
+				MarkerView.RowCount = Tastudio.CurrentMovie.Markers.Count;
 			}
 
 			MarkerView.Refresh();
@@ -108,12 +109,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MarkerView_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			RemoveBtn.Enabled = SelectedIndices.Any(i => i < Markers.Count);
+			RemoveBtn.Enabled = SelectedIndices.Any(i => i < Tastudio.CurrentMovie.Markers.Count);
 		}
 
 		private void RemoveBtn_Click(object sender, EventArgs e)
 		{
-			SelectedMarkers.ForEach(i => Markers.Remove(i));
+			SelectedMarkers.ForEach(i => Tastudio.CurrentMovie.Markers.Remove(i));
 			Tastudio.RefreshDialog();
 			MarkerView_SelectedIndexChanged(sender, e);
 		}
@@ -132,7 +133,7 @@ namespace BizHawk.Client.EmuHawk
 			get
 			{
 				return SelectedIndices
-					.Select(index => Markers[index])
+					.Select(index => Tastudio.CurrentMovie.Markers[index])
 					.ToList();
 			}
 		}
