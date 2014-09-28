@@ -1228,10 +1228,11 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="newCell"></param>
 		private void CellChanged(Cell newCell)
 		{
+			LastCell = CurrentCell;
+			CurrentCell = newCell;
+
 			if (PointedCellChanged != null && newCell != CurrentCell)
 			{
-				LastCell = CurrentCell;
-				CurrentCell = newCell;
 				PointedCellChanged(this, new CellEventArgs(LastCell, CurrentCell));
 			}
 		}
