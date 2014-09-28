@@ -754,7 +754,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.MarkerControl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.MarkerControl.Location = new System.Drawing.Point(302, 129);
-			this.MarkerControl.Markers = null;
 			this.MarkerControl.Name = "MarkerControl";
 			this.MarkerControl.Size = new System.Drawing.Size(204, 215);
 			this.MarkerControl.TabIndex = 6;

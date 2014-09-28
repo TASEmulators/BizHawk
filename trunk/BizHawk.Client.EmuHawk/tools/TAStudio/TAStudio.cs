@@ -80,7 +80,6 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm.PauseEmulator();
 			GlobalWin.MainForm.RelinquishControl(this);
 			_originalEndAction = Global.Config.MovieEndAction;
-			MarkerControl.Markers = _currentTasMovie.Markers;
 			GlobalWin.MainForm.ClearRewindData();
 			Global.Config.MovieEndAction = MovieEndAction.Record;
 			GlobalWin.MainForm.SetMainformMovieInfo();
