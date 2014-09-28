@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 {
 	public class WatchList : IList<Watch>
 	{
-		private readonly IMemoryDomains Core;
+		private IMemoryDomains _core;
 		private List<Watch> _watchList = new List<Watch>();
 		private MemoryDomain _domain;
 		private string _currentFilename = string.Empty;
@@ -27,8 +27,19 @@ namespace BizHawk.Client.Common
 
 		public WatchList(IMemoryDomains core, MemoryDomain domain)
 		{
-			Core = core;
+			_core = core;
 			_domain = domain;
+		}
+
+		public void RefreshDomans(IMemoryDomains core, MemoryDomain domain)
+		{
+			_core = core;
+			_domain = domain;
+
+			_watchList.ForEach(w =>
+			{
+				w.Domain = _core.MemoryDomains[w.Domain.Name];
+			});
 		}
 		
 		public enum WatchPrevDef { LastSearch, Original, LastFrame, LastChange }
@@ -473,7 +484,7 @@ namespace BizHawk.Client.Common
 
 					// Temporary, rename if kept
 					int addr;
-					var memDomain = Core.MemoryDomains.MainMemory;
+					var memDomain = _core.MemoryDomains.MainMemory;
 
 					var temp = line.Substring(0, line.IndexOf('\t'));
 					try
@@ -511,7 +522,7 @@ namespace BizHawk.Client.Common
 						startIndex = line.IndexOf('\t') + 1;
 						line = line.Substring(startIndex, line.Length - startIndex);   // Domain
 						temp = line.Substring(0, line.IndexOf('\t'));
-						memDomain = Core.MemoryDomains[temp] ?? Core.MemoryDomains.MainMemory;
+						memDomain = _core.MemoryDomains[temp] ?? _core.MemoryDomains.MainMemory;
 					}
 
 					startIndex = line.IndexOf('\t') + 1;
@@ -525,10 +536,10 @@ namespace BizHawk.Client.Common
 							type,
 							notes,
 							bigEndian));
-					_domain = Core.MemoryDomains[domain];
+					_domain = _core.MemoryDomains[domain];
 				}
 
-				Domain = Core.MemoryDomains[domain] ?? Core.MemoryDomains.MainMemory;
+				Domain = _core.MemoryDomains[domain] ?? _core.MemoryDomains.MainMemory;
 				_currentFilename = path;
 			}
 

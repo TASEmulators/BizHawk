@@ -64,9 +64,9 @@ namespace BizHawk.Client.Common
 		public virtual DisplayType Type { get { return _type; } set { _type = value; } }
 		public virtual bool BigEndian { get { return _bigEndian; } set { _bigEndian = value; } }
 
-		public MemoryDomain Domain { get { return _domain; } }
+		public MemoryDomain Domain { get { return _domain; } set { _domain = value; } }
 
-		public string DomainName { get { return _domain != null ? _domain.Name : String.Empty; } }
+		public string DomainName { get { return _domain != null ? _domain.Name : string.Empty; } }
 
 		public virtual int? Address { get { return _address; } }
 
