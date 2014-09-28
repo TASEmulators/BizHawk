@@ -377,14 +377,17 @@ namespace BizHawk.Client.EmuHawk
 					LoadState(_currentTasMovie[_currentTasMovie.LastEmulatedFrame].State.ToArray());
 				}
 
-				GlobalWin.MainForm.UnpauseEmulator();
-				if (Global.Config.TAStudioAutoPause && frame < _currentTasMovie.InputLogLength)
+				if (frame != Global.Emulator.Frame) // If we aren't already at our destination, seek
 				{
-					GlobalWin.MainForm.PauseOnFrame = _currentTasMovie.InputLogLength;
-				}
-				else
-				{
-					GlobalWin.MainForm.PauseOnFrame = frame;
+					GlobalWin.MainForm.UnpauseEmulator();
+					if (Global.Config.TAStudioAutoPause && frame < _currentTasMovie.InputLogLength)
+					{
+						GlobalWin.MainForm.PauseOnFrame = _currentTasMovie.InputLogLength;
+					}
+					else
+					{
+						GlobalWin.MainForm.PauseOnFrame = frame;
+					}
 				}
 			}
 
