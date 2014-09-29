@@ -57,6 +57,31 @@ void C65C02::GetRegs(C6502_REGS &regs)
 	regs.IRQ=mSystem.gSystemIRQ;
 }
 
+SYNCFUNC(C65C02)
+{
+	NSS(mA);
+	NSS(mX);
+	NSS(mY);
+	NSS(mSP);
+	NSS(mOpcode);
+	NSS(mOperand);
+	NSS(mPC);
+
+	NSS(mN);
+	NSS(mV);
+	NSS(mB);
+	NSS(mD);
+	NSS(mI);
+	NSS(mZ);
+	NSS(mC);
+
+	NSS(mIRQActive);
+
+	// don't need to save these:
+	// mRamPointer
+	// mBCDTable
+}
+
 
 void C65C02::Update(void)
 {

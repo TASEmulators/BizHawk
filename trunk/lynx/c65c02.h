@@ -161,6 +161,8 @@ public:
 
 	inline int GetPC() { return mPC; }
 
+	template<bool isReader>void SyncState(NewState *ns);
+
 private:
 	CSystem	&mSystem;
 

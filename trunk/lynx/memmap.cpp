@@ -186,4 +186,18 @@ INLINE uint8 CMemMap::Peek(uint32 addr)
 	return retval;
 }
 
-//END OF FILE
+SYNCFUNC(CMemMap)
+{
+	NSS(mMikieEnabled);
+	NSS(mSusieEnabled);
+	NSS(mRomEnabled);
+	NSS(mVectorsEnabled);
+
+	if (isReader)
+	{
+		// force regenerate memory handlers
+		uint8 current = Peek(0);
+		Poke(0, ~current);
+		Poke(0, current);
+	}
+}

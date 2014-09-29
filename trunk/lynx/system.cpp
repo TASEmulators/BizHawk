@@ -188,6 +188,28 @@ bool CSystem::Advance(int buttons, uint32 *vbuff, int16 *sbuff, int &sbuffsize)
 	return mSusie->lagged;
 }
 
+SYNCFUNC(CSystem)
+{
+	// mMemMap regenerates the mMemoryHandlers directly on load
+
+	TSS(mCart);
+	TSS(mRom);
+	TSS(mMemMap);
+	TSS(mRam);
+	TSS(mCpu);
+	TSS(mMikie);
+	TSS(mSusie);
+
+	NSS(gSuzieDoneTime);
+	NSS(gSystemCycleCount);
+	NSS(gNextTimerEvent);
+	NSS(gSystemIRQ);
+	NSS(gSystemNMI);
+	NSS(gSystemCPUSleep);
+	NSS(gSystemHalt);
+	NSS(frameoverflow);
+}
+
 
 /*
 static MDFNSetting LynxSettings[] =

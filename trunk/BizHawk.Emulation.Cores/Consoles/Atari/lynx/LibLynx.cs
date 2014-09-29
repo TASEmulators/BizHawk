@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Emulation.Common;
 using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Atari.Lynx
@@ -26,6 +27,18 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		[DllImport(dllname, CallingConvention = cc)]
 		public static extern bool GetSaveRamPtr(IntPtr s, out int size, out IntPtr data);
+
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern int BinStateSize(IntPtr s);
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern bool BinStateSave(IntPtr s, byte[] data, int length);
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern bool BinStateLoad(IntPtr s, byte[] data, int length);
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern void TxtStateSave(IntPtr s, [In]ref TextStateFPtrs ff);
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern void TxtStateLoad(IntPtr s, [In]ref TextStateFPtrs ff);
+
 
 		[Flags]
 		public enum Buttons : ushort

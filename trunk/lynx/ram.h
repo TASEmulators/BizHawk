@@ -79,6 +79,8 @@ public:
 	uint32   ObjectSize(void) {return RAM_SIZE;};
 	uint8*	GetRamPointer(void) { return mRamData; };
 
+	template<bool isReader>void SyncState(NewState *ns);
+
 	// Data members
 
 private:

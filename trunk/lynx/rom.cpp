@@ -47,7 +47,7 @@
 
 CRom::CRom(const uint8 *romfile, uint32 length)
 {
-	mWriteEnable=FALSE;
+	//mWriteEnable = false;
 	Reset();
 
 	std::memset(mRomData, DEFAULT_ROM_CONTENTS, ROM_SIZE);
@@ -57,4 +57,10 @@ CRom::CRom(const uint8 *romfile, uint32 length)
 
 void CRom::Reset(void)
 {
+}
+
+SYNCFUNC(CRom)
+{
+	//NSS(mWriteEnable);
+	//NSS(mRomData);
 }
