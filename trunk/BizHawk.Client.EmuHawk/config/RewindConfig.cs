@@ -68,6 +68,21 @@ namespace BizHawk.Client.EmuHawk
 			rbStatesDefault.Checked = Global.Config.SaveStateType == Config.SaveStateTypeE.Default;
 			rbStatesBinary.Checked = Global.Config.SaveStateType == Config.SaveStateTypeE.Binary;
 			rbStatesText.Checked = Global.Config.SaveStateType == Config.SaveStateTypeE.Text;
+
+			BackupSavestatesCheckbox.Checked = Global.Config.BackupSavestates;
+			ScreenshotInStatesCheckbox.Checked = Global.Config.SaveScreenshotWithStates;
+			SaveLargeScreenshotsCheckbox.Checked = Global.Config.SaveLargeScreenshotWithStates;
+			BigScreenshotNumeric.Value = Global.Config.BigScreenshotSize / 1024;
+
+			ScreenshotInStatesCheckbox_CheckedChanged(null, null);
+		}
+
+		private void ScreenshotInStatesCheckbox_CheckedChanged(object sender, EventArgs e)
+		{
+			SaveLargeScreenshotsCheckbox.Enabled =
+				BigScreenshotNumeric.Enabled =
+				KbLabel.Enabled =
+				ScreenshotInStatesCheckbox.Checked;
 		}
 
 		private void SetStateSize()
@@ -149,6 +164,11 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.MainForm.FlagNeedsReboot();
 				Global.Config.Rewind_IsThreaded = RewindIsThreadedCheckbox.Checked;
 			}
+
+			Global.Config.BackupSavestates = BackupSavestatesCheckbox.Checked;
+			Global.Config.SaveScreenshotWithStates = ScreenshotInStatesCheckbox.Checked;
+			Global.Config.SaveLargeScreenshotWithStates = SaveLargeScreenshotsCheckbox.Checked;
+			Global.Config.BigScreenshotSize = (int)(BigScreenshotNumeric.Value * 1024);
 
 			Close();
 		}
