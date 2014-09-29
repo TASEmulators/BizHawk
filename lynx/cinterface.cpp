@@ -32,9 +32,9 @@ EXPORT void Reset(CSystem *s)
 	s->Reset();
 }
 
-EXPORT void Advance(CSystem *s, int buttons, uint32 *vbuff, int16 *sbuff, int *sbuffsize)
+EXPORT int Advance(CSystem *s, int buttons, uint32 *vbuff, int16 *sbuff, int *sbuffsize)
 {
-	s->Advance(buttons, vbuff, sbuff, *sbuffsize);
+	return s->Advance(buttons, vbuff, sbuff, *sbuffsize);
 }
 
 EXPORT int GetSaveRamPtr(CSystem *s, int *size, uint8 **data)

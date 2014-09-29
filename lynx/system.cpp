@@ -153,12 +153,13 @@ static int Load(MDFNFILE *fp)
 }
 */
 
-void CSystem::Advance(int buttons, uint32 *vbuff, int16 *sbuff, int &sbuffsize)
+bool CSystem::Advance(int buttons, uint32 *vbuff, int16 *sbuff, int &sbuffsize)
 {
 	// this check needs to occur at least once every 250 million cycles or better
 	mMikie->CheckWrap();
 
 	SetButtonData(buttons);
+	mSusie->lagged = true;
 
 	uint32 start = gSystemCycleCount;
 
@@ -183,6 +184,8 @@ void CSystem::Advance(int buttons, uint32 *vbuff, int16 *sbuff, int &sbuffsize)
 
 	mMikie->mikbuf.end_frame((gSystemCycleCount - start) >> 2);
 	sbuffsize = mMikie->mikbuf.read_samples(sbuff, sbuffsize);
+
+	return mSusie->lagged;
 }
 
 
