@@ -1262,6 +1262,7 @@ namespace BizHawk.Client.Common
 					hf.Unbind();
 				}
 			}
+
 			m.Header[HeaderKeys.PLATFORM] = platform;
 			return m;
 		}
@@ -1305,7 +1306,7 @@ namespace BizHawk.Client.Common
 			// 074 5-byte	 Console indicator (pce, ngp, pcfx, wswan)
 			string platform = NullTerminated(r.ReadStringFixedAscii(5));
 			Dictionary<string, Dictionary<string, object>> platforms = new Dictionary<string, Dictionary<string, object>>
-				{
+			{
 				{
 					/*
 					 Normally, NES receives from 5 input ports, where the first 4 have a length of 1 byte, and the last has
@@ -1324,6 +1325,13 @@ namespace BizHawk.Client.Common
 						{"name", "PC Engine"}, {"ports", 5}, {"bytesPerPort", 2},
 						{"buttons", new[] { "B1", "B2", "Select", "Run", "Up", "Right", "Down", "Left" }}
 					}
+				},
+				{
+					"lynx", new Dictionary<string, object>
+					{
+						{ "name", "Lynx" }, { "ports", 2 }, { "bytesPerPort", 1 },
+						{ "buttons", new[] { "A", "B", "Up", "Down", "Left", "Right" }}
+					}
 				}
 			};
 			if (!platforms.ContainsKey(platform))
@@ -1334,7 +1342,10 @@ namespace BizHawk.Client.Common
 				return null;
 			}
 			string name = (string)platforms[platform]["name"];
-			m.Header[HeaderKeys.PLATFORM] = name;
+
+			string systemID = name.ToUpper(); // Hack
+
+			m.Header[HeaderKeys.PLATFORM] = systemID;
 			// 079 32-byte	Author name
 			string author = NullTerminated(r.ReadStringFixedAscii(32));
 			m.Header[HeaderKeys.AUTHOR] = author;
@@ -1369,7 +1380,8 @@ namespace BizHawk.Client.Common
 					ushort controllerState = r.ReadByte();
 					for (int button = 0; button < buttons.Length; button++)
 					{
-						controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 0x1) != 0);
+						string prefix = platform == "lynx" ? "" : ("P" + player + " "); // hack
+						controllers[prefix + buttons[button]] = (((controllerState >> button) & 0x1) != 0);
 					}
 				}
 				r.ReadByte();
