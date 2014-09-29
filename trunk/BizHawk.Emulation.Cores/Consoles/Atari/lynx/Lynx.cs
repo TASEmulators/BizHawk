@@ -219,7 +219,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			writer.WriteLine();
 			writer.WriteLine("Frame {0}", Frame);
 
-			Console.WriteLine(BizHawk.Common.BufferExtensions.BufferExtensions.HashSHA1(SaveStateBinary()));
+			//Console.WriteLine(BizHawk.Common.BufferExtensions.BufferExtensions.HashSHA1(SaveStateBinary()));
 		}
 
 		public void LoadStateText(TextReader reader)
