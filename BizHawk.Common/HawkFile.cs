@@ -54,7 +54,8 @@ namespace BizHawk.Common
 		public static IHawkFileArchiveHandler ArchiveHandlerFactory { get; set; }
 
 		/// <summary>
-		/// Gets a value indicating whether a bound file exists. if there is no bound file, it can't exist
+		/// Gets a value indicating whether a bound file exists. if there is no bound file, it can't exist.
+		/// NOTE: this isn't set until the file is Opened. Not too great...
 		/// </summary>
 		public bool Exists { get { return _exists; } }
 
@@ -82,6 +83,11 @@ namespace BizHawk.Common
 		/// returns the virtual name of the bound file (disregarding the archive)
 		/// </summary>
 		public string Name { get { return GetBoundNameFromCanonical(MakeCanonicalName(_rootPath, _memberPath)); } }
+
+		/// <summary>
+		/// returns the complete full path of the bound file, excluding the archive member portion
+		/// </summary>
+		public string FullPathWithoutMember { get { return _rootPath; } }
 
 		/// <summary>
 		/// returns the extension of Name
