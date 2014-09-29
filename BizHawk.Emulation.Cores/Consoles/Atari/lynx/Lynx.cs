@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Runtime.InteropServices;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -218,22 +219,38 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		public byte[] CloneSaveRam()
 		{
-			return new byte[0];
+			int size;
+			IntPtr data;
+			if (!LibLynx.GetSaveRamPtr(Core, out size, out data))
+				return null;
+			byte[] ret = new byte[size];
+			Marshal.Copy(data, ret, 0, size);
+			return ret;
 		}
 
-		public void StoreSaveRam(byte[] data)
+		public void StoreSaveRam(byte[] srcdata)
 		{
+			int size;
+			IntPtr data;
+			if (!LibLynx.GetSaveRamPtr(Core, out size, out data))
+				throw new InvalidOperationException();
+			if (size != srcdata.Length)
+				throw new ArgumentOutOfRangeException();
+			Marshal.Copy(srcdata, 0, data, size);
 		}
 
 		public void ClearSaveRam()
 		{
+			throw new NotImplementedException();
 		}
 
 		public bool SaveRamModified
 		{
 			get
 			{
-				return false;
+				int unused;
+				IntPtr unused2;
+				return LibLynx.GetSaveRamPtr(Core, out unused, out unused2);
 			}
 			set
 			{

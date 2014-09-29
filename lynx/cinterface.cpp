@@ -36,3 +36,8 @@ EXPORT void Advance(CSystem *s, int buttons, uint32 *vbuff, int16 *sbuff, int *s
 {
 	s->Advance(buttons, vbuff, sbuff, *sbuffsize);
 }
+
+EXPORT int GetSaveRamPtr(CSystem *s, int *size, uint8 **data)
+{
+	return s->GetSaveRamPtr(*size, *data);
+}

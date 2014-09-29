@@ -140,6 +140,7 @@ public:
 	}
 
 	void Advance(int buttons, uint32 *vbuff, int16 *sbuff, int &sbuffsize);
+	bool GetSaveRamPtr(int &size, uint8 *&data) { return mCart->GetSaveRamPtr(size, data); }
 
 	//
 	// We MUST have separate CPU & RAM peek & poke handlers as all CPU accesses must
@@ -211,7 +212,7 @@ public:
 	uint32			gSystemIRQ;
 	uint32			gSystemNMI;
 	uint32			gSystemCPUSleep;
-	uint32			gSystemHalt;
+	uint32			gSystemHalt; // this is set in various places, but never tested, anywhere?
 
 	// frame overflow detection
 	int frameoverflow;

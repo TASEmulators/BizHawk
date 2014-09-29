@@ -163,6 +163,7 @@ enum
 	MIKIE_ROTATE_R
 };
 
+/*
 enum
 {
 	MIKIE_PIXEL_FORMAT_8BPP=0,
@@ -171,6 +172,7 @@ enum
 	MIKIE_PIXEL_FORMAT_24BPP,
 	MIKIE_PIXEL_FORMAT_32BPP,
 };
+*/
 
 #include "sound/Stereo_Buffer.h"
 
