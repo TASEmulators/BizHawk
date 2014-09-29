@@ -49,6 +49,7 @@
 #define RAM_ADDR_MASK			0xffff
 #define DEFAULT_RAM_CONTENTS	0xff
 
+/*
 struct HOME_HEADER
 {
 	uint16   jump;
@@ -56,6 +57,7 @@ struct HOME_HEADER
 	uint16   size;
 	uint8   magic[4];
 };
+*/
 
 class CRam : public CLynxBase
 {

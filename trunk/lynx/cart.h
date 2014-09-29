@@ -102,9 +102,12 @@ public:
 	// Data members
 
 public:
-	uint32	mWriteEnableBank0;
-	uint32	mWriteEnableBank1;
-	uint32	mCartRAM;
+	bool	mWriteEnableBank0; // always false, as all carts have rom here
+	bool	mWriteEnableBank1;
+	bool	mCartRAM; // always true if there is no second rom segment; probably providing saveram in many cases
+					  // when the original cart did not have it
+
+	bool GetSaveRamPtr(int &size, uint8 *&data);
 
 private:
 	EMMODE	mBank;

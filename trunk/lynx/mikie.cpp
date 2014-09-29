@@ -892,7 +892,7 @@ void CMikie::Poke(uint32 addr,uint8 data)
 		mIODAT=data;
 		mSystem.CartAddressData((mIODAT&0x02)?TRUE:FALSE);
 		// Enable cart writes to BANK1 on AUDIN if AUDIN is set to output
-		if(mIODIR&0x10) mSystem.mCart->mWriteEnableBank1=(mIODAT&0x10)?TRUE:FALSE;
+		if(mIODIR&0x10) mSystem.mCart->mWriteEnableBank1=(mIODAT&0x10)?true:false;
 		break;
 
 	case (SERCTL&0xff): 
