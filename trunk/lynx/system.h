@@ -139,7 +139,7 @@ public:
 		}
 	}
 
-	void Advance(int buttons, uint32 *vbuff, int16 *sbuff, int &sbuffsize);
+	bool Advance(int buttons, uint32 *vbuff, int16 *sbuff, int &sbuffsize);
 	bool GetSaveRamPtr(int &size, uint8 *&data) { return mCart->GetSaveRamPtr(size, data); }
 
 	//
@@ -192,7 +192,7 @@ public:
 
 	// Miscellaneous
 	void	SetButtonData(uint32 data) {mSusie->SetButtonData(data);};
-	uint32	GetButtonData() {return mSusie->GetButtonData();};
+	// uint32	GetButtonData() {return mSusie->GetButtonData();};
 	uint8*	GetRamPointer() {return mRam->GetRamPointer();};
 
 public:

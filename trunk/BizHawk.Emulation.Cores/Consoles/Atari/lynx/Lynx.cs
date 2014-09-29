@@ -111,8 +111,10 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 				LibLynx.Reset(Core);
 
 			int samples = soundbuff.Length;
-			LibLynx.Advance(Core, GetButtons(), videobuff, soundbuff, ref samples);
+			IsLagFrame = LibLynx.Advance(Core, GetButtons(), videobuff, soundbuff, ref samples);
 			numsamp = samples / 2; // sound provider wants number of sample pairs
+			if (IsLagFrame)
+				LagCount++;
 		}
 
 		public int Frame { get; private set; }

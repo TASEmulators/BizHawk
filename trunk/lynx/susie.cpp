@@ -2076,6 +2076,7 @@ uint8 CSusie::Peek(uint32 addr)
 			retval= Modified.Byte;
 		}
 		//			TRACE_SUSIE2("Peek(JOYSTICK)=$%02x at PC=$%04x",retval,mSystem.mCpu->GetPC());
+		lagged = false;
 		return retval;
 		break;
 
@@ -2083,6 +2084,7 @@ uint8 CSusie::Peek(uint32 addr)
 	case (SWITCHES&0xff):
 		retval=mSWITCHES.Byte;
 		//			TRACE_SUSIE2("Peek(SWITCHES)=$%02x at PC=$%04x",retval,mSystem.mCpu->GetPC());
+		lagged = false;
 		return retval;
 
 		// Cartridge reading ports

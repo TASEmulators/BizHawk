@@ -324,9 +324,10 @@ class CSusie : public CLynxBase
 		uint32	ObjectSize(void) {return SUSIE_SIZE;};
 
 		void	SetButtonData(uint32 data) {mJOYSTICK.Byte=(uint8)data;mSWITCHES.Byte=(uint8)(data>>8);};
-		uint32	GetButtonData(void) {return mJOYSTICK.Byte+(mSWITCHES.Byte<<8);};
+		// uint32	GetButtonData(void) {return mJOYSTICK.Byte+(mSWITCHES.Byte<<8);};
 
 		uint32	PaintSprites(void);
+		bool lagged; // set to false whenever joystick/switches are read
 
 	private:
 		void	DoMathDivide(void);
