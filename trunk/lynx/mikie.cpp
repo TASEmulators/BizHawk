@@ -1587,30 +1587,28 @@ void CMikie::CheckWrap()
 	// To stop problems with cycle count wrap we will check and then correct the
 	// cycle counter.
 	//
+#define DEC(X) do { if((X)) { (X) -= 0x80000000; } } while (0)
 
 	if(mSystem.gSystemCycleCount>0xf0000000)
 	{
-		mSystem.gSystemCycleCount-=0x80000000;
-		mTIM_0_LAST_COUNT-=0x80000000;
-		mTIM_1_LAST_COUNT-=0x80000000;
-		mTIM_2_LAST_COUNT-=0x80000000;
-		mTIM_3_LAST_COUNT-=0x80000000;
-		mTIM_4_LAST_COUNT-=0x80000000;
-		mTIM_5_LAST_COUNT-=0x80000000;
-		mTIM_6_LAST_COUNT-=0x80000000;
-		mTIM_7_LAST_COUNT-=0x80000000;
-		mAUDIO_LAST_COUNT[0]-=0x80000000;
-		mAUDIO_LAST_COUNT[1]-=0x80000000;
-		mAUDIO_LAST_COUNT[2]-=0x80000000;
-		mAUDIO_LAST_COUNT[3]-=0x80000000;
-		startTS -= 0x80000000;
-		// Only correct if sleep is active
-		if(mSystem.gSuzieDoneTime)
-		{
-			mSystem.gSuzieDoneTime-=0x80000000;
-		}
+		DEC(mSystem.gSystemCycleCount);
+		DEC(mTIM_0_LAST_COUNT);
+		DEC(mTIM_1_LAST_COUNT);
+		DEC(mTIM_2_LAST_COUNT);
+		DEC(mTIM_3_LAST_COUNT);
+		DEC(mTIM_4_LAST_COUNT);
+		DEC(mTIM_5_LAST_COUNT);
+		DEC(mTIM_6_LAST_COUNT);
+		DEC(mTIM_7_LAST_COUNT);
+		DEC(mAUDIO_LAST_COUNT[0]);
+		DEC(mAUDIO_LAST_COUNT[1]);
+		DEC(mAUDIO_LAST_COUNT[2]);
+		DEC(mAUDIO_LAST_COUNT[3]);
+		DEC(startTS);
+		DEC(mSystem.gSuzieDoneTime);
+		DEC(mSystem.gNextTimerEvent);
 	}
-
+#undef DEC
 }
 
 void CMikie::Update()
