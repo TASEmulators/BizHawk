@@ -32,10 +32,6 @@ namespace BizHawk.Client.EmuHawk
 			SingleInstanceModeCheckbox.Checked = Global.Config.SingleInstanceMode;
 			LogWindowAsConsoleCheckbox.Checked = Global.Config.WIN32_CONSOLE;
 
-			BackupSavestatesCheckbox.Checked = Global.Config.BackupSavestates;
-			ScreenshotInStatesCheckbox.Checked = Global.Config.SaveScreenshotWithStates;
-			SaveLargeScreenshotsCheckbox.Checked = Global.Config.SaveLargeScreenshotWithStates;
-			BigScreenshotNumeric.Value = Global.Config.BigScreenshotSize / 1024;
 
 			BackupSRamCheckbox.Checked = Global.Config.BackupSaveram;
 			FrameAdvSkipLagCheckbox.Checked = Global.Config.SkipLagFrame;
@@ -45,10 +41,8 @@ namespace BizHawk.Client.EmuHawk
 				LogWindowAsConsoleCheckbox.Enabled = false;
 				toolTip1.SetToolTip(
 					LogWindowAsConsoleCheckbox,
-					"This can not be chaned while the log window is open");
+					"This can not be chaned while the log window is open. I know, it's annoying.");
 			}
-
-			ScreenshotInStatesCheckbox_CheckedChanged(null, null);
 
 			// Recent
 			RecentRomsNumeric.Value = Global.Config.RecentRoms.MAX_RECENT_FILES;
@@ -76,10 +70,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.SingleInstanceMode = SingleInstanceModeCheckbox.Checked;
 			Global.Config.WIN32_CONSOLE = LogWindowAsConsoleCheckbox.Checked;
 
-			Global.Config.BackupSavestates = BackupSavestatesCheckbox.Checked;
-			Global.Config.SaveScreenshotWithStates = ScreenshotInStatesCheckbox.Checked;
-			Global.Config.SaveLargeScreenshotWithStates = SaveLargeScreenshotsCheckbox.Checked;
-			Global.Config.BigScreenshotSize = (int)(BigScreenshotNumeric.Value * 1024);
+
 
 			Global.Config.BackupSaveram = BackupSRamCheckbox.Checked;
 			Global.Config.SkipLagFrame = FrameAdvSkipLagCheckbox.Checked;
@@ -141,12 +132,6 @@ namespace BizHawk.Client.EmuHawk
 				});
 		}
 
-		private void ScreenshotInStatesCheckbox_CheckedChanged(object sender, EventArgs e)
-		{
-			SaveLargeScreenshotsCheckbox.Enabled =
-				BigScreenshotNumeric.Enabled =
-				KbLabel.Enabled =
-				ScreenshotInStatesCheckbox.Checked;
-		}
+
 	}
 }
