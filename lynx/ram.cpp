@@ -62,3 +62,8 @@ void CRam::Reset(void)
 	//MDFNMP_AddRAM(65536, 0x0000, mRamData);
 	std::memset(mRamData, DEFAULT_RAM_CONTENTS, RAM_SIZE);
 }
+
+SYNCFUNC(CRam)
+{
+	NSS(mRamData);
+}

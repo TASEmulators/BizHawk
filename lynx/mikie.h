@@ -221,6 +221,8 @@ public:
 	uint32		mpDisplayCurrentLine;
 	uint32		framebuffer[SCREEN_WIDTH * SCREEN_HEIGHT];
 
+	template<bool isReader>void SyncState(NewState *ns);
+
 private:
 	CSystem		&mSystem;
 

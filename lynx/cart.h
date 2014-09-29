@@ -109,6 +109,8 @@ public:
 
 	bool GetSaveRamPtr(int &size, uint8 *&data);
 
+	template<bool isReader>void SyncState(NewState *ns);
+
 private:
 	EMMODE	mBank;
 	uint32	mMaskBank0;

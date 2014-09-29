@@ -2129,3 +2129,106 @@ uint8 CSusie::Peek(uint32 addr)
 
 	return 0xff;
 }
+
+SYNCFUNC(CSusie)
+{
+	NSS(lagged);
+
+	NSS(cycles_used);
+
+	NSS(mTMPADR);
+	NSS(mTILTACUM);
+	NSS(mHOFF);
+	NSS(mVOFF);
+	NSS(mVIDBAS);
+	NSS(mCOLLBAS);
+	NSS(mVIDADR);
+	NSS(mCOLLADR);
+	NSS(mSCBNEXT);
+	NSS(mSPRDLINE);
+	NSS(mHPOSSTRT);
+	NSS(mVPOSSTRT);
+	NSS(mSPRHSIZ);
+	NSS(mSPRVSIZ);
+	NSS(mSTRETCH);
+	NSS(mTILT);
+	NSS(mSPRDOFF);
+	NSS(mSPRVPOS);
+	NSS(mCOLLOFF);
+	NSS(mVSIZACUM);
+	NSS(mHSIZACUM);
+	NSS(mHSIZOFF);
+	NSS(mVSIZOFF);
+	NSS(mSCBADR);
+	NSS(mPROCADR);
+
+
+	NSS(mMATHABCD);
+	NSS(mMATHEFGH);
+	NSS(mMATHJKLM);
+	NSS(mMATHNP);
+	NSS(mMATHAB_sign);
+	NSS(mMATHCD_sign);
+	NSS(mMATHEFGH_sign);
+
+	NSS(mSPRCTL0_Type);
+	NSS(mSPRCTL0_Vflip);
+	NSS(mSPRCTL0_Hflip);
+	NSS(mSPRCTL0_PixelBits);
+
+	NSS(mSPRCTL1_StartLeft);
+	NSS(mSPRCTL1_StartUp);
+	NSS(mSPRCTL1_SkipSprite);
+	NSS(mSPRCTL1_ReloadPalette);
+	NSS(mSPRCTL1_ReloadDepth);
+	NSS(mSPRCTL1_Sizing);
+	NSS(mSPRCTL1_Literal);
+
+	NSS(mSPRCOLL_Number);
+	NSS(mSPRCOLL_Collide);
+
+	NSS(mSPRSYS_StopOnCurrent);
+	NSS(mSPRSYS_LeftHand);
+	NSS(mSPRSYS_VStretch);
+	NSS(mSPRSYS_NoCollide);
+	NSS(mSPRSYS_Accumulate);
+	NSS(mSPRSYS_SignedMath);
+	NSS(mSPRSYS_Status);
+	NSS(mSPRSYS_UnsafeAccess);
+	NSS(mSPRSYS_LastCarry);
+	NSS(mSPRSYS_Mathbit);
+	NSS(mSPRSYS_MathInProgress);
+
+	NSS(mSUZYBUSEN);
+
+	NSS(mSPRINIT);
+
+	NSS(mSPRGO);
+	NSS(mEVERON);
+
+	NSS(mPenIndex);
+
+
+
+	NSS(mLineType);
+	NSS(mLineShiftRegCount);
+	NSS(mLineShiftReg);
+	NSS(mLineRepeatCount);
+	NSS(mLinePixel);
+	NSS(mLinePacketBitsLeft);
+
+	NSS(mCollision);
+
+	// mRamPointer;
+
+	NSS(mLineBaseAddress);
+	NSS(mLineCollisionAddress);
+
+	NSS(hquadoff);
+	NSS(vquadoff);
+
+
+
+	NSS(mJOYSTICK);
+	NSS(mSWITCHES);
+}

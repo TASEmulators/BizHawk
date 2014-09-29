@@ -59,6 +59,7 @@
 //
 
 #include "lynxbase.h"
+#include "newstate.h"
 
 #endif
 

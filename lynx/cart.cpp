@@ -330,3 +330,36 @@ bool CCart::GetSaveRamPtr(int &size, uint8 *&data)
 		return false;
 	}
 }
+
+SYNCFUNC(CCart)
+{
+	NSS(mWriteEnableBank0);
+	NSS(mWriteEnableBank1);
+	NSS(mCartRAM);
+
+	EBS(mBank, 0);
+	EVS(mBank, bank0, 0);
+	EVS(mBank, bank1, 1);
+	EVS(mBank, ram, 2);
+	EVS(mBank, cpu, 3);
+	EES(mBank, bank0);
+
+	NSS(mMaskBank0);
+	NSS(mMaskBank1);
+	if (false)
+		PSS(mCartBank0, mMaskBank0 + 1);
+	if (mCartRAM)
+		PSS(mCartBank1, mMaskBank1 + 1);
+
+	NSS(mCounter);
+	NSS(mShifter);
+	NSS(mAddrData);
+	NSS(mStrobe);
+
+	NSS(mShiftCount0);
+	NSS(mCountMask0);
+	NSS(mShiftCount1);
+	NSS(mCountMask1);
+
+	NSS(last_strobe);
+}

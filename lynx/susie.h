@@ -329,6 +329,8 @@ class CSusie : public CLynxBase
 		uint32	PaintSprites(void);
 		bool lagged; // set to false whenever joystick/switches are read
 
+		template<bool isReader>void SyncState(NewState *ns);
+
 	private:
 		void	DoMathDivide(void);
 		void	DoMathMultiply(void);

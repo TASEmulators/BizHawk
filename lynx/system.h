@@ -216,6 +216,8 @@ public:
 
 	// frame overflow detection
 	int frameoverflow;
+
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 #endif
