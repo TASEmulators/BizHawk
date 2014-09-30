@@ -37,7 +37,8 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 					};
 					
 					//TODO - use standard methods to split filename (hawkfile acquire?)
-					var hf = new HawkFile(temp);
+					var hf = new HawkFile();
+					hf.Parse(temp);
 					bool canExplore = true;
 					if (!File.Exists(hf.FullPathWithoutMember))
 						canExplore = false;
@@ -50,31 +51,56 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 						var timestamp = File.GetLastWriteTime(hf.FullPathWithoutMember);
 						var tsmiTimestamp = new ToolStripLabel { Text = timestamp.ToString() };
 
-						//make a menuitem to let you explore to it
-						var tsmiExplore = new ToolStripMenuItem { Text = "&Explore" };
-						tsmiExplore.Click += (o, ev) => { System.Diagnostics.Process.Start("explorer.exe", "/select, " + hf.FullPathWithoutMember); };
-
-						//make a menuitem to let you copy the path
-						var tsmiCopyPath = new ToolStripMenuItem { Text = "&Copy Canonical Path" };
-						tsmiCopyPath.Click += (o, ev) => { System.Windows.Forms.Clipboard.SetText(temp); };
-
 						tsdd.Items.Add(tsmiTimestamp);
-						var sep = new ToolStripSeparator();
-						tsdd.Items.Add(sep);
-						tsdd.Items.Add(tsmiExplore);
-						tsdd.Items.Add(tsmiCopyPath);
-						
-						//make a special action to open archive in default archiver
+						tsdd.Items.Add(new ToolStripSeparator());
+
+
+
 						if (hf.IsArchive)
 						{
-							var tsmiOpenArchive = new ToolStripMenuItem { Text = "Open &Archive" };
-							tsmiOpenArchive.Click += (o, ev) => { System.Diagnostics.Process.Start(hf.FullPathWithoutMember); };
-							tsdd.Items.Add(tsmiOpenArchive);
+							//make a menuitem to let you copy the path
+							var tsmiCopyCanonicalPath = new ToolStripMenuItem { Text = "&Copy Canonical Path" };
+							tsmiCopyCanonicalPath.Click += (o, ev) => { System.Windows.Forms.Clipboard.SetText(temp); };
+							tsdd.Items.Add(tsmiCopyCanonicalPath);
 
 							var tsmiCopyArchivePath = new ToolStripMenuItem { Text = "Copy Archive Path" };
 							tsmiCopyArchivePath.Click += (o, ev) => { System.Windows.Forms.Clipboard.SetText(hf.FullPathWithoutMember); };
 							tsdd.Items.Add(tsmiCopyArchivePath);
+
+							var tsmiOpenArchive = new ToolStripMenuItem { Text = "Open &Archive" };
+							tsmiOpenArchive.Click += (o, ev) => { System.Diagnostics.Process.Start(hf.FullPathWithoutMember); };
+							tsdd.Items.Add(tsmiOpenArchive);
 						}
+						else
+						{
+							//make a menuitem to let you copy the path
+							var tsmiCopyPath = new ToolStripMenuItem { Text = "&Copy Path" };
+							tsmiCopyPath.Click += (o, ev) => { System.Windows.Forms.Clipboard.SetText(temp); };
+							tsdd.Items.Add(tsmiCopyPath);
+						}
+
+						tsdd.Items.Add(new ToolStripSeparator());
+
+						//make a menuitem to let you explore to it
+						var tsmiExplore = new ToolStripMenuItem { Text = "&Explore" };
+						tsmiExplore.Click += (o, ev) => { System.Diagnostics.Process.Start("explorer.exe", "/select, " + hf.FullPathWithoutMember); };
+						tsdd.Items.Add(tsmiExplore);
+
+						var tsmiCopyFile = new ToolStripMenuItem { Text = "Copy &File" };
+						var lame = new System.Collections.Specialized.StringCollection();
+						lame.Add(hf.FullPathWithoutMember);
+						tsmiCopyFile.Click += (o, ev) => { System.Windows.Forms.Clipboard.SetFileDropList(lame); };
+						tsdd.Items.Add(tsmiCopyFile);
+
+						var tsmiTest = new ToolStripMenuItem { Text = "&Shell Context Menu" };
+						tsmiTest.Click += (o, ev) => {
+							var si = new GongSolutions.Shell.ShellItem(hf.FullPathWithoutMember);
+							var scm = new GongSolutions.Shell.ShellContextMenu(si);
+							var tsddi = o as ToolStripDropDownItem;
+							tsddi.Owner.Update();
+							scm.ShowContextMenu(tsddi.Owner, new System.Drawing.Point(0, 0));
+						};
+						tsdd.Items.Add(tsmiTest);
 
 						tsdd.Items.Add(new ToolStripSeparator());
 					}
