@@ -83,7 +83,8 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 
 						//make a menuitem to let you explore to it
 						var tsmiExplore = new ToolStripMenuItem { Text = "&Explore" };
-						tsmiExplore.Click += (o, ev) => { System.Diagnostics.Process.Start("explorer.exe", "/select, " + hf.FullPathWithoutMember); };
+						string explorePath = "\"" + hf.FullPathWithoutMember + "\"";
+						tsmiExplore.Click += (o, ev) => { System.Diagnostics.Process.Start("explorer.exe", "/select, " + explorePath); };
 						tsdd.Items.Add(tsmiExplore);
 
 						var tsmiCopyFile = new ToolStripMenuItem { Text = "Copy &File" };
