@@ -42,6 +42,16 @@ namespace BizHawk.Client.Common
 			get { return Extension; }
 		}
 
+		public override bool Stop(bool saveChanges = true)
+		{
+			if (Changes)
+			{
+				return base.Stop(saveChanges);
+			}
+
+			return false;
+		}
+
 		#region Events and Handlers 
 
 		public event PropertyChangedEventHandler PropertyChanged;

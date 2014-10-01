@@ -54,6 +54,9 @@
     <ClCompile Include="..\cinterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\newstate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\c65c02.h">
@@ -103,6 +106,9 @@
     </ClInclude>
     <ClInclude Include="..\sound\Stereo_Buffer.h">
       <Filter>Header Files\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\newstate.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

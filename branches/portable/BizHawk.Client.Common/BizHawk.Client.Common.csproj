@@ -90,6 +90,7 @@
     <Compile Include="config\ToolDialogSettings.cs" />
     <Compile Include="ControllerBinding.cs" />
     <Compile Include="CoreFileProvider.cs" />
+    <Compile Include="ExceptionClasses.cs" />
     <Compile Include="FirmwareManager.cs" />
     <Compile Include="GLManager.cs">
       <SubType>Code</SubType>

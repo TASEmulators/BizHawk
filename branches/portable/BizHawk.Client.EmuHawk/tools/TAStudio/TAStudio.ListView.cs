@@ -212,6 +212,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void TasView_ColumnRightClick(object sender, ColumnClickEventArgs e)
+		{
+			var column = TasView.Columns[e.Column];
+			column.Emphasis ^= true;
+
+			Global.StickyXORAdapter.SetSticky(column.Name, column.Emphasis);
+
+			TasView.Refresh();
+		}
+
 		private void TasView_MouseDown(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Middle)
@@ -242,7 +252,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
 							GoToLastEmulatedFrameIfNecessary(TasView.CurrentCell.RowIndex.Value);
-							UpdateValues();
+							RefreshDialog();
 
 							_startBoolDrawColumn = buttonName;
 

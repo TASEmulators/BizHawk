@@ -292,6 +292,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public void PokeValue(int val)
+		{
+			if (!IsSeparator)
+			{
+				_val = val;
+			}
+		}
+
 		public void Increment()
 		{
 			if (!IsSeparator)

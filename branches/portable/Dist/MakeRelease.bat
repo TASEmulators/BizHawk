@@ -1,3 +1,6 @@
+svn --version > NUL
+@if errorlevel 1 goto MISSINGSVN
+
 rmdir /s /q temp
 del /s BizHawk.zip
 cd ..\output
@@ -28,3 +31,8 @@ upx -d *.exe
 cd ..
 
 rmdir /s /q temp
+goto END
+
+:MISSINGSVN
+@echo missing svn.exe. can't make distro without that.
+:END

@@ -43,6 +43,7 @@ namespace BizHawk.Common
 		private string _memberPath;
 		private Stream _rootStream, _boundStream;
 		private IHawkFileArchiveHandler _extractor;
+		private bool _isArchive;
 		private List<HawkFileArchiveItem> _archiveItems;
 		private int? _boundIndex;
 
@@ -54,7 +55,8 @@ namespace BizHawk.Common
 		public static IHawkFileArchiveHandler ArchiveHandlerFactory { get; set; }
 
 		/// <summary>
-		/// Gets a value indicating whether a bound file exists. if there is no bound file, it can't exist
+		/// Gets a value indicating whether a bound file exists. if there is no bound file, it can't exist.
+		/// NOTE: this isn't set until the file is Opened. Not too great...
 		/// </summary>
 		public bool Exists { get { return _exists; } }
 
@@ -84,6 +86,16 @@ namespace BizHawk.Common
 		public string Name { get { return GetBoundNameFromCanonical(MakeCanonicalName(_rootPath, _memberPath)); } }
 
 		/// <summary>
+		/// returns the complete full path of the bound file, excluding the archive member portion
+		/// </summary>
+		public string FullPathWithoutMember { get { return _rootPath; } }
+
+		/// <summary>
+		/// returns the member path part of the bound file
+		/// </summary>
+		public string ArchiveMemberPath { get { return _memberPath; } }
+
+		/// <summary>
 		/// returns the extension of Name
 		/// </summary>
 		public string Extension { get { return Path.GetExtension(Name).ToUpper(); } }
@@ -91,7 +103,7 @@ namespace BizHawk.Common
 		/// <summary>
 		/// Indicates whether this file is an archive
 		/// </summary>
-		public bool IsArchive { get { return _extractor != null; } }
+		public bool IsArchive { get { return _isArchive; } }
 
 		public IList<HawkFileArchiveItem> ArchiveItems
 		{
@@ -161,6 +173,26 @@ namespace BizHawk.Common
 		/// </summary>
 		public string[] NonArchiveExtensions = { };
 
+		/// <summary>
+		/// Parses the given filename to create an un-opened HawkFile with some information available about its path constitution
+		/// </summary>
+		public void Parse(string path)
+		{
+			bool isArchivePath = IsCanonicalArchivePath(path);
+			if (isArchivePath)
+			{
+				var parts = path.Split('|');
+				path = parts[0];
+				_memberPath = parts[1];
+				//we're gonna assume, on parsing, that this is 
+				_isArchive = true;
+			}
+			_rootPath = path;
+		}
+
+		/// <summary>
+		/// Parses the given filename and then opens it. This may take a while (the archive may be accessed and scanned).
+		/// </summary>
 		public void Open(string path)
 		{
 			if (_rootPath != null)
@@ -413,6 +445,7 @@ namespace BizHawk.Common
 				try
 				{
 					ScanArchive();
+					_isArchive = true;
 				}
 				catch
 				{

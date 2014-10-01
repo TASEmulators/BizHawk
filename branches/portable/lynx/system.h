@@ -139,7 +139,8 @@ public:
 		}
 	}
 
-	void Advance(int buttons, uint32 *vbuff, int16 *sbuff, int &sbuffsize);
+	bool Advance(int buttons, uint32 *vbuff, int16 *sbuff, int &sbuffsize);
+	bool GetSaveRamPtr(int &size, uint8 *&data) { return mCart->GetSaveRamPtr(size, data); }
 
 	//
 	// We MUST have separate CPU & RAM peek & poke handlers as all CPU accesses must
@@ -191,7 +192,7 @@ public:
 
 	// Miscellaneous
 	void	SetButtonData(uint32 data) {mSusie->SetButtonData(data);};
-	uint32	GetButtonData() {return mSusie->GetButtonData();};
+	// uint32	GetButtonData() {return mSusie->GetButtonData();};
 	uint8*	GetRamPointer() {return mRam->GetRamPointer();};
 
 public:
@@ -211,10 +212,12 @@ public:
 	uint32			gSystemIRQ;
 	uint32			gSystemNMI;
 	uint32			gSystemCPUSleep;
-	uint32			gSystemHalt;
+	uint32			gSystemHalt; // this is set in various places, but never tested, anywhere?
 
 	// frame overflow detection
 	int frameoverflow;
+
+	template<bool isReader>void SyncState(NewState *ns);
 };
 
 #endif
