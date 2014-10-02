@@ -323,5 +323,22 @@ namespace BizHawk.Client.Common
 		{
 			StateManager.Capture();
 		}
+
+		public void ClearGreenzone()
+		{
+			if (StateManager.StateCount > 0)
+			{
+				StateManager.Clear();
+				Changes = true;
+			}
+		}
+
+		public bool HasGreenzone
+		{
+			get
+			{
+				return StateManager.Any();
+			}
+		}
 	}
 }

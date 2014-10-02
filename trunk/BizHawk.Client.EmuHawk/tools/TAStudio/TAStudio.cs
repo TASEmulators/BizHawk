@@ -626,6 +626,9 @@ namespace BizHawk.Client.EmuHawk
 				PasteMenuItem.Enabled =
 				PasteInsertMenuItem.Enabled =
 				_tasClipboard.Any();
+
+			ClearGreenzoneMenuItem.Enabled =
+				_currentTasMovie != null && _currentTasMovie.HasGreenzone;
 		}
 
 		private void DeselectMenuItem_Click(object sender, EventArgs e)
@@ -906,6 +909,12 @@ namespace BizHawk.Client.EmuHawk
 		private void RemoveMarkersMenuItem_Click(object sender, EventArgs e)
 		{
 			_currentTasMovie.Markers.RemoveAll(m => TasView.SelectedRows.Contains(m.Frame));
+			RefreshDialog();
+		}
+
+		private void ClearGreenzoneMenuItem_Click(object sender, EventArgs e)
+		{
+			_currentTasMovie.ClearGreenzone();
 			RefreshDialog();
 		}
 
