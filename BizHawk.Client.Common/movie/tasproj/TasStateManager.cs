@@ -136,7 +136,14 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Clears all state information
 		/// </summary>
+		/// 
 		public void Clear()
+		{
+			States.Clear();
+			Used = 0;
+		}
+
+		public void ClearGreenzone()
 		{
 			if (States.Any())
 			{
