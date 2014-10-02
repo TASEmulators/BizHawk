@@ -138,8 +138,15 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void Clear()
 		{
+			var power = States.FirstOrDefault(s => s.Key == 0);
 			States.Clear();
-			Used = 0;
+
+			if (power.Value.Length > 0)
+			{
+				States.Add(0, power.Value);
+			}
+
+			Used = power.Value.Length;
 		}
 
 		public void Save(BinaryWriter bw)
