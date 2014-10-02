@@ -123,6 +123,7 @@ namespace BizHawk.Client.EmuHawk
 			this.InsertNumFramesContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator18 = new System.Windows.Forms.ToolStripSeparator();
 			this.TruncateContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ClearGreenzoneMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.RightClickMenu.SuspendLayout();
@@ -258,7 +259,8 @@ namespace BizHawk.Client.EmuHawk
             this.InsertFrameMenuItem,
             this.InsertNumFramesMenuItem,
             this.toolStripSeparator6,
-            this.TruncateMenuItem});
+            this.TruncateMenuItem,
+            this.ClearGreenzoneMenuItem});
 			this.EditSubMenu.Name = "EditSubMenu";
 			this.EditSubMenu.Size = new System.Drawing.Size(39, 20);
 			this.EditSubMenu.Text = "&Edit";
@@ -886,6 +888,13 @@ namespace BizHawk.Client.EmuHawk
 			this.TruncateContextMenuItem.Text = "Truncate Movie";
 			this.TruncateContextMenuItem.Click += new System.EventHandler(this.TruncateMenuItem_Click);
 			// 
+			// ClearGreenzoneMenuItem
+			// 
+			this.ClearGreenzoneMenuItem.Name = "ClearGreenzoneMenuItem";
+			this.ClearGreenzoneMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.ClearGreenzoneMenuItem.Text = "&Clear Greenzone";
+			this.ClearGreenzoneMenuItem.Click += new System.EventHandler(this.ClearGreenzoneMenuItem_Click);
+			// 
 			// TAStudio
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1007,5 +1016,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem CloneContextMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator18;
 		private System.Windows.Forms.ToolStripMenuItem TruncateContextMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ClearGreenzoneMenuItem;
 	}
 }
