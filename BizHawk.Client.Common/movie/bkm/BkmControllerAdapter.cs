@@ -79,6 +79,12 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
+			if (ControlType == "Lynx Controller")
+			{
+				SetLynxControllersAsMnemonic(mnemonic);
+				return;
+			}
+
 			if (ControlType == "SNES Controller")
 			{
 				SetSNESControllersAsMnemonic(mnemonic);
@@ -400,6 +406,38 @@ namespace BizHawk.Client.Common
 				foreach (var button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
 				{
 					Force("P" + player + " " + button, c[srcindex + start++]);
+				}
+			}
+		}
+
+		private void SetLynxControllersAsMnemonic(string mnemonic)
+		{
+			var c = new MnemonicChecker(mnemonic);
+			MyBoolButtons.Clear();
+
+			if (mnemonic.Length < 2)
+			{
+				return;
+			}
+
+			if (mnemonic[1] == 'P')
+			{
+				Force("Power", true);
+			}
+
+			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[ControlType]; player++)
+			{
+				int srcindex = (player - 1) * (BkmMnemonicConstants.BUTTONS[ControlType].Count + 1);
+
+				if (mnemonic.Length < srcindex + 3 + BkmMnemonicConstants.BUTTONS[ControlType].Count - 1)
+				{
+					return;
+				}
+
+				int start = 3;
+				foreach (var button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
+				{
+					Force(button, c[srcindex + start++]);
 				}
 			}
 		}

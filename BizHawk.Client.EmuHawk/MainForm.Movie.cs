@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
@@ -12,9 +13,17 @@ namespace BizHawk.Client.EmuHawk
 {
 	partial class MainForm
 	{
-		public void StartNewMovie(IMovie movie, bool record)
+		public bool StartNewMovie(IMovie movie, bool record)
 		{
-			Global.MovieSession.QueueNewMovie(movie, record);
+			try
+			{
+				Global.MovieSession.QueueNewMovie(movie, record);
+			}
+			catch (MoviePlatformMismatchException ex)
+			{
+				MessageBox.Show(this, ex.Message, "Movie/Platform Mismatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return false;
+			}
 
 			LoadRom(GlobalWin.MainForm.CurrentlyOpenRom);
 
@@ -40,6 +49,8 @@ namespace BizHawk.Client.EmuHawk
 
 			GlobalWin.Tools.Restart<VirtualpadTool>();
 			GlobalWin.DisplayManager.NeedsToPaint = true;
+
+			return true;
 		}
 
 		public void SetMainformMovieInfo()

@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public override byte ReadA000(int addr)
 		{
-			return currentBankB[addr];
+            return currentBankB[addr];
 		}
 
 		public override byte ReadDF00(int addr)
@@ -147,6 +147,35 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			currentBankA = banksA[bankNumber];
 			currentBankB = banksB[bankNumber];
 		}
+
+        public override void Write8000(int addr, byte val)
+        {
+            if (!pinGame && pinExRom)
+            {
+                System.Diagnostics.Debug.WriteLine("EasyFlash Write: $" + C64Util.ToHex(addr | 0x8000, 4) + " = " + C64Util.ToHex(val, 2));
+                if (addr == 0x0555)
+                {
+                }
+                else if (addr == 0x02AA) // $82AA
+                {
+                }
+                else if (addr == 0x07FF) // $87FF
+                {
+                }
+                else if (addr == 0x0007) // $8007
+                {
+                }
+                else if (addr == 0x1000) // $9000
+                {
+                }
+                else if (addr == 0x0000) // $8000
+                {
+                }
+                else
+                {
+                }
+            }
+        }
 
 		public override void WriteDE00(int addr, byte val)
 		{

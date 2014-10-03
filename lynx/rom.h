@@ -61,16 +61,18 @@ public:
 
 public:
 	void	Reset(void) MDFN_COLD;
-	void	Poke(uint32 addr,uint8 data) { if(mWriteEnable) mRomData[addr&ROM_ADDR_MASK]=data;};
-	uint8	Peek(uint32 addr) { return(mRomData[addr&ROM_ADDR_MASK]);};
-	uint32	ReadCycle(void) {return 5;};
-	uint32	WriteCycle(void) {return 5;};
-	uint32	ObjectSize(void) {return ROM_SIZE;};
+	void	Poke(uint32 addr,uint8 data) { /*if(mWriteEnable) mRomData[addr&ROM_ADDR_MASK]=data;*/ }
+	uint8	Peek(uint32 addr) { return(mRomData[addr&ROM_ADDR_MASK]); }
+	uint32	ReadCycle(void) {return 5;}
+	uint32	WriteCycle(void) {return 5;}
+	uint32	ObjectSize(void) {return ROM_SIZE;}
+
+	template<bool isReader>void SyncState(NewState *ns);
 
 	// Data members
 
 public:
-	bool	mWriteEnable;
+	//bool	mWriteEnable; // always false
 private:
 	uint8	mRomData[ROM_SIZE];
 };

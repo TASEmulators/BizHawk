@@ -73,6 +73,7 @@
     <ClCompile Include="..\cinterface.cpp" />
     <ClCompile Include="..\memmap.cpp" />
     <ClCompile Include="..\mikie.cpp" />
+    <ClCompile Include="..\newstate.cpp" />
     <ClCompile Include="..\ram.cpp" />
     <ClCompile Include="..\rom.cpp" />
     <ClCompile Include="..\sound\Blip_Buffer.cpp" />
@@ -90,6 +91,7 @@
     <ClInclude Include="..\mednafen.h" />
     <ClInclude Include="..\memmap.h" />
     <ClInclude Include="..\mikie.h" />
+    <ClInclude Include="..\newstate.h" />
     <ClInclude Include="..\ram.h" />
     <ClInclude Include="..\rom.h" />
     <ClInclude Include="..\sound\Blip_Buffer.h" />

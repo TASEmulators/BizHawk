@@ -42,6 +42,16 @@ namespace BizHawk.Client.Common
 			get { return Extension; }
 		}
 
+		public override bool Stop(bool saveChanges = true)
+		{
+			if (Changes)
+			{
+				return base.Stop(saveChanges);
+			}
+
+			return false;
+		}
+
 		#region Events and Handlers 
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -312,6 +322,23 @@ namespace BizHawk.Client.Common
 		public void CaptureCurrentState()
 		{
 			StateManager.Capture();
+		}
+
+		public void ClearGreenzone()
+		{
+			if (StateManager.Any())
+			{
+				StateManager.ClearGreenzone();
+				Changes = true;
+			}
+		}
+
+		public bool HasGreenzone
+		{
+			get
+			{
+				return StateManager.Any();
+			}
 		}
 	}
 }

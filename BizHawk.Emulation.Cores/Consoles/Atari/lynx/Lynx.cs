@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Runtime.InteropServices;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Atari.Lynx
 {
@@ -95,6 +97,9 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			{
 				CoreComm.VsyncNum = 16000000; // 16.00 mhz refclock
 				CoreComm.VsyncDen = 16 * 105 * 159;
+
+				savebuff = new byte[LibLynx.BinStateSize(Core)];
+				savebuff2 = new byte[savebuff.Length + 13];
 			}
 			catch
 			{
@@ -110,8 +115,10 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 				LibLynx.Reset(Core);
 
 			int samples = soundbuff.Length;
-			LibLynx.Advance(Core, GetButtons(), videobuff, soundbuff, ref samples);
+			IsLagFrame = LibLynx.Advance(Core, GetButtons(), videobuff, soundbuff, ref samples);
 			numsamp = samples / 2; // sound provider wants number of sample pairs
+			if (IsLagFrame)
+				LagCount++;
 		}
 
 		public int Frame { get; private set; }
@@ -186,25 +193,84 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		#region savestates
 
+		JsonSerializer ser = new JsonSerializer() { Formatting = Formatting.Indented };
+		byte[] savebuff;
+		byte[] savebuff2;
+
+		class TextStateData
+		{
+			public int Frame;
+			public int LagCount;
+			public bool IsLagFrame;
+		}
+
 		public void SaveStateText(TextWriter writer)
 		{
+			var s = new TextState<TextStateData>();
+			s.Prepare();
+			var ff = s.GetFunctionPointersSave();
+			LibLynx.TxtStateSave(Core, ref ff);
+			s.ExtraData.IsLagFrame = IsLagFrame;
+			s.ExtraData.LagCount = LagCount;
+			s.ExtraData.Frame = Frame;
+
+			ser.Serialize(writer, s);
+			// write extra copy of stuff we don't use
+			writer.WriteLine();
+			writer.WriteLine("Frame {0}", Frame);
+
+			//Console.WriteLine(BizHawk.Common.BufferExtensions.BufferExtensions.HashSHA1(SaveStateBinary()));
 		}
 
 		public void LoadStateText(TextReader reader)
 		{
+			var s = (TextState<TextStateData>)ser.Deserialize(reader, typeof(TextState<TextStateData>));
+			s.Prepare();
+			var ff = s.GetFunctionPointersLoad();
+			LibLynx.TxtStateLoad(Core, ref ff);
+			IsLagFrame = s.ExtraData.IsLagFrame;
+			LagCount = s.ExtraData.LagCount;
+			Frame = s.ExtraData.Frame;
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
+			if (!LibLynx.BinStateSave(Core, savebuff, savebuff.Length))
+				throw new InvalidOperationException("Core's BinStateSave() returned false!");
+			writer.Write(savebuff.Length);
+			writer.Write(savebuff);
+
+			// other variables
+			writer.Write(IsLagFrame);
+			writer.Write(LagCount);
+			writer.Write(Frame);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
+			int length = reader.ReadInt32();
+			if (length != savebuff.Length)
+				throw new InvalidOperationException("Save buffer size mismatch!");
+			reader.Read(savebuff, 0, length);
+			if (!LibLynx.BinStateLoad(Core, savebuff, savebuff.Length))
+				throw new InvalidOperationException("Core's BinStateLoad() returned false!");
+
+			// other variables
+			IsLagFrame = reader.ReadBoolean();
+			LagCount = reader.ReadInt32();
+			Frame = reader.ReadInt32();
 		}
 
 		public byte[] SaveStateBinary()
 		{
-			return new byte[0];
+			var ms = new MemoryStream(savebuff2, true);
+			var bw = new BinaryWriter(ms);
+			SaveStateBinary(bw);
+			bw.Flush();
+			if (ms.Position != savebuff2.Length)
+				throw new InvalidOperationException();
+			ms.Close();
+			return savebuff2;
 		}
 
 		public bool BinarySaveStatesPreferred
@@ -218,22 +284,38 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		public byte[] CloneSaveRam()
 		{
-			return new byte[0];
+			int size;
+			IntPtr data;
+			if (!LibLynx.GetSaveRamPtr(Core, out size, out data))
+				return null;
+			byte[] ret = new byte[size];
+			Marshal.Copy(data, ret, 0, size);
+			return ret;
 		}
 
-		public void StoreSaveRam(byte[] data)
+		public void StoreSaveRam(byte[] srcdata)
 		{
+			int size;
+			IntPtr data;
+			if (!LibLynx.GetSaveRamPtr(Core, out size, out data))
+				throw new InvalidOperationException();
+			if (size != srcdata.Length)
+				throw new ArgumentOutOfRangeException();
+			Marshal.Copy(srcdata, 0, data, size);
 		}
 
 		public void ClearSaveRam()
 		{
+			throw new NotImplementedException();
 		}
 
 		public bool SaveRamModified
 		{
 			get
 			{
-				return false;
+				int unused;
+				IntPtr unused2;
+				return LibLynx.GetSaveRamPtr(Core, out unused, out unused2);
 			}
 			set
 			{

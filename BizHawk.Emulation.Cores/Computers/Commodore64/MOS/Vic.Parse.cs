@@ -118,7 +118,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				else
 				{
 					parsecycleFetchSpriteIndex = (parsefetch & 0x7);
-					if ((parsefetch & 0xF0) == 0)
+                    if ((parsefetch & 0xF0) == 0) // sprite rule 5
 					{
 						// fetch P
 						parseaddr = (0x3F8 | pointerVM | parsecycleFetchSpriteIndex);
@@ -128,14 +128,22 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 					else
 					{
 						// fetch S
-						if (sprites[parsecycleFetchSpriteIndex].dma)
-						{
-							SpriteGenerator spr = sprites[parsecycleFetchSpriteIndex];
-							parseaddr = (spr.mc | (spr.pointer << 6));
-							spr.sr <<= 8;
-							spr.sr |= ReadMemory(parseaddr);
-							spr.mc++;
-						}
+                        SpriteGenerator spr = sprites[parsecycleFetchSpriteIndex];
+                        if (spr.dma && spr.mcbase < 63)
+                        {
+                            parseaddr = (spr.mc | (spr.pointer << 6));
+                            spr.sr <<= 8;
+                            spr.sr |= ReadMemory(parseaddr);
+                            spr.srMask <<= 8;
+                            spr.srMask |= 0xFF;
+                            spr.mc++;
+                            spr.dmaCount++;
+                        }
+                        else
+                        {
+                            spr.dma = false;
+                            //spr.mc = 0;
+                        }
 					}
 				}
 
@@ -169,23 +177,23 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 				if (parseact != 0)
 				{
-					if ((parseact & pipelineChkSprCrunch) != 0)
+					if ((parseact & pipelineChkSprCrunch) != 0) // sprite rule 7
 					{
 						foreach (SpriteGenerator spr in sprites)
 						{
-							if (spr.yCrunch)
-								spr.mcbase += 2;
+                            spr.yCrunch |= !spr.yExpand; // sprite rule 1
 							spr.shiftEnable = false;
 							spr.xCrunch = !spr.xExpand;
 							spr.multicolorCrunch = !spr.multicolor;
 						}
 					}
 
-					else if ((parseact & pipelineChkSprDisp) != 0)
+					else if ((parseact & pipelineChkSprDisp) != 0) // sprite rule 4
 					{
 						foreach (SpriteGenerator spr in sprites)
 						{
-							spr.mc = spr.mcbase;
+                            spr.yCrunch |= !spr.yExpand; // sprite rule 1
+                            spr.mc = spr.mcbase;
 							if (spr.dma && spr.y == (rasterLine & 0xFF))
 							{
 								spr.display = true;
@@ -193,45 +201,54 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 						}
 					}
 
-					else if ((parseact & pipelineChkSprDma) != 0)
+					else if ((parseact & pipelineChkSprDma) != 0) // sprite rule 3
 					{
 						foreach (SpriteGenerator spr in sprites)
 						{
-							if (spr.enable && spr.y == (rasterLine & 0xFF) && !spr.dma)
+                            spr.yCrunch |= !spr.yExpand; // sprite rule 1
+                            if (spr.enable && spr.y == (rasterLine & 0xFF) && !spr.dma)
 							{
 								spr.dma = true;
 								spr.mcbase = 0;
 								spr.yCrunch = !spr.yExpand;
+                                spr.mc = 0;
+                                spr.dmaCount = 0;
 							}
 						}
 					}
 
-					else if ((parseact & pipelineChkSprExp) != 0)
+					else if ((parseact & pipelineChkSprExp) != 0) // sprite rule 2
 					{
 						foreach (SpriteGenerator spr in sprites)
 						{
-							if (spr.yExpand)
+                            spr.yCrunch |= !spr.yExpand; // sprite rule 1
+                            if (spr.yExpand)
 								spr.yCrunch ^= true;
-						}
+                            if (spr.yCrunch)
+                            {
+                                spr.mcbase = spr.mc;
+                            }
+                        }
 					}
 
-					else if ((parseact & pipelineUpdateMcBase) != 0)
+					else if ((parseact & pipelineUpdateMcBase) != 0) // sprite rule 8
 					{
 						foreach (SpriteGenerator spr in sprites)
 						{
-							if (spr.yCrunch)
+                            if (spr.yCrunch && spr.display)
 							{
-								spr.mcbase++;
-								if (spr.mcbase == 63)
-								{
-									spr.dma = false;
-									spr.display = false;
-								}
+                                //spr.mcbase = spr.mc;
+                                if (spr.mcbase == 63 && spr.dma)
+                                {
+                                    //spr.display = false;
+                                    //spr.dma = false;
+                                }
 							}
-						}
+                            spr.yCrunch |= !spr.yExpand; // sprite rule 1
+                        }
 					}
 
-					else if ((parseact & pipelineUpdateRc) != 0)
+					else if ((parseact & pipelineUpdateRc) != 0) // VC/RC rule 5
 					{
 						if (rc == 7)
 						{
@@ -242,7 +259,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 							rc = (rc + 1) & 0x7;
 					}
 
-					else if ((parseact & pipelineUpdateVc) != 0)
+					else if ((parseact & pipelineUpdateVc) != 0) // VC/RC rule 2
 					{
 						vc = vcbase;
 						vmli = 0;

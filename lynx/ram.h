@@ -49,6 +49,7 @@
 #define RAM_ADDR_MASK			0xffff
 #define DEFAULT_RAM_CONTENTS	0xff
 
+/*
 struct HOME_HEADER
 {
 	uint16   jump;
@@ -56,6 +57,7 @@ struct HOME_HEADER
 	uint16   size;
 	uint8   magic[4];
 };
+*/
 
 class CRam : public CLynxBase
 {
@@ -76,6 +78,8 @@ public:
 	uint32	WriteCycle(void) {return 5;};
 	uint32   ObjectSize(void) {return RAM_SIZE;};
 	uint8*	GetRamPointer(void) { return mRamData; };
+
+	template<bool isReader>void SyncState(NewState *ns);
 
 	// Data members
 

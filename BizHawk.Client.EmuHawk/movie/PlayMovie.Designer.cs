@@ -226,13 +226,13 @@
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.editToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(95, 26);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(93, 26);
 			// 
 			// editToolStripMenuItem
 			// 
 			this.editToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.CutHS;
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-			this.editToolStripMenuItem.Size = new System.Drawing.Size(94, 22);
+			this.editToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
 			this.editToolStripMenuItem.Text = "&Edit";
 			this.editToolStripMenuItem.Click += new System.EventHandler(this.EditMenuItem_Click);
 			// 
@@ -251,10 +251,10 @@
 			// StopOnFrameTextBox
 			// 
 			this.StopOnFrameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.StopOnFrameTextBox.ByteSize = BizHawk.Client.Common.Watch.WatchSize.Byte;
+			this.StopOnFrameTextBox.ByteSize = BizHawk.Client.Common.Watch.WatchSize.DWord;
 			this.StopOnFrameTextBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.StopOnFrameTextBox.Location = new System.Drawing.Point(438, 355);
-			this.StopOnFrameTextBox.MaxLength = 8;
+			this.StopOnFrameTextBox.MaxLength = 10;
 			this.StopOnFrameTextBox.Name = "StopOnFrameTextBox";
 			this.StopOnFrameTextBox.Nullable = true;
 			this.StopOnFrameTextBox.Size = new System.Drawing.Size(54, 20);
