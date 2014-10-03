@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	// the RAM underneath (BASIC variable values probably)
 	// and then disables once loaded.
 
-	public class Mapper000B : Cart
+	sealed public class Mapper000B : Cart
 	{
 		private byte[] rom = new byte[0x4000];
 

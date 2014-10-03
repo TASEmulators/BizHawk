@@ -1,7 +1,7 @@
 ﻿using System;
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Cores.Computers.Commodore64
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	// ROM chips
 	// 2332: 32 kbit (4kbyte)

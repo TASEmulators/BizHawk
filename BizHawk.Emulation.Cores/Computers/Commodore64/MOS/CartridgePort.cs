@@ -1,7 +1,7 @@
 ﻿using System;
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Cores.Computers.Commodore64
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	sealed public class CartridgePort
 	{
@@ -81,6 +81,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public void SyncState(Serializer ser)
 		{
 			SaveState.SyncObject(ser, this);
+			cart.SyncState(ser);
 		}
 	}
 }

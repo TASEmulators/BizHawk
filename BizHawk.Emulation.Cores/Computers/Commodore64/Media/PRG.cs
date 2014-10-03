@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64
+﻿using BizHawk.Emulation.Cores.Computers.Commodore64.MOS;
+
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	public static class PRG
 	{
