@@ -207,12 +207,12 @@ INLINE void CCart::Poke(uint32 addr, uint8 data)
 {
 	if(mBank==bank0)
 	{
-		if(mWriteEnableBank0)
+		if(mWriteEnableBank0 && false) // can never write as there is no ram
 			mCartBank0[addr&mMaskBank0]=data;
 	}
 	else
 	{
-		if(mWriteEnableBank1)
+		if(mWriteEnableBank1 && mCartRAM) // can only write if it's actually ram
 			mCartBank1[addr&mMaskBank1]=data;
 	}
 }
@@ -260,7 +260,7 @@ void CCart::CartAddressData(bool data)
 
 void CCart::Poke0(uint8 data)
 {
-	if(mWriteEnableBank0)
+	if(mWriteEnableBank0 && false) // can never write as there is no ram
 	{
 		uint32 address=(mShifter<<mShiftCount0)+(mCounter&mCountMask0);
 		mCartBank0[address&mMaskBank0]=data;		
@@ -274,7 +274,7 @@ void CCart::Poke0(uint8 data)
 
 void CCart::Poke1(uint8 data)
 {
-	if(mWriteEnableBank1)
+	if(mWriteEnableBank1 && mCartRAM) // can only write if it's actually ram
 	{
 		uint32 address=(mShifter<<mShiftCount1)+(mCounter&mCountMask1);
 		mCartBank1[address&mMaskBank1]=data;		
@@ -313,4 +313,53 @@ uint8 CCart::Peek1(void)
 	}
 
 	return data;
+}
+
+
+
+bool CCart::GetSaveRamPtr(int &size, uint8 *&data)
+{
+	if (mCartRAM)
+	{
+		size = mMaskBank1 + 1;
+		data = mCartBank1;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+SYNCFUNC(CCart)
+{
+	NSS(mWriteEnableBank0);
+	NSS(mWriteEnableBank1);
+	NSS(mCartRAM);
+
+	EBS(mBank, 0);
+	EVS(mBank, bank0, 0);
+	EVS(mBank, bank1, 1);
+	EVS(mBank, ram, 2);
+	EVS(mBank, cpu, 3);
+	EES(mBank, bank0);
+
+	NSS(mMaskBank0);
+	NSS(mMaskBank1);
+	if (false)
+		PSS(mCartBank0, mMaskBank0 + 1);
+	if (mCartRAM)
+		PSS(mCartBank1, mMaskBank1 + 1);
+
+	NSS(mCounter);
+	NSS(mShifter);
+	NSS(mAddrData);
+	NSS(mStrobe);
+
+	NSS(mShiftCount0);
+	NSS(mCountMask0);
+	NSS(mShiftCount1);
+	NSS(mCountMask1);
+
+	NSS(last_strobe);
 }

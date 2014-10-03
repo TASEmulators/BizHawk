@@ -577,10 +577,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			//so here are two workaround methods.
 
 			//method 1.
-			//BizHawk.Common.Win32ThreadHacks.HackyPinvokeWaitOne(m64pFrameComplete);
+			BizHawk.Common.Win32ThreadHacks.HackyPinvokeWaitOne(m64pFrameComplete);
 
 			//method 2.
-			BizHawk.Common.Win32ThreadHacks.HackyComWaitOne(m64pFrameComplete);
+			//BizHawk.Common.Win32ThreadHacks.HackyComWaitOne(m64pFrameComplete);
 		}
 
 		public int SaveState(byte[] buffer)

@@ -37,6 +37,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		private Action _pendingThreadAction;
 
+		private bool _disableExpansionSlot = true;
+
 		/// <summary>
 		/// Create mupen64plus Emulator
 		/// </summary>
@@ -58,10 +60,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			_syncSettings = (N64SyncSettings)syncSettings ?? new N64SyncSettings();
 			_settings = (N64Settings)settings ?? new N64Settings();
 
+			_disableExpansionSlot = _syncSettings.DisableExpansionSlot;
 
+			// Override the user's expansion slot setting if it is mentioned in the gamedb (it is mentioned but the game MUST have this setting or else not work
 			if (game.OptionValue("expansionpak") != null && game.OptionValue("expansionpak") == "1")
 			{
-				_syncSettings.DisableExpansionSlot = false;
+				_disableExpansionSlot = false;
+				IsOverridingUserExpansionSlotSetting = true;
 			}
 
 			byte country_code = file[0x3E];
@@ -109,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			//not sure why this works... if we put the plugin initializations in here, we get deadlocks in some SDL initialization. doesnt make sense to me...
 			RunThreadAction(() =>
 			{
-				api = new mupen64plusApi(this, file, videosettings, SaveType, (int)coreType, _syncSettings.DisableExpansionSlot);
+				api = new mupen64plusApi(this, file, videosettings, SaveType, (int)coreType, _disableExpansionSlot);
 			});
 
 			// Order is important because the register with the mupen core
@@ -130,6 +135,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			api.AsyncExecuteEmulator();
 			SetControllerButtons();
 		}
+
+		public bool UsingExpansionSlot
+		{
+			get { return !_disableExpansionSlot; }
+		}
+
+		public bool IsOverridingUserExpansionSlotSetting { get; set; }
 
 		public void Dispose()
 		{
@@ -341,7 +353,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			int length = reader.ReadInt32();
-			if ((_syncSettings.DisableExpansionSlot && length >= 16788288) || (!_syncSettings.DisableExpansionSlot && length < 16788288))
+			if ((_disableExpansionSlot && length >= 16788288) || (!_disableExpansionSlot && length < 16788288))
 			{
 				throw new SavestateSizeMismatchException("Wrong N64 savestate size");
 			}

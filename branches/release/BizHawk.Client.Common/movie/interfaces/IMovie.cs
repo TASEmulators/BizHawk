@@ -145,7 +145,8 @@ namespace BizHawk.Client.Common
 		/// The saveChanges flag will tell the movie to save its contents to disk
 		/// </summary>
 		/// <param name="saveChanges">if true, will save to disk</param>
-		void Stop(bool saveChanges = true);
+		/// <returns>Whether or not the movie was saved</returns>
+		bool Stop(bool saveChanges = true);
 
 		/// <summary>
 		/// Switches to record mode

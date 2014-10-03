@@ -33,6 +33,7 @@
 			this.CancelBtn = new System.Windows.Forms.Button();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.StartFullScreenCheckbox = new System.Windows.Forms.CheckBox();
 			this.label14 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
 			this.SingleInstanceModeCheckbox = new System.Windows.Forms.CheckBox();
@@ -47,21 +48,12 @@
 			this.StartPausedCheckbox = new System.Windows.Forms.CheckBox();
 			this.PauseWhenMenuActivatedCheckbox = new System.Windows.Forms.CheckBox();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
-			this.KbLabel = new System.Windows.Forms.Label();
-			this.BigScreenshotNumeric = new System.Windows.Forms.NumericUpDown();
-			this.SaveLargeScreenshotsCheckbox = new System.Windows.Forms.CheckBox();
 			this.label12 = new System.Windows.Forms.Label();
 			this.label13 = new System.Windows.Forms.Label();
 			this.FrameAdvSkipLagCheckbox = new System.Windows.Forms.CheckBox();
 			this.label9 = new System.Windows.Forms.Label();
 			this.label10 = new System.Windows.Forms.Label();
 			this.BackupSRamCheckbox = new System.Windows.Forms.CheckBox();
-			this.label8 = new System.Windows.Forms.Label();
-			this.label7 = new System.Windows.Forms.Label();
-			this.ScreenshotInStatesCheckbox = new System.Windows.Forms.CheckBox();
-			this.label6 = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
-			this.BackupSavestatesCheckbox = new System.Windows.Forms.CheckBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.LogWindowAsConsoleCheckbox = new System.Windows.Forms.CheckBox();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -88,11 +80,9 @@
 			this.RecentRomsNumeric = new System.Windows.Forms.NumericUpDown();
 			this.label11 = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.StartFullScreenCheckbox = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage3.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.BigScreenshotNumeric)).BeginInit();
 			this.tabPage2.SuspendLayout();
 			this.RecentGroupBox.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.RecentSearchesNumeric)).BeginInit();
@@ -166,6 +156,16 @@
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "General";
 			this.tabPage1.UseVisualStyleBackColor = true;
+			// 
+			// StartFullScreenCheckbox
+			// 
+			this.StartFullScreenCheckbox.AutoSize = true;
+			this.StartFullScreenCheckbox.Location = new System.Drawing.Point(104, 100);
+			this.StartFullScreenCheckbox.Name = "StartFullScreenCheckbox";
+			this.StartFullScreenCheckbox.Size = new System.Drawing.Size(107, 17);
+			this.StartFullScreenCheckbox.TabIndex = 13;
+			this.StartFullScreenCheckbox.Text = "Start in fullscreen";
+			this.StartFullScreenCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// label14
 			// 
@@ -295,21 +295,12 @@
 			// 
 			// tabPage3
 			// 
-			this.tabPage3.Controls.Add(this.KbLabel);
-			this.tabPage3.Controls.Add(this.BigScreenshotNumeric);
-			this.tabPage3.Controls.Add(this.SaveLargeScreenshotsCheckbox);
 			this.tabPage3.Controls.Add(this.label12);
 			this.tabPage3.Controls.Add(this.label13);
 			this.tabPage3.Controls.Add(this.FrameAdvSkipLagCheckbox);
 			this.tabPage3.Controls.Add(this.label9);
 			this.tabPage3.Controls.Add(this.label10);
 			this.tabPage3.Controls.Add(this.BackupSRamCheckbox);
-			this.tabPage3.Controls.Add(this.label8);
-			this.tabPage3.Controls.Add(this.label7);
-			this.tabPage3.Controls.Add(this.ScreenshotInStatesCheckbox);
-			this.tabPage3.Controls.Add(this.label6);
-			this.tabPage3.Controls.Add(this.label5);
-			this.tabPage3.Controls.Add(this.BackupSavestatesCheckbox);
 			this.tabPage3.Controls.Add(this.label4);
 			this.tabPage3.Controls.Add(this.LogWindowAsConsoleCheckbox);
 			this.tabPage3.Location = new System.Drawing.Point(4, 22);
@@ -319,51 +310,10 @@
 			this.tabPage3.Text = "Advanced";
 			this.tabPage3.UseVisualStyleBackColor = true;
 			// 
-			// KbLabel
-			// 
-			this.KbLabel.AutoSize = true;
-			this.KbLabel.Location = new System.Drawing.Point(213, 155);
-			this.KbLabel.Name = "KbLabel";
-			this.KbLabel.Size = new System.Drawing.Size(19, 13);
-			this.KbLabel.TabIndex = 17;
-			this.KbLabel.Text = "kb";
-			// 
-			// BigScreenshotNumeric
-			// 
-			this.BigScreenshotNumeric.Location = new System.Drawing.Point(155, 151);
-			this.BigScreenshotNumeric.Maximum = new decimal(new int[] {
-            8192,
-            0,
-            0,
-            0});
-			this.BigScreenshotNumeric.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			this.BigScreenshotNumeric.Name = "BigScreenshotNumeric";
-			this.BigScreenshotNumeric.Size = new System.Drawing.Size(58, 20);
-			this.BigScreenshotNumeric.TabIndex = 16;
-			this.BigScreenshotNumeric.Value = new decimal(new int[] {
-            128,
-            0,
-            0,
-            0});
-			// 
-			// SaveLargeScreenshotsCheckbox
-			// 
-			this.SaveLargeScreenshotsCheckbox.AutoSize = true;
-			this.SaveLargeScreenshotsCheckbox.Location = new System.Drawing.Point(27, 153);
-			this.SaveLargeScreenshotsCheckbox.Name = "SaveLargeScreenshotsCheckbox";
-			this.SaveLargeScreenshotsCheckbox.Size = new System.Drawing.Size(131, 17);
-			this.SaveLargeScreenshotsCheckbox.TabIndex = 15;
-			this.SaveLargeScreenshotsCheckbox.Text = "And large screenshots";
-			this.SaveLargeScreenshotsCheckbox.UseVisualStyleBackColor = true;
-			// 
 			// label12
 			// 
 			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(24, 295);
+			this.label12.Location = new System.Drawing.Point(24, 149);
 			this.label12.Name = "label12";
 			this.label12.Size = new System.Drawing.Size(231, 13);
 			this.label12.TabIndex = 14;
@@ -372,7 +322,7 @@
 			// label13
 			// 
 			this.label13.AutoSize = true;
-			this.label13.Location = new System.Drawing.Point(24, 282);
+			this.label13.Location = new System.Drawing.Point(24, 136);
 			this.label13.Name = "label13";
 			this.label13.Size = new System.Drawing.Size(268, 13);
 			this.label13.TabIndex = 13;
@@ -381,7 +331,7 @@
 			// FrameAdvSkipLagCheckbox
 			// 
 			this.FrameAdvSkipLagCheckbox.AutoSize = true;
-			this.FrameAdvSkipLagCheckbox.Location = new System.Drawing.Point(6, 262);
+			this.FrameAdvSkipLagCheckbox.Location = new System.Drawing.Point(6, 116);
 			this.FrameAdvSkipLagCheckbox.Name = "FrameAdvSkipLagCheckbox";
 			this.FrameAdvSkipLagCheckbox.Size = new System.Drawing.Size(241, 17);
 			this.FrameAdvSkipLagCheckbox.TabIndex = 12;
@@ -391,7 +341,7 @@
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(24, 236);
+			this.label9.Location = new System.Drawing.Point(24, 90);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(99, 13);
 			this.label9.TabIndex = 11;
@@ -400,7 +350,7 @@
 			// label10
 			// 
 			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(24, 223);
+			this.label10.Location = new System.Drawing.Point(24, 77);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(277, 13);
 			this.label10.TabIndex = 10;
@@ -409,69 +359,12 @@
 			// BackupSRamCheckbox
 			// 
 			this.BackupSRamCheckbox.AutoSize = true;
-			this.BackupSRamCheckbox.Location = new System.Drawing.Point(4, 207);
+			this.BackupSRamCheckbox.Location = new System.Drawing.Point(4, 61);
 			this.BackupSRamCheckbox.Name = "BackupSRamCheckbox";
 			this.BackupSRamCheckbox.Size = new System.Drawing.Size(108, 17);
 			this.BackupSRamCheckbox.TabIndex = 9;
 			this.BackupSRamCheckbox.Text = "Backup Saveram";
 			this.BackupSRamCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// label8
-			// 
-			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(24, 186);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(183, 13);
-			this.label8.TabIndex = 8;
-			this.label8.Text = "black screen on the frame it is loaded";
-			// 
-			// label7
-			// 
-			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(24, 172);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(290, 13);
-			this.label7.TabIndex = 7;
-			this.label7.Text = "Saves a screenshot and loads it on loadstate so there isn\'t a";
-			// 
-			// ScreenshotInStatesCheckbox
-			// 
-			this.ScreenshotInStatesCheckbox.AutoSize = true;
-			this.ScreenshotInStatesCheckbox.Location = new System.Drawing.Point(4, 134);
-			this.ScreenshotInStatesCheckbox.Name = "ScreenshotInStatesCheckbox";
-			this.ScreenshotInStatesCheckbox.Size = new System.Drawing.Size(180, 17);
-			this.ScreenshotInStatesCheckbox.TabIndex = 6;
-			this.ScreenshotInStatesCheckbox.Text = "Save a screenshot in savestates";
-			this.ScreenshotInStatesCheckbox.UseVisualStyleBackColor = true;
-			this.ScreenshotInStatesCheckbox.CheckedChanged += new System.EventHandler(this.ScreenshotInStatesCheckbox_CheckedChanged);
-			// 
-			// label6
-			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(24, 107);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(99, 13);
-			this.label6.TabIndex = 5;
-			this.label6.Text = "before overwriting it";
-			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(24, 94);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(292, 13);
-			this.label5.TabIndex = 4;
-			this.label5.Text = "When set, the client will make a backup copy of a savestate";
-			// 
-			// BackupSavestatesCheckbox
-			// 
-			this.BackupSavestatesCheckbox.AutoSize = true;
-			this.BackupSavestatesCheckbox.Location = new System.Drawing.Point(6, 74);
-			this.BackupSavestatesCheckbox.Name = "BackupSavestatesCheckbox";
-			this.BackupSavestatesCheckbox.Size = new System.Drawing.Size(119, 17);
-			this.BackupSavestatesCheckbox.TabIndex = 3;
-			this.BackupSavestatesCheckbox.Text = "Backup Savestates";
-			this.BackupSavestatesCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// label4
 			// 
@@ -846,16 +739,6 @@
 			this.label11.TabIndex = 0;
 			this.label11.Text = "Roms";
 			// 
-			// StartFullScreenCheckbox
-			// 
-			this.StartFullScreenCheckbox.AutoSize = true;
-			this.StartFullScreenCheckbox.Location = new System.Drawing.Point(104, 100);
-			this.StartFullScreenCheckbox.Name = "StartFullScreenCheckbox";
-			this.StartFullScreenCheckbox.Size = new System.Drawing.Size(107, 17);
-			this.StartFullScreenCheckbox.TabIndex = 13;
-			this.StartFullScreenCheckbox.Text = "Start in fullscreen";
-			this.StartFullScreenCheckbox.UseVisualStyleBackColor = true;
-			// 
 			// EmuHawkOptions
 			// 
 			this.AcceptButton = this.OkBtn;
@@ -876,7 +759,6 @@
 			this.tabPage1.PerformLayout();
 			this.tabPage3.ResumeLayout(false);
 			this.tabPage3.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.BigScreenshotNumeric)).EndInit();
 			this.tabPage2.ResumeLayout(false);
 			this.RecentGroupBox.ResumeLayout(false);
 			this.RecentGroupBox.PerformLayout();
@@ -916,12 +798,6 @@
 		private System.Windows.Forms.CheckBox LogWindowAsConsoleCheckbox;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.ToolTip toolTip1;
-		private System.Windows.Forms.Label label6;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.CheckBox BackupSavestatesCheckbox;
-		private System.Windows.Forms.CheckBox ScreenshotInStatesCheckbox;
-		private System.Windows.Forms.Label label8;
-		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.CheckBox BackupSRamCheckbox;
 		private System.Windows.Forms.Label label9;
 		private System.Windows.Forms.Label label10;
@@ -951,9 +827,6 @@
 		private System.Windows.Forms.Label label19;
 		private System.Windows.Forms.Button IncreaseRecentBtn;
 		private System.Windows.Forms.Button DecreaseRecentBtn;
-		private System.Windows.Forms.CheckBox SaveLargeScreenshotsCheckbox;
-		private System.Windows.Forms.NumericUpDown BigScreenshotNumeric;
-		private System.Windows.Forms.Label KbLabel;
 		private System.Windows.Forms.CheckBox StartFullScreenCheckbox;
 	}
 }

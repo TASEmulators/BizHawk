@@ -64,7 +64,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public void ExecutePhase1()
 		{
-			//xScroll = 1;
 			{
 				// raster IRQ compare
 				if ((cycle == rasterIrqLineXCycle && rasterLine > 0) || (cycle == rasterIrqLine0Cycle && rasterLine == 0))
@@ -93,13 +92,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				if (badline)
 					idle = false;
 
-				// process some sprite crunch vars
-				foreach (SpriteGenerator spr in sprites)
-					if (!spr.yExpand) spr.yCrunch = true;
-
 				ParseCycle();
 
-				//xOffset = 0;
 				Render();
 
 				// if the BA counter is nonzero, allow CPU bus access

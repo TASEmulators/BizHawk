@@ -32,7 +32,47 @@ EXPORT void Reset(CSystem *s)
 	s->Reset();
 }
 
-EXPORT void Advance(CSystem *s, int buttons, uint32 *vbuff, int16 *sbuff, int *sbuffsize)
+EXPORT int Advance(CSystem *s, int buttons, uint32 *vbuff, int16 *sbuff, int *sbuffsize)
 {
-	s->Advance(buttons, vbuff, sbuff, *sbuffsize);
+	return s->Advance(buttons, vbuff, sbuff, *sbuffsize);
 }
+
+EXPORT int GetSaveRamPtr(CSystem *s, int *size, uint8 **data)
+{
+	return s->GetSaveRamPtr(*size, *data);
+}
+
+
+EXPORT int BinStateSize(CSystem *s)
+{
+	NewStateDummy dummy;
+	s->SyncState<false>(&dummy);
+	return dummy.GetLength();
+}
+
+EXPORT int BinStateSave(CSystem *s, char *data, int length)
+{
+	NewStateExternalBuffer saver(data, length);
+	s->SyncState<false>(&saver);
+	return !saver.Overflow() && saver.GetLength() == length;
+}
+	
+EXPORT int BinStateLoad(CSystem *s, const char *data, int length)
+{
+	NewStateExternalBuffer loader(const_cast<char *>(data), length);
+	s->SyncState<true>(&loader);
+	return !loader.Overflow() && loader.GetLength() == length;
+}
+
+EXPORT void TxtStateSave(CSystem *s, FPtrs *ff)
+{
+	NewStateExternalFunctions saver(ff);
+	s->SyncState<false>(&saver);
+}
+
+EXPORT void TxtStateLoad(CSystem *s, FPtrs *ff)
+{
+	NewStateExternalFunctions loader(ff);
+	s->SyncState<true>(&loader);
+}
+

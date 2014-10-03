@@ -91,5 +91,39 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
+
+		[LuaMethodAttributes(
+			"islag",
+			"Returns whether or not the given frame was a lag frame, null if unknown"
+		)]
+		public bool? IsLag(int frame)
+		{
+			if (Engaged())
+			{
+				if (frame < Tastudio.CurrentMovie.InputLogLength)
+				{
+					return Tastudio.CurrentMovie[frame].Lagged;
+				}
+			}
+
+			return null;
+		}
+
+		[LuaMethodAttributes(
+			"hasstate",
+			"Returns whether or not the given frame has a savestate associated with it"
+		)]
+		public bool HasState(int frame)
+		{
+			if (Engaged())
+			{
+				if (frame < Tastudio.CurrentMovie.InputLogLength)
+				{
+					return Tastudio.CurrentMovie[frame].HasState;
+				}
+			}
+
+			return false;
+		}
 	}
 }

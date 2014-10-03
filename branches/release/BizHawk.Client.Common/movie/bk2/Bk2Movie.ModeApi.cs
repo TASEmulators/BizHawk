@@ -55,18 +55,22 @@ namespace BizHawk.Client.Common
 			Save();
 		}
 
-		public void Stop(bool saveChanges = true)
+		public virtual bool Stop(bool saveChanges = true)
 		{
+			bool saved = false;
 			if (saveChanges)
 			{
 				if (_mode == Moviemode.Record || (IsActive && Changes))
 				{
 					Save();
+					saved = true;
 				}
 			}
 
 			Changes = false;
 			_mode = Moviemode.Inactive;
+
+			return saved;
 		}
 
 		public void FinishedMode()

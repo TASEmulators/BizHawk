@@ -15,5 +15,19 @@
 			this.Focus();
 			//NewTasMenuItem_Click(null, null);
 		}
+
+		public bool WantsToControlRewind { get { return true; } }
+
+		public void CaptureRewind()
+		{
+			// Do nothing, Tastudio handles this just fine
+		}
+
+		public bool Rewind()
+		{
+			GoToPreviousFrame();
+
+			return true;
+		}
 	}
 }

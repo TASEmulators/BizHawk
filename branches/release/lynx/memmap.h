@@ -80,6 +80,8 @@ class CMemMap : public CLynxBase
 		uint32	WriteCycle(void) {return 5;};
 		uint32	ObjectSize(void) {return MEMMAP_SIZE;};
 
+		template<bool isReader>void SyncState(NewState *ns);
+
 	// Data members
 
 	private:

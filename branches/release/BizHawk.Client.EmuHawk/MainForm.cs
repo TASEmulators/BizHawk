@@ -306,13 +306,23 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Global.Config.RecentMovies.AutoLoad && !Global.Config.RecentMovies.Empty)
 			{
-				if (Global.Game == null)
+				if (Global.Game.IsNullInstance)
 				{
 					OpenRom();
 				}
-				else
+
+				// If user picked a game, then do the autoload logic
+				if (!Global.Game.IsNullInstance)
 				{
-					StartNewMovie(MovieService.Get(Global.Config.RecentMovies.MostRecent), false);
+
+					if (File.Exists(Global.Config.RecentMovies.MostRecent))
+					{
+						StartNewMovie(MovieService.Get(Global.Config.RecentMovies.MostRecent), false);
+					}
+					else
+					{
+						Global.Config.RecentMovies.HandleLoadError(Global.Config.RecentMovies.MostRecent);
+					}
 				}
 			}
 
@@ -2580,16 +2590,7 @@ namespace BizHawk.Client.EmuHawk
 				runFrame = true;
 			}
 
-			bool isRewinding = false;
-			if (Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind) 
-				&& !Global.MovieSession.Movie.IsRecording) // Rewind isn't "bulletproof" and can desync a recording movie!
-			{
-				Global.Rewinder.Rewind(1);
-				suppressCaptureRewind = true;
-
-				runFrame = Global.Rewinder.Count != 0;
-				isRewinding = true;
-			}
+			bool isRewinding = suppressCaptureRewind = Rewind(ref runFrame);
 
 			if (UpdateFrame)
 			{
@@ -2663,10 +2664,7 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.OSD.FPS = fps_string;
 				}
 
-				if (!suppressCaptureRewind && Global.Rewinder.RewindActive)
-				{
-					Global.Rewinder.CaptureRewindState();
-				}
+				CaptureRewind(suppressCaptureRewind);
 
 				if (!_runloopFrameadvance)
 				{
@@ -3418,6 +3416,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void ClearRewindData()
+		{
+			Global.Rewinder.ResetRewindBuffer();
+		}
+
 		#endregion
 
         #region Tool Control API
@@ -3477,6 +3480,43 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GenericCoreConfig.DoDialog(this, "Gameboy Advance Settings");
         }
+
+
+		private void CaptureRewind(bool suppressCaptureRewind)
+		{
+			if (IsSlave && master.WantsToControlRewind)
+			{
+				master.CaptureRewind();
+			}
+			else if (!suppressCaptureRewind && Global.Rewinder.RewindActive)
+			{
+				Global.Rewinder.CaptureRewindState();
+			}
+		}
+
+		private bool Rewind(ref bool runFrame)
+		{
+			if (IsSlave && master.WantsToControlRewind)
+			{
+				if (Global.ClientControls["Rewind"] || PressRewind)
+				{
+					runFrame = false; // TODO: the master should be deciding this!
+					return master.Rewind();
+				}
+			}
+			
+			var isRewinding = false;
+			if (Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind)
+				&& !Global.MovieSession.Movie.IsRecording) // Rewind isn't "bulletproof" and can desync a recording movie!
+			{
+				Global.Rewinder.Rewind(1);
+
+				runFrame = Global.Rewinder.Count != 0;
+				isRewinding = true;
+			}
+
+			return isRewinding;
+		}
 
         #endregion
 

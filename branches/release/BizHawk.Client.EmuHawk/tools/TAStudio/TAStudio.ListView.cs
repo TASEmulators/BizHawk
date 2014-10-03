@@ -31,12 +31,6 @@ namespace BizHawk.Client.EmuHawk
 		public static Color LagZone_InputLog = Color.FromArgb(0xF0D0D2);
 		public static Color LagZone_Invalidated_InputLog = Color.FromArgb(0xF7E5E5);
 
-		public static Color NoState_GreenZone_FrameCol = Color.FromArgb(0xF9FFF9);
-		public static Color NoState_GreenZone_InputLog = Color.FromArgb(0xE0FBE0);
-
-		public static Color NoState_LagZone_FrameCol = Color.FromArgb(0xFFE9E9);
-		public static Color NoState_LagZone_InputLog = Color.FromArgb(0xF0D0D2);
-
 		public static Color Marker_FrameCol = Color.FromArgb(0xF7FFC9);
 
 		#region Query callbacks
@@ -86,28 +80,17 @@ namespace BizHawk.Client.EmuHawk
 		private void TasView_QueryItemBkColor(int index, int column, ref Color color)
 		{
 			var columnName = TasView.Columns[column].Name;
+			var record = _currentTasMovie[index];
 
-			// Marker Column is white regardless
 			if (columnName == MarkerColumnName)
 			{
-				color = Color.White;
-				return;
-			}
-
-			// "pending" frame logic
-			if (index == Global.Emulator.Frame && index == _currentTasMovie.InputLogLength)
-			{
-				if (columnName == FrameColumnName)
+				if (VersionInfo.DeveloperBuild) // For debugging purposes, let's visually show the state frames
 				{
-					color = CurrentFrame_FrameCol;
+					color = (record.HasState ? color = Color.FromArgb(0xEEEEEE) : Color.White);
 				}
-
-				color = CurrentFrame_InputLog;
-
+				
 				return;
 			}
-
-			var record = _currentTasMovie[index];
 
 			if (columnName == FrameColumnName)
 			{
@@ -123,11 +106,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (record.Lagged.Value)
 					{
-						color = record.HasState ? LagZone_FrameCol : NoState_LagZone_InputLog;
+						color = LagZone_FrameCol;
 					}
 					else
 					{
-						color = record.HasState ? GreenZone_FrameCol : NoState_GreenZone_FrameCol;
+						color = GreenZone_FrameCol;
 					}
 				}
 				else
@@ -147,12 +130,12 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (record.Lagged.Value)
 						{
-							color = record.HasState ? LagZone_InputLog : NoState_LagZone_InputLog;
+							color = LagZone_InputLog;
 							
 						}
 						else
 						{
-							color = record.HasState ? GreenZone_InputLog : NoState_GreenZone_InputLog;
+							color = GreenZone_InputLog;
 						}
 					}
 					else
@@ -243,6 +226,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void TasView_ColumnRightClick(object sender, ColumnClickEventArgs e)
+		{
+			var column = TasView.Columns[e.Column];
+			column.Emphasis ^= true;
+
+			Global.StickyXORAdapter.SetSticky(column.Name, column.Emphasis);
+
+			TasView.Refresh();
+		}
+
 		private void TasView_MouseDown(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Middle)
@@ -264,7 +257,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						_startFrameDrag = true;
 					}
-					else//User changed input
+					else // User changed input
 					{
 						var frame = TasView.CurrentCell.RowIndex.Value;
 						var buttonName = TasView.CurrentCell.Column.Name;
@@ -273,7 +266,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
 							GoToLastEmulatedFrameIfNecessary(TasView.CurrentCell.RowIndex.Value);
-							TasView.Refresh();
+							RefreshDialog();
 
 							_startBoolDrawColumn = buttonName;
 

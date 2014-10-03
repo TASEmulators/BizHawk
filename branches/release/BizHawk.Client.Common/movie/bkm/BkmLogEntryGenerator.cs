@@ -22,6 +22,11 @@ namespace BizHawk.Client.Common
 				return "|.|";
 			}
 
+			if (_controlType == "Lynx Controller")
+			{
+				return GetLynxControllersAsMnemonic();
+			}
+
 			if (_controlType == "Atari 7800 ProLine Joystick Controller")
 			{
 				return GetA78ControllersAsMnemonic();
@@ -407,6 +412,25 @@ namespace BizHawk.Client.Common
 				foreach (var button in BkmMnemonicConstants.BUTTONS[_controlType].Keys)
 				{
 					input.Append(IsBasePressed("P" + player + " " + button) ? BkmMnemonicConstants.BUTTONS[_controlType][button] : ".");
+				}
+
+				input.Append('|');
+			}
+
+			return input.ToString();
+		}
+
+		private string GetLynxControllersAsMnemonic()
+		{
+			var input = new StringBuilder("|");
+			input.Append(IsBasePressed("Power") ? 'P' : '.');
+			input.Append('|');
+
+			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[_controlType]; player++)
+			{
+				foreach (var button in BkmMnemonicConstants.BUTTONS[_controlType].Keys)
+				{
+					input.Append(IsBasePressed(button) ? BkmMnemonicConstants.BUTTONS[_controlType][button] : ".");
 				}
 
 				input.Append('|');

@@ -136,10 +136,30 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Clears all state information
 		/// </summary>
+		/// 
 		public void Clear()
 		{
 			States.Clear();
 			Used = 0;
+		}
+
+		public void ClearGreenzone()
+		{
+			if (States.Any())
+			{
+				var power = States.FirstOrDefault(s => s.Key == 0);
+				States.Clear();
+
+				if (power.Value.Length > 0)
+				{
+					States.Add(0, power.Value);
+					Used = power.Value.Length;
+				}
+				else
+				{
+					Used = 0;
+				}
+			}
 		}
 
 		public void Save(BinaryWriter bw)
@@ -191,6 +211,11 @@ namespace BizHawk.Client.Common
 			{
 				return States.Count;
 			}
+		}
+
+		public bool Any()
+		{
+			return States.Count > 1; // TODO: power-on MUST have a state, savestate-anchored movies do not, take this into account
 		}
 
 		public int LastKey

@@ -1,0 +1,1795 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GongShell</name>
+    </assembly>
+    <members>
+        <member name="T:GongSolutions.Shell.PlacesToolbar">
+            <summary>
+            Provides a toolbar showing common places in the computer's
+            filesystem.
+            </summary>
+            
+            <remarks>
+            Use the <see cref="T:GongSolutions.Shell.PlacesToolbar"/> control to display a 
+            toolbar listing common places in the computer's filesystem,
+            similar to that on the far left-side of the standard file 
+            open/save dialogs.
+            </remarks>
+        </member>
+        <member name="F:GongSolutions.Shell.PlacesToolbar.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.PlacesToolbar.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:GongSolutions.Shell.PlacesToolbar.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.PlacesToolbar.#ctor">
+            <summary>
+            Initializes a new instance of the 
+            <see cref="T:GongSolutions.Shell.PlacesToolbar"/> class.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.PlacesToolbar.Add(GongSolutions.Shell.ShellItem)">
+            <summary>
+            Adds a new folder to the toolbar.
+            </summary>
+            
+            <param name="folder">
+            A <see cref="T:GongSolutions.Shell.ShellItem"/> representing the folder to be added.
+            </param>
+            
+            <returns>
+            true if the item was sucessfully added, false otherwise.
+            </returns>
+        </member>
+        <member name="M:GongSolutions.Shell.PlacesToolbar.OnVisibleChanged(System.EventArgs)">
+            <summary>
+            Overrides the <see cref="M:System.Windows.Forms.Control.OnVisibleChanged(System.EventArgs)"/> method.
+            </summary>
+            <param name="e"/>
+        </member>
+        <member name="P:GongSolutions.Shell.PlacesToolbar.ShellView">
+            <summary>
+            A <see cref="C:ShellView"/> that should be automatically 
+            navigated when the user clicks on an entry in the toolbar.
+            </summary>
+        </member>
+        <member name="E:GongSolutions.Shell.PlacesToolbar.FilterItem">
+            <summary>
+            Occurs when the <see cref="T:GongSolutions.Shell.PlacesToolbar"/> control wants to 
+            know if it should include an item.
+            </summary>
+            
+            <remarks>
+            This event allows the items displayed in the 
+            <see cref="T:GongSolutions.Shell.PlacesToolbar"/> control to be filtered.
+            </remarks>
+        </member>
+        <member name="P:GongSolutions.Shell.PlacesToolbar.AllowDrop">
+            <summary>
+            This property does not apply to the 
+            <see cref="T:GongSolutions.Shell.PlacesToolbar"/> class.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.PlacesToolbar.AutoScroll">
+            <summary>
+            This property is not relevant to the 
+            <see cref="T:GongSolutions.Shell.PlacesToolbar"/> class.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.PlacesToolbar.AutoScrollMargin">
+            <summary>
+            This property is not relevant to the 
+            <see cref="T:GongSolutions.Shell.PlacesToolbar"/> class.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.PlacesToolbar.AutoScrollMinSize">
+            <summary>
+            This property is not relevant to the 
+            <see cref="T:GongSolutions.Shell.PlacesToolbar"/> class.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.PlacesToolbar.AutoSize">
+            <summary>
+            This property is not relevant to the 
+            <see cref="T:GongSolutions.Shell.PlacesToolbar"/> class.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.PlacesToolbar.AutoSizeMode">
+            <summary>
+            This property is not relevant to the 
+            <see cref="T:GongSolutions.Shell.PlacesToolbar"/> class.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.PlacesToolbar.AutoValidate">
+            <summary>
+            This property is not relevant to the 
+            <see cref="T:GongSolutions.Shell.PlacesToolbar"/> class.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.PlacesToolbar.BackgroundImage">
+            <summary>
+            This property is not relevant to the 
+            <see cref="T:GongSolutions.Shell.PlacesToolbar"/> class.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.PlacesToolbar.BackgroundImageLayout">
+            <summary>
+            This property is not relevant to the 
+            <see cref="T:GongSolutions.Shell.PlacesToolbar"/> class.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.PlacesToolbar.BorderStyle">
+            <summary>
+            This property is not relevant to the 
+            <see cref="T:GongSolutions.Shell.PlacesToolbar"/> class.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.PlacesToolbar.CausesValidation">
+            <summary>
+            This property is not relevant to the 
+            <see cref="T:GongSolutions.Shell.PlacesToolbar"/> class.
+            </summary>
+        </member>
+        <member name="F:GongSolutions.Shell.ShellItemBrowseForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItemBrowseForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItemBrowseForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:GongSolutions.Shell.FileNameComboBox">
+            <summary>
+            A filename combo box suitable for use in file Open/Save dialogs.
+            </summary>
+            
+            <remarks>
+            <para>
+            This control extends the <see cref="T:System.Windows.Forms.ComboBox"/> class to provide
+            auto-completion of filenames based on the folder selected in a
+            <see cref="P:GongSolutions.Shell.FileNameComboBox.ShellView"/>. The control also automatically navigates 
+            the ShellView control when the user types a folder path.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:GongSolutions.Shell.FileNameComboBox.IsInputKey(System.Windows.Forms.Keys)">
+            <summary>
+            Determines whether the specified key is a regular input key or a 
+            special key that requires preprocessing. 
+            </summary>
+            
+            <param name="keyData">
+            One of the <see cref="T:System.Windows.Forms.Keys"/> values.
+            </param>
+            
+            <returns>
+            true if the specified key is a regular input key; otherwise, false. 
+            </returns>
+        </member>
+        <member name="M:GongSolutions.Shell.FileNameComboBox.OnKeyDown(System.Windows.Forms.KeyEventArgs)">
+            <summary>
+            Raises the <see cref="E:System.Windows.Forms.Control.KeyDown"/> event.
+            </summary>
+            
+            <param name="e">
+            A <see cref="T:System.Windows.Forms.KeyEventArgs"/> that contains the event data.
+            </param>
+        </member>
+        <member name="M:GongSolutions.Shell.FileNameComboBox.OnKeyPress(System.Windows.Forms.KeyPressEventArgs)">
+            <summary>
+            Raises the <see cref="E:System.Windows.Forms.Control.KeyPress"/> event.
+            </summary>
+            
+            <param name="e">
+            A <see cref="T:System.Windows.Forms.KeyPressEventArgs"/> that contains the event data.
+            </param>
+        </member>
+        <member name="M:GongSolutions.Shell.FileNameComboBox.OnTextChanged(System.EventArgs)">
+            <summary>
+            Raises the <see cref="E:System.Windows.Forms.Control.TextChanged"/> event.
+            </summary>
+            
+            <param name="e">
+            An <see cref="T:System.EventArgs"/> that contains the event data.
+            </param>
+        </member>
+        <member name="P:GongSolutions.Shell.FileNameComboBox.FilterControl">
+            <summary>
+            Initializes a new instance of the <see cref="T:GongSolutions.Shell.FileNameComboBox"/>
+            class.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.FileNameComboBox.ShellView">
+            <summary>
+            Gets/sets the <see cref="P:GongSolutions.Shell.FileNameComboBox.ShellView"/> control that the 
+            <see cref="T:GongSolutions.Shell.FileNameComboBox"/> should look for auto-completion
+            hints.
+            </summary>
+        </member>
+        <member name="E:GongSolutions.Shell.FileNameComboBox.FileNameEntered">
+            <summary>
+            Occurs when a file name is entered into the 
+            <see cref="T:GongSolutions.Shell.FileNameComboBox"/> and the Return key pressed.
+            </summary>
+        </member>
+        <member name="T:GongSolutions.Shell.ShellComboBox">
+            <summary>
+            Provides a drop-down list displaying the Windows Shell namespace.
+            </summary>
+            
+            <remarks>
+            The <see cref="T:GongSolutions.Shell.ShellComboBox"/> class displays a view of the Windows
+            Shell namespace in a drop-down list similar to that displayed in
+            a file open/save dialog.
+            </remarks>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellComboBox.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:GongSolutions.Shell.ShellComboBox"/> class.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellComboBox.Editable">
+            <summary>
+            Gets/sets a value indicating whether the combo box is editable.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellComboBox.ShowFileSystemPath">
+            <summary>
+            Gets/sets a value indicating whether the full file system path 
+            should be displayed in the main portion of the control.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellComboBox.RootFolder">
+            <summary>
+            Gets/sets the folder that the <see cref="T:GongSolutions.Shell.ShellComboBox"/> should
+            display as the root folder.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellComboBox.SelectedFolder">
+            <summary>
+            Gets/sets the folder currently selected in the 
+            <see cref="T:GongSolutions.Shell.ShellComboBox"/>.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellComboBox.ShellView">
+            <summary>
+            Gets/sets a <see cref="P:GongSolutions.Shell.ShellComboBox.ShellView"/> whose navigation should be
+            controlled by the combo box.
+            </summary>
+        </member>
+        <member name="E:GongSolutions.Shell.ShellComboBox.Changed">
+            <summary>
+            Occurs when the <see cref="T:GongSolutions.Shell.ShellComboBox"/>'s 
+            <see cref="P:GongSolutions.Shell.ShellComboBox.SelectedFolder"/> property changes.
+            </summary>
+        </member>
+        <member name="E:GongSolutions.Shell.ShellComboBox.FilterItem">
+            <summary>
+            Occurs when the <see cref="T:GongSolutions.Shell.ShellComboBox"/> control wants to know
+            if it should include a folder in its view.
+            </summary>
+            
+            <remarks>
+            This event allows the folders displayed in the 
+            <see cref="T:GongSolutions.Shell.ShellComboBox"/> control to be filtered.
+            </remarks>
+        </member>
+        <member name="T:GongSolutions.Shell.ShellItem">
+            <summary>
+            Represents an item in the Windows Shell namespace.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItem.#ctor(System.Uri)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GongSolutions.Shell.ShellItem"/> class.
+            </summary>
+            
+            <remarks>
+            Takes a <see cref="T:System.Uri"/> containing the location of the ShellItem. 
+            This constructor accepts URIs using two schemes:
+            
+            - file: A file or folder in the computer's filesystem, e.g.
+                    file:///D:/Folder
+            - shell: A virtual folder, or a file or folder referenced from 
+                     a virtual folder, e.g. shell:///Personal/file.txt
+            </remarks>
+            
+            <param name="uri">
+            A <see cref="T:System.Uri"/> containing the location of the ShellItem.
+            </param>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItem.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GongSolutions.Shell.ShellItem"/> class.
+            </summary>
+            
+            <remarks>
+            Takes a <see cref="T:System.String"/> containing the location of the ShellItem. 
+            This constructor accepts URIs using two schemes:
+            
+            - file: A file or folder in the computer's filesystem, e.g.
+                    file:///D:/Folder
+            - shell: A virtual folder, or a file or folder referenced from 
+                     a virtual folder, e.g. shell:///Personal/file.txt
+            </remarks>
+            
+            <param name="path">
+            A string containing a Uri with the location of the ShellItem.
+            </param>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItem.#ctor(System.Environment.SpecialFolder)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GongSolutions.Shell.ShellItem"/> class.
+            </summary>
+            
+            <remarks>
+            Takes an <see cref="T:System.Environment.SpecialFolder"/> containing the 
+            location of the folder.
+            </remarks>
+            
+            <param name="folder">
+            An <see cref="T:System.Environment.SpecialFolder"/> containing the 
+            location of the folder.
+            </param>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItem.#ctor(GongSolutions.Shell.ShellItem,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GongSolutions.Shell.ShellItem"/> class.
+            </summary>
+            
+            <remarks>
+            Creates a ShellItem which is a named child of <paramref name="parent"/>.
+            </remarks>
+            
+            <param name="parent">
+            The parent folder of the item.
+            </param>
+            
+            <param name="name">
+            The name of the child item.
+            </param>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItem.#ctor(GongSolutions.Shell.Interop.IShellItem)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GongSolutions.Shell.ShellItem"/> class.
+            </summary>
+            
+            <param name="comInterface">
+            An <see cref="T:GongSolutions.Shell.Interop.IShellItem"/> representing the folder.
+            </param>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItem.Compare(GongSolutions.Shell.ShellItem)">
+            <summary>
+            Compares two <see cref="T:GongSolutions.Shell.Interop.IShellItem"/>s. The comparison is carried
+            out by display order.
+            </summary>
+            
+            <param name="item">
+            The item to compare.
+            </param>
+            
+            <returns>
+            0 if the two items are equal. A negative number if 
+            <see langword="this"/> is before <paramref name="item"/> in 
+            display order. A positive number if 
+            <see langword="this"/> comes after <paramref name="item"/> in 
+            display order.
+            </returns>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItem.Equals(System.Object)">
+            <summary>
+            Determines whether two <see cref="T:GongSolutions.Shell.ShellItem"/>s refer to
+            the same shell folder.
+            </summary>
+            
+            <param name="obj">
+            The item to compare.
+            </param>
+            
+            <returns>
+            <see langword="true"/> if the two objects refer to the same
+            folder, <see langword="false"/> otherwise.
+            </returns>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItem.GetDisplayName(GongSolutions.Shell.Interop.SIGDN)">
+            <summary>
+            Returns the name of the item in the specified style.
+            </summary>
+            
+            <param name="sigdn">
+            The style of display name to return.
+            </param>
+            
+            <returns>
+            A string containing the display name of the item.
+            </returns>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItem.GetEnumerator">
+            <summary>
+            Returns an enumerator detailing the child items of the
+            <see cref="T:GongSolutions.Shell.ShellItem"/>.
+            </summary>
+            
+            <remarks>
+            This method returns all child item including hidden
+            items.
+            </remarks>
+            
+            <returns>
+            An enumerator over all child items.
+            </returns>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItem.GetEnumerator(GongSolutions.Shell.Interop.SHCONTF)">
+            <summary>
+            Returns an enumerator detailing the child items of the
+            <see cref="T:GongSolutions.Shell.ShellItem"/>.
+            </summary>
+            
+            <param name="filter">
+            A filter describing the types of child items to be included.
+            </param>
+            
+            <returns>
+            An enumerator over all child items.
+            </returns>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItem.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Returns an enumerator detailing the child items of the
+            <see cref="T:GongSolutions.Shell.ShellItem"/>.
+            </summary>
+            
+            <remarks>
+            This method returns all child item including hidden
+            items.
+            </remarks>
+            
+            <returns>
+            An enumerator over all child items.
+            </returns>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItem.GetIDataObject">
+            <summary>
+            Returns an <see cref="T:System.Runtime.InteropServices.ComTypes.IDataObject"/> representing the
+            item. This object is used in drag and drop operations.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItem.GetIDropTarget(System.Windows.Forms.Control)">
+            <summary>
+            Returns an <see cref="T:GongSolutions.Shell.Interop.IDropTarget"/> representing the
+            item. This object is used in drag and drop operations.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItem.GetIShellFolder">
+            <summary>
+            Returns an <see cref="T:GongSolutions.Shell.Interop.IShellFolder"/> representing the
+            item.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItem.GetSystemImageListIndex(GongSolutions.Shell.ShellIconType,GongSolutions.Shell.ShellIconFlags)">
+            <summary>
+            Gets the index in the system image list of the icon representing
+            the item.
+            </summary>
+            
+            <param name="type">
+            The type of icon to retrieve.
+            </param>
+            
+            <param name="flags">
+            Flags detailing additional information to be conveyed by the icon.
+            </param>
+            
+            <returns></returns>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItem.IsImmediateParentOf(GongSolutions.Shell.ShellItem)">
+            <summary>
+            Tests whether the <see cref="T:GongSolutions.Shell.ShellItem"/> is the immediate parent 
+            of another item.
+            </summary>
+            
+            <param name="item">
+            The potential child item.
+            </param>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItem.IsParentOf(GongSolutions.Shell.ShellItem)">
+            <summary>
+            Tests whether the <see cref="T:GongSolutions.Shell.ShellItem"/> is the parent of 
+            another item.
+            </summary>
+            
+            <param name="item">
+            The potential child item.
+            </param>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItem.ToString">
+            <summary>
+            Returns a string representation of the <see cref="T:GongSolutions.Shell.ShellItem"/>.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItem.ToUri">
+            <summary>
+            Returns a URI representation of the <see cref="T:GongSolutions.Shell.ShellItem"/>.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItem.op_Inequality(GongSolutions.Shell.ShellItem,GongSolutions.Shell.ShellItem)">
+            <summary>
+            Tests if two <see cref="T:GongSolutions.Shell.ShellItem"/>s refer to the same folder.
+            </summary>
+            
+            <param name="a">
+            The first folder.
+            </param>
+            
+            <param name="b">
+            The second folder.
+            </param>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItem.op_Equality(GongSolutions.Shell.ShellItem,GongSolutions.Shell.ShellItem)">
+            <summary>
+            Tests if two <see cref="T:GongSolutions.Shell.ShellItem"/>s refer to the same folder.
+            </summary>
+            
+            <param name="a">
+            The first folder.
+            </param>
+            
+            <param name="b">
+            The second folder.
+            </param>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellItem.Item(System.String)">
+            <summary>
+            Gets a child item.
+            </summary>
+            
+            <param name="name">
+            The name of the child item.
+            </param>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellItem.ComInterface">
+            <summary>
+            Gets the underlying <see cref="T:GongSolutions.Shell.Interop.IShellItem"/> COM interface.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellItem.DisplayName">
+            <summary>
+            Gets the normal display name of the item.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellItem.FileSystemPath">
+            <summary>
+            Gets the file system path of the item.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellItem.HasSubFolders">
+            <summary>
+            Gets a value indicating whether the item has subfolders.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellItem.IsFileSystem">
+            <summary>
+            Gets a value indicating whether the item is a file system item.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellItem.IsFileSystemAncestor">
+            <summary>
+            Gets a value indicating whether the item is a file system item
+            or the child of a file system item.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellItem.IsFolder">
+            <summary>
+            Gets a value indicating whether the item is a folder.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellItem.IsReadOnly">
+            <summary>
+            Gets a value indicating whether the item is read-only.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellItem.Parent">
+            <summary>
+            Gets the item's parent.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellItem.ParsingName">
+            <summary>
+            Gets the item's parsing name.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellItem.Pidl">
+            <summary>
+            Gets a PIDL representing the item.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellItem.ShellIcon">
+            <summary>
+            Gets the item's shell icon.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellItem.ToolTipText">
+            <summary>
+            Gets the item's tooltip text.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellItem.Desktop">
+            <summary>
+            Gets the Desktop folder.
+            </summary>
+        </member>
+        <member name="T:GongSolutions.Shell.ShellIconType">
+            <summary>
+            Enumerates the types of shell icons.
+            </summary>
+        </member>
+        <member name="F:GongSolutions.Shell.ShellIconType.LargeIcon">
+            <summary>The system large icon type</summary>
+        </member>
+        <member name="F:GongSolutions.Shell.ShellIconType.ShellIcon">
+            <summary>The system shell icon type</summary>
+        </member>
+        <member name="F:GongSolutions.Shell.ShellIconType.SmallIcon">
+            <summary>The system small icon type</summary>
+        </member>
+        <member name="T:GongSolutions.Shell.ShellIconFlags">
+            <summary>
+            Enumerates the optional styles that can be applied to shell icons.
+            </summary>
+        </member>
+        <member name="F:GongSolutions.Shell.ShellIconFlags.OpenIcon">
+            <summary>The icon is displayed opened.</summary>
+        </member>
+        <member name="F:GongSolutions.Shell.ShellIconFlags.OverlayIndex">
+            <summary>Get the overlay for the icon as well.</summary>
+        </member>
+        <member name="T:GongSolutions.Shell.ShellContextMenu">
+            <summary>
+            Provides support for displaying the context menu of a shell item.
+            </summary>
+            
+            <remarks>
+            <para>
+            Use this class to display a context menu for a shell item, either
+            as a popup menu, or as a main menu. 
+            </para>
+            
+            <para>
+            To display a popup menu, simply call <see cref="M:GongSolutions.Shell.ShellContextMenu.ShowContextMenu(System.Windows.Forms.Control,System.Drawing.Point)"/>
+            with the parent control and the position at which the menu should
+            be shown.
+            </para>
+            
+            <para>
+            To display a shell context menu in a Form's main menu, call the
+            <see cref="M:GongSolutions.Shell.ShellContextMenu.Populate(System.Windows.Forms.Menu)"/> method to populate the menu. In addition, 
+            you must intercept a number of special messages that will be sent 
+            to the menu's parent form. To do this, you must override 
+            <see cref="M:System.Windows.Forms.Form.WndProc(System.Windows.Forms.Message@)"/> like so:
+            </para>
+            
+            <code>
+                protected override void WndProc(ref Message m) {
+                    if ((m_ContextMenu == null) || (!m_ContextMenu.HandleMenuMessage(ref m))) {
+                        base.WndProc(ref m);
+                    }
+                }
+            </code>
+            
+            <para>
+            Where m_ContextMenu is the <see cref="T:GongSolutions.Shell.ShellContextMenu"/> being shown.
+            </para>
+            
+            Standard menu commands can also be invoked from this class, for 
+            example <see cref="M:GongSolutions.Shell.ShellContextMenu.InvokeDelete"/> and <see cref="M:GongSolutions.Shell.ShellContextMenu.InvokeRename"/>.
+            </remarks>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellContextMenu.#ctor(GongSolutions.Shell.ShellItem)">
+            <summary>
+            Initialises a new instance of the <see cref="T:GongSolutions.Shell.ShellContextMenu"/> 
+            class.
+            </summary>
+            
+            <param name="item">
+            The item to which the context menu should refer.
+            </param>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellContextMenu.#ctor(GongSolutions.Shell.ShellItem[])">
+            <summary>
+            Initialises a new instance of the <see cref="T:GongSolutions.Shell.ShellContextMenu"/> 
+            class.
+            </summary>
+            
+            <param name="items">
+            The items to which the context menu should refer.
+            </param>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellContextMenu.HandleMenuMessage(System.Windows.Forms.Message@)">
+            <summary>
+            Handles context menu messages when the <see cref="T:GongSolutions.Shell.ShellContextMenu"/>
+            is displayed on a Form's main menu bar.
+            </summary>
+            
+            <remarks>
+            <para>
+            To display a shell context menu in a Form's main menu, call the
+            <see cref="M:GongSolutions.Shell.ShellContextMenu.Populate(System.Windows.Forms.Menu)"/> method to populate the menu with the shell
+            item's menu items. In addition, you must intercept a number of
+            special messages that will be sent to the menu's parent form. To
+            do this, you must override <see cref="M:System.Windows.Forms.Form.WndProc(System.Windows.Forms.Message@)"/> like so:
+            </para>
+            
+            <code>
+                protected override void WndProc(ref Message m) {
+                    if ((m_ContextMenu == null) || (!m_ContextMenu.HandleMenuMessage(ref m))) {
+                        base.WndProc(ref m);
+                    }
+                }
+            </code>
+            
+            <para>
+            Where m_ContextMenu is the <see cref="T:GongSolutions.Shell.ShellContextMenu"/> being shown.
+            </para>
+            </remarks>
+            
+            <param name="m">
+            The message to handle.
+            </param>
+            
+            <returns>
+            <see langword="true"/> if the message was a Shell Context Menu
+            message, <see langword="false"/> if not. If the method returns false,
+            then the message should be passed down to the base class's
+            <see cref="M:System.Windows.Forms.Form.WndProc(System.Windows.Forms.Message@)"/> method.
+            </returns>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellContextMenu.InvokeDelete">
+            <summary>
+            Invokes the Delete command on the shell item.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellContextMenu.InvokeRename">
+            <summary>
+            Invokes the Rename command on the shell item.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellContextMenu.Populate(System.Windows.Forms.Menu)">
+            <summary>
+            Populates a <see cref="T:System.Windows.Forms.Menu"/> with the context menu items for
+            a shell item.
+            </summary>
+            
+            <remarks>
+            If this method is being used to populate a Form's main menu
+            then you need to call <see cref="M:GongSolutions.Shell.ShellContextMenu.HandleMenuMessage(System.Windows.Forms.Message@)"/> in the
+            Form's message handler.
+            </remarks>
+            
+            <param name="menu">
+            The menu to populate.
+            </param>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellContextMenu.ShowContextMenu(System.Windows.Forms.Control,System.Drawing.Point)">
+            <summary>
+            Shows a context menu for a shell item.
+            </summary>
+            
+            <param name="control">
+            The parent control.
+            </param>
+            
+            <param name="pos">
+            The position on <paramref name="control"/> that the menu
+            should be displayed at.
+            </param>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellContextMenu.ComInterface">
+            <summary>
+            Gets the underlying COM <see cref="T:GongSolutions.Shell.Interop.IContextMenu"/> interface.
+            </summary>
+        </member>
+        <member name="T:GongSolutions.Shell.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="T:GongSolutions.Shell.FileDialogToolbar">
+            <summary>
+            Provides a toolbar suitable for use in file Open/Save dialogs.
+            </summary>
+            
+            <remarks>
+            This control provides a toolbar containing a 
+            <see cref="T:GongSolutions.Shell.ShellComboBox"/> and the various navigation buttons as
+            found in a standard file dialog. By setting the 
+            <see cref="P:GongSolutions.Shell.FileDialogToolbar.ShellView"/> property, the toolbar will automatically 
+            control the navigation of a ShellView&gt; control in response to the 
+            user's actions.
+            </remarks>
+        </member>
+        <member name="F:GongSolutions.Shell.FileDialogToolbar.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.FileDialogToolbar.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:GongSolutions.Shell.FileDialogToolbar.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.FileDialogToolbar.#ctor">
+            <summary>
+            Initializes a new instance of the FileDialogToolbar control.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.FileDialogToolbar.RootFolder">
+            <summary>
+            Gets/sets the root folder displayed in the toolbar's drop-down
+            folder list.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.FileDialogToolbar.SelectedFolder">
+            <summary>
+            Gets/sets the folder currently selected in the toolbar's combo box.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.FileDialogToolbar.ShellView">
+            <summary>
+            Gets/sets a <see cref="P:GongSolutions.Shell.FileDialogToolbar.ShellView"/> whose navigation should be
+            controlled by the toolbar.
+            </summary>
+        </member>
+        <member name="E:GongSolutions.Shell.FileDialogToolbar.FilterItem">
+            <summary>
+            Occurs when the <see cref="T:GongSolutions.Shell.FileDialogToolbar"/> needs to know 
+            what items it should display in its drop-down list.
+            </summary>
+        </member>
+        <member name="T:GongSolutions.Shell.FileFilterComboBox">
+            <summary>
+            A file-filter combo box suitable for use in open/save file dialogs.
+            </summary>
+            
+            <remarks>
+            <para>
+            This control extends the <see cref="T:System.Windows.Forms.ComboBox"/> class to provide
+            automatic filtering of shell items according to wildcard patterns. 
+            By setting the control's <see cref="P:GongSolutions.Shell.FileFilterComboBox.ShellView"/> property, the control
+            will automatically filter items in a ShellView.
+            </para>
+            
+            <para>
+            The <see cref="P:GongSolutions.Shell.FileFilterComboBox.FilterItems"/> property accepts a filter string 
+            similar to that accepted by the standard <see cref="T:System.Windows.Forms.FileDialog"/>
+            class, for example: 
+            <b>"Text files (*.txt)|*.txt|All files (*.*)|*.*"</b>
+            </para>
+            
+            <para>
+            The currently selected filter is selected by the <see cref="P:GongSolutions.Shell.FileFilterComboBox.Filter"/>
+            property. This should be set to one of the filter patterns specified
+            in <see cref="P:GongSolutions.Shell.FileFilterComboBox.FilterItems"/>, e.g. <b>"*.txt"</b>.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:GongSolutions.Shell.FileFilterComboBox.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:GongSolutions.Shell.FileFilterComboBox"/>
+            class.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.FileFilterComboBox.GenerateRegex(System.String)">
+            <summary>
+            Generates a <see cref="T:System.Text.RegularExpressions.Regex"/> object equivalent to the 
+            provided wildcard.
+            </summary>
+            
+            <param name="wildcard">
+            The wildcard to generate a regex for.
+            </param>
+            
+            <returns>
+            A regex equivalent to the wildcard.
+            </returns>
+        </member>
+        <member name="M:GongSolutions.Shell.FileFilterComboBox.OnTextChanged(System.EventArgs)">
+            <summary>
+            Raises the <see cref="E:System.Windows.Forms.Control.TextChanged"/> event.
+            </summary>
+            
+            <param name="e">
+            An EventArgs that contains the event data.
+            </param>
+        </member>
+        <member name="P:GongSolutions.Shell.FileFilterComboBox.Filter">
+            <summary>
+            Gets or sets the current filter string, which determines the 
+            items that appear in the control's <see cref="P:GongSolutions.Shell.FileFilterComboBox.ShellView"/>.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.FileFilterComboBox.DropDownStyle">
+            <summary>
+            This property does not apply to <see cref="T:GongSolutions.Shell.FileFilterComboBox"/>.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.FileFilterComboBox.FilterItems">
+            <summary>
+            Gets/sets the filter string which determines the choices that 
+            appear in the control's drop-down list.
+            </summary>
+            
+            <remarks>
+            <para>
+            For each filtering option, the filter string contains a 
+            description of the filter, followed by the vertical bar (|) and
+            the filter pattern. The strings for different filtering options
+            are separated by the vertical bar.
+            </para>
+            
+            <para>
+            If the filter itself does not appear in the description then
+            it will be automatically added when the control is displayed.
+            For example, in the example below the "Video files" entry will
+            be displayed as "Video files (*.avi, *.wmv)". Beacuse the "All 
+            files" entry already has the filter string present in its 
+            description, it will not be added again.
+            </para>
+            
+            <para>
+            <example>
+            "Video files|*.avi, *.wmv|All files (*.*)|*.*"
+            </example>
+            </para>
+            </remarks>
+        </member>
+        <member name="P:GongSolutions.Shell.FileFilterComboBox.Items">
+            <summary>
+            This property does not apply to <see cref="T:GongSolutions.Shell.FileFilterComboBox"/>.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.FileFilterComboBox.ShellView">
+            <summary>
+            Gets/sets the <see cref="P:GongSolutions.Shell.FileFilterComboBox.ShellView"/> control that the 
+            <see cref="T:GongSolutions.Shell.FileFilterComboBox"/> should filter the items of.
+            </summary>
+        </member>
+        <member name="T:GongSolutions.Shell.ShellTreeView">
+            <summary>
+            Provides a tree view of a computer's folders.
+            </summary>
+            
+            <remarks>
+            <para>
+            The <see cref="T:GongSolutions.Shell.ShellTreeView"/> control allows you to embed Windows 
+            Explorer functionality in your Windows Forms applications. The
+            control provides a tree view of the computer's folders, as it would 
+            appear in the left-hand pane in Explorer.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellTreeView.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:GongSolutions.Shell.ShellTreeView"/> class.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellTreeView.RefreshContents">
+            <summary>
+            Refreses the contents of the <see cref="T:GongSolutions.Shell.ShellTreeView"/>.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellTreeView.AllowDrop">
+            <summary>
+            Gets/sets a value indicating whether drag/drop operations are
+            allowed on the control.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellTreeView.HotTracking">
+            <summary>
+            Gets or sets a value indicating whether a tree node label takes on
+            the appearance of a hyperlink as the mouse pointer passes over it.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellTreeView.RootFolder">
+            <summary>
+            Gets or sets the root folder that is displayed in the 
+            <see cref="T:GongSolutions.Shell.ShellTreeView"/>.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellTreeView.ShellView">
+            <summary>
+            Gets/sets a <see cref="P:GongSolutions.Shell.ShellTreeView.ShellView"/> whose navigation should be
+            controlled by the treeview.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellTreeView.SelectedFolder">
+            <summary>
+            Gets or sets the selected folder in the 
+            <see cref="T:GongSolutions.Shell.ShellTreeView"/>.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellTreeView.ShowHidden">
+            <summary>
+            Gets or sets a value indicating whether hidden folders should
+            be displayed in the tree.
+            </summary>
+        </member>
+        <member name="E:GongSolutions.Shell.ShellTreeView.SelectionChanged">
+            <summary>
+            Occurs when the <see cref="P:GongSolutions.Shell.ShellTreeView.SelectedFolder"/> property changes.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellTreeView.Text">
+            <summary>
+            This property does not apply to the <see cref="T:GongSolutions.Shell.ShellTreeView"/> 
+            class.
+            </summary>
+        </member>
+        <member name="T:GongSolutions.Shell.ShowHidden">
+            Describes whether hidden files/folders should be displayed in a 
+            control.
+        </member>
+        <member name="F:GongSolutions.Shell.ShowHidden.False">
+            <summary>
+            Hidden files/folders should not be displayed.
+            </summary>
+        </member>
+        <member name="F:GongSolutions.Shell.ShowHidden.True">
+            <summary>
+            Hidden files/folders should be displayed.
+            </summary>
+        </member>
+        <member name="F:GongSolutions.Shell.ShowHidden.System">
+            <summary>
+            The Windows Explorer "Show hidden files" setting should be used
+            to determine whether to show hidden files/folders.
+            </summary>
+        </member>
+        <member name="T:GongSolutions.Shell.ShellNotificationListener">
+            <summary>
+            Listens for notifications of changes in the Windows Shell Namespace.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellNotificationListener.#ctor">
+            <summary>
+            Initializes a new instance of the 
+            <see cref="T:GongSolutions.Shell.ShellNotificationListener"/> class.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellNotificationListener.#ctor(System.ComponentModel.IContainer)">
+            <summary>
+            Initializes a new instance of the 
+            <see cref="T:GongSolutions.Shell.ShellNotificationListener"/> class.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellNotificationListener.Dispose(System.Boolean)">
+            <summary>
+            Overrides the <see cref="M:System.ComponentModel.Component.Dispose(System.Boolean)"/> method.
+            </summary>
+            <param name="disposing"/>
+        </member>
+        <member name="E:GongSolutions.Shell.ShellNotificationListener.DriveAdded">
+            <summary>
+            Occurs when a drive is added.
+            </summary>
+        </member>
+        <member name="E:GongSolutions.Shell.ShellNotificationListener.DriveRemoved">
+            <summary>
+            Occurs when a drive is removed.
+            </summary>
+        </member>
+        <member name="E:GongSolutions.Shell.ShellNotificationListener.FolderCreated">
+            <summary>
+            Occurs when a folder is created.
+            </summary>
+        </member>
+        <member name="E:GongSolutions.Shell.ShellNotificationListener.FolderDeleted">
+            <summary>
+            Occurs when a folder is deleted.
+            </summary>
+        </member>
+        <member name="E:GongSolutions.Shell.ShellNotificationListener.FolderRenamed">
+            <summary>
+            Occurs when a folder is renamed.
+            </summary>
+        </member>
+        <member name="E:GongSolutions.Shell.ShellNotificationListener.FolderUpdated">
+            <summary>
+            Occurs when a folder's contents are updated.
+            </summary>
+        </member>
+        <member name="E:GongSolutions.Shell.ShellNotificationListener.ItemCreated">
+            <summary>
+            Occurs when a non-folder item is created.
+            </summary>
+        </member>
+        <member name="E:GongSolutions.Shell.ShellNotificationListener.ItemDeleted">
+            <summary>
+            Occurs when a non-folder item is deleted.
+            </summary>
+        </member>
+        <member name="E:GongSolutions.Shell.ShellNotificationListener.ItemRenamed">
+            <summary>
+            Occurs when a non-folder item is renamed.
+            </summary>
+        </member>
+        <member name="E:GongSolutions.Shell.ShellNotificationListener.ItemUpdated">
+            <summary>
+            Occurs when a non-folder item is updated.
+            </summary>
+        </member>
+        <member name="E:GongSolutions.Shell.ShellNotificationListener.SharingChanged">
+            <summary>
+            Occurs when the shared state for a folder changes.
+            </summary>
+        </member>
+        <member name="T:GongSolutions.Shell.ShellItemEventArgs">
+            <summary>
+            Provides information of changes in the Windows Shell Namespace.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItemEventArgs.#ctor(GongSolutions.Shell.ShellItem)">
+            <summary>
+            Initializes a new instance of the 
+            <see cref="T:GongSolutions.Shell.ShellItemEventArgs"/> class.
+            </summary>
+            
+            <param name="item">
+            The ShellItem that has changed.
+            </param>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellItemEventArgs.Item">
+            <summary>
+            The ShellItem that has changed.
+            </summary>
+        </member>
+        <member name="T:GongSolutions.Shell.ShellItemChangeEventArgs">
+            <summary>
+            Provides information of changes in the Windows Shell Namespace.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellItemChangeEventArgs.#ctor(GongSolutions.Shell.ShellItem,GongSolutions.Shell.ShellItem)">
+            <summary>
+            Initializes a new instance of the 
+            <see cref="T:GongSolutions.Shell.ShellItemChangeEventArgs"/> class.
+            </summary>
+            
+            <param name="oldItem">
+            The ShellItem before the change
+            </param>
+            
+            <param name="newItem">
+            The ShellItem after the change
+            </param>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellItemChangeEventArgs.OldItem">
+            <summary>
+            The ShellItem before the change.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellItemChangeEventArgs.NewItem">
+            <summary>
+            The ShellItem after the change.
+            </summary>
+        </member>
+        <member name="T:GongSolutions.Shell.ShellItemEventHandler">
+            <summary>
+            Represents the method that handles change notifications from
+            <see cref="T:GongSolutions.Shell.ShellNotificationListener"/>
+            </summary>
+            
+            <param name="sender">
+            The source of the event.
+            </param>
+            
+            <param name="e">
+            A <see cref="T:GongSolutions.Shell.ShellItemEventArgs"/> that contains the data
+            for the event.
+            </param>
+        </member>
+        <member name="T:GongSolutions.Shell.ShellItemChangeEventHandler">
+            <summary>
+            Represents the method that handles change notifications from
+            <see cref="T:GongSolutions.Shell.ShellNotificationListener"/>
+            </summary>
+            
+            <param name="sender">
+            The source of the event.
+            </param>
+            
+            <param name="e">
+            A <see cref="T:GongSolutions.Shell.ShellItemChangeEventArgs"/> that contains the data
+            for the event.
+            </param>
+        </member>
+        <member name="T:GongSolutions.Shell.ShellViewStyle">
+            <summary>
+            Specifies how list items are displayed in a <see cref="T:GongSolutions.Shell.ShellView"/> 
+            control. 
+            </summary>
+        </member>
+        <member name="F:GongSolutions.Shell.ShellViewStyle.LargeIcon">
+            <summary>
+            Each item appears as a full-sized icon with a label below it. 
+            </summary>
+        </member>
+        <member name="F:GongSolutions.Shell.ShellViewStyle.SmallIcon">
+            <summary>
+            Each item appears as a small icon with a label to its right. 
+            </summary>
+        </member>
+        <member name="F:GongSolutions.Shell.ShellViewStyle.List">
+            <summary>
+            Each item appears as a small icon with a label to its right. 
+            Items are arranged in columns with no column headers. 
+            </summary>
+        </member>
+        <member name="F:GongSolutions.Shell.ShellViewStyle.Details">
+            <summary>
+            Each item appears on a separate line with further information 
+            about each item arranged in columns. The left-most column 
+            contains a small icon and label. 
+            </summary>
+        </member>
+        <member name="F:GongSolutions.Shell.ShellViewStyle.Thumbnail">
+            <summary>
+            Each item appears with a thumbnail picture of the file's content.
+            </summary>
+        </member>
+        <member name="F:GongSolutions.Shell.ShellViewStyle.Tile">
+            <summary>
+            Each item appears as a full-sized icon with the item label and 
+            file information to the right of it. 
+            </summary>
+        </member>
+        <member name="F:GongSolutions.Shell.ShellViewStyle.Thumbstrip">
+            <summary>
+            Each item appears in a thumbstrip at the bottom of the control,
+            with a large preview of the seleted item appearing above.
+            </summary>
+        </member>
+        <member name="T:GongSolutions.Shell.ShellView">
+            <summary>
+            Provides a view of a computer's files and folders.
+            </summary>
+            
+            <remarks>
+            <para>
+            The <see cref="T:GongSolutions.Shell.ShellView"/> control allows you to embed Windows 
+            Explorer functionality in your Windows Forms applications. The
+            control provides a view of a single folder's contents, as it would
+            appear in the right-hand pane in Explorer.
+            </para>
+            
+            <para>
+            When a new <see cref="T:GongSolutions.Shell.ShellView"/> control is added to a form,
+            it displays the contents of the Desktop folder. Other folders
+            can be displayed by calling one of the Navigate methods or setting
+            the <see cref="P:GongSolutions.Shell.ShellView.CurrentFolder"/> property.
+            </para>
+            </remarks>    
+        </member>
+        <member name="M:GongSolutions.Shell.ShellView.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:GongSolutions.Shell.ShellView"/> class.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellView.CreateNewFolder">
+            <summary>
+            Creates a new folder in the folder currently being browsed.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellView.DeleteSelectedItems">
+            <summary>
+            Deletes the item currently selected in the <see cref="T:GongSolutions.Shell.ShellView"/>.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellView.Navigate(GongSolutions.Shell.ShellItem)">
+            <summary>
+            Navigates to the specified <see cref="P:GongSolutions.Shell.ShellView.ShellItem"/>.
+            </summary>
+            
+            <param name="folder">
+            The folder to navigate to.
+            </param>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellView.Navigate(System.String)">
+            <summary>
+            Navigates to the specified filesystem directory.
+            </summary>
+            
+            <param name="path">
+            The path of the directory to navigate to.
+            </param>
+            
+            <exception cref="T:System.IO.DirectoryNotFoundException">
+            <paramref name="path"/> is not a valid folder.
+            </exception>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellView.Navigate(System.Environment.SpecialFolder)">
+            <summary>
+            Navigates to the specified standard location.
+            </summary>
+            
+            <param name="location">
+            The <see cref="T:System.Environment.SpecialFolder"/> to which to navigate.
+            </param>
+            
+            <remarks>
+            Standard locations are virtual folders which may be located in 
+            different places in different versions of Windows. For example 
+            the "My Documents" folder is normally located at C:\My Documents 
+            on Windows 98, but is located in the user's "Documents and 
+            Settings" folder in Windows XP. Using a standard 
+            <see cref="T:System.Environment.SpecialFolder"/> to refer to such folders 
+            ensures that your application will behave correctly on all 
+            versions of Windows.
+            </remarks>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellView.NavigateBack">
+            <summary>
+            Navigates the <see cref="T:GongSolutions.Shell.ShellView"/> control to the previous folder 
+            in the navigation history. 
+            </summary>
+            
+            <remarks>
+            <para>
+            The WebBrowser control maintains a history list of all the folders
+            visited during a session. You can use the <see cref="M:GongSolutions.Shell.ShellView.NavigateBack"/>
+            method to implement a <b>Back</b> button similar to the one in 
+            Windows Explorer, which will allow your users to return to a 
+            previous folder in the navigation history. 
+            </para>
+            
+            <para>
+            Use the <see cref="P:GongSolutions.Shell.ShellView.CanNavigateBack"/> property to determine whether 
+            the navigation history is available and contains a previous page. 
+            This property is useful, for example, to change the enabled state 
+            of a Back button when the ShellView control navigates to or leaves 
+            the beginning of the navigation history.
+            </para>
+            </remarks>
+            
+            <exception cref="T:System.InvalidOperationException">
+            There is no history to navigate backwards through.
+            </exception>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellView.NavigateBack(GongSolutions.Shell.ShellItem)">
+            <summary>
+            Navigates the <see cref="T:GongSolutions.Shell.ShellView"/> control backwards to the 
+            requested folder in the navigation history. 
+            </summary>
+            
+            <remarks>
+            The WebBrowser control maintains a history list of all the folders
+            visited during a session. You can use the <see cref="M:GongSolutions.Shell.ShellView.NavigateBack"/>
+            method to implement a drop-down menu on a <b>Back</b> button similar 
+            to the one in Windows Explorer, which will allow your users to return 
+            to a previous folder in the navigation history. 
+            </remarks>
+            
+            <param name="folder">
+            The folder to navigate to.
+            </param>
+            
+            <exception cref="T:System.Exception">
+            The requested folder is not present in the 
+            <see cref="T:GongSolutions.Shell.ShellView"/>'s 'back' history.
+            </exception>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellView.NavigateForward">
+            <summary>
+            Navigates the <see cref="T:GongSolutions.Shell.ShellView"/> control to the next folder 
+            in the navigation history. 
+            </summary>
+            
+            <remarks>
+            <para>
+            The WebBrowser control maintains a history list of all the folders
+            visited during a session. You can use the <see cref="M:GongSolutions.Shell.ShellView.NavigateForward"/> 
+            method to implement a <b>Forward</b> button similar to the one 
+            in Windows Explorer, allowing your users to return to the next 
+            folder in the navigation history after navigating backward.
+            </para>
+            
+            <para>
+            Use the <see cref="P:GongSolutions.Shell.ShellView.CanNavigateForward"/> property to determine 
+            whether the navigation history is available and contains a folder 
+            located after the current one.  This property is useful, for 
+            example, to change the enabled state of a <b>Forward</b> button 
+            when the ShellView control navigates to or leaves the end of the 
+            navigation history.
+            </para>
+            </remarks>
+            
+            <exception cref="T:System.InvalidOperationException">
+            There is no history to navigate forwards through.
+            </exception>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellView.NavigateForward(GongSolutions.Shell.ShellItem)">
+            <summary>
+            Navigates the <see cref="T:GongSolutions.Shell.ShellView"/> control forwards to the 
+            requested folder in the navigation history. 
+            </summary>
+            
+            <remarks>
+            The WebBrowser control maintains a history list of all the folders
+            visited during a session. You can use the 
+            <see cref="M:GongSolutions.Shell.ShellView.NavigateForward"/> method to implement a drop-down menu 
+            on a <b>Forward</b> button similar to the one in Windows Explorer, 
+            which will allow your users to return to a folder in the 'forward'
+            navigation history. 
+            </remarks>
+            
+            <param name="folder">
+            The folder to navigate to.
+            </param>
+            
+            <exception cref="T:System.Exception">
+            The requested folder is not present in the 
+            <see cref="T:GongSolutions.Shell.ShellView"/>'s 'forward' history.
+            </exception>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellView.NavigateParent">
+            <summary>
+            Navigates to the parent of the currently displayed folder.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellView.NavigateSelectedFolder">
+            <summary>
+            Navigates to the folder currently selected in the 
+            <see cref="T:GongSolutions.Shell.ShellView"/>.
+            </summary>
+            
+            <remarks>
+            If the <see cref="T:GongSolutions.Shell.ShellView"/>'s <see cref="P:GongSolutions.Shell.ShellView.MultiSelect"/>
+            property is set, and more than one item is selected in the
+            ShellView, the first Folder found will be navigated to.
+            </remarks>
+            
+            <returns>
+            <see langword="true"/> if a selected folder could be
+            navigated to, <see langword="false"/> otherwise.
+            </returns>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellView.RefreshContents">
+            <summary>
+            Refreshes the contents of the <see cref="T:GongSolutions.Shell.ShellView"/>.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellView.RenameSelectedItem">
+            <summary>
+            Begins a rename on the item currently selected in the 
+            <see cref="T:GongSolutions.Shell.ShellView"/>.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellView.SelectAll">
+            <summary>
+            Selects all items in the <see cref="T:GongSolutions.Shell.ShellView"/>.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellView.Dispose(System.Boolean)">
+            <summary>
+            Overrides <see cref="M:System.Windows.Forms.Control.Dispose(System.Boolean)"/>
+            </summary>
+            
+            <param name="disposing"/>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellView.OnCreateControl">
+            <summary>
+            Creates the actual shell view control.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellView.OnPreviewKeyDown(System.Windows.Forms.PreviewKeyDownEventArgs)">
+            <summary>
+            Overrides <see cref="M:System.Windows.Forms.Control.OnPreviewKeyDown(System.Windows.Forms.PreviewKeyDownEventArgs)"/>.
+            </summary>
+            
+            <param name="e"/>
+            <returns/>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellView.OnResize(System.EventArgs)">
+            <summary>
+            Overrides <see cref="M:System.Windows.Forms.Control.OnResize(System.EventArgs)"/>.
+            </summary>
+            
+            <param name="eventargs"/>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellView.PreProcessMessage(System.Windows.Forms.Message@)">
+            <summary>
+            Overrides <see cref="M:System.Windows.Forms.Control.PreProcessMessage(System.Windows.Forms.Message@)"/>
+            </summary>
+            
+            <param name="msg"/>
+            <returns/>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellView.WndProc(System.Windows.Forms.Message@)">
+            <summary>
+            Overrides <see cref="M:System.Windows.Forms.Control.WndProc(System.Windows.Forms.Message@)"/>
+            </summary>
+            <param name="m"/>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellView.CanCreateFolder">
+            <summary>
+            Gets a value indicating whether a new folder can be created in
+            the folder currently being browsed by th <see cref="T:GongSolutions.Shell.ShellView"/>.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellView.CanNavigateBack">
+            <summary>
+            Gets a value indicating whether a previous page in navigation 
+            history is available, which allows the <see cref="M:GongSolutions.Shell.ShellView.NavigateBack"/> 
+            method to succeed. 
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellView.CanNavigateForward">
+            <summary>
+            Gets a value indicating whether a subsequent page in navigation 
+            history is available, which allows the <see cref="M:GongSolutions.Shell.ShellView.NavigateForward"/> 
+            method to succeed. 
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellView.CanNavigateParent">
+            <summary>
+            Gets a value indicating whether the folder currently being browsed
+            by the <see cref="T:GongSolutions.Shell.ShellView"/> has parent folder which can be
+            navigated to by calling <see cref="M:GongSolutions.Shell.ShellView.NavigateParent"/>.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellView.ComInterface">
+            <summary>
+            Gets the control's underlying COM IShellView interface.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellView.CurrentFolder">
+            <summary>
+            Gets/sets a <see cref="P:GongSolutions.Shell.ShellView.ShellItem"/> describing the folder 
+            currently being browsed by the <see cref="T:GongSolutions.Shell.ShellView"/>.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellView.History">
+            <summary>
+            Gets the <see cref="T:GongSolutions.Shell.ShellView"/>'s navigation history.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellView.SelectedItems">
+            <summary>
+            Gets a list of the items currently selected in the 
+            <see cref="T:GongSolutions.Shell.ShellView"/>
+            </summary>
+            
+            <value>
+            A <see cref="P:GongSolutions.Shell.ShellView.ShellItem"/> array detailing the items currently 
+            selected in the control. If no items are currently selected, 
+            an empty array is returned. 
+            </value>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellView.MultiSelect">
+            <summary>
+            Gets/sets a value indicating whether multiple items can be selected
+            by the user.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellView.ShowWebView">
+            <summary>
+            Gets/sets a value indicating whether a "WebView" is displayed on
+            the left of the <see cref="T:GongSolutions.Shell.ShellView"/> control.
+            </summary>
+            
+            <remarks>
+            The WebView is a strip of HTML that appears to the left of a
+            Windows Explorer window when the window has no Explorer Bar.
+            It displays general system tasks and locations, as well as
+            information about the items selected in the window.
+            
+            <para>
+            <b>Important:</b> When <see cref="P:GongSolutions.Shell.ShellView.ShowWebView"/> is set to 
+            <see langref="true"/>, the <see cref="E:GongSolutions.Shell.ShellView.SelectionChanged"/>
+            event will not occur. This is due to a limitation in the 
+            underlying windows control.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellView.StatusBar">
+            <summary>
+            Gets/sets a <see cref="C:StatusBar"/> control that the 
+            <see cref="T:GongSolutions.Shell.ShellView"/> should use to display folder details.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellView.View">
+            <summary>
+            Gets or sets how items are displayed in the control. 
+            </summary>
+        </member>
+        <member name="E:GongSolutions.Shell.ShellView.FilterItem">
+            <summary>
+            Occurs when the <see cref="T:GongSolutions.Shell.ShellView"/> control wants to know
+            if it should include an item in its view.
+            </summary>
+            
+            <remarks>
+            This event allows the items displayed in the <see cref="T:GongSolutions.Shell.ShellView"/>
+            control to be filtered. You may want to to only list files with
+            a certain extension, for example.
+            </remarks>
+        </member>
+        <member name="E:GongSolutions.Shell.ShellView.Navigated">
+            <summary>
+            Occurs when the <see cref="T:GongSolutions.Shell.ShellView"/> control navigates to a 
+            new folder.
+            </summary>
+        </member>
+        <member name="E:GongSolutions.Shell.ShellView.Navigating">
+            <summary>
+            Occurs when the <see cref="T:GongSolutions.Shell.ShellView"/> control is about to 
+            navigate to a new folder.
+            </summary>
+        </member>
+        <member name="E:GongSolutions.Shell.ShellView.SelectionChanged">
+            <summary>
+            Occurs when the <see cref="T:GongSolutions.Shell.ShellView"/>'s current selection 
+            changes.
+            </summary>
+            
+            <remarks>
+            <b>Important:</b> When <see cref="P:GongSolutions.Shell.ShellView.ShowWebView"/> is set to 
+            <see langref="true"/>, this event will not occur. This is due to 
+            a limitation in the underlying windows control.
+            </remarks>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellView.BackColor">
+            <summary>
+            This property does not apply to <see cref="T:GongSolutions.Shell.ShellView"/>.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellView.BackgroundImage">
+            <summary>
+            This property does not apply to <see cref="T:GongSolutions.Shell.ShellView"/>.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellView.BackgroundImageLayout">
+            <summary>
+            This property does not apply to <see cref="T:GongSolutions.Shell.ShellView"/>.
+            </summary>
+        </member>
+        <member name="T:GongSolutions.Shell.FilterItemEventArgs">
+            <summary>
+            Provides information for FilterItem events.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.FilterItemEventArgs.#ctor(GongSolutions.Shell.ShellItem)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GongSolutions.Shell.FilterItemEventArgs"/>
+            class.
+            </summary>
+            
+            <param name="item">
+            The item to be filtered.
+            </param>
+        </member>
+        <member name="P:GongSolutions.Shell.FilterItemEventArgs.Include">
+            <summary>
+            Gets/sets a value which will determine whether the item will be
+            included in the <see cref="T:GongSolutions.Shell.ShellView"/>.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.FilterItemEventArgs.Item">
+            <summary>
+            The item to be filtered.
+            </summary>
+        </member>
+        <member name="T:GongSolutions.Shell.NavigatingEventArgs">
+            <summary>
+            Provides information for the <see cref="E:GongSolutions.Shell.ShellView.Navigating"/>
+            event.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.NavigatingEventArgs.#ctor(GongSolutions.Shell.ShellItem)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GongSolutions.Shell.NavigatingEventArgs"/>
+            class.
+            </summary>
+            
+            <param name="folder">
+            The folder being navigated to.
+            </param>
+        </member>
+        <member name="P:GongSolutions.Shell.NavigatingEventArgs.Cancel">
+            <summary>
+            Gets/sets a value indicating whether the navigation should be
+            cancelled.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.NavigatingEventArgs.Folder">
+            <summary>
+            The folder being navigated to.
+            </summary>
+        </member>
+        <member name="T:GongSolutions.Shell.UserAbortException">
+            <summary>
+            Exception raised when a user aborts a Shell operation.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.UserAbortException.#ctor(System.Exception)">
+            <summary>
+            Initializes a new instance of the 
+            <see cref="T:GongSolutions.Shell.UserAbortException"/> class.
+            </summary>
+            
+            <param name="e">
+            The inner exception.
+            </param>
+        </member>
+        <member name="T:GongSolutions.Shell.FilterItemEventHandler">
+            <summary>
+            Represents the method that will handle FilterItem events.
+            </summary>
+        </member>
+        <member name="T:GongSolutions.Shell.NavigatingEventHandler">
+            <summary>
+            Represents the method that will handle the 
+            <see cref="E:GongSolutions.Shell.ShellView.Navigating"/> event.
+            </summary>
+        </member>
+        <member name="T:GongSolutions.Shell.ShellHistory">
+            <summary>
+            Holds a <see cref="T:GongSolutions.Shell.ShellView"/>'s navigation history.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Shell.ShellHistory.Clear">
+            <summary>
+            Clears the shell history.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellHistory.HistoryBack">
+            <summary>
+            Gets the list of folders in the <see cref="T:GongSolutions.Shell.ShellView"/>'s
+            <b>Back</b> history.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Shell.ShellHistory.HistoryForward">
+            <summary>
+            Gets the list of folders in the <see cref="T:GongSolutions.Shell.ShellView"/>'s
+            <b>Forward</b> history.
+            </summary>
+        </member>
+    </members>
+</doc>

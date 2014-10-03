@@ -35,7 +35,8 @@ namespace BizHawk.Client.EmuHawk
 
 			UseCustomBackground = true;
 			GridLines = true;
-			CellPadding = 3;
+			CellWidthPadding = 3;
+			CellHeightPadding = 1;
 			CurrentCell = null;
 			Font = new Font("Courier New", 8);  // Only support fixed width
 
@@ -95,11 +96,18 @@ namespace BizHawk.Client.EmuHawk
 		#region Properties
 
 		/// <summary>
-		/// Gets or sets the amount of padding on the text inside a cell
+		/// Gets or sets the amount of left and right padding on the text inside a cell
 		/// </summary>
 		[DefaultValue(3)]
 		[Category("Behavior")]
-		public int CellPadding { get; set; }
+		public int CellWidthPadding { get; set; }
+
+		/// <summary>
+		/// Gets or sets the amount of top and bottom padding on the text inside a cell
+		/// </summary>
+		[DefaultValue(1)]
+		[Category("Behavior")]
+		public int CellHeightPadding { get; set; }
 
 		/// <summary>
 		/// Displays grid lines around cells
@@ -233,6 +241,12 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		[Category("Action")]
 		public event System.Windows.Forms.ColumnClickEventHandler ColumnClick;
+
+		/// <summary>
+		/// Occurs when a column header is right-clicked
+		/// </summary>
+		[Category("Action")]
+		public event System.Windows.Forms.ColumnClickEventHandler ColumnRightClick;
 
 		/// <summary>
 		/// Occurs whenever the 'SelectedItems' property for this control changes
@@ -473,9 +487,9 @@ namespace BizHawk.Client.EmuHawk
 					return (int)((width - ColumnWidth) / CellWidth);
 				}
 
-				var height = DrawHeight - (NeedsHScrollbar ? HBar.Height : 0);
+				var height = DrawHeight - (NeedsHScrollbar ? HBar.Height : (CellHeight -1));
 
-				return (int)height / CellHeight;
+				return ((int)height / CellHeight) - 1; // adelikat: -1 to compensate for what this math should be doing anyway, TODO: figure out why it doesn't work without it?
 			}
 		}
 
@@ -539,7 +553,7 @@ namespace BizHawk.Client.EmuHawk
 				Gdi.PrepDrawString(this.Font, this.ForeColor);
 				foreach (var column in _columns)
 				{
-					var point = new Point(CellPadding, start + CellPadding);
+					var point = new Point(CellWidthPadding, start + CellHeightPadding);
 
 					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
 					{
@@ -560,7 +574,7 @@ namespace BizHawk.Client.EmuHawk
 				Gdi.PrepDrawString(this.Font, this.ForeColor);
 				foreach (var column in _columns)
 				{
-					var point = new Point(column.Left.Value + 2* CellPadding - HBar.Value, CellPadding);//TODO: fix this CellPadding issue (2 * CellPadding vs just CellPadding)
+					var point = new Point(column.Left.Value + 2 * CellWidthPadding - HBar.Value, CellHeightPadding); // TODO: fix this CellPadding issue (2 * CellPadding vs just CellPadding)
 
 					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
 					{
@@ -595,7 +609,7 @@ namespace BizHawk.Client.EmuHawk
 
 							//Center Text
 							int x = RowsToPixels(i) + (CellWidth - text.Length * _charSize.Width) / 2;
-							int y = j * CellHeight + CellPadding;
+							int y = (j * CellHeight) + CellHeightPadding;
 							var point = new Point(x, y);
 							if (!string.IsNullOrWhiteSpace(text))
 							{
@@ -610,7 +624,7 @@ namespace BizHawk.Client.EmuHawk
 					int range = Math.Min(LastVisibleRow, RowCount - 1) - startRow + 1;
 
 					Gdi.PrepDrawString(this.Font, this.ForeColor);
-					int xPadding = CellPadding + 1 - HBar.Value;
+					int xPadding = CellWidthPadding + 1 - HBar.Value;
 					for (int i = 0; i < range; i++)//Vertical
 					{
 						for (int j = 0; j < _columns.Count; j++)//Horizontal
@@ -621,7 +635,7 @@ namespace BizHawk.Client.EmuHawk
 								continue;
 							}
 							string text;
-							var point = new Point(col.Left.Value + xPadding, RowsToPixels(i) + CellPadding);
+							var point = new Point(col.Left.Value + xPadding, RowsToPixels(i) + CellHeightPadding);
 
 							Bitmap image = null;
 							if (QueryItemIcon != null)
@@ -631,7 +645,7 @@ namespace BizHawk.Client.EmuHawk
 
 							if (image != null)
 							{
-								Gdi.DrawBitmap(image, new Point(col.Left.Value, point.Y + CellPadding), true);
+								Gdi.DrawBitmap(image, new Point(col.Left.Value, point.Y + CellHeightPadding), true);
 							}
 							else
 							{
@@ -692,6 +706,20 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			// Emphasis
+			foreach (var column in Columns.Where(c => c.Emphasis))
+			{
+				Gdi.SetBrush(SystemColors.ActiveBorder);
+				if (HorizontalOrientation)
+				{
+					Gdi.FillRectangle(1, Columns.IndexOf(column) * CellHeight + 1, ColumnWidth - 1, ColumnHeight - 1);
+				}
+				else
+				{
+					Gdi.FillRectangle(column.Left.Value + 1, 1, column.Width.Value - 1, ColumnHeight - 1);
+				}
+			}
+
 			// If the user is hovering over a column
 			if (IsHoveringOnColumnCell)
 			{
@@ -704,7 +732,15 @@ namespace BizHawk.Client.EmuHawk
 							continue;
 						}
 
-						Gdi.SetBrush(SystemColors.Highlight);
+						if (CurrentCell.Column.Emphasis)
+						{
+							Gdi.SetBrush(Add(SystemColors.Highlight, 0x00222222));
+						}
+						else
+						{
+							Gdi.SetBrush(SystemColors.Highlight);
+						}
+
 						Gdi.FillRectangle(1, i * CellHeight + 1, ColumnWidth - 1, ColumnHeight - 1);
 					}
 				}
@@ -720,13 +756,31 @@ namespace BizHawk.Client.EmuHawk
 							}
 							int left = _columns[i].Left.Value - HBar.Value;
 							int width = _columns[i].Right.Value - HBar.Value - left;
-							Gdi.SetBrush(SystemColors.Highlight);
+
+							if (CurrentCell.Column.Emphasis)
+							{
+								Gdi.SetBrush(Add(SystemColors.Highlight, 0x00550000));
+							}
+							else
+							{
+								Gdi.SetBrush(SystemColors.Highlight);
+							}
+
 							Gdi.FillRectangle(left + 1, 1, width - 1, ColumnHeight - 1);
 						}
 					}
 				}
 			}
 		}
+
+		// TODO: Make into an extension method
+		private Color Add(Color color, int val)
+		{
+			var col = color.ToArgb();
+			col += val;
+			return Color.FromArgb(col);
+		}
+
 		//TODO refactor this and DoBackGroundCallback functions.
 		/// <summary>
 		/// Draw Gridlines and background colors using QueryItemBkColor.
@@ -944,7 +998,14 @@ namespace BizHawk.Client.EmuHawk
 
 			if (e.Button == MouseButtons.Right)
 			{
-				RightButtonHeld = true;
+				if (IsHoveringOnColumnCell)
+				{
+					ColumnRightClickEvent(ColumnAtX(e.X));
+				}
+				else
+				{
+					RightButtonHeld = true;
+				}
 			}
 
 			if (e.Button == MouseButtons.Left)
@@ -1115,6 +1176,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void ColumnRightClickEvent(RollColumn column)
+		{
+			if (ColumnRightClick != null)
+			{
+				ColumnRightClick(this, new ColumnClickEventArgs(_columns.IndexOf(column)));
+			}
+		}
+
 		#endregion
 
 		#region Change Events
@@ -1159,10 +1228,11 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="newCell"></param>
 		private void CellChanged(Cell newCell)
 		{
+			LastCell = CurrentCell;
+			CurrentCell = newCell;
+
 			if (PointedCellChanged != null && newCell != CurrentCell)
 			{
-				LastCell = CurrentCell;
-				CurrentCell = newCell;
 				PointedCellChanged(this, new CellEventArgs(LastCell, CurrentCell));
 			}
 		}
@@ -1188,7 +1258,7 @@ namespace BizHawk.Client.EmuHawk
 			RecalculateScrollBars();
 			if (_columns.Any())
 			{
-				ColumnWidth = _columns.Max(c => c.Width.Value) + CellPadding * 4;
+				ColumnWidth = _columns.Max(c => c.Width.Value) + CellWidthPadding * 4;
 			}
 		}
 
@@ -1493,7 +1563,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <returns>The new width of the RollColumn object.</returns>
 		private int UpdateWidth(RollColumn col)
 		{
-			col.Width = ((col.Text.Length * _charSize.Width) + (CellPadding * 4));
+			col.Width = ((col.Text.Length * _charSize.Width) + (CellWidthPadding * 4));
 			return col.Width.Value;
 		}
 
@@ -1584,8 +1654,8 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void UpdateCellSize()
 		{
-			CellHeight = _charSize.Height + CellPadding * 2;
-			CellWidth  = _charSize.Width * MaxCharactersInHorizontal + CellPadding * 4; // Double the padding for horizontal because it looks better
+			CellHeight = _charSize.Height + CellHeightPadding * 2;
+			CellWidth  = _charSize.Width * MaxCharactersInHorizontal + CellWidthPadding * 4; // Double the padding for horizontal because it looks better
 		}
 
 		#endregion
@@ -1733,6 +1803,11 @@ namespace BizHawk.Client.EmuHawk
 			public string Name { get; set; }
 			public string Text { get; set; }
 			public InputType Type { get; set; }
+
+			/// <summary>
+			/// Column will be drawn with an emphasized look, if true
+			/// </summary>
+			public bool Emphasis { get; set; }
 		}
 
 		/// <summary>
