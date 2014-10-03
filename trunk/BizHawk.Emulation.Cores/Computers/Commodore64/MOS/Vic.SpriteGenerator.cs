@@ -16,6 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			public int color;
 			public bool display;
 			public bool dma;
+            public int dmaCount;
 			public bool enable;
 			public int mc;
 			public int mcbase;
@@ -25,6 +26,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			public bool priority;
 			public bool shiftEnable;
 			public int sr;
+            public int srMask;
 			public int x;
 			public bool xCrunch;
 			public bool xExpand;
@@ -39,6 +41,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				color = 0;
 				display = false;
 				dma = false;
+                dmaCount = 0;
 				enable = false;
 				mc = 0;
 				mcbase = 0;
