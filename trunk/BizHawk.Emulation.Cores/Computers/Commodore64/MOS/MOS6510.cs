@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using BizHawk.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
 
-namespace BizHawk.Emulation.Cores.Computers.Commodore64
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	// an extension of the 6502 processor
 

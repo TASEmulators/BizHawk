@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace BizHawk.Emulation.Cores.Computers.Commodore64
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	// vic ntsc
 	static public class MOS6567

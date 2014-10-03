@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	// Bank select is DE00, bit 7 enabled means to disable
 	// ROM in 8000-9FFF.
 
-	public class Mapper0013 : Cart
+	sealed public class Mapper0013 : Cart
 	{
 		private byte[][] banks = new byte[0][]; //8000
 		private int bankMask;

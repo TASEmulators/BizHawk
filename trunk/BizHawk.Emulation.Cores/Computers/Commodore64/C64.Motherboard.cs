@@ -2,6 +2,9 @@
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Computers.Commodore64.MOS;
+using BizHawk.Emulation.Cores.Computers.Commodore64.CassettePort;
+using BizHawk.Emulation.Cores.Computers.Commodore64.UserPort;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
@@ -25,10 +28,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		// ports
 		public CartridgePort cartPort;
-		public CassettePort cassPort;
+		public CassettePortDevice cassPort;
 		public IController controller;
 		public SerialPort serPort;
-		public UserPort userPort;
+		public UserPortDevice userPort;
 
 		// state
 		//public int address;
@@ -45,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			_c64 = c64;
 
 			cartPort = new CartridgePort();
-			cassPort = new CassettePort();
+			cassPort = new CassettePortDevice();
 			cia0 = new MOS6526(initRegion);
 			cia1 = new MOS6526(initRegion);
 			colorRam = new Chip2114();
@@ -59,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				case Region.NTSC: vic = MOS6567.Create(); break;
 				case Region.PAL: vic = MOS6569.Create(); break;
 			}
-			userPort = new UserPort();
+			userPort = new UserPortDevice();
 		}
 
 		// -----------------------------------------
@@ -239,6 +242,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 			ser.BeginSection("sid");
 			sid.SyncState(ser);
+			ser.EndSection();
+
+			ser.BeginSection("user");
+			userPort.SyncState(ser);
 			ser.EndSection();
 
 			ser.BeginSection("vic");
