@@ -14,10 +14,10 @@ rem explicitly list the OK ones here as individual copies. until then....
 
 copy *.dll dll
 
-zip -X -r ..\Dist\BizHawk.zip EmuHawk.exe DiscoHawk.exe defctrl.json dll shaders gamedb NES\Palettes Lua Gameboy\Palettes -x *.pdb -x *.lib -x *.pgd -x *.exp -x dll\libsneshawk-64*.exe -x *.ilk
+..\dist\zip.exe -X -r ..\Dist\BizHawk.zip EmuHawk.exe DiscoHawk.exe defctrl.json dll shaders gamedb NES\Palettes Lua Gameboy\Palettes -x *.pdb -x *.lib -x *.pgd -x *.exp -x dll\libsneshawk-64*.exe -x *.ilk
 
 cd ..\Dist
-unzip BizHawk.zip -d temp
+.\unzip.exe BizHawk.zip -d temp
 del BizHawk.zip
 
 rmdir /s /q temp\lua
@@ -28,7 +28,7 @@ cd temp
 upx -d dll\*.dll
 upx -d dll\*.exe
 upx -d *.exe
-..\zip -X -9 -r ..\BizHawk.zip . -i \*
+..\zip.exe -X -9 -r ..\BizHawk.zip . -i \*
 cd ..
 
 rmdir /s /q temp
