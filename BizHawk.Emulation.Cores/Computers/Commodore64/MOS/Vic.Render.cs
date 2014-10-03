@@ -141,24 +141,31 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				{
 					sprData = 0;
 					sprPixel = pixel;
+                    spr.srMask &= 0xFFFFFF;
 
 					if (spr.x == rasterX)
-						spr.shiftEnable = true;
+                        spr.shiftEnable = spr.display && spr.srMask != 0;
 
-					if (spr.shiftEnable)
+					if (spr.shiftEnable) // sprite rule 6
 					{
 						if (spr.multicolor)
 						{
 							sprData = (spr.sr & srSpriteMaskMC);
-							if (spr.multicolorCrunch && spr.xCrunch && !rasterXHold)
-								spr.sr <<= 2;
+                            if (spr.multicolorCrunch && spr.xCrunch && !rasterXHold)
+                            {
+                                spr.sr <<= 2;
+                                spr.srMask <<= 2;
+                            }
 							spr.multicolorCrunch ^= spr.xCrunch;
 						}
 						else
 						{
 							sprData = (spr.sr & srSpriteMask);
-							if (spr.xCrunch && !rasterXHold)
-								spr.sr <<= 1;
+                            if (spr.xCrunch && !rasterXHold)
+                            {
+                                spr.sr <<= 1;
+                                spr.srMask <<= 1;
+                            }
 						}
 						spr.xCrunch ^= spr.xExpand;
 
@@ -167,16 +174,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 							// sprite-sprite collision
 							if (pixelOwner == null)
 							{
-								if (!spr.priority || (pixelData == 0))
-								{
-									if (sprData == srSpriteMask1)
-										pixel = spriteMulticolor0;
-									else if (sprData == srSpriteMask2)
-										pixel = spr.color;
-									else if (sprData == srSpriteMask3)
-										pixel = spriteMulticolor1;
-								}
-								pixelOwner = spr;
+                                if (sprData == srSpriteMask1)
+                                    sprPixel = spriteMulticolor0;
+                                else if (sprData == srSpriteMask2)
+                                    sprPixel = spr.color;
+                                else if (sprData == srSpriteMask3)
+                                    sprPixel = spriteMulticolor1;
+                                pixelOwner = spr;
 							}
 							else
 							{
@@ -188,13 +192,24 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 							}
 
 							// sprite-data collision
-							if (!borderOnVertical && (pixelData < srMask2))
+							if (!borderOnVertical && (pixelData >= srMask2))
 							{
 								spr.collideData = true;
 							}
-						}
-						if (spr.sr == 0)
-							spr.shiftEnable = false; //optimization
+
+                            // sprite priority logic
+                            if (spr.priority)
+                            {
+                                pixel = (pixelData >= srMask2) ? pixel : sprPixel;
+                            }
+                            else
+                            {
+                                pixel = sprPixel;
+                            }
+                        }
+                        if (spr.srMask == 0)
+							spr.shiftEnable = false;
+                        //pixel = (spr.mcbase / 3) & 0xF;
 					}
 				}
 
