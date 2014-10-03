@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Reflection;
+using System.Text;
 
 using BizHawk.Common;
 
@@ -8,6 +9,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	static class SaveState
 	{
+        static private Encoding encoding = Encoding.Unicode;
+
 		static public void SyncObject(Serializer ser, object obj)
 		{
 			BindingFlags defaultFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
@@ -67,6 +70,22 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 								ser.Sync(member.Name, ref refBool);
 								currentValue = refBool;
 								break;
+                            case "Boolean[]":
+                                {
+                                    bool[] source = (bool[])currentValue;
+                                    refIntBuffer = new IntBuffer(source.Length);
+                                    for (int i = 0; i < source.Length; i++)
+                                    {
+                                        refIntBuffer[i] = source[i] ? -1 : 0;
+                                    }
+                                    ser.Sync(member.Name, ref refIntBuffer);
+                                    for (int i = 0; i < source.Length; i++)
+                                    {
+                                        source[i] = refIntBuffer[i] != 0;
+                                    }
+                                    currentValue = source;
+                                }
+                                break;
 							case "Byte":
 								refByte = (Byte)currentValue;
 								ser.Sync(member.Name, ref refByte);
@@ -82,6 +101,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 								ser.Sync(member.Name, ref refByteBuffer);
 								currentValue = refByteBuffer;
 								break;
+                            case "Func`1":
+                                break;
 							case "Int16":
 								refInt16 = (Int16)currentValue;
 								ser.Sync(member.Name, ref refInt16);
@@ -125,6 +146,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 								ser.Sync(member.Name, ref refSByte);
 								currentValue = refSByte;
 								break;
+                            case "String":
+                                {
+                                    var refString = (String)currentValue;
+                                    var refVal = new ByteBuffer(encoding.GetBytes(refString));
+                                    ser.Sync(member.Name, ref refVal);
+                                    currentValue = encoding.GetString(refVal.Arr);
+                                }
+                                break;
 							case "UInt16":
 								refUInt16 = (UInt16)currentValue;
 								ser.Sync(member.Name, ref refUInt16);
@@ -135,9 +164,40 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 								ser.Sync(member.Name, ref refUInt32);
 								currentValue = refUInt32;
 								break;
-							default:
-								fail = true;
-								break;
+                            default:
+                                {
+                                    Type t = currentValue.GetType();
+                                    if (t.IsEnum)
+                                    {
+                                        refInt32 = (Int32)currentValue;
+                                        ser.Sync(member.Name, ref refInt32);
+                                        currentValue = refInt32;
+                                    }
+                                    else if (t.IsValueType)
+                                    {
+                                        fail = true;
+                                    }
+                                    else if (t.IsClass)
+                                    {
+                                        fail = true;
+                                        foreach (var method in t.GetMethods())
+                                        {
+                                            if (method.Name == "SyncState")
+                                            {
+                                                ser.BeginSection(fieldInfo.Name);
+                                                method.Invoke(currentValue, new object[] {(Serializer)ser});
+                                                ser.EndSection();
+                                                fail = false;
+                                                break;
+                                            }
+                                        } 
+                                    }
+                                    else
+                                    {
+                                        fail = true;
+                                    }
+                                }
+                                break;
 						}
 					}
 
