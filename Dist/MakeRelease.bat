@@ -22,12 +22,13 @@ del BizHawk.zip
 
 rmdir /s /q temp\lua
 svn export ..\output\lua temp\Lua
+svn export ..\output\firmware temp\Firmware
 
 cd temp
 upx -d dll\*.dll
 upx -d dll\*.exe
 upx -d *.exe
-..\zip -X -9 -r ..\BizHawk.zip .
+..\zip -X -9 -r ..\BizHawk.zip . -i \*
 cd ..
 
 rmdir /s /q temp
