@@ -152,8 +152,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("bankMask", ref bankMask);
-			ser.Sync("bankNumber", ref bankNumber);
 			if (ser.IsReader)
 				BankSet(bankNumber);
 		}

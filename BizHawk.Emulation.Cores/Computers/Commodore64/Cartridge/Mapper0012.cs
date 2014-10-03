@@ -73,7 +73,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("bankIndex", ref bankIndex);
 			if (ser.IsReader)
 				bankHighSelected = bankHigh[bankIndex];
 		}
