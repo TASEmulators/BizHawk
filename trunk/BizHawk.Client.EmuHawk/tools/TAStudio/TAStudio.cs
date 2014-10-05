@@ -1086,6 +1086,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm.StartNewMovie(_currentTasMovie, record: true);
 			_currentTasMovie.CaptureCurrentState();
 			_currentTasMovie.SwitchToRecord();
+			_currentTasMovie.ClearChanges();
 		}
 
 		private void Tastudio_Closing(object sender, FormClosingEventArgs e)
