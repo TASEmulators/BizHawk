@@ -98,6 +98,26 @@ namespace BizHawk.Common
 			}
 		}
 
+		public static bool[] ByteBufferToBoolBuffer(byte[] buf)
+		{
+			var ret = new bool[buf.Length];
+			for (int i = 0; i < buf.Length; i++)
+			{
+				ret[i] = buf[i] != 0;
+			}
+			return ret;
+		}
+
+		public static byte[] BoolBufferToByteBuffer(bool[] buf)
+		{
+			var ret = new byte[buf.Length];
+			for (int i = 0; i < buf.Length; i++)
+			{
+				ret[i] = (byte)(buf[i] ? 1 : 0);
+			}
+			return ret;
+		}
+
 		public static short[] ByteBufferToShortBuffer(byte[] buf)
 		{
 			int num = buf.Length / 2;

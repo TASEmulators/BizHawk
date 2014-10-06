@@ -72,18 +72,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 								break;
                             case "Boolean[]":
                                 {
-                                    bool[] source = (bool[])currentValue;
-                                    refIntBuffer = new IntBuffer(source.Length);
-                                    for (int i = 0; i < source.Length; i++)
-                                    {
-                                        refIntBuffer[i] = source[i] ? -1 : 0;
-                                    }
-                                    ser.Sync(member.Name, ref refIntBuffer);
-                                    for (int i = 0; i < source.Length; i++)
-                                    {
-                                        source[i] = refIntBuffer[i] != 0;
-                                    }
-                                    currentValue = source;
+                                    bool[] tmp = (bool[])currentValue;
+									ser.Sync(member.Name, ref tmp, false);
+									currentValue = tmp;
                                 }
                                 break;
 							case "Byte":

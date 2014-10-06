@@ -231,6 +231,47 @@ namespace BizHawk.Common
 			}
 		}
 
+		public void Sync(string name, ref bool[] val, bool useNull)
+		{
+			if (IsText)
+			{
+				SyncText(name, ref val, useNull);
+			}
+			else if (IsReader)
+			{
+				val = Util.ByteBufferToBoolBuffer(Util.ReadByteBuffer(_br, false));
+				if (val == null && !useNull)
+				{
+					val = new bool[0];
+				}
+			}
+			else
+			{
+				Util.WriteByteBuffer(_bw, Util.BoolBufferToByteBuffer(val));
+			}
+		}
+
+		public void SyncText(string name, ref bool[] val, bool useNull)
+		{
+			if (IsReader)
+			{
+				if (Present(name))
+				{
+					var bytes = Util.HexStringToBytes(Item(name));
+					val = Util.ByteBufferToBoolBuffer(bytes);
+				}
+
+				if (val != null && val.Length == 0 && useNull)
+				{
+					val = null;
+				}
+			}
+			else
+			{
+				var temp = val ?? new bool[0];
+				_tw.WriteLine("{0} {1}", name, Util.BoolBufferToByteBuffer(temp).BytesToHexString());
+			}
+		}
 		public void Sync(string name, ref short[] val, bool useNull)
 		{
 			if (IsText)
