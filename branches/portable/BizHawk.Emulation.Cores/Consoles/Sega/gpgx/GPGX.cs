@@ -281,7 +281,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			if (audio)
 			{
 				byte[] data = new byte[2352];
-				CD.ReadLBA_2352(lba, data, 0);
+				if (lba < CD.LBACount)
+				{
+					CD.ReadLBA_2352(lba, data, 0);
+				}
+				else
+				{
+					// audio seems to read slightly past the end of disks; probably innoculous
+					// just send back 0s.
+					// Console.WriteLine("!!{0} >= {1}", lba, CD.LBACount);
+				}
 				Marshal.Copy(data, 0, dest, 2352);
 			}
 			else

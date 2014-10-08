@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64
+﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	// sid
 	static public class MOS6581

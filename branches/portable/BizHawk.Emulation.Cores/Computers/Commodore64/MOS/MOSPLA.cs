@@ -1,7 +1,7 @@
 ﻿using System;
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Cores.Computers.Commodore64
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	// emulates the PLA
 	// which handles all bank switching
@@ -311,11 +311,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			{
 				case PLABank.CartridgeHi:
 					WriteCartridgeHi(addr, val);
-			        WriteMemory(addr, val);
+                    if (ReadGame() || !ReadExRom())
+                    {
+                        WriteMemory(addr, val);
+                    }
 					break;
 				case PLABank.CartridgeLo:
 					WriteCartridgeLo(addr, val);
-			        WriteMemory(addr, val);
+                    if (ReadGame() || !ReadExRom())
+                    {
+                        WriteMemory(addr, val);
+                    }
 					break;
 				case PLABank.Cia0:
 					WriteCia0(addr, val);

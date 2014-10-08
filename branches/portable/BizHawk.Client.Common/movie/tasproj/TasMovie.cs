@@ -323,5 +323,30 @@ namespace BizHawk.Client.Common
 		{
 			StateManager.Capture();
 		}
+
+		public void ClearGreenzone()
+		{
+			if (StateManager.Any())
+			{
+				StateManager.ClearGreenzone();
+				Changes = true;
+			}
+		}
+
+		public bool HasGreenzone // TODO: get rid of wrappers like this now that we expose the state manager directly
+		{
+			get
+			{
+				return StateManager.Any();
+			}
+		}
+
+		public TasStateManager TasStateManager
+		{
+			get
+			{
+				return StateManager;
+			}
+		}
 	}
 }

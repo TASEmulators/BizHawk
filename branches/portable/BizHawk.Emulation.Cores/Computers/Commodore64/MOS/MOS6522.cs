@@ -1,7 +1,7 @@
 ﻿using System;
 
 #if false
-namespace BizHawk.Emulation.Cores.Computers.Commodore64
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	// via
 	public class MOS6522 : Timer

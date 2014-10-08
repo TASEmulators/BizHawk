@@ -457,6 +457,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					var font = new Font(family, fontsize ?? 12, fstyle, GraphicsUnit.Pixel);
+					g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
 					g.DrawString(message, font, GetBrush(color ?? Color.White), x, y);
 				}
 				catch (Exception)

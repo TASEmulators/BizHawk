@@ -2555,6 +2555,12 @@ namespace BizHawk.Client.EmuHawk
 			_throttle.Step(true, -1);
 		}
 
+		// TODO: for Tastudio debugging, coudl be removed if unused, it is a bad idea for anything else to clal this
+		public void FrameAdvance()
+		{
+			StepRunLoop_Core();
+		}
+
 		private void StepRunLoop_Core()
 		{
 			var runFrame = false;

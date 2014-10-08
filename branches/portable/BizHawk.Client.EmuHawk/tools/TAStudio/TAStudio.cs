@@ -626,6 +626,13 @@ namespace BizHawk.Client.EmuHawk
 				PasteMenuItem.Enabled =
 				PasteInsertMenuItem.Enabled =
 				_tasClipboard.Any();
+
+			ClearGreenzoneMenuItem.Enabled =
+				_currentTasMovie != null && _currentTasMovie.HasGreenzone;
+
+			GreenzoneICheckSeparator.Visible =
+				GreenZzoneIntegrityCheckMenuItem.Visible =
+				VersionInfo.DeveloperBuild;
 		}
 
 		private void DeselectMenuItem_Click(object sender, EventArgs e)
@@ -909,6 +916,12 @@ namespace BizHawk.Client.EmuHawk
 			RefreshDialog();
 		}
 
+		private void ClearGreenzoneMenuItem_Click(object sender, EventArgs e)
+		{
+			_currentTasMovie.ClearGreenzone();
+			RefreshDialog();
+		}
+
 		#endregion
 
 		#region Config
@@ -1073,6 +1086,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm.StartNewMovie(_currentTasMovie, record: true);
 			_currentTasMovie.CaptureCurrentState();
 			_currentTasMovie.SwitchToRecord();
+			_currentTasMovie.ClearChanges();
 		}
 
 		private void Tastudio_Closing(object sender, FormClosingEventArgs e)
@@ -1108,5 +1122,27 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
+
+		private void GreenZzoneIntegrityCheckMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.MainForm.RebootCore();
+
+			GlobalWin.MainForm.FrameAdvance();
+			var frame = Global.Emulator.Frame;
+
+			if (_currentTasMovie.TasStateManager.HasState(frame))
+			{
+				var state = (byte[])Global.Emulator.SaveStateBinary().Clone();
+				var greenzone = _currentTasMovie.TasStateManager[frame];
+
+				if (!state.SequenceEqual(greenzone))
+				{
+					MessageBox.Show("bad data at frame: " + frame);
+					return;
+				}
+			}
+
+			MessageBox.Show("Integrity Check passed");
+		}
 	}
 }

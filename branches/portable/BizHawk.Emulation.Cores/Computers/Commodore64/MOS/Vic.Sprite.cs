@@ -5,11 +5,11 @@ using System.Text;
 
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Cores.Computers.Commodore64
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	sealed public partial class Vic
 	{
-		sealed class SpriteGenerator
+		sealed class Sprite
 		{
 			public bool collideData;
 			public bool collideSprite;
@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			public bool display;
 			public bool dma;
 			public bool enable;
+			public int loaded;
 			public int mc;
 			public int mcbase;
 			public bool multicolor;

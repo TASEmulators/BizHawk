@@ -18,7 +18,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 	// There is also 256 bytes RAM at DF00-DFFF.
 
-	public class Mapper0020 : Cart
+	// We emulate having the AM29F040 chip.
+
+	sealed public class Mapper0020 : Cart
 	{
 		private byte[][] banksA = new byte[64][]; //8000
 		private byte[][] banksB = new byte[64][]; //A000
@@ -30,6 +32,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
         private bool jumper = false;
         private int stateBits;
 		private byte[] ram = new byte[256];
+		private bool commandLatch55;
+		private bool commandLatchAA;
+		private int internalRomState;
 
 		public Mapper0020(List<int> newAddresses, List<int> newBanks, List<byte[]> newData)
 		{
@@ -66,6 +71,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 			// default to bank 0
 			BankSet(0);
+
+			// internal operation settings
+			commandLatch55 = false;
+			commandLatchAA = false;
+			internalRomState = 0;
 		}
 
 		private void BankSet(int index)
@@ -117,17 +127,49 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public override byte Read8000(int addr)
 		{
-			return currentBankA[addr];
+			return ReadInternal(addr);
 		}
 
 		public override byte ReadA000(int addr)
 		{
-			return currentBankB[addr];
+			return ReadInternal(addr | 0x2000);
 		}
 
 		public override byte ReadDF00(int addr)
 		{
 			return ram[addr];
+		}
+
+		private byte ReadInternal(int addr)
+		{
+			switch (internalRomState)
+			{
+				case 0x80:
+					break;
+				case 0x90:
+					switch (addr & 0x1FFF)
+					{
+						case 0x0000:
+							return 0x01;
+						case 0x0001:
+							return 0xA4;
+						case 0x0002:
+							return 0x00;
+					}
+					break;
+				case 0xA0:
+					break;
+				case 0xF0:
+					break;
+			}
+			if ((addr & 0x3FFF) < 0x2000)
+			{
+				return currentBankA[addr & 0x1FFF];
+			}
+			else
+			{
+				return currentBankB[addr & 0x1FFF];
+			}
 		}
 
 		private void StateSet(byte val)
@@ -139,6 +181,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
                 pinGame = jumper;
 			pinExRom = ((val & 0x02) == 0);
 			boardLed = ((val & 0x80) != 0);
+			internalRomState = 0;
 			UpdateState();
 		}
 
@@ -146,6 +189,81 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			currentBankA = banksA[bankNumber];
 			currentBankB = banksB[bankNumber];
+		}
+
+        public override void Write8000(int addr, byte val)
+        {
+			WriteInternal(addr, val);
+        }
+
+		public override void WriteA000(int addr, byte val)
+		{
+			WriteInternal(addr | 0x2000, val);
+		}
+
+		private void WriteInternal(int addr, byte val)
+		{
+			if (!pinGame && pinExRom)
+			{
+				System.Diagnostics.Debug.WriteLine("EasyFlash Write: $" + C64Util.ToHex(addr | 0x8000, 4) + " = " + C64Util.ToHex(val, 2));
+				if (val == 0xF0) // any address, resets flash
+				{
+					internalRomState = 0;
+					commandLatch55 = false;
+					commandLatchAA = false;
+				}
+				else if (internalRomState != 0x00 && internalRomState != 0xF0)
+				{
+					switch (internalRomState)
+					{
+						case 0xA0:
+							if ((addr & 0x2000) == 0)
+							{
+								addr &= 0x1FFF;
+								banksA[bankNumber][addr] = val;
+								currentBankA[addr] = val;
+							}
+							else
+							{
+								addr &= 0x1FFF;
+								banksB[bankNumber][addr] = val;
+								currentBankB[addr] = val;
+							}
+							break;
+					}
+				}
+				else if (addr == 0x0555) // $8555
+				{
+					if (!commandLatchAA)
+					{
+						if (val == 0xAA)
+						{
+							commandLatch55 = true;
+						}
+					}
+					else
+					{
+						// process EZF command
+						internalRomState = val;
+					}
+				}
+				else if (addr == 0x02AA) // $82AA
+				{
+					if (commandLatch55 && val == 0x55)
+					{
+						commandLatchAA = true;
+					}
+					else
+					{
+						commandLatch55 = false;
+					}
+				}
+				else
+				{
+					commandLatch55 = false;
+					commandLatchAA = false;
+				}
+			}
 		}
 
 		public override void WriteDE00(int addr, byte val)
@@ -165,9 +283,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("bankNumber", ref bankNumber);
-			ser.Sync("boardLed", ref boardLed);
-			ser.Sync("ram", ref ram, false);
 			if (ser.IsReader)
 				UpdateState();
 		}

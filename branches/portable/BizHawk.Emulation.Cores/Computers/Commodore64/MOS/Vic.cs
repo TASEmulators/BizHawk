@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace BizHawk.Emulation.Cores.Computers.Commodore64
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	sealed public partial class Vic
 	{
@@ -12,11 +12,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public bool ReadBABuffer() { return pinBA; }
 		public bool ReadIRQBuffer() { return pinIRQ; }
 
-		int cyclesPerSec;
-		int irqShift;
-		int[][] pipeline;
-		int totalCycles;
-		int totalLines;
+		private int cyclesPerSec;
+		private int irqShift;
+		private int[][] pipeline;
+		private int totalCycles;
+		private int totalLines;
 
 		public Vic(int newCycles, int newLines, int[][] newPipeline, int newCyclesPerSec, int hblankStart, int hblankEnd, int vblankStart, int vblankEnd)
 		{
@@ -37,9 +37,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				buf = new int[bufWidth * bufHeight];
 				bufLength = buf.Length;
 
-				sprites = new SpriteGenerator[8];
+				sprites = new Sprite[8];
 				for (int i = 0; i < 8; i++)
-					sprites[i] = new SpriteGenerator();
+					sprites[i] = new Sprite();
 
 				bufferC = new int[40];
 				bufferG = new int[40];
@@ -64,7 +64,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public void ExecutePhase1()
 		{
-			//xScroll = 1;
 			{
 				// raster IRQ compare
 				if ((cycle == rasterIrqLineXCycle && rasterLine > 0) || (cycle == rasterIrqLine0Cycle && rasterLine == 0))
@@ -93,13 +92,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				if (badline)
 					idle = false;
 
-				// process some sprite crunch vars
-				foreach (SpriteGenerator spr in sprites)
-					if (!spr.yExpand) spr.yCrunch = true;
-
 				ParseCycle();
 
-				//xOffset = 0;
 				Render();
 
 				// if the BA counter is nonzero, allow CPU bus access
@@ -186,30 +180,30 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			if (!extraColorMode && !bitmapMode && !multicolorMode)
 			{
-				videoMode = VicVideoMode.Mode000;
+				videoMode = 0;
 				return;
 			}
 			else if (!extraColorMode && !bitmapMode && multicolorMode)
 			{
-				videoMode = VicVideoMode.Mode001;
+				videoMode = 1;
 				return;
 			}
 			else if (!extraColorMode && bitmapMode && !multicolorMode)
 			{
-				videoMode = VicVideoMode.Mode010;
+				videoMode = 2;
 				return;
 			}
 			else if (!extraColorMode && bitmapMode && multicolorMode)
 			{
-				videoMode = VicVideoMode.Mode011;
+				videoMode = 3;
 				return;
 			}
 			else if (extraColorMode && !bitmapMode && !multicolorMode)
 			{
-				videoMode = VicVideoMode.Mode100;
+				videoMode = 4;
 				return;
 			}
-			videoMode = VicVideoMode.ModeBad;
+			videoMode = -1;
 		}
 	}
 }
