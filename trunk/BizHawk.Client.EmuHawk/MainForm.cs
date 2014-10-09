@@ -3311,7 +3311,7 @@ namespace BizHawk.Client.EmuHawk
 					backupFile.Delete();
 				}
 
-				file.CopyTo(backup);
+				File.Move(path, backup);
 			}
 
 			SaveState(path, quickSlotName, false);
