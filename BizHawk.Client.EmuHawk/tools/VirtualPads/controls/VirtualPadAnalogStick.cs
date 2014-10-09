@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Client.Common;
 using System.Windows;
 
 namespace BizHawk.Client.EmuHawk
@@ -63,6 +64,11 @@ namespace BizHawk.Client.EmuHawk
 			AnalogStick.Clear();
 			ManualX.Value = 0;
 			ManualY.Value = 0;
+			//see HOOMOO
+			Global.AutofireStickyXORAdapter.SetSticky(AnalogStick.XName, false);
+			Global.StickyXORAdapter.Unset(AnalogStick.XName);
+			Global.AutofireStickyXORAdapter.SetSticky(AnalogStick.YName, false);
+			Global.StickyXORAdapter.Unset(AnalogStick.YName);
 		}
 
 		public bool ReadOnly
