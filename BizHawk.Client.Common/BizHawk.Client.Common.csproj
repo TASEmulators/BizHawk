@@ -39,6 +39,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
+    <Reference Include="Ionic.Zip">
+      <HintPath>..\References\Ionic.Zip.dll</HintPath>
+    </Reference>
     <Reference Include="LuaInterface">
       <HintPath>..\References\LuaInterface.dll</HintPath>
     </Reference>
@@ -114,7 +117,9 @@
     <Compile Include="inputAdapters\InputAdapterExtensions.cs" />
     <Compile Include="inputAdapters\InputAdapters.cs" />
     <Compile Include="inputAdapters\InputManager.cs" />
+    <Compile Include="IonicZipWriter.cs" />
     <Compile Include="IPS.cs" />
+    <Compile Include="IZipWriter.cs" />
     <Compile Include="KeyTurbo.cs" />
     <Compile Include="lua\EmuLuaLibrary.Bit.cs" />
     <Compile Include="lua\EmuLuaLibrary.Emu.cs" />
@@ -185,6 +190,7 @@
     <Compile Include="SaveSlotManager.cs" />
     <Compile Include="SavestateManager.cs" />
     <Compile Include="SevenZipSharpArchiveHandler.cs" />
+    <Compile Include="SharpZipWriter.cs" />
     <Compile Include="SystemInfo.cs" />
     <Compile Include="tools\Cheat.cs" />
     <Compile Include="tools\CheatList.cs" />
