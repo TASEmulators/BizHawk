@@ -271,7 +271,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!Global.Config.SoundEnabled || Global.Config.SoundVolume == 0)
 				DSoundBuffer.Volume = -5000;
 			else
-				DSoundBuffer.Volume = 0 - ((100 - Global.Config.SoundVolume) * 15);
+				DSoundBuffer.Volume = 0 - ((100 - Global.Config.SoundVolume) * 45);
 		}
 	}
 #else
