@@ -58,6 +58,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.AllowUD_LR = false;
 				Global.Config.BackupSavestates = false;
 
+				Global.Config.SaveStateCompressionLevelNormal = 5;
 				Global.Config.RewindEnabledLarge = false;
 				Global.Config.RewindEnabledMedium = false;
 				Global.Config.RewindEnabledSmall = true;
@@ -113,6 +114,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.AllowUD_LR = false;
 				Global.Config.BackupSavestates = false;
 				Global.Config.SkipLagFrame = false;
+				Global.Config.SaveStateCompressionLevelNormal = 5;
 
 				Global.Config.RewindEnabledLarge = false;
 				Global.Config.RewindEnabledMedium = false;
@@ -170,6 +172,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.AllowUD_LR = true;
 				Global.Config.BackupSavestates = true;
 				Global.Config.SkipLagFrame = false;
+				Global.Config.SaveStateCompressionLevelNormal = 5;
 
 				// Rewind
 				Global.Config.RewindEnabledLarge = false;
@@ -228,6 +231,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.AllowUD_LR = true;
 				Global.Config.BackupSavestates = true;
 				Global.Config.SkipLagFrame = true;
+				Global.Config.SaveStateCompressionLevelNormal = 0;
 
 				// Rewind
 				Global.Config.RewindEnabledLarge = false;
