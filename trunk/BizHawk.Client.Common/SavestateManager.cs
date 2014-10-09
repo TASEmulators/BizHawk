@@ -3,6 +3,7 @@ using System.IO;
 
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Common.IOExtensions;
+using BizHawk.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -19,12 +20,14 @@ namespace BizHawk.Client.Common
 					(Global.Config.SaveStateType == Config.SaveStateTypeE.Default && !Global.Emulator.BinarySaveStatesPreferred))
 				{
 					// text savestate format
-					bs.PutLump(BinaryStateLump.CorestateText, (tw) => Global.Emulator.SaveStateText(tw));
+					using (new SimpleTime("Save Core"))
+						bs.PutLump(BinaryStateLump.CorestateText, (tw) => Global.Emulator.SaveStateText(tw));
 				}
 				else
 				{
 					// binary core lump format
-					bs.PutLump(BinaryStateLump.Corestate, bw => Global.Emulator.SaveStateBinary(bw));
+					using (new SimpleTime("Save Core"))
+						bs.PutLump(BinaryStateLump.Corestate, bw => Global.Emulator.SaveStateBinary(bw));
 				}
 
 				if (Global.Config.SaveScreenshotWithStates)
@@ -34,7 +37,8 @@ namespace BizHawk.Client.Common
 					// If user wants large screenshots, or screenshot is small enough
 					if (Global.Config.SaveLargeScreenshotWithStates || buff.Length < Global.Config.BigScreenshotSize)
 					{
-						bs.PutLump(BinaryStateLump.Framebuffer, (BinaryWriter bw) => bw.Write(buff));
+						using (new SimpleTime("Save Framebuffer"))
+							bs.PutLump(BinaryStateLump.Framebuffer, (BinaryWriter bw) => bw.Write(buff));
 					}
 				}
 
@@ -71,7 +75,8 @@ namespace BizHawk.Client.Common
 						}
 					}
 
-					bl.GetCoreState(br => Global.Emulator.LoadStateBinary(br), tr => Global.Emulator.LoadStateText(tr));
+					using (new SimpleTime("Load Core"))
+						bl.GetCoreState(br => Global.Emulator.LoadStateBinary(br), tr => Global.Emulator.LoadStateText(tr));
 
 					bl.GetLump(BinaryStateLump.Framebuffer, false, 
 						delegate(BinaryReader br)
