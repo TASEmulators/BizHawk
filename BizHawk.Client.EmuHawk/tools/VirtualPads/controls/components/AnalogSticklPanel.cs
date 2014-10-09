@@ -107,19 +107,23 @@ namespace BizHawk.Client.EmuHawk
 			BackColor = Color.Gray;
 			Paint += AnalogControlPanel_Paint;
 			BorderStyle = BorderStyle.Fixed3D;
-			
-			// Draw the dot into a bitmap
-			var g = Graphics.FromImage(Dot);
-			g.Clear(Color.Transparent);
-			g.FillRectangle(RedBrush, 2, 0, 3, 7);
-			g.FillRectangle(RedBrush, 1, 1, 5, 5);
-			g.FillRectangle(RedBrush, 0, 2, 7, 3);
 
-			var gg = Graphics.FromImage(GrayDot);
-			gg.Clear(Color.Transparent);
-			gg.FillRectangle(Brushes.Gray, 2, 0, 3, 7);
-			gg.FillRectangle(Brushes.Gray, 1, 1, 5, 5);
-			gg.FillRectangle(Brushes.Gray, 0, 2, 7, 3);
+			// Draw the dot into a bitmap
+			using (var g = Graphics.FromImage(Dot))
+			{
+				g.Clear(Color.Transparent);
+				g.FillRectangle(RedBrush, 2, 0, 3, 7);
+				g.FillRectangle(RedBrush, 1, 1, 5, 5);
+				g.FillRectangle(RedBrush, 0, 2, 7, 3);
+			}
+
+			using (var gg = Graphics.FromImage(GrayDot))
+			{
+				gg.Clear(Color.Transparent);
+				gg.FillRectangle(Brushes.Gray, 2, 0, 3, 7);
+				gg.FillRectangle(Brushes.Gray, 1, 1, 5, 5);
+				gg.FillRectangle(Brushes.Gray, 0, 2, 7, 3);
+			}
 		}
 
 		private int RealToGfx(int val)
@@ -164,6 +168,7 @@ namespace BizHawk.Client.EmuHawk
 			unchecked
 			{
 				// Background
+				e.Graphics.Clear(Color.Black);
 				e.Graphics.FillRectangle(GrayBrush, 0, 0, MaxX, MaxY);
 				e.Graphics.FillEllipse(ReadOnly ? OffWhiteBrush : WhiteBrush, 0, 0, MaxX - 1, MaxY - 3);
 				e.Graphics.DrawEllipse(BlackPen, 0, 0, MaxX - 1, MaxY - 3);
