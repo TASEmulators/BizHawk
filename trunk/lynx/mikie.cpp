@@ -487,7 +487,15 @@ uint32 CMikie::DisplayEndOfFrame()
 		BlankLineSurface();
 		mpDisplayCurrentLine++;
 	}
-	std::memcpy(mpDisplayCurrent, framebuffer, sizeof(framebuffer));
+	if (mpDisplayCurrent)
+	{
+		std::memcpy(mpDisplayCurrent, framebuffer, sizeof(framebuffer));
+	}
+	else
+	{
+		// a game shouldn't be able to get two frames in in the length of time we traverse in a single
+		// call to advance.  what is going on here?
+	}
 
 	mpDisplayCurrent = nullptr;
 	mpDisplayCurrentLine = 0;
