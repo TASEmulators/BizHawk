@@ -472,6 +472,7 @@ void cdd_update(void)
   {
     /* fast-forward or fast-rewind */
     cdd.lba += cdd.scanOffset;
+	cdd.sampleLba += cdd.scanOffset;
 
     /* check current track limits */
     if (cdd.lba >= cdd.toc.tracks[cdd.index].end)

@@ -14,6 +14,7 @@ copy *.dll dll
 zip -X -r ..\Dist\BizHawk.zip EmuHawk.exe DiscoHawk.exe defctrl.json dll shaders gamedb NES\Palettes Lua Gameboy\Palettes -x *.pdb -x *.lib -x *.pgd -x *.exp -x dll\libsneshawk-64*.exe
 
 cd ..\Dist
+
 unzip BizHawk.zip -d temp
 del BizHawk.zip
 
@@ -21,6 +22,7 @@ rmdir /s /q temp\lua
 svn export ..\output\lua temp\Lua
 
 cd temp
+md firmware
 upx -d dll\*.dll
 upx -d dll\*.exe
 upx -d *.exe
