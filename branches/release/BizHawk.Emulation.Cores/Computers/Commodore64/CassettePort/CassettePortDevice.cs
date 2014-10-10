@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.CassettePort
 {
-	public class CassettePort
+	public class CassettePortDevice
 	{
 		public Func<bool> ReadDataOutput;
 		public Func<bool> ReadMotor;

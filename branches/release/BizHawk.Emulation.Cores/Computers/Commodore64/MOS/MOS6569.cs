@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace BizHawk.Emulation.Cores.Computers.Commodore64
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	// vic pal
 	static public class MOS6569

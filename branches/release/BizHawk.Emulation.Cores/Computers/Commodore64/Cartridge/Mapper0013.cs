@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	// Bank select is DE00, bit 7 enabled means to disable
 	// ROM in 8000-9FFF.
 
-	public class Mapper0013 : Cart
+	sealed public class Mapper0013 : Cart
 	{
 		private byte[][] banks = new byte[0][]; //8000
 		private int bankMask;
@@ -118,9 +118,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("bankMask", ref bankMask);
-			ser.Sync("bankNumber", ref bankNumber);
-			ser.Sync("romEnable", ref romEnable);
 			if (ser.IsReader)
 				BankSet(bankNumber | (romEnable ? 0x00 : 0x80));
 		}

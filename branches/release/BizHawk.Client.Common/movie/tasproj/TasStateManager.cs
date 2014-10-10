@@ -63,6 +63,19 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public byte[] InitialState
+		{
+			get
+			{
+				if (_movie.StartsFromSavestate)
+				{
+					return _movie.BinarySavestate;
+				}
+
+				return States[0];
+			}
+		}
+
 		/// <summary>
 		/// Requests that the current emulator state be captured 
 		/// Unless force is true, the state may or may not be captured depending on the logic employed by "greenzone" management

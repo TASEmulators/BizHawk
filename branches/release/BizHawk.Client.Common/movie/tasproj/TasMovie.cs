@@ -333,11 +333,19 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool HasGreenzone
+		public bool HasGreenzone // TODO: get rid of wrappers like this now that we expose the state manager directly
 		{
 			get
 			{
 				return StateManager.Any();
+			}
+		}
+
+		public TasStateManager TasStateManager
+		{
+			get
+			{
+				return StateManager;
 			}
 		}
 	}

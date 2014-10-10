@@ -3,21 +3,21 @@
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Computers.Commodore64
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	sealed public partial class Vic : IVideoProvider
 	{
-		int[] buf;
-		int bufHeight;
-		int bufLength;
-		int bufOffset;
-		int bufWidth;
-		int pixBufferSize = 12;
-		int[] pixBuffer;
-		int pixBufferIndex;
+		private int[] buf;
+		private int bufHeight;
+		private int bufLength;
+		private int bufOffset;
+		private int bufWidth;
+		private int pixBufferSize = 12;
+		private int[] pixBuffer;
+		private int pixBufferIndex;
 
 		// palette
-		int[] palette =
+		private int[] palette =
 		{
 				Colors.ARGB(0x00, 0x00, 0x00),
 				Colors.ARGB(0xFF, 0xFF, 0xFF),
