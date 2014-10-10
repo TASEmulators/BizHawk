@@ -232,6 +232,17 @@ namespace BizHawk.Client.EmuHawk.Filters
 			return point;
 		}
 
+		public override Vector2 TransformPoint(string channel, Vector2 point)
+		{
+			if (nop)
+				return point;
+			point.X *= LL.WidthScale;
+			point.Y *= LL.HeightScale;
+			point.X += LL.vx;
+			point.Y += LL.vy;
+			return point;
+		}
+
 		public override void Run()
 		{
 			if (nop)

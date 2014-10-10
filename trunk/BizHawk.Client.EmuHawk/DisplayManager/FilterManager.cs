@@ -94,6 +94,19 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 			return point;
 		}
 
+		/// <summary>
+		/// Receives a point in the input space of the filter program and transforms it through to output points
+		/// </summary>
+		public Vector2 TransformPoint(string channel, Vector2 point)
+		{
+			for (int i = 0; i < Filters.Count; i++)
+			{
+				var filter = Filters[i];
+				point = filter.TransformPoint(channel, point);
+			}
+			return point;
+		}
+
 		public class ProgramStep
 		{
 			public ProgramStep(ProgramStepType type, object args, string comment = null)

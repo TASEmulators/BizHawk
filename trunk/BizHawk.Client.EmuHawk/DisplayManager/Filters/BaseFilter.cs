@@ -51,6 +51,20 @@ namespace BizHawk.Client.EmuHawk.Filters
 			}
 			return point;
 		}
+
+		public virtual Vector2 TransformPoint(string channel, Vector2 point)
+		{
+			//base class behaviour here just uses the input and output sizes, if appropriate. few filters will have to do anything more complex
+			var input = FindInput(channel);
+			var output = FindOutput(channel);
+			if (input != null && output != null)
+			{
+				point.X *= ((float)output.SurfaceFormat.Size.Width) / (float)input.SurfaceFormat.Size.Width;
+				point.Y *= ((float)output.SurfaceFormat.Size.Height) / (float)input.SurfaceFormat.Size.Height;
+			}
+			return point;
+		}
+
 		public void SetInput(Texture2d tex)
 		{
 			InputTexture = tex;
