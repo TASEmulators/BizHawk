@@ -155,5 +155,10 @@ namespace BizHawk.Common.ReflectionExtensions
 				yield return v.GetDescription();
 			}
 		}
+
+		public static T GetAttribute<T>(this object o)
+		{
+			return (T)o.GetType().GetCustomAttributes(typeof(T), false)[0];
+		}
 	}
 }

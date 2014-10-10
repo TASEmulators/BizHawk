@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (var fp in fps)
 				{
-					if (fp.ToString() == Global.Config.VideoWriter)
+					if (fp.ToString() == Global.Config.FFmpegFormat)
 					{
 						if (fp.custom)
 							return fp;

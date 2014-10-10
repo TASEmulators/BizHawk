@@ -10,6 +10,8 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[VideoWriter("vfwavi", "AVI writer", 
+		"Uses the Microsoft AVIFIL32 system to write .avi files.  Audio is uncompressed; Video can be compressed with any installed VCM codec.  Splits on 2G and resolution change.")]
 	class AviWriter : IVideoWriter
 	{
 		CodecToken currVideoCodecToken = null;
@@ -850,22 +852,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-
-		public override string ToString()
-		{
-			return "AVI writer";
-		}
-
-		public string WriterDescription()
-		{
-			return "Uses the Microsoft AVIFIL32 system to write .avi files.  Audio is uncompressed; Video can be compressed with any installed VCM codec.  Splits on 2G and resolution change.";
-		}
-
-		public string DesiredExtension()
-		{
-			return "avi";
-		}
-
 		public void SetDefaultVideoCodecToken()
 		{
 			CodecToken ct = CodecToken.DeSerialize(Global.Config.AVICodecToken);
@@ -874,9 +860,9 @@ namespace BizHawk.Client.EmuHawk
 			currVideoCodecToken = ct;
 		}
 
-		public string ShortName()
+		public string DesiredExtension()
 		{
-			return "vfwavi";
+			return "avi";
 		}
 	}
 }

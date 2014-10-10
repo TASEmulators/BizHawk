@@ -27,20 +27,26 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="list">list of IVideoWriters to choose from</param>
 		/// <param name="owner">parent window</param>
 		/// <returns>user choice, or null on Cancel\Close\invalid</returns>
-		public static IVideoWriter DoVideoWriterChoserDlg(IEnumerable<IVideoWriter> list, IWin32Window owner, out int resizew, out int resizeh, out bool pad)
+		public static IVideoWriter DoVideoWriterChoserDlg(IEnumerable<VideoWriterInfo> list, IWin32Window owner, out int resizew, out int resizeh, out bool pad)
 		{
 			VideoWriterChooserForm dlg = new VideoWriterChooserForm();
 
 			dlg.labelDescriptionBody.Text = "";
 
-			dlg.listBox1.BeginUpdate();
-			foreach (var vw in list)
-				dlg.listBox1.Items.Add(vw);
-			dlg.listBox1.EndUpdate();
-
-			int i = dlg.listBox1.FindStringExact(Global.Config.VideoWriter);
-			if (i != ListBox.NoMatches)
-				dlg.listBox1.SelectedIndex = i;
+			{
+				int idx = 0;
+				int idx_select = -1;
+				dlg.listBox1.BeginUpdate();
+				foreach (var vw in list)
+				{
+					dlg.listBox1.Items.Add(vw);
+					if (vw.Attribs.ShortName == Global.Config.VideoWriter)
+						idx_select = idx;
+					idx++;
+				}
+				dlg.listBox1.SelectedIndex = idx_select;
+				dlg.listBox1.EndUpdate();
+			}
 
 			foreach (Control c in dlg.panelSizeSelect.Controls)
 				c.Enabled = false;
@@ -51,11 +57,14 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result == DialogResult.OK && dlg.listBox1.SelectedIndex != -1)
 			{
-				ret = (IVideoWriter)dlg.listBox1.SelectedItem;
-				Global.Config.VideoWriter = ret.ToString();
+				var vwi = (VideoWriterInfo)dlg.listBox1.SelectedItem;
+				ret = vwi.Create();
+				Global.Config.VideoWriter = vwi.Attribs.ShortName;
 			}
 			else
+			{
 				ret = null;
+			}
 
 			if (ret != null && dlg.checkBoxResize.Checked)
 			{
@@ -77,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 		private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (listBox1.SelectedIndex != -1)
-				labelDescriptionBody.Text = ((IVideoWriter)listBox1.SelectedItem).WriterDescription();
+				labelDescriptionBody.Text = ((VideoWriterInfo)listBox1.SelectedItem).Attribs.Description;
 			else
 				labelDescriptionBody.Text = "";
 		}

@@ -11,6 +11,7 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// uses pipes to launch an external ffmpeg process and encode
 	/// </summary>
+	[VideoWriter("ffmpeg", "FFmpeg writer", "Uses an external FFMPEG process to encode video and audio.  Various formats supported.  Splits on resolution change.")]
 	class FFmpegWriter : IVideoWriter
 	{
 		/// <summary>
@@ -275,31 +276,15 @@ namespace BizHawk.Client.EmuHawk
 			this.channels = channels;
 		}
 
-		public override string ToString()
-		{
-			return "FFmpeg writer";
-		}
-
-		public string WriterDescription()
-		{
-			return "Uses an external FFMPEG process to encode video and audio.  Various formats supported.  Splits on resolution change.";
-		}
-
 		public string DesiredExtension()
 		{
 			// this needs to interface with the codec token
 			return token.defaultext;
 		}
 
-
 		public void SetDefaultVideoCodecToken()
 		{
 			token = FFmpegWriterForm.FormatPreset.GetDefaultPreset();
-		}
-
-		public string ShortName()
-		{
-			return "ffmpeg";
 		}
 	}
 }
