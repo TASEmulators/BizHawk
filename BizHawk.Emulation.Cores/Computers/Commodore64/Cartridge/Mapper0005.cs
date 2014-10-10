@@ -5,7 +5,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
-	public class Mapper0005 : Cart
+	sealed public class Mapper0005 : Cart
 	{
 		private byte[][] banksA = new byte[0][]; //8000
 		private byte[][] banksB = new byte[0][]; //A000
@@ -152,8 +152,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("bankMask", ref bankMask);
-			ser.Sync("bankNumber", ref bankNumber);
 			if (ser.IsReader)
 				BankSet(bankNumber);
 		}

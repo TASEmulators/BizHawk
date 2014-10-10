@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
-	public class Mapper0000 : Cart
+	sealed public class Mapper0000 : Cart
 	{
 		private byte[] romA;
 		private int romAMask;

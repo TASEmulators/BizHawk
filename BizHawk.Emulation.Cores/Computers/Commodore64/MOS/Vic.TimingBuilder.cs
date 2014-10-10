@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BizHawk.Emulation.Cores.Computers.Commodore64
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	sealed public partial class Vic
 	{
@@ -13,16 +13,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		const int BORDER_RIGHT_40 = 0x158;
 
 		// The special actions taken by the Vic are in the same order and interval on all chips, just different offsets.
-		static int[] TimingBuilder_Cycle14Act = new int[]
+		static private int[] TimingBuilder_Cycle14Act = new int[]
         {
 			pipelineUpdateVc, 0,
 			pipelineChkSprCrunch, 0,
 			pipelineUpdateMcBase, 0,
         };
-		static int[] TimingBuilder_Cycle55Act = new int[]
+		static private int[] TimingBuilder_Cycle55Act = new int[]
         {
 			pipelineChkSprDma, 0,
-			pipelineChkSprDma, pipelineChkSprExp,
+			pipelineChkSprDma | pipelineChkSprExp, 0,
 			0, 0,
 			pipelineChkSprDisp, pipelineUpdateRc
         };

@@ -115,6 +115,7 @@ namespace BizHawk.Client.Common
 					new Binding { DisplayName = "Reboot Core", Bindings = "Ctrl+R", TabGroup = "General", DefaultBinding = "Ctrl+R", Ordinal = 30 },
 					new Binding { DisplayName = "Autofire", Bindings = "", TabGroup = "General", DefaultBinding = "", Ordinal = 31 },
 					new Binding { DisplayName = "Toggle Sound", Bindings = "", TabGroup = "General", DefaultBinding = "", Ordinal = 32 },
+					new Binding { DisplayName = "Exit Program", Bindings = "", TabGroup = "General", DefaultBinding = "", Ordinal = 33 },
 
 					//Save States
 					new Binding { DisplayName = "Save State 0", Bindings = "Shift+F10", TabGroup = "Save States", DefaultBinding = "Shift+F10", Ordinal = 1 },

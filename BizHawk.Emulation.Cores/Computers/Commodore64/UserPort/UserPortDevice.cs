@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.UserPort
 {
-	public class UserPort
+	public class UserPortDevice
 	{
 		public Func<bool> ReadCounter1;
 		public Func<bool> ReadCounter2;
@@ -11,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public Func<bool> ReadSerial1;
 		public Func<bool> ReadSerial2;
 
-		public UserPort()
+		public UserPortDevice()
 		{
 		}
 
@@ -45,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			return true;
 		}
 
-		virtual public bool ReadPA2()
+		virtual public bool ReadPA2()	
 		{
 			return true;
 		}
