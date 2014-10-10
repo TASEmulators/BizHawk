@@ -2782,28 +2782,15 @@ namespace BizHawk.Client.EmuHawk
 
 			// select IVideoWriter to use
 			IVideoWriter aw = null;
-			var writers = VideoWriterInventory.GetAllVideoWriters();
 
-			var video_writers = writers as IVideoWriter[] ?? writers.ToArray();
 			if (unattended)
 			{
-				foreach (var w in video_writers.Where(w => w.ShortName() == videowritername))
-				{
-					aw = w;
-					break;
-				}
+				aw = VideoWriterInventory.GetVideoWriter(videowritername);
+
 			}
 			else
 			{
-				aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(video_writers, GlobalWin.MainForm, out _avwriterResizew, out _avwriterResizeh, out _avwriterpad);
-			}
-
-			foreach (var w in video_writers)
-			{
-				if (w != aw)
-				{
-					w.Dispose();
-				}
+				aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(VideoWriterInventory.GetAllWriters(), GlobalWin.MainForm, out _avwriterResizew, out _avwriterResizeh, out _avwriterpad);
 			}
 
 			if (aw == null)
