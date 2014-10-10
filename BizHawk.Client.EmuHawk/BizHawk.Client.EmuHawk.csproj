@@ -126,6 +126,7 @@
       <DependentUpon>ArchiveChooser.cs</DependentUpon>
     </Compile>
     <Compile Include="AVOut\AviWriter.cs" />
+    <Compile Include="AVOut\AVSync.cs" />
     <Compile Include="AVOut\BitmapBufferVideoProvder.cs" />
     <Compile Include="AVOut\BmpVideoProvder.cs" />
     <Compile Include="AVOut\FFmpegWriter.cs" />
