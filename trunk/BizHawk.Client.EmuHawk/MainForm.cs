@@ -1204,7 +1204,7 @@ namespace BizHawk.Client.EmuHawk
 		private IVideoWriter _currAviWriter;
 		private ISoundProvider _aviSoundInput;
 		private MetaspuSoundProvider _dumpProxy; // an audio proxy used for dumping
-		private long _soundRemainder; // audio timekeeping for video dumping
+		private bool _dumpaudiosync; // set true to for experimental AV dumping
 		private int _avwriterResizew;
 		private int _avwriterResizeh;
 		private bool _avwriterpad;
@@ -2790,7 +2790,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(VideoWriterInventory.GetAllWriters(), GlobalWin.MainForm, out _avwriterResizew, out _avwriterResizeh, out _avwriterpad);
+				aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(VideoWriterInventory.GetAllWriters(), this,
+					out _avwriterResizew, out _avwriterResizeh, out _avwriterpad, out _dumpaudiosync);
 			}
 
 			if (aw == null)
@@ -2803,6 +2804,15 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
+				if (_dumpaudiosync)
+				{
+					aw = new VideoStretcher(aw);
+				}
+				else
+				{
+					aw = new AudioStretcher(aw);
+				}
+
 				aw.SetMovieParameters(Global.Emulator.CoreComm.VsyncNum, Global.Emulator.CoreComm.VsyncDen);
 				if (_avwriterResizew > 0 && _avwriterResizeh > 0)
 				{
@@ -2898,13 +2908,17 @@ namespace BizHawk.Client.EmuHawk
 				throw;
 			}
 
-			// do sound rewire.  the plan is to eventually have AVI writing support syncsound input, but it doesn't for the moment
-			_aviSoundInput = !Global.Emulator.StartAsyncSound()
-				? new MetaspuAsync(Global.Emulator.SyncSoundProvider, ESynchMethod.ESynchMethod_V)
-				: Global.Emulator.SoundProvider;
-
+			if (_dumpaudiosync)
+			{
+				Global.Emulator.EndAsyncSound();
+			}
+			else
+			{
+				_aviSoundInput = !Global.Emulator.StartAsyncSound()
+					? new MetaspuAsync(Global.Emulator.SyncSoundProvider, ESynchMethod.ESynchMethod_V)
+					: Global.Emulator.SoundProvider;
+			}
 			_dumpProxy = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
-			_soundRemainder = 0;
 			RewireSound();
 		}
 
@@ -2925,7 +2939,6 @@ namespace BizHawk.Client.EmuHawk
 			AVIStatusLabel.Visible = false;
 			_aviSoundInput = null;
 			_dumpProxy = null; // return to normal sound output
-			_soundRemainder = 0;
 			RewireSound();
 		}
 
@@ -2947,7 +2960,6 @@ namespace BizHawk.Client.EmuHawk
 			AVIStatusLabel.Visible = false;
 			_aviSoundInput = null;
 			_dumpProxy = null; // return to normal sound output
-			_soundRemainder = 0;
 			RewireSound();
 		}
 
@@ -2956,16 +2968,6 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			if (_currAviWriter != null)
 			{
-				var nsampnum = 44100 * (long)Global.Emulator.CoreComm.VsyncDen + _soundRemainder;
-				var nsamp = nsampnum / Global.Emulator.CoreComm.VsyncNum;
-
-				// exactly remember fractional parts of an audio sample
-				_soundRemainder = nsampnum % Global.Emulator.CoreComm.VsyncNum;
-
-				var temp = new short[nsamp * 2];
-				_aviSoundInput.GetSamples(temp);
-				_dumpProxy.buffer.enqueue_samples(temp, (int)nsamp);
-
 				//TODO ZERO - this code is pretty jacked. we'll want to frugalize buffers better for speedier dumping, and we might want to rely on the GL layer for padding
 				try
 				{
@@ -3024,14 +3026,24 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					_currAviWriter.SetFrame(Global.Emulator.Frame);
-					_currAviWriter.AddFrame(output);
+
+					short[] samp;
+					int nsamp;
+					if (_dumpaudiosync)
+					{
+						(_currAviWriter as VideoStretcher).DumpAV(output, Global.Emulator.SyncSoundProvider, out samp, out nsamp);
+					}
+					else
+					{
+						(_currAviWriter as AudioStretcher).DumpAV(output, _aviSoundInput, out samp, out nsamp);
+					}
 
 					if (disposableOutput != null)
 					{
 						disposableOutput.Dispose();
 					}
 
-					_currAviWriter.AddSamples(temp);
+					_dumpProxy.buffer.enqueue_samples(samp, nsamp);
 				}
 				catch (Exception e)
 				{

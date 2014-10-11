@@ -257,6 +257,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (ffmpeg.HasExited)
 				throw new Exception("unexpected ffmpeg death:\n" + ffmpeg_geterror());
+			if (samples.Length == 0)
+			{
+				// has special meaning for the muxer, so don't pass on
+				return;
+			}
 			try
 			{
 				muxer.WriteAudioFrame(samples);
