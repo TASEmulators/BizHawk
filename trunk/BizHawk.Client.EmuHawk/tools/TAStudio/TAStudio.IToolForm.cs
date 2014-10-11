@@ -21,7 +21,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			SetVisibleIndex();
+			if (TasPlaybackBox.FollowCursor)
+			{
+				SetVisibleIndex();
+			}
+
 			RefreshDialog();
 		}
 
@@ -33,7 +37,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			TasView.RowCount = _currentTasMovie.InputLogLength + 1;
-			SetVisibleIndex();
+
+			if (TasPlaybackBox.FollowCursor)
+			{
+				SetVisibleIndex();
+			}
 		}
 
 		public void Restart()
@@ -81,7 +89,7 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		private void SetVisibleIndex(int? indexThatMustBeVisible = null)
+		public void SetVisibleIndex(int? indexThatMustBeVisible = null)
 		{
 			if (!indexThatMustBeVisible.HasValue)
 			{
