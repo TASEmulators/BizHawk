@@ -340,7 +340,9 @@ namespace BizHawk.Client.EmuHawk
 				LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
 			}
 
-			if (Global.Config.RecentWatches.AutoLoad)
+			//can't do this unless we are autoloading a rom too...
+			if (Global.Config.RecentWatches.AutoLoad 
+				&& Global.Emulator is IMemoryDomains)
 			{
 				GlobalWin.Tools.LoadRamWatch(!Global.Config.DisplayRamWatch);
 			}
