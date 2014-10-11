@@ -1231,7 +1231,8 @@ namespace BizHawk.Client.EmuHawk
 			LastCell = CurrentCell;
 			CurrentCell = newCell;
 
-			if (PointedCellChanged != null && newCell != CurrentCell)
+			if (PointedCellChanged != null && 
+				(LastCell.Column != CurrentCell.Column || LastCell.RowIndex != CurrentCell.RowIndex))
 			{
 				PointedCellChanged(this, new CellEventArgs(LastCell, CurrentCell));
 			}
