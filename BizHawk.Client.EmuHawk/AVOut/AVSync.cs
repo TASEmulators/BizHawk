@@ -82,6 +82,9 @@ namespace BizHawk.Client.EmuHawk
 			s.GetSamples(out samples, out samplesprovided);
 			exaudio_num += samplesprovided * (long)fpsnum;
 
+			// todo: scan for duplicate frames (ie, video content exactly matches previous frame) and for them, skip the threshone step
+			// this is a good idea, but expensive on time.  is it worth it?
+
 			if (exaudio_num >= threshone)
 			{
 				// add frame once
