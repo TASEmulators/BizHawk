@@ -2548,10 +2548,11 @@ namespace BizHawk.Client.EmuHawk
 		// TODO: for Tastudio debugging, coudl be removed if unused, it is a bad idea for anything else to clal this
 		public void FrameAdvance()
 		{
+			PressFrameAdvance = true;
 			StepRunLoop_Core();
 		}
 
-		private void StepRunLoop_Core()
+		private void StepRunLoop_Core(bool force = false)
 		{
 			var runFrame = false;
 			_runloopFrameadvance = false;
@@ -2613,7 +2614,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var genSound = false;
 			var coreskipaudio = false;
-			if (runFrame)
+			if (runFrame || force)
 			{
 				var isFastForwarding = Global.ClientControls["Fast Forward"] || IsTurboing;
 				var updateFpsString = _runloopLastFf != isFastForwarding;
