@@ -47,6 +47,21 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		public bool FollowCursor
+		{
+			get
+			{
+				return Global.Config.TAStudioFollowCursor;
+			}
+
+			set
+			{
+				FollowCursorCheckbox.Checked = Global.Config.TAStudioFollowCursor = value;
+			}
+		}
+
 		public PlaybackBox()
 		{
 			InitializeComponent();
@@ -55,6 +70,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				TurboSeekCheckbox.Checked = Global.Config.TurboSeek;
 				AutoRestoreCheckbox.Checked = Global.Config.TAStudioAutoRestoreLastPosition;
+				FollowCursorCheckbox.Checked = Global.Config.TAStudioFollowCursor;
 			}
 			_programmaticallyChangingValue = false;
 		}
@@ -97,6 +113,20 @@ namespace BizHawk.Client.EmuHawk
 			if (!_programmaticallyChangingValue)
 			{
 				Global.Config.TAStudioAutoRestoreLastPosition ^= true;
+			}
+		}
+
+		private void FollowCursorCheckbox_CheckedChanged(object sender, EventArgs e)
+		{
+			if (!_programmaticallyChangingValue)
+			{
+				Global.Config.TAStudioFollowCursor ^= true;
+
+				if (Global.Config.TAStudioFollowCursor)
+				{
+					Tastudio.SetVisibleIndex();
+					Tastudio.RefreshDialog();
+				}
 			}
 		}
 	}
