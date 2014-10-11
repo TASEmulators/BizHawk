@@ -1650,9 +1650,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SyncThrottle()
 		{
+			//TODO - this is a bit confusing. theres a difference between signal_unthrottle and Global.ForceNoThrottle. Isn't that kind of weird?
+			//someone should evaluate these different modes and clean that up.
+
+			//TODO - did we change 'unthrottled' nomenclature to turbo? is turbo defined as 'temporarily disable throttle entirely'?
+
 			var fastforward = Global.ClientControls["Fast Forward"] || FastForward;
 			var superfastforward = IsTurboing;
-			Global.ForceNoThrottle = _unthrottled || fastforward;
+			
+			//zero 11-oct-2014 - i think this is more correct..
+			//Global.ForceNoThrottle = _unthrottled || fastforward;
+			Global.ForceNoThrottle = _unthrottled || fastforward || superfastforward;
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
 			_throttle.SetCoreFps(Global.Emulator.CoreComm.VsyncRate);
