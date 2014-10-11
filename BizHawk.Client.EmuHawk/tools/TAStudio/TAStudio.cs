@@ -328,7 +328,7 @@ namespace BizHawk.Client.EmuHawk
 
 						if (frame > 0) // We can't emulate up to frame 0!
 						{
-							Global.Emulator.FrameAdvance(true);
+							GlobalWin.MainForm.FrameAdvance();
 						}
 
 						GlobalWin.DisplayManager.NeedsToPaint = true;
