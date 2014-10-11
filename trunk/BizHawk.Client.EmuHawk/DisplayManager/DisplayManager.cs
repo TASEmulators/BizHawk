@@ -600,6 +600,14 @@ TESTEROO:
 				Debug.Assert(inFinalTarget);
 				//apply the vsync setting (should probably try to avoid repeating this)
 				bool vsync = Global.Config.VSyncThrottle || Global.Config.VSync;
+
+				//ok, now this is a bit undesireable.
+				//maybe the user wants vsync, but not vsync throttle.
+				//this makes sense... but we dont have the infrastructure to support it now (we'd have to enable triple buffering or something like that)
+				//so what we're gonna do is disable vsync no matter what if throttling is off, and maybe nobody will notice.
+				if (Global.ForceNoThrottle)
+					vsync = false;
+
 				if (LastVsyncSetting != vsync || LastVsyncSettingGraphicsControl != presentationPanel.GraphicsControl)
 				{
 					presentationPanel.GraphicsControl.SetVsync(vsync);
