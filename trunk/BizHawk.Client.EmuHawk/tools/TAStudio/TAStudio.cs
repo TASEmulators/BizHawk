@@ -392,6 +392,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			RefreshDialog();
+			UpdateOtherTools();
+		}
+
+		private void UpdateOtherTools() // a hack probably, surely there is a better way to do this
+		{
+			_hackyDontUpdate = true;
+			GlobalWin.Tools.UpdateBefore();
+			GlobalWin.Tools.UpdateAfter();
+			_hackyDontUpdate = false;
 		}
 
 		#region Playback Controls
