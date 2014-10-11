@@ -80,6 +80,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			}
 			SelectObject(bitHDC, old);
 			DeleteDC(bitHDC);
+			DeleteObject(hbmp);
 		}
 
 		/// <summary>
