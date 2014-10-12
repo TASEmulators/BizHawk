@@ -229,7 +229,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetUpColumns()
 		{
-			TasView.Columns.Clear();
+			TasView.AllColumns.Clear();
 			AddColumn(MarkerColumnName, string.Empty, 18);
 			AddColumn(FrameColumnName, "Frame#", 68);
 
@@ -241,7 +241,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void AddColumn(string columnName, string columnText, int columnWidth)
 		{
-			if (TasView.Columns[columnName] == null)
+			if (TasView.AllColumns[columnName] == null)
 			{
 				var column = new InputRoll.RollColumn
 				{
@@ -250,7 +250,7 @@ namespace BizHawk.Client.EmuHawk
 					Width = columnWidth,
 				};
 
-				TasView.Columns.Add(column);
+				TasView.AllColumns.Add(column);
 			}
 		}
 
@@ -524,7 +524,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetColumnsFromCurrentStickies()
 		{
-			foreach (var column in TasView.Columns)
+			foreach (var column in TasView.VisibleColumns)
 			{
 				if (Global.StickyXORAdapter.IsSticky(column.Name))
 				{
@@ -1163,6 +1163,35 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			MessageBox.Show("Integrity Check passed");
+		}
+
+		private void ColumnsSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			ColumnsSubMenu.DropDownItems.Clear();
+
+			var columns = TasView.AllColumns
+				.Where(x => !string.IsNullOrWhiteSpace(x.Text))
+				.Where(x => x.Name != "FrameColumn");
+
+			foreach (var column in columns)
+			{
+				var dummyColumnObject = column;
+
+				var menuItem = new ToolStripMenuItem
+				{
+					Text = column.Text,
+					Checked = column.Visible
+				};
+
+				menuItem.Click += (o, ev) =>
+				{
+					dummyColumnObject.Visible ^= true;
+					TasView.AllColumns.ColumnsChanged();
+					TasView.Refresh();
+				};
+
+				ColumnsSubMenu.DropDownItems.Add(menuItem);
+			}
 		}
 	}
 }

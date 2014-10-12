@@ -68,6 +68,8 @@ namespace BizHawk.Client.EmuHawk
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.TruncateMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ClearGreenzoneMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.GreenzoneICheckSeparator = new System.Windows.Forms.ToolStripSeparator();
+			this.GreenZzoneIntegrityCheckMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ConfigSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SetMaxUndoLevelsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
@@ -98,6 +100,7 @@ namespace BizHawk.Client.EmuHawk
 			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
 			this.RestoreDefaultSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ColumnsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.HelpSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.EnableTooltipsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
@@ -124,8 +127,7 @@ namespace BizHawk.Client.EmuHawk
 			this.InsertNumFramesContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator18 = new System.Windows.Forms.ToolStripSeparator();
 			this.TruncateContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.GreenzoneICheckSeparator = new System.Windows.Forms.ToolStripSeparator();
-			this.GreenZzoneIntegrityCheckMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator19 = new System.Windows.Forms.ToolStripSeparator();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.RightClickMenu.SuspendLayout();
@@ -140,6 +142,7 @@ namespace BizHawk.Client.EmuHawk
             this.ConfigSubMenu,
             this.MetaSubMenu,
             this.SettingsSubMenu,
+            this.ColumnsSubMenu,
             this.HelpSubMenu});
 			this.TASMenu.Location = new System.Drawing.Point(0, 0);
 			this.TASMenu.Name = "TASMenu";
@@ -445,6 +448,20 @@ namespace BizHawk.Client.EmuHawk
 			this.ClearGreenzoneMenuItem.Text = "&Clear Greenzone";
 			this.ClearGreenzoneMenuItem.Click += new System.EventHandler(this.ClearGreenzoneMenuItem_Click);
 			// 
+			// GreenzoneICheckSeparator
+			// 
+			this.GreenzoneICheckSeparator.Name = "GreenzoneICheckSeparator";
+			this.GreenzoneICheckSeparator.Size = new System.Drawing.Size(279, 6);
+			// 
+			// GreenZzoneIntegrityCheckMenuItem
+			// 
+			this.GreenZzoneIntegrityCheckMenuItem.Name = "GreenZzoneIntegrityCheckMenuItem";
+			this.GreenZzoneIntegrityCheckMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.I)));
+			this.GreenZzoneIntegrityCheckMenuItem.Size = new System.Drawing.Size(282, 22);
+			this.GreenZzoneIntegrityCheckMenuItem.Text = "Greenzone Integrity Check";
+			this.GreenZzoneIntegrityCheckMenuItem.Click += new System.EventHandler(this.GreenZzoneIntegrityCheckMenuItem_Click);
+			// 
 			// ConfigSubMenu
 			// 
 			this.ConfigSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -671,6 +688,15 @@ namespace BizHawk.Client.EmuHawk
 			this.RestoreDefaultSettingsMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.RestoreDefaultSettingsMenuItem.Text = "Restore Default Settings";
 			this.RestoreDefaultSettingsMenuItem.Click += new System.EventHandler(this.RestoreDefaultSettingsMenuItem_Click);
+			// 
+			// ColumnsSubMenu
+			// 
+			this.ColumnsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripSeparator19});
+			this.ColumnsSubMenu.Name = "ColumnsSubMenu";
+			this.ColumnsSubMenu.Size = new System.Drawing.Size(67, 20);
+			this.ColumnsSubMenu.Text = "&Columns";
+			this.ColumnsSubMenu.DropDownOpened += new System.EventHandler(this.ColumnsSubMenu_DropDownOpened);
 			// 
 			// HelpSubMenu
 			// 
@@ -899,19 +925,10 @@ namespace BizHawk.Client.EmuHawk
 			this.TruncateContextMenuItem.Text = "Truncate Movie";
 			this.TruncateContextMenuItem.Click += new System.EventHandler(this.TruncateMenuItem_Click);
 			// 
-			// GreenzoneICheckSeparator
+			// toolStripSeparator19
 			// 
-			this.GreenzoneICheckSeparator.Name = "GreenzoneICheckSeparator";
-			this.GreenzoneICheckSeparator.Size = new System.Drawing.Size(279, 6);
-			// 
-			// GreenZzoneIntegrityCheckMenuItem
-			// 
-			this.GreenZzoneIntegrityCheckMenuItem.Name = "GreenZzoneIntegrityCheckMenuItem";
-			this.GreenZzoneIntegrityCheckMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.I)));
-			this.GreenZzoneIntegrityCheckMenuItem.Size = new System.Drawing.Size(282, 22);
-			this.GreenZzoneIntegrityCheckMenuItem.Text = "Greenzone Integrity Check";
-			this.GreenZzoneIntegrityCheckMenuItem.Click += new System.EventHandler(this.GreenZzoneIntegrityCheckMenuItem_Click);
+			this.toolStripSeparator19.Name = "toolStripSeparator19";
+			this.toolStripSeparator19.Size = new System.Drawing.Size(149, 6);
 			// 
 			// TAStudio
 			// 
@@ -1037,5 +1054,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem ClearGreenzoneMenuItem;
 		private System.Windows.Forms.ToolStripSeparator GreenzoneICheckSeparator;
 		private System.Windows.Forms.ToolStripMenuItem GreenZzoneIntegrityCheckMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ColumnsSubMenu;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator19;
 	}
 }

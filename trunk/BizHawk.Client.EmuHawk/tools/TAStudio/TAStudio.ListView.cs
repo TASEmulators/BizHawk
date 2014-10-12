@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_QueryItemIcon(int index, int column, ref Bitmap bitmap)
 		{
-			var columnName = TasView.Columns[column].Name;
+			var columnName = TasView.VisibleColumns.ToList()[column].Name; // TODO: don't do this when a column object is passed in instead of an int
 
 			if (columnName == MarkerColumnName)
 			{
@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			var columnName = TasView.Columns[column].Name;
+			var columnName = TasView.VisibleColumns.ToList()[column].Name; // TODO: don't do this when a column object is passed in instead of an int
 			var record = _currentTasMovie[index];
 
 			if (columnName == MarkerColumnName)
@@ -153,7 +153,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				text = string.Empty;
-				var columnName = TasView.Columns[column].Name;
+				var columnName = TasView.VisibleColumns.ToList()[column].Name; // TODO: don't do this when a column object is passed in instead of an int
 
 				if (columnName == MarkerColumnName)
 				{
@@ -192,7 +192,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.SelectedRows.Any())
 			{
-				var columnName = TasView.Columns[e.Column].Name;
+				var columnName = TasView.VisibleColumns.ToList()[e.Column].Name; // TODO: e
 
 				if (columnName == FrameColumnName)
 				{
@@ -214,7 +214,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_ColumnRightClick(object sender, ColumnClickEventArgs e)
 		{
-			var column = TasView.Columns[e.Column];
+			var column = TasView.AllColumns[e.Column];
 			column.Emphasis ^= true;
 
 			Global.StickyXORAdapter.SetSticky(column.Name, column.Emphasis);
