@@ -18,8 +18,15 @@ namespace BizHawk.Common
 		MemoryMappedViewAccessor mmva;
 
 		byte* mmvaPtr;
+#if WINDOWS
 		volatile byte* begin;
 		volatile int* head, tail;
+#else
+		//TODO: This is REALLY BAD, and will probably cause problems. 
+		//It's a quick fix to let Mono build again, and I've raised Bug 23770 with the Mono team in hopes this gets fixed before this class is used.
+		byte* begin;
+		int* head, tail;
+#endif
 		int bufsize;
 
 		public string Id;
