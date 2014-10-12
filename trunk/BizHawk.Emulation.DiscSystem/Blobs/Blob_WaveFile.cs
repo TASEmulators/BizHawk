@@ -92,9 +92,9 @@ namespace BizHawk.Emulation.DiscSystem
 			long mDataLength;
 			public long Length { get { return mDataLength; } }
 
-				public void Dispose()
+			public void Dispose()
 			{
-				if(RiffSource != null)
+				if (RiffSource != null)
 					RiffSource.Dispose();
 				RiffSource = null;
 			}

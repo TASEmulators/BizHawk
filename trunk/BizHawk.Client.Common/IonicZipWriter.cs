@@ -13,10 +13,10 @@ namespace BizHawk.Client.Common
 		private ZipOutputStream z;
 		private int level;
 
-		public IonicZipWriter(Stream s, int compressionlevel)
+		public IonicZipWriter(string path, int compressionlevel)
 		{
 			level = compressionlevel;
-			z = new ZipOutputStream(s, true)
+			z = new ZipOutputStream(path)
 			{
 				EnableZip64 = Zip64Option.Never,
 				CompressionLevel = (Ionic.Zlib.CompressionLevel)level

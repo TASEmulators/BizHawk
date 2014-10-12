@@ -252,14 +252,12 @@ namespace BizHawk.Client.Common
 			sw.Flush();
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="s">not closed when finished!</param>
-		public BinaryStateSaver(Stream s, bool stateVersionTag = true) // stateVersionTag is a hack for reusing this for movie code
+
+		public BinaryStateSaver(string path, bool stateVersionTag = true) // stateVersionTag is a hack for reusing this for movie code
 		{
-			_zip = new IonicZipWriter(s, Global.Config.SaveStateCompressionLevelNormal);
-			//_zip = new SharpZipWriter(s, Global.Config.SaveStateCompressionLevelNormal);
+			_zip = new IonicZipWriter(path, Global.Config.SaveStateCompressionLevelNormal);
+			//_zip = new SharpZipWriter(path, Global.Config.SaveStateCompressionLevelNormal);
+			//_zip = new SevenZipWriter(path, Global.Config.SaveStateCompressionLevelNormal);
 
 			if (stateVersionTag)
 			{

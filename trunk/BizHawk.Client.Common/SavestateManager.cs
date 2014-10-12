@@ -13,8 +13,7 @@ namespace BizHawk.Client.Common
 		{
 			// the old method of text savestate save is now gone.
 			// a text savestate is just like a binary savestate, but with a different core lump
-			using (var fs = new FileStream(filename, FileMode.Create, FileAccess.Write))
-			using (var bs = new BinaryStateSaver(fs))
+			using (var bs = new BinaryStateSaver(filename))
 			{
 				if (Global.Config.SaveStateType == Config.SaveStateTypeE.Text ||
 					(Global.Config.SaveStateType == Config.SaveStateTypeE.Default && !Global.Emulator.BinarySaveStatesPreferred))

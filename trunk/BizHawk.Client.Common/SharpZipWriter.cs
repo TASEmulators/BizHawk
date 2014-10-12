@@ -13,12 +13,12 @@ namespace BizHawk.Client.Common
 		private ZipOutputStream z;
 		private int level;
 
-		public SharpZipWriter(Stream s, int compressionlevel)
+		public SharpZipWriter(string path, int compressionlevel)
 		{
 			level = compressionlevel;
-			z = new ZipOutputStream(s)
+			z = new ZipOutputStream(new FileStream(path, FileMode.Create, FileAccess.Write))
 			{
-				IsStreamOwner = false,
+				IsStreamOwner = true,
 				UseZip64 = UseZip64.Off
 			};
 			z.SetLevel(level);
