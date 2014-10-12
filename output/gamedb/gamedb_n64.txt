@@ -770,10 +770,10 @@ A730D8DD3B00C22F8FA4C6E74299E5CC2BBB8207	G	Tetrisphere (Europe)	N64		Glide_alt_t
 98DB3A0F9025893107E9FB1BB8D0B6BC0EF3E280	G	Tigger's Honey Hunt (USA)	N64		RiceEnableHacksForGame=16;Glide_filtering=0
 96C874C4556B4872269E41339A1CBAC53CC5B052	G	Tom and Jerry in Fists of Furry (Europe) (En,Fr,De,Es,It,Nl)	N64		Glide_depth_bias=2;Glide64mk2_filtering=1
 D8980A34ECE4A8933D439D0378E0CFF8F03994A7	G	Tom and Jerry in Fists of Furry (USA)	N64		Glide_depth_bias=2;Glide64mk2_filtering=1
-64105F5C17BA7E2E0350F20E18ADDCC0A4766BD8	G	Tom Clancy's Rainbow Six (Europe)	N64		Glide_increase_texrect_edge=true;Glide_filtering=0;Glide64mk2_increase_texrect_edge=true
-EC38196491AEEE7AD2FB4A0A7F139C0839E864C6	G	Tom Clancy's Rainbow Six (France)	N64		Glide_increase_texrect_edge=true;Glide_filtering=0;Glide64mk2_increase_texrect_edge=true
-E41C7B71284976EA5D51B42593973A1D3CE58508	G	Tom Clancy's Rainbow Six (Germany)	N64		Glide_increase_texrect_edge=true;Glide_filtering=0;Glide64mk2_increase_texrect_edge=true
-F785674C670C01E31C77B3034525D43FD6703B9A	G	Tom Clancy's Rainbow Six (USA)	N64		Glide_increase_texrect_edge=true;Glide_filtering=0;Glide64mk2_increase_texrect_edge=true
+64105F5C17BA7E2E0350F20E18ADDCC0A4766BD8	G	Tom Clancy's Rainbow Six (Europe)	N64		Glide_increase_texrect_edge=true;Glide_filtering=0;Glide64mk2_increase_texrect_edge=true;expansionpak=1
+EC38196491AEEE7AD2FB4A0A7F139C0839E864C6	G	Tom Clancy's Rainbow Six (France)	N64		Glide_increase_texrect_edge=true;Glide_filtering=0;Glide64mk2_increase_texrect_edge=true;expansionpak=1
+E41C7B71284976EA5D51B42593973A1D3CE58508	G	Tom Clancy's Rainbow Six (Germany)	N64		Glide_increase_texrect_edge=true;Glide_filtering=0;Glide64mk2_increase_texrect_edge=true;expansionpak=1
+F785674C670C01E31C77B3034525D43FD6703B9A	G	Tom Clancy's Rainbow Six (USA)	N64		Glide_increase_texrect_edge=true;Glide_filtering=0;Glide64mk2_increase_texrect_edge=true;expansionpak=1
 287FD68B5DE520ADE240889BC0133777FED5C671	G	Tommy Thunder (USA) (Proto)	N64
 81909104362BAEB7AE3793C08C3D138E96105BBF	G	Tonic Trouble (Europe) (En,Fr,De,Es,It)	N64		Glide_enable_hacks_for_game=4;Glide_filtering=0;Glide_detect_cpu_write=true;Glide64mk2_enable_hacks_for_game=27;Glide64mk2_detect_cpu_write=true
 38F9837159D6AA69CA656D8005ECCF099C129537	G	Tonic Trouble (USA) (Rev A)	N64		Glide_enable_hacks_for_game=4;Glide_filtering=0;Glide_detect_cpu_write=true;Glide64mk2_enable_hacks_for_game=27;Glide64mk2_detect_cpu_write=true;Jabo_Clear_Frame=2
