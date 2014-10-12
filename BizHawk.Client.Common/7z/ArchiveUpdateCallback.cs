@@ -496,6 +496,11 @@ namespace SevenZip
                     case ItemPropId.Size:
                         #region Size
 
+												//zero 11-oct-2014 - this doesnt matter, we think it's only used for updating the progress indicator
+												value.VarType = VarEnum.VT_UI8;
+												//value.UInt64Value = unchecked((ulong)-1);
+												break;
+
                         value.VarType = VarEnum.VT_UI8;
                         UInt64 size;
                         if (_updateData.Mode != InternalCompressionMode.Modify)
