@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace BizHawk.Client.Common
 {
@@ -22,6 +23,8 @@ namespace BizHawk.Client.Common
 			bool readclosed;
 
 			object sharedlock = new object();
+			ManualResetEvent full = new ManualResetEvent(true);
+			ManualResetEvent empty = new ManualResetEvent(false);
 
 			public Stream W { get; private set; }
 			public Stream R { get; private set; }
@@ -37,6 +40,7 @@ namespace BizHawk.Client.Common
 				int ret = 0;
 				while (count > 0)
 				{
+					empty.WaitOne();
 					lock (sharedlock)
 					{
 						int start = rpos;
@@ -54,6 +58,7 @@ namespace BizHawk.Client.Common
 							ret += c;
 							offset += c;
 							rpos = end & MASK;
+							full.Set();
 						}
 						else if (writeclosed)
 						{
@@ -61,7 +66,7 @@ namespace BizHawk.Client.Common
 						}
 						else
 						{
-							// todo: don't spin here
+							empty.Reset();
 						}
 					}
 				}
@@ -71,7 +76,10 @@ namespace BizHawk.Client.Common
 			public void CloseRead()
 			{
 				lock (sharedlock)
+				{
 					readclosed = true;
+					full.Set();
+				}
 			}
 
 			public int Write(byte[] buffer, int offset, int count)
@@ -79,6 +87,7 @@ namespace BizHawk.Client.Common
 				int ret = 0;
 				while (count > 0)
 				{
+					full.WaitOne();
 					lock (sharedlock)
 					{
 						int start = wpos;
@@ -96,6 +105,7 @@ namespace BizHawk.Client.Common
 							ret += c;
 							offset += c;
 							wpos = end & MASK;
+							empty.Set();
 						}
 						else if (readclosed)
 						{
@@ -103,7 +113,7 @@ namespace BizHawk.Client.Common
 						}
 						else
 						{
-							// todo: don't spin here
+							full.Reset();
 						}
 					}
 				}
@@ -113,7 +123,10 @@ namespace BizHawk.Client.Common
 			public void CloseWrite()
 			{
 				lock (sharedlock)
+				{
 					writeclosed = true;
+					empty.Set();
+				}
 			}
 
 			private class WStream : Stream
