@@ -172,6 +172,7 @@ namespace BizHawk.Client.EmuHawk
 				_currentTasMovie = Global.MovieSession.Movie as TasMovie;
 				Global.Config.RecentTas.Add(path);
 				Text = "TAStudio - " + _currentTasMovie.Name;
+
 				RefreshDialog();
 				return true;
 			}
@@ -571,6 +572,16 @@ namespace BizHawk.Client.EmuHawk
 					_currentTasMovie.Filename = file.FullName;
 					_currentTasMovie.Load();
 					Global.Config.RecentTas.Add(_currentTasMovie.Filename);
+
+					if (_currentTasMovie.InputLogLength > 0) // TODO: this is probably reoccuring logic, break off into a function
+					{
+						_currentTasMovie.SwitchToRecord();
+					}
+					else
+					{
+						_currentTasMovie.SwitchToPlay();
+					}
+
 					RefreshDialog();
 					MessageStatusLabel.Text = Path.GetFileName(_currentTasMovie.Filename) + " loaded.";
 				}
