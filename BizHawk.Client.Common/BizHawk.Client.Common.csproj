@@ -190,6 +190,7 @@
     <Compile Include="SaveSlotManager.cs" />
     <Compile Include="SavestateManager.cs" />
     <Compile Include="SevenZipSharpArchiveHandler.cs" />
+    <Compile Include="SevenZipWriter.cs" />
     <Compile Include="SharpZipWriter.cs" />
     <Compile Include="SystemInfo.cs" />
     <Compile Include="tools\Cheat.cs" />

@@ -18,8 +18,7 @@ namespace BizHawk.Client.Common
 				Directory.CreateDirectory(file.Directory.ToString());
 			}
 
-			using (var fs = new FileStream(fn, FileMode.Create, FileAccess.Write))
-			using (var bs = new BinaryStateSaver(fs, false))
+			using (var bs = new BinaryStateSaver(fn, false))
 			{
 				bs.PutLump(BinaryStateLump.Movieheader, tw => tw.WriteLine(Header.ToString()));
 				bs.PutLump(BinaryStateLump.Comments, tw => tw.WriteLine(CommentsString()));
