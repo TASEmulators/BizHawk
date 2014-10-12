@@ -575,11 +575,11 @@ namespace BizHawk.Client.EmuHawk
 
 					if (_currentTasMovie.InputLogLength > 0) // TODO: this is probably reoccuring logic, break off into a function
 					{
-						_currentTasMovie.SwitchToRecord();
+						_currentTasMovie.SwitchToPlay();
 					}
 					else
 					{
-						_currentTasMovie.SwitchToPlay();
+						_currentTasMovie.SwitchToRecord();
 					}
 
 					RefreshDialog();
