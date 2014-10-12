@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 
-			MarkerView.Columns.AddRange(new InputRoll.RollColumn[]
+			MarkerView.AllColumns.AddRange(new InputRoll.RollColumn[]
 			{
 				new InputRoll.RollColumn
 				{

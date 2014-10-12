@@ -186,10 +186,18 @@ namespace BizHawk.Client.EmuHawk
 		public bool InputPaintingMode { get; set; }
 
 		/// <summary>
-		/// The columns shown
+		/// All visible columns
 		/// </summary>
 		[Category("Behavior")]
-		public RollColumns Columns { get { return _columns; } }
+		public IEnumerable<RollColumn> VisibleColumns { get { return _columns.VisibleColumns; } }
+
+		/// <summary>
+		/// Returns all columns including those that are not visible
+		/// </summary>
+		/// <returns></returns>
+		[Browsable(false)]
+		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		public RollColumns AllColumns { get { return _columns; } }
 
 		public void SelectAll()
 		{
@@ -236,12 +244,14 @@ namespace BizHawk.Client.EmuHawk
 		[Category("Mouse")]
 		public event CellChangeEventHandler PointedCellChanged;
 
+		// TODO: do not use ColumnClickEventHandler, make a custom one that passes a column object
 		/// <summary>
 		/// Occurs when a column header is clicked
 		/// </summary>
 		[Category("Action")]
 		public event System.Windows.Forms.ColumnClickEventHandler ColumnClick;
 
+		// TODO: do not use ColumnClickEventHandler, make a custom one that passes a column object
 		/// <summary>
 		/// Occurs when a column header is right-clicked
 		/// </summary>
@@ -260,16 +270,19 @@ namespace BizHawk.Client.EmuHawk
 		[Category("Behavior")]
 		public event RightMouseScrollEventHandler RightMouseScrolled;
 
+		// TODO: change this to pass in a column object instead of an index (which forces the caller to look up the column
 		/// <summary>
 		/// Retrieve the text for a cell
 		/// </summary>
 		public delegate void QueryItemTextHandler(int index, int column, out string text);
 
+		// TODO: change this to pass in a column object instead of an index (which forces the caller to look up the column
 		/// <summary>
 		/// Retrieve the background color for a cell
 		/// </summary>
 		public delegate void QueryItemBkColorHandler(int index, int column, ref Color color);
 
+		// TODO: change this to pass in a column object instead of an index (which forces the caller to look up the column
 		/// <summary>
 		/// Retrive the image for a given cell
 		/// </summary>
@@ -297,7 +310,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SelectRow(int index, bool val)
 		{
-			if (_columns.Any())
+			if (_columns.VisibleColumns.Any())
 			{
 				if (val)
 				{
@@ -523,7 +536,7 @@ namespace BizHawk.Client.EmuHawk
 				Gdi.SetSolidPen(Color.White);
 				Gdi.FillRectangle(0, 0, Width, Height);
 
-				if (_columns.Any())
+				if (_columns.VisibleColumns.Any())
 				{
 					DrawColumnBg(e);
 					DrawColumnText(e);
@@ -547,11 +560,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DrawColumnText(PaintEventArgs e)
 		{
+			var columns = _columns.VisibleColumns.ToList();
+
 			if (HorizontalOrientation)
 			{
 				int start = 0;
 				Gdi.PrepDrawString(this.Font, this.ForeColor);
-				foreach (var column in _columns)
+				foreach (var column in columns)
 				{
 					var point = new Point(CellWidthPadding, start + CellHeightPadding);
 
@@ -572,7 +587,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				Gdi.PrepDrawString(this.Font, this.ForeColor);
-				foreach (var column in _columns)
+				foreach (var column in columns)
 				{
 					var point = new Point(column.Left.Value + 2 * CellWidthPadding - HBar.Value, CellHeightPadding); // TODO: fix this CellPadding issue (2 * CellPadding vs just CellPadding)
 
@@ -592,6 +607,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DrawData(PaintEventArgs e)
 		{
+			var columns = _columns.VisibleColumns.ToList();
 			if (QueryItemText != null)
 			{
 				if (HorizontalOrientation)
@@ -602,7 +618,7 @@ namespace BizHawk.Client.EmuHawk
 					Gdi.PrepDrawString(this.Font, this.ForeColor);
 					for (int i = 0; i < range; i++)
 					{
-						for (int j = 0; j < _columns.Count; j++)
+						for (int j = 0; j < columns.Count; j++)
 						{
 							string text;
 							QueryItemText(i + startIndex, j, out text);
@@ -627,9 +643,9 @@ namespace BizHawk.Client.EmuHawk
 					int xPadding = CellWidthPadding + 1 - HBar.Value;
 					for (int i = 0; i < range; i++)//Vertical
 					{
-						for (int j = 0; j < _columns.Count; j++)//Horizontal
+						for (int j = 0; j < columns.Count; j++)//Horizontal
 						{
-							var col = _columns[j];
+							var col = columns[j];
 							if (col.Left.Value < 0 || col.Right.Value > DrawWidth)
 							{
 								continue;
@@ -666,19 +682,21 @@ namespace BizHawk.Client.EmuHawk
 			Gdi.SetBrush(SystemColors.ControlLight);
 			Gdi.SetSolidPen(Color.Black);
 
+			var columns = _columns.VisibleColumns.ToList();
+
 			if (HorizontalOrientation)
 			{
 				Gdi.FillRectangle(0, 0, ColumnWidth + 1, DrawHeight + 1);
-				Gdi.Line(0, 0, 0, _columns.Count * CellHeight + 1);
-				Gdi.Line(ColumnWidth, 0, ColumnWidth, _columns.Count * CellHeight + 1);
+				Gdi.Line(0, 0, 0, columns.Count * CellHeight + 1);
+				Gdi.Line(ColumnWidth, 0, ColumnWidth, columns.Count * CellHeight + 1);
 
 				int start = 0;
-				foreach (var column in _columns)
+				foreach (var column in columns)
 				{
 					Gdi.Line(1, start, ColumnWidth, start);
 					start += CellHeight;
 				}
-				if (_columns.Any())
+				if (columns.Any())
 				{
 					Gdi.Line(1, start, ColumnWidth, start);
 				}
@@ -692,14 +710,14 @@ namespace BizHawk.Client.EmuHawk
 				Gdi.Line(0, bottomEdge, TotalColWidth.Value + 1, bottomEdge);
 
 				//Vertical black seperators
-				for (int i = 0; i < _columns.Count; i++)
+				for (int i = 0; i < columns.Count; i++)
 				{
-					int pos = _columns[i].Left.Value - HBar.Value;
+					int pos = columns[i].Left.Value - HBar.Value;
 					Gdi.Line(pos, 0, pos, bottomEdge);
 				}
 
 				////Draw right most line
-				if (_columns.Any())
+				if (columns.Any())
 				{
 					int right = TotalColWidth.Value - HBar.Value;
 					Gdi.Line(right, 0, right, bottomEdge);
@@ -707,12 +725,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Emphasis
-			foreach (var column in Columns.Where(c => c.Emphasis))
+			foreach (var column in columns.Where(c => c.Emphasis))
 			{
 				Gdi.SetBrush(SystemColors.ActiveBorder);
 				if (HorizontalOrientation)
 				{
-					Gdi.FillRectangle(1, Columns.IndexOf(column) * CellHeight + 1, ColumnWidth - 1, ColumnHeight - 1);
+					Gdi.FillRectangle(1, columns.IndexOf(column) * CellHeight + 1, ColumnWidth - 1, ColumnHeight - 1);
 				}
 				else
 				{
@@ -725,9 +743,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (HorizontalOrientation)
 				{
-					for (int i = 0; i < _columns.Count; i++)
+					for (int i = 0; i < columns.Count; i++)
 					{
-						if (_columns[i] != CurrentCell.Column)
+						if (columns[i] != CurrentCell.Column)
 						{
 							continue;
 						}
@@ -747,15 +765,17 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					//TODO multiple selected columns
-					for (int i = 0; i < _columns.Count; i++)
+					for (int i = 0; i < columns.Count; i++)
 					{
-						if (_columns[i] == CurrentCell.Column){
+						if (columns[i] == CurrentCell.Column)
+						{
 							//Left of column is to the right of the viewable area or right of column is to the left of the viewable area
-							if(_columns[i].Left.Value - HBar.Value > Width || _columns[i].Right.Value - HBar.Value < 0){
+							if (columns[i].Left.Value - HBar.Value > Width || columns[i].Right.Value - HBar.Value < 0)
+							{
 								continue;
 							}
-							int left = _columns[i].Left.Value - HBar.Value;
-							int width = _columns[i].Right.Value - HBar.Value - left;
+							int left = columns[i].Left.Value - HBar.Value;
+							int width = columns[i].Right.Value - HBar.Value - left;
 
 							if (CurrentCell.Column.Emphasis)
 							{
@@ -792,8 +812,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DoBackGroundCallback(e);
 			}
+
 			if (GridLines)
 			{
+				var columns = _columns.VisibleColumns.ToList();
+
 				Gdi.SetSolidPen(SystemColors.ControlLight);
 				if (HorizontalOrientation)
 				{
@@ -801,7 +824,7 @@ namespace BizHawk.Client.EmuHawk
 					for (int i = 1; i < VisibleRows + 1; i++)
 					{
 						var x = RowsToPixels(i);
-						var y2 = (_columns.Count * CellHeight) - 1;
+						var y2 = (columns.Count * CellHeight) - 1;
 						if (y2 > Height)
 						{
 							y2 = Height - 2;
@@ -811,7 +834,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					// Rows
-					for (int i = 0; i < _columns.Count + 1; i++)
+					for (int i = 0; i < columns.Count + 1; i++)
 					{
 						Gdi.Line(RowsToPixels(0) + 1, i * CellHeight, DrawWidth, i * CellHeight);
 					}
@@ -820,12 +843,12 @@ namespace BizHawk.Client.EmuHawk
 				{
 					// Columns
 					int y = ColumnHeight + 1;
-					foreach (var column in _columns)
+					foreach (var column in columns)
 					{
 						int x = column.Left.Value - HBar.Value;
 						Gdi.Line(x, y, x, Height - 1);
 					}
-					if (_columns.Any())
+					if (columns.Any())
 					{
 						Gdi.Line(TotalColWidth.Value - HBar.Value, y, TotalColWidth.Value - HBar.Value, Height - 1);
 					}
@@ -865,6 +888,8 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="cell"></param>
 		private void DrawCellBG(Color color, Cell cell)
 		{
+			var columns = _columns.VisibleColumns.ToList();
+
 			int x = 0,
 				y = 0,
 				w = 0,
@@ -874,7 +899,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				x = RowsToPixels(cell.RowIndex.Value) + 1;
 				w = CellWidth - 1;
-				y = (CellHeight * _columns.IndexOf(cell.Column)) + 1; // We can't draw without row and column, so assume they exist and fail catastrophically if they don't
+				y = (CellHeight * columns.IndexOf(cell.Column)) + 1; // We can't draw without row and column, so assume they exist and fail catastrophically if they don't
 				h = CellHeight - 1;
 				if (x < ColumnWidth) { return; }
 			}
@@ -899,6 +924,8 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="e"></param>
 		private void DoBackGroundCallback(PaintEventArgs e)
 		{
+			var columns = _columns.VisibleColumns.ToList();
+
 			if (HorizontalOrientation)
 			{
 				int startIndex = FirstVisibleRow;
@@ -906,7 +933,7 @@ namespace BizHawk.Client.EmuHawk
 
 				for (int i = 0; i < range; i++)
 				{
-					for (int j = 0; j < _columns.Count; j++)//TODO: Don't query all columns
+					for (int j = 0; j < columns.Count; j++)//TODO: Don't query all columns
 					{
 						Color color = Color.White;
 						QueryItemBkColor(i + startIndex, j, ref color);
@@ -915,7 +942,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							var cell = new Cell()
 							{
-								Column = _columns[j],
+								Column = columns[j],
 								RowIndex = i
 							};
 							DrawCellBG(color, cell);
@@ -930,15 +957,15 @@ namespace BizHawk.Client.EmuHawk
 
 				for (int i = 0; i < range; i++)//Vertical
 				{
-					for (int j = 0; j < _columns.Count; j++)//Horizontal
+					for (int j = 0; j < columns.Count; j++)//Horizontal
 					{
 						Color color = Color.White;
 						QueryItemBkColor(i + startRow, j, ref color);
 						if (color != Color.White) // An easy optimization, don't draw unless the user specified something other than the default
 						{
-							var cell = new Cell()
+							var cell = new Cell
 							{
-								Column = _columns[j],
+								Column = columns[j],
 								RowIndex = i
 							};
 							DrawCellBG(color, cell);
@@ -1257,9 +1284,9 @@ namespace BizHawk.Client.EmuHawk
 		private void ColumnChangedCallback()
 		{
 			RecalculateScrollBars();
-			if (_columns.Any())
+			if (_columns.VisibleColumns.Any())
 			{
-				ColumnWidth = _columns.Max(c => c.Width.Value) + CellWidthPadding * 4;
+				ColumnWidth = _columns.VisibleColumns.Max(c => c.Width.Value) + CellWidthPadding * 4;
 			}
 		}
 
@@ -1273,9 +1300,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			UpdateDrawSize();
 
+			var columns = _columns.VisibleColumns.ToList();
+
 			if (HorizontalOrientation)
 			{
-				NeedsVScrollbar =  _columns.Count > DrawHeight / CellHeight;
+				NeedsVScrollbar = columns.Count > DrawHeight / CellHeight;
 				NeedsHScrollbar = RowCount > (DrawWidth - ColumnWidth) / CellWidth;
 			}
 			else
@@ -1291,7 +1320,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (HorizontalOrientation)
 				{
-					VBar.Maximum = (((_columns.Count * CellHeight) - DrawHeight) / CellHeight) + VBar.LargeChange;
+					VBar.Maximum = (((columns.Count() * CellHeight) - DrawHeight) / CellHeight) + VBar.LargeChange;
 				}
 				else
 				{
@@ -1479,9 +1508,10 @@ namespace BizHawk.Client.EmuHawk
 		private Cell CalculatePointedCell(int x, int y)
 		{
 			var newCell = new Cell();
+			var columns = _columns.VisibleColumns.ToList();
 
 			// If pointing to a column header
-			if (_columns.Any())
+			if (columns.Any())
 			{
 				if (HorizontalOrientation)
 				{
@@ -1491,9 +1521,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					int colIndex = (y / CellHeight);
-					if (colIndex >= 0 && colIndex < _columns.Count)
+					if (colIndex >= 0 && colIndex < columns.Count)
 					{
-						newCell.Column = _columns[colIndex];
+						newCell.Column = columns[colIndex];
 					}
 				}
 				else
@@ -1513,7 +1543,7 @@ namespace BizHawk.Client.EmuHawk
 		//TODO: find a different solution
 		private Point StartBg()
 		{
-			if (_columns.Any())
+			if (_columns.VisibleColumns.Any())
 			{
 				if (HorizontalOrientation)
 				{
@@ -1549,13 +1579,6 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private bool NeedsHScrollbar{ get; set; }
 
-		//TODO rename and find uses
-		//private void ColumnChanged()
-		//{
-		//	var text = _columns.Max(c => c.Text.Length);
-		//	ColumnWidth = (text * _charSize.Width) + (CellPadding * 2);
-		//}
-
 		/// <summary>
 		/// Updates the width of the supplied column.
 		/// <remarks>Call when changing the ColumnCell text, CellPadding, or text font.</remarks>
@@ -1575,9 +1598,9 @@ namespace BizHawk.Client.EmuHawk
 		private int? TotalColWidth
 		{ 
 			get{
-				if (_columns.Any())
+				if (_columns.VisibleColumns.Any())
 				{
-					return _columns.Last().Right;
+					return _columns.VisibleColumns.Last().Right;
 				}
 				return null;
 			}
@@ -1590,7 +1613,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <returns>RollColumn object that contains the x coordinate or null if none exists.</returns>
 		private RollColumn ColumnAtX(int x)
 		{
-			foreach (var column in _columns)
+			foreach (var column in _columns.VisibleColumns)
 			{
 				if (column.Left.Value - HBar.Value <= x && column.Right.Value - HBar.Value >= x)
 				{
@@ -1673,6 +1696,14 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 			
+			public IEnumerable<RollColumn> VisibleColumns
+			{
+				get
+				{
+					return this.Where(c => c.Visible);
+				}
+			}
+
 			public Action ChangedCallback { get; set; }
 
 			private void DoChangeCallback()
@@ -1683,14 +1714,18 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			private void ColumnsChanged()
+			// TODO: this shouldn't be exposed.  But in order to not expose it, each RollColumn must have a chane callback, and all property changes must call it, it is quicker and easier to just call this when needed
+			public void ColumnsChanged()
 			{
 				int pos = 0;
-				for (int i = 0; i < Count; i++)
+
+				var columns = VisibleColumns.ToList();
+
+				for (int i = 0; i < columns.Count; i++)
 				{
-					this[i].Left = pos;
-					pos += this[i].Width.Value;
-					this[i].Right = pos;
+					columns[i].Left = pos;
+					pos += columns[i].Width.Value;
+					columns[i].Right = pos;
 				}
 				DoChangeCallback();
 			}
@@ -1804,11 +1839,17 @@ namespace BizHawk.Client.EmuHawk
 			public string Name { get; set; }
 			public string Text { get; set; }
 			public InputType Type { get; set; }
+			public bool Visible { get; set; }
 
 			/// <summary>
 			/// Column will be drawn with an emphasized look, if true
 			/// </summary>
 			public bool Emphasis { get; set; }
+
+			public RollColumn()
+			{
+				Visible = true;
+			}
 		}
 
 		/// <summary>
