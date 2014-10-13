@@ -880,7 +880,8 @@ void CMikie::Poke(uint32 addr,uint8 data)
 			C6502_REGS regs;
 			mSystem.GetRegs(regs);
 			TRACE_MIKIE1("Runtime Alert - System Halted\nCMikie::Poke(SYSCTL1) - Lynx power down occured at PC=$%04x.\nResetting system.",regs.PC);
-			mSystem.Reset();
+			// can't reset in the middle of a frame, screws the timekeeping; and it doesn't make a difference anyway
+			// mSystem.Reset();
 			mSystem.gSystemHalt=TRUE;
 		}
 		mSystem.CartAddressStrobe((data&0x01)?TRUE:FALSE);
