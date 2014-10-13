@@ -270,11 +270,10 @@ namespace BizHawk.Client.EmuHawk
 		[Category("Behavior")]
 		public event RightMouseScrollEventHandler RightMouseScrolled;
 
-		// TODO: change this to pass in a column object instead of an index (which forces the caller to look up the column
 		/// <summary>
 		/// Retrieve the text for a cell
 		/// </summary>
-		public delegate void QueryItemTextHandler(int index, int column, out string text);
+		public delegate void QueryItemTextHandler(int index, RollColumn column, out string text);
 
 		// TODO: change this to pass in a column object instead of an index (which forces the caller to look up the column
 		/// <summary>
@@ -619,7 +618,7 @@ namespace BizHawk.Client.EmuHawk
 						for (int j = 0; j < columns.Count; j++)
 						{
 							string text;
-							QueryItemText(i + startIndex, j, out text);
+							QueryItemText(i + startIndex, columns[j], out text);
 
 							//Center Text
 							int x = RowsToPixels(i) + (CellWidth - text.Length * _charSize.Width) / 2;
@@ -663,7 +662,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 							else
 							{
-								QueryItemText(i + startRow, j, out text);
+								QueryItemText(i + startRow, columns[j], out text);
 								if (!string.IsNullOrWhiteSpace(text))
 								{
 									Gdi.DrawString(text, point);
