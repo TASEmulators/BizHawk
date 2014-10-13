@@ -450,13 +450,13 @@ namespace BizHawk.Client.EmuHawk
 			var list = TasView.SelectedRows;
 			string message = "Selected: ";
 
-			if (list.Count > 0)
+			if (list.Any())
 			{
-				message += list.Count + " rows 0 col, Clipboard: ";
+				message += list.Count() + " rows 0 col, Clipboard: ";
 			}
 			else
 			{
-				message += list.Count + " none, Clipboard: ";
+				message += list.Count() + " none, Clipboard: ";
 			}
 
 			message += _tasClipboard.Any() ? _tasClipboard.Count.ToString() + " rows 0 col": "empty";
@@ -698,8 +698,9 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.SelectedRows.Any())
 			{
 				_tasClipboard.Clear();
-				var list = TasView.SelectedRows;
+				var list = TasView.SelectedRows.ToList();
 				var sb = new StringBuilder();
+
 				for (var i = 0; i < list.Count; i++)
 				{
 					var input = _currentTasMovie.GetInputState(list[i]);

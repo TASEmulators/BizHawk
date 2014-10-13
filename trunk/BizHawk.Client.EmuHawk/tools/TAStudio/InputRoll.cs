@@ -50,14 +50,14 @@ namespace BizHawk.Client.EmuHawk
 			using (var g = CreateGraphics())
 			using (var LCK = Gdi.LockGraphics(g))
 			{
-				_charSize = Gdi.MeasureString("A", this.Font);//TODO make this a property so changing it updates other values.
+				_charSize = Gdi.MeasureString("A", this.Font); // TODO make this a property so changing it updates other values.
 			}
 
 			UpdateCellSize();
 			ColumnWidth = CellWidth;
 			ColumnHeight = CellHeight + 2;
 
-			//TODO Figure out how to use the width and height properties of the scrollbars instead of 17
+			// TODO Figure out how to use the width and height properties of the scrollbars instead of 17
 			VBar = new VScrollBar
 			{
 				Location = new Point(Width - 17, 0),
@@ -506,18 +506,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		// TODO: make IEnumerable, IList is for legacy support
 		[Browsable(false)]
 		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
-		public IList<int> SelectedRows
+		public IEnumerable<int> SelectedRows
 		{
 			get
 			{
 				return SelectedItems
 					.Where(cell => cell.RowIndex.HasValue)
 					.Select(cell => cell.RowIndex.Value)
-					.Distinct()
-					.ToList();
+					.Distinct();
 			}
 		}
 
