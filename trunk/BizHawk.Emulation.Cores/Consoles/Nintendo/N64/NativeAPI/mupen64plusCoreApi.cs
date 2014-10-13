@@ -20,6 +20,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		ManualResetEvent m64pStartupComplete = new ManualResetEvent(false);
 
 		[DllImport("kernel32.dll")]
+		public static extern UInt32 GetLastError();
+
+		[DllImport("kernel32.dll")]
 		public static extern IntPtr LoadLibrary(string dllToLoad);
 
 		[DllImport("kernel32.dll")]
@@ -698,7 +701,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			AttachedPlugin plugin;
 			plugin.dllHandle = LoadLibrary(PluginName);
 			if (plugin.dllHandle == IntPtr.Zero)
-				throw new InvalidOperationException(string.Format("Failed to load plugin {0}", PluginName));
+				throw new InvalidOperationException(string.Format("Failed to load plugin {0}, error code: 0x{1:X}", PluginName, GetLastError()));
 
 			plugin.dllStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(plugin.dllHandle, "PluginStartup"), typeof(PluginStartup));
 			plugin.dllShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(plugin.dllHandle, "PluginShutdown"), typeof(PluginShutdown));
