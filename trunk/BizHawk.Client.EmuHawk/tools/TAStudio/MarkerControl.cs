@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			
 		}
 
-		private void MarkerView_QueryItemBkColor(int index, int column, ref Color color)
+		private void MarkerView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
 		{
 			var prev = Tastudio.CurrentMovie.Markers.PreviousOrCurrent(Global.Emulator.Frame);
 
@@ -59,11 +59,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (record.Lagged.Value)
 					{
-						color = column == 0 ? TAStudio.LagZone_FrameCol : TAStudio.LagZone_InputLog;
+						color = column.Name == "FrameColumn" ? TAStudio.LagZone_FrameCol : TAStudio.LagZone_InputLog;
 					}
 					else
 					{
-						color = column == 0 ? TAStudio.GreenZone_FrameCol : TAStudio.GreenZone_InputLog;
+						color = column.Name == "LabelColumn" ? TAStudio.GreenZone_FrameCol : TAStudio.GreenZone_InputLog;
 					}
 				}
 				else
