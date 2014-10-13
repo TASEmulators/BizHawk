@@ -74,15 +74,15 @@ namespace BizHawk.Client.EmuHawk
 			
 		}
 
-		private void MarkerView_QueryItemText(int index, int column, out string text)
+		private void MarkerView_QueryItemText(int index, InputRoll.RollColumn column, out string text)
 		{
 			text = "";
 
-			if (column == 0)
+			if (column.Name == "FrameColumn")
 			{
 				text = Tastudio.CurrentMovie.Markers[index].Frame.ToString();
 			}
-			else if (column == 1)
+			else if (column.Name == "LabelColumn")
 			{
 				text = Tastudio.CurrentMovie.Markers[index].Message;
 			}

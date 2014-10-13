@@ -148,12 +148,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void TasView_QueryItemText(int index, int column, out string text)
+		private void TasView_QueryItemText(int index, InputRoll.RollColumn column, out string text)
 		{
 			try
 			{
 				text = string.Empty;
-				var columnName = TasView.VisibleColumns.ToList()[column].Name; // TODO: don't do this when a column object is passed in instead of an int
+				var columnName = column.Name;
 
 				if (columnName == MarkerColumnName)
 				{
