@@ -35,6 +35,33 @@ namespace BizHawk.Client.Common
 				R = new RStream(this);
 			}
 
+			public int ReadByte()
+			{
+				// slow, but faster than using the other overload with byte[1]
+				while (true)
+				{
+					empty.WaitOne();
+					lock (sharedlock)
+					{
+						if (rpos != wpos)
+						{
+							byte ret = buff[rpos++];
+							rpos &= MASK;
+							full.Set();
+							return ret;
+						}
+						else if (writeclosed)
+						{
+							return -1;
+						}
+						else
+						{
+							empty.Reset();
+						}
+					}
+				}
+			}
+
 			public int Read(byte[] buffer, int offset, int count)
 			{
 				int ret = 0;
@@ -79,6 +106,33 @@ namespace BizHawk.Client.Common
 				{
 					readclosed = true;
 					full.Set();
+				}
+			}
+
+			public bool WriteByte(byte value)
+			{
+				while (true)
+				{
+					full.WaitOne();
+					lock (sharedlock)
+					{
+						int next = (wpos + 1) & MASK;
+						if (next != rpos)
+						{
+							buff[wpos] = value;
+							wpos = next;
+							empty.Set();
+							return true;
+						}
+						else if (readclosed)
+						{
+							return false;
+						}
+						else
+						{
+							full.Reset();
+						}
+					}
 				}
 			}
 
@@ -158,9 +212,24 @@ namespace BizHawk.Client.Common
 
 				public override void Write(byte[] buffer, int offset, int count)
 				{
+#if true
 					int cnt = _r.Write(buffer, offset, count);
 					_total += cnt;
 					if (cnt < count)
+						throw new IOException("broken pipe");
+#else
+					int end = offset + count;
+					while (offset < end)
+					{
+						WriteByte(buffer[offset++]);
+						_total++;
+					}
+#endif
+				}
+
+				public override void WriteByte(byte value)
+				{
+					if (!_r.WriteByte(value))
 						throw new IOException("broken pipe");
 				}
 
@@ -198,9 +267,30 @@ namespace BizHawk.Client.Common
 
 				public override int Read(byte[] buffer, int offset, int count)
 				{
+#if true
 					int cnt = _r.Read(buffer, offset, count);
 					_total += cnt; 
 					return cnt;
+#else
+					int ret = 0;
+					int end = offset + count;
+					while (offset < end)
+					{
+						int val = ReadByte();
+						if (val == -1)
+							break;
+						buffer[offset] = (byte)val;
+						offset++;
+						ret++;
+						_total++;
+					}
+					return ret;
+#endif
+				}
+
+				public override int ReadByte()
+				{
+					return _r.ReadByte();
 				}
 
 				public override void Write(byte[] buffer, int offset, int count)
