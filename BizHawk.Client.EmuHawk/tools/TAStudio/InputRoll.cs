@@ -275,17 +275,15 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public delegate void QueryItemTextHandler(int index, RollColumn column, out string text);
 
-		// TODO: change this to pass in a column object instead of an index (which forces the caller to look up the column
 		/// <summary>
 		/// Retrieve the background color for a cell
 		/// </summary>
-		public delegate void QueryItemBkColorHandler(int index, int column, ref Color color);
+		public delegate void QueryItemBkColorHandler(int index, RollColumn column, ref Color color);
 
-		// TODO: change this to pass in a column object instead of an index (which forces the caller to look up the column
 		/// <summary>
 		/// Retrive the image for a given cell
 		/// </summary>
-		public delegate void QueryItemIconHandler(int index, int column, ref Bitmap icon);
+		public delegate void QueryItemIconHandler(int index, RollColumn column, ref Bitmap icon);
 
 		public delegate void CellChangeEventHandler(object sender, CellEventArgs e);
 
@@ -620,7 +618,7 @@ namespace BizHawk.Client.EmuHawk
 							string text;
 							QueryItemText(i + startIndex, columns[j], out text);
 
-							//Center Text
+							// Center Text
 							int x = RowsToPixels(i) + (CellWidth - text.Length * _charSize.Width) / 2;
 							int y = (j * CellHeight) + CellHeightPadding;
 							var point = new Point(x, y);
@@ -638,9 +636,9 @@ namespace BizHawk.Client.EmuHawk
 
 					Gdi.PrepDrawString(this.Font, this.ForeColor);
 					int xPadding = CellWidthPadding + 1 - HBar.Value;
-					for (int i = 0; i < range; i++)//Vertical
+					for (int i = 0; i < range; i++) // Vertical
 					{
-						for (int j = 0; j < columns.Count; j++)//Horizontal
+						for (int j = 0; j < columns.Count; j++) // Horizontal
 						{
 							var col = columns[j];
 							if (col.Left.Value < 0 || col.Right.Value > DrawWidth)
@@ -653,7 +651,7 @@ namespace BizHawk.Client.EmuHawk
 							Bitmap image = null;
 							if (QueryItemIcon != null)
 							{
-								QueryItemIcon(i + startRow, j, ref image);
+								QueryItemIcon(i + startRow, columns[j], ref image);
 							}
 
 							if (image != null)
@@ -930,10 +928,10 @@ namespace BizHawk.Client.EmuHawk
 
 				for (int i = 0; i < range; i++)
 				{
-					for (int j = 0; j < columns.Count; j++)//TODO: Don't query all columns
+					for (int j = 0; j < columns.Count; j++) // TODO: Don't query all columns
 					{
 						Color color = Color.White;
-						QueryItemBkColor(i + startIndex, j, ref color);
+						QueryItemBkColor(i + startIndex, columns[j], ref color);
 
 						if (color != Color.White) // An easy optimization, don't draw unless the user specified something other than the default
 						{
@@ -952,12 +950,12 @@ namespace BizHawk.Client.EmuHawk
 				int startRow = FirstVisibleRow;
 				int range = Math.Min(LastVisibleRow, RowCount - 1) - startRow + 1;
 
-				for (int i = 0; i < range; i++)//Vertical
+				for (int i = 0; i < range; i++) // Vertical
 				{
-					for (int j = 0; j < columns.Count; j++)//Horizontal
+					for (int j = 0; j < columns.Count; j++) // Horizontal
 					{
 						Color color = Color.White;
-						QueryItemBkColor(i + startRow, j, ref color);
+						QueryItemBkColor(i + startRow, columns[j], ref color);
 						if (color != Color.White) // An easy optimization, don't draw unless the user specified something other than the default
 						{
 							var cell = new Cell

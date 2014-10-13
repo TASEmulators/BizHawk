@@ -35,9 +35,9 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Query callbacks
 
-		private void TasView_QueryItemIcon(int index, int column, ref Bitmap bitmap)
+		private void TasView_QueryItemIcon(int index, InputRoll.RollColumn column, ref Bitmap bitmap)
 		{
-			var columnName = TasView.VisibleColumns.ToList()[column].Name; // TODO: don't do this when a column object is passed in instead of an int
+			var columnName = column.Name;
 
 			if (columnName == MarkerColumnName)
 			{
@@ -77,9 +77,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void TasView_QueryItemBkColor(int index, int column, ref Color color)
+		private void TasView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
 		{
-			var columnName = TasView.VisibleColumns.ToList()[column].Name; // TODO: don't do this when a column object is passed in instead of an int
+			var columnName = column.Name;
 			var record = _currentTasMovie[index];
 
 			if (columnName == MarkerColumnName)
