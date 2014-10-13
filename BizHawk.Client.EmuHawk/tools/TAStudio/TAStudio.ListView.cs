@@ -277,7 +277,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var frame = TasView.CurrentCell.RowIndex.Value;
 					var buttonName = TasView.CurrentCell.Column.Name;
-					if (TasView.SelectedRows.IndexOf(frame) != -1 && (buttonName == MarkerColumnName || buttonName == FrameColumnName))
+					if (TasView.SelectedRows.ToList().IndexOf(frame) != -1 && (buttonName == MarkerColumnName || buttonName == FrameColumnName))
 					{
 						RightClickMenu.Show(TasView, e.X, e.Y);
 					}
