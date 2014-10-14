@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
-using System.Collections;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -16,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 	public class InputRoll : Control
 	{
 		private readonly GDIRenderer Gdi;
-		private readonly RollColumns _columns = new RollColumns();
+		private RollColumns _columns = new RollColumns();
 		private readonly List<Cell> SelectedItems = new List<Cell>();
 
 		private readonly VScrollBar VBar;
@@ -422,7 +423,16 @@ namespace BizHawk.Client.EmuHawk
 
 		public string UserSettingsSerialized()
 		{
-			return string.Empty; // TODO
+			// TODO: More than just columns
+			var settings = ConfigService.SaveWithType(_columns);
+			return settings;
+		}
+
+		public void LoadSettingsSerialized(string settingsJson)
+		{
+			//TODO: more than just columns
+			var settings = ConfigService.LoadWithType(settingsJson);
+			_columns = (RollColumns)settings;
 		}
 
 		/// <summary>
