@@ -648,7 +648,7 @@ namespace BizHawk.Client.EmuHawk
 				_tasClipboard.Any();
 
 			ClearGreenzoneMenuItem.Enabled =
-				_currentTasMovie != null && _currentTasMovie.HasGreenzone;
+				_currentTasMovie != null && _currentTasMovie.TasStateManager.Any();
 
 			GreenzoneICheckSeparator.Visible =
 				GreenZzoneIntegrityCheckMenuItem.Visible =
@@ -1105,7 +1105,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			NewTasMovie();
 			GlobalWin.MainForm.StartNewMovie(_currentTasMovie, record: true);
-			_currentTasMovie.CaptureCurrentState();
+			_currentTasMovie.TasStateManager.Capture();
 			_currentTasMovie.SwitchToRecord();
 			_currentTasMovie.ClearChanges();
 		}

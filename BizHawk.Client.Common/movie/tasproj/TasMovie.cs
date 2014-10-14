@@ -316,28 +316,12 @@ namespace BizHawk.Client.Common
 			return StateManager.GetStateClosestToFrame(frame);
 		}
 
-		/// <summary>
-		/// Captures the current frame into the greenzone
-		/// </summary>
-		public void CaptureCurrentState()
-		{
-			StateManager.Capture();
-		}
-
 		public void ClearGreenzone()
 		{
 			if (StateManager.Any())
 			{
 				StateManager.ClearGreenzone();
 				Changes = true;
-			}
-		}
-
-		public bool HasGreenzone // TODO: get rid of wrappers like this now that we expose the state manager directly
-		{
-			get
-			{
-				return StateManager.Any();
 			}
 		}
 
