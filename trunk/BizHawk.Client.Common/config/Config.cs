@@ -611,29 +611,6 @@ namespace BizHawk.Client.Common
 		public bool GB_AsSGB = false;
 		public bool NES_InQuickNES = true;
 		public bool SNES_InSnes9x = false;
-
-		// LuaWriter Settings
-		public int LuaDefaultTextColor = -16777216;
-		public bool LuaDefaultTextBold = false;
-		public int LuaWriterBackColor = -1;
-
-		public int LuaKeyWordColor = -16776961;
-		public bool LuaKeyWordBold = false;
-		public int LuaCommentColor = -16744448;
-		public bool LuaCommentBold = false;
-		public int LuaStringColor = -8355712;
-		public bool LuaStringBold = false;
-		public int LuaSymbolColor = -16777216;
-		public bool LuaSymbolBold = false;
-		public int LuaLibraryColor = -16711681;
-		public bool LuaLibraryBold = false;
-		public int LuaDecimalColor = -23296;
-		public bool LuaDecimalBold = false;
-		public float LuaWriterFontSize = 11;
-		public string LuaWriterFont = "Courier New";
-		public float LuaWriterZoom = 1;
-		public bool LuaWriterStartEmpty = false;
-		public bool LuaShowLineNumbers = false;
 	}
 
 	// These are used in the defctrl.json or wherever
