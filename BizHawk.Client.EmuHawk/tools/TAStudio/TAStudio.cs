@@ -1117,7 +1117,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			EngageTastudio();
-			SetUpColumns();
+
+			if (!TasView.AllColumns.Any()) // If a project with column settings has already been loaded we don't need to do this
+			{
+				SetUpColumns();
+			}
+
 			LoadConfigSettings();
 			SetColumnsFromCurrentStickies();
 			RefreshDialog();
