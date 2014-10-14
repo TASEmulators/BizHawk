@@ -76,6 +76,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm.PauseOnFrame = null;
 			GlobalWin.OSD.AddMessage("TAStudio engaged");
 			_currentTasMovie = Global.MovieSession.Movie as TasMovie;
+			SetTasMovieCallbacks();
 			SetTextProperty();
 			GlobalWin.MainForm.PauseEmulator();
 			GlobalWin.MainForm.RelinquishControl(this);
@@ -99,6 +100,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.MovieSession.Movie = new TasMovie();
 			_currentTasMovie = Global.MovieSession.Movie as TasMovie;
+			SetTasMovieCallbacks();
 			_currentTasMovie.PropertyChanged += new PropertyChangedEventHandler(this.TasMovie_OnPropertyChanged);
 			_currentTasMovie.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
 			_currentTasMovie.PopulateWithDefaultHeaderValues();
@@ -112,6 +114,12 @@ namespace BizHawk.Client.EmuHawk
 				PathManager.FilesystemSafeName(Global.Game) + "." + TasMovie.Extension);
 		}
 
+		private void SetTasMovieCallbacks()
+		{
+			_currentTasMovie.ClientSettingsForSave = ClientSettingsForSave;
+			_currentTasMovie.GetClientSettingsOnLoad = GetClientSettingsOnLoad;
+		}
+
 		private void StartNewTasMovie()
 		{
 			if (AskSaveChanges())
@@ -123,6 +131,17 @@ namespace BizHawk.Client.EmuHawk
 				SetTextProperty();
 				RefreshDialog();
 			}
+		}
+
+		private string ClientSettingsForSave()
+		{
+			return TasView.UserSettingsSerialized();
+		}
+
+		private void GetClientSettingsOnLoad(string settingsJson)
+		{
+			TasView.LoadSettingsSerialized(settingsJson);
+			TasView.Refresh();
 		}
 
 		private void SetTextProperty()
@@ -140,9 +159,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (AskSaveChanges())
 			{
-				var movie = new TasMovie()
+				var movie = new TasMovie
 				{
-					Filename = path
+					Filename = path,
+					ClientSettingsForSave = ClientSettingsForSave,
+					GetClientSettingsOnLoad = GetClientSettingsOnLoad
 				};
 
 				movie.PropertyChanged += TasMovie_OnPropertyChanged;
@@ -168,8 +189,10 @@ namespace BizHawk.Client.EmuHawk
 					return false;
 				}
 
-				WantsToControlStopMovie = true;
 				_currentTasMovie = Global.MovieSession.Movie as TasMovie;
+				SetTasMovieCallbacks();
+
+				WantsToControlStopMovie = true;
 				Global.Config.RecentTas.Add(path);
 				Text = "TAStudio - " + _currentTasMovie.Name;
 
