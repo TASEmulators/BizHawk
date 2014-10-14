@@ -75,11 +75,10 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			{
 				switch (realfile.Length)
 				{
-					// these are untested
 					case 0x10000: pagesize0 = 0x100; break;
-					case 0x20000: pagesize0 = 0x200; break;
-					case 0x40000: pagesize0 = 0x400; break;
-					case 0x80000: pagesize0 = 0x800; break;
+					case 0x20000: pagesize0 = 0x200; break; //
+					case 0x40000: pagesize0 = 0x400; break; // all known good dumps fall in one of these three categories
+					case 0x80000: pagesize0 = 0x800; break; //
 
 					case 0x30000: pagesize0 = 0x200; pagesize1 = 0x100; break;
 					case 0x50000: pagesize0 = 0x400; pagesize1 = 0x100; break;
