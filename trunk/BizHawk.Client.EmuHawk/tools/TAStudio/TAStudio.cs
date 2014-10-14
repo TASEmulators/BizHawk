@@ -287,7 +287,7 @@ namespace BizHawk.Client.EmuHawk
 		private void StartAtNearestFrameAndEmulate(int frame)
 		{
 			_currentTasMovie.SwitchToPlay();
-			var closestState = _currentTasMovie.GetStateClosestToFrame(frame);
+			var closestState = _currentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
 			if (closestState != null)
 			{
 				LoadState(closestState.ToArray());
@@ -373,9 +373,9 @@ namespace BizHawk.Client.EmuHawk
 					shouldLoadstate = false;
 				}
 
-				if (_currentTasMovie.LastEmulatedFrame > 0 && shouldLoadstate)
+				if (_currentTasMovie.TasStateManager.LastEmulatedFrame > 0 && shouldLoadstate)
 				{
-					LoadState(_currentTasMovie[_currentTasMovie.LastEmulatedFrame].State.ToArray());
+					LoadState(_currentTasMovie[_currentTasMovie.TasStateManager.LastEmulatedFrame].State.ToArray());
 				}
 
 				if (frame != Global.Emulator.Frame) // If we aren't already at our destination, seek
@@ -972,12 +972,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			new MovieHeaderEditor(_currentTasMovie).Show();
 			UpdateChangesIndicator();
-
 		}
 
 		private void GreenzoneSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new GreenzoneSettings(_currentTasMovie.GreenzoneSettings).Show();
+			new GreenzoneSettingsForm(_currentTasMovie.TasStateManager.Settings).Show();
 			UpdateChangesIndicator();
 		}
 
