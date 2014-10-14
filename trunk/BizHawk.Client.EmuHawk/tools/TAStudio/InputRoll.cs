@@ -57,19 +57,20 @@ namespace BizHawk.Client.EmuHawk
 			ColumnWidth = CellWidth;
 			ColumnHeight = CellHeight + 2;
 
-			// TODO Figure out how to use the width and height properties of the scrollbars instead of 17
+			var width = new VScrollBar().Width;
 			VBar = new VScrollBar
 			{
-				Location = new Point(Width - 17, 0),
+				Location = new Point(Width - width, 0),
 				Visible = false,
 				Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom,
 				SmallChange = CellHeight,
 				LargeChange = CellHeight * 20
 			};
 
+			var height = new HScrollBar().Height;
 			HBar = new HScrollBar
 			{
-				Location = new Point(0, Height - 17),
+				Location = new Point(0, Height - height),
 				Visible = false,
 				Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
 				SmallChange = 1,
