@@ -745,8 +745,8 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.RowCount = 0;
 			this.TasView.Size = new System.Drawing.Size(288, 471);
 			this.TasView.TabIndex = 1;
-			this.TasView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.TasView_ColumnClick);
-			this.TasView.ColumnRightClick += new System.Windows.Forms.ColumnClickEventHandler(this.TasView_ColumnRightClick);
+			this.TasView.ColumnClick += new InputRoll.ColumnClickEventHandler(this.TasView_ColumnClick);
+			this.TasView.ColumnRightClick += new InputRoll.ColumnClickEventHandler(this.TasView_ColumnRightClick);
 			this.TasView.SelectedIndexChanged += new System.EventHandler(this.TasView_SelectedIndexChanged);
 			this.TasView.RightMouseScrolled += new BizHawk.Client.EmuHawk.InputRoll.RightMouseScrollEventHandler(this.TasView_MouseWheel);
 			this.TasView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TasView_KeyDown);

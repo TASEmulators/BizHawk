@@ -245,19 +245,17 @@ namespace BizHawk.Client.EmuHawk
 		[Category("Mouse")]
 		public event CellChangeEventHandler PointedCellChanged;
 
-		// TODO: do not use ColumnClickEventHandler, make a custom one that passes a column object
 		/// <summary>
 		/// Occurs when a column header is clicked
 		/// </summary>
 		[Category("Action")]
-		public event System.Windows.Forms.ColumnClickEventHandler ColumnClick;
+		public event ColumnClickEventHandler ColumnClick;
 
-		// TODO: do not use ColumnClickEventHandler, make a custom one that passes a column object
 		/// <summary>
 		/// Occurs when a column header is right-clicked
 		/// </summary>
 		[Category("Action")]
-		public event System.Windows.Forms.ColumnClickEventHandler ColumnRightClick;
+		public event ColumnClickEventHandler ColumnRightClick;
 
 		/// <summary>
 		/// Occurs whenever the 'SelectedItems' property for this control changes
@@ -290,6 +288,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public delegate void RightMouseScrollEventHandler(object sender, MouseEventArgs e);
 
+		public delegate void ColumnClickEventHandler(object sender, ColumnClickEventArgs e);
+
 		public class CellEventArgs
 		{
 			public CellEventArgs(Cell oldCell, Cell newCell)
@@ -300,6 +300,16 @@ namespace BizHawk.Client.EmuHawk
 
 			public Cell OldCell { get; private set; }
 			public Cell NewCell { get; private set; }
+		}
+
+		public class ColumnClickEventArgs
+		{
+			public ColumnClickEventArgs(RollColumn column)
+			{
+				Column = column;
+			}
+
+			public RollColumn Column { get; private set; }
 		}
 
 		#endregion
@@ -1195,7 +1205,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (ColumnClick != null)
 			{
-				ColumnClick(this, new ColumnClickEventArgs(_columns.IndexOf(column)));
+				ColumnClick(this, new ColumnClickEventArgs(column));
 			}
 		}
 
@@ -1203,7 +1213,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (ColumnRightClick != null)
 			{
-				ColumnRightClick(this, new ColumnClickEventArgs(_columns.IndexOf(column)));
+				ColumnRightClick(this, new ColumnClickEventArgs(column));
 			}
 		}
 
