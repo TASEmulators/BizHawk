@@ -188,11 +188,11 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Events
 
-		private void TasView_ColumnClick(object sender, ColumnClickEventArgs e)
+		private void TasView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
 			if (TasView.SelectedRows.Any())
 			{
-				var columnName = TasView.VisibleColumns.ToList()[e.Column].Name; // TODO: e
+				var columnName = e.Column.Name;
 
 				if (columnName == FrameColumnName)
 				{
@@ -212,12 +212,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void TasView_ColumnRightClick(object sender, ColumnClickEventArgs e)
+		private void TasView_ColumnRightClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
-			var column = TasView.AllColumns[e.Column];
-			column.Emphasis ^= true;
+			e.Column.Emphasis ^= true;
 
-			Global.StickyXORAdapter.SetSticky(column.Name, column.Emphasis);
+			Global.StickyXORAdapter.SetSticky(e.Column.Name, e.Column.Emphasis);
 
 			TasView.Refresh();
 		}
