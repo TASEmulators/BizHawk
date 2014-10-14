@@ -238,8 +238,24 @@ namespace BizHawk.Client.Common
 				var kk = States.Keys;
 				int index = kk.Count;
 				if (index == 0)
+				{
 					return 0;
+				}
+
 				return kk[index - 1];
+			}
+		}
+
+		public int LastEmulatedFrame
+		{
+			get
+			{
+				if (StateCount > 0)
+				{
+					return LastKey;
+				}
+
+				return 0;
 			}
 		}
 

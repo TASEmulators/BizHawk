@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class GreenzoneSettings
+	public partial class GreenzoneSettingsForm
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GreenzoneSettings));
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GreenzoneSettingsForm));
 			this.CancelBtn = new System.Windows.Forms.Button();
 			this.OkBtn = new System.Windows.Forms.Button();
 			this.SaveGreenzoneCheckbox = new System.Windows.Forms.CheckBox();

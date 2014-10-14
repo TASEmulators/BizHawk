@@ -42,6 +42,26 @@ namespace BizHawk.Client.Common
 			get { return Extension; }
 		}
 
+		public TasStateManager TasStateManager
+		{
+			get { return StateManager; }
+		}
+
+		public new const string Extension = "tasproj";
+
+		public TasMovieRecord this[int index]
+		{
+			get
+			{
+				return new TasMovieRecord
+				{
+					State = StateManager[index],
+					LogEntry = GetInputLogEntry(index),
+					Lagged = (index < LagLog.Count) ? LagLog[index] : (bool?)null
+				};
+			}
+		}
+
 		public override bool Stop(bool saveChanges = true)
 		{
 			if (Changes)
@@ -70,12 +90,12 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		//This event is Raised ony when Changes is TOGGLED.
+		// This event is Raised ony when Changes is TOGGLED.
 		private void OnPropertyChanged(string propertyName)
 		{
 			if (PropertyChanged != null)
 			{
-				//Raising the event when FirstName or LastName property value changed
+				// Raising the event when FirstName or LastName property value changed
 				PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
@@ -86,21 +106,6 @@ namespace BizHawk.Client.Common
 		}
 
 		#endregion
-
-		public new const string Extension = "tasproj";
-
-		public TasMovieRecord this[int index]
-		{
-			get
-			{
-				return new TasMovieRecord
-				{
-					State = StateManager[index],
-					LogEntry = GetInputLogEntry(index),
-					Lagged = (index < LagLog.Count) ? LagLog[index] : (bool?)null
-				};
-			}
-		}
 
 		public void ClearChanges()
 		{
@@ -290,46 +295,12 @@ namespace BizHawk.Client.Common
 			return string.Empty;
 		}
 
-		public TasStateManager.ManagerSettings GreenzoneSettings
-		{
-			get { return StateManager.Settings;  }
-		}
-
-		public int LastEmulatedFrame
-		{
-			get
-			{
-				if (StateManager.StateCount > 0)
-				{
-					return StateManager.LastKey;
-				}
-
-				return 0;
-			}
-		}
-
-		/// <summary>
-		/// For the given frame, returns a savestate that is that frame or before it, as close as possible to it
-		/// </summary>
-		public byte[] GetStateClosestToFrame(int frame)
-		{
-			return StateManager.GetStateClosestToFrame(frame);
-		}
-
 		public void ClearGreenzone()
 		{
 			if (StateManager.Any())
 			{
 				StateManager.ClearGreenzone();
 				Changes = true;
-			}
-		}
-
-		public TasStateManager TasStateManager
-		{
-			get
-			{
-				return StateManager;
 			}
 		}
 	}
