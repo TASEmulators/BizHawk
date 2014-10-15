@@ -167,6 +167,13 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public bool HasLump(BinaryStateLump lump)
+		{
+			string name = BinaryStateFileNames.GetReadName(lump);
+			ZipEntry e;
+			return _entriesbyname.TryGetValue(name, out e);
+		}
+
 		/// <summary>
 		/// Gets a lump
 		/// </summary>
