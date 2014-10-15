@@ -140,9 +140,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						color = (columnName == MarkerColumnName || columnName == FrameColumnName) ?
-							Color.White :
-							SystemColors.ControlLight;
+						color = Color.FromArgb(0xFFFEEE);
 					}
 				}
 			}
