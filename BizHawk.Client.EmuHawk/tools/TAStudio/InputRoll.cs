@@ -405,7 +405,8 @@ namespace BizHawk.Client.EmuHawk
 		/// Sets the width of data cells when in Horizontal orientation.
 		/// </summary>
 		/// <param name="maxLength">The maximum number of characters the column will support in Horizontal orientation.</param>
-		public int MaxCharactersInHorizontal{
+		public int MaxCharactersInHorizontal
+		{
 			get
 			{
 				return _maxCharactersInHorizontal;
@@ -535,6 +536,25 @@ namespace BizHawk.Client.EmuHawk
 					.Select(cell => cell.RowIndex.Value)
 					.Distinct();
 			}
+		}
+
+		public IEnumerable<ToolStripItem> GenerateContextMenuItems()
+		{
+			yield return new ToolStripSeparator();
+
+			var rotate = new ToolStripMenuItem
+			{
+				Name = "RotateMenuItem",
+				Text = "Rotate",
+				ShortcutKeyDisplayString = "Ctrl+Shift+F",
+			};
+
+			rotate.Click += (o, ev) =>
+			{
+				this.HorizontalOrientation ^= true;
+			};
+
+			yield return rotate;
 		}
 
 		#endregion
@@ -1225,6 +1245,16 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ColumnRightClick(this, new ColumnClickEventArgs(column));
 			}
+		}
+
+		protected override void OnKeyDown(KeyEventArgs e)
+		{
+			if (e.Control && !e.Alt && e.Shift && e.KeyCode == Keys.F) // Ctrl+Shift+F
+			{
+				HorizontalOrientation ^= true;
+			}
+
+			base.OnKeyDown(e);
 		}
 
 		#endregion

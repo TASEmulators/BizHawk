@@ -1132,6 +1132,7 @@ namespace BizHawk.Client.EmuHawk
 
 			LoadConfigSettings();
 			SetColumnsFromCurrentStickies();
+			RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems().ToArray());
 			RefreshDialog();
 		}
 
@@ -1166,7 +1167,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RightClickMenu_Opened(object sender, EventArgs e)
 		{
-			RemoveMarkersContextMenuItem.Enabled = _currentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame)); // Disable the option to remove markers if no markers are selected (FCUEX does this).
+			RemoveMarkersContextMenuItem.Enabled = _currentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
 		}
 
 		#endregion
