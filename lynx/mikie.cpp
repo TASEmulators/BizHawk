@@ -371,14 +371,14 @@ void CMikie::DisplaySetAttributes()
 
 void CMikie::BlankLineSurface()
 {
-	uint32* bitmap_tmp = /*mpDisplayCurrent*/ framebuffer + mpDisplayCurrentLine * SCREEN_WIDTH;
+	uint32* bitmap_tmp = framebuffer + mpDisplayCurrentLine * SCREEN_WIDTH;
 	for (int i = 0; i < SCREEN_WIDTH; i++)
 		bitmap_tmp[i] = 0xff000000;
 }
 
 void CMikie::CopyLineSurface()
 {
-	uint32* bitmap_tmp = /*mpDisplayCurrent*/ framebuffer + mpDisplayCurrentLine * SCREEN_WIDTH;
+	uint32* bitmap_tmp = framebuffer + mpDisplayCurrentLine * SCREEN_WIDTH;
 
 	for (int loop = 0; loop < SCREEN_WIDTH / 2; loop++)
 	{
@@ -487,17 +487,9 @@ uint32 CMikie::DisplayEndOfFrame()
 		BlankLineSurface();
 		mpDisplayCurrentLine++;
 	}
-	if (mpDisplayCurrent)
-	{
-		std::memcpy(mpDisplayCurrent, framebuffer, sizeof(framebuffer));
-	}
-	else
-	{
-		// a game shouldn't be able to get two frames in in the length of time we traverse in a single
-		// call to advance.  what is going on here?
-	}
 
-	mpDisplayCurrent = nullptr;
+	mSystem.Blit(framebuffer);
+
 	mpDisplayCurrentLine = 0;
 	return 0;
 }

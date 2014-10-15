@@ -99,6 +99,19 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 				savebuff = new byte[LibLynx.BinStateSize(Core)];
 				savebuff2 = new byte[savebuff.Length + 13];
+
+				int rot = game.OptionPresent("rotate") ? int.Parse(game.OptionValue("rotate")) : 0;
+				LibLynx.SetRotation(Core, rot);
+				if ((rot & 1) != 0)
+				{
+					BufferWidth = HEIGHT;
+					BufferHeight = WIDTH;
+				}
+				else
+				{
+					BufferWidth = WIDTH;
+					BufferHeight = HEIGHT;
+				}
 			}
 			catch
 			{
@@ -333,10 +346,10 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		public IVideoProvider VideoProvider { get { return this; } }
 		public int[] GetVideoBuffer() { return videobuff; }
-		public int VirtualWidth { get { return WIDTH; } }
-		public int VirtualHeight { get { return HEIGHT; } }
-		public int BufferWidth { get { return WIDTH; } }
-		public int BufferHeight { get { return HEIGHT; } }
+		public int VirtualWidth { get { return BufferWidth; } }
+		public int VirtualHeight { get { return BufferHeight; } }
+		public int BufferWidth { get; private set; }
+		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
 
 		#endregion
