@@ -113,8 +113,10 @@ namespace BizHawk.Client.Common
 				{
 					if (Used + state.Length >= Settings.Cap)
 					{
-						Used -= States.ElementAt(0).Value.Length;
-						States.RemoveAt(0);
+						var first = _movie.StartsFromSavestate ? 0 : 1;
+
+						Used -= States.ElementAt(first).Value.Length;
+						States.RemoveAt(first);
 					}
 
 					States.Add(frame, state);
