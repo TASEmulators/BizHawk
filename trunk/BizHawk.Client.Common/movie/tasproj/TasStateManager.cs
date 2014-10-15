@@ -16,6 +16,29 @@ namespace BizHawk.Client.Common
 		private readonly SortedList<int, byte[]> States = new SortedList<int, byte[]>();
 
 		private readonly TasMovie _movie;
+		private int _expectedStateSize = 0;
+
+		private const int _minFrequency = 2;
+		private const int _maxFrequency = 16; 
+		private int StateFrequency
+		{
+			get
+			{
+				var freq = _expectedStateSize / 65536;
+
+				if (freq < _minFrequency)
+				{
+					return _minFrequency;
+				}
+
+				if (freq > _maxFrequency)
+				{
+					return _maxFrequency;
+				}
+
+				return freq;
+			}
+		}
 
 		public TasStateManager(TasMovie movie)
 		{
@@ -27,11 +50,11 @@ namespace BizHawk.Client.Common
 			int limit = 0;
 			if (Global.Emulator != null)
 			{
-				var stateSize = Global.Emulator.SaveStateBinary().Length;
+				_expectedStateSize = Global.Emulator.SaveStateBinary().Length;
 
-				if (stateSize > 0)
+				if (_expectedStateSize > 0)
 				{
-					limit = cap / stateSize;
+					limit = cap / _expectedStateSize;
 				}
 			}
 
@@ -83,7 +106,12 @@ namespace BizHawk.Client.Common
 		public void Capture(bool force = false)
 		{
 			bool shouldCapture = false;
-			if (force)
+
+			if (_movie.StartsFromSavestate && Global.Emulator.Frame == 0) // Never capture frame 0 on savestate anchored movies since we have it anyway
+			{
+				shouldCapture = false;
+			}
+			else if (force)
 			{
 				shouldCapture = force;
 			}
@@ -97,7 +125,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				shouldCapture = Global.Emulator.Frame % 2 > 0;
+				shouldCapture = Global.Emulator.Frame % StateFrequency == 0;
 			}
 
 			if (shouldCapture)
