@@ -17,6 +17,7 @@ namespace BizHawk.Client.EmuHawk
 		private float _floatPaintState;
 		private bool _startMarkerDrag;
 		private bool _startFrameDrag;
+		private bool _supressContextMenu = false;
 
 		public static Color CurrentFrame_FrameCol = Color.FromArgb(0xCFEDFC);
 		public static Color CurrentFrame_InputLog = Color.FromArgb(0xB5E7F7);
@@ -271,31 +272,32 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 				}
-				else if (e.Button == MouseButtons.Right)
-				{
-					var frame = TasView.CurrentCell.RowIndex.Value;
-					var buttonName = TasView.CurrentCell.Column.Name;
-					if (TasView.SelectedRows.ToList().IndexOf(frame) != -1 && (buttonName == MarkerColumnName || buttonName == FrameColumnName))
-					{
-						RightClickMenu.Show(TasView, e.X, e.Y);
-					}
-				}
 			}
 		}
 
 		private void TasView_MouseUp(object sender, MouseEventArgs e)
 		{
-			_startMarkerDrag = false;
-			_startFrameDrag = false;
-			_startBoolDrawColumn = string.Empty;
-			_startFloatDrawColumn = string.Empty;
-			_floatPaintState = 0;
+			if (e.Button == MouseButtons.Right && !_supressContextMenu)
+			{
+				RightClickMenu.Show(TasView, e.X, e.Y);
+			}
+			else if (e.Button == MouseButtons.Left)
+			{
+				_startMarkerDrag = false;
+				_startFrameDrag = false;
+				_startBoolDrawColumn = string.Empty;
+				_startFloatDrawColumn = string.Empty;
+				_floatPaintState = 0;
+			}
+
+			_supressContextMenu = false;
 		}
 
 		private void TasView_MouseWheel(object sender, MouseEventArgs e)
 		{
 			if (TasView.RightButtonHeld && TasView.CurrentCell.RowIndex.HasValue)
 			{
+				_supressContextMenu = true;
 				if (e.Delta < 0)
 				{
 					GoToFrame(Global.Emulator.Frame + 1);

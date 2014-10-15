@@ -708,7 +708,7 @@ namespace BizHawk.Client.EmuHawk
 			// toolStripSeparator19
 			// 
 			this.toolStripSeparator19.Name = "toolStripSeparator19";
-			this.toolStripSeparator19.Size = new System.Drawing.Size(57, 6);
+			this.toolStripSeparator19.Size = new System.Drawing.Size(149, 6);
 			// 
 			// HelpSubMenu
 			// 
@@ -874,10 +874,10 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// UngreenzoneContextMenuItem
 			// 
-			this.UngreenzoneContextMenuItem.Enabled = false;
 			this.UngreenzoneContextMenuItem.Name = "UngreenzoneContextMenuItem";
 			this.UngreenzoneContextMenuItem.Size = new System.Drawing.Size(272, 22);
-			this.UngreenzoneContextMenuItem.Text = "Ungreenzone";
+			this.UngreenzoneContextMenuItem.Text = "Clear Greenzone";
+			this.UngreenzoneContextMenuItem.Click += new System.EventHandler(this.ClearGreenzoneMenuItem_Click);
 			// 
 			// toolStripSeparator17
 			// 
