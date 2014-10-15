@@ -183,7 +183,7 @@ namespace BizHawk.Client.Common
 					}
 				});
 
-				if (GetClientSettingsOnLoad != null)
+				if (GetClientSettingsOnLoad != null && bl.HasLump(BinaryStateLump.ClientSettings))
 				{
 					string clientSettings = string.Empty;
 					bl.GetLump(BinaryStateLump.ClientSettings, true, delegate(TextReader tr)
