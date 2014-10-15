@@ -981,7 +981,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DrawInputByDraggingMenuItem_Click(object sender, EventArgs e)
 		{
-			// TOOD: integrate this logic into input roll, have it save and load through its own load/save settings methods, Global.Config.TAStudioDrawInput will go away
 			TasView.InputPaintingMode = Global.Config.TAStudioDrawInput ^= true;
 		}
 
@@ -989,7 +988,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config.TAStudioEmptyMarkers ^= true;
 		}
-
 
 		private void AutopauseAtEndMenuItem_Click(object sender, EventArgs e)
 		{
