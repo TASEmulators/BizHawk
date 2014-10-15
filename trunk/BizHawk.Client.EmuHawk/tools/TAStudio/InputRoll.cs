@@ -1294,6 +1294,7 @@ namespace BizHawk.Client.EmuHawk
 				HBar.LargeChange = 20;
 			}
 
+			ColumnChangedCallback();
 			RecalculateScrollBars();
 
 			Refresh();
@@ -1684,9 +1685,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_horizontalOrientation)
 			{
-				return index * CellWidth + ColumnWidth;
+				return (index * CellWidth) + ColumnWidth;
 			}
-			return index * CellHeight + ColumnHeight;
+
+			return (index * CellHeight) + ColumnHeight; 
 		}
 
 		/// <summary>
@@ -1729,8 +1731,8 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void UpdateCellSize()
 		{
-			CellHeight = _charSize.Height + CellHeightPadding * 2;
-			CellWidth  = _charSize.Width * MaxCharactersInHorizontal + CellWidthPadding * 4; // Double the padding for horizontal because it looks better
+			CellHeight = _charSize.Height + (CellHeightPadding * 2);
+			CellWidth  = (_charSize.Width * MaxCharactersInHorizontal) + (CellWidthPadding * 4); // Double the padding for horizontal because it looks better
 		}
 
 		#endregion
