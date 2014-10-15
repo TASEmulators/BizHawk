@@ -205,6 +205,7 @@ namespace BizHawk.Client.EmuHawk
 					foreach (var index in TasView.SelectedRows)
 					{
 						ToggleBoolState(index, columnName);
+						GoToLastEmulatedFrameIfNecessary(TasView.SelectedRows.Min());
 					}
 
 					RefreshDialog();
