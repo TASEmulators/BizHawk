@@ -387,7 +387,7 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Load<GBGPUView>();
 			}
 
-			if (Global.Config.AutoloadTAStudio)
+			if (Global.Config.AutoloadTAStudio && !Global.Game.IsNullInstance)
 			{
 				GlobalWin.Tools.Load<TAStudio>();
 			}
