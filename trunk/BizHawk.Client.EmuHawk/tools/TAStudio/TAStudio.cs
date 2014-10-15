@@ -974,6 +974,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			DrawInputByDraggingMenuItem.Checked = Global.Config.TAStudioDrawInput;
 			AutopauseAtEndOfMovieMenuItem.Checked = Global.Config.TAStudioAutoPause;
+			EmptyNewMarkerNotesMenuItem.Checked = Global.Config.TAStudioEmptyMarkers;
 		}
 
 		private void DrawInputByDraggingMenuItem_Click(object sender, EventArgs e)
@@ -981,6 +982,12 @@ namespace BizHawk.Client.EmuHawk
 			// TOOD: integrate this logic into input roll, have it save and load through its own load/save settings methods, Global.Config.TAStudioDrawInput will go away
 			TasView.InputPaintingMode = Global.Config.TAStudioDrawInput ^= true;
 		}
+
+		private void EmptyNewMarkerNotesMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.TAStudioEmptyMarkers ^= true;
+		}
+
 
 		private void AutopauseAtEndMenuItem_Click(object sender, EventArgs e)
 		{

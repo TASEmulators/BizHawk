@@ -73,7 +73,6 @@ namespace BizHawk.Client.EmuHawk
 			this.ConfigSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SetMaxUndoLevelsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
-			this.AutofirePatternSkipsLagMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoadjustInputMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
 			this.DrawInputByDraggingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -101,6 +100,7 @@ namespace BizHawk.Client.EmuHawk
 			this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
 			this.RestoreDefaultSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ColumnsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator19 = new System.Windows.Forms.ToolStripSeparator();
 			this.HelpSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.EnableTooltipsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
@@ -127,7 +127,6 @@ namespace BizHawk.Client.EmuHawk
 			this.InsertNumFramesContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator18 = new System.Windows.Forms.ToolStripSeparator();
 			this.TruncateContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator19 = new System.Windows.Forms.ToolStripSeparator();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.RightClickMenu.SuspendLayout();
@@ -467,7 +466,6 @@ namespace BizHawk.Client.EmuHawk
 			this.ConfigSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.SetMaxUndoLevelsMenuItem,
             this.toolStripSeparator9,
-            this.AutofirePatternSkipsLagMenuItem,
             this.AutoadjustInputMenuItem,
             this.toolStripSeparator11,
             this.DrawInputByDraggingMenuItem,
@@ -497,13 +495,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.toolStripSeparator9.Name = "toolStripSeparator9";
 			this.toolStripSeparator9.Size = new System.Drawing.Size(285, 6);
-			// 
-			// AutofirePatternSkipsLagMenuItem
-			// 
-			this.AutofirePatternSkipsLagMenuItem.Enabled = false;
-			this.AutofirePatternSkipsLagMenuItem.Name = "AutofirePatternSkipsLagMenuItem";
-			this.AutofirePatternSkipsLagMenuItem.Size = new System.Drawing.Size(288, 22);
-			this.AutofirePatternSkipsLagMenuItem.Text = "Autofire Pattern skips Lag";
 			// 
 			// AutoadjustInputMenuItem
 			// 
@@ -552,10 +543,10 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// EmptyNewMarkerNotesMenuItem
 			// 
-			this.EmptyNewMarkerNotesMenuItem.Enabled = false;
 			this.EmptyNewMarkerNotesMenuItem.Name = "EmptyNewMarkerNotesMenuItem";
 			this.EmptyNewMarkerNotesMenuItem.Size = new System.Drawing.Size(288, 22);
 			this.EmptyNewMarkerNotesMenuItem.Text = "Empty new Marker Notes";
+			this.EmptyNewMarkerNotesMenuItem.Click += new System.EventHandler(this.EmptyNewMarkerNotesMenuItem_Click);
 			// 
 			// toolStripSeparator13
 			// 
@@ -698,6 +689,11 @@ namespace BizHawk.Client.EmuHawk
 			this.ColumnsSubMenu.Text = "&Columns";
 			this.ColumnsSubMenu.DropDownOpened += new System.EventHandler(this.ColumnsSubMenu_DropDownOpened);
 			// 
+			// toolStripSeparator19
+			// 
+			this.toolStripSeparator19.Name = "toolStripSeparator19";
+			this.toolStripSeparator19.Size = new System.Drawing.Size(57, 6);
+			// 
 			// HelpSubMenu
 			// 
 			this.HelpSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -745,8 +741,8 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.RowCount = 0;
 			this.TasView.Size = new System.Drawing.Size(288, 471);
 			this.TasView.TabIndex = 1;
-			this.TasView.ColumnClick += new InputRoll.ColumnClickEventHandler(this.TasView_ColumnClick);
-			this.TasView.ColumnRightClick += new InputRoll.ColumnClickEventHandler(this.TasView_ColumnRightClick);
+			this.TasView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.TasView_ColumnClick);
+			this.TasView.ColumnRightClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.TasView_ColumnRightClick);
 			this.TasView.SelectedIndexChanged += new System.EventHandler(this.TasView_SelectedIndexChanged);
 			this.TasView.RightMouseScrolled += new BizHawk.Client.EmuHawk.InputRoll.RightMouseScrollEventHandler(this.TasView_MouseWheel);
 			this.TasView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TasView_KeyDown);
@@ -925,11 +921,6 @@ namespace BizHawk.Client.EmuHawk
 			this.TruncateContextMenuItem.Text = "Truncate Movie";
 			this.TruncateContextMenuItem.Click += new System.EventHandler(this.TruncateMenuItem_Click);
 			// 
-			// toolStripSeparator19
-			// 
-			this.toolStripSeparator19.Name = "toolStripSeparator19";
-			this.toolStripSeparator19.Size = new System.Drawing.Size(149, 6);
-			// 
 			// TAStudio
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1004,7 +995,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
 		private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SetMaxUndoLevelsMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AutofirePatternSkipsLagMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AutoadjustInputMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
 		private System.Windows.Forms.ToolStripMenuItem DrawInputByDraggingMenuItem;

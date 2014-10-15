@@ -319,7 +319,15 @@ namespace BizHawk.Client.EmuHawk
 				TasView.CurrentCell.Column.Name == FrameColumnName &&
 				e.Button == MouseButtons.Left)
 			{
-				CallAddMarkerPopUp(TasView.CurrentCell.RowIndex.Value);
+				if (Global.Config.TAStudioEmptyMarkers)
+				{
+					_currentTasMovie.Markers.Add(TasView.CurrentCell.RowIndex.Value, string.Empty);
+					RefreshDialog();
+				}
+				else
+				{
+					CallAddMarkerPopUp(TasView.CurrentCell.RowIndex.Value);
+				}
 			}
 		}
 
