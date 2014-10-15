@@ -546,7 +546,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Name = "RotateMenuItem",
 				Text = "Rotate",
-				ShortcutKeyDisplayString = "Ctrl+Shift+F",
+				ShortcutKeyDisplayString = RotateHotkeyStr,
 			};
 
 			rotate.Click += (o, ev) =>
@@ -555,6 +555,11 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			yield return rotate;
+		}
+
+		public string RotateHotkeyStr
+		{
+			get { return "Ctrl+Shift+F";  }
 		}
 
 		#endregion

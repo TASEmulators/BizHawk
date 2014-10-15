@@ -86,6 +86,8 @@ namespace BizHawk.Client.EmuHawk
 			this.OsdInBranchScreenshotsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
 			this.AutopauseAtEndOfMovieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator20 = new System.Windows.Forms.ToolStripSeparator();
+			this.RotateMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MetaSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.HeaderMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GreenzoneSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -478,7 +480,9 @@ namespace BizHawk.Client.EmuHawk
             this.BranchesRestoreEntireMovieMenuItem,
             this.OsdInBranchScreenshotsMenuItem,
             this.toolStripSeparator14,
-            this.AutopauseAtEndOfMovieMenuItem});
+            this.AutopauseAtEndOfMovieMenuItem,
+            this.toolStripSeparator20,
+            this.RotateMenuItem});
 			this.ConfigSubMenu.Name = "ConfigSubMenu";
 			this.ConfigSubMenu.Size = new System.Drawing.Size(55, 20);
 			this.ConfigSubMenu.Text = "&Config";
@@ -578,6 +582,18 @@ namespace BizHawk.Client.EmuHawk
 			this.AutopauseAtEndOfMovieMenuItem.Size = new System.Drawing.Size(288, 22);
 			this.AutopauseAtEndOfMovieMenuItem.Text = "Autopause at end of Movie";
 			this.AutopauseAtEndOfMovieMenuItem.Click += new System.EventHandler(this.AutopauseAtEndMenuItem_Click);
+			// 
+			// toolStripSeparator20
+			// 
+			this.toolStripSeparator20.Name = "toolStripSeparator20";
+			this.toolStripSeparator20.Size = new System.Drawing.Size(285, 6);
+			// 
+			// RotateMenuItem
+			// 
+			this.RotateMenuItem.Name = "RotateMenuItem";
+			this.RotateMenuItem.Size = new System.Drawing.Size(288, 22);
+			this.RotateMenuItem.Text = "Rotate";
+			this.RotateMenuItem.Click += new System.EventHandler(this.RotateMenuItem_Click);
 			// 
 			// MetaSubMenu
 			// 
@@ -1046,5 +1062,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem GreenZzoneIntegrityCheckMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ColumnsSubMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator19;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator20;
+		private System.Windows.Forms.ToolStripMenuItem RotateMenuItem;
 	}
 }

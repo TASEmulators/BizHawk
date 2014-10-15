@@ -975,6 +975,8 @@ namespace BizHawk.Client.EmuHawk
 			DrawInputByDraggingMenuItem.Checked = Global.Config.TAStudioDrawInput;
 			AutopauseAtEndOfMovieMenuItem.Checked = Global.Config.TAStudioAutoPause;
 			EmptyNewMarkerNotesMenuItem.Checked = Global.Config.TAStudioEmptyMarkers;
+
+			RotateMenuItem.ShortcutKeyDisplayString = TasView.RotateHotkeyStr;
 		}
 
 		private void DrawInputByDraggingMenuItem_Click(object sender, EventArgs e)
@@ -992,6 +994,11 @@ namespace BizHawk.Client.EmuHawk
 		private void AutopauseAtEndMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.TAStudioAutoPause ^= true;
+		}
+
+		private void RotateMenuItem_Click(object sender, EventArgs e)
+		{
+			TasView.HorizontalOrientation ^= true;
 		}
 
 		#endregion
