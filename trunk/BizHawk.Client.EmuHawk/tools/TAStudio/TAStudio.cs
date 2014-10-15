@@ -1172,6 +1172,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RightClickMenu_Opened(object sender, EventArgs e)
 		{
+			SetMarkersContextMenuItem.Enabled =
+				SelectBetweenMarkersContextMenuItem.Enabled =
+				RemoveMarkersContextMenuItem.Enabled =
+				DeselectContextMenuItem.Enabled =
+				ClearContextMenuItem.Enabled =
+				DeleteFramesContextMenuItem.Enabled =
+				CloneContextMenuItem.Enabled =
+				InsertFrameContextMenuItem.Enabled =
+				InsertNumFramesContextMenuItem.Enabled =
+				TruncateContextMenuItem.Enabled =
+				TasView.SelectedRows.Any();
+
 			RemoveMarkersContextMenuItem.Enabled = _currentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
 		}
 
