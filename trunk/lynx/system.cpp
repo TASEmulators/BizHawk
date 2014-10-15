@@ -171,7 +171,7 @@ bool CSystem::Advance(int buttons, uint32 *vbuff, int16 *sbuff, int &sbuffsize)
 	// audio start frame
 	mMikie->startTS = start;
 
-	mMikie->mpDisplayCurrent = vbuff;
+	videobuffer = vbuff;
 
 	while (gSystemCycleCount < target)
 	//while (mMikie->mpDisplayCurrent && gSystemCycleCount - start < 800000)
@@ -186,6 +186,89 @@ bool CSystem::Advance(int buttons, uint32 *vbuff, int16 *sbuff, int &sbuffsize)
 	sbuffsize = mMikie->mikbuf.read_samples(sbuff, sbuffsize);
 
 	return mSusie->lagged;
+}
+
+void CSystem::Blit(const uint32 *src)
+{
+	if (!videobuffer)
+	{
+		// a game shouldn't be able to get two frames in in the length of time we traverse in a single
+		// call to advance.  what is going on here?
+		return;
+	}
+
+	const int W = 160;
+	const int H = 102;
+
+	switch (rotate)
+	{
+	case 0:
+		std::memcpy(videobuffer, src, sizeof(uint32) * W * H);
+		break;
+	case 1:
+		{
+			uint32 *dest = videobuffer + H * (W - 1);
+			for (int j = 0; j < H; j++)
+			{
+				for (int i = 0; i < W; i++)
+				{
+					*dest = *src++;
+					dest -= H;
+				}
+				dest += H * W + 1;
+			}
+		}
+		break;
+	case 2:
+		{
+			uint32 *dest = videobuffer + H * W - 1;
+			for (int i = 0; i < W * H; i++)
+			{
+				*dest-- = *src++;
+			}
+		}
+		break;
+	case 3:
+		{
+			uint32 *dest = videobuffer + H - 1;
+			for (int j = 0; j < H; j++)
+			{
+				for (int i = 0; i < W; i++)
+				{
+					*dest = *src++;
+					dest += H;
+				}
+				dest -= H * W + 1;
+			}
+		}
+		break;
+	}
+
+	videobuffer = nullptr;
+}
+
+void CSystem::SetButtonData(uint32 data)
+{
+	// bit:  7654
+	// input DURL
+	// rot=1 RLUD
+	// rot=2 UDLR
+	// rot=3 LRDU
+
+	uint32 newdata;
+	switch (rotate)
+	{
+	case 0:
+		newdata = data; break;
+	case 1:
+		newdata = data & 0xff0f | data >> 3 & 0x0010 | data >> 1 & 0x0020 | data << 2 & 0x00c0; break;
+	case 2:
+		newdata = data & 0xff0f | data >> 1 & 0x0050 | data << 1 & 0x00a0; break;
+	case 3:
+		newdata = data & 0xff0f | data >> 2 & 0x0030 | data << 1 & 0x0040 | data << 3 & 0x0080; break;
+	}
+
+	mSusie->SetButtonData(newdata);
 }
 
 SYNCFUNC(CSystem)
