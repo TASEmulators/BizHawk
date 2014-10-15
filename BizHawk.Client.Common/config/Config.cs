@@ -532,6 +532,7 @@ namespace BizHawk.Client.Common
 		public bool TAStudioAutoPause = true;
 		public bool TAStudioAutoRestoreLastPosition = false;
 		public bool TAStudioFollowCursor = true;
+		public bool TAStudioEmptyMarkers = false;
 
 		// VirtualPad Dialog
 		public ToolDialogSettings VirtualPadSettings = new ToolDialogSettings();
