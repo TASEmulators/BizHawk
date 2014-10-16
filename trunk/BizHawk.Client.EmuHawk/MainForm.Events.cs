@@ -925,6 +925,10 @@ namespace BizHawk.Client.EmuHawk
 			if (new ProfileConfig().ShowDialog() == DialogResult.OK)
 			{
 				GlobalWin.OSD.AddMessage("Profile settings saved");
+				//We hide the FirstBoot items since the user setup a Profile
+				//Is it a bad thing to do this constantly?
+				Global.Config.FirstBoot = false;
+				ProfileFirstBootLabel.Visible = false;
 			}
 			else
 			{
