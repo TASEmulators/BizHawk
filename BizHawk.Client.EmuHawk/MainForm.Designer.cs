@@ -1417,7 +1417,7 @@
 			// 
 			// ProfilesMenuItem
 			// 
-			this.ProfilesMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.user_blue;
+			this.ProfilesMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.user_blue_small;
 			this.ProfilesMenuItem.Name = "ProfilesMenuItem";
 			this.ProfilesMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.ProfilesMenuItem.Text = "&Profiles...";
@@ -2879,7 +2879,7 @@
 			// 
 			this.ProfileFirstBootLabel.AutoToolTip = true;
 			this.ProfileFirstBootLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.ProfileFirstBootLabel.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.user_blue;
+			this.ProfileFirstBootLabel.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.user_blue_small;
 			this.ProfileFirstBootLabel.Name = "ProfileFirstBootLabel";
 			this.ProfileFirstBootLabel.Size = new System.Drawing.Size(16, 17);
 			this.ProfileFirstBootLabel.Text = "ProfileFirstBootLabel";
