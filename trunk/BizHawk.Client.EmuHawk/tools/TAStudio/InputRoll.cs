@@ -651,6 +651,7 @@ namespace BizHawk.Client.EmuHawk
 			var columns = _columns.VisibleColumns.ToList();
 			if (QueryItemText != null)
 			{
+				// TODO: icon callback for horizontal view!
 				if (HorizontalOrientation)
 				{
 					int startIndex = FirstVisibleRow;
@@ -668,9 +669,23 @@ namespace BizHawk.Client.EmuHawk
 							int x = RowsToPixels(i) + (CellWidth - text.Length * _charSize.Width) / 2;
 							int y = (j * CellHeight) + CellHeightPadding;
 							var point = new Point(x, y);
+
+							bool rePrep = false;
+							if (SelectedItems.Contains(new Cell { Column = columns[j], RowIndex = i }))
+							{
+								Gdi.PrepDrawString(this.Font, SystemColors.HighlightText);
+								rePrep = true;
+							}
+
+
 							if (!string.IsNullOrWhiteSpace(text))
 							{
 								Gdi.DrawString(text, point);
+							}
+
+							if (rePrep)
+							{
+								Gdi.PrepDrawString(this.Font, this.ForeColor);
 							}
 						}
 					}
@@ -707,9 +722,22 @@ namespace BizHawk.Client.EmuHawk
 							else
 							{
 								QueryItemText(i + startRow, columns[j], out text);
+
+								bool rePrep = false;
+								if (SelectedItems.Contains(new Cell { Column = columns[j], RowIndex = i }))
+								{
+									Gdi.PrepDrawString(this.Font, SystemColors.HighlightText);
+									rePrep = true;
+								}
+
 								if (!string.IsNullOrWhiteSpace(text))
 								{
 									Gdi.DrawString(text, point);
+								}
+
+								if (rePrep)
+								{
+									Gdi.PrepDrawString(this.Font, this.ForeColor);
 								}
 							}
 						}
