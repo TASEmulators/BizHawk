@@ -1,6 +1,6 @@
 static class VersionInfo
 {
-	public const string MAINVERSION = "1.7.0";
+	public const string MAINVERSION = "1.8.4";
 	public static string RELEASEDATE = "Unoffical BETA of unknown origin!";
 	public static bool DeveloperBuild = true;
 
