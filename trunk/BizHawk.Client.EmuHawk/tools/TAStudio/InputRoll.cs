@@ -688,7 +688,7 @@ namespace BizHawk.Client.EmuHawk
 								var point = new Point(x, y);
 
 								bool rePrep = false;
-								if (SelectedItems.Contains(new Cell { Column = columns[j], RowIndex = i }))
+								if (SelectedItems.Contains(new Cell { Column = columns[j], RowIndex = i + startRow }))
 								{
 									Gdi.PrepDrawString(this.Font, SystemColors.HighlightText);
 									rePrep = true;
@@ -742,7 +742,7 @@ namespace BizHawk.Client.EmuHawk
 								QueryItemText(i + startRow, columns[j], out text);
 
 								bool rePrep = false;
-								if (SelectedItems.Contains(new Cell { Column = columns[j], RowIndex = i }))
+								if (SelectedItems.Contains(new Cell { Column = columns[j], RowIndex = i + startRow }))
 								{
 									Gdi.PrepDrawString(this.Font, SystemColors.HighlightText);
 									rePrep = true;
