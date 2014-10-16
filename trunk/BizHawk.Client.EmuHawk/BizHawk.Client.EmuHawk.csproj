@@ -1479,6 +1479,8 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\user_blue_small.png" />
+    <None Include="images\user_blue.ico" />
     <None Include="images\tastudio\ts_v_piano_19_green_blue.png" />
     <None Include="images\tastudio\ts_v_piano_19_green.png" />
     <None Include="images\tastudio\ts_v_piano_19_blue.png" />
