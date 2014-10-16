@@ -2236,23 +2236,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ProfileFirstBootLabel_Click(object sender, EventArgs e)
 		{
-			//We should make sure the user actually picked a Profile.
-			if (new ProfileConfig().ShowDialog() == DialogResult.OK)
-			{
-				GlobalWin.OSD.AddMessage("Profile settings saved");
-				//We hide the FirstBoot items since the user setup a Profile
-				//Is it a bad thing to do this constantly?
-				Global.Config.FirstBoot = false;
-				ProfileFirstBootLabel.Visible = false;
-			}
-			else
-			{
-				GlobalWin.OSD.AddMessage("Profile config aborted");
-			}
-			//var profileForm = new ProfileConfig();
-			//profileForm.ShowDialog();
-			//Global.Config.FirstBoot = false;
-			//ProfileFirstBootLabel.Visible = false;
+			//We do not check if the user is actually setting a profile here.
+			//This is intentional.
+			var profileForm = new ProfileConfig();
+			profileForm.ShowDialog();
+			Global.Config.FirstBoot = false;
+			ProfileFirstBootLabel.Visible = false;
 		}
 
 		#endregion
