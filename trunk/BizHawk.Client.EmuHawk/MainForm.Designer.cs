@@ -287,6 +287,7 @@
 			this.toolStripSeparator23 = new System.Windows.Forms.ToolStripSeparator();
 			this.N64CircularAnalogRangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MupenStyleLagMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.N64ExpansionSlotMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaturnSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaturnPreferencesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DGBSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -372,7 +373,6 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.N64ExpansionSlotMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -1417,6 +1417,7 @@
 			// 
 			// ProfilesMenuItem
 			// 
+			this.ProfilesMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.user_blue;
 			this.ProfilesMenuItem.Name = "ProfilesMenuItem";
 			this.ProfilesMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.ProfilesMenuItem.Text = "&Profiles...";
@@ -2549,6 +2550,13 @@
 			this.MupenStyleLagMenuItem.Text = "&Non-VI Lag Frames";
 			this.MupenStyleLagMenuItem.Click += new System.EventHandler(this.MupenStyleLagMenuItem_Click);
 			// 
+			// N64ExpansionSlotMenuItem
+			// 
+			this.N64ExpansionSlotMenuItem.Name = "N64ExpansionSlotMenuItem";
+			this.N64ExpansionSlotMenuItem.Size = new System.Drawing.Size(192, 22);
+			this.N64ExpansionSlotMenuItem.Text = "&Use Expansion Slot";
+			this.N64ExpansionSlotMenuItem.Click += new System.EventHandler(this.N64ExpansionSlotMenuItem_Click);
+			// 
 			// SaturnSubMenu
 			// 
 			this.SaturnSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -3271,13 +3279,6 @@
 			this.ShowMenuContextMenuItem.Size = new System.Drawing.Size(216, 22);
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
-			// 
-			// N64ExpansionSlotMenuItem
-			// 
-			this.N64ExpansionSlotMenuItem.Name = "N64ExpansionSlotMenuItem";
-			this.N64ExpansionSlotMenuItem.Size = new System.Drawing.Size(192, 22);
-			this.N64ExpansionSlotMenuItem.Text = "&Use Expansion Slot";
-			this.N64ExpansionSlotMenuItem.Click += new System.EventHandler(this.N64ExpansionSlotMenuItem_Click);
 			// 
 			// MainForm
 			// 
