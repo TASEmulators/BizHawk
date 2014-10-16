@@ -651,41 +651,59 @@ namespace BizHawk.Client.EmuHawk
 			var columns = _columns.VisibleColumns.ToList();
 			if (QueryItemText != null)
 			{
-				// TODO: icon callback for horizontal view!
 				if (HorizontalOrientation)
 				{
-					int startIndex = FirstVisibleRow;
-					int range = Math.Min(LastVisibleRow, RowCount - 1) - startIndex + 1;
+					int startRow = FirstVisibleRow;
+					int range = Math.Min(LastVisibleRow, RowCount - 1) - startRow + 1;
 
 					Gdi.PrepDrawString(this.Font, this.ForeColor);
 					for (int i = 0; i < range; i++)
 					{
 						for (int j = 0; j < columns.Count; j++)
 						{
-							string text;
-							QueryItemText(i + startIndex, columns[j], out text);
+							Bitmap image = null;
+							int x = 0;
+							int y = 0;
 
-							// Center Text
-							int x = RowsToPixels(i) + (CellWidth - text.Length * _charSize.Width) / 2;
-							int y = (j * CellHeight) + CellHeightPadding;
-							var point = new Point(x, y);
-
-							bool rePrep = false;
-							if (SelectedItems.Contains(new Cell { Column = columns[j], RowIndex = i }))
+							if (QueryItemIcon != null)
 							{
-								Gdi.PrepDrawString(this.Font, SystemColors.HighlightText);
-								rePrep = true;
+								x = RowsToPixels(i) + CellWidthPadding;
+								y = (j * CellHeight) + (CellHeightPadding * 2);
+
+								QueryItemIcon(i + startRow, columns[j], ref image);
 							}
 
-
-							if (!string.IsNullOrWhiteSpace(text))
+							if (image != null)
 							{
-								Gdi.DrawString(text, point);
+								Gdi.DrawBitmap(image, new Point(x, y), true);
 							}
-
-							if (rePrep)
+							else
 							{
-								Gdi.PrepDrawString(this.Font, this.ForeColor);
+								string text;
+								QueryItemText(i + startRow, columns[j], out text);
+
+								// Center Text
+								x = RowsToPixels(i) + (CellWidth - text.Length * _charSize.Width) / 2;
+								y = (j * CellHeight) + CellHeightPadding;
+								var point = new Point(x, y);
+
+								bool rePrep = false;
+								if (SelectedItems.Contains(new Cell { Column = columns[j], RowIndex = i }))
+								{
+									Gdi.PrepDrawString(this.Font, SystemColors.HighlightText);
+									rePrep = true;
+								}
+
+
+								if (!string.IsNullOrWhiteSpace(text))
+								{
+									Gdi.DrawString(text, point);
+								}
+
+								if (rePrep)
+								{
+									Gdi.PrepDrawString(this.Font, this.ForeColor);
+								}
 							}
 						}
 					}
