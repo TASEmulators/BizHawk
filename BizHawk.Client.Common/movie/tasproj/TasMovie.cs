@@ -256,22 +256,10 @@ namespace BizHawk.Client.Common
 		}
 
 		// TODO: try not to need this, or at least use GetInputState and then a log entry generator
-		// TODO: this is being called in Clone and probably other places, and that's bad, they are capturing the current frame for other frames!
 		public string GetInputLogEntry(int frame)
 		{
-			if (Global.Emulator.Frame == frame && !StateManager.HasState(frame))
-			{
-				StateManager.Capture();
-			}
-
-			if (Global.Emulator.Frame == frame && frame >= LagLog.Count)
-			{
-				LagLog.Add(Global.Emulator.IsLagFrame);
-			}
-
 			if (frame < FrameCount && frame >= 0)
 			{
-
 				int getframe;
 
 				if (LoopOffset.HasValue)
