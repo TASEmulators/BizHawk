@@ -13,9 +13,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class GreenzoneSettingsForm : Form
 	{
-		private readonly TasStateManager.ManagerSettings Settings;
+		private readonly TasStateManagerSettings Settings;
 		private decimal _stateSizeMb;
-		public GreenzoneSettingsForm(TasStateManager.ManagerSettings settings)
+		public GreenzoneSettingsForm(TasStateManagerSettings settings)
 		{
 			Settings = settings;
 			InitializeComponent();

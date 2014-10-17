@@ -177,6 +177,7 @@
     <Compile Include="movie\tasproj\TasMovieMarker.cs" />
     <Compile Include="movie\tasproj\TasStateManager.cs" />
     <Compile Include="movie\tasproj\TasMovieRecord.cs" />
+    <Compile Include="movie\tasproj\TasStateManagerSettings.cs" />
     <Compile Include="NESGameGenieEncoderDecoder.cs" />
     <Compile Include="PathManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
