@@ -119,9 +119,9 @@ namespace BizHawk.Client.EmuHawk
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(13, 50);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(103, 13);
+			this.label2.Size = new System.Drawing.Size(99, 13);
 			this.label2.TabIndex = 5;
-			this.label2.Text = "Greenzone Capacity";
+			this.label2.Text = "Savestate Capacity";
 			// 
 			// label3
 			// 
@@ -159,7 +159,7 @@ namespace BizHawk.Client.EmuHawk
 			this.NumStatesLabel.TabIndex = 9;
 			this.NumStatesLabel.Text = "1kb";
 			// 
-			// GreenzoneSettings
+			// GreenzoneSettingsForm
 			// 
 			this.AcceptButton = this.OkBtn;
 			this.CancelButton = this.CancelBtn;
@@ -176,7 +176,7 @@ namespace BizHawk.Client.EmuHawk
 			this.Controls.Add(this.CancelBtn);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MinimumSize = new System.Drawing.Size(225, 165);
-			this.Name = "GreenzoneSettings";
+			this.Name = "GreenzoneSettingsForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Greenzone Settings";
 			this.Load += new System.EventHandler(this.GreenzoneSettings_Load);
