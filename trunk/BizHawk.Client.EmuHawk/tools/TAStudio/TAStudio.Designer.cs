@@ -69,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TruncateMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ClearGreenzoneMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GreenzoneICheckSeparator = new System.Windows.Forms.ToolStripSeparator();
-			this.GreenZzoneIntegrityCheckMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.GreenZoneIntegrityCheckMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ConfigSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SetMaxUndoLevelsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
@@ -268,7 +268,7 @@ namespace BizHawk.Client.EmuHawk
             this.TruncateMenuItem,
             this.ClearGreenzoneMenuItem,
             this.GreenzoneICheckSeparator,
-            this.GreenZzoneIntegrityCheckMenuItem});
+            this.GreenZoneIntegrityCheckMenuItem});
 			this.EditSubMenu.Name = "EditSubMenu";
 			this.EditSubMenu.Size = new System.Drawing.Size(39, 20);
 			this.EditSubMenu.Text = "&Edit";
@@ -456,12 +456,12 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// GreenZzoneIntegrityCheckMenuItem
 			// 
-			this.GreenZzoneIntegrityCheckMenuItem.Name = "GreenZzoneIntegrityCheckMenuItem";
-			this.GreenZzoneIntegrityCheckMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+			this.GreenZoneIntegrityCheckMenuItem.Name = "GreenZzoneIntegrityCheckMenuItem";
+			this.GreenZoneIntegrityCheckMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.I)));
-			this.GreenZzoneIntegrityCheckMenuItem.Size = new System.Drawing.Size(282, 22);
-			this.GreenZzoneIntegrityCheckMenuItem.Text = "Greenzone Integrity Check";
-			this.GreenZzoneIntegrityCheckMenuItem.Click += new System.EventHandler(this.GreenZzoneIntegrityCheckMenuItem_Click);
+			this.GreenZoneIntegrityCheckMenuItem.Size = new System.Drawing.Size(282, 22);
+			this.GreenZoneIntegrityCheckMenuItem.Text = "Greenzone Integrity Check";
+			this.GreenZoneIntegrityCheckMenuItem.Click += new System.EventHandler(this.GreenZzoneIntegrityCheckMenuItem_Click);
 			// 
 			// ConfigSubMenu
 			// 
@@ -1059,7 +1059,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem TruncateContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ClearGreenzoneMenuItem;
 		private System.Windows.Forms.ToolStripSeparator GreenzoneICheckSeparator;
-		private System.Windows.Forms.ToolStripMenuItem GreenZzoneIntegrityCheckMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem GreenZoneIntegrityCheckMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ColumnsSubMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator19;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator20;

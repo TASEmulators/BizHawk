@@ -130,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 				_currentTasMovie != null && _currentTasMovie.TasStateManager.Any();
 
 			GreenzoneICheckSeparator.Visible =
-				GreenZzoneIntegrityCheckMenuItem.Visible =
+				GreenZoneIntegrityCheckMenuItem.Visible =
 				VersionInfo.DeveloperBuild;
 		}
 
@@ -180,17 +180,16 @@ namespace BizHawk.Client.EmuHawk
 				var list = TasView.SelectedRows.ToList();
 				var sb = new StringBuilder();
 
-				for (var i = 0; i < list.Count; i++)
+				foreach (var index in list)
 				{
-					var input = _currentTasMovie.GetInputState(list[i]);
-					_tasClipboard.Add(new TasClipboardEntry(list[i], input));
+					var input = _currentTasMovie.GetInputState(index);
+					_tasClipboard.Add(new TasClipboardEntry(index, input));
 					var lg = _currentTasMovie.LogGeneratorInstance();
 					lg.SetSource(input);
 					sb.AppendLine(lg.GenerateLogEntry());
 				}
 
 				Clipboard.SetDataObject(sb.ToString());
-
 				SetSplicer();
 			}
 		}
@@ -323,12 +322,10 @@ namespace BizHawk.Client.EmuHawk
 				var framesToInsert = TasView.SelectedRows.ToList();
 				var insertionFrame = TasView.LastSelectedIndex.Value + 1;
 				var needsToRollback = !(insertionFrame > Global.Emulator.Frame);
-				var inputLog = new List<string>();
 
-				foreach (var frame in framesToInsert)
-				{
-					inputLog.Add(_currentTasMovie.GetInputLogEntry(frame));
-				}
+				var inputLog = framesToInsert
+					.Select(frame => _currentTasMovie.GetInputLogEntry(frame))
+					.ToList();
 
 				_currentTasMovie.InsertInput(insertionFrame, inputLog);
 
@@ -346,7 +343,7 @@ namespace BizHawk.Client.EmuHawk
 		private void InsertFrameMenuItem_Click(object sender, EventArgs e)
 		{
 			var insertionFrame = TasView.SelectedRows.Any() ? TasView.FirstSelectedIndex.Value : 0;
-			bool needsToRollback = insertionFrame <= Global.Emulator.Frame;
+			var needsToRollback = insertionFrame <= Global.Emulator.Frame;
 
 			_currentTasMovie.InsertEmptyFrame(insertionFrame);
 
@@ -363,7 +360,7 @@ namespace BizHawk.Client.EmuHawk
 		private void InsertNumFramesMenuItem_Click(object sender, EventArgs e)
 		{
 			var insertionFrame = TasView.SelectedRows.Any() ? TasView.FirstSelectedIndex.Value : 0;
-			bool needsToRollback = insertionFrame <= Global.Emulator.Frame;
+			var needsToRollback = insertionFrame <= Global.Emulator.Frame;
 
 			var framesPrompt = new FramesPrompt();
 			var result = framesPrompt.ShowDialog();
@@ -404,7 +401,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetMarkersMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach (int index in TasView.SelectedRows)
+			foreach (var index in TasView.SelectedRows)
 			{
 				CallAddMarkerPopUp(index);
 			}
@@ -425,7 +422,6 @@ namespace BizHawk.Client.EmuHawk
 		private void GreenZzoneIntegrityCheckMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.MainForm.RebootCore();
-
 			GlobalWin.MainForm.FrameAdvance();
 			var frame = Global.Emulator.Frame;
 

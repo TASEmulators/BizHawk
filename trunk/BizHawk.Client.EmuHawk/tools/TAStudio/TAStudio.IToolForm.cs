@@ -5,9 +5,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio : IToolForm
 	{
-		public bool UpdateBefore { get { return false; } }
+		private bool _hackyDontUpdate;
 
-		private bool _hackyDontUpdate = false;
+		public bool UpdateBefore { get { return false; } }
 
 		public void UpdateValues()
 		{
@@ -56,7 +56,6 @@ namespace BizHawk.Client.EmuHawk
 				RefreshDialog();
 			}
 		}
-
 
 		public bool AskSaveChanges()
 		{

@@ -82,13 +82,8 @@ namespace BizHawk.Client.EmuHawk
 				// TODO: get the last greenzone frame and go there
 				_currentTasMovie.SwitchToPlay();
 
-
-				var shouldLoadstate = true;
-				// Some situations it is silly to load a state
-				if (frame - Global.Emulator.Frame == 1)
-				{
-					shouldLoadstate = false;
-				}
+				// no reason to loadstate when we can emulate a frame instead
+				var shouldLoadstate = frame - Global.Emulator.Frame != 1;
 
 				if (_currentTasMovie.TasStateManager.LastEmulatedFrame > 0 && shouldLoadstate)
 				{
