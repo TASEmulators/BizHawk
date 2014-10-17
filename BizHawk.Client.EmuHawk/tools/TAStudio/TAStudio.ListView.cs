@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -17,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		private float _floatPaintState;
 		private bool _startMarkerDrag;
 		private bool _startFrameDrag;
-		private bool _supressContextMenu = false;
+		private bool _supressContextMenu;
 
 		public static Color CurrentFrame_FrameCol = Color.FromArgb(0xCFEDFC);
 		public static Color CurrentFrame_InputLog = Color.FromArgb(0xB5E7F7);
@@ -44,36 +43,21 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (index == Global.Emulator.Frame && index == GlobalWin.MainForm.PauseOnFrame)
 				{
-					if (TasView.HorizontalOrientation)
-					{
-						bitmap = Properties.Resources.ts_v_arrow_green_blue;
-					}
-					else
-					{
-						bitmap = Properties.Resources.ts_h_arrow_green_blue;
-					}
+					bitmap = TasView.HorizontalOrientation ?
+						Properties.Resources.ts_v_arrow_green_blue :
+						Properties.Resources.ts_h_arrow_green_blue;
 				}
 				else if (index == Global.Emulator.Frame)
 				{
-					if (TasView.HorizontalOrientation)
-					{
-						bitmap = Properties.Resources.ts_v_arrow_blue;
-					}
-					else
-					{
-						bitmap = Properties.Resources.ts_h_arrow_blue;
-					}
+					bitmap = TasView.HorizontalOrientation ?
+						Properties.Resources.ts_v_arrow_blue :
+						Properties.Resources.ts_h_arrow_blue;
 				}
 				else if (index == GlobalWin.MainForm.PauseOnFrame)
 				{
-					if (TasView.HorizontalOrientation)
-					{
-						bitmap = Properties.Resources.ts_v_arrow_green;
-					}
-					else
-					{
-						bitmap = Properties.Resources.ts_h_arrow_green;
-					}
+					bitmap = TasView.HorizontalOrientation ?
+						Properties.Resources.ts_v_arrow_green :
+						Properties.Resources.ts_h_arrow_green;
 				}
 			}
 		}
@@ -105,14 +89,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (record.Lagged.HasValue)
 				{
-					if (record.Lagged.Value)
-					{
-						color = LagZone_FrameCol;
-					}
-					else
-					{
-						color = GreenZone_FrameCol;
-					}
+					color = record.Lagged.Value ?
+						LagZone_FrameCol :
+						GreenZone_FrameCol;
 				}
 				else
 				{
@@ -129,15 +108,9 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (record.Lagged.HasValue)
 					{
-						if (record.Lagged.Value)
-						{
-							color = LagZone_InputLog;
-							
-						}
-						else
-						{
-							color = GreenZone_InputLog;
-						}
+						color = record.Lagged.Value ?
+							LagZone_InputLog :
+							GreenZone_InputLog;
 					}
 					else
 					{
