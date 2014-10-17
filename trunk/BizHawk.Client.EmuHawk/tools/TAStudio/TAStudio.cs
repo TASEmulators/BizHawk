@@ -411,10 +411,6 @@ namespace BizHawk.Client.EmuHawk
 			_currentTasMovie.ClearChanges();
 		}
 
-		#region Events
-
-		
-
 		#region Dialog Events
 
 		private void Tastudio_Load(object sender, EventArgs e)
@@ -513,8 +509,6 @@ namespace BizHawk.Client.EmuHawk
 
 			RemoveMarkersContextMenuItem.Enabled = _currentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
 		}
-
-		#endregion
 
 		#endregion
 	}
