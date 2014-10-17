@@ -207,6 +207,7 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
+					DoAutoRestore();
 				}
 				else
 				{
@@ -226,6 +227,7 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
+					DoAutoRestore();
 				}
 				else
 				{
@@ -261,6 +263,7 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
+					DoAutoRestore();
 				}
 				else
 				{
@@ -284,6 +287,7 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
+					DoAutoRestore();
 				}
 				else
 				{
@@ -307,6 +311,7 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
+					DoAutoRestore();
 				}
 				else
 				{
@@ -332,6 +337,7 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(insertionFrame);
+					DoAutoRestore();
 				}
 				else
 				{
@@ -350,6 +356,7 @@ namespace BizHawk.Client.EmuHawk
 			if (needsToRollback)
 			{
 				GoToLastEmulatedFrameIfNecessary(insertionFrame);
+				DoAutoRestore();
 			}
 			else
 			{
@@ -372,6 +379,7 @@ namespace BizHawk.Client.EmuHawk
 			if (needsToRollback)
 			{
 				GoToLastEmulatedFrameIfNecessary(insertionFrame);
+				DoAutoRestore();
 			}
 			else
 			{
