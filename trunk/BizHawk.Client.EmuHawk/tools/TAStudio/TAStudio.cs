@@ -32,6 +32,8 @@ namespace BizHawk.Client.EmuHawk
 			return (lg as Bk2LogEntryGenerator).Map();
 		}
 
+		private int? _autoRestoreFrame; // The frame auto-restore will restore to, if set
+
 		public TAStudio()
 		{
 			InitializeComponent();
@@ -212,16 +214,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DoAutoRestore(int restoreFrame)
+		private void DoAutoRestore()
 		{
-			if (Global.Config.TAStudioAutoRestoreLastPosition)
+			if (Global.Config.TAStudioAutoRestoreLastPosition && _autoRestoreFrame.HasValue)
 			{
-				if (restoreFrame > Global.Emulator.Frame) // Don't unpause if we are already on the desired frame, else runaway seek
+				if (_autoRestoreFrame > Global.Emulator.Frame) // Don't unpause if we are already on the desired frame, else runaway seek
 				{
 					GlobalWin.MainForm.UnpauseEmulator();
-					GlobalWin.MainForm.PauseOnFrame = restoreFrame;
+					GlobalWin.MainForm.PauseOnFrame = _autoRestoreFrame;
 				}
 			}
+
+			_autoRestoreFrame = null;
 		}
 
 		private void SetUpColumns()

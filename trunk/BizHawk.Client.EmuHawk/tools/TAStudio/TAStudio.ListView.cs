@@ -18,6 +18,9 @@ namespace BizHawk.Client.EmuHawk
 		private bool _startFrameDrag;
 		private bool _supressContextMenu;
 
+		private bool _triggerAutoRestore; // If true, autorestore will be called on mouse up
+		private int? _triggerAutoRestoreFromFrame; // If set and _triggerAutoRestore is true, will clal GoToFrameIfNecessary() with this value
+
 		public static Color CurrentFrame_FrameCol = Color.FromArgb(0xCFEDFC);
 		public static Color CurrentFrame_InputLog = Color.FromArgb(0xB5E7F7);
 
@@ -177,7 +180,8 @@ namespace BizHawk.Client.EmuHawk
 					foreach (var index in TasView.SelectedRows)
 					{
 						ToggleBoolState(index, columnName);
-						GoToLastEmulatedFrameIfNecessary(TasView.SelectedRows.Min());
+						_triggerAutoRestore = true;
+						_triggerAutoRestoreFromFrame = TasView.SelectedRows.Min();
 					}
 
 					RefreshDialog();
@@ -228,7 +232,8 @@ namespace BizHawk.Client.EmuHawk
 						if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
 						{
 							ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
-							GoToLastEmulatedFrameIfNecessary(TasView.CurrentCell.RowIndex.Value);
+							_triggerAutoRestore = true;
+							_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 							RefreshDialog();
 
 							_startBoolDrawColumn = buttonName;
@@ -269,6 +274,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_supressContextMenu = false;
+
+			if (_triggerAutoRestore)
+			{
+				GoToLastEmulatedFrameIfNecessary(_triggerAutoRestoreFromFrame.Value);
+				DoAutoRestore();
+
+				_triggerAutoRestore = false;
+				_triggerAutoRestoreFromFrame = null;
+			}
 		}
 
 		private void TasView_MouseWheel(object sender, MouseEventArgs e)
@@ -357,7 +371,8 @@ namespace BizHawk.Client.EmuHawk
 					for (var i = startVal; i < endVal; i++)
 					{
 						SetBoolState(i, _startBoolDrawColumn, _boolPaintState); // Notice it uses new row, old column, you can only paint across a single column
-						GoToLastEmulatedFrameIfNecessary(TasView.CurrentCell.RowIndex.Value);
+						_triggerAutoRestore = true;
+						_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 					}
 
 					TasView.Refresh();
@@ -372,7 +387,8 @@ namespace BizHawk.Client.EmuHawk
 						if (i < _currentTasMovie.InputLogLength) // TODO: how do we really want to handle the user setting the float state of the pending frame?
 						{
 							_currentTasMovie.SetFloatState(i, _startFloatDrawColumn, _floatPaintState); // Notice it uses new row, old column, you can only paint across a single column
-							GoToLastEmulatedFrameIfNecessary(TasView.CurrentCell.RowIndex.Value);
+							_triggerAutoRestore = true;
+							_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 						}
 					}
 
