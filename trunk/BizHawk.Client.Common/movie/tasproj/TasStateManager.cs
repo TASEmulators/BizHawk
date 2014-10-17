@@ -43,7 +43,7 @@ namespace BizHawk.Client.Common
 		public TasStateManager(TasMovie movie)
 		{
 			_movie = movie;
-			Settings = new TasStateManagerSettings();
+			Settings = new TasStateManagerSettings(Global.Config.DefaultTasProjSettings);
 
 			var cap = Settings.Cap;
 
