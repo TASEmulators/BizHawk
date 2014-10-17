@@ -12,6 +12,12 @@ namespace BizHawk.Client.Common
 			Capacitymb = 512;
 		}
 
+		public TasStateManagerSettings(TasStateManagerSettings settings)
+		{
+			SaveGreenzone = settings.SaveGreenzone;
+			Capacitymb = settings.Capacitymb;
+		}
+
 		/// <summary>
 		/// Whether or not to save greenzone information to disk
 		/// </summary>
