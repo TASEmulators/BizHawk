@@ -27,23 +27,11 @@ namespace BizHawk.Client.EmuHawk
 		private int _defaultHeight;
 		private TasMovie _currentTasMovie;
 		private MovieEndAction _originalEndAction; // The movie end behavior selected by the user (that is overridden by TAStudio)
-
 		private Dictionary<string, string> GenerateColumnNames()
 		{
 			var lg = Global.MovieSession.LogGeneratorInstance();
 			lg.SetSource(Global.MovieSession.MovieControllerAdapter);
 			return (lg as Bk2LogEntryGenerator).Map();
-		}
-
-		public TasMovie CurrentMovie
-		{
-			get { return _currentTasMovie; }
-		}
-
-		private void TastudioToStopMovie()
-		{
-			Global.MovieSession.StopMovie(false);
-			GlobalWin.MainForm.SetMainformMovieInfo();
 		}
 
 		public TAStudio()
@@ -61,6 +49,17 @@ namespace BizHawk.Client.EmuHawk
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
 			TasView.MultiSelect = true;
 			TasView.MaxCharactersInHorizontal = 1;
+		}
+
+		public TasMovie CurrentMovie
+		{
+			get { return _currentTasMovie; }
+		}
+
+		private void TastudioToStopMovie()
+		{
+			Global.MovieSession.StopMovie(false);
+			GlobalWin.MainForm.SetMainformMovieInfo();
 		}
 
 		private void ConvertCurrentMovieToTasproj()
@@ -305,7 +304,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GoToFrame(marker.Frame);
 		}
-
 
 		private void StartAtNearestFrameAndEmulate(int frame)
 		{
@@ -554,6 +552,15 @@ namespace BizHawk.Client.EmuHawk
 					column.Emphasis = true;
 				}
 			}
+		}
+
+		private void NewDefaultProject()
+		{
+			NewTasMovie();
+			GlobalWin.MainForm.StartNewMovie(_currentTasMovie, record: true);
+			_currentTasMovie.TasStateManager.Capture();
+			_currentTasMovie.SwitchToRecord();
+			_currentTasMovie.ClearChanges();
 		}
 
 		#region Events
@@ -966,6 +973,28 @@ namespace BizHawk.Client.EmuHawk
 			RefreshDialog();
 		}
 
+		private void GreenZzoneIntegrityCheckMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.MainForm.RebootCore();
+
+			GlobalWin.MainForm.FrameAdvance();
+			var frame = Global.Emulator.Frame;
+
+			if (_currentTasMovie.TasStateManager.HasState(frame))
+			{
+				var state = (byte[])Global.Emulator.SaveStateBinary().Clone();
+				var greenzone = _currentTasMovie.TasStateManager[frame];
+
+				if (!state.SequenceEqual(greenzone))
+				{
+					MessageBox.Show("bad data at frame: " + frame);
+					return;
+				}
+			}
+
+			MessageBox.Show("Integrity Check passed");
+		}
+
 		#endregion
 
 		#region Config
@@ -1081,13 +1110,40 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		#region Dialog Events
+		#region Columns
 
-		protected override void OnShown(EventArgs e)
+		private void ColumnsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			RefreshFloatingWindowControl();
-			base.OnShown(e);
+			ColumnsSubMenu.DropDownItems.Clear();
+
+			var columns = TasView.AllColumns
+				.Where(x => !string.IsNullOrWhiteSpace(x.Text))
+				.Where(x => x.Name != "FrameColumn");
+
+			foreach (var column in columns)
+			{
+				var dummyColumnObject = column;
+
+				var menuItem = new ToolStripMenuItem
+				{
+					Text = column.Text,
+					Checked = column.Visible
+				};
+
+				menuItem.Click += (o, ev) =>
+				{
+					dummyColumnObject.Visible ^= true;
+					TasView.AllColumns.ColumnsChanged();
+					TasView.Refresh();
+				};
+
+				ColumnsSubMenu.DropDownItems.Add(menuItem);
+			}
 		}
+
+		#endregion
+
+		#region Dialog Events
 
 		private void Tastudio_Load(object sender, EventArgs e)
 		{
@@ -1118,14 +1174,14 @@ namespace BizHawk.Client.EmuHawk
 				var result = LoadProject(Global.Config.RecentTas.MostRecent);
 				if (!result)
 				{
-					Scenario4();
+					NewDefaultProject();
 				}
 			}
 
 			// Start Scenario 4: No movie, default behavior of engaging tastudio with a new default project
 			else
 			{
-				Scenario4();
+				NewDefaultProject();
 			}
 
 			EngageTastudio();
@@ -1139,15 +1195,6 @@ namespace BizHawk.Client.EmuHawk
 			SetColumnsFromCurrentStickies();
 			RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems().ToArray());
 			RefreshDialog();
-		}
-
-		private void Scenario4()
-		{
-			NewTasMovie();
-			GlobalWin.MainForm.StartNewMovie(_currentTasMovie, record: true);
-			_currentTasMovie.TasStateManager.Capture();
-			_currentTasMovie.SwitchToRecord();
-			_currentTasMovie.ClearChanges();
 		}
 
 		private void Tastudio_Closing(object sender, FormClosingEventArgs e)
@@ -1164,7 +1211,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		//This method is called everytime the Changes property is toggled on a TasMovie instance.
+		protected override void OnShown(EventArgs e)
+		{
+			RefreshFloatingWindowControl();
+			base.OnShown(e);
+		}
+
+		/// <summary>
+		/// This method is called everytime the Changes property is toggled on a TasMovie instance.
+		/// </summary>
 		private void TasMovie_OnPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			SetTextProperty();
@@ -1189,62 +1244,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		private void TasView_MouseEnter(object sender, EventArgs e)
-		{
-			TasView.Focus();
-		}
-
 		#endregion
-
-		private void GreenZzoneIntegrityCheckMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.MainForm.RebootCore();
-
-			GlobalWin.MainForm.FrameAdvance();
-			var frame = Global.Emulator.Frame;
-
-			if (_currentTasMovie.TasStateManager.HasState(frame))
-			{
-				var state = (byte[])Global.Emulator.SaveStateBinary().Clone();
-				var greenzone = _currentTasMovie.TasStateManager[frame];
-
-				if (!state.SequenceEqual(greenzone))
-				{
-					MessageBox.Show("bad data at frame: " + frame);
-					return;
-				}
-			}
-
-			MessageBox.Show("Integrity Check passed");
-		}
-
-		private void ColumnsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			ColumnsSubMenu.DropDownItems.Clear();
-
-			var columns = TasView.AllColumns
-				.Where(x => !string.IsNullOrWhiteSpace(x.Text))
-				.Where(x => x.Name != "FrameColumn");
-
-			foreach (var column in columns)
-			{
-				var dummyColumnObject = column;
-
-				var menuItem = new ToolStripMenuItem
-				{
-					Text = column.Text,
-					Checked = column.Visible
-				};
-
-				menuItem.Click += (o, ev) =>
-				{
-					dummyColumnObject.Visible ^= true;
-					TasView.AllColumns.ColumnsChanged();
-					TasView.Refresh();
-				};
-
-				ColumnsSubMenu.DropDownItems.Add(menuItem);
-			}
-		}
 	}
 }

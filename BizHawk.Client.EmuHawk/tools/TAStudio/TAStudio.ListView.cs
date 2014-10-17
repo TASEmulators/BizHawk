@@ -221,6 +221,11 @@ namespace BizHawk.Client.EmuHawk
 			TasView.Refresh();
 		}
 
+		private void TasView_MouseEnter(object sender, EventArgs e)
+		{
+			TasView.Focus();
+		}
+
 		private void TasView_MouseDown(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Middle)
