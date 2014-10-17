@@ -1258,7 +1258,15 @@ namespace BizHawk.Client.EmuHawk
 		private void SetWindowText()
 		{
 			string str = "";
-			
+
+			if (Global.Emulator == null)
+			{
+				// in some weird cirumstances, this can get called too early before any emulator exists
+				// just ignore it
+				Text = "BizHawk";
+				return;
+			}
+
 			if (_inResizeLoop)
 			{
 				var size = GlobalWin.PresentationPanel.NativeSize;
