@@ -25,13 +25,13 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Name = "FrameColumn",
 					Text = "Frame",
-					Width = 64
+					Width = 52
 				},
 				new InputRoll.RollColumn
 				{
 					Name = "LabelColumn",
-					Text = "Label",
-					Width = 133
+					Text = "",
+					Width = 139
 				}
 			});
 
