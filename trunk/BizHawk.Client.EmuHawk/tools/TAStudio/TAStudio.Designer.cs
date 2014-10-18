@@ -93,6 +93,8 @@ namespace BizHawk.Client.EmuHawk
 			this.GreenzoneSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CommentsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SubtitlesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator21 = new System.Windows.Forms.ToolStripSeparator();
+			this.DefaultStateSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SettingsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoloadProjectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -129,8 +131,6 @@ namespace BizHawk.Client.EmuHawk
 			this.InsertNumFramesContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator18 = new System.Windows.Forms.ToolStripSeparator();
 			this.TruncateContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator21 = new System.Windows.Forms.ToolStripSeparator();
-			this.DefaultStateSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.RightClickMenu.SuspendLayout();
@@ -448,7 +448,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.ClearGreenzoneMenuItem.Name = "ClearGreenzoneMenuItem";
 			this.ClearGreenzoneMenuItem.Size = new System.Drawing.Size(282, 22);
-			this.ClearGreenzoneMenuItem.Text = "&Clear Greenzone";
+			this.ClearGreenzoneMenuItem.Text = "&Clear Savestate History";
 			this.ClearGreenzoneMenuItem.Click += new System.EventHandler(this.ClearGreenzoneMenuItem_Click);
 			// 
 			// GreenzoneICheckSeparator
@@ -638,6 +638,18 @@ namespace BizHawk.Client.EmuHawk
 			this.SubtitlesMenuItem.Text = "&Subtitles...";
 			this.SubtitlesMenuItem.Click += new System.EventHandler(this.SubtitlesMenuItem_Click);
 			// 
+			// toolStripSeparator21
+			// 
+			this.toolStripSeparator21.Name = "toolStripSeparator21";
+			this.toolStripSeparator21.Size = new System.Drawing.Size(233, 6);
+			// 
+			// DefaultStateSettingsMenuItem
+			// 
+			this.DefaultStateSettingsMenuItem.Name = "DefaultStateSettingsMenuItem";
+			this.DefaultStateSettingsMenuItem.Size = new System.Drawing.Size(236, 22);
+			this.DefaultStateSettingsMenuItem.Text = "&Default State History Settings...";
+			this.DefaultStateSettingsMenuItem.Click += new System.EventHandler(this.DefaultStateSettingsMenuItem_Click);
+			// 
 			// SettingsSubMenu
 			// 
 			this.SettingsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -712,7 +724,7 @@ namespace BizHawk.Client.EmuHawk
 			// toolStripSeparator19
 			// 
 			this.toolStripSeparator19.Name = "toolStripSeparator19";
-			this.toolStripSeparator19.Size = new System.Drawing.Size(57, 6);
+			this.toolStripSeparator19.Size = new System.Drawing.Size(149, 6);
 			// 
 			// HelpSubMenu
 			// 
@@ -940,18 +952,6 @@ namespace BizHawk.Client.EmuHawk
 			this.TruncateContextMenuItem.Size = new System.Drawing.Size(272, 22);
 			this.TruncateContextMenuItem.Text = "Truncate Movie";
 			this.TruncateContextMenuItem.Click += new System.EventHandler(this.TruncateMenuItem_Click);
-			// 
-			// toolStripSeparator21
-			// 
-			this.toolStripSeparator21.Name = "toolStripSeparator21";
-			this.toolStripSeparator21.Size = new System.Drawing.Size(233, 6);
-			// 
-			// DefaultStateSettingsMenuItem
-			// 
-			this.DefaultStateSettingsMenuItem.Name = "DefaultStateSettingsMenuItem";
-			this.DefaultStateSettingsMenuItem.Size = new System.Drawing.Size(236, 22);
-			this.DefaultStateSettingsMenuItem.Text = "&Default State History Settings...";
-			this.DefaultStateSettingsMenuItem.Click += new System.EventHandler(this.DefaultStateSettingsMenuItem_Click);
 			// 
 			// TAStudio
 			// 

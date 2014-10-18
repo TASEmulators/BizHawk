@@ -77,9 +77,9 @@ namespace BizHawk.Client.EmuHawk
 			this.SaveGreenzoneCheckbox.AutoSize = true;
 			this.SaveGreenzoneCheckbox.Location = new System.Drawing.Point(13, 20);
 			this.SaveGreenzoneCheckbox.Name = "SaveGreenzoneCheckbox";
-			this.SaveGreenzoneCheckbox.Size = new System.Drawing.Size(205, 17);
+			this.SaveGreenzoneCheckbox.Size = new System.Drawing.Size(234, 17);
 			this.SaveGreenzoneCheckbox.TabIndex = 2;
-			this.SaveGreenzoneCheckbox.Text = "Save greenzone information in proj file";
+			this.SaveGreenzoneCheckbox.Text = "Save savestate history information in proj file";
 			this.SaveGreenzoneCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// CapacityNumeric
@@ -178,7 +178,7 @@ namespace BizHawk.Client.EmuHawk
 			this.MinimumSize = new System.Drawing.Size(225, 165);
 			this.Name = "GreenzoneSettingsForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Greenzone Settings";
+			this.Text = "Savestate History Settings";
 			this.Load += new System.EventHandler(this.GreenzoneSettings_Load);
 			((System.ComponentModel.ISupportInitialize)(this.CapacityNumeric)).EndInit();
 			this.ResumeLayout(false);
