@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		isPorted: true,
 		isReleased: false
 		)]
-	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, IMemoryDomains
+    public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, IMemoryDomains, IDebuggable
 	{
 		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{

@@ -375,16 +375,6 @@ namespace BizHawk.Emulation.Cores
 
 		public MemoryDomainList MemoryDomains { get; private set; }
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void SetCpuRegister(string register, int value)
-		{
-			throw new NotImplementedException();
-		}
-
 		#endregion
 
 		public void Dispose()

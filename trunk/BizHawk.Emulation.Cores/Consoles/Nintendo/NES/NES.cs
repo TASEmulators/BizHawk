@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		isPorted: false,
 		isReleased: true
 		)]
-	public partial class NES : IEmulator, IMemoryDomains
+    public partial class NES : IEmulator, IMemoryDomains, IDebuggable
 	{
 		static readonly bool USE_DATABASE = true;
 		public RomStatus RomStatus;

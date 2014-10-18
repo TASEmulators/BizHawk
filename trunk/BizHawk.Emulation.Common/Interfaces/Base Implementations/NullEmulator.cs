@@ -86,13 +86,6 @@ namespace BizHawk.Emulation.Common
 
 		public void Dispose() { }
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
-		{
-			return new Dictionary<string, int>();
-		}
-
-		public void SetCpuRegister(string register, int value) { }
-
 		bool xmas;
 		Pleg pleg;
 
