@@ -104,6 +104,7 @@ namespace BizHawk.Client.EmuHawk
 			_currentTasMovie.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
 			_currentTasMovie.PopulateWithDefaultHeaderValues();
 			_currentTasMovie.ClearChanges();
+			TasView.RowCount = 1;
 		}
 
 		private static string DefaultTasProjName()
