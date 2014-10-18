@@ -141,6 +141,7 @@ namespace BizHawk.Client.EmuHawk
 				NewTasMovie();
 				WantsToControlStopMovie = false;
 				StartNewMovieWrapper(record: true);
+				_currentTasMovie.ClearChanges();
 				WantsToControlStopMovie = true;
 				SetTextProperty();
 				RefreshDialog();
