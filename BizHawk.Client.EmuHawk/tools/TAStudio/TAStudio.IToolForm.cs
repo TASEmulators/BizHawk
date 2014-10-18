@@ -6,6 +6,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class TAStudio : IToolForm
 	{
 		private bool _hackyDontUpdate;
+		private bool _initializing; // If true, will bypass restart logic, this is necessary since loading projects causes a movie to load which causes a rom to reload causing dialogs to restart
 
 		public bool UpdateBefore { get { return false; } }
 
@@ -51,9 +52,25 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			if (_initializing)
+			{
+				return;
+			}
+
 			if (_currentTasMovie != null)
 			{
-				RefreshDialog();
+				if (Global.Game.Hash != _currentTasMovie.Hash)
+				{
+					TastudioToStopMovie();
+					TasView.AllColumns.Clear();
+					NewDefaultProject();
+					SetUpColumns();
+					TasView.Refresh();
+				}
+				else
+				{
+					RefreshDialog();
+				}
 			}
 		}
 
