@@ -446,6 +446,7 @@ namespace BizHawk.Client.EmuHawk
 				var result = LoadProject(Global.Config.RecentTas.MostRecent);
 				if (!result)
 				{
+					TasView.AllColumns.Clear();
 					NewDefaultProject();
 				}
 			}
