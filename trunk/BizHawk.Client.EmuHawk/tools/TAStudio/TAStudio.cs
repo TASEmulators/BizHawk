@@ -107,7 +107,21 @@ namespace BizHawk.Client.EmuHawk
 			TasView.RowCount = 1;
 		}
 
+		/// <summary>
+		/// Used when starting a new project
+		/// </summary>
 		private static string DefaultTasProjName()
+		{
+			return Path.Combine(
+				PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
+				TasMovie.DefaultProjectName + "." + TasMovie.Extension);
+		}
+
+		/// <summary>
+		/// Used for things like SaveFile dialogs to suggest a name to the user
+		/// </summary>
+		/// <returns></returns>
+		private static string SuggestedTasProjName()
 		{
 			return Path.Combine(
 				PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
@@ -131,6 +145,11 @@ namespace BizHawk.Client.EmuHawk
 				SetTextProperty();
 				RefreshDialog();
 			}
+		}
+
+		private void DummyLoadProject(string path)
+		{
+			LoadProject(path);
 		}
 
 		private string ClientSettingsForSave()
