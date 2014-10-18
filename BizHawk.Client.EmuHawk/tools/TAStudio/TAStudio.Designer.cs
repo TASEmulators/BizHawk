@@ -826,7 +826,7 @@ namespace BizHawk.Client.EmuHawk
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.MarkerControl.Location = new System.Drawing.Point(2, 16);
 			this.MarkerControl.Name = "MarkerControl";
-			this.MarkerControl.Size = new System.Drawing.Size(198, 215);
+			this.MarkerControl.Size = new System.Drawing.Size(198, 343);
 			this.MarkerControl.TabIndex = 6;
 			this.MarkerControl.Tastudio = null;
 			// 
@@ -959,10 +959,12 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox1.Controls.Add(this.MarkerControl);
 			this.groupBox1.Location = new System.Drawing.Point(302, 129);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(201, 237);
+			this.groupBox1.Size = new System.Drawing.Size(201, 365);
 			this.groupBox1.TabIndex = 7;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Markers";
