@@ -64,12 +64,7 @@ namespace BizHawk.Client.Common
 
 		public override bool Stop(bool saveChanges = true)
 		{
-			if (Changes)
-			{
-				return base.Stop(saveChanges);
-			}
-
-			return false;
+			return base.Stop(saveChanges);
 		}
 
 		#region Events and Handlers 
