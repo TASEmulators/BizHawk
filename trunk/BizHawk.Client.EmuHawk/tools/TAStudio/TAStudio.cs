@@ -125,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				NewTasMovie();
 				WantsToControlStopMovie = false;
-				GlobalWin.MainForm.StartNewMovie(_currentTasMovie, record: true);
+				StartNewMovieWrapper(record: true);
 				WantsToControlStopMovie = true;
 				SetTextProperty();
 				RefreshDialog();
@@ -178,7 +178,7 @@ namespace BizHawk.Client.EmuHawk
 
 				var shouldRecord = movie.InputLogLength == 0;
 
-				var result = GlobalWin.MainForm.StartNewMovie(movie, shouldRecord);
+				var result = StartNewMovieWrapper(record: true);
 				if (!result)
 				{
 					return false;
@@ -409,15 +409,33 @@ namespace BizHawk.Client.EmuHawk
 		private void NewDefaultProject()
 		{
 			NewTasMovie();
-			GlobalWin.MainForm.StartNewMovie(_currentTasMovie, record: true);
+			StartNewMovieWrapper(record: true);
 			_currentTasMovie.TasStateManager.Capture();
 			_currentTasMovie.SwitchToRecord();
 			_currentTasMovie.ClearChanges();
 		}
 
+		private bool StartNewMovieWrapper(bool record)
+		{
+			_initializing = true;
+			var result = GlobalWin.MainForm.StartNewMovie(_currentTasMovie, record);
+			_initializing = false;
+
+			return result;
+		}
+
 		#region Dialog Events
 
 		private void Tastudio_Load(object sender, EventArgs e)
+		{
+			InitializeOnLoad();
+			LoadConfigSettings();
+			SetColumnsFromCurrentStickies();
+			RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems().ToArray());
+			RefreshDialog();
+		}
+
+		private void InitializeOnLoad()
 		{
 			// Start Scenario 1: A regular movie is active
 			if (Global.MovieSession.Movie.IsActive && !(Global.MovieSession.Movie is TasMovie))
@@ -463,11 +481,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SetUpColumns();
 			}
-
-			LoadConfigSettings();
-			SetColumnsFromCurrentStickies();
-			RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems().ToArray());
-			RefreshDialog();
 		}
 
 		private void Tastudio_Closing(object sender, FormClosingEventArgs e)
