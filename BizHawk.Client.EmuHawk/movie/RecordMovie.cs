@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (path[path.Length - 4] != '.') // If no file extension, add movie extension
 					{
-						path += "." + Global.MovieSession.Movie.PreferredExtension;
+						path += "." +  MovieService.DefaultExtension;
 					}
 				}
 			}
