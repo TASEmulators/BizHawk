@@ -1,6 +1,8 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Text;
 using Newtonsoft.Json;
+
 
 namespace BizHawk.Client.Common
 {
@@ -21,14 +23,19 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Whether or not to save greenzone information to disk
 		/// </summary>
+		[DisplayName("Save History")]
+		[Description("Whether or not to use savestate history")]
 		public bool SaveGreenzone { get; set; }
 
 		/// <summary>
 		/// The total amount of memory to devote to greenzone in megabytes
 		/// </summary>
+		[DisplayName("Capacity (in megabytes))")]
+		[Description("The size limit of the state history buffer.  When this limit is reached it will start removing previous savestates")]
 		public int Capacitymb { get; set; }
 
 		[JsonIgnore]
+		[Browsable(false)]
 		public int Cap
 		{
 			get { return Capacitymb * 1024 * 1024; }
