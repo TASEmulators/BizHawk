@@ -35,7 +35,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewTasMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.OSD.AddMessage("new TAStudio session started");
 			StartNewTasMovie();
 		}
 
