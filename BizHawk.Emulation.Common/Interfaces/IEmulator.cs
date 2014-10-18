@@ -127,21 +127,6 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		CoreComm CoreComm { get; }
 
-		//Debugging
-
-		/// <summary>
-		/// Returns a list of Cpu registers and their current state
-		/// </summary>
-		/// <returns></returns>
-		Dictionary<string, int> GetCpuFlagsAndRegisters();
-
-		/// <summary>
-		/// Sets a given Cpu register to the given value
-		/// </summary>
-		/// <param name="register"></param>
-		/// <param name="value"></param>
-		void SetCpuRegister(string register, int value);
-
 		// ====settings interface====
 
 		// in addition to these methods, it's expected that the constructor or Load() method
@@ -180,6 +165,22 @@ namespace BizHawk.Emulation.Common
 		/// <returns>true if a core reboot will be required to make the changes effective</returns>
 		bool PutSyncSettings(object o);
 	}
+
+    public interface IDebuggable : IEmulator
+    {
+        /// <summary>
+        /// Returns a list of Cpu registers and their current state
+        /// </summary>
+        /// <returns></returns>
+        Dictionary<string, int> GetCpuFlagsAndRegisters();
+
+        /// <summary>
+        /// Sets a given Cpu register to the given value
+        /// </summary>
+        /// <param name="register"></param>
+        /// <param name="value"></param>
+        void SetCpuRegister(string register, int value);
+    }
 
 	public enum DisplayType { NTSC, PAL, DENDY }
 }
