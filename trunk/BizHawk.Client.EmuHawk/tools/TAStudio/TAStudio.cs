@@ -198,7 +198,7 @@ namespace BizHawk.Client.EmuHawk
 
 				var shouldRecord = movie.InputLogLength == 0;
 
-				var result = StartNewMovieWrapper(movie: movie, record: true);
+				var result = StartNewMovieWrapper(movie: movie, record: shouldRecord);
 				if (!result)
 				{
 					return false;
