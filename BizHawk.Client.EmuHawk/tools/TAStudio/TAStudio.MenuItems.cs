@@ -18,9 +18,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			ToBk2MenuItem.Enabled =
-				SaveTASMenuItem.Enabled =
+			ToBk2MenuItem.Enabled =		
 				!string.IsNullOrWhiteSpace(_currentTasMovie.Filename);
+
+			SaveTASMenuItem.Enabled =
+				!string.IsNullOrWhiteSpace(_currentTasMovie.Filename) &&
+				(_currentTasMovie.Filename != DefaultTasProjName());
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -28,11 +31,6 @@ namespace BizHawk.Client.EmuHawk
 			RecentSubMenu.DropDownItems.Clear();
 			RecentSubMenu.DropDownItems.AddRange(
 				Global.Config.RecentTas.RecentMenu(DummyLoadProject));
-		}
-
-		private void DummyLoadProject(string path)
-		{
-			LoadProject(path);
 		}
 
 		private void NewTasMenuItem_Click(object sender, EventArgs e)
@@ -45,7 +43,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (AskSaveChanges())
 			{
-				var file = ToolHelpers.GetTasProjFileFromUser(_currentTasMovie.Filename);
+				var filename = _currentTasMovie.Filename;
+				if (string.IsNullOrWhiteSpace(filename) || filename == DefaultTasProjName())
+				{
+					filename = "";
+				}
+
+				var file = ToolHelpers.GetTasProjFileFromUser(filename);
 				if (file != null)
 				{
 					_currentTasMovie.Filename = file.FullName;
@@ -83,13 +87,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveAsTasMenuItem_Click(object sender, EventArgs e)
 		{
-			var file = ToolHelpers.GetTasProjSaveFileFromUser(_currentTasMovie.Filename);
+			var filename = _currentTasMovie.Filename;
+			if (string.IsNullOrWhiteSpace(filename) || filename == DefaultTasProjName())
+			{
+				filename = SuggestedTasProjName();
+			}
+
+			var file = ToolHelpers.GetTasProjSaveFileFromUser(filename);
 			if (file != null)
 			{
 				_currentTasMovie.Filename = file.FullName;
 				_currentTasMovie.Save();
 				Global.Config.RecentTas.Add(_currentTasMovie.Filename);
 				MessageStatusLabel.Text = Path.GetFileName(_currentTasMovie.Filename) + " saved.";
+				SetTextProperty();
 			}
 		}
 

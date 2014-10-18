@@ -17,6 +17,8 @@ namespace BizHawk.Client.Common
 		private readonly TasStateManager StateManager;
 		public TasMovieMarkerList Markers { get; set; }
 
+		public const string DefaultProjectName = "default";
+
 		public TasMovie(string path) : base(path)
 		{
 			// TODO: how to call the default constructor AND the base(path) constructor?  And is base(path) calling base() ?
