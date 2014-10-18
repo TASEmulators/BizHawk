@@ -421,16 +421,39 @@ namespace BizHawk.Client.EmuHawk
 
 		public string UserSettingsSerialized()
 		{
-			// TODO: More than just columns
-			var settings = ConfigService.SaveWithType(_columns);
+			var settings = ConfigService.SaveWithType(Settings);
 			return settings;
 		}
 
 		public void LoadSettingsSerialized(string settingsJson)
 		{
-			// TODO: more than just columns
 			var settings = ConfigService.LoadWithType(settingsJson);
-			_columns = (RollColumns)settings;
+
+			// TODO: don't silently fail, inform the user somehow
+			if (settings is InputRollSettings)
+			{
+				_columns = (settings as InputRollSettings).Columns;
+				HorizontalOrientation = (settings as InputRollSettings).HorizontalOrientation;
+			}
+		}
+
+
+		private InputRollSettings Settings
+		{
+			get
+			{
+				return new InputRollSettings
+				{
+					Columns = _columns,
+					HorizontalOrientation = HorizontalOrientation
+				};
+			}
+		}
+
+		public class InputRollSettings
+		{
+			public RollColumns Columns { get; set; }
+			public bool HorizontalOrientation { get; set; }
 		}
 
 		/// <summary>
@@ -716,10 +739,11 @@ namespace BizHawk.Client.EmuHawk
 						for (int j = 0; j < columns.Count; j++) // Horizontal
 						{
 							var col = columns[j];
-							if (col.Left.Value < 0 || col.Right.Value > DrawWidth)
+							if (col.Left.Value < 0 || col.Left.Value > DrawWidth)
 							{
 								continue;
 							}
+
 							string text;
 							var point = new Point(col.Left.Value + xPadding, RowsToPixels(i) + CellHeightPadding);
 
