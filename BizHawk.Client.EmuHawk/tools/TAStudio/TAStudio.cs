@@ -198,7 +198,7 @@ namespace BizHawk.Client.EmuHawk
 
 				var shouldRecord = movie.InputLogLength == 0;
 
-				var result = StartNewMovieWrapper(record: true);
+				var result = StartNewMovieWrapper(movie: movie, record: true);
 				if (!result)
 				{
 					return false;
@@ -435,10 +435,10 @@ namespace BizHawk.Client.EmuHawk
 			_currentTasMovie.ClearChanges();
 		}
 
-		private bool StartNewMovieWrapper(bool record)
+		private bool StartNewMovieWrapper(bool record, IMovie movie = null)
 		{
 			_initializing = true;
-			var result = GlobalWin.MainForm.StartNewMovie(_currentTasMovie, record);
+			var result = GlobalWin.MainForm.StartNewMovie(movie != null ? movie : _currentTasMovie, record);
 			_initializing = false;
 
 			return result;
