@@ -507,6 +507,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (AskSaveChanges())
 			{
+				WantsToControlStopMovie = false;
 				SaveConfigSettings();
 				GlobalWin.MainForm.StopMovie(saveChanges: false);
 				DisengageTastudio();

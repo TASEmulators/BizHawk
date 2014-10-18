@@ -13,7 +13,7 @@
 		public void StopMovie()
 		{
 			this.Focus();
-			//NewTasMenuItem_Click(null, null);
+			NewTasMenuItem_Click(null, null);
 		}
 
 		public bool WantsToControlRewind { get { return true; } }
