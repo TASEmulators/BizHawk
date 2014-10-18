@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		portedVersion: "0.7.0",
 		portedUrl: "https://github.com/kode54/QuickNES"
 		)]
-	public class QuickNES : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains
+    public class QuickNES : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, IDebuggable
 	{
 		#region FPU precision
 

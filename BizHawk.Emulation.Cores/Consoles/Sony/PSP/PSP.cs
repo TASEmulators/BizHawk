@@ -62,16 +62,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 			}
 		}
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void SetCpuRegister(string register, int value)
-		{
-			throw new NotImplementedException();
-		}
-
 		bool disposed = false;
 		static PSP attachedcore = null;
 		GCHandle vidhandle;

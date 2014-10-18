@@ -162,16 +162,6 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 		public IController Controller { get; set; }
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void SetCpuRegister(string register, int value)
-		{
-			throw new NotImplementedException();
-		}
-
 		public bool GLMode { get; private set; }
 
 		public void SetGLRes(int factor, int width, int height)

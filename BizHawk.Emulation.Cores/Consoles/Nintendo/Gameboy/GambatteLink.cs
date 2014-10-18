@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		isPorted: true,
 		isReleased: true
 		)]
-	public class GambatteLink : IEmulator, IVideoProvider, ISyncSoundProvider
+    public class GambatteLink : IEmulator, IVideoProvider, ISyncSoundProvider, IDebuggable
 	{
 		bool disposed = false;
 

@@ -163,15 +163,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		#region debugging
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
-		{
-			return new Dictionary<string, int>();
-		}
-
-		public void SetCpuRegister(string register, int value)
-		{
-		}
-
 		#endregion
 
 		#region Controller
