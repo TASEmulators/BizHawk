@@ -73,7 +73,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveTasMenuItem_Click(object sender, EventArgs e)
 		{
-			if (string.IsNullOrEmpty(_currentTasMovie.Filename))
+			if (string.IsNullOrEmpty(_currentTasMovie.Filename) ||
+				_currentTasMovie.Filename == DefaultTasProjName())
 			{
 				SaveAsTasMenuItem_Click(sender, e);
 			}
