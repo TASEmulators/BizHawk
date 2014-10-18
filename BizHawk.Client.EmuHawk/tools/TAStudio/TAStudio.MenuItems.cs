@@ -511,6 +511,11 @@ namespace BizHawk.Client.EmuHawk
 			form.ShowDialog();
 		}
 
+		private void DefaultStateSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			new DefaultGreenzoneSettings().ShowDialog();
+		}
+
 		#endregion
 
 		#region Settings Menu

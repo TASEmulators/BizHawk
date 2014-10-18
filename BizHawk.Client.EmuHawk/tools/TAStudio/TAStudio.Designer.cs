@@ -129,6 +129,8 @@ namespace BizHawk.Client.EmuHawk
 			this.InsertNumFramesContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator18 = new System.Windows.Forms.ToolStripSeparator();
 			this.TruncateContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator21 = new System.Windows.Forms.ToolStripSeparator();
+			this.DefaultStateSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.RightClickMenu.SuspendLayout();
@@ -454,9 +456,9 @@ namespace BizHawk.Client.EmuHawk
 			this.GreenzoneICheckSeparator.Name = "GreenzoneICheckSeparator";
 			this.GreenzoneICheckSeparator.Size = new System.Drawing.Size(279, 6);
 			// 
-			// GreenZzoneIntegrityCheckMenuItem
+			// GreenZoneIntegrityCheckMenuItem
 			// 
-			this.GreenZoneIntegrityCheckMenuItem.Name = "GreenZzoneIntegrityCheckMenuItem";
+			this.GreenZoneIntegrityCheckMenuItem.Name = "GreenZoneIntegrityCheckMenuItem";
 			this.GreenZoneIntegrityCheckMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.I)));
 			this.GreenZoneIntegrityCheckMenuItem.Size = new System.Drawing.Size(282, 22);
@@ -601,7 +603,9 @@ namespace BizHawk.Client.EmuHawk
             this.HeaderMenuItem,
             this.GreenzoneSettingsMenuItem,
             this.CommentsMenuItem,
-            this.SubtitlesMenuItem});
+            this.SubtitlesMenuItem,
+            this.toolStripSeparator21,
+            this.DefaultStateSettingsMenuItem});
 			this.MetaSubMenu.Name = "MetaSubMenu";
 			this.MetaSubMenu.Size = new System.Drawing.Size(69, 20);
 			this.MetaSubMenu.Text = "&Metadata";
@@ -609,28 +613,28 @@ namespace BizHawk.Client.EmuHawk
 			// HeaderMenuItem
 			// 
 			this.HeaderMenuItem.Name = "HeaderMenuItem";
-			this.HeaderMenuItem.Size = new System.Drawing.Size(184, 22);
+			this.HeaderMenuItem.Size = new System.Drawing.Size(236, 22);
 			this.HeaderMenuItem.Text = "&Header...";
 			this.HeaderMenuItem.Click += new System.EventHandler(this.HeaderMenuItem_Click);
 			// 
 			// GreenzoneSettingsMenuItem
 			// 
 			this.GreenzoneSettingsMenuItem.Name = "GreenzoneSettingsMenuItem";
-			this.GreenzoneSettingsMenuItem.Size = new System.Drawing.Size(184, 22);
-			this.GreenzoneSettingsMenuItem.Text = "&Greenzone Settings...";
+			this.GreenzoneSettingsMenuItem.Size = new System.Drawing.Size(236, 22);
+			this.GreenzoneSettingsMenuItem.Text = "&Savestate History Settings...";
 			this.GreenzoneSettingsMenuItem.Click += new System.EventHandler(this.GreenzoneSettingsMenuItem_Click);
 			// 
 			// CommentsMenuItem
 			// 
 			this.CommentsMenuItem.Name = "CommentsMenuItem";
-			this.CommentsMenuItem.Size = new System.Drawing.Size(184, 22);
+			this.CommentsMenuItem.Size = new System.Drawing.Size(236, 22);
 			this.CommentsMenuItem.Text = "&Comments...";
 			this.CommentsMenuItem.Click += new System.EventHandler(this.CommentsMenuItem_Click);
 			// 
 			// SubtitlesMenuItem
 			// 
 			this.SubtitlesMenuItem.Name = "SubtitlesMenuItem";
-			this.SubtitlesMenuItem.Size = new System.Drawing.Size(184, 22);
+			this.SubtitlesMenuItem.Size = new System.Drawing.Size(236, 22);
 			this.SubtitlesMenuItem.Text = "&Subtitles...";
 			this.SubtitlesMenuItem.Click += new System.EventHandler(this.SubtitlesMenuItem_Click);
 			// 
@@ -708,7 +712,7 @@ namespace BizHawk.Client.EmuHawk
 			// toolStripSeparator19
 			// 
 			this.toolStripSeparator19.Name = "toolStripSeparator19";
-			this.toolStripSeparator19.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator19.Size = new System.Drawing.Size(57, 6);
 			// 
 			// HelpSubMenu
 			// 
@@ -937,6 +941,18 @@ namespace BizHawk.Client.EmuHawk
 			this.TruncateContextMenuItem.Text = "Truncate Movie";
 			this.TruncateContextMenuItem.Click += new System.EventHandler(this.TruncateMenuItem_Click);
 			// 
+			// toolStripSeparator21
+			// 
+			this.toolStripSeparator21.Name = "toolStripSeparator21";
+			this.toolStripSeparator21.Size = new System.Drawing.Size(233, 6);
+			// 
+			// DefaultStateSettingsMenuItem
+			// 
+			this.DefaultStateSettingsMenuItem.Name = "DefaultStateSettingsMenuItem";
+			this.DefaultStateSettingsMenuItem.Size = new System.Drawing.Size(236, 22);
+			this.DefaultStateSettingsMenuItem.Text = "&Default State History Settings...";
+			this.DefaultStateSettingsMenuItem.Click += new System.EventHandler(this.DefaultStateSettingsMenuItem_Click);
+			// 
 			// TAStudio
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1064,5 +1080,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator19;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator20;
 		private System.Windows.Forms.ToolStripMenuItem RotateMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator21;
+		private System.Windows.Forms.ToolStripMenuItem DefaultStateSettingsMenuItem;
 	}
 }
