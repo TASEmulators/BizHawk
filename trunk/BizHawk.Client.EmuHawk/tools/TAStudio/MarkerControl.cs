@@ -54,8 +54,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (index < Tastudio.CurrentMovie.InputLogLength)
 			{
-				var record = Tastudio.CurrentMovie[index];
-				if (record.HasState && record.Lagged.HasValue)
+				var marker = Tastudio.CurrentMovie.Markers[index];
+				var record = Tastudio.CurrentMovie[marker.Frame];
+
+				if (record.Lagged.HasValue)
 				{
 					if (record.Lagged.Value)
 					{
