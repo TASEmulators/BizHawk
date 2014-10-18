@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.PCEngine;
@@ -64,7 +64,14 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				return Global.Emulator.GetCpuFlagsAndRegisters().FirstOrDefault(x => x.Key == name).Value;
+                var debuggable = Global.Emulator as IDebuggable;
+                if (debuggable == null)
+                    throw new NotImplementedException();
+
+                var registers = debuggable.GetCpuFlagsAndRegisters();
+                return registers.ContainsKey(name)
+                    ? registers[name]
+                    : 0;
 			}
 			catch (NotImplementedException)
 			{
@@ -86,7 +93,11 @@ namespace BizHawk.Client.Common
 
 			try
 			{
-				foreach (var kvp in Global.Emulator.GetCpuFlagsAndRegisters())
+                var debuggable = Global.Emulator as IDebuggable;
+                if (debuggable == null)
+                    throw new NotImplementedException();
+
+                foreach (var kvp in debuggable.GetCpuFlagsAndRegisters())
 				{
 					table[kvp.Key] = kvp.Value;
 				}
@@ -109,7 +120,11 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				Global.Emulator.SetCpuRegister(register, value);
+                var debuggable = Global.Emulator as IDebuggable;
+                if (debuggable == null)
+                    throw new NotImplementedException();
+
+                debuggable.SetCpuRegister(register, value);
 			}
 			catch (NotImplementedException)
 			{
