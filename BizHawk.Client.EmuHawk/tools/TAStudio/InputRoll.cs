@@ -1144,11 +1144,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (e.Button == MouseButtons.Left)
 			{
-				if (IsHoveringOnColumnCell)
-				{
-					ColumnClickEvent(ColumnAtX(e.X));
-				}
-				else if (IsHoveringOnDataCell)
+				if (IsHoveringOnDataCell)
 				{
 					if (ModifierKeys == Keys.Alt)
 					{
@@ -1243,11 +1239,16 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
+			if (e.Button == MouseButtons.Left && IsHoveringOnColumnCell)
+			{
+				ColumnClickEvent(ColumnAtX(e.X));
+			}
+			
 			IsPaintDown = false;
 			RightButtonHeld = false;
 
 			base.OnMouseUp(e);
-			}
+		}
 
 		private void IncrementScrollBar(ScrollBar bar, bool increment)
 		{
