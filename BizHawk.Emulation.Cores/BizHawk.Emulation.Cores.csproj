@@ -472,8 +472,6 @@
     <Compile Include="CPUs\MOS 6502X\Disassembler.cs" />
     <Compile Include="CPUs\MOS 6502X\Execute.cs" />
     <Compile Include="CPUs\MOS 6502X\MOS6502X.cs" />
-    <Compile Include="CPUs\MOS 6502X\MOS6502XDouble.cs" />
-    <Compile Include="CPUs\MOS 6502X\MOS6502XNative.cs" />
     <Compile Include="CPUs\x86\Disassembler.cs" />
     <Compile Include="CPUs\x86\Execute.cs" />
     <Compile Include="CPUs\x86\Timing.cs" />
