@@ -401,7 +401,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.SelectedRows.Any())
 			{
-				var rollbackFrame = TasView.LastSelectedIndex.Value + 1;
+				var rollbackFrame = TasView.LastSelectedIndex.Value;
 				var needsToRollback = !(rollbackFrame > Global.Emulator.Frame);
 
 				_currentTasMovie.Truncate(rollbackFrame);
