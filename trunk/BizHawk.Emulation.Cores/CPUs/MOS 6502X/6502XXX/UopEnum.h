@@ -139,7 +139,6 @@ enum Uop {
 	Uop_DecS, 
 	Uop_PushPCL, 
 	Uop_PushPCH, 
-	Uop_PushPCH_B, 
 	Uop_PushP, 
 	Uop_PullP, 
 	Uop_PullPCL, 
@@ -250,5 +249,4 @@ enum Uop {
 	Uop_End_BranchSpecial, 
 	Uop_End_SuppressInterrupt, 
 };
-extern const Uop Microcode[264][8];
 #endif // UOPENUM_H

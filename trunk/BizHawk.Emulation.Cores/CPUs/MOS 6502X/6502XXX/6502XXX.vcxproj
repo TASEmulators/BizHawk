@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{3F8F3D38-25DB-45C9-84C9-943D0368BF47}</ProjectGuid>
+    <ProjectGuid>{0EF7FBBC-3CA9-4121-AF6C-C46CD02354B4}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>MOS6502XNative</RootNamespace>
+    <RootNamespace>My6502XXX</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -39,37 +39,35 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <CustomBuildAfterTargets>
-    </CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <CustomBuildAfterTargets>
-    </CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MOS6502XNATIVE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MY6502XXX_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetDir)$(TargetName).dll" "$(SolutionDir)..\..\..\..\BizHawk.MultiClient\output\dll\$(TargetName).dll"</Command>
+      <Command>copy /y "$(TargetDir)$(TargetFileName)" "$(ProjectDir)..\..\..\..\output\dll\$(TargetFileName)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;MOS6502XNATIVE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;MY6502XXX_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -78,18 +76,15 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetDir)$(TargetName).dll" "$(SolutionDir)..\..\..\..\BizHawk.MultiClient\output\dll\$(TargetName).dll"</Command>
+      <Command>copy /y "$(TargetDir)$(TargetFileName)" "$(ProjectDir)..\..\..\..\output\dll\$(TargetFileName)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ints.h" />
-    <ClInclude Include="MOS6502X.h" />
-    <ClInclude Include="UopEnum.h" />
+    <ClCompile Include="Execute.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Execute.cpp" />
-    <ClCompile Include="MOS6502X.cpp" />
-    <ClCompile Include="UopTable.cpp" />
+    <ClInclude Include="TableNZ.h" />
+    <ClInclude Include="UopEnum.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
