@@ -273,6 +273,10 @@ namespace BizHawk.Client.EmuHawk
 		[Category("Behavior")]
 		public event RightMouseScrollEventHandler RightMouseScrolled;
 
+		[Category("Property Changed")]
+		[Description("Occurs when the column header has been reordered")]
+		public event ColumnReorderedEventHandler ColumnReordered;
+
 		/// <summary>
 		/// Retrieve the text for a cell
 		/// </summary>
@@ -294,6 +298,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public delegate void ColumnClickEventHandler(object sender, ColumnClickEventArgs e);
 
+		public delegate void ColumnReorderedEventHandler(object sender, ColumnReorderedEventArgs e);
+
 		public class CellEventArgs
 		{
 			public CellEventArgs(Cell oldCell, Cell newCell)
@@ -314,6 +320,20 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			public RollColumn Column { get; private set; }
+		}
+
+		public class ColumnReorderedEventArgs
+		{
+			public ColumnReorderedEventArgs(int oldDisplayIndex, int newDisplayIndex, RollColumn column)
+			{
+				Column = column;
+				OldDisplayIndex = oldDisplayIndex;
+				NewDisplayIndex = NewDisplayIndex;
+			}
+
+			public RollColumn Column { get; private set; }
+			public int OldDisplayIndex { get; private set; }
+			public int NewDisplayIndex { get; private set; }
 		}
 
 		#endregion
@@ -1478,7 +1498,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_columnDown != CurrentCell.Column)
 			{
+				var oldIndex = _columns.IndexOf(_columnDown);
 				var newIndex = _columns.IndexOf(CurrentCell.Column);
+
+				if (ColumnReordered != null)
+				{
+					ColumnReordered(this, new ColumnReorderedEventArgs(oldIndex, newIndex, _columnDown));
+				}
+
 				_columns.Remove(_columnDown);
 				_columns.Insert(newIndex, _columnDown);
 			}
