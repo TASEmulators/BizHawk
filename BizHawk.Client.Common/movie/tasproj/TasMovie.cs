@@ -109,6 +109,11 @@ namespace BizHawk.Client.Common
 			Changes = false;
 		}
 
+		public void FlagChanges() // TODO: it is pointless to have these two methods rather than a public setter
+		{
+			Changes = true;
+		}
+
 		public override void StartNewRecording()
 		{
 			LagLog.Clear();

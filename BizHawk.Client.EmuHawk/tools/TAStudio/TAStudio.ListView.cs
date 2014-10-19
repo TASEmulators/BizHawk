@@ -198,6 +198,11 @@ namespace BizHawk.Client.EmuHawk
 			TasView.Refresh();
 		}
 
+		private void TasView_ColumnReordered(object sender, InputRoll.ColumnReorderedEventArgs e)
+		{
+			_currentTasMovie.FlagChanges();
+		}
+
 		private void TasView_MouseEnter(object sender, EventArgs e)
 		{
 			TasView.Focus();
