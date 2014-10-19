@@ -29,6 +29,11 @@ namespace BizHawk.Client.EmuHawk
 		private int _rowCount;
 		private Size _charSize;
 
+		private RollColumn _columnDown;
+
+		private int? _currentX;
+		private int? _currentY;
+
 		public InputRoll()
 		{
 
@@ -618,6 +623,8 @@ namespace BizHawk.Client.EmuHawk
 				//Foreground
 				DrawData(e);
 
+				DrawColumnDrag(e);
+
 				Gdi.CopyToScreen();
 				Gdi.EndOffScreenBitmap();
 			}
@@ -626,6 +633,22 @@ namespace BizHawk.Client.EmuHawk
 		protected override void OnPaintBackground(PaintEventArgs pevent)
 		{
 			// Do nothing, and this should never be called
+		}
+
+		private void DrawColumnDrag(PaintEventArgs e)
+		{
+			if (_columnDown != null && _currentX.HasValue && _currentY.HasValue && IsHoveringOnColumnCell)
+			{
+				int x1 = _currentX.Value - (_columnDown.Width.Value / 2);
+				int y1 = _currentY.Value - (CellHeight / 2);
+				int x2 = x1 + _columnDown.Width.Value;
+				int y2 = y1 + CellHeight;
+
+				Gdi.SetSolidPen(this.BackColor);
+				Gdi.DrawRectangle(x1, y1, x2, y2);
+				Gdi.PrepDrawString(this.Font, this.ForeColor);
+				Gdi.DrawString(_columnDown.Text, new Point(x1 + CellWidthPadding, y1 + CellHeightPadding));
+			}
 		}
 
 		private void DrawColumnText(PaintEventArgs e)
@@ -1097,6 +1120,9 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
+			_currentX = e.X;
+			_currentY = e.Y;
+
 			var newCell = CalculatePointedCell(e.X, e.Y);
 			newCell.RowIndex += FirstVisibleRow;
 			if (!newCell.Equals(CurrentCell))
@@ -1108,6 +1134,14 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Refresh();
 				}
+				else if (_columnDown != null)
+				{
+					Refresh();
+				}
+			}
+			else if (_columnDown != null)  // Kind of silly feeling to have this check twice, but the only alternative I can think of has it refreshing twice when pointed column changes with column down, and speed matters
+			{
+				Refresh();
 			}
 
 			base.OnMouseMove(e);
@@ -1126,6 +1160,8 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnMouseLeave(EventArgs e)
 		{
+			_currentX = null;
+			_currentY = null;
 			CurrentCell = null;
 			IsPaintDown = false;
 			Refresh();
@@ -1135,9 +1171,16 @@ namespace BizHawk.Client.EmuHawk
 		// TODO add query callback of whether to select the cell or not
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Left && InputPaintingMode)
+			if (e.Button == MouseButtons.Left)
 			{
-				IsPaintDown = true;
+				if (IsHoveringOnColumnCell)
+				{
+					_columnDown = CurrentCell.Column;
+				}
+				else if (InputPaintingMode)
+				{
+					IsPaintDown = true;
+				}
 			}
 
 			if (e.Button == MouseButtons.Right)
@@ -1247,7 +1290,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (IsHoveringOnColumnCell)
 			{
-				if (e.Button == MouseButtons.Left)
+				if (_columnDown != null)
+				{
+					DoColumnReorder();
+					_columnDown = null;
+					Refresh();
+				}
+				else if (e.Button == MouseButtons.Left)
 				{
 					ColumnClickEvent(ColumnAtX(e.X));
 				}
@@ -1256,10 +1305,10 @@ namespace BizHawk.Client.EmuHawk
 					ColumnRightClickEvent(ColumnAtX(e.X));
 				}
 			}
-			
-			IsPaintDown = false;
-			RightButtonHeld = false;
 
+			_columnDown = null;
+			RightButtonHeld = false;
+			IsPaintDown = false;
 			base.OnMouseUp(e);
 		}
 
@@ -1424,6 +1473,16 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region Helpers
+
+		private void DoColumnReorder()
+		{
+			if (_columnDown != CurrentCell.Column)
+			{
+				var newIndex = _columns.IndexOf(CurrentCell.Column);
+				_columns.Remove(_columnDown);
+				_columns.Insert(newIndex, _columnDown);
+			}
+		}
 
 		//ScrollBar.Maximum = DesiredValue + ScrollBar.LargeChange - 1
 		//See MSDN Page for more information on the dumb ScrollBar.Maximum Property
