@@ -348,6 +348,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					GoToLastEmulatedFrameIfNecessary(insertionFrame);
 					DoAutoRestore();
+					RefreshDialog();
 				}
 				else
 				{
@@ -367,6 +368,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GoToLastEmulatedFrameIfNecessary(insertionFrame);
 				DoAutoRestore();
+				RefreshDialog();
 			}
 			else
 			{
@@ -390,6 +392,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GoToLastEmulatedFrameIfNecessary(insertionFrame);
 				DoAutoRestore();
+				RefreshDialog();
 			}
 			else
 			{
