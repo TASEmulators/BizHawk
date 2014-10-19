@@ -260,7 +260,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_MouseUp(object sender, MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Right && !_supressContextMenu)
+			if (e.Button == MouseButtons.Right && !TasView.IsPointingAtColumnHeader && !_supressContextMenu)
 			{
 				RightClickMenu.Show(TasView, e.X, e.Y);
 			}

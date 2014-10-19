@@ -337,6 +337,16 @@ namespace BizHawk.Client.EmuHawk
 
 		[Browsable(false)]
 		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		public bool IsPointingAtColumnHeader
+		{
+			get
+			{
+				return IsHoveringOnColumnCell;
+			}
+		}
+
+		[Browsable(false)]
+		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
 		public int? FirstSelectedIndex
 		{
 			get
