@@ -608,6 +608,22 @@ namespace BizHawk.Client.EmuHawk
 
 				ColumnsSubMenu.DropDownItems.Add(menuItem);
 			}
+
+			ColumnsSubMenu.DropDownItems.Add(new ToolStripSeparator());
+			var defaults = new ToolStripMenuItem
+			{
+				Name = "RestoreDefaultColumnConfiguration",
+				Text = "Restore defaults"
+			};
+
+			defaults.Click += (o, ev) =>
+			{
+				TasView.AllColumns.Clear();
+				SetUpColumns();
+				TasView.Refresh();
+			};
+
+			ColumnsSubMenu.DropDownItems.Add(defaults);
 		}
 
 		#endregion
