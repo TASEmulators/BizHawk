@@ -490,6 +490,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RotateMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView.HorizontalOrientation ^= true;
+			_currentTasMovie.FlagChanges();
 		}
 
 		#endregion
@@ -603,6 +604,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					dummyColumnObject.Visible ^= true;
 					TasView.AllColumns.ColumnsChanged();
+					_currentTasMovie.FlagChanges();
 					TasView.Refresh();
 				};
 
@@ -621,6 +623,7 @@ namespace BizHawk.Client.EmuHawk
 				TasView.AllColumns.Clear();
 				SetUpColumns();
 				TasView.Refresh();
+				_currentTasMovie.FlagChanges();
 			};
 
 			ColumnsSubMenu.DropDownItems.Add(defaults);
