@@ -453,6 +453,15 @@ namespace BizHawk.Client.EmuHawk
 			LoadConfigSettings();
 			SetColumnsFromCurrentStickies();
 			RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems().ToArray());
+
+			RightClickMenu.Items
+				.OfType<ToolStripMenuItem>()
+				.First(t => t.Name == "RotateMenuItem")
+				.Click += (o, ov) =>
+				{
+					_currentTasMovie.FlagChanges();
+				};
+
 			RefreshDialog();
 		}
 
