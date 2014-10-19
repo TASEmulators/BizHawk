@@ -317,7 +317,6 @@ namespace BizHawk.Client.EmuHawk
 				_tasClipboard.Clear();
 				_currentTasMovie.RemoveFrames(TasView.SelectedRows.ToArray());
 				SetSplicer();
-				TasView.DeselectAll();
 
 				if (needsToRollback)
 				{
