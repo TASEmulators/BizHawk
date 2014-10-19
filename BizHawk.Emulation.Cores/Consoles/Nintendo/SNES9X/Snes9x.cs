@@ -126,30 +126,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 		#endregion
 
-		#region settings
-
-		public object GetSettings()
-		{
-			return null;
-		}
-
-		public object GetSyncSettings()
-		{
-			return null;
-		}
-
-		public bool PutSettings(object o)
-		{
-			return false;
-		}
-
-		public bool PutSyncSettings(object o)
-		{
-			return false;
-		}
-
-		#endregion
-
 		#region IVideoProvider
 
 		private int[] _vbuff = new int[512 * 480];

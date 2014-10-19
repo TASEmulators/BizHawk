@@ -21,7 +21,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		portedVersion: "0.7.0",
 		portedUrl: "https://github.com/kode54/QuickNES"
 		)]
-    public class QuickNES : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, IDebuggable
+	public class QuickNES : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains,
+		IDebuggable, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>
 	{
 		#region FPU precision
 
@@ -84,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					BoardName = mappername;
 					CoreComm.VsyncNum = 39375000;
 					CoreComm.VsyncDen = 655171;
-					PutSettings(Settings ?? new QuickNESSettings());
+					PutSettings((QuickNESSettings)Settings ?? new QuickNESSettings());
 
 					ComputeBootGod();
 				}
@@ -502,28 +503,48 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			}
 		}
 
-		public object GetSettings()
+		public QuickNESSettings GetSettings()
 		{
 			return _Settings.Clone();
 		}
 
-		public object GetSyncSettings()
+		public QuickNESSyncSettings GetSyncSettings()
 		{
 			return new QuickNESSyncSettings();
 		}
 
-		public bool PutSettings(object o)
+		public bool PutSettings(QuickNESSettings o)
 		{
-			_Settings = (QuickNESSettings)o;
+			_Settings = o;
 			LibQuickNES.qn_set_sprite_limit(Context, _Settings.NumSprites);
 			RecalculateCrops();
 			CalculatePalette();
 			return false;
 		}
 
-		public bool PutSyncSettings(object o)
+		public bool PutSyncSettings(QuickNESSyncSettings o)
 		{
 			return false;
+		}
+
+		object ISettable.GetSettings()
+		{
+			return GetSettings();
+		}
+
+		bool ISettable.PutSettings(object o)
+		{
+			return PutSettings((QuickNESSettings)o);
+		}
+
+		object ISettable.GetSyncSettings()
+		{
+			return GetSyncSettings();
+		}
+
+		bool ISettable.PutSyncSettings(object o)
+		{
+			return PutSyncSettings((QuickNESSyncSettings)o);
 		}
 
 		#endregion

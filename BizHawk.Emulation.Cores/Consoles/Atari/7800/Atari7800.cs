@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		portedVersion: "v1.5",
 		portedUrl: "http://emu7800.sourceforge.net/"
 		)]
-    public partial class Atari7800 : IEmulator, IMemoryDomains, IDebuggable
+	public partial class Atari7800 : IEmulator, IMemoryDomains, IDebuggable
 	{
 		// TODO:
 		// some things don't work when you try to plug in a 2600 game
@@ -457,10 +457,5 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			}
 		}
 		#endregion
-
-		public object GetSettings() { return null; }
-		public object GetSyncSettings() { return null; }
-		public bool PutSettings(object o) { return false; }
-		public bool PutSyncSettings(object o) { return false; }
 	}
 }

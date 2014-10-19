@@ -27,7 +27,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		isPorted: false,
 		isReleased: true
 		)]
-    public sealed partial class SMS : IEmulator, IMemoryDomains, IDebuggable
+	public sealed partial class SMS : IEmulator, IMemoryDomains,
+		IDebuggable, ISettable<SMS.SMSSettings, SMS.SMSSyncSettings>
 	{
 		// Constants
 		public const int BankSize = 16384;
@@ -101,14 +102,14 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			IsGameGear = game.System == "GG";
 			IsSG1000 = game.System == "SG";
-		    RomData = rom;
-            CoreComm.CpuTraceAvailable = true;
-            
-            if (RomData.Length % BankSize != 0)
-                Array.Resize(ref RomData, ((RomData.Length / BankSize) + 1) * BankSize);
-            RomBanks = (byte)(RomData.Length / BankSize);
+			RomData = rom;
+			CoreComm.CpuTraceAvailable = true;
+			
+			if (RomData.Length % BankSize != 0)
+				Array.Resize(ref RomData, ((RomData.Length / BankSize) + 1) * BankSize);
+			RomBanks = (byte)(RomData.Length / BankSize);
 
-            DisplayType = DetermineDisplayType(SyncSettings.DisplayType, game.Region);
+			DisplayType = DetermineDisplayType(SyncSettings.DisplayType, game.Region);
 			if (game["PAL"] && DisplayType != DisplayType.PAL)
 			{
 				DisplayType = DisplayType.PAL;
@@ -128,26 +129,26 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				CoreComm.Notify("Region was forced to Japan for game compatibility.");
 			}
 
-            if ((game.NotInDatabase || game["FM"]) && SyncSettings.EnableFM && !IsGameGear)
-                HasYM2413 = true;
+			if ((game.NotInDatabase || game["FM"]) && SyncSettings.EnableFM && !IsGameGear)
+				HasYM2413 = true;
 
-            if (Controller == null)
-                Controller = NullController.GetNullController();
+			if (Controller == null)
+				Controller = NullController.GetNullController();
 
-            Cpu = new Z80A();
-            Cpu.RegisterSP = 0xDFF0;
-            Cpu.ReadHardware = ReadPort;
-            Cpu.WriteHardware = WritePort;
+			Cpu = new Z80A();
+			Cpu.RegisterSP = 0xDFF0;
+			Cpu.ReadHardware = ReadPort;
+			Cpu.WriteHardware = WritePort;
 
-            Vdp = new VDP(this, Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, DisplayType);
-            PSG = new SN76489();
-            YM2413 = new YM2413();
-            SoundMixer = new SoundMixer(YM2413, PSG);
-            if (HasYM2413 && game["WhenFMDisablePSG"])
-                SoundMixer.DisableSource(PSG);
-            ActiveSoundProvider = HasYM2413 ? (ISoundProvider)SoundMixer : PSG;
+			Vdp = new VDP(this, Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, DisplayType);
+			PSG = new SN76489();
+			YM2413 = new YM2413();
+			SoundMixer = new SoundMixer(YM2413, PSG);
+			if (HasYM2413 && game["WhenFMDisablePSG"])
+				SoundMixer.DisableSource(PSG);
+			ActiveSoundProvider = HasYM2413 ? (ISoundProvider)SoundMixer : PSG;
 
-            SystemRam = new byte[0x2000];
+			SystemRam = new byte[0x2000];
 
 			if (game["CMMapper"])
 				InitCodeMastersMapper();
@@ -166,20 +167,20 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			else
 				InitSegaMapper();
 
-            if (Settings.ForceStereoSeparation && !IsGameGear)
-            {
-                if (game["StereoByte"])
-                {
-                    ForceStereoByte = byte.Parse(game.OptionValue("StereoByte"));
-                }
+			if (Settings.ForceStereoSeparation && !IsGameGear)
+			{
+				if (game["StereoByte"])
+				{
+					ForceStereoByte = byte.Parse(game.OptionValue("StereoByte"));
+				}
 				PSG.StereoPanning = ForceStereoByte;
-            }
+			}
 
-            if (SyncSettings.AllowOverlock && game["OverclockSafe"])
-                Vdp.IPeriod = 512;
+			if (SyncSettings.AllowOverlock && game["OverclockSafe"])
+				Vdp.IPeriod = 512;
 
-            if (Settings.SpriteLimit)
-                Vdp.SpriteLimit = true;
+			if (Settings.SpriteLimit)
+				Vdp.SpriteLimit = true;
 
 			if (game["3D"])
 				IsGame3D = true;
@@ -593,21 +594,39 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public void Dispose() { }
 
-		public object GetSettings() { return Settings.Clone(); }
-		public object GetSyncSettings() { return SyncSettings.Clone(); }
-		public bool PutSettings(object o)
+		public SMSSettings GetSettings() { return Settings.Clone(); }
+		public SMSSyncSettings GetSyncSettings() { return SyncSettings.Clone(); }
+		public bool PutSettings(SMSSettings o)
 		{
-			SMSSettings n = (SMSSettings)o;
-			bool ret = SMSSettings.RebootNeeded(Settings, n);
-			Settings = n;
+			bool ret = SMSSettings.RebootNeeded(Settings, o);
+			Settings = o;
 			return ret;
 		}
-		public bool PutSyncSettings(object o)
+		public bool PutSyncSettings(SMSSyncSettings o)
 		{
-			SMSSyncSettings n = (SMSSyncSettings)o;
-			bool ret = SMSSyncSettings.RebootNeeded(SyncSettings, n);
-			SyncSettings = n;
+			bool ret = SMSSyncSettings.RebootNeeded(SyncSettings, o);
+			SyncSettings = o;
 			return ret;	
+		}
+
+		object ISettable.GetSettings()
+		{
+			return GetSettings();
+		}
+
+		bool ISettable.PutSettings(object o)
+		{
+			return PutSettings((SMSSettings)o);
+		}
+
+		object ISettable.GetSyncSettings()
+		{
+			return GetSyncSettings();
+		}
+
+		bool ISettable.PutSyncSettings(object o)
+		{
+			return PutSyncSettings((SMSSyncSettings)o);
 		}
 
 		public SMSSettings Settings;

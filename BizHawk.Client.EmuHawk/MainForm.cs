@@ -507,8 +507,8 @@ namespace BizHawk.Client.EmuHawk
 					Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
 				}
 
-                // autohold/autofire must not be affected by the following inputs
-                Global.ActiveController.Overrides(Global.LuaAndAdaptor);
+				// autohold/autofire must not be affected by the following inputs
+				Global.ActiveController.Overrides(Global.LuaAndAdaptor);
 
 				if (GlobalWin.Tools.Has<LuaConsole>())
 				{
@@ -1068,9 +1068,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private static LibsnesCore AsSNES { get { return Global.Emulator as LibsnesCore; } }
+
 		public void SNES_ToggleBG1(bool? setto = null)
 		{
-			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
 				s.ShowBG1_1 = s.ShowBG1_0 = setto.Value;
@@ -1080,13 +1082,13 @@ namespace BizHawk.Client.EmuHawk
 				s.ShowBG1_1 = s.ShowBG1_0 ^= true;
 			}
 
-			Global.Emulator.PutSettings(s);
+			AsSNES.PutSettings(s);
 			GlobalWin.OSD.AddMessage(s.ShowBG1_1 ? "BG 1 Layer On" : "BG 1 Layer Off");
 		}
 
 		public void SNES_ToggleBG2(bool? setto = null)
 		{
-			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
 				s.ShowBG2_1 = s.ShowBG2_0 = setto.Value;
@@ -1096,13 +1098,13 @@ namespace BizHawk.Client.EmuHawk
 				s.ShowBG2_1 = s.ShowBG2_0 ^= true;
 			}
 
-			Global.Emulator.PutSettings(s);
+			AsSNES.PutSettings(s);
 			GlobalWin.OSD.AddMessage(s.ShowBG2_1 ? "BG 2 Layer On" : "BG 2 Layer Off");
 		}
 
 		public void SNES_ToggleBG3(bool? setto = null)
 		{
-			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
 				s.ShowBG3_1 = s.ShowBG3_0 = setto.Value;
@@ -1112,13 +1114,13 @@ namespace BizHawk.Client.EmuHawk
 				s.ShowBG3_1 = s.ShowBG3_0 ^= true;
 			}
 
-			Global.Emulator.PutSettings(s);
+			AsSNES.PutSettings(s);
 			GlobalWin.OSD.AddMessage(s.ShowBG3_1 ? "BG 3 Layer On" : "BG 3 Layer Off");
 		}
 
 		public void SNES_ToggleBG4(bool? setto = null)
 		{
-			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
 				s.ShowBG4_1 = s.ShowBG4_0 = setto.Value;
@@ -1128,13 +1130,13 @@ namespace BizHawk.Client.EmuHawk
 				s.ShowBG4_1 = s.ShowBG4_0 ^= true;
 			}
 
-			Global.Emulator.PutSettings(s);
+			AsSNES.PutSettings(s);
 			GlobalWin.OSD.AddMessage(s.ShowBG4_1 ? "BG 4 Layer On" : "BG 4 Layer Off");
 		}
 
 		public void SNES_ToggleObj1(bool? setto = null)
 		{
-			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
 				s.ShowOBJ_0 = setto.Value;
@@ -1144,13 +1146,13 @@ namespace BizHawk.Client.EmuHawk
 				s.ShowOBJ_0 ^= true;
 			}
 
-			Global.Emulator.PutSettings(s);
+			AsSNES.PutSettings(s);
 			GlobalWin.OSD.AddMessage(s.ShowOBJ_0 ? "OBJ 1 Layer On" : "OBJ 1 Layer Off");
 		}
 
 		public void SNES_ToggleObj2(bool? setto = null)
 		{
-			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
 				s.ShowOBJ_1 = setto.Value;
@@ -1159,13 +1161,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				s.ShowOBJ_1 ^= true;
 			}
-			Global.Emulator.PutSettings(s);
+			AsSNES.PutSettings(s);
 			GlobalWin.OSD.AddMessage(s.ShowOBJ_1 ? "OBJ 2 Layer On" : "OBJ 2 Layer Off");
 		}
 
 		public void SNES_ToggleOBJ3(bool? setto = null)
 		{
-			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
 				s.ShowOBJ_2 = setto.Value;
@@ -1175,13 +1177,13 @@ namespace BizHawk.Client.EmuHawk
 				s.ShowOBJ_2 ^= true;
 			}
 
-			Global.Emulator.PutSettings(s);
+			AsSNES.PutSettings(s);
 			GlobalWin.OSD.AddMessage(s.ShowOBJ_2 ? "OBJ 3 Layer On" : "OBJ 3 Layer Off");
 		}
 
 		public void SNES_ToggleOBJ4(bool? setto = null)
 		{
-			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
 				s.ShowOBJ_3 = setto.Value;
@@ -1191,7 +1193,7 @@ namespace BizHawk.Client.EmuHawk
 				s.ShowOBJ_3 ^= true;
 			}
 
-			Global.Emulator.PutSettings(s);
+			AsSNES.PutSettings(s);
 			GlobalWin.OSD.AddMessage(s.ShowOBJ_3 ? "OBJ 4 Layer On" : "OBJ 4 Layer Off");
 		}
 
@@ -1484,108 +1486,108 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void HandlePlatformMenus()
-        {
-            var system = string.Empty;
-            if (!Global.Game.IsNullInstance)
-            {
-                //New Code
+		{
+			var system = string.Empty;
+			if (!Global.Game.IsNullInstance)
+			{
+				//New Code
 				//We use SystemID as that has the system we are playing on.
-                system = Global.Emulator.SystemId;
-                //Old Code below.
-                //system = Global.Game.System;
+				system = Global.Emulator.SystemId;
+				//Old Code below.
+				//system = Global.Game.System;
 
-            }
+			}
 
-            TI83SubMenu.Visible = false;
-            NESSubMenu.Visible = false;
-            PCESubMenu.Visible = false;
-            SMSSubMenu.Visible = false;
-            GBSubMenu.Visible = false;
-            GBASubMenu.Visible = false;
-            AtariSubMenu.Visible = false;
-            SNESSubMenu.Visible = false;
-            ColecoSubMenu.Visible = false;
-            N64SubMenu.Visible = false;
-            SaturnSubMenu.Visible = false;
-            DGBSubMenu.Visible = false;
-            GenesisSubMenu.Visible = false;
-            wonderSwanToolStripMenuItem.Visible = false;
+			TI83SubMenu.Visible = false;
+			NESSubMenu.Visible = false;
+			PCESubMenu.Visible = false;
+			SMSSubMenu.Visible = false;
+			GBSubMenu.Visible = false;
+			GBASubMenu.Visible = false;
+			AtariSubMenu.Visible = false;
+			SNESSubMenu.Visible = false;
+			ColecoSubMenu.Visible = false;
+			N64SubMenu.Visible = false;
+			SaturnSubMenu.Visible = false;
+			DGBSubMenu.Visible = false;
+			GenesisSubMenu.Visible = false;
+			wonderSwanToolStripMenuItem.Visible = false;
 
-            switch (system)
-            {
-                case "GEN":
-                    GenesisSubMenu.Visible = true;
-                    break;
-                case "TI83":
-                    TI83SubMenu.Visible = true;
-                    break;
-                case "NES":
-                    NESSubMenu.Visible = true;
-                    break;
-                case "PCE":
-                case "PCECD":
-                case "SGX":
-                    PCESubMenu.Visible = true;
-                    break;
-                case "SMS":
-                    SMSSubMenu.Text = "&SMS";
-                    SMSSubMenu.Visible = true;
-                    break;
-                case "SG":
-                    SMSSubMenu.Text = "&SG";
-                    SMSSubMenu.Visible = true;
-                    break;
-                case "GG":
-                    SMSSubMenu.Text = "&GG";
-                    SMSSubMenu.Visible = true;
-                    break;
-                case "GB":
-                case "GBC":
-                    GBSubMenu.Visible = true;
-                    break;
-                case "GBA":
-                    GBASubMenu.Visible = true;
-                    break;
-                case "A26":
-                    AtariSubMenu.Visible = true;
-                    break;
-                case "SNES":
-                case "SGB":
-                    // TODO: fix SNES9x here
-                    if (Global.Emulator is LibsnesCore)
-                    {
-                        if ((Global.Emulator as LibsnesCore).IsSGB)
-                        {
-                            SNESSubMenu.Text = "&SGB";
-                        }
-                        else
-                        {
-                            SNESSubMenu.Text = "&SNES";
-                        }
-                        SNESSubMenu.Visible = true;
-                    }
-                    else
-                    {
-                        SNESSubMenu.Visible = false;
-                    }
-                    break;
-                case "Coleco":
-                    ColecoSubMenu.Visible = true;
-                    break;
-                case "N64":
-                    N64SubMenu.Visible = true;
-                    break;
-                case "SAT":
-                    SaturnSubMenu.Visible = true;
-                    break;
-                case "DGB":
-                    DGBSubMenu.Visible = true;
-                    break;
-                case "WSWAN":
-                    wonderSwanToolStripMenuItem.Visible = true;
-                    break;
-            }
-        }
+			switch (system)
+			{
+				case "GEN":
+					GenesisSubMenu.Visible = true;
+					break;
+				case "TI83":
+					TI83SubMenu.Visible = true;
+					break;
+				case "NES":
+					NESSubMenu.Visible = true;
+					break;
+				case "PCE":
+				case "PCECD":
+				case "SGX":
+					PCESubMenu.Visible = true;
+					break;
+				case "SMS":
+					SMSSubMenu.Text = "&SMS";
+					SMSSubMenu.Visible = true;
+					break;
+				case "SG":
+					SMSSubMenu.Text = "&SG";
+					SMSSubMenu.Visible = true;
+					break;
+				case "GG":
+					SMSSubMenu.Text = "&GG";
+					SMSSubMenu.Visible = true;
+					break;
+				case "GB":
+				case "GBC":
+					GBSubMenu.Visible = true;
+					break;
+				case "GBA":
+					GBASubMenu.Visible = true;
+					break;
+				case "A26":
+					AtariSubMenu.Visible = true;
+					break;
+				case "SNES":
+				case "SGB":
+					// TODO: fix SNES9x here
+					if (Global.Emulator is LibsnesCore)
+					{
+						if ((Global.Emulator as LibsnesCore).IsSGB)
+						{
+							SNESSubMenu.Text = "&SGB";
+						}
+						else
+						{
+							SNESSubMenu.Text = "&SNES";
+						}
+						SNESSubMenu.Visible = true;
+					}
+					else
+					{
+						SNESSubMenu.Visible = false;
+					}
+					break;
+				case "Coleco":
+					ColecoSubMenu.Visible = true;
+					break;
+				case "N64":
+					N64SubMenu.Visible = true;
+					break;
+				case "SAT":
+					SaturnSubMenu.Visible = true;
+					break;
+				case "DGB":
+					DGBSubMenu.Visible = true;
+					break;
+				case "WSWAN":
+					wonderSwanToolStripMenuItem.Visible = true;
+					break;
+			}
+		}
 
 		private static void InitControls()
 		{
@@ -1724,9 +1726,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var sfd = new SaveFileDialog();
-            sfd.AddExtension = true;
-            sfd.DefaultExt = "State";
-            sfd.Filter = "Save States (*.State)|*.State|All Files|*.*";
+			sfd.AddExtension = true;
+			sfd.DefaultExt = "State";
+			sfd.Filter = "Save States (*.State)|*.State|All Files|*.*";
 			var path = PathManager.GetSaveStatePath(Global.Game);
 			sfd.InitialDirectory = path;
 			sfd.FileName = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave0.State";
@@ -1923,7 +1925,8 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void PutCoreSettings(object o)
 		{
-			if (Global.Emulator.PutSettings(o))
+            var settable = Global.Emulator as ISettable;
+            if (settable != null && settable.PutSettings(o))
 			{
 				FlagNeedsReboot();
 			}
@@ -1934,11 +1937,12 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void PutCoreSyncSettings(object o)
 		{
+            var settable = Global.Emulator as ISettable;
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				GlobalWin.OSD.AddMessage("Attempt to change sync-relevant settings while recording BLOCKED.");
 			}
-			else if (Global.Emulator.PutSyncSettings(o))
+            else if (settable != null && settable.PutSyncSettings(o))
 			{
 				FlagNeedsReboot();
 			}
@@ -3182,7 +3186,7 @@ namespace BizHawk.Client.EmuHawk
 			// the new settings objects
 			CommitCoreSettingsToConfig(); // adelikat: I Think by reordering things, this isn't necessary anymore
 			CloseGame();
-            
+			
 			var nextComm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals(nextComm);
 			var result = loader.LoadRom(path, nextComm);
@@ -3289,7 +3293,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-                //This shows up if there's a problem                
+				//This shows up if there's a problem                
 				// TODO: put all these in a single method or something
 				HandlePlatformMenus();
 				_stateSlots.Clear();
@@ -3344,19 +3348,23 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// save settings object
 			var t = Global.Emulator.GetType();
-			Global.Config.PutCoreSettings(Global.Emulator.GetSettings(), t);
+            var settable = Global.Emulator as ISettable;
+            if (settable == null)
+                return;
+
+            Global.Config.PutCoreSettings(settable.GetSettings(), t);
 
 			// don't trample config with loaded-from-movie settings
 			if (!Global.MovieSession.Movie.IsActive)
 			{
-				Global.Config.PutCoreSyncSettings(Global.Emulator.GetSyncSettings(), t);
+                Global.Config.PutCoreSyncSettings(settable.GetSyncSettings(), t);
 			}
 		}
 
 		// whats the difference between these two methods??
 		// its very tricky. rename to be more clear or combine them.
-        // This gets called whenever a core related thing is changed.
-        // Like reboot core.
+		// This gets called whenever a core related thing is changed.
+		// Like reboot core.
 		private void CloseGame(bool clearSram = false)
 		{
 			if (clearSram)
@@ -3392,8 +3400,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void CloseRom(bool clearSram = false)
 		{
-            //This gets called after Close Game gets called.
-            //Tested with NESHawk and SMB3 (U)
+			//This gets called after Close Game gets called.
+			//Tested with NESHawk and SMB3 (U)
 			if (GlobalWin.Tools.AskSave())
 			{
 				CloseGame(clearSram);
@@ -3447,48 +3455,48 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-        #region Tool Control API
+		#region Tool Control API
 
-        // TODO: move me
-        public IControlMainform master { get; private set; }
+		// TODO: move me
+		public IControlMainform master { get; private set; }
 		public void RelinquishControl(IControlMainform master)
 		{
 			this.master = master;
 		}
 
-        private void ToggleReadOnly()
-        {
-            if (IsSlave && master.WantsToControlReadOnly)
-            {
-                master.ToggleReadOnly();
-            }
-            else
-            {
-                if (Global.MovieSession.Movie.IsActive)
-                {
-                    Global.MovieSession.ReadOnly ^= true;
-                    GlobalWin.OSD.AddMessage(Global.MovieSession.ReadOnly ? "Movie read-only mode" : "Movie read+write mode");
-                }
-                else
-                {
-                    GlobalWin.OSD.AddMessage("No movie active");
-                }
-            }
-        }
+		private void ToggleReadOnly()
+		{
+			if (IsSlave && master.WantsToControlReadOnly)
+			{
+				master.ToggleReadOnly();
+			}
+			else
+			{
+				if (Global.MovieSession.Movie.IsActive)
+				{
+					Global.MovieSession.ReadOnly ^= true;
+					GlobalWin.OSD.AddMessage(Global.MovieSession.ReadOnly ? "Movie read-only mode" : "Movie read+write mode");
+				}
+				else
+				{
+					GlobalWin.OSD.AddMessage("No movie active");
+				}
+			}
+		}
 
-        public void StopMovie(bool saveChanges = true)
-        {
-            if (IsSlave && master.WantsToControlStopMovie)
-            {
-                master.StopMovie();
-            }
-            else
-            {
-                Global.MovieSession.StopMovie(saveChanges);
-                SetMainformMovieInfo();
-                UpdateStatusSlots();
-            }
-        }
+		public void StopMovie(bool saveChanges = true)
+		{
+			if (IsSlave && master.WantsToControlStopMovie)
+			{
+				master.StopMovie();
+			}
+			else
+			{
+				Global.MovieSession.StopMovie(saveChanges);
+				SetMainformMovieInfo();
+				UpdateStatusSlots();
+			}
+		}
 
 		private bool IsSlave
 		{
@@ -3503,7 +3511,7 @@ namespace BizHawk.Client.EmuHawk
 		private void GBAcoresettingsToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Gameboy Advance Settings");
-        }
+		}
 
 
 		private void CaptureRewind(bool suppressCaptureRewind)
@@ -3542,11 +3550,11 @@ namespace BizHawk.Client.EmuHawk
 			return isRewinding;
 		}
 
-        #endregion
+		#endregion
 
 		private void LinkConnectStatusBarButton_Click(object sender, EventArgs e)
 		{
 			// TODO: it would be cool if clicking this toggled the state
 		}
-    }
+	}
 }

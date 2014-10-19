@@ -24,7 +24,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		portedVersion: "r874",
 		portedUrl: "https://code.google.com/p/genplus-gx/"
 		)]
-    public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, IMemoryDomains, IDebuggable
+	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, IMemoryDomains,
+		IDebuggable, ISettable<GPGX.GPGXSettings, GPGX.GPGXSyncSettings>
 	{
 		static GPGX AttachedCore = null;
 
@@ -163,7 +164,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (CD != null)
 					CoreComm.UsesDriveLed = true;
 
-				PutSettings(Settings ?? new GPGXSettings());
+				PutSettings((GPGXSettings)Settings ?? new GPGXSettings());
 
 				InitMemCallbacks();
 				KillMemCallbacks();
@@ -786,21 +787,39 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		GPGXSyncSettings _SyncSettings;
 		GPGXSettings _Settings;
 
-		public object GetSettings() { return _Settings.Clone(); }
-		public object GetSyncSettings() { return _SyncSettings.Clone(); }
-		public bool PutSettings(object o)
+		public GPGXSettings GetSettings() { return _Settings.Clone(); }
+		public GPGXSyncSettings GetSyncSettings() { return _SyncSettings.Clone(); }
+		public bool PutSettings(GPGXSettings o)
 		{
-			_Settings = (GPGXSettings)o;
+			_Settings = o;
 			LibGPGX.gpgx_set_draw_mask(_Settings.GetDrawMask());
 			return false;
 		}
-		public bool PutSyncSettings(object o)
+		public bool PutSyncSettings(GPGXSyncSettings o)
 		{
-			bool ret;
-			var n = (GPGXSyncSettings)o;
-			ret = GPGXSyncSettings.NeedsReboot(_SyncSettings, n);
-			_SyncSettings = n;
+			bool ret = GPGXSyncSettings.NeedsReboot(_SyncSettings, o);
+			_SyncSettings = o;
 			return ret;
+		}
+
+		object ISettable.GetSettings()
+		{
+			return GetSettings();
+		}
+
+		bool ISettable.PutSettings(object o)
+		{
+			return PutSettings((GPGXSettings)o);
+		}
+
+		object ISettable.GetSyncSettings()
+		{
+			return GetSyncSettings();
+		}
+
+		bool ISettable.PutSyncSettings(object o)
+		{
+			return PutSyncSettings((GPGXSyncSettings)o);
 		}
 
 		public class GPGXSettings
