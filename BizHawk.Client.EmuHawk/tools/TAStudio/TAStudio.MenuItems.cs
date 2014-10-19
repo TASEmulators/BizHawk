@@ -501,13 +501,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HeaderMenuItem_Click(object sender, EventArgs e)
 		{
-			new MovieHeaderEditor(_currentTasMovie).Show();
+			new MovieHeaderEditor(_currentTasMovie) { Owner = GlobalWin.MainForm }.Show();
 			UpdateChangesIndicator();
 		}
 
 		private void GreenzoneSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new GreenzoneSettingsForm(_currentTasMovie.TasStateManager.Settings).Show();
+			new GreenzoneSettingsForm(_currentTasMovie.TasStateManager.Settings) { Owner = GlobalWin.MainForm }.Show();
 			UpdateChangesIndicator();
 		}
 
