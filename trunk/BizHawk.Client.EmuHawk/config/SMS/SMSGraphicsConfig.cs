@@ -16,14 +16,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SMSGraphicsConfig_Load(object sender, EventArgs e)
 		{
-			var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
+			var s = ((SMS)Global.Emulator).GetSettings();
 			DispOBJ.Checked = s.DispOBJ;
 			DispBG.Checked = s.DispBG;
 		}
 
 		private void OK_Click(object sender, EventArgs e)
 		{
-			var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
+			var s = ((SMS)Global.Emulator).GetSettings();
 			s.DispOBJ = DispOBJ.Checked;
 			s.DispBG = DispBG.Checked;
 			GlobalWin.MainForm.PutCoreSettings(s);

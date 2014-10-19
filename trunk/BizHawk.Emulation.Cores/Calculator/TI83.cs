@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 		isPorted: false,
 		isReleased: true
 		)]
-	public class TI83 : IEmulator, IMemoryDomains, IDebuggable
+	public class TI83 : IEmulator, IMemoryDomains, IDebuggable, ISettable<TI83.TI83Settings, object>
 	{
 		//hardware
 		private readonly Z80A cpu = new Z80A();
@@ -350,7 +350,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 		[CoreConstructor("TI83")]
 		public TI83(CoreComm comm, GameInfo game, byte[] rom, object Settings)
 		{
-			PutSettings(Settings ?? new TI83Settings());
+			PutSettings((TI83Settings)Settings ?? new TI83Settings());
 
 			CoreComm = comm;
 			cpu.ReadMemory = ReadMemory;
@@ -997,12 +997,21 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		TI83Settings Settings;
 
-		public object GetSettings() { return Settings.Clone(); }
+		public TI83Settings GetSettings() { return Settings.Clone(); }
 
-		public bool PutSettings(object o)
+		public bool PutSettings(TI83Settings o)
 		{
-			Settings = (TI83Settings)o;
+			Settings = o;
 			return false;
+		}
+
+		object ISettable.GetSettings()
+		{
+			return GetSettings();
+		}
+
+		bool ISettable.PutSettings(object o) {
+			return PutSettings((TI83Settings)o);
 		}
 
 		public object GetSyncSettings() { return null; }

@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void QuickNesConfig_Load(object sender, EventArgs e)
 		{
-			Settings = (QuickNES.QuickNESSettings)Global.Emulator.GetSettings();
+			Settings = ((QuickNES)Global.Emulator).GetSettings();
 			propertyGrid1.SelectedObject = Settings;
 			SetPaletteImage();
 		}

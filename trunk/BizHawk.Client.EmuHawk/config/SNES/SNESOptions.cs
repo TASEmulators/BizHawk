@@ -59,8 +59,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void DoSettingsDialog(IWin32Window owner)
 		{
-			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
-			var ss = (LibsnesCore.SnesSyncSettings)Global.Emulator.GetSyncSettings();
+			var s = ((LibsnesCore)Global.Emulator).GetSettings();
+			var ss = ((LibsnesCore)Global.Emulator).GetSyncSettings();
 			var dlg = new SNESOptions
 			{
 				UseRingBuffer = s.UseRingBuffer,

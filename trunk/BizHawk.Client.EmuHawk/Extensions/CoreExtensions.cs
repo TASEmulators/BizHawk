@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 
 			if (Global.Emulator is LibsnesCore)
 			{
-				str += " (" + ((LibsnesCore.SnesSyncSettings)Global.Emulator.GetSyncSettings()).Profile + ")";
+				str += " (" + (((LibsnesCore)Global.Emulator).GetSyncSettings()).Profile + ")";
 			}
 
 			return str;

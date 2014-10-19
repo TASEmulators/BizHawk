@@ -126,9 +126,34 @@ namespace BizHawk.Emulation.Common
 		/// the corecomm module in use by this core.
 		/// </summary>
 		CoreComm CoreComm { get; }
+	}
 
-		// ====settings interface====
+	public interface IDebuggable : IEmulator
+	{
+		/// <summary>
+		/// Returns a list of Cpu registers and their current state
+		/// </summary>
+		/// <returns></returns>
+		Dictionary<string, int> GetCpuFlagsAndRegisters();
 
+		/// <summary>
+		/// Sets a given Cpu register to the given value
+		/// </summary>
+		/// <param name="register"></param>
+		/// <param name="value"></param>
+		void SetCpuRegister(string register, int value);
+	}
+
+	public interface ISettable : IEmulator
+	{
+		object GetSettings();
+		object GetSyncSettings();
+		bool PutSettings(object o);
+		bool PutSyncSettings(object o);
+	}
+
+	public interface ISettable<TSettings, TSync> : ISettable
+	{
 		// in addition to these methods, it's expected that the constructor or Load() method
 		// will take a Settings and SyncSettings object to set the initial state of the core
 		// (if those are null, default settings are to be used)
@@ -139,7 +164,7 @@ namespace BizHawk.Emulation.Common
 		/// (unless the object is later passed to PutSettings)
 		/// </summary>
 		/// <returns>a json-serializable object</returns>
-		object GetSettings();
+		new TSettings GetSettings();
 
 		/// <summary>
 		/// get the current core settings that affect movie sync.  these go in movie 2.0 files, so don't make the JSON too extravagant, please
@@ -148,14 +173,14 @@ namespace BizHawk.Emulation.Common
 		/// (unless the object is later passed to PutSyncSettings)
 		/// </summary>
 		/// <returns>a json-serializable object</returns>
-		object GetSyncSettings();
+		new TSync GetSyncSettings();
 
 		/// <summary>
 		/// change the core settings, excepting movie settings
 		/// </summary>
 		/// <param name="o">an object of the same type as the return for GetSettings</param>
 		/// <returns>true if a core reboot will be required to make the changes effective</returns>
-		bool PutSettings(object o);
+		new bool PutSettings(TSettings o);
 
 		/// <summary>
 		/// changes the movie-sync relevant settings.  THIS SHOULD NEVER BE CALLED WHILE RECORDING
@@ -163,24 +188,8 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		/// <param name="o">an object of the same type as the return for GetSyncSettings</param>
 		/// <returns>true if a core reboot will be required to make the changes effective</returns>
-		bool PutSyncSettings(object o);
+		new bool PutSyncSettings(TSync o);
 	}
-
-    public interface IDebuggable : IEmulator
-    {
-        /// <summary>
-        /// Returns a list of Cpu registers and their current state
-        /// </summary>
-        /// <returns></returns>
-        Dictionary<string, int> GetCpuFlagsAndRegisters();
-
-        /// <summary>
-        /// Sets a given Cpu register to the given value
-        /// </summary>
-        /// <param name="register"></param>
-        /// <param name="value"></param>
-        void SetCpuRegister(string register, int value);
-    }
 
 	public enum DisplayType { NTSC, PAL, DENDY }
 }

@@ -14,7 +14,8 @@ using BizHawk.Common;
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	[CoreAttributes("VBA-Next", "many authors", true, true, "cd508312a29ed8c29dacac1b11c2dce56c338a54", "https://github.com/libretro/vba-next")]
-    public class VBANext : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, IMemoryDomains, IDebuggable
+	public class VBANext : IEmulator, IVideoProvider, ISyncSoundProvider,
+		IGBAGPUViewable, IMemoryDomains, IDebuggable, ISettable<object, VBANext.SyncSettings>
 	{
 		IntPtr Core;
 
@@ -399,7 +400,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			return null;
 		}
 
-		public object GetSyncSettings()
+		public SyncSettings GetSyncSettings()
 		{
 			return _SyncSettings.Clone();
 		}
@@ -412,12 +413,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			return false;
 		}
 
-		public bool PutSyncSettings(object o)
+		public bool PutSyncSettings(SyncSettings o)
 		{
-			var s = (SyncSettings)o;
-			bool ret = SyncSettings.NeedsReboot(s, _SyncSettings);
-			_SyncSettings = s;
+			bool ret = SyncSettings.NeedsReboot(o, _SyncSettings);
+			_SyncSettings = o;
 			return ret;
+		}
+
+		object ISettable.GetSettings()
+		{
+			return GetSettings();
+		}
+
+		bool ISettable.PutSettings(object o)
+		{
+			return PutSettings(o);
+		}
+
+		object ISettable.GetSyncSettings()
+		{
+			return GetSyncSettings();
+		}
+
+		bool ISettable.PutSyncSettings(object o)
+		{
+			return PutSyncSettings((SyncSettings)o);
 		}
 
 		public class SyncSettings

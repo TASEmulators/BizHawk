@@ -22,7 +22,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		portedVersion: "SVN 344",
 		portedUrl: "http://gambatte.sourceforge.net/"
 		)]
-    public class Gameboy : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, IDebuggable
+	public class Gameboy : IEmulator, IVideoProvider, ISyncSoundProvider,
+		IMemoryDomains, IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>
 	{
 		#region ALL SAVESTATEABLE STATE GOES HERE
 
@@ -163,7 +164,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					throw new InvalidOperationException("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
 
 				// set real default colors (before anyone mucks with them at all)
-				PutSettings(Settings ?? new GambatteSettings());
+				PutSettings((GambatteSettings)Settings ?? new GambatteSettings());
 
 				InitSound();
 
@@ -986,11 +987,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		GambatteSettings _Settings;
 		GambatteSyncSettings _SyncSettings;
 
-		public object GetSettings() { return _Settings.Clone(); }
-		public object GetSyncSettings() { return _SyncSettings.Clone(); }
-		public bool PutSettings(object o)
+		public GambatteSettings GetSettings() { return _Settings.Clone(); }
+		public GambatteSyncSettings GetSyncSettings() { return _SyncSettings.Clone(); }
+		public bool PutSettings(GambatteSettings o)
 		{
-			_Settings = (GambatteSettings)o;
+			_Settings = o;
 			if (IsCGBMode())
 				SetCGBColors(_Settings.CGBColors);
 			else
@@ -998,12 +999,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			return false;
 		}
 
-		public bool PutSyncSettings(object o)
+		public bool PutSyncSettings(GambatteSyncSettings o)
 		{
-			var s = (GambatteSyncSettings)o;
-			bool ret = GambatteSyncSettings.NeedsReboot(_SyncSettings, s);
-			_SyncSettings = s;
+			bool ret = GambatteSyncSettings.NeedsReboot(_SyncSettings, o);
+			_SyncSettings = o;
 			return ret;
+		}
+
+		object ISettable.GetSettings()
+		{
+			return GetSettings();
+		}
+
+		bool ISettable.PutSettings(object o)
+		{
+			return PutSettings((GambatteSettings)o);
+		}
+
+		object ISettable.GetSyncSettings()
+		{
+			return GetSyncSettings();
+		}
+
+		bool ISettable.PutSyncSettings(object o)
+		{
+			return PutSyncSettings((GambatteSyncSettings)o);
 		}
 
 		public class GambatteSettings

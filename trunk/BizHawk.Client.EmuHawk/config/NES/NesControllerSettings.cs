@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 		public NesControllerSettings()
 		{
 			InitializeComponent();
-			SyncSettings = (NES.NESSyncSettings)Global.Emulator.GetSyncSettings();
+			SyncSettings = ((NES)Global.Emulator).GetSyncSettings();
 
 			// TODO: use combobox extension and add descriptions to enum values
 			comboBoxFamicom.Items.AddRange(NESControlSettings.GetFamicomExpansionValues().ToArray());

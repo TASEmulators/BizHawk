@@ -34,6 +34,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+        private static NES AsNES { get { return Global.Emulator as NES; } }
+
 		public NESSoundConfig()
 		{
 			InitializeComponent();
@@ -48,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NESSoundConfig_Load(object sender, EventArgs e)
 		{
-			_oldSettings = (NES.NESSettings)Global.Emulator.GetSettings();
+			_oldSettings = AsNES.GetSettings();
 			_settings = _oldSettings.Clone();
 
 			trackBar1.Value = _settings.Square1;
@@ -66,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 		private void Cancel_Click(object sender, EventArgs e)
 		{
 			// restore previous value
-			Global.Emulator.PutSettings(_oldSettings);
+            AsNES.PutSettings(_oldSettings);
 			Close();
 		}
 
@@ -74,35 +76,35 @@ namespace BizHawk.Client.EmuHawk
 		{
 			label6.Text = trackBar1.Value.ToString();
 			_settings.Square1 = trackBar1.Value;
-			Global.Emulator.PutSettings(_settings);
+            AsNES.PutSettings(_settings);
 		}
 
 		private void trackBar2_ValueChanged(object sender, EventArgs e)
 		{
 			label7.Text = trackBar2.Value.ToString();
 			_settings.Square2 = trackBar2.Value;
-			Global.Emulator.PutSettings(_settings);
+            AsNES.PutSettings(_settings);
 		}
 
 		private void trackBar3_ValueChanged(object sender, EventArgs e)
 		{
 			label8.Text = trackBar3.Value.ToString();
 			_settings.Triangle = trackBar3.Value;
-			Global.Emulator.PutSettings(_settings);
+            AsNES.PutSettings(_settings);
 		}
 
 		private void trackBar4_ValueChanged(object sender, EventArgs e)
 		{
 			label9.Text = trackBar4.Value.ToString();
 			_settings.Noise = trackBar4.Value;
-			Global.Emulator.PutSettings(_settings);
+            AsNES.PutSettings(_settings);
 		}
 
 		private void trackBar5_ValueChanged(object sender, EventArgs e)
 		{
 			label10.Text = trackBar5.Value.ToString();
 			_settings.DMC = trackBar5.Value;
-			Global.Emulator.PutSettings(_settings);
+            AsNES.PutSettings(_settings);
 		}
 	}
 }

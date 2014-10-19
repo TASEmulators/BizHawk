@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 		public NESSyncSettingsForm()
 		{
 			InitializeComponent();
-			SyncSettings = (NES.NESSyncSettings)Global.Emulator.GetSyncSettings();
+			SyncSettings = ((NES)Global.Emulator).GetSyncSettings();
 			DTDB = new DataTableDictionaryBind<string, string>(SyncSettings.BoardProperties);
 			dataGridView1.DataSource = DTDB.Table;
 

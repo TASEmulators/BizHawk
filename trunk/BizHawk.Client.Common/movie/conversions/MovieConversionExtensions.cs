@@ -95,7 +95,11 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			movie.EmulatorVersion = VersionInfo.GetEmuVersion();
 			movie.SystemID = Global.Emulator.SystemId;
 
-			movie.SyncSettingsJson = ConfigService.SaveWithType(Global.Emulator.GetSyncSettings());
+            var settable = Global.Emulator as ISettable<object, object>;
+            if (settable == null)
+                throw new NotImplementedException("ISettable");
+
+            movie.SyncSettingsJson = ConfigService.SaveWithType(settable.GetSyncSettings());
 
 			if (Global.Game != null)
 			{

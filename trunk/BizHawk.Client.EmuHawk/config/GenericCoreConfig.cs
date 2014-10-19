@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -21,8 +22,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 
-			s = Global.Emulator.GetSettings();
-			ss = Global.Emulator.GetSyncSettings();
+			var settable = Global.Emulator as ISettable;
+
+			if (settable != null)
+			{
+				s = settable.GetSettings();
+				ss = settable.GetSyncSettings();
+			}
 
 			if (s != null)
 				propertyGrid1.SelectedObject = s;
@@ -39,8 +45,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			if (s != null)
-				Global.Emulator.PutSettings(s);
+			var settable = Global.Emulator as ISettable;
+			if (s != null && settable != null)
+			{
+				settable.PutSettings(s);
+			}
+
 			if (ss != null && syncsettingschanged)
 				GlobalWin.MainForm.PutCoreSyncSettings(ss);
 
