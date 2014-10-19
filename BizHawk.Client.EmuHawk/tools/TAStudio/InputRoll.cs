@@ -1132,11 +1132,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (e.Button == MouseButtons.Right)
 			{
-				if (IsHoveringOnColumnCell)
-				{
-					ColumnRightClickEvent(ColumnAtX(e.X));
-				}
-				else
+				if (!IsHoveringOnColumnCell)
 				{
 					RightButtonHeld = true;
 				}
@@ -1239,9 +1235,16 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Left && IsHoveringOnColumnCell)
+			if (IsHoveringOnColumnCell)
 			{
-				ColumnClickEvent(ColumnAtX(e.X));
+				if (e.Button == MouseButtons.Left)
+				{
+					ColumnClickEvent(ColumnAtX(e.X));
+				}
+				else if (e.Button == MouseButtons.Right)
+				{
+					ColumnRightClickEvent(ColumnAtX(e.X));
+				}
 			}
 			
 			IsPaintDown = false;
