@@ -365,8 +365,9 @@ namespace BizHawk.Client.EmuHawk
 					for (var i = startVal; i < endVal; i++)
 					{
 						TasView.SelectRow(i, true);
-						TasView.Refresh();
 					}
+
+					TasView.Refresh();
 				}
 			}
 			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startBoolDrawColumn))
