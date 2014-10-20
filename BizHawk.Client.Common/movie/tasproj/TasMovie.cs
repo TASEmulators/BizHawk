@@ -109,7 +109,7 @@ namespace BizHawk.Client.Common
 			Changes = false;
 		}
 
-		public void FlagChanges() // TODO: it is pointless to have these two methods rather than a public setter
+		public void FlagChanges()
 		{
 			Changes = true;
 		}

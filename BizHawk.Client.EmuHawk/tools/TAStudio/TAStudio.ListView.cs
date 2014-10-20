@@ -68,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 		private void TasView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
 		{
 			var columnName = column.Name;
-			var record = _currentTasMovie[index];
+			var record = CurrentTasMovie[index];
 
 			if (columnName == MarkerColumnName)
 			{
@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					color = CurrentFrame_FrameCol;
 				}
-				else if (_currentTasMovie.Markers.IsMarker(index))
+				else if (CurrentTasMovie.Markers.IsMarker(index))
 				{
 					color = Marker_FrameCol;
 				}
@@ -136,17 +136,17 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (columnName == FrameColumnName)
 				{
-					text = (index).ToString().PadLeft(_currentTasMovie.InputLogLength.ToString().Length, '0');
+					text = (index).ToString().PadLeft(CurrentTasMovie.InputLogLength.ToString().Length, '0');
 				}
 				else
 				{
-					if (index < _currentTasMovie.InputLogLength)
+					if (index < CurrentTasMovie.InputLogLength)
 					{
-						text = _currentTasMovie.DisplayValue(index, columnName);
+						text = CurrentTasMovie.DisplayValue(index, columnName);
 					}
-					else if (Global.Emulator.Frame == _currentTasMovie.InputLogLength) // In this situation we have a "pending" frame for the user to click
+					else if (Global.Emulator.Frame == CurrentTasMovie.InputLogLength) // In this situation we have a "pending" frame for the user to click
 					{
-						text = _currentTasMovie.CreateDisplayValueForButton(
+						text = CurrentTasMovie.CreateDisplayValueForButton(
 							Global.ClickyVirtualPadController,
 							columnName);
 					}
@@ -171,7 +171,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (columnName == FrameColumnName)
 				{
-					_currentTasMovie.Markers.Add(TasView.LastSelectedIndex.Value, "");
+					CurrentTasMovie.Markers.Add(TasView.LastSelectedIndex.Value, "");
 					RefreshDialog();
 					
 				}
@@ -200,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_ColumnReordered(object sender, InputRoll.ColumnReorderedEventArgs e)
 		{
-			_currentTasMovie.FlagChanges();
+			CurrentTasMovie.FlagChanges();
 		}
 
 		private void TasView_MouseEnter(object sender, EventArgs e)
@@ -243,9 +243,9 @@ namespace BizHawk.Client.EmuHawk
 
 							_startBoolDrawColumn = buttonName;
 
-							if (frame < _currentTasMovie.InputLogLength)
+							if (frame < CurrentTasMovie.InputLogLength)
 							{
-								_boolPaintState = _currentTasMovie.BoolIsPressed(frame, buttonName);
+								_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
 							}
 							else
 							{
@@ -256,7 +256,7 @@ namespace BizHawk.Client.EmuHawk
 						else
 						{
 							_startFloatDrawColumn = buttonName;
-							_floatPaintState = _currentTasMovie.GetFloatValue(frame, buttonName);
+							_floatPaintState = CurrentTasMovie.GetFloatValue(frame, buttonName);
 						}
 					}
 				}
@@ -318,7 +318,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Global.Config.TAStudioEmptyMarkers)
 				{
-					_currentTasMovie.Markers.Add(TasView.CurrentCell.RowIndex.Value, string.Empty);
+					CurrentTasMovie.Markers.Add(TasView.CurrentCell.RowIndex.Value, string.Empty);
 					RefreshDialog();
 				}
 				else
@@ -390,9 +390,9 @@ namespace BizHawk.Client.EmuHawk
 				{
 					for (var i = startVal; i < endVal; i++)
 					{
-						if (i < _currentTasMovie.InputLogLength) // TODO: how do we really want to handle the user setting the float state of the pending frame?
+						if (i < CurrentTasMovie.InputLogLength) // TODO: how do we really want to handle the user setting the float state of the pending frame?
 						{
-							_currentTasMovie.SetFloatState(i, _startFloatDrawColumn, _floatPaintState); // Notice it uses new row, old column, you can only paint across a single column
+							CurrentTasMovie.SetFloatState(i, _startFloatDrawColumn, _floatPaintState); // Notice it uses new row, old column, you can only paint across a single column
 							_triggerAutoRestore = true;
 							_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 						}

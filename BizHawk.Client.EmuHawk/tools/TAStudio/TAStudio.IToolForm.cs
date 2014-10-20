@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			if (!IsHandleCreated || IsDisposed || _currentTasMovie == null)
+			if (!IsHandleCreated || IsDisposed || CurrentTasMovie == null)
 			{
 				return;
 			}
@@ -32,12 +32,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FastUpdate()
 		{
-			if (!IsHandleCreated || IsDisposed || _currentTasMovie == null)
+			if (!IsHandleCreated || IsDisposed || CurrentTasMovie == null)
 			{
 				return;
 			}
 
-			TasView.RowCount = _currentTasMovie.InputLogLength + 1;
+			TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
 
 			if (TasPlaybackBox.FollowCursor)
 			{
@@ -57,9 +57,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (_currentTasMovie != null)
+			if (CurrentTasMovie != null)
 			{
-				if (Global.Game.Hash != _currentTasMovie.Hash)
+				if (Global.Game.Hash != CurrentTasMovie.Hash)
 				{
 					TastudioToStopMovie();
 					TasView.AllColumns.Clear();
@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool AskSaveChanges()
 		{
-			if (_currentTasMovie != null && _currentTasMovie.Changes)
+			if (CurrentTasMovie != null && CurrentTasMovie.Changes)
 			{
 				GlobalWin.Sound.StopSound();
 				var result = MessageBox.Show(
@@ -93,7 +93,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (result == DialogResult.No)
 				{
-					_currentTasMovie.ClearChanges();
+					CurrentTasMovie.ClearChanges();
 					return true;
 				}
 				else if (result == DialogResult.Cancel)
@@ -109,8 +109,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!indexThatMustBeVisible.HasValue)
 			{
-				indexThatMustBeVisible = _currentTasMovie.IsRecording
-					? _currentTasMovie.InputLogLength
+				indexThatMustBeVisible = CurrentTasMovie.IsRecording
+					? CurrentTasMovie.InputLogLength
 					: Global.Emulator.Frame + 1;
 			}
 
