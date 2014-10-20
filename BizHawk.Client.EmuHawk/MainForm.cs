@@ -2448,6 +2448,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadState(string path, string userFriendlyStateName, bool fromLua = false) // Move to client.common
 		{
+			// If from lua, disable counting rerecords
+			bool wasCountingRerecords = Global.MovieSession.Movie.IsCountingRerecords;
+
+			if (fromLua)
+				Global.MovieSession.Movie.IsCountingRerecords = false;
+
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 
 			if (SavestateManager.LoadStateFile(path, userFriendlyStateName))
@@ -2469,6 +2475,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GlobalWin.OSD.AddMessage("Loadstate error!");
 			}
+
+			Global.MovieSession.Movie.IsCountingRerecords = wasCountingRerecords;
 		}
 
 		public void LoadQuickSave(string quickSlotName, bool fromLua = false)
