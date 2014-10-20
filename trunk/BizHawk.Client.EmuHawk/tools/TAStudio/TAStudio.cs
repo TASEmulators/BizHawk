@@ -379,6 +379,26 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void CallEditMarkerPopUp(TasMovieMarker marker)
+		{
+			var markerFrame = marker.Frame;
+			InputPrompt i = new InputPrompt
+			{
+				Text = "Marker for frame " + markerFrame,
+				TextInputType = InputPrompt.InputType.Text,
+				Message = "Enter a message",
+				InitialValue = CurrentTasMovie.Markers.IsMarker(markerFrame) ? CurrentTasMovie.Markers.PreviousOrCurrent(markerFrame).Message : ""
+			};
+
+			var result = i.ShowHawkDialog();
+
+			if (result == DialogResult.OK)
+			{
+				marker.Message = i.PromptText;
+				MarkerControl.UpdateValues();
+			}
+		}
+
 		private void UpdateChangesIndicator()
 		{
 			// TODO
