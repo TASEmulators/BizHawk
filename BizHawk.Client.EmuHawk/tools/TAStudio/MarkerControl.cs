@@ -144,5 +144,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Tastudio.GoToMarker(SelectedMarkers.First());
 		}
+
+		private void MarkerView_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			if (MarkerView.CurrentCell.RowIndex.HasValue)
+			{
+				var marker = Tastudio.CurrentTasMovie.Markers[MarkerView.CurrentCell.RowIndex.Value];
+				Tastudio.CallEditMarkerPopUp(marker);
+			}
+		}
 	}
 }

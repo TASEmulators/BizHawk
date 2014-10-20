@@ -312,7 +312,6 @@ namespace BizHawk.Client.EmuHawk
 		private void TasView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
 			if (TasView.CurrentCell.RowIndex.HasValue &&
-				TasView.CurrentCell != null &&
 				TasView.CurrentCell.Column.Name == FrameColumnName &&
 				e.Button == MouseButtons.Left)
 			{
