@@ -23,7 +23,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _defaultWidth;
 		private int _defaultHeight;
-		private TasMovie _currentTasMovie;
 		private MovieEndAction _originalEndAction; // The movie end behavior selected by the user (that is overridden by TAStudio)
 		private Dictionary<string, string> GenerateColumnNames()
 		{
@@ -33,6 +32,11 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private int? _autoRestoreFrame; // The frame auto-restore will restore to, if set
+
+		public TasMovie CurrentTasMovie
+		{
+			get { return Global.MovieSession.Movie as TasMovie; }
+		}
 
 		public TAStudio()
 		{
@@ -49,11 +53,6 @@ namespace BizHawk.Client.EmuHawk
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
 			TasView.MultiSelect = true;
 			TasView.MaxCharactersInHorizontal = 1;
-		}
-
-		public TasMovie CurrentMovie
-		{
-			get { return _currentTasMovie; }
 		}
 
 		private void TastudioToStopMovie()
@@ -74,7 +73,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.MainForm.PauseOnFrame = null;
 			GlobalWin.OSD.AddMessage("TAStudio engaged");
-			_currentTasMovie = Global.MovieSession.Movie as TasMovie;
 			SetTasMovieCallbacks();
 			SetTextProperty();
 			GlobalWin.MainForm.PauseEmulator();
@@ -98,12 +96,11 @@ namespace BizHawk.Client.EmuHawk
 		private void NewTasMovie()
 		{
 			Global.MovieSession.Movie = new TasMovie();
-			_currentTasMovie = Global.MovieSession.Movie as TasMovie;
 			SetTasMovieCallbacks();
-			_currentTasMovie.PropertyChanged += new PropertyChangedEventHandler(this.TasMovie_OnPropertyChanged);
-			_currentTasMovie.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
-			_currentTasMovie.PopulateWithDefaultHeaderValues();
-			_currentTasMovie.ClearChanges();
+			CurrentTasMovie.PropertyChanged += new PropertyChangedEventHandler(this.TasMovie_OnPropertyChanged);
+			CurrentTasMovie.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
+			CurrentTasMovie.PopulateWithDefaultHeaderValues();
+			CurrentTasMovie.ClearChanges();
 			TasView.RowCount = 1;
 		}
 
@@ -130,8 +127,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetTasMovieCallbacks()
 		{
-			_currentTasMovie.ClientSettingsForSave = ClientSettingsForSave;
-			_currentTasMovie.GetClientSettingsOnLoad = GetClientSettingsOnLoad;
+			CurrentTasMovie.ClientSettingsForSave = ClientSettingsForSave;
+			CurrentTasMovie.GetClientSettingsOnLoad = GetClientSettingsOnLoad;
 		}
 
 		private void StartNewTasMovie()
@@ -141,7 +138,7 @@ namespace BizHawk.Client.EmuHawk
 				NewTasMovie();
 				WantsToControlStopMovie = false;
 				StartNewMovieWrapper(record: true);
-				_currentTasMovie.ClearChanges();
+				CurrentTasMovie.ClearChanges();
 				WantsToControlStopMovie = true;
 				SetTextProperty();
 				RefreshDialog();
@@ -167,9 +164,9 @@ namespace BizHawk.Client.EmuHawk
 		private void SetTextProperty()
 		{
 			var text = "TAStudio";
-			if (_currentTasMovie != null)
+			if (CurrentTasMovie != null)
 			{
-				text += " - " + _currentTasMovie.Name + (_currentTasMovie.Changes ? "*" : "");
+				text += " - " + CurrentTasMovie.Name + (CurrentTasMovie.Changes ? "*" : "");
 			}
 
 			Text = text;
@@ -205,12 +202,11 @@ namespace BizHawk.Client.EmuHawk
 					return false;
 				}
 
-				_currentTasMovie = Global.MovieSession.Movie as TasMovie;
 				SetTasMovieCallbacks();
 
 				WantsToControlStopMovie = true;
 				Global.Config.RecentTas.Add(path);
-				Text = "TAStudio - " + _currentTasMovie.Name;
+				Text = "TAStudio - " + CurrentTasMovie.Name;
 
 				RefreshDialog();
 				return true;
@@ -221,13 +217,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RefreshDialog()
 		{
-			_currentTasMovie.FlushInputCache();
-			_currentTasMovie.UseInputCache = true;
-			TasView.RowCount = _currentTasMovie.InputLogLength + 1;
+			CurrentTasMovie.FlushInputCache();
+			CurrentTasMovie.UseInputCache = true;
+			TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
 			TasView.Refresh();
 
-			_currentTasMovie.FlushInputCache();
-			_currentTasMovie.UseInputCache = false;
+			CurrentTasMovie.FlushInputCache();
+			CurrentTasMovie.UseInputCache = false;
 
 			if (MarkerControl != null)
 			{
@@ -302,8 +298,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StartAtNearestFrameAndEmulate(int frame)
 		{
-			_currentTasMovie.SwitchToPlay();
-			var closestState = _currentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
+			CurrentTasMovie.SwitchToPlay();
+			var closestState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
 			if (closestState != null)
 			{
 				LoadState(closestState.ToArray());
@@ -371,14 +367,14 @@ namespace BizHawk.Client.EmuHawk
 				Text = "Marker for frame " + markerFrame,
 				TextInputType = InputPrompt.InputType.Text,
 				Message = "Enter a message",
-				InitialValue = _currentTasMovie.Markers.IsMarker(markerFrame) ? _currentTasMovie.Markers.PreviousOrCurrent(markerFrame).Message : ""
+				InitialValue = CurrentTasMovie.Markers.IsMarker(markerFrame) ? CurrentTasMovie.Markers.PreviousOrCurrent(markerFrame).Message : ""
 			};
 
 			var result = i.ShowHawkDialog();
 
 			if (result == DialogResult.OK)
 			{
-				_currentTasMovie.Markers.Add(markerFrame, i.PromptText);
+				CurrentTasMovie.Markers.Add(markerFrame, i.PromptText);
 				MarkerControl.UpdateValues();
 			}
 		}
@@ -392,11 +388,11 @@ namespace BizHawk.Client.EmuHawk
 		// Sets either the pending frame or the tas input log
 		private void ToggleBoolState(int frame, string buttonName)
 		{
-			if (frame < _currentTasMovie.InputLogLength)
+			if (frame < CurrentTasMovie.InputLogLength)
 			{
-				_currentTasMovie.ToggleBoolState(frame, buttonName);
+				CurrentTasMovie.ToggleBoolState(frame, buttonName);
 			}
-			else if (frame == Global.Emulator.Frame && frame == _currentTasMovie.InputLogLength)
+			else if (frame == Global.Emulator.Frame && frame == CurrentTasMovie.InputLogLength)
 			{
 				Global.ClickyVirtualPadController.Toggle(buttonName);
 			}
@@ -406,11 +402,11 @@ namespace BizHawk.Client.EmuHawk
 		// Sets either the pending frame or the tas input log
 		private void SetBoolState(int frame, string buttonName, bool value)
 		{
-			if (frame < _currentTasMovie.InputLogLength)
+			if (frame < CurrentTasMovie.InputLogLength)
 			{
-				_currentTasMovie.SetBoolState(frame, buttonName, value);
+				CurrentTasMovie.SetBoolState(frame, buttonName, value);
 			}
-			else if (frame == Global.Emulator.Frame && frame == _currentTasMovie.InputLogLength)
+			else if (frame == Global.Emulator.Frame && frame == CurrentTasMovie.InputLogLength)
 			{
 				Global.ClickyVirtualPadController.SetBool(buttonName, value);
 			}
@@ -431,15 +427,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			NewTasMovie();
 			StartNewMovieWrapper(record: true);
-			_currentTasMovie.TasStateManager.Capture();
-			_currentTasMovie.SwitchToRecord();
-			_currentTasMovie.ClearChanges();
+			CurrentTasMovie.TasStateManager.Capture();
+			CurrentTasMovie.SwitchToRecord();
+			CurrentTasMovie.ClearChanges();
 		}
 
 		private bool StartNewMovieWrapper(bool record, IMovie movie = null)
 		{
 			_initializing = true;
-			var result = GlobalWin.MainForm.StartNewMovie(movie != null ? movie : _currentTasMovie, record);
+			var result = GlobalWin.MainForm.StartNewMovie(movie != null ? movie : CurrentTasMovie, record);
 			_initializing = false;
 
 			return result;
@@ -459,7 +455,7 @@ namespace BizHawk.Client.EmuHawk
 				.First(t => t.Name == "RotateMenuItem")
 				.Click += (o, ov) =>
 				{
-					_currentTasMovie.FlagChanges();
+					CurrentTasMovie.FlagChanges();
 				};
 
 			RefreshDialog();
@@ -556,7 +552,7 @@ namespace BizHawk.Client.EmuHawk
 				TruncateContextMenuItem.Enabled =
 				TasView.SelectedRows.Any();
 
-			RemoveMarkersContextMenuItem.Enabled = _currentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
+			RemoveMarkersContextMenuItem.Enabled = CurrentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
 		}
 
 		#endregion
