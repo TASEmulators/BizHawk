@@ -35,7 +35,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewTasMenuItem_Click(object sender, EventArgs e)
 		{
-			StartNewTasMovie();
+			if (GlobalWin.MainForm.GameIsClosing)
+			{
+				Close();
+			}
+			else
+			{
+				StartNewTasMovie();
+			}
 		}
 
 		private void OpenTasMenuItem_Click(object sender, EventArgs e)
