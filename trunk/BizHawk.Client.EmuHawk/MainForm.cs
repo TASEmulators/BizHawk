@@ -3367,6 +3367,7 @@ namespace BizHawk.Client.EmuHawk
 		// Like reboot core.
 		private void CloseGame(bool clearSram = false)
 		{
+			GameIsClosing = true;
 			if (clearSram)
 			{
 				var path = PathManager.SaveRamPath(Global.Game);
@@ -3396,7 +3397,10 @@ namespace BizHawk.Client.EmuHawk
 			Global.AutoFireController = Global.AutofireNullControls;
 			RewireSound();
 			RebootStatusBarIcon.Visible = false;
+			GameIsClosing = false;
 		}
+
+		public bool GameIsClosing { get; set; } // Let's tools make better decisions when being called by CloseGame
 
 		public void CloseRom(bool clearSram = false)
 		{
