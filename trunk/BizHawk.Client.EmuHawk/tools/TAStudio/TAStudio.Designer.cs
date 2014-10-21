@@ -972,6 +972,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// TAStudio
 			// 
+			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(506, 519);
@@ -988,6 +989,8 @@ namespace BizHawk.Client.EmuHawk
 			this.Text = "TAStudio";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Tastudio_Closing);
 			this.Load += new System.EventHandler(this.Tastudio_Load);
+			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.TAStudio_DragDrop);
+			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.TAStudio_DragEnter);
 			this.TASMenu.ResumeLayout(false);
 			this.TASMenu.PerformLayout();
 			this.TasStatusStrip.ResumeLayout(false);
