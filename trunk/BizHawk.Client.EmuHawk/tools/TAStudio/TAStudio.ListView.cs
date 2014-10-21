@@ -280,14 +280,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_supressContextMenu = false;
 
-			if (_triggerAutoRestore)
-			{
-				GoToLastEmulatedFrameIfNecessary(_triggerAutoRestoreFromFrame.Value);
-				DoAutoRestore();
-
-				_triggerAutoRestore = false;
-				_triggerAutoRestoreFromFrame = null;
-			}
+			DoTriggeredAutoRestoreIfNeeded();
 		}
 
 		private void TasView_MouseWheel(object sender, MouseEventArgs e)

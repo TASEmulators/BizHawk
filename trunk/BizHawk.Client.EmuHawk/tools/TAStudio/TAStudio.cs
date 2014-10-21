@@ -461,6 +461,18 @@ namespace BizHawk.Client.EmuHawk
 			return result;
 		}
 
+		private void DoTriggeredAutoRestoreIfNeeded()
+		{
+			if (_triggerAutoRestore)
+			{
+				GoToLastEmulatedFrameIfNecessary(_triggerAutoRestoreFromFrame.Value);
+				DoAutoRestore();
+
+				_triggerAutoRestore = false;
+				_triggerAutoRestoreFromFrame = null;
+			}
+		}
+
 		#region Dialog Events
 
 		private void Tastudio_Load(object sender, EventArgs e)
