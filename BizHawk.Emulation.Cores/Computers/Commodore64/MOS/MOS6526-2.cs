@@ -4,6 +4,10 @@ using System.Linq;
 using System.Text;
 using BizHawk.Common;
 
+#pragma warning disable 0169
+#pragma warning disable 0414
+#pragma warning disable 0649
+
 // thanks to these fine folks for their research on this buggy as hell chip:
 // Simon White (s_a_white@email.com)
 // Antti S. Lankila "alankila"
