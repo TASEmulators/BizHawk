@@ -59,21 +59,7 @@ namespace BizHawk.Client.EmuHawk
 				var file = ToolHelpers.GetTasProjFileFromUser(filename);
 				if (file != null)
 				{
-					CurrentTasMovie.Filename = file.FullName;
-					CurrentTasMovie.Load();
-					Global.Config.RecentTas.Add(CurrentTasMovie.Filename);
-
-					if (CurrentTasMovie.InputLogLength > 0) // TODO: this is probably reoccuring logic, break off into a function
-					{
-						CurrentTasMovie.SwitchToPlay();
-					}
-					else
-					{
-						CurrentTasMovie.SwitchToRecord();
-					}
-
-					RefreshDialog();
-					MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " loaded.";
+					LoadFile(file);
 				}
 			}
 		}

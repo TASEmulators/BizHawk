@@ -473,6 +473,25 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void LoadFile(FileInfo file)
+		{
+			CurrentTasMovie.Filename = file.FullName;
+			CurrentTasMovie.Load();
+			Global.Config.RecentTas.Add(CurrentTasMovie.Filename);
+
+			if (CurrentTasMovie.InputLogLength > 0) // TODO: this is probably reoccuring logic, break off into a function
+			{
+				CurrentTasMovie.SwitchToPlay();
+			}
+			else
+			{
+				CurrentTasMovie.SwitchToRecord();
+			}
+
+			RefreshDialog();
+			MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " loaded.";
+		}
+
 		#region Dialog Events
 
 		private void Tastudio_Load(object sender, EventArgs e)
@@ -585,6 +604,27 @@ namespace BizHawk.Client.EmuHawk
 				TasView.SelectedRows.Any();
 
 			RemoveMarkersContextMenuItem.Enabled = CurrentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
+		}
+
+		private void TAStudio_DragEnter(object sender, DragEventArgs e)
+		{
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+		}
+
+		private void TAStudio_DragDrop(object sender, DragEventArgs e)
+		{
+			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			if (Path.GetExtension(filePaths[0]) == "." + TasMovie.Extension)
+			{
+				var file = new FileInfo(filePaths[0]);
+				if (file != null)
+				{
+					if (AskSaveChanges())
+					{
+						LoadFile(file);
+					}
+				}
+			}
 		}
 
 		#endregion
