@@ -1429,6 +1429,29 @@ namespace BizHawk.Client.EmuHawk
 			{
 				HorizontalOrientation ^= true;
 			}
+			else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.PageUp) // Page Up
+			{
+				if (FirstVisibleRow > 0)
+				{
+					LastVisibleRow = FirstVisibleRow;
+					Refresh();
+				}
+			}
+			else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.PageDown) // Page Down
+			{
+				var totalRows = LastVisibleRow - FirstVisibleRow;
+				if (totalRows <= RowCount)
+				{
+					var final = LastVisibleRow + totalRows;
+					if (final > RowCount)
+					{
+						final = RowCount;
+					}
+
+					LastVisibleRow = final;
+					Refresh();
+				}
+			}
 
 			base.OnKeyDown(e);
 		}
