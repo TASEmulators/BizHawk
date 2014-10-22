@@ -1452,6 +1452,16 @@ namespace BizHawk.Client.EmuHawk
 					Refresh();
 				}
 			}
+			else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.Home) // Home
+			{
+				FirstVisibleRow = 0;
+				Refresh();
+			}
+			else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.End) // End
+			{
+				LastVisibleRow = RowCount;
+				Refresh();
+			}
 
 			base.OnKeyDown(e);
 		}
