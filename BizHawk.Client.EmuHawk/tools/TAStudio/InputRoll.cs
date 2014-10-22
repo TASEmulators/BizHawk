@@ -1,4 +1,6 @@
-﻿using System;
+﻿//TODO - do not constantly reference this.ForeColor and this.NormalFont. it should be a waste of time. Cache them (and be sure to respond to system messages when the user settings change)
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -34,6 +36,9 @@ namespace BizHawk.Client.EmuHawk
 		private int? _currentX;
 		private int? _currentY;
 
+		private IntPtr RotatedFont;
+		private Font NormalFont;
+
 		public InputRoll()
 		{
 
@@ -42,7 +47,10 @@ namespace BizHawk.Client.EmuHawk
 			CellWidthPadding = 3;
 			CellHeightPadding = 1;
 			CurrentCell = null;
-			Font = new Font("Courier New", 8);  // Only support fixed width
+
+			NormalFont = new Font("Courier New", 8);  // Only support fixed width
+
+			RotatedFont = GDIRenderer.CreateRotatedHFont(Font, true);
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
@@ -54,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 			using (var g = CreateGraphics())
 			using (var LCK = Gdi.LockGraphics(g))
 			{
-				_charSize = Gdi.MeasureString("A", this.Font); // TODO make this a property so changing it updates other values.
+				_charSize = Gdi.MeasureString("A", this.NormalFont); // TODO make this a property so changing it updates other values.
 			}
 
 			UpdateCellSize();
@@ -95,6 +103,10 @@ namespace BizHawk.Client.EmuHawk
 		protected override void Dispose(bool disposing)
 		{
 			Gdi.Dispose();
+			
+			this.NormalFont.Dispose();
+			GDIRenderer.DestroyHFont(RotatedFont);
+
 			base.Dispose(disposing);
 		}
 
@@ -666,7 +678,7 @@ namespace BizHawk.Client.EmuHawk
 
 				Gdi.SetSolidPen(this.BackColor);
 				Gdi.DrawRectangle(x1, y1, x2, y2);
-				Gdi.PrepDrawString(this.Font, this.ForeColor);
+				Gdi.PrepDrawString(this.NormalFont, this.ForeColor);
 				Gdi.DrawString(_columnDown.Text, new Point(x1 + CellWidthPadding, y1 + CellHeightPadding));
 			}
 		}
@@ -678,16 +690,18 @@ namespace BizHawk.Client.EmuHawk
 			if (HorizontalOrientation)
 			{
 				int start = 0;
-				Gdi.PrepDrawString(this.Font, this.ForeColor);
+				
+				Gdi.PrepDrawString(this.RotatedFont, this.ForeColor);
+				
 				foreach (var column in columns)
 				{
 					var point = new Point(CellWidthPadding, start + CellHeightPadding);
 
 					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
 					{
-						Gdi.PrepDrawString(this.Font, SystemColors.HighlightText);
+						Gdi.PrepDrawString(this.NormalFont, SystemColors.HighlightText);
 						Gdi.DrawString(column.Text, point);
-						Gdi.PrepDrawString(this.Font, this.ForeColor);
+						Gdi.PrepDrawString(this.NormalFont, this.ForeColor);
 					}
 					else
 					{
@@ -699,16 +713,23 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				Gdi.PrepDrawString(this.Font, this.ForeColor);
+				//zeromus test
+				//Gdi.PrepDrawString(this.NormalFont, this.ForeColor);
+				Gdi.PrepDrawString(this.RotatedFont, this.ForeColor);
+
 				foreach (var column in columns)
 				{
 					var point = new Point(column.Left.Value + 2 * CellWidthPadding - HBar.Value, CellHeightPadding); // TODO: fix this CellPadding issue (2 * CellPadding vs just CellPadding)
 
 					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
 					{
-						Gdi.PrepDrawString(this.Font, SystemColors.HighlightText);
+						//zeromus test
+						//Gdi.PrepDrawString(this.NormalFont, SystemColors.HighlightText);
+						Gdi.PrepDrawString(this.RotatedFont, SystemColors.HighlightText);
 						Gdi.DrawString(column.Text, point);
-						Gdi.PrepDrawString(this.Font, this.ForeColor);
+						//zeromus test
+						//Gdi.PrepDrawString(this.NormalFont, this.ForeColor);
+						Gdi.PrepDrawString(this.RotatedFont, this.ForeColor);
 					}
 					else
 					{
@@ -728,7 +749,7 @@ namespace BizHawk.Client.EmuHawk
 					int startRow = FirstVisibleRow;
 					int range = Math.Min(LastVisibleRow, RowCount - 1) - startRow + 1;
 
-					Gdi.PrepDrawString(this.Font, this.ForeColor);
+					Gdi.PrepDrawString(this.NormalFont, this.ForeColor);
 					for (int i = 0; i < range; i++)
 					{
 						for (int j = 0; j < columns.Count; j++)
@@ -762,7 +783,7 @@ namespace BizHawk.Client.EmuHawk
 								var rePrep = false;
 								if (SelectedItems.Contains(new Cell { Column = columns[j], RowIndex = i + startRow }))
 								{
-									Gdi.PrepDrawString(this.Font, SystemColors.HighlightText);
+									Gdi.PrepDrawString(this.NormalFont, SystemColors.HighlightText);
 									rePrep = true;
 								}
 
@@ -774,7 +795,7 @@ namespace BizHawk.Client.EmuHawk
 
 								if (rePrep)
 								{
-									Gdi.PrepDrawString(this.Font, this.ForeColor);
+									Gdi.PrepDrawString(this.NormalFont, this.ForeColor);
 								}
 							}
 						}
@@ -785,7 +806,7 @@ namespace BizHawk.Client.EmuHawk
 					int startRow = FirstVisibleRow;
 					int range = Math.Min(LastVisibleRow, RowCount - 1) - startRow + 1;
 
-					Gdi.PrepDrawString(this.Font, this.ForeColor);
+					Gdi.PrepDrawString(this.NormalFont, this.ForeColor);
 					int xPadding = CellWidthPadding + 1 - HBar.Value;
 					for (int i = 0; i < range; i++) // Vertical
 					{
@@ -817,7 +838,7 @@ namespace BizHawk.Client.EmuHawk
 								bool rePrep = false;
 								if (SelectedItems.Contains(new Cell { Column = columns[j], RowIndex = i + startRow }))
 								{
-									Gdi.PrepDrawString(this.Font, SystemColors.HighlightText);
+									Gdi.PrepDrawString(this.NormalFont, SystemColors.HighlightText);
 									rePrep = true;
 								}
 
@@ -828,7 +849,7 @@ namespace BizHawk.Client.EmuHawk
 
 								if (rePrep)
 								{
-									Gdi.PrepDrawString(this.Font, this.ForeColor);
+									Gdi.PrepDrawString(this.NormalFont, this.ForeColor);
 								}
 							}
 						}
