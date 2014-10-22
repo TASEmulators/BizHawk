@@ -555,6 +555,7 @@ namespace BizHawk.Client.EmuHawk
 		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.TAStudioSettings.TopMost ^= true;
+			TopMost = Global.Config.TAStudioSettings.TopMost;
 		}
 
 		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
