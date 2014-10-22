@@ -627,6 +627,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void TAStudio_MouseLeave(object sender, EventArgs e)
+		{
+			DoTriggeredAutoRestoreIfNeeded();
+		}
+
 		#endregion
 	}
 }
