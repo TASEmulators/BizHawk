@@ -466,10 +466,19 @@ namespace BizHawk.Client.EmuHawk
 			if (_triggerAutoRestore)
 			{
 				GoToLastEmulatedFrameIfNecessary(_triggerAutoRestoreFromFrame.Value);
+
+				if (GlobalWin.MainForm.PauseOnFrame.HasValue &&
+				_autoRestoreFrame.HasValue &&
+				_autoRestoreFrame < GlobalWin.MainForm.PauseOnFrame) // If we are already seeking to a later frame don't shorten that journey here
+				{
+					_autoRestoreFrame = GlobalWin.MainForm.PauseOnFrame;
+				}
+
 				DoAutoRestore();
 
 				_triggerAutoRestore = false;
 				_triggerAutoRestoreFromFrame = null;
+				
 			}
 		}
 
