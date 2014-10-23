@@ -2,7 +2,7 @@
 {
 	public partial class TAStudio : IControlMainform
 	{
-		public bool WantsToControlReadOnly { get { return true; } }
+		public bool WantsToControlReadOnly { get { return false; } }
 		public void ToggleReadOnly()
 		{
 			GlobalWin.OSD.AddMessage("TAStudio does not allow manual readonly toggle");
