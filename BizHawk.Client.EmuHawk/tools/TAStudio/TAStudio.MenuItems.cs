@@ -691,5 +691,15 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
+
+		#region Context Menu
+
+		private void CancelSeekContextMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.MainForm.PauseOnFrame = null;
+			TasView.Refresh();
+		}
+
+		#endregion
 	}
 }

@@ -123,6 +123,7 @@ namespace BizHawk.Client.EmuHawk
 			this.SelectBetweenMarkersContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
 			this.UngreenzoneContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.CancelSeekContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator17 = new System.Windows.Forms.ToolStripSeparator();
 			this.ClearContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DeleteFramesContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -841,6 +842,7 @@ namespace BizHawk.Client.EmuHawk
             this.SelectBetweenMarkersContextMenuItem,
             this.toolStripSeparator16,
             this.UngreenzoneContextMenuItem,
+            this.CancelSeekContextMenuItem,
             this.toolStripSeparator17,
             this.ClearContextMenuItem,
             this.DeleteFramesContextMenuItem,
@@ -850,7 +852,7 @@ namespace BizHawk.Client.EmuHawk
             this.toolStripSeparator18,
             this.TruncateContextMenuItem});
 			this.RightClickMenu.Name = "RightClickMenu";
-			this.RightClickMenu.Size = new System.Drawing.Size(273, 270);
+			this.RightClickMenu.Size = new System.Drawing.Size(273, 292);
 			this.RightClickMenu.Opened += new System.EventHandler(this.RightClickMenu_Opened);
 			// 
 			// SetMarkersContextMenuItem
@@ -899,6 +901,13 @@ namespace BizHawk.Client.EmuHawk
 			this.UngreenzoneContextMenuItem.Size = new System.Drawing.Size(272, 22);
 			this.UngreenzoneContextMenuItem.Text = "Clear Greenzone";
 			this.UngreenzoneContextMenuItem.Click += new System.EventHandler(this.ClearGreenzoneMenuItem_Click);
+			// 
+			// CancelSeekContextMenuItem
+			// 
+			this.CancelSeekContextMenuItem.Name = "CancelSeekContextMenuItem";
+			this.CancelSeekContextMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.CancelSeekContextMenuItem.Text = "Cancel Seek";
+			this.CancelSeekContextMenuItem.Click += new System.EventHandler(this.CancelSeekContextMenuItem_Click);
 			// 
 			// toolStripSeparator17
 			// 
@@ -1105,5 +1114,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator21;
 		private System.Windows.Forms.ToolStripMenuItem DefaultStateSettingsMenuItem;
 		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.ToolStripMenuItem CancelSeekContextMenuItem;
 	}
 }

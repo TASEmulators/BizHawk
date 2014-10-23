@@ -613,6 +613,8 @@ namespace BizHawk.Client.EmuHawk
 				TasView.SelectedRows.Any();
 
 			RemoveMarkersContextMenuItem.Enabled = CurrentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
+
+			CancelSeekContextMenuItem.Enabled = GlobalWin.MainForm.PauseOnFrame.HasValue;
 		}
 
 		private void TAStudio_DragEnter(object sender, DragEventArgs e)
