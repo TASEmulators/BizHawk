@@ -203,6 +203,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// TODO: if highlighting 2 rows and pasting 3, only paste 2 of them
 			// FCEUX Taseditor does't do this, but I think it is the expected behavior in editor programs
+
+			var wasPaused = GlobalWin.MainForm.EmulatorPaused;
+
 			if (_tasClipboard.Any())
 			{
 				var needsToRollback = !(TasView.FirstSelectedIndex > Global.Emulator.Frame);
@@ -212,7 +215,14 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
-					DoAutoRestore();
+					if (wasPaused)
+					{
+						DoAutoRestore();
+					}
+					else
+					{
+						GlobalWin.MainForm.UnpauseEmulator();
+					}
 				}
 				else
 				{
@@ -223,6 +233,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PasteInsertMenuItem_Click(object sender, EventArgs e)
 		{
+			var wasPaused = GlobalWin.MainForm.EmulatorPaused;
+
 			if (_tasClipboard.Any())
 			{
 				var needsToRollback = !(TasView.FirstSelectedIndex > Global.Emulator.Frame);
@@ -232,7 +244,14 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
-					DoAutoRestore();
+					if (wasPaused)
+					{
+						DoAutoRestore();
+					}
+					else
+					{
+						GlobalWin.MainForm.UnpauseEmulator();
+					}
 				}
 				else
 				{
@@ -245,6 +264,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.SelectedRows.Any())
 			{
+				var wasPaused = GlobalWin.MainForm.EmulatorPaused;
 				var needsToRollback = !(TasView.FirstSelectedIndex.Value > Global.Emulator.Frame);
 				var rollBackFrame = TasView.FirstSelectedIndex.Value;
 
@@ -268,7 +288,14 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-					DoAutoRestore();
+					if (wasPaused)
+					{
+						DoAutoRestore();
+					}
+					else
+					{
+						GlobalWin.MainForm.UnpauseEmulator();
+					}
 				}
 				else
 				{
@@ -281,6 +308,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.SelectedRows.Any())
 			{
+				var wasPaused = GlobalWin.MainForm.EmulatorPaused;
 				var needsToRollback = !(TasView.FirstSelectedIndex > Global.Emulator.Frame);
 				var rollBackFrame = TasView.FirstSelectedIndex.Value;
 
@@ -292,7 +320,14 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-					DoAutoRestore();
+					if (wasPaused)
+					{
+						DoAutoRestore();
+					}
+					else
+					{
+						GlobalWin.MainForm.UnpauseEmulator();
+					}
 				}
 				else
 				{
@@ -305,6 +340,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.SelectedRows.Any())
 			{
+				var wasPaused = GlobalWin.MainForm.EmulatorPaused;
 				var needsToRollback = !(TasView.FirstSelectedIndex > Global.Emulator.Frame);
 				var rollBackFrame = TasView.FirstSelectedIndex.Value;
 
@@ -315,7 +351,14 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-					DoAutoRestore();
+					if (wasPaused)
+					{
+						DoAutoRestore();
+					}
+					else
+					{
+						GlobalWin.MainForm.UnpauseEmulator();
+					}
 				}
 				else
 				{
@@ -328,6 +371,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.SelectedRows.Any())
 			{
+				var wasPaused = GlobalWin.MainForm.EmulatorPaused;
 				var framesToInsert = TasView.SelectedRows.ToList();
 				var insertionFrame = TasView.LastSelectedIndex.Value + 1;
 				var needsToRollback = !(insertionFrame > Global.Emulator.Frame);
@@ -341,8 +385,14 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(insertionFrame);
-					DoAutoRestore();
-					RefreshDialog();
+					if (wasPaused)
+					{
+						DoAutoRestore();
+					}
+					else
+					{
+						GlobalWin.MainForm.UnpauseEmulator();
+					}
 				}
 				else
 				{
@@ -353,6 +403,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertFrameMenuItem_Click(object sender, EventArgs e)
 		{
+			var wasPaused = GlobalWin.MainForm.EmulatorPaused;
 			var insertionFrame = TasView.SelectedRows.Any() ? TasView.FirstSelectedIndex.Value : 0;
 			var needsToRollback = insertionFrame <= Global.Emulator.Frame;
 
@@ -361,8 +412,14 @@ namespace BizHawk.Client.EmuHawk
 			if (needsToRollback)
 			{
 				GoToLastEmulatedFrameIfNecessary(insertionFrame);
-				DoAutoRestore();
-				RefreshDialog();
+				if (wasPaused)
+				{
+					DoAutoRestore();
+				}
+				else
+				{
+					GlobalWin.MainForm.UnpauseEmulator();
+				}
 			}
 			else
 			{
@@ -372,6 +429,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertNumFramesMenuItem_Click(object sender, EventArgs e)
 		{
+			var wasPaused = GlobalWin.MainForm.EmulatorPaused;
 			var insertionFrame = TasView.SelectedRows.Any() ? TasView.FirstSelectedIndex.Value : 0;
 			var needsToRollback = insertionFrame <= Global.Emulator.Frame;
 
@@ -385,8 +443,14 @@ namespace BizHawk.Client.EmuHawk
 			if (needsToRollback)
 			{
 				GoToLastEmulatedFrameIfNecessary(insertionFrame);
-				DoAutoRestore();
-				RefreshDialog();
+				if (wasPaused)
+				{
+					DoAutoRestore();
+				}
+				else
+				{
+					GlobalWin.MainForm.UnpauseEmulator();
+				}
 			}
 			else
 			{
