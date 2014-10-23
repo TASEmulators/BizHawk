@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToBk2MenuItem_Click(object sender, EventArgs e)
 		{
-			var bk2 = CurrentTasMovie.ToBk2();
+			var bk2 = CurrentTasMovie.ToBk2(true);
 			bk2.Save();
 			MessageStatusLabel.Text = Path.GetFileName(bk2.Filename) + " created.";
 

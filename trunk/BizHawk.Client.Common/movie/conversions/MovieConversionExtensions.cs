@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			return tas;
 		}
 
-		public static Bk2Movie ToBk2(this IMovie old)
+		public static Bk2Movie ToBk2(this IMovie old, bool copy = false)
 		{
 			var newFilename = old.Filename + "." + Bk2Movie.Extension;
 			var bk2 = new Bk2Movie(newFilename);
@@ -59,7 +59,10 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				bk2.AppendFrame(input);
 			}
 
-			old.Truncate(0); // Trying to minimize ram usage
+			if (!copy)
+			{
+				old.Truncate(0); // Trying to minimize ram usage
+			}
 
 			bk2.HeaderEntries.Clear();
 			foreach(var kvp in old.HeaderEntries)
