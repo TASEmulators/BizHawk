@@ -387,12 +387,9 @@ namespace BizHawk.Client.EmuHawk
 				if (_logFile.Exists)
 				{
 					_logFile.Delete();
-					_logFile.Create();
 				}
-				else
-				{
-					_logFile.Create();
-				}
+			
+				using (_logFile.Create()) { }
 
 				FileBox.Text = _logFile.FullName;
 			}
