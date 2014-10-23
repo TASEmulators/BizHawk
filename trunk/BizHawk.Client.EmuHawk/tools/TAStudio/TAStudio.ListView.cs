@@ -290,14 +290,11 @@ namespace BizHawk.Client.EmuHawk
 				_supressContextMenu = true;
 				if (e.Delta < 0)
 				{
-					GoToFrame(Global.Emulator.Frame + 1);
+					GoToNextFrame();
 				}
 				else
 				{
-					if (Global.Emulator.Frame > 0)
-					{
-						GoToFrame(Global.Emulator.Frame - 1);
-					}
+					GoToPreviousFrame();
 				}
 			}
 		}

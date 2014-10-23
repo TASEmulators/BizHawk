@@ -60,46 +60,60 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else // We are going foward
 				{
-					var goToFrame = frame == 0 ? 0 : frame - 1;
-					if (CurrentTasMovie[goToFrame].HasState) // Can we go directly there?
+					if (frame == Global.Emulator.Frame + 1) // Just emulate a frame we only have 1 to go!
 					{
-						CurrentTasMovie.SwitchToPlay();
-						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(CurrentTasMovie[goToFrame].State.ToArray())));
-						Global.Emulator.FrameAdvance(true);
-						GlobalWin.DisplayManager.NeedsToPaint = true;
-
-						SetVisibleIndex(frame);
+						GlobalWin.MainForm.FrameAdvance();
 					}
 					else
 					{
-						StartAtNearestFrameAndEmulate(frame);
-						return;
+						var goToFrame = frame == 0 ? 0 : frame - 1;
+						if (CurrentTasMovie[goToFrame].HasState) // Can we go directly there?
+						{
+							CurrentTasMovie.SwitchToPlay();
+							Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(CurrentTasMovie[goToFrame].State.ToArray())));
+							Global.Emulator.FrameAdvance(true);
+							GlobalWin.DisplayManager.NeedsToPaint = true;
+
+							SetVisibleIndex(frame);
+						}
+						else
+						{
+							StartAtNearestFrameAndEmulate(frame);
+							return;
+						}
 					}
 				}
 			}
 			else // Emulate to a future frame
 			{
-				// TODO: get the last greenzone frame and go there
-				CurrentTasMovie.SwitchToPlay();
-
-				// no reason to loadstate when we can emulate a frame instead
-				var shouldLoadstate = frame - Global.Emulator.Frame != 1;
-
-				if (CurrentTasMovie.TasStateManager.LastEmulatedFrame > 0 && shouldLoadstate)
+				if (frame == Global.Emulator.Frame + 1) // We are at the end of the movie and advancing one frame, therefore we are recording, simply emulate a frame
 				{
-					LoadState(CurrentTasMovie[CurrentTasMovie.TasStateManager.LastEmulatedFrame].State.ToArray());
+					GlobalWin.MainForm.FrameAdvance();
 				}
-
-				if (frame != Global.Emulator.Frame) // If we aren't already at our destination, seek
+				else
 				{
-					GlobalWin.MainForm.UnpauseEmulator();
-					if (Global.Config.TAStudioAutoPause && frame < CurrentTasMovie.InputLogLength)
+					// TODO: get the last greenzone frame and go there
+					CurrentTasMovie.SwitchToPlay();
+
+					// no reason to loadstate when we can emulate a frame instead
+					var shouldLoadstate = frame - Global.Emulator.Frame != 1;
+
+					if (CurrentTasMovie.TasStateManager.LastEmulatedFrame > 0 && shouldLoadstate)
 					{
-						GlobalWin.MainForm.PauseOnFrame = CurrentTasMovie.InputLogLength;
+						LoadState(CurrentTasMovie[CurrentTasMovie.TasStateManager.LastEmulatedFrame].State.ToArray());
 					}
-					else
+
+					if (frame != Global.Emulator.Frame) // If we aren't already at our destination, seek
 					{
-						GlobalWin.MainForm.PauseOnFrame = frame;
+						GlobalWin.MainForm.UnpauseEmulator();
+						if (Global.Config.TAStudioAutoPause && frame < CurrentTasMovie.InputLogLength)
+						{
+							GlobalWin.MainForm.PauseOnFrame = CurrentTasMovie.InputLogLength;
+						}
+						else
+						{
+							GlobalWin.MainForm.PauseOnFrame = frame;
+						}
 					}
 				}
 			}
