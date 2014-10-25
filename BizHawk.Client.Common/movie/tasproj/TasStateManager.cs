@@ -155,6 +155,11 @@ namespace BizHawk.Client.Common
 
 		public bool HasState(int frame)
 		{
+			if (_movie.StartsFromSavestate && frame == 0)
+			{
+				return true;
+			}
+			
 			return States.ContainsKey(frame);
 		}
 
