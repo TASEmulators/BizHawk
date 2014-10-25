@@ -19,24 +19,24 @@ namespace BizHawk.Client.Common
 
 		public const string DefaultProjectName = "default";
 
-		public TasMovie(string path) : base(path)
+		public TasMovie(string path, bool startsFromSavestate = false) : base(path)
 		{
 			// TODO: how to call the default constructor AND the base(path) constructor?  And is base(path) calling base() ?
 			StateManager = new TasStateManager(this);
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
-			Markers.Add(0, StartsFromSavestate ? "Savestate" : "Power on");
+			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
 		}
 
-		public TasMovie()
+		public TasMovie(bool startsFromSavestate = false)
 			: base()
 		{
 			StateManager = new TasStateManager(this);
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
-			Markers.Add(0, StartsFromSavestate ? "Savestate" : "Power on");
+			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
 		}
 
 		public override string PreferredExtension
