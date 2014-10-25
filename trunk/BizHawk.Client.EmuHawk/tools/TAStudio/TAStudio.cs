@@ -656,5 +656,27 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
+
+		private void MarkerContextMenu_Opening(object sender, CancelEventArgs e)
+		{
+			EditMarkerContextMenuItem.Enabled =
+			RemoveMarkerContextMenuItem.Enabled =
+				MarkerControl.MarkerInputRoll.SelectedRows.Any();
+		}
+
+		private void EditMarkerContextMenuItem_Click(object sender, EventArgs e)
+		{
+			MarkerControl.EditMarker();
+		}
+
+		private void AddMarkerContextMenuItem_Click(object sender, EventArgs e)
+		{
+			MarkerControl.AddMarker();
+		}
+
+		private void RemoveMarkerContextMenuItem_Click(object sender, EventArgs e)
+		{
+			MarkerControl.RemoveMarker();
+		}
 	}
 }
