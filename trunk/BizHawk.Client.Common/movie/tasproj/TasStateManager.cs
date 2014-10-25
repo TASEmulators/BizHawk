@@ -258,7 +258,12 @@ namespace BizHawk.Client.Common
 
 		public bool Any()
 		{
-			return States.Count > 1; // TODO: power-on MUST have a state, savestate-anchored movies do not, take this into account
+			if (_movie.StartsFromSavestate)
+			{
+				return States.Count > 0;
+			}
+
+			return States.Count > 1;
 		}
 
 		public int LastKey
