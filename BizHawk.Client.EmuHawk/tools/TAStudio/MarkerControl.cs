@@ -44,6 +44,8 @@ namespace BizHawk.Client.EmuHawk
 			
 		}
 
+		public InputRoll MarkerInputRoll { get { return MarkerView; } }
+
 		private void MarkerView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
 		{
 			var prev = Tastudio.CurrentTasMovie.Markers.PreviousOrCurrent(Global.Emulator.Frame);
@@ -147,10 +149,34 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MarkerView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			if (MarkerView.CurrentCell.RowIndex.HasValue)
+			if (MarkerView.CurrentCell != null && MarkerView.CurrentCell.RowIndex.HasValue &&
+				MarkerView.CurrentCell.RowIndex < MarkerView.RowCount)
 			{
 				var marker = Tastudio.CurrentTasMovie.Markers[MarkerView.CurrentCell.RowIndex.Value];
 				Tastudio.CallEditMarkerPopUp(marker);
+			}
+		}
+
+		public void EditMarker()
+		{
+			if (MarkerView.SelectedRows.Any())
+			{
+				var index = MarkerView.SelectedRows.First();
+				var marker = Tastudio.CurrentTasMovie.Markers[index];
+				Tastudio.CallEditMarkerPopUp(marker);
+			}
+		}
+
+		public void AddMarker()
+		{
+			AddBtn_Click(null, null);
+		}
+
+		public void RemoveMarker()
+		{
+			if (RemoveBtn.Enabled)
+			{
+				RemoveBtn_Click(null, null);
 			}
 		}
 	}

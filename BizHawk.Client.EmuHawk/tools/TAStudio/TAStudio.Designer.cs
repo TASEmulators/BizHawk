@@ -115,6 +115,10 @@ namespace BizHawk.Client.EmuHawk
 			this.SplicerStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.TasPlaybackBox = new BizHawk.Client.EmuHawk.PlaybackBox();
 			this.MarkerControl = new BizHawk.Client.EmuHawk.MarkerControl();
+			this.MarkerContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.EditMarkerContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AddMarkerContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.RemoveMarkerContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RightClickMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.SetMarkersContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RemoveMarkersContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -135,6 +139,7 @@ namespace BizHawk.Client.EmuHawk
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
+			this.MarkerContextMenu.SuspendLayout();
 			this.RightClickMenu.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
@@ -826,11 +831,43 @@ namespace BizHawk.Client.EmuHawk
 			this.MarkerControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.MarkerControl.ContextMenuStrip = this.MarkerContextMenu;
 			this.MarkerControl.Location = new System.Drawing.Point(2, 16);
 			this.MarkerControl.Name = "MarkerControl";
 			this.MarkerControl.Size = new System.Drawing.Size(198, 343);
 			this.MarkerControl.TabIndex = 6;
 			this.MarkerControl.Tastudio = null;
+			// 
+			// MarkerContextMenu
+			// 
+			this.MarkerContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.EditMarkerContextMenuItem,
+            this.AddMarkerContextMenuItem,
+            this.RemoveMarkerContextMenuItem});
+			this.MarkerContextMenu.Name = "MarkerContextMenu";
+			this.MarkerContextMenu.Size = new System.Drawing.Size(118, 70);
+			this.MarkerContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.MarkerContextMenu_Opening);
+			// 
+			// EditMarkerContextMenuItem
+			// 
+			this.EditMarkerContextMenuItem.Name = "EditMarkerContextMenuItem";
+			this.EditMarkerContextMenuItem.Size = new System.Drawing.Size(117, 22);
+			this.EditMarkerContextMenuItem.Text = "Edit";
+			this.EditMarkerContextMenuItem.Click += new System.EventHandler(this.EditMarkerContextMenuItem_Click);
+			// 
+			// AddMarkerContextMenuItem
+			// 
+			this.AddMarkerContextMenuItem.Name = "AddMarkerContextMenuItem";
+			this.AddMarkerContextMenuItem.Size = new System.Drawing.Size(117, 22);
+			this.AddMarkerContextMenuItem.Text = "Add";
+			this.AddMarkerContextMenuItem.Click += new System.EventHandler(this.AddMarkerContextMenuItem_Click);
+			// 
+			// RemoveMarkerContextMenuItem
+			// 
+			this.RemoveMarkerContextMenuItem.Name = "RemoveMarkerContextMenuItem";
+			this.RemoveMarkerContextMenuItem.Size = new System.Drawing.Size(117, 22);
+			this.RemoveMarkerContextMenuItem.Text = "Remove";
+			this.RemoveMarkerContextMenuItem.Click += new System.EventHandler(this.RemoveMarkerContextMenuItem_Click);
 			// 
 			// RightClickMenu
 			// 
@@ -1005,6 +1042,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TASMenu.PerformLayout();
 			this.TasStatusStrip.ResumeLayout(false);
 			this.TasStatusStrip.PerformLayout();
+			this.MarkerContextMenu.ResumeLayout(false);
 			this.RightClickMenu.ResumeLayout(false);
 			this.groupBox1.ResumeLayout(false);
 			this.ResumeLayout(false);
@@ -1115,5 +1153,9 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem DefaultStateSettingsMenuItem;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.ToolStripMenuItem CancelSeekContextMenuItem;
+		private System.Windows.Forms.ContextMenuStrip MarkerContextMenu;
+		private System.Windows.Forms.ToolStripMenuItem EditMarkerContextMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem AddMarkerContextMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem RemoveMarkerContextMenuItem;
 	}
 }
