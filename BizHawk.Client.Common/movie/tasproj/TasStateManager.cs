@@ -168,8 +168,13 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void Invalidate(int frame)
 		{
-			if (States.Count > 0 && frame > 0) // Never invalidate frame 0, TODO: Only if movie is a power-on movie should we keep frame 0, check this
+			if (Any())
 			{
+				if (!_movie.StartsFromSavestate && frame == 0) // Never invalidate frame 0 on a non-savestate-anchored movie
+				{
+					frame = 1;
+				}
+
 				var statesToRemove = States
 					.Where(x => x.Key >= frame)
 					.ToList();
