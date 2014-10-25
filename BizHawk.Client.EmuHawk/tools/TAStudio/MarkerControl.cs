@@ -113,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MarkerView_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			RemoveBtn.Enabled = SelectedIndices.Any(i => i < Tastudio.CurrentTasMovie.Markers.Count);
+			RemoveBtn.Enabled = MarkerView.SelectedRows.Any(i => i < Tastudio.CurrentTasMovie.Markers.Count);
 		}
 
 		private void RemoveBtn_Click(object sender, EventArgs e)
@@ -123,20 +123,11 @@ namespace BizHawk.Client.EmuHawk
 			MarkerView_SelectedIndexChanged(sender, e);
 		}
 
-		private IEnumerable<int> SelectedIndices
-		{
-			get
-			{
-				return MarkerView.SelectedRows
-					.OfType<int>();
-			}
-		}
-
 		private List<TasMovieMarker> SelectedMarkers
 		{
 			get
 			{
-				return SelectedIndices
+				return MarkerView.SelectedRows
 					.Select(index => Tastudio.CurrentTasMovie.Markers[index])
 					.ToList();
 			}
