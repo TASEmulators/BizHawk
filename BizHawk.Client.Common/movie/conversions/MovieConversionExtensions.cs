@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 		public static TasMovie ToTasMovie(this IMovie old)
 		{
 			var newFilename = old.Filename + "." +  TasMovie.Extension;
-			var tas = new TasMovie(newFilename);
+			var tas = new TasMovie(newFilename, old.StartsFromSavestate);
 
 			for (var i = 0; i < old.InputLogLength; i++)
 			{
