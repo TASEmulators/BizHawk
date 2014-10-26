@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 					if (CurrentTasMovie[goToFrame].HasState) // Go back 1 frame and emulate to get the display (we don't store that)
 					{
 						CurrentTasMovie.SwitchToPlay();
-						LoadState(CurrentTasMovie[goToFrame].State.ToArray());
+						LoadState(CurrentTasMovie[goToFrame].State);
 
 						if (frame > 0) // We can't emulate up to frame 0!
 						{
@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 						if (CurrentTasMovie[goToFrame].HasState) // Can we go directly there?
 						{
 							CurrentTasMovie.SwitchToPlay();
-							Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(CurrentTasMovie[goToFrame].State.ToArray())));
+							LoadState(CurrentTasMovie[goToFrame].State);
 							Global.Emulator.FrameAdvance(true);
 							GlobalWin.DisplayManager.NeedsToPaint = true;
 
@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (CurrentTasMovie.TasStateManager.LastEmulatedFrame > 0 && shouldLoadstate)
 					{
-						LoadState(CurrentTasMovie[CurrentTasMovie.TasStateManager.LastEmulatedFrame].State.ToArray());
+						LoadState(CurrentTasMovie[CurrentTasMovie.TasStateManager.LastEmulatedFrame].State);
 					}
 
 					if (frame != Global.Emulator.Frame) // If we aren't already at our destination, seek
