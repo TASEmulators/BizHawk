@@ -240,13 +240,13 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public byte[] GetStateClosestToFrame(int frame)
+		public KeyValuePair<int, byte[]> GetStateClosestToFrame(int frame)
 		{
-			var s = States.LastOrDefault(state => state.Key < frame).Value;
+			var s = States.LastOrDefault(state => state.Key < frame);
 
-			if (s == null && _movie.StartsFromSavestate)
+			if (s.Value == null && _movie.StartsFromSavestate)
 			{
-				return _movie.BinarySavestate;
+				return new KeyValuePair<int, byte[]>(0, _movie.BinarySavestate);
 			}
 
 			return s;

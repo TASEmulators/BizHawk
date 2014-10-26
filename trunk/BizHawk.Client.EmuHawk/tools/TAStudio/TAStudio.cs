@@ -300,11 +300,15 @@ namespace BizHawk.Client.EmuHawk
 		private void StartAtNearestFrameAndEmulate(int frame)
 		{
 			CurrentTasMovie.SwitchToPlay();
-			var closestState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
-			if (closestState != null)
+			KeyValuePair<int, byte[]> closestState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
+			if (closestState.Value != null)
 			{
-				LoadState(closestState.ToArray());
-				
+				LoadState(closestState.Value.ToArray());
+
+				if (closestState.Key == 0 && CurrentTasMovie.StartsFromSavestate)
+				{
+					Global.Emulator.ResetCounters();
+				}
 			}
 
 			GlobalWin.MainForm.PauseOnFrame = frame;
