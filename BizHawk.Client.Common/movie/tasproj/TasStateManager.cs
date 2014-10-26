@@ -242,7 +242,14 @@ namespace BizHawk.Client.Common
 
 		public byte[] GetStateClosestToFrame(int frame)
 		{
-			return States.LastOrDefault(state => state.Key < frame).Value;
+			var s = States.LastOrDefault(state => state.Key < frame).Value;
+
+			if (s == null && _movie.StartsFromSavestate)
+			{
+				return _movie.BinarySavestate;
+			}
+
+			return s;
 		}
 
 		// Map:
