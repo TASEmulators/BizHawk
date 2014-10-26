@@ -2141,6 +2141,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 			}
 
+			GlobalWin.OSD.AddMessage("Screensize set to " + Global.Config.TargetZoomFactor + "x");
 			FrameBufferResized();
 		}
 
@@ -2167,6 +2168,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 			}
 
+			GlobalWin.OSD.AddMessage("Screensize set to " + Global.Config.TargetZoomFactor + "x");
 			FrameBufferResized();
 		}
 
