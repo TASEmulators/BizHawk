@@ -53,6 +53,7 @@ namespace BizHawk.Client.EmuHawk
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
 			TasView.MultiSelect = true;
 			TasView.MaxCharactersInHorizontal = 1;
+			WantsToControlRestartMovie = true;
 		}
 
 		private void TastudioToStopMovie()
@@ -529,16 +530,8 @@ namespace BizHawk.Client.EmuHawk
 				var result = MessageBox.Show("In order to use Tastudio, a new project must be created from the current movie\nThe current movie will be saved and closed, and a new project file will be created\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 				if (result == DialogResult.OK)
 				{
-					var previousAutoloadTAStudio = Global.Config.AutoloadTAStudio;
-					var previousAutoloadTAStudioProject = Global.Config.AutoloadTAStudioProject;
-
 					ConvertCurrentMovieToTasproj();
-					Global.Config.AutoloadTAStudio = true;
-					Global.Config.AutoloadTAStudioProject = true;
-					GlobalWin.MainForm.RestartMovie();
-
-					Global.Config.AutoloadTAStudio = previousAutoloadTAStudio;
-					Global.Config.AutoloadTAStudioProject = previousAutoloadTAStudioProject;
+					StartNewMovieWrapper(false);
 				}
 				else
 				{

@@ -2,6 +2,7 @@
 {
 	public partial class TAStudio : IControlMainform
 	{
+		
 		public bool WantsToControlReadOnly { get { return false; } }
 		public void ToggleReadOnly()
 		{
@@ -26,8 +27,20 @@
 		public bool Rewind()
 		{
 			GoToPreviousFrame();
-
 			return true;
+		}
+
+		public bool WantsToControlRestartMovie { get; private set; }
+
+		public void RestartMovie()
+		{
+			if (AskSaveChanges())
+			{
+				WantsToControlStopMovie = false;
+				StartNewMovieWrapper(false);
+				WantsToControlStopMovie = true;
+				RefreshDialog();
+			}
 		}
 	}
 }

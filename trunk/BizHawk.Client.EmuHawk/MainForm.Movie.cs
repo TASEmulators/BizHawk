@@ -85,10 +85,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RestartMovie()
 		{
-			if (Global.MovieSession.Movie.IsActive)
+			if (IsSlave && master.WantsToControlRestartMovie)
 			{
-				GlobalWin.MainForm.StartNewMovie(Global.MovieSession.Movie, false);
-				GlobalWin.OSD.AddMessage("Replaying movie file in read-only mode");
+				master.RestartMovie();
+			}
+			else
+			{
+				if (Global.MovieSession.Movie.IsActive)
+				{
+					GlobalWin.MainForm.StartNewMovie(Global.MovieSession.Movie, false);
+					GlobalWin.OSD.AddMessage("Replaying movie file in read-only mode");
+				}
 			}
 		}
 	}

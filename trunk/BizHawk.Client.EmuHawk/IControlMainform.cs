@@ -32,5 +32,9 @@
 		/// </summary>
 		/// <returns></returns>
 		bool Rewind();
+
+		bool WantsToControlRestartMovie { get; }
+
+		void RestartMovie();
 	}
 }
