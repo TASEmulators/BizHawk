@@ -264,9 +264,9 @@ namespace BizHawk.Client.Common
 
 		public BinaryStateSaver(string path, bool stateVersionTag = true) // stateVersionTag is a hack for reusing this for movie code
 		{
-			_zip = new IonicZipWriter(path, Global.Config.SaveStateCompressionLevelNormal);
+			//_zip = new IonicZipWriter(path, Global.Config.SaveStateCompressionLevelNormal);
 			//_zip = new SharpZipWriter(path, Global.Config.SaveStateCompressionLevelNormal);
-			//_zip = new SevenZipWriter(path, Global.Config.SaveStateCompressionLevelNormal);
+			_zip = new SevenZipWriter(path, Global.Config.SaveStateCompressionLevelNormal);
 
 			if (stateVersionTag)
 			{
