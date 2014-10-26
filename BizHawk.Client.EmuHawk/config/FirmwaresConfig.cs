@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
@@ -431,6 +432,37 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		bool RunImportJobSingle(string basepath, string f, ref string errors)
+		{
+			try
+			{
+				var fi = new FileInfo(f);
+				if (!fi.Exists) return false;
+
+				string target = Path.Combine(basepath, fi.Name);
+				if (new FileInfo(target).Exists)
+				{
+					//compare the files, if theyre the same. dont do anything
+					if (File.ReadAllBytes(target).SequenceEqual(File.ReadAllBytes(f)))
+						return false;
+					//hmm theyre different. import but rename it
+					string dir = Path.GetDirectoryName(target);
+					string ext = Path.GetExtension(target);
+					string name = Path.GetFileNameWithoutExtension(target);
+					name += " (variant)";
+					target = Path.Combine(dir, name) + ext;
+				}
+				fi.CopyTo(target, false);
+				return true;
+			}
+			catch
+			{
+				if (errors != "") errors += "\n";
+				errors += f;
+				return false;
+			}
+		}
+
 		void RunImportJob(IEnumerable<string> files)
 		{
 			bool didSomething = false;
@@ -438,29 +470,38 @@ namespace BizHawk.Client.EmuHawk
 			string errors = "";
 			foreach(var f in files)
 			{
-				try 
+				using (var hf = new HawkFile(f))
 				{
-					var fi = new FileInfo(f);
-					if (!fi.Exists) continue;
-					string target = Path.Combine(basepath,fi.Name);
-					if(new FileInfo(target).Exists)
+					if (hf.IsArchive)
 					{
-						//compare the files, if theyre the same. dont do anything
-						if(File.ReadAllBytes(target).SequenceEqual(File.ReadAllBytes(f)))
-							continue;
-						//hmm theyre different. import but rename it
-						string dir = Path.GetDirectoryName(target);
-						string ext = Path.GetExtension(target);
-						string name = Path.GetFileNameWithoutExtension(target);
-						name += " (variant)";
-						target = Path.Combine(dir,name) + ext;
+						//blech. the worst extraction code in the universe.
+						string extractpath = System.IO.Path.GetTempFileName() + ".dir";
+						DirectoryInfo di = null;
+						di = System.IO.Directory.CreateDirectory(extractpath);
+
+						try
+						{
+							foreach (var ai in hf.ArchiveItems)
+							{
+								hf.BindArchiveMember(ai);
+								var stream = hf.GetStream();
+								var ms = new MemoryStream();
+								Util.CopyStream(hf.GetStream(), ms, stream.Length);
+								string outfile = ai.Name;
+								string myname = Path.GetFileName(outfile);
+								outfile = Path.Combine(extractpath, myname);
+								File.WriteAllBytes(outfile, ms.ToArray());
+								hf.Unbind();
+								didSomething |= RunImportJobSingle(basepath, outfile, ref errors);
+							}
+						}
+						finally
+						{
+							di.Delete(true);
+						}
 					}
-					fi.CopyTo(target, false);
-					didSomething = true;
-				}
-				catch {
-					if (errors != "") errors += "\n";
-					errors += f;
+					else
+						didSomething |= RunImportJobSingle(basepath, f, ref errors);
 				}
 			}
 
