@@ -303,21 +303,21 @@ namespace BizHawk.Client.EmuHawk
 			KeyValuePair<int, byte[]> closestState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
 			if (closestState.Value != null)
 			{
-				LoadState(closestState.Value.ToArray());
-
-				if (closestState.Key == 0 && CurrentTasMovie.StartsFromSavestate)
-				{
-					Global.Emulator.ResetCounters();
-				}
+				LoadState(closestState);
 			}
 
 			GlobalWin.MainForm.PauseOnFrame = frame;
 			GlobalWin.MainForm.UnpauseEmulator();
 		}
 
-		private void LoadState(byte[] state)
+		private void LoadState(KeyValuePair<int, byte[]> state)
 		{
-			Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(state)));
+			Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(state.Value.ToArray())));
+
+			if (state.Key == 0 && CurrentTasMovie.StartsFromSavestate)
+			{
+				Global.Emulator.ResetCounters();
+			}
 
 			_hackyDontUpdate = true;
 			GlobalWin.Tools.UpdateBefore();

@@ -509,7 +509,7 @@ namespace BizHawk.Client.EmuHawk
 				var state = (byte[])Global.Emulator.SaveStateBinary().Clone();
 				var greenzone = CurrentTasMovie.TasStateManager[frame];
 
-				if (!state.SequenceEqual(greenzone))
+				if (!state.SequenceEqual(greenzone.Value))
 				{
 					MessageBox.Show("bad data at frame: " + frame);
 					return;

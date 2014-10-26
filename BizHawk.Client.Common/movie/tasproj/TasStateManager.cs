@@ -68,21 +68,21 @@ namespace BizHawk.Client.Common
 		/// If this frame does not have a state currently, will return an empty array
 		/// </summary>
 		/// <returns>A savestate for the given frame or an empty array if there isn't one</returns>
-		public byte[] this[int frame]
+		public KeyValuePair<int, byte[]> this[int frame]
 		{
 			get
 			{
 				if (frame == 0 && _movie.StartsFromSavestate)
 				{
-					return _movie.BinarySavestate;
+					return new KeyValuePair<int,byte[]>(0, _movie.BinarySavestate);
 				}
 
 				if (States.ContainsKey(frame))
 				{
-					return States[frame];
+					return new KeyValuePair<int,byte[]>(frame, States[frame]);
 				}
 
-				return new byte[0];
+				return new KeyValuePair<int,byte[]>(-1, new byte[0]);
 			}
 		}
 
