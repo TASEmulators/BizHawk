@@ -420,5 +420,74 @@ namespace BizHawk.Client.EmuHawk
 				DoScan();
 		}
 
+		private void tbbImport_Click(object sender, EventArgs e)
+		{
+			using(var ofd = new OpenFileDialog())
+			{
+				ofd.Multiselect = true;
+				if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+					return;
+				RunImportJob(ofd.FileNames);
+			}
+		}
+
+		void RunImportJob(IEnumerable<string> files)
+		{
+			bool didSomething = false;
+			var basepath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
+			string errors = "";
+			foreach(var f in files)
+			{
+				try 
+				{
+					var fi = new FileInfo(f);
+					if (!fi.Exists) continue;
+					string target = Path.Combine(basepath,fi.Name);
+					if(new FileInfo(target).Exists)
+					{
+						//compare the files, if theyre the same. dont do anything
+						if(File.ReadAllBytes(target).SequenceEqual(File.ReadAllBytes(f)))
+							continue;
+						//hmm theyre different. import but rename it
+						string dir = Path.GetDirectoryName(target);
+						string ext = Path.GetExtension(target);
+						string name = Path.GetFileNameWithoutExtension(target);
+						name += " (variant)";
+						target = Path.Combine(dir,name) + ext;
+					}
+					fi.CopyTo(target, false);
+					didSomething = true;
+				}
+				catch {
+					if (errors != "") errors += "\n";
+					errors += f;
+				}
+			}
+
+			if (errors != "")
+				System.Windows.Forms.MessageBox.Show(errors, "Error importing these files");
+
+			if (didSomething) DoScan();
+		}
+
+		private void lvFirmwares_DragEnter(object sender, DragEventArgs e)
+		{
+			if (e.Data.GetDataPresent(DataFormats.FileDrop))
+				e.Effect = DragDropEffects.Copy;
+			else
+				e.Effect = DragDropEffects.None;
+		}
+
+		private void lvFirmwares_DragDrop(object sender, DragEventArgs e)
+		{
+			if (e.Data.GetDataPresent(DataFormats.FileDrop))
+			{
+				string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+				RunImportJob(files);
+			}
+		}
+
+
+
 	}		//class FirmwaresConfig
 }

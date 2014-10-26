@@ -46,15 +46,16 @@
 			this.tsmiCopy = new System.Windows.Forms.ToolStripMenuItem();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.label1 = new System.Windows.Forms.Label();
-			this.linkBasePath = new System.Windows.Forms.LinkLabel();
 			this.panel2 = new System.Windows.Forms.Panel();
+			this.linkBasePath = new System.Windows.Forms.LinkLabel();
+			this.label1 = new System.Windows.Forms.Label();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.toolStrip1 = new ToolStripEx();
 			this.tbbGroup = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.tbbScan = new System.Windows.Forms.ToolStripButton();
 			this.tbbOrganize = new System.Windows.Forms.ToolStripButton();
+			this.tbbImport = new System.Windows.Forms.ToolStripButton();
 			this.lvFirmwaresContextMenuStrip.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
@@ -70,6 +71,7 @@
 			// 
 			// lvFirmwares
 			// 
+			this.lvFirmwares.AllowDrop = true;
 			this.lvFirmwares.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader5,
             this.columnHeader1,
@@ -90,6 +92,8 @@
 			this.lvFirmwares.UseCompatibleStateImageBehavior = false;
 			this.lvFirmwares.View = System.Windows.Forms.View.Details;
 			this.lvFirmwares.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lvFirmwares_ColumnClick);
+			this.lvFirmwares.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvFirmwares_DragDrop);
+			this.lvFirmwares.DragEnter += new System.Windows.Forms.DragEventHandler(this.lvFirmwares_DragEnter);
 			this.lvFirmwares.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvFirmwares_KeyDown);
 			this.lvFirmwares.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lvFirmwares_MouseClick);
 			// 
@@ -134,34 +138,34 @@
             this.tsmiInfo,
             this.tsmiCopy});
 			this.lvFirmwaresContextMenuStrip.Name = "lvFirmwaresContextMenuStrip";
-			this.lvFirmwaresContextMenuStrip.Size = new System.Drawing.Size(181, 92);
+			this.lvFirmwaresContextMenuStrip.Size = new System.Drawing.Size(170, 92);
 			this.lvFirmwaresContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.lvFirmwaresContextMenuStrip_Opening);
 			// 
 			// tsmiSetCustomization
 			// 
 			this.tsmiSetCustomization.Name = "tsmiSetCustomization";
-			this.tsmiSetCustomization.Size = new System.Drawing.Size(180, 22);
+			this.tsmiSetCustomization.Size = new System.Drawing.Size(169, 22);
 			this.tsmiSetCustomization.Text = "&Set Customization";
 			this.tsmiSetCustomization.Click += new System.EventHandler(this.tsmiSetCustomization_Click);
 			// 
 			// tsmiClearCustomization
 			// 
 			this.tsmiClearCustomization.Name = "tsmiClearCustomization";
-			this.tsmiClearCustomization.Size = new System.Drawing.Size(180, 22);
+			this.tsmiClearCustomization.Size = new System.Drawing.Size(169, 22);
 			this.tsmiClearCustomization.Text = "C&lear Customization";
 			this.tsmiClearCustomization.Click += new System.EventHandler(this.tsmiClearCustomization_Click);
 			// 
 			// tsmiInfo
 			// 
 			this.tsmiInfo.Name = "tsmiInfo";
-			this.tsmiInfo.Size = new System.Drawing.Size(180, 22);
+			this.tsmiInfo.Size = new System.Drawing.Size(169, 22);
 			this.tsmiInfo.Text = "&Info";
 			this.tsmiInfo.Click += new System.EventHandler(this.tsmiInfo_Click);
 			// 
 			// tsmiCopy
 			// 
 			this.tsmiCopy.Name = "tsmiCopy";
-			this.tsmiCopy.Size = new System.Drawing.Size(180, 22);
+			this.tsmiCopy.Size = new System.Drawing.Size(169, 22);
 			this.tsmiCopy.Text = "&Copy";
 			this.tsmiCopy.Click += new System.EventHandler(this.tsmiCopy_Click);
 			// 
@@ -190,26 +194,6 @@
 			this.tableLayoutPanel1.Size = new System.Drawing.Size(779, 478);
 			this.tableLayoutPanel1.TabIndex = 25;
 			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(3, 0);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(109, 13);
-			this.label1.TabIndex = 25;
-			this.label1.Text = "Firmwares Base Path:";
-			// 
-			// linkBasePath
-			// 
-			this.linkBasePath.AutoSize = true;
-			this.linkBasePath.Location = new System.Drawing.Point(112, 0);
-			this.linkBasePath.Name = "linkBasePath";
-			this.linkBasePath.Size = new System.Drawing.Size(55, 13);
-			this.linkBasePath.TabIndex = 27;
-			this.linkBasePath.TabStop = true;
-			this.linkBasePath.Text = "linkLabel1";
-			this.linkBasePath.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkBasePath_LinkClicked);
-			// 
 			// panel2
 			// 
 			this.panel2.AutoSize = true;
@@ -223,6 +207,26 @@
 			this.panel2.Size = new System.Drawing.Size(773, 17);
 			this.panel2.TabIndex = 26;
 			// 
+			// linkBasePath
+			// 
+			this.linkBasePath.AutoSize = true;
+			this.linkBasePath.Location = new System.Drawing.Point(112, 0);
+			this.linkBasePath.Name = "linkBasePath";
+			this.linkBasePath.Size = new System.Drawing.Size(55, 13);
+			this.linkBasePath.TabIndex = 27;
+			this.linkBasePath.TabStop = true;
+			this.linkBasePath.Text = "linkLabel1";
+			this.linkBasePath.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkBasePath_LinkClicked);
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(3, 0);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(109, 13);
+			this.label1.TabIndex = 25;
+			this.label1.Text = "Firmwares Base Path:";
+			// 
 			// toolStrip1
 			// 
 			this.toolStrip1.ClickThrough = true;
@@ -230,7 +234,8 @@
             this.tbbGroup,
             this.toolStripSeparator2,
             this.tbbScan,
-            this.tbbOrganize});
+            this.tbbOrganize,
+            this.tbbImport});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
 			this.toolStrip1.Size = new System.Drawing.Size(773, 25);
@@ -274,6 +279,16 @@
 			this.tbbOrganize.Size = new System.Drawing.Size(54, 22);
 			this.tbbOrganize.Text = "Organize";
 			this.tbbOrganize.Click += new System.EventHandler(this.tbbOrganize_Click);
+			// 
+			// tbbImport
+			// 
+			this.tbbImport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.tbbImport.Image = ((System.Drawing.Image)(resources.GetObject("tbbImport.Image")));
+			this.tbbImport.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tbbImport.Name = "tbbImport";
+			this.tbbImport.Size = new System.Drawing.Size(43, 22);
+			this.tbbImport.Text = "Import";
+			this.tbbImport.Click += new System.EventHandler(this.tbbImport_Click);
 			// 
 			// FirmwaresConfig
 			// 
@@ -327,5 +342,6 @@
 				private System.Windows.Forms.Panel panel2;
 				private System.Windows.Forms.LinkLabel linkBasePath;
 				private System.Windows.Forms.Label label1;
+				private System.Windows.Forms.ToolStripButton tbbImport;
     }
 }
