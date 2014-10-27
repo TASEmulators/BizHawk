@@ -83,6 +83,17 @@ namespace BizHawk.Client.EmuHawk
 							movieToRecord.TextSavestate = sw.ToString();
 						}
 					}
+					// TODO: do we want to support optionally not saving this?
+					if (true)
+					{
+						// hack: some IMovies eat the framebuffer, so don't bother with them
+						movieToRecord.SavestateFramebuffer = new int[0];
+						if (movieToRecord.SavestateFramebuffer != null)
+						{
+
+							movieToRecord.SavestateFramebuffer = (int[])Global.Emulator.VideoProvider.GetVideoBuffer().Clone();
+						}
+					}
 				}
 
 				movieToRecord.PopulateWithDefaultHeaderValues(AuthorBox.Text);
