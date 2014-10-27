@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 			PauseWhenMenuActivatedCheckbox.Checked = Global.Config.PauseWhenMenuActivated;
 			EnableContextMenuCheckbox.Checked = Global.Config.ShowContextMenu;
 			SaveWindowPositionCheckbox.Checked = Global.Config.SaveWindowPosition;
-			ShowMenuInFullScreenCheckbox.Checked = Global.Config.ShowMenuInFullscreen;
+			ShowMenuInFullscreenCheckbox.Checked = Global.Config.ShowMenuInFullscreen;
 			RunInBackgroundCheckbox.Checked = Global.Config.RunInBackground;
 			AcceptBackgroundInputCheckbox.Checked = Global.Config.AcceptBackgroundInput;
 			NeverAskSaveCheckbox.Checked = Global.Config.SupressAskSave;
@@ -63,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.PauseWhenMenuActivated = PauseWhenMenuActivatedCheckbox.Checked;
 			Global.Config.ShowContextMenu = EnableContextMenuCheckbox.Checked;
 			Global.Config.SaveWindowPosition = SaveWindowPositionCheckbox.Checked;
-			Global.Config.ShowMenuInFullscreen = ShowMenuInFullScreenCheckbox.Checked;
+			Global.Config.ShowMenuInFullscreen = ShowMenuInFullscreenCheckbox.Checked;
 			Global.Config.RunInBackground = RunInBackgroundCheckbox.Checked;
 			Global.Config.AcceptBackgroundInput = AcceptBackgroundInputCheckbox.Checked;
 			Global.Config.SupressAskSave = NeverAskSaveCheckbox.Checked;
