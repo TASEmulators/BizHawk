@@ -44,7 +44,16 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(movie.BinarySavestate, false)));
 				}
-
+				if (movie.SavestateFramebuffer != null)
+				{
+					var b1 = movie.SavestateFramebuffer;
+					var b2 = Global.Emulator.VideoProvider.GetVideoBuffer();
+					int len = Math.Min(b1.Length, b2.Length);
+					for (int i = 0; i < len; i++)
+					{
+						b2[i] = b1[i];
+					}
+				}
 				Global.Emulator.ResetCounters();
 			}
 
