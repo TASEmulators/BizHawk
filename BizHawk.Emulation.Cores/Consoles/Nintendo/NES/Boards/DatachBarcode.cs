@@ -83,21 +83,43 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			return data[stream_idx] != END;
 		}
-		public static bool IsDigtsSupported(int count)
+		private static bool IsDigtsSupported(int count)
 		{
 			return count.In(MIN_DIGITS, MAX_DIGITS);
 		}
 
-		public bool Transfer(string s, int len)
+		public static bool ValidString(string s, out string why)
 		{
 			if (s == null)
 				throw new ArgumentNullException("s");
-			if (!IsDigtsSupported(len))
+			if (!s.Length.In(MIN_DIGITS, MAX_DIGITS))
+			{
+				why = string.Format("String must be {0} or {1} digits long!", MIN_DIGITS, MAX_DIGITS);
 				return false;
+			}
+			foreach (char c in s)
+			{
+				if (c < '0' || c > '9')
+				{
+					why = "String must be numeric only!";
+					return false;
+				}
+			}
+			why = "String is OK.";
+			return true;
+		}
+
+		public void Transfer(string s)
+		{
+			string why;
+			if (!ValidString(s, out why))
+				throw new InvalidOperationException(why);
+
+			Reset();
 
 			byte[] code = new byte[16];
 
-			for (int i = 0; i < len; i++)
+			for (int i = 0; i < s.Length; i++)
 			{
 				if (s[i] >= '0' && s[i] <= '9')
 					code[i] = (byte)(s[i] - '0');
@@ -115,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			int sum = 0;
 
-			if (len == MAX_DIGITS)
+			if (s.Length == MAX_DIGITS)
 			{
 				for (int i = 0; i < 6; i++)
 				{
@@ -144,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				for (int i = 0; i < 12; i++)
 					sum += code[i] * ((i & 1) != 0 ? 3 : 1);
 			}
-			else // len == MIN_DIGITS
+			else // s.Length == MIN_DIGITS
 			{
 				for (int i = 0; i < 4; i++)
 					for (int j = 0; j < 7; j++)
@@ -178,7 +200,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			cycles = CC_INTERVAL;
 			output = data[stream_idx]; // ??
-			return true;
 		}
 
 		public void Clock()

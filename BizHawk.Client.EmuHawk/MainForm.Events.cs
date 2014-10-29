@@ -1218,6 +1218,8 @@ namespace BizHawk.Client.EmuHawk
 
 			NesControllerSettingsMenuItem.Enabled = Global.Emulator is NES && !Global.MovieSession.Movie.IsActive;
 			MovieSettingsMenuItem.Enabled = Global.Emulator is NES && !Global.MovieSession.Movie.IsActive;
+
+			barcodeReaderToolStripMenuItem.Enabled = BarcodeEntry.HasReader();
 		}
 
 		private void FdsControlsMenuItem_DropDownOpened(object sender, EventArgs e)
