@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool regs_prg_enable; // can the mapper regs be written to in 8000:ffff?
 		bool regs_wram_enable; // can the mapper regs be written to in 6000:7fff?
 		bool jump2 = false; // are we in special mode for the JUMP2 board?
+		bool vram = false; // is this a VRAM board?  (also set to true for JUMP2)
 
 		//regenerable state
 		IntBuffer prg_banks_16k = new IntBuffer(2);
@@ -130,6 +131,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					regs_prg_enable = true;
 					regs_wram_enable = false;
 					jump2 = true;
+					vram = true;
 					break;
 				case "BANDAI-JUMP2": // [5]
 					AssertPrg(512);
@@ -139,8 +141,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					regs_prg_enable = true;
 					regs_wram_enable = false;
 					jump2 = true;
+					vram = true;
 					break;
-
+				case "MAPPER157": // [6]
+					// incomplete
+					// bootgod doesn't have any of these recorded
+					AssertPrg(128, 256);
+					AssertChr(0);
+					Cart.vram_size = 8;
+					Cart.wram_size = 0;
+					regs_prg_enable = true;
+					regs_wram_enable = false;
+					vram = true;
+					break;
 				default:
 					return false;
 			}
@@ -301,7 +314,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x2000)
 			{
-				if (jump2)
+				if (vram)
 					return VRAM[addr];
 				else
 					return VROM[CalcPPUAddress(addr)];
@@ -316,7 +329,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x2000)
 			{
-				if (jump2)
+				if (vram)
 					VRAM[addr] = value;
 			}
 			else
