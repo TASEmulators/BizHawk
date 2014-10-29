@@ -128,6 +128,7 @@
       <DependentUpon>ArchiveChooser.cs</DependentUpon>
     </Compile>
     <Compile Include="AVOut\AviWriter.cs" />
+    <Compile Include="AVOut\AVSync.cs" />
     <Compile Include="AVOut\BitmapBufferVideoProvder.cs" />
     <Compile Include="AVOut\BmpVideoProvder.cs" />
     <Compile Include="AVOut\FFmpegWriter.cs" />
@@ -840,6 +841,12 @@
     <Compile Include="tools\TAStudio\BookmarksBranchesBox.Designer.cs">
       <DependentUpon>BookmarksBranchesBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\TAStudio\DefaultGreenzoneSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\DefaultGreenzoneSettings.Designer.cs">
+      <DependentUpon>DefaultGreenzoneSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\TAStudio\FramesPrompt.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -912,6 +919,14 @@
       <DependentUpon>TAStudio.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\TAStudio\TAStudio.ListView.cs">
+      <DependentUpon>TAStudio.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\TAStudio.MenuItems.cs">
+      <DependentUpon>TAStudio.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\TAStudio.Navigation.cs">
       <DependentUpon>TAStudio.cs</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
@@ -1284,6 +1299,9 @@
     <EmbeddedResource Include="tools\TAStudio\BookmarksBranchesBox.resx">
       <DependentUpon>BookmarksBranchesBox.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="tools\TAStudio\DefaultGreenzoneSettings.resx">
+      <DependentUpon>DefaultGreenzoneSettings.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\FramesPrompt.resx">
       <DependentUpon>FramesPrompt.cs</DependentUpon>
     </EmbeddedResource>
@@ -1484,6 +1502,8 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\user_blue_small.png" />
+    <None Include="images\user_blue.ico" />
     <None Include="images\tastudio\ts_v_piano_19_green_blue.png" />
     <None Include="images\tastudio\ts_v_piano_19_green.png" />
     <None Include="images\tastudio\ts_v_piano_19_blue.png" />

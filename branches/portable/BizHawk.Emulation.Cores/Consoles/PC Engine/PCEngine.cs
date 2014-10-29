@@ -22,7 +22,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		isPorted: false,
 		isReleased: true
 		)]
-	public sealed partial class PCEngine : IEmulator, IMemoryDomains
+	public sealed partial class PCEngine : IEmulator, IMemoryDomains,
+		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>
 	{
 		// ROM
 		public byte[] RomData;
@@ -567,29 +568,47 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public PCESettings _settings;
 		private PCESyncSettings _syncSettings;
 
-		public object GetSettings() { return _settings.Clone(); }
-		public object GetSyncSettings() { return _syncSettings.Clone(); }
-		public bool PutSettings(object o)
+		public PCESettings GetSettings() { return _settings.Clone(); }
+		public PCESyncSettings GetSyncSettings() { return _syncSettings.Clone(); }
+		public bool PutSettings(PCESettings o)
 		{
-			PCESettings n = (PCESettings)o;
 			bool ret;
-			if (n.ArcadeCardRewindHack != _settings.ArcadeCardRewindHack ||
-				n.EqualizeVolume != _settings.EqualizeVolume)
+			if (o.ArcadeCardRewindHack != _settings.ArcadeCardRewindHack ||
+				o.EqualizeVolume != _settings.EqualizeVolume)
 				ret = true;
 			else
 				ret = false;
 
-			_settings = n;
+			_settings = o;
 			return ret;
 		}
 
-		public bool PutSyncSettings(object o)
+		public bool PutSyncSettings(PCESyncSettings o)
 		{
-			var newsyncsettings =  (PCESyncSettings)o;
-			bool ret = PCESyncSettings.NeedsReboot(newsyncsettings, _syncSettings);
-			_syncSettings = newsyncsettings;
+			bool ret = PCESyncSettings.NeedsReboot(o, _syncSettings);
+			_syncSettings = o;
 			// SetControllerButtons(); // not safe to change the controller during emulation, so instead make it a reboot event
 			return ret;
+		}
+
+		object ISettable.GetSettings()
+		{
+			return GetSettings();
+		}
+
+		bool ISettable.PutSettings(object o)
+		{
+			return PutSettings((PCESettings)o);
+		}
+
+		object ISettable.GetSyncSettings()
+		{
+			return GetSyncSettings();
+		}
+
+		bool ISettable.PutSyncSettings(object o)
+		{
+			return PutSyncSettings((PCESyncSettings)o);
 		}
 
 		public class PCESettings

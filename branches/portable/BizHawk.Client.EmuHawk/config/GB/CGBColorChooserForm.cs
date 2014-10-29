@@ -91,14 +91,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using (var dlg = new CGBColorChooserForm())
 			{
-				dlg.LoadType((Gameboy.GambatteSettings)Global.Emulator.GetSettings());
+				var gb = Global.Emulator as Gameboy;
+				dlg.LoadType(gb.GetSettings());
 
 				var result = dlg.ShowDialog(parent);
 				if (result == DialogResult.OK)
 				{
-					var s = (Gameboy.GambatteSettings)Global.Emulator.GetSettings();
+					var s = gb.GetSettings();
 					s.CGBColors = dlg.type;
-					Global.Emulator.PutSettings(s);
+					gb.PutSettings(s);
 				}
 			}
 		}

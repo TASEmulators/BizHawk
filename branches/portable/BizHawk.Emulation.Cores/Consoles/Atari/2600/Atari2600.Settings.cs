@@ -1,40 +1,60 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing;
+using BizHawk.Emulation.Common;
 using Newtonsoft.Json;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	public partial class Atari2600
+	public partial class Atari2600 : ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
 	{
-		public object GetSettings()
+		public A2600Settings GetSettings()
 		{
 			return Settings.Clone();
 		}
 
-		public object GetSyncSettings()
+		public A2600SyncSettings GetSyncSettings()
 		{
 			return SyncSettings.Clone();
 		}
 
-		public bool PutSettings(object o)
+		public bool PutSettings(A2600Settings o)
 		{
-			A2600Settings newSettings = (A2600Settings)o;
-			if (Settings == null || Settings.SECAMColors != newSettings.SECAMColors)
+			if (Settings == null || Settings.SECAMColors != o.SECAMColors)
 			{
 				if (_tia != null)
-					_tia.SetSECAM(newSettings.SECAMColors);
+					_tia.SetSECAM(o.SECAMColors);
 			}
 
-			Settings = newSettings;
+			Settings = o;
 			return false;
 		}
 
-		public bool PutSyncSettings(object o)
+		public bool PutSyncSettings(A2600SyncSettings o)
 		{
-			SyncSettings = (A2600SyncSettings)o;
+			SyncSettings = o;
 			return false;
+		}
+
+		object ISettable.GetSettings()
+		{
+			return GetSettings();
+		}
+
+		bool ISettable.PutSettings(object o)
+		{
+			return PutSettings((A2600Settings)o);
+		}
+
+		object ISettable.GetSyncSettings()
+		{
+			return GetSyncSettings();
+		}
+
+		bool ISettable.PutSyncSettings(object o)
+		{
+			return PutSyncSettings((A2600SyncSettings)o);
 		}
 
 		public class A2600Settings

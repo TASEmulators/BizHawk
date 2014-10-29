@@ -66,6 +66,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return data;
 		}
 
+		void Cpu_WriteMemoryPort(int addr, byte val)
+		{
+			pla.WriteMemory(addr, bus);
+		}
+
 		bool Glue_ReadIRQ()
 		{
 			return cia0.ReadIRQBuffer() & vic.ReadIRQBuffer() & cartPort.ReadIRQBuffer();

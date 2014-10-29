@@ -31,16 +31,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public bool StartAsyncSound() { return true; }
 		public void EndAsyncSound() { }
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void SetCpuRegister(string register, int value)
-		{
-			throw new NotImplementedException();
-		}
-
 		public static bool CheckIsPSX(DiscSystem.Disc disc)
 		{
 			bool ret = false;
@@ -293,10 +283,5 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public int MaxVolume { get; set; }
 		private List<MemoryDomain> memoryDomains = new List<MemoryDomain>();
 		public MemoryDomainList MemoryDomains { get; private set; }
-
-		public object GetSettings() { return null; }
-		public object GetSyncSettings() { return null; }
-		public bool PutSettings(object o) { return false; }
-		public bool PutSyncSettings(object o) { return false; }
 	}
 }

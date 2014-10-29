@@ -136,6 +136,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			cpu.ReadRDY = vic.ReadBABuffer;
 			cpu.ReadMemory = pla.Read;
 			cpu.WriteMemory = pla.Write;
+			cpu.WriteMemoryPort = Cpu_WriteMemoryPort;
 
 			pla.PeekBasicRom = basicRom.Peek;
 			pla.PeekCartridgeHi = cartPort.PeekHiRom;

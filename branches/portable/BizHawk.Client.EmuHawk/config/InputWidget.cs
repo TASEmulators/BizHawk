@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -11,10 +12,8 @@ namespace BizHawk.Client.EmuHawk
 		// TODO: when binding, make sure that the new key combo is not in one of the other bindings
 		private readonly ToolTip _tooltip1 = new ToolTip();
 		private readonly Timer _timer = new Timer();
-		private readonly string[] _bindings = new string[4];
-		private readonly int _maxBind = 4; // Max number of bindings allowed
+		private readonly List<string> _bindings = new List<string>();
 	
-		private int _pos;	 // Which mapping the widget will listen for
 		private string _wasPressed = string.Empty;
 
 		public InputCompositeWidget CompositeWidget;
@@ -42,8 +41,7 @@ namespace BizHawk.Client.EmuHawk
 			AutoTab = autotab;
 			ContextMenu = new ContextMenu();
 			_timer.Tick += Timer_Tick;
-			_maxBind = maxBindings;
-			_bindings = new string[_maxBind];
+			_bindings = new List<string>();
 			ClearBindings();
 			_tooltip1.AutoPopDelay = 2000;
 		}
@@ -62,14 +60,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ClearBindings();
 				var newBindings = value.Trim().Split(',');
-				for (var i = 0; i < _maxBind; i++)
-				{
-					if (i < newBindings.Length)
-					{
-						_bindings[i] = newBindings[i];
-					}
-				}
-
+				_bindings.AddRange(newBindings);
 				UpdateLabel();
 			}
 		}
@@ -95,15 +86,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearBindings()
 		{
-			for (var i = 0; i < _maxBind; i++)
-			{
-				_bindings[i] = string.Empty;
-			}
+			_bindings.Clear();
 		}
 
 		protected override void OnEnter(EventArgs e)
 		{
-			_pos = 0;
 			_timer.Start();
 
 			_wasPressed = Input.Instance.GetNextBindEvent();
@@ -135,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void SetBinding(string bindingStr)
 		{
-			_bindings[_pos] = bindingStr;
+			_bindings.Add(bindingStr);
 			UpdateLabel();
 			Increment();
 		}
@@ -182,10 +169,9 @@ namespace BizHawk.Client.EmuHawk
 					if (AutoTab)
 					{
 						ClearBindings();
-						_pos = 0;
 					}
 
-					_bindings[_pos] = bindingStr;
+					_bindings.Add(bindingStr);
 				}
 				
 				_wasPressed = bindingStr;
@@ -220,23 +206,12 @@ namespace BizHawk.Client.EmuHawk
 			e.Handled = true;
 		}
 
-		// Advances to the next widget or the next binding depending on the autotab setting
+		// Advances to the next widget depending on the autotab setting
 		public void Increment()
 		{
 			if (AutoTab)
 			{
 				CompositeWidget.TabNext();
-			}
-			else
-			{
-				if (_pos < _maxBind)
-				{
-					_pos++;
-				}
-				else
-				{
-					_pos = 0;
-				}
 			}
 		}
 
@@ -245,17 +220,6 @@ namespace BizHawk.Client.EmuHawk
 			if (AutoTab)
 			{
 				Parent.SelectNextControl(this, false, true, true, true);
-			}
-			else
-			{
-				if (_pos == 0)
-				{
-					_pos = _maxBind - 1;
-				}
-				else
-				{
-					_pos--;
-				}
 			}
 		}
 

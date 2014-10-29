@@ -18,6 +18,7 @@ namespace BizHawk.Client.EmuHawk
 	/// so each dump is always one file
 	/// they can be processed with JPC-rr streamtools or JMDSource (avisynth)
 	/// </summary>
+	[VideoWriter("jmd", "JMD writer", "Writes a JPC-rr multidump file (JMD).  These can be read and further processed with jpc-streamtools.  One JMD file contains all audio (uncompressed) and video (compressed).")]
 	class JMDWriter : IVideoWriter
 	{
 		/// <summary>
@@ -768,22 +769,10 @@ namespace BizHawk.Client.EmuHawk
 			moviemetadata.rerecords = rerecords;
 		}
 
-
-		public override string ToString()
-		{
-			return "JMD writer";
-		}
-
-		public string WriterDescription()
-		{
-			return "Writes a JPC-rr multidump file (JMD).  These can be read and further processed with jpc-streamtools.  One JMD file contains all audio (uncompressed) and video (compressed).";
-		}
-
 		public string DesiredExtension()
 		{
 			return "jmd";
 		}
-
 
 		public void SetDefaultVideoCodecToken()
 		{
@@ -798,11 +787,6 @@ namespace BizHawk.Client.EmuHawk
 			ct.numthreads = t;
 
 			token = ct;
-		}
-
-		public string ShortName()
-		{
-			return "jmd";
 		}
 
 		public void SetFrame(int frame) { }

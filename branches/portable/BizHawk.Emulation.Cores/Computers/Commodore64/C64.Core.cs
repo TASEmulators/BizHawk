@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		PAL
 	}
 
-	sealed public partial class C64 : IEmulator
+	sealed public partial class C64 : IEmulator, IDebuggable
 	{
 		private Motherboard board;
 		private bool loadPrg;

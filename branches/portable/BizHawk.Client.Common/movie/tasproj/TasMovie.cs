@@ -17,24 +17,26 @@ namespace BizHawk.Client.Common
 		private readonly TasStateManager StateManager;
 		public TasMovieMarkerList Markers { get; set; }
 
-		public TasMovie(string path) : base(path)
+		public const string DefaultProjectName = "default";
+
+		public TasMovie(string path, bool startsFromSavestate = false) : base(path)
 		{
 			// TODO: how to call the default constructor AND the base(path) constructor?  And is base(path) calling base() ?
 			StateManager = new TasStateManager(this);
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
-			Markers.Add(0, StartsFromSavestate ? "Savestate" : "Power on");
+			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
 		}
 
-		public TasMovie()
+		public TasMovie(bool startsFromSavestate = false)
 			: base()
 		{
 			StateManager = new TasStateManager(this);
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
-			Markers.Add(0, StartsFromSavestate ? "Savestate" : "Power on");
+			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
 		}
 
 		public override string PreferredExtension
@@ -42,14 +44,29 @@ namespace BizHawk.Client.Common
 			get { return Extension; }
 		}
 
+		public TasStateManager TasStateManager
+		{
+			get { return StateManager; }
+		}
+
+		public new const string Extension = "tasproj";
+
+		public TasMovieRecord this[int index]
+		{
+			get
+			{
+				return new TasMovieRecord
+				{
+					State = StateManager[index],
+					LogEntry = GetInputLogEntry(index),
+					Lagged = (index < LagLog.Count) ? LagLog[index] : (bool?)null
+				};
+			}
+		}
+
 		public override bool Stop(bool saveChanges = true)
 		{
-			if (Changes)
-			{
-				return base.Stop(saveChanges);
-			}
-
-			return false;
+			return base.Stop(saveChanges);
 		}
 
 		#region Events and Handlers 
@@ -70,12 +87,12 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		//This event is Raised ony when Changes is TOGGLED.
+		// This event is Raised ony when Changes is TOGGLED.
 		private void OnPropertyChanged(string propertyName)
 		{
 			if (PropertyChanged != null)
 			{
-				//Raising the event when FirstName or LastName property value changed
+				// Raising the event when FirstName or LastName property value changed
 				PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
@@ -87,24 +104,14 @@ namespace BizHawk.Client.Common
 
 		#endregion
 
-		public new const string Extension = "tasproj";
-
-		public TasMovieRecord this[int index]
-		{
-			get
-			{
-				return new TasMovieRecord
-				{
-					State = StateManager[index],
-					LogEntry = GetInputLogEntry(index),
-					Lagged = (index < LagLog.Count) ? LagLog[index] : (bool?)null
-				};
-			}
-		}
-
 		public void ClearChanges()
 		{
 			Changes = false;
+		}
+
+		public void FlagChanges()
+		{
+			Changes = true;
 		}
 
 		public override void StartNewRecording()
@@ -253,19 +260,8 @@ namespace BizHawk.Client.Common
 		// TODO: try not to need this, or at least use GetInputState and then a log entry generator
 		public string GetInputLogEntry(int frame)
 		{
-			if (Global.Emulator.Frame == frame && !StateManager.HasState(frame))
-			{
-				StateManager.Capture();
-			}
-
-			if (Global.Emulator.Frame == frame && frame >= LagLog.Count)
-			{
-				LagLog.Add(Global.Emulator.IsLagFrame);
-			}
-
 			if (frame < FrameCount && frame >= 0)
 			{
-
 				int getframe;
 
 				if (LoopOffset.HasValue)
@@ -290,40 +286,6 @@ namespace BizHawk.Client.Common
 			return string.Empty;
 		}
 
-		public TasStateManager.ManagerSettings GreenzoneSettings
-		{
-			get { return StateManager.Settings;  }
-		}
-
-		public int LastEmulatedFrame
-		{
-			get
-			{
-				if (StateManager.StateCount > 0)
-				{
-					return StateManager.LastKey;
-				}
-
-				return 0;
-			}
-		}
-
-		/// <summary>
-		/// For the given frame, returns a savestate that is that frame or before it, as close as possible to it
-		/// </summary>
-		public byte[] GetStateClosestToFrame(int frame)
-		{
-			return StateManager.GetStateClosestToFrame(frame);
-		}
-
-		/// <summary>
-		/// Captures the current frame into the greenzone
-		/// </summary>
-		public void CaptureCurrentState()
-		{
-			StateManager.Capture();
-		}
-
 		public void ClearGreenzone()
 		{
 			if (StateManager.Any())
@@ -333,20 +295,23 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool HasGreenzone // TODO: get rid of wrappers like this now that we expose the state manager directly
+		public override IController GetInputState(int frame)
 		{
-			get
+			// TODO: states and lag capture
+			if (Global.Emulator.Frame == frame) // Take this opportunity to capture lag and state info if we do not have it
 			{
-				return StateManager.Any();
-			}
-		}
+				if (frame == LagLog.Count) // I intentionally did not do >=, if it were >= we missed some entries somewhere, oops, maybe this shoudl be a dictionary<int, bool> with frame values?
+				{
+					LagLog.Add(Global.Emulator.IsLagFrame);
+				}
 
-		public TasStateManager TasStateManager
-		{
-			get
-			{
-				return StateManager;
+				if (!StateManager.HasState(frame))
+				{
+					StateManager.Capture();
+				}
 			}
+
+			return base.GetInputState(frame);
 		}
 	}
 }

@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		isPorted: false,
 		isReleased: true
 		)]
-	public sealed partial class ColecoVision : IEmulator, IMemoryDomains
+	public sealed partial class ColecoVision : IEmulator, IMemoryDomains, IDebuggable, ISettable<object, ColecoVision.ColecoSyncSettings>
 	{
 		// ROM
 		public byte[] RomData;
@@ -239,14 +239,23 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public void EndAsyncSound() { }
 
 		public object GetSettings() { return null; }
-		public object GetSyncSettings() { return SyncSettings.Clone(); }
+		public ColecoSyncSettings GetSyncSettings() { return SyncSettings.Clone(); }
 		public bool PutSettings(object o) { return false; }
-		public bool PutSyncSettings(object o)
+		public bool PutSyncSettings(ColecoSyncSettings o)
 		{
-			var n = (ColecoSyncSettings)o;
-			bool ret = n.SkipBiosIntro != SyncSettings.SkipBiosIntro;
-			SyncSettings = n;
+			bool ret = o.SkipBiosIntro != SyncSettings.SkipBiosIntro;
+			SyncSettings = o;
 			return ret;
+		}
+
+		object ISettable.GetSyncSettings()
+		{
+			return GetSyncSettings();
+		}
+
+		bool ISettable.PutSyncSettings(object o)
+		{
+			return PutSettings((ColecoSyncSettings)o);
 		}
 
 		ColecoSyncSettings SyncSettings;

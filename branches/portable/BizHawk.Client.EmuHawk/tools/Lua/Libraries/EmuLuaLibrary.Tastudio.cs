@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				var marker = Tastudio.CurrentMovie.Markers.Get(frame);
+				var marker = Tastudio.CurrentTasMovie.Markers.Get(frame);
 				if (marker != null)
 				{
 					return marker.Message;
@@ -62,10 +62,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				var marker = Tastudio.CurrentMovie.Markers.Get(frame);
+				var marker = Tastudio.CurrentTasMovie.Markers.Get(frame);
 				if (marker != null)
 				{
-					Tastudio.CurrentMovie.Markers.Remove(marker);
+					Tastudio.CurrentTasMovie.Markers.Remove(marker);
 					Tastudio.UpdateValues();
 				}
 			}
@@ -79,14 +79,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				var marker = Tastudio.CurrentMovie.Markers.Get(frame);
+				var marker = Tastudio.CurrentTasMovie.Markers.Get(frame);
 				if (marker != null)
 				{
 					marker.Message = message;
 				}
 				else
 				{
-					Tastudio.CurrentMovie.Markers.Add(frame, message);
+					Tastudio.CurrentTasMovie.Markers.Add(frame, message);
 					Tastudio.UpdateValues();
 				}
 			}
@@ -100,9 +100,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				if (frame < Tastudio.CurrentMovie.InputLogLength)
+				if (frame < Tastudio.CurrentTasMovie.InputLogLength)
 				{
-					return Tastudio.CurrentMovie[frame].Lagged;
+					return Tastudio.CurrentTasMovie[frame].Lagged;
 				}
 			}
 
@@ -117,9 +117,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				if (frame < Tastudio.CurrentMovie.InputLogLength)
+				if (frame < Tastudio.CurrentTasMovie.InputLogLength)
 				{
-					return Tastudio.CurrentMovie[frame].HasState;
+					return Tastudio.CurrentTasMovie[frame].HasState;
 				}
 			}
 

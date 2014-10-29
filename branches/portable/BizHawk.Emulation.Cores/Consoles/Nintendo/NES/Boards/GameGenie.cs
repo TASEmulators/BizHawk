@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	public class GameGenie : NES.NESBoardBase
 	{
-		static byte[] NameTables = new byte[256];
+		static byte[] PatternTables = new byte[256];
 
 		static GameGenie()
 		{
@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				d |= (byte)(d << 1);
 				d |= (byte)(d << 2);
-				NameTables[addr] = d;
+				PatternTables[addr] = d;
 			}
 		}
 
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr >= 0x2000)
 				return base.ReadPPU(addr);
 			else
-				return NameTables[addr & 0xff];
+				return PatternTables[addr & 0xff];
 		}
 
 		public override void WritePRG(int addr, byte value)

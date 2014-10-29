@@ -114,7 +114,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public IController GetInputState(int frame)
+		public virtual IController GetInputState(int frame)
 		{
 			if (frame < FrameCount && frame >= 0)
 			{

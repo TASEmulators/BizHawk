@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 
 namespace BizHawk.Common
@@ -18,6 +19,11 @@ namespace BizHawk.Common
 		{
 		}
 
+		/// <summary>
+		/// if this is enabled, seeks to Begin,0 will get ignored; anything else will be an exception
+		/// </summary>
+		public bool DenySeekHack = false;
+
 		public override bool CanRead { get { return _currStream.CanRead; } }
 		public override bool CanSeek { get { return _currStream.CanSeek; } }
 		public override bool CanWrite { get { return _currStream.CanWrite; } }
@@ -33,7 +39,12 @@ namespace BizHawk.Common
 
 			set
 			{
-				_currStream.Position = Position;
+				if (DenySeekHack)
+				{
+					if (value == 0) return;
+					else throw new InvalidOperationException("Cannot set position to non-zero in a SwitcherStream with DenySeekHack=true");
+				}
+				_currStream.Position = value;
 			}
 		}
 
@@ -54,6 +65,11 @@ namespace BizHawk.Common
 
 		public override long Seek(long offset, SeekOrigin origin)
 		{
+			if (DenySeekHack)
+			{
+				if (offset == 0 && origin == SeekOrigin.Begin) return 0;
+				else throw new InvalidOperationException("Cannot call Seek with non-zero offset or non-Begin origin in a SwitcherStream with DenySeekHack=true");
+			}
 			return _currStream.Seek(offset, origin);
 		}
 

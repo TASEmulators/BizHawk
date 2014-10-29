@@ -26,6 +26,9 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		public static extern bool Advance(IntPtr s, Buttons buttons, int[] vbuff, short[] sbuff, ref int sbuffsize);
 
 		[DllImport(dllname, CallingConvention = cc)]
+		public static extern void SetRotation(IntPtr s, int value);
+
+		[DllImport(dllname, CallingConvention = cc)]
 		public static extern bool GetSaveRamPtr(IntPtr s, out int size, out IntPtr data);
 
 		[DllImport(dllname, CallingConvention = cc)]

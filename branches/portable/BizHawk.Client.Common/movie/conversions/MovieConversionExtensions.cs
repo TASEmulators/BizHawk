@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 		public static TasMovie ToTasMovie(this IMovie old)
 		{
 			var newFilename = old.Filename + "." +  TasMovie.Extension;
-			var tas = new TasMovie(newFilename);
+			var tas = new TasMovie(newFilename, old.StartsFromSavestate);
 
 			for (var i = 0; i < old.InputLogLength; i++)
 			{
@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			return tas;
 		}
 
-		public static Bk2Movie ToBk2(this IMovie old)
+		public static Bk2Movie ToBk2(this IMovie old, bool copy = false)
 		{
 			var newFilename = old.Filename + "." + Bk2Movie.Extension;
 			var bk2 = new Bk2Movie(newFilename);
@@ -59,7 +59,10 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				bk2.AppendFrame(input);
 			}
 
-			old.Truncate(0); // Trying to minimize ram usage
+			if (!copy)
+			{
+				old.Truncate(0); // Trying to minimize ram usage
+			}
 
 			bk2.HeaderEntries.Clear();
 			foreach(var kvp in old.HeaderEntries)
@@ -95,7 +98,11 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			movie.EmulatorVersion = VersionInfo.GetEmuVersion();
 			movie.SystemID = Global.Emulator.SystemId;
 
-			movie.SyncSettingsJson = ConfigService.SaveWithType(Global.Emulator.GetSyncSettings());
+			var settable = Global.Emulator as ISettable;
+			if (settable != null)
+			{
+				movie.SyncSettingsJson = ConfigService.SaveWithType(settable.GetSyncSettings());
+			}
 
 			if (Global.Game != null)
 			{

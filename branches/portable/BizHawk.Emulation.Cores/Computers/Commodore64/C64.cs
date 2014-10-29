@@ -101,12 +101,37 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			board.inputRead = false;
 			board.PollInput();
-            board.cpu.LagCycles = 0;
+			board.cpu.LagCycles = 0;
 
 			for (int count = 0; count < cyclesPerFrame; count++)
 			{
 				//disk.Execute();
 				board.Execute();
+
+#if false
+				if (board.cpu.PC == 0xE16F && (board.cpu.ReadPort() & 0x7) == 7)
+				{
+					// HUGE kernal hack to load files
+					// the only purpose for this is to be able to run the Lorenz
+					// test suite!
+
+					int fileNameLength = board.ram.Peek(0xB7);
+					int fileNameOffset = board.ram.Peek(0xBB) | ((int)board.ram.Peek(0xBC) << 8);
+					byte[] fileNameRaw = new byte[fileNameLength];
+					for (int i = 0; i < fileNameLength; i++)
+					{
+						fileNameRaw[i] = board.ram.Peek(fileNameOffset + i);
+					}
+					var enc = System.Text.Encoding.ASCII;
+					string fileName = enc.GetString(fileNameRaw);
+					string filePath = Path.Combine(@"E:\Programming\Visual Studio 2013\Vice\testprogs\general\Lorenz-2.15\src\", fileName + ".prg");
+					if (File.Exists(filePath))
+					{
+						PRG.Load(board.pla, File.ReadAllBytes(filePath));
+					}
+					board.cpu.PC = 0xE1B5;
+				}
+#endif
 
 				// load PRG file if needed
 				if (loadPrg)
@@ -176,10 +201,5 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			//domains.Add(new MemoryDomain("1541 RAM", 0x1000, MemoryDomain.Endian.Little, new Func<int, byte>(disk.PeekRam), new Action<int, byte>(disk.PokeRam)));
 			memoryDomains = new MemoryDomainList(domains);
 		}
-
-		public object GetSettings() { return null; }
-		public object GetSyncSettings() { return null; }
-		public bool PutSettings(object o) { return false; }
-		public bool PutSyncSettings(object o) { return false; }
 	}
 }

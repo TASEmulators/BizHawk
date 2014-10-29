@@ -75,11 +75,10 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			{
 				switch (realfile.Length)
 				{
-					// these are untested
 					case 0x10000: pagesize0 = 0x100; break;
-					case 0x20000: pagesize0 = 0x200; break;
-					case 0x40000: pagesize0 = 0x400; break;
-					case 0x80000: pagesize0 = 0x800; break;
+					case 0x20000: pagesize0 = 0x200; break; //
+					case 0x40000: pagesize0 = 0x400; break; // all known good dumps fall in one of these three categories
+					case 0x80000: pagesize0 = 0x800; break; //
 
 					case 0x30000: pagesize0 = 0x200; pagesize1 = 0x100; break;
 					case 0x50000: pagesize0 = 0x400; pagesize1 = 0x100; break;
@@ -100,6 +99,19 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 				savebuff = new byte[LibLynx.BinStateSize(Core)];
 				savebuff2 = new byte[savebuff.Length + 13];
+
+				int rot = game.OptionPresent("rotate") ? int.Parse(game.OptionValue("rotate")) : 0;
+				LibLynx.SetRotation(Core, rot);
+				if ((rot & 1) != 0)
+				{
+					BufferWidth = HEIGHT;
+					BufferHeight = WIDTH;
+				}
+				else
+				{
+					BufferWidth = WIDTH;
+					BufferHeight = HEIGHT;
+				}
 			}
 			catch
 			{
@@ -150,15 +162,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		}
 
 		#region debugging
-
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
-		{
-			return new Dictionary<string, int>();
-		}
-
-		public void SetCpuRegister(string register, int value)
-		{
-		}
 
 		#endregion
 
@@ -334,10 +337,10 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		public IVideoProvider VideoProvider { get { return this; } }
 		public int[] GetVideoBuffer() { return videobuff; }
-		public int VirtualWidth { get { return WIDTH; } }
-		public int VirtualHeight { get { return HEIGHT; } }
-		public int BufferWidth { get { return WIDTH; } }
-		public int BufferHeight { get { return HEIGHT; } }
+		public int VirtualWidth { get { return BufferWidth; } }
+		public int VirtualHeight { get { return BufferHeight; } }
+		public int BufferWidth { get; private set; }
+		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
 
 		#endregion
@@ -363,30 +366,5 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		}
 
 		#endregion
-
-		#region Settings
-
-		public object GetSettings()
-		{
-			return null;
-		}
-
-		public object GetSyncSettings()
-		{
-			return null;
-		}
-
-		public bool PutSettings(object o)
-		{
-			return false;
-		}
-
-		public bool PutSyncSettings(object o)
-		{
-			return false;
-		}
-
-		#endregion
-
 	}
 }

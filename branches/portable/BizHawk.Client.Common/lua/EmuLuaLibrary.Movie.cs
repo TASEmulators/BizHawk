@@ -71,6 +71,15 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodAttributes(
+			"getrerecordcount",
+			"Gets the rerecord count of the current movie."
+		)]
+		public static ulong GetRerecordCount()
+		{
+			return Global.MovieSession.Movie.Rerecords;
+		}
+
+		[LuaMethodAttributes(
 			"getrerecordcounting",
 			"Returns whether or not the current movie is incrementing rerecords on loadstate"
 		)]
@@ -123,11 +132,11 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"rerecordcount",
-			"Returns the current rerecord count for the loaded movie"
+			"[Deprecated] Alias of getrerecordcount"
 		)]
 		public static string RerecordCount()
 		{
-			return Global.MovieSession.Movie.Rerecords.ToString();
+			return GetRerecordCount().ToString();
 		}
 
 		[LuaMethodAttributes(
@@ -137,6 +146,22 @@ namespace BizHawk.Client.Common
 		public static void SetReadOnly(bool readOnly)
 		{
 			Global.MovieSession.ReadOnly = readOnly;
+		}
+
+		[LuaMethodAttributes(
+			"setrerecordcount",
+			"Sets the rerecord count of the current movie."
+		)]
+		public static void SetRerecordCount(double count)
+		{
+			// Lua numbers are always double, integer precision holds up
+			// to 53 bits, so throw an error if it's bigger than that.
+			const double precisionLimit = 9007199254740992d;
+
+			if (count > precisionLimit)
+				throw new Exception("Rerecord count exceeds Lua integer precision.");
+
+			Global.MovieSession.Movie.Rerecords = (ulong)count;
 		}
 
 		[LuaMethodAttributes(

@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		isPorted: true,
 		isReleased: false
 		)]
-	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, IMemoryDomains
+	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, IMemoryDomains, IDebuggable
 	{
 		public Dictionary<string, int> GetCpuFlagsAndRegisters()
 		{
@@ -544,10 +544,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		}
 
 		#endregion
-
-		public object GetSettings() { return null; }
-		public object GetSyncSettings() { return null; }
-		public bool PutSettings(object o) { return false; }
-		public bool PutSyncSettings(object o) { return false; }
 	}
 }

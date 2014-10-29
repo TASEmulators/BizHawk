@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Client.Common;
 using System.Windows;
 
 namespace BizHawk.Client.EmuHawk
@@ -15,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		public VirtualPadAnalogStick()
 		{
 			InitializeComponent();
-			AnalogStick.ClearCallback = SetNumericsFromAnalog;
+			AnalogStick.ClearCallback = ClearCallback;
 			RangeX = 127;
 			RangeY = 127;
 		}
@@ -58,11 +59,21 @@ namespace BizHawk.Client.EmuHawk
 			SetNumericsFromAnalog();
 		}
 
+		public void ClearCallback()
+		{
+			ManualX.Value = 0;
+			ManualY.Value = 0;
+			//see HOOMOO
+			Global.AutofireStickyXORAdapter.SetSticky(AnalogStick.XName, false);
+			Global.StickyXORAdapter.Unset(AnalogStick.XName);
+			Global.AutofireStickyXORAdapter.SetSticky(AnalogStick.YName, false);
+			Global.StickyXORAdapter.Unset(AnalogStick.YName);
+			AnalogStick.HasValue = false;
+		}
+
 		public void Clear()
 		{
 			AnalogStick.Clear();
-			ManualX.Value = 0;
-			ManualY.Value = 0;
 		}
 
 		public bool ReadOnly

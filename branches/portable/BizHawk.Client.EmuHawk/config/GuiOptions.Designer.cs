@@ -42,7 +42,7 @@
 			this.AcceptBackgroundInputCheckbox = new System.Windows.Forms.CheckBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.RunInBackgroundCheckbox = new System.Windows.Forms.CheckBox();
-			this.ShowMenuInFullScreenCheckbox = new System.Windows.Forms.CheckBox();
+			this.ShowMenuInFullscreenCheckbox = new System.Windows.Forms.CheckBox();
 			this.SaveWindowPositionCheckbox = new System.Windows.Forms.CheckBox();
 			this.EnableContextMenuCheckbox = new System.Windows.Forms.CheckBox();
 			this.StartPausedCheckbox = new System.Windows.Forms.CheckBox();
@@ -144,7 +144,7 @@
 			this.tabPage1.Controls.Add(this.AcceptBackgroundInputCheckbox);
 			this.tabPage1.Controls.Add(this.label1);
 			this.tabPage1.Controls.Add(this.RunInBackgroundCheckbox);
-			this.tabPage1.Controls.Add(this.ShowMenuInFullScreenCheckbox);
+			this.tabPage1.Controls.Add(this.ShowMenuInFullscreenCheckbox);
 			this.tabPage1.Controls.Add(this.SaveWindowPositionCheckbox);
 			this.tabPage1.Controls.Add(this.EnableContextMenuCheckbox);
 			this.tabPage1.Controls.Add(this.StartPausedCheckbox);
@@ -162,9 +162,9 @@
 			this.StartFullScreenCheckbox.AutoSize = true;
 			this.StartFullScreenCheckbox.Location = new System.Drawing.Point(104, 100);
 			this.StartFullScreenCheckbox.Name = "StartFullScreenCheckbox";
-			this.StartFullScreenCheckbox.Size = new System.Drawing.Size(107, 17);
+			this.StartFullScreenCheckbox.Size = new System.Drawing.Size(110, 17);
 			this.StartFullScreenCheckbox.TabIndex = 13;
-			this.StartFullScreenCheckbox.Text = "Start in fullscreen";
+			this.StartFullScreenCheckbox.Text = "Start in Fullscreen";
 			this.StartFullScreenCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// label14
@@ -243,15 +243,15 @@
 			this.RunInBackgroundCheckbox.Text = "Run in background";
 			this.RunInBackgroundCheckbox.UseVisualStyleBackColor = true;
 			// 
-			// ShowMenuInFullScreenCheckbox
+			// ShowMenuInFullscreenCheckbox
 			// 
-			this.ShowMenuInFullScreenCheckbox.AutoSize = true;
-			this.ShowMenuInFullScreenCheckbox.Location = new System.Drawing.Point(6, 40);
-			this.ShowMenuInFullScreenCheckbox.Name = "ShowMenuInFullScreenCheckbox";
-			this.ShowMenuInFullScreenCheckbox.Size = new System.Drawing.Size(147, 17);
-			this.ShowMenuInFullScreenCheckbox.TabIndex = 1;
-			this.ShowMenuInFullScreenCheckbox.Text = "Show Menu in FullScreen";
-			this.ShowMenuInFullScreenCheckbox.UseVisualStyleBackColor = true;
+			this.ShowMenuInFullscreenCheckbox.AutoSize = true;
+			this.ShowMenuInFullscreenCheckbox.Location = new System.Drawing.Point(6, 40);
+			this.ShowMenuInFullscreenCheckbox.Name = "ShowMenuInFullscreenCheckbox";
+			this.ShowMenuInFullscreenCheckbox.Size = new System.Drawing.Size(145, 17);
+			this.ShowMenuInFullscreenCheckbox.TabIndex = 1;
+			this.ShowMenuInFullscreenCheckbox.Text = "Show Menu in Fullscreen";
+			this.ShowMenuInFullscreenCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// SaveWindowPositionCheckbox
 			// 
@@ -786,7 +786,7 @@
 		private System.Windows.Forms.CheckBox PauseWhenMenuActivatedCheckbox;
 		private System.Windows.Forms.CheckBox EnableContextMenuCheckbox;
 		private System.Windows.Forms.CheckBox SaveWindowPositionCheckbox;
-		private System.Windows.Forms.CheckBox ShowMenuInFullScreenCheckbox;
+		private System.Windows.Forms.CheckBox ShowMenuInFullscreenCheckbox;
 		private System.Windows.Forms.CheckBox RunInBackgroundCheckbox;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;

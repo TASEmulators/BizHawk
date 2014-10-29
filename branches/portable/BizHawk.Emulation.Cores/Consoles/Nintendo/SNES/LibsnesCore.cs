@@ -66,7 +66,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		portedVersion: "v87",
 		portedUrl: "http://byuu.org/"
 		)]
-	public unsafe class LibsnesCore : IEmulator, IVideoProvider, IMemoryDomains
+	public unsafe class LibsnesCore : IEmulator, IVideoProvider, IMemoryDomains,
+		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
 	{
 		public bool IsSGB { get; private set; }
 
@@ -1183,23 +1184,41 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		SnesSettings Settings;
 		SnesSyncSettings SyncSettings;
 
-		public object GetSettings() { return Settings.Clone(); }
-		public object GetSyncSettings() { return SyncSettings.Clone(); }
-		public bool PutSettings(object o)
+		public SnesSettings GetSettings() { return Settings.Clone(); }
+		public SnesSyncSettings GetSyncSettings() { return SyncSettings.Clone(); }
+		public bool PutSettings(SnesSettings o)
 		{
-			SnesSettings n = (SnesSettings)o;
-			bool refreshneeded = n.Palette != Settings.Palette;
-			Settings = n;
+			bool refreshneeded = o.Palette != Settings.Palette;
+			Settings = o;
 			if (refreshneeded)
 				RefreshPalette();
 			return false;
 		}
-		public bool PutSyncSettings(object o)
+		public bool PutSyncSettings(SnesSyncSettings o)
 		{
-			SnesSyncSettings n = (SnesSyncSettings)o;
-			bool ret = n.Profile != SyncSettings.Profile;
-			SyncSettings = n;
+			bool ret = o.Profile != SyncSettings.Profile;
+			SyncSettings = o;
 			return ret;
+		}
+
+		object ISettable.GetSettings()
+		{
+			return GetSettings();
+		}
+
+		bool ISettable.PutSettings(object o)
+		{
+			return PutSettings((SnesSettings)o);
+		}
+
+		object ISettable.GetSyncSettings()
+		{
+			return GetSyncSettings();
+		}
+
+		bool ISettable.PutSyncSettings(object o)
+		{
+			return PutSyncSettings((SnesSyncSettings)o);
 		}
 
 		public class SnesSettings

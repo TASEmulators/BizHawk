@@ -10,6 +10,9 @@ namespace BizHawk.Client.Common
 {
 	public partial class TasMovie
 	{
+		public Func<string> ClientSettingsForSave { get; set; }
+		public Action<string> GetClientSettingsOnLoad { get; set; }
+
 		protected override void Write(string fn)
 		{
 			var file = new FileInfo(fn);
@@ -18,8 +21,7 @@ namespace BizHawk.Client.Common
 				Directory.CreateDirectory(file.Directory.ToString());
 			}
 
-			using (var fs = new FileStream(fn, FileMode.Create, FileAccess.Write))
-			using (var bs = new BinaryStateSaver(fs, false))
+			using (var bs = new BinaryStateSaver(fn, false))
 			{
 				bs.PutLump(BinaryStateLump.Movieheader, tw => tw.WriteLine(Header.ToString()));
 				bs.PutLump(BinaryStateLump.Comments, tw => tw.WriteLine(CommentsString()));
@@ -48,6 +50,12 @@ namespace BizHawk.Client.Common
 					{
 						bs.PutLump(BinaryStateLump.Corestate, (BinaryWriter bw) => bw.Write(BinarySavestate));
 					}
+				}
+
+				if (ClientSettingsForSave != null)
+				{
+					var clientSettingsJson = ClientSettingsForSave();
+					bs.PutLump(BinaryStateLump.ClientSettings, (TextWriter tw) => tw.Write(clientSettingsJson));
 				}
 			}
 
@@ -174,6 +182,24 @@ namespace BizHawk.Client.Common
 						}
 					}
 				});
+
+				if (GetClientSettingsOnLoad != null && bl.HasLump(BinaryStateLump.ClientSettings))
+				{
+					string clientSettings = string.Empty;
+					bl.GetLump(BinaryStateLump.ClientSettings, true, delegate(TextReader tr)
+					{
+						string line;
+						while ((line = tr.ReadLine()) != null)
+						{
+							if (!string.IsNullOrWhiteSpace(line))
+							{
+								clientSettings = line;
+							}
+						}
+					});
+
+					GetClientSettingsOnLoad(clientSettings);
+				}
 			}
 
 			Changes = false;
@@ -184,11 +210,6 @@ namespace BizHawk.Client.Common
 		{
 			LagLog.Clear();
 			StateManager.Clear();
-		}
-
-		private void RestoreLagLog(byte[] buffer)
-		{
-
 		}
 	}
 }

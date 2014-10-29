@@ -14,6 +14,7 @@ using BizHawk.Bizware.BizwareGL;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[VideoWriter("syncless", "Syncless Recording", "Writes each frame to a directory as a PNG and WAV pair, identified by frame number. The results can be exported into one video file.")]
 	public class SynclessRecorder : IVideoWriter
 	{
 		public void Dispose() { }
@@ -95,19 +96,8 @@ namespace BizHawk.Client.EmuHawk
 			//not needed
 		}
 
-		public override string ToString()
-		{
-			return "Syncless Recording";
-		}
-
-		public string WriterDescription()
-		{
-			return "Writes each frame to a directory as a PNG and WAV pair, identified by frame number. The results can be exported into one video file.";
-		}
-
 		public string DesiredExtension() { return "syncless.txt"; }
 
-		public string ShortName() { return "syncless"; }
 
 		/// <summary>
 		/// splits the string into chunks of length s

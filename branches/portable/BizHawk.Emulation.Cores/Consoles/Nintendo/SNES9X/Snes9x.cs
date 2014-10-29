@@ -124,40 +124,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			get { throw new NotImplementedException(); }
 		}
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void SetCpuRegister(string register, int value)
-		{
-			throw new NotImplementedException();
-		}
-
-		#endregion
-
-		#region settings
-
-		public object GetSettings()
-		{
-			return null;
-		}
-
-		public object GetSyncSettings()
-		{
-			return null;
-		}
-
-		public bool PutSettings(object o)
-		{
-			return false;
-		}
-
-		public bool PutSyncSettings(object o)
-		{
-			return false;
-		}
-
 		#endregion
 
 		#region IVideoProvider

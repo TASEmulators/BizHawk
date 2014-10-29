@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (path[path.Length - 4] != '.') // If no file extension, add movie extension
 					{
-						path += "." + Global.MovieSession.Movie.PreferredExtension;
+						path += "." +  MovieService.DefaultExtension;
 					}
 				}
 			}
@@ -81,6 +81,17 @@ namespace BizHawk.Client.EmuHawk
 						{
 							Global.Emulator.SaveStateText(sw);
 							movieToRecord.TextSavestate = sw.ToString();
+						}
+					}
+					// TODO: do we want to support optionally not saving this?
+					if (true)
+					{
+						// hack: some IMovies eat the framebuffer, so don't bother with them
+						movieToRecord.SavestateFramebuffer = new int[0];
+						if (movieToRecord.SavestateFramebuffer != null)
+						{
+
+							movieToRecord.SavestateFramebuffer = (int[])Global.Emulator.VideoProvider.GetVideoBuffer().Clone();
 						}
 					}
 				}

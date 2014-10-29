@@ -1350,7 +1350,7 @@ namespace BizHawk.Client.EmuHawk
 			if (suppression) return;
 			var pal = (SnesColors.ColorType)comboPalette.SelectedValue;
 			Console.WriteLine("set {0}", pal);
-			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+			var s = ((LibsnesCore)Global.Emulator).GetSettings();
 			s.Palette = pal.ToString();
 			if (currentSnesCore != null)
 			{
@@ -1364,7 +1364,7 @@ namespace BizHawk.Client.EmuHawk
 
 		void RefreshBGENCheckStatesFromConfig()
 		{
-			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+			var s = ((LibsnesCore)Global.Emulator).GetSettings();
 			checkEN0_BG1.Checked = s.ShowBG1_0;
 			checkEN0_BG2.Checked = s.ShowBG2_0;
 			checkEN0_BG3.Checked = s.ShowBG3_0;
@@ -1382,7 +1382,8 @@ namespace BizHawk.Client.EmuHawk
 		private void checkEN_CheckedChanged(object sender, EventArgs e)
 		{
 			if(suppression) return;
-			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+			var snes = ((LibsnesCore)Global.Emulator);
+			var s = snes.GetSettings();
 			if (sender == checkEN0_BG1) s.ShowBG1_0 = checkEN0_BG1.Checked;
 			if (sender == checkEN0_BG2) s.ShowBG2_0 = checkEN0_BG2.Checked;
 			if (sender == checkEN0_BG3) s.ShowBG3_0 = checkEN0_BG3.Checked;
@@ -1414,7 +1415,7 @@ namespace BizHawk.Client.EmuHawk
 				RefreshBGENCheckStatesFromConfig();
 				suppression = false;
 			}
-			Global.Emulator.PutSettings(s);
+			snes.PutSettings(s);
 		}
 
 		private void lblEnPrio0_Click(object sender, EventArgs e)

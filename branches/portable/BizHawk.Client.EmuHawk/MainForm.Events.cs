@@ -268,6 +268,13 @@ namespace BizHawk.Client.EmuHawk
 			MovieEndRecordMenuItem.Checked = Global.Config.MovieEndAction == MovieEndAction.Record;
 			MovieEndStopMenuItem.Checked = Global.Config.MovieEndAction == MovieEndAction.Stop;
 			MovieEndPauseMenuItem.Checked = Global.Config.MovieEndAction == MovieEndAction.Pause;
+
+			// Arguably an IControlMainForm property should be set here, but in reality only Tastudio is ever going to interfere with this logic
+			MovieEndFinishMenuItem.Enabled =
+			MovieEndRecordMenuItem.Enabled =
+			MovieEndStopMenuItem.Enabled =
+			MovieEndPauseMenuItem.Enabled =
+				!GlobalWin.Tools.Has<TAStudio>();
 		}
 
 		private void AVSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -405,7 +412,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Global.Emulator is LibsnesCore)
 			{
-				var ss = (LibsnesCore.SnesSyncSettings)Global.Emulator.GetSyncSettings();
+				var snes = (LibsnesCore)Global.Emulator;
+				var ss = snes.GetSyncSettings();
 				if (ss.Profile == "Performance")
 				{
 					var box = new MsgBox(
@@ -424,7 +432,7 @@ namespace BizHawk.Client.EmuHawk
 					if (result == DialogResult.Yes)
 					{
 						ss.Profile = "Compatibility";
-						Global.Emulator.PutSyncSettings(ss);
+						snes.PutSyncSettings(ss);
 					}
 					else if (result == DialogResult.Cancel)
 					{
@@ -923,6 +931,10 @@ namespace BizHawk.Client.EmuHawk
 			if (new ProfileConfig().ShowDialog() == DialogResult.OK)
 			{
 				GlobalWin.OSD.AddMessage("Profile settings saved");
+				//We hide the FirstBoot items since the user setup a Profile
+				//Is it a bad thing to do this constantly?
+				Global.Config.FirstBoot = false;
+				ProfileFirstBootLabel.Visible = false;
 			}
 			else
 			{
@@ -1287,7 +1299,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PCESubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			var s = (PCEngine.PCESettings)Global.Emulator.GetSettings();
+			var s = ((PCEngine)Global.Emulator).GetSettings();
 
 			PceControllerSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
 
@@ -1331,21 +1343,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PCEAlwaysPerformSpriteLimitMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = (PCEngine.PCESettings)Global.Emulator.GetSettings();
+			var s = ((PCEngine)Global.Emulator).GetSettings();
 			s.SpriteLimit ^= true;
 			PutCoreSettings(s);
 		}
 
 		private void PCEAlwaysEqualizeVolumesMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = (PCEngine.PCESettings)Global.Emulator.GetSettings();
+			var s = ((PCEngine)Global.Emulator).GetSettings();
 			s.EqualizeVolume ^= true;
 			PutCoreSettings(s);
 		}
 
 		private void PCEArcadeCardRewindEnableMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = (PCEngine.PCESettings)Global.Emulator.GetSettings();
+			var s = ((PCEngine)Global.Emulator).GetSettings();
 			s.ArcadeCardRewindHack ^= true;
 			PutCoreSettings(s);
 		}
@@ -1356,8 +1368,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SMSSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
-			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			var s = ((SMS)Global.Emulator).GetSettings();
+			var ss = ((SMS)Global.Emulator).GetSyncSettings();
 			SMSregionExportToolStripMenuItem.Checked = ss.ConsoleRegion == "Export";
 			SMSregionJapanToolStripMenuItem.Checked = ss.ConsoleRegion == "Japan";
 			SMSregionAutoToolStripMenuItem.Checked = ss.ConsoleRegion == "Auto";
@@ -1395,98 +1407,98 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SMS_RegionExport_Click(object sender, EventArgs e)
 		{
-			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			var ss = ((SMS)Global.Emulator).GetSyncSettings();
 			ss.ConsoleRegion = "Export";
 			PutCoreSyncSettings(ss);
 		}
 
 		private void SMS_RegionJapan_Click(object sender, EventArgs e)
 		{
-			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			var ss = ((SMS)Global.Emulator).GetSyncSettings();
 			ss.ConsoleRegion = "Japan";
 			PutCoreSyncSettings(ss);
 		}
 
 		private void SMS_RegionAuto_Click(object sender, EventArgs e)
 		{
-			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			var ss = ((SMS)Global.Emulator).GetSyncSettings();
 			ss.ConsoleRegion = "Auto";
 			PutCoreSyncSettings(ss);
 		}
 
 		private void SMS_DisplayNTSC_Click(object sender, EventArgs e)
 		{
-			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			var ss = ((SMS)Global.Emulator).GetSyncSettings();
 			ss.DisplayType = "NTSC";
 			PutCoreSyncSettings(ss);
 		}
 
 		private void SMS_DisplayPAL_Click(object sender, EventArgs e)
 		{
-			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			var ss = ((SMS)Global.Emulator).GetSyncSettings();
 			ss.DisplayType = "PAL";
 			PutCoreSyncSettings(ss);
 		}
 
 		private void SMS_DisplayAuto_Click(object sender, EventArgs e)
 		{
-			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			var ss = ((SMS)Global.Emulator).GetSyncSettings();
 			ss.DisplayType = "Auto";
 			PutCoreSyncSettings(ss);
 		}
 
 		private void SMS_BIOS_Click(object sender, EventArgs e)
 		{
-			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			var ss = ((SMS)Global.Emulator).GetSyncSettings();
 			ss.UseBIOS ^= true;
 			PutCoreSyncSettings(ss);
 		}
 
 		private void SMSEnableFMChipMenuItem_Click(object sender, EventArgs e)
 		{
-			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			var ss = ((SMS)Global.Emulator).GetSyncSettings();
 			ss.EnableFM ^= true;
 			PutCoreSyncSettings(ss);
 		}
 
 		private void SMSOverclockMenuItem_Click(object sender, EventArgs e)
 		{
-			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			var ss = ((SMS)Global.Emulator).GetSyncSettings();
 			ss.AllowOverlock ^= true;
 			PutCoreSyncSettings(ss);
 		}
 
 		private void SMSForceStereoMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
+			var s = ((SMS)Global.Emulator).GetSettings();
 			s.ForceStereoSeparation ^= true;
 			PutCoreSettings(s);
 		}
 
 		private void SMSSpriteLimitMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
+			var s = ((SMS)Global.Emulator).GetSettings();
 			s.SpriteLimit ^= true;
 			PutCoreSettings(s);
 		}
 
 		private void SMSFix3DDisplayMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
+			var s = ((SMS)Global.Emulator).GetSettings();
 			s.Fix3D ^= true;
 			PutCoreSettings(s);
 		}
 
 		private void ShowClippedRegionsMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
+			var s = ((SMS)Global.Emulator).GetSettings();
 			s.ShowClippedRegions ^= true;
 			PutCoreSettings(s);
 		}
 
 		private void HighlightActiveDisplayRegionMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
+			var s = ((SMS)Global.Emulator).GetSettings();
 			s.HighlightActiveDisplayRegion ^= true;
 			PutCoreSettings(s);
 		}
@@ -1604,21 +1616,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBForceDMGMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = (Gameboy.GambatteSyncSettings)Global.Emulator.GetSyncSettings();
+			var s = ((Gameboy)Global.Emulator).GetSyncSettings();
 			s.ForceDMG ^= true;
 			PutCoreSyncSettings(s);
 		}
 
 		private void GBAInCGBModeMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = (Gameboy.GambatteSyncSettings)Global.Emulator.GetSyncSettings();
+			var s = ((Gameboy)Global.Emulator).GetSyncSettings();
 			s.GBACGB ^= true;
 			PutCoreSyncSettings(s);
 		}
 
 		private void GBMulticartCompatibilityMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = (Gameboy.GambatteSyncSettings)Global.Emulator.GetSyncSettings();
+			var s = ((Gameboy)Global.Emulator).GetSyncSettings();
 			s.MulticartCompat ^= true;
 			PutCoreSyncSettings(s);
 		}
@@ -1678,7 +1690,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SNESDisplayMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+			var s = ((LibsnesCore)Global.Emulator).GetSettings();
 
 			SnesBg1MenuItem.Checked = s.ShowBG1_1;
 			SnesBg2MenuItem.Checked = s.ShowBG2_1;
@@ -1768,13 +1780,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColecoSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			var ss = (ColecoVision.ColecoSyncSettings)Global.Emulator.GetSyncSettings();
+			var ss = ((ColecoVision)Global.Emulator).GetSyncSettings();
 			ColecoSkipBiosMenuItem.Checked = ss.SkipBiosIntro;
 		}
 
 		private void ColecoSkipBiosMenuItem_Click(object sender, EventArgs e)
 		{
-			var ss = (ColecoVision.ColecoSyncSettings)Global.Emulator.GetSyncSettings();
+			var ss = ((ColecoVision)Global.Emulator).GetSyncSettings();
 			ss.SkipBiosIntro ^= true;
 			PutCoreSyncSettings(ss);
 		}
@@ -1792,7 +1804,7 @@ namespace BizHawk.Client.EmuHawk
 
 			N64CircularAnalogRangeMenuItem.Checked = Global.Config.N64UseCircularAnalogConstraint;
 
-			var s = (N64Settings)Global.Emulator.GetSettings();
+			var s = ((N64)Global.Emulator).GetSettings();
 			MupenStyleLagMenuItem.Checked = s.UseMupenStyleLag;
 
 			//var ss = (N64SyncSettings)Global.Emulator.GetSyncSettings();
@@ -1841,16 +1853,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MupenStyleLagMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = (N64Settings)Global.Emulator.GetSettings();
+			var n64 = (N64)Global.Emulator;
+			var s = n64.GetSettings();
 			s.UseMupenStyleLag ^= true;
-			Global.Emulator.PutSettings(s);
+			n64.PutSettings(s);
 		}
 
 		private void N64ExpansionSlotMenuItem_Click(object sender, EventArgs e)
 		{
-			var ss = (N64SyncSettings)Global.Emulator.GetSyncSettings();
+			var n64 = (N64)Global.Emulator;
+			var ss = n64.GetSyncSettings();
 			ss.DisableExpansionSlot ^= true;
-			Global.Emulator.PutSyncSettings(ss);
+			n64.PutSyncSettings(ss);
 			FlagNeedsReboot();
 		}
 
@@ -2230,6 +2244,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ProfileFirstBootLabel_Click(object sender, EventArgs e)
 		{
+			//We do not check if the user is actually setting a profile here.
+			//This is intentional.
 			var profileForm = new ProfileConfig();
 			profileForm.ShowDialog();
 			Global.Config.FirstBoot = false;

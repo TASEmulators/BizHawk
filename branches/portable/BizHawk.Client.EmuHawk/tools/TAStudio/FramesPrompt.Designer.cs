@@ -30,8 +30,8 @@
 		{
 			this.OkBtn = new System.Windows.Forms.Button();
 			this.CancelBtn = new System.Windows.Forms.Button();
-			this.NumFramesBox = new BizHawk.Client.EmuHawk.WatchValueBox();
 			this.label1 = new System.Windows.Forms.Label();
+			this.NumFramesBox = new BizHawk.Client.EmuHawk.WatchValueBox();
 			this.SuspendLayout();
 			// 
 			// OkBtn
@@ -57,19 +57,6 @@
 			this.CancelBtn.UseVisualStyleBackColor = true;
 			this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
 			// 
-			// NumFramesBox
-			// 
-			this.NumFramesBox.ByteSize = BizHawk.Client.Common.Watch.WatchSize.Byte;
-			this.NumFramesBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.NumFramesBox.Location = new System.Drawing.Point(138, 16);
-			this.NumFramesBox.MaxLength = 3;
-			this.NumFramesBox.Name = "NumFramesBox";
-			this.NumFramesBox.Nullable = false;
-			this.NumFramesBox.Size = new System.Drawing.Size(51, 20);
-			this.NumFramesBox.TabIndex = 3;
-			this.NumFramesBox.Text = "1";
-			this.NumFramesBox.Type = BizHawk.Client.Common.Watch.DisplayType.Unsigned;
-			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
@@ -78,6 +65,19 @@
 			this.label1.Size = new System.Drawing.Size(120, 13);
 			this.label1.TabIndex = 4;
 			this.label1.Text = "Insert number of frames:";
+			// 
+			// NumFramesBox
+			// 
+			this.NumFramesBox.ByteSize = BizHawk.Client.Common.Watch.WatchSize.Byte;
+			this.NumFramesBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.NumFramesBox.Location = new System.Drawing.Point(138, 16);
+			this.NumFramesBox.MaxLength = 5;
+			this.NumFramesBox.Name = "NumFramesBox";
+			this.NumFramesBox.Nullable = false;
+			this.NumFramesBox.Size = new System.Drawing.Size(51, 20);
+			this.NumFramesBox.TabIndex = 3;
+			this.NumFramesBox.Text = "1";
+			this.NumFramesBox.Type = BizHawk.Client.Common.Watch.DisplayType.Unsigned;
 			// 
 			// FramesPrompt
 			// 

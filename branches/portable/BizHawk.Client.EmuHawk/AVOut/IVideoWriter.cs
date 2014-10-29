@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Common.ReflectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -90,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// short description of this IVideoWriter
 		/// </summary>
-		string WriterDescription();
+		// string WriterDescription();
 		/// <summary>
 		/// what default extension this writer would like to put on its output
 		/// </summary>
@@ -99,7 +100,68 @@ namespace BizHawk.Client.EmuHawk
 		/// name that command line parameters can refer to
 		/// </summary>
 		/// <returns></returns>
-		string ShortName();
+		// string ShortName();
+	}
+
+	public static class VideoWriterExtensions
+	{
+		public static string WriterDescription(this IVideoWriter w)
+		{
+			return w.GetAttribute<VideoWriterAttribute>().Description;
+		}
+
+		public static string ShortName(this IVideoWriter w)
+		{
+			return w.GetAttribute<VideoWriterAttribute>().ShortName;
+		}
+
+		public static string LongName(this IVideoWriter w)
+		{
+			return w.GetAttribute<VideoWriterAttribute>().Name;
+		}
+	}
+
+
+	[AttributeUsage(AttributeTargets.Class)]
+	public class VideoWriterAttribute : Attribute
+	{
+		public string ShortName { get; private set; }
+		public string Name { get; private set; }
+		public string Description { get; private set; }
+
+		public VideoWriterAttribute(string ShortName, string Name, string Description)
+		{
+			this.ShortName = ShortName;
+			this.Name = Name;
+			this.Description = Description;
+		}
+	}
+
+	[AttributeUsage(AttributeTargets.Class)]
+	public class VideoWriterIgnoreAttribute : Attribute
+	{
+	}
+
+	public class VideoWriterInfo
+	{
+		public VideoWriterAttribute Attribs { get; private set; }
+		private Type type;
+
+		public VideoWriterInfo(VideoWriterAttribute Attribs, Type type)
+		{
+			this.type = type;
+			this.Attribs = Attribs;
+		}
+
+		public IVideoWriter Create()
+		{
+			return (IVideoWriter)Activator.CreateInstance(type);
+		}
+
+		public override string ToString()
+		{
+			return Attribs.Name;
+		}
 	}
 
 	/// <summary>
@@ -107,19 +169,26 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public static class VideoWriterInventory
 	{
-		public static IEnumerable<IVideoWriter> GetAllVideoWriters()
+		private static Dictionary<string, VideoWriterInfo> vws = new Dictionary<string, VideoWriterInfo>();
+
+		static VideoWriterInventory()
 		{
-			var ret = new IVideoWriter[]
-			{ 
-				new AviWriter(),
-				new JMDWriter(),
-				new WavWriterV(),
-				new FFmpegWriter(),
-				new NutWriter(),
-				new GifWriter(),
-				new SynclessRecorder()
-			};
-			return ret;
+			foreach (Type t in typeof(VideoWriterInventory).Assembly.GetTypes())
+			{
+				if (!t.IsInterface
+					&& typeof(IVideoWriter).IsAssignableFrom(t)
+					&& !t.IsAbstract
+					&& t.GetCustomAttributes(typeof(VideoWriterIgnoreAttribute), false).Length == 0)
+				{
+					var a = (VideoWriterAttribute)t.GetCustomAttributes(typeof(VideoWriterAttribute), false)[0];
+					vws.Add(a.ShortName, new VideoWriterInfo(a, t));
+				}
+			}
+		}
+
+		public static IEnumerable<VideoWriterInfo> GetAllWriters()
+		{
+			return vws.Values;
 		}
 
 		/// <summary>
@@ -129,18 +198,11 @@ namespace BizHawk.Client.EmuHawk
 		/// <returns></returns>
 		public static IVideoWriter GetVideoWriter(string name)
 		{
-			IVideoWriter ret = null;
-
-			var vws = GetAllVideoWriters();
-
-			foreach (var vw in vws)
-				if (vw.ShortName() == name)
-					ret = vw;
-
-			foreach (var vw in vws)
-				if (vw != ret)
-					vw.Dispose();
-			return ret;
+			VideoWriterInfo ret;
+			if (vws.TryGetValue(name, out ret))
+				return ret.Create();
+			else
+				return null;
 		}
 	}
 }

@@ -17,7 +17,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		isPorted: true,
 		isReleased: true
 		)]
-	public class GambatteLink : IEmulator, IVideoProvider, ISyncSoundProvider
+	public class GambatteLink : IEmulator, IVideoProvider, ISyncSoundProvider,
+		IDebuggable, ISettable<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings>
 	{
 		bool disposed = false;
 
@@ -516,31 +517,49 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region settings
 
-		public object GetSettings()
+		public GambatteLinkSettings GetSettings()
 		{
 			return new GambatteLinkSettings
 			(
-				(Gameboy.GambatteSettings)L.GetSettings(),
-				(Gameboy.GambatteSettings)R.GetSettings()
+				L.GetSettings(),
+				R.GetSettings()
 			);
 		}
-		public object GetSyncSettings()
+		public GambatteLinkSyncSettings GetSyncSettings()
 		{
 			return new GambatteLinkSyncSettings
 			(
-				(Gameboy.GambatteSyncSettings)L.GetSyncSettings(),
-				(Gameboy.GambatteSyncSettings)R.GetSyncSettings()
+				L.GetSyncSettings(),
+				R.GetSyncSettings()
 			);
 		}
-		public bool PutSettings(object o)
+		public bool PutSettings(GambatteLinkSettings o)
 		{
-			var s = (GambatteLinkSettings)o;
-			return L.PutSettings(s.L) || R.PutSettings(s.R);
+			return L.PutSettings(o.L) || R.PutSettings(o.R);
 		}
-		public bool PutSyncSettings(object o)
+		public bool PutSyncSettings(GambatteLinkSyncSettings o)
 		{
-			var s = (GambatteLinkSyncSettings)o;
-			return L.PutSyncSettings(s.L) || R.PutSyncSettings(s.R);
+			return L.PutSyncSettings(o.L) || R.PutSyncSettings(o.R);
+		}
+
+		object ISettable.GetSettings()
+		{
+			return GetSettings();
+		}
+
+		bool ISettable.PutSettings(object o)
+		{
+			return PutSettings((GambatteLinkSettings)o);
+		}
+
+		object ISettable.GetSyncSettings()
+		{
+			return GetSyncSettings();
+		}
+
+		bool ISettable.PutSyncSettings(object o)
+		{
+			return PutSyncSettings((GambatteLinkSyncSettings)o);
 		}
 
 		public class GambatteLinkSettings

@@ -32,6 +32,11 @@ EXPORT void Reset(CSystem *s)
 	s->Reset();
 }
 
+EXPORT void SetRotation(CSystem *s, int value)
+{
+	s->rotate = value;
+}
+
 EXPORT int Advance(CSystem *s, int buttons, uint32 *vbuff, int16 *sbuff, int *sbuffsize)
 {
 	return s->Advance(buttons, vbuff, sbuff, *sbuffsize);

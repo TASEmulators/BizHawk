@@ -48,18 +48,21 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		private static QuickNES AsQuickNES { get { return Global.Emulator as QuickNES; } }
+		private static NES AsNES { get { return Global.Emulator as NES; } }
+
 		[LuaMethodAttributes(
 			"getallowmorethaneightsprites",
 			"Gets the NES setting 'Allow more than 8 sprites per scanline' value"
 		)]
 		public static bool GetAllowMoreThanEightSprites()
 		{
-			if (Global.Config.NES_InQuickNES)
+			if (AsQuickNES != null)
 			{
-				return ((QuickNES.QuickNESSettings)Global.Emulator.GetSettings()).NumSprites != 8;
+				return AsQuickNES.GetSettings().NumSprites != 8;
 			}
 
-			return ((NES.NESSettings)Global.Emulator.GetSettings()).AllowMoreThanEightSprites;
+			return AsNES.GetSettings().AllowMoreThanEightSprites;
 		}
 
 		[LuaMethodAttributes(
@@ -68,17 +71,14 @@ namespace BizHawk.Client.Common
 		)]
 		public static int GetBottomScanline(bool pal = false)
 		{
-			if (Global.Config.NES_InQuickNES)
+			if (AsQuickNES != null)
 			{
-				return ((QuickNES.QuickNESSettings)Global.Emulator.GetSettings()).ClipTopAndBottom ? 231 : 239;
+				return AsQuickNES.GetSettings().ClipTopAndBottom ? 231 : 239;
 			}
 
-			if (pal)
-			{
-				return ((NES.NESSettings)Global.Emulator.GetSettings()).PAL_BottomLine;
-			}
-			
-			return ((NES.NESSettings)Global.Emulator.GetSettings()).NTSC_BottomLine;
+			return pal
+				? AsNES.GetSettings().PAL_BottomLine
+				: AsNES.GetSettings().NTSC_BottomLine;
 		}
 
 		[LuaMethodAttributes(
@@ -87,12 +87,12 @@ namespace BizHawk.Client.Common
 		)]
 		public static bool GetClipLeftAndRight()
 		{
-			if (Global.Config.NES_InQuickNES)
+			if (AsQuickNES != null)
 			{
-				return ((QuickNES.QuickNESSettings)Global.Emulator.GetSettings()).ClipLeftAndRight;
+				return AsQuickNES.GetSettings().ClipLeftAndRight;
 			}
 
-			return ((NES.NESSettings)Global.Emulator.GetSettings()).ClipLeftAndRight;
+			return AsNES.GetSettings().ClipLeftAndRight;
 		}
 
 		[LuaMethodAttributes(
@@ -101,12 +101,12 @@ namespace BizHawk.Client.Common
 		)]
 		public static bool GetDisplayBackground()
 		{
-			if (Global.Config.NES_InQuickNES)
+			if (AsQuickNES != null)
 			{
 				return true;
 			}
 
-			return ((NES.NESSettings)Global.Emulator.GetSettings()).DispBackground;
+			return AsNES.GetSettings().DispBackground;
 		}
 
 		[LuaMethodAttributes(
@@ -115,12 +115,12 @@ namespace BizHawk.Client.Common
 		)]
 		public static bool GetDisplaySprites()
 		{
-			if (Global.Config.NES_InQuickNES)
+			if (AsQuickNES != null)
 			{
 				return true;
 			}
 
-			return ((NES.NESSettings)Global.Emulator.GetSettings()).DispSprites;
+			return AsNES.GetSettings().DispSprites;
 		}
 
 		[LuaMethodAttributes(
@@ -129,17 +129,14 @@ namespace BizHawk.Client.Common
 		)]
 		public static int GetTopScanline(bool pal = false)
 		{
-			if (Global.Config.NES_InQuickNES)
+			if (AsQuickNES != null)
 			{
-				return ((QuickNES.QuickNESSettings)Global.Emulator.GetSettings()).ClipTopAndBottom ? 8 : 0;
+				return AsQuickNES.GetSettings().ClipTopAndBottom ? 8 : 0;
 			}
 
-			if (pal)
-			{
-				return ((NES.NESSettings)Global.Emulator.GetSettings()).PAL_TopLine;
-			}
-			
-			return ((NES.NESSettings)Global.Emulator.GetSettings()).NTSC_TopLine;
+			return pal
+				? AsNES.GetSettings().PAL_TopLine
+				: AsNES.GetSettings().NTSC_TopLine;
 		}
 
 		[LuaMethodAttributes(
@@ -164,15 +161,15 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator is NES)
 			{
-				var s = (NES.NESSettings)Global.Emulator.GetSettings();
+				var s = AsNES.GetSettings();
 				s.AllowMoreThanEightSprites = allow;
-				Global.Emulator.PutSettings(s);
+				AsNES.PutSettings(s);
 			}
 			else if (Global.Emulator is QuickNES)
 			{
-				var s = (QuickNES.QuickNESSettings)Global.Emulator.GetSettings();
+				var s = AsQuickNES.GetSettings();
 				s.NumSprites = allow ? 64 : 8;
-				Global.Emulator.PutSettings(s);
+				AsQuickNES.PutSettings(s);
 				
 			}
 		}
@@ -185,16 +182,15 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator is NES)
 			{
-				var s = (NES.NESSettings)Global.Emulator.GetSettings();
+				var s = AsNES.GetSettings();
 				s.ClipLeftAndRight = leftandright;
-				Global.Emulator.PutSettings(s);
+				AsNES.PutSettings(s);
 			}
 			else if (Global.Emulator is QuickNES)
 			{
-				var s = (QuickNES.QuickNESSettings)Global.Emulator.GetSettings();
+				var s = AsQuickNES.GetSettings();
 				s.ClipLeftAndRight = leftandright;
-				Global.Emulator.PutSettings(s);
-
+				AsQuickNES.PutSettings(s);
 			}
 		}
 
@@ -206,9 +202,9 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator is NES)
 			{
-				var s = (NES.NESSettings)Global.Emulator.GetSettings();
+				var s = AsNES.GetSettings();
 				s.DispBackground = show;
-				Global.Emulator.PutSettings(s);
+				AsNES.PutSettings(s);
 			}
 		}
 
@@ -220,9 +216,9 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator is NES)
 			{
-				var s = (NES.NESSettings)Global.Emulator.GetSettings();
+				var s = AsNES.GetSettings();
 				s.DispSprites = show;
-				Global.Emulator.PutSettings(s);
+				AsNES.PutSettings(s);
 			}
 		}
 
@@ -252,7 +248,7 @@ namespace BizHawk.Client.Common
 					bottom = 128;
 				}
 
-				var s = (NES.NESSettings)Global.Emulator.GetSettings();
+				var s = AsNES.GetSettings();
 
 				if (pal)
 				{
@@ -265,7 +261,7 @@ namespace BizHawk.Client.Common
 					s.NTSC_BottomLine = bottom;
 				}
 
-				Global.Emulator.PutSettings(s);
+				AsNES.PutSettings(s);
 			}
 		}
 	}

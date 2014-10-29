@@ -119,6 +119,13 @@ namespace BizHawk.Client.Common
 						{
 							TextSavestate = tr.ReadToEnd();
 						});
+					bl.GetLump(BinaryStateLump.Framebuffer, false,
+						delegate(BinaryReader br, long length)
+						{
+							SavestateFramebuffer = new int[length / sizeof(int)];
+							for (int i = 0; i < SavestateFramebuffer.Length; i++)
+								SavestateFramebuffer[i] = br.ReadInt32();
+						});
 				}
 			}
 
@@ -147,8 +154,7 @@ namespace BizHawk.Client.Common
 				Directory.CreateDirectory(file.Directory.ToString());
 			}
 
-			using (var fs = new FileStream(fn, FileMode.Create, FileAccess.Write))
-			using (var bs = new BinaryStateSaver(fs, false))
+			using (var bs = new BinaryStateSaver(fn, false))
 			{
 				bs.PutLump(BinaryStateLump.Movieheader, tw => tw.WriteLine(Header.ToString()));
 				bs.PutLump(BinaryStateLump.Comments, tw => tw.WriteLine(CommentsString()));
@@ -166,6 +172,11 @@ namespace BizHawk.Client.Common
 					else
 					{
 						bs.PutLump(BinaryStateLump.Corestate, (BinaryWriter bw) => bw.Write(BinarySavestate));
+					}
+					if (SavestateFramebuffer != null)
+					{
+						bs.PutLump(BinaryStateLump.Framebuffer,
+							(BinaryWriter bw) => BizHawk.Common.IOExtensions.IOExtensions.Write(bw, SavestateFramebuffer));
 					}
 				}
 			}

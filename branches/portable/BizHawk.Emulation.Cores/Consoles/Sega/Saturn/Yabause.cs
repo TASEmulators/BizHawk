@@ -23,7 +23,8 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		portedVersion: "9.12",
 		portedUrl: "http://yabause.org"
 		)]
-	public class Yabause : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains
+	public class Yabause : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains,
+		ISettable<object, Yabause.SaturnSyncSettings>
 	{
 		public static ControllerDefinition SaturnController = new ControllerDefinition
 		{
@@ -161,16 +162,6 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		}
 
 		public IController Controller { get; set; }
-
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void SetCpuRegister(string register, int value)
-		{
-			throw new NotImplementedException();
-		}
 
 		public bool GLMode { get; private set; }
 
@@ -717,14 +708,13 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		SaturnSyncSettings SyncSettings;
 
 		public object GetSettings() { return null; }
-		public object GetSyncSettings() { return SyncSettings.Clone(); }
+		public SaturnSyncSettings GetSyncSettings() { return SyncSettings.Clone(); }
 		public bool PutSettings(object o) { return false; }
-		public bool PutSyncSettings(object o)
+		public bool PutSyncSettings(SaturnSyncSettings o)
 		{
-			var n = (SaturnSyncSettings)o;
-			bool ret = SaturnSyncSettings.NeedsReboot(SyncSettings, n);
+			bool ret = SaturnSyncSettings.NeedsReboot(SyncSettings, o);
 
-			SyncSettings = n;
+			SyncSettings = o;
 
 			if (GLMode && SyncSettings.UseGL)
 				if (SyncSettings.DispFree)
@@ -732,6 +722,26 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 				else
 					SetGLRes(SyncSettings.DispFactor, 0, 0);
 			return ret;
+		}
+
+		object ISettable.GetSettings()
+		{
+			return GetSettings();
+		}
+
+		bool ISettable.PutSettings(object o)
+		{
+			return PutSettings((object)o);
+		}
+
+		object ISettable.GetSyncSettings()
+		{
+			return GetSyncSettings();
+		}
+
+		bool ISettable.PutSyncSettings(object o)
+		{
+			return PutSyncSettings((SaturnSyncSettings)o);
 		}
 
 		public class SaturnSyncSettings

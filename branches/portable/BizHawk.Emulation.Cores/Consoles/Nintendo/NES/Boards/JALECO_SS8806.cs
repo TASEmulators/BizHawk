@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				case "MAPPER018":
 				case "JALECO-JF-23":
-				case "JALECO-JF-24": //TODO: there will be many boards to list here
+				case "JALECO-JF-24":
 				case "JALECO-JF-25":
 				case "JALECO-JF-27":
 				case "JALECO-JF-29":
@@ -225,22 +225,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void ClockCPU()
 		{
-			//ppuclock++;
-			//if (ppuclock == 3)
-			//{
-				//ppuclock = 0;
-				if (!irqcountpaused)
+			if (!irqcountpaused)
+			{
+				int newclock = irqclock - 1;
+				if (squeeze(newclock) > squeeze(irqclock))
 				{
-					int newclock = irqclock - 1;
-					if (squeeze(newclock) > squeeze(irqclock))
-					{
-						IRQSignal = true;
-						irqclock = irqreload;
-					}
-					else
-						irqclock = newclock;
+					IRQSignal = true;
+					irqclock = irqreload;
 				}
-			//}
+				else
+					irqclock = newclock;
+			}
 		}
 
 		/// <summary>

@@ -58,6 +58,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.AllowUD_LR = false;
 				Global.Config.BackupSavestates = false;
 
+				Global.Config.SaveStateCompressionLevelNormal = 5;
 				Global.Config.RewindEnabledLarge = false;
 				Global.Config.RewindEnabledMedium = false;
 				Global.Config.RewindEnabledSmall = true;
@@ -113,6 +114,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.AllowUD_LR = false;
 				Global.Config.BackupSavestates = false;
 				Global.Config.SkipLagFrame = false;
+				Global.Config.SaveStateCompressionLevelNormal = 5;
 
 				Global.Config.RewindEnabledLarge = false;
 				Global.Config.RewindEnabledMedium = false;
@@ -170,6 +172,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.AllowUD_LR = true;
 				Global.Config.BackupSavestates = true;
 				Global.Config.SkipLagFrame = false;
+				Global.Config.SaveStateCompressionLevelNormal = 5;
 
 				// Rewind
 				Global.Config.RewindEnabledLarge = false;
@@ -226,8 +229,9 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.SaveLargeScreenshotWithStates = true;
 				Global.Config.SaveScreenshotWithStates = true;
 				Global.Config.AllowUD_LR = true;
-				Global.Config.BackupSavestates = true;
+				Global.Config.BackupSavestates = false;
 				Global.Config.SkipLagFrame = true;
+				Global.Config.SaveStateCompressionLevelNormal = 0;
 
 				// Rewind
 				Global.Config.RewindEnabledLarge = false;
@@ -236,7 +240,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// N64
 				var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
-				n64Settings.Rsp = N64SyncSettings.RspType.Rsp_Z64_hlevideo;
+				n64Settings.Rsp = N64SyncSettings.RspType.Rsp_Hle;
 				n64Settings.Core = N64SyncSettings.CoreType.Pure_Interpret;
 				Global.Config.N64UseCircularAnalogConstraint = false;
 				PutSyncSettings<N64>(n64Settings);
@@ -351,7 +355,7 @@ namespace BizHawk.Client.EmuHawk
 			where TEmulator : IEmulator
 		{
 			// should we complain if we get a successful object from the config file, but it is the wrong type?
-			return Global.Emulator.GetSyncSettings() as TSetting
+			return ((ISettable)Global.Emulator).GetSyncSettings() as TSetting
 				?? Global.Config.GetCoreSyncSettings<TEmulator>() as TSetting
 				?? new TSetting(); // guaranteed to give sensible defaults
 		}
@@ -361,7 +365,7 @@ namespace BizHawk.Client.EmuHawk
 			where TEmulator : IEmulator
 		{
 			// should we complain if we get a successful object from the config file, but it is the wrong type?
-			return Global.Emulator.GetSettings() as TSetting
+			return ((ISettable)Global.Emulator).GetSettings() as TSetting
 				?? Global.Config.GetCoreSettings<TEmulator>() as TSetting
 				?? new TSetting(); // guaranteed to give sensible defaults
 		}
@@ -371,7 +375,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Emulator is TEmulator)
 			{
-				Global.Emulator.PutSettings(o);
+				((ISettable)Global.Emulator).PutSettings(o);
 			}
 			else
 			{

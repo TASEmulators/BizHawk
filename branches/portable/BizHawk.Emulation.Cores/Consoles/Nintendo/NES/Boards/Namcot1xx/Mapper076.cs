@@ -1,9 +1,12 @@
+using System;
 using BizHawk.Common;
 
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	//aka NAMCOT-3446
+	// aka NAMCOT-3446
+	// just a mapper206 with a few lines changed;
+	// but easiest described in code with a separate, independent class
 	public sealed class Mapper076 : NES.NESBoardBase
 	{
 		// config
@@ -16,10 +19,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
-			//analyze board type
 			switch (Cart.board_type)
 			{
-				case "NAMCOT-3446": //Megami Tensei: Digital Devil Story
+				case "NAMCOT-3446": // Megami Tensei: Digital Devil Story
 				case "MAPPER076":
 					break;
 				default:
@@ -64,6 +66,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			return ROM[addr & 0x1fff | prg[addr >> 13] << 13];
 		}
+
 		public override byte ReadPPU(int addr)
 		{
 			if (addr < 0x2000)
@@ -71,7 +74,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else
 				return base.ReadPPU(addr);
 		}
-		public override void SyncState(BizHawk.Common.Serializer ser)
+
+		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
 			ser.Sync("prg", ref prg, false);

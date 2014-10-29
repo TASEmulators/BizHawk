@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-
+using BizHawk.Emulation.Common;
 using LuaInterface;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 
@@ -17,13 +17,22 @@ namespace BizHawk.Client.Common
 
 		public override string Name { get { return "snes"; } }
 
+		private static LibsnesCore.SnesSettings GetSettings()
+		{
+			return ((LibsnesCore)Global.Emulator).GetSettings();
+		}
+
+        private static void PutSettings(LibsnesCore.SnesSettings settings) {
+            ((LibsnesCore)Global.Emulator).PutSettings(settings);
+        }
+
 		[LuaMethodAttributes(
 			"getlayer_bg_1",
 			"Returns whether the bg 1 layer is displayed"
 		)]
 		public static bool GetLayerBg1()
 		{
-			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowBG1_1;
+			return GetSettings().ShowBG1_1;
 		}
 
 		[LuaMethodAttributes(
@@ -32,7 +41,7 @@ namespace BizHawk.Client.Common
 		)]
 		public static bool GetLayerBg2()
 		{
-			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowBG2_1;
+			return GetSettings().ShowBG2_1;
 		}
 
 		[LuaMethodAttributes(
@@ -41,7 +50,7 @@ namespace BizHawk.Client.Common
 		)]
 		public static bool GetLayerBg3()
 		{
-			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowBG3_1;
+			return GetSettings().ShowBG3_1;
 		}
 
 		[LuaMethodAttributes(
@@ -50,7 +59,7 @@ namespace BizHawk.Client.Common
 		)]
 		public static bool GetLayerBg4()
 		{
-			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowBG4_1;
+			return GetSettings().ShowBG4_1;
 		}
 
 		[LuaMethodAttributes(
@@ -59,7 +68,7 @@ namespace BizHawk.Client.Common
 		)]
 		public static bool GetLayerObj1()
 		{
-			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowOBJ_0;
+			return GetSettings().ShowOBJ_0;
 		}
 
 		[LuaMethodAttributes(
@@ -68,7 +77,7 @@ namespace BizHawk.Client.Common
 		)]
 		public static bool GetLayerObj2()
 		{
-			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowOBJ_1;
+			return GetSettings().ShowOBJ_1;
 		}
 
 		[LuaMethodAttributes(
@@ -77,7 +86,7 @@ namespace BizHawk.Client.Common
 		)]
 		public static bool GetLayerObj3()
 		{
-			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowOBJ_2;
+			return GetSettings().ShowOBJ_2;
 		}
 
 		[LuaMethodAttributes(
@@ -86,7 +95,7 @@ namespace BizHawk.Client.Common
 		)]
 		public static bool GetLayerObj4()
 		{
-			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowOBJ_3;
+			return GetSettings().ShowOBJ_3;
 		}
 
 		[LuaMethodAttributes(
@@ -97,9 +106,9 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+                var s = GetSettings();
 				s.ShowBG1_1 = s.ShowBG1_0 = value;
-				Global.Emulator.PutSettings(s);
+				PutSettings(s);
 			}
 		}
 
@@ -111,9 +120,9 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+                var s = GetSettings();
 				s.ShowBG2_1 = s.ShowBG2_0 = value;
-				Global.Emulator.PutSettings(s);
+				PutSettings(s);
 			}
 		}
 
@@ -125,9 +134,9 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+                var s = GetSettings();
 				s.ShowBG3_1 = s.ShowBG3_0 = value;
-				Global.Emulator.PutSettings(s);
+				PutSettings(s);
 			}
 		}
 
@@ -139,9 +148,9 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+                var s = GetSettings();
 				s.ShowBG4_1 = s.ShowBG4_0 = value;
-				Global.Emulator.PutSettings(s);
+				PutSettings(s);
 			}
 		}
 
@@ -153,9 +162,9 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+                var s = GetSettings();
 				s.ShowOBJ_0 = value;
-				Global.Emulator.PutSettings(s);
+				PutSettings(s);
 			}
 		}
 
@@ -167,9 +176,9 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+                var s = GetSettings();
 				s.ShowOBJ_1 = value;
-				Global.Emulator.PutSettings(s);
+				PutSettings(s);
 			}
 		}
 
@@ -181,9 +190,9 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+                var s = GetSettings();
 				s.ShowOBJ_2 = value;
-				Global.Emulator.PutSettings(s);
+				PutSettings(s);
 			}
 		}
 
@@ -195,9 +204,9 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+                var s = GetSettings();
 				s.ShowOBJ_3 = value;
-				Global.Emulator.PutSettings(s);
+				PutSettings(s);
 			}
 		}
 	}

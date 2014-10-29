@@ -425,7 +425,7 @@ namespace BizHawk.Client.Common
 			QueuedMovie = null;
 			MultiTrack.Restart();
 
-			if (Movie.IsRecording)
+			if (recordMode)
 			{
 				Movie.StartNewRecording();
 				ReadOnly = false;

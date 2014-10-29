@@ -204,9 +204,10 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!string.IsNullOrWhiteSpace(_watches.CurrentFileName))
 			{
-				_watches.Reload();
-				UpdateStatusBar();
 				_watches.RefreshDomans(_core, _core.MemoryDomains.MainMemory);
+				_watches.Reload();
+				SetPlatformAndMemoryDomainLabel();
+				UpdateStatusBar();
 			}
 			else
 			{
