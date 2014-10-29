@@ -226,7 +226,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			string s = Marshal.PtrToStringAnsi(p);
 			if (s == "Unsupported mapper" || s == "Not an iNES file") // Not worth making a new exception for the iNES error, they ultimately are the same problem
 			{
-				throw new Emulation.Common.UnsupportedMapperException("Quicknes unsupported mapper");
+				throw new Emulation.Common.UnsupportedGameException("Quicknes unsupported mapper");
 			}
 			else
 			{
