@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
@@ -9,7 +11,26 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 	{
 		public static TasMovie ToTasMovie(this IMovie old)
 		{
-			var newFilename = old.Filename + "." +  TasMovie.Extension;
+			string newFilename = old.Filename + "." + TasMovie.Extension;
+
+			if (File.Exists(newFilename))
+			{
+				int fileNum = 1;
+				bool fileConflict = true;
+				while (fileConflict)
+				{
+					if (File.Exists(newFilename))
+					{
+						newFilename = old.Filename + " (" + fileNum + ")" + "." + TasMovie.Extension;
+						fileNum++;
+					}
+					else
+					{
+						fileConflict = false;
+					}
+				}
+			}
+
 			var tas = new TasMovie(newFilename, old.StartsFromSavestate);
 
 			for (var i = 0; i < old.InputLogLength; i++)
