@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool irq_enabled;
 		ushort irq_counter;
 		SEEPROM eprom;
-		DatachBarcode reader;
+		public DatachBarcode reader;
 
 		public override void SyncState(Serializer ser)
 		{

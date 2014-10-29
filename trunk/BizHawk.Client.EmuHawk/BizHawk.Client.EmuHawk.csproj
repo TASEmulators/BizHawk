@@ -749,6 +749,12 @@
     <Compile Include="tools\Lua\SyncTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\NES\BarcodeEntry.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\NES\BarcodeEntry.Designer.cs">
+      <DependentUpon>BarcodeEntry.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\NES\NameTableViewer.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1256,6 +1262,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Lua\LuaWinform.resx">
       <DependentUpon>LuaWinform.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\NES\BarcodeEntry.resx">
+      <DependentUpon>BarcodeEntry.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\NES\NESDebugger.resx">
       <DependentUpon>NESDebugger.cs</DependentUpon>

@@ -3569,5 +3569,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// TODO: it would be cool if clicking this toggled the state
 		}
+
+		private void barcodeReaderToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<BarcodeEntry>();
+		}
 	}
 }
