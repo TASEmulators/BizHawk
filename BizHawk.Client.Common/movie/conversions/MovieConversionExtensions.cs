@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 {
 	public static class MovieConversionExtensions
 	{
-		public static TasMovie ToTasMovie(this IMovie old)
+		public static TasMovie ToTasMovie(this IMovie old, bool copy = false)
 		{
 			string newFilename = old.Filename + "." + TasMovie.Extension;
 
@@ -39,7 +39,10 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				tas.AppendFrame(input);
 			}
 
-			old.Truncate(0); // Trying to minimize ram usage
+			if (!copy)
+			{
+				old.Truncate(0); // Trying to minimize ram usage
+			}
 
 			tas.HeaderEntries.Clear();
 			foreach (var kvp in old.HeaderEntries)
@@ -63,8 +66,6 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 
 			tas.TextSavestate = old.TextSavestate;
 			tas.BinarySavestate = old.BinarySavestate;
-
-			
 
 			return tas;
 		}
