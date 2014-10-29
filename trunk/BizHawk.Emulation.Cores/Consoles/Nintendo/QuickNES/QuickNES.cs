@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
@@ -395,6 +396,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			if (carts.Count > 0)
 			{
 				Console.WriteLine("BootGod entry found: {0}", carts[0].name);
+				switch (carts[0].system)
+				{
+					case "NES-PAL":
+					case "NES-PAL-A":
+					case "NES-PAL-B":
+					case "Dendy":
+						Console.WriteLine("Bad region {0}! Failing over...", carts[0].system);
+						throw new UnsupportedGameException("Unsupported region!");
+					default:
+						break;
+				}
 				BootGodStatus = RomStatus.GoodDump;
 				BootGodName = carts[0].name;
 			}
