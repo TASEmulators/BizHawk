@@ -49,6 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool irq_enabled;
 		ushort irq_counter;
 		SEEPROM eprom;
+		DatachBarcode reader;
 
 		public override void SyncState(Serializer ser)
 		{
@@ -59,6 +60,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("irq_enabled", ref irq_enabled);
 			if (eprom != null)
 				eprom.SyncState(ser);
+			if (reader != null)
+				reader.SyncState(ser);
 			SyncPRG();
 		}
 
@@ -152,7 +155,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					Cart.wram_size = 0;
 					regs_prg_enable = true;
 					regs_wram_enable = false;
+					// 24C02 is present on all boards
+					// some also have a 24C01 with SCK connected to reg ($8000-$8003).3
+					// (does that second seeprom use the same SDA and OE connections as the first? 99% yes, but not implemented)
+					eprom = new SEEPROM(true);
 					vram = true;
+					reader = new DatachBarcode();
 					break;
 				default:
 					return false;
@@ -271,6 +279,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				byte ret = (byte)(NES.DB & 0xef);
 				if (eprom != null && eprom.ReadBit(NES.DB.Bit(4)))
 					ret |= 0x10;
+				if (reader != null)
+				{
+					if (reader.GetOutput())
+						ret |= 0x08;
+					else
+						ret &= 0xf7;
+				}
 				return ret;
 			}
 			else
@@ -288,6 +303,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					IRQSignal = true;
 				}
+			}
+			if (reader != null)
+			{
+				reader.Clock();
 			}
 		}
 
