@@ -141,6 +141,7 @@ B2089533E05FE95814D0D77F2729944CBEB95988		Datach - J League Super Top Players	NE
 EDD7A45A7F27E396B6D686F1861642D509863132		Datach - SD Gundam - Gundam Wars	NES		board=MAPPER157
 533170D5EB685231CCD27B9C136FFA4FAD68A7B8		Datach - Ultraman Club - Supokon Fight!	NES		board=MAPPER157
 74218AAE93E4FEBFB2284BCF15811453418A2029		Datach - Yuu Yuu Hakusho - Bakutou Ankoku Bujutsu Kai	NES		board=MAPPER157
+6F3C65BD945FE13305A7A39D8CD884A5BF314A8F		Datach - Crayon Shin Chan - Ora to Poi Poi	NES		board=MAPPER157
 
 #include gamedb_neshomebrew.txt
 #include gamedb_vs.txt
