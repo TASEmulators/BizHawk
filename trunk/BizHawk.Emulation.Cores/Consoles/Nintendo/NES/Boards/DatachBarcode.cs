@@ -50,14 +50,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		const int MIN_DIGITS = 8;
 		const int MAX_DIGITS = 13;
-		const int MAX_DATA_LENGTH = 0x100;
-		const byte END = 0xFF;
 		const int CC_INTERVAL = 1000;
 
 		int cycles;
 		byte output;
 		int stream_idx;
-		byte[] data = new byte[MAX_DATA_LENGTH];
+		byte[] data = new byte[0];
+
+		byte streamoutput { get { return data[stream_idx]; } }
 
 		public void SyncState(Serializer ser)
 		{
@@ -72,16 +72,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void Reset()
 		{
-			cycles = 0; // MAX
-			//output = 0;
+			cycles = 0;
 			stream_idx = 0;
-			for (int i = 0; i < data.Length; i++)
-				data[i] = END;
+			data = new byte[0];
 		}
 
 		public bool IsTransferring()
 		{
-			return data[stream_idx] != END;
+			return stream_idx < data.Length;
 		}
 		private static bool IsDigtsSupported(int count)
 		{
@@ -127,13 +125,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					throw new InvalidOperationException("s must be numeric only");
 			}
 
-			int out_ptr = 0;
-			for (int i = 0; i < 33; i++)
-				data[out_ptr++] = 8;
+			var result = new System.IO.MemoryStream();
 
-			data[out_ptr++] = 0;
-			data[out_ptr++] = 8;
-			data[out_ptr++] = 0;
+			for (int i = 0; i < 33; i++)
+				result.WriteByte(8);
+
+			result.WriteByte(0);
+			result.WriteByte(8);
+			result.WriteByte(0);
 
 			int sum = 0;
 
@@ -144,24 +143,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					if (prefixParityType[code[0], i] != 0)
 					{
 						for (int j = 0; j < 7; j++)
-							data[out_ptr++] = dataLeftOdd[code[i + 1], j];
+							result.WriteByte(dataLeftOdd[code[i + 1], j]);
 					}
 					else
 					{
 						for (int j = 0; j < 7; j++)
-							data[out_ptr++] = dataLeftEven[code[i + 1], j];
+							result.WriteByte(dataLeftEven[code[i + 1], j]);
 					}
 				}
 
-				data[out_ptr++] = 8;
-				data[out_ptr++] = 0;
-				data[out_ptr++] = 8;
-				data[out_ptr++] = 0;
-				data[out_ptr++] = 8;
+				result.WriteByte(8);
+				result.WriteByte(0);
+				result.WriteByte(8);
+				result.WriteByte(0);
+				result.WriteByte(8);
 
 				for (int i = 7; i < 12; i++)
 					for (int j = 0; j < 7; j++)
-						data[out_ptr++] = dataRight[code[i], j];
+						result.WriteByte(dataRight[code[i], j]);
 
 				for (int i = 0; i < 12; i++)
 					sum += code[i] * ((i & 1) != 0 ? 3 : 1);
@@ -170,17 +169,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				for (int i = 0; i < 4; i++)
 					for (int j = 0; j < 7; j++)
-						data[out_ptr++] = dataLeftOdd[code[i], j];
+						result.WriteByte(dataLeftOdd[code[i], j]);
 
-				data[out_ptr++] = 8;
-				data[out_ptr++] = 0;
-				data[out_ptr++] = 8;
-				data[out_ptr++] = 0;
-				data[out_ptr++] = 8;
+				result.WriteByte(8);
+				result.WriteByte(0);
+				result.WriteByte(8);
+				result.WriteByte(0);
+				result.WriteByte(8);
 
 				for (int i = 4; i < 7; i++)
 					for (int j = 0; j < 7; j++)
-						data[out_ptr++] = dataRight[code[i], j];
+						result.WriteByte(dataRight[code[i], j]);
 
 
 				for (int i = 0; i < 7; i++)
@@ -189,17 +188,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			sum = (10 - (sum % 10)) % 10;
 
 			for (int j = 0; j < 7; j++)
-				data[out_ptr++] = dataRight[sum, j];
+				result.WriteByte(dataRight[sum, j]);
 
-			data[out_ptr++] = 0;
-			data[out_ptr++] = 8;
-			data[out_ptr++] = 0;
+			result.WriteByte(0);
+			result.WriteByte(8);
+			result.WriteByte(0);
 
 			for (int i = 0; i < 32; i++)
-				data[out_ptr++] = 8;
+				result.WriteByte(8);
+
+			data = result.ToArray();
 
 			cycles = CC_INTERVAL;
-			output = data[stream_idx]; // ??
+			output = streamoutput;
 		}
 
 		public void Clock()
@@ -210,11 +211,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (cycles <= 0)
 			{
 				stream_idx++;
-				output = data[stream_idx];
-				if (output == END)
-					output = 0;
-				else
+				if (IsTransferring())
+				{
+					output = streamoutput;
 					cycles = CC_INTERVAL;
+				}
+				else
+				{
+					output = 0;
+				}
 			}
 		}
 
