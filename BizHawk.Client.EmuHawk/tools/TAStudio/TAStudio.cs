@@ -605,25 +605,6 @@ namespace BizHawk.Client.EmuHawk
 			SetTextProperty();
 		}
 
-		private void RightClickMenu_Opened(object sender, EventArgs e)
-		{
-			SetMarkersContextMenuItem.Enabled =
-				SelectBetweenMarkersContextMenuItem.Enabled =
-				RemoveMarkersContextMenuItem.Enabled =
-				DeselectContextMenuItem.Enabled =
-				ClearContextMenuItem.Enabled =
-				DeleteFramesContextMenuItem.Enabled =
-				CloneContextMenuItem.Enabled =
-				InsertFrameContextMenuItem.Enabled =
-				InsertNumFramesContextMenuItem.Enabled =
-				TruncateContextMenuItem.Enabled =
-				TasView.SelectedRows.Any();
-
-			RemoveMarkersContextMenuItem.Enabled = CurrentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
-
-			CancelSeekContextMenuItem.Enabled = GlobalWin.MainForm.PauseOnFrame.HasValue;
-		}
-
 		private void TAStudio_DragEnter(object sender, DragEventArgs e)
 		{
 			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;

@@ -136,6 +136,8 @@ namespace BizHawk.Client.EmuHawk
 			this.InsertNumFramesContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator18 = new System.Windows.Forms.ToolStripSeparator();
 			this.TruncateContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.StartFromNowSeparator = new System.Windows.Forms.ToolStripSeparator();
+			this.StartNewProjectFromNowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
@@ -887,9 +889,11 @@ namespace BizHawk.Client.EmuHawk
             this.InsertFrameContextMenuItem,
             this.InsertNumFramesContextMenuItem,
             this.toolStripSeparator18,
-            this.TruncateContextMenuItem});
+            this.TruncateContextMenuItem,
+            this.StartFromNowSeparator,
+            this.StartNewProjectFromNowMenuItem});
 			this.RightClickMenu.Name = "RightClickMenu";
-			this.RightClickMenu.Size = new System.Drawing.Size(273, 292);
+			this.RightClickMenu.Size = new System.Drawing.Size(273, 342);
 			this.RightClickMenu.Opened += new System.EventHandler(this.RightClickMenu_Opened);
 			// 
 			// SetMarkersContextMenuItem
@@ -1003,6 +1007,18 @@ namespace BizHawk.Client.EmuHawk
 			this.TruncateContextMenuItem.Size = new System.Drawing.Size(272, 22);
 			this.TruncateContextMenuItem.Text = "Truncate Movie";
 			this.TruncateContextMenuItem.Click += new System.EventHandler(this.TruncateMenuItem_Click);
+			// 
+			// StartFromNowSeparator
+			// 
+			this.StartFromNowSeparator.Name = "StartFromNowSeparator";
+			this.StartFromNowSeparator.Size = new System.Drawing.Size(269, 6);
+			// 
+			// StartNewProjectFromNowMenuItem
+			// 
+			this.StartNewProjectFromNowMenuItem.Name = "StartNewProjectFromNowMenuItem";
+			this.StartNewProjectFromNowMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.StartNewProjectFromNowMenuItem.Text = "Start a new project from Here";
+			this.StartNewProjectFromNowMenuItem.Click += new System.EventHandler(this.StartNewProjectFromNowMenuItem_Click);
 			// 
 			// groupBox1
 			// 
@@ -1157,5 +1173,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem EditMarkerContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AddMarkerContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem RemoveMarkerContextMenuItem;
+		private System.Windows.Forms.ToolStripSeparator StartFromNowSeparator;
+		private System.Windows.Forms.ToolStripMenuItem StartNewProjectFromNowMenuItem;
 	}
 }
