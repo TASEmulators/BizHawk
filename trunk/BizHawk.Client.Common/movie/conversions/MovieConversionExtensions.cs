@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
@@ -111,6 +112,71 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 
 			bk2.Save();
 			return bk2;
+		}
+
+		public static TasMovie ConvertToSavestateAnchoredMovie(this TasMovie old, int frame, byte[] savestate)
+		{
+			string newFilename = old.Filename + "." + TasMovie.Extension;
+
+			if (File.Exists(newFilename))
+			{
+				int fileNum = 1;
+				bool fileConflict = true;
+				while (fileConflict)
+				{
+					if (File.Exists(newFilename))
+					{
+						newFilename = old.Filename + " (" + fileNum + ")" + "." + TasMovie.Extension;
+						fileNum++;
+					}
+					else
+					{
+						fileConflict = false;
+					}
+				}
+			}
+
+			var tas = new TasMovie(newFilename, true);
+			tas.BinarySavestate = savestate;
+			tas.TasStateManager.Clear();
+			tas.ClearLagLog();
+
+			tas.CopyLog(old.Log);
+			tas.DeleteLogBefore(frame);
+			
+			tas.HeaderEntries.Clear();
+			foreach (var kvp in old.HeaderEntries)
+			{
+				tas.HeaderEntries[kvp.Key] = kvp.Value;
+			}
+
+			tas.StartsFromSavestate = true;
+			tas.SyncSettingsJson = old.SyncSettingsJson;
+
+			tas.Comments.Clear();
+			foreach (var comment in old.Comments)
+			{
+				tas.Comments.Add(comment);
+			}
+
+			tas.Subtitles.Clear();
+			foreach (var sub in old.Subtitles)
+			{
+				tas.Subtitles.Add(sub);
+			}
+
+			foreach(var marker in old.Markers)
+			{
+				if (marker.Frame > 0)
+				{
+					tas.Markers.Add(marker);
+				}
+			}
+
+			tas.TasStateManager.Settings = old.TasStateManager.Settings;
+
+			tas.Save();
+			return tas;
 		}
 
 		// TODO: This doesn't really belong here, but not sure where to put it

@@ -313,5 +313,32 @@ namespace BizHawk.Client.Common
 
 			return base.GetInputState(frame);
 		}
+
+		public void ClearLagLog()
+		{
+			LagLog.Clear();
+		}
+
+		public void DeleteLogBefore(int frame)
+		{
+			if (frame < _log.Count)
+			{
+				_log.RemoveRange(0, frame);
+			}
+		}
+
+		public List<string> Log
+		{
+			get { return _log; }
+		}
+
+		public void CopyLog(List<string> log)
+		{
+			_log.Clear();
+			foreach(var entry in log)
+			{
+				_log.Add(entry);
+			}
+		}
 	}
 }
