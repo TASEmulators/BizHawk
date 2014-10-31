@@ -248,16 +248,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			return ret;
 		}
 
-		object ISettable.GetSyncSettings()
-		{
-			return GetSyncSettings();
-		}
-
-		bool ISettable.PutSyncSettings(object o)
-		{
-			return PutSettings((ColecoSyncSettings)o);
-		}
-
 		ColecoSyncSettings SyncSettings;
 
 		public class ColecoSyncSettings

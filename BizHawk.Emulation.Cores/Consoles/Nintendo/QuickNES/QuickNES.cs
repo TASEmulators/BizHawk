@@ -539,26 +539,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			return false;
 		}
 
-		object ISettable.GetSettings()
-		{
-			return GetSettings();
-		}
-
-		bool ISettable.PutSettings(object o)
-		{
-			return PutSettings((QuickNESSettings)o);
-		}
-
-		object ISettable.GetSyncSettings()
-		{
-			return GetSyncSettings();
-		}
-
-		bool ISettable.PutSyncSettings(object o)
-		{
-			return PutSyncSettings((QuickNESSyncSettings)o);
-		}
-
 		#endregion
 
 		public void Dispose()

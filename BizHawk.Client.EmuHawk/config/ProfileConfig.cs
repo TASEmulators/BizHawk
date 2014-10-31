@@ -355,7 +355,13 @@ namespace BizHawk.Client.EmuHawk
 			where TEmulator : IEmulator
 		{
 			// should we complain if we get a successful object from the config file, but it is the wrong type?
-			return ((ISettable)Global.Emulator).GetSyncSettings() as TSetting
+
+			object fromcore = null;
+			var settable = new SettingsAdapter(Global.Emulator);
+			if (settable.HasSyncSettings)
+				fromcore = settable.GetSyncSettings();
+
+			return fromcore as TSetting
 				?? Global.Config.GetCoreSyncSettings<TEmulator>() as TSetting
 				?? new TSetting(); // guaranteed to give sensible defaults
 		}
@@ -365,7 +371,13 @@ namespace BizHawk.Client.EmuHawk
 			where TEmulator : IEmulator
 		{
 			// should we complain if we get a successful object from the config file, but it is the wrong type?
-			return ((ISettable)Global.Emulator).GetSettings() as TSetting
+
+			object fromcore = null;
+			var settable = new SettingsAdapter(Global.Emulator);
+			if (settable.HasSettings)
+				fromcore = settable.GetSettings();
+
+			return fromcore as TSetting
 				?? Global.Config.GetCoreSettings<TEmulator>() as TSetting
 				?? new TSetting(); // guaranteed to give sensible defaults
 		}
@@ -375,7 +387,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Emulator is TEmulator)
 			{
-				((ISettable)Global.Emulator).PutSettings(o);
+				var settable = new SettingsAdapter(Global.Emulator);
+				settable.PutSettings(o);
 			}
 			else
 			{

@@ -542,26 +542,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			return L.PutSyncSettings(o.L) || R.PutSyncSettings(o.R);
 		}
 
-		object ISettable.GetSettings()
-		{
-			return GetSettings();
-		}
-
-		bool ISettable.PutSettings(object o)
-		{
-			return PutSettings((GambatteLinkSettings)o);
-		}
-
-		object ISettable.GetSyncSettings()
-		{
-			return GetSyncSettings();
-		}
-
-		bool ISettable.PutSyncSettings(object o)
-		{
-			return PutSyncSettings((GambatteLinkSyncSettings)o);
-		}
-
 		public class GambatteLinkSettings
 		{
 			public Gameboy.GambatteSettings L;

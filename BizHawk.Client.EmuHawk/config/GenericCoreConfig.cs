@@ -22,13 +22,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 
-			var settable = Global.Emulator as ISettable;
+			var settable = new SettingsAdapter(Global.Emulator);
 
-			if (settable != null)
-			{
+			if (settable.HasSettings)
 				s = settable.GetSettings();
+			if (settable.HasSyncSettings)
 				ss = settable.GetSyncSettings();
-			}
 
 			if (s != null)
 				propertyGrid1.SelectedObject = s;
@@ -45,8 +44,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			var settable = Global.Emulator as ISettable;
-			if (s != null && settable != null)
+			var settable = new SettingsAdapter(Global.Emulator);
+			if (s != null && settable.HasSettings)
 			{
 				settable.PutSettings(s);
 			}

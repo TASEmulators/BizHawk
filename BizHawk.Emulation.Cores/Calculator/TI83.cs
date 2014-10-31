@@ -1005,15 +1005,6 @@ namespace BizHawk.Emulation.Cores.Calculators
 			return false;
 		}
 
-		object ISettable.GetSettings()
-		{
-			return GetSettings();
-		}
-
-		bool ISettable.PutSettings(object o) {
-			return PutSettings((TI83Settings)o);
-		}
-
 		public object GetSyncSettings() { return null; }
 		public bool PutSyncSettings(object o) { return false; }
 

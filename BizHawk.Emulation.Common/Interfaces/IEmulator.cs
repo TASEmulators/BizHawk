@@ -144,52 +144,5 @@ namespace BizHawk.Emulation.Common
 		void SetCpuRegister(string register, int value);
 	}
 
-	public interface ISettable : IEmulator
-	{
-		object GetSettings();
-		object GetSyncSettings();
-		bool PutSettings(object o);
-		bool PutSyncSettings(object o);
-	}
-
-	public interface ISettable<TSettings, TSync> : ISettable
-	{
-		// in addition to these methods, it's expected that the constructor or Load() method
-		// will take a Settings and SyncSettings object to set the initial state of the core
-		// (if those are null, default settings are to be used)
-
-		/// <summary>
-		/// get the current core settings, excepting movie settings.  should be a clone of the active in-core object.
-		/// VERY IMPORTANT: changes to the object returned by this function SHOULD NOT have any effect on emulation
-		/// (unless the object is later passed to PutSettings)
-		/// </summary>
-		/// <returns>a json-serializable object</returns>
-		new TSettings GetSettings();
-
-		/// <summary>
-		/// get the current core settings that affect movie sync.  these go in movie 2.0 files, so don't make the JSON too extravagant, please
-		/// should be a clone of the active in-core object.
-		/// VERY IMPORTANT: changes to the object returned by this function MUST NOT have any effect on emulation
-		/// (unless the object is later passed to PutSyncSettings)
-		/// </summary>
-		/// <returns>a json-serializable object</returns>
-		new TSync GetSyncSettings();
-
-		/// <summary>
-		/// change the core settings, excepting movie settings
-		/// </summary>
-		/// <param name="o">an object of the same type as the return for GetSettings</param>
-		/// <returns>true if a core reboot will be required to make the changes effective</returns>
-		new bool PutSettings(TSettings o);
-
-		/// <summary>
-		/// changes the movie-sync relevant settings.  THIS SHOULD NEVER BE CALLED WHILE RECORDING
-		/// if it is called while recording, the core need not guarantee continued determinism
-		/// </summary>
-		/// <param name="o">an object of the same type as the return for GetSyncSettings</param>
-		/// <returns>true if a core reboot will be required to make the changes effective</returns>
-		new bool PutSyncSettings(TSync o);
-	}
-
 	public enum DisplayType { NTSC, PAL, DENDY }
 }
