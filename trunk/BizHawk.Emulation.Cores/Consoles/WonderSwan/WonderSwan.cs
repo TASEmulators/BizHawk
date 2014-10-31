@@ -522,26 +522,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			return ret;
 		}
 
-		object ISettable.GetSettings()
-		{
-			return GetSettings();
-		}
-
-		bool ISettable.PutSettings(object o)
-		{
-			return PutSettings((Settings)o);
-		}
-
-		object ISettable.GetSyncSettings()
-		{
-			return GetSyncSettings();
-		}
-
-		bool ISettable.PutSyncSettings(object o)
-		{
-			return PutSyncSettings((SyncSettings)o);
-		}
-
 		#endregion
 
 		#region IVideoProvider

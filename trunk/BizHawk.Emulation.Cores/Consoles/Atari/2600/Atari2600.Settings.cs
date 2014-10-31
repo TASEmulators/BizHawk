@@ -37,26 +37,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return false;
 		}
 
-		object ISettable.GetSettings()
-		{
-			return GetSettings();
-		}
-
-		bool ISettable.PutSettings(object o)
-		{
-			return PutSettings((A2600Settings)o);
-		}
-
-		object ISettable.GetSyncSettings()
-		{
-			return GetSyncSettings();
-		}
-
-		bool ISettable.PutSyncSettings(object o)
-		{
-			return PutSyncSettings((A2600SyncSettings)o);
-		}
-
 		public class A2600Settings
 		{
 			[JsonIgnore]

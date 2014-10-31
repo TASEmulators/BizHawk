@@ -1006,26 +1006,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			return ret;
 		}
 
-		object ISettable.GetSettings()
-		{
-			return GetSettings();
-		}
-
-		bool ISettable.PutSettings(object o)
-		{
-			return PutSettings((GambatteSettings)o);
-		}
-
-		object ISettable.GetSyncSettings()
-		{
-			return GetSyncSettings();
-		}
-
-		bool ISettable.PutSyncSettings(object o)
-		{
-			return PutSyncSettings((GambatteSyncSettings)o);
-		}
-
 		public class GambatteSettings
 		{
 			private static readonly int[] DefaultPalette = new[]

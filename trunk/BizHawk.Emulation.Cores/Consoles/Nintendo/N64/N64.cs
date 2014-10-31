@@ -505,26 +505,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			return true;
 		}
 
-		object ISettable.GetSettings()
-		{
-			return GetSettings();
-		}
-
-		bool ISettable.PutSettings(object o)
-		{
-			return PutSettings((N64Settings)o);
-		}
-
-		object ISettable.GetSyncSettings()
-		{
-			return GetSyncSettings();
-		}
-
-		bool ISettable.PutSyncSettings(object o)
-		{
-			return PutSyncSettings((N64SyncSettings)o);
-		}
-
 		private void SetControllerButtons()
 		{
 			ControllerDefinition.BoolButtons.Clear();

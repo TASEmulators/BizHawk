@@ -1925,8 +1925,8 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void PutCoreSettings(object o)
 		{
-            var settable = Global.Emulator as ISettable;
-            if (settable != null && settable.PutSettings(o))
+            var settable = new SettingsAdapter(Global.Emulator);
+            if (settable.HasSettings && settable.PutSettings(o))
 			{
 				FlagNeedsReboot();
 			}
@@ -1937,12 +1937,12 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void PutCoreSyncSettings(object o)
 		{
-            var settable = Global.Emulator as ISettable;
+			var settable = new SettingsAdapter(Global.Emulator);
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				GlobalWin.OSD.AddMessage("Attempt to change sync-relevant settings while recording BLOCKED.");
 			}
-            else if (settable != null && settable.PutSyncSettings(o))
+            else if (settable.HasSyncSettings && settable.PutSyncSettings(o))
 			{
 				FlagNeedsReboot();
 			}
@@ -3357,16 +3357,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// save settings object
 			var t = Global.Emulator.GetType();
-            var settable = Global.Emulator as ISettable;
-            if (settable == null)
-                return;
+			var settable = new SettingsAdapter(Global.Emulator);
 
-            Global.Config.PutCoreSettings(settable.GetSettings(), t);
-
-			// don't trample config with loaded-from-movie settings
-			if (!Global.MovieSession.Movie.IsActive)
+			if (settable.HasSettings)
 			{
-                Global.Config.PutCoreSyncSettings(settable.GetSyncSettings(), t);
+				Global.Config.PutCoreSettings(settable.GetSettings(), t);
+			}
+
+			if (settable.HasSyncSettings && !Global.MovieSession.Movie.IsActive)
+			{
+				// don't trample config with loaded-from-movie settings
+				Global.Config.PutCoreSyncSettings(settable.GetSyncSettings(), t);
 			}
 		}
 

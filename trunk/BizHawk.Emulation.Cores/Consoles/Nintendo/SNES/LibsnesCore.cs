@@ -1201,26 +1201,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			return ret;
 		}
 
-		object ISettable.GetSettings()
-		{
-			return GetSettings();
-		}
-
-		bool ISettable.PutSettings(object o)
-		{
-			return PutSettings((SnesSettings)o);
-		}
-
-		object ISettable.GetSyncSettings()
-		{
-			return GetSyncSettings();
-		}
-
-		bool ISettable.PutSyncSettings(object o)
-		{
-			return PutSyncSettings((SnesSyncSettings)o);
-		}
-
 		public class SnesSettings
 		{
 			public bool ShowBG1_0 = true;
