@@ -12,12 +12,12 @@ namespace BizHawk.Client.Common
 {
 	public sealed partial class TasMovie : Bk2Movie, INotifyPropertyChanged
 	{
-		private readonly Bk2MnemonicConstants Mnemonics = new Bk2MnemonicConstants();
-		private List<bool> LagLog = new List<bool>();
-		private readonly TasStateManager StateManager;
-		public TasMovieMarkerList Markers { get; set; }
-
 		public const string DefaultProjectName = "default";
+
+		private readonly Bk2MnemonicConstants Mnemonics = new Bk2MnemonicConstants();
+		private readonly TasStateManager StateManager;
+		private readonly List<bool> LagLog = new List<bool>();
+		private readonly Dictionary<int, IController> InputStateCache = new Dictionary<int, IController>();
 
 		public TasMovie(string path, bool startsFromSavestate = false) : base(path)
 		{
@@ -38,6 +38,9 @@ namespace BizHawk.Client.Common
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
 		}
+
+		public TasMovieMarkerList Markers { get; set; }
+		public bool UseInputCache { get; set; }
 
 		public override string PreferredExtension
 		{
@@ -62,11 +65,6 @@ namespace BizHawk.Client.Common
 					Lagged = (index < LagLog.Count) ? LagLog[index] : (bool?)null
 				};
 			}
-		}
-
-		public override bool Stop(bool saveChanges = true)
-		{
-			return base.Stop(saveChanges);
 		}
 
 		#region Events and Handlers 
@@ -116,12 +114,10 @@ namespace BizHawk.Client.Common
 
 		public override void StartNewRecording()
 		{
-			LagLog.Clear();
-			StateManager.Clear();
-			Markers.Clear();
-			base.StartNewRecording();
-
+			ClearTasprojExtras();
 			Markers.Add(0, StartsFromSavestate ? "Savestate" : "Power on");
+
+			base.StartNewRecording();
 		}
 
 		public override void SwitchToPlay()
@@ -165,9 +161,6 @@ namespace BizHawk.Client.Common
 			return CreateDisplayValueForButton(adapter, buttonName);
 		}
 
-		private readonly Dictionary<int, IController> InputStateCache = new Dictionary<int, IController>();
-
-		public bool UseInputCache { get; set; }
 		public void FlushInputCache()
 		{
 			InputStateCache.Clear();
@@ -247,14 +240,14 @@ namespace BizHawk.Client.Common
 
 		public bool BoolIsPressed(int frame, string buttonName)
 		{
-			var adapter = GetInputState(frame) as Bk2ControllerAdapter;
-			return adapter.IsPressed(buttonName);
+			return ((Bk2ControllerAdapter)GetInputState(frame))
+				.IsPressed(buttonName);
 		}
 
 		public float GetFloatValue(int frame, string buttonName)
 		{
-			var adapter = GetInputState(frame) as Bk2ControllerAdapter;
-			return adapter.GetFloat(buttonName);
+			return ((Bk2ControllerAdapter)GetInputState(frame))
+				.GetFloat(buttonName);
 		}
 
 		// TODO: try not to need this, or at least use GetInputState and then a log entry generator
@@ -327,11 +320,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public List<string> Log
-		{
-			get { return _log; }
-		}
-
 		public void CopyLog(List<string> log)
 		{
 			_log.Clear();
@@ -339,6 +327,11 @@ namespace BizHawk.Client.Common
 			{
 				_log.Add(entry);
 			}
+		}
+
+		public List<string> GetLogEntries()
+		{
+			return _log;
 		}
 	}
 }
