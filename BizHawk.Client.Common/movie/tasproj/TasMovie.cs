@@ -18,6 +18,7 @@ namespace BizHawk.Client.Common
 		private readonly TasStateManager StateManager;
 		private readonly List<bool> LagLog = new List<bool>();
 		private readonly Dictionary<int, IController> InputStateCache = new Dictionary<int, IController>();
+		private readonly List<string> VerificationLog = new List<string>(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 
 		public TasMovie(string path, bool startsFromSavestate = false) : base(path)
 		{

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
@@ -30,7 +32,8 @@ namespace BizHawk.Client.Common
 
 				bs.PutLump(BinaryStateLump.Input, tw => tw.WriteLine(RawInputLog()));
 
-				
+				// TasProj extras
+
 				bs.PutLump(BinaryStateLump.GreenzoneSettings, tw => tw.WriteLine(StateManager.Settings.ToString()));
 				if (StateManager.Settings.SaveGreenzone)
 				{
@@ -56,6 +59,11 @@ namespace BizHawk.Client.Common
 				{
 					var clientSettingsJson = ClientSettingsForSave();
 					bs.PutLump(BinaryStateLump.ClientSettings, (TextWriter tw) => tw.Write(clientSettingsJson));
+				}
+
+				if (VerificationLog.Any())
+				{
+					bs.PutLump(BinaryStateLump.VerificationLog, tw => tw.WriteLine(InputLogToString(VerificationLog)));
 				}
 			}
 
@@ -200,6 +208,27 @@ namespace BizHawk.Client.Common
 
 					GetClientSettingsOnLoad(clientSettings);
 				}
+
+				if (bl.HasLump(BinaryStateLump.VerificationLog))
+				{
+					bl.GetLump(BinaryStateLump.VerificationLog, true, delegate(TextReader tr)
+					{
+						VerificationLog.Clear();
+						while (true)
+						{
+							var line = tr.ReadLine();
+							if (string.IsNullOrEmpty(line))
+							{
+								break;
+							}
+
+							if (line.StartsWith("|"))
+							{
+								VerificationLog.Add(line);
+							}
+						}
+					});
+				}
 			}
 
 			Changes = false;
@@ -211,6 +240,17 @@ namespace BizHawk.Client.Common
 			LagLog.Clear();
 			StateManager.Clear();
 			Markers.Clear();
+		}
+
+		private static string InputLogToString(List<string> log)
+		{
+			var sb = new StringBuilder();
+			foreach (var record in log)
+			{
+				sb.AppendLine(record);
+			}
+
+			return sb.ToString();
 		}
 	}
 }
