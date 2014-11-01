@@ -52,7 +52,10 @@ public:
 
 	// Emulate one video frame using joypad1 and joypad2 as input. Afterwards, image
 	// and sound are available for output using the accessors below.
-	virtual blargg_err_t emulate_frame( int joypad1, int joypad2 = 0 );
+	// A connected controller should have 0xffffff** in the high bits, or 0x000000**
+	// if emulating an incorrectly made third party controller.  A disconnected controller
+	// should be 0x00000000 exactly.
+	virtual blargg_err_t emulate_frame( uint32_t joypad1, uint32_t joypad2 );
 	
 	// Maximum size of palette that can be generated
 	enum { max_palette_size = 256 };

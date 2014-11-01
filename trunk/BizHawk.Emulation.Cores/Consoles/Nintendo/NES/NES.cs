@@ -285,6 +285,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool StartAsyncSound() { return true; }
 		public void EndAsyncSound() { }
 
+		[Obsolete] // with the changes to both nes and quicknes cores, nothing uses this anymore
 		public static readonly ControllerDefinition NESController =
 			new ControllerDefinition
 			{
