@@ -78,7 +78,7 @@ namespace BizHawk.Client.Common
 				}
 
 				ClearBeforeLoad();
-				ClearTasprojExtrasBeforeLoad();
+				ClearTasprojExtras();
 
 				bl.GetLump(BinaryStateLump.Movieheader, true, delegate(TextReader tr)
 				{
@@ -155,7 +155,7 @@ namespace BizHawk.Client.Common
 				// TasMovie enhanced information
 				bl.GetLump(BinaryStateLump.LagLog, false, delegate(BinaryReader br, long length)
 				{
-					LagLog = br.ReadBytes((int)length).ToBools().ToList();
+					LagLog.AddRange(br.ReadBytes((int)length).ToBools());
 				});
 
 				bl.GetLump(BinaryStateLump.GreenzoneSettings, false, delegate(TextReader tr)
@@ -206,10 +206,11 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		private void ClearTasprojExtrasBeforeLoad()
+		private void ClearTasprojExtras()
 		{
 			LagLog.Clear();
 			StateManager.Clear();
+			Markers.Clear();
 		}
 	}
 }
