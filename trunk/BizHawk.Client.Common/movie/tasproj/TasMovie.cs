@@ -321,12 +321,21 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void CopyLog(List<string> log)
+		public void CopyLog(IEnumerable<string> log)
 		{
 			_log.Clear();
 			foreach(var entry in log)
 			{
 				_log.Add(entry);
+			}
+		}
+
+		public void CopyVerificationLog(IEnumerable<string> log)
+		{
+			VerificationLog.Clear();
+			foreach (var entry in log)
+			{
+				VerificationLog.Add(entry);
 			}
 		}
 
