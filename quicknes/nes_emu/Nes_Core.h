@@ -50,7 +50,7 @@ public: private: friend class Nes_Emu;
 	bool sram_present;
 
 public:
-	unsigned long current_joypad [2];
+	uint32_t current_joypad [2];
 	int joypad_read_count;
 	Nes_Cart const* cart;
 	Nes_Mapper* mapper;
