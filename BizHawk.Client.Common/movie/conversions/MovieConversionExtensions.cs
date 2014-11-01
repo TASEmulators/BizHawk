@@ -141,9 +141,11 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			tas.TasStateManager.Clear();
 			tas.ClearLagLog();
 
-			tas.CopyLog(old.GetLogEntries());
-			tas.DeleteLogBefore(frame);
-			
+			var entries = old.GetLogEntries();
+
+			tas.CopyLog(entries.Skip(frame));
+			tas.CopyVerificationLog(entries.Take(frame));
+
 			tas.HeaderEntries.Clear();
 			foreach (var kvp in old.HeaderEntries)
 			{
