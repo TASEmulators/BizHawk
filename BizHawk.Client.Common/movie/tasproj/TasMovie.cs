@@ -290,10 +290,11 @@ namespace BizHawk.Client.Common
 			// TODO: states and lag capture
 			if (Global.Emulator.Frame == frame) // Take this opportunity to capture lag and state info if we do not have it
 			{
-				if (frame == LagLog.Count) // I intentionally did not do >=, if it were >= we missed some entries somewhere, oops, maybe this shoudl be a dictionary<int, bool> with frame values?
-				{
-					LagLog.Add(Global.Emulator.IsLagFrame);
-				}
+				// TODO
+				//if (frame == LagLog.Count) // I intentionally did not do >=, if it were >= we missed some entries somewhere, oops, maybe this shoudl be a dictionary<int, bool> with frame values?
+				//{
+				//	LagLog.Add(Global.Emulator.IsLagFrame);
+				//}
 
 				if (!StateManager.HasState(frame))
 				{
