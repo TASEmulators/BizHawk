@@ -537,9 +537,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		public class QuickNESSyncSettings
 		{
 			[DefaultValue(true)]
+			[DisplayName("Left Port Connected")]
+			[Description("Specifies whether or not the Left (Player 1) Controller is connected")]
 			public bool LeftPortConnected { get; set; }
 
-			[DefaultValue(true)]
+			[DefaultValue(false)]
+			[DisplayName("Right Port Connected")]
+			[Description("Specifies whether or not the Right (Player 2) Controller is connected")]
 			public bool RightPortConnected { get; set; }
 
 			public QuickNESSyncSettings()
