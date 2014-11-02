@@ -20,9 +20,11 @@ namespace BizHawk.Client.EmuHawk
 			_sortReverse = false;
 		}
 
+		public bool ForceReadWrite { get; set; }
+
 		private void EditCommentsForm_Load(object sender, EventArgs e)
 		{
-			if (Global.MovieSession.ReadOnly)
+			if (!ForceReadWrite && Global.MovieSession.ReadOnly)
 			{
 				CommentGrid.Columns[0].ReadOnly = true;
 				Text = "View Comments";
@@ -33,6 +35,18 @@ namespace BizHawk.Client.EmuHawk
 				var x = Height + ((CommentGrid.Rows.Count - 8) * 21);
 				Height = x < 600 ? x : 600;
 			}
+		}
+
+		private void Save()
+		{
+			_selectedMovie.Comments.Clear();
+			for (int i = 0; i < CommentGrid.Rows.Count - 1; i++)
+			{
+				var c = CommentGrid.Rows[i].Cells[0];
+				_selectedMovie.Comments.Add(c.Value.ToString());
+			}
+
+			_selectedMovie.Save();
 		}
 
 		public void GetMovie(IMovie m)
@@ -58,17 +72,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OK_Click(object sender, EventArgs e)
 		{
-			if (!Global.MovieSession.ReadOnly)
-			{
-				_selectedMovie.Comments.Clear();
-				for (int i = 0; i < CommentGrid.Rows.Count - 1; i++)
-				{
-					var c = CommentGrid.Rows[i].Cells[0];
-					_selectedMovie.Comments.Add("comment " + c.Value);
-				}
-				_selectedMovie.Save();
-			}
+			Save();
 			Close();
+		}
+
+		private void SaveBtn_Click(object sender, EventArgs e)
+		{
+			Save();
 		}
 
 		private void OnColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
