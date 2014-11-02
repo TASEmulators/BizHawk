@@ -12,6 +12,10 @@ namespace BizHawk.Client.Common
 			{
 				this.RemoveRange(frame - 1, this.Count - (frame - 1));
 			}
+			else
+			{
+				this.Clear();
+			}
 		}
 
 		public bool? Lagged(int index)
