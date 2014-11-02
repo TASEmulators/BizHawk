@@ -573,7 +573,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var form = new EditCommentsForm();
 			form.GetMovie(CurrentTasMovie);
-			form.ShowDialog();
+			form.ForceReadWrite = true;
+			form.Show();
 		}
 
 		private void SubtitlesMenuItem_Click(object sender, EventArgs e)
