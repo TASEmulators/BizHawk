@@ -14,8 +14,11 @@ namespace BizHawk.Client.Common
 		{
 			base.RecordFrame(frame, source);
 
-			LagLog.RemoveFrom(frame);
-			LagLog.Add(Global.Emulator.IsLagFrame);
+			if (frame > 0)
+			{
+				LagLog.RemoveFrom(frame);
+				LagLog.Add(Global.Emulator.IsLagFrame);
+			}
 
 			StateManager.Capture();
 		}
