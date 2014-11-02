@@ -143,6 +143,7 @@ public:
 
 	bool Advance(int buttons, uint32 *vbuff, int16 *sbuff, int &sbuffsize);
 	bool GetSaveRamPtr(int &size, uint8 *&data) { return mCart->GetSaveRamPtr(size, data); }
+	void GetReadOnlyCartPtrs(int &s0, uint8 *&p0, int &s1, uint8 *&p1) { mCart->GetReadOnlyPtrs(s0, p0, s1, p1); }
 
 	//
 	// We MUST have separate CPU & RAM peek & poke handlers as all CPU accesses must
