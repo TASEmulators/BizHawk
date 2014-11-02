@@ -8,9 +8,9 @@ namespace BizHawk.Client.Common
 	{
 		public void RemoveFrom(int frame)
 		{
-			if (frame > 0 && frame < this.Count)
+			if (frame > 0 && frame <= this.Count)
 			{
-				this.RemoveRange(frame - 1, this.Count - frame);
+				this.RemoveRange(frame - 1, this.Count - (frame - 1));
 			}
 		}
 
