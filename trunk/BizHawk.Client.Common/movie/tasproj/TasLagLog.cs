@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 			{
 				this.RemoveRange(frame - 1, this.Count - (frame - 1));
 			}
-			else
+			else if (frame == 0)
 			{
 				this.Clear();
 			}
