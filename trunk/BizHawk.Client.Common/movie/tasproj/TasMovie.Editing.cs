@@ -14,11 +14,7 @@ namespace BizHawk.Client.Common
 		{
 			base.RecordFrame(frame, source);
 
-			if (frame < LagLog.Count)
-			{
-				LagLog.RemoveRange(frame, LagLog.Count - frame);
-			}
-
+			LagLog.RemoveFrom(frame);
 			LagLog.Add(Global.Emulator.IsLagFrame);
 
 			StateManager.Capture();
@@ -33,11 +29,7 @@ namespace BizHawk.Client.Common
 
 			base.Truncate(frame);
 
-			if (frame < LagLog.Count)
-			{
-				LagLog.RemoveRange(frame, LagLog.Count - frame);
-			}
-
+			LagLog.RemoveFrom(frame);
 			StateManager.Invalidate(frame);
 			Markers.TruncateAt(frame);
 		}

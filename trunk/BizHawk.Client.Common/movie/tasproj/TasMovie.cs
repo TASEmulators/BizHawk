@@ -16,7 +16,7 @@ namespace BizHawk.Client.Common
 
 		private readonly Bk2MnemonicConstants Mnemonics = new Bk2MnemonicConstants();
 		private readonly TasStateManager StateManager;
-		private readonly List<bool> LagLog = new List<bool>();
+		private readonly TasLagLog LagLog = new TasLagLog();
 		private readonly Dictionary<int, IController> InputStateCache = new Dictionary<int, IController>();
 		private readonly List<string> VerificationLog = new List<string>(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 
@@ -63,7 +63,7 @@ namespace BizHawk.Client.Common
 				{
 					State = StateManager[index],
 					LogEntry = GetInputLogEntry(index),
-					Lagged = (index < LagLog.Count) ? LagLog[index] : (bool?)null
+					Lagged = LagLog.Lagged(index)
 				};
 			}
 		}
@@ -132,11 +132,7 @@ namespace BizHawk.Client.Common
 		/// <param name="frame">The last frame that can be valid.</param>
 		private void InvalidateAfter(int frame)
 		{
-			if (frame < LagLog.Count)
-			{
-				LagLog.RemoveRange(frame + 1, LagLog.Count - frame - 1);
-			}
-
+			LagLog.RemoveFrom(frame);
 			StateManager.Invalidate(frame + 1);
 			Changes = true; // TODO check if this actually removed anything before flagging changes
 		}
