@@ -26,6 +26,8 @@ namespace BizHawk.Client.EmuHawk
 		public int ColumnWidth = 280;
 		public int LabelWidth = 60;
 
+		public ToolTip Tooltip;
+
 		protected List<InputCompositeWidget> Inputs = new List<InputCompositeWidget>();
 		protected List<Label> Labels = new List<Label>();
 
@@ -117,6 +119,8 @@ namespace BizHawk.Client.EmuHawk
 					AutoTab = this.Autotab
 				};
 
+				iw.SetupTooltip(Tooltip, null);
+
 				iw.BringToFront();
 				Controls.Add(iw);
 				Inputs.Add(iw);
@@ -125,6 +129,9 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(x + InputSize + LabelPadding, y + 3),
 						Text = buttons[i].Replace('_', ' ').Trim(),
 					};
+
+				//Tooltip.SetToolTip(label, null); //??? not supported yet
+
 				Controls.Add(label);
 				Labels.Add(label);
 			}

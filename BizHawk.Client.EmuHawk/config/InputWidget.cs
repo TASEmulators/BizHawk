@@ -10,7 +10,6 @@ namespace BizHawk.Client.EmuHawk
 	public sealed class InputWidget : TextBox
 	{
 		// TODO: when binding, make sure that the new key combo is not in one of the other bindings
-		private readonly ToolTip _tooltip1 = new ToolTip();
 		private readonly Timer _timer = new Timer();
 		private readonly List<string> _bindings = new List<string>();
 	
@@ -18,33 +17,34 @@ namespace BizHawk.Client.EmuHawk
 
 		public InputCompositeWidget CompositeWidget;
 
+		public class SpecialBindingInfo
+		{
+			public string BindingName;
+			public string TooltipText;
+		}
+
 		/// <summary>
 		/// These bindings get ignored by the widget and can only be entered by SetBinding() via the contextmenu from the InputCompositeWidget
 		/// </summary>
-		public static readonly string[] SpecialBindings = new[] {
-			"Escape",
-			"WMouse L","WMouse M","WMouse R",
-			"WMouse 1", "WMouse 2"
+		public static readonly SpecialBindingInfo[] SpecialBindings = {
+			 new SpecialBindingInfo { BindingName = "Escape", TooltipText = "Binds the Escape key" },
+			new SpecialBindingInfo { BindingName = "WMouse L", TooltipText =  "Binds the left mouse button"},
+				new SpecialBindingInfo { BindingName = "WMouse M", TooltipText =  "Binds the middle mouse button"},
+				new SpecialBindingInfo { BindingName = "WMouse R", TooltipText =  "Binds the right mouse button"},
+			new SpecialBindingInfo { BindingName = "WMouse 1", TooltipText =  "Binds the mouse auxiliary button 1" }, 
+				new SpecialBindingInfo {	BindingName = "WMouse 2", TooltipText =  "Binds the mouse auxiliary button 2" },
 		};
+
 
 		public InputWidget()
 		{
 			ContextMenu = new ContextMenu();
 			_timer.Tick += Timer_Tick;
 			ClearBindings();
-			_tooltip1.AutoPopDelay = 2000;
 			AutoTab = true;
+			Cursor = Cursors.Arrow;
 		}
 
-		public InputWidget(int maxBindings, bool autotab)
-		{
-			AutoTab = autotab;
-			ContextMenu = new ContextMenu();
-			_timer.Tick += Timer_Tick;
-			_bindings = new List<string>();
-			ClearBindings();
-			_tooltip1.AutoPopDelay = 2000;
-		}
 
 		public bool AutoTab { get; set; }
 		public string WidgetName { get; set; }
@@ -110,7 +110,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ClearBindings();
 			Text = string.Empty;
-			_tooltip1.SetToolTip(this, string.Empty);
 		}
 
 		/// <summary>
@@ -154,11 +153,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				//ignore special bindings
-				if (SpecialBindings.Contains(bindingStr))
-				{
-					return;
-				}
-
+				foreach(var spec in SpecialBindings)
+					if(spec.BindingName == bindingStr)
+						return;
 
 				if (!IsDuplicate(bindingStr))
 				{
@@ -222,7 +219,7 @@ namespace BizHawk.Client.EmuHawk
 		public void UpdateLabel()
 		{
 			Text = string.Join(",", _bindings.Where(str => !string.IsNullOrWhiteSpace(str)));
-			_tooltip1.SetToolTip(this, Text);
+			CompositeWidget.RefreshTooltip();
 		}
 
 		protected override void OnKeyPress(KeyPressEventArgs e)
