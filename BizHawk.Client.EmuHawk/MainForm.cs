@@ -3502,7 +3502,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (IsSlave && master.WantsToControlStopMovie)
 			{
-				master.StopMovie();
+				master.StopMovie(!saveChanges);
 			}
 			else
 			{

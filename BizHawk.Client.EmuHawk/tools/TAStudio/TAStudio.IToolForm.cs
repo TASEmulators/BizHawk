@@ -76,6 +76,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool AskSaveChanges()
 		{
+			if (_suppressAskSave)
+			{
+				return true;
+			}
+
 			if (CurrentTasMovie != null && CurrentTasMovie.Changes)
 			{
 				GlobalWin.Sound.StopSound();
