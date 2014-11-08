@@ -85,6 +85,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var instance = (LuaLibraryBase)Activator.CreateInstance(lib, _lua);
 					instance.LuaRegister(lib, Docs);
+					instance.LogOutputCallback = ConsoleLuaLibrary.LogOutput;
 					Libraries.Add(lib, instance);
 				}
 			}
