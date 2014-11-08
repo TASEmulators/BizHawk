@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Nintendo.NES;
@@ -14,12 +16,11 @@ using LuaInterface;
 
 namespace BizHawk.Client.Common
 {
+	[Description("A library for interacting with the currently loaded emulator core")]
 	public sealed class EmulatorLuaLibrary : LuaLibraryBase
 	{
 		public Action FrameAdvanceCallback { get; set; }
 		public Action YieldCallback { get; set; }
-
-
 
 		public EmulatorLuaLibrary(Lua lua)
 			: base(lua) { }
