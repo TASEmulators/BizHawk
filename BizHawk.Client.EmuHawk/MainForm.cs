@@ -217,7 +217,18 @@ namespace BizHawk.Client.EmuHawk
 			string cmdDumpType = null;
 			string cmdDumpName = null;
 
-			if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
+			// Workaround for windows, location is -32000 when minimized, if they close it during this time, that's what gets saved
+			if (Global.Config.MainWndx == -32000)
+			{
+				Global.Config.MainWndx = 0;
+			}
+
+			if (Global.Config.MainWndy == -32000)
+			{
+				Global.Config.MainWndy = 0;
+			}
+
+			if (Global.Config.MainWndx != -1 && Global.Config.MainWndy != -1 && Global.Config.SaveWindowPosition)
 			{
 				Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
 			}
@@ -1952,8 +1963,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Config.SaveWindowPosition)
 			{
-				Global.Config.MainWndx = Location.X;
-				Global.Config.MainWndy = Location.Y;
+				if (Global.Config.MainWndx != -32000) // When minimized location is -32000, don't save this into the config file!
+				{
+					Global.Config.MainWndx = Location.X;
+				}
+
+				if (Global.Config.MainWndy != -32000)
+				{
+					Global.Config.MainWndy = Location.Y;
+				}
 			}
 			else
 			{
