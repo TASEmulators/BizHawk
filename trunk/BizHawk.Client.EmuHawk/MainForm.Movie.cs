@@ -32,6 +32,18 @@ namespace BizHawk.Client.EmuHawk
 
 			LoadRom(GlobalWin.MainForm.CurrentlyOpenRom);
 
+			if (Global.MovieSession.PreviousNES_InQuickNES.HasValue)
+			{
+				Global.Config.NES_InQuickNES = Global.MovieSession.PreviousNES_InQuickNES.HasValue;
+				Global.MovieSession.PreviousNES_InQuickNES = null;
+			}
+
+			if (Global.MovieSession.PreviousSNES_InSnes9x.HasValue)
+			{
+				Global.Config.SNES_InSnes9x = Global.MovieSession.PreviousSNES_InSnes9x.HasValue;
+				Global.MovieSession.PreviousSNES_InSnes9x = null;
+			}
+
 			Global.Config.RecentMovies.Add(movie.Filename);
 
 			if (movie.StartsFromSavestate)
