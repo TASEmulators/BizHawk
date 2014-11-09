@@ -648,6 +648,7 @@ namespace BizHawk.Client.EmuHawk
 				SelectedFiles.Any();
 
 			RemoveScriptMenuItem.Enabled =
+				DuplicateScriptMenuItem.Enabled =
 				MoveUpMenuItem.Enabled =
 				MoveDownMenuItem.Enabled =
 				LuaListView.SelectedIndices().Any();
@@ -774,6 +775,32 @@ namespace BizHawk.Client.EmuHawk
 
 				UpdateRegisteredFunctionsDialog();
 				UpdateDialog();
+			}
+		}
+
+		private void DuplicateScriptMenuItem_Click(object sender, EventArgs e)
+		{
+			if (LuaListView.SelectedIndices().Any())
+			{
+				var script = SelectedFiles.First();
+
+				var sfd = new SaveFileDialog
+				{
+					InitialDirectory = Path.GetDirectoryName(script.Path),
+					DefaultExt = ".lua",
+					FileName = Path.GetFileNameWithoutExtension(script.Path) + " (1)",
+					OverwritePrompt = true,
+					Filter = "Lua Scripts (*.lua)|*.lua|All Files (*.*)|*.*"
+				};
+
+				if (sfd.ShowDialog() == DialogResult.OK)
+				{
+					string text = File.ReadAllText(script.Path);
+					File.WriteAllText(sfd.FileName, text);
+					_luaList.Add(new LuaFile(Path.GetFileNameWithoutExtension(sfd.FileName), sfd.FileName));
+					UpdateDialog();
+					System.Diagnostics.Process.Start(sfd.FileName);
+				}
 			}
 		}
 
