@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
-	[CoreAttributes("Cygne/Mednafen", "Dox", true, true, "0.9.34.1", "http://mednafen.sourceforge.net/")]
+	[CoreAttributes("Cygne/Mednafen", "Dox", true, true, "0.9.36.5", "http://mednafen.sourceforge.net/")]
 	public class WonderSwan : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains,
 		IDebuggable, ISettable<WonderSwan.Settings, WonderSwan.SyncSettings>
 	{
