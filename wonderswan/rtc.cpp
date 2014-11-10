@@ -23,6 +23,9 @@
 
 namespace MDFN_IEN_WSWAN
 {
+	// TODO: replace all use of libc time functions with internal stuff for movie recording
+	// (when userealtime == true, OK to use libc stuff)
+
 	static void GMTime(uint64 ticks, tm &time)
 	{
 		time_t t = ticks;
