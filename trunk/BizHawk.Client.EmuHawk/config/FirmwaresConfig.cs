@@ -197,7 +197,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (ListViewItem lvi in lvFirmwares.Items)
 			{
 				var fr = lvi.Tag as FirmwareDatabase.FirmwareRecord;
-				var ri = Manager.Resolve(fr);
+				var ri = Manager.Resolve(fr, true);
 				for(int i=4;i<=6;i++)
 					lvi.SubItems[i].Text = "";
 
