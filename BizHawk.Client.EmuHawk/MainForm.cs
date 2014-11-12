@@ -540,6 +540,13 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				CheckMessages();
+
+				if (_exitRequestPending)
+				{
+					_exitRequestPending = false;
+					Close();
+				}
+
 				if (_exit)
 				{
 					break;
@@ -1225,6 +1232,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _avwriterpad;
 
 		private bool _exit;
+		private bool _exitRequestPending;
 		private bool _runloopFrameProgress;
 		private DateTime _frameAdvanceTimestamp = DateTime.MinValue;
 		private int _runloopFps;
