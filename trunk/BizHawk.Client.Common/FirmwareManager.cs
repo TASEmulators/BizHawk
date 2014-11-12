@@ -70,7 +70,6 @@ namespace BizHawk.Client.Common
 
 		public class RealFirmwareReader : IDisposable
 		{
-			byte[] buffer = new byte[0];
 			System.Security.Cryptography.SHA1 sha1 = System.Security.Cryptography.SHA1.Create();
 			public void Dispose()
 			{
@@ -81,20 +80,12 @@ namespace BizHawk.Client.Common
 			{
 				var rff = new RealFirmwareFile { FileInfo = fi };
 				long len = fi.Length;
-				if (len > buffer.Length)
-				{
-					buffer = new byte[len];
-				}
 
 				using (var fs = fi.OpenRead())
 				{
-					fs.Read(buffer, 0, (int)len);
+					sha1.ComputeHash(fs);
 				}
 
-				//without this, the file reading will make bad GC behaviour
-				GC.Collect();
-
-				sha1.ComputeHash(buffer, 0, (int)len);
 				rff.Hash = sha1.Hash.BytesToHexString();
 				dict[rff.Hash] = rff;
 				_files.Add(rff);
