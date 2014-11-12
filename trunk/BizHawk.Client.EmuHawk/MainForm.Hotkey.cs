@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 					ToggleSound();
 					break;
 				case "Exit Program":
-					_exit = true;
+					_exitRequestPending = true;
 					break;
 				case "Record A/V":
 					RecordAv();
