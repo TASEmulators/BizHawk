@@ -6,9 +6,6 @@ using System.Linq;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 
-// IDEA: put filesizes in DB too. then scans can go real quick by only scanning filesizes that match (and then scanning filesizes that dont match, in case of an emergency)
-// this would be adviseable if we end up with a very large firmware file
-
 namespace BizHawk.Client.Common
 {
 	public class FirmwareManager
@@ -28,6 +25,7 @@ namespace BizHawk.Client.Common
 			public FirmwareDatabase.FirmwareFile KnownFirmwareFile { get; set; }
 			public string FilePath { get; set; }
 			public string Hash { get; set; }
+			public long Size { get; set; }
 		}
 
 		private readonly Dictionary<FirmwareDatabase.FirmwareRecord, ResolutionInfo> _resolutionDictionary = new Dictionary<FirmwareDatabase.FirmwareRecord, ResolutionInfo>();
@@ -98,6 +96,11 @@ namespace BizHawk.Client.Common
 
 		public void DoScanAndResolve()
 		{
+			//build a list of file sizes. Only those will be checked during scanning
+			HashSet<long> sizes = new HashSet<long>();
+			foreach (var ff in FirmwareDatabase.FirmwareFiles)
+				sizes.Add(ff.size);
+
 			using(var reader = new RealFirmwareReader())
 			{
 				// build a list of files under the global firmwares path, and build a hash for each of them while we're at it
@@ -119,7 +122,8 @@ namespace BizHawk.Client.Common
 				
 					foreach (var fi in di.GetFiles())
 					{
-						reader.Read(fi);
+						if(sizes.Contains(fi.Length))
+							reader.Read(fi);
 					}
 				}
 
@@ -149,7 +153,8 @@ namespace BizHawk.Client.Common
 								{
 									FilePath = reader.dict[hash].FileInfo.FullName,
 									KnownFirmwareFile = FirmwareDatabase.FirmwareFilesByHash[hash],
-									Hash = hash
+									Hash = hash,
+									Size = fo.size
 								};
 							_resolutionDictionary[fr] = ri;
 							goto DONE_FIRMWARE;
@@ -190,6 +195,7 @@ namespace BizHawk.Client.Common
 
 						// compute its hash 
 						var rff = reader.Read(fi);
+						ri.Size = fi.Length;
 						ri.Hash = rff.Hash;
 
 						// check whether it was a known file anyway, and go ahead and bind to the known file, as a perk (the firmwares config doesnt really use this information right now)

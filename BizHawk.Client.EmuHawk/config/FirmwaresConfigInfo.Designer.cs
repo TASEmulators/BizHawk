@@ -34,6 +34,7 @@
 			this.colStandardFilename = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.colDescription = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.colInfo = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.label1 = new System.Windows.Forms.Label();
 			this.btnClose = new System.Windows.Forms.Button();
@@ -42,7 +43,7 @@
 			this.lblFirmware = new System.Windows.Forms.Label();
 			this.lvmiOptionsContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsmiOptionsCopy = new System.Windows.Forms.ToolStripMenuItem();
-			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+			this.colSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.tableLayoutPanel1.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
 			this.lvmiOptionsContextMenuStrip.SuspendLayout();
@@ -51,6 +52,7 @@
 			// lvOptions
 			// 
 			this.lvOptions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colSize,
             this.colHash,
             this.colStandardFilename,
             this.colDescription,
@@ -87,6 +89,12 @@
 			// 
 			this.colInfo.Text = "Info";
 			this.colInfo.Width = 165;
+			// 
+			// imageList1
+			// 
+			this.imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+			this.imageList1.ImageSize = new System.Drawing.Size(16, 16);
+			this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
 			// 
 			// tableLayoutPanel1
 			// 
@@ -173,11 +181,10 @@
 			this.tsmiOptionsCopy.Text = "&Copy";
 			this.tsmiOptionsCopy.Click += new System.EventHandler(this.tsmiOptionsCopy_Click);
 			// 
-			// imageList1
+			// colSize
 			// 
-			this.imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-			this.imageList1.ImageSize = new System.Drawing.Size(16, 16);
-			this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+			this.colSize.Text = "Size";
+			this.colSize.Width = 74;
 			// 
 			// FirmwaresConfigInfo
 			// 
@@ -216,5 +223,6 @@
 		private System.Windows.Forms.ToolStripMenuItem tsmiOptionsCopy;
 		private System.Windows.Forms.ColumnHeader colInfo;
 		private System.Windows.Forms.ImageList imageList1;
+		private System.Windows.Forms.ColumnHeader colSize;
 	}
 }
