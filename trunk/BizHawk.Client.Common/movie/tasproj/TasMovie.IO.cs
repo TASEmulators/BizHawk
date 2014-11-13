@@ -144,7 +144,9 @@ namespace BizHawk.Client.Common
 				bl.GetLump(BinaryStateLump.Input, true, delegate(TextReader tr)
 				{
 					var errorMessage = string.Empty;
+					IsCountingRerecords = false;
 					ExtractInputLog(tr, out errorMessage);
+					IsCountingRerecords = true;
 				});
 
 				if (StartsFromSavestate)
