@@ -56,6 +56,7 @@
 			this.linkBasePath = new System.Windows.Forms.LinkLabel();
 			this.label1 = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.lvFirmwaresContextMenuStrip.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
@@ -79,6 +80,7 @@
             this.columnHeader4,
             this.columnHeader2,
             this.columnHeader3,
+            this.columnHeader8,
             this.columnHeader7});
 			this.lvFirmwares.ContextMenuStrip = this.lvFirmwaresContextMenuStrip;
 			this.lvFirmwares.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -86,7 +88,7 @@
 			this.lvFirmwares.GridLines = true;
 			this.lvFirmwares.Location = new System.Drawing.Point(0, 25);
 			this.lvFirmwares.Name = "lvFirmwares";
-			this.lvFirmwares.Size = new System.Drawing.Size(773, 424);
+			this.lvFirmwares.Size = new System.Drawing.Size(824, 424);
 			this.lvFirmwares.SmallImageList = this.imageList1;
 			this.lvFirmwares.TabIndex = 24;
 			this.lvFirmwares.UseCompatibleStateImageBehavior = false;
@@ -128,7 +130,7 @@
 			// columnHeader7
 			// 
 			this.columnHeader7.Text = "Hash";
-			this.columnHeader7.Width = 340;
+			this.columnHeader7.Width = 250;
 			// 
 			// lvFirmwaresContextMenuStrip
 			// 
@@ -176,7 +178,7 @@
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel1.Location = new System.Drawing.Point(3, 3);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(773, 449);
+			this.panel1.Size = new System.Drawing.Size(824, 449);
 			this.panel1.TabIndex = 24;
 			// 
 			// toolStrip1
@@ -190,7 +192,7 @@
             this.tbbImport});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(773, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(824, 25);
 			this.toolStrip1.TabIndex = 23;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
@@ -254,7 +256,7 @@
 			this.tableLayoutPanel1.RowCount = 2;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(779, 478);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(830, 478);
 			this.tableLayoutPanel1.TabIndex = 25;
 			// 
 			// panel2
@@ -267,7 +269,7 @@
 			this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel2.Location = new System.Drawing.Point(3, 458);
 			this.panel2.Name = "panel2";
-			this.panel2.Size = new System.Drawing.Size(773, 17);
+			this.panel2.Size = new System.Drawing.Size(824, 17);
 			this.panel2.TabIndex = 26;
 			// 
 			// linkBasePath
@@ -290,11 +292,15 @@
 			this.label1.TabIndex = 25;
 			this.label1.Text = "Firmwares Search Path:";
 			// 
+			// columnHeader8
+			// 
+			this.columnHeader8.Text = "Size";
+			// 
 			// FirmwaresConfig
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(779, 478);
+			this.ClientSize = new System.Drawing.Size(830, 478);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.Name = "FirmwaresConfig";
 			this.ShowIcon = false;
@@ -343,5 +349,6 @@
 				private System.Windows.Forms.LinkLabel linkBasePath;
 				private System.Windows.Forms.Label label1;
 				private System.Windows.Forms.ToolStripButton tbbImport;
+				private System.Windows.Forms.ColumnHeader columnHeader8;
     }
 }
