@@ -52,7 +52,6 @@ namespace BizHawk.Client.Common
 		public virtual void SwitchToPlay()
 		{
 			_mode = Moviemode.Play;
-			Save();
 		}
 
 		public virtual bool Stop(bool saveChanges = true)
