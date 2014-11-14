@@ -12610,32 +12610,8 @@ updateLoop:
 					io_registers[REG_DISPSTAT] &= 0xFFFD;
 					if(io_registers[REG_VCOUNT] == 160)
 					{
-						/* update joystick information */
-						io_registers[REG_P1] = 0x03FF ^ (joy & 0x3FF);
-#if 0
-						if(cpuEEPROMSensorEnabled)
-							systemUpdateMotionSensor();
-#endif
-						UPDATE_REG(0x130, io_registers[REG_P1]);
-						io_registers[REG_P1CNT] = READ16LE(((uint16_t *)&ioMem[0x132]));
-
-						// this seems wrong, but there are cases where the game
-						// can enter the stop state without requesting an IRQ from
-						// the joypad.
-						if((io_registers[REG_P1CNT] & 0x4000) || stopState) {
-							uint16_t p1 = (0x3FF ^ io_registers[REG_P1CNT]) & 0x3FF;
-							if(io_registers[REG_P1CNT] & 0x8000) {
-								if(p1 == (io_registers[REG_P1CNT] & 0x3FF)) {
-									io_registers[REG_IF] |= 0x1000;
-									UPDATE_REG(0x202, io_registers[REG_IF]);
-								}
-							} else {
-								if(p1 & io_registers[REG_P1CNT]) {
-									io_registers[REG_IF] |= 0x1000;
-									UPDATE_REG(0x202, io_registers[REG_IF]);
-								}
-							}
-						}
+						// moved to start of emulated frame
+						//UpdateJoypad();
 
 						io_registers[REG_DISPSTAT] |= 1;
 						io_registers[REG_DISPSTAT] &= 0xFFFD;
@@ -13016,6 +12992,36 @@ void systemOnWriteDataToSoundBuffer(int16_t * finalWave, int length)
 	systemAudioFrameSamp = nullptr;
 }
 
+void UpdateJoypad()
+{
+	/* update joystick information */
+	io_registers[REG_P1] = 0x03FF ^ (joy & 0x3FF);
+#if 0
+	if(cpuEEPROMSensorEnabled)
+		systemUpdateMotionSensor();
+#endif
+	UPDATE_REG(0x130, io_registers[REG_P1]);
+	io_registers[REG_P1CNT] = READ16LE(((uint16_t *)&ioMem[0x132]));
+
+	// this seems wrong, but there are cases where the game
+	// can enter the stop state without requesting an IRQ from
+	// the joypad.
+	if((io_registers[REG_P1CNT] & 0x4000) || stopState) {
+		uint16_t p1 = (0x3FF ^ io_registers[REG_P1CNT]) & 0x3FF;
+		if(io_registers[REG_P1CNT] & 0x8000) {
+			if(p1 == (io_registers[REG_P1CNT] & 0x3FF)) {
+				io_registers[REG_IF] |= 0x1000;
+				UPDATE_REG(0x202, io_registers[REG_IF]);
+			}
+		} else {
+			if(p1 & io_registers[REG_P1CNT]) {
+				io_registers[REG_IF] |= 0x1000;
+				UPDATE_REG(0x202, io_registers[REG_IF]);
+			}
+		}
+	}
+}
+
 public:
 
 template<bool isReader>void SyncState(NewState *ns)
@@ -13368,6 +13374,7 @@ template<bool isReader>bool SyncBatteryRam(NewState *ns)
 		systemAudioFrameDest = audiobuffer;
 		systemAudioFrameSamp = numsamp;
 		lagged = true;
+		UpdateJoypad();
 		do
 		{
 			CPULoop();
