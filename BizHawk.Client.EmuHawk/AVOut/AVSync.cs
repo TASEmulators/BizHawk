@@ -16,7 +16,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private long _soundRemainder; // audio timekeeping for video dumping
-		private short[] _samples = new short[0];
 
 		public void DumpAV(IVideoProvider v, ISoundProvider s, out short[] samples, out int samplesprovided)
 		{
@@ -29,9 +28,7 @@ namespace BizHawk.Client.EmuHawk
 			// exactly remember fractional parts of an audio sample
 			_soundRemainder = nsampnum % fpsnum;
 
-			if (nsamp * channels != _samples.Length)
-				_samples = new short[nsamp * channels];
-			samples = _samples;
+			samples = new short[nsamp * channels];
 			s.GetSamples(samples);
 			samplesprovided = (int)nsamp;
 
