@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -559,13 +560,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HeaderMenuItem_Click(object sender, EventArgs e)
 		{
-			new MovieHeaderEditor(CurrentTasMovie) { Owner = GlobalWin.MainForm }.Show();
+			new MovieHeaderEditor(CurrentTasMovie)
+			{
+				Owner = GlobalWin.MainForm,
+				Location = this.ChildPointToScreen(TasView)
+			}.Show();
 			UpdateChangesIndicator();
 		}
 
 		private void GreenzoneSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new GreenzoneSettingsForm(CurrentTasMovie.TasStateManager.Settings) { Owner = GlobalWin.MainForm }.Show();
+			new GreenzoneSettingsForm(CurrentTasMovie.TasStateManager.Settings)
+			{
+				Owner = GlobalWin.MainForm,
+				Location = this.ChildPointToScreen(TasView)
+			}.Show();
 			UpdateChangesIndicator();
 		}
 
@@ -586,7 +595,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DefaultStateSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new DefaultGreenzoneSettings().ShowDialog();
+			new DefaultGreenzoneSettings
+			{
+				Location = this.ChildPointToScreen(TasView)
+			}.ShowDialog();
 		}
 
 		#endregion
