@@ -177,7 +177,7 @@ namespace BizHawk.Client.EmuHawk
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MinimumSize = new System.Drawing.Size(225, 165);
 			this.Name = "GreenzoneSettingsForm";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Savestate History Settings";
 			this.Load += new System.EventHandler(this.GreenzoneSettings_Load);
 			((System.ComponentModel.ISupportInitialize)(this.CapacityNumeric)).EndInit();
