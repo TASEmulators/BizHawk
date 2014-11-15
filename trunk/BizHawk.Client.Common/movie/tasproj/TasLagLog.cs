@@ -1,37 +1,91 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace BizHawk.Client.Common
 {
-	public class TasLagLog : List<bool>
+	public class TasLagLog
 	{
+		private readonly SortedList<int, bool> LagLog = new SortedList<int, bool>();
+
+		public bool? this[int frame]
+		{
+			get
+			{
+				if (LagLog.ContainsKey(frame))
+				{
+					return LagLog[frame];
+				}
+
+				return null;
+			}
+
+			set
+			{
+				if (!value.HasValue)
+				{
+					LagLog.Remove(frame);
+				}
+				else if (frame < 0)
+				{
+					return; // Nothing to do
+				}
+				else if (LagLog.ContainsKey(frame))
+				{
+					LagLog[frame] = value.Value;
+				}
+				else
+				{
+					LagLog.Add(frame, value.Value);
+				}
+			}
+		}
+
+		public bool HasLagEntry(int frame)
+		{
+			return LagLog.ContainsKey(frame);
+		}
+
+		public void Clear()
+		{
+			LagLog.Clear();
+		}
+
 		public void RemoveFrom(int frame)
 		{
-			if (frame > 0 && frame <= this.Count)
+			if (frame > 0 && frame <= LagLog.Count)
 			{
-				this.RemoveRange(frame - 1, this.Count - (frame - 1));
+				for (int i = LagLog.Count - 1; i > frame; i--) // Reverse order because removing from a sorted list re-indexes the items after the removed item
+				{
+					LagLog.RemoveAt(i);
+				}
 			}
 			else if (frame == 0)
 			{
 				this.Clear();
 			}
+
 		}
 
-		public bool? Lagged(int index)
+		public void Save(BinaryWriter bw)
 		{
-			// Hacky but effective, we haven't record the lag information for the current frame yet
-			if (index == Global.Emulator.Frame - 1)
+			bw.Write(LagLog.Count);
+			foreach (var kvp in LagLog)
 			{
-				return Global.Emulator.IsLagFrame;
+				bw.Write(kvp.Key);
+				bw.Write(kvp.Value);
 			}
-			
-			if (index < this.Count)
-			{
-				return this[index];
-			}
+		}
 
-			return null;
+		public void Load(BinaryReader br)
+		{
+			LagLog.Clear();
+			int length = br.ReadInt32();
+			for (int i = 0; i < length; i++)
+			{
+				LagLog.Add(br.ReadInt32(), br.ReadBoolean());
+			}
 		}
 	}
 }

@@ -40,7 +40,7 @@ namespace BizHawk.Client.Common
 					bs.PutLump(BinaryStateLump.Greenzone, (BinaryWriter bw) => StateManager.Save(bw));
 				}
 
-				bs.PutLump(BinaryStateLump.LagLog, (BinaryWriter bw) => bw.Write(LagLog.ToByteArray()));
+				bs.PutLump(BinaryStateLump.LagLog, (BinaryWriter bw) => LagLog.Save(bw));
 				bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
 
 				if (StartsFromSavestate)
@@ -163,10 +163,13 @@ namespace BizHawk.Client.Common
 				}
 
 				// TasMovie enhanced information
-				bl.GetLump(BinaryStateLump.LagLog, false, delegate(BinaryReader br, long length)
+				if (bl.HasLump(BinaryStateLump.LagLog))
 				{
-					LagLog.AddRange(br.ReadBytes((int)length).ToBools());
-				});
+					bl.GetLump(BinaryStateLump.LagLog, false, delegate(BinaryReader br, long length)
+					{
+						LagLog.Load(br);
+					});
+				}
 
 				bl.GetLump(BinaryStateLump.GreenzoneSettings, false, delegate(TextReader tr)
 				{
