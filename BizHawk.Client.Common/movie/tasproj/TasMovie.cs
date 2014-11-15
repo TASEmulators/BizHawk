@@ -7,6 +7,7 @@ using System.Text;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using System.ComponentModel;
+using System.Globalization;
 
 namespace BizHawk.Client.Common
 {
@@ -334,6 +335,166 @@ namespace BizHawk.Client.Common
 		public List<string> GetLogEntries()
 		{
 			return _log;
+		}
+
+		private int? TimelineBranchFrame = null;
+
+		// TODO: this is 99% copy pasting of bad code
+		public override bool ExtractInputLog(TextReader reader, out string errorMessage)
+		{
+			errorMessage = string.Empty;
+			int? stateFrame = null;
+
+			var newLog = new List<string>();
+			// We are in record mode so replace the movie log with the one from the savestate
+			if (!Global.MovieSession.MultiTrack.IsActive)
+			{
+				TimelineBranchFrame = null;
+
+				if (Global.Config.EnableBackupMovies && MakeBackup && _log.Any())
+				{
+					SaveBackup();
+					MakeBackup = false;
+				}
+
+				int counter = 0;
+				while (true)
+				{
+					var line = reader.ReadLine();
+					if (string.IsNullOrEmpty(line))
+					{
+						break;
+					}
+					else if (line.Contains("Frame 0x")) // NES stores frame count in hex, yay
+					{
+						var strs = line.Split('x');
+						try
+						{
+							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
+						}
+						catch
+						{
+							errorMessage = "Savestate Frame number failed to parse";
+							return false;
+						}
+					}
+					else if (line.Contains("Frame "))
+					{
+						var strs = line.Split(' ');
+						try
+						{
+							stateFrame = int.Parse(strs[1]);
+						}
+						catch
+						{
+							errorMessage = "Savestate Frame number failed to parse";
+							return false;
+						}
+					}
+					else if (line.StartsWith("LogKey:"))
+					{
+						LogKey = line.Replace("LogKey:", "");
+					}
+					else if (line[0] == '|')
+					{
+						newLog.Add(line);
+						if (!TimelineBranchFrame.HasValue && line != _log[counter])
+						{
+							TimelineBranchFrame = counter;
+						}
+						counter++;
+					}
+				}
+
+				_log.Clear();
+				_log.AddRange(newLog);
+			}
+			else //Multitrack mode
+			{
+				// TODO: consider TimelineBranchFrame here, my thinking is that there's never a scenario to invalidate state/lag data during multitrack
+				var i = 0;
+				while (true)
+				{
+					var line = reader.ReadLine();
+					if (line == null)
+					{
+						break;
+					}
+
+					if (line.Contains("Frame 0x")) // NES stores frame count in hex, yay
+					{
+						var strs = line.Split('x');
+						try
+						{
+							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
+						}
+						catch
+						{
+							errorMessage = "Savestate Frame number failed to parse";
+							return false;
+						}
+					}
+					else if (line.Contains("Frame "))
+					{
+						var strs = line.Split(' ');
+						try
+						{
+							stateFrame = int.Parse(strs[1]);
+						}
+						catch
+						{
+							errorMessage = "Savestate Frame number failed to parse";
+							return false;
+						}
+					}
+					else if (line.StartsWith("LogKey:"))
+					{
+						LogKey = line.Replace("LogKey:", "");
+					}
+					else if (line.StartsWith("|"))
+					{
+						SetFrameAt(i, line);
+						i++;
+					}
+				}
+			}
+
+			if (!stateFrame.HasValue)
+			{
+				errorMessage = "Savestate Frame number failed to parse";
+			}
+
+			var stateFramei = stateFrame ?? 0;
+
+			if (stateFramei > 0 && stateFramei < _log.Count)
+			{
+				if (!Global.Config.VBAStyleMovieLoadState)
+				{
+					Truncate(stateFramei);
+				}
+			}
+			else if (stateFramei > _log.Count) // Post movie savestate
+			{
+				if (!Global.Config.VBAStyleMovieLoadState)
+				{
+					Truncate(_log.Count);
+				}
+
+				_mode = Moviemode.Finished;
+			}
+
+			if (IsCountingRerecords)
+			{
+				Rerecords++;
+			}
+
+			if (TimelineBranchFrame.HasValue)
+			{
+				LagLog.RemoveFrom(TimelineBranchFrame.Value);
+				TasStateManager.Invalidate(TimelineBranchFrame.Value);
+			}
+
+			return true;
 		}
 	}
 }

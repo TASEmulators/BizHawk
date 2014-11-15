@@ -7,7 +7,7 @@ namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie : IMovie
 	{
-		private bool _makeBackup = true;
+		protected bool MakeBackup = true;
 
 		public Bk2Movie(string filename)
 			: this()
@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 			Filename = string.Empty;
 			IsCountingRerecords = true;
 			_mode = Moviemode.Inactive;
-			_makeBackup = true;
+			MakeBackup = true;
 
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0.0";
 		}
@@ -52,7 +52,7 @@ namespace BizHawk.Client.Common
 
 		public ILogEntryGenerator LogGeneratorInstance()
 		{
-			return new Bk2LogEntryGenerator(_logKey);
+			return new Bk2LogEntryGenerator(LogKey);
 		}
 
 		public double FrameCount
@@ -168,7 +168,7 @@ namespace BizHawk.Client.Common
 
 		#endregion
 
-		private void SetFrameAt(int frameNum, string frame)
+		protected void SetFrameAt(int frameNum, string frame)
 		{
 			if (_log.Count > frameNum)
 			{
