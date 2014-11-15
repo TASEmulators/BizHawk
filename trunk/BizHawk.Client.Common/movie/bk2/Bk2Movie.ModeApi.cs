@@ -30,10 +30,10 @@ namespace BizHawk.Client.Common
 		public virtual void StartNewRecording()
 		{
 			_mode = Moviemode.Record;
-			if (Global.Config.EnableBackupMovies && _makeBackup && _log.Any())
+			if (Global.Config.EnableBackupMovies && MakeBackup && _log.Any())
 			{
 				SaveBackup();
-				_makeBackup = false;
+				MakeBackup = false;
 			}
 
 			_log.Clear();

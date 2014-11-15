@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 	public partial class Bk2Movie
 	{
 		protected List<string> _log = new List<string>();
-		private string _logKey = string.Empty;
+		protected string LogKey = string.Empty;
 
 		public string GetInputLog()
 		{
@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 			return sb.ToString();
 		}
 
-		public bool ExtractInputLog(TextReader reader, out string errorMessage)
+		public virtual bool ExtractInputLog(TextReader reader, out string errorMessage)
 		{
 			errorMessage = string.Empty;
 			int? stateFrame = null;
@@ -30,10 +30,10 @@ namespace BizHawk.Client.Common
 			// We are in record mode so replace the movie log with the one from the savestate
 			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
-				if (Global.Config.EnableBackupMovies && _makeBackup && _log.Any())
+				if (Global.Config.EnableBackupMovies && MakeBackup && _log.Any())
 				{
 					SaveBackup();
-					_makeBackup = false;
+					MakeBackup = false;
 				}
 
 				_log.Clear();
@@ -72,7 +72,7 @@ namespace BizHawk.Client.Common
 					}
 					else if (line.StartsWith("LogKey:"))
 					{
-						_logKey = line.Replace("LogKey:", "");
+						LogKey = line.Replace("LogKey:", "");
 					}
 					else if (line[0] == '|')
 					{
@@ -119,7 +119,7 @@ namespace BizHawk.Client.Common
 					}
 					else if (line.StartsWith("LogKey:"))
 					{
-						_logKey = line.Replace("LogKey:", "");
+						LogKey = line.Replace("LogKey:", "");
 					}
 					else if (line.StartsWith("|"))
 					{
@@ -265,7 +265,7 @@ namespace BizHawk.Client.Common
 
 		protected StringBuilder RawInputLog()
 		{
-			var lg = new Bk2LogEntryGenerator(_logKey);
+			var lg = new Bk2LogEntryGenerator(LogKey);
 			lg.SetSource(Global.MovieOutputHardpoint);
 
 			var sb = new StringBuilder();
