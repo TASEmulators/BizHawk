@@ -878,12 +878,6 @@
     <Compile Include="tools\TAStudio\InputRoll.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\TAStudio\LuaBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\LuaBox.Designer.cs">
-      <DependentUpon>LuaBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\TAStudio\TAStudio.IControlMainForm.cs">
       <DependentUpon>TAStudio.cs</DependentUpon>
       <SubType>Form</SubType>
@@ -898,23 +892,11 @@
     <Compile Include="tools\TAStudio\MarkerControl.Designer.cs">
       <DependentUpon>MarkerControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\TAStudio\MarkerControlsBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\MarkerControlsBox.Designer.cs">
-      <DependentUpon>MarkerControlsBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\TAStudio\PlaybackBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="tools\TAStudio\PlaybackBox.Designer.cs">
       <DependentUpon>PlaybackBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\TAStudio\RecorderBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\RecorderBox.Designer.cs">
-      <DependentUpon>RecorderBox.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\TAStudio\TAStudio.cs">
       <SubType>Form</SubType>
@@ -1321,20 +1303,11 @@
     <EmbeddedResource Include="tools\TAStudio\HistoryBox.resx">
       <DependentUpon>HistoryBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\LuaBox.resx">
-      <DependentUpon>LuaBox.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\MarkerControl.resx">
       <DependentUpon>MarkerControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\MarkerControlsBox.resx">
-      <DependentUpon>MarkerControlsBox.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\PlaybackBox.resx">
       <DependentUpon>PlaybackBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\RecorderBox.resx">
-      <DependentUpon>RecorderBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\TAStudio.resx">
       <DependentUpon>TAStudio.cs</DependentUpon>
