@@ -63,7 +63,7 @@ namespace BizHawk.Client.Common
 				{
 					State = StateManager[index],
 					LogEntry = GetInputLogEntry(index),
-					Lagged = LagLog.Lagged(index)
+					Lagged = LagLog[index]
 				};
 			}
 		}
@@ -287,16 +287,9 @@ namespace BizHawk.Client.Common
 
 		public override IController GetInputState(int frame)
 		{
-			if (Global.Emulator.Frame - 1 == frame)
+			if (frame == Global.Emulator.Frame) // Take this opportunity to capture lag and state info if we do not have it
 			{
-				if (frame == LagLog.Count) // I intentionally did not do >=, if it were >= we missed some entries somewhere, oops, maybe this shoudl be a dictionary<int, bool> with frame values?
-				{
-					LagLog.Add(Global.Emulator.IsLagFrame);
-				}
-			}
-
-			if (Global.Emulator.Frame == frame) // Take this opportunity to capture lag and state info if we do not have it
-			{
+				LagLog[Global.Emulator.Frame] = Global.Emulator.IsLagFrame;
 
 				if (!StateManager.HasState(frame))
 				{
