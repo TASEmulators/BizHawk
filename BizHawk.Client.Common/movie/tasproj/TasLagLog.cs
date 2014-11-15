@@ -17,6 +17,15 @@ namespace BizHawk.Client.Common
 				{
 					return LagLog[frame];
 				}
+				else if (frame == Global.Emulator.Frame)
+				{
+					if (frame == LagLog.Count)
+					{
+						LagLog[frame] = Global.Emulator.IsLagFrame; // Note: Side effects!
+					}
+
+					return Global.Emulator.IsLagFrame;
+				}
 
 				return null;
 			}
@@ -40,11 +49,6 @@ namespace BizHawk.Client.Common
 					LagLog.Add(frame, value.Value);
 				}
 			}
-		}
-
-		public bool HasLagEntry(int frame)
-		{
-			return LagLog.ContainsKey(frame);
 		}
 
 		public void Clear()

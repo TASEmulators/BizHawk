@@ -63,7 +63,7 @@ namespace BizHawk.Client.Common
 				{
 					State = StateManager[index],
 					LogEntry = GetInputLogEntry(index),
-					Lagged = LagLog[index]
+					Lagged = LagLog[index + 1]
 				};
 			}
 		}
