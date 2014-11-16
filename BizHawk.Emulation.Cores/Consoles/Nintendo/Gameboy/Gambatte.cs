@@ -331,7 +331,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					_cycleCount += (ulong)samplesEmitted;
 					frameOverflow += samplesEmitted;
 
-					if (rendersound)
+					if (rendersound && !Muted)
 					{
 						ProcessSound((int)samplesEmitted);
 					}
@@ -354,13 +354,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				_cycleCount += (ulong)samplesEmitted;
 				frameOverflow = 0;
-				if (rendersound)
+				if (rendersound && !Muted)
 				{
 					ProcessSound((int)samplesEmitted);
 				}
 			}
 
-			if (rendersound)
+			if (rendersound && !Muted)
 				ProcessSoundEnd();
 
 			FrameAdvancePost();
@@ -980,6 +980,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			nsamp = soundoutbuffcontains;
 		}
 
+		public bool Muted { get { return _Settings.Muted; } }
+
 		#endregion
 
 		#region Settings
@@ -1017,6 +1019,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			public int[] GBPalette;
 			public GBColors.ColorType CGBColors;
+			/// <summary>
+			/// true to mute all audio
+			/// </summary>
+			public bool Muted;
 
 			public GambatteSettings()
 			{

@@ -31,6 +31,7 @@
 			this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
 			this.buttonDefaults = new System.Windows.Forms.Button();
 			this.buttonPalette = new System.Windows.Forms.Button();
+			this.checkBoxMuted = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
 			// propertyGrid1
@@ -68,16 +69,30 @@
 			this.buttonPalette.UseVisualStyleBackColor = true;
 			this.buttonPalette.Click += new System.EventHandler(this.buttonPalette_Click);
 			// 
+			// checkBoxMuted
+			// 
+			this.checkBoxMuted.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.checkBoxMuted.AutoSize = true;
+			this.checkBoxMuted.Location = new System.Drawing.Point(84, 289);
+			this.checkBoxMuted.Name = "checkBoxMuted";
+			this.checkBoxMuted.Size = new System.Drawing.Size(80, 17);
+			this.checkBoxMuted.TabIndex = 3;
+			this.checkBoxMuted.Text = "Mute Audio";
+			this.checkBoxMuted.UseVisualStyleBackColor = true;
+			this.checkBoxMuted.CheckedChanged += new System.EventHandler(this.checkBoxMuted_CheckedChanged);
+			// 
 			// GBPrefControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.checkBoxMuted);
 			this.Controls.Add(this.buttonPalette);
 			this.Controls.Add(this.buttonDefaults);
 			this.Controls.Add(this.propertyGrid1);
 			this.Name = "GBPrefControl";
 			this.Size = new System.Drawing.Size(324, 311);
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -86,5 +101,6 @@
 		private System.Windows.Forms.PropertyGrid propertyGrid1;
 		private System.Windows.Forms.Button buttonDefaults;
 		private System.Windows.Forms.Button buttonPalette;
+		private System.Windows.Forms.CheckBox checkBoxMuted;
 	}
 }
