@@ -1858,7 +1858,7 @@ namespace BizHawk.Client.EmuHawk
 			if (VersionInfo.DeveloperBuild)
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.cue;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.cue;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;%ARCH%",
 					"Music Files", "*.psf;*.sid",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;*.fds;%ARCH%",
@@ -1870,6 +1870,7 @@ namespace BizHawk.Client.EmuHawk
 					"Savestate", "*.state",
 					"Atari 2600", "*.a26;*.bin;%ARCH%",
 					"Atari 7800", "*.a78;*.bin;%ARCH%",
+					"Atari Lynx", "*.lnx;%ARCH%",
 					"Genesis", "*.gen;*.smd;*.bin;*.md;*.cue;%ARCH%",
 					"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
 					"Gameboy Advance", "*.gba;%ARCH%",
@@ -1886,7 +1887,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.col;*.rom;*.cue;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.rom;*.cue;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;*.fds;%ARCH%",
 					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
@@ -1897,6 +1898,7 @@ namespace BizHawk.Client.EmuHawk
 					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
 					"Atari 2600", "*.a26;%ARCH%",
 					"Atari 7800", "*.a78;%ARCH%",
+					"Atari Lynx", "*.lnx;%ARCH%",
 					"Colecovision", "*.col;%ARCH%",
 					"TI-83", "*.rom;%ARCH%",
 					"Archive Files", "%ARCH%",
