@@ -67,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return PathTabControl.TabPages
 				.OfType<TabPage>()
-				.FirstOrDefault(x => x.Name.ToUpper().Contains(name.ToUpper())) 
+				.FirstOrDefault(x => x.Name.ToUpper().StartsWith(name.ToUpper())) 
 				?? new TabPage();
 		}
 
