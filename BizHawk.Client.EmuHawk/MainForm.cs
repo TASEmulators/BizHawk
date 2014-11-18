@@ -181,6 +181,8 @@ namespace BizHawk.Client.EmuHawk
 			ResizeEnd += (o, e) =>
 			{
 				_inResizeLoop = false;
+				SetWindowText();
+
 				if (GlobalWin.PresentationPanel != null)
 				{
 					GlobalWin.PresentationPanel.Resized = true;
