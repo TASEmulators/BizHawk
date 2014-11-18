@@ -397,8 +397,8 @@
       "P1 Down": "DownArrow, J1 POV1D, X1 DpadDown, X1 LStickDown",
       "P1 Left": "LeftArrow, J1 POV1L, X1 DpadLeft, X1 LStickLeft",
       "P1 Right": "RightArrow, J1 POV1R, X1 DpadRight, X1 LStickRight",
-      "P1 B2": "X, J1 B1, X1 X",
-      "P1 B1": "Z, J1 B2, X1 A",
+      "P1 B2": "Z, J1 B1, X1 X",
+      "P1 B1": "X, J1 B2, X1 A",
       "P1 Select": "V, J1 B9, X1 Back",
       "P1 Run": "Return, J1 B10, X1 Start",
       "P2 Up": "",
@@ -616,7 +616,6 @@
       "P1 Start": "Return, J1 B10, X1 Start",
       "P1 B": "Z, J1 B1, X1 X",
       "P1 A": "X, J1 B2, X1 A",
-        
       "P2 X1": "",
       "P2 X3": "X, J1 B2, X1 A",
       "P2 X4": "Z, J1 B1, X1 X",
@@ -628,7 +627,18 @@
       "P2 Start": "Return, J1 B10, X1 Start",
       "P2 B": "",
       "P2 A": "",
-        
+      "Power": ""
+    },
+    "Lynx Controller": {
+      "Up": "UpArrow",
+      "Down": "DownArrow",
+      "Left": "LeftArrow",
+      "Right": "RightArrow",
+      "A": "X",
+      "B": "Z",
+      "Option 1": "Return",
+      "Option 2": "Space",
+      "Pause": "",
       "Power": ""
     }
   },
@@ -801,6 +811,18 @@
       "P2 X4": "A",
       "P2 X3": "S",
       "Power": ""
+    },
+    "Lynx Controller": {
+      "Up": "",
+      "Down": "",
+      "Left": "",
+      "Right": "",
+      "A": "",
+      "B": "",
+      "Option 1": "",
+      "Option 2": "",
+      "Pause": "",
+      "Power": ""
     }
   },
   "AllTrollersAnalog": {
@@ -917,8 +939,9 @@
         "Value": "WMouse Y",
         "Mult": 1.0,
         "Deadzone": 0.0
-      },
+      }
     },
-    "WonderSwan Controller": {}
+    "WonderSwan Controller": {},
+    "Lynx Controller": {}
   }
 }
