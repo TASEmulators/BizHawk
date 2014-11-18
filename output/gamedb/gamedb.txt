@@ -146,3 +146,5 @@ EDD7A45A7F27E396B6D686F1861642D509863132		Datach - SD Gundam - Gundam Wars	NES		
 #include gamedb_neshomebrew.txt
 #include gamedb_vs.txt
 #include gamedb_user.txt
+#include gamedb_ws.txt
+#include gamedb_wsc.txt

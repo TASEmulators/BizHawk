@@ -1,0 +1,96 @@
+;This is the No-Intro WonderSwan Color SHA-1 List
+99d9d7f951ae589059f34e76aea7489ae4cd79f1		Alchemist Marie & Elie - Futari no Atelier (Japan)	WSWAN
+caf4a8de853ded732b2a72619acf2784eeceafc7		Another Heaven - Memory of those Days (Japan)	WSWAN
+68981c05d8118d4189100eed462ee6639328dc59		Arc the Lad - Kishin Fukkatsu (Japan)	WSWAN
+fffb1aea34e0a96113cd10ba9de515000d27bfe6		Battle Spirit - Digimon Frontier (Japan)	WSWAN
+02103fc5fc97c3a38834ced32a3cfe6523832535		Blue Wing Blitz (Japan)	WSWAN
+c2188171dc0f78fb6a13bbb55b4e85bdf7b82fd5		Dark Eyes - Battle Gate (Japan)	WSWAN
+79658575c736fcad18e9225aa0e62398b086093b		Dicing Knight. (Japan)	WSWAN
+7a6411cf8a4d91e8a4e0532779f11bdd25b92363		Digimon - Anode Tamer & Cathode Tamer (Asia)	WSWAN
+18d3dfe25d82964ab7bb61af363d368fd12f4d4b		Digimon Adventure 02 - D1 Tamers (Japan)	WSWAN
+757e92177385a14d979227edee1cb544b4c56bd6		Digimon Tamers - Battle Spirit (Japan) (En,Ja)	WSWAN
+3f39ff494a3d8dd9d55a2e7cf86b47f1c8e8a156		Digimon Tamers - Battle Spirit Ver. 1.5 (Japan)	WSWAN
+31a718cfbcff2dab56ab9606a0b5b2dfccecbbcb		Digimon Tamers - Brave Tamer (Japan)	WSWAN
+8638737e5a35c6be05a888dc81e504e0d80fd756		Digimon Tamers - Digimon Medley (Japan)	WSWAN
+3e8fffe1f607ea5f855397d9d877cecb285507f7		Digital Monster - D-Project (Japan)	WSWAN
+ba16a0770f7a71dd49e2879799fd04a4f04f7e60		Digital Monster Card Game - Ver. WonderSwan Color (Japan)	WSWAN
+66b4bd15ef67dc324736a1cc78d6aca335f03389		Dokodemo Hamster 3 - Odekake Saffron (Japan)	WSWAN
+5384f9974c66e5e26129a4709976de0bb1ae1f17		Dragon Ball (Japan)	WSWAN
+26628eb76c16880b6faf2e706778d91a60144078		Final Fantasy (Japan)	WSWAN
+959321e3b971516e38a4cbf95b0fc3efc0b0a825		Final Fantasy II (Japan)	WSWAN
+6d707e88c85d1b5ef708631e709668006a9ee244		Final Fantasy IV (Japan)	WSWAN
+4c3f092b095bdb0afdaf8d32d4c54b4d6c209c96		Final Lap Special - GT & Formula Machine (Japan)	WSWAN
+a3d6717efdb8f243fe86b4c3d869a9734a2e02d3		Flash Koibito-kun (Japan)	WSWAN
+221f48e97ec2c6d0046213956e1f36e923c0dec2		From TV Animation One Piece - Chopper no Daibouken (Japan)	WSWAN
+01e765bf356cdcb413bfd27c6321f7449465766a		From TV Animation One Piece - Grand Battle Swan Colosseum (Japan)	WSWAN
+2410690ad46667c52b63402df9e95fc8a75cee62		From TV Animation One Piece - Niji no Shima Densetsu (Japan)	WSWAN
+dd1e6e5467b72fcb5848f07a9747aa66bb207d45		From TV Animation One Piece - Treasure Wars (Japan)	WSWAN
+b7775e8f60fd62dc07f2865f8fad29a11e12dbb5		From TV Animation One Piece - Treasure Wars 2 - Buggy Land e Youkoso (Japan)	WSWAN
+3c752694ab651f9a00ccd39c334a2e3ff78f5cb2		Front Mission (Japan)	WSWAN
+1bc1e831b9e2aefc59f2cac5f19f7d22be574fc1		Gekitou! Crash Gear Turbo - Gear Champion League (Japan)	WSWAN
+adbe6e38a0bc6a2d19da64a444071977b771f14f		Gensou Maden Saiyuuki Retribution - Hi no Ataru Basho de (Japan)	WSWAN
+87661841ca63e99b04c0f6dc4ba3454c897e0c6d		Golden Axe (Japan)	WSWAN
+3a4c5d1c08b74cf05b4cb64cbfd7c3dd8b1c3789		Gransta Chronicle (Japan)	WSWAN
+6d8f8fd330f32374b55cf6b998196a7db2131073		Guilty Gear Petit (Japan)	WSWAN
+f7aeab6724154f7ef6a389f9f18b7100045e1064		Guilty Gear Petit 2 (Japan)	WSWAN
+1eb729aa9ab0a7df6f8a3470a6fede59d7622d4a		GunPey EX (Japan)	WSWAN
+2e3f221d6965f53b29586d2019ee81dec6d1ac30		Hanjuku Hero - Ah, Sekai yo Hanjuku Nare...!! (Japan)	WSWAN
+9bd63ed48926b27be70333fbe07da2ceed56328a		Hataraku Chocobo (Japan)	WSWAN
+f66335b5af87e7cb72ae311eb9b339534722f738		Hunter X Hunter - Greed Island (Japan)	WSWAN
+bc591fc24d3f8e94b70503fd8b6a35fa58151139		Hunter X Hunter - Michibikareshi Mono (Japan)	WSWAN
+2da2a9bcff4813abcb5b2c88095258d89a575378		Hunter X Hunter - Sorezore no Ketsui (Japan)	WSWAN
+99d5bdde193685a1d09ea73bb79a54b4da82625d		Inuyasha - Fuuun Emaki (Japan)	WSWAN
+b4fbea1a2c50d8566685f72820b360af4b54f82f		Inuyasha - Kagome no Sengoku Nikki (Japan)	WSWAN
+f7c8f8b6b6d036df8fc4bde72fcfac2846dffe35		Inuyasha - Kagome no Yume Nikki (Japan)	WSWAN
+657aea8377e207b9b5a182b13966a27f46633640		Judgement Silversword - Rebirth Edition (Japan) (Rev 4321)	WSWAN
+a1d910123b6be0b941f699ef70c745d16350d029		Judgement Silversword - Rebirth Edition (Japan) (Rev SC21)	WSWAN
+20b671bc14a8ab6373deecc641479d09658ac21f		Kidou Senshi Gundam - Giren no Yabou - Tokubetsu Hen - Aoki Hoshi no Hasha (Japan)	WSWAN
+e933ff8eace56a462019ae4654b0bab1b21b1d6c		Kidou Senshi Gundam Seed (Japan)	WSWAN
+29e72e7f96f145a0ff56e447f577310df2ec463b		Kidou Senshi Gundam Vol. 1 - Side 7 (Japan)	WSWAN
+df1a794f7e3992b1e1e9de14141b607746202202		Kidou Senshi Gundam Vol. 2 - Jaburo (Japan)	WSWAN
+35443e2ef8a20a0ad82da1274b2768c16239dd46		Kidou Senshi Gundam Vol. 3 - A Baoa Qu (Japan)	WSWAN
+efcf8f92357ffc6f6ec0e4aa960cd97a5070836e		Kinnikuman II-Sei - Choujin Seisenshi (Japan)	WSWAN
+81dd3124cce8a1aafd423bfe0814187fb7c646cb		Kinnikuman II-Sei - Dream Tag Match (Japan)	WSWAN
+9942d1b7d1c00126b9891e560e6a3e264f8fdc2e		Kurupara! (Japan)	WSWAN
+b019f41207e396d9fe3509dccdbe1cc6e7ac46bb		Last Alive (Japan)	WSWAN
+6b7a9b810c932974cbda4de7178cf0ea5a90e628		Makai Toushi Sa-Ga (Japan)	WSWAN
+36d8bc2ce7920d940943358d48f056f81055ab34		Meitantei Conan - Yuugure no Koujo (Japan)	WSWAN
+f47b4ab9197999bbec351750601baa20fbbd7177		Memories Off - Festa (Japan)	WSWAN
+2358701531e8a38419859cd70bf2fbbd967b6745		Mikeneko Holmes - Ghost Panic (Japan)	WSWAN
+209232f1e91c05140529d466c0ef6b7ad3386de1		Mr. Driller (Japan)	WSWAN
+c48569fd0a46ab7b7ceafeb5698be90420cd4fbe		Namco Super Wars (Japan)	WSWAN
+dbaa50fd56e69e72fdfe49362ef5fe4437d66667		Naruto - Konoha Ninpouchou (Japan)	WSWAN
+57338999b949589c36ce116a30f433e9618685e4		Pocket no Naka no Doraemon (Japan)	WSWAN
+977d5830e45c78b9020e9d06a63a9ad6bc623745		Raku Jongg (Japan)	WSWAN
+5973306a864c3804ee10b209e45067807d39a4de		Rhyme Rider Kerorican (Japan)	WSWAN
+a8f8d3efc9b2d5741081e05f517d746ee5437f87		Riviera - Yakusoku no Chi Riviera (Japan)	WSWAN
+9b4786adca7b83fe66a9d4b9fd4ffaf32abe7656		Rockman EXE - N1 Battle (Japan)	WSWAN
+b4a3ff3b72639f27d1a6f449b0335074aeb9e603		Rockman EXE WS (Japan)	WSWAN
+06fcc9aad3ae478db6eed27621af4f56a6488a67		Romancing Sa-Ga (Japan)	WSWAN
+3a41a3b8fc126da07e2a82c21056a45c15efbc98		RUN=DIM - Return to Earth (Japan)	WSWAN
+8542649963efe0976015759382c180b7c056be9a		Saint Seiya - Ougon Densetsu Hen - Perfect Edition (Japan)	WSWAN
+152c4d63b1b17f2c717a43efc75d718b614f9ddc		SD Gundam - Operation U.C. (Japan)	WSWAN
+ebd4b37ade6df717f7b637747a4d3c45a6cca037		SD Gundam Eiyuu Den - Kishi Densetsu (Japan)	WSWAN
+d8097e25431f0ad5183b2479ee0837599677a300		SD Gundam Eiyuu Den - Musha Densetsu (Japan)	WSWAN
+016ff46509cbfe57a7440a1755d3a41ef49c048f		SD Gundam G Generation - Gather Beat 2 (Japan)	WSWAN
+91e087056207fce21e782e25e383c203bc046897		SD Gundam G Generation - Mono-Eye Gundams (Japan)	WSWAN
+df9e831842072d9af613effbee7162229849de58		Senkaiden Ni - TV Animation Senkaiden Houshin Engi Yori (Japan)	WSWAN
+473195666a633573c777d3be98d7e8f46569c84b		Shaman King - Asu e no Ishi (Japan) (v1.1)	WSWAN
+1e735d1e83a7bfa06c5c717c7e8a386d55a8e3f0		Shaman King - Asu e no Ishi (Japan)	WSWAN
+983582fe8d18839df30b6d29fb75780a9e32f4ec		Sorobang (Japan)	WSWAN
+2b2c2a0566646156bcdde2a00b728c5b8218aa23		Star Hearts - Hoshi to Daichi no Shisha (Japan)	WSWAN
+44940ae0140df1bd91d742a166c459df1b6c2339		Star Hearts - Hoshi to Daichi no Shisha - Taikenban (Japan)	WSWAN
+b579f204be604ebef4e8238e5883152b70399c4d		Super Robot Taisen Compact 3 (Japan) (v1.5)	WSWAN
+dd6fe0f278cdec2670d3be8552dbb0cf6a3a2841		Super Robot Taisen Compact 3 (Japan) (v1.6)	WSWAN
+bf212cecbbc51ee32ee2655a072f55e7bf70b9ec		Super Robot Taisen Compact for WonderSwan Color (Japan)	WSWAN
+9532113e14b03c95f034c015168e21273d42eff1		Terrors 2 (Japan)	WSWAN
+1a86403d7896d60fcb7a4c09367f5a976c7ea5a5		Tetris (Japan)	WSWAN
+fb53c28bd48174d3829467f1ab81d3f87f9a7f5b		Tonpuusou (Japan)	WSWAN
+dd1878279a6667fb66dd1ac44a2cdb9a5acbe415		Uchuu Senkan Yamato (Japan)	WSWAN
+bd107befe5ce6c5508d2da8be351b9984166ae1d		Ultraman - Hikari no Kuni no Shisha (Japan)	WSWAN
+ea878a485a20abd5251065fd66e82d9d8b8a669d		Wild Card (Japan)	WSWAN
+6a4f4a03c367ccf00aa7462191c929a2736eb44b		With You - Mitsumete Itai (Japan)	WSWAN
+c1ad383d337dba8a63295cfb8c7ca8470c893c67		Wizardry Scenario 1 - Proving Grounds of the Mad Overlord (Japan)	WSWAN
+55b54944efd6e277fa7140925ed2457a8cfb40b8		Wonder Classic (Japan)	WSWAN
+c1ab4e24f261615ca59f937b866fcf7047b67796		X - Card of Fate (Japan)	WSWAN
+97c29917a78918a6905fd61a1466971cfd2a33c6		XI Little (Japan)	WSWAN
