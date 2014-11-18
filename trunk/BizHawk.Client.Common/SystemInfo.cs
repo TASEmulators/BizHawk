@@ -285,5 +285,16 @@ namespace BizHawk.Client.Common
 				};
 			}
 		}
+		public static SystemInfo Lynx
+		{
+			get
+			{
+				return new SystemInfo
+				{
+					DisplayName = "Lynx",
+					ByteSize = 2,
+				};
+			}
+		}
 	}
 }
