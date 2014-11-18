@@ -87,7 +87,7 @@ BOOST_STATIC_ASSERT( sizeof (nes_state_t) == 8 );
 
 struct joypad_state_t
 {
-	BOOST::uint32_t joypad_latches [2]; // joypad 1 & 2 shift registers
+	uint32_t joypad_latches [2]; // joypad 1 & 2 shift registers
 	byte w4016;             // strobe
 	byte unused [3];
 	

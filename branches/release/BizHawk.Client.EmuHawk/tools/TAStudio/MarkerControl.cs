@@ -19,19 +19,19 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 
-			MarkerView.Columns.AddRange(new InputRoll.RollColumn[]
+			MarkerView.AllColumns.AddRange(new InputRoll.RollColumn[]
 			{
 				new InputRoll.RollColumn
 				{
 					Name = "FrameColumn",
 					Text = "Frame",
-					Width = 64
+					Width = 52
 				},
 				new InputRoll.RollColumn
 				{
 					Name = "LabelColumn",
-					Text = "Label",
-					Width = 133
+					Text = "",
+					Width = 139
 				}
 			});
 
@@ -44,26 +44,30 @@ namespace BizHawk.Client.EmuHawk
 			
 		}
 
-		private void MarkerView_QueryItemBkColor(int index, int column, ref Color color)
-		{
-			var prev = Tastudio.CurrentMovie.Markers.PreviousOrCurrent(Global.Emulator.Frame);
+		public InputRoll MarkerInputRoll { get { return MarkerView; } }
 
-			if (prev != null && index == Tastudio.CurrentMovie.Markers.IndexOf(prev))
+		private void MarkerView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
+		{
+			var prev = Tastudio.CurrentTasMovie.Markers.PreviousOrCurrent(Global.Emulator.Frame);
+
+			if (prev != null && index == Tastudio.CurrentTasMovie.Markers.IndexOf(prev))
 			{
 				color = TAStudio.Marker_FrameCol;
 			}
-			else if (index < Tastudio.CurrentMovie.InputLogLength)
+			else if (index < Tastudio.CurrentTasMovie.InputLogLength)
 			{
-				var record = Tastudio.CurrentMovie[index];
-				if (record.HasState && record.Lagged.HasValue)
+				var marker = Tastudio.CurrentTasMovie.Markers[index];
+				var record = Tastudio.CurrentTasMovie[marker.Frame];
+
+				if (record.Lagged.HasValue)
 				{
 					if (record.Lagged.Value)
 					{
-						color = column == 0 ? TAStudio.LagZone_FrameCol : TAStudio.LagZone_InputLog;
+						color = column.Name == "FrameColumn" ? TAStudio.LagZone_FrameCol : TAStudio.LagZone_InputLog;
 					}
 					else
 					{
-						color = column == 0 ? TAStudio.GreenZone_FrameCol : TAStudio.GreenZone_InputLog;
+						color = column.Name == "LabelColumn" ? TAStudio.GreenZone_FrameCol : TAStudio.GreenZone_InputLog;
 					}
 				}
 				else
@@ -74,17 +78,17 @@ namespace BizHawk.Client.EmuHawk
 			
 		}
 
-		private void MarkerView_QueryItemText(int index, int column, out string text)
+		private void MarkerView_QueryItemText(int index, InputRoll.RollColumn column, out string text)
 		{
 			text = "";
 
-			if (column == 0)
+			if (column.Name == "FrameColumn")
 			{
-				text = Tastudio.CurrentMovie.Markers[index].Frame.ToString();
+				text = Tastudio.CurrentTasMovie.Markers[index].Frame.ToString();
 			}
-			else if (column == 1)
+			else if (column.Name == "LabelColumn")
 			{
-				text = Tastudio.CurrentMovie.Markers[index].Message;
+				text = Tastudio.CurrentTasMovie.Markers[index].Message;
 			}
 		}
 
@@ -98,10 +102,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (MarkerView != null &&
 				Tastudio != null &&
-				Tastudio.CurrentMovie != null &&
-				Tastudio.CurrentMovie.Markers != null)
+				Tastudio.CurrentTasMovie != null &&
+				Tastudio.CurrentTasMovie.Markers != null)
 			{
-				MarkerView.RowCount = Tastudio.CurrentMovie.Markers.Count;
+				MarkerView.RowCount = Tastudio.CurrentTasMovie.Markers.Count;
 			}
 
 			MarkerView.Refresh();
@@ -109,31 +113,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MarkerView_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			RemoveBtn.Enabled = SelectedIndices.Any(i => i < Tastudio.CurrentMovie.Markers.Count);
+			RemoveBtn.Enabled = MarkerView.SelectedRows.Any(i => i < Tastudio.CurrentTasMovie.Markers.Count);
 		}
 
 		private void RemoveBtn_Click(object sender, EventArgs e)
 		{
-			SelectedMarkers.ForEach(i => Tastudio.CurrentMovie.Markers.Remove(i));
+			SelectedMarkers.ForEach(i => Tastudio.CurrentTasMovie.Markers.Remove(i));
 			Tastudio.RefreshDialog();
 			MarkerView_SelectedIndexChanged(sender, e);
-		}
-
-		private IEnumerable<int> SelectedIndices
-		{
-			get
-			{
-				return MarkerView.SelectedRows
-					.OfType<int>();
-			}
 		}
 
 		private List<TasMovieMarker> SelectedMarkers
 		{
 			get
 			{
-				return SelectedIndices
-					.Select(index => Tastudio.CurrentMovie.Markers[index])
+				return MarkerView.SelectedRows
+					.Select(index => Tastudio.CurrentTasMovie.Markers[index])
 					.ToList();
 			}
 		}
@@ -141,6 +136,39 @@ namespace BizHawk.Client.EmuHawk
 		private void MarkerView_ItemActivate(object sender, EventArgs e)
 		{
 			Tastudio.GoToMarker(SelectedMarkers.First());
+		}
+
+		private void MarkerView_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			if (MarkerView.CurrentCell != null && MarkerView.CurrentCell.RowIndex.HasValue &&
+				MarkerView.CurrentCell.RowIndex < MarkerView.RowCount)
+			{
+				var marker = Tastudio.CurrentTasMovie.Markers[MarkerView.CurrentCell.RowIndex.Value];
+				Tastudio.CallEditMarkerPopUp(marker);
+			}
+		}
+
+		public void EditMarker()
+		{
+			if (MarkerView.SelectedRows.Any())
+			{
+				var index = MarkerView.SelectedRows.First();
+				var marker = Tastudio.CurrentTasMovie.Markers[index];
+				Tastudio.CallEditMarkerPopUp(marker);
+			}
+		}
+
+		public void AddMarker()
+		{
+			AddBtn_Click(null, null);
+		}
+
+		public void RemoveMarker()
+		{
+			if (RemoveBtn.Enabled)
+			{
+				RemoveBtn_Click(null, null);
+			}
 		}
 	}
 }

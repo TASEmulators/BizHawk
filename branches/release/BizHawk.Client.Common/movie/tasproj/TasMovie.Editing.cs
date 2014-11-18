@@ -14,46 +14,30 @@ namespace BizHawk.Client.Common
 		{
 			base.RecordFrame(frame, source);
 
-			if (frame < LagLog.Count)
-			{
-				LagLog.RemoveRange(frame, LagLog.Count - frame);
-			}
-
-			LagLog.Add(Global.Emulator.IsLagFrame);
+			LagLog.RemoveFrom(frame);
+			LagLog[frame] = Global.Emulator.IsLagFrame;
 
 			StateManager.Capture();
 		}
 
-		/// <summary>
-		/// Truncate all frames including starting frame to end of movie.
-		/// </summary>
-		/// <param name="frame">First frame to be truncated.</param>
 		public override void Truncate(int frame)
 		{
-			base.Truncate(frame);
-
-			if (frame < LagLog.Count)
-			{
-				LagLog.RemoveRange(frame, LagLog.Count - frame);
-			}
-
-			StateManager.Invalidate(frame);
-
 			if (frame < _log.Count - 1)
 			{
 				Changes = true;
 			}
 
-			//TAS Editor deletes markers that are in truncated portion of movie.
+			base.Truncate(frame);
+
+			LagLog.RemoveFrom(frame);
+			StateManager.Invalidate(frame);
 			Markers.TruncateAt(frame);
 		}
 
 		public override void PokeFrame(int frame, IController source)
 		{
 			base.PokeFrame(frame, source);
-
-			LagLog.RemoveRange(frame, LagLog.Count - frame);
-			StateManager.Invalidate(frame);
+			InvalidateAfter(frame);
 		}
 
 		public override void ClearFrame(int frame)
@@ -112,11 +96,7 @@ namespace BizHawk.Client.Common
 			Changes = true;
 			InvalidateAfter(frame);
 		}
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="frame">Adds frame at this position, shifting all the rest down.</param>
-		/// <param name="count">The number of frames to insert at the particular frame.</param>
+
 		public void InsertEmptyFrame(int frame, int count = 1)
 		{
 			var lg = LogGeneratorInstance();

@@ -28,6 +28,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public Func<int, byte> ReadMemory;
 		public Func<byte> ReadPort;
 		public Action<int, byte> WriteMemory;
+		public Action<int, byte> WriteMemoryPort;
 
 		// ------------------------------------
 
@@ -196,10 +197,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public void Write(ushort addr, byte val)
 		{
 			if (addr == 0x0000)
+			{
 				port.Direction = val;
+				WriteMemoryPort(addr, val);
+			}
 			else if (addr == 0x0001)
+			{
 				port.Latch = val;
-			WriteMemory(addr, val);
+				WriteMemoryPort(addr, val);
+			}
+			else
+			{
+				WriteMemory(addr, val);
+			}
 		}
 	}
 }

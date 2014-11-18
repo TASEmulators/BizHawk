@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.PCEngine;
@@ -14,12 +16,11 @@ using LuaInterface;
 
 namespace BizHawk.Client.Common
 {
+	[Description("A library for interacting with the currently loaded emulator core")]
 	public sealed class EmulatorLuaLibrary : LuaLibraryBase
 	{
 		public Action FrameAdvanceCallback { get; set; }
 		public Action YieldCallback { get; set; }
-
-
 
 		public EmulatorLuaLibrary(Lua lua)
 			: base(lua) { }
@@ -64,7 +65,14 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				return Global.Emulator.GetCpuFlagsAndRegisters().FirstOrDefault(x => x.Key == name).Value;
+				var debuggable = Global.Emulator as IDebuggable;
+				if (debuggable == null)
+					throw new NotImplementedException();
+
+				var registers = debuggable.GetCpuFlagsAndRegisters();
+				return registers.ContainsKey(name)
+					? registers[name]
+					: 0;
 			}
 			catch (NotImplementedException)
 			{
@@ -86,7 +94,11 @@ namespace BizHawk.Client.Common
 
 			try
 			{
-				foreach (var kvp in Global.Emulator.GetCpuFlagsAndRegisters())
+				var debuggable = Global.Emulator as IDebuggable;
+				if (debuggable == null)
+					throw new NotImplementedException();
+
+				foreach (var kvp in debuggable.GetCpuFlagsAndRegisters())
 				{
 					table[kvp.Key] = kvp.Value;
 				}
@@ -109,7 +121,11 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				Global.Emulator.SetCpuRegister(register, value);
+				var debuggable = Global.Emulator as IDebuggable;
+				if (debuggable == null)
+					throw new NotImplementedException();
+
+				debuggable.SetCpuRegister(register, value);
 			}
 			catch (NotImplementedException)
 			{
@@ -174,25 +190,28 @@ namespace BizHawk.Client.Common
 			{
 				// in the future, we could do something more arbitrary here.
 				// but this isn't any worse than the old system
-				var s = (NES.NESSettings)Global.Emulator.GetSettings();
+				var nes = Global.Emulator as NES;
+				var s = nes.GetSettings();
 				s.DispSprites = (bool)luaParam[0];
 				s.DispBackground = (bool)luaParam[1];
-				Global.Emulator.PutSettings(s);
+				nes.PutSettings(s);
 			}
 			else if (Global.Emulator is QuickNES)
 			{
-				var s = (QuickNES.QuickNESSettings)Global.Emulator.GetSettings();
+				var quicknes = Global.Emulator as QuickNES;
+				var s = quicknes.GetSettings();
 				// this core doesn't support disabling BG
 				bool showsp = GetSetting(0, luaParam);
 				if (showsp && s.NumSprites == 0)
 					s.NumSprites = 8;
 				else if (!showsp && s.NumSprites > 0)
 					s.NumSprites = 0;
-				Global.Emulator.PutSettings(s);
+				quicknes.PutSettings(s);
 			}
 			else if (Global.Emulator is PCEngine)
 			{
-				var s = (PCEngine.PCESettings)Global.Emulator.GetSettings();
+				var pce = Global.Emulator as PCEngine;
+				var s = pce.GetSettings();
 				s.ShowOBJ1 = GetSetting(0, luaParam);
 				s.ShowBG1 = GetSetting(1, luaParam);
 				if (luaParam.Length > 2)
@@ -201,22 +220,24 @@ namespace BizHawk.Client.Common
 					s.ShowBG2 = GetSetting(3, luaParam);
 				}
 
-				Global.Emulator.PutSettings(s);
+				pce.PutSettings(s);
 			}
 			else if (Global.Emulator is SMS)
 			{
-				var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
+				var sms = Global.Emulator as SMS;
+				var s = sms.GetSettings();
 				s.DispOBJ = GetSetting(0, luaParam);
 				s.DispBG = GetSetting(1, luaParam);
-				Global.Emulator.PutSettings(s);
+				sms.PutSettings(s);
 			}
 			else if (Global.Emulator is WonderSwan)
 			{
-				var s = (WonderSwan.Settings)Global.Emulator.GetSettings();
+				var ws = Global.Emulator as WonderSwan;
+				var s = ws.GetSettings();
 				s.EnableSprites = GetSetting(0, luaParam);
 				s.EnableFG = GetSetting(1, luaParam);
 				s.EnableBG = GetSetting(2, luaParam);
-				Global.Emulator.PutSettings(s);
+				ws.PutSettings(s);
 			}
 		}
 

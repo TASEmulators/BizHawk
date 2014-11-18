@@ -1,4 +1,5 @@
-Besides the main Bizhawk.sln, there are a number of other projects, each with a build method:
+Besides the main Bizhawk.sln, there are a number of other projects, each with its own build method.  To develop Bizhawk, you do not need to build these other projects, as they are included prebuild in SVN.  You need only build them if you want to modify the cores themselves.
+
 
 EMU7800: Load EMU7800/EMU7800.sln; builds as .NET 4.0.  Does file automatically copy to appropriate folder??
 

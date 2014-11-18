@@ -126,6 +126,7 @@
       <DependentUpon>ArchiveChooser.cs</DependentUpon>
     </Compile>
     <Compile Include="AVOut\AviWriter.cs" />
+    <Compile Include="AVOut\AVSync.cs" />
     <Compile Include="AVOut\BitmapBufferVideoProvder.cs" />
     <Compile Include="AVOut\BmpVideoProvder.cs" />
     <Compile Include="AVOut\FFmpegWriter.cs" />
@@ -748,6 +749,12 @@
     <Compile Include="tools\Lua\SyncTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\NES\BarcodeEntry.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\NES\BarcodeEntry.Designer.cs">
+      <DependentUpon>BarcodeEntry.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\NES\NameTableViewer.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -838,6 +845,12 @@
     <Compile Include="tools\TAStudio\BookmarksBranchesBox.Designer.cs">
       <DependentUpon>BookmarksBranchesBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\TAStudio\DefaultGreenzoneSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\DefaultGreenzoneSettings.Designer.cs">
+      <DependentUpon>DefaultGreenzoneSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\TAStudio\FramesPrompt.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -865,12 +878,6 @@
     <Compile Include="tools\TAStudio\InputRoll.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\TAStudio\LuaBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\LuaBox.Designer.cs">
-      <DependentUpon>LuaBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\TAStudio\TAStudio.IControlMainForm.cs">
       <DependentUpon>TAStudio.cs</DependentUpon>
       <SubType>Form</SubType>
@@ -885,23 +892,11 @@
     <Compile Include="tools\TAStudio\MarkerControl.Designer.cs">
       <DependentUpon>MarkerControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\TAStudio\MarkerControlsBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\MarkerControlsBox.Designer.cs">
-      <DependentUpon>MarkerControlsBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\TAStudio\PlaybackBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="tools\TAStudio\PlaybackBox.Designer.cs">
       <DependentUpon>PlaybackBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\TAStudio\RecorderBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\RecorderBox.Designer.cs">
-      <DependentUpon>RecorderBox.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\TAStudio\TAStudio.cs">
       <SubType>Form</SubType>
@@ -910,6 +905,14 @@
       <DependentUpon>TAStudio.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\TAStudio\TAStudio.ListView.cs">
+      <DependentUpon>TAStudio.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\TAStudio.MenuItems.cs">
+      <DependentUpon>TAStudio.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\TAStudio.Navigation.cs">
       <DependentUpon>TAStudio.cs</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
@@ -1242,6 +1245,9 @@
     <EmbeddedResource Include="tools\Lua\LuaWinform.resx">
       <DependentUpon>LuaWinform.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="tools\NES\BarcodeEntry.resx">
+      <DependentUpon>BarcodeEntry.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\NES\NESDebugger.resx">
       <DependentUpon>NESDebugger.cs</DependentUpon>
     </EmbeddedResource>
@@ -1282,6 +1288,9 @@
     <EmbeddedResource Include="tools\TAStudio\BookmarksBranchesBox.resx">
       <DependentUpon>BookmarksBranchesBox.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="tools\TAStudio\DefaultGreenzoneSettings.resx">
+      <DependentUpon>DefaultGreenzoneSettings.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\FramesPrompt.resx">
       <DependentUpon>FramesPrompt.cs</DependentUpon>
     </EmbeddedResource>
@@ -1294,20 +1303,11 @@
     <EmbeddedResource Include="tools\TAStudio\HistoryBox.resx">
       <DependentUpon>HistoryBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\LuaBox.resx">
-      <DependentUpon>LuaBox.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\MarkerControl.resx">
       <DependentUpon>MarkerControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\MarkerControlsBox.resx">
-      <DependentUpon>MarkerControlsBox.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\PlaybackBox.resx">
       <DependentUpon>PlaybackBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\RecorderBox.resx">
-      <DependentUpon>RecorderBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\TAStudio.resx">
       <DependentUpon>TAStudio.cs</DependentUpon>
@@ -1478,6 +1478,8 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\user_blue_small.png" />
+    <None Include="images\user_blue.ico" />
     <None Include="images\tastudio\ts_v_piano_19_green_blue.png" />
     <None Include="images\tastudio\ts_v_piano_19_green.png" />
     <None Include="images\tastudio\ts_v_piano_19_blue.png" />

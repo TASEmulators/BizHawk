@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 		isPorted: false,
 		isReleased: false
 		)]
-	public sealed partial class Genesis : IEmulator, IMemoryDomains
+	public sealed partial class Genesis : IEmulator, IMemoryDomains, IDebuggable
 	{
 		private int _lagcount = 0;
 		private bool lagged = true;
@@ -138,8 +138,8 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 			Musashi.Reset();
 			VDP.GetPC = () => Musashi.PC;
 #else
-            MainCPU.Reset();
-            VDP.GetPC = () => MainCPU.PC;
+			MainCPU.Reset();
+			VDP.GetPC = () => MainCPU.PC;
 #endif
 			InitializeCartHardware(game);
 		}
@@ -224,7 +224,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 #if MUSASHI
 			Musashi.Execute(cycles);
 #else
-            MainCPU.ExecuteCycles(cycles);
+			MainCPU.ExecuteCycles(cycles);
 #endif
 		}
 
@@ -244,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 #if MUSASHI
 			Musashi.SetIRQ(irq);
 #else
-            MainCPU.Interrupt = irq;
+			MainCPU.Interrupt = irq;
 #endif
 		}
 
@@ -491,10 +491,5 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		public void Dispose() { }
-
-		public object GetSettings() { return null; }
-		public object GetSyncSettings() { return null; }
-		public bool PutSettings(object o) { return false; }
-		public bool PutSyncSettings(object o) { return false; }
 	}
 }

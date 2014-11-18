@@ -16,50 +16,73 @@ namespace BizHawk.Client.Common
 		private readonly SortedList<int, byte[]> States = new SortedList<int, byte[]>();
 
 		private readonly TasMovie _movie;
+		private int _expectedStateSize = 0;
+
+		private const int _minFrequency = 2;
+		private const int _maxFrequency = 16; 
+		private int StateFrequency
+		{
+			get
+			{
+				var freq = _expectedStateSize / 65536;
+
+				if (freq < _minFrequency)
+				{
+					return _minFrequency;
+				}
+
+				if (freq > _maxFrequency)
+				{
+					return _maxFrequency;
+				}
+
+				return freq;
+			}
+		}
 
 		public TasStateManager(TasMovie movie)
 		{
 			_movie = movie;
-			Settings = new ManagerSettings();
+			Settings = new TasStateManagerSettings(Global.Config.DefaultTasProjSettings);
 
 			var cap = Settings.Cap;
 
 			int limit = 0;
 			if (Global.Emulator != null)
 			{
-				var stateSize = Global.Emulator.SaveStateBinary().Length;
+				_expectedStateSize = Global.Emulator.SaveStateBinary().Length;
 
-				if (stateSize > 0)
+				if (_expectedStateSize > 0)
 				{
-					limit = cap / stateSize;
+					limit = cap / _expectedStateSize;
 				}
 			}
 
 			States = new SortedList<int, byte[]>(limit);
 		}
 
-		public ManagerSettings Settings { get; set; }
+		public TasStateManagerSettings Settings { get; set; }
 
 		/// <summary>
 		/// Retrieves the savestate for the given frame,
 		/// If this frame does not have a state currently, will return an empty array
 		/// </summary>
 		/// <returns>A savestate for the given frame or an empty array if there isn't one</returns>
-		public byte[] this[int frame]
+		public KeyValuePair<int, byte[]> this[int frame]
 		{
 			get
 			{
 				if (frame == 0 && _movie.StartsFromSavestate)
 				{
-					return _movie.BinarySavestate;
+					return new KeyValuePair<int,byte[]>(0, _movie.BinarySavestate);
 				}
 
 				if (States.ContainsKey(frame))
 				{
-					return States[frame];
+					return new KeyValuePair<int,byte[]>(frame, States[frame]);
 				}
 
-				return new byte[0];
+				return new KeyValuePair<int,byte[]>(-1, new byte[0]);
 			}
 		}
 
@@ -83,7 +106,12 @@ namespace BizHawk.Client.Common
 		public void Capture(bool force = false)
 		{
 			bool shouldCapture = false;
-			if (force)
+
+			if (_movie.StartsFromSavestate && Global.Emulator.Frame == 0) // Never capture frame 0 on savestate anchored movies since we have it anyway
+			{
+				shouldCapture = false;
+			}
+			else if (force)
 			{
 				shouldCapture = force;
 			}
@@ -97,7 +125,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				shouldCapture = Global.Emulator.Frame % 2 > 0;
+				shouldCapture = Global.Emulator.Frame % StateFrequency == 0;
 			}
 
 			if (shouldCapture)
@@ -113,8 +141,10 @@ namespace BizHawk.Client.Common
 				{
 					if (Used + state.Length >= Settings.Cap)
 					{
-						Used -= States.ElementAt(0).Value.Length;
-						States.RemoveAt(0);
+						var first = _movie.StartsFromSavestate ? 0 : 1;
+
+						Used -= States.ElementAt(first).Value.Length;
+						States.RemoveAt(first);
 					}
 
 					States.Add(frame, state);
@@ -125,6 +155,11 @@ namespace BizHawk.Client.Common
 
 		public bool HasState(int frame)
 		{
+			if (_movie.StartsFromSavestate && frame == 0)
+			{
+				return true;
+			}
+			
 			return States.ContainsKey(frame);
 		}
 
@@ -133,8 +168,13 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void Invalidate(int frame)
 		{
-			if (States.Count > 0 && frame > 0) // Never invalidate frame 0, TODO: Only if movie is a power-on movie should we keep frame 0, check this
+			if (Any())
 			{
+				if (!_movie.StartsFromSavestate && frame == 0) // Never invalidate frame 0 on a non-savestate-anchored movie
+				{
+					frame = 1;
+				}
+
 				var statesToRemove = States
 					.Where(x => x.Key >= frame)
 					.ToList();
@@ -200,9 +240,16 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public byte[] GetStateClosestToFrame(int frame)
+		public KeyValuePair<int, byte[]> GetStateClosestToFrame(int frame)
 		{
-			return States.LastOrDefault(state => state.Key < frame).Value;
+			var s = States.LastOrDefault(state => state.Key < frame);
+
+			if (s.Value == null && _movie.StartsFromSavestate)
+			{
+				return new KeyValuePair<int, byte[]>(0, _movie.BinarySavestate);
+			}
+
+			return s;
 		}
 
 		// Map:
@@ -228,7 +275,12 @@ namespace BizHawk.Client.Common
 
 		public bool Any()
 		{
-			return States.Count > 1; // TODO: power-on MUST have a state, savestate-anchored movies do not, take this into account
+			if (_movie.StartsFromSavestate)
+			{
+				return States.Count > 0;
+			}
+
+			return States.Count > 1;
 		}
 
 		public int LastKey
@@ -238,49 +290,24 @@ namespace BizHawk.Client.Common
 				var kk = States.Keys;
 				int index = kk.Count;
 				if (index == 0)
+				{
 					return 0;
+				}
+
 				return kk[index - 1];
 			}
 		}
 
-		public class ManagerSettings
+		public int LastEmulatedFrame
 		{
-			public ManagerSettings()
+			get
 			{
-				SaveGreenzone = true;
-				Capacitymb = 512;
-			}
+				if (StateCount > 0)
+				{
+					return LastKey;
+				}
 
-			/// <summary>
-			/// Whether or not to save greenzone information to disk
-			/// </summary>
-			public bool SaveGreenzone { get; set; }
-
-			/// <summary>
-			/// The total amount of memory to devote to greenzone in megabytes
-			/// </summary>
-			public int Capacitymb { get; set; }
-
-			public int Cap
-			{
-				get { return Capacitymb * 1024 * 1024; }
-			}
-
-			public override string ToString()
-			{
-				StringBuilder sb = new StringBuilder();
-
-				sb.AppendLine(SaveGreenzone.ToString());
-				sb.AppendLine(Capacitymb.ToString());
-
-				return sb.ToString();
-			}
-
-			public void PopulateFromString(string settings)
-			{
-				var lines = settings.Split(new [] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-				SaveGreenzone = bool.Parse(lines[0]);
-				Capacitymb = int.Parse(lines[1]);
+				return 0;
 			}
 		}
 	}

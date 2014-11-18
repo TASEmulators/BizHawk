@@ -17,7 +17,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		isPorted: false,
 		isReleased: true
 		)]
-	public partial class NES : IEmulator, IMemoryDomains
+	public partial class NES : IEmulator, IMemoryDomains, IDebuggable,
+		ISettable<NES.NESSettings, NES.NESSyncSettings>
 	{
 		static readonly bool USE_DATABASE = true;
 		public RomStatus RomStatus;
@@ -46,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				CoreComm.UsesDriveLed = true;
 				(board as FDS).SetDriveLightCallback((val) => CoreComm.DriveLED = val);
 			}
-			PutSettings(Settings ?? new NESSettings());
+			PutSettings((NESSettings)Settings ?? new NESSettings());
 		}
 
 		private NES()
@@ -284,6 +285,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool StartAsyncSound() { return true; }
 		public void EndAsyncSound() { }
 
+		[Obsolete] // with the changes to both nes and quicknes cores, nothing uses this anymore
 		public static readonly ControllerDefinition NESController =
 			new ControllerDefinition
 			{
@@ -931,11 +933,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		NESSettings Settings = new NESSettings();
 		NESSyncSettings SyncSettings = new NESSyncSettings();
 
-		public object GetSettings() { return Settings.Clone(); }
-		public object GetSyncSettings() { return SyncSettings.Clone(); }
-		public bool PutSettings(object o)
+		public NESSettings GetSettings() { return Settings.Clone(); }
+		public NESSyncSettings GetSyncSettings() { return SyncSettings.Clone(); }
+		public bool PutSettings(NESSettings o)
 		{
-			Settings = (NESSettings)o;
+			Settings = o;
 			if (Settings.ClipLeftAndRight)
 			{
 				videoProvider.left = 8;
@@ -959,11 +961,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			return false;
 		}
-		public bool PutSyncSettings(object o)
+		public bool PutSyncSettings(NESSyncSettings o)
 		{
-			var n = (NESSyncSettings)o;
-			bool ret = NESSyncSettings.NeedsReboot(SyncSettings, n);
-			SyncSettings = n;
+			bool ret = NESSyncSettings.NeedsReboot(SyncSettings, o);
+			SyncSettings = o;
 			return ret;
 		}
 

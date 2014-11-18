@@ -47,8 +47,9 @@ namespace BizHawk.Client.EmuHawk.config.GB
 
 		public static void DoDGBPrefsDialog(IWin32Window owner)
 		{
-			var s = (GambatteLink.GambatteLinkSettings)Global.Emulator.GetSettings();
-			var ss = (GambatteLink.GambatteLinkSyncSettings)Global.Emulator.GetSyncSettings();
+			var gambatte = (GambatteLink)Global.Emulator;
+			var s = gambatte.GetSettings();
+			var ss = gambatte.GetSyncSettings();
 
 			using (var dlg = new DGBPrefs())
 			{
@@ -61,7 +62,7 @@ namespace BizHawk.Client.EmuHawk.config.GB
 				if (dlg.ShowDialog(owner) == DialogResult.OK)
 				{
 					dlg.GetSettings(out s, out ss);
-					Global.Emulator.PutSettings(s);
+					gambatte.PutSettings(s);
 					if (dlg.SyncSettingsChanged)
 						GlobalWin.MainForm.PutCoreSyncSettings(ss);
 				}

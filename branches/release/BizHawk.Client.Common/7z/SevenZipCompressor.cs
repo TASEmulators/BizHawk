@@ -1685,7 +1685,9 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
 #else
             foreach (var pair in streamDictionary)
             {
-                if (pair.Value != null && (!pair.Value.CanSeek || !pair.Value.CanRead))
+                if (pair.Value != null && (
+									//!pair.Value.CanSeek ||  //zero 11-oct-2014 - this is dumb, and I made it no longer necessary
+									!pair.Value.CanRead))
                 {
                     if (!ThrowException(null, new ArgumentException(
                             "The specified stream dictionary contains an invalid stream corresponding to the archive entry \"" + pair.Key + "\".",

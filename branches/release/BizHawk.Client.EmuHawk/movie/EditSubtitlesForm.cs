@@ -217,5 +217,14 @@ namespace BizHawk.Client.EmuHawk
                 "Success"
                 );
         }
+
+		private void SubGrid_DefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)
+		{
+			e.Row.Cells["Frame"].Value      = 0;
+			e.Row.Cells["X"].Value          = 0;
+			e.Row.Cells["Y"].Value          = 0;
+			e.Row.Cells["Length"].Value     = 0;
+			e.Row.Cells["DispColor"].Value  = "FFFFFFFF";
+		}
 	}
 }

@@ -17,7 +17,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		isPorted: true,
 		isReleased: true
 		)]
-	public class GambatteLink : IEmulator, IVideoProvider, ISyncSoundProvider
+	public class GambatteLink : IEmulator, IVideoProvider, ISyncSoundProvider,
+		IDebuggable, ISettable<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings>
 	{
 		bool disposed = false;
 
@@ -466,38 +467,58 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		int LatchL;
 		int LatchR;
 
-		void PrepSound()
+		unsafe void PrepSound()
 		{
-			unsafe
+			fixed (short* sl = LeftBuffer, sr = RightBuffer)
 			{
-				fixed (short* sl = LeftBuffer, sr = RightBuffer)
+				for (uint i = 0; i < SampPerFrame * 2; i += 2)
 				{
-					for (uint i = 0; i < SampPerFrame * 2; i += 2)
+					int s = (sl[i] + sl[i + 1]) / 2;
+					if (s != LatchL)
 					{
-						int s = (sl[i] + sl[i + 1]) / 2;
-						if (s != LatchL)
-						{
-							blip_left.AddDelta(i, s - LatchL);
-							LatchL = s;
-						}
-						s = (sr[i] + sr[i + 1]) / 2;
-						if (s != LatchR)
-						{
-							blip_right.AddDelta(i, s - LatchR);
-							LatchR = s;
-						}
+						blip_left.AddDelta(i, s - LatchL);
+						LatchL = s;
 					}
-
+					s = (sr[i] + sr[i + 1]) / 2;
+					if (s != LatchR)
+					{
+						blip_right.AddDelta(i, s - LatchR);
+						LatchR = s;
+					}
 				}
+
 			}
+
 			blip_left.EndFrame(SampPerFrame * 2);
 			blip_right.EndFrame(SampPerFrame * 2);
 			int count = blip_left.SamplesAvailable();
 			if (count != blip_right.SamplesAvailable())
 				throw new Exception("Sound problem?");
 
+			// calling blip.Clear() causes rounding fractions to be reset,
+			// and if only one channel is muted, in subsequent frames we can be off by a sample or two
+			// not a big deal, but we didn't account for it.  so we actually complete the entire
+			// audio read and then stamp it out if muted.
+
 			blip_left.ReadSamplesLeft(SampleBuffer, count);
+			if (L.Muted)
+			{
+				fixed (short* p = SampleBuffer)
+				{
+					for (int i = 0; i < SampleBuffer.Length; i += 2)
+						p[i] = 0;
+				}
+			}
+
 			blip_right.ReadSamplesRight(SampleBuffer, count);
+			if (R.Muted)
+			{
+				fixed (short* p = SampleBuffer)
+				{
+					for (int i = 1; i < SampleBuffer.Length; i += 2)
+						p[i] = 0;
+				}
+			}
 			SampleBufferContains = count;
 		}
 
@@ -516,31 +537,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region settings
 
-		public object GetSettings()
+		public GambatteLinkSettings GetSettings()
 		{
 			return new GambatteLinkSettings
 			(
-				(Gameboy.GambatteSettings)L.GetSettings(),
-				(Gameboy.GambatteSettings)R.GetSettings()
+				L.GetSettings(),
+				R.GetSettings()
 			);
 		}
-		public object GetSyncSettings()
+		public GambatteLinkSyncSettings GetSyncSettings()
 		{
 			return new GambatteLinkSyncSettings
 			(
-				(Gameboy.GambatteSyncSettings)L.GetSyncSettings(),
-				(Gameboy.GambatteSyncSettings)R.GetSyncSettings()
+				L.GetSyncSettings(),
+				R.GetSyncSettings()
 			);
 		}
-		public bool PutSettings(object o)
+		public bool PutSettings(GambatteLinkSettings o)
 		{
-			var s = (GambatteLinkSettings)o;
-			return L.PutSettings(s.L) || R.PutSettings(s.R);
+			return L.PutSettings(o.L) || R.PutSettings(o.R);
 		}
-		public bool PutSyncSettings(object o)
+		public bool PutSyncSettings(GambatteLinkSyncSettings o)
 		{
-			var s = (GambatteLinkSyncSettings)o;
-			return L.PutSyncSettings(s.L) || R.PutSyncSettings(s.R);
+			return L.PutSyncSettings(o.L) || R.PutSyncSettings(o.R);
 		}
 
 		public class GambatteLinkSettings

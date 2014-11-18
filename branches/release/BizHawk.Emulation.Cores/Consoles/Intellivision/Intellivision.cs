@@ -23,16 +23,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		STIC Stic;
 		PSG Psg;
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void SetCpuRegister(string register, int value)
-		{
-			throw new NotImplementedException();
-		}
-
 		public void Connect()
 		{
 			Cpu.SetIntRM(Stic.GetSr1());
@@ -215,10 +205,5 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public void Dispose()
 		{
 		}
-
-		public object GetSettings() { return null; }
-		public object GetSyncSettings() { return null; }
-		public bool PutSettings(object o) { return false; }
-		public bool PutSyncSettings(object o) { return false; }
 	}
 }

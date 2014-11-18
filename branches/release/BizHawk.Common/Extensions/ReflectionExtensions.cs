@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.Common.ReflectionExtensions
 {
@@ -155,5 +157,54 @@ namespace BizHawk.Common.ReflectionExtensions
 				yield return v.GetDescription();
 			}
 		}
+
+		public static T GetAttribute<T>(this object o)
+		{
+			return (T)o.GetType().GetCustomAttributes(typeof(T), false)[0];
+		}
+
+		/// <summary>
+		/// where the fields begin relative to the address an object references points to
+		/// </summary>
+		public static IntPtr ManagedFieldStart { get { return _managedfieldstart; } }
+
+		[StructLayout(LayoutKind.Explicit)]
+		private class Junkus { [FieldOffset(0)]public IntPtr s; }
+
+		static IntPtr _managedfieldstart = GetManagedOffset(typeof(Junkus).GetField("s"));
+
+		/// <summary>
+		/// the address of a field relative to the address an object reference of that type points to.  this function is very expensive to call.
+		/// </summary>
+		/// <param name="field"></param>
+		/// <returns></returns>
+		public static IntPtr GetManagedOffset(this FieldInfo field)
+		{
+			Type type = field.DeclaringType;
+
+			var dyn = new System.Reflection.Emit.DynamicMethod(
+				"xxz0", typeof(IntPtr), new Type[] { typeof(object) }, typeof(ReflectionExtensions).Module, true);
+			var il = dyn.GetILGenerator();
+
+			var pin = il.DeclareLocal(type, true);
+			var baseaddr = il.DeclareLocal(typeof(IntPtr));
+
+			il.Emit(OpCodes.Ldarg_0);
+			il.Emit(OpCodes.Stloc, pin); // force cast object to type (invalid), and pin
+
+			il.Emit(OpCodes.Ldloc, pin); // base address of reference (points to typeinfo)
+			il.Emit(OpCodes.Conv_I); // convert object ref to intptr (invalid)
+			il.Emit(OpCodes.Stloc, baseaddr);
+
+			il.Emit(OpCodes.Ldloc, pin);
+			il.Emit(OpCodes.Ldflda, field); // address of desired field
+			il.Emit(OpCodes.Conv_I); // convert field& to intptr (invalid)
+			il.Emit(OpCodes.Ldloc, baseaddr);
+			il.Emit(OpCodes.Sub);
+			il.Emit(OpCodes.Ret);
+
+			return (IntPtr)dyn.Invoke(null, new object[] { new object() });
+		}
+
 	}
 }

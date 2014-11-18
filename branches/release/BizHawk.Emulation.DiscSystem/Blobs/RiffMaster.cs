@@ -2,6 +2,8 @@
 using System.IO;
 using System.Collections.Generic;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.DiscSystem
 {
 	/// <summary>
@@ -68,23 +70,6 @@ namespace BizHawk.Emulation.DiscSystem
 			/// transforms into a derived class depending on tag
 			/// </summary>
 			public abstract RiffChunk Morph();
-		}
-
-		static class Util
-		{
-			public static void CopyStream(Stream src, Stream dest, long len)
-			{
-				const int size = 0x2000;
-				byte[] buffer = new byte[size];
-				while (len > 0)
-				{
-					long todo = len;
-					if (len > size) todo = size;
-					int n = src.Read(buffer, 0, (int)todo);
-					dest.Write(buffer, 0, n);
-					len -= n;
-				}
-			}
 		}
 
 		public class RiffSubchunk : RiffChunk

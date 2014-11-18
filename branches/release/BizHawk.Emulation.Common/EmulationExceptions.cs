@@ -10,9 +10,12 @@ namespace BizHawk.Emulation.Common
 		}
 	}
 
-	public class UnsupportedMapperException : InvalidOperationException
+	/// <summary>
+	/// indicates that this core does not support the game, but it may be valid
+	/// </summary>
+	public class UnsupportedGameException : InvalidOperationException
 	{
-		public UnsupportedMapperException(string message)
+		public UnsupportedGameException(string message)
 			: base(message)
 		{
 

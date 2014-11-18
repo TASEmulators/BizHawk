@@ -26,7 +26,14 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		public static extern bool Advance(IntPtr s, Buttons buttons, int[] vbuff, short[] sbuff, ref int sbuffsize);
 
 		[DllImport(dllname, CallingConvention = cc)]
+		public static extern void SetRotation(IntPtr s, int value);
+
+		[DllImport(dllname, CallingConvention = cc)]
 		public static extern bool GetSaveRamPtr(IntPtr s, out int size, out IntPtr data);
+
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern void GetReadOnlyCartPtrs(IntPtr s, out int s0, out IntPtr p0, out int s1, out IntPtr p1);
+
 
 		[DllImport(dllname, CallingConvention = cc)]
 		public static extern int BinStateSize(IntPtr s);
@@ -39,6 +46,8 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		[DllImport(dllname, CallingConvention = cc)]
 		public static extern void TxtStateLoad(IntPtr s, [In]ref TextStateFPtrs ff);
 
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern IntPtr GetRamPointer(IntPtr s);
 
 		[Flags]
 		public enum Buttons : ushort

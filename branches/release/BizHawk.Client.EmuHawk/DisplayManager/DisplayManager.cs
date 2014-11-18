@@ -247,6 +247,20 @@ namespace BizHawk.Client.EmuHawk
 			return new Point((int)v.X, (int)v.Y);
 		}
 
+		/// <summary>
+		/// Using the current filter program, turn a emulator screen space coordinat to a window coordinate (suitable for lua layer drawing)
+		/// </summary>
+		public Point TransformPoint(Point p)
+		{
+			//now, if theres no filter program active, just give up
+			if (CurrentFilterProgram == null) return p;
+
+			//otherwise, have the filter program untransform it
+			Vector2 v = new Vector2(p.X, p.Y);
+			v = CurrentFilterProgram.TransformPoint("default", v);
+			return new Point((int)v.X, (int)v.Y);
+		}
+
 
 		/// <summary>
 		/// This will receive an emulated output frame from an IVideoProvider and run it through the complete frame processing pipeline
@@ -586,6 +600,14 @@ TESTEROO:
 				Debug.Assert(inFinalTarget);
 				//apply the vsync setting (should probably try to avoid repeating this)
 				bool vsync = Global.Config.VSyncThrottle || Global.Config.VSync;
+
+				//ok, now this is a bit undesireable.
+				//maybe the user wants vsync, but not vsync throttle.
+				//this makes sense... but we dont have the infrastructure to support it now (we'd have to enable triple buffering or something like that)
+				//so what we're gonna do is disable vsync no matter what if throttling is off, and maybe nobody will notice.
+				if (Global.ForceNoThrottle)
+					vsync = false;
+
 				if (LastVsyncSetting != vsync || LastVsyncSettingGraphicsControl != presentationPanel.GraphicsControl)
 				{
 					presentationPanel.GraphicsControl.SetVsync(vsync);

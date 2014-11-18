@@ -31,6 +31,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				RightClicked = false;
 				Checked = false;
+				//HOOMOO
 				Global.AutofireStickyXORAdapter.SetSticky(Name, false);
 				Global.StickyXORAdapter.SetSticky(Name, false);
 			}
@@ -172,6 +173,7 @@ namespace BizHawk.Client.EmuHawk
 
 				base.OnMouseClick(e);
 			}
+			GlobalWin.MainForm.Activate();
 		}
 
 		protected override void OnClick(EventArgs e)
@@ -180,6 +182,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				base.OnClick(e);
 			}
+			GlobalWin.MainForm.Activate();
 		}
 	}
 }

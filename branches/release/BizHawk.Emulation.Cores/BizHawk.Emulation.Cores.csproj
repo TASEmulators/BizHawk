@@ -113,6 +113,9 @@
     <Compile Include="Computers\Commodore64\Media\D64.cs" />
     <Compile Include="Computers\Commodore64\Media\Disk.cs" />
     <Compile Include="Computers\Commodore64\Media\G64.cs" />
+    <Compile Include="Computers\Commodore64\MOS\MOS6526-2.cs" />
+    <Compile Include="Computers\Commodore64\MOS\MOS6526-2.Interface.cs" />
+    <Compile Include="Computers\Commodore64\MOS\MOS6526-2.PortIO.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6526.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6567.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6581.cs" />
@@ -235,6 +238,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\BANDAI_74_161_161_32.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\BxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Camerica.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\DatachBarcode.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Farid-UNROM-8-in-1.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\FS304.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\GameGenie.cs" />
@@ -469,8 +473,6 @@
     <Compile Include="CPUs\MOS 6502X\Disassembler.cs" />
     <Compile Include="CPUs\MOS 6502X\Execute.cs" />
     <Compile Include="CPUs\MOS 6502X\MOS6502X.cs" />
-    <Compile Include="CPUs\MOS 6502X\MOS6502XDouble.cs" />
-    <Compile Include="CPUs\MOS 6502X\MOS6502XNative.cs" />
     <Compile Include="CPUs\x86\Disassembler.cs" />
     <Compile Include="CPUs\x86\Execute.cs" />
     <Compile Include="CPUs\x86\Timing.cs" />
@@ -555,6 +557,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Computers\Commodore64\MOS\MOS6526-2.Registers.cs" />
     <None Include="Consoles\Atari\docs\stella.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech1.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech2.pdf" />

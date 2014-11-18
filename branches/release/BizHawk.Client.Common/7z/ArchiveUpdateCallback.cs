@@ -263,13 +263,14 @@ namespace SevenZip
             _entries = new string[streamDict.Count];
             streamDict.Keys.CopyTo(_entries, 0);
             _actualFilesCount = streamDict.Count;
-            foreach (Stream str in _streams)
-            {
-                if (str != null)
-                {
-                    _bytesCount += str.Length;
-                }
-            }
+					//zero 11-oct-2014 - we want sequential streams only. length is unknown.
+						//foreach (Stream str in _streams)
+						//{
+						//    if (str != null)
+						//    {
+						//        _bytesCount += str.Length;
+						//    }
+						//}
             CommonInit(compressor, updateData, directoryStructure);
         }
 
@@ -494,6 +495,11 @@ namespace SevenZip
                         break;
                     case ItemPropId.Size:
                         #region Size
+
+												//zero 11-oct-2014 - this doesnt matter, we think it's only used for updating the progress indicator
+												value.VarType = VarEnum.VT_UI8;
+												//value.UInt64Value = unchecked((ulong)-1);
+												break;
 
                         value.VarType = VarEnum.VT_UI8;
                         UInt64 size;
@@ -780,25 +786,27 @@ namespace SevenZip
 
         private void IntEventArgsHandler(object sender, IntEventArgs e)
         {
-            lock (_files)
-            {
-                var pold = (byte) ((_bytesWrittenOld*100)/_bytesCount);
-                _bytesWritten += e.Value;
-                byte pnow;
-                if (_bytesCount < _bytesWritten) //Holy shit, this check for ZIP is golden
-                {
-                    pnow = 100;
-                }
-                else
-                {
-                    pnow = (byte)((_bytesWritten * 100) / _bytesCount);
-                }
-                if (pnow > pold)
-                {
-                    _bytesWrittenOld = _bytesWritten;
-                    OnCompressing(new ProgressEventArgs(pnow, (byte) (pnow - pold)));
-                }
-            }
+					//zero 11-oct-2014 - first of all, its possible for _files to be null (if we're compressing streams)
+					//second of all, if we're compressing streams, we cant possibly have _bytesCount anyway. so.. goodbye
+						//lock (_files)
+						//{
+						//    var pold = (byte) ((_bytesWrittenOld*100)/_bytesCount);
+						//    _bytesWritten += e.Value;
+						//    byte pnow;
+						//    if (_bytesCount < _bytesWritten) //Holy shit, this check for ZIP is golden
+						//    {
+						//        pnow = 100;
+						//    }
+						//    else
+						//    {
+						//        pnow = (byte)((_bytesWritten * 100) / _bytesCount);
+						//    }
+						//    if (pnow > pold)
+						//    {
+						//        _bytesWrittenOld = _bytesWritten;
+						//        OnCompressing(new ProgressEventArgs(pnow, (byte) (pnow - pold)));
+						//    }
+						//}
         }
     }
 #endif

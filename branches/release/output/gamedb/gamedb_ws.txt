@@ -1,0 +1,113 @@
+;This is the No-Intro WonderSwan SHA-1 List
+06447c248afce04c4f4a1c3b5f7a4ab6f383c94b		Anchorz Field (Japan)	WSWAN
+ae5e4f06f07fe13a48f414a1cd437a816e9ad2e7		Armored Unit (Japan)	WSWAN
+821bb81917445b63ac663c706ab4ce27de28543f		Bakusou Dekotora Densetsu for WonderSwan (Japan)	WSWAN
+544e76133fa53fc0ae5e00e3465b9cf634f14fd0		Beatmania for WonderSwan (Japan)	WSWAN
+35eea568f756bacf533bb9aaad7e3239ba00e411		Buffers Evolution (Japan)	WSWAN
+39e9a897b681b2c326b052827d7c534f22290286		Cardcaptor Sakura - Sakura to Fushigi na Clow Card (Japan)	WSWAN
+e212bba4fac51bbfcf440966da0e67b1686dcfc5		Chaos Gear - Michibikareshi Mono (Japan)	WSWAN
+3b62fd2841602f1077270848ab7a3aad58712ee9		Chocobo no Fushigi na Dungeon for WonderSwan (Japan)	WSWAN
+eb538b82c5516fae8ce38778e41fb118aa5c830f		Chou Aniki - Otoko no Tamafuda (Japan)	WSWAN
+c4436a59fd830ba6af2d63462f71e1ab1cfa3212		Chou Denki Card Battle - Youfu Makai (Japan)	WSWAN
+4ba44f23d3b43ee730ce34d56f4cadaf429b6d1b		Clock Tower for WonderSwan (Japan)	WSWAN
+67a80b7fb00c3afe0ce9b0f8975c6d250a2cd49d		Crazy Climber (Japan)	WSWAN
+83e190af2e25fbb3e93b1d5835c52fe6f1d279ce		D's Garage 21 Koubo Game - Tane o Maku Tori (Japan)	WSWAN
+d3da0ae529c6f78162682141154a95879f288ca7		Densha de Go! (Japan)	WSWAN
+c07f776ac4374b648d1a49efd9d6fcd0db2ac1fa		Densha de Go! 2 (Japan)	WSWAN
+5cc59ec1687fe83ec5fb048d3dfc37849747df34		Digimon - Ver. WonderSwan (Asia)	WSWAN
+9db54826c2887dea07aac774bd15e092596e37af		Digimon Adventure - Anode Tamer (Japan)	WSWAN
+0b54cc1d350ab92c42ce8214784389b994562bf6		Digimon Adventure - Cathode Tamer (Japan)	WSWAN
+44a5502b70ea75926b87377e3f634c8093bc574a		Digimon Adventure 02 - Tag Tamers (Japan)	WSWAN
+ecea24db6e65254ab4d6e312de0eb951c7df716f		Digital Monster - Ver. WonderSwan (Japan)	WSWAN
+c622f6742ca3f0129fc12dce0a1c17d292388ffb		Digital Partner (Japan)	WSWAN
+3d5a1ed77e721908eb1145aaedef17c0ee6355ae		Dokodemo Hamster (Japan)	WSWAN
+f79451034b6d844f0e10c825306bbc26f26a5466		Engacho! for WonderSwan (Japan)	WSWAN
+f26b0215c49e04cb8ef6f031b627dff6a49d2015		Fever - Sankyo Koushiki Pachinko Simulation for WonderSwan (Japan)	WSWAN
+cfcb14be6d2f1dbffdfcefb8c8d83b4f39bc102b		Final Lap 2000 (Japan)	WSWAN
+fbb745b016cc710ff6f82ec3091a181415d8de61		Fire Pro Wrestling for WonderSwan (Japan)	WSWAN
+f8f077da30f227f3793e97c7f1d656559f08b9d4		Fishing Freaks - Bass Rise for WonderSwan (Japan)	WSWAN
+99c831c27c478064e3d3fa8f9f089cc28f0e946f		From TV Animation One Piece - Mezase Kaizoku Ou! (Japan)	WSWAN
+cbf6455e89b20a000b6121e5c485be1a20d1f726		Ganso Jajamaru-kun (Japan)	WSWAN
+e100d54e5c63512dbd655f0439870e08ced439dd		Glocal Hexcite (Japan)	WSWAN
+867f23963e33b26a781aa96851748e483e41fcad		Gomoku Narabe & Reversi - Touryuumon (Japan)	WSWAN
+af3fe9da3f5ee0f5a7b06b0440223db88fcb3bf2		Goraku Ou Tango! (Japan)	WSWAN
+ee4b777f029bac9561e60c19407d08360e733822		GunPey (Japan)	WSWAN
+4504b62212e1637dfd92e4f985a8497fa38941cd		Hanafuda Shiyouyo (Japan)	WSWAN
+1f42c5694a798de8ff3c68f63dfc7395be1669a5		Harobots (Japan)	WSWAN
+57b4278fc5812f52413ca65f45225922d4f2ec3d		Hunter X Hunter - Ishi o Tsugu Mono (Japan)	WSWAN
+38f708a4c0c4fcec0cf4d6ce051d1ff76466d617		Itou Junji Uzumaki - Noroi Simulation (Japan)	WSWAN
+b40fbc7b72921c9ac31330831c0f77e4133ec7d6		Kakutou Ryouri Densetsu Bistro Recipe - Wonder Battle Hen (Japan)	WSWAN
+207a3ceb9a09eabca6e455deeb7035e7e04c9795		Kaze no Klonoa - Moonlight Museum (Japan)	WSWAN
+461f87e6e301b0dbb6324d908d4ca7efd7518e20		Keiba Yosou Shien Soft - Yosou Shinkaron (Japan)	WSWAN
+9ef89b6fe68c5a06d34344e8c783ec24114ad959		Kiss Yori... - Seaside Serenade (Japan)	WSWAN
+52b154a3e36d01357649a9f7f614139ce6cc46b8		Kosodate Quiz Dokodemo - My Angel (Japan)	WSWAN
+a309a430fbbed6c42f41d8ccaf4aba82e96d6a7b		Kyousouba Ikusei Simulation - Keiba (Japan)	WSWAN
+9fdf3f5821f2a4488139525fe49e87b23de4571f		Langrisser Millennium WS - The Last Century (Japan)	WSWAN
+d524da01f2bfad92c2fa080950229955a3030ef2		Last Stand (Japan)	WSWAN
+91595cd5d5192db50eda883157852ff81994990c		Lode Runner for WonderSwan (Japan)	WSWAN
+211e051db3fd4d7ae1ea143e043f87cfbcec5f1c		Macross - True Love Song (Japan)	WSWAN
+a25944969068ee495254f94c2c48dfffcb66ce8d		Magical Drop for WonderSwan (Japan)	WSWAN
+281079b22cb213ee4dda5c304b5b5be028130929		Mahjong Touryuumon (Japan)	WSWAN
+5eaeab859e5f647fac354dad285a311387ea126b		Makai Mura for WonderSwan (Japan)	WSWAN
+509e5748e5efdfb56093c78ae886153dd1838215		Medarot Perfect Edition - Kabuto Version (Japan)	WSWAN
+315061e4739e947175d6ad7f006498cd61a33f8c		Medarot Perfect Edition - Kuwagata Version (Japan)	WSWAN
+8f3f97be31f3bd0e6922ab7795aa6f04bc5cfe2a		Meitantei Conan - Majutsushi no Chousenjou! (Japan)	WSWAN
+e5684789e81f9d739010db575022a12a448b5509		Meitantei Conan - Nishi no Meitantei Saidai no Kiki! (Japan)	WSWAN
+dc94e17a942acfdc1eb0c38d91bf72460a4bb8f9		Metakomi Theraphy - Nee Kiite! (Japan)	WSWAN
+c7230ef709f6ceaef9a220541c8cdc05c0cd549f		Mingle Magnet (Japan)	WSWAN
+2688ca67ac31ce3d5c3523b0e11cad55e70fa257		Mobile Suit Gundam MSVS (Japan)	WSWAN
+92d4a6ff6f2b1152d8935025f38f910155e5d709		MobileWonderGate (Japan)	WSWAN
+e88e659cc04fc08a04b8c881f62fe086c5cdab06		Moero!! Pro Yakyuu Rookies (Japan)	WSWAN
+d70fbc6be9a9a0f12cea8a9f7c98aa415e41aafd		Morita Shougi for WonderSwan (Japan)	WSWAN
+b358c65bae818c4b3de6bf668d16c311534036c2		Nazo Ou Pocket (Japan)	WSWAN
+ae31488cee1c91f383efbe3083b4abec092dda36		Neon Genesis Evangelion - Shito Ikusei (Japan)	WSWAN
+6a479ee45e69cd3d6cc6cdda5a60eff3077953b0		Nice On (Japan)	WSWAN
+4eefc5a51008c2ab33e8d04064ec9bdcbc03d036		Nihon Pro Mahjong Renmei Kounin - Tetsuman (Japan)	WSWAN
+b143cece1e7db9d9f660f4e9ca3a95b02a71dcd3		Nobunaga no Yabou for WonderSwan (Japan)	WSWAN
+0f73d3112b1184f74e728cf1252ffbee6a146fa6		Ou-chan no Oekaki Logic (Japan)	WSWAN
+fb8d0f4e58a4192989ec71eb6e392d182aaa3eec		Pocket Fighter (Japan)	WSWAN
+32013a7a745a3aa2fd63cc9427c5e1f2635655ed		Pro Mahjong Kiwame for WonderSwan (Japan)	WSWAN
+d72c1221c2ce3e281a0ee288a3d079aa8e1b714b		Puyo Puyo Tsuu (Japan)	WSWAN
+5e7dabb66b0ca580481aa79ee8b8a5b0c6ce6592		Puzzle Bobble (Japan)	WSWAN
+759deb79a3fc3befed705d7264e4b88adbadacc7		Rainbow Islands - Putty's Party (Japan)	WSWAN
+9896d93c97381dc06b6f044de6c9bd112ca0c94b		Ring Infinity (Japan)	WSWAN
+2117ed92e8cb4ae61868535f1d4d16851b480890		Robot Works (Asia) (En,Ja)	WSWAN
+4d4d4a3fde6b1dbbc8f008fbd035fb59624dfba7		Robot Works (Japan)	WSWAN
+9f8829aa8ea523e8370cbb2acd2acce056bb7958		Rockman & Forte - Mirai Kara no Chousensha (Japan)	WSWAN
+d064b94f31b15564c9a3dbd3a68690244ea043ac		Sangokushi for WonderSwan (Japan)	WSWAN
+59d904149c3f405357b2715468d509095388a194		Sangokushi II for WonderSwan (Japan)	WSWAN
+ae54a1f8916a2d37a1e0c82c5a9b5d8fe0eeae51		SD Gundam - Emotional Jam (Japan)	WSWAN
+5e5db8b066e1b41c5c12a2d4ffa97b73ed6c3f03		SD Gundam G Generation - Gather Beat (Japan)	WSWAN
+e6899de5b53f73c8978e3330dca0f2daaf95f140		SD Gundam Gashapon Senki - Episode 1 (Japan)	WSWAN
+fc8b0b9b7efeac54812e7ae54153b7ae0cb9c12f		Senkaiden - TV Animation Senkaiden Houshin Engi Yori (Japan)	WSWAN
+708288e70b3186f6c0ef07acaef1b50fe6b7ab22		Sennou Millennium (Japan)	WSWAN
+d64b9b2d567d1cea5960f64e5bdf83d4514446da		Shanghai Pocket (Japan)	WSWAN
+7324c5939b8b64858c96bd9726f5b5c483a11e22		Shin Nihon Pro Wrestling - Toukon Retsuden (Japan)	WSWAN
+c42339590a6d7864cb4f5728b84c4cce09779f0a		Shougi Touryuumon (Japan)	WSWAN
+4a756dab81e0101475dc2e5494270f3df7dac1e6		Side Pocket for WonderSwan (Japan)	WSWAN
+3e31beaca985ac5041c6e95e0d07f163168e190d		Slither Link (Japan)	WSWAN
+6eec04244f4d85807988a2331e7031d0c3549646		Soccer Yarou! - Challenge the World (Japan)	WSWAN
+e461762566d529d1b103f119da50353902d180d7		Sotsugyou for WonderSwan (Japan)	WSWAN
+54dd6e3fe81a8a384a0ffdd7a39211a5de9174c7		Space Invaders (Japan)	WSWAN
+e93d58ab5819992e54223f5d1c4d5aeb6983d6a3		Super Robot Taisen Compact (Japan)	WSWAN
+e6911e5bb0a742ba299e05b20ee81f2faa4854a5		Super Robot Taisen Compact 2 - Dai-1-bu - Chijou Gekidou Hen (Japan)	WSWAN
+6014ac0b8978e710f26c9cc41180cdf788584743		Super Robot Taisen Compact 2 - Dai-2-bu - Uchuu Gekishin Hen (Japan)	WSWAN
+d24d8cea57c5c487e877eaa523eefb0dd184556d		Super Robot Taisen Compact 2 - Dai-3-bu - Ginga Kessen Hen (Japan)	WSWAN
+813f296b5b0ddaa34f1d3e5aa9955b1db1918f7d		Taikyoku Igo - Heisei Kiin (Japan)	WSWAN
+2f35d250b8ddeb98ca3a2704a4ad85713f4c71b0		Tanjou Debut for WonderSwan (Japan)	WSWAN
+9622c65c939f05a9dfae288919ec5bd15c348f14		Tare Panda no GunPey (Japan)	WSWAN
+96a9ce5e56dc0c9648027ad4454e6f35e88d9a07		Tekken Card Challenge (Japan)	WSWAN
+7148d750f12b5da9a0efd99f5a5a7ccadecbdf60		Terrors (Japan)	WSWAN
+65c4c6aaa36328bba5d56419af59af5d3420ed78		Tetsujin 28 Gou (Japan)	WSWAN
+ad77d2e8429d5ed926d514d926050086f4edbeee		Time Bokan Series - Bokan Densetsu - Butamo Odaterya Doronbou (Japan)	WSWAN
+866c67737a4fbb5f09a0b13bbdb89397bcab1f55		Tokyo Majin Gakuen - Fuju Houroku (Japan)	WSWAN
+ab3c925bf1bfd36403335af0c0365be8a2950ca8		Trump Collection - Bottom-Up Teki Trump Seikatsu (Japan)	WSWAN
+64a3053c0f92681eb514e55adabc8ba0da1cb1a1		Trump Collection 2 - Bottom-Up Teki Sekaiisshuu no Tabi (Japan)	WSWAN
+858f1f57b5522a1701cc8a0abae43cec948e26a6		Turntablist - DJ Battle (Japan)	WSWAN
+4f739292d11a45490851eaf40c0a7081824ad75a		Umizuri ni Ikou! (Japan)	WSWAN
+4c8166e0632bdb8c098d586a7b1522ed7b63b5f7		Uzumaki - Denshi Kaiki Hen (Japan)	WSWAN
+cfb877f0988920c8fe4da5cdd7583197799df621		Vaitz Blade (Japan)	WSWAN
+672cfc0e4547b2721d11b67476391b6e6cca81ae		Wasabi Produce - Street Dancer (Japan)	WSWAN
+bb138765346d9f4d77615444d090b1328a59818a		Wonder Stadium '99 (Japan)	WSWAN
+cb9454a8277bb2a7d5a6e3b4ddc84194fcbb1231		Wonder Stadium (Japan)	WSWAN
+70d65a936ee1dfc2b89c543312c205285d955efb		WonderSwan Handy Sonar (Japan)	WSWAN

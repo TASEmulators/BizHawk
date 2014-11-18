@@ -66,15 +66,17 @@
 			this.MarkerView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MarkerView.FullRowSelect = true;
 			this.MarkerView.HorizontalOrientation = false;
-			this.MarkerView.RowCount = 0;
-			this.MarkerView.LastVisibleRow = 9;
+			this.MarkerView.LastVisibleRow = 11;
 			this.MarkerView.Location = new System.Drawing.Point(3, 0);
+			this.MarkerView.MaxCharactersInHorizontal = 1;
 			this.MarkerView.MultiSelect = false;
 			this.MarkerView.Name = "MarkerView";
+			this.MarkerView.RowCount = 0;
 			this.MarkerView.Size = new System.Drawing.Size(198, 209);
 			this.MarkerView.TabIndex = 5;
 			this.MarkerView.TabStop = false;
 			this.MarkerView.SelectedIndexChanged += new System.EventHandler(this.MarkerView_SelectedIndexChanged);
+			this.MarkerView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.MarkerView_MouseDoubleClick);
 			// 
 			// MarkerControl
 			// 

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
@@ -10,6 +12,9 @@ namespace BizHawk.Client.Common
 {
 	public partial class TasMovie
 	{
+		public Func<string> ClientSettingsForSave { get; set; }
+		public Action<string> GetClientSettingsOnLoad { get; set; }
+
 		protected override void Write(string fn)
 		{
 			var file = new FileInfo(fn);
@@ -18,8 +23,7 @@ namespace BizHawk.Client.Common
 				Directory.CreateDirectory(file.Directory.ToString());
 			}
 
-			using (var fs = new FileStream(fn, FileMode.Create, FileAccess.Write))
-			using (var bs = new BinaryStateSaver(fs, false))
+			using (var bs = new BinaryStateSaver(fn, false))
 			{
 				bs.PutLump(BinaryStateLump.Movieheader, tw => tw.WriteLine(Header.ToString()));
 				bs.PutLump(BinaryStateLump.Comments, tw => tw.WriteLine(CommentsString()));
@@ -28,14 +32,15 @@ namespace BizHawk.Client.Common
 
 				bs.PutLump(BinaryStateLump.Input, tw => tw.WriteLine(RawInputLog()));
 
-				
+				// TasProj extras
+
 				bs.PutLump(BinaryStateLump.GreenzoneSettings, tw => tw.WriteLine(StateManager.Settings.ToString()));
 				if (StateManager.Settings.SaveGreenzone)
 				{
 					bs.PutLump(BinaryStateLump.Greenzone, (BinaryWriter bw) => StateManager.Save(bw));
 				}
 
-				bs.PutLump(BinaryStateLump.LagLog, (BinaryWriter bw) => bw.Write(LagLog.ToByteArray()));
+				bs.PutLump(BinaryStateLump.LagLog, (BinaryWriter bw) => LagLog.Save(bw));
 				bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
 
 				if (StartsFromSavestate)
@@ -48,6 +53,17 @@ namespace BizHawk.Client.Common
 					{
 						bs.PutLump(BinaryStateLump.Corestate, (BinaryWriter bw) => bw.Write(BinarySavestate));
 					}
+				}
+
+				if (ClientSettingsForSave != null)
+				{
+					var clientSettingsJson = ClientSettingsForSave();
+					bs.PutLump(BinaryStateLump.ClientSettings, (TextWriter tw) => tw.Write(clientSettingsJson));
+				}
+
+				if (VerificationLog.Any())
+				{
+					bs.PutLump(BinaryStateLump.VerificationLog, tw => tw.WriteLine(InputLogToString(VerificationLog)));
 				}
 			}
 
@@ -70,7 +86,7 @@ namespace BizHawk.Client.Common
 				}
 
 				ClearBeforeLoad();
-				ClearTasprojExtrasBeforeLoad();
+				ClearTasprojExtras();
 
 				bl.GetLump(BinaryStateLump.Movieheader, true, delegate(TextReader tr)
 				{
@@ -125,10 +141,12 @@ namespace BizHawk.Client.Common
 					}
 				});
 
-				bl.GetLump(BinaryStateLump.Input, true, delegate(TextReader tr)
+				bl.GetLump(BinaryStateLump.Input, true, delegate(TextReader tr) // Note: ExtractInputLog will clear Lag and State data potentially, this must come before loading those
 				{
 					var errorMessage = string.Empty;
+					IsCountingRerecords = false;
 					ExtractInputLog(tr, out errorMessage);
+					IsCountingRerecords = true;
 				});
 
 				if (StartsFromSavestate)
@@ -145,10 +163,13 @@ namespace BizHawk.Client.Common
 				}
 
 				// TasMovie enhanced information
-				bl.GetLump(BinaryStateLump.LagLog, false, delegate(BinaryReader br, long length)
+				if (bl.HasLump(BinaryStateLump.LagLog))
 				{
-					LagLog = br.ReadBytes((int)length).ToBools().ToList();
-				});
+					bl.GetLump(BinaryStateLump.LagLog, false, delegate(BinaryReader br, long length)
+					{
+						LagLog.Load(br);
+					});
+				}
 
 				bl.GetLump(BinaryStateLump.GreenzoneSettings, false, delegate(TextReader tr)
 				{
@@ -174,21 +195,67 @@ namespace BizHawk.Client.Common
 						}
 					}
 				});
+
+				if (GetClientSettingsOnLoad != null && bl.HasLump(BinaryStateLump.ClientSettings))
+				{
+					string clientSettings = string.Empty;
+					bl.GetLump(BinaryStateLump.ClientSettings, true, delegate(TextReader tr)
+					{
+						string line;
+						while ((line = tr.ReadLine()) != null)
+						{
+							if (!string.IsNullOrWhiteSpace(line))
+							{
+								clientSettings = line;
+							}
+						}
+					});
+
+					GetClientSettingsOnLoad(clientSettings);
+				}
+
+				if (bl.HasLump(BinaryStateLump.VerificationLog))
+				{
+					bl.GetLump(BinaryStateLump.VerificationLog, true, delegate(TextReader tr)
+					{
+						VerificationLog.Clear();
+						while (true)
+						{
+							var line = tr.ReadLine();
+							if (string.IsNullOrEmpty(line))
+							{
+								break;
+							}
+
+							if (line.StartsWith("|"))
+							{
+								VerificationLog.Add(line);
+							}
+						}
+					});
+				}
 			}
 
 			Changes = false;
 			return true;
 		}
 
-		private void ClearTasprojExtrasBeforeLoad()
+		private void ClearTasprojExtras()
 		{
 			LagLog.Clear();
 			StateManager.Clear();
+			Markers.Clear();
 		}
 
-		private void RestoreLagLog(byte[] buffer)
+		private static string InputLogToString(List<string> log)
 		{
+			var sb = new StringBuilder();
+			foreach (var record in log)
+			{
+				sb.AppendLine(record);
+			}
 
+			return sb.ToString();
 		}
 	}
 }

@@ -86,13 +86,6 @@ namespace BizHawk.Emulation.Common
 
 		public void Dispose() { }
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
-		{
-			return new Dictionary<string, int>();
-		}
-
-		public void SetCpuRegister(string register, int value) { }
-
 		bool xmas;
 		Pleg pleg;
 
@@ -125,11 +118,6 @@ namespace BizHawk.Emulation.Common
 			get;
 			set;
 		}
-
-		public object GetSettings() { return null; }
-		public object GetSyncSettings() { return null; }
-		public bool PutSettings(object o) { return false; }
-		public bool PutSyncSettings(object o) { return false; }
 	}
 
 	public class NullSound : ISoundProvider

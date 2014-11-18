@@ -70,8 +70,7 @@
 			// GBPrefs
 			// 
 			this.AcceptButton = this.buttonOK;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
 			this.ClientSize = new System.Drawing.Size(448, 398);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);

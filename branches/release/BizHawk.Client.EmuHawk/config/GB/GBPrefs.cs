@@ -20,17 +20,18 @@ namespace BizHawk.Client.EmuHawk.config.GB
 
 		public static void DoGBPrefsDialog(IWin32Window owner)
 		{
-			var s = (Gameboy.GambatteSettings)Global.Emulator.GetSettings();
-			var ss = (Gameboy.GambatteSyncSettings)Global.Emulator.GetSyncSettings();
+			var gb = ((Gameboy)Global.Emulator);
+			var s = gb.GetSettings();
+			var ss = gb.GetSyncSettings();
 
 			using (var dlg = new GBPrefs())
 			{
 				dlg.gbPrefControl1.PutSettings(s, ss);
-				dlg.gbPrefControl1.ColorGameBoy = ((Gameboy)Global.Emulator).IsCGBMode();
+				dlg.gbPrefControl1.ColorGameBoy = gb.IsCGBMode();
 				if (dlg.ShowDialog(owner) == DialogResult.OK)
 				{
 					dlg.gbPrefControl1.GetSettings(out s, out ss);
-					Global.Emulator.PutSettings(s);
+					gb.PutSettings(s);
 					if (dlg.gbPrefControl1.SyncSettingsChanged)
 						GlobalWin.MainForm.PutCoreSyncSettings(ss);
 				}

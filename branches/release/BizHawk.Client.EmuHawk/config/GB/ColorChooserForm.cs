@@ -232,8 +232,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using (var dlg = new ColorChooserForm())
 			{
+				var gb = Global.Emulator as Gameboy;
 				if (fromemu)
-					s = (Gameboy.GambatteSettings)Global.Emulator.GetSettings();
+					s = gb.GetSettings();
 				dlg.SetAllColors(s.GBPalette);
 
 				var result = dlg.ShowDialog(parent);
@@ -245,7 +246,7 @@ namespace BizHawk.Client.EmuHawk
 
 					s.GBPalette = colorints;
 					if (fromemu)
-						Global.Emulator.PutSettings(s);
+						gb.PutSettings(s);
 				}
 			}
 		}

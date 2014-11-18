@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Emulator is NES)
 			{
-				var ss = (NES.NESSyncSettings)Global.Emulator.GetSyncSettings();
+				var ss = ((NES)Global.Emulator).GetSyncSettings();
 				var core = (Global.Emulator as NES);
 				var isFds = core.BoardName == "FDS";
 				if (ss.Controls.Famicom)

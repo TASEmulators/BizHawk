@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 
 using ICSharpCode.SharpZipLib.Zip;
+//using Ionic.Zip;
 
 namespace BizHawk.Client.Common
 {
@@ -24,20 +25,13 @@ namespace BizHawk.Client.Common
 		LagLog,
 		Greenzone,
 		GreenzoneSettings,
-		Markers
+		Markers,
+		ClientSettings,
+		VerificationLog
 	}
 
-	public class BinaryStateFileNames
+	public static class BinaryStateFileNames
 	{
-		/*
-		public const string Versiontag = "BizState 1.0";
-		public const string Corestate = "Core";
-		public const string Framebuffer = "Framebuffer";
-		public const string Input = "Input Log";
-		public const string CorestateText = "CoreText";
-		public const string Movieheader = "Header";
-		*/
-
 		private static readonly Dictionary<BinaryStateLump, string> ReadNames;
 		private static readonly Dictionary<BinaryStateLump, string> WriteNames;
 
@@ -67,6 +61,8 @@ namespace BizHawk.Client.Common
 			AddLumpName(BinaryStateLump.Greenzone, "GreenZone");
 			AddLumpName(BinaryStateLump.GreenzoneSettings, "GreenZoneSettings.txt");
 			AddLumpName(BinaryStateLump.Markers, "Markers.txt");
+			AddLumpName(BinaryStateLump.ClientSettings, "ClientSettings.json");
+			AddLumpName(BinaryStateLump.VerificationLog, "VerificationLog.txt");
 		}
 
 		public static string GetReadName(BinaryStateLump lump)
@@ -104,7 +100,6 @@ namespace BizHawk.Client.Common
 			if (!_isDisposed)
 			{
 				_isDisposed = true;
-
 				if (disposing)
 				{
 					_zip.Close();
@@ -172,6 +167,13 @@ namespace BizHawk.Client.Common
 			{
 				return null;
 			}
+		}
+
+		public bool HasLump(BinaryStateLump lump)
+		{
+			string name = BinaryStateFileNames.GetReadName(lump);
+			ZipEntry e;
+			return _entriesbyname.TryGetValue(name, out e);
 		}
 
 		/// <summary>
@@ -251,7 +253,7 @@ namespace BizHawk.Client.Common
 
 	public class BinaryStateSaver : IDisposable
 	{
-		private readonly ZipOutputStream _zip;
+		private readonly IZipWriter _zip;
 		private bool _isDisposed;
 
 		private static void WriteVersion(Stream s)
@@ -261,18 +263,12 @@ namespace BizHawk.Client.Common
 			sw.Flush();
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="s">not closed when finished!</param>
-		public BinaryStateSaver(Stream s, bool stateVersionTag = true) // stateVersionTag is a hack for reusing this for movie code
+
+		public BinaryStateSaver(string path, bool stateVersionTag = true) // stateVersionTag is a hack for reusing this for movie code
 		{
-			_zip = new ZipOutputStream(s)
-				{
-					IsStreamOwner = false,
-					UseZip64 = UseZip64.Off
-				};
-			_zip.SetLevel(Global.Config.SaveStateCompressionLevelNormal);
+			//_zip = new IonicZipWriter(path, Global.Config.SaveStateCompressionLevelNormal);
+			//_zip = new SharpZipWriter(path, Global.Config.SaveStateCompressionLevelNormal);
+			_zip = new SevenZipWriter(path, Global.Config.SaveStateCompressionLevelNormal);
 
 			if (stateVersionTag)
 			{
@@ -283,13 +279,7 @@ namespace BizHawk.Client.Common
 		public void PutLump(BinaryStateLump lump, Action<Stream> callback)
 		{
 			var name = BinaryStateFileNames.GetWriteName(lump);
-			var e = new ZipEntry(name);
-			if (Global.Config.SaveStateCompressionLevelNormal == 0)
-				e.CompressionMethod = CompressionMethod.Stored;
-			else e.CompressionMethod = CompressionMethod.Deflated;
-			_zip.PutNextEntry(e);
-			callback(_zip);
-			_zip.CloseEntry();
+			_zip.WriteItem(name, callback);
 		}
 
 		public void PutLump(BinaryStateLump lump, Action<BinaryWriter> callback)
@@ -326,7 +316,7 @@ namespace BizHawk.Client.Common
 
 				if (disposing)
 				{
-					_zip.Close();
+					_zip.Dispose();
 				}
 			}
 		}

@@ -18,6 +18,20 @@ namespace BizHawk.Common
 			HexConvPtr = (char*)HexConvHandle.AddrOfPinnedObject().ToPointer();
 		}
 
+		public static void CopyStream(Stream src, Stream dest, long len)
+		{
+			const int size = 0x2000;
+			byte[] buffer = new byte[size];
+			while (len > 0)
+			{
+				long todo = len;
+				if (len > size) todo = size;
+				int n = src.Read(buffer, 0, (int)todo);
+				dest.Write(buffer, 0, n);
+				len -= n;
+			}
+		}
+
 		public static char* HexConvPtr { get; set; }
 
 		public static bool IsPowerOfTwo(int x)

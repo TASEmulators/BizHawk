@@ -28,6 +28,50 @@ namespace BizHawk.Client.EmuHawk
 		public override string Name { get { return "client"; } }
 
 		[LuaMethodAttributes(
+			"borderheight",
+			"Gets the current height in pixels of the border around the emulator's drawing area"
+		)]
+		public static int BorderHeight()
+		{
+			var point = new System.Drawing.Point(0, 0);
+			return GlobalWin.DisplayManager.TransformPoint(point).Y;
+		}
+
+		[LuaMethodAttributes(
+			"borderwidth",
+			"Gets the current width in pixels of the border around the emulator's drawing area"
+		)]
+		public static int BorderWidth()
+		{
+			var point = new System.Drawing.Point(0, 0);
+			return GlobalWin.DisplayManager.TransformPoint(point).X;
+		}
+
+		[LuaMethodAttributes(
+			"bufferheight",
+			"Gets the current height in pixels of the emulator's drawing area"
+		)]
+		public static int BufferHeight()
+		{
+			var height = Global.Emulator.VideoProvider.BufferHeight;
+			var point = new System.Drawing.Point(0, height);
+
+			return GlobalWin.DisplayManager.TransformPoint(point).Y - BorderHeight();
+		}
+
+		[LuaMethodAttributes(
+			"bufferwidth",
+			"Gets the current width in pixels of the emulator's drawing area"
+		)]
+		public static int BufferWidth()
+		{
+			var width = Global.Emulator.VideoProvider.BufferWidth;
+			var point = new System.Drawing.Point(width, 0);
+
+			return GlobalWin.DisplayManager.TransformPoint(point).X - BorderWidth();
+		}
+
+		[LuaMethodAttributes(
 			"clearautohold",
 			"Clears all autohold keys"
 		)]
@@ -308,6 +352,26 @@ namespace BizHawk.Client.EmuHawk
 		public static void TogglePause()
 		{
 			GlobalWin.MainForm.TogglePause();
+		}
+		
+		[LuaMethodAttributes(
+			"transformPointX",
+			"Transforms an x-coordinate in emulator space to an x-coordinate in client space"
+		)]
+		public static int TransformPointX(int x)
+		{
+			var point = new System.Drawing.Point(x, 0);
+			return GlobalWin.DisplayManager.TransformPoint(point).X;
+		}
+
+		[LuaMethodAttributes(
+			"transformPointY",
+			"Transforms an y-coordinate in emulator space to an y-coordinate in client space"
+		)]
+		public static int TransformPointY(int y)
+		{
+			var point = new System.Drawing.Point(0, y);
+			return GlobalWin.DisplayManager.TransformPoint(point).Y;
 		}
 
 		[LuaMethodAttributes(
