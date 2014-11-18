@@ -3,6 +3,7 @@ using System.IO;
 
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Common.IOExtensions;
+using BizHawk.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -12,19 +13,20 @@ namespace BizHawk.Client.Common
 		{
 			// the old method of text savestate save is now gone.
 			// a text savestate is just like a binary savestate, but with a different core lump
-			using (var fs = new FileStream(filename, FileMode.Create, FileAccess.Write))
-			using (var bs = new BinaryStateSaver(fs))
+			using (var bs = new BinaryStateSaver(filename))
 			{
 				if (Global.Config.SaveStateType == Config.SaveStateTypeE.Text ||
 					(Global.Config.SaveStateType == Config.SaveStateTypeE.Default && !Global.Emulator.BinarySaveStatesPreferred))
 				{
 					// text savestate format
-					bs.PutLump(BinaryStateLump.CorestateText, (tw) => Global.Emulator.SaveStateText(tw));
+					using (new SimpleTime("Save Core"))
+						bs.PutLump(BinaryStateLump.CorestateText, (tw) => Global.Emulator.SaveStateText(tw));
 				}
 				else
 				{
 					// binary core lump format
-					bs.PutLump(BinaryStateLump.Corestate, bw => Global.Emulator.SaveStateBinary(bw));
+					using (new SimpleTime("Save Core"))
+						bs.PutLump(BinaryStateLump.Corestate, bw => Global.Emulator.SaveStateBinary(bw));
 				}
 
 				if (Global.Config.SaveScreenshotWithStates)
@@ -34,7 +36,8 @@ namespace BizHawk.Client.Common
 					// If user wants large screenshots, or screenshot is small enough
 					if (Global.Config.SaveLargeScreenshotWithStates || buff.Length < Global.Config.BigScreenshotSize)
 					{
-						bs.PutLump(BinaryStateLump.Framebuffer, (BinaryWriter bw) => bw.Write(buff));
+						using (new SimpleTime("Save Framebuffer"))
+							bs.PutLump(BinaryStateLump.Framebuffer, DumpFramebuffer);
 					}
 				}
 
@@ -51,6 +54,25 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public static void PopulateFramebuffer(BinaryReader br)
+		{
+			var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
+			try
+			{
+				for (int i = 0; i < buff.Length; i++)
+				{
+					int j = br.ReadInt32();
+					buff[i] = j;
+				}
+			}
+			catch (EndOfStreamException) { }
+		}
+
+		public static void DumpFramebuffer(BinaryWriter bw)
+		{
+			bw.Write(Global.Emulator.VideoProvider.GetVideoBuffer());
+		}
+
 		public static bool LoadStateFile(string path, string name)
 		{
 			// try to detect binary first
@@ -64,6 +86,11 @@ namespace BizHawk.Client.Common
 					if (Global.MovieSession.Movie.IsActive)
 					{
 						bl.GetLump(BinaryStateLump.Input, true, tr => succeed = Global.MovieSession.HandleMovieLoadState_HackyStep1(tr));
+						if (!succeed)
+						{
+							return false;
+						}
+
 						bl.GetLump(BinaryStateLump.Input, true, tr => succeed = Global.MovieSession.HandleMovieLoadState_HackyStep2(tr));
 						if (!succeed)
 						{
@@ -71,22 +98,10 @@ namespace BizHawk.Client.Common
 						}
 					}
 
-					bl.GetCoreState(br => Global.Emulator.LoadStateBinary(br), tr => Global.Emulator.LoadStateText(tr));
+					using (new SimpleTime("Load Core"))
+						bl.GetCoreState(br => Global.Emulator.LoadStateBinary(br), tr => Global.Emulator.LoadStateText(tr));
 
-					bl.GetLump(BinaryStateLump.Framebuffer, false, 
-						delegate(BinaryReader br)
-						{
-							var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
-							try
-							{
-								for (int i = 0; i < buff.Length; i++)
-								{
-									int j = br.ReadInt32();
-									buff[i] = j;
-								}
-							}
-							catch (EndOfStreamException) { }
-						});
+					bl.GetLump(BinaryStateLump.Framebuffer, false, PopulateFramebuffer);
 				}
 				catch
 				{

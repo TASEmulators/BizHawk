@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -17,12 +18,16 @@ namespace BizHawk.Client.EmuHawk
 		object ss;
 		bool syncsettingschanged = false;
 
-		GenericCoreConfig()
+		GenericCoreConfig(bool ignoresettings, bool ignoresyncsettings)
 		{
 			InitializeComponent();
 
-			s = Global.Emulator.GetSettings();
-			ss = Global.Emulator.GetSyncSettings();
+			var settable = new SettingsAdapter(Global.Emulator);
+
+			if (settable.HasSettings && !ignoresettings)
+				s = settable.GetSettings();
+			if (settable.HasSyncSettings && !ignoresyncsettings)
+				ss = settable.GetSyncSettings();
 
 			if (s != null)
 				propertyGrid1.SelectedObject = s;
@@ -37,10 +42,19 @@ namespace BizHawk.Client.EmuHawk
 				propertyGrid2.Enabled = false; // disable changes to sync setting when movie, so as not to confuse user
 		}
 
+		GenericCoreConfig()
+			:this(false, false)
+		{
+		}
+
 		private void button1_Click(object sender, EventArgs e)
 		{
-			if (s != null)
-				Global.Emulator.PutSettings(s);
+			var settable = new SettingsAdapter(Global.Emulator);
+			if (s != null && settable.HasSettings)
+			{
+				settable.PutSettings(s);
+			}
+
 			if (ss != null && syncsettingschanged)
 				GlobalWin.MainForm.PutCoreSyncSettings(ss);
 
@@ -51,6 +65,12 @@ namespace BizHawk.Client.EmuHawk
 		public static void DoDialog(IWin32Window owner, string title)
 		{
 			using (var dlg = new GenericCoreConfig { Text = title })
+				dlg.ShowDialog(owner);
+		}
+
+		public static void DoDialog(IWin32Window owner, string title, bool hidesettings, bool hidesyncsettings)
+		{
+			using (var dlg = new GenericCoreConfig(hidesettings, hidesyncsettings) { Text = title })
 				dlg.ShowDialog(owner);
 		}
 

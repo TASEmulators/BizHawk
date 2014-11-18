@@ -67,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return PathTabControl.TabPages
 				.OfType<TabPage>()
-				.FirstOrDefault(x => x.Name.ToUpper().Contains(name.ToUpper())) 
+				.FirstOrDefault(x => x.Name.ToUpper().StartsWith(name.ToUpper())) 
 				?? new TabPage();
 		}
 
@@ -205,7 +205,7 @@ namespace BizHawk.Client.EmuHawk
 				system = null;
 			}
 
-			var f = new FolderBrowserDialog
+			var f = new FolderBrowserEx
 			{
 				Description = "Set the directory for " + name,
 				SelectedPath = PathManager.MakeAbsolutePath(box.Text, system)

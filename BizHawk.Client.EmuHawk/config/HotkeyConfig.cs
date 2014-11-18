@@ -19,6 +19,7 @@ namespace BizHawk.Client.EmuHawk
 				IDB_SAVE.Focus(); // A very dirty hack to avoid https://code.google.com/p/bizhawk/issues/detail?id=161
 			};
 
+			tabPage1.Focus();
 		}
 
 		protected override void OnActivated(EventArgs e)
@@ -129,13 +130,17 @@ namespace BizHawk.Client.EmuHawk
 					};
 
 					var w = new InputCompositeWidget
-						{
-						Bindings = b.Bindings,
+					{
 						Location = new Point(_x + iwOffsetX, _y + iwOffsetY),
 						AutoTab = AutoTabCheckBox.Checked,
 						Width = iwWidth,
 						WidgetName = b.DisplayName,
 					};
+
+					w.SetupTooltip(toolTip1, b.ToolTip);
+					toolTip1.SetToolTip(l, b.ToolTip);
+
+					w.Bindings = b.Bindings;
 
 					tb.Controls.Add(l);
 					tb.Controls.Add(w);

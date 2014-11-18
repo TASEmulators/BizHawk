@@ -2,7 +2,9 @@
 {
 	public partial class TAStudio : IControlMainform
 	{
-		public bool WantsToControlReadOnly { get { return true; } }
+		private bool _suppressAskSave = false;
+
+		public bool WantsToControlReadOnly { get { return false; } }
 		public void ToggleReadOnly()
 		{
 			GlobalWin.OSD.AddMessage("TAStudio does not allow manual readonly toggle");
@@ -10,10 +12,12 @@
 
 		public bool WantsToControlStopMovie { get; private set; }
 
-		public void StopMovie()
+		public void StopMovie(bool supressSave)
 		{
 			this.Focus();
-			//NewTasMenuItem_Click(null, null);
+			_suppressAskSave = supressSave;
+			NewTasMenuItem_Click(null, null);
+			_suppressAskSave = false;
 		}
 
 		public bool WantsToControlRewind { get { return true; } }
@@ -26,8 +30,20 @@
 		public bool Rewind()
 		{
 			GoToPreviousFrame();
-
 			return true;
+		}
+
+		public bool WantsToControlRestartMovie { get; private set; }
+
+		public void RestartMovie()
+		{
+			if (AskSaveChanges())
+			{
+				WantsToControlStopMovie = false;
+				StartNewMovieWrapper(false);
+				WantsToControlStopMovie = true;
+				RefreshDialog();
+			}
 		}
 	}
 }

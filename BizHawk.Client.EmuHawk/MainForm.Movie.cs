@@ -15,6 +15,11 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public bool StartNewMovie(IMovie movie, bool record)
 		{
+			if (movie.IsActive)
+			{
+				movie.Save();
+			}
+
 			try
 			{
 				Global.MovieSession.QueueNewMovie(movie, record);
@@ -26,6 +31,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			LoadRom(GlobalWin.MainForm.CurrentlyOpenRom);
+
+			if (Global.MovieSession.PreviousNES_InQuickNES.HasValue)
+			{
+				Global.Config.NES_InQuickNES = Global.MovieSession.PreviousNES_InQuickNES.HasValue;
+				Global.MovieSession.PreviousNES_InQuickNES = null;
+			}
+
+			if (Global.MovieSession.PreviousSNES_InSnes9x.HasValue)
+			{
+				Global.Config.SNES_InSnes9x = Global.MovieSession.PreviousSNES_InSnes9x.HasValue;
+				Global.MovieSession.PreviousSNES_InSnes9x = null;
+			}
 
 			Global.Config.RecentMovies.Add(movie.Filename);
 
@@ -39,7 +56,16 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(movie.BinarySavestate, false)));
 				}
-
+				if (movie.SavestateFramebuffer != null)
+				{
+					var b1 = movie.SavestateFramebuffer;
+					var b2 = Global.Emulator.VideoProvider.GetVideoBuffer();
+					int len = Math.Min(b1.Length, b2.Length);
+					for (int i = 0; i < len; i++)
+					{
+						b2[i] = b1[i];
+					}
+				}
 				Global.Emulator.ResetCounters();
 			}
 
@@ -80,10 +106,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RestartMovie()
 		{
-			if (Global.MovieSession.Movie.IsActive)
+			if (IsSlave && master.WantsToControlRestartMovie)
 			{
-				GlobalWin.MainForm.StartNewMovie(Global.MovieSession.Movie, true);
-				GlobalWin.OSD.AddMessage("Replaying movie file in read-only mode");
+				master.RestartMovie();
+			}
+			else
+			{
+				if (Global.MovieSession.Movie.IsActive)
+				{
+					GlobalWin.MainForm.StartNewMovie(Global.MovieSession.Movie, false);
+					GlobalWin.OSD.AddMessage("Replaying movie file in read-only mode");
+				}
 			}
 		}
 	}

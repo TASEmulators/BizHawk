@@ -14,7 +14,8 @@ using BizHawk.Common;
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	[CoreAttributes("VBA-Next", "many authors", true, true, "cd508312a29ed8c29dacac1b11c2dce56c338a54", "https://github.com/libretro/vba-next")]
-	public class VBANext : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, IMemoryDomains
+	public class VBANext : IEmulator, IVideoProvider, ISyncSoundProvider,
+		IGBAGPUViewable, IMemoryDomains, IDebuggable, ISettable<object, VBANext.SyncSettings>
 	{
 		IntPtr Core;
 
@@ -23,7 +24,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			CoreComm = comm;
 			byte[] biosfile = CoreComm.CoreFileProvider.GetFirmware("GBA", "Bios", true, "GBA bios file is mandatory.");
-
 			if (file.Length > 32 * 1024 * 1024)
 				throw new ArgumentException("ROM is too big to be a GBA ROM!");
 			if (biosfile.Length != 16 * 1024)
@@ -329,7 +329,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			mm.Add(MemoryDomain.FromIntPtr("VRAM", 96 * 1024, l, s.vram));
 			mm.Add(MemoryDomain.FromIntPtr("OAM", 1024, l, s.oam));
 			mm.Add(MemoryDomain.FromIntPtr("ROM", 32 * 1024 * 1024, l, s.rom));
-			
+
 			mm.Add(new MemoryDomain("BUS", 0x10000000, l,
 				delegate(int addr)
 				{
@@ -399,7 +399,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			return null;
 		}
 
-		public object GetSyncSettings()
+		public SyncSettings GetSyncSettings()
 		{
 			return _SyncSettings.Clone();
 		}
@@ -412,11 +412,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			return false;
 		}
 
-		public bool PutSyncSettings(object o)
+		public bool PutSyncSettings(SyncSettings o)
 		{
-			var s = (SyncSettings)o;
-			bool ret = SyncSettings.NeedsReboot(s, _SyncSettings);
-			_SyncSettings = s;
+			bool ret = SyncSettings.NeedsReboot(o, _SyncSettings);
+			_SyncSettings = o;
 			return ret;
 		}
 

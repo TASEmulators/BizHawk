@@ -139,8 +139,11 @@ public:
 		}
 	}
 
+	void Blit(const uint32 *src);
+
 	bool Advance(int buttons, uint32 *vbuff, int16 *sbuff, int &sbuffsize);
 	bool GetSaveRamPtr(int &size, uint8 *&data) { return mCart->GetSaveRamPtr(size, data); }
+	void GetReadOnlyCartPtrs(int &s0, uint8 *&p0, int &s1, uint8 *&p1) { mCart->GetReadOnlyPtrs(s0, p0, s1, p1); }
 
 	//
 	// We MUST have separate CPU & RAM peek & poke handlers as all CPU accesses must
@@ -191,7 +194,7 @@ public:
 	uint32	PaintSprites() {return mSusie->PaintSprites();};
 
 	// Miscellaneous
-	void	SetButtonData(uint32 data) {mSusie->SetButtonData(data);};
+	void	SetButtonData(uint32 data);
 	// uint32	GetButtonData() {return mSusie->GetButtonData();};
 	uint8*	GetRamPointer() {return mRam->GetRamPointer();};
 
@@ -216,6 +219,10 @@ public:
 
 	// frame overflow detection
 	int frameoverflow;
+	// rotation of the device
+	int rotate;
+	// video dest
+	uint32 *videobuffer;
 
 	template<bool isReader>void SyncState(NewState *ns);
 };

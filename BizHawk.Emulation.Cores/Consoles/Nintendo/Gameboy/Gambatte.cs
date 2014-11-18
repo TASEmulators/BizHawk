@@ -22,7 +22,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		portedVersion: "SVN 344",
 		portedUrl: "http://gambatte.sourceforge.net/"
 		)]
-	public class Gameboy : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains
+	public class Gameboy : IEmulator, IVideoProvider, ISyncSoundProvider,
+		IMemoryDomains, IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>
 	{
 		#region ALL SAVESTATEABLE STATE GOES HERE
 
@@ -163,7 +164,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					throw new InvalidOperationException("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
 
 				// set real default colors (before anyone mucks with them at all)
-				PutSettings(Settings ?? new GambatteSettings());
+				PutSettings((GambatteSettings)Settings ?? new GambatteSettings());
 
 				InitSound();
 
@@ -330,7 +331,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					_cycleCount += (ulong)samplesEmitted;
 					frameOverflow += samplesEmitted;
 
-					if (rendersound)
+					if (rendersound && !Muted)
 					{
 						ProcessSound((int)samplesEmitted);
 					}
@@ -353,13 +354,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				_cycleCount += (ulong)samplesEmitted;
 				frameOverflow = 0;
-				if (rendersound)
+				if (rendersound && !Muted)
 				{
 					ProcessSound((int)samplesEmitted);
 				}
 			}
 
-			if (rendersound)
+			if (rendersound && !Muted)
 				ProcessSoundEnd();
 
 			FrameAdvancePost();
@@ -413,9 +414,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				case 0x08: break;
 				case 0x09: break;
 
-				case 0x0b: throw new UnsupportedMapperException("\"MM01\" Mapper not supported!");
-				case 0x0c: throw new UnsupportedMapperException("\"MM01\" Mapper not supported!");
-				case 0x0d: throw new UnsupportedMapperException("\"MM01\" Mapper not supported!");
+				case 0x0b: throw new UnsupportedGameException("\"MM01\" Mapper not supported!");
+				case 0x0c: throw new UnsupportedGameException("\"MM01\" Mapper not supported!");
+				case 0x0d: throw new UnsupportedGameException("\"MM01\" Mapper not supported!");
 
 				case 0x0f: break;
 				case 0x10: break;
@@ -423,9 +424,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				case 0x12: break;
 				case 0x13: break;
 
-				case 0x15: throw new UnsupportedMapperException("\"MBC4\" Mapper not supported!");
-				case 0x16: throw new UnsupportedMapperException("\"MBC4\" Mapper not supported!");
-				case 0x17: throw new UnsupportedMapperException("\"MBC4\" Mapper not supported!");
+				case 0x15: throw new UnsupportedGameException("\"MBC4\" Mapper not supported!");
+				case 0x16: throw new UnsupportedGameException("\"MBC4\" Mapper not supported!");
+				case 0x17: throw new UnsupportedGameException("\"MBC4\" Mapper not supported!");
 
 				case 0x19: break;
 				case 0x1a: break;
@@ -434,14 +435,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				case 0x1d: break; // rumble
 				case 0x1e: break; // rumble
 
-				case 0x20: throw new UnsupportedMapperException("\"MBC6\" Mapper not supported!");
-				case 0x22: throw new UnsupportedMapperException("\"MBC7\" Mapper not supported!");
+				case 0x20: throw new UnsupportedGameException("\"MBC6\" Mapper not supported!");
+				case 0x22: throw new UnsupportedGameException("\"MBC7\" Mapper not supported!");
 
-				case 0xfc: throw new UnsupportedMapperException("\"Pocket Camera\" Mapper not supported!");
-				case 0xfd: throw new UnsupportedMapperException("\"Bandai TAMA5\" Mapper not supported!");
-				case 0xfe: throw new UnsupportedMapperException("\"HuC3\" Mapper not supported!");
+				case 0xfc: throw new UnsupportedGameException("\"Pocket Camera\" Mapper not supported!");
+				case 0xfd: throw new UnsupportedGameException("\"Bandai TAMA5\" Mapper not supported!");
+				case 0xfe: throw new UnsupportedGameException("\"HuC3\" Mapper not supported!");
 				case 0xff: break;
-				default: throw new UnsupportedMapperException(string.Format("Unknown mapper: {0:x2}", romdata[0x147]));
+				default: throw new UnsupportedGameException(string.Format("Unknown mapper: {0:x2}", romdata[0x147]));
 			}
 			return;
 		}
@@ -979,6 +980,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			nsamp = soundoutbuffcontains;
 		}
 
+		public bool Muted { get { return _Settings.Muted; } }
+
 		#endregion
 
 		#region Settings
@@ -986,11 +989,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		GambatteSettings _Settings;
 		GambatteSyncSettings _SyncSettings;
 
-		public object GetSettings() { return _Settings.Clone(); }
-		public object GetSyncSettings() { return _SyncSettings.Clone(); }
-		public bool PutSettings(object o)
+		public GambatteSettings GetSettings() { return _Settings.Clone(); }
+		public GambatteSyncSettings GetSyncSettings() { return _SyncSettings.Clone(); }
+		public bool PutSettings(GambatteSettings o)
 		{
-			_Settings = (GambatteSettings)o;
+			_Settings = o;
 			if (IsCGBMode())
 				SetCGBColors(_Settings.CGBColors);
 			else
@@ -998,11 +1001,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			return false;
 		}
 
-		public bool PutSyncSettings(object o)
+		public bool PutSyncSettings(GambatteSyncSettings o)
 		{
-			var s = (GambatteSyncSettings)o;
-			bool ret = GambatteSyncSettings.NeedsReboot(_SyncSettings, s);
-			_SyncSettings = s;
+			bool ret = GambatteSyncSettings.NeedsReboot(_SyncSettings, o);
+			_SyncSettings = o;
 			return ret;
 		}
 
@@ -1017,6 +1019,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			public int[] GBPalette;
 			public GBColors.ColorType CGBColors;
+			/// <summary>
+			/// true to mute all audio
+			/// </summary>
+			public bool Muted;
 
 			public GambatteSettings()
 			{

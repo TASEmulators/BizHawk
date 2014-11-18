@@ -124,10 +124,10 @@ void Nes_Emu::set_palette_range( int begin, int end )
 	require( host_palette_size >= palette_alignment );
 }
 
-blargg_err_t Nes_Emu::emulate_frame( int joypad1, int joypad2 )
+blargg_err_t Nes_Emu::emulate_frame( const uint32_t joypad1, const uint32_t joypad2 )
 {
-	emu.current_joypad [0] = (joypad1 |= ~0xFF);
-	emu.current_joypad [1] = (joypad2 |= ~0xFF);
+	emu.current_joypad [0] = joypad1;
+	emu.current_joypad [1] = joypad2;
 	
 	emu.ppu.host_pixels = NULL;
 	

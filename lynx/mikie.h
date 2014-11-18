@@ -217,7 +217,6 @@ public:
 	void Update();
 	void CheckWrap();
 
-	uint32*		mpDisplayCurrent;
 	uint32		mpDisplayCurrentLine;
 	uint32		framebuffer[SCREEN_WIDTH * SCREEN_HEIGHT];
 

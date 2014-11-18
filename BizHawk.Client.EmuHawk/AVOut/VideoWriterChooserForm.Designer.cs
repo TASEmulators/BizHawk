@@ -36,13 +36,14 @@
 			this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
 			this.labelDescription = new System.Windows.Forms.Label();
 			this.labelDescriptionBody = new System.Windows.Forms.Label();
-			this.numericTextBoxW = new BizHawk.Client.EmuHawk.NumericTextBox();
-			this.numericTextBoxH = new BizHawk.Client.EmuHawk.NumericTextBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.buttonAuto = new System.Windows.Forms.Button();
 			this.panelSizeSelect = new System.Windows.Forms.Panel();
 			this.checkBoxPad = new System.Windows.Forms.CheckBox();
+			this.numericTextBoxW = new BizHawk.Client.EmuHawk.NumericTextBox();
+			this.numericTextBoxH = new BizHawk.Client.EmuHawk.NumericTextBox();
+			this.checkBoxASync = new System.Windows.Forms.CheckBox();
 			this.tableLayoutPanel4.SuspendLayout();
 			this.panelSizeSelect.SuspendLayout();
 			this.SuspendLayout();
@@ -130,26 +131,6 @@
 			this.labelDescriptionBody.TabIndex = 6;
 			this.labelDescriptionBody.Text = resources.GetString("labelDescriptionBody.Text");
 			// 
-			// numericTextBoxW
-			// 
-			this.numericTextBoxW.AllowDecimal = false;
-			this.numericTextBoxW.AllowNegative = false;
-			this.numericTextBoxW.AllowSpace = false;
-			this.numericTextBoxW.Location = new System.Drawing.Point(0, 16);
-			this.numericTextBoxW.Name = "numericTextBoxW";
-			this.numericTextBoxW.Size = new System.Drawing.Size(70, 20);
-			this.numericTextBoxW.TabIndex = 10;
-			// 
-			// numericTextBoxH
-			// 
-			this.numericTextBoxH.AllowDecimal = false;
-			this.numericTextBoxH.AllowNegative = false;
-			this.numericTextBoxH.AllowSpace = false;
-			this.numericTextBoxH.Location = new System.Drawing.Point(92, 16);
-			this.numericTextBoxH.Name = "numericTextBoxH";
-			this.numericTextBoxH.Size = new System.Drawing.Size(70, 20);
-			this.numericTextBoxH.TabIndex = 11;
-			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
@@ -187,7 +168,7 @@
 			this.panelSizeSelect.Controls.Add(this.numericTextBoxW);
 			this.panelSizeSelect.Controls.Add(this.numericTextBoxH);
 			this.panelSizeSelect.Controls.Add(this.label3);
-			this.panelSizeSelect.Location = new System.Drawing.Point(347, 35);
+			this.panelSizeSelect.Location = new System.Drawing.Point(347, 58);
 			this.panelSizeSelect.Name = "panelSizeSelect";
 			this.panelSizeSelect.Size = new System.Drawing.Size(162, 105);
 			this.panelSizeSelect.TabIndex = 15;
@@ -202,6 +183,36 @@
 			this.checkBoxPad.Text = "Pad";
 			this.checkBoxPad.UseVisualStyleBackColor = true;
 			// 
+			// numericTextBoxW
+			// 
+			this.numericTextBoxW.AllowDecimal = false;
+			this.numericTextBoxW.AllowNegative = false;
+			this.numericTextBoxW.AllowSpace = false;
+			this.numericTextBoxW.Location = new System.Drawing.Point(0, 16);
+			this.numericTextBoxW.Name = "numericTextBoxW";
+			this.numericTextBoxW.Size = new System.Drawing.Size(70, 20);
+			this.numericTextBoxW.TabIndex = 10;
+			// 
+			// numericTextBoxH
+			// 
+			this.numericTextBoxH.AllowDecimal = false;
+			this.numericTextBoxH.AllowNegative = false;
+			this.numericTextBoxH.AllowSpace = false;
+			this.numericTextBoxH.Location = new System.Drawing.Point(92, 16);
+			this.numericTextBoxH.Name = "numericTextBoxH";
+			this.numericTextBoxH.Size = new System.Drawing.Size(70, 20);
+			this.numericTextBoxH.TabIndex = 11;
+			// 
+			// checkBoxASync
+			// 
+			this.checkBoxASync.AutoSize = true;
+			this.checkBoxASync.Location = new System.Drawing.Point(347, 35);
+			this.checkBoxASync.Name = "checkBoxASync";
+			this.checkBoxASync.Size = new System.Drawing.Size(95, 17);
+			this.checkBoxASync.TabIndex = 16;
+			this.checkBoxASync.Text = "Alternate Sync";
+			this.checkBoxASync.UseVisualStyleBackColor = true;
+			// 
 			// VideoWriterChooserForm
 			// 
 			this.AcceptButton = this.buttonOK;
@@ -209,6 +220,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(521, 440);
+			this.Controls.Add(this.checkBoxASync);
 			this.Controls.Add(this.panelSizeSelect);
 			this.Controls.Add(this.tableLayoutPanel4);
 			this.Controls.Add(this.listBox1);
@@ -244,5 +256,6 @@
 		private System.Windows.Forms.Button buttonAuto;
 		private System.Windows.Forms.Panel panelSizeSelect;
 		private System.Windows.Forms.CheckBox checkBoxPad;
+		private System.Windows.Forms.CheckBox checkBoxASync;
 	}
 }

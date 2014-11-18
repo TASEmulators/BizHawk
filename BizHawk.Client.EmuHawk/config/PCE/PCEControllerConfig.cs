@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PCEControllerConfig_Load(object sender, EventArgs e)
 		{
-			var pceSettings = (PCEngine.PCESyncSettings)Global.Emulator.GetSyncSettings();
+			var pceSettings = ((PCEngine)Global.Emulator).GetSyncSettings();
 			for (int i = 0; i < 5; i++)
 			{
 				Controls.Add(new Label
@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			var pceSettings = (PCEngine.PCESyncSettings)Global.Emulator.GetSyncSettings();
+			var pceSettings = ((PCEngine)Global.Emulator).GetSyncSettings();
 
 			Controls
 				.OfType<CheckBox>()

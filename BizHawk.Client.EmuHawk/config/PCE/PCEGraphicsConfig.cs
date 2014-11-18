@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PCEGraphicsConfig_Load(object sender, EventArgs e)
 		{
-			PCEngine.PCESettings s = (PCEngine.PCESettings)Global.Emulator.GetSettings();
+			PCEngine.PCESettings s = ((PCEngine)Global.Emulator).GetSettings();
 
 			DispOBJ1.Checked = s.ShowOBJ1;
 			DispBG1.Checked = s.ShowBG1;
@@ -25,12 +25,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OK_Click(object sender, EventArgs e)
 		{
-			PCEngine.PCESettings s = (PCEngine.PCESettings)Global.Emulator.GetSettings();
+			var pce = (PCEngine)Global.Emulator;
+			PCEngine.PCESettings s = pce.GetSettings();
 			s.ShowOBJ1 = DispOBJ1.Checked;
 			s.ShowBG1 = DispBG1.Checked;
 			s.ShowOBJ2 = DispOBJ2.Checked;
 			s.ShowBG2 = DispBG2.Checked;
-			Global.Emulator.PutSettings(s);
+			pce.PutSettings(s);
 			Close();
 		}
 	}

@@ -63,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Emulator is N64)
 			{
-				return (N64SyncSettings)Global.Emulator.GetSyncSettings();
+				return ((N64)Global.Emulator).GetSyncSettings();
 			}
 			else
 			{
@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Emulator is N64)
 			{
-				return (N64Settings)Global.Emulator.GetSettings();
+				return ((N64)Global.Emulator).GetSettings();
 			}
 			else
 			{

@@ -85,13 +85,13 @@
 			// FollowCursorCheckbox
 			// 
 			this.FollowCursorCheckbox.AutoSize = true;
-			this.FollowCursorCheckbox.Enabled = false;
 			this.FollowCursorCheckbox.Location = new System.Drawing.Point(10, 48);
 			this.FollowCursorCheckbox.Name = "FollowCursorCheckbox";
 			this.FollowCursorCheckbox.Size = new System.Drawing.Size(89, 17);
 			this.FollowCursorCheckbox.TabIndex = 5;
 			this.FollowCursorCheckbox.Text = "Follow Cursor";
 			this.FollowCursorCheckbox.UseVisualStyleBackColor = true;
+			this.FollowCursorCheckbox.CheckedChanged += new System.EventHandler(this.FollowCursorCheckbox_CheckedChanged);
 			// 
 			// NextMarkerButton
 			// 

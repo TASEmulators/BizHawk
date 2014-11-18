@@ -11,8 +11,8 @@ using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Atari.Lynx
 {
-	[CoreAttributes("Handy", "K. Wilkins", true, false, "mednafen 0-9-34-1", "http://mednafen.sourceforge.net/")]
-	public class Lynx : IEmulator, IVideoProvider, ISyncSoundProvider
+	[CoreAttributes("Handy", "K. Wilkins", true, true, "mednafen 0-9-34-1", "http://mednafen.sourceforge.net/")]
+	public class Lynx : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains
 	{
 		IntPtr Core;
 
@@ -75,11 +75,10 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			{
 				switch (realfile.Length)
 				{
-					// these are untested
 					case 0x10000: pagesize0 = 0x100; break;
-					case 0x20000: pagesize0 = 0x200; break;
-					case 0x40000: pagesize0 = 0x400; break;
-					case 0x80000: pagesize0 = 0x800; break;
+					case 0x20000: pagesize0 = 0x200; break; //
+					case 0x40000: pagesize0 = 0x400; break; // all known good dumps fall in one of these three categories
+					case 0x80000: pagesize0 = 0x800; break; //
 
 					case 0x30000: pagesize0 = 0x200; pagesize1 = 0x100; break;
 					case 0x50000: pagesize0 = 0x400; pagesize1 = 0x100; break;
@@ -100,6 +99,20 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 				savebuff = new byte[LibLynx.BinStateSize(Core)];
 				savebuff2 = new byte[savebuff.Length + 13];
+
+				int rot = game.OptionPresent("rotate") ? int.Parse(game.OptionValue("rotate")) : 0;
+				LibLynx.SetRotation(Core, rot);
+				if ((rot & 1) != 0)
+				{
+					BufferWidth = HEIGHT;
+					BufferHeight = WIDTH;
+				}
+				else
+				{
+					BufferWidth = WIDTH;
+					BufferHeight = HEIGHT;
+				}
+				SetupMemoryDomains();
 			}
 			catch
 			{
@@ -148,19 +161,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 				Core = IntPtr.Zero;
 			}
 		}
-
-		#region debugging
-
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
-		{
-			return new Dictionary<string, int>();
-		}
-
-		public void SetCpuRegister(string register, int value)
-		{
-		}
-
-		#endregion
 
 		#region Controller
 
@@ -334,10 +334,10 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		public IVideoProvider VideoProvider { get { return this; } }
 		public int[] GetVideoBuffer() { return videobuff; }
-		public int VirtualWidth { get { return WIDTH; } }
-		public int VirtualHeight { get { return HEIGHT; } }
-		public int BufferWidth { get { return WIDTH; } }
-		public int BufferHeight { get { return HEIGHT; } }
+		public int VirtualWidth { get { return BufferWidth; } }
+		public int VirtualHeight { get { return BufferHeight; } }
+		public int BufferWidth { get; private set; }
+		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
 
 		#endregion
@@ -364,29 +364,32 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		#endregion
 
-		#region Settings
+		#region MemoryDomains
 
-		public object GetSettings()
+		private void SetupMemoryDomains()
 		{
-			return null;
+			var mms = new List<MemoryDomain>();
+			mms.Add(MemoryDomain.FromIntPtr("RAM", 65536, MemoryDomain.Endian.Little, LibLynx.GetRamPointer(Core), true));
+
+			IntPtr p;
+			int s;
+			if (LibLynx.GetSaveRamPtr(Core, out s, out p))
+				mms.Add(MemoryDomain.FromIntPtr("Save RAM", s, MemoryDomain.Endian.Little, p, true));
+
+			IntPtr p0, p1;
+			int s0, s1;
+			LibLynx.GetReadOnlyCartPtrs(Core, out s0, out p0, out s1, out p1);
+			if (s0 > 0 && p0 != IntPtr.Zero)
+				mms.Add(MemoryDomain.FromIntPtr("Cart A", s0, MemoryDomain.Endian.Little, p0, false));
+			if (s1 > 0 && p1 != IntPtr.Zero)
+				mms.Add(MemoryDomain.FromIntPtr("Cart B", s1, MemoryDomain.Endian.Little, p1, false));
+
+			MemoryDomains = new MemoryDomainList(mms, 0);
 		}
 
-		public object GetSyncSettings()
-		{
-			return null;
-		}
 
-		public bool PutSettings(object o)
-		{
-			return false;
-		}
-
-		public bool PutSyncSettings(object o)
-		{
-			return false;
-		}
+		public MemoryDomainList MemoryDomains { get; private set; }
 
 		#endregion
-
 	}
 }

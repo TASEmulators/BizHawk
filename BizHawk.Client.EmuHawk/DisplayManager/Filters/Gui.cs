@@ -43,6 +43,8 @@ namespace BizHawk.Client.EmuHawk.Filters
 			int virtualHeight = virtualSize.Height;
 
 			//zero 02-jun-2014 - we passed these in, but ignored them. kind of weird..
+			int oldSourceWidth = sourceWidth;
+			int oldSourceHeight = sourceHeight;
 			sourceWidth = (int)virtualWidth;
 			sourceHeight = (int)virtualHeight;
 
@@ -140,8 +142,14 @@ namespace BizHawk.Client.EmuHawk.Filters
 			//determine letterboxing parameters
 			vx = (targetWidth - vw) / 2;
 			vy = (targetHeight - vh) / 2;
-			WidthScale = widthScale;
-			HeightScale = heightScale;
+
+			//zero 09-oct-2014 - changed this for TransformPoint. scenario: basic 1x (but system-specified AR) NES window.
+			//vw would be 293 but WidthScale would be 1.0. I think it should be something different.
+			//FinalPresentation doesnt use the LL.WidthScale, so this is unlikely to be breaking anything old that depends on it
+			//WidthScale = widthScale;
+			//HeightScale = heightScale;
+			WidthScale = (float)vw / oldSourceWidth;
+			HeightScale = (float)vh / oldSourceHeight;
 		}
 
 	}
@@ -232,6 +240,17 @@ namespace BizHawk.Client.EmuHawk.Filters
 			return point;
 		}
 
+		public override Vector2 TransformPoint(string channel, Vector2 point)
+		{
+			if (nop)
+				return point;
+			point.X *= LL.WidthScale;
+			point.Y *= LL.HeightScale;
+			point.X += LL.vx;
+			point.Y += LL.vy;
+			return point;
+		}
+
 		public override void Run()
 		{
 			if (nop)
@@ -243,8 +262,6 @@ namespace BizHawk.Client.EmuHawk.Filters
 			GuiRenderer.Begin(OutputSize.Width, OutputSize.Height);
 			GuiRenderer.SetBlendState(GL.BlendNone);
 			GuiRenderer.Modelview.Push();
-			//GuiRenderer.Modelview.Translate(LL.vx, LL.vy);
-			//GuiRenderer.Modelview.Scale(LL.WidthScale, LL.HeightScale);
 			if(FilterOption != eFilterOption.None)
 				InputTexture.SetFilterLinear();
 			else

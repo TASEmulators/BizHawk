@@ -433,7 +433,7 @@ namespace BizHawk.Client.Common
 						ex = ex.InnerException;
 
 					// Specific hack here, as we get more cores of the same system, this isn't scalable
-					if (ex is UnsupportedMapperException)
+					if (ex is UnsupportedGameException)
 					{
 						return LoadRom(path, nextComm, forceAccurateCore: true);
 					}

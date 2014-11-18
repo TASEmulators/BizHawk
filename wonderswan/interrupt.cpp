@@ -5,13 +5,15 @@ namespace MDFN_IEN_WSWAN
 {
 	void Interrupt::Recalc()
 	{
-		IOn_Cache = FALSE;
+		IStatus |= (IAsserted & LevelTriggeredMask) & IEnable;
+
+		IOn_Cache = false;
 		IOn_Which = 0;
 		IVector_Cache = 0;
 
 		for(int i = 0; i < 8; i++)
 		{
-			if(IStatus & IEnable & (1 << i))
+			if(IStatus & IEnable & (1U << i))
 			{
 				IOn_Cache = TRUE;
 				IOn_Which = i;
@@ -21,17 +23,21 @@ namespace MDFN_IEN_WSWAN
 		}
 	}
 
-	void Interrupt::DebugForce(unsigned int level)
+	void Interrupt::AssertInterrupt(unsigned which, bool asserted)
 	{
-		sys->cpu.interrupt((IVectorBase + level) * 4, TRUE);
+		const uint8 prev_IAsserted = IAsserted;
+
+		IAsserted &= ~(1U << which);
+		IAsserted |= (unsigned)asserted << which;
+
+		IStatus |= ((prev_IAsserted ^ IAsserted) & IAsserted) & IEnable;
+
+		Recalc();
 	}
 
-	void Interrupt::DoInterrupt(int which)
+	void Interrupt::DoInterrupt(unsigned which)
 	{
-		if(IEnable & (1 << which))
-			IStatus |= 1 << which;
-
-		//printf("Interrupt: %d\n", which);
+		IStatus |= (1U << which) & IEnable;
 		Recalc();
 	}
 
@@ -42,7 +48,7 @@ namespace MDFN_IEN_WSWAN
 		{
 		case 0xB0: IVectorBase = V; Recalc(); break;
 		case 0xB2: IEnable = V; IStatus &= IEnable; Recalc(); break;
-		case 0xB6: /*printf("IStatus: %02x\n", V);*/ IStatus &= ~V; Recalc(); break;
+		case 0xB6: IStatus &= ~V; Recalc(); break;
 		}
 	}
 
@@ -68,6 +74,7 @@ namespace MDFN_IEN_WSWAN
 
 	void Interrupt::Reset()
 	{
+		IAsserted = 0x00;
 		IEnable = 0x00;
 		IStatus = 0x00;
 		IVectorBase = 0x00;
@@ -76,6 +83,7 @@ namespace MDFN_IEN_WSWAN
 
 	SYNCFUNC(Interrupt)
 	{
+		NSS(IAsserted);
 		NSS(IStatus);
 		NSS(IEnable);
 		NSS(IVectorBase);

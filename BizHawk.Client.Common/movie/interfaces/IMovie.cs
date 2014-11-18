@@ -50,6 +50,7 @@ namespace BizHawk.Client.Common
 		// savestate anchor.
 		string TextSavestate { get; set; }
 		byte[] BinarySavestate { get; set; }
+		int[] SavestateFramebuffer { get; set; }
 
 		ulong Rerecords { get; set; }
 		bool StartsFromSavestate { get; set; }

@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IEnumerable<PadSchema> GetPadSchemas()
 		{
-			var ss = (N64SyncSettings)Global.Emulator.GetSyncSettings();
+			var ss = ((N64)Global.Emulator).GetSyncSettings();
 			for (var i = 0; i < 4; i++)
 			{
 				if (ss.Controllers[i].IsConnected)

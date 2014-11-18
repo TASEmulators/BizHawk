@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		public bool IRQ;
 		public bool NMI;
-        public bool RDY;
+		public bool RDY;
 
 		public void SyncState(Serializer ser)
 		{
@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			ser.Sync("S", ref S);
 			ser.Sync("NMI", ref NMI);
 			ser.Sync("IRQ", ref IRQ);
-            ser.Sync("RDY", ref RDY);
+			ser.Sync("RDY", ref RDY);
 			ser.Sync("TotalExecutedCycles", ref TotalExecutedCycles);
 			ser.Sync("opcode", ref opcode);
 			ser.Sync("opcode2", ref opcode2);
@@ -109,6 +109,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			ser.Sync("iflag_pending", ref iflag_pending);
 			ser.Sync("interrupt_pending", ref interrupt_pending);
 			ser.Sync("branch_irq_hack", ref branch_irq_hack);
+			ser.Sync("rdy_freeze", ref rdy_freeze);
 			ser.EndSection();
 		}
 

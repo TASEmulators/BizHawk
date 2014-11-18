@@ -11,11 +11,11 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class GreenzoneSettings : Form
+	public partial class GreenzoneSettingsForm : Form
 	{
-		private readonly TasStateManager.ManagerSettings Settings;
+		private readonly TasStateManagerSettings Settings;
 		private decimal _stateSizeMb;
-		public GreenzoneSettings(TasStateManager.ManagerSettings settings)
+		public GreenzoneSettingsForm(TasStateManagerSettings settings)
 		{
 			Settings = settings;
 			InitializeComponent();

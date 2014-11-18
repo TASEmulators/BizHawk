@@ -68,7 +68,6 @@
 			// widget
 			// 
 			this.widget.AutoTab = true;
-			this.widget.Bindings = "button1";
 			this.widget.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.widget.Location = new System.Drawing.Point(0, 0);
 			this.widget.Margin = new System.Windows.Forms.Padding(0);

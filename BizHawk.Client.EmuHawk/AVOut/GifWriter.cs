@@ -10,6 +10,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[VideoWriter("gif", "GIF writer", "Creates an animated .gif")]
 	public class GifWriter : IVideoWriter
 	{
 		public class GifToken : IDisposable
@@ -212,17 +213,8 @@ namespace BizHawk.Client.EmuHawk
 			// gif can't support this
 		}
 
-		public string WriterDescription()
-		{
-			return "Creates an animated .gif";
-		}
 
 		public string DesiredExtension()
-		{
-			return "gif";
-		}
-
-		public string ShortName()
 		{
 			return "gif";
 		}
@@ -234,11 +226,6 @@ namespace BizHawk.Client.EmuHawk
 				f.Dispose();
 				f = null;
 			}
-		}
-
-		public override string ToString()
-		{
-			return "GIF writer";
 		}
 	}
 }

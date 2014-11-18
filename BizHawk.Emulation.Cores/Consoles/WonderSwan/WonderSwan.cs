@@ -11,8 +11,9 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
-	[CoreAttributes("Cygne/Mednafen", "Dox", true, true, "0.9.34.1", "http://mednafen.sourceforge.net/")]
-	public class WonderSwan : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains
+	[CoreAttributes("Cygne/Mednafen", "Dox", true, true, "0.9.36.5", "http://mednafen.sourceforge.net/")]
+	public class WonderSwan : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains,
+		IDebuggable, ISettable<WonderSwan.Settings, WonderSwan.SyncSettings>
 	{
 		#region Controller
 
@@ -496,29 +497,28 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			}
 		}
 
-		public object GetSettings()
+		public Settings GetSettings()
 		{
 			return _Settings.Clone();
 		}
 
-		public object GetSyncSettings()
+		public SyncSettings GetSyncSettings()
 		{
 			return _SyncSettings.Clone();
 		}
 
-		public bool PutSettings(object o)
+		public bool PutSettings(Settings o)
 		{
-			_Settings = (Settings)o;
+			_Settings = o;
 			var native = _Settings.GetNativeSettings();
 			BizSwan.bizswan_putsettings(Core, ref native);
 			return false;
 		}
 
-		public bool PutSyncSettings(object o)
+		public bool PutSyncSettings(SyncSettings o)
 		{
-			var newsettings = (SyncSettings)o;
-			bool ret = SyncSettings.NeedsReboot(newsettings, _SyncSettings);
-			_SyncSettings = newsettings;
+			bool ret = SyncSettings.NeedsReboot(o, _SyncSettings);
+			_SyncSettings = o;
 			return ret;
 		}
 

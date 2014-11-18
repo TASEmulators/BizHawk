@@ -17,7 +17,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		portedVersion: "2.0",
 		portedUrl: "https://code.google.com/p/mupen64plus/"
 		)]
-	public partial class N64 : IEmulator, IMemoryDomains
+	public partial class N64 : IEmulator, IMemoryDomains, IDebuggable,
+		ISettable<N64Settings, N64SyncSettings>
 	{
 		private readonly N64Input _inputProvider;
 		private readonly N64VideoProvider _videoProvider;
@@ -481,25 +482,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		#region Settings
 
-		public object GetSettings()
+		public N64Settings GetSettings()
 		{
 			return _settings.Clone();
 		}
 
-		public object GetSyncSettings()
+		public N64SyncSettings GetSyncSettings()
 		{
 			return _syncSettings.Clone();
 		}
 
-		public bool PutSettings(object o)
+		public bool PutSettings(N64Settings o)
 		{
-			_settings = (N64Settings)o;
+			_settings = o;
 			return true;
 		}
 
-		public bool PutSyncSettings(object o)
+		public bool PutSyncSettings(N64SyncSettings o)
 		{
-			_syncSettings = (N64SyncSettings)o;
+			_syncSettings = o;
 			SetControllerButtons();
 			return true;
 		}

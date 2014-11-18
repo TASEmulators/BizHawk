@@ -169,19 +169,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					irq_counter++;
 			}
 		}
-
-		/*
-		public override void ClockPPU()
-		{
-			if (!irq_enabled) return;
-
-			irq_cycles--;
-			if (irq_cycles == 0)
-			{
-				irq_cycles += 3;
-				ClockIRQ();
-			}
-		}*/
-
 	}
 }

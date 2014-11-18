@@ -22,6 +22,7 @@
 #include gamedb_snes.txt
 #include gamedb_n64.txt
 #include gamedb_gba.txt
+#include gamedb_lynx.txt
 
 ; ************ TI-83 ************
 
@@ -133,6 +134,17 @@ sha1:F794FDA12D34E611D58E652319ED583AE61B81E0		Blargg's 6-MMC6.nes	NES		board=MA
 sha1:2F29F3DC724027FAD926BC9D4470A481884E42A5		Blargg's 6-MMC6.nes (newer)	NES		board=MAPPER004_MMC6
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
+;datach stuff
+29CC759D5CA214EEFC0CC1C6CE0F8B9111E58124		Datach - Battle Rush - Build Up Robot Tournament	NES		board=MAPPER157
+87478B635FEFB25FA13C4876E20F505A97426C1B		Datach - Dragon Ball Z - Gekitou Tenkaichi Budou Kai	NES		board=MAPPER157
+B2089533E05FE95814D0D77F2729944CBEB95988		Datach - J League Super Top Players	NES		board=MAPPER157
+EDD7A45A7F27E396B6D686F1861642D509863132		Datach - SD Gundam - Gundam Wars	NES		board=MAPPER157
+533170D5EB685231CCD27B9C136FFA4FAD68A7B8		Datach - Ultraman Club - Supokon Fight!	NES		board=MAPPER157
+74218AAE93E4FEBFB2284BCF15811453418A2029		Datach - Yuu Yuu Hakusho - Bakutou Ankoku Bujutsu Kai	NES		board=MAPPER157
+6F3C65BD945FE13305A7A39D8CD884A5BF314A8F		Datach - Crayon Shin Chan - Ora to Poi Poi	NES		board=MAPPER157
+
 #include gamedb_neshomebrew.txt
 #include gamedb_vs.txt
 #include gamedb_user.txt
+#include gamedb_ws.txt
+#include gamedb_wsc.txt

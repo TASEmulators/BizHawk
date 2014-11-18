@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
-
-// IDEA: put filesizes in DB too. then scans can go real quick by only scanning filesizes that match (and then scanning filesizes that dont match, in case of an emergency)
-// this would be adviseable if we end up with a very large firmware file
 
 namespace BizHawk.Client.Common
 {
@@ -27,6 +25,7 @@ namespace BizHawk.Client.Common
 			public FirmwareDatabase.FirmwareFile KnownFirmwareFile { get; set; }
 			public string FilePath { get; set; }
 			public string Hash { get; set; }
+			public long Size { get; set; }
 		}
 
 		private readonly Dictionary<FirmwareDatabase.FirmwareRecord, ResolutionInfo> _resolutionDictionary = new Dictionary<FirmwareDatabase.FirmwareRecord, ResolutionInfo>();
@@ -36,8 +35,10 @@ namespace BizHawk.Client.Common
 			return Resolve(FirmwareDatabase.LookupFirmwareRecord(sysId, firmwareId));
 		}
 
-		public ResolutionInfo Resolve(FirmwareDatabase.FirmwareRecord record)
+		public ResolutionInfo Resolve(FirmwareDatabase.FirmwareRecord record, bool forbidScan = false)
 		{
+			//purpose of forbidScan: sometimes this is called from a loop in Scan(). we dont want to repeatedly DoScanAndResolve in that case, its already been done.
+
 			bool first = true;
 
 		RETRY:
@@ -49,7 +50,7 @@ namespace BizHawk.Client.Common
 			// NOTE: this could result in bad performance in some cases if the scanning happens repeatedly..
 			if (resolved == null && first)
 			{
-				DoScanAndResolve();
+				if(!forbidScan) DoScanAndResolve();
 				first = false;
 				goto RETRY;
 			}
@@ -65,24 +66,25 @@ namespace BizHawk.Client.Common
 			return resolved.FilePath;
 		}
 
-		public class RealFirmwareReader
+		public class RealFirmwareReader : IDisposable
 		{
-			byte[] buffer = new byte[0];
+			System.Security.Cryptography.SHA1 sha1 = System.Security.Cryptography.SHA1.Create();
+			public void Dispose()
+			{
+				sha1.Dispose();
+				sha1 = null;
+			}
 			public RealFirmwareFile Read(FileInfo fi)
 			{
 				var rff = new RealFirmwareFile { FileInfo = fi };
 				long len = fi.Length;
-				if (len > buffer.Length)
-				{
-					buffer = new byte[len];
-				}
 
 				using (var fs = fi.OpenRead())
 				{
-					fs.Read(buffer, 0, (int)len);
+					sha1.ComputeHash(fs);
 				}
 
-				rff.Hash = buffer.HashSHA1(0, (int)len);
+				rff.Hash = sha1.Hash.BytesToHexString();
 				dict[rff.Hash] = rff;
 				_files.Add(rff);
 				return rff;
@@ -94,119 +96,131 @@ namespace BizHawk.Client.Common
 
 		public void DoScanAndResolve()
 		{
-			var reader = new RealFirmwareReader();
+			//build a list of file sizes. Only those will be checked during scanning
+			HashSet<long> sizes = new HashSet<long>();
+			foreach (var ff in FirmwareDatabase.FirmwareFiles)
+				sizes.Add(ff.size);
 
-			// build a list of files under the global firmwares path, and build a hash for each of them while we're at it
-			var todo = new Queue<DirectoryInfo>();
-			todo.Enqueue(new DirectoryInfo(PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null)));
+			using(var reader = new RealFirmwareReader())
+			{
+				// build a list of files under the global firmwares path, and build a hash for each of them while we're at it
+				var todo = new Queue<DirectoryInfo>();
+				todo.Enqueue(new DirectoryInfo(PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null)));
 	
-			while (todo.Count != 0)
-			{
-				var di = todo.Dequeue();
-
-				if (!di.Exists)
-					continue;
-
-				// we're going to allow recursing into subdirectories, now. its been verified to work OK
-				foreach (var disub in di.GetDirectories())
+				while (todo.Count != 0)
 				{
-					todo.Enqueue(disub);
-				}
-				
-				foreach (var fi in di.GetFiles())
-				{
-					reader.Read(fi);
-				}
-			}
+					var di = todo.Dequeue();
 
-			// now, for each firmware record, try to resolve it
-			foreach (var fr in FirmwareDatabase.FirmwareRecords)
-			{
-				// clear previous resolution results
-				_resolutionDictionary.Remove(fr);
-
-				// get all options for this firmware (in order)
-				var fr1 = fr;
-				var options =
-					from fo in FirmwareDatabase.FirmwareOptions
-					where fo.systemId == fr1.systemId && fo.firmwareId == fr1.firmwareId && fo.IsAcceptableOrIdeal
-					select fo;
-
-				// try each option
-				foreach (var fo in options)
-				{
-					var hash = fo.hash;
-
-					// did we find this firmware?
-					if (reader.dict.ContainsKey(hash))
-					{
-						// rad! then we can use it
-						var ri = new ResolutionInfo
-							{
-								FilePath = reader.dict[hash].FileInfo.FullName,
-								KnownFirmwareFile = FirmwareDatabase.FirmwareFilesByHash[hash],
-								Hash = hash
-							};
-						_resolutionDictionary[fr] = ri;
-						goto DONE_FIRMWARE;
-					}
-				}
-
-			DONE_FIRMWARE: ;
-
-			}
-
-			// apply user overrides
-			foreach (var fr in FirmwareDatabase.FirmwareRecords)
-			{
-				string userSpec;
-				
-				// do we have a user specification for this firmware record?
-				if (Global.Config.FirmwareUserSpecifications.TryGetValue(fr.ConfigKey, out userSpec))
-				{
-					// flag it as user specified
-					ResolutionInfo ri;
-					if (!_resolutionDictionary.TryGetValue(fr, out ri))
-					{
-						ri = new ResolutionInfo();
-						_resolutionDictionary[fr] = ri;
-					}
-					ri.UserSpecified = true;
-					ri.KnownFirmwareFile = null;
-					ri.FilePath = userSpec;
-					ri.Hash = null;
-
-					// check whether it exists
-					var fi = new FileInfo(userSpec);
-					if (!fi.Exists)
-					{
-						ri.Missing = true;
+					if (!di.Exists)
 						continue;
-					}
 
-					// compute its hash 
-					var rff = reader.Read(fi);
-					ri.Hash = rff.Hash;
-
-					// check whether it was a known file anyway, and go ahead and bind to the known file, as a perk (the firmwares config doesnt really use this information right now)
-					FirmwareDatabase.FirmwareFile ff;
-					if (FirmwareDatabase.FirmwareFilesByHash.TryGetValue(rff.Hash,out ff))
+					// we're going to allow recursing into subdirectories, now. its been verified to work OK
+					foreach (var disub in di.GetDirectories())
 					{
-						ri.KnownFirmwareFile = ff;
+						todo.Enqueue(disub);
+					}
+				
+					foreach (var fi in di.GetFiles())
+					{
+						if(sizes.Contains(fi.Length))
+							reader.Read(fi);
+					}
+				}
 
-						// if the known firmware file is for a different firmware, flag it so we can show a warning
-						var option =
-							(from fo in FirmwareDatabase.FirmwareOptions
-							where fo.hash == rff.Hash && fo.ConfigKey != fr.ConfigKey
-							select fr).FirstOrDefault();
+				// now, for each firmware record, try to resolve it
+				foreach (var fr in FirmwareDatabase.FirmwareRecords)
+				{
+					// clear previous resolution results
+					_resolutionDictionary.Remove(fr);
 
-						if (option != null)
+					// get all options for this firmware (in order)
+					var fr1 = fr;
+					var options =
+						from fo in FirmwareDatabase.FirmwareOptions
+						where fo.systemId == fr1.systemId && fo.firmwareId == fr1.firmwareId && fo.IsAcceptableOrIdeal
+						select fo;
+
+					// try each option
+					foreach (var fo in options)
+					{
+						var hash = fo.hash;
+
+						// did we find this firmware?
+						if (reader.dict.ContainsKey(hash))
 						{
-							ri.KnownMismatching = true;
+							// rad! then we can use it
+							var ri = new ResolutionInfo
+								{
+									FilePath = reader.dict[hash].FileInfo.FullName,
+									KnownFirmwareFile = FirmwareDatabase.FirmwareFilesByHash[hash],
+									Hash = hash,
+									Size = fo.size
+								};
+							_resolutionDictionary[fr] = ri;
+							goto DONE_FIRMWARE;
 						}
 					}
+
+				DONE_FIRMWARE: ;
+
 				}
-			}
-		}
-	}
-}
+
+				// apply user overrides
+				foreach (var fr in FirmwareDatabase.FirmwareRecords)
+				{
+					string userSpec;
+
+					// do we have a user specification for this firmware record?
+					if (Global.Config.FirmwareUserSpecifications.TryGetValue(fr.ConfigKey, out userSpec))
+					{
+						// flag it as user specified
+						ResolutionInfo ri;
+						if (!_resolutionDictionary.TryGetValue(fr, out ri))
+						{
+							ri = new ResolutionInfo();
+							_resolutionDictionary[fr] = ri;
+						}
+						ri.UserSpecified = true;
+						ri.KnownFirmwareFile = null;
+						ri.FilePath = userSpec;
+						ri.Hash = null;
+
+						// check whether it exists
+						var fi = new FileInfo(userSpec);
+						if (!fi.Exists)
+						{
+							ri.Missing = true;
+							continue;
+						}
+
+						// compute its hash 
+						var rff = reader.Read(fi);
+						ri.Size = fi.Length;
+						ri.Hash = rff.Hash;
+
+						// check whether it was a known file anyway, and go ahead and bind to the known file, as a perk (the firmwares config doesnt really use this information right now)
+						FirmwareDatabase.FirmwareFile ff;
+						if (FirmwareDatabase.FirmwareFilesByHash.TryGetValue(rff.Hash, out ff))
+						{
+							ri.KnownFirmwareFile = ff;
+
+							// if the known firmware file is for a different firmware, flag it so we can show a warning
+							var option =
+								(from fo in FirmwareDatabase.FirmwareOptions
+								 where fo.hash == rff.Hash && fo.ConfigKey != fr.ConfigKey
+								 select fr).FirstOrDefault();
+
+							if (option != null)
+							{
+								ri.KnownMismatching = true;
+							}
+						}
+					}
+
+				} //foreach(firmware record)
+			} //using(new RealFirmwareReader())
+		} //DoScanAndResolve()
+
+	} //class FirmwareManager
+
+} //namespace

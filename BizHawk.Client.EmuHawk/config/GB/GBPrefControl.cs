@@ -33,6 +33,7 @@ namespace BizHawk.Client.EmuHawk.config.GB
 			this.ss = ss ?? new Gameboy.GambatteSyncSettings();
 			propertyGrid1.SelectedObject = this.ss;
 			propertyGrid1.Enabled = !Global.MovieSession.Movie.IsActive;
+			checkBoxMuted.Checked = this.s.Muted;
 		}
 
 		public void GetSettings(out Gameboy.GambatteSettings s, out Gameboy.GambatteSyncSettings ss)
@@ -59,6 +60,11 @@ namespace BizHawk.Client.EmuHawk.config.GB
 		private void propertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
 		{
 			SyncSettingsChanged = true;
+		}
+
+		private void checkBoxMuted_CheckedChanged(object sender, EventArgs e)
+		{
+			s.Muted = (sender as CheckBox).Checked;
 		}
 	}
 }
