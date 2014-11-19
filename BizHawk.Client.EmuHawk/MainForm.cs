@@ -663,12 +663,12 @@ namespace BizHawk.Client.EmuHawk
 					{ "Coleco", "Colecovision" },
 					{ "TI83", "TI-83 Calculator" },
 
-					{ "WSWAN", "WonderSwan" }
+					{ "WSWAN", "WonderSwan" },
+                    { "GBA", "Gameboy Advance" }
 				};
 
 				if (VersionInfo.DeveloperBuild)
 				{
-					released.Add("GBA", "Gameboy Advance");
 					released.Add("C64", "Commodore 64");
 				}
 
