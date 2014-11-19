@@ -1125,8 +1125,6 @@ namespace BizHawk.Client.EmuHawk
 				Global.Emulator.HasMemoryDomains();
 
 			batchRunnerToolStripMenuItem.Visible = VersionInfo.DeveloperBuild;
-
-			TAStudioMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
 
 		private void ToolBoxMenuItem_Click(object sender, EventArgs e)
