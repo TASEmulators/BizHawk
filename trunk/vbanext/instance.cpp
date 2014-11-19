@@ -5608,6 +5608,8 @@ int armExecute (void)
 		int oldArmNextPC = bus.armNextPC;
 
 		bus.armNextPC = bus.reg[15].I;
+		if (traceCallback)
+			traceCallback(bus.armNextPC, opcode);
 		if (fetchCallback)
 			fetchCallback(bus.armNextPC);
 		bus.reg[15].I += 4;
@@ -7207,6 +7209,8 @@ int thumbExecute (void)
 		u32 oldArmNextPC = bus.armNextPC;
 
 		bus.armNextPC = bus.reg[15].I;
+		if (traceCallback) // low bit of addr is set on callback to indicate thumb mode
+			traceCallback(bus.armNextPC | 1, opcode);
 		if (fetchCallback)
 			fetchCallback(bus.armNextPC);
 
@@ -12961,6 +12965,7 @@ int scanlineCallbackLine;
 void (*fetchCallback)(u32 addr);
 void (*writeCallback)(u32 addr);
 void (*readCallback)(u32 addr);
+void (*traceCallback)(u32 addr, u32 opcode);
 
 void (*padCallback)();
 
@@ -13443,6 +13448,12 @@ template<bool isReader>bool SyncBatteryRam(NewState *ns)
 		writeCallback = cb;
 	}
 
+	void SetTraceCallback(void (*cb)(u32 addr, u32 opcode))
+	{
+		// before each opcode fetch
+		traceCallback = cb;
+	}
+
 }; // class Gigazoid
 
 // zeroing mem operators: these are very important
@@ -13587,6 +13598,11 @@ EXPORT u8 SystemBusRead(Gigazoid *g, u32 addr)
 EXPORT void SetScanlineCallback(Gigazoid *g, void (*cb)(), int scanline)
 {
 	g->SetScanlineCallback(cb, scanline);
+}
+
+EXPORT void SetTraceCallback(Gigazoid *g, void (*cb)(u32 addr, u32 opcode))
+{
+	g->SetTraceCallback(cb);
 }
 
 EXPORT u32 *GetRegisters(Gigazoid *g)

@@ -143,6 +143,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		[UnmanagedFunctionPointer(cc)]
 		public delegate void AddressCallback(uint addr);
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="addr">if bit 0 is set, thumb mode</param>
+		/// <param name="opcode"></param>
+		[UnmanagedFunctionPointer(cc)]
+		public delegate void TraceCallback(uint addr, uint opcode);
+
 		[DllImport(dllname, CallingConvention = cc)]
 		public static extern void SetPadCallback(IntPtr g, StandardCallback cb);
 		[DllImport(dllname, CallingConvention = cc)]
@@ -151,6 +159,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public static extern void SetReadCallback(IntPtr g, AddressCallback cb);
 		[DllImport(dllname, CallingConvention = cc)]
 		public static extern void SetWriteCallback(IntPtr g, AddressCallback cb);
+		[DllImport(dllname, CallingConvention = cc)]
+		public static extern void SetTraceCallback(IntPtr g, TraceCallback cb);
 
 
 		[StructLayout(LayoutKind.Sequential)]
