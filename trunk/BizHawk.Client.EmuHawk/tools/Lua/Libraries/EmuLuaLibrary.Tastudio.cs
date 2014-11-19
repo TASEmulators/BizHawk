@@ -7,7 +7,7 @@ using LuaInterface;
 namespace BizHawk.Client.EmuHawk
 {
 	[Description("A library for manipulating the Tastudio dialog of the EmuHawk client")]
-	[LuaLibraryAttributes(released: false)]
+	[LuaLibraryAttributes(released: true)]
 	public sealed class TastudioLuaLibrary : LuaLibraryBase
 	{
 		public TastudioLuaLibrary(Lua lua)
