@@ -19,3 +19,6 @@ wonderswan: Load wonderswan/bizswan/bizswan.sln; builds as VC++ (VC10).  Output 
 
 yabause: Load yabause/src/libyabause/libyabause.sln; builds as VC++ (VC10).  Output dll automatically copies to appropriate folder.
 
+
+libdarm: stock build from https://github.com/jbremer/darm.git   71a027e0ffb2171d01213c6ecc6da1c49e158398
+
