@@ -273,9 +273,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		string Trace(uint addr, uint opcode)
 		{
 			return
-				string.Format("{0:x8} {1}",
+				string.Format("{0:x8} {1} {2}",
 				opcode,
-				Emulation.Cores.Components.ARM.Darm.DisassembleStuff(addr, opcode));
+				(Emulation.Cores.Components.ARM.Darm.DisassembleStuff(addr, opcode) ?? "").PadRight(30),
+				regs.TraceString());
 		}
 
 		void InitCallbacks()
