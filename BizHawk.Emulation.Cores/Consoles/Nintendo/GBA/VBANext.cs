@@ -79,7 +79,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				InitCallbacks();
 
 				CoreComm.CpuTraceAvailable = true;
-				CoreComm.TraceHeader = "--ADDR-- ---OP---";
 
 				// todo: hook me up as a setting
 				SetupColors();
@@ -271,13 +270,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		LibVBANext.AddressCallback writecb;
 		LibVBANext.TraceCallback tracecb;
 
+		string Trace(uint addr, uint opcode)
+		{
+			return
+				string.Format("{0:x8} {1}",
+				opcode,
+				Emulation.Cores.Components.ARM.Darm.DisassembleStuff(addr, opcode));
+		}
+
 		void InitCallbacks()
 		{
 			padcb = new LibVBANext.StandardCallback(() => CoreComm.InputCallback.Call());
 			fetchcb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallExecute(addr));
 			readcb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallRead(addr));
 			writecb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallWrite(addr));
-			tracecb = new LibVBANext.TraceCallback((addr, opcode) => CoreComm.Tracer.Put(string.Format("{0:x8} {1:x8}", addr, opcode)));
+			tracecb = new LibVBANext.TraceCallback((addr, opcode) => CoreComm.Tracer.Put(Trace(addr, opcode)));
 		}
 
 		void SyncCallbacks()
