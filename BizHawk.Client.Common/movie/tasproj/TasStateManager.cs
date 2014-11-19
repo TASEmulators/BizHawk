@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 		private readonly TasMovie _movie;
 		private int _expectedStateSize = 0;
 
-		private const int _minFrequency = 2;
+		private int _minFrequency = VersionInfo.DeveloperBuild ? 2 : 1;
 		private const int _maxFrequency = 16; 
 		private int StateFrequency
 		{
