@@ -34,6 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	{
 		public LibsnesCore(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData, CoreComm comm, object Settings, object SyncSettings)
 		{
+			_game = game;
 			CoreComm = comm;
 			byte[] sgbRomData = null;
 			if (game["SGB"])
@@ -161,6 +162,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				bw.Write(new byte[536]);
 				bw.Close();
 				savestatebuff = ms.ToArray();
+			}
+		}
+
+		private GameInfo _game;
+
+		public string CurrentProfile
+		{
+			get
+			{
+				// TODO: This logic will only work until Accuracy is ready, would we really want to override the user's choice of Accuracy with Compatibility?
+				if (_game.OptionValue("profile") == "Compatibility")
+				{
+					return "Compatibility";
+				}
+
+				return SyncSettings.Profile;
 			}
 		}
 
@@ -345,12 +362,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			// if (Win32.Is64BitOperatingSystem)
 			// bits = "64";
 
-			var exename = "libsneshawk-" + bits + "-" +  SyncSettings.Profile.ToLower() + ".exe";
+			var exename = "libsneshawk-" + bits + "-" + CurrentProfile.ToLower() + ".exe";
 
 			string exePath = Path.Combine(CoreComm.CoreFileProvider.DllPath(), exename);
 
 			if (!File.Exists(exePath))
-				throw new InvalidOperationException("Couldn't locate the executable for SNES emulation for profile: " + SyncSettings.Profile + ". Please make sure you're using a fresh dearchive of a BizHawk distribution.");
+				throw new InvalidOperationException("Couldn't locate the executable for SNES emulation for profile: " + CurrentProfile + ". Please make sure you're using a fresh dearchive of a BizHawk distribution.");
 
 			return exePath;
 		}
@@ -687,7 +704,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		// Perormance will NEVER be in deterministic mode (and the client side logic will prohibit movie recording on it)
 		public bool DeterministicEmulation
 		{
-			get { return SyncSettings.Profile == "Compatibility" || SyncSettings.Profile == "Accuracy"; }
+			get { return CurrentProfile == "Compatibility" || CurrentProfile == "Accuracy"; }
 			private set {  /* Do nothing */ }
 		}
 
@@ -847,7 +864,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			var temp = SaveStateBinary();
 			temp.SaveAsHexFast(writer);
 			writer.WriteLine("Frame {0}", Frame); // we don't parse this, it's only for the client to use
-			writer.WriteLine("Profile {0}", SyncSettings.Profile);
+			writer.WriteLine("Profile {0}", CurrentProfile);
 		}
 		public void LoadStateText(TextReader reader)
 		{
@@ -871,7 +888,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			writer.Write(IsLagFrame);
 			writer.Write(LagCount);
 			writer.Write(Frame);
-			writer.Write(SyncSettings.Profile);
+			writer.Write(CurrentProfile);
 
 			writer.Flush();
 		}
@@ -919,9 +936,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		void ValidateLoadstateProfile(string profile)
 		{
-			if (profile != SyncSettings.Profile)
+			if (profile != CurrentProfile)
 			{
-				throw new InvalidOperationException(string.Format("You've attempted to load a savestate made using a different SNES profile ({0}) than your current configuration ({1}). We COULD automatically switch for you, but we havent done that yet. This error is to make sure you know that this isnt going to work right now.", profile, SyncSettings.Profile));
+				throw new InvalidOperationException(string.Format("You've attempted to load a savestate made using a different SNES profile ({0}) than your current configuration ({1}). We COULD automatically switch for you, but we havent done that yet. This error is to make sure you know that this isnt going to work right now.", profile, CurrentProfile));
 			}
 		}
 

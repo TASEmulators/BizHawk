@@ -413,8 +413,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (Global.Emulator is LibsnesCore)
 			{
 				var snes = (LibsnesCore)Global.Emulator;
-				var ss = snes.GetSyncSettings();
-				if (ss.Profile == "Performance")
+				if (snes.CurrentProfile == "Performance")
 				{
 					var box = new MsgBox(
 						"While the performance core is faster, it is not stable enough for movie recording\n\nSwitch to Compatibility?",
@@ -431,6 +430,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (result == DialogResult.Yes)
 					{
+						var ss = snes.GetSyncSettings();
 						ss.Profile = "Compatibility";
 						snes.PutSyncSettings(ss);
 					}
