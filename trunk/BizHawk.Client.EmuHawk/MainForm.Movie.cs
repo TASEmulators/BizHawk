@@ -34,13 +34,13 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.MovieSession.PreviousNES_InQuickNES.HasValue)
 			{
-				Global.Config.NES_InQuickNES = Global.MovieSession.PreviousNES_InQuickNES.HasValue;
+				Global.Config.NES_InQuickNES = Global.MovieSession.PreviousNES_InQuickNES.Value;
 				Global.MovieSession.PreviousNES_InQuickNES = null;
 			}
 
 			if (Global.MovieSession.PreviousSNES_InSnes9x.HasValue)
 			{
-				Global.Config.SNES_InSnes9x = Global.MovieSession.PreviousSNES_InSnes9x.HasValue;
+				Global.Config.SNES_InSnes9x = Global.MovieSession.PreviousSNES_InSnes9x.Value;
 				Global.MovieSession.PreviousSNES_InSnes9x = null;
 			}
 
