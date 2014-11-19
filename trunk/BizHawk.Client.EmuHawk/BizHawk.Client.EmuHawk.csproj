@@ -1759,6 +1759,7 @@
     <None Include="images\Both.png" />
     <None Include="config\ControllerImages\A78Joystick.png" />
     <None Include="config\ControllerImages\IntVController.png" />
+    <None Include="config\ControllerImages\Lynx.png" />
     <Content Include="config\ControllerImages\N64.png" />
     <Content Include="config\ControllerImages\SaturnController.jpg" />
     <None Include="images\addWatch.ico" />
