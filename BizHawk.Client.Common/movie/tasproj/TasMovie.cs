@@ -398,7 +398,7 @@ namespace BizHawk.Client.Common
 					else if (line[0] == '|')
 					{
 						newLog.Add(line);
-						if (!TimelineBranchFrame.HasValue && line != _log[counter])
+						if (!TimelineBranchFrame.HasValue && counter < _log.Count && line != _log[counter])
 						{
 							TimelineBranchFrame = counter;
 						}
