@@ -229,14 +229,17 @@ namespace BizHawk.Client.Common
 		public void Load(BinaryReader br)
 		{
 			States.Clear();
-			int nstates = br.ReadInt32();
-			for (int i = 0; i < nstates; i++)
+			if (br.BaseStream.Length > 0)
 			{
-				int frame = br.ReadInt32();
-				int len = br.ReadInt32();
-				byte[] data = br.ReadBytes(len);
-				States.Add(frame, data);
-				Used += len;
+				int nstates = br.ReadInt32();
+				for (int i = 0; i < nstates; i++)
+				{
+					int frame = br.ReadInt32();
+					int len = br.ReadInt32();
+					byte[] data = br.ReadBytes(len);
+					States.Add(frame, data);
+					Used += len;
+				}
 			}
 		}
 
