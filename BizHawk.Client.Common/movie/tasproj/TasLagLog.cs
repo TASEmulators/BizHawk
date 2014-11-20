@@ -85,10 +85,13 @@ namespace BizHawk.Client.Common
 		public void Load(BinaryReader br)
 		{
 			LagLog.Clear();
-			int length = br.ReadInt32();
-			for (int i = 0; i < length; i++)
+			if (br.BaseStream.Length > 0)
 			{
-				LagLog.Add(br.ReadInt32(), br.ReadBoolean());
+				int length = br.ReadInt32();
+				for (int i = 0; i < length; i++)
+				{
+					LagLog.Add(br.ReadInt32(), br.ReadBoolean());
+				}
 			}
 		}
 	}
