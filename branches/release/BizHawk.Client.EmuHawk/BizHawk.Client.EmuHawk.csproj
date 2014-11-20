@@ -964,6 +964,7 @@
     <Compile Include="tools\VirtualPads\schema\GBASchema.cs" />
     <Compile Include="tools\VirtualPads\schema\GBSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\GenSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\LynxSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\SatSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\IVirtualPadSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\N64Schema.cs" />
