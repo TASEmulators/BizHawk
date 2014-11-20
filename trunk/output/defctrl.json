@@ -636,9 +636,9 @@
       "Right": "RightArrow",
       "A": "X",
       "B": "Z",
-      "Option 1": "Return",
-      "Option 2": "Space",
-      "Pause": "",
+      "Option 1": "A",
+      "Option 2": "X",
+      "Pause": "Return",
       "Power": ""
     }
   },
