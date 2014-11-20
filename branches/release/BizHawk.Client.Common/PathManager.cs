@@ -306,7 +306,7 @@ namespace BizHawk.Client.Common
 			// Bsnes profiles have incompatible savestates so save the profile name
 			if (Global.Emulator is LibsnesCore)
 			{
-				name += "." + (Global.Emulator as LibsnesCore).GetSyncSettings().Profile;
+				name += "." + (Global.Emulator as LibsnesCore).CurrentProfile;
 			}
 
 			if (Global.MovieSession.Movie.IsActive)

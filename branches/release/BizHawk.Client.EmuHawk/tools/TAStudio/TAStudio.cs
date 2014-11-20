@@ -514,7 +514,11 @@ namespace BizHawk.Client.EmuHawk
 			InitializeOnLoad();
 			LoadConfigSettings();
 			SetColumnsFromCurrentStickies();
-			RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems().ToArray());
+
+			if (VersionInfo.DeveloperBuild)
+			{
+				RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems().ToArray());
+			}
 
 			RightClickMenu.Items
 				.OfType<ToolStripMenuItem>()

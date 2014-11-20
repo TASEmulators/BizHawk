@@ -181,6 +181,8 @@ namespace BizHawk.Client.EmuHawk
 			ResizeEnd += (o, e) =>
 			{
 				_inResizeLoop = false;
+				SetWindowText();
+
 				if (GlobalWin.PresentationPanel != null)
 				{
 					GlobalWin.PresentationPanel.Resized = true;
@@ -661,12 +663,12 @@ namespace BizHawk.Client.EmuHawk
 					{ "Coleco", "Colecovision" },
 					{ "TI83", "TI-83 Calculator" },
 
-					{ "WSWAN", "WonderSwan" }
+					{ "WSWAN", "WonderSwan" },
+                    { "GBA", "Gameboy Advance" }
 				};
 
 				if (VersionInfo.DeveloperBuild)
 				{
-					released.Add("GBA", "Gameboy Advance");
 					released.Add("C64", "Commodore 64");
 				}
 
@@ -1895,16 +1897,16 @@ namespace BizHawk.Client.EmuHawk
 					"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
 					"Gameboy Advance", "*.gba;%ARCH%",
 					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
-					"Genesis", "*.gen;*.md;*.smd;*.bin;*.cue;%ARCH%",
 					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
 					"Atari 2600", "*.a26;%ARCH%",
 					"Atari 7800", "*.a78;%ARCH%",
 					"Atari Lynx", "*.lnx;%ARCH%",
 					"Colecovision", "*.col;%ARCH%",
-					"WonderSwan", "*.ws;*.wsc;%ARCH%",
 					"TI-83", "*.rom;%ARCH%",
 					"Archive Files", "%ARCH%",
 					"Savestate", "*.state",
+					"Genesis", "*.gen;*.md;*.smd;*.bin;*.cue;%ARCH%",
+					"WonderSwan", "*.ws;*.wsc;%ARCH%",
 					"All Files", "*.*");
 			}
 

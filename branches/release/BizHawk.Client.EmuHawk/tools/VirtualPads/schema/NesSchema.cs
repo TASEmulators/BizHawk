@@ -4,7 +4,7 @@ using System.Linq;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
-
+using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 namespace BizHawk.Client.EmuHawk
 {
 	[SchemaAttributes("NES")]
@@ -116,10 +116,24 @@ namespace BizHawk.Client.EmuHawk
 					yield return NesConsoleButtons();
 				}
 			}
-			else // Quicknes only supports 2 controllers and no other configuration
+			else
+				// Quicknes Can support none, one or two controllers.
 			{
-				yield return StandardController(1);
-				yield return StandardController(2);
+				var ss = ((QuickNES)Global.Emulator).GetSyncSettings();
+				if (ss.LeftPortConnected == true && ss.RightPortConnected == true)
+				{
+					//Set both controllers
+					yield return StandardController(1);
+					yield return StandardController(2);
+				}
+				else if (ss.LeftPortConnected == true && ss.RightPortConnected == false)
+				{
+					yield return StandardController(1);
+				}
+				else if (ss.LeftPortConnected == false && ss.RightPortConnected == true)
+				{
+					yield return StandardController(1);
+				}
 				yield return NesConsoleButtons();
 			}
 		}

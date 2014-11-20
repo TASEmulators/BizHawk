@@ -78,6 +78,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				InitRegisters();
 				InitCallbacks();
 
+				CoreComm.CpuTraceAvailable = true;
+
 				// todo: hook me up as a setting
 				SetupColors();
 			}
@@ -266,6 +268,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		LibVBANext.AddressCallback fetchcb;
 		LibVBANext.AddressCallback readcb;
 		LibVBANext.AddressCallback writecb;
+		LibVBANext.TraceCallback tracecb;
+
+		string Trace(uint addr, uint opcode)
+		{
+			return
+				string.Format("{0:x8} {1} {2}",
+				opcode,
+				(Emulation.Cores.Components.ARM.Darm.DisassembleStuff(addr, opcode) ?? "").PadRight(30),
+				regs.TraceString());
+		}
 
 		void InitCallbacks()
 		{
@@ -273,6 +285,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			fetchcb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallExecute(addr));
 			readcb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallRead(addr));
 			writecb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallWrite(addr));
+			tracecb = new LibVBANext.TraceCallback((addr, opcode) => CoreComm.Tracer.Put(Trace(addr, opcode)));
 		}
 
 		void SyncCallbacks()
@@ -281,6 +294,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			LibVBANext.SetFetchCallback(Core, CoreComm.MemoryCallbackSystem.HasExecutes ? fetchcb : null);
 			LibVBANext.SetReadCallback(Core, CoreComm.MemoryCallbackSystem.HasReads ? readcb : null);
 			LibVBANext.SetWriteCallback(Core, CoreComm.MemoryCallbackSystem.HasWrites ? writecb : null);
+			LibVBANext.SetTraceCallback(Core, CoreComm.Tracer.Enabled ? tracecb : null);
 		}
 
 		LibVBANext.StandardCallback scanlinecb;
