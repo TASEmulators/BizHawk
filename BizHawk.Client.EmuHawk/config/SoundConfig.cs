@@ -66,16 +66,27 @@ namespace BizHawk.Client.EmuHawk
 		private void SoundVolNumeric_ValueChanged(object sender, EventArgs e)
 		{
 			SoundVolBar.Value = (int)SoundVolNumeric.Value;
+			//This is changed through the user or the Above Scroll Bar
+			//Is it Zero?  Mute
+			if (SoundVolBar.Value == 0)
+			{
+				SoundOnCheckBox.Checked = false;
+			}
+			// Not Zero.  Unmute
+			else
+			{
+				SoundOnCheckBox.Checked = true;
+			}
 		}
 
 		private void SoundOnCheckBox_CheckedChanged(object sender, EventArgs e)
 		{
 			UpdateSoundDialog();
 		}
-
 		private void UpdateSoundDialog()
 		{
-			SoundVolGroup.Enabled =
+			//Ocean Prince commented this out
+			//SoundVolGroup.Enabled =
 			MuteFrameAdvance.Enabled =
 			ThrottlecheckBox.Enabled =
 				SoundOnCheckBox.Checked;

@@ -53,9 +53,12 @@ namespace BizHawk.Client.Common
 
 		public void PopulateFromString(string settings)
 		{
-			var lines = settings.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-			SaveGreenzone = bool.Parse(lines[0]);
-			Capacitymb = int.Parse(lines[1]);
+			if (!string.IsNullOrWhiteSpace(settings))
+			{
+				var lines = settings.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+				SaveGreenzone = bool.Parse(lines[0]);
+				Capacitymb = int.Parse(lines[1]);
+			}
 		}
 	}
 }

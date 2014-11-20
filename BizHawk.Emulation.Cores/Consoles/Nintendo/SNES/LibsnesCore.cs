@@ -21,43 +21,6 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
-	public class ScanlineHookManager
-	{
-		public void Register(object tag, Action<int> callback)
-		{
-			var rr = new RegistrationRecord();
-			rr.tag = tag;
-			rr.callback = callback;
-
-			Unregister(tag);
-			records.Add(rr);
-			OnHooksChanged();
-		}
-
-		public int HookCount { get { return records.Count; } }
-
-		public virtual void OnHooksChanged() { }
-
-		public void Unregister(object tag)
-		{
-			records.RemoveAll((r) => r.tag == tag);
-		}
-
-		public void HandleScanline(int scanline)
-		{
-			foreach (var rr in records) rr.callback(scanline);
-		}
-
-		List<RegistrationRecord> records = new List<RegistrationRecord>();
-
-		class RegistrationRecord
-		{
-			public object tag;
-			public int scanline = 0;
-			public Action<int> callback;
-		}
-	}
-
 	[CoreAttributes(
 		"BSNES",
 		"byuu",
@@ -69,6 +32,155 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	public unsafe class LibsnesCore : IEmulator, IVideoProvider, IMemoryDomains,
 		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
 	{
+		public LibsnesCore(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData, CoreComm comm, object Settings, object SyncSettings)
+		{
+			_game = game;
+			CoreComm = comm;
+			byte[] sgbRomData = null;
+			if (game["SGB"])
+			{
+				if ((romData[0x143] & 0xc0) == 0xc0)
+					throw new CGBNotSupportedException();
+				sgbRomData = CoreComm.CoreFileProvider.GetFirmware("SNES", "Rom_SGB", true, "SGB Rom is required for SGB emulation.");
+				game.FirmwareHash = sgbRomData.HashSHA1();
+			}
+
+			this.Settings = (SnesSettings)Settings ?? new SnesSettings();
+			this.SyncSettings = (SnesSyncSettings)SyncSettings ?? new SnesSyncSettings();
+
+			api = new LibsnesApi(GetExePath());
+			api.CMD_init();
+			api.ReadHook = ReadHook;
+			api.ExecHook = ExecHook;
+			api.WriteHook = WriteHook;
+
+			ScanlineHookManager = new MyScanlineHookManager(this);
+
+			api.CMD_init();
+
+			api.QUERY_set_video_refresh(snes_video_refresh);
+			api.QUERY_set_input_poll(snes_input_poll);
+			api.QUERY_set_input_state(snes_input_state);
+			api.QUERY_set_input_notify(snes_input_notify);
+			api.QUERY_set_path_request(snes_path_request);
+
+			scanlineStart_cb = new LibsnesApi.snes_scanlineStart_t(snes_scanlineStart);
+			tracecb = new LibsnesApi.snes_trace_t(snes_trace);
+
+			soundcb = new LibsnesApi.snes_audio_sample_t(snes_audio_sample);
+			api.QUERY_set_audio_sample(soundcb);
+
+			RefreshPalette();
+
+			// start up audio resampler
+			InitAudio();
+
+			//strip header
+			if (romData != null)
+				if ((romData.Length & 0x7FFF) == 512)
+				{
+					var newData = new byte[romData.Length - 512];
+					Array.Copy(romData, 512, newData, 0, newData.Length);
+					romData = newData;
+				}
+
+			if (game["SGB"])
+			{
+				IsSGB = true;
+				SystemId = "SNES";
+				BoardName = "SGB";
+
+				CurrLoadParams = new LoadParams()
+				{
+					type = LoadParamType.SuperGameBoy,
+					rom_xml = null,
+					rom_data = sgbRomData,
+					rom_size = (uint)sgbRomData.Length,
+					dmg_xml = null,
+					dmg_data = romData,
+					dmg_size = (uint)romData.Length
+				};
+
+				if (!LoadCurrent())
+					throw new Exception("snes_load_cartridge_normal() failed");
+			}
+			else
+			{
+				//we may need to get some information out of the cart, even during the following bootup/load process
+				if (xmlData != null)
+				{
+					romxml = new System.Xml.XmlDocument();
+					romxml.Load(new MemoryStream(xmlData));
+
+					//bsnes wont inspect the xml to load the necessary sfc file.
+					//so, we have to do that here and pass it in as the romData :/
+					if (romxml["cartridge"] != null && romxml["cartridge"]["rom"] != null)
+						romData = File.ReadAllBytes(CoreComm.CoreFileProvider.PathSubfile(romxml["cartridge"]["rom"].Attributes["name"].Value));
+					else
+						throw new Exception("Could not find rom file specification in xml file. Please check the integrity of your xml file");
+				}
+
+				SystemId = "SNES";
+				CurrLoadParams = new LoadParams()
+				{
+					type = LoadParamType.Normal,
+					xml_data = xmlData,
+					rom_data = romData
+				};
+
+				if (!LoadCurrent())
+					throw new Exception("snes_load_cartridge_normal() failed");
+			}
+
+			if (api.QUERY_get_region() == LibsnesApi.SNES_REGION.NTSC)
+			{
+				//similar to what aviout reports from snes9x and seems logical from bsnes first principles. bsnes uses that numerator (ntsc master clockrate) for sure.
+				CoreComm.VsyncNum = 21477272;
+				CoreComm.VsyncDen = 4 * 341 * 262;
+			}
+			else
+			{
+				//http://forums.nesdev.com/viewtopic.php?t=5367&start=19
+				CoreComm.VsyncNum = 21281370;
+				CoreComm.VsyncDen = 4 * 341 * 312;
+			}
+
+			CoreComm.CpuTraceAvailable = true;
+
+			api.CMD_power();
+
+			SetupMemoryDomains(romData, sgbRomData);
+
+			DeterministicEmulation = deterministicEmulation;
+			if (DeterministicEmulation) // save frame-0 savestate now
+			{
+				MemoryStream ms = new MemoryStream();
+				BinaryWriter bw = new BinaryWriter(ms);
+				bw.Write(CoreSaveState());
+				bw.Write(true); // framezero, so no controller follows and don't frameadvance on load
+				// hack: write fake dummy controller info
+				bw.Write(new byte[536]);
+				bw.Close();
+				savestatebuff = ms.ToArray();
+			}
+		}
+
+		private GameInfo _game;
+
+		public string CurrentProfile
+		{
+			get
+			{
+				// TODO: This logic will only work until Accuracy is ready, would we really want to override the user's choice of Accuracy with Compatibility?
+				if (_game.OptionValue("profile") == "Compatibility")
+				{
+					return "Compatibility";
+				}
+
+				return SyncSettings.Profile;
+			}
+		}
+
 		public bool IsSGB { get; private set; }
 
 		/// <summary>disable all external callbacks.  the front end should not even know the core is frame advancing</summary>
@@ -250,12 +362,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			// if (Win32.Is64BitOperatingSystem)
 			// bits = "64";
 
-			var exename = "libsneshawk-" + bits + "-" +  SyncSettings.Profile.ToLower() + ".exe";
+			var exename = "libsneshawk-" + bits + "-" + CurrentProfile.ToLower() + ".exe";
 
 			string exePath = Path.Combine(CoreComm.CoreFileProvider.DllPath(), exename);
 
 			if (!File.Exists(exePath))
-				throw new InvalidOperationException("Couldn't locate the executable for SNES emulation for profile: " + SyncSettings.Profile + ". Please make sure you're using a fresh dearchive of a BizHawk distribution.");
+				throw new InvalidOperationException("Couldn't locate the executable for SNES emulation for profile: " + CurrentProfile + ". Please make sure you're using a fresh dearchive of a BizHawk distribution.");
 
 			return exePath;
 		}
@@ -313,138 +425,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			if (CurrLoadParams.type == LoadParamType.Normal)
 				return api.CMD_load_cartridge_normal(CurrLoadParams.xml_data, CurrLoadParams.rom_data);
 			else return api.CMD_load_cartridge_super_game_boy(CurrLoadParams.rom_xml, CurrLoadParams.rom_data, CurrLoadParams.rom_size, CurrLoadParams.dmg_xml, CurrLoadParams.dmg_data, CurrLoadParams.dmg_size);
-		}
-
-		public LibsnesCore(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData, CoreComm comm, object Settings, object SyncSettings)
-		{
-			CoreComm = comm;
-			byte[] sgbRomData = null;
-			if (game["SGB"])
-			{
-				if ((romData[0x143] & 0xc0) == 0xc0)
-					throw new CGBNotSupportedException();
-				sgbRomData = CoreComm.CoreFileProvider.GetFirmware("SNES", "Rom_SGB", true, "SGB Rom is required for SGB emulation.");
-				game.FirmwareHash = sgbRomData.HashSHA1();
-			}
-
-			this.Settings = (SnesSettings)Settings ?? new SnesSettings();
-			this.SyncSettings = (SnesSyncSettings)SyncSettings ?? new SnesSyncSettings();
-
-			api = new LibsnesApi(GetExePath());
-			api.CMD_init();
-			api.ReadHook = ReadHook;
-			api.ExecHook = ExecHook;
-			api.WriteHook = WriteHook;
-
-			ScanlineHookManager = new MyScanlineHookManager(this);
-
-			api.CMD_init();
-
-			api.QUERY_set_video_refresh(snes_video_refresh);
-			api.QUERY_set_input_poll(snes_input_poll);
-			api.QUERY_set_input_state(snes_input_state);
-			api.QUERY_set_input_notify(snes_input_notify);
-			api.QUERY_set_path_request(snes_path_request);
-			
-			scanlineStart_cb = new LibsnesApi.snes_scanlineStart_t(snes_scanlineStart);
-			tracecb = new LibsnesApi.snes_trace_t(snes_trace);
-
-			soundcb = new LibsnesApi.snes_audio_sample_t(snes_audio_sample);
-			api.QUERY_set_audio_sample(soundcb);
-
-			RefreshPalette();
-
-			// start up audio resampler
-			InitAudio();
-
-			//strip header
-			if(romData != null)
-				if ((romData.Length & 0x7FFF) == 512)
-				{
-					var newData = new byte[romData.Length - 512];
-					Array.Copy(romData, 512, newData, 0, newData.Length);
-					romData = newData;
-				}
-
-			if (game["SGB"])
-			{
-				IsSGB = true;
-				SystemId = "SNES";
-				BoardName = "SGB";
-
-				CurrLoadParams = new LoadParams()
-				{
-					type = LoadParamType.SuperGameBoy,
-					rom_xml = null,
-					rom_data = sgbRomData,
-					rom_size = (uint)sgbRomData.Length,
-					dmg_xml = null,
-					dmg_data = romData,
-					dmg_size = (uint)romData.Length
-				};
-
-				if (!LoadCurrent())
-					throw new Exception("snes_load_cartridge_normal() failed");
-			}
-			else
-			{
-				//we may need to get some information out of the cart, even during the following bootup/load process
-				if (xmlData != null)
-				{
-					romxml = new System.Xml.XmlDocument();
-					romxml.Load(new MemoryStream(xmlData));
-
-					//bsnes wont inspect the xml to load the necessary sfc file.
-					//so, we have to do that here and pass it in as the romData :/
-					if (romxml["cartridge"] != null && romxml["cartridge"]["rom"] != null)
-						romData = File.ReadAllBytes(CoreComm.CoreFileProvider.PathSubfile(romxml["cartridge"]["rom"].Attributes["name"].Value));
-					else
-						throw new Exception("Could not find rom file specification in xml file. Please check the integrity of your xml file");
-				}
-
-				SystemId = "SNES";
-				CurrLoadParams = new LoadParams()
-				{
-					type = LoadParamType.Normal,
-					xml_data = xmlData,
-					rom_data = romData
-				};
-
-				if(!LoadCurrent())
-					throw new Exception("snes_load_cartridge_normal() failed");
-			}
-
-			if (api.QUERY_get_region() == LibsnesApi.SNES_REGION.NTSC)
-			{
-				//similar to what aviout reports from snes9x and seems logical from bsnes first principles. bsnes uses that numerator (ntsc master clockrate) for sure.
-				CoreComm.VsyncNum = 21477272;
-				CoreComm.VsyncDen = 4 * 341 * 262;
-			}
-			else
-			{
-				//http://forums.nesdev.com/viewtopic.php?t=5367&start=19
-				CoreComm.VsyncNum = 21281370;
-				CoreComm.VsyncDen = 4 * 341 * 312;
-			}
-
-			CoreComm.CpuTraceAvailable = true;
-
-			api.CMD_power();
-
-			SetupMemoryDomains(romData,sgbRomData);
-
-			DeterministicEmulation = deterministicEmulation;
-			if (DeterministicEmulation) // save frame-0 savestate now
-			{
-				MemoryStream ms = new MemoryStream();
-				BinaryWriter bw = new BinaryWriter(ms);
-				bw.Write(CoreSaveState());
-				bw.Write(true); // framezero, so no controller follows and don't frameadvance on load
-				// hack: write fake dummy controller info
-				bw.Write(new byte[536]);
-				bw.Close();
-				savestatebuff = ms.ToArray();
-			}
 		}
 
 		/// <summary>
@@ -724,7 +704,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		// Perormance will NEVER be in deterministic mode (and the client side logic will prohibit movie recording on it)
 		public bool DeterministicEmulation
 		{
-			get { return SyncSettings.Profile == "Compatibility" || SyncSettings.Profile == "Accuracy"; }
+			get { return CurrentProfile == "Compatibility" || CurrentProfile == "Accuracy"; }
 			private set {  /* Do nothing */ }
 		}
 
@@ -884,7 +864,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			var temp = SaveStateBinary();
 			temp.SaveAsHexFast(writer);
 			writer.WriteLine("Frame {0}", Frame); // we don't parse this, it's only for the client to use
-			writer.WriteLine("Profile {0}", SyncSettings.Profile);
+			writer.WriteLine("Profile {0}", CurrentProfile);
 		}
 		public void LoadStateText(TextReader reader)
 		{
@@ -908,7 +888,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			writer.Write(IsLagFrame);
 			writer.Write(LagCount);
 			writer.Write(Frame);
-			writer.Write(SyncSettings.Profile);
+			writer.Write(CurrentProfile);
 
 			writer.Flush();
 		}
@@ -956,9 +936,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		void ValidateLoadstateProfile(string profile)
 		{
-			if (profile != SyncSettings.Profile)
+			if (profile != CurrentProfile)
 			{
-				throw new InvalidOperationException(string.Format("You've attempted to load a savestate made using a different SNES profile ({0}) than your current configuration ({1}). We COULD automatically switch for you, but we havent done that yet. This error is to make sure you know that this isnt going to work right now.", profile, SyncSettings.Profile));
+				throw new InvalidOperationException(string.Format("You've attempted to load a savestate made using a different SNES profile ({0}) than your current configuration ({1}). We COULD automatically switch for you, but we havent done that yet. This error is to make sure you know that this isnt going to work right now.", profile, CurrentProfile));
 			}
 		}
 
@@ -1234,6 +1214,43 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				return (SnesSyncSettings)MemberwiseClone();
 			}
+		}
+	}
+
+	public class ScanlineHookManager
+	{
+		public void Register(object tag, Action<int> callback)
+		{
+			var rr = new RegistrationRecord();
+			rr.tag = tag;
+			rr.callback = callback;
+
+			Unregister(tag);
+			records.Add(rr);
+			OnHooksChanged();
+		}
+
+		public int HookCount { get { return records.Count; } }
+
+		public virtual void OnHooksChanged() { }
+
+		public void Unregister(object tag)
+		{
+			records.RemoveAll((r) => r.tag == tag);
+		}
+
+		public void HandleScanline(int scanline)
+		{
+			foreach (var rr in records) rr.callback(scanline);
+		}
+
+		List<RegistrationRecord> records = new List<RegistrationRecord>();
+
+		class RegistrationRecord
+		{
+			public object tag;
+			public int scanline = 0;
+			public Action<int> callback;
 		}
 	}
 }

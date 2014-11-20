@@ -733,6 +733,16 @@ namespace BizHawk.Client.EmuHawk.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Lynx {
+            get {
+                object obj = ResourceManager.GetObject("Lynx", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap MessageConfig {
             get {
                 object obj = ResourceManager.GetObject("MessageConfig", resourceCulture);

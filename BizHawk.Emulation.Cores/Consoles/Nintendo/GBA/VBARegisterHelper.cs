@@ -40,5 +40,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			}
 			return ret;
 		}
+
+		public string TraceString()
+		{
+			var sb = new StringBuilder();
+			int* p = (int*)_origin;
+			for (int i = 0; i < 17; i++)
+			{
+				sb.Append(p[i].ToString("X8"));
+				if (i != 16)
+					sb.Append(' ');
+			}
+			return sb.ToString();
+		}
 	}
 }
