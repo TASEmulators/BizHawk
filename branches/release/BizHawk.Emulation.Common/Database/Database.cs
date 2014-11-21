@@ -333,7 +333,7 @@ namespace BizHawk.Emulation.Common
 					break;
 
 				case ".LNX":
-					game.System = "LYNX";
+					game.System = "Lynx";
 					break;
 			}
 
