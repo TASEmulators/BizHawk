@@ -136,7 +136,7 @@ namespace BizHawk.Client.Common
 						return SystemInfo.DualGB;
 					case "WSWAN":
 						return SystemInfo.WonderSwan;
-					case "LYNX":
+					case "Lynx":
 						return SystemInfo.Lynx;
 				}
 			}

@@ -240,7 +240,7 @@ namespace BizHawk.Client.Common
 					}
 				},
 				{
-					"LYNX",
+					"Lynx",
 					new Dictionary<string, char>
 					{
 						{ "Option 1", '1' },

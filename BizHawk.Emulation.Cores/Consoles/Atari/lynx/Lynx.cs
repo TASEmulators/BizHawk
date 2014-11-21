@@ -16,12 +16,12 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 	{
 		IntPtr Core;
 
-		[CoreConstructor("LYNX")]
+		[CoreConstructor("Lynx")]
 		public Lynx(byte[] file, GameInfo game, CoreComm comm)
 		{
 			CoreComm = comm;
 
-			byte[] bios = CoreComm.CoreFileProvider.GetFirmware("LYNX", "Boot", true, "Boot rom is required");
+			byte[] bios = CoreComm.CoreFileProvider.GetFirmware("Lynx", "Boot", true, "Boot rom is required");
 			if (bios.Length != 512)
 				throw new MissingFirmwareException("Lynx Bootrom must be 512 bytes!");
 
@@ -138,7 +138,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
 
-		public string SystemId { get { return "LYNX"; } }
+		public string SystemId { get { return "Lynx"; } }
 
 		public bool DeterministicEmulation { get { return true; } }
 

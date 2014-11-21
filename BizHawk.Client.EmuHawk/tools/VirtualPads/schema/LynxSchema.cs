@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[SchemaAttributes("LYNX")]
+	[SchemaAttributes("Lynx")]
 	public class LYNXSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas()
