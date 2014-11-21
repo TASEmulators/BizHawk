@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 				if (bs93 == "BS93")
 					throw new InvalidOperationException("Unsupported BS93 Lynx ram image");
 
-				if (header == "Lynx" && (ver & 255) == 1)
+				if (header == "LYNX" && (ver & 255) == 1)
 				{
 					Console.WriteLine("Processing Handy-Lynx header");
 					pagesize0 = p0;
