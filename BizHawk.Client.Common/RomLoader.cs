@@ -333,6 +333,9 @@ namespace BizHawk.Client.Common
 								core = CoreInventory.Instance[game.System];
 								break;
 
+							case null:
+								// The user picked nothing in the Core picker
+								break;
 							case "SNES":
 								if (Global.Config.SNES_InSnes9x && VersionInfo.DeveloperBuild)
 								{
