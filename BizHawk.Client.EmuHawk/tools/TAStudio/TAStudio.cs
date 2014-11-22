@@ -620,12 +620,9 @@ namespace BizHawk.Client.EmuHawk
 			if (Path.GetExtension(filePaths[0]) == "." + TasMovie.Extension)
 			{
 				var file = new FileInfo(filePaths[0]);
-				if (file != null)
+				if (file.Exists)
 				{
-					if (AskSaveChanges())
-					{
-						LoadFile(file);
-					}
+					LoadProject(file.FullName);
 				}
 			}
 		}
