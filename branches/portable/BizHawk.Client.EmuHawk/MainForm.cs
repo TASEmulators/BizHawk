@@ -60,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.FirstBoot == true)
 			{
 				ProfileFirstBootLabel.Visible = true;
-		}
+			}
 
 			HandleToggleLightAndLink();
 		}
@@ -570,11 +570,12 @@ namespace BizHawk.Client.EmuHawk
 
 			CheckMessages();
 
-				if (_exitRequestPending)
-				{
-					_exitRequestPending = false;
-					Close();
-				}
+			if (_exitRequestPending)
+			{
+				_exitRequestPending = false;
+				Close();
+				_exit = true;
+			}
 
 			return true;
 		}
