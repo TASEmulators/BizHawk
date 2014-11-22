@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HotkeyConfig));
 			this.label38 = new System.Windows.Forms.Label();
 			this.AutoTabCheckBox = new System.Windows.Forms.CheckBox();
@@ -40,6 +41,7 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.HotkeyTabControl.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -47,7 +49,7 @@
 			// 
 			this.label38.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label38.AutoSize = true;
-			this.label38.Location = new System.Drawing.Point(45, 441);
+			this.label38.Location = new System.Drawing.Point(39, 441);
 			this.label38.Name = "label38";
 			this.label38.Size = new System.Drawing.Size(153, 13);
 			this.label38.TabIndex = 4;
@@ -122,6 +124,7 @@
 			this.RestoreDefaults.TabIndex = 105;
 			this.RestoreDefaults.TabStop = false;
 			this.RestoreDefaults.Text = "&Defaults";
+			this.toolTip1.SetToolTip(this.RestoreDefaults, "Reses _all_ bindings to default.");
 			this.RestoreDefaults.UseVisualStyleBackColor = true;
 			this.RestoreDefaults.Click += new System.EventHandler(this.RestoreDefaults_Click);
 			// 
@@ -149,7 +152,7 @@
 			// 
 			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(204, 441);
+			this.label2.Location = new System.Drawing.Point(194, 441);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(168, 13);
 			this.label2.TabIndex = 108;
@@ -205,5 +208,6 @@
         private System.Windows.Forms.Label label1;
 				private System.Windows.Forms.Label label2;
 				private System.Windows.Forms.Label label3;
+				private System.Windows.Forms.ToolTip toolTip1;
 	}
 }

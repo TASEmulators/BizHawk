@@ -22,12 +22,12 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (TasPlaybackBox.FollowCursor)
+			RefreshDialog();
+
+			if (TasPlaybackBox.FollowCursor) // TODO: we already refreshed in RefreshDialog now we will do it again, make this more efficient
 			{
 				SetVisibleIndex();
 			}
-
-			RefreshDialog();
 		}
 
 		public void FastUpdate()
@@ -76,6 +76,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool AskSaveChanges()
 		{
+			if (_suppressAskSave)
+			{
+				return true;
+			}
+
 			if (CurrentTasMovie != null && CurrentTasMovie.Changes)
 			{
 				GlobalWin.Sound.StopSound();

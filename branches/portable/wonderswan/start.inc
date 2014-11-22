@@ -304,13 +304,19 @@ static const DLEntry Developers[] =
 	{ 0x1F, "Emotion" }, // Bandai Visual??
 	{ 0x20, "Athena" },
 	{ 0x21, "KID" },
+	{ 0x22, "HAL" },
+	{ 0x23, "Yuki-Enterprise" },
 	{ 0x24, "Omega Micott" },
 	{ 0x25, "Upstar" },
 	{ 0x26, "Kadokawa/Megas" },
 	{ 0x27, "Cocktail Soft" },
 	{ 0x28, "Squaresoft" },
+	{ 0x2A, "NTT DoCoMo" },
 	{ 0x2B, "TomCreate" },
 	{ 0x2D, "Namco" },
 	{ 0x2F, "Gust" },
+	{ 0x31, "Vanguard" },	// or Elorg?
+	{ 0x32, "Megatron" },
+	{ 0x33, "WiZ" },
 	{ 0x36, "Capcom" },
 };

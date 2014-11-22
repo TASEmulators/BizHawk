@@ -591,26 +591,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			return ret;
 		}
 
-		object ISettable.GetSettings()
-		{
-			return GetSettings();
-		}
-
-		bool ISettable.PutSettings(object o)
-		{
-			return PutSettings((PCESettings)o);
-		}
-
-		object ISettable.GetSyncSettings()
-		{
-			return GetSyncSettings();
-		}
-
-		bool ISettable.PutSyncSettings(object o)
-		{
-			return PutSyncSettings((PCESyncSettings)o);
-		}
-
 		public class PCESettings
 		{
 			public bool ShowBG1 = true;

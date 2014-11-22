@@ -724,26 +724,6 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			return ret;
 		}
 
-		object ISettable.GetSettings()
-		{
-			return GetSettings();
-		}
-
-		bool ISettable.PutSettings(object o)
-		{
-			return PutSettings((object)o);
-		}
-
-		object ISettable.GetSyncSettings()
-		{
-			return GetSyncSettings();
-		}
-
-		bool ISettable.PutSyncSettings(object o)
-		{
-			return PutSyncSettings((SaturnSyncSettings)o);
-		}
-
 		public class SaturnSyncSettings
 		{
 			[DisplayName("Open GL Mode")]

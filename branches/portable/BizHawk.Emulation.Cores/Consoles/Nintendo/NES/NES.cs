@@ -285,6 +285,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool StartAsyncSound() { return true; }
 		public void EndAsyncSound() { }
 
+		[Obsolete] // with the changes to both nes and quicknes cores, nothing uses this anymore
 		public static readonly ControllerDefinition NESController =
 			new ControllerDefinition
 			{
@@ -965,26 +966,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			bool ret = NESSyncSettings.NeedsReboot(SyncSettings, o);
 			SyncSettings = o;
 			return ret;
-		}
-
-		object ISettable.GetSettings()
-		{
-			return GetSettings();
-		}
-
-		bool ISettable.PutSettings(object o)
-		{
-			return PutSettings((NESSettings)o);
-		}
-
-		object ISettable.GetSyncSettings()
-		{
-			return GetSyncSettings();
-		}
-
-		bool ISettable.PutSyncSettings(object o)
-		{
-			return PutSyncSettings((NESSyncSettings)o);
 		}
 
 		public class NESSettings

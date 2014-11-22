@@ -26,7 +26,8 @@ namespace BizHawk.Client.Common
 		Greenzone,
 		GreenzoneSettings,
 		Markers,
-		ClientSettings
+		ClientSettings,
+		VerificationLog
 	}
 
 	public static class BinaryStateFileNames
@@ -61,6 +62,7 @@ namespace BizHawk.Client.Common
 			AddLumpName(BinaryStateLump.GreenzoneSettings, "GreenZoneSettings.txt");
 			AddLumpName(BinaryStateLump.Markers, "Markers.txt");
 			AddLumpName(BinaryStateLump.ClientSettings, "ClientSettings.json");
+			AddLumpName(BinaryStateLump.VerificationLog, "VerificationLog.txt");
 		}
 
 		public static string GetReadName(BinaryStateLump lump)

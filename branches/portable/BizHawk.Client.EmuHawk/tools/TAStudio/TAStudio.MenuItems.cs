@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -559,13 +560,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HeaderMenuItem_Click(object sender, EventArgs e)
 		{
-			new MovieHeaderEditor(CurrentTasMovie) { Owner = GlobalWin.MainForm }.Show();
+			new MovieHeaderEditor(CurrentTasMovie)
+			{
+				Owner = GlobalWin.MainForm,
+				Location = this.ChildPointToScreen(TasView)
+			}.Show();
 			UpdateChangesIndicator();
 		}
 
 		private void GreenzoneSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new GreenzoneSettingsForm(CurrentTasMovie.TasStateManager.Settings) { Owner = GlobalWin.MainForm }.Show();
+			new GreenzoneSettingsForm(CurrentTasMovie.TasStateManager.Settings)
+			{
+				Owner = GlobalWin.MainForm,
+				Location = this.ChildPointToScreen(TasView)
+			}.Show();
 			UpdateChangesIndicator();
 		}
 
@@ -573,7 +582,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var form = new EditCommentsForm();
 			form.GetMovie(CurrentTasMovie);
-			form.ShowDialog();
+			form.ForceReadWrite = true;
+			form.Show();
 		}
 
 		private void SubtitlesMenuItem_Click(object sender, EventArgs e)
@@ -585,7 +595,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DefaultStateSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new DefaultGreenzoneSettings().ShowDialog();
+			new DefaultGreenzoneSettings
+			{
+				Location = this.ChildPointToScreen(TasView)
+			}.ShowDialog();
 		}
 
 		#endregion
@@ -694,10 +707,54 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Context Menu
 
+		private void RightClickMenu_Opened(object sender, EventArgs e)
+		{
+			SetMarkersContextMenuItem.Enabled =
+				SelectBetweenMarkersContextMenuItem.Enabled =
+				RemoveMarkersContextMenuItem.Enabled =
+				DeselectContextMenuItem.Enabled =
+				ClearContextMenuItem.Enabled =
+				DeleteFramesContextMenuItem.Enabled =
+				CloneContextMenuItem.Enabled =
+				InsertFrameContextMenuItem.Enabled =
+				InsertNumFramesContextMenuItem.Enabled =
+				TruncateContextMenuItem.Enabled =
+				TasView.SelectedRows.Any();
+
+			StartFromNowSeparator.Visible =
+				StartNewProjectFromNowMenuItem.Visible =
+				TasView.SelectedRows.Count() == 1 &&
+				!CurrentTasMovie.StartsFromSavestate;
+
+			RemoveMarkersContextMenuItem.Enabled = CurrentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
+
+			CancelSeekContextMenuItem.Enabled = GlobalWin.MainForm.PauseOnFrame.HasValue;
+		}
+
 		private void CancelSeekContextMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.MainForm.PauseOnFrame = null;
 			TasView.Refresh();
+		}
+
+		private void StartNewProjectFromNowMenuItem_Click(object sender, EventArgs e)
+		{
+			if (TasView.SelectedRows.Count() == 1 &&
+				!CurrentTasMovie.StartsFromSavestate)
+			{
+				if (AskSaveChanges())
+				{
+					var index = TasView.SelectedRows.First();
+					GoToFrame(index);
+
+					var newProject = CurrentTasMovie.ConvertToSavestateAnchoredMovie(
+						index,
+						(byte[])Global.Emulator.SaveStateBinary().Clone());
+
+					GlobalWin.MainForm.PauseEmulator();
+					LoadProject(newProject.Filename);
+				}
+			}
 		}
 
 		#endregion

@@ -94,7 +94,7 @@
 			this.Controls.Add(this.CancelBtn);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "DefaultGreenzoneSettings";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Default Savestate History Settings";
 			this.ResumeLayout(false);
 

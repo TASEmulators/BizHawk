@@ -238,6 +238,14 @@ namespace BizHawk.Client.Common
 					{
 						{ "Toggle Cable", 'L' },
 					}
+				},
+				{
+					"Lynx",
+					new Dictionary<string, char>
+					{
+						{ "Option 1", '1' },
+						{ "Option 2", '2' }
+					}
 				}	
 			};
 	}

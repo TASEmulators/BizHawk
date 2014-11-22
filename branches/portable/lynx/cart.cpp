@@ -331,6 +331,14 @@ bool CCart::GetSaveRamPtr(int &size, uint8 *&data)
 	}
 }
 
+void CCart::GetReadOnlyPtrs(int &s0, uint8 *&p0, int &s1, uint8 *&p1)
+{
+	s0 = mMaskBank0 + 1;
+	s1 = mMaskBank1 + 1;
+	p0 = mCartBank0;
+	p1 = mCartBank1;
+}
+
 SYNCFUNC(CCart)
 {
 	NSS(mWriteEnableBank0);

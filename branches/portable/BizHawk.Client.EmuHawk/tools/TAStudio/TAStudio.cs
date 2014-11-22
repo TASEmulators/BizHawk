@@ -514,15 +514,19 @@ namespace BizHawk.Client.EmuHawk
 			InitializeOnLoad();
 			LoadConfigSettings();
 			SetColumnsFromCurrentStickies();
-			RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems().ToArray());
 
-			RightClickMenu.Items
+			if (VersionInfo.DeveloperBuild)
+			{
+				RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems().ToArray());
+
+				RightClickMenu.Items
 				.OfType<ToolStripMenuItem>()
 				.First(t => t.Name == "RotateMenuItem")
 				.Click += (o, ov) =>
 				{
 					CurrentTasMovie.FlagChanges();
 				};
+			}
 
 			RefreshDialog();
 		}
@@ -605,25 +609,6 @@ namespace BizHawk.Client.EmuHawk
 			SetTextProperty();
 		}
 
-		private void RightClickMenu_Opened(object sender, EventArgs e)
-		{
-			SetMarkersContextMenuItem.Enabled =
-				SelectBetweenMarkersContextMenuItem.Enabled =
-				RemoveMarkersContextMenuItem.Enabled =
-				DeselectContextMenuItem.Enabled =
-				ClearContextMenuItem.Enabled =
-				DeleteFramesContextMenuItem.Enabled =
-				CloneContextMenuItem.Enabled =
-				InsertFrameContextMenuItem.Enabled =
-				InsertNumFramesContextMenuItem.Enabled =
-				TruncateContextMenuItem.Enabled =
-				TasView.SelectedRows.Any();
-
-			RemoveMarkersContextMenuItem.Enabled = CurrentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
-
-			CancelSeekContextMenuItem.Enabled = GlobalWin.MainForm.PauseOnFrame.HasValue;
-		}
-
 		private void TAStudio_DragEnter(object sender, DragEventArgs e)
 		{
 			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
@@ -635,12 +620,9 @@ namespace BizHawk.Client.EmuHawk
 			if (Path.GetExtension(filePaths[0]) == "." + TasMovie.Extension)
 			{
 				var file = new FileInfo(filePaths[0]);
-				if (file != null)
+				if (file.Exists)
 				{
-					if (AskSaveChanges())
-					{
-						LoadFile(file);
-					}
+					LoadProject(file.FullName);
 				}
 			}
 		}

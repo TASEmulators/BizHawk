@@ -95,6 +95,7 @@
 			this.PauseToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.EditToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.RemoveScriptToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.DuplicateToolbarButton = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.MoveUpToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonMoveDown = new System.Windows.Forms.ToolStripButton();
@@ -104,6 +105,7 @@
 			this.LuaListView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.PathName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.DuplicateScriptMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ScriptListContextMenu.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.ConsoleContextMenu.SuspendLayout();
@@ -304,8 +306,9 @@
             this.PauseScriptMenuItem,
             this.EditScriptMenuItem,
             this.RemoveScriptMenuItem,
-            this.InsertSeparatorMenuItem,
+            this.DuplicateScriptMenuItem,
             this.toolStripSeparator7,
+            this.InsertSeparatorMenuItem,
             this.MoveUpMenuItem,
             this.MoveDownMenuItem,
             this.SelectAllMenuItem,
@@ -619,6 +622,7 @@
             this.PauseToolbarItem,
             this.EditToolbarItem,
             this.RemoveScriptToolbarItem,
+            this.DuplicateToolbarButton,
             this.toolStripSeparator2,
             this.MoveUpToolbarItem,
             this.toolStripButtonMoveDown,
@@ -701,6 +705,16 @@
 			this.RemoveScriptToolbarItem.Text = "Remove Script";
 			this.RemoveScriptToolbarItem.Click += new System.EventHandler(this.RemoveScriptMenuItem_Click);
 			// 
+			// DuplicateToolbarButton
+			// 
+			this.DuplicateToolbarButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.DuplicateToolbarButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Duplicate;
+			this.DuplicateToolbarButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.DuplicateToolbarButton.Name = "DuplicateToolbarButton";
+			this.DuplicateToolbarButton.Size = new System.Drawing.Size(23, 22);
+			this.DuplicateToolbarButton.Text = "toolStripButton1";
+			this.DuplicateToolbarButton.Click += new System.EventHandler(this.DuplicateScriptMenuItem_Click);
+			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
@@ -774,6 +788,7 @@
 			this.LuaListView.Size = new System.Drawing.Size(291, 255);
 			this.LuaListView.TabIndex = 0;
 			this.LuaListView.UseCompatibleStateImageBehavior = false;
+			this.LuaListView.UseCustomBackground = true;
 			this.LuaListView.View = System.Windows.Forms.View.Details;
 			this.LuaListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.LuaListView_ColumnClick);
 			this.LuaListView.ItemActivate += new System.EventHandler(this.LuaListView_ItemActivate);
@@ -788,6 +803,13 @@
 			// 
 			this.PathName.Text = "Path";
 			this.PathName.Width = 195;
+			// 
+			// DuplicateScriptMenuItem
+			// 
+			this.DuplicateScriptMenuItem.Name = "DuplicateScriptMenuItem";
+			this.DuplicateScriptMenuItem.Size = new System.Drawing.Size(218, 22);
+			this.DuplicateScriptMenuItem.Text = "&Duplicate Script";
+			this.DuplicateScriptMenuItem.Click += new System.EventHandler(this.DuplicateScriptMenuItem_Click);
 			// 
 			// LuaConsole
 			// 
@@ -898,5 +920,7 @@
 		private System.Windows.Forms.ToolStripMenuItem RefreshScriptMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
 		private System.Windows.Forms.ToolStripButton EraseToolbarItem;
+		private System.Windows.Forms.ToolStripButton DuplicateToolbarButton;
+		private System.Windows.Forms.ToolStripMenuItem DuplicateScriptMenuItem;
 	}
 }

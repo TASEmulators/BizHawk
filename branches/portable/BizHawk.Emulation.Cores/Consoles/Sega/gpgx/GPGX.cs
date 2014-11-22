@@ -802,26 +802,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			return ret;
 		}
 
-		object ISettable.GetSettings()
-		{
-			return GetSettings();
-		}
-
-		bool ISettable.PutSettings(object o)
-		{
-			return PutSettings((GPGXSettings)o);
-		}
-
-		object ISettable.GetSyncSettings()
-		{
-			return GetSyncSettings();
-		}
-
-		bool ISettable.PutSyncSettings(object o)
-		{
-			return PutSyncSettings((GPGXSyncSettings)o);
-		}
-
 		public class GPGXSettings
 		{
 			[DisplayName("Background Layer A")]

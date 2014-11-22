@@ -333,6 +333,9 @@ namespace BizHawk.Client.Common
 								core = CoreInventory.Instance[game.System];
 								break;
 
+							case null:
+								// The user picked nothing in the Core picker
+								break;
 							case "SNES":
 								if (Global.Config.SNES_InSnes9x && VersionInfo.DeveloperBuild)
 								{
@@ -433,7 +436,7 @@ namespace BizHawk.Client.Common
 						ex = ex.InnerException;
 
 					// Specific hack here, as we get more cores of the same system, this isn't scalable
-					if (ex is UnsupportedMapperException)
+					if (ex is UnsupportedGameException)
 					{
 						return LoadRom(path, nextComm, forceAccurateCore: true);
 					}

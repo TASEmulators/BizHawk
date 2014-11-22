@@ -11,6 +11,8 @@ using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 
+using BizHawk.Emulation.Cores.Nintendo.SNES;
+
 namespace BizHawk.Client.Common
 {
 	public static class MovieImport
@@ -1264,6 +1266,11 @@ namespace BizHawk.Client.Common
 			}
 
 			m.Header[HeaderKeys.PLATFORM] = platform;
+
+			LibsnesCore.SnesSyncSettings ss = new LibsnesCore.SnesSyncSettings();
+			ss.Profile = "Compatibility";
+			m.SyncSettingsJson = ConfigService.SaveWithType(ss);
+
 			return m;
 		}
 
@@ -2011,6 +2018,11 @@ namespace BizHawk.Client.Common
 			}
 			r.Close();
 			fs.Close();
+
+			LibsnesCore.SnesSyncSettings ss = new LibsnesCore.SnesSyncSettings();
+			ss.Profile = "Compatibility";
+			m.SyncSettingsJson = ConfigService.SaveWithType(ss);
+
 			return m;
 		}
 

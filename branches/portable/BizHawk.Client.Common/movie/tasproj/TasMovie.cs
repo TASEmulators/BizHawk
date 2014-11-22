@@ -7,17 +7,19 @@ using System.Text;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using System.ComponentModel;
+using System.Globalization;
 
 namespace BizHawk.Client.Common
 {
 	public sealed partial class TasMovie : Bk2Movie, INotifyPropertyChanged
 	{
-		private readonly Bk2MnemonicConstants Mnemonics = new Bk2MnemonicConstants();
-		private List<bool> LagLog = new List<bool>();
-		private readonly TasStateManager StateManager;
-		public TasMovieMarkerList Markers { get; set; }
-
 		public const string DefaultProjectName = "default";
+
+		private readonly Bk2MnemonicConstants Mnemonics = new Bk2MnemonicConstants();
+		private readonly TasStateManager StateManager;
+		private readonly TasLagLog LagLog = new TasLagLog();
+		private readonly Dictionary<int, IController> InputStateCache = new Dictionary<int, IController>();
+		private readonly List<string> VerificationLog = new List<string>(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 
 		public TasMovie(string path, bool startsFromSavestate = false) : base(path)
 		{
@@ -39,6 +41,9 @@ namespace BizHawk.Client.Common
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
 		}
 
+		public TasMovieMarkerList Markers { get; set; }
+		public bool UseInputCache { get; set; }
+
 		public override string PreferredExtension
 		{
 			get { return Extension; }
@@ -59,14 +64,9 @@ namespace BizHawk.Client.Common
 				{
 					State = StateManager[index],
 					LogEntry = GetInputLogEntry(index),
-					Lagged = (index < LagLog.Count) ? LagLog[index] : (bool?)null
+					Lagged = LagLog[index + 1]
 				};
 			}
-		}
-
-		public override bool Stop(bool saveChanges = true)
-		{
-			return base.Stop(saveChanges);
 		}
 
 		#region Events and Handlers 
@@ -116,12 +116,10 @@ namespace BizHawk.Client.Common
 
 		public override void StartNewRecording()
 		{
-			LagLog.Clear();
-			StateManager.Clear();
-			Markers.Clear();
-			base.StartNewRecording();
-
+			ClearTasprojExtras();
 			Markers.Add(0, StartsFromSavestate ? "Savestate" : "Power on");
+
+			base.StartNewRecording();
 		}
 
 		public override void SwitchToPlay()
@@ -135,11 +133,7 @@ namespace BizHawk.Client.Common
 		/// <param name="frame">The last frame that can be valid.</param>
 		private void InvalidateAfter(int frame)
 		{
-			if (frame < LagLog.Count)
-			{
-				LagLog.RemoveRange(frame + 1, LagLog.Count - frame - 1);
-			}
-
+			LagLog.RemoveFrom(frame);
 			StateManager.Invalidate(frame + 1);
 			Changes = true; // TODO check if this actually removed anything before flagging changes
 		}
@@ -165,9 +159,6 @@ namespace BizHawk.Client.Common
 			return CreateDisplayValueForButton(adapter, buttonName);
 		}
 
-		private readonly Dictionary<int, IController> InputStateCache = new Dictionary<int, IController>();
-
-		public bool UseInputCache { get; set; }
 		public void FlushInputCache()
 		{
 			InputStateCache.Clear();
@@ -247,14 +238,14 @@ namespace BizHawk.Client.Common
 
 		public bool BoolIsPressed(int frame, string buttonName)
 		{
-			var adapter = GetInputState(frame) as Bk2ControllerAdapter;
-			return adapter.IsPressed(buttonName);
+			return ((Bk2ControllerAdapter)GetInputState(frame))
+				.IsPressed(buttonName);
 		}
 
 		public float GetFloatValue(int frame, string buttonName)
 		{
-			var adapter = GetInputState(frame) as Bk2ControllerAdapter;
-			return adapter.GetFloat(buttonName);
+			return ((Bk2ControllerAdapter)GetInputState(frame))
+				.GetFloat(buttonName);
 		}
 
 		// TODO: try not to need this, or at least use GetInputState and then a log entry generator
@@ -297,13 +288,9 @@ namespace BizHawk.Client.Common
 
 		public override IController GetInputState(int frame)
 		{
-			// TODO: states and lag capture
-			if (Global.Emulator.Frame == frame) // Take this opportunity to capture lag and state info if we do not have it
+			if (frame == Global.Emulator.Frame) // Take this opportunity to capture lag and state info if we do not have it
 			{
-				if (frame == LagLog.Count) // I intentionally did not do >=, if it were >= we missed some entries somewhere, oops, maybe this shoudl be a dictionary<int, bool> with frame values?
-				{
-					LagLog.Add(Global.Emulator.IsLagFrame);
-				}
+				LagLog[Global.Emulator.Frame] = Global.Emulator.IsLagFrame;
 
 				if (!StateManager.HasState(frame))
 				{
@@ -312,6 +299,202 @@ namespace BizHawk.Client.Common
 			}
 
 			return base.GetInputState(frame);
+		}
+
+		public void ClearLagLog()
+		{
+			LagLog.Clear();
+		}
+
+		public void DeleteLogBefore(int frame)
+		{
+			if (frame < _log.Count)
+			{
+				_log.RemoveRange(0, frame);
+			}
+		}
+
+		public void CopyLog(IEnumerable<string> log)
+		{
+			_log.Clear();
+			foreach(var entry in log)
+			{
+				_log.Add(entry);
+			}
+		}
+
+		public void CopyVerificationLog(IEnumerable<string> log)
+		{
+			VerificationLog.Clear();
+			foreach (var entry in log)
+			{
+				VerificationLog.Add(entry);
+			}
+		}
+
+		public List<string> GetLogEntries()
+		{
+			return _log;
+		}
+
+		private int? TimelineBranchFrame = null;
+
+		// TODO: this is 99% copy pasting of bad code
+		public override bool ExtractInputLog(TextReader reader, out string errorMessage)
+		{
+			errorMessage = string.Empty;
+			int? stateFrame = null;
+
+			var newLog = new List<string>();
+			// We are in record mode so replace the movie log with the one from the savestate
+			if (!Global.MovieSession.MultiTrack.IsActive)
+			{
+				TimelineBranchFrame = null;
+
+				if (Global.Config.EnableBackupMovies && MakeBackup && _log.Any())
+				{
+					SaveBackup();
+					MakeBackup = false;
+				}
+
+				int counter = 0;
+				while (true)
+				{
+					var line = reader.ReadLine();
+					if (string.IsNullOrEmpty(line))
+					{
+						break;
+					}
+					else if (line.Contains("Frame 0x")) // NES stores frame count in hex, yay
+					{
+						var strs = line.Split('x');
+						try
+						{
+							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
+						}
+						catch
+						{
+							errorMessage = "Savestate Frame number failed to parse";
+							return false;
+						}
+					}
+					else if (line.Contains("Frame "))
+					{
+						var strs = line.Split(' ');
+						try
+						{
+							stateFrame = int.Parse(strs[1]);
+						}
+						catch
+						{
+							errorMessage = "Savestate Frame number failed to parse";
+							return false;
+						}
+					}
+					else if (line.StartsWith("LogKey:"))
+					{
+						LogKey = line.Replace("LogKey:", "");
+					}
+					else if (line[0] == '|')
+					{
+						newLog.Add(line);
+						if (!TimelineBranchFrame.HasValue && counter < _log.Count && line != _log[counter])
+						{
+							TimelineBranchFrame = counter;
+						}
+						counter++;
+					}
+				}
+
+				_log.Clear();
+				_log.AddRange(newLog);
+			}
+			else //Multitrack mode
+			{
+				// TODO: consider TimelineBranchFrame here, my thinking is that there's never a scenario to invalidate state/lag data during multitrack
+				var i = 0;
+				while (true)
+				{
+					var line = reader.ReadLine();
+					if (line == null)
+					{
+						break;
+					}
+
+					if (line.Contains("Frame 0x")) // NES stores frame count in hex, yay
+					{
+						var strs = line.Split('x');
+						try
+						{
+							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
+						}
+						catch
+						{
+							errorMessage = "Savestate Frame number failed to parse";
+							return false;
+						}
+					}
+					else if (line.Contains("Frame "))
+					{
+						var strs = line.Split(' ');
+						try
+						{
+							stateFrame = int.Parse(strs[1]);
+						}
+						catch
+						{
+							errorMessage = "Savestate Frame number failed to parse";
+							return false;
+						}
+					}
+					else if (line.StartsWith("LogKey:"))
+					{
+						LogKey = line.Replace("LogKey:", "");
+					}
+					else if (line.StartsWith("|"))
+					{
+						SetFrameAt(i, line);
+						i++;
+					}
+				}
+			}
+
+			if (!stateFrame.HasValue)
+			{
+				errorMessage = "Savestate Frame number failed to parse";
+			}
+
+			var stateFramei = stateFrame ?? 0;
+
+			if (stateFramei > 0 && stateFramei < _log.Count)
+			{
+				if (!Global.Config.VBAStyleMovieLoadState)
+				{
+					Truncate(stateFramei);
+				}
+			}
+			else if (stateFramei > _log.Count) // Post movie savestate
+			{
+				if (!Global.Config.VBAStyleMovieLoadState)
+				{
+					Truncate(_log.Count);
+				}
+
+				_mode = Moviemode.Finished;
+			}
+
+			if (IsCountingRerecords)
+			{
+				Rerecords++;
+			}
+
+			if (TimelineBranchFrame.HasValue)
+			{
+				LagLog.RemoveFrom(TimelineBranchFrame.Value);
+				TasStateManager.Invalidate(TimelineBranchFrame.Value);
+			}
+
+			return true;
 		}
 	}
 }

@@ -24,7 +24,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			CoreComm = comm;
 			byte[] biosfile = CoreComm.CoreFileProvider.GetFirmware("GBA", "Bios", true, "GBA bios file is mandatory.");
-
 			if (file.Length > 32 * 1024 * 1024)
 				throw new ArgumentException("ROM is too big to be a GBA ROM!");
 			if (biosfile.Length != 16 * 1024)
@@ -78,6 +77,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				InitMemoryDomains();
 				InitRegisters();
 				InitCallbacks();
+
+				CoreComm.CpuTraceAvailable = true;
 
 				// todo: hook me up as a setting
 				SetupColors();
@@ -267,6 +268,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		LibVBANext.AddressCallback fetchcb;
 		LibVBANext.AddressCallback readcb;
 		LibVBANext.AddressCallback writecb;
+		LibVBANext.TraceCallback tracecb;
+
+		string Trace(uint addr, uint opcode)
+		{
+			return
+				string.Format("{0:x8} {1} {2}",
+				opcode,
+				(Emulation.Cores.Components.ARM.Darm.DisassembleStuff(addr, opcode) ?? "").PadRight(30),
+				regs.TraceString());
+		}
 
 		void InitCallbacks()
 		{
@@ -274,6 +285,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			fetchcb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallExecute(addr));
 			readcb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallRead(addr));
 			writecb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallWrite(addr));
+			tracecb = new LibVBANext.TraceCallback((addr, opcode) => CoreComm.Tracer.Put(Trace(addr, opcode)));
 		}
 
 		void SyncCallbacks()
@@ -282,6 +294,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			LibVBANext.SetFetchCallback(Core, CoreComm.MemoryCallbackSystem.HasExecutes ? fetchcb : null);
 			LibVBANext.SetReadCallback(Core, CoreComm.MemoryCallbackSystem.HasReads ? readcb : null);
 			LibVBANext.SetWriteCallback(Core, CoreComm.MemoryCallbackSystem.HasWrites ? writecb : null);
+			LibVBANext.SetTraceCallback(Core, CoreComm.Tracer.Enabled ? tracecb : null);
 		}
 
 		LibVBANext.StandardCallback scanlinecb;
@@ -330,7 +343,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			mm.Add(MemoryDomain.FromIntPtr("VRAM", 96 * 1024, l, s.vram));
 			mm.Add(MemoryDomain.FromIntPtr("OAM", 1024, l, s.oam));
 			mm.Add(MemoryDomain.FromIntPtr("ROM", 32 * 1024 * 1024, l, s.rom));
-			
+
 			mm.Add(new MemoryDomain("BUS", 0x10000000, l,
 				delegate(int addr)
 				{
@@ -418,26 +431,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			bool ret = SyncSettings.NeedsReboot(o, _SyncSettings);
 			_SyncSettings = o;
 			return ret;
-		}
-
-		object ISettable.GetSettings()
-		{
-			return GetSettings();
-		}
-
-		bool ISettable.PutSettings(object o)
-		{
-			return PutSettings(o);
-		}
-
-		object ISettable.GetSyncSettings()
-		{
-			return GetSyncSettings();
-		}
-
-		bool ISettable.PutSyncSettings(object o)
-		{
-			return PutSyncSettings((SyncSettings)o);
 		}
 
 		public class SyncSettings

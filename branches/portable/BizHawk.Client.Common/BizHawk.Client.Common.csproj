@@ -157,6 +157,7 @@
     <Compile Include="movie\PlatformFrameRates.cs" />
     <Compile Include="movie\Subtitle.cs" />
     <Compile Include="movie\SubtitleList.cs" />
+    <Compile Include="movie\tasproj\TasLagLog.cs" />
     <Compile Include="movie\tasproj\TasMovie.Editing.cs" />
     <Compile Include="movie\tasproj\TasMovie.IO.cs" />
     <Compile Include="movie\tasproj\TasMovie.cs" />

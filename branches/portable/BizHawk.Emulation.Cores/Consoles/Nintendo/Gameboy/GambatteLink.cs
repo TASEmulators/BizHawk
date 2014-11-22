@@ -467,38 +467,58 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		int LatchL;
 		int LatchR;
 
-		void PrepSound()
+		unsafe void PrepSound()
 		{
-			unsafe
+			fixed (short* sl = LeftBuffer, sr = RightBuffer)
 			{
-				fixed (short* sl = LeftBuffer, sr = RightBuffer)
+				for (uint i = 0; i < SampPerFrame * 2; i += 2)
 				{
-					for (uint i = 0; i < SampPerFrame * 2; i += 2)
+					int s = (sl[i] + sl[i + 1]) / 2;
+					if (s != LatchL)
 					{
-						int s = (sl[i] + sl[i + 1]) / 2;
-						if (s != LatchL)
-						{
-							blip_left.AddDelta(i, s - LatchL);
-							LatchL = s;
-						}
-						s = (sr[i] + sr[i + 1]) / 2;
-						if (s != LatchR)
-						{
-							blip_right.AddDelta(i, s - LatchR);
-							LatchR = s;
-						}
+						blip_left.AddDelta(i, s - LatchL);
+						LatchL = s;
 					}
-
+					s = (sr[i] + sr[i + 1]) / 2;
+					if (s != LatchR)
+					{
+						blip_right.AddDelta(i, s - LatchR);
+						LatchR = s;
+					}
 				}
+
 			}
+
 			blip_left.EndFrame(SampPerFrame * 2);
 			blip_right.EndFrame(SampPerFrame * 2);
 			int count = blip_left.SamplesAvailable();
 			if (count != blip_right.SamplesAvailable())
 				throw new Exception("Sound problem?");
 
+			// calling blip.Clear() causes rounding fractions to be reset,
+			// and if only one channel is muted, in subsequent frames we can be off by a sample or two
+			// not a big deal, but we didn't account for it.  so we actually complete the entire
+			// audio read and then stamp it out if muted.
+
 			blip_left.ReadSamplesLeft(SampleBuffer, count);
+			if (L.Muted)
+			{
+				fixed (short* p = SampleBuffer)
+				{
+					for (int i = 0; i < SampleBuffer.Length; i += 2)
+						p[i] = 0;
+				}
+			}
+
 			blip_right.ReadSamplesRight(SampleBuffer, count);
+			if (R.Muted)
+			{
+				fixed (short* p = SampleBuffer)
+				{
+					for (int i = 1; i < SampleBuffer.Length; i += 2)
+						p[i] = 0;
+				}
+			}
 			SampleBufferContains = count;
 		}
 
@@ -540,26 +560,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public bool PutSyncSettings(GambatteLinkSyncSettings o)
 		{
 			return L.PutSyncSettings(o.L) || R.PutSyncSettings(o.R);
-		}
-
-		object ISettable.GetSettings()
-		{
-			return GetSettings();
-		}
-
-		bool ISettable.PutSettings(object o)
-		{
-			return PutSettings((GambatteLinkSettings)o);
-		}
-
-		object ISettable.GetSyncSettings()
-		{
-			return GetSyncSettings();
-		}
-
-		bool ISettable.PutSyncSettings(object o)
-		{
-			return PutSyncSettings((GambatteLinkSyncSettings)o);
 		}
 
 		public class GambatteLinkSettings

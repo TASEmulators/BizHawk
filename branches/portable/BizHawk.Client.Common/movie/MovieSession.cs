@@ -436,6 +436,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		// The behavior here is to only temporarily override these settings when playing a movie and then restore the user's preferred settings
+		// A more elegant approach would be appreciated
+		public bool? PreviousNES_InQuickNES = null;
+		public bool? PreviousSNES_InSnes9x = null;
+
 		public void QueueNewMovie(IMovie movie, bool record)
 		{
 			if (!record) // The semantics of record is that we are starting a new movie, and even wiping a pre-existing movie with the same path, but non-record means we are loading an existing movie into playback mode
@@ -469,10 +474,12 @@ namespace BizHawk.Client.Common
 				// If either is specified use that, else use whatever is currently set
 				if (movie.Core == quicknesName)
 				{
+					PreviousNES_InQuickNES = Global.Config.NES_InQuickNES;
 					Global.Config.NES_InQuickNES = true;
 				}
 				else if (movie.Core == neshawkName)
 				{
+					PreviousNES_InQuickNES = Global.Config.NES_InQuickNES;
 					Global.Config.NES_InQuickNES = false;
 				}
 			}
@@ -483,10 +490,12 @@ namespace BizHawk.Client.Common
 
 				if (movie.Core == snes9xName)
 				{
+					PreviousSNES_InSnes9x = Global.Config.SNES_InSnes9x;
 					Global.Config.SNES_InSnes9x = true;
 				}
 				else
 				{
+					PreviousSNES_InSnes9x = Global.Config.SNES_InSnes9x;
 					Global.Config.SNES_InSnes9x = false;
 				}
 			}

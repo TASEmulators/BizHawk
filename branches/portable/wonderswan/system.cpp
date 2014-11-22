@@ -153,10 +153,11 @@ namespace MDFN_IEN_WSWAN
 
 		switch(header[5])
 		{
-		case 0x01: memory.sram_size = 8*1024; break;
-		case 0x02: memory.sram_size = 32*1024; break;
-		case 0x03: memory.sram_size = 16 * 65536; break;
-		case 0x04: memory.sram_size = 32 * 65536; break; // Dicing Knight!
+		case 0x01: memory.sram_size = 8 * 1024; break;
+		case 0x02: memory.sram_size = 32 * 1024; break;
+		case 0x03: memory.sram_size = 128 * 1024; break; // Taikyoku Igo.  Maybe it should only be 65536 bytes?
+		case 0x04: memory.sram_size = 256 * 1024; break; // Dicing Knight, Judgement Silversword
+		case 0x05: memory.sram_size = 512 * 1024; break; // Wonder Gate
 
 		case 0x10: eeprom.eeprom_size = 128; break;
 		case 0x20: eeprom.eeprom_size = 2*1024; break;

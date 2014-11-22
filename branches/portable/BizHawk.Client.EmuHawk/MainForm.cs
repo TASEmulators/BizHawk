@@ -190,6 +190,8 @@ namespace BizHawk.Client.EmuHawk
 			ResizeEnd += (o, e) =>
 			{
 				_inResizeLoop = false;
+				SetWindowText();
+
 				if (GlobalWin.PresentationPanel != null)
 				{
 					GlobalWin.PresentationPanel.Resized = true;
@@ -226,7 +228,18 @@ namespace BizHawk.Client.EmuHawk
 			string cmdDumpType = null;
 			string cmdDumpName = null;
 
-			if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
+			// Workaround for windows, location is -32000 when minimized, if they close it during this time, that's what gets saved
+			if (Global.Config.MainWndx == -32000)
+			{
+				Global.Config.MainWndx = 0;
+			}
+
+			if (Global.Config.MainWndy == -32000)
+			{
+				Global.Config.MainWndy = 0;
+			}
+
+			if (Global.Config.MainWndx != -1 && Global.Config.MainWndy != -1 && Global.Config.SaveWindowPosition)
 			{
 				Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
 			}
@@ -556,6 +569,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			CheckMessages();
+
+				if (_exitRequestPending)
+				{
+					_exitRequestPending = false;
+					Close();
+				}
+
 			return true;
 		}
 
@@ -662,12 +682,12 @@ namespace BizHawk.Client.EmuHawk
 					{ "Coleco", "Colecovision" },
 					{ "TI83", "TI-83 Calculator" },
 
-					{ "WSWAN", "WonderSwan" }
+					{ "WSWAN", "WonderSwan" },
+                    { "GBA", "Gameboy Advance" }
 				};
 
 				if (VersionInfo.DeveloperBuild)
 				{
-					released.Add("GBA", "Gameboy Advance");
 					released.Add("C64", "Commodore 64");
 				}
 
@@ -1233,6 +1253,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _avwriterpad;
 
 		private bool _exit;
+		private bool _exitRequestPending;
 		private bool _runloopFrameProgress;
 		private DateTime _frameAdvanceTimestamp = DateTime.MinValue;
 		private int _runloopFps;
@@ -1857,7 +1878,7 @@ namespace BizHawk.Client.EmuHawk
 			if (VersionInfo.DeveloperBuild)
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.cue;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.cue;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;%ARCH%",
 					"Music Files", "*.psf;*.sid",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;*.fds;%ARCH%",
@@ -1869,6 +1890,7 @@ namespace BizHawk.Client.EmuHawk
 					"Savestate", "*.state",
 					"Atari 2600", "*.a26;*.bin;%ARCH%",
 					"Atari 7800", "*.a78;*.bin;%ARCH%",
+					"Atari Lynx", "*.lnx;%ARCH%",
 					"Genesis", "*.gen;*.smd;*.bin;*.md;*.cue;%ARCH%",
 					"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
 					"Gameboy Advance", "*.gba;%ARCH%",
@@ -1885,7 +1907,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.col;*.rom;*.cue;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.rom;*.cue;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;*.fds;%ARCH%",
 					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
@@ -1896,6 +1918,7 @@ namespace BizHawk.Client.EmuHawk
 					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
 					"Atari 2600", "*.a26;%ARCH%",
 					"Atari 7800", "*.a78;%ARCH%",
+					"Atari Lynx", "*.lnx;%ARCH%",
 					"Colecovision", "*.col;%ARCH%",
 					"TI-83", "*.rom;%ARCH%",
 					"Archive Files", "%ARCH%",
@@ -1943,8 +1966,8 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void PutCoreSettings(object o)
 		{
-            var settable = Global.Emulator as ISettable;
-            if (settable != null && settable.PutSettings(o))
+            var settable = new SettingsAdapter(Global.Emulator);
+            if (settable.HasSettings && settable.PutSettings(o))
 			{
 				FlagNeedsReboot();
 			}
@@ -1955,12 +1978,12 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void PutCoreSyncSettings(object o)
 		{
-            var settable = Global.Emulator as ISettable;
+			var settable = new SettingsAdapter(Global.Emulator);
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				GlobalWin.OSD.AddMessage("Attempt to change sync-relevant settings while recording BLOCKED.");
 			}
-            else if (settable != null && settable.PutSyncSettings(o))
+            else if (settable.HasSyncSettings && settable.PutSyncSettings(o))
 			{
 				FlagNeedsReboot();
 			}
@@ -1970,8 +1993,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Config.SaveWindowPosition)
 			{
+				if (Global.Config.MainWndx != -32000) // When minimized location is -32000, don't save this into the config file!
+				{
 				Global.Config.MainWndx = Location.X;
+				}
+
+				if (Global.Config.MainWndy != -32000)
+				{
 				Global.Config.MainWndy = Location.Y;
+			}
 			}
 			else
 			{
@@ -3377,15 +3407,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// save settings object
 			var t = Global.Emulator.GetType();
-            var settable = Global.Emulator as ISettable;
-            if (settable == null)
-                return;
+			var settable = new SettingsAdapter(Global.Emulator);
 
-            Global.Config.PutCoreSettings(settable.GetSettings(), t);
-
-			// don't trample config with loaded-from-movie settings
-			if (!Global.MovieSession.Movie.IsActive)
+			if (settable.HasSettings)
 			{
+            Global.Config.PutCoreSettings(settable.GetSettings(), t);
+			}
+
+			if (settable.HasSyncSettings && !Global.MovieSession.Movie.IsActive)
+			{
+			// don't trample config with loaded-from-movie settings
                 Global.Config.PutCoreSyncSettings(settable.GetSyncSettings(), t);
 			}
 		}
@@ -3521,7 +3552,7 @@ namespace BizHawk.Client.EmuHawk
         {
             if (IsSlave && master.WantsToControlStopMovie)
             {
-                master.StopMovie();
+				master.StopMovie(!saveChanges);
             }
             else
             {
@@ -3588,6 +3619,23 @@ namespace BizHawk.Client.EmuHawk
 		private void LinkConnectStatusBarButton_Click(object sender, EventArgs e)
 		{
 			// TODO: it would be cool if clicking this toggled the state
+			if (Global.Emulator.CoreComm.LinkConnected == true)
+			{
+				//Disconnect
+				//This Value:  cablediscosignal_new  Changes to False, The Core will disconnect
+
+			}
+			else if (Global.Emulator.CoreComm.LinkConnected == false)
+			{
+				//Reconnect
+
+			}
+		}
+
+		private void barcodeReaderToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<BarcodeEntry>();
+		}
+
 	}
-    }
 }

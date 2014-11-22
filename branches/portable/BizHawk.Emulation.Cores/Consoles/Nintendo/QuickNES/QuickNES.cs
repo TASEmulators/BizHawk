@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
@@ -67,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		}
 
 		[CoreConstructor("NES")]
-		public QuickNES(CoreComm comm, byte[] file, object Settings)
+		public QuickNES(CoreComm comm, byte[] file, object Settings, object SyncSettings)
 		{
 			using (FP.Save())
 			{
@@ -93,6 +94,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					CoreComm.VsyncDen = 655171;
 					PutSettings((QuickNESSettings)Settings ?? new QuickNESSettings());
 
+					_SyncSettings = (QuickNESSyncSettings)SyncSettings ?? new QuickNESSyncSettings();
+					_SyncSettings_next = _SyncSettings.Clone();
+
+					SetControllerDefinition();
 					ComputeBootGod();
 				}
 				catch
@@ -105,45 +110,71 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		#region Controller
 
-		public ControllerDefinition ControllerDefinition { get { return Emulation.Cores.Nintendo.NES.NES.NESController; } }
+		public ControllerDefinition ControllerDefinition { get; private set; }
 		public IController Controller { get; set; }
+
+		void SetControllerDefinition()
+		{
+			var def = new ControllerDefinition();
+			def.Name = "NES Controller";
+			def.BoolButtons.AddRange(new[] { "Reset", "Power" }); // console buttons
+			if (_SyncSettings.LeftPortConnected || _SyncSettings.RightPortConnected)
+				def.BoolButtons.AddRange(PadP1.Select(p => p.Name));
+			if (_SyncSettings.LeftPortConnected && _SyncSettings.RightPortConnected)
+				def.BoolButtons.AddRange(PadP2.Select(p => p.Name));
+			ControllerDefinition = def;
+		}
+
+		private struct PadEnt
+		{
+			public readonly string Name;
+			public readonly int Mask;
+			public PadEnt(string Name, int Mask)
+			{
+				this.Name = Name;
+				this.Mask = Mask;
+			}
+		}
+
+		private static PadEnt[] GetPadList(int player)
+		{
+			string prefix = string.Format("P{0} ", player);
+			return PadNames.Zip(PadMasks, (s, i) => new PadEnt(prefix + s, i)).ToArray();
+		}
+
+		private static string[] PadNames = new[]
+			{
+				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A"
+			};
+		private static int[] PadMasks = new[]
+			{
+				16, 32, 64, 128, 8, 4, 2, 1
+			};
+
+		private static PadEnt[] PadP1 = GetPadList(1);
+		private static PadEnt[] PadP2 = GetPadList(2);
+
+		private int GetPad(IEnumerable<PadEnt> buttons)
+		{
+			int ret = 0;
+			foreach (var b in buttons)
+			{
+				if (Controller[b.Name])
+					ret |= b.Mask;
+			}
+			return ret;
+		}
 
 		void SetPads(out int j1, out int j2)
 		{
-			j1 = 0;
-			j2 = 0;
-			if (Controller["P1 A"])
-				j1 |= 1;
-			if (Controller["P1 B"])
-				j1 |= 2;
-			if (Controller["P1 Select"])
-				j1 |= 4;
-			if (Controller["P1 Start"])
-				j1 |= 8;
-			if (Controller["P1 Up"])
-				j1 |= 16;
-			if (Controller["P1 Down"])
-				j1 |= 32;
-			if (Controller["P1 Left"])
-				j1 |= 64;
-			if (Controller["P1 Right"])
-				j1 |= 128;
-			if (Controller["P2 A"])
-				j2 |= 1;
-			if (Controller["P2 B"])
-				j2 |= 2;
-			if (Controller["P2 Select"])
-				j2 |= 4;
-			if (Controller["P2 Start"])
-				j2 |= 8;
-			if (Controller["P2 Up"])
-				j2 |= 16;
-			if (Controller["P2 Down"])
-				j2 |= 32;
-			if (Controller["P2 Left"])
-				j2 |= 64;
-			if (Controller["P2 Right"])
-				j2 |= 128;
+			if (_SyncSettings.LeftPortConnected)
+				j1 = GetPad(PadP1) | unchecked((int)0xffffff00);
+			else
+				j1 = 0;
+			if (_SyncSettings.RightPortConnected)
+				j2 = GetPad(_SyncSettings.LeftPortConnected ? PadP2 : PadP1) | unchecked((int)0xffffff00);
+			else
+				j2 = 0;
 		}
 
 		#endregion
@@ -383,7 +414,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		void ComputeBootGod()
 		{
 			// inefficient, sloppy, etc etc
-			Emulation.Cores.Nintendo.NES.NES.BootGodDB.Initialize(); 
+			Emulation.Cores.Nintendo.NES.NES.BootGodDB.Initialize();
 			var chrrom = MemoryDomains["CHR VROM"];
 			var prgrom = MemoryDomains["PRG ROM"];
 
@@ -401,6 +432,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			if (carts.Count > 0)
 			{
 				Console.WriteLine("BootGod entry found: {0}", carts[0].name);
+				switch (carts[0].system)
+				{
+					case "NES-PAL":
+					case "NES-PAL-A":
+					case "NES-PAL-B":
+					case "Dendy":
+						Console.WriteLine("Bad region {0}! Failing over...", carts[0].system);
+						throw new UnsupportedGameException("Unsupported region!");
+					default:
+						break;
+				}
 				BootGodStatus = RomStatus.GoodDump;
 				BootGodName = carts[0].name;
 			}
@@ -498,16 +540,45 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			}
 		}
 
-		QuickNESSettings _Settings;
-
-		// what is this for?
 		public class QuickNESSyncSettings
 		{
+			[DefaultValue(true)]
+			[DisplayName("Left Port Connected")]
+			[Description("Specifies whether or not the Left (Player 1) Controller is connected")]
+			public bool LeftPortConnected { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Right Port Connected")]
+			[Description("Specifies whether or not the Right (Player 2) Controller is connected")]
+			public bool RightPortConnected { get; set; }
+
+			public QuickNESSyncSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+
 			public QuickNESSyncSettings Clone()
 			{
-				return new QuickNESSyncSettings();
+				return (QuickNESSyncSettings)MemberwiseClone();
+			}
+
+			public static bool NeedsReboot(QuickNESSyncSettings x, QuickNESSyncSettings y)
+			{
+				// the core can handle dynamic plugging and unplugging, but that changes
+				// the controllerdefinition, and we're not ready for that
+				return !DeepEquality.DeepEquals(x, y);
 			}
 		}
+
+		QuickNESSettings _Settings;
+		/// <summary>
+		/// the syncsettings that this run of emulation is using (was passed to ctor)
+		/// </summary>
+		QuickNESSyncSettings _SyncSettings;
+		/// <summary>
+		/// the syncsettings that were requested but won't be used yet
+		/// </summary>
+		QuickNESSyncSettings _SyncSettings_next;
 
 		public QuickNESSettings GetSettings()
 		{
@@ -516,7 +587,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public QuickNESSyncSettings GetSyncSettings()
 		{
-			return new QuickNESSyncSettings();
+			return _SyncSettings_next.Clone();
 		}
 
 		public bool PutSettings(QuickNESSettings o)
@@ -530,27 +601,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public bool PutSyncSettings(QuickNESSyncSettings o)
 		{
-			return false;
-		}
-
-		object ISettable.GetSettings()
-		{
-			return GetSettings();
-		}
-
-		bool ISettable.PutSettings(object o)
-		{
-			return PutSettings((QuickNESSettings)o);
-		}
-
-		object ISettable.GetSyncSettings()
-		{
-			return GetSyncSettings();
-		}
-
-		bool ISettable.PutSyncSettings(object o)
-		{
-			return PutSyncSettings((QuickNESSyncSettings)o);
+			bool ret = QuickNESSyncSettings.NeedsReboot(_SyncSettings, o);
+			_SyncSettings_next = o;
+			return ret;
 		}
 
 		#endregion

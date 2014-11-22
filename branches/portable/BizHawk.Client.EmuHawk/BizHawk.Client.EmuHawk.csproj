@@ -751,6 +751,12 @@
     <Compile Include="tools\Lua\SyncTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\NES\BarcodeEntry.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\NES\BarcodeEntry.Designer.cs">
+      <DependentUpon>BarcodeEntry.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\NES\NameTableViewer.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -874,12 +880,6 @@
     <Compile Include="tools\TAStudio\InputRoll.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\TAStudio\LuaBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\LuaBox.Designer.cs">
-      <DependentUpon>LuaBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\TAStudio\TAStudio.IControlMainForm.cs">
       <DependentUpon>TAStudio.cs</DependentUpon>
       <SubType>Form</SubType>
@@ -894,23 +894,11 @@
     <Compile Include="tools\TAStudio\MarkerControl.Designer.cs">
       <DependentUpon>MarkerControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\TAStudio\MarkerControlsBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\MarkerControlsBox.Designer.cs">
-      <DependentUpon>MarkerControlsBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\TAStudio\PlaybackBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="tools\TAStudio\PlaybackBox.Designer.cs">
       <DependentUpon>PlaybackBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\TAStudio\RecorderBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\RecorderBox.Designer.cs">
-      <DependentUpon>RecorderBox.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\TAStudio\TAStudio.cs">
       <SubType>Form</SubType>
@@ -978,6 +966,7 @@
     <Compile Include="tools\VirtualPads\schema\GBASchema.cs" />
     <Compile Include="tools\VirtualPads\schema\GBSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\GenSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\LynxSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\SatSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\IVirtualPadSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\N64Schema.cs" />
@@ -1259,6 +1248,9 @@
     <EmbeddedResource Include="tools\Lua\LuaWinform.resx">
       <DependentUpon>LuaWinform.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="tools\NES\BarcodeEntry.resx">
+      <DependentUpon>BarcodeEntry.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\NES\NESDebugger.resx">
       <DependentUpon>NESDebugger.cs</DependentUpon>
     </EmbeddedResource>
@@ -1314,20 +1306,11 @@
     <EmbeddedResource Include="tools\TAStudio\HistoryBox.resx">
       <DependentUpon>HistoryBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\LuaBox.resx">
-      <DependentUpon>LuaBox.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\MarkerControl.resx">
       <DependentUpon>MarkerControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\MarkerControlsBox.resx">
-      <DependentUpon>MarkerControlsBox.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\PlaybackBox.resx">
       <DependentUpon>PlaybackBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\RecorderBox.resx">
-      <DependentUpon>RecorderBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\TAStudio.resx">
       <DependentUpon>TAStudio.cs</DependentUpon>
@@ -1783,6 +1766,7 @@
     <None Include="images\Both.png" />
     <None Include="config\ControllerImages\A78Joystick.png" />
     <None Include="config\ControllerImages\IntVController.png" />
+    <None Include="config\ControllerImages\Lynx.png" />
     <Content Include="config\ControllerImages\N64.png" />
     <Content Include="config\ControllerImages\SaturnController.jpg" />
     <None Include="images\addWatch.ico" />

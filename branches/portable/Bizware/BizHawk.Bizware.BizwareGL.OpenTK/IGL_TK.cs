@@ -560,9 +560,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			ErrorCode errcode;
 
 			errcode = GL.GetError();
-            if (errcode != ErrorCode.NoError)
-                return false;
-				//throw new InvalidOperationException("Error compiling shader (from previous operation) " + errcode);
+			if (errcode != ErrorCode.NoError)
+				if (required)
+					throw new InvalidOperationException("Error compiling shader (from previous operation) " + errcode);
+				else success = false;
 
 			GL.ShaderSource(sid, source);
 			

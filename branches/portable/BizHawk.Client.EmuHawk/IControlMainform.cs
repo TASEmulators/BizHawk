@@ -19,7 +19,7 @@
 		/// Should not be called directly.
 		/// <remarks>Like MainForm's StopMovie(), saving the movie is part of this function's responsibility.</remarks>
 		/// </summary>
-		void StopMovie();
+		void StopMovie(bool supressSave);
 
 		bool WantsToControlRewind { get; }
 

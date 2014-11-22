@@ -108,6 +108,7 @@ public:
 					  // when the original cart did not have it
 
 	bool GetSaveRamPtr(int &size, uint8 *&data);
+	void GetReadOnlyPtrs(int &s0, uint8 *&p0, int &s1, uint8 *&p1);
 
 	template<bool isReader>void SyncState(NewState *ns);
 

@@ -47,6 +47,10 @@ EXPORT int GetSaveRamPtr(CSystem *s, int *size, uint8 **data)
 	return s->GetSaveRamPtr(*size, *data);
 }
 
+EXPORT void GetReadOnlyCartPtrs(CSystem *s, int *s0, uint8 **p0, int *s1, uint8 **p1)
+{
+	s->GetReadOnlyCartPtrs(*s0, *p0, *s1, *p1);
+}
 
 EXPORT int BinStateSize(CSystem *s)
 {
@@ -79,5 +83,10 @@ EXPORT void TxtStateLoad(CSystem *s, FPtrs *ff)
 {
 	NewStateExternalFunctions loader(ff);
 	s->SyncState<true>(&loader);
+}
+
+EXPORT void *GetRamPointer(CSystem *s)
+{
+	return s->GetRamPointer();
 }
 

@@ -230,7 +230,7 @@ namespace BizHawk.Client.EmuHawk
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MinimumSize = new System.Drawing.Size(150, 311);
 			this.Name = "MovieHeaderEditor";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Header Info";
 			this.Load += new System.EventHandler(this.MovieHeaderEditor_Load);
 			this.ResumeLayout(false);

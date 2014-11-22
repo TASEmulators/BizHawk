@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 				{ "GEN", "Genesis" },
 				{ "SMS", "Sega Master System" },
 				{ "PSX", "Sony PlayStation" },
-				{ "LYNX", "Atari Lynx" },
+				{ "Lynx", "Atari Lynx" },
 			};
 
 		public string TargetSystem = null;
@@ -124,8 +124,10 @@ namespace BizHawk.Client.EmuHawk
 				lvi.SubItems.Add(fr.descr);
 				lvi.SubItems.Add(""); //resolved with
 				lvi.SubItems.Add(""); //location
+				lvi.SubItems.Add(""); //size
 				lvi.SubItems.Add(""); //hash
-				lvi.SubItems[6].Font = fixedFont; //would be used for hash
+				lvi.SubItems[6].Font = fixedFont; //would be used for hash and size
+				lvi.SubItems[7].Font = fixedFont; //would be used for hash and size
 				lvFirmwares.Items.Add(lvi);
 
 				//build the groups in the listview as we go:
@@ -197,8 +199,8 @@ namespace BizHawk.Client.EmuHawk
 			foreach (ListViewItem lvi in lvFirmwares.Items)
 			{
 				var fr = lvi.Tag as FirmwareDatabase.FirmwareRecord;
-				var ri = Manager.Resolve(fr);
-				for(int i=4;i<=6;i++)
+				var ri = Manager.Resolve(fr, true);
+				for(int i=4;i<=7;i++)
 					lvi.SubItems[i].Text = "";
 
 				if (ri == null)
@@ -248,8 +250,11 @@ namespace BizHawk.Client.EmuHawk
 						lvi.ImageIndex = idUnsure;
 
 					lvi.SubItems[5].Text = path;
-					if (ri.Hash != null) lvi.SubItems[6].Text = "sha1:" + ri.Hash;
-					else lvi.SubItems[6].Text = "";
+
+					lvi.SubItems[6].Text = ri.Size.ToString();
+
+					if (ri.Hash != null) lvi.SubItems[7].Text = "sha1:" + ri.Hash;
+					else lvi.SubItems[7].Text = "";
 				}
 			}
 
@@ -362,6 +367,7 @@ namespace BizHawk.Client.EmuHawk
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
+				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				var ff = FirmwareDatabase.FirmwareFilesByHash[o.hash];
 				if (o.status == FirmwareDatabase.FirmwareOptionStatus.Ideal)
 					olvi.ImageIndex = FirmwaresConfigInfo.idIdeal;
@@ -371,14 +377,16 @@ namespace BizHawk.Client.EmuHawk
 					olvi.ImageIndex = FirmwaresConfigInfo.idUnacceptable;
 				if (o.status == FirmwareDatabase.FirmwareOptionStatus.Bad)
 					olvi.ImageIndex = FirmwaresConfigInfo.idBad;
-				olvi.SubItems[0].Text = o.hash;
-				olvi.SubItems[0].Font = fixedFont;
-				olvi.SubItems[1].Text = ff.recommendedName;
-				olvi.SubItems[1].Font = this.Font; //why doesnt this work?
-				olvi.SubItems[2].Text = ff.descr;
+				olvi.SubItems[0].Text = ff.size.ToString();
+				olvi.SubItems[0].Font = this.Font; //why doesnt this work?
+				olvi.SubItems[1].Text = o.hash;
+				olvi.SubItems[1].Font = fixedFont;
+				olvi.SubItems[2].Text = ff.recommendedName;
 				olvi.SubItems[2].Font = this.Font; //why doesnt this work?
-				olvi.SubItems[3].Text = ff.info;
+				olvi.SubItems[3].Text = ff.descr;
 				olvi.SubItems[3].Font = this.Font; //why doesnt this work?
+				olvi.SubItems[4].Text = ff.info;
+				olvi.SubItems[4].Font = this.Font; //why doesnt this work?
 				fciDialog.lvOptions.Items.Add(olvi);
 			}
 

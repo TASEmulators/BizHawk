@@ -609,26 +609,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			return ret;	
 		}
 
-		object ISettable.GetSettings()
-		{
-			return GetSettings();
-		}
-
-		bool ISettable.PutSettings(object o)
-		{
-			return PutSettings((SMSSettings)o);
-		}
-
-		object ISettable.GetSyncSettings()
-		{
-			return GetSyncSettings();
-		}
-
-		bool ISettable.PutSyncSettings(object o)
-		{
-			return PutSyncSettings((SMSSyncSettings)o);
-		}
-
 		public SMSSettings Settings;
 		public SMSSyncSettings SyncSettings;
 

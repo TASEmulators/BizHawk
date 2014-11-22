@@ -413,8 +413,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (Global.Emulator is LibsnesCore)
 			{
 				var snes = (LibsnesCore)Global.Emulator;
-				var ss = snes.GetSyncSettings();
-				if (ss.Profile == "Performance")
+				if (snes.CurrentProfile == "Performance")
 				{
 					var box = new MsgBox(
 						"While the performance core is faster, it is not stable enough for movie recording\n\nSwitch to Compatibility?",
@@ -431,6 +430,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (result == DialogResult.Yes)
 					{
+						var ss = snes.GetSyncSettings();
 						ss.Profile = "Compatibility";
 						snes.PutSyncSettings(ss);
 					}
@@ -1123,8 +1123,6 @@ namespace BizHawk.Client.EmuHawk
 				Global.Emulator.HasMemoryDomains();
 
 			batchRunnerToolStripMenuItem.Visible = VersionInfo.DeveloperBuild;
-
-			TAStudioMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
 
 		private void ToolBoxMenuItem_Click(object sender, EventArgs e)
@@ -1214,8 +1212,10 @@ namespace BizHawk.Client.EmuHawk
 				MovieSettingsMenuItem.Enabled =
 				Global.Emulator is NES;
 
-			NesControllerSettingsMenuItem.Enabled = Global.Emulator is NES && !Global.MovieSession.Movie.IsActive;
+			NesControllerSettingsMenuItem.Enabled = (Global.Emulator is NES || Global.Emulator is QuickNES) && !Global.MovieSession.Movie.IsActive;
 			MovieSettingsMenuItem.Enabled = Global.Emulator is NES && !Global.MovieSession.Movie.IsActive;
+
+			barcodeReaderToolStripMenuItem.Enabled = BarcodeEntry.HasReader();
 		}
 
 		private void FdsControlsMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1281,7 +1281,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NesControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new NesControllerSettings().ShowDialog();
+			if (Global.Emulator is NES)
+				new NesControllerSettings().ShowDialog();
+			else if (Global.Emulator is QuickNES)
+				GenericCoreConfig.DoDialog(this, "QuickNES Controller Settings", true, false);
 		}
 
 		private void MovieSettingsMenuItem_Click(object sender, EventArgs e)

@@ -41,6 +41,7 @@ namespace BizHawk.Client.EmuHawk
 			ControllerImages.Add("TI83 Controller", Properties.Resources.TI83_Controller);
 
 			ControllerImages.Add("WonderSwan Controller", Properties.Resources.WonderSwanColor);
+			ControllerImages.Add("Lynx Controller", Properties.Resources.Lynx);
 		}
 
 		protected override void OnActivated(EventArgs e)
@@ -69,6 +70,7 @@ namespace BizHawk.Client.EmuHawk
 		private Control CreateNormalPanel(Dictionary<string, string> settings, List<string> buttons, Size size)
 		{
 			var cp = new ControllerConfigPanel { Dock = DockStyle.Fill };
+			cp.Tooltip = toolTip1;
 			cp.LoadSettings(settings, checkBoxAutoTab.Checked, buttons, size.Width, size.Height);
 			return cp;
 		}

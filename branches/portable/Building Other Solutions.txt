@@ -1,4 +1,5 @@
-Besides the main Bizhawk.sln, there are a number of other projects, each with a build method:
+Besides the main Bizhawk.sln, there are a number of other projects, each with its own build method.  To develop Bizhawk, you do not need to build these other projects, as they are included prebuild in SVN.  You need only build them if you want to modify the cores themselves.
+
 
 EMU7800: Load EMU7800/EMU7800.sln; builds as .NET 4.0.  Does file automatically copy to appropriate folder??
 
@@ -17,4 +18,7 @@ quicknes: Process quicknes/mingw/Makefile with mingw.  Use "make install" top co
 wonderswan: Load wonderswan/bizswan/bizswan.sln; builds as VC++ (VC10).  Output dll automatically copies to appropriate folder.  Alternatively, there is a mingw Makefile at wonderswan/mingw/Makefile, but that's not used.
 
 yabause: Load yabause/src/libyabause/libyabause.sln; builds as VC++ (VC10).  Output dll automatically copies to appropriate folder.
+
+
+libdarm: stock build from https://github.com/jbremer/darm.git   71a027e0ffb2171d01213c6ecc6da1c49e158398
 

@@ -2,7 +2,8 @@
 {
 	public partial class TAStudio : IControlMainform
 	{
-		
+		private bool _suppressAskSave = false;
+
 		public bool WantsToControlReadOnly { get { return false; } }
 		public void ToggleReadOnly()
 		{
@@ -11,10 +12,12 @@
 
 		public bool WantsToControlStopMovie { get; private set; }
 
-		public void StopMovie()
+		public void StopMovie(bool supressSave)
 		{
 			this.Focus();
+			_suppressAskSave = supressSave;
 			NewTasMenuItem_Click(null, null);
+			_suppressAskSave = false;
 		}
 
 		public bool WantsToControlRewind { get { return true; } }

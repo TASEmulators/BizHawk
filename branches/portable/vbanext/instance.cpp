@@ -5608,6 +5608,8 @@ int armExecute (void)
 		int oldArmNextPC = bus.armNextPC;
 
 		bus.armNextPC = bus.reg[15].I;
+		if (traceCallback)
+			traceCallback(bus.armNextPC, opcode);
 		if (fetchCallback)
 			fetchCallback(bus.armNextPC);
 		bus.reg[15].I += 4;
@@ -7207,6 +7209,8 @@ int thumbExecute (void)
 		u32 oldArmNextPC = bus.armNextPC;
 
 		bus.armNextPC = bus.reg[15].I;
+		if (traceCallback) // low bit of addr is set on callback to indicate thumb mode
+			traceCallback(bus.armNextPC | 1, opcode);
 		if (fetchCallback)
 			fetchCallback(bus.armNextPC);
 
@@ -12610,32 +12614,8 @@ updateLoop:
 					io_registers[REG_DISPSTAT] &= 0xFFFD;
 					if(io_registers[REG_VCOUNT] == 160)
 					{
-						/* update joystick information */
-						io_registers[REG_P1] = 0x03FF ^ (joy & 0x3FF);
-#if 0
-						if(cpuEEPROMSensorEnabled)
-							systemUpdateMotionSensor();
-#endif
-						UPDATE_REG(0x130, io_registers[REG_P1]);
-						io_registers[REG_P1CNT] = READ16LE(((uint16_t *)&ioMem[0x132]));
-
-						// this seems wrong, but there are cases where the game
-						// can enter the stop state without requesting an IRQ from
-						// the joypad.
-						if((io_registers[REG_P1CNT] & 0x4000) || stopState) {
-							uint16_t p1 = (0x3FF ^ io_registers[REG_P1CNT]) & 0x3FF;
-							if(io_registers[REG_P1CNT] & 0x8000) {
-								if(p1 == (io_registers[REG_P1CNT] & 0x3FF)) {
-									io_registers[REG_IF] |= 0x1000;
-									UPDATE_REG(0x202, io_registers[REG_IF]);
-								}
-							} else {
-								if(p1 & io_registers[REG_P1CNT]) {
-									io_registers[REG_IF] |= 0x1000;
-									UPDATE_REG(0x202, io_registers[REG_IF]);
-								}
-							}
-						}
+						// moved to start of emulated frame
+						//UpdateJoypad();
 
 						io_registers[REG_DISPSTAT] |= 1;
 						io_registers[REG_DISPSTAT] &= 0xFFFD;
@@ -12985,6 +12965,7 @@ int scanlineCallbackLine;
 void (*fetchCallback)(u32 addr);
 void (*writeCallback)(u32 addr);
 void (*readCallback)(u32 addr);
+void (*traceCallback)(u32 addr, u32 opcode);
 
 void (*padCallback)();
 
@@ -13014,6 +12995,36 @@ void systemOnWriteDataToSoundBuffer(int16_t * finalWave, int length)
 	systemAudioFrameDest = nullptr;
 	*systemAudioFrameSamp = length / 2;
 	systemAudioFrameSamp = nullptr;
+}
+
+void UpdateJoypad()
+{
+	/* update joystick information */
+	io_registers[REG_P1] = 0x03FF ^ (joy & 0x3FF);
+#if 0
+	if(cpuEEPROMSensorEnabled)
+		systemUpdateMotionSensor();
+#endif
+	UPDATE_REG(0x130, io_registers[REG_P1]);
+	io_registers[REG_P1CNT] = READ16LE(((uint16_t *)&ioMem[0x132]));
+
+	// this seems wrong, but there are cases where the game
+	// can enter the stop state without requesting an IRQ from
+	// the joypad.
+	if((io_registers[REG_P1CNT] & 0x4000) || stopState) {
+		uint16_t p1 = (0x3FF ^ io_registers[REG_P1CNT]) & 0x3FF;
+		if(io_registers[REG_P1CNT] & 0x8000) {
+			if(p1 == (io_registers[REG_P1CNT] & 0x3FF)) {
+				io_registers[REG_IF] |= 0x1000;
+				UPDATE_REG(0x202, io_registers[REG_IF]);
+			}
+		} else {
+			if(p1 & io_registers[REG_P1CNT]) {
+				io_registers[REG_IF] |= 0x1000;
+				UPDATE_REG(0x202, io_registers[REG_IF]);
+			}
+		}
+	}
 }
 
 public:
@@ -13368,6 +13379,7 @@ template<bool isReader>bool SyncBatteryRam(NewState *ns)
 		systemAudioFrameDest = audiobuffer;
 		systemAudioFrameSamp = numsamp;
 		lagged = true;
+		UpdateJoypad();
 		do
 		{
 			CPULoop();
@@ -13434,6 +13446,12 @@ template<bool isReader>bool SyncBatteryRam(NewState *ns)
 	{
 		// before each write
 		writeCallback = cb;
+	}
+
+	void SetTraceCallback(void (*cb)(u32 addr, u32 opcode))
+	{
+		// before each opcode fetch
+		traceCallback = cb;
 	}
 
 }; // class Gigazoid
@@ -13580,6 +13598,11 @@ EXPORT u8 SystemBusRead(Gigazoid *g, u32 addr)
 EXPORT void SetScanlineCallback(Gigazoid *g, void (*cb)(), int scanline)
 {
 	g->SetScanlineCallback(cb, scanline);
+}
+
+EXPORT void SetTraceCallback(Gigazoid *g, void (*cb)(u32 addr, u32 opcode))
+{
+	g->SetTraceCallback(cb);
 }
 
 EXPORT u32 *GetRegisters(Gigazoid *g)

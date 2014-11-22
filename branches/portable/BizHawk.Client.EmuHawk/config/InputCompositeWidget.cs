@@ -19,15 +19,37 @@ namespace BizHawk.Client.EmuHawk
 
 			DropdownMenu.ItemClicked += new ToolStripItemClickedEventHandler(DropdownMenu_ItemClicked);
 			DropdownMenu.PreviewKeyDown += new PreviewKeyDownEventHandler(DropdownMenu_PreviewKeyDown);
-			foreach (var str in InputWidget.SpecialBindings)
+			foreach (var spec in InputWidget.SpecialBindings)
 			{
-				var tsi = new ToolStripMenuItem(str);
+				var tsi = new ToolStripMenuItem(spec.BindingName);
+				tsi.ToolTipText = spec.TooltipText;
 				DropdownMenu.Items.Add(tsi);
 			}
 		
 			btnSpecial.ContextMenuStrip = DropdownMenu;
 
 			widget.CompositeWidget = this;
+		}
+
+		static readonly string WidgetTooltipText = "* Escape clears a key mapping\r\n* Disable Auto Tab to multiply bind";
+		ToolTip _tooltip;
+		string _bindingTooltipText;
+
+		public void SetupTooltip(ToolTip tip, string bindingText)
+		{
+			_tooltip = tip;
+			_tooltip.SetToolTip(btnSpecial, "Click here for special tricky bindings");
+			_bindingTooltipText = bindingText;
+			RefreshTooltip();
+		}
+
+		public void RefreshTooltip()
+		{
+			string widgetText = "Current Binding: " + widget.Text;
+			if (_bindingTooltipText != null)
+				widgetText = widgetText + "\r\n---\r\n" + _bindingTooltipText;
+			widgetText = widgetText + "\r\n---\r\n" + WidgetTooltipText;
+			_tooltip.SetToolTip(widget, widgetText);
 		}
 
 		void DropdownMenu_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)

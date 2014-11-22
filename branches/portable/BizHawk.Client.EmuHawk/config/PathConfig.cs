@@ -60,15 +60,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetDefaultFocusedTab()
 		{
-			PathTabControl.SelectTab(FindTabByName(Global.Game.System));
+			var tab = FindTabByName(Global.Game.System);
+			if (tab != null)
+			{
+				PathTabControl.SelectTab(tab);
+		}
 		}
 
 		private TabPage FindTabByName(string name)
 		{
+			var global = PathTabControl.TabPages
+				.OfType<TabPage>()
+				.First(x => x.Name.ToUpper().Contains("GLOBAL"));
+
 			return PathTabControl.TabPages
 				.OfType<TabPage>()
-				.FirstOrDefault(x => x.Name.ToUpper().Contains(name.ToUpper())) 
-				?? new TabPage();
+				.FirstOrDefault(x => x.Name.ToUpper().StartsWith(name.ToUpper()))
+				?? global;
 		}
 
 		private void DoTabs(List<PathEntry> pathCollection)
