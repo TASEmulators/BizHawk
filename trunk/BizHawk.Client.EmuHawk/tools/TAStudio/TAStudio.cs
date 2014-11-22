@@ -518,15 +518,15 @@ namespace BizHawk.Client.EmuHawk
 			if (VersionInfo.DeveloperBuild)
 			{
 				RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems().ToArray());
-			}
 
-			RightClickMenu.Items
+				RightClickMenu.Items
 				.OfType<ToolStripMenuItem>()
 				.First(t => t.Name == "RotateMenuItem")
 				.Click += (o, ov) =>
 				{
 					CurrentTasMovie.FlagChanges();
 				};
+			}
 
 			RefreshDialog();
 		}
