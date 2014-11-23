@@ -355,7 +355,7 @@ namespace BizHawk.Client.EmuHawk
 
 			//can't do this unless we are autoloading a rom too...
 			if (Global.Config.RecentWatches.AutoLoad 
-				&& Global.Emulator is IMemoryDomains)
+				&& Global.Emulator.HasMemoryDomains())
 			{
 				GlobalWin.Tools.LoadRamWatch(!Global.Config.DisplayRamWatch);
 			}
