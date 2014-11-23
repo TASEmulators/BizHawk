@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 
 			ValueHexIndLabel.Text =
 				CompareHexIndLabel.Text =
-				_cheat.Type == Watch.DisplayType.Hex ? HexInd : String.Empty;
+				_cheat.Type == Watch.DisplayType.Hex ? HexInd : string.Empty;
 
 			BigEndianCheckBox.Checked = _cheat.BigEndian.Value;
 
@@ -95,7 +95,7 @@ namespace BizHawk.Client.EmuHawk
 			SetSizeSelected(Watch.WatchSize.Byte);
 			PopulateTypeDropdown();
 
-			NameBox.Text = String.Empty;
+			NameBox.Text = string.Empty;
 
 			if (Global.Emulator != null)
 			{

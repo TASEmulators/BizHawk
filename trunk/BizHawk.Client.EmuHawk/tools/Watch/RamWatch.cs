@@ -580,7 +580,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetPlatformAndMemoryDomainLabel()
 		{
-			MemDomainLabel.Text = Global.Emulator.SystemId + " " + _watches.Domain.Name;
+			MemDomainLabel.Text = _core.SystemId + " " + _watches.Domain.Name;
 		}
 
 		private void UpdateStatusBar(bool saved = false)

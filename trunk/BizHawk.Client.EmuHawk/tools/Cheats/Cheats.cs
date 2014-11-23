@@ -199,11 +199,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GameGenieToolbarSeparator.Visible =
 				LoadGameGenieToolbarItem.Visible =
-				   (Global.Emulator.SystemId == "NES")
-				|| (Global.Emulator.SystemId == "GEN" && VersionInfo.DeveloperBuild)
-				|| (Global.Emulator.SystemId == "GB")
+				   (Core.SystemId == "NES")
+				|| (Core.SystemId == "GEN" && VersionInfo.DeveloperBuild)
+				|| (Core.SystemId == "GB")
 				|| (Global.Game.System == "GG")
-				|| (Global.Emulator is LibsnesCore);
+				|| (Core is LibsnesCore);
 		}
 
 		private void AddCheat()
@@ -540,11 +540,11 @@ namespace BizHawk.Client.EmuHawk
 
 			GameGenieSeparator.Visible =
 				OpenGameGenieEncoderDecoderMenuItem.Visible = 
-					   (Global.Emulator.SystemId == "NES") 
-					|| (Global.Emulator is Genesis)
-					|| (Global.Emulator.SystemId == "GB")
+					   (Core.SystemId == "NES") 
+					|| (Core is Genesis)
+					|| (Core.SystemId == "GB")
 					|| (Global.Game.System == "GG")
-					|| (Global.Emulator is LibsnesCore);
+					|| (Core is LibsnesCore);
 		}
 
 		private void RemoveCheatMenuItem_Click(object sender, EventArgs e)
