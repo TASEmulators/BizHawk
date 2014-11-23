@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.Common
 		}
 	}
 
-	public interface ISettable<TSettings, TSync> : IEmulator
+	public interface ISettable<TSettings, TSync> : IEmulator, ICoreService
 	{
 		// in addition to these methods, it's expected that the constructor or Load() method
 		// will take a Settings and SyncSettings object to set the initial state of the core
