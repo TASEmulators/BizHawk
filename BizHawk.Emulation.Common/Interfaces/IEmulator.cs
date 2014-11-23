@@ -128,21 +128,5 @@ namespace BizHawk.Emulation.Common
 		CoreComm CoreComm { get; }
 	}
 
-	public interface IDebuggable : IEmulator
-	{
-		/// <summary>
-		/// Returns a list of Cpu registers and their current state
-		/// </summary>
-		/// <returns></returns>
-		Dictionary<string, int> GetCpuFlagsAndRegisters();
-
-		/// <summary>
-		/// Sets a given Cpu register to the given value
-		/// </summary>
-		/// <param name="register"></param>
-		/// <param name="value"></param>
-		void SetCpuRegister(string register, int value);
-	}
-
 	public enum DisplayType { NTSC, PAL, DENDY }
 }
