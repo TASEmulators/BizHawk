@@ -1,8 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing;
-using BizHawk.Emulation.Common;
+
 using Newtonsoft.Json;
+
+using BizHawk.Emulation.Common;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
@@ -24,7 +26,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (Settings == null || Settings.SECAMColors != o.SECAMColors)
 			{
 				if (_tia != null)
+				{
 					_tia.SetSECAM(o.SECAMColors);
+				}
 			}
 
 			Settings = o;

@@ -145,9 +145,10 @@
     <Compile Include="Computers\Commodore64\UserPort\UserPortDevice.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs" />
+    <Compile Include="Consoles\Atari\2600\Atari2600.IDebuggable.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.IMemoryDomains.cs" />
+    <Compile Include="Consoles\Atari\2600\Atari2600.ISettable.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.RomHeuristics.cs" />
-    <Compile Include="Consoles\Atari\2600\Atari2600.Settings.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\m0840.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\m3E.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\m3F.cs" />
