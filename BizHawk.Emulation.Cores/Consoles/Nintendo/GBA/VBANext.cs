@@ -394,7 +394,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			regs = new VBARegisterHelper(Core);
 		}
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			return regs.GetAllRegisters();
 		}

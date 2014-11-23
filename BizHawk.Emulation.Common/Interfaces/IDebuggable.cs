@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Common
 		/// Returns a list of Cpu registers and their current state
 		/// </summary>
 		/// <returns></returns>
-		Dictionary<string, int> GetCpuFlagsAndRegisters();
+		IDictionary<string, int> GetCpuFlagsAndRegisters();
 
 		/// <summary>
 		/// Sets a given Cpu register to the given value

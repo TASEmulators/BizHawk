@@ -379,7 +379,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public MemoryDomainList MemoryDomains { get; private set; }
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			int[] regs = new int[6];
 			var ret = new Dictionary<string, int>();

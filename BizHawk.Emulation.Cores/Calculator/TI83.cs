@@ -1008,7 +1008,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 		public object GetSyncSettings() { return null; }
 		public bool PutSyncSettings(object o) { return false; }
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			return new Dictionary<string, int>
 			{

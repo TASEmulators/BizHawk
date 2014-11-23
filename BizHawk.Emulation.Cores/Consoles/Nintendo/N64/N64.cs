@@ -406,7 +406,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		#region Debugging Hooks
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			//note: the approach this code takes is highly bug-prone
 			var ret = new Dictionary<string, int>();

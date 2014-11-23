@@ -199,7 +199,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			api.Dispose();
 		}
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			LibsnesApi.CpuRegs regs;
 			api.QUERY_peek_cpu_regs(out regs);

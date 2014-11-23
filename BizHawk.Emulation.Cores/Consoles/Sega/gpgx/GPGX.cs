@@ -627,7 +627,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		}
 
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			LibGPGX.RegisterInfo[] regs = new LibGPGX.RegisterInfo[LibGPGX.gpgx_getmaxnumregs()];
 

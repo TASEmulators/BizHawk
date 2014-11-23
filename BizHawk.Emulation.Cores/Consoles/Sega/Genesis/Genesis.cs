@@ -248,7 +248,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 #endif
 		}
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			return new Dictionary<string, int>
 			{

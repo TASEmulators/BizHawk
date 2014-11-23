@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			};
 		}
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			return new Dictionary<string, int>
 			{
