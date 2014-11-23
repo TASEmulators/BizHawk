@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		isPorted: false,
 		isReleased: false
 		)]
-	public sealed partial class Intellivision : IEmulator, IMemoryDomains
+	public sealed partial class Intellivision : IEmulator
 	{
 		byte[] Rom;
 		GameInfo Game;
@@ -196,11 +196,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public bool BinarySaveStatesPreferred { get { return false; } }
 
 		public CoreComm CoreComm { get; private set; }
-
-		public MemoryDomainList MemoryDomains
-		{
-			get { throw new NotImplementedException(); }
-		}
 
 		public void Dispose()
 		{
