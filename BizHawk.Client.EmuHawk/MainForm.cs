@@ -3617,5 +3617,15 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.Load<BarcodeEntry>();
 		}
 
+		private void FeaturesMenuItem_Click(object sender, EventArgs e)
+		{
+			new CoreFeatureAnalysis().Show();
+		}
+
+		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			FeaturesMenuItem.Visible = VersionInfo.DeveloperBuild;
+		}
+
 	}
 }
