@@ -23,6 +23,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CoreFeatureAnalysis_Load(object sender, EventArgs e)
 		{
+			CoreTree.ImageList = new ImageList();
+			CoreTree.ImageList.Images.Add("Good", Properties.Resources.GreenCheck);
+			CoreTree.ImageList.Images.Add("Bad", Properties.Resources.ExclamationRed);
+
+
 			var services = Assembly
 				.GetAssembly(typeof(IEmulator))
 				.GetTypes()
@@ -57,8 +62,10 @@ namespace BizHawk.Client.EmuHawk
 				var coreNode = new TreeNode
 				{
 					Text = core.CoreAttributes.CoreName + (core.CoreAttributes.Released ? string.Empty : " (UNRELEASED)"),
-					ForeColor = core.CoreAttributes.Released ? Color.Black : Color.DarkGray
+					ForeColor = core.CoreAttributes.Released ? Color.Black : Color.DarkGray,
 				};
+
+				bool missingImplementation = false;
 
 				foreach (var service in services)
 				{
@@ -101,10 +108,15 @@ namespace BizHawk.Client.EmuHawk
 							});
 						}
 					}
+					else
+					{
+						missingImplementation = true;
+					}
 
 					coreNode.Nodes.Add(serviceNode);
 				}
 
+				coreNode.ImageKey = missingImplementation ? "Bad" : "Good";
 
 				CoreTree.Nodes.Add(coreNode);
 			}
