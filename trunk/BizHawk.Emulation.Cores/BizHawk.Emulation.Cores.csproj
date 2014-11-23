@@ -89,6 +89,7 @@
     <Compile Include="Calculator\TI83.ISettable.cs" />
     <Compile Include="Calculator\TI83.cs" />
     <Compile Include="Calculator\TI83.IDebuggable.cs" />
+    <Compile Include="Calculator\TI83LinkPort.cs" />
     <Compile Include="Computers\Commodore64\C64.Core.cs" />
     <Compile Include="Computers\Commodore64\C64.cs" />
     <Compile Include="Computers\Commodore64\C64.Motherboard.cs" />
