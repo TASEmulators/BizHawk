@@ -50,39 +50,56 @@ namespace BizHawk.Client.EmuHawk
 			ReleasedCoresLabel.Text = cores.Count(c => c.CoreAttributes.Released).ToString();
 
 			CoreTree.Nodes.Clear();
+			CoreTree.BeginUpdate();
 
 			foreach (var core in cores)
 			{
 				var coreNode = new TreeNode
 				{
 					Text = core.CoreAttributes.CoreName + (core.CoreAttributes.Released ? string.Empty : " (UNRELEASED)"),
-					ForeColor = core.CoreAttributes.Released ? Color.Black : Color.DarkGray,
-					// TODO
-					//ForeColor = services.All(s => s.IsAssignableFrom(core.CoreType)) ? Color.Black : Color.Red
+					ForeColor = core.CoreAttributes.Released ? Color.Black : Color.DarkGray
 				};
 
 				foreach (var service in services)
 				{
+					bool isImplemented = false;
+					if (service.IsAssignableFrom(core.CoreType))
+					{
+						isImplemented = true;
+					}
+					else if (service.IsAssignableFrom(typeof(ISettable<,>)))
+					{
+						isImplemented = core.CoreType
+							.GetInterfaces()
+							.Where(t => t.IsGenericType &&
+										t.GetGenericTypeDefinition() == typeof(ISettable<,>))
+							.FirstOrDefault() != null;
+					}
+
+
 					var serviceNode = new TreeNode
 					{
 						Text = service.Name,
-						ForeColor = (service.IsAssignableFrom(core.CoreType)) ? Color.Black : Color.Red
+						ForeColor = isImplemented ? Color.Black : Color.Red
 					};
 
-					foreach(var field in service.GetProperties())
+					if (isImplemented)
 					{
-						serviceNode.Nodes.Add(new TreeNode
+						foreach (var field in service.GetProperties())
 						{
-							Text = field.Name
-						});
-					}
+							serviceNode.Nodes.Add(new TreeNode
+							{
+								Text = field.Name
+							});
+						}
 
-					foreach (var field in service.GetMethods())
-					{
-						serviceNode.Nodes.Add(new TreeNode
+						foreach (var field in service.GetMethods())
 						{
-							Text = field.Name
-						});
+							serviceNode.Nodes.Add(new TreeNode
+							{
+								Text = field.Name
+							});
+						}
 					}
 
 					coreNode.Nodes.Add(serviceNode);
@@ -91,6 +108,8 @@ namespace BizHawk.Client.EmuHawk
 
 				CoreTree.Nodes.Add(coreNode);
 			}
+
+			CoreTree.EndUpdate();
 		}
 	}
 }
