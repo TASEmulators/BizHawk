@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		)]
 	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, IMemoryDomains, IDebuggable
 	{
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			var ret = new Dictionary<string, int>();
 			int[] data = new int[LibMeteor.regnames.Length];

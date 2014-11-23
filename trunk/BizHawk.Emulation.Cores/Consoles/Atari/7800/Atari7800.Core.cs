@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		EMU7800.Win.GameProgram GameInfo;
 		public byte[] hsram = new byte[2048];
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			return new Dictionary<string, int>
 			{

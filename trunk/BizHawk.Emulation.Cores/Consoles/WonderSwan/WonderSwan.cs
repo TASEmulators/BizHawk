@@ -324,7 +324,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public MemoryDomainList MemoryDomains { get; private set; }
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			var ret = new Dictionary<string, int>();
 			for (int i = (int)BizSwan.NecRegsMin; i <= (int)BizSwan.NecRegsMax; i++)

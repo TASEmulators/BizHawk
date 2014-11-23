@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			//disk.HardReset();
 		}
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			return new Dictionary<string, int>
 			{

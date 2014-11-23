@@ -402,7 +402,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public MemoryDomainList MemoryDomains { get; private set; }
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			var left = L.GetCpuFlagsAndRegisters()
 				.Select(reg => new KeyValuePair<string, int>("Left " + reg.Key, reg.Value));
