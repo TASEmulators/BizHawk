@@ -393,6 +393,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			return ret;
 		}
 
+		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value)
 		{
 			throw new NotImplementedException();

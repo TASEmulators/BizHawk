@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		isPorted: true,
 		isReleased: false
 		)]
-	public unsafe class Octoshock : IEmulator, IVideoProvider, ISoundProvider, IMemoryDomains
+	public unsafe class Octoshock : IEmulator, IVideoProvider, ISoundProvider
 	{
 		public string SystemId { get { return "NULL"; } }
 		public static readonly ControllerDefinition NullController = new ControllerDefinition { Name = "Null Controller" };
@@ -65,8 +65,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			CoreComm = comm;
 			VirtualWidth = BufferWidth = 256;
 			BufferHeight = 192;
-
-			MemoryDomains = new MemoryDomainList(memoryDomains);
 		}
 
 		void Attach()
@@ -254,23 +252,67 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 					frameBuffer[i] = (int)unchecked(((int*)ptr)[y * p + x] | (int)0xFF000000);
 				}
 		}
+
+		[FeatureNotImplemented]
 		public ControllerDefinition ControllerDefinition { get { return NullController; } }
+
+		[FeatureNotImplemented]
 		public IController Controller { get; set; }
 
-		public int Frame { get; set; }
-		public int LagCount { get { return 0; } set { return; } }
-		public bool IsLagFrame { get { return false; } }
+		public int Frame
+		{
+			[FeatureNotImplemented]
+			get;
 
+			[FeatureNotImplemented]
+			set;
+		}
+
+		public int LagCount
+		{
+			[FeatureNotImplemented]
+			get { return 0; }
+
+			[FeatureNotImplemented]
+			set { return; }
+		}
+		public bool IsLagFrame
+		{
+			[FeatureNotImplemented]
+			get { return false; }
+		}
+
+		[FeatureNotImplemented]
 		public byte[] CloneSaveRam() { return null; }
+
+		[FeatureNotImplemented]
 		public void StoreSaveRam(byte[] data) { }
+
+		[FeatureNotImplemented]
 		public void ClearSaveRam() { }
+
+		[FeatureNotImplemented]
 		public bool DeterministicEmulation { get { return true; } }
+
+		[FeatureNotImplemented]
 		public bool SaveRamModified { get; set; }
+
+		[FeatureNotImplemented]
 		public void SaveStateText(TextWriter writer) { }
+
+		[FeatureNotImplemented]
 		public void LoadStateText(TextReader reader) { }
+
+		[FeatureNotImplemented]
 		public void SaveStateBinary(BinaryWriter writer) { }
+
+		[FeatureNotImplemented]
 		public void LoadStateBinary(BinaryReader reader) { }
+
+		[FeatureNotImplemented]
 		public byte[] SaveStateBinary() { return new byte[1]; }
+
+		[FeatureNotImplemented]
 		public bool BinarySaveStatesPreferred { get { return false; } }
 		public int[] GetVideoBuffer() { return frameBuffer; }
 		public int VirtualWidth { get; private set; }
@@ -281,7 +323,5 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public void GetSamples(short[] samples) { }
 		public void DiscardSamples() { }
 		public int MaxVolume { get; set; }
-		private List<MemoryDomain> memoryDomains = new List<MemoryDomain>();
-		public MemoryDomainList MemoryDomains { get; private set; }
 	}
 }

@@ -286,6 +286,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				return L.SaveRamModified || R.SaveRamModified;
 			}
+
+			[FeatureNotImplemented]
 			set
 			{
 				throw new NotImplementedException();

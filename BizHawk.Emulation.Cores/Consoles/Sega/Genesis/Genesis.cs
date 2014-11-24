@@ -280,6 +280,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 			};
 		}
 
+		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value)
 		{
 			throw new NotImplementedException();
