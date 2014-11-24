@@ -147,17 +147,35 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			get { return "INTV"; }
 		}
 
+		[FeatureNotImplemented]
 		public string BoardName { get { return null; } }
 
 		public bool DeterministicEmulation { get { return true; } }
 
+		[FeatureNotImplemented]
+		public byte[] CloneSaveRam()
+		{
+			return null;
+		}
 
-		public byte[] CloneSaveRam() { return null; }
-		public void StoreSaveRam(byte[] data) { }
-		public void ClearSaveRam() { }
+		[FeatureNotImplemented]
+		public void StoreSaveRam(byte[] data)
+		{
+
+		}
+
+		[FeatureNotImplemented]
+		public void ClearSaveRam()
+		{
+
+		}
+
 		public bool SaveRamModified
 		{
+			[FeatureNotImplemented]
 			get { return false; }
+
+			[FeatureNotImplemented]
 			set { }
 		}
 
