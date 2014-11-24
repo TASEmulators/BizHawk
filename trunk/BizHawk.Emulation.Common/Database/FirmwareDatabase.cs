@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("45BEDC4CBDEAC66C7DF59E9E599195C778D86A92", 8192, "Coleco", "Bios", "ColecoBios.bin", "Bios");
 
 			{
-				var GBA_JDebug = File("AA98A2AD32B86106340665D1222D7D973A1361C7", 16384, "gbabios.rom", "Bios (J Debug)"); //?? is this size correct?
+				var GBA_JDebug = File("AA98A2AD32B86106340665D1222D7D973A1361C7", 16384, "gbabios.rom", "Bios (J Debug)");
 				var GBA_Normal = File("300C20DF6731A33952DED8C436F7F186D25D3492", 16384, "gbabios.rom", "Bios (World)");
 				Firmware("GBA", "Bios", "Bios");
 				Option("GBA", "Bios", GBA_Normal);
@@ -92,13 +92,13 @@ namespace BizHawk.Emulation.Common
 			Option("TI83", "Rom", ti83p_112);
 
 			// mega cd
-			var eu_mcd1_9210 = File("f891e0ea651e2232af0c5c4cb46a0cae2ee8f356", 131072, "eu_mcd1_9210.bin", "Mega CD EU (9210)"); //?? is this size correct?
-			var eu_mcd2_9303 = File("7063192ae9f6b696c5b81bc8f0a9fe6f0c400e58", 131072, "eu_mcd2_9303.bin", "Mega CD EU (9303)"); //?? is this size correct?
+			var eu_mcd1_9210 = File("f891e0ea651e2232af0c5c4cb46a0cae2ee8f356", 131072, "eu_mcd1_9210.bin", "Mega CD EU (9210)");
+			var eu_mcd2_9303 = File("7063192ae9f6b696c5b81bc8f0a9fe6f0c400e58", 131072, "eu_mcd2_9303.bin", "Mega CD EU (9303)");
 			var eu_mcd2_9306 = File("523b3125fb0ac094e16aa072bc6ccdca22e520e5", 131072, "eu_mcd2_9306.bin", "Mega CD EU (9310)"); //?? is this size correct?
-			var jp_mcd1_9111 = File("4846f448160059a7da0215a5df12ca160f26dd69", 131072, "jp_mcd1_9111.bin", "Mega CD JP (9111)"); //?? is this size correct?
-			var jp_mcd1_9112 = File("e4193c6ae44c3cea002707d2a88f1fbcced664de", 131072, "jp_mcd1_9112.bin", "Mega CD JP (9112)"); //?? is this size correct?
-			var us_scd1_9210 = File("f4f315adcef9b8feb0364c21ab7f0eaf5457f3ed", 131072, "us_scd1_9210.bin", "Sega CD US (9210)"); //?? is this size correct?
-			var us_scd2_9303 = File("bd3ee0c8ab732468748bf98953603ce772612704", 131072, "us_scd2_9303.bin", "Sega CD US (9303)"); //?? is this size correct?
+			var jp_mcd1_9111 = File("4846f448160059a7da0215a5df12ca160f26dd69", 131072, "jp_mcd1_9111.bin", "Mega CD JP (9111)");
+			var jp_mcd1_9112 = File("e4193c6ae44c3cea002707d2a88f1fbcced664de", 131072, "jp_mcd1_9112.bin", "Mega CD JP (9112)");
+			var us_scd1_9210 = File("f4f315adcef9b8feb0364c21ab7f0eaf5457f3ed", 131072, "us_scd1_9210.bin", "Sega CD US (9210)");
+			var us_scd2_9303 = File("bd3ee0c8ab732468748bf98953603ce772612704", 131072, "us_scd2_9303.bin", "Sega CD US (9303)");
 
 			Firmware("GEN", "CD_BIOS_EU", "Mega CD Bios (Europe)");
 			Firmware("GEN", "CD_BIOS_JP", "Mega CD Bios (Japan)");
