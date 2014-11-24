@@ -88,14 +88,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public static extern bool bizswan_saveramsave(IntPtr core, byte[] data, int maxsize);
 
 		/// <summary>
-		/// bad function
-		/// </summary>
-		/// <param name="core"></param>
-		/// <param name="settings">pass EXACTLY the same syncsettings you originally passed on core load, else DRAGONS</param>
-		[DllImport(dd, CallingConvention = cc)]
-		public static extern void bizswan_saveramclearhacky(IntPtr core, [In] ref SyncSettings settings);
-
-		/// <summary>
 		/// put non-sync settings, can be done at any time
 		/// </summary>
 		/// <param name="core"></param>
