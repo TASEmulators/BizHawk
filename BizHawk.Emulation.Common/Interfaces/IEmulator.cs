@@ -89,11 +89,6 @@ namespace BizHawk.Emulation.Common
 		void StoreSaveRam(byte[] data);
 
 		/// <summary>
-		/// reset saveram to a standard initial state.  this probably shouldn't be used; instantiate a new core to clear persistent things.
-		/// </summary>
-		void ClearSaveRam();
-
-		/// <summary>
 		/// Whether or not Save ram has been modified since the last save
 		/// </summary>
 		bool SaveRamModified { get; set; }
