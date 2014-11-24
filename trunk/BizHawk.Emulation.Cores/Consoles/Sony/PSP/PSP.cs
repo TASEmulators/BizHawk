@@ -155,11 +155,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		{
 		}
 
-		[FeatureNotImplemented]
-		public void ClearSaveRam()
-		{
-		}
-
 		public bool SaveRamModified
 		{
 			[FeatureNotImplemented]

@@ -108,6 +108,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				if (!BizSwan.bizswan_load(Core, file, file.Length, ref ss, ref rotate))
 					throw new InvalidOperationException("bizswan_load() returned FALSE!");
 
+				// adelikat: TODO: ClearSaveRam() doesn't exist anymore, do we still need this?
 				// for future uses of ClearSaveRam(), it's important that we save this
 				_DONTTOUCHME = ss;
 
@@ -198,12 +199,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		{
 			if (!BizSwan.bizswan_saveramload(Core, data, data.Length))
 				throw new InvalidOperationException("bizswan_saveramload() returned false!");
-		}
-
-		public void ClearSaveRam()
-		{
-			BizSwan.bizswan_saveramclearhacky(Core, ref _DONTTOUCHME);
-			//throw new InvalidOperationException("A new core starts with a clear saveram.  Instantiate a new core if you want this.");
 		}
 
 		public bool SaveRamModified

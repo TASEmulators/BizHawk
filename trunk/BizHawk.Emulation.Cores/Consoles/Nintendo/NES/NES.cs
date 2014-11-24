@@ -348,20 +348,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Array.Copy(data, board.SaveRam, data.Length);
 		}
 
-		public void ClearSaveRam()
-		{
-			if (board is FDS)
-			{
-				(board as FDS).ClearSaveRam();
-				return;
-			}
-
-			if (board == null || board.SaveRam == null)
-				return;
-			for (int i = 0; i < board.SaveRam.Length; i++)
-				board.SaveRam[i] = 0;
-		}
-
 		public bool SaveRamModified
 		{
 			get

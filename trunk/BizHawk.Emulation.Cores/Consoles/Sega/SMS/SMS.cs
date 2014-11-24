@@ -56,11 +56,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			if (SaveRAM != null)
 				Array.Copy(data, SaveRAM, data.Length);
 		}
-		public void ClearSaveRam()
-		{
-			if (SaveRAM != null)
-				SaveRAM = new byte[SaveRAM.Length];
-		}
+
 		public bool SaveRamModified { get; set; }
 
 		// Machine resources

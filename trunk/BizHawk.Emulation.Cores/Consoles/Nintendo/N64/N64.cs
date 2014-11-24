@@ -301,11 +301,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			api.LoadSaveram(data);
 		}
 
-		public void ClearSaveRam()
-		{
-			api.InitSaveram();
-		}
-
 		public bool SaveRamModified { get { return true; } set { } }
 
 		#region Savestates

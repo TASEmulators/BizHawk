@@ -132,13 +132,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 #endif
 		}
 
-		public void ClearSaveRam()
-		{
-			if (disposed)
-				throw new ObjectDisposedException(this.GetType().ToString());
-			LibMeteor.libmeteor_clearsaveram();
-		}
-
 		public bool SaveRamModified
 		{
 			get

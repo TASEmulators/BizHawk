@@ -164,12 +164,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		}
 
-		[FeatureNotImplemented]
-		public void ClearSaveRam()
-		{
-
-		}
-
 		public bool SaveRamModified
 		{
 			[FeatureNotImplemented]

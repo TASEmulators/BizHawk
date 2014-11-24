@@ -480,18 +480,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 		}
 
-		public void ClearSaveRam()
-		{
-			if (disposed)
-			{
-				throw new ObjectDisposedException(typeof(GPGX).ToString());
-			}
-			else
-			{
-				LibGPGX.gpgx_clear_sram();
-			}
-		}
-
 		public bool SaveRamModified
 		{
 			get

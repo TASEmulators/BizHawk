@@ -43,7 +43,6 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 
 		public byte[] CloneSaveRam() { return (byte[])SaveRAM.Clone(); }
 		public void StoreSaveRam(byte[] data) { Array.Copy(data, SaveRAM, data.Length); }
-		public void ClearSaveRam() { SaveRAM = new byte[SaveRAM.Length]; }
 
 		public bool SaveRamModified { get; set; }
 	}

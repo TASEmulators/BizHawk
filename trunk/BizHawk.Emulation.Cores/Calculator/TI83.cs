@@ -526,7 +526,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		public byte[] CloneSaveRam() { return null; }
 		public void StoreSaveRam(byte[] data) { }
-		public void ClearSaveRam() { }
+
 		public bool SaveRamModified
 		{
 			get { return false; }
