@@ -154,6 +154,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				throw new InvalidOperationException("SaveRamLoad() failed!");
 		}
 
+		[FeatureNotImplemented]
 		public void ClearSaveRam()
 		{
 			throw new NotImplementedException();

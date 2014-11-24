@@ -452,6 +452,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			return ret;
 		}
 
+		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value)
 		{
 			throw new NotImplementedException();

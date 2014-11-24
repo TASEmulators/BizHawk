@@ -640,6 +640,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			return ret;
 		}
 
+		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value)
 		{
 			throw new NotImplementedException();

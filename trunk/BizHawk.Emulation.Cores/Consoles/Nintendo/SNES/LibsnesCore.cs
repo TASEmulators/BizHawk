@@ -241,6 +241,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			};
 		}
 
+		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value)
 		{
 			throw new NotImplementedException();

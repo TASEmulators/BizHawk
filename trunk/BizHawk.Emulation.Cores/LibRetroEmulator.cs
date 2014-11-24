@@ -288,6 +288,8 @@ namespace BizHawk.Emulation.Cores
 		public bool SaveRamModified
 		{
 			get { return true; }
+
+			[FeatureNotImplemented]
 			set { throw new NotImplementedException(); }
 		}
 
@@ -305,11 +307,13 @@ namespace BizHawk.Emulation.Cores
 		private byte[] savebuff;
 		private byte[] savebuff2;
 
+		[FeatureNotImplemented]
 		public void SaveStateText(System.IO.TextWriter writer)
 		{
 			throw new NotImplementedException();
 		}
 
+		[FeatureNotImplemented]
 		public void LoadStateText(System.IO.TextReader reader)
 		{
 			throw new NotImplementedException();

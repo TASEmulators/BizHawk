@@ -336,6 +336,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			return ret;
 		}
 
+		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value)
 		{
 			throw new NotImplementedException();

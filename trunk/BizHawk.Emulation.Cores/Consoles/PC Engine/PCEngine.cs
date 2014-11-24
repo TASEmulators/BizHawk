@@ -554,6 +554,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			};
 		}
 
+		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value)
 		{
 			throw new NotImplementedException();

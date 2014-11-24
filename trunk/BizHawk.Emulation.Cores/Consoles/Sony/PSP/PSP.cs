@@ -120,15 +120,19 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 
 		public int Frame
 		{
+			[FeatureNotImplemented]
 			get { return 0; }
 		}
 
 		public int LagCount
 		{
+			[FeatureNotImplemented]
 			get
 			{
 				return 0;
 			}
+
+			[FeatureNotImplemented]
 			set
 			{
 			}
@@ -136,58 +140,72 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 
 		public bool IsLagFrame
 		{
+			[FeatureNotImplemented]
 			get { return true; }
 		}
 
+		[FeatureNotImplemented]
 		public byte[] CloneSaveRam()
 		{
 			return new byte[0];
 		}
 
+		[FeatureNotImplemented]
 		public void StoreSaveRam(byte[] data)
 		{
 		}
 
+		[FeatureNotImplemented]
 		public void ClearSaveRam()
 		{
 		}
 
 		public bool SaveRamModified
 		{
+			[FeatureNotImplemented]
 			get
 			{
 				return false;
 			}
+
+			[FeatureNotImplemented]
 			set
 			{
 			}
 		}
 
+		[FeatureNotImplemented]
 		public void ResetCounters()
 		{
 		}
 
+		[FeatureNotImplemented]
 		public void SaveStateText(System.IO.TextWriter writer)
 		{
 		}
 
+		[FeatureNotImplemented]
 		public void LoadStateText(System.IO.TextReader reader)
 		{
 		}
 
+		[FeatureNotImplemented]
 		public void SaveStateBinary(System.IO.BinaryWriter writer)
 		{
 		}
 
+		[FeatureNotImplemented]
 		public void LoadStateBinary(System.IO.BinaryReader reader)
 		{
 		}
 
+		[FeatureNotImplemented]
 		public byte[] SaveStateBinary()
 		{
 			return new byte[0];
 		}
 
+		[FeatureNotImplemented]
 		public MemoryDomainList MemoryDomains
 		{
 			get { throw new NotImplementedException(); }
