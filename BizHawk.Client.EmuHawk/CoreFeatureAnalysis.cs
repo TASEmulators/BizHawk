@@ -90,22 +90,54 @@ namespace BizHawk.Client.EmuHawk
 						ForeColor = isImplemented ? Color.Black : Color.Red
 					};
 
+					bool fullyImplementedInterface = isImplemented;
+
 					if (isImplemented)
 					{
-						foreach (var field in service.GetProperties())
+						foreach (var field in service.GetMethods().OrderBy(f => f.Name))
 						{
-							serviceNode.Nodes.Add(new TreeNode
+							try
 							{
-								Text = field.Name
-							});
+								var coreImplementation = core.CoreType.GetMethod(field.Name);
+
+								if (coreImplementation != null)
+								{
+									var i = coreImplementation.IsImplemented();
+									serviceNode.Nodes.Add(new TreeNode
+									{
+										Text = field.Name,
+										ImageKey = i ? "Good" : "Bad",
+										SelectedImageKey = i ? "Good" : "Bad",
+										StateImageKey = i ? "Good" : "Bad"
+									});
+
+									if (!i)
+									{
+										fullyImplementedInterface = false;
+									}
+								}
+							}
+							catch (Exception ex)
+							{
+								// TODO: SavestateBinary() and SaveStateBinary(BinaryWriter bw) cause an exception, need to look at signature too
+							}
 						}
 
-						foreach (var field in service.GetMethods())
+						foreach (var field in service.GetProperties().OrderBy(f => f.Name))
 						{
+							var i = field.IsImplemented();
 							serviceNode.Nodes.Add(new TreeNode
 							{
-								Text = field.Name
+								Text = field.Name,
+								ImageKey = i ? "Good" : "Bad",
+								SelectedImageKey = i ? "Good" : "Bad",
+								StateImageKey = i ? "Good" : "Bad"
 							});
+
+							if (!i)
+							{
+								fullyImplementedInterface = false;
+							}
 						}
 					}
 					else
@@ -113,10 +145,12 @@ namespace BizHawk.Client.EmuHawk
 						missingImplementation = true;
 					}
 
+					serviceNode.StateImageKey = serviceNode.SelectedImageKey = serviceNode.ImageKey = fullyImplementedInterface ? "Good" : "Bad";
+
 					coreNode.Nodes.Add(serviceNode);
 				}
 
-				coreNode.ImageKey = missingImplementation ? "Bad" : "Good";
+				coreNode.StateImageKey = coreNode.SelectedImageKey = coreNode.ImageKey = missingImplementation ? "Bad" : "Good";
 
 				CoreTree.Nodes.Add(coreNode);
 			}
