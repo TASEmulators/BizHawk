@@ -6,6 +6,9 @@ using System.Reflection;
 
 namespace BizHawk.Emulation.Common
 {
+	/// <summary>
+	/// serves as a shim between strongly typed ISettable and consumers
+	/// </summary>
 	public class SettingsAdapter
 	{
 		public SettingsAdapter(IEmulator e)

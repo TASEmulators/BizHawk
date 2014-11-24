@@ -45,8 +45,6 @@ public:
 
 	bool GetMemoryArea(int index, const char *&name, int &size, uint8 *&data);
 
-	void SaveRamClearHacky(const SyncSettings &s);
-
 public:
 	GFX gfx;
 	Memory memory;

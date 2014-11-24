@@ -304,13 +304,6 @@ namespace MDFN_IEN_WSWAN
 		NSS(oldbuttons);
 	}
 
-	void System::SaveRamClearHacky(const SyncSettings &s)
-	{
-		// this really shouldn't be done
-		// be sure to pass the same SyncSettings that the core was originally initialized with!
-		memory.Init(s);
-	}
-
 	EXPORT System *bizswan_new()
 	{
 		return new System();
@@ -401,11 +394,6 @@ namespace MDFN_IEN_WSWAN
 	{
 		NewStateExternalFunctions loader(ff);
 		s->SyncState<true>(&loader);
-	}
-
-	EXPORT void bizswan_saveramclearhacky(System *s, const SyncSettings *settings)
-	{
-		s->SaveRamClearHacky(*settings);
 	}
 
 	EXPORT void bizswan_setmemorycallbacks(System *s, void (*rcb)(uint32), void (*ecb)(uint32), void (*wcb)(uint32))

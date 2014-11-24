@@ -108,10 +108,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				if (!BizSwan.bizswan_load(Core, file, file.Length, ref ss, ref rotate))
 					throw new InvalidOperationException("bizswan_load() returned FALSE!");
 
-				// adelikat: TODO: ClearSaveRam() doesn't exist anymore, do we still need this?
-				// for future uses of ClearSaveRam(), it's important that we save this
-				_DONTTOUCHME = ss;
-
 				CoreComm.VsyncNum = 3072000; // master CPU clock, also pixel clock
 				CoreComm.VsyncDen = (144 + 15) * (224 + 32); // 144 vislines, 15 vblank lines; 224 vispixels, 32 hblank pixels
 
@@ -383,7 +379,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		Settings _Settings;
 		SyncSettings _SyncSettings;
-		BizSwan.SyncSettings _DONTTOUCHME;
 
 		public class Settings
 		{
