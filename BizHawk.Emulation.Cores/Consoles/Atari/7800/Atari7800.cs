@@ -81,11 +81,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		{
 			Buffer.BlockCopy(data, 0, hsram, 0, data.Length);
 		}
-		public void ClearSaveRam()
-		{
-			for (int i = 0; i < hsram.Length; i++)
-				hsram[i] = 0;
-		}
+
 		public bool SaveRamModified
 		{
 			get

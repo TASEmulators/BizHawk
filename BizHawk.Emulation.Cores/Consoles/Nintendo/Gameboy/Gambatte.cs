@@ -477,23 +477,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			LibGambatte.gambatte_loadsavedata(GambatteState, data);
 		}
 
-		/// <summary>
-		/// reset cart save ram, if any, to initial state
-		/// </summary>
-		public void ClearSaveRam()
-		{
-			int length = LibGambatte.gambatte_savesavedatalength(GambatteState);
-			if (length == 0)
-				return;
-
-			byte[] clear = new byte[length];
-			for (int i = 0; i < clear.Length; i++)
-				clear[i] = 0xff; // this exactly matches what gambatte core does
-
-			StoreSaveRam(clear);
-		}
-
-
 		public bool SaveRamModified
 		{
 			get

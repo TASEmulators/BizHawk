@@ -304,12 +304,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			Marshal.Copy(srcdata, 0, data, size);
 		}
 
-		[FeatureNotImplemented]
-		public void ClearSaveRam()
-		{
-			throw new NotImplementedException();
-		}
-
 		public bool SaveRamModified
 		{
 			get

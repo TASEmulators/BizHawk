@@ -366,16 +366,13 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			else
 				return null;
 		}
+
 		public void StoreSaveRam(byte[] data)
 		{
 			if (BRAM != null)
 				Array.Copy(data, BRAM, data.Length);
 		}
-		public void ClearSaveRam()
-		{
-			if (BRAM != null)
-				BRAM = new byte[BRAM.Length];
-		}
+
 		public bool SaveRamModified { get; set; }
 
 		public bool BinarySaveStatesPreferred { get { return false; } }

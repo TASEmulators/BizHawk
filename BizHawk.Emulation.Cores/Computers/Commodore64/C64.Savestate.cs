@@ -7,10 +7,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	sealed public partial class C64 : IEmulator
 	{
-		public void ClearSaveRam()
-		{
-		}
-
 		public void LoadStateBinary(BinaryReader br)
 		{
 			SyncState(new Serializer(br));

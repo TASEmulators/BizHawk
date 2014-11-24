@@ -159,8 +159,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public void StoreSaveRam(byte[] data) { }
 
-		public void ClearSaveRam() { }
-
 		public void SaveStateText(TextWriter writer)
 		{
 			SyncState(Serializer.CreateTextWriter(writer));

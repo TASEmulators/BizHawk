@@ -271,22 +271,9 @@ namespace BizHawk.Emulation.Cores
 			Marshal.Copy(data, 0, dst, size);
 		}
 
-		public void ClearSaveRam()
-		{
-			// this is sort of wrong, because we should be clearing saveram to whatever the default state is
-			// which may or may not be 0-fill
-			int size = (int)retro.retro_get_memory_size(LibRetro.RETRO_MEMORY.SAVE_RAM);
-			IntPtr dst = retro.retro_get_memory_data(LibRetro.RETRO_MEMORY.SAVE_RAM);
-			if (dst == IntPtr.Zero)
-				throw new Exception("retro_get_memory_data(RETRO_MEMORY_SAVE_RAM) returned NULL");
-
-			byte* p = (byte*)dst;
-			for (int i = 0; i < size; i++)
-				p[i] = 0;
-		}
-
 		public bool SaveRamModified
 		{
+			[FeatureNotImplemented]
 			get { return true; }
 
 			[FeatureNotImplemented]

@@ -274,12 +274,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			R.StoreSaveRam(rb);
 		}
 
-		public void ClearSaveRam()
-		{
-			L.ClearSaveRam();
-			R.ClearSaveRam();
-		}
-
 		public bool SaveRamModified
 		{
 			get

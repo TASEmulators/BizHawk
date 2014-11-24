@@ -345,18 +345,6 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			}
 		}
 
-		public void ClearSaveRam()
-		{
-			if (Disposed)
-			{
-				throw new Exception("It's a bit late for that");
-			}
-			else
-			{
-				LibYabause.libyabause_clearsaveram();
-			}
-		}
-
 		public bool SaveRamModified
 		{
 			get

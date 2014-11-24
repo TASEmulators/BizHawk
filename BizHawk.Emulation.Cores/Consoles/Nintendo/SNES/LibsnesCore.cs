@@ -745,12 +745,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			Marshal.Copy(data, 0, (IntPtr)buf, size);
 		}
 
-		public void ClearSaveRam()
-		{
-			byte[] cleardata = new byte[(int)api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM)];
-			StoreSaveRam(cleardata);
-		}
-
 		public void ResetCounters()
 		{
 			timeFrameCounter = 0;

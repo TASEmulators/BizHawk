@@ -222,17 +222,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				diskdrive.ApplyDiff(diskdiffs[(int)currentside]);
 		}
 
-		public void ClearSaveRam()
-		{
-			// be careful with this; it can only really be done in frame 0
-			//if (currentside != null)
-			//	throw new Exception("FDS Saveram: Can't clear when a disk is active!");
-			for (int i = 0; i < diskdiffs.Length; i++)
-				diskdiffs[i] = null;
-			if (currentside != null)
-				InsertSide((int)currentside);
-		}
-
 		public override byte[] SaveRam
 		{ get { throw new Exception("FDS Saveram: Must access with method api!"); } }
 

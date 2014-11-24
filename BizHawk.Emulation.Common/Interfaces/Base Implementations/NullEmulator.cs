@@ -68,7 +68,6 @@ namespace BizHawk.Emulation.Common
 
 		public byte[] CloneSaveRam() { return null; }
 		public void StoreSaveRam(byte[] data) { }
-		public void ClearSaveRam() { }
 		public bool DeterministicEmulation { get { return true; } }
 		public bool SaveRamModified { get; set; }
 		public void SaveStateText(TextWriter writer) { }

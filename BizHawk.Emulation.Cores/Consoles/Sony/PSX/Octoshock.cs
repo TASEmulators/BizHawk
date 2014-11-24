@@ -289,9 +289,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public void StoreSaveRam(byte[] data) { }
 
 		[FeatureNotImplemented]
-		public void ClearSaveRam() { }
-
-		[FeatureNotImplemented]
 		public bool DeterministicEmulation { get { return true; } }
 
 		[FeatureNotImplemented]
