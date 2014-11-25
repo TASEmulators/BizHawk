@@ -3063,6 +3063,8 @@ namespace BizHawk.Client.EmuHawk
 								}
 								else
 								{
+									g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+									g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
 									g.DrawImage(bmpin, new Rectangle(0, 0, bmpout.Width, bmpout.Height));
 								}
 							}
