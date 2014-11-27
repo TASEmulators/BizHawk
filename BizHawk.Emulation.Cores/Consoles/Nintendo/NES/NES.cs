@@ -721,8 +721,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			LoadReport.Flush();
-			CoreComm.RomStatusDetails = LoadReport.ToString();
 
 			//create the board's rom and vrom
 			if (iNesHeaderInfo != null)
@@ -734,16 +732,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					board.VROM = new byte[choice.chr_size * 1024];
 					int vrom_offset = iNesHeaderInfo.prg_size * 1024;
-					// if file isn't long enough for VROM, truncate
 
-					Array.Copy(file, 16 + vrom_offset, board.VROM, 0, Math.Min(board.VROM.Length, file.Length - 16 - vrom_offset));
+					// if file isn't long enough for VROM, truncate
+					int vrom_copy_size = Math.Min(board.VROM.Length, file.Length - 16 - vrom_offset);
+					Array.Copy(file, 16 + vrom_offset, board.VROM, 0, vrom_copy_size);
+					if (vrom_copy_size < board.VROM.Length)
+						LoadWriteLine("Less than the expected VROM was found in the file: {0} < {1}", vrom_copy_size, board.VROM.Length);
 				}
+				if (choice.prg_size != iNesHeaderInfo.prg_size || choice.chr_size != iNesHeaderInfo.chr_size)
+					LoadWriteLine("Warning: Detected choice has different filesizes than the INES header!");
 			}
 			else
 			{
 				board.ROM = unif.PRG;
 				board.VROM = unif.CHR;
 			}
+
+			LoadReport.Flush();
+			CoreComm.RomStatusDetails = LoadReport.ToString();
 
 			// IF YOU DO ANYTHING AT ALL BELOW THIS LINE, MAKE SURE THE APPROPRIATE CHANGE IS MADE TO FDS (if applicable)
 
