@@ -38,7 +38,10 @@ namespace BizHawk.Client.Common
 
 			_watchList.ForEach(w =>
 			{
-				w.Domain = _core.MemoryDomains[w.Domain.Name];
+				if (w.Domain != null)
+				{
+					w.Domain = _core.MemoryDomains[w.Domain.Name];
+				}
 			});
 		}
 		
