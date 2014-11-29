@@ -1018,12 +1018,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach (var path in filePaths)
 				{
-					if (Path.GetExtension(path) == ".lua" || Path.GetExtension(path) == ".txt")
+					if (Path.GetExtension(path).ToLower() == ".lua" || Path.GetExtension(path).ToLower() == ".txt")
 					{
 						LoadLuaFile(path);
 						UpdateDialog();
 					}
-					else if (Path.GetExtension(path) == ".luases")
+					else if (Path.GetExtension(path).ToLower() == ".luases")
 					{
 						_luaList.LoadLuaSession(path);
 						RunLuaScripts();
