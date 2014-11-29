@@ -138,6 +138,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!Global.Emulator.HasMemoryDomains())
 			{
 				Close();
+				return;
 			}
 
 
