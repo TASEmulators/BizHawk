@@ -1090,8 +1090,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private static LibsnesCore AsSNES { get { return Global.Emulator as LibsnesCore; } }
 
+		// TODO: Clean Me!
+
 		public void SNES_ToggleBG1(bool? setto = null)
 		{
+			if (!(Global.Emulator is LibsnesCore)) return;
 			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
@@ -1108,6 +1111,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SNES_ToggleBG2(bool? setto = null)
 		{
+			if (!(Global.Emulator is LibsnesCore)) return;
 			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
@@ -1124,6 +1128,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SNES_ToggleBG3(bool? setto = null)
 		{
+			if (!(Global.Emulator is LibsnesCore)) return;
 			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
@@ -1140,6 +1145,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SNES_ToggleBG4(bool? setto = null)
 		{
+			if (!(Global.Emulator is LibsnesCore)) return;
 			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
@@ -1156,6 +1162,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SNES_ToggleObj1(bool? setto = null)
 		{
+			if (!(Global.Emulator is LibsnesCore)) return;
 			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
@@ -1172,6 +1179,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SNES_ToggleObj2(bool? setto = null)
 		{
+			if (!(Global.Emulator is LibsnesCore)) return;
 			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
@@ -1187,6 +1195,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SNES_ToggleOBJ3(bool? setto = null)
 		{
+			if (!(Global.Emulator is LibsnesCore)) return;
 			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
@@ -1203,6 +1212,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SNES_ToggleOBJ4(bool? setto = null)
 		{
+			if (!(Global.Emulator is LibsnesCore)) return;
 			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
