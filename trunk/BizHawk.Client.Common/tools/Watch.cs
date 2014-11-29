@@ -175,23 +175,59 @@ namespace BizHawk.Client.Common
 
 		protected byte GetByte()
 		{
-			if (_domain.Size == 0)
-				return _domain.PeekByte(_address);
-			else return _domain.PeekByte(_address % _domain.Size);
+			if (Global.CheatList.IsActive(_domain, _address))
+			{
+				return Global.CheatList.GetByteValue(_domain, _address).Value;
+			}
+			else
+			{
+				if (_domain.Size == 0)
+				{
+					return _domain.PeekByte(_address);
+				}
+				else
+				{
+					return _domain.PeekByte(_address % _domain.Size);
+				}
+			}
 		}
 
 		protected ushort GetWord()
 		{
-			if (_domain.Size == 0)
-				return _domain.PeekWord(_address, _bigEndian);
-			else return _domain.PeekWord(_address % _domain.Size, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+			if (Global.CheatList.IsActive(_domain, _address))
+			{
+				return (ushort)Global.CheatList.GetCheatValue(_domain, _address, WatchSize.Word).Value;
+			}
+			else
+			{
+				if (_domain.Size == 0)
+				{
+					return _domain.PeekWord(_address, _bigEndian);
+				}
+				else
+				{
+					return _domain.PeekWord(_address % _domain.Size, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+				}
+			}
 		}
 
 		protected uint GetDWord()
 		{
-			if(_domain.Size == 0)
-				return _domain.PeekDWord(_address, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
-			else return _domain.PeekDWord(_address % _domain.Size, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+			if (Global.CheatList.IsActive(_domain, _address))
+			{
+				return (uint)Global.CheatList.GetCheatValue(_domain, _address, WatchSize.DWord).Value;
+			}
+			else
+			{
+				if (_domain.Size == 0)
+				{
+					return _domain.PeekDWord(_address, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+				}
+				else
+				{
+					return _domain.PeekDWord(_address % _domain.Size, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+				}
+			}
 		}
 
 		protected void PokeByte(byte val)
