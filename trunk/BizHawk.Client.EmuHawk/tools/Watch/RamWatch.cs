@@ -198,6 +198,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!Global.Emulator.HasMemoryDomains())
 			{
 				Close();
+				return;
 			}
 
 			_core = (IMemoryDomains)Global.Emulator; // Cast is intentional, better to get a cast exception than a null reference exception later
