@@ -2391,7 +2391,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (MovieService.IsValidMovieExtension(ext))
 			{
-				StartNewMovie(MovieService.Get(filePaths[0]), false);
+				if (!Global.MovieSession.Movie.IsActive)
+				{
+					StartNewMovie(MovieService.Get(filePaths[0]), false);
+				}
 			}
 			else if (ext.ToUpper() == ".STATE")
 			{
@@ -2416,32 +2419,35 @@ namespace BizHawk.Client.EmuHawk
 
 			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))
 			{
-				//tries to open a legacy movie format by importing it
-				if (CurrentlyOpenRom == null)
+				if (!Global.MovieSession.Movie.IsActive)
 				{
-					OpenRom();
-				}
-				else
-				{
-					LoadRom(CurrentlyOpenRom);
-				}
+					//tries to open a legacy movie format by importing it
+					if (CurrentlyOpenRom == null)
+					{
+						OpenRom();
+					}
+					else
+					{
+						LoadRom(CurrentlyOpenRom);
+					}
 
-				string errorMsg;
-				string warningMsg;
-				var movie = MovieImport.ImportFile(filePaths[0], out errorMsg, out warningMsg);
-				if (!string.IsNullOrEmpty(errorMsg))
-				{
-					MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				}
-				else
-				{
-					// fix movie extension to something palatable for these purposes. 
-					// for instance, something which doesnt clobber movies you already may have had.
-					// i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
-					StartNewMovie(movie, false);
-				}
+					string errorMsg;
+					string warningMsg;
+					var movie = MovieImport.ImportFile(filePaths[0], out errorMsg, out warningMsg);
+					if (!string.IsNullOrEmpty(errorMsg))
+					{
+						MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					}
+					else
+					{
+						// fix movie extension to something palatable for these purposes. 
+						// for instance, something which doesnt clobber movies you already may have had.
+						// i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
+						StartNewMovie(movie, false);
+					}
 
-				GlobalWin.OSD.AddMessage(warningMsg);
+					GlobalWin.OSD.AddMessage(warningMsg);
+				}
 			}
 			else
 			{
