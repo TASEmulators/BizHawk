@@ -125,19 +125,6 @@ namespace BizHawk.Client.EmuHawk
 			SaveState9MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 9"].Bindings;
 			SaveState0MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 0"].Bindings;
 			SaveNamedStateMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save Named State"].Bindings;
-
-			SaveNamedStateMenuItem.Enabled =
-				SaveState1MenuItem.Enabled =
-				SaveState2MenuItem.Enabled =
-				SaveState3MenuItem.Enabled =
-				SaveState4MenuItem.Enabled =
-				SaveState5MenuItem.Enabled =
-				SaveState6MenuItem.Enabled =
-				SaveState7MenuItem.Enabled =
-				SaveState8MenuItem.Enabled =
-				SaveState9MenuItem.Enabled =
-				SaveState0MenuItem.Enabled =
-				!Global.Emulator.IsNull();
 		}
 
 		private void LoadStateSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -156,7 +143,6 @@ namespace BizHawk.Client.EmuHawk
 
 			AutoloadLastSlotMenuItem.Checked = Global.Config.AutoLoadLastSaveSlot;
 
-			LoadNamedStateMenuItem.Enabled = !Global.Emulator.IsNull();
 			LoadState1MenuItem.Enabled = _stateSlots.HasSlot(1);
 			LoadState2MenuItem.Enabled = _stateSlots.HasSlot(2);
 			LoadState3MenuItem.Enabled = _stateSlots.HasSlot(3);
@@ -185,8 +171,6 @@ namespace BizHawk.Client.EmuHawk
 			NextSlotMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Next Slot"].Bindings;
 			SaveToCurrentSlotMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Quick Save"].Bindings;
 			LoadCurrentSlotMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Quick Load"].Bindings;
-
-			SaveToCurrentSlotMenuItem.Enabled = LoadCurrentSlotMenuItem.Enabled = !Global.Emulator.IsNull();
 
 			SelectSlot0MenuItem.Checked = false;
 			SelectSlot1MenuItem.Checked = false;
