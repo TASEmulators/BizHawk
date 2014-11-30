@@ -1749,7 +1749,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveStateAs()
 		{
-			if (Global.Emulator.IsNull())
+			if (!Global.Emulator.HasSavestates())
 			{
 				return;
 			}
@@ -1780,7 +1780,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadStateAs()
 		{
-			if (Global.Emulator.IsNull())
+			if (!Global.Emulator.HasSavestates())
 			{
 				return;
 			}
