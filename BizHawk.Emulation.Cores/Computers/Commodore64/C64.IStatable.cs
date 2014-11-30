@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
-	sealed public partial class C64 : IEmulator
+	sealed public partial class C64 : IStatable
 	{
 		public void LoadStateBinary(BinaryReader br)
 		{
