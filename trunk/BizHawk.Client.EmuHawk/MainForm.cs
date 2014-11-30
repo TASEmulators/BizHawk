@@ -1485,9 +1485,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SelectSlot(int num)
 		{
-			Global.Config.SaveSlot = num;
-			SaveSlotSelectedMessage();
-			UpdateStatusSlots();
+			if (Global.Emulator.HasSavestates())
+			{
+				Global.Config.SaveSlot = num;
+				SaveSlotSelectedMessage();
+				UpdateStatusSlots();
+			}
 		}
 
 		private void RewireSound()
@@ -2013,40 +2016,46 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PreviousSlot()
 		{
-			if (Global.Config.SaveSlot == 0)
+			if (Global.Emulator.HasSavestates())
 			{
-				Global.Config.SaveSlot = 9; // Wrap to end of slot list
-			}
-			else if (Global.Config.SaveSlot > 9)
-			{
-				Global.Config.SaveSlot = 9; // Meh, just in case
-			}
-			else
-			{
-				Global.Config.SaveSlot--;
-			}
+				if (Global.Config.SaveSlot == 0)
+				{
+					Global.Config.SaveSlot = 9; // Wrap to end of slot list
+				}
+				else if (Global.Config.SaveSlot > 9)
+				{
+					Global.Config.SaveSlot = 9; // Meh, just in case
+				}
+				else
+				{
+					Global.Config.SaveSlot--;
+				}
 
-			SaveSlotSelectedMessage();
-			UpdateStatusSlots();
+				SaveSlotSelectedMessage();
+				UpdateStatusSlots();
+			}
 		}
 
 		private void NextSlot()
 		{
-			if (Global.Config.SaveSlot >= 9)
+			if (Global.Emulator.HasSavestates())
 			{
-				Global.Config.SaveSlot = 0; // Wrap to beginning of slot list
-			}
-			else if (Global.Config.SaveSlot < 0)
-			{
-				Global.Config.SaveSlot = 0; // Meh, just in case
-			}
-			else
-			{
-				Global.Config.SaveSlot++;
-			}
+				if (Global.Config.SaveSlot >= 9)
+				{
+					Global.Config.SaveSlot = 0; // Wrap to beginning of slot list
+				}
+				else if (Global.Config.SaveSlot < 0)
+				{
+					Global.Config.SaveSlot = 0; // Meh, just in case
+				}
+				else
+				{
+					Global.Config.SaveSlot++;
+				}
 
-			SaveSlotSelectedMessage();
-			UpdateStatusSlots();
+				SaveSlotSelectedMessage();
+				UpdateStatusSlots();
+			}
 		}
 
 		private static void ToggleFPS()
