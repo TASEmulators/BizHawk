@@ -22,18 +22,6 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return !info.GetCustomAttributes(false).OfType<FeatureNotImplemented>().Any();
 		}
 
-		public static bool ThrowsError(this MethodInfo info)
-		{
-			var il = info.GetMethodBody().GetILAsByteArray();
-			return (il[il.Length - 1] == 0x7A);
-		}
-
-		public static bool IsEmpty(this MethodInfo info)
-		{
-			var il = info.GetMethodBody().GetILAsByteArray();
-			return (il.Length == 1 && il[0] == 0x2A);
-		}
-
 		public static bool IsImplemented(this PropertyInfo info)
 		{
 			return !info.GetCustomAttributes(false).OfType<FeatureNotImplemented>().Any();
