@@ -29,6 +29,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
+			SaveStateSubMenu.Enabled =
+				LoadStateSubMenu.Enabled =
+				SaveSlotSubMenu.Enabled =
+				Global.Emulator.HasSavestates();
+
 			OpenRomMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Open ROM"].Bindings;
 			CloseRomMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Close ROM"].Bindings;
 
