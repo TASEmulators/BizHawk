@@ -45,7 +45,10 @@ namespace BizHawk.Client.EmuHawk
 					CoreType = core,
 					CoreAttributes = core.GetCustomAttributes(false)
 										.OfType<CoreAttributes>()
-										.Single()
+										.Single(),
+					ServicesNotApplicable = core.GetCustomAttributes(false)
+										.OfType<ServiceNotApplicable>()
+										.SingleOrDefault() ?? new ServiceNotApplicable()
 				})
 				.OrderBy(c => !c.CoreAttributes.Released)
 				.ThenBy(c => c.CoreAttributes.CoreName)
@@ -67,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 
 				bool missingImplementation = false;
 
-				foreach (var service in services)
+				foreach (var service in services.Where(s => !core.ServicesNotApplicable.NotApplicableTypes.Contains(s)))
 				{
 					bool isImplemented = false;
 					if (service.IsAssignableFrom(core.CoreType))

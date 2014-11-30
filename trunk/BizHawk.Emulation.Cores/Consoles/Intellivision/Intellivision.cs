@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		isPorted: false,
 		isReleased: false
 		)]
+	[ServiceNotApplicable(typeof(ISaveRam))]
 	public sealed partial class Intellivision : IEmulator
 	{
 		byte[] Rom;
