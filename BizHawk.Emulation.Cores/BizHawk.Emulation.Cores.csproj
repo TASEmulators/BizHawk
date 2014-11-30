@@ -86,14 +86,14 @@
       <Link>VersionInfo.cs</Link>
     </Compile>
     <Compile Include="Calculator\TI83.IMemoryDomains.cs">
-        <DependentUpon>TI83.cs</DependentUpon>
+      <DependentUpon>TI83.cs</DependentUpon>
     </Compile>
     <Compile Include="Calculator\TI83.ISettable.cs">
-        <DependentUpon>TI83.cs</DependentUpon>
+      <DependentUpon>TI83.cs</DependentUpon>
     </Compile>
     <Compile Include="Calculator\TI83.cs" />
     <Compile Include="Calculator\TI83.IDebuggable.cs">
-        <DependentUpon>TI83.cs</DependentUpon>
+      <DependentUpon>TI83.cs</DependentUpon>
     </Compile>
     <Compile Include="Calculator\TI83LinkPort.cs" />
     <Compile Include="Computers\Commodore64\C64.Core.cs" />
@@ -151,19 +151,19 @@
     <Compile Include="Computers\Commodore64\UserPort\UserPortDevice.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs">
-        <DependentUpon>Atari2600.cs</DependentUpon>
+      <DependentUpon>Atari2600.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Atari\2600\Atari2600.IDebuggable.cs">
-        <DependentUpon>Atari2600.cs</DependentUpon>
+      <DependentUpon>Atari2600.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Atari\2600\Atari2600.IMemoryDomains.cs">
-        <DependentUpon>Atari2600.cs</DependentUpon>
+      <DependentUpon>Atari2600.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Atari\2600\Atari2600.ISettable.cs">
-        <DependentUpon>Atari2600.cs</DependentUpon>
+      <DependentUpon>Atari2600.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Atari\2600\Atari2600.RomHeuristics.cs">
-        <DependentUpon>Atari2600.cs</DependentUpon>
+      <DependentUpon>Atari2600.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Atari\2600\Mappers\m0840.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\m3E.cs" />
@@ -206,9 +206,17 @@
     <Compile Include="Consoles\Atari\2600\Tia\Tia.MissleData.cs" />
     <Compile Include="Consoles\Atari\2600\Tia\Tia.PlayerData.cs" />
     <Compile Include="Consoles\Atari\2600\Tia\Tia.PlayfieldData.cs" />
-    <Compile Include="Consoles\Atari\7800\Atari7800.Core.cs" />
     <Compile Include="Consoles\Atari\7800\Atari7800.cs" />
+    <Compile Include="Consoles\Atari\7800\Atari7800.IDebuggable.cs">
+              <DependentUpon>Atari7800.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\7800\Atari7800.IMemoryDomains.cs">
+        <DependentUpon>Atari7800.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Atari\7800\Atari7800Control.cs" />
+    <Compile Include="Consoles\Atari\7800\Atari7800.ISaveRam.cs">
+        <DependentUpon>Atari7800.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Atari\lynx\LibLynx.cs" />
     <Compile Include="Consoles\Atari\lynx\Lynx.cs" />
     <Compile Include="Consoles\Coleco\ColecoVision.cs" />
@@ -242,7 +250,7 @@
       <DependentUpon>N64.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\N64\N64.ISettable.cs">
-        <DependentUpon>N64.cs</DependentUpon>
+      <DependentUpon>N64.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\N64\N64Input.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64Settings.cs" />
