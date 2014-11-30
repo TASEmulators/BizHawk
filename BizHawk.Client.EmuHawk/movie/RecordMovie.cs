@@ -19,6 +19,15 @@ namespace BizHawk.Client.EmuHawk
 		public RecordMovie()
 		{
 			InitializeComponent();
+
+			if (!Global.Emulator.HasSavestates())
+			{
+				StartFromCombo.Items.Remove(
+					StartFromCombo.Items
+						.OfType<object>()
+						.First(i => i.ToString()
+							.ToLower() == "now"));
+			}
 		}
 
 		private string MakePath()
