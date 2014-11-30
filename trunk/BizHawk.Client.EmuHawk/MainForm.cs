@@ -1748,18 +1748,22 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var sfd = new SaveFileDialog();
-			sfd.AddExtension = true;
-			sfd.DefaultExt = "State";
-			sfd.Filter = "Save States (*.State)|*.State|All Files|*.*";
 			var path = PathManager.GetSaveStatePath(Global.Game);
-			sfd.InitialDirectory = path;
-			sfd.FileName = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave0.State";
+
 			var file = new FileInfo(path);
 			if (file.Directory != null && file.Directory.Exists == false)
 			{
 				file.Directory.Create();
 			}
+
+			var sfd = new SaveFileDialog
+			{
+				AddExtension = true,
+				DefaultExt = "State",
+				Filter = "Save States (*.State)|*.State|All Files|*.*",
+				InitialDirectory = path,
+				FileName = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave0.State"
+			};
 
 			var result = sfd.ShowHawkDialog();
 			if (result == DialogResult.OK)
