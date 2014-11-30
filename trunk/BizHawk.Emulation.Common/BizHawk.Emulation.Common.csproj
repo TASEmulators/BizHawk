@@ -49,6 +49,8 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Base Implementations\NullController.cs" />
+    <Compile Include="Base Implementations\NullEmulator.cs" />
     <Compile Include="CoreAttributes.cs" />
     <Compile Include="Database\CRC32.cs" />
     <Compile Include="Database\Database.cs" />
@@ -56,8 +58,6 @@
     <Compile Include="Database\GameInfo.cs" />
     <Compile Include="EmulationExceptions.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="Interfaces\Base Implementations\NullController.cs" />
-    <Compile Include="Interfaces\Base Implementations\NullEmulator.cs" />
     <Compile Include="Interfaces\CoreComms.cs" />
     <Compile Include="Interfaces\IController.cs" />
     <Compile Include="Interfaces\ICoreFileProvider.cs" />
