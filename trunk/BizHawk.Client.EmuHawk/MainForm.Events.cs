@@ -781,7 +781,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			ControllersMenuItem.Enabled = !Global.Emulator.IsNull();
+			ControllersMenuItem.Enabled = Global.Emulator.ControllerDefinition.Any();
 		}
 
 		private void FrameSkipMenuItem_DropDownOpened(object sender, EventArgs e)
