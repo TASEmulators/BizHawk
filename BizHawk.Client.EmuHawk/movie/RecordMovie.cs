@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
+using System.Linq;
 
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
@@ -34,13 +35,14 @@ namespace BizHawk.Client.EmuHawk
 
 					path = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null) + path;
 
-					if (path[path.Length - 4] != '.') // If no file extension, add movie extension
+					if (!MovieService.MovieExtensions.Contains(Path.GetExtension(path)))
 					{
-						path += "." +  MovieService.DefaultExtension;
+						// If no valid movie extension, add movie extension
+						path += "." + MovieService.DefaultExtension;
 					}
 				}
 			}
-			
+
 			return path;
 		}
 
