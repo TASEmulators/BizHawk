@@ -165,6 +165,9 @@
     <Compile Include="Consoles\Atari\2600\Atari2600.ISettable.cs">
       <DependentUpon>Atari2600.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Atari\2600\Atari2600.IStatable.cs">
+      <DependentUpon>Atari2600.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Atari\2600\Atari2600.RomHeuristics.cs">
       <DependentUpon>Atari2600.cs</DependentUpon>
     </Compile>
@@ -214,6 +217,9 @@
       <DependentUpon>Atari7800.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Atari\7800\Atari7800.IMemoryDomains.cs">
+      <DependentUpon>Atari7800.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\7800\Atari7800.IStatable.cs">
       <DependentUpon>Atari7800.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Atari\7800\Atari7800Control.cs" />
