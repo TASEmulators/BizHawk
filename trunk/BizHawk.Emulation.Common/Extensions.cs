@@ -22,6 +22,11 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return core is ISaveRam;
 		}
 
+		public static bool HasSavestates(this IEmulator core)
+		{
+			return core is IStatable;
+		}
+
 		public static bool IsNull(this IEmulator core)
 		{
 			return core == null || core is NullEmulator;

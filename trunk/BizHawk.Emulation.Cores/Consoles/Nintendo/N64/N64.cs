@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		portedVersion: "2.0",
 		portedUrl: "https://code.google.com/p/mupen64plus/"
 		)]
-	public partial class N64 : IEmulator, IMemoryDomains, ISaveRam, IDebuggable,
+	public partial class N64 : IEmulator, IMemoryDomains, ISaveRam, IDebuggable, IStatable,
 		ISettable<N64Settings, N64SyncSettings>
 	{
 		private readonly N64Input _inputProvider;

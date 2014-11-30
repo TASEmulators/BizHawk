@@ -285,23 +285,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		[FeatureNotImplemented]
 		public bool DeterministicEmulation { get { return true; } }
 
-		[FeatureNotImplemented]
-		public void SaveStateText(TextWriter writer) { }
-
-		[FeatureNotImplemented]
-		public void LoadStateText(TextReader reader) { }
-
-		[FeatureNotImplemented]
-		public void SaveStateBinary(BinaryWriter writer) { }
-
-		[FeatureNotImplemented]
-		public void LoadStateBinary(BinaryReader reader) { }
-
-		[FeatureNotImplemented]
-		public byte[] SaveStateBinary() { return new byte[1]; }
-
-		[FeatureNotImplemented]
-		public bool BinarySaveStatesPreferred { get { return false; } }
 		public int[] GetVideoBuffer() { return frameBuffer; }
 		public int VirtualWidth { get; private set; }
 		public int VirtualHeight { get { return BufferHeight; } }

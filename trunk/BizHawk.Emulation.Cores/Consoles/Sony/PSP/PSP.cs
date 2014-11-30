@@ -43,7 +43,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		public IController Controller { get; set; }
 		public bool DeterministicEmulation { get { return true; } }
 		public string SystemId { get { return "PSP"; } }
-		public bool BinarySaveStatesPreferred { get { return true; } }
 		public CoreComm CoreComm { get; private set; }
 
 		public string BoardName { get { return null; } }
@@ -147,32 +146,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		[FeatureNotImplemented]
 		public void ResetCounters()
 		{
-		}
-
-		[FeatureNotImplemented]
-		public void SaveStateText(System.IO.TextWriter writer)
-		{
-		}
-
-		[FeatureNotImplemented]
-		public void LoadStateText(System.IO.TextReader reader)
-		{
-		}
-
-		[FeatureNotImplemented]
-		public void SaveStateBinary(System.IO.BinaryWriter writer)
-		{
-		}
-
-		[FeatureNotImplemented]
-		public void LoadStateBinary(System.IO.BinaryReader reader)
-		{
-		}
-
-		[FeatureNotImplemented]
-		public byte[] SaveStateBinary()
-		{
-			return new byte[0];
 		}
 
 		const int screenwidth = 480;
