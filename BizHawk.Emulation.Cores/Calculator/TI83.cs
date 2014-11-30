@@ -47,10 +47,6 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		internal bool LinkActive;
 		private bool m_CursorMoved;
-
-		private int lagCount = 0;
-		private bool lagged = true;
-		private bool isLag = false;
 		private int frame;
 
 		[CoreConstructor("TI83")]
@@ -127,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 					}
 					break;
 				case 1: //PORT_KEYBOARD:
-					lagged = false;
+					_lagged = false;
 					keyboardMask = value;
 					//Console.WriteLine("write PORT_KEYBOARD {0:X2}",value);
 					break;
@@ -468,7 +464,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{
-			lagged = true;
+			_lagged = true;
 			//I eyeballed this speed
 			for (int i = 0; i < 5; i++)
 			{
@@ -479,14 +475,14 @@ namespace BizHawk.Emulation.Cores.Calculators
 			}
 
 			Frame++;
-			if (lagged)
+			if (_lagged)
 			{
-				lagCount++;
-				isLag = true;
+				_lagCount++;
+				_isLag = true;
 			}
 			else
 			{
-				isLag = false;
+				_isLag = false;
 			}
 		}
 
@@ -513,14 +509,12 @@ namespace BizHawk.Emulation.Cores.Calculators
 		}
 
 		public int Frame { get { return frame; } set { frame = value; } }
-		public int LagCount { get { return lagCount; } set { lagCount = value; } }
-		public bool IsLagFrame { get { return isLag; } }
 
 		public void ResetCounters()
 		{
 			Frame = 0;
-			lagCount = 0;
-			isLag = false;
+			_lagCount = 0;
+			_isLag = false;
 		}
 
 		public bool DeterministicEmulation { get { return true; } }

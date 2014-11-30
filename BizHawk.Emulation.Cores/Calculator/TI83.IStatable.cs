@@ -73,8 +73,8 @@ namespace BizHawk.Emulation.Cores.Calculators
 			ser.Sync("m_LinkOutput", ref m_LinkOutput);
 			ser.Sync("VRAM", ref vram, false);
 			ser.Sync("Frame", ref frame);
-			ser.Sync("LagCount", ref lagCount);
-			ser.Sync("IsLag", ref isLag);
+			ser.Sync("LagCount", ref _lagCount);
+			ser.Sync("IsLag", ref _isLag);
 			ser.EndSection();
 		}
 	}
