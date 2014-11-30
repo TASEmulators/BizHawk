@@ -5,6 +5,7 @@ using System.Linq;
 
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 
@@ -69,19 +70,21 @@ namespace BizHawk.Client.EmuHawk
 					Directory.CreateDirectory(fileInfo.DirectoryName);
 				}
 
-				if (StartFromCombo.SelectedItem.ToString() == "Now")
+				if (StartFromCombo.SelectedItem.ToString() == "Now" && Global.Emulator.HasSavestates())
 				{
+					var core = Global.Emulator as IStatable;
+
 					movieToRecord.StartsFromSavestate = true;
 
-					if (Global.Emulator.BinarySaveStatesPreferred)
+					if (core.BinarySaveStatesPreferred)
 					{
-						movieToRecord.BinarySavestate = (byte[])Global.Emulator.SaveStateBinary().Clone();
+						movieToRecord.BinarySavestate = (byte[])core.SaveStateBinary().Clone();
 					}
 					else
 					{
 						using (var sw = new StringWriter())
 						{
-							Global.Emulator.SaveStateText(sw);
+							core.SaveStateText(sw);
 							movieToRecord.TextSavestate = sw.ToString();
 						}
 					}

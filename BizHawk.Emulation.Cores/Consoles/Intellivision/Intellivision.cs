@@ -159,38 +159,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			//IsLagFrame = false;
 		}
 
-		[FeatureNotImplemented]
-		public void SaveStateText(TextWriter writer)
-		{
-			throw new NotImplementedException();
-		}
-
-		[FeatureNotImplemented]
-		public void LoadStateText(TextReader reader)
-		{
-			throw new NotImplementedException();
-		}
-
-		[FeatureNotImplemented]
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			throw new NotImplementedException();
-		}
-
-		[FeatureNotImplemented]
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			throw new NotImplementedException();
-		}
-
-		[FeatureNotImplemented]
-		public byte[] SaveStateBinary()
-		{
-			throw new NotImplementedException();
-		}
-
-		public bool BinarySaveStatesPreferred { get { return false; } }
-
 		public CoreComm CoreComm { get; private set; }
 
 		public void Dispose()

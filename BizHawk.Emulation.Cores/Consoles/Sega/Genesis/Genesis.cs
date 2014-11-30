@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 		isPorted: false,
 		isReleased: false
 		)]
-	public sealed partial class Genesis : IEmulator, IMemoryDomains, IDebuggable, ISaveRam
+	public sealed partial class Genesis : IEmulator, IMemoryDomains, IDebuggable, ISaveRam, IStatable
 	{
 		private int _lagcount = 0;
 		private bool lagged = true;

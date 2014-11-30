@@ -5,6 +5,8 @@ using System.Linq;
 using System.Windows.Forms;
 using System.ComponentModel;
 
+using BizHawk.Emulation.Common;
+
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 
@@ -313,7 +315,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadState(KeyValuePair<int, byte[]> state)
 		{
-			Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(state.Value.ToArray())));
+			((IStatable)Global.Emulator).LoadStateBinary(new BinaryReader(new MemoryStream(state.Value.ToArray())));
 
 			if (state.Key == 0 && CurrentTasMovie.StartsFromSavestate)
 			{

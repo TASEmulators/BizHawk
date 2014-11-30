@@ -61,33 +61,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		public string BoardName { get { return null; } }
 		public CoreComm CoreComm { get; private set; }
 
-		#region savestates
-
-		public void SaveStateText(System.IO.TextWriter writer)
-		{
-		}
-
-		public void LoadStateText(System.IO.TextReader reader)
-		{
-		}
-
-		public void SaveStateBinary(System.IO.BinaryWriter writer)
-		{
-		}
-
-		public void LoadStateBinary(System.IO.BinaryReader reader)
-		{
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			return new byte[0];
-		}
-
-		public bool BinarySaveStatesPreferred { get { return true; } }
-
-		#endregion
-
 		#region IVideoProvider
 
 		private int[] _vbuff = new int[512 * 480];

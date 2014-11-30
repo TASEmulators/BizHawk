@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -23,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GreenzoneSettings_Load(object sender, EventArgs e)
 		{
-			_stateSizeMb = Global.Emulator.SaveStateBinary().Length / (decimal)1024 / (decimal)1024;
+			_stateSizeMb = ((IStatable)Global.Emulator).SaveStateBinary().Length / (decimal)1024 / (decimal)1024;
 
 			SaveGreenzoneCheckbox.Checked = Settings.SaveGreenzone;
 			CapacityNumeric.Value = Settings.Capacitymb == 0 ? 1 : Settings.Capacitymb < CapacityNumeric.Maximum ?

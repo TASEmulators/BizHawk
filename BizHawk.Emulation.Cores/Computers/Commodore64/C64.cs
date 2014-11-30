@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		isPorted: false,
 		isReleased: false
 		)]
-	sealed public partial class C64 : IEmulator, IMemoryDomains
+	sealed public partial class C64 : IEmulator, IMemoryDomains, IStatable
 	{
 		// internal variables
 		private bool _islag = true;

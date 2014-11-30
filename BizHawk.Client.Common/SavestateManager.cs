@@ -1,9 +1,10 @@
 ﻿using System;
 using System.IO;
 
+using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Common.IOExtensions;
-using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -11,22 +12,23 @@ namespace BizHawk.Client.Common
 	{
 		public static void SaveStateFile(string filename, string name)
 		{
+			var core = Global.Emulator as IStatable;
 			// the old method of text savestate save is now gone.
 			// a text savestate is just like a binary savestate, but with a different core lump
 			using (var bs = new BinaryStateSaver(filename))
 			{
 				if (Global.Config.SaveStateType == Config.SaveStateTypeE.Text ||
-					(Global.Config.SaveStateType == Config.SaveStateTypeE.Default && !Global.Emulator.BinarySaveStatesPreferred))
+					(Global.Config.SaveStateType == Config.SaveStateTypeE.Default && !core.BinarySaveStatesPreferred))
 				{
 					// text savestate format
 					using (new SimpleTime("Save Core"))
-						bs.PutLump(BinaryStateLump.CorestateText, (tw) => Global.Emulator.SaveStateText(tw));
+						bs.PutLump(BinaryStateLump.CorestateText, (tw) => core.SaveStateText(tw));
 				}
 				else
 				{
 					// binary core lump format
 					using (new SimpleTime("Save Core"))
-						bs.PutLump(BinaryStateLump.Corestate, bw => Global.Emulator.SaveStateBinary(bw));
+						bs.PutLump(BinaryStateLump.Corestate, bw => core.SaveStateBinary(bw));
 				}
 
 				if (Global.Config.SaveScreenshotWithStates)
@@ -75,6 +77,8 @@ namespace BizHawk.Client.Common
 
 		public static bool LoadStateFile(string path, string name)
 		{
+			var core = Global.Emulator as IStatable;
+
 			// try to detect binary first
 			var bl = BinaryStateLoader.LoadAndDetect(path);
 			if (bl != null)
@@ -99,7 +103,7 @@ namespace BizHawk.Client.Common
 					}
 
 					using (new SimpleTime("Load Core"))
-						bl.GetCoreState(br => Global.Emulator.LoadStateBinary(br), tr => Global.Emulator.LoadStateText(tr));
+						bl.GetCoreState(br => core.LoadStateBinary(br), tr => core.LoadStateText(tr));
 
 					bl.GetLump(BinaryStateLump.Framebuffer, false, PopulateFramebuffer);
 				}
@@ -120,7 +124,7 @@ namespace BizHawk.Client.Common
 				{
 					using (var reader = new StreamReader(path))
 					{
-						Global.Emulator.LoadStateText(reader);
+						core.LoadStateText(reader);
 
 						while (true)
 						{
