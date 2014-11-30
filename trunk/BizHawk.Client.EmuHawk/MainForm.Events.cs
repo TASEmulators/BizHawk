@@ -37,9 +37,10 @@ namespace BizHawk.Client.EmuHawk
 			OpenRomMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Open ROM"].Bindings;
 			CloseRomMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Close ROM"].Bindings;
 
+			// screenshots and av record should work correctly on nullemulator
 			MovieSubMenu.Enabled =
-					AVSubMenu.Enabled =
-					ScreenshotSubMenu.Enabled =
+					// AVSubMenu.Enabled =
+					// ScreenshotSubMenu.Enabled =
 					CloseRomMenuItem.Enabled =
 					!Global.Emulator.IsNull();
 		}
