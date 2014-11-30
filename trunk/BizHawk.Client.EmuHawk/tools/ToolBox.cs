@@ -95,7 +95,7 @@ namespace BizHawk.Client.EmuHawk
 
 			NesDebuggerToolbarItem.Visible = VersionInfo.DeveloperBuild && Global.Emulator.SystemId == "NES";
 
-			TAStudioToolbarItem.Visible = Global.Emulator.HasSavestates();
+			TAStudioToolbarItem.Visible = Global.Emulator.HasSavestates() && Global.Emulator.CanPollInput();
 
 			foreach (var button in ToolBoxItems)
 			{

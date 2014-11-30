@@ -1104,7 +1104,7 @@ namespace BizHawk.Client.EmuHawk
 			TraceLoggerMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Trace Logger"].Bindings;
 			TraceLoggerMenuItem.Enabled = Global.Emulator.CoreComm.CpuTraceAvailable;
 
-			TAStudioMenuItem.Enabled = Global.Emulator.HasSavestates();
+			TAStudioMenuItem.Enabled = Global.Emulator.HasSavestates() && Global.Emulator.CanPollInput();
 
 			CheatsMenuItem.Enabled =
 				HexEditorMenuItem.Enabled =
