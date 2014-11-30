@@ -256,7 +256,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				board.NESSoftReset();
 				cpu.NESSoftReset();
 				apu.NESSoftReset();
-				//need to study what happens to ppu and apu and stuff..
+				ppu.NESSoftReset();
 			}
 			else if (hardResetSignal)
 			{
