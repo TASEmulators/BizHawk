@@ -306,7 +306,7 @@ namespace BizHawk.Client.Common
 		{
 			if (frame == Global.Emulator.Frame) // Take this opportunity to capture lag and state info if we do not have it
 			{
-				LagLog[Global.Emulator.Frame] = Global.Emulator.IsLagFrame;
+				LagLog[Global.Emulator.Frame] = (Global.Emulator as IInputPollable).IsLagFrame;
 
 				if (!StateManager.HasState(frame))
 				{

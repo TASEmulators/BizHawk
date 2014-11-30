@@ -214,13 +214,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 		}
 
-
+		[FeatureNotImplemented]
 		public void ResetCounters()
 		{
 			// FIXME when all this stuff is implemented
 			Frame = 0;
-			LagCount = 0;
-			//IsLagFrame = false;
 		}
 
 		public void FrameAdvance(bool render, bool rendersound)
@@ -266,20 +264,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			[FeatureNotImplemented]
 			set;
-		}
-
-		public int LagCount
-		{
-			[FeatureNotImplemented]
-			get { return 0; }
-
-			[FeatureNotImplemented]
-			set { return; }
-		}
-		public bool IsLagFrame
-		{
-			[FeatureNotImplemented]
-			get { return false; }
 		}
 
 		[FeatureNotImplemented]

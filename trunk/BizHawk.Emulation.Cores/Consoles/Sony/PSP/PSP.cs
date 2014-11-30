@@ -123,26 +123,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 			get { return 0; }
 		}
 
-		public int LagCount
-		{
-			[FeatureNotImplemented]
-			get
-			{
-				return 0;
-			}
-
-			[FeatureNotImplemented]
-			set
-			{
-			}
-		}
-
-		public bool IsLagFrame
-		{
-			[FeatureNotImplemented]
-			get { return true; }
-		}
-
 		[FeatureNotImplemented]
 		public void ResetCounters()
 		{

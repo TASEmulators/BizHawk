@@ -673,6 +673,8 @@ namespace BizHawk.Client.EmuHawk
 
 			DisplayStatusBarMenuItem.Checked = Global.Config.DisplayStatusBar;
 			DisplayLogWindowMenuItem.Checked = Global.Config.ShowLogWindow;
+
+			DisplayLagCounterMenuItem.Enabled = Global.Emulator.CanPollInput();
 		}
 
 		private void WindowSizeSubMenu_DropDownOpened(object sender, EventArgs e)

@@ -148,18 +148,34 @@ namespace BizHawk.Client.Common
 			"islagged",
 			"returns whether or not the current frame is a lag frame"
 		)]
-		public static bool IsLagged()
+		public bool IsLagged()
 		{
-			return Global.Emulator.IsLagFrame;
+			if (Global.Emulator.CanPollInput())
+			{
+				return (Global.Emulator as IInputPollable).IsLagFrame;
+			}
+			else
+			{
+				Log("Can not get lag information, core does not implement IInputPollable");
+				return false;
+			}
 		}
 
 		[LuaMethodAttributes(
 			"lagcount",
 			"Returns the current lag count"
 		)]
-		public static int LagCount()
+		public int LagCount()
 		{
-			return Global.Emulator.LagCount;
+			if (Global.Emulator.CanPollInput())
+			{
+				return (Global.Emulator as IInputPollable).LagCount;
+			}
+			else
+			{
+				Log("Can not get lag information, core does not implement IInputPollable");
+				return 0;
+			}
 		}
 
 		[LuaMethodAttributes(
