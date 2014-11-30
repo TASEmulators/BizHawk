@@ -315,7 +315,10 @@ namespace BizHawk.Client.EmuHawk
 					}
 					break;
 				case "TAStudio":
-					GlobalWin.Tools.Load<TAStudio>();
+					if (Global.Emulator.HasSavestates())
+					{
+						GlobalWin.Tools.Load<TAStudio>();
+					}
 					break;
 				case "ToolBox":
 					GlobalWin.Tools.Load<ToolBox>();
@@ -326,22 +329,40 @@ namespace BizHawk.Client.EmuHawk
 
 				// Ram Search
 				case "Do Search":
-					GlobalWin.Tools.RamSearch.DoSearch();
+					if (Global.Emulator.HasMemoryDomains())
+					{
+						GlobalWin.Tools.RamSearch.DoSearch();
+					}
 					break;
 				case "New Search":
-					GlobalWin.Tools.RamSearch.NewSearch();
+					if (Global.Emulator.HasMemoryDomains())
+					{
+						GlobalWin.Tools.RamSearch.NewSearch();
+					}
 					break;
 				case "Previous Compare To":
-					GlobalWin.Tools.RamSearch.NextCompareTo(reverse: true);
+					if (Global.Emulator.HasMemoryDomains())
+					{
+						GlobalWin.Tools.RamSearch.NextCompareTo(reverse: true);
+					}
 					break;
 				case "Next Compare To":
-					GlobalWin.Tools.RamSearch.NextCompareTo();
+					if (Global.Emulator.HasMemoryDomains())
+					{
+						GlobalWin.Tools.RamSearch.NextCompareTo();
+					}
 					break;
 				case "Previous Operator":
-					GlobalWin.Tools.RamSearch.NextOperator(reverse: true);
+					if (Global.Emulator.HasMemoryDomains())
+					{
+						GlobalWin.Tools.RamSearch.NextOperator(reverse: true);
+					}
 					break;
 				case "Next Operator":
-					GlobalWin.Tools.RamSearch.NextOperator();
+					if (Global.Emulator.HasMemoryDomains())
+					{
+						GlobalWin.Tools.RamSearch.NextOperator();
+					}
 					break;
 
 				// SNES
