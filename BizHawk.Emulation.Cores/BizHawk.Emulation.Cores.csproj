@@ -95,6 +95,9 @@
     <Compile Include="Calculator\TI83.IDebuggable.cs">
       <DependentUpon>TI83.cs</DependentUpon>
     </Compile>
+    <Compile Include="Calculator\TI83.IStatable.cs">
+        <DependentUpon>TI83.cs</DependentUpon>
+    </Compile>
     <Compile Include="Calculator\TI83LinkPort.cs" />
     <Compile Include="Computers\Commodore64\C64.Core.cs" />
     <Compile Include="Computers\Commodore64\C64.cs" />
@@ -208,14 +211,14 @@
     <Compile Include="Consoles\Atari\2600\Tia\Tia.PlayfieldData.cs" />
     <Compile Include="Consoles\Atari\7800\Atari7800.cs" />
     <Compile Include="Consoles\Atari\7800\Atari7800.IDebuggable.cs">
-              <DependentUpon>Atari7800.cs</DependentUpon>
+      <DependentUpon>Atari7800.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Atari\7800\Atari7800.IMemoryDomains.cs">
-        <DependentUpon>Atari7800.cs</DependentUpon>
+      <DependentUpon>Atari7800.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Atari\7800\Atari7800Control.cs" />
     <Compile Include="Consoles\Atari\7800\Atari7800.ISaveRam.cs">
-        <DependentUpon>Atari7800.cs</DependentUpon>
+      <DependentUpon>Atari7800.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Atari\lynx\LibLynx.cs" />
     <Compile Include="Consoles\Atari\lynx\Lynx.cs" />
