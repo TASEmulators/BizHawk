@@ -128,6 +128,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				Reset();
 			}
 
+			public void NESSoftReset()
+			{
+				//this hasn't been brought up to date since NEShawk was first made.
+				//in particular http://wiki.nesdev.com/w/index.php/PPU_power_up_state should be studied, but theres no use til theres test cases
+				Reset();
+			}
+
 			//state
 			int ppudead; //measured in frames
 			bool idleSynch;
