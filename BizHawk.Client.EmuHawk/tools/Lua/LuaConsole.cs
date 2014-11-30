@@ -465,7 +465,7 @@ namespace BizHawk.Client.EmuHawk
 				sfd.FileName = Path.GetFileNameWithoutExtension(_luaList.Filename);
 				sfd.InitialDirectory = Path.GetDirectoryName(_luaList.Filename);
 			}
-			else if (!Global.Emulator.IsNull())
+			else if (Global.Game != null)
 			{
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 				sfd.InitialDirectory = PathManager.GetLuaPath();
