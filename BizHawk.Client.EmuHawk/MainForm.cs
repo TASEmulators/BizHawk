@@ -2160,6 +2160,19 @@ namespace BizHawk.Client.EmuHawk
 			Slot7StatusButton.BackColor = Global.Config.SaveSlot == 7 ? SystemColors.Highlight : SystemColors.Control;
 			Slot8StatusButton.BackColor = Global.Config.SaveSlot == 8 ? SystemColors.Highlight : SystemColors.Control;
 			Slot9StatusButton.BackColor = Global.Config.SaveSlot == 9 ? SystemColors.Highlight : SystemColors.Control;
+
+			SaveSlotsStatusLabel.Visible =
+				Slot0StatusButton.Visible =
+				Slot1StatusButton.Visible =
+				Slot2StatusButton.Visible =
+				Slot3StatusButton.Visible =
+				Slot4StatusButton.Visible =
+				Slot5StatusButton.Visible =
+				Slot6StatusButton.Visible =
+				Slot7StatusButton.Visible =
+				Slot8StatusButton.Visible =
+				Slot9StatusButton.Visible =
+				Global.Emulator.HasSavestates();
 		}
 
 		private BitmapBuffer CaptureOSD()
