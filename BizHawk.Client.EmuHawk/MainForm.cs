@@ -1290,15 +1290,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetWindowText()
 		{
-			string str = "";
-
-			if (Global.Emulator == null)
-			{
-				// in some weird cirumstances, this can get called too early before any emulator exists
-				// just ignore it
-				Text = "BizHawk";
-				return;
-			}
+			string str = string.Empty;
 
 			if (_inResizeLoop)
 			{
@@ -1306,7 +1298,7 @@ namespace BizHawk.Client.EmuHawk
 				str = str + string.Format("({0}x{1}) - ", size.Width, size.Height);
 			}
 
-			if (Global.Emulator is NullEmulator)
+			if (Global.Emulator.IsNull())
 			{
 				str = str + "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
 			}
@@ -1707,7 +1699,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
 			_throttle.SetCoreFps(Global.Emulator.CoreComm.VsyncRate);
-			_throttle.signal_paused = EmulatorPaused || Global.Emulator is NullEmulator;
+			_throttle.signal_paused = EmulatorPaused || Global.Emulator.IsNull();
 			_throttle.signal_unthrottle = _unthrottled || superfastforward;
 			_throttle.SetSpeedPercent(fastforward ? Global.Config.SpeedPercentAlternate : Global.Config.SpeedPercent);
 		}
@@ -1751,7 +1743,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveStateAs()
 		{
-			if (Global.Emulator is NullEmulator)
+			if (Global.Emulator.IsNull())
 			{
 				return;
 			}
@@ -1778,7 +1770,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadStateAs()
 		{
-			if (Global.Emulator is NullEmulator)
+			if (Global.Emulator.IsNull())
 			{
 				return;
 			}
@@ -2523,7 +2515,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadQuickSave(string quickSlotName, bool fromLua = false)
 		{
-			if (Global.Emulator is NullEmulator)
+			if (Global.Emulator.IsNull())
 			{
 				return;
 			}
@@ -2579,7 +2571,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateCoreStatusBarButton()
 		{
-			if (Global.Emulator is NullEmulator)
+			if (Global.Emulator.IsNull())
 			{
 				CoreNameStatusBarButton.Visible = false;
 				return;
@@ -2940,7 +2932,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						var sfd = new SaveFileDialog();
-						if (!(Global.Emulator is NullEmulator))
+						if (!Global.Emulator.IsNull())
 						{
 							sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + "." + ext; //dont use Path.ChangeExtension, it might wreck game names with dots in them
 							sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPathFragment, null);
@@ -3360,7 +3352,7 @@ namespace BizHawk.Client.EmuHawk
 		// TODO: should backup logic be stuffed in into Client.Common.SaveStateManager?
 		public void SaveQuickSave(string quickSlotName)
 		{
-			if (Global.Emulator is NullEmulator)
+			if (Global.Emulator.IsNull())
 			{
 				return;
 			}

@@ -16,6 +16,11 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return core is IMemoryDomains;
 		}
 
+		public static bool IsNull(this IEmulator core)
+		{
+			return core == null || core is NullEmulator;
+		}
+
 		// TODO: a better place for these
 		public static bool IsImplemented(this MethodInfo info)
 		{
