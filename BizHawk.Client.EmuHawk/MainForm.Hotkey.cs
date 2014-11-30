@@ -54,7 +54,10 @@ namespace BizHawk.Client.EmuHawk
 					ToggleFrameCounter();
 					break;
 				case "Lag Counter":
-					ToggleLagCounter();
+					if (Global.Emulator.CanPollInput())
+					{
+						ToggleLagCounter();
+					}
 					break;
 				case "Input Display":
 					ToggleInputDisplay();
@@ -315,7 +318,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					break;
 				case "TAStudio":
-					if (Global.Emulator.HasSavestates())
+					if (Global.Emulator.HasSavestates() && Global.Emulator.CanPollInput())
 					{
 						GlobalWin.Tools.Load<TAStudio>();
 					}
