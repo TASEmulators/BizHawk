@@ -45,6 +45,11 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
+				if (!Global.Emulator.HasSavestates())
+				{
+					return false;
+				}
+
 				Update();
 				return _slots.Any(slot => slot);
 			}
@@ -52,7 +57,7 @@ namespace BizHawk.Client.Common
 
 		public bool HasSlot(int slot)
 		{
-			if (Global.Emulator.IsNull())
+			if (!Global.Emulator.HasSavestates())
 			{
 				return false;
 			}
