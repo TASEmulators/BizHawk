@@ -93,6 +93,10 @@ namespace BizHawk.Client.EmuHawk
 
 			SmsVdpToolbarItem.Visible = Global.Emulator is SMS;
 
+			NesDebuggerToolbarItem.Visible = VersionInfo.DeveloperBuild && Global.Emulator.SystemId == "NES";
+
+			TAStudioToolbarItem.Visible = Global.Emulator.HasSavestates();
+
 			foreach (var button in ToolBoxItems)
 			{
 				if (button.Visible)
@@ -101,8 +105,6 @@ namespace BizHawk.Client.EmuHawk
 					toolBtn.Click += (o, e) => Close();
 				}
 			}
-
-			NesDebuggerToolbarItem.Visible = VersionInfo.DeveloperBuild && Global.Emulator.SystemId == "NES";
 		}
 
 		private void SetSize()
