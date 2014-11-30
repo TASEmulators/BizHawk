@@ -425,16 +425,8 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			if (Global.Emulator.IsNull())
-			{
-				sfd.FileName = "MemoryDump";
-				sfd.InitialDirectory = PathManager.GetBasePathAbsolute();
-			}
-			else
-			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null));
-			}
+			sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+			sfd.InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null));
 
 			var result = sfd.ShowHawkDialog();
 
@@ -923,26 +915,17 @@ namespace BizHawk.Client.EmuHawk
 			var sfd = new SaveFileDialog
 			{
 				Filter = GetSaveFileFilter(),
-				RestoreDirectory = true
+				RestoreDirectory = true,
+				InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null))
 			};
 
-			if (Global.Emulator.IsNull())
+			if (_domain.Name == "File on Disk")
 			{
-				sfd.FileName = "MemoryDump";
-				sfd.InitialDirectory = PathManager.GetBasePathAbsolute();
+				sfd.FileName = Path.GetFileName(Global.Config.RecentRoms.MostRecent);
 			}
 			else
 			{
-				if (_domain.Name == "File on Disk")
-				{
-					sfd.FileName = Path.GetFileName(Global.Config.RecentRoms.MostRecent);
-				}
-				else
-				{
-					sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				}
-
-				sfd.InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null));
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 			}
 
 			var result = sfd.ShowHawkDialog();
