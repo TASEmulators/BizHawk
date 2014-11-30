@@ -19,6 +19,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 		isPorted: false,
 		isReleased: true
 		)]
+	[ServiceNotApplicable(typeof(ISaveRam))]
 	public partial class TI83 : IEmulator, IMemoryDomains, IStatable, IDebuggable, IInputPollable, ISettable<TI83.TI83Settings, object>
 	{
 		//hardware

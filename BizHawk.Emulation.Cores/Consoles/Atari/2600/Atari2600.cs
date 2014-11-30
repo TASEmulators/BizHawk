@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		isPorted: false,
 		isReleased: true
 		)]
+	[ServiceNotApplicable(typeof(ISaveRam))]
 	public partial class Atari2600 : IEmulator, IMemoryDomains, IStatable, IDebuggable, IInputPollable, ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
 	{
 		private readonly GameInfo _game;

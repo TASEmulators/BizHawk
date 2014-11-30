@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BizHawk.Emulation.Common
 {
@@ -18,5 +20,22 @@ namespace BizHawk.Emulation.Common
 	public class FeatureNotImplemented : Attribute
 	{
 		public FeatureNotImplemented() { }
+	}
+
+	public class ServiceNotApplicable : Attribute
+	{
+		public ServiceNotApplicable(params Type[] types)
+		{
+			if (types != null)
+			{
+				NotApplicableTypes = types.ToList();
+			}
+			else
+			{
+				NotApplicableTypes = new List<Type>();
+			}
+		}
+
+		public IEnumerable<Type> NotApplicableTypes { get; private set; }
 	}
 }
