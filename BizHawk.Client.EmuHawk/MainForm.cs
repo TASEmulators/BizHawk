@@ -2492,6 +2492,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadState(string path, string userFriendlyStateName, bool fromLua = false) // Move to client.common
 		{
+			if (!Global.Emulator.HasSavestates())
+			{
+				return;
+			}
+
 			// If from lua, disable counting rerecords
 			bool wasCountingRerecords = Global.MovieSession.Movie.IsCountingRerecords;
 
@@ -2525,7 +2530,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadQuickSave(string quickSlotName, bool fromLua = false)
 		{
-			if (Global.Emulator.IsNull())
+			if (!Global.Emulator.HasSavestates())
 			{
 				return;
 			}
@@ -2542,6 +2547,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SaveState(string path, string userFriendlyStateName, bool fromLua)
 		{
+			if (!Global.Emulator.HasSavestates())
+			{
+				return;
+			}
+
 			try
 			{
 				SavestateManager.SaveStateFile(path, userFriendlyStateName);
@@ -3362,7 +3372,7 @@ namespace BizHawk.Client.EmuHawk
 		// TODO: should backup logic be stuffed in into Client.Common.SaveStateManager?
 		public void SaveQuickSave(string quickSlotName)
 		{
-			if (Global.Emulator.IsNull())
+			if (!Global.Emulator.HasSavestates())
 			{
 				return;
 			}
