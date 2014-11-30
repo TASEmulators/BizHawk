@@ -43,11 +43,6 @@ namespace BizHawk.Client.EmuHawk
 				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
 				sfd.InitialDirectory = Path.GetDirectoryName(currentFile);
 			}
-			else if (!Global.Emulator.IsNull())
-			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
-			}
 			else
 			{
 				sfd.FileName = "NULL";
@@ -94,11 +89,6 @@ namespace BizHawk.Client.EmuHawk
 				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
 				sfd.InitialDirectory = Path.GetDirectoryName(currentFile);
 			}
-			else if (!Global.Emulator.IsNull())
-			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPathFragment, null);
-			}
 			else
 			{
 				sfd.FileName = "NULL";
@@ -143,10 +133,6 @@ namespace BizHawk.Client.EmuHawk
 			if (!string.IsNullOrWhiteSpace(currentFile))
 			{
 				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-			}
-			else if (!Global.Emulator.IsNull())
-			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 			}
 
 			sfd.InitialDirectory = PathManager.GetCheatsPath(Global.Game);
