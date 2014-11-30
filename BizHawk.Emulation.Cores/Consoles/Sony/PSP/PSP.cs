@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		isPorted: true,
 		isReleased: false
 		)]
-	public class PSP : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains
+	public class PSP : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
 		public static readonly ControllerDefinition PSPController = new ControllerDefinition
 		{
@@ -173,12 +173,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		public byte[] SaveStateBinary()
 		{
 			return new byte[0];
-		}
-
-		[FeatureNotImplemented]
-		public MemoryDomainList MemoryDomains
-		{
-			get { throw new NotImplementedException(); }
 		}
 
 		const int screenwidth = 480;
