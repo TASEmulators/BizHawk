@@ -162,6 +162,11 @@ namespace BizHawk.Emulation.Common
 				return 0;
 			}
 		}
+
+		public virtual bool Any()
+		{
+			return BoolButtons.Any() || FloatControls.Any();
+		}
 	}
 
 	public interface IController
