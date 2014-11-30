@@ -18,6 +18,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 	public class GBAGPUMemoryAreas
 	{
+		// the pointers are assumed to stay valid as long as the IEmulator is valid, maybe
+		// this will need some change for a managed core (lifecycle management, etc)
+
 		public IntPtr vram;
 		public IntPtr oam;
 		public IntPtr mmio;
