@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 					AVSubMenu.Enabled =
 					ScreenshotSubMenu.Enabled =
 					CloseRomMenuItem.Enabled =
-					!(Global.Emulator is NullEmulator);
+					!Global.Emulator.IsNull();
 		}
 
 		private void RecentRomMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -131,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 				SaveState8MenuItem.Enabled =
 				SaveState9MenuItem.Enabled =
 				SaveState0MenuItem.Enabled =
-				!(Global.Emulator is NullEmulator);
+				!Global.Emulator.IsNull();
 		}
 
 		private void LoadStateSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -150,7 +150,7 @@ namespace BizHawk.Client.EmuHawk
 
 			AutoloadLastSlotMenuItem.Checked = Global.Config.AutoLoadLastSaveSlot;
 
-			LoadNamedStateMenuItem.Enabled = !(Global.Emulator is NullEmulator);
+			LoadNamedStateMenuItem.Enabled = !Global.Emulator.IsNull();
 			LoadState1MenuItem.Enabled = _stateSlots.HasSlot(1);
 			LoadState2MenuItem.Enabled = _stateSlots.HasSlot(2);
 			LoadState3MenuItem.Enabled = _stateSlots.HasSlot(3);
@@ -180,7 +180,7 @@ namespace BizHawk.Client.EmuHawk
 			SaveToCurrentSlotMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Quick Save"].Bindings;
 			LoadCurrentSlotMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Quick Load"].Bindings;
 
-			SaveToCurrentSlotMenuItem.Enabled = LoadCurrentSlotMenuItem.Enabled = !(Global.Emulator is NullEmulator);
+			SaveToCurrentSlotMenuItem.Enabled = LoadCurrentSlotMenuItem.Enabled = !Global.Emulator.IsNull();
 
 			SelectSlot0MenuItem.Checked = false;
 			SelectSlot1MenuItem.Checked = false;
@@ -617,7 +617,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void emulationToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			RebootCoreMenuItem.Enabled = !(Global.Emulator is NullEmulator);
+			RebootCoreMenuItem.Enabled = !Global.Emulator.IsNull();
 
 			PauseMenuItem.Checked = _didMenuPause ? _wasPaused : EmulatorPaused;
 
@@ -791,7 +791,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			ControllersMenuItem.Enabled = !(Global.Emulator is NullEmulator);
+			ControllersMenuItem.Enabled = !Global.Emulator.IsNull();
 		}
 
 		private void FrameSkipMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1053,7 +1053,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config.GB_AsSGB ^= true;
 
-			if (!(Global.Emulator is NullEmulator))
+			if (!Global.Emulator.IsNull())
 			{
 				FlagNeedsReboot();
 			}
@@ -1063,7 +1063,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config.NES_InQuickNES ^= true;
 
-			if (!(Global.Emulator is NullEmulator))
+			if (!Global.Emulator.IsNull())
 			{
 				FlagNeedsReboot();
 			}
@@ -1073,7 +1073,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config.SNES_InSnes9x ^= true;
 
-			if (!(Global.Emulator is NullEmulator))
+			if (!Global.Emulator.IsNull())
 			{
 				FlagNeedsReboot();
 			}
@@ -1116,7 +1116,7 @@ namespace BizHawk.Client.EmuHawk
 
 			TAStudioMenuItem.Enabled =
 				VirtualPadMenuItem.Enabled =
-				!(Global.Emulator is NullEmulator);
+				!Global.Emulator.IsNull();
 
 			CheatsMenuItem.Enabled =
 				HexEditorMenuItem.Enabled =
@@ -1823,7 +1823,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (new N64VideoPluginconfig().ShowDialog() == DialogResult.OK)
 			{
-				if (Global.Emulator is NullEmulator)
+				if (Global.Emulator.IsNull())
 				{
 					GlobalWin.OSD.AddMessage("Plugin settings saved");
 				}
@@ -1956,14 +1956,13 @@ namespace BizHawk.Client.EmuHawk
 			_didMenuPause = true;
 			PauseEmulator();
 
-			OpenRomContextMenuItem.Visible = (Global.Emulator is NullEmulator) || _inFullscreen;
+			OpenRomContextMenuItem.Visible = Global.Emulator.IsNull() || _inFullscreen;
 
 			ShowMenuContextMenuItem.Visible =
 				ShowMenuContextMenuSeparator.Visible =
 				_inFullscreen;
 
-			LoadLastRomContextMenuItem.Visible =
-				(Global.Emulator is NullEmulator);
+			LoadLastRomContextMenuItem.Visible = Global.Emulator.IsNull();
 
 			StopAVContextMenuItem.Visible = _currAviWriter != null;
 
@@ -1972,12 +1971,12 @@ namespace BizHawk.Client.EmuHawk
 				ScreenshotContextMenuItem.Visible =
 				CloseRomContextMenuItem.Visible =
 				UndoSavestateContextMenuItem.Visible =
-				!(Global.Emulator is NullEmulator);
+				!Global.Emulator.IsNull();
 
 			RecordMovieContextMenuItem.Visible =
 				PlayMovieContextMenuItem.Visible =
 				LoadLastMovieContextMenuItem.Visible =
-				!(Global.Emulator is NullEmulator) && !Global.MovieSession.Movie.IsActive;
+				!Global.Emulator.IsNull() && !Global.MovieSession.Movie.IsActive;
 
 			RestartMovieContextMenuItem.Visible =
 				StopMovieContextMenuItem.Visible =
@@ -1990,7 +1989,7 @@ namespace BizHawk.Client.EmuHawk
 
 			StopNoSaveContextMenuItem.Visible = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.Changes;
 
-			AddSubtitleContextMenuItem.Visible = !(Global.Emulator is NullEmulator) && Global.MovieSession.Movie.IsActive && !Global.MovieSession.ReadOnly;
+			AddSubtitleContextMenuItem.Visible = !Global.Emulator.IsNull() && Global.MovieSession.Movie.IsActive && !Global.MovieSession.ReadOnly;
 
 			ConfigContextMenuItem.Visible = _inFullscreen;
 

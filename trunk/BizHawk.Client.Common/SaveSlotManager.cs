@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 
-using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -52,7 +52,7 @@ namespace BizHawk.Client.Common
 
 		public bool HasSlot(int slot)
 		{
-			if (Global.Emulator is NullEmulator)
+			if (Global.Emulator.IsNull())
 			{
 				return false;
 			}

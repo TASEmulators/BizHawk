@@ -425,7 +425,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			if (Global.Emulator is NullEmulator)
+			if (Global.Emulator.IsNull())
 			{
 				sfd.FileName = "MemoryDump";
 				sfd.InitialDirectory = PathManager.GetBasePathAbsolute();
@@ -926,7 +926,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			if (Global.Emulator is NullEmulator)
+			if (Global.Emulator.IsNull())
 			{
 				sfd.FileName = "MemoryDump";
 				sfd.InitialDirectory = PathManager.GetBasePathAbsolute();
