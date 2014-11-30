@@ -61,35 +61,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		public string BoardName { get { return null; } }
 		public CoreComm CoreComm { get; private set; }
 
-		#region saveram
-
-		[FeatureNotImplemented]
-		public byte[] CloneSaveRam()
-		{
-			return new byte[0];
-		}
-
-		[FeatureNotImplemented]
-		public void StoreSaveRam(byte[] data)
-		{
-		}
-
-		public bool SaveRamModified
-		{
-			get
-			{
-				return false;
-			}
-
-			[FeatureNotImplemented]
-			set
-			{
-				throw new NotImplementedException();
-			}
-		}
-
-		#endregion
-
 		#region savestates
 
 		public void SaveStateText(System.IO.TextWriter writer)

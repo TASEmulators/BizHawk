@@ -73,8 +73,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public bool IsLagFrame { get { return _islag; } }
 
-		public bool SaveRamModified { get; set; }
-
 		public bool DeterministicEmulation { get; set; }
 
 		public bool BinarySaveStatesPreferred { get { return false; } }
@@ -151,13 +149,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.EndSection();
 			ser.EndSection();
 		}
-
-		public byte[] CloneSaveRam()
-		{
-			return null;
-		}
-
-		public void StoreSaveRam(byte[] data) { }
 
 		public void SaveStateText(TextWriter writer)
 		{

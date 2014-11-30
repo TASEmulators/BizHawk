@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		isPorted: true,
 		isReleased: false
 		)]
-	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, IMemoryDomains, IDebuggable
+	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, IMemoryDomains, ISaveRam, IDebuggable
 	{
 		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
@@ -140,8 +140,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 					throw new ObjectDisposedException(this.GetType().ToString());
 				return LibMeteor.libmeteor_hassaveram();
 			}
-			set
-			{ }
 		}
 
 		#endregion

@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		portedVersion: "9.12",
 		portedUrl: "http://yabause.org"
 		)]
-	public class Yabause : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains,
+	public class Yabause : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam,
 		ISettable<object, Yabause.SaturnSyncSettings>
 	{
 		public static ControllerDefinition SaturnController = new ControllerDefinition
@@ -354,7 +354,6 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 				else
 					return LibYabause.libyabause_saveramodified();
 			}
-			set { throw new InvalidOperationException("No you may not!"); }
 		}
 
 		#endregion

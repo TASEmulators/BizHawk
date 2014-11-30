@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		portedVersion: "v87",
 		portedUrl: "http://byuu.org/"
 		)]
-	public unsafe class LibsnesCore : IEmulator, IVideoProvider, IMemoryDomains,
+	public unsafe class LibsnesCore : IEmulator, IVideoProvider, IMemoryDomains, ISaveRam,
 		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
 	{
 		public LibsnesCore(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData, CoreComm comm, object Settings, object SyncSettings)
@@ -712,7 +712,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public bool SaveRamModified
 		{
-			set { }
 			get
 			{
 				return api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM) != 0;

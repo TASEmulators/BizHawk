@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		portedVersion: "v1.5",
 		portedUrl: "http://emu7800.sourceforge.net/"
 		)]
-	public partial class Atari7800 : IEmulator, IMemoryDomains, IDebuggable
+	public partial class Atari7800 : IEmulator, IMemoryDomains, ISaveRam, IDebuggable
 	{
 		// TODO:
 		// some things don't work when you try to plug in a 2600 game
@@ -73,6 +73,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		private int _frame = 0;
 
 		#region saveram
+
 		public byte[] CloneSaveRam()
 		{
 			return (byte[])hsram.Clone();
@@ -88,11 +89,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			{
 				return GameInfo.MachineType == MachineType.A7800PAL || GameInfo.MachineType == MachineType.A7800NTSC;
 			}
-			set
-			{
-				throw new Exception("No one ever uses this, and it won't work with the way MainForm is set up.");
-			}
 		}
+
 		#endregion
 
 		public void Dispose()

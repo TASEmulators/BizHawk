@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		isPorted: false,
 		isReleased: true
 		)]
-	public sealed partial class PCEngine : IEmulator, IMemoryDomains,
+	public sealed partial class PCEngine : IEmulator, IMemoryDomains, ISaveRam,
 		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>
 	{
 		// ROM
@@ -373,7 +373,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				Array.Copy(data, BRAM, data.Length);
 		}
 
-		public bool SaveRamModified { get; set; }
+		public bool SaveRamModified { get; private set; }
 
 		public bool BinarySaveStatesPreferred { get { return false; } }
 		public void SaveStateBinary(BinaryWriter bw) { SyncState(Serializer.CreateBinaryWriter(bw)); }

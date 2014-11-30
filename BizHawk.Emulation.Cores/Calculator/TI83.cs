@@ -524,15 +524,6 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		public bool DeterministicEmulation { get { return true; } }
 
-		public byte[] CloneSaveRam() { return null; }
-		public void StoreSaveRam(byte[] data) { }
-
-		public bool SaveRamModified
-		{
-			get { return false; }
-			set { }
-		}
-
 		public bool BinarySaveStatesPreferred { get { return false; } }
 		public void SaveStateBinary(BinaryWriter bw) { SyncState(Serializer.CreateBinaryWriter(bw)); }
 		public void LoadStateBinary(BinaryReader br) { SyncState(Serializer.CreateBinaryReader(br)); }

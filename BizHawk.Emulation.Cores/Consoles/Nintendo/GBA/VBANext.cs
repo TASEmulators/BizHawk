@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	[CoreAttributes("VBA-Next", "many authors", true, true, "cd508312a29ed8c29dacac1b11c2dce56c338a54", "https://github.com/libretro/vba-next")]
 	public class VBANext : IEmulator, IVideoProvider, ISyncSoundProvider,
-		IGBAGPUViewable, IMemoryDomains, IDebuggable, ISettable<object, VBANext.SyncSettings>
+		IGBAGPUViewable, IMemoryDomains, ISaveRam, IDebuggable, ISettable<object, VBANext.SyncSettings>
 	{
 		IntPtr Core;
 
@@ -159,10 +159,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			get
 			{
 				return LibVBANext.SaveRamSize(Core) != 0;
-			}
-			set
-			{
-				throw new InvalidOperationException();
 			}
 		}
 

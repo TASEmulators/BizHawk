@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		isPorted: false,
 		isReleased: true
 		)]
-	public partial class NES : IEmulator, IMemoryDomains, IDebuggable,
+	public partial class NES : IEmulator, IMemoryDomains, ISaveRam, IDebuggable,
 		ISettable<NES.NESSettings, NES.NESSyncSettings>
 	{
 		static readonly bool USE_DATABASE = true;
@@ -357,7 +357,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (board.SaveRam == null) return false;
 				return true;
 			}
-			set { }
 		}
 
 		private MemoryDomainList memoryDomains;

@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
 	[CoreAttributes("Cygne/Mednafen", "Dox", true, true, "0.9.36.5", "http://mednafen.sourceforge.net/")]
-	public class WonderSwan : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains,
+	public class WonderSwan : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam,
 		IDebuggable, ISettable<WonderSwan.Settings, WonderSwan.SyncSettings>
 	{
 		#region Controller
@@ -200,7 +200,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public bool SaveRamModified
 		{
 			get { return BizSwan.bizswan_saveramsize(Core) > 0; }
-			set { throw new InvalidOperationException(); }
 		}
 
 		#endregion

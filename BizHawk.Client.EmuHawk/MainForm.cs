@@ -1411,70 +1411,76 @@ namespace BizHawk.Client.EmuHawk
 
 		private static void LoadSaveRam()
 		{
-			try // zero says: this is sort of sketchy... but this is no time for rearchitecting
+			if (Global.Emulator.HasSaveRam())
 			{
-				byte[] sram;
-
-				// GBA meteor core might not know how big the saveram ought to be, so just send it the whole file
-				// GBA vba-next core will try to eat anything, regardless of size
-				if (Global.Emulator is GBA || Global.Emulator is VBANext)
+				try // zero says: this is sort of sketchy... but this is no time for rearchitecting
 				{
-					sram = File.ReadAllBytes(PathManager.SaveRamPath(Global.Game));
-				}
-				else
-				{
-					var oldram = Global.Emulator.CloneSaveRam();
-					if (oldram == null)
-					{
-						// we're eating this one now.  the possible negative consequence is that a user could lose
-						// their saveram and not know why
-						// MessageBox.Show("Error: tried to load saveram, but core would not accept it?");
-						return;
-					}
-					// why do we silently truncate\pad here instead of warning\erroring?
-					sram = new byte[oldram.Length];
-					using (var reader = new BinaryReader(
-							new FileStream(PathManager.SaveRamPath(Global.Game), FileMode.Open, FileAccess.Read)))
-					{
-						reader.Read(sram, 0, sram.Length);
-					}
-				}
+					byte[] sram;
 
-				Global.Emulator.StoreSaveRam(sram);
-			}
-			catch (IOException)
-			{
-				GlobalWin.OSD.AddMessage("An error occurred while loading Sram");
+					// GBA meteor core might not know how big the saveram ought to be, so just send it the whole file
+					// GBA vba-next core will try to eat anything, regardless of size
+					if (Global.Emulator is GBA || Global.Emulator is VBANext)
+					{
+						sram = File.ReadAllBytes(PathManager.SaveRamPath(Global.Game));
+					}
+					else
+					{
+						var oldram = (Global.Emulator as ISaveRam).CloneSaveRam();
+						if (oldram == null)
+						{
+							// we're eating this one now.  the possible negative consequence is that a user could lose
+							// their saveram and not know why
+							// MessageBox.Show("Error: tried to load saveram, but core would not accept it?");
+							return;
+						}
+						// why do we silently truncate\pad here instead of warning\erroring?
+						sram = new byte[oldram.Length];
+						using (var reader = new BinaryReader(
+								new FileStream(PathManager.SaveRamPath(Global.Game), FileMode.Open, FileAccess.Read)))
+						{
+							reader.Read(sram, 0, sram.Length);
+						}
+					}
+
+					(Global.Emulator as ISaveRam).StoreSaveRam(sram);
+				}
+				catch (IOException)
+				{
+					GlobalWin.OSD.AddMessage("An error occurred while loading Sram");
+				}
 			}
 		}
 
 		private static void SaveRam()
 		{
-			var path = PathManager.SaveRamPath(Global.Game);
-			var f = new FileInfo(path);
-			if (f.Directory != null && f.Directory.Exists == false)
+			if (Global.Emulator.HasSaveRam())
 			{
-				f.Directory.Create();
-			}
-
-			// Make backup first
-			if (Global.Config.BackupSaveram && f.Exists)
-			{
-				var backup = path + ".bak";
-				var backupFile = new FileInfo(backup);
-				if (backupFile.Exists)
+				var path = PathManager.SaveRamPath(Global.Game);
+				var f = new FileInfo(path);
+				if (f.Directory != null && f.Directory.Exists == false)
 				{
-					backupFile.Delete();
+					f.Directory.Create();
 				}
 
-				f.CopyTo(backup);
+				// Make backup first
+				if (Global.Config.BackupSaveram && f.Exists)
+				{
+					var backup = path + ".bak";
+					var backupFile = new FileInfo(backup);
+					if (backupFile.Exists)
+					{
+						backupFile.Delete();
+					}
+
+					f.CopyTo(backup);
+				}
+
+				var writer = new BinaryWriter(new FileStream(path, FileMode.Create, FileAccess.Write));
+				var saveram = (Global.Emulator as ISaveRam).CloneSaveRam();
+
+				writer.Write(saveram, 0, saveram.Length);
+				writer.Close();
 			}
-
-			var writer = new BinaryWriter(new FileStream(path, FileMode.Create, FileAccess.Write));
-			var saveram = Global.Emulator.CloneSaveRam();
-
-			writer.Write(saveram, 0, saveram.Length);
-			writer.Close();
 		}
 
 		private void SelectSlot(int num)
@@ -3425,7 +3431,7 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.OSD.AddMessage("SRAM cleared.");
 				}
 			}
-			else if (Global.Emulator.SaveRamModified)
+			else if (Global.Emulator.HasSaveRam() && (Global.Emulator as ISaveRam).SaveRamModified)
 			{
 				SaveRam();
 			}
