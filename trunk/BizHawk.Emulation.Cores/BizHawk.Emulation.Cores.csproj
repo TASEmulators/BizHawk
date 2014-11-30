@@ -85,6 +85,9 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Calculator\TI83.IInputPollable.cs">
+        <DependentUpon>TI83.cs</DependentUpon>
+    </Compile>
     <Compile Include="Calculator\TI83.IMemoryDomains.cs">
       <DependentUpon>TI83.cs</DependentUpon>
     </Compile>
