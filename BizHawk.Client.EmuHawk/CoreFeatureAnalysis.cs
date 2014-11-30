@@ -117,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 									}
 								}
 							}
-							catch (Exception ex)
+							catch (Exception)
 							{
 								// TODO: SavestateBinary() and SaveStateBinary(BinaryWriter bw) cause an exception, need to look at signature too
 							}
