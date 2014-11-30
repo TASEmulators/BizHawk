@@ -49,6 +49,7 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Base Implementations\ControllerDefinition.cs" />
     <Compile Include="Base Implementations\NullController.cs" />
     <Compile Include="Base Implementations\NullEmulator.cs" />
     <Compile Include="CoreAttributes.cs" />
