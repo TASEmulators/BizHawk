@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		portedVersion: "v1.5",
 		portedUrl: "http://emu7800.sourceforge.net/"
 		)]
-	public partial class Atari7800 : IEmulator, IMemoryDomains, ISaveRam, IDebuggable, IStatable
+	public partial class Atari7800 : IEmulator, IMemoryDomains, ISaveRam, IDebuggable, IStatable, IInputPollable
 	{
 		// TODO:
 		// some things don't work when you try to plug in a 2600 game

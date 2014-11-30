@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		portedUrl: "https://code.google.com/p/genplus-gx/"
 		)]
 	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, IMemoryDomains, ISaveRam, IStatable,
-		IDebuggable, ISettable<GPGX.GPGXSettings, GPGX.GPGXSyncSettings>
+		IInputPollable, IDebuggable, ISettable<GPGX.GPGXSettings, GPGX.GPGXSyncSettings>
 	{
 		static GPGX AttachedCore = null;
 

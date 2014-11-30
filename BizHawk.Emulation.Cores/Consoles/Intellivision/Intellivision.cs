@@ -134,14 +134,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public IController Controller { get; set; }
 		public int Frame { get; set; }
 
-		public int LagCount
-		{
-			get { return 0; }
-			set { }
-		}
-
-		public bool IsLagFrame { get { return false; } }
-
 		public string SystemId
 		{
 			get { return "INTV"; }
@@ -155,8 +147,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public void ResetCounters()
 		{
 			Frame = 0;
-			LagCount = 0;
-			//IsLagFrame = false;
 		}
 
 		public CoreComm CoreComm { get; private set; }

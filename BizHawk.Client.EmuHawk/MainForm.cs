@@ -2646,6 +2646,19 @@ namespace BizHawk.Client.EmuHawk
 			StepRunLoop_Core(true);
 		}
 
+		public bool IsLagFrame
+		{
+			get
+			{
+				if (Global.Emulator.CanPollInput())
+				{
+					return (Global.Emulator as IInputPollable).IsLagFrame;
+				}
+
+				return false;
+			}
+		}
+
 		private void StepRunLoop_Core(bool force = false)
 		{
 			var runFrame = false;
@@ -2656,7 +2669,7 @@ namespace BizHawk.Client.EmuHawk
 			double frameAdvanceTimestampDelta = (now - _frameAdvanceTimestamp).TotalMilliseconds;
 			bool frameProgressTimeElapsed = Global.Config.FrameProgressDelayMs < frameAdvanceTimestampDelta;
 
-			if (Global.Config.SkipLagFrame && Global.Emulator.IsLagFrame && frameProgressTimeElapsed && Global.Emulator.Frame > 0)
+			if (Global.Config.SkipLagFrame && IsLagFrame && frameProgressTimeElapsed && Global.Emulator.Frame > 0)
 			{
 				runFrame = true;
 			}
@@ -2802,7 +2815,7 @@ namespace BizHawk.Client.EmuHawk
 					AvFrameAdvance();
 				}
 
-				if (Global.Emulator.IsLagFrame && Global.Config.AutofireLagFrames)
+				if (IsLagFrame && Global.Config.AutofireLagFrames)
 				{
 					Global.AutoFireController.IncrementStarts();
 				}

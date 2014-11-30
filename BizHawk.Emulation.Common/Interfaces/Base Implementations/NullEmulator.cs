@@ -65,9 +65,6 @@ namespace BizHawk.Emulation.Common
 		public IController Controller { get; set; }
 
 		public int Frame { get; set; }
-		public int LagCount { get { return 0; } set { return; } }
-		public bool IsLagFrame { get { return false; } }
-
 		public bool DeterministicEmulation { get { return true; } }
 
 		public int[] GetVideoBuffer() { return frameBuffer; }

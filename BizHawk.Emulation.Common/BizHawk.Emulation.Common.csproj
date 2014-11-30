@@ -64,6 +64,7 @@
     <Compile Include="Interfaces\ICoreService.cs" />
     <Compile Include="Interfaces\IDebuggable.cs" />
     <Compile Include="Interfaces\IEmulator.cs" />
+    <Compile Include="Interfaces\IInputPollable.cs" />
     <Compile Include="Interfaces\IMemoryDomains.cs" />
     <Compile Include="Interfaces\ISaveRam.cs" />
     <Compile Include="Interfaces\ISettable.cs" />

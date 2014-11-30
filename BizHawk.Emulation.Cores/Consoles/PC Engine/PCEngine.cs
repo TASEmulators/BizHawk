@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		isPorted: false,
 		isReleased: true
 		)]
-	public sealed partial class PCEngine : IEmulator, IMemoryDomains, ISaveRam, IStatable,
+	public sealed partial class PCEngine : IEmulator, IMemoryDomains, ISaveRam, IStatable, IInputPollable,
 		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>
 	{
 		// ROM

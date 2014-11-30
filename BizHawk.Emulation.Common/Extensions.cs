@@ -27,6 +27,11 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return core is IStatable;
 		}
 
+		public static bool CanPollInput(this IEmulator core)
+		{
+			return core is IInputPollable;
+		}
+
 		public static bool IsNull(this IEmulator core)
 		{
 			return core == null || core is NullEmulator;

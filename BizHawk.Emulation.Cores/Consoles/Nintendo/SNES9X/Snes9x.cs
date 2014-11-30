@@ -41,19 +41,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			Frame++;
 
 			LibSnes9x.debug_advance(_vbuff);
-
-			if (IsLagFrame)
-				LagCount++;
 		}
 
 		public int Frame { get; private set; }
-		public int LagCount { get; set; }
-		public bool IsLagFrame { get { return true; } }
 
 		public void ResetCounters()
 		{
 			Frame = 0;
-			LagCount = 0;
 		}
 
 		public string SystemId { get { return "SNES"; } }

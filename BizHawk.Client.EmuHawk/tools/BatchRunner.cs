@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using BizHawk.Client.Common;
-using BizHawk.Emulation.Common;
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
+using BizHawk.Client.Common;
+
+
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -180,7 +183,7 @@ namespace BizHawk.Client.EmuHawk
 						// some cores really really really like it if you drain their audio every frame
 						emu.SyncSoundProvider.GetSamples(out samp, out nsamp);
 						current.Frames++;
-						if (emu.IsLagFrame)
+						if (emu.CanPollInput() && (emu as IInputPollable).IsLagFrame)
 							current.LaggedFrames++;
 					}
 					catch (Exception e)
