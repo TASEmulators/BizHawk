@@ -2603,9 +2603,6 @@ namespace BizHawk.Client.EmuHawk
 			CoreNameStatusBarButton.Text = Global.Emulator.DisplayName();
 			CoreNameStatusBarButton.Image = Global.Emulator.Icon();
 			CoreNameStatusBarButton.ToolTipText = attributes.Ported ? "(ported) " : string.Empty;
-
-			// Let's also do the link icon here too since they both would be updated under the same circumstances
-
 		}
 
 		#endregion
@@ -2952,7 +2949,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						var sfd = new SaveFileDialog();
-						if (!Global.Emulator.IsNull())
+						if (Global.Game != null)
 						{
 							sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + "." + ext; //dont use Path.ChangeExtension, it might wreck game names with dots in them
 							sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPathFragment, null);
@@ -2963,7 +2960,7 @@ namespace BizHawk.Client.EmuHawk
 							sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPathFragment, null);
 						}
 
-						sfd.Filter = String.Format("{0} (*.{0})|*.{0}|All Files|*.*", ext);
+						sfd.Filter = string.Format("{0} (*.{0})|*.{0}|All Files|*.*", ext);
 
 						var result = sfd.ShowHawkDialog();
 						if (result == DialogResult.Cancel)
