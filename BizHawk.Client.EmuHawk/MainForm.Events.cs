@@ -782,6 +782,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ControllersMenuItem.Enabled = Global.Emulator.ControllerDefinition.Any();
+			RewindOptionsMenuItem.Enabled = Global.Emulator.HasSavestates();
 		}
 
 		private void FrameSkipMenuItem_DropDownOpened(object sender, EventArgs e)
