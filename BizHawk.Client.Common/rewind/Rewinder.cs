@@ -137,7 +137,10 @@ namespace BizHawk.Client.Common
 
 		public void Rewind(int frames)
 		{
-			_rewindThread.Rewind(frames);
+			if (Global.Emulator.HasSavestates())
+			{
+				_rewindThread.Rewind(frames);
+			}
 		}
 
 		// TODO remove me
