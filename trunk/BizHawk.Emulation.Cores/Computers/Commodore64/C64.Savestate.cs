@@ -17,23 +17,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			SyncState(new Serializer(reader));
 		}
 
-		public byte[] CloneSaveRam()
-		{
-			return null;
-		}
-
-		// TODO: when disk support is finished, set this flag according to if any writes to disk were done
-		public bool SaveRamModified
-		{
-			get
-			{
-				return false;
-			}
-			set
-			{
-			}
-		}
-
 		public void SaveStateBinary(BinaryWriter bw)
 		{
 			SyncState(new Serializer(bw));
@@ -42,10 +25,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public void SaveStateText(TextWriter writer)
 		{
 			SyncState(new Serializer(writer));
-		}
-
-		public void StoreSaveRam(byte[] data)
-		{
 		}
 
 		void SyncState(Serializer ser)

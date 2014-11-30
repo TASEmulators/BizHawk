@@ -145,31 +145,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		}
 
 		[FeatureNotImplemented]
-		public byte[] CloneSaveRam()
-		{
-			return new byte[0];
-		}
-
-		[FeatureNotImplemented]
-		public void StoreSaveRam(byte[] data)
-		{
-		}
-
-		public bool SaveRamModified
-		{
-			[FeatureNotImplemented]
-			get
-			{
-				return false;
-			}
-
-			[FeatureNotImplemented]
-			set
-			{
-			}
-		}
-
-		[FeatureNotImplemented]
 		public void ResetCounters()
 		{
 		}

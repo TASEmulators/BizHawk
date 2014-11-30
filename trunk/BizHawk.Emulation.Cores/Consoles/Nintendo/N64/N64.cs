@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		portedVersion: "2.0",
 		portedUrl: "https://code.google.com/p/mupen64plus/"
 		)]
-	public partial class N64 : IEmulator, IMemoryDomains, IDebuggable,
+	public partial class N64 : IEmulator, IMemoryDomains, ISaveRam, IDebuggable,
 		ISettable<N64Settings, N64SyncSettings>
 	{
 		private readonly N64Input _inputProvider;
@@ -301,7 +301,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			api.LoadSaveram(data);
 		}
 
-		public bool SaveRamModified { get { return true; } set { } }
+		public bool SaveRamModified
+		{
+			get { return true; }
+		}
 
 		#region Savestates
 

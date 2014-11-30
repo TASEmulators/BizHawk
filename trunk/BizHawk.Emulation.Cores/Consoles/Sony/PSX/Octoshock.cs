@@ -283,16 +283,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		}
 
 		[FeatureNotImplemented]
-		public byte[] CloneSaveRam() { return null; }
-
-		[FeatureNotImplemented]
-		public void StoreSaveRam(byte[] data) { }
-
-		[FeatureNotImplemented]
 		public bool DeterministicEmulation { get { return true; } }
-
-		[FeatureNotImplemented]
-		public bool SaveRamModified { get; set; }
 
 		[FeatureNotImplemented]
 		public void SaveStateText(TextWriter writer) { }

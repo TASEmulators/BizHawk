@@ -152,27 +152,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public bool DeterministicEmulation { get { return true; } }
 
-		[FeatureNotImplemented]
-		public byte[] CloneSaveRam()
-		{
-			return null;
-		}
-
-		[FeatureNotImplemented]
-		public void StoreSaveRam(byte[] data)
-		{
-
-		}
-
-		public bool SaveRamModified
-		{
-			[FeatureNotImplemented]
-			get { return false; }
-
-			[FeatureNotImplemented]
-			set { }
-		}
-
 		public void ResetCounters()
 		{
 			Frame = 0;

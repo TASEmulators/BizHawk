@@ -65,6 +65,7 @@
     <Compile Include="Interfaces\IDebuggable.cs" />
     <Compile Include="Interfaces\IEmulator.cs" />
     <Compile Include="Interfaces\IMemoryDomains.cs" />
+    <Compile Include="Interfaces\ISaveRam.cs" />
     <Compile Include="Interfaces\ISettable.cs" />
     <Compile Include="Interfaces\ISoundProvider.cs" />
     <Compile Include="Interfaces\ISyncSoundProvider.cs" />

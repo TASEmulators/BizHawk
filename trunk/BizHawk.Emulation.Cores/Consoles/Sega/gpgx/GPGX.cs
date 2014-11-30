@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		portedVersion: "r874",
 		portedUrl: "https://code.google.com/p/genplus-gx/"
 		)]
-	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, IMemoryDomains,
+	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, IMemoryDomains, ISaveRam,
 		IDebuggable, ISettable<GPGX.GPGXSettings, GPGX.GPGXSyncSettings>
 	{
 		static GPGX AttachedCore = null;
@@ -495,10 +495,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					LibGPGX.gpgx_get_sram(ref area, ref size);
 					return size > 0 && area != IntPtr.Zero;
 				}
-			}
-			set
-			{
-				throw new Exception();
 			}
 		}
 

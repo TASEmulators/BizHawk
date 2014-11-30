@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 namespace BizHawk.Emulation.Cores.Atari.Lynx
 {
 	[CoreAttributes("Handy", "K. Wilkins", true, true, "mednafen 0-9-34-1", "http://mednafen.sourceforge.net/")]
-	public class Lynx : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains
+	public class Lynx : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam
 	{
 		IntPtr Core;
 
@@ -311,10 +311,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 				int unused;
 				IntPtr unused2;
 				return LibLynx.GetSaveRamPtr(Core, out unused, out unused2);
-			}
-			set
-			{
-				throw new InvalidOperationException();
 			}
 		}
 

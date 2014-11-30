@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		isPorted: false,
 		isReleased: true
 		)]
-	public sealed partial class SMS : IEmulator, IMemoryDomains,
+	public sealed partial class SMS : IEmulator, IMemoryDomains, ISaveRam,
 		IDebuggable, ISettable<SMS.SMSSettings, SMS.SMSSyncSettings>
 	{
 		// Constants
@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				Array.Copy(data, SaveRAM, data.Length);
 		}
 
-		public bool SaveRamModified { get; set; }
+		public bool SaveRamModified { get; private set; }
 
 		// Machine resources
 		public Z80A Cpu;

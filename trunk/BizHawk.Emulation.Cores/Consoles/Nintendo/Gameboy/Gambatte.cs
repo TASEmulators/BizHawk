@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		portedVersion: "SVN 344",
 		portedUrl: "http://gambatte.sourceforge.net/"
 		)]
-	public class Gameboy : IEmulator, IVideoProvider, ISyncSoundProvider,
+	public class Gameboy : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam,
 		IMemoryDomains, IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>
 	{
 		#region ALL SAVESTATEABLE STATE GOES HERE
@@ -486,7 +486,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				else
 					return true; // need to wire more stuff into the core to actually know this
 			}
-			set { }
 		}
 
 		#endregion

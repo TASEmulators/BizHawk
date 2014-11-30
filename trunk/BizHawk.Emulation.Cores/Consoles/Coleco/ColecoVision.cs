@@ -170,10 +170,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 		}
 
-		public byte[] CloneSaveRam() { return null; }
-		public void StoreSaveRam(byte[] data) { }
-		public bool SaveRamModified { get; set; }
-
 		public bool DeterministicEmulation { get { return true; } }
 
 		public bool BinarySaveStatesPreferred { get { return false; } }
