@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using BizHawk.Common.ReflectionExtensions;
 
 namespace BizHawk.Emulation.Common.IEmulatorExtensions
 {
@@ -24,7 +25,14 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 		// TODO: a better place for these
 		public static bool IsImplemented(this MethodInfo info)
 		{
-			return !info.GetCustomAttributes(false).OfType<FeatureNotImplemented>().Any();
+			// If a method is marked as Not implemented, it is not implemented no matter what the body is
+			if (info.GetCustomAttributes(false).OfType<FeatureNotImplemented>().Any())
+			{
+				return true;
+			}
+
+			// If a method is not marked but all it does is throw an exception, consider it not implemented
+			return !info.ThrowsError();
 		}
 
 		public static bool IsImplemented(this PropertyInfo info)
