@@ -58,6 +58,8 @@ namespace BizHawk.Emulation.Common
 			else 
 				for (int i = 0; i < 256 * 192; i++)
 					frameBuffer[i] = Colors.Luminosity((byte) rand.Next());
+
+			Frame++;
 		}
 		public ControllerDefinition ControllerDefinition { get { return NullController; } }
 		public IController Controller { get; set; }
@@ -66,16 +68,8 @@ namespace BizHawk.Emulation.Common
 		public int LagCount { get { return 0; } set { return; } }
 		public bool IsLagFrame { get { return false; } }
 
-		public byte[] CloneSaveRam() { return null; }
-		public void StoreSaveRam(byte[] data) { }
 		public bool DeterministicEmulation { get { return true; } }
-		public bool SaveRamModified { get; set; }
-		public void SaveStateText(TextWriter writer) { }
-		public void LoadStateText(TextReader reader) { }
-		public void SaveStateBinary(BinaryWriter writer) { }
-		public void LoadStateBinary(BinaryReader reader) { }
-		public byte[] SaveStateBinary() { return new byte[1]; }
-		public bool BinarySaveStatesPreferred { get { return false; } }
+
 		public int[] GetVideoBuffer() { return frameBuffer; }
 		public int VirtualWidth { get { return 256; } }
 		public int VirtualHeight { get { return 192; } }
