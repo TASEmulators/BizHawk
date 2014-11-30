@@ -123,6 +123,8 @@ namespace BizHawk.Client.EmuHawk
 							}
 						}
 
+						// Properties are redundant the getter and setters show up when iterating methods
+						/*
 						foreach (var field in service.GetProperties().OrderBy(f => f.Name))
 						{
 							var i = field.IsImplemented();
@@ -139,6 +141,7 @@ namespace BizHawk.Client.EmuHawk
 								fullyImplementedInterface = false;
 							}
 						}
+						*/
 					}
 					else
 					{
