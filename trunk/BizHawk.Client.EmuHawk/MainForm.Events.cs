@@ -623,8 +623,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void emulationToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			RebootCoreMenuItem.Enabled = !Global.Emulator.IsNull();
-
 			PauseMenuItem.Checked = _didMenuPause ? _wasPaused : EmulatorPaused;
 
 			SoftResetMenuItem.Enabled = Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset") &&
