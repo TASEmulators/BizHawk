@@ -291,21 +291,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public bool DeterministicEmulation { get { return false; } }
 
-		public byte[] CloneSaveRam()
-		{
-			return api.SaveSaveram();
-		}
-
-		public void StoreSaveRam(byte[] data)
-		{
-			api.LoadSaveram(data);
-		}
-
-		public bool SaveRamModified
-		{
-			get { return true; }
-		}
-
 		#region Savestates
 
 		// these next 5 functions are all exact copy paste from gambatte.
@@ -404,58 +389,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		#region Debugging Hooks
 
-		public IDictionary<string, int> GetCpuFlagsAndRegisters()
-		{
-			//note: the approach this code takes is highly bug-prone
-			var ret = new Dictionary<string, int>();
-			var data = new byte[32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + 32 * 4 + 32 * 8];
-			api.getRegisters(data);
-
-			for (int i = 0; i < 32; i++)
-			{
-				var reg = BitConverter.ToInt64(data, i * 8);
-				ret.Add("REG" + i + "_lo", (int)(reg));
-				ret.Add("REG" + i + "_hi", (int)(reg >> 32));
-			}
-
-			var PC = BitConverter.ToUInt32(data, 32 * 8);
-			ret.Add("PC", (int)PC);
-
-			ret.Add("LL", BitConverter.ToInt32(data, 32 * 8 + 4));
-
-			var Lo = BitConverter.ToInt64(data, 32 * 8 + 4 + 4);
-			ret.Add("LO_lo", (int)Lo);
-			ret.Add("LO_hi", (int)(Lo >> 32));
-
-			var Hi = BitConverter.ToInt64(data, 32 * 8 + 4 + 4 + 8);
-			ret.Add("HI_lo", (int)Hi);
-			ret.Add("HI_hi", (int)(Hi >> 32));
-
-			ret.Add("FCR0", BitConverter.ToInt32(data, 32 * 8 + 4 + 4 + 8 + 8));
-			ret.Add("FCR31", BitConverter.ToInt32(data, 32 * 8 + 4 + 4 + 8 + 8 + 4));
-
-			for (int i = 0; i < 32; i++)
-			{
-				var reg_cop0 = BitConverter.ToUInt32(data, 32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + i * 4);
-				ret.Add("CP0 REG" + i, (int)reg_cop0);
-			}
-
-			for (int i = 0; i < 32; i++)
-			{
-				var reg_cop1_fgr_64 = BitConverter.ToInt64(data, 32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + 32 * 4 + i * 8);
-				ret.Add("CP1 FGR REG" + i + "_lo", (int)reg_cop1_fgr_64);
-				ret.Add("CP1 FGR REG" + i + "_hi", (int)(reg_cop1_fgr_64 >> 32));
-			}
-
-			return ret;
-		}
-
-		[FeatureNotImplemented]
-		public void SetCpuRegister(string register, int value)
-		{
-			throw new NotImplementedException();
-		}
-
 		private mupen64plusApi.MemoryCallback readcb;
 		private mupen64plusApi.MemoryCallback writecb;
 
@@ -475,79 +408,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			api.setReadCallback(readcb);
 			api.setWriteCallback(writecb);
-		}
-
-		#endregion
-
-		#region Settings
-
-		public N64Settings GetSettings()
-		{
-			return _settings.Clone();
-		}
-
-		public N64SyncSettings GetSyncSettings()
-		{
-			return _syncSettings.Clone();
-		}
-
-		public bool PutSettings(N64Settings o)
-		{
-			_settings = o;
-			return true;
-		}
-
-		public bool PutSyncSettings(N64SyncSettings o)
-		{
-			_syncSettings = o;
-			SetControllerButtons();
-			return true;
-		}
-
-		private void SetControllerButtons()
-		{
-			ControllerDefinition.BoolButtons.Clear();
-			ControllerDefinition.FloatControls.Clear();
-
-			ControllerDefinition.BoolButtons.AddRange(new[]
-			{
-				"Reset",
-				"Power"
-			});
-
-			for (int i = 0; i < 4; i++)
-			{
-				if (_syncSettings.Controllers[i].IsConnected)
-				{
-					ControllerDefinition.BoolButtons.AddRange(new []
-					{
-						"P" + (i + 1) + " A Up",
-						"P" + (i + 1) + " A Down",
-						"P" + (i + 1) + " A Left",
-						"P" + (i + 1) + " A Right",
-						"P" + (i + 1) + " DPad U",
-						"P" + (i + 1) + " DPad D",
-						"P" + (i + 1) + " DPad L",
-						"P" + (i + 1) + " DPad R",
-						"P" + (i + 1) + " Start",
-						"P" + (i + 1) + " Z",
-						"P" + (i + 1) + " B",
-						"P" + (i + 1) + " A",
-						"P" + (i + 1) + " C Up",
-						"P" + (i + 1) + " C Down",
-						"P" + (i + 1) + " C Right",
-						"P" + (i + 1) + " C Left",
-						"P" + (i + 1) + " L",
-						"P" + (i + 1) + " R", 
-					});
-
-					ControllerDefinition.FloatControls.AddRange(new[]
-					{
-						"P" + (i + 1) + " X Axis",
-						"P" + (i + 1) + " Y Axis",
-					});
-				}
-			}
 		}
 
 		#endregion
