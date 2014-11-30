@@ -54,14 +54,12 @@ namespace BizHawk.Client.Common
 			var cap = Settings.Cap;
 
 			int limit = 0;
-			if (!Global.Emulator.IsNull())
-			{
-				_expectedStateSize = Core.SaveStateBinary().Length;
+			
+			_expectedStateSize = Core.SaveStateBinary().Length;
 
-				if (_expectedStateSize > 0)
-				{
-					limit = cap / _expectedStateSize;
-				}
+			if (_expectedStateSize > 0)
+			{
+				limit = cap / _expectedStateSize;
 			}
 
 			States = new SortedList<int, byte[]>(limit);
