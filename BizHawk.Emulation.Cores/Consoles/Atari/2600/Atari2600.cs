@@ -19,8 +19,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	public partial class Atari2600 : IEmulator, IMemoryDomains, IStatable, IDebuggable, IInputPollable, ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
 	{
 		private readonly GameInfo _game;
-		private bool _islag = true;
-		private int _lagcount;
 		private int _frame;
 
 		[CoreConstructor("A26")]
@@ -69,10 +67,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public IController Controller { get; set; }
 
 		public int Frame { get { return _frame; } set { _frame = value; } }
-
-		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
-
-		public bool IsLagFrame { get { return _islag; } }
 
 		public bool DeterministicEmulation { get; set; }
 

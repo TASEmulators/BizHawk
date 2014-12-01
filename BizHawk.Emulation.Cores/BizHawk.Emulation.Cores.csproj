@@ -86,7 +86,7 @@
       <Link>VersionInfo.cs</Link>
     </Compile>
     <Compile Include="Calculator\TI83.IInputPollable.cs">
-        <DependentUpon>TI83.cs</DependentUpon>
+      <DependentUpon>TI83.cs</DependentUpon>
     </Compile>
     <Compile Include="Calculator\TI83.IMemoryDomains.cs">
       <DependentUpon>TI83.cs</DependentUpon>
@@ -162,6 +162,9 @@
     <Compile Include="Consoles\Atari\2600\Atari2600.IDebuggable.cs">
       <DependentUpon>Atari2600.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Atari\2600\Atari2600.IInputPollable.cs">
+      <DependentUpon>Atari2600.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Atari\2600\Atari2600.IMemoryDomains.cs">
       <DependentUpon>Atari2600.cs</DependentUpon>
     </Compile>
@@ -218,6 +221,9 @@
     <Compile Include="Consoles\Atari\7800\Atari7800.cs" />
     <Compile Include="Consoles\Atari\7800\Atari7800.IDebuggable.cs">
       <DependentUpon>Atari7800.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\7800\Atari7800.IInputPollable.cs">
+        <DependentUpon>Atari7800.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Atari\7800\Atari7800.IMemoryDomains.cs">
       <DependentUpon>Atari7800.cs</DependentUpon>
