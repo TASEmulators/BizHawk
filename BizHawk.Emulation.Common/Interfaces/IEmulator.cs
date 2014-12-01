@@ -77,6 +77,4 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		CoreComm CoreComm { get; }
 	}
-
-	public enum DisplayType { NTSC, PAL, DENDY }
 }
