@@ -58,6 +58,7 @@
     <Compile Include="Database\FirmwareDatabase.cs" />
     <Compile Include="Database\GameInfo.cs" />
     <Compile Include="EmulationExceptions.cs" />
+    <Compile Include="Enums.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Interfaces\CoreComms.cs" />
     <Compile Include="Interfaces\IController.cs" />
