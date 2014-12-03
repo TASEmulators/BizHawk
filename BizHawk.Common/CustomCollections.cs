@@ -68,6 +68,12 @@ namespace BizHawk.Common
 			this[key].Add(val);
 		}
 
+		public void Add(K key, L val)
+		{
+			foreach (var v in val)
+				this[key].Add(v);
+		}
+
 		public bool ContainsKey(K key) { return dictionary.ContainsKey(key); }
 
 		IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
