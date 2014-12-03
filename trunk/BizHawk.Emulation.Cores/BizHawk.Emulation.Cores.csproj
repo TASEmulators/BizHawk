@@ -223,7 +223,7 @@
       <DependentUpon>Atari7800.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Atari\7800\Atari7800.IInputPollable.cs">
-        <DependentUpon>Atari7800.cs</DependentUpon>
+      <DependentUpon>Atari7800.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Atari\7800\Atari7800.IMemoryDomains.cs">
       <DependentUpon>Atari7800.cs</DependentUpon>
@@ -548,6 +548,7 @@
     <Compile Include="CPUs\Z80\Registers.cs" />
     <Compile Include="CPUs\Z80\Tables.cs" />
     <Compile Include="CPUs\Z80\Z80A.cs" />
+    <Compile Include="FileID.cs" />
     <Compile Include="LibRetro.cs" />
     <Compile Include="LibRetroEmulator.cs" />
     <Compile Include="Properties\svnrev.cs" />
