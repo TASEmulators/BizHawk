@@ -119,6 +119,7 @@ namespace BizHawk.Client.EmuHawk
 				lvi.Tag = fr;
 				lvi.UseItemStyleForSubItems = false;
 				lvi.ImageIndex = idUnsure;
+				lvi.ToolTipText = null;
 				lvi.SubItems.Add(fr.systemId);
 				lvi.SubItems.Add(fr.firmwareId);
 				lvi.SubItems.Add(fr.descr);
@@ -206,6 +207,7 @@ namespace BizHawk.Client.EmuHawk
 				if (ri == null)
 				{
 					lvi.ImageIndex = idMissing;
+					lvi.ToolTipText = "Missing!";
 				}
 				else
 				{
@@ -221,11 +223,13 @@ namespace BizHawk.Client.EmuHawk
 					if (ri.KnownFirmwareFile == null)
 					{
 						lvi.ImageIndex = idUnsure;
+						lvi.ToolTipText = null;
 						lvi.SubItems[4].Text = "-custom-";
 					}
 					else
 					{
 						lvi.ImageIndex = idOk;
+						lvi.ToolTipText = "Good!";
 						lvi.SubItems[4].Text = ri.KnownFirmwareFile.descr;
 					}
 
@@ -242,8 +246,11 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					//if the user specified a file but its missing, mark it as such
-					if(ri.Missing)
+					if (ri.Missing)
+					{
 						lvi.ImageIndex = idMissing;
+						lvi.ToolTipText = "Missing!";
+					}
 
 					//if the user specified a known firmware file but its for some other firmware, it was probably a mistake. mark it as suspicious
 					if (ri.KnownMismatching)
