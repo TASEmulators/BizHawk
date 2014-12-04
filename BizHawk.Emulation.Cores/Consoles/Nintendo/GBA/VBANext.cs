@@ -282,11 +282,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			readcb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallRead(addr));
 			writecb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallWrite(addr));
 			tracecb = new LibVBANext.TraceCallback((addr, opcode) => CoreComm.Tracer.Put(Trace(addr, opcode)));
+			_inputCallbacks.ActiveChanged += SyncPadCallback;
+		}
+
+		bool _inputcbactive = false;
+		void SyncPadCallback()
+		{
+			bool _inputcbactive_new = InputCallbacks.Any();
+			if (_inputcbactive != _inputcbactive_new)
+			{
+				_inputcbactive = _inputcbactive_new;
+				LibVBANext.SetPadCallback(Core, _inputcbactive ? padcb : null);
+			}
 		}
 
 		void SyncCallbacks()
 		{
-			LibVBANext.SetPadCallback(Core, InputCallbacks.Any() ? padcb : null);
+			//LibVBANext.SetPadCallback(Core, InputCallbacks.Any() ? padcb : null);
 			LibVBANext.SetFetchCallback(Core, CoreComm.MemoryCallbackSystem.HasExecutes ? fetchcb : null);
 			LibVBANext.SetReadCallback(Core, CoreComm.MemoryCallbackSystem.HasReads ? readcb : null);
 			LibVBANext.SetWriteCallback(Core, CoreComm.MemoryCallbackSystem.HasWrites ? writecb : null);
