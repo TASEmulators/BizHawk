@@ -241,6 +241,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			};
 		}
 
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+
+		// TODO: optimize managed to unmanaged using the ActiveChanged event
+		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
+
 		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value)
 		{
@@ -440,7 +445,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			// as this is implemented right now, only P1 and P2 normal controllers work
 
-			CoreComm.InputCallback.Call();
+			InputCallbacks.Call();
 			//Console.WriteLine("{0} {1} {2} {3}", port, device, index, id);
 
 			string key = "P" + (1 + port) + " ";

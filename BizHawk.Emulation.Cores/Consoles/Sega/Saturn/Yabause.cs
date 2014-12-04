@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			ActivateGL();
 			Init(bios);
 
-			InputCallbackH = new LibYabause.InputCallback(() => CoreComm.InputCallback.Call());
+			InputCallbackH = new LibYabause.InputCallback(() => InputCallbacks.Call());
 			LibYabause.libyabause_setinputcallback(InputCallbackH);
 			CoreComm.UsesDriveLed = true;
 
@@ -291,6 +291,11 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		public int Frame { get; private set; }
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
+
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+
+		// TODO: optimize managed to unmanaged using the ActiveChanged event
+		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
 
 		public string SystemId { get { return "SAT"; } }
 		public bool DeterministicEmulation { get { return true; } }

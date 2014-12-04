@@ -36,6 +36,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
 
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+
+		// TODO: optimize managed to unmanaged using the ActiveChanged event
+		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
+
 		// all cycle counts are relative to a 2*1024*1024 mhz refclock
 
 		/// <summary>
@@ -222,7 +227,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		LibGambatte.Buttons ControllerCallback()
 		{
-			CoreComm.InputCallback.Call();
+			InputCallbacks.Call();
 			IsLagFrame = false;
 			return CurrentButtons;
 		}

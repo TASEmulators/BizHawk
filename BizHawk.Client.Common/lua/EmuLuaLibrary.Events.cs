@@ -3,7 +3,8 @@ using System.Linq;
 using System.ComponentModel;
 
 using LuaInterface;
-
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -155,7 +156,27 @@ namespace BizHawk.Client.Common
 		{
 			var nlf = new NamedLuaFunction(luaf, "OnInputPoll", LogOutputCallback, CurrentThread, name);
 			_luaFunctions.Add(nlf);
-			Global.Emulator.CoreComm.InputCallback.Add(nlf.Callback);
+
+			if (Global.Emulator.CanPollInput())
+			{
+				try
+				{
+					(Global.Emulator as IInputPollable).InputCallbacks.Add(nlf.Callback);
+				}
+				catch (NotImplementedException)
+				{
+					LogNotImplemented();
+				}
+			}
+			else
+			{
+				LogNotImplemented();
+			}
+		}
+
+		private void LogNotImplemented()
+		{
+			Log(string.Format("Error: {0} does not yet implement input polling callbacks"));
 		}
 
 		[LuaMethodAttributes(

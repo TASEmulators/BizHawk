@@ -424,7 +424,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public byte ReadControls1(bool peek)
 		{
-			CoreComm.InputCallback.Call();
+			InputCallbacks.Call();
 			byte value = 0xFF;
 
 			if (Controller["P1 Up"]) { value &= 0xEF; }
@@ -443,7 +443,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public byte ReadControls2(bool peek)
 		{
-			CoreComm.InputCallback.Call();
+			InputCallbacks.Call();
 			byte value = 0xFF;
 
 			if (Controller["P2 Up"]) { value &= 0xEF; }

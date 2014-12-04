@@ -78,6 +78,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public int Frame { get { return frame; } set { frame = value; } }
 		public int LagCount { get { return lagCount; } set { lagCount = value; } }
 		public bool IsLagFrame { get { return isLag; } }
+
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
+
 		byte Port01 = 0xFF;
 		byte Port02 = 0xFF;
 		byte Port3E = 0xAF;

@@ -322,9 +322,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
 		public bool IsLagFrame { get { return islag; } }
 
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
+
 		public bool DeterministicEmulation { get { return true; } }
-
-
 
 		public byte[] CloneSaveRam()
 		{

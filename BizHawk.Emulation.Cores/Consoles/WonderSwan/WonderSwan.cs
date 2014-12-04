@@ -175,6 +175,10 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
 
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+
+		// TODO: optimize managed to unmanaged using the ActiveChanged event
+		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
 
 		public string SystemId { get { return "WSWAN"; } }
 		public bool DeterministicEmulation { get; private set; }
@@ -351,7 +355,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		}
 		void ButtonCallback()
 		{
-			CoreComm.InputCallback.Call();
+			InputCallbacks.Call();
 		}
 
 		void InitDebugCallbacks()
@@ -369,7 +373,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				CoreComm.MemoryCallbackSystem.HasWrites ? WriteCallbackD : null,
 				CoreComm.MemoryCallbackSystem.HasExecutes ? ExecCallbackD : null);
 			BizSwan.bizswan_setbuttoncallback(Core,
-				CoreComm.InputCallback.Any() ? ButtonCallbackD : null);
+				InputCallbacks.Any() ? ButtonCallbackD : null);
 		}
 
 		#endregion
