@@ -316,7 +316,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			ret.readcallback = cd_callback_handle = new LibGPGX.cd_read_cb(CDRead);
 
-			var ses = CD.TOC.Sessions[0];
+			var ses = CD.Structure.Sessions[0];
 			int ntrack = ses.Tracks.Count;
 
 			// bet you a dollar this is all wrong
@@ -325,7 +325,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (i < ntrack)
 				{
 					ret.tracks[i].start = ses.Tracks[i].Indexes[1].aba - 150;
-					ret.tracks[i].end = ses.Tracks[i].length_aba + ret.tracks[i].start;
+					ret.tracks[i].end = ses.Tracks[i].LengthInSectors + ret.tracks[i].start;
 					if (i == ntrack - 1)
 					{
 						ret.end = ret.tracks[i].end;

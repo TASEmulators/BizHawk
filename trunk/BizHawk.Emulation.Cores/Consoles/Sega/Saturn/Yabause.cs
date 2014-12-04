@@ -627,7 +627,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		{
 			// this stuff from yabause's cdbase.c.  don't ask me to explain it
 
-			var TOC = CD.ReadTOC();
+			var TOC = CD.ReadStructure();
 			int[] rTOC = new int[102];
 			var ses = TOC.Sessions[0];
 			int ntrk = ses.Tracks.Count;

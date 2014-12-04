@@ -6,6 +6,9 @@ namespace BizHawk.Emulation.DiscSystem
 {
 	partial class Disc
 	{
+		/// <summary>
+		/// TODO - dont we need to modify RiffMaster to be able to stream from the disk instead of loading everything at parse time?
+		/// </summary>
 		class Blob_WaveFile : IBlob
 		{
 			[Serializable]
@@ -19,7 +22,53 @@ namespace BizHawk.Emulation.DiscSystem
 
 			public Blob_WaveFile()
 			{
+			}	private class Blob_RawFile : IBlob
+		{
+			public string PhysicalPath { 
+				get
+				{
+					return physicalPath;
+				}
+				set
+				{
+					physicalPath = value;
+					length = new FileInfo(physicalPath).Length;
+				}
 			}
+			string physicalPath;
+			long length;
+
+			public long Offset = 0;
+
+			BufferedStream fs;
+			public void Dispose()
+			{
+				if (fs != null)
+				{
+					fs.Dispose();
+					fs = null;
+				}
+			}
+			public int Read(long byte_pos, byte[] buffer, int offset, int count)
+			{
+				//use quite a large buffer, because normally we will be reading these sequentially but in small chunks.
+				//this enhances performance considerably
+				const int buffersize = 2352 * 75 * 2;
+				if (fs == null)
+					fs = new BufferedStream(new FileStream(physicalPath, FileMode.Open, FileAccess.Read, FileShare.Read), buffersize);
+				long target = byte_pos + Offset;
+				if(fs.Position != target)
+					fs.Position = target;
+				return fs.Read(buffer, offset, count);
+			}
+			public long Length
+			{
+				get
+				{
+					return length;
+				}
+			}
+		}
 
 			public void Load(byte[] waveData)
 			{

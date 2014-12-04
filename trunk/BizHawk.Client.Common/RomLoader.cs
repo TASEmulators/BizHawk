@@ -203,9 +203,16 @@ namespace BizHawk.Client.Common
 				try
 				{
 					var ext = file.Extension.ToLower();
-					if (ext == ".iso" || ext == ".cue")
+					if (ext == ".iso" || ext == ".cue" || ext == ".ccd")
 					{
-						var disc = ext == ".iso" ? Disc.FromIsoPath(path) : Disc.FromCuePath(path, new CueBinPrefs());
+						Disc disc = null;
+						if(ext == ".iso")
+							disc = Disc.FromIsoPath(path);
+						if(ext == ".cue")
+							disc = Disc.FromCuePath(path, new CueBinPrefs());
+						if (ext == ".ccd")
+							disc = Disc.FromCCDPath(path);
+
 						var hash = disc.GetHash();
 						game = Database.CheckDatabase(hash);
 						if (game == null)

@@ -178,6 +178,10 @@ namespace BizHawk.Client.DiscoHawk
 				dialog.ShowDialog();
 				return;
 			}
+			else
+			{
+				//test stuff...
+			}
 		}
 	}
 
