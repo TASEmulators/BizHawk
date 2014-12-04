@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using System.IO;
 using System.Threading;
 
+using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Client.DiscoHawk
@@ -60,8 +62,10 @@ namespace BizHawk.Client.DiscoHawk
 					Disc disc = null;
 					if (ext == ".ISO")
 						disc = Disc.FromIsoPath(file);
-					else if(ext == ".CUE")
+					else if (ext == ".CUE")
 						disc = Disc.FromCuePath(file, prefs);
+					else if (ext == ".CCD")
+						disc = Disc.FromCCDPath(file);
 					string baseName = Path.GetFileNameWithoutExtension(file);
 					baseName += "_hawked";
 					prefs.ReallyDumpBin = true;
@@ -116,7 +120,8 @@ namespace BizHawk.Client.DiscoHawk
 			if (files == null) return new List<string>();
 			foreach (string str in files)
 			{
-				if (Path.GetExtension(str).ToUpper() != ".CUE" && Path.GetExtension(str).ToUpper() != ".ISO")
+				string ext = Path.GetExtension(str).ToUpper();
+				if(!ext.In(new string[]{".CUE",".ISO",".CCD"}))
 				{
 					return new List<string>();
 				}

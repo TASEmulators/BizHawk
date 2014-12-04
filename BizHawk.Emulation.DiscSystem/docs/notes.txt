@@ -1,9 +1,7 @@
 //lets leave some notes here until we've rewritten every possible thing -- error recovery, ECM file format, ISO filesystem, etc.
 
-//here is a braindump of urls and stuff for future reference
-//check this for some iso stuff but seems like it ripped off corlett's code
-//http://lioneditor.googlecode.com/svn/trunk/utils/isopatcherv05/src/
-//http://code.ohloh.net/file?fid=185llKM04w3QCqwC2MdFgtUiQ94&cid=yPMRq_HKxUg&s=ecc_computeblock%28pSector%20%2B%200xC%2C%2052%2C%2043%2C%2086%2C%2088%2C%20pSector%20%2B%200x8C8%29&mp=1&ml=1&me=1&md=1&browser=Default#L106
+//we used this code
+//https://code.google.com/p/iso-parser/
 
 //more gpl edc/ecc
 //http://code.ohloh.net/file?fid=BEZeY2fWALJKXTgY3Oe9J988ubQ&cid=Xkpw3SKt7K8&s=edc%20ecc%20&pp=0&fl=C&ff=1&filterChecked=true&mp=1&ml=1&me=1&md=1&browser=Default#L13
@@ -33,3 +31,8 @@
 //http://www.cs.utsa.edu/~wagner/laws/FFM.html
 //http://www.cs.cmu.edu/afs/cs.cmu.edu/project/pscico-guyb/realworld/www/reedsolomon/reed_solomon_codes.html
 //http://en.wikipedia.org/wiki/Finite_field_arithmetic
+
+//here is a braindump of urls and stuff for future reference
+//check this for some iso stuff but seems like it ripped off corlett's code
+//http://lioneditor.googlecode.com/svn/trunk/utils/isopatcherv05/src/
+//http://code.ohloh.net/file?fid=185llKM04w3QCqwC2MdFgtUiQ94&cid=yPMRq_HKxUg&s=ecc_computeblock%28pSector%20%2B%200xC%2C%2052%2C%2043%2C%2086%2C%2088%2C%20pSector%20%2B%200x8C8%29&mp=1&ml=1&me=1&md=1&browser=Default#L106

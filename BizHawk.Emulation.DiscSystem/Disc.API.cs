@@ -63,6 +63,44 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 	}
 
+	
+	/// <summary>
+	/// Simplifies access to the subcode data in a disc
+	/// </summary>
+	public class SubcodeReader
+	{
+		public SubcodeReader(Disc disc)
+		{
+			this.disc = disc;
+		}
+
+		public void ReadLBA_SubchannelQ(int lba, ref SubchannelQ sq)
+		{
+			var se = disc.ReadLBA_SectorEntry(lba);
+			se.SubcodeSector.ReadSubcodeChannel(1, buffer, 0);
+			int offset = 0;
+
+			sq.q_status = buffer[offset + 0];
+			sq.q_tno = buffer[offset + 1];
+			sq.q_index = buffer[offset + 2];
+			sq.min.BCDValue = buffer[offset + 3];
+			sq.sec.BCDValue = buffer[offset + 4];
+			sq.frame.BCDValue = buffer[offset + 5];
+			//nothing in byte[6]
+			sq.ap_min.BCDValue = buffer[offset + 7];
+			sq.ap_sec.BCDValue = buffer[offset + 8];
+			sq.ap_frame.BCDValue = buffer[offset + 9];
+			
+			//CRC is stored inverted and big endian.. so... do the opposite
+			byte hibyte = (byte)(~buffer[offset + 10]);
+			byte lobyte = (byte)(~buffer[offset + 11]);
+			sq.q_crc = (ushort)((hibyte << 8) | lobyte);
+		}
+
+		Disc disc;
+		byte[] buffer = new byte[96];
+	}
+
 	/// <summary>
 	/// Allows you to stream data off a disc
 	/// </summary>
@@ -140,8 +178,7 @@ namespace BizHawk.Emulation.DiscSystem
 	sealed public partial class Disc
 	{
 		/// <summary>
-		/// Main API to read a 2352-byte sector from a disc.
-		/// This starts after the mandatory pregap of 2 seconds (but what happens if there is more more?).
+		/// Main API to read a 2352-byte sector from a disc, identified by LBA.
 		/// </summary>
 		public void ReadLBA_2352(int lba, byte[] buffer, int offset)
 		{
@@ -149,26 +186,31 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		/// <summary>
-		/// Main API to read a 2048-byte sector from a disc.
-		/// This starts after the mandatory pregap of 2 seconds (but what happens if there is more more?).
+		/// Main API to read a 2048-byte sector from a disc, identified by LBA.
 		/// </summary>
 		public void ReadLBA_2048(int lba, byte[] buffer, int offset)
 		{
 			ReadABA_2048(lba + 150, buffer, offset);
 		}
 
+		/// <summary>
+		/// Main API to read a 2352-byte sector from a disc, identified by ABA
+		/// </summary>
 		public void ReadABA_2352(int aba, byte[] buffer, int offset)
 		{
 			Sectors[aba].Sector.Read_2352(buffer, offset);
 		}
 
+		/// <summary>
+		/// Main API to read a 2048-byte sector from a disc, identified by ABA
+		/// </summary>
 		public void ReadABA_2048(int aba, byte[] buffer, int offset)
 		{
 			Sectors[aba].Sector.Read_2048(buffer, offset);
 		}
 
 		/// <summary>
-		/// reads logical data from a flat disc address space
+		/// reads logical data from a flat (logical) disc address space. disc_offset=0 represents LBA=0.
 		/// useful for plucking data from a known location on the disc
 		/// </summary>
 		public void ReadLBA_2352_Flat(long disc_offset, byte[] buffer, int offset, int length)
@@ -180,7 +222,7 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		/// <summary>
-		/// reads logical data from a flat disc address space
+		/// reads logical data from a flat (absolute) disc address space. disc_offset=0 represents LBA=0.
 		/// useful for plucking data from a known location on the disc
 		/// </summary>
 		public void ReadLBA_2048_Flat(long disc_offset, byte[] buffer, int offset, int length)
@@ -191,7 +233,7 @@ namespace BizHawk.Emulation.DiscSystem
 			READLBA_Flat_Implementation(disc_offset, buffer, offset, length, (a, b, c) => ReadLBA_2048(a, b, c), secsize, lba_buf, ref sectorHint);
 		}
 
-		public void READLBA_Flat_Implementation(long disc_offset, byte[] buffer, int offset, int length, Action<int, byte[], int> sectorReader, int sectorSize, byte[] sectorBuf, ref int sectorBufferHint)
+		internal void READLBA_Flat_Implementation(long disc_offset, byte[] buffer, int offset, int length, Action<int, byte[], int> sectorReader, int sectorSize, byte[] sectorBuf, ref int sectorBufferHint)
 		{
 			//hint is the sector number which is already read. to avoid repeatedly reading the sector from the disc in case of several small reads, so that sectorBuf can be used as a sector cache
 			while (length > 0)
@@ -221,25 +263,6 @@ namespace BizHawk.Emulation.DiscSystem
 			return Sectors[lba + 150];
 		}
 
-		/// <summary>
-		/// Reads the specified LBA's subcode (96 bytes) deinterleaved into the provided buffer.
-		/// P is first 12 bytes, followed by 12 Q bytes, etc.
-		/// I'm not sure what format scsi commands generally return it in. 
-		/// It could be this, or RAW (interleaved) which I could also supply when we need it
-		/// </summary>
-		public void ReadLBA_Subcode_Deinterleaved(int lba, byte[] buffer, int offset)
-		{
-			Array.Clear(buffer, offset, 96);
-			Sectors[lba + 150].Read_SubchannelQ(buffer, offset + 12);
-		}
-
-		/// <summary>
-		/// Reads the specified LBA's subchannel Q (12 bytes) into the provided buffer
-		/// </summary>
-		public void ReadLBA_Subchannel_Q(int lba, byte[] buffer, int offset)
-		{
-			Sectors[lba + 150].Read_SubchannelQ(buffer, offset);
-		}
 
 		/// <summary>
 		/// Main API to determine how many LBAs are available on the disc.
@@ -260,11 +283,13 @@ namespace BizHawk.Emulation.DiscSystem
 		public bool WasSlowLoad { get; private set; }
 
 		/// <summary>
-		/// main api for reading the TOC from a disc
+		/// main api for reading the structure from a disc.
+		/// TODO - this is weak sauce. Why this one method to read something which is nothing but returning a structure? Lame.
+		/// Either get rid of this, or rethink the disc API wrapper concept
 		/// </summary>
-		public DiscTOC ReadTOC()
+		public DiscStructure ReadStructure()
 		{
-			return TOC;
+			return Structure;
 		}
 
 		// converts LBA to minute:second:frame format.
@@ -285,16 +310,17 @@ namespace BizHawk.Emulation.DiscSystem
 
 		// gets an identifying hash. hashes the first 512 sectors of 
 		// the first data track on the disc.
+		//TODO - this is a very platform-specific thing. hashing the TOC may be faster and be just as effective. so, rename it appropriately
 		public string GetHash()
 		{
 			byte[] buffer = new byte[512 * 2352];
-			foreach (var track in TOC.Sessions[0].Tracks)
+			foreach (var track in Structure.Sessions[0].Tracks)
 			{
 				if (track.TrackType == ETrackType.Audio)
 					continue;
 
-				int lba_len = Math.Min(track.length_aba, 512);
-				for (int s = 0; s < 512 && s < track.length_aba; s++)
+				int lba_len = Math.Min(track.LengthInSectors, 512);
+				for (int s = 0; s < 512 && s < track.LengthInSectors; s++)
 					ReadABA_2352(track.Indexes[1].aba + s, buffer, s * 2352);
 
 				return buffer.HashMD5(0, lba_len * 2352);
