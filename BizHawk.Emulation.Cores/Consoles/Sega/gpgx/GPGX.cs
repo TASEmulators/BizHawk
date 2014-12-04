@@ -381,8 +381,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 
-		// TODO: optimize managed to unmanaged using the ActiveChanged event
-		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
+		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
 
 		#endregion
 
