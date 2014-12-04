@@ -37,9 +37,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public bool IsLagFrame { get; private set; }
 
 		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
-
-		// TODO: optimize managed to unmanaged using the ActiveChanged event
-		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
+		// low priority TODO: due to certain aspects of the core implementation,
+		// we don't smartly use the ActiveChanged event here.
+		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
 
 		// all cycle counts are relative to a 2*1024*1024 mhz refclock
 

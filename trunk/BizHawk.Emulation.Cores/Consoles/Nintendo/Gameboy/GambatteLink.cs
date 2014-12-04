@@ -78,18 +78,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			blip_right.SetRates(2097152 * 2, 44100);
 
 			SetMemoryDomains();
-
-			foreach (var callback in InputCallbacks)
-			{
-				L.InputCallbacks.Add(callback);
-				R.InputCallbacks.Add(callback);
-			}
 		}
 
-		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
-
-		// TODO: optimize managed to unmanaged using the ActiveChanged event
-		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
+		// TODO: how to best work this under the new system?  IInputCallbackSystem is far too unwieldly to actually implement
+		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { throw new NotImplementedException(); } }
 
 		public IVideoProvider VideoProvider { get { return this; } }
 		public ISoundProvider SoundProvider { get { return null; } }
