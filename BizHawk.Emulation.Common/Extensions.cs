@@ -41,9 +41,9 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 		public static bool IsImplemented(this MethodInfo info)
 		{
 			// If a method is marked as Not implemented, it is not implemented no matter what the body is
-			if (info.GetCustomAttributes(false).OfType<FeatureNotImplemented>().Any())
+			if (info.GetCustomAttributes(false).Any(a => a is FeatureNotImplemented))
 			{
-				return true;
+				return false;
 			}
 
 			// If a method is not marked but all it does is throw an exception, consider it not implemented
@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool IsImplemented(this PropertyInfo info)
 		{
-			return !info.GetCustomAttributes(false).OfType<FeatureNotImplemented>().Any();
+			return !info.GetCustomAttributes(false).Any(a => a is FeatureNotImplemented);
 		}
 	}
 }
