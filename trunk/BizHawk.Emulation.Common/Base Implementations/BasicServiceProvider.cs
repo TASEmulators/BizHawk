@@ -40,8 +40,6 @@ namespace BizHawk.Emulation.Common
 					//Services.Add(service, core);
 				}
 			}
-
-			int zzz = 0;
 		}
 
 		public IEmulatorService GetService<T>()
