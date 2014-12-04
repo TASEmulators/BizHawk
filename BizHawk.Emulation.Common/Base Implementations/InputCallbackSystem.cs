@@ -40,10 +40,12 @@ namespace BizHawk.Emulation.Common
 		public new bool Remove(Action item)
 		{
 			var hadAny = this.Any();
-			return base.Remove(item);
+			var result = base.Remove(item);
 			var hasAny = this.Any();
 
 			Changes(hadAny, hasAny);
+
+			return result;
 		}
 
 		// TODO: these just happen to be all the add/remove methods the client uses, to be thorough the others should be overriden as well
