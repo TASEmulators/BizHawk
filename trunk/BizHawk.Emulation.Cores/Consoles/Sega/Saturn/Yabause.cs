@@ -56,6 +56,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 		public Yabause(CoreComm CoreComm, DiscSystem.Disc CD, object SyncSettings)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			byte[] bios = CoreComm.CoreFileProvider.GetFirmware("SAT", "J", true, "Saturn BIOS is required.");
 			CoreComm.RomStatusDetails = string.Format("Disk partial hash:{0}", CD.GetHash());
 			this.CoreComm = CoreComm;
@@ -80,6 +81,8 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 			DeactivateGL();
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		static object glContext;
 

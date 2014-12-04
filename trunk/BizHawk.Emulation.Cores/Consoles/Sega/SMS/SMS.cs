@@ -96,6 +96,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		[CoreConstructor("SMS", "SG", "GG")]
 		public SMS(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			Settings = (SMSSettings)settings ?? new SMSSettings();
 			SyncSettings = (SMSSyncSettings)syncSettings ?? new SMSSyncSettings();
 			CoreComm = comm;
@@ -209,6 +210,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			SetupMemoryDomains();
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		string DetermineRegion(string gameRegion)
 		{

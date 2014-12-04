@@ -26,6 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		[CoreConstructor("NES")]
 		public NES(CoreComm comm, GameInfo game, byte[] rom, object Settings, object SyncSettings)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			byte[] fdsbios = comm.CoreFileProvider.GetFirmware("NES", "Bios_FDS", false);
 			if (fdsbios != null && fdsbios.Length == 40976)
 			{
@@ -49,6 +50,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			PutSettings((NESSettings)Settings ?? new NESSettings());
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		private NES()
 		{

@@ -138,6 +138,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		[CoreConstructor("GB", "GBC")]
 		public Gameboy(CoreComm comm, GameInfo game, byte[] file, object Settings, object SyncSettings, bool deterministic)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
 
 			comm.VsyncNum = 262144;
@@ -215,6 +216,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				throw;
 			}
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		#region controller
 

@@ -67,6 +67,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 
 		public PSP(CoreComm comm, string isopath)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			if (attachedcore != null)
 			{
 				attachedcore.Dispose();
@@ -89,6 +90,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 
 			attachedcore = this;
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		public void Dispose()
 		{

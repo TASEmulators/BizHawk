@@ -44,6 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom, object Settings, object SyncSettings, bool deterministic)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			GambatteLinkSettings _Settings = (GambatteLinkSettings)Settings ?? new GambatteLinkSettings();
 			GambatteLinkSyncSettings _SyncSettings = (GambatteLinkSyncSettings)SyncSettings ?? new GambatteLinkSyncSettings();
 
@@ -81,6 +82,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			SetMemoryDomains();
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		private InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }

@@ -88,6 +88,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 
 		public Genesis(CoreComm comm, GameInfo game, byte[] rom)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
 			MainCPU = new MC68000();
 			SoundCPU = new Z80A();
@@ -146,6 +147,8 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 #endif
 			InitializeCartHardware(game);
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		void InitializeCartHardware(GameInfo game)
 		{

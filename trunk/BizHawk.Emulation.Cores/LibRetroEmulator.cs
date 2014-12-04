@@ -133,6 +133,8 @@ namespace BizHawk.Emulation.Cores
 
 		public LibRetroEmulator(CoreComm nextComm, string modulename)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
+
 			retro_environment_cb = new LibRetro.retro_environment_t(retro_environment);
 			retro_video_refresh_cb = new LibRetro.retro_video_refresh_t(retro_video_refresh);
 			retro_audio_sample_cb = new LibRetro.retro_audio_sample_t(retro_audio_sample);
@@ -167,6 +169,8 @@ namespace BizHawk.Emulation.Cores
 				throw;
 			}
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		public bool Load(byte[] data)
 		{

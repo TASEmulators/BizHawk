@@ -35,6 +35,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		[CoreConstructor("Coleco")]
 		public ColecoVision(CoreComm comm, GameInfo game, byte[] rom, object SyncSettings)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
 			this.SyncSettings = (ColecoSyncSettings)SyncSettings ?? new ColecoSyncSettings();
 			bool skipbios = this.SyncSettings.SkipBiosIntro;
@@ -59,6 +60,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			this.game = game;
 			SetupMemoryDomains();
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }

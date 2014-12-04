@@ -50,6 +50,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		[CoreConstructor("N64")]
 		public N64(CoreComm comm, GameInfo game, byte[] file, object settings, object syncSettings)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
+
 			int SaveType = 0;
 			if (game.OptionValue("SaveType") == "EEPROM_16K")
 			{
@@ -136,6 +138,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			api.AsyncExecuteEmulator();
 			SetControllerButtons();
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		public bool UsingExpansionSlot
 		{

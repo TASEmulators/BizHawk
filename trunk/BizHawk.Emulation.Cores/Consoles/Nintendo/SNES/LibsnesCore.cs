@@ -34,6 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	{
 		public LibsnesCore(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData, CoreComm comm, object Settings, object SyncSettings)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			_game = game;
 			CoreComm = comm;
 			byte[] sgbRomData = null;
@@ -164,6 +165,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				savestatebuff = ms.ToArray();
 			}
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		private GameInfo _game;
 

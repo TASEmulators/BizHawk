@@ -68,6 +68,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		[CoreConstructor("PCE", "SGX")]
 		public PCEngine(CoreComm comm, GameInfo game, byte[] rom, object Settings, object syncSettings)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
 			CoreComm.CpuTraceAvailable = true;
 
@@ -87,6 +88,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			Init(game, rom);
 			SetControllerButtons();
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		public string BoardName { get { return null; } }
 

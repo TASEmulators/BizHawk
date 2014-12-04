@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool HasSavestates(this IEmulator core)
 		{
-			return core is IStatable;
+			return core != null && core.ServiceProvider.HasService<IStatable>();
 		}
 
 		public static bool CanPollInput(this IEmulator core)
