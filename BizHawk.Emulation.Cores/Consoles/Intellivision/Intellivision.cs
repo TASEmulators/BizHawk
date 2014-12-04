@@ -58,6 +58,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		[CoreConstructor("INTV")]
 		public Intellivision(CoreComm comm, GameInfo game, byte[] rom)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
 
 			Rom = rom;
@@ -90,6 +91,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			LoadExecutiveRom(CoreComm.CoreFileProvider.GetFirmwarePath("INTV", "EROM", true, "Executive ROM is required."));
 			LoadGraphicsRom(CoreComm.CoreFileProvider.GetFirmwarePath("INTV", "GROM", true, "Graphics ROM is required."));
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{

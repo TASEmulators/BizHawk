@@ -49,6 +49,7 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Base Implementations\BasicServiceProvider.cs" />
     <Compile Include="Base Implementations\ControllerDefinition.cs" />
     <Compile Include="Base Implementations\InputCallbackSystem.cs" />
     <Compile Include="Base Implementations\NullController.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Interfaces\IInputPollable.cs" />
     <Compile Include="Interfaces\IMemoryDomains.cs" />
     <Compile Include="Interfaces\ISaveRam.cs" />
+    <Compile Include="Interfaces\IEmulatorServiceProvider.cs" />
     <Compile Include="Interfaces\ISettable.cs" />
     <Compile Include="Interfaces\ISoundProvider.cs" />
     <Compile Include="Interfaces\IStatable.cs" />

@@ -77,6 +77,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		// framework
 		public C64(CoreComm comm, GameInfo game, byte[] rom, string romextension)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			inputFileInfo = new InputFileInfo();
 			inputFileInfo.Data = rom;
 			inputFileInfo.Extension = romextension;
@@ -87,6 +88,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			SetupMemoryDomains();
 			HardReset();
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		public void Dispose()
 		{

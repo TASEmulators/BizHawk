@@ -31,6 +31,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				TIATables.PALPalette[i] |= unchecked((int)0xff000000);
 		}
 
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+
 		public byte[] rom;
 		public byte[] hsbios;
 		public byte[] bios;
@@ -122,6 +124,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 
 		public Atari7800(CoreComm comm, GameInfo game, byte[] rom, string GameDBfn)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			InputCallbacks = new InputCallbackSystem();
 			CoreComm = comm;
 			byte[] highscoreBIOS = comm.CoreFileProvider.GetFirmware("A78", "Bios_HSC", false, "Some functions may not work without the high score BIOS.");

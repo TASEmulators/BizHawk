@@ -8,6 +8,19 @@ namespace BizHawk.Emulation.Common
 	[CoreAttributes("NullHawk", "")]
 	public class NullEmulator : IEmulator, IVideoProvider, ISyncSoundProvider, ISoundProvider
 	{
+		public NullEmulator(CoreComm comm)
+		{
+			ServiceProvider = new BasicServiceProvider(this);
+			CoreComm = comm;
+
+			var d = DateTime.Now;
+			xmas = d.Month == 12 && d.Day >= 17 && d.Day <= 27;
+			if (xmas)
+				pleg = new Pleg();
+		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+
 		public string SystemId { get { return "NULL"; } }
 		public static readonly ControllerDefinition NullController = new ControllerDefinition { Name = "Null Controller" };
 
@@ -23,19 +36,9 @@ namespace BizHawk.Emulation.Common
 		public bool StartAsyncSound() { return true; }
 		public void EndAsyncSound() { }
 
-		public NullEmulator(CoreComm comm)
-		{
-			CoreComm = comm;
-
-			var d = DateTime.Now;
-			xmas = d.Month == 12 && d.Day >= 17 && d.Day <= 27;
-			if (xmas)
-				pleg = new Pleg();
-		}
 		public void ResetCounters()
 		{
 			Frame = 0;
-			// no lag frames on this stub core
 		}
 
 		public void FrameAdvance(bool render, bool rendersound)

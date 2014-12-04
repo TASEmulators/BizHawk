@@ -33,8 +33,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			if (!LibSnes9x.debug_init(rom, rom.Length))
 				throw new Exception();
 
+			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{

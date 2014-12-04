@@ -89,6 +89,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		[CoreConstructor("WSWAN")]
 		public WonderSwan(CoreComm comm, byte[] file, bool deterministic, object Settings, object SyncSettings)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
 			_Settings = (Settings)Settings ?? new Settings();
 			_SyncSettings = (SyncSettings)SyncSettings ?? new SyncSettings();
@@ -128,6 +129,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				throw;
 			}
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		public void Dispose()
 		{

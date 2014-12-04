@@ -22,6 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		[CoreConstructor("GBA")]
 		public VBANext(byte[] file, CoreComm comm, GameInfo game, bool deterministic, object syncsettings)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
 			byte[] biosfile = CoreComm.CoreFileProvider.GetFirmware("GBA", "Bios", true, "GBA bios file is mandatory.");
 			if (file.Length > 32 * 1024 * 1024)
@@ -89,6 +90,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				throw;
 			}
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{

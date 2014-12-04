@@ -60,6 +60,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public GPGX(CoreComm comm, byte[] rom, DiscSystem.Disc CD, object Settings, object SyncSettings)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
+
 			// this can influence some things internally
 			string romextension = "GEN";
 
@@ -175,6 +177,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				throw;
 			}
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		/// <summary>
 		/// core callback for file loading

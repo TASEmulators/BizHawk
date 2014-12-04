@@ -20,6 +20,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		[CoreConstructor("Lynx")]
 		public Lynx(byte[] file, GameInfo game, CoreComm comm)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
 
 			byte[] bios = CoreComm.CoreFileProvider.GetFirmware("Lynx", "Boot", true, "Boot rom is required");
@@ -121,6 +122,8 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 				throw;
 			}
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{

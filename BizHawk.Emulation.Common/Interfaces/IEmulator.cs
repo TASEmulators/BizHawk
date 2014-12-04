@@ -7,6 +7,14 @@ namespace BizHawk.Emulation.Common
 	public interface IEmulator : IEmulatorService, IDisposable
 	{
 		/// <summary>
+		/// Retrieves an IEmulatorService from the core, 
+		/// if the core does not have the type specified, it will return null
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		IEmulatorServiceProvider ServiceProvider { get; }
+
+		/// <summary>
 		/// Video provider to the client
 		/// </summary>
 		IVideoProvider VideoProvider { get; }

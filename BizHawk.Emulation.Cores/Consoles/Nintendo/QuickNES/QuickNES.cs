@@ -66,6 +66,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		{
 			using (FP.Save())
 			{
+				ServiceProvider = new BasicServiceProvider(this);
 				CoreComm = comm;
 
 				Context = LibQuickNES.qn_new();
@@ -101,6 +102,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				}
 			}
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		#region Controller
 

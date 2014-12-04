@@ -52,6 +52,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 		[CoreConstructor("TI83")]
 		public TI83(CoreComm comm, GameInfo game, byte[] rom, object Settings)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			InputCallbacks = new InputCallbackSystem();
 			PutSettings((TI83Settings)Settings ?? new TI83Settings());
 
@@ -76,6 +77,8 @@ namespace BizHawk.Emulation.Cores.Calculators
 			HardReset();
 			SetupMemoryDomains();
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		//-------
 

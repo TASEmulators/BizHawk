@@ -61,11 +61,14 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public Octoshock(CoreComm comm)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			var domains = new List<MemoryDomain>();
 			CoreComm = comm;
 			VirtualWidth = BufferWidth = 256;
 			BufferHeight = 192;
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		void Attach()
 		{

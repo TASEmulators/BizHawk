@@ -47,6 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		[CoreConstructor("GBA")]
 		public GBA(CoreComm comm, byte[] file)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
 			comm.VsyncNum = 262144;
 			comm.VsyncDen = 4389;
@@ -68,6 +69,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			SetUpMemoryDomains();
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
