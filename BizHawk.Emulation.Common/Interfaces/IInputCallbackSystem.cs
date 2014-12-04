@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace BizHawk.Emulation.Common
 {
 	// TODO: This isn't a CoreService, it is a sub class of a core service, it would be nice to make that clear
-	public interface IInputCallbackSystem : IList<Action>
+	public interface IInputCallbackSystem : ICollection<Action>
 	{
 		/// <summary>
 		/// Will iterate and call every callback

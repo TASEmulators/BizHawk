@@ -36,10 +36,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
 
-		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		private InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 		// low priority TODO: due to certain aspects of the core implementation,
 		// we don't smartly use the ActiveChanged event here.
 		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
+
+		/// <summary>
+		/// for use in dual core
+		/// </summary>
+		/// <param name="ics"></param>
+		public void ConnectInputCallbackSystem(InputCallbackSystem ics)
+		{
+			_inputCallbacks = ics;
+		}
 
 		// all cycle counts are relative to a 2*1024*1024 mhz refclock
 

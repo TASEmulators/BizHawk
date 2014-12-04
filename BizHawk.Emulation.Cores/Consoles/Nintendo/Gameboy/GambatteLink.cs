@@ -57,6 +57,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			L.Controller = LCont;
 			R.Controller = RCont;
+			L.ConnectInputCallbackSystem(_inputCallbacks);
+			R.ConnectInputCallbackSystem(_inputCallbacks);
 
 			comm.VsyncNum = L.CoreComm.VsyncNum;
 			comm.VsyncDen = L.CoreComm.VsyncDen;
@@ -80,8 +82,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			SetMemoryDomains();
 		}
 
-		// TODO: how to best work this under the new system?  IInputCallbackSystem is far too unwieldly to actually implement
-		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { throw new NotImplementedException(); } }
+		private InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
 
 		public IVideoProvider VideoProvider { get { return this; } }
 		public ISoundProvider SoundProvider { get { return null; } }
