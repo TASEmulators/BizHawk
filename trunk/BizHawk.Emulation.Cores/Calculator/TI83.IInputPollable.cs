@@ -14,6 +14,8 @@ namespace BizHawk.Emulation.Cores.Calculators
 			set { _lagCount = value; }
 		}
 
+		public IInputCallbackSystem InputCallbacks { get; private set; }
+
 		public bool IsLagFrame
 		{
 			get { return _isLag; }

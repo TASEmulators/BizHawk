@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 
 		void ReadController(ref byte data)
 		{
-			CoreComm.InputCallback.Call();
+			InputCallbacks.Call();
 			data &= 0xC0;
 			if ((data & 0x40) != 0) // TH high
 			{

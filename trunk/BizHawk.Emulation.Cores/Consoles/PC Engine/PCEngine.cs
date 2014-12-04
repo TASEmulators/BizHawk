@@ -295,6 +295,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public int LagCount { get { return lagCount; } set { lagCount = value; } }
 		public bool IsLagFrame { get { return isLag; } }
 
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
+
 		public void ResetCounters()
 		{
 			// this should just be a public setter instead of a new method.

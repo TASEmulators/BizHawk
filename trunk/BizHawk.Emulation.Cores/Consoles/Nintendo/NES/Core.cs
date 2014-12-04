@@ -420,7 +420,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		byte read_joyport(int addr)
 		{
-			CoreComm.InputCallback.Call();
+			InputCallbacks.Call();
 			lagged = false;
 				byte ret = addr == 0x4016 ? ControllerDeck.ReadA(Controller) : ControllerDeck.ReadB(Controller);
 				ret &= 0x1f;

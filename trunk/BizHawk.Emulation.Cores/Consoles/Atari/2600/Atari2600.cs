@@ -24,6 +24,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		[CoreConstructor("A26")]
 		public Atari2600(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
+			InputCallbacks = new InputCallbackSystem();
 			Ram = new byte[128];
 			CoreComm = comm;
 			Settings = (A2600Settings)settings ?? new A2600Settings();
@@ -137,7 +138,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			// give the emu a minimal of input\output connections so it doesn't crash
 			var comm = new CoreComm(null, null);
-			comm.InputCallback = new InputCallbackSystem();
+
 			using (Atari2600 emu = new Atari2600(new CoreComm(null, null), newgame, rom, null, null))
 			{
 				emu.Controller = new NullController();

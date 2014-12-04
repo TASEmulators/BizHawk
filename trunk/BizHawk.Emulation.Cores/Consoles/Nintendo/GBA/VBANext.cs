@@ -109,6 +109,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
 
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+
+		// TODO: optimize managed to unmanaged using the ActiveChanged event
+		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
+
 		public string SystemId { get { return "GBA"; } }
 
 		public bool DeterministicEmulation { get; private set; }
@@ -272,7 +277,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		void InitCallbacks()
 		{
-			padcb = new LibVBANext.StandardCallback(() => CoreComm.InputCallback.Call());
+			padcb = new LibVBANext.StandardCallback(() => InputCallbacks.Call());
 			fetchcb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallExecute(addr));
 			readcb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallRead(addr));
 			writecb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallWrite(addr));
@@ -281,7 +286,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		void SyncCallbacks()
 		{
-			LibVBANext.SetPadCallback(Core, CoreComm.InputCallback.Any() ? padcb : null);
+			LibVBANext.SetPadCallback(Core, InputCallbacks.Any() ? padcb : null);
 			LibVBANext.SetFetchCallback(Core, CoreComm.MemoryCallbackSystem.HasExecutes ? fetchcb : null);
 			LibVBANext.SetReadCallback(Core, CoreComm.MemoryCallbackSystem.HasReads ? readcb : null);
 			LibVBANext.SetWriteCallback(Core, CoreComm.MemoryCallbackSystem.HasWrites ? writecb : null);

@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			// Order is important because the register with the mupen core
 			_videoProvider = new N64VideoProvider(api, videosettings);
 			_audioProvider = new N64Audio(api);
-			_inputProvider = new N64Input(api, comm, this._syncSettings.Controllers);
+			_inputProvider = new N64Input(this as IInputPollable, api, comm, this._syncSettings.Controllers);
 
 
 			string rsp = _syncSettings.Rsp == N64SyncSettings.RspType.Rsp_Hle ?
@@ -409,6 +409,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			api.setReadCallback(readcb);
 			api.setWriteCallback(writecb);
 		}
+
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+
+		// TODO: optimize managed to unmanaged using the ActiveChanged event
+		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
 
 		#endregion
 	}

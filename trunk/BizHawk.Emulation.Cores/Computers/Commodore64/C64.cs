@@ -186,6 +186,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public bool BinarySaveStatesPreferred { get { return false; } }
 
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
+
 		private void SetupMemoryDomains()
 		{
 			// chips must be initialized before this code runs!

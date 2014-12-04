@@ -79,9 +79,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			SetMemoryDomains();
 
-			L.CoreComm.InputCallback = CoreComm.InputCallback;
-			R.CoreComm.InputCallback = CoreComm.InputCallback;
+			foreach (var callback in InputCallbacks)
+			{
+				L.InputCallbacks.Add(callback);
+				R.InputCallbacks.Add(callback);
+			}
 		}
+
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+
+		// TODO: optimize managed to unmanaged using the ActiveChanged event
+		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
 
 		public IVideoProvider VideoProvider { get { return this; } }
 		public ISoundProvider SoundProvider { get { return null; } }

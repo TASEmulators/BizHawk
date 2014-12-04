@@ -139,6 +139,14 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
 
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+
+		// TODO: optimize managed to unmanaged using the ActiveChanged event
+		public IInputCallbackSystem InputCallbacks
+		{
+			[FeatureNotImplemented]get { return _inputCallbacks; }
+		}
+
 		public string SystemId { get { return "Lynx"; } }
 
 		public bool DeterministicEmulation { get { return true; } }

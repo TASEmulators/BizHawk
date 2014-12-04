@@ -14,11 +14,6 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public TraceBuffer Tracer = new TraceBuffer();
 
-		/// <summary>
-		/// for emu.on_snoop()
-		/// </summary>
-		public InputCallbackSystem InputCallback = new InputCallbackSystem();
-
 		public MemoryCallbackSystem MemoryCallbackSystem = new MemoryCallbackSystem();
 
 		public double VsyncRate
@@ -119,25 +114,6 @@ namespace BizHawk.Emulation.Common
 
 		private readonly StringBuilder buffer;
 		private bool logging;
-	}
-
-	public class InputCallbackSystem : List<Action>
-	{
-		public void Call()
-		{
-			foreach (var action in this)
-			{
-				action();
-			}
-		}
-
-		public void RemoveAll(IEnumerable<Action> actions)
-		{
-			foreach (var action in actions)
-			{
-				this.Remove(action);
-			}
-		}
 	}
 
 	public class MemoryCallbackSystem

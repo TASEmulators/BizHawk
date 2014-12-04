@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		byte ReadControls1()
 		{
-			CoreComm.InputCallback.Call();
+			InputCallbacks.Call();
 			lagged = false;
 			byte value = 0xFF;
 
@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		byte ReadControls2()
 		{
-			CoreComm.InputCallback.Call();
+			InputCallbacks.Call();
 			lagged = false;
 			byte value = 0xFF;
 

@@ -87,6 +87,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public int Frame { get; private set; }
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
+
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+
+		// TODO: optimize managed to unmanaged using the ActiveChanged event
+		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
+
 		public string SystemId { get { return "GBA"; } }
 		public bool DeterministicEmulation { get { return true; } }
 
@@ -309,7 +315,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		LibMeteor.Buttons GetInput()
 		{
-			CoreComm.InputCallback.Call();
+			InputCallbacks.Call();
 			// libmeteor bitflips everything itself, so 0 == off, 1 == on
 			IsLagFrame = false;
 			LibMeteor.Buttons ret = 0;

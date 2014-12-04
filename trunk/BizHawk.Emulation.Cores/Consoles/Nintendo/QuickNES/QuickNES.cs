@@ -392,6 +392,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		#endregion
 
+		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { throw new NotImplementedException(); } }
+
 		#region bootgod
 
 		public RomStatus? BootGodStatus { get; private set; }

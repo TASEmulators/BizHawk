@@ -52,6 +52,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 		[CoreConstructor("TI83")]
 		public TI83(CoreComm comm, GameInfo game, byte[] rom, object Settings)
 		{
+			InputCallbacks = new InputCallbackSystem();
 			PutSettings((TI83Settings)Settings ?? new TI83Settings());
 
 			CoreComm = comm;
@@ -186,7 +187,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		private byte ReadKeyboard()
 		{
-			CoreComm.InputCallback.Call();
+			InputCallbacks.Call();
 			//ref TI-9X
 
 			int ret = 0xFF;

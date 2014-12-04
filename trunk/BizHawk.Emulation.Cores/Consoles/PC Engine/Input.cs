@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		byte ReadInput()
 		{
-			CoreComm.InputCallback.Call();
+			InputCallbacks.Call();
 			byte value = 0x3F;
 
 			int player = SelectedController + 1;

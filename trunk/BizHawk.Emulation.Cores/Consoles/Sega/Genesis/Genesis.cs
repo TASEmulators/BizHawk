@@ -45,6 +45,9 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 
 		private SoundMixer SoundMixer;
 
+		[FeatureNotImplemented]
+		public IInputCallbackSystem InputCallbacks { get { throw new NotImplementedException(); } }
+
 		public void ResetCounters()
 		{
 			Frame = 0;
