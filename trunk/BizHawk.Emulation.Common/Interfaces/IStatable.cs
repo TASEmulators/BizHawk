@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Common
 	/// <summary>
 	/// Savestate handling methods
 	/// </summary>
-	public interface IStatable : ICoreService, IEmulator
+	public interface IStatable : IEmulatorService, IEmulator
 	{
 		void SaveStateText(TextWriter writer);
 		void LoadStateText(TextReader reader);

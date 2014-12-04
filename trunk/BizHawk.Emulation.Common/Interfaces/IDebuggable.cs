@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Common
 {
-	public interface IDebuggable : IEmulator, ICoreService
+	public interface IDebuggable : IEmulator, IEmulatorService
 	{
 		/// <summary>
 		/// Returns a list of Cpu registers and their current state

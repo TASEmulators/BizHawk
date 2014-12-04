@@ -4,7 +4,7 @@ using System.IO;
 
 namespace BizHawk.Emulation.Common
 {
-	public interface IEmulator : ICoreService, IDisposable
+	public interface IEmulator : IEmulatorService, IDisposable
 	{
 		/// <summary>
 		/// Video provider to the client

@@ -32,8 +32,8 @@ namespace BizHawk.Client.EmuHawk
 				.GetAssembly(typeof(IEmulator))
 				.GetTypes()
 				.Where(t => t.IsInterface)
-				.Where(t => typeof(ICoreService).IsAssignableFrom(t))
-				.Where(t => t != typeof(ICoreService))
+				.Where(t => typeof(IEmulatorService).IsAssignableFrom(t))
+				.Where(t => t != typeof(IEmulatorService))
 				.ToList();
 
 			var cores = Assembly
