@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 
-#pragma warning disable 0162
+#pragma warning disable
 
 #if MONO
 using SevenZip.Mono.COM;
