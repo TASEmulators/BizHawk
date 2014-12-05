@@ -9,10 +9,10 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 {
 	public sealed partial class HuC6280
 	{
-		public HuC6280(CoreComm comm)
+		public HuC6280(IDebuggable core)
 		{
 			Reset();
-			CoreComm = comm;
+			Core = core;
 		}
 
 		public void Reset()
@@ -224,7 +224,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		public Action<int, byte> WriteVDC;
 		public Action<int> ThinkAction = delegate { };
 
-		public CoreComm CoreComm;
+		public IDebuggable Core;
 
 		public byte ReadMemory(ushort address)
 		{

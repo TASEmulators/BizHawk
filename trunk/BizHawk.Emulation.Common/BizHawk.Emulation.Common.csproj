@@ -52,6 +52,7 @@
     <Compile Include="Base Implementations\BasicServiceProvider.cs" />
     <Compile Include="Base Implementations\ControllerDefinition.cs" />
     <Compile Include="Base Implementations\InputCallbackSystem.cs" />
+    <Compile Include="Base Implementations\MemoryCallbackSystem.cs" />
     <Compile Include="Base Implementations\NullController.cs" />
     <Compile Include="Base Implementations\NullEmulator.cs" />
     <Compile Include="Base Implementations\NullSound.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Interfaces\IEmulatorService.cs" />
     <Compile Include="Interfaces\IInputCallbackSystem.cs" />
     <Compile Include="Interfaces\IInputPollable.cs" />
+    <Compile Include="Interfaces\IMemoryCallbackSystem.cs" />
     <Compile Include="Interfaces\IMemoryDomains.cs" />
     <Compile Include="Interfaces\ISaveRam.cs" />
     <Compile Include="Interfaces\IEmulatorServiceProvider.cs" />

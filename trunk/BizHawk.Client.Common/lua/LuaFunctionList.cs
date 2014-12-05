@@ -23,7 +23,11 @@ namespace BizHawk.Client.Common
 				Global.Emulator.AsInputPollable().InputCallbacks.Remove(function.Callback);
 			}
 
-			Global.Emulator.CoreComm.MemoryCallbackSystem.Remove(function.Callback);
+			if (Global.Emulator.CanDebug())
+			{
+				Global.Emulator.AsDebuggable().MemoryCallbacks.Remove(function.Callback);
+			}
+
 			return base.Remove(function);
 		}
 
@@ -34,7 +38,11 @@ namespace BizHawk.Client.Common
 				Global.Emulator.AsInputPollable().InputCallbacks.RemoveAll(this.Select(x => x.Callback));
 			}
 
-			Global.Emulator.CoreComm.MemoryCallbackSystem.RemoveAll(this.Select(x => x.Callback));
+			if (Global.Emulator.CanDebug())
+			{
+				Global.Emulator.AsDebuggable().MemoryCallbacks.RemoveAll(this.Select(x => x.Callback));
+			}
+
 			Clear();
 		}
 	}

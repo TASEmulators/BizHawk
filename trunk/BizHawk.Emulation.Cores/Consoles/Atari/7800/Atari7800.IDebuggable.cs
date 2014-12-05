@@ -59,5 +59,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			[FeatureNotImplemented]
 			get { throw new NotImplementedException(); }
 		}
+
+		public IMemoryCallbackSystem MemoryCallbacks
+		{
+			[FeatureNotImplemented]
+			get { throw new NotImplementedException(); }
+		}
 	}
 }

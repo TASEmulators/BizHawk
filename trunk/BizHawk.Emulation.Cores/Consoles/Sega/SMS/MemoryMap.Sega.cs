@@ -53,7 +53,7 @@
 				ret = SystemRam[address & RamSizeMask];
 			}
 
-			CoreComm.MemoryCallbackSystem.CallRead(address);
+			MemoryCallbacks.CallRead(address);
 
 			return ret;
 		}
@@ -91,7 +91,7 @@
 				else if (address == 0xFFFF) RomBank2 = (byte)(value % RomBanks);
 				return;
 			}
-			CoreComm.MemoryCallbackSystem.CallWrite((uint)address);
+			MemoryCallbacks.CallWrite((uint)address);
 		}
 
 		void InitSegaMapper()

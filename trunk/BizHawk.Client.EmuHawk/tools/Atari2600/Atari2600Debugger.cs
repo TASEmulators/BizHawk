@@ -394,7 +394,7 @@ namespace BizHawk.Client.EmuHawk
 			var b = new AddBreakpointDialog();
 			if (b.ShowDialog() == DialogResult.OK)
 			{
-				Breakpoints.Add(b.Address, b.BreakType);
+				Breakpoints.Add(_core, b.Address, b.BreakType);
 			}
 
 			BreakpointView.ItemCount = Breakpoints.Count;
@@ -446,18 +446,21 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public Action Callback { get; set; }
 
-			public void Add(uint address, BreakpointType type)
+			public void Add(Atari2600 core, uint address, BreakpointType type)
 			{
-				Add(new AtariBreakpoint(Callback, address, type));
+				Add(new AtariBreakpoint(core, Callback, address, type));
 			}
 		}
 
 		public class AtariBreakpoint
 		{
 			private bool _active;
+			private readonly Atari2600 _core;
 
-			public AtariBreakpoint(Action callBack, uint address, BreakpointType type, bool enabled = true)
+			public AtariBreakpoint(Atari2600 core, Action callBack, uint address, BreakpointType type, bool enabled = true)
 			{
+				_core = core;
+
 				Callback = callBack;
 				Address = address;
 				Active = enabled;
@@ -500,20 +503,20 @@ namespace BizHawk.Client.EmuHawk
 				switch (Type)
 				{
 					case BreakpointType.Read:
-						Global.CoreComm.MemoryCallbackSystem.AddRead(Callback, Address);
+						_core.MemoryCallbacks.AddRead(Callback, Address);
 						break;
 					case BreakpointType.Write:
-						Global.CoreComm.MemoryCallbackSystem.AddWrite(Callback, Address);
+						_core.MemoryCallbacks.AddWrite(Callback, Address);
 						break;
 					case BreakpointType.Execute:
-						Global.CoreComm.MemoryCallbackSystem.AddExecute(Callback, Address);
+						_core.MemoryCallbacks.AddExecute(Callback, Address);
 						break;
 				}
 			}
 
 			private void RemoveCallback()
 			{
-				Global.CoreComm.MemoryCallbackSystem.Remove(Callback);
+				_core.MemoryCallbacks.Remove(Callback);
 			}
 		}
 

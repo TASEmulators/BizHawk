@@ -77,26 +77,6 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return (IInputPollable)core.ServiceProvider.GetService<IInputPollable>();
 		}
 
-		public static bool CpuTraceAvailable(this IEmulator core)
-		{
-			// TODO: this is a pretty ugly way to handle this
-			var debuggable = (IDebuggable)core.ServiceProvider.GetService<IDebuggable>();
-			if (debuggable != null)
-			{
-				try
-				{
-					var tracer = debuggable.Tracer;
-					return true;
-				}
-				catch(NotImplementedException)
-				{
-					return false;
-				}
-			}
-
-			return false;
-		}
-
 		public static bool CanDebug(this IEmulator core)
 		{
 			if (core == null)
@@ -110,6 +90,56 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 		public static IDebuggable AsDebuggable(this IEmulator core)
 		{
 			return (IDebuggable)core.ServiceProvider.GetService<IDebuggable>();
+		}
+
+		public static bool CpuTraceAvailable(this IEmulator core)
+		{
+			if (core == null)
+			{
+				return false;
+			}
+
+			// TODO: this is a pretty ugly way to handle this
+			var debuggable = (IDebuggable)core.ServiceProvider.GetService<IDebuggable>();
+			if (debuggable != null)
+			{
+				try
+				{
+					var tracer = debuggable.Tracer;
+					return true;
+				}
+				catch (NotImplementedException)
+				{
+					return false;
+				}
+			}
+
+			return false;
+		}
+
+		public static bool MemoryCallbacksAvailable(this IEmulator core)
+		{
+			if (core == null)
+			{
+				return false;
+			}
+
+			// TODO: this is a pretty ugly way to handle this
+			var debuggable = (IDebuggable)core.ServiceProvider.GetService<IDebuggable>();
+			if (debuggable != null)
+			{
+				try
+				{
+					var tracer = debuggable.MemoryCallbacks;
+					return true;
+				}
+				catch (NotImplementedException)
+				{
+					return false;
+				}
+			}
+
+			return false;
 		}
 
 		// TODO: a better place for these

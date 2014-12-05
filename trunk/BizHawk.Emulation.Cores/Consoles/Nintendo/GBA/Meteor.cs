@@ -32,6 +32,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			throw new NotImplementedException();
 		}
 
+		public IMemoryCallbackSystem MemoryCallbacks
+		{
+			[FeatureNotImplemented]
+			get { throw new NotImplementedException(); }
+		}
+
 		public static readonly ControllerDefinition GBAController =
 		new ControllerDefinition
 		{

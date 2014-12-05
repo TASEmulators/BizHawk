@@ -93,6 +93,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			get { throw new NotImplementedException(); }
 		}
 
+		public IMemoryCallbackSystem MemoryCallbacks
+		{
+			[FeatureNotImplemented]
+			get { throw new NotImplementedException(); }
+		}
+
 		public IVideoProvider VideoProvider { get { return this; } }
 		public ISoundProvider SoundProvider { get { return null; } }
 		public ISyncSoundProvider SyncSoundProvider { get { return this; } }

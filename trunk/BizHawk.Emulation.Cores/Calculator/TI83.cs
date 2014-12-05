@@ -54,6 +54,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			InputCallbacks = new InputCallbackSystem();
+			MemoryCallbacks = new MemoryCallbackSystem();
 			PutSettings((TI83Settings)Settings ?? new TI83Settings());
 
 			CoreComm = comm;
@@ -93,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 				ret = rom[romPage * 0x4000 + addr - 0x4000]; //other rom page
 			else ret = ram[addr - 0x8000];
 
-			CoreComm.MemoryCallbackSystem.CallRead(addr);
+			MemoryCallbacks.CallRead(addr);
 
 			return ret;
 		}
@@ -106,7 +107,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 				return; //other rom page
 			else ram[addr - 0x8000] = value;
 
-			CoreComm.MemoryCallbackSystem.CallWrite(addr);
+			MemoryCallbacks.CallWrite(addr);
 		}
 
 		public void WriteHardware(ushort addr, byte value)

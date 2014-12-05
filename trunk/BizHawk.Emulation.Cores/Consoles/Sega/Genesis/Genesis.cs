@@ -48,6 +48,12 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 		[FeatureNotImplemented]
 		public IInputCallbackSystem InputCallbacks { get { throw new NotImplementedException(); } }
 
+		public IMemoryCallbackSystem MemoryCallbacks
+		{
+			[FeatureNotImplemented]
+			get { throw new NotImplementedException(); }
+		}
+
 		public void ResetCounters()
 		{
 			Frame = 0;

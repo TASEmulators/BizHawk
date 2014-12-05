@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			_mapper.Bit13 = addr.Bit(13);
 			var temp = _mapper.ReadMemory((ushort)(addr & 0x1FFF));
-			CoreComm.MemoryCallbackSystem.CallRead(addr);
+			MemoryCallbacks.CallRead(addr);
 
 			return temp;
 		}
@@ -130,7 +130,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			_mapper.WriteMemory((ushort)(addr & 0x1FFF), value);
 
-			CoreComm.MemoryCallbackSystem.CallWrite(addr);
+			MemoryCallbacks.CallWrite(addr);
 		}
 
 		public void PokeMemory(ushort addr, byte value)
@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public void ExecFetch(ushort addr)
 		{
-			CoreComm.MemoryCallbackSystem.CallExecute(addr);
+			MemoryCallbacks.CallExecute(addr);
 		}
 
 		private static MapperBase SetMultiCartMapper(int romLength, int gameTotal)

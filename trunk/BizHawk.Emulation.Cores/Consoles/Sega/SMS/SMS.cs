@@ -81,6 +81,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
+		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
 		byte Port01 = 0xFF;
 		byte Port02 = 0xFF;
@@ -100,6 +101,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			Settings = (SMSSettings)settings ?? new SMSSettings();
 			SyncSettings = (SMSSyncSettings)syncSettings ?? new SMSSyncSettings();
 			CoreComm = comm;
+			MemoryCallbacks = new MemoryCallbackSystem();
 
 			IsGameGear = game.System == "GG";
 			IsSG1000 = game.System == "SG";

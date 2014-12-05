@@ -397,6 +397,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 		}
 
+		private readonly MemoryCallbackSystem _memoryCallbacks = new MemoryCallbackSystem();
+		public IMemoryCallbackSystem MemoryCallbacks { get { return _memoryCallbacks; } }
+
 		#endregion
 
 		// TODO: use render and rendersound
@@ -660,17 +663,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		void InitMemCallbacks()
 		{
-			ExecCallback = new LibGPGX.mem_cb(a => CoreComm.MemoryCallbackSystem.CallExecute(a));
-			ReadCallback = new LibGPGX.mem_cb(a => CoreComm.MemoryCallbackSystem.CallRead(a));
-			WriteCallback = new LibGPGX.mem_cb(a => CoreComm.MemoryCallbackSystem.CallWrite(a));
+			ExecCallback = new LibGPGX.mem_cb(a => MemoryCallbacks.CallExecute(a));
+			ReadCallback = new LibGPGX.mem_cb(a => MemoryCallbacks.CallRead(a));
+			WriteCallback = new LibGPGX.mem_cb(a => MemoryCallbacks.CallWrite(a));
 		}
 
 		void RefreshMemCallbacks()
 		{
 			LibGPGX.gpgx_set_mem_callback(
-				CoreComm.MemoryCallbackSystem.HasReads ? ReadCallback : null,
-				CoreComm.MemoryCallbackSystem.HasWrites ? WriteCallback : null,
-				CoreComm.MemoryCallbackSystem.HasExecutes ? ExecCallback : null);
+				MemoryCallbacks.HasReads ? ReadCallback : null,
+				MemoryCallbacks.HasWrites ? WriteCallback : null,
+				MemoryCallbacks.HasExecutes ? ExecCallback : null);
 		}
 
 		void KillMemCallbacks()

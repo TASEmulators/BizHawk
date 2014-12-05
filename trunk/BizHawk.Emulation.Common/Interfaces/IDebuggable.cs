@@ -18,5 +18,7 @@ namespace BizHawk.Emulation.Common
 		void SetCpuRegister(string register, int value);
 
 		ITracer Tracer { get; }
+
+		IMemoryCallbackSystem MemoryCallbacks { get; }
 	}
 }

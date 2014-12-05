@@ -140,6 +140,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			Tracer = new TraceBuffer();
+			MemoryCallbacks = new MemoryCallbackSystem();
 			CoreComm = comm;
 
 			comm.VsyncNum = 262144;
@@ -275,6 +276,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		}
 
 		public ITracer Tracer { get; private set; }
+
+		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
 		/// <summary>
 		/// true if the emulator is currently emulating CGB
@@ -643,7 +646,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		void RefreshMemoryCallbacks()
 		{
-			var mcs = CoreComm.MemoryCallbackSystem;
+			var mcs = MemoryCallbacks;
 
 			// we RefreshMemoryCallbacks() after the triggers in case the trigger turns itself off at that point
 
