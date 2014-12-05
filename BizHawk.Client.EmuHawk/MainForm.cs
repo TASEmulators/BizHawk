@@ -1425,7 +1425,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						var oldram = (Global.Emulator as ISaveRam).CloneSaveRam();
+						var oldram = Global.Emulator.AsSaveRam().CloneSaveRam();
 						if (oldram == null)
 						{
 							// we're eating this one now.  the possible negative consequence is that a user could lose
@@ -1442,7 +1442,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					(Global.Emulator as ISaveRam).StoreSaveRam(sram);
+					Global.Emulator.AsSaveRam().StoreSaveRam(sram);
 				}
 				catch (IOException)
 				{
@@ -1476,7 +1476,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				var writer = new BinaryWriter(new FileStream(path, FileMode.Create, FileAccess.Write));
-				var saveram = (Global.Emulator as ISaveRam).CloneSaveRam();
+				var saveram = Global.Emulator.AsSaveRam().CloneSaveRam();
 
 				writer.Write(saveram, 0, saveram.Length);
 				writer.Close();
@@ -3473,7 +3473,7 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.OSD.AddMessage("SRAM cleared.");
 				}
 			}
-			else if (Global.Emulator.HasSaveRam() && (Global.Emulator as ISaveRam).SaveRamModified)
+			else if (Global.Emulator.HasSaveRam() && Global.Emulator.AsSaveRam().SaveRamModified)
 			{
 				SaveRam();
 			}
