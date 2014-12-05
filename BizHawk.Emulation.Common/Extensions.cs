@@ -12,14 +12,19 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return (CoreAttributes)Attribute.GetCustomAttribute(core.GetType(), typeof(CoreAttributes));
 		}
 
+		public static bool IsNull(this IEmulator core)
+		{
+			return core == null || core is NullEmulator;
+		}
+
 		public static bool HasMemoryDomains(this IEmulator core)
 		{
-			return core is IMemoryDomains;
+			return core != null && core.ServiceProvider.HasService<IMemoryDomains>();
 		}
 
 		public static bool HasSaveRam(this IEmulator core)
 		{
-			return core is ISaveRam;
+			return core != null && core.ServiceProvider.HasService<ISaveRam>();
 		}
 
 		public static bool HasSavestates(this IEmulator core)
@@ -29,12 +34,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool CanPollInput(this IEmulator core)
 		{
-			return core is IInputPollable;
-		}
-
-		public static bool IsNull(this IEmulator core)
-		{
-			return core == null || core is NullEmulator;
+			return core != null && core.ServiceProvider.HasService<IInputPollable>();
 		}
 
 		public static bool CpuTraceAvailable(this IEmulator core)
