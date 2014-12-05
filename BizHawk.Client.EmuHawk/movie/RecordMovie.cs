@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (StartFromCombo.SelectedItem.ToString() == "Now" && Global.Emulator.HasSavestates())
 				{
-					var core = Global.Emulator as IStatable;
+					var core = Global.Emulator.AsStatable();
 
 					movieToRecord.StartsFromSavestate = true;
 

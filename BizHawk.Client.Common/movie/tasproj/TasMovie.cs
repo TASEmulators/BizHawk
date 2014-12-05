@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common
 				throw new InvalidOperationException("Cannot create a TasMovie against a core that does not implement IStatable");
 			}
 
-			var core = (IStatable)Global.Emulator;
+			var core = Global.Emulator.AsStatable();
 
 			StateManager = new TasStateManager(this, core);
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common
 				throw new InvalidOperationException("Cannot create a TasMovie against a core that does not implement IStatable");
 			}
 
-			var core = (IStatable)Global.Emulator;
+			var core = Global.Emulator.AsStatable();
 
 			StateManager = new TasStateManager(this, core);
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";

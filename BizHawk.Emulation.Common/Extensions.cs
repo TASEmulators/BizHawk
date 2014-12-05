@@ -19,7 +19,12 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool HasMemoryDomains(this IEmulator core)
 		{
-			return core != null && core.ServiceProvider.HasService<IMemoryDomains>();
+			if (core == null)
+			{
+				return false;
+			}
+
+			return core.ServiceProvider.HasService<IMemoryDomains>();
 		}
 
 		public static IMemoryDomains AsMemoryDomains(this IEmulator core)
@@ -29,7 +34,12 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool HasSaveRam(this IEmulator core)
 		{
-			return core != null && core.ServiceProvider.HasService<ISaveRam>();
+			if (core == null)
+			{
+				return false;
+			}
+
+			return core.ServiceProvider.HasService<ISaveRam>();
 		}
 
 		public static ISaveRam AsSaveRam(this IEmulator core)
@@ -39,7 +49,12 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool HasSavestates(this IEmulator core)
 		{
-			return core != null && core.ServiceProvider.HasService<IStatable>();
+			if (core == null)
+			{
+				return false;
+			}
+
+			return core.ServiceProvider.HasService<IStatable>();
 		}
 
 		public static IStatable AsStatable(this IEmulator core)
@@ -49,7 +64,12 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool CanPollInput(this IEmulator core)
 		{
-			return core != null && core.ServiceProvider.HasService<IInputPollable>();
+			if (core == null)
+			{
+				return false;
+			}
+
+			return core.ServiceProvider.HasService<IInputPollable>();
 		}
 
 		public static IInputPollable AsInputPollable(this IEmulator core)
@@ -79,6 +99,11 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool CanDebug(this IEmulator core)
 		{
+			if (core == null)
+			{
+				return false;
+			}
+
 			return core.ServiceProvider.HasService<IDebuggable>();
 		}
 
