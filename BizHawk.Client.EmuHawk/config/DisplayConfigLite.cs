@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk.config
 			InitializeComponent();
 
 			rbNone.Checked = Global.Config.TargetDisplayFilter == 0;
-			rbHq2x.Checked  = Global.Config.TargetDisplayFilter == 1;
+			rbHq2x.Checked = Global.Config.TargetDisplayFilter == 1;
 			rbScanlines.Checked = Global.Config.TargetDisplayFilter == 2;
 			rbUser.Checked = Global.Config.TargetDisplayFilter == 3;
 
@@ -31,11 +31,20 @@ namespace BizHawk.Client.EmuHawk.config
 			rbFinalFilterBilinear.Checked = Global.Config.DispFinalFilter == 1;
 			rbFinalFilterBicubic.Checked = Global.Config.DispFinalFilter == 2;
 
-			tbScanlineIntensity.Value = Global.Config.TargetScanlineFilterIntensity; 
+			tbScanlineIntensity.Value = Global.Config.TargetScanlineFilterIntensity;
 			checkLetterbox.Checked = Global.Config.DispFixAspectRatio;
 			checkPadInteger.Checked = Global.Config.DispFixScaleInteger;
 			checkFullscreenHacks.Checked = Global.Config.DispFullscreenHacks;
-			checkSnowyNullEmulator.Checked = Global.Config.DispSnowyNullEmulator;
+
+			// null emulator config hack
+			{
+				NullEmulator.NullEmulatorSettings s;
+				if (Global.Emulator is NullEmulator)
+					s = (Global.Emulator as dynamic).GetSettings();
+				else
+					s = (NullEmulator.NullEmulatorSettings)Global.Config.GetCoreSettings<NullEmulator>();
+				checkSnowyNullEmulator.Checked = s.SnowyDisplay;
+			}
 
 			if (Global.Config.DispManagerAR == Config.EDispManagerAR.None)
 				rbUseRaw.Checked = true;
@@ -52,7 +61,7 @@ namespace BizHawk.Client.EmuHawk.config
 
 		private void btnOk_Click(object sender, EventArgs e)
 		{
-			if(rbNone.Checked)
+			if (rbNone.Checked)
 				Global.Config.TargetDisplayFilter = 0;
 			if (rbHq2x.Checked)
 				Global.Config.TargetDisplayFilter = 1;
@@ -61,18 +70,31 @@ namespace BizHawk.Client.EmuHawk.config
 			if (rbUser.Checked)
 				Global.Config.TargetDisplayFilter = 3;
 
-			if(rbFinalFilterNone.Checked) 
+			if (rbFinalFilterNone.Checked)
 				Global.Config.DispFinalFilter = 0;
-			if(rbFinalFilterBilinear.Checked) 
+			if (rbFinalFilterBilinear.Checked)
 				Global.Config.DispFinalFilter = 1;
-			if(rbFinalFilterBicubic.Checked) 
+			if (rbFinalFilterBicubic.Checked)
 				Global.Config.DispFinalFilter = 2;
 
 			Global.Config.TargetScanlineFilterIntensity = tbScanlineIntensity.Value;
 			Global.Config.DispFixAspectRatio = checkLetterbox.Checked;
 			Global.Config.DispFixScaleInteger = checkPadInteger.Checked;
 			Global.Config.DispFullscreenHacks = checkFullscreenHacks.Checked;
-			Global.Config.DispSnowyNullEmulator = checkSnowyNullEmulator.Checked;
+
+			// HACK:: null emulator's settings don't persist to config normally
+			{
+				NullEmulator.NullEmulatorSettings s;
+				if (Global.Emulator is NullEmulator)
+					s = (Global.Emulator as dynamic).GetSettings();
+				else
+					s = (NullEmulator.NullEmulatorSettings)Global.Config.GetCoreSettings<NullEmulator>();
+				s.SnowyDisplay = checkSnowyNullEmulator.Checked;
+
+				Global.Config.PutCoreSettings<NullEmulator>(s);
+				if (Global.Emulator is NullEmulator)
+					(Global.Emulator as dynamic).PutSettings(s);
+			}
 
 			if (rbUseRaw.Checked)
 				Global.Config.DispManagerAR = Config.EDispManagerAR.None;

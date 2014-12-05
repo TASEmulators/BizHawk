@@ -77,7 +77,6 @@ namespace BizHawk.Client.EmuHawk
 			ret.RequestGLContext = () => GlobalWin.GLManager.CreateGLContext();
 			ret.ActivateGLContext = (gl) => GlobalWin.GLManager.Activate((GLManager.ContextRef)gl);
 			ret.DeactivateGLContext = () => GlobalWin.GLManager.Deactivate();
-			ret.DispSnowyNullEmulator = () => Global.Config.DispSnowyNullEmulator;
 			return ret;
 		}
 
@@ -198,7 +197,7 @@ namespace BizHawk.Client.EmuHawk
 			InitControls();
 			Global.CoreComm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals();
-			Global.Emulator = new NullEmulator(Global.CoreComm);
+			Global.Emulator = new NullEmulator(Global.CoreComm, Global.Config.GetCoreSettings<NullEmulator>());
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
 			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
@@ -3488,7 +3487,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Emulator.Dispose();
 			Global.CoreComm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals();
-			Global.Emulator = new NullEmulator(Global.CoreComm);
+			Global.Emulator = new NullEmulator(Global.CoreComm, Global.Config.GetCoreSettings<NullEmulator>());
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
 			RewireSound();
@@ -3507,7 +3506,7 @@ namespace BizHawk.Client.EmuHawk
 				CloseGame(clearSram);
 				Global.CoreComm = CreateCoreComm();
 				CoreFileProvider.SyncCoreCommInputSignals();
-				Global.Emulator = new NullEmulator(Global.CoreComm);
+				Global.Emulator = new NullEmulator(Global.CoreComm, Global.Config.GetCoreSettings<NullEmulator>());
 				Global.Game = GameInfo.NullInstance;
 
 				GlobalWin.Tools.Restart();

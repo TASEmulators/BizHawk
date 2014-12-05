@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using System.IO;
 using BizHawk.Common;
+using System.ComponentModel;
 
 namespace BizHawk.Emulation.Common
 {
 	[CoreAttributes("NullHawk", "")]
-	public class NullEmulator : IEmulator, IVideoProvider, ISyncSoundProvider, ISoundProvider
+	public class NullEmulator : IEmulator, IVideoProvider, ISyncSoundProvider, ISoundProvider, ISettable<NullEmulator.NullEmulatorSettings, object>
 	{
-		public NullEmulator(CoreComm comm)
+		public NullEmulator(CoreComm comm, object settings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
+			_settings = (NullEmulatorSettings)settings ?? new NullEmulatorSettings();
 
 			var d = DateTime.Now;
 			xmas = d.Month == 12 && d.Day >= 17 && d.Day <= 27;
@@ -44,7 +46,7 @@ namespace BizHawk.Emulation.Common
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			if (render == false) return;
-			if (!CoreComm.DispSnowyNullEmulator())
+			if (!_settings.SnowyDisplay)
 			{
 				if (frameBufferClear) return;
 				frameBufferClear = true;
@@ -53,15 +55,18 @@ namespace BizHawk.Emulation.Common
 			}
 			frameBufferClear = false;
 			if (xmas)
+			{
 				for (int i = 0; i < 256 * 192; i++)
 				{
 					byte b = (byte)rand.Next();
 					frameBuffer[i] = Colors.ARGB(b, (byte)(255 - b), 0, 255);
 				}
-			else 
+			}
+			else
+			{
 				for (int i = 0; i < 256 * 192; i++)
-					frameBuffer[i] = Colors.Luminosity((byte) rand.Next());
-
+					frameBuffer[i] = Colors.Luminosity((byte)rand.Next());
+			}
 			Frame++;
 		}
 		public ControllerDefinition ControllerDefinition { get { return NullController; } }
@@ -88,7 +93,7 @@ namespace BizHawk.Emulation.Common
 		{
 			nsamp = 735;
 			samples = sampbuff;
-			if (!CoreComm.DispSnowyNullEmulator())
+			if (!_settings.SnowyDisplay)
 				return;
 			if (xmas)
 				pleg.Generate(samples);
@@ -100,7 +105,7 @@ namespace BizHawk.Emulation.Common
 
 		public void GetSamples(short[] samples)
 		{
-			if (!CoreComm.DispSnowyNullEmulator())
+			if (!_settings.SnowyDisplay)
 				return;
 			if (xmas)
 				pleg.Generate(samples);
@@ -110,6 +115,45 @@ namespace BizHawk.Emulation.Common
 		{
 			get;
 			set;
+		}
+
+		private NullEmulatorSettings _settings;
+
+		public class NullEmulatorSettings
+		{
+			[DefaultValue(true)]
+			public bool SnowyDisplay { get; set; }
+
+			public NullEmulatorSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+
+			public NullEmulatorSettings Clone()
+			{
+				return (NullEmulatorSettings)MemberwiseClone();
+			}
+		}
+
+		public NullEmulatorSettings GetSettings()
+		{
+			return _settings.Clone();
+		}
+
+		public object GetSyncSettings()
+		{
+			return null;
+		}
+
+		public bool PutSettings(NullEmulatorSettings o)
+		{
+			_settings = o;
+			return false;
+		}
+
+		public bool PutSyncSettings(object o)
+		{
+			return false;
 		}
 	}
 

@@ -76,6 +76,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\LuaInterface.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualBasic" Condition=" '$(OS)' == 'Windows_NT' " />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
