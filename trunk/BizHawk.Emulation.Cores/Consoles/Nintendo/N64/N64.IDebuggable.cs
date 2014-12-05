@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
@@ -69,5 +70,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		}
 
 		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
+
+		private mupen64plusApi.MemoryCallback _readcb;
+		private mupen64plusApi.MemoryCallback _writecb;
+
+		private void RefreshMemoryCallbacks()
+		{
+			var mcs = MemoryCallbacks;
+
+			// we RefreshMemoryCallbacks() after the triggers in case the trigger turns itself off at that point
+			if (mcs.HasReads)
+			{
+				_readcb = delegate(uint addr) { mcs.CallRead(addr); };
+			}
+			else
+			{
+				_readcb = null;
+			}
+
+			if (mcs.HasWrites)
+			{
+				_writecb = delegate(uint addr) { mcs.CallWrite(addr); };
+			}
+			else
+			{
+				_writecb = null;
+			}
+
+			api.setReadCallback(_readcb);
+			api.setWriteCallback(_writecb);
+		}
 	}
 }
