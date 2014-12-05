@@ -203,7 +203,6 @@ namespace BizHawk.Client.Common
 		public bool DispFixAspectRatio = true;
 		public bool DispFixScaleInteger = true;
 		public bool DispFullscreenHacks = true;
-		public bool DispSnowyNullEmulator = true;
 
 		public EDispManagerAR DispManagerAR = EDispManagerAR.System; 
 		public int DispCustomUserARWidth = 1;
