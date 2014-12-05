@@ -18,20 +18,35 @@ namespace BizHawk.Emulation.Common
 
 		public void AddRead(Action function, uint? addr)
 		{
+			var hadAny = _reads.Any() || _writes.Any() || _executes.Any();
+
 			_reads.Add(function);
 			_readAddrs.Add(addr);
+
+			var hasAny = _reads.Any() || _writes.Any() || _executes.Any();
+			Changes(hadAny, hasAny);
 		}
 
 		public void AddWrite(Action function, uint? addr)
 		{
+			var hadAny = _reads.Any() || _writes.Any() || _executes.Any();
+
 			_writes.Add(function);
 			_writeAddrs.Add(addr);
+
+			var hasAny = _reads.Any() || _writes.Any() || _executes.Any();
+			Changes(hadAny, hasAny);
 		}
 
 		public void AddExecute(Action function, uint addr)
 		{
+			var hadAny = _reads.Any() || _writes.Any() || _executes.Any();
+
 			_executes.Add(function);
 			_execAddrs.Add(addr);
+
+			var hasAny = _reads.Any() || _writes.Any() || _executes.Any();
+			Changes(hadAny, hasAny);
 		}
 
 		public void CallRead(uint addr)
@@ -73,6 +88,8 @@ namespace BizHawk.Emulation.Common
 
 		public void Remove(Action action)
 		{
+			var hadAny = _reads.Any() || _writes.Any() || _executes.Any();
+
 			for (int i = 0; i < _reads.Count; i++)
 			{
 				if (_reads[i] == action)
@@ -99,24 +116,51 @@ namespace BizHawk.Emulation.Common
 					_execAddrs.Remove(_execAddrs[i]);
 				}
 			}
+
+			var hasAny = _reads.Any() || _writes.Any() || _executes.Any();
+			Changes(hadAny, hasAny);
 		}
 
 		public void RemoveAll(IEnumerable<Action> actions)
 		{
+			var hadAny = _reads.Any() || _writes.Any() || _executes.Any();
+
 			foreach (var action in actions)
 			{
 				Remove(action);
 			}
+
+			var hasAny = _reads.Any() || _writes.Any() || _executes.Any();
+			Changes(hadAny, hasAny);
 		}
 
 		public void Clear()
 		{
+			var hadAny = _reads.Any() || _writes.Any() || _executes.Any();
+
 			_reads.Clear();
 			_readAddrs.Clear();
 			_writes.Clear();
 			_writes.Clear();
 			_executes.Clear();
 			_execAddrs.Clear();
+
+			
+			Changes(hadAny, false);
+		}
+
+		public delegate void ActiveChangedEventHandler();
+		public event ActiveChangedEventHandler ActiveChanged;
+
+		private void Changes(bool hadAny, bool hasAny)
+		{
+			if ((hadAny && !hasAny) || (!hadAny && hasAny))
+			{
+				if (ActiveChanged != null)
+				{
+					ActiveChanged();
+				}
+			}
 		}
 	}
 }
