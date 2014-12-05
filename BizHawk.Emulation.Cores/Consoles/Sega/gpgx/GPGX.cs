@@ -397,9 +397,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 		}
 
-		private readonly MemoryCallbackSystem _memoryCallbacks = new MemoryCallbackSystem();
-		public IMemoryCallbackSystem MemoryCallbacks { get { return _memoryCallbacks; } }
-
 		#endregion
 
 		// TODO: use render and rendersound
@@ -424,8 +421,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			IsLagFrame = true;
 			Frame++;
 			drivelight = false;
-
-			RefreshMemCallbacks();
 
 			LibGPGX.gpgx_advance();
 			update_video();
@@ -657,6 +652,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			LibGPGX.gpgx_flush_vram(); // fully regenerate internal caches as needed
 		}
 
+		private readonly MemoryCallbackSystem _memoryCallbacks = new MemoryCallbackSystem();
+		public IMemoryCallbackSystem MemoryCallbacks { get { return _memoryCallbacks; } }
+
 		LibGPGX.mem_cb ExecCallback;
 		LibGPGX.mem_cb ReadCallback;
 		LibGPGX.mem_cb WriteCallback;
@@ -666,6 +664,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			ExecCallback = new LibGPGX.mem_cb(a => MemoryCallbacks.CallExecute(a));
 			ReadCallback = new LibGPGX.mem_cb(a => MemoryCallbacks.CallRead(a));
 			WriteCallback = new LibGPGX.mem_cb(a => MemoryCallbacks.CallWrite(a));
+			_memoryCallbacks.ActiveChanged += RefreshMemCallbacks;
 		}
 
 		void RefreshMemCallbacks()
