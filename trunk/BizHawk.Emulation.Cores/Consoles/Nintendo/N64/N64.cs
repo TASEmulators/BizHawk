@@ -5,6 +5,7 @@ using System.IO;
 
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
@@ -123,7 +124,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			// Order is important because the register with the mupen core
 			_videoProvider = new N64VideoProvider(api, videosettings);
 			_audioProvider = new N64Audio(api);
-			_inputProvider = new N64Input(this as IInputPollable, api, comm, this._syncSettings.Controllers);
+			_inputProvider = new N64Input(this.AsInputPollable(), api, comm, this._syncSettings.Controllers);
 
 
 			string rsp = _syncSettings.Rsp == N64SyncSettings.RspType.Rsp_Hle ?

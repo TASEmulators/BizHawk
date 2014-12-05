@@ -20,7 +20,7 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator.CanPollInput())
 			{
-				(Global.Emulator as IInputPollable).InputCallbacks.Remove(function.Callback);
+				Global.Emulator.AsInputPollable().InputCallbacks.Remove(function.Callback);
 			}
 
 			Global.Emulator.CoreComm.MemoryCallbackSystem.Remove(function.Callback);
@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator.CanPollInput())
 			{
-				(Global.Emulator as IInputPollable).InputCallbacks.RemoveAll(this.Select(x => x.Callback));
+				Global.Emulator.AsInputPollable().InputCallbacks.RemoveAll(this.Select(x => x.Callback));
 			}
 
 			Global.Emulator.CoreComm.MemoryCallbackSystem.RemoveAll(this.Select(x => x.Callback));

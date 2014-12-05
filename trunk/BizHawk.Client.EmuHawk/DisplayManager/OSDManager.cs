@@ -390,7 +390,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.DisplayLagCounter && Global.Emulator.CanPollInput())
 			{
-				var counter = (Global.Emulator as IInputPollable).LagCount.ToString();
+				var counter = Global.Emulator.AsInputPollable().LagCount.ToString();
 				var x = GetX(g, Global.Config.DispLagx, Global.Config.DispLaganchor, counter);
 				var y = GetY(g, Global.Config.DispLagy, Global.Config.DispLaganchor, counter);
 
