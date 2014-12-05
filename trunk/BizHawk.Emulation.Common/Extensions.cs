@@ -22,6 +22,11 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return core != null && core.ServiceProvider.HasService<IMemoryDomains>();
 		}
 
+		public static IMemoryDomains GetMemoryDomains(this IEmulator core)
+		{
+			return (IMemoryDomains)core.ServiceProvider.GetService<IMemoryDomains>();
+		}
+
 		public static bool HasSaveRam(this IEmulator core)
 		{
 			return core != null && core.ServiceProvider.HasService<ISaveRam>();
