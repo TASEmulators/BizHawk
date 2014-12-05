@@ -27,8 +27,6 @@ namespace BizHawk.Emulation.Common
 
 		public int ScreenLogicalOffsetX, ScreenLogicalOffsetY;
 
-		public string TraceHeader = "Instructions";
-
 		// size hint to a/v out resizer.  this probably belongs in VideoProvider?  but it's somewhat different than VirtualWidth...
 		public int NominalWidth = 640;
 		public int NominalHeight = 480;
