@@ -4,6 +4,7 @@ using System.Linq;
 
 using LuaInterface;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 
@@ -34,7 +35,7 @@ namespace BizHawk.Client.Common
 			{
 				var decoder = new NESGameGenieDecoder(code);
 				var watch = Watch.GenerateWatch(
-					(Global.Emulator as IMemoryDomains).MemoryDomains["System Bus"],
+					Global.Emulator.AsMemoryDomains().MemoryDomains["System Bus"],
 					decoder.Address,
 					Watch.WatchSize.Byte,
 					Watch.DisplayType.Hex,
