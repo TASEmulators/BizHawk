@@ -90,7 +90,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public WonderSwan(CoreComm comm, byte[] file, bool deterministic, object Settings, object SyncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
-			MemoryCallbacks = new MemoryCallbackSystem();
 			CoreComm = comm;
 			_Settings = (Settings)Settings ?? new Settings();
 			_SyncSettings = (SyncSettings)SyncSettings ?? new SyncSettings();
@@ -142,8 +141,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			}
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
-
 		public void Dispose()
 		{
 			if (Core != IntPtr.Zero)
@@ -157,8 +154,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		{
 			Frame++;
 			IsLagFrame = true;
-
-			SetMemoryCallbacks();
 
 			if (Controller["Power"])
 				BizSwan.bizswan_reset(Core);
@@ -189,9 +184,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public int Frame { get; private set; }
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
-
-		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
-		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
 
 		public string SystemId { get { return "WSWAN"; } }
 		public bool DeterministicEmulation { get; private set; }
@@ -329,8 +321,14 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			MemoryDomains = new MemoryDomainList(mmd, 0);
 		}
 
-		public MemoryDomainList MemoryDomains { get; private set; }
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
 
+		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem();
+		public IMemoryCallbackSystem MemoryCallbacks { get { return _memorycallbacks; } }
+
+		public MemoryDomainList MemoryDomains { get; private set; }
+	
 		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			var ret = new Dictionary<string, int>();
@@ -378,17 +376,12 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			ExecCallbackD = new BizSwan.MemoryCallback(ExecCallback);
 			ButtonCallbackD = new BizSwan.ButtonCallback(ButtonCallback);
 			_inputCallbacks.ActiveChanged += SetInputCallback;
+			_memorycallbacks.ActiveChanged += SetMemoryCallbacks;
 		}
 
-		bool _inputcbactive = false;
 		void SetInputCallback()
 		{
-			bool _inputcbactive_new = InputCallbacks.Any();
-			if (_inputcbactive != _inputcbactive_new)
-			{
-				_inputcbactive = _inputcbactive_new;
-				BizSwan.bizswan_setbuttoncallback(Core, _inputcbactive ? ButtonCallbackD : null);
-			}
+			BizSwan.bizswan_setbuttoncallback(Core, InputCallbacks.Any() ? ButtonCallbackD : null);
 		}
 
 		void SetMemoryCallbacks()
