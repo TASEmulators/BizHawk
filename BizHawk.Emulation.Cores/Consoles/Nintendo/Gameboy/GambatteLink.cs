@@ -60,6 +60,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			R.Controller = RCont;
 			L.ConnectInputCallbackSystem(_inputCallbacks);
 			R.ConnectInputCallbackSystem(_inputCallbacks);
+			L.ConnectMemoryCallbackSystem(_memorycallbacks);
+			R.ConnectMemoryCallbackSystem(_memorycallbacks);
 
 			comm.VsyncNum = L.CoreComm.VsyncNum;
 			comm.VsyncDen = L.CoreComm.VsyncDen;
@@ -86,14 +88,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
+		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem();
+		public IMemoryCallbackSystem MemoryCallbacks { get { return _memorycallbacks; } }
 
 		public ITracer Tracer
-		{
-			[FeatureNotImplemented]
-			get { throw new NotImplementedException(); }
-		}
-
-		public IMemoryCallbackSystem MemoryCallbacks
 		{
 			[FeatureNotImplemented]
 			get { throw new NotImplementedException(); }

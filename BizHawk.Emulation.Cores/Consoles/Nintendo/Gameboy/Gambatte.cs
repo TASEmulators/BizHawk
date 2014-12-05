@@ -641,8 +641,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		LibGambatte.MemoryCallback writecb;
 		LibGambatte.MemoryCallback execcb;
 
-		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem();
+		private MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem();
 		public IMemoryCallbackSystem MemoryCallbacks { get { return _memorycallbacks; } }
+
+		/// <summary>
+		/// for use in dual core
+		/// </summary>
+		/// <param name="ics"></param>
+		public void ConnectMemoryCallbackSystem(MemoryCallbackSystem mcs)
+		{
+			_memorycallbacks = mcs;
+		}
 
 		void InitMemoryCallbacks()
 		{
