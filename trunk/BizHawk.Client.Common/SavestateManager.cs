@@ -5,6 +5,7 @@ using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -12,7 +13,7 @@ namespace BizHawk.Client.Common
 	{
 		public static void SaveStateFile(string filename, string name)
 		{
-			var core = Global.Emulator as IStatable;
+			var core = Global.Emulator.AsStatable();
 			// the old method of text savestate save is now gone.
 			// a text savestate is just like a binary savestate, but with a different core lump
 			using (var bs = new BinaryStateSaver(filename))
@@ -77,7 +78,7 @@ namespace BizHawk.Client.Common
 
 		public static bool LoadStateFile(string path, string name)
 		{
-			var core = Global.Emulator as IStatable;
+			var core = Global.Emulator.AsStatable();
 
 			// try to detect binary first
 			var bl = BinaryStateLoader.LoadAndDetect(path);

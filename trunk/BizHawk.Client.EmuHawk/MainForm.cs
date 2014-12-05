@@ -3520,6 +3520,7 @@ namespace BizHawk.Client.EmuHawk
 				ClearHolds();
 				PauseOnFrame = null;
 				ToolHelpers.UpdateCheatRelatedTools(null, null);
+				UpdateStatusSlots();
 			}
 		}
 

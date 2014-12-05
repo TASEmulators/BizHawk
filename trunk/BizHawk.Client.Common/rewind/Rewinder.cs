@@ -69,7 +69,7 @@ namespace BizHawk.Client.Common
 				// log a frame
 				if (_lastState != null && Global.Emulator.Frame % _rewindFrequency == 0)
 				{
-					_rewindThread.Capture(((IStatable)Global.Emulator).SaveStateBinary());
+					_rewindThread.Capture(Global.Emulator.AsStatable().SaveStateBinary());
 				}
 			}
 		}
@@ -79,7 +79,7 @@ namespace BizHawk.Client.Common
 			if (Global.Emulator.HasSavestates())
 			{
 				// This is the first frame. Capture the state, and put it in LastState for future deltas to be compared against.
-				_lastState = (byte[]) ((IStatable)Global.Emulator).SaveStateBinary().Clone();
+				_lastState = (byte[])Global.Emulator.AsStatable().SaveStateBinary().Clone();
 
 				int state_size;
 				if (_lastState.Length >= Global.Config.Rewind_LargeStateSize)
@@ -365,7 +365,7 @@ namespace BizHawk.Client.Common
 				var fullstate = reader.ReadBoolean();
 				if (fullstate)
 				{
-					((IStatable)Global.Emulator).LoadStateBinary(reader);
+					Global.Emulator.AsStatable().LoadStateBinary(reader);
 				}
 				else
 				{
@@ -382,7 +382,7 @@ namespace BizHawk.Client.Common
 
 					reader.Close();
 					output.Position = 0;
-					((IStatable)Global.Emulator).LoadStateBinary(new BinaryReader(output));
+					Global.Emulator.AsStatable().LoadStateBinary(new BinaryReader(output));
 				}
 			}
 		}

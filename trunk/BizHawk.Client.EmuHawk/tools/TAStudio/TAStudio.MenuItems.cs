@@ -6,11 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
+
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -508,7 +510,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (CurrentTasMovie.TasStateManager.HasState(frame))
 			{
-				var state = (byte[])(((IStatable)Global.Emulator).SaveStateBinary().Clone());
+				var state = (byte[])Global.Emulator.AsStatable().SaveStateBinary().Clone();
 				var greenzone = CurrentTasMovie.TasStateManager[frame];
 
 				if (!state.SequenceEqual(greenzone.Value))
@@ -750,7 +752,7 @@ namespace BizHawk.Client.EmuHawk
 
 					var newProject = CurrentTasMovie.ConvertToSavestateAnchoredMovie(
 						index,
-						(byte[])((IStatable)Global.Emulator).SaveStateBinary().Clone());
+						(byte[])Global.Emulator.AsStatable().SaveStateBinary().Clone());
 
 					GlobalWin.MainForm.PauseEmulator();
 					LoadProject(newProject.Filename);

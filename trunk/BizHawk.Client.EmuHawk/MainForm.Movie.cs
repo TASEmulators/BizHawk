@@ -51,11 +51,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (movie.TextSavestate != null)
 				{
-					(Global.Emulator as IStatable).LoadStateText(new StringReader(movie.TextSavestate));
+					Global.Emulator.AsStatable().LoadStateText(new StringReader(movie.TextSavestate));
 				}
 				else
 				{
-					(Global.Emulator as IStatable).LoadStateBinary(new BinaryReader(new MemoryStream(movie.BinarySavestate, false)));
+					Global.Emulator.AsStatable().LoadStateBinary(new BinaryReader(new MemoryStream(movie.BinarySavestate, false)));
 				}
 				if (movie.SavestateFramebuffer != null)
 				{
