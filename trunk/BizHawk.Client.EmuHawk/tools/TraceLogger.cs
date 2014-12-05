@@ -126,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 				if (Global.Emulator.CpuTraceAvailable())
 				{
 					ClearList();
-					TraceView.Columns[0].Text = Global.Emulator.CoreComm.TraceHeader;
+					TraceView.Columns[0].Text = Tracer.Header;
 				}
 				else
 				{
