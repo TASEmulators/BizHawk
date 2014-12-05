@@ -265,6 +265,9 @@
     <Compile Include="Consoles\Nintendo\N64\N64.IDebuggable.cs">
       <DependentUpon>N64.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Nintendo\N64\N64.IInputPollable.cs">
+      <DependentUpon>N64.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\N64\N64.IMemoryDomains.cs">
       <DependentUpon>N64.cs</DependentUpon>
     </Compile>
@@ -273,6 +276,9 @@
     </Compile>
     <Compile Include="Consoles\Nintendo\N64\N64.ISettable.cs">
       <DependentUpon>N64.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\N64\N64.IStatable.cs">
+        <DependentUpon>N64.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\N64\N64Input.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64Settings.cs" />
