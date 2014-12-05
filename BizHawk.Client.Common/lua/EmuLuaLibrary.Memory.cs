@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator.HasMemoryDomains())
 			{
-				var domains = (Global.Emulator as IMemoryDomains).MemoryDomains;
+				var domains = Global.Emulator.AsMemoryDomains().MemoryDomains;
 				_currentMemoryDomain = domains.IndexOf(domains.MainMemory);
 			}
 		}
@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator.HasMemoryDomains())
 			{
-				var domains = (Global.Emulator as IMemoryDomains).MemoryDomains;
+				var domains = Global.Emulator.AsMemoryDomains().MemoryDomains;
 				_currentMemoryDomain = domains.IndexOf(domains.MainMemory);
 			}
 		}
@@ -40,7 +40,7 @@ namespace BizHawk.Client.Common
 			{
 				if (Global.Emulator.HasMemoryDomains())
 				{
-					return (Global.Emulator as IMemoryDomains).MemoryDomains[_currentMemoryDomain];
+					return Global.Emulator.AsMemoryDomains().MemoryDomains[_currentMemoryDomain];
 				}
 				else
 				{

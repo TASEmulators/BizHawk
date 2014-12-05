@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Emulator.CpuTraceAvailable())
 			{
-				Tracer = Global.Emulator.GetDebugger().Tracer;
+				Tracer = Global.Emulator.AsDebuggable().Tracer;
 			}
 			else
 			{

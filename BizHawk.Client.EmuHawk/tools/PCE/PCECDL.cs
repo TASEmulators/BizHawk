@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Components.H6280;
 using BizHawk.Emulation.Cores.PCEngine;
 
@@ -304,7 +305,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					using (var fs = new FileStream(sfd.FileName, FileMode.Create, FileAccess.Write))
 					{
-						_cdl.Disassemble(fs, (Global.Emulator as IMemoryDomains).MemoryDomains);
+						_cdl.Disassemble(fs, Global.Emulator.AsMemoryDomains().MemoryDomains);
 					}
 				}
 			}
