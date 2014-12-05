@@ -2651,7 +2651,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Global.Emulator.CanPollInput())
 				{
-					return (Global.Emulator as IInputPollable).IsLagFrame;
+					return Global.Emulator.AsInputPollable().IsLagFrame;
 				}
 
 				return false;

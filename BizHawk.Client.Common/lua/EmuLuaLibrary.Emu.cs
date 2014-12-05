@@ -152,7 +152,7 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator.CanPollInput())
 			{
-				return (Global.Emulator as IInputPollable).IsLagFrame;
+				return Global.Emulator.AsInputPollable().IsLagFrame;
 			}
 			else
 			{
@@ -169,7 +169,7 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator.CanPollInput())
 			{
-				return (Global.Emulator as IInputPollable).LagCount;
+				return Global.Emulator.AsInputPollable().LagCount;
 			}
 			else
 			{

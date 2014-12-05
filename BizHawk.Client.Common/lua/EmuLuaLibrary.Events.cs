@@ -161,7 +161,7 @@ namespace BizHawk.Client.Common
 			{
 				try
 				{
-					(Global.Emulator as IInputPollable).InputCallbacks.Add(nlf.Callback);
+					Global.Emulator.AsInputPollable().InputCallbacks.Add(nlf.Callback);
 				}
 				catch (NotImplementedException)
 				{

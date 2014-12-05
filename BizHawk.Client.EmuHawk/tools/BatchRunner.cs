@@ -183,7 +183,7 @@ namespace BizHawk.Client.EmuHawk
 						// some cores really really really like it if you drain their audio every frame
 						emu.SyncSoundProvider.GetSamples(out samp, out nsamp);
 						current.Frames++;
-						if (emu.CanPollInput() && (emu as IInputPollable).IsLagFrame)
+						if (emu.CanPollInput() && emu.AsInputPollable().IsLagFrame)
 							current.LaggedFrames++;
 					}
 					catch (Exception e)
