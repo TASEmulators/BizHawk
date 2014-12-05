@@ -35,6 +35,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public LibsnesCore(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData, CoreComm comm, object Settings, object SyncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
+			MemoryCallbacks = new MemoryCallbackSystem();
+			Tracer = new TraceBuffer();
+
 			_game = game;
 			CoreComm = comm;
 			byte[] sgbRomData = null;
@@ -146,8 +149,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				CoreComm.VsyncDen = 4 * 341 * 312;
 			}
 
-			Tracer = new TraceBuffer();
-
 			api.CMD_power();
 
 			SetupMemoryDomains(romData, sgbRomData);
@@ -250,6 +251,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
 
 		public ITracer Tracer { get; private set; }
+		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
 		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value)
@@ -385,7 +387,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		void ReadHook(uint addr)
 		{
-			CoreComm.MemoryCallbackSystem.CallRead(addr);
+			MemoryCallbacks.CallRead(addr);
 			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			//EDIT: for now, theres some IPC re-entrancy problem
 			//RefreshMemoryCallbacks();
@@ -393,7 +395,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 		void ExecHook(uint addr)
 		{
-			CoreComm.MemoryCallbackSystem.CallExecute(addr);
+			MemoryCallbacks.CallExecute(addr);
 			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			//EDIT: for now, theres some IPC re-entrancy problem
 			//RefreshMemoryCallbacks();
@@ -401,7 +403,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 		void WriteHook(uint addr, byte val)
 		{
-			CoreComm.MemoryCallbackSystem.CallWrite(addr);
+			MemoryCallbacks.CallWrite(addr);
 			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			//EDIT: for now, theres some IPC re-entrancy problem
 			//RefreshMemoryCallbacks();
@@ -649,7 +651,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		void RefreshMemoryCallbacks(bool suppress)
 		{
-			var mcs = CoreComm.MemoryCallbackSystem;
+			var mcs = MemoryCallbacks;
 			api.QUERY_set_state_hook_exec(!suppress && mcs.HasExecutes);
 			api.QUERY_set_state_hook_read(!suppress && mcs.HasReads);
 			api.QUERY_set_state_hook_write(!suppress && mcs.HasWrites);

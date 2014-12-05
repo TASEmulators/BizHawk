@@ -52,6 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public N64(CoreComm comm, GameInfo game, byte[] file, object settings, object syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
+			MemoryCallbacks = new MemoryCallbackSystem();
 
 			int SaveType = 0;
 			if (game.OptionValue("SaveType") == "EEPROM_16K")
@@ -399,7 +400,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		private void RefreshMemoryCallbacks()
 		{
-			var mcs = CoreComm.MemoryCallbackSystem;
+			var mcs = MemoryCallbacks;
 
 			// we RefreshMemoryCallbacks() after the triggers in case the trigger turns itself off at that point
 			if (mcs.HasReads)

@@ -124,6 +124,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		private void LogMemoryCallbacksNotImplemented()
+		{
+			Log(string.Format("{0} does not implement memory callbacks"));
+		}
+
 		#endregion
 
 		[LuaMethodAttributes(
@@ -196,10 +201,19 @@ namespace BizHawk.Client.Common
 		)]
 		public string OnMemoryExecute(LuaFunction luaf, uint address, string name = null)
 		{
-			var nlf = new NamedLuaFunction(luaf, "OnMemoryExecute", LogOutputCallback, CurrentThread, name);
-			_luaFunctions.Add(nlf);
-			Global.CoreComm.MemoryCallbackSystem.AddExecute(nlf.Callback, address);
-			return nlf.Guid.ToString();
+			if (Global.Emulator.MemoryCallbacksAvailable())
+			{
+				var nlf = new NamedLuaFunction(luaf, "OnMemoryExecute", LogOutputCallback, CurrentThread, name);
+				_luaFunctions.Add(nlf);
+
+				Global.Emulator.AsDebuggable().MemoryCallbacks.AddExecute(nlf.Callback, address);
+				return nlf.Guid.ToString();
+			}
+			else
+			{
+				LogMemoryCallbacksNotImplemented();
+				return Guid.Empty.ToString();
+			}
 		}
 
 		[LuaMethodAttributes(
@@ -208,10 +222,18 @@ namespace BizHawk.Client.Common
 		)]
 		public string OnMemoryRead(LuaFunction luaf, uint? address = null, string name = null)
 		{
-			var nlf = new NamedLuaFunction(luaf, "OnMemoryRead", LogOutputCallback, CurrentThread, name);
-			_luaFunctions.Add(nlf);
-			Global.CoreComm.MemoryCallbackSystem.AddRead(nlf.Callback, address);
-			return nlf.Guid.ToString();
+			if (Global.Emulator.MemoryCallbacksAvailable())
+			{
+				var nlf = new NamedLuaFunction(luaf, "OnMemoryRead", LogOutputCallback, CurrentThread, name);
+				_luaFunctions.Add(nlf);
+				Global.Emulator.AsDebuggable().MemoryCallbacks.AddRead(nlf.Callback, address);
+				return nlf.Guid.ToString();
+			}
+			else
+			{
+				LogMemoryCallbacksNotImplemented();
+				return Guid.Empty.ToString();
+			}
 		}
 
 		[LuaMethodAttributes(
@@ -220,10 +242,18 @@ namespace BizHawk.Client.Common
 		)]
 		public string OnMemoryWrite(LuaFunction luaf, uint? address = null, string name = null)
 		{
-			var nlf = new NamedLuaFunction(luaf, "OnMemoryWrite", LogOutputCallback, CurrentThread, name);
-			_luaFunctions.Add(nlf);
-			Global.CoreComm.MemoryCallbackSystem.AddWrite(nlf.Callback, address);
-			return nlf.Guid.ToString();
+			if (Global.Emulator.MemoryCallbacksAvailable())
+			{
+				var nlf = new NamedLuaFunction(luaf, "OnMemoryWrite", LogOutputCallback, CurrentThread, name);
+				_luaFunctions.Add(nlf);
+				Global.Emulator.AsDebuggable().MemoryCallbacks.AddWrite(nlf.Callback, address);
+				return nlf.Guid.ToString();
+			}
+			else
+			{
+				LogMemoryCallbacksNotImplemented();
+				return Guid.Empty.ToString();
+			}
 		}
 
 		[LuaMethodAttributes(

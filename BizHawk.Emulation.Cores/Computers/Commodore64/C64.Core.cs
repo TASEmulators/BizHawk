@@ -132,6 +132,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			[FeatureNotImplemented]
 			get { throw new NotImplementedException(); }
 		}
+
+		public IMemoryCallbackSystem MemoryCallbacks
+		{
+			[FeatureNotImplemented]
+			get { throw new NotImplementedException(); }
+		}
 	}
 
 	static public class C64Util

@@ -90,6 +90,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public WonderSwan(CoreComm comm, byte[] file, bool deterministic, object Settings, object SyncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
+			MemoryCallbacks = new MemoryCallbackSystem();
 			CoreComm = comm;
 			_Settings = (Settings)Settings ?? new Settings();
 			_SyncSettings = (SyncSettings)SyncSettings ?? new SyncSettings();
@@ -140,6 +141,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				throw new NotImplementedException();
 			}
 		}
+
+		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
 		public void Dispose()
 		{
@@ -353,15 +356,15 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		void ReadCallback(uint addr)
 		{
-			CoreComm.MemoryCallbackSystem.CallRead(addr);
+			MemoryCallbacks.CallRead(addr);
 		}
 		void WriteCallback(uint addr)
 		{
-			CoreComm.MemoryCallbackSystem.CallWrite(addr);
+			MemoryCallbacks.CallWrite(addr);
 		}
 		void ExecCallback(uint addr)
 		{
-			CoreComm.MemoryCallbackSystem.CallExecute(addr);
+			MemoryCallbacks.CallExecute(addr);
 		}
 		void ButtonCallback()
 		{
@@ -391,9 +394,9 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		void SetMemoryCallbacks()
 		{
 			BizSwan.bizswan_setmemorycallbacks(Core,
-				CoreComm.MemoryCallbackSystem.HasReads ? ReadCallbackD : null,
-				CoreComm.MemoryCallbackSystem.HasWrites ? WriteCallbackD : null,
-				CoreComm.MemoryCallbackSystem.HasExecutes ? ExecCallbackD : null);
+				MemoryCallbacks.HasReads ? ReadCallbackD : null,
+				MemoryCallbacks.HasWrites ? WriteCallbackD : null,
+				MemoryCallbacks.HasExecutes ? ExecCallbackD : null);
 		}
 
 		#endregion

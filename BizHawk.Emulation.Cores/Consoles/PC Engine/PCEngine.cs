@@ -70,6 +70,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			Tracer = new TraceBuffer();
+			MemoryCallbacks = new MemoryCallbackSystem();
 			CoreComm = comm;
 
 			switch (game.System)
@@ -94,11 +95,13 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public string BoardName { get { return null; } }
 
 		public ITracer Tracer { get; private set; }
+		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
 		public PCEngine(CoreComm comm, GameInfo game, Disc disc, object Settings, object syncSettings)
 		{
 			CoreComm = comm;
 			Tracer = new TraceBuffer();
+			MemoryCallbacks = new MemoryCallbackSystem();
 			CoreComm.UsesDriveLed = true;
 			systemid = "PCECD";
 			Type = NecSystemType.TurboCD;
@@ -152,7 +155,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		void Init(GameInfo game, byte[] rom)
 		{
 			Controller = NullController.GetNullController();
-			Cpu = new HuC6280(CoreComm);
+			Cpu = new HuC6280(this);
 			VCE = new VCE();
 			VDC1 = new VDC(this, Cpu, VCE);
 			PSG = new HuC6280PSG();

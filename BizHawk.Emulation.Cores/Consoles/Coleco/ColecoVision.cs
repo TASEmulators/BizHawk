@@ -72,6 +72,12 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			get { throw new NotImplementedException(); }
 		}
 
+		public IMemoryCallbackSystem MemoryCallbacks
+		{
+			[FeatureNotImplemented]
+			get { throw new NotImplementedException(); }
+		}
+
 		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 		MemoryDomainList memoryDomains;
 		const ushort RamSizeMask = 0x03FF;

@@ -24,6 +24,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
+			MemoryCallbacks = new MemoryCallbackSystem();
+
 			byte[] biosfile = CoreComm.CoreFileProvider.GetFirmware("GBA", "Bios", true, "GBA bios file is mandatory.");
 			if (file.Length > 32 * 1024 * 1024)
 				throw new ArgumentException("ROM is too big to be a GBA ROM!");
@@ -118,6 +120,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
 
 		public ITracer Tracer { get; private set; }
+
+		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
 		public string SystemId { get { return "GBA"; } }
 
@@ -283,9 +287,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		void InitCallbacks()
 		{
 			padcb = new LibVBANext.StandardCallback(() => InputCallbacks.Call());
-			fetchcb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallExecute(addr));
-			readcb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallRead(addr));
-			writecb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallWrite(addr));
+			fetchcb = new LibVBANext.AddressCallback((addr) => MemoryCallbacks.CallExecute(addr));
+			readcb = new LibVBANext.AddressCallback((addr) => MemoryCallbacks.CallRead(addr));
+			writecb = new LibVBANext.AddressCallback((addr) => MemoryCallbacks.CallWrite(addr));
 			tracecb = new LibVBANext.TraceCallback((addr, opcode) => Tracer.Put(Trace(addr, opcode)));
 			_inputCallbacks.ActiveChanged += SyncPadCallback;
 		}
@@ -304,9 +308,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		void SyncCallbacks()
 		{
 			//LibVBANext.SetPadCallback(Core, InputCallbacks.Any() ? padcb : null);
-			LibVBANext.SetFetchCallback(Core, CoreComm.MemoryCallbackSystem.HasExecutes ? fetchcb : null);
-			LibVBANext.SetReadCallback(Core, CoreComm.MemoryCallbackSystem.HasReads ? readcb : null);
-			LibVBANext.SetWriteCallback(Core, CoreComm.MemoryCallbackSystem.HasWrites ? writecb : null);
+			LibVBANext.SetFetchCallback(Core, MemoryCallbacks.HasExecutes ? fetchcb : null);
+			LibVBANext.SetReadCallback(Core, MemoryCallbacks.HasReads ? readcb : null);
+			LibVBANext.SetWriteCallback(Core, MemoryCallbacks.HasWrites ? writecb : null);
 			LibVBANext.SetTraceCallback(Core, Tracer.Enabled ? tracecb : null);
 		}
 
