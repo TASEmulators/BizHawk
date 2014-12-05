@@ -36,20 +36,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
 
-		private InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
-		// low priority TODO: due to certain aspects of the core implementation,
-		// we don't smartly use the ActiveChanged event here.
-		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
-
-		/// <summary>
-		/// for use in dual core
-		/// </summary>
-		/// <param name="ics"></param>
-		public void ConnectInputCallbackSystem(InputCallbackSystem ics)
-		{
-			_inputCallbacks = ics;
-		}
-
 		// all cycle counts are relative to a 2*1024*1024 mhz refclock
 
 		/// <summary>
@@ -140,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			Tracer = new TraceBuffer();
-			MemoryCallbacks = new MemoryCallbackSystem();
+			InitMemoryCallbacks();
 			CoreComm = comm;
 
 			comm.VsyncNum = 262144;
@@ -277,8 +263,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public ITracer Tracer { get; private set; }
 
-		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
-
 		/// <summary>
 		/// true if the emulator is currently emulating CGB
 		/// </summary>
@@ -286,6 +270,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public bool IsCGBMode()
 		{
 			return (LibGambatte.gambatte_iscgb(GambatteState));
+		}
+
+		private InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		// low priority TODO: due to certain aspects of the core implementation,
+		// we don't smartly use the ActiveChanged event here.
+		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
+
+		/// <summary>
+		/// for use in dual core
+		/// </summary>
+		/// <param name="ics"></param>
+		public void ConnectInputCallbackSystem(InputCallbackSystem ics)
+		{
+			_inputCallbacks = ics;
 		}
 
 		#endregion
@@ -320,7 +318,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			if (Controller["Power"])
 				LibGambatte.gambatte_reset(GambatteState, GetCurrentTime());
 
-			RefreshMemoryCallbacks();
 			if (Tracer.Enabled)
 				tracecb = MakeTrace;
 			else
@@ -644,28 +641,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		LibGambatte.MemoryCallback writecb;
 		LibGambatte.MemoryCallback execcb;
 
+		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem();
+		public IMemoryCallbackSystem MemoryCallbacks { get { return _memorycallbacks; } }
+
+		void InitMemoryCallbacks()
+		{
+			readcb = (addr) => MemoryCallbacks.CallRead(addr);
+			writecb = (addr) => MemoryCallbacks.CallWrite(addr);
+			execcb = (addr) => MemoryCallbacks.CallExecute(addr);
+			_memorycallbacks.ActiveChanged += RefreshMemoryCallbacks;
+		}
+
 		void RefreshMemoryCallbacks()
 		{
 			var mcs = MemoryCallbacks;
 
-			// we RefreshMemoryCallbacks() after the triggers in case the trigger turns itself off at that point
-
-			if (mcs.HasReads)
-				readcb = delegate(uint addr) { mcs.CallRead(addr); RefreshMemoryCallbacks(); };
-			else
-				readcb = null;
-			if (mcs.HasWrites)
-				writecb = delegate(uint addr) { mcs.CallWrite(addr); RefreshMemoryCallbacks(); };
-			else
-				writecb = null;
-			if (mcs.HasExecutes)
-				execcb = delegate(uint addr) { mcs.CallExecute(addr); RefreshMemoryCallbacks(); };
-			else
-				execcb = null;
-
-			LibGambatte.gambatte_setreadcallback(GambatteState, readcb);
-			LibGambatte.gambatte_setwritecallback(GambatteState, writecb);
-			LibGambatte.gambatte_setexeccallback(GambatteState, execcb);
+			LibGambatte.gambatte_setreadcallback(GambatteState, mcs.HasReads ? readcb : null);
+			LibGambatte.gambatte_setwritecallback(GambatteState, mcs.HasWrites ? writecb : null);
+			LibGambatte.gambatte_setexeccallback(GambatteState, mcs.HasExecutes ? execcb : null);
 		}
 
 		#endregion

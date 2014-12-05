@@ -24,7 +24,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
-			MemoryCallbacks = new MemoryCallbackSystem();
 
 			byte[] biosfile = CoreComm.CoreFileProvider.GetFirmware("GBA", "Bios", true, "GBA bios file is mandatory.");
 			if (file.Length > 32 * 1024 * 1024)
@@ -306,7 +305,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			LibVBANext.SetWriteCallback(Core, MemoryCallbacks.HasWrites ? writecb : null);
 		}
 
-		void SyncTracerCallback()
+		void SyncTraceCallback()
 		{
 			LibVBANext.SetTraceCallback(Core, Tracer.Enabled ? tracecb : null);
 		}
