@@ -242,6 +242,21 @@
     <Compile Include="Consoles\Atari\lynx\LibLynx.cs" />
     <Compile Include="Consoles\Atari\lynx\Lynx.cs" />
     <Compile Include="Consoles\Coleco\ColecoVision.cs" />
+    <Compile Include="Consoles\Coleco\ColecoVision.IDebuggable.cs">
+      <DependentUpon>ColecoVision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Coleco\ColecoVision.IInputPollable.cs">
+        <DependentUpon>ColecoVision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Coleco\ColecoVision.IMemoryDomains.cs">
+        <DependentUpon>ColecoVision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Coleco\ColecoVision.ISettable.cs">
+        <DependentUpon>ColecoVision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Coleco\ColecoVision.IStatable.cs">
+        <DependentUpon>ColecoVision.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Coleco\Input.cs" />
     <Compile Include="Consoles\Coleco\MemoryMap.cs" />
     <Compile Include="Consoles\Coleco\TMS9918A.cs" />
@@ -278,7 +293,7 @@
       <DependentUpon>N64.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\N64\N64.IStatable.cs">
-        <DependentUpon>N64.cs</DependentUpon>
+      <DependentUpon>N64.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\N64\N64Input.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64Settings.cs" />
