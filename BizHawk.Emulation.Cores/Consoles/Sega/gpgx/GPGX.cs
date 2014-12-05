@@ -387,6 +387,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
 
+		private readonly TraceBuffer _tracer = new TraceBuffer();
+
+		public ITracer Tracer
+		{
+			get
+			{
+				return _tracer;
+			}
+		}
+
 		#endregion
 
 		// TODO: use render and rendersound

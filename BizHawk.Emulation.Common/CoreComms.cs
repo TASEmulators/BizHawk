@@ -9,11 +9,6 @@ namespace BizHawk.Emulation.Common
 	{
 		public ICoreFileProvider CoreFileProvider;
 
-		/// <summary>
-		/// if this is set, then the cpu should dump trace info to CpuTraceStream
-		/// </summary>
-		public TraceBuffer Tracer = new TraceBuffer();
-
 		public MemoryCallbackSystem MemoryCallbackSystem = new MemoryCallbackSystem();
 
 		public double VsyncRate
@@ -31,8 +26,6 @@ namespace BizHawk.Emulation.Common
 		public string RomStatusDetails;
 
 		public int ScreenLogicalOffsetX, ScreenLogicalOffsetY;
-
-		public bool CpuTraceAvailable = false;
 
 		public string TraceHeader = "Instructions";
 
@@ -67,53 +60,6 @@ namespace BizHawk.Emulation.Common
 		public Action DeactivateGLContext; //this shouldnt be necessary.. frontend should be changing context before it does anything.. but for now..
 
 		public Func<bool> DispSnowyNullEmulator;
-	}
-
-	public class TraceBuffer
-	{
-		public string TakeContents()
-		{
-			string s = buffer.ToString();
-			buffer.Clear();
-			return s;
-		}
-
-		public string Contents
-		{
-			get
-			{
-				return buffer.ToString();
-			}
-		}
-
-		public void Put(string content)
-		{
-			if (logging)
-			{
-				buffer.AppendLine(content);
-			}
-		}
-
-		public TraceBuffer()
-		{
-			buffer = new StringBuilder();
-		}
-
-		public bool Enabled
-		{
-			get
-			{
-				return logging;
-			}
-
-			set
-			{
-				logging = value;
-			}
-		}
-
-		private readonly StringBuilder buffer;
-		private bool logging;
 	}
 
 	public class MemoryCallbackSystem

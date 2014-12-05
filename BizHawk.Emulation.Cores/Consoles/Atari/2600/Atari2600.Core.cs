@@ -414,9 +414,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_tia.Execute(1);
 			_tia.Execute(1);
 			M6532.Timer.Tick();
-			if (CoreComm.Tracer.Enabled)
+			if (Tracer.Enabled)
 			{
-				CoreComm.Tracer.Put(Cpu.TraceState());
+				Tracer.Put(Cpu.TraceState());
 			}
 			Cpu.ExecuteOne();
 			_mapper.ClockCpu();

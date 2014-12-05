@@ -139,13 +139,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public Gameboy(CoreComm comm, GameInfo game, byte[] file, object Settings, object SyncSettings, bool deterministic)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
+			Tracer = new TraceBuffer();
 			CoreComm = comm;
 
 			comm.VsyncNum = 262144;
 			comm.VsyncDen = 4389;
 			comm.RomStatusAnnotation = null;
 			comm.RomStatusDetails = null;
-			comm.CpuTraceAvailable = true;
 			comm.NominalWidth = 160;
 			comm.NominalHeight = 144;
 
@@ -274,6 +274,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			throw new NotImplementedException();
 		}
 
+		public ITracer Tracer { get; private set; }
+
 		/// <summary>
 		/// true if the emulator is currently emulating CGB
 		/// </summary>
@@ -316,7 +318,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				LibGambatte.gambatte_reset(GambatteState, GetCurrentTime());
 
 			RefreshMemoryCallbacks();
-			if (CoreComm.Tracer.Enabled)
+			if (Tracer.Enabled)
 				tracecb = MakeTrace;
 			else
 				tracecb = null;
@@ -675,7 +677,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			System.Runtime.InteropServices.Marshal.Copy(_s, s, 0, 13);
 			ushort unused;
 
-			CoreComm.Tracer.Put(string.Format(
+			Tracer.Put(string.Format(
 				"{13} SP:{2:x2} A:{3:x2} B:{4:x2} C:{5:x2} D:{6:x2} E:{7:x2} F:{8:x2} H:{9:x2} L:{10:x2} {11} Cy:{0}",
 				s[0],
 				s[1] & 0xffff,

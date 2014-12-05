@@ -37,6 +37,36 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return core == null || core is NullEmulator;
 		}
 
+		public static bool CpuTraceAvailable(this IEmulator core)
+		{
+			// TODO: this is a pretty ugly way to handle this
+			var debuggable = (IDebuggable)core.ServiceProvider.GetService<IDebuggable>();
+			if (debuggable != null)
+			{
+				try
+				{
+					var tracer = debuggable.Tracer;
+					return true;
+				}
+				catch(NotImplementedException)
+				{
+					return false;
+				}
+			}
+
+			return false;
+		}
+
+		public static bool CanDebug(this IEmulator core)
+		{
+			return core.ServiceProvider.HasService<IDebuggable>();
+		}
+
+		public static IDebuggable GetDebugger(this IEmulator core)
+		{
+			return (IDebuggable)core.ServiceProvider.GetService<IDebuggable>();
+		}
+
 		// TODO: a better place for these
 		public static bool IsImplemented(this MethodInfo info)
 		{

@@ -53,5 +53,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 					break;
 			}
 		}
+
+		public ITracer Tracer
+		{
+			[FeatureNotImplemented]
+			get { throw new NotImplementedException(); }
+		}
 	}
 }

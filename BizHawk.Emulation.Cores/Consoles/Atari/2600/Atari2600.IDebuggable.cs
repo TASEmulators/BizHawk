@@ -55,5 +55,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					break;
 			}
 		}
+
+		public ITracer Tracer { get; private set; }
 	}
 }

@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -111,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// TODO: some kind of method like PauseAndRelinquishControl() which will set a flag preventing unpausing by the user, and then a ResumeControl() method that is done on close
 			//GlobalWin.MainForm.PauseEmulator();
-			Global.CoreComm.Tracer.Enabled = true;
+			(_core as IDebuggable).Tracer.Enabled = true;
 
 			if (Global.Config.Atari2600DebuggerSettings.UseWindowPosition)
 			{
@@ -145,8 +146,8 @@ namespace BizHawk.Client.EmuHawk
 		private void Shutdown()
 		{
 			//TODO: add a Mainform.ResumeControl() call
-			Global.CoreComm.Tracer.TakeContents();
-			Global.CoreComm.Tracer.Enabled = false;
+			(_core as IDebuggable).Tracer.TakeContents();
+			(_core as IDebuggable).Tracer.Enabled = false;
 		}
 
 		public void Restart()
@@ -214,7 +215,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateTraceLog()
 		{
-			var instructions = Global.CoreComm.Tracer.TakeContents().Split('\n');
+			var instructions = (_core as IDebuggable).Tracer.TakeContents().Split('\n');
 			if (!string.IsNullOrWhiteSpace(instructions[0]))
 			{
 				_instructions.AddRange(instructions.Where(str => !string.IsNullOrEmpty(str)));

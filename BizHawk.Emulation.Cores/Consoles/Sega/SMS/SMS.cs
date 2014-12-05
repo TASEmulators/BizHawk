@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			IsGameGear = game.System == "GG";
 			IsSG1000 = game.System == "SG";
 			RomData = rom;
-			CoreComm.CpuTraceAvailable = true;
+			Tracer = new TraceBuffer();
 			
 			if (RomData.Length % BankSize != 0)
 				Array.Resize(ref RomData, ((RomData.Length / BankSize) + 1) * BankSize);
@@ -212,6 +212,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+
+		public ITracer Tracer { get; private set; }
 
 		string DetermineRegion(string gameRegion)
 		{
@@ -321,12 +323,12 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			lagged = true;
 			Frame++;
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
-			Cpu.Debug = CoreComm.Tracer.Enabled;
+			Cpu.Debug = Tracer.Enabled;
 			if (!IsGameGear)
 				PSG.StereoPanning = Settings.ForceStereoSeparation ? ForceStereoByte : (byte) 0xFF;
 
 			if (Cpu.Debug && Cpu.Logger == null) // TODO, lets not do this on each frame. But lets refactor CoreComm/CoreComm first
-				Cpu.Logger = (s) => CoreComm.Tracer.Put(s);
+				Cpu.Logger = (s) => Tracer.Put(s);
 
 			if (IsGameGear == false)
 				Cpu.NonMaskableInterrupt = Controller["Pause"];

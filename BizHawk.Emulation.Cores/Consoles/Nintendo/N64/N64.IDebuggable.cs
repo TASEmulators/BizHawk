@@ -58,5 +58,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		{
 			throw new NotImplementedException();
 		}
+
+		public ITracer Tracer
+		{
+			[FeatureNotImplemented]
+			get
+			{
+				throw new NotImplementedException();
+			}
+		}
 	}
 }

@@ -65,6 +65,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				if (!LibVBANext.LoadRom(Core, file, (uint)file.Length, biosfile, (uint)biosfile.Length, FES))
 					throw new InvalidOperationException("LoadRom() returned false!");
 
+				Tracer = new TraceBuffer();
+
 				CoreComm.VsyncNum = 262144;
 				CoreComm.VsyncDen = 4389;
 				CoreComm.NominalWidth = 240;
@@ -78,8 +80,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				InitMemoryDomains();
 				InitRegisters();
 				InitCallbacks();
-
-				CoreComm.CpuTraceAvailable = true;
 
 				// todo: hook me up as a setting
 				SetupColors();
@@ -116,6 +116,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		// TODO: optimize managed to unmanaged using the ActiveChanged event
 		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
+
+		public ITracer Tracer { get; private set; }
 
 		public string SystemId { get { return "GBA"; } }
 
@@ -284,7 +286,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			fetchcb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallExecute(addr));
 			readcb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallRead(addr));
 			writecb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallWrite(addr));
-			tracecb = new LibVBANext.TraceCallback((addr, opcode) => CoreComm.Tracer.Put(Trace(addr, opcode)));
+			tracecb = new LibVBANext.TraceCallback((addr, opcode) => Tracer.Put(Trace(addr, opcode)));
 			_inputCallbacks.ActiveChanged += SyncPadCallback;
 		}
 
@@ -305,7 +307,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			LibVBANext.SetFetchCallback(Core, CoreComm.MemoryCallbackSystem.HasExecutes ? fetchcb : null);
 			LibVBANext.SetReadCallback(Core, CoreComm.MemoryCallbackSystem.HasReads ? readcb : null);
 			LibVBANext.SetWriteCallback(Core, CoreComm.MemoryCallbackSystem.HasWrites ? writecb : null);
-			LibVBANext.SetTraceCallback(Core, CoreComm.Tracer.Enabled ? tracecb : null);
+			LibVBANext.SetTraceCallback(Core, Tracer.Enabled ? tracecb : null);
 		}
 
 		LibVBANext.StandardCallback scanlinecb;
