@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				CoreComm.VsyncDen = 4 * 341 * 312;
 			}
 
-			CoreComm.CpuTraceAvailable = true;
+			Tracer = new TraceBuffer();
 
 			api.CMD_power();
 
@@ -249,6 +249,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		// TODO: optimize managed to unmanaged using the ActiveChanged event
 		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
 
+		public ITracer Tracer { get; private set; }
+
 		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value)
 		{
@@ -348,7 +350,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		void snes_trace(string msg)
 		{
-			CoreComm.Tracer.Put(msg);
+			Tracer.Put(msg);
 		}
 
 		public SnesColors.ColorType CurrPalette { get; private set; }
@@ -596,7 +598,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				savestatebuff = ms.ToArray();
 			}
 
-			if (!nocallbacks && CoreComm.Tracer.Enabled)
+			if (!nocallbacks && Tracer.Enabled)
 				api.QUERY_set_trace_callback(tracecb);
 			else
 				api.QUERY_set_trace_callback(null);

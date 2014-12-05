@@ -119,5 +119,11 @@ namespace BizHawk.Emulation.Cores.Calculators
 					break;
 			}
 		}
+
+		public ITracer Tracer
+		{
+			[FeatureNotImplemented]
+			get { throw new NotImplementedException(); }
+		}
 	}
 }

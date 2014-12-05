@@ -16,5 +16,7 @@ namespace BizHawk.Emulation.Common
 		/// <param name="register"></param>
 		/// <param name="value"></param>
 		void SetCpuRegister(string register, int value);
+
+		ITracer Tracer { get; }
 	}
 }

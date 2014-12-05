@@ -66,6 +66,12 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
 
+		public ITracer Tracer
+		{
+			[FeatureNotImplemented]
+			get { throw new NotImplementedException(); }
+		}
+
 		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 		MemoryDomainList memoryDomains;
 		const ushort RamSizeMask = 0x03FF;

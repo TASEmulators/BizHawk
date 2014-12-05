@@ -1103,7 +1103,7 @@ namespace BizHawk.Client.EmuHawk
 			TAStudioMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["TAStudio"].Bindings;
 			VirtualPadMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Virtual Pad"].Bindings;
 			TraceLoggerMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Trace Logger"].Bindings;
-			TraceLoggerMenuItem.Enabled = Global.Emulator.CoreComm.CpuTraceAvailable;
+			TraceLoggerMenuItem.Enabled = Global.Emulator.CpuTraceAvailable();
 
 			TAStudioMenuItem.Enabled = Global.Emulator.HasSavestates() && Global.Emulator.CanPollInput();
 

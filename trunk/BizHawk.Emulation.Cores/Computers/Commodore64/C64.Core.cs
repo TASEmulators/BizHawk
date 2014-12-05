@@ -126,6 +126,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 					break;
 			}
 		}
+
+		public ITracer Tracer
+		{
+			[FeatureNotImplemented]
+			get { throw new NotImplementedException(); }
+		}
 	}
 
 	static public class C64Util

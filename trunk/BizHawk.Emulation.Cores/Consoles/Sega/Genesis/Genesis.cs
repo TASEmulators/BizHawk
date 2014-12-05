@@ -292,6 +292,15 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 			throw new NotImplementedException();
 		}
 
+		public ITracer Tracer
+		{
+			[FeatureNotImplemented]
+			get
+			{
+				throw new NotImplementedException();
+			}
+		}
+
 		int vdpcallback(int level) // Musashi handler
 		{
 			InterruptCallback(level);

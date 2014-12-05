@@ -464,7 +464,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadTraceLogger()
 		{
-			if (Global.Emulator.CoreComm.CpuTraceAvailable)
+			if (Global.Emulator.CpuTraceAvailable())
 			{
 				Load<TraceLogger>();
 			}

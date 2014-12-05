@@ -55,6 +55,7 @@
     <Compile Include="Base Implementations\NullController.cs" />
     <Compile Include="Base Implementations\NullEmulator.cs" />
     <Compile Include="Base Implementations\NullSound.cs" />
+    <Compile Include="Base Implementations\TraceBuffer.cs" />
     <Compile Include="CoreAttributes.cs" />
     <Compile Include="CoreComms.cs" />
     <Compile Include="Database\CRC32.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Interfaces\ISoundProvider.cs" />
     <Compile Include="Interfaces\IStatable.cs" />
     <Compile Include="Interfaces\ISyncSoundProvider.cs" />
+    <Compile Include="Interfaces\ITracer.cs" />
     <Compile Include="Interfaces\IVideoProvider.cs" />
     <Compile Include="MemoryDomain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

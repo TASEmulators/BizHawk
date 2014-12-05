@@ -69,8 +69,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public PCEngine(CoreComm comm, GameInfo game, byte[] rom, object Settings, object syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
+			Tracer = new TraceBuffer();
 			CoreComm = comm;
-			CoreComm.CpuTraceAvailable = true;
 
 			switch (game.System)
 			{
@@ -93,10 +93,12 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public string BoardName { get { return null; } }
 
+		public ITracer Tracer { get; private set; }
+
 		public PCEngine(CoreComm comm, GameInfo game, Disc disc, object Settings, object syncSettings)
 		{
 			CoreComm = comm;
-			CoreComm.CpuTraceAvailable = true;
+			Tracer = new TraceBuffer();
 			CoreComm.UsesDriveLed = true;
 			systemid = "PCECD";
 			Type = NecSystemType.TurboCD;
@@ -156,7 +158,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			PSG = new HuC6280PSG();
 			SCSI = new ScsiCDBus(this, disc);
 
-			Cpu.Logger = (s) => CoreComm.Tracer.Put(s);
+			Cpu.Logger = (s) => Tracer.Put(s);
 
 			if (TurboGrafx)
 			{
@@ -217,7 +219,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				RomData = rom;
 				RomLength = RomData.Length;
 				// user request: current value of the SF2MapperLatch on the tracelogger
-				Cpu.Logger = (s) => CoreComm.Tracer.Put(string.Format("{0:X1}:{1}", SF2MapperLatch, s));
+				Cpu.Logger = (s) => Tracer.Put(string.Format("{0:X1}:{1}", SF2MapperLatch, s));
 			}
 			else
 			{
@@ -317,7 +319,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			CheckSpriteLimit();
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
 
-			Cpu.Debug = CoreComm.Tracer.Enabled;
+			Cpu.Debug = Tracer.Enabled;
 
 			if (SuperGrafx)
 				VPC.ExecFrame(render);

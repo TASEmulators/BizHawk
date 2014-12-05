@@ -65,7 +65,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			comm.VsyncDen = L.CoreComm.VsyncDen;
 			comm.RomStatusAnnotation = null;
 			comm.RomStatusDetails = "LEFT:\r\n" + L.CoreComm.RomStatusDetails + "RIGHT:\r\n" + R.CoreComm.RomStatusDetails;
-			comm.CpuTraceAvailable = false; // TODO
 			comm.NominalWidth = L.CoreComm.NominalWidth + R.CoreComm.NominalWidth;
 			comm.NominalHeight = L.CoreComm.NominalHeight;
 			comm.UsesLinkCable = true;
@@ -87,6 +86,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
+
+		public ITracer Tracer
+		{
+			[FeatureNotImplemented]
+			get { throw new NotImplementedException(); }
+		}
 
 		public IVideoProvider VideoProvider { get { return this; } }
 		public ISoundProvider SoundProvider { get { return null; } }

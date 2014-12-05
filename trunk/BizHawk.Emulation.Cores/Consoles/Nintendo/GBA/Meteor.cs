@@ -48,10 +48,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public GBA(CoreComm comm, byte[] file)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
+			Tracer = new TraceBuffer();
 			CoreComm = comm;
+
 			comm.VsyncNum = 262144;
 			comm.VsyncDen = 4389;
-			comm.CpuTraceAvailable = true;
 			comm.TraceHeader = "   -Addr--- -Opcode- -Instruction------------------- -R0----- -R1----- -R2----- -R3----- -R4----- -R5----- -R6----- -R7----- -R8----- -R9----- -R10---- -R11---- -R12---- -R13(SP) -R14(LR) -R15(PC) -CPSR--- -SPSR---";
 			comm.NominalWidth = 240;
 			comm.NominalHeight = 160;
@@ -80,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			if (Controller["Power"])
 				LibMeteor.libmeteor_hardreset();
 			// due to the design of the tracing api, we have to poll whether it's active each frame
-			LibMeteor.libmeteor_settracecallback(CoreComm.Tracer.Enabled ? tracecallback : null);
+			LibMeteor.libmeteor_settracecallback(Tracer.Enabled ? tracecallback : null);
 			if (!coredead)
 				LibMeteor.libmeteor_frameadvance();
 			if (IsLagFrame)
@@ -95,6 +96,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		// TODO: optimize managed to unmanaged using the ActiveChanged event
 		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
+
+
+		public ITracer Tracer { get; private set; }
 
 		public string SystemId { get { return "GBA"; } }
 		public bool DeterministicEmulation { get { return true; } }
@@ -416,7 +420,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		void Trace(string msg)
 		{
-			CoreComm.Tracer.Put(msg);
+			Tracer.Put(msg);
 		}
 
 		GBAGPUMemoryAreas IGBAGPUViewable.GetMemoryAreas()

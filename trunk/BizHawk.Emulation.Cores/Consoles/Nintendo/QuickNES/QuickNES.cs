@@ -393,6 +393,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			throw new NotImplementedException();
 		}
 
+		public ITracer Tracer
+		{
+			[FeatureNotImplemented]
+			get
+			{
+				throw new NotImplementedException();
+			}
+		}
+
 		#endregion
 
 		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { throw new NotImplementedException(); } }

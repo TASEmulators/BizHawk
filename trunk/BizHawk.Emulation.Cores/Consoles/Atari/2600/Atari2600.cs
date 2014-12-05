@@ -24,6 +24,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		[CoreConstructor("A26")]
 		public Atari2600(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
+			Tracer = new TraceBuffer();
 			ServiceProvider = new BasicServiceProvider(this);
 			InputCallbacks = new InputCallbackSystem();
 			Ram = new byte[128];
@@ -31,7 +32,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			Settings = (A2600Settings)settings ?? new A2600Settings();
 			SyncSettings = (A2600SyncSettings)syncSettings ?? new A2600SyncSettings();
 
-			CoreComm.CpuTraceAvailable = true;
 			Rom = rom;
 			_game = game;
 

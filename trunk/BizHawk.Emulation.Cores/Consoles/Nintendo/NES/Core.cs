@@ -245,8 +245,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool hardResetSignal;
 		public void FrameAdvance(bool render, bool rendersound)
 		{
-			if (CoreComm.Tracer.Enabled)
-				cpu.TraceCallback = (s) => CoreComm.Tracer.Put(s);
+			if (Tracer.Enabled)
+				cpu.TraceCallback = (s) => Tracer.Put(s);
 			else
 				cpu.TraceCallback = null;
 

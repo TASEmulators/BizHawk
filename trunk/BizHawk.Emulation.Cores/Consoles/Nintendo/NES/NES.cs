@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			this.SyncSettings = (NESSyncSettings)SyncSettings ?? new NESSyncSettings();
 			this.ControllerSettings = this.SyncSettings.Controls;
 			CoreComm = comm;
-			CoreComm.CpuTraceAvailable = true;
+			Tracer = new TraceBuffer();
 			BootGodDB.Initialize();
 			videoProvider = new MyVideoProvider(this);
 			Init(game, rom, fdsbios);
@@ -924,6 +924,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 			}
 		}
+
+		public ITracer Tracer { get; private set; }
 
 		NESSettings Settings = new NESSettings();
 		NESSyncSettings SyncSettings = new NESSyncSettings();
