@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			if (Controller["Power"])
 				LibVBANext.Reset(Core);
 
-			SyncCallbacks();
+			SyncTraceCallback();
 
 			IsLagFrame = LibVBANext.FrameAdvance(Core, GetButtons(), videobuff, soundbuff, out numsamp, videopalette);
 
@@ -114,14 +114,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
 
-		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
-
-		// TODO: optimize managed to unmanaged using the ActiveChanged event
-		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
-
 		public ITracer Tracer { get; private set; }
-
-		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
 		public string SystemId { get { return "GBA"; } }
 
@@ -275,6 +268,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		LibVBANext.AddressCallback writecb;
 		LibVBANext.TraceCallback tracecb;
 
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
+
+		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem();
+		public IMemoryCallbackSystem MemoryCallbacks { get { return _memorycallbacks; } }
+
 		string Trace(uint addr, uint opcode)
 		{
 			return
@@ -292,25 +291,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			writecb = new LibVBANext.AddressCallback((addr) => MemoryCallbacks.CallWrite(addr));
 			tracecb = new LibVBANext.TraceCallback((addr, opcode) => Tracer.Put(Trace(addr, opcode)));
 			_inputCallbacks.ActiveChanged += SyncPadCallback;
+			_memorycallbacks.ActiveChanged += SyncMemoryCallbacks;
 		}
 
-		bool _inputcbactive = false;
 		void SyncPadCallback()
 		{
-			bool _inputcbactive_new = InputCallbacks.Any();
-			if (_inputcbactive != _inputcbactive_new)
-			{
-				_inputcbactive = _inputcbactive_new;
-				LibVBANext.SetPadCallback(Core, _inputcbactive ? padcb : null);
-			}
+			LibVBANext.SetPadCallback(Core, InputCallbacks.Any() ? padcb : null);
 		}
 
-		void SyncCallbacks()
+		void SyncMemoryCallbacks()
 		{
-			//LibVBANext.SetPadCallback(Core, InputCallbacks.Any() ? padcb : null);
 			LibVBANext.SetFetchCallback(Core, MemoryCallbacks.HasExecutes ? fetchcb : null);
 			LibVBANext.SetReadCallback(Core, MemoryCallbacks.HasReads ? readcb : null);
 			LibVBANext.SetWriteCallback(Core, MemoryCallbacks.HasWrites ? writecb : null);
+		}
+
+		void SyncTracerCallback()
+		{
 			LibVBANext.SetTraceCallback(Core, Tracer.Enabled ? tracecb : null);
 		}
 
