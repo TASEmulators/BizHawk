@@ -65,11 +65,13 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				var debuggable = Global.Emulator as IDebuggable;
-				if (debuggable == null)
+				var debuggable = Global.Emulator.AsDebuggable();
+				if (!Global.Emulator.CanDebug())
+				{
 					throw new NotImplementedException();
+				}
 
-				var registers = debuggable.GetCpuFlagsAndRegisters();
+				var registers = debuggable.AsDebuggable().GetCpuFlagsAndRegisters();
 				return registers.ContainsKey(name)
 					? registers[name]
 					: 0;
@@ -94,9 +96,11 @@ namespace BizHawk.Client.Common
 
 			try
 			{
-				var debuggable = Global.Emulator as IDebuggable;
-				if (debuggable == null)
+				var debuggable = Global.Emulator.AsDebuggable();
+				if (!Global.Emulator.CanDebug())
+				{
 					throw new NotImplementedException();
+				}
 
 				foreach (var kvp in debuggable.GetCpuFlagsAndRegisters())
 				{
@@ -121,9 +125,11 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				var debuggable = Global.Emulator as IDebuggable;
-				if (debuggable == null)
+				var debuggable = Global.Emulator.AsDebuggable();
+				if (!Global.Emulator.CanDebug())
+				{
 					throw new NotImplementedException();
+				}
 
 				debuggable.SetCpuRegister(register, value);
 			}
