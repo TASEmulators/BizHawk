@@ -63,6 +63,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				Core.Tracer.Enabled = true;
+				TraceView.Columns[0].Text = Core.Tracer.Header;
 			}
 			catch (NotImplementedException)
 			{
