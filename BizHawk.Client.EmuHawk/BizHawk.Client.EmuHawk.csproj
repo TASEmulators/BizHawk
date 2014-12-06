@@ -636,6 +636,13 @@
     <Compile Include="tools\Cheats\Cheats.Designer.cs">
       <DependentUpon>Cheats.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\Debugger\Breakpoint.cs" />
+    <Compile Include="tools\Debugger\BreakpointControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\Debugger\BreakpointControl.Designer.cs">
+      <DependentUpon>BreakpointControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\Debugger\GenericDebugger.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -643,6 +650,7 @@
       <DependentUpon>GenericDebugger.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\Debugger\GenericDebugger.IControlMainform.cs">
+      <DependentUpon>GenericDebugger.cs</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="tools\Debugger\GenericDebugger.IToolForm.cs">
@@ -1226,6 +1234,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Cheats\Cheats.resx">
       <DependentUpon>Cheats.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Debugger\BreakpointControl.resx">
+      <DependentUpon>BreakpointControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Debugger\GenericDebugger.resx">
       <DependentUpon>GenericDebugger.cs</DependentUpon>

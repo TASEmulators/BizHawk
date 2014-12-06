@@ -45,9 +45,11 @@
 			this.RegistersGroupBox = new System.Windows.Forms.GroupBox();
 			this.RegisterPanel = new BizHawk.Client.EmuHawk.RegisterBoxControl();
 			this.BreakpointsGroupBox = new System.Windows.Forms.GroupBox();
+			this.BreakPointControl1 = new BizHawk.Client.EmuHawk.tools.Debugger.BreakpointControl();
 			this.menuStrip1.SuspendLayout();
 			this.TracerBox.SuspendLayout();
 			this.RegistersGroupBox.SuspendLayout();
+			this.BreakpointsGroupBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -204,12 +206,25 @@
 			this.BreakpointsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.BreakpointsGroupBox.Controls.Add(this.BreakPointControl1);
 			this.BreakpointsGroupBox.Location = new System.Drawing.Point(425, 267);
 			this.BreakpointsGroupBox.Name = "BreakpointsGroupBox";
 			this.BreakpointsGroupBox.Size = new System.Drawing.Size(239, 281);
 			this.BreakpointsGroupBox.TabIndex = 9;
 			this.BreakpointsGroupBox.TabStop = false;
 			this.BreakpointsGroupBox.Text = "Breakpoints";
+			// 
+			// BreakPointControl1
+			// 
+			this.BreakPointControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.BreakPointControl1.Core = null;
+			this.BreakPointControl1.Location = new System.Drawing.Point(8, 19);
+			this.BreakPointControl1.Name = "BreakPointControl1";
+			this.BreakPointControl1.ParentDebugger = null;
+			this.BreakPointControl1.Size = new System.Drawing.Size(225, 256);
+			this.BreakPointControl1.TabIndex = 0;
 			// 
 			// GenericDebugger
 			// 
@@ -230,6 +245,7 @@
 			this.menuStrip1.PerformLayout();
 			this.TracerBox.ResumeLayout(false);
 			this.RegistersGroupBox.ResumeLayout(false);
+			this.BreakpointsGroupBox.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -253,5 +269,6 @@
 		private System.Windows.Forms.GroupBox RegistersGroupBox;
 		private RegisterBoxControl RegisterPanel;
 		private System.Windows.Forms.GroupBox BreakpointsGroupBox;
+		private tools.Debugger.BreakpointControl BreakPointControl1;
 	}
 }

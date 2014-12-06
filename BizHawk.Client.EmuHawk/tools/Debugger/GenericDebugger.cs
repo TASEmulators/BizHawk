@@ -72,6 +72,10 @@ namespace BizHawk.Client.EmuHawk
 				RegisterPanel.Core = Core;
 				RegisterPanel.ParentDebugger = this;
 				RegisterPanel.GenerateUI();
+
+				BreakPointControl1.Core = Core;
+				BreakPointControl1.ParentDebugger = this;
+
 			}
 			catch (NotImplementedException)
 			{
@@ -82,6 +86,8 @@ namespace BizHawk.Client.EmuHawk
 		private void DisengageDebugger()
 		{
 			SaveConfigSettings();
+
+			BreakPointControl1.Shutdown();
 		}
 
 		private void UpdateTraceLog()
@@ -102,13 +108,6 @@ namespace BizHawk.Client.EmuHawk
 				TraceView.ItemCount = _instructions.Count;
 			}
 		}
-
-
-
-
-
-
-
 
 		private void TraceView_QueryItemText(int index, int column, out string text)
 		{
