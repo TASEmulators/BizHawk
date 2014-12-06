@@ -30,6 +30,44 @@ namespace BizHawk.Client.EmuHawk
 
 		}
 
+		public void UpdateValues()
+		{
+			if (this.Enabled)
+			{
+				var registers = Core.GetCpuFlagsAndRegisters();
+				
+
+				_supressChangeEvents = true;
+
+				foreach (var register in registers)
+				{
+					Controls
+						.OfType<CheckBox>()
+						.ToList()
+						.ForEach(checkbox =>
+						{
+							if (checkbox.Name == register.Key)
+							{
+								checkbox.Checked = register.Value == 1;
+							}
+						});
+
+					Controls
+						.OfType<TextBox>()
+						.ToList()
+						.ForEach(textbox =>
+						{
+							if (textbox.Name == register.Key)
+							{
+								textbox.Text = register.Value.ToString();
+							}
+						});
+				}
+
+				_supressChangeEvents = false;
+			}
+		}
+
 		private bool CanGetCpuRegisters
 		{
 			get
@@ -84,9 +122,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				this.Controls.Add(new Label
 				{
-					Text = register.Key + (canset ? ": " : ""),
+					Text = register.Key.Replace("Flag ", "") + (canset ? ": " : ""),
 					Location = new Point(5, y + 2),
-					Width = 50
+					Width = 35
 				});
 
 				if (canset)
@@ -98,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 							Name = register.Key,
 							Text = "",
 							Checked = register.Value == 1 ? true : false,
-							Location = new Point(55, y)
+							Location = new Point(40, y)
 						};
 
 						c.CheckedChanged += (o, e) =>
@@ -127,13 +165,23 @@ namespace BizHawk.Client.EmuHawk
 						{
 							Name = register.Key,
 							Text = register.Value.ToString(),
-							Width = 75,
-							Location = new Point(55, y),
+							Width = 45,
+							Location = new Point(40, y),
 						};
 
 						t.TextChanged += (o, e) =>
 						{
-							Core.SetCpuRegister(t.Name, int.Parse(t.Text));
+							if (!_supressChangeEvents)
+							{
+								try
+								{
+									Core.SetCpuRegister(t.Name, int.Parse(t.Text));
+								}
+								catch (InvalidOperationException)
+								{
+									t.Enabled = false;
+								}
+							}
 						};
 
 						this.Controls.Add(t);
@@ -145,8 +193,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = register.Key,
 						Text = register.Value.ToString(),
-						Width = 75,
-						Location = new Point(55, y)
+						Width = 45,
+						Location = new Point(40, y)
 					});
 				}
 

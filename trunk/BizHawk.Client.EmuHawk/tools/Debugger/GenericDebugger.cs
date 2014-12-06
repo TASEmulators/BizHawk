@@ -103,6 +103,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+
+
+
+
+
+
+
 		private void TraceView_QueryItemText(int index, int column, out string text)
 		{
 			text = index < _instructions.Count ? _instructions[index] : string.Empty;
