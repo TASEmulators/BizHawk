@@ -58,12 +58,20 @@ namespace BizHawk.Client.EmuHawk
 			EngageDebugger();
 		}
 
+		public void DisableRegisterBox()
+		{
+			RegistersGroupBox.Enabled = false;
+		}
+
 		private void EngageDebugger()
 		{
 			try
 			{
 				Core.Tracer.Enabled = true;
 				TraceView.Columns[0].Text = Core.Tracer.Header;
+				RegisterPanel.Core = Core;
+				RegisterPanel.ParentDebugger = this;
+				RegisterPanel.GenerateUI();
 			}
 			catch (NotImplementedException)
 			{

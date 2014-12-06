@@ -649,6 +649,12 @@
       <DependentUpon>GenericDebugger.cs</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="tools\Debugger\RegisterBoxControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\Debugger\RegisterBoxControl.Designer.cs">
+      <DependentUpon>RegisterBoxControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\GBA\GBAGPUView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1223,6 +1229,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Debugger\GenericDebugger.resx">
       <DependentUpon>GenericDebugger.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Debugger\RegisterBoxControl.resx">
+      <DependentUpon>RegisterBoxControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\GBA\GBAGPUView.resx">
       <DependentUpon>GBAGPUView.cs</DependentUpon>

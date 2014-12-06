@@ -42,8 +42,11 @@
 			this.TracerBox = new System.Windows.Forms.GroupBox();
 			this.TraceView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.RegistersGroupBox = new System.Windows.Forms.GroupBox();
+			this.RegisterPanel = new BizHawk.Client.EmuHawk.RegisterBoxControl();
 			this.menuStrip1.SuspendLayout();
 			this.TracerBox.SuspendLayout();
+			this.RegistersGroupBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -54,7 +57,7 @@
             this.OptionsSubMenu});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(685, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(746, 24);
 			this.menuStrip1.TabIndex = 1;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -170,11 +173,37 @@
 			this.Script.Text = "Instructions";
 			this.Script.Width = 599;
 			// 
+			// RegistersGroupBox
+			// 
+			this.RegistersGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.RegistersGroupBox.Controls.Add(this.RegisterPanel);
+			this.RegistersGroupBox.Location = new System.Drawing.Point(425, 27);
+			this.RegistersGroupBox.Name = "RegistersGroupBox";
+			this.RegistersGroupBox.Size = new System.Drawing.Size(309, 234);
+			this.RegistersGroupBox.TabIndex = 8;
+			this.RegistersGroupBox.TabStop = false;
+			this.RegistersGroupBox.Text = "Registers";
+			// 
+			// RegisterPanel
+			// 
+			this.RegisterPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.RegisterPanel.AutoScroll = true;
+			this.RegisterPanel.Core = null;
+			this.RegisterPanel.Location = new System.Drawing.Point(8, 19);
+			this.RegisterPanel.Name = "RegisterPanel";
+			this.RegisterPanel.ParentDebugger = null;
+			this.RegisterPanel.Size = new System.Drawing.Size(295, 209);
+			this.RegisterPanel.TabIndex = 0;
+			// 
 			// GenericDebugger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(685, 560);
+			this.ClientSize = new System.Drawing.Size(746, 560);
+			this.Controls.Add(this.RegistersGroupBox);
 			this.Controls.Add(this.TracerBox);
 			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -186,6 +215,7 @@
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.TracerBox.ResumeLayout(false);
+			this.RegistersGroupBox.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -206,5 +236,7 @@
 		private System.Windows.Forms.GroupBox TracerBox;
 		private VirtualListView TraceView;
 		public System.Windows.Forms.ColumnHeader Script;
+		private System.Windows.Forms.GroupBox RegistersGroupBox;
+		private RegisterBoxControl RegisterPanel;
 	}
 }
