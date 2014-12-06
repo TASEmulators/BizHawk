@@ -5,6 +5,7 @@
 		public void UpdateValues()
 		{
 			UpdateTraceLog();
+			RegisterPanel.UpdateValues();
 		}
 
 		public void FastUpdate()
