@@ -87,6 +87,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SaveConfigSettings();
 
+			if (Core.CpuTraceAvailable())
+			{
+				Core.Tracer.Enabled = false;
+			}
+
 			BreakPointControl1.Shutdown();
 		}
 
