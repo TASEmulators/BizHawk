@@ -14,6 +14,11 @@
 
 		public void Restart()
 		{
+			if (!IsHandleCreated || IsDisposed)
+			{
+				return;
+			}
+
 			// TODO
 		}
 
