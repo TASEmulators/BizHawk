@@ -454,6 +454,11 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.LoadTraceLogger();
 			}
 
+			if (Global.Config.GenericDebuggerAutoload && Global.Emulator.CanDebug())
+			{
+				GlobalWin.Tools.Load<GenericDebugger>();
+			}
+
 			if (Global.Config.Atari2600DebuggerAutoload && Global.Emulator is Atari2600)
 			{
 				GlobalWin.Tools.Load<Atari2600Debugger>();
@@ -3682,6 +3687,5 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FeaturesMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
-
 	}
 }

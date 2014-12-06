@@ -636,6 +636,19 @@
     <Compile Include="tools\Cheats\Cheats.Designer.cs">
       <DependentUpon>Cheats.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\Debugger\GenericDebugger.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Debugger\GenericDebugger.Designer.cs">
+      <DependentUpon>GenericDebugger.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\Debugger\GenericDebugger.IControlMainform.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Debugger\GenericDebugger.IToolForm.cs">
+      <DependentUpon>GenericDebugger.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="tools\GBA\GBAGPUView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1207,6 +1220,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Cheats\Cheats.resx">
       <DependentUpon>Cheats.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Debugger\GenericDebugger.resx">
+      <DependentUpon>GenericDebugger.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\GBA\GBAGPUView.resx">
       <DependentUpon>GBAGPUView.cs</DependentUpon>

@@ -581,6 +581,10 @@ namespace BizHawk.Client.Common
 		public ToolDialogSettings Atari2600DebuggerSettings = new ToolDialogSettings();
 		public bool Atari2600DebuggerAutoload = false;
 
+		// Generic Debugger
+		public ToolDialogSettings GenericDebuggerSettings = new ToolDialogSettings();
+		public bool GenericDebuggerAutoload = false;
+
 		// Analog Hotkey values
 		public int Analog_LargeChange = 10;
 		public int Analog_SmallChange = 1;
