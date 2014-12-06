@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -16,11 +18,17 @@ namespace BizHawk.Client.EmuHawk
 		private int _defaultWidth;
 		private int _defaultHeight;
 
+		private IDebuggable Core;
+		private readonly List<string> _instructions = new List<string>();
+
 		public GenericDebugger()
 		{
 			InitializeComponent();
 			TopMost = Global.Config.GenericDebuggerSettings.TopMost;
-			Closing += (o, e) => Shutdown();
+			Closing += (o, e) => DisengageDebugger();
+
+			TraceView.QueryItemText += TraceView_QueryItemText;
+			TraceView.VirtualMode = true;
 		}
 
 		private void GenericDebugger_Load(object sender, EventArgs e)
@@ -37,11 +45,58 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Size = Global.Config.GenericDebuggerSettings.WindowSize;
 			}
+
+			if (Global.Emulator.CanDebug())
+			{
+				Core = Global.Emulator.AsDebuggable();
+			}
+			else
+			{
+				Close();
+			}
+
+			EngageDebugger();
 		}
 
-		private void Shutdown()
+		private void EngageDebugger()
+		{
+			try
+			{
+				Core.Tracer.Enabled = true;
+			}
+			catch (NotImplementedException)
+			{
+				TracerBox.Enabled = false;
+			}
+		}
+
+		private void DisengageDebugger()
 		{
 			SaveConfigSettings();
+		}
+
+		private void UpdateTraceLog()
+		{
+			if (TracerBox.Enabled)
+			{
+				var instructions = Core.Tracer.TakeContents().Split('\n');
+				if (!string.IsNullOrWhiteSpace(instructions[0]))
+				{
+					_instructions.AddRange(instructions.Where(str => !string.IsNullOrEmpty(str)));
+				}
+
+				if (_instructions.Count >= Global.Config.TraceLoggerMaxLines)
+				{
+					_instructions.RemoveRange(0, _instructions.Count - Global.Config.TraceLoggerMaxLines);
+				}
+
+				TraceView.ItemCount = _instructions.Count;
+			}
+		}
+
+		private void TraceView_QueryItemText(int index, int column, out string text)
+		{
+			text = index < _instructions.Count ? _instructions[index] : string.Empty;
 		}
 
 		private void SaveConfigSettings()

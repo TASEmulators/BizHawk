@@ -4,7 +4,7 @@
 	{
 		public void UpdateValues()
 		{
-			// TODO
+			UpdateTraceLog();
 		}
 
 		public void FastUpdate()
