@@ -1092,7 +1092,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Tools
 
-		private void toolsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		private void ToolsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ToolBoxMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["ToolBox"].Bindings;
 			RamWatchMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Ram Watch"].Bindings;
@@ -1112,6 +1112,9 @@ namespace BizHawk.Client.EmuHawk
 				RamSearchMenuItem.Enabled =
 				RamWatchMenuItem.Enabled =
 				Global.Emulator.HasMemoryDomains();
+
+			DebuggerMenuItem.Visible = VersionInfo.DeveloperBuild;
+			DebuggerMenuItem.Enabled = Global.Emulator.CanDebug();
 
 			batchRunnerToolStripMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
@@ -1139,6 +1142,11 @@ namespace BizHawk.Client.EmuHawk
 		private void TraceLoggerMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.LoadTraceLogger();
+		}
+
+		private void DebuggerMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<GenericDebugger>();
 		}
 
 		private void TAStudioMenuItem_Click(object sender, EventArgs e)

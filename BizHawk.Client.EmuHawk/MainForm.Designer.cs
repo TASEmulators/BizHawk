@@ -182,13 +182,14 @@
 			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
 			this.SaveConfigMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LoadConfigMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ToolsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.ToolBoxMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
 			this.RamWatchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RamSearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.HexEditorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TraceLoggerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.DebuggerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TAStudioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.VirtualPadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
@@ -388,7 +389,7 @@
             this.EmulationSubMenu,
             this.ViewSubMenu,
             this.ConfigSubMenu,
-            this.toolsToolStripMenuItem,
+            this.ToolsSubMenu,
             this.NESSubMenu,
             this.PCESubMenu,
             this.SMSSubMenu,
@@ -1716,15 +1717,16 @@
 			this.LoadConfigMenuItem.Text = "Load Config";
 			this.LoadConfigMenuItem.Click += new System.EventHandler(this.LoadConfigMenuItem_Click);
 			// 
-			// toolsToolStripMenuItem
+			// ToolsSubMenu
 			// 
-			this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.ToolsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolBoxMenuItem,
             this.toolStripSeparator12,
             this.RamWatchMenuItem,
             this.RamSearchMenuItem,
             this.HexEditorMenuItem,
             this.TraceLoggerMenuItem,
+            this.DebuggerMenuItem,
             this.TAStudioMenuItem,
             this.VirtualPadMenuItem,
             this.toolStripSeparator11,
@@ -1733,10 +1735,10 @@
             this.toolStripSeparator29,
             this.CreateDualGbXmlMenuItem,
             this.batchRunnerToolStripMenuItem});
-			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 19);
-			this.toolsToolStripMenuItem.Text = "&Tools";
-			this.toolsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.toolsToolStripMenuItem_DropDownOpened);
+			this.ToolsSubMenu.Name = "ToolsSubMenu";
+			this.ToolsSubMenu.Size = new System.Drawing.Size(48, 19);
+			this.ToolsSubMenu.Text = "&Tools";
+			this.ToolsSubMenu.DropDownOpened += new System.EventHandler(this.ToolsSubMenu_DropDownOpened);
 			// 
 			// ToolBoxMenuItem
 			// 
@@ -1782,6 +1784,14 @@
 			this.TraceLoggerMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.TraceLoggerMenuItem.Text = "Trace &Logger";
 			this.TraceLoggerMenuItem.Click += new System.EventHandler(this.TraceLoggerMenuItem_Click);
+			// 
+			// DebuggerMenuItem
+			// 
+			this.DebuggerMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Bug;
+			this.DebuggerMenuItem.Name = "DebuggerMenuItem";
+			this.DebuggerMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.DebuggerMenuItem.Text = "&Debugger";
+			this.DebuggerMenuItem.Click += new System.EventHandler(this.DebuggerMenuItem_Click);
 			// 
 			// TAStudioMenuItem
 			// 
@@ -2637,7 +2647,7 @@
 			// settingsToolStripMenuItem
 			// 
 			this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
 			this.settingsToolStripMenuItem.Text = "&Settings...";
 			this.settingsToolStripMenuItem.Click += new System.EventHandler(this.WondersawnSettingsMenuItem_Click);
 			// 
@@ -2657,7 +2667,7 @@
 			// 
 			this.OnlineHelpMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Help;
 			this.OnlineHelpMenuItem.Name = "OnlineHelpMenuItem";
-			this.OnlineHelpMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.OnlineHelpMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.OnlineHelpMenuItem.Text = "&Online Help...";
 			this.OnlineHelpMenuItem.Click += new System.EventHandler(this.OnlineHelpMenuItem_Click);
 			// 
@@ -2665,14 +2675,14 @@
 			// 
 			this.ForumsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio;
 			this.ForumsMenuItem.Name = "ForumsMenuItem";
-			this.ForumsMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.ForumsMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.ForumsMenuItem.Text = "Forums...";
 			this.ForumsMenuItem.Click += new System.EventHandler(this.ForumsMenuItem_Click);
 			// 
 			// FeaturesMenuItem
 			// 
 			this.FeaturesMenuItem.Name = "FeaturesMenuItem";
-			this.FeaturesMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.FeaturesMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.FeaturesMenuItem.Text = "&Features";
 			this.FeaturesMenuItem.Click += new System.EventHandler(this.FeaturesMenuItem_Click);
 			// 
@@ -2680,7 +2690,7 @@
 			// 
 			this.AboutMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.CorpHawkSmall;
 			this.AboutMenuItem.Name = "AboutMenuItem";
-			this.AboutMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.AboutMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.AboutMenuItem.Text = "&About";
 			this.AboutMenuItem.Click += new System.EventHandler(this.AboutMenuItem_Click);
 			// 
@@ -3358,7 +3368,7 @@
 		private System.Windows.Forms.ToolStripMenuItem EmulationSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem ViewSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem ConfigSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ToolsSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem HelpSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem PauseMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
@@ -3684,6 +3694,7 @@
 		private System.Windows.Forms.ToolStripMenuItem N64ExpansionSlotMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem barcodeReaderToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem FeaturesMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem DebuggerMenuItem;
 	}
 }
 
