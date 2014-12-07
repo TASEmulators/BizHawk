@@ -460,11 +460,20 @@ namespace BizHawk.Bizware.BizwareGL
 
 
 		/// <summary>
-		/// Dumps this BitmapBuffer to a System.Drawing.Bitmap
+		/// Dumps this BitmapBuffer to a new System.Drawing.Bitmap
 		/// </summary>
 		public unsafe Bitmap ToSysdrawingBitmap()
 		{
 			Bitmap bmp = new Bitmap(Width, Height, PixelFormat.Format32bppArgb);
+			ToSysdrawingBitmap(bmp);
+			return bmp;
+		}
+
+		/// <summary>
+		/// Dumps this BitmapBuffer to an existing System.Drawing.Bitmap
+		/// </summary>
+		public unsafe void ToSysdrawingBitmap(Bitmap bmp)
+		{
 			var bmpdata = bmp.LockBits(new sd.Rectangle(0, 0, Width, Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			int* ptr = (int*)bmpdata.Scan0.ToPointer();
@@ -481,7 +490,6 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 
 			bmp.UnlockBits(bmpdata);
-			return bmp;
 		}
 
 	}

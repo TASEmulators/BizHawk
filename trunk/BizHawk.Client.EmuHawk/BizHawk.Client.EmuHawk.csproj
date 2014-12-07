@@ -1436,6 +1436,10 @@
       <Project>{f51946ea-827f-4d82-b841-1f2f6d060312}</Project>
       <Name>BizHawk.Emulation.DiscSystem</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL.GdiPlus\BizHawk.Bizware.BizwareGL.GdiPlus.csproj">
+      <Project>{337CA23E-65E7-44E1-9411-97EE08BB8116}</Project>
+      <Name>BizHawk.Bizware.BizwareGL.GdiPlus</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL.OpenTK\BizHawk.Bizware.BizwareGL.OpenTK.csproj">
       <Project>{5160CFB1-5389-47C1-B7F6-8A0DC97641EE}</Project>
       <Name>BizHawk.Bizware.BizwareGL.OpenTK</Name>

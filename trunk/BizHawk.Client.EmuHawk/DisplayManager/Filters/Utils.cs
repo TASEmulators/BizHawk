@@ -62,7 +62,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 		public override void Run()
 		{
-			GuiRenderer renderer = FilterProgram.GuiRenderer;
+			var renderer = FilterProgram.GuiRenderer;
 			renderer.Begin(FindOutput().SurfaceFormat.Size);
 			renderer.SetBlendState(FilterProgram.GL.BlendNone);
 			renderer.Draw(InputTexture);

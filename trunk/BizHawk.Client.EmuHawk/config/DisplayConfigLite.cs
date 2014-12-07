@@ -36,6 +36,9 @@ namespace BizHawk.Client.EmuHawk.config
 			checkPadInteger.Checked = Global.Config.DispFixScaleInteger;
 			checkFullscreenHacks.Checked = Global.Config.DispFullscreenHacks;
 
+			rbOpenGL.Checked = Global.Config.DispMethod == Config.EDispMethod.OpenGL;
+			rbGDIPlus.Checked = Global.Config.DispMethod == Config.EDispMethod.GdiPlus;
+
 			// null emulator config hack
 			{
 				NullEmulator.NullEmulatorSettings s;
@@ -105,6 +108,11 @@ namespace BizHawk.Client.EmuHawk.config
 
 			int.TryParse(txtCustomARWidth.Text, out Global.Config.DispCustomUserARWidth);
 			int.TryParse(txtCustomARHeight.Text, out Global.Config.DispCustomUserARHeight);
+
+			if(rbOpenGL.Checked)
+				Global.Config.DispMethod = Config.EDispMethod.OpenGL;
+			if(rbGDIPlus.Checked)
+				Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
 
 			Global.Config.DispUserFilterPath = PathSelection;
 			GlobalWin.DisplayManager.RefreshUserShader();

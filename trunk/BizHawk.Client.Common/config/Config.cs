@@ -105,6 +105,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public enum EDispMethod { OpenGL, GdiPlus };
+
 		public enum EDispManagerAR { None, System, Custom };
 
 		public enum SaveStateTypeE { Default, Binary, Text };
@@ -203,6 +205,9 @@ namespace BizHawk.Client.Common
 		public bool DispFixAspectRatio = true;
 		public bool DispFixScaleInteger = true;
 		public bool DispFullscreenHacks = true;
+
+		//warning: we dont even want to deal with changing this at runtime. but we want it changed here for config purposes. so dont check this variable. check in GlobalWin or something like that.
+		public EDispMethod DispMethod = EDispMethod.OpenGL;
 
 		public EDispManagerAR DispManagerAR = EDispManagerAR.System; 
 		public int DispCustomUserARWidth = 1;

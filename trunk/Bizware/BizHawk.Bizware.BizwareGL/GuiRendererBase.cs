@@ -1,7 +1,5 @@
 //http://stackoverflow.com/questions/6893302/decode-rgb-value-to-single-float-without-bit-shift-in-glsl
 
-//why this stupid assert on the blendstate. just set one by default, geeze.
-
 using System;
 using System.Diagnostics;
 using System.Collections;
@@ -13,15 +11,9 @@ using OpenTK.Graphics.OpenGL;
 
 namespace BizHawk.Bizware.BizwareGL
 {
-	/// <summary>
-	/// A simple renderer useful for rendering GUI stuff. 
-	/// When doing GUI rendering, run everything through here (if you need a GL feature not done through here, run it through here first)
-	/// Call Begin, then draw, then End, and dont use other Renderers or GL calls in the meantime, unless you know what youre doing.
-	/// This can perform batching (well.. maybe not yet), which is occasionally necessary for drawing large quantities of things.
-	/// </summary>
-	public class GuiRenderer : IDisposable, IGuiRenderer
+	public class GDIPlusGuiRenderer : IGuiRenderer
 	{
-		public GuiRenderer(IGL owner)
+		public GDIPlusGuiRenderer(IGL owner)
 		{
 			Owner = owner;
 
@@ -43,14 +35,18 @@ namespace BizHawk.Bizware.BizwareGL
 			new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f)
 		};
 
-
+		/// <summary>
+		/// Sets the specified corner color (for the gradient effect)
+		/// </summary>
 		public void SetCornerColor(int which, OpenTK.Graphics.Color4 color)
 		{
 			Flush(); //dont really need to flush with current implementation. we might as well roll modulate color into it too.
 			CornerColors[which] = color;
 		}
 
-	
+		/// <summary>
+		/// Sets all four corner colors at once
+		/// </summary>
 		public void SetCornerColors(OpenTK.Graphics.Color4[] colors)
 		{
 			Flush(); //dont really need to flush with current implementation. we might as well roll modulate color into it too.
@@ -67,7 +63,10 @@ namespace BizHawk.Bizware.BizwareGL
 			DefaultPipeline = null;
 		}
 
-
+		/// <summary>
+		/// Sets the pipeline for this GuiRenderer to use. We won't keep possession of it.
+		/// This pipeline must work in certain ways, which can be discerned by inspecting the built-in one
+		/// </summary>
 		public void SetPipeline(Pipeline pipeline)
 		{
 			if (IsActive)
@@ -81,6 +80,9 @@ namespace BizHawk.Bizware.BizwareGL
 			//save the modulate color? user beware, I guess, for now.
 		}
 
+		/// <summary>
+		/// Restores the pipeline to the default
+		/// </summary>
 		public void SetDefaultPipeline()
 		{
 			SetPipeline(DefaultPipeline);
@@ -128,6 +130,10 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void Begin(sd.Size size) { Begin(size.Width, size.Height); }
 
+		/// <summary>
+		/// begin rendering, initializing viewport and projections to the given dimensions
+		/// </summary>
+		/// <param name="yflipped">Whether the matrices should be Y-flipped, for use with render targets</param>
 		public void Begin(int width, int height, bool yflipped = false)
 		{
 			Begin();
@@ -144,7 +150,9 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner.SetViewport(width, height);
 		}
 
-
+		/// <summary>
+		/// Begins rendering
+		/// </summary>
 		public void Begin()
 		{
 			//uhhmmm I want to throw an exception if its already active, but its annoying.
@@ -167,13 +175,18 @@ namespace BizHawk.Bizware.BizwareGL
 			#endif
 		}
 
-
+		/// <summary>
+		/// Use this, if you must do something sneaky to openGL without this GuiRenderer knowing.
+		/// It might be faster than End and Beginning again, and certainly prettier
+		/// </summary>
 		public void Flush()
 		{
 			//no batching, nothing to do here yet
 		}
 
-
+		/// <summary>
+		/// Ends rendering
+		/// </summary>
 		public void End()
 		{
 			if (!IsActive)
@@ -187,31 +200,47 @@ namespace BizHawk.Bizware.BizwareGL
 			EmitRectangleInternal(x, y, w, h, 0, 0, 0, 0);
 		}
 
-
+		/// <summary>
+		/// Draws a subrectangle from the provided texture. For advanced users only
+		/// </summary>
 		public void DrawSubrect(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
 			DrawSubrectInternal(tex, x, y, w, h, u0, v0, u1, v1);
 		}
 
-
+		/// <summary>
+		/// draws the specified Art resource
+		/// </summary>
 		public void Draw(Art art) { DrawInternal(art, 0, 0, art.Width, art.Height, false, false); }
 
-
+		/// <summary>
+		/// draws the specified Art resource with the specified offset. This could be tricky if youve applied other rotate or scale transforms first.
+		/// </summary>
 		public void Draw(Art art, float x, float y) { DrawInternal(art, x, y, art.Width, art.Height, false, false); }
 
-
+		/// <summary>
+		/// draws the specified Art resource with the specified offset, with the specified size. This could be tricky if youve applied other rotate or scale transforms first.
+		/// </summary>
 		public void Draw(Art art, float x, float y, float width, float height) { DrawInternal(art, x, y, width, height, false, false); }
 
-
+		/// <summary>
+		/// draws the specified Art resource with the specified offset. This could be tricky if youve applied other rotate or scale transforms first.
+		/// </summary>
 		public void Draw(Art art, Vector2 pos) { DrawInternal(art, pos.X, pos.Y, art.Width, art.Height, false, false); }
 
-
+		/// <summary>
+		/// draws the specified texture2d resource.
+		/// </summary>
 		public void Draw(Texture2d tex) { DrawInternal(tex, 0, 0, tex.Width, tex.Height); }
 
-
+		/// <summary>
+		/// draws the specified texture2d resource.
+		/// </summary>
 		public void Draw(Texture2d tex, float x, float y) { DrawInternal(tex, x, y, tex.Width, tex.Height); }
 
-
+		/// <summary>
+		/// draws the specified Art resource with the given flip flags
+		/// </summary>
 		public void DrawFlipped(Art art, bool xflip, bool yflip) { DrawInternal(art, 0, 0, art.Width, art.Height, xflip, yflip); }
 
 		public void Draw(Texture2d art, float x, float y, float width, float height)
