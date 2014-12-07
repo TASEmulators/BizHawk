@@ -16,24 +16,24 @@ namespace BizHawk.Emulation.Common
 		private readonly List<Action> _executes = new List<Action>();
 		private readonly List<uint> _execAddrs = new List<uint>();
 
-		public void Add(MemoryCallbackType type, Action function, uint? addr)
+		public void Add(IMemoryCallback callback)
 		{
-			switch (type)
+			switch (callback.Type)
 			{
 				case MemoryCallbackType.Read:
-					AddRead(function, addr);
+					AddRead(callback.Callback, callback.Address);
 					break;
 				case MemoryCallbackType.Write:
-					AddWrite(function, addr);
+					AddWrite(callback.Callback, callback.Address);
 					break;
 				case MemoryCallbackType.Execute:
-					if (!addr.HasValue)
+					if (!callback.Address.HasValue)
 					{
 						throw new InvalidOperationException("When assigning an execute callback, an address must be specified");
 					}
 					else
 					{
-						AddExecute(function, addr.Value);
+						AddExecute(callback.Callback, callback.Address.Value);
 					}
 
 					break;
@@ -186,5 +186,21 @@ namespace BizHawk.Emulation.Common
 				}
 			}
 		}
+	}
+
+	public class MemoryCallback : IMemoryCallback
+	{
+		public MemoryCallback(MemoryCallbackType type, string name, Action callback, uint? address)
+		{
+			Type = type;
+			Name = name;
+			Callback = callback;
+			Address = address;
+		}
+
+		public MemoryCallbackType Type { get; private set; }
+		public string Name { get; private set; }
+		public Action Callback { get; private set; }
+		public uint? Address { get; private set; }
 	}
 }

@@ -76,18 +76,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddCallback()
 		{
-			switch (Type)
-			{
-				case MemoryCallbackType.Read:
-					_core.MemoryCallbacks.Add(MemoryCallbackType.Read, Callback, Address);
-					break;
-				case MemoryCallbackType.Write:
-					_core.MemoryCallbacks.Add(MemoryCallbackType.Write, Callback, Address);
-					break;
-				case MemoryCallbackType.Execute:
-					_core.MemoryCallbacks.Add(MemoryCallbackType.Execute, Callback, Address);
-					break;
-			}
+			_core.MemoryCallbacks.Add(new MemoryCallback(Type, "Pause", Callback, Address));
 		}
 
 		private void RemoveCallback()
