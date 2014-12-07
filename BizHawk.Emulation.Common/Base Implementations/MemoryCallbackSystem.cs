@@ -16,7 +16,31 @@ namespace BizHawk.Emulation.Common
 		private readonly List<Action> _executes = new List<Action>();
 		private readonly List<uint> _execAddrs = new List<uint>();
 
-		public void AddRead(Action function, uint? addr)
+		public void Add(MemoryCallbackType type, Action function, uint? addr)
+		{
+			switch (type)
+			{
+				case MemoryCallbackType.Read:
+					AddRead(function, addr);
+					break;
+				case MemoryCallbackType.Write:
+					AddWrite(function, addr);
+					break;
+				case MemoryCallbackType.Execute:
+					if (!addr.HasValue)
+					{
+						throw new InvalidOperationException("When assigning an execute callback, an address must be specified");
+					}
+					else
+					{
+						AddExecute(function, addr.Value);
+					}
+
+					break;
+			}
+		}
+
+		private void AddRead(Action function, uint? addr)
 		{
 			var hadAny = _reads.Any() || _writes.Any() || _executes.Any();
 
@@ -27,7 +51,7 @@ namespace BizHawk.Emulation.Common
 			Changes(hadAny, hasAny);
 		}
 
-		public void AddWrite(Action function, uint? addr)
+		private void AddWrite(Action function, uint? addr)
 		{
 			var hadAny = _reads.Any() || _writes.Any() || _executes.Any();
 
@@ -38,7 +62,7 @@ namespace BizHawk.Emulation.Common
 			Changes(hadAny, hasAny);
 		}
 
-		public void AddExecute(Action function, uint addr)
+		private void AddExecute(Action function, uint addr)
 		{
 			var hadAny = _reads.Any() || _writes.Any() || _executes.Any();
 
@@ -49,7 +73,7 @@ namespace BizHawk.Emulation.Common
 			Changes(hadAny, hasAny);
 		}
 
-		public void CallRead(uint addr)
+		public void CallReads(uint addr)
 		{
 			for (int i = 0; i < _reads.Count; i++)
 			{
@@ -60,7 +84,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public void CallWrite(uint addr)
+		public void CallWrites(uint addr)
 		{
 			for (int i = 0; i < _writes.Count; i++)
 			{
@@ -71,7 +95,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public void CallExecute(uint addr)
+		public void CallExecutes(uint addr)
 		{
 			for (int i = 0; i < _executes.Count; i++)
 			{

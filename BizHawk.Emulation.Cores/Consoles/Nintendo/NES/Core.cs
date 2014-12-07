@@ -534,7 +534,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void ExecFetch(ushort addr)
 		{
-			MemoryCallbacks.CallExecute(addr);
+			MemoryCallbacks.CallExecutes(addr);
 		}
 
 		public byte ReadMemory(ushort addr)
@@ -579,7 +579,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ret = sysbus_watch[addr].ApplyGameGenie(ret);
 			}
 
-			MemoryCallbacks.CallRead(addr);
+			MemoryCallbacks.CallReads(addr);
 
 			DB = ret;
 
@@ -633,7 +633,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				board.WritePRG(addr - 0x8000, value);
 			}
 
-			MemoryCallbacks.CallWrite(addr);
+			MemoryCallbacks.CallWrites(addr);
 		}
 
 	}
