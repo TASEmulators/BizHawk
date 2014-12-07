@@ -21,36 +21,26 @@ namespace BizHawk.Emulation.Common
 		bool HasExecutes { get; }
 
 		/// <summary>
-		/// Adds a Read callback for the given address
+		/// Adds a callback for the given type to the given address
 		/// If no address is specified the callback will be hooked to all addresses
+		/// Note: an execute callback can not be added without an address, else an InvalidOperationException will occur
 		/// </summary>
-		void AddRead(Action function, uint? addr);
-
-		/// <summary>
-		/// Adds a Write callback for the given address
-		/// If no address is specified the callback will be hooked to all addresses
-		/// </summary>
-		void AddWrite(Action function, uint? addr);
-
-		/// <summary>
-		/// Adds an Execute callback for the given address
-		/// </summary>
-		void AddExecute(Action function, uint addr);
+		void Add(MemoryCallbackType type, Action function, uint? addr);
 
 		/// <summary>
 		/// Executes all Read callbacks for the given addr
 		/// </summary>
-		void CallRead(uint addr);
+		void CallReads(uint addr);
 
 		/// <summary>
 		/// Executes all Write callbacks for the given addr
 		/// </summary>
-		void CallWrite(uint addr);
+		void CallWrites(uint addr);
 
 		/// <summary>
 		/// Executes all Execute callbacks for the given addr
 		/// </summary>
-		void CallExecute(uint addr);
+		void CallExecutes(uint addr);
 
 		/// <summary>
 		/// Removes the given callback from the list
@@ -67,4 +57,6 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		void Clear();
 	}
+
+	public enum MemoryCallbackType { Read, Write, Execute }
 }

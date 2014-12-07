@@ -446,7 +446,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public Action Callback { get; set; }
 
-			public void Add(Atari2600 core, uint address, BreakpointType type)
+			public void Add(Atari2600 core, uint address, MemoryCallbackType type)
 			{
 				Add(new AtariBreakpoint(core, Callback, address, type));
 			}
@@ -457,7 +457,7 @@ namespace BizHawk.Client.EmuHawk
 			private bool _active;
 			private readonly Atari2600 _core;
 
-			public AtariBreakpoint(Atari2600 core, Action callBack, uint address, BreakpointType type, bool enabled = true)
+			public AtariBreakpoint(Atari2600 core, Action callBack, uint address, MemoryCallbackType type, bool enabled = true)
 			{
 				_core = core;
 
@@ -473,7 +473,7 @@ namespace BizHawk.Client.EmuHawk
 
 			public Action Callback { get; set; }
 			public uint Address { get; set; }
-			public BreakpointType Type { get; set; }
+			public MemoryCallbackType Type { get; set; }
 
 			public bool Active
 			{
@@ -500,18 +500,7 @@ namespace BizHawk.Client.EmuHawk
 
 			private void AddCallback()
 			{
-				switch (Type)
-				{
-					case BreakpointType.Read:
-						_core.MemoryCallbacks.AddRead(Callback, Address);
-						break;
-					case BreakpointType.Write:
-						_core.MemoryCallbacks.AddWrite(Callback, Address);
-						break;
-					case BreakpointType.Execute:
-						_core.MemoryCallbacks.AddExecute(Callback, Address);
-						break;
-				}
+				_core.MemoryCallbacks.Add(Type, Callback, Address);
 			}
 
 			private void RemoveCallback()

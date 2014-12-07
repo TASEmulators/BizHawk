@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public Action Callback { get; set; }
 
-		public void Add(IDebuggable core, uint address, BreakpointType type)
+		public void Add(IDebuggable core, uint address, MemoryCallbackType type)
 		{
 			Add(new Breakpoint(core, Callback, address, type));
 		}
@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _active;
 		private readonly IDebuggable _core;
 
-		public Breakpoint(IDebuggable core, Action callBack, uint address, BreakpointType type, bool enabled = true)
+		public Breakpoint(IDebuggable core, Action callBack, uint address, MemoryCallbackType type, bool enabled = true)
 		{
 			_core = core;
 
@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public Action Callback { get; set; }
 		public uint Address { get; set; }
-		public BreakpointType Type { get; set; }
+		public MemoryCallbackType Type { get; set; }
 
 		public bool Active
 		{
@@ -78,14 +78,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			switch (Type)
 			{
-				case BreakpointType.Read:
-					_core.MemoryCallbacks.AddRead(Callback, Address);
+				case MemoryCallbackType.Read:
+					_core.MemoryCallbacks.Add(MemoryCallbackType.Read, Callback, Address);
 					break;
-				case BreakpointType.Write:
-					_core.MemoryCallbacks.AddWrite(Callback, Address);
+				case MemoryCallbackType.Write:
+					_core.MemoryCallbacks.Add(MemoryCallbackType.Write, Callback, Address);
 					break;
-				case BreakpointType.Execute:
-					_core.MemoryCallbacks.AddExecute(Callback, Address);
+				case MemoryCallbackType.Execute:
+					_core.MemoryCallbacks.Add(MemoryCallbackType.Execute, Callback, Address);
 					break;
 			}
 		}

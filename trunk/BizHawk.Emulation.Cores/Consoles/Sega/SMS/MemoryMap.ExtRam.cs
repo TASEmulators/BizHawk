@@ -16,7 +16,7 @@
 			else
 				ret = SystemRam[address & RamSizeMask];
 
-			MemoryCallbacks.CallRead(address);
+			MemoryCallbacks.CallReads(address);
 			return ret;
 		}
 
@@ -27,7 +27,7 @@
 			else if (address >= 0xC000)
 				SystemRam[address & RamSizeMask] = value;
 
-			MemoryCallbacks.CallWrite((uint)address);
+			MemoryCallbacks.CallWrites((uint)address);
 		}
 
 		void InitExt2kMapper(int size)

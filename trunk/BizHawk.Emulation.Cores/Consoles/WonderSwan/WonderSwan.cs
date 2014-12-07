@@ -354,15 +354,15 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		void ReadCallback(uint addr)
 		{
-			MemoryCallbacks.CallRead(addr);
+			MemoryCallbacks.CallReads(addr);
 		}
 		void WriteCallback(uint addr)
 		{
-			MemoryCallbacks.CallWrite(addr);
+			MemoryCallbacks.CallWrites(addr);
 		}
 		void ExecCallback(uint addr)
 		{
-			MemoryCallbacks.CallExecute(addr);
+			MemoryCallbacks.CallExecutes(addr);
 		}
 		void ButtonCallback()
 		{

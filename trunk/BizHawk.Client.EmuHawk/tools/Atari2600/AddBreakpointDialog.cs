@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class AddBreakpointDialog : Form
@@ -16,26 +18,26 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public BreakpointType BreakType
+		public MemoryCallbackType BreakType
 		{
 			get
 			{
 				if (ReadRadio.Checked)
 				{
-					return BreakpointType.Read;
+					return MemoryCallbackType.Read;
 				}
 
 				if (WriteRadio.Checked)
 				{
-					return BreakpointType.Write;
+					return MemoryCallbackType.Write;
 				}
 
 				if (ExecuteRadio.Checked)
 				{
-					return BreakpointType.Execute;
+					return MemoryCallbackType.Execute;
 				}
 
-				return BreakpointType.Read;
+				return MemoryCallbackType.Read;
 			}
 		}
 
@@ -54,9 +56,5 @@ namespace BizHawk.Client.EmuHawk
 		{
 
 		}
-
-		
 	}
-
-	public enum BreakpointType { Read, Write, Execute }
 }

@@ -661,9 +661,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		void InitMemCallbacks()
 		{
-			ExecCallback = new LibGPGX.mem_cb(a => MemoryCallbacks.CallExecute(a));
-			ReadCallback = new LibGPGX.mem_cb(a => MemoryCallbacks.CallRead(a));
-			WriteCallback = new LibGPGX.mem_cb(a => MemoryCallbacks.CallWrite(a));
+			ExecCallback = new LibGPGX.mem_cb(a => MemoryCallbacks.CallExecutes(a));
+			ReadCallback = new LibGPGX.mem_cb(a => MemoryCallbacks.CallReads(a));
+			WriteCallback = new LibGPGX.mem_cb(a => MemoryCallbacks.CallWrites(a));
 			_memoryCallbacks.ActiveChanged += RefreshMemCallbacks;
 		}
 

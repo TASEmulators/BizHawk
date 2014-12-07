@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			// we RefreshMemoryCallbacks() after the triggers in case the trigger turns itself off at that point
 			if (mcs.HasReads)
 			{
-				_readcb = delegate(uint addr) { mcs.CallRead(addr); };
+				_readcb = delegate(uint addr) { mcs.CallReads(addr); };
 			}
 			else
 			{
@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			if (mcs.HasWrites)
 			{
-				_writecb = delegate(uint addr) { mcs.CallWrite(addr); };
+				_writecb = delegate(uint addr) { mcs.CallWrites(addr); };
 			}
 			else
 			{
