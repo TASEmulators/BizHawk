@@ -77,9 +77,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 #endif
 
-			//create IGL context.
-			//at some point in the future, we may need to select from several drivers
-			GlobalWin.GL = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
+			//create IGL context. we do this whether or not the user has selected OpenGL, so that we can run opengl-based emulator cores
+			GlobalWin.IGL_GL = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
+			if(Global.Config.DispMethod == Config.EDispMethod.GdiPlus)
+				GlobalWin.GL = new Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus();
+			else
+				GlobalWin.GL = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
 			GlobalWin.GLManager = new GLManager();
 			GlobalWin.CR_GL = GlobalWin.GLManager.GetContextForIGL(GlobalWin.GL);
 

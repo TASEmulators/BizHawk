@@ -77,6 +77,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public int IntWidth { get { return (int)Width; } }
 		public int IntHeight { get { return (int)Height; } }
+		public Rectangle Rectangle { get { return new Rectangle(0, 0, IntWidth, IntHeight); } }
 		public Size Size { get { return new Size(IntWidth, IntHeight); } }
 
 		/// <summary>

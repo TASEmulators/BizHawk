@@ -69,7 +69,7 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 		}
 
 		//services to filters:
-		public GuiRenderer GuiRenderer;
+		public IGuiRenderer GuiRenderer;
 		public IGL GL;
 		public IRenderTargetProvider RenderTargetProvider;
 		public RenderTarget GetRenderTarget(string channel = "default") { return CurrRenderTarget; }

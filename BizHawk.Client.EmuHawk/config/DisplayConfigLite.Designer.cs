@@ -49,28 +49,41 @@
 			this.rbUseRaw = new System.Windows.Forms.RadioButton();
 			this.rbUseSystem = new System.Windows.Forms.RadioButton();
 			this.grpARSelection = new System.Windows.Forms.GroupBox();
+			this.label4 = new System.Windows.Forms.Label();
+			this.txtCustomARHeight = new System.Windows.Forms.TextBox();
+			this.label3 = new System.Windows.Forms.Label();
+			this.txtCustomARWidth = new System.Windows.Forms.TextBox();
+			this.rbUseCustom = new System.Windows.Forms.RadioButton();
 			this.checkFullscreenHacks = new System.Windows.Forms.CheckBox();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.checkSnowyNullEmulator = new System.Windows.Forms.CheckBox();
 			this.label1 = new System.Windows.Forms.Label();
-			this.rbUseCustom = new System.Windows.Forms.RadioButton();
-			this.txtCustomARWidth = new System.Windows.Forms.TextBox();
-			this.label3 = new System.Windows.Forms.Label();
-			this.txtCustomARHeight = new System.Windows.Forms.TextBox();
-			this.label4 = new System.Windows.Forms.Label();
+			this.rbOpenGL = new System.Windows.Forms.RadioButton();
+			this.label5 = new System.Windows.Forms.Label();
+			this.tabControl1 = new System.Windows.Forms.TabControl();
+			this.tpAR = new System.Windows.Forms.TabPage();
+			this.tpDispMethod = new System.Windows.Forms.TabPage();
+			this.tpMisc = new System.Windows.Forms.TabPage();
+			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.rbGDIPlus = new System.Windows.Forms.RadioButton();
+			this.label6 = new System.Windows.Forms.Label();
+			this.label7 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			this.grpFinalFilter.SuspendLayout();
 			this.grpARSelection.SuspendLayout();
-			this.groupBox2.SuspendLayout();
+			this.tabControl1.SuspendLayout();
+			this.tpAR.SuspendLayout();
+			this.tpDispMethod.SuspendLayout();
+			this.tpMisc.SuspendLayout();
+			this.groupBox3.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// btnCancel
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(544, 297);
+			this.btnCancel.Location = new System.Drawing.Point(360, 404);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 5;
@@ -80,7 +93,7 @@
 			// btnOk
 			// 
 			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOk.Location = new System.Drawing.Point(463, 297);
+			this.btnOk.Location = new System.Drawing.Point(279, 404);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(75, 23);
 			this.btnOk.TabIndex = 4;
@@ -98,7 +111,7 @@
 			this.groupBox1.Controls.Add(this.rbNone);
 			this.groupBox1.Controls.Add(this.rbScanlines);
 			this.groupBox1.Controls.Add(this.rbHq2x);
-			this.groupBox1.Location = new System.Drawing.Point(12, 12);
+			this.groupBox1.Location = new System.Drawing.Point(6, 6);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(193, 132);
 			this.groupBox1.TabIndex = 7;
@@ -193,7 +206,7 @@
 			// checkLetterbox
 			// 
 			this.checkLetterbox.AutoSize = true;
-			this.checkLetterbox.Location = new System.Drawing.Point(12, 154);
+			this.checkLetterbox.Location = new System.Drawing.Point(6, 148);
 			this.checkLetterbox.Name = "checkLetterbox";
 			this.checkLetterbox.Size = new System.Drawing.Size(173, 17);
 			this.checkLetterbox.TabIndex = 8;
@@ -204,7 +217,7 @@
 			// checkPadInteger
 			// 
 			this.checkPadInteger.AutoSize = true;
-			this.checkPadInteger.Location = new System.Drawing.Point(21, 290);
+			this.checkPadInteger.Location = new System.Drawing.Point(15, 284);
 			this.checkPadInteger.Name = "checkPadInteger";
 			this.checkPadInteger.Size = new System.Drawing.Size(248, 17);
 			this.checkPadInteger.TabIndex = 9;
@@ -217,7 +230,7 @@
 			this.grpFinalFilter.Controls.Add(this.rbFinalFilterBicubic);
 			this.grpFinalFilter.Controls.Add(this.rbFinalFilterNone);
 			this.grpFinalFilter.Controls.Add(this.rbFinalFilterBilinear);
-			this.grpFinalFilter.Location = new System.Drawing.Point(211, 12);
+			this.grpFinalFilter.Location = new System.Drawing.Point(205, 6);
 			this.grpFinalFilter.Name = "grpFinalFilter";
 			this.grpFinalFilter.Size = new System.Drawing.Size(187, 132);
 			this.grpFinalFilter.TabIndex = 8;
@@ -290,62 +303,44 @@
 			this.grpARSelection.Controls.Add(this.rbUseCustom);
 			this.grpARSelection.Controls.Add(this.rbUseRaw);
 			this.grpARSelection.Controls.Add(this.rbUseSystem);
-			this.grpARSelection.Location = new System.Drawing.Point(21, 177);
+			this.grpARSelection.Location = new System.Drawing.Point(15, 171);
 			this.grpARSelection.Name = "grpARSelection";
 			this.grpARSelection.Size = new System.Drawing.Size(377, 107);
 			this.grpARSelection.TabIndex = 13;
 			this.grpARSelection.TabStop = false;
 			this.grpARSelection.Text = "Aspect Ratio Selection";
 			// 
-			// checkFullscreenHacks
+			// label4
 			// 
-			this.checkFullscreenHacks.AutoSize = true;
-			this.checkFullscreenHacks.Location = new System.Drawing.Point(6, 19);
-			this.checkFullscreenHacks.Name = "checkFullscreenHacks";
-			this.checkFullscreenHacks.Size = new System.Drawing.Size(191, 17);
-			this.checkFullscreenHacks.TabIndex = 14;
-			this.checkFullscreenHacks.Text = "Enable Windows Fullscreen Hacks";
-			this.checkFullscreenHacks.UseVisualStyleBackColor = true;
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(23, 41);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(257, 13);
+			this.label4.TabIndex = 12;
+			this.label4.Text = "Allow pixel distortion (e.g. 2x1 pixels, for better AR fit):";
 			// 
-			// groupBox2
+			// txtCustomARHeight
 			// 
-			this.groupBox2.Controls.Add(this.label2);
-			this.groupBox2.Controls.Add(this.checkSnowyNullEmulator);
-			this.groupBox2.Controls.Add(this.label1);
-			this.groupBox2.Controls.Add(this.checkFullscreenHacks);
-			this.groupBox2.Location = new System.Drawing.Point(404, 12);
-			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(217, 272);
-			this.groupBox2.TabIndex = 15;
-			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "Misc.";
+			this.txtCustomARHeight.Location = new System.Drawing.Point(230, 79);
+			this.txtCustomARHeight.Name = "txtCustomARHeight";
+			this.txtCustomARHeight.Size = new System.Drawing.Size(72, 20);
+			this.txtCustomARHeight.TabIndex = 15;
 			// 
-			// label2
+			// label3
 			// 
-			this.label2.Location = new System.Drawing.Point(7, 190);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(204, 45);
-			this.label2.TabIndex = 17;
-			this.label2.Text = "Some people think the whitenoise is a great idea, and some people don\'t. Enabling" +
-    " this displays an Oxoo instead.";
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(212, 84);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(12, 13);
+			this.label3.TabIndex = 12;
+			this.label3.Text = "x";
 			// 
-			// checkSnowyNullEmulator
+			// txtCustomARWidth
 			// 
-			this.checkSnowyNullEmulator.AutoSize = true;
-			this.checkSnowyNullEmulator.Location = new System.Drawing.Point(6, 165);
-			this.checkSnowyNullEmulator.Name = "checkSnowyNullEmulator";
-			this.checkSnowyNullEmulator.Size = new System.Drawing.Size(159, 17);
-			this.checkSnowyNullEmulator.TabIndex = 16;
-			this.checkSnowyNullEmulator.Text = "Enable Snowy Null Emulator";
-			this.checkSnowyNullEmulator.UseVisualStyleBackColor = true;
-			// 
-			// label1
-			// 
-			this.label1.Location = new System.Drawing.Point(7, 42);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(204, 117);
-			this.label1.TabIndex = 15;
-			this.label1.Text = resources.GetString("label1.Text");
+			this.txtCustomARWidth.Location = new System.Drawing.Point(134, 79);
+			this.txtCustomARWidth.Name = "txtCustomARWidth";
+			this.txtCustomARWidth.Size = new System.Drawing.Size(72, 20);
+			this.txtCustomARWidth.TabIndex = 14;
 			// 
 			// rbUseCustom
 			// 
@@ -358,37 +353,157 @@
 			this.rbUseCustom.Text = "Use custom Size:";
 			this.rbUseCustom.UseVisualStyleBackColor = true;
 			// 
-			// txtCustomARWidth
+			// checkFullscreenHacks
 			// 
-			this.txtCustomARWidth.Location = new System.Drawing.Point(134, 79);
-			this.txtCustomARWidth.Name = "txtCustomARWidth";
-			this.txtCustomARWidth.Size = new System.Drawing.Size(72, 20);
-			this.txtCustomARWidth.TabIndex = 14;
+			this.checkFullscreenHacks.AutoSize = true;
+			this.checkFullscreenHacks.Location = new System.Drawing.Point(2, 7);
+			this.checkFullscreenHacks.Name = "checkFullscreenHacks";
+			this.checkFullscreenHacks.Size = new System.Drawing.Size(191, 17);
+			this.checkFullscreenHacks.TabIndex = 14;
+			this.checkFullscreenHacks.Text = "Enable Windows Fullscreen Hacks";
+			this.checkFullscreenHacks.UseVisualStyleBackColor = true;
 			// 
-			// label3
+			// label2
 			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(212, 84);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(12, 13);
-			this.label3.TabIndex = 12;
-			this.label3.Text = "x";
+			this.label2.Location = new System.Drawing.Point(3, 131);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(398, 45);
+			this.label2.TabIndex = 17;
+			this.label2.Text = "Some people think the whitenoise is a great idea, and some people don\'t. Enabling" +
+    " this displays an Oxoo instead.";
 			// 
-			// txtCustomARHeight
+			// checkSnowyNullEmulator
 			// 
-			this.txtCustomARHeight.Location = new System.Drawing.Point(230, 79);
-			this.txtCustomARHeight.Name = "txtCustomARHeight";
-			this.txtCustomARHeight.Size = new System.Drawing.Size(72, 20);
-			this.txtCustomARHeight.TabIndex = 15;
+			this.checkSnowyNullEmulator.AutoSize = true;
+			this.checkSnowyNullEmulator.Location = new System.Drawing.Point(2, 106);
+			this.checkSnowyNullEmulator.Name = "checkSnowyNullEmulator";
+			this.checkSnowyNullEmulator.Size = new System.Drawing.Size(159, 17);
+			this.checkSnowyNullEmulator.TabIndex = 16;
+			this.checkSnowyNullEmulator.Text = "Enable Snowy Null Emulator";
+			this.checkSnowyNullEmulator.UseVisualStyleBackColor = true;
 			// 
-			// label4
+			// label1
 			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(23, 41);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(257, 13);
-			this.label4.TabIndex = 12;
-			this.label4.Text = "Allow pixel distortion (e.g. 2x1 pixels, for better AR fit):";
+			this.label1.Location = new System.Drawing.Point(3, 30);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(398, 73);
+			this.label1.TabIndex = 15;
+			this.label1.Text = resources.GetString("label1.Text");
+			// 
+			// rbOpenGL
+			// 
+			this.rbOpenGL.AutoSize = true;
+			this.rbOpenGL.Checked = true;
+			this.rbOpenGL.Location = new System.Drawing.Point(9, 19);
+			this.rbOpenGL.Name = "rbOpenGL";
+			this.rbOpenGL.Size = new System.Drawing.Size(65, 17);
+			this.rbOpenGL.TabIndex = 3;
+			this.rbOpenGL.TabStop = true;
+			this.rbOpenGL.Text = "OpenGL";
+			this.rbOpenGL.UseVisualStyleBackColor = true;
+			// 
+			// label5
+			// 
+			this.label5.Location = new System.Drawing.Point(24, 39);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(359, 47);
+			this.label5.TabIndex = 16;
+			this.label5.Text = " • May malfunction on some systems.\r\n • May have increased performance for OpenGL" +
+    "-based emulation cores.\r\n • May have reduced performance on some systems.\r\n";
+			// 
+			// tabControl1
+			// 
+			this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.tabControl1.Controls.Add(this.tpAR);
+			this.tabControl1.Controls.Add(this.tpDispMethod);
+			this.tabControl1.Controls.Add(this.tpMisc);
+			this.tabControl1.Location = new System.Drawing.Point(12, 12);
+			this.tabControl1.Name = "tabControl1";
+			this.tabControl1.SelectedIndex = 0;
+			this.tabControl1.Size = new System.Drawing.Size(423, 382);
+			this.tabControl1.TabIndex = 17;
+			// 
+			// tpAR
+			// 
+			this.tpAR.Controls.Add(this.groupBox1);
+			this.tpAR.Controls.Add(this.checkLetterbox);
+			this.tpAR.Controls.Add(this.checkPadInteger);
+			this.tpAR.Controls.Add(this.grpARSelection);
+			this.tpAR.Controls.Add(this.grpFinalFilter);
+			this.tpAR.Location = new System.Drawing.Point(4, 22);
+			this.tpAR.Name = "tpAR";
+			this.tpAR.Padding = new System.Windows.Forms.Padding(3);
+			this.tpAR.Size = new System.Drawing.Size(415, 356);
+			this.tpAR.TabIndex = 0;
+			this.tpAR.Text = "Scaling & Filtering";
+			this.tpAR.UseVisualStyleBackColor = true;
+			// 
+			// tpDispMethod
+			// 
+			this.tpDispMethod.Controls.Add(this.label6);
+			this.tpDispMethod.Controls.Add(this.groupBox3);
+			this.tpDispMethod.Location = new System.Drawing.Point(4, 22);
+			this.tpDispMethod.Name = "tpDispMethod";
+			this.tpDispMethod.Size = new System.Drawing.Size(415, 356);
+			this.tpDispMethod.TabIndex = 2;
+			this.tpDispMethod.Text = "Display Method";
+			this.tpDispMethod.UseVisualStyleBackColor = true;
+			// 
+			// tpMisc
+			// 
+			this.tpMisc.Controls.Add(this.label2);
+			this.tpMisc.Controls.Add(this.checkSnowyNullEmulator);
+			this.tpMisc.Controls.Add(this.checkFullscreenHacks);
+			this.tpMisc.Controls.Add(this.label1);
+			this.tpMisc.Location = new System.Drawing.Point(4, 22);
+			this.tpMisc.Name = "tpMisc";
+			this.tpMisc.Size = new System.Drawing.Size(415, 356);
+			this.tpMisc.TabIndex = 3;
+			this.tpMisc.Text = "Misc";
+			this.tpMisc.UseVisualStyleBackColor = true;
+			// 
+			// groupBox3
+			// 
+			this.groupBox3.Controls.Add(this.label7);
+			this.groupBox3.Controls.Add(this.rbGDIPlus);
+			this.groupBox3.Controls.Add(this.label5);
+			this.groupBox3.Controls.Add(this.rbOpenGL);
+			this.groupBox3.Location = new System.Drawing.Point(4, 3);
+			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.Size = new System.Drawing.Size(389, 165);
+			this.groupBox3.TabIndex = 16;
+			this.groupBox3.TabStop = false;
+			// 
+			// rbGDIPlus
+			// 
+			this.rbGDIPlus.AutoSize = true;
+			this.rbGDIPlus.Checked = true;
+			this.rbGDIPlus.Location = new System.Drawing.Point(6, 89);
+			this.rbGDIPlus.Name = "rbGDIPlus";
+			this.rbGDIPlus.Size = new System.Drawing.Size(50, 17);
+			this.rbGDIPlus.TabIndex = 17;
+			this.rbGDIPlus.TabStop = true;
+			this.rbGDIPlus.Text = "GDI+";
+			this.rbGDIPlus.UseVisualStyleBackColor = true;
+			// 
+			// label6
+			// 
+			this.label6.Location = new System.Drawing.Point(3, 171);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(359, 47);
+			this.label6.TabIndex = 18;
+			this.label6.Text = "Changes require restart of program to take effect.\r\n";
+			// 
+			// label7
+			// 
+			this.label7.Location = new System.Drawing.Point(24, 109);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(359, 47);
+			this.label7.TabIndex = 18;
+			this.label7.Text = " • Mainly for compatibility purposes\r\n • Missing some features\r\n • Works better o" +
+    "ver Remote Desktop, etc.\r\n";
 			// 
 			// DisplayConfigLite
 			// 
@@ -396,13 +511,8 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(631, 332);
-			this.Controls.Add(this.groupBox2);
-			this.Controls.Add(this.grpARSelection);
-			this.Controls.Add(this.grpFinalFilter);
-			this.Controls.Add(this.checkPadInteger);
-			this.Controls.Add(this.checkLetterbox);
-			this.Controls.Add(this.groupBox1);
+			this.ClientSize = new System.Drawing.Size(451, 439);
+			this.Controls.Add(this.tabControl1);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnOk);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -416,10 +526,15 @@
 			this.grpFinalFilter.PerformLayout();
 			this.grpARSelection.ResumeLayout(false);
 			this.grpARSelection.PerformLayout();
-			this.groupBox2.ResumeLayout(false);
-			this.groupBox2.PerformLayout();
+			this.tabControl1.ResumeLayout(false);
+			this.tpAR.ResumeLayout(false);
+			this.tpAR.PerformLayout();
+			this.tpDispMethod.ResumeLayout(false);
+			this.tpMisc.ResumeLayout(false);
+			this.tpMisc.PerformLayout();
+			this.groupBox3.ResumeLayout(false);
+			this.groupBox3.PerformLayout();
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
 		}
 
@@ -445,7 +560,6 @@
 		private System.Windows.Forms.RadioButton rbUseSystem;
 		private System.Windows.Forms.GroupBox grpARSelection;
 		private System.Windows.Forms.CheckBox checkFullscreenHacks;
-		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.CheckBox checkSnowyNullEmulator;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label1;
@@ -455,5 +569,15 @@
 		private System.Windows.Forms.TextBox txtCustomARWidth;
 		private System.Windows.Forms.RadioButton rbUseCustom;
 		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.RadioButton rbOpenGL;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.TabControl tabControl1;
+		private System.Windows.Forms.TabPage tpAR;
+		private System.Windows.Forms.TabPage tpDispMethod;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.RadioButton rbGDIPlus;
+		private System.Windows.Forms.TabPage tpMisc;
 	}
 }
