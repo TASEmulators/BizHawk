@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,16 @@ namespace BizHawk.Emulation.Common
 	public class MemoryCallbackSystem : IMemoryCallbackSystem
 	{
 		private readonly List<IMemoryCallback> Callbacks = new List<IMemoryCallback>();
+
+		public IEnumerator<IMemoryCallback> GetEnumerator()
+		{
+			return Callbacks.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
 
 		public void Add(IMemoryCallback callback)
 		{
