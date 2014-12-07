@@ -69,18 +69,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Core.Tracer.Enabled = true;
 				TraceView.Columns[0].Text = Core.Tracer.Header;
-				RegisterPanel.Core = Core;
-				RegisterPanel.ParentDebugger = this;
-				RegisterPanel.GenerateUI();
-
-				BreakPointControl1.Core = Core;
-				BreakPointControl1.ParentDebugger = this;
-
 			}
 			catch (NotImplementedException)
 			{
 				TracerBox.Enabled = false;
 			}
+
+			RegisterPanel.Core = Core;
+			RegisterPanel.ParentDebugger = this;
+			RegisterPanel.GenerateUI();
+
+			BreakPointControl1.Core = Core;
+			BreakPointControl1.ParentDebugger = this;
 		}
 
 		private void DisengageDebugger()
