@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Common
 		/// If no address is specified the callback will be hooked to all addresses
 		/// Note: an execute callback can not be added without an address, else an InvalidOperationException will occur
 		/// </summary>
-		void Add(MemoryCallbackType type, Action function, uint? addr);
+		void Add(IMemoryCallback callback);
 
 		/// <summary>
 		/// Executes all Read callbacks for the given addr
@@ -56,6 +56,14 @@ namespace BizHawk.Emulation.Common
 		/// Removes all read,write, and execute callbacks
 		/// </summary>
 		void Clear();
+	}
+
+	public interface IMemoryCallback
+	{
+		MemoryCallbackType Type { get; }
+		string Name { get; }
+		Action Callback { get; }
+		uint? Address { get; }
 	}
 
 	public enum MemoryCallbackType { Read, Write, Execute }

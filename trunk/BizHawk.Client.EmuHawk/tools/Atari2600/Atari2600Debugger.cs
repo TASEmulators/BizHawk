@@ -500,7 +500,7 @@ namespace BizHawk.Client.EmuHawk
 
 			private void AddCallback()
 			{
-				_core.MemoryCallbacks.Add(Type, Callback, Address);
+				_core.MemoryCallbacks.Add(new MemoryCallback(Type, "", Callback, Address));
 			}
 
 			private void RemoveCallback()
