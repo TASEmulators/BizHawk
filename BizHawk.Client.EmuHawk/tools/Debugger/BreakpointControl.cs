@@ -63,7 +63,12 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 		{
 			if (Core.MemoryCallbacksAvailable())
 			{
-				// TODO: need a way to populate existing breakpoints
+				foreach (var callback in Core.MemoryCallbacks)
+				{
+					Breakpoints.Add(new Breakpoint(Core, callback.Callback, callback.Address ?? 0 /*TODO*/,callback.Type, true));
+				}
+
+				BreakpointView.Refresh();
 			}
 			else
 			{

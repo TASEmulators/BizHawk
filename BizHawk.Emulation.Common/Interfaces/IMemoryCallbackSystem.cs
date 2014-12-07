@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Common
 {
-	public interface IMemoryCallbackSystem
+	public interface IMemoryCallbackSystem : IEnumerable<IMemoryCallback>
 	{
 		/// <summary>
 		/// Returns whether or not there are currently any read hooks
