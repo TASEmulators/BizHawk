@@ -605,12 +605,6 @@
       <DependentUpon>RomStatusPicker.cs</DependentUpon>
     </Compile>
     <Compile Include="Throttle.cs" />
-    <Compile Include="tools\Atari2600\AddBreakpointDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Atari2600\AddBreakpointDialog.Designer.cs">
-      <DependentUpon>AddBreakpointDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\Atari2600\Atari2600Debugger.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -635,6 +629,12 @@
     </Compile>
     <Compile Include="tools\Cheats\Cheats.Designer.cs">
       <DependentUpon>Cheats.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\Debugger\AddBreakpointDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Debugger\AddBreakpointDialog.Designer.cs">
+      <DependentUpon>AddBreakpointDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\Debugger\Breakpoint.cs" />
     <Compile Include="tools\Debugger\BreakpointControl.cs">
@@ -1220,9 +1220,6 @@
     <EmbeddedResource Include="RomStatusPicker.resx">
       <DependentUpon>RomStatusPicker.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\Atari2600\AddBreakpointDialog.resx">
-      <DependentUpon>AddBreakpointDialog.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="tools\Atari2600\Atari2600Debugger.resx">
       <DependentUpon>Atari2600Debugger.cs</DependentUpon>
     </EmbeddedResource>
@@ -1234,6 +1231,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Cheats\Cheats.resx">
       <DependentUpon>Cheats.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Debugger\AddBreakpointDialog.resx">
+      <DependentUpon>AddBreakpointDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Debugger\BreakpointControl.resx">
       <DependentUpon>BreakpointControl.cs</DependentUpon>
