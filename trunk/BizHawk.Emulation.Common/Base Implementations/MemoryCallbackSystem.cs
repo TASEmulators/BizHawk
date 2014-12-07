@@ -7,169 +7,94 @@ namespace BizHawk.Emulation.Common
 {
 	public class MemoryCallbackSystem : IMemoryCallbackSystem
 	{
-		private readonly List<Action> _reads = new List<Action>();
-		private readonly List<uint?> _readAddrs = new List<uint?>();
-
-		private readonly List<Action> _writes = new List<Action>();
-		private readonly List<uint?> _writeAddrs = new List<uint?>();
-
-		private readonly List<Action> _executes = new List<Action>();
-		private readonly List<uint> _execAddrs = new List<uint>();
+		private readonly List<IMemoryCallback> Callbacks = new List<IMemoryCallback>();
 
 		public void Add(IMemoryCallback callback)
 		{
-			switch (callback.Type)
-			{
-				case MemoryCallbackType.Read:
-					AddRead(callback.Callback, callback.Address);
-					break;
-				case MemoryCallbackType.Write:
-					AddWrite(callback.Callback, callback.Address);
-					break;
-				case MemoryCallbackType.Execute:
-					if (!callback.Address.HasValue)
-					{
-						throw new InvalidOperationException("When assigning an execute callback, an address must be specified");
-					}
-					else
-					{
-						AddExecute(callback.Callback, callback.Address.Value);
-					}
+			var hadAny = Callbacks.Any();
 
-					break;
-			}
-		}
+			Callbacks.Add(callback);
 
-		private void AddRead(Action function, uint? addr)
-		{
-			var hadAny = _reads.Any() || _writes.Any() || _executes.Any();
-
-			_reads.Add(function);
-			_readAddrs.Add(addr);
-
-			var hasAny = _reads.Any() || _writes.Any() || _executes.Any();
-			Changes(hadAny, hasAny);
-		}
-
-		private void AddWrite(Action function, uint? addr)
-		{
-			var hadAny = _reads.Any() || _writes.Any() || _executes.Any();
-
-			_writes.Add(function);
-			_writeAddrs.Add(addr);
-
-			var hasAny = _reads.Any() || _writes.Any() || _executes.Any();
-			Changes(hadAny, hasAny);
-		}
-
-		private void AddExecute(Action function, uint addr)
-		{
-			var hadAny = _reads.Any() || _writes.Any() || _executes.Any();
-
-			_executes.Add(function);
-			_execAddrs.Add(addr);
-
-			var hasAny = _reads.Any() || _writes.Any() || _executes.Any();
+			var hasAny = Callbacks.Any();
 			Changes(hadAny, hasAny);
 		}
 
 		public void CallReads(uint addr)
 		{
-			for (int i = 0; i < _reads.Count; i++)
+			foreach (var read in Callbacks.Where(callback => callback.Type == MemoryCallbackType.Read))
 			{
-				if (!_readAddrs[i].HasValue || _readAddrs[i].Value == addr)
+				if (!read.Address.HasValue || read.Address == addr)
 				{
-					_reads[i]();
+					read.Callback();
 				}
 			}
 		}
 
 		public void CallWrites(uint addr)
 		{
-			for (int i = 0; i < _writes.Count; i++)
+			foreach (var read in Callbacks.Where(callback => callback.Type == MemoryCallbackType.Write))
 			{
-				if (!_writeAddrs[i].HasValue || _writeAddrs[i] == addr)
+				if (!read.Address.HasValue || read.Address == addr)
 				{
-					_writes[i]();
+					read.Callback();
 				}
 			}
 		}
 
 		public void CallExecutes(uint addr)
 		{
-			for (int i = 0; i < _executes.Count; i++)
+			foreach (var read in Callbacks.Where(callback => callback.Type == MemoryCallbackType.Execute))
 			{
-				if (_execAddrs[i] == addr)
+				if (!read.Address.HasValue || read.Address == addr)
 				{
-					_executes[i]();
+					read.Callback();
 				}
 			}
 		}
 
-		public bool HasReads { get { return _reads.Any(); } }
-		public bool HasWrites { get { return _writes.Any(); } }
-		public bool HasExecutes { get { return _executes.Any(); } }
+		public bool HasReads
+		{
+			get { return Callbacks.Any(callback => callback.Type == MemoryCallbackType.Read); }
+		}
+
+		public bool HasWrites
+		{
+			get { return Callbacks.Any(callback => callback.Type == MemoryCallbackType.Write); }
+		}
+
+		public bool HasExecutes
+		{
+			get { return Callbacks.Any(callback => callback.Type == MemoryCallbackType.Execute); }
+		}
 
 		public void Remove(Action action)
 		{
-			var hadAny = _reads.Any() || _writes.Any() || _executes.Any();
+			var hadAny = Callbacks.Any();
 
-			for (int i = 0; i < _reads.Count; i++)
-			{
-				if (_reads[i] == action)
-				{
-					_reads.Remove(_reads[i]);
-					_readAddrs.Remove(_readAddrs[i]);
-				}
-			}
+			var actions = Callbacks.Where(c => c.Callback == action);
+			Callbacks.RemoveAll(c => actions.Contains(c));
 
-			for (int i = 0; i < _writes.Count; i++)
-			{
-				if (_writes[i] == action)
-				{
-					_writes.Remove(_writes[i]);
-					_writeAddrs.Remove(_writeAddrs[i]);
-				}
-			}
-
-			for (int i = 0; i < _executes.Count; i++)
-			{
-				if (_executes[i] == action)
-				{
-					_executes.Remove(_executes[i]);
-					_execAddrs.Remove(_execAddrs[i]);
-				}
-			}
-
-			var hasAny = _reads.Any() || _writes.Any() || _executes.Any();
+			var hasAny = Callbacks.Any();
 			Changes(hadAny, hasAny);
 		}
 
 		public void RemoveAll(IEnumerable<Action> actions)
 		{
-			var hadAny = _reads.Any() || _writes.Any() || _executes.Any();
+			var hadAny = Callbacks.Any();
 
 			foreach (var action in actions)
 			{
 				Remove(action);
 			}
 
-			var hasAny = _reads.Any() || _writes.Any() || _executes.Any();
+			var hasAny = Callbacks.Any();
 			Changes(hadAny, hasAny);
 		}
 
 		public void Clear()
 		{
-			var hadAny = _reads.Any() || _writes.Any() || _executes.Any();
-
-			_reads.Clear();
-			_readAddrs.Clear();
-			_writes.Clear();
-			_writes.Clear();
-			_executes.Clear();
-			_execAddrs.Clear();
-
-			
+			var hadAny = Callbacks.Any();
+			Callbacks.Clear();
 			Changes(hadAny, false);
 		}
 
@@ -192,6 +117,11 @@ namespace BizHawk.Emulation.Common
 	{
 		public MemoryCallback(MemoryCallbackType type, string name, Action callback, uint? address)
 		{
+			if (type == MemoryCallbackType.Execute && !address.HasValue)
+			{
+				throw new InvalidOperationException("When assigning an execute callback, an address must be specified");
+			}
+
 			Type = type;
 			Name = name;
 			Callback = callback;
