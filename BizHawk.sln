@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Client.DBMan", "Biz
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Bizware.BizwareGL.GdiPlus", "Bizware\BizHawk.Bizware.BizwareGL.GdiPlus\BizHawk.Bizware.BizwareGL.GdiPlus.csproj", "{337CA23E-65E7-44E1-9411-97EE08BB8116}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Bizware.BizwareGL.SlimDX", "Bizware\BizHawk.Bizware.BizwareGL.SlimDX\BizHawk.Bizware.BizwareGL.SlimDX.csproj", "{E6B436B1-A3CD-4C9A-8F76-5D7154726884}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -173,6 +175,18 @@ Global
 		{337CA23E-65E7-44E1-9411-97EE08BB8116}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{337CA23E-65E7-44E1-9411-97EE08BB8116}.Release|Win32.ActiveCfg = Release|Any CPU
 		{337CA23E-65E7-44E1-9411-97EE08BB8116}.Release|x86.ActiveCfg = Release|Any CPU
+		{E6B436B1-A3CD-4C9A-8F76-5D7154726884}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6B436B1-A3CD-4C9A-8F76-5D7154726884}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6B436B1-A3CD-4C9A-8F76-5D7154726884}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E6B436B1-A3CD-4C9A-8F76-5D7154726884}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{E6B436B1-A3CD-4C9A-8F76-5D7154726884}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{E6B436B1-A3CD-4C9A-8F76-5D7154726884}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E6B436B1-A3CD-4C9A-8F76-5D7154726884}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6B436B1-A3CD-4C9A-8F76-5D7154726884}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6B436B1-A3CD-4C9A-8F76-5D7154726884}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{E6B436B1-A3CD-4C9A-8F76-5D7154726884}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{E6B436B1-A3CD-4C9A-8F76-5D7154726884}.Release|Win32.ActiveCfg = Release|Any CPU
+		{E6B436B1-A3CD-4C9A-8F76-5D7154726884}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -188,6 +202,7 @@ Global
 		{9F84A0B2-861E-4EF4-B89B-5E2A3F38A465} = {0540A9A6-977E-466D-8BD3-1D8590BD5282}
 		{5160CFB1-5389-47C1-B7F6-8A0DC97641EE} = {0540A9A6-977E-466D-8BD3-1D8590BD5282}
 		{337CA23E-65E7-44E1-9411-97EE08BB8116} = {0540A9A6-977E-466D-8BD3-1D8590BD5282}
+		{E6B436B1-A3CD-4C9A-8F76-5D7154726884} = {0540A9A6-977E-466D-8BD3-1D8590BD5282}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = BizHawk.Client.EmuHawk\BizHawk.Client.EmuHawk.csproj

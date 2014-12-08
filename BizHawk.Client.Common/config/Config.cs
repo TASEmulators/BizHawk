@@ -105,7 +105,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public enum EDispMethod { OpenGL, GdiPlus };
+		public enum EDispMethod { OpenGL, GdiPlus, SlimDX9 };
 
 		public enum EDispManagerAR { None, System, Custom };
 

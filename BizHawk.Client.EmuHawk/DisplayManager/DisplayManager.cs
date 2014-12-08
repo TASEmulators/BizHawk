@@ -46,6 +46,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (GL is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK)
 				Renderer = new GuiRenderer(GL);
+			else if (GL is BizHawk.Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9)
+				Renderer = new GuiRenderer(GL);
 			else
 				Renderer = new GDIPlusGuiRenderer((BizHawk.Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus)GL);
 
@@ -484,7 +486,8 @@ TESTEROO:
 			if (!simulate)
 			{
 				//special codepath for GDI+
-				if (GL is IGL_GdiPlus)
+				//TODO - make for gdi+ only. maybe other codepath for d3d
+				if (!(GL is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK))
 				{
 					//wrap the videoprovider data in a BitmapBuffer (no point to refactoring that many IVideoProviders)
 					bb = new BitmapBuffer(bufferWidth, bufferHeight, videoBuffer);

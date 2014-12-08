@@ -26,16 +26,29 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner = owner;
 
 			VertexLayout = owner.CreateVertexLayout();
-			VertexLayout.DefineVertexAttribute("aPosition", 0, 2, VertexAttribPointerType.Float, false, 32, 0);
-			VertexLayout.DefineVertexAttribute("aTexcoord", 1, 2, VertexAttribPointerType.Float, false, 32, 8);
-			VertexLayout.DefineVertexAttribute("aColor", 2, 4, VertexAttribPointerType.Float, false, 32, 16);
+			VertexLayout.DefineVertexAttribute("aPosition", 0, 2, VertexAttribPointerType.Float, AttributeUsage.Position, false, 32, 0);
+			VertexLayout.DefineVertexAttribute("aTexcoord", 1, 2, VertexAttribPointerType.Float, AttributeUsage.Texcoord0, false, 32, 8);
+			VertexLayout.DefineVertexAttribute("aColor", 2, 4, VertexAttribPointerType.Float, AttributeUsage.Texcoord1, false, 32, 16);
 			VertexLayout.Close();
 
 			_Projection = new MatrixStack();
 			_Modelview = new MatrixStack();
 
-			var vs = Owner.CreateVertexShader(DefaultVertexShader,true);
-			var ps = Owner.CreateFragmentShader(DefaultPixelShader, true);
+			string psProgram, vsProgram;
+
+			if (owner.API == "D3D9")
+			{
+				vsProgram = DefaultShader_d3d9;
+				psProgram = DefaultShader_d3d9;
+			}
+			else
+			{
+				vsProgram = DefaultVertexShader_gl;
+				psProgram = DefaultPixelShader_gl;
+			}
+
+			var vs = Owner.CreateVertexShader(vsProgram, true);
+			var ps = Owner.CreateFragmentShader(psProgram, true);
 			CurrPipeline = DefaultPipeline = Owner.CreatePipeline(VertexLayout, vs, ps, true);
 		}
 
@@ -346,7 +359,54 @@ namespace BizHawk.Bizware.BizwareGL
 			bool BlendStateSet;
 		#endif
 
-		public readonly string DefaultVertexShader = @"
+
+			public readonly string DefaultShader_d3d9 = @"
+float4x4 um44Modelview, um44Projection;
+float4 uModulateColor;
+
+bool uSamplerEnable;
+texture2D texture0;
+sampler uSampler0 = sampler_state { Texture = (texture0); };
+
+struct VS_INPUT
+{
+	float2 aPosition : POSITION;
+	float2 aTexcoord : TEXCOORD0;
+	float4 aColor : TEXCOORD1;
+};
+
+struct VS_OUTPUT
+{
+	float4 vPosition : POSITION;
+	float2 vTexcoord0 : TEXCOORD0;
+	float4 vCornerColor : TEXCOORD1;
+};
+
+struct PS_INPUT
+{
+	float2 vTexcoord0 : TEXCOORD0;
+	float4 vCornerColor : TEXCOORD1;
+};
+
+VS_OUTPUT vsmain(VS_INPUT src)
+{
+	VS_OUTPUT dst;
+	float4 temp = float4(src.aPosition,0,1);
+	dst.vPosition = mul(mul(temp,um44Modelview),um44Projection);
+	dst.vTexcoord0 = src.aTexcoord;
+	dst.vCornerColor = src.aColor * uModulateColor;
+	return dst;
+}
+
+float4 psmain(PS_INPUT src) : COLOR
+{
+	float4 temp = src.vCornerColor;
+	if(uSamplerEnable) temp *= tex2D(uSampler0,src.vTexcoord0);
+	return temp;
+}
+";
+
+		public readonly string DefaultVertexShader_gl = @"
 #version 110 //opengl 2.0 ~ 2004
 uniform mat4 um44Modelview, um44Projection;
 uniform vec4 uModulateColor;
@@ -366,7 +426,7 @@ void main()
 	vCornerColor = aColor * uModulateColor;
 }";
 
-		public readonly string DefaultPixelShader = @"
+		public readonly string DefaultPixelShader_gl = @"
 #version 110 //opengl 2.0 ~ 2004
 uniform bool uSamplerEnable;
 uniform sampler2D uSampler0;
