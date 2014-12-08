@@ -84,10 +84,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		public void Clear(OpenTK.Graphics.OpenGL.ClearBufferMask mask)
 		{
-
-
-
 		}
+
+		public string API { get { return "GDIPLUS"; } }
 
 		public IBlendState CreateBlendState(BlendingFactorSrc colorSource, BlendEquationMode colorEquation, BlendingFactorDest colorDest,
 					BlendingFactorSrc alphaSource, BlendEquationMode alphaEquation, BlendingFactorDest alphaDest)
@@ -106,7 +105,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 
 		public IntPtr GenTexture() { return ResourceIDs.Alloc(ResourceIdManager.EResourceType.Texture); }
-		public void FreeTexture(IntPtr texHandle) { ResourceIDs.Free(texHandle); }
+		public void FreeTexture(Texture2d tex)
+		{
+			ResourceIDs.Free(tex.Id);
+		}
 		public IntPtr GetEmptyHandle() { return new IntPtr(0); }
 		public IntPtr GetEmptyUniformHandle() { return new IntPtr(-1); }
 
@@ -214,7 +216,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			tw.SDBitmap = sdbmp;
 			IntPtr id = GenTexture();
 			ResourceIDs.Lookup[id.ToInt32()] = tw;
-			return new Texture2d(this, id, bitmap.Width, bitmap.Height);
+			return new Texture2d(this, id, null, bitmap.Width, bitmap.Height);
 		}
 
 		public Texture2d LoadTexture(Stream stream)
@@ -248,7 +250,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			var tw = new TextureWrapper();
 			tw.SDBitmap = sdbmp;
 			ResourceIDs.Lookup[id.ToInt32()] = tw;
-			return new Texture2d(this, id, bmp.Width, bmp.Height);
+			return new Texture2d(this, id, null, bmp.Width, bmp.Height);
 		}
 
 		public unsafe BitmapBuffer ResolveTexture2d(Texture2d tex)

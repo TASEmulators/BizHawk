@@ -1444,6 +1444,10 @@
       <Project>{5160CFB1-5389-47C1-B7F6-8A0DC97641EE}</Project>
       <Name>BizHawk.Bizware.BizwareGL.OpenTK</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL.SlimDX\BizHawk.Bizware.BizwareGL.SlimDX.csproj">
+      <Project>{E6B436B1-A3CD-4C9A-8F76-5D7154726884}</Project>
+      <Name>BizHawk.Bizware.BizwareGL.SlimDX</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL\BizHawk.Bizware.BizwareGL.csproj">
       <Project>{9F84A0B2-861E-4EF4-B89B-5E2A3F38A465}</Project>
       <Name>BizHawk.Bizware.BizwareGL</Name>

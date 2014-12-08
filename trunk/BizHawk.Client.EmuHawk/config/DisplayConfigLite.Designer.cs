@@ -63,11 +63,13 @@
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tpAR = new System.Windows.Forms.TabPage();
 			this.tpDispMethod = new System.Windows.Forms.TabPage();
-			this.tpMisc = new System.Windows.Forms.TabPage();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.rbGDIPlus = new System.Windows.Forms.RadioButton();
 			this.label6 = new System.Windows.Forms.Label();
+			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.label7 = new System.Windows.Forms.Label();
+			this.rbGDIPlus = new System.Windows.Forms.RadioButton();
+			this.tpMisc = new System.Windows.Forms.TabPage();
+			this.rbD3D9 = new System.Windows.Forms.RadioButton();
+			this.label8 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			this.grpFinalFilter.SuspendLayout();
@@ -75,8 +77,8 @@
 			this.tabControl1.SuspendLayout();
 			this.tpAR.SuspendLayout();
 			this.tpDispMethod.SuspendLayout();
-			this.tpMisc.SuspendLayout();
 			this.groupBox3.SuspendLayout();
+			this.tpMisc.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// btnCancel
@@ -394,7 +396,7 @@
 			// 
 			this.rbOpenGL.AutoSize = true;
 			this.rbOpenGL.Checked = true;
-			this.rbOpenGL.Location = new System.Drawing.Point(9, 19);
+			this.rbOpenGL.Location = new System.Drawing.Point(6, 80);
 			this.rbOpenGL.Name = "rbOpenGL";
 			this.rbOpenGL.Size = new System.Drawing.Size(65, 17);
 			this.rbOpenGL.TabIndex = 3;
@@ -404,7 +406,7 @@
 			// 
 			// label5
 			// 
-			this.label5.Location = new System.Drawing.Point(24, 39);
+			this.label5.Location = new System.Drawing.Point(21, 100);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(359, 47);
 			this.label5.TabIndex = 16;
@@ -451,6 +453,49 @@
 			this.tpDispMethod.Text = "Display Method";
 			this.tpDispMethod.UseVisualStyleBackColor = true;
 			// 
+			// label6
+			// 
+			this.label6.Location = new System.Drawing.Point(3, 227);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(359, 47);
+			this.label6.TabIndex = 18;
+			this.label6.Text = "Changes require restart of program to take effect.\r\n";
+			// 
+			// groupBox3
+			// 
+			this.groupBox3.Controls.Add(this.label8);
+			this.groupBox3.Controls.Add(this.rbD3D9);
+			this.groupBox3.Controls.Add(this.label7);
+			this.groupBox3.Controls.Add(this.rbGDIPlus);
+			this.groupBox3.Controls.Add(this.label5);
+			this.groupBox3.Controls.Add(this.rbOpenGL);
+			this.groupBox3.Location = new System.Drawing.Point(4, 3);
+			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.Size = new System.Drawing.Size(389, 221);
+			this.groupBox3.TabIndex = 16;
+			this.groupBox3.TabStop = false;
+			// 
+			// label7
+			// 
+			this.label7.Location = new System.Drawing.Point(21, 170);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(359, 47);
+			this.label7.TabIndex = 18;
+			this.label7.Text = " • Mainly for compatibility purposes\r\n • Missing some features\r\n • Works better o" +
+    "ver Remote Desktop, etc.\r\n";
+			// 
+			// rbGDIPlus
+			// 
+			this.rbGDIPlus.AutoSize = true;
+			this.rbGDIPlus.Checked = true;
+			this.rbGDIPlus.Location = new System.Drawing.Point(6, 150);
+			this.rbGDIPlus.Name = "rbGDIPlus";
+			this.rbGDIPlus.Size = new System.Drawing.Size(50, 17);
+			this.rbGDIPlus.TabIndex = 17;
+			this.rbGDIPlus.TabStop = true;
+			this.rbGDIPlus.Text = "GDI+";
+			this.rbGDIPlus.UseVisualStyleBackColor = true;
+			// 
 			// tpMisc
 			// 
 			this.tpMisc.Controls.Add(this.label2);
@@ -464,46 +509,26 @@
 			this.tpMisc.Text = "Misc";
 			this.tpMisc.UseVisualStyleBackColor = true;
 			// 
-			// groupBox3
+			// rbD3D9
 			// 
-			this.groupBox3.Controls.Add(this.label7);
-			this.groupBox3.Controls.Add(this.rbGDIPlus);
-			this.groupBox3.Controls.Add(this.label5);
-			this.groupBox3.Controls.Add(this.rbOpenGL);
-			this.groupBox3.Location = new System.Drawing.Point(4, 3);
-			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(389, 165);
-			this.groupBox3.TabIndex = 16;
-			this.groupBox3.TabStop = false;
+			this.rbD3D9.AutoSize = true;
+			this.rbD3D9.Checked = true;
+			this.rbD3D9.Enabled = false;
+			this.rbD3D9.Location = new System.Drawing.Point(6, 10);
+			this.rbD3D9.Name = "rbD3D9";
+			this.rbD3D9.Size = new System.Drawing.Size(73, 17);
+			this.rbD3D9.TabIndex = 19;
+			this.rbD3D9.TabStop = true;
+			this.rbD3D9.Text = "Direct3D9";
+			this.rbD3D9.UseVisualStyleBackColor = true;
 			// 
-			// rbGDIPlus
+			// label8
 			// 
-			this.rbGDIPlus.AutoSize = true;
-			this.rbGDIPlus.Checked = true;
-			this.rbGDIPlus.Location = new System.Drawing.Point(6, 89);
-			this.rbGDIPlus.Name = "rbGDIPlus";
-			this.rbGDIPlus.Size = new System.Drawing.Size(50, 17);
-			this.rbGDIPlus.TabIndex = 17;
-			this.rbGDIPlus.TabStop = true;
-			this.rbGDIPlus.Text = "GDI+";
-			this.rbGDIPlus.UseVisualStyleBackColor = true;
-			// 
-			// label6
-			// 
-			this.label6.Location = new System.Drawing.Point(3, 171);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(359, 47);
-			this.label6.TabIndex = 18;
-			this.label6.Text = "Changes require restart of program to take effect.\r\n";
-			// 
-			// label7
-			// 
-			this.label7.Location = new System.Drawing.Point(24, 109);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(359, 47);
-			this.label7.TabIndex = 18;
-			this.label7.Text = " • Mainly for compatibility purposes\r\n • Missing some features\r\n • Works better o" +
-    "ver Remote Desktop, etc.\r\n";
+			this.label8.Location = new System.Drawing.Point(24, 30);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(359, 47);
+			this.label8.TabIndex = 20;
+			this.label8.Text = " • Not working yet\r\n • Best compatibility\r\n • No support for custom shaders\r\n";
 			// 
 			// DisplayConfigLite
 			// 
@@ -530,10 +555,10 @@
 			this.tpAR.ResumeLayout(false);
 			this.tpAR.PerformLayout();
 			this.tpDispMethod.ResumeLayout(false);
-			this.tpMisc.ResumeLayout(false);
-			this.tpMisc.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
+			this.tpMisc.ResumeLayout(false);
+			this.tpMisc.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -579,5 +604,7 @@
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.RadioButton rbGDIPlus;
 		private System.Windows.Forms.TabPage tpMisc;
+		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.RadioButton rbD3D9;
 	}
 }

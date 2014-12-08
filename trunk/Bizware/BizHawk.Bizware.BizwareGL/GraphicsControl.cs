@@ -19,7 +19,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 			//in case we need it
 			//GLControl.GetType().GetMethod("SetStyle", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(GLControl, new object[] { System.Windows.Forms.ControlStyles.UserMouse, true });
-
+			
 
 			IGC = owner.Internal_CreateGraphicsControl();
 			Managed = IGC as Control;

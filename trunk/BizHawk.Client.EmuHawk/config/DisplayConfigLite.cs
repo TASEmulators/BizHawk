@@ -38,6 +38,7 @@ namespace BizHawk.Client.EmuHawk.config
 
 			rbOpenGL.Checked = Global.Config.DispMethod == Config.EDispMethod.OpenGL;
 			rbGDIPlus.Checked = Global.Config.DispMethod == Config.EDispMethod.GdiPlus;
+			rbD3D9.Checked = Global.Config.DispMethod == Config.EDispMethod.SlimDX9;
 
 			// null emulator config hack
 			{
@@ -113,6 +114,8 @@ namespace BizHawk.Client.EmuHawk.config
 				Global.Config.DispMethod = Config.EDispMethod.OpenGL;
 			if(rbGDIPlus.Checked)
 				Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+			if(rbD3D9.Checked)
+				Global.Config.DispMethod = Config.EDispMethod.SlimDX9;
 
 			Global.Config.DispUserFilterPath = PathSelection;
 			GlobalWin.DisplayManager.RefreshUserShader();
