@@ -1946,7 +1946,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CoreSyncSettings(object sender, RomLoader.SettingsLoadArgs e)
 		{
-			if (Global.MovieSession.QueuedMovie != null)
+			if (Global.MovieSession.QueuedMovie != null && !string.IsNullOrWhiteSpace(Global.MovieSession.QueuedMovie.SyncSettingsJson))
 			{
 				e.Settings = ConfigService.LoadWithType(Global.MovieSession.QueuedMovie.SyncSettingsJson);
 			}
