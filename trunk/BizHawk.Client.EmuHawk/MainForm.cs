@@ -1946,9 +1946,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CoreSyncSettings(object sender, RomLoader.SettingsLoadArgs e)
 		{
-			if (Global.MovieSession.QueuedMovie != null && !string.IsNullOrWhiteSpace(Global.MovieSession.QueuedMovie.SyncSettingsJson))
+			if (Global.MovieSession.QueuedMovie != null)
 			{
-				e.Settings = ConfigService.LoadWithType(Global.MovieSession.QueuedMovie.SyncSettingsJson);
+				if (!string.IsNullOrWhiteSpace(Global.MovieSession.QueuedMovie.SyncSettingsJson))
+				{
+					e.Settings = ConfigService.LoadWithType(Global.MovieSession.QueuedMovie.SyncSettingsJson);
+				}
+				else
+				{
+					MessageBox.Show(
+						"No sync settings found, using currently configured settings for this core.",
+						"No sync settings found",
+						MessageBoxButtons.OK,
+						MessageBoxIcon.Warning
+						);
+
+					e.Settings = Global.Config.GetCoreSyncSettings(e.Core);
+				}
 			}
 			else
 			{
