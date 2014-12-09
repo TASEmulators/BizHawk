@@ -22,6 +22,9 @@ namespace BizHawk.Emulation.Common
 		{
 			public Dictionary<string, byte[]> Data = new Dictionary<string, byte[]>();
 			public Dictionary<string, Node> Objects = new Dictionary<string, Node>();
+
+			// methods named "ShouldSerialize*" are detected and dynamically invoked by JSON.NET
+			// if they return false during serialization, the field/prop is omitted from the created json
 			public bool ShouldSerializeData()
 			{
 				return Data.Count > 0;
