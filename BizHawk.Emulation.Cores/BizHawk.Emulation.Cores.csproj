@@ -86,7 +86,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\VersionInfo.cs">
+    <Compile Include="..\Version\svnrev.cs">
+      <Link>svnrev.cs</Link>
+    </Compile>
+    <Compile Include="..\Version\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
     <Compile Include="Calculator\TI83.IInputPollable.cs">
@@ -246,16 +249,16 @@
       <DependentUpon>ColecoVision.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Coleco\ColecoVision.IInputPollable.cs">
-        <DependentUpon>ColecoVision.cs</DependentUpon>
+      <DependentUpon>ColecoVision.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Coleco\ColecoVision.IMemoryDomains.cs">
-        <DependentUpon>ColecoVision.cs</DependentUpon>
+      <DependentUpon>ColecoVision.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Coleco\ColecoVision.ISettable.cs">
-        <DependentUpon>ColecoVision.cs</DependentUpon>
+      <DependentUpon>ColecoVision.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Coleco\ColecoVision.IStatable.cs">
-        <DependentUpon>ColecoVision.cs</DependentUpon>
+      <DependentUpon>ColecoVision.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Coleco\Input.cs" />
     <Compile Include="Consoles\Coleco\MemoryMap.cs" />
@@ -576,7 +579,6 @@
     <Compile Include="FileID.cs" />
     <Compile Include="LibRetro.cs" />
     <Compile Include="LibRetroEmulator.cs" />
-    <Compile Include="Properties\svnrev.cs" />
     <Compile Include="Consoles\PC Engine\Input.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.SF2.cs" />
@@ -654,6 +656,9 @@
   <PropertyGroup>
     <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>
     <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">"$(SolutionDir)subwcrev.sh" "$(ProjectDir)"</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent />
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

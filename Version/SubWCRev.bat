@@ -1,14 +1,14 @@
 @echo off
 
 set TEMPFILE="%TEMP%\BIZBUILD-SVN-%RANDOM%-%RANDOM%-%RANDOM%-%RANDOM%"
-set SVNREV="%~1properties\svnrev.cs"
+set SVNREV="%~1svnrev.cs"
 
 rem try generating svnrev from svn now. this will fail if svn is nonexistent, so...
-"%~1..\SubWCRev.exe" "%~1\.." "%~1properties\svnrev_template" %TEMPFILE% > nul
+"%~1SubWCRev.exe" "%~1" "%~1svnrev_template" %TEMPFILE% > nul
 
 rem generate a svnrev with sed using no revision number, in case svn isnt available
 if not exist %TEMPFILE% (
-    "%~1..\sed.exe" s/\$WCREV\$/0/ < "%~1properties\svnrev_template" > %TEMPFILE%
+    "%~1sed.exe" s/\$WCREV\$/0/ < "%~1svnrev_template" > %TEMPFILE%
 )
 
 rem ... ignore the error
