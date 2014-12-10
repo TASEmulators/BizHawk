@@ -1,5 +1,4 @@
-//API TODO
-//get rid of the 2048 byte reader
+//TODO - make sure msvc builds with 32bit enums and get rid of the extra marshalling fluff here
 
 using System;
 using System.Runtime.InteropServices;
@@ -25,9 +24,21 @@ public unsafe static class OctoshockDll
 		Normalize = 1
 	}
 
+	public enum ePeripheralType
+	{
+		None = 0, //can be used to signify disconnection
+
+		Pad = 1, //SCPH-1080
+		DualShock = 2, //SCPH-1200
+		DualAnalog = 3, //SCPH-1180
+
+		Multitap = 10,
+	};
+
 	public const int SHOCK_OK = 0;
 	public const int SHOCK_ERROR = -1;
 	public const int SHOCK_NOCANDO = -2;
+	public const int SHOCK_INVALID_ADDRESS = -3;
 
 	[StructLayout(LayoutKind.Sequential)]
 	public struct ShockDiscInfo
@@ -81,6 +92,17 @@ public unsafe static class OctoshockDll
 
 	[DllImport("octoshock.dll")]
 	public static extern int shock_Destroy(IntPtr psx);
+
+	[DllImport("octoshock.dll")]
+	
+	public static extern int shock_Peripheral_Connect(
+		IntPtr psx, 
+		int address,
+		[MarshalAs(UnmanagedType.I4)] ePeripheralType type
+		);
+	
+	[DllImport("octoshock.dll")]
+	public static extern int shock_Peripheral_SetPadInput(IntPtr psx, int address, uint buttons, byte left_x, byte left_y, byte right_x, byte right_y);
 
 	[DllImport("octoshock.dll")]
 	public static extern int shock_PowerOn(IntPtr psx);

@@ -1,6 +1,7 @@
 ﻿//TODO hook up newer file ID stuff, think about how to combine it with the disc ID
 //TODO change display manager to not require 0xFF alpha channel set on videoproviders. check gdi+ and opengl! this will get us a speedup in some places
 //TODO Disc.Structure.Sessions[0].length_aba was 0
+//TODO disc lights
 
 using System;
 using System.Runtime.InteropServices;
@@ -22,7 +23,31 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 	public unsafe class Octoshock : IEmulator, IVideoProvider, ISoundProvider
 	{
 		public string SystemId { get { return "NULL"; } }
-		public static readonly ControllerDefinition NullController = new ControllerDefinition { Name = "Null Controller" };
+
+		public static readonly ControllerDefinition DualShockController = new ControllerDefinition
+		{
+			Name = "DualShock Controller",
+			BoolButtons =
+			{					
+				"Up", "Down", "Left", "Right", 
+				"Select", "Start",
+				"Square", "Triangle", "Circle", "Cross", 
+				"L1", "R1",  "L2", "R2", "L3", "R3", 
+				"MODE",
+			},
+			FloatControls =
+			{
+				"LStick X", "LStick Y",
+				"RStick X", "RStick Y",
+			},
+			FloatRanges = 
+			{
+				new[] {0.0f, 128.0f, 255.0f},
+				new[] {255.0f, 128.0f, 0.0f},
+				new[] {0.0f, 128.0f, 255.0f},
+				new[] {255.0f, 128.0f, 0.0f},
+			}
+		};
 
 		public string BoardName { get { return null; } }
 
@@ -185,6 +210,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			OctoshockDll.shock_OpenTray(psx);
 			OctoshockDll.shock_SetDisc(psx, discInterface.OctoshockHandle);
 			OctoshockDll.shock_CloseTray(psx);
+			OctoshockDll.shock_Peripheral_Connect(psx, 0x01, OctoshockDll.ePeripheralType.DualShock);
 			OctoshockDll.shock_PowerOn(psx);
 		}
 
@@ -219,8 +245,43 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			Frame = 0;
 		}
 
+		void SetInput()
+		{
+			uint buttons = 0;
+			
+			//dualshock style
+			if(Controller["Select"]) buttons |= 1;
+			if (Controller["L3"]) buttons |= 2;
+			if (Controller["R3"]) buttons |= 4;
+			if (Controller["Start"]) buttons |= 8;
+			if (Controller["Up"]) buttons |= 16;
+			if (Controller["Right"]) buttons |= 32;
+			if (Controller["Down"]) buttons |= 64;
+			if (Controller["Left"]) buttons |= 128;
+			if (Controller["L2"]) buttons |= 256;
+			if (Controller["R2"]) buttons |= 512;
+			if (Controller["L1"]) buttons |= 1024;
+			if (Controller["R1"]) buttons |= 2048;
+			if (Controller["Triangle"]) buttons |= 4096;
+			if (Controller["Circle"]) buttons |= 8192;
+			if (Controller["Cross"]) buttons |= 16384;
+			if (Controller["Square"]) buttons |= 32768;
+			if (Controller["MODE"]) buttons |= 65536;
+
+			byte left_x = (byte)Controller.GetFloat("LStick X");
+			byte left_y = (byte)Controller.GetFloat("LStick Y");
+			byte right_x = (byte)Controller.GetFloat("RStick X");
+			byte right_y = (byte)Controller.GetFloat("RStick Y");
+
+			OctoshockDll.shock_Peripheral_SetPadInput(psx, 0x01, buttons, left_x, left_y, right_x, right_y);
+		}
+
 		public void FrameAdvance(bool render, bool rendersound)
 		{
+			Frame++;
+
+			SetInput();
+
 			OctoshockDll.shock_Step(psx, OctoshockDll.eShockStep.Frame);
 
 			OctoshockDll.ShockFramebufferInfo fb = new OctoshockDll.ShockFramebufferInfo();
@@ -251,10 +312,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 		}
 
-		[FeatureNotImplemented]
-		public ControllerDefinition ControllerDefinition { get { return NullController; } }
-
-		[FeatureNotImplemented]
+		public ControllerDefinition ControllerDefinition { get { return DualShockController; } }
 		public IController Controller { get; set; }
 
 		public int Frame
