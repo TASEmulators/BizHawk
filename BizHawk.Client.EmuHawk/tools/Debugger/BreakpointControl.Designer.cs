@@ -84,6 +84,9 @@
 			this.BreakpointView.UseCompatibleStateImageBehavior = false;
 			this.BreakpointView.UseCustomBackground = true;
 			this.BreakpointView.View = System.Windows.Forms.View.Details;
+			this.BreakpointView.ItemActivate += new System.EventHandler(this.BreakpointView_ItemActivate);
+			this.BreakpointView.SelectedIndexChanged += new System.EventHandler(this.BreakpointView_SelectedIndexChanged);
+			this.BreakpointView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.BreakpointView_KeyDown);
 			// 
 			// columnHeader1
 			// 

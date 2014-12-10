@@ -22,6 +22,7 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 		{
 			InitializeComponent();
 			BreakpointView.QueryItemText += BreakPointView_QueryItemText;
+			BreakpointView.QueryItemBkColor += BreakPointView_QueryItemBkColor;
 			BreakpointView.VirtualMode = true;
 			Breakpoints.Callback = BreakpointCallback;
 		}
@@ -46,6 +47,11 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 					text = Breakpoints[index].Name;
 					break;
 			}
+		}
+
+		private void BreakPointView_QueryItemBkColor(int index, int column, ref Color color)
+		{
+			color = Breakpoints[index].Active ? Color.LightCyan : SystemColors.Control;
 		}
 
 		private void BreakpointCallback()
@@ -73,6 +79,7 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 
 				BreakpointView.ItemCount = Breakpoints.Count;
 				BreakpointView.Refresh();
+				UpdateBreakpointRemoveButton();
 			}
 			else
 			{
@@ -128,6 +135,37 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 		private void UpdateBreakpointRemoveButton()
 		{
 			RemoveBreakpointButton.Enabled = BreakpointView.SelectedIndices.Count > 0;
+		}
+
+		private void BreakpointView_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			UpdateBreakpointRemoveButton();
+		}
+
+		private void BreakpointView_ItemActivate(object sender, EventArgs e)
+		{
+			if (BreakpointView.SelectedIndices.Count > 0)
+			{
+				var items = SelectedItems.ToList();
+				if (items.Any())
+				{
+					foreach (var item in items)
+					{
+						item.Active ^= true;
+					}
+
+					BreakpointView.ItemCount = Breakpoints.Count;
+					UpdateBreakpointRemoveButton();
+				}
+			}
+		}
+
+		private void BreakpointView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.Delete) // Delete
+			{
+				RemoveBreakpointButton_Click(null, null);
+			}
 		}
 	}
 }
