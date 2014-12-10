@@ -230,7 +230,6 @@ class PS_CDC
 
  static CDC_CTEntry Commands[0x20];
 
- int32 Command_Sync(const int arg_count, const uint8 *args);
  int32 Command_Nop(const int arg_count, const uint8 *args);
  int32 Command_Setloc(const int arg_count, const uint8 *args);
  int32 Command_Play(const int arg_count, const uint8 *args);

@@ -525,7 +525,9 @@ template<typename T, bool IsWrite, bool Access24> static INLINE void MemRW(pscpu
      if(timestamp >= events[PSX_EVENT__SYNFIRST].next->event_time)
       PSX_EventHandler(timestamp);
 
-     V = SPU->Read(timestamp, A) | (SPU->Read(timestamp, A | 2) << 16);
+		 //0.9.36.5 - clarified read order by turning into two statements
+     V = SPU->Read(timestamp, A);
+     V |= SPU->Read(timestamp, A | 2) << 16;
     }
    }
    else

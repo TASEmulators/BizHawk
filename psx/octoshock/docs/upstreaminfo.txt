@@ -1,0 +1,5 @@
+0.9.36.2 (approx) -> 0.9.36.5
+[NO] cdrom/CDAccess.* : added support for SBI files
+[OK] psx/CDC : removed stub for Command_Sync (WHY?)
+[OK] psx/psx.cpp : fixed bug (SPU-related: clarified read order by turning into two statements)
+[NO] psx/psx.cpp : StateAction bugfix
