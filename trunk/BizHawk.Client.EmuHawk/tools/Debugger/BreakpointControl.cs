@@ -42,6 +42,9 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 				case 1:
 					text = Breakpoints[index].Type.ToString();
 					break;
+				case 2:
+					text = Breakpoints[index].Name;
+					break;
 			}
 		}
 
@@ -65,9 +68,10 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 			{
 				foreach (var callback in Core.MemoryCallbacks)
 				{
-					Breakpoints.Add(new Breakpoint(Core, callback.Callback, callback.Address ?? 0 /*TODO*/,callback.Type, true));
+					Breakpoints.Add(new Breakpoint(Core, callback));
 				}
 
+				BreakpointView.ItemCount = Breakpoints.Count;
 				BreakpointView.Refresh();
 			}
 			else
@@ -83,7 +87,7 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 
 		private void AddBreakpointButton_Click(object sender, EventArgs e)
 		{
-			var b = new AddBreakpointDialog(); // TODO: rename and move this widget
+			var b = new AddBreakpointDialog();
 			if (b.ShowDialog() == DialogResult.OK)
 			{
 				Breakpoints.Add(Core, b.Address, b.BreakType);

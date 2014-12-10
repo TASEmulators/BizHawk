@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			Callback = callBack;
 			Address = address;
 			Active = enabled;
-
+			Name = "Pause";
 			if (enabled)
 			{
 				AddCallback();
@@ -48,8 +48,19 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public Action Callback { get; set; }
-		public uint Address { get; set; }
+		public uint? Address { get; set; }
 		public MemoryCallbackType Type { get; set; }
+		public string Name { get; set; }
+
+		// Adds an existing callback
+		public Breakpoint(IDebuggable core, IMemoryCallback callback)
+		{
+			_core = core;
+			Callback = callback.Callback;
+			Address = callback.Address;
+			Type = callback.Type;
+			Name = callback.Name;
+		}
 
 		public bool Active
 		{
@@ -76,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddCallback()
 		{
-			_core.MemoryCallbacks.Add(new MemoryCallback(Type, "Pause", Callback, Address));
+			_core.MemoryCallbacks.Add(new MemoryCallback(Type, Name, Callback, Address));
 		}
 
 		private void RemoveCallback()

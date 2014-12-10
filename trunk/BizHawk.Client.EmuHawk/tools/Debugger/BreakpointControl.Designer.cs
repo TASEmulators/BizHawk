@@ -28,12 +28,35 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.AddBreakpointButton = new System.Windows.Forms.Button();
+			this.RemoveBreakpointButton = new System.Windows.Forms.Button();
 			this.BreakpointView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.AddBreakpointButton = new System.Windows.Forms.Button();
-			this.RemoveBreakpointButton = new System.Windows.Forms.Button();
+			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.SuspendLayout();
+			// 
+			// AddBreakpointButton
+			// 
+			this.AddBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.AddBreakpointButton.Location = new System.Drawing.Point(0, 387);
+			this.AddBreakpointButton.Name = "AddBreakpointButton";
+			this.AddBreakpointButton.Size = new System.Drawing.Size(60, 23);
+			this.AddBreakpointButton.TabIndex = 6;
+			this.AddBreakpointButton.Text = "&Add";
+			this.AddBreakpointButton.UseVisualStyleBackColor = true;
+			this.AddBreakpointButton.Click += new System.EventHandler(this.AddBreakpointButton_Click);
+			// 
+			// RemoveBreakpointButton
+			// 
+			this.RemoveBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.RemoveBreakpointButton.Location = new System.Drawing.Point(130, 387);
+			this.RemoveBreakpointButton.Name = "RemoveBreakpointButton";
+			this.RemoveBreakpointButton.Size = new System.Drawing.Size(60, 23);
+			this.RemoveBreakpointButton.TabIndex = 7;
+			this.RemoveBreakpointButton.Text = "&Remove";
+			this.RemoveBreakpointButton.UseVisualStyleBackColor = true;
+			this.RemoveBreakpointButton.Click += new System.EventHandler(this.RemoveBreakpointButton_Click);
 			// 
 			// BreakpointView
 			// 
@@ -44,7 +67,8 @@
 			this.BreakpointView.CheckBoxes = true;
 			this.BreakpointView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
-            this.columnHeader2});
+            this.columnHeader2,
+            this.columnHeader3});
 			this.BreakpointView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.BreakpointView.FullRowSelect = true;
 			this.BreakpointView.GridLines = true;
@@ -71,27 +95,10 @@
 			this.columnHeader2.Text = "Type";
 			this.columnHeader2.Width = 103;
 			// 
-			// AddBreakpointButton
+			// columnHeader3
 			// 
-			this.AddBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.AddBreakpointButton.Location = new System.Drawing.Point(0, 387);
-			this.AddBreakpointButton.Name = "AddBreakpointButton";
-			this.AddBreakpointButton.Size = new System.Drawing.Size(60, 23);
-			this.AddBreakpointButton.TabIndex = 6;
-			this.AddBreakpointButton.Text = "&Add";
-			this.AddBreakpointButton.UseVisualStyleBackColor = true;
-			this.AddBreakpointButton.Click += new System.EventHandler(this.AddBreakpointButton_Click);
-			// 
-			// RemoveBreakpointButton
-			// 
-			this.RemoveBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.RemoveBreakpointButton.Location = new System.Drawing.Point(130, 387);
-			this.RemoveBreakpointButton.Name = "RemoveBreakpointButton";
-			this.RemoveBreakpointButton.Size = new System.Drawing.Size(60, 23);
-			this.RemoveBreakpointButton.TabIndex = 7;
-			this.RemoveBreakpointButton.Text = "&Remove";
-			this.RemoveBreakpointButton.UseVisualStyleBackColor = true;
-			this.RemoveBreakpointButton.Click += new System.EventHandler(this.RemoveBreakpointButton_Click);
+			this.columnHeader3.Text = "Name";
+			this.columnHeader3.Width = 80;
 			// 
 			// BreakpointControl
 			// 
@@ -114,5 +121,6 @@
 		private System.Windows.Forms.ColumnHeader columnHeader2;
 		private System.Windows.Forms.Button AddBreakpointButton;
 		private System.Windows.Forms.Button RemoveBreakpointButton;
+		private System.Windows.Forms.ColumnHeader columnHeader3;
 	}
 }

@@ -81,6 +81,7 @@ namespace BizHawk.Client.EmuHawk
 
 			BreakPointControl1.Core = Core;
 			BreakPointControl1.ParentDebugger = this;
+			BreakPointControl1.GenerateUI();
 		}
 
 		private void DisengageDebugger()
