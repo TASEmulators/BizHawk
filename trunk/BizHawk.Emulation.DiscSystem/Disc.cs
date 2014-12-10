@@ -205,7 +205,8 @@ FILE ""xarp.barp.marp.farp"" BINARY
 			var ret = new Disc();
 			ret.FromCuePathInternal(cuePath, prefs);
 			ret.Structure.Synthesize_TOCPointsFromSessions();
-			ret.Synthesize_SubcodeFromCurrentTOC();
+			ret.Synthesize_SubcodeFromStructure();
+			ret.Synthesize_TOCRawFromStructure();
 			return ret;
 		}
 
@@ -223,15 +224,38 @@ FILE ""xarp.barp.marp.farp"" BINARY
 			var ret = new Disc();
 			ret.FromIsoPathInternal(isoPath);
 			ret.Structure.Synthesize_TOCPointsFromSessions();
-			ret.Synthesize_SubcodeFromCurrentTOC();
+			ret.Synthesize_SubcodeFromStructure();
 			return ret;
+		}
+
+		/// <summary>
+		/// Synthesizes a crudely estimated TOCRaw from the disc structure.
+		/// </summary>
+		public void Synthesize_TOCRawFromStructure()
+		{
+			TOCRaw = new DiscTOCRaw();
+			TOCRaw.FirstRecordedTrackNumber = 1;
+			TOCRaw.LastRecordedTrackNumber = Structure.Sessions[0].Tracks.Count;
+			int lastEnd = 0;
+			for (int i = 0; i < Structure.Sessions[0].Tracks.Count; i++)
+			{
+				var track = Structure.Sessions[0].Tracks[i];
+				TOCRaw.TOCItems[i + 1].Control = track.Control;
+				TOCRaw.TOCItems[i + 1].Exists = true;
+				//TOCRaw.TOCItems[i + 1].LBATimestamp = new Timestamp(track.Start_ABA - 150); //AUGH. see comment in Start_ABA
+				//TOCRaw.TOCItems[i + 1].LBATimestamp = new Timestamp(track.Indexes[1].LBA);  //ZOUNDS!
+				TOCRaw.TOCItems[i + 1].LBATimestamp = new Timestamp(track.Indexes[1].LBA + 150); //WHATEVER, I DONT KNOW. MAKES IT MATCH THE CCD, BUT THERES MORE PROBLEMS
+				lastEnd = track.LengthInSectors + track.Indexes[1].LBA;
+			}
+
+			TOCRaw.LeadoutTimestamp = new Timestamp(lastEnd);
 		}
 
 		/// <summary>
 		/// Creates the subcode (really, just subchannel Q) for this disc from its current TOC.
 		/// Depends on the TOCPoints existing in the structure
 		/// </summary>
-		void Synthesize_SubcodeFromCurrentTOC()
+		void Synthesize_SubcodeFromStructure()
 		{
 			int aba = 0;
 			int dpIndex = 0;
@@ -249,7 +273,7 @@ FILE ""xarp.barp.marp.farp"" BINARY
 
 				var se = Sectors[aba];
 
-				EControlQ control = EControlQ.None;
+				EControlQ control = dp.Track.Control;
 				
 				//we always use ADR=1 (mode-1 q block)
 				//this could be more sophisticated but it is almost useless for emulation (only useful for catalog/ISRC numbers)

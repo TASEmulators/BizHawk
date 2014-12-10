@@ -31,7 +31,18 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 		public int Read_2048(byte[] buffer, int offset)
 		{
-			return Blob.Read(Offset, buffer, offset, 2048);
+			//this depends on CD-XA mode and such. so we need to read the mode bytes
+			//HEY!!!!!! SHOULD THIS BE DONE BASED ON THE CLAIMED TRACK TYPE, OR ON WHATS IN THE SECTOR?
+			//this is kind of a function of the CD reader.. it's not clear how this function should work.
+			//YIKES!!!!!!!!!!!!!!
+			//well, we need to scrutinize it for CCD files anyway, so...
+			//this sucks.
+			Blob.Read(Offset + 16, buffer, 0, 1);
+			byte mode = buffer[0];
+			if(mode == 1)
+				return Blob.Read(Offset + 16, buffer, offset, 2048);
+			else
+				return Blob.Read(Offset + 24, buffer, offset, 2048);
 		}
 	}
 

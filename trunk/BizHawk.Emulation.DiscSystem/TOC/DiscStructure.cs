@@ -187,6 +187,10 @@ namespace BizHawk.Emulation.DiscSystem
 
 			/// <summary>
 			/// The beginning ABA of the track (index 1). This isn't well-supported, yet
+			/// WHAT? IS THIS NOT AN ABA SOMETIMES?
+			/// IS IT THE INDEX 0 OF THE TRACK? THATS FUCKED UP. COMPARE TO TOCRAW ENTRIES. IT SHOULD BE MATCHING THAT
+			/// HEY??? SHOULD THIS EVEN BE HERE? YOURE SUPPOSED TO USE THE INDEXES INSTEAD.
+			/// WELL, IF WE KEEP THIS THE MEANING SHOULD BE  SAME AS INDEX[1].LBA (or ABA) SO BE SURE TO WRITE THAT COMMENT HERE
 			/// </summary>
 			public int Start_ABA;
 
