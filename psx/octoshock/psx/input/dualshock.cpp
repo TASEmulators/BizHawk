@@ -291,19 +291,24 @@ void InputDevice_DualShock::UpdateInput(const void *data)
  buttons[1] = d8[1];
  cur_ana_button_state = d8[2] & 0x01;
 
- for(int stick = 0; stick < 2; stick++)
- {
-  for(int axis = 0; axis < 2; axis++)
-  {
-   const uint8* aba = &d8[3] + stick * 8 + axis * 4;
-   int32 tmp;
+ //OCTOSHOCK EDIT - so we can set values directly
+ //for(int stick = 0; stick < 2; stick++)
+ //{
+ // for(int axis = 0; axis < 2; axis++)
+ // {
+ //  //const uint8* aba = &d8[3] + stick * 8 + axis * 4;
+ //  //int32 tmp;
 
-   tmp = 32767 + MDFN_de16lsb(&aba[0]) - MDFN_de16lsb(&aba[2]);
-   tmp = (tmp * 0x100) / 0xFFFF;
+ //  //tmp = 32767 + MDFN_de16lsb(&aba[0]) - MDFN_de16lsb(&aba[2]);
+ //  //tmp = (tmp * 0x100) / 0xFFFF;
+	//	
+ // }
+ //}
+	axes[0][0] = d8[3];
+	axes[0][1] = d8[4];
+	axes[1][0] = d8[5];
+	axes[1][1] = d8[6];
 
-   axes[stick][axis] = tmp;
-  }
- }
 
  //printf("%3d:%3d, %3d:%3d\n", axes[0][0], axes[0][1], axes[1][0], axes[1][1]);
 

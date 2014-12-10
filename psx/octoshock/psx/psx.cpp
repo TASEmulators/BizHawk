@@ -1323,6 +1323,98 @@ struct ShockState
 	bool power;
 } s_ShockState;
 
+
+struct ShockPeripheral
+{
+	ePeripheralType type;
+	u8 buffer[16];
+};
+
+struct {
+
+	ShockPeripheral ports[2];
+
+	void Initialize()
+	{
+		for(int i=0;i<2;i++)
+		{
+			ports[i].type = ePeripheralType_None;
+			memset(ports[i].buffer,0,sizeof(ports[i].buffer));
+		}
+	}
+
+	s32 Connect(s32 address, s32 type)
+	{
+		//check the port address
+		int portnum = address&1;
+		if(portnum != 1 && portnum != 2)
+			return SHOCK_INVALID_ADDRESS;
+		portnum--;
+
+		//check whats already there
+		if(ports[portnum].type == ePeripheralType_None && type == ePeripheralType_None) return SHOCK_OK; //NOP
+		if(ports[portnum].type != ePeripheralType_None && type != ePeripheralType_None) return SHOCK_NOCANDO; //cant re-connect something without disconnecting first
+
+		//disconnecting:
+		if(type == ePeripheralType_None) {
+			ports[portnum].type = ePeripheralType_None;
+			memset(ports[portnum].buffer,0,sizeof(ports[portnum].buffer));
+			FIO->SetInput(portnum, "none", ports[portnum].buffer);
+			return SHOCK_OK;
+		}
+
+		//connecting:
+		const char* name = NULL;
+		switch(type)
+		{
+		case ePeripheralType_Pad: name = "gamepad"; break;
+		case ePeripheralType_DualShock: name = "dualshock"; break;
+		case ePeripheralType_DualAnalog: name = "dualanalog"; break;
+		default:
+			return SHOCK_ERROR;
+		}
+		ports[portnum].type = (ePeripheralType)type;
+		memset(ports[portnum].buffer,0,sizeof(ports[portnum].buffer));
+		FIO->SetInput(portnum, name, ports[portnum].buffer);
+
+		return SHOCK_OK;
+	}
+
+	s32 SetPadInput(s32 address, u32 buttons, u8 left_x, u8 left_y, u8 right_x, u8 right_y)
+	{
+		//check the port address
+		int portnum = address&1;
+		if(portnum != 1 && portnum != 2)
+			return SHOCK_INVALID_ADDRESS;
+		portnum--;
+
+		u8* buf = ports[portnum].buffer;
+		switch(ports[portnum].type)
+		{
+		case ePeripheralType_DualShock:
+			buf[0] = (buttons>>0)&0xFF;
+			buf[1] = (buttons>>8)&0xFF;
+			buf[2] = (buttons>>16)&0xFF; //this is only the analog mode button
+			buf[3] = left_x;
+			buf[4] = left_y;
+			buf[3] = right_x;
+			buf[4] = right_y;
+			break;
+		}
+	}
+
+} s_ShockPeripheralState;
+
+EW_EXPORT s32 shock_Peripheral_Connect(void* psx, s32 address, s32 type)
+{
+	return s_ShockPeripheralState.Connect(address,type);
+}
+
+EW_EXPORT s32 shock_Peripheral_SetPadInput(void* psx, s32 address, u32 buttons, u8 left_x, u8 left_y, u8 right_x, u8 right_y)
+{
+	return s_ShockPeripheralState.SetPadInput(address, buttons, left_x, left_y, right_x, right_y);
+}
+
 static void MountCPUAddressSpace()
 {
 	for(uint32 ma = 0x00000000; ma < 0x00800000; ma += 2048 * 1024)
@@ -1350,7 +1442,7 @@ static bool s_FramebufferNormalized;
 static int s_FramebufferCurrent;
 static int s_FramebufferCurrentWidth;
 
-EW_EXPORT s32 shock_Create(void** psx, eRegion region, void* firmware512k)
+EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
 {
 	//NEW
 	*psx = NULL;
@@ -1413,6 +1505,7 @@ EW_EXPORT s32 shock_Create(void** psx, eRegion region, void* firmware512k)
 	static bool emulate_memcard[8] = {0};
 	static bool emulate_multitap[2] = {0};
 	FIO = new FrontIO(emulate_memcard, emulate_multitap);
+	s_ShockPeripheralState.Initialize();
 
 	MountCPUAddressSpace();
 
@@ -2186,15 +2279,6 @@ static void CloseGame(void)
  }
 
  Cleanup();
-}
-
-
-static void SetInput(int port, const char *type, void *ptr)
-{
- if(psf_loader)
-  FIO->SetInput(port, "none", NULL);
- else
-  FIO->SetInput(port, type, ptr);
 }
 
 static int StateAction(StateMem *sm, int load, int data_only)

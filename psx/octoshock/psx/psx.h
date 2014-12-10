@@ -131,6 +131,17 @@ enum eShockFramebufferFlags
 	eShockFramebufferFlags_Normalize = 1
 };
 
+enum ePeripheralType
+{
+	ePeripheralType_None = 0, //can be used to signify disconnection
+	
+	ePeripheralType_Pad = 1, //SCPH-1080
+	ePeripheralType_DualShock = 2, //SCPH-1200
+	ePeripheralType_DualAnalog = 3, //SCPH-1180
+	
+	ePeripheralType_Multitap = 10,
+};
+
 enum eShockSetting
 {
 	REGION_AUTODETECT = 0,
@@ -152,6 +163,7 @@ int shock_GetSetting(eShockSetting setting);
 #define SHOCK_OK 0
 #define SHOCK_ERROR -1
 #define SHOCK_NOCANDO -2
+#define SHOCK_INVALID_ADDRESS -3
 
 struct ShockTOCTrack
 {
@@ -230,10 +242,22 @@ EW_EXPORT s32 shock_AnalyzeDisc(ShockDiscRef* disc, ShockDiscInfo* info);
 //Creates the psx instance as a console of the specified region.
 //Additionally mounts the firmware from the provided buffer (the contents are copied)
 //TODO - receive a model number parameter instead
-EW_EXPORT s32 shock_Create(void** psx, eRegion region, void* firmware512k);
+EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k);
 
 //Frees the psx instance created with shock_Create
 EW_EXPORT s32 shock_Destroy(void* psx);
+
+//Attaches (or detaches) a peripheral at the given address. 
+//Send ePeripheralType_None to detach. 
+//Do not attach when something is already attached. 
+//You can detach when nothing is attached.
+//Returns SHOCK_NOCANDO if something inappropriate is done.
+//Presently this has only been validated as functioning correctly before the initial PowerOn, but we would like to use it other times.
+EW_EXPORT s32 shock_Peripheral_Connect(void* psx, s32 address, s32 type);
+
+//Sets pad-type input (pad,dualshock,dualanalog) on the specified address;
+//Read more about the input format (buttons, analog range) here: TBD
+EW_EXPORT s32 shock_Peripheral_SetPadInput(void* psx, s32 address, u32 buttons, u8 left_x, u8 left_y, u8 right_x, u8 right_y);
 
 //Sets the power to ON. Returns SHOCK_NOCANDO if already on.
 EW_EXPORT s32 shock_PowerOn(void* psx);
