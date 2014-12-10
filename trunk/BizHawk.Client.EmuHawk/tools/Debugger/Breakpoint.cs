@@ -56,6 +56,7 @@ namespace BizHawk.Client.EmuHawk
 		public Breakpoint(IDebuggable core, IMemoryCallback callback)
 		{
 			_core = core;
+			_active = true;
 			Callback = callback.Callback;
 			Address = callback.Address;
 			Type = callback.Type;
