@@ -956,6 +956,7 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					}
 				}
+				Console.WriteLine("Selecting display size " + lastComputedSize.ToString());
 
 				// Change size
 				Size = new Size((lastComputedSize.Width) + borderWidth, ((lastComputedSize.Height) + borderHeight));
