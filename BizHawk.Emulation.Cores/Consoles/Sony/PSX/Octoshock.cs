@@ -1,4 +1,19 @@
-﻿using System;
+﻿//TODO hook up newer file ID stuff, think about how to combine it with the disc ID
+//TODO not liking the name ShockFramebufferJob
+//TODO change display manager to not require 0xFF alpha channel set on videoproviders. check gdi+ and opengl! this will get us a speedup in some places
+//TODO Disc.Structure.Sessions[0].length_aba was 0
+
+//looks like we can have (in NTSC) framebuffer dimensions like this:
+//width: 280, 350, 700
+//height: 240, 480
+//mednafen's strategy is to put everything in a 320x240 and scale it up 3x to 960x720 by default (which is adequate to contain the largest PSX framebuffer)
+//heres my strategy.
+//1. we should have a native output mode, for debugging. but most users wont want it (massively distorted resolutions are common in games)
+//2. do the right thing: 
+//always double a height of 240, and double a width of 280 or 350. For 280, float content in center screen.
+//but lets not do this til we're on an upgraded mednafen
+
+using System;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Collections.Generic;
@@ -10,7 +25,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Sony.PSX
 {
 	[CoreAttributes(
-		"MednafenPSX",
+		"Octoshock",
 		"Ryphecha",
 		isPorted: true,
 		isReleased: false
@@ -31,41 +46,141 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public bool StartAsyncSound() { return true; }
 		public void EndAsyncSound() { }
 
-		public static bool CheckIsPSX(DiscSystem.Disc disc)
-		{
-			bool ret = false;
-
-			byte[] buf = new byte[59];
-			disc.ReadLBA_2352_Flat(0x24D8, buf, 0, 59);
-			string sig = System.Text.ASCIIEncoding.ASCII.GetString(buf);
-
-			//this string is considered highly unlikely to exist anywhere besides a psx disc
-			if (sig == "          Licensed  by          Sony Computer Entertainment")
-				ret = true;
-
-			return ret;
-		}
-
 		//we can only have one active core at a time, due to the lib being so static.
 		//so we'll track the current one here and detach the previous one whenever a new one is booted up.
 		static Octoshock CurrOctoshockCore;
+		
+		IntPtr psx;
+		DiscSystem.Disc disc;
+		DiscInterface discInterface;
 
 		bool disposed = false;
 		public void Dispose()
 		{
 			if (disposed) return;
-			disposed = true;
 
-			//BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_audio_sample(null);
+			OctoshockDll.shock_Destroy(psx);
+			psx = IntPtr.Zero;
+
+			disposed = true;
 		}
 
-		public Octoshock(CoreComm comm)
+		class DiscInterface : IDisposable
+		{
+			public DiscInterface(DiscSystem.Disc disc)
+			{
+				this.Disc = disc;
+				cbReadTOC = ShockDisc_ReadTOC;
+				cbReadLBA = ShockDisc_ReadLBA2448;
+				OctoshockDll.shock_CreateDisc(out OctoshockHandle, IntPtr.Zero, disc.LBACount, cbReadTOC, cbReadLBA, true);
+			}
+
+			OctoshockDll.ShockDisc_ReadTOC cbReadTOC;
+			OctoshockDll.ShockDisc_ReadLBA cbReadLBA;
+
+			public DiscSystem.Disc Disc;
+			public IntPtr OctoshockHandle;
+
+			public void Dispose()
+			{
+				OctoshockDll.shock_DestroyDisc(OctoshockHandle);
+				OctoshockHandle = IntPtr.Zero;
+			}
+
+			int ShockDisc_ReadTOC(IntPtr opaque, OctoshockDll.ShockTOC* read_target, OctoshockDll.ShockTOCTrack* tracks101)
+			{
+				read_target->disc_type = 1; //hardcoded in octoshock
+				read_target->first_track = (byte)Disc.TOCRaw.FirstRecordedTrackNumber; //i _think_ thats what is meant here
+				read_target->last_track = (byte)Disc.TOCRaw.LastRecordedTrackNumber; //i _think_ thats what is meant here
+
+				tracks101[0].lba = tracks101[0].adr = tracks101[0].control = 0;
+
+				for (int i = 1; i < 100; i++)
+				{
+					var item = Disc.TOCRaw.TOCItems[i];
+					tracks101[i].adr = 1; //not sure what this is
+					tracks101[i].lba = (uint)item.LBATimestamp.Sector;
+					tracks101[i].control = (byte)item.Control;
+				}
+
+				////the lead-out track is to be synthesized
+				tracks101[read_target->last_track + 1].adr = 1;
+				tracks101[read_target->last_track + 1].control = 0;
+				tracks101[read_target->last_track + 1].lba = (uint)Disc.TOCRaw.LeadoutTimestamp.Sector;
+				////laaaame
+				//tracks101[read_target->last_track + 1].lba =
+				//  (uint)(
+				//  Disc.Structure.Sessions[0].Tracks[read_target->last_track - 1].Start_ABA //AUGH. see comment in Start_ABA
+				//  + Disc.Structure.Sessions[0].Tracks[read_target->last_track - 1].LengthInSectors
+				//  - 150
+				//  );
+
+				//element 100 is to be copied as the lead-out track
+				tracks101[100] = tracks101[read_target->last_track + 1];
+
+				return OctoshockDll.SHOCK_OK;
+			}
+
+			byte[] SectorBuffer = new byte[2352];
+
+			int ShockDisc_ReadLBA2448(IntPtr opaque, int lba, void* dst)
+			{
+				//lets you check subcode generation by logging it and checking against the CCD subcode
+				bool subcodeLog = false;
+				bool readLog = false;
+
+				if (subcodeLog) Console.Write("{0}|", lba);
+				else if (readLog) Console.WriteLine("Read Sector: " + lba);
+
+				Disc.ReadLBA_2352(lba, SectorBuffer, 0);
+				Marshal.Copy(SectorBuffer, 0, new IntPtr(dst), 2352);
+				Disc.ReadLBA_SectorEntry(lba).SubcodeSector.ReadSubcodeDeinterleaved(SectorBuffer, 0);
+				Marshal.Copy(SectorBuffer, 0, new IntPtr((byte*)dst + 2352), 96);
+
+				if (subcodeLog)
+				{
+					for (int i = 0; i < 24; i++)
+						Console.Write("{0:X2}", *((byte*)dst + 2352 + i));
+					Console.WriteLine();
+				}
+				
+
+				return OctoshockDll.SHOCK_OK;
+			}
+		}
+
+
+		public Octoshock(CoreComm comm, DiscSystem.Disc disc)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			var domains = new List<MemoryDomain>();
 			CoreComm = comm;
 			VirtualWidth = BufferWidth = 256;
 			BufferHeight = 192;
+
+			Attach();
+
+			this.disc = disc;
+			discInterface = new DiscInterface(disc);
+
+			//determine region of the provided disc
+			OctoshockDll.ShockDiscInfo discInfo;
+			OctoshockDll.shock_AnalyzeDisc(discInterface.OctoshockHandle, out discInfo);
+
+			//try to acquire the appropriate firmware
+			string firmwareRegion = "U";
+			if(discInfo.region == OctoshockDll.eRegion.EU) firmwareRegion = "E";
+			if (discInfo.region == OctoshockDll.eRegion.JP) firmwareRegion = "J";
+			byte[] firmware = comm.CoreFileProvider.GetFirmware("PSX", "U", true, "A PSX `" + firmwareRegion + "` region bios file is required");
+
+			//create the instance
+			fixed (byte* pFirmware = firmware)
+				OctoshockDll.shock_Create(out psx, discInfo.region, pFirmware);
+
+			OctoshockDll.shock_OpenTray(psx);
+			OctoshockDll.shock_SetDisc(psx, discInterface.OctoshockHandle);
+			OctoshockDll.shock_CloseTray(psx);
+			OctoshockDll.shock_PowerOn(psx);
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
@@ -76,146 +191,21 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			if (CurrOctoshockCore != null)
 				CurrOctoshockCore.Dispose();
 			CurrOctoshockCore = this;
+
+			//the psx instance cant be created until the desired region is known, which needs a disc, so we need the dll static attached first
 		}
 
-		//note to self: try to make mednafen have file IO callbacks into here: open, close, read, write.
-		//we'll trick mednafen into using a virtual filesystem and track the fake files internally
-
-		public void LoadCuePath(string path)
-		{
-			Attach();
-
-			//note to self:
-			//consider loading a fake cue, which is generated by our Disc class, and converting all reads to the fake bin to reads into the disc class.
-			//thatd be pretty cool.... (may need to add an absolute byte range read method into the disc class, which can traverse the requisite LBAs)...
-			//...but... are there other ideas?
-			LibMednahawkDll.psx_LoadCue(path);
-		}
+		//public void LoadCuePath(string path)
+		//{
+		//  Attach();
+		//  DiscSystem.Disc.FromCCDPath
+		//}
 
 
 		static Octoshock()
 		{
-			LibMednahawkDll.dll_Initialize();
-
-			FopenCallback = new LibMednahawkDll.t_FopenCallback(FopenCallbackProc);
-			FcloseCallback = new LibMednahawkDll.t_FcloseCallback(FcloseCallbackProc);
-			FopCallback = new LibMednahawkDll.t_FopCallback(FopCallbackProc);
-			LibMednahawkDll.dll_SetPropPtr(LibMednahawkDll.eProp.SetPtr_FopenCallback, Marshal.GetFunctionPointerForDelegate(FopenCallback));
-			LibMednahawkDll.dll_SetPropPtr(LibMednahawkDll.eProp.SetPtr_FcloseCallback, Marshal.GetFunctionPointerForDelegate(FcloseCallback));
-			LibMednahawkDll.dll_SetPropPtr(LibMednahawkDll.eProp.SetPtr_FopCallback, Marshal.GetFunctionPointerForDelegate(FopCallback));
 		}
 
-		static LibMednahawkDll.t_FopenCallback FopenCallback;
-		static LibMednahawkDll.t_FcloseCallback FcloseCallback;
-		static LibMednahawkDll.t_FopCallback FopCallback;
-
-		class VirtualFile : IDisposable
-		{
-			public Stream stream;
-			public int id;
-			public void Dispose()
-			{
-				if(stream != null) stream.Dispose();
-				stream = null;
-			}
-		}
-
-		static Dictionary<int, VirtualFile> VirtualFiles = new Dictionary<int, VirtualFile>();
-
-		static IntPtr FopenCallbackProc(string fname, string mode)
-		{
-			throw new NotImplementedException("Antiquated CoreComm.PSX_FirmwaresPath must be replaced by CoreFileProvider");
-
-			// TODO - this should be using the CoreComm.CoreFileProvider interfaces
-
-			//TODO - probably this should never really fail. but for now, mednafen tries to create a bunch of junk, so just return failure for files which cant be opened
-			/*
-			if (fname.StartsWith("$psx"))
-			{
-				string[] parts = fname.Split('/');
-				if (parts[0] != "$psx") throw new InvalidOperationException("Octoshock using some weird path we dont handle yet");
-				if (parts[1] == "firmware")
-				{
-					//fname = Path.Combine(CurrOctoshockCore.CoreComm.PSX_FirmwaresPath, parts[2]);
-					if (!File.Exists(fname))
-					{
-						System.Windows.Forms.MessageBox.Show("the Octoshock core is referencing a firmware file which could not be found. Please make sure it's in your configured PSX firmwares folder. The referenced filename is: " + parts[1]);
-					}
-				}
-			}
-
-			Stream stream = null;
-			if (mode == "rb") { if (File.Exists(fname)) stream = new FileStream(fname, FileMode.Open, FileAccess.Read, FileShare.Read); }
-			else if (mode == "wb") stream = new FileStream(fname, FileMode.Create, FileAccess.Write, FileShare.Read);
-			else throw new InvalidOperationException("unexpected virtual file mode from libmednahawk");
-
-			if (stream == null) return IntPtr.Zero;
-
-			//find a free id. dont use 0 because it looks like an error
-			int id = 1;
-			for (; ; )
-			{
-			RETRY:
-				foreach (var vfid in VirtualFiles.Keys)
-					if (vfid == id)
-					{
-						id++;
-						goto RETRY;
-					}
-				break;
-			}
-
-			var ret = new VirtualFile();
-			ret.id = id;
-			ret.stream = stream;
-
-			VirtualFiles[ret.id] = ret;
-			return new IntPtr(ret.id);
-			*/
-		}
-		static int FcloseCallbackProc(IntPtr fp)
-		{
-			int id = fp.ToInt32();
-			VirtualFiles[id].stream.Dispose();
-			VirtualFiles.Remove(id);
-			return 0;
-		}
-		static byte[] fiobuf = new byte[10*1024];
-		static long FopCallbackProc(int op, IntPtr ptr, long a, long b, IntPtr fp)
-		{
-			var vf = VirtualFiles[fp.ToInt32()];
-			int amt = (int)(a*b);
-			switch ((LibMednahawkDll.FOP)op)
-			{
-				case LibMednahawkDll.FOP.FOP_clearerr: return 0;
-				case LibMednahawkDll.FOP.FOP_ferror: return 0;
-				case LibMednahawkDll.FOP.FOP_fflush: vf.stream.Flush(); return 0;
-				case LibMednahawkDll.FOP.FOP_fread:
-					{
-						if(fiobuf.Length < amt)
-							fiobuf = new byte[amt];
-						int read = vf.stream.Read(fiobuf, 0, amt);
-						Marshal.Copy(fiobuf, 0, ptr, amt);
-						return read / a;
-					}
-				case LibMednahawkDll.FOP.FOP_fseeko:
-					vf.stream.Seek(a, (SeekOrigin)b);
-					return vf.stream.Position;
-				case LibMednahawkDll.FOP.FOP_ftello:
-					return vf.stream.Position;
-				case LibMednahawkDll.FOP.FOP_fwrite:
-					{
-						if (fiobuf.Length < amt)
-							fiobuf = new byte[amt];
-						Marshal.Copy(fiobuf, 0, ptr, amt);
-						vf.stream.Write(fiobuf, 0, amt);
-						return (int)b;
-					}
-				case LibMednahawkDll.FOP.FOP_size: return vf.stream.Length;
-				default:
-					throw new InvalidOperationException("INESTIMABLE GOPHER");
-			}
-		}
 
 		[FeatureNotImplemented]
 		public void ResetCounters()
@@ -226,32 +216,33 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{
-			LibMednahawkDll.psx_FrameAdvance();
-			
+			OctoshockDll.shock_Step(psx, OctoshockDll.eShockStep.Frame);
+
+			OctoshockDll.ShockFramebufferJob fb = new OctoshockDll.ShockFramebufferJob();
+			OctoshockDll.shock_GetFramebuffer(psx, ref fb);
+
+			//Console.WriteLine(fb.height);
+
 			if (render == false) return;
 
-			int w = LibMednahawkDll.dll_GetPropPtr(LibMednahawkDll.eProp.GetPtr_FramebufferWidth).ToInt32();
-			int h = LibMednahawkDll.dll_GetPropPtr(LibMednahawkDll.eProp.GetPtr_FramebufferHeight).ToInt32();
-			int p = LibMednahawkDll.dll_GetPropPtr(LibMednahawkDll.eProp.GetPtr_FramebufferPitchPixels).ToInt32();
-			IntPtr iptr = LibMednahawkDll.dll_GetPropPtr(LibMednahawkDll.eProp.GetPtr_FramebufferPointer);
-			void* ptr = iptr.ToPointer();
-
-
-			VirtualWidth = BufferWidth = w;
+			int w = fb.width;
+			int h = fb.height;
+			BufferWidth = w;
 			BufferHeight = h;
 
 			int len = w*h;
 			if (frameBuffer.Length != len)
+			{
+				Console.WriteLine("PSX FB size: {0},{1}", fb.width, fb.height);
 				frameBuffer = new int[len];
+			}
 
-			//todo - we could do the reformatting in the PSX core
-			//better yet, we could send a buffer into the psx core before frame advance to use for outputting video to
-
-			for (int y = 0, i = 0; y < h; y++)
-				for (int x = 0; x < w; x++, i++)
-				{
-					frameBuffer[i] = (int)unchecked(((int*)ptr)[y * p + x] | (int)0xFF000000);
-				}
+			fixed (int* ptr = frameBuffer)
+			{
+				fb.ptr = ptr;
+				OctoshockDll.shock_GetFramebuffer(psx, ref fb);
+				//alpha channel is added in c++, right now. wish we didnt have to do it at all
+			}
 		}
 
 		[FeatureNotImplemented]
