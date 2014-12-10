@@ -259,8 +259,7 @@ namespace BizHawk.Client.Common
 								nextEmulator = new PSP(nextComm, file.Name);
 								break;
 							case "PSX":
-								nextEmulator = new Octoshock(nextComm);
-								(nextEmulator as Octoshock).LoadCuePath(file.CanonicalFullPath);
+								nextEmulator = new Octoshock(nextComm, disc);
 								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 								break;
 							case "PCE":

@@ -533,8 +533,8 @@
     <Compile Include="Consoles\Sega\SMS\VDP.Tables.cs" />
     <Compile Include="Consoles\Sony\PSP\PPSSPPDll.cs" />
     <Compile Include="Consoles\Sony\PSP\PSP.cs" />
-    <Compile Include="Consoles\Sony\PSX\LibMednahawkDll.cs" />
     <Compile Include="Consoles\Sony\PSX\Octoshock.cs" />
+    <Compile Include="Consoles\Sony\PSX\OctoshockDll.cs" />
     <Compile Include="Consoles\WonderSwan\BizSwan.cs" />
     <Compile Include="Consoles\WonderSwan\WonderSwan.cs" />
     <Compile Include="CoreInventory.cs" />
