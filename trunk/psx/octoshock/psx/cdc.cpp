@@ -1528,12 +1528,6 @@ bool PS_CDC::CommandCheckDiscPresent(void)
  return(true);
 }
 
-int32 PS_CDC::Command_Sync(const int arg_count, const uint8 *args)
-{
- PSX_WARNING("[CDC] Unimplemented command: 0x%02x", PendingCommand);
- return(0);
-}
-
 int32 PS_CDC::Command_Nop(const int arg_count, const uint8 *args)
 {
  WriteResult(MakeStatus());
@@ -2363,7 +2357,7 @@ int32 PS_CDC::Command_0x1d(const int arg_count, const uint8 *args)
 
 PS_CDC::CDC_CTEntry PS_CDC::Commands[0x20] =
 {
- { /* 0x00, */ 0, 0, "Sync", &PS_CDC::Command_Sync, NULL },
+ { /* 0x00, */ 0, 0, NULL, NULL, NULL },
  { /* 0x01, */ 0, 0, "Nop", &PS_CDC::Command_Nop, NULL },
  { /* 0x02, */ 3, 3, "Setloc", &PS_CDC::Command_Setloc, NULL },
  { /* 0x03, */ 0, 1, "Play", &PS_CDC::Command_Play, NULL },
