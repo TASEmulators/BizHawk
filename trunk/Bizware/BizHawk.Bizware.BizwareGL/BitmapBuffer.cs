@@ -476,17 +476,20 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 			var bmpdata = bmp.LockBits(new sd.Rectangle(0, 0, Width, Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
-			int* ptr = (int*)bmpdata.Scan0.ToPointer();
-			int stride = bmpdata.Stride;
-			fixed (int* pPtr = &Pixels[0])
+			if (bmp.Width != 0 && bmp.Height != 0)
 			{
-				for (int idx = 0, y = 0; y < Height; y++)
-					for (int x = 0; x < Width; x++)
-					{
-						int srcPixel = pPtr[idx];
-						ptr[idx] = srcPixel;
-						idx++;
-					}
+				int* ptr = (int*)bmpdata.Scan0.ToPointer();
+				int stride = bmpdata.Stride;
+				fixed (int* pPtr = &Pixels[0])
+				{
+					for (int idx = 0, y = 0; y < Height; y++)
+						for (int x = 0; x < Width; x++)
+						{
+							int srcPixel = pPtr[idx];
+							ptr[idx] = srcPixel;
+							idx++;
+						}
+				}
 			}
 
 			bmp.UnlockBits(bmpdata);
