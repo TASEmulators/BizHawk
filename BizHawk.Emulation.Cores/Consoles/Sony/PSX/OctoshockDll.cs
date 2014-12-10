@@ -19,6 +19,12 @@ public unsafe static class OctoshockDll
 		Frame
 	};
 
+	public enum eShockFramebufferFlags
+	{
+		None = 0,
+		Normalize = 1
+	}
+
 	public const int SHOCK_OK = 0;
 	public const int SHOCK_ERROR = -1;
 	public const int SHOCK_NOCANDO = -2;
@@ -47,9 +53,11 @@ public unsafe static class OctoshockDll
 	};
 
 	[StructLayout(LayoutKind.Sequential)]
-	public struct ShockFramebufferJob
+	public struct ShockFramebufferInfo
 	{
 		public int width, height;
+		[MarshalAs(UnmanagedType.I4)]
+		public eShockFramebufferFlags flags;
 		public void* ptr;
 	};
 
@@ -93,5 +101,5 @@ public unsafe static class OctoshockDll
 	public static extern int shock_Step(IntPtr psx, eShockStep step);
 
 	[DllImport("octoshock.dll")]
-	public static extern int shock_GetFramebuffer(IntPtr psx, ref ShockFramebufferJob fb);
+	public static extern int shock_GetFramebuffer(IntPtr psx, ref ShockFramebufferInfo fb);
 }

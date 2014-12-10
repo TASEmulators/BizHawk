@@ -125,6 +125,11 @@ enum eShockStep
 	eShockStep_Frame
 };
 
+enum eShockFramebufferFlags
+{
+	eShockFramebufferFlags_None = 0,
+	eShockFramebufferFlags_Normalize = 1
+};
 
 enum eShockSetting
 {
@@ -203,9 +208,10 @@ struct ShockDiscInfo
 	char id[5]; //SCEI, SCEA, SCEE, etc. with null terminator
 };
 
-struct ShockFramebufferJob
+struct ShockFramebufferInfo
 {
-	int width, height;
+	s32 width, height;
+	s32 flags;
 	void* ptr;
 };
 
@@ -250,4 +256,4 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step);
 //Fetches the framebuffer. Can retrieve parameters (set the job ptr to NULL) or fill the provided job ptr with the framebuffer (make sure its big enough).
 //This helps us copy fewer times.
 //TODO - support pitch and color format conversion if needed
-EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferJob* fb);
+EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferInfo* fb);

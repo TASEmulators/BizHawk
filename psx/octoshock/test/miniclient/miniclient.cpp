@@ -286,15 +286,19 @@ private:
 
 int main(int argc, char **argv)
 {
+	const char* fwpath = argv[1];
+	const char* discpath = argv[2];
+	const char* outdir = argv[3];
+
 	FILE* inf;
 	
 	//load up the firmware
 	char firmware[512*1024];
-	inf = fopen("myfirmware.bin","rb");
+	inf = fopen(fwpath,"rb");
 	fread(firmware,1,512*1024,inf);
 	fclose(inf);
 
-	BinReader2352 bin("mybin.bin");
+	BinReader2352 bin(discpath);
 	ShockDiscInfo info;
 	shock_AnalyzeDisc(bin.disc, &info);
 	printf("disc id: %s\n",info.id);
@@ -316,12 +320,13 @@ int main(int argc, char **argv)
 		if(framectr%60==0)
 		{
 			//dump a screen grab
-			ShockFramebufferJob fbinfo;
+			ShockFramebufferInfo fbinfo;
 			static u32 buf[1024*1024];
 			fbinfo.ptr = buf;
+			fbinfo.flags = eShockFramebufferFlags_Normalize;
 			shock_GetFramebuffer(psx,&fbinfo);
 			char fname[128];
-			sprintf(fname,"c:\\dump\\test%03d.bmp",framectr/60);
+			sprintf(fname,"%s\\test%03d.bmp",outdir,framectr/60);
 			WriteBMP32(fbinfo.width,fbinfo.height,buf,fname); //rgb is backwards
 		}
 

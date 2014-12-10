@@ -1,17 +1,6 @@
 ﻿//TODO hook up newer file ID stuff, think about how to combine it with the disc ID
-//TODO not liking the name ShockFramebufferJob
 //TODO change display manager to not require 0xFF alpha channel set on videoproviders. check gdi+ and opengl! this will get us a speedup in some places
 //TODO Disc.Structure.Sessions[0].length_aba was 0
-
-//looks like we can have (in NTSC) framebuffer dimensions like this:
-//width: 280, 350, 700
-//height: 240, 480
-//mednafen's strategy is to put everything in a 320x240 and scale it up 3x to 960x720 by default (which is adequate to contain the largest PSX framebuffer)
-//heres my strategy.
-//1. we should have a native output mode, for debugging. but most users wont want it (massively distorted resolutions are common in games)
-//2. do the right thing: 
-//always double a height of 240, and double a width of 280 or 350. For 280, float content in center screen.
-//but lets not do this til we're on an upgraded mednafen
 
 using System;
 using System.Runtime.InteropServices;
@@ -149,14 +138,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 		}
 
-
+		//note: its annoying that we have to have a disc before constructing this.
+		//might want to change that later. HOWEVER - we need to definitely have a region, at least
 		public Octoshock(CoreComm comm, DiscSystem.Disc disc)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			var domains = new List<MemoryDomain>();
 			CoreComm = comm;
-			VirtualWidth = BufferWidth = 256;
-			BufferHeight = 192;
 
 			Attach();
 
@@ -176,6 +164,23 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			//create the instance
 			fixed (byte* pFirmware = firmware)
 				OctoshockDll.shock_Create(out psx, discInfo.region, pFirmware);
+
+
+			//these should track values in octoshock gpu.cpp FillVideoParams
+			//if (discInfo.region == OctoshockDll.eRegion.EU)
+			//{
+			//  VirtualWidth = 377; // " Dunno :( "
+			//  VirtualHeight = 288;
+			//}
+			//else 
+			//{
+			//  VirtualWidth = 320; // Dunno :(
+			//  VirtualHeight = 240;
+			//}
+			//BUT-for now theyre normalized (NOTE: THIS MESSES UP THE ASPECT RATIOS)
+			VirtualWidth = 700;
+			VirtualHeight = 480;
+
 
 			OctoshockDll.shock_OpenTray(psx);
 			OctoshockDll.shock_SetDisc(psx, discInterface.OctoshockHandle);
@@ -218,7 +223,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 			OctoshockDll.shock_Step(psx, OctoshockDll.eShockStep.Frame);
 
-			OctoshockDll.ShockFramebufferJob fb = new OctoshockDll.ShockFramebufferJob();
+			OctoshockDll.ShockFramebufferInfo fb = new OctoshockDll.ShockFramebufferInfo();
+			fb.flags = OctoshockDll.eShockFramebufferFlags.Normalize;
 			OctoshockDll.shock_GetFramebuffer(psx, ref fb);
 
 			//Console.WriteLine(fb.height);
@@ -265,7 +271,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public int[] GetVideoBuffer() { return frameBuffer; }
 		public int VirtualWidth { get; private set; }
-		public int VirtualHeight { get { return BufferHeight; } }
+		public int VirtualHeight { get; private set; }
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return 0; } }
