@@ -81,16 +81,18 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		class DiscInterface : IDisposable
 		{
-			public DiscInterface(DiscSystem.Disc disc)
+			public DiscInterface(DiscSystem.Disc disc, Action cbActivity)
 			{
 				this.Disc = disc;
 				cbReadTOC = ShockDisc_ReadTOC;
 				cbReadLBA = ShockDisc_ReadLBA2448;
+				this.cbActivity = cbActivity;
 				OctoshockDll.shock_CreateDisc(out OctoshockHandle, IntPtr.Zero, disc.LBACount, cbReadTOC, cbReadLBA, true);
 			}
 
 			OctoshockDll.ShockDisc_ReadTOC cbReadTOC;
 			OctoshockDll.ShockDisc_ReadLBA cbReadLBA;
+			Action cbActivity;
 
 			public DiscSystem.Disc Disc;
 			public IntPtr OctoshockHandle;
@@ -139,6 +141,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			int ShockDisc_ReadLBA2448(IntPtr opaque, int lba, void* dst)
 			{
+				cbActivity();
+
 				//lets you check subcode generation by logging it and checking against the CCD subcode
 				bool subcodeLog = false;
 				bool readLog = false;
@@ -157,11 +161,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 						Console.Write("{0:X2}", *((byte*)dst + 2352 + i));
 					Console.WriteLine();
 				}
-				
 
 				return OctoshockDll.SHOCK_OK;
 			}
 		}
+
 
 		//note: its annoying that we have to have a disc before constructing this.
 		//might want to change that later. HOWEVER - we need to definitely have a region, at least
@@ -171,10 +175,18 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			var domains = new List<MemoryDomain>();
 			CoreComm = comm;
 
+			CoreComm.UsesDriveLed = true;
+
 			Attach();
 
 			this.disc = disc;
-			discInterface = new DiscInterface(disc);
+			discInterface = new DiscInterface(disc, 
+				() =>
+				{
+					//if current disc this delegate disc, activity is happening
+					if (disc == this.disc)
+						CoreComm.DriveLED = true;
+				});
 
 			//determine region of the provided disc
 			OctoshockDll.ShockDiscInfo discInfo;
@@ -226,13 +238,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			//the psx instance cant be created until the desired region is known, which needs a disc, so we need the dll static attached first
 		}
 
-		//public void LoadCuePath(string path)
-		//{
-		//  Attach();
-		//  DiscSystem.Disc.FromCCDPath
-		//}
-
-
 		static Octoshock()
 		{
 		}
@@ -279,6 +284,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			Frame++;
+			CoreComm.DriveLED = false;
 
 			SetInput();
 
