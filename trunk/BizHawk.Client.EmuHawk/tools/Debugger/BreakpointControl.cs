@@ -51,7 +51,9 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 
 		private void BreakPointView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			color = Breakpoints[index].Active ? Color.LightCyan : SystemColors.Control;
+			color = Breakpoints[index].ReadOnly ? SystemColors.Control
+				: Breakpoints[index].Active ? Color.LightCyan
+				: Color.White;
 		}
 
 		private void BreakpointCallback()
@@ -114,11 +116,16 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 			get { return SelectedIndices.Select(index => Breakpoints[index]); }
 		}
 
+		private IEnumerable<Breakpoint> EditableItems
+		{
+			get { return SelectedItems.Where(item => !item.ReadOnly); }
+		}
+
 		private void RemoveBreakpointButton_Click(object sender, EventArgs e)
 		{
-			if (BreakpointView.SelectedIndices.Count > 0)
+			if (EditableItems.Any())
 			{
-				var items = SelectedItems.ToList();
+				var items = EditableItems.ToList();
 				if (items.Any())
 				{
 					foreach (var item in items)
@@ -134,7 +141,7 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 
 		private void UpdateBreakpointRemoveButton()
 		{
-			RemoveBreakpointButton.Enabled = BreakpointView.SelectedIndices.Count > 0;
+			RemoveBreakpointButton.Enabled = EditableItems.Any();
 		}
 
 		private void BreakpointView_SelectedIndexChanged(object sender, EventArgs e)
@@ -144,9 +151,9 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 
 		private void BreakpointView_ItemActivate(object sender, EventArgs e)
 		{
-			if (BreakpointView.SelectedIndices.Count > 0)
+			if (EditableItems.Any())
 			{
-				var items = SelectedItems.ToList();
+				var items = EditableItems.ToList();
 				if (items.Any())
 				{
 					foreach (var item in items)

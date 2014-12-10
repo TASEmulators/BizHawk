@@ -52,6 +52,8 @@ namespace BizHawk.Client.EmuHawk
 		public MemoryCallbackType Type { get; set; }
 		public string Name { get; set; }
 
+		public bool ReadOnly { get; private set; }
+
 		// Adds an existing callback
 		public Breakpoint(IDebuggable core, IMemoryCallback callback)
 		{
@@ -61,6 +63,10 @@ namespace BizHawk.Client.EmuHawk
 			Address = callback.Address;
 			Type = callback.Type;
 			Name = callback.Name;
+
+			// We don't know where this callback came from so don't let the user mess with it
+			// Most likely it came from lua and doing so could cause some bad things to happen
+			ReadOnly = true;
 		}
 
 		public bool Active
@@ -72,17 +78,20 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
-				if (!value)
+				if (!ReadOnly)
 				{
-					RemoveCallback();
-				}
+					if (!value)
+					{
+						RemoveCallback();
+					}
 
-				if (!_active && value) // If inactive and changing to active
-				{
-					AddCallback();
-				}
+					if (!_active && value) // If inactive and changing to active
+					{
+						AddCallback();
+					}
 
-				_active = value;
+					_active = value;
+				}
 			}
 		}
 
