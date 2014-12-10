@@ -1346,6 +1346,9 @@ static void MountCPUAddressSpace()
 
 static MDFN_Surface *VTBuffer[2] = { NULL, NULL };
 static int *VTLineWidths[2] = { NULL, NULL };
+static bool s_FramebufferNormalized;
+static int s_FramebufferCurrent;
+static int s_FramebufferCurrentWidth;
 
 EW_EXPORT s32 shock_Create(void** psx, eRegion region, void* firmware512k)
 {
@@ -1374,33 +1377,37 @@ EW_EXPORT s32 shock_Create(void** psx, eRegion region, void* firmware512k)
 	{
 		sls = 0;
 		sle = 287;
-		s_ShockConfig.nominal_width = 367;	// Dunno. :(
-		s_ShockConfig.nominal_height = 288;
-
-		s_ShockConfig.fb_width = 768;
-		s_ShockConfig.fb_height = 576;
 	}
 	else
 	{
 		sls = 0;
 		sle = 239;
-		s_ShockConfig.lcm_width = 2720;
-		s_ShockConfig.lcm_height = 480;
-
-		s_ShockConfig.nominal_width = 310;
-		s_ShockConfig.nominal_height = 240;
-
-		s_ShockConfig.fb_width = 768;
-		s_ShockConfig.fb_height = 480;
 	}
-
-	//setup gpu output surfaces
-	MDFN_PixelFormat nf(MDFN_COLORSPACE_RGB, 16, 8, 0, 24);
-	VTBuffer[0] = new MDFN_Surface(NULL, s_ShockConfig.fb_width, s_ShockConfig.fb_height, s_ShockConfig.fb_width, nf);
-	VTLineWidths[0] = (int *)calloc(s_ShockConfig.fb_height, sizeof(int));
 
 	//these steps can't be done without more information
 	GPU = new PS_GPU(region == REGION_EU, sls, sle);
+
+	//fetch video parameters, stash in a simpler format
+	MDFNGI givp;
+	GPU->FillVideoParams(&givp);
+	s_ShockConfig.lcm_width = givp.lcm_width;
+	s_ShockConfig.lcm_height = givp.lcm_height;
+	s_ShockConfig.fb_height = givp.fb_height;
+	s_ShockConfig.fb_width = givp.fb_width;
+	s_ShockConfig.fb_height = givp.fb_height;
+	s_ShockConfig.nominal_width = givp.nominal_width;
+	s_ShockConfig.nominal_height = givp.nominal_height;
+	//givp.fps // TODO
+
+
+	//setup gpu output surfaces
+	MDFN_PixelFormat nf(MDFN_COLORSPACE_RGB, 16, 8, 0, 24);
+	for(int i=0;i<2;i++)
+	{
+		VTBuffer[i] = new MDFN_Surface(NULL, s_ShockConfig.fb_width, s_ShockConfig.fb_height, s_ShockConfig.fb_width, nf);
+		VTLineWidths[i] = (int *)calloc(s_ShockConfig.fb_height, sizeof(int));
+	}
+
 	
 	//TODO - configuration
 	static bool emulate_memcard[8] = {0};
@@ -1521,15 +1528,160 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 		espec.InterlaceField = 0;
 	}
 
-	//pixel-double some dimensions as needed (TBD)
+	//new frame, hasnt been normalized
+	s_FramebufferNormalized = false;
+	s_FramebufferCurrent = 0;
+	s_FramebufferCurrentWidth = s_ShockConfig.fb_width;
 
 	return SHOCK_OK;
 }
 
-EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferJob* fb)
+//`normalizes` the framebuffer to 700x480 by pixel doubling and wrecking the AR a little bit as needed
+void NormalizeFramebuffer()
 {
-	//always fetch description
+	//mednafen's advised solution for smooth gaming: "scale the output width to z * nominal_width, and the output height to z * nominal_height, where nominal_width and nominal_height are members of the MDFNGI struct"
+	//IOW, mednafen's strategy is to put everything in a 320x240 and scale it up 3x to 960x720 by default (which is adequate to contain the largest PSX framebuffer of 700x480)
+	
+	//psxtech says horizontal resolutions can be:  256, 320, 368, 512, 640 pixels
+	//mednafen will turn those into 2800/{ 10, 8, 5, 4, 7 } -> 280,350,560,700,400
+
+	//heres my strategy: 
+	//try to do the smart thing, try to get aspect ratio near the right value
+	//intended AR = 320/240 = 1.3333
+	//280x240 - ok (AR 1.1666666666666666666666666666667)
+	//350x240 - ok (AR 1.4583333333333333333333333333333)
+	//400x240 - ok (AR 1.6666666666666666666666666666667)
+	//560x240 - scale vertically by 2 = 560x480 ~ 280x240
+	//700x240 - scale vertically by 2 = 700x480 ~ 350x240
+	//280x480 - scale horizontally by 2 = 560x480 ~ 280x240
+	//350x480 - scale horizontally by 2 = 700x480 ~ 350x240
+	//400x480 - scale horizontally by 2 = 800x480 ~ 400x240
+	//560x480 - ok ~ 280x240
+	//700x480 - ok ~ 350x240
+
+	//NOTE: this approach is very redundant with the displaymanager AR tracking stuff
+	//however, it will help us avoid stressing the displaymanager (for example, a 700x240 will freak it out kind of. we could send it a much more sensible 700x480)
+
+
 	int width = VTLineWidths[0][0]; //presently, except for contrived test programs, it is safe to assume this is the same for the entire frame (no known use by games)
+	int height = espec.DisplayRect.h;
+
+	int xs=1,ys=1,xm=0;
+
+	//I. as described above
+	//if(width == 280 && height == 240) {}
+	//if(width == 350 && height == 240) {}
+	//if(width == 400 && height == 240) {}
+	//if(width == 560 && height == 240) ys=2;
+	//if(width == 700 && height == 240) ys=2;
+	//if(width == 280 && height == 480) xs=2;
+	//if(width == 350 && height == 480) xs=2;
+	//if(width == 400 && height == 480) xs=2;
+	//if(width == 560 && height == 480) {}
+	//if(width == 700 && height == 480) {}
+
+	//II. as the snes 'always double size framebuffer'. I think thats a better idea, and we already have the concept
+	if(width == 280 && height == 240) xs=ys=2;
+	if(width == 350 && height == 240) xs=ys=2;
+	if(width == 400 && height == 240) xs=ys=2;
+	if(width == 560 && height == 240) ys=2;
+	if(width == 700 && height == 240) ys=2;
+	if(width == 280 && height == 480) xs=2;
+	if(width == 350 && height == 480) xs=2;
+	if(width == 400 && height == 480) xs=2;
+	if(width == 560 && height == 480) {}
+	if(width == 700 && height == 480) {}
+	xm = (700-width*xs)/2;
+
+	int curr = 0;
+
+	//1. double the height, while cropping down
+	if(ys==2) //should handle ntsc or pal, but not tested yet for pal
+	{
+		uint32* src = VTBuffer[curr]->pixels + (s_ShockConfig.fb_width*espec.DisplayRect.y) + espec.DisplayRect.x;
+		uint32* dst = VTBuffer[curr^1]->pixels;
+		int tocopy = width*4;
+		for(int y=0;y<height;y++)
+		{
+			memcpy(dst,src,tocopy);
+			dst += width;
+			memcpy(dst,src,tocopy);
+			dst += width;
+			src += s_FramebufferCurrentWidth;
+		}
+
+		//patch up the metrics
+		height *= 2;
+		espec.DisplayRect.x = 0;
+		espec.DisplayRect.y = 0;
+		espec.DisplayRect.h = height;
+		s_FramebufferCurrentWidth = width;
+		VTLineWidths[curr^1][0] = VTLineWidths[curr][0];
+
+		curr ^= 1;
+	}
+
+	//2. double the width as needed. but always float it.
+	//note, theres nothing to be done here if the framebuffer is already wide enough
+	if(width != 700)
+	{
+		uint32* src = VTBuffer[curr]->pixels + (s_ShockConfig.fb_width*espec.DisplayRect.y) + espec.DisplayRect.x;
+		uint32* dst = VTBuffer[curr^1]->pixels;
+
+		for(int y=0;y<height;y++)
+		{
+			//float the content horizontally
+			for(int x=0;x<xm;x++)
+				*dst++ = 0;
+
+			if(xs==2)
+			{
+				for(int x=0;x<width;x++)
+				{
+					*dst++ = *src;
+					*dst++ = *src++;
+				}
+				src += s_FramebufferCurrentWidth - width;
+			}
+			else
+			{
+				memcpy(dst,src,width*4);
+				dst += width;
+				src += s_FramebufferCurrentWidth;
+			}
+
+			//float the content horizontally
+			for(int x=0;x<xm;x++)
+				*dst++ = 0;
+		}
+
+		//patch up the metrics
+		width = 700; //we floated the content horizontally, so this becomes the new width
+		espec.DisplayRect.x = 0;
+		espec.DisplayRect.y = 0;
+		VTLineWidths[curr^1][0] = width;
+		s_FramebufferCurrentWidth = width;
+
+		curr ^= 1;
+	}
+
+	s_FramebufferCurrent = curr;
+}
+
+EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferInfo* fb)
+{
+	//if user requires normalization, do it now
+	if(fb->flags & eShockFramebufferFlags_Normalize)
+		if(!s_FramebufferNormalized)
+		{
+			NormalizeFramebuffer();
+			s_FramebufferNormalized = true;
+		}
+
+	int fbIndex = s_FramebufferCurrent;
+
+	//always fetch description
+	int width = VTLineWidths[fbIndex][0]; //presently, except for contrived test programs, it is safe to assume this is the same for the entire frame (no known use by games)
 	int height = espec.DisplayRect.h;
 	fb->width = width;
 	fb->height = height;
@@ -1542,7 +1694,7 @@ EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferJob* fb)
 
 	//maybe we need to output the framebuffer
 	//do a raster loop and copy it to the target
-	uint32* src = VTBuffer[0]->pixels + (s_ShockConfig.fb_width*espec.DisplayRect.y) + espec.DisplayRect.x;
+	uint32* src = VTBuffer[fbIndex]->pixels + (s_FramebufferCurrentWidth*espec.DisplayRect.y) + espec.DisplayRect.x;
 	uint32* dst = (u32*)fb->ptr;
 	int tocopy = width*4;
 	for(int y=0;y<height;y++)
@@ -1551,7 +1703,7 @@ EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferJob* fb)
 		{
 			*dst++ = *src++ | 0xFF000000;
 		}
-		src += s_ShockConfig.fb_width - width;
+		src += s_FramebufferCurrentWidth - width;
 	}
 
 	return SHOCK_OK;
