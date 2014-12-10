@@ -434,7 +434,6 @@ namespace BizHawk.Client.EmuHawk
 
 			var size = filterProgram.Filters[filterProgram.Filters.Count - 1].FindOutput().SurfaceFormat.Size;
 
-			Console.WriteLine("Selecting size " + size.ToString());
 			return size;
 		}
 
