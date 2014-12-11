@@ -115,19 +115,25 @@ void InputDevice_DualAnalog::UpdateInput(const void *data)
  buttons[0] = d8[0];
  buttons[1] = d8[1];
 
- for(int stick = 0; stick < 2; stick++)
- {
-  for(int axis = 0; axis < 2; axis++)
-  {
-   const uint8* aba = &d8[2] + stick * 8 + axis * 4;
-   int32 tmp;
+  //OCTOSHOCK EDIT - so we can set values directly
+ //for(int stick = 0; stick < 2; stick++)
+ //{
+ // for(int axis = 0; axis < 2; axis++)
+ // {
+ //  const uint8* aba = &d8[2] + stick * 8 + axis * 4;
+ //  int32 tmp;
 
-   tmp = 32768 + MDFN_de16lsb(&aba[0]) - ((int32)MDFN_de16lsb(&aba[2]) * 32768 / 32767);
-   tmp >>= 8;
+ //  tmp = 32768 + MDFN_de16lsb(&aba[0]) - ((int32)MDFN_de16lsb(&aba[2]) * 32768 / 32767);
+ //  tmp >>= 8;
 
-   axes[stick][axis] = tmp;
-  }
- }
+ //  axes[stick][axis] = tmp;
+ // }
+ //}
+
+	axes[0][0] = d8[3];
+	axes[0][1] = d8[4];
+	axes[1][0] = d8[5];
+	axes[1][1] = d8[6];
 
  //printf("%d %d %d %d\n", axes[0][0], axes[0][1], axes[1][0], axes[1][1]);
 }
