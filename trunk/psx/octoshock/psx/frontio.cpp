@@ -63,61 +63,6 @@ void InputDevice::ResetTS(void)
 
 }
 
-void InputDevice::SetCrosshairsColor(uint32 color)
-{
- chair_r = (color >> 16) & 0xFF;
- chair_g = (color >>  8) & 0xFF;
- chair_b = (color >>  0) & 0xFF;
-
- draw_chair = (color != (1 << 24));
-}
-
-INLINE void InputDevice::DrawCrosshairs(uint32 *pixels, const MDFN_PixelFormat* const format, const unsigned width, const unsigned pix_clock)
-{
- if(draw_chair && chair_y >= -8 && chair_y <= 8)
- {
-  int32 ic;
-  int32 x_start, x_bound;
-
-  if(chair_y == 0)
-   ic = pix_clock / 762925;
-  else
-   ic = 0;
-
-  x_start = std::max<int32>(0, chair_x - ic);
-  x_bound = std::min<int32>(width, chair_x + ic + 1);
-
-  for(int32 x = x_start; x < x_bound; x++)
-  {
-   int r, g, b, a;
-   int nr, ng, nb;
-
-   format->DecodeColor(pixels[x], r, g, b, a);
-
-   nr = (r + chair_r * 3) >> 2;
-   ng = (g + chair_g * 3) >> 2;
-   nb = (b + chair_b * 3) >> 2;
-
-   if((int)((abs(r - nr) - 0x40) & (abs(g - ng) - 0x40) & (abs(b - nb) - 0x40)) < 0)
-   {
-    if((nr | ng | nb) & 0x80)
-    {
-     nr >>= 1;
-     ng >>= 1;
-     nb >>= 1;
-    }
-    else
-    {
-     nr ^= 0x80;
-     ng ^= 0x80;
-     nb ^= 0x80;
-    }
-   }
-
-   pixels[x] = format->MakeColor(nr, ng, nb, a);
-  }
- }
-}
 
 bool InputDevice::RequireNoFrameskip(void)
 {
@@ -177,146 +122,38 @@ void InputDevice::ResetNVDirtyCount(void)
 
 }
 
-static unsigned EP_to_MP(bool emulate_multitap[2], unsigned ep)
+//an old snippet tha showshow to set up a multitap device
+  //if(emulate_multitap[mp])
+  // DevicesTap[mp]->SetSubDevice(EP_to_SP(emulate_multitap, i), Devices[i], emulate_memcards[i] ? DevicesMC[i] : DummyDevice);
+  //else
+  // DevicesTap[mp]->SetSubDevice(EP_to_SP(emulate_multitap, i), DummyDevice, DummyDevice);
+
+
+FrontIO::FrontIO()
 {
- if(!emulate_multitap[0] && emulate_multitap[1])
- {
-  if(ep == 0 || ep >= 5)
-   return(0);
-  else
-   return(1);
- }
- else
-  return(ep >= 4);
+	//a dummy device used for memcards (please rename me)
+	DummyDevice = new InputDevice();
+
+	for(int i=0;i<2;i++)
+	{
+		Ports[i] = new InputDevice();
+		PortData[i] = NULL;
+		MCPorts[i] = new InputDevice();
+	}
+
+	//always add one memory device for now
+	MCPorts[0] = Device_Memcard_Create();
 }
 
-static INLINE unsigned EP_to_SP(bool emulate_multitap[2], unsigned ep)
-{
- if(!emulate_multitap[0] && emulate_multitap[1])
- {
-  if(ep == 0)
-   return(0);
-  else if(ep < 5)
-   return(ep - 1);
-  else
-   return(ep - 4);
- }
- else
-  return(ep & 0x3);
-}
-
-void FrontIO::MapDevicesToPorts(void)
-{
- if(emulate_multitap[0] && emulate_multitap[1])
- {
-  for(unsigned i = 0; i < 2; i++)
-  {
-   Ports[i] = DevicesTap[i];
-   MCPorts[i] = DummyDevice;
-  }
- }
- else if(!emulate_multitap[0] && emulate_multitap[1])
- {
-  Ports[0] = Devices[0];
-  MCPorts[0] = emulate_memcards[0] ? DevicesMC[0] : DummyDevice;
-
-  Ports[1] = DevicesTap[1];
-  MCPorts[1] = DummyDevice;
- }
- else if(emulate_multitap[0] && !emulate_multitap[1])
- {
-  Ports[0] = DevicesTap[0];
-  MCPorts[0] = DummyDevice;
-
-  Ports[1] = Devices[4];
-  MCPorts[1] = emulate_memcards[4] ? DevicesMC[4] : DummyDevice;
- }
- else
- {
-  for(unsigned i = 0; i < 2; i++)
-  {
-   Ports[i] = Devices[i];
-   MCPorts[i] = emulate_memcards[i] ? DevicesMC[i] : DummyDevice;
-  }
- }
-
- //printf("\n");
- for(unsigned i = 0; i < 8; i++)
- {
-  unsigned mp = EP_to_MP(emulate_multitap, i);
-  
-  if(emulate_multitap[mp])
-   DevicesTap[mp]->SetSubDevice(EP_to_SP(emulate_multitap, i), Devices[i], emulate_memcards[i] ? DevicesMC[i] : DummyDevice);
-  else
-   DevicesTap[mp]->SetSubDevice(EP_to_SP(emulate_multitap, i), DummyDevice, DummyDevice);
-
-  //printf("%d-> multitap: %d, sub-port: %d\n", i, mp, EP_to_SP(emulate_multitap, i));
- }
-}
-
-FrontIO::FrontIO(bool emulate_memcards_[8], bool emulate_multitap_[2])
-{
- memcpy(emulate_memcards, emulate_memcards_, sizeof(emulate_memcards));
- memcpy(emulate_multitap, emulate_multitap_, sizeof(emulate_multitap));
-
- DummyDevice = new InputDevice();
-
- for(unsigned i = 0; i < 8; i++)
- {
-  DeviceData[i] = NULL;
-  Devices[i] = new InputDevice();
-  DevicesMC[i] = Device_Memcard_Create();
-  chair_colors[i] = 1 << 24;
-  Devices[i]->SetCrosshairsColor(chair_colors[i]);
- }
-
- for(unsigned i = 0; i < 2; i++)
- {
-  DevicesTap[i] = new InputDevice_Multitap();
- }
-
- MapDevicesToPorts();
-}
-
-
-void FrontIO::SetCrosshairsColor(unsigned port, uint32 color)
-{
- assert(port >= 0 && port < 8);
-
- chair_colors[port] = color;
- Devices[port]->SetCrosshairsColor(color);
-}
 
 FrontIO::~FrontIO()
 {
- for(int i = 0; i < 8; i++)
- {
-  if(Devices[i])
-  {
-   delete Devices[i];
-   Devices[i] = NULL;
-  }
-  if(DevicesMC[i])
-  {
-   delete DevicesMC[i];
-   DevicesMC[i] = NULL;
-  }
- }
-
- for(unsigned i = 0; i < 2; i++)
- {
-  if(DevicesTap[i])
-  {
-   delete DevicesTap[i];
-   DevicesTap[i] = NULL;
-  }
- }
-
- if(DummyDevice)
- {
-  delete DummyDevice;
-  DummyDevice = NULL;
- }
+	for(int i=0;i<2;i++)
+	{
+		delete Ports[i];
+		delete MCPorts[i];
+	}
+	delete DummyDevice;
 }
 
 pscpu_timestamp_t FrontIO::CalcNextEventTS(pscpu_timestamp_t timestamp, int32 next_event)
@@ -655,20 +492,20 @@ pscpu_timestamp_t FrontIO::Update(pscpu_timestamp_t timestamp)
 
 void FrontIO::ResetTS(void)
 {
- for(int i = 0; i < 8; i++)
- {
-  Devices[i]->Update(lastts);	// Maybe eventually call Update() from FrontIO::Update() and remove this(but would hurt speed)?
-  Devices[i]->ResetTS();
+	for(int i=0;i<2;i++)
+	{
+		if(Ports[i] != NULL)
+		{
+			Ports[i]->Update(lastts); 	// Maybe eventually call Update() from FrontIO::Update() and remove this(but would hurt speed)?
+			Ports[i]->ResetTS();
+		}
 
-  DevicesMC[i]->Update(lastts);	// Maybe eventually call Update() from FrontIO::Update() and remove this(but would hurt speed)?
-  DevicesMC[i]->ResetTS();
- }
-
- for(int i = 0; i < 2; i++)
- {
-  DevicesTap[i]->Update(lastts);
-  DevicesTap[i]->ResetTS();
- }
+		if(MCPorts[i] != NULL)
+		{
+			MCPorts[i]->Update(lastts); 	// Maybe eventually call Update() from FrontIO::Update() and remove this(but would hurt speed)?
+			MCPorts[i]->ResetTS();
+		}
+	}
 
  for(int i = 0; i < 2; i++)
  {
@@ -726,10 +563,11 @@ void FrontIO::Power(void)
  Control = 0;
  Baudrate = 0;
 
- for(int i = 0; i < 8; i++)
+ //power on all plugged devices (are we doing this when attaching them?)
+ for(int i=0;i<2;i++)
  {
-  Devices[i]->Power();
-  DevicesMC[i]->Power();
+	 if(Ports[i] != NULL) Ports[i]->Power();
+	 if(MCPorts[i] != NULL) MCPorts[i]->Power();
  }
 
  istatus = false;
@@ -737,102 +575,54 @@ void FrontIO::Power(void)
 
 void FrontIO::UpdateInput(void)
 {
- for(int i = 0; i < 8; i++)
-  Devices[i]->UpdateInput(DeviceData[i]);
+	for(int i=0;i<2;i++)
+	{
+		if(Ports[i] != NULL) Ports[i]->UpdateInput(PortData[i]);
+	}
 }
 
 void FrontIO::SetInput(unsigned int port, const char *type, void *ptr)
 {
- delete Devices[port];
- Devices[port] = NULL;
+	//clean up the old device
+	delete Ports[port];
+	Ports[port] = NULL;
 
+ //OCTOSHOCK TODO - not sure I understand this
  if(port < 2)
   irq10_pulse_ts[port] = PSX_EVENT_MAXTS;
 
- //DAW
  if(!strcmp(type, "gamepad") || !strcmp(type, "dancepad"))
-  Devices[port] = Device_Gamepad_Create();
+  Ports[port] = Device_Gamepad_Create();
  else if(!strcmp(type, "dualanalog"))
-  Devices[port] = Device_DualAnalog_Create(false);
+  Ports[port] = Device_DualAnalog_Create(false);
  else if(!strcmp(type, "analogjoy"))
-  Devices[port] = Device_DualAnalog_Create(true);
+  Ports[port] = Device_DualAnalog_Create(true);
  else if(!strcmp(type, "dualshock"))
  {
   char name[256];
   snprintf(name, 256, "DualShock on port %u", port + 1);
-  Devices[port] = Device_DualShock_Create(std::string(name));
+  Ports[port] = Device_DualShock_Create(std::string(name));
  }
  else if(!strcmp(type, "mouse"))
-  Devices[port] = Device_Mouse_Create();
+  Ports[port] = Device_Mouse_Create();
  else if(!strcmp(type, "negcon"))
-  Devices[port] = Device_neGcon_Create();
+  Ports[port] = Device_neGcon_Create();
  else if(!strcmp(type, "guncon"))
-  Devices[port] = Device_GunCon_Create();
+  Ports[port] = Device_GunCon_Create();
  else if(!strcmp(type, "justifier"))
-  Devices[port] = Device_Justifier_Create();
+  Ports[port] = Device_Justifier_Create();
  else
-  Devices[port] = new InputDevice();
+  Ports[port] = new InputDevice();
 
  //Devices[port]->SetCrosshairsColor(chair_colors[port]);
- DeviceData[port] = ptr;
-
- MapDevicesToPorts();
+ PortData[port] = ptr;
 }
 
 uint64 FrontIO::GetMemcardDirtyCount(unsigned int which)
 {
- assert(which < 8);
-
- return(DevicesMC[which]->GetNVDirtyCount());
-}
-
-void FrontIO::LoadMemcard(unsigned int which, const char *path)
-{
- //assert(which < 8);
-
- //try
- //{
- // if(DevicesMC[which]->GetNVSize())
- // {
- //  FileStream mf(path, FileStream::MODE_READ);
- //  std::vector<uint8> tmpbuf;
-
- //  tmpbuf.resize(DevicesMC[which]->GetNVSize());
-
- //  if(mf.size() != (int64)tmpbuf.size())
- //   throw(MDFN_Error(0, _("Memory card file \"%s\" is an incorrect size(%d bytes).  The correct size is %d bytes."), path, (int)mf.size(), (int)tmpbuf.size()));
-
- //  mf.read(&tmpbuf[0], tmpbuf.size());
-
- //  DevicesMC[which]->WriteNV(&tmpbuf[0], 0, tmpbuf.size());
- //  DevicesMC[which]->ResetNVDirtyCount();		// There's no need to rewrite the file if it's the same data.
- // }
- //}
- //catch(MDFN_Error &e)
- //{
- // if(e.GetErrno() != ENOENT)
- //  throw(e);
- //}
-}
-
-void FrontIO::SaveMemcard(unsigned int which, const char *path)
-{
- //assert(which < 8);
-
- //if(DevicesMC[which]->GetNVSize() && DevicesMC[which]->GetNVDirtyCount())
- //{
- // FileStream mf(path, FileStream::MODE_WRITE);	// TODO: MODE_WRITE_ATOMIC_OVERWRITE
- // std::vector<uint8> tmpbuf;
-
- // tmpbuf.resize(DevicesMC[which]->GetNVSize());
-
- // DevicesMC[which]->ReadNV(&tmpbuf[0], 0, tmpbuf.size());
- // mf.write(&tmpbuf[0], tmpbuf.size());
-
- // mf.close();	// Call before resetting the NV dirty count!
-
- // DevicesMC[which]->ResetNVDirtyCount();
- //}
+ assert(which < 2);
+ 
+ return(MCPorts[which]->GetNVDirtyCount());
 }
 
 int FrontIO::StateAction(StateMem* sm, int load, int data_only)
@@ -871,33 +661,35 @@ int FrontIO::StateAction(StateMem* sm, int load, int data_only)
 
  int ret = MDFNSS_StateAction(sm, load, data_only, StateRegs, "FIO");
 
- for(unsigned i = 0; i < 8; i++)
- {
-	static const char* labels[] = {
-		"FIODEV0","FIODEV1","FIODEV2","FIODEV3","FIODEV4","FIODEV5","FIODEV6","FIODEV7"
-	};
+ //TODO - SAVESTATES
 
-  ret &= Devices[i]->StateAction(sm, load, data_only, labels[i]);
- }
+ //for(unsigned i = 0; i < 8; i++)
+ //{
+	//static const char* labels[] = {
+	//	"FIODEV0","FIODEV1","FIODEV2","FIODEV3","FIODEV4","FIODEV5","FIODEV6","FIODEV7"
+	//};
 
- for(unsigned i = 0; i < 8; i++)
- {
-	static const char* labels[] = {
-		"FIOMC0","FIOMC1","FIOMC2","FIOMC3","FIOMC4","FIOMC5","FIOMC6","FIOMC7"
-	};
+ // ret &= Devices[i]->StateAction(sm, load, data_only, labels[i]);
+ //}
+
+ //for(unsigned i = 0; i < 8; i++)
+ //{
+	//static const char* labels[] = {
+	//	"FIOMC0","FIOMC1","FIOMC2","FIOMC3","FIOMC4","FIOMC5","FIOMC6","FIOMC7"
+	//};
 
 
-  ret &= DevicesMC[i]->StateAction(sm, load, data_only, labels[i]);
- }
+ // ret &= DevicesMC[i]->StateAction(sm, load, data_only, labels[i]);
+ //}
 
- for(unsigned i = 0; i < 2; i++)
- {
-	static const char* labels[] = {
-		"FIOTAP0","FIOTAP1",
-	};
+ //for(unsigned i = 0; i < 2; i++)
+ //{
+	//static const char* labels[] = {
+	//	"FIOTAP0","FIOTAP1",
+	//};
 
-  ret &= DevicesTap[i]->StateAction(sm, load, data_only, labels[i]);
- }
+ // ret &= DevicesTap[i]->StateAction(sm, load, data_only, labels[i]);
+ //}
 
  if(load)
  {
@@ -909,10 +701,7 @@ int FrontIO::StateAction(StateMem* sm, int load, int data_only)
 
 bool FrontIO::RequireNoFrameskip(void)
 {
- for(unsigned i = 0; i < 8; i++)
-  if(Devices[i]->RequireNoFrameskip())
-   return(true);
- 
+	//this whole function is nonsense. frontend should know what it has attached
  return(false);
 }
 
@@ -920,9 +709,13 @@ void FrontIO::GPULineHook(const pscpu_timestamp_t timestamp, const pscpu_timesta
 {
  Update(timestamp);
 
- for(unsigned i = 0; i < 8; i++)
+ for(int i = 0; i < 2; i++)
  {
-  pscpu_timestamp_t plts = Devices[i]->GPULineHook(line_timestamp, vsync, pixels, format, width, pix_clock_offset, pix_clock, pix_clock_divider);
+	 //octoshock edits.. not sure how safe it is
+	 if(Ports[i] == NULL)
+		 continue;
+
+	pscpu_timestamp_t plts = Ports[i]->GPULineHook(line_timestamp, vsync, pixels, format, width, pix_clock_offset, pix_clock, pix_clock_divider);
 
   if(i < 2)
   {
@@ -934,17 +727,6 @@ void FrontIO::GPULineHook(const pscpu_timestamp_t timestamp, const pscpu_timesta
     IRQ_Assert(IRQ_PIO, true);
     IRQ_Assert(IRQ_PIO, false);
    }
-  }
- }
-
- //
- // Draw crosshairs in a separate pass so the crosshairs won't mess up the color evaluation of later lightun GPULineHook()s.
- //
- if(pixels && pix_clock)
- {
-  for(unsigned i = 0; i < 8; i++)
-  {
-   Devices[i]->DrawCrosshairs(pixels, format, width, pix_clock);
   }
  }
 

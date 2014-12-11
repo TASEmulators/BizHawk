@@ -33,6 +33,15 @@ public unsafe static class OctoshockDll
 		SPURAM = 4 //512K
 	};
 
+	public enum eShockMemcardTransaction
+	{
+		Connect = 0, //connects it to the addressed port (not supported yet)
+		Disconnect = 1, //disconnects it from the addressed port (not supported yet)
+		Write = 2, //writes from the frontend to the memcard
+		Read = 3, //reads from the memcard to the frontend. Also clears the dirty flag
+		CheckDirty = 4, //checks whether the memcard is dirty
+	};
+
 
 	public enum ePeripheralType
 	{
@@ -46,6 +55,8 @@ public unsafe static class OctoshockDll
 	};
 
 	public const int SHOCK_OK = 0;
+	public const int SHOCK_FALSE = 0;
+	public const int SHOCK_TRUE = 1;
 	public const int SHOCK_ERROR = -1;
 	public const int SHOCK_NOCANDO = -2;
 	public const int SHOCK_INVALID_ADDRESS = -3;
@@ -82,6 +93,14 @@ public unsafe static class OctoshockDll
 		public void* ptr;
 	};
 
+	[StructLayout(LayoutKind.Sequential)]
+	public struct ShockMemcardTransaction
+	{
+		[MarshalAs(UnmanagedType.I4)]
+		public eShockMemcardTransaction transaction;
+		public void* buffer128k;
+	};
+
 	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 	public delegate int ShockDisc_ReadTOC(IntPtr opaque, ShockTOC* read_target, ShockTOCTrack* tracks101);
 
@@ -113,6 +132,9 @@ public unsafe static class OctoshockDll
 	
 	[DllImport("octoshock.dll")]
 	public static extern int shock_Peripheral_SetPadInput(IntPtr psx, int address, uint buttons, byte left_x, byte left_y, byte right_x, byte right_y);
+
+	[DllImport("octoshock.dll")]
+	public static extern int shock_Peripheral_MemcardTransact(IntPtr psx, int address, ref ShockMemcardTransaction transaction);
 
 	[DllImport("octoshock.dll")]
 	public static extern int shock_PowerOn(IntPtr psx);

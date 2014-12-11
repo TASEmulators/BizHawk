@@ -25,12 +25,7 @@ class InputDevice
  virtual void Update(const pscpu_timestamp_t timestamp);	// Partially-implemented, don't rely on for timing any more fine-grained than a video frame for now.
  virtual void ResetTS(void);
 
- void DrawCrosshairs(uint32 *pixels, const MDFN_PixelFormat* const format, const unsigned width, const unsigned pix_clock);
- //
- //
- //
- virtual void SetCrosshairsColor(uint32 color);
-
+ 
  //
  //
  //
@@ -63,7 +58,7 @@ class FrontIO
 {
  public:
 
- FrontIO(bool emulate_memcards_[8], bool emulate_multitap_[2]);
+ FrontIO();
  ~FrontIO();
 
  void Power(void);
@@ -81,31 +76,31 @@ class FrontIO
  void SetCrosshairsColor(unsigned port, uint32 color);
 
  uint64 GetMemcardDirtyCount(unsigned int which);
- void LoadMemcard(unsigned int which, const char *path);
- void SaveMemcard(unsigned int which, const char *path); //, bool force_save = false);
+
 
  int StateAction(StateMem* sm, int load, int data_only);
+ 
+ InputDevice *Ports[2];
+ void *PortData[2];
+ InputDevice *MCPorts[2];
+ InputDevice *DummyDevice;
 
  private:
 
  void DoDSRIRQ(void);
  void CheckStartStopPending(pscpu_timestamp_t timestamp, bool skip_event_set = false);
 
- void MapDevicesToPorts(void);
 
- bool emulate_memcards[8];
- bool emulate_multitap[2];
 
- InputDevice *Ports[2];
- InputDevice *MCPorts[2];
 
- InputDevice *DummyDevice;
- InputDevice_Multitap *DevicesTap[2];
-
- InputDevice *Devices[8];
- void *DeviceData[8];
-
- InputDevice *DevicesMC[8];
+ //OLD
+ //bool emulate_memcards[8];
+ //void MapDevicesToPorts(void);
+ //bool emulate_multitap[2];
+ //InputDevice_Multitap *DevicesTap[2];
+ //InputDevice *Devices[8];
+ //void *DeviceData[8];
+ //InputDevice *DevicesMC[8];
 
  //
  //

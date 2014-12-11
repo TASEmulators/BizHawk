@@ -147,8 +147,17 @@ enum ePeripheralType
 	ePeripheralType_Pad = 1, //SCPH-1080
 	ePeripheralType_DualShock = 2, //SCPH-1200
 	ePeripheralType_DualAnalog = 3, //SCPH-1180
-	
+
 	ePeripheralType_Multitap = 10,
+};
+
+enum eShockMemcardTransaction
+{
+	eShockMemcardTransaction_Connect = 0, //connects it to the addressed port (not supported yet)
+	eShockMemcardTransaction_Disconnect = 1, //disconnects it from the addressed port (not supported yet)
+	eShockMemcardTransaction_Write = 2, //writes from the frontend to the memcard
+	eShockMemcardTransaction_Read = 3, //reads from the memcard to the frontend. Also clears the dirty flag
+	eShockMemcardTransaction_CheckDirty = 4, //checks whether the memcard is dirty
 };
 
 enum eShockSetting
@@ -170,6 +179,8 @@ int shock_GetSetting(eShockSetting setting);
 #define MDFN_MSC_EJECT_DISK 4
 
 #define SHOCK_OK 0
+#define SHOCK_FALSE 0
+#define SHOCK_TRUE 1
 #define SHOCK_ERROR -1
 #define SHOCK_NOCANDO -2
 #define SHOCK_INVALID_ADDRESS -3
@@ -236,6 +247,13 @@ struct ShockFramebufferInfo
 	void* ptr;
 };
 
+struct ShockMemcardTransaction
+{
+	eShockMemcardTransaction transaction;
+	void* buffer128k;
+};
+
+
 //Creates a ShockDiscRef (representing a disc) with the given properties. Returns it in the specified output pointer.
 //The ReadLBA2048 function should return 0x01 or 0x02 depending on which mode was there.
 //Others should return SHOCK_OK
@@ -267,6 +285,9 @@ EW_EXPORT s32 shock_Peripheral_Connect(void* psx, s32 address, s32 type);
 //Sets pad-type input (pad,dualshock,dualanalog) on the specified address;
 //Read more about the input format (buttons, analog range) here: TBD
 EW_EXPORT s32 shock_Peripheral_SetPadInput(void* psx, s32 address, u32 buttons, u8 left_x, u8 left_y, u8 right_x, u8 right_y);
+
+//Performs one of several transactions on an attached memory card.
+EW_EXPORT s32 shock_Peripheral_MemcardTransact(void* psx, s32 address, ShockMemcardTransaction* transaction);
 
 //Sets the power to ON. Returns SHOCK_NOCANDO if already on.
 EW_EXPORT s32 shock_PowerOn(void* psx);
