@@ -131,6 +131,15 @@ enum eShockFramebufferFlags
 	eShockFramebufferFlags_Normalize = 1
 };
 
+enum eMemType
+{
+	eMemType_MainRAM = 0, //2048K
+	eMemType_BiosROM = 1, //512K
+	eMemType_PIOMem = 2, //64K
+	eMemType_GPURAM = 3, //512K
+	eMemType_SPURAM = 4 //512K
+};
+
 enum ePeripheralType
 {
 	ePeripheralType_None = 0, //can be used to signify disconnection
@@ -283,4 +292,7 @@ EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferInfo* fb);
 
 //Returns the queued SPU output (usually ~737 samples per frame) as the normal 16bit interleaved stereo format
 //The size of the queue will be returned. Make sure your buffer can handle it. Pass NULL just to get the required size.
-EW_EXPORT s32 shock_GetSamples(void* buffer);
+EW_EXPORT s32 shock_GetSamples(void* psx, void* buffer);
+
+//Returns information about a memory buffer for peeking (main memory, spu memory, etc.)
+EW_EXPORT s32 shock_GetMemData(void* psx, void** ptr, s32* size, s32 memType);

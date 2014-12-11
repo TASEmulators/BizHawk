@@ -98,15 +98,15 @@ class PS_GPU
   GPURAM[(A >> 10) & 0x1FF][A & 0x3FF] = V;
  }
 
+ // Y, X
+ uint16 GPURAM[512][1024];
+
  private:
 
  void ProcessFIFO(void);
  void WriteCB(uint32 data);
  uint32 ReadData(void);
  void SoftReset(void);
-
- // Y, X
- uint16 GPURAM[512][1024];
 
  uint32 DMAControl;
 

@@ -114,7 +114,9 @@ class PS_SPU
  int32 UpdateFromCDC(int32 clocks);
  //pscpu_timestamp_t Update(pscpu_timestamp_t timestamp);
 
- private:
+ uint16 SPURAM[524288 / sizeof(uint16)];
+
+private:
 
  void CheckIRQAddr(uint32 addr);
  void WriteSPURAM(uint32 addr, uint16 value);
@@ -239,8 +241,6 @@ class PS_SPU
 
  //pscpu_timestamp_t lastts;
  int32 clock_divider;
-
- uint16 SPURAM[524288 / sizeof(uint16)];
 
  int last_rate;
  uint32 last_quality;

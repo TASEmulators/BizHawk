@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		isPorted: true,
 		isReleased: false
 		)]
-	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider
+	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains
 	{
 		public string SystemId { get { return "NULL"; } }
 
@@ -167,7 +167,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public Octoshock(CoreComm comm, DiscSystem.Disc disc)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
-			var domains = new List<MemoryDomain>();
 			CoreComm = comm;
 
 			CoreComm.UsesDriveLed = true;
@@ -196,6 +195,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			//create the instance
 			fixed (byte* pFirmware = firmware)
 				OctoshockDll.shock_Create(out psx, discInfo.region, pFirmware);
+
+			SetMemoryDomains();
 
 
 			//these should track values in octoshock gpu.cpp FillVideoParams
@@ -314,9 +315,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			fixed (short* samples = sbuff)
 			{
-				sbuffcontains = OctoshockDll.shock_GetSamples(null);
+				sbuffcontains = OctoshockDll.shock_GetSamples(psx, null);
 				if (sbuffcontains * 2 > sbuff.Length) throw new InvalidOperationException("shock_GetSamples returned too many samples: " + sbuffcontains);
-				OctoshockDll.shock_GetSamples(samples);
+				OctoshockDll.shock_GetSamples(psx, samples);
 			}
 		}
 
@@ -341,6 +342,36 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return 0; } }
+
+		#region Debugging
+
+		unsafe void SetMemoryDomains()
+		{
+			var mmd = new List<MemoryDomain>();
+			IntPtr ptr;
+			int size;
+
+			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.MainRAM);
+			mmd.Add(MemoryDomain.FromIntPtr("MainRAM", size, MemoryDomain.Endian.Little, ptr, true));
+
+			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.GPURAM);
+			mmd.Add(MemoryDomain.FromIntPtr("GPURAM", size, MemoryDomain.Endian.Little, ptr, true));
+
+			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.SPURAM);
+			mmd.Add(MemoryDomain.FromIntPtr("SPURAM", size, MemoryDomain.Endian.Little, ptr, true));
+
+			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.BiosROM);
+			mmd.Add(MemoryDomain.FromIntPtr("BiosROM", size, MemoryDomain.Endian.Little, ptr, true));
+
+			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.PIOMem);
+			mmd.Add(MemoryDomain.FromIntPtr("PIOMem", size, MemoryDomain.Endian.Little, ptr, true));
+
+			MemoryDomains = new MemoryDomainList(mmd, 0);
+		}
+
+		public MemoryDomainList MemoryDomains { get; private set; }
+
+		#endregion
 
 		#region ISoundProvider
 
