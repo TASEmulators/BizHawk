@@ -137,6 +137,9 @@ public unsafe static class OctoshockDll
 	public static extern int shock_Peripheral_MemcardTransact(IntPtr psx, int address, ref ShockMemcardTransaction transaction);
 
 	[DllImport("octoshock.dll")]
+	public static extern int shock_MountEXE(IntPtr psx, void* exebuf, int size);
+
+	[DllImport("octoshock.dll")]
 	public static extern int shock_PowerOn(IntPtr psx);
 
 	[DllImport("octoshock.dll")]

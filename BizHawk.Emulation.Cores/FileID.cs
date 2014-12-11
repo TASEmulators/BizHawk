@@ -27,7 +27,8 @@ namespace BizHawk.Emulation.Cores
 		Multiple, //dont think this makes sense. shouldnt the multiple options be returned?
 
 		Disc, //an unknown disc
-		PSX, PSP, 
+		PSX, PSX_EXE,
+		PSP, 
 		Saturn, MegaCD,
 
 		PCE, SGX, TurboCD,
@@ -264,7 +265,8 @@ namespace BizHawk.Emulation.Cores
 			public static SimpleMagicRecord SEGASATURN = new SimpleMagicRecord { Offset = 0, Key = "SEGA SEGASATURN" };
 			public static SimpleMagicRecord SEGADISCSYSTEM = new SimpleMagicRecord { Offset = 0, Key = "SEGADISCSYSTEM" };
 
-			public static SimpleMagicRecord PSX = new SimpleMagicRecord { Offset = 0x24E0, Key = "  Licensed  by          Sony Computer Entertainment" };
+			public static SimpleMagicRecord PSX = new SimpleMagicRecord { Offset = 0x24E0, Key = "  Licensed  by          Sony Computer Entertainment" }; //there might be other ideas for checking in mednafen sources, if we need them
+			public static SimpleMagicRecord PSX_EXE = new SimpleMagicRecord { Key = "PS-X EXE\0" };
 			public static SimpleMagicRecord PSP = new SimpleMagicRecord { Offset = 0x8000, Key = "\x01CD001\x01\0x00PSP GAME" };
 
 			//https://sites.google.com/site/atari7800wiki/a78-header
@@ -311,6 +313,8 @@ namespace BizHawk.Emulation.Cores
 
 			{ "JAD", new ExtensionInfo(FileIDType.Multiple, Test_JAD_JAC ) },
 			{ "JAC", new ExtensionInfo(FileIDType.Multiple, Test_JAD_JAC ) },
+
+			{ "EXE", new ExtensionInfo(FileIDType.PSX_EXE, (j)=>Test_Simple(j,FileIDType.PSX_EXE,SimpleMagics.PSX_EXE) ) },
 
 			//royal mess
 			{ "MD", new ExtensionInfo(FileIDType.SMD, null ) },

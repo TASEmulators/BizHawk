@@ -74,6 +74,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			disposed = true;
 		}
 
+		/// <summary>
+		/// Wraps the ShockDiscRef returned from the DLL and acts as a bridge between it and a DiscSystem disc
+		/// </summary>
 		class DiscInterface : IDisposable
 		{
 			public DiscInterface(DiscSystem.Disc disc, Action cbActivity)
@@ -164,7 +167,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		//note: its annoying that we have to have a disc before constructing this.
 		//might want to change that later. HOWEVER - we need to definitely have a region, at least
-		public Octoshock(CoreComm comm, DiscSystem.Disc disc)
+		public Octoshock(CoreComm comm, DiscSystem.Disc disc, byte[] exe)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
@@ -174,27 +177,38 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			Attach();
 
 			this.disc = disc;
-			discInterface = new DiscInterface(disc, 
-				() =>
-				{
-					//if current disc this delegate disc, activity is happening
-					if (disc == this.disc)
-						CoreComm.DriveLED = true;
-				});
 
-			//determine region of the provided disc
-			OctoshockDll.ShockDiscInfo discInfo;
-			OctoshockDll.shock_AnalyzeDisc(discInterface.OctoshockHandle, out discInfo);
-
-			//try to acquire the appropriate firmware
 			string firmwareRegion = "U";
-			if(discInfo.region == OctoshockDll.eRegion.EU) firmwareRegion = "E";
-			if (discInfo.region == OctoshockDll.eRegion.JP) firmwareRegion = "J";
+			OctoshockDll.eRegion region = OctoshockDll.eRegion.NA;
+
+			if (disc != null)
+			{
+				discInterface = new DiscInterface(disc,
+					() =>
+					{
+						//if current disc this delegate disc, activity is happening
+						if (disc == this.disc)
+							CoreComm.DriveLED = true;
+					});
+
+				//determine region of the provided disc
+				OctoshockDll.ShockDiscInfo discInfo;
+				OctoshockDll.shock_AnalyzeDisc(discInterface.OctoshockHandle, out discInfo);
+
+				//try to acquire the appropriate firmware
+				if (discInfo.region == OctoshockDll.eRegion.EU) firmwareRegion = "E";
+				if (discInfo.region == OctoshockDll.eRegion.JP) firmwareRegion = "J";
+			}
+			else
+			{
+				//assume its NA region for test programs, for now. could it be read out of the ps-exe header?
+			}
+
 			byte[] firmware = comm.CoreFileProvider.GetFirmware("PSX", "U", true, "A PSX `" + firmwareRegion + "` region bios file is required");
 
 			//create the instance
 			fixed (byte* pFirmware = firmware)
-				OctoshockDll.shock_Create(out psx, discInfo.region, pFirmware);
+				OctoshockDll.shock_Create(out psx, region, pFirmware);
 
 			SetMemoryDomains();
 
@@ -214,10 +228,18 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			VirtualWidth = 800;
 			VirtualHeight = 480;
 
-
-			OctoshockDll.shock_OpenTray(psx);
-			OctoshockDll.shock_SetDisc(psx, discInterface.OctoshockHandle);
-			OctoshockDll.shock_CloseTray(psx);
+			if (disc != null)
+			{
+				OctoshockDll.shock_OpenTray(psx);
+				OctoshockDll.shock_SetDisc(psx, discInterface.OctoshockHandle);
+				OctoshockDll.shock_CloseTray(psx);
+			}
+			else
+			{
+				//must be an exe
+				fixed (byte* pExeBuffer = exe)
+					OctoshockDll.shock_MountEXE(psx, pExeBuffer, exe.Length);
+			}
 			OctoshockDll.shock_Peripheral_Connect(psx, 0x01, OctoshockDll.ePeripheralType.DualShock);
 			OctoshockDll.shock_PowerOn(psx);
 		}
