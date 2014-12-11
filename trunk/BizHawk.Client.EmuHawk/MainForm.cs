@@ -1543,6 +1543,7 @@ namespace BizHawk.Client.EmuHawk
 			GBASubMenu.Visible = false;
 			AtariSubMenu.Visible = false;
 			SNESSubMenu.Visible = false;
+			PSXSubMenu.Visible = false;
 			ColecoSubMenu.Visible = false;
 			N64SubMenu.Visible = false;
 			SaturnSubMenu.Visible = false;
@@ -1587,6 +1588,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "A26":
 					AtariSubMenu.Visible = true;
+					break;
+				case "PSX":
+					PSXSubMenu.Visible = true;
 					break;
 				case "SNES":
 				case "SGB":
@@ -3702,5 +3706,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FeaturesMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
+
+
+
 	}
 }

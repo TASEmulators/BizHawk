@@ -1776,6 +1776,12 @@ namespace BizHawk.Client.EmuHawk
 			SNESOptions.DoSettingsDialog(this);
 		}
 
+		private void PSXOptionsMenuItem_Click(object sender, EventArgs e)
+		{
+			//help me, i dont want to mess with doing this the right way right now
+			new PSXOptions().ShowDialog();
+		}
+
 		#endregion
 
 		#region Coleco
