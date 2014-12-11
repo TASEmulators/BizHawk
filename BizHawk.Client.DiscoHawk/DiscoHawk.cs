@@ -46,12 +46,32 @@ namespace BizHawk.Client.DiscoHawk
 		//NoInlining should keep this code from getting jammed into Main() which would create dependencies on types which havent been setup by the resolver yet... or something like that
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern bool ChangeWindowMessageFilterEx(IntPtr hWnd, uint msg, ChangeWindowMessageFilterExAction action, ref CHANGEFILTERSTRUCT changeInfo);
+		private static class Win32
+		{
+			[DllImport("kernel32.dll")]
+			public static extern IntPtr LoadLibrary(string dllToLoad);
+			[DllImport("kernel32.dll")]
+			public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
+			[DllImport("kernel32.dll")]
+			public static extern bool FreeLibrary(IntPtr hModule);
+		}
+
 		static void SubMain(string[] args)
 		{
+			//MICROSOFT BROKE DRAG AND DROP IN WINDOWS 7. IT DOESNT WORK ANYMORE
+			//WELL, OBVIOUSLY IT DOES SOMETIMES. I DONT REMEMBER THE DETAILS OR WHY WE HAD TO DO THIS SHIT
 #if WINDOWS
-			ChangeWindowMessageFilter(WM_DROPFILES, ChangeWindowMessageFilterFlags.Add);
-			ChangeWindowMessageFilter(WM_COPYDATA, ChangeWindowMessageFilterFlags.Add);
-			ChangeWindowMessageFilter(0x0049, ChangeWindowMessageFilterFlags.Add);
+			//BUT THE FUNCTION WE NEED DOESNT EXIST UNTIL WINDOWS 7, CONVENIENTLY
+			//SO CHECK FOR IT
+			IntPtr lib = Win32.LoadLibrary("user32.dll");
+			IntPtr proc = Win32.GetProcAddress(lib, "ChangeWindowMessageFilterEx");
+			if (proc != IntPtr.Zero)
+			{
+				ChangeWindowMessageFilter(WM_DROPFILES, ChangeWindowMessageFilterFlags.Add);
+				ChangeWindowMessageFilter(WM_COPYDATA, ChangeWindowMessageFilterFlags.Add);
+				ChangeWindowMessageFilter(0x0049, ChangeWindowMessageFilterFlags.Add);
+			}
+			Win32.FreeLibrary(lib);
 #endif
 
 			var ffmpegPath = Path.Combine(GetExeDirectoryAbsolute(), "ffmpeg.exe");
