@@ -160,17 +160,6 @@ enum eShockMemcardTransaction
 	eShockMemcardTransaction_CheckDirty = 4, //checks whether the memcard is dirty
 };
 
-enum eShockSetting
-{
-	REGION_AUTODETECT = 0,
-	REGION_DEFAULT = 1,
-	SLSTART = 2,
-	SLEND = 3,
-	SLSTARTP = 4,
-	SLENDP = 5
-};
-
-int shock_GetSetting(eShockSetting setting);
 
 #define MDFN_MSC_RESET 0
 #define MDFN_MSC_POWER 1
