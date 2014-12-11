@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		)]
 	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam
 	{
-		public string SystemId { get { return "NULL"; } }
+		public string SystemId { get { return "PSX"; } }
 
 		public static readonly ControllerDefinition DualShockController = new ControllerDefinition
 		{

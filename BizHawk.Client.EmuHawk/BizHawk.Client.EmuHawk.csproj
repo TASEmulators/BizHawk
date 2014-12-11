@@ -418,6 +418,12 @@
     <Compile Include="config\ProfileConfig.Designer.cs">
       <DependentUpon>ProfileConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\PSX\PSXOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\PSX\PSXOptions.Designer.cs">
+      <DependentUpon>PSXOptions.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\RewindConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1170,6 +1176,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\ProfileConfig.resx">
       <DependentUpon>ProfileConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\PSX\PSXOptions.resx">
+      <DependentUpon>PSXOptions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\RewindConfig.resx">
       <DependentUpon>RewindConfig.cs</DependentUpon>
