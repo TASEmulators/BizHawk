@@ -259,7 +259,7 @@ namespace BizHawk.Client.Common
 								nextEmulator = new PSP(nextComm, file.Name);
 								break;
 							case "PSX":
-								nextEmulator = new Octoshock(nextComm, disc);
+								nextEmulator = new Octoshock(nextComm, disc, null);
 								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 								break;
 							case "PCE":
@@ -305,6 +305,12 @@ namespace BizHawk.Client.Common
 					else // most extensions
 					{
 						rom = new RomGame(file);
+
+						//hacky for now
+						if (file.Extension.ToLower() == ".exe")
+						{
+							rom.GameInfo.System = "PSX";
+						}
 
 						if (string.IsNullOrEmpty(rom.GameInfo.System))
 						{
@@ -405,6 +411,10 @@ namespace BizHawk.Client.Common
 							case "GBA":
 								//core = CoreInventory.Instance["GBA", "Meteor"];
 								core = CoreInventory.Instance["GBA", "VBA-Next"];
+								break;
+							case "PSX":
+								nextEmulator = new Octoshock(nextComm, null, rom.FileData);
+								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 								break;
 							case "DEBUG":
 								if (VersionInfo.DeveloperBuild)

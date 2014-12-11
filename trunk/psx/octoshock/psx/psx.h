@@ -278,6 +278,9 @@ EW_EXPORT s32 shock_Peripheral_SetPadInput(void* psx, s32 address, u32 buttons, 
 //Performs one of several transactions on an attached memory card.
 EW_EXPORT s32 shock_Peripheral_MemcardTransact(void* psx, s32 address, ShockMemcardTransaction* transaction);
 
+//Mounts a PS-EXE executable 
+EW_EXPORT s32 shock_MountEXE(void* psx, void* exebuf, int size);
+
 //Sets the power to ON. Returns SHOCK_NOCANDO if already on.
 EW_EXPORT s32 shock_PowerOn(void* psx);
 

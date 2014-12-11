@@ -1554,176 +1554,186 @@ EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferInfo* fb)
 
 static void LoadEXE(const uint8 *data, const uint32 size, bool ignore_pcsp = false)
 {
-// uint32 PC;
-// uint32 SP;
-// uint32 TextStart;
-// uint32 TextSize;
-//
-// if(size < 0x800)
-//  throw(MDFN_Error(0, "PS-EXE is too small."));
-//
-// PC = MDFN_de32lsb(&data[0x10]);
-// SP = MDFN_de32lsb(&data[0x30]);
-// TextStart = MDFN_de32lsb(&data[0x18]);
-// TextSize = MDFN_de32lsb(&data[0x1C]);
-//
-// if(ignore_pcsp)
-//  printf("TextStart=0x%08x\nTextSize=0x%08x\n", TextStart, TextSize);
-// else
-//  printf("PC=0x%08x\nSP=0x%08x\nTextStart=0x%08x\nTextSize=0x%08x\n", PC, SP, TextStart, TextSize);
-//
-// TextStart &= 0x1FFFFF;
-//
-// if(TextSize > 2048 * 1024)
-// {
-//  throw(MDFN_Error(0, "Text section too large"));
-// }
-//
-// if(TextSize > (size - 0x800))
-//  throw(MDFN_Error(0, "Text section recorded size is larger than data available in file.  Header=0x%08x, Available=0x%08x", TextSize, size - 0x800));
-//
-// if(TextSize < (size - 0x800))
-//  throw(MDFN_Error(0, "Text section recorded size is smaller than data available in file.  Header=0x%08x, Available=0x%08x", TextSize, size - 0x800));
-//
-// if(!TextMem.size())
-// {
-//  TextMem_Start = TextStart;
-//  TextMem.resize(TextSize);
-// }
-//
-// if(TextStart < TextMem_Start)
-// {
-//  uint32 old_size = TextMem.size();
-//
-//  //printf("RESIZE: 0x%08x\n", TextMem_Start - TextStart);
-//
-//  TextMem.resize(old_size + TextMem_Start - TextStart);
-//  memmove(&TextMem[TextMem_Start - TextStart], &TextMem[0], old_size);
-//
-//  TextMem_Start = TextStart;
-// }
-//
-// if(TextMem.size() < (TextStart - TextMem_Start + TextSize))
-//  TextMem.resize(TextStart - TextMem_Start + TextSize);
-//
-// memcpy(&TextMem[TextStart - TextMem_Start], data + 0x800, TextSize);
-//
-//
-// //
-// //
-// //
-//
-// // BIOS patch
-// BIOSROM->WriteU32(0x6990, (3 << 26) | ((0xBF001000 >> 2) & ((1 << 26) - 1)));
-//// BIOSROM->WriteU32(0x691C, (3 << 26) | ((0xBF001000 >> 2) & ((1 << 26) - 1)));
-//
-//// printf("INSN: 0x%08x\n", BIOSROM->ReadU32(0x6990));
-//// exit(1);
-// uint8 *po;
-//
-// po = &PIOMem->data8[0x0800];
-//
-// MDFN_en32lsb(po, (0x0 << 26) | (31 << 21) | (0x8 << 0));	// JR
-// po += 4;
-// MDFN_en32lsb(po, 0);	// NOP(kinda)
-// po += 4;
-//
-// po = &PIOMem->data8[0x1000];
-//
-// // Load cacheable-region target PC into r2
-// MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16) | (0x9F001010 >> 16));      // LUI
-// po += 4;
-// MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (2 << 16) | (0x9F001010 & 0xFFFF));   // ORI
-// po += 4;
-//
-// // Jump to r2
-// MDFN_en32lsb(po, (0x0 << 26) | (2 << 21) | (0x8 << 0));	// JR
-// po += 4;
-// MDFN_en32lsb(po, 0);	// NOP(kinda)
-// po += 4;
-//
-// //
-// // 0x9F001010:
-// //
-//
-// // Load source address into r8
-// uint32 sa = 0x9F000000 + 65536;
-// MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16) | (sa >> 16));	// LUI
-// po += 4;
-// MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (8 << 16) | (sa & 0xFFFF)); 	// ORI
-// po += 4;
-//
-// // Load dest address into r9
-// MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (TextMem_Start >> 16));	// LUI
-// po += 4;
-// MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (9 << 16) | (TextMem_Start & 0xFFFF)); 	// ORI
-// po += 4;
-//
-// // Load size into r10
-// MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (TextMem.size() >> 16));	// LUI
-// po += 4;
-// MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (10 << 16) | (TextMem.size() & 0xFFFF)); 	// ORI
-// po += 4;
-//
-// //
-// // Loop begin
-// //
-// 
-// MDFN_en32lsb(po, (0x24 << 26) | (8 << 21) | (1 << 16));	// LBU to r1
-// po += 4;
-//
-// MDFN_en32lsb(po, (0x08 << 26) | (10 << 21) | (10 << 16) | 0xFFFF);	// Decrement size
-// po += 4;
-//
-// MDFN_en32lsb(po, (0x28 << 26) | (9 << 21) | (1 << 16));	// SB from r1
-// po += 4;
-//
-// MDFN_en32lsb(po, (0x08 << 26) | (8 << 21) | (8 << 16) | 0x0001);	// Increment source addr
-// po += 4;
-//
-// MDFN_en32lsb(po, (0x05 << 26) | (0 << 21) | (10 << 16) | (-5 & 0xFFFF));
-// po += 4;
-// MDFN_en32lsb(po, (0x08 << 26) | (9 << 21) | (9 << 16) | 0x0001);	// Increment dest addr
-// po += 4;
-//
-// //
-// // Loop end
-// //
-//
-// // Load SP into r29
-// if(ignore_pcsp)
-// {
-//  po += 16;
-// }
-// else
-// {
-//  MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (SP >> 16));	// LUI
-//  po += 4;
-//  MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (29 << 16) | (SP & 0xFFFF)); 	// ORI
-//  po += 4;
-//
-//  // Load PC into r2
-//  MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | ((PC >> 16) | 0x8000));      // LUI
-//  po += 4;
-//  MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (2 << 16) | (PC & 0xFFFF));   // ORI
-//  po += 4;
-// }
-//
-// // Half-assed instruction cache flush. ;)
-// for(unsigned i = 0; i < 1024; i++)
-// {
-//  MDFN_en32lsb(po, 0);
-//  po += 4;
-// }
-//
-//
-//
-// // Jump to r2
-// MDFN_en32lsb(po, (0x0 << 26) | (2 << 21) | (0x8 << 0));	// JR
-// po += 4;
-// MDFN_en32lsb(po, 0);	// NOP(kinda)
-// po += 4;
+ uint32 PC;
+ uint32 SP;
+ uint32 TextStart;
+ uint32 TextSize;
+
+ //TODO ERROR HANDLING
+ //if(size < 0x800)
+ // throw(MDFN_Error(0, "PS-EXE is too small."));
+
+ PC = MDFN_de32lsb(&data[0x10]);
+ SP = MDFN_de32lsb(&data[0x30]);
+ TextStart = MDFN_de32lsb(&data[0x18]);
+ TextSize = MDFN_de32lsb(&data[0x1C]);
+
+ if(ignore_pcsp)
+  printf("TextStart=0x%08x\nTextSize=0x%08x\n", TextStart, TextSize);
+ else
+  printf("PC=0x%08x\nSP=0x%08x\nTextStart=0x%08x\nTextSize=0x%08x\n", PC, SP, TextStart, TextSize);
+
+ TextStart &= 0x1FFFFF;
+
+ if(TextSize > 2048 * 1024)
+ {
+	 //TODO ERROR HANDLING
+  //throw(MDFN_Error(0, "Text section too large"));
+ }
+
+ //TODO ERROR HANDLING
+ /*if(TextSize > (size - 0x800))
+  throw(MDFN_Error(0, "Text section recorded size is larger than data available in file.  Header=0x%08x, Available=0x%08x", TextSize, size - 0x800));
+
+ if(TextSize < (size - 0x800))
+  throw(MDFN_Error(0, "Text section recorded size is smaller than data available in file.  Header=0x%08x, Available=0x%08x", TextSize, size - 0x800));*/
+
+ if(!TextMem.size())
+ {
+  TextMem_Start = TextStart;
+  TextMem.resize(TextSize);
+ }
+
+ if(TextStart < TextMem_Start)
+ {
+  uint32 old_size = TextMem.size();
+
+  //printf("RESIZE: 0x%08x\n", TextMem_Start - TextStart);
+
+  TextMem.resize(old_size + TextMem_Start - TextStart);
+  memmove(&TextMem[TextMem_Start - TextStart], &TextMem[0], old_size);
+
+  TextMem_Start = TextStart;
+ }
+
+ if(TextMem.size() < (TextStart - TextMem_Start + TextSize))
+  TextMem.resize(TextStart - TextMem_Start + TextSize);
+
+ memcpy(&TextMem[TextStart - TextMem_Start], data + 0x800, TextSize);
+
+
+ //
+ //
+ //
+
+ // BIOS patch
+ BIOSROM->WriteU32(0x6990, (3 << 26) | ((0xBF001000 >> 2) & ((1 << 26) - 1)));
+// BIOSROM->WriteU32(0x691C, (3 << 26) | ((0xBF001000 >> 2) & ((1 << 26) - 1)));
+
+// printf("INSN: 0x%08x\n", BIOSROM->ReadU32(0x6990));
+// exit(1);
+ uint8 *po;
+
+ po = &PIOMem->data8[0x0800];
+
+ MDFN_en32lsb(po, (0x0 << 26) | (31 << 21) | (0x8 << 0));	// JR
+ po += 4;
+ MDFN_en32lsb(po, 0);	// NOP(kinda)
+ po += 4;
+
+ po = &PIOMem->data8[0x1000];
+
+ // Load cacheable-region target PC into r2
+ MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16) | (0x9F001010 >> 16));      // LUI
+ po += 4;
+ MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (2 << 16) | (0x9F001010 & 0xFFFF));   // ORI
+ po += 4;
+
+ // Jump to r2
+ MDFN_en32lsb(po, (0x0 << 26) | (2 << 21) | (0x8 << 0));	// JR
+ po += 4;
+ MDFN_en32lsb(po, 0);	// NOP(kinda)
+ po += 4;
+
+ //
+ // 0x9F001010:
+ //
+
+ // Load source address into r8
+ uint32 sa = 0x9F000000 + 65536;
+ MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16) | (sa >> 16));	// LUI
+ po += 4;
+ MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (8 << 16) | (sa & 0xFFFF)); 	// ORI
+ po += 4;
+
+ // Load dest address into r9
+ MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (TextMem_Start >> 16));	// LUI
+ po += 4;
+ MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (9 << 16) | (TextMem_Start & 0xFFFF)); 	// ORI
+ po += 4;
+
+ // Load size into r10
+ MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (TextMem.size() >> 16));	// LUI
+ po += 4;
+ MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (10 << 16) | (TextMem.size() & 0xFFFF)); 	// ORI
+ po += 4;
+
+ //
+ // Loop begin
+ //
+ 
+ MDFN_en32lsb(po, (0x24 << 26) | (8 << 21) | (1 << 16));	// LBU to r1
+ po += 4;
+
+ MDFN_en32lsb(po, (0x08 << 26) | (10 << 21) | (10 << 16) | 0xFFFF);	// Decrement size
+ po += 4;
+
+ MDFN_en32lsb(po, (0x28 << 26) | (9 << 21) | (1 << 16));	// SB from r1
+ po += 4;
+
+ MDFN_en32lsb(po, (0x08 << 26) | (8 << 21) | (8 << 16) | 0x0001);	// Increment source addr
+ po += 4;
+
+ MDFN_en32lsb(po, (0x05 << 26) | (0 << 21) | (10 << 16) | (-5 & 0xFFFF));
+ po += 4;
+ MDFN_en32lsb(po, (0x08 << 26) | (9 << 21) | (9 << 16) | 0x0001);	// Increment dest addr
+ po += 4;
+
+ //
+ // Loop end
+ //
+
+ // Load SP into r29
+ if(ignore_pcsp)
+ {
+  po += 16;
+ }
+ else
+ {
+  MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (SP >> 16));	// LUI
+  po += 4;
+  MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (29 << 16) | (SP & 0xFFFF)); 	// ORI
+  po += 4;
+
+  // Load PC into r2
+  MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | ((PC >> 16) | 0x8000));      // LUI
+  po += 4;
+  MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (2 << 16) | (PC & 0xFFFF));   // ORI
+  po += 4;
+ }
+
+ // Half-assed instruction cache flush. ;)
+ for(unsigned i = 0; i < 1024; i++)
+ {
+  MDFN_en32lsb(po, 0);
+  po += 4;
+ }
+
+
+
+ // Jump to r2
+ MDFN_en32lsb(po, (0x0 << 26) | (2 << 21) | (0x8 << 0));	// JR
+ po += 4;
+ MDFN_en32lsb(po, 0);	// NOP(kinda)
+ po += 4;
 }
+
+EW_EXPORT s32 shock_MountEXE(void* psx, void* exebuf, int size)
+{
+	LoadEXE((uint8*)exebuf, (uint32)size);
+	return SHOCK_OK;
+}
+
 
 #ifdef WANT_PSF
 PSF1Loader::PSF1Loader(MDFNFILE *fp)
@@ -1743,72 +1753,6 @@ void PSF1Loader::HandleEXE(const uint8 *data, uint32 size, bool ignore_pcsp)
  LoadEXE(data, size, ignore_pcsp);
 }
 #endif
-
-//static void Cleanup(void);
-//static int Load(MDFNFILE *fp)
-//{
-// try
-// {
-//  const bool IsPSF = PSFLoader::TestMagic(0x01, fp);
-//
-//  if(!TestMagic(fp))
-//   throw MDFN_Error(0, _("File format is unknown to module \"%s\"."), MDFNGameInfo->shortname);
-//
-//// For testing.
-//#if 0
-//  #warning "GREMLINS GREMLINS EVERYWHEREE IYEEEEEE"
-//  #warning "Seriously, GREMLINS!  Or peanut butter.  Or maybe...DINOSAURS."
-//
-//  static std::vector<CDIF *> CDInterfaces;
-//
-//  //CDInterfaces.push_back(CDIF_Open("/home/sarah-projects/psxdev/tests/cd/adpcm.cue", false, false));
-//  //CDInterfaces.push_back(CDIF_Open("/extra/games/PSX/Tony Hawk's Pro Skater 2 (USA)/Tony Hawk's Pro Skater 2 (USA).cue", false, false));
-//  //CDInterfaces.push_back(CDIF_Open("/extra/games/PSX/Jumping Flash! (USA)/Jumping Flash! (USA).cue", false, false));
-//  //CDInterfaces.push_back(CDIF_Open("/extra/games/PC-FX/Blue Breaker.cue", false, false));
-//  CDInterfaces.push_back(CDIF_Open("/dev/cdrom2", true, false));
-//  InitCommon(&CDInterfaces, !IsPSF, true);
-//#else
-//  InitCommon(NULL, !IsPSF, true);
-//#endif
-//
-//  TextMem.resize(0);
-//
-//  if(IsPSF)
-//  {
-//   psf_loader = new PSF1Loader(fp);
-//
-//   std::vector<std::string> SongNames;
-//
-//   SongNames.push_back(psf_loader->tags.GetTag("title"));
-//
-//   Player_Init(1, psf_loader->tags.GetTag("game"), psf_loader->tags.GetTag("artist"), psf_loader->tags.GetTag("copyright"), SongNames);
-//  }
-//  else
-//   LoadEXE(fp->data, fp->size);
-// }
-// catch(std::exception &e)
-// {
-//  Cleanup();
-//  throw;
-// }
-//
-// return(1);
-//}
-
-//static void LoadCD(std::vector<CDIF *> *CDInterfaces)
-//{
-// try
-// {
-//  InitCommon(CDInterfaces);
-//
-//  MDFNGameInfo->GameType = GMT_CDROM;
-// }
-// catch(std::exception &e)
-// {
-//  Cleanup();
-//  throw;
-// }
-//}
 
 static void Cleanup(void)
 {
