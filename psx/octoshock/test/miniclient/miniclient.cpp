@@ -310,6 +310,7 @@ int main(int argc, char **argv)
 	shock_OpenTray(psx);
 	shock_SetDisc(psx,bin.disc);
 	shock_CloseTray(psx);
+	shock_Peripheral_Connect(psx,0x01,ePeripheralType_DualShock);
 	shock_PowerOn(psx);
 
 	int framectr = 0;

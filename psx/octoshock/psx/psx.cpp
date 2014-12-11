@@ -960,27 +960,6 @@ static void PSX_Power(void)
 {
  PSX_PRNG.ResetState();	// Should occur first!
 
-#if 0
- const uint32 counterer = 262144;
- uint64 averageizer = 0;
- uint32 maximizer = 0;
- uint32 minimizer = ~0U;
- for(int i = 0; i < counterer; i++)
- {
-  uint32 tmp = PSX_GetRandU32(0, 20000);
-  if(tmp < minimizer)
-   minimizer = tmp;
-
-  if(tmp > maximizer)
-   maximizer = tmp;
-
-  averageizer += tmp;
-  printf("%8u\n", tmp);
- }
- printf("Average: %f\nMinimum: %u\nMaximum: %u\n", (double)averageizer / counterer, minimizer, maximizer);
- exit(1);
-#endif
-
  memset(MainRAM.data32, 0, 2048 * 1024);
 
  for(unsigned i = 0; i < 9; i++)
@@ -1395,10 +1374,10 @@ struct {
 			buf[0] = (buttons>>0)&0xFF;
 			buf[1] = (buttons>>8)&0xFF;
 			buf[2] = (buttons>>16)&0xFF; //this is only the analog mode button
-			buf[3] = left_x;
-			buf[4] = left_y;
 			buf[3] = right_x;
 			buf[4] = right_y;
+			buf[5] = left_x;
+			buf[6] = left_y;
 			break;
 		}
 	}
@@ -1485,7 +1464,8 @@ EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
 	s_ShockConfig.lcm_width = givp.lcm_width;
 	s_ShockConfig.lcm_height = givp.lcm_height;
 	s_ShockConfig.fb_height = givp.fb_height;
-	s_ShockConfig.fb_width = givp.fb_width;
+	//s_ShockConfig.fb_width = givp.fb_width;
+	s_ShockConfig.fb_width = 800; //we're a bit sloppy right now.. use this to make sure theres adequate room for double-sizing a 400px wide screen
 	s_ShockConfig.fb_height = givp.fb_height;
 	s_ShockConfig.nominal_width = givp.nominal_width;
 	s_ShockConfig.nominal_height = givp.nominal_height;
@@ -1684,7 +1664,7 @@ void NormalizeFramebuffer()
 	if(width == 400 && height == 480) xs=2;
 	if(width == 560 && height == 480) {}
 	if(width == 700 && height == 480) {}
-	xm = (700-width*xs)/2;
+	xm = (800-width*xs)/2;
 
 	int curr = 0;
 
@@ -1716,7 +1696,7 @@ void NormalizeFramebuffer()
 
 	//2. double the width as needed. but always float it.
 	//note, theres nothing to be done here if the framebuffer is already wide enough
-	if(width != 700)
+	if(width != 800)
 	{
 		uint32* src = VTBuffer[curr]->pixels + (s_ShockConfig.fb_width*espec.DisplayRect.y) + espec.DisplayRect.x;
 		uint32* dst = VTBuffer[curr^1]->pixels;
@@ -1749,7 +1729,7 @@ void NormalizeFramebuffer()
 		}
 
 		//patch up the metrics
-		width = 700; //we floated the content horizontally, so this becomes the new width
+		width = 800; //we floated the content horizontally, so this becomes the new width
 		espec.DisplayRect.x = 0;
 		espec.DisplayRect.y = 0;
 		VTLineWidths[curr^1][0] = width;
