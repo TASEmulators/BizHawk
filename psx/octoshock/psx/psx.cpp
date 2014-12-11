@@ -1051,231 +1051,7 @@ static void Emulate(EmulateSpecStruct *espec)
   }
  }
 
- //DAW!!
- // Save memcards if dirty.
- //for(int i = 0; i < 8; i++)
- //{
- // uint64 new_dc = FIO->GetMemcardDirtyCount(i);
-
- // if(new_dc > Memcard_PrevDC[i])
- // {
- //  Memcard_PrevDC[i] = new_dc;
- //  Memcard_SaveDelay[i] = 0;
- // }
-
- // if(Memcard_SaveDelay[i] >= 0)
- // {
- //  Memcard_SaveDelay[i] += timestamp;
- //  if(Memcard_SaveDelay[i] >= (33868800 * 2))	// Wait until about 2 seconds of no new writes.
- //  {
- //   PSX_DBG(PSX_DBG_SPARSE, "Saving memcard %d...\n", i);
- //   try
- //   {
- //    char ext[64];
- //    trio_snprintf(ext, sizeof(ext), "%d.mcr", i);
- //    FIO->SaveMemcard(i, MDFN_MakeFName(MDFNMKF_SAV, 0, ext).c_str());
- //    Memcard_SaveDelay[i] = -1;
- //    Memcard_PrevDC[i] = 0;
- //   }
- //   catch(std::exception &e)
- //   {
- //    MDFN_PrintError("Memcard %d save error: %s", i, e.what());
- //    MDFN_DispMessage("Memcard %d save error: %s", i, e.what());
- //   }
- //   //MDFN_DispMessage("Memcard %d saved.", i);
- //  }
- // }
- //}
 }
-//
-//static bool TestMagic(MDFNFILE *fp)
-//{
-//#ifdef WANT_PSF
-// if(PSFLoader::TestMagic(0x01, fp))
-//  return(true);
-//#endif
-//
-// if(fp->size < 0x800)
-//  return(false);
-//
-// if(memcmp(fp->data, "PS-X EXE", 8))
-//  return(false);
-//
-// return(true);
-//}
-//
-//static bool TestMagicCD(std::vector<CDIF *> *CDInterfaces)
-//{
-// uint8 buf[2048];
-// CDUtility::TOC toc;
-// int dt;
-//
-// (*CDInterfaces)[0]->ReadTOC(&toc);
-//
-// dt = toc.FindTrackByLBA(4);
-// if(dt > 0 && !(toc.tracks[dt].control & 0x4))
-//  return(false);
-//
-// if((*CDInterfaces)[0]->ReadSector(buf, 4, 1) != 0x2)
-//  return(false);
-//
-// if(strncmp((char *)buf + 10, "Licensed  by", strlen("Licensed  by")))
-//  return(false);
-//
-// //if(strncmp((char *)buf + 32, "Sony", 4))
-// // return(false);
-//
-// //for(int i = 0; i < 2048; i++)
-// // printf("%d, %02x %c\n", i, buf[i], buf[i]);
-// //exit(1);
-//
-//#if 0
-// {
-//  uint8 buf[2048 * 7];
-//
-//  if((*cdifs)[0]->ReadSector(buf, 5, 7) == 0x2)
-//  {
-//   printf("CRC32: 0x%08x\n", (uint32)crc32(0, &buf[0], 0x3278));
-//  }
-// }
-//#endif
-//
-// return(true);
-//}
-
-//
-//
-//static const char *CalcDiscSCEx_BySYSTEMCNF(CDIF *c, unsigned *rr)
-//{
-// const char *ret = NULL;
-// Stream *fp = NULL;
-// CDUtility::TOC toc;
-//
-// //(*CDInterfaces)[disc]->ReadTOC(&toc);
-//
-// //if(toc.first_track > 1 || toc.
-//
-// try
-// {
-//  uint8 pvd[2048];
-//  unsigned pvd_search_count = 0;
-//
-//  fp = c->MakeStream(0, ~0U);
-//  fp->seek(0x8000, SEEK_SET);
-//
-//  do
-//  {
-//   if((pvd_search_count++) == 32)
-//    throw MDFN_Error(0, "PVD search count limit met.");
-//
-//   fp->read(pvd, 2048);
-//
-//   if(memcmp(&pvd[1], "CD001", 5))
-//    throw MDFN_Error(0, "Not ISO-9660");
-//
-//   if(pvd[0] == 0xFF)
-//    throw MDFN_Error(0, "Missing Primary Volume Descriptor");
-//  } while(pvd[0] != 0x01);
-//  //[156 ... 189], 34 bytes
-//  uint32 rdel = MDFN_de32lsb(&pvd[0x9E]);
-//  uint32 rdel_len = MDFN_de32lsb(&pvd[0xA6]);
-//
-//  if(rdel_len >= (1024 * 1024 * 10))	// Arbitrary sanity check.
-//   throw MDFN_Error(0, "Root directory table too large");
-//
-//  fp->seek((int64)rdel * 2048, SEEK_SET);
-//  //printf("%08x, %08x\n", rdel * 2048, rdel_len);
-//  while(fp->tell() < (((int64)rdel * 2048) + rdel_len))
-//  {
-//   uint8 len_dr = fp->get_u8();
-//   uint8 dr[256 + 1];
-//
-//   memset(dr, 0xFF, sizeof(dr));
-//
-//   if(!len_dr)
-//    break;
-//
-//   memset(dr, 0, sizeof(dr));
-//   dr[0] = len_dr;
-//   fp->read(dr + 1, len_dr - 1);
-//
-//   uint8 len_fi = dr[0x20];
-//
-//   if(len_fi == 12 && !memcmp(&dr[0x21], "SYSTEM.CNF;1", 12))
-//   {
-//    uint32 file_lba = MDFN_de32lsb(&dr[0x02]);
-//    //uint32 file_len = MDFN_de32lsb(&dr[0x0A]);
-//    uint8 fb[2048 + 1];
-//    char *bootpos;
-//
-//    memset(fb, 0, sizeof(fb));
-//    fp->seek(file_lba * 2048, SEEK_SET);
-//    fp->read(fb, 2048);
-//
-//    bootpos = strstr((char*)fb, "BOOT") + 4;
-//    while(*bootpos == ' ' || *bootpos == '\t') bootpos++;
-//    if(*bootpos == '=')
-//    {
-//     bootpos++;
-//     while(*bootpos == ' ' || *bootpos == '\t') bootpos++;
-//     if(!strncasecmp(bootpos, "cdrom:\\", 7))
-//     { 
-//      bootpos += 7;
-//      char *tmp;
-//
-//      if((tmp = strchr(bootpos, '_'))) *tmp = 0;
-//      if((tmp = strchr(bootpos, '.'))) *tmp = 0;
-//      if((tmp = strchr(bootpos, ';'))) *tmp = 0;
-//      //puts(bootpos);
-//
-//      if(strlen(bootpos) == 4 && bootpos[0] == 'S' && (bootpos[1] == 'C' || bootpos[1] == 'L' || bootpos[1] == 'I'))
-//      {
-//       switch(bootpos[2])
-//       {
-//	case 'E': if(rr)
-//		   *rr = REGION_EU;
-//		  ret = "SCEE";
-//		  goto Breakout;
-//
-//	case 'U': if(rr)
-//		   *rr = REGION_NA;
-//		  ret = "SCEA";
-//		  goto Breakout;
-//
-//	case 'K':	// Korea?
-//	case 'B':
-//	case 'P': if(rr)
-//		   *rr = REGION_JP;
-//		  ret = "SCEI";
-//		  goto Breakout;
-//       }
-//      }
-//     }
-//    }
-//  
-//    //puts((char*)fb);
-//    //puts("ASOFKOASDFKO");
-//   }
-//  }
-// }
-// catch(std::exception &e)
-// {
-//  //puts(e.what());
-// }
-// catch(...)
-// {
-//
-// }
-//
-// Breakout:
-// if(fp != NULL)
-// {
-//  delete fp;
-//  fp = NULL;
-// }
-//
-// return(ret);
-//}
 
 struct ShockConfig
 {
@@ -1310,6 +1086,8 @@ struct ShockPeripheral
 };
 
 struct {
+
+	//This is kind of redundant with the frontIO code, and should be merged with it eventually, when the configurability gets more advanced
 
 	ShockPeripheral ports[2];
 
@@ -1378,7 +1156,43 @@ struct {
 			buf[4] = right_y;
 			buf[5] = left_x;
 			buf[6] = left_y;
-			break;
+			return SHOCK_OK;
+		
+		default:
+			return SHOCK_ERROR;
+		}
+	}
+
+	s32 MemcardTransact(s32 address, ShockMemcardTransaction* transaction)
+	{
+		//check the port address
+		int portnum = address&1;
+		if(portnum != 1 && portnum != 2)
+			return SHOCK_INVALID_ADDRESS;
+		portnum--;
+
+		//TODO - once we get flexible here, do some extra condition checks.. whether memcards exist, etc. much like devices.
+		switch(transaction->transaction)
+		{
+			case eShockMemcardTransaction_Connect: return SHOCK_ERROR; //not supported yet
+			case eShockMemcardTransaction_Disconnect: return SHOCK_ERROR; //not supported yet
+
+			case eShockMemcardTransaction_Write:
+				FIO->MCPorts[portnum]->WriteNV((uint8*)transaction->buffer128k,0,128*1024);
+				return SHOCK_OK;
+
+			case eShockMemcardTransaction_Read:
+				FIO->MCPorts[portnum]->ReadNV((uint8*)transaction->buffer128k,0,128*1024);
+				FIO->MCPorts[portnum]->ResetNVDirtyCount();
+				return SHOCK_OK;
+
+			case eShockMemcardTransaction_CheckDirty:
+				if(FIO->GetMemcardDirtyCount(portnum))
+					return SHOCK_TRUE;
+				else return SHOCK_FALSE;
+
+			default:
+				return SHOCK_ERROR;
 		}
 	}
 
@@ -1392,6 +1206,11 @@ EW_EXPORT s32 shock_Peripheral_Connect(void* psx, s32 address, s32 type)
 EW_EXPORT s32 shock_Peripheral_SetPadInput(void* psx, s32 address, u32 buttons, u8 left_x, u8 left_y, u8 right_x, u8 right_y)
 {
 	return s_ShockPeripheralState.SetPadInput(address, buttons, left_x, left_y, right_x, right_y);
+}
+
+EW_EXPORT s32 shock_Peripheral_MemcardTransact(void* psx, s32 address, ShockMemcardTransaction* transaction)
+{
+	return s_ShockPeripheralState.MemcardTransact(address, transaction);
 }
 
 static void MountCPUAddressSpace()
@@ -1423,7 +1242,10 @@ static int s_FramebufferCurrentWidth;
 
 EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
 {
-	//NEW
+	//TODO
+ //psx_dbg_level = MDFN_GetSettingUI("psx.dbg_level");
+ //DBG_Init();
+	
 	*psx = NULL;
 
 	//PIO Mem: why wouldn't we want this?
@@ -1480,11 +1302,7 @@ EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
 		VTLineWidths[i] = (int *)calloc(s_ShockConfig.fb_height, sizeof(int));
 	}
 
-	
-	//TODO - configuration
-	static bool emulate_memcard[8] = {0};
-	static bool emulate_multitap[2] = {0};
-	FIO = new FrontIO(emulate_memcard, emulate_multitap);
+	FIO = new FrontIO();
 	s_ShockPeripheralState.Initialize();
 
 	MountCPUAddressSpace();
@@ -1791,155 +1609,6 @@ EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferInfo* fb)
 	}
 
 	return SHOCK_OK;
-}
-
-static void InitCommon(std::vector<CDIF *> *CDInterfaces, const bool EmulateMemcards = true, const bool WantPIOMem = false)
-{
-	//OLD
- unsigned region;
- bool emulate_memcard[8];
- bool emulate_multitap[2];
- int sls, sle;
-
-#if PSX_DBGPRINT_ENABLE
- psx_dbg_level = MDFN_GetSettingUI("psx.dbg_level");
-#endif
-
- //DAW
- /*for(unsigned i = 0; i < 8; i++)
- {
-  char buf[64];
-  trio_snprintf(buf, sizeof(buf), "psx.input.port%u.memcard", i + 1);
-  emulate_memcard[i] = EmulateMemcards && MDFN_GetSettingB(buf);
- }
-
- for(unsigned i = 0; i < 2; i++)
- {
-  char buf[64];
-  trio_snprintf(buf, sizeof(buf), "psx.input.pport%u.multitap", i + 1);
-  emulate_multitap[i] = MDFN_GetSettingB(buf);
- }*/
-
-
- //cdifs = CDInterfaces;
- //region = CalcDiscSCEx();
-
- if(shock_GetSetting(REGION_AUTODETECT)==0)
-  region = shock_GetSetting(REGION_DEFAULT);
-
- sls = shock_GetSetting((region == REGION_EU) ? SLSTARTP : SLSTART);
- sle = shock_GetSetting((region == REGION_EU) ? SLENDP : SLEND);
-
- if(sls > sle)
- {
-  int tmp = sls;
-  sls = sle;
-  sle = tmp;
- }
-
- CPU = new PS_CPU();
- SPU = new PS_SPU();
- GPU = new PS_GPU(region == REGION_EU, sls, sle);
- CDC = new PS_CDC();
- FIO = new FrontIO(emulate_memcard, emulate_multitap);
- 
- //dont think we want the crosshair drawing to be done here
- //FIO->SetCrosshairsColor(i, MDFN_GetSettingUI(buf));
-
- DMA_Init();
-
- //DAW
- //GPU->FillVideoParams(&EmulatedPSX);
-
- if(cdifs)
- {
-  CD_TrayOpen = false;
-  CD_SelectedDisc = 0;
- }
- else
- {
-  CD_TrayOpen = true;
-  CD_SelectedDisc = -1;
- }
-
- //CDC->SetDisc(true, NULL, NULL);
- //CDC->SetDisc(CD_TrayOpen, (CD_SelectedDisc >= 0 && !CD_TrayOpen) ? (*cdifs)[CD_SelectedDisc] : NULL,
-	//(CD_SelectedDisc >= 0 && !CD_TrayOpen) ? cdifs_scex_ids[CD_SelectedDisc] : NULL);
-
-
- BIOSROM = new MultiAccessSizeMem<512 * 1024, uint32, false>();
-
- if(WantPIOMem)
-  PIOMem = new MultiAccessSizeMem<65536, uint32, false>();
- else
-  PIOMem = NULL;
-
- for(uint32 ma = 0x00000000; ma < 0x00800000; ma += 2048 * 1024)
- {
-  CPU->SetFastMap(MainRAM.data32, 0x00000000 + ma, 2048 * 1024);
-  CPU->SetFastMap(MainRAM.data32, 0x80000000 + ma, 2048 * 1024);
-  CPU->SetFastMap(MainRAM.data32, 0xA0000000 + ma, 2048 * 1024);
- }
-
- CPU->SetFastMap(BIOSROM->data32, 0x1FC00000, 512 * 1024);
- CPU->SetFastMap(BIOSROM->data32, 0x9FC00000, 512 * 1024);
- CPU->SetFastMap(BIOSROM->data32, 0xBFC00000, 512 * 1024);
-
- if(PIOMem)
- {
-  CPU->SetFastMap(PIOMem->data32, 0x1F000000, 65536);
-  CPU->SetFastMap(PIOMem->data32, 0x9F000000, 65536);
-  CPU->SetFastMap(PIOMem->data32, 0xBF000000, 65536);
- }
-
-
- //MDFNMP_Init(1024, ((uint64)1 << 29) / 1024);
- //MDFNMP_AddRAM(2048 * 1024, 0x00000000, MainRAM.data8);
-
- //DAW-
- //TODO - load bios
- //
- //
- //
- //const char *biospath_sname;
-
- //if(region == REGION_JP)
- // biospath_sname = "psx.bios_jp";
- //else if(region == REGION_EU)
- // biospath_sname = "psx.bios_eu";
- //else if(region == REGION_NA)
- // biospath_sname = "psx.bios_na";
- //else
- // abort();
-
- //{
- // std::string biospath = MDFN_MakeFName(MDFNMKF_FIRMWARE, 0, MDFN_GetSettingS(biospath_sname).c_str());
- // FileStream BIOSFile(biospath.c_str(), FileStream::MODE_READ);
-
- // BIOSFile.read(BIOSROM->data8, 512 * 1024);
- //}
-
- //todo - load memcard
- //DAW
- //for(int i = 0; i < 8; i++)
- //{
- // char ext[64];
- // trio_snprintf(ext, sizeof(ext), "%d.mcr", i);
- // FIO->LoadMemcard(i, MDFN_MakeFName(MDFNMKF_SAV, 0, ext).c_str());
- //}
-
- for(int i = 0; i < 8; i++)
- {
-  Memcard_PrevDC[i] = FIO->GetMemcardDirtyCount(i);
-  Memcard_SaveDelay[i] = -1;
- }
-
-
- #ifdef WANT_DEBUGGER
- DBG_Init();
- #endif
-
- PSX_Power();
 }
 
 static void LoadEXE(const uint8 *data, const uint32 size, bool ignore_pcsp = false)

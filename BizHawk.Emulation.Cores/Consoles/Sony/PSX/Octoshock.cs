@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		isPorted: true,
 		isReleased: false
 		)]
-	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains
+	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam
 	{
 		public string SystemId { get { return "NULL"; } }
 
@@ -395,6 +395,44 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		}
 
 		#endregion
+
+		#region ISaveRam
+
+		public byte[] CloneSaveRam()
+		{
+			var buf = new byte[128 * 1024];
+			fixed (byte* pbuf = buf)
+			{
+				var transaction = new OctoshockDll.ShockMemcardTransaction();
+				transaction.buffer128k = pbuf;
+				transaction.transaction = OctoshockDll.eShockMemcardTransaction.Read;
+				OctoshockDll.shock_Peripheral_MemcardTransact(psx, 0x01, ref transaction);
+			}
+			return buf;
+		}
+
+		public void StoreSaveRam(byte[] data)
+		{
+			fixed (byte* pbuf = data)
+			{
+				var transaction = new OctoshockDll.ShockMemcardTransaction();
+				transaction.buffer128k = pbuf;
+				transaction.transaction = OctoshockDll.eShockMemcardTransaction.Write;
+				OctoshockDll.shock_Peripheral_MemcardTransact(psx, 0x01, ref transaction);
+			}
+		}
+
+		public bool SaveRamModified
+		{
+			get
+			{
+				var transaction = new OctoshockDll.ShockMemcardTransaction();
+				transaction.transaction = OctoshockDll.eShockMemcardTransaction.CheckDirty;
+				return OctoshockDll.shock_Peripheral_MemcardTransact(psx, 0x01, ref transaction) == OctoshockDll.SHOCK_TRUE;
+			}
+		}
+
+		#endregion //ISaveRam
 
 	}
 }
