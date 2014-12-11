@@ -27,17 +27,12 @@
 #include "error.h"
 #include "endian.h"
 
-//DAW
-//#include <mednafen/mempatcher.h>
-//#include <mednafen/player.h>
-
-#ifdef WANT_PSF
-#include <mednafen/PSFLoader.h>
-#endif
-
+//#include <mednafen/PSFLoader.h>
 
 #include <stdarg.h>
 #include <ctype.h>
+
+
 
 //extern MDFNGI EmulatedPSX;
 
@@ -995,64 +990,6 @@ void PSX_GPULineHook(const pscpu_timestamp_t timestamp, const pscpu_timestamp_t 
 
 using namespace MDFN_IEN_PSX;
 
-
-static void Emulate(EmulateSpecStruct *espec)
-{
- pscpu_timestamp_t timestamp = 0;
-
- if(FIO->RequireNoFrameskip())
- {
-  //puts("MEOW");
-  espec->skip = false;	//TODO: Save here, and restore at end of Emulate() ?
- }
-
- //DAW
- //MDFNGameInfo->mouse_sensitivity = MDFN_GetSettingF("psx.input.mouse_sensitivity");
-
- //MDFNMP_ApplyPeriodicCheats();
-
-
- espec->MasterCycles = 0;
- espec->SoundBufSize = 0;
-
- FIO->UpdateInput();
- GPU->StartFrame(psf_loader ? NULL : espec);
- SPU->StartFrame(espec->SoundRate, 0);
-
- Running = -1;
- timestamp = CPU->Run(timestamp, psf_loader != NULL);
-
- assert(timestamp);
-
- ForceEventUpdates(timestamp);
- if(GPU->GetScanlineNum() < 100)
-  PSX_DBG(PSX_DBG_ERROR, "[BUUUUUUUG] Frame timing end glitch; scanline=%u, st=%u\n", GPU->GetScanlineNum(), timestamp);
-
- //printf("scanline=%u, st=%u\n", GPU->GetScanlineNum(), timestamp);
-
- espec->SoundBufSize = SPU->EndFrame(espec->SoundBuf);
-
- CDC->ResetTS();
- TIMER_ResetTS();
- DMA_ResetTS();
- GPU->ResetTS();
- FIO->ResetTS();
-
- RebaseTS(timestamp);
-
- espec->MasterCycles = timestamp;
-
- if(psf_loader)
- {
-  if(!espec->skip)
-  {
-   espec->LineWidths[0] = ~0;
-   //Player_Draw(espec->surface, &espec->DisplayRect, 0, espec->SoundBuf, espec->SoundBufSize);
-  }
- }
-
-}
-
 struct ShockConfig
 {
 	// multires is a hint that, if set, indicates that the system has fairly programmable video modes(particularly, the ability
@@ -1355,8 +1292,6 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 
 	pscpu_timestamp_t timestamp = 0;
 
-	//MDFNMP_ApplyPeriodicCheats(); //TODO
-
 	memset(&espec, 0, sizeof(EmulateSpecStruct));
 
 	espec.VideoFormatChanged = true; //shouldnt do this every frame..
@@ -1366,16 +1301,22 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 	espec.soundmultiplier = 1.0;
 	espec.NeedRewind = false;
 
+	espec.MasterCycles = 0;
+
 	espec.SoundBufMaxSize = 1024*1024;
 	espec.SoundRate = 44100;
 	espec.SoundBuf = soundbuf;
+	espec.SoundBufSize = 0;
 	espec.SoundVolume = 1.0;
 
 	//-------------------------
 
 	FIO->UpdateInput();
-	//GPU->StartFrame(psf_loader ? NULL : espec);
+	
+	//GPU->StartFrame(psf_loader ? NULL : espec); //a reminder that when we do psf, we will be telling the gpu not to draw
 	GPU->StartFrame(&espec);
+	
+	//not that it matters, but we may need to control this at some point
 	static const int ResampleQuality = 5;
 	SPU->StartFrame(espec.SoundRate, ResampleQuality); 
 
