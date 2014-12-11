@@ -1741,6 +1741,17 @@ void NormalizeFramebuffer()
 	s_FramebufferCurrent = curr;
 }
 
+EW_EXPORT s32 shock_GetSamples(void* buffer)
+{
+	//if buffer is NULL, user just wants to know how many samples, so dont do any copying
+	if(buffer != NULL)
+	{
+		memcpy(buffer,espec.SoundBuf,espec.SoundBufSize*4);
+	}
+
+	return espec.SoundBufSize;
+}
+
 EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferInfo* fb)
 {
 	//if user requires normalization, do it now
