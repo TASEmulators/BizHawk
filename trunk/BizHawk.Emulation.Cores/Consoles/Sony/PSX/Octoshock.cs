@@ -1,7 +1,6 @@
 ﻿//TODO hook up newer file ID stuff, think about how to combine it with the disc ID
 //TODO change display manager to not require 0xFF alpha channel set on videoproviders. check gdi+ and opengl! this will get us a speedup in some places
 //TODO Disc.Structure.Sessions[0].length_aba was 0
-//TODO disc lights
 
 using System;
 using System.Runtime.InteropServices;
@@ -215,7 +214,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			//  VirtualHeight = 240;
 			//}
 			//BUT-for now theyre normalized (NOTE: THIS MESSES UP THE ASPECT RATIOS)
-			VirtualWidth = 700;
+			VirtualWidth = 800;
 			VirtualHeight = 480;
 
 

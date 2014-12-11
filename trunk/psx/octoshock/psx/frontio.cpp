@@ -750,28 +750,28 @@ void FrontIO::SetInput(unsigned int port, const char *type, void *ptr)
   irq10_pulse_ts[port] = PSX_EVENT_MAXTS;
 
  //DAW
- //if(!strcmp(type, "gamepad") || !strcmp(type, "dancepad"))
+ if(!strcmp(type, "gamepad") || !strcmp(type, "dancepad"))
   Devices[port] = Device_Gamepad_Create();
- //else if(!strcmp(type, "dualanalog"))
- // Devices[port] = Device_DualAnalog_Create(false);
- //else if(!strcmp(type, "analogjoy"))
- // Devices[port] = Device_DualAnalog_Create(true);
- //else if(!strcmp(type, "dualshock"))
- //{
- // char name[256];
- // trio_snprintf(name, 256, _("DualShock on port %u"), port + 1);
- // Devices[port] = Device_DualShock_Create(std::string(name));
- //}
- //else if(!strcmp(type, "mouse"))
- // Devices[port] = Device_Mouse_Create();
- //else if(!strcmp(type, "negcon"))
- // Devices[port] = Device_neGcon_Create();
- //else if(!strcmp(type, "guncon"))
- // Devices[port] = Device_GunCon_Create();
- //else if(!strcmp(type, "justifier"))
- // Devices[port] = Device_Justifier_Create();
- //else
- // Devices[port] = new InputDevice();
+ else if(!strcmp(type, "dualanalog"))
+  Devices[port] = Device_DualAnalog_Create(false);
+ else if(!strcmp(type, "analogjoy"))
+  Devices[port] = Device_DualAnalog_Create(true);
+ else if(!strcmp(type, "dualshock"))
+ {
+  char name[256];
+  snprintf(name, 256, "DualShock on port %u", port + 1);
+  Devices[port] = Device_DualShock_Create(std::string(name));
+ }
+ else if(!strcmp(type, "mouse"))
+  Devices[port] = Device_Mouse_Create();
+ else if(!strcmp(type, "negcon"))
+  Devices[port] = Device_neGcon_Create();
+ else if(!strcmp(type, "guncon"))
+  Devices[port] = Device_GunCon_Create();
+ else if(!strcmp(type, "justifier"))
+  Devices[port] = Device_Justifier_Create();
+ else
+  Devices[port] = new InputDevice();
 
  //Devices[port]->SetCrosshairsColor(chair_colors[port]);
  DeviceData[port] = ptr;
