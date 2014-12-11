@@ -24,6 +24,16 @@ public unsafe static class OctoshockDll
 		Normalize = 1
 	}
 
+	public enum eMemType
+	{
+		MainRAM = 0, //2048K
+		BiosROM = 1, //512K
+		PIOMem = 2, //64K
+		GPURAM = 3, //512K
+		SPURAM = 4 //512K
+	};
+
+
 	public enum ePeripheralType
 	{
 		None = 0, //can be used to signify disconnection
@@ -126,5 +136,13 @@ public unsafe static class OctoshockDll
 	public static extern int shock_GetFramebuffer(IntPtr psx, ref ShockFramebufferInfo fb);
 
 	[DllImport("octoshock.dll")]
-	public static extern int shock_GetSamples(void* buffer);
+	public static extern int shock_GetSamples(IntPtr psx, void* buffer);
+
+	[DllImport("octoshock.dll")]
+	public static extern int shock_GetMemData(
+		IntPtr psx,
+		out IntPtr ptr, 
+		out int size,
+		[MarshalAs(UnmanagedType.I4)] eMemType memType
+		);
 }

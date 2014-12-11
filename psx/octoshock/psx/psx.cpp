@@ -1741,7 +1741,7 @@ void NormalizeFramebuffer()
 	s_FramebufferCurrent = curr;
 }
 
-EW_EXPORT s32 shock_GetSamples(void* buffer)
+EW_EXPORT s32 shock_GetSamples(void* psx, void* buffer)
 {
 	//if buffer is NULL, user just wants to know how many samples, so dont do any copying
 	if(buffer != NULL)
@@ -3155,4 +3155,21 @@ s32 ShockDiscRef::ReadLBA2048(s32 lba, void* dst2048)
 		memcpy(dst2048,xasector.form1.data2048,2048);
 
 	return sector.mode;
+}
+
+
+//Returns information about a memory buffer for peeking (main memory, spu memory, etc.)
+EW_EXPORT s32 shock_GetMemData(void* psx, void** ptr, s32* size, s32 memType)
+{
+	switch(memType)
+	{
+	case eMemType_MainRAM: *ptr = MainRAM.data8; *size = 2048*1024; break;
+	case eMemType_BiosROM: *ptr = BIOSROM->data8; *size = 512*1024; break;
+	case eMemType_PIOMem: *ptr = PIOMem->data8; *size = 64*1024; break;
+	case eMemType_GPURAM: *ptr = GPU->GPURAM; *size = 2*512*1024; break;
+	case eMemType_SPURAM: *ptr = SPU->SPURAM; *size = 512*1024; break;
+	default:
+		return SHOCK_ERROR;
+	}
+	return SHOCK_OK;
 }
