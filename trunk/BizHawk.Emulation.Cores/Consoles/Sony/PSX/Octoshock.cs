@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		isPorted: true,
 		isReleased: false
 		)]
-	public unsafe class Octoshock : IEmulator, IVideoProvider, ISoundProvider
+	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
 		public string SystemId { get { return "NULL"; } }
 
@@ -54,10 +54,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		private Random rand = new Random();
 		public CoreComm CoreComm { get; private set; }
 		public IVideoProvider VideoProvider { get { return this; } }
-		public ISoundProvider SoundProvider { get { return this; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(this, 735); } }
-		public bool StartAsyncSound() { return true; }
-		public void EndAsyncSound() { }
 
 		//we can only have one active core at a time, due to the lib being so static.
 		//so we'll track the current one here and detach the previous one whenever a new one is booted up.
@@ -315,6 +311,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				OctoshockDll.shock_GetFramebuffer(psx, ref fb);
 				//alpha channel is added in c++, right now. wish we didnt have to do it at all
 			}
+
+			fixed (short* samples = sbuff)
+			{
+				sbuffcontains = OctoshockDll.shock_GetSamples(null);
+				if (sbuffcontains * 2 > sbuff.Length) throw new InvalidOperationException("shock_GetSamples returned too many samples: " + sbuffcontains);
+				OctoshockDll.shock_GetSamples(samples);
+			}
 		}
 
 		public ControllerDefinition ControllerDefinition { get { return DualShockController; } }
@@ -338,8 +341,29 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return 0; } }
-		public void GetSamples(short[] samples) { }
-		public void DiscardSamples() { }
-		public int MaxVolume { get; set; }
+
+		#region ISoundProvider
+
+		private short[] sbuff = new short[1454*2]; //this is the most ive ever seen.. dont know why
+		private int sbuffcontains = 0;
+
+		public ISoundProvider SoundProvider { get { throw new InvalidOperationException(); } }
+		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
+		public bool StartAsyncSound() { return false; }
+		public void EndAsyncSound() { }
+
+		public void GetSamples(out short[] samples, out int nsamp)
+		{
+			samples = sbuff;
+			nsamp = sbuffcontains;
+		}
+
+		public void DiscardSamples()
+		{
+			sbuffcontains = 0;
+		}
+
+		#endregion
+
 	}
 }

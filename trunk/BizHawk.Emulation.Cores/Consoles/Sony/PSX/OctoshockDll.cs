@@ -124,4 +124,7 @@ public unsafe static class OctoshockDll
 
 	[DllImport("octoshock.dll")]
 	public static extern int shock_GetFramebuffer(IntPtr psx, ref ShockFramebufferInfo fb);
+
+	[DllImport("octoshock.dll")]
+	public static extern int shock_GetSamples(void* buffer);
 }

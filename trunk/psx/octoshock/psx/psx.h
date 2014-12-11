@@ -279,5 +279,8 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step);
 
 //Fetches the framebuffer. Can retrieve parameters (set the job ptr to NULL) or fill the provided job ptr with the framebuffer (make sure its big enough).
 //This helps us copy fewer times.
-//TODO - support pitch and color format conversion if needed
 EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferInfo* fb);
+
+//Returns the queued SPU output (usually ~737 samples per frame) as the normal 16bit interleaved stereo format
+//The size of the queue will be returned. Make sure your buffer can handle it. Pass NULL just to get the required size.
+EW_EXPORT s32 shock_GetSamples(void* buffer);
