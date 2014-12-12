@@ -27,6 +27,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		isPorted: false,
 		isReleased: true
 		)]
+	[ServiceNotApplicable(typeof(IDriveLight))]
 	public sealed partial class SMS : IEmulator, IMemoryDomains, ISaveRam, IStatable, IInputPollable,
 		IDebuggable, ISettable<SMS.SMSSettings, SMS.SMSSyncSettings>
 	{

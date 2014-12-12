@@ -22,6 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		portedVersion: "SVN 344",
 		portedUrl: "http://gambatte.sourceforge.net/"
 		)]
+	[ServiceNotApplicable(typeof(IDriveLight))]
 	public class Gameboy : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IInputPollable,
 		IMemoryDomains, IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>
 	{

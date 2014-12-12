@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		isPorted: false,
 		isReleased: true
 		)]
-	[ServiceNotApplicable(typeof(ISaveRam))]
+	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
 	public sealed partial class ColecoVision : IEmulator, IMemoryDomains, IDebuggable, IInputPollable, IStatable, ISettable<object, ColecoVision.ColecoSyncSettings>
 	{
 		// ROM

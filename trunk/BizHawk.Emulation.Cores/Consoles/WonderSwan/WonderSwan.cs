@@ -87,6 +87,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		#endregion
 
 		[CoreConstructor("WSWAN")]
+		[ServiceNotApplicable(typeof(IDriveLight))]
 		public WonderSwan(CoreComm comm, byte[] file, bool deterministic, object Settings, object SyncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);

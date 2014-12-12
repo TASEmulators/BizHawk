@@ -22,6 +22,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		portedVersion: "0.7.0",
 		portedUrl: "https://github.com/kode54/QuickNES"
 		)]
+	[ServiceNotApplicable(typeof(IDriveLight))]
 	public class QuickNES : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IInputPollable,
 		IStatable, IDebuggable, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>
 	{
