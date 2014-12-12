@@ -1573,119 +1573,105 @@ void PS_GPU::StartFrame(EmulateSpecStruct *espec_arg)
  }
 }
 
-int PS_GPU::StateAction(StateMem *sm, int load, int data_only)
+SYNCFUNC(PS_GPU)
 {
- SFORMAT StateRegs[] =
- {
-  SFARRAY16(&GPURAM[0][0], sizeof(GPURAM) / sizeof(GPURAM[0][0])),
+	NSS(GPURAM);
 
-  SFVAR(DMAControl),
+  NSS(DMAControl);
 
-  SFVAR(ClipX0),
-  SFVAR(ClipY0),
-  SFVAR(ClipX1),
-  SFVAR(ClipY1),
+  NSS(ClipX0);
+  NSS(ClipY0);
+  NSS(ClipX1);
+  NSS(ClipY1);
 
-  SFVAR(OffsX),
-  SFVAR(OffsY),
+  NSS(OffsX);
+  NSS(OffsY);
 
-  SFVAR(dtd),
-  SFVAR(dfe),
+  NSS(dtd);
+  NSS(dfe);
 
-  SFVAR(MaskSetOR),
-  SFVAR(MaskEvalAND),
+  NSS(MaskSetOR);
+  NSS(MaskEvalAND);
 
-  SFVAR(tww),
-  SFVAR(twh),
-  SFVAR(twx),
-  SFVAR(twy),
+  NSS(tww);
+  NSS(twh);
+  NSS(twx);
+  NSS(twy);
 
-  SFVAR(TexPageX),
-  SFVAR(TexPageY),
+  NSS(TexPageX);
+  NSS(TexPageY);
 
-  SFVAR(SpriteFlip),
+  NSS(SpriteFlip);
 
-  SFVAR(abr),
-  SFVAR(TexMode),
+  NSS(abr);
+  NSS(TexMode);
 
-  SFARRAY32(&BlitterFIFO.data[0], BlitterFIFO.data.size()),
-  SFVAR(BlitterFIFO.read_pos),
-  SFVAR(BlitterFIFO.write_pos),
-  SFVAR(BlitterFIFO.in_count),
+	SSS(BlitterFIFO);
 
-  SFVAR(DataReadBuffer),
+  NSS(DataReadBuffer);
 
-  SFVAR(IRQPending),
+  NSS(IRQPending);
 
-  SFVAR(InCmd),
-  SFVAR(InCmd_CC),
+  NSS(InCmd);
+  NSS(InCmd_CC);
 
-#define TVHELPER(n)	SFVAR(n.x), SFVAR(n.y), SFVAR(n.u), SFVAR(n.v), SFVAR(n.r), SFVAR(n.g), SFVAR(n.b)
-  TVHELPER(InQuad_F3Vertices[0]),
-  TVHELPER(InQuad_F3Vertices[1]),
-  TVHELPER(InQuad_F3Vertices[2]),
-#undef TVHELPER
-  SFVAR(InQuad_clut),
+	NSS(InQuad_F3Vertices);
 
-  SFVAR(InPLine_PrevPoint.x),
-  SFVAR(InPLine_PrevPoint.y),
-  SFVAR(InPLine_PrevPoint.r),
-  SFVAR(InPLine_PrevPoint.g),
-  SFVAR(InPLine_PrevPoint.b),
+  NSS(InQuad_clut);
 
-  SFVAR(FBRW_X),
-  SFVAR(FBRW_Y),
-  SFVAR(FBRW_W),
-  SFVAR(FBRW_H),
-  SFVAR(FBRW_CurY),
-  SFVAR(FBRW_CurX),
+  NSS(InPLine_PrevPoint);
 
-  SFVAR(DisplayMode),
-  SFVAR(DisplayOff),
-  SFVAR(DisplayFB_XStart),
-  SFVAR(DisplayFB_YStart),
+  NSS(FBRW_X);
+  NSS(FBRW_Y);
+  NSS(FBRW_W);
+  NSS(FBRW_H);
+  NSS(FBRW_CurY);
+  NSS(FBRW_CurX);
 
-  SFVAR(HorizStart),
-  SFVAR(HorizEnd),
+  NSS(DisplayMode);
+  NSS(DisplayOff);
+  NSS(DisplayFB_XStart);
+  NSS(DisplayFB_YStart);
 
-  SFVAR(VertStart),
-  SFVAR(VertEnd),
+  NSS(HorizStart);
+  NSS(HorizEnd);
 
-  SFVAR(DisplayFB_CurYOffset),
-  SFVAR(DisplayFB_CurLineYReadout),
+  NSS(VertStart);
+  NSS(VertEnd);
 
-  SFVAR(InVBlank),
+  NSS(DisplayFB_CurYOffset);
+  NSS(DisplayFB_CurLineYReadout);
 
-  SFVAR(LinesPerField),
-  SFVAR(scanline),
-  SFVAR(field),
-  SFVAR(field_ram_readout),
-  SFVAR(PhaseChange),
+  NSS(InVBlank);
 
-  SFVAR(DotClockCounter),
+  NSS(LinesPerField);
+  NSS(scanline);
+  NSS(field);
+  NSS(field_ram_readout);
+  NSS(PhaseChange);
 
-  SFVAR(GPUClockCounter),
-  SFVAR(LineClockCounter),
-  SFVAR(LinePhase),
+  NSS(DotClockCounter);
 
-  SFVAR(DrawTimeAvail),
+  NSS(GPUClockCounter);
+  NSS(LineClockCounter);
+  NSS(LinePhase);
 
-  SFEND
- };
- int ret = MDFNSS_StateAction(sm, load, data_only, StateRegs, "GPU");
+  NSS(DrawTimeAvail);
 
- if(load)
- {
-  RecalcTexWindowLUT();
-  BlitterFIFO.SaveStatePostLoad();
+	if(isReader)
+	{
+		//cached luts; safe not to sync
+		RecalcTexWindowLUT();
 
-  HorizStart &= 0xFFF;
-  HorizEnd &= 0xFFF;
+		//what the hell is this? I dont like it at all.
+		HorizStart &= 0xFFF;
+		HorizEnd &= 0xFFF;
 
-  IRQ_Assert(IRQ_GPU, IRQPending);
- }
+		//this is kind of typical stuff, BUT: a cursory inspection reveals nothing. the IRQ and CPU modules should be handling it OK
+		//LOOK HERE FOR BUGS
+		IRQ_Assert(IRQ_GPU, IRQPending);
+	}
 
- return(ret);
 }
 
 }

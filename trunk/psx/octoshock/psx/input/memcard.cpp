@@ -41,7 +41,7 @@ class InputDevice_Memcard : public InputDevice
 
  virtual void Power(void);
  virtual int StateAction(StateMem* sm, int load, int data_only, const char* section_name);
-
+ virtual void SyncState(bool isReader, EW::NewState *ns);
  //
  //
  //
@@ -160,6 +160,38 @@ void InputDevice_Memcard::Power(void)
  addr = 0;
 
  presence_new = true;
+}
+
+void InputDevice_Memcard::SyncState(bool isReader, EW::NewState *ns)
+{
+	NSS(presence_new);
+
+	NSS(rw_buffer);
+	NSS(write_xor);
+
+	NSS(dtr);
+	NSS(command_phase);
+	NSS(bitpos);
+	NSS(receive_buffer);
+
+	NSS(command);
+	NSS(addr);
+	NSS(calced_xor);
+
+	NSS(transmit_buffer);
+	NSS(transmit_count);
+
+	NSS(data_used);
+
+	//(now there was logic to avoid savestating cards that had never been used. only needed if we have a pool of cards)
+	//(also it called Format() but I dont see how that makes sense at all and anyway I'm ignoring it)
+
+	//now for the BIG QUESTION, regarding clobber's lament.
+	//we need to dump the contents of the card along with the register state. its necessary for safety.
+	//HOWEVER - we clear the dirty flag. that way, a user wont accidentally `clobber` his savestates when loading a state.
+	//instead, the state will only be dirtied when the game actually modifies the contents
+	NSS(card_data);
+	dirty_count = 0;
 }
 
 int InputDevice_Memcard::StateAction(StateMem* sm, int load, int data_only, const char* section_name)

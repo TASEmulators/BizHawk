@@ -777,44 +777,14 @@ uint32 DMA_Read(const pscpu_timestamp_t timestamp, uint32 A)
  return(ret);
 }
 
-
-int DMA_StateAction(StateMem *sm, int load, int data_only)
+void DMA_SyncState(bool isReader, EW::NewState *ns)
 {
- SFORMAT StateRegs[] =
- {
-  SFVAR(DMACycleCounter),
-  SFVAR(DMAControl),
-  SFVAR(DMAIntControl),
-  SFVAR(DMAIntStatus),
-  SFVAR(IRQOut),
-
-#define SFDMACH(n)	SFVARN(DMACH[n].BaseAddr, #n "BaseAddr"),		\
-			SFVARN(DMACH[n].BlockControl, #n "BlockControl"),	\
-			SFVARN(DMACH[n].ChanControl, #n "ChanControl"),		\
-			SFVARN(DMACH[n].CurAddr, #n "CurAddr"),			\
-			SFVARN(DMACH[n].WordCounter, #n "WordCounter"),		\
-			SFVARN(DMACH[n].ClockCounter, #n "ClockCounter")
-
-  SFDMACH(0),
-  SFDMACH(1),
-  SFDMACH(2),
-  SFDMACH(3),
-  SFDMACH(4),
-  SFDMACH(5),
-  SFDMACH(6),
-
-#undef SFDMACH
-
-  SFEND
- };
- int ret = MDFNSS_StateAction(sm, load, data_only, StateRegs, "DMA");
-
- if(load)
- {
-
- }
-
- return(ret);
+  NSS(DMACycleCounter);
+  NSS(DMAControl);
+  NSS(DMAIntControl);
+  NSS(DMAIntStatus);
+  NSS(IRQOut);
+	NSS(DMACH);
 }
 
 

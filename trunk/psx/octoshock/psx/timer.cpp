@@ -446,34 +446,11 @@ void TIMER_Power(void)
  memset(Timers, 0, sizeof(Timers));
 }
 
-int TIMER_StateAction(StateMem *sm, int load, int data_only)
+void TIMER_SyncState(bool isReader, EW::NewState *ns)
 {
- SFORMAT StateRegs[] =
- {
-#define SFTIMER(n)	SFVARN(Timers[n].Mode, #n "Mode"),			\
-			SFVARN(Timers[n].Counter, #n "Counter"),		\
-			SFVARN(Timers[n].Target, #n "Target"),			\
-			SFVARN(Timers[n].Div8Counter, #n "Div8Counter"),	\
-			SFVARN(Timers[n].IRQDone, #n "IRQDone"),		\
-			SFVARN(Timers[n].DoZeCounting, #n "DoZeCounting")
-  SFTIMER(0),
-  SFTIMER(1),
-  SFTIMER(2),
-#undef SFTIMER
-
-  SFVAR(vblank),
-  SFVAR(hretrace),
-
-  SFEND
- };
- int ret = MDFNSS_StateAction(sm, load, data_only, StateRegs, "TIMER");
-
- if(load)
- {
-
- }
-
- return(ret);
+	NSS(Timers);
+  NSS(vblank);
+  NSS(hretrace);
 }
 
 uint32 TIMER_GetRegister(unsigned int which, char *special, const uint32 special_len)

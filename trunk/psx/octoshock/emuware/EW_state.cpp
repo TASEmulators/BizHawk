@@ -1,6 +1,8 @@
 #include "EW_state.h"
 #include <cstring>
 #include <algorithm>
+#include <stdarg.h>
+#include <stdio.h>
 
 namespace EW {
 
@@ -56,13 +58,37 @@ void NewStateExternalFunctions::Load(void *ptr, size_t size, const char *name)
 {
 	Load_(ptr, size, name);
 }
-void NewStateExternalFunctions::EnterSection(const char *name)
+
+void NewStateExternalFunctions::EnterSection(const char *name, ...)
 {
-	EnterSection_(name);
+	//analysis: multiple passes to generate string not ideal, but there arent many sections.. so it should be OK. improvement would be special vararg overload
+	va_list ap;
+	va_start(ap,name);
+	char easybuf[32];
+	int size = vsnprintf(easybuf,0,name,ap);
+	char *ptr = easybuf;
+	if(size>31)
+		ptr = (char*)malloc(size+1);
+	vsprintf(ptr,name,ap);
+	EnterSection_(ptr);
+	if(ptr != easybuf)
+		free(ptr);
+	va_end(ap);
 }
-void NewStateExternalFunctions::ExitSection(const char *name)
+void NewStateExternalFunctions::ExitSection(const char *name, ...)
 {
-	ExitSection_(name);
+	va_list ap;
+	va_start(ap,name);
+	char easybuf[32];
+	int size = vsnprintf(easybuf,0,name,ap);
+	char *ptr = easybuf;
+	if(size>31)
+		ptr = (char*)malloc(size+1);
+	vsprintf(ptr,name,ap);
+	ExitSection_(ptr);
+	if(ptr != easybuf)
+		free(ptr);
+	va_end(ap);
 }
 
 

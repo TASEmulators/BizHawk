@@ -12,8 +12,8 @@ namespace EW
 	public:
 		virtual void Save(const void *ptr, size_t size, const char *name) = 0;
 		virtual void Load(void *ptr, size_t size, const char *name) = 0;
-		virtual void EnterSection(const char *name) { }
-		virtual void ExitSection(const char *name) { }
+		virtual void EnterSection(const char *name, ...) { }
+		virtual void ExitSection(const char *name, ...) { }
 	};
 
 	class NewStateDummy : public NewState
@@ -62,8 +62,8 @@ namespace EW
 		NewStateExternalFunctions(const FPtrs *ff);
 		virtual void Save(const void *ptr, size_t size, const char *name);
 		virtual void Load(void *ptr, size_t size, const char *name);
-		virtual void EnterSection(const char *name);
-		virtual void ExitSection(const char *name);
+		virtual void EnterSection(const char *name, ...);
+		virtual void ExitSection(const char *name, ...);
 	};
 
 	// defines and explicitly instantiates 

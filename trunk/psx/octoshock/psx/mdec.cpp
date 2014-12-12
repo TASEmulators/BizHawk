@@ -164,64 +164,50 @@ void MDEC_Power(void)
  RAMOffsetWWS = 0;
 }
 
-int MDEC_StateAction(StateMem *sm, int load, int data_only)
+template<bool isReader> void MDEC_SyncState(EW::NewState *ns)
 {
- SFORMAT StateRegs[] =
- {
-  SFVAR(ClockCounter),
-  SFVAR(MDRPhase),
+	NSS(ClockCounter);
+	NSS(MDRPhase);
 
-#define SFFIFO32(fifoobj)  SFARRAY32(&fifoobj.data[0], fifoobj.data.size()),	\
-			 SFVAR(fifoobj.read_pos),				\
-			 SFVAR(fifoobj.write_pos),				\
-			 SFVAR(fifoobj.in_count)
+	SSS(InFIFO);
+	SSS(OutFIFO);
 
-  SFFIFO32(InFIFO),
-  SFFIFO32(OutFIFO),
-#undef SFFIFO
+  NSS(block_y);
+  NSS(block_cb);
+  NSS(block_cr);
 
-  SFARRAY(&block_y[0][0], sizeof(block_y) / sizeof(block_y[0][0])),
-  SFARRAY(&block_cb[0][0], sizeof(block_cb) / sizeof(block_cb[0][0])),
-  SFARRAY(&block_cr[0][0], sizeof(block_cr) / sizeof(block_cr[0][0])),
+  NSS(Control);
+  NSS(Command);
+  NSS(InCommand);
 
-  SFVAR(Control),
-  SFVAR(Command),
-  SFVAR(InCommand),
+  NSS(QMatrix);
+  NSS(QMIndex);
 
-  SFARRAY(&QMatrix[0][0], sizeof(QMatrix) / sizeof(QMatrix[0][0])),
-  SFVAR(QMIndex),
+  NSS(IDCTMatrix);
+  NSS(IDCTMIndex);
 
-  SFARRAY16(&IDCTMatrix[0], sizeof(IDCTMatrix) / sizeof(IDCTMatrix[0])),
-  SFVAR(IDCTMIndex),
+  NSS(QScale);
 
-  SFVAR(QScale),
+  NSS(Coeff);
+  NSS(CoeffIndex);
+  NSS(DecodeWB);
 
-  SFARRAY16(&Coeff[0], sizeof(Coeff) / sizeof(Coeff[0])),
-  SFVAR(CoeffIndex),
-  SFVAR(DecodeWB),
+  NSS(PixelBuffer);
+  NSS(PixelBufferReadOffset);
+  NSS(PixelBufferCount32);
 
-  SFARRAY32(&PixelBuffer.pix32[0], sizeof(PixelBuffer.pix32) / sizeof(PixelBuffer.pix32[0])),
-  SFVAR(PixelBufferReadOffset),
-  SFVAR(PixelBufferCount32),
+  NSS(InCounter);
 
-  SFVAR(InCounter),
+  NSS(RAMOffsetY);
+  NSS(RAMOffsetCounter);
+  NSS(RAMOffsetWWS);
 
-  SFVAR(RAMOffsetY),
-  SFVAR(RAMOffsetCounter),
-  SFVAR(RAMOffsetWWS),
+}
 
-  SFEND
- };
-
- int ret = MDFNSS_StateAction(sm, load, data_only, StateRegs, "MDEC");
-
- if(load)
- {
-  InFIFO.SaveStatePostLoad();
-  OutFIFO.SaveStatePostLoad();
- }
-
- return(ret);
+void MDEC_SyncState(bool isReader, EW::NewState *ns)
+{
+	if(isReader) MDEC_SyncState<true>(ns);
+	else MDEC_SyncState<false>(ns);
 }
 
 static INLINE int8 Mask9ClampS8(int32 v)

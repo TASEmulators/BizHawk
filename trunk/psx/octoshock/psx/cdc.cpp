@@ -215,99 +215,83 @@ void PS_CDC::Power(void)
  lastts = 0;
 }
 
-int PS_CDC::StateAction(StateMem *sm, int load, int data_only)
+SYNCFUNC(PS_CDC)
 {
- SFORMAT StateRegs[] =
- {
-  SFVAR(DiscChanged),
-  SFVAR(DiscStartupDelay),
+	NSS(DiscChanged);
+  NSS(DiscStartupDelay);
 
-  SFARRAY16(&AudioBuffer.Samples[0][0], sizeof(AudioBuffer.Samples) / sizeof(AudioBuffer.Samples[0][0])),
-  SFVAR(AudioBuffer.Size),
-  SFVAR(AudioBuffer.Freq),
-  SFVAR(AudioBuffer.ReadPos),
+  NSS(AudioBuffer);
 
-  SFARRAY(&Pending_DecodeVolume[0][0], 2 * 2),
-  SFARRAY(&DecodeVolume[0][0], 2 * 2),
+  NSS(Pending_DecodeVolume);
+  NSS(DecodeVolume);
 
-  SFARRAY16(&ADPCM_ResampBuf[0][0], sizeof(ADPCM_ResampBuf) / sizeof(ADPCM_ResampBuf[0][0])),
-  SFVAR(ADPCM_ResampCurPhase),
-  SFVAR(ADPCM_ResampCurPos),
+  NSS(ADPCM_ResampBuf);
+  NSS(ADPCM_ResampCurPhase);
+  NSS(ADPCM_ResampCurPos);
 
+  NSS(RegSelector);
+  NSS(ArgsBuf);
+  NSS(ArgsWP);
+  NSS(ArgsRP);
 
+  NSS(ArgsReceiveLatch);
+  NSS(ArgsReceiveBuf);
+  NSS(ArgsReceiveIn);
 
-  SFVAR(RegSelector),
-  SFARRAY(ArgsBuf, 16),
-  SFVAR(ArgsWP),
-  SFVAR(ArgsRP),
+  NSS(ResultsBuffer);
+  NSS(ResultsIn);
+  NSS(ResultsWP);
+  NSS(ResultsRP);
 
-  SFVAR(ArgsReceiveLatch),
-  SFARRAY(ArgsReceiveBuf, 32),
-  SFVAR(ArgsReceiveIn),
+	SSS(DMABuffer);
 
-  SFARRAY(ResultsBuffer, 16),
-  SFVAR(ResultsIn),
-  SFVAR(ResultsWP),
-  SFVAR(ResultsRP),
+  NSS(SB);
+  NSS(SB_In);
 
-  //
-  //
-  //
-  SFARRAY(&DMABuffer.data[0], DMABuffer.data.size()),
-  SFVAR(DMABuffer.read_pos),
-  SFVAR(DMABuffer.write_pos),
-  SFVAR(DMABuffer.in_count),
-  //
-  //
-  //
+  NSS(SectorPipe);
+  NSS(SectorPipe_Pos);
+  NSS(SectorPipe_In);
 
-  SFARRAY(SB, sizeof(SB) / sizeof(SB[0])),
-  SFVAR(SB_In),
+  NSS(SubQBuf);
+  NSS(SubQBuf_Safe);
 
-  SFARRAY(&SectorPipe[0][0], sizeof(SectorPipe) / sizeof(SectorPipe[0][0])),
-  SFVAR(SectorPipe_Pos),
-  SFVAR(SectorPipe_In),
+  NSS(SubQChecksumOK);
 
-  SFARRAY(SubQBuf, sizeof(SubQBuf) / sizeof(SubQBuf[0])),
-  SFARRAY(SubQBuf_Safe, sizeof(SubQBuf_Safe) / sizeof(SubQBuf_Safe[0])),
+  NSS(HeaderBufValid);
+  NSS(HeaderBuf);
 
-  SFVAR(SubQChecksumOK),
-
-  SFVAR(HeaderBufValid),
-  SFARRAY(HeaderBuf, sizeof(HeaderBuf) / sizeof(HeaderBuf[0])),
-
-  SFVAR(IRQBuffer),
-  SFVAR(IRQOutTestMask),
-  SFVAR(CDCReadyReceiveCounter),
+  NSS(IRQBuffer);
+  NSS(IRQOutTestMask);
+  NSS(CDCReadyReceiveCounter);
 
 
-  SFVAR(FilterFile),
-  SFVAR(FilterChan),
+  NSS(FilterFile);
+  NSS(FilterChan);
 
-  SFVAR(PendingCommand),
-  SFVAR(PendingCommandPhase),
-  SFVAR(PendingCommandCounter),
+  NSS(PendingCommand);
+  NSS(PendingCommandPhase);
+  NSS(PendingCommandCounter);
 
-  SFVAR(SPUCounter),
+  NSS(SPUCounter);
 
-  SFVAR(Mode),
-  SFVAR(DriveStatus),
-  SFVAR(StatusAfterSeek),
-  SFVAR(Forward),
-  SFVAR(Backward),
-  SFVAR(Muted),
+  NSS(Mode);
+  NSS(DriveStatus);
+  NSS(StatusAfterSeek);
+  NSS(Forward);
+  NSS(Backward);
+  NSS(Muted);
 
-  SFVAR(PlayTrackMatch),
+  NSS(PlayTrackMatch);
 
-  SFVAR(PSRCounter),
+  NSS(PSRCounter);
 
-  SFVAR(CurSector),
+  NSS(CurSector);
 
-  SFVAR(AsyncIRQPending),
-  SFARRAY(AsyncResultsPending, sizeof(AsyncResultsPending) / sizeof(AsyncResultsPending[0])),
-  SFVAR(AsyncResultsPendingCount),
+  NSS(AsyncIRQPending);
+  NSS(AsyncResultsPending);
+  NSS(AsyncResultsPendingCount);
 
-  SFVAR(SeekTarget),
+  NSS(SeekTarget);
 
  // FIXME: Save TOC stuff?
 #if 0
@@ -316,27 +300,17 @@ int PS_CDC::StateAction(StateMem *sm, int load, int data_only)
  uint8 DiscID[4];
 #endif
 
-  SFVAR(CommandLoc),
-  SFVAR(CommandLoc_Dirty),
-  SFARRAY16(&xa_previous[0][0], sizeof(xa_previous) / sizeof(xa_previous[0][0])),
+  NSS(CommandLoc);
+  NSS(CommandLoc_Dirty);
+  NSS(xa_previous);
 
-  SFVAR(xa_cur_set),
-  SFVAR(xa_cur_file),
-  SFVAR(xa_cur_chan),
+  NSS(xa_cur_set);
+  NSS(xa_cur_file);
+  NSS(xa_cur_chan);
 
-  SFVAR(ReportLastF),
+  NSS(ReportLastF);
 
-  SFEND
- };
-
- int ret = MDFNSS_StateAction(sm, load, data_only, StateRegs, "CDC");
-
- if(load)
- {
-  DMABuffer.SaveStatePostLoad();
-  SectorPipe_Pos %= SectorPipe_Count;
- }
- return(ret);
+	//(%= crap about file format recovery in case SectorPipe_Pos changes)
 }
 
 void PS_CDC::ResetTS(void)

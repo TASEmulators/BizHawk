@@ -53,6 +53,7 @@
     <ClInclude Include="..\cdrom\CDUtility.h" />
     <ClInclude Include="..\cdrom\dvdisaster.h" />
     <ClInclude Include="..\cdrom\lec.h" />
+    <ClInclude Include="..\cdrom\SimpleFIFO.h" />
     <ClInclude Include="..\emuware\emuware.h" />
     <ClInclude Include="..\emuware\EW_state.h" />
     <ClInclude Include="..\emuware\msvc\inttypes.h" />

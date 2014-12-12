@@ -58,6 +58,19 @@ int IRQ_StateAction(StateMem *sm, int load, int data_only)
 }
 
 
+void IRQ_SyncState(bool isReader, EW::NewState *ns)
+{
+  NSS(Asserted);
+  NSS(Mask);
+  NSS(Status);
+
+	//as usual, not sure why this is necessary
+	if(isReader)
+	{
+		Recalc();
+	}
+}
+
 void IRQ_Assert(int which, bool status)
 {
  uint32 old_Asserted = Asserted;

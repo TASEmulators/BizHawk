@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		isPorted: true,
 		isReleased: false
 		)]
-	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IDriveLight
+	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IStatable, IDriveLight
 	{
 		public string SystemId { get { return "PSX"; } }
 
@@ -213,7 +213,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				OctoshockDll.shock_Create(out psx, region, pFirmware);
 
 			SetMemoryDomains();
-			StudySaveBufferSize();
 
 			//these should track values in octoshock gpu.cpp FillVideoParams
 			//if (discInfo.region == OctoshockDll.eRegion.EU)
@@ -248,6 +247,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 					OctoshockDll.shock_MountEXE(psx, pExeBuffer, exe.Length);
 			}
 			OctoshockDll.shock_Peripheral_Connect(psx, 0x01, OctoshockDll.ePeripheralType.DualShock);
+
+			//do this after framebuffers and peripherals and whatever crap are setup. kind of lame, but thats how it is for now
+			StudySaveBufferSize();
+		
 			OctoshockDll.shock_PowerOn(psx);
 		}
 
@@ -503,7 +506,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			var transaction = new OctoshockDll.ShockStateTransaction()
 			{
 				transaction = OctoshockDll.eShockStateTransaction.TextLoad,
-				ff = s.GetFunctionPointersSave()
+				ff = s.GetFunctionPointersLoad()
 			};
 			
 			int result = OctoshockDll.shock_StateTransaction(psx, ref transaction);

@@ -99,6 +99,8 @@ class PS_SPU
  PS_SPU();
  ~PS_SPU();
 
+ template<bool isReader>void SyncState(EW::NewState *ns);
+
  int StateAction(StateMem *sm, int load, int data_only);
 
  void Power(void);

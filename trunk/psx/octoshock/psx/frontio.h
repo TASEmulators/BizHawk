@@ -15,6 +15,8 @@ class InputDevice
 
  virtual void Power(void);
  virtual void UpdateInput(const void *data);
+
+ virtual void SyncState(bool isReader, EW::NewState *ns) {}
  virtual int StateAction(StateMem* sm, int load, int data_only, const char* section_name);
 
  virtual bool RequireNoFrameskip(void);
@@ -60,6 +62,8 @@ class FrontIO
 
  FrontIO();
  ~FrontIO();
+
+ template<bool isReader>void SyncState(EW::NewState *ns);
 
  void Power(void);
  void Write(pscpu_timestamp_t timestamp, uint32 A, uint32 V);

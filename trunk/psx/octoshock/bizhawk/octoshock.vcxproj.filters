@@ -226,6 +226,9 @@
     <ClInclude Include="..\emuware\EW_state.h">
       <Filter>emuware</Filter>
     </ClInclude>
+    <ClInclude Include="..\cdrom\SimpleFIFO.h">
+      <Filter>cdrom</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\psx\gpu_command_table.inc">

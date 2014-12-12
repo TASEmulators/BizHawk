@@ -141,9 +141,10 @@ FrontIO::FrontIO()
 		MCPorts[i] = new InputDevice();
 	}
 
-	//always add one memory device for now
+	//always add one memory device for now 
+	delete MCPorts[0];
 	MCPorts[0] = Device_Memcard_Create();
-}
+} 
 
 
 FrontIO::~FrontIO()
@@ -623,6 +624,68 @@ uint64 FrontIO::GetMemcardDirtyCount(unsigned int which)
  assert(which < 2);
  
  return(MCPorts[which]->GetNVDirtyCount());
+}
+
+//TODO - ok, savestating varying input devices. this is tricky.
+//its like... what happens when the hardware unfreezes with different input attached? 
+//thats some kind of instantaneous change event which shouldnt/cant be properly emulated or likely even implemented
+//so in that respect it's very much like (if not identical to) CDs.
+//heres a discussion question. what are we doing here? savestating the CONSOLE or savestating the ENTIRE SYSTEM?
+//well, what's being emulated?
+//I dont know. lets save it for later.
+//You know, this is one reason mednafen had a distinction between ports and devices.
+//But I had to get rid of it, I just had to. At least they need to be organized into a pool differently somehow.
+
+//Anyway, think about this: We cant just savestate the entire system. The game will be depending on the input devices being in a certain state.
+//If theyre in any other state, literally, any other state, then the game will fail.
+//Therefore the entire system needs saving together and mismatches MUST NOT BE PERMITTED.
+
+SYNCFUNC(FrontIO)
+{
+	NSS(ClockDivider);
+
+	NSS(ReceivePending);
+	NSS(TransmitPending);
+
+	NSS(ReceiveInProgress);
+	NSS(TransmitInProgress);
+
+	NSS(ReceiveBufferAvail);
+
+	NSS(ReceiveBuffer);
+	NSS(TransmitBuffer);
+
+	NSS(ReceiveBitCounter);
+	NSS(TransmitBitCounter);
+
+	NSS(Mode);
+	NSS(Control);
+	NSS(Baudrate);
+
+	NSS(istatus);
+
+	// FIXME: Step mode save states.
+	NSS(irq10_pulse_ts);
+	NSS(dsr_pulse_delay);
+	NSS(dsr_active_until_ts);
+
+	//state actions for ports and such
+	for(int i=0;i<2;i++)
+	{
+		ns->EnterSection("PORT%d",i);
+		Ports[i]->SyncState(isReader,ns);
+		ns->ExitSection("PORT%d",i);
+		ns->EnterSection("MCPORT%d",i);
+		MCPorts[i]->SyncState(isReader,ns);
+		ns->ExitSection("MCPORT%d",i);
+	}
+
+	//more of this crap....
+	if(isReader)
+ {
+  IRQ_Assert(IRQ_SIO, istatus);
+ }
+
 }
 
 int FrontIO::StateAction(StateMem* sm, int load, int data_only)

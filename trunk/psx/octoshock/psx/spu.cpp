@@ -1160,147 +1160,61 @@ int32 PS_SPU::EndFrame(int16 *SoundBuf)
  }
 }
 
-int PS_SPU::StateAction(StateMem *sm, int load, int data_only)
+SYNCFUNC(PS_SPU)
 {
- SFORMAT StateRegs[] =
- {
-#define SFSWEEP(r) SFVAR((r).Control),	\
-		   SFVAR((r).Current),	\
-		   SFVAR((r).Divider)
+	NSS(Voices);
 
-#define SFVOICE(n) SFARRAY16(&Voices[n].DecodeBuffer[0], sizeof(Voices[n].DecodeBuffer) / sizeof(Voices[n].DecodeBuffer[0])),	\
-		   SFVAR(Voices[n].DecodeM2),											\
-		   SFVAR(Voices[n].DecodeM1),											\
-		   SFVAR(Voices[n].DecodePlayDelay),										\
-		   SFVAR(Voices[n].DecodeWritePos),										\
-		   SFVAR(Voices[n].DecodeReadPos),										\
-		   SFVAR(Voices[n].DecodeAvail),										\
-		   SFVAR(Voices[n].DecodeShift),										\
-		   SFVAR(Voices[n].DecodeWeight),										\
-		   SFVAR(Voices[n].DecodeFlags),										\
-		   SFVAR(Voices[n].IgnoreSampLA),										\
-																\
-		   SFSWEEP(Voices[n].Sweep[0]),											\
-		   SFSWEEP(Voices[n].Sweep[1]),											\
-																\
-		   SFVAR(Voices[n].Pitch),											\
-		   SFVAR(Voices[n].CurPhase),											\
-																\
-		   SFVAR(Voices[n].StartAddr),											\
-		   SFVAR(Voices[n].CurAddr),											\
-		   SFVAR(Voices[n].ADSRControl),										\
-		   SFVAR(Voices[n].LoopAddr),											\
-		   SFVAR(Voices[n].PreLRSample),										\
-																\
-		   SFVAR(Voices[n].ADSR.EnvLevel),										\
-		   SFVAR(Voices[n].ADSR.Divider),										\
-		   SFVAR(Voices[n].ADSR.Phase),											\
-																\
-		   SFVAR(Voices[n].ADSR.AttackExp),										\
-		   SFVAR(Voices[n].ADSR.SustainExp),										\
-		   SFVAR(Voices[n].ADSR.SustainDec),										\
-		   SFVAR(Voices[n].ADSR.ReleaseExp),										\
-																\
-		   SFVAR(Voices[n].ADSR.AttackRate),										\
-		   SFVAR(Voices[n].ADSR.DecayRate),										\
-		   SFVAR(Voices[n].ADSR.SustainRate),										\
-		   SFVAR(Voices[n].ADSR.ReleaseRate),										\
-																\
-		   SFVAR(Voices[n].ADSR.SustainLevel)
+  NSS(NoiseCounter);
+  NSS(LFSR);
 
-  SFVOICE(0),
-  SFVOICE(1),
-  SFVOICE(2),
-  SFVOICE(3),
-  SFVOICE(4),
-  SFVOICE(5),
-  SFVOICE(6),
-  SFVOICE(7),
-  SFVOICE(8),
-  SFVOICE(9),
-  SFVOICE(10),
-  SFVOICE(11),
-  SFVOICE(12),
-  SFVOICE(13),
-  SFVOICE(14),
-  SFVOICE(15),
-  SFVOICE(16),
-  SFVOICE(17),
-  SFVOICE(18),
-  SFVOICE(19),
-  SFVOICE(20),
-  SFVOICE(21),
-  SFVOICE(22),
-  SFVOICE(23),
-#undef SFVOICE
+  NSS(FM_Mode);
+  NSS(Noise_Mode);
+  NSS(Reverb_Mode);
 
-  SFVAR(NoiseCounter),
-  SFVAR(LFSR),
+  NSS(ReverbWA);
 
-  SFVAR(FM_Mode),
-  SFVAR(Noise_Mode),
-  SFVAR(Reverb_Mode),
+  NSS(GlobalSweep);
 
-  SFVAR(ReverbWA),
+  NSS(ReverbVol);
 
-  SFSWEEP(GlobalSweep[0]),
-  SFSWEEP(GlobalSweep[1]),
-
-  SFARRAY32(ReverbVol, sizeof(ReverbVol) / sizeof(ReverbVol[0])),
-
-  SFARRAY32(CDVol, sizeof(CDVol) / sizeof(CDVol[0])),
-  SFARRAY32(ExternVol, sizeof(ExternVol) / sizeof(ExternVol[0])),
+  NSS(CDVol);
+  NSS(ExternVol);
  
-  SFVAR(IRQAddr),
+  NSS(IRQAddr);
 
-  SFVAR(RWAddr),
+  NSS(RWAddr);
 
-  SFVAR(SPUControl),
+  NSS(SPUControl);
 
-  SFVAR(VoiceOn),
-  SFVAR(VoiceOff),
+  NSS(VoiceOn);
+  NSS(VoiceOff);
 
-  SFVAR(BlockEnd),
+  NSS(BlockEnd);
 
-  SFVAR(CWA),
+  NSS(CWA);
 
-  SFARRAY16(Regs, sizeof(Regs) / sizeof(Regs[0])),
-  SFARRAY16(AuxRegs, sizeof(AuxRegs) / sizeof(AuxRegs[0])),
+  NSS(Regs);
+  NSS(AuxRegs);
 
-  SFARRAY16(&RDSB[0][0], sizeof(RDSB) / sizeof(RDSB[0][0])),
-  SFVAR(RDSB_WP),
+  NSS(RDSB);
+  NSS(RDSB_WP);
 
-  SFARRAY16(&RUSB[0][0], sizeof(RUSB) / sizeof(RUSB[0][0])),
-  SFVAR(RUSB_WP),
+  NSS(RUSB);
+  NSS(RUSB_WP);
 
-  SFVAR(ReverbCur),
-  SFVAR(IRQAsserted),
+  NSS(ReverbCur);
+  NSS(IRQAsserted);
 
-  SFVAR(clock_divider),
+  NSS(clock_divider);
 
-  SFARRAY16(SPURAM, 524288 / sizeof(uint16)),
-  SFEND
- };
-#undef SFSWEEP
- int ret = 1;
+  NSS(SPURAM);
 
- ret &= MDFNSS_StateAction(sm, load, data_only, StateRegs, "SPU");
-
- if(load)
- {
-  for(unsigned i = 0; i < 24; i++)
-  {
-   Voices[i].DecodeReadPos &= 0x1F;
-   Voices[i].DecodeWritePos &= 0x1F;
-  }
-
-  RDSB_WP &= 0x3F;
-  RUSB_WP &= 0x3F;
-
-  IRQ_Assert(IRQ_SPU, IRQAsserted);
- }
-
- return(ret);
+	//if(isReader)
+	//{
+		//there was more weird crap here about controlling the range of variables. just sanity checks, I guess? to prevent crashes? no thanks, id rather have crashes alert me to nondeterminisms.
+		//and another thing like this, which I think makes no sense. I really need to test these.
+		IRQ_Assert(IRQ_SPU, IRQAsserted);
+	//}
 }
 
 uint16 PS_SPU::PeekSPURAM(uint32 address)

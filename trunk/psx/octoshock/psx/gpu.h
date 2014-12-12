@@ -42,6 +42,8 @@ class PS_GPU
  PS_GPU(bool pal_clock_and_tv, int sls, int sle) MDFN_COLD;
  ~PS_GPU() MDFN_COLD;
 
+ template<bool isReader>void SyncState(EW::NewState *ns);
+
  void FillVideoParams(MDFNGI* gi) MDFN_COLD;
 
  void Power(void) MDFN_COLD;
