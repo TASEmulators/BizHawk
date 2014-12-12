@@ -360,7 +360,10 @@ namespace BizHawk.Client.EmuHawk
 						Vector2 BS = new Vector2(bufferWidth, bufferHeight);
 						Vector2 AR = Vector2.Divide(VS, BS);
 						float target_par = (AR.X / AR.Y);
-						Vector2 PS = new Vector2(1, 1); //this would malfunction for AR <= 0.5 or AR >= 2.0
+
+						//this would malfunction for AR <= 0.5 or AR >= 2.0
+						//EDIT - in fact, we have AR like that coming from PSX, sometimes, so maybe we should solve this better
+						Vector2 PS = new Vector2(1, 1); 
 
 						//here's how we define zooming, in this case:
 						//make sure each step is an increment of zoom for at least one of the dimensions (or maybe both of them)
@@ -399,7 +402,9 @@ namespace BizHawk.Client.EmuHawk
 								}
 							}
 							//is it possible to get here without selecting one? doubtful.
-							PS = trials[bestIndex];
+							//EDIT: YES IT IS. it happened with an 0,0 buffer size. of course, that was a mistake, but we shouldnt crash
+							if(bestIndex != -1) //so, what now? well, this will result in 0,0 getting picked, so thats probably all we can do
+								PS = trials[bestIndex];
 						}
 
 						chain_outsize = new Size((int)(bufferWidth * PS.X), (int)(bufferHeight * PS.Y));
