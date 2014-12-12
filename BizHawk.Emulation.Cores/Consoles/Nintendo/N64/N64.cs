@@ -18,6 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		portedVersion: "2.0",
 		portedUrl: "https://code.google.com/p/mupen64plus/"
 		)]
+	[ServiceNotApplicable(typeof(IDriveLight))]
 	public partial class N64 : IEmulator, IMemoryDomains, ISaveRam, IDebuggable, IStatable, IInputPollable,
 		ISettable<N64Settings, N64SyncSettings>
 	{

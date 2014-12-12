@@ -14,6 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		isPorted: true,
 		isReleased: false
 		)]
+	[ServiceNotApplicable(typeof(IDriveLight))]
 	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, IMemoryDomains, ISaveRam, IDebuggable, IStatable, IInputPollable
 	{
 		public IDictionary<string, int> GetCpuFlagsAndRegisters()
