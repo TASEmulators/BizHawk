@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		isReleased: true
 		)]
 	public sealed partial class PCEngine : IEmulator, IMemoryDomains, ISaveRam, IStatable, IInputPollable,
-		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>
+		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>, IDriveLight
 	{
 		// ROM
 		public byte[] RomData;
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			CoreComm = comm;
 			Tracer = new TraceBuffer();
 			MemoryCallbacks = new MemoryCallbackSystem();
-			CoreComm.UsesDriveLed = true;
+			DriveLightEnabled = true;
 			systemid = "PCECD";
 			Type = NecSystemType.TurboCD;
 			this.disc = disc;
@@ -151,6 +151,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			CoreComm.RomStatusDetails = string.Format("{0}\r\nDisk partial hash:{1}", game.Name, disc.GetHash());
 			SetControllerButtons();
 		}
+
+		public bool DriveLightEnabled { get; private set; }
+		public bool DriveLightOn { get; internal set; }
 
 		void Init(GameInfo game, byte[] rom)
 		{
@@ -317,7 +320,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			lagged = true;
-			CoreComm.DriveLED = false;
+			DriveLightOn = false;
 			Frame++;
 			CheckSpriteLimit();
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);

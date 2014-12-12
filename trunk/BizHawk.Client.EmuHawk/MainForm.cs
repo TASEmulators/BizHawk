@@ -2422,14 +2422,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (MainStatusBar.Visible)
 			{
-				if (Global.Emulator.CoreComm.UsesDriveLed)
+				var hasDriveLight = Global.Emulator.HasDriveLight() && Global.Emulator.AsDriveLight().DriveLightEnabled;
+
+				if (hasDriveLight)
 				{
 					if (!LedLightStatusLabel.Visible)
 					{
 						LedLightStatusLabel.Visible = true;
 					}
 
-					LedLightStatusLabel.Image = Global.Emulator.CoreComm.DriveLED
+					LedLightStatusLabel.Image = Global.Emulator.AsDriveLight().DriveLightOn
 						? StatusBarDiskLightOnImage
 						: StatusBarDiskLightOffImage;
 				}

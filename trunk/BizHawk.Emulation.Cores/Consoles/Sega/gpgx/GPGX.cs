@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		portedUrl: "https://code.google.com/p/genplus-gx/"
 		)]
 	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, IMemoryDomains, ISaveRam, IStatable,
-		IInputPollable, IDebuggable, ISettable<GPGX.GPGXSettings, GPGX.GPGXSyncSettings>
+		IInputPollable, IDebuggable, ISettable<GPGX.GPGXSettings, GPGX.GPGXSyncSettings>, IDriveLight
 	{
 		static GPGX AttachedCore = null;
 
@@ -164,7 +164,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				LibGPGX.gpgx_set_input_callback(InputCallback);
 
 				if (CD != null)
-					CoreComm.UsesDriveLed = true;
+					DriveLightEnabled = true;
 
 				PutSettings((GPGXSettings)Settings ?? new GPGXSettings());
 
@@ -179,6 +179,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+
+		public bool DriveLightEnabled { get; private set;}
+		public bool DriveLightOn { get; private set; }
 
 		/// <summary>
 		/// core callback for file loading
@@ -430,7 +433,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				LagCount++;
 
 			if (CD != null)
-				CoreComm.DriveLED = drivelight;
+				DriveLightOn = drivelight;
 		}
 
 		public int Frame { get; private set; }

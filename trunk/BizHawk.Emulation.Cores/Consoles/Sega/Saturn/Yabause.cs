@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		portedUrl: "http://yabause.org"
 		)]
 	public class Yabause : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IStatable, IInputPollable,
-		ISettable<object, Yabause.SaturnSyncSettings>
+		ISettable<object, Yabause.SaturnSyncSettings>, IDriveLight
 	{
 		public static ControllerDefinition SaturnController = new ControllerDefinition
 		{
@@ -77,12 +77,15 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 			InputCallbackH = new LibYabause.InputCallback(() => InputCallbacks.Call());
 			LibYabause.libyabause_setinputcallback(InputCallbackH);
-			CoreComm.UsesDriveLed = true;
+			DriveLightEnabled = true;
 
 			DeactivateGL();
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+
+		public bool DriveLightEnabled { get; private set; }
+		public bool DriveLightOn { get; private set; }
 
 		static object glContext;
 
@@ -275,7 +278,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 			LibYabause.libyabause_setpads(p11, p12, p21, p22);
 
-			CoreComm.DriveLED = false;
+			DriveLightOn = false;
 
 			IsLagFrame = LibYabause.libyabause_frameadvance(out w, out h, out nsamp);
 			BufferWidth = w;
@@ -686,7 +689,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 				return 0; // failure
 			}
 			Marshal.Copy(data, 0, dest, 2352);
-			CoreComm.DriveLED = true;
+			DriveLightOn = true;
 			return 1; // success
 		}
 		/// <summary>
