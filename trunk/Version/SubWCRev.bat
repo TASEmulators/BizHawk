@@ -4,7 +4,7 @@ set TEMPFILE="%TEMP%\BIZBUILD-SVN-%RANDOM%-%RANDOM%-%RANDOM%-%RANDOM%"
 set SVNREV="%~1svnrev.cs"
 
 rem try generating svnrev from svn now. this will fail if svn is nonexistent, so...
-"%~1SubWCRev.exe" "%~1" "%~1svnrev_template" %TEMPFILE% > nul
+"%~1SubWCRev.exe" "%~1." "%~1svnrev_template" %TEMPFILE% > nul
 
 rem generate a svnrev with sed using no revision number, in case svn isnt available
 if not exist %TEMPFILE% (
