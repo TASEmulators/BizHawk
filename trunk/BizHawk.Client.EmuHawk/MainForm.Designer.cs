@@ -70,6 +70,8 @@
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.SaveToCurrentSlotMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LoadCurrentSlotMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SaveRAMSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.FlushSaveRAMMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			this.MovieSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.ReadonlyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -428,6 +430,7 @@
             this.SaveStateSubMenu,
             this.LoadStateSubMenu,
             this.SaveSlotSubMenu,
+            this.SaveRAMSubMenu,
             this.toolStripMenuItem2,
             this.MovieSubMenu,
             this.AVSubMenu,
@@ -443,7 +446,7 @@
 			// 
 			this.OpenRomMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.OpenRomMenuItem.Name = "OpenRomMenuItem";
-			this.OpenRomMenuItem.Size = new System.Drawing.Size(134, 22);
+			this.OpenRomMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.OpenRomMenuItem.Text = "Open ROM";
 			this.OpenRomMenuItem.Click += new System.EventHandler(this.OpenRomMenuItem_Click);
 			// 
@@ -453,7 +456,7 @@
             this.toolStripSeparator3});
 			this.RecentRomSubMenu.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
 			this.RecentRomSubMenu.Name = "RecentRomSubMenu";
-			this.RecentRomSubMenu.Size = new System.Drawing.Size(134, 22);
+			this.RecentRomSubMenu.Size = new System.Drawing.Size(152, 22);
 			this.RecentRomSubMenu.Text = "Recent ROM";
 			this.RecentRomSubMenu.DropDownOpened += new System.EventHandler(this.RecentRomMenuItem_DropDownOpened);
 			// 
@@ -466,14 +469,14 @@
 			// 
 			this.CloseRomMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Close;
 			this.CloseRomMenuItem.Name = "CloseRomMenuItem";
-			this.CloseRomMenuItem.Size = new System.Drawing.Size(134, 22);
+			this.CloseRomMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.CloseRomMenuItem.Text = "&Close ROM";
 			this.CloseRomMenuItem.Click += new System.EventHandler(this.CloseRomMenuItem_Click);
 			// 
 			// toolStripMenuItem1
 			// 
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(131, 6);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
 			// 
 			// SaveStateSubMenu
 			// 
@@ -491,7 +494,7 @@
             this.toolStripSeparator6,
             this.SaveNamedStateMenuItem});
 			this.SaveStateSubMenu.Name = "SaveStateSubMenu";
-			this.SaveStateSubMenu.Size = new System.Drawing.Size(134, 22);
+			this.SaveStateSubMenu.Size = new System.Drawing.Size(152, 22);
 			this.SaveStateSubMenu.Text = "Save State";
 			this.SaveStateSubMenu.DropDownOpened += new System.EventHandler(this.SaveStateSubMenu_DropDownOpened);
 			// 
@@ -595,7 +598,7 @@
             this.toolStripSeparator21,
             this.AutoloadLastSlotMenuItem});
 			this.LoadStateSubMenu.Name = "LoadStateSubMenu";
-			this.LoadStateSubMenu.Size = new System.Drawing.Size(134, 22);
+			this.LoadStateSubMenu.Size = new System.Drawing.Size(152, 22);
 			this.LoadStateSubMenu.Text = "Load State";
 			this.LoadStateSubMenu.DropDownOpened += new System.EventHandler(this.LoadStateSubMenu_DropDownOpened);
 			// 
@@ -712,8 +715,8 @@
             this.SaveToCurrentSlotMenuItem,
             this.LoadCurrentSlotMenuItem});
 			this.SaveSlotSubMenu.Name = "SaveSlotSubMenu";
-			this.SaveSlotSubMenu.Size = new System.Drawing.Size(134, 22);
-			this.SaveSlotSubMenu.Text = "SaveSlot";
+			this.SaveSlotSubMenu.Size = new System.Drawing.Size(152, 22);
+			this.SaveSlotSubMenu.Text = "Save Slot";
 			this.SaveSlotSubMenu.DropDownOpened += new System.EventHandler(this.SaveSlotSubMenu_DropDownOpened);
 			// 
 			// SelectSlot0MenuItem
@@ -821,10 +824,27 @@
 			this.LoadCurrentSlotMenuItem.Text = "Load Current Slot";
 			this.LoadCurrentSlotMenuItem.Click += new System.EventHandler(this.LoadCurrentSlotMenuItem_Click);
 			// 
+			// SaveRAMSubMenu
+			// 
+			this.SaveRAMSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.FlushSaveRAMMenuItem});
+			this.SaveRAMSubMenu.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
+			this.SaveRAMSubMenu.Name = "SaveRAMSubMenu";
+			this.SaveRAMSubMenu.Size = new System.Drawing.Size(152, 22);
+			this.SaveRAMSubMenu.Text = "Save RAM";
+			// 
+			// FlushSaveRAMMenuItem
+			// 
+			this.FlushSaveRAMMenuItem.Font = new System.Drawing.Font("Tahoma", 8.25F);
+			this.FlushSaveRAMMenuItem.Name = "FlushSaveRAMMenuItem";
+			this.FlushSaveRAMMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.FlushSaveRAMMenuItem.Text = "&Flush Save Ram";
+			this.FlushSaveRAMMenuItem.Click += new System.EventHandler(this.FlushSaveRAMMenuItem_Click);
+			// 
 			// toolStripMenuItem2
 			// 
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-			this.toolStripMenuItem2.Size = new System.Drawing.Size(131, 6);
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(149, 6);
 			// 
 			// MovieSubMenu
 			// 
@@ -844,7 +864,7 @@
             this.FullMovieLoadstatesMenuItem,
             this.MovieEndSubMenu});
 			this.MovieSubMenu.Name = "MovieSubMenu";
-			this.MovieSubMenu.Size = new System.Drawing.Size(134, 22);
+			this.MovieSubMenu.Size = new System.Drawing.Size(152, 22);
 			this.MovieSubMenu.Text = "Movie";
 			this.MovieSubMenu.DropDownOpened += new System.EventHandler(this.MovieSubMenu_DropDownOpened);
 			// 
@@ -1000,7 +1020,7 @@
             this.CaptureOSDMenuItem,
             this.SynclessRecordingMenuItem});
 			this.AVSubMenu.Name = "AVSubMenu";
-			this.AVSubMenu.Size = new System.Drawing.Size(134, 22);
+			this.AVSubMenu.Size = new System.Drawing.Size(152, 22);
 			this.AVSubMenu.Text = "AVI/WAV";
 			this.AVSubMenu.DropDownOpened += new System.EventHandler(this.AVSubMenu_DropDownOpened);
 			// 
@@ -1049,7 +1069,7 @@
             this.toolStripSeparator20,
             this.ScreenshotCaptureOSDMenuItem1});
 			this.ScreenshotSubMenu.Name = "ScreenshotSubMenu";
-			this.ScreenshotSubMenu.Size = new System.Drawing.Size(134, 22);
+			this.ScreenshotSubMenu.Size = new System.Drawing.Size(152, 22);
 			this.ScreenshotSubMenu.Text = "Screenshot";
 			this.ScreenshotSubMenu.DropDownOpening += new System.EventHandler(this.ScreenshotSubMenu_DropDownOpening);
 			// 
@@ -1100,13 +1120,13 @@
 			// toolStripSeparator4
 			// 
 			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(131, 6);
+			this.toolStripSeparator4.Size = new System.Drawing.Size(149, 6);
 			// 
 			// ExitMenuItem
 			// 
 			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.ExitMenuItem.Size = new System.Drawing.Size(134, 22);
+			this.ExitMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.ExitMenuItem.Text = "Exit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
@@ -2399,7 +2419,7 @@
 			// PSXOptionsMenuItem
 			// 
 			this.PSXOptionsMenuItem.Name = "PSXOptionsMenuItem";
-			this.PSXOptionsMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.PSXOptionsMenuItem.Size = new System.Drawing.Size(111, 22);
 			this.PSXOptionsMenuItem.Text = "&Options";
 			this.PSXOptionsMenuItem.Click += new System.EventHandler(this.PSXOptionsMenuItem_Click);
 			// 
@@ -3715,6 +3735,8 @@
 		private System.Windows.Forms.ToolStripMenuItem DebuggerMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PSXSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem PSXOptionsMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SaveRAMSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem FlushSaveRAMMenuItem;
 	}
 }
 
