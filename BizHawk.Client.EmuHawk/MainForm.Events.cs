@@ -37,15 +37,14 @@ namespace BizHawk.Client.EmuHawk
 			OpenRomMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Open ROM"].Bindings;
 			CloseRomMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Close ROM"].Bindings;
 
-			// screenshots and av record should work correctly on nullemulator
 			MovieSubMenu.Enabled =
-					// AVSubMenu.Enabled =
-					// ScreenshotSubMenu.Enabled =
-					CloseRomMenuItem.Enabled =
-					!Global.Emulator.IsNull();
+				CloseRomMenuItem.Enabled =
+				!Global.Emulator.IsNull();
 
-			SaveRAMSubMenu.Enabled = Global.Emulator.HasSaveRam();
-			bool needBold = Global.Emulator.AsSaveRam().SaveRamModified;
+			var hasSaveRam = Global.Emulator.HasSaveRam();
+			bool needBold = hasSaveRam && Global.Emulator.AsSaveRam().SaveRamModified;
+
+			SaveRAMSubMenu.Enabled = hasSaveRam;
 			if (SaveRAMSubMenu.Font.Bold != needBold)
 			{
 				var font = new System.Drawing.Font(SaveRAMSubMenu.Font, needBold ? FontStyle.Bold : FontStyle.Regular);
