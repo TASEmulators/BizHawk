@@ -316,6 +316,9 @@ EW_EXPORT s32 shock_SetDisc(void* psx, ShockDiscRef* disc);
 EW_EXPORT s32 shock_CloseTray(void* psx);
 
 //Steps emulation by the specified interval
+//TODO - think about something. After loadstating, the device input state is probably nonsense. 
+//Normally we'd set the input before frame advancing. But every frontend might not do that, and we might not be stepping by one frame.
+//What to do about this?
 EW_EXPORT s32 shock_Step(void* psx, eShockStep step);
 
 //Fetches the framebuffer. Can retrieve parameters (set the job ptr to NULL) or fill the provided job ptr with the framebuffer (make sure its big enough).

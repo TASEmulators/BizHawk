@@ -29,9 +29,10 @@ class SimpleFIFO
 
  INLINE void SaveStatePostLoad(void)
  {
-  read_pos %= data.size();
-  write_pos %= data.size();
-  in_count %= (data.size() + 1);
+	 //I think this is crap about file format (buffer size) change recovery. screw it.
+  //read_pos %= data.size();
+  //write_pos %= data.size();
+  //in_count %= (data.size() + 1);
  }
 
 #if 0
@@ -134,6 +135,20 @@ class SimpleFIFO
  uint32 read_pos; // Read position
  uint32 write_pos; // Write position
  uint32 in_count; // Number of units in the FIFO
+
+ template<bool isReader> void SyncState(EW::NewState *ns)
+ {
+	 //I dont like this class...
+
+	 PSS(&data[0], data.capacity());
+	 NSS(read_pos);
+	 NSS(write_pos);
+	 NSS(in_count);
+
+	 
+	 SaveStatePostLoad();
+ }
+
 };
 
 

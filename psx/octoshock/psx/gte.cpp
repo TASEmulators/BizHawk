@@ -233,63 +233,11 @@ void GTE_Power(void)
  Reg23 = 0;
 }
 
-// TODO: Don't save redundant state, regarding CR cache variables
 int GTE_StateAction(StateMem *sm, int load, int data_only)
 {
- SFORMAT StateRegs[] =
- {
-  SFARRAY32(CR, 32),
-  SFVAR(FLAGS),
 
-  SFARRAY16(&Matrices.Raw16[0][0], 4 * 10),
+return 1;
 
-  SFARRAY32(&CRVectors.All[0][0], 4 * 4),
-
-  SFVAR(OFX),
-  SFVAR(OFY),
-  SFVAR(H),
-  SFVAR(DQA),
-  SFVAR(DQB),
-
-  SFVAR(ZSF3),
-  SFVAR(ZSF4),
-  SFARRAY16(&Vectors[0][0], 3 * 4),
-
-  SFARRAY(RGB.Raw8, 4),
-  SFVAR(OTZ),
-  SFARRAY16(IR, 4),
-
-  SFVAR(XY_FIFO[0].X),
-  SFVAR(XY_FIFO[0].Y),
-  SFVAR(XY_FIFO[1].X),
-  SFVAR(XY_FIFO[1].Y),
-  SFVAR(XY_FIFO[2].X),
-  SFVAR(XY_FIFO[2].Y),
-  SFVAR(XY_FIFO[3].X),
-  SFVAR(XY_FIFO[3].Y),
-
-  SFARRAY16(Z_FIFO, 4),
-
-  SFARRAY(RGB_FIFO[0].Raw8, 4),
-  SFARRAY(RGB_FIFO[1].Raw8, 4),
-  SFARRAY(RGB_FIFO[2].Raw8, 4),
-
-  SFARRAY32(MAC, 4),
-
-  SFVAR(LZCS),
-  SFVAR(LZCR),
-  SFVAR(Reg23),
-
-  SFEND
- };
- int ret = MDFNSS_StateAction(sm, load, data_only, StateRegs, "GTE");
-
- if(load)
- {
-
- }
-
- return(ret);
 }
 
 
@@ -1731,6 +1679,43 @@ int32 GTE_Instruction(uint32 instr)
  return(ret - 1);
 }
 
+void GTE_SyncState(bool isReader, EW::NewState *ns)
+{
+	NSS(CR);
+	NSS(FLAGS);
+
+	NSS(Matrices);
+
+	NSS(CRVectors);
+
+	NSS(OFX);
+	NSS(OFY);
+	NSS(H);
+	NSS(DQA);
+	NSS(DQB);
+
+	NSS(ZSF3);
+	NSS(ZSF4);
+	NSS(Vectors);
+
+	NSS(RGB);
+	NSS(OTZ);
+	NSS(IR);
+
+	NSS(XY_FIFO);
+
+	NSS(Z_FIFO);
+
+	NSS(RGB_FIFO);
+
+	NSS(MAC);
+
+	NSS(LZCS);
+	NSS(LZCR);
+	NSS(Reg23);
+}
+
 #ifndef PSXDEV_GTE_TESTING
 }
 #endif
+

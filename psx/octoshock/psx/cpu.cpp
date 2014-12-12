@@ -951,4 +951,39 @@ void PS_CPU::CheckBreakpoints(void (*callback)(bool write, uint32_t address, uns
 }
 
 
-}
+
+SYNCFUNC(PS_CPU)
+{
+	NSS(GPR);
+	NSS(LO);
+	NSS(HI);
+	NSS(BACKED_PC);
+	NSS(BACKED_new_PC);
+	NSS(BACKED_new_PC_mask);
+
+	NSS(IPCache);
+	NSS(Halted);
+
+	NSS(BACKED_LDWhich);
+	NSS(BACKED_LDValue);
+	NSS(LDAbsorb);
+
+	NSS(next_event_ts);
+	NSS(gte_ts_done);
+	NSS(muldiv_ts_done);
+
+	NSS(BIU);
+	NSS(ICache_Bulk);
+
+	NSS(CP0.Regs);
+
+	NSS(ReadAbsorb);
+	NSS(ReadAbsorbDummy);
+	NSS(ReadAbsorbWhich);
+	NSS(ReadFudge);
+
+	NSS(ScratchRAM.data8);
+
+} //SYNCFUNC(CPU)
+
+} //namespace MDFN_IEN_PSX

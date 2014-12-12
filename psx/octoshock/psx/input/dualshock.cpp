@@ -60,7 +60,7 @@ class InputDevice_DualShock : public InputDevice
  virtual ~InputDevice_DualShock();
 
  virtual void Power(void);
- virtual int StateAction(StateMem* sm, int load, int data_only, const char* section_name);
+  virtual void SyncState(bool isReader, EW::NewState *ns);
 
  virtual void Update(const pscpu_timestamp_t timestamp);
  virtual void ResetTS(void);
@@ -232,55 +232,39 @@ void InputDevice_DualShock::Power(void)
  prev_ana_button_state = false;
 }
 
-int InputDevice_DualShock::StateAction(StateMem* sm, int load, int data_only, const char* section_name)
-{
- SFORMAT StateRegs[] =
+ void InputDevice_DualShock::SyncState(bool isReader, EW::NewState *ns)
  {
-  SFVAR(cur_ana_button_state),
-  SFVAR(prev_ana_button_state),
-  SFVAR(combo_anatoggle_counter),
+  NSS(cur_ana_button_state);
+  NSS(prev_ana_button_state);
+  NSS(combo_anatoggle_counter);
 
-  SFVAR(da_rumble_compat),
+  NSS(da_rumble_compat);
 
-  SFVAR(analog_mode),
-  SFVAR(analog_mode_locked),
+  NSS(analog_mode);
+  NSS(analog_mode_locked);
 
-  SFVAR(mad_munchkins),
-  SFARRAY(rumble_magic, sizeof(rumble_magic)),
+  NSS(mad_munchkins);
+  NSS(rumble_magic);
 
-  SFARRAY(rumble_param, sizeof(rumble_param)),
+  NSS(rumble_param);
 
-  SFVAR(dtr),
+  NSS(dtr);
 
-  SFARRAY(buttons, sizeof(buttons)),
-  SFARRAY(&axes[0][0], sizeof(axes)),
+  NSS(buttons);
+  NSS(axes);
 
-  SFVAR(command_phase),
-  SFVAR(bitpos),
-  SFVAR(receive_buffer),
+  NSS(command_phase);
+  NSS(bitpos);
+  NSS(receive_buffer);
 
-  SFVAR(command),
+  NSS(command);
 
-  SFARRAY(transmit_buffer, sizeof(transmit_buffer)),
-  SFVAR(transmit_pos),
-  SFVAR(transmit_count),
+  NSS(transmit_buffer);
+  NSS(transmit_pos);
+  NSS(transmit_count);
 
-  SFEND
- };
- int ret = MDFNSS_StateAction(sm, load, data_only, StateRegs, section_name);
-
- if(load)
- {
-  if((transmit_pos + transmit_count) > sizeof(transmit_buffer))
-  {
-   transmit_pos = 0;
-   transmit_count = 0;
-  }
+	//THERES MORE BUFFER SIZE SANITY CHECKS HERE. DONT LIKE THAT STUFF
  }
-
- return(ret);
-}
-
 
 void InputDevice_DualShock::UpdateInput(const void *data)
 {

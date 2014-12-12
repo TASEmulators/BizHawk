@@ -1116,6 +1116,7 @@ struct {
 
 			case eShockMemcardTransaction_Write:
 				FIO->MCPorts[portnum]->WriteNV((uint8*)transaction->buffer128k,0,128*1024);
+				FIO->MCPorts[portnum]->ResetNVDirtyCount();
 				return SHOCK_OK;
 
 			case eShockMemcardTransaction_Read:
@@ -1825,62 +1826,6 @@ static void CloseGame(void)
  Cleanup();
 }
 
-static int StateAction(StateMem *sm, int load, int data_only)
-{
-
- //SFORMAT StateRegs[] =
- //{
- // NSS(CD_TrayOpen);
- // PSS(MainRAM.data8, 2*1024*1024);
- // NSS(SysControl.Regs, 9);
-
- // //SFVAR(PSX_PRNG.lcgo),
- // //SFVAR(PSX_PRNG.x),
- // //SFVAR(PSX_PRNG.y),
- // //SFVAR(PSX_PRNG.z),
- // //SFVAR(PSX_PRNG.c),
-
- // SFEND
- //};
-
- //int ret = MDFNSS_StateAction(sm, load, data_only, StateRegs, "MAIN");
-
- //// Call SetDisc() BEFORE we load CDC state, since SetDisc() has emulation side effects.  We might want to clean this up in the future.
- //if(load)
- //{
- // if(CD_SelectedDisc >= (int)cdifs->size())
- //  CD_SelectedDisc = -1;
-
-	////DAW????????????
- //// CDC->SetDisc(CD_TrayOpen, (CD_SelectedDisc >= 0 && !CD_TrayOpen) ? (*cdifs)[CD_SelectedDisc] : NULL,
-	////(CD_SelectedDisc >= 0 && !CD_TrayOpen) ? cdifs_scex_ids[CD_SelectedDisc] : NULL);
- //}
-
- //// TODO: Remember to increment dirty count in memory card state loading routine.
-
- //ret &= CPU->StateAction(sm, load, data_only);
- //ret &= DMA_StateAction(sm, load, data_only);
- //ret &= TIMER_StateAction(sm, load, data_only);
- //ret &= SIO_StateAction(sm, load, data_only);
-
- //ret &= CDC->StateAction(sm, load, data_only);
- //ret &= MDEC_StateAction(sm, load, data_only);
- //ret &= GPU->StateAction(sm, load, data_only);
- //ret &= SPU->StateAction(sm, load, data_only);
-
- //ret &= FIO->StateAction(sm, load, data_only);
-
- //ret &= IRQ_StateAction(sm, load, data_only);	// Do it last.
-
- //if(load)
- //{
- // ForceEventUpdates(0);	// FIXME to work with debugger step mode.
- //}
-
- //return(ret);
-	return 0;
-}
-
 static void CDInsertEject(void)
 {
  CD_TrayOpen = !CD_TrayOpen;
@@ -1921,6 +1866,10 @@ EW_EXPORT s32 shock_SetDisc(void* psx, ShockDiscRef* disc)
 	ShockDiscInfo info;
 	s32 ret = shock_AnalyzeDisc(disc,&info);
 	if(ret != SHOCK_OK) return ret;
+
+	//heres a comment from some old savestating code. something to keep in mind (maybe or maybe not a surprise depending on your point of view)
+	//"Call SetDisc() BEFORE we load CDC state, since SetDisc() has emulation side effects.  We might want to clean this up in the future."
+	//I'm not really sure I like how SetDisc works, so I'm glad this was brought to our attention
 
 	s_CurrDiscInfo = info;
 	s_CurrDisc = disc;
@@ -2419,62 +2368,79 @@ public:
 	template<bool isReader>void SyncState(EW::NewState *ns);
 } s_PSX;
 
-//--OLD SAVESTATE--
- //SFORMAT StateRegs[] =
- //{
- // NSS(CD_TrayOpen);
- // PSS(MainRAM.data8, 2*1024*1024);
- // NSS(SysControl.Regs, 9);
-
- // //SFVAR(PSX_PRNG.lcgo),
- // //SFVAR(PSX_PRNG.x),
- // //SFVAR(PSX_PRNG.y),
- // //SFVAR(PSX_PRNG.z),
- // //SFVAR(PSX_PRNG.c),
-
- // SFEND
- //};
-
- //int ret = MDFNSS_StateAction(sm, load, data_only, StateRegs, "MAIN");
-
- //// Call SetDisc() BEFORE we load CDC state, since SetDisc() has emulation side effects.  We might want to clean this up in the future.
- //if(load)
- //{
- // if(CD_SelectedDisc >= (int)cdifs->size())
- //  CD_SelectedDisc = -1;
-
-	////DAW????????????
- //// CDC->SetDisc(CD_TrayOpen, (CD_SelectedDisc >= 0 && !CD_TrayOpen) ? (*cdifs)[CD_SelectedDisc] : NULL,
-	////(CD_SelectedDisc >= 0 && !CD_TrayOpen) ? cdifs_scex_ids[CD_SelectedDisc] : NULL);
- //}
-
- //// TODO: Remember to increment dirty count in memory card state loading routine.
-
- //ret &= CPU->StateAction(sm, load, data_only);
- //ret &= DMA_StateAction(sm, load, data_only);
- //ret &= TIMER_StateAction(sm, load, data_only);
- //ret &= SIO_StateAction(sm, load, data_only);
-
- //ret &= CDC->StateAction(sm, load, data_only);
- //ret &= MDEC_StateAction(sm, load, data_only);
- //ret &= GPU->StateAction(sm, load, data_only);
- //ret &= SPU->StateAction(sm, load, data_only);
-
- //ret &= FIO->StateAction(sm, load, data_only);
-
- //ret &= IRQ_StateAction(sm, load, data_only);	// Do it last.
-
- //if(load)
- //{
- // ForceEventUpdates(0);	// FIXME to work with debugger step mode.
- //}
-
+namespace MDFN_IEN_PSX {
+void DMA_SyncState(bool isReader, EW::NewState *ns);
+void GTE_SyncState(bool isReader, EW::NewState *ns);
+void TIMER_SyncState(bool isReader, EW::NewState *ns);
+void SIO_SyncState(bool isReader, EW::NewState *ns);
+void MDEC_SyncState(bool isReader, EW::NewState *ns);
+void IRQ_SyncState(bool isReader, EW::NewState *ns);
+}
 
 SYNCFUNC(PSX)
 {
   NSS(CD_TrayOpen);
   PSS(MainRAM.data8, 2*1024*1024);
-  NSS(SysControl.Regs); //9 regs.. does the array work?
+  NSS(SysControl.Regs);
+	NSS(PSX_PRNG.lcgo);
+	NSS(PSX_PRNG.x);
+	NSS(PSX_PRNG.y);
+	NSS(PSX_PRNG.z);
+	NSS(PSX_PRNG.c);
+
+	//note: mednafen used to save the current disc index. that's kind of nice, I guess, if you accept that responsibility in the core.
+	//but we're not doing things that way.
+	//I think instead maybe we should generate a hash of the inserted disc and save that, and then check if theres a mismatch between the disc at the time of the savestate and the current disc
+	//but we'll do that in the frontend for now
+
+	//old:
+	// "TODO: Remember to increment dirty count in memory card state loading routine." 
+	//not sure what this means or whether I like it
+
+	//I've kept the ordering of these sections the same, in case its important for some unknown reason.. for now.
+
+	TSS(CPU);
+
+	ns->EnterSection("GTE");
+	GTE_SyncState(isReader,ns);
+	ns->ExitSection("GTE");
+
+	ns->EnterSection("DMA");
+	DMA_SyncState(isReader,ns);
+	ns->ExitSection("DMA");
+
+	ns->EnterSection("TIMER");
+	TIMER_SyncState(isReader,ns);
+	ns->ExitSection("TIMER");
+
+	ns->EnterSection("SIO");
+	SIO_SyncState(isReader,ns);
+	ns->ExitSection("SIO");
+
+	TSS(CDC);
+
+	ns->EnterSection("MDEC");
+	MDEC_SyncState(isReader,ns);
+	ns->ExitSection("MDEC");
+
+	TSS(GPU); //did some special logic for the CPU, ordering may matter, but probably not
+
+	TSS(SPU);
+	TSS(FIO); //TODO - DUALSHOCK, MC
+
+
+	//"Do it last." the comments say. And all this other nonsense about IRQs in the other state syncing functions. weird.....
+	 //ret &= IRQ_StateAction(sm, load, data_only);	// 
+
+	ns->EnterSection("IRQ");
+	IRQ_SyncState(isReader,ns);
+	ns->ExitSection("IRQ");
+
+	//zero: this is probably OK
+	if(isReader)
+	{
+		ForceEventUpdates(0);	// FIXME to work with debugger step mode.
+	}
 }
 
 EW_EXPORT s32 shock_StateTransaction(void *psx, ShockStateTransaction* transaction)
@@ -2517,6 +2483,9 @@ EW_EXPORT s32 shock_StateTransaction(void *psx, ShockStateTransaction* transacti
 			s_PSX.SyncState<false>(&loader);
 			return SHOCK_OK;
 		}
+		return SHOCK_ERROR;
+
+	default:
 		return SHOCK_ERROR;
 	}
 }

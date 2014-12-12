@@ -25,6 +25,8 @@ class PS_CDC
  PS_CDC();
  ~PS_CDC();
 
+ template<bool isReader>void SyncState(EW::NewState *ns);
+
  void SetDisc(bool tray_open, ShockDiscRef *disc, const char disc_id[4]);
 
  void Power(void);

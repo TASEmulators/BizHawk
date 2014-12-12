@@ -52,6 +52,8 @@ class PS_CPU
  PS_CPU();
  ~PS_CPU();
 
+	template<bool isReader>void SyncState(EW::NewState *ns);
+
  // FAST_MAP_* enums are in BYTES(8-bit), not in 32-bit units("words" in MIPS context), but the sizes
  // will always be multiples of 4.
  enum { FAST_MAP_SHIFT = 16 };
