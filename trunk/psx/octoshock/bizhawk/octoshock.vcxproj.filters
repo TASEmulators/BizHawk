@@ -119,6 +119,9 @@
     <ClCompile Include="..\cdrom\recover-raw.cpp">
       <Filter>cdrom</Filter>
     </ClCompile>
+    <ClCompile Include="..\emuware\EW_state.cpp">
+      <Filter>emuware</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\psx\cdc.h">
@@ -219,6 +222,9 @@
     </ClInclude>
     <ClInclude Include="..\video\Deinterlacer.h">
       <Filter>video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emuware\EW_state.h">
+      <Filter>emuware</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

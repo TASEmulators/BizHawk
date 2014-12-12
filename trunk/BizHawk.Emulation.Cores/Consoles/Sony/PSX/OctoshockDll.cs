@@ -3,8 +3,13 @@
 using System;
 using System.Runtime.InteropServices;
 
+using BizHawk.Emulation.Common;
+
 public unsafe static class OctoshockDll
 {
+	const CallingConvention cc = CallingConvention.Cdecl;
+	const string dd = "octoshock.dll";
+
 	public enum eRegion : int
 	{
 		JP = 0,
@@ -32,6 +37,15 @@ public unsafe static class OctoshockDll
 		GPURAM = 3, //512K
 		SPURAM = 4 //512K
 	};
+
+	public enum eShockStateTransaction : int
+	{
+		BinarySize=0,
+		BinaryLoad=1,
+		BinarySave=2,
+		TextLoad=3,
+		TextSave=4
+	}
 
 	public enum eShockMemcardTransaction
 	{
@@ -101,28 +115,38 @@ public unsafe static class OctoshockDll
 		public void* buffer128k;
 	};
 
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct ShockStateTransaction
+	{
+		public eShockStateTransaction transaction;
+		public void* buffer;
+		public int bufferLength;
+		public TextStateFPtrs ff;
+	};
+
 	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 	public delegate int ShockDisc_ReadTOC(IntPtr opaque, ShockTOC* read_target, ShockTOCTrack* tracks101);
 
 	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 	public delegate int ShockDisc_ReadLBA(IntPtr opaque, int lba, void* dst);
 
-	[DllImport("octoshock.dll")]
+	[DllImport(dd)]
 	public static extern int shock_CreateDisc(out IntPtr outDisc, IntPtr Opaque, int lbaCount, ShockDisc_ReadTOC ReadTOC, ShockDisc_ReadLBA ReadLBA2448, bool suppliesDeinterleavedSubcode);
 
-	[DllImport("octoshock.dll")]
+	[DllImport(dd)]
 	public static extern int shock_DestroyDisc(IntPtr disc);
 
-	[DllImport("octoshock.dll")]
+	[DllImport(dd)]
 	public static extern int shock_AnalyzeDisc(IntPtr disc, out ShockDiscInfo info);
 
-	[DllImport("octoshock.dll")]
+	[DllImport(dd)]
 	public static extern int shock_Create(out IntPtr psx, eRegion region, void* firmware512k);
 
-	[DllImport("octoshock.dll")]
+	[DllImport(dd)]
 	public static extern int shock_Destroy(IntPtr psx);
 
-	[DllImport("octoshock.dll")]
+	[DllImport(dd)]
 	
 	public static extern int shock_Peripheral_Connect(
 		IntPtr psx, 
@@ -130,44 +154,48 @@ public unsafe static class OctoshockDll
 		[MarshalAs(UnmanagedType.I4)] ePeripheralType type
 		);
 	
-	[DllImport("octoshock.dll")]
+	[DllImport(dd)]
 	public static extern int shock_Peripheral_SetPadInput(IntPtr psx, int address, uint buttons, byte left_x, byte left_y, byte right_x, byte right_y);
 
-	[DllImport("octoshock.dll")]
+	[DllImport(dd)]
 	public static extern int shock_Peripheral_MemcardTransact(IntPtr psx, int address, ref ShockMemcardTransaction transaction);
 
-	[DllImport("octoshock.dll")]
+	[DllImport(dd)]
 	public static extern int shock_MountEXE(IntPtr psx, void* exebuf, int size);
 
-	[DllImport("octoshock.dll")]
+	[DllImport(dd)]
 	public static extern int shock_PowerOn(IntPtr psx);
 
-	[DllImport("octoshock.dll")]
+	[DllImport(dd)]
 	public static extern int shock_PowerOff(IntPtr psx);
 
-	[DllImport("octoshock.dll")]
+	[DllImport(dd)]
 	public static extern int shock_OpenTray(IntPtr psx);
 
-	[DllImport("octoshock.dll")]
+	[DllImport(dd)]
 	public static extern int shock_SetDisc(IntPtr psx, IntPtr disc);
 
-	[DllImport("octoshock.dll")]
+	[DllImport(dd)]
 	public static extern int shock_CloseTray(IntPtr psx);
 
-	[DllImport("octoshock.dll")]
+	[DllImport(dd)]
 	public static extern int shock_Step(IntPtr psx, eShockStep step);
 
-	[DllImport("octoshock.dll")]
+	[DllImport(dd)]
 	public static extern int shock_GetFramebuffer(IntPtr psx, ref ShockFramebufferInfo fb);
 
-	[DllImport("octoshock.dll")]
+	[DllImport(dd)]
 	public static extern int shock_GetSamples(IntPtr psx, void* buffer);
 
-	[DllImport("octoshock.dll")]
+	[DllImport(dd)]
 	public static extern int shock_GetMemData(
 		IntPtr psx,
 		out IntPtr ptr, 
 		out int size,
 		[MarshalAs(UnmanagedType.I4)] eMemType memType
 		);
+
+	[DllImport(dd, CallingConvention = cc)]
+	public static extern int shock_StateTransaction(IntPtr psx, ref ShockStateTransaction transaction);
+
 }

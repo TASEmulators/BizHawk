@@ -5,6 +5,7 @@
 #include "video/surface.h"
 #include "masmem.h"
 #include "endian.h"
+#include "emuware/EW_state.h"
 
 
 //
@@ -151,6 +152,15 @@ enum ePeripheralType
 	ePeripheralType_Multitap = 10,
 };
 
+enum eShockStateTransaction : s32
+{
+	eShockStateTransaction_BinarySize = 0,
+	eShockStateTransaction_BinaryLoad = 1,
+	eShockStateTransaction_BinarySave = 2,
+	eShockStateTransaction_TextLoad = 3,
+	eShockStateTransaction_TextSave = 4
+};
+
 enum eShockMemcardTransaction
 {
 	eShockMemcardTransaction_Connect = 0, //connects it to the addressed port (not supported yet)
@@ -242,6 +252,15 @@ struct ShockMemcardTransaction
 	void* buffer128k;
 };
 
+struct ShockStateTransaction
+{
+	eShockStateTransaction transaction;
+	void *buffer;
+	s32 bufferLength;
+
+	//originally this was a pointer, however, we had problems getting it to marshal correctly
+	EW::FPtrs ff;
+};
 
 //Creates a ShockDiscRef (representing a disc) with the given properties. Returns it in the specified output pointer.
 //The ReadLBA2048 function should return 0x01 or 0x02 depending on which mode was there.
@@ -309,3 +328,6 @@ EW_EXPORT s32 shock_GetSamples(void* psx, void* buffer);
 
 //Returns information about a memory buffer for peeking (main memory, spu memory, etc.)
 EW_EXPORT s32 shock_GetMemData(void* psx, void** ptr, s32* size, s32 memType);
+
+//savestate work. Returns the size if that's what was requested, otherwise error codes
+EW_EXPORT s32 shock_StateTransaction(void *psx, ShockStateTransaction* transaction);

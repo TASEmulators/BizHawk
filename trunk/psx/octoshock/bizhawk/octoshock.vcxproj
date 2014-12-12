@@ -18,6 +18,7 @@
     <ClCompile Include="..\cdrom\lec.cpp" />
     <ClCompile Include="..\cdrom\recover-raw.cpp" />
     <ClCompile Include="..\emuware\emuware.cpp" />
+    <ClCompile Include="..\emuware\EW_state.cpp" />
     <ClCompile Include="..\endian.cpp" />
     <ClCompile Include="..\file.cpp" />
     <ClCompile Include="..\octoshock.cpp" />
@@ -53,6 +54,7 @@
     <ClInclude Include="..\cdrom\dvdisaster.h" />
     <ClInclude Include="..\cdrom\lec.h" />
     <ClInclude Include="..\emuware\emuware.h" />
+    <ClInclude Include="..\emuware\EW_state.h" />
     <ClInclude Include="..\emuware\msvc\inttypes.h" />
     <ClInclude Include="..\emuware\msvc\stdint.h" />
     <ClInclude Include="..\endian.h" />
