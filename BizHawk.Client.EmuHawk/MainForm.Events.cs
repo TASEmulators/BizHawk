@@ -43,6 +43,15 @@ namespace BizHawk.Client.EmuHawk
 					// ScreenshotSubMenu.Enabled =
 					CloseRomMenuItem.Enabled =
 					!Global.Emulator.IsNull();
+
+			SaveRAMSubMenu.Enabled = Global.Emulator.HasSaveRam();
+			bool needBold = Global.Emulator.AsSaveRam().SaveRamModified;
+			if (SaveRAMSubMenu.Font.Bold != needBold)
+			{
+				var font = new System.Drawing.Font(SaveRAMSubMenu.Font, needBold ? FontStyle.Bold : FontStyle.Regular);
+				SaveRAMSubMenu.Font.Dispose();
+				SaveRAMSubMenu.Font = font;
+			}
 		}
 
 		private void RecentRomMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1780,6 +1789,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			//help me, i dont want to mess with doing this the right way right now
 			new PSXOptions().ShowDialog();
+		}
+
+		private void FlushSaveRAMMenuItem_Click(object sender, EventArgs e)
+		{
+			SaveRam();
 		}
 
 		#endregion
