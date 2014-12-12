@@ -1,11 +1,13 @@
 ﻿//TODO hook up newer file ID stuff, think about how to combine it with the disc ID
 //TODO change display manager to not require 0xFF alpha channel set on videoproviders. check gdi+ and opengl! this will get us a speedup in some places
 //TODO Disc.Structure.Sessions[0].length_aba was 0
+//TODO add sram dump option (bold it if dirty) to file menu
 
 using System;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 using BizHawk.Emulation.Common;
 
@@ -211,7 +213,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				OctoshockDll.shock_Create(out psx, region, pFirmware);
 
 			SetMemoryDomains();
-
+			StudySaveBufferSize();
 
 			//these should track values in octoshock gpu.cpp FillVideoParams
 			//if (discInfo.region == OctoshockDll.eRegion.EU)
@@ -346,14 +348,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public ControllerDefinition ControllerDefinition { get { return DualShockController; } }
 		public IController Controller { get; set; }
 
-		public int Frame
-		{
-			[FeatureNotImplemented]
-			get;
-
-			[FeatureNotImplemented]
-			set;
-		}
+		public int Frame { get; private set; }
+		public int LagCount { get; set; }
+		public bool IsLagFrame { get; private set; }
 
 		[FeatureNotImplemented]
 		public bool DeterministicEmulation { get { return true; } }
@@ -456,5 +453,120 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		#endregion //ISaveRam
 
+
+		#region Savestates
+		//THIS IS STILL AWFUL
+
+		JsonSerializer ser = new JsonSerializer() { Formatting = Formatting.Indented };
+
+		class TextStateData
+		{
+			public int Frame;
+			public int LagCount;
+			public bool IsLagFrame;
+		}
+
+		public void SaveStateText(TextWriter writer)
+		{
+			var s = new TextState<TextStateData>();
+			s.Prepare();
+
+			var transaction = new OctoshockDll.ShockStateTransaction()
+			{
+				transaction = OctoshockDll.eShockStateTransaction.TextSave,
+				ff = s.GetFunctionPointersSave()
+			};
+			int result = OctoshockDll.shock_StateTransaction(psx, ref transaction);
+			if (result != OctoshockDll.SHOCK_OK)
+				throw new InvalidOperationException("eShockStateTransaction.TextSave returned error!");
+
+			s.ExtraData.IsLagFrame = IsLagFrame;
+			s.ExtraData.LagCount = LagCount;
+			s.ExtraData.Frame = Frame;
+
+			ser.Serialize(writer, s);
+			// TODO write extra copy of stuff we don't use (WHY?)
+		}
+
+		public void LoadStateText(TextReader reader)
+		{
+			var s = (TextState<TextStateData>)ser.Deserialize(reader, typeof(TextState<TextStateData>));
+			s.Prepare();
+			var transaction = new OctoshockDll.ShockStateTransaction()
+			{
+				transaction = OctoshockDll.eShockStateTransaction.TextLoad,
+				ff = s.GetFunctionPointersSave()
+			};
+			
+			int result = OctoshockDll.shock_StateTransaction(psx, ref transaction);
+			if (result != OctoshockDll.SHOCK_OK)
+				throw new InvalidOperationException("eShockStateTransaction.TextLoad returned error!");
+
+			IsLagFrame = s.ExtraData.IsLagFrame;
+			LagCount = s.ExtraData.LagCount;
+			Frame = s.ExtraData.Frame;
+		}
+
+		byte[] savebuff;
+
+		void StudySaveBufferSize()
+		{
+			var transaction = new OctoshockDll.ShockStateTransaction();
+			transaction.transaction = OctoshockDll.eShockStateTransaction.BinarySize;
+			int size = OctoshockDll.shock_StateTransaction(psx, ref transaction);
+			savebuff = new byte[size];
+		}
+
+		public void SaveStateBinary(BinaryWriter writer)
+		{
+			fixed (byte* psavebuff = savebuff)
+			{
+				var transaction = new OctoshockDll.ShockStateTransaction()
+				{
+					transaction = OctoshockDll.eShockStateTransaction.BinarySave,
+					buffer = psavebuff,
+					bufferLength = savebuff.Length
+				};
+				
+				int result = OctoshockDll.shock_StateTransaction(psx, ref transaction);
+				if (result != OctoshockDll.SHOCK_OK)
+					throw new InvalidOperationException("eShockStateTransaction.BinarySave returned error!");
+				writer.Write(savebuff.Length);
+				writer.Write(savebuff);
+			}
+		}
+
+		public void LoadStateBinary(BinaryReader reader)
+		{
+			fixed (byte* psavebuff = savebuff)
+			{
+				var transaction = new OctoshockDll.ShockStateTransaction()
+				{
+					transaction = OctoshockDll.eShockStateTransaction.BinaryLoad,
+					buffer = psavebuff,
+					bufferLength = savebuff.Length
+				};
+
+				int length = reader.ReadInt32();
+				if (length != savebuff.Length)
+					throw new InvalidOperationException("Save buffer size mismatch!");
+				reader.Read(savebuff, 0, length);
+				int ret = OctoshockDll.shock_StateTransaction(psx, ref transaction);
+				if (ret != OctoshockDll.SHOCK_OK)
+					throw new InvalidOperationException("eShockStateTransaction.BinaryLoad returned error!");
+			}
+		}
+
+		public byte[] SaveStateBinary()
+		{
+			return savebuff;
+		}
+
+		public bool BinarySaveStatesPreferred
+		{
+			get { return true; }
+		}
+
+		#endregion
 	}
 }

@@ -26,6 +26,7 @@
 #include "cdrom/cdromif.h"
 #include "error.h"
 #include "endian.h"
+#include "emuware/EW_state.h"
 
 //#include <mednafen/PSFLoader.h>
 
@@ -140,7 +141,6 @@ static PSF1Loader *psf_loader = NULL;
 static std::vector<CDIF*> *cdifs = NULL;
 static std::vector<const char *> cdifs_scex_ids;
 static bool CD_TrayOpen;
-static int CD_SelectedDisc;     // -1 for no disc
 
 static uint64 Memcard_PrevDC[8];
 static int64 Memcard_SaveDelay[8];
@@ -1246,9 +1246,8 @@ EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
 
 	s_ShockState.power = false;
 
-	//TODO - disc tray / cdc stuff?
+	//TODO - not the ideal starting condition, need to make sure its all sensible as being closed
 	CD_TrayOpen = true;
-	CD_SelectedDisc = -1;
 
 	return SHOCK_OK;
 }
@@ -1829,57 +1828,57 @@ static void CloseGame(void)
 static int StateAction(StateMem *sm, int load, int data_only)
 {
 
- SFORMAT StateRegs[] =
- {
-  SFVAR(CD_TrayOpen),
-  SFVAR(CD_SelectedDisc),
-  SFARRAY(MainRAM.data8, 1024 * 2048),
-  SFARRAY32(SysControl.Regs, 9),
+ //SFORMAT StateRegs[] =
+ //{
+ // NSS(CD_TrayOpen);
+ // PSS(MainRAM.data8, 2*1024*1024);
+ // NSS(SysControl.Regs, 9);
 
-  SFVAR(PSX_PRNG.lcgo),
-  SFVAR(PSX_PRNG.x),
-  SFVAR(PSX_PRNG.y),
-  SFVAR(PSX_PRNG.z),
-  SFVAR(PSX_PRNG.c),
+ // //SFVAR(PSX_PRNG.lcgo),
+ // //SFVAR(PSX_PRNG.x),
+ // //SFVAR(PSX_PRNG.y),
+ // //SFVAR(PSX_PRNG.z),
+ // //SFVAR(PSX_PRNG.c),
 
-  SFEND
- };
+ // SFEND
+ //};
 
- int ret = MDFNSS_StateAction(sm, load, data_only, StateRegs, "MAIN");
+ //int ret = MDFNSS_StateAction(sm, load, data_only, StateRegs, "MAIN");
 
- // Call SetDisc() BEFORE we load CDC state, since SetDisc() has emulation side effects.  We might want to clean this up in the future.
- if(load)
- {
-  if(CD_SelectedDisc >= (int)cdifs->size())
-   CD_SelectedDisc = -1;
+ //// Call SetDisc() BEFORE we load CDC state, since SetDisc() has emulation side effects.  We might want to clean this up in the future.
+ //if(load)
+ //{
+ // if(CD_SelectedDisc >= (int)cdifs->size())
+ //  CD_SelectedDisc = -1;
 
-	//DAW????????????
- // CDC->SetDisc(CD_TrayOpen, (CD_SelectedDisc >= 0 && !CD_TrayOpen) ? (*cdifs)[CD_SelectedDisc] : NULL,
-	//(CD_SelectedDisc >= 0 && !CD_TrayOpen) ? cdifs_scex_ids[CD_SelectedDisc] : NULL);
- }
+	////DAW????????????
+ //// CDC->SetDisc(CD_TrayOpen, (CD_SelectedDisc >= 0 && !CD_TrayOpen) ? (*cdifs)[CD_SelectedDisc] : NULL,
+	////(CD_SelectedDisc >= 0 && !CD_TrayOpen) ? cdifs_scex_ids[CD_SelectedDisc] : NULL);
+ //}
 
- // TODO: Remember to increment dirty count in memory card state loading routine.
+ //// TODO: Remember to increment dirty count in memory card state loading routine.
 
- ret &= CPU->StateAction(sm, load, data_only);
- ret &= DMA_StateAction(sm, load, data_only);
- ret &= TIMER_StateAction(sm, load, data_only);
- ret &= SIO_StateAction(sm, load, data_only);
+ //ret &= CPU->StateAction(sm, load, data_only);
+ //ret &= DMA_StateAction(sm, load, data_only);
+ //ret &= TIMER_StateAction(sm, load, data_only);
+ //ret &= SIO_StateAction(sm, load, data_only);
 
- ret &= CDC->StateAction(sm, load, data_only);
- ret &= MDEC_StateAction(sm, load, data_only);
- ret &= GPU->StateAction(sm, load, data_only);
- ret &= SPU->StateAction(sm, load, data_only);
+ //ret &= CDC->StateAction(sm, load, data_only);
+ //ret &= MDEC_StateAction(sm, load, data_only);
+ //ret &= GPU->StateAction(sm, load, data_only);
+ //ret &= SPU->StateAction(sm, load, data_only);
 
- ret &= FIO->StateAction(sm, load, data_only);
+ //ret &= FIO->StateAction(sm, load, data_only);
 
- ret &= IRQ_StateAction(sm, load, data_only);	// Do it last.
+ //ret &= IRQ_StateAction(sm, load, data_only);	// Do it last.
 
- if(load)
- {
-  ForceEventUpdates(0);	// FIXME to work with debugger step mode.
- }
+ //if(load)
+ //{
+ // ForceEventUpdates(0);	// FIXME to work with debugger step mode.
+ //}
 
- return(ret);
+ //return(ret);
+	return 0;
 }
 
 static void CDInsertEject(void)
@@ -1901,320 +1900,7 @@ static void CDInsertEject(void)
 	//(CD_SelectedDisc >= 0 && !CD_TrayOpen) ? cdifs_scex_ids[CD_SelectedDisc] : NULL);
 }
 
-static void CDEject(void)
-{
- if(!CD_TrayOpen)
-  CDInsertEject();
-}
 
-static void CDSelect(void)
-{
- if(cdifs && CD_TrayOpen)
- {
-  CD_SelectedDisc = (CD_SelectedDisc + 1) % (cdifs->size() + 1);
-
-  if((unsigned)CD_SelectedDisc == cdifs->size())
-   CD_SelectedDisc = -1;
-
-
- }
-}
-
-
-static void DoSimpleCommand(int cmd)
-{
- switch(cmd)
- {
-  case MDFN_MSC_RESET: PSX_Power(); break;
-  case MDFN_MSC_POWER: PSX_Power(); break;
-
-  case MDFN_MSC_INSERT_DISK:
-                CDInsertEject();
-                break;
-
-  case MDFN_MSC_SELECT_DISK:
-                CDSelect();
-                break;
-
-  case MDFN_MSC_EJECT_DISK:
-                CDEject();
-                break;
- }
-}
-//
-//static void GSCondCode(MemoryPatch* patch, const char* cc, const unsigned len, const uint32 addr, const uint16 val)
-//{
-// char tmp[256];
-//
-// if(patch->conditions.size() > 0)
-//  patch->conditions.append(", ");
-//
-// if(len == 2)
-//  trio_snprintf(tmp, 256, "%u L 0x%08x %s 0x%04x", len, addr, cc, val & 0xFFFFU);
-// else
-//  trio_snprintf(tmp, 256, "%u L 0x%08x %s 0x%02x", len, addr, cc, val & 0xFFU);
-//
-// patch->conditions.append(tmp);
-//}
-//
-//static bool DecodeGS(const std::string& cheat_string, MemoryPatch* patch)
-//{
-// uint64 code = 0;
-// unsigned nybble_count = 0;
-//
-// for(unsigned i = 0; i < cheat_string.size(); i++)
-// {
-//  if(cheat_string[i] == ' ' || cheat_string[i] == '-' || cheat_string[i] == ':')
-//   continue;
-//
-//  nybble_count++;
-//  code <<= 4;
-//
-//  if(cheat_string[i] >= '0' && cheat_string[i] <= '9')
-//   code |= cheat_string[i] - '0';
-//  else if(cheat_string[i] >= 'a' && cheat_string[i] <= 'f')
-//   code |= cheat_string[i] - 'a' + 0xA;
-//  else if(cheat_string[i] >= 'A' && cheat_string[i] <= 'F')
-//   code |= cheat_string[i] - 'A' + 0xA;  
-//  else
-//  {
-//   if(cheat_string[i] & 0x80)
-//    throw MDFN_Error(0, _("Invalid character in GameShark code."));
-//   else
-//    throw MDFN_Error(0, _("Invalid character in GameShark code: %c"), cheat_string[i]);
-//  }
-// }
-//
-// if(nybble_count != 12)
-//  throw MDFN_Error(0, _("GameShark code is of an incorrect length."));
-//
-// const uint8 code_type = code >> 40;
-// const uint64 cl = code & 0xFFFFFFFFFFULL;
-//
-// patch->bigendian = false;
-// patch->compare = 0;
-//
-// if(patch->type == 'T')
-// {
-//  if(code_type != 0x80)
-//   throw MDFN_Error(0, _("Unrecognized GameShark code type for second part to copy bytes code."));
-//
-//  patch->addr = cl >> 16;
-//  return(false);
-// }
-//
-// switch(code_type)
-// {
-//  default:
-//	throw MDFN_Error(0, _("GameShark code type 0x%02X is currently not supported."), code_type);
-//
-//	return(false);
-//
-//  //
-//  //
-//  // TODO:
-//  case 0x10:	// 16-bit increment
-//	patch->length = 2;
-//	patch->type = 'A';
-//	patch->addr = cl >> 16;
-//	patch->val = cl & 0xFFFF;
-//	return(false);
-//
-//  case 0x11:	// 16-bit decrement
-//	patch->length = 2;
-//	patch->type = 'A';
-//	patch->addr = cl >> 16;
-//	patch->val = (0 - cl) & 0xFFFF;
-//	return(false);
-//
-//  case 0x20:	// 8-bit increment
-//	patch->length = 1;
-//	patch->type = 'A';
-//	patch->addr = cl >> 16;
-//	patch->val = cl & 0xFF;
-//	return(false);
-//
-//  case 0x21:	// 8-bit decrement
-//	patch->length = 1;
-//	patch->type = 'A';
-//	patch->addr = cl >> 16;
-//	patch->val = (0 - cl) & 0xFF;
-//	return(false);
-//  //
-//  //
-//  //
-//
-//  case 0x30:	// 8-bit constant
-//	patch->length = 1;
-//	patch->type = 'R';
-//	patch->addr = cl >> 16;
-//	patch->val = cl & 0xFF;
-//	return(false);
-//
-//  case 0x80:	// 16-bit constant
-//	patch->length = 2;
-//	patch->type = 'R';
-//	patch->addr = cl >> 16;
-//	patch->val = cl & 0xFFFF;
-//	return(false);
-//
-//  case 0x50:	// Repeat thingy
-//	{
-//	 const uint8 wcount = (cl >> 24) & 0xFF;
-//	 const uint8 addr_inc = (cl >> 16) & 0xFF;
-//	 const uint8 val_inc = (cl >> 0) & 0xFF;
-//
-//	 patch->mltpl_count = wcount;
-//	 patch->mltpl_addr_inc = addr_inc;
-//	 patch->mltpl_val_inc = val_inc;
-//	}
-//	return(true);
-//
-//  case 0xC2:	// Copy
-//	{
-//	 const uint16 ccount = cl & 0xFFFF;
-//
-//	 patch->type = 'T';
-//	 patch->val = 0;
-//	 patch->length = 1;
-//
-//	 patch->copy_src_addr = cl >> 16;
-//	 patch->copy_src_addr_inc = 1;
-//
-//	 patch->mltpl_count = ccount;
-//	 patch->mltpl_addr_inc = 1;
-//	 patch->mltpl_val_inc = 0;
-//	}
-//	return(true);
-//
-//  case 0xD0:	// 16-bit == condition
-//	GSCondCode(patch, "==", 2, cl >> 16, cl);
-//	return(true);
-//
-//  case 0xD1:	// 16-bit != condition
-//	GSCondCode(patch, "!=", 2, cl >> 16, cl);
-//	return(true);
-//
-//  case 0xD2:	// 16-bit < condition
-//	GSCondCode(patch, "<", 2, cl >> 16, cl);
-//	return(true);
-//
-//  case 0xD3:	// 16-bit > condition
-//	GSCondCode(patch, ">", 2, cl >> 16, cl);
-//	return(true);
-//
-//
-//
-//  case 0xE0:	// 8-bit == condition
-//	GSCondCode(patch, "==", 1, cl >> 16, cl);
-//	return(true);
-//
-//  case 0xE1:	// 8-bit != condition
-//	GSCondCode(patch, "!=", 1, cl >> 16, cl);
-//	return(true);
-//
-//  case 0xE2:	// 8-bit < condition
-//	GSCondCode(patch, "<", 1, cl >> 16, cl);
-//	return(true);
-//
-//  case 0xE3:	// 8-bit > condition
-//	GSCondCode(patch, ">", 1, cl >> 16, cl);
-//	return(true);
-//
-// }
-//}
-//
-//static CheatFormatStruct CheatFormats[] =
-//{
-// { "GameShark", gettext_noop("Sharks with lamprey eels for eyes."), DecodeGS },
-//};
-//
-//static CheatFormatInfoStruct CheatFormatInfo =
-//{
-// 1,
-// CheatFormats
-//};
-//
-//static const FileExtensionSpecStruct KnownExtensions[] =
-//{
-// { ".psf", gettext_noop("PSF1 Rip") },
-// { ".minipsf", gettext_noop("MiniPSF1 Rip") },
-// { ".psx", gettext_noop("PS-X Executable") },
-// { ".exe", gettext_noop("PS-X Executable") },
-// { NULL, NULL }
-//};
-//
-//static const MDFNSetting_EnumList Region_List[] =
-//{
-// { "jp", REGION_JP, gettext_noop("Japan") },
-// { "na", REGION_NA, gettext_noop("North America") },
-// { "eu", REGION_EU, gettext_noop("Europe") },
-// { NULL, 0 },
-//};
-//
-//#if 0
-//static const MDFNSetting_EnumList MultiTap_List[] =
-//{
-// { "0", 0, gettext_noop("Disabled") },
-// { "1", 1, gettext_noop("Enabled") },
-// { "auto", 0, gettext_noop("Automatically-enable multitap."), gettext_noop("NOT IMPLEMENTED YET(currently equivalent to 0)") },
-// { NULL, 0 },
-//};
-//#endif
-//
-//static MDFNSetting PSXSettings[] =
-//{
-// { "psx.input.mouse_sensitivity", MDFNSF_NOFLAGS, gettext_noop("Emulated mouse sensitivity."), NULL, MDFNST_FLOAT, "1.00", NULL, NULL },
-//
-// { "psx.input.analog_mode_ct", MDFNSF_EMU_STATE | MDFNSF_UNTRUSTED_SAFE, gettext_noop("Enable analog mode combo-button alternate toggle."), gettext_noop("When enabled, instead of the configured Analog mode toggle button for the emulated DualShock, use a combination of buttons to toggle it instead.  When Select, Start, and all four shoulder buttons are held down for about 1 second, the mode will toggle."), MDFNST_BOOL, "0", NULL, NULL },
-//
-// { "psx.input.pport1.multitap", MDFNSF_EMU_STATE | MDFNSF_UNTRUSTED_SAFE, gettext_noop("Enable multitap on PSX port 1."), gettext_noop("Makes 3 more virtual ports available.\n\nNOTE: Enabling multitap in games that don't fully support it may cause deleterious effects."), MDFNST_BOOL, "0", NULL, NULL }, //MDFNST_ENUM, "auto", NULL, NULL, NULL, NULL, MultiTap_List },
-// { "psx.input.pport2.multitap", MDFNSF_EMU_STATE | MDFNSF_UNTRUSTED_SAFE, gettext_noop("Enable multitap on PSX port 2."), gettext_noop("Makes 3 more virtual ports available.\n\nNOTE: Enabling multitap in games that don't fully support it may cause deleterious effects."), MDFNST_BOOL, "0", NULL, NULL },
-//
-// { "psx.input.port1.memcard", MDFNSF_EMU_STATE | MDFNSF_UNTRUSTED_SAFE, gettext_noop("Emulate memcard on virtual port 1."), NULL, MDFNST_BOOL, "1", NULL, NULL, },
-// { "psx.input.port2.memcard", MDFNSF_EMU_STATE | MDFNSF_UNTRUSTED_SAFE, gettext_noop("Emulate memcard on virtual port 2."), NULL, MDFNST_BOOL, "1", NULL, NULL, },
-// { "psx.input.port3.memcard", MDFNSF_EMU_STATE | MDFNSF_UNTRUSTED_SAFE, gettext_noop("Emulate memcard on virtual port 3."), NULL, MDFNST_BOOL, "1", NULL, NULL, },
-// { "psx.input.port4.memcard", MDFNSF_EMU_STATE | MDFNSF_UNTRUSTED_SAFE, gettext_noop("Emulate memcard on virtual port 4."), NULL, MDFNST_BOOL, "1", NULL, NULL, },
-// { "psx.input.port5.memcard", MDFNSF_EMU_STATE | MDFNSF_UNTRUSTED_SAFE, gettext_noop("Emulate memcard on virtual port 5."), NULL, MDFNST_BOOL, "1", NULL, NULL, },
-// { "psx.input.port6.memcard", MDFNSF_EMU_STATE | MDFNSF_UNTRUSTED_SAFE, gettext_noop("Emulate memcard on virtual port 6."), NULL, MDFNST_BOOL, "1", NULL, NULL, },
-// { "psx.input.port7.memcard", MDFNSF_EMU_STATE | MDFNSF_UNTRUSTED_SAFE, gettext_noop("Emulate memcard on virtual port 7."), NULL, MDFNST_BOOL, "1", NULL, NULL, },
-// { "psx.input.port8.memcard", MDFNSF_EMU_STATE | MDFNSF_UNTRUSTED_SAFE, gettext_noop("Emulate memcard on virtual port 8."), NULL, MDFNST_BOOL, "1", NULL, NULL, },
-//
-//
-// { "psx.input.port1.gun_chairs", MDFNSF_NOFLAGS, gettext_noop("Crosshairs color for lightgun on virtual port 1."), gettext_noop("A value of 0x1000000 disables crosshair drawing."), MDFNST_UINT, "0xFF0000", "0x000000", "0x1000000" },
-// { "psx.input.port2.gun_chairs", MDFNSF_NOFLAGS, gettext_noop("Crosshairs color for lightgun on virtual port 2."), gettext_noop("A value of 0x1000000 disables crosshair drawing."), MDFNST_UINT, "0x00FF00", "0x000000", "0x1000000" },
-// { "psx.input.port3.gun_chairs", MDFNSF_NOFLAGS, gettext_noop("Crosshairs color for lightgun on virtual port 3."), gettext_noop("A value of 0x1000000 disables crosshair drawing."), MDFNST_UINT, "0xFF00FF", "0x000000", "0x1000000" },
-// { "psx.input.port4.gun_chairs", MDFNSF_NOFLAGS, gettext_noop("Crosshairs color for lightgun on virtual port 4."), gettext_noop("A value of 0x1000000 disables crosshair drawing."), MDFNST_UINT, "0xFF8000", "0x000000", "0x1000000" },
-// { "psx.input.port5.gun_chairs", MDFNSF_NOFLAGS, gettext_noop("Crosshairs color for lightgun on virtual port 5."), gettext_noop("A value of 0x1000000 disables crosshair drawing."), MDFNST_UINT, "0xFFFF00", "0x000000", "0x1000000" },
-// { "psx.input.port6.gun_chairs", MDFNSF_NOFLAGS, gettext_noop("Crosshairs color for lightgun on virtual port 6."), gettext_noop("A value of 0x1000000 disables crosshair drawing."), MDFNST_UINT, "0x00FFFF", "0x000000", "0x1000000" },
-// { "psx.input.port7.gun_chairs", MDFNSF_NOFLAGS, gettext_noop("Crosshairs color for lightgun on virtual port 7."), gettext_noop("A value of 0x1000000 disables crosshair drawing."), MDFNST_UINT, "0x0080FF", "0x000000", "0x1000000" },
-// { "psx.input.port8.gun_chairs", MDFNSF_NOFLAGS, gettext_noop("Crosshairs color for lightgun on virtual port 8."), gettext_noop("A value of 0x1000000 disables crosshair drawing."), MDFNST_UINT, "0x8000FF", "0x000000", "0x1000000" },
-//
-// { "psx.region_autodetect", MDFNSF_EMU_STATE | MDFNSF_UNTRUSTED_SAFE, gettext_noop("Attempt to auto-detect region of game."), NULL, MDFNST_BOOL, "1" },
-// { "psx.region_default", MDFNSF_EMU_STATE | MDFNSF_UNTRUSTED_SAFE, gettext_noop("Default region to use."), gettext_noop("Used if region autodetection fails or is disabled."), MDFNST_ENUM, "jp", NULL, NULL, NULL, NULL, Region_List },
-//
-// { "psx.bios_jp", MDFNSF_EMU_STATE, gettext_noop("Path to the Japan SCPH-5500 ROM BIOS"), NULL, MDFNST_STRING, "scph5500.bin" },
-// { "psx.bios_na", MDFNSF_EMU_STATE, gettext_noop("Path to the North America SCPH-5501 ROM BIOS"), gettext_noop("SHA1 0555c6fae8906f3f09baf5988f00e55f88e9f30b"), MDFNST_STRING, "scph5501.bin" },
-// { "psx.bios_eu", MDFNSF_EMU_STATE, gettext_noop("Path to the Europe SCPH-5502 ROM BIOS"), NULL, MDFNST_STRING, "scph5502.bin" },
-//
-// { "psx.spu.resamp_quality", MDFNSF_NOFLAGS, gettext_noop("SPU output resampler quality."),
-//	gettext_noop("0 is lowest quality and CPU usage, 10 is highest quality and CPU usage.  The resampler that this setting refers to is used for converting from 44.1KHz to the sampling rate of the host audio device Mednafen is using.  Changing Mednafen's output rate, via the \"sound.rate\" setting, to \"44100\" may bypass the resampler, which can decrease CPU usage by Mednafen, and can increase or decrease audio quality, depending on various operating system and hardware factors."), MDFNST_UINT, "5", "0", "10" },
-//
-//
-// { "psx.slstart", MDFNSF_NOFLAGS, gettext_noop("First displayed scanline in NTSC mode."), NULL, MDFNST_INT, "0", "0", "239" },
-// { "psx.slend", MDFNSF_NOFLAGS, gettext_noop("Last displayed scanline in NTSC mode."), NULL, MDFNST_INT, "239", "0", "239" },
-//
-// { "psx.slstartp", MDFNSF_NOFLAGS, gettext_noop("First displayed scanline in PAL mode."), NULL, MDFNST_INT, "0", "0", "287" },
-// { "psx.slendp", MDFNSF_NOFLAGS, gettext_noop("Last displayed scanline in PAL mode."), NULL, MDFNST_INT, "287", "0", "287" },
-//
-//#if PSX_DBGPRINT_ENABLE
-// { "psx.dbg_level", MDFNSF_NOFLAGS, gettext_noop("Debug printf verbosity level."), NULL, MDFNST_UINT, "0", "0", "4" },
-//#endif
-//
-// { "psx.clobbers_lament", MDFNSF_NOFLAGS, gettext_noop("Enable experimental save state functionality."), gettext_noop("Save states will destroy your saved game/memory card data if you're careless, and that will make clobber sad.  Poor clobber."), MDFNST_BOOL, "0" },
-//
-// { NULL },
-//};
 
 
 EW_EXPORT s32 shock_CreateDisc(ShockDiscRef** outDisc, void *Opaque, s32 lbaCount, ShockDisc_ReadTOC ReadTOC, ShockDisc_ReadLBA ReadLBA2448, bool suppliesDeinterleavedSubcode)
@@ -2711,7 +2397,6 @@ s32 ShockDiscRef::ReadLBA2048(s32 lba, void* dst2048)
 	return sector.mode;
 }
 
-
 //Returns information about a memory buffer for peeking (main memory, spu memory, etc.)
 EW_EXPORT s32 shock_GetMemData(void* psx, void** ptr, s32* size, s32 memType)
 {
@@ -2726,4 +2411,112 @@ EW_EXPORT s32 shock_GetMemData(void* psx, void** ptr, s32* size, s32 memType)
 		return SHOCK_ERROR;
 	}
 	return SHOCK_OK;
+}
+
+class PSX
+{
+public:
+	template<bool isReader>void SyncState(EW::NewState *ns);
+} s_PSX;
+
+//--OLD SAVESTATE--
+ //SFORMAT StateRegs[] =
+ //{
+ // NSS(CD_TrayOpen);
+ // PSS(MainRAM.data8, 2*1024*1024);
+ // NSS(SysControl.Regs, 9);
+
+ // //SFVAR(PSX_PRNG.lcgo),
+ // //SFVAR(PSX_PRNG.x),
+ // //SFVAR(PSX_PRNG.y),
+ // //SFVAR(PSX_PRNG.z),
+ // //SFVAR(PSX_PRNG.c),
+
+ // SFEND
+ //};
+
+ //int ret = MDFNSS_StateAction(sm, load, data_only, StateRegs, "MAIN");
+
+ //// Call SetDisc() BEFORE we load CDC state, since SetDisc() has emulation side effects.  We might want to clean this up in the future.
+ //if(load)
+ //{
+ // if(CD_SelectedDisc >= (int)cdifs->size())
+ //  CD_SelectedDisc = -1;
+
+	////DAW????????????
+ //// CDC->SetDisc(CD_TrayOpen, (CD_SelectedDisc >= 0 && !CD_TrayOpen) ? (*cdifs)[CD_SelectedDisc] : NULL,
+	////(CD_SelectedDisc >= 0 && !CD_TrayOpen) ? cdifs_scex_ids[CD_SelectedDisc] : NULL);
+ //}
+
+ //// TODO: Remember to increment dirty count in memory card state loading routine.
+
+ //ret &= CPU->StateAction(sm, load, data_only);
+ //ret &= DMA_StateAction(sm, load, data_only);
+ //ret &= TIMER_StateAction(sm, load, data_only);
+ //ret &= SIO_StateAction(sm, load, data_only);
+
+ //ret &= CDC->StateAction(sm, load, data_only);
+ //ret &= MDEC_StateAction(sm, load, data_only);
+ //ret &= GPU->StateAction(sm, load, data_only);
+ //ret &= SPU->StateAction(sm, load, data_only);
+
+ //ret &= FIO->StateAction(sm, load, data_only);
+
+ //ret &= IRQ_StateAction(sm, load, data_only);	// Do it last.
+
+ //if(load)
+ //{
+ // ForceEventUpdates(0);	// FIXME to work with debugger step mode.
+ //}
+
+
+SYNCFUNC(PSX)
+{
+  NSS(CD_TrayOpen);
+  PSS(MainRAM.data8, 2*1024*1024);
+  NSS(SysControl.Regs); //9 regs.. does the array work?
+}
+
+EW_EXPORT s32 shock_StateTransaction(void *psx, ShockStateTransaction* transaction)
+{
+	switch(transaction->transaction)
+	{
+	case eShockStateTransaction_BinarySize:
+		{
+			EW::NewStateDummy dummy;
+			s_PSX.SyncState<false>(&dummy);
+			return dummy.GetLength();
+		}
+	case eShockStateTransaction_BinaryLoad:
+		{
+			if(transaction->buffer == NULL) return SHOCK_ERROR;
+			EW::NewStateExternalBuffer loader((char*)transaction->buffer, transaction->bufferLength);
+			s_PSX.SyncState<true>(&loader);
+			if(!loader.Overflow() && loader.GetLength() == transaction->bufferLength)
+				return SHOCK_OK;
+			else return SHOCK_ERROR;
+		}
+	case eShockStateTransaction_BinarySave:
+		{
+			if(transaction->buffer == NULL) return SHOCK_ERROR;
+			EW::NewStateExternalBuffer saver((char*)transaction->buffer, transaction->bufferLength);
+			s_PSX.SyncState<false>(&saver);
+			if(!saver.Overflow() && saver.GetLength() == transaction->bufferLength)
+				return SHOCK_OK;
+			else return SHOCK_ERROR;
+		}
+	case eShockStateTransaction_TextLoad:
+		{
+			EW::NewStateExternalFunctions saver(&transaction->ff);
+			s_PSX.SyncState<true>(&saver);
+			return SHOCK_OK;
+		}
+	case eShockStateTransaction_TextSave:
+		{
+			EW::NewStateExternalFunctions loader(&transaction->ff);
+			s_PSX.SyncState<false>(&loader);
+			return SHOCK_OK;
+		}
+		return SHOCK_ERROR;
+	}
 }
