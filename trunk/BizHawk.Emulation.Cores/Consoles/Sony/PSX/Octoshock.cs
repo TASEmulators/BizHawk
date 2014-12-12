@@ -230,6 +230,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			VirtualWidth = 800;
 			VirtualHeight = 480;
 
+			//set a default framebuffer
+			BufferWidth = VirtualWidth;
+			BufferHeight = VirtualHeight;
+			frameBuffer = new int[BufferWidth*BufferHeight];
+
 			if (disc != null)
 			{
 				OctoshockDll.shock_OpenTray(psx);
