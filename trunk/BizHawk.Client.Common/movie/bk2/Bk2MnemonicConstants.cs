@@ -64,6 +64,12 @@ namespace BizHawk.Client.Common
 				{ "L1", 'l' },
 				{ "R1", 'r' },
 
+				{ "L2", 'L' },
+				{ "R2", 'R' },
+
+				{ "L3", '<' },
+				{ "R3", '>' },
+
 				{ "Button", 'B' },
 				{ "B1", '1' },
 				{ "B2", '2' },
@@ -78,6 +84,7 @@ namespace BizHawk.Client.Common
 				{ "Mouse Start", 's' },
 
 				{"Mode", 'M'},
+				{"MODE", 'M'},
 
 				{ "Fire", 'F' },
 				{ "Lightgun Trigger", 'T' },
@@ -96,6 +103,11 @@ namespace BizHawk.Client.Common
 				{ "Y2", '2' },
 				{ "Y3", '3' },
 				{ "Y4", '4' },
+
+				{ "Triangle", 'T' },
+				{ "Circle", 'O' },
+				{ "Cross", 'X' },
+				{ "Square", '□' }
 			};
 
 		private readonly Dictionary<string, Dictionary<string, char>> SystemOverrides = new Dictionary<string, Dictionary<string, char>>
