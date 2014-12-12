@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		isReleased: false
 		)]
 	[ServiceNotApplicable(typeof(ISettable<,>))]
-	sealed public partial class C64 : IEmulator, IMemoryDomains, IStatable, IInputPollable
+	sealed public partial class C64 : IEmulator, IMemoryDomains, IStatable, IInputPollable, IDriveLight
 	{
 		// internal variables
 		private bool _islag = true;
@@ -84,10 +84,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			CoreComm = comm;
 			Init(Region.PAL);
 			cyclesPerFrame = board.vic.CyclesPerFrame;
-			CoreComm.UsesDriveLed = true;
 			SetupMemoryDomains();
 			HardReset();
 		}
+
+		public bool DriveLightEnabled { get { return true; } }
+		public bool DriveLightOn { get; private set; }
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
@@ -169,7 +171,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			//Console.WriteLine("CPUPC: " + C64Util.ToHex(board.cpu.PC, 4) + " 1541PC: " + C64Util.ToHex(disk.PC, 4));
 
 			int test = board.cpu.LagCycles;
-			CoreComm.DriveLED = DriveLED;
+			DriveLightOn = DriveLED;
 		}
 
 		private void HandleFirmwareError(string file)

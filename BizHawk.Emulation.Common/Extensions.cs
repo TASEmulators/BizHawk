@@ -77,6 +77,21 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return (IInputPollable)core.ServiceProvider.GetService<IInputPollable>();
 		}
 
+		public static bool HasDriveLight(this IEmulator core)
+		{
+			if (core == null)
+			{
+				return false;
+			}
+
+			return core.ServiceProvider.HasService<IDriveLight>();
+		}
+
+		public static IDriveLight AsDriveLight(this IEmulator core)
+		{
+			return (IDriveLight)core.ServiceProvider.GetService<IDriveLight>();
+		}
+
 		public static bool CanDebug(this IEmulator core)
 		{
 			if (core == null)

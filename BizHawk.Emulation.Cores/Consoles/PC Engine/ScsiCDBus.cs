@@ -170,7 +170,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (DataReadInProgress && pce.Cpu.TotalExecutedCycles > DataReadWaitTimer)
 			{
 				if (SectorsLeftToRead > 0)
-					pce.CoreComm.DriveLED = true;
+					pce.DriveLightOn = true;
 
 				if (DataIn.Count == 0)
 				{

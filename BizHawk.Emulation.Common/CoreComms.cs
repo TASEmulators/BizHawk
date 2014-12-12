@@ -35,9 +35,6 @@ namespace BizHawk.Emulation.Common
 		public int NominalWidth = 640;
 		public int NominalHeight = 480;
 
-		public bool DriveLED = false;
-		public bool UsesDriveLed = false;
-
 		public bool LinkConnected = false;
 		public bool UsesLinkCable = false;
 

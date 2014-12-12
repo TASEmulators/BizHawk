@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		isPorted: true,
 		isReleased: false
 		)]
-	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam
+	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IDriveLight
 	{
 		public string SystemId { get { return "PSX"; } }
 
@@ -174,7 +174,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
 
-			CoreComm.UsesDriveLed = true;
+			DriveLightEnabled = true;
 
 			Attach();
 
@@ -190,7 +190,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 					{
 						//if current disc this delegate disc, activity is happening
 						if (disc == this.disc)
-							CoreComm.DriveLED = true;
+							DriveLightOn = true;
 					});
 
 				//determine region of the provided disc
@@ -253,6 +253,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
+		public bool DriveLightEnabled { get; private set; }
+		public bool DriveLightOn { get; private set; }
+
 		void Attach()
 		{
 			//attach this core as the current
@@ -309,7 +312,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			Frame++;
-			CoreComm.DriveLED = false;
+			DriveLightOn = false;
 
 			SetInput();
 

@@ -46,8 +46,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Init(game, rom, fdsbios);
 			if (board is FDS)
 			{
-				CoreComm.UsesDriveLed = true;
-				(board as FDS).SetDriveLightCallback((val) => CoreComm.DriveLED = val);
+				DriveLightEnabled = true;
+				(board as FDS).SetDriveLightCallback((val) => DriveLightOn = val);
 			}
 			PutSettings((NESSettings)Settings ?? new NESSettings());
 		}
@@ -58,6 +58,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			BootGodDB.Initialize();
 		}
+
+		public bool DriveLightEnabled { get; private set; }
+		public bool DriveLightOn { get; private set; }
 
 		public void WriteLogTimestamp()
 		{
