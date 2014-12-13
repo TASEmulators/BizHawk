@@ -102,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool IsAvailable(Type toolType)
 		{
 			return GetDependencies(toolType)
-				.All(t => Global.Emulator.ServiceProvider.HasService(toolType));
+				.All(t => Global.Emulator.ServiceProvider.HasService(t));
 		}
 
 		/// <summary>
