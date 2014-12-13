@@ -44,9 +44,14 @@
 			this.BreakpointsGroupBox = new System.Windows.Forms.GroupBox();
 			this.BreakPointControl1 = new BizHawk.Client.EmuHawk.tools.Debugger.BreakpointControl();
 			this.DisassemblerBox = new System.Windows.Forms.GroupBox();
+			this.DisassemblerView = new BizHawk.Client.EmuHawk.VirtualListView();
+			this.Address = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.Instruction = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.label1 = new System.Windows.Forms.Label();
 			this.menuStrip1.SuspendLayout();
 			this.RegistersGroupBox.SuspendLayout();
 			this.BreakpointsGroupBox.SuspendLayout();
+			this.DisassemblerBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -185,12 +190,54 @@
 			// 
 			this.DisassemblerBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+			this.DisassemblerBox.Controls.Add(this.label1);
+			this.DisassemblerBox.Controls.Add(this.DisassemblerView);
 			this.DisassemblerBox.Location = new System.Drawing.Point(12, 27);
 			this.DisassemblerBox.Name = "DisassemblerBox";
 			this.DisassemblerBox.Size = new System.Drawing.Size(407, 521);
 			this.DisassemblerBox.TabIndex = 7;
 			this.DisassemblerBox.TabStop = false;
 			this.DisassemblerBox.Text = "Disassembler";
+			// 
+			// DisassemblerView
+			// 
+			this.DisassemblerView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.DisassemblerView.BlazingFast = false;
+			this.DisassemblerView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.Address,
+            this.Instruction});
+			this.DisassemblerView.GridLines = true;
+			this.DisassemblerView.ItemCount = 0;
+			this.DisassemblerView.Location = new System.Drawing.Point(6, 39);
+			this.DisassemblerView.Name = "DisassemblerView";
+			this.DisassemblerView.SelectAllInProgress = false;
+			this.DisassemblerView.selectedItem = -1;
+			this.DisassemblerView.Size = new System.Drawing.Size(395, 476);
+			this.DisassemblerView.TabIndex = 1;
+			this.DisassemblerView.UseCompatibleStateImageBehavior = false;
+			this.DisassemblerView.UseCustomBackground = true;
+			this.DisassemblerView.View = System.Windows.Forms.View.Details;
+			// 
+			// Address
+			// 
+			this.Address.Text = "Address";
+			this.Address.Width = 94;
+			// 
+			// Instruction
+			// 
+			this.Instruction.Text = "Instruction";
+			this.Instruction.Width = 143;
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(6, 23);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(29, 13);
+			this.label1.TabIndex = 2;
+			this.label1.Text = "Cpu:";
 			// 
 			// GenericDebugger
 			// 
@@ -211,6 +258,8 @@
 			this.menuStrip1.PerformLayout();
 			this.RegistersGroupBox.ResumeLayout(false);
 			this.BreakpointsGroupBox.ResumeLayout(false);
+			this.DisassemblerBox.ResumeLayout(false);
+			this.DisassemblerBox.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -233,5 +282,9 @@
 		private System.Windows.Forms.GroupBox BreakpointsGroupBox;
 		private tools.Debugger.BreakpointControl BreakPointControl1;
 		private System.Windows.Forms.GroupBox DisassemblerBox;
+		private VirtualListView DisassemblerView;
+		private System.Windows.Forms.ColumnHeader Address;
+		private System.Windows.Forms.ColumnHeader Instruction;
+		private System.Windows.Forms.Label label1;
 	}
 }
