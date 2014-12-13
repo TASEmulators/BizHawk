@@ -18,6 +18,8 @@ namespace BizHawk.Client.EmuHawk
 		private GPGX Emu;
 		int palindex = 0;
 
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
 		public GenVDPViewer()
 		{
 			InitializeComponent();

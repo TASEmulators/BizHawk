@@ -22,6 +22,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class HexEditor : Form, IToolForm
 	{
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
 		private bool fontSizeSet = false;
 		private int fontWidth;
 		private int fontHeight;

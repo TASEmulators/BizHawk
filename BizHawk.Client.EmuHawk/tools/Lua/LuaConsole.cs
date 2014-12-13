@@ -19,6 +19,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class LuaConsole : Form, IToolForm
 	{
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
 		private readonly LuaFileList _luaList;
 		private int _defaultWidth;
 		private int _defaultHeight;

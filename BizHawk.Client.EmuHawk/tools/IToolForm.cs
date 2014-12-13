@@ -1,7 +1,18 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+
+namespace BizHawk.Client.EmuHawk
 {
 	public interface IToolForm
 	{
+		/// <summary>
+		/// This should be used to approach any services required of the emulator
+		/// core. It will be populated by ToolManager with the services specified
+		/// in the tool's RequiredServices attribute.
+		/// </summary>
+		IDictionary<Type, object> EmulatorServices { set; }
+
 		/// <summary>
 		/// Will be called by the client anytime an Update needs to occur, such as after an emulated frame, a loadstate, or a related dialog has made a relevant change
 		/// </summary>
@@ -28,7 +39,6 @@
 		/// <returns></returns>
 		bool AskSaveChanges();
 
-
 		/// <summary>
 		/// Indicates whether the tool should be updated before a frame loop or after.
 		/// In general, tools that draw graphics from the core should update before the loop,
@@ -41,5 +51,20 @@
 		void Show();
 		void Close();
 		bool IsDisposed { get; }
+	}
+
+	/// <summary>
+	/// Attribute used for IToolForms to indicate which IEmulatorServices they
+	/// need.
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
+	sealed class RequiredServices : Attribute
+	{
+		public readonly Type[] Dependencies;
+
+		public RequiredServices(params Type[] requiredServices)
+		{
+			this.Dependencies = requiredServices;
+		}
 	}
 }

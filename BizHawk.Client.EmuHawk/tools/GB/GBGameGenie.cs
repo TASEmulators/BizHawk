@@ -15,6 +15,8 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Dictionary<char, int> _gameGenieTable = new Dictionary<char, int>();
 		private bool _processing;
 
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
 		#region Public
 
 		public bool AskSaveChanges() { return true; }

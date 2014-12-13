@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Common;
+using System.Collections.Generic;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -25,6 +26,8 @@ namespace BizHawk.Client.EmuHawk
 		private Bitmap _zoomBoxDefaultImage = new Bitmap(64, 64);
 		private NES _nes;
 		private bool _forceChange;
+
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
 
 		public NesPPU()
 		{

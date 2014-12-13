@@ -46,6 +46,8 @@ namespace BizHawk.Client.EmuHawk
 		public bool UpdateBefore { get { return false; } }
 		public bool AskSaveChanges() { return true; }
 
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
 		public void Restart()
 		{
 			if (Global.Emulator is LibsnesCore)

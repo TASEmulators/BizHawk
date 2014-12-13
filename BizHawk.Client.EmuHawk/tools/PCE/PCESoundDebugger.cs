@@ -20,6 +20,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PCESoundDebugger : Form, IToolForm
 	{
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
 		public PCESoundDebugger()
 		{
 			InitializeComponent();

@@ -6,12 +6,15 @@ using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
+using System.Collections.Generic;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class GBAGPUView : Form, IToolForm
 	{
 		IGBAGPUViewable gba;
+
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
 
 		// emulator memory areas
 		private IntPtr vram;

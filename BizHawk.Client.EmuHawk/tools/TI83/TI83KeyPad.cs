@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
-
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Calculators;
 
@@ -8,6 +8,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TI83KeyPad : Form, IToolForm
 	{
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
 		public TI83KeyPad()
 		{
 			InitializeComponent();

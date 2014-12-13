@@ -16,6 +16,8 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private DatachBarcode reader;
 
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
 		public BarcodeEntry()
 		{
 			InitializeComponent();

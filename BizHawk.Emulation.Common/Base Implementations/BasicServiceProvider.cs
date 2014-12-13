@@ -70,17 +70,40 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
+		public IEmulatorService GetService(Type t)
+		{
+			if (typeof(IEmulatorService).IsAssignableFrom(t))
+			{
+				IEmulatorService service;
+
+				if (Services.TryGetValue(t, out service))
+					return service;
+				else
+					return null;
+			}
+			else
+			{
+				throw new Exception(String.Format("Type {0} does not implement IEmulatorService.", t.Name));
+			}
+		}
+
 		public bool HasService<T>()
 			where T : IEmulatorService
 		{
 			IEmulatorService service;
-			if (Services.TryGetValue(typeof(T), out service))
+			return Services.TryGetValue(typeof(T), out service);
+		}
+
+		public bool HasService(Type t)
+		{
+			if (typeof(IEmulatorService).IsAssignableFrom(t))
 			{
-				return true;
+				IEmulatorService service;
+				return Services.TryGetValue(t, out service);
 			}
 			else
 			{
-				return false;
+				throw new Exception(String.Format("Type {0} does not implement IEmulatorService.", t.Name));
 			}
 		}
 	}

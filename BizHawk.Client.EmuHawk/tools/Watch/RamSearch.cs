@@ -55,6 +55,8 @@ namespace BizHawk.Client.EmuHawk
 		public const int MaxDetailedSize = 1024 * 1024; // 1mb, semi-arbituary decision, sets the size to check for and automatically switch to fast mode for the user
 		public const int MaxSupportedSize = 1024 * 1024 * 64; // 64mb, semi-arbituary decision, sets the maximum size ram search will support (as it will crash beyond this)
 
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
 		public bool AskSaveChanges()
 		{
 			return true;

@@ -19,6 +19,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class Cheats : Form, IToolForm
 	{
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
 		public const string NAME = "NamesColumn";
 		public const string ADDRESS = "AddressColumn";
 		public const string VALUE = "ValueColumn";
