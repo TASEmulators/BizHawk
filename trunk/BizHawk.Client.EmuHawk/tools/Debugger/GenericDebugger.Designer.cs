@@ -39,15 +39,12 @@
 			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.RestoreDefaultsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.TracerBox = new System.Windows.Forms.GroupBox();
-			this.TraceView = new BizHawk.Client.EmuHawk.VirtualListView();
-			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.RegistersGroupBox = new System.Windows.Forms.GroupBox();
 			this.RegisterPanel = new BizHawk.Client.EmuHawk.RegisterBoxControl();
 			this.BreakpointsGroupBox = new System.Windows.Forms.GroupBox();
 			this.BreakPointControl1 = new BizHawk.Client.EmuHawk.tools.Debugger.BreakpointControl();
+			this.DisassemblerBox = new System.Windows.Forms.GroupBox();
 			this.menuStrip1.SuspendLayout();
-			this.TracerBox.SuspendLayout();
 			this.RegistersGroupBox.SuspendLayout();
 			this.BreakpointsGroupBox.SuspendLayout();
 			this.SuspendLayout();
@@ -134,48 +131,6 @@
 			this.RestoreDefaultsMenuItem.Text = "Restore Defaults";
 			this.RestoreDefaultsMenuItem.Click += new System.EventHandler(this.RestoreDefaultsMenuItem_Click);
 			// 
-			// TracerBox
-			// 
-			this.TracerBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-			this.TracerBox.Controls.Add(this.TraceView);
-			this.TracerBox.Location = new System.Drawing.Point(12, 27);
-			this.TracerBox.Name = "TracerBox";
-			this.TracerBox.Size = new System.Drawing.Size(407, 521);
-			this.TracerBox.TabIndex = 7;
-			this.TracerBox.TabStop = false;
-			this.TracerBox.Text = "Trace log";
-			// 
-			// TraceView
-			// 
-			this.TraceView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.TraceView.BlazingFast = false;
-			this.TraceView.CheckBoxes = true;
-			this.TraceView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Script});
-			this.TraceView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.TraceView.FullRowSelect = true;
-			this.TraceView.GridLines = true;
-			this.TraceView.HideSelection = false;
-			this.TraceView.ItemCount = 0;
-			this.TraceView.Location = new System.Drawing.Point(8, 18);
-			this.TraceView.Name = "TraceView";
-			this.TraceView.SelectAllInProgress = false;
-			this.TraceView.selectedItem = -1;
-			this.TraceView.Size = new System.Drawing.Size(393, 491);
-			this.TraceView.TabIndex = 4;
-			this.TraceView.TabStop = false;
-			this.TraceView.UseCompatibleStateImageBehavior = false;
-			this.TraceView.UseCustomBackground = true;
-			this.TraceView.View = System.Windows.Forms.View.Details;
-			// 
-			// Script
-			// 
-			this.Script.Text = "Instructions";
-			this.Script.Width = 599;
-			// 
 			// RegistersGroupBox
 			// 
 			this.RegistersGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -226,6 +181,17 @@
 			this.BreakPointControl1.Size = new System.Drawing.Size(225, 256);
 			this.BreakPointControl1.TabIndex = 0;
 			// 
+			// DisassemblerBox
+			// 
+			this.DisassemblerBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+			this.DisassemblerBox.Location = new System.Drawing.Point(12, 27);
+			this.DisassemblerBox.Name = "DisassemblerBox";
+			this.DisassemblerBox.Size = new System.Drawing.Size(407, 521);
+			this.DisassemblerBox.TabIndex = 7;
+			this.DisassemblerBox.TabStop = false;
+			this.DisassemblerBox.Text = "Disassembler";
+			// 
 			// GenericDebugger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -233,7 +199,7 @@
 			this.ClientSize = new System.Drawing.Size(767, 560);
 			this.Controls.Add(this.BreakpointsGroupBox);
 			this.Controls.Add(this.RegistersGroupBox);
-			this.Controls.Add(this.TracerBox);
+			this.Controls.Add(this.DisassemblerBox);
 			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
@@ -243,7 +209,6 @@
 			this.Load += new System.EventHandler(this.GenericDebugger_Load);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
-			this.TracerBox.ResumeLayout(false);
 			this.RegistersGroupBox.ResumeLayout(false);
 			this.BreakpointsGroupBox.ResumeLayout(false);
 			this.ResumeLayout(false);
@@ -263,12 +228,10 @@
 		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem RestoreDefaultsMenuItem;
-		private System.Windows.Forms.GroupBox TracerBox;
-		private VirtualListView TraceView;
-		public System.Windows.Forms.ColumnHeader Script;
 		private System.Windows.Forms.GroupBox RegistersGroupBox;
 		private RegisterBoxControl RegisterPanel;
 		private System.Windows.Forms.GroupBox BreakpointsGroupBox;
 		private tools.Debugger.BreakpointControl BreakPointControl1;
+		private System.Windows.Forms.GroupBox DisassemblerBox;
 	}
 }
