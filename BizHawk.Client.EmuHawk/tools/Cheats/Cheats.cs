@@ -17,9 +17,11 @@ using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(IMemoryDomains))]
 	public partial class Cheats : Form, IToolForm
 	{
 		public IDictionary<Type, object> EmulatorServices { private get; set; }
+		private IMemoryDomains Core { get { return (IMemoryDomains)EmulatorServices[typeof(IMemoryDomains)]; } }
 
 		public const string NAME = "NamesColumn";
 		public const string ADDRESS = "AddressColumn";
@@ -49,15 +51,11 @@ namespace BizHawk.Client.EmuHawk
 		private string _sortedColumn = string.Empty;
 		private bool _sortReverse;
 
-		private readonly IMemoryDomains Core;
-
 		public bool UpdateBefore { get { return false; } }
 
 		public Cheats()
 		{
-			Core = (IMemoryDomains)Global.Emulator; // Cast is intentional in order to get a cast excpetion rather than a null reference exception later
 			InitializeComponent();
-			CheatEditor.Core = Core;
 
 			Closing += (o, e) =>
 			{
@@ -92,11 +90,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			if (!Global.Emulator.HasMemoryDomains())
-			{
-				Close();
-			}
-
+			CheatEditor.Core = Core;
 			StartNewList();
 		}
 
@@ -188,8 +182,9 @@ namespace BizHawk.Client.EmuHawk
 			return file != null && Global.CheatList.SaveFile(file.FullName);
 		}
 
-		private void NewCheatForm_Load(object sender, EventArgs e)
+		private void Cheats_Load(object sender, EventArgs e)
 		{
+			CheatEditor.Core = Core;
 			LoadConfigSettings();
 			ToggleGameGenieButton();
 			CheatEditor.SetAddEvent(AddCheat);
