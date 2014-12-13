@@ -668,7 +668,11 @@ namespace BizHawk.Emulation.DiscSystem
 					case "SONGWRITER":
 					case "TITLE":
 					case "ISRC":
+					case "FLAGS":
 						//TODO - keep these for later?
+						//known flags:
+						//FLAGS DCP
+						//that's all. don't know what it means
 						break;
 					default:
 						throw new CueBrokenException("unsupported cue command: " + key);
