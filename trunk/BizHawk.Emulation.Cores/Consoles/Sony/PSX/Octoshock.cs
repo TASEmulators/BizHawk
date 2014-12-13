@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		isPorted: true,
 		isReleased: false
 		)]
-	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IStatable, IDriveLight
+	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IStatable, IDriveLight, IInputPollable
 	{
 		public string SystemId { get { return "PSX"; } }
 
@@ -255,6 +255,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+
+		public IInputCallbackSystem InputCallbacks { get { throw new NotImplementedException(); } }
 
 		public bool DriveLightEnabled { get; private set; }
 		public bool DriveLightOn { get; private set; }
