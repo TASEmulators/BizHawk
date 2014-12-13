@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
 	[CoreAttributes("Cygne/Mednafen", "Dox", true, true, "0.9.36.5", "http://mednafen.sourceforge.net/")]
+	[ServiceNotApplicable(typeof(IDriveLight))]
 	public class WonderSwan : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IStatable,
 		IInputPollable, IDebuggable, ISettable<WonderSwan.Settings, WonderSwan.SyncSettings>
 	{
@@ -87,7 +88,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		#endregion
 
 		[CoreConstructor("WSWAN")]
-		[ServiceNotApplicable(typeof(IDriveLight))]
 		public WonderSwan(CoreComm comm, byte[] file, bool deterministic, object Settings, object SyncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);

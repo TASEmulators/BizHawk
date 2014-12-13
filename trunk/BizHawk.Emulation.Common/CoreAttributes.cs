@@ -2,6 +2,7 @@
 
 namespace BizHawk.Emulation.Common
 {
+	[AttributeUsage(AttributeTargets.Class)]
 	public class CoreAttributes : Attribute
 	{
 		public CoreAttributes(
