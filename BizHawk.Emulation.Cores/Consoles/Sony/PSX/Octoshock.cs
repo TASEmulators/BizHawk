@@ -519,6 +519,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		}
 
 		byte[] savebuff;
+		byte[] savebuff2;
 
 		void StudySaveBufferSize()
 		{
@@ -526,6 +527,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			transaction.transaction = OctoshockDll.eShockStateTransaction.BinarySize;
 			int size = OctoshockDll.shock_StateTransaction(psx, ref transaction);
 			savebuff = new byte[size];
+			savebuff2 = new byte[savebuff.Length + 13];
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
@@ -544,6 +546,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 					throw new InvalidOperationException("eShockStateTransaction.BinarySave returned error!");
 				writer.Write(savebuff.Length);
 				writer.Write(savebuff);
+
+				// other variables
+				writer.Write(IsLagFrame);
+				writer.Write(LagCount);
+				writer.Write(Frame);
 			}
 		}
 
@@ -565,12 +572,25 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				int ret = OctoshockDll.shock_StateTransaction(psx, ref transaction);
 				if (ret != OctoshockDll.SHOCK_OK)
 					throw new InvalidOperationException("eShockStateTransaction.BinaryLoad returned error!");
+
+				// other variables
+				IsLagFrame = reader.ReadBoolean();
+				LagCount = reader.ReadInt32();
+				Frame = reader.ReadInt32();
 			}
 		}
 
 		public byte[] SaveStateBinary()
 		{
-			return savebuff;
+			//this are objectionable shenanigans, but theyre required to get the extra info in the stream. we need a better approach.
+			var ms = new MemoryStream(savebuff2, true);
+			var bw = new BinaryWriter(ms);
+			SaveStateBinary(bw);
+			bw.Flush();
+			if (ms.Position != savebuff2.Length)
+				throw new InvalidOperationException();
+			ms.Close();
+			return savebuff2;
 		}
 
 		public bool BinarySaveStatesPreferred
