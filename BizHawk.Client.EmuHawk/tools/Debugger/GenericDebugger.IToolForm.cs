@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IDictionary<Type, object> EmulatorServices { private get; set; }
 		private IDebuggable Core { get { return (IDebuggable)EmulatorServices[typeof(IDebuggable)]; } }
-		private IDisassemblable Disassembler;
+		private IDisassemblable Disassembler { get { return (IDisassemblable)EmulatorServices[typeof(IDisassemblable)]; } }
 
 		public void UpdateValues()
 		{
@@ -29,8 +29,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-
-			Disassembler = Global.Emulator.AsDissassembler();
 		}
 
 		public bool AskSaveChanges()
