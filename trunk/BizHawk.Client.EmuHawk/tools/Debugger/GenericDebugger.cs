@@ -19,12 +19,17 @@ namespace BizHawk.Client.EmuHawk
 		private int _defaultHeight;
 
 		private IDebuggable Core;
+		private IDisassemblable Disassembler;
 
 		public GenericDebugger()
 		{
 			InitializeComponent();
 			TopMost = Global.Config.GenericDebuggerSettings.TopMost;
 			Closing += (o, e) => DisengageDebugger();
+
+			DisassemblerView.QueryItemText += DisassemblerView_QueryItemText;
+			DisassemblerView.QueryItemBkColor += DisassemblerView_QueryItemBkColor;
+			DisassemblerView.VirtualMode = true;
 		}
 
 		private void GenericDebugger_Load(object sender, EventArgs e)
@@ -51,7 +56,19 @@ namespace BizHawk.Client.EmuHawk
 				Close();
 			}
 
+			Disassembler = Global.Emulator.AsDissassembler();
+
 			EngageDebugger();
+		}
+
+		private void DisassemblerView_QueryItemText(int index, int column, out string text)
+		{
+			text = string.Empty;
+		}
+
+		private void DisassemblerView_QueryItemBkColor(int index, int column, ref Color color)
+		{
+			
 		}
 
 		public void DisableRegisterBox()
@@ -61,6 +78,55 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EngageDebugger()
 		{
+			if (Core.CanDisassemble())
+			{
+				try
+				{
+					// Quick way to check if setting is implemented
+					Disassembler.Cpu = Disassembler.Cpu;
+
+					if (Disassembler.AvailableCpus.Count() > 1)
+					{
+						var c = new ComboBox
+						{
+							Location = new Point(30, 20),
+							DropDownStyle = ComboBoxStyle.DropDownList
+						};
+
+						c.Items.AddRange(Core.AsDissassembler().AvailableCpus.ToArray());
+
+						c.SelectedItem = Core.AsDissassembler().Cpu;
+
+						Controls.Add(c);
+					}
+					else
+					{
+						DisassemblerBox.Controls.Add(new Label
+						{
+							Location = new Point(30, 23),
+							Text = Disassembler.Cpu
+						});
+					}
+				}
+				catch (NotImplementedException)
+				{
+					DisassemblerBox.Controls.Add(new Label
+					{
+						Location = new Point(30, 23),
+						Text = Disassembler.Cpu
+					});
+				}
+			}
+			else
+			{
+				DisassemblerBox.Enabled = false;
+				DisassemblerBox.Controls.Add(new Label
+				{
+					Location = new Point(35, 23),
+					Text = "Unknown"
+				});
+			}
+
 			RegisterPanel.Core = Core;
 			RegisterPanel.ParentDebugger = this;
 			RegisterPanel.GenerateUI();
