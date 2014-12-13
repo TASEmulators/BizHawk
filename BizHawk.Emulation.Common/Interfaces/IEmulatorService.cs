@@ -22,6 +22,7 @@ namespace BizHawk.Emulation.Common
 		public FeatureNotImplemented() { }
 	}
 
+	[AttributeUsage(AttributeTargets.Class)]
 	public class ServiceNotApplicable : Attribute
 	{
 		public ServiceNotApplicable(params Type[] types)
