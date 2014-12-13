@@ -1,7 +1,18 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using System;
+using System.Collections.Generic;
+
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
+using BizHawk.Client.Common;
+
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class GenericDebugger : IToolForm
 	{
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+		private IDebuggable Core { get { return (IDebuggable)EmulatorServices[typeof(IDebuggable)]; } }
+		private IDisassemblable Disassembler;
+
 		public void UpdateValues()
 		{
 			RegisterPanel.UpdateValues();
@@ -19,7 +30,7 @@
 				return;
 			}
 
-			// TODO
+			Disassembler = Global.Emulator.AsDissassembler();
 		}
 
 		public bool AskSaveChanges()
