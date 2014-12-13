@@ -67,4 +67,19 @@ namespace BizHawk.Client.EmuHawk
 			this.Dependencies = requiredServices;
 		}
 	}
+
+	/// <summary>
+	/// Attribute used for IToolForms to indicate which IEmulatorServices they
+	/// could use, but that aren't critical for their functioning.
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
+	sealed class OptionalServices : Attribute
+	{
+		public readonly Type[] Dependencies;
+
+		public OptionalServices(params Type[] optionalServices)
+		{
+			this.Dependencies = optionalServices;
+		}
+	}
 }
