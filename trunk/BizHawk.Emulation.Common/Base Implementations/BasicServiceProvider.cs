@@ -33,6 +33,20 @@ namespace BizHawk.Emulation.Common
 			// Add the core itself since we know a core implements IEmulatorService
 			Services.Add(core.GetType(), core);
 
+			// Any IEmulatorServices the core might have that are core specific (and therefore not in Emulation.Common)
+			var coreSpecificServices = core
+				.GetType()
+				.GetInterfaces()
+				.Where(i => !services.Contains(i))
+				.Where(t => typeof(IEmulatorService).IsAssignableFrom(t))
+				.Where(t => !t.FullName.Contains("ISettable")) // adelikat: TODO: Hack! but I need a way around this, every core implements their own specific ISettable
+				.ToList();
+
+			foreach (var service in coreSpecificServices)
+			{
+				Services.Add(service, core);
+			}
+
 			foreach (var service in core.GetType().GetNestedTypes(BindingFlags.Public)
 				.Where(t => typeof(IEmulatorService).IsAssignableFrom(t))
 				.Where(t => t.IsClass))

@@ -10,9 +10,10 @@ using System.Collections.Generic;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(IGBAGPUViewable))]
 	public partial class GBAGPUView : Form, IToolForm
 	{
-		IGBAGPUViewable gba;
+		IGBAGPUViewable gba { get { return (IGBAGPUViewable)EmulatorServices[typeof(IGBAGPUViewable)]; } }
 
 		public IDictionary<Type, object> EmulatorServices { private get; set; }
 
@@ -683,23 +684,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			gba = Global.Emulator as IGBAGPUViewable;
-			if (gba != null)
-			{
-				var mem = gba.GetMemoryAreas();
-				vram = mem.vram;
-				palram = mem.palram;
-				oam = mem.oam;
-				mmio = mem.mmio;
+			var mem = gba.GetMemoryAreas();
+			vram = mem.vram;
+			palram = mem.palram;
+			oam = mem.oam;
+			mmio = mem.mmio;
 
-				_cbscanlineEmu = 500; // force an update
-				UpdateValues();
-			}
-			else
-			{
-				if (Visible)
-					Close();
-			}
+			_cbscanlineEmu = 500; // force an update
+			UpdateValues();
 		}
 
 		/// <summary>belongs in ToolsBefore</summary>
@@ -707,19 +699,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!IsHandleCreated || IsDisposed)
 				return;
-			if (gba != null)
+
+			if (_cbscanlineEmu != _cbscanline)
 			{
-				if (_cbscanlineEmu != _cbscanline)
+				_cbscanlineEmu = _cbscanline;
+				if (!_cbscanline.HasValue) // manual, deactivate callback
 				{
-					_cbscanlineEmu = _cbscanline;
-					if (!_cbscanline.HasValue) // manual, deactivate callback
-					{
-						gba.SetScanlineCallback(null, 0);
-					}
-					else
-					{
-						gba.SetScanlineCallback(DrawEverything, _cbscanline.Value);
-					}
+					gba.SetScanlineCallback(null, 0);
+				}
+				else
+				{
+					gba.SetScanlineCallback(DrawEverything, _cbscanline.Value);
 				}
 			}
 		}
@@ -806,11 +796,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBAGPUView_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			if (gba != null)
-			{
-				gba.SetScanlineCallback(null, 0);
-				gba = null;
-			}
+			gba.SetScanlineCallback(null, 0);
 		}
 
 		#region copy to clipboard
