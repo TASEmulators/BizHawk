@@ -157,6 +157,21 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return false;
 		}
 
+		public static bool CanDisassemble(this IEmulator core)
+		{
+			if (core == null)
+			{
+				return false;
+			}
+
+			return core.ServiceProvider.HasService<IDisassemblable>();
+		}
+
+		public static IDisassemblable AsDissassembler(this IEmulator core)
+		{
+			return (IDisassemblable)core.ServiceProvider.GetService<IDisassemblable>(); 
+		}
+
 		// TODO: a better place for these
 		public static bool IsImplemented(this MethodInfo info)
 		{
