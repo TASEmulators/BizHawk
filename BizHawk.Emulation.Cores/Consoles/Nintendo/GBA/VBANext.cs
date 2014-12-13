@@ -23,7 +23,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		[CoreConstructor("GBA")]
 		public VBANext(byte[] file, CoreComm comm, GameInfo game, bool deterministic, object syncsettings)
 		{
-			ServiceProvider = new BasicServiceProvider(this);
+			var ser = new BasicServiceProvider(this);
+			ser.Register<IDisassemblable>(new ArmV4Disassembler());
+			ServiceProvider = ser;
+
 			CoreComm = comm;
 
 			byte[] biosfile = CoreComm.CoreFileProvider.GetFirmware("GBA", "Bios", true, "GBA bios file is mandatory.");
