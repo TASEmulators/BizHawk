@@ -46,6 +46,19 @@ namespace BizHawk.Client.EmuHawk
 			get { return (uint)AddressBox.ToRawInt().Value; }
 		}
 
+		public int MaxAddressSize
+		{
+			get
+			{
+				return AddressBox.MaxLength;
+			}
+
+			set
+			{
+				AddressBox.MaxLength = value;
+			}
+		}
+
 		private void AddButton_Click(object sender, EventArgs e)
 		{
 			DialogResult = DialogResult.OK;
