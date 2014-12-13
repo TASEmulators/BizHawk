@@ -42,6 +42,7 @@ namespace BizHawk.Client.EmuHawk
 
 			ControllerImages.Add("WonderSwan Controller", Properties.Resources.WonderSwanColor);
 			ControllerImages.Add("Lynx Controller", Properties.Resources.Lynx);
+			ControllerImages.Add("DualShock Controller", Properties.Resources.psx_dualshock);
 		}
 
 		protected override void OnActivated(EventArgs e)
