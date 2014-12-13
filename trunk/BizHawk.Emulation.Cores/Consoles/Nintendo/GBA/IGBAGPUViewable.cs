@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
-	public interface IGBAGPUViewable
+	public interface IGBAGPUViewable : IEmulatorService
 	{
 		GBAGPUMemoryAreas GetMemoryAreas();
 		/// <summary>
