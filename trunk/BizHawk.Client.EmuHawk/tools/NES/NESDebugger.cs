@@ -10,6 +10,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class NESDebugger : Form, IToolForm
 	{
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
 		private const int ADDR_MAX = 0xFFFF;
 		private const int DISASM_LINE_COUNT = 100;
 		private int defaultWidth;       //For saving the default size of the dialog, so the user can restore if desired

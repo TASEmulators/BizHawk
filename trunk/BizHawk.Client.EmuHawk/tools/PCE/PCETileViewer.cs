@@ -22,6 +22,8 @@ namespace BizHawk.Client.EmuHawk
 		private int bgpalnum;
 		private int sppalnum;
 
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
 		public PCETileViewer()
 		{
 			InitializeComponent();

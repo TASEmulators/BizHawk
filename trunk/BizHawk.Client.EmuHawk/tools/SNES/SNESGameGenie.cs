@@ -38,6 +38,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool _processing;
 
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
 		public SNESGameGenie()
 		{
 			InitializeComponent();

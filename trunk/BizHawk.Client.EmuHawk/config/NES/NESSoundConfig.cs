@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
-
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 
@@ -10,6 +10,8 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private NES.NESSettings _oldSettings;
 		private NES.NESSettings _settings;
+
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
 
 		public bool AskSaveChanges() { return true; }
 		public bool UpdateBefore { get { return false; } }

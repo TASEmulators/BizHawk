@@ -39,6 +39,8 @@ namespace BizHawk.Client.EmuHawk
 		private bool _sortReverse;
 		private bool _paused = false;
 
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
 		public RamWatch()
 		{
 			_core = (IMemoryDomains)Global.Emulator; // Cast is intentional, better to get a cast exception than a null reference exception later

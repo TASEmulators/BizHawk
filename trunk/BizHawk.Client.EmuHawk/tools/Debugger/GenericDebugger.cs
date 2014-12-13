@@ -21,6 +21,8 @@ namespace BizHawk.Client.EmuHawk
 		private IDebuggable Core;
 		private IDisassemblable Disassembler;
 
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
 		public GenericDebugger()
 		{
 			InitializeComponent();

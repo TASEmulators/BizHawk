@@ -1,7 +1,11 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using System;
+using System.Collections.Generic;
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio : IControlMainform
 	{
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
 		private bool _suppressAskSave = false;
 
 		public bool WantsToControlReadOnly { get { return false; } }

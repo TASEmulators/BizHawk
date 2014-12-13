@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
-
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 
@@ -14,6 +14,8 @@ namespace BizHawk.Client.EmuHawk
 		// Show Scroll Lines + UI Toggle
 		private readonly NES.PPU.DebugCallback _callback = new NES.PPU.DebugCallback();
 		private NES _nes;
+
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
 
 		public NESNameTableViewer()
 		{

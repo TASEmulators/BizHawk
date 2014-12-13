@@ -41,6 +41,35 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>
+		/// Gets all the IEmulatorServices the tool needs, as defined in its
+		/// RequiredServices attribute. If no attribute is defined, returns an
+		/// empty array.
+		/// </summary>
+		public Type[] GetDependencies<T>()
+			where T : IToolForm
+		{
+			var attribute = (RequiredServices)typeof(T)
+				.GetCustomAttributes(typeof(RequiredServices), false)
+				.FirstOrDefault();
+
+			if (attribute == null)
+				return new Type[0];
+			else
+				return attribute.Dependencies;
+		}
+
+		/// <summary>
+		/// Determines whether a tool is available, considering its dependencies
+		/// and the services provided by the emulator core.
+		/// </summary>
+		public bool IsAvailable<T>()
+			where T : IToolForm
+		{
+			return GetDependencies<T>()
+				.All(t => Global.Emulator.ServiceProvider.HasService(typeof(T)));
+		}
+
+		/// <summary>
 		/// Determines whether a given IToolForm is already loaded
 		/// </summary>
 		public bool IsLoaded<T>() where T : IToolForm

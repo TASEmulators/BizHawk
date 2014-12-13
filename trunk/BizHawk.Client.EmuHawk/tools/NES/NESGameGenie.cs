@@ -11,6 +11,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class NESGameGenie : Form, IToolForm
 	{
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
 		private readonly Dictionary<char, int> _gameGenieTable = new Dictionary<char, int>
 		{
 			{ 'A', 0 },  // 0000

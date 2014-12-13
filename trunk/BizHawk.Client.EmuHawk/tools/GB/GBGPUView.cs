@@ -7,11 +7,14 @@ using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using System.Collections.Generic;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class GBGPUView : Form, IToolForm
 	{
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
 		// TODO: freeze semantics are a bit weird: details for a mouseover or freeze are taken from the current
 		// state, not the state at the last callback (and so can be quite different when update is set to manual).
 		// I'm not quite sure what's the best thing to do...

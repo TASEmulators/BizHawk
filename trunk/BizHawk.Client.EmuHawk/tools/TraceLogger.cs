@@ -26,6 +26,8 @@ namespace BizHawk.Client.EmuHawk
 		private int _defaultWidth;
 		private int _defaultHeight;
 
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
 		public TraceLogger()
 		{
 			InitializeComponent();

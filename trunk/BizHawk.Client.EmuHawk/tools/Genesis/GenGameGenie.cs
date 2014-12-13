@@ -50,6 +50,8 @@ namespace BizHawk.Client.EmuHawk
 			{ '9', 31 }
 		};
 
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
 		private bool _processing;
 
 		private void GenGameGenie_Load(object sender, EventArgs e)

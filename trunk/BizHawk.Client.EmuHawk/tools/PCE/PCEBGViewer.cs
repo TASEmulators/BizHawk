@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
-
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.PCEngine;
 
@@ -12,6 +12,8 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private PCEngine _pce;
 		private int _vdcType;
+
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
 
 		public PceBgViewer()
 		{
