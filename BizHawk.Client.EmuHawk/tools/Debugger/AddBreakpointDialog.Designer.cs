@@ -125,6 +125,7 @@
 			this.MinimizeBox = false;
 			this.Name = "AddBreakpointDialog";
 			this.ShowIcon = false;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Add Breakpoint";
 			this.Load += new System.EventHandler(this.AddBreakpointDialog_Load);
 			this.BreakpointTypeGroupbox.ResumeLayout(false);
