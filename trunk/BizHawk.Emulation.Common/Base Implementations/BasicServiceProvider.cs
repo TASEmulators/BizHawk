@@ -30,6 +30,9 @@ namespace BizHawk.Emulation.Common
 				}
 			}
 
+			// Add the core itself since we know a core implements IEmulatorService
+			Services.Add(core.GetType(), core);
+
 			foreach (var service in core.GetType().GetNestedTypes(BindingFlags.Public)
 				.Where(t => typeof(IEmulatorService).IsAssignableFrom(t))
 				.Where(t => t.IsClass))
