@@ -20,9 +20,11 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(IMemoryDomains))]
 	public partial class HexEditor : Form, IToolForm
 	{
 		public IDictionary<Type, object> EmulatorServices { private get; set; }
+		private MemoryDomainList MemoryDomains { get { return (EmulatorServices[typeof(IMemoryDomains)] as IMemoryDomains).MemoryDomains; } }
 
 		private bool fontSizeSet = false;
 		private int fontWidth;
@@ -60,8 +62,6 @@ namespace BizHawk.Client.EmuHawk
 		// Configurations
 		private bool _bigEndian;
 		private int _dataSize;
-
-		private MemoryDomainList MemoryDomains;
 
 		public HexEditor()
 		{
@@ -135,21 +135,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			MemoryDomains = null;
-
-			if (!Global.Emulator.HasMemoryDomains())
-			{
-				Close();
-				return;
-			}
-
-
 			if (!IsHandleCreated || IsDisposed)
 			{
 				return;
 			}
-
-			MemoryDomains = ((IMemoryDomains)Global.Emulator).MemoryDomains; // The cast is intentional, we want a specific cast error, not an eventual null reference error
 
 			var theDomain = _domain.Name.ToLower() == "file on disk" ? 999 : GetDomainInt(_domain.Name);
 
