@@ -13,15 +13,11 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(IDebuggable))]
 	public partial class GenericDebugger : Form, IToolForm, IControlMainform
 	{
 		private int _defaultWidth;
 		private int _defaultHeight;
-
-		private IDebuggable Core;
-		private IDisassemblable Disassembler;
-
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
 
 		public GenericDebugger()
 		{
@@ -47,15 +43,6 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.GenericDebuggerSettings.UseWindowSize)
 			{
 				Size = Global.Config.GenericDebuggerSettings.WindowSize;
-			}
-
-			if (Global.Emulator.CanDebug())
-			{
-				Core = Global.Emulator.AsDebuggable();
-			}
-			else
-			{
-				Close();
 			}
 
 			Disassembler = Global.Emulator.AsDissassembler();
