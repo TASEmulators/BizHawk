@@ -19,16 +19,12 @@ namespace BizHawk.Client.EmuHawk
 		private int _defaultHeight;
 
 		private IDebuggable Core;
-		private readonly List<string> _instructions = new List<string>();
 
 		public GenericDebugger()
 		{
 			InitializeComponent();
 			TopMost = Global.Config.GenericDebuggerSettings.TopMost;
 			Closing += (o, e) => DisengageDebugger();
-
-			TraceView.QueryItemText += TraceView_QueryItemText;
-			TraceView.VirtualMode = true;
 		}
 
 		private void GenericDebugger_Load(object sender, EventArgs e)
@@ -65,20 +61,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EngageDebugger()
 		{
-			try
-			{
-				Core.Tracer.Enabled = true;
-				TraceView.Columns[0].Text = Core.Tracer.Header;
-			}
-			catch (NotImplementedException)
-			{
-				TracerBox.Enabled = false;
-			}
-
 			RegisterPanel.Core = Core;
 			RegisterPanel.ParentDebugger = this;
 			RegisterPanel.GenerateUI();
 
+			// TODO: handle if unavailable
 			BreakPointControl1.Core = Core;
 			BreakPointControl1.ParentDebugger = this;
 			BreakPointControl1.GenerateUI();
@@ -94,30 +81,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			BreakPointControl1.Shutdown();
-		}
-
-		private void UpdateTraceLog()
-		{
-			if (TracerBox.Enabled)
-			{
-				var instructions = Core.Tracer.TakeContents().Split('\n');
-				if (!string.IsNullOrWhiteSpace(instructions[0]))
-				{
-					_instructions.AddRange(instructions.Where(str => !string.IsNullOrEmpty(str)));
-				}
-
-				if (_instructions.Count >= Global.Config.TraceLoggerMaxLines)
-				{
-					_instructions.RemoveRange(0, _instructions.Count - Global.Config.TraceLoggerMaxLines);
-				}
-
-				TraceView.ItemCount = _instructions.Count;
-			}
-		}
-
-		private void TraceView_QueryItemText(int index, int column, out string text)
-		{
-			text = index < _instructions.Count ? _instructions[index] : string.Empty;
 		}
 
 		private void SaveConfigSettings()

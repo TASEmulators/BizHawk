@@ -4,7 +4,6 @@
 	{
 		public void UpdateValues()
 		{
-			UpdateTraceLog();
 			RegisterPanel.UpdateValues();
 		}
 
