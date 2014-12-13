@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheatEdit_Load(object sender, EventArgs e)
 		{
-			if (Global.Emulator != null) // the designer needs this check
+			if (Core != null) // the designer needs this check
 			{
 				DomainDropDown.Items.Clear();
 				DomainDropDown.Items.AddRange(Core.MemoryDomains
