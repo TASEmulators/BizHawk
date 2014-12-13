@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
-				AddressBox.MaxLength = value;
+				AddressBox.SetHexProperties(value);
 			}
 		}
 
