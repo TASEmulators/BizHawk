@@ -1832,6 +1832,7 @@
     <None Include="config\ControllerImages\WonderSwanColor.png" />
     <None Include="images\alt_about_image.png" />
     <None Include="images\connect_16x16.png" />
+    <None Include="images\add.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />
