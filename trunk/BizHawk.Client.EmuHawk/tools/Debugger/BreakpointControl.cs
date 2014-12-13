@@ -151,7 +151,9 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 
 		private void UpdateBreakpointRemoveButton()
 		{
-			RemoveBreakpointButton.Enabled = EditableItems.Any();
+			ToggleButton.Enabled =
+				RemoveBreakpointButton.Enabled =
+				EditableItems.Any();
 		}
 
 		private void BreakpointView_SelectedIndexChanged(object sender, EventArgs e)
@@ -189,6 +191,17 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 		private void UpdateStatsLabel()
 		{
 			BreakpointStatsLabel.Text = string.Format("{0} Total / {1} Active", Breakpoints.Count(), Breakpoints.Count(x => x.Active));
+		}
+
+		private void ToggleButton_Click(object sender, EventArgs e)
+		{
+			foreach (var item in SelectedItems)
+			{
+				item.Active ^= true;
+			}
+
+			BreakpointView.ItemCount = Breakpoints.Count;
+			UpdateStatsLabel();
 		}
 	}
 }
