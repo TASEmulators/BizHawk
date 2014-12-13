@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 		{
 			var renderer = FilterProgram.GuiRenderer;
 			renderer.Begin(FindOutput().SurfaceFormat.Size);
-			renderer.SetBlendState(FilterProgram.GL.BlendNone);
+			renderer.SetBlendState(FilterProgram.GL.BlendNoneCopy);
 			renderer.Draw(InputTexture);
 			renderer.End();
 		}

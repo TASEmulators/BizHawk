@@ -51,6 +51,9 @@ namespace BizHawk.Client.EmuHawk
 			//get the current entry
 			Texture2d CurrentTexture = CurrentTextures[0];
 
+			//TODO - its a bit cruddy here that we dont respect the current texture HasAlpha condition (in fact, theres no such concept)
+			//we might need to deal with that in the future to fix some bugs.
+
 			//check if its rotten and needs recreating
 			if (CurrentTexture == null || CurrentTexture.IntWidth != bb.Width || CurrentTexture.IntHeight != bb.Height)
 			{

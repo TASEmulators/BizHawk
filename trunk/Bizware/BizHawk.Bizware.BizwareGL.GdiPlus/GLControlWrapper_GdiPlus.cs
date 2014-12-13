@@ -73,9 +73,15 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 				return;
 
 			using (var g = CreateGraphics())
+			{
+				//not sure we had proof we needed this but it cant hurt
+				g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+				g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighSpeed;
 				RenderTargetWrapper.MyBufferedGraphics.Render(g);
+			}
 
 			//not too sure about this.. i think we have to re-allocate it so we can support a changed window size. did we do this at the right time anyway?
+			//maybe I should try caching harder, I hate to reallocate these constantly
 			RenderTargetWrapper.CreateGraphics();
 		}
 	}

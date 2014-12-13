@@ -495,6 +495,7 @@ TESTEROO:
 				{
 					//wrap the videoprovider data in a BitmapBuffer (no point to refactoring that many IVideoProviders)
 					bb = new BitmapBuffer(bufferWidth, bufferHeight, videoBuffer);
+					bb.DiscardAlpha();
 
 					//now, acquire the data sent from the videoProvider into a texture
 					videoTexture = VideoTextureFrugalizer.Get(bb);
