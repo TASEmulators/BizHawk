@@ -89,9 +89,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		sd.Color CurrentModulateColor = sd.Color.White;
 
+		IBlendState CurrentBlendState;
 		public void SetBlendState(IBlendState rsBlend)
 		{
-
+			CurrentBlendState = rsBlend;
 		}
 
 		MatrixStack _Projection, _Modelview;
@@ -120,6 +121,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 		public void Begin(int width, int height, bool yflipped = false)
 		{
 			Begin();
+
+			CurrentBlendState = Gdi.BlendNormal;
 
 			Projection = Owner.CreateGuiProjectionMatrix(width, height);
 			Modelview = Owner.CreateGuiViewMatrix(width, height);
@@ -172,6 +175,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 				new sd.PointF(x+w,y),
 				new sd.PointF(x,y+h),	
 			};
+
 			g.DrawImage(tw.SDBitmap, destPoints, new sd.RectangleF(x0, y0, x1 - x0, y1 - y0), sd.GraphicsUnit.Pixel, CurrentImageAttributes);
 			//g.DrawImage(tw.SDBitmap, 0, 0); //test
 		}
@@ -199,18 +203,50 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 				g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Bilinear;
 			if (tw.MagFilter == TextureMagFilter.Nearest)
 				g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+
+
+			//---------
+
+			if (CurrentBlendState == Gdi.BlendNormal)
+			{
+				g.CompositingMode = sd.Drawing2D.CompositingMode.SourceOver;
+				g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.Default; //?
+
+				//CurrentImageAttributes.ClearColorMatrix(ColorAdjustType.Bitmap);
+			}
+			else
+			//if(CurrentBlendState == Gdi.BlendNoneCopy)
+			//if(CurrentBlendState == Gdi.BlendNoneOpaque)
+			{
+				g.CompositingMode = sd.Drawing2D.CompositingMode.SourceCopy;
+				g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighSpeed;
+
+				//WARNING : DO NOT USE COLOR MATRIX TO WIPE THE ALPHA
+				//ITS SOOOOOOOOOOOOOOOOOOOOOOOOOOOO SLOW
+				//instead, we added kind of hacky support for 24bpp images
+			}
+
 		}
 
 		unsafe void DrawInternal(Texture2d tex, float x, float y, float w, float h)
 		{
 			var tw = Gdi.TextureWrapperForTexture(tex);
 			var g = Gdi.GetCurrentGraphics();
-			PrepDraw(g,tw);
+			PrepDraw(g, tw);
+
 			//a little bit of a fastpath.. I think it's safe
-			if (w == tex.Width && h == tex.Height && x == (int)x && y == (int)y)
-				g.DrawImageUnscaled(tw.SDBitmap, (int)x, (int)y);
-			else
-				g.DrawImage(tw.SDBitmap, x, y, w, h);
+			//if (w == tex.Width && h == tex.Height && x == (int)x && y == (int)y)
+			//  g.DrawImageUnscaled(tw.SDBitmap, (int)x, (int)y);
+			//else
+			{
+				sd.PointF[] destPoints = new sd.PointF[] {
+					new sd.PointF(x,y),
+					new sd.PointF(x+w,y),
+					new sd.PointF(x,y+h),	
+				};
+				//g.DrawImage(tw.SDBitmap, x, y, w, h); //original
+				g.DrawImage(tw.SDBitmap, destPoints, new sd.RectangleF(0, 0, tex.Width, tex.Height), sd.GraphicsUnit.Pixel, CurrentImageAttributes);
+			}
 		}
 
 		unsafe void DrawInternal(Art art, float x, float y, float w, float h, bool fx, bool fy)

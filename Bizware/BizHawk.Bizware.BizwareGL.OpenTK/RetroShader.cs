@@ -82,7 +82,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; //junk
 			pData[i++] = 1; pData[i++] = v1; //texcoord
 
-			Owner.SetBlendState(Owner.BlendNone);
+			Owner.SetBlendState(Owner.BlendNoneCopy);
 			Owner.BindArrayData(pData);
 			Owner.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
 		}

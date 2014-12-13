@@ -145,9 +145,15 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 				GL.BlendFuncSeparate(mybs.colorSource, mybs.colorDest, mybs.alphaSource, mybs.alphaDest);
 			}
 			else GL.Disable(EnableCap.Blend);
+			if (rsBlend == _rsBlendNoneOpaque)
+			{
+				//make sure constant color is set correctly
+				GL.BlendColor(new Color4(255, 255, 255, 255));
+			}
 		}
 
-		public IBlendState BlendNone { get { return _rsBlendNone; } }
+		public IBlendState BlendNoneCopy { get { return _rsBlendNoneVerbatim; } }
+		public IBlendState BlendNoneOpaque { get { return _rsBlendNoneOpaque; } }
 		public IBlendState BlendNormal { get { return _rsBlendNormal; } }
 
 		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required)
@@ -641,13 +647,23 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		void CreateRenderStates()
 		{
-			_rsBlendNone = new MyBlendState(false, BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero, BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
-			_rsBlendNormal = new MyBlendState(true,
+			_rsBlendNoneVerbatim = new MyBlendState(
+				false, 
+				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero, 
+				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
+			
+			_rsBlendNoneOpaque = new MyBlendState(
+				false, 
+				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero, 
+				BlendingFactorSrc.ConstantAlpha, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
+			
+			_rsBlendNormal = new MyBlendState(
+				true,
 				BlendingFactorSrc.SrcAlpha, BlendEquationMode.FuncAdd, BlendingFactorDest.OneMinusSrcAlpha,
 				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
 		}
 
-		MyBlendState _rsBlendNone, _rsBlendNormal;
+		MyBlendState _rsBlendNoneVerbatim, _rsBlendNoneOpaque, _rsBlendNormal;
 
 		//state caches
 		int sActiveTexture;

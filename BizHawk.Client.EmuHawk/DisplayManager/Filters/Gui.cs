@@ -260,7 +260,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 			GL.Clear(OpenTK.Graphics.OpenGL.ClearBufferMask.ColorBufferBit);
 
 			GuiRenderer.Begin(OutputSize.Width, OutputSize.Height);
-			GuiRenderer.SetBlendState(GL.BlendNone);
+			GuiRenderer.SetBlendState(GL.BlendNoneCopy);
 			
 			if(FilterOption != eFilterOption.None)
 				InputTexture.SetFilterLinear();

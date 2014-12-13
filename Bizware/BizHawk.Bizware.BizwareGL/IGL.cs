@@ -155,7 +155,13 @@ namespace BizHawk.Bizware.BizwareGL
 		/// retrieves a blend state for opaque rendering
 		/// Alpha values are copied from the source fragment.
 		/// </summary>
-		IBlendState BlendNone { get; }
+		IBlendState BlendNoneCopy { get; }
+
+		/// <summary>
+		/// retrieves a blend state for opaque rendering
+		/// Alpha values are written as opaque
+		/// </summary>
+		IBlendState BlendNoneOpaque { get; }
 
 		/// <summary>
 		/// retrieves a blend state for normal (non-premultiplied) alpha blending.

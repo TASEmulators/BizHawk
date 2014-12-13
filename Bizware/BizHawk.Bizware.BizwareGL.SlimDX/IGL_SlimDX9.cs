@@ -153,9 +153,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 		}
 
 		class MyBlendState : IBlendState { }
-		static MyBlendState _rsBlendNone = new MyBlendState(), _rsBlendNormal = new MyBlendState();
+		static MyBlendState _rsBlendNoneOpaque = new MyBlendState(), _rsBlendNoneVerbatim = new MyBlendState(), _rsBlendNormal = new MyBlendState();
 
-		public IBlendState BlendNone { get { return _rsBlendNone; } }
+		public IBlendState BlendNoneCopy { get { return _rsBlendNoneVerbatim; } }
+		public IBlendState BlendNoneOpaque { get { return _rsBlendNoneOpaque; } }
 		public IBlendState BlendNormal { get { return _rsBlendNormal; } }
 
 		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required)
