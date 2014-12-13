@@ -30,7 +30,7 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 
 		private void BreakpointControl_Load(object sender, EventArgs e)
 		{
-
+			UpdateStatsLabel();
 		}
 
 		private void BreakPointView_QueryItemText(int index, int column, out string text)
@@ -83,6 +83,7 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 				BreakpointView.ItemCount = Breakpoints.Count;
 				BreakpointView.Refresh();
 				UpdateBreakpointRemoveButton();
+				UpdateStatsLabel();
 			}
 			else
 			{
@@ -93,6 +94,7 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 		public void Shutdown()
 		{
 			Breakpoints.Clear();
+			UpdateStatsLabel();
 		}
 
 		private void AddBreakpointButton_Click(object sender, EventArgs e)
@@ -110,6 +112,7 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 
 			BreakpointView.ItemCount = Breakpoints.Count;
 			UpdateBreakpointRemoveButton();
+			UpdateStatsLabel();
 		}
 
 		private IEnumerable<int> SelectedIndices
@@ -141,6 +144,7 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 
 					BreakpointView.ItemCount = Breakpoints.Count;
 					UpdateBreakpointRemoveButton();
+					UpdateStatsLabel();
 				}
 			}
 		}
@@ -169,6 +173,7 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 
 					BreakpointView.ItemCount = Breakpoints.Count;
 					UpdateBreakpointRemoveButton();
+					UpdateStatsLabel();
 				}
 			}
 		}
@@ -179,6 +184,11 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 			{
 				RemoveBreakpointButton_Click(null, null);
 			}
+		}
+
+		private void UpdateStatsLabel()
+		{
+			BreakpointStatsLabel.Text = string.Format("{0} Total / {1} Active", Breakpoints.Count(), Breakpoints.Count(x => x.Active));
 		}
 	}
 }

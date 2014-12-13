@@ -34,6 +34,7 @@
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.BreakpointStatsLabel = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// AddBreakpointButton
@@ -74,11 +75,11 @@
 			this.BreakpointView.GridLines = true;
 			this.BreakpointView.HideSelection = false;
 			this.BreakpointView.ItemCount = 0;
-			this.BreakpointView.Location = new System.Drawing.Point(0, 0);
+			this.BreakpointView.Location = new System.Drawing.Point(0, 19);
 			this.BreakpointView.Name = "BreakpointView";
 			this.BreakpointView.SelectAllInProgress = false;
 			this.BreakpointView.selectedItem = -1;
-			this.BreakpointView.Size = new System.Drawing.Size(193, 384);
+			this.BreakpointView.Size = new System.Drawing.Size(193, 365);
 			this.BreakpointView.TabIndex = 5;
 			this.BreakpointView.TabStop = false;
 			this.BreakpointView.UseCompatibleStateImageBehavior = false;
@@ -103,10 +104,20 @@
 			this.columnHeader3.Text = "Name";
 			this.columnHeader3.Width = 80;
 			// 
+			// BreakpointStatsLabel
+			// 
+			this.BreakpointStatsLabel.AutoSize = true;
+			this.BreakpointStatsLabel.Location = new System.Drawing.Point(3, 3);
+			this.BreakpointStatsLabel.Name = "BreakpointStatsLabel";
+			this.BreakpointStatsLabel.Size = new System.Drawing.Size(35, 13);
+			this.BreakpointStatsLabel.TabIndex = 8;
+			this.BreakpointStatsLabel.Text = "label1";
+			// 
 			// BreakpointControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.BreakpointStatsLabel);
 			this.Controls.Add(this.RemoveBreakpointButton);
 			this.Controls.Add(this.AddBreakpointButton);
 			this.Controls.Add(this.BreakpointView);
@@ -114,6 +125,7 @@
 			this.Size = new System.Drawing.Size(193, 413);
 			this.Load += new System.EventHandler(this.BreakpointControl_Load);
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -125,5 +137,6 @@
 		private System.Windows.Forms.Button AddBreakpointButton;
 		private System.Windows.Forms.Button RemoveBreakpointButton;
 		private System.Windows.Forms.ColumnHeader columnHeader3;
+		private System.Windows.Forms.Label BreakpointStatsLabel;
 	}
 }
