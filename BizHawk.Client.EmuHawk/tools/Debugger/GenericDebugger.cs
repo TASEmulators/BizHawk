@@ -78,6 +78,11 @@ namespace BizHawk.Client.EmuHawk
 			RegistersGroupBox.Enabled = false;
 		}
 
+		private void OnCpuDropDownIndexChanged(object sender, EventArgs e)
+		{
+			Disassembler.Cpu = (sender as ComboBox).SelectedItem.ToString();
+		}
+
 		private void EngageDebugger()
 		{
 			if (Core.CanDisassemble())
@@ -91,15 +96,15 @@ namespace BizHawk.Client.EmuHawk
 					{
 						var c = new ComboBox
 						{
-							Location = new Point(30, 20),
+							Location = new Point(35, 17),
 							DropDownStyle = ComboBoxStyle.DropDownList
 						};
 
 						c.Items.AddRange(Core.AsDissassembler().AvailableCpus.ToArray());
-
 						c.SelectedItem = Core.AsDissassembler().Cpu;
+						c.SelectedIndexChanged += OnCpuDropDownIndexChanged;
 
-						Controls.Add(c);
+						DisassemblerBox.Controls.Add(c);
 					}
 					else
 					{
