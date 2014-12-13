@@ -36,6 +36,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var result = Get<T>();
+
+			UpdateDependencies(result);
+			result.Restart();
+
 			result.Show();
 			return result;
 		}
@@ -66,6 +70,19 @@ namespace BizHawk.Client.EmuHawk
 				return new Type[0];
 			else
 				return attribute.Dependencies;
+		}
+
+		/// <summary>
+		/// Feeds the tool its required services.
+		/// </summary>
+		private void UpdateDependencies(IToolForm tool)
+		{
+			var serviceSet = new Dictionary<Type, object>();
+
+			foreach (var service in GetDependencies(tool.GetType()))
+				serviceSet[service] = Global.Emulator.ServiceProvider.GetService(service);
+
+			tool.EmulatorServices = serviceSet;
 		}
 
 		/// <summary>
@@ -181,7 +198,26 @@ namespace BizHawk.Client.EmuHawk
 				Global.CheatList.NewList(GenerateDefaultCheatFilename(), autosave: true);
 			}
 
-			_tools.ForEach(x => x.Restart());
+			var unavailable = new List<IToolForm>();
+
+			foreach (var tool in _tools)
+			{
+				if (IsAvailable(tool.GetType()))
+				{
+					UpdateDependencies(tool);
+					tool.Restart();
+				}
+				else
+				{
+					unavailable.Add(tool);
+				}
+			}
+
+			foreach (var tool in unavailable)
+			{
+				tool.Close();
+				_tools.Remove(tool);
+			}
 		}
 
 		/// <summary>
