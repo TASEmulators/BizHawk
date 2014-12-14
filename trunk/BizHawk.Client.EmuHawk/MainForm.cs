@@ -352,9 +352,7 @@ namespace BizHawk.Client.EmuHawk
 				LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
 			}
 
-			//can't do this unless we are autoloading a rom too...
-			if (Global.Config.RecentWatches.AutoLoad 
-				&& Global.Emulator.HasMemoryDomains())
+			if (Global.Config.RecentWatches.AutoLoad)
 			{
 				GlobalWin.Tools.LoadRamWatch(!Global.Config.DisplayRamWatch);
 			}
@@ -374,32 +372,32 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Load<Cheats>();
 			}
 
-			if (Global.Config.AutoLoadNESPPU && Global.Emulator is NES)
+			if (Global.Config.AutoLoadNESPPU)
 			{
 				GlobalWin.Tools.Load<NesPPU>();
 			}
 
-			if (Global.Config.AutoLoadNESNameTable && Global.Emulator is NES)
+			if (Global.Config.AutoLoadNESNameTable)
 			{
 				GlobalWin.Tools.Load<NESNameTableViewer>();
 			}
 
-			if (Global.Config.AutoLoadNESDebugger && Global.Emulator is NES)
+			if (Global.Config.AutoLoadNESDebugger)
 			{
 				GlobalWin.Tools.Load<NESDebugger>();
 			}
 
-			if (Global.Config.NESGGAutoload && Global.Emulator.SystemId == "NES")
+			if (Global.Config.NESGGAutoload)
 			{
 				GlobalWin.Tools.LoadGameGenieEc();
 			}
 
-			if (Global.Config.AutoLoadGBGPUView && Global.Emulator is Gameboy)
+			if (Global.Config.AutoLoadGBGPUView)
 			{
 				GlobalWin.Tools.Load<GBGPUView>();
 			}
 
-			if (Global.Config.AutoloadTAStudio && !Global.Game.IsNullInstance)
+			if (Global.Config.AutoloadTAStudio)
 			{
 				GlobalWin.Tools.Load<TAStudio>();
 			}
@@ -414,37 +412,37 @@ namespace BizHawk.Client.EmuHawk
 				OpenLuaConsole();
 			}
 
-			if (Global.Config.SmsVdpAutoLoad && Global.Emulator is SMS)
+			if (Global.Config.SmsVdpAutoLoad)
 			{
 				GlobalWin.Tools.Load<SmsVDPViewer>();
 			}
 
-			if (Global.Config.PCEBGViewerAutoload && Global.Emulator is PCEngine)
+			if (Global.Config.PCEBGViewerAutoload)
 			{
 				GlobalWin.Tools.Load<PceBgViewer>();
 			}
 
-			if (Global.Config.PceVdpAutoLoad && Global.Emulator is PCEngine)
+			if (Global.Config.PceVdpAutoLoad)
 			{
 				GlobalWin.Tools.Load<PCETileViewer>();
 			}
 
-			if (Global.Config.RecentPceCdlFiles.AutoLoad && Global.Emulator is PCEngine)
+			if (Global.Config.RecentPceCdlFiles.AutoLoad)
 			{
 				GlobalWin.Tools.Load<PCECDL>();
 			}
 
-			if (Global.Config.PceSoundDebuggerAutoload && Global.Emulator is PCEngine)
+			if (Global.Config.PceSoundDebuggerAutoload)
 			{
 				GlobalWin.Tools.Load<PCESoundDebugger>();
 			}
 
-			if (Global.Config.GenVdpAutoLoad && Global.Emulator is GPGX)
+			if (Global.Config.GenVdpAutoLoad)
 			{
 				GlobalWin.Tools.Load<GenVDPViewer>();
 			}
 
-			if (Global.Config.AutoLoadSNESGraphicsDebugger && Global.Emulator is LibsnesCore)
+			if (Global.Config.AutoLoadSNESGraphicsDebugger)
 			{
 				GlobalWin.Tools.Load<SNESGraphicsDebugger>();
 			}
@@ -454,7 +452,7 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.LoadTraceLogger();
 			}
 
-			if (Global.Config.GenericDebuggerAutoload && Global.Emulator.CanDebug())
+			if (Global.Config.GenericDebuggerAutoload)
 			{
 				GlobalWin.Tools.Load<GenericDebugger>();
 			}
