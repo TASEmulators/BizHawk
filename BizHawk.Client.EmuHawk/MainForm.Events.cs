@@ -1209,11 +1209,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FDSControlsMenuItem.Enabled = Global.Emulator.BoardName == "FDS";
 
-			NESDebuggerMenuItem.Visible =
-				VersionInfo.DeveloperBuild;
-
-			NESDebuggerMenuItem.Enabled =
-				NESPPUViewerMenuItem.Enabled =
+			NESPPUViewerMenuItem.Enabled =
 				NESNametableViewerMenuItem.Enabled =
 				NESSoundChannelsMenuItem.Enabled =
 				MovieSettingsMenuItem.Enabled =
@@ -1242,11 +1238,6 @@ namespace BizHawk.Client.EmuHawk
 					FdsInsertDiskMenuAdd("Insert Disk " + i, str, "FDS Disk " + i + " inserted.");
 				}
 			}
-		}
-
-		private void NESDebuggerMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<NESDebugger>();
 		}
 
 		private void NESPPUViewerMenuItem_Click(object sender, EventArgs e)

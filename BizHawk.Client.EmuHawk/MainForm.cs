@@ -386,11 +386,6 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Load<NESNameTableViewer>();
 			}
 
-			if (Global.Config.AutoLoadNESDebugger)
-			{
-				GlobalWin.Tools.Load<NESDebugger>();
-			}
-
 			if (Global.Config.NESGGAutoload)
 			{
 				GlobalWin.Tools.LoadGameGenieEc();

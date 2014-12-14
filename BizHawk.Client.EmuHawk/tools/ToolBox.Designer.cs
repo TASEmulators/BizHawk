@@ -37,7 +37,6 @@
 			this.LuaConsoleToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.TAStudioToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.VirtualpadToolbarItem = new System.Windows.Forms.ToolStripButton();
-			this.NesDebuggerToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.NesPPUToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.NesNameTableToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.NesGameGenieToolbarItem = new System.Windows.Forms.ToolStripButton();
@@ -76,7 +75,6 @@
             this.LuaConsoleToolbarItem,
             this.TAStudioToolbarItem,
             this.VirtualpadToolbarItem,
-            this.NesDebuggerToolbarItem,
             this.NesPPUToolbarItem,
             this.NesNameTableToolbarItem,
             this.NesGameGenieToolbarItem,
@@ -165,16 +163,6 @@
 			this.VirtualpadToolbarItem.Size = new System.Drawing.Size(23, 20);
 			this.VirtualpadToolbarItem.ToolTipText = "Virtualpads";
 			this.VirtualpadToolbarItem.Click += new System.EventHandler(this.VirtualpadToolbarItem_Click);
-			// 
-			// NesDebuggerToolbarItem
-			// 
-			this.NesDebuggerToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NESControllerIcon;
-			this.NesDebuggerToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.NesDebuggerToolbarItem.Name = "NesDebuggerToolbarItem";
-			this.NesDebuggerToolbarItem.Size = new System.Drawing.Size(49, 20);
-			this.NesDebuggerToolbarItem.Text = "Dbg";
-			this.NesDebuggerToolbarItem.ToolTipText = "Nes Debugger";
-			this.NesDebuggerToolbarItem.Click += new System.EventHandler(this.NesDebuggerToolbarItem_Click);
 			// 
 			// NesPPUToolbarItem
 			// 
@@ -372,7 +360,6 @@
 		private System.Windows.Forms.ToolStripButton HexEditorToolbarItem;
 		private System.Windows.Forms.ToolStripButton LuaConsoleToolbarItem;
 		private System.Windows.Forms.ToolStripButton NesPPUToolbarItem;
-		private System.Windows.Forms.ToolStripButton NesDebuggerToolbarItem;
 		private System.Windows.Forms.ToolStripButton NesGameGenieToolbarItem;
 		private System.Windows.Forms.ToolStripButton NesNameTableToolbarItem;
 		private System.Windows.Forms.ToolStripButton TI83KeypadToolbarItem;
