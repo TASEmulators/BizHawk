@@ -291,11 +291,6 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (!Global.Emulator.HasMemoryDomains())
-			{
-				Close();
-			}
-
 			_settings.Domain = Core.MemoryDomains.MainMemory;
 			MessageLabel.Text = "Search restarted";
 			DoDomainSizeCheck();
