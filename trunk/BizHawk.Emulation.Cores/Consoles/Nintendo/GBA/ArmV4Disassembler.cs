@@ -16,6 +16,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			}
 		}
 
+		public override string PCRegisterName
+		{
+			get { return "R15"; }
+		}
+
 		public override string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
 			if (_cpu == "ARM v4 (Thumb)")
