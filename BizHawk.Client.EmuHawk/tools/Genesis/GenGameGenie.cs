@@ -12,8 +12,13 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(IEmulator))]
 	public partial class GenGameGenie : Form, IToolForm
 	{
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+		private IEmulator Emulator { get { return (IEmulator)EmulatorServices[typeof(IEmulator)]; } }
+		private MemoryDomainList MemoryDomains { get { return (EmulatorServices[typeof(IMemoryDomains)] as IMemoryDomains).MemoryDomains; } }
+
 		private readonly Dictionary<char, int> _gameGenieTable = new Dictionary<char, int>
 		{
 			{ 'A', 0 },
@@ -50,8 +55,6 @@ namespace BizHawk.Client.EmuHawk
 			{ '9', 31 }
 		};
 
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-
 		private bool _processing;
 
 		private void GenGameGenie_Load(object sender, EventArgs e)
@@ -70,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			if (Global.Emulator.SystemId != "GEN")
+			if (Emulator.SystemId != "GEN")
 			{
 				Close();
 			}
@@ -78,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			if (Global.Emulator.SystemId != "GEN")
+			if (Emulator.SystemId != "GEN")
 			{
 				Close();
 			}
@@ -360,7 +363,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var watch = Watch.GenerateWatch(
-				Global.Emulator.AsMemoryDomains().MemoryDomains["MD CART"],
+				MemoryDomains["MD CART"],
 				address,
 				Watch.WatchSize.Word,
 				Watch.DisplayType.Hex,

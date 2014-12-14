@@ -12,20 +12,24 @@ using System.Drawing.Imaging;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(GPGX))]
 	public partial class GenVDPViewer : Form, IToolForm
 	{
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+		private GPGX Emu { get { return (GPGX)EmulatorServices[typeof(GPGX)]; } }
+
 		private LibGPGX.VDPView View = new LibGPGX.VDPView();
-		private GPGX Emu;
 		int palindex = 0;
 
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
+		
 
 		public GenVDPViewer()
 		{
 			InitializeComponent();
 			bmpViewTiles.ChangeBitmapSize(512, 256);
 			bmpViewPal.ChangeBitmapSize(16, 4);
-			Restart();
+
+			TopMost = Global.Config.GenVdpSettings.TopMost;
 		}
 
 		unsafe static void DrawTile(int* dest, int pitch, byte* src, int* pal)
@@ -141,9 +145,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			Emu = Global.Emulator as GPGX;
-			if (Emu == null)
-				Close();
 			UpdateValues();
 		}
 
@@ -259,11 +260,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GenVDPViewer_Load(object sender, EventArgs e)
 		{
-			TopMost = Global.Config.GenVdpSettings.TopMost;
 			if (Global.Config.GenVdpSettings.UseWindowPosition)
 			{
 				Location = Global.Config.GenVdpSettings.WindowPosition;
 			}
+
+			Restart();
 		}
 	}
 }
