@@ -154,6 +154,8 @@ namespace BizHawk.Client.Common
 
 		public bool LoadRom(string path, CoreComm nextComm, bool forceAccurateCore = false) // forceAccurateCore is currently just for Quicknes vs Neshawk but could be used for other situations
 		{
+			bool cancel = false;
+
 			if (path == null)
 			{
 				return false;
@@ -321,7 +323,15 @@ namespace BizHawk.Client.Common
 							}
 							else if (ChoosePlatform != null)
 							{
-								rom.GameInfo.System = ChoosePlatform(rom);
+								var result = ChoosePlatform(rom);
+								if (!string.IsNullOrEmpty(result))
+								{
+									rom.GameInfo.System = ChoosePlatform(rom);
+								}
+								else
+								{
+									cancel = true;
+								}
 							}
 						}
 
@@ -434,7 +444,10 @@ namespace BizHawk.Client.Common
 
 					if (nextEmulator == null)
 					{
-						DoLoadErrorCallback("No core could load the rom.", null);
+						if (!cancel)
+						{
+							DoLoadErrorCallback("No core could load the rom.", null);
+						}
 						return false;
 					}
 				}
