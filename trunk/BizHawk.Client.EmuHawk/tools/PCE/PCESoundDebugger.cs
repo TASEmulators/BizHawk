@@ -18,9 +18,11 @@ using ICSharpCode.SharpZipLib.Zip;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(PCEngine))]
 	public partial class PCESoundDebugger : Form, IToolForm
 	{
 		public IDictionary<Type, object> EmulatorServices { private get; set; }
+		private PCEngine _pce { get { return (PCEngine)EmulatorServices[typeof(PCEngine)]; } }
 
 		public PCESoundDebugger()
 		{
@@ -44,10 +46,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			var pce = Global.Emulator as PCEngine;
-			if (pce == null)
-				return;
-
 			foreach(var entry in PSGEntries)
 			{
 				entry.wasactive = entry.active;
@@ -60,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 
 			for(int i=0;i<6;i++)
 			{
-				var ch = pce.PSG.Channels[i];
+				var ch = _pce.PSG.Channels[i];
 
 				//these conditions mean a sample isnt playing
 				if (!ch.Enabled)
@@ -281,11 +279,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void lvChEn_ItemChecked(object sender, ItemCheckedEventArgs e)
 		{
-			var pce = Global.Emulator as PCEngine;
-			if (pce == null)
-				return;
 			for (int i = 0; i < 6; i++)
-				pce.PSG.UserMute[i] = !lvChEn.Items[i].Checked;
+				_pce.PSG.UserMute[i] = !lvChEn.Items[i].Checked;
 		}
 
 		private void PCESoundDebugger_Load(object sender, EventArgs e)
