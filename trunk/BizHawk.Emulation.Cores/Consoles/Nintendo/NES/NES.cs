@@ -50,6 +50,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				(board as FDS).SetDriveLightCallback((val) => DriveLightOn = val);
 			}
 			PutSettings((NESSettings)Settings ?? new NESSettings());
+
+			if (board is BANDAI_FCG_1)
+			{
+				(ServiceProvider as BasicServiceProvider).Register<DatachBarcode>((board as BANDAI_FCG_1).reader);
+			}
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
