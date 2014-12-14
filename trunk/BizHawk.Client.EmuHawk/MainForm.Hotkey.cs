@@ -300,7 +300,7 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.Load<HexEditor>();
 					break;
 				case "Trace Logger":
-					GlobalWin.Tools.LoadTraceLogger();
+					GlobalWin.Tools.Load<TraceLogger>();
 					break;
 				case "Lua Console":
 					OpenLuaConsole();

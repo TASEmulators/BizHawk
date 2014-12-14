@@ -449,7 +449,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.TraceLoggerAutoLoad)
 			{
-				GlobalWin.Tools.LoadTraceLogger();
+				GlobalWin.Tools.Load<TraceLogger>();
 			}
 
 			if (Global.Config.GenericDebuggerAutoload)
