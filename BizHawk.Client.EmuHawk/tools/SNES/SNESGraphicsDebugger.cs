@@ -36,6 +36,7 @@ using BizHawk.Client.EmuHawk; //TODO: What??
 
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(LibsnesCore))]
 	public unsafe partial class SNESGraphicsDebugger : Form, IToolForm
 	{
 		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
@@ -47,17 +48,11 @@ namespace BizHawk.Client.EmuHawk
 		public bool AskSaveChanges() { return true; }
 
 		public IDictionary<Type, object> EmulatorServices { private get; set; }
+		private LibsnesCore Emulator { get { return (LibsnesCore)EmulatorServices[typeof(LibsnesCore)]; } }
 
 		public void Restart()
 		{
-			if (Global.Emulator is LibsnesCore)
-			{
-				//TODO: shouldn't something be done here?
-			}
-			else
-			{
-				Close();
-			}
+			
 		}
 
 		public SNESGraphicsDebugger()
@@ -132,18 +127,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			if (Global.Emulator is LibsnesCore)
+			SyncCore();
+			if (Visible && !checkScanlineControl.Checked)
 			{
-				SyncCore();
-				if (Visible && !checkScanlineControl.Checked)
-				{
-					RegenerateData();
-					InternalUpdateValues();
-				}
-			}
-			else
-			{
-				Close();
+				RegenerateData();
+				InternalUpdateValues();
 			}
 		}
 
@@ -183,21 +171,20 @@ namespace BizHawk.Client.EmuHawk
 
 		void SyncCore()
 		{
-			LibsnesCore core = Global.Emulator as LibsnesCore;
-			if (currentSnesCore != core && currentSnesCore != null)
+			if (currentSnesCore != Emulator && currentSnesCore != null)
 			{
 				currentSnesCore.ScanlineHookManager.Unregister(this);
 			}
 
-			if(currentSnesCore != core && core != null)
+			if (currentSnesCore != Emulator && Emulator != null)
 			{
 				suppression = true;
-				comboPalette.SelectedValue = core.CurrPalette;
+				comboPalette.SelectedValue = Emulator.CurrPalette;
 				RefreshBGENCheckStatesFromConfig();
 				suppression = false;
 			}
 
-			currentSnesCore = core;
+			currentSnesCore = Emulator;
 
 			if (currentSnesCore != null)
 			{
@@ -1352,7 +1339,7 @@ namespace BizHawk.Client.EmuHawk
 			if (suppression) return;
 			var pal = (SnesColors.ColorType)comboPalette.SelectedValue;
 			Console.WriteLine("set {0}", pal);
-			var s = ((LibsnesCore)Global.Emulator).GetSettings();
+			var s = Emulator.GetSettings();
 			s.Palette = pal.ToString();
 			if (currentSnesCore != null)
 			{
@@ -1366,7 +1353,7 @@ namespace BizHawk.Client.EmuHawk
 
 		void RefreshBGENCheckStatesFromConfig()
 		{
-			var s = ((LibsnesCore)Global.Emulator).GetSettings();
+			var s = Emulator.GetSettings();
 			checkEN0_BG1.Checked = s.ShowBG1_0;
 			checkEN0_BG2.Checked = s.ShowBG2_0;
 			checkEN0_BG3.Checked = s.ShowBG3_0;
@@ -1384,7 +1371,7 @@ namespace BizHawk.Client.EmuHawk
 		private void checkEN_CheckedChanged(object sender, EventArgs e)
 		{
 			if(suppression) return;
-			var snes = ((LibsnesCore)Global.Emulator);
+			var snes = Emulator;
 			var s = snes.GetSettings();
 			if (sender == checkEN0_BG1) s.ShowBG1_0 = checkEN0_BG1.Checked;
 			if (sender == checkEN0_BG2) s.ShowBG2_0 = checkEN0_BG2.Checked;

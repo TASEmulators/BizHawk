@@ -44,13 +44,13 @@ namespace BizHawk.Client.EmuHawk
 
 			if (columnName == MarkerColumnName)
 			{
-				if (index == Global.Emulator.Frame && index == GlobalWin.MainForm.PauseOnFrame)
+				if (index == Emulator.Frame && index == GlobalWin.MainForm.PauseOnFrame)
 				{
 					bitmap = TasView.HorizontalOrientation ?
 						Properties.Resources.ts_v_arrow_green_blue :
 						Properties.Resources.ts_h_arrow_green_blue;
 				}
-				else if (index == Global.Emulator.Frame)
+				else if (index == Emulator.Frame)
 				{
 					bitmap = TasView.HorizontalOrientation ?
 						Properties.Resources.ts_v_arrow_blue :
@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (columnName == FrameColumnName)
 			{
-				if (Global.Emulator.Frame == index)
+				if (Emulator.Frame == index)
 				{
 					color = CurrentFrame_FrameCol;
 				}
@@ -103,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				if (Global.Emulator.Frame == index)
+				if (Emulator.Frame == index)
 				{
 					color = CurrentFrame_InputLog;
 				}
@@ -144,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						text = CurrentTasMovie.DisplayValue(index, columnName);
 					}
-					else if (Global.Emulator.Frame == CurrentTasMovie.InputLogLength) // In this situation we have a "pending" frame for the user to click
+					else if (Emulator.Frame == CurrentTasMovie.InputLogLength) // In this situation we have a "pending" frame for the user to click
 					{
 						text = CurrentTasMovie.CreateDisplayValueForButton(
 							Global.ClickyVirtualPadController,

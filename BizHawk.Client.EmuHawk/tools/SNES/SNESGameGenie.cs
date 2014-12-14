@@ -11,8 +11,13 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(LibsnesCore), typeof(IMemoryDomains))]
 	public partial class SNESGameGenie : Form, IToolForm
 	{
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+		private SNESGameGenie Emulator { get { return (SNESGameGenie)EmulatorServices[typeof(SNESGameGenie)]; } }
+		private MemoryDomainList MemoryDomains { get { return (EmulatorServices[typeof(IMemoryDomains)] as IMemoryDomains).MemoryDomains; } }
+
 		// including transposition
 		// Code: D F 4 7 0 9 1 5 6 B C 8 A 2 3 E
 		// Hex:  0 1 2 3 4 5 6 7 8 9 A B C D E F
@@ -37,8 +42,6 @@ namespace BizHawk.Client.EmuHawk
 		};
 
 		private bool _processing;
-
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
 
 		public SNESGameGenie()
 		{
@@ -67,18 +70,12 @@ namespace BizHawk.Client.EmuHawk
 		public bool UpdateBefore { get { return false; } }
 		public void Restart()
 		{
-			if (!(Global.Emulator is LibsnesCore))
-			{
-				Close();
-			}
+			// Do nothing
 		}
 
 		public void UpdateValues()
 		{
-			if (!(Global.Emulator is LibsnesCore))
-			{
-				Close();
-			}
+			// Do nothing
 		}
 
 		public void FastUpdate()
@@ -247,50 +244,47 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddCheat_Click(object sender, EventArgs e)
 		{
-			if (Global.Emulator is LibsnesCore)
+			string name;
+			var address = 0;
+			var value = 0;
+
+			if (!string.IsNullOrWhiteSpace(CheatNameBox.Text))
 			{
-				string name;
-				var address = 0;
-				var value = 0;
-
-				if (!string.IsNullOrWhiteSpace(CheatNameBox.Text))
-				{
-					name = CheatNameBox.Text;
-				}
-				else
-				{
-					_processing = true;
-					GGCodeMaskBox.TextMaskFormat = MaskFormat.IncludeLiterals;
-					name = GGCodeMaskBox.Text;
-					GGCodeMaskBox.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
-					_processing = false;
-				}
-
-				if (!string.IsNullOrWhiteSpace(AddressBox.Text))
-				{
-					address = int.Parse(AddressBox.Text, NumberStyles.HexNumber)
-						+ 0x8000;
-				}
-
-				if (!string.IsNullOrWhiteSpace(ValueBox.Text))
-				{
-					value = byte.Parse(ValueBox.Text, NumberStyles.HexNumber);
-				}
-
-				var watch = Watch.GenerateWatch(
-					Global.Emulator.AsMemoryDomains().MemoryDomains["BUS"],
-					address,
-					Watch.WatchSize.Byte,
-					Watch.DisplayType.Hex,
-					name,
-					bigEndian: false
-				);
-
-				Global.CheatList.Add(new Cheat(
-					watch,
-					value
-				));
+				name = CheatNameBox.Text;
 			}
+			else
+			{
+				_processing = true;
+				GGCodeMaskBox.TextMaskFormat = MaskFormat.IncludeLiterals;
+				name = GGCodeMaskBox.Text;
+				GGCodeMaskBox.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
+				_processing = false;
+			}
+
+			if (!string.IsNullOrWhiteSpace(AddressBox.Text))
+			{
+				address = int.Parse(AddressBox.Text, NumberStyles.HexNumber)
+					+ 0x8000;
+			}
+
+			if (!string.IsNullOrWhiteSpace(ValueBox.Text))
+			{
+				value = byte.Parse(ValueBox.Text, NumberStyles.HexNumber);
+			}
+
+			var watch = Watch.GenerateWatch(
+				MemoryDomains["BUS"],
+				address,
+				Watch.WatchSize.Byte,
+				Watch.DisplayType.Hex,
+				name,
+				bigEndian: false
+			);
+
+			Global.CheatList.Add(new Cheat(
+				watch,
+				value
+			));
 		}
 
 		private void AddressBox_TextChanged(object sender, EventArgs e)
