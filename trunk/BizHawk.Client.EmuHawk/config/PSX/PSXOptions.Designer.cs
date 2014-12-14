@@ -32,19 +32,19 @@
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.btnOk = new System.Windows.Forms.Button();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.button1 = new System.Windows.Forms.Button();
+			this.btnNiceDisplayConfig = new System.Windows.Forms.Button();
 			this.label2 = new System.Windows.Forms.Label();
-			this.radioButton2 = new System.Windows.Forms.RadioButton();
+			this.rbMednafenMode = new System.Windows.Forms.RadioButton();
 			this.label8 = new System.Windows.Forms.Label();
-			this.radioButton1 = new System.Windows.Forms.RadioButton();
-			this.label3 = new System.Windows.Forms.Label();
-			this.checkBox1 = new System.Windows.Forms.CheckBox();
+			this.rbPixelPro = new System.Windows.Forms.RadioButton();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.label6 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
+			this.rbDebugMode = new System.Windows.Forms.RadioButton();
+			this.label3 = new System.Windows.Forms.Label();
+			this.rbTweakedMednafenMode = new System.Windows.Forms.RadioButton();
+			this.label9 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();
@@ -53,7 +53,7 @@
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(437, 347);
+			this.btnCancel.Location = new System.Drawing.Point(622, 240);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 3;
@@ -63,59 +63,65 @@
 			// btnOk
 			// 
 			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOk.Location = new System.Drawing.Point(356, 347);
+			this.btnOk.Location = new System.Drawing.Point(541, 240);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(75, 23);
 			this.btnOk.TabIndex = 2;
 			this.btnOk.Text = "OK";
 			this.btnOk.UseVisualStyleBackColor = true;
+			this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
 			// 
 			// groupBox1
 			// 
-			this.groupBox1.Controls.Add(this.button1);
+			this.groupBox1.Controls.Add(this.label9);
+			this.groupBox1.Controls.Add(this.rbTweakedMednafenMode);
+			this.groupBox1.Controls.Add(this.label3);
+			this.groupBox1.Controls.Add(this.rbDebugMode);
+			this.groupBox1.Controls.Add(this.btnNiceDisplayConfig);
 			this.groupBox1.Controls.Add(this.label2);
-			this.groupBox1.Controls.Add(this.radioButton2);
+			this.groupBox1.Controls.Add(this.rbMednafenMode);
 			this.groupBox1.Controls.Add(this.label8);
-			this.groupBox1.Controls.Add(this.radioButton1);
-			this.groupBox1.Location = new System.Drawing.Point(12, 12);
+			this.groupBox1.Controls.Add(this.rbPixelPro);
+			this.groupBox1.Location = new System.Drawing.Point(12, 7);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(276, 265);
+			this.groupBox1.Size = new System.Drawing.Size(474, 256);
 			this.groupBox1.TabIndex = 6;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Resolution Management";
 			// 
-			// button1
+			// btnNiceDisplayConfig
 			// 
-			this.button1.AutoSize = true;
-			this.button1.Location = new System.Drawing.Point(46, 225);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(173, 23);
-			this.button1.TabIndex = 24;
-			this.button1.Text = "Change My Display Configuration";
-			this.button1.UseVisualStyleBackColor = true;
+			this.btnNiceDisplayConfig.AutoSize = true;
+			this.btnNiceDisplayConfig.Location = new System.Drawing.Point(140, 221);
+			this.btnNiceDisplayConfig.Name = "btnNiceDisplayConfig";
+			this.btnNiceDisplayConfig.Size = new System.Drawing.Size(173, 23);
+			this.btnNiceDisplayConfig.TabIndex = 24;
+			this.btnNiceDisplayConfig.Text = "Change My Display Options";
+			this.btnNiceDisplayConfig.UseVisualStyleBackColor = true;
+			this.btnNiceDisplayConfig.Click += new System.EventHandler(this.btnNiceDisplayConfig_Click);
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(6, 140);
+			this.label2.Location = new System.Drawing.Point(6, 132);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(213, 82);
 			this.label2.TabIndex = 23;
 			this.label2.Text = resources.GetString("label2.Text");
 			// 
-			// radioButton2
+			// rbMednafenMode
 			// 
-			this.radioButton2.AutoSize = true;
-			this.radioButton2.Location = new System.Drawing.Point(6, 120);
-			this.radioButton2.Name = "radioButton2";
-			this.radioButton2.Size = new System.Drawing.Size(145, 17);
-			this.radioButton2.TabIndex = 22;
-			this.radioButton2.TabStop = true;
-			this.radioButton2.Text = "Mednafen Mode (4:3 AR)";
-			this.radioButton2.UseVisualStyleBackColor = true;
+			this.rbMednafenMode.AutoSize = true;
+			this.rbMednafenMode.Location = new System.Drawing.Point(6, 116);
+			this.rbMednafenMode.Name = "rbMednafenMode";
+			this.rbMednafenMode.Size = new System.Drawing.Size(145, 17);
+			this.rbMednafenMode.TabIndex = 22;
+			this.rbMednafenMode.TabStop = true;
+			this.rbMednafenMode.Text = "Mednafen Mode (4:3 AR)";
+			this.rbMednafenMode.UseVisualStyleBackColor = true;
 			// 
 			// label8
 			// 
-			this.label8.Location = new System.Drawing.Point(6, 39);
+			this.label8.Location = new System.Drawing.Point(6, 35);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(252, 78);
 			this.label8.TabIndex = 21;
@@ -123,56 +129,27 @@
     " • Content is pixel perfect\r\n • Aspect ratio is usually wrong\r\n • Game may seen " +
     "to have scale varying by mode\r\n\r\n\r\n";
 			// 
-			// radioButton1
+			// rbPixelPro
 			// 
-			this.radioButton1.AutoSize = true;
-			this.radioButton1.Location = new System.Drawing.Point(6, 19);
-			this.radioButton1.Name = "radioButton1";
-			this.radioButton1.Size = new System.Drawing.Size(96, 17);
-			this.radioButton1.TabIndex = 0;
-			this.radioButton1.TabStop = true;
-			this.radioButton1.Text = "Pixel Pro Mode";
-			this.radioButton1.UseVisualStyleBackColor = true;
-			// 
-			// label3
-			// 
-			this.label3.Location = new System.Drawing.Point(9, 291);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(283, 91);
-			this.label3.TabIndex = 24;
-			this.label3.Text = resources.GetString("label3.Text");
-			// 
-			// checkBox1
-			// 
-			this.checkBox1.AutoSize = true;
-			this.checkBox1.Location = new System.Drawing.Point(6, 100);
-			this.checkBox1.Name = "checkBox1";
-			this.checkBox1.Size = new System.Drawing.Size(109, 17);
-			this.checkBox1.TabIndex = 25;
-			this.checkBox1.Text = "Discard overscan";
-			this.checkBox1.UseVisualStyleBackColor = true;
+			this.rbPixelPro.AutoSize = true;
+			this.rbPixelPro.Location = new System.Drawing.Point(6, 19);
+			this.rbPixelPro.Name = "rbPixelPro";
+			this.rbPixelPro.Size = new System.Drawing.Size(96, 17);
+			this.rbPixelPro.TabIndex = 0;
+			this.rbPixelPro.TabStop = true;
+			this.rbPixelPro.Text = "Pixel Pro Mode";
+			this.rbPixelPro.UseVisualStyleBackColor = true;
 			// 
 			// groupBox2
 			// 
-			this.groupBox2.Controls.Add(this.label6);
 			this.groupBox2.Controls.Add(this.label1);
 			this.groupBox2.Controls.Add(this.label5);
-			this.groupBox2.Controls.Add(this.label4);
-			this.groupBox2.Controls.Add(this.checkBox1);
-			this.groupBox2.Location = new System.Drawing.Point(294, 12);
+			this.groupBox2.Location = new System.Drawing.Point(492, 7);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(211, 265);
+			this.groupBox2.Size = new System.Drawing.Size(211, 143);
 			this.groupBox2.TabIndex = 26;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Non-Functional Options";
-			// 
-			// label6
-			// 
-			this.label6.Location = new System.Drawing.Point(7, 144);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(197, 21);
-			this.label6.TabIndex = 29;
-			this.label6.Text = "Maybe fixes 1x window size problem";
 			// 
 			// label1
 			// 
@@ -184,36 +161,68 @@
 			// 
 			// label5
 			// 
-			this.label5.Location = new System.Drawing.Point(6, 201);
+			this.label5.Location = new System.Drawing.Point(8, 45);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(197, 21);
 			this.label5.TabIndex = 27;
 			this.label5.Text = "(Scanline range selection)";
 			// 
-			// label4
-			// 
-			this.label4.Location = new System.Drawing.Point(6, 120);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(197, 21);
-			this.label4.TabIndex = 26;
-			this.label4.Text = "Decreases resolutions (e.g. 350 to 320)";
-			// 
 			// label7
 			// 
-			this.label7.Location = new System.Drawing.Point(315, 303);
+			this.label7.Location = new System.Drawing.Point(500, 169);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(197, 29);
 			this.label7.TabIndex = 30;
 			this.label7.Text = "Restart the core to take effect.\r\nSorry, its still in development";
 			// 
+			// rbDebugMode
+			// 
+			this.rbDebugMode.AutoSize = true;
+			this.rbDebugMode.Location = new System.Drawing.Point(246, 19);
+			this.rbDebugMode.Name = "rbDebugMode";
+			this.rbDebugMode.Size = new System.Drawing.Size(134, 17);
+			this.rbDebugMode.TabIndex = 25;
+			this.rbDebugMode.TabStop = true;
+			this.rbDebugMode.Text = "Hardcore Debug Mode";
+			this.rbDebugMode.UseVisualStyleBackColor = true;
+			// 
+			// label3
+			// 
+			this.label3.Location = new System.Drawing.Point(246, 39);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(213, 50);
+			this.label3.TabIndex = 26;
+			this.label3.Text = "Displays all content unmodified\r\n • Window size will constantly change\r\n • Aspect" +
+    " ratio is usually wrong";
+			// 
+			// rbTweakedMednafenMode
+			// 
+			this.rbTweakedMednafenMode.AutoSize = true;
+			this.rbTweakedMednafenMode.Location = new System.Drawing.Point(246, 116);
+			this.rbTweakedMednafenMode.Name = "rbTweakedMednafenMode";
+			this.rbTweakedMednafenMode.Size = new System.Drawing.Size(193, 17);
+			this.rbTweakedMednafenMode.TabIndex = 27;
+			this.rbTweakedMednafenMode.TabStop = true;
+			this.rbTweakedMednafenMode.Text = "Tweaked Mednafen Mode (4:3 AR)";
+			this.rbTweakedMednafenMode.UseVisualStyleBackColor = true;
+			// 
+			// label9
+			// 
+			this.label9.Location = new System.Drawing.Point(255, 132);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(213, 79);
+			this.label9.TabIndex = 28;
+			this.label9.Text = "Displays all content at as multiple of 400x300.\r\n • Correct aspect ratio\r\n • Gene" +
+    "rally enjoyable game presentation\r\n • Detail loss at 1x in fewer cases\r\n • Requi" +
+    "res certain display configuration:\r\n";
+			// 
 			// PSXOptions
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(524, 382);
+			this.ClientSize = new System.Drawing.Size(713, 275);
 			this.Controls.Add(this.label7);
 			this.Controls.Add(this.groupBox2);
-			this.Controls.Add(this.label3);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnOk);
@@ -225,7 +234,6 @@
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
-			this.groupBox2.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -235,18 +243,18 @@
 		private System.Windows.Forms.Button btnCancel;
 		private System.Windows.Forms.Button btnOk;
 		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.RadioButton radioButton1;
-		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.RadioButton rbPixelPro;
+		private System.Windows.Forms.Button btnNiceDisplayConfig;
 		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.RadioButton radioButton2;
+		private System.Windows.Forms.RadioButton rbMednafenMode;
 		private System.Windows.Forms.Label label8;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.CheckBox checkBox1;
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.RadioButton rbDebugMode;
+		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.RadioButton rbTweakedMednafenMode;
 	}
 }

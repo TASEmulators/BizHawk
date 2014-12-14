@@ -1513,6 +1513,9 @@ EW_EXPORT s32 shock_GetSamples(void* psx, void* buffer)
 
 EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferInfo* fb)
 {
+	//TODO - fastpath for emitting to the final framebuffer, although if we did that, we'd have to regenerate it every time
+	//TODO - let the frontend do this, anyway. need a new filter for it. this was in the plans from the beginning, i just havent done it yet
+
 	//if user requires normalization, do it now
 	if(fb->flags & eShockFramebufferFlags_Normalize)
 		if(!s_FramebufferNormalized)
@@ -1542,11 +1545,9 @@ EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferInfo* fb)
 	int tocopy = width*4;
 	for(int y=0;y<height;y++)
 	{
-		for(int x=0;x<width;x++)
-		{
-			*dst++ = *src++ | 0xFF000000;
-		}
-		src += s_FramebufferCurrentWidth - width;
+		memcpy(dst,src,tocopy);
+		src += s_FramebufferCurrentWidth;
+		dst += width;
 	}
 
 	return SHOCK_OK;

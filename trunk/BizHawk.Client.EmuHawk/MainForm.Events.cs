@@ -1786,8 +1786,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PSXOptionsMenuItem_Click(object sender, EventArgs e)
 		{
-			//help me, i dont want to mess with doing this the right way right now
-			new PSXOptions().ShowDialog();
+			var result = PSXOptions.DoSettingsDialog(this);
+			if (result == DialogResult.OK)
+			{
+				FrameBufferResized();
+			}
 		}
 
 		private void FlushSaveRAMMenuItem_Click(object sender, EventArgs e)
@@ -2091,7 +2094,7 @@ namespace BizHawk.Client.EmuHawk
 			if (result == DialogResult.OK)
 			{
 				FrameBufferResized();
-				SynchChrome(); //not sure if we'll end up needing to do this due to framebuffer resizing, putting it here for now anyway though
+				SynchChrome();
 			}
 		}
 
