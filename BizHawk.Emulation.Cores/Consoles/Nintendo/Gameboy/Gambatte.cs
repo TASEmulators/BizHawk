@@ -125,7 +125,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		[CoreConstructor("GB", "GBC")]
 		public Gameboy(CoreComm comm, GameInfo game, byte[] file, object Settings, object SyncSettings, bool deterministic)
 		{
-			ServiceProvider = new BasicServiceProvider(this);
+			var ser = new BasicServiceProvider(this);
+			ser.Register<IDisassemblable>(new GBDisassembler());
+			ServiceProvider = ser;
 			Tracer = new TraceBuffer();
 			InitMemoryCallbacks();
 			CoreComm = comm;
