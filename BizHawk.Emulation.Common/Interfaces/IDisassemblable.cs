@@ -44,10 +44,9 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public abstract IEnumerable<string> AvailableCpus
-		{
-			get;
-		}
+		public abstract IEnumerable<string> AvailableCpus { get; }
+
+		public abstract string PCRegisterName { get; }
 
 		public abstract string Disassemble(MemoryDomain m, uint addr, out int length);
 
