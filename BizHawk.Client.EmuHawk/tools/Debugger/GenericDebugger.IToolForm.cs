@@ -14,24 +14,9 @@ namespace BizHawk.Client.EmuHawk
 		private IDisassemblable Disassembler { get { return (IDisassemblable)EmulatorServices[typeof(IDisassemblable)]; } }
 		private MemoryDomainList MemoryDomains { get { return (EmulatorServices[typeof(IMemoryDomains)] as IMemoryDomains).MemoryDomains; } }
 
-		private int? PC
+		private int PC
 		{
-			get
-			{
-				var flags = Core.GetCpuFlagsAndRegisters();
-
-				if (flags.ContainsKey("PC"))
-				{
-					return flags["PC"];
-				}
-
-				else if (flags.ContainsKey("R15"))
-				{
-					return flags["R15"];
-				}
-
-				return null;
-			}
+			get { return Core.GetCpuFlagsAndRegisters()[Disassembler.PCRegisterName]; }
 		}
 
 		public void UpdateValues()

@@ -199,12 +199,12 @@ namespace BizHawk.Client.EmuHawk
 			// Always show a window's worth of instructions (if possible)
 			if (CanDisassemble)
 			{
-				addr = PC.Value;
+				addr = PC;
 
 				DisassemblerView.BlazingFast = true;
 				Disasm(DISASM_LINE_COUNT);
 				DisassemblerView.ensureVisible(0xFFFF);
-				DisassemblerView.ensureVisible(PC.Value);
+				DisassemblerView.ensureVisible(PC);
 
 				DisassemblerView.Refresh();
 				DisassemblerView.BlazingFast = false;
@@ -229,7 +229,21 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				return Disassembler != null && PC.HasValue;
+				if (Disassembler == null)
+				{
+					return false;
+				}
+
+				try
+				{
+					var pc = PC;
+					return true;
+				}
+				catch (NotImplementedException)
+				{
+					return false;
+				}
+				
 			}
 		}
 
