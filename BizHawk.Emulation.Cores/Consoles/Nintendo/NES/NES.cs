@@ -942,6 +942,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
+		[FeatureNotImplemented]
+		public void StepInto() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOut() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOver() { throw new NotImplementedException(); }
+
 		public ITracer Tracer { get; private set; }
 		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 

@@ -20,5 +20,10 @@ namespace BizHawk.Emulation.Common
 		ITracer Tracer { get; }
 
 		IMemoryCallbackSystem MemoryCallbacks { get; }
+
+		// Advanced Navigation
+		void StepInto();
+		void StepOut();
+		void StepOver();
 	}
 }

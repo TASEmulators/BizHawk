@@ -127,6 +127,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 		}
 
+		[FeatureNotImplemented]
+		public void StepInto() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOut() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOver() { throw new NotImplementedException(); }
+
 		public ITracer Tracer
 		{
 			[FeatureNotImplemented]

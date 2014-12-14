@@ -348,6 +348,15 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			throw new NotImplementedException();
 		}
 
+		[FeatureNotImplemented]
+		public void StepInto() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOut() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOver() { throw new NotImplementedException(); }
+
 		BizSwan.MemoryCallback ReadCallbackD;
 		BizSwan.MemoryCallback WriteCallbackD;
 		BizSwan.MemoryCallback ExecCallbackD;
