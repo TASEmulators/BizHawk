@@ -4,12 +4,14 @@
 //TODO add sram dump option (bold it if dirty) to file menu
 
 using System;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Common;
 
 #pragma warning disable 649 //adelikat: Disable dumb warnings until this file is complete
 
@@ -21,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		isPorted: true,
 		isReleased: false
 		)]
-	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IStatable, IDriveLight, IInputPollable
+	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IStatable, IDriveLight, IInputPollable, ISettable<Octoshock.Settings, Octoshock.SyncSettings>
 	{
 		public string SystemId { get { return "PSX"; } }
 
@@ -60,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		//we can only have one active core at a time, due to the lib being so static.
 		//so we'll track the current one here and detach the previous one whenever a new one is booted up.
 		static Octoshock CurrOctoshockCore;
-		
+
 		IntPtr psx;
 		DiscSystem.Disc disc;
 		DiscInterface discInterface;
@@ -169,10 +171,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		//note: its annoying that we have to have a disc before constructing this.
 		//might want to change that later. HOWEVER - we need to definitely have a region, at least
-		public Octoshock(CoreComm comm, DiscSystem.Disc disc, byte[] exe)
+		public Octoshock(CoreComm comm, DiscSystem.Disc disc, byte[] exe, object settings, object syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
+
+			_Settings = (Settings)settings ?? new Settings();
+			_SyncSettings = (SyncSettings)syncSettings ?? new SyncSettings();
 
 			DriveLightEnabled = true;
 
@@ -232,7 +237,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			//set a default framebuffer
 			BufferWidth = VirtualWidth;
 			BufferHeight = VirtualHeight;
-			frameBuffer = new int[BufferWidth*BufferHeight];
+			frameBuffer = new int[BufferWidth * BufferHeight];
 
 			if (disc != null)
 			{
@@ -250,7 +255,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			//do this after framebuffers and peripherals and whatever crap are setup. kind of lame, but thats how it is for now
 			StudySaveBufferSize();
-		
+
 			OctoshockDll.shock_PowerOn(psx);
 		}
 
@@ -286,9 +291,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		void SetInput()
 		{
 			uint buttons = 0;
-			
+
 			//dualshock style
-			if(Controller["Select"]) buttons |= 1;
+			if (Controller["Select"]) buttons |= 1;
 			if (Controller["L3"]) buttons |= 2;
 			if (Controller["R3"]) buttons |= 4;
 			if (Controller["Start"]) buttons |= 8;
@@ -323,20 +328,41 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			OctoshockDll.shock_Step(psx, OctoshockDll.eShockStep.Frame);
 
-			OctoshockDll.ShockFramebufferInfo fb = new OctoshockDll.ShockFramebufferInfo();
-			fb.flags = OctoshockDll.eShockFramebufferFlags.Normalize;
-			OctoshockDll.shock_GetFramebuffer(psx, ref fb);
-
-			//Console.WriteLine(fb.height);
-
+			//what happens to sound in this case?
 			if (render == false) return;
+
+			OctoshockDll.ShockFramebufferInfo fb = new OctoshockDll.ShockFramebufferInfo();
+			if (_Settings.ResolutionMode == eResolutionMode.PixelPro)
+				fb.flags = OctoshockDll.eShockFramebufferFlags.Normalize;
+
+			OctoshockDll.shock_GetFramebuffer(psx, ref fb);
 
 			int w = fb.width;
 			int h = fb.height;
 			BufferWidth = w;
 			BufferHeight = h;
 
-			int len = w*h;
+			switch (_Settings.ResolutionMode)
+			{
+				case eResolutionMode.Debug:
+					VirtualWidth = w;
+					VirtualHeight = h;
+					break;
+				case eResolutionMode.Mednafen:
+					VirtualWidth = 320;
+					VirtualHeight = 240;
+					break;
+				case eResolutionMode.PixelPro:
+					VirtualWidth = 800;
+					VirtualHeight = 480;
+					break;
+				case eResolutionMode.TweakedMednafen:
+					VirtualWidth = 400;
+					VirtualHeight = 300;
+					break;
+			}
+
+			int len = w * h;
 			if (frameBuffer.Length != len)
 			{
 				Console.WriteLine("PSX FB size: {0},{1}", fb.width, fb.height);
@@ -347,7 +373,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			{
 				fb.ptr = ptr;
 				OctoshockDll.shock_GetFramebuffer(psx, ref fb);
-				//alpha channel is added in c++, right now. wish we didnt have to do it at all
 			}
 
 			fixed (short* samples = sbuff)
@@ -407,7 +432,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		#region ISoundProvider
 
-		private short[] sbuff = new short[1454*2]; //this is the most ive ever seen.. dont know why
+		private short[] sbuff = new short[1454 * 2]; //this is the most ive ever seen.. dont know why
 		private int sbuffcontains = 0;
 
 		public ISoundProvider SoundProvider { get { throw new InvalidOperationException(); } }
@@ -510,7 +535,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				transaction = OctoshockDll.eShockStateTransaction.TextLoad,
 				ff = s.GetFunctionPointersLoad()
 			};
-			
+
 			int result = OctoshockDll.shock_StateTransaction(psx, ref transaction);
 			if (result != OctoshockDll.SHOCK_OK)
 				throw new InvalidOperationException("eShockStateTransaction.TextLoad returned error!");
@@ -542,7 +567,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 					buffer = psavebuff,
 					bufferLength = savebuff.Length
 				};
-				
+
 				int result = OctoshockDll.shock_StateTransaction(psx, ref transaction);
 				if (result != OctoshockDll.SHOCK_OK)
 					throw new InvalidOperationException("eShockStateTransaction.BinarySave returned error!");
@@ -601,5 +626,70 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		}
 
 		#endregion
+
+		#region Settings
+
+		Settings _Settings = new Settings();
+		SyncSettings _SyncSettings;
+
+		public enum eResolutionMode
+		{
+			PixelPro, Debug,
+			Mednafen, TweakedMednafen
+		}
+
+		public class SyncSettings
+		{
+			public SyncSettings Clone()
+			{
+				return (SyncSettings)MemberwiseClone();
+			}
+		}
+
+		public class Settings
+		{
+			[DisplayName("Resolution Mode")]
+			[Description("Stuf")]
+			[DefaultValue(eResolutionMode.PixelPro)]
+			public eResolutionMode ResolutionMode { get; set; }
+
+			public Settings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+
+			public Settings Clone()
+			{
+				return (Settings)MemberwiseClone();
+			}
+		}
+
+		public Settings GetSettings()
+		{
+			return _Settings.Clone();
+		}
+
+		public SyncSettings GetSyncSettings()
+		{
+			return _SyncSettings.Clone();
+		}
+
+		public bool PutSettings(Settings o)
+		{
+			_Settings = o;
+			//TODO
+			//var native = _Settings.GetNativeSettings();
+			//BizSwan.bizswan_putsettings(Core, ref native);
+			return false;
+		}
+
+		public bool PutSyncSettings(SyncSettings o)
+		{
+			_SyncSettings = o;
+			return false;
+		}
+
+		#endregion
+
 	}
 }

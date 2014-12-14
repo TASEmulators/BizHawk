@@ -125,12 +125,4 @@
  • Requires certain display configuration:
 </value>
   </data>
-  <data name="label3.Text" xml:space="preserve">
-    <value>Background info:
-Here are the possible (NTSC) resolutions:
-280x240 350x240 400x240 560x240 700x240
-280x480 350x480 400x480 560x480 700x480
-This is including some overscan area. 
-E.g. a 350 wide resolution is for a 320 wide framebuffer</value>
-  </data>
 </root>

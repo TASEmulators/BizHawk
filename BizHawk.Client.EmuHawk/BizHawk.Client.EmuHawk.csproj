@@ -539,6 +539,7 @@
     </Compile>
     <Compile Include="MainForm.Hotkey.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Movie.cs">
       <DependentUpon>MainForm.cs</DependentUpon>

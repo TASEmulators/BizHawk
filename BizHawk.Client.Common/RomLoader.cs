@@ -261,7 +261,7 @@ namespace BizHawk.Client.Common
 								nextEmulator = new PSP(nextComm, file.Name);
 								break;
 							case "PSX":
-								nextEmulator = new Octoshock(nextComm, disc, null);
+								nextEmulator = new Octoshock(nextComm, disc, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
 								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 								break;
 							case "PCE":
@@ -423,7 +423,7 @@ namespace BizHawk.Client.Common
 								core = CoreInventory.Instance["GBA", "VBA-Next"];
 								break;
 							case "PSX":
-								nextEmulator = new Octoshock(nextComm, null, rom.FileData);
+								nextEmulator = new Octoshock(nextComm, null, rom.FileData, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
 								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 								break;
 							case "DEBUG":
