@@ -193,7 +193,6 @@ namespace BizHawk.Client.Common
 		public int DispRamWatchx = 0;
 		public int DispRamWatchy = 70;
 		public bool DisplayRamWatch = false;
-		public bool ShowMenuInFullscreen = false;
 		public int DispMessagex = 3;
 		public int DispMessagey = 0;
 		public int DispMessageanchor = 2;
@@ -208,6 +207,13 @@ namespace BizHawk.Client.Common
 
 		//warning: we dont even want to deal with changing this at runtime. but we want it changed here for config purposes. so dont check this variable. check in GlobalWin or something like that.
 		public EDispMethod DispMethod = EDispMethod.OpenGL;
+
+		public int DispChrome_FrameWindowed = 2;
+		public bool DispChrome_StatusBarWindowed = true;
+		public bool DispChrome_CaptionWindowed = true;
+		public bool DispChrome_MenuWindowed = true;
+		public bool DispChrome_StatusBarFullscreen = false;
+		public bool DispChrome_MenuFullscreen = false;
 
 		public EDispManagerAR DispManagerAR = EDispManagerAR.System; 
 		public int DispCustomUserARWidth = 1;

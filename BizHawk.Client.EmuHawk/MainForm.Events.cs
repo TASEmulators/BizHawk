@@ -1974,9 +1974,12 @@ namespace BizHawk.Client.EmuHawk
 
 			OpenRomContextMenuItem.Visible = Global.Emulator.IsNull() || _inFullscreen;
 
+			bool showMenuVisible = _inFullscreen;
+			if (!MainMenuStrip.Visible) showMenuVisible = true; //need to always be able to restore this as an emergency measure
+			if (_chromeless) showMenuVisible = true; //I decided this was always possible in chromeless mode, we'll see what they think
 			ShowMenuContextMenuItem.Visible =
 				ShowMenuContextMenuSeparator.Visible =
-				_inFullscreen;
+				showMenuVisible;
 
 			LoadLastRomContextMenuItem.Visible = Global.Emulator.IsNull();
 
@@ -2058,10 +2061,7 @@ namespace BizHawk.Client.EmuHawk
 				UndoSavestateContextMenuItem.Image = Properties.Resources.undo;
 			}
 
-			if (_inFullscreen)
-			{
-				ShowMenuContextMenuItem.Text = MainMenuStrip.Visible ? "Hide Menu" : "Show Menu";
-			}
+			ShowMenuContextMenuItem.Text = MainMenuStrip.Visible ? "Hide Menu" : "Show Menu";
 		}
 
 		private void MainFormContextMenu_Closing(object sender, ToolStripDropDownClosingEventArgs e)
@@ -2091,6 +2091,7 @@ namespace BizHawk.Client.EmuHawk
 			if (result == DialogResult.OK)
 			{
 				FrameBufferResized();
+				SynchChrome(); //not sure if we'll end up needing to do this due to framebuffer resizing, putting it here for now anyway though
 			}
 		}
 
@@ -2192,6 +2193,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ShowMenuContextMenuItem_Click(object sender, EventArgs e)
 		{
 			MainMenuStrip.Visible ^= true;
+			FrameBufferResized();
 		}
 
 		#endregion

@@ -25,7 +25,6 @@ namespace BizHawk.Client.EmuHawk
 			PauseWhenMenuActivatedCheckbox.Checked = Global.Config.PauseWhenMenuActivated;
 			EnableContextMenuCheckbox.Checked = Global.Config.ShowContextMenu;
 			SaveWindowPositionCheckbox.Checked = Global.Config.SaveWindowPosition;
-			ShowMenuInFullscreenCheckbox.Checked = Global.Config.ShowMenuInFullscreen;
 			RunInBackgroundCheckbox.Checked = Global.Config.RunInBackground;
 			AcceptBackgroundInputCheckbox.Checked = Global.Config.AcceptBackgroundInput;
 			NeverAskSaveCheckbox.Checked = Global.Config.SupressAskSave;
@@ -41,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 				LogWindowAsConsoleCheckbox.Enabled = false;
 				toolTip1.SetToolTip(
 					LogWindowAsConsoleCheckbox,
-					"This can not be chaned while the log window is open. I know, it's annoying.");
+					"This can not be changed while the log window is open. I know, it's annoying.");
 			}
 
 			// Recent
@@ -63,7 +62,6 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.PauseWhenMenuActivated = PauseWhenMenuActivatedCheckbox.Checked;
 			Global.Config.ShowContextMenu = EnableContextMenuCheckbox.Checked;
 			Global.Config.SaveWindowPosition = SaveWindowPositionCheckbox.Checked;
-			Global.Config.ShowMenuInFullscreen = ShowMenuInFullscreenCheckbox.Checked;
 			Global.Config.RunInBackground = RunInBackgroundCheckbox.Checked;
 			Global.Config.AcceptBackgroundInput = AcceptBackgroundInputCheckbox.Checked;
 			Global.Config.SupressAskSave = NeverAskSaveCheckbox.Checked;
@@ -74,12 +72,6 @@ namespace BizHawk.Client.EmuHawk
 
 			Global.Config.BackupSaveram = BackupSRamCheckbox.Checked;
 			Global.Config.SkipLagFrame = FrameAdvSkipLagCheckbox.Checked;
-
-			// Make sure this gets applied immediately
-			if (GlobalWin.MainForm.IsInFullscreen)
-			{
-				GlobalWin.MainForm.MainMenuStrip.Visible = Global.Config.ShowMenuInFullscreen;
-			}
 
 			//Recent
 			Global.Config.RecentRoms.MAX_RECENT_FILES = (int)RecentRomsNumeric.Value;
