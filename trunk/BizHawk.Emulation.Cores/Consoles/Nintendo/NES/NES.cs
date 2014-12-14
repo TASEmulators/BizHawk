@@ -53,7 +53,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (board is BANDAI_FCG_1)
 			{
-				(ServiceProvider as BasicServiceProvider).Register<DatachBarcode>((board as BANDAI_FCG_1).reader);
+				var reader = (board as BANDAI_FCG_1).reader;
+				// not all BANDAI FCG 1 boards have a barcode reader
+				if (reader != null)
+					(ServiceProvider as BasicServiceProvider).Register<DatachBarcode>(reader);
 			}
 		}
 

@@ -67,6 +67,8 @@ namespace BizHawk.Emulation.Common
 		public void Register<T>(T provider)
 			where T : IEmulatorService
 		{
+			if (provider == null)
+				throw new ArgumentNullException("provider");
 			Services[typeof(T)] = provider;
 		}
 
