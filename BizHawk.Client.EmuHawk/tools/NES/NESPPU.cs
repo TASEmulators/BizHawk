@@ -10,6 +10,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(NES))]
 	public partial class NesPPU : Form, IToolForm
 	{
 		// TODO:
@@ -24,10 +25,10 @@ namespace BizHawk.Client.EmuHawk
 		private readonly NES.PPU.DebugCallback _callback = new NES.PPU.DebugCallback();
 
 		private Bitmap _zoomBoxDefaultImage = new Bitmap(64, 64);
-		private NES _nes;
 		private bool _forceChange;
 
 		public IDictionary<Type, object> EmulatorServices { private get; set; }
+		private NES _nes { get { return (NES)EmulatorServices[typeof(NES)]; } }
 
 		public NesPPU()
 		{
@@ -46,7 +47,6 @@ namespace BizHawk.Client.EmuHawk
 		private void NesPPU_Load(object sender, EventArgs e)
 		{
 			LoadConfigSettings();
-			_nes = Global.Emulator as NES;
 			ClearDetails();
 			RefreshRate.Value = Global.Config.NESPPURefreshRate;
 			Generate(true);
@@ -60,14 +60,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			if (Global.Emulator is NES)
-			{
-				_nes.ppu.PPUViewCallback = _callback;
-			}
-			else
-			{
-				Close();
-			}
+			_nes.ppu.PPUViewCallback = _callback;
 		}
 
 		public void FastUpdate()
@@ -77,16 +70,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			if (Global.Emulator is NES)
-			{
-				_nes = Global.Emulator as NES;
-				Generate(true);
-				CHRROMViewReload();
-			}
-			else
-			{
-				Close();
-			}
+			Generate(true);
+			CHRROMViewReload();
 		}
 
 		#endregion
@@ -186,7 +171,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (Global.Emulator.Frame % RefreshRate.Value == 0 || now)
+			if (_nes.Frame % RefreshRate.Value == 0 || now)
 			{
 				int b0;
 				int b1;
