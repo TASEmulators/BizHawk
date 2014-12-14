@@ -20,33 +20,44 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public IToolForm Load<T>() where T : IToolForm
 		{
-			if (IsAvailable(typeof(T)))
+			return Load(typeof(T));
+		}
+
+		/// <summary>
+		/// Loads a tool dialog of type toolType if it does not exist it will be
+		/// created, if it is already open, it will be focused.
+		/// </summary>
+		public IToolForm Load(Type toolType)
+		{
+			if (!typeof(IToolForm).IsAssignableFrom(toolType))
+				throw new ArgumentException(String.Format("Type {0} does not implement IToolForm.", toolType.Name));
+
+			if (!IsAvailable(toolType))
+				return null;
+
+			var existingTool = _tools.FirstOrDefault(x => toolType.IsAssignableFrom(x.GetType()));
+
+			if (existingTool != null)
 			{
-				var existingTool = _tools.FirstOrDefault(x => x is T);
-				if (existingTool != null)
+				if (existingTool.IsDisposed)
 				{
-					if (existingTool.IsDisposed)
-					{
-						_tools.Remove(existingTool);
-					}
-					else
-					{
-						existingTool.Show();
-						existingTool.Focus();
-						return existingTool;
-					}
+					_tools.Remove(existingTool);
 				}
-
-				var result = Get<T>();
-
-				UpdateServices(result);
-				result.Restart();
-
-				result.Show();
-				return result;
+				else
+				{
+					existingTool.Show();
+					existingTool.Focus();
+					return existingTool;
+				}
 			}
 
-			return null;
+			var newTool = CreateInstance(toolType);
+
+			UpdateServices(newTool);
+			newTool.Restart();
+
+			newTool.Show();
+			return newTool;
 		}
 
 		/// <summary>
@@ -294,6 +305,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void Close(Type toolType)
+		{
+			var tool = _tools.FirstOrDefault(x => toolType.IsAssignableFrom(x.GetType()));
+
+			if (tool != null)
+			{
+				tool.Close();
+				_tools.Remove(tool);
+			}
+		}
+
 		public void Close()
 		{
 			_tools.ForEach(x => x.Close());
@@ -307,6 +329,15 @@ namespace BizHawk.Client.EmuHawk
 			// Add to the list and extract it, so it will be strongly typed as T
 			_tools.Add(tool as IToolForm);
 			return _tools.FirstOrDefault(x => x is T);
+		}
+
+		private IToolForm CreateInstance(Type toolType)
+		{
+			var tool = (IToolForm)Activator.CreateInstance(toolType);
+
+			// Add to our list of tools
+			_tools.Add(tool);
+			return tool;
 		}
 
 		private void CloseIfDisposed<T>() where T : IToolForm
@@ -554,6 +585,14 @@ namespace BizHawk.Client.EmuHawk
 			if (loadDialog)
 			{
 				GlobalWin.Tools.Load<RamWatch>();
+			}
+		}
+
+		public void LoadTraceLogger()
+		{
+			if (Global.Emulator.CpuTraceAvailable())
+			{
+				Load<TraceLogger>();
 			}
 		}
 
