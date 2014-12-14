@@ -14,9 +14,12 @@ using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(IDebuggable))]
 	public partial class TraceLogger : Form, IToolForm
 	{
-		private readonly ITracer Tracer;
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
+		private ITracer Tracer { get { return (EmulatorServices[typeof(IDebuggable)] as IDebuggable).Tracer; } }
 
 		// Refresh rate slider
 		// Make faster, such as not saving to disk until the logging is stopped, dont' add to Instructions list every frame, etc
@@ -25,8 +28,6 @@ namespace BizHawk.Client.EmuHawk
 		private FileInfo _logFile;
 		private int _defaultWidth;
 		private int _defaultHeight;
-
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
 
 		public TraceLogger()
 		{
@@ -37,15 +38,6 @@ namespace BizHawk.Client.EmuHawk
 
 			TopMost = Global.Config.TraceLoggerSettings.TopMost;
 			Closing += (o, e) => SaveConfigSettings();
-
-			if (Global.Emulator.CpuTraceAvailable())
-			{
-				Tracer = Global.Emulator.AsDebuggable().Tracer;
-			}
-			else
-			{
-				Close();
-			}
 		}
 
 		public bool UpdateBefore
@@ -123,18 +115,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-			else
-			{
-				if (Global.Emulator.CpuTraceAvailable())
-				{
-					ClearList();
-					TraceView.Columns[0].Text = Tracer.Header;
-				}
-				else
-				{
-					Close();
-				}
-			}
+			
+			ClearList();
+			TraceView.Columns[0].Text = Tracer.Header;
 		}
 
 		private void ClearList()
