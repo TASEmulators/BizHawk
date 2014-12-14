@@ -14,7 +14,7 @@ using BizHawk.Client.Common;
 namespace BizHawk.Client.EmuHawk
 {
 	[RequiredServices(typeof(IDebuggable))]
-	[OptionalServices(typeof(IDisassemblable))]
+	[OptionalServices(typeof(IDisassemblable), typeof(IMemoryDomains))]
 	public partial class GenericDebugger : Form, IToolForm, IControlMainform
 	{
 		private int _defaultWidth;
@@ -29,6 +29,7 @@ namespace BizHawk.Client.EmuHawk
 			DisassemblerView.QueryItemText += DisassemblerView_QueryItemText;
 			DisassemblerView.QueryItemBkColor += DisassemblerView_QueryItemBkColor;
 			DisassemblerView.VirtualMode = true;
+			DisassemblerView.ItemCount = ADDR_MAX + 1;
 		}
 
 		private void GenericDebugger_Load(object sender, EventArgs e)
@@ -51,7 +52,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisassemblerView_QueryItemText(int index, int column, out string text)
 		{
-			text = string.Empty;
+			text = "";
+			if (column == 0)
+			{
+				if (addr <= index && index < addr + lines.Count)
+				{
+					int a = addr;
+					for (int i = 0; i < index - addr; ++i)
+						a += lines[i].size;
+					text = string.Format("{0:X4}", a);
+				}
+			}
+			else if (column == 1)
+			{
+				if (addr <= index && index < addr + lines.Count)
+					text = lines[index - addr].mnemonic;
+			}
 		}
 
 		private void DisassemblerView_QueryItemBkColor(int index, int column, ref Color color)
@@ -162,6 +178,59 @@ namespace BizHawk.Client.EmuHawk
 		private void RefreshFloatingWindowControl()
 		{
 			Owner = Global.Config.RamSearchSettings.FloatingWindow ? null : GlobalWin.MainForm;
+		}
+
+
+		private readonly List<DisasmOp> lines = new List<DisasmOp>();
+
+		private struct DisasmOp
+		{
+			public readonly int size;
+			public readonly string mnemonic;
+			public DisasmOp(int s, string m) { size = s; mnemonic = m; }
+		}
+
+		private int addr;
+		private const int ADDR_MAX = 0xFFFF; // TODO: this isn't a constant, calculate it off bus size
+		private const int DISASM_LINE_COUNT = 100;
+
+		private void UpdateDisassembler()
+		{
+			// Always show a window's worth of instructions (if possible)
+			if (CanDisassemble)
+			{
+				addr = PC.Value;
+
+				DisassemblerView.BlazingFast = true;
+				Disasm(DISASM_LINE_COUNT);
+				DisassemblerView.ensureVisible(0xFFFF);
+				DisassemblerView.ensureVisible(PC.Value);
+
+				DisassemblerView.Refresh();
+				DisassemblerView.BlazingFast = false;
+			}
+		}
+
+		private void Disasm(int line_count)
+		{
+			lines.Clear();
+			int a = addr;
+			for (int i = 0; i < line_count; ++i)
+			{
+				int advance;
+				string line = Disassembler.Disassemble(MemoryDomains.SystemBus, (ushort)a, out advance);
+				lines.Add(new DisasmOp(advance, line));
+				a += advance;
+				if (a > ADDR_MAX) break;
+			}
+		}
+
+		private bool CanDisassemble
+		{
+			get
+			{
+				return Disassembler != null && PC.HasValue;
+			}
 		}
 
 		#region Menu Items
