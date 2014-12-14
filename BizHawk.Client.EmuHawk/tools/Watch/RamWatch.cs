@@ -195,12 +195,6 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (!Global.Emulator.HasMemoryDomains())
-			{
-				Close();
-				return;
-			}
-
 			if (!string.IsNullOrWhiteSpace(_watches.CurrentFileName))
 			{
 				_watches.RefreshDomans(_core, _core.MemoryDomains.MainMemory);
