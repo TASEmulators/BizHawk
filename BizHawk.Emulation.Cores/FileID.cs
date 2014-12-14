@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores
 		Multiple, //dont think this makes sense. shouldnt the multiple options be returned?
 
 		Disc, //an unknown disc
-		PSX, PSX_EXE,
+		PSX, PSX_EXE, PSF,
 		PSP, 
 		Saturn, MegaCD,
 
@@ -45,7 +45,8 @@ namespace BizHawk.Emulation.Cores
 		INT,
 		A26, A52, A78, LNX,
 
-		PSF,
+		JAD, SBI,
+		M3U
 	}
 
 	public class FileIDResult
@@ -274,6 +275,9 @@ namespace BizHawk.Emulation.Cores
 
 			//could be at various offsets?
 			public static SimpleMagicRecord TMR_SEGA = new SimpleMagicRecord { Offset = 0x7FF0, Key = "TMR SEGA" };
+
+			public static SimpleMagicRecord SBI = new SimpleMagicRecord { Key = "SBI\0" };
+			public static SimpleMagicRecord M3U = new SimpleMagicRecord { Key = "#EXTM3U" }; //note: M3U may not have this. EXTM3U only has it. We'll still catch it by extension though.
 		}
 
 		class ExtensionInfo
@@ -310,9 +314,11 @@ namespace BizHawk.Emulation.Cores
 
 			{ "BIN", new ExtensionInfo(FileIDType.Multiple, Test_BIN_ISO ) },
 			{ "ISO", new ExtensionInfo(FileIDType.Multiple, Test_BIN_ISO ) },
+			{ "M3U", new ExtensionInfo(FileIDType.M3U, (j)=>Test_Simple(j,FileIDType.M3U,SimpleMagics.M3U) ) },
 
 			{ "JAD", new ExtensionInfo(FileIDType.Multiple, Test_JAD_JAC ) },
 			{ "JAC", new ExtensionInfo(FileIDType.Multiple, Test_JAD_JAC ) },
+			{ "SBI", new ExtensionInfo(FileIDType.SBI, (j)=>Test_Simple(j,FileIDType.SBI,SimpleMagics.SBI) ) },
 
 			{ "EXE", new ExtensionInfo(FileIDType.PSX_EXE, (j)=>Test_Simple(j,FileIDType.PSX_EXE,SimpleMagics.PSX_EXE) ) },
 

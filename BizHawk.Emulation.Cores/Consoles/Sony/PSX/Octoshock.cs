@@ -171,8 +171,14 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		//note: its annoying that we have to have a disc before constructing this.
 		//might want to change that later. HOWEVER - we need to definitely have a region, at least
-		public Octoshock(CoreComm comm, DiscSystem.Disc disc, byte[] exe, object settings, object syncSettings)
+		public Octoshock(CoreComm comm, List<DiscSystem.Disc> discs, byte[] exe, object settings, object syncSettings)
 		{
+			//analyze our first disc from the list by default, because i dont know
+
+			DiscSystem.Disc disc = null;
+			if (discs != null)
+				disc = discs[0];
+
 			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
 
@@ -339,7 +345,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			int w = fb.width;
 			int h = fb.height;
-			BufferWidth = w;
+		BufferWidth = w;
 			BufferHeight = h;
 
 			switch (_Settings.ResolutionMode)

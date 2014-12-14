@@ -72,6 +72,7 @@
     <Compile Include="DiscUtils.cs" />
     <Compile Include="ECM.cs" />
     <Compile Include="GPL_ECM.cs" />
+    <Compile Include="M3U_file.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SectorInterfaces.cs" />
     <Compile Include="Subcode.cs" />

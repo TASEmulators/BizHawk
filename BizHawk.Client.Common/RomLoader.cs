@@ -205,7 +205,38 @@ namespace BizHawk.Client.Common
 				try
 				{
 					var ext = file.Extension.ToLower();
-					if (ext == ".iso" || ext == ".cue" || ext == ".ccd")
+					if (ext == ".m3u")
+					{
+						//HACK ZONE - currently only psx supports m3u
+						M3U_File m3u;
+						using(var sr = new StreamReader(path))
+							m3u = M3U_File.Read(sr);
+						if(m3u.Entries.Count == 0)
+							throw new InvalidOperationException("Can't load an empty M3U");
+						//load discs for all the m3u
+						m3u.Rebase(Path.GetDirectoryName(path));
+						List<Disc> discs = new List<Disc>();
+						foreach (var e in m3u.Entries)
+						{
+							Disc disc = null;
+							string discPath = e.Path;
+							string discExt = Path.GetExtension(discPath).ToLower();
+							if (discExt == ".iso")
+								disc = Disc.FromIsoPath(discPath);
+							if (discExt == ".cue")
+								disc = Disc.FromCuePath(discPath, new CueBinPrefs());
+							if (discExt == ".ccd")
+								disc = Disc.FromCCDPath(discPath);
+							if(disc == null)
+								throw new InvalidOperationException("Can't load one of the files specified in the M3U");
+							discs.Add(disc);
+						}
+						nextEmulator = new Octoshock(nextComm, discs, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
+						nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
+						game = new GameInfo { Name = Path.GetFileNameWithoutExtension(file.Name) };
+						game.System = "PSX";
+					}
+					else if (ext == ".iso" || ext == ".cue" || ext == ".ccd")
 					{
 						Disc disc = null;
 						if(ext == ".iso")
@@ -261,7 +292,7 @@ namespace BizHawk.Client.Common
 								nextEmulator = new PSP(nextComm, file.Name);
 								break;
 							case "PSX":
-								nextEmulator = new Octoshock(nextComm, disc, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
+								nextEmulator = new Octoshock(nextComm, new List<Disc>(new[]{disc}), null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
 								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 								break;
 							case "PCE":
