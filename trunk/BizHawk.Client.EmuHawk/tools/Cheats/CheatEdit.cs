@@ -97,7 +97,7 @@ namespace BizHawk.Client.EmuHawk
 
 			NameBox.Text = string.Empty;
 
-			if (Global.Emulator != null)
+			if (Core != null)
 			{
 				AddressBox.SetHexProperties(Core.MemoryDomains.MainMemory.Size);
 			}
