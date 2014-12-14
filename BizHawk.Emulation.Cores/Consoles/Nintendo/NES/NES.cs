@@ -630,6 +630,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					LoadWriteLine("Using information from UNIF header");
 					choice = unif.CartInfo;
+					//ok, i have this Q-Boy rom with no VROM and no VRAM.
+					//looks like FCEUX policy is to allocate 8KB of chr ram no matter what UNLESS certain flags are set.
+					//we'll let individual boards override that and set 8KB here
+					choice.vram_size = 8;
+					//(do we need to suppress this in case theres a CHR rom? probably not. nes board base will use ram if no rom is available)
 					origin = EDetectionOrigin.UNIF;
 				}
 				if (iNesHeaderInfo != null)
