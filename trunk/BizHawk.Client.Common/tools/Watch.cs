@@ -621,9 +621,11 @@ namespace BizHawk.Client.Common
 				if (Global.CheatList.Contains(Domain, _address))
 				{
 					var cheat = Global.CheatList.FirstOrDefault(c => c.Address == _address && c.Domain == Domain);
+
 					if (cheat != (Cheat)null)
 					{
 						cheat.PokeValue(val);
+						PokeByte(val);
 						return true;
 					}
 				}
