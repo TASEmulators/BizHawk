@@ -127,5 +127,14 @@ namespace BizHawk.Emulation.Cores.Calculators
 		}
 
 		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
+
+		[FeatureNotImplemented]
+		public void StepInto() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOut() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOver() { throw new NotImplementedException(); }
 	}
 }

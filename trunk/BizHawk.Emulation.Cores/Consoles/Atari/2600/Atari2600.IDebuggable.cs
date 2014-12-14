@@ -59,5 +59,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public ITracer Tracer { get; private set; }
 
 		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
+
+		[FeatureNotImplemented]
+		public void StepInto() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOut() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOver() { throw new NotImplementedException(); }
 	}
 }

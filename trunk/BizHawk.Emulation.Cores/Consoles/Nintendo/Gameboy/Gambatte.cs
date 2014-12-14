@@ -289,6 +289,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			_inputCallbacks = ics;
 		}
 
+		[FeatureNotImplemented]
+		public void StepInto() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOut() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOver() { throw new NotImplementedException(); }
+
 		#endregion
 
 		internal void FrameAdvancePrep()

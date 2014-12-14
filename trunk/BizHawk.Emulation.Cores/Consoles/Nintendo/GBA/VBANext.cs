@@ -421,6 +421,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			regs.SetRegister(register, value);
 		}
 
+		[FeatureNotImplemented]
+		public void StepInto() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOut() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOver() { throw new NotImplementedException(); }
+
 		#endregion
 
 		#region Settings

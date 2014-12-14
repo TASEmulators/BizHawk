@@ -71,6 +71,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
+		[FeatureNotImplemented]
+		public void StepInto() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOut() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOver() { throw new NotImplementedException(); }
+
 		private mupen64plusApi.MemoryCallback _readcb;
 		private mupen64plusApi.MemoryCallback _writecb;
 

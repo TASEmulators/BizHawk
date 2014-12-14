@@ -132,5 +132,14 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			[FeatureNotImplemented]
 			get { throw new NotImplementedException(); }
 		}
+
+		[FeatureNotImplemented]
+		public void StepInto() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOut() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOver() { throw new NotImplementedException(); }
 	}
 }

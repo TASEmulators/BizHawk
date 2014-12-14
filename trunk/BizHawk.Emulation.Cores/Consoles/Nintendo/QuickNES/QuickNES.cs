@@ -394,6 +394,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			throw new NotImplementedException();
 		}
 
+		[FeatureNotImplemented]
+		public void StepInto() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOut() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOver() { throw new NotImplementedException(); }
+
 		public ITracer Tracer
 		{
 			[FeatureNotImplemented]
