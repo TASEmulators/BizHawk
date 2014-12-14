@@ -14,17 +14,23 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(PCEngine), typeof(IMemoryDomains))]
 	public partial class PCECDL : Form, IToolForm
 	{
-		// TODO
-		private PCEngine _emu;
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
+		// TODO: you shouldn't require this
+		private PCEngine _emu { get { return (PCEngine)EmulatorServices[typeof(PCEngine)]; } }
+
+		// TODO: make this an emulator service
 		private CodeDataLog _cdl;
+
+		private MemoryDomainList MemoryDomains { get { return (EmulatorServices[typeof(IMemoryDomains)] as IMemoryDomains).MemoryDomains; } }
+
 		private string _currentFileName = string.Empty;
 
 		private int _defaultWidth;
 		private int _defaultHeight;
-
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
 
 		public PCECDL()
 		{
@@ -59,19 +65,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			if (Global.Emulator is PCEngine)
-			{
-				_emu = (PCEngine)Global.Emulator;
-				LoggingActiveCheckbox.Checked = _emu.Cpu.CDLLoggingActive;
-				_cdl = _emu.Cpu.CDL;
-				_emu.InitCDLMappings();
-				UpdateDisplay();
-			}
-			else
-			{
-				_emu = null;
-				Close();
-			}
+			LoggingActiveCheckbox.Checked = _emu.Cpu.CDLLoggingActive;
+			_cdl = _emu.Cpu.CDL;
+			_emu.InitCDLMappings();
+			UpdateDisplay();
 		}
 
 		private void UpdateDisplay()
@@ -307,7 +304,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					using (var fs = new FileStream(sfd.FileName, FileMode.Create, FileAccess.Write))
 					{
-						_cdl.Disassemble(fs, Global.Emulator.AsMemoryDomains().MemoryDomains);
+						_cdl.Disassemble(fs, MemoryDomains);
 					}
 				}
 			}

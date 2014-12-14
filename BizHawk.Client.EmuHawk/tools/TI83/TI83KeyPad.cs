@@ -6,6 +6,7 @@ using BizHawk.Emulation.Cores.Calculators;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(TI83))]
 	public partial class TI83KeyPad : Form, IToolForm
 	{
 		public IDictionary<Type, object> EmulatorServices { private get; set; }
@@ -41,10 +42,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			if (!(Global.Emulator is TI83))
-			{
-				Close();
-			}
+			// Do nothing
 		}
 
 		public void FastUpdate()
@@ -54,10 +52,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			if (!(Global.Emulator is TI83))
-			{
-				Close();
-			}
+			// Do nothing
 		}
 
 		#endregion
