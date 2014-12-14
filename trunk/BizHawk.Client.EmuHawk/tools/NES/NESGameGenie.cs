@@ -9,9 +9,12 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(IEmulator), typeof(IMemoryDomains))]
 	public partial class NESGameGenie : Form, IToolForm
 	{
 		public IDictionary<Type, object> EmulatorServices { private get; set; }
+		private IEmulator Emulator { get { return (IEmulator)EmulatorServices[typeof(IEmulator)]; } }
+		private MemoryDomainList MemoryDomains { get { return (EmulatorServices[typeof(IMemoryDomains)] as IMemoryDomains).MemoryDomains; } }
 
 		private readonly Dictionary<char, int> _gameGenieTable = new Dictionary<char, int>
 		{
@@ -45,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool UpdateBefore { get { return false; } }
 		public void Restart()
 		{
-			if (Global.Emulator.SystemId != "NES")
+			if (Emulator.SystemId != "NES")
 			{
 				Close();
 			}
@@ -53,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			if (Global.Emulator.SystemId != "NES")
+			if (Emulator.SystemId != "NES")
 			{
 				Close();
 			}
@@ -234,7 +237,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!string.IsNullOrWhiteSpace(AddressBox.Text) && !string.IsNullOrWhiteSpace(ValueBox.Text))
 			{
 				var watch = Watch.GenerateWatch(
-					Global.Emulator.AsMemoryDomains().MemoryDomains["System Bus"],
+					MemoryDomains["System Bus"],
 					AddressBox.ToRawInt().Value,
 					Watch.WatchSize.Byte,
 					Watch.DisplayType.Hex,
