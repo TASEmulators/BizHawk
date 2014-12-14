@@ -235,10 +235,40 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Menu Items
 
+		#region File
+
 		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
 			Close();
 		}
+
+		#endregion
+
+		#region Debug
+
+		private void DebugSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+
+		}
+
+		private void StepIntoMenuItem_Click(object sender, EventArgs e)
+		{
+			MessageBox.Show("TODO");
+		}
+
+		private void StepOverMenuItem_Click(object sender, EventArgs e)
+		{
+			MessageBox.Show("TODO");
+		}
+
+		private void StepOutMenuItem_Click(object sender, EventArgs e)
+		{
+			MessageBox.Show("TODO");
+		}
+
+		#endregion
+
+		#region Options
 
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -278,5 +308,30 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
+
+		#endregion
+
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+		{
+			if (keyData == Keys.F10)
+			{
+				StepIntoMenuItem_Click(null, null);
+				return true;
+			}
+			else if (keyData == (Keys.F11 | Keys.Shift))
+			{
+				StepOverMenuItem_Click(null, null);
+				return true;
+			}
+			else if (keyData == Keys.F11)
+			{
+				StepOutMenuItem_Click(null, null);
+				return true;
+			}
+			else
+			{
+				return base.ProcessCmdKey(ref msg, keyData);
+			}
+		}
 	}
 }
