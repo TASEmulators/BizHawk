@@ -1149,7 +1149,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TraceLoggerMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.LoadTraceLogger();
+			GlobalWin.Tools.Load<TraceLogger>();
 		}
 
 		private void DebuggerMenuItem_Click(object sender, EventArgs e)

@@ -211,7 +211,7 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public static void OpenTraceLogger()
 		{
-			GlobalWin.Tools.LoadTraceLogger();
+			GlobalWin.Tools.Load<TraceLogger>();
 		}
 
 		[LuaMethodAttributes(
