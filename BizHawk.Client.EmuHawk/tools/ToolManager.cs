@@ -20,28 +20,33 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public IToolForm Load<T>() where T : IToolForm
 		{
-			var existingTool = _tools.FirstOrDefault(x => x is T);
-			if (existingTool != null)
+			if (IsAvailable(typeof(T)))
 			{
-				if (existingTool.IsDisposed)
+				var existingTool = _tools.FirstOrDefault(x => x is T);
+				if (existingTool != null)
 				{
-					_tools.Remove(existingTool);
+					if (existingTool.IsDisposed)
+					{
+						_tools.Remove(existingTool);
+					}
+					else
+					{
+						existingTool.Show();
+						existingTool.Focus();
+						return existingTool;
+					}
 				}
-				else
-				{
-					existingTool.Show();
-					existingTool.Focus();
-					return existingTool;
-				}
+
+				var result = Get<T>();
+
+				UpdateServices(result);
+				result.Restart();
+
+				result.Show();
+				return result;
 			}
 
-			var result = Get<T>();
-
-			UpdateServices(result);
-			result.Restart();
-
-			result.Show();
-			return result;
+			return null;
 		}
 
 		/// <summary>
