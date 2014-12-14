@@ -1921,9 +1921,9 @@ namespace BizHawk.Client.EmuHawk
 			if (VersionInfo.DeveloperBuild)
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;%ARCH%",
 					"Music Files", "*.psf;*.sid",
-					"Disc Images", "*.cue;*.ccd",
+					"Disc Images", "*.cue;*.ccd;*.m3u",
 					"NES", "*.nes;*.fds;%ARCH%",
 					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
 					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
@@ -1939,8 +1939,8 @@ namespace BizHawk.Client.EmuHawk
 					"Gameboy Advance", "*.gba;%ARCH%",
 					"Colecovision", "*.col;%ARCH%",
 					"Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
-					"PSX Executables (very experimental)", "*.exe",
-					"PSF Playstation Sound File (very experimental)", "*.psf",
+					"PSX Executables (experimental)", "*.exe",
+					"PSF Playstation Sound File (not supported)", "*.psf",
 					"Commodore 64 (experimental)", "*.prg; *.d64, *.g64; *.crt;%ARCH%",
 					"SID Commodore 64 Music File", "*.sid;%ARCH%",
 					"Nintendo 64", "*.z64;*.v64;*.n64",
@@ -1951,7 +1951,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ofd.Filter = FormatFilter(
 					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.rom;*.cue;*.ccd;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;%ARCH%",
-					"Disc Images", "*.cue;*.ccd",
+					"Disc Images", "*.cue;*.ccd;*.m3u",
 					"NES", "*.nes;*.fds;%ARCH%",
 					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
 					"Nintendo 64", "*.z64;*.v64;*.n64",

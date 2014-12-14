@@ -254,6 +254,7 @@ FILE ""xarp.barp.marp.farp"" BINARY
 		/// <summary>
 		/// Creates the subcode (really, just subchannel Q) for this disc from its current TOC.
 		/// Depends on the TOCPoints existing in the structure
+		/// TODO - do we need a fully 0xFF P-subchannel for PSX?
 		/// </summary>
 		void Synthesize_SubcodeFromStructure()
 		{
