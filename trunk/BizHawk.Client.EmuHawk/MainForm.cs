@@ -271,6 +271,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_autoCloseOnDump = true;
 				}
+				else if (arg.StartsWith("--chromeless"))
+				{
+					_chromeless = true;
+				}
 				else if (arg.StartsWith("--fullscreen"))
 				{
 					startFullscreen = true;
@@ -483,6 +487,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			SetMainformMovieInfo();
+
+			SynchChrome();
 
 			//TODO POOP
 			GlobalWin.PresentationPanel.Control.Paint += (o, e) =>
@@ -982,6 +988,32 @@ namespace BizHawk.Client.EmuHawk
 			get { return _inFullscreen; }
 		}
 
+		public void SynchChrome()
+		{
+			//PANTS
+
+			if (_inFullscreen)
+			{
+				//TODO - maybe apply a hack tracked during fullscreen here to override it
+				FormBorderStyle = FormBorderStyle.None;
+				MainMenuStrip.Visible = Global.Config.DispChrome_MenuFullscreen && !_chromeless;
+				MainStatusBar.Visible = Global.Config.DispChrome_StatusBarFullscreen && !_chromeless;
+			}
+			else
+			{
+				MainStatusBar.Visible = Global.Config.DispChrome_StatusBarWindowed && !_chromeless;
+				MainMenuStrip.Visible = Global.Config.DispChrome_MenuWindowed && !_chromeless;
+				MaximizeBox = MinimizeBox = Global.Config.DispChrome_CaptionWindowed && !_chromeless;
+				if (Global.Config.DispChrome_FrameWindowed == 0 || _chromeless)
+					FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+				else if (Global.Config.DispChrome_FrameWindowed == 1)
+					FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+				else if (Global.Config.DispChrome_FrameWindowed == 2)
+					FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+			}
+
+		}
+
 		public void ToggleFullscreen(bool allowSuppress=false)
 		{
 			//prohibit this operation if the current controls include LMouse
@@ -1004,26 +1036,27 @@ namespace BizHawk.Client.EmuHawk
 					//Please note: It is important to do this before resizing things, otherwise momentarily a GL control without WS_BORDER will be at the magic dimensions and cause the flakeout
 					if (Global.Config.DispFullscreenHacks)
 					{
+						//ATTENTION: this causes the statusbar to not work well, since the backcolor is now set to black instead of SystemColors.Control.
+						//It seems that some statusbar elements composite with the backcolor. 
+						//Maybe we could add another control under the statusbar. with a different backcolor
 						Padding = new Padding(1);
 						BackColor = Color.Black;
 					}
 				#endif
 
 				_windowedLocation = Location;
-				FormBorderStyle = FormBorderStyle.None;
-				WindowState = FormWindowState.Maximized;
-				MainMenuStrip.Visible = Global.Config.ShowMenuInFullscreen;
-				MainStatusBar.Visible = false;
+
+				_inFullscreen = true;
+				SynchChrome();
+				WindowState = FormWindowState.Maximized; //be sure to do this after setting the chrome, otherwise it wont work fully
 				ResumeLayout();
 
 				GlobalWin.PresentationPanel.Resized = true;
-				_inFullscreen = true;
 			}
 			else
 			{
 				SuspendLayout();
 
-				FormBorderStyle = FormBorderStyle.Sizable;
 				WindowState = FormWindowState.Normal;
 
 				#if WINDOWS
@@ -1034,13 +1067,13 @@ namespace BizHawk.Client.EmuHawk
 					BackColor = SystemColors.Control; 
 				#endif
 
-				MainMenuStrip.Visible = true;
-				MainStatusBar.Visible = Global.Config.DisplayStatusBar;
+				_inFullscreen = false;
+					
+				SynchChrome();
 				Location = _windowedLocation;
 				ResumeLayout();
 
 				FrameBufferResized();
-				_inFullscreen = false;
 			}
 		}
 
@@ -1271,6 +1304,9 @@ namespace BizHawk.Client.EmuHawk
 		private readonly bool _autoCloseOnDump;
 		private int _lastOpenRomFilter;
 
+		//chrome is never shown, even in windowed mode
+		private readonly bool _chromeless;
+
 		// Resources
 		Bitmap StatusBarDiskLightOnImage, StatusBarDiskLightOffImage;
 		Bitmap LinkCableOn, LinkCableOff;
@@ -1323,6 +1359,9 @@ namespace BizHawk.Client.EmuHawk
 					str = str + " - " + Global.Game.Name;
 				}
 			}
+
+			if (!Global.Config.DispChrome_CaptionWindowed || _chromeless)
+				str = "";
 
 			Text = str;
 		}

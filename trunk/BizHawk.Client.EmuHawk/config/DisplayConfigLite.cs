@@ -40,6 +40,14 @@ namespace BizHawk.Client.EmuHawk.config
 			rbGDIPlus.Checked = Global.Config.DispMethod == Config.EDispMethod.GdiPlus;
 			rbD3D9.Checked = Global.Config.DispMethod == Config.EDispMethod.SlimDX9;
 
+			cbStatusBarWindowed.Checked = Global.Config.DispChrome_StatusBarWindowed;
+			cbCaptionWindowed.Checked = Global.Config.DispChrome_CaptionWindowed;
+			cbMenuWindowed.Checked = Global.Config.DispChrome_MenuWindowed;
+			cbStatusBarFullscreen.Checked = Global.Config.DispChrome_StatusBarFullscreen;
+			cbMenuFullscreen.Checked = Global.Config.DispChrome_MenuFullscreen;
+			trackbarFrameSizeWindowed.Value = Global.Config.DispChrome_FrameWindowed;
+			SyncTrackbar();
+
 			// null emulator config hack
 			{
 				NullEmulator.NullEmulatorSettings s;
@@ -85,6 +93,13 @@ namespace BizHawk.Client.EmuHawk.config
 			Global.Config.DispFixAspectRatio = checkLetterbox.Checked;
 			Global.Config.DispFixScaleInteger = checkPadInteger.Checked;
 			Global.Config.DispFullscreenHacks = checkFullscreenHacks.Checked;
+
+			Global.Config.DispChrome_StatusBarWindowed = cbStatusBarWindowed.Checked;
+			Global.Config.DispChrome_CaptionWindowed = cbCaptionWindowed.Checked;
+			Global.Config.DispChrome_MenuWindowed = cbMenuWindowed.Checked;
+			Global.Config.DispChrome_StatusBarFullscreen = cbStatusBarFullscreen.Checked;
+			Global.Config.DispChrome_MenuFullscreen = cbMenuFullscreen.Checked;
+			Global.Config.DispChrome_FrameWindowed = trackbarFrameSizeWindowed.Value;
 
 			// HACK:: null emulator's settings don't persist to config normally
 			{
@@ -174,6 +189,21 @@ namespace BizHawk.Client.EmuHawk.config
 			float percentage = (float) scanlines / 255 * 100;
 			if (percentage > 100) percentage = 100;
 			lblScanlines.Text = String.Format("{0:F2}", percentage) + "%";
+		}
+
+		private void trackbarFrameSizeWindowed_ValueChanged(object sender, EventArgs e)
+		{
+			SyncTrackbar();
+		}
+
+		void SyncTrackbar()
+		{
+			if (trackbarFrameSizeWindowed.Value == 0)
+				lblFrameTypeWindowed.Text = "None";
+			if (trackbarFrameSizeWindowed.Value == 1)
+				lblFrameTypeWindowed.Text = "Thin";
+			if (trackbarFrameSizeWindowed.Value == 2)
+				lblFrameTypeWindowed.Text = "Thick";
 		}
 
 	}
