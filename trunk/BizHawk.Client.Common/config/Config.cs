@@ -429,14 +429,6 @@ namespace BizHawk.Client.Common
 		public int NESPPURefreshRate = 4;
 		public bool NESPPUChrRomView = false;
 
-		// NESDebuger Settings
-		public bool AutoLoadNESDebugger = false;
-		public bool NESDebuggerSaveWindowPosition = true;
-		public int NESDebuggerWndx = -1;
-		public int NESDebuggerWndy = -1;
-		public int NESDebuggerWidth = -1;
-		public int NESDebuggerHeight = -1;
-
 		// NES NameTableViewer Settings
 		public ToolDialogSettings NesNameTableSettings = new ToolDialogSettings();
 		public bool AutoLoadNESNameTable = false;

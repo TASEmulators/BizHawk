@@ -801,12 +801,6 @@
     <Compile Include="tools\NES\NameTableViewer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\NES\NESDebugger.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\NES\NESDebugger.Designer.cs">
-      <DependentUpon>NESDebugger.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\NES\NESGameGenie.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1306,9 +1300,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\NES\BarcodeEntry.resx">
       <DependentUpon>BarcodeEntry.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\NES\NESDebugger.resx">
-      <DependentUpon>NESDebugger.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\NES\NESGameGenie.resx">
       <DependentUpon>NESGameGenie.cs</DependentUpon>

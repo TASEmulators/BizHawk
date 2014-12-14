@@ -63,7 +63,6 @@ namespace BizHawk.Client.EmuHawk
 				Global.Emulator.HasMemoryDomains();
 
 			NesPPUToolbarItem.Visible =
-				NesDebuggerToolbarItem.Visible =
 				NesNameTableToolbarItem.Visible =
 				Global.Emulator is NES;
 
@@ -94,8 +93,6 @@ namespace BizHawk.Client.EmuHawk
 			GenesisVdpToolBarItem.Visible = Global.Emulator is GPGX;
 
 			SmsVdpToolbarItem.Visible = Global.Emulator is SMS;
-
-			NesDebuggerToolbarItem.Visible = VersionInfo.DeveloperBuild && Global.Emulator.SystemId == "NES";
 
 			TAStudioToolbarItem.Visible = Global.Emulator.HasSavestates() && Global.Emulator.CanPollInput();
 
@@ -167,11 +164,6 @@ namespace BizHawk.Client.EmuHawk
 		private void NesPPUToolbarItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<NesPPU>();
-		}
-
-		private void NesDebuggerToolbarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<NESDebugger>();
 		}
 
 		private void NesGameGenieToolbarItem_Click(object sender, EventArgs e)
