@@ -13,6 +13,11 @@ namespace BizHawk.Emulation.Common
 		string Cpu { get; set; }
 
 		/// <summary>
+		/// Returns the name of the Program Counter Register for the current Cpu
+		/// </summary>
+		string PCRegisterName { get; }
+
+		/// <summary>
 		/// Gets a list of Cpus that can be used when setting the Cpu property
 		/// </summary>
 		IEnumerable<string> AvailableCpus { get; }
