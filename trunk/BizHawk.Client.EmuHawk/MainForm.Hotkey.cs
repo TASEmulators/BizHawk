@@ -294,16 +294,10 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.LoadRamWatch(true);
 					break;
 				case "Ram Search":
-					if (Global.Emulator.HasMemoryDomains())
-					{
-						GlobalWin.Tools.Load<RamSearch>();
-					}
+					GlobalWin.Tools.Load<RamSearch>();
 					break;
 				case "Hex Editor":
-					if (Global.Emulator.HasMemoryDomains())
-					{
-						GlobalWin.Tools.Load<HexEditor>();
-					}
+					GlobalWin.Tools.Load<HexEditor>();
 					break;
 				case "Trace Logger":
 					GlobalWin.Tools.LoadTraceLogger();
@@ -312,16 +306,10 @@ namespace BizHawk.Client.EmuHawk
 					OpenLuaConsole();
 					break;
 				case "Cheats":
-					if (Global.Emulator.HasMemoryDomains())
-					{
-						GlobalWin.Tools.Load<Cheats>();
-					}
+					GlobalWin.Tools.Load<Cheats>();
 					break;
 				case "TAStudio":
-					if (Global.Emulator.HasSavestates() && Global.Emulator.CanPollInput())
-					{
-						GlobalWin.Tools.Load<TAStudio>();
-					}
+					GlobalWin.Tools.Load<TAStudio>();
 					break;
 				case "ToolBox":
 					GlobalWin.Tools.Load<ToolBox>();
@@ -332,40 +320,22 @@ namespace BizHawk.Client.EmuHawk
 
 				// Ram Search
 				case "Do Search":
-					if (Global.Emulator.HasMemoryDomains())
-					{
-						GlobalWin.Tools.RamSearch.DoSearch();
-					}
+					GlobalWin.Tools.RamSearch.DoSearch();
 					break;
 				case "New Search":
-					if (Global.Emulator.HasMemoryDomains())
-					{
-						GlobalWin.Tools.RamSearch.NewSearch();
-					}
+					GlobalWin.Tools.RamSearch.NewSearch();
 					break;
 				case "Previous Compare To":
-					if (Global.Emulator.HasMemoryDomains())
-					{
-						GlobalWin.Tools.RamSearch.NextCompareTo(reverse: true);
-					}
+					GlobalWin.Tools.RamSearch.NextCompareTo(reverse: true);
 					break;
 				case "Next Compare To":
-					if (Global.Emulator.HasMemoryDomains())
-					{
-						GlobalWin.Tools.RamSearch.NextCompareTo();
-					}
+					GlobalWin.Tools.RamSearch.NextCompareTo();
 					break;
 				case "Previous Operator":
-					if (Global.Emulator.HasMemoryDomains())
-					{
-						GlobalWin.Tools.RamSearch.NextOperator(reverse: true);
-					}
+					GlobalWin.Tools.RamSearch.NextOperator(reverse: true);
 					break;
 				case "Next Operator":
-					if (Global.Emulator.HasMemoryDomains())
-					{
-						GlobalWin.Tools.RamSearch.NextOperator();
-					}
+					GlobalWin.Tools.RamSearch.NextOperator();
 					break;
 
 				// SNES
