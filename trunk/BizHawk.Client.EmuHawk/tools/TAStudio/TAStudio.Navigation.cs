@@ -12,11 +12,11 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void GoToLastEmulatedFrameIfNecessary(int frame)
 		{
-			if (frame != Global.Emulator.Frame) // Don't go to a frame if you are already on it!
+			if (frame != Emulator.Frame) // Don't go to a frame if you are already on it!
 			{
-				var restoreFrame = Global.Emulator.Frame;
+				var restoreFrame = Emulator.Frame;
 
-				if (frame <= Global.Emulator.Frame)
+				if (frame <= Emulator.Frame)
 				{
 					GoToFrame(frame);
 				}
@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (frame < CurrentTasMovie.InputLogLength)
 			{
-				if (frame < Global.Emulator.Frame) // We are rewinding
+				if (frame < Emulator.Frame) // We are rewinding
 				{
 					var goToFrame = frame == 0 ? 0 : frame - 1;
 
@@ -60,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else // We are going foward
 				{
-					if (frame == Global.Emulator.Frame + 1) // Just emulate a frame we only have 1 to go!
+					if (frame == Emulator.Frame + 1) // Just emulate a frame we only have 1 to go!
 					{
 						GlobalWin.MainForm.FrameAdvance();
 					}
@@ -71,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							CurrentTasMovie.SwitchToPlay();
 							LoadState(CurrentTasMovie[goToFrame].State);
-							Global.Emulator.FrameAdvance(true);
+							Emulator.FrameAdvance(true);
 							GlobalWin.DisplayManager.NeedsToPaint = true;
 
 							SetVisibleIndex(frame);
@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else // Emulate to a future frame
 			{
-				if (frame == Global.Emulator.Frame + 1) // We are at the end of the movie and advancing one frame, therefore we are recording, simply emulate a frame
+				if (frame == Emulator.Frame + 1) // We are at the end of the movie and advancing one frame, therefore we are recording, simply emulate a frame
 				{
 					GlobalWin.MainForm.FrameAdvance();
 				}
@@ -96,14 +96,14 @@ namespace BizHawk.Client.EmuHawk
 					CurrentTasMovie.SwitchToPlay();
 
 					// no reason to loadstate when we can emulate a frame instead
-					var shouldLoadstate = frame - Global.Emulator.Frame != 1;
+					var shouldLoadstate = frame - Emulator.Frame != 1;
 
 					if (CurrentTasMovie.TasStateManager.LastEmulatedFrame > 0 && shouldLoadstate)
 					{
 						LoadState(CurrentTasMovie[CurrentTasMovie.TasStateManager.LastEmulatedFrame].State);
 					}
 
-					if (frame != Global.Emulator.Frame) // If we aren't already at our destination, seek
+					if (frame != Emulator.Frame) // If we aren't already at our destination, seek
 					{
 						GlobalWin.MainForm.UnpauseEmulator();
 						if (Global.Config.TAStudioAutoPause && frame < CurrentTasMovie.InputLogLength)
@@ -124,22 +124,22 @@ namespace BizHawk.Client.EmuHawk
 
 		public void GoToPreviousFrame()
 		{
-			if (Global.Emulator.Frame > 0)
+			if (Emulator.Frame > 0)
 			{
-				GoToFrame(Global.Emulator.Frame - 1);
+				GoToFrame(Emulator.Frame - 1);
 			}
 		}
 
 		public void GoToNextFrame()
 		{
-			GoToFrame(Global.Emulator.Frame + 1);
+			GoToFrame(Emulator.Frame + 1);
 		}
 
 		public void GoToPreviousMarker()
 		{
-			if (Global.Emulator.Frame > 0)
+			if (Emulator.Frame > 0)
 			{
-				var prevMarker = CurrentTasMovie.Markers.Previous(Global.Emulator.Frame);
+				var prevMarker = CurrentTasMovie.Markers.Previous(Emulator.Frame);
 				var prev = prevMarker != null ? prevMarker.Frame : 0;
 				GoToFrame(prev);
 			}
@@ -147,7 +147,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void GoToNextMarker()
 		{
-			var nextMarker = CurrentTasMovie.Markers.Next(Global.Emulator.Frame);
+			var nextMarker = CurrentTasMovie.Markers.Next(Emulator.Frame);
 			var next = nextMarker != null ? nextMarker.Frame : CurrentTasMovie.InputLogLength - 1;
 			GoToFrame(next);
 		}

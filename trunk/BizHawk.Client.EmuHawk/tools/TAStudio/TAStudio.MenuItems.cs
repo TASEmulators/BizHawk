@@ -212,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_tasClipboard.Any())
 			{
-				var needsToRollback = !(TasView.FirstSelectedIndex > Global.Emulator.Frame);
+				var needsToRollback = !(TasView.FirstSelectedIndex > Emulator.Frame);
 
 				CurrentTasMovie.CopyOverInput(TasView.FirstSelectedIndex.Value, _tasClipboard.Select(x => x.ControllerState));
 
@@ -241,7 +241,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_tasClipboard.Any())
 			{
-				var needsToRollback = !(TasView.FirstSelectedIndex > Global.Emulator.Frame);
+				var needsToRollback = !(TasView.FirstSelectedIndex > Emulator.Frame);
 
 				CurrentTasMovie.InsertInput(TasView.FirstSelectedIndex.Value, _tasClipboard.Select(x => x.ControllerState));
 
@@ -269,7 +269,7 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.SelectedRows.Any())
 			{
 				var wasPaused = GlobalWin.MainForm.EmulatorPaused;
-				var needsToRollback = !(TasView.FirstSelectedIndex.Value > Global.Emulator.Frame);
+				var needsToRollback = !(TasView.FirstSelectedIndex.Value > Emulator.Frame);
 				var rollBackFrame = TasView.FirstSelectedIndex.Value;
 
 				_tasClipboard.Clear();
@@ -313,7 +313,7 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.SelectedRows.Any())
 			{
 				var wasPaused = GlobalWin.MainForm.EmulatorPaused;
-				var needsToRollback = !(TasView.FirstSelectedIndex > Global.Emulator.Frame);
+				var needsToRollback = !(TasView.FirstSelectedIndex > Emulator.Frame);
 				var rollBackFrame = TasView.FirstSelectedIndex.Value;
 
 				foreach (var frame in TasView.SelectedRows)
@@ -345,7 +345,7 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.SelectedRows.Any())
 			{
 				var wasPaused = GlobalWin.MainForm.EmulatorPaused;
-				var needsToRollback = !(TasView.FirstSelectedIndex > Global.Emulator.Frame);
+				var needsToRollback = !(TasView.FirstSelectedIndex > Emulator.Frame);
 				var rollBackFrame = TasView.FirstSelectedIndex.Value;
 
 				_tasClipboard.Clear();
@@ -378,7 +378,7 @@ namespace BizHawk.Client.EmuHawk
 				var wasPaused = GlobalWin.MainForm.EmulatorPaused;
 				var framesToInsert = TasView.SelectedRows.ToList();
 				var insertionFrame = TasView.LastSelectedIndex.Value + 1;
-				var needsToRollback = !(insertionFrame > Global.Emulator.Frame);
+				var needsToRollback = !(insertionFrame > Emulator.Frame);
 
 				var inputLog = framesToInsert
 					.Select(frame => CurrentTasMovie.GetInputLogEntry(frame))
@@ -409,7 +409,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var wasPaused = GlobalWin.MainForm.EmulatorPaused;
 			var insertionFrame = TasView.SelectedRows.Any() ? TasView.FirstSelectedIndex.Value : 0;
-			var needsToRollback = insertionFrame <= Global.Emulator.Frame;
+			var needsToRollback = insertionFrame <= Emulator.Frame;
 
 			CurrentTasMovie.InsertEmptyFrame(insertionFrame);
 
@@ -435,7 +435,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var wasPaused = GlobalWin.MainForm.EmulatorPaused;
 			var insertionFrame = TasView.SelectedRows.Any() ? TasView.FirstSelectedIndex.Value : 0;
-			var needsToRollback = insertionFrame <= Global.Emulator.Frame;
+			var needsToRollback = insertionFrame <= Emulator.Frame;
 
 			var framesPrompt = new FramesPrompt();
 			var result = framesPrompt.ShowDialog();
@@ -467,7 +467,7 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.SelectedRows.Any())
 			{
 				var rollbackFrame = TasView.LastSelectedIndex.Value;
-				var needsToRollback = !(rollbackFrame > Global.Emulator.Frame);
+				var needsToRollback = !(rollbackFrame > Emulator.Frame);
 
 				CurrentTasMovie.Truncate(rollbackFrame);
 
@@ -506,11 +506,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.MainForm.RebootCore();
 			GlobalWin.MainForm.FrameAdvance();
-			var frame = Global.Emulator.Frame;
+			var frame = Emulator.Frame;
 
 			if (CurrentTasMovie.TasStateManager.HasState(frame))
 			{
-				var state = (byte[])Global.Emulator.AsStatable().SaveStateBinary().Clone();
+				var state = (byte[])StatableEmulator.SaveStateBinary().Clone();
 				var greenzone = CurrentTasMovie.TasStateManager[frame];
 
 				if (!state.SequenceEqual(greenzone.Value))
@@ -752,7 +752,7 @@ namespace BizHawk.Client.EmuHawk
 
 					var newProject = CurrentTasMovie.ConvertToSavestateAnchoredMovie(
 						index,
-						(byte[])Global.Emulator.AsStatable().SaveStateBinary().Clone());
+						(byte[])StatableEmulator.SaveStateBinary().Clone());
 
 					GlobalWin.MainForm.PauseEmulator();
 					LoadProject(newProject.Filename);
