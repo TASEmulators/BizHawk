@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Common
 {
-	public interface ISaveRam : IEmulator, IEmulatorService
+	public interface ISaveRam : IEmulatorService
 	{
 		/// <summary>
 		/// return a copy of the saveram.  editing it won't do you any good unless you later call StoreSaveRam()
