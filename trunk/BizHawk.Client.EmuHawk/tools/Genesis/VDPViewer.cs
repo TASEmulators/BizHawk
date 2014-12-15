@@ -12,16 +12,13 @@ using System.Drawing.Imaging;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(GPGX))]
 	public partial class GenVDPViewer : Form, IToolForm
 	{
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-		private GPGX Emu { get { return (GPGX)EmulatorServices[typeof(GPGX)]; } }
+		[RequiredService]
+		private GPGX Emu { get; set; }
 
 		private LibGPGX.VDPView View = new LibGPGX.VDPView();
 		int palindex = 0;
-
-		
 
 		public GenVDPViewer()
 		{

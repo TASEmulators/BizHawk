@@ -10,15 +10,17 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(IEmulator), typeof(IMemoryDomains))]
 	public partial class GBGameGenie : Form, IToolForm
 	{
+		// TODO: fix the use of Global.Game.System and Emulator.SystemId
+		[RequiredService]
+		private IEmulator Emulator { get; set; }
+		[RequiredService]
+		private IMemoryDomains MemoryDomainSource { get; set; }
+		private MemoryDomainList MemoryDomains { get { return MemoryDomainSource.MemoryDomains; } }
+
 		private readonly Dictionary<char, int> _gameGenieTable = new Dictionary<char, int>();
 		private bool _processing;
-
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-		private IMemoryDomains Emulator { get { return (IMemoryDomains)EmulatorServices[typeof(IMemoryDomains)]; } }
-		private MemoryDomainList MemoryDomains { get { return (EmulatorServices[typeof(IMemoryDomains)] as IMemoryDomains).MemoryDomains; } }
 
 		#region Public
 

@@ -10,12 +10,10 @@ using System.Collections.Generic;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(IGBAGPUViewable))]
 	public partial class GBAGPUView : Form, IToolForm
 	{
-		IGBAGPUViewable gba { get { return (IGBAGPUViewable)EmulatorServices[typeof(IGBAGPUViewable)]; } }
-
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
+		[RequiredService]
+		IGBAGPUViewable gba { get; set; }
 
 		// emulator memory areas
 		private IntPtr vram;

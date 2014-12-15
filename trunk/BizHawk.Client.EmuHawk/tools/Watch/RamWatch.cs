@@ -16,7 +16,6 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(IMemoryDomains))]
 	public partial class RamWatch : Form, IToolForm
 	{
 		private readonly Dictionary<string, int> _defaultColumnWidths = new Dictionary<string, int>
@@ -38,8 +37,8 @@ namespace BizHawk.Client.EmuHawk
 		private bool _sortReverse;
 		private bool _paused = false;
 
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-		private IMemoryDomains _core { get { return (IMemoryDomains)EmulatorServices[typeof(IMemoryDomains)]; } }
+		[RequiredService]
+		private IMemoryDomains _core { get; set; }
 
 		public RamWatch()
 		{

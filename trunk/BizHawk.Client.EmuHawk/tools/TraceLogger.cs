@@ -14,12 +14,13 @@ using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(IDebuggable))]
 	public partial class TraceLogger : Form, IToolForm
 	{
 		public IDictionary<Type, object> EmulatorServices { private get; set; }
 
-		private ITracer Tracer { get { return (EmulatorServices[typeof(IDebuggable)] as IDebuggable).Tracer; } }
+		[RequiredService]
+		private IDebuggable _debugtarget { get; set; }
+		private ITracer Tracer { get { return _debugtarget.Tracer; } }
 
 		// Refresh rate slider
 		// Make faster, such as not saving to disk until the logging is stopped, dont' add to Instructions list every frame, etc

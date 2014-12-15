@@ -11,8 +11,6 @@ namespace BizHawk.Client.EmuHawk
 		private NES.NESSettings _oldSettings;
 		private NES.NESSettings _settings;
 
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-
 		public bool AskSaveChanges() { return true; }
 		public bool UpdateBefore { get { return false; } }
 		public void UpdateValues()
