@@ -22,8 +22,12 @@ namespace BizHawk.Emulation.Common
 		IMemoryCallbackSystem MemoryCallbacks { get; }
 
 		// Advanced Navigation
-		void StepInto();
-		void StepOut();
-		void StepOver();
+		//void StepInto();
+		//void StepOut();
+		//void StepOver();
+
+		void Step(StepType type);
 	}
+
+	public enum StepType { Into, Out, Over }
 }

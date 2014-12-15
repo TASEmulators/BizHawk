@@ -448,9 +448,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			MemoryDomains = new MemoryDomainList(mm);
 		}
 
-		public void StepInto() { throw new NotImplementedException(); }
-		public void StepOut() { throw new NotImplementedException(); }
-		public void StepOver() { throw new NotImplementedException(); }
+		[FeatureNotImplemented]
+		public void Step(StepType type) { throw new NotImplementedException(); }
 
 		#endregion
 

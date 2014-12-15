@@ -422,13 +422,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		}
 
 		[FeatureNotImplemented]
-		public void StepInto() { throw new NotImplementedException(); }
-
-		[FeatureNotImplemented]
-		public void StepOut() { throw new NotImplementedException(); }
-
-		[FeatureNotImplemented]
-		public void StepOver() { throw new NotImplementedException(); }
+		public void Step(StepType type) { throw new NotImplementedException(); }
 
 		#endregion
 

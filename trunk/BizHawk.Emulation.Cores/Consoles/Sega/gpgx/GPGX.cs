@@ -644,13 +644,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		}
 
 		[FeatureNotImplemented]
-		public void StepInto() { throw new NotImplementedException(); }
-
-		[FeatureNotImplemented]
-		public void StepOut() { throw new NotImplementedException(); }
-
-		[FeatureNotImplemented]
-		public void StepOver() { throw new NotImplementedException(); }
+		public void Step(StepType type) { throw new NotImplementedException(); }
 
 		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value)
