@@ -65,11 +65,13 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				var debuggable = Global.Emulator as IDebuggable;
-				if (debuggable == null)
+				var debuggable = Global.Emulator.AsDebuggable();
+				if (!Global.Emulator.CanDebug())
+				{
 					throw new NotImplementedException();
+				}
 
-				var registers = debuggable.GetCpuFlagsAndRegisters();
+				var registers = debuggable.AsDebuggable().GetCpuFlagsAndRegisters();
 				return registers.ContainsKey(name)
 					? registers[name]
 					: 0;
@@ -94,9 +96,11 @@ namespace BizHawk.Client.Common
 
 			try
 			{
-				var debuggable = Global.Emulator as IDebuggable;
-				if (debuggable == null)
+				var debuggable = Global.Emulator.AsDebuggable();
+				if (!Global.Emulator.CanDebug())
+				{
 					throw new NotImplementedException();
+				}
 
 				foreach (var kvp in debuggable.GetCpuFlagsAndRegisters())
 				{
@@ -121,9 +125,11 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				var debuggable = Global.Emulator as IDebuggable;
-				if (debuggable == null)
+				var debuggable = Global.Emulator.AsDebuggable();
+				if (!Global.Emulator.CanDebug())
+				{
 					throw new NotImplementedException();
+				}
 
 				debuggable.SetCpuRegister(register, value);
 			}
@@ -148,18 +154,34 @@ namespace BizHawk.Client.Common
 			"islagged",
 			"returns whether or not the current frame is a lag frame"
 		)]
-		public static bool IsLagged()
+		public bool IsLagged()
 		{
-			return Global.Emulator.IsLagFrame;
+			if (Global.Emulator.CanPollInput())
+			{
+				return Global.Emulator.AsInputPollable().IsLagFrame;
+			}
+			else
+			{
+				Log("Can not get lag information, core does not implement IInputPollable");
+				return false;
+			}
 		}
 
 		[LuaMethodAttributes(
 			"lagcount",
 			"Returns the current lag count"
 		)]
-		public static int LagCount()
+		public int LagCount()
 		{
-			return Global.Emulator.LagCount;
+			if (Global.Emulator.CanPollInput())
+			{
+				return Global.Emulator.AsInputPollable().LagCount;
+			}
+			else
+			{
+				Log("Can not get lag information, core does not implement IInputPollable");
+				return 0;
+			}
 		}
 
 		[LuaMethodAttributes(

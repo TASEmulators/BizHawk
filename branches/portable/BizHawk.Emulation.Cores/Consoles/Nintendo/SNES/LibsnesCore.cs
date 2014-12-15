@@ -29,11 +29,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		portedVersion: "v87",
 		portedUrl: "http://byuu.org/"
 		)]
-	public unsafe class LibsnesCore : IEmulator, IVideoProvider, IMemoryDomains,
+	[ServiceNotApplicable(typeof(IDriveLight))]
+	public unsafe class LibsnesCore : IEmulator, IVideoProvider, IMemoryDomains, ISaveRam, IStatable, IInputPollable,
 		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
 	{
 		public LibsnesCore(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData, CoreComm comm, object Settings, object SyncSettings)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
+			MemoryCallbacks = new MemoryCallbackSystem();
+			Tracer = new TraceBuffer();
+
 			_game = game;
 			CoreComm = comm;
 			byte[] sgbRomData = null;
@@ -145,8 +150,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				CoreComm.VsyncDen = 4 * 341 * 312;
 			}
 
-			CoreComm.CpuTraceAvailable = true;
-
 			api.CMD_power();
 
 			SetupMemoryDomains(romData, sgbRomData);
@@ -164,6 +167,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				savestatebuff = ms.ToArray();
 			}
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		private GameInfo _game;
 
@@ -199,7 +204,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			api.Dispose();
 		}
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			LibsnesApi.CpuRegs regs;
 			api.QUERY_peek_cpu_regs(out regs);
@@ -241,6 +246,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			};
 		}
 
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+
+		// TODO: optimize managed to unmanaged using the ActiveChanged event
+		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
+
+		public ITracer Tracer { get; private set; }
+		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
+
+		[FeatureNotImplemented]
+		public void StepInto() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOut() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOver() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value)
 		{
 			throw new NotImplementedException();
@@ -339,7 +362,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		void snes_trace(string msg)
 		{
-			CoreComm.Tracer.Put(msg);
+			Tracer.Put(msg);
 		}
 
 		public SnesColors.ColorType CurrPalette { get; private set; }
@@ -374,7 +397,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		void ReadHook(uint addr)
 		{
-			CoreComm.MemoryCallbackSystem.CallRead(addr);
+			MemoryCallbacks.CallReads(addr);
 			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			//EDIT: for now, theres some IPC re-entrancy problem
 			//RefreshMemoryCallbacks();
@@ -382,7 +405,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 		void ExecHook(uint addr)
 		{
-			CoreComm.MemoryCallbackSystem.CallExecute(addr);
+			MemoryCallbacks.CallExecutes(addr);
 			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			//EDIT: for now, theres some IPC re-entrancy problem
 			//RefreshMemoryCallbacks();
@@ -390,7 +413,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 		void WriteHook(uint addr, byte val)
 		{
-			CoreComm.MemoryCallbackSystem.CallWrite(addr);
+			MemoryCallbacks.CallWrites(addr);
 			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			//EDIT: for now, theres some IPC re-entrancy problem
 			//RefreshMemoryCallbacks();
@@ -439,7 +462,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			// as this is implemented right now, only P1 and P2 normal controllers work
 
-			CoreComm.InputCallback.Call();
+			InputCallbacks.Call();
 			//Console.WriteLine("{0} {1} {2} {3}", port, device, index, id);
 
 			string key = "P" + (1 + port) + " ";
@@ -587,7 +610,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				savestatebuff = ms.ToArray();
 			}
 
-			if (!nocallbacks && CoreComm.Tracer.Enabled)
+			if (!nocallbacks && Tracer.Enabled)
 				api.QUERY_set_trace_callback(tracecb);
 			else
 				api.QUERY_set_trace_callback(null);
@@ -638,7 +661,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		void RefreshMemoryCallbacks(bool suppress)
 		{
-			var mcs = CoreComm.MemoryCallbackSystem;
+			var mcs = MemoryCallbacks;
 			api.QUERY_set_state_hook_exec(!suppress && mcs.HasExecutes);
 			api.QUERY_set_state_hook_read(!suppress && mcs.HasReads);
 			api.QUERY_set_state_hook_write(!suppress && mcs.HasWrites);
@@ -711,7 +734,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public bool SaveRamModified
 		{
-			set { }
 			get
 			{
 				return api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM) != 0;
@@ -742,12 +764,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			if (size != data.Length) throw new InvalidOperationException("Somehow, we got a mismatch between saveram size and what bsnes says the saveram size is");
 			byte* buf = api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
 			Marshal.Copy(data, 0, (IntPtr)buf, size);
-		}
-
-		public void ClearSaveRam()
-		{
-			byte[] cleardata = new byte[(int)api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM)];
-			StoreSaveRam(cleardata);
 		}
 
 		public void ResetCounters()

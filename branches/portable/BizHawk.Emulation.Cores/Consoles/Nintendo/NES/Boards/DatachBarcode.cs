@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// mostly jacked from nestopia's NstBoardBandaiDatach.cpp
 	// very dirty, needs cleanup and such
 
-	public class DatachBarcode
+	public class DatachBarcode : IEmulatorService
 	{
 		static readonly byte[,] prefixParityType = new byte[10, 6]
 		{

@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			//disk.HardReset();
 		}
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			return new Dictionary<string, int>
 			{
@@ -125,6 +125,27 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 					board.cpu.PC = (ushort)value;
 					break;
 			}
+		}
+
+		[FeatureNotImplemented]
+		public void StepInto() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOut() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOver() { throw new NotImplementedException(); }
+
+		public ITracer Tracer
+		{
+			[FeatureNotImplemented]
+			get { throw new NotImplementedException(); }
+		}
+
+		public IMemoryCallbackSystem MemoryCallbacks
+		{
+			[FeatureNotImplemented]
+			get { throw new NotImplementedException(); }
 		}
 	}
 

@@ -757,7 +757,7 @@
 			this.MinimumSize = new System.Drawing.Size(285, 384);
 			this.Name = "Cheats";
 			this.Text = "Cheats";
-			this.Load += new System.EventHandler(this.NewCheatForm_Load);
+			this.Load += new System.EventHandler(this.Cheats_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewCheatForm_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.NewCheatForm_DragEnter);
 			this.CheatsContextMenu.ResumeLayout(false);

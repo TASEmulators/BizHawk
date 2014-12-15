@@ -13,9 +13,12 @@ using System.Drawing.Imaging;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(SMS))]
 	public partial class SmsVDPViewer : Form, IToolForm
 	{
-		private VDP vdp;
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+		private VDP vdp { get { return (EmulatorServices[typeof(SMS)] as SMS).Vdp; } }
+
 		int palindex = 0;
 
 		public SmsVDPViewer()
@@ -25,8 +28,6 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewTiles.ChangeBitmapSize(256, 128);
 			bmpViewPalette.ChangeBitmapSize(16, 2);
 			bmpViewBG.ChangeBitmapSize(256, 256);
-
-			Restart();
 		}
 
 		unsafe static void Draw8x8(byte* src, int* dest, int pitch, int* pal)
@@ -157,13 +158,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			if (!(Global.Emulator is SMS))
-			{
-				Close();
-				return;
-			}
-
-			vdp = (Global.Emulator as SMS).Vdp;
 			UpdateValues();
 		}
 
@@ -259,6 +253,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Location = Global.Config.SmsVdpSettings.WindowPosition;
 			}
+
+			Restart();
 		}
 
 		private void AutoloadMenuItem_Click(object sender, EventArgs e)

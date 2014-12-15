@@ -20,8 +20,12 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(IMemoryDomains))]
 	public partial class HexEditor : Form, IToolForm
 	{
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+		private MemoryDomainList MemoryDomains { get { return (EmulatorServices[typeof(IMemoryDomains)] as IMemoryDomains).MemoryDomains; } }
+
 		private bool fontSizeSet = false;
 		private int fontWidth;
 		private int fontHeight;
@@ -58,8 +62,6 @@ namespace BizHawk.Client.EmuHawk
 		// Configurations
 		private bool _bigEndian;
 		private int _dataSize;
-
-		private MemoryDomainList MemoryDomains;
 
 		public HexEditor()
 		{
@@ -133,20 +135,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			MemoryDomains = null;
-
-			if (!Global.Emulator.HasMemoryDomains())
-			{
-				Close();
-			}
-
-
 			if (!IsHandleCreated || IsDisposed)
 			{
 				return;
 			}
-
-			MemoryDomains = ((IMemoryDomains)Global.Emulator).MemoryDomains; // The cast is intentional, we want a specific cast error, not an eventual null reference error
 
 			var theDomain = _domain.Name.ToLower() == "file on disk" ? 999 : GetDomainInt(_domain.Name);
 
@@ -424,16 +416,8 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			if (Global.Emulator is NullEmulator)
-			{
-				sfd.FileName = "MemoryDump";
-				sfd.InitialDirectory = PathManager.GetBasePathAbsolute();
-			}
-			else
-			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null));
-			}
+			sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+			sfd.InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null));
 
 			var result = sfd.ShowHawkDialog();
 
@@ -922,26 +906,17 @@ namespace BizHawk.Client.EmuHawk
 			var sfd = new SaveFileDialog
 			{
 				Filter = GetSaveFileFilter(),
-				RestoreDirectory = true
+				RestoreDirectory = true,
+				InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null))
 			};
 
-			if (Global.Emulator is NullEmulator)
+			if (_domain.Name == "File on Disk")
 			{
-				sfd.FileName = "MemoryDump";
-				sfd.InitialDirectory = PathManager.GetBasePathAbsolute();
+				sfd.FileName = Path.GetFileName(Global.Config.RecentRoms.MostRecent);
 			}
 			else
 			{
-				if (_domain.Name == "File on Disk")
-				{
-					sfd.FileName = Path.GetFileName(Global.Config.RecentRoms.MostRecent);
-				}
-				else
-				{
-					sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				}
-
-				sfd.InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null));
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 			}
 
 			var result = sfd.ShowHawkDialog();

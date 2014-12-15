@@ -6,13 +6,21 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 
+
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(IDebuggable))]
 	public partial class TraceLogger : Form, IToolForm
 	{
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
+		private ITracer Tracer { get { return (EmulatorServices[typeof(IDebuggable)] as IDebuggable).Tracer; } }
+
 		// Refresh rate slider
 		// Make faster, such as not saving to disk until the logging is stopped, dont' add to Instructions list every frame, etc
 		private readonly List<string> _instructions = new List<string>();
@@ -44,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveConfigSettings()
 		{
-			Global.CoreComm.Tracer.Enabled = false;
+			Tracer.Enabled = false;
 			Global.Config.TraceLoggerSettings.Wndx = Location.X;
 			Global.Config.TraceLoggerSettings.Wndy = Location.Y;
 			Global.Config.TraceLoggerSettings.Width = Size.Width;
@@ -73,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 
 			ClearList();
 			LoggingEnabled.Checked = true;
-			Global.CoreComm.Tracer.Enabled = true;
+			Tracer.Enabled = true;
 			SetTracerBoxTitle();
 			Restart();
 		}
@@ -107,18 +115,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-			else
-			{
-				if (Global.Emulator.CoreComm.CpuTraceAvailable)
-				{
-					ClearList();
-					TraceView.Columns[0].Text = Global.Emulator.CoreComm.TraceHeader;
-				}
-				else
-				{
-					Close();
-				}
-			}
+			
+			ClearList();
+			TraceView.Columns[0].Text = Tracer.Header;
 		}
 
 		private void ClearList()
@@ -132,13 +131,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using (var sw = new StreamWriter(_logFile.FullName, true))
 			{
-				sw.Write(Global.CoreComm.Tracer.TakeContents());
+				sw.Write(Tracer.TakeContents());
 			}
 		}
 
 		private void LogToWindow()
 		{
-			var instructions = Global.CoreComm.Tracer.TakeContents().Split('\n');
+			var instructions = Tracer.TakeContents().Split('\n');
 			if (!string.IsNullOrWhiteSpace(instructions[0]))
 			{
 				_instructions.AddRange(instructions);
@@ -154,7 +153,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetTracerBoxTitle()
 		{
-			if (Global.CoreComm.Tracer.Enabled)
+			if (Tracer.Enabled)
 			{
 				if (ToFileRadio.Checked)
 				{
@@ -351,7 +350,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoggingEnabled_CheckedChanged(object sender, EventArgs e)
 		{
-			Global.CoreComm.Tracer.Enabled = LoggingEnabled.Checked;
+			Tracer.Enabled = LoggingEnabled.Checked;
 			SetTracerBoxTitle();
 		}
 

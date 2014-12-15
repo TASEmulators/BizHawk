@@ -84,6 +84,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\LuaInterface.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualBasic" Condition=" '$(OS)' == 'Windows_NT' " />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
@@ -112,7 +113,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\VersionInfo.cs">
+    <Compile Include="..\Version\svnrev.cs">
+      <Link>svnrev.cs</Link>
+    </Compile>
+    <Compile Include="..\Version\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
     <Compile Include="AboutBox.cs">
@@ -416,6 +420,12 @@
     <Compile Include="config\ProfileConfig.Designer.cs">
       <DependentUpon>ProfileConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\PSX\PSXOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\PSX\PSXOptions.Designer.cs">
+      <DependentUpon>PSXOptions.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\RewindConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -445,6 +455,12 @@
     </Compile>
     <Compile Include="config\TI83\TI83PaletteConfig.Designer.cs">
       <DependentUpon>TI83PaletteConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CoreFeatureAnalysis.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CoreFeatureAnalysis.Designer.cs">
+      <DependentUpon>CoreFeatureAnalysis.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControls\FolderBrowserDialogEx.cs">
       <SubType>Component</SubType>
@@ -600,12 +616,6 @@
       <DependentUpon>RomStatusPicker.cs</DependentUpon>
     </Compile>
     <Compile Include="Throttle.cs" />
-    <Compile Include="tools\Atari2600\AddBreakpointDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Atari2600\AddBreakpointDialog.Designer.cs">
-      <DependentUpon>AddBreakpointDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\Atari2600\Atari2600Debugger.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -630,6 +640,39 @@
     </Compile>
     <Compile Include="tools\Cheats\Cheats.Designer.cs">
       <DependentUpon>Cheats.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\Debugger\AddBreakpointDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Debugger\AddBreakpointDialog.Designer.cs">
+      <DependentUpon>AddBreakpointDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\Debugger\Breakpoint.cs" />
+    <Compile Include="tools\Debugger\BreakpointControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\Debugger\BreakpointControl.Designer.cs">
+      <DependentUpon>BreakpointControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\Debugger\GenericDebugger.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Debugger\GenericDebugger.Designer.cs">
+      <DependentUpon>GenericDebugger.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\Debugger\GenericDebugger.IControlMainform.cs">
+      <DependentUpon>GenericDebugger.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Debugger\GenericDebugger.IToolForm.cs">
+      <DependentUpon>GenericDebugger.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Debugger\RegisterBoxControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\Debugger\RegisterBoxControl.Designer.cs">
+      <DependentUpon>RegisterBoxControl.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\GBA\GBAGPUView.cs">
       <SubType>Form</SubType>
@@ -759,12 +802,6 @@
     </Compile>
     <Compile Include="tools\NES\NameTableViewer.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\NES\NESDebugger.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\NES\NESDebugger.Designer.cs">
-      <DependentUpon>NESDebugger.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\NES\NESGameGenie.cs">
       <SubType>Form</SubType>
@@ -1136,6 +1173,9 @@
     <EmbeddedResource Include="config\ProfileConfig.resx">
       <DependentUpon>ProfileConfig.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="config\PSX\PSXOptions.resx">
+      <DependentUpon>PSXOptions.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="config\RewindConfig.resx">
       <DependentUpon>RewindConfig.cs</DependentUpon>
     </EmbeddedResource>
@@ -1147,6 +1187,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\TI83\TI83PaletteConfig.resx">
       <DependentUpon>TI83PaletteConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CoreFeatureAnalysis.resx">
+      <DependentUpon>CoreFeatureAnalysis.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControls\InputConfigBase.resx">
       <DependentUpon>InputConfigBase.cs</DependentUpon>
@@ -1185,9 +1228,6 @@
     <EmbeddedResource Include="RomStatusPicker.resx">
       <DependentUpon>RomStatusPicker.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\Atari2600\AddBreakpointDialog.resx">
-      <DependentUpon>AddBreakpointDialog.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="tools\Atari2600\Atari2600Debugger.resx">
       <DependentUpon>Atari2600Debugger.cs</DependentUpon>
     </EmbeddedResource>
@@ -1199,6 +1239,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Cheats\Cheats.resx">
       <DependentUpon>Cheats.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Debugger\AddBreakpointDialog.resx">
+      <DependentUpon>AddBreakpointDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Debugger\BreakpointControl.resx">
+      <DependentUpon>BreakpointControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Debugger\GenericDebugger.resx">
+      <DependentUpon>GenericDebugger.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Debugger\RegisterBoxControl.resx">
+      <DependentUpon>RegisterBoxControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\GBA\GBAGPUView.resx">
       <DependentUpon>GBAGPUView.cs</DependentUpon>
@@ -1250,9 +1302,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\NES\BarcodeEntry.resx">
       <DependentUpon>BarcodeEntry.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\NES\NESDebugger.resx">
-      <DependentUpon>NESDebugger.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\NES\NESGameGenie.resx">
       <DependentUpon>NESGameGenie.cs</DependentUpon>
@@ -1345,16 +1394,6 @@
     <EmbeddedResource Include="tools\Watch\WatchEditor.resx">
       <DependentUpon>WatchEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <Compile Include="Properties\svnrev.cs" />
     <Compile Include="tools\InputPrompt.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1396,9 +1435,17 @@
       <Project>{F51946EA-827F-4D82-B841-1F2F6D060312}</Project>
       <Name>BizHawk.Emulation.DiscSystem</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL.GdiPlus\BizHawk.Bizware.BizwareGL.GdiPlus.csproj">
+      <Project>{337CA23E-65E7-44E1-9411-97EE08BB8116}</Project>
+      <Name>BizHawk.Bizware.BizwareGL.GdiPlus</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL.OpenTK\BizHawk.Bizware.BizwareGL.OpenTK.csproj">
       <Project>{5160CFB1-5389-47C1-B7F6-8A0DC97641EE}</Project>
       <Name>BizHawk.Bizware.BizwareGL.OpenTK</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL.SlimDX\BizHawk.Bizware.BizwareGL.SlimDX.csproj">
+      <Project>{E6B436B1-A3CD-4C9A-8F76-5D7154726884}</Project>
+      <Name>BizHawk.Bizware.BizwareGL.SlimDX</Name>
     </ProjectReference>
     <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL\BizHawk.Bizware.BizwareGL.csproj">
       <Project>{9F84A0B2-861E-4EF4-B89B-5E2A3F38A465}</Project>
@@ -1768,6 +1815,7 @@
     <None Include="config\ControllerImages\IntVController.png" />
     <None Include="config\ControllerImages\Lynx.png" />
     <Content Include="config\ControllerImages\N64.png" />
+    <None Include="config\ControllerImages\psx_dualshock.png" />
     <Content Include="config\ControllerImages\SaturnController.jpg" />
     <None Include="images\addWatch.ico" />
     <None Include="images\gba-icon.png" />
@@ -1781,6 +1829,7 @@
     <None Include="config\ControllerImages\WonderSwanColor.png" />
     <None Include="images\alt_about_image.png" />
     <None Include="images\connect_16x16.png" />
+    <None Include="images\add.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />
@@ -1844,5 +1893,8 @@
         <Command Condition=" '$(OS)' != 'Windows_NT' " type="BeforeBuild" command="${SolutionDir}/subwcrev.sh &quot;$(ProjectDir)&quot;" workingdir="${ProjectDir}" />
       </CustomCommands>
     </CustomCommands>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent />
   </PropertyGroup>
 </Project>

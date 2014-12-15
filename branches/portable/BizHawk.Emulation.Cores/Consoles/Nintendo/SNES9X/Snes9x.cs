@@ -10,7 +10,8 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 {
 	[CoreAttributes("Snes9x", "FIXME", true, false, "5e0319ab3ef9611250efb18255186d0dc0d7e125", "https://github.com/snes9xgit/snes9x")]
-	public class Snes9x : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains
+	[ServiceNotApplicable(typeof(IDriveLight))]
+	public class Snes9x : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
 		#region controller
 
@@ -33,98 +34,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			if (!LibSnes9x.debug_init(rom, rom.Length))
 				throw new Exception();
 
+			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
 			Frame++;
 
 			LibSnes9x.debug_advance(_vbuff);
-
-			if (IsLagFrame)
-				LagCount++;
 		}
 
 		public int Frame { get; private set; }
-		public int LagCount { get; set; }
-		public bool IsLagFrame { get { return true; } }
 
 		public void ResetCounters()
 		{
 			Frame = 0;
-			LagCount = 0;
 		}
 
 		public string SystemId { get { return "SNES"; } }
 		public bool DeterministicEmulation { get { return true; } }
 		public string BoardName { get { return null; } }
 		public CoreComm CoreComm { get; private set; }
-
-		#region saveram
-
-		public byte[] CloneSaveRam()
-		{
-			return new byte[0];
-		}
-
-		public void StoreSaveRam(byte[] data)
-		{
-		}
-
-		public void ClearSaveRam()
-		{
-		}
-
-		public bool SaveRamModified
-		{
-			get
-			{
-				return false;
-			}
-			set
-			{
-				throw new NotImplementedException();
-			}
-		}
-
-		#endregion
-
-		#region savestates
-
-		public void SaveStateText(System.IO.TextWriter writer)
-		{
-		}
-
-		public void LoadStateText(System.IO.TextReader reader)
-		{
-		}
-
-		public void SaveStateBinary(System.IO.BinaryWriter writer)
-		{
-		}
-
-		public void LoadStateBinary(System.IO.BinaryReader reader)
-		{
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			return new byte[0];
-		}
-
-		public bool BinarySaveStatesPreferred { get { return true; } }
-
-		#endregion
-
-		#region debugging
-
-		public MemoryDomainList MemoryDomains
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-		#endregion
 
 		#region IVideoProvider
 

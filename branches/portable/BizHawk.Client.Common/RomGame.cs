@@ -126,7 +126,7 @@ namespace BizHawk.Client.Common
 			// N64 roms are in one of the following formats:
 			//  .Z64 = No swapping
 			//  .N64 = Word Swapped
-			//  .V64 = Bytse Swapped
+			//  .V64 = Byte Swapped
 
 			// File extension does not always match the format
 			int size = source.Length;

@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		isPorted: true,
 		isReleased: false
 		)]
-	public class PSP : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains
+	public class PSP : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
 		public static readonly ControllerDefinition PSPController = new ControllerDefinition
 		{
@@ -43,7 +43,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		public IController Controller { get; set; }
 		public bool DeterministicEmulation { get { return true; } }
 		public string SystemId { get { return "PSP"; } }
-		public bool BinarySaveStatesPreferred { get { return true; } }
 		public CoreComm CoreComm { get; private set; }
 
 		public string BoardName { get { return null; } }
@@ -68,6 +67,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 
 		public PSP(CoreComm comm, string isopath)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			if (attachedcore != null)
 			{
 				attachedcore.Dispose();
@@ -90,6 +90,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 
 			attachedcore = this;
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		public void Dispose()
 		{
@@ -120,77 +122,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 
 		public int Frame
 		{
+			[FeatureNotImplemented]
 			get { return 0; }
 		}
 
-		public int LagCount
-		{
-			get
-			{
-				return 0;
-			}
-			set
-			{
-			}
-		}
-
-		public bool IsLagFrame
-		{
-			get { return true; }
-		}
-
-		public byte[] CloneSaveRam()
-		{
-			return new byte[0];
-		}
-
-		public void StoreSaveRam(byte[] data)
-		{
-		}
-
-		public void ClearSaveRam()
-		{
-		}
-
-		public bool SaveRamModified
-		{
-			get
-			{
-				return false;
-			}
-			set
-			{
-			}
-		}
-
+		[FeatureNotImplemented]
 		public void ResetCounters()
 		{
-		}
-
-		public void SaveStateText(System.IO.TextWriter writer)
-		{
-		}
-
-		public void LoadStateText(System.IO.TextReader reader)
-		{
-		}
-
-		public void SaveStateBinary(System.IO.BinaryWriter writer)
-		{
-		}
-
-		public void LoadStateBinary(System.IO.BinaryReader reader)
-		{
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			return new byte[0];
-		}
-
-		public MemoryDomainList MemoryDomains
-		{
-			get { throw new NotImplementedException(); }
 		}
 
 		const int screenwidth = 480;

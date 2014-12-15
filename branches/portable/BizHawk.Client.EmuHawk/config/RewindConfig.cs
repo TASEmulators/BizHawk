@@ -2,6 +2,8 @@
 using System.Windows.Forms;
 using System.Drawing;
 
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -33,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 
 			DiskBufferCheckbox.Checked = Global.Config.Rewind_OnDisk;
 			RewindIsThreadedCheckbox.Checked = Global.Config.Rewind_IsThreaded;
-			_stateSize = Global.Emulator.SaveStateBinary().Length;
+			_stateSize = Global.Emulator.AsStatable().SaveStateBinary().Length;
 			BufferSizeUpDown.Value = Global.Config.Rewind_BufferSize;
 
 			_mediumStateSize = Global.Config.Rewind_MediumStateSize;
@@ -295,7 +297,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					avg_state_size = Global.Emulator.SaveStateBinary().Length;
+					avg_state_size = _stateSize;
 				}
 			}
 			else

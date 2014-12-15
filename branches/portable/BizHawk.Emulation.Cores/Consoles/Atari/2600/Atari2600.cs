@@ -15,22 +15,25 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		isPorted: false,
 		isReleased: true
 		)]
-	public partial class Atari2600 : IEmulator, IMemoryDomains, IDebuggable
+	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
+	public partial class Atari2600 : IEmulator, IMemoryDomains, IStatable, IDebuggable, IInputPollable, ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
 	{
 		private readonly GameInfo _game;
-		private bool _islag = true;
-		private int _lagcount;
 		private int _frame;
 
 		[CoreConstructor("A26")]
 		public Atari2600(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
+			Tracer = new TraceBuffer();
+			MemoryCallbacks = new MemoryCallbackSystem();
+			InputCallbacks = new InputCallbackSystem();
+
 			Ram = new byte[128];
 			CoreComm = comm;
 			Settings = (A2600Settings)settings ?? new A2600Settings();
 			SyncSettings = (A2600SyncSettings)syncSettings ?? new A2600SyncSettings();
 
-			CoreComm.CpuTraceAvailable = true;
 			Rom = rom;
 			_game = game;
 
@@ -43,6 +46,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			RebootCore();
 			SetupMemoryDomains();
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		public string SystemId { get { return "A26"; } }
 
@@ -69,15 +74,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public int Frame { get { return _frame; } set { _frame = value; } }
 
-		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
-
-		public bool IsLagFrame { get { return _islag; } }
-
-		public bool SaveRamModified { get; set; }
-
 		public bool DeterministicEmulation { get; set; }
-
-		public bool BinarySaveStatesPreferred { get { return false; } }
 
 		public A2600Settings Settings { get; private set; }
 
@@ -122,55 +119,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			};
 		}
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
-		{
-			return new Dictionary<string, int>
-			{
-				{ "A", Cpu.A },
-				{ "X", Cpu.X },
-				{ "Y", Cpu.Y },
-				{ "S", Cpu.S },
-				{ "PC", Cpu.PC },
-
-				{ "Flag C", Cpu.FlagC ? 1 : 0 },
-				{ "Flag Z", Cpu.FlagZ ? 1 : 0 },
-				{ "Flag I", Cpu.FlagI ? 1 : 0 },
-				{ "Flag D", Cpu.FlagD ? 1 : 0 },
-
-				{ "Flag B", Cpu.FlagB ? 1 : 0 },
-				{ "Flag V", Cpu.FlagV ? 1 : 0 },
-				{ "Flag N", Cpu.FlagN ? 1 : 0 },
-				{ "Flag T", Cpu.FlagT ? 1 : 0 }
-			};
-		}
-
-		public void SetCpuRegister(string register, int value)
-		{
-			switch(register)
-			{
-				default:
-					throw new InvalidOperationException();
-				case "A":
-					Cpu.A = (byte)value;
-					break;
-				case "X":
-					Cpu.X = (byte)value;
-					break;
-				case "Y":
-					Cpu.Y = (byte)value;
-					break;
-				case "S":
-					Cpu.S = (byte)value;
-					break;
-				case "PC":
-					Cpu.PC = (ushort)value;
-					break;
-				case "Flag I":
-					Cpu.FlagI = value > 0;
-					break;
-			}
-		}
-
 		public bool StartAsyncSound() { return true; }
 
 		public void EndAsyncSound() { }
@@ -180,61 +128,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_frame = 0;
 			_lagcount = 0;
 			_islag = false;
-		}
-
-		private void SyncState(Serializer ser)
-		{
-			ser.BeginSection("A2600");
-			Cpu.SyncState(ser);
-			ser.Sync("ram", ref this.Ram, false);
-			ser.Sync("Lag", ref _lagcount);
-			ser.Sync("Frame", ref _frame);
-			ser.Sync("IsLag", ref _islag);
-			ser.Sync("frameStartPending", ref _frameStartPending);
-			_tia.SyncState(ser);
-			M6532.SyncState(ser);
-			ser.BeginSection("Mapper");
-			_mapper.SyncState(ser);
-			ser.EndSection();
-			ser.EndSection();
-		}
-
-		public byte[] CloneSaveRam()
-		{
-			return null;
-		}
-
-		public void StoreSaveRam(byte[] data) { }
-
-		public void ClearSaveRam() { }
-
-		public void SaveStateText(TextWriter writer)
-		{
-			SyncState(Serializer.CreateTextWriter(writer));
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			SyncState(Serializer.CreateTextReader(reader));
-		}
-
-		public void SaveStateBinary(BinaryWriter bw)
-		{
-			SyncState(Serializer.CreateBinaryWriter(bw));
-		}
-
-		public void LoadStateBinary(BinaryReader br)
-		{
-			SyncState(Serializer.CreateBinaryReader(br));
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			var ms = new MemoryStream();
-			var bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			return ms.ToArray();
 		}
 
 		public void Dispose() { }
@@ -250,7 +143,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			// give the emu a minimal of input\output connections so it doesn't crash
 			var comm = new CoreComm(null, null);
-			comm.InputCallback = new InputCallbackSystem();
+
 			using (Atari2600 emu = new Atari2600(new CoreComm(null, null), newgame, rom, null, null))
 			{
 				emu.Controller = new NullController();

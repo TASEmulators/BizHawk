@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 				return (uint)_maxSize.Value;
 			}
 
-            return (uint)(((long)1 << (4 * MaxLength)) - 1);
+			return (uint)(((long)1 << (4 * MaxLength)) - 1);
 		}
 
 		public override void ResetText()

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using System.ComponentModel;
-using System.Globalization;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -24,7 +25,15 @@ namespace BizHawk.Client.Common
 		public TasMovie(string path, bool startsFromSavestate = false) : base(path)
 		{
 			// TODO: how to call the default constructor AND the base(path) constructor?  And is base(path) calling base() ?
-			StateManager = new TasStateManager(this);
+
+			if (!Global.Emulator.HasSavestates())
+			{
+				throw new InvalidOperationException("Cannot create a TasMovie against a core that does not implement IStatable");
+			}
+
+			var core = Global.Emulator.AsStatable();
+
+			StateManager = new TasStateManager(this, core);
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
@@ -34,7 +43,14 @@ namespace BizHawk.Client.Common
 		public TasMovie(bool startsFromSavestate = false)
 			: base()
 		{
-			StateManager = new TasStateManager(this);
+			if (!Global.Emulator.HasSavestates())
+			{
+				throw new InvalidOperationException("Cannot create a TasMovie against a core that does not implement IStatable");
+			}
+
+			var core = Global.Emulator.AsStatable();
+
+			StateManager = new TasStateManager(this, core);
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
@@ -290,7 +306,7 @@ namespace BizHawk.Client.Common
 		{
 			if (frame == Global.Emulator.Frame) // Take this opportunity to capture lag and state info if we do not have it
 			{
-				LagLog[Global.Emulator.Frame] = Global.Emulator.IsLagFrame;
+				LagLog[Global.Emulator.Frame] = Global.Emulator.AsInputPollable().IsLagFrame;
 
 				if (!StateManager.HasState(frame))
 				{

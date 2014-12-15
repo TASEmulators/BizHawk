@@ -164,8 +164,6 @@
 					}
 			}
 
-			CoreComm.MemoryCallbackSystem.CallRead(addr);
-
 			if (cart != null)
 			{
 				return (ushort)cart;
@@ -355,8 +353,6 @@
 						return true;
 					}
 			}
-
-			CoreComm.MemoryCallbackSystem.CallWrite(addr);
 
 			return (cart || stic || psg);
 		}

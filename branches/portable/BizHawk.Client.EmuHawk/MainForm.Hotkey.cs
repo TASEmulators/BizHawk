@@ -54,7 +54,10 @@ namespace BizHawk.Client.EmuHawk
 					ToggleFrameCounter();
 					break;
 				case "Lag Counter":
-					ToggleLagCounter();
+					if (Global.Emulator.CanPollInput())
+					{
+						ToggleLagCounter();
+					}
 					break;
 				case "Input Display":
 					ToggleInputDisplay();
@@ -291,28 +294,19 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.LoadRamWatch(true);
 					break;
 				case "Ram Search":
-					if (Global.Emulator.HasMemoryDomains())
-					{
-						GlobalWin.Tools.Load<RamSearch>();
-					}
+					GlobalWin.Tools.Load<RamSearch>();
 					break;
 				case "Hex Editor":
-					if (Global.Emulator.HasMemoryDomains())
-					{
-						GlobalWin.Tools.Load<HexEditor>();
-					}
+					GlobalWin.Tools.Load<HexEditor>();
 					break;
 				case "Trace Logger":
-					GlobalWin.Tools.LoadTraceLogger();
+					GlobalWin.Tools.Load<TraceLogger>();
 					break;
 				case "Lua Console":
 					OpenLuaConsole();
 					break;
 				case "Cheats":
-					if (Global.Emulator.HasMemoryDomains())
-					{
-						GlobalWin.Tools.Load<Cheats>();
-					}
+					GlobalWin.Tools.Load<Cheats>();
 					break;
 				case "TAStudio":
 					GlobalWin.Tools.Load<TAStudio>();

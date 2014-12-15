@@ -19,6 +19,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class ToolBox : Form, IToolForm
 	{
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
 		public ToolBox()
 		{
 			InitializeComponent();
@@ -61,7 +63,6 @@ namespace BizHawk.Client.EmuHawk
 				Global.Emulator.HasMemoryDomains();
 
 			NesPPUToolbarItem.Visible =
-				NesDebuggerToolbarItem.Visible =
 				NesNameTableToolbarItem.Visible =
 				Global.Emulator is NES;
 
@@ -93,6 +94,8 @@ namespace BizHawk.Client.EmuHawk
 
 			SmsVdpToolbarItem.Visible = Global.Emulator is SMS;
 
+			TAStudioToolbarItem.Visible = Global.Emulator.HasSavestates() && Global.Emulator.CanPollInput();
+
 			foreach (var button in ToolBoxItems)
 			{
 				if (button.Visible)
@@ -101,8 +104,6 @@ namespace BizHawk.Client.EmuHawk
 					toolBtn.Click += (o, e) => Close();
 				}
 			}
-
-			NesDebuggerToolbarItem.Visible = VersionInfo.DeveloperBuild && Global.Emulator.SystemId == "NES";
 		}
 
 		private void SetSize()
@@ -163,11 +164,6 @@ namespace BizHawk.Client.EmuHawk
 		private void NesPPUToolbarItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<NesPPU>();
-		}
-
-		private void NesDebuggerToolbarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<NESDebugger>();
 		}
 
 		private void NesGameGenieToolbarItem_Click(object sender, EventArgs e)

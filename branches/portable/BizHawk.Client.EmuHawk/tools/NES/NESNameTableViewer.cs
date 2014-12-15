@@ -1,19 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
-
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(NES))]
 	public partial class NESNameTableViewer : Form, IToolForm
 	{
 		// TODO:
 		// Show Scroll Lines + UI Toggle
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+		private NES _nes { get { return (NES)EmulatorServices[typeof(NES)]; } }
+
 		private readonly NES.PPU.DebugCallback _callback = new NES.PPU.DebugCallback();
-		private NES _nes;
 
 		public NESNameTableViewer()
 		{
@@ -35,7 +38,6 @@ namespace BizHawk.Client.EmuHawk
 				Location = Global.Config.NesNameTableSettings.WindowPosition;
 			}
 
-			_nes = Global.Emulator as NES;
 			RefreshRate.Value = Global.Config.NESNameTableRefreshRate;
 			Generate(true);
 		}
@@ -47,27 +49,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			if (Global.Emulator is NES)
-			{
-				_nes = Global.Emulator as NES;
-				Generate(true);
-			}
-			else
-			{
-				Close();
-			}
+			Generate(true);
 		}
 
 		public void UpdateValues()
 		{
-			if (Global.Emulator is NES)
-			{
-				(Global.Emulator as NES).ppu.NTViewCallback = _callback;
-			}
-			else
-			{
-				Close();
-			}
+			_nes.ppu.NTViewCallback = _callback;
 		}
 
 		public void FastUpdate()
@@ -177,12 +164,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (_nes == null)
-			{
-				return;
-			}
-
-			if (now == false && Global.Emulator.Frame % RefreshRate.Value != 0)
+			if (now == false && _nes.Frame % RefreshRate.Value != 0)
 			{
 				return;
 			}

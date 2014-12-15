@@ -12,8 +12,9 @@ using System.Runtime.InteropServices;
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
 	[CoreAttributes("Cygne/Mednafen", "Dox", true, true, "0.9.36.5", "http://mednafen.sourceforge.net/")]
-	public class WonderSwan : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains,
-		IDebuggable, ISettable<WonderSwan.Settings, WonderSwan.SyncSettings>
+	[ServiceNotApplicable(typeof(IDriveLight))]
+	public class WonderSwan : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IStatable,
+		IInputPollable, IDebuggable, ISettable<WonderSwan.Settings, WonderSwan.SyncSettings>
 	{
 		#region Controller
 
@@ -89,6 +90,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		[CoreConstructor("WSWAN")]
 		public WonderSwan(CoreComm comm, byte[] file, bool deterministic, object Settings, object SyncSettings)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
 			_Settings = (Settings)Settings ?? new Settings();
 			_SyncSettings = (SyncSettings)SyncSettings ?? new SyncSettings();
@@ -107,9 +109,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 				if (!BizSwan.bizswan_load(Core, file, file.Length, ref ss, ref rotate))
 					throw new InvalidOperationException("bizswan_load() returned FALSE!");
-
-				// for future uses of ClearSaveRam(), it's important that we save this
-				_DONTTOUCHME = ss;
 
 				CoreComm.VsyncNum = 3072000; // master CPU clock, also pixel clock
 				CoreComm.VsyncDen = (144 + 15) * (224 + 32); // 144 vislines, 15 vblank lines; 224 vispixels, 32 hblank pixels
@@ -132,6 +131,17 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			}
 		}
 
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+
+		public ITracer Tracer
+		{
+			[FeatureNotImplemented]
+			get
+			{
+				throw new NotImplementedException();
+			}
+		}
+
 		public void Dispose()
 		{
 			if (Core != IntPtr.Zero)
@@ -145,8 +155,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		{
 			Frame++;
 			IsLagFrame = true;
-
-			SetDebugCallbacks();
 
 			if (Controller["Power"])
 				BizSwan.bizswan_reset(Core);
@@ -178,7 +186,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
 
-
 		public string SystemId { get { return "WSWAN"; } }
 		public bool DeterministicEmulation { get; private set; }
 		public string BoardName { get { return null; } }
@@ -200,16 +207,9 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				throw new InvalidOperationException("bizswan_saveramload() returned false!");
 		}
 
-		public void ClearSaveRam()
-		{
-			BizSwan.bizswan_saveramclearhacky(Core, ref _DONTTOUCHME);
-			//throw new InvalidOperationException("A new core starts with a clear saveram.  Instantiate a new core if you want this.");
-		}
-
 		public bool SaveRamModified
 		{
 			get { return BizSwan.bizswan_saveramsize(Core) > 0; }
-			set { throw new InvalidOperationException(); }
 		}
 
 		#endregion
@@ -322,9 +322,15 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			MemoryDomains = new MemoryDomainList(mmd, 0);
 		}
 
-		public MemoryDomainList MemoryDomains { get; private set; }
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem();
+		public IMemoryCallbackSystem MemoryCallbacks { get { return _memorycallbacks; } }
+
+		public MemoryDomainList MemoryDomains { get; private set; }
+	
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			var ret = new Dictionary<string, int>();
 			for (int i = (int)BizSwan.NecRegsMin; i <= (int)BizSwan.NecRegsMax; i++)
@@ -336,10 +342,20 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			return ret;
 		}
 
+		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value)
 		{
 			throw new NotImplementedException();
 		}
+
+		[FeatureNotImplemented]
+		public void StepInto() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOut() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOver() { throw new NotImplementedException(); }
 
 		BizSwan.MemoryCallback ReadCallbackD;
 		BizSwan.MemoryCallback WriteCallbackD;
@@ -348,19 +364,19 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		void ReadCallback(uint addr)
 		{
-			CoreComm.MemoryCallbackSystem.CallRead(addr);
+			MemoryCallbacks.CallReads(addr);
 		}
 		void WriteCallback(uint addr)
 		{
-			CoreComm.MemoryCallbackSystem.CallWrite(addr);
+			MemoryCallbacks.CallWrites(addr);
 		}
 		void ExecCallback(uint addr)
 		{
-			CoreComm.MemoryCallbackSystem.CallExecute(addr);
+			MemoryCallbacks.CallExecutes(addr);
 		}
 		void ButtonCallback()
 		{
-			CoreComm.InputCallback.Call();
+			InputCallbacks.Call();
 		}
 
 		void InitDebugCallbacks()
@@ -369,16 +385,21 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			WriteCallbackD = new BizSwan.MemoryCallback(WriteCallback);
 			ExecCallbackD = new BizSwan.MemoryCallback(ExecCallback);
 			ButtonCallbackD = new BizSwan.ButtonCallback(ButtonCallback);
+			_inputCallbacks.ActiveChanged += SetInputCallback;
+			_memorycallbacks.ActiveChanged += SetMemoryCallbacks;
 		}
 
-		void SetDebugCallbacks()
+		void SetInputCallback()
+		{
+			BizSwan.bizswan_setbuttoncallback(Core, InputCallbacks.Any() ? ButtonCallbackD : null);
+		}
+
+		void SetMemoryCallbacks()
 		{
 			BizSwan.bizswan_setmemorycallbacks(Core,
-				CoreComm.MemoryCallbackSystem.HasReads ? ReadCallbackD : null,
-				CoreComm.MemoryCallbackSystem.HasWrites ? WriteCallbackD : null,
-				CoreComm.MemoryCallbackSystem.HasExecutes ? ExecCallbackD : null);
-			BizSwan.bizswan_setbuttoncallback(Core,
-				CoreComm.InputCallback.Any() ? ButtonCallbackD : null);
+				MemoryCallbacks.HasReads ? ReadCallbackD : null,
+				MemoryCallbacks.HasWrites ? WriteCallbackD : null,
+				MemoryCallbacks.HasExecutes ? ExecCallbackD : null);
 		}
 
 		#endregion
@@ -387,7 +408,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		Settings _Settings;
 		SyncSettings _SyncSettings;
-		BizSwan.SyncSettings _DONTTOUCHME;
 
 		public class Settings
 		{

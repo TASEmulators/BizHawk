@@ -42,6 +42,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			//NOTE: this throws EGL exceptions anyway. I'm going to ignore it and whine about it later
 		}
 
+		public string API { get { return "OPENGL"; } }
+
 		public IGL_TK()
 		{
 			//make an 'offscreen context' so we can at least do things without having to create a window
@@ -87,7 +89,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		}
 
 		public IntPtr GenTexture() { return new IntPtr(GL.GenTexture()); }
-		public void FreeTexture(IntPtr texHandle) { GL.DeleteTexture(texHandle.ToInt32()); }
+		public void FreeTexture(Texture2d tex)
+		{
+			GL.DeleteTexture(tex.Id.ToInt32());
+		}
 		public IntPtr GetEmptyHandle() { return new IntPtr(0); }
 		public IntPtr GetEmptyUniformHandle() { return new IntPtr(-1); }
 
@@ -140,9 +145,15 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 				GL.BlendFuncSeparate(mybs.colorSource, mybs.colorDest, mybs.alphaSource, mybs.alphaDest);
 			}
 			else GL.Disable(EnableCap.Blend);
+			if (rsBlend == _rsBlendNoneOpaque)
+			{
+				//make sure constant color is set correctly
+				GL.BlendColor(new Color4(255, 255, 255, 255));
+			}
 		}
 
-		public IBlendState BlendNone { get { return _rsBlendNone; } }
+		public IBlendState BlendNoneCopy { get { return _rsBlendNoneVerbatim; } }
+		public IBlendState BlendNoneOpaque { get { return _rsBlendNoneOpaque; } }
 		public IBlendState BlendNormal { get { return _rsBlendNormal; } }
 
 		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required)
@@ -367,13 +378,13 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		public Texture2d CreateTexture(int width, int height)
 		{
-			IntPtr id = (this as IGL).GenTexture();
-			return new Texture2d(this, id, width, height);
+			IntPtr id = GenTexture();
+			return new Texture2d(this, id, null, width, height);
 		}
 
 		public Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height)
 		{
-			return new Texture2d(this as IGL,glTexId, width, height);
+			return new Texture2d(this as IGL, glTexId, null, width, height);
 		}
 
 		public void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
@@ -399,8 +410,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		public unsafe RenderTarget CreateRenderTarget(int w, int h)
 		{
 			//create a texture for it
-			IntPtr texid = (this as IGL).GenTexture();
-			Texture2d tex = new Texture2d(this, texid, w, h);
+			IntPtr texid = GenTexture();
+			Texture2d tex = new Texture2d(this, texid, null, w, h);
 			GL.BindTexture(TextureTarget.Texture2D,texid.ToInt32());
 			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8, w, h, 0, PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
 			tex.SetMagFilter(TextureMagFilter.Nearest);
@@ -438,10 +449,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		public Texture2d LoadTexture(BitmapBuffer bmp)
 		{
 			Texture2d ret = null;
-			IntPtr id = (this as IGL).GenTexture();
+			IntPtr id = GenTexture();
 			try
 			{
-				ret = new Texture2d(this, id, bmp.Width, bmp.Height);
+				ret = new Texture2d(this, id, null, bmp.Width, bmp.Height);
 				GL.BindTexture(TextureTarget.Texture2D, id.ToInt32());
 				//picking a color order that matches doesnt seem to help, any. maybe my driver is accelerating it, or maybe it isnt a big deal. but its something to study on another day
 				GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bmp.Width, bmp.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
@@ -449,7 +460,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			}
 			catch
 			{
-				(this as IGL).FreeTexture(id);
+				GL.DeleteTexture(id.ToInt32());
 				throw;
 			}
 
@@ -636,13 +647,23 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		void CreateRenderStates()
 		{
-			_rsBlendNone = new MyBlendState(false, BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero, BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
-			_rsBlendNormal = new MyBlendState(true,
+			_rsBlendNoneVerbatim = new MyBlendState(
+				false, 
+				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero, 
+				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
+			
+			_rsBlendNoneOpaque = new MyBlendState(
+				false, 
+				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero, 
+				BlendingFactorSrc.ConstantAlpha, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
+			
+			_rsBlendNormal = new MyBlendState(
+				true,
 				BlendingFactorSrc.SrcAlpha, BlendEquationMode.FuncAdd, BlendingFactorDest.OneMinusSrcAlpha,
 				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
 		}
 
-		MyBlendState _rsBlendNone, _rsBlendNormal;
+		MyBlendState _rsBlendNoneVerbatim, _rsBlendNoneOpaque, _rsBlendNormal;
 
 		//state caches
 		int sActiveTexture;

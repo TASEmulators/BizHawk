@@ -14,6 +14,7 @@ namespace BizHawk.Client.EmuHawk
 		public static DirectSound DSound;
 #endif
 		public static IGL GL;
+		public static Bizware.BizwareGL.Drivers.OpenTK.IGL_TK IGL_GL;
 		public static GLManager.ContextRef CR_GL;
 		public static Sound Sound;
 		public static PresentationPanel PresentationPanel;

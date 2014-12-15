@@ -7,11 +7,16 @@ using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using System.Collections.Generic;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(Gameboy))]
 	public partial class GBGPUView : Form, IToolForm
 	{
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+		private Gameboy Gb { get { return (Gameboy)EmulatorServices[typeof(Gameboy)]; } }
+
 		// TODO: freeze semantics are a bit weird: details for a mouseover or freeze are taken from the current
 		// state, not the state at the last callback (and so can be quite different when update is set to manual).
 		// I'm not quite sure what's the best thing to do...
@@ -26,8 +31,6 @@ namespace BizHawk.Client.EmuHawk
 		// r' = 8.25r
 		// g' = 8.25g
 	    // b' = 8.25b
-
-		private Gameboy _gb;
 
 		// gambatte doesn't modify these memory locations unless you reconstruct, so we can store
 		private IntPtr _vram;
@@ -87,40 +90,31 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			if (Global.Emulator is Gameboy)
-			{
-				_gb = Global.Emulator as Gameboy;
-				_cgb = _gb.IsCGBMode();
-				_lcdc = 0;
-				if (!_gb.GetGPUMemoryAreas(out _vram, out _bgpal, out _sppal, out _oam))
-				{
-					_gb = null;
-					if (Visible)
-						Close();
-				}
-				tilespal = _bgpal;
+			_cgb = Gb.IsCGBMode();
+			_lcdc = 0;
 
-				if (_cgb)
-					label4.Enabled = true;
-				else
-					label4.Enabled = false;
-				bmpViewBG.Clear();
-				bmpViewWin.Clear();
-				bmpViewTiles1.Clear();
-				bmpViewTiles2.Clear();
-				bmpViewBGPal.Clear();
-				bmpViewSPPal.Clear();
-				bmpViewOAM.Clear();
-				bmpViewDetails.Clear();
-				bmpViewMemory.Clear();
-				cbscanline_emu = -4; // force refresh
-			}
-			else
+			// TODO: can this be a required Emulator Service, and let the tool manage the logic of closing?
+			if (!Gb.GetGPUMemoryAreas(out _vram, out _bgpal, out _sppal, out _oam))
 			{
-				_gb = null;
 				if (Visible)
 					Close();
 			}
+			tilespal = _bgpal;
+
+			if (_cgb)
+				label4.Enabled = true;
+			else
+				label4.Enabled = false;
+			bmpViewBG.Clear();
+			bmpViewWin.Clear();
+			bmpViewTiles1.Clear();
+			bmpViewTiles2.Clear();
+			bmpViewBGPal.Clear();
+			bmpViewSPPal.Clear();
+			bmpViewOAM.Clear();
+			bmpViewDetails.Clear();
+			bmpViewMemory.Clear();
+			cbscanline_emu = -4; // force refresh
 		}
 
 
@@ -481,11 +475,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBGPUView_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			if (_gb != null)
+			if (Gb != null)
 			{
-				_gb.SetScanlineCallback(null, 0);
-				_gb = null;
+				Gb.SetScanlineCallback(null, 0);
 			}
+
 			Global.Config.GBGPUSpriteBack = spriteback;
 		}
 
@@ -533,8 +527,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void buttonRefresh_Click(object sender, EventArgs e)
 		{
-			if (cbscanline == -2 && _gb != null)
-				_gb.SetScanlineCallback(ScanlineCallback, -2);
+			if (cbscanline == -2 && Gb != null)
+				Gb.SetScanlineCallback(ScanlineCallback, -2);
 		}
 
 		private void hScrollBarScanline_ValueChanged(object sender, EventArgs e)
@@ -561,14 +555,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-			else if (_gb != null)
+			else if (Gb != null)
 			{
 				if (!Visible)
 				{
 					if (cbscanline_emu != -2)
 					{
 						cbscanline_emu = -2;
-						_gb.SetScanlineCallback(null, 0);
+						Gb.SetScanlineCallback(null, 0);
 					}
 				}
 				else
@@ -577,9 +571,9 @@ namespace BizHawk.Client.EmuHawk
 					{
 						cbscanline_emu = cbscanline;
 						if (cbscanline == -2)
-							_gb.SetScanlineCallback(null, 0);
+							Gb.SetScanlineCallback(null, 0);
 						else
-							_gb.SetScanlineCallback(ScanlineCallback, cbscanline);
+							Gb.SetScanlineCallback(ScanlineCallback, cbscanline);
 					}
 				}
 			}

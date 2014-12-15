@@ -5,6 +5,9 @@ using System.Linq;
 using System.Windows.Forms;
 using System.ComponentModel;
 
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
+
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 
@@ -13,6 +16,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(IEmulator), typeof(IStatable), typeof(IInputPollable))]
 	public partial class TAStudio : Form, IToolForm, IControlMainform
 	{
 		// TODO: UI flow that conveniently allows to start from savestate
@@ -237,7 +241,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Config.TAStudioAutoRestoreLastPosition && _autoRestoreFrame.HasValue)
 			{
-				if (_autoRestoreFrame > Global.Emulator.Frame) // Don't unpause if we are already on the desired frame, else runaway seek
+				if (_autoRestoreFrame > Emulator.Frame) // Don't unpause if we are already on the desired frame, else runaway seek
 				{
 					GlobalWin.MainForm.UnpauseEmulator();
 					GlobalWin.MainForm.PauseOnFrame = _autoRestoreFrame;
@@ -313,11 +317,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadState(KeyValuePair<int, byte[]> state)
 		{
-			Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(state.Value.ToArray())));
+			StatableEmulator.LoadStateBinary(new BinaryReader(new MemoryStream(state.Value.ToArray())));
 
 			if (state.Key == 0 && CurrentTasMovie.StartsFromSavestate)
 			{
-				Global.Emulator.ResetCounters();
+				Emulator.ResetCounters();
 			}
 
 			_hackyDontUpdate = true;
@@ -367,7 +371,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void CallAddMarkerPopUp(int? frame = null)
 		{
-			var markerFrame = frame ?? TasView.LastSelectedIndex ?? Global.Emulator.Frame;
+			var markerFrame = frame ?? TasView.LastSelectedIndex ?? Emulator.Frame;
 			InputPrompt i = new InputPrompt
 			{
 				Text = "Marker for frame " + markerFrame,
@@ -418,7 +422,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CurrentTasMovie.ToggleBoolState(frame, buttonName);
 			}
-			else if (frame == Global.Emulator.Frame && frame == CurrentTasMovie.InputLogLength)
+			else if (frame == Emulator.Frame && frame == CurrentTasMovie.InputLogLength)
 			{
 				Global.ClickyVirtualPadController.Toggle(buttonName);
 			}
@@ -432,7 +436,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CurrentTasMovie.SetBoolState(frame, buttonName, value);
 			}
-			else if (frame == Global.Emulator.Frame && frame == CurrentTasMovie.InputLogLength)
+			else if (frame == Emulator.Frame && frame == CurrentTasMovie.InputLogLength)
 			{
 				Global.ClickyVirtualPadController.SetBool(buttonName, value);
 			}

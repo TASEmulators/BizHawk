@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -18,7 +20,23 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public IToolForm Load<T>() where T : IToolForm
 		{
-			var existingTool = _tools.FirstOrDefault(x => x is T);
+			return Load(typeof(T));
+		}
+
+		/// <summary>
+		/// Loads a tool dialog of type toolType if it does not exist it will be
+		/// created, if it is already open, it will be focused.
+		/// </summary>
+		public IToolForm Load(Type toolType)
+		{
+			if (!typeof(IToolForm).IsAssignableFrom(toolType))
+				throw new ArgumentException(String.Format("Type {0} does not implement IToolForm.", toolType.Name));
+
+			if (!IsAvailable(toolType))
+				return null;
+
+			var existingTool = _tools.FirstOrDefault(x => toolType.IsAssignableFrom(x.GetType()));
+
 			if (existingTool != null)
 			{
 				if (existingTool.IsDisposed)
@@ -33,9 +51,80 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var result = Get<T>();
-			result.Show();
-			return result;
+			var newTool = CreateInstance(toolType);
+
+			UpdateServices(newTool);
+			newTool.Restart();
+
+			newTool.Show();
+			return newTool;
+		}
+
+		/// <summary>
+		/// Gets all the IEmulatorServices the tool needs, as defined in its
+		/// RequiredServices attribute. If no attribute is defined, returns an
+		/// empty array.
+		/// </summary>
+		public Type[] GetRequiredServices(Type toolType)
+		{
+			var attribute = (RequiredServices)toolType
+				.GetCustomAttributes(typeof(RequiredServices), false)
+				.FirstOrDefault();
+
+			if (attribute == null)
+				return new Type[0];
+			else
+				return attribute.Dependencies;
+		}
+
+		/// <summary>
+		/// Gets all the IEmulatorServices the tool could use, but does not
+		/// need, as defined in its OptionalServices attribute. If no attribute
+		/// is defined, returns an empty array.
+		/// </summary>
+		public Type[] GetOptionalServices(Type toolType)
+		{
+			var attribute = (OptionalServices)toolType
+				.GetCustomAttributes(typeof(OptionalServices), false)
+				.FirstOrDefault();
+
+			if (attribute == null)
+				return new Type[0];
+			else
+				return attribute.Dependencies;
+		}
+
+		/// <summary>
+		/// Feeds the tool its required services.
+		/// </summary>
+		private void UpdateServices(IToolForm tool)
+		{
+			var serviceSet = new Dictionary<Type, object>();
+
+			// Populate the required services
+			foreach (var service in GetRequiredServices(tool.GetType()))
+				serviceSet[service] = Global.Emulator.ServiceProvider.GetService(service);
+
+			// Populate the optional services if they exist, otherwise insert null
+			foreach(var service in GetOptionalServices(tool.GetType()))
+			{
+				if (Global.Emulator.ServiceProvider.HasService(service))
+					serviceSet[service] = Global.Emulator.ServiceProvider.GetService(service);
+				else
+					serviceSet[service] = null;
+			}
+
+			tool.EmulatorServices = serviceSet;
+		}
+
+		/// <summary>
+		/// Determines whether a tool is available, considering its dependencies
+		/// and the services provided by the emulator core.
+		/// </summary>
+		public bool IsAvailable(Type toolType)
+		{
+			return GetRequiredServices(toolType)
+				.All(t => Global.Emulator.ServiceProvider.HasService(t));
 		}
 
 		/// <summary>
@@ -131,7 +220,26 @@ namespace BizHawk.Client.EmuHawk
 				Global.CheatList.NewList(GenerateDefaultCheatFilename(), autosave: true);
 			}
 
-			_tools.ForEach(x => x.Restart());
+			var unavailable = new List<IToolForm>();
+
+			foreach (var tool in _tools)
+			{
+				if (IsAvailable(tool.GetType()))
+				{
+					UpdateServices(tool);
+					tool.Restart();
+				}
+				else
+				{
+					unavailable.Add(tool);
+				}
+			}
+
+			foreach (var tool in unavailable)
+			{
+				tool.Close();
+				_tools.Remove(tool);
+			}
 		}
 
 		/// <summary>
@@ -197,6 +305,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void Close(Type toolType)
+		{
+			var tool = _tools.FirstOrDefault(x => toolType.IsAssignableFrom(x.GetType()));
+
+			if (tool != null)
+			{
+				tool.Close();
+				_tools.Remove(tool);
+			}
+		}
+
 		public void Close()
 		{
 			_tools.ForEach(x => x.Close());
@@ -210,6 +329,15 @@ namespace BizHawk.Client.EmuHawk
 			// Add to the list and extract it, so it will be strongly typed as T
 			_tools.Add(tool as IToolForm);
 			return _tools.FirstOrDefault(x => x is T);
+		}
+
+		private IToolForm CreateInstance(Type toolType)
+		{
+			var tool = (IToolForm)Activator.CreateInstance(toolType);
+
+			// Add to our list of tools
+			_tools.Add(tool);
+			return tool;
 		}
 
 		private void CloseIfDisposed<T>() where T : IToolForm
@@ -448,6 +576,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadRamWatch(bool loadDialog)
 		{
+			if (Global.Emulator.HasMemoryDomains())
 			if (!IsLoaded<RamWatch>() && Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
 			{
 				GlobalWin.Tools.RamWatch.LoadFileFromRecent(Global.Config.RecentWatches.MostRecent);
@@ -461,7 +590,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadTraceLogger()
 		{
-			if (Global.Emulator.CoreComm.CpuTraceAvailable)
+			if (Global.Emulator.CpuTraceAvailable())
 			{
 				Load<TraceLogger>();
 			}

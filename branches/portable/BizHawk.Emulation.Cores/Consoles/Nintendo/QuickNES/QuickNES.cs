@@ -22,8 +22,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		portedVersion: "0.7.0",
 		portedUrl: "https://github.com/kode54/QuickNES"
 		)]
-	public class QuickNES : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains,
-		IDebuggable, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>
+	[ServiceNotApplicable(typeof(IDriveLight))]
+	public class QuickNES : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IInputPollable,
+		IStatable, IDebuggable, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>
 	{
 		#region FPU precision
 
@@ -72,6 +73,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		{
 			using (FP.Save())
 			{
+				ServiceProvider = new BasicServiceProvider(this);
 				CoreComm = comm;
 
 				Context = LibQuickNES.qn_new();
@@ -107,6 +109,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				}
 			}
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		#region Controller
 
@@ -240,20 +244,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			LibQuickNES.ThrowStringError(LibQuickNES.qn_battery_ram_load(Context, data, data.Length));
 		}
 
-		public void ClearSaveRam()
-		{
-			LibQuickNES.ThrowStringError(LibQuickNES.qn_battery_ram_clear(Context));
-		}
-
 		public bool SaveRamModified
 		{
 			get
 			{
 				return LibQuickNES.qn_has_battery_ram(Context);
-			}
-			set
-			{
-				throw new Exception();
 			}
 		}
 
@@ -385,7 +380,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public MemoryDomainList MemoryDomains { get; private set; }
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			int[] regs = new int[6];
 			var ret = new Dictionary<string, int>();
@@ -399,12 +394,39 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			return ret;
 		}
 
+		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value)
 		{
 			throw new NotImplementedException();
 		}
 
+		[FeatureNotImplemented]
+		public void StepInto() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOut() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOver() { throw new NotImplementedException(); }
+
+		public ITracer Tracer
+		{
+			[FeatureNotImplemented]
+			get
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		public IMemoryCallbackSystem MemoryCallbacks
+		{
+			[FeatureNotImplemented]
+			get { throw new NotImplementedException(); }
+		}
+
 		#endregion
+
+		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { throw new NotImplementedException(); } }
 
 		#region bootgod
 

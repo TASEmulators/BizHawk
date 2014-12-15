@@ -48,11 +48,11 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public void PlayTrack(int track)
 		{
-			if (track < 1 || track > Disc.TOC.Sessions[0].Tracks.Count)
+			if (track < 1 || track > Disc.Structure.Sessions[0].Tracks.Count)
 				return;
 
-			StartLBA = Disc.TOC.Sessions[0].Tracks[track - 1].Indexes[1].aba - 150;
-			EndLBA = StartLBA + Disc.TOC.Sessions[0].Tracks[track - 1].length_aba;
+			StartLBA = Disc.Structure.Sessions[0].Tracks[track - 1].Indexes[1].aba - 150;
+			EndLBA = StartLBA + Disc.Structure.Sessions[0].Tracks[track - 1].LengthInSectors;
 			PlayingTrack = track;
 			CurrentSector = StartLBA;
 			SectorOffset = 0;
@@ -64,12 +64,12 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public void PlayStartingAtLba(int lba)
 		{
-			var point = Disc.TOC.SeekPoint(lba);
+			var point = Disc.Structure.SeekPoint(lba);
 			if (point == null || point.Track == null) return;
 
 			PlayingTrack = point.TrackNum;
 			StartLBA = lba;
-			EndLBA = point.Track.Indexes[1].aba + point.Track.length_aba - 150;
+			EndLBA = point.Track.Indexes[1].aba + point.Track.LengthInSectors - 150;
 
 			CurrentSector = StartLBA;
 			SectorOffset = 0;

@@ -5,6 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
+
 namespace BizHawk.Client.Common
 {
 	/// <summary>
@@ -13,6 +16,7 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class TasStateManager
 	{
+		private readonly IStatable Core;
 		private readonly SortedList<int, byte[]> States = new SortedList<int, byte[]>();
 
 		private readonly TasMovie _movie;
@@ -40,22 +44,22 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public TasStateManager(TasMovie movie)
+		public TasStateManager(TasMovie movie, IStatable core)
 		{
 			_movie = movie;
+			Core = core;
+
 			Settings = new TasStateManagerSettings(Global.Config.DefaultTasProjSettings);
 
 			var cap = Settings.Cap;
 
 			int limit = 0;
-			if (Global.Emulator != null)
-			{
-				_expectedStateSize = Global.Emulator.SaveStateBinary().Length;
+			
+			_expectedStateSize = Core.SaveStateBinary().Length;
 
-				if (_expectedStateSize > 0)
-				{
-					limit = cap / _expectedStateSize;
-				}
+			if (_expectedStateSize > 0)
+			{
+				limit = cap / _expectedStateSize;
 			}
 
 			States = new SortedList<int, byte[]>(limit);
@@ -131,7 +135,7 @@ namespace BizHawk.Client.Common
 			if (shouldCapture)
 			{
 				var frame = Global.Emulator.Frame;
-				var state = (byte[])Global.Emulator.SaveStateBinary().Clone();
+				var state = (byte[])Core.SaveStateBinary().Clone();
 
 				if (States.ContainsKey(frame))
 				{

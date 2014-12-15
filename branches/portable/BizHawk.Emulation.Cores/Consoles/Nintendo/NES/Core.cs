@@ -245,8 +245,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool hardResetSignal;
 		public void FrameAdvance(bool render, bool rendersound)
 		{
-			if (CoreComm.Tracer.Enabled)
-				cpu.TraceCallback = (s) => CoreComm.Tracer.Put(s);
+			if (Tracer.Enabled)
+				cpu.TraceCallback = (s) => Tracer.Put(s);
 			else
 				cpu.TraceCallback = null;
 
@@ -256,7 +256,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				board.NESSoftReset();
 				cpu.NESSoftReset();
 				apu.NESSoftReset();
-				//need to study what happens to ppu and apu and stuff..
+				ppu.NESSoftReset();
 			}
 			else if (hardResetSignal)
 			{
@@ -420,7 +420,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		byte read_joyport(int addr)
 		{
-			CoreComm.InputCallback.Call();
+			InputCallbacks.Call();
 			lagged = false;
 				byte ret = addr == 0x4016 ? ControllerDeck.ReadA(Controller) : ControllerDeck.ReadB(Controller);
 				ret &= 0x1f;
@@ -534,7 +534,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void ExecFetch(ushort addr)
 		{
-			CoreComm.MemoryCallbackSystem.CallExecute(addr);
+			MemoryCallbacks.CallExecutes(addr);
 		}
 
 		public byte ReadMemory(ushort addr)
@@ -579,7 +579,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ret = sysbus_watch[addr].ApplyGameGenie(ret);
 			}
 
-			CoreComm.MemoryCallbackSystem.CallRead(addr);
+			MemoryCallbacks.CallReads(addr);
 
 			DB = ret;
 
@@ -633,7 +633,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				board.WritePRG(addr - 0x8000, value);
 			}
 
-			CoreComm.MemoryCallbackSystem.CallWrite(addr);
+			MemoryCallbacks.CallWrites(addr);
 		}
 
 	}

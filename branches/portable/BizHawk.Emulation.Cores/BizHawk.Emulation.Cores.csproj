@@ -75,6 +75,10 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\References\OpenTK.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
@@ -95,12 +99,32 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\VersionInfo.cs">
+    <Compile Include="..\Version\svnrev.cs">
+      <Link>svnrev.cs</Link>
+    </Compile>
+    <Compile Include="..\Version\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Calculator\TI83.IInputPollable.cs">
+      <DependentUpon>TI83.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Calculator\TI83.IMemoryDomains.cs">
+      <DependentUpon>TI83.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Calculator\TI83.ISettable.cs">
+      <DependentUpon>TI83.cs</DependentUpon>
+    </Compile>
     <Compile Include="Calculator\TI83.cs" />
+    <Compile Include="Calculator\TI83.IDebuggable.cs">
+      <DependentUpon>TI83.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Calculator\TI83.IStatable.cs">
+      <DependentUpon>TI83.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Calculator\TI83LinkPort.cs" />
     <Compile Include="Computers\Commodore64\C64.Core.cs" />
     <Compile Include="Computers\Commodore64\C64.cs" />
+    <Compile Include="Computers\Commodore64\C64.IStatable.cs" />
     <Compile Include="Computers\Commodore64\C64.Motherboard.cs" />
     <Compile Include="Computers\Commodore64\C64.MotherboardInterface.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0000.cs" />
@@ -133,7 +157,6 @@
     <Compile Include="Computers\Commodore64\MOS\MOS6567.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6581.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6569.cs" />
-    <Compile Include="Computers\Commodore64\C64.Savestate.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOSPLA.cs" />
     <Compile Include="Computers\Commodore64\MOS\Port.cs" />
     <Compile Include="Computers\Commodore64\MOS\SerialPort.cs" />
@@ -153,10 +176,27 @@
     <Compile Include="Computers\Commodore64\SaveState.cs" />
     <Compile Include="Computers\Commodore64\UserPort\UserPortDevice.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
-    <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs" />
-    <Compile Include="Consoles\Atari\2600\Atari2600.IMemoryDomains.cs" />
-    <Compile Include="Consoles\Atari\2600\Atari2600.RomHeuristics.cs" />
-    <Compile Include="Consoles\Atari\2600\Atari2600.Settings.cs" />
+    <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs">
+      <DependentUpon>Atari2600.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\2600\Atari2600.IDebuggable.cs">
+      <DependentUpon>Atari2600.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\2600\Atari2600.IInputPollable.cs">
+      <DependentUpon>Atari2600.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\2600\Atari2600.IMemoryDomains.cs">
+      <DependentUpon>Atari2600.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\2600\Atari2600.ISettable.cs">
+      <DependentUpon>Atari2600.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\2600\Atari2600.IStatable.cs">
+      <DependentUpon>Atari2600.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\2600\Atari2600.RomHeuristics.cs">
+      <DependentUpon>Atari2600.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Atari\2600\Mappers\m0840.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\m3E.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\m3F.cs" />
@@ -198,12 +238,41 @@
     <Compile Include="Consoles\Atari\2600\Tia\Tia.MissleData.cs" />
     <Compile Include="Consoles\Atari\2600\Tia\Tia.PlayerData.cs" />
     <Compile Include="Consoles\Atari\2600\Tia\Tia.PlayfieldData.cs" />
-    <Compile Include="Consoles\Atari\7800\Atari7800.Core.cs" />
     <Compile Include="Consoles\Atari\7800\Atari7800.cs" />
+    <Compile Include="Consoles\Atari\7800\Atari7800.IDebuggable.cs">
+      <DependentUpon>Atari7800.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\7800\Atari7800.IInputPollable.cs">
+      <DependentUpon>Atari7800.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\7800\Atari7800.IMemoryDomains.cs">
+      <DependentUpon>Atari7800.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\7800\Atari7800.IStatable.cs">
+      <DependentUpon>Atari7800.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Atari\7800\Atari7800Control.cs" />
+    <Compile Include="Consoles\Atari\7800\Atari7800.ISaveRam.cs">
+      <DependentUpon>Atari7800.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Atari\lynx\LibLynx.cs" />
     <Compile Include="Consoles\Atari\lynx\Lynx.cs" />
     <Compile Include="Consoles\Coleco\ColecoVision.cs" />
+    <Compile Include="Consoles\Coleco\ColecoVision.IDebuggable.cs">
+      <DependentUpon>ColecoVision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Coleco\ColecoVision.IInputPollable.cs">
+      <DependentUpon>ColecoVision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Coleco\ColecoVision.IMemoryDomains.cs">
+      <DependentUpon>ColecoVision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Coleco\ColecoVision.ISettable.cs">
+      <DependentUpon>ColecoVision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Coleco\ColecoVision.IStatable.cs">
+      <DependentUpon>ColecoVision.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Coleco\Input.cs" />
     <Compile Include="Consoles\Coleco\MemoryMap.cs" />
     <Compile Include="Consoles\Coleco\TMS9918A.cs" />
@@ -217,14 +286,33 @@
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\GBColors.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\GBDisassembler.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\LibGambatte.cs" />
+    <Compile Include="Consoles\Nintendo\GBA\ArmV4Disassembler.cs" />
     <Compile Include="Consoles\Nintendo\GBA\IGBAGPUViewable.cs" />
     <Compile Include="Consoles\Nintendo\GBA\LibMeteor.cs" />
     <Compile Include="Consoles\Nintendo\GBA\LibVBANext.cs" />
     <Compile Include="Consoles\Nintendo\GBA\Meteor.cs" />
     <Compile Include="Consoles\Nintendo\GBA\VBANext.cs" />
     <Compile Include="Consoles\Nintendo\GBA\VBARegisterHelper.cs" />
-    <Compile Include="Consoles\Nintendo\N64\N64.IMemoryDomains.cs" />
+    <Compile Include="Consoles\Nintendo\N64\N64.IDebuggable.cs">
+      <DependentUpon>N64.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\N64\N64.IInputPollable.cs">
+      <DependentUpon>N64.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\N64\N64.IMemoryDomains.cs">
+      <DependentUpon>N64.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\N64\N64.ISaveRam.cs">
+      <DependentUpon>N64.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\N64\N64.ISettable.cs">
+      <DependentUpon>N64.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\N64\N64.IStatable.cs">
+      <DependentUpon>N64.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\N64\N64Input.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64Settings.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.Controller.cs" />
@@ -460,8 +548,8 @@
     <Compile Include="Consoles\Sega\SMS\VDP.Tables.cs" />
     <Compile Include="Consoles\Sony\PSP\PPSSPPDll.cs" />
     <Compile Include="Consoles\Sony\PSP\PSP.cs" />
-    <Compile Include="Consoles\Sony\PSX\LibMednahawkDll.cs" />
     <Compile Include="Consoles\Sony\PSX\Octoshock.cs" />
+    <Compile Include="Consoles\Sony\PSX\OctoshockDll.cs" />
     <Compile Include="Consoles\WonderSwan\BizSwan.cs" />
     <Compile Include="Consoles\WonderSwan\WonderSwan.cs" />
     <Compile Include="CoreInventory.cs" />
@@ -503,9 +591,9 @@
     <Compile Include="CPUs\Z80\Registers.cs" />
     <Compile Include="CPUs\Z80\Tables.cs" />
     <Compile Include="CPUs\Z80\Z80A.cs" />
+    <Compile Include="FileID.cs" />
     <Compile Include="LibRetro.cs" />
     <Compile Include="LibRetroEmulator.cs" />
-    <Compile Include="Properties\svnrev.cs" />
     <Compile Include="Consoles\PC Engine\Input.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.SF2.cs" />
@@ -587,6 +675,9 @@
         <Command Condition=" '$(OS)' != 'Windows_NT' " type="BeforeBuild" command="${SolutionDir}/subwcrev.sh &quot;$(ProjectDir)&quot;" workingdir="${ProjectDir}" />
       </CustomCommands>
     </CustomCommands>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent />
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

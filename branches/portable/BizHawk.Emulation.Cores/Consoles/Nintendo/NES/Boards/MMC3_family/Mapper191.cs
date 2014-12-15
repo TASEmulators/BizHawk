@@ -20,6 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Cart.vram_size = 2;
 			BaseSetup();
 
+			//theres a possibly bogus Q Boy rom using this mapper but I have no idea what emulator its supposed to boot in, for proof
 			throw new InvalidOperationException("THIS MAPPER ISNT TESTED! WHAT GAME USES IT? PLEASE REPORT!");
 
 			//return true;

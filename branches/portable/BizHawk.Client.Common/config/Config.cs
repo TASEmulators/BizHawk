@@ -105,6 +105,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public enum EDispMethod { OpenGL, GdiPlus, SlimDX9 };
+
 		public enum EDispManagerAR { None, System, Custom };
 
 		public enum SaveStateTypeE { Default, Binary, Text };
@@ -191,7 +193,6 @@ namespace BizHawk.Client.Common
 		public int DispRamWatchx = 0;
 		public int DispRamWatchy = 70;
 		public bool DisplayRamWatch = false;
-		public bool ShowMenuInFullscreen = false;
 		public int DispMessagex = 3;
 		public int DispMessagey = 0;
 		public int DispMessageanchor = 2;
@@ -203,7 +204,16 @@ namespace BizHawk.Client.Common
 		public bool DispFixAspectRatio = true;
 		public bool DispFixScaleInteger = true;
 		public bool DispFullscreenHacks = true;
-		public bool DispSnowyNullEmulator = true;
+
+		//warning: we dont even want to deal with changing this at runtime. but we want it changed here for config purposes. so dont check this variable. check in GlobalWin or something like that.
+		public EDispMethod DispMethod = EDispMethod.OpenGL;
+
+		public int DispChrome_FrameWindowed = 2;
+		public bool DispChrome_StatusBarWindowed = true;
+		public bool DispChrome_CaptionWindowed = true;
+		public bool DispChrome_MenuWindowed = true;
+		public bool DispChrome_StatusBarFullscreen = false;
+		public bool DispChrome_MenuFullscreen = false;
 
 		public EDispManagerAR DispManagerAR = EDispManagerAR.System; 
 		public int DispCustomUserARWidth = 1;
@@ -419,14 +429,6 @@ namespace BizHawk.Client.Common
 		public int NESPPURefreshRate = 4;
 		public bool NESPPUChrRomView = false;
 
-		// NESDebuger Settings
-		public bool AutoLoadNESDebugger = false;
-		public bool NESDebuggerSaveWindowPosition = true;
-		public int NESDebuggerWndx = -1;
-		public int NESDebuggerWndy = -1;
-		public int NESDebuggerWidth = -1;
-		public int NESDebuggerHeight = -1;
-
 		// NES NameTableViewer Settings
 		public ToolDialogSettings NesNameTableSettings = new ToolDialogSettings();
 		public bool AutoLoadNESNameTable = false;
@@ -581,6 +583,10 @@ namespace BizHawk.Client.Common
 		// Atari 2600 Debugger
 		public ToolDialogSettings Atari2600DebuggerSettings = new ToolDialogSettings();
 		public bool Atari2600DebuggerAutoload = false;
+
+		// Generic Debugger
+		public ToolDialogSettings GenericDebuggerSettings = new ToolDialogSettings();
+		public bool GenericDebuggerAutoload = false;
 
 		// Analog Hotkey values
 		public int Analog_LargeChange = 10;

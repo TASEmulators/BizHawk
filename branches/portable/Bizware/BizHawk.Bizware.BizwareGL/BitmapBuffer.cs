@@ -29,6 +29,11 @@ namespace BizHawk.Bizware.BizwareGL
 		public int Width, Height;
 		public int[] Pixels;
 
+		/// <summary>
+		/// Whether this instance should be considered as having alpha (ARGB) or not (XRBG)
+		/// </summary>
+		public bool HasAlpha = true;
+
 		public Size Size { get { return new Size(Width, Height); } }
 
 		sd.Bitmap WrappedBitmap;
@@ -241,6 +246,14 @@ namespace BizHawk.Bizware.BizwareGL
 			this.Height = height;
 		}
 
+		/// <summary>
+		/// Suggests that this BitmapBuffer is now XRGB instead of ARGB but doesn't actually change any of the pixels data.
+		/// Should affect how things get exported from here, though, I think
+		/// </summary>
+		public void DiscardAlpha()
+		{
+			HasAlpha = false;
+		}
 
 		void LoadInternal(Stream stream, sd.Bitmap bitmap, BitmapLoadOptions options)
 		{
@@ -460,28 +473,44 @@ namespace BizHawk.Bizware.BizwareGL
 
 
 		/// <summary>
-		/// Dumps this BitmapBuffer to a System.Drawing.Bitmap
+		/// Dumps this BitmapBuffer to a new System.Drawing.Bitmap
 		/// </summary>
 		public unsafe Bitmap ToSysdrawingBitmap()
 		{
-			Bitmap bmp = new Bitmap(Width, Height, PixelFormat.Format32bppArgb);
+			var pf = PixelFormat.Format32bppArgb;
+			if (!HasAlpha)
+				pf = PixelFormat.Format24bppRgb;
+			Bitmap bmp = new Bitmap(Width, Height, pf);
+			ToSysdrawingBitmap(bmp);
+			return bmp;
+		}
+
+		/// <summary>
+		/// Dumps this BitmapBuffer to an existing System.Drawing.Bitmap.
+		/// Some features of this may not be super fast (in particular, 32bpp to 24bpp conversion; we might fix that later with a customized loop)
+		/// </summary>
+		public unsafe void ToSysdrawingBitmap(Bitmap bmp)
+		{
+			//note: we lock it as 32bpp even if the bitmap is 24bpp so we can write to it more conveniently. 
 			var bmpdata = bmp.LockBits(new sd.Rectangle(0, 0, Width, Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
-			int* ptr = (int*)bmpdata.Scan0.ToPointer();
-			int stride = bmpdata.Stride;
-			fixed (int* pPtr = &Pixels[0])
+			if (bmp.Width != 0 && bmp.Height != 0)
 			{
-				for (int idx = 0, y = 0; y < Height; y++)
-					for (int x = 0; x < Width; x++)
-					{
-						int srcPixel = pPtr[idx];
-						ptr[idx] = srcPixel;
-						idx++;
-					}
+				int* ptr = (int*)bmpdata.Scan0.ToPointer();
+				int stride = bmpdata.Stride;
+				fixed (int* pPtr = &Pixels[0])
+				{
+					for (int idx = 0, y = 0; y < Height; y++)
+						for (int x = 0; x < Width; x++)
+						{
+							int srcPixel = pPtr[idx];
+							ptr[idx] = srcPixel;
+							idx++;
+						}
+				}
 			}
 
 			bmp.UnlockBits(bmpdata);
-			return bmp;
 		}
 
 	}

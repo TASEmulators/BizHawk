@@ -1,0 +1,3 @@
+MIT LICENSE
+
+https://code.google.com/p/iso-parser/

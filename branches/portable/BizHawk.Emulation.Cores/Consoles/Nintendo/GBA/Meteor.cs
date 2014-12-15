@@ -14,9 +14,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		isPorted: true,
 		isReleased: false
 		)]
-	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, IMemoryDomains, IDebuggable
+	[ServiceNotApplicable(typeof(IDriveLight))]
+	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, IMemoryDomains, ISaveRam, IDebuggable, IStatable, IInputPollable
 	{
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			var ret = new Dictionary<string, int>();
 			int[] data = new int[LibMeteor.regnames.Length];
@@ -26,9 +27,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			return ret;
 		}
 
+		[FeatureNotImplemented]
+		public void StepInto() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOut() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOver() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value)
 		{
 			throw new NotImplementedException();
+		}
+
+		public IMemoryCallbackSystem MemoryCallbacks
+		{
+			[FeatureNotImplemented]
+			get { throw new NotImplementedException(); }
 		}
 
 		public static readonly ControllerDefinition GBAController =
@@ -46,11 +63,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		[CoreConstructor("GBA")]
 		public GBA(CoreComm comm, byte[] file)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
+			Tracer = new TraceBuffer
+			{
+				Header = "   -Addr--- -Opcode- -Instruction------------------- -R0----- -R1----- -R2----- -R3----- -R4----- -R5----- -R6----- -R7----- -R8----- -R9----- -R10---- -R11---- -R12---- -R13(SP) -R14(LR) -R15(PC) -CPSR--- -SPSR---"
+			};
+
 			CoreComm = comm;
+
 			comm.VsyncNum = 262144;
 			comm.VsyncDen = 4389;
-			comm.CpuTraceAvailable = true;
-			comm.TraceHeader = "   -Addr--- -Opcode- -Instruction------------------- -R0----- -R1----- -R2----- -R3----- -R4----- -R5----- -R6----- -R7----- -R8----- -R9----- -R10---- -R11---- -R12---- -R13(SP) -R14(LR) -R15(PC) -CPSR--- -SPSR---";
 			comm.NominalWidth = 240;
 			comm.NominalHeight = 160;
 
@@ -68,6 +90,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			SetUpMemoryDomains();
 		}
 
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
 			Frame++;
@@ -76,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			if (Controller["Power"])
 				LibMeteor.libmeteor_hardreset();
 			// due to the design of the tracing api, we have to poll whether it's active each frame
-			LibMeteor.libmeteor_settracecallback(CoreComm.Tracer.Enabled ? tracecallback : null);
+			LibMeteor.libmeteor_settracecallback(Tracer.Enabled ? tracecallback : null);
 			if (!coredead)
 				LibMeteor.libmeteor_frameadvance();
 			if (IsLagFrame)
@@ -86,6 +110,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public int Frame { get; private set; }
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
+
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+
+		// TODO: optimize managed to unmanaged using the ActiveChanged event
+		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
+
+
+		public ITracer Tracer { get; private set; }
+
 		public string SystemId { get { return "GBA"; } }
 		public bool DeterministicEmulation { get { return true; } }
 
@@ -131,13 +164,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 #endif
 		}
 
-		public void ClearSaveRam()
-		{
-			if (disposed)
-				throw new ObjectDisposedException(this.GetType().ToString());
-			LibMeteor.libmeteor_clearsaveram();
-		}
-
 		public bool SaveRamModified
 		{
 			get
@@ -146,8 +172,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 					throw new ObjectDisposedException(this.GetType().ToString());
 				return LibMeteor.libmeteor_hassaveram();
 			}
-			set
-			{ }
 		}
 
 		#endregion
@@ -317,7 +341,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		LibMeteor.Buttons GetInput()
 		{
-			CoreComm.InputCallback.Call();
+			InputCallbacks.Call();
 			// libmeteor bitflips everything itself, so 0 == off, 1 == on
 			IsLagFrame = false;
 			LibMeteor.Buttons ret = 0;
@@ -415,7 +439,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		void Trace(string msg)
 		{
-			CoreComm.Tracer.Put(msg);
+			Tracer.Put(msg);
 		}
 
 		GBAGPUMemoryAreas IGBAGPUViewable.GetMemoryAreas()

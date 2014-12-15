@@ -3,7 +3,8 @@ using System.Linq;
 using System.ComponentModel;
 
 using LuaInterface;
-
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -123,6 +124,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		private void LogMemoryCallbacksNotImplemented()
+		{
+			Log(string.Format("{0} does not implement memory callbacks"));
+		}
+
 		#endregion
 
 		[LuaMethodAttributes(
@@ -155,7 +161,27 @@ namespace BizHawk.Client.Common
 		{
 			var nlf = new NamedLuaFunction(luaf, "OnInputPoll", LogOutputCallback, CurrentThread, name);
 			_luaFunctions.Add(nlf);
-			Global.Emulator.CoreComm.InputCallback.Add(nlf.Callback);
+
+			if (Global.Emulator.CanPollInput())
+			{
+				try
+				{
+					Global.Emulator.AsInputPollable().InputCallbacks.Add(nlf.Callback);
+				}
+				catch (NotImplementedException)
+				{
+					LogNotImplemented();
+				}
+			}
+			else
+			{
+				LogNotImplemented();
+			}
+		}
+
+		private void LogNotImplemented()
+		{
+			Log(string.Format("Error: {0} does not yet implement input polling callbacks"));
 		}
 
 		[LuaMethodAttributes(
@@ -175,10 +201,20 @@ namespace BizHawk.Client.Common
 		)]
 		public string OnMemoryExecute(LuaFunction luaf, uint address, string name = null)
 		{
-			var nlf = new NamedLuaFunction(luaf, "OnMemoryExecute", LogOutputCallback, CurrentThread, name);
-			_luaFunctions.Add(nlf);
-			Global.CoreComm.MemoryCallbackSystem.AddExecute(nlf.Callback, address);
-			return nlf.Guid.ToString();
+			if (Global.Emulator.MemoryCallbacksAvailable())
+			{
+				var nlf = new NamedLuaFunction(luaf, "OnMemoryExecute", LogOutputCallback, CurrentThread, name);
+				_luaFunctions.Add(nlf);
+
+				Global.Emulator.AsDebuggable().MemoryCallbacks.Add(
+					new MemoryCallback(MemoryCallbackType.Execute, "Lua Hook", nlf.Callback, address));
+				return nlf.Guid.ToString();
+			}
+			else
+			{
+				LogMemoryCallbacksNotImplemented();
+				return Guid.Empty.ToString();
+			}
 		}
 
 		[LuaMethodAttributes(
@@ -187,10 +223,19 @@ namespace BizHawk.Client.Common
 		)]
 		public string OnMemoryRead(LuaFunction luaf, uint? address = null, string name = null)
 		{
-			var nlf = new NamedLuaFunction(luaf, "OnMemoryRead", LogOutputCallback, CurrentThread, name);
-			_luaFunctions.Add(nlf);
-			Global.CoreComm.MemoryCallbackSystem.AddRead(nlf.Callback, address);
-			return nlf.Guid.ToString();
+			if (Global.Emulator.MemoryCallbacksAvailable())
+			{
+				var nlf = new NamedLuaFunction(luaf, "OnMemoryRead", LogOutputCallback, CurrentThread, name);
+				_luaFunctions.Add(nlf);
+				Global.Emulator.AsDebuggable().MemoryCallbacks.Add(
+					new MemoryCallback(MemoryCallbackType.Read, "Lua Hook", nlf.Callback, address));
+				return nlf.Guid.ToString();
+			}
+			else
+			{
+				LogMemoryCallbacksNotImplemented();
+				return Guid.Empty.ToString();
+			}
 		}
 
 		[LuaMethodAttributes(
@@ -199,10 +244,19 @@ namespace BizHawk.Client.Common
 		)]
 		public string OnMemoryWrite(LuaFunction luaf, uint? address = null, string name = null)
 		{
-			var nlf = new NamedLuaFunction(luaf, "OnMemoryWrite", LogOutputCallback, CurrentThread, name);
-			_luaFunctions.Add(nlf);
-			Global.CoreComm.MemoryCallbackSystem.AddWrite(nlf.Callback, address);
-			return nlf.Guid.ToString();
+			if (Global.Emulator.MemoryCallbacksAvailable())
+			{
+				var nlf = new NamedLuaFunction(luaf, "OnMemoryWrite", LogOutputCallback, CurrentThread, name);
+				_luaFunctions.Add(nlf);
+				Global.Emulator.AsDebuggable().MemoryCallbacks.Add(
+					new MemoryCallback(MemoryCallbackType.Write, "Lua Hook", nlf.Callback, address));
+				return nlf.Guid.ToString();
+			}
+			else
+			{
+				LogMemoryCallbacksNotImplemented();
+				return Guid.Empty.ToString();
+			}
 		}
 
 		[LuaMethodAttributes(

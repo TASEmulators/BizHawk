@@ -50,7 +50,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 			Cart.wram_size = 0; // cart responds to regs in 6000:7fff
-			Cart.vram_size = 0;
+
+			//zero 13-dec-2014 - Q-boy is example of game with vram, apparently.
+			//lets only clear vram if theres a chr rom
+			if(Cart.chr_size != 0)
+				Cart.vram_size = 0;
 
 			shiftmask = (1 << shiftout) - 1;
 			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
@@ -131,6 +135,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x2000)
 			{
+				if(VROM == null)
+					return base.ReadPPU(addr);
+
 				int idx = addr >> 11;
 				// in addition to fixing V-mirroring, simple fixes us to 1 bank
 				// this means for type C, simple has 1 8KiB chr bank

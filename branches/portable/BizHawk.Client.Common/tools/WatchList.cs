@@ -387,7 +387,7 @@ namespace BizHawk.Client.Common
 				var sb = new StringBuilder();
 				sb
 					.Append("Domain ").AppendLine(_domain.Name)
-					.Append("SystemID ").AppendLine(Global.Emulator.SystemId);
+					.Append("SystemID ").AppendLine(_core.SystemId);
 
 				foreach (var watch in _watchList)
 				{

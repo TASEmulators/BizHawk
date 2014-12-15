@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("45BEDC4CBDEAC66C7DF59E9E599195C778D86A92", 8192, "Coleco", "Bios", "ColecoBios.bin", "Bios");
 
 			{
-				var GBA_JDebug = File("AA98A2AD32B86106340665D1222D7D973A1361C7", 16384, "gbabios.rom", "Bios (J Debug)"); //?? is this size correct?
+				var GBA_JDebug = File("AA98A2AD32B86106340665D1222D7D973A1361C7", 16384, "gbabios.rom", "Bios (J Debug)");
 				var GBA_Normal = File("300C20DF6731A33952DED8C436F7F186D25D3492", 16384, "gbabios.rom", "Bios (World)");
 				Firmware("GBA", "Bios", "Bios");
 				Option("GBA", "Bios", GBA_Normal);
@@ -92,13 +92,13 @@ namespace BizHawk.Emulation.Common
 			Option("TI83", "Rom", ti83p_112);
 
 			// mega cd
-			var eu_mcd1_9210 = File("f891e0ea651e2232af0c5c4cb46a0cae2ee8f356", 131072, "eu_mcd1_9210.bin", "Mega CD EU (9210)"); //?? is this size correct?
-			var eu_mcd2_9303 = File("7063192ae9f6b696c5b81bc8f0a9fe6f0c400e58", 131072, "eu_mcd2_9303.bin", "Mega CD EU (9303)"); //?? is this size correct?
+			var eu_mcd1_9210 = File("f891e0ea651e2232af0c5c4cb46a0cae2ee8f356", 131072, "eu_mcd1_9210.bin", "Mega CD EU (9210)");
+			var eu_mcd2_9303 = File("7063192ae9f6b696c5b81bc8f0a9fe6f0c400e58", 131072, "eu_mcd2_9303.bin", "Mega CD EU (9303)");
 			var eu_mcd2_9306 = File("523b3125fb0ac094e16aa072bc6ccdca22e520e5", 131072, "eu_mcd2_9306.bin", "Mega CD EU (9310)"); //?? is this size correct?
-			var jp_mcd1_9111 = File("4846f448160059a7da0215a5df12ca160f26dd69", 131072, "jp_mcd1_9111.bin", "Mega CD JP (9111)"); //?? is this size correct?
-			var jp_mcd1_9112 = File("e4193c6ae44c3cea002707d2a88f1fbcced664de", 131072, "jp_mcd1_9112.bin", "Mega CD JP (9112)"); //?? is this size correct?
-			var us_scd1_9210 = File("f4f315adcef9b8feb0364c21ab7f0eaf5457f3ed", 131072, "us_scd1_9210.bin", "Sega CD US (9210)"); //?? is this size correct?
-			var us_scd2_9303 = File("bd3ee0c8ab732468748bf98953603ce772612704", 131072, "us_scd2_9303.bin", "Sega CD US (9303)"); //?? is this size correct?
+			var jp_mcd1_9111 = File("4846f448160059a7da0215a5df12ca160f26dd69", 131072, "jp_mcd1_9111.bin", "Mega CD JP (9111)");
+			var jp_mcd1_9112 = File("e4193c6ae44c3cea002707d2a88f1fbcced664de", 131072, "jp_mcd1_9112.bin", "Mega CD JP (9112)");
+			var us_scd1_9210 = File("f4f315adcef9b8feb0364c21ab7f0eaf5457f3ed", 131072, "us_scd1_9210.bin", "Sega CD US (9210)");
+			var us_scd2_9303 = File("bd3ee0c8ab732468748bf98953603ce772612704", 131072, "us_scd2_9303.bin", "Sega CD US (9303)");
 
 			Firmware("GEN", "CD_BIOS_EU", "Mega CD Bios (Europe)");
 			Firmware("GEN", "CD_BIOS_JP", "Mega CD Bios (Japan)");
@@ -139,6 +139,7 @@ namespace BizHawk.Emulation.Common
 			var ps_21e = File("76CF6B1B2A7C571A6AD07F2BAC0DB6CD8F71E2CC", 524288, "ps-21e.bin", "PSX BIOS (Version 2.1 07/17/95 E)", "Used on SCPH-1002, DTL-H1102 [g]. This is for Rev B hardware [w].");
 			var ps_22j = File("FFA7F9A7FB19D773A0C3985A541C8E5623D2C30D", 524288, "ps-22j.bin", "PSX BIOS (Version 2.2 12/04/95 J)", "Used on SCPH-5000, DTL-H1200, DTL-H3000 [g]. This is for Rev C hardware [w].");
 			var ps_22j_bad = File("E340DB2696274DDA5FDC25E434A914DB71E8B02B", 524288, "ps-22j-bad.bin", "BAD DUMP OF SCPH-5000. Found on [p]."); //BAD!!
+			var ps_22j_bad2 = File("81622ACE63E25696A5D884692E554D350DDF57A6", 526083, "ps-22j-bad2.bin", "PSX BIOS (Version 2.2 12/04/95 J", "BAD DUMP OF SCPH-5000."); //BAD!
 			var ps_22a = File("10155D8D6E6E832D6EA66DB9BC098321FB5E8EBF", 524288, "ps-22a.bin", "PSX BIOS (Version 2.2 12/04/95 A)", "Used on SCPH-1001, DTL-H1201, DTL-H3001 [g]. This is for Rev C hardware [w].");
 			var ps_22e = File("B6A11579CAEF3875504FCF3831B8E3922746DF2C", 524288, "ps-22e.bin", "PSX BIOS (Version 2.2 12/04/95 E)", "Used on SCPH-1002, DTL-H1202, DTL-H3002 [g]. This is for Rev C hardware [w].");
 			var ps_22d = File("73107D468FC7CB1D2C5B18B269715DD889ECEF06", 524288, "ps-22d.bin", "PSX BIOS (Version 2.2 03/06/96 D)", "Used on DTL-H1100 [g]. This is for Rev C hardware, presumably.");
@@ -153,9 +154,9 @@ namespace BizHawk.Emulation.Common
 			var psone_44e = File("BEB0AC693C0DC26DAF5665B3314DB81480FA5C7C", 524288, "psone-44e.bin", "PSX BIOS (Version 4.4 03/24/00 E)", "Used on PSone SCPH-102 [g]. This is for Rev C PSone hardware [w].");
 			var psone_45a = File("DCFFE16BD90A723499AD46C641424981338D8378", 524288, "psone-45a.bin", "PSX BIOS (Version 4.5 05/25/00 A)", "Used on PSone SCPH-101 [g]. This is for Rev C PSone hardware [w].");
 			var psone_r5e = File("DBC7339E5D85827C095764FC077B41F78FD2ECAE", 524288, "psone-45e.bin", "PSX BIOS (Version 4.5 05/25/00 E)", "Used on PSone SCPH-102 [g]. This is for Rev C PSone hardware [w].");
-			var ps2_50j = File("D7D6BE084F51354BC951D8FA2D8D912AA70ABC5E", 99999, "ps2-50j.bin", "PSX BIOS (Version 5.0 10/27/00 J)", "Found on a PS2 [p]."); //not sure about this size
+			var ps2_50j = File("D7D6BE084F51354BC951D8FA2D8D912AA70ABC5E", 4194304, "ps2-50j.bin", "PSX BIOS (Version 5.0 10/27/00 J)", "Found on a PS2 [p].");
 
-			ps_22j_bad.bad = ps_30e_bad.bad = true;
+			ps_22j_bad.bad = ps_22j_bad2.bad = ps_30e_bad.bad = true;
 
 			Firmware("PSX", "U", "BIOS (U)");
 			Firmware("PSX", "J", "BIOS (J)");
@@ -179,6 +180,7 @@ namespace BizHawk.Emulation.Common
 			Option("PSX", "E", ps_21e, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "J", ps_22j, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "J", ps_22j_bad, FirmwareOptionStatus.Bad);
+			Option("PSX", "J", ps_22j_bad2, FirmwareOptionStatus.Bad);
 			Option("PSX", "U", ps_22a, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "E", ps_22e, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "E", ps_30e_bad, FirmwareOptionStatus.Bad);

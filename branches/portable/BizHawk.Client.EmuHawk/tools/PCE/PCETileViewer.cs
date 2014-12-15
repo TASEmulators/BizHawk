@@ -13,9 +13,12 @@ using System.Drawing.Imaging;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(PCEngine))]
 	public partial class PCETileViewer : Form, IToolForm
 	{
-		private PCEngine emu;
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+		private PCEngine emu { get { return (PCEngine)EmulatorServices[typeof(PCEngine)]; } }
+
 		private VDC vdc;
 		private VCE vce;
 
@@ -29,8 +32,6 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewSP.ChangeBitmapSize(512, 256);
 			bmpViewBGPal.ChangeBitmapSize(256, 256);
 			bmpViewSPPal.ChangeBitmapSize(256, 256);
-
-			Restart();
 		}
 
 		#region IToolForm
@@ -147,13 +148,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			if (!(Global.Emulator is PCEngine))
-			{
-				Close();
-				return;
-			}
-			emu = (PCEngine)Global.Emulator;
-
 			vce = emu.VCE;
 
 			if (emu.SystemId == "SGX")
@@ -270,11 +264,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PCETileViewer_Load(object sender, EventArgs e)
 		{
+			vce = emu.VCE;
 			TopMost = Global.Config.PceVdpSettings.TopMost;
 			if (Global.Config.PceVdpSettings.UseWindowPosition)
 			{
 				Location = Global.Config.PceVdpSettings.WindowPosition;
 			}
+
+			Restart();
 		}
 
 		private void RefreshFloatingWindowControl()

@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			_mapper.Bit13 = addr.Bit(13);
 			var temp = _mapper.ReadMemory((ushort)(addr & 0x1FFF));
-			CoreComm.MemoryCallbackSystem.CallRead(addr);
+			MemoryCallbacks.CallReads(addr);
 
 			return temp;
 		}
@@ -130,7 +130,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			_mapper.WriteMemory((ushort)(addr & 0x1FFF), value);
 
-			CoreComm.MemoryCallbackSystem.CallWrite(addr);
+			MemoryCallbacks.CallWrites(addr);
 		}
 
 		public void PokeMemory(ushort addr, byte value)
@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public void ExecFetch(ushort addr)
 		{
-			CoreComm.MemoryCallbackSystem.CallExecute(addr);
+			MemoryCallbacks.CallExecutes(addr);
 		}
 
 		private static MapperBase SetMultiCartMapper(int romLength, int gameTotal)
@@ -414,9 +414,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_tia.Execute(1);
 			_tia.Execute(1);
 			M6532.Timer.Tick();
-			if (CoreComm.Tracer.Enabled)
+			if (Tracer.Enabled)
 			{
-				CoreComm.Tracer.Put(Cpu.TraceState());
+				Tracer.Put(Cpu.TraceState());
 			}
 			Cpu.ExecuteOne();
 			_mapper.ClockCpu();
@@ -424,7 +424,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public byte ReadControls1(bool peek)
 		{
-			CoreComm.InputCallback.Call();
+			InputCallbacks.Call();
 			byte value = 0xFF;
 
 			if (Controller["P1 Up"]) { value &= 0xEF; }
@@ -443,7 +443,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public byte ReadControls2(bool peek)
 		{
-			CoreComm.InputCallback.Call();
+			InputCallbacks.Call();
 			byte value = 0xFF;
 
 			if (Controller["P2 Up"]) { value &= 0xEF; }

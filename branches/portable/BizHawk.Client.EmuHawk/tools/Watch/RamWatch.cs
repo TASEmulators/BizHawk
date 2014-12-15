@@ -16,7 +16,8 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-    public partial class RamWatch : Form, IToolForm, IHasShowDialog
+	[RequiredServices(typeof(IMemoryDomains))]
+	public partial class RamWatch : Form, IToolForm
 	{
 		private readonly Dictionary<string, int> _defaultColumnWidths = new Dictionary<string, int>
 		{
@@ -30,8 +31,6 @@ namespace BizHawk.Client.EmuHawk
 		};
 
 		private WatchList _watches;
-		private IMemoryDomains _core;
-
 
 		private int _defaultWidth;
 		private int _defaultHeight;
@@ -39,10 +38,11 @@ namespace BizHawk.Client.EmuHawk
 		private bool _sortReverse;
 		private bool _paused = false;
 
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+		private IMemoryDomains _core { get { return (IMemoryDomains)EmulatorServices[typeof(IMemoryDomains)]; } }
+
 		public RamWatch()
 		{
-			_core = (IMemoryDomains)Global.Emulator; // Cast is intentional, better to get a cast exception than a null reference exception later
-			_watches = new WatchList(_core, _core.MemoryDomains.MainMemory);
 			InitializeComponent();
 			WatchListView.QueryItemText += WatchListView_QueryItemText;
 			WatchListView.QueryItemBkColor += WatchListView_QueryItemBkColor;
@@ -194,13 +194,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-
-			if (!Global.Emulator.HasMemoryDomains())
-			{
-				Close();
-			}
-
-			_core = (IMemoryDomains)Global.Emulator; // Cast is intentional, better to get a cast exception than a null reference exception later
 
 			if (!string.IsNullOrWhiteSpace(_watches.CurrentFileName))
 			{
@@ -580,7 +573,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetPlatformAndMemoryDomainLabel()
 		{
-			MemDomainLabel.Text = Global.Emulator.SystemId + " " + _watches.Domain.Name;
+			MemDomainLabel.Text = _core.SystemId + " " + _watches.Domain.Name;
 		}
 
 		private void UpdateStatusBar(bool saved = false)
@@ -1084,7 +1077,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewRamWatch_Load(object sender, EventArgs e)
 		{
-
+			_watches = new WatchList(_core, _core.MemoryDomains.MainMemory);
 			LoadConfigSettings();
 			UpdateStatusBar();
 		}

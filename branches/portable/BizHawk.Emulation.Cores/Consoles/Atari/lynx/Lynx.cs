@@ -12,13 +12,15 @@ using Newtonsoft.Json;
 namespace BizHawk.Emulation.Cores.Atari.Lynx
 {
 	[CoreAttributes("Handy", "K. Wilkins", true, true, "mednafen 0-9-34-1", "http://mednafen.sourceforge.net/")]
-	public class Lynx : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains
+	[ServiceNotApplicable(typeof(ISettable<,>), typeof(IDriveLight))]
+	public class Lynx : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IStatable, IInputPollable
 	{
 		IntPtr Core;
 
 		[CoreConstructor("Lynx")]
 		public Lynx(byte[] file, GameInfo game, CoreComm comm)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
 
 			byte[] bios = CoreComm.CoreFileProvider.GetFirmware("Lynx", "Boot", true, "Boot rom is required");
@@ -121,6 +123,8 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			}
 		}
 
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
 			Frame++;
@@ -137,6 +141,13 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		public int Frame { get; private set; }
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
+
+		// TODO
+		public IInputCallbackSystem InputCallbacks
+		{
+			[FeatureNotImplemented]
+			get { throw new NotImplementedException(); }
+		}
 
 		public string SystemId { get { return "Lynx"; } }
 
@@ -304,11 +315,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			Marshal.Copy(srcdata, 0, data, size);
 		}
 
-		public void ClearSaveRam()
-		{
-			throw new NotImplementedException();
-		}
-
 		public bool SaveRamModified
 		{
 			get
@@ -316,10 +322,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 				int unused;
 				IntPtr unused2;
 				return LibLynx.GetSaveRamPtr(Core, out unused, out unused2);
-			}
-			set
-			{
-				throw new InvalidOperationException();
 			}
 		}
 

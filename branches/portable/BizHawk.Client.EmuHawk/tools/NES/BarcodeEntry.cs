@@ -12,9 +12,11 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(DatachBarcode))]
 	public partial class BarcodeEntry : Form, IToolForm
 	{
-		private DatachBarcode reader;
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+		private DatachBarcode reader { get { return (DatachBarcode)EmulatorServices[typeof(DatachBarcode)]; } }
 
 		public BarcodeEntry()
 		{
@@ -33,28 +35,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
-		public static bool HasReader()
-		{
-			return GetReader() != null;
-		}
-
-		private static DatachBarcode GetReader()
-		{
-			var nes = Global.Emulator as NES;
-			if (nes == null)
-				return null;
-			var board = nes.GetBoard() as BANDAI_FCG_1;
-			if (board == null)
-				return null;
-			var reader = board.reader; // will be null for non-datach FCG-1 games
-			return reader;
-		}
-
 		public void Restart()
 		{
-			reader = GetReader();
-			if (reader == null)
-				Close();
 			textBox1_TextChanged(null, null);
 		}
 

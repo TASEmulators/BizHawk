@@ -1,6 +1,9 @@
 ﻿using System;
 using System.IO;
 
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
+
 namespace BizHawk.Client.Common
 {
 	public class Rewinder
@@ -51,84 +54,93 @@ namespace BizHawk.Client.Common
 		// TOOD: this should not be parameterless?! It is only possible due to passing a static context in
 		public void CaptureRewindState()
 		{
-			if (_rewindImpossible)
+			if (Global.Emulator.HasSavestates())
 			{
-				return;
-			}
+				if (_rewindImpossible)
+				{
+					return;
+				}
 
-			if (_lastState == null)
-			{
-				DoRewindSettings();
-			}
+				if (_lastState == null)
+				{
+					DoRewindSettings();
+				}
 
-			// log a frame
-			if (_lastState != null && Global.Emulator.Frame % _rewindFrequency == 0)
-			{
-				_rewindThread.Capture(Global.Emulator.SaveStateBinary());
+				// log a frame
+				if (_lastState != null && Global.Emulator.Frame % _rewindFrequency == 0)
+				{
+					_rewindThread.Capture(Global.Emulator.AsStatable().SaveStateBinary());
+				}
 			}
 		}
 
 		public void DoRewindSettings()
 		{
-			// This is the first frame. Capture the state, and put it in LastState for future deltas to be compared against.
-			_lastState = (byte[])Global.Emulator.SaveStateBinary().Clone();
+			if (Global.Emulator.HasSavestates())
+			{
+				// This is the first frame. Capture the state, and put it in LastState for future deltas to be compared against.
+				_lastState = (byte[])Global.Emulator.AsStatable().SaveStateBinary().Clone();
 
-			int state_size;
-			if (_lastState.Length >= Global.Config.Rewind_LargeStateSize)
-			{
-				SetRewindParams(Global.Config.RewindEnabledLarge, Global.Config.RewindFrequencyLarge);
-				state_size = 3;
-			}
-			else if (_lastState.Length >= Global.Config.Rewind_MediumStateSize)
-			{
-				SetRewindParams(Global.Config.RewindEnabledMedium, Global.Config.RewindFrequencyMedium);
-				state_size = 2;
-			}
-			else
-			{
-				SetRewindParams(Global.Config.RewindEnabledSmall, Global.Config.RewindFrequencySmall);
-				state_size = 1;
-			}
-
-			var rewind_enabled = false;
-			if (state_size == 1)
-			{
-				rewind_enabled = Global.Config.RewindEnabledSmall;
-			}
-			else if (state_size == 2)
-			{
-				rewind_enabled = Global.Config.RewindEnabledMedium;
-			}
-			else if (state_size == 3)
-			{
-				rewind_enabled = Global.Config.RewindEnabledLarge;
-			}
-
-			_rewindDeltaEnable = Global.Config.Rewind_UseDelta;
-
-			if (rewind_enabled)
-			{
-				var cap = Global.Config.Rewind_BufferSize * (long)1024 * 1024;
-
-				if (_rewindBuffer != null)
+				int state_size;
+				if (_lastState.Length >= Global.Config.Rewind_LargeStateSize)
 				{
-					_rewindBuffer.Dispose();
+					SetRewindParams(Global.Config.RewindEnabledLarge, Global.Config.RewindFrequencyLarge);
+					state_size = 3;
+				}
+				else if (_lastState.Length >= Global.Config.Rewind_MediumStateSize)
+				{
+					SetRewindParams(Global.Config.RewindEnabledMedium, Global.Config.RewindFrequencyMedium);
+					state_size = 2;
+				}
+				else
+				{
+					SetRewindParams(Global.Config.RewindEnabledSmall, Global.Config.RewindFrequencySmall);
+					state_size = 1;
 				}
 
-				_rewindBuffer = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, cap, BufferManage);
-
-				if (_rewindThread != null)
+				var rewind_enabled = false;
+				if (state_size == 1)
 				{
-					_rewindThread.Dispose();
+					rewind_enabled = Global.Config.RewindEnabledSmall;
+				}
+				else if (state_size == 2)
+				{
+					rewind_enabled = Global.Config.RewindEnabledMedium;
+				}
+				else if (state_size == 3)
+				{
+					rewind_enabled = Global.Config.RewindEnabledLarge;
 				}
 
-				_rewindThread = new RewindThreader(this, Global.Config.Rewind_IsThreaded);
+				_rewindDeltaEnable = Global.Config.Rewind_UseDelta;
+
+				if (rewind_enabled)
+				{
+					var cap = Global.Config.Rewind_BufferSize * (long)1024 * 1024;
+
+					if (_rewindBuffer != null)
+					{
+						_rewindBuffer.Dispose();
+					}
+
+					_rewindBuffer = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, cap, BufferManage);
+
+					if (_rewindThread != null)
+					{
+						_rewindThread.Dispose();
+					}
+
+					_rewindThread = new RewindThreader(this, Global.Config.Rewind_IsThreaded);
+				}
 			}
 		}
 
 		public void Rewind(int frames)
 		{
-			_rewindThread.Rewind(frames);
+			if (Global.Emulator.HasSavestates())
+			{
+				_rewindThread.Rewind(frames);
+			}
 		}
 
 		// TODO remove me
@@ -346,29 +358,32 @@ namespace BizHawk.Client.Common
 
 		private void RewindDelta(bool isSmall)
 		{
-			var ms = _rewindBuffer.PopMemoryStream();
-			var reader = new BinaryReader(ms);
-			var fullstate = reader.ReadBoolean();
-			if (fullstate)
+			if (Global.Emulator.HasSavestates())
 			{
-				Global.Emulator.LoadStateBinary(reader);
-			}
-			else
-			{
-				var output = new MemoryStream(_lastState);
-				while (ms.Position < ms.Length)
+				var ms = _rewindBuffer.PopMemoryStream();
+				var reader = new BinaryReader(ms);
+				var fullstate = reader.ReadBoolean();
+				if (fullstate)
 				{
-					var len = reader.ReadByte();
-					int offset = isSmall ? reader.ReadUInt16() : reader.ReadInt32();
-
-					output.Position = offset;
-					output.Write(ms.GetBuffer(), (int)ms.Position, len);
-					ms.Position += len;
+					Global.Emulator.AsStatable().LoadStateBinary(reader);
 				}
+				else
+				{
+					var output = new MemoryStream(_lastState);
+					while (ms.Position < ms.Length)
+					{
+						var len = reader.ReadByte();
+						int offset = isSmall ? reader.ReadUInt16() : reader.ReadInt32();
 
-				reader.Close();
-				output.Position = 0;
-				Global.Emulator.LoadStateBinary(new BinaryReader(output));
+						output.Position = offset;
+						output.Write(ms.GetBuffer(), (int)ms.Position, len);
+						ms.Position += len;
+					}
+
+					reader.Close();
+					output.Position = 0;
+					Global.Emulator.AsStatable().LoadStateBinary(new BinaryReader(output));
+				}
 			}
 		}
 	}

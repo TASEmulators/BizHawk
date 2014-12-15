@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Common
 {
-	public interface IMemoryDomains
+	public interface IMemoryDomains : IEmulator, IEmulatorService
 	{
 		///The list of all avaialble memory domains
 		/// A memory domain is a byte array that respresents a distinct part of the emulated system.

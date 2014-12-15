@@ -1,16 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
-
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.PCEngine;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(PCEngine))]
 	public partial class PceBgViewer : Form, IToolForm
 	{
-		private PCEngine _pce;
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+		private PCEngine _pce { get { return (PCEngine)EmulatorServices[typeof(PCEngine)]; } }
+
 		private int _vdcType;
 
 		public PceBgViewer()
@@ -28,8 +31,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PceBgViewer_Load(object sender, EventArgs e)
 		{
-			_pce = Global.Emulator as PCEngine;
-
 			if (Global.Config.PceBgViewerSettings.UseWindowPosition)
 			{
 				Location = Global.Config.PceBgViewerSettings.WindowPosition;
@@ -57,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public unsafe void Generate()
 		{
-			if (Global.Emulator.Frame % RefreshRate.Value != 0)
+			if (_pce.Frame % RefreshRate.Value != 0)
 			{
 				return;
 			}
@@ -103,26 +104,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			if (Global.Emulator is PCEngine)
-			{
-				_pce = Global.Emulator as PCEngine;
-			}
-			else
-			{
-				Close();
-			}
+			// Nothing to do
 		}
 
 		public void UpdateValues()
 		{
-			if (Global.Emulator is PCEngine)
-			{
-				Generate();
-			}
-			else
-			{
-				Close();
-			}
+			Generate();
 		}
 
 		public void FastUpdate()

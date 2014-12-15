@@ -45,7 +45,7 @@ namespace BizHawk.Bizware.BizwareGL
 			return new sd.SizeF(x, FontInfo.LineHeight);
 		}
 
-		public void RenderString(GuiRenderer renderer, float x, float y, string str)
+		public void RenderString(IGuiRenderer renderer, float x, float y, string str)
 		{
 			int len = str.Length;
 			for (int i = 0; i < len; i++)

@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 			{
 				if (Global.Emulator.HasMemoryDomains())
 				{
-					return (Global.Emulator as IMemoryDomains).MemoryDomains;
+					return Global.Emulator.AsMemoryDomains().MemoryDomains;
 				}
 				else
 				{

@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
@@ -46,15 +47,15 @@ namespace BizHawk.Client.EmuHawk
 
 			Global.Config.RecentMovies.Add(movie.Filename);
 
-			if (movie.StartsFromSavestate)
+			if (Global.Emulator.HasSavestates() && movie.StartsFromSavestate)
 			{
 				if (movie.TextSavestate != null)
 				{
-					Global.Emulator.LoadStateText(new StringReader(movie.TextSavestate));
+					Global.Emulator.AsStatable().LoadStateText(new StringReader(movie.TextSavestate));
 				}
 				else
 				{
-					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(movie.BinarySavestate, false)));
+					Global.Emulator.AsStatable().LoadStateBinary(new BinaryReader(new MemoryStream(movie.BinarySavestate, false)));
 				}
 				if (movie.SavestateFramebuffer != null)
 				{

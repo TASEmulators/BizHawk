@@ -13,7 +13,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		isPorted: false,
 		isReleased: false
 		)]
-	public sealed partial class Intellivision : IEmulator, IMemoryDomains
+	[ServiceNotApplicable(typeof(ISaveRam))]
+	public sealed partial class Intellivision : IEmulator
 	{
 		byte[] Rom;
 		GameInfo Game;
@@ -57,6 +58,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		[CoreConstructor("INTV")]
 		public Intellivision(CoreComm comm, GameInfo game, byte[] rom)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
 
 			Rom = rom;
@@ -89,6 +91,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			LoadExecutiveRom(CoreComm.CoreFileProvider.GetFirmwarePath("INTV", "EROM", true, "Executive ROM is required."));
 			LoadGraphicsRom(CoreComm.CoreFileProvider.GetFirmwarePath("INTV", "GROM", true, "Graphics ROM is required."));
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{
@@ -134,73 +138,22 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public IController Controller { get; set; }
 		public int Frame { get; set; }
 
-		public int LagCount
-		{
-			get { return 0; }
-			set { }
-		}
-
-		public bool IsLagFrame { get { return false; } }
-
 		public string SystemId
 		{
 			get { return "INTV"; }
 		}
 
+		[FeatureNotImplemented]
 		public string BoardName { get { return null; } }
 
 		public bool DeterministicEmulation { get { return true; } }
 
-
-		public byte[] CloneSaveRam() { return null; }
-		public void StoreSaveRam(byte[] data) { }
-		public void ClearSaveRam() { }
-		public bool SaveRamModified
-		{
-			get { return false; }
-			set { }
-		}
-
 		public void ResetCounters()
 		{
 			Frame = 0;
-			LagCount = 0;
-			//IsLagFrame = false;
 		}
-
-		public void SaveStateText(TextWriter writer)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			throw new NotImplementedException();
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			return new byte[0];
-		}
-
-		public bool BinarySaveStatesPreferred { get { return false; } }
 
 		public CoreComm CoreComm { get; private set; }
-
-		public MemoryDomainList MemoryDomains
-		{
-			get { throw new NotImplementedException(); }
-		}
 
 		public void Dispose()
 		{

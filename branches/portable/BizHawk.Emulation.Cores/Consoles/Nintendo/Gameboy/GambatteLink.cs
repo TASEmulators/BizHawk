@@ -17,7 +17,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		isPorted: true,
 		isReleased: true
 		)]
-	public class GambatteLink : IEmulator, IVideoProvider, ISyncSoundProvider,
+	[ServiceNotApplicable(typeof(IDriveLight))]
+	public class GambatteLink : IEmulator, IVideoProvider, ISyncSoundProvider, IInputPollable, ISaveRam, IStatable, IMemoryDomains,
 		IDebuggable, ISettable<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings>
 	{
 		bool disposed = false;
@@ -44,6 +45,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom, object Settings, object SyncSettings, bool deterministic)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			GambatteLinkSettings _Settings = (GambatteLinkSettings)Settings ?? new GambatteLinkSettings();
 			GambatteLinkSyncSettings _SyncSettings = (GambatteLinkSyncSettings)SyncSettings ?? new GambatteLinkSyncSettings();
 
@@ -57,12 +59,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			L.Controller = LCont;
 			R.Controller = RCont;
+			L.ConnectInputCallbackSystem(_inputCallbacks);
+			R.ConnectInputCallbackSystem(_inputCallbacks);
+			L.ConnectMemoryCallbackSystem(_memorycallbacks);
+			R.ConnectMemoryCallbackSystem(_memorycallbacks);
 
 			comm.VsyncNum = L.CoreComm.VsyncNum;
 			comm.VsyncDen = L.CoreComm.VsyncDen;
 			comm.RomStatusAnnotation = null;
 			comm.RomStatusDetails = "LEFT:\r\n" + L.CoreComm.RomStatusDetails + "RIGHT:\r\n" + R.CoreComm.RomStatusDetails;
-			comm.CpuTraceAvailable = false; // TODO
 			comm.NominalWidth = L.CoreComm.NominalWidth + R.CoreComm.NominalWidth;
 			comm.NominalHeight = L.CoreComm.NominalHeight;
 			comm.UsesLinkCable = true;
@@ -78,9 +83,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			blip_right.SetRates(2097152 * 2, 44100);
 
 			SetMemoryDomains();
+		}
 
-			L.CoreComm.InputCallback = CoreComm.InputCallback;
-			R.CoreComm.InputCallback = CoreComm.InputCallback;
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+
+		private InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
+		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem();
+		public IMemoryCallbackSystem MemoryCallbacks { get { return _memorycallbacks; } }
+
+		public ITracer Tracer
+		{
+			[FeatureNotImplemented]
+			get { throw new NotImplementedException(); }
 		}
 
 		public IVideoProvider VideoProvider { get { return this; } }
@@ -274,18 +289,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			R.StoreSaveRam(rb);
 		}
 
-		public void ClearSaveRam()
-		{
-			L.ClearSaveRam();
-			R.ClearSaveRam();
-		}
-
 		public bool SaveRamModified
 		{
 			get
 			{
 				return L.SaveRamModified || R.SaveRamModified;
 			}
+
+			[FeatureNotImplemented]
 			set
 			{
 				throw new NotImplementedException();
@@ -402,7 +413,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public MemoryDomainList MemoryDomains { get; private set; }
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			var left = L.GetCpuFlagsAndRegisters()
 				.Select(reg => new KeyValuePair<string, int>("Left " + reg.Key, reg.Value));
@@ -436,6 +447,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			MemoryDomains = new MemoryDomainList(mm);
 		}
+
+		public void StepInto() { throw new NotImplementedException(); }
+		public void StepOut() { throw new NotImplementedException(); }
+		public void StepOver() { throw new NotImplementedException(); }
 
 		#endregion
 

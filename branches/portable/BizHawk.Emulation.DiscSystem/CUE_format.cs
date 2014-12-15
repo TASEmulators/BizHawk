@@ -7,6 +7,64 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.DiscSystem
 {
+	public class CUE_Format
+	{
+		/// <summary>
+		/// Generates the CUE file for the provided DiscStructure
+		/// </summary>
+		public string GenerateCUE_OneBin(DiscStructure structure, CueBinPrefs prefs)
+		{
+			if (prefs.OneBlobPerTrack) throw new InvalidOperationException("OneBinPerTrack passed to GenerateCUE_OneBin");
+
+			//this generates a single-file cue!!!!!!! dont expect it to generate bin-per-track!
+			StringBuilder sb = new StringBuilder();
+
+			foreach (var session in structure.Sessions)
+			{
+				if (!prefs.SingleSession)
+				{
+					//dont want to screw around with sessions for now
+					sb.AppendFormat("SESSION {0:D2}\n", session.num);
+					if (prefs.AnnotateCue) sb.AppendFormat("REM ; session (length={0})\n", session.length_aba);
+				}
+
+				foreach (var track in session.Tracks)
+				{
+					ETrackType trackType = track.TrackType;
+
+					//mutate track type according to our principle of canonicalization 
+					if (trackType == ETrackType.Mode1_2048 && prefs.DumpECM)
+						trackType = ETrackType.Mode1_2352;
+
+					sb.AppendFormat("  TRACK {0:D2} {1}\n", track.Number, Cue.TrackTypeStringForTrackType(trackType));
+					if (prefs.AnnotateCue) sb.AppendFormat("  REM ; track (length={0})\n", track.LengthInSectors);
+					
+					foreach (var index in track.Indexes)
+					{
+						//cue+bin has an implicit 150 sector pregap which neither the cue nor the bin has any awareness of
+						//except for the baked-in sector addressing.
+						//but, if there is an extra-long pregap, we want to reflect it this way
+						int lba = index.aba - 150;
+						if (lba <= 0 && index.Number == 0 && track.Number == 1)
+						{
+						}
+						//dont emit index 0 when it is the same as index 1, it is illegal for some reason
+						else if (index.Number == 0 && index.aba == track.Indexes[1].aba)
+						{
+							//dont emit index 0 when it is the same as index 1, it confuses some cue parsers
+						}
+						else
+						{
+							sb.AppendFormat("    INDEX {0:D2} {1}\n", index.Number, new Timestamp(lba).Value);
+						}
+					}
+				}
+			}
+
+			return sb.ToString();
+		}
+	}
+
 	partial class Disc
 	{
 		/// <summary>
@@ -53,8 +111,9 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			//TODO - add cue directory to CueBinPrefs???? could make things cleaner...
 
-			var session = new DiscTOC.Session {num = 1};
-			TOC.Sessions.Add(session);
+			Structure = new DiscStructure();
+			var session = new DiscStructure.Session {num = 1};
+			Structure.Sessions.Add(session);
 			var pregap_sector = new Sector_Zero();
 
 			int curr_track = 1;
@@ -190,7 +249,7 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 
 				//validate that the first index in the file is 00:00:00
-				if (cue_file.Tracks[0].Indexes[0].Timestamp.ABA != 0) throw new Cue.CueBrokenException("`The first index of a blob must start at 00:00:00.`");
+				if (cue_file.Tracks[0].Indexes[0].Timestamp.Sector != 0) throw new Cue.CueBrokenException("`The first index of a blob must start at 00:00:00.`");
 
 
 				//for each track within the file:
@@ -211,14 +270,19 @@ namespace BizHawk.Emulation.DiscSystem
 					//check integrity of track sequence and setup data structures
 					//TODO - check for skipped tracks in cue parser instead
 					if (cue_track.TrackNum != curr_track) throw new Cue.CueBrokenException("Found a cue with skipped tracks");
-					var toc_track = new DiscTOC.Track();
-					toc_track.num = curr_track;
-					toc_track.TrackType = cue_track.TrackType;
+					var toc_track = new DiscStructure.Track();
 					session.Tracks.Add(toc_track);
+					toc_track.Number = curr_track;
+					toc_track.TrackType = cue_track.TrackType;
+
+					//choose a Control value based on 
+					if (toc_track.TrackType == ETrackType.Audio)
+						toc_track.Control = EControlQ.StereoNoPreEmph;
+					else toc_track.Control = EControlQ.DataUninterrupted;
 
 					if (curr_track == 1)
 					{
-						if (cue_track.PreGap.ABA != 0)
+						if (cue_track.PreGap.Sector != 0)
 							throw new InvalidOperationException("not supported (yet): cue files with track 1 pregaps");
 						//but now we add one anyway, because every existing cue+bin seems to implicitly specify this
 						cue_track.PreGap = new Timestamp(150);
@@ -226,9 +290,9 @@ namespace BizHawk.Emulation.DiscSystem
 
 					//check whether a pregap is requested.
 					//this causes empty sectors to get generated without consuming data from the blob
-					if (cue_track.PreGap.ABA > 0)
+					if (cue_track.PreGap.Sector > 0)
 					{
-						for (int i = 0; i < cue_track.PreGap.ABA; i++)
+						for (int i = 0; i < cue_track.PreGap.Sector; i++)
 						{
 							Sectors.Add(new SectorEntry(pregap_sector));
 						}
@@ -239,7 +303,7 @@ namespace BizHawk.Emulation.DiscSystem
 					int track_length_aba;
 					if (t == cue_file.Tracks.Count - 1)
 						track_length_aba = blob_length_aba - blob_timestamp;
-					else track_length_aba = cue_file.Tracks[t + 1].Indexes[1].Timestamp.ABA - blob_timestamp;
+					else track_length_aba = cue_file.Tracks[t + 1].Indexes[1].Timestamp.Sector - blob_timestamp;
 					//toc_track.length_aba = track_length_aba; //xxx
 
 					//find out how many indexes we have
@@ -253,11 +317,11 @@ namespace BizHawk.Emulation.DiscSystem
 						bool is_last_index = index == num_indexes - 1;
 
 						//install index into hierarchy
-						var toc_index = new DiscTOC.Index {num = index};
+						var toc_index = new DiscStructure.Index {Number = index};
 						toc_track.Indexes.Add(toc_index);
 						if (index == 0)
 						{
-							toc_index.aba = track_disc_pregap_aba - (cue_track.Indexes[1].Timestamp.ABA - cue_track.Indexes[0].Timestamp.ABA);
+							toc_index.aba = track_disc_pregap_aba - (cue_track.Indexes[1].Timestamp.Sector - cue_track.Indexes[0].Timestamp.Sector);
 						}
 						else toc_index.aba = Sectors.Count;
 
@@ -266,7 +330,7 @@ namespace BizHawk.Emulation.DiscSystem
 						int index_length_aba;
 						if (is_last_index)
 							index_length_aba = track_length_aba - (blob_timestamp - blob_track_start);
-						else index_length_aba = cue_track.Indexes[index + 1].Timestamp.ABA - blob_timestamp;
+						else index_length_aba = cue_track.Indexes[index + 1].Timestamp.Sector - blob_timestamp;
 
 						//emit sectors
 						for (int aba = 0; aba < index_length_aba; aba++)
@@ -327,14 +391,14 @@ namespace BizHawk.Emulation.DiscSystem
 					} //index loop
 
 					//check whether a postgap is requested. if it is, we need to generate silent sectors
-					for (int i = 0; i < cue_track.PostGap.ABA; i++)
+					for (int i = 0; i < cue_track.PostGap.Sector; i++)
 					{
 						Sectors.Add(new SectorEntry(pregap_sector));
 					}
 
 					//we're done with the track now.
 					//record its length:
-					toc_track.length_aba = Sectors.Count - toc_track.Indexes[1].aba;
+					toc_track.LengthInSectors = Sectors.Count - toc_track.Indexes[1].aba;
 					curr_track++;
 
 					//if we ran off the end of the blob, pad it with zeroes, I guess
@@ -350,8 +414,8 @@ namespace BizHawk.Emulation.DiscSystem
 			//finally, analyze the length of the sessions and the entire disc by summing the lengths of the tracks
 			//this is a little more complex than it looks, because the length of a thing is not determined by summing it
 			//but rather by the difference in abas between start and end
-			TOC.length_aba = 0;
-			foreach (var toc_session in TOC.Sessions)
+			Structure.LengthInSectors = 0;
+			foreach (var toc_session in Structure.Sessions)
 			{
 				var firstTrack = toc_session.Tracks[0];
 
@@ -359,8 +423,8 @@ namespace BizHawk.Emulation.DiscSystem
 				//firstTrack.Indexes[0].aba -= 150;
 
 				var lastTrack = toc_session.Tracks[toc_session.Tracks.Count - 1];
-				session.length_aba = lastTrack.Indexes[1].aba + lastTrack.length_aba - firstTrack.Indexes[0].aba;
-				TOC.length_aba += toc_session.length_aba;
+				session.length_aba = lastTrack.Indexes[1].aba + lastTrack.LengthInSectors - firstTrack.Indexes[0].aba;
+				Structure.LengthInSectors += toc_session.length_aba;
 			}
 		}
 
@@ -469,6 +533,10 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			public CueTrackIndex(int num) { IndexNum = num; }
 			public int IndexNum;
+
+			/// <summary>
+			/// Is this an ABA or a LBA? please say.
+			/// </summary>
 			public Timestamp Timestamp;
 		}
 
@@ -600,7 +668,11 @@ namespace BizHawk.Emulation.DiscSystem
 					case "SONGWRITER":
 					case "TITLE":
 					case "ISRC":
+					case "FLAGS":
 						//TODO - keep these for later?
+						//known flags:
+						//FLAGS DCP
+						//that's all. don't know what it means
 						break;
 					default:
 						throw new CueBrokenException("unsupported cue command: " + key);

@@ -4,6 +4,8 @@ using System.Text;
 using System.Drawing;
 using System.Collections.Generic;
 
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.InputAdapterExtensions;
 using BizHawk.Bizware.BizwareGL;
@@ -325,7 +327,7 @@ namespace BizHawk.Client.EmuHawk
 
 				DrawOsdMessage(g, message, Color.FromArgb(Global.Config.MessagesColor), x, y);
 
-				if (Global.Emulator.IsLagFrame)
+				if (GlobalWin.MainForm.IsLagFrame)
 				{
 					DrawOsdMessage(g, Global.Emulator.Frame.ToString(), FixedAlertMessageColor, x, y);
 				}
@@ -386,9 +388,9 @@ namespace BizHawk.Client.EmuHawk
 				DrawOsdMessage(g, FPS, FixedMessagesColor, x, y);
 			}
 
-			if (Global.Config.DisplayLagCounter)
+			if (Global.Config.DisplayLagCounter && Global.Emulator.CanPollInput())
 			{
-				var counter = Global.Emulator.LagCount.ToString();
+				var counter = Global.Emulator.AsInputPollable().LagCount.ToString();
 				var x = GetX(g, Global.Config.DispLagx, Global.Config.DispLaganchor, counter);
 				var y = GetY(g, Global.Config.DispLagy, Global.Config.DispLaganchor, counter);
 

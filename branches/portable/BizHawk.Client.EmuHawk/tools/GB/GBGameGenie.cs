@@ -5,14 +5,20 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[RequiredServices(typeof(IEmulator), typeof(IMemoryDomains))]
 	public partial class GBGameGenie : Form, IToolForm
 	{
 		private readonly Dictionary<char, int> _gameGenieTable = new Dictionary<char, int>();
 		private bool _processing;
+
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+		private IMemoryDomains Emulator { get { return (IMemoryDomains)EmulatorServices[typeof(IMemoryDomains)]; } }
+		private MemoryDomainList MemoryDomains { get { return (EmulatorServices[typeof(IMemoryDomains)] as IMemoryDomains).MemoryDomains; } }
 
 		#region Public
 
@@ -22,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 		
 		public void Restart()
 		{
-			if ((Global.Emulator.SystemId != "GB") && (Global.Game.System != "GG"))
+			if ((Emulator.SystemId != "GB") && (Global.Game.System != "GG"))
 			{
 				Close();
 			}
@@ -30,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 		
 		public void UpdateValues()
 		{
-			if ((Global.Emulator.SystemId != "GB") && (Global.Game.System != "GG"))
+			if ((Emulator.SystemId != "GB") && (Global.Game.System != "GG"))
 			{
 				Close();
 			}
@@ -187,7 +193,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			//"Game Boy/Game Gear Game Genie Encoder / Decoder"
-			if (Global.Emulator.SystemId == "GB")
+			if (Emulator.SystemId == "GB")
 			{
 				Text = "Game Boy Game Genie Encoder/Decoder";
 			}
@@ -253,7 +259,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddCheatClick(object sender, EventArgs e)
 		{
-			if ((Global.Emulator.SystemId == "GB") || (Global.Game.System == "GG"))
+			if ((Emulator.SystemId == "GB") || (Global.Game.System == "GG"))
 			{
 				string name;
 				var address = 0;
@@ -296,7 +302,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				var watch = Watch.GenerateWatch(
-					(Global.Emulator as IMemoryDomains).MemoryDomains["System Bus"],
+					MemoryDomains["System Bus"],
 					address,
 					Watch.WatchSize.Byte,
 					Watch.DisplayType.Hex,

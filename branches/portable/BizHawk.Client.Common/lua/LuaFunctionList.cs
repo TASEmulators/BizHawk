@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
+
 namespace BizHawk.Client.Common
 {
 	public class LuaFunctionList : List<NamedLuaFunction>
@@ -15,15 +18,31 @@ namespace BizHawk.Client.Common
 
 		public new bool Remove(NamedLuaFunction function)
 		{
-			Global.Emulator.CoreComm.InputCallback.Remove(function.Callback);
-			Global.Emulator.CoreComm.MemoryCallbackSystem.Remove(function.Callback);
+			if (Global.Emulator.CanPollInput())
+			{
+				Global.Emulator.AsInputPollable().InputCallbacks.Remove(function.Callback);
+			}
+
+			if (Global.Emulator.CanDebug())
+			{
+				Global.Emulator.AsDebuggable().MemoryCallbacks.Remove(function.Callback);
+			}
+
 			return base.Remove(function);
 		}
 
 		public void ClearAll()
 		{
-			Global.Emulator.CoreComm.InputCallback.RemoveAll(this.Select(x => x.Callback));
-			Global.Emulator.CoreComm.MemoryCallbackSystem.RemoveAll(this.Select(x => x.Callback));
+			if (Global.Emulator.CanPollInput())
+			{
+				Global.Emulator.AsInputPollable().InputCallbacks.RemoveAll(this.Select(x => x.Callback));
+			}
+
+			if (Global.Emulator.CanDebug())
+			{
+				Global.Emulator.AsDebuggable().MemoryCallbacks.RemoveAll(this.Select(x => x.Callback));
+			}
+
 			Clear();
 		}
 	}

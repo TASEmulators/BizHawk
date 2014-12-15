@@ -1007,7 +1007,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "RamWatch";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Ram Watch";
+			this.Text = " ";
 			this.Activated += new System.EventHandler(this.NewRamWatch_Activated);
 			this.Load += new System.EventHandler(this.NewRamWatch_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamWatch_DragDrop);

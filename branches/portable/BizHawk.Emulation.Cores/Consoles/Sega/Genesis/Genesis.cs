@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 		isPorted: false,
 		isReleased: false
 		)]
-	public sealed partial class Genesis : IEmulator, IMemoryDomains, IDebuggable
+	public sealed partial class Genesis : IEmulator, IMemoryDomains, IDebuggable, ISaveRam, IStatable, IInputPollable
 	{
 		private int _lagcount = 0;
 		private bool lagged = true;
@@ -44,6 +44,15 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 		private bool Z80Runnable { get { return (Z80Reset == false && M68000HasZ80Bus == false); } }
 
 		private SoundMixer SoundMixer;
+
+		[FeatureNotImplemented]
+		public IInputCallbackSystem InputCallbacks { get { throw new NotImplementedException(); } }
+
+		public IMemoryCallbackSystem MemoryCallbacks
+		{
+			[FeatureNotImplemented]
+			get { throw new NotImplementedException(); }
+		}
 
 		public void ResetCounters()
 		{
@@ -85,6 +94,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 
 		public Genesis(CoreComm comm, GameInfo game, byte[] rom)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
 			MainCPU = new MC68000();
 			SoundCPU = new Z80A();
@@ -143,6 +153,8 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 #endif
 			InitializeCartHardware(game);
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		void InitializeCartHardware(GameInfo game)
 		{
@@ -248,7 +260,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 #endif
 		}
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			return new Dictionary<string, int>
 			{
@@ -280,9 +292,28 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 			};
 		}
 
+		[FeatureNotImplemented]
+		public void StepInto() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOut() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOver() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value)
 		{
 			throw new NotImplementedException();
+		}
+
+		public ITracer Tracer
+		{
+			[FeatureNotImplemented]
+			get
+			{
+				throw new NotImplementedException();
+			}
 		}
 
 		int vdpcallback(int level) // Musashi handler

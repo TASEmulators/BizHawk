@@ -22,8 +22,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		isPorted: false,
 		isReleased: true
 		)]
-	public sealed partial class PCEngine : IEmulator, IMemoryDomains,
-		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>
+	public sealed partial class PCEngine : IEmulator, IMemoryDomains, ISaveRam, IStatable, IInputPollable,
+		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>, IDriveLight
 	{
 		// ROM
 		public byte[] RomData;
@@ -68,8 +68,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		[CoreConstructor("PCE", "SGX")]
 		public PCEngine(CoreComm comm, GameInfo game, byte[] rom, object Settings, object syncSettings)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
+			Tracer = new TraceBuffer();
+			MemoryCallbacks = new MemoryCallbackSystem();
 			CoreComm = comm;
-			CoreComm.CpuTraceAvailable = true;
 
 			switch (game.System)
 			{
@@ -88,13 +90,19 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			SetControllerButtons();
 		}
 
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+
 		public string BoardName { get { return null; } }
+
+		public ITracer Tracer { get; private set; }
+		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
 		public PCEngine(CoreComm comm, GameInfo game, Disc disc, object Settings, object syncSettings)
 		{
 			CoreComm = comm;
-			CoreComm.CpuTraceAvailable = true;
-			CoreComm.UsesDriveLed = true;
+			Tracer = new TraceBuffer();
+			MemoryCallbacks = new MemoryCallbackSystem();
+			DriveLightEnabled = true;
 			systemid = "PCECD";
 			Type = NecSystemType.TurboCD;
 			this.disc = disc;
@@ -144,16 +152,19 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			SetControllerButtons();
 		}
 
+		public bool DriveLightEnabled { get; private set; }
+		public bool DriveLightOn { get; internal set; }
+
 		void Init(GameInfo game, byte[] rom)
 		{
 			Controller = NullController.GetNullController();
-			Cpu = new HuC6280(CoreComm);
+			Cpu = new HuC6280(this);
 			VCE = new VCE();
 			VDC1 = new VDC(this, Cpu, VCE);
 			PSG = new HuC6280PSG();
 			SCSI = new ScsiCDBus(this, disc);
 
-			Cpu.Logger = (s) => CoreComm.Tracer.Put(s);
+			Cpu.Logger = (s) => Tracer.Put(s);
 
 			if (TurboGrafx)
 			{
@@ -214,7 +225,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				RomData = rom;
 				RomLength = RomData.Length;
 				// user request: current value of the SF2MapperLatch on the tracelogger
-				Cpu.Logger = (s) => CoreComm.Tracer.Put(string.Format("{0:X1}:{1}", SF2MapperLatch, s));
+				Cpu.Logger = (s) => Tracer.Put(string.Format("{0:X1}:{1}", SF2MapperLatch, s));
 			}
 			else
 			{
@@ -295,6 +306,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public int LagCount { get { return lagCount; } set { lagCount = value; } }
 		public bool IsLagFrame { get { return isLag; } }
 
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
+
 		public void ResetCounters()
 		{
 			// this should just be a public setter instead of a new method.
@@ -306,12 +320,12 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			lagged = true;
-			CoreComm.DriveLED = false;
+			DriveLightOn = false;
 			Frame++;
 			CheckSpriteLimit();
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
 
-			Cpu.Debug = CoreComm.Tracer.Enabled;
+			Cpu.Debug = Tracer.Enabled;
 
 			if (SuperGrafx)
 				VPC.ExecFrame(render);
@@ -366,17 +380,14 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			else
 				return null;
 		}
+
 		public void StoreSaveRam(byte[] data)
 		{
 			if (BRAM != null)
 				Array.Copy(data, BRAM, data.Length);
 		}
-		public void ClearSaveRam()
-		{
-			if (BRAM != null)
-				BRAM = new byte[BRAM.Length];
-		}
-		public bool SaveRamModified { get; set; }
+
+		public bool SaveRamModified { get; private set; }
 
 		public bool BinarySaveStatesPreferred { get { return false; } }
 		public void SaveStateBinary(BinaryWriter bw) { SyncState(Serializer.CreateBinaryWriter(bw)); }
@@ -534,7 +545,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		MemoryDomainList memoryDomains;
 		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			return new Dictionary<string, int>
 			{
@@ -554,6 +565,16 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			};
 		}
 
+		[FeatureNotImplemented]
+		public void StepInto() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOut() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOver() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value)
 		{
 			throw new NotImplementedException();

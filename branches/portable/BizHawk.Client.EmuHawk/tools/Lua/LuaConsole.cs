@@ -11,6 +11,7 @@ using LuaInterface;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 
@@ -18,6 +19,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class LuaConsole : Form, IToolForm
 	{
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
+
 		private readonly LuaFileList _luaList;
 		private int _defaultWidth;
 		private int _defaultHeight;
@@ -462,7 +465,7 @@ namespace BizHawk.Client.EmuHawk
 				sfd.FileName = Path.GetFileNameWithoutExtension(_luaList.Filename);
 				sfd.InitialDirectory = Path.GetDirectoryName(_luaList.Filename);
 			}
-			else if (!(Global.Emulator is NullEmulator))
+			else if (Global.Game != null)
 			{
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 				sfd.InitialDirectory = PathManager.GetLuaPath();

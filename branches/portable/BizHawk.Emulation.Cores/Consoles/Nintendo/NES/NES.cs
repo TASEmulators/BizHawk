@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		isPorted: false,
 		isReleased: true
 		)]
-	public partial class NES : IEmulator, IMemoryDomains, IDebuggable,
+	public partial class NES : IEmulator, IMemoryDomains, ISaveRam, IDebuggable, IStatable, IInputPollable,
 		ISettable<NES.NESSettings, NES.NESSyncSettings>
 	{
 		static readonly bool USE_DATABASE = true;
@@ -26,6 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		[CoreConstructor("NES")]
 		public NES(CoreComm comm, GameInfo game, byte[] rom, object Settings, object SyncSettings)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			byte[] fdsbios = comm.CoreFileProvider.GetFirmware("NES", "Bios_FDS", false);
 			if (fdsbios != null && fdsbios.Length == 40976)
 			{
@@ -38,22 +39,36 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			this.SyncSettings = (NESSyncSettings)SyncSettings ?? new NESSyncSettings();
 			this.ControllerSettings = this.SyncSettings.Controls;
 			CoreComm = comm;
-			CoreComm.CpuTraceAvailable = true;
+			Tracer = new TraceBuffer();
+			MemoryCallbacks = new MemoryCallbackSystem();
 			BootGodDB.Initialize();
 			videoProvider = new MyVideoProvider(this);
 			Init(game, rom, fdsbios);
 			if (board is FDS)
 			{
-				CoreComm.UsesDriveLed = true;
-				(board as FDS).SetDriveLightCallback((val) => CoreComm.DriveLED = val);
+				DriveLightEnabled = true;
+				(board as FDS).SetDriveLightCallback((val) => DriveLightOn = val);
 			}
 			PutSettings((NESSettings)Settings ?? new NESSettings());
+
+			if (board is BANDAI_FCG_1)
+			{
+				var reader = (board as BANDAI_FCG_1).reader;
+				// not all BANDAI FCG 1 boards have a barcode reader
+				if (reader != null)
+					(ServiceProvider as BasicServiceProvider).Register<DatachBarcode>(reader);
+			}
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		private NES()
 		{
 			BootGodDB.Initialize();
 		}
+
+		public bool DriveLightEnabled { get; private set; }
+		public bool DriveLightOn { get; private set; }
 
 		public void WriteLogTimestamp()
 		{
@@ -322,9 +337,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
 		public bool IsLagFrame { get { return islag; } }
 
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
+
 		public bool DeterministicEmulation { get { return true; } }
-
-
 
 		public byte[] CloneSaveRam()
 		{
@@ -348,20 +364,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Array.Copy(data, board.SaveRam, data.Length);
 		}
 
-		public void ClearSaveRam()
-		{
-			if (board is FDS)
-			{
-				(board as FDS).ClearSaveRam();
-				return;
-			}
-
-			if (board == null || board.SaveRam == null)
-				return;
-			for (int i = 0; i < board.SaveRam.Length; i++)
-				board.SaveRam[i] = 0;
-		}
-
 		public bool SaveRamModified
 		{
 			get
@@ -371,7 +373,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (board.SaveRam == null) return false;
 				return true;
 			}
-			set { }
 		}
 
 		private MemoryDomainList memoryDomains;
@@ -637,6 +638,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					LoadWriteLine("Using information from UNIF header");
 					choice = unif.CartInfo;
+					//ok, i have this Q-Boy rom with no VROM and no VRAM.
+					//looks like FCEUX policy is to allocate 8KB of chr ram no matter what UNLESS certain flags are set.
+					//we'll let individual boards override that and set 8KB here
+					choice.vram_size = 8;
+					//(do we need to suppress this in case theres a CHR rom? probably not. nes board base will use ram if no rom is available)
 					origin = EDetectionOrigin.UNIF;
 				}
 				if (iNesHeaderInfo != null)
@@ -735,8 +741,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			LoadReport.Flush();
-			CoreComm.RomStatusDetails = LoadReport.ToString();
 
 			//create the board's rom and vrom
 			if (iNesHeaderInfo != null)
@@ -748,16 +752,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					board.VROM = new byte[choice.chr_size * 1024];
 					int vrom_offset = iNesHeaderInfo.prg_size * 1024;
-					// if file isn't long enough for VROM, truncate
 
-					Array.Copy(file, 16 + vrom_offset, board.VROM, 0, Math.Min(board.VROM.Length, file.Length - 16 - vrom_offset));
+					// if file isn't long enough for VROM, truncate
+					int vrom_copy_size = Math.Min(board.VROM.Length, file.Length - 16 - vrom_offset);
+					Array.Copy(file, 16 + vrom_offset, board.VROM, 0, vrom_copy_size);
+					if (vrom_copy_size < board.VROM.Length)
+						LoadWriteLine("Less than the expected VROM was found in the file: {0} < {1}", vrom_copy_size, board.VROM.Length);
 				}
+				if (choice.prg_size != iNesHeaderInfo.prg_size || choice.chr_size != iNesHeaderInfo.chr_size)
+					LoadWriteLine("Warning: Detected choice has different filesizes than the INES header!");
 			}
 			else
 			{
 				board.ROM = unif.PRG;
 				board.VROM = unif.CHR;
 			}
+
+			LoadReport.Flush();
+			CoreComm.RomStatusDetails = LoadReport.ToString();
 
 			// IF YOU DO ANYTHING AT ALL BELOW THIS LINE, MAKE SURE THE APPROPRIATE CHANGE IS MADE TO FDS (if applicable)
 
@@ -883,7 +895,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public bool BinarySaveStatesPreferred { get { return false; } }
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			return new Dictionary<string, int>
 			{
@@ -929,6 +941,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 			}
 		}
+
+		[FeatureNotImplemented]
+		public void StepInto() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOut() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOver() { throw new NotImplementedException(); }
+
+		public ITracer Tracer { get; private set; }
+		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
 		NESSettings Settings = new NESSettings();
 		NESSyncSettings SyncSettings = new NESSyncSettings();

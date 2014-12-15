@@ -77,11 +77,20 @@ namespace BizHawk.Client.EmuHawk
 			}
 #endif
 
-			//create IGL context.
-			//at some point in the future, we may need to select from several drivers
-			GlobalWin.GL = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
+			//create IGL context. we do this whether or not the user has selected OpenGL, so that we can run opengl-based emulator cores
+			GlobalWin.IGL_GL = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
+
+			//setup the GL context manager, needed for coping with multiple opengl cores vs opengl display method
 			GlobalWin.GLManager = new GLManager();
 			GlobalWin.CR_GL = GlobalWin.GLManager.GetContextForIGL(GlobalWin.GL);
+
+			//now create the "GL" context for the display method. we can reuse the IGL_TK context if opengl display method is chosen
+			if (Global.Config.DispMethod == Config.EDispMethod.GdiPlus)
+				GlobalWin.GL = new Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus();
+			else if (Global.Config.DispMethod == Config.EDispMethod.SlimDX9)
+				GlobalWin.GL = new Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9();
+			else
+				GlobalWin.GL = GlobalWin.IGL_GL;
 
 			//WHY do we have to do this? some intel graphics drivers (ig7icd64.dll 10.18.10.3304 on an unknown chip on win8.1) are calling SetDllDirectory() for the process, which ruins stuff.
 			//The relevant initialization happened just before in "create IGL context".

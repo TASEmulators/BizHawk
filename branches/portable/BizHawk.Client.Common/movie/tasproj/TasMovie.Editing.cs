@@ -5,6 +5,7 @@ using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -15,7 +16,7 @@ namespace BizHawk.Client.Common
 			base.RecordFrame(frame, source);
 
 			LagLog.RemoveFrom(frame);
-			LagLog[frame] = Global.Emulator.IsLagFrame;
+			LagLog[frame] = Global.Emulator.AsInputPollable().IsLagFrame;
 
 			StateManager.Capture();
 		}

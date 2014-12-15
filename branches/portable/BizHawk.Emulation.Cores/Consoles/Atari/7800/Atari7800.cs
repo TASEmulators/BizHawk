@@ -16,7 +16,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		portedVersion: "v1.5",
 		portedUrl: "http://emu7800.sourceforge.net/"
 		)]
-	public partial class Atari7800 : IEmulator, IMemoryDomains, IDebuggable
+	[ServiceNotApplicable(typeof(ISettable<,>), typeof(IDriveLight))]
+	public partial class Atari7800 : IEmulator, IMemoryDomains, ISaveRam, IDebuggable, IStatable, IInputPollable
 	{
 		// TODO:
 		// some things don't work when you try to plug in a 2600 game
@@ -29,6 +30,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			for (int i = 0; i < TIATables.PALPalette.Length; i++)
 				TIATables.PALPalette[i] |= unchecked((int)0xff000000);
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+
+		public byte[] rom;
+		public byte[] hsbios;
+		public byte[] bios;
+		Cart cart;
+		MachineBase theMachine;
+		EMU7800.Win.GameProgram GameInfo;
+		public byte[] hsram = new byte[2048];
 
 		public string SystemId { get { return "A78"; } } // TODO 2600?
 		public GameInfo game;
@@ -62,42 +73,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 
 		public CoreComm CoreComm { get; private set; }
 		public bool DeterministicEmulation { get; set; }
-		private List<MemoryDomain> _MemoryDomains;
-		public MemoryDomainList MemoryDomains { get; private set; }
 
 		public int Frame { get { return _frame; } set { _frame = value; } }
-		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
-		public bool IsLagFrame { get { return _islag; } }
-		private bool _islag = true;
-		private int _lagcount = 0;
 		private int _frame = 0;
-
-		#region saveram
-		public byte[] CloneSaveRam()
-		{
-			return (byte[])hsram.Clone();
-		}
-		public void StoreSaveRam(byte[] data)
-		{
-			Buffer.BlockCopy(data, 0, hsram, 0, data.Length);
-		}
-		public void ClearSaveRam()
-		{
-			for (int i = 0; i < hsram.Length; i++)
-				hsram[i] = 0;
-		}
-		public bool SaveRamModified
-		{
-			get
-			{
-				return GameInfo.MachineType == MachineType.A7800PAL || GameInfo.MachineType == MachineType.A7800NTSC;
-			}
-			set
-			{
-				throw new Exception("No one ever uses this, and it won't work with the way MainForm is set up.");
-			}
-		}
-		#endregion
 
 		public void Dispose()
 		{
@@ -108,53 +86,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			}
 		}
 
-
 		public void ResetCounters()
 		{
 			_frame = 0;
 			_lagcount = 0;
 			_islag = false;
 		}
-
-		#region savestates
-		public void SaveStateText(TextWriter writer) { SyncState(new Serializer(writer)); }
-		public void LoadStateText(TextReader reader) { SyncState(new Serializer(reader)); }
-		public void SaveStateBinary(BinaryWriter bw) { SyncState(new Serializer(bw)); }
-		public void LoadStateBinary(BinaryReader br) { SyncState(new Serializer(br)); }
-		public byte[] SaveStateBinary()
-		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			return ms.ToArray();
-		}
-
-		public bool BinarySaveStatesPreferred { get { return true; } }
-
-		void SyncState(Serializer ser)
-		{
-			byte[] core = null;
-			if (ser.IsWriter)
-			{
-				var ms = new MemoryStream();
-				theMachine.Serialize(new BinaryWriter(ms));
-				ms.Close();
-				core = ms.ToArray();
-			}
-			ser.BeginSection("Atari7800");
-			ser.Sync("core", ref core, false);
-			ser.Sync("Lag", ref _lagcount);
-			ser.Sync("Frame", ref _frame);
-			ser.Sync("IsLag", ref _islag);
-			ser.EndSection();
-			if (ser.IsReader)
-			{
-				theMachine = MachineBase.Deserialize(new BinaryReader(new MemoryStream(core, false)));
-				avProvider.ConnectToMachine(theMachine, GameInfo);
-			}
-		}
-		#endregion
 
 		public Atari7800Control ControlAdapter;
 
@@ -187,6 +124,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 
 		public Atari7800(CoreComm comm, GameInfo game, byte[] rom, string GameDBfn)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
+			InputCallbacks = new InputCallbackSystem();
 			CoreComm = comm;
 			byte[] highscoreBIOS = comm.CoreFileProvider.GetFirmware("A78", "Bios_HSC", false, "Some functions may not work without the high score BIOS.");
 			byte[] pal_bios = comm.CoreFileProvider.GetFirmware("A78", "Bios_PAL", false, "The game will not run if the correct region BIOS is not available.");
@@ -251,7 +190,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				logger);
 
 			theMachine.Reset();
-			theMachine.InputState.InputPollCallback = CoreComm.InputCallback.Call;
+			theMachine.InputState.InputPollCallback = InputCallbacks.Call;
 
 			ControlAdapter = new Atari7800Control(theMachine);
 			ControllerDefinition = ControlAdapter.ControlType;
@@ -261,92 +200,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			CoreComm.VsyncNum = theMachine.FrameHZ;
 			CoreComm.VsyncDen = 1;
 
-			// reset memory domains
-			if (_MemoryDomains == null)
-			{
-				_MemoryDomains = new List<MemoryDomain>();
-				if (theMachine is Machine7800)
-				{
-					_MemoryDomains.Add(new MemoryDomain(
-						"RAM1", 0x800, MemoryDomain.Endian.Unknown,
-						delegate(int addr)
-						{
-							if (addr < 0 || addr >= 0x800)
-								throw new ArgumentOutOfRangeException();
-							return ((Machine7800)theMachine).RAM1[(ushort)addr];
-						},
-						delegate(int addr, byte val)
-						{
-							if (addr < 0 || addr >= 0x800)
-								throw new ArgumentOutOfRangeException();
-							((Machine7800)theMachine).RAM1[(ushort)addr] = val;
-						}));
-					_MemoryDomains.Add(new MemoryDomain(
-						"RAM2", 0x800, MemoryDomain.Endian.Unknown,
-						delegate(int addr)
-						{
-							if (addr < 0 || addr >= 0x800)
-								throw new ArgumentOutOfRangeException();
-							return ((Machine7800)theMachine).RAM2[(ushort)addr];
-						},
-						delegate(int addr, byte val)
-						{
-							if (addr < 0 || addr >= 0x800)
-								throw new ArgumentOutOfRangeException();
-							((Machine7800)theMachine).RAM2[(ushort)addr] = val;
-						}));
-					_MemoryDomains.Add(new MemoryDomain(
-						"BIOS ROM", bios.Length, MemoryDomain.Endian.Unknown,
-						delegate(int addr)
-						{
-							return bios[addr];
-						},
-						delegate(int addr, byte val)
-						{
-						}));
-					if (hsc7800 != null)
-					{
-						_MemoryDomains.Add(new MemoryDomain(
-							"HSC ROM", hsbios.Length, MemoryDomain.Endian.Unknown,
-							delegate(int addr)
-							{
-								return hsbios[addr];
-							},
-							delegate(int addr, byte val)
-							{
-							}));
-						_MemoryDomains.Add(new MemoryDomain(
-							"HSC RAM", hsram.Length, MemoryDomain.Endian.Unknown,
-							delegate(int addr)
-							{
-								return hsram[addr];
-							},
-							delegate(int addr, byte val)
-							{
-								hsram[addr] = val;
-							}));
-					}
-					_MemoryDomains.Add(new MemoryDomain(
-						"System Bus", 65536, MemoryDomain.Endian.Unknown,
-						delegate(int addr)
-						{
-							if (addr < 0 || addr >= 0x10000)
-								throw new ArgumentOutOfRangeException();
-							return theMachine.Mem[(ushort)addr];
-						},
-						delegate(int addr, byte val)
-						{
-							if (addr < 0 || addr >= 0x10000)
-								throw new ArgumentOutOfRangeException();
-							theMachine.Mem[(ushort)addr] = val;
-						}));
-				}
-				else // todo 2600?
-				{
-				}
-				MemoryDomains = new MemoryDomainList(_MemoryDomains);
-			}
-
+			SetupMemoryDomains(hsc7800);
 		}
 
 		#region audio\video

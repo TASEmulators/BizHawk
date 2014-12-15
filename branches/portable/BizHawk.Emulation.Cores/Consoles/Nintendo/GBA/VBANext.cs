@@ -14,15 +14,21 @@ using BizHawk.Common;
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	[CoreAttributes("VBA-Next", "many authors", true, true, "cd508312a29ed8c29dacac1b11c2dce56c338a54", "https://github.com/libretro/vba-next")]
-	public class VBANext : IEmulator, IVideoProvider, ISyncSoundProvider,
-		IGBAGPUViewable, IMemoryDomains, IDebuggable, ISettable<object, VBANext.SyncSettings>
+	[ServiceNotApplicable(typeof(IDriveLight))]
+	public class VBANext : IEmulator, IVideoProvider, ISyncSoundProvider, IInputPollable,
+		IGBAGPUViewable, IMemoryDomains, ISaveRam, IStatable, IDebuggable, ISettable<object, VBANext.SyncSettings>
 	{
 		IntPtr Core;
 
 		[CoreConstructor("GBA")]
 		public VBANext(byte[] file, CoreComm comm, GameInfo game, bool deterministic, object syncsettings)
 		{
+			var ser = new BasicServiceProvider(this);
+			ser.Register<IDisassemblable>(new ArmV4Disassembler());
+			ServiceProvider = ser;
+
 			CoreComm = comm;
+
 			byte[] biosfile = CoreComm.CoreFileProvider.GetFirmware("GBA", "Bios", true, "GBA bios file is mandatory.");
 			if (file.Length > 32 * 1024 * 1024)
 				throw new ArgumentException("ROM is too big to be a GBA ROM!");
@@ -64,6 +70,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				if (!LibVBANext.LoadRom(Core, file, (uint)file.Length, biosfile, (uint)biosfile.Length, FES))
 					throw new InvalidOperationException("LoadRom() returned false!");
 
+				Tracer = new TraceBuffer();
+
 				CoreComm.VsyncNum = 262144;
 				CoreComm.VsyncDen = 4389;
 				CoreComm.NominalWidth = 240;
@@ -78,8 +86,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				InitRegisters();
 				InitCallbacks();
 
-				CoreComm.CpuTraceAvailable = true;
-
 				// todo: hook me up as a setting
 				SetupColors();
 			}
@@ -90,6 +96,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			}
 		}
 
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
 			Frame++;
@@ -97,7 +105,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			if (Controller["Power"])
 				LibVBANext.Reset(Core);
 
-			SyncCallbacks();
+			SyncTraceCallback();
 
 			IsLagFrame = LibVBANext.FrameAdvance(Core, GetButtons(), videobuff, soundbuff, out numsamp, videopalette);
 
@@ -108,6 +116,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public int Frame { get; private set; }
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
+
+		public ITracer Tracer { get; private set; }
 
 		public string SystemId { get { return "GBA"; } }
 
@@ -154,20 +164,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				throw new InvalidOperationException("SaveRamLoad() failed!");
 		}
 
-		public void ClearSaveRam()
-		{
-			throw new NotImplementedException();
-		}
-
 		public bool SaveRamModified
 		{
 			get
 			{
 				return LibVBANext.SaveRamSize(Core) != 0;
-			}
-			set
-			{
-				throw new InvalidOperationException();
 			}
 		}
 
@@ -270,6 +271,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		LibVBANext.AddressCallback writecb;
 		LibVBANext.TraceCallback tracecb;
 
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
+
+		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem();
+		public IMemoryCallbackSystem MemoryCallbacks { get { return _memorycallbacks; } }
+
 		string Trace(uint addr, uint opcode)
 		{
 			return
@@ -281,20 +288,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		void InitCallbacks()
 		{
-			padcb = new LibVBANext.StandardCallback(() => CoreComm.InputCallback.Call());
-			fetchcb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallExecute(addr));
-			readcb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallRead(addr));
-			writecb = new LibVBANext.AddressCallback((addr) => CoreComm.MemoryCallbackSystem.CallWrite(addr));
-			tracecb = new LibVBANext.TraceCallback((addr, opcode) => CoreComm.Tracer.Put(Trace(addr, opcode)));
+			padcb = new LibVBANext.StandardCallback(() => InputCallbacks.Call());
+			fetchcb = new LibVBANext.AddressCallback((addr) => MemoryCallbacks.CallExecutes(addr));
+			readcb = new LibVBANext.AddressCallback((addr) => MemoryCallbacks.CallReads(addr));
+			writecb = new LibVBANext.AddressCallback((addr) => MemoryCallbacks.CallWrites(addr));
+			tracecb = new LibVBANext.TraceCallback((addr, opcode) => Tracer.Put(Trace(addr, opcode)));
+			_inputCallbacks.ActiveChanged += SyncPadCallback;
+			_memorycallbacks.ActiveChanged += SyncMemoryCallbacks;
 		}
 
-		void SyncCallbacks()
+		void SyncPadCallback()
 		{
-			LibVBANext.SetPadCallback(Core, CoreComm.InputCallback.Any() ? padcb : null);
-			LibVBANext.SetFetchCallback(Core, CoreComm.MemoryCallbackSystem.HasExecutes ? fetchcb : null);
-			LibVBANext.SetReadCallback(Core, CoreComm.MemoryCallbackSystem.HasReads ? readcb : null);
-			LibVBANext.SetWriteCallback(Core, CoreComm.MemoryCallbackSystem.HasWrites ? writecb : null);
-			LibVBANext.SetTraceCallback(Core, CoreComm.Tracer.Enabled ? tracecb : null);
+			LibVBANext.SetPadCallback(Core, InputCallbacks.Any() ? padcb : null);
+		}
+
+		void SyncMemoryCallbacks()
+		{
+			LibVBANext.SetFetchCallback(Core, MemoryCallbacks.HasExecutes ? fetchcb : null);
+			LibVBANext.SetReadCallback(Core, MemoryCallbacks.HasReads ? readcb : null);
+			LibVBANext.SetWriteCallback(Core, MemoryCallbacks.HasWrites ? writecb : null);
+		}
+
+		void SyncTraceCallback()
+		{
+			LibVBANext.SetTraceCallback(Core, Tracer.Enabled ? tracecb : null);
 		}
 
 		LibVBANext.StandardCallback scanlinecb;
@@ -394,7 +411,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			regs = new VBARegisterHelper(Core);
 		}
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
 		{
 			return regs.GetAllRegisters();
 		}
@@ -403,6 +420,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			regs.SetRegister(register, value);
 		}
+
+		[FeatureNotImplemented]
+		public void StepInto() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOut() { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
+		public void StepOver() { throw new NotImplementedException(); }
 
 		#endregion
 

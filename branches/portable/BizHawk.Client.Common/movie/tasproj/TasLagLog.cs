@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using BizHawk.Emulation.Common.IEmulatorExtensions;
+
 namespace BizHawk.Client.Common
 {
 	public class TasLagLog
@@ -21,10 +23,10 @@ namespace BizHawk.Client.Common
 				{
 					if (frame == LagLog.Count)
 					{
-						LagLog[frame] = Global.Emulator.IsLagFrame; // Note: Side effects!
+						LagLog[frame] = Global.Emulator.AsInputPollable().IsLagFrame; // Note: Side effects!
 					}
 
-					return Global.Emulator.IsLagFrame;
+					return Global.Emulator.AsInputPollable().IsLagFrame;
 				}
 
 				return null;

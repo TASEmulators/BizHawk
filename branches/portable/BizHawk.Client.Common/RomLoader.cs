@@ -154,6 +154,8 @@ namespace BizHawk.Client.Common
 
 		public bool LoadRom(string path, CoreComm nextComm, bool forceAccurateCore = false) // forceAccurateCore is currently just for Quicknes vs Neshawk but could be used for other situations
 		{
+			bool cancel = false;
+
 			if (path == null)
 			{
 				return false;
@@ -203,9 +205,47 @@ namespace BizHawk.Client.Common
 				try
 				{
 					var ext = file.Extension.ToLower();
-					if (ext == ".iso" || ext == ".cue")
+					if (ext == ".m3u")
 					{
-						var disc = ext == ".iso" ? Disc.FromIsoPath(path) : Disc.FromCuePath(path, new CueBinPrefs());
+						//HACK ZONE - currently only psx supports m3u
+						M3U_File m3u;
+						using(var sr = new StreamReader(path))
+							m3u = M3U_File.Read(sr);
+						if(m3u.Entries.Count == 0)
+							throw new InvalidOperationException("Can't load an empty M3U");
+						//load discs for all the m3u
+						m3u.Rebase(Path.GetDirectoryName(path));
+						List<Disc> discs = new List<Disc>();
+						foreach (var e in m3u.Entries)
+						{
+							Disc disc = null;
+							string discPath = e.Path;
+							string discExt = Path.GetExtension(discPath).ToLower();
+							if (discExt == ".iso")
+								disc = Disc.FromIsoPath(discPath);
+							if (discExt == ".cue")
+								disc = Disc.FromCuePath(discPath, new CueBinPrefs());
+							if (discExt == ".ccd")
+								disc = Disc.FromCCDPath(discPath);
+							if(disc == null)
+								throw new InvalidOperationException("Can't load one of the files specified in the M3U");
+							discs.Add(disc);
+						}
+						nextEmulator = new Octoshock(nextComm, discs, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
+						nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
+						game = new GameInfo { Name = Path.GetFileNameWithoutExtension(file.Name) };
+						game.System = "PSX";
+					}
+					else if (ext == ".iso" || ext == ".cue" || ext == ".ccd")
+					{
+						Disc disc = null;
+						if(ext == ".iso")
+							disc = Disc.FromIsoPath(path);
+						if(ext == ".cue")
+							disc = Disc.FromCuePath(path, new CueBinPrefs());
+						if (ext == ".ccd")
+							disc = Disc.FromCCDPath(path);
+
 						var hash = disc.GetHash();
 						game = Database.CheckDatabase(hash);
 						if (game == null)
@@ -252,8 +292,7 @@ namespace BizHawk.Client.Common
 								nextEmulator = new PSP(nextComm, file.Name);
 								break;
 							case "PSX":
-								nextEmulator = new Octoshock(nextComm);
-								(nextEmulator as Octoshock).LoadCuePath(file.CanonicalFullPath);
+								nextEmulator = new Octoshock(nextComm, new List<Disc>(new[]{disc}), null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
 								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 								break;
 							case "PCE":
@@ -300,6 +339,12 @@ namespace BizHawk.Client.Common
 					{
 						rom = new RomGame(file);
 
+						//hacky for now
+						if (file.Extension.ToLower() == ".exe")
+						{
+							rom.GameInfo.System = "PSX";
+						}
+
 						if (string.IsNullOrEmpty(rom.GameInfo.System))
 						{
 							// Has the user picked a preference for this extension?
@@ -309,7 +354,15 @@ namespace BizHawk.Client.Common
 							}
 							else if (ChoosePlatform != null)
 							{
-								rom.GameInfo.System = ChoosePlatform(rom);
+								var result = ChoosePlatform(rom);
+								if (!string.IsNullOrEmpty(result))
+								{
+									rom.GameInfo.System = ChoosePlatform(rom);
+								}
+								else
+								{
+									cancel = true;
+								}
 							}
 						}
 
@@ -400,6 +453,10 @@ namespace BizHawk.Client.Common
 								//core = CoreInventory.Instance["GBA", "Meteor"];
 								core = CoreInventory.Instance["GBA", "VBA-Next"];
 								break;
+							case "PSX":
+								nextEmulator = new Octoshock(nextComm, null, rom.FileData, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
+								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
+								break;
 							case "DEBUG":
 								if (VersionInfo.DeveloperBuild)
 								{
@@ -418,7 +475,10 @@ namespace BizHawk.Client.Common
 
 					if (nextEmulator == null)
 					{
-						DoLoadErrorCallback("No core could load the rom.", null);
+						if (!cancel)
+						{
+							DoLoadErrorCallback("No core could load the rom.", null);
+						}
 						return false;
 					}
 				}

@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AttributeInfo.cs" />
+    <Compile Include="AttributeUsage.cs" />
     <Compile Include="BitmapBuffer.cs" />
     <Compile Include="BitmapLoadOptions.cs" />
     <Compile Include="Borrowed\BitmapFontParser\BitmapFont.cs" />
@@ -66,6 +67,9 @@
     <Compile Include="IGL.cs" />
     <Compile Include="ArtManager.cs" />
     <Compile Include="IGraphicsControl.cs" />
+    <Compile Include="IGuiRenderer.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="MatrixStack.cs" />
     <Compile Include="Pipeline.cs" />
     <Compile Include="PipelineUniform.cs" />

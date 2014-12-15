@@ -2,6 +2,7 @@
 
 namespace BizHawk.Client.Common
 {
+	[AttributeUsage(AttributeTargets.Method)]
 	public class LuaMethodAttributes : Attribute
 	{
 		public LuaMethodAttributes(string name, string description)
@@ -14,6 +15,7 @@ namespace BizHawk.Client.Common
 		public string Description { get; set; }
 	}
 
+	[AttributeUsage(AttributeTargets.Class)]
 	public class LuaLibraryAttributes : Attribute
 	{
 		public LuaLibraryAttributes(bool released)

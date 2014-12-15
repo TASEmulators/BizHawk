@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -23,6 +24,8 @@ namespace BizHawk.Client.EmuHawk
 		// Save breakpoints to file?
 		// Video Frame advance
 		// Add to toolbox
+
+		public IDictionary<Type, object> EmulatorServices { private get; set; }
 
 		private Atari2600 _core = Global.Emulator as Atari2600;
 		private readonly List<string> _instructions = new List<string>();
@@ -111,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// TODO: some kind of method like PauseAndRelinquishControl() which will set a flag preventing unpausing by the user, and then a ResumeControl() method that is done on close
 			//GlobalWin.MainForm.PauseEmulator();
-			Global.CoreComm.Tracer.Enabled = true;
+			(_core as IDebuggable).Tracer.Enabled = true;
 
 			if (Global.Config.Atari2600DebuggerSettings.UseWindowPosition)
 			{
@@ -145,8 +148,8 @@ namespace BizHawk.Client.EmuHawk
 		private void Shutdown()
 		{
 			//TODO: add a Mainform.ResumeControl() call
-			Global.CoreComm.Tracer.TakeContents();
-			Global.CoreComm.Tracer.Enabled = false;
+			(_core as IDebuggable).Tracer.TakeContents();
+			(_core as IDebuggable).Tracer.Enabled = false;
 		}
 
 		public void Restart()
@@ -214,7 +217,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateTraceLog()
 		{
-			var instructions = Global.CoreComm.Tracer.TakeContents().Split('\n');
+			var instructions = (_core as IDebuggable).Tracer.TakeContents().Split('\n');
 			if (!string.IsNullOrWhiteSpace(instructions[0]))
 			{
 				_instructions.AddRange(instructions.Where(str => !string.IsNullOrEmpty(str)));
@@ -393,7 +396,7 @@ namespace BizHawk.Client.EmuHawk
 			var b = new AddBreakpointDialog();
 			if (b.ShowDialog() == DialogResult.OK)
 			{
-				Breakpoints.Add(b.Address, b.BreakType);
+				Breakpoints.Add(_core, b.Address, b.BreakType);
 			}
 
 			BreakpointView.ItemCount = Breakpoints.Count;
@@ -445,18 +448,21 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public Action Callback { get; set; }
 
-			public void Add(uint address, BreakpointType type)
+			public void Add(Atari2600 core, uint address, MemoryCallbackType type)
 			{
-				Add(new AtariBreakpoint(Callback, address, type));
+				Add(new AtariBreakpoint(core, Callback, address, type));
 			}
 		}
 
 		public class AtariBreakpoint
 		{
 			private bool _active;
+			private readonly Atari2600 _core;
 
-			public AtariBreakpoint(Action callBack, uint address, BreakpointType type, bool enabled = true)
+			public AtariBreakpoint(Atari2600 core, Action callBack, uint address, MemoryCallbackType type, bool enabled = true)
 			{
+				_core = core;
+
 				Callback = callBack;
 				Address = address;
 				Active = enabled;
@@ -469,7 +475,7 @@ namespace BizHawk.Client.EmuHawk
 
 			public Action Callback { get; set; }
 			public uint Address { get; set; }
-			public BreakpointType Type { get; set; }
+			public MemoryCallbackType Type { get; set; }
 
 			public bool Active
 			{
@@ -496,23 +502,12 @@ namespace BizHawk.Client.EmuHawk
 
 			private void AddCallback()
 			{
-				switch (Type)
-				{
-					case BreakpointType.Read:
-						Global.CoreComm.MemoryCallbackSystem.AddRead(Callback, Address);
-						break;
-					case BreakpointType.Write:
-						Global.CoreComm.MemoryCallbackSystem.AddWrite(Callback, Address);
-						break;
-					case BreakpointType.Execute:
-						Global.CoreComm.MemoryCallbackSystem.AddExecute(Callback, Address);
-						break;
-				}
+				_core.MemoryCallbacks.Add(new MemoryCallback(Type, "", Callback, Address));
 			}
 
 			private void RemoveCallback()
 			{
-				Global.CoreComm.MemoryCallbackSystem.Remove(Callback);
+				_core.MemoryCallbacks.Remove(Callback);
 			}
 		}
 
