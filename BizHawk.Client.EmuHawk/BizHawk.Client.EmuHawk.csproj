@@ -1002,6 +1002,7 @@
     <Compile Include="tools\VirtualPads\schema\GBSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\GenSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\LynxSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\PSXSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\SatSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\IVirtualPadSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\N64Schema.cs" />
@@ -1526,6 +1527,10 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\Circle.png" />
+    <None Include="images\Cross.png" />
+    <None Include="images\Square.png" />
+    <None Include="images\Triangle.png" />
     <None Include="images\user_blue_small.png" />
     <None Include="images\user_blue.ico" />
     <None Include="images\tastudio\ts_v_piano_19_green_blue.png" />
