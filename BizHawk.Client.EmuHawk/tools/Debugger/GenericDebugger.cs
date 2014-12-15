@@ -13,8 +13,6 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(IDebuggable))]
-	[OptionalServices(typeof(IDisassemblable), typeof(IMemoryDomains))]
 	public partial class GenericDebugger : Form, IToolForm, IControlMainform
 	{
 		private int _defaultWidth;

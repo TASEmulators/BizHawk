@@ -24,7 +24,6 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// A form designed to search through ram values
 	/// </summary>
-	[RequiredServices(typeof(IMemoryDomains))]
 	public partial class RamSearch : Form, IToolForm
 	{
 		// TODO: DoSearch grabs the state of widgets and passes it to the engine before running, so rip out code that is attempting to keep the state up to date through change events
@@ -54,9 +53,8 @@ namespace BizHawk.Client.EmuHawk
 		public const int MaxDetailedSize = 1024 * 1024; // 1mb, semi-arbituary decision, sets the size to check for and automatically switch to fast mode for the user
 		public const int MaxSupportedSize = 1024 * 1024 * 64; // 64mb, semi-arbituary decision, sets the maximum size ram search will support (as it will crash beyond this)
 
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-
-		private IMemoryDomains Core { get { return (IMemoryDomains)EmulatorServices[typeof(IMemoryDomains)]; } }
+		[RequiredService]
+		public IMemoryDomains Core { get; private set; }
 
 		public bool AskSaveChanges()
 		{

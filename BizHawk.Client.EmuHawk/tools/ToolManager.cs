@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
@@ -60,38 +61,12 @@ namespace BizHawk.Client.EmuHawk
 			return newTool;
 		}
 
-		/// <summary>
-		/// Gets all the IEmulatorServices the tool needs, as defined in its
-		/// RequiredServices attribute. If no attribute is defined, returns an
-		/// empty array.
-		/// </summary>
-		public Type[] GetRequiredServices(Type toolType)
+
+
+		private static IEnumerable<PropertyInfo> GetPropertiesWithAttr(Type type, Type attributeType)
 		{
-			var attribute = (RequiredServices)toolType
-				.GetCustomAttributes(typeof(RequiredServices), false)
-				.FirstOrDefault();
-
-			if (attribute == null)
-				return new Type[0];
-			else
-				return attribute.Dependencies;
-		}
-
-		/// <summary>
-		/// Gets all the IEmulatorServices the tool could use, but does not
-		/// need, as defined in its OptionalServices attribute. If no attribute
-		/// is defined, returns an empty array.
-		/// </summary>
-		public Type[] GetOptionalServices(Type toolType)
-		{
-			var attribute = (OptionalServices)toolType
-				.GetCustomAttributes(typeof(OptionalServices), false)
-				.FirstOrDefault();
-
-			if (attribute == null)
-				return new Type[0];
-			else
-				return attribute.Dependencies;
+			return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic)
+				.Where(p => p.GetCustomAttributes(attributeType, false).Length > 0);
 		}
 
 		/// <summary>
@@ -99,22 +74,20 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void UpdateServices(IToolForm tool)
 		{
-			var serviceSet = new Dictionary<Type, object>();
+			var toolType = tool.GetType();
 
-			// Populate the required services
-			foreach (var service in GetRequiredServices(tool.GetType()))
-				serviceSet[service] = Global.Emulator.ServiceProvider.GetService(service);
-
-			// Populate the optional services if they exist, otherwise insert null
-			foreach(var service in GetOptionalServices(tool.GetType()))
+			foreach (var propinfo in GetPropertiesWithAttr(toolType, typeof(RequiredService)))
 			{
-				if (Global.Emulator.ServiceProvider.HasService(service))
-					serviceSet[service] = Global.Emulator.ServiceProvider.GetService(service);
-				else
-					serviceSet[service] = null;
+				var service =  Global.Emulator.ServiceProvider.GetService(propinfo.PropertyType);
+				propinfo.GetSetMethod(true).Invoke(tool, new[] { service });
 			}
 
-			tool.EmulatorServices = serviceSet;
+			foreach (var propinfo in GetPropertiesWithAttr(toolType, typeof(OptionalService)))
+			{
+				var service = Global.Emulator.ServiceProvider.HasService(propinfo.PropertyType)
+					? Global.Emulator.ServiceProvider.GetService(propinfo.PropertyType) : null;
+				propinfo.GetSetMethod(true).Invoke(tool, new[] { service });
+			}
 		}
 
 		/// <summary>
@@ -123,7 +96,8 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public bool IsAvailable(Type toolType)
 		{
-			return GetRequiredServices(toolType)
+			return GetPropertiesWithAttr(toolType, typeof(RequiredService))
+				.Select(pi => pi.PropertyType)
 				.All(t => Global.Emulator.ServiceProvider.HasService(t));
 		}
 
@@ -323,12 +297,9 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private IToolForm CreateInstance<T>()
+			where T: IToolForm
 		{
-			var tool = Activator.CreateInstance(typeof(T));
-
-			// Add to the list and extract it, so it will be strongly typed as T
-			_tools.Add(tool as IToolForm);
-			return _tools.FirstOrDefault(x => x is T);
+			return CreateInstance(typeof(T));
 		}
 
 		private IToolForm CreateInstance(Type toolType)

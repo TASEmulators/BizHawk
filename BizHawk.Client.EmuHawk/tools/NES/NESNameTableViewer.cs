@@ -8,13 +8,12 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(NES))]
 	public partial class NESNameTableViewer : Form, IToolForm
 	{
 		// TODO:
 		// Show Scroll Lines + UI Toggle
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-		private NES _nes { get { return (NES)EmulatorServices[typeof(NES)]; } }
+		[RequiredService]
+		private NES _nes { get; set; }
 
 		private readonly NES.PPU.DebugCallback _callback = new NES.PPU.DebugCallback();
 

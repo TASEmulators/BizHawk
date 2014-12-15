@@ -14,18 +14,13 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(PCEngine), typeof(IMemoryDomains))]
 	public partial class PCECDL : Form, IToolForm
 	{
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-
-		// TODO: you shouldn't require this
-		private PCEngine _emu { get { return (PCEngine)EmulatorServices[typeof(PCEngine)]; } }
-
-		// TODO: make this an emulator service
+		[RequiredService]
+		private PCEngine _emu { get; set; }
 		private CodeDataLog _cdl;
 
-		private MemoryDomainList MemoryDomains { get { return (EmulatorServices[typeof(IMemoryDomains)] as IMemoryDomains).MemoryDomains; } }
+		private MemoryDomainList MemoryDomains { get { return _emu.MemoryDomains; } }
 
 		private string _currentFileName = string.Empty;
 

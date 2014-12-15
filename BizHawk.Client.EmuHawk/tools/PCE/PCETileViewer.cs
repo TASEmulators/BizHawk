@@ -13,11 +13,10 @@ using System.Drawing.Imaging;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(PCEngine))]
 	public partial class PCETileViewer : Form, IToolForm
 	{
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-		private PCEngine emu { get { return (PCEngine)EmulatorServices[typeof(PCEngine)]; } }
+		[RequiredService]
+		public PCEngine emu { get; private set; }
 
 		private VDC vdc;
 		private VCE vce;

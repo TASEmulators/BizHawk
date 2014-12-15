@@ -9,10 +9,13 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class GenericDebugger : IToolForm
 	{
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-		private IDebuggable Core { get { return (IDebuggable)EmulatorServices[typeof(IDebuggable)]; } }
-		private IDisassemblable Disassembler { get { return (IDisassemblable)EmulatorServices[typeof(IDisassemblable)]; } }
-		private MemoryDomainList MemoryDomains { get { return (EmulatorServices[typeof(IMemoryDomains)] as IMemoryDomains).MemoryDomains; } }
+		[RequiredService]
+		private IDebuggable Core { get; set; }
+		[OptionalService]
+		private IDisassemblable Disassembler { get; set; }
+		[OptionalService]
+		private IMemoryDomains MemoryDomainSource { get; set; }
+		private MemoryDomainList MemoryDomains { get { return MemoryDomainSource.MemoryDomains; } }
 
 		private int PC
 		{

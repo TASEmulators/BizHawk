@@ -20,11 +20,10 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(IMemoryDomains))]
 	public partial class HexEditor : Form, IToolForm
 	{
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-		private MemoryDomainList MemoryDomains { get { return (EmulatorServices[typeof(IMemoryDomains)] as IMemoryDomains).MemoryDomains; } }
+		[RequiredService]
+		private MemoryDomainList MemoryDomains { get; set; }
 
 		private bool fontSizeSet = false;
 		private int fontWidth;

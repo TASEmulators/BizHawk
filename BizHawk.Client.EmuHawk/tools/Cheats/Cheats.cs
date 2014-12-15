@@ -17,11 +17,10 @@ using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(IMemoryDomains))]
 	public partial class Cheats : Form, IToolForm
 	{
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-		private IMemoryDomains Core { get { return (IMemoryDomains)EmulatorServices[typeof(IMemoryDomains)]; } }
+		[RequiredService]
+		private IMemoryDomains Core { get; set; }
 
 		public const string NAME = "NamesColumn";
 		public const string ADDRESS = "AddressColumn";

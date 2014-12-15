@@ -9,12 +9,12 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(IEmulator), typeof(IMemoryDomains))]
 	public partial class NESGameGenie : Form, IToolForm
 	{
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-		private IEmulator Emulator { get { return (IEmulator)EmulatorServices[typeof(IEmulator)]; } }
-		private MemoryDomainList MemoryDomains { get { return (EmulatorServices[typeof(IMemoryDomains)] as IMemoryDomains).MemoryDomains; } }
+		[RequiredService]
+		private IEmulator Emulator { get; set; }
+		[RequiredService]
+		private MemoryDomainList MemoryDomains { get; set; }
 
 		private readonly Dictionary<char, int> _gameGenieTable = new Dictionary<char, int>
 		{

@@ -12,11 +12,10 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(DatachBarcode))]
 	public partial class BarcodeEntry : Form, IToolForm
 	{
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-		private DatachBarcode reader { get { return (DatachBarcode)EmulatorServices[typeof(DatachBarcode)]; } }
+		[RequiredService]
+		private DatachBarcode reader { get; set; }
 
 		public BarcodeEntry()
 		{

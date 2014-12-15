@@ -13,11 +13,11 @@ using System.Drawing.Imaging;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(SMS))]
 	public partial class SmsVDPViewer : Form, IToolForm
 	{
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-		private VDP vdp { get { return (EmulatorServices[typeof(SMS)] as SMS).Vdp; } }
+		[RequiredService]
+		private SMS sms { get; set; }
+		private VDP vdp { get { return sms.Vdp; } }
 
 		int palindex = 0;
 

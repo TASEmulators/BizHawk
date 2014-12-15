@@ -18,11 +18,10 @@ using ICSharpCode.SharpZipLib.Zip;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(PCEngine))]
 	public partial class PCESoundDebugger : Form, IToolForm
 	{
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-		private PCEngine _pce { get { return (PCEngine)EmulatorServices[typeof(PCEngine)]; } }
+		[RequiredService]
+		private PCEngine _pce { get; set; }
 
 		public PCESoundDebugger()
 		{
