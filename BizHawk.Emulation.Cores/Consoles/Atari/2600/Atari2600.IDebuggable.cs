@@ -61,12 +61,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
 		[FeatureNotImplemented]
-		public void StepInto() { throw new NotImplementedException(); }
-
-		[FeatureNotImplemented]
-		public void StepOut() { throw new NotImplementedException(); }
-
-		[FeatureNotImplemented]
-		public void StepOver() { throw new NotImplementedException(); }
+		public void Step(StepType type) { throw new NotImplementedException(); }
 	}
 }
