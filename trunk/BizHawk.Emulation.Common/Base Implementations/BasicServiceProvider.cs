@@ -8,54 +8,29 @@ namespace BizHawk.Emulation.Common
 {
 	public class BasicServiceProvider : IEmulatorServiceProvider
 	{
-		private Dictionary<Type, IEmulatorService> Services = new Dictionary<Type, IEmulatorService>();
+		private Dictionary<Type, object> Services = new Dictionary<Type, object>();
 
 		public BasicServiceProvider(IEmulator core)
 		{
-			var services = Assembly
-				.GetAssembly(typeof(IEmulator))
-				.GetTypes()
-				.Where(t => t.IsInterface)
-				.Where(t => typeof(IEmulatorService).IsAssignableFrom(t))
-				.Where(t => t != typeof(IEmulatorService))
-				.ToList();
+			// simplified logic here doesn't scan for possible services; just adds what it knows is implemented by the core
+			// this removes the possibility of automagically picking up a service in a nested class, (find the type, then
+			// find the field), but we're going to keep such logic out of the basic provider.  anything the passed
+			// core doesn't implement directly needs to be added with Register()
 
-			var coreType = core.GetType();
+			// this also fully allows services that are not IEmulatorService
 
-			foreach (var service in services)
-			{
-				if (service.IsAssignableFrom(coreType))
-				{
-					Services.Add(service, core);
-				}
-			}
+			Type coreType = core.GetType();
 
-			// Add the core itself since we know a core implements IEmulatorService
-			Services.Add(core.GetType(), core);
-
-			// Any IEmulatorServices the core might have that are core specific (and therefore not in Emulation.Common)
-			var coreSpecificServices = core
-				.GetType()
-				.GetInterfaces()
-				.Where(i => !services.Contains(i))
-				.Where(t => typeof(IEmulatorService).IsAssignableFrom(t))
-				.Where(t => !t.FullName.Contains("ISettable")) // adelikat: TODO: Hack! but I need a way around this, every core implements their own specific ISettable
-				.ToList();
-
-			foreach (var service in coreSpecificServices)
+			foreach (Type service in coreType.GetInterfaces())
 			{
 				Services.Add(service, core);
 			}
 
-			foreach (var service in core.GetType().GetNestedTypes(BindingFlags.Public)
-				.Where(t => typeof(IEmulatorService).IsAssignableFrom(t))
-				.Where(t => t.IsClass))
+			// add the actual instantiated type and any types in the hierarchy
+			while (coreType != null)
 			{
-				if (service.IsAssignableFrom(coreType))
-				{
-					// TODO: get the instance from the core
-					//Services.Add(service, core);
-				}
+				Services.Add(coreType, core);
+				coreType = coreType.BaseType;
 			}
 		}
 
@@ -65,62 +40,34 @@ namespace BizHawk.Emulation.Common
 		/// <typeparam name="T"></typeparam>
 		/// <param name="provider"></param>
 		public void Register<T>(T provider)
-			where T : IEmulatorService
 		{
 			if (provider == null)
 				throw new ArgumentNullException("provider");
 			Services[typeof(T)] = provider;
 		}
 
-		public IEmulatorService GetService<T>()
-			where T : IEmulatorService
+		public T GetService<T>()
 		{
-			IEmulatorService service;
-			if (Services.TryGetValue(typeof(T), out service))
-			{
-				return (T)service;
-			}
-			else
-			{
-				return null;
-			}
+			return (T)GetService(typeof(T));
 		}
 
-		public IEmulatorService GetService(Type t)
+		public object GetService(Type t)
 		{
-			if (typeof(IEmulatorService).IsAssignableFrom(t))
-			{
-				IEmulatorService service;
-
-				if (Services.TryGetValue(t, out service))
-					return service;
-				else
-					return null;
-			}
+			object service;
+			if (Services.TryGetValue(t, out service))
+				return service;
 			else
-			{
-				throw new Exception(String.Format("Type {0} does not implement IEmulatorService.", t.Name));
-			}
+				return null;
 		}
 
 		public bool HasService<T>()
-			where T : IEmulatorService
 		{
-			IEmulatorService service;
-			return Services.TryGetValue(typeof(T), out service);
+			return HasService(typeof(T));
 		}
 
 		public bool HasService(Type t)
 		{
-			if (typeof(IEmulatorService).IsAssignableFrom(t))
-			{
-				IEmulatorService service;
-				return Services.TryGetValue(t, out service);
-			}
-			else
-			{
-				throw new Exception(String.Format("Type {0} does not implement IEmulatorService.", t.Name));
-			}
+			return Services.ContainsKey(t);
 		}
 	}
 }
