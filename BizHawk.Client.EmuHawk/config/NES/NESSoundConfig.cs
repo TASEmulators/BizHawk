@@ -8,6 +8,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class NESSoundConfig : Form, IToolForm
 	{
+		[RequiredService]
+		private NES _nes { get; set; }
+
 		private NES.NESSettings _oldSettings;
 		private NES.NESSettings _settings;
 
@@ -15,26 +18,16 @@ namespace BizHawk.Client.EmuHawk
 		public bool UpdateBefore { get { return false; } }
 		public void UpdateValues()
 		{
-			if (!(Global.Emulator is NES))
-			{
-				Close();
-			}
 		}
 
 		public void FastUpdate()
 		{
-			// Do nothing
 		}
 
 		public void Restart()
 		{
-			if (!(Global.Emulator is NES))
-			{
-				Close();
-			}
+			NESSoundConfig_Load(null, null);
 		}
-
-        private static NES AsNES { get { return Global.Emulator as NES; } }
 
 		public NESSoundConfig()
 		{
@@ -50,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NESSoundConfig_Load(object sender, EventArgs e)
 		{
-			_oldSettings = AsNES.GetSettings();
+			_oldSettings = _nes.GetSettings();
 			_settings = _oldSettings.Clone();
 
 			trackBar1.Value = _settings.Square1;
@@ -68,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 		private void Cancel_Click(object sender, EventArgs e)
 		{
 			// restore previous value
-            AsNES.PutSettings(_oldSettings);
+            _nes.PutSettings(_oldSettings);
 			Close();
 		}
 
@@ -76,35 +69,35 @@ namespace BizHawk.Client.EmuHawk
 		{
 			label6.Text = trackBar1.Value.ToString();
 			_settings.Square1 = trackBar1.Value;
-            AsNES.PutSettings(_settings);
+            _nes.PutSettings(_settings);
 		}
 
 		private void trackBar2_ValueChanged(object sender, EventArgs e)
 		{
 			label7.Text = trackBar2.Value.ToString();
 			_settings.Square2 = trackBar2.Value;
-            AsNES.PutSettings(_settings);
+			_nes.PutSettings(_settings);
 		}
 
 		private void trackBar3_ValueChanged(object sender, EventArgs e)
 		{
 			label8.Text = trackBar3.Value.ToString();
 			_settings.Triangle = trackBar3.Value;
-            AsNES.PutSettings(_settings);
+			_nes.PutSettings(_settings);
 		}
 
 		private void trackBar4_ValueChanged(object sender, EventArgs e)
 		{
 			label9.Text = trackBar4.Value.ToString();
 			_settings.Noise = trackBar4.Value;
-            AsNES.PutSettings(_settings);
+			_nes.PutSettings(_settings);
 		}
 
 		private void trackBar5_ValueChanged(object sender, EventArgs e)
 		{
 			label10.Text = trackBar5.Value.ToString();
 			_settings.DMC = trackBar5.Value;
-            AsNES.PutSettings(_settings);
+			_nes.PutSettings(_settings);
 		}
 	}
 }
