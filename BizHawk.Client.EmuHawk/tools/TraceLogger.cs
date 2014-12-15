@@ -16,8 +16,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TraceLogger : Form, IToolForm
 	{
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-
 		[RequiredService]
 		private IDebuggable _debugtarget { get; set; }
 		private ITracer Tracer { get { return _debugtarget.Tracer; } }
