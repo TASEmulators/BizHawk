@@ -133,10 +133,12 @@ private:
 
 
  void RunReverb(int32 in_l, int32 in_r, int32 &out_l, int32 &out_r);
+ void RunNoise(void);
  bool GetCDAudio(int32 &l, int32 &r);
 
  SPU_Voice Voices[24];
 
+ uint32 NoiseDivider;
  uint32 NoiseCounter;
  uint16 LFSR;
 
