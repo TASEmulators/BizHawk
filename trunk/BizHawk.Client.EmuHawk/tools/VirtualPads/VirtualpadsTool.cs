@@ -25,8 +25,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-		
 		public bool Readonly
 		{
 			get

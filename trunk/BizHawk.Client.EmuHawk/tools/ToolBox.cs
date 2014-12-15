@@ -19,8 +19,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class ToolBox : Form, IToolForm
 	{
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-
 		public ToolBox()
 		{
 			InitializeComponent();
