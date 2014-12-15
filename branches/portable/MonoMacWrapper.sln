@@ -19,12 +19,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Bizware.BizwareGL",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Bizware.BizwareGL.OpenTK", "Bizware\BizHawk.Bizware.BizwareGL.OpenTK\BizHawk.Bizware.BizwareGL.OpenTK.csproj", "{5160CFB1-5389-47C1-B7F6-8A0DC97641EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "version", "Version\version.csproj", "{0CE8B337-08E3-4602-BF10-C4D4C75D2F13}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0CE8B337-08E3-4602-BF10-C4D4C75D2F13}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0CE8B337-08E3-4602-BF10-C4D4C75D2F13}.Debug|x86.Build.0 = Debug|Any CPU
+		{0CE8B337-08E3-4602-BF10-C4D4C75D2F13}.Release|x86.ActiveCfg = Release|Any CPU
+		{0CE8B337-08E3-4602-BF10-C4D4C75D2F13}.Release|x86.Build.0 = Release|Any CPU
 		{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}.Debug|x86.Build.0 = Debug|Any CPU
 		{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}.Release|x86.ActiveCfg = Release|Any CPU

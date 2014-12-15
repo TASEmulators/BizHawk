@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -161,14 +161,6 @@
       <Name>BizHawk.Emulation.DiscSystem</Name>
     </ProjectReference>
   </ItemGroup>
-  <PropertyGroup>
-    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>
-    <CustomCommands>
-      <CustomCommands>
-        <Command Condition=" '$(OS)' != 'Windows_NT' " type="BeforeBuild" command="${SolutionDir}/subwcrev.sh &quot;$(ProjectDir)&quot;" workingdir="${ProjectDir}" />
-      </CustomCommands>
-    </CustomCommands>
-  </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent />
   </PropertyGroup>
