@@ -55,6 +55,8 @@ namespace BizHawk.Client.EmuHawk
 
 		[RequiredService]
 		public IMemoryDomains Core { get; private set; }
+		[RequiredService]
+		public IEmulator Emu { get; private set; }
 
 		public bool AskSaveChanges()
 		{
@@ -839,7 +841,7 @@ namespace BizHawk.Client.EmuHawk
 					_currentFileName = file.FullName;
 				}
 
-				var watches = new WatchList(Core, _settings.Domain);
+				var watches = new WatchList(Core, _settings.Domain, Emu.SystemId);
 				watches.Load(file.FullName, append);
 
 				var watchList = watches.Where(x => !x.IsSeparator);
@@ -995,7 +997,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!string.IsNullOrWhiteSpace(_currentFileName))
 			{
-				var watches = new WatchList(Core, _settings.Domain) { CurrentFileName = _currentFileName };
+				var watches = new WatchList(Core, _settings.Domain, Emu.SystemId) { CurrentFileName = _currentFileName };
 				for (var i = 0; i < _searches.Count; i++)
 				{
 					watches.Add(_searches[i]);
@@ -1023,7 +1025,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveAsMenuItem_Click(object sender, EventArgs e)
 		{
-			var watches = new WatchList(Core, _settings.Domain) { CurrentFileName = _currentFileName };
+			var watches = new WatchList(Core, _settings.Domain, Emu.SystemId) { CurrentFileName = _currentFileName };
 			for (var i = 0; i < _searches.Count; i++)
 			{
 				watches.Add(_searches[i]);

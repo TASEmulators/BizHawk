@@ -12,6 +12,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return (CoreAttributes)Attribute.GetCustomAttribute(core.GetType(), typeof(CoreAttributes));
 		}
 
+		// todo: most of the special cases involving the NullEmulator should probably go away
 		public static bool IsNull(this IEmulator core)
 		{
 			return core == null || core is NullEmulator;
@@ -169,7 +170,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static IDisassemblable AsDissassembler(this IEmulator core)
 		{
-			return (IDisassemblable)core.ServiceProvider.GetService<IDisassemblable>(); 
+			return (IDisassemblable)core.ServiceProvider.GetService<IDisassemblable>();
 		}
 
 		// TODO: a better place for these
