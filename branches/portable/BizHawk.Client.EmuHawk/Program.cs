@@ -87,8 +87,10 @@ namespace BizHawk.Client.EmuHawk
 			//now create the "GL" context for the display method. we can reuse the IGL_TK context if opengl display method is chosen
 			if (Global.Config.DispMethod == Config.EDispMethod.GdiPlus)
 				GlobalWin.GL = new Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus();
+#if WINDOWS
 			else if (Global.Config.DispMethod == Config.EDispMethod.SlimDX9)
-				GlobalWin.GL = new Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9();
+			GlobalWin.GL = new Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9();
+#endif
 			else
 				GlobalWin.GL = GlobalWin.IGL_GL;
 

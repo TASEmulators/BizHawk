@@ -46,8 +46,10 @@ namespace BizHawk.Client.EmuHawk
 
 			if (GL is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK)
 				Renderer = new GuiRenderer(GL);
+#if WINDOWS
 			else if (GL is BizHawk.Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9)
 				Renderer = new GuiRenderer(GL);
+#endif
 			else
 				Renderer = new GDIPlusGuiRenderer((BizHawk.Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus)GL);
 
