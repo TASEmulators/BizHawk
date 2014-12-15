@@ -32,16 +32,17 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			Name = "DualShock Controller",
 			BoolButtons =
 			{					
-				"Up", "Down", "Left", "Right", 
-				"Select", "Start",
-				"Square", "Triangle", "Circle", "Cross", 
-				"L1", "R1",  "L2", "R2", "L3", "R3", 
-				"MODE",
+				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Select", "P1 Start", "P1 Square", "P1 Triangle", "P1 Circle", "P1 Cross", "P1 L1", 
+                "P1 R1",  "P1 L2", "P1 R2", "P1 L3", "P1 R3", "P1 MODE",  
+				//"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Select", "P2 Start", "P2 Square", "P2 Triangle", "P2 Circle", "P2 Cross", "P2 L1", 
+                //"P2 R1",  "P2 L2", "P2 R2", "P2 L3", "P2 R3", "P2 MODE",
+				"Eject", "Reset", 
 			},
 			FloatControls =
 			{
-				"LStick X", "LStick Y",
-				"RStick X", "RStick Y",
+				"P1 LStick X", "P1 LStick Y", "P1 RStick X", "P1 RStick Y",
+				//"P2 LStick X", "P2 LStick Y", "P2 RStick X", "P2 RStick Y",
+                //TODO: Fix "Disc Switch",
 			},
 			FloatRanges = 
 			{
