@@ -16,6 +16,7 @@ namespace BizHawk.Client.Common
 		private List<Watch> _watchList = new List<Watch>();
 		private MemoryDomain _domain;
 		private string _currentFilename = string.Empty;
+		private string _systemid;
 
 		public const string ADDRESS = "AddressColumn";
 		public const string VALUE = "ValueColumn";
@@ -25,10 +26,11 @@ namespace BizHawk.Client.Common
 		public const string DOMAIN = "DomainColumn";
 		public const string NOTES = "NotesColumn";
 
-		public WatchList(IMemoryDomains core, MemoryDomain domain)
+		public WatchList(IMemoryDomains core, MemoryDomain domain, string systemid)
 		{
 			_core = core;
 			_domain = domain;
+			_systemid = systemid;
 		}
 
 		public void RefreshDomans(IMemoryDomains core, MemoryDomain domain)
@@ -387,7 +389,7 @@ namespace BizHawk.Client.Common
 				var sb = new StringBuilder();
 				sb
 					.Append("Domain ").AppendLine(_domain.Name)
-					.Append("SystemID ").AppendLine(_core.SystemId);
+					.Append("SystemID ").AppendLine(_systemid);
 
 				foreach (var watch in _watchList)
 				{

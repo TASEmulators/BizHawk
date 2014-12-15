@@ -15,6 +15,9 @@ namespace BizHawk.Client.EmuHawk
 		private IDisassemblable Disassembler { get; set; }
 		[OptionalService]
 		private IMemoryDomains MemoryDomainSource { get; set; }
+		[OptionalService]
+		private IMemoryCallbackSystem MCS { get; set; }
+
 		private MemoryDomainList MemoryDomains { get { return MemoryDomainSource.MemoryDomains; } }
 
 		private int PC
