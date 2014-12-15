@@ -138,7 +138,8 @@ enum eMemType
 	eMemType_BiosROM = 1, //512K
 	eMemType_PIOMem = 2, //64K
 	eMemType_GPURAM = 3, //512K
-	eMemType_SPURAM = 4 //512K
+	eMemType_SPURAM = 4, //512K
+	eMemType_DCache = 5 //1K
 };
 
 enum ePeripheralType
@@ -196,6 +197,15 @@ struct ShockTOC
   u8 first_track;
   u8 last_track;
   u8 disc_type;
+};
+
+struct ShockRegisters_CPU
+{
+  u32 GPR[32];
+  u32 PC, PC_NEXT;
+  u32 IN_BD_SLOT;
+  u32 LO, HI;
+	u32 SR, CAUSE, EPC;
 };
 
 // [0] is unused, [100] is for the leadout track.
@@ -334,3 +344,9 @@ EW_EXPORT s32 shock_GetMemData(void* psx, void** ptr, s32* size, s32 memType);
 
 //savestate work. Returns the size if that's what was requested, otherwise error codes
 EW_EXPORT s32 shock_StateTransaction(void *psx, ShockStateTransaction* transaction);
+
+//Retrieves the CPU registers in a compact struct
+EW_EXPORT s32 shock_GetRegisters_CPU(void* psx, ShockRegisters_CPU* buffer);
+
+//Sets a CPU register. Rather than have an enum for the registers, lets just use the index (not offset) within the struct
+EW_EXPORT s32 shock_SetRegister_CPU(void* psx, s32 index, u32 value);
