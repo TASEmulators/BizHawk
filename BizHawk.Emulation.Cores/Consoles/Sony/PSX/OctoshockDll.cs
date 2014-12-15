@@ -37,7 +37,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			BiosROM = 1, //512K
 			PIOMem = 2, //64K
 			GPURAM = 3, //512K
-			SPURAM = 4 //512K
+			SPURAM = 4, //512K
+			DCache = 5 //1K
 		};
 
 		public enum eShockStateTransaction : int
@@ -117,6 +118,15 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			public void* buffer128k;
 		};
 
+		[StructLayout(LayoutKind.Sequential)]
+		public struct ShockRegisters_CPU
+		{
+			public fixed uint GPR[32];
+			public uint PC, PC_NEXT;
+			public uint IN_BD_SLOT;
+			public uint LO, HI;
+			public uint SR, CAUSE, EPC;
+		};
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct ShockStateTransaction
@@ -200,5 +210,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_StateTransaction(IntPtr psx, ref ShockStateTransaction transaction);
 
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern int shock_GetRegisters_CPU(IntPtr psx, ref ShockRegisters_CPU buffer);
+
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern int shock_SetRegister_CPU(IntPtr psx, int index, uint value);
 	}
 }

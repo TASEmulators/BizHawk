@@ -232,6 +232,8 @@ class PS_CPU
  public:
  void SetCPUHook(void (*cpuh)(const pscpu_timestamp_t timestamp, uint32_t pc), void (*addbt)(uint32_t from, uint32_t to, bool exception));
  void CheckBreakpoints(void (*callback)(bool write, uint32_t address, unsigned int len), uint32_t instr);
+ void* debug_GetScratchRAMPtr() { return ScratchRAM.data8; }
+ void* debug_GetGPRPtr() { return GPR; }
 
  enum
  {
