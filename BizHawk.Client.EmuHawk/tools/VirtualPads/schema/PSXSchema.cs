@@ -12,6 +12,7 @@ namespace BizHawk.Client.EmuHawk
 		public IEnumerable<PadSchema> GetPadSchemas()
 		{
 			yield return DualShockController(1);
+			yield return DualShockController(2);
 			yield return ConsoleButtons();
 		}
 
