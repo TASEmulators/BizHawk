@@ -131,6 +131,67 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 
+			// TODO - replace this with some kind of standard dictionary-yielding parser in a separate component
+			string cmdRom = null;
+			string cmdLoadState = null;
+			string cmdMovie = null;
+			string cmdDumpType = null;
+			string cmdDumpName = null;
+			bool startFullscreen = false;
+			for (int i = 0; i < args.Length; i++)
+			{
+				// For some reason sometimes visual studio will pass this to us on the commandline. it makes no sense.
+				if (args[i] == ">")
+				{
+					i++;
+					var stdout = args[i];
+					Console.SetOut(new StreamWriter(stdout));
+					continue;
+				}
+
+				var arg = args[i].ToLower();
+				if (arg.StartsWith("--load-slot="))
+				{
+					cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
+				}
+				else if (arg.StartsWith("--movie="))
+				{
+					cmdMovie = arg.Substring(arg.IndexOf('=') + 1);
+				}
+				else if (arg.StartsWith("--dump-type="))
+				{
+					cmdDumpType = arg.Substring(arg.IndexOf('=') + 1);
+				}
+				else if (arg.StartsWith("--dump-name="))
+				{
+					cmdDumpName = arg.Substring(arg.IndexOf('=') + 1);
+				}
+				else if (arg.StartsWith("--dump-length="))
+				{
+					int.TryParse(arg.Substring(arg.IndexOf('=') + 1), out _autoDumpLength);
+				}
+				else if (arg.StartsWith("--dump-close"))
+				{
+					_autoCloseOnDump = true;
+				}
+				else if (arg.StartsWith("--chromeless"))
+				{
+					_chromeless = true;
+				}
+				else if (arg.StartsWith("--gdi"))
+				{
+					Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+				}
+				else if (arg.StartsWith("--fullscreen"))
+				{
+					startFullscreen = true;
+				}
+				else
+				{
+					cmdRom = arg;
+				}
+			}
+
 			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
 			//TODO GL - a lot of disorganized wiring-up here
@@ -211,13 +272,6 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools = new ToolManager();
 			RewireSound();
 
-			// TODO - replace this with some kind of standard dictionary-yielding parser in a separate component
-			string cmdRom = null;
-			string cmdLoadState = null;
-			string cmdMovie = null;
-			string cmdDumpType = null;
-			string cmdDumpName = null;
-
 			// Workaround for windows, location is -32000 when minimized, if they close it during this time, that's what gets saved
 			if (Global.Config.MainWndx == -32000)
 			{
@@ -232,57 +286,6 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.MainWndx != -1 && Global.Config.MainWndy != -1 && Global.Config.SaveWindowPosition)
 			{
 				Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
-			}
-
-			bool startFullscreen = false;
-			for (int i = 0; i < args.Length; i++)
-			{
-				// For some reason sometimes visual studio will pass this to us on the commandline. it makes no sense.
-				if (args[i] == ">")
-				{
-					i++;
-					var stdout = args[i];
-					Console.SetOut(new StreamWriter(stdout));
-					continue;
-				}
-
-				var arg = args[i].ToLower();
-				if (arg.StartsWith("--load-slot="))
-				{
-					cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
-				}
-				else if (arg.StartsWith("--movie="))
-				{
-					cmdMovie = arg.Substring(arg.IndexOf('=') + 1);
-				}
-				else if (arg.StartsWith("--dump-type="))
-				{
-					cmdDumpType = arg.Substring(arg.IndexOf('=') + 1);
-				}
-				else if (arg.StartsWith("--dump-name="))
-				{
-					cmdDumpName = arg.Substring(arg.IndexOf('=') + 1);
-				}
-				else if (arg.StartsWith("--dump-length="))
-				{
-					int.TryParse(arg.Substring(arg.IndexOf('=') + 1), out _autoDumpLength);
-				}
-				else if (arg.StartsWith("--dump-close"))
-				{
-					_autoCloseOnDump = true;
-				}
-				else if (arg.StartsWith("--chromeless"))
-				{
-					_chromeless = true;
-				}
-				else if (arg.StartsWith("--fullscreen"))
-				{
-					startFullscreen = true;
-				}
-				else
-				{
-					cmdRom = arg;
-				}
 			}
 
 			if (cmdRom != null)
