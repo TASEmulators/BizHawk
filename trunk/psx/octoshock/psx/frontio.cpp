@@ -47,12 +47,6 @@ void InputDevice::Power(void)
 {
 }
 
-int InputDevice::StateAction(StateMem* sm, int load, int data_only, const char* section_name)
-{
- return(1);
-}
-
-
 void InputDevice::Update(const pscpu_timestamp_t timestamp)
 {
 
@@ -97,14 +91,14 @@ bool InputDevice::Clock(bool TxD, int32 &dsr_pulse_delay)
  return(1);
 }
 
-uint32 InputDevice::GetNVSize(void)
+uint32 InputDevice::GetNVSize(void) const
 {
  return(0);
 }
 
-void InputDevice::ReadNV(uint8 *buffer, uint32 offset, uint32 count)
+const uint8* InputDevice::ReadNV(void) const
 {
-
+ return NULL;
 }
 
 void InputDevice::WriteNV(const uint8 *buffer, uint32 offset, uint32 count)
@@ -112,7 +106,7 @@ void InputDevice::WriteNV(const uint8 *buffer, uint32 offset, uint32 count)
 
 }
 
-uint64 InputDevice::GetNVDirtyCount(void)
+uint64 InputDevice::GetNVDirtyCount(void) const
 {
  return(0);
 }
@@ -236,17 +230,20 @@ INLINE void FrontIO::DoDSRIRQ(void)
 }
 
 
+
 void FrontIO::Write(pscpu_timestamp_t timestamp, uint32 A, uint32 V)
 {
- assert(!(A & 0x1));
-
  PSX_FIODBGINFO("[FIO] Write: %08x %08x", A, V);
+
+ V <<= (A & 1) * 8;
 
  Update(timestamp);
 
- switch(A & 0xF)
+ switch(A & 0xE)
  {
   case 0x0:
+  case 0x2:
+        V <<= (A & 2) * 8;
 	TransmitBuffer = V;
 	TransmitPending = true;
 	TransmitInProgress = false;
@@ -335,24 +332,23 @@ if(!((Control & 0x2) && (Control & 0x2000)))
  CheckStartStopPending(timestamp, false);
 }
 
-
 uint32 FrontIO::Read(pscpu_timestamp_t timestamp, uint32 A)
 {
  uint32 ret = 0;
 
- assert(!(A & 0x1));
-
  Update(timestamp);
 
- switch(A & 0xF)
+ switch(A & 0xE)
  {
   case 0x0:
+  case 0x2:
 	//printf("FIO Read: 0x%02x\n", ReceiveBuffer);
 	ret = ReceiveBuffer | (ReceiveBuffer << 8) | (ReceiveBuffer << 16) | (ReceiveBuffer << 24);
 	ReceiveBufferAvail = false;
 	ReceivePending = true;
 	ReceiveInProgress = false;
 	CheckStartStopPending(timestamp, false);
+	ret >>= (A & 2) * 8;
 	break;
 
   case 0x4:
@@ -384,6 +380,8 @@ uint32 FrontIO::Read(pscpu_timestamp_t timestamp, uint32 A)
 	ret = Baudrate;
 	break;
  }
+
+ ret >>= (A & 1) * 8;
 
  if((A & 0xF) != 0x4)
   PSX_FIODBGINFO("[FIO] Read: %08x %08x", A, ret);
@@ -526,7 +524,7 @@ void FrontIO::ResetTS(void)
 }
 
 
-void FrontIO::Power(void)
+void FrontIO::Reset(bool powering_up)
 {
  for(int i = 0; i < 4; i++)
  {
@@ -565,10 +563,13 @@ void FrontIO::Power(void)
  Baudrate = 0;
 
  //power on all plugged devices (are we doing this when attaching them?)
- for(int i=0;i<2;i++)
+ if(powering_up)
  {
-	 if(Ports[i] != NULL) Ports[i]->Power();
-	 if(MCPorts[i] != NULL) MCPorts[i]->Power();
+	 for(int i=0;i<2;i++)
+	 {
+		 if(Ports[i] != NULL) Ports[i]->Power();
+		 if(MCPorts[i] != NULL) MCPorts[i]->Power();
+	 }
  }
 
  istatus = false;
@@ -582,15 +583,12 @@ void FrontIO::UpdateInput(void)
 	}
 }
 
+// Take care to call ->Power() only if the device actually changed.
 void FrontIO::SetInput(unsigned int port, const char *type, void *ptr)
 {
 	//clean up the old device
 	delete Ports[port];
 	Ports[port] = NULL;
-
- //OCTOSHOCK TODO - not sure I understand this
- if(port < 2)
-  irq10_pulse_ts[port] = PSX_EVENT_MAXTS;
 
  if(!strcmp(type, "gamepad") || !strcmp(type, "dancepad"))
   Ports[port] = Device_Gamepad_Create();
@@ -599,11 +597,7 @@ void FrontIO::SetInput(unsigned int port, const char *type, void *ptr)
  else if(!strcmp(type, "analogjoy"))
   Ports[port] = Device_DualAnalog_Create(true);
  else if(!strcmp(type, "dualshock"))
- {
-  char name[256];
-  snprintf(name, 256, "DualShock on port %u", port + 1);
-  Ports[port] = Device_DualShock_Create(std::string(name));
- }
+  Ports[port] = Device_DualShock_Create();
  else if(!strcmp(type, "mouse"))
   Ports[port] = Device_Mouse_Create();
  else if(!strcmp(type, "negcon"))
@@ -615,7 +609,14 @@ void FrontIO::SetInput(unsigned int port, const char *type, void *ptr)
  else
   Ports[port] = new InputDevice();
 
- //Devices[port]->SetCrosshairsColor(chair_colors[port]);
+ // " Take care to call ->Power() only if the device actually changed. " - TO THINK ABOUT. maybe irrelevant in octoshock
+ //if(Devices[port] != nd)
+
+ //OCTOSHOCK TODO - not sure I understand this
+ if(port < 2)
+  irq10_pulse_ts[port] = PSX_EVENT_MAXTS;
+
+ Ports[port]->Power();
  PortData[port] = ptr;
 }
 
@@ -688,231 +689,36 @@ SYNCFUNC(FrontIO)
 
 }
 
-int FrontIO::StateAction(StateMem* sm, int load, int data_only)
-{
- SFORMAT StateRegs[] =
- {
-  SFVAR(ClockDivider),
-
-  SFVAR(ReceivePending),
-  SFVAR(TransmitPending),
-
-  SFVAR(ReceiveInProgress),
-  SFVAR(TransmitInProgress),
-
-  SFVAR(ReceiveBufferAvail),
-
-  SFVAR(ReceiveBuffer),
-  SFVAR(TransmitBuffer),
-
-  SFVAR(ReceiveBitCounter),
-  SFVAR(TransmitBitCounter),
-
-  SFVAR(Mode),
-  SFVAR(Control),
-  SFVAR(Baudrate),
-
-  SFVAR(istatus),
-
-  // FIXME: Step mode save states.
-  SFARRAY32(irq10_pulse_ts, sizeof(irq10_pulse_ts) / sizeof(irq10_pulse_ts[0])),
-  SFARRAY32(dsr_pulse_delay, sizeof(dsr_pulse_delay) / sizeof(dsr_pulse_delay[0])),
-  SFARRAY32(dsr_active_until_ts, sizeof(dsr_active_until_ts) / sizeof(dsr_active_until_ts[0])),
-
-  SFEND
- };
-
- int ret = MDFNSS_StateAction(sm, load, data_only, StateRegs, "FIO");
-
- //TODO - SAVESTATES
-
- //for(unsigned i = 0; i < 8; i++)
- //{
-	//static const char* labels[] = {
-	//	"FIODEV0","FIODEV1","FIODEV2","FIODEV3","FIODEV4","FIODEV5","FIODEV6","FIODEV7"
-	//};
-
- // ret &= Devices[i]->StateAction(sm, load, data_only, labels[i]);
- //}
-
- //for(unsigned i = 0; i < 8; i++)
- //{
-	//static const char* labels[] = {
-	//	"FIOMC0","FIOMC1","FIOMC2","FIOMC3","FIOMC4","FIOMC5","FIOMC6","FIOMC7"
-	//};
-
-
- // ret &= DevicesMC[i]->StateAction(sm, load, data_only, labels[i]);
- //}
-
- //for(unsigned i = 0; i < 2; i++)
- //{
-	//static const char* labels[] = {
-	//	"FIOTAP0","FIOTAP1",
-	//};
-
- // ret &= DevicesTap[i]->StateAction(sm, load, data_only, labels[i]);
- //}
-
- if(load)
- {
-  IRQ_Assert(IRQ_SIO, istatus);
- }
-
- return(ret);
-}
-
 bool FrontIO::RequireNoFrameskip(void)
 {
 	//this whole function is nonsense. frontend should know what it has attached
  return(false);
 }
 
+
 void FrontIO::GPULineHook(const pscpu_timestamp_t timestamp, const pscpu_timestamp_t line_timestamp, bool vsync, uint32 *pixels, const MDFN_PixelFormat* const format, const unsigned width, const unsigned pix_clock_offset, const unsigned pix_clock, const unsigned pix_clock_divider)
 {
  Update(timestamp);
 
- for(int i = 0; i < 2; i++)
+ for(unsigned i = 0; i < 2; i++)
  {
-	 //octoshock edits.. not sure how safe it is
-	 if(Ports[i] == NULL)
-		 continue;
+  pscpu_timestamp_t plts = Ports[i]->GPULineHook(line_timestamp, vsync, pixels, format, width, pix_clock_offset, pix_clock, pix_clock_divider);
 
-	pscpu_timestamp_t plts = Ports[i]->GPULineHook(line_timestamp, vsync, pixels, format, width, pix_clock_offset, pix_clock, pix_clock_divider);
+  irq10_pulse_ts[i] = plts;
 
-  if(i < 2)
+  if(irq10_pulse_ts[i] <= timestamp)
   {
-   irq10_pulse_ts[i] = plts;
-
-   if(irq10_pulse_ts[i] <= timestamp)
-   {
-    irq10_pulse_ts[i] = PSX_EVENT_MAXTS;
-    IRQ_Assert(IRQ_PIO, true);
-    IRQ_Assert(IRQ_PIO, false);
-   }
+   irq10_pulse_ts[i] = PSX_EVENT_MAXTS;
+   IRQ_Assert(IRQ_PIO, true);
+   IRQ_Assert(IRQ_PIO, false);
   }
  }
+
 
  PSX_SetEventNT(PSX_EVENT_FIO, CalcNextEventTS(timestamp, 0x10000000));
 }
 
-static InputDeviceInfoStruct InputDeviceInfoPSXPort[] =
-{
- // None
- {
-  "none",
-  "none",
-  NULL,
-  NULL,
-  0,
-  NULL 
- },
 
- // Gamepad(SCPH-1080)
- {
-  "gamepad",
-  "Digital Gamepad",
-  "PlayStation digital gamepad; SCPH-1080.",
-  NULL,
-  sizeof(Device_Gamepad_IDII) / sizeof(InputDeviceInputInfoStruct),
-  Device_Gamepad_IDII,
- },
-
- // Dual Shock Gamepad(SCPH-1200)
- {
-  "dualshock",
-  "DualShock",
-  "DualShock gamepad; SCPH-1200.  Emulation in Mednafen includes the analog mode toggle button.  Rumble is emulated, but currently only supported on Linux, and MS Windows via the XInput API and XInput-compatible gamepads/joysticks.  If you're having trouble getting rumble to work on Linux, see if Mednafen is printing out error messages during startup regarding /dev/input/event*, and resolve the issue(s) as necessary.",
-  NULL,
-  sizeof(Device_DualShock_IDII) / sizeof(InputDeviceInputInfoStruct),
-  Device_DualShock_IDII,
- },
-
- // Dual Analog Gamepad(SCPH-1180), forced to analog mode.
- {
-  "dualanalog",
-  "Dual Analog",
-  "Dual Analog gamepad; SCPH-1180.  It is the predecessor/prototype to the more advanced DualShock.  Emulated in Mednafen as forced to analog mode, and without rumble.",
-  NULL,
-  sizeof(Device_DualAnalog_IDII) / sizeof(InputDeviceInputInfoStruct),
-  Device_DualAnalog_IDII,
- },
-
-
- // Analog joystick(SCPH-1110), forced to analog mode - emulated through a tweak to dual analog gamepad emulation.
- {
-  "analogjoy",
-  "Analog Joystick",
-  "Flight-game-oriented dual-joystick controller; SCPH-1110.   Emulated in Mednafen as forced to analog mode.",
-  NULL,
-  sizeof(Device_AnalogJoy_IDII) / sizeof(InputDeviceInputInfoStruct),
-  Device_AnalogJoy_IDII,
- },
-
- {
-  "mouse",
-  "Mouse",
-  NULL,
-  NULL,
-  sizeof(Device_Mouse_IDII) / sizeof(InputDeviceInputInfoStruct),
-  Device_Mouse_IDII,
- },
-
- {
-  "negcon",
-  "neGcon",
-  "Namco's unconventional twisty racing-game-oriented gamepad; NPC-101.",
-  NULL,
-  sizeof(Device_neGcon_IDII) / sizeof(InputDeviceInputInfoStruct),
-  Device_neGcon_IDII,
- },
-
- {
-  "guncon",
-  "GunCon",
-  "Namco's light gun; NPC-103.",
-  NULL,
-  sizeof(Device_GunCon_IDII) / sizeof(InputDeviceInputInfoStruct),
-  Device_GunCon_IDII,
- },
-
- {
-  "justifier",
-  "Konami Justifier",
-  "Konami's light gun; SLUH-00017.  Rumored to be wrought of the coagulated rage of all who tried to shoot The Dog.  If the game you want to play supports the \"GunCon\", you should use that instead. NOTE: Currently does not work properly when on any of ports 1B-1D and 2B-2D.",
-  NULL,
-  sizeof(Device_Justifier_IDII) / sizeof(InputDeviceInputInfoStruct),
-  Device_Justifier_IDII,
- },
-
- {
-  "dancepad",
-  "Dance Pad",
-  "Dingo Dingo Rodeo!",
-  NULL,
-  sizeof(Device_Dancepad_IDII) / sizeof(InputDeviceInputInfoStruct),
-  Device_Dancepad_IDII,
- },
-
-};
-
-static const InputPortInfoStruct PortInfo[] =
-{
- { "port1", "Virtual Port 1", sizeof(InputDeviceInfoPSXPort) / sizeof(InputDeviceInfoStruct), InputDeviceInfoPSXPort, "gamepad" },
- { "port2", "Virtual Port 2", sizeof(InputDeviceInfoPSXPort) / sizeof(InputDeviceInfoStruct), InputDeviceInfoPSXPort, "gamepad" },
- { "port3", "Virtual Port 3", sizeof(InputDeviceInfoPSXPort) / sizeof(InputDeviceInfoStruct), InputDeviceInfoPSXPort, "gamepad" },
- { "port4", "Virtual Port 4", sizeof(InputDeviceInfoPSXPort) / sizeof(InputDeviceInfoStruct), InputDeviceInfoPSXPort, "gamepad" },
- { "port5", "Virtual Port 5", sizeof(InputDeviceInfoPSXPort) / sizeof(InputDeviceInfoStruct), InputDeviceInfoPSXPort, "gamepad" },
- { "port6", "Virtual Port 6", sizeof(InputDeviceInfoPSXPort) / sizeof(InputDeviceInfoStruct), InputDeviceInfoPSXPort, "gamepad" },
- { "port7", "Virtual Port 7", sizeof(InputDeviceInfoPSXPort) / sizeof(InputDeviceInfoStruct), InputDeviceInfoPSXPort, "gamepad" },
- { "port8", "Virtual Port 8", sizeof(InputDeviceInfoPSXPort) / sizeof(InputDeviceInfoStruct), InputDeviceInfoPSXPort, "gamepad" },
-};
-
-InputInfoStruct FIO_InputInfo =
-{
- sizeof(PortInfo) / sizeof(InputPortInfoStruct),
- PortInfo
-};
 
 
 }

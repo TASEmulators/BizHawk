@@ -13,7 +13,6 @@ class InputDevice_Gamepad : public InputDevice
  virtual ~InputDevice_Gamepad();
 
  virtual void Power(void);
- virtual int StateAction(StateMem* sm, int load, int data_only, const char* section_name);
  virtual void UpdateInput(const void *data);
 
  //
@@ -68,40 +67,6 @@ void InputDevice_Gamepad::Power(void)
 
  transmit_pos = 0;
  transmit_count = 0;
-}
-
-int InputDevice_Gamepad::StateAction(StateMem* sm, int load, int data_only, const char* section_name)
-{
- SFORMAT StateRegs[] =
- {
-  SFVAR(dtr),
-
-  SFARRAY(buttons, sizeof(buttons)),
-
-  SFVAR(command_phase),
-  SFVAR(bitpos),
-  SFVAR(receive_buffer),
-
-  SFVAR(command),
-
-  SFARRAY(transmit_buffer, sizeof(transmit_buffer)),
-  SFVAR(transmit_pos),
-  SFVAR(transmit_count),
-
-  SFEND
- };
- int ret = MDFNSS_StateAction(sm, load, data_only, StateRegs, section_name);
-
- if(load)
- {
-  if((transmit_pos + transmit_count) > sizeof(transmit_buffer))
-  {
-   transmit_pos = 0;
-   transmit_count = 0;
-  }
- }
-
- return(ret);
 }
 
 

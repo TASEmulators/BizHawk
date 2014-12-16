@@ -4,23 +4,28 @@
 namespace MDFN_IEN_PSX
 {
 
-class InputDevice_Multitap : public InputDevice
+class InputDevice_Multitap final : public InputDevice
 {
  public:
 
  InputDevice_Multitap();
  virtual ~InputDevice_Multitap();
- virtual void Power(void);
- virtual int StateAction(StateMem* sm, int load, int data_only, const char* section_name);
+ virtual void Power(void) override;
+
+ virtual void Update(const pscpu_timestamp_t timestamp) override;
+ virtual void ResetTS(void) override;
+
+ virtual bool RequireNoFrameskip(void) override;
+ virtual pscpu_timestamp_t GPULineHook(const pscpu_timestamp_t line_timestamp, bool vsync, uint32 *pixels, const MDFN_PixelFormat* const format, const unsigned width, const unsigned pix_clock_offset, const unsigned pix_clock, const unsigned pix_clock_divider) override;
 
  void SetSubDevice(unsigned int sub_index, InputDevice *device, InputDevice *mc_device);
 
  //
  //
  //
- virtual void SetDTR(bool new_dtr);
- virtual bool GetDSR(void);
- virtual bool Clock(bool TxD, int32 &dsr_pulse_delay);
+ virtual void SetDTR(bool new_dtr) override;
+ virtual bool GetDSR(void) override;
+ virtual bool Clock(bool TxD, int32 &dsr_pulse_delay) override;
 
  private:
 

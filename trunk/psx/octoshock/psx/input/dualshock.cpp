@@ -56,7 +56,7 @@ class InputDevice_DualShock : public InputDevice
 {
  public:
 
- InputDevice_DualShock(const std::string &arg_name);
+ InputDevice_DualShock();
  virtual ~InputDevice_DualShock();
 
  virtual void Power(void);
@@ -112,9 +112,6 @@ class InputDevice_DualShock : public InputDevice
  //
  //
  //
- bool am_prev_info;
- bool aml_prev_info;
- std::string gp_name;
  pscpu_timestamp_t lastts;
 
  //
@@ -122,13 +119,9 @@ class InputDevice_DualShock : public InputDevice
  bool amct_enabled;
 };
 
-InputDevice_DualShock::InputDevice_DualShock(const std::string &name)
+InputDevice_DualShock::InputDevice_DualShock()
 {
- gp_name = name;
  Power();
- am_prev_info = analog_mode;
- aml_prev_info = analog_mode_locked;
- amct_enabled = false;
 }
 
 InputDevice_DualShock::~InputDevice_DualShock()
@@ -306,7 +299,7 @@ void InputDevice_DualShock::UpdateInput(const void *data)
   if(rumble_param[0] == 0x01)
    sneaky_weaky = 0xFF;
 
-  MDFN_en16lsb(rumb_dp, (sneaky_weaky << 0) | (rumble_param[1] << 8));
+  MDFN_en16lsb<false>(rumb_dp, (sneaky_weaky << 0) | (rumble_param[1] << 8));
  }
  else
  {
@@ -315,7 +308,7 @@ void InputDevice_DualShock::UpdateInput(const void *data)
   if(((rumble_param[0] & 0xC0) == 0x40) && ((rumble_param[1] & 0x01) == 0x01))
    sneaky_weaky = 0xFF;
 
-  MDFN_en16lsb(rumb_dp, sneaky_weaky << 0);
+  MDFN_en16lsb<false>(rumb_dp, sneaky_weaky << 0);
  }
 
  //printf("%d %d %d %d\n", axes[0][0], axes[0][1], axes[1][0], axes[1][1]);
@@ -325,12 +318,12 @@ void InputDevice_DualShock::UpdateInput(const void *data)
  //
  CheckManualAnaModeChange();
 
- if(am_prev_info != analog_mode || aml_prev_info != analog_mode_locked)
- {
-  //MDFN_DispMessage(_("%s: Analog mode is %s(%s)."), gp_name.c_str(), analog_mode ? _("on") : _("off"), analog_mode_locked ? _("locked") : _("unlocked"));
- }
- aml_prev_info = analog_mode_locked;
- am_prev_info = analog_mode;
+ //
+ // Encode analog mode state last.
+ //
+ d8[2] &= ~0x6;
+ d8[2] |= (analog_mode ? 0x02 : 0x00);
+ d8[2] |= (analog_mode_locked ? 0x04 : 0x00);
 }
 
 
@@ -1046,9 +1039,9 @@ bool InputDevice_DualShock::Clock(bool TxD, int32 &dsr_pulse_delay)
  return(ret);
 }
 
-InputDevice *Device_DualShock_Create(const std::string &name)
+InputDevice *Device_DualShock_Create()
 {
- return new InputDevice_DualShock(name);
+ return new InputDevice_DualShock();
 }
 
 

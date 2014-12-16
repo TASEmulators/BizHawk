@@ -148,7 +148,7 @@ void MDFN_Surface::Init(void *const p_pixels, const uint32 p_width, const uint32
   {
    //ErrnoHolder ene(errno);
 
-	 throw "OLD ERROR";
+		throw "OLD ERROR";
    //throw(MDFN_Error(ene.Errno(), "%s", ene.StrError()));
   }
  }
@@ -225,6 +225,16 @@ void MDFN_Surface::SetFormat(const MDFN_PixelFormat &nf, bool convert)
    {
     if(format.bpp == 8)
     {
+     uint16 palconv[256];
+
+     for(unsigned i = 0; i < 256; i++)
+     {
+      uint8 r, g, b;
+
+      format.DecodePColor(palette[i], r, g, b);
+      palconv[i] = nf.MakeColor(r, g, b, 0);
+     }
+
      puts("8bpp to 16bpp convert");
      for(int y = 0; y < h; y++)
      {
@@ -233,9 +243,7 @@ void MDFN_Surface::SetFormat(const MDFN_PixelFormat &nf, bool convert)
 
       for(int x = 0; x < w; x++)
       {
-       const MDFN_PaletteEntry &p = palette[srow[x]];
-
-       drow[x] = nf.MakeColor(p.r, p.g, p.b, 0);
+       drow[x] = palconv[srow[x]];
       }
      }
     }
@@ -267,6 +275,16 @@ void MDFN_Surface::SetFormat(const MDFN_PixelFormat &nf, bool convert)
    {
     if(format.bpp == 8)
     {
+     uint32 palconv[256];
+
+     for(unsigned i = 0; i < 256; i++)
+     {
+      uint8 r, g, b;
+
+      format.DecodePColor(palette[i], r, g, b);
+      palconv[i] = nf.MakeColor(r, g, b, 0);
+     }
+
      puts("8bpp to 32bpp convert");
      for(int y = 0; y < h; y++)
      {
@@ -275,9 +293,7 @@ void MDFN_Surface::SetFormat(const MDFN_PixelFormat &nf, bool convert)
 
       for(int x = 0; x < w; x++)
       {
-       const MDFN_PaletteEntry &p = palette[srow[x]];
-
-       drow[x] = nf.MakeColor(p.r, p.g, p.b, 0);
+       drow[x] = palconv[srow[x]];
       }
      }
     }

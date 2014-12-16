@@ -1,3 +1,27 @@
+/* Mednafen - Multi-system Emulator
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+#include "psx.h"
+#include "gpu.h"
+
+namespace MDFN_IEN_PSX
+{
+#include "gpu_common.inc"
+
 struct line_fxp_coord
 {
  int64 x, y;
@@ -236,3 +260,49 @@ INLINE void PS_GPU::Command_DrawLine(const uint32 *cb)
  DrawLine<goraud, BlendMode, MaskEval_TA>(points);
 }
 
+//
+// C-style function wrappers so our command table isn't so ginormous(in memory usage).
+//
+template<bool polyline, bool goraud, int BlendMode, bool MaskEval_TA>
+static void G_Command_DrawLine(PS_GPU* g, const uint32 *cb)
+{
+ g->Command_DrawLine<polyline, goraud, BlendMode, MaskEval_TA>(cb);
+}
+
+const CTEntry PS_GPU::Commands_40_5F[0x20] =
+{
+ LINE_HELPER(0x40),
+ LINE_HELPER(0x41),
+ LINE_HELPER(0x42),
+ LINE_HELPER(0x43),
+ LINE_HELPER(0x44),
+ LINE_HELPER(0x45),
+ LINE_HELPER(0x46),
+ LINE_HELPER(0x47),
+ LINE_HELPER(0x48),
+ LINE_HELPER(0x49),
+ LINE_HELPER(0x4a),
+ LINE_HELPER(0x4b),
+ LINE_HELPER(0x4c),
+ LINE_HELPER(0x4d),
+ LINE_HELPER(0x4e),
+ LINE_HELPER(0x4f),
+ LINE_HELPER(0x50),
+ LINE_HELPER(0x51),
+ LINE_HELPER(0x52),
+ LINE_HELPER(0x53),
+ LINE_HELPER(0x54),
+ LINE_HELPER(0x55),
+ LINE_HELPER(0x56),
+ LINE_HELPER(0x57),
+ LINE_HELPER(0x58),
+ LINE_HELPER(0x59),
+ LINE_HELPER(0x5a),
+ LINE_HELPER(0x5b),
+ LINE_HELPER(0x5c),
+ LINE_HELPER(0x5d),
+ LINE_HELPER(0x5e),
+ LINE_HELPER(0x5f)
+};
+
+}

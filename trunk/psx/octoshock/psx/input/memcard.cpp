@@ -40,7 +40,6 @@ class InputDevice_Memcard : public InputDevice
  virtual ~InputDevice_Memcard();
 
  virtual void Power(void);
- virtual int StateAction(StateMem* sm, int load, int data_only, const char* section_name);
  virtual void SyncState(bool isReader, EW::NewState *ns);
  //
  //
@@ -52,10 +51,10 @@ class InputDevice_Memcard : public InputDevice
  //
  //
  virtual uint32 GetNVSize(void);
- virtual void ReadNV(uint8 *buffer, uint32 offset, uint32 size);
+ virtual const uint8* ReadNV(void) const override;
  virtual void WriteNV(const uint8 *buffer, uint32 offset, uint32 size);
 
- virtual uint64 GetNVDirtyCount(void);
+ virtual uint64 GetNVDirtyCount(void) const;
  virtual void ResetNVDirtyCount(void);
 
  private:
@@ -193,67 +192,67 @@ void InputDevice_Memcard::SyncState(bool isReader, EW::NewState *ns)
 	NSS(card_data);
 	dirty_count = 0;
 }
-
-int InputDevice_Memcard::StateAction(StateMem* sm, int load, int data_only, const char* section_name)
-{
- // Don't save dirty_count.
- SFORMAT StateRegs[] =
- {
-  SFVAR(presence_new),
-
-  SFARRAY(rw_buffer, sizeof(rw_buffer)),
-  SFVAR(write_xor),
-
-  SFVAR(dtr),
-  SFVAR(command_phase),
-  SFVAR(bitpos),
-  SFVAR(receive_buffer),
-
-  SFVAR(command),
-  SFVAR(addr),
-  SFVAR(calced_xor),
-
-  SFVAR(transmit_buffer),
-  SFVAR(transmit_count),
-
-  SFVAR(data_used),
-
-  SFEND
- };
-
- SFORMAT CD_StateRegs[] =
- {
-  SFARRAY(card_data, sizeof(card_data)),
-  SFEND
- };
- int ret = 1;
-
- if(MDFNSS_StateAction(sm, load, data_only, StateRegs, section_name) != 0)
- {
-  //printf("%s data_used=%d\n", section_name, data_used);
-  if(data_used)
-  {
-   std::string tmp_name = std::string(section_name) + "_DT";
-
-   ret &= MDFNSS_StateAction(sm, load, data_only, CD_StateRegs, tmp_name.c_str());
-  }
-
-  if(load)
-  {
-   if(data_used)
-    dirty_count++;
-   else
-   {
-    //printf("Format: %s\n", section_name);
-    Format();
-   }
-  }
- }
- else
-  ret = 0;
-
- return(ret);
-}
+//
+//int InputDevice_Memcard::StateAction(StateMem* sm, int load, int data_only, const char* section_name)
+//{
+// // Don't save dirty_count.
+// SFORMAT StateRegs[] =
+// {
+//  SFVAR(presence_new),
+//
+//  SFARRAY(rw_buffer, sizeof(rw_buffer)),
+//  SFVAR(write_xor),
+//
+//  SFVAR(dtr),
+//  SFVAR(command_phase),
+//  SFVAR(bitpos),
+//  SFVAR(receive_buffer),
+//
+//  SFVAR(command),
+//  SFVAR(addr),
+//  SFVAR(calced_xor),
+//
+//  SFVAR(transmit_buffer),
+//  SFVAR(transmit_count),
+//
+//  SFVAR(data_used),
+//
+//  SFEND
+// };
+//
+// SFORMAT CD_StateRegs[] =
+// {
+//  SFARRAY(card_data, sizeof(card_data)),
+//  SFEND
+// };
+// int ret = 1;
+//
+// if(MDFNSS_StateAction(sm, load, data_only, StateRegs, section_name) != 0)
+// {
+//  //printf("%s data_used=%d\n", section_name, data_used);
+//  if(data_used)
+//  {
+//   std::string tmp_name = std::string(section_name) + "_DT";
+//
+//   ret &= MDFNSS_StateAction(sm, load, data_only, CD_StateRegs, tmp_name.c_str());
+//  }
+//
+//  if(load)
+//  {
+//   if(data_used)
+//    dirty_count++;
+//   else
+//   {
+//    //printf("Format: %s\n", section_name);
+//    Format();
+//   }
+//  }
+// }
+// else
+//  ret = 0;
+//
+// return(ret);
+//}
 
 
 void InputDevice_Memcard::SetDTR(bool new_dtr)
@@ -531,14 +530,9 @@ uint32 InputDevice_Memcard::GetNVSize(void)
  return(sizeof(card_data));
 }
 
-void InputDevice_Memcard::ReadNV(uint8 *buffer, uint32 offset, uint32 size)
+const uint8* InputDevice_Memcard::ReadNV(void) const
 {
- while(size--)
- {
-  *buffer = card_data[offset & (sizeof(card_data) - 1)];
-  buffer++;
-  offset++;
- }
+ return card_data;
 }
 
 void InputDevice_Memcard::WriteNV(const uint8 *buffer, uint32 offset, uint32 size)
@@ -559,7 +553,7 @@ void InputDevice_Memcard::WriteNV(const uint8 *buffer, uint32 offset, uint32 siz
  }
 }
 
-uint64 InputDevice_Memcard::GetNVDirtyCount(void)
+uint64 InputDevice_Memcard::GetNVDirtyCount(void) const
 {
  return(dirty_count);
 }

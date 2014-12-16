@@ -34,8 +34,7 @@ void TIMER_SetVBlank(bool status);
 pscpu_timestamp_t TIMER_Update(const pscpu_timestamp_t);
 void TIMER_ResetTS(void);
 
-void TIMER_Power(void);
-int TIMER_StateAction(StateMem *sm, int load, int data_only);
+void TIMER_Power(void) MDFN_COLD;
 
 }
 

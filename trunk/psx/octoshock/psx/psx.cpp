@@ -40,10 +40,29 @@
 namespace MDFN_IEN_PSX
 {
 
-#if PSX_DBGPRINT_ENABLE
-static unsigned psx_dbg_level = 0;
 
-void PSX_DBG(unsigned level, const char *format, ...) throw()
+static unsigned psx_dbg_level = 0;
+#if PSX_DBGPRINT_ENABLE
+
+void PSX_DBG_BIOS_PUTC(uint8 c) noexcept
+{
+ if(psx_dbg_level >= PSX_DBG_BIOS_PRINT)
+ {
+  if(c == 0x1B)
+   return;
+
+  fputc(c, stdout);
+
+  //if(c == '\n')
+  //{
+  // fputc('%', stdout);
+  // fputc(' ', stdout);
+  //}
+  fflush(stdout);
+ }
+}
+
+void PSX_DBG(unsigned level, const char *format, ...) noexcept
 {
  if(psx_dbg_level >= level)
  {
@@ -151,10 +170,10 @@ PS_GPU *GPU = NULL;
 PS_CDC *CDC = NULL;
 FrontIO *FIO = NULL;
 
-static MultiAccessSizeMem<512 * 1024, uint32, false> *BIOSROM = NULL;
-static MultiAccessSizeMem<65536, uint32, false> *PIOMem = NULL;
+static MultiAccessSizeMem<512 * 1024, false> *BIOSROM = NULL;
+static MultiAccessSizeMem<65536, false> *PIOMem = NULL;
 
-MultiAccessSizeMem<2048 * 1024, uint32, false> MainRAM;
+MultiAccessSizeMem<2048 * 1024, false> MainRAM;
 
 static uint32 TextMem_Start;
 static std::vector<uint8> TextMem;
@@ -731,8 +750,8 @@ template<typename T, bool IsWrite, bool Access24> static INLINE void MemRW(pscpu
      else switch(sizeof(T))
      {
       case 1: V = TextMem[(A & 0x7FFFFF) - 65536]; break;
-      case 2: V = MDFN_de16lsb(&TextMem[(A & 0x7FFFFF) - 65536]); break;
-      case 4: V = MDFN_de32lsb(&TextMem[(A & 0x7FFFFF) - 65536]); break;
+      case 2: V = MDFN_de16lsb<false>(&TextMem[(A & 0x7FFFFF) - 65536]); break;
+      case 4: V = MDFN_de32lsb<false>(&TextMem[(A & 0x7FFFFF) - 65536]); break;
      }
     }
    }
@@ -921,8 +940,8 @@ template<typename T, bool Access24> static INLINE uint32 MemPeek(pscpu_timestamp
     else switch(sizeof(T))
     {
      case 1: return(TextMem[(A & 0x7FFFFF) - 65536]); break;
-     case 2: return(MDFN_de16lsb(&TextMem[(A & 0x7FFFFF) - 65536])); break;
-     case 4: return(MDFN_de32lsb(&TextMem[(A & 0x7FFFFF) - 65536])); break;
+     case 2: return(MDFN_de16lsb<false>(&TextMem[(A & 0x7FFFFF) - 65536])); break;
+     case 4: return(MDFN_de32lsb<false>(&TextMem[(A & 0x7FFFFF) - 65536])); break;
     }
    }
   }
@@ -951,11 +970,11 @@ uint32 PSX_MemPeek32(uint32 A)
 }
 
 // FIXME: Add PSX_Reset() and FrontIO::Reset() so that emulated input devices don't get power-reset on reset-button reset.
-static void PSX_Power(void)
+static void PSX_Power(bool powering_up)
 {
  PSX_PRNG.ResetState();	// Should occur first!
 
- memset(MainRAM.data32, 0, 2048 * 1024);
+ memset(MainRAM.data8, 0, 2048 * 1024);
 
  for(unsigned i = 0; i < 9; i++)
   SysControl.Regs[i] = 0;
@@ -968,7 +987,7 @@ static void PSX_Power(void)
 
  DMA_Power();
 
- FIO->Power();
+ FIO->Reset(powering_up);
  SIO_Power();
 
  MDEC_Power();
@@ -1120,9 +1139,12 @@ struct {
 				return SHOCK_OK;
 
 			case eShockMemcardTransaction_Read:
-				FIO->MCPorts[portnum]->ReadNV((uint8*)transaction->buffer128k,0,128*1024);
+			{
+				const u8* ptr = FIO->MCPorts[portnum]->ReadNV();
+				memcpy(transaction->buffer128k,ptr,128*1024);
 				FIO->MCPorts[portnum]->ResetNVDirtyCount();
 				return SHOCK_OK;
+			}
 
 			case eShockMemcardTransaction_CheckDirty:
 				if(FIO->GetMemcardDirtyCount(portnum))
@@ -1155,20 +1177,20 @@ static void MountCPUAddressSpace()
 {
 	for(uint32 ma = 0x00000000; ma < 0x00800000; ma += 2048 * 1024)
 	{
-		CPU->SetFastMap(MainRAM.data32, 0x00000000 + ma, 2048 * 1024);
-		CPU->SetFastMap(MainRAM.data32, 0x80000000 + ma, 2048 * 1024);
-		CPU->SetFastMap(MainRAM.data32, 0xA0000000 + ma, 2048 * 1024);
+		CPU->SetFastMap(MainRAM.data8, 0x00000000 + ma, 2048 * 1024);
+		CPU->SetFastMap(MainRAM.data8, 0x80000000 + ma, 2048 * 1024);
+		CPU->SetFastMap(MainRAM.data8, 0xA0000000 + ma, 2048 * 1024);
 	}
 
-	CPU->SetFastMap(BIOSROM->data32, 0x1FC00000, 512 * 1024);
-	CPU->SetFastMap(BIOSROM->data32, 0x9FC00000, 512 * 1024);
-	CPU->SetFastMap(BIOSROM->data32, 0xBFC00000, 512 * 1024);
+	CPU->SetFastMap(BIOSROM->data8, 0x1FC00000, 512 * 1024);
+	CPU->SetFastMap(BIOSROM->data8, 0x9FC00000, 512 * 1024);
+	CPU->SetFastMap(BIOSROM->data8, 0xBFC00000, 512 * 1024);
 
 	if(PIOMem)
 	{
-		CPU->SetFastMap(PIOMem->data32, 0x1F000000, 65536);
-		CPU->SetFastMap(PIOMem->data32, 0x9F000000, 65536);
-		CPU->SetFastMap(PIOMem->data32, 0xBF000000, 65536);
+		CPU->SetFastMap(PIOMem->data8, 0x1F000000, 65536);
+		CPU->SetFastMap(PIOMem->data8, 0x9F000000, 65536);
+		CPU->SetFastMap(PIOMem->data8, 0xBF000000, 65536);
 	}
 }
 
@@ -1189,10 +1211,10 @@ EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
 	//PIO Mem: why wouldn't we want this?
 	static const bool WantPIOMem = true;
 
-	BIOSROM = new MultiAccessSizeMem<512 * 1024, uint32, false>();
+	BIOSROM = new MultiAccessSizeMem<512 * 1024, false>();
 	memcpy(BIOSROM->data8, firmware512k, 512 * 1024);
 
-	if(WantPIOMem) PIOMem = new MultiAccessSizeMem<65536, uint32, false>();
+	if(WantPIOMem) PIOMem = new MultiAccessSizeMem<65536, false>();
 	else PIOMem = NULL;
 
 	CPU = new PS_CPU();
@@ -1216,7 +1238,7 @@ EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
 	}
 
 	//these steps can't be done without more information
-	GPU = new PS_GPU(region == REGION_EU, sls, sle);
+	GPU = new PS_GPU(region == REGION_EU, sls, sle, true);
 
 	//fetch video parameters, stash in a simpler format
 	MDFNGI givp;
@@ -1264,7 +1286,7 @@ EW_EXPORT s32 shock_PowerOn(void* psx)
 {
 	if(s_ShockState.power) return SHOCK_NOCANDO;
 
-	PSX_Power();
+	PSX_Power(true);
 
 	return SHOCK_OK;
 }
@@ -1321,7 +1343,7 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 	SPU->StartFrame(espec.SoundRate, ResampleQuality); 
 
 	Running = -1;
-	timestamp = CPU->Run(timestamp, psf_loader != NULL);
+	timestamp = CPU->Run(timestamp, psf_loader == NULL && psx_dbg_level >= PSX_DBG_BIOS_PRINT, psf_loader != NULL);
 	assert(timestamp);
 
 	ForceEventUpdates(timestamp);
@@ -1564,10 +1586,10 @@ static void LoadEXE(const uint8 *data, const uint32 size, bool ignore_pcsp = fal
  //if(size < 0x800)
  // throw(MDFN_Error(0, "PS-EXE is too small."));
 
- PC = MDFN_de32lsb(&data[0x10]);
- SP = MDFN_de32lsb(&data[0x30]);
- TextStart = MDFN_de32lsb(&data[0x18]);
- TextSize = MDFN_de32lsb(&data[0x1C]);
+ PC = MDFN_de32lsb<false>(&data[0x10]);
+ SP = MDFN_de32lsb<false>(&data[0x30]);
+ TextStart = MDFN_de32lsb<false>(&data[0x18]);
+ TextSize = MDFN_de32lsb<false>(&data[0x1C]);
 
  if(ignore_pcsp)
   printf("TextStart=0x%08x\nTextSize=0x%08x\n", TextStart, TextSize);
@@ -1627,23 +1649,23 @@ static void LoadEXE(const uint8 *data, const uint32 size, bool ignore_pcsp = fal
 
  po = &PIOMem->data8[0x0800];
 
- MDFN_en32lsb(po, (0x0 << 26) | (31 << 21) | (0x8 << 0));	// JR
+ MDFN_en32lsb<false>(po, (0x0 << 26) | (31 << 21) | (0x8 << 0));	// JR
  po += 4;
- MDFN_en32lsb(po, 0);	// NOP(kinda)
+ MDFN_en32lsb<false>(po, 0);	// NOP(kinda)
  po += 4;
 
  po = &PIOMem->data8[0x1000];
 
  // Load cacheable-region target PC into r2
- MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16) | (0x9F001010 >> 16));      // LUI
+ MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16) | (0x9F001010 >> 16));      // LUI
  po += 4;
- MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (2 << 16) | (0x9F001010 & 0xFFFF));   // ORI
+ MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (2 << 16) | (0x9F001010 & 0xFFFF));   // ORI
  po += 4;
 
  // Jump to r2
- MDFN_en32lsb(po, (0x0 << 26) | (2 << 21) | (0x8 << 0));	// JR
+ MDFN_en32lsb<false>(po, (0x0 << 26) | (2 << 21) | (0x8 << 0));	// JR
  po += 4;
- MDFN_en32lsb(po, 0);	// NOP(kinda)
+ MDFN_en32lsb<false>(po, 0);	// NOP(kinda)
  po += 4;
 
  //
@@ -1652,42 +1674,42 @@ static void LoadEXE(const uint8 *data, const uint32 size, bool ignore_pcsp = fal
 
  // Load source address into r8
  uint32 sa = 0x9F000000 + 65536;
- MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16) | (sa >> 16));	// LUI
+ MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16) | (sa >> 16));	// LUI
  po += 4;
- MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (8 << 16) | (sa & 0xFFFF)); 	// ORI
+ MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (8 << 16) | (sa & 0xFFFF)); 	// ORI
  po += 4;
 
  // Load dest address into r9
- MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (TextMem_Start >> 16));	// LUI
+ MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (TextMem_Start >> 16));	// LUI
  po += 4;
- MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (9 << 16) | (TextMem_Start & 0xFFFF)); 	// ORI
+ MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (9 << 16) | (TextMem_Start & 0xFFFF)); 	// ORI
  po += 4;
 
  // Load size into r10
- MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (TextMem.size() >> 16));	// LUI
+ MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (TextMem.size() >> 16));	// LUI
  po += 4;
- MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (10 << 16) | (TextMem.size() & 0xFFFF)); 	// ORI
+ MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (10 << 16) | (TextMem.size() & 0xFFFF)); 	// ORI
  po += 4;
 
  //
  // Loop begin
  //
  
- MDFN_en32lsb(po, (0x24 << 26) | (8 << 21) | (1 << 16));	// LBU to r1
+ MDFN_en32lsb<false>(po, (0x24 << 26) | (8 << 21) | (1 << 16));	// LBU to r1
  po += 4;
 
- MDFN_en32lsb(po, (0x08 << 26) | (10 << 21) | (10 << 16) | 0xFFFF);	// Decrement size
+ MDFN_en32lsb<false>(po, (0x08 << 26) | (10 << 21) | (10 << 16) | 0xFFFF);	// Decrement size
  po += 4;
 
- MDFN_en32lsb(po, (0x28 << 26) | (9 << 21) | (1 << 16));	// SB from r1
+ MDFN_en32lsb<false>(po, (0x28 << 26) | (9 << 21) | (1 << 16));	// SB from r1
  po += 4;
 
- MDFN_en32lsb(po, (0x08 << 26) | (8 << 21) | (8 << 16) | 0x0001);	// Increment source addr
+ MDFN_en32lsb<false>(po, (0x08 << 26) | (8 << 21) | (8 << 16) | 0x0001);	// Increment source addr
  po += 4;
 
- MDFN_en32lsb(po, (0x05 << 26) | (0 << 21) | (10 << 16) | (-5 & 0xFFFF));
+ MDFN_en32lsb<false>(po, (0x05 << 26) | (0 << 21) | (10 << 16) | (-5 & 0xFFFF));
  po += 4;
- MDFN_en32lsb(po, (0x08 << 26) | (9 << 21) | (9 << 16) | 0x0001);	// Increment dest addr
+ MDFN_en32lsb<false>(po, (0x08 << 26) | (9 << 21) | (9 << 16) | 0x0001);	// Increment dest addr
  po += 4;
 
  //
@@ -1701,31 +1723,31 @@ static void LoadEXE(const uint8 *data, const uint32 size, bool ignore_pcsp = fal
  }
  else
  {
-  MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (SP >> 16));	// LUI
+  MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (SP >> 16));	// LUI
   po += 4;
-  MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (29 << 16) | (SP & 0xFFFF)); 	// ORI
+  MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (29 << 16) | (SP & 0xFFFF)); 	// ORI
   po += 4;
 
   // Load PC into r2
-  MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | ((PC >> 16) | 0x8000));      // LUI
+  MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16)  | ((PC >> 16) | 0x8000));      // LUI
   po += 4;
-  MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (2 << 16) | (PC & 0xFFFF));   // ORI
+  MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (2 << 16) | (PC & 0xFFFF));   // ORI
   po += 4;
  }
 
  // Half-assed instruction cache flush. ;)
  for(unsigned i = 0; i < 1024; i++)
  {
-  MDFN_en32lsb(po, 0);
+  MDFN_en32lsb<false>(po, 0);
   po += 4;
  }
 
 
 
  // Jump to r2
- MDFN_en32lsb(po, (0x0 << 26) | (2 << 21) | (0x8 << 0));	// JR
+ MDFN_en32lsb<false>(po, (0x0 << 26) | (2 << 21) | (0x8 << 0));	// JR
  po += 4;
- MDFN_en32lsb(po, 0);	// NOP(kinda)
+ MDFN_en32lsb<false>(po, 0);	// NOP(kinda)
  po += 4;
 }
 
@@ -2162,8 +2184,8 @@ EW_EXPORT s32 shock_AnalyzeDisc(ShockDiscRef* disc, ShockDiscInfo* info)
 				throw "Missing Primary Volume Descriptor";
 		} while(pvd[0] != 0x01);
 		//[156 ... 189], 34 bytes
-		uint32 rdel = MDFN_de32lsb(&pvd[0x9E]);
-		uint32 rdel_len = MDFN_de32lsb(&pvd[0xA6]);
+		uint32 rdel = MDFN_de32lsb<false>(&pvd[0x9E]);
+		uint32 rdel_len = MDFN_de32lsb<false>(&pvd[0xA6]);
 
 		if(rdel_len >= (1024 * 1024 * 10))	// Arbitrary sanity check.
 			throw "Root directory table too large";
@@ -2190,8 +2212,8 @@ EW_EXPORT s32 shock_AnalyzeDisc(ShockDiscRef* disc, ShockDiscInfo* info)
 
 			if(len_fi == 12 && !memcmp(&dr[0x21], "SYSTEM.CNF;1", 12))
 			{
-				uint32 file_lba = MDFN_de32lsb(&dr[0x02]);
-				//uint32 file_len = MDFN_de32lsb(&dr[0x0A]);
+				uint32 file_lba = MDFN_de32lsb<false>(&dr[0x02]);
+				//uint32 file_len = MDFN_de32lsb<false>(&dr[0x0A]);
 				uint8 fb[2048 + 1];
 				char *bootpos;
 

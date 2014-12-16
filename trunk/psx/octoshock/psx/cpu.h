@@ -49,8 +49,8 @@ class PS_CPU
 {
  public:
 
- PS_CPU();
- ~PS_CPU();
+ PS_CPU() MDFN_COLD;
+ ~PS_CPU() MDFN_COLD;
 
 	template<bool isReader>void SyncState(EW::NewState *ns);
 
@@ -66,20 +66,19 @@ class PS_CPU
   next_event_ts = next_event_ts_arg;
  }
 
- pscpu_timestamp_t Run(pscpu_timestamp_t timestamp_in, const bool ILHMode);
+ pscpu_timestamp_t Run(pscpu_timestamp_t timestamp_in, bool BIOSPrintMode, bool ILHMode);
 
- void Power(void);
+ void Power(void) MDFN_COLD;
 
  // which ranges 0-5, inclusive
- void AssertIRQ(int which, bool asserted);
+ void AssertIRQ(unsigned which, bool asserted);
+
 
  void SetHalt(bool status);
 
  // TODO eventually: factor BIU address decoding directly in the CPU core somehow without hurting speed.
  void SetBIU(uint32_t val);
  uint32_t GetBIU(void);
-
- int StateAction(StateMem *sm, int load, int data_only);
 
  private:
 
@@ -192,8 +191,9 @@ class PS_CPU
  //uint32_t WriteAbsorb;
  //uint8_t WriteAbsorbCount;
  //uint8_t WriteAbsorbMonkey;
+ uint8 MULT_Tab24[24];
 
- MultiAccessSizeMem<1024, uint32, false> ScratchRAM;
+ MultiAccessSizeMem<1024, false> ScratchRAM;
 
  //PS_GTE GTE;
 
@@ -219,7 +219,7 @@ class PS_CPU
 
  uint32_t Exception(uint32_t code, uint32_t PC, const uint32_t NPM) MDFN_WARN_UNUSED_RESULT;
 
- template<bool DebugMode, bool ILHMode> pscpu_timestamp_t RunReal(pscpu_timestamp_t timestamp_in);
+ template<bool DebugMode, bool BIOSPrintMode, bool ILHMode> pscpu_timestamp_t RunReal(pscpu_timestamp_t timestamp_in) NO_INLINE;
 
  template<typename T> T PeekMemory(uint32_t address) MDFN_COLD;
  template<typename T> T ReadMemory(pscpu_timestamp_t &timestamp, uint32_t address, bool DS24 = false, bool LWC_timing = false);

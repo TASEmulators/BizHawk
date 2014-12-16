@@ -57,6 +57,7 @@ subdir = src/psx
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_cflags_gcc_option.m4 \
+	$(top_srcdir)/m4/ax_cxx_compile_stdcxx_11.m4 \
 	$(top_srcdir)/m4/codeset.m4 $(top_srcdir)/m4/fcntl-o.m4 \
 	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/glibc2.m4 \
 	$(top_srcdir)/m4/glibc21.m4 $(top_srcdir)/m4/iconv.m4 \
@@ -94,21 +95,23 @@ libpsx_a_AR = $(AR) $(ARFLAGS)
 libpsx_a_LIBADD =
 am__libpsx_a_SOURCES_DIST = psx.cpp irq.cpp timer.cpp dma.cpp \
 	frontio.cpp sio.cpp cpu.cpp gte.cpp dis.cpp cdc.cpp spu.cpp \
-	gpu.cpp mdec.cpp input/gamepad.cpp input/dualanalog.cpp \
-	input/dualshock.cpp input/memcard.cpp input/multitap.cpp \
-	input/mouse.cpp input/negcon.cpp input/guncon.cpp \
-	input/justifier.cpp debug.cpp
+	mdec.cpp gpu.cpp gpu_polygon.cpp gpu_line.cpp gpu_sprite.cpp \
+	input/gamepad.cpp input/dualanalog.cpp input/dualshock.cpp \
+	input/memcard.cpp input/multitap.cpp input/mouse.cpp \
+	input/negcon.cpp input/guncon.cpp input/justifier.cpp \
+	debug.cpp
 am__dirstamp = $(am__leading_dot)dirstamp
 @WANT_DEBUGGER_TRUE@am__objects_1 = debug.$(OBJEXT)
 am_libpsx_a_OBJECTS = psx.$(OBJEXT) irq.$(OBJEXT) timer.$(OBJEXT) \
 	dma.$(OBJEXT) frontio.$(OBJEXT) sio.$(OBJEXT) cpu.$(OBJEXT) \
 	gte.$(OBJEXT) dis.$(OBJEXT) cdc.$(OBJEXT) spu.$(OBJEXT) \
-	gpu.$(OBJEXT) mdec.$(OBJEXT) input/gamepad.$(OBJEXT) \
-	input/dualanalog.$(OBJEXT) input/dualshock.$(OBJEXT) \
-	input/memcard.$(OBJEXT) input/multitap.$(OBJEXT) \
-	input/mouse.$(OBJEXT) input/negcon.$(OBJEXT) \
-	input/guncon.$(OBJEXT) input/justifier.$(OBJEXT) \
-	$(am__objects_1)
+	mdec.$(OBJEXT) gpu.$(OBJEXT) gpu_polygon.$(OBJEXT) \
+	gpu_line.$(OBJEXT) gpu_sprite.$(OBJEXT) \
+	input/gamepad.$(OBJEXT) input/dualanalog.$(OBJEXT) \
+	input/dualshock.$(OBJEXT) input/memcard.$(OBJEXT) \
+	input/multitap.$(OBJEXT) input/mouse.$(OBJEXT) \
+	input/negcon.$(OBJEXT) input/guncon.$(OBJEXT) \
+	input/justifier.$(OBJEXT) $(am__objects_1)
 libpsx_a_OBJECTS = $(am_libpsx_a_OBJECTS)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -186,7 +189,6 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
-GBA_EXTRA_FLAGS = @GBA_EXTRA_FLAGS@
 GENCAT = @GENCAT@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GLIBC2 = @GLIBC2@
@@ -195,6 +197,7 @@ GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GREP = @GREP@
 HAVE_ASPRINTF = @HAVE_ASPRINTF@
+HAVE_CXX11 = @HAVE_CXX11@
 HAVE_NEWLOCALE = @HAVE_NEWLOCALE@
 HAVE_POSIX_PRINTF = @HAVE_POSIX_PRINTF@
 HAVE_SNPRINTF = @HAVE_SNPRINTF@
@@ -349,11 +352,12 @@ AUTOMAKE_OPTIONS = subdir-objects
 DEFAULT_INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include -I$(top_srcdir)/intl
 noinst_LIBRARIES = libpsx.a
 libpsx_a_SOURCES = psx.cpp irq.cpp timer.cpp dma.cpp frontio.cpp \
-	sio.cpp cpu.cpp gte.cpp dis.cpp cdc.cpp spu.cpp gpu.cpp \
-	mdec.cpp input/gamepad.cpp input/dualanalog.cpp \
-	input/dualshock.cpp input/memcard.cpp input/multitap.cpp \
-	input/mouse.cpp input/negcon.cpp input/guncon.cpp \
-	input/justifier.cpp $(am__append_1)
+	sio.cpp cpu.cpp gte.cpp dis.cpp cdc.cpp spu.cpp mdec.cpp \
+	gpu.cpp gpu_polygon.cpp gpu_line.cpp gpu_sprite.cpp \
+	input/gamepad.cpp input/dualanalog.cpp input/dualshock.cpp \
+	input/memcard.cpp input/multitap.cpp input/mouse.cpp \
+	input/negcon.cpp input/guncon.cpp input/justifier.cpp \
+	$(am__append_1)
 all: all-am
 
 .SUFFIXES:
@@ -442,6 +446,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dma.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/frontio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpu.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpu_line.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpu_polygon.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpu_sprite.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gte.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/irq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mdec.Po@am__quote@
