@@ -312,11 +312,6 @@ namespace BizHawk.Client.Common
 
 		public void SetPreviousType(Watch.PreviousType type)
 		{
-			if (type == Watch.PreviousType.LastChange)
-			{
-				throw new InvalidOperationException();
-			}
-
 			if (_settings.Mode == Settings.SearchMode.Fast)
 			{
 				if (type == Watch.PreviousType.LastFrame)
@@ -1047,6 +1042,10 @@ namespace BizHawk.Client.Common
 					case Watch.PreviousType.LastFrame:
 						_previous = _prevFrame;
 						break;
+					case Watch.PreviousType.LastChange:
+						if (_prevFrame != value)
+							_previous = _prevFrame;
+						break;
 				}
 
 				_prevFrame = value;
@@ -1103,6 +1102,10 @@ namespace BizHawk.Client.Common
 					case Watch.PreviousType.LastFrame:
 						_previous = _prevFrame;
 						break;
+					case Watch.PreviousType.LastChange:
+						if (_prevFrame != value)
+							_previous = _prevFrame;
+						break;
 				}
 
 				_prevFrame = value;
@@ -1158,6 +1161,10 @@ namespace BizHawk.Client.Common
 						break;
 					case Watch.PreviousType.LastFrame:
 						_previous = _prevFrame;
+						break;
+					case Watch.PreviousType.LastChange:
+						if (_prevFrame != value)
+							_previous = _prevFrame;
 						break;
 				}
 
