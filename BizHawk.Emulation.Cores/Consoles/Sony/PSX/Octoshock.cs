@@ -366,7 +366,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			int w = fb.width;
 			int h = fb.height;
-		BufferWidth = w;
+			BufferWidth = w;
 			BufferHeight = h;
 
 			switch (_Settings.ResolutionMode)

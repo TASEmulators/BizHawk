@@ -1877,7 +1877,7 @@ EW_EXPORT s32 shock_SetDisc(void* psx, ShockDiscRef* disc)
 	s_CurrDisc = disc;
 
 	//set the disc to the CDC, but since its necessarily open to insert, this is false
-	CDC->SetDisc(false,s_CurrDisc,s_CurrDiscInfo.id);
+	CDC->SetDisc(true,s_CurrDisc,s_CurrDiscInfo.id);
 
 	return SHOCK_OK;
 }
