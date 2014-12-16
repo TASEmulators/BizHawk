@@ -614,6 +614,7 @@
       <DependentUpon>RomStatusPicker.cs</DependentUpon>
     </Compile>
     <Compile Include="Throttle.cs" />
+    <Compile Include="ToolAttributes.cs" />
     <Compile Include="tools\Atari2600\Atari2600Debugger.cs">
       <SubType>Form</SubType>
     </Compile>
