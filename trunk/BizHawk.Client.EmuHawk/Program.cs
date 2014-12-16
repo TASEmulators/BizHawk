@@ -69,6 +69,16 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.ResolveDefaults();
 			HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
 
+			//super hacky! this needs to be done first. still not worth the trouble to make this system fully proper
+			for (int i = 0; i < args.Length; i++)
+			{
+				var arg = args[i].ToLower();
+				if (arg.StartsWith("--gdi"))
+				{
+					Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+				}
+			}
+
 #if WINDOWS
 			try { GlobalWin.DSound = SoundEnumeration.Create(); }
 			catch
