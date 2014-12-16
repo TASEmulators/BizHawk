@@ -95,12 +95,23 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.CR_GL = GlobalWin.GLManager.GetContextForIGL(GlobalWin.GL);
 
 			//now create the "GL" context for the display method. we can reuse the IGL_TK context if opengl display method is chosen
+REDO_DISPMETHOD:
 			if (Global.Config.DispMethod == Config.EDispMethod.GdiPlus)
 				GlobalWin.GL = new Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus();
 			else if (Global.Config.DispMethod == Config.EDispMethod.SlimDX9)
 				GlobalWin.GL = new Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9();
 			else
+			{
 				GlobalWin.GL = GlobalWin.IGL_GL;
+				//check the opengl version and dont even try to boot this crap up if its too old
+				int version = GlobalWin.IGL_GL.Version;
+				if (version < 200)
+				{
+					//fallback
+					Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+					goto REDO_DISPMETHOD;
+				}
+			}
 
 			//WHY do we have to do this? some intel graphics drivers (ig7icd64.dll 10.18.10.3304 on an unknown chip on win8.1) are calling SetDllDirectory() for the process, which ruins stuff.
 			//The relevant initialization happened just before in "create IGL context".
