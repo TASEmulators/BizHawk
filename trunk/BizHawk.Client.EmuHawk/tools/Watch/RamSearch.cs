@@ -117,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RamSearch_Load(object sender, EventArgs e)
 		{
 			_settings = new RamSearchEngine.Settings(Core);
-			_searches = new RamSearchEngine(_settings);
+			_searches = new RamSearchEngine(_settings, Core);
 
 			ErrorIconButton.Visible = false;
 			_dropdownDontfire = true;
@@ -313,7 +313,7 @@ namespace BizHawk.Client.EmuHawk
 			var compareVal = _searches.CompareValue;
 			var differentBy = _searches.DifferentBy;
 
-			_searches = new RamSearchEngine(_settings, compareTo, compareVal, differentBy);
+			_searches = new RamSearchEngine(_settings, Core, compareTo, compareVal, differentBy);
 			_searches.Start();
 			if (Global.Config.RamSearchAlwaysExcludeRamWatch)
 			{
