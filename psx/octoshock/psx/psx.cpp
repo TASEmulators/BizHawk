@@ -159,7 +159,6 @@ class PSF1Loader {};
 static PSF1Loader *psf_loader = NULL;
 static std::vector<CDIF*> *cdifs = NULL;
 static std::vector<const char *> cdifs_scex_ids;
-static bool CD_TrayOpen;
 
 static uint64 Memcard_PrevDC[8];
 static int64 Memcard_SaveDelay[8];
@@ -969,7 +968,6 @@ uint32 PSX_MemPeek32(uint32 A)
  return MemPeek<uint32, false>(0, A);
 }
 
-// FIXME: Add PSX_Reset() and FrontIO::Reset() so that emulated input devices don't get power-reset on reset-button reset.
 static void PSX_Power(bool powering_up)
 {
  PSX_PRNG.ResetState();	// Should occur first!
@@ -1032,6 +1030,7 @@ struct ShockConfig
 struct ShockState
 {
 	bool power;
+	bool eject;
 } s_ShockState;
 
 
@@ -1268,9 +1267,10 @@ EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
 	MountCPUAddressSpace();
 
 	s_ShockState.power = false;
+	s_ShockState.eject = false;
 
-	//TODO - not the ideal starting condition, need to make sure its all sensible as being closed
-	CD_TrayOpen = true;
+	//set tray closed with no disc
+	CDC->SetDisc(false,NULL,"");
 
 	return SHOCK_OK;
 }
@@ -1849,28 +1849,6 @@ static void CloseGame(void)
  Cleanup();
 }
 
-static void CDInsertEject(void)
-{
- CD_TrayOpen = !CD_TrayOpen;
-
- for(unsigned disc = 0; disc < cdifs->size(); disc++)
- {
-  if(!(*cdifs)[disc]->Eject(CD_TrayOpen))
-  {
-
-   CD_TrayOpen = !CD_TrayOpen;
-  }
- }
-
-
-//DAWWWWW
- //CDC->SetDisc(CD_TrayOpen, (CD_SelectedDisc >= 0 && !CD_TrayOpen) ? (*cdifs)[CD_SelectedDisc] : NULL,
-	//(CD_SelectedDisc >= 0 && !CD_TrayOpen) ? cdifs_scex_ids[CD_SelectedDisc] : NULL);
-}
-
-
-
-
 EW_EXPORT s32 shock_CreateDisc(ShockDiscRef** outDisc, void *Opaque, s32 lbaCount, ShockDisc_ReadTOC ReadTOC, ShockDisc_ReadLBA ReadLBA2448, bool suppliesDeinterleavedSubcode)
 {
 	*outDisc = new ShockDiscRef(Opaque, lbaCount, ReadTOC, ReadLBA2448, suppliesDeinterleavedSubcode);
@@ -1879,6 +1857,7 @@ EW_EXPORT s32 shock_CreateDisc(ShockDiscRef** outDisc, void *Opaque, s32 lbaCoun
 
 ShockDiscRef* s_CurrDisc = NULL;
 ShockDiscInfo s_CurrDiscInfo;
+
 
 //Sets the disc in the tray. Returns SHOCK_NOCANDO if it's closed. You can pass NULL to remove a disc from the tray
 EW_EXPORT s32 shock_SetDisc(void* psx, ShockDiscRef* disc)
@@ -1896,19 +1875,25 @@ EW_EXPORT s32 shock_SetDisc(void* psx, ShockDiscRef* disc)
 
 	s_CurrDiscInfo = info;
 	s_CurrDisc = disc;
-	CDC->SetDisc(true,s_CurrDisc,s_CurrDiscInfo.id);
+
+	//set the disc to the CDC, but since its necessarily open to insert, this is false
+	CDC->SetDisc(false,s_CurrDisc,s_CurrDiscInfo.id);
 
 	return SHOCK_OK;
 }
 
 EW_EXPORT s32 shock_OpenTray(void* psx)
 {
+	if(s_ShockState.eject) return SHOCK_NOCANDO;
+	s_ShockState.eject = true;
 	CDC->SetDisc(true,s_CurrDisc,s_CurrDiscInfo.id);
 	return SHOCK_OK;
 }
 
 EW_EXPORT s32 shock_CloseTray(void* psx)
 {
+	if(!s_ShockState.eject) return SHOCK_NOCANDO;
+	s_ShockState.eject = false;
 	CDC->SetDisc(false,s_CurrDisc,s_CurrDiscInfo.id);
 	return SHOCK_OK;
 }
@@ -2403,7 +2388,7 @@ void IRQ_SyncState(bool isReader, EW::NewState *ns);
 
 SYNCFUNC(PSX)
 {
-  NSS(CD_TrayOpen);
+  NSS(s_ShockState);
   PSS(MainRAM.data8, 2*1024*1024);
   NSS(SysControl.Regs);
 	NSS(PSX_PRNG.lcgo);
