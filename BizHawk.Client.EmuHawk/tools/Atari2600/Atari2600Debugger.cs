@@ -13,6 +13,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[ToolAttributes(released: false)]
 	public partial class Atari2600Debugger : Form, IToolForm
 	{
 		// TODO:
