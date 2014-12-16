@@ -333,7 +333,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (Global.Config.DisplayInput)
+			if (Global.Config.DisplayInput && !Global.Game.IsNullInstance)
 			{
 				if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
 				{
