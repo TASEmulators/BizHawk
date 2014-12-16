@@ -28,6 +28,4 @@ namespace BizHawk.Emulation.Common
 
 		void Step(StepType type);
 	}
-
-	public enum StepType { Into, Out, Over }
 }
