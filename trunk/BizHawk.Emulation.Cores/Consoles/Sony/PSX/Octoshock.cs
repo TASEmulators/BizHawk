@@ -66,8 +66,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		static Octoshock CurrOctoshockCore;
 
 		IntPtr psx;
-		DiscSystem.Disc disc;
-		DiscInterface discInterface;
 
 		bool disposed = false;
 		public void Dispose()
@@ -78,6 +76,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			psx = IntPtr.Zero;
 
 			disposed = true;
+
+			//TODO - dispose disc wrappers
+			//TODO - dispose discs
 		}
 
 		/// <summary>
@@ -85,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		/// </summary>
 		class DiscInterface : IDisposable
 		{
-			public DiscInterface(DiscSystem.Disc disc, Action cbActivity)
+			public DiscInterface(DiscSystem.Disc disc, Action<DiscInterface> cbActivity)
 			{
 				this.Disc = disc;
 				cbReadTOC = ShockDisc_ReadTOC;
@@ -96,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			OctoshockDll.ShockDisc_ReadTOC cbReadTOC;
 			OctoshockDll.ShockDisc_ReadLBA cbReadLBA;
-			Action cbActivity;
+			Action<DiscInterface> cbActivity;
 
 			public DiscSystem.Disc Disc;
 			public IntPtr OctoshockHandle;
@@ -145,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			int ShockDisc_ReadLBA2448(IntPtr opaque, int lba, void* dst)
 			{
-				cbActivity();
+				cbActivity(this);
 
 				//lets you check subcode generation by logging it and checking against the CCD subcode
 				bool subcodeLog = false;
@@ -170,16 +171,14 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 		}
 
+		List<DiscInterface> discInterfaces = new List<DiscInterface>();
+		DiscInterface currentDiscInterface;
 
 		//note: its annoying that we have to have a disc before constructing this.
 		//might want to change that later. HOWEVER - we need to definitely have a region, at least
 		public Octoshock(CoreComm comm, List<DiscSystem.Disc> discs, byte[] exe, object settings, object syncSettings)
 		{
 			//analyze our first disc from the list by default, because i dont know
-
-			DiscSystem.Disc disc = null;
-			if (discs != null)
-				disc = discs[0];
 
 			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
@@ -191,32 +190,38 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			Attach();
 
-			this.disc = disc;
-
 			string firmwareRegion = "U";
 			OctoshockDll.eRegion region = OctoshockDll.eRegion.NA;
 
-			if (disc != null)
+			if (discs != null)
 			{
-				discInterface = new DiscInterface(disc,
-					() =>
-					{
-						//if current disc this delegate disc, activity is happening
-						if (disc == this.disc)
-							DriveLightOn = true;
-					});
+				foreach(var disc in discs)
+				{
+					var discInterface = new DiscInterface(disc,
+						(di) =>
+						{
+							//if current disc this delegate disc, activity is happening
+							if (di == currentDiscInterface)
+								DriveLightOn = true;
+						});
 
-				//determine region of the provided disc
-				OctoshockDll.ShockDiscInfo discInfo;
-				OctoshockDll.shock_AnalyzeDisc(discInterface.OctoshockHandle, out discInfo);
-
-				//try to acquire the appropriate firmware
-				if (discInfo.region == OctoshockDll.eRegion.EU) firmwareRegion = "E";
-				if (discInfo.region == OctoshockDll.eRegion.JP) firmwareRegion = "J";
+					discInterfaces.Add(discInterface);
+				}
 			}
 			else
 			{
 				//assume its NA region for test programs, for now. could it be read out of the ps-exe header?
+			}
+
+			if (discInterfaces.Count != 0)
+			{
+				//determine region of one of the discs
+				OctoshockDll.ShockDiscInfo discInfo;
+				OctoshockDll.shock_AnalyzeDisc(discInterfaces[0].OctoshockHandle, out discInfo);
+
+				//try to acquire the appropriate firmware
+				if (discInfo.region == OctoshockDll.eRegion.EU) firmwareRegion = "E";
+				if (discInfo.region == OctoshockDll.eRegion.JP) firmwareRegion = "J";
 			}
 
 			byte[] firmware = comm.CoreFileProvider.GetFirmware("PSX", "U", true, "A PSX `" + firmwareRegion + "` region bios file is required");
@@ -247,11 +252,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			BufferHeight = VirtualHeight;
 			frameBuffer = new int[BufferWidth * BufferHeight];
 
-			if (disc != null)
+			if (discInterfaces.Count != 0)
 			{
-				OctoshockDll.shock_OpenTray(psx);
-				OctoshockDll.shock_SetDisc(psx, discInterface.OctoshockHandle);
-				OctoshockDll.shock_CloseTray(psx);
+				//disc will be set during first frame advance
 			}
 			else
 			{
@@ -333,6 +336,22 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			DriveLightOn = false;
 
 			SetInput();
+
+			if (Controller["Eject"]) OctoshockDll.shock_OpenTray(psx);
+
+			//if requested disc is not matching current disc, set it now
+			int discChoice = (int)Controller.GetFloat("Disc Select") - 1;
+			if (discChoice >= discInterfaces.Count)
+				discChoice = discInterfaces.Count - 1;
+			if (discInterfaces[discChoice] != currentDiscInterface)
+			{
+				currentDiscInterface = discInterfaces[discChoice];
+				if (!Controller["Eject"]) OctoshockDll.shock_OpenTray(psx); //open tray if needed
+				OctoshockDll.shock_SetDisc(psx, currentDiscInterface.OctoshockHandle);
+			}
+
+			if (!Controller["Eject"]) OctoshockDll.shock_CloseTray(psx);
+
 
 			OctoshockDll.shock_Step(psx, OctoshockDll.eShockStep.Frame);
 
