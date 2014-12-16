@@ -26,9 +26,9 @@ namespace BizHawk.Client.Common
 		private bool _keepHistory = true;
 		private bool _isSorted = true; // Tracks whether or not the list is sorted by address, if it is, binary search can be used for finding watches
 
-		public RamSearchEngine(Settings settings)
+		public RamSearchEngine(Settings settings, IMemoryDomains memoryDomains)
 		{
-			_settings = new Settings(Global.Emulator.AsMemoryDomains());
+			_settings = new Settings(memoryDomains);
 			_settings.Mode = settings.Mode;
 			_settings.Domain = settings.Domain;
 			_settings.Size = settings.Size;
@@ -38,8 +38,8 @@ namespace BizHawk.Client.Common
 			_settings.PreviousType = settings.PreviousType;
 		}
 
-		public RamSearchEngine(Settings settings, Compare compareTo, long? compareValue, int? differentBy)
-			: this(settings)
+		public RamSearchEngine(Settings settings, IMemoryDomains memoryDomains, Compare compareTo, long? compareValue, int? differentBy)
+			: this(settings, memoryDomains)
 			{
 				_compareTo = compareTo;
 				_differentBy = differentBy;
@@ -1182,6 +1182,7 @@ namespace BizHawk.Client.Common
 			public Settings(IMemoryDomains core)
 			{
 				BigEndian = core.MemoryDomains.MainMemory.EndianType == MemoryDomain.Endian.Big;
+				// TODO: Fetch this default from the IMemoryDomains object when that's implemented.
 				Size = (Watch.WatchSize)Global.SystemInfo.ByteSize;
 				Type = Watch.DisplayType.Unsigned;
 				Mode = core.MemoryDomains.MainMemory.Size > (1024 * 1024) ?
