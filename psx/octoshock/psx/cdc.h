@@ -17,7 +17,6 @@ struct CD_Audio_Buffer
  int32 ReadPos;
 };
 
-
 class PS_CDC
 {
  public:
@@ -30,7 +29,6 @@ class PS_CDC
  void SetDisc(bool tray_open, ShockDiscRef *disc, const char disc_id[4]);
 
  void Power(void);
- int StateAction(StateMem *sm, int load, int data_only);
  void ResetTS(void);
 
  int32 CalcNextEvent(void);	// Returns in master cycles to next event.
@@ -177,6 +175,7 @@ class PS_CDC
  int32 PSRCounter;
 
  int32 CurSector;
+ uint32 SectorsRead;	// Reset to 0 on Read*/Play command start; used in the rough simulation of PS1 SetLoc->Read->Pause->Read behavior.
 
  unsigned AsyncIRQPending;
  uint8 AsyncResultsPending[16];
@@ -204,6 +203,7 @@ class PS_CDC
  uint8 MakeStatus(bool cmd_error = false);
  bool DecodeSubQ(uint8 *subpw);
  bool CommandCheckDiscPresent(void);
+ void DMForceStop();
 
  void EnbufferizeCDDASector(const uint8 *buf);
  bool XA_Test(const uint8 *sdata);

@@ -22,23 +22,22 @@
 namespace MDFN_IEN_PSX
 {
 
-class InputDevice_neGcon : public InputDevice
+class InputDevice_neGcon final : public InputDevice
 {
  public:
 
  InputDevice_neGcon(void);
  virtual ~InputDevice_neGcon();
 
- virtual void Power(void);
- virtual int StateAction(StateMem* sm, int load, int data_only, const char* section_name);
- virtual void UpdateInput(const void *data);
+ virtual void Power(void) override;
+ virtual void UpdateInput(const void *data) override;
 
  //
  //
  //
- virtual void SetDTR(bool new_dtr);
- virtual bool GetDSR(void);
- virtual bool Clock(bool TxD, int32 &dsr_pulse_delay);
+ virtual void SetDTR(bool new_dtr) override;
+ virtual bool GetDSR(void) override;
+ virtual bool Clock(bool TxD, int32 &dsr_pulse_delay) override;
 
  private:
 
@@ -92,42 +91,43 @@ void InputDevice_neGcon::Power(void)
  transmit_pos = 0;
  transmit_count = 0;
 }
-
-int InputDevice_neGcon::StateAction(StateMem* sm, int load, int data_only, const char* section_name)
-{
- SFORMAT StateRegs[] =
- {
-  SFVAR(dtr),
-
-  SFARRAY(buttons, sizeof(buttons)),
-  SFVAR(twist),
-  SFARRAY(anabuttons, sizeof(anabuttons)),
-
-  SFVAR(command_phase),
-  SFVAR(bitpos),
-  SFVAR(receive_buffer),
-
-  SFVAR(command),
-
-  SFARRAY(transmit_buffer, sizeof(transmit_buffer)),
-  SFVAR(transmit_pos),
-  SFVAR(transmit_count),
-
-  SFEND
- };
- int ret = MDFNSS_StateAction(sm, load, data_only, StateRegs, section_name);
-
- if(load)
- {
-  if((transmit_pos + transmit_count) > sizeof(transmit_buffer))
-  {
-   transmit_pos = 0;
-   transmit_count = 0;
-  }
- }
-
- return(ret);
-}
+//
+//void InputDevice_neGcon::StateAction(StateMem* sm, const unsigned load, const bool data_only, const char* sname_prefix)
+//{
+// SFORMAT StateRegs[] =
+// {
+//  SFVAR(dtr),
+//
+//  SFARRAY(buttons, sizeof(buttons)),
+//  SFVAR(twist),
+//  SFARRAY(anabuttons, sizeof(anabuttons)),
+//
+//  SFVAR(command_phase),
+//  SFVAR(bitpos),
+//  SFVAR(receive_buffer),
+//
+//  SFVAR(command),
+//
+//  SFARRAY(transmit_buffer, sizeof(transmit_buffer)),
+//  SFVAR(transmit_pos),
+//  SFVAR(transmit_count),
+//
+//  SFEND
+// };
+// char section_name[32];
+// trio_snprintf(section_name, sizeof(section_name), "%s_neGcon", sname_prefix);
+//
+// if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, section_name, true) && load)
+//  Power();
+// else if(load)
+// {
+//  if((transmit_pos + transmit_count) > sizeof(transmit_buffer))
+//  {
+//   transmit_pos = 0;
+//   transmit_count = 0;
+//  }
+// }
+//}
 
 
 void InputDevice_neGcon::UpdateInput(const void *data)
@@ -137,11 +137,11 @@ void InputDevice_neGcon::UpdateInput(const void *data)
  buttons[0] = d8[0];
  buttons[1] = d8[1];
 
- twist = ((32768 + MDFN_de16lsb((const uint8 *)data + 2) - (((int32)MDFN_de16lsb((const uint8 *)data + 4) * 32768 + 16383) / 32767)) * 255 + 32767) / 65535;
+ twist = ((32768 + MDFN_de16lsb<false>((const uint8 *)data + 2) - (((int32)MDFN_de16lsb<false>((const uint8 *)data + 4) * 32768 + 16383) / 32767)) * 255 + 32767) / 65535;
 
- anabuttons[0] = (MDFN_de16lsb((const uint8 *)data + 6) * 255 + 16383) / 32767; 
- anabuttons[1] = (MDFN_de16lsb((const uint8 *)data + 8) * 255 + 16383) / 32767;
- anabuttons[2] = (MDFN_de16lsb((const uint8 *)data + 10) * 255 + 16383) / 32767;
+ anabuttons[0] = (MDFN_de16lsb<false>((const uint8 *)data + 6) * 255 + 16383) / 32767; 
+ anabuttons[1] = (MDFN_de16lsb<false>((const uint8 *)data + 8) * 255 + 16383) / 32767;
+ anabuttons[2] = (MDFN_de16lsb<false>((const uint8 *)data + 10) * 255 + 16383) / 32767;
 
  //printf("%02x %02x %02x %02x\n", twist, anabuttons[0], anabuttons[1], anabuttons[2]);
 }
@@ -264,34 +264,5 @@ InputDevice *Device_neGcon_Create(void)
  return new InputDevice_neGcon();
 }
 
-
-InputDeviceInputInfoStruct Device_neGcon_IDII[21] =
-{
- { NULL, "empty", -1, IDIT_BUTTON, NULL },
- { NULL, "empty", -1, IDIT_BUTTON, NULL },
- { NULL, "empty", -1, IDIT_BUTTON, NULL },
- { "start", "START", 4, IDIT_BUTTON, NULL },
- { "up", "D-Pad UP ↑", 0, IDIT_BUTTON, "down" },
- { "right", "D-Pad RIGHT →", 3, IDIT_BUTTON, "left" },
- { "down", "D-Pad DOWN ↓", 1, IDIT_BUTTON, "up" },
- { "left", "D-Pad LEFT ←", 2, IDIT_BUTTON, "right" },
-
- { NULL, "empty", -1, IDIT_BUTTON, NULL },
- { NULL, "empty", -1, IDIT_BUTTON, NULL },
- { NULL, "empty", -1, IDIT_BUTTON, NULL },
- { "r", "Right Shoulder", 12, IDIT_BUTTON },
-
- { "b", "B", 9, IDIT_BUTTON, NULL },
- { "a", "A", 10, IDIT_BUTTON, NULL },
- { NULL, "empty", -1, IDIT_BUTTON, NULL },
- { NULL, "empty", -1, IDIT_BUTTON, NULL },
-
- { "twist_cwise",  "Twist ↓|↑ (Analog, Turn Right)", 6, IDIT_BUTTON_ANALOG },
- { "twist_ccwise", "Twist ↑|↓ (Analog, Turn Left)", 5, IDIT_BUTTON_ANALOG },
- { "i", "I (Analog)", 8, IDIT_BUTTON_ANALOG },
- { "ii", "II (Analog)", 7, IDIT_BUTTON_ANALOG },
-
- { "l", "Left Shoulder (Analog)", 11, IDIT_BUTTON_ANALOG },
-};
 
 }

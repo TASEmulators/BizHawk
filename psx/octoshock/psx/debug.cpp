@@ -332,11 +332,6 @@ static int GfxDecode_PBN = 0;
 
 static void DoGfxDecode(void)
 {
- unsigned tp_w, tp_h;
-
- tp_w = 256;
- tp_h = 256;
-
  if(GfxDecode_Buf)
  {
   for(int sy = 0; sy < GfxDecode_Buf->h; sy++)
@@ -344,7 +339,7 @@ static void DoGfxDecode(void)
    for(int sx = 0; sx < GfxDecode_Buf->w; sx++)
    {
     unsigned fb_x = ((sx % GfxDecode_Buf->w) + ((sy + GfxDecode_Scroll) / GfxDecode_Buf->w * GfxDecode_Buf->w)) & 1023;
-    unsigned fb_y = (((sy + GfxDecode_Scroll) % GfxDecode_Buf->w) + ((((sx % GfxDecode_Buf->w) + ((sy + GfxDecode_Scroll) / GfxDecode_Buf->w * GfxDecode_Buf->w)) / 1024) * 256)) & 511;
+    unsigned fb_y = (((sy + GfxDecode_Scroll) % GfxDecode_Buf->w) + ((((sx % GfxDecode_Buf->w) + ((sy + GfxDecode_Scroll) / GfxDecode_Buf->w * GfxDecode_Buf->w)) / 1024) * GfxDecode_Buf->w)) & 511;
 
     uint16 pixel = GPU->PeekRAM(fb_y * 1024 + fb_x);
 
@@ -467,14 +462,14 @@ static RegType Regs_SPU[] =
  { PS_SPU::GSREG_CDVOL_L, "CDVolL", "CD Volume Left", 2 },
  { PS_SPU::GSREG_CDVOL_R, "CDVolR", "CD Volume Right", 2 },
 
- { PS_SPU::GSREG_DRYVOL_CTRL_L, "DryVolCL", "Dry Volume Control Left", 2 },
- { PS_SPU::GSREG_DRYVOL_CTRL_R, "DryVolCR", "Dry Volume Control Right", 2 },
+ { PS_SPU::GSREG_RVBVOL_L, "RvbVolL", "Reverb Volume Left", 2 },
+ { PS_SPU::GSREG_RVBVOL_R, "RvbVolR", "Reverb Volume Right", 2 },
 
- { PS_SPU::GSREG_DRYVOL_L, "DryVolL", "Dry Volume Left", 2 },
- { PS_SPU::GSREG_DRYVOL_R, "DryVolR", "Dry Volume Right", 2 },
+ { PS_SPU::GSREG_MAINVOL_CTRL_L, "MainVolCL", "Main Volume Control Left", 2 },
+ { PS_SPU::GSREG_MAINVOL_CTRL_R, "MainVolCR", "Main Volume Control Right", 2 },
 
- { PS_SPU::GSREG_WETVOL_L, "WetVolL", "Wet Volume Left", 2 },
- { PS_SPU::GSREG_WETVOL_R, "WetVolR", "Wet Volume Right", 2 },
+ { PS_SPU::GSREG_MAINVOL_L, "MainVolL", "Dry Volume Left", 2 },
+ { PS_SPU::GSREG_MAINVOL_R, "MainVolR", "Dry Volume Right", 2 },
 
  { PS_SPU::GSREG_RWADDR, "RWAddr", "SPURAM Read/Write Address", 3 },
 

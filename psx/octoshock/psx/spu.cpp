@@ -25,8 +25,7 @@
 	Test reverb upsampler on the real thing.
 
 	Alter reverb algorithm to process in the pattern of L,R,L,R,L,R on each input sample, instead of doing both L and R on every 2 input samples(make
-	sure the real thing does it this way too, I think it at least runs the downsampler this way); and while we're at it, implement the correct buffer
-	offset(probably either -39 or -40, the latter is what we have now).
+	sure the real thing does it this way too, I think it at least runs the downsampler this way).
 
 	Alter reverb algorithm to perform saturation more often, as occurs on the real thing.
 
@@ -47,8 +46,6 @@
 
 /*
  Notes:
-	The last half of the noise freq table was confirmed on a real PSX(more or less, number of changes * 0x8000 / samples), but the first half hasn't been yet with sufficient precision.
-
 	All addresses(for 16-bit access, at least) within the SPU address space appear to be fully read/write as if they were RAM, though
 	values at some addresses(like the envelope current value) will be "overwritten" by the sound processing at certain times.
 
@@ -94,6 +91,7 @@ PS_SPU::PS_SPU()
 PS_SPU::~PS_SPU()
 {
 }
+
 
 void PS_SPU::Power(void)
 {
@@ -171,10 +169,8 @@ void PS_SPU::Power(void)
  memset(Regs, 0, sizeof(Regs));
 
  memset(RDSB, 0, sizeof(RDSB));
- RDSB_WP = 0;
-
  memset(RUSB, 0, sizeof(RUSB));
- RUSB_WP = 0;
+ RvbResPos = 0;
 
  ReverbCur = ReverbWA;
 
@@ -191,7 +187,7 @@ static INLINE void CalcVCDelta(const uint8 zs, uint8 speed, bool log_mode, bool 
   divinco = 32768;
 
   if(speed < 0x2C)
-   increment <<= (0x2F - speed) >> 2;
+   increment = (unsigned)increment << ((0x2F - speed) >> 2);
 
   if(speed >= 0x30)
    divinco >>= (speed - 0x2C) >> 2;
@@ -328,9 +324,19 @@ void PS_SPU::RunDecoder(SPU_Voice *voice)
   return;
  }
 
+ 
  if((voice->CurAddr & 0x7) == 0)
  {
+  //
   // Handle delayed flags from the previously-decoded block.
+  //
+  // NOTE: The timing of setting the BlockEnd bit here, and forcing ADSR envelope volume to 0, is a bit late.  (And I'm not sure if it should be done once
+  // per decoded block, or more than once, but that's probably not something games would rely on, but we should test it anyway).
+  //
+  // Correctish timing can be achieved by moving this block of code up above voice->DecodeAvail >= 11, and sticking it inside an: if(voice->DecodeAvail <= 12),
+  // though more tests are needed on the ADPCM decoding process as a whole before we should actually make such a change.  Additionally, we'd probably
+  // have to separate the CurAddr = LoopAddr logic, so we don't generate spurious early SPU IRQs.
+  //
   if(voice->DecodeFlags & 0x1)
   {
    voice->CurAddr = voice->LoopAddr & ~0x7;
@@ -391,12 +397,25 @@ void PS_SPU::RunDecoder(SPU_Voice *voice)
   // at higher rates will fail horribly.
   //
   {
-   const uint16 CV = SPURAM[voice->CurAddr];
-   const unsigned shift = voice->DecodeShift;
    const int32 weight_m1 = Weights[voice->DecodeWeight][0];
    const int32 weight_m2 = Weights[voice->DecodeWeight][1];
-   uint32 coded = (uint32)CV << 12;
+   uint16 CV;
+   unsigned shift;
+   uint32 coded;
    int16 *tb = &voice->DecodeBuffer[voice->DecodeWritePos];
+
+   CV = SPURAM[voice->CurAddr];
+   shift = voice->DecodeShift;
+
+   if(MDFN_UNLIKELY(shift > 12))
+   {
+    //PSX_DBG(PSX_DBG_FLOOD, "[SPU] Buggy/Illegal ADPCM block shift value on voice %u: %u\n", (unsigned)(voice - Voices), shift);
+
+    shift = 8;
+    CV &= 0x8888;
+   }
+
+   coded = (uint32)CV << 12;
 
    for(int i = 0; i < 4; i++)
    {
@@ -592,23 +611,21 @@ int32 PS_SPU::UpdateFromCDC(int32 clocks)
   sample_clocks++;
  }
 
- while(sample_clocks > 0)
+while(sample_clocks > 0)
  {
-  // Accumulated normal sound output.
-  int32 accum_l = 0;
-  int32 accum_r = 0;
+  // xxx[0] = left, xxx[1] = right
+
+  // Accumulated sound output.
+  int32 accum[2] = { 0, 0 };
 
   // Accumulated sound output for reverb input
-  int32 accum_fv_l = 0;
-  int32 accum_fv_r = 0;
+  int32 accum_fv[2] = { 0, 0 };
 
   // Output of reverb processing.
-  int32 reverb_l = 0;
-  int32 reverb_r = 0;
+  int32 reverb[2] = { 0, 0 };
 
   // Final output.
-  int32 output_l = 0;
-  int32 output_r = 0;
+  int32 output[2] = { 0, 0 };
 
   const uint32 PhaseModCache = FM_Mode & ~ 1;
 /*
@@ -690,14 +707,14 @@ int32 PS_SPU::UpdateFromCDC(int32 clocks)
    l = (voice_pvs * voice->Sweep[0].ReadVolume()) >> 15;
    r = (voice_pvs * voice->Sweep[1].ReadVolume()) >> 15;
 
-   accum_l += l;
-   accum_r += r;
+   accum[0] += l;
+   accum[1] += r;
 
    if(Reverb_Mode & (1 << voice_num))
    {
-    accum_fv_l += l;
-    accum_fv_r += r;
-   }
+    accum_fv[0] += l;
+    accum_fv[1] += r;
+	 }
 
    // Run sweep
    for(int lr = 0; lr < 2; lr++)
@@ -782,10 +799,10 @@ int32 PS_SPU::UpdateFromCDC(int32 clocks)
   // TODO: If we add sub-sample timing accuracy, see if it's checked for every channel at different times, or just once.
   if(!(SPUControl & 0x4000))
   {
-   accum_l = 0;
-   accum_r = 0;
-   accum_fv_l = 0;
-   accum_fv_r = 0;
+   accum[0] = 0;
+   accum[1] = 0;
+   accum_fv[0] = 0;
+   accum_fv[1] = 0;
   }
 
   // Get CD-DA
@@ -804,13 +821,13 @@ int32 PS_SPU::UpdateFromCDC(int32 clocks)
 
    if(SPUControl & 0x0001)
    {
-    accum_l += cdav[0];
-    accum_r += cdav[1];
+    accum[0] += cdav[0];
+    accum[1] += cdav[1];
 
     if(SPUControl & 0x0004)	// TODO: Test this bit(and see if it is really dependent on bit0)
     {
-     accum_fv_l += cdav[0];
-     accum_fv_r += cdav[1];
+     accum_fv[0] += cdav[0];
+     accum_fv[1] += cdav[1];
     }
    }
   }
@@ -819,43 +836,31 @@ int32 PS_SPU::UpdateFromCDC(int32 clocks)
 
   RunNoise();
 
-  clamp(&accum_l, -32768, 32767);
-  clamp(&accum_r, -32768, 32767);
-  clamp(&accum_fv_l, -32768, 32767);
-  clamp(&accum_fv_r, -32768, 32767);
+  for(unsigned lr = 0; lr < 2; lr++)
+   clamp(&accum_fv[lr], -32768, 32767);
   
-#if 0
-  accum_l = 0;
-  accum_r = 0;
-  //accum_fv_l = (short)(rand());
-  //accum_fv_r = (short)(rand());
-#endif
+  RunReverb(accum_fv, reverb);
 
-  RunReverb(accum_fv_l, accum_fv_r, reverb_l, reverb_r);
-
-  //MDFN_DispMessage("%d %d\n", MainVol[0], MainVol[1], ReverbVol[0], ReverbVol[1]);
-
-  // FIXME: Dry volume versus everything else
-  output_l = (((accum_l * GlobalSweep[0].ReadVolume()) >> 16) + ((reverb_l * ReverbVol[0]) >> 15));
-  output_r = (((accum_r * GlobalSweep[1].ReadVolume()) >> 16) + ((reverb_r * ReverbVol[1]) >> 15));
-
-  //output_l = reverb_l;
-  //output_r = reverb_r;
-
-  clamp(&output_l, -32768, 32767);
-  clamp(&output_r, -32768, 32767);
+  for(unsigned lr = 0; lr < 2; lr++)
+  {
+   accum[lr] += ((reverb[lr] * ReverbVol[lr]) >> 15);
+   clamp(&accum[lr], -32768, 32767);
+   output[lr] = (accum[lr] * GlobalSweep[lr].ReadVolume()) >> 15;
+  }
 
   if(IntermediateBufferPos < 4096)	// Overflow might occur in some debugger use cases.
   {
-   IntermediateBuffer[IntermediateBufferPos][0] = output_l;
-   IntermediateBuffer[IntermediateBufferPos][1] = output_r;
+   // 75%, for some (resampling) headroom.
+   for(unsigned lr = 0; lr < 2; lr++)
+    IntermediateBuffer[IntermediateBufferPos][lr] = (output[lr] * 3 + 2) >> 2;
+
    IntermediateBufferPos++;
   }
 
   sample_clocks--;
 
   // Clock global sweep
-  for(int lr = 0; lr < 2; lr++)
+  for(unsigned lr = 0; lr < 2; lr++)
    GlobalSweep[lr].Clock();
  }
 
@@ -1216,10 +1221,9 @@ SYNCFUNC(PS_SPU)
   NSS(AuxRegs);
 
   NSS(RDSB);
-  NSS(RDSB_WP);
-
   NSS(RUSB);
-  NSS(RUSB_WP);
+  NSS(RvbResPos);
+
 
   NSS(ReverbCur);
   NSS(IRQAsserted);
@@ -1234,6 +1238,9 @@ SYNCFUNC(PS_SPU)
 		//and another thing like this, which I think makes no sense. I really need to test these.
 		IRQ_Assert(IRQ_SPU, IRQAsserted);
 	//}
+
+		//sanity check this
+		  //RvbResPos &= 0x3F;
 }
 
 uint16 PS_SPU::PeekSPURAM(uint32 address)
@@ -1323,27 +1330,27 @@ uint32 PS_SPU::GetRegister(unsigned int which, char *special, const uint32 speci
 	ret = (uint16)CDVol[1];
 	break;
 
-  case GSREG_DRYVOL_CTRL_L:
+  case GSREG_MAINVOL_CTRL_L:
 	ret = Regs[0xC0];
 	break;
 
-  case GSREG_DRYVOL_CTRL_R:
+  case GSREG_MAINVOL_CTRL_R:
 	ret = Regs[0xC1];
 	break;
 
-  case GSREG_DRYVOL_L:
+  case GSREG_MAINVOL_L:
 	ret = GlobalSweep[0].ReadVolume() & 0xFFFF;
 	break;
 
-  case GSREG_DRYVOL_R:
+  case GSREG_MAINVOL_R:
 	ret = GlobalSweep[1].ReadVolume() & 0xFFFF;
 	break;
 
-  case GSREG_WETVOL_L:
+  case GSREG_RVBVOL_L:
 	ret = (uint16)ReverbVol[0];
 	break;
 
-  case GSREG_WETVOL_R:
+  case GSREG_RVBVOL_R:
 	ret = (uint16)ReverbVol[1];
 	break;
 
@@ -1405,7 +1412,7 @@ uint32 PS_SPU::GetRegister(unsigned int which, char *special, const uint32 speci
   case GSREG_MIX_DEST_B1:
   case GSREG_IN_COEF_L:
   case GSREG_IN_COEF_R:
-	ret = ReverbRegs[which - GSREG_FB_SRC_A] & 0xFFFF;
+	ret = ReverbRegs[which - GSREG_FB_SRC_A];
 	break;
  }
 
@@ -1441,31 +1448,31 @@ void PS_SPU::SetRegister(unsigned int which, uint32 value)
 	CDVol[1] = (int16)value;
 	break;
 
-  case GSREG_DRYVOL_CTRL_L:
+  case GSREG_MAINVOL_CTRL_L:
 	Regs[0xC0] = value;
 	GlobalSweep[0].WriteControl(value);
 	//GlobalSweep[0].Control = value;
 	break;
 
-  case GSREG_DRYVOL_CTRL_R:
+  case GSREG_MAINVOL_CTRL_R:
 	Regs[0xC1] = value;
 	GlobalSweep[1].WriteControl(value);
 	//GlobalSweep[1].Control = value;
 	break;
 
-  case GSREG_DRYVOL_L:
+  case GSREG_MAINVOL_L:
 	GlobalSweep[0].WriteVolume(value);
 	break;
 
-  case GSREG_DRYVOL_R:
+  case GSREG_MAINVOL_R:
 	GlobalSweep[1].WriteVolume(value);
 	break;
 
-  case GSREG_WETVOL_L:
+  case GSREG_RVBVOL_L:
 	ReverbVol[0] = (int16)value;
 	break;
 
-  case GSREG_WETVOL_R:
+  case GSREG_RVBVOL_R:
 	ReverbVol[1] = (int16)value;
 	break;
 
@@ -1493,6 +1500,42 @@ void PS_SPU::SetRegister(unsigned int which, uint32 value)
         BlockEnd = value & 0xFFFFFF;
         break;
 
+
+ //case GSREG_FB_SRC_A ... GSREG_IN_COEF_R:
+	case GSREG_FB_SRC_A:
+  case GSREG_FB_SRC_B:
+  case GSREG_IIR_ALPHA:
+  case GSREG_ACC_COEF_A:
+  case GSREG_ACC_COEF_B:
+  case GSREG_ACC_COEF_C:
+  case GSREG_ACC_COEF_D:
+  case GSREG_IIR_COEF:
+  case GSREG_FB_ALPHA:
+  case GSREG_FB_X:
+  case GSREG_IIR_DEST_A0:
+  case GSREG_IIR_DEST_A1:
+  case GSREG_ACC_SRC_A0:
+  case GSREG_ACC_SRC_A1:
+  case GSREG_ACC_SRC_B0:
+  case GSREG_ACC_SRC_B1:
+  case GSREG_IIR_SRC_A0:
+  case GSREG_IIR_SRC_A1:
+  case GSREG_IIR_DEST_B0:
+  case GSREG_IIR_DEST_B1:
+  case GSREG_ACC_SRC_C0:
+  case GSREG_ACC_SRC_C1:
+  case GSREG_ACC_SRC_D0:
+  case GSREG_ACC_SRC_D1:
+  case GSREG_IIR_SRC_B1:
+  case GSREG_IIR_SRC_B0:
+  case GSREG_MIX_DEST_A0:
+  case GSREG_MIX_DEST_A1:
+  case GSREG_MIX_DEST_B0:
+  case GSREG_MIX_DEST_B1:
+  case GSREG_IN_COEF_L:
+  case GSREG_IN_COEF_R:
+		ReverbRegs[which - GSREG_FB_SRC_A] = value;
+		break;
 
  }
 }

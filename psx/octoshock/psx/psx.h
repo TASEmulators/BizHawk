@@ -33,12 +33,14 @@ namespace MDFN_IEN_PSX
  #define PSX_DBG_FLOOD		4	// Heavy informational debug messages(GPU commands; TODO).
 
 #if PSX_DBGPRINT_ENABLE
- void PSX_DBG(unsigned level, const char *format, ...) throw() MDFN_COLD MDFN_FORMATSTR(gnu_printf, 2, 3);
+ void PSX_DBG(unsigned level, const char *format, ...) noexcept MDFN_COLD MDFN_FORMATSTR(gnu_printf, 2, 3);
+ void PSX_DBG_BIOS_PUTC(uint8 c) noexcept;
 
  #define PSX_WARNING(format, ...) { PSX_DBG(PSX_DBG_WARNING, format "\n", ## __VA_ARGS__); }
  #define PSX_DBGINFO(format, ...) { }
 #else
  static INLINE void PSX_DBG(unsigned level, const char* format, ...) { }
+ static INLINE void PSX_DBG_BIOS_PUTC(uint8 c) { }
  static INLINE void PSX_WARNING(const char* format, ...) { }
  static INLINE void PSX_DBGINFO(const char* format, ...) { }
 #endif
@@ -110,7 +112,7 @@ namespace MDFN_IEN_PSX
  extern PS_GPU *GPU;
  extern PS_CDC *CDC;
  extern PS_SPU *SPU;
- extern MultiAccessSizeMem<2048 * 1024, uint32, false> MainRAM;
+ extern MultiAccessSizeMem<2048 * 1024, false> MainRAM;
 };
 
 enum eRegion

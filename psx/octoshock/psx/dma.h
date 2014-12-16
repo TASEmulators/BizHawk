@@ -12,12 +12,12 @@ uint32 DMA_Read(const pscpu_timestamp_t timestamp, uint32 A);
 
 void DMA_ResetTS(void);
 
-void DMA_Power(void);
+void DMA_Power(void) MDFN_COLD;
 
-void DMA_Init(void);
-void DMA_Kill(void);
+void DMA_Init(void) MDFN_COLD;
+void DMA_Kill(void) MDFN_COLD;
 
-int DMA_StateAction(StateMem *sm, int load, int data_only);
+
 
 }
 

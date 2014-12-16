@@ -5,25 +5,24 @@
 namespace MDFN_IEN_PSX
 {
 
-class InputDevice_Mouse : public InputDevice
+class InputDevice_Mouse final : public InputDevice
 {
  public:
 
  InputDevice_Mouse();
  virtual ~InputDevice_Mouse();
 
- virtual void Power(void);
- virtual int StateAction(StateMem* sm, int load, int data_only, const char* section_name);
- virtual void UpdateInput(const void *data);
+ virtual void Power(void) override;
+ virtual void UpdateInput(const void *data) override;
 
- virtual void Update(const pscpu_timestamp_t timestamp);
- virtual void ResetTS(void);
+ virtual void Update(const pscpu_timestamp_t timestamp) override;
+ virtual void ResetTS(void) override;
 
  //
  //
  //
- virtual void SetDTR(bool new_dtr);
- virtual bool Clock(bool TxD, int32 &dsr_pulse_delay);
+ virtual void SetDTR(bool new_dtr) override;
+ virtual bool Clock(bool TxD, int32 &dsr_pulse_delay) override;
 
  private:
 
@@ -106,50 +105,51 @@ void InputDevice_Mouse::Power(void)
  transmit_count = 0;
 }
 
-int InputDevice_Mouse::StateAction(StateMem* sm, int load, int data_only, const char* section_name)
-{
- SFORMAT StateRegs[] =
- {
-  SFVAR(clear_timeout),
-
-  SFVAR(dtr),
-
-  SFVAR(button),
-  SFVAR(button_post_mask),
-  SFVAR(accum_xdelta),
-  SFVAR(accum_ydelta),
-
-  SFVAR(command_phase),
-  SFVAR(bitpos),
-  SFVAR(receive_buffer),
-
-  SFVAR(command),
-
-  SFARRAY(transmit_buffer, sizeof(transmit_buffer)),
-  SFVAR(transmit_pos),
-  SFVAR(transmit_count),
-
-  SFEND
- };
- int ret = MDFNSS_StateAction(sm, load, data_only, StateRegs, section_name);
-
- if(load)
- {
-  if((transmit_pos + transmit_count) > sizeof(transmit_buffer))
-  {
-   transmit_pos = 0;
-   transmit_count = 0;
-  }
- }
-
- return(ret);
-}
+//void InputDevice_Mouse::StateAction(StateMem* sm, const unsigned load, const bool data_only, const char* sname_prefix)
+//{
+// SFORMAT StateRegs[] =
+// {
+//  SFVAR(clear_timeout),
+//
+//  SFVAR(dtr),
+//
+//  SFVAR(button),
+//  SFVAR(button_post_mask),
+//  SFVAR(accum_xdelta),
+//  SFVAR(accum_ydelta),
+//
+//  SFVAR(command_phase),
+//  SFVAR(bitpos),
+//  SFVAR(receive_buffer),
+//
+//  SFVAR(command),
+//
+//  SFARRAY(transmit_buffer, sizeof(transmit_buffer)),
+//  SFVAR(transmit_pos),
+//  SFVAR(transmit_count),
+//
+//  SFEND
+// };
+// char section_name[32];
+// trio_snprintf(section_name, sizeof(section_name), "%s_Mouse", sname_prefix);
+//
+// if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, section_name, true) && load)
+//  Power();
+// else if(load)
+// {
+//  if((transmit_pos + transmit_count) > sizeof(transmit_buffer))
+//  {
+//   transmit_pos = 0;
+//   transmit_count = 0;
+//  }
+// }
+//}
 
 
 void InputDevice_Mouse::UpdateInput(const void *data)
 {
- accum_xdelta += (int32)MDFN_de32lsb((uint8*)data + 0);
- accum_ydelta += (int32)MDFN_de32lsb((uint8*)data + 4);
+ accum_xdelta += (int32)MDFN_de32lsb<false>((uint8*)data + 0);
+ accum_ydelta += (int32)MDFN_de32lsb<false>((uint8*)data + 4);
 
  if(accum_xdelta > 30 * 127) accum_xdelta = 30 * 127;
  if(accum_xdelta < 30 * -128) accum_xdelta = 30 * -128;
@@ -278,16 +278,6 @@ InputDevice *Device_Mouse_Create(void)
 {
  return new InputDevice_Mouse();
 }
-
-
-InputDeviceInputInfoStruct Device_Mouse_IDII[4] =
-{
- { "x_axis", "X Axis", -1, IDIT_X_AXIS_REL },
- { "y_axis", "Y Axis", -1, IDIT_Y_AXIS_REL },
- { "right", "Right Button", 1, IDIT_BUTTON, NULL },
- { "left", "Left Button", 0, IDIT_BUTTON, NULL },
-};
-
 
 
 }

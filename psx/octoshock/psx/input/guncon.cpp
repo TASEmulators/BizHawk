@@ -22,25 +22,24 @@
 namespace MDFN_IEN_PSX
 {
 
-class InputDevice_GunCon : public InputDevice
+class InputDevice_GunCon final : public InputDevice
 {
  public:
 
  InputDevice_GunCon(void);
  virtual ~InputDevice_GunCon();
 
- virtual void Power(void);
- virtual int StateAction(StateMem* sm, int load, int data_only, const char* section_name);
- virtual void UpdateInput(const void *data);
- virtual bool RequireNoFrameskip(void);
- virtual pscpu_timestamp_t GPULineHook(const pscpu_timestamp_t line_timestamp, bool vsync, uint32 *pixels, const MDFN_PixelFormat* const format, const unsigned width, const unsigned pix_clock_offset, const unsigned pix_clock, const unsigned pix_clock_divider);
+ virtual void Power(void) override;
+ virtual void UpdateInput(const void *data) override;
+ virtual bool RequireNoFrameskip(void) override;
+ virtual pscpu_timestamp_t GPULineHook(const pscpu_timestamp_t line_timestamp, bool vsync, uint32 *pixels, const MDFN_PixelFormat* const format, const unsigned width, const unsigned pix_clock_offset, const unsigned pix_clock, const unsigned pix_clock_divider) override;
 
  //
  //
  //
- virtual void SetDTR(bool new_dtr);
- virtual bool GetDSR(void);
- virtual bool Clock(bool TxD, int32 &dsr_pulse_delay);
+ virtual void SetDTR(bool new_dtr) override;
+ virtual bool GetDSR(void) override;
+ virtual bool Clock(bool TxD, int32 &dsr_pulse_delay) override;
 
  private:
 
@@ -114,59 +113,60 @@ void InputDevice_GunCon::Power(void)
  line_counter = 0;
 }
 
-int InputDevice_GunCon::StateAction(StateMem* sm, int load, int data_only, const char* section_name)
-{
- SFORMAT StateRegs[] =
- {
-  SFVAR(dtr),
-
-  SFVAR(buttons),
-  SFVAR(trigger_eff),
-  SFVAR(trigger_noclear),
-  SFVAR(hit_x),
-  SFVAR(hit_y),
-
-  SFVAR(nom_x),
-  SFVAR(nom_y),
-  SFVAR(os_shot_counter),
-  SFVAR(prev_oss),
-
-  SFVAR(command_phase),
-  SFVAR(bitpos),
-  SFVAR(receive_buffer),
-
-  SFVAR(command),
-
-  SFARRAY(transmit_buffer, sizeof(transmit_buffer)),
-  SFVAR(transmit_pos),
-  SFVAR(transmit_count),
-
-  SFVAR(prev_vsync),
-  SFVAR(line_counter),
-
-  SFEND
- };
- int ret = MDFNSS_StateAction(sm, load, data_only, StateRegs, section_name);
-
- if(load)
- {
-  if((transmit_pos + transmit_count) > sizeof(transmit_buffer))
-  {
-   transmit_pos = 0;
-   transmit_count = 0;
-  }
- }
-
- return(ret);
-}
+//void InputDevice_GunCon::StateAction(StateMem* sm, const unsigned load, const bool data_only, const char* sname_prefix)
+//{
+// SFORMAT StateRegs[] =
+// {
+//  SFVAR(dtr),
+//
+//  SFVAR(buttons),
+//  SFVAR(trigger_eff),
+//  SFVAR(trigger_noclear),
+//  SFVAR(hit_x),
+//  SFVAR(hit_y),
+//
+//  SFVAR(nom_x),
+//  SFVAR(nom_y),
+//  SFVAR(os_shot_counter),
+//  SFVAR(prev_oss),
+//
+//  SFVAR(command_phase),
+//  SFVAR(bitpos),
+//  SFVAR(receive_buffer),
+//
+//  SFVAR(command),
+//
+//  SFARRAY(transmit_buffer, sizeof(transmit_buffer)),
+//  SFVAR(transmit_pos),
+//  SFVAR(transmit_count),
+//
+//  SFVAR(prev_vsync),
+//  SFVAR(line_counter),
+//
+//  SFEND
+// };
+// char section_name[32];
+// trio_snprintf(section_name, sizeof(section_name), "%s_GunCon", sname_prefix);
+//
+// if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, section_name, true) && load)
+//  Power();
+// else if(load)
+// {
+//  if((transmit_pos + transmit_count) > sizeof(transmit_buffer))
+//  {
+//   transmit_pos = 0;
+//   transmit_count = 0;
+//  }
+// }
+//}
 
 
 void InputDevice_GunCon::UpdateInput(const void *data)
 {
  uint8 *d8 = (uint8 *)data;
 
- nom_x = (int16)MDFN_de16lsb(&d8[0]);
- nom_y = (int16)MDFN_de16lsb(&d8[2]);
+ nom_x = (int16)MDFN_de16lsb<false>(&d8[0]);
+ nom_y = (int16)MDFN_de16lsb<false>(&d8[2]);
 
  trigger_noclear = (bool)(d8[4] & 0x1);
  trigger_eff |= trigger_noclear;
@@ -329,8 +329,8 @@ bool InputDevice_GunCon::Clock(bool TxD, int32 &dsr_pulse_delay)
 	  }
 	 }
 
-	 MDFN_en16lsb(&transmit_buffer[3], hit_x);
-	 MDFN_en16lsb(&transmit_buffer[5], hit_y);
+	 MDFN_en16lsb<false>(&transmit_buffer[3], hit_x);
+	 MDFN_en16lsb<false>(&transmit_buffer[5], hit_y);
 
 	 hit_x = 0x01;
 	 hit_y = 0x0A;
@@ -363,20 +363,6 @@ InputDevice *Device_GunCon_Create(void)
 {
  return new InputDevice_GunCon();
 }
-
-
-InputDeviceInputInfoStruct Device_GunCon_IDII[6] =
-{
- { "x_axis", "X Axis", -1, IDIT_X_AXIS },
- { "y_axis", "Y Axis", -1, IDIT_Y_AXIS },
-
- { "trigger", "Trigger", 0, IDIT_BUTTON, NULL  },
-
- { "a",	"A",		 1, IDIT_BUTTON,	NULL },
- { "b", "B",		 2, IDIT_BUTTON,	NULL },
-
- { "offscreen_shot", "Offscreen Shot(Simulated)", 3, IDIT_BUTTON, NULL },	// Useful for "Judge Dredd", and probably not much else.
-};
 
 
 

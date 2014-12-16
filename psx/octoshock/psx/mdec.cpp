@@ -407,7 +407,7 @@ static void EncodeImage(const unsigned ybn)
 
      YCbCr_to_RGB(by[x], cb[x >> 1], cr[x >> 1], r, g, b);
 
-     StoreU16_LE(pix_out, pixel_xor ^ RGB_to_RGB555(r, g, b));
+     MDFN_en16lsb<true>(pix_out, pixel_xor ^ RGB_to_RGB555(r, g, b));
      pix_out++;
     }
    }
@@ -603,7 +603,7 @@ void MDEC_Run(int32 clocks)
      PixelBufferReadOffset = 0;
      while(PixelBufferReadOffset != PixelBufferCount32)
      {
-      MDEC_WRITE_FIFO(LoadU32_LE(&PixelBuffer.pix32[PixelBufferReadOffset++]));
+      MDEC_WRITE_FIFO(MDFN_de32lsb<true>(&PixelBuffer.pix32[PixelBufferReadOffset++]));
      }
     } while(InCounter != 0xFFFF);
    }

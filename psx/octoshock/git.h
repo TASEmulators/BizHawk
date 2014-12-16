@@ -45,8 +45,6 @@ typedef enum
  GMT_PLAYER	// Music player(NSF, HES, GSF)
 } GameMediumTypes;
 
-#include "state.h"
-
 #ifdef WANT_DEBUGGER
 // #ifdef WANT_DEBUGGER
 // typedef struct DebuggerInfoStruct;
@@ -276,7 +274,6 @@ typedef struct
  // Main save state routine, called by the save state code in state.cpp.
  // When saving, load is set to 0.  When loading, load is set to the version field of the save state being loaded.
  // data_only is true when the save state data is temporary, such as being saved into memory for state rewinding.
- int (*StateAction)(StateMem *sm, int load, int data_only);
 
  void (*Emulate)(EmulateSpecStruct *espec);
  void (*SetInput)(int port, const char *type, void *ptr);
