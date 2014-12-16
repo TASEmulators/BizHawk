@@ -1099,6 +1099,7 @@ namespace BizHawk.Client.EmuHawk
 			Previous_LastSearchMenuItem.Checked = false;
 			PreviousFrameMenuItem.Checked = false;
 			Previous_OriginalMenuItem.Checked = false;
+			Previous_LastChangeMenuItem.Checked = false;
 
 			switch (_settings.PreviousType)
 			{
@@ -1112,9 +1113,13 @@ namespace BizHawk.Client.EmuHawk
 				case Watch.PreviousType.Original:
 					Previous_OriginalMenuItem.Checked = true;
 					break;
+				case Watch.PreviousType.LastChange:
+					Previous_LastChangeMenuItem.Checked = true;
+					break;
 			}
 
 			PreviousFrameMenuItem.Enabled = _settings.Mode != RamSearchEngine.Settings.SearchMode.Fast;
+			Previous_LastChangeMenuItem.Enabled = _settings.Mode != RamSearchEngine.Settings.SearchMode.Fast;
 		}
 
 		private void DetailedMenuItem_Click(object sender, EventArgs e)
@@ -1161,6 +1166,11 @@ namespace BizHawk.Client.EmuHawk
 		private void Previous_OriginalMenuItem_Click(object sender, EventArgs e)
 		{
 			SetPreviousStype(Watch.PreviousType.Original);
+		}
+
+		private void Previous_LastChangeMenuItem_Click(object sender, EventArgs e)
+		{
+			SetPreviousStype(Watch.PreviousType.LastChange);
 		}
 
 		private void BigEndianMenuItem_Click(object sender, EventArgs e)
@@ -1226,7 +1236,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CopyValueToPrevMenuItem_Click(object sender, EventArgs e)
 		{
-			_searches.SetPrevousToCurrent();
+			_searches.SetPreviousToCurrent();
 			WatchListView.Refresh();
 		}
 
