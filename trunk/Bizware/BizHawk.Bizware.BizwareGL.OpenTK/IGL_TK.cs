@@ -44,6 +44,18 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		public string API { get { return "OPENGL"; } }
 
+		public int Version
+		{
+			get
+			{
+				int major, minor;
+				//other overloads may not exist...
+				GL.GetInteger(GetPName.MajorVersion, out major);
+				GL.GetInteger(GetPName.MajorVersion, out minor);
+				return major * 100 + minor * 10;
+			}
+		}
+
 		public IGL_TK()
 		{
 			//make an 'offscreen context' so we can at least do things without having to create a window
