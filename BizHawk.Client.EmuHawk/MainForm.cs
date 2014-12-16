@@ -178,10 +178,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_chromeless = true;
 				}
-				else if (arg.StartsWith("--gdi"))
-				{
-					Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
-				}
 				else if (arg.StartsWith("--fullscreen"))
 				{
 					startFullscreen = true;
