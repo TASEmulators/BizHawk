@@ -1,7 +1,7 @@
 ﻿//TODO hook up newer file ID stuff, think about how to combine it with the disc ID
 //TODO change display manager to not require 0xFF alpha channel set on videoproviders. check gdi+ and opengl! this will get us a speedup in some places
 //TODO Disc.Structure.Sessions[0].length_aba was 0
-//TODO add sram dump option (bold it if dirty) to file menu
+//TODO mednafen 0.9.37 changed some disc region detection heuristics. analyze and apply in c# side. also the SCEX id handling changed, maybe simplified
 
 using System;
 using System.ComponentModel;
@@ -35,14 +35,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Select", "P1 Start", "P1 Square", "P1 Triangle", "P1 Circle", "P1 Cross", "P1 L1", 
                 "P1 R1",  "P1 L2", "P1 R2", "P1 L3", "P1 R3", "P1 MODE",  
 				//"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Select", "P2 Start", "P2 Square", "P2 Triangle", "P2 Circle", "P2 Cross", "P2 L1", 
-                //"P2 R1",  "P2 L2", "P2 R2", "P2 L3", "P2 R3", "P2 MODE",
+          //      "P2 R1",  "P2 L2", "P2 R2", "P2 L3", "P2 R3", "P2 MODE",
 				"Eject", "Reset", 
 			},
 			FloatControls =
 			{
 				"P1 LStick X", "P1 LStick Y", "P1 RStick X", "P1 RStick Y",
 				//"P2 LStick X", "P2 LStick Y", "P2 RStick X", "P2 RStick Y",
-                //TODO: Fix "Disc Switch",
 				"Disc Select",
 			},
 			FloatRanges = 
@@ -302,28 +301,28 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			uint buttons = 0;
 
 			//dualshock style
-			if (Controller["Select"]) buttons |= 1;
-			if (Controller["L3"]) buttons |= 2;
-			if (Controller["R3"]) buttons |= 4;
-			if (Controller["Start"]) buttons |= 8;
-			if (Controller["Up"]) buttons |= 16;
-			if (Controller["Right"]) buttons |= 32;
-			if (Controller["Down"]) buttons |= 64;
-			if (Controller["Left"]) buttons |= 128;
-			if (Controller["L2"]) buttons |= 256;
-			if (Controller["R2"]) buttons |= 512;
-			if (Controller["L1"]) buttons |= 1024;
-			if (Controller["R1"]) buttons |= 2048;
-			if (Controller["Triangle"]) buttons |= 4096;
-			if (Controller["Circle"]) buttons |= 8192;
-			if (Controller["Cross"]) buttons |= 16384;
-			if (Controller["Square"]) buttons |= 32768;
-			if (Controller["MODE"]) buttons |= 65536;
+			if (Controller["P1 Select"]) buttons |= 1;
+			if (Controller["P1 L3"]) buttons |= 2;
+			if (Controller["P1 R3"]) buttons |= 4;
+			if (Controller["P1 Start"]) buttons |= 8;
+			if (Controller["P1 Up"]) buttons |= 16;
+			if (Controller["P1 Right"]) buttons |= 32;
+			if (Controller["P1 Down"]) buttons |= 64;
+			if (Controller["P1 Left"]) buttons |= 128;
+			if (Controller["P1 L2"]) buttons |= 256;
+			if (Controller["P1 R2"]) buttons |= 512;
+			if (Controller["P1 L1"]) buttons |= 1024;
+			if (Controller["P1 R1"]) buttons |= 2048;
+			if (Controller["P1 Triangle"]) buttons |= 4096;
+			if (Controller["P1 Circle"]) buttons |= 8192;
+			if (Controller["P1 Cross"]) buttons |= 16384;
+			if (Controller["P1 Square"]) buttons |= 32768;
+			if (Controller["P1 MODE"]) buttons |= 65536;
 
-			byte left_x = (byte)Controller.GetFloat("LStick X");
-			byte left_y = (byte)Controller.GetFloat("LStick Y");
-			byte right_x = (byte)Controller.GetFloat("RStick X");
-			byte right_y = (byte)Controller.GetFloat("RStick Y");
+			byte left_x = (byte)Controller.GetFloat("P1 LStick X");
+			byte left_y = (byte)Controller.GetFloat("P1 LStick Y");
+			byte right_x = (byte)Controller.GetFloat("P1 RStick X");
+			byte right_y = (byte)Controller.GetFloat("P1 RStick Y");
 
 			OctoshockDll.shock_Peripheral_SetPadInput(psx, 0x01, buttons, left_x, left_y, right_x, right_y);
 		}
