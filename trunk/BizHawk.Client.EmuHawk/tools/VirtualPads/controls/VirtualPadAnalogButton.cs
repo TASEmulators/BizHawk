@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class VirtualPadAnalogButton : UserControl, IVirtualPadControl
 	{
 		private string _displayName = string.Empty;
-		private int _maxValue;
+		private int _maxValue, _minValue;
 		private bool _programmaticallyChangingValue;
 		private bool _readonly;
 
@@ -130,9 +130,41 @@ namespace BizHawk.Client.EmuHawk
 				if (AnalogTrackBar != null)
 				{
 					AnalogTrackBar.Maximum = _maxValue;
-					AnalogTrackBar.TickFrequency = _maxValue / 10;
+					UpdateTickFrequency();
 				}
 			}
+		}
+
+		public int MinValue
+		{
+			get
+			{
+				return _minValue;
+			}
+
+			set
+			{
+				_minValue = value;
+				if (AnalogTrackBar != null)
+				{
+					AnalogTrackBar.Minimum = _minValue;
+					UpdateTickFrequency();
+				}
+			}
+		}
+
+		void UpdateTickFrequency()
+		{
+			if (AnalogTrackBar == null) return;
+			//try to base it on the width, lets make a tick every 10 pixels at the minimum
+			int canDoTicks = AnalogTrackBar.Width / 10;
+			if (canDoTicks < 2) canDoTicks = 2;
+			int range = _maxValue - _minValue + 1;
+			if (range < canDoTicks)
+				canDoTicks = range;
+			if (canDoTicks <= 0)
+				canDoTicks = 1;
+			AnalogTrackBar.TickFrequency = range / canDoTicks;
 		}
 
 		public int CurrentValue

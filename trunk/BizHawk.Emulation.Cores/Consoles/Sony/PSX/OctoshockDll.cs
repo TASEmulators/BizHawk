@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		};
 
 
-		public enum ePeripheralType
+		public enum ePeripheralType : int
 		{
 			None = 0, //can be used to signify disconnection
 
@@ -143,63 +143,62 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int ShockDisc_ReadLBA(IntPtr opaque, int lba, void* dst);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_CreateDisc(out IntPtr outDisc, IntPtr Opaque, int lbaCount, ShockDisc_ReadTOC ReadTOC, ShockDisc_ReadLBA ReadLBA2448, bool suppliesDeinterleavedSubcode);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_DestroyDisc(IntPtr disc);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_AnalyzeDisc(IntPtr disc, out ShockDiscInfo info);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_Create(out IntPtr psx, eRegion region, void* firmware512k);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_Destroy(IntPtr psx);
 
-		[DllImport(dd)]
-
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_Peripheral_Connect(
 			IntPtr psx,
 			int address,
 			[MarshalAs(UnmanagedType.I4)] ePeripheralType type
 			);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_Peripheral_SetPadInput(IntPtr psx, int address, uint buttons, byte left_x, byte left_y, byte right_x, byte right_y);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_Peripheral_MemcardTransact(IntPtr psx, int address, ref ShockMemcardTransaction transaction);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_MountEXE(IntPtr psx, void* exebuf, int size);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_PowerOn(IntPtr psx);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_PowerOff(IntPtr psx);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_OpenTray(IntPtr psx);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_SetDisc(IntPtr psx, IntPtr disc);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_CloseTray(IntPtr psx);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_Step(IntPtr psx, eShockStep step);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_GetFramebuffer(IntPtr psx, ref ShockFramebufferInfo fb);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_GetSamples(IntPtr psx, void* buffer);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_GetMemData(
 			IntPtr psx,
 			out IntPtr ptr,
