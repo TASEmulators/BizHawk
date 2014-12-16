@@ -43,6 +43,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				"P1 LStick X", "P1 LStick Y", "P1 RStick X", "P1 RStick Y",
 				//"P2 LStick X", "P2 LStick Y", "P2 RStick X", "P2 RStick Y",
                 //TODO: Fix "Disc Switch",
+				"Disc Select",
 			},
 			FloatRanges = 
 			{
@@ -50,6 +51,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				new[] {255.0f, 128.0f, 0.0f},
 				new[] {0.0f, 128.0f, 255.0f},
 				new[] {255.0f, 128.0f, 0.0f},
+				new[] {1.0f,1.0f,5.0f},
 			}
 		};
 

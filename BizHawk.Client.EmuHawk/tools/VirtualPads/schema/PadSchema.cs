@@ -30,6 +30,7 @@ namespace BizHawk.Client.EmuHawk
 			public Size TargetSize { get; set; } // Specifically for TargetedPair, specifies the screen size
 			public string[] SecondaryNames { get; set; } // Any other buttons necessary to operate (such as the Y axis)
 			public int MaxValue { get; set; } // For non-boolean values, specifies the maximum value the button allows
+			public int MinValue { get; set; } // For non-boolean values, specifies the minimum value the button allows
 		}
 	}
 

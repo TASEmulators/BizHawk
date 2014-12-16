@@ -12,16 +12,16 @@ namespace BizHawk.Client.EmuHawk
 		public IEnumerable<PadSchema> GetPadSchemas()
 		{
 			yield return DualShockController(1);
-            yield return ConsoleButtons();
+			yield return ConsoleButtons();
 		}
 
-        public static PadSchema DualShockController(int controller)
-        {
-            return new PadSchema
-            {
-                IsConsole = false,
-                DefaultSize = new Size(420, 260),
-                Buttons = new[]
+		public static PadSchema DualShockController(int controller)
+		{
+			return new PadSchema
+			{
+				IsConsole = false,
+				DefaultSize = new Size(420, 260),
+				Buttons = new[]
 				{
 					new PadSchema.ButtonScema
 					{
@@ -151,7 +151,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(3, 120),
 						Type = PadSchema.PadInputType.AnalogStick
 					},
-                    new PadSchema.ButtonScema
+										new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " RStick X",
 						MaxValue = 127,
@@ -160,9 +160,9 @@ namespace BizHawk.Client.EmuHawk
 						Type = PadSchema.PadInputType.AnalogStick
 					}
 				}
-            };
-        }
-        private static PadSchema ConsoleButtons()
+			};
+		}
+		private static PadSchema ConsoleButtons()
 		{
 			return new PadSchema
 			{
@@ -185,13 +185,15 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(60, 15),
 						Type = PadSchema.PadInputType.Boolean
 					},
-                    new PadSchema.ButtonScema
+					new PadSchema.ButtonScema
 					{
-						Name = "Disc Switch",
-						MaxValue = 50,
-						DisplayName = "",
+						Name = "Disc Select",
+						MinValue = 1,
+						MaxValue = 5,
+						DisplayName = "Disc Select",
 						Location = new Point(10, 40),
-						Type = PadSchema.PadInputType.AnalogStick
+						TargetSize = new Size(300,100),
+						Type = PadSchema.PadInputType.FloatSingle
 					}
 				}
 			};
