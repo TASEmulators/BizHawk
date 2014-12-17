@@ -38,10 +38,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			if (!IsHandleCreated || IsDisposed)
-			{
-				return;
-			}
+			// TODO
 		}
 
 		public bool AskSaveChanges()
