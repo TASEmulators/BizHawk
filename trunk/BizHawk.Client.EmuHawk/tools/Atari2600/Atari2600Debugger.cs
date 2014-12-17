@@ -26,7 +26,8 @@ namespace BizHawk.Client.EmuHawk
 		// Video Frame advance
 		// Add to toolbox
 
-		private Atari2600 _core = Global.Emulator as Atari2600;
+		[RequiredService]
+		private Atari2600 _core { get; set; }
 		private readonly List<string> _instructions = new List<string>();
 
 		private readonly AtariBreakpointList Breakpoints = new AtariBreakpointList();
