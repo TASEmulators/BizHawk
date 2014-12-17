@@ -58,6 +58,9 @@
 namespace MDFN_IEN_PSX
 {
 
+//static data
+uint8 PS_GPU::DitherLUT[4][4][512];	// Y, X, 8-bit source value(256 extra for saturation)
+
 static const int8 dither_table[4][4] =
 {
  { -4,  0, -3,  1 },
@@ -66,28 +69,47 @@ static const int8 dither_table[4][4] =
  {  3, -1,  2, -2 },
 };
 
-PS_GPU::PS_GPU(bool pal_clock_and_tv, int sls, int sle, bool show_h_overscan) : BlitterFIFO(0x20) // 0x10 on actual PS1 GPU, 0x20 here(see comment at top of gpu.h)	// 0x10)
+
+void PS_GPU::StaticInitialize()
 {
+	static bool initialized = false;
+	if(initialized) return;
+
+	initialized = true;
+	for(int y = 0; y < 4; y++)
+	{
+		for(int x = 0; x < 4; x++)
+		{
+			for(int v = 0; v < 512; v++)
+			{
+				int value = v + dither_table[y][x];
+
+				value >>= 3;
+
+				if(value < 0)
+					value = 0;
+
+				if(value > 0x1F)
+					value = 0x1F;
+
+				DitherLUT[y][x][v] = value;
+			}
+		}
+	}
+
+ memcpy(&Commands[0x00], Commands_00_1F, sizeof(Commands_00_1F));
+ memcpy(&Commands[0x20], Commands_20_3F, sizeof(Commands_20_3F));
+ memcpy(&Commands[0x40], Commands_40_5F, sizeof(Commands_40_5F));
+ memcpy(&Commands[0x60], Commands_60_7F, sizeof(Commands_60_7F));
+ memcpy(&Commands[0x80], Commands_80_FF, sizeof(Commands_80_FF));
+}
+
+PS_GPU::PS_GPU(bool pal_clock_and_tv) : BlitterFIFO(0x20) // 0x10 on actual PS1 GPU, 0x20 here(see comment at top of gpu.h)	// 0x10)
+{
+	//todo - not thread safe
+	StaticInitialize();
+
  HardwarePALType = pal_clock_and_tv;
-
- hide_hoverscan = !show_h_overscan;
-
- for(int y = 0; y < 4; y++)
-  for(int x = 0; x < 4; x++)
-   for(int v = 0; v < 512; v++)
-   {
-    int value = v + dither_table[y][x];
-
-    value >>= 3;
- 
-    if(value < 0)
-     value = 0;
-
-    if(value > 0x1F)
-     value = 0x1F;
-
-    DitherLUT[y][x][v] = value;
-   }
 
  if(HardwarePALType == false)	// NTSC clock
  {
@@ -100,15 +122,6 @@ PS_GPU::PS_GPU(bool pal_clock_and_tv, int sls, int sle, bool show_h_overscan) : 
   hmc_to_visible = 560; 
  }
 
- LineVisFirst = sls;
- LineVisLast = sle;
-
-
- memcpy(&Commands[0x00], Commands_00_1F, sizeof(Commands_00_1F));
- memcpy(&Commands[0x20], Commands_20_3F, sizeof(Commands_20_3F));
- memcpy(&Commands[0x40], Commands_40_5F, sizeof(Commands_40_5F));
- memcpy(&Commands[0x60], Commands_60_7F, sizeof(Commands_60_7F));
- memcpy(&Commands[0x80], Commands_80_FF, sizeof(Commands_80_FF));
 }
 
 PS_GPU::~PS_GPU()
@@ -1551,4 +1564,12 @@ SYNCFUNC(PS_GPU)
 
 }
 
+void PS_GPU::SetRenderOptions(::ShockRenderOptions* opts)
+{
+	hide_hoverscan = !!opts->clipOverscan;
+	LineVisFirst = opts->scanline_start;
+	LineVisLast = opts->scanline_end;
 }
+
+}
+

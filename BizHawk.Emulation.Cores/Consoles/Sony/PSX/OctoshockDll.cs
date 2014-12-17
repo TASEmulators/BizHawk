@@ -20,6 +20,12 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			NONE = 3 //TODO - whats the difference between unset, and region unknown?
 		}
 
+		public enum eVidStandard : int
+		{
+			NTSC = 0,
+			PAL = 1,
+		}
+
 		public enum eShockStep
 		{
 			Frame
@@ -111,6 +117,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		};
 
 		[StructLayout(LayoutKind.Sequential)]
+		public struct ShockRenderOptions
+		{
+			public int scanline_start, scanline_end;
+			public bool clipOverscan;
+		};
+
+		[StructLayout(LayoutKind.Sequential)]
 		public struct ShockMemcardTransaction
 		{
 			[MarshalAs(UnmanagedType.I4)]
@@ -188,6 +201,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_CloseTray(IntPtr psx);
+
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern int shock_SetRenderOptions(IntPtr psx, ref ShockRenderOptions opts);
 
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_Step(IntPtr psx, eShockStep step);

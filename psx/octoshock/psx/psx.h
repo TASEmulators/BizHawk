@@ -258,6 +258,12 @@ struct ShockFramebufferInfo
 	void* ptr;
 };
 
+struct ShockRenderOptions
+{
+	s32 scanline_start, scanline_end;
+	bool clipOverscan;
+};
+
 struct ShockMemcardTransaction
 {
 	eShockMemcardTransaction transaction;
@@ -326,6 +332,9 @@ EW_EXPORT s32 shock_SetDisc(void* psx, ShockDiscRef* disc);
 
 //Closes the disc tray. Returns SHOCK_NOCANDO if already closed.
 EW_EXPORT s32 shock_CloseTray(void* psx);
+
+//Sets rendering options for next frame
+EW_EXPORT s32 shock_SetRenderOptions(void* psx, ShockRenderOptions* opts);
 
 //Steps emulation by the specified interval
 //TODO - think about something. After loadstating, the device input state is probably nonsense. 
