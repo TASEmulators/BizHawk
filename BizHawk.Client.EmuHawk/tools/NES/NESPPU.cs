@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _forceChange;
 
 		[RequiredService]
-		private INESPPUViewable xxx { get; set; }
+		private INESPPUViewable _ppu { get; set; }
 		[RequiredService]
 		private IEmulator _emu { get; set; }
 
@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			xxx.InstallCallback2(() => Generate(), scanline);
+			_ppu.InstallCallback2(() => Generate(), scanline);
 		}
 
 		public void FastUpdate()
@@ -177,10 +177,10 @@ namespace BizHawk.Client.EmuHawk
 			if (_emu.Frame % RefreshRate.Value != 0 && !now)
 				return;
 
-			byte[] PALRAM = xxx.GetPalRam();
-			int[] FinalPalette = xxx.GetPalette();
-			byte[] OAM = xxx.GetOam();
-			byte[] PPUBus = xxx.GetPPUBus();
+			byte[] PALRAM = _ppu.GetPalRam();
+			int[] FinalPalette = _ppu.GetPalette();
+			byte[] OAM = _ppu.GetOam();
+			byte[] PPUBus = _ppu.GetPPUBus();
 
 			int b0;
 			int b1;
@@ -211,8 +211,8 @@ namespace BizHawk.Client.EmuHawk
 			var bmpdata2 = SpriteView.sprites.LockBits(new Rectangle(new Point(0, 0), SpriteView.sprites.Size), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			var framebuf2 = (int*)bmpdata2.Scan0.ToPointer();
 
-			int pt_add = xxx.SPBaseHigh ? 0x1000 : 0;
-			bool is8x16 = xxx.SPTall;
+			int pt_add = _ppu.SPBaseHigh ? 0x1000 : 0;
+			bool is8x16 = _ppu.SPTall;
 
 
 			// Sprite Viewer
@@ -616,10 +616,10 @@ namespace BizHawk.Client.EmuHawk
 			if (e.X >= SpriteView.ClientRectangle.Right) return;
 			if (e.Y >= SpriteView.ClientRectangle.Bottom) return;
 
-			byte[] OAM = xxx.GetOam();
-			byte[] PPUBus = xxx.GetPPUBus(); // caching is quicker, but not really correct in this case
+			byte[] OAM = _ppu.GetOam();
+			byte[] PPUBus = _ppu.GetPPUBus(); // caching is quicker, but not really correct in this case
 
-			bool is8x16 = xxx.SPTall;
+			bool is8x16 = _ppu.SPTall;
 			var spriteNumber = ((e.Y / 24) * 16) + (e.X / 16);
 			int x = OAM[(spriteNumber * 4) + 3];
 			int y = OAM[spriteNumber * 4];
@@ -712,7 +712,7 @@ namespace BizHawk.Client.EmuHawk
 			var bmp = new Bitmap(64, 64);
 			var g = Graphics.FromImage(bmp);
 
-			byte[] PALRAM = xxx.GetPalRam();
+			byte[] PALRAM = _ppu.GetPalRam();
 
 			if (baseAddr == 0x3F00)
 			{
@@ -796,16 +796,16 @@ namespace BizHawk.Client.EmuHawk
 			tile += (e.Y / 8) * 16;
 			var usage = "Usage: ";
 
-			if (xxx.BGBaseHigh == address >= 0x1000) // bghigh
+			if (_ppu.BGBaseHigh == address >= 0x1000) // bghigh
 			{
 				usage = "BG";
 			}
-			else if (xxx.SPBaseHigh == address >= 0x1000) // sphigh
+			else if (_ppu.SPBaseHigh == address >= 0x1000) // sphigh
 			{
 				usage = "SPR";
 			}
 
-			if (xxx.SPTall) // spbig
+			if (_ppu.SPTall) // spbig
 			{
 				usage += " (SPR16)";
 			}
@@ -822,13 +822,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (int.TryParse(txtScanline.Text, out scanline))
 			{
-				xxx.InstallCallback2(() => Generate(), scanline);
+				_ppu.InstallCallback2(() => Generate(), scanline);
 			}
 		}
 
 		private void NesPPU_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			xxx.RemoveCallback2();
+			_ppu.RemoveCallback2();
 		}
 
 		#endregion
@@ -849,7 +849,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CHRROMViewReload()
 		{
-			CHRROM = xxx.GetCHRROM();
+			CHRROM = _ppu.GetCHRROM();
 			if (CHRROM == null)
 			{
 				numericUpDownCHRROMBank.Enabled = false;
@@ -873,7 +873,7 @@ namespace BizHawk.Client.EmuHawk
 				for (int i = 0; i < 8192; i++)
 					chrromcache[i] = CHRROM.PeekByte(offs + i);
 
-				DrawPatternView(CHRROMView, chrromcache, xxx.GetPalette(), xxx.GetPalRam());
+				DrawPatternView(CHRROMView, chrromcache, _ppu.GetPalette(), _ppu.GetPalRam());
 			}
 		}
 
