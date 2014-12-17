@@ -80,8 +80,6 @@ namespace BizHawk.Client.EmuHawk
 			AddressLabel.Font = font;
 
 			TopMost = Global.Config.HexEditorSettings.TopMost;
-
-			Restart();
 		}
 
 		private int? HighlightedAddress
@@ -446,8 +444,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HexEditor_Load(object sender, EventArgs e)
 		{
-			Restart();
-
 			_defaultWidth = Size.Width;     // Save these first so that the user can restore to its original size
 			_defaultHeight = Size.Height;
 

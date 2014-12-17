@@ -253,8 +253,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Location = Global.Config.SmsVdpSettings.WindowPosition;
 			}
-
-			Restart();
 		}
 
 		private void AutoloadMenuItem_Click(object sender, EventArgs e)
