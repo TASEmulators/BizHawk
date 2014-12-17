@@ -494,7 +494,9 @@ namespace BizHawk.Bizware.BizwareGL
 			//note: we lock it as 32bpp even if the bitmap is 24bpp so we can write to it more conveniently. 
 			var bmpdata = bmp.LockBits(new sd.Rectangle(0, 0, Width, Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
-			if (bmp.Width != 0 && bmp.Height != 0)
+			if(bmpdata.Stride == bmpdata.Width*4)
+				Marshal.Copy(Pixels, 0, bmpdata.Scan0, Width * Height);
+			else if (bmp.Width != 0 && bmp.Height != 0)
 			{
 				int* ptr = (int*)bmpdata.Scan0.ToPointer();
 				int stride = bmpdata.Stride;
