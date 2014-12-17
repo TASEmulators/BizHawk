@@ -13,6 +13,7 @@ using BizHawk.Client.Common;
 
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Common.Components;
+using BizHawk.Emulation.Common;
 
 using ICSharpCode.SharpZipLib.Zip;
 

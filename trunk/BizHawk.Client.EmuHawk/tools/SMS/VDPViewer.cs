@@ -10,6 +10,7 @@ using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 using System.Drawing.Imaging;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {

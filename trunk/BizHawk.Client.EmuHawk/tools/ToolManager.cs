@@ -6,6 +6,8 @@ using System.Reflection;
 
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
+
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -33,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!typeof(IToolForm).IsAssignableFrom(toolType))
 				throw new ArgumentException(String.Format("Type {0} does not implement IToolForm.", toolType.Name));
 
-			if (!IsAvailable(toolType))
+			if (!ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, toolType))
 				return null;
 
 			var existingTool = _tools.FirstOrDefault(x => toolType.IsAssignableFrom(x.GetType()));
@@ -54,51 +56,11 @@ namespace BizHawk.Client.EmuHawk
 
 			var newTool = CreateInstance(toolType);
 
-			UpdateServices(newTool);
+			ServiceInjector.UpdateServices(Global.Emulator.ServiceProvider, newTool);
 			newTool.Restart();
 
 			newTool.Show();
 			return newTool;
-		}
-
-
-
-		private static IEnumerable<PropertyInfo> GetPropertiesWithAttr(Type type, Type attributeType)
-		{
-			return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic)
-				.Where(p => p.GetCustomAttributes(attributeType, false).Length > 0);
-		}
-
-		/// <summary>
-		/// Feeds the tool its required services.
-		/// </summary>
-		private void UpdateServices(IToolForm tool)
-		{
-			var toolType = tool.GetType();
-
-			foreach (var propinfo in GetPropertiesWithAttr(toolType, typeof(RequiredService)))
-			{
-				var service =  Global.Emulator.ServiceProvider.GetService(propinfo.PropertyType);
-				propinfo.GetSetMethod(true).Invoke(tool, new[] { service });
-			}
-
-			foreach (var propinfo in GetPropertiesWithAttr(toolType, typeof(OptionalService)))
-			{
-				var service = Global.Emulator.ServiceProvider.HasService(propinfo.PropertyType)
-					? Global.Emulator.ServiceProvider.GetService(propinfo.PropertyType) : null;
-				propinfo.GetSetMethod(true).Invoke(tool, new[] { service });
-			}
-		}
-
-		/// <summary>
-		/// Determines whether a tool is available, considering its dependencies
-		/// and the services provided by the emulator core.
-		/// </summary>
-		public bool IsAvailable(Type toolType)
-		{
-			return GetPropertiesWithAttr(toolType, typeof(RequiredService))
-				.Select(pi => pi.PropertyType)
-				.All(t => Global.Emulator.ServiceProvider.HasService(t));
 		}
 
 		/// <summary>
@@ -198,9 +160,9 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var tool in _tools)
 			{
-				if (IsAvailable(tool.GetType()))
+				if (ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, tool.GetType()))
 				{
-					UpdateServices(tool);
+					ServiceInjector.UpdateServices(Global.Emulator.ServiceProvider, tool);
 					if ((tool.IsHandleCreated && !tool.IsDisposed) || tool is RamWatch) // Hack for Ram Watch - in display watches mode it wants to keep running even closed, it will handle disposed logic
 					{
 						tool.Restart();

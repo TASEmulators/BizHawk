@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.PCEngine;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {

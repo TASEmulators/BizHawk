@@ -62,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 				.Where(t => VersionInfo.DeveloperBuild ? true : !(t.GetCustomAttributes(false)
 					.OfType<ToolAttributes>().Any(a => !a.Released)))
 				.Where(t => !(t == typeof(GBGameGenie))) // Hack, this tool is specific to a system id and a sub-system (gb and gg) we have no reasonable way to declare a dependency like that
-				.Where(t => GlobalWin.Tools.IsAvailable(t))
+				.Where(t => BizHawk.Emulation.Common.ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, t))
 				.Select(t => Activator.CreateInstance(t))
 				.Select(instance => new
 				{
