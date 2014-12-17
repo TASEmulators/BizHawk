@@ -100,6 +100,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public PCEngine(CoreComm comm, GameInfo game, Disc disc, object Settings, object syncSettings)
 		{
 			CoreComm = comm;
+			ServiceProvider = new BasicServiceProvider(this);
 			Tracer = new TraceBuffer();
 			MemoryCallbacks = new MemoryCallbackSystem();
 			DriveLightEnabled = true;
