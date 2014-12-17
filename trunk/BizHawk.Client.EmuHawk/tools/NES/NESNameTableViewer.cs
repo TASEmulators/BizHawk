@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IEmulator _emu { get; set; }
 
-		private readonly NES.PPU.DebugCallback _callback = new NES.PPU.DebugCallback();
+		int scanline;
 
 		public NESNameTableViewer()
 		{
@@ -32,7 +32,6 @@ namespace BizHawk.Client.EmuHawk
 					Global.Config.NESNameTableRefreshRate = RefreshRate.Value;
 				};
 			TopMost = Global.Config.NesNameTableSettings.TopMost;
-			_callback.Callback = () => Generate();
 		}
 
 		private void NESNameTableViewer_Load(object sender, EventArgs e)
@@ -58,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			_nes.ppu.NTViewCallback = _callback;
+			xxx.InstallCallback1(() => Generate(), scanline);
 		}
 
 		public void FastUpdate()
@@ -286,18 +285,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NESNameTableViewer_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			if (_nes != null && _nes.ppu.NTViewCallback == _callback)
-			{
-				_nes.ppu.NTViewCallback = null;
-			}
+			xxx.RemoveCallback1();
 		}
 
 		private void ScanlineTextbox_TextChanged(object sender, EventArgs e)
 		{
-			int temp;
-			if (int.TryParse(txtScanline.Text, out temp))
+			if (int.TryParse(txtScanline.Text, out scanline))
 			{
-				_callback.Scanline = temp;
+				xxx.InstallCallback1(() => Generate(), scanline);
 			}
 		}
 

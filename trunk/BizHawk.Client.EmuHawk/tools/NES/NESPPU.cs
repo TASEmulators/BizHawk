@@ -17,11 +17,10 @@ namespace BizHawk.Client.EmuHawk
 		// Speedups
 		// Smarter refreshing?  only refresh when things of changed, perhaps peek at the ppu to when the pattern table has changed, or sprites have moved
 		// Maybe 48 individual bitmaps for sprites is faster than the overhead of redrawing all that transparent space
-		private readonly byte[] _ppuBus = Enumerable.Repeat((byte)0, 0x2000).ToArray();
-		private readonly byte[] _ppuBusprev = Enumerable.Repeat((byte)0, 0x2000).ToArray();
-		private readonly byte[] _palRam = Enumerable.Repeat((byte)0, 0x20).ToArray();
-		private readonly byte[] _palRamPrev = Enumerable.Repeat((byte)0, 0x20).ToArray();
-		private readonly NES.PPU.DebugCallback _callback = new NES.PPU.DebugCallback();
+		private readonly byte[] _ppuBusprev = new byte[0x3000];
+		private readonly byte[] _palRamPrev = new byte[0x20];
+
+		int scanline;
 
 		private Bitmap _zoomBoxDefaultImage = new Bitmap(64, 64);
 		private bool _forceChange;
@@ -43,7 +42,6 @@ namespace BizHawk.Client.EmuHawk
 					Global.Config.NESPPURefreshRate = RefreshRate.Value;
 				};
 			TopMost = Global.Config.NesPPUSettings.TopMost;
-			_callback.Callback = () => Generate();
 			CalculateFormSize();
 		}
 
@@ -63,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			_nes.ppu.PPUViewCallback = _callback;
+			xxx.InstallCallback2(() => Generate(), scanline);
 		}
 
 		public void FastUpdate()
@@ -87,33 +85,37 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private byte GetBit(int address, int bit)
+		private byte GetBit(byte[] PPUBus, int address, int bit)
 		{
-			return (byte)((_ppuBus[address] >> (7 - bit)) & 1);
+			return (byte)((PPUBus[address] >> (7 - bit)) & 1);
 		}
 
-		private bool CheckChange()
+		private bool CheckChange(byte[] PALRAM, byte[] PPUBus)
 		{
 			bool changed = false;
-			for (var i = 0; i < 0x20; i++)
+			for (int i = 0; i < 0x20; i++)
 			{
-				_palRamPrev[i] = _palRam[i];
-				_palRam[i] = _nes.ppu.PALRAM[i];
-				if (_palRam[i] != _palRamPrev[i])
+				if (_palRamPrev[i] != PALRAM[i])
 				{
 					changed = true;
+					break;
 				}
 			}
 
-			for (var i = 0; i < 0x2000; i++)
+			if (!changed)
 			{
-				_ppuBusprev[i] = _ppuBus[i];
-				_ppuBus[i] = _nes.ppu.ppubus_peek(i);
-				if (_ppuBus[i] != _ppuBusprev[i])
+				for (int i = 0; i < 0x2000; i++)
 				{
-					changed = true;
+					if (_ppuBusprev[i] != PPUBus[i])
+					{
+						changed = true;
+						break;
+					}
 				}
 			}
+
+			Buffer.BlockCopy(PALRAM, 0, _palRamPrev, 0, 0x20);
+			Buffer.BlockCopy(PPUBus, 0, _ppuBusprev, 0, 0x3000);
 
 			if (_forceChange)
 			{
@@ -180,13 +182,14 @@ namespace BizHawk.Client.EmuHawk
 			byte[] PALRAM = xxx.GetPalRam();
 			int[] FinalPalette = xxx.GetPalette();
 			byte[] OAM = xxx.GetOam();
+			byte[] PPUBus = xxx.GetPPUBus();
 
 			int b0;
 			int b1;
 			byte value;
 			int cvalue;
 
-			if (CheckChange())
+			if (CheckChange(PALRAM, PPUBus))
 			{
 				_forceChange = false;
 
@@ -204,7 +207,7 @@ namespace BizHawk.Client.EmuHawk
 					PaletteView.Refresh();
 				}
 
-				DrawPatternView(PatternView, _ppuBus, FinalPalette, PALRAM);
+				DrawPatternView(PatternView, PPUBus, FinalPalette, PALRAM);
 			}
 
 			var bmpdata2 = SpriteView.sprites.LockBits(new Rectangle(new Point(0, 0), SpriteView.sprites.Size), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
@@ -242,8 +245,8 @@ namespace BizHawk.Client.EmuHawk
 						for (int y = 0; y < 8; y++)
 						{
 							int address = patternAddr + y;
-							b0 = (byte)((_ppuBus[address] >> (7 - x)) & 1);
-							b1 = (byte)((_ppuBus[address + 8] >> (7 - x)) & 1);
+							b0 = (byte)((PPUBus[address] >> (7 - x)) & 1);
+							b1 = (byte)((PPUBus[address + 8] >> (7 - x)) & 1);
 							value = (byte)(b0 + (b1 << 1));
 							cvalue = FinalPalette[PALRAM[16 + value + (Palette << 2)]];
 
@@ -257,8 +260,8 @@ namespace BizHawk.Client.EmuHawk
 							for (int y = 0; y < 8; y++)
 							{
 								int address = patternAddr + y;
-								b0 = (byte)((_ppuBus[address] >> (7 - x)) & 1);
-								b1 = (byte)((_ppuBus[address + 8] >> (7 - x)) & 1);
+								b0 = (byte)((PPUBus[address] >> (7 - x)) & 1);
+								b1 = (byte)((PPUBus[address + 8] >> (7 - x)) & 1);
 								value = (byte)(b0 + (b1 << 1));
 								cvalue = FinalPalette[PALRAM[16 + value + (Palette << 2)]];
 
@@ -616,6 +619,7 @@ namespace BizHawk.Client.EmuHawk
 			if (e.Y >= SpriteView.ClientRectangle.Bottom) return;
 
 			byte[] OAM = xxx.GetOam();
+			byte[] PPUBus = xxx.GetPPUBus(); // caching is quicker, but not really correct in this case
 
 			bool is8x16 = xxx.SPTall;
 			var spriteNumber = ((e.Y / 24) * 16) + (e.X / 16);
@@ -625,9 +629,9 @@ namespace BizHawk.Client.EmuHawk
 			var attributes = OAM[(spriteNumber * 4) + 2];
 
 			var flags = "Flags: ";
-			int h = GetBit(attributes, 6);
-			int v = GetBit(attributes, 7);
-			int priority = GetBit(attributes, 5);
+			int h = GetBit(PPUBus, attributes, 6);
+			int v = GetBit(PPUBus, attributes, 7);
+			int priority = GetBit(PPUBus, attributes, 5);
 			if (h > 0)
 			{
 				flags += "H ";
@@ -818,19 +822,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ScanlineTextbox_TextChanged(object sender, EventArgs e)
 		{
-			int temp;
-			if (int.TryParse(txtScanline.Text, out temp))
+			if (int.TryParse(txtScanline.Text, out scanline))
 			{
-				_callback.Scanline = temp;
+				xxx.InstallCallback2(() => Generate(), scanline);
 			}
 		}
 
 		private void NesPPU_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			if (_nes != null && _nes.ppu.PPUViewCallback == _callback)
-			{
-				_nes.ppu.PPUViewCallback = null;
-			}
+			xxx.RemoveCallback2();
 		}
 
 		#endregion
