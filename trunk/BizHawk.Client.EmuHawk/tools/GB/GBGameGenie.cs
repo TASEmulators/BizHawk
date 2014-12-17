@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -19,9 +18,6 @@ namespace BizHawk.Client.EmuHawk
 
 		[RequiredService]
 		private IMemoryDomains MemoryDomainSource { get; set; }
-
-		[RequiredService]
-		private Gameboy Gb { get; set; }
 
 		private MemoryDomainList MemoryDomains { get { return MemoryDomainSource.MemoryDomains; } }
 
