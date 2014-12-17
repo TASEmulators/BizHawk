@@ -133,11 +133,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			if (!IsHandleCreated || IsDisposed)
-			{
-				return;
-			}
-
 			var theDomain = _domain.Name.ToLower() == "file on disk" ? 999 : GetDomainInt(_domain.Name);
 
 			SetMemoryDomainMenu(); // Calls update routines, TODO: refactor, that is confusing!

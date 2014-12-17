@@ -109,11 +109,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			if (!IsHandleCreated || IsDisposed)
-			{
-				return;
-			}
-			
 			ClearList();
 			TraceView.Columns[0].Text = Tracer.Header;
 		}

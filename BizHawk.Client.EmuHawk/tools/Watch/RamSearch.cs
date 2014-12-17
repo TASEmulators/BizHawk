@@ -286,11 +286,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			if (!IsHandleCreated || IsDisposed)
-			{
-				return;
-			}
-
 			_settings.Domain = Core.MemoryDomains.MainMemory;
 			MessageLabel.Text = "Search restarted";
 			DoDomainSizeCheck();
