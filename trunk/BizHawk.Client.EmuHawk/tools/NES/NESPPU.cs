@@ -28,6 +28,8 @@ namespace BizHawk.Client.EmuHawk
 
 		[RequiredService]
 		private NES _nes { get; set; }
+		[RequiredService]
+		private INESPPUViewable xxx { get; set; }
 
 		public NesPPU()
 		{

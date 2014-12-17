@@ -59,15 +59,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return board;
 		}
 
-		/// <summary>
-		/// for debugging only!
-		/// </summary>
-		/// <returns></returns>
-		public int[] GetCompiledPalette()
-		{
-			return palette_compiled;
-		}
-
 		public void Dispose()
 		{
 			if (magicSoundProvider != null)
