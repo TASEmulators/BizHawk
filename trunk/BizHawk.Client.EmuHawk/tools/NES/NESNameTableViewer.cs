@@ -14,8 +14,6 @@ namespace BizHawk.Client.EmuHawk
 		// TODO:
 		// Show Scroll Lines + UI Toggle
 		[RequiredService]
-		private NES _nes { get; set; }
-		[RequiredService]
 		private INESPPUViewable xxx { get; set; }
 		[RequiredService]
 		private IEmulator _emu { get; set; }
