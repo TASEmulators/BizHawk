@@ -1111,18 +1111,18 @@ namespace BizHawk.Client.EmuHawk
 			TAStudioMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["TAStudio"].Bindings;
 			VirtualPadMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Virtual Pad"].Bindings;
 			TraceLoggerMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Trace Logger"].Bindings;
-			TraceLoggerMenuItem.Enabled = Global.Emulator.CpuTraceAvailable();
+            TraceLoggerMenuItem.Enabled = GlobalWin.Tools.IsAvailable(typeof(TraceLogger));
 
-			TAStudioMenuItem.Enabled = Global.Emulator.HasSavestates() && Global.Emulator.CanPollInput();
+            TAStudioMenuItem.Enabled = GlobalWin.Tools.IsAvailable(typeof(TAStudio));
 
-			CheatsMenuItem.Enabled =
-				HexEditorMenuItem.Enabled =
-				RamSearchMenuItem.Enabled =
-				RamWatchMenuItem.Enabled =
-				Global.Emulator.HasMemoryDomains();
+            CheatsMenuItem.Enabled = GlobalWin.Tools.IsAvailable(typeof(Cheats));
+            HexEditorMenuItem.Enabled = GlobalWin.Tools.IsAvailable(typeof(HexEditor));
+            HexEditorMenuItem.Enabled = true;
+            RamSearchMenuItem.Enabled = GlobalWin.Tools.IsAvailable(typeof(RamSearch));
+            RamWatchMenuItem.Enabled = GlobalWin.Tools.IsAvailable(typeof(RamWatch));
 
 			DebuggerMenuItem.Visible = VersionInfo.DeveloperBuild;
-			DebuggerMenuItem.Enabled = Global.Emulator.CanDebug();
+			DebuggerMenuItem.Enabled = GlobalWin.Tools.IsAvailable(typeof(GenericDebugger));
 
 			batchRunnerToolStripMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
