@@ -421,7 +421,7 @@ namespace BizHawk.Client.EmuHawk
 					box.SetButtons(
 						new[] { "Switch", "Cancel" },
 						new[] { DialogResult.Yes, DialogResult.Cancel });
-					
+
 					box.MaximumSize = new Size(450, 350);
 					box.SetMessageToAutoSize();
 					var result = box.ShowDialog();
@@ -1100,6 +1100,11 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Tools
 
+		static bool ToolAvailable<T>()
+		{
+			return ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, typeof(T));
+		}
+
 		private void ToolsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ToolBoxMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["ToolBox"].Bindings;
@@ -1111,18 +1116,18 @@ namespace BizHawk.Client.EmuHawk
 			TAStudioMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["TAStudio"].Bindings;
 			VirtualPadMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Virtual Pad"].Bindings;
 			TraceLoggerMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Trace Logger"].Bindings;
-            TraceLoggerMenuItem.Enabled = GlobalWin.Tools.IsAvailable(typeof(TraceLogger));
+			TraceLoggerMenuItem.Enabled = ToolAvailable<TraceLogger>();
 
-            TAStudioMenuItem.Enabled = GlobalWin.Tools.IsAvailable(typeof(TAStudio));
+			TAStudioMenuItem.Enabled = ToolAvailable<TAStudio>();
 
-            CheatsMenuItem.Enabled = GlobalWin.Tools.IsAvailable(typeof(Cheats));
-            HexEditorMenuItem.Enabled = GlobalWin.Tools.IsAvailable(typeof(HexEditor));
-            HexEditorMenuItem.Enabled = true;
-            RamSearchMenuItem.Enabled = GlobalWin.Tools.IsAvailable(typeof(RamSearch));
-            RamWatchMenuItem.Enabled = GlobalWin.Tools.IsAvailable(typeof(RamWatch));
+			CheatsMenuItem.Enabled = ToolAvailable<Cheats>();
+			HexEditorMenuItem.Enabled = ToolAvailable<HexEditor>();
+			HexEditorMenuItem.Enabled = true;
+			RamSearchMenuItem.Enabled = ToolAvailable<RamSearch>();
+			RamWatchMenuItem.Enabled = ToolAvailable<RamWatch>();
 
 			DebuggerMenuItem.Visible = VersionInfo.DeveloperBuild;
-			DebuggerMenuItem.Enabled = GlobalWin.Tools.IsAvailable(typeof(GenericDebugger));
+			DebuggerMenuItem.Enabled = ToolAvailable<GenericDebugger>();
 
 			batchRunnerToolStripMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
@@ -1385,13 +1390,13 @@ namespace BizHawk.Client.EmuHawk
 			HighlightActiveDisplayRegionMenuItem.Checked = s.HighlightActiveDisplayRegion;
 
 			SMSEnableFMChipMenuItem.Visible =
-				SMSFix3DGameDisplayToolStripMenuItem.Visible = 
-				SMSenableBIOSToolStripMenuItem.Visible = 
+				SMSFix3DGameDisplayToolStripMenuItem.Visible =
+				SMSenableBIOSToolStripMenuItem.Visible =
 				Global.Game.System == "SMS";
 
 			SMSOverclockMenuItem.Visible =
 				SMSForceStereoMenuItem.Visible =
-				SMSdisplayToolStripMenuItem.Visible = 
+				SMSdisplayToolStripMenuItem.Visible =
 				Global.Game.System != "GG";
 
 			ShowClippedRegionsMenuItem.Visible =
@@ -1400,7 +1405,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Game.System == "GG";
 
 			SMSOverclockMenuItem.Visible =
-				SMSVDPViewerToolStripMenuItem.Visible = 
+				SMSVDPViewerToolStripMenuItem.Visible =
 				Global.Game.System != "SG";
 		}
 
@@ -1812,7 +1817,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			N64PluginSettingsMenuItem.Enabled =
 				N64ControllerSettingsMenuItem.Enabled =
-				N64ExpansionSlotMenuItem.Enabled = 
+				N64ExpansionSlotMenuItem.Enabled =
 				!Global.MovieSession.Movie.IsActive;
 
 			N64CircularAnalogRangeMenuItem.Checked = Global.Config.N64UseCircularAnalogConstraint;
@@ -2368,7 +2373,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void FormDragDrop_internal(object sender, DragEventArgs e)
-		{		
+		{
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			var isLua = false;
 			foreach (var path in filePaths)
