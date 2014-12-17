@@ -3,6 +3,13 @@
 //TODO Disc.Structure.Sessions[0].length_aba was 0
 //TODO mednafen 0.9.37 changed some disc region detection heuristics. analyze and apply in c# side. also the SCEX id handling changed, maybe simplified
 
+//TODO - ok, think about this. we MUST load a state with the CDC completely intact. no quickly changing discs. thats madness.
+//well, I could savestate the disc index and validate the disc collection when loading a state.
+//the big problem is, it's completely at odds with the slider-based disc changing model. 
+//but, maybe it can be reconciled with that model by using the disc ejection to our advantage. 
+//perhaps moving the slider is meaningless if the disc is ejected--it only affects what disc is inserted when the disc gets inserted!! yeah! this might could save us!
+//not exactly user friendly but maybe we can build it from there with a custom UI.. a disk-changer? dunno if that would help
+
 using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;

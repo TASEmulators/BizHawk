@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <cstdlib>
 
-#ifdef _WINDOWS
+#ifdef _MSC_VER
 typedef __int64 s64;
 typedef __int32 s32;
 typedef __int16 s16;
