@@ -1363,6 +1363,11 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 	s_FramebufferCurrent = 0;
 	s_FramebufferCurrentWidth = FB_WIDTH;
 
+	//just in case we debug printed or something like that
+	fflush(stdout);
+	fflush(stderr);
+
+
 	return SHOCK_OK;
 }
 
@@ -2419,9 +2424,12 @@ SYNCFUNC(PSX)
 	IRQ_SyncState(isReader,ns);
 	ns->ExitSection("IRQ");
 
-	//zero: this is probably OK
 	if(isReader)
 	{
+		//the purpose of this is to restore the sorting of the event list
+		//event updates are programmed to have no effect if the time step is 0
+		//and at this point, the time base timestamp will be 0 (it always is after a frame advance)
+		//so the event updaters just run, do nothing, and restore themselves in the list
 		ForceEventUpdates(0);	// FIXME to work with debugger step mode.
 	}
 }
