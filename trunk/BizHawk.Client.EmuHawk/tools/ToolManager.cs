@@ -201,7 +201,10 @@ namespace BizHawk.Client.EmuHawk
 				if (IsAvailable(tool.GetType()))
 				{
 					UpdateServices(tool);
-					tool.Restart();
+					if ((tool.IsHandleCreated && !tool.IsDisposed) || tool is RamWatch) // Hack for Ram Watch - in display watches mode it wants to keep running even closed, it will handle disposed logic
+					{
+						tool.Restart();
+					}
 				}
 				else
 				{

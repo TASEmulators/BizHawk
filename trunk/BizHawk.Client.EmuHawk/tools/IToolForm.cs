@@ -44,6 +44,7 @@ namespace BizHawk.Client.EmuHawk
 		void Show();
 		void Close();
 		bool IsDisposed { get; }
+		bool IsHandleCreated { get; }
 	}
 
 	[AttributeUsage(AttributeTargets.Property)]
