@@ -70,6 +70,10 @@
  #include <altivec.h>
 #endif
 
+#ifndef MDFN_ALIGN
+#define MDFN_ALIGN(n) __attribute__ ((aligned (n)))
+#endif
+
 namespace MDFN_IEN_PSX
 {
 

@@ -22,7 +22,7 @@ class MDFN_Error : public std::exception
  MDFN_Error(const MDFN_Error &ze_error) noexcept;
  MDFN_Error & operator=(const MDFN_Error &ze_error) noexcept;
 
- virtual const char *what(void) const noexcept;
+// virtual const char *what(void) const noexcept;
  int GetErrno(void) const noexcept;
 
  private:
