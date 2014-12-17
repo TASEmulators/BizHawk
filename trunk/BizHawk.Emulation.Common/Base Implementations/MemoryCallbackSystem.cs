@@ -8,119 +8,139 @@ namespace BizHawk.Emulation.Common
 {
 	public class MemoryCallbackSystem : IMemoryCallbackSystem
 	{
-		private readonly List<IMemoryCallback> Callbacks = new List<IMemoryCallback>();
+		private readonly List<IMemoryCallback> Reads = new List<IMemoryCallback>();
+		private readonly List<IMemoryCallback> Writes = new List<IMemoryCallback>();
+		private readonly List<IMemoryCallback> Execs = new List<IMemoryCallback>();
 
-		public IEnumerator<IMemoryCallback> GetEnumerator()
-		{
-			return Callbacks.GetEnumerator();
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
+		bool empty = true;
 
 		public void Add(IMemoryCallback callback)
 		{
-			var hadAny = Callbacks.Any();
+			switch (callback.Type)
+			{
+				case MemoryCallbackType.Execute: Execs.Add(callback); break;
+				case MemoryCallbackType.Read: Reads.Add(callback); break;
+				case MemoryCallbackType.Write: Writes.Add(callback); break;
+			}
+			if (empty)
+				Changes();
+			empty = false;
+		}
 
-			Callbacks.Add(callback);
-
-			var hasAny = Callbacks.Any();
-			Changes(hadAny, hasAny);
+		private static void Call(List<IMemoryCallback> cbs, uint addr)
+		{
+			for (int i = 0; i < cbs.Count; i++)
+			{
+				if (!cbs[i].Address.HasValue || cbs[i].Address == addr)
+					cbs[i].Callback();
+			}
 		}
 
 		public void CallReads(uint addr)
 		{
-			foreach (var read in Callbacks.Where(callback => callback.Type == MemoryCallbackType.Read))
-			{
-				if (!read.Address.HasValue || read.Address == addr)
-				{
-					read.Callback();
-				}
-			}
+			Call(Reads, addr);
 		}
 
 		public void CallWrites(uint addr)
 		{
-			foreach (var read in Callbacks.Where(callback => callback.Type == MemoryCallbackType.Write))
-			{
-				if (!read.Address.HasValue || read.Address == addr)
-				{
-					read.Callback();
-				}
-			}
+			Call(Writes, addr);
 		}
 
 		public void CallExecutes(uint addr)
 		{
-			foreach (var read in Callbacks.Where(callback => callback.Type == MemoryCallbackType.Execute))
-			{
-				if (!read.Address.HasValue || read.Address == addr)
-				{
-					read.Callback();
-				}
-			}
+			Call(Execs, addr);
 		}
 
 		public bool HasReads
 		{
-			get { return Callbacks.Any(callback => callback.Type == MemoryCallbackType.Read); }
+			get { return Reads.Count > 0; }
 		}
 
 		public bool HasWrites
 		{
-			get { return Callbacks.Any(callback => callback.Type == MemoryCallbackType.Write); }
+			get { return Writes.Count > 0; }
 		}
 
 		public bool HasExecutes
 		{
-			get { return Callbacks.Any(callback => callback.Type == MemoryCallbackType.Execute); }
+			get { return Execs.Count > 0; }
+		}
+
+		private int RemoveInternal(Action action)
+		{
+			int ret = 0;
+			ret += Reads.RemoveAll(imc => imc.Callback == action);
+			ret += Writes.RemoveAll(imc => imc.Callback == action);
+			ret += Execs.RemoveAll(imc => imc.Callback == action);
+			return ret;
 		}
 
 		public void Remove(Action action)
 		{
-			var hadAny = Callbacks.Any();
-
-			var actions = Callbacks.Where(c => c.Callback == action);
-			Callbacks.RemoveAll(c => actions.Contains(c));
-
-			var hasAny = Callbacks.Any();
-			Changes(hadAny, hasAny);
+			if (RemoveInternal(action) > 0)
+			{
+				bool newEmpty = !HasReads && !HasWrites && !HasExecutes;
+				if (newEmpty != empty)
+					Changes();
+				empty = newEmpty;
+			}
 		}
 
 		public void RemoveAll(IEnumerable<Action> actions)
 		{
-			var hadAny = Callbacks.Any();
-
+			bool changed = false;
 			foreach (var action in actions)
 			{
-				Remove(action);
+				changed |= RemoveInternal(action) > 0;
 			}
-
-			var hasAny = Callbacks.Any();
-			Changes(hadAny, hasAny);
+			if (changed)
+			{
+				bool newEmpty = !HasReads && !HasWrites && !HasExecutes;
+				if (newEmpty != empty)
+					Changes();
+				empty = newEmpty;
+			}
 		}
 
 		public void Clear()
 		{
-			var hadAny = Callbacks.Any();
-			Callbacks.Clear();
-			Changes(hadAny, false);
+			Reads.Clear();
+			Writes.Clear();
+			Execs.Clear();
+			if (!empty)
+				Changes();
+			empty = true;
 		}
 
 		public delegate void ActiveChangedEventHandler();
 		public event ActiveChangedEventHandler ActiveChanged;
 
-		private void Changes(bool hadAny, bool hasAny)
+		private void Changes()
 		{
-			if ((hadAny && !hasAny) || (!hadAny && hasAny))
+			if (ActiveChanged != null)
 			{
-				if (ActiveChanged != null)
-				{
-					ActiveChanged();
-				}
+				ActiveChanged();
 			}
+		}
+
+		public IEnumerator<IMemoryCallback> GetEnumerator()
+		{
+			foreach (var imc in Reads)
+				yield return imc;
+			foreach (var imc in Writes)
+				yield return imc;
+			foreach (var imc in Execs)
+				yield return imc;
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			foreach (var imc in Reads)
+				yield return imc;
+			foreach (var imc in Writes)
+				yield return imc;
+			foreach (var imc in Execs)
+				yield return imc;
 		}
 	}
 
