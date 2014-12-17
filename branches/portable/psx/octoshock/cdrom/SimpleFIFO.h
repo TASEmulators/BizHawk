@@ -14,7 +14,7 @@ class SimpleFIFO
  // Constructor
  SimpleFIFO(uint32 the_size) // Size should be a power of 2!
  {
-  data.resize((std::vector<T>::size_type)round_up_pow2(the_size));
+  data.resize((unsigned long)round_up_pow2(the_size));
   size = the_size;
   read_pos = 0;
   write_pos = 0;
