@@ -33,8 +33,6 @@ namespace BizHawk.Client.EmuHawk
 			TopMost = Global.Config.PceCdlSettings.TopMost;
 
 			Closing += (o, e) => SaveConfigSettings();
-
-			Restart();
 		}
 
 		private void RefreshFloatingWindowControl()
