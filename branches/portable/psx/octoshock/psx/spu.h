@@ -96,14 +96,12 @@ class PS_SPU
 {
  public:
 
- PS_SPU();
- ~PS_SPU();
+ PS_SPU() MDFN_COLD;
+ ~PS_SPU() MDFN_COLD;
 
  template<bool isReader>void SyncState(EW::NewState *ns);
 
- int StateAction(StateMem *sm, int load, int data_only);
-
- void Power(void);
+ void Power(void) MDFN_COLD;
  void Write(pscpu_timestamp_t timestamp, uint32 A, uint16 V);
  uint16 Read(pscpu_timestamp_t timestamp, uint32 A);
 
@@ -132,11 +130,13 @@ private:
  void RunEnvelope(SPU_Voice *voice);
 
 
- void RunReverb(int32 in_l, int32 in_r, int32 &out_l, int32 &out_r);
+void RunReverb(const int32* in, int32* out);
+ void RunNoise(void);
  bool GetCDAudio(int32 &l, int32 &r);
 
  SPU_Voice Voices[24];
 
+ uint32 NoiseDivider;
  uint32 NoiseCounter;
  uint16 LFSR;
 
@@ -144,7 +144,7 @@ private:
  uint32 Noise_Mode;
  uint32 Reverb_Mode;
 
- int32 ReverbWA;
+ uint32 ReverbWA;
 
  SPU_Sweep GlobalSweep[2];	// Doesn't affect reverb volume!
 
@@ -182,14 +182,14 @@ private:
      uint16 _Global1[0x08];
     };
    };
-   union
+  union
    {
-    int16 ReverbRegs[0x20];
+    uint16 ReverbRegs[0x20];
 
     struct
     {
-     int16 FB_SRC_A;
-     int16 FB_SRC_B;
+     uint16 FB_SRC_A;
+     uint16 FB_SRC_B;
      int16 IIR_ALPHA;
      int16 ACC_COEF_A;
      int16 ACC_COEF_B;
@@ -198,26 +198,26 @@ private:
      int16 IIR_COEF;
      int16 FB_ALPHA;
      int16 FB_X;
-     int16 IIR_DEST_A0;
-     int16 IIR_DEST_A1;
-     int16 ACC_SRC_A0;
-     int16 ACC_SRC_A1;
-     int16 ACC_SRC_B0;
-     int16 ACC_SRC_B1;
-     int16 IIR_SRC_A0;
-     int16 IIR_SRC_A1;
-     int16 IIR_DEST_B0;
-     int16 IIR_DEST_B1;
-     int16 ACC_SRC_C0;
-     int16 ACC_SRC_C1;
-     int16 ACC_SRC_D0;
-     int16 ACC_SRC_D1;
-     int16 IIR_SRC_B1;
-     int16 IIR_SRC_B0;
-     int16 MIX_DEST_A0;
-     int16 MIX_DEST_A1;
-     int16 MIX_DEST_B0;
-     int16 MIX_DEST_B1;
+     uint16 IIR_DEST_A0;
+     uint16 IIR_DEST_A1;
+     uint16 ACC_SRC_A0;
+     uint16 ACC_SRC_A1;
+     uint16 ACC_SRC_B0;
+     uint16 ACC_SRC_B1;
+     uint16 IIR_SRC_A0;
+     uint16 IIR_SRC_A1;
+     uint16 IIR_DEST_B0;
+     uint16 IIR_DEST_B1;
+     uint16 ACC_SRC_C0;
+     uint16 ACC_SRC_C1;
+     uint16 ACC_SRC_D0;
+     uint16 ACC_SRC_D1;
+     uint16 IIR_SRC_B1;
+     uint16 IIR_SRC_B0;
+     uint16 MIX_DEST_A0;
+     uint16 MIX_DEST_A1;
+     uint16 MIX_DEST_B0;
+     uint16 MIX_DEST_B1;
      int16 IN_COEF_L;
      int16 IN_COEF_R;
     };
@@ -227,17 +227,15 @@ private:
 
  uint16 AuxRegs[0x10];
 
- int16 RDSB[2][128];	// [40]
- int32 RDSB_WP;
+ int16 RDSB[2][128];
+ int16 RUSB[2][64];
+ int32 RvbResPos;
 
- int16 RUSB[2][128];
- int32 RUSB_WP;
+ uint32 ReverbCur;
 
- int32 ReverbCur;
-
- int32 Get_Reverb_Offset(int32 offset);
- int32 RD_RVB(int16 raw_offs);
- void WR_RVB(int16 raw_offs, int32 sample, int32 extra_offs = 0);
+ uint32 Get_Reverb_Offset(uint32 offset);
+ int16 RD_RVB(uint16 raw_offs, int32 extra_offs = 0);
+ void WR_RVB(uint16 raw_offs, int16 sample);
 
  bool IRQAsserted;
 
@@ -264,14 +262,14 @@ private:
   GSREG_CDVOL_L,
   GSREG_CDVOL_R,
 
-  GSREG_DRYVOL_CTRL_L,
-  GSREG_DRYVOL_CTRL_R,
+  GSREG_MAINVOL_CTRL_L,
+  GSREG_MAINVOL_CTRL_R,
 
-  GSREG_DRYVOL_L,
-  GSREG_DRYVOL_R,
+  GSREG_MAINVOL_L,
+  GSREG_MAINVOL_R,
 
-  GSREG_WETVOL_L,
-  GSREG_WETVOL_R,
+  GSREG_RVBVOL_L,
+  GSREG_RVBVOL_R,
 
   GSREG_RWADDR,
 

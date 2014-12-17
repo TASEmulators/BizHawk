@@ -17,7 +17,6 @@ class InputDevice
  virtual void UpdateInput(const void *data);
 
  virtual void SyncState(bool isReader, EW::NewState *ns) {}
- virtual int StateAction(StateMem* sm, int load, int data_only, const char* section_name);
 
  virtual bool RequireNoFrameskip(void);
 
@@ -38,16 +37,17 @@ class InputDevice
 
  //
  //
- virtual uint32 GetNVSize(void);
- virtual void ReadNV(uint8 *buffer, uint32 offset, uint32 count);
+ virtual uint32 GetNVSize(void) const;
+ virtual const uint8* ReadNV(void) const;	// Pointer returned should be considered temporary and assumed invalidated upon further calls to non-const functions on the object.
  virtual void WriteNV(const uint8 *buffer, uint32 offset, uint32 count);
 
  //
  // Dirty count should be incremented on each call to a method this class that causes at least 1 write to occur to the
  // nonvolatile memory(IE Clock() in the correct command phase, and WriteNV()).
  //
- virtual uint64 GetNVDirtyCount(void);
+ virtual uint64 GetNVDirtyCount(void) const;
  virtual void ResetNVDirtyCount(void);
+
 
  private:
  unsigned chair_r, chair_g, chair_b;
@@ -65,7 +65,7 @@ class FrontIO
 
  template<bool isReader>void SyncState(EW::NewState *ns);
 
- void Power(void);
+ void Reset(bool powering_up);
  void Write(pscpu_timestamp_t timestamp, uint32 A, uint32 V);
  uint32 Read(pscpu_timestamp_t timestamp, uint32 A);
  pscpu_timestamp_t CalcNextEventTS(pscpu_timestamp_t timestamp, int32 next_event);
@@ -82,8 +82,6 @@ class FrontIO
  uint64 GetMemcardDirtyCount(unsigned int which);
 
 
- int StateAction(StateMem* sm, int load, int data_only);
- 
  InputDevice *Ports[2];
  void *PortData[2];
  InputDevice *MCPorts[2];

@@ -17,6 +17,7 @@
 
 #include "psx.h"
 #include "cpu.h"
+#include "gte.h"
 
 /* TODO
 	Make sure load delays are correct.
@@ -48,6 +49,21 @@ PS_CPU::PS_CPU()
 
    CPUHook = NULL;
    ADDBT = NULL;
+
+ GTE_Init();
+
+ for(unsigned i = 0; i < 24; i++)
+ {
+  uint8 v = 7;
+
+  if(i < 12)
+   v += 4;
+
+  if(i < 21)
+   v += 3;
+
+  MULT_Tab24[i] = v;
+ }
 }
 
 PS_CPU::~PS_CPU()
@@ -131,57 +147,9 @@ void PS_CPU::Power(void)
    GTE_Power();
 }
 
-int PS_CPU::StateAction(StateMem *sm, int load, int data_only)
+void PS_CPU::AssertIRQ(unsigned which, bool asserted)
 {
-   SFORMAT StateRegs[] =
-   {
-      SFARRAY32(GPR, 32),
-      SFVAR(LO),
-      SFVAR(HI),
-      SFVAR(BACKED_PC),
-      SFVAR(BACKED_new_PC),
-      SFVAR(BACKED_new_PC_mask),
-
-      SFVAR(IPCache),
-      SFVAR(Halted),
-
-      SFVAR(BACKED_LDWhich),
-      SFVAR(BACKED_LDValue),
-      SFVAR(LDAbsorb),
-
-      SFVAR(next_event_ts),
-      SFVAR(gte_ts_done),
-      SFVAR(muldiv_ts_done),
-
-      SFVAR(BIU),
-      SFARRAY32(ICache_Bulk, 2048),
-
-      SFARRAY32(CP0.Regs, 32),
-
-      SFARRAY(ReadAbsorb, 0x20),
-      SFVAR(ReadAbsorbDummy),
-      SFVAR(ReadAbsorbWhich),
-      SFVAR(ReadFudge),
-
-      SFARRAY(ScratchRAM.data8, 1024),
-
-      SFEND
-   };
-   int ret = MDFNSS_StateAction(sm, load, data_only, StateRegs, "CPU");
-
-   ret &= GTE_StateAction(sm, load, data_only);
-
-   if(load)
-   {
-
-   }
-
-   return(ret);
-}
-
-void PS_CPU::AssertIRQ(int which, bool asserted)
-{
-   assert(which >= 0 && which <= 5);
+	assert(which <= 5);
 
    CP0.CAUSE &= ~(1 << (10 + which));
 
@@ -428,7 +396,7 @@ uint32_t PS_CPU::Exception(uint32_t code, uint32_t PC, const uint32_t NPM)
 #define GPR_RES(n) { unsigned tn = (n); ReadAbsorb[tn] = 0; }
 #define GPR_DEPRES_END ReadAbsorb[0] = back; }
 
-template<bool DebugMode, bool ILHMode>
+template<bool DebugMode, bool BIOSPrintMode, bool ILHMode>
 pscpu_timestamp_t PS_CPU::RunReal(pscpu_timestamp_t timestamp_in)
 {
    register pscpu_timestamp_t timestamp = timestamp_in;
@@ -474,16 +442,28 @@ pscpu_timestamp_t PS_CPU::RunReal(pscpu_timestamp_t timestamp_in)
             BACKING_TO_ACTIVE;
          }
 
-         if(!ILHMode)
-         {
-            if(PC == 0xB0)
-            {
-               if(MDFN_UNLIKELY(GPR[9] == 0x3D))
-               {
-                  PSX_DBG(PSX_DBG_BIOS_PRINT, "%c", GPR[4]);
-               }
-            }
-         }
+
+				 if(BIOSPrintMode)
+				 {
+					if(PC == 0xB0)
+					{
+					 if(MDFN_UNLIKELY(GPR[9] == 0x3D))
+					 {
+						PSX_DBG_BIOS_PUTC(GPR[4]);
+					 }
+					}
+				 }
+
+				 // We can't fold this into the ICache[] != PC handling, since the lower 2 bits of TV
+				 // are already used for cache management purposes and it assumes that the lower 2 bits of PC will be 0.
+				 if(MDFN_UNLIKELY(PC & 0x3))
+				 {
+					// This will block interrupt processing, but since we're going more for keeping broken homebrew/hacks from working
+					// than super-duper-accurate pipeline emulation, it shouldn't be a problem.
+					new_PC = Exception(EXCEPTION_ADEL, PC, new_PC_mask);
+					new_PC_mask = 0;
+					goto OpDone;
+				 }
 
          instr = ICache[(PC & 0xFFC) >> 2].Data;
 
@@ -498,13 +478,14 @@ pscpu_timestamp_t PS_CPU::RunReal(pscpu_timestamp_t timestamp_in)
             // FIXME: Handle executing out of scratchpad.
             if(PC >= 0xA0000000 || !(BIU & 0x800))
             {
-               instr = LoadU32_LE((uint32_t *)&FastMap[PC >> FAST_MAP_SHIFT][PC]);
-               timestamp += 4;	// Approximate best-case cache-disabled time, per PS1 tests(executing out of 0xA0000000+); it can be 5 in *some* sequences of code(like a lot of sequential "nop"s, probably other simple instructions too).
-            }
-            else
-            {
-               __ICache *ICI = &ICache[((PC & 0xFF0) >> 2)];
-               const uint32_t *FMP = (uint32_t *)&FastMap[(PC &~ 0xF) >> FAST_MAP_SHIFT][PC &~ 0xF];
+     instr = MDFN_de32lsb<true>(&FastMap[PC >> FAST_MAP_SHIFT][PC]);
+     timestamp += 4;	// Approximate best-case cache-disabled time, per PS1 tests(executing out of 0xA0000000+); it can be 5 in *some* sequences of code(like a lot of sequential "nop"s, probably other simple instructions too).
+    }
+    else
+    {
+     __ICache *ICI = &ICache[((PC & 0xFF0) >> 2)];
+     const uint8 *FMP = &FastMap[(PC &~ 0xF) >> FAST_MAP_SHIFT][PC &~ 0xF];
+
 
                // | 0x2 to simulate (in)validity bits.
                ICI[0x00].TV = (PC &~ 0xF) | 0x00 | 0x2;
@@ -514,29 +495,30 @@ pscpu_timestamp_t PS_CPU::RunReal(pscpu_timestamp_t timestamp_in)
 
                timestamp += 3;
 
-               switch(PC & 0xC)
-               {
-                  case 0x0:
-                     timestamp++;
-                     ICI[0x00].TV &= ~0x2;
-                     ICI[0x00].Data = LoadU32_LE(&FMP[0]);
-                  case 0x4:
-                     timestamp++;
-                     ICI[0x01].TV &= ~0x2;
-                     ICI[0x01].Data = LoadU32_LE(&FMP[1]);
-                  case 0x8:
-                     timestamp++;
-                     ICI[0x02].TV &= ~0x2;
-                     ICI[0x02].Data = LoadU32_LE(&FMP[2]);
-                  case 0xC:
-                     timestamp++;
-                     ICI[0x03].TV &= ~0x2;
-                     ICI[0x03].Data = LoadU32_LE(&FMP[3]);
-                     break;
-               }
-               instr = ICache[(PC & 0xFFC) >> 2].Data;
-            }
-         }
+
+							 switch(PC & 0xC)
+							 {
+							 case 0x0:
+								 timestamp++;
+								 ICI[0x00].TV &= ~0x2;
+								 ICI[0x00].Data = MDFN_de32lsb<true>(&FMP[0x0]);
+							 case 0x4:
+								 timestamp++;
+								 ICI[0x01].TV &= ~0x2;
+								 ICI[0x01].Data = MDFN_de32lsb<true>(&FMP[0x4]);
+							 case 0x8:
+								 timestamp++;
+								 ICI[0x02].TV &= ~0x2;
+								 ICI[0x02].Data = MDFN_de32lsb<true>(&FMP[0x8]);
+							 case 0xC:
+								 timestamp++;
+								 ICI[0x03].TV &= ~0x2;
+								 ICI[0x03].Data = MDFN_de32lsb<true>(&FMP[0xC]);
+								 break;
+							 }
+							 instr = ICache[(PC & 0xFFC) >> 2].Data;
+						}
+				 }
 
          //printf("PC=%08x, SP=%08x - op=0x%02x - funct=0x%02x - instr=0x%08x\n", PC, GPR[29], instr >> 26, instr & 0x3F, instr);
          //for(int i = 0; i < 32; i++)
@@ -586,7 +568,7 @@ pscpu_timestamp_t PS_CPU::RunReal(pscpu_timestamp_t timestamp_in)
                PC = (PC & new_PC_mask) + new_PC;				\
                if(old_PC == ((PC & (mask)) + (offset)))			\
                {								\
-                  if(*(uint32_t *)&FastMap[PC >> FAST_MAP_SHIFT][PC] == 0)	\
+							 if(MDFN_densb<uint32, true>(&FastMap[PC >> FAST_MAP_SHIFT][PC]) == 0)	\
                   {								\
                      if(next_event_ts > timestamp) /* Necessary since next_event_ts might be set to something like "0" to force a call to the event handler. */		\
                      {								\
@@ -608,15 +590,15 @@ pscpu_timestamp_t PS_CPU::RunReal(pscpu_timestamp_t timestamp_in)
             goto SkipNPCStuff;				\
          }
 
-#define ITYPE uint32_t rs MDFN_NOWARN_UNUSED = (instr >> 21) & 0x1F; uint32_t rt MDFN_NOWARN_UNUSED = (instr >> 16) & 0x1F; int32_t immediate = (int16)(instr & 0xFFFF); /*printf(" rs=%02x(%08x), rt=%02x(%08x), immediate=(%08x) ", rs, GPR[rs], rt, GPR[rt], immediate);*/
+#define ITYPE uint32 rs MDFN_NOWARN_UNUSED = (instr >> 21) & 0x1F; uint32 rt MDFN_NOWARN_UNUSED = (instr >> 16) & 0x1F; uint32 immediate = (int32)(int16)(instr & 0xFFFF); /*printf(" rs=%02x(%08x), rt=%02x(%08x), immediate=(%08x) ", rs, GPR[rs], rt, GPR[rt], immediate);*/
 #define ITYPE_ZE uint32_t rs MDFN_NOWARN_UNUSED = (instr >> 21) & 0x1F; uint32_t rt MDFN_NOWARN_UNUSED = (instr >> 16) & 0x1F; uint32_t immediate = instr & 0xFFFF; /*printf(" rs=%02x(%08x), rt=%02x(%08x), immediate=(%08x) ", rs, GPR[rs], rt, GPR[rt], immediate);*/
 #define JTYPE uint32_t target = instr & ((1 << 26) - 1); /*printf(" target=(%08x) ", target);*/
 #define RTYPE uint32_t rs MDFN_NOWARN_UNUSED = (instr >> 21) & 0x1F; uint32_t rt MDFN_NOWARN_UNUSED = (instr >> 16) & 0x1F; uint32_t rd MDFN_NOWARN_UNUSED = (instr >> 11) & 0x1F; uint32_t shamt MDFN_NOWARN_UNUSED = (instr >> 6) & 0x1F; /*printf(" rs=%02x(%08x), rt=%02x(%08x), rd=%02x(%08x) ", rs, GPR[rs], rt, GPR[rt], rd, GPR[rd]);*/
 
 #if 1
-#include "cpu_bigswitch.c"
+#include "cpu_bigswitch.inc"
 #else
-#include "cpu_coputedgoto.c"
+#include "cpu_coputedgoto.inc"
 #endif
 
 OpDone: ;
@@ -642,14 +624,24 @@ SkipNPCStuff:	;
    return(timestamp);
 }
 
-pscpu_timestamp_t PS_CPU::Run(pscpu_timestamp_t timestamp_in, const bool ILHMode)
+pscpu_timestamp_t PS_CPU::Run(pscpu_timestamp_t timestamp_in, bool BIOSPrintMode, bool ILHMode)
 {
-   if(CPUHook || ADDBT)
-      return(RunReal<true, false>(timestamp_in));
-   if (ILHMode)
-      return(RunReal<false, true>(timestamp_in));
-   return(RunReal<false, false>(timestamp_in));
+ if(CPUHook || ADDBT)
+  return(RunReal<true, true, false>(timestamp_in));
+ else
+ {
+  if(ILHMode)
+   return(RunReal<false, false, true>(timestamp_in));
+  else
+  {
+   if(BIOSPrintMode)
+    return(RunReal<false, true, false>(timestamp_in));
+   else
+    return(RunReal<false, false, false>(timestamp_in));
+  }
+ }
 }
+
 
 void PS_CPU::SetCPUHook(void (*cpuh)(const pscpu_timestamp_t timestamp, uint32_t pc), void (*addbt)(uint32_t from, uint32_t to, bool exception))
 {

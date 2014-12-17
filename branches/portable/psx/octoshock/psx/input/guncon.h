@@ -5,7 +5,6 @@ namespace MDFN_IEN_PSX
 {
 
 InputDevice *Device_GunCon_Create(void);
-extern InputDeviceInputInfoStruct Device_GunCon_IDII[6];
 
 }
 #endif

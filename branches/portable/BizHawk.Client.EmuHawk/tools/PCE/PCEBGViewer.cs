@@ -8,11 +8,10 @@ using BizHawk.Emulation.Cores.PCEngine;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(PCEngine))]
 	public partial class PceBgViewer : Form, IToolForm
 	{
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-		private PCEngine _pce { get { return (PCEngine)EmulatorServices[typeof(PCEngine)]; } }
+		[RequiredService]
+		private PCEngine _pce { get; set; }
 
 		private int _vdcType;
 

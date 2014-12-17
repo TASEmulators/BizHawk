@@ -99,6 +99,7 @@ namespace BizHawk.Client.EmuHawk
 							DisplayName = button.DisplayName,
 							Location = button.Location,
 							Size = button.TargetSize,
+							MinValue = button.MinValue,
 							MaxValue = button.MaxValue
 						});
 						break;

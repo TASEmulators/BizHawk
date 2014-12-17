@@ -16,7 +16,6 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(IMemoryDomains))]
 	public partial class RamWatch : Form, IToolForm
 	{
 		private readonly Dictionary<string, int> _defaultColumnWidths = new Dictionary<string, int>
@@ -38,8 +37,10 @@ namespace BizHawk.Client.EmuHawk
 		private bool _sortReverse;
 		private bool _paused = false;
 
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-		private IMemoryDomains _core { get { return (IMemoryDomains)EmulatorServices[typeof(IMemoryDomains)]; } }
+		[RequiredService]
+		private IMemoryDomains _core { get; set; }
+		[RequiredService]
+		private IEmulator _emu { get; set; }
 
 		public RamWatch()
 		{
@@ -204,7 +205,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				_watches = new WatchList(_core, _core.MemoryDomains.MainMemory);
+				_watches = new WatchList(_core, _core.MemoryDomains.MainMemory, _emu.SystemId);
 				NewWatchList(true);
 			}
 		}
@@ -573,7 +574,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetPlatformAndMemoryDomainLabel()
 		{
-			MemDomainLabel.Text = _core.SystemId + " " + _watches.Domain.Name;
+			MemDomainLabel.Text = _emu.SystemId + " " + _watches.Domain.Name;
 		}
 
 		private void UpdateStatusBar(bool saved = false)
@@ -1077,7 +1078,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewRamWatch_Load(object sender, EventArgs e)
 		{
-			_watches = new WatchList(_core, _core.MemoryDomains.MainMemory);
+			_watches = new WatchList(_core, _core.MemoryDomains.MainMemory, _emu.SystemId);
 			LoadConfigSettings();
 			UpdateStatusBar();
 		}

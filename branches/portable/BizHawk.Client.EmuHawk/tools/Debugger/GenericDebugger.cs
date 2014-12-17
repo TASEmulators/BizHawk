@@ -13,8 +13,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(IDebuggable))]
-	[OptionalServices(typeof(IDisassemblable), typeof(IMemoryDomains))]
+	[ToolAttributes(released: false)]
 	public partial class GenericDebugger : Form, IToolForm, IControlMainform
 	{
 		private int _defaultWidth;
@@ -102,8 +101,8 @@ namespace BizHawk.Client.EmuHawk
 							DropDownStyle = ComboBoxStyle.DropDownList
 						};
 
-						c.Items.AddRange(Core.AsDissassembler().AvailableCpus.ToArray());
-						c.SelectedItem = Core.AsDissassembler().Cpu;
+						c.Items.AddRange(Disassembler.AvailableCpus.ToArray());
+						c.SelectedItem = Disassembler.Cpu;
 						c.SelectedIndexChanged += OnCpuDropDownIndexChanged;
 
 						DisassemblerBox.Controls.Add(c);
@@ -142,6 +141,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// TODO: handle if unavailable
 			BreakPointControl1.Core = Core;
+			BreakPointControl1.MCS = MCS;
 			BreakPointControl1.ParentDebugger = this;
 			BreakPointControl1.GenerateUI();
 		}
@@ -149,8 +149,7 @@ namespace BizHawk.Client.EmuHawk
 		private void DisengageDebugger()
 		{
 			SaveConfigSettings();
-
-			if (Core.CpuTraceAvailable())
+			if (Core.Tracer != null)
 			{
 				Core.Tracer.Enabled = false;
 			}

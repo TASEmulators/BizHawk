@@ -8,16 +8,16 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 
-#pragma warning disable 675 //TOOD: fix the potential problem this is masking
-
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(IEmulator))]
 	public partial class GenGameGenie : Form, IToolForm
 	{
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-		private IEmulator Emulator { get { return (IEmulator)EmulatorServices[typeof(IEmulator)]; } }
-		private MemoryDomainList MemoryDomains { get { return (EmulatorServices[typeof(IMemoryDomains)] as IMemoryDomains).MemoryDomains; } }
+#pragma warning disable 675
+
+		[RequiredService]
+		private IEmulator Emulator { get; set; }
+		[RequiredService]
+		private MemoryDomainList MemoryDomains { get; set; }
 
 		private readonly Dictionary<char, int> _gameGenieTable = new Dictionary<char, int>
 		{

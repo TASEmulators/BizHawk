@@ -21,6 +21,51 @@ typedef unsigned __int32 uint32;
 typedef unsigned __int16 uint16;
 typedef unsigned __int8 uint8;
 
+#define final
+#define noexcept
+
+#ifdef _MSC_VER
+#include <intrin.h>
+//http://stackoverflow.com/questions/355967/how-to-use-msvc-intrinsics-to-get-the-equivalent-of-this-gcc-code
+//if needed
+//uint32_t __inline ctz( uint32_t value )
+//{
+//    DWORD trailing_zero = 0;
+//
+//    if ( _BitScanForward( &trailing_zero, value ) )
+//    {
+//        return trailing_zero;
+//    }
+//    else
+//    {
+//        // This is undefined, I better choose 32 than 0
+//        return 32;
+//    }
+//}
+
+uint32 __inline __builtin_clz( uint32_t value )
+{
+    unsigned long leading_zero = 0;
+
+    if ( _BitScanReverse( &leading_zero, value ) )
+    {
+       return 31 - leading_zero;
+    }
+    else
+    {
+         // Same remarks as above
+         return 32;
+    }
+}
+#endif
+
+//#if MDFN_GCC_VERSION >= MDFN_MAKE_GCCV(4,7,0)
+// #define MDFN_ASSUME_ALIGNED(p, align) __builtin_assume_aligned((p), (align))
+//#else
+// #define MDFN_ASSUME_ALIGNED(p, align) (p)
+//#endif
+#define MDFN_ASSUME_ALIGNED(p, align) (p)
+
 //#define MDFN_WARN_UNUSED_RESULT __attribute__ ((warn_unused_result))
 #define MDFN_WARN_UNUSED_RESULT
 
@@ -52,6 +97,15 @@ typedef unsigned __int8 uint8;
 
 #define TRUE_1 1
 #define FALSE_0 0
+
+#ifndef ARRAY_SIZE
+//taken from winnt.h
+extern "C++" // templates cannot be declared to have 'C' linkage
+template <typename T, size_t N>
+char (*BLAHBLAHBLAH( UNALIGNED T (&)[N] ))[N];
+
+#define ARRAY_SIZE(A) (sizeof(*BLAHBLAHBLAH(A)))
+#endif
 
 //------------alignment macros-------------
 //dont apply these to types without further testing. it only works portably here on declarations of variables

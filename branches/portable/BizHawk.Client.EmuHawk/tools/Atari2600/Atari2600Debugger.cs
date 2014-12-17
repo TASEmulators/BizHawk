@@ -13,6 +13,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[ToolAttributes(released: false)]
 	public partial class Atari2600Debugger : Form, IToolForm
 	{
 		// TODO:
@@ -25,9 +26,8 @@ namespace BizHawk.Client.EmuHawk
 		// Video Frame advance
 		// Add to toolbox
 
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-
-		private Atari2600 _core = Global.Emulator as Atari2600;
+		[RequiredService]
+		private Atari2600 _core { get; set; }
 		private readonly List<string> _instructions = new List<string>();
 
 		private readonly AtariBreakpointList Breakpoints = new AtariBreakpointList();

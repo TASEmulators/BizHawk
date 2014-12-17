@@ -19,7 +19,7 @@ enum
  IRQ_PIO		= 10,	// Probably
 };
 
-void IRQ_Power(void);
+void IRQ_Power(void) MDFN_COLD;
 void IRQ_Assert(int which, bool asserted);
 
 void IRQ_Write(uint32 A, uint32 V);
@@ -36,7 +36,6 @@ enum
 uint32 IRQ_GetRegister(unsigned int which, char *special, const uint32 special_len);
 void IRQ_SetRegister(unsigned int which, uint32 value);
 
-int IRQ_StateAction(StateMem *sm, int load, int data_only);
 };
 
 

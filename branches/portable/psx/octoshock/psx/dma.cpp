@@ -100,11 +100,8 @@ static INLINE void RecalcIRQOut(void)
 {
  bool irqo;
 
- irqo = (bool)(DMAIntStatus & ((DMAIntControl >> 16) & 0x7F));
+ irqo = (bool)DMAIntStatus;
  irqo &= (DMAIntControl >> 23) & 1;
-
- // I think it's logical OR, not XOR/invert.  Still kind of weird, maybe it actually does something more complicated?
- //irqo ^= (DMAIntControl >> 15) & 1;
  irqo |= (DMAIntControl >> 15) & 1;
 
  IRQOut = irqo;
@@ -629,6 +626,7 @@ static void CheckLinkedList(uint32 addr)
 }
 #endif
 
+
 void DMA_Write(const pscpu_timestamp_t timestamp, uint32 A, uint32 V)
 {
  int ch = (A & 0x7F) >> 4;
@@ -651,19 +649,8 @@ void DMA_Write(const pscpu_timestamp_t timestamp, uint32 A, uint32 V)
 	     break;
 
    case 0x4: 
-	     //for(int x = 0; x < 7; x++)
-	     //{
-             // if(DMACH[x].WordCounter || (DMACH[x].ChanControl & (1 << 24)))
-	     // {
-	     //  fprintf(stderr, "Write DMAIntControl while channel %d active: 0x%08x\n", x, V);
-	     // }
-	     //}
 	     DMAIntControl = V & 0x00ff803f;
 	     DMAIntStatus &= ~(V >> 24);
-
-	     //if(DMAIntStatus ^ (DMAIntStatus & (V >> 16)))
-	     // fprintf(stderr, "DMAINT Fudge: %02x\n", DMAIntStatus ^ (DMAIntStatus & (V >> 16)));
-	     DMAIntStatus &= (V >> 16);	// THIS IS ALMOST CERTAINLY WRONG AND A HACK.  Remove when CDC emulation is better.
      	     RecalcIRQOut();
 	     break;
 
@@ -776,6 +763,7 @@ uint32 DMA_Read(const pscpu_timestamp_t timestamp, uint32 A)
 
  return(ret);
 }
+
 
 void DMA_SyncState(bool isReader, EW::NewState *ns)
 {

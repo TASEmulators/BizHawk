@@ -16,6 +16,7 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 	public partial class BreakpointControl : UserControl
 	{
 		public IDebuggable Core { get; set; }
+		public IMemoryCallbackSystem MCS { get; set; }
 		public GenericDebugger ParentDebugger { get; set; }
 		private readonly BreakpointList Breakpoints = new BreakpointList();
 
@@ -73,9 +74,9 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 
 		public void GenerateUI()
 		{
-			if (Core.MemoryCallbacksAvailable())
+			if (MCS != null)
 			{
-				foreach (var callback in Core.MemoryCallbacks)
+				foreach (var callback in MCS)
 				{
 					Breakpoints.Add(new Breakpoint(Core, callback));
 				}

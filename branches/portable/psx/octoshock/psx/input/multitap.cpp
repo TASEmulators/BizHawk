@@ -144,42 +144,102 @@ void InputDevice_Multitap::Power(void)
  } 
 }
 
-int InputDevice_Multitap::StateAction(StateMem* sm, int load, int data_only, const char* section_name)
+//void InputDevice_Multitap::StateAction(StateMem* sm, const unsigned load, const bool data_only, const char* sname_prefix)
+//{
+// SFORMAT StateRegs[] =
+// {
+//  SFVAR(dtr),
+//
+//  SFVAR(selected_device),
+//  SFVAR(full_mode_setting),
+//
+//  SFVAR(full_mode),
+//  SFVAR(mc_mode),
+//
+//  SFVAR(fm_dp),
+//  SFARRAY(&fm_buffer[0][0], sizeof(fm_buffer) / sizeof(fm_buffer[0][0])),
+//
+//  SFVAR(fm_deferred_error_temp),
+//  SFVAR(fm_deferred_error),
+//  SFVAR(fm_command_error),
+//
+//  SFVAR(command),
+//  SFVAR(receive_buffer),
+//  SFVAR(bit_counter),
+//  SFVAR(byte_counter),
+//
+//  SFEND
+// };
+// char section_name[32];
+// trio_snprintf(section_name, sizeof(section_name), "%s_MT", sname_prefix);
+//
+// if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, section_name, true) && load)
+//  Power();
+// else if(load)
+// {
+//
+// }
+//
+// for(unsigned i = 0; i < 4; i++)
+// {
+//  char tmpbuf[32];
+//
+//  trio_snprintf(tmpbuf, sizeof(tmpbuf), "%sP%u", section_name, i);
+//  pad_devices[i]->StateAction(sm, load, data_only, tmpbuf);
+// }
+//
+// for(unsigned i = 0; i < 4; i++)
+// {
+//  char tmpbuf[32];
+//
+//  trio_snprintf(tmpbuf, sizeof(tmpbuf), "%sMC%u", section_name, i);
+//  mc_devices[i]->StateAction(sm, load, data_only, tmpbuf);
+// }
+//}
+
+void InputDevice_Multitap::Update(const pscpu_timestamp_t timestamp)
 {
- SFORMAT StateRegs[] =
+ for(unsigned i = 0; i < 4; i++)
  {
-  SFVAR(dtr),
-
-  SFVAR(selected_device),
-  SFVAR(full_mode_setting),
-
-  SFVAR(full_mode),
-  SFVAR(mc_mode),
-
-  SFVAR(fm_dp),
-  SFARRAY(&fm_buffer[0][0], sizeof(fm_buffer) / sizeof(fm_buffer[0][0])),
-
-  SFVAR(fm_deferred_error_temp),
-  SFVAR(fm_deferred_error),
-  SFVAR(fm_command_error),
-
-  SFVAR(command),
-  SFVAR(receive_buffer),
-  SFVAR(bit_counter),
-  SFVAR(byte_counter),
-
-  SFEND
- };
- int ret = MDFNSS_StateAction(sm, load, data_only, StateRegs, section_name);
-
- if(load)
- {
-
+  pad_devices[i]->Update(timestamp);
+  mc_devices[i]->Update(timestamp);
  }
+}
+
+void InputDevice_Multitap::ResetTS(void)
+{
+ for(unsigned i = 0; i < 4; i++)
+ {
+  pad_devices[i]->ResetTS();
+  mc_devices[i]->ResetTS();
+ }
+}
+
+
+bool InputDevice_Multitap::RequireNoFrameskip(void)
+{
+ bool ret = false;
+
+ for(unsigned i = 0; i < 4; i++)
+  ret |= pad_devices[i]->RequireNoFrameskip();
 
  return(ret);
 }
 
+pscpu_timestamp_t InputDevice_Multitap::GPULineHook(const pscpu_timestamp_t line_timestamp, bool vsync, uint32 *pixels, const MDFN_PixelFormat* const format, const unsigned width, const unsigned pix_clock_offset, const unsigned pix_clock, const unsigned pix_clock_divider)
+{
+ pscpu_timestamp_t ret = PSX_EVENT_MAXTS;
+
+ for(unsigned i = 0; i < 4; i++)
+ {
+  pscpu_timestamp_t tmp = pad_devices[i]->GPULineHook(line_timestamp, vsync, pixels, format, width, pix_clock_offset, pix_clock, pix_clock_divider);
+
+  if(i == 0)	// FIXME; though the problems the design flaw causes(multitap issues with justifier) are documented at least.
+   ret = tmp;
+ }
+
+ return(ret);
+}
 
 void InputDevice_Multitap::SetDTR(bool new_dtr)
 {

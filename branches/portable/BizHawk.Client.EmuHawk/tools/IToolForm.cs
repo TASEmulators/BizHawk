@@ -7,13 +7,6 @@ namespace BizHawk.Client.EmuHawk
 	public interface IToolForm
 	{
 		/// <summary>
-		/// This should be used to approach any services required of the emulator
-		/// core. It will be populated by ToolManager with the services specified
-		/// in the tool's RequiredServices attribute.
-		/// </summary>
-		IDictionary<Type, object> EmulatorServices { set; }
-
-		/// <summary>
 		/// Will be called by the client anytime an Update needs to occur, such as after an emulated frame, a loadstate, or a related dialog has made a relevant change
 		/// </summary>
 		void UpdateValues();
@@ -53,33 +46,13 @@ namespace BizHawk.Client.EmuHawk
 		bool IsDisposed { get; }
 	}
 
-	/// <summary>
-	/// Attribute used for IToolForms to indicate which IEmulatorServices they
-	/// need.
-	/// </summary>
-	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
-	sealed class RequiredServices : Attribute
+	[AttributeUsage(AttributeTargets.Property)]
+	public class RequiredService : Attribute
 	{
-		public readonly Type[] Dependencies;
-
-		public RequiredServices(params Type[] requiredServices)
-		{
-			this.Dependencies = requiredServices;
-		}
 	}
 
-	/// <summary>
-	/// Attribute used for IToolForms to indicate which IEmulatorServices they
-	/// could use, but that aren't critical for their functioning.
-	/// </summary>
-	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
-	sealed class OptionalServices : Attribute
+	[AttributeUsage(AttributeTargets.Property)]
+	public class OptionalService : Attribute
 	{
-		public readonly Type[] Dependencies;
-
-		public OptionalServices(params Type[] optionalServices)
-		{
-			this.Dependencies = optionalServices;
-		}
 	}
 }

@@ -23,6 +23,12 @@ namespace BizHawk.Client.EmuHawk
 			rbDebugMode.Checked = _settings.ResolutionMode == Octoshock.eResolutionMode.Debug;
 			rbMednafenMode.Checked = _settings.ResolutionMode == Octoshock.eResolutionMode.Mednafen;
 			rbTweakedMednafenMode.Checked = _settings.ResolutionMode == Octoshock.eResolutionMode.TweakedMednafen;
+			checkClipHorizontal.Checked = _settings.ClipHorizontalOverscan;
+
+			NTSC_FirstLineNumeric.Value = _settings.ScanlineStart_NTSC;
+			NTSC_LastLineNumeric.Value = _settings.ScanlineEnd_NTSC;
+			PAL_FirstLineNumeric.Value = _settings.ScanlineStart_PAL;
+			PAL_LastLineNumeric.Value = _settings.ScanlineEnd_PAL;
 		}
 
 		Octoshock.Settings _settings;
@@ -59,10 +65,27 @@ namespace BizHawk.Client.EmuHawk
 			if(rbMednafenMode.Checked)_settings.ResolutionMode = Octoshock.eResolutionMode.Mednafen;
 			if(rbTweakedMednafenMode.Checked)_settings.ResolutionMode = Octoshock.eResolutionMode.TweakedMednafen;
 
+			_settings.ClipHorizontalOverscan = checkClipHorizontal.Checked;
+
+			_settings.ScanlineStart_NTSC = (int)NTSC_FirstLineNumeric.Value;
+			_settings.ScanlineEnd_NTSC = (int)NTSC_LastLineNumeric.Value;
+			_settings.ScanlineStart_PAL = (int)PAL_FirstLineNumeric.Value;
+			_settings.ScanlineEnd_PAL = (int)PAL_LastLineNumeric.Value;
+
+			_settings.Validate();
+
 			GlobalWin.MainForm.PutCoreSettings(_settings);
 
 			DialogResult = DialogResult.OK;
 			Close();
+		}
+
+		private void btnAreaFull_Click(object sender, EventArgs e)
+		{
+			NTSC_FirstLineNumeric.Value = 0;
+			NTSC_LastLineNumeric.Value = 239;
+			PAL_FirstLineNumeric.Value = 0;
+			PAL_LastLineNumeric.Value = 287;
 		}
 
 	}

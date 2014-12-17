@@ -26,7 +26,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		[CoreConstructor("NES")]
 		public NES(CoreComm comm, GameInfo game, byte[] rom, object Settings, object SyncSettings)
 		{
-			ServiceProvider = new BasicServiceProvider(this);
 			byte[] fdsbios = comm.CoreFileProvider.GetFirmware("NES", "Bios_FDS", false);
 			if (fdsbios != null && fdsbios.Length == 40976)
 			{
@@ -51,13 +50,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			PutSettings((NESSettings)Settings ?? new NESSettings());
 
+			var ser = new BasicServiceProvider(this);
+			ser.Register<IDisassemblable>(cpu);
+
 			if (board is BANDAI_FCG_1)
 			{
 				var reader = (board as BANDAI_FCG_1).reader;
 				// not all BANDAI FCG 1 boards have a barcode reader
 				if (reader != null)
-					(ServiceProvider as BasicServiceProvider).Register<DatachBarcode>(reader);
+					ser.Register<DatachBarcode>(reader);
 			}
+
+			ServiceProvider = ser;
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
@@ -943,13 +947,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		[FeatureNotImplemented]
-		public void StepInto() { throw new NotImplementedException(); }
-
-		[FeatureNotImplemented]
-		public void StepOut() { throw new NotImplementedException(); }
-
-		[FeatureNotImplemented]
-		public void StepOver() { throw new NotImplementedException(); }
+		public void Step(StepType type) { throw new NotImplementedException(); }
 
 		public ITracer Tracer { get; private set; }
 		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }

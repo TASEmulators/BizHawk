@@ -8,9 +8,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio : IToolForm
 	{
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-		public IEmulator Emulator { get { return (IEmulator)EmulatorServices[typeof(IEmulator)]; } }
-		public IStatable StatableEmulator { get { return (IStatable)EmulatorServices[typeof(IStatable)]; } }
+		[RequiredService]
+		public IEmulator Emulator { get; private set; }
+		[RequiredService]
+		public IStatable StatableEmulator { get; private set; }
 
 		private bool _hackyDontUpdate;
 		private bool _initializing; // If true, will bypass restart logic, this is necessary since loading projects causes a movie to load which causes a rom to reload causing dialogs to restart

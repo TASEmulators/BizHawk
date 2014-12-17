@@ -6,6 +6,8 @@
 #include "cdrom/SimpleFIFO.h"
 #include "git.h"
 
+struct ShockRenderOptions;
+
 namespace MDFN_IEN_PSX
 {
 
@@ -39,16 +41,17 @@ class PS_GPU
 {
  public:
 
- PS_GPU(bool pal_clock_and_tv, int sls, int sle) MDFN_COLD;
+ void SetRenderOptions(ShockRenderOptions* opts);
+
+ PS_GPU(bool pal_clock_and_tv) MDFN_COLD;
  ~PS_GPU() MDFN_COLD;
+ static void StaticInitialize() MDFN_COLD;
 
  template<bool isReader>void SyncState(EW::NewState *ns);
 
  void FillVideoParams(MDFNGI* gi) MDFN_COLD;
 
  void Power(void) MDFN_COLD;
-
- int StateAction(StateMem *sm, int load, int data_only);
 
  void ResetTS(void);
 
@@ -105,6 +108,31 @@ class PS_GPU
 
  private:
 
+ uint16 CLUT_Cache[256];
+ uint32 CLUT_Cache_VB;	// Don't try to be clever and reduce it to 16 bits... ~0U is value for invalidated state.
+
+ template<uint32 TexMode_TA>
+ void Update_CLUT_Cache(uint16 raw_clut);
+
+ struct	// Speedup-cache varibles, derived from other variables; shouldn't be saved in save states.
+ {
+  // TW*_* variables derived from tww, twh, twx, twy, TexPageX, TexPageY
+  uint32 TWX_AND;
+  uint32 TWX_ADD;
+
+  uint32 TWY_AND;
+  uint32 TWY_ADD;
+ } SUCV;
+ void RecalcTexWindowStuff(void);
+
+ struct tTexCache
+ {
+  uint16 Data[4];
+  uint32 Tag;
+ } TexCache[256];
+
+ void InvalidateCache(void);
+
  void ProcessFIFO(void);
  void WriteCB(uint32 data);
  uint32 ReadData(void);
@@ -135,20 +163,6 @@ class PS_GPU
  uint32 MaskEvalAND;
 
  uint8 tww, twh, twx, twy;
- struct
- {
-  uint8 TexWindowXLUT_Pre[16];
-  uint8 TexWindowXLUT[256];
-  uint8 TexWindowXLUT_Post[16];
- };
-
- struct
- {
-  uint8 TexWindowYLUT_Pre[16];
-  uint8 TexWindowYLUT[256];
-  uint8 TexWindowYLUT_Post[16];
- };
- void RecalcTexWindowLUT(void);
  
  int32 TexPageX;
  int32 TexPageY;
@@ -158,33 +172,26 @@ class PS_GPU
  uint32 abr;
  uint32 TexMode;
 
- struct
- {
-  uint8 RGB8SAT_Under[256];
-  uint8 RGB8SAT[256];
-  uint8 RGB8SAT_Over[256];
- };
-
- uint8 DitherLUT[4][4][512];	// Y, X, 8-bit source value(256 extra for saturation)
+ static uint8 DitherLUT[4][4][512];	// Y, X, 8-bit source value(256 extra for saturation)
 
  bool LineSkipTest(unsigned y);
 
  template<int BlendMode, bool MaskEval_TA, bool textured>
- void PlotPixel(int32 x, int32 y, uint16 pix);
+ void PlotPixel(uint32 x, uint32 y, uint16 pix);
 
  template<uint32 TexMode_TA>
- uint16 GetTexel(uint32 clut_offset, int32 u, int32 v);
+ uint16 GetTexel(uint32 u, uint32 v);
 
  uint16 ModTexel(uint16 texel, int32 r, int32 g, int32 b, const int32 dither_x, const int32 dither_y);
 
  template<bool goraud, bool textured, int BlendMode, bool TexMult, uint32 TexMode, bool MaskEval_TA>
- void DrawSpan(int y, uint32 clut_offset, const int32 x_start, const int32 x_bound, i_group ig, const i_deltas &idl);
+ void DrawSpan(int y, const int32 x_start, const int32 x_bound, i_group ig, const i_deltas &idl);
 
  template<bool shaded, bool textured, int BlendMode, bool TexMult, uint32 TexMode_TA, bool MaskEval_TA>
- void DrawTriangle(tri_vertex *vertices, uint32 clut);
+ void DrawTriangle(tri_vertex *vertices);
 
  template<bool textured, int BlendMode, bool TexMult, uint32 TexMode_TA, bool MaskEval_TA, bool FlipX, bool FlipY>
- void DrawSprite(int32 x_arg, int32 y_arg, int32 w, int32 h, uint8 u_arg, uint8 v_arg, uint32 color, uint32 clut_offset);
+ void DrawSprite(int32 x_arg, int32 y_arg, int32 w, int32 h, uint8 u_arg, uint8 v_arg, uint32 color);
 
  template<bool goraud, int BlendMode, bool MaskEval_TA>
  void DrawLine(line_point *vertices);
@@ -217,6 +224,11 @@ class PS_GPU
 
  private:
  static CTEntry Commands[256];
+ static const CTEntry Commands_00_1F[0x20];
+ static const CTEntry Commands_20_3F[0x20];
+ static const CTEntry Commands_40_5F[0x20];
+ static const CTEntry Commands_60_7F[0x20];
+ static const CTEntry Commands_80_FF[0x80];
 
  SimpleFIFO<uint32> BlitterFIFO;
 
@@ -239,7 +251,6 @@ class PS_GPU
  uint8 InCmd_CC;
 
  tri_vertex InQuad_F3Vertices[3];
- uint32 InQuad_clut;
 
  line_point InPLine_PrevPoint;
 
@@ -296,6 +307,8 @@ class PS_GPU
  //
  //
  //
+ int32 hmc_to_visible;
+ bool hide_hoverscan;
 
  bool sl_zero_reached;
  //
@@ -309,7 +322,7 @@ class PS_GPU
  bool HardwarePALType;
  int LineVisFirst, LineVisLast;
 
- uint32 OutputLUT[32768];
+ uint32 OutputLUT[384];
  void ReorderRGB_Var(uint32 out_Rshift, uint32 out_Gshift, uint32 out_Bshift, bool bpp24, const uint16 *src, uint32 *dest, const int32 dx_start, const int32 dx_end, int32 fb_x);
 
  template<uint32 out_Rshift, uint32 out_Gshift, uint32 out_Bshift>

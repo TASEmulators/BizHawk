@@ -13,6 +13,11 @@ enum
  //MDFN_COLORSPACE_YUV = 2, // TODO, maybe.
 };
 
+struct MDFN_PaletteEntry
+{
+ uint8 r, g, b;
+};
+
 class MDFN_PixelFormat
 {
  public:
@@ -86,6 +91,24 @@ class MDFN_PixelFormat
   }
  }
 
+ INLINE MDFN_PaletteEntry MakePColor(uint8 r, uint8 g, uint8 b) const
+ {
+  MDFN_PaletteEntry ret;
+
+  ret.r = ((r * ((1 << Rprec) - 1) + 127) / 255) << Rshift;
+  ret.g = ((g * ((1 << Gprec) - 1) + 127) / 255) << Gshift;
+  ret.b = ((b * ((1 << Bprec) - 1) + 127) / 255) << Bshift;
+
+  return ret;
+ }
+
+ INLINE void DecodePColor(const MDFN_PaletteEntry& pe, uint8 &r, uint8 &g, uint8 &b) const
+ {
+  r = ((pe.r >> Rshift) & ((1 << Rprec) - 1)) * 255 / ((1 << Rprec) - 1);
+  g = ((pe.g >> Gshift) & ((1 << Gprec) - 1)) * 255 / ((1 << Gprec) - 1);
+  b = ((pe.b >> Bshift) & ((1 << Bprec) - 1)) * 255 / ((1 << Bprec) - 1);
+ }
+
  // Gets the R/G/B/A values for the passed 32-bit surface pixel value
  INLINE void DecodeColor(uint32 value, int &r, int &g, int &b, int &a) const
  {
@@ -148,11 +171,6 @@ class MDFN_PixelFormat
   DecodeColor(value, r, g, b, dummy_a);
  }
 }; // MDFN_PixelFormat;
-
-struct MDFN_PaletteEntry
-{
- uint8 r, g, b;
-};
 
 // Supports 32-bit RGBA
 //  16-bit is WIP

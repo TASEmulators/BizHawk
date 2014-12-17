@@ -26,9 +26,9 @@ namespace BizHawk.Client.Common
 		private bool _keepHistory = true;
 		private bool _isSorted = true; // Tracks whether or not the list is sorted by address, if it is, binary search can be used for finding watches
 
-		public RamSearchEngine(Settings settings)
+		public RamSearchEngine(Settings settings, IMemoryDomains memoryDomains)
 		{
-			_settings = new Settings(Global.Emulator.AsMemoryDomains());
+			_settings = new Settings(memoryDomains);
 			_settings.Mode = settings.Mode;
 			_settings.Domain = settings.Domain;
 			_settings.Size = settings.Size;
@@ -38,8 +38,8 @@ namespace BizHawk.Client.Common
 			_settings.PreviousType = settings.PreviousType;
 		}
 
-		public RamSearchEngine(Settings settings, Compare compareTo, long? compareValue, int? differentBy)
-			: this(settings)
+		public RamSearchEngine(Settings settings, IMemoryDomains memoryDomains, Compare compareTo, long? compareValue, int? differentBy)
+			: this(settings, memoryDomains)
 			{
 				_compareTo = compareTo;
 				_differentBy = differentBy;
@@ -192,7 +192,7 @@ namespace BizHawk.Client.Common
 
 			if (_settings.PreviousType == Watch.PreviousType.LastSearch)
 			{
-				SetPrevousToCurrent();
+				SetPreviousToCurrent();
 			}
 
 			if (_keepHistory)
@@ -312,11 +312,6 @@ namespace BizHawk.Client.Common
 
 		public void SetPreviousType(Watch.PreviousType type)
 		{
-			if (type == Watch.PreviousType.LastChange)
-			{
-				throw new InvalidOperationException();
-			}
-
 			if (_settings.Mode == Settings.SearchMode.Fast)
 			{
 				if (type == Watch.PreviousType.LastFrame)
@@ -328,7 +323,7 @@ namespace BizHawk.Client.Common
 			_settings.PreviousType = type;
 		}
 
-		public void SetPrevousToCurrent()
+		public void SetPreviousToCurrent()
 		{
 			_watchList.ForEach(x => x.SetPreviousToCurrent(_settings.Domain, _settings.BigEndian));
 		}
@@ -645,28 +640,28 @@ namespace BizHawk.Client.Common
 							return watchList.Where(x => ToFloat(GetValue(x.Address)) > ToFloat(_compareValue.Value));
 						}
 
-						return watchList.Where(x => GetValue(x.Address) > _compareValue.Value);
+						return watchList.Where(x => SignExtendAsNeeded(GetValue(x.Address)) > _compareValue.Value);
 					case ComparisonOperator.GreaterThanEqual:
 						if (_settings.Type == Watch.DisplayType.Float)
 						{
 							return watchList.Where(x => ToFloat(GetValue(x.Address)) >= ToFloat(_compareValue.Value));
 						}
 
-						return watchList.Where(x => GetValue(x.Address) >= _compareValue.Value);
+						return watchList.Where(x => SignExtendAsNeeded(GetValue(x.Address)) >= _compareValue.Value);
 					case ComparisonOperator.LessThan:
 						if (_settings.Type == Watch.DisplayType.Float)
 						{
 							return watchList.Where(x => ToFloat(GetValue(x.Address)) < ToFloat(_compareValue.Value));
 						}
 
-						return watchList.Where(x => GetValue(x.Address) < _compareValue.Value);
+						return watchList.Where(x => SignExtendAsNeeded(GetValue(x.Address)) < _compareValue.Value);
 					case ComparisonOperator.LessThanEqual:
 						if (_settings.Type == Watch.DisplayType.Float)
 						{
 							return watchList.Where(x => ToFloat(GetValue(x.Address)) <= ToFloat(_compareValue.Value));
 						}
 
-						return watchList.Where(x => GetValue(x.Address) <= _compareValue.Value);
+						return watchList.Where(x => SignExtendAsNeeded(GetValue(x.Address)) <= _compareValue.Value);
 					case ComparisonOperator.DifferentBy:
 						if (_differentBy.HasValue)
 						{
@@ -676,7 +671,9 @@ namespace BizHawk.Client.Common
 									(ToFloat(GetValue(x.Address)) - _differentBy.Value == _compareValue.Value));
 							}
 
-							return watchList.Where(x => (GetValue(x.Address) + _differentBy.Value == _compareValue.Value) || (GetValue(x.Address) - _differentBy.Value == _compareValue.Value));
+							return watchList.Where(x
+								=> (SignExtendAsNeeded(GetValue(x.Address)) + _differentBy.Value == _compareValue.Value)
+								|| (SignExtendAsNeeded(GetValue(x.Address)) - _differentBy.Value == _compareValue.Value));
 						}
 						else
 						{
@@ -796,42 +793,42 @@ namespace BizHawk.Client.Common
 							return watchList.Where(x => (ToFloat(GetValue(x.Address)) - ToFloat(x.Previous)) == _compareValue.Value);
 						}
 
-						return watchList.Where(x => (GetValue(x.Address) - x.Previous) == _compareValue.Value);
+						return watchList.Where(x => (SignExtendAsNeeded(GetValue(x.Address)) - SignExtendAsNeeded(x.Previous)) == _compareValue.Value);
 					case ComparisonOperator.NotEqual:
 						if (_settings.Type == Watch.DisplayType.Float)
 						{
 							return watchList.Where(x => (ToFloat(GetValue(x.Address)) - x.Previous) != _compareValue.Value);
 						}
 
-						return watchList.Where(x => (GetValue(x.Address) - x.Previous) != _compareValue.Value);
+						return watchList.Where(x => (SignExtendAsNeeded(GetValue(x.Address)) - SignExtendAsNeeded(x.Previous)) != _compareValue.Value);
 					case ComparisonOperator.GreaterThan:
 						if (_settings.Type == Watch.DisplayType.Float)
 						{
 							return watchList.Where(x => (ToFloat(GetValue(x.Address)) - x.Previous) > _compareValue.Value);
 						}
 
-						return watchList.Where(x => (GetValue(x.Address) - x.Previous) > _compareValue.Value);
+						return watchList.Where(x => (SignExtendAsNeeded(GetValue(x.Address)) - SignExtendAsNeeded(x.Previous)) > _compareValue.Value);
 					case ComparisonOperator.GreaterThanEqual:
 						if (_settings.Type == Watch.DisplayType.Float)
 						{
 							return watchList.Where(x => (ToFloat(GetValue(x.Address)) - x.Previous) >= _compareValue.Value);
 						}
 
-						return watchList.Where(x => (GetValue(x.Address) - x.Previous) >= _compareValue.Value);
+						return watchList.Where(x => (SignExtendAsNeeded(GetValue(x.Address)) - SignExtendAsNeeded(x.Previous)) >= _compareValue.Value);
 					case ComparisonOperator.LessThan:
 						if (_settings.Type == Watch.DisplayType.Float)
 						{
 							return watchList.Where(x => (ToFloat(GetValue(x.Address)) - x.Previous) < _compareValue.Value);
 						}
 
-						return watchList.Where(x => (GetValue(x.Address) - x.Previous) < _compareValue.Value);
+						return watchList.Where(x => (SignExtendAsNeeded(GetValue(x.Address)) - SignExtendAsNeeded(x.Previous)) < _compareValue.Value);
 					case ComparisonOperator.LessThanEqual:
 						if (_settings.Type == Watch.DisplayType.Float)
 						{
 							return watchList.Where(x => (ToFloat(GetValue(x.Address)) - x.Previous) <= _compareValue.Value);
 						}
 
-						return watchList.Where(x => (GetValue(x.Address) - x.Previous) <= _compareValue.Value);
+						return watchList.Where(x => (SignExtendAsNeeded(GetValue(x.Address)) - SignExtendAsNeeded(x.Previous)) <= _compareValue.Value);
 					case ComparisonOperator.DifferentBy:
 						if (_differentBy.HasValue)
 						{
@@ -841,7 +838,9 @@ namespace BizHawk.Client.Common
 									(ToFloat(GetValue(x.Address)) - x.Previous - _differentBy.Value == x.Previous));
 							}
 
-							return watchList.Where(x => (GetValue(x.Address) - x.Previous + _differentBy.Value == _compareValue) || (GetValue(x.Address) - x.Previous - _differentBy.Value == x.Previous));
+							return watchList.Where(x
+								=> (SignExtendAsNeeded(GetValue(x.Address)) - SignExtendAsNeeded(x.Previous) + _differentBy.Value == _compareValue)
+								|| (SignExtendAsNeeded(GetValue(x.Address)) - SignExtendAsNeeded(x.Previous) - _differentBy.Value == _compareValue));
 						}
 						else
 						{
@@ -1043,6 +1042,10 @@ namespace BizHawk.Client.Common
 					case Watch.PreviousType.LastFrame:
 						_previous = _prevFrame;
 						break;
+					case Watch.PreviousType.LastChange:
+						if (_prevFrame != value)
+							_previous = _prevFrame;
+						break;
 				}
 
 				_prevFrame = value;
@@ -1098,6 +1101,10 @@ namespace BizHawk.Client.Common
 						break;
 					case Watch.PreviousType.LastFrame:
 						_previous = _prevFrame;
+						break;
+					case Watch.PreviousType.LastChange:
+						if (_prevFrame != value)
+							_previous = _prevFrame;
 						break;
 				}
 
@@ -1155,6 +1162,10 @@ namespace BizHawk.Client.Common
 					case Watch.PreviousType.LastFrame:
 						_previous = _prevFrame;
 						break;
+					case Watch.PreviousType.LastChange:
+						if (_prevFrame != value)
+							_previous = _prevFrame;
+						break;
 				}
 
 				_prevFrame = value;
@@ -1171,6 +1182,7 @@ namespace BizHawk.Client.Common
 			public Settings(IMemoryDomains core)
 			{
 				BigEndian = core.MemoryDomains.MainMemory.EndianType == MemoryDomain.Endian.Big;
+				// TODO: Fetch this default from the IMemoryDomains object when that's implemented.
 				Size = (Watch.WatchSize)Global.SystemInfo.ByteSize;
 				Type = Watch.DisplayType.Unsigned;
 				Mode = core.MemoryDomains.MainMemory.Size > (1024 * 1024) ?

@@ -33,17 +33,37 @@
 #include <stdarg.h>
 #include <ctype.h>
 
-
+#define FB_WIDTH 768
+#define FB_HEIGHT 576
 
 //extern MDFNGI EmulatedPSX;
 
 namespace MDFN_IEN_PSX
 {
 
-#if PSX_DBGPRINT_ENABLE
-static unsigned psx_dbg_level = 0;
 
-void PSX_DBG(unsigned level, const char *format, ...) throw()
+static unsigned psx_dbg_level = 0;
+#if PSX_DBGPRINT_ENABLE
+
+void PSX_DBG_BIOS_PUTC(uint8 c) noexcept
+{
+ if(psx_dbg_level >= PSX_DBG_BIOS_PRINT)
+ {
+  if(c == 0x1B)
+   return;
+
+  fputc(c, stdout);
+
+  //if(c == '\n')
+  //{
+  // fputc('%', stdout);
+  // fputc(' ', stdout);
+  //}
+  fflush(stdout);
+ }
+}
+
+void PSX_DBG(unsigned level, const char *format, ...) noexcept
 {
  if(psx_dbg_level >= level)
  {
@@ -140,7 +160,6 @@ class PSF1Loader {};
 static PSF1Loader *psf_loader = NULL;
 static std::vector<CDIF*> *cdifs = NULL;
 static std::vector<const char *> cdifs_scex_ids;
-static bool CD_TrayOpen;
 
 static uint64 Memcard_PrevDC[8];
 static int64 Memcard_SaveDelay[8];
@@ -151,10 +170,10 @@ PS_GPU *GPU = NULL;
 PS_CDC *CDC = NULL;
 FrontIO *FIO = NULL;
 
-static MultiAccessSizeMem<512 * 1024, uint32, false> *BIOSROM = NULL;
-static MultiAccessSizeMem<65536, uint32, false> *PIOMem = NULL;
+static MultiAccessSizeMem<512 * 1024, false> *BIOSROM = NULL;
+static MultiAccessSizeMem<65536, false> *PIOMem = NULL;
 
-MultiAccessSizeMem<2048 * 1024, uint32, false> MainRAM;
+MultiAccessSizeMem<2048 * 1024, false> MainRAM;
 
 static uint32 TextMem_Start;
 static std::vector<uint8> TextMem;
@@ -731,8 +750,8 @@ template<typename T, bool IsWrite, bool Access24> static INLINE void MemRW(pscpu
      else switch(sizeof(T))
      {
       case 1: V = TextMem[(A & 0x7FFFFF) - 65536]; break;
-      case 2: V = MDFN_de16lsb(&TextMem[(A & 0x7FFFFF) - 65536]); break;
-      case 4: V = MDFN_de32lsb(&TextMem[(A & 0x7FFFFF) - 65536]); break;
+      case 2: V = MDFN_de16lsb<false>(&TextMem[(A & 0x7FFFFF) - 65536]); break;
+      case 4: V = MDFN_de32lsb<false>(&TextMem[(A & 0x7FFFFF) - 65536]); break;
      }
     }
    }
@@ -921,8 +940,8 @@ template<typename T, bool Access24> static INLINE uint32 MemPeek(pscpu_timestamp
     else switch(sizeof(T))
     {
      case 1: return(TextMem[(A & 0x7FFFFF) - 65536]); break;
-     case 2: return(MDFN_de16lsb(&TextMem[(A & 0x7FFFFF) - 65536])); break;
-     case 4: return(MDFN_de32lsb(&TextMem[(A & 0x7FFFFF) - 65536])); break;
+     case 2: return(MDFN_de16lsb<false>(&TextMem[(A & 0x7FFFFF) - 65536])); break;
+     case 4: return(MDFN_de32lsb<false>(&TextMem[(A & 0x7FFFFF) - 65536])); break;
     }
    }
   }
@@ -950,12 +969,11 @@ uint32 PSX_MemPeek32(uint32 A)
  return MemPeek<uint32, false>(0, A);
 }
 
-// FIXME: Add PSX_Reset() and FrontIO::Reset() so that emulated input devices don't get power-reset on reset-button reset.
-static void PSX_Power(void)
+static void PSX_Power(bool powering_up)
 {
  PSX_PRNG.ResetState();	// Should occur first!
 
- memset(MainRAM.data32, 0, 2048 * 1024);
+ memset(MainRAM.data8, 0, 2048 * 1024);
 
  for(unsigned i = 0; i < 9; i++)
   SysControl.Regs[i] = 0;
@@ -968,7 +986,7 @@ static void PSX_Power(void)
 
  DMA_Power();
 
- FIO->Power();
+ FIO->Reset(powering_up);
  SIO_Power();
 
  MDEC_Power();
@@ -992,27 +1010,31 @@ using namespace MDFN_IEN_PSX;
 
 struct ShockConfig
 {
-	// multires is a hint that, if set, indicates that the system has fairly programmable video modes(particularly, the ability
-	// to display multiple horizontal resolutions, such as the PCE, PC-FX, or Genesis).  In practice, it will cause the driver
-	// code to set the linear interpolation on by default. (TRUE for psx)
-	// lcm_width and lcm_height are the least common multiples of all possible
-	// resolutions in the frame buffer as specified by DisplayRect/LineWidths(Ex for PCE: widths of 256, 341.333333, 512,
-	// lcm = 1024)
-	// nominal_width and nominal_height specify the resolution that Mednafen should display
-	// the framebuffer image in at 1x scaling, scaled from the dimensions of DisplayRect, and optionally the LineWidths array
-	// passed through espec to the Emulate() function.
-	int lcm_width;
-	int lcm_height;
-	int nominal_width;
-	int nominal_height;
+	//// multires is a hint that, if set, indicates that the system has fairly programmable video modes(particularly, the ability
+	//// to display multiple horizontal resolutions, such as the PCE, PC-FX, or Genesis).  In practice, it will cause the driver
+	//// code to set the linear interpolation on by default. (TRUE for psx)
+	//// lcm_width and lcm_height are the least common multiples of all possible
+	//// resolutions in the frame buffer as specified by DisplayRect/LineWidths(Ex for PCE: widths of 256, 341.333333, 512,
+	//// lcm = 1024)
+	//// nominal_width and nominal_height specify the resolution that Mednafen should display
+	//// the framebuffer image in at 1x scaling, scaled from the dimensions of DisplayRect, and optionally the LineWidths array
+	//// passed through espec to the Emulate() function.
+	//int lcm_width;
+	//int lcm_height;
+	//int nominal_width;
+	//int nominal_height;
 	int fb_width;		// Width of the framebuffer(not necessarily width of the image).  MDFN_Surface width should be >= this.
 	int fb_height;		// Height of the framebuffer passed to the Emulate() function(not necessarily height of the image)
+
+	//last used render options
+	ShockRenderOptions opts;
 } s_ShockConfig;
 
 
 struct ShockState
 {
 	bool power;
+	bool eject;
 } s_ShockState;
 
 
@@ -1120,9 +1142,12 @@ struct {
 				return SHOCK_OK;
 
 			case eShockMemcardTransaction_Read:
-				FIO->MCPorts[portnum]->ReadNV((uint8*)transaction->buffer128k,0,128*1024);
+			{
+				const u8* ptr = FIO->MCPorts[portnum]->ReadNV();
+				memcpy(transaction->buffer128k,ptr,128*1024);
 				FIO->MCPorts[portnum]->ResetNVDirtyCount();
 				return SHOCK_OK;
+			}
 
 			case eShockMemcardTransaction_CheckDirty:
 				if(FIO->GetMemcardDirtyCount(portnum))
@@ -1155,20 +1180,20 @@ static void MountCPUAddressSpace()
 {
 	for(uint32 ma = 0x00000000; ma < 0x00800000; ma += 2048 * 1024)
 	{
-		CPU->SetFastMap(MainRAM.data32, 0x00000000 + ma, 2048 * 1024);
-		CPU->SetFastMap(MainRAM.data32, 0x80000000 + ma, 2048 * 1024);
-		CPU->SetFastMap(MainRAM.data32, 0xA0000000 + ma, 2048 * 1024);
+		CPU->SetFastMap(MainRAM.data8, 0x00000000 + ma, 2048 * 1024);
+		CPU->SetFastMap(MainRAM.data8, 0x80000000 + ma, 2048 * 1024);
+		CPU->SetFastMap(MainRAM.data8, 0xA0000000 + ma, 2048 * 1024);
 	}
 
-	CPU->SetFastMap(BIOSROM->data32, 0x1FC00000, 512 * 1024);
-	CPU->SetFastMap(BIOSROM->data32, 0x9FC00000, 512 * 1024);
-	CPU->SetFastMap(BIOSROM->data32, 0xBFC00000, 512 * 1024);
+	CPU->SetFastMap(BIOSROM->data8, 0x1FC00000, 512 * 1024);
+	CPU->SetFastMap(BIOSROM->data8, 0x9FC00000, 512 * 1024);
+	CPU->SetFastMap(BIOSROM->data8, 0xBFC00000, 512 * 1024);
 
 	if(PIOMem)
 	{
-		CPU->SetFastMap(PIOMem->data32, 0x1F000000, 65536);
-		CPU->SetFastMap(PIOMem->data32, 0x9F000000, 65536);
-		CPU->SetFastMap(PIOMem->data32, 0xBF000000, 65536);
+		CPU->SetFastMap(PIOMem->data8, 0x1F000000, 65536);
+		CPU->SetFastMap(PIOMem->data8, 0x9F000000, 65536);
+		CPU->SetFastMap(PIOMem->data8, 0xBF000000, 65536);
 	}
 }
 
@@ -1189,10 +1214,10 @@ EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
 	//PIO Mem: why wouldn't we want this?
 	static const bool WantPIOMem = true;
 
-	BIOSROM = new MultiAccessSizeMem<512 * 1024, uint32, false>();
+	BIOSROM = new MultiAccessSizeMem<512 * 1024, false>();
 	memcpy(BIOSROM->data8, firmware512k, 512 * 1024);
 
-	if(WantPIOMem) PIOMem = new MultiAccessSizeMem<65536, uint32, false>();
+	if(WantPIOMem) PIOMem = new MultiAccessSizeMem<65536, false>();
 	else PIOMem = NULL;
 
 	CPU = new PS_CPU();
@@ -1200,44 +1225,15 @@ EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
 	CDC = new PS_CDC();
 	DMA_Init();
 
-	//analyze region to determine display area (visible scanline regions and such)
-	//currently this can't be changed by the user
-	//[0,239] for NTSC; [0,287] for PAL
-	int sls, sle;
-	if(region == REGION_EU)
-	{
-		sls = 0;
-		sle = 287;
-	}
-	else
-	{
-		sls = 0;
-		sle = 239;
-	}
-
 	//these steps can't be done without more information
-	GPU = new PS_GPU(region == REGION_EU, sls, sle);
-
-	//fetch video parameters, stash in a simpler format
-	MDFNGI givp;
-	GPU->FillVideoParams(&givp);
-	s_ShockConfig.lcm_width = givp.lcm_width;
-	s_ShockConfig.lcm_height = givp.lcm_height;
-	s_ShockConfig.fb_height = givp.fb_height;
-	//s_ShockConfig.fb_width = givp.fb_width;
-	s_ShockConfig.fb_width = 800; //we're a bit sloppy right now.. use this to make sure theres adequate room for double-sizing a 400px wide screen
-	s_ShockConfig.fb_height = givp.fb_height;
-	s_ShockConfig.nominal_width = givp.nominal_width;
-	s_ShockConfig.nominal_height = givp.nominal_height;
-	//givp.fps // TODO
-
+	GPU = new PS_GPU(region == REGION_EU);
 
 	//setup gpu output surfaces
 	MDFN_PixelFormat nf(MDFN_COLORSPACE_RGB, 16, 8, 0, 24);
 	for(int i=0;i<2;i++)
 	{
-		VTBuffer[i] = new MDFN_Surface(NULL, s_ShockConfig.fb_width, s_ShockConfig.fb_height, s_ShockConfig.fb_width, nf);
-		VTLineWidths[i] = (int *)calloc(s_ShockConfig.fb_height, sizeof(int));
+		VTBuffer[i] = new MDFN_Surface(NULL, FB_WIDTH, FB_HEIGHT, FB_WIDTH, nf);
+		VTLineWidths[i] = (int *)calloc(FB_HEIGHT, sizeof(int));
 	}
 
 	FIO = new FrontIO();
@@ -1246,9 +1242,10 @@ EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
 	MountCPUAddressSpace();
 
 	s_ShockState.power = false;
+	s_ShockState.eject = false;
 
-	//TODO - not the ideal starting condition, need to make sure its all sensible as being closed
-	CD_TrayOpen = true;
+	//set tray closed with no disc
+	CDC->SetDisc(false,NULL,"");
 
 	return SHOCK_OK;
 }
@@ -1264,7 +1261,7 @@ EW_EXPORT s32 shock_PowerOn(void* psx)
 {
 	if(s_ShockState.power) return SHOCK_NOCANDO;
 
-	PSX_Power();
+	PSX_Power(true);
 
 	return SHOCK_OK;
 }
@@ -1321,7 +1318,7 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 	SPU->StartFrame(espec.SoundRate, ResampleQuality); 
 
 	Running = -1;
-	timestamp = CPU->Run(timestamp, psf_loader != NULL);
+	timestamp = CPU->Run(timestamp, psf_loader == NULL && psx_dbg_level >= PSX_DBG_BIOS_PRINT, psf_loader != NULL);
 	assert(timestamp);
 
 	ForceEventUpdates(timestamp);
@@ -1363,7 +1360,7 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 	//new frame, hasnt been normalized
 	s_FramebufferNormalized = false;
 	s_FramebufferCurrent = 0;
-	s_FramebufferCurrentWidth = s_ShockConfig.fb_width;
+	s_FramebufferCurrentWidth = 768;
 
 	return SHOCK_OK;
 }
@@ -1376,6 +1373,8 @@ void NormalizeFramebuffer()
 	
 	//psxtech says horizontal resolutions can be:  256, 320, 368, 512, 640 pixels
 	//mednafen will turn those into 2800/{ 10, 8, 5, 4, 7 } -> 280,350,560,700,400
+	//additionally with the crop options we can cut it down by 160/X -> { 16, 20, 32, 40, 22 } -> { 264, 330, 528, 660, 378 }
+	//this means our virtual area for doubling is no longer 800 but 756
 
 	//heres my strategy: 
 	//try to do the smart thing, try to get aspect ratio near the right value
@@ -1397,6 +1396,7 @@ void NormalizeFramebuffer()
 
 	int width = VTLineWidths[0][0]; //presently, except for contrived test programs, it is safe to assume this is the same for the entire frame (no known use by games)
 	int height = espec.DisplayRect.h;
+	int virtual_width = s_ShockConfig.opts.clipOverscan ? 756 : 800;
 
 	int xs=1,ys=1,xm=0;
 
@@ -1413,17 +1413,12 @@ void NormalizeFramebuffer()
 	//if(width == 700 && height == 480) {}
 
 	//II. as the snes 'always double size framebuffer'. I think thats a better idea, and we already have the concept
-	if(width == 280 && height == 240) xs=ys=2;
-	if(width == 350 && height == 240) xs=ys=2;
-	if(width == 400 && height == 240) xs=ys=2;
-	if(width == 560 && height == 240) ys=2;
-	if(width == 700 && height == 240) ys=2;
-	if(width == 280 && height == 480) xs=2;
-	if(width == 350 && height == 480) xs=2;
-	if(width == 400 && height == 480) xs=2;
-	if(width == 560 && height == 480) {}
-	if(width == 700 && height == 480) {}
-	xm = (800-width*xs)/2;
+	if(width <= 400 && height <= 276) xs=ys=2;
+	if(width > 400 && height <= 276) ys=2;
+	if(width <= 400 && height > 276) xs=2;
+	if(width > 400 && height > 276) {}
+	//TODO - shrink it entirely if cropping
+	xm = (virtual_width-width*xs)/2;
 
 	int curr = 0;
 
@@ -1455,7 +1450,7 @@ void NormalizeFramebuffer()
 
 	//2. double the width as needed. but always float it.
 	//note, theres nothing to be done here if the framebuffer is already wide enough
-	if(width != 800)
+	if(width != virtual_width)
 	{
 		uint32* src = VTBuffer[curr]->pixels + (s_ShockConfig.fb_width*espec.DisplayRect.y) + espec.DisplayRect.x;
 		uint32* dst = VTBuffer[curr^1]->pixels;
@@ -1488,7 +1483,7 @@ void NormalizeFramebuffer()
 		}
 
 		//patch up the metrics
-		width = 800; //we floated the content horizontally, so this becomes the new width
+		width = virtual_width; //we floated the content horizontally, so this becomes the new width
 		espec.DisplayRect.x = 0;
 		espec.DisplayRect.y = 0;
 		VTLineWidths[curr^1][0] = width;
@@ -1564,10 +1559,10 @@ static void LoadEXE(const uint8 *data, const uint32 size, bool ignore_pcsp = fal
  //if(size < 0x800)
  // throw(MDFN_Error(0, "PS-EXE is too small."));
 
- PC = MDFN_de32lsb(&data[0x10]);
- SP = MDFN_de32lsb(&data[0x30]);
- TextStart = MDFN_de32lsb(&data[0x18]);
- TextSize = MDFN_de32lsb(&data[0x1C]);
+ PC = MDFN_de32lsb<false>(&data[0x10]);
+ SP = MDFN_de32lsb<false>(&data[0x30]);
+ TextStart = MDFN_de32lsb<false>(&data[0x18]);
+ TextSize = MDFN_de32lsb<false>(&data[0x1C]);
 
  if(ignore_pcsp)
   printf("TextStart=0x%08x\nTextSize=0x%08x\n", TextStart, TextSize);
@@ -1627,23 +1622,23 @@ static void LoadEXE(const uint8 *data, const uint32 size, bool ignore_pcsp = fal
 
  po = &PIOMem->data8[0x0800];
 
- MDFN_en32lsb(po, (0x0 << 26) | (31 << 21) | (0x8 << 0));	// JR
+ MDFN_en32lsb<false>(po, (0x0 << 26) | (31 << 21) | (0x8 << 0));	// JR
  po += 4;
- MDFN_en32lsb(po, 0);	// NOP(kinda)
+ MDFN_en32lsb<false>(po, 0);	// NOP(kinda)
  po += 4;
 
  po = &PIOMem->data8[0x1000];
 
  // Load cacheable-region target PC into r2
- MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16) | (0x9F001010 >> 16));      // LUI
+ MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16) | (0x9F001010 >> 16));      // LUI
  po += 4;
- MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (2 << 16) | (0x9F001010 & 0xFFFF));   // ORI
+ MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (2 << 16) | (0x9F001010 & 0xFFFF));   // ORI
  po += 4;
 
  // Jump to r2
- MDFN_en32lsb(po, (0x0 << 26) | (2 << 21) | (0x8 << 0));	// JR
+ MDFN_en32lsb<false>(po, (0x0 << 26) | (2 << 21) | (0x8 << 0));	// JR
  po += 4;
- MDFN_en32lsb(po, 0);	// NOP(kinda)
+ MDFN_en32lsb<false>(po, 0);	// NOP(kinda)
  po += 4;
 
  //
@@ -1652,42 +1647,42 @@ static void LoadEXE(const uint8 *data, const uint32 size, bool ignore_pcsp = fal
 
  // Load source address into r8
  uint32 sa = 0x9F000000 + 65536;
- MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16) | (sa >> 16));	// LUI
+ MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16) | (sa >> 16));	// LUI
  po += 4;
- MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (8 << 16) | (sa & 0xFFFF)); 	// ORI
+ MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (8 << 16) | (sa & 0xFFFF)); 	// ORI
  po += 4;
 
  // Load dest address into r9
- MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (TextMem_Start >> 16));	// LUI
+ MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (TextMem_Start >> 16));	// LUI
  po += 4;
- MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (9 << 16) | (TextMem_Start & 0xFFFF)); 	// ORI
+ MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (9 << 16) | (TextMem_Start & 0xFFFF)); 	// ORI
  po += 4;
 
  // Load size into r10
- MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (TextMem.size() >> 16));	// LUI
+ MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (TextMem.size() >> 16));	// LUI
  po += 4;
- MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (10 << 16) | (TextMem.size() & 0xFFFF)); 	// ORI
+ MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (10 << 16) | (TextMem.size() & 0xFFFF)); 	// ORI
  po += 4;
 
  //
  // Loop begin
  //
  
- MDFN_en32lsb(po, (0x24 << 26) | (8 << 21) | (1 << 16));	// LBU to r1
+ MDFN_en32lsb<false>(po, (0x24 << 26) | (8 << 21) | (1 << 16));	// LBU to r1
  po += 4;
 
- MDFN_en32lsb(po, (0x08 << 26) | (10 << 21) | (10 << 16) | 0xFFFF);	// Decrement size
+ MDFN_en32lsb<false>(po, (0x08 << 26) | (10 << 21) | (10 << 16) | 0xFFFF);	// Decrement size
  po += 4;
 
- MDFN_en32lsb(po, (0x28 << 26) | (9 << 21) | (1 << 16));	// SB from r1
+ MDFN_en32lsb<false>(po, (0x28 << 26) | (9 << 21) | (1 << 16));	// SB from r1
  po += 4;
 
- MDFN_en32lsb(po, (0x08 << 26) | (8 << 21) | (8 << 16) | 0x0001);	// Increment source addr
+ MDFN_en32lsb<false>(po, (0x08 << 26) | (8 << 21) | (8 << 16) | 0x0001);	// Increment source addr
  po += 4;
 
- MDFN_en32lsb(po, (0x05 << 26) | (0 << 21) | (10 << 16) | (-5 & 0xFFFF));
+ MDFN_en32lsb<false>(po, (0x05 << 26) | (0 << 21) | (10 << 16) | (-5 & 0xFFFF));
  po += 4;
- MDFN_en32lsb(po, (0x08 << 26) | (9 << 21) | (9 << 16) | 0x0001);	// Increment dest addr
+ MDFN_en32lsb<false>(po, (0x08 << 26) | (9 << 21) | (9 << 16) | 0x0001);	// Increment dest addr
  po += 4;
 
  //
@@ -1701,31 +1696,31 @@ static void LoadEXE(const uint8 *data, const uint32 size, bool ignore_pcsp = fal
  }
  else
  {
-  MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (SP >> 16));	// LUI
+  MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (SP >> 16));	// LUI
   po += 4;
-  MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (29 << 16) | (SP & 0xFFFF)); 	// ORI
+  MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (29 << 16) | (SP & 0xFFFF)); 	// ORI
   po += 4;
 
   // Load PC into r2
-  MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | ((PC >> 16) | 0x8000));      // LUI
+  MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16)  | ((PC >> 16) | 0x8000));      // LUI
   po += 4;
-  MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (2 << 16) | (PC & 0xFFFF));   // ORI
+  MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (2 << 16) | (PC & 0xFFFF));   // ORI
   po += 4;
  }
 
  // Half-assed instruction cache flush. ;)
  for(unsigned i = 0; i < 1024; i++)
  {
-  MDFN_en32lsb(po, 0);
+  MDFN_en32lsb<false>(po, 0);
   po += 4;
  }
 
 
 
  // Jump to r2
- MDFN_en32lsb(po, (0x0 << 26) | (2 << 21) | (0x8 << 0));	// JR
+ MDFN_en32lsb<false>(po, (0x0 << 26) | (2 << 21) | (0x8 << 0));	// JR
  po += 4;
- MDFN_en32lsb(po, 0);	// NOP(kinda)
+ MDFN_en32lsb<false>(po, 0);	// NOP(kinda)
  po += 4;
 }
 
@@ -1827,28 +1822,6 @@ static void CloseGame(void)
  Cleanup();
 }
 
-static void CDInsertEject(void)
-{
- CD_TrayOpen = !CD_TrayOpen;
-
- for(unsigned disc = 0; disc < cdifs->size(); disc++)
- {
-  if(!(*cdifs)[disc]->Eject(CD_TrayOpen))
-  {
-
-   CD_TrayOpen = !CD_TrayOpen;
-  }
- }
-
-
-//DAWWWWW
- //CDC->SetDisc(CD_TrayOpen, (CD_SelectedDisc >= 0 && !CD_TrayOpen) ? (*cdifs)[CD_SelectedDisc] : NULL,
-	//(CD_SelectedDisc >= 0 && !CD_TrayOpen) ? cdifs_scex_ids[CD_SelectedDisc] : NULL);
-}
-
-
-
-
 EW_EXPORT s32 shock_CreateDisc(ShockDiscRef** outDisc, void *Opaque, s32 lbaCount, ShockDisc_ReadTOC ReadTOC, ShockDisc_ReadLBA ReadLBA2448, bool suppliesDeinterleavedSubcode)
 {
 	*outDisc = new ShockDiscRef(Opaque, lbaCount, ReadTOC, ReadLBA2448, suppliesDeinterleavedSubcode);
@@ -1857,6 +1830,7 @@ EW_EXPORT s32 shock_CreateDisc(ShockDiscRef** outDisc, void *Opaque, s32 lbaCoun
 
 ShockDiscRef* s_CurrDisc = NULL;
 ShockDiscInfo s_CurrDiscInfo;
+
 
 //Sets the disc in the tray. Returns SHOCK_NOCANDO if it's closed. You can pass NULL to remove a disc from the tray
 EW_EXPORT s32 shock_SetDisc(void* psx, ShockDiscRef* disc)
@@ -1874,6 +1848,8 @@ EW_EXPORT s32 shock_SetDisc(void* psx, ShockDiscRef* disc)
 
 	s_CurrDiscInfo = info;
 	s_CurrDisc = disc;
+
+	//set the disc to the CDC, but since its necessarily open to insert, this is false
 	CDC->SetDisc(true,s_CurrDisc,s_CurrDiscInfo.id);
 
 	return SHOCK_OK;
@@ -1881,12 +1857,16 @@ EW_EXPORT s32 shock_SetDisc(void* psx, ShockDiscRef* disc)
 
 EW_EXPORT s32 shock_OpenTray(void* psx)
 {
+	if(s_ShockState.eject) return SHOCK_NOCANDO;
+	s_ShockState.eject = true;
 	CDC->SetDisc(true,s_CurrDisc,s_CurrDiscInfo.id);
 	return SHOCK_OK;
 }
 
 EW_EXPORT s32 shock_CloseTray(void* psx)
 {
+	if(!s_ShockState.eject) return SHOCK_NOCANDO;
+	s_ShockState.eject = false;
 	CDC->SetDisc(false,s_CurrDisc,s_CurrDiscInfo.id);
 	return SHOCK_OK;
 }
@@ -2162,8 +2142,8 @@ EW_EXPORT s32 shock_AnalyzeDisc(ShockDiscRef* disc, ShockDiscInfo* info)
 				throw "Missing Primary Volume Descriptor";
 		} while(pvd[0] != 0x01);
 		//[156 ... 189], 34 bytes
-		uint32 rdel = MDFN_de32lsb(&pvd[0x9E]);
-		uint32 rdel_len = MDFN_de32lsb(&pvd[0xA6]);
+		uint32 rdel = MDFN_de32lsb<false>(&pvd[0x9E]);
+		uint32 rdel_len = MDFN_de32lsb<false>(&pvd[0xA6]);
 
 		if(rdel_len >= (1024 * 1024 * 10))	// Arbitrary sanity check.
 			throw "Root directory table too large";
@@ -2190,8 +2170,8 @@ EW_EXPORT s32 shock_AnalyzeDisc(ShockDiscRef* disc, ShockDiscInfo* info)
 
 			if(len_fi == 12 && !memcmp(&dr[0x21], "SYSTEM.CNF;1", 12))
 			{
-				uint32 file_lba = MDFN_de32lsb(&dr[0x02]);
-				//uint32 file_len = MDFN_de32lsb(&dr[0x0A]);
+				uint32 file_lba = MDFN_de32lsb<false>(&dr[0x02]);
+				//uint32 file_len = MDFN_de32lsb<false>(&dr[0x0A]);
 				uint8 fb[2048 + 1];
 				char *bootpos;
 
@@ -2357,6 +2337,7 @@ EW_EXPORT s32 shock_GetMemData(void* psx, void** ptr, s32* size, s32 memType)
 	case eMemType_PIOMem: *ptr = PIOMem->data8; *size = 64*1024; break;
 	case eMemType_GPURAM: *ptr = GPU->GPURAM; *size = 2*512*1024; break;
 	case eMemType_SPURAM: *ptr = SPU->SPURAM; *size = 512*1024; break;
+	case eMemType_DCache: *ptr = CPU->debug_GetScratchRAMPtr(); *size = 1024; break;
 	default:
 		return SHOCK_ERROR;
 	}
@@ -2380,7 +2361,7 @@ void IRQ_SyncState(bool isReader, EW::NewState *ns);
 
 SYNCFUNC(PSX)
 {
-  NSS(CD_TrayOpen);
+  NSS(s_ShockState);
   PSS(MainRAM.data8, 2*1024*1024);
   NSS(SysControl.Regs);
 	NSS(PSX_PRNG.lcgo);
@@ -2489,4 +2470,35 @@ EW_EXPORT s32 shock_StateTransaction(void *psx, ShockStateTransaction* transacti
 	default:
 		return SHOCK_ERROR;
 	}
+}
+
+EW_EXPORT s32 shock_GetRegisters_CPU(void* psx, ShockRegisters_CPU* buffer)
+{
+	memcpy(buffer->GPR,CPU->debug_GetGPRPtr(),32*4);
+	buffer->PC = CPU->GetRegister(PS_CPU::GSREG_PC_NEXT,NULL,0);
+  buffer->PC_NEXT = CPU->GetRegister(PS_CPU::GSREG_PC_NEXT,NULL,0);
+  buffer->IN_BD_SLOT = CPU->GetRegister(PS_CPU::GSREG_IN_BD_SLOT,NULL,0);
+  buffer->LO  = CPU->GetRegister(PS_CPU::GSREG_LO,NULL,0);
+	buffer->HI = CPU->GetRegister(PS_CPU::GSREG_HI,NULL,0);
+	buffer->SR = CPU->GetRegister(PS_CPU::GSREG_SR,NULL,0);
+	buffer->CAUSE = CPU->GetRegister(PS_CPU::GSREG_CAUSE,NULL,0);
+	buffer->EPC = CPU->GetRegister(PS_CPU::GSREG_EPC,NULL,0);
+	
+	return SHOCK_OK;
+}
+
+//Sets a CPU register. Rather than have an enum for the registers, lets just use the index (not offset) within the struct
+EW_EXPORT s32 shock_SetRegister_CPU(void* psx, s32 index, u32 value)
+{
+	//takes advantage of layout of GSREG_ matchign our struct (not an accident!)
+	CPU->SetRegister((u32)index,value);
+	
+	return SHOCK_OK;
+}
+
+EW_EXPORT s32 shock_SetRenderOptions(void* pxs, ShockRenderOptions* opts)
+{
+	GPU->SetRenderOptions(opts);
+	s_ShockConfig.opts = *opts;
+	return SHOCK_OK;
 }

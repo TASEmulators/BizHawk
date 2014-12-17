@@ -24,7 +24,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		[CoreConstructor("A26")]
 		public Atari2600(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
-			ServiceProvider = new BasicServiceProvider(this);
 			Tracer = new TraceBuffer();
 			MemoryCallbacks = new MemoryCallbackSystem();
 			InputCallbacks = new InputCallbackSystem();
@@ -45,6 +44,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			Console.WriteLine("Game uses mapper " + game.GetOptionsDict()["m"]);
 			RebootCore();
 			SetupMemoryDomains();
+
+			var ser = new  BasicServiceProvider(this);
+			ser.Register<IDisassemblable>(Cpu);
+			ServiceProvider = ser;
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }

@@ -11,12 +11,12 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(LibsnesCore), typeof(IMemoryDomains))]
 	public partial class SNESGameGenie : Form, IToolForm
 	{
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-		private SNESGameGenie Emulator { get { return (SNESGameGenie)EmulatorServices[typeof(SNESGameGenie)]; } }
-		private MemoryDomainList MemoryDomains { get { return (EmulatorServices[typeof(IMemoryDomains)] as IMemoryDomains).MemoryDomains; } }
+		[RequiredService]
+		public LibsnesCore Emulator { get; set; }
+
+		private MemoryDomainList MemoryDomains { get { return Emulator.MemoryDomains; } }
 
 		// including transposition
 		// Code: D F 4 7 0 9 1 5 6 B C 8 A 2 3 E

@@ -6,10 +6,10 @@ using BizHawk.Emulation.Cores.Calculators;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(TI83))]
 	public partial class TI83KeyPad : Form, IToolForm
 	{
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
+		[RequiredService]
+		public TI83 Emu { get; private set; }
 
 		public TI83KeyPad()
 		{

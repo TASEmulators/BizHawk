@@ -10,7 +10,6 @@ using System.Collections.Generic;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(NES))]
 	public partial class NesPPU : Form, IToolForm
 	{
 		// TODO:
@@ -27,8 +26,10 @@ namespace BizHawk.Client.EmuHawk
 		private Bitmap _zoomBoxDefaultImage = new Bitmap(64, 64);
 		private bool _forceChange;
 
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-		private NES _nes { get { return (NES)EmulatorServices[typeof(NES)]; } }
+		[RequiredService]
+		private NES _nes { get; set; }
+		[RequiredService]
+		private INESPPUViewable xxx { get; set; }
 
 		public NesPPU()
 		{

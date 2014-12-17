@@ -33,12 +33,14 @@ namespace MDFN_IEN_PSX
  #define PSX_DBG_FLOOD		4	// Heavy informational debug messages(GPU commands; TODO).
 
 #if PSX_DBGPRINT_ENABLE
- void PSX_DBG(unsigned level, const char *format, ...) throw() MDFN_COLD MDFN_FORMATSTR(gnu_printf, 2, 3);
+ void PSX_DBG(unsigned level, const char *format, ...) noexcept MDFN_COLD MDFN_FORMATSTR(gnu_printf, 2, 3);
+ void PSX_DBG_BIOS_PUTC(uint8 c) noexcept;
 
  #define PSX_WARNING(format, ...) { PSX_DBG(PSX_DBG_WARNING, format "\n", ## __VA_ARGS__); }
  #define PSX_DBGINFO(format, ...) { }
 #else
  static INLINE void PSX_DBG(unsigned level, const char* format, ...) { }
+ static INLINE void PSX_DBG_BIOS_PUTC(uint8 c) { }
  static INLINE void PSX_WARNING(const char* format, ...) { }
  static INLINE void PSX_DBGINFO(const char* format, ...) { }
 #endif
@@ -110,7 +112,7 @@ namespace MDFN_IEN_PSX
  extern PS_GPU *GPU;
  extern PS_CDC *CDC;
  extern PS_SPU *SPU;
- extern MultiAccessSizeMem<2048 * 1024, uint32, false> MainRAM;
+ extern MultiAccessSizeMem<2048 * 1024, false> MainRAM;
 };
 
 enum eRegion
@@ -138,7 +140,8 @@ enum eMemType
 	eMemType_BiosROM = 1, //512K
 	eMemType_PIOMem = 2, //64K
 	eMemType_GPURAM = 3, //512K
-	eMemType_SPURAM = 4 //512K
+	eMemType_SPURAM = 4, //512K
+	eMemType_DCache = 5 //1K
 };
 
 enum ePeripheralType
@@ -198,6 +201,15 @@ struct ShockTOC
   u8 disc_type;
 };
 
+struct ShockRegisters_CPU
+{
+  u32 GPR[32];
+  u32 PC, PC_NEXT;
+  u32 IN_BD_SLOT;
+  u32 LO, HI;
+	u32 SR, CAUSE, EPC;
+};
+
 // [0] is unused, [100] is for the leadout track.
 // Also, for convenience, tracks[last_track + 1] will always refer
 // to the leadout track(even if last_track < 99, IE the leadout track details are duplicated).
@@ -244,6 +256,12 @@ struct ShockFramebufferInfo
 	s32 width, height;
 	s32 flags;
 	void* ptr;
+};
+
+struct ShockRenderOptions
+{
+	s32 scanline_start, scanline_end;
+	bool clipOverscan;
 };
 
 struct ShockMemcardTransaction
@@ -315,6 +333,9 @@ EW_EXPORT s32 shock_SetDisc(void* psx, ShockDiscRef* disc);
 //Closes the disc tray. Returns SHOCK_NOCANDO if already closed.
 EW_EXPORT s32 shock_CloseTray(void* psx);
 
+//Sets rendering options for next frame
+EW_EXPORT s32 shock_SetRenderOptions(void* psx, ShockRenderOptions* opts);
+
 //Steps emulation by the specified interval
 //TODO - think about something. After loadstating, the device input state is probably nonsense. 
 //Normally we'd set the input before frame advancing. But every frontend might not do that, and we might not be stepping by one frame.
@@ -334,3 +355,9 @@ EW_EXPORT s32 shock_GetMemData(void* psx, void** ptr, s32* size, s32 memType);
 
 //savestate work. Returns the size if that's what was requested, otherwise error codes
 EW_EXPORT s32 shock_StateTransaction(void *psx, ShockStateTransaction* transaction);
+
+//Retrieves the CPU registers in a compact struct
+EW_EXPORT s32 shock_GetRegisters_CPU(void* psx, ShockRegisters_CPU* buffer);
+
+//Sets a CPU register. Rather than have an enum for the registers, lets just use the index (not offset) within the struct
+EW_EXPORT s32 shock_SetRegister_CPU(void* psx, s32 index, u32 value);

@@ -16,7 +16,6 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(IEmulator), typeof(IStatable), typeof(IInputPollable))]
 	public partial class TAStudio : Form, IToolForm, IControlMainform
 	{
 		// TODO: UI flow that conveniently allows to start from savestate

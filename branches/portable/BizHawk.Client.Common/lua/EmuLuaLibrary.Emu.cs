@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common
 					throw new NotImplementedException();
 				}
 
-				var registers = debuggable.AsDebuggable().GetCpuFlagsAndRegisters();
+				var registers = debuggable.GetCpuFlagsAndRegisters();
 				return registers.ContainsKey(name)
 					? registers[name]
 					: 0;

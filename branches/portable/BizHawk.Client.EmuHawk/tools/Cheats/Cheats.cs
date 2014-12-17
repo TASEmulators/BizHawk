@@ -17,11 +17,13 @@ using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(IMemoryDomains))]
 	public partial class Cheats : Form, IToolForm
 	{
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-		private IMemoryDomains Core { get { return (IMemoryDomains)EmulatorServices[typeof(IMemoryDomains)]; } }
+		[RequiredService]
+		private IMemoryDomains Core { get; set; }
+
+		[RequiredService] // TODO: use of this property should be factored out
+		private IEmulator Emu { get; set; }
 
 		public const string NAME = "NamesColumn";
 		public const string ADDRESS = "AddressColumn";
@@ -196,11 +198,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GameGenieToolbarSeparator.Visible =
 				LoadGameGenieToolbarItem.Visible =
-				   (Core.SystemId == "NES")
-				|| (Core.SystemId == "GEN" && VersionInfo.DeveloperBuild)
-				|| (Core.SystemId == "GB")
+				   (Emu.SystemId == "NES")
+				|| (Emu.SystemId == "GEN" && VersionInfo.DeveloperBuild)
+				|| (Emu.SystemId == "GB")
 				|| (Global.Game.System == "GG")
-				|| (Core is LibsnesCore);
+				|| (Emu is LibsnesCore);
 		}
 
 		private void AddCheat()
@@ -537,11 +539,11 @@ namespace BizHawk.Client.EmuHawk
 
 			GameGenieSeparator.Visible =
 				OpenGameGenieEncoderDecoderMenuItem.Visible = 
-					   (Core.SystemId == "NES") 
-					|| (Core is Genesis)
-					|| (Core.SystemId == "GB")
+					   (Emu.SystemId == "NES") 
+					|| (Emu is Genesis)
+					|| (Emu.SystemId == "GB")
 					|| (Global.Game.System == "GG")
-					|| (Core is LibsnesCore);
+					|| (Emu is LibsnesCore);
 		}
 
 		private void RemoveCheatMenuItem_Click(object sender, EventArgs e)

@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Common
 {
-	public interface IDebuggable : IEmulator, IEmulatorService
+	public interface IDebuggable : IEmulatorService
 	{
 		/// <summary>
 		/// Returns a list of Cpu registers and their current state
@@ -22,8 +22,10 @@ namespace BizHawk.Emulation.Common
 		IMemoryCallbackSystem MemoryCallbacks { get; }
 
 		// Advanced Navigation
-		void StepInto();
-		void StepOut();
-		void StepOver();
+		//void StepInto();
+		//void StepOut();
+		//void StepOver();
+
+		void Step(StepType type);
 	}
 }

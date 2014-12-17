@@ -20,6 +20,12 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			NONE = 3 //TODO - whats the difference between unset, and region unknown?
 		}
 
+		public enum eVidStandard : int
+		{
+			NTSC = 0,
+			PAL = 1,
+		}
+
 		public enum eShockStep
 		{
 			Frame
@@ -37,7 +43,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			BiosROM = 1, //512K
 			PIOMem = 2, //64K
 			GPURAM = 3, //512K
-			SPURAM = 4 //512K
+			SPURAM = 4, //512K
+			DCache = 5 //1K
 		};
 
 		public enum eShockStateTransaction : int
@@ -59,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		};
 
 
-		public enum ePeripheralType
+		public enum ePeripheralType : int
 		{
 			None = 0, //can be used to signify disconnection
 
@@ -110,6 +117,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		};
 
 		[StructLayout(LayoutKind.Sequential)]
+		public struct ShockRenderOptions
+		{
+			public int scanline_start, scanline_end;
+			public bool clipOverscan;
+		};
+
+		[StructLayout(LayoutKind.Sequential)]
 		public struct ShockMemcardTransaction
 		{
 			[MarshalAs(UnmanagedType.I4)]
@@ -117,6 +131,15 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			public void* buffer128k;
 		};
 
+		[StructLayout(LayoutKind.Sequential)]
+		public struct ShockRegisters_CPU
+		{
+			public fixed uint GPR[32];
+			public uint PC, PC_NEXT;
+			public uint IN_BD_SLOT;
+			public uint LO, HI;
+			public uint SR, CAUSE, EPC;
+		};
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct ShockStateTransaction
@@ -133,63 +156,65 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int ShockDisc_ReadLBA(IntPtr opaque, int lba, void* dst);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_CreateDisc(out IntPtr outDisc, IntPtr Opaque, int lbaCount, ShockDisc_ReadTOC ReadTOC, ShockDisc_ReadLBA ReadLBA2448, bool suppliesDeinterleavedSubcode);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_DestroyDisc(IntPtr disc);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_AnalyzeDisc(IntPtr disc, out ShockDiscInfo info);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_Create(out IntPtr psx, eRegion region, void* firmware512k);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_Destroy(IntPtr psx);
 
-		[DllImport(dd)]
-
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_Peripheral_Connect(
 			IntPtr psx,
 			int address,
 			[MarshalAs(UnmanagedType.I4)] ePeripheralType type
 			);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_Peripheral_SetPadInput(IntPtr psx, int address, uint buttons, byte left_x, byte left_y, byte right_x, byte right_y);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_Peripheral_MemcardTransact(IntPtr psx, int address, ref ShockMemcardTransaction transaction);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_MountEXE(IntPtr psx, void* exebuf, int size);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_PowerOn(IntPtr psx);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_PowerOff(IntPtr psx);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_OpenTray(IntPtr psx);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_SetDisc(IntPtr psx, IntPtr disc);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_CloseTray(IntPtr psx);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern int shock_SetRenderOptions(IntPtr psx, ref ShockRenderOptions opts);
+
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_Step(IntPtr psx, eShockStep step);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_GetFramebuffer(IntPtr psx, ref ShockFramebufferInfo fb);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_GetSamples(IntPtr psx, void* buffer);
 
-		[DllImport(dd)]
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_GetMemData(
 			IntPtr psx,
 			out IntPtr ptr,
@@ -200,5 +225,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_StateTransaction(IntPtr psx, ref ShockStateTransaction transaction);
 
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern int shock_GetRegisters_CPU(IntPtr psx, ref ShockRegisters_CPU buffer);
+
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern int shock_SetRegister_CPU(IntPtr psx, int index, uint value);
 	}
 }

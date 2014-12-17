@@ -36,7 +36,6 @@ using BizHawk.Client.EmuHawk; //TODO: What??
 
 namespace BizHawk.Client.EmuHawk
 {
-	[RequiredServices(typeof(LibsnesCore))]
 	public unsafe partial class SNESGraphicsDebugger : Form, IToolForm
 	{
 		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
@@ -47,8 +46,8 @@ namespace BizHawk.Client.EmuHawk
 		public bool UpdateBefore { get { return false; } }
 		public bool AskSaveChanges() { return true; }
 
-		public IDictionary<Type, object> EmulatorServices { private get; set; }
-		private LibsnesCore Emulator { get { return (LibsnesCore)EmulatorServices[typeof(LibsnesCore)]; } }
+		[RequiredService]
+		private LibsnesCore Emulator { get; set; }
 
 		public void Restart()
 		{

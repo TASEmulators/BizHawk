@@ -319,7 +319,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void DrawScreenInfo(IBlitter g)
 		{
-			if (Global.Config.DisplayFrameCounter)
+			if (Global.Config.DisplayFrameCounter && !Global.Game.IsNullInstance)
 			{
 				string message = MakeFrameCounter();
 				float x = GetX(g, Global.Config.DispFrameCx, Global.Config.DispFrameanchor, message);
@@ -333,7 +333,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (Global.Config.DisplayInput)
+			if (Global.Config.DisplayInput && !Global.Game.IsNullInstance)
 			{
 				if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
 				{

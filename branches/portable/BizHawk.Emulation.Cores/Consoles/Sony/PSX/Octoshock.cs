@@ -1,7 +1,7 @@
 ﻿//TODO hook up newer file ID stuff, think about how to combine it with the disc ID
 //TODO change display manager to not require 0xFF alpha channel set on videoproviders. check gdi+ and opengl! this will get us a speedup in some places
 //TODO Disc.Structure.Sessions[0].length_aba was 0
-//TODO add sram dump option (bold it if dirty) to file menu
+//TODO mednafen 0.9.37 changed some disc region detection heuristics. analyze and apply in c# side. also the SCEX id handling changed, maybe simplified
 
 using System;
 using System.ComponentModel;
@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		isPorted: true,
 		isReleased: false
 		)]
-	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IStatable, IDriveLight, IInputPollable, ISettable<Octoshock.Settings, Octoshock.SyncSettings>
+	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IStatable, IDriveLight, IInputPollable, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IDebuggable
 	{
 		public string SystemId { get { return "PSX"; } }
 
@@ -32,16 +32,17 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			Name = "DualShock Controller",
 			BoolButtons =
 			{					
-				"Up", "Down", "Left", "Right", 
-				"Select", "Start",
-				"Square", "Triangle", "Circle", "Cross", 
-				"L1", "R1",  "L2", "R2", "L3", "R3", 
-				"MODE",
+				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Select", "P1 Start", "P1 Square", "P1 Triangle", "P1 Circle", "P1 Cross", "P1 L1", 
+				"P1 R1",  "P1 L2", "P1 R2", "P1 L3", "P1 R3", "P1 MODE",  
+				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Select", "P2 Start", "P2 Square", "P2 Triangle", "P2 Circle", "P2 Cross", "P2 L1", 
+				"P2 R1",  "P2 L2", "P2 R2", "P2 L3", "P2 R3", "P2 MODE",
+				"Eject", "Reset", 
 			},
 			FloatControls =
 			{
-				"LStick X", "LStick Y",
-				"RStick X", "RStick Y",
+				"P1 LStick X", "P1 LStick Y", "P1 RStick X", "P1 RStick Y",
+				"P2 LStick X", "P2 LStick Y", "P2 RStick X", "P2 RStick Y",
+				"Disc Select",
 			},
 			FloatRanges = 
 			{
@@ -49,6 +50,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				new[] {255.0f, 128.0f, 0.0f},
 				new[] {0.0f, 128.0f, 255.0f},
 				new[] {255.0f, 128.0f, 0.0f},
+				new[] {0.0f, 128.0f, 255.0f},
+				new[] {255.0f, 128.0f, 0.0f},
+				new[] {0.0f, 128.0f, 255.0f},
+				new[] {255.0f, 128.0f, 0.0f},
+				new[] {1.0f,1.0f,5.0f},
 			}
 		};
 
@@ -64,8 +70,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		static Octoshock CurrOctoshockCore;
 
 		IntPtr psx;
-		DiscSystem.Disc disc;
-		DiscInterface discInterface;
 
 		bool disposed = false;
 		public void Dispose()
@@ -76,6 +80,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			psx = IntPtr.Zero;
 
 			disposed = true;
+
+			//TODO - dispose disc wrappers
+			//TODO - dispose discs
 		}
 
 		/// <summary>
@@ -83,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		/// </summary>
 		class DiscInterface : IDisposable
 		{
-			public DiscInterface(DiscSystem.Disc disc, Action cbActivity)
+			public DiscInterface(DiscSystem.Disc disc, Action<DiscInterface> cbActivity)
 			{
 				this.Disc = disc;
 				cbReadTOC = ShockDisc_ReadTOC;
@@ -94,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			OctoshockDll.ShockDisc_ReadTOC cbReadTOC;
 			OctoshockDll.ShockDisc_ReadLBA cbReadLBA;
-			Action cbActivity;
+			Action<DiscInterface> cbActivity;
 
 			public DiscSystem.Disc Disc;
 			public IntPtr OctoshockHandle;
@@ -143,7 +150,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			int ShockDisc_ReadLBA2448(IntPtr opaque, int lba, void* dst)
 			{
-				cbActivity();
+				cbActivity(this);
 
 				//lets you check subcode generation by logging it and checking against the CCD subcode
 				bool subcodeLog = false;
@@ -168,16 +175,17 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 		}
 
+		List<DiscInterface> discInterfaces = new List<DiscInterface>();
+		DiscInterface currentDiscInterface;
+
+		OctoshockDll.eRegion SystemRegion;
+		OctoshockDll.eVidStandard SystemVidStandard;
 
 		//note: its annoying that we have to have a disc before constructing this.
 		//might want to change that later. HOWEVER - we need to definitely have a region, at least
 		public Octoshock(CoreComm comm, List<DiscSystem.Disc> discs, byte[] exe, object settings, object syncSettings)
 		{
 			//analyze our first disc from the list by default, because i dont know
-
-			DiscSystem.Disc disc = null;
-			if (discs != null)
-				disc = discs[0];
 
 			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
@@ -189,54 +197,70 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			Attach();
 
-			this.disc = disc;
-
+			//assume this region for EXE and PSF, maybe not correct though
 			string firmwareRegion = "U";
-			OctoshockDll.eRegion region = OctoshockDll.eRegion.NA;
+			SystemRegion = OctoshockDll.eRegion.NA;
 
-			if (disc != null)
+			if (discs != null)
 			{
-				discInterface = new DiscInterface(disc,
-					() =>
-					{
-						//if current disc this delegate disc, activity is happening
-						if (disc == this.disc)
-							DriveLightOn = true;
-					});
+				foreach(var disc in discs)
+				{
+					var discInterface = new DiscInterface(disc,
+						(di) =>
+						{
+							//if current disc this delegate disc, activity is happening
+							if (di == currentDiscInterface)
+								DriveLightOn = true;
+						});
 
-				//determine region of the provided disc
-				OctoshockDll.ShockDiscInfo discInfo;
-				OctoshockDll.shock_AnalyzeDisc(discInterface.OctoshockHandle, out discInfo);
-
-				//try to acquire the appropriate firmware
-				if (discInfo.region == OctoshockDll.eRegion.EU) firmwareRegion = "E";
-				if (discInfo.region == OctoshockDll.eRegion.JP) firmwareRegion = "J";
+					discInterfaces.Add(discInterface);
+				}
 			}
 			else
 			{
 				//assume its NA region for test programs, for now. could it be read out of the ps-exe header?
 			}
 
-			byte[] firmware = comm.CoreFileProvider.GetFirmware("PSX", "U", true, "A PSX `" + firmwareRegion + "` region bios file is required");
+			if (discInterfaces.Count != 0)
+			{
+				//determine region of one of the discs
+				OctoshockDll.ShockDiscInfo discInfo;
+				OctoshockDll.shock_AnalyzeDisc(discInterfaces[0].OctoshockHandle, out discInfo);
+
+				//try to acquire the appropriate firmware
+				if (discInfo.region == OctoshockDll.eRegion.EU) firmwareRegion = "E";
+				if (discInfo.region == OctoshockDll.eRegion.JP) firmwareRegion = "J";
+				SystemRegion = discInfo.region;
+			}
+
+			//see http://problemkaputt.de/psx-spx.htm
+			int CpuClock_n = 44100*768;
+			int CpuClock_d = 1;
+			int VidClock_n = CpuClock_n*11;
+			int VidClock_d = CpuClock_d*7;
+			if (SystemRegion == OctoshockDll.eRegion.EU)
+			{
+				CoreComm.VsyncNum = VidClock_n;
+				CoreComm.VsyncDen = VidClock_d * 314 * 3406;
+				SystemVidStandard = OctoshockDll.eVidStandard.PAL;
+			}
+			else
+			{
+				CoreComm.VsyncNum = VidClock_n;
+				CoreComm.VsyncDen = VidClock_d * 263 * 3413;
+				SystemVidStandard = OctoshockDll.eVidStandard.NTSC;
+			}
+
+			//TODO - known bad firmwares are a no-go. we should refuse to boot them. (thats the mednafen policy)
+			byte[] firmware = comm.CoreFileProvider.GetFirmware("PSX", firmwareRegion, true, "A PSX `" + firmwareRegion + "` region bios file is required");
 
 			//create the instance
 			fixed (byte* pFirmware = firmware)
-				OctoshockDll.shock_Create(out psx, region, pFirmware);
+				OctoshockDll.shock_Create(out psx, SystemRegion, pFirmware);
 
 			SetMemoryDomains();
 
-			//these should track values in octoshock gpu.cpp FillVideoParams
-			//if (discInfo.region == OctoshockDll.eRegion.EU)
-			//{
-			//  VirtualWidth = 377; // " Dunno :( "
-			//  VirtualHeight = 288;
-			//}
-			//else 
-			//{
-			//  VirtualWidth = 320; // Dunno :(
-			//  VirtualHeight = 240;
-			//}
-			//BUT-for now theyre normalized (NOTE: THIS MESSES UP THE ASPECT RATIOS)
+			//TODO - refactor resolution detection and set this accordingly to the first frame of emulation, or at least what the bios is doing first
 			VirtualWidth = 800;
 			VirtualHeight = 480;
 
@@ -245,11 +269,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			BufferHeight = VirtualHeight;
 			frameBuffer = new int[BufferWidth * BufferHeight];
 
-			if (disc != null)
+			if (discInterfaces.Count != 0)
 			{
-				OctoshockDll.shock_OpenTray(psx);
-				OctoshockDll.shock_SetDisc(psx, discInterface.OctoshockHandle);
-				OctoshockDll.shock_CloseTray(psx);
+				//disc will be set during first frame advance
 			}
 			else
 			{
@@ -299,28 +321,28 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			uint buttons = 0;
 
 			//dualshock style
-			if (Controller["Select"]) buttons |= 1;
-			if (Controller["L3"]) buttons |= 2;
-			if (Controller["R3"]) buttons |= 4;
-			if (Controller["Start"]) buttons |= 8;
-			if (Controller["Up"]) buttons |= 16;
-			if (Controller["Right"]) buttons |= 32;
-			if (Controller["Down"]) buttons |= 64;
-			if (Controller["Left"]) buttons |= 128;
-			if (Controller["L2"]) buttons |= 256;
-			if (Controller["R2"]) buttons |= 512;
-			if (Controller["L1"]) buttons |= 1024;
-			if (Controller["R1"]) buttons |= 2048;
-			if (Controller["Triangle"]) buttons |= 4096;
-			if (Controller["Circle"]) buttons |= 8192;
-			if (Controller["Cross"]) buttons |= 16384;
-			if (Controller["Square"]) buttons |= 32768;
-			if (Controller["MODE"]) buttons |= 65536;
+			if (Controller["P1 Select"]) buttons |= 1;
+			if (Controller["P1 L3"]) buttons |= 2;
+			if (Controller["P1 R3"]) buttons |= 4;
+			if (Controller["P1 Start"]) buttons |= 8;
+			if (Controller["P1 Up"]) buttons |= 16;
+			if (Controller["P1 Right"]) buttons |= 32;
+			if (Controller["P1 Down"]) buttons |= 64;
+			if (Controller["P1 Left"]) buttons |= 128;
+			if (Controller["P1 L2"]) buttons |= 256;
+			if (Controller["P1 R2"]) buttons |= 512;
+			if (Controller["P1 L1"]) buttons |= 1024;
+			if (Controller["P1 R1"]) buttons |= 2048;
+			if (Controller["P1 Triangle"]) buttons |= 4096;
+			if (Controller["P1 Circle"]) buttons |= 8192;
+			if (Controller["P1 Cross"]) buttons |= 16384;
+			if (Controller["P1 Square"]) buttons |= 32768;
+			if (Controller["P1 MODE"]) buttons |= 65536;
 
-			byte left_x = (byte)Controller.GetFloat("LStick X");
-			byte left_y = (byte)Controller.GetFloat("LStick Y");
-			byte right_x = (byte)Controller.GetFloat("RStick X");
-			byte right_y = (byte)Controller.GetFloat("RStick Y");
+			byte left_x = (byte)Controller.GetFloat("P1 LStick X");
+			byte left_y = (byte)Controller.GetFloat("P1 LStick Y");
+			byte right_x = (byte)Controller.GetFloat("P1 RStick X");
+			byte right_y = (byte)Controller.GetFloat("P1 RStick Y");
 
 			OctoshockDll.shock_Peripheral_SetPadInput(psx, 0x01, buttons, left_x, left_y, right_x, right_y);
 		}
@@ -331,6 +353,29 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			DriveLightOn = false;
 
 			SetInput();
+
+			if (Controller["Eject"]) OctoshockDll.shock_OpenTray(psx);
+
+			//if requested disc is not matching current disc, set it now
+			int discChoice = (int)Controller.GetFloat("Disc Select") - 1;
+			if (discChoice >= discInterfaces.Count)
+				discChoice = discInterfaces.Count - 1;
+			if (discInterfaces[discChoice] != currentDiscInterface)
+			{
+				currentDiscInterface = discInterfaces[discChoice];
+				if (!Controller["Eject"]) OctoshockDll.shock_OpenTray(psx); //open tray if needed
+				OctoshockDll.shock_SetDisc(psx, currentDiscInterface.OctoshockHandle);
+			}
+
+			if (!Controller["Eject"]) OctoshockDll.shock_CloseTray(psx);
+
+			var ropts = new OctoshockDll.ShockRenderOptions()
+			{
+				scanline_start = SystemVidStandard == OctoshockDll.eVidStandard.NTSC ? _Settings.ScanlineStart_NTSC : _Settings.ScanlineStart_PAL,
+				scanline_end = SystemVidStandard == OctoshockDll.eVidStandard.NTSC ? _Settings.ScanlineEnd_NTSC : _Settings.ScanlineEnd_PAL,
+				clipOverscan = _Settings.ClipHorizontalOverscan
+			};
+			OctoshockDll.shock_SetRenderOptions(psx, ref ropts);
 
 			OctoshockDll.shock_Step(psx, OctoshockDll.eShockStep.Frame);
 
@@ -345,8 +390,12 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			int w = fb.width;
 			int h = fb.height;
-		BufferWidth = w;
+			BufferWidth = w;
 			BufferHeight = h;
+
+			int virtual_width = ropts.clipOverscan ? 768 : 800;
+			int scanline_num = ropts.scanline_end - ropts.scanline_start + 1;
+			int real_scanline_num = SystemVidStandard == OctoshockDll.eVidStandard.NTSC ? 240 : 288;
 
 			switch (_Settings.ResolutionMode)
 			{
@@ -355,16 +404,18 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 					VirtualHeight = h;
 					break;
 				case eResolutionMode.Mednafen:
-					VirtualWidth = 320;
-					VirtualHeight = 240;
+					VirtualWidth = ropts.clipOverscan ? 302 : 320;
+					VirtualHeight = scanline_num;
 					break;
 				case eResolutionMode.PixelPro:
-					VirtualWidth = 800;
-					VirtualHeight = 480;
+					VirtualWidth = virtual_width;
+					VirtualHeight = scanline_num*2;
 					break;
 				case eResolutionMode.TweakedMednafen:
-					VirtualWidth = 400;
-					VirtualHeight = 300;
+					{
+						VirtualWidth = ropts.clipOverscan ? 378 : 400;
+						VirtualHeight = (int)(scanline_num * 300.0f / real_scanline_num);
+					}
 					break;
 			}
 
@@ -429,6 +480,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.PIOMem);
 			mmd.Add(MemoryDomain.FromIntPtr("PIOMem", size, MemoryDomain.Endian.Little, ptr, true));
 
+			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.DCache);
+			mmd.Add(MemoryDomain.FromIntPtr("DCache", size, MemoryDomain.Endian.Little, ptr, true));
+
 			MemoryDomains = new MemoryDomainList(mmd, 0);
 		}
 
@@ -438,7 +492,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		#region ISoundProvider
 
-		private short[] sbuff = new short[1454 * 2]; //this is the most ive ever seen.. dont know why
+		//private short[] sbuff = new short[1454 * 2]; //this is the most ive ever seen.. dont know why. two frames worth i guess
+		private short[] sbuff = new short[1611 * 2]; //need this for pal
 		private int sbuffcontains = 0;
 
 		public ISoundProvider SoundProvider { get { throw new InvalidOperationException(); } }
@@ -655,9 +710,51 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public class Settings
 		{
 			[DisplayName("Resolution Mode")]
-			[Description("Stuf")]
+			[Description("Stuff")]
 			[DefaultValue(eResolutionMode.PixelPro)]
 			public eResolutionMode ResolutionMode { get; set; }
+
+			[DisplayName("ScanlineStart_NTSC")]
+			[DefaultValue(0)]
+			public int ScanlineStart_NTSC { get; set; }
+
+			[DisplayName("ScanlineEnd_NTSC")]
+			[DefaultValue(239)]
+			public int ScanlineEnd_NTSC { get; set; }
+
+			[DisplayName("ScanlineStart_PAL")]
+			[DefaultValue(0)]
+			public int ScanlineStart_PAL { get; set; }
+
+			[DisplayName("ScanlineEnd_PAL")]
+			[DefaultValue(287)]
+			public int ScanlineEnd_PAL { get; set; }
+
+			[DisplayName("Clip Horizontal Overscan")]
+			[DefaultValue(false)]
+			public bool ClipHorizontalOverscan { get; set; }
+
+			public void Validate()
+			{
+				if (ScanlineStart_NTSC < 0) ScanlineStart_NTSC = 0;
+				if (ScanlineStart_PAL < 0) ScanlineStart_PAL = 0;
+				if (ScanlineEnd_NTSC > 239) ScanlineEnd_NTSC = 239;
+				if (ScanlineEnd_PAL > 287) ScanlineEnd_PAL = 287;
+				
+				//make sure theyre not in the wrong order
+				if (ScanlineEnd_NTSC < ScanlineStart_NTSC)
+				{
+					int temp = ScanlineEnd_NTSC;
+					ScanlineEnd_NTSC = ScanlineStart_NTSC;
+					ScanlineStart_NTSC = temp;
+				}
+				if (ScanlineEnd_PAL < ScanlineStart_PAL)
+				{
+					int temp = ScanlineEnd_PAL;
+					ScanlineEnd_PAL = ScanlineStart_PAL;
+					ScanlineStart_PAL = temp;
+				}
+			}
 
 			public Settings()
 			{
@@ -682,6 +779,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public bool PutSettings(Settings o)
 		{
+			_Settings.Validate();
 			_Settings = o;
 			//TODO
 			//var native = _Settings.GetNativeSettings();
@@ -697,5 +795,72 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		#endregion
 
+		#region IDebuggable
+
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
+		{
+			Dictionary<string, int> ret = new Dictionary<string, int>();
+			var regs = new OctoshockDll.ShockRegisters_CPU();
+
+			OctoshockDll.shock_GetRegisters_CPU(psx, ref regs);
+
+			ret["r1"] = (int)regs.GPR[1]; ret["r2"] = (int)regs.GPR[2]; ret["r3"] = (int)regs.GPR[3];
+			ret["r4"] = (int)regs.GPR[4]; ret["r5"] = (int)regs.GPR[5]; ret["r6"] = (int)regs.GPR[6]; ret["r7"] = (int)regs.GPR[7];
+			ret["r8"] = (int)regs.GPR[8]; ret["r9"] = (int)regs.GPR[9]; ret["r10"] = (int)regs.GPR[10]; ret["r11"] = (int)regs.GPR[11];
+			ret["r12"] = (int)regs.GPR[12]; ret["r13"] = (int)regs.GPR[13]; ret["r14"] = (int)regs.GPR[14]; ret["r15"] = (int)regs.GPR[15];
+			ret["r16"] = (int)regs.GPR[16]; ret["r17"] = (int)regs.GPR[17]; ret["r18"] = (int)regs.GPR[18]; ret["r19"] = (int)regs.GPR[19];
+			ret["r20"] = (int)regs.GPR[20]; ret["r21"] = (int)regs.GPR[21]; ret["r22"] = (int)regs.GPR[22]; ret["r23"] = (int)regs.GPR[23];
+			ret["r24"] = (int)regs.GPR[24]; ret["r25"] = (int)regs.GPR[25]; ret["r26"] = (int)regs.GPR[26]; ret["r27"] = (int)regs.GPR[27];
+			ret["r28"] = (int)regs.GPR[28]; ret["r29"] = (int)regs.GPR[29]; ret["r30"] = (int)regs.GPR[30]; ret["r31"] = (int)regs.GPR[31];
+
+			ret["at"] = (int)regs.GPR[1];
+			ret["v0"] = (int)regs.GPR[2]; ret["v1"] = (int)regs.GPR[3];
+			ret["a0"] = (int)regs.GPR[4]; ret["a1"] = (int)regs.GPR[5]; ret["a2"] = (int)regs.GPR[6]; ret["a3"] = (int)regs.GPR[7];
+			ret["t0"] = (int)regs.GPR[8]; ret["t1"] = (int)regs.GPR[9]; ret["t2"] = (int)regs.GPR[10]; ret["t3"] = (int)regs.GPR[11];
+			ret["t4"] = (int)regs.GPR[12]; ret["t5"] = (int)regs.GPR[13]; ret["t6"] = (int)regs.GPR[14]; ret["t7"] = (int)regs.GPR[15];
+			ret["s0"] = (int)regs.GPR[16]; ret["s1"] = (int)regs.GPR[17]; ret["s2"] = (int)regs.GPR[18]; ret["s3"] = (int)regs.GPR[19];
+			ret["s4"] = (int)regs.GPR[20]; ret["s5"] = (int)regs.GPR[21]; ret["s6"] = (int)regs.GPR[22]; ret["s7"] = (int)regs.GPR[23];
+			ret["t8"] = (int)regs.GPR[24]; ret["t9"] = (int)regs.GPR[25];
+			ret["k0"] = (int)regs.GPR[26]; ret["k1"] = (int)regs.GPR[27];
+			ret["gp"] = (int)regs.GPR[28];
+			ret["sp"] = (int)regs.GPR[29];
+			ret["fp"] = (int)regs.GPR[30];
+			ret["ra"] = (int)regs.GPR[31];
+
+			return ret;
+		}
+
+		static Dictionary<string, int> CpuRegisterIndices = new Dictionary<string, int>() {
+			{"r1",1},{"r2",2},{"r3",3},{"r4",4},{"r5",5},{"r6",6},{"r7",7},
+			{"r8",8},{"r9",9},{"r10",10},{"r11",11},{"r12",12},{"r13",13},{"r14",14},{"r15",15},
+			{"r16",16},{"r17",17},{"r18",18},{"r19",19},{"r20",20},{"r21",21},{"r22",22},{"r23",23},
+			{"r24",24},{"r25",25},{"r26",26},{"r27",27},{"r28",28},{"r29",29},{"r30",30},{"r31",31},
+			{"at",1},{"v0",2},{"v1",3},
+			{"a0",4},{"a1",5},{"a2",6},{"a3",7},
+			{"t0",8},{"t1",9},{"t2",10},{"t3",11},
+			{"t4",12},{"t5",13},{"t6",14},{"t7",15},
+			{"s0",16},{"s1",17},{"s2",18},{"s3",19},
+			{"s4",20},{"s5",21},{"s6",22},{"s7",23},
+			{"t8",24},{"t9",25},
+			{"k0",26},{"k1",27},
+			{"gp",28},{"sp",29},{"fp",30},{"ra",31}
+		};
+
+		public void SetCpuRegister(string register, int value)
+		{
+			int index = CpuRegisterIndices[register];
+			OctoshockDll.shock_SetRegister_CPU(psx, index, (uint)value);
+		}
+
+		[FeatureNotImplemented]
+		public ITracer Tracer { get { throw new NotImplementedException(); } }
+
+		[FeatureNotImplemented]
+		public IMemoryCallbackSystem MemoryCallbacks { get { throw new NotImplementedException(); } }
+
+		[FeatureNotImplemented]
+		public void Step(StepType type) { throw new NotImplementedException(); }
+
+		#endregion //IDebuggable
 	}
 }

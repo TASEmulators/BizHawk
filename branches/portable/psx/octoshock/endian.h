@@ -1,209 +1,296 @@
 #ifndef __MDFN_ENDIAN_H
 #define __MDFN_ENDIAN_H
 
-#include "octoshock.h"
+#pragma warning(once : 4519)
+static INLINE uint32 BitsExtract(const uint8* ptr, const size_t bit_offset, const size_t bit_count)
+{
+ uint32 ret = 0;
 
-#ifdef MSB_FIRST
- #ifdef LSB_FIRST
-  #error Only define one of LSB_FIRST and MSB_FIRST
- #endif
+ for(size_t x = 0; x < bit_count; x++)
+ {
+  size_t co = bit_offset + x;
+  bool b = (ptr[co >> 3] >> (co & 7)) & 1;
 
- #ifndef le32toh
-  #define le32toh(l)      ((((l)>>24) & 0xff) | (((l)>>8) & 0xff00) \
-                         | (((l)<<8) & 0xff0000) | (((l)<<24) & 0xff000000))
- #endif
- #ifndef le16toh
-  #define le16toh(l)      ((((l)>>8) & 0xff) | (((l)<<8) & 0xff00))
- #endif
-#else
- #ifndef le32toh
-  #define le32toh(l)      (l)
- #endif
- #ifndef le16toh
-  #define le16toh(l)      (l)
- #endif
-#endif
+  ret |= (uint64)b << x;
+ }
 
-#ifndef htole32
-#define htole32 le32toh
-#endif
+ return ret;
+}
 
-#ifndef htole16
-#define htole16 le16toh
-#endif
+static INLINE void BitsIntract(uint8* ptr, const size_t bit_offset, const size_t bit_count, uint32 value)
+{
+ for(size_t x = 0; x < bit_count; x++)
+ {
+  size_t co = bit_offset + x;
+  bool b = (value >> x) & 1;
+  uint8 tmp = ptr[co >> 3];
 
+  tmp &= ~(1 << (co & 7));
+  tmp |= b << (co & 7);
 
-int write16le(uint16 b, FILE *fp);
-int write32le(uint32 b, FILE *fp);
-int read32le(uint32 *Bufo, FILE *fp);
+  ptr[co >> 3] = tmp;
+ }
+}
+
+/*
+ Regarding safety of calling MDFN_*sb<true> on dynamically-allocated memory with new uint8[], see C++ standard 3.7.3.1(i.e. it should be
+ safe provided the offsets into the memory are aligned/multiples of the MDFN_*sb access type).  malloc()'d and calloc()'d
+ memory should be safe as well.
+
+ Statically-allocated arrays/memory should be unioned with a big POD type or C++11 "alignas"'d.  (May need to audit code to ensure
+ this is being done).
+*/
 
 void Endian_A16_Swap(void *src, uint32 nelements);
 void Endian_A32_Swap(void *src, uint32 nelements);
 void Endian_A64_Swap(void *src, uint32 nelements);
 
-void Endian_A16_NE_to_LE(void *src, uint32 nelements);
-void Endian_A32_NE_to_LE(void *src, uint32 nelements);
-void Endian_A64_NE_to_LE(void *src, uint32 nelements);
+void Endian_A16_NE_LE(void *src, uint32 nelements);
+void Endian_A32_NE_LE(void *src, uint32 nelements);
+void Endian_A64_NE_LE(void *src, uint32 nelements);
 
-void Endian_A16_LE_to_NE(void *src, uint32 nelements);
-void Endian_A16_BE_to_NE(void *src, uint32 nelements);
-void Endian_A32_LE_to_NE(void *src, uint32 nelements);
-void Endian_A64_LE_to_NE(void *src, uint32 nelements);
+void Endian_A16_NE_BE(void *src, uint32 nelements);
+void Endian_A32_NE_BE(void *src, uint32 nelements);
+void Endian_A64_NE_BE(void *src, uint32 nelements);
 
-void Endian_V_LE_to_NE(void *src, uint32 bytesize);
-void Endian_V_NE_to_LE(void *src, uint32 bytesize);
+void Endian_V_NE_LE(void *src, uint32 bytesize);
+void Endian_V_NE_BE(void *src, uint32 bytesize);
 
-void FlipByteOrder(uint8 *src, uint32 count);
-
-// The following functions can encode/decode to unaligned addresses.
-
-static INLINE void MDFN_en16lsb(uint8 *buf, uint16 morp)
+static INLINE uint16 MDFN_bswap16(uint16 v)
 {
- buf[0]=morp;
- buf[1]=morp>>8;
+ return (v << 8) | (v >> 8);
 }
 
-static INLINE void MDFN_en24lsb(uint8 *buf, uint32 morp)
+static INLINE uint32 MDFN_bswap32(uint32 v)
 {
- buf[0]=morp;
- buf[1]=morp>>8;
- buf[2]=morp>>16;
+ return (v << 24) | ((v & 0xFF00) << 8) | ((v >> 8) & 0xFF00) | (v >> 24);
 }
 
-
-static INLINE void MDFN_en32lsb(uint8 *buf, uint32 morp)
+static INLINE uint64 MDFN_bswap64(uint64 v)
 {
- buf[0]=morp;
- buf[1]=morp>>8;
- buf[2]=morp>>16;
- buf[3]=morp>>24;
+	//octoshock edit
+ //return (v << 56) | (v >> 56) | ((v & 0xFF00) << 40) | ((v >> 40) & 0xFF00) | ((uint64)MDFN_bswap32(v >> 16) << 16);
+	return (v << 56) | (v >> 56) | ((v & 0xFF00) << 40) | ((v >> 40) & 0xFF00) | ((uint64)MDFN_bswap32(((uint32)v) >> 16) << 16);
 }
 
-static INLINE void MDFN_en64lsb(uint8 *buf, uint64 morp)
+#ifdef LSB_FIRST
+ #define MDFN_ENDIANH_IS_BIGENDIAN 0
+#else
+ #define MDFN_ENDIANH_IS_BIGENDIAN 1
+#endif
+
+//
+// X endian.
+//
+template<int isbigendian, typename T, bool aligned>
+static INLINE T MDFN_deXsb(const void* ptr)
 {
- buf[0]=morp >> 0;
- buf[1]=morp >> 8;
- buf[2]=morp >> 16;
- buf[3]=morp >> 24;
- buf[4]=morp >> 32;
- buf[5]=morp >> 40;
- buf[6]=morp >> 48;
- buf[7]=morp >> 56;
+ T tmp;
+
+ memcpy(&tmp, MDFN_ASSUME_ALIGNED(ptr, (aligned ? sizeof(T) : 1)), sizeof(T));
+
+ if(isbigendian != -1 && isbigendian != MDFN_ENDIANH_IS_BIGENDIAN)
+ {
+  static_assert(sizeof(T) == 1 || sizeof(T) == 2 || sizeof(T) == 4 || sizeof(T) == 8, "Gummy penguins.");
+
+  if(sizeof(T) == 8)
+   return (T)MDFN_bswap64(tmp);
+  else if(sizeof(T) == 4)
+   return (T)MDFN_bswap32(tmp);
+  else if(sizeof(T) == 2)
+   return (T)MDFN_bswap16(tmp);
+ }
+
+ return tmp;
 }
 
-
-static INLINE void MDFN_en16msb(uint8 *buf, uint16 morp)
+//
+// Native endian.
+//
+template<typename T, bool aligned = false>
+static INLINE T MDFN_densb(const void* ptr)
 {
- buf[0] = morp >> 8;
- buf[1] = morp;
+ return MDFN_deXsb<-1, T, aligned>(ptr);
 }
 
-static INLINE void MDFN_en24msb(uint8 *buf, uint32 morp)
+//
+// Little endian.
+//
+template<typename T, bool aligned = false>
+static INLINE T MDFN_delsb(const void* ptr)
 {
- buf[0] = morp >> 16;
- buf[1] = morp >> 8;
- buf[2] = morp;
+ return MDFN_deXsb<0, T, aligned>(ptr);
 }
 
-static INLINE void MDFN_en32msb(uint8 *buf, uint32 morp)
+template<bool aligned = false>
+static INLINE uint16 MDFN_de16lsb(const void* ptr)
 {
- buf[0] = morp >> 24;
- buf[1] = morp >> 16;
- buf[2] = morp >> 8;
- buf[3] = morp;
+ return MDFN_delsb<uint16, aligned>(ptr);
 }
 
-static INLINE void MDFN_en64msb(uint8 *buf, uint64 morp)
+static INLINE uint32 MDFN_de24lsb(const void* ptr)
 {
- buf[0] = morp >> 56;
- buf[1] = morp >> 48;
- buf[2] = morp >> 40;
- buf[3] = morp >> 32;
- buf[4] = morp >> 24;
- buf[5] = morp >> 16;
- buf[6] = morp >> 8;
- buf[7] = morp >> 0;
-}
-
-
-// Overloaded functions, yay.
-static INLINE void MDFN_enlsb(uint16 * buf, uint16 value)
-{
- MDFN_en16lsb((uint8 *)buf, value);
-}
-
-static INLINE void MDFN_enlsb(uint32 * buf, uint32 value)
-{
- MDFN_en32lsb((uint8 *)buf, value);
-}
-
-static INLINE void MDFN_enlsb(uint64 * buf, uint64 value)
-{
- MDFN_en64lsb((uint8 *)buf, value);
-}
-
-
-static INLINE uint16 MDFN_de16lsb(const uint8 *morp)
-{
- return(morp[0] | (morp[1] << 8));
-}
-
-
-static INLINE uint32 MDFN_de24lsb(const uint8 *morp)
-{
+ const uint8* morp = (const uint8*)ptr;
  return(morp[0]|(morp[1]<<8)|(morp[2]<<16));
 }
 
-static INLINE uint32 MDFN_de32lsb(const uint8 *morp)
+template<bool aligned = false>
+static INLINE uint32 MDFN_de32lsb(const void* ptr)
 {
- return(morp[0]|(morp[1]<<8)|(morp[2]<<16)|(morp[3]<<24));
+ return MDFN_delsb<uint32, aligned>(ptr);
 }
 
-static INLINE uint64 MDFN_de64lsb(const uint8 *morp)
+template<bool aligned = false>
+static INLINE uint64 MDFN_de64lsb(const void* ptr)
 {
- uint64 ret = 0;
-
- ret |= (uint64)morp[0];
- ret |= (uint64)morp[1] << 8;
- ret |= (uint64)morp[2] << 16;
- ret |= (uint64)morp[3] << 24;
- ret |= (uint64)morp[4] << 32;
- ret |= (uint64)morp[5] << 40;
- ret |= (uint64)morp[6] << 48;
- ret |= (uint64)morp[7] << 56;
-
- return(ret);
+ return MDFN_delsb<uint64, aligned>(ptr);
 }
 
-static INLINE uint16 MDFN_delsb(const uint16 *buf)
+//
+// Big endian.
+//
+template<typename T, bool aligned = false>
+static INLINE T MDFN_demsb(const void* ptr)
 {
- return(MDFN_de16lsb((uint8 *)buf));
+ return MDFN_deXsb<1, T, aligned>(ptr);
 }
 
-static INLINE uint32 MDFN_delsb(const uint32 *buf)
+template<bool aligned = false>
+static INLINE uint16 MDFN_de16msb(const void* ptr)
 {
- return(MDFN_de32lsb((uint8 *)buf));
+ return MDFN_demsb<uint16, aligned>(ptr);
 }
 
-static INLINE uint64 MDFN_delsb(const uint64 *buf)
+static INLINE uint32 MDFN_de24msb(const void* ptr)
 {
- return(MDFN_de64lsb((uint8 *)buf));
-}
-
-static INLINE uint16 MDFN_de16msb(const uint8 *morp)
-{
- return(morp[1] | (morp[0] << 8));
-}
-
-static INLINE uint32 MDFN_de24msb(const uint8 *morp)
-{
+ const uint8* morp = (const uint8*)ptr;
  return((morp[2]<<0)|(morp[1]<<8)|(morp[0]<<16));
 }
 
-
-static INLINE uint32 MDFN_de32msb(const uint8 *morp)
+template<bool aligned = false>
+static INLINE uint32 MDFN_de32msb(const void* ptr)
 {
- return(morp[3]|(morp[2]<<8)|(morp[1]<<16)|(morp[0]<<24));
+ return MDFN_demsb<uint32, aligned>(ptr);
+}
+
+template<bool aligned = false>
+static INLINE uint64 MDFN_de64msb(const void* ptr)
+{
+ return MDFN_demsb<uint64, aligned>(ptr);
+}
+
+//
+//
+//
+//
+//
+//
+//
+//
+
+//
+// X endian.
+//
+template<int isbigendian, typename T, bool aligned>
+static INLINE void MDFN_enXsb(void* ptr, T value)
+{
+ T tmp = value;
+
+ if(isbigendian != -1 && isbigendian != MDFN_ENDIANH_IS_BIGENDIAN)
+ {
+  static_assert(sizeof(T) == 1 || sizeof(T) == 2 || sizeof(T) == 4 || sizeof(T) == 8, "Gummy penguins.");
+
+  if(sizeof(T) == 8)
+   tmp = (T)MDFN_bswap64(value);
+  else if(sizeof(T) == 4)
+   tmp = (T)MDFN_bswap32(value);
+  else if(sizeof(T) == 2)
+   tmp = (T)MDFN_bswap16(value);
+ }
+
+ memcpy(MDFN_ASSUME_ALIGNED(ptr, (aligned ? sizeof(T) : 1)), &tmp, sizeof(T));
+}
+
+//
+// Native endian.
+//
+template<typename T, bool aligned = false>
+static INLINE void MDFN_ennsb(void* ptr, T value)
+{
+ MDFN_enXsb<-1, T, aligned>(ptr, value);
+}
+
+//
+// Little endian.
+//
+template<typename T, bool aligned = false>
+static INLINE void MDFN_enlsb(void* ptr, T value)
+{
+ MDFN_enXsb<0, T, aligned>(ptr, value);
+}
+
+template<bool aligned = false>
+static INLINE void MDFN_en16lsb(void* ptr, uint16 value)
+{
+ MDFN_enlsb<uint16, aligned>(ptr, value);
+}
+
+static INLINE void MDFN_en24lsb(void* ptr, uint32 value)
+{
+ uint8* morp = (uint8*)ptr;
+
+ morp[0] = value;
+ morp[1] = value >> 8;
+ morp[2] = value >> 16;
+}
+
+template<bool aligned = false>
+static INLINE void MDFN_en32lsb(void* ptr, uint32 value)
+{
+ MDFN_enlsb<uint32, aligned>(ptr, value);
+}
+
+template<bool aligned = false>
+static INLINE void MDFN_en64lsb(void* ptr, uint64 value)
+{
+ MDFN_enlsb<uint64, aligned>(ptr, value);
+}
+
+
+//
+// Big endian.
+//
+template<typename T, bool aligned = false>
+static INLINE void MDFN_enmsb(void* ptr, T value)
+{
+ MDFN_enXsb<1, T, aligned>(ptr, value);
+}
+
+template<bool aligned = false>
+static INLINE void MDFN_en16msb(void* ptr, uint16 value)
+{
+ MDFN_enmsb<uint16, aligned>(ptr, value);
+}
+
+static INLINE void MDFN_en24msb(void* ptr, uint32 value)
+{
+ uint8* morp = (uint8*)ptr;
+
+ morp[0] = value;
+ morp[1] = value >> 8;
+ morp[2] = value >> 16;
+}
+
+template<bool aligned = false>
+static INLINE void MDFN_en32msb(void* ptr, uint32 value)
+{
+ MDFN_enmsb<uint32, aligned>(ptr, value);
+}
+
+template<bool aligned = false>
+static INLINE void MDFN_en64msb(void* ptr, uint64 value)
+{
+ MDFN_enmsb<uint64, aligned>(ptr, value);
 }
 
 #endif
