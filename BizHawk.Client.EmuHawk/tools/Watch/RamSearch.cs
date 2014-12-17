@@ -54,9 +54,9 @@ namespace BizHawk.Client.EmuHawk
 		public const int MaxSupportedSize = 1024 * 1024 * 64; // 64mb, semi-arbituary decision, sets the maximum size ram search will support (as it will crash beyond this)
 
 		[RequiredService]
-		public IMemoryDomains Core { get; private set; }
+		public IMemoryDomains Core { get; set; }
 		[RequiredService]
-		public IEmulator Emu { get; private set; }
+		public IEmulator Emu { get; set; }
 
 		public bool AskSaveChanges()
 		{
@@ -286,7 +286,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			_settings.Domain = Core.MemoryDomains.MainMemory;
+			_settings = new RamSearchEngine.Settings(Core);
+			_searches = new RamSearchEngine(_settings, Core);
 			MessageLabel.Text = "Search restarted";
 			DoDomainSizeCheck();
 			NewSearch();
