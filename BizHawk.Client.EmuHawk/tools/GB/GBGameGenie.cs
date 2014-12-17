@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -15,8 +16,13 @@ namespace BizHawk.Client.EmuHawk
 		// TODO: fix the use of Global.Game.System and Emulator.SystemId
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
+
 		[RequiredService]
 		private IMemoryDomains MemoryDomainSource { get; set; }
+
+		[RequiredService]
+		private Gameboy Gb { get; set; }
+
 		private MemoryDomainList MemoryDomains { get { return MemoryDomainSource.MemoryDomains; } }
 
 		private readonly Dictionary<char, int> _gameGenieTable = new Dictionary<char, int>();
