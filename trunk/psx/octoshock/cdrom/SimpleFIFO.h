@@ -140,7 +140,7 @@ class SimpleFIFO
  {
 	 //I dont like this class...
 
-	 PSS(&data[0], data.capacity());
+	 PSS(&data[0], data.capacity()*sizeof(T));
 	 NSS(read_pos);
 	 NSS(write_pos);
 	 NSS(in_count);
