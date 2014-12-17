@@ -719,7 +719,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBAGPUView_Load(object sender, EventArgs e)
 		{
-			Restart();
 		}
 
 		void ShowSelectedWidget()

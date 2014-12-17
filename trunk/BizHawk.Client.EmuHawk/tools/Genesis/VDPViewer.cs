@@ -261,8 +261,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Location = Global.Config.GenVdpSettings.WindowPosition;
 			}
-
-			Restart();
 		}
 	}
 }

@@ -20,8 +20,6 @@ namespace BizHawk.Client.EmuHawk
 		public BarcodeEntry()
 		{
 			InitializeComponent();
-
-			Restart();
 		}
 
 		#region IToolForm

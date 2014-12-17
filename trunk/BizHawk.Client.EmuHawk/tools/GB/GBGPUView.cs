@@ -490,7 +490,6 @@ namespace BizHawk.Client.EmuHawk
 				if (p.X >= 0 && p.Y >= 0)
 					Location = p;
 			}
-			Restart();
 		}
 
 		#region refresh

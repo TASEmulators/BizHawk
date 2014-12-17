@@ -82,7 +82,6 @@ namespace BizHawk.Client.EmuHawk
 			LoggingEnabled.Checked = true;
 			Tracer.Enabled = true;
 			SetTracerBoxTitle();
-			Restart();
 		}
 
 		public void UpdateValues()

@@ -269,8 +269,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Location = Global.Config.PceVdpSettings.WindowPosition;
 			}
-
-			Restart();
 		}
 
 		private void RefreshFloatingWindowControl()
