@@ -646,7 +646,7 @@
       "P1 R2": "X1 RightTrigger,R",
       "P1 L3": "X1 LeftThumb,T",
       "P1 R3": "X1 RightThumb,Y",
-      "P1 MODE": "A"
+      "P1 MODE": "D"
     },
     "Lynx Controller": {
       "Up": "UpArrow",
