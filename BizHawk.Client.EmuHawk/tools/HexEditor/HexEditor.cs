@@ -26,6 +26,9 @@ namespace BizHawk.Client.EmuHawk
 		private IMemoryDomains MemoryDomainSource { get; set; }
 		private MemoryDomainList MemoryDomains { get { return MemoryDomainSource.MemoryDomains; } }
 
+		[RequiredService]
+		private IEmulator Emulator { get; set; }
+
 		private bool fontSizeSet = false;
 		private int fontWidth;
 		private int fontHeight;
@@ -650,7 +653,7 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateGroupBoxTitle()
 		{
 			var addressesString = "0x" + string.Format("{0:X8}", _domainSize / _dataSize).TrimStart('0');
-			MemoryViewerBox.Text = Global.Emulator.SystemId + " " + _domain + "  -  " + addressesString + " addresses";
+			MemoryViewerBox.Text = Emulator.SystemId + " " + _domain + "  -  " + addressesString + " addresses";
 		}
 
 		private void SetMemoryDomainMenu()
