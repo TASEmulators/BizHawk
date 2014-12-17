@@ -33,7 +33,8 @@
 #include <stdarg.h>
 #include <ctype.h>
 
-#define FB_WIDTH 768
+//we're a bit sloppy right now.. use this to make sure theres adequate room for double-sizing a 400px wide screen
+#define FB_WIDTH 800
 #define FB_HEIGHT 576
 
 //extern MDFNGI EmulatedPSX;
@@ -1360,7 +1361,7 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 	//new frame, hasnt been normalized
 	s_FramebufferNormalized = false;
 	s_FramebufferCurrent = 0;
-	s_FramebufferCurrentWidth = 768;
+	s_FramebufferCurrentWidth = FB_WIDTH;
 
 	return SHOCK_OK;
 }

@@ -32,27 +32,27 @@
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.btnOk = new System.Windows.Forms.Button();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.label9 = new System.Windows.Forms.Label();
+			this.lblTweakedMednafen = new System.Windows.Forms.Label();
 			this.rbTweakedMednafenMode = new System.Windows.Forms.RadioButton();
 			this.label3 = new System.Windows.Forms.Label();
 			this.rbDebugMode = new System.Windows.Forms.RadioButton();
 			this.btnNiceDisplayConfig = new System.Windows.Forms.Button();
-			this.label2 = new System.Windows.Forms.Label();
+			this.lblMednafen = new System.Windows.Forms.Label();
 			this.rbMednafenMode = new System.Windows.Forms.RadioButton();
-			this.label8 = new System.Windows.Forms.Label();
+			this.lblPixelPro = new System.Windows.Forms.Label();
 			this.rbPixelPro = new System.Windows.Forms.RadioButton();
 			this.label7 = new System.Windows.Forms.Label();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.label6 = new System.Windows.Forms.Label();
+			this.lblPAL = new System.Windows.Forms.Label();
 			this.PAL_LastLineNumeric = new System.Windows.Forms.NumericUpDown();
 			this.PAL_FirstLineNumeric = new System.Windows.Forms.NumericUpDown();
-			this.label5 = new System.Windows.Forms.Label();
+			this.lblNTSC = new System.Windows.Forms.Label();
 			this.btnAreaFull = new System.Windows.Forms.Button();
+			this.checkClipHorizontal = new System.Windows.Forms.CheckBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.NTSC_LastLineNumeric = new System.Windows.Forms.NumericUpDown();
 			this.NTSC_FirstLineNumeric = new System.Windows.Forms.NumericUpDown();
-			this.checkClipHorizontal = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PAL_LastLineNumeric)).BeginInit();
@@ -85,29 +85,29 @@
 			// 
 			// groupBox1
 			// 
-			this.groupBox1.Controls.Add(this.label9);
+			this.groupBox1.Controls.Add(this.lblTweakedMednafen);
 			this.groupBox1.Controls.Add(this.rbTweakedMednafenMode);
 			this.groupBox1.Controls.Add(this.label3);
 			this.groupBox1.Controls.Add(this.rbDebugMode);
 			this.groupBox1.Controls.Add(this.btnNiceDisplayConfig);
-			this.groupBox1.Controls.Add(this.label2);
+			this.groupBox1.Controls.Add(this.lblMednafen);
 			this.groupBox1.Controls.Add(this.rbMednafenMode);
-			this.groupBox1.Controls.Add(this.label8);
+			this.groupBox1.Controls.Add(this.lblPixelPro);
 			this.groupBox1.Controls.Add(this.rbPixelPro);
 			this.groupBox1.Location = new System.Drawing.Point(12, 7);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(474, 256);
 			this.groupBox1.TabIndex = 6;
 			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Resolution Management (sample numbers do not reflect Drawing Area choices)";
+			this.groupBox1.Text = "Resolution Management";
 			// 
-			// label9
+			// lblTweakedMednafen
 			// 
-			this.label9.Location = new System.Drawing.Point(255, 132);
-			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(213, 79);
-			this.label9.TabIndex = 28;
-			this.label9.Text = "Displays all content at as multiple of 400x300.\r\n • Correct aspect ratio\r\n • Gene" +
+			this.lblTweakedMednafen.Location = new System.Drawing.Point(255, 132);
+			this.lblTweakedMednafen.Name = "lblTweakedMednafen";
+			this.lblTweakedMednafen.Size = new System.Drawing.Size(213, 79);
+			this.lblTweakedMednafen.TabIndex = 28;
+			this.lblTweakedMednafen.Text = "Displays all content at as multiple of 400x300.\r\n • Correct aspect ratio\r\n • Gene" +
     "rally enjoyable game presentation\r\n • Detail loss at 1x in fewer cases\r\n • Requi" +
     "res certain display configuration:\r\n";
 			// 
@@ -153,13 +153,13 @@
 			this.btnNiceDisplayConfig.UseVisualStyleBackColor = true;
 			this.btnNiceDisplayConfig.Click += new System.EventHandler(this.btnNiceDisplayConfig_Click);
 			// 
-			// label2
+			// lblMednafen
 			// 
-			this.label2.Location = new System.Drawing.Point(6, 132);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(213, 82);
-			this.label2.TabIndex = 23;
-			this.label2.Text = resources.GetString("label2.Text");
+			this.lblMednafen.Location = new System.Drawing.Point(6, 132);
+			this.lblMednafen.Name = "lblMednafen";
+			this.lblMednafen.Size = new System.Drawing.Size(213, 82);
+			this.lblMednafen.TabIndex = 23;
+			this.lblMednafen.Text = resources.GetString("lblMednafen.Text");
 			// 
 			// rbMednafenMode
 			// 
@@ -172,13 +172,13 @@
 			this.rbMednafenMode.Text = "Mednafen Mode (4:3 AR)";
 			this.rbMednafenMode.UseVisualStyleBackColor = true;
 			// 
-			// label8
+			// lblPixelPro
 			// 
-			this.label8.Location = new System.Drawing.Point(6, 35);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(252, 78);
-			this.label8.TabIndex = 21;
-			this.label8.Text = "Converts content with nearest neighbor to \r\nfit gracefully in a 800x480 window.\r\n" +
+			this.lblPixelPro.Location = new System.Drawing.Point(6, 35);
+			this.lblPixelPro.Name = "lblPixelPro";
+			this.lblPixelPro.Size = new System.Drawing.Size(252, 78);
+			this.lblPixelPro.TabIndex = 21;
+			this.lblPixelPro.Text = "Converts content with nearest neighbor to \r\nfit gracefully in a 800x480 window.\r\n" +
     " • Content is pixel perfect\r\n • Aspect ratio is usually wrong\r\n • Game may seen " +
     "to have scale varying by mode\r\n\r\n\r\n";
 			// 
@@ -205,10 +205,10 @@
 			// 
 			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.groupBox2.Controls.Add(this.label6);
+			this.groupBox2.Controls.Add(this.lblPAL);
 			this.groupBox2.Controls.Add(this.PAL_LastLineNumeric);
 			this.groupBox2.Controls.Add(this.PAL_FirstLineNumeric);
-			this.groupBox2.Controls.Add(this.label5);
+			this.groupBox2.Controls.Add(this.lblNTSC);
 			this.groupBox2.Controls.Add(this.btnAreaFull);
 			this.groupBox2.Controls.Add(this.checkClipHorizontal);
 			this.groupBox2.Controls.Add(this.label4);
@@ -222,14 +222,14 @@
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Drawing Area";
 			// 
-			// label6
+			// lblPAL
 			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(131, 22);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(27, 13);
-			this.label6.TabIndex = 44;
-			this.label6.Text = "PAL";
+			this.lblPAL.AutoSize = true;
+			this.lblPAL.Location = new System.Drawing.Point(131, 22);
+			this.lblPAL.Name = "lblPAL";
+			this.lblPAL.Size = new System.Drawing.Size(27, 13);
+			this.lblPAL.TabIndex = 44;
+			this.lblPAL.Text = "PAL";
 			// 
 			// PAL_LastLineNumeric
 			// 
@@ -247,6 +247,7 @@
             0,
             0,
             0});
+			this.PAL_LastLineNumeric.ValueChanged += new System.EventHandler(this.DrawingArea_ValueChanged);
 			// 
 			// PAL_FirstLineNumeric
 			// 
@@ -259,15 +260,16 @@
 			this.PAL_FirstLineNumeric.Name = "PAL_FirstLineNumeric";
 			this.PAL_FirstLineNumeric.Size = new System.Drawing.Size(47, 20);
 			this.PAL_FirstLineNumeric.TabIndex = 42;
+			this.PAL_FirstLineNumeric.ValueChanged += new System.EventHandler(this.DrawingArea_ValueChanged);
 			// 
-			// label5
+			// lblNTSC
 			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(62, 22);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(36, 13);
-			this.label5.TabIndex = 41;
-			this.label5.Text = "NTSC";
+			this.lblNTSC.AutoSize = true;
+			this.lblNTSC.Location = new System.Drawing.Point(62, 22);
+			this.lblNTSC.Name = "lblNTSC";
+			this.lblNTSC.Size = new System.Drawing.Size(36, 13);
+			this.lblNTSC.TabIndex = 41;
+			this.lblNTSC.Text = "NTSC";
 			// 
 			// btnAreaFull
 			// 
@@ -278,6 +280,17 @@
 			this.btnAreaFull.Text = "Full [0,239] and [0,287]";
 			this.btnAreaFull.UseVisualStyleBackColor = true;
 			this.btnAreaFull.Click += new System.EventHandler(this.btnAreaFull_Click);
+			// 
+			// checkClipHorizontal
+			// 
+			this.checkClipHorizontal.AutoSize = true;
+			this.checkClipHorizontal.Location = new System.Drawing.Point(7, 127);
+			this.checkClipHorizontal.Name = "checkClipHorizontal";
+			this.checkClipHorizontal.Size = new System.Drawing.Size(142, 17);
+			this.checkClipHorizontal.TabIndex = 30;
+			this.checkClipHorizontal.Text = "Clip Horizontal Overscan";
+			this.checkClipHorizontal.UseVisualStyleBackColor = true;
+			this.checkClipHorizontal.CheckedChanged += new System.EventHandler(this.checkClipHorizontal_CheckedChanged);
 			// 
 			// label4
 			// 
@@ -313,6 +326,7 @@
             0,
             0,
             0});
+			this.NTSC_LastLineNumeric.ValueChanged += new System.EventHandler(this.DrawingArea_ValueChanged);
 			// 
 			// NTSC_FirstLineNumeric
 			// 
@@ -325,16 +339,7 @@
 			this.NTSC_FirstLineNumeric.Name = "NTSC_FirstLineNumeric";
 			this.NTSC_FirstLineNumeric.Size = new System.Drawing.Size(47, 20);
 			this.NTSC_FirstLineNumeric.TabIndex = 21;
-			// 
-			// checkClipHorizontal
-			// 
-			this.checkClipHorizontal.AutoSize = true;
-			this.checkClipHorizontal.Location = new System.Drawing.Point(7, 127);
-			this.checkClipHorizontal.Name = "checkClipHorizontal";
-			this.checkClipHorizontal.Size = new System.Drawing.Size(142, 17);
-			this.checkClipHorizontal.TabIndex = 30;
-			this.checkClipHorizontal.Text = "Clip Horizontal Overscan";
-			this.checkClipHorizontal.UseVisualStyleBackColor = true;
+			this.NTSC_FirstLineNumeric.ValueChanged += new System.EventHandler(this.DrawingArea_ValueChanged);
 			// 
 			// PSXOptions
 			// 
@@ -370,19 +375,19 @@
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.RadioButton rbPixelPro;
 		private System.Windows.Forms.Button btnNiceDisplayConfig;
-		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label lblMednafen;
 		private System.Windows.Forms.RadioButton rbMednafenMode;
-		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.Label lblPixelPro;
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.RadioButton rbDebugMode;
-		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.Label lblTweakedMednafen;
 		private System.Windows.Forms.RadioButton rbTweakedMednafenMode;
 		private System.Windows.Forms.GroupBox groupBox2;
-		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label lblPAL;
 		private System.Windows.Forms.NumericUpDown PAL_LastLineNumeric;
 		private System.Windows.Forms.NumericUpDown PAL_FirstLineNumeric;
-		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Label lblNTSC;
 		private System.Windows.Forms.Button btnAreaFull;
 		private System.Windows.Forms.CheckBox checkClipHorizontal;
 		private System.Windows.Forms.Label label4;
