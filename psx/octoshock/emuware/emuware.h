@@ -88,6 +88,10 @@ uint32 __inline __builtin_clz( uint32_t value )
 
 #define INLINE inline
 
+#ifndef UNALIGNED
+#define UNALIGNED
+#endif
+
 #ifdef _MSC_VER
   #define snprintf _snprintf
   #define vsnprintf _vsnprintf
