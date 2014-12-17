@@ -79,5 +79,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// </summary>
 		/// <returns></returns>
 		MemoryDomain GetCHRROM();
+
+		/// <summary>
+		/// install a callback to run at a particular scanline
+		/// </summary>
+		/// <param name="cb"></param>
+		/// <param name="sl"></param>
+		void InstallCallback1(Action cb, int sl);
+		/// <summary>
+		/// install a callback to run at a particular scanline
+		/// </summary>
+		/// <param name="cb"></param>
+		/// <param name="sl"></param>
+		void InstallCallback2(Action cb, int sl);
+
+		/// <summary>
+		/// remove previously installed callback
+		/// </summary>
+		void RemoveCallback1();
+		/// <summary>
+		/// remove previously installed callback
+		/// </summary>
+		void RemoveCallback2();
 	}
 }
