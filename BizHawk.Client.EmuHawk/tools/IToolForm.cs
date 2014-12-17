@@ -46,14 +46,4 @@ namespace BizHawk.Client.EmuHawk
 		bool IsDisposed { get; }
 		bool IsHandleCreated { get; }
 	}
-
-	[AttributeUsage(AttributeTargets.Property)]
-	public class RequiredService : Attribute
-	{
-	}
-
-	[AttributeUsage(AttributeTargets.Property)]
-	public class OptionalService : Attribute
-	{
-	}
 }

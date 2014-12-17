@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Calculators;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {

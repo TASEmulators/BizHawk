@@ -1209,14 +1209,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FDSControlsMenuItem.Enabled = Global.Emulator.BoardName == "FDS";
 
-				NESSoundChannelsMenuItem.Enabled =
-				MovieSettingsMenuItem.Enabled =
-				Global.Emulator is NES;
+			NESSoundChannelsMenuItem.Enabled =
+			MovieSettingsMenuItem.Enabled =
+			Global.Emulator is NES;
 
 			NesControllerSettingsMenuItem.Enabled = (Global.Emulator is NES || Global.Emulator is QuickNES) && !Global.MovieSession.Movie.IsActive;
 			MovieSettingsMenuItem.Enabled = Global.Emulator is NES && !Global.MovieSession.Movie.IsActive;
 
-			barcodeReaderToolStripMenuItem.Enabled = GlobalWin.Tools.IsAvailable(typeof(BarcodeEntry));
+			barcodeReaderToolStripMenuItem.Enabled = ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, typeof(BarcodeEntry));
 		}
 
 		private void FdsControlsMenuItem_DropDownOpened(object sender, EventArgs e)

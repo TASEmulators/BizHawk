@@ -8,6 +8,7 @@ using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using System.Collections.Generic;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
