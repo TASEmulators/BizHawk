@@ -2017,8 +2017,8 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void PutCoreSettings(object o)
 		{
-            var settable = new SettingsAdapter(Global.Emulator);
-            if (settable.HasSettings && settable.PutSettings(o))
+			var settable = new SettingsAdapter(Global.Emulator);
+			if (settable.HasSettings && settable.PutSettings(o))
 			{
 				FlagNeedsReboot();
 			}

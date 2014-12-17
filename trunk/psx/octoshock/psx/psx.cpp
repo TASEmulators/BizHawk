@@ -33,7 +33,8 @@
 #include <stdarg.h>
 #include <ctype.h>
 
-
+#define FB_WIDTH 768
+#define FB_HEIGHT 576
 
 //extern MDFNGI EmulatedPSX;
 
@@ -1009,21 +1010,24 @@ using namespace MDFN_IEN_PSX;
 
 struct ShockConfig
 {
-	// multires is a hint that, if set, indicates that the system has fairly programmable video modes(particularly, the ability
-	// to display multiple horizontal resolutions, such as the PCE, PC-FX, or Genesis).  In practice, it will cause the driver
-	// code to set the linear interpolation on by default. (TRUE for psx)
-	// lcm_width and lcm_height are the least common multiples of all possible
-	// resolutions in the frame buffer as specified by DisplayRect/LineWidths(Ex for PCE: widths of 256, 341.333333, 512,
-	// lcm = 1024)
-	// nominal_width and nominal_height specify the resolution that Mednafen should display
-	// the framebuffer image in at 1x scaling, scaled from the dimensions of DisplayRect, and optionally the LineWidths array
-	// passed through espec to the Emulate() function.
-	int lcm_width;
-	int lcm_height;
-	int nominal_width;
-	int nominal_height;
+	//// multires is a hint that, if set, indicates that the system has fairly programmable video modes(particularly, the ability
+	//// to display multiple horizontal resolutions, such as the PCE, PC-FX, or Genesis).  In practice, it will cause the driver
+	//// code to set the linear interpolation on by default. (TRUE for psx)
+	//// lcm_width and lcm_height are the least common multiples of all possible
+	//// resolutions in the frame buffer as specified by DisplayRect/LineWidths(Ex for PCE: widths of 256, 341.333333, 512,
+	//// lcm = 1024)
+	//// nominal_width and nominal_height specify the resolution that Mednafen should display
+	//// the framebuffer image in at 1x scaling, scaled from the dimensions of DisplayRect, and optionally the LineWidths array
+	//// passed through espec to the Emulate() function.
+	//int lcm_width;
+	//int lcm_height;
+	//int nominal_width;
+	//int nominal_height;
 	int fb_width;		// Width of the framebuffer(not necessarily width of the image).  MDFN_Surface width should be >= this.
 	int fb_height;		// Height of the framebuffer passed to the Emulate() function(not necessarily height of the image)
+
+	//last used render options
+	ShockRenderOptions opts;
 } s_ShockConfig;
 
 
@@ -1221,44 +1225,15 @@ EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
 	CDC = new PS_CDC();
 	DMA_Init();
 
-	//analyze region to determine display area (visible scanline regions and such)
-	//currently this can't be changed by the user
-	//[0,239] for NTSC; [0,287] for PAL
-	int sls, sle;
-	if(region == REGION_EU)
-	{
-		sls = 0;
-		sle = 287;
-	}
-	else
-	{
-		sls = 0;
-		sle = 239;
-	}
-
 	//these steps can't be done without more information
-	GPU = new PS_GPU(region == REGION_EU, sls, sle, true);
-
-	//fetch video parameters, stash in a simpler format
-	MDFNGI givp;
-	GPU->FillVideoParams(&givp);
-	s_ShockConfig.lcm_width = givp.lcm_width;
-	s_ShockConfig.lcm_height = givp.lcm_height;
-	s_ShockConfig.fb_height = givp.fb_height;
-	//s_ShockConfig.fb_width = givp.fb_width;
-	s_ShockConfig.fb_width = 800; //we're a bit sloppy right now.. use this to make sure theres adequate room for double-sizing a 400px wide screen
-	s_ShockConfig.fb_height = givp.fb_height;
-	s_ShockConfig.nominal_width = givp.nominal_width;
-	s_ShockConfig.nominal_height = givp.nominal_height;
-	//givp.fps // TODO
-
+	GPU = new PS_GPU(region == REGION_EU);
 
 	//setup gpu output surfaces
 	MDFN_PixelFormat nf(MDFN_COLORSPACE_RGB, 16, 8, 0, 24);
 	for(int i=0;i<2;i++)
 	{
-		VTBuffer[i] = new MDFN_Surface(NULL, s_ShockConfig.fb_width, s_ShockConfig.fb_height, s_ShockConfig.fb_width, nf);
-		VTLineWidths[i] = (int *)calloc(s_ShockConfig.fb_height, sizeof(int));
+		VTBuffer[i] = new MDFN_Surface(NULL, FB_WIDTH, FB_HEIGHT, FB_WIDTH, nf);
+		VTLineWidths[i] = (int *)calloc(FB_HEIGHT, sizeof(int));
 	}
 
 	FIO = new FrontIO();
@@ -1385,7 +1360,7 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 	//new frame, hasnt been normalized
 	s_FramebufferNormalized = false;
 	s_FramebufferCurrent = 0;
-	s_FramebufferCurrentWidth = s_ShockConfig.fb_width;
+	s_FramebufferCurrentWidth = 768;
 
 	return SHOCK_OK;
 }
@@ -1398,6 +1373,8 @@ void NormalizeFramebuffer()
 	
 	//psxtech says horizontal resolutions can be:  256, 320, 368, 512, 640 pixels
 	//mednafen will turn those into 2800/{ 10, 8, 5, 4, 7 } -> 280,350,560,700,400
+	//additionally with the crop options we can cut it down by 160/X -> { 16, 20, 32, 40, 22 } -> { 264, 330, 528, 660, 378 }
+	//this means our virtual area for doubling is no longer 800 but 756
 
 	//heres my strategy: 
 	//try to do the smart thing, try to get aspect ratio near the right value
@@ -1419,6 +1396,7 @@ void NormalizeFramebuffer()
 
 	int width = VTLineWidths[0][0]; //presently, except for contrived test programs, it is safe to assume this is the same for the entire frame (no known use by games)
 	int height = espec.DisplayRect.h;
+	int virtual_width = s_ShockConfig.opts.clipOverscan ? 756 : 800;
 
 	int xs=1,ys=1,xm=0;
 
@@ -1435,17 +1413,12 @@ void NormalizeFramebuffer()
 	//if(width == 700 && height == 480) {}
 
 	//II. as the snes 'always double size framebuffer'. I think thats a better idea, and we already have the concept
-	if(width == 280 && height == 240) xs=ys=2;
-	if(width == 350 && height == 240) xs=ys=2;
-	if(width == 400 && height == 240) xs=ys=2;
-	if(width == 560 && height == 240) ys=2;
-	if(width == 700 && height == 240) ys=2;
-	if(width == 280 && height == 480) xs=2;
-	if(width == 350 && height == 480) xs=2;
-	if(width == 400 && height == 480) xs=2;
-	if(width == 560 && height == 480) {}
-	if(width == 700 && height == 480) {}
-	xm = (800-width*xs)/2;
+	if(width <= 400 && height <= 276) xs=ys=2;
+	if(width > 400 && height <= 276) ys=2;
+	if(width <= 400 && height > 276) xs=2;
+	if(width > 400 && height > 276) {}
+	//TODO - shrink it entirely if cropping
+	xm = (virtual_width-width*xs)/2;
 
 	int curr = 0;
 
@@ -1477,7 +1450,7 @@ void NormalizeFramebuffer()
 
 	//2. double the width as needed. but always float it.
 	//note, theres nothing to be done here if the framebuffer is already wide enough
-	if(width != 800)
+	if(width != virtual_width)
 	{
 		uint32* src = VTBuffer[curr]->pixels + (s_ShockConfig.fb_width*espec.DisplayRect.y) + espec.DisplayRect.x;
 		uint32* dst = VTBuffer[curr^1]->pixels;
@@ -1510,7 +1483,7 @@ void NormalizeFramebuffer()
 		}
 
 		//patch up the metrics
-		width = 800; //we floated the content horizontally, so this becomes the new width
+		width = virtual_width; //we floated the content horizontally, so this becomes the new width
 		espec.DisplayRect.x = 0;
 		espec.DisplayRect.y = 0;
 		VTLineWidths[curr^1][0] = width;
@@ -2520,5 +2493,12 @@ EW_EXPORT s32 shock_SetRegister_CPU(void* psx, s32 index, u32 value)
 	//takes advantage of layout of GSREG_ matchign our struct (not an accident!)
 	CPU->SetRegister((u32)index,value);
 	
+	return SHOCK_OK;
+}
+
+EW_EXPORT s32 shock_SetRenderOptions(void* pxs, ShockRenderOptions* opts)
+{
+	GPU->SetRenderOptions(opts);
+	s_ShockConfig.opts = *opts;
 	return SHOCK_OK;
 }

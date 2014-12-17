@@ -178,6 +178,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		List<DiscInterface> discInterfaces = new List<DiscInterface>();
 		DiscInterface currentDiscInterface;
 
+		OctoshockDll.eRegion SystemRegion;
+		OctoshockDll.eVidStandard SystemVidStandard;
+
 		//note: its annoying that we have to have a disc before constructing this.
 		//might want to change that later. HOWEVER - we need to definitely have a region, at least
 		public Octoshock(CoreComm comm, List<DiscSystem.Disc> discs, byte[] exe, object settings, object syncSettings)
@@ -194,8 +197,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			Attach();
 
+			//assume this region for EXE and PSF, maybe not correct though
 			string firmwareRegion = "U";
-			OctoshockDll.eRegion region = OctoshockDll.eRegion.NA;
+			SystemRegion = OctoshockDll.eRegion.NA;
 
 			if (discs != null)
 			{
@@ -226,28 +230,37 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				//try to acquire the appropriate firmware
 				if (discInfo.region == OctoshockDll.eRegion.EU) firmwareRegion = "E";
 				if (discInfo.region == OctoshockDll.eRegion.JP) firmwareRegion = "J";
+				SystemRegion = discInfo.region;
 			}
 
-			byte[] firmware = comm.CoreFileProvider.GetFirmware("PSX", "U", true, "A PSX `" + firmwareRegion + "` region bios file is required");
+			//see http://problemkaputt.de/psx-spx.htm
+			int CpuClock_n = 44100*768;
+			int CpuClock_d = 1;
+			int VidClock_n = CpuClock_n*11;
+			int VidClock_d = CpuClock_d*7;
+			if (SystemRegion == OctoshockDll.eRegion.EU)
+			{
+				CoreComm.VsyncNum = VidClock_n;
+				CoreComm.VsyncDen = VidClock_d * 314 * 3406;
+				SystemVidStandard = OctoshockDll.eVidStandard.PAL;
+			}
+			else
+			{
+				CoreComm.VsyncNum = VidClock_n;
+				CoreComm.VsyncDen = VidClock_d * 263 * 3413;
+				SystemVidStandard = OctoshockDll.eVidStandard.NTSC;
+			}
+
+			//TODO - known bad firmwares are a no-go. we should refuse to boot them. (thats the mednafen policy)
+			byte[] firmware = comm.CoreFileProvider.GetFirmware("PSX", firmwareRegion, true, "A PSX `" + firmwareRegion + "` region bios file is required");
 
 			//create the instance
 			fixed (byte* pFirmware = firmware)
-				OctoshockDll.shock_Create(out psx, region, pFirmware);
+				OctoshockDll.shock_Create(out psx, SystemRegion, pFirmware);
 
 			SetMemoryDomains();
 
-			//these should track values in octoshock gpu.cpp FillVideoParams
-			//if (discInfo.region == OctoshockDll.eRegion.EU)
-			//{
-			//  VirtualWidth = 377; // " Dunno :( "
-			//  VirtualHeight = 288;
-			//}
-			//else 
-			//{
-			//  VirtualWidth = 320; // Dunno :(
-			//  VirtualHeight = 240;
-			//}
-			//BUT-for now theyre normalized (NOTE: THIS MESSES UP THE ASPECT RATIOS)
+			//TODO - refactor resolution detection and set this accordingly to the first frame of emulation, or at least what the bios is doing first
 			VirtualWidth = 800;
 			VirtualHeight = 480;
 
@@ -356,6 +369,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			if (!Controller["Eject"]) OctoshockDll.shock_CloseTray(psx);
 
+			var ropts = new OctoshockDll.ShockRenderOptions()
+			{
+				scanline_start = SystemVidStandard == OctoshockDll.eVidStandard.NTSC ? _Settings.ScanlineStart_NTSC : _Settings.ScanlineStart_PAL,
+				scanline_end = SystemVidStandard == OctoshockDll.eVidStandard.NTSC ? _Settings.ScanlineEnd_NTSC : _Settings.ScanlineEnd_PAL,
+				clipOverscan = _Settings.ClipHorizontalOverscan
+			};
+			OctoshockDll.shock_SetRenderOptions(psx, ref ropts);
 
 			OctoshockDll.shock_Step(psx, OctoshockDll.eShockStep.Frame);
 
@@ -373,6 +393,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			BufferWidth = w;
 			BufferHeight = h;
 
+			int virtual_width = ropts.clipOverscan ? 768 : 800;
+			int scanline_num = ropts.scanline_end - ropts.scanline_start + 1;
+			int real_scanline_num = SystemVidStandard == OctoshockDll.eVidStandard.NTSC ? 240 : 288;
+
 			switch (_Settings.ResolutionMode)
 			{
 				case eResolutionMode.Debug:
@@ -380,16 +404,18 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 					VirtualHeight = h;
 					break;
 				case eResolutionMode.Mednafen:
-					VirtualWidth = 320;
-					VirtualHeight = 240;
+					VirtualWidth = ropts.clipOverscan ? 302 : 320;
+					VirtualHeight = scanline_num;
 					break;
 				case eResolutionMode.PixelPro:
-					VirtualWidth = 800;
-					VirtualHeight = 480;
+					VirtualWidth = virtual_width;
+					VirtualHeight = scanline_num*2;
 					break;
 				case eResolutionMode.TweakedMednafen:
-					VirtualWidth = 400;
-					VirtualHeight = 300;
+					{
+						VirtualWidth = ropts.clipOverscan ? 378 : 400;
+						VirtualHeight = (int)(scanline_num * 300.0f / real_scanline_num);
+					}
 					break;
 			}
 
@@ -466,7 +492,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		#region ISoundProvider
 
-		private short[] sbuff = new short[1454 * 2]; //this is the most ive ever seen.. dont know why
+		//private short[] sbuff = new short[1454 * 2]; //this is the most ive ever seen.. dont know why. two frames worth i guess
+		private short[] sbuff = new short[1611 * 2]; //need this for pal
 		private int sbuffcontains = 0;
 
 		public ISoundProvider SoundProvider { get { throw new InvalidOperationException(); } }
@@ -683,9 +710,51 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public class Settings
 		{
 			[DisplayName("Resolution Mode")]
-			[Description("Stuf")]
+			[Description("Stuff")]
 			[DefaultValue(eResolutionMode.PixelPro)]
 			public eResolutionMode ResolutionMode { get; set; }
+
+			[DisplayName("ScanlineStart_NTSC")]
+			[DefaultValue(0)]
+			public int ScanlineStart_NTSC { get; set; }
+
+			[DisplayName("ScanlineEnd_NTSC")]
+			[DefaultValue(239)]
+			public int ScanlineEnd_NTSC { get; set; }
+
+			[DisplayName("ScanlineStart_PAL")]
+			[DefaultValue(0)]
+			public int ScanlineStart_PAL { get; set; }
+
+			[DisplayName("ScanlineEnd_PAL")]
+			[DefaultValue(287)]
+			public int ScanlineEnd_PAL { get; set; }
+
+			[DisplayName("Clip Horizontal Overscan")]
+			[DefaultValue(false)]
+			public bool ClipHorizontalOverscan { get; set; }
+
+			public void Validate()
+			{
+				if (ScanlineStart_NTSC < 0) ScanlineStart_NTSC = 0;
+				if (ScanlineStart_PAL < 0) ScanlineStart_PAL = 0;
+				if (ScanlineEnd_NTSC > 239) ScanlineEnd_NTSC = 239;
+				if (ScanlineEnd_PAL > 287) ScanlineEnd_PAL = 287;
+				
+				//make sure theyre not in the wrong order
+				if (ScanlineEnd_NTSC < ScanlineStart_NTSC)
+				{
+					int temp = ScanlineEnd_NTSC;
+					ScanlineEnd_NTSC = ScanlineStart_NTSC;
+					ScanlineStart_NTSC = temp;
+				}
+				if (ScanlineEnd_PAL < ScanlineStart_PAL)
+				{
+					int temp = ScanlineEnd_PAL;
+					ScanlineEnd_PAL = ScanlineStart_PAL;
+					ScanlineStart_PAL = temp;
+				}
+			}
 
 			public Settings()
 			{
@@ -710,6 +779,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public bool PutSettings(Settings o)
 		{
+			_Settings.Validate();
 			_Settings = o;
 			//TODO
 			//var native = _Settings.GetNativeSettings();

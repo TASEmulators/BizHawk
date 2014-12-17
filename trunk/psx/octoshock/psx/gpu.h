@@ -6,6 +6,8 @@
 #include "cdrom/SimpleFIFO.h"
 #include "git.h"
 
+struct ShockRenderOptions;
+
 namespace MDFN_IEN_PSX
 {
 
@@ -39,8 +41,11 @@ class PS_GPU
 {
  public:
 
- PS_GPU(bool pal_clock_and_tv, int sls, int sle, bool show_h_overscan) MDFN_COLD;
+ void SetRenderOptions(ShockRenderOptions* opts);
+
+ PS_GPU(bool pal_clock_and_tv) MDFN_COLD;
  ~PS_GPU() MDFN_COLD;
+ static void StaticInitialize() MDFN_COLD;
 
  template<bool isReader>void SyncState(EW::NewState *ns);
 
@@ -167,7 +172,7 @@ class PS_GPU
  uint32 abr;
  uint32 TexMode;
 
- uint8 DitherLUT[4][4][512];	// Y, X, 8-bit source value(256 extra for saturation)
+ static uint8 DitherLUT[4][4][512];	// Y, X, 8-bit source value(256 extra for saturation)
 
  bool LineSkipTest(unsigned y);
 
