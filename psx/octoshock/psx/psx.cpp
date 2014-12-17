@@ -1042,7 +1042,7 @@ struct ShockState
 struct ShockPeripheral
 {
 	ePeripheralType type;
-	u8 buffer[16];
+	u8 buffer[32]; //must be larger than 16+3+1 or thereabouts because the dualshock writes some rumble data into it. bleck, ill fix it later
 };
 
 struct {
@@ -1063,7 +1063,7 @@ struct {
 	s32 Connect(s32 address, s32 type)
 	{
 		//check the port address
-		int portnum = address&1;
+		int portnum = address&0x0F;
 		if(portnum != 1 && portnum != 2)
 			return SHOCK_INVALID_ADDRESS;
 		portnum--;
@@ -1100,7 +1100,7 @@ struct {
 	s32 SetPadInput(s32 address, u32 buttons, u8 left_x, u8 left_y, u8 right_x, u8 right_y)
 	{
 		//check the port address
-		int portnum = address&1;
+		int portnum = address&0x0F;
 		if(portnum != 1 && portnum != 2)
 			return SHOCK_INVALID_ADDRESS;
 		portnum--;

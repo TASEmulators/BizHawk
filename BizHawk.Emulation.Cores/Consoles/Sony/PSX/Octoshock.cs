@@ -288,7 +288,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				fixed (byte* pExeBuffer = exe)
 					OctoshockDll.shock_MountEXE(psx, pExeBuffer, exe.Length);
 			}
+
+			//connect two dualshocks, thats all we're doing right now
 			OctoshockDll.shock_Peripheral_Connect(psx, 0x01, OctoshockDll.ePeripheralType.DualShock);
+			OctoshockDll.shock_Peripheral_Connect(psx, 0x02, OctoshockDll.ePeripheralType.DualShock);
 
 			//do this after framebuffers and peripherals and whatever crap are setup. kind of lame, but thats how it is for now
 			StudySaveBufferSize();
@@ -354,6 +357,33 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			byte right_y = (byte)Controller.GetFloat("P1 RStick Y");
 
 			OctoshockDll.shock_Peripheral_SetPadInput(psx, 0x01, buttons, left_x, left_y, right_x, right_y);
+
+			//dualshock style
+			buttons = 0;
+			if (Controller["P2 Select"]) buttons |= 1;
+			if (Controller["P2 L3"]) buttons |= 2;
+			if (Controller["P2 R3"]) buttons |= 4;
+			if (Controller["P2 Start"]) buttons |= 8;
+			if (Controller["P2 Up"]) buttons |= 16;
+			if (Controller["P2 Right"]) buttons |= 32;
+			if (Controller["P2 Down"]) buttons |= 64;
+			if (Controller["P2 Left"]) buttons |= 128;
+			if (Controller["P2 L2"]) buttons |= 256;
+			if (Controller["P2 R2"]) buttons |= 512;
+			if (Controller["P2 L1"]) buttons |= 1024;
+			if (Controller["P2 R1"]) buttons |= 2048;
+			if (Controller["P2 Triangle"]) buttons |= 4096;
+			if (Controller["P2 Circle"]) buttons |= 8192;
+			if (Controller["P2 Cross"]) buttons |= 16384;
+			if (Controller["P2 Square"]) buttons |= 32768;
+			if (Controller["P2 MODE"]) buttons |= 65536;
+
+			left_x = (byte)Controller.GetFloat("P2 LStick X");
+			left_y = (byte)Controller.GetFloat("P2 LStick Y");
+			right_x = (byte)Controller.GetFloat("P2 RStick X");
+			right_y = (byte)Controller.GetFloat("P2 RStick Y");
+
+			OctoshockDll.shock_Peripheral_SetPadInput(psx, 0x02, buttons, left_x, left_y, right_x, right_y);
 		}
 
 		/// <summary>
