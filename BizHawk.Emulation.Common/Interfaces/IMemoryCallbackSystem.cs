@@ -5,6 +5,12 @@ namespace BizHawk.Emulation.Common
 {
 	public interface IMemoryCallbackSystem : IEnumerable<IMemoryCallback>
 	{
+		/*
+		 * DANGER:
+		 * Many cores will blindly call CallReads(), CallWrites(), CallExecutes() on every rwx no matter what.
+		 * These functions must return very quickly if the list is empty.  Very very quickly.
+		 */
+
 		/// <summary>
 		/// Returns whether or not there are currently any read hooks
 		/// </summary>
