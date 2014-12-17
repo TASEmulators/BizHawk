@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -22,6 +23,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool BGBaseHigh { get; }
 
 		/// <summary>
+		/// true if sp tile indexes start at 0x1000 instead of 0x0000 (8x8 mode only)
+		/// </summary>
+		bool SPBaseHigh { get; }
+
+		/// <summary>
+		/// true if sprites are 8x16
+		/// </summary>
+		bool SPTall { get; }
+
+		/// <summary>
 		/// get the first 0x3000 bytes of ppu data
 		/// </summary>
 		/// <returns></returns>
@@ -32,6 +43,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// </summary>
 		/// <returns></returns>
 		byte[] GetPalRam();
+
+		/// <summary>
+		/// returns the object attribute memory
+		/// </summary>
+		/// <returns></returns>
+		byte[] GetOam();
 
 		/// <summary>
 		/// return one byte of PPU bus data
@@ -56,5 +73,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// </summary>
 		/// <returns></returns>
 		byte[] GetExRam();
+
+		/// <summary>
+		/// get memory domain for chr rom; return null if RAM or other N/A.  for direct viewing of ROM tiles.
+		/// </summary>
+		/// <returns></returns>
+		MemoryDomain GetCHRROM();
 	}
 }
