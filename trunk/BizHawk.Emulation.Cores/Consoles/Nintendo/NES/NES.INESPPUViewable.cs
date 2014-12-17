@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -17,6 +18,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			get { return ppu.reg_2000.bg_pattern_hi; }
 		}
 
+		public bool SPBaseHigh
+		{
+			get { return ppu.reg_2000.obj_pattern_hi; }
+		}
+
+		public bool SPTall
+		{
+			get { return ppu.reg_2000.obj_size_16; }
+		}
+
 		public byte[] GetPPUBus()
 		{
 			byte[] ret = new byte[0x3000];
@@ -30,6 +41,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public byte[] GetPalRam()
 		{
 			return ppu.PALRAM;
+		}
+
+		public byte[] GetOam()
+		{
+			return ppu.OAM;
 		}
 
 		public byte PeekPPU(int addr)
@@ -64,6 +80,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				throw new InvalidOperationException();
 			}
+		}
+
+		public MemoryDomain GetCHRROM()
+		{
+			return MemoryDomains["CHR VROM"];
 		}
 	}
 }
