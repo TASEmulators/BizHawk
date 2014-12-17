@@ -42,7 +42,11 @@ namespace BizHawk.Client.Common
 				{ "A26_PAL", 3546895.0 / 312.0 / 228.0 }, // 49.860759671614934772829509671615
 
 				{ "A78", 59.9227510135505 },
-				{ "Coleco", 59.9227510135505 }
+				{ "Coleco", 59.9227510135505 },
+
+				//http://problemkaputt.de/psx-spx.htm
+				{"PSX", 44100.0*768*11/7/263/3413},
+				{"PSX_PAL", 44100.0*768*11/7/314/3406},
 			};
 
 		public double this[string systemId, bool pal]
