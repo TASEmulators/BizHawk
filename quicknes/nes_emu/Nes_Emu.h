@@ -206,8 +206,13 @@ public:
 // Prg peek/poke for debuggin
 	byte peek_prg(nes_addr_t addr) const { return *static_cast<Nes_Cpu>(emu).get_code(addr); }
 	void poke_prg(nes_addr_t addr, byte value) { *static_cast<Nes_Cpu>(emu).get_code(addr) = value; }
+	byte peek_ppu(int addr) { return emu.ppu.peekaddr(addr); }
 
 	void get_regs(unsigned int *dest) const;
+
+	byte get_ppu2000() const { return emu.ppu.w2000; }
+	byte* pal_mem() { return emu.ppu.palette; }
+	byte* oam_mem() { return emu.ppu.spr_ram; }
 
 	// End of public interface
 public:

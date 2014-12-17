@@ -32,6 +32,7 @@ public:
 	enum { buffer_height = image_height };
 	
 	int write_2007( int );
+	int peekaddr(int);
 	
 	// Host palette
 	enum { palette_increment = 64 };
@@ -64,8 +65,8 @@ public:
 	impl_t* impl;
 	enum { scanline_len = 341 };
 	
-protected:
 	byte spr_ram [0x100];
+protected:
 	void begin_frame();
 	void run_hblank( int );
 	int sprite_height() const { return (w2000 >> 2 & 8) + 8; }
@@ -104,6 +105,11 @@ private:
 	enum { chr_page_size = 0x400 };
 	long chr_pages [chr_addr_size / chr_page_size];
 	long chr_pages_ex [chr_addr_size / chr_page_size]; // mmc24 only
+	long map_chr_addr_peek( unsigned a ) const
+	{
+		return chr_pages[a / chr_page_size] + a;
+	}
+
 	long map_chr_addr( unsigned a ) /*const*/
 	{
 		if (!mmc24_enabled)

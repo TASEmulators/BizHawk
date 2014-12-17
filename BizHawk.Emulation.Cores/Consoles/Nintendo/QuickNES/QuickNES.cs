@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public class QuickNES : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IInputPollable,
-		IStatable, IDebuggable, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>
+		IStatable, IDebuggable, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>, Cores.Nintendo.NES.INESPPUViewable
 	{
 		#region FPU precision
 
@@ -199,6 +199,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					Blit();
 				if (rendersound)
 					DrainAudio();
+
+				if (CB1 != null) CB1();
+				if (CB2 != null) CB2();
 			}
 		}
 
@@ -714,6 +717,103 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public void DiscardSamples()
 		{
+		}
+
+		#endregion
+
+		#region INESPPUViewable
+
+		// todo: don't just call the callbacks at the end of frame; use the scanline info
+		Action CB1;
+		Action CB2;
+
+		public int[] GetPalette()
+		{
+			return VideoPalette;
+		}
+
+		private byte R2000 { get { return LibQuickNES.qn_get_reg2000(Context); } }
+
+		public bool BGBaseHigh
+		{
+			get { return (R2000 & 0x10) != 0; }
+		}
+
+		public bool SPBaseHigh
+		{
+			get { return (R2000 & 0x08) != 0; }
+		}
+
+		public bool SPTall
+		{
+			get { return (R2000 & 0x20) != 0; }
+		}
+
+		byte[] ppubusbuf = new byte[0x3000];
+		public byte[] GetPPUBus()
+		{
+			LibQuickNES.qn_peek_ppubus(Context, ppubusbuf);
+			return ppubusbuf;
+		}
+
+		byte[] palrambuf = new byte[0x20];
+		public byte[] GetPalRam()
+		{
+			Marshal.Copy(LibQuickNES.qn_get_palmem(Context), palrambuf, 0, 0x20);
+			return palrambuf;
+		}
+
+		byte[] oambuf = new byte[0x100];
+		public byte[] GetOam()
+		{
+			Marshal.Copy(LibQuickNES.qn_get_oammem(Context), oambuf, 0, 0x100);
+			return oambuf;
+		}
+
+		public byte PeekPPU(int addr)
+		{
+			return LibQuickNES.qn_peek_ppu(Context, addr);
+		}
+
+		// we don't use quicknes's MMC5 at all, so these three methods are just stubs
+		public byte[] GetExTiles()
+		{
+			throw new InvalidOperationException();
+		}
+
+		public bool ExActive
+		{
+			get { return false; }
+		}
+
+		public byte[] GetExRam()
+		{
+			throw new InvalidOperationException();
+		}
+
+		public MemoryDomain GetCHRROM()
+		{
+			return MemoryDomains["CHR VROM"];
+		}
+
+		public void InstallCallback1(Action cb, int sl)
+		{
+			CB1 = cb;
+		}
+
+		public void InstallCallback2(Action cb, int sl)
+		{
+			CB2 = cb;
+		}
+
+		public void RemoveCallback1()
+		{
+			CB1 = null;
+		}
+
+		public void RemoveCallback2()
+		{
+			CB2 = null;
 		}
 
 		#endregion

@@ -26,8 +26,6 @@ namespace BizHawk.Client.EmuHawk
 		private bool _forceChange;
 
 		[RequiredService]
-		private NES _nes { get; set; }
-		[RequiredService]
 		private INESPPUViewable xxx { get; set; }
 		[RequiredService]
 		private IEmulator _emu { get; set; }
