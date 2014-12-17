@@ -23,7 +23,8 @@ namespace BizHawk.Client.EmuHawk
 	public partial class HexEditor : Form, IToolForm
 	{
 		[RequiredService]
-		private MemoryDomainList MemoryDomains { get; set; }
+		private IMemoryDomains MemoryDomainSource { get; set; }
+		private MemoryDomainList MemoryDomains { get { return MemoryDomainSource.MemoryDomains; } }
 
 		private bool fontSizeSet = false;
 		private int fontWidth;
