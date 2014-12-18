@@ -254,8 +254,6 @@
 			this.AutoloadKeypadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.paletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AtariSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.Atari2600DebuggerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator31 = new System.Windows.Forms.ToolStripSeparator();
 			this.AtariSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBcoreSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -2295,31 +2293,16 @@
 			// AtariSubMenu
 			// 
 			this.AtariSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.Atari2600DebuggerMenuItem,
-            this.toolStripSeparator31,
             this.AtariSettingsToolStripMenuItem});
 			this.AtariSubMenu.Name = "AtariSubMenu";
 			this.AtariSubMenu.Size = new System.Drawing.Size(44, 19);
 			this.AtariSubMenu.Text = "&Atari";
 			this.AtariSubMenu.DropDownOpened += new System.EventHandler(this.AtariSubMenu_DropDownOpened);
 			// 
-			// Atari2600DebuggerMenuItem
-			// 
-			this.Atari2600DebuggerMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Bug;
-			this.Atari2600DebuggerMenuItem.Name = "Atari2600DebuggerMenuItem";
-			this.Atari2600DebuggerMenuItem.Size = new System.Drawing.Size(126, 22);
-			this.Atari2600DebuggerMenuItem.Text = "Debugger";
-			this.Atari2600DebuggerMenuItem.Click += new System.EventHandler(this.Atari2600DebuggerMenuItem_Click);
-			// 
-			// toolStripSeparator31
-			// 
-			this.toolStripSeparator31.Name = "toolStripSeparator31";
-			this.toolStripSeparator31.Size = new System.Drawing.Size(123, 6);
-			// 
 			// AtariSettingsToolStripMenuItem
 			// 
 			this.AtariSettingsToolStripMenuItem.Name = "AtariSettingsToolStripMenuItem";
-			this.AtariSettingsToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+			this.AtariSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.AtariSettingsToolStripMenuItem.Text = "Settings...";
 			this.AtariSettingsToolStripMenuItem.Click += new System.EventHandler(this.AtariSettingsToolStripMenuItem_Click);
 			// 
@@ -3664,8 +3647,6 @@
 		private System.Windows.Forms.ToolStripMenuItem SMSdisplayAutoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator26;
 		private System.Windows.Forms.ToolStripMenuItem extensionsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem Atari2600DebuggerMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator31;
 		private System.Windows.Forms.ToolStripStatusLabel CoreNameStatusBarButton;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem6;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem7;
