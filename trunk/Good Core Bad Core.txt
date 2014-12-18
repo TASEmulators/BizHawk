@@ -8,6 +8,7 @@ Optical disk access, if applicable, through GetToc() and GetSector() type primit
 Multi-instance capable.
 Multi-threading, if applicable, is handled internally.  The frontend will call FrameAdvance()
   on a single thread and callbacks will be marshalled back to that thread.
+Settings and preferences, where applicable, can be specified by the frontend.
 
 Bad Core:
 
@@ -18,3 +19,4 @@ Direct file IO that can't be trapped or rerouted easily.
 Optical disk access through cruddy cuebin system that can't be replaced easily.
 Single instance.
 Sloppy multithreading, or main program loop that can't be easily factored out.
+Settings and preferences go to untrappable file IO or central registry.
