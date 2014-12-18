@@ -79,10 +79,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public bool DeterministicEmulation { get; set; }
 
-		public A2600Settings Settings { get; private set; }
-
-		public A2600SyncSettings SyncSettings { get; private set; }
-
 		public static readonly ControllerDefinition Atari2600ControllerDefinition = new ControllerDefinition
 		{
 			Name = "Atari 2600 Basic Controller",

@@ -41,6 +41,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return false;
 		}
 
+		internal A2600Settings Settings { get; private set; }
+		internal A2600SyncSettings SyncSettings { get; private set; }
+
 		public class A2600Settings
 		{
 			[JsonIgnore]
