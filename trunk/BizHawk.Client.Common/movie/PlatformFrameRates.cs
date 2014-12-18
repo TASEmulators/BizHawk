@@ -44,9 +44,18 @@ namespace BizHawk.Client.Common
 				{ "A78", 59.9227510135505 },
 				{ "Coleco", 59.9227510135505 },
 
-				//http://problemkaputt.de/psx-spx.htm
-				{"PSX", 44100.0*768*11/7/263/3413},
-				{"PSX_PAL", 44100.0*768*11/7/314/3406},
+				//according to http://problemkaputt.de/psx-spx.htm
+				{"PSX", 44100.0*768*11/7/263/3413}, //59.292862562
+				{"PSX_PAL", 44100.0*768*11/7/314/3406}, //49.7645593576
+
+				//according to ryphecha, using
+				//clocks[2] = { 53.693182e06, 53.203425e06 }; //ntsc console, pal console
+				//lpf[2][2] = { { 263, 262.5 }, { 314, 312.5 } }; //ntsc,pal; noninterlaced, interlaced
+				//cpl[2] = { 3412.5, 3405 }; //ntsc mode, pal mode
+				//PAL PS1: 0, PAL Mode: 0, Interlaced: 0 --- 59.826106 (53.693182e06/(263*3412.5))
+				//PAL PS1: 0, PAL Mode: 0, Interlaced: 1 --- 59.940060 (53.693182e06/(262.5*3412.5))
+				//PAL PS1: 1, PAL Mode: 1, Interlaced: 0 --- 49.761427 (53.203425e06/(314*3405))
+				//PAL PS1: 1, PAL Mode: 1, Interlaced: 1 --- 50.000282(53.203425e06/(312.5*3405))
 			};
 
 		public double this[string systemId, bool pal]
