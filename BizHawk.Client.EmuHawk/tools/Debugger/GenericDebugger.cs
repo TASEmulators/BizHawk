@@ -224,28 +224,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool CanDisassemble
-		{
-			get
-			{
-				if (Disassembler == null)
-				{
-					return false;
-				}
-
-				try
-				{
-					var pc = PC;
-					return true;
-				}
-				catch (NotImplementedException)
-				{
-					return false;
-				}
-				
-			}
-		}
-
 		#region Menu Items
 
 		#region File
