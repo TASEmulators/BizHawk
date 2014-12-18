@@ -7,6 +7,13 @@ using BizHawk.Emulation.Cores.Computers.Commodore64.MOS;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
+	// TODO: use the EMulation.Common Region enum
+	public enum Region
+	{
+		NTSC,
+		PAL
+	}
+
 	[CoreAttributes(
 		"C64Hawk",
 		"SaxxonPIke",
@@ -14,11 +21,25 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		isReleased: false
 		)]
 	[ServiceNotApplicable(typeof(ISettable<,>))]
-	sealed public partial class C64 : IEmulator, IMemoryDomains, IStatable, IInputPollable, IDriveLight
+	sealed public partial class C64 : IEmulator, IMemoryDomains, IStatable, IInputPollable, IDriveLight, IDebuggable
 	{
+		// framework
+		public C64(CoreComm comm, GameInfo game, byte[] rom, string romextension)
+		{
+			ServiceProvider = new BasicServiceProvider(this);
+			InputCallbacks = new InputCallbackSystem();
+
+			inputFileInfo = new InputFileInfo();
+			inputFileInfo.Data = rom;
+			inputFileInfo.Extension = romextension;
+			CoreComm = comm;
+			Init(Region.PAL);
+			cyclesPerFrame = board.vic.CyclesPerFrame;
+			SetupMemoryDomains();
+			HardReset();
+		}
+
 		// internal variables
-		private bool _islag = true;
-		private int _lagcount = 0;
 		private int _frame = 0;
 		private int cyclesPerFrame;
 		private InputFileInfo inputFileInfo;
@@ -32,15 +53,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public string BoardName { get { return null; } }
 
-		// memory domains
-		private MemoryDomainList memoryDomains;
-		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
-
 		// running state
 		public bool DeterministicEmulation { get { return true; } set { ; } }
 		public int Frame { get { return _frame; } set { _frame = value; } }
-		public bool IsLagFrame { get { return _islag; } }
-		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
 		public void ResetCounters()
 		{
 			_frame = 0;
@@ -73,23 +88,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				"Key F1", "Key F3", "Key F5", "Key F7"
 			}
 		};
-
-		// framework
-		public C64(CoreComm comm, GameInfo game, byte[] rom, string romextension)
-		{
-			ServiceProvider = new BasicServiceProvider(this);
-			inputFileInfo = new InputFileInfo();
-			inputFileInfo.Data = rom;
-			inputFileInfo.Extension = romextension;
-			CoreComm = comm;
-			Init(Region.PAL);
-			cyclesPerFrame = board.vic.CyclesPerFrame;
-			SetupMemoryDomains();
-			HardReset();
-		}
-
-		public bool DriveLightEnabled { get { return true; } }
-		public bool DriveLightOn { get; private set; }
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
@@ -180,35 +178,64 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			throw new FileNotFoundException();
 		}
 
-		public byte[] SaveStateBinary()
+		private Motherboard board;
+		private bool loadPrg;
+
+		private byte[] GetFirmware(string name, int length)
 		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			return ms.ToArray();
+			byte[] result = CoreComm.CoreFileProvider.GetFirmware("C64", name, true);
+			if (result.Length != length)
+				throw new MissingFirmwareException(string.Format("Firmware {0} was {1} bytes, should be {2} bytes", name, result.Length, length));
+			return result;
 		}
 
-		public bool BinarySaveStatesPreferred { get { return false; } }
-
-		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
-		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
-
-		private void SetupMemoryDomains()
+		private void Init(Region initRegion)
 		{
-			// chips must be initialized before this code runs!
-			var domains = new List<MemoryDomain>(1);
-			domains.Add(new MemoryDomain("System Bus", 0x10000, MemoryDomain.Endian.Little, board.cpu.Peek, board.cpu.Poke));
-			domains.Add(new MemoryDomain("RAM", 0x10000, MemoryDomain.Endian.Little, board.ram.Peek, board.ram.Poke));
-			domains.Add(new MemoryDomain("CIA0", 0x10, MemoryDomain.Endian.Little, board.cia0.Peek, board.cia0.Poke));
-			domains.Add(new MemoryDomain("CIA1", 0x10, MemoryDomain.Endian.Little, board.cia1.Peek, board.cia1.Poke));
-			domains.Add(new MemoryDomain("VIC", 0x40, MemoryDomain.Endian.Little, board.vic.Peek, board.vic.Poke));
-			domains.Add(new MemoryDomain("SID", 0x20, MemoryDomain.Endian.Little, board.sid.Peek, board.sid.Poke));
-			//domains.Add(new MemoryDomain("1541 Bus", 0x10000, MemoryDomain.Endian.Little, new Func<int, byte>(disk.Peek), new Action<int, byte>(disk.Poke)));
-			//domains.Add(new MemoryDomain("1541 VIA0", 0x10, MemoryDomain.Endian.Little, new Func<int, byte>(disk.PeekVia0), new Action<int, byte>(disk.PokeVia0)));
-			//domains.Add(new MemoryDomain("1541 VIA1", 0x10, MemoryDomain.Endian.Little, new Func<int, byte>(disk.PeekVia1), new Action<int, byte>(disk.PokeVia1)));
-			//domains.Add(new MemoryDomain("1541 RAM", 0x1000, MemoryDomain.Endian.Little, new Func<int, byte>(disk.PeekRam), new Action<int, byte>(disk.PokeRam)));
-			memoryDomains = new MemoryDomainList(domains);
+			board = new Motherboard(this, initRegion);
+			InitRoms();
+			board.Init();
+			InitMedia();
+
+			// configure video
+			CoreComm.VsyncDen = board.vic.CyclesPerFrame;
+			CoreComm.VsyncNum = board.vic.CyclesPerSecond;
+		}
+
+		private void InitMedia()
+		{
+			switch (inputFileInfo.Extension.ToUpper())
+			{
+				case @".CRT":
+					Cart cart = Cart.Load(inputFileInfo.Data);
+					if (cart != null)
+					{
+						board.cartPort.Connect(cart);
+					}
+					break;
+				case @".PRG":
+					if (inputFileInfo.Data.Length > 2)
+						loadPrg = true;
+					break;
+			}
+		}
+
+		private void InitRoms()
+		{
+			byte[] basicRom = GetFirmware("Basic", 0x2000);
+			byte[] charRom = GetFirmware("Chargen", 0x1000);
+			byte[] kernalRom = GetFirmware("Kernal", 0x2000);
+
+			board.basicRom = new Chip23XX(Chip23XXmodel.Chip2364, basicRom);
+			board.kernalRom = new Chip23XX(Chip23XXmodel.Chip2364, kernalRom);
+			board.charRom = new Chip23XX(Chip23XXmodel.Chip2332, charRom);
+		}
+
+		// ------------------------------------
+
+		public void HardReset()
+		{
+			board.HardReset();
+			//disk.HardReset();
 		}
 	}
 }
