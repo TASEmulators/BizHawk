@@ -1214,12 +1214,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FDSControlsMenuItem.Enabled = Global.Emulator.BoardName == "FDS";
 
-			NESSoundChannelsMenuItem.Enabled =
-			MovieSettingsMenuItem.Enabled =
-			Global.Emulator is NES;
+			NESSoundChannelsMenuItem.Enabled = ToolAvailable<NESSoundConfig>();
+			MovieSettingsMenuItem.Enabled = ToolAvailable<NESSyncSettingsForm>()
+				&& !Global.MovieSession.Movie.IsActive;
 
-			NesControllerSettingsMenuItem.Enabled = (Global.Emulator is NES || Global.Emulator is QuickNES) && !Global.MovieSession.Movie.IsActive;
-			MovieSettingsMenuItem.Enabled = Global.Emulator is NES && !Global.MovieSession.Movie.IsActive;
+			NesControllerSettingsMenuItem.Enabled = ToolAvailable<NesControllerSettings>()
+				&& !Global.MovieSession.Movie.IsActive;
 
 			barcodeReaderToolStripMenuItem.Enabled = ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, typeof(BarcodeEntry));
 		}
@@ -1533,10 +1533,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void KeypadMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.Emulator is TI83)
-			{
-				GlobalWin.Tools.Load<TI83KeyPad>();
-			}
+			GlobalWin.Tools.Load<TI83KeyPad>();
 		}
 
 		private void AutoloadKeypadMenuItem_Click(object sender, EventArgs e)
@@ -1629,14 +1626,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBPaletteConfigMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.Emulator is Gameboy)
-			{
-				var gb = Global.Emulator as Gameboy;
-				if (gb.IsCGBMode())
-					CGBColorChooserForm.DoCGBColorChooserFormDialog(this);
-				else
-					ColorChooserForm.DoColorChooserFormDialog(this);
-			}
+			var gb = Global.Emulator as Gameboy;
+			if (gb.IsCGBMode())
+				CGBColorChooserForm.DoCGBColorChooserFormDialog(this);
+			else
+				ColorChooserForm.DoColorChooserFormDialog(this);
 		}
 
 		private void LoadGBInSGBMenuItem_Click(object sender, EventArgs e)
