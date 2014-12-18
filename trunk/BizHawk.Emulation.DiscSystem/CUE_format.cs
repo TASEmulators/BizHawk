@@ -321,7 +321,9 @@ namespace BizHawk.Emulation.DiscSystem
 						toc_track.Indexes.Add(toc_index);
 						if (index == 0)
 						{
-							toc_index.aba = track_disc_pregap_aba - (cue_track.Indexes[1].Timestamp.Sector - cue_track.Indexes[0].Timestamp.Sector);
+							//zero 18-dec-2014 - uhhhh cant make sense of this.
+							//toc_index.aba = track_disc_pregap_aba - (cue_track.Indexes[1].Timestamp.Sector - cue_track.Indexes[0].Timestamp.Sector);
+							toc_index.aba = track_disc_pregap_aba;
 						}
 						else toc_index.aba = Sectors.Count;
 

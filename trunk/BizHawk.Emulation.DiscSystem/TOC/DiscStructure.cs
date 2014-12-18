@@ -17,7 +17,10 @@ namespace BizHawk.Emulation.DiscSystem
 		public List<Session> Sessions = new List<Session>();
 
 		/// <summary>
-		/// List of Points described by the TOC
+		/// List of Points described by the TOC.
+		/// TODO - this is kind of garbage, but... I was using it for Synthesize_SubcodeFromStructure() :/
+		/// Really, what it is, is a series of points where the tno/index change. Kind of an agenda. And thats how that function uses it.
+		/// Maybe I should rename it something different, or at least comment it
 		/// </summary>
 		public List<TOCPoint> Points;
 
