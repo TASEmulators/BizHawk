@@ -905,9 +905,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			ret["pc"] = (int)regs.PC;
 			ret["lo"] = (int)regs.LO;
 			ret["hi"] = (int)regs.HI;
-			ret["sr"] = (int)regs.HI;
-			ret["cause"] = (int)regs.HI;
-			ret["epc"] = (int)regs.HI;
+			ret["sr"] = (int)regs.SR;
+			ret["cause"] = (int)regs.CAUSE;
+			ret["epc"] = (int)regs.EPC;
 
 			return ret;
 		}
