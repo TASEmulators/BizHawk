@@ -1584,19 +1584,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AtariSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			if (!VersionInfo.DeveloperBuild)
-			{
-				Atari2600DebuggerMenuItem.Visible =
-					toolStripSeparator31.Visible =
-					false;
-			}
 
-			Atari2600DebuggerMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
-		}
-
-		private void Atari2600DebuggerMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<Atari2600Debugger>();
 		}
 
 		private void AtariSettingsToolStripMenuItem_Click(object sender, EventArgs e)

@@ -455,11 +455,6 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Load<GenericDebugger>();
 			}
 
-			if (Global.Config.Atari2600DebuggerAutoload && Global.Emulator is Atari2600)
-			{
-				GlobalWin.Tools.Load<Atari2600Debugger>();
-			}
-
 			if (Global.Config.DisplayStatusBar == false)
 			{
 				MainStatusBar.Visible = false;
