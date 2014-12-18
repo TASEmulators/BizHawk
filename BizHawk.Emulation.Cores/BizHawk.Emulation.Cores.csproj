@@ -109,11 +109,25 @@
       <DependentUpon>TI83.cs</DependentUpon>
     </Compile>
     <Compile Include="Calculator\TI83LinkPort.cs" />
-    <Compile Include="Computers\Commodore64\C64.Core.cs" />
     <Compile Include="Computers\Commodore64\C64.cs" />
-    <Compile Include="Computers\Commodore64\C64.IStatable.cs" />
+    <Compile Include="Computers\Commodore64\C64.IDebuggable.cs">
+      <DependentUpon>C64.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\Commodore64\C64.IDriveLight.cs">
+      <DependentUpon>C64.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\Commodore64\C64.IInputPollable.cs">
+      <DependentUpon>C64.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\Commodore64\C64.IMemoryDomains.cs">
+      <DependentUpon>C64.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\Commodore64\C64.IStatable.cs">
+      <DependentUpon>C64.cs</DependentUpon>
+    </Compile>
     <Compile Include="Computers\Commodore64\C64.Motherboard.cs" />
     <Compile Include="Computers\Commodore64\C64.MotherboardInterface.cs" />
+    <Compile Include="Computers\Commodore64\C64Util.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0000.cs" />
     <Compile Include="Computers\Commodore64\C64.Input.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0005.cs" />

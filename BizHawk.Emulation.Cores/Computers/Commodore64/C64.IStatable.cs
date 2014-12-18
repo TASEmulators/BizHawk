@@ -7,6 +7,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	sealed public partial class C64 : IStatable
 	{
+		public bool BinarySaveStatesPreferred { get { return false; } }
+
 		public void LoadStateBinary(BinaryReader br)
 		{
 			SyncState(new Serializer(br));
@@ -27,7 +29,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			SyncState(new Serializer(writer));
 		}
 
-		void SyncState(Serializer ser)
+		public byte[] SaveStateBinary()
+		{
+			MemoryStream ms = new MemoryStream();
+			BinaryWriter bw = new BinaryWriter(ms);
+			SaveStateBinary(bw);
+			bw.Flush();
+			return ms.ToArray();
+		}
+
+		private void SyncState(Serializer ser)
 		{
 			ser.BeginSection("core");
 			board.SyncState(ser);
