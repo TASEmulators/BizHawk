@@ -17,6 +17,7 @@ using System.IO;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
+
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
 
@@ -77,6 +78,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		static Octoshock CurrOctoshockCore;
 
 		IntPtr psx;
+		TraceBuffer tracer = new TraceBuffer();
 
 		bool disposed = false;
 		public void Dispose()
@@ -459,7 +461,15 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			};
 			OctoshockDll.shock_SetRenderOptions(psx, ref ropts);
 
+			//prep tracer
+			if (tracer.Enabled)
+				OctoshockDll.shock_SetTraceCallback(psx, IntPtr.Zero, ShockTraceCallback);
+			else
+				OctoshockDll.shock_SetTraceCallback(psx, IntPtr.Zero, null);
+
+			//------------------------
 			OctoshockDll.shock_Step(psx, OctoshockDll.eShockStep.Frame);
+			//------------------------
 
 			//what happens to sound in this case?
 			if (render == false) return;
@@ -932,8 +942,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			OctoshockDll.shock_SetRegister_CPU(psx, index, (uint)value);
 		}
 
-		[FeatureNotImplemented]
-		public ITracer Tracer { get { throw new NotImplementedException(); } }
+		public ITracer Tracer { get { return tracer; } }
+
+		public int ShockTraceCallback(IntPtr opaque, uint PC, uint inst, string dis)
+		{
+			Tracer.Put(dis);
+			return OctoshockDll.SHOCK_OK;
+		}
 
 		[FeatureNotImplemented]
 		public IMemoryCallbackSystem MemoryCallbacks { get { throw new NotImplementedException(); } }
