@@ -25,6 +25,32 @@ namespace BizHawk.Client.EmuHawk
 			get { return Core.GetCpuFlagsAndRegisters()[Disassembler.PCRegisterName]; }
 		}
 
+		#region Implementation checking
+
+		private bool CanDisassemble
+		{
+			get
+			{
+				if (Disassembler == null)
+				{
+					return false;
+				}
+
+				try
+				{
+					var pc = PC;
+					return true;
+				}
+				catch (NotImplementedException)
+				{
+					return false;
+				}
+
+			}
+		}
+
+		#endregion
+
 		public void UpdateValues()
 		{
 			RegisterPanel.UpdateValues();
