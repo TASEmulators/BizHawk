@@ -2511,3 +2511,15 @@ EW_EXPORT s32 shock_SetRenderOptions(void* pxs, ShockRenderOptions* opts)
 	s_ShockConfig.opts = *opts;
 	return SHOCK_OK;
 }
+
+extern void* g_ShockTraceCallbackOpaque;
+extern ShockCallback_Trace g_ShockTraceCallback;
+
+//Sets the callback to be used for CPU tracing
+EW_EXPORT s32 shock_SetTraceCallback(void* psx, void* opaque, ShockCallback_Trace callback)
+{
+	g_ShockTraceCallbackOpaque = opaque;
+	g_ShockTraceCallback = callback;
+
+	return SHOCK_OK;
+}
