@@ -261,6 +261,13 @@ FILE ""xarp.barp.marp.farp"" BINARY
 			int aba = 0;
 			int dpIndex = 0;
 
+			//NOTE: discs may have subcode which is nonsense or possibly not recoverable from a sensible disc structure.
+			//but this function does what it says.
+
+			//SO: heres the main idea of how this works.
+			//we have the Structure.Points (whose name we dont like) which is a list of sectors where the tno/index changes.
+			//So for each sector, we see if we've advanced to the next point.
+			//TODO - check if this is synthesized correctly when producing a structure from a TOCRaw
 			while (aba < Sectors.Count)
 			{
 				if (dpIndex < Structure.Points.Count - 1)
@@ -275,6 +282,11 @@ FILE ""xarp.barp.marp.farp"" BINARY
 				var se = Sectors[aba];
 
 				EControlQ control = dp.Track.Control;
+				bool pause = true;
+				if (dp.Num != 0)
+					pause = false;
+				if ((dp.Track.Control & EControlQ.DataUninterrupted)!=0)
+					pause = false;
 				
 				//we always use ADR=1 (mode-1 q block)
 				//this could be more sophisticated but it is almost useless for emulation (only useful for catalog/ISRC numbers)
@@ -299,6 +311,10 @@ FILE ""xarp.barp.marp.farp"" BINARY
 
 				var bss = new BufferedSubcodeSector();
 				bss.Synthesize_SubchannelQ(ref sq, true);
+
+				//TEST: need this for psx?
+				if(pause) bss.Synthesize_SubchannelP(true);
+
 				se.SubcodeSector = bss;
 
 				aba++;

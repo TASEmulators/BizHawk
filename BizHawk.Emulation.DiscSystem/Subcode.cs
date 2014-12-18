@@ -23,6 +23,13 @@ namespace BizHawk.Emulation.DiscSystem
 	/// </summary>
 	class BufferedSubcodeSector : ISubcodeSector
 	{
+		public void Synthesize_SubchannelP(bool pause)
+		{
+			byte val = pause ? (byte)0xFF : (byte)0x00;
+			for (int i = 0; i < 12; i++)
+				SubcodeDeinterleaved[i] = val;
+		}
+
 		/// <summary>
 		/// Fills this subcode buffer with subchannel Q data. calculates the required CRC, as well.
 		/// Returns the crc, calculated or otherwise.
