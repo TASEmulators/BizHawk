@@ -892,6 +892,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			ret["fp"] = (int)regs.GPR[30];
 			ret["ra"] = (int)regs.GPR[31];
 
+			ret["pc"] = (int)regs.PC;
+			ret["lo"] = (int)regs.LO;
+			ret["hi"] = (int)regs.HI;
+			ret["sr"] = (int)regs.HI;
+			ret["cause"] = (int)regs.HI;
+			ret["epc"] = (int)regs.HI;
+
 			return ret;
 		}
 
@@ -908,7 +915,15 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			{"s4",20},{"s5",21},{"s6",22},{"s7",23},
 			{"t8",24},{"t9",25},
 			{"k0",26},{"k1",27},
-			{"gp",28},{"sp",29},{"fp",30},{"ra",31}
+			{"gp",28},{"sp",29},{"fp",30},{"ra",31},
+			{"pc",32},
+			//33 - PC_NEXT
+			//34 - IN_BD_SLOT
+			{"lo",35},
+			{"hi",36},
+			{"sr",37},
+			{"cause",38},
+			{"epc",39},
 		};
 
 		public void SetCpuRegister(string register, int value)
