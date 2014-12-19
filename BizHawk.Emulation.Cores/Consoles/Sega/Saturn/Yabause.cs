@@ -556,6 +556,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 				LibYabause.libyabause_deinit();
 				VideoHandle.Free();
 				SoundHandle.Free();
+				CD.Dispose();
 				Disposed = true;
 				DeactivateGL();
 			}
