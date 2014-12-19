@@ -28,6 +28,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public string PadSchemaDisplayName { get { return _schema.DisplayName; } }
+
 		public bool ReadOnly
 		{
 			get
@@ -101,6 +103,16 @@ namespace BizHawk.Client.EmuHawk
 							Size = button.TargetSize,
 							MinValue = button.MinValue,
 							MaxValue = button.MaxValue
+						});
+						break;
+					case PadSchema.PadInputType.DiscManager:
+						PadBox.Controls.Add(new VirtualPadDiscManager(button.SecondaryNames)
+						{
+							Name = button.Name,
+							//DisplayName = button.DisplayName,
+							Location = button.Location,
+							Size = button.TargetSize,
+							OwnerEmulator = button.OwnerEmulator
 						});
 						break;
 				}

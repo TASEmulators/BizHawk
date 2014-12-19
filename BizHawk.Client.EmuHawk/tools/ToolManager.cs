@@ -21,9 +21,9 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Loads the tool dialog T, if it does not exist it will be created, if it is already open, it will be focused
 		/// </summary>
-		public IToolForm Load<T>() where T : IToolForm
+		public T Load<T>() where T : IToolForm
 		{
-			return Load(typeof(T));
+			return (T)Load(typeof(T));
 		}
 
 		/// <summary>

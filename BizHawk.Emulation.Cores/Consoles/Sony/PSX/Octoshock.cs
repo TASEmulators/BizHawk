@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 	{
 		public string SystemId { get { return "PSX"; } }
 
-		public static readonly ControllerDefinition DualShockController = new ControllerDefinition
+		public static readonly ControllerDefinition PSXControllerDefinition = new ControllerDefinition
 		{
 			Name = "DualShock Controller",
 			BoolButtons =
@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				"P1 R1",  "P1 L2", "P1 R2", "P1 L3", "P1 R3", "P1 MODE",  
 				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Select", "P2 Start", "P2 Square", "P2 Triangle", "P2 Circle", "P2 Cross", "P2 L1", 
 				"P2 R1",  "P2 L2", "P2 R2", "P2 L3", "P2 R3", "P2 MODE",
-				"Eject", "Reset", 
+				"Eject", "Insert", "Reset", 
 			},
 			FloatControls =
 			{
@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				new[] {0.0f, 128.0f, 255.0f},
 				new[] {255.0f, 128.0f, 0.0f},
 				new[] {1.0f,1.0f,5.0f},
-			}
+			},
 		};
 
 		public string BoardName { get { return null; } }
@@ -190,22 +190,26 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public OctoshockDll.eRegion SystemRegion { get; private set; }
 		public OctoshockDll.eVidStandard SystemVidStandard { get; private set; }
 		public System.Drawing.Size CurrentVideoSize { get; private set; }
+		
+		public bool CurrentDiscEjected { get; private set; }
+		public int CurrentDiscIndexMounted { get; private set; }
+
+		public List<string> HackyDiscButtons = new List<string>();
 
 		//note: its annoying that we have to have a disc before constructing this.
 		//might want to change that later. HOWEVER - we need to definitely have a region, at least
-		public Octoshock(CoreComm comm, List<DiscSystem.Disc> discs, byte[] exe, object settings, object syncSettings)
+		public Octoshock(CoreComm comm, List<DiscSystem.Disc> discs, List<string> discNames, byte[] exe, object settings, object syncSettings)
 		{
-			//analyze our first disc from the list by default, because i dont know
-
 			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
+			DriveLightEnabled = true;
 
 			_Settings = (Settings)settings ?? new Settings();
 			_SyncSettings = (SyncSettings)syncSettings ?? new SyncSettings();
 
-			DriveLightEnabled = true;
-
 			Attach();
+
+			HackyDiscButtons.AddRange(discNames);
 
 			//assume this region for EXE and PSF, maybe not correct though
 			string firmwareRegion = "U";
@@ -287,15 +291,27 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				frameBuffer = new int[BufferWidth * BufferHeight];
 			}
 
+			//TODO - should be able to cold boot system with disc isnerted
 			if (discInterfaces.Count != 0)
 			{
-				//disc will be set during first frame advance
+				//start with first disc inserted and tray closed
+				CurrentDiscEjected = false;
+				CurrentDiscIndexMounted = 1;
+				currentDiscInterface = discInterfaces[CurrentDiscIndexMounted - 1];
+				OctoshockDll.shock_OpenTray(psx);
+				OctoshockDll.shock_SetDisc(psx, currentDiscInterface.OctoshockHandle);
+				OctoshockDll.shock_CloseTray(psx);
 			}
 			else
 			{
 				//must be an exe
 				fixed (byte* pExeBuffer = exe)
 					OctoshockDll.shock_MountEXE(psx, pExeBuffer, exe.Length);
+
+				//start with no disc inserted and tray closed
+				CurrentDiscEjected = false;
+				CurrentDiscIndexMounted = 0;
+				OctoshockDll.shock_CloseTray(psx);
 			}
 
 			//connect two dualshocks, thats all we're doing right now
@@ -431,27 +447,52 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			return new System.Drawing.Size(VirtualWidth, VirtualHeight);
 		}
 
+		void FrameAdvance_PrepDiscState()
+		{
+			//if eject is requested, and valid, apply it
+			if (Controller["Eject"] && !CurrentDiscEjected)
+			{
+				OctoshockDll.shock_OpenTray(psx);
+				CurrentDiscEjected = true;
+			}
+
+			//change the disc if needed, and valid
+			//TODO - warning if zero time change?
+			int requestedDisc = (int)Controller.GetFloat("Disc Select");
+			if (requestedDisc != CurrentDiscIndexMounted && CurrentDiscEjected)
+			{
+				CurrentDiscIndexMounted = requestedDisc;
+				if (CurrentDiscIndexMounted == 0)
+				{
+					currentDiscInterface = null;
+					OctoshockDll.shock_SetDisc(psx, IntPtr.Zero);
+				}
+				else
+				{
+					currentDiscInterface = discInterfaces[CurrentDiscIndexMounted - 1];
+					OctoshockDll.shock_SetDisc(psx, currentDiscInterface.OctoshockHandle);
+				}
+			}
+
+			//if insert is requested, and valid, apply it
+			if (Controller["Insert"] && CurrentDiscEjected)
+			{
+				OctoshockDll.shock_CloseTray(psx);
+				CurrentDiscEjected = false;
+			}
+		}
+
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			Frame++;
+
+			//clear drive light. itll get set to light up by sector-reading callbacks
+			//TODO - debounce this by a frame or so perhaps?
 			DriveLightOn = false;
 
+			FrameAdvance_PrepDiscState();
+			
 			SetInput();
-
-			if (Controller["Eject"]) OctoshockDll.shock_OpenTray(psx);
-
-			//if requested disc is not matching current disc, set it now
-			int discChoice = (int)Controller.GetFloat("Disc Select") - 1;
-			if (discChoice >= discInterfaces.Count)
-				discChoice = discInterfaces.Count - 1;
-			if (discInterfaces[discChoice] != currentDiscInterface)
-			{
-				currentDiscInterface = discInterfaces[discChoice];
-				if (!Controller["Eject"]) OctoshockDll.shock_OpenTray(psx); //open tray if needed
-				OctoshockDll.shock_SetDisc(psx, currentDiscInterface.OctoshockHandle);
-			}
-
-			if (!Controller["Eject"]) OctoshockDll.shock_CloseTray(psx);
 
 			var ropts = new OctoshockDll.ShockRenderOptions()
 			{
@@ -515,7 +556,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 		}
 
-		public ControllerDefinition ControllerDefinition { get { return DualShockController; } }
+		public ControllerDefinition ControllerDefinition { get { return PSXControllerDefinition; } }
 		public IController Controller { get; set; }
 
 		public int Frame { get; private set; }
@@ -638,6 +679,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			public int Frame;
 			public int LagCount;
 			public bool IsLagFrame;
+			public bool CurrentDiscEjected;
+			public int CurrentDiscIndexMounted;
 		}
 
 		public void SaveStateText(TextWriter writer)
@@ -657,6 +700,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			s.ExtraData.IsLagFrame = IsLagFrame;
 			s.ExtraData.LagCount = LagCount;
 			s.ExtraData.Frame = Frame;
+			s.ExtraData.CurrentDiscEjected = CurrentDiscEjected;
+			s.ExtraData.CurrentDiscIndexMounted = CurrentDiscIndexMounted;
 
 			ser.Serialize(writer, s);
 			// TODO write extra copy of stuff we don't use (WHY?)
@@ -679,6 +724,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			IsLagFrame = s.ExtraData.IsLagFrame;
 			LagCount = s.ExtraData.LagCount;
 			Frame = s.ExtraData.Frame;
+			CurrentDiscEjected = s.ExtraData.CurrentDiscEjected;
+			CurrentDiscIndexMounted = s.ExtraData.CurrentDiscIndexMounted;
 		}
 
 		byte[] savebuff;
@@ -690,7 +737,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			transaction.transaction = OctoshockDll.eShockStateTransaction.BinarySize;
 			int size = OctoshockDll.shock_StateTransaction(psx, ref transaction);
 			savebuff = new byte[size];
-			savebuff2 = new byte[savebuff.Length + 13];
+			savebuff2 = new byte[savebuff.Length + 4+  4+4+1+1+4];
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
@@ -714,6 +761,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				writer.Write(IsLagFrame);
 				writer.Write(LagCount);
 				writer.Write(Frame);
+				writer.Write(CurrentDiscEjected);
+				writer.Write(CurrentDiscIndexMounted);
 			}
 		}
 
@@ -740,6 +789,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				IsLagFrame = reader.ReadBoolean();
 				LagCount = reader.ReadInt32();
 				Frame = reader.ReadInt32();
+				CurrentDiscEjected = reader.ReadBoolean();
+				CurrentDiscIndexMounted = reader.ReadInt32();
+
+				//TODO - need a method to sneak the required disc, without having to do a proper eject sequence
 			}
 		}
 
