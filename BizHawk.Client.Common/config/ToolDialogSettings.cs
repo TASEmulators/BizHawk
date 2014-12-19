@@ -48,6 +48,7 @@ namespace BizHawk.Client.Common
 		public bool SaveWindowPosition { get; set; }
 		public bool TopMost { get; set; }
 		public bool FloatingWindow { get; set; }
+		public bool AutoLoad { get; set; }
 
 		[JsonIgnore]
 		public bool UseWindowPosition

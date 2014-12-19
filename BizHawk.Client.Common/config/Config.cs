@@ -411,6 +411,8 @@ namespace BizHawk.Client.Common
 
 		#endregion
 
+		public Dictionary<string, ToolDialogSettings> CommonToolSettings = new Dictionary<string, ToolDialogSettings>();
+
 		// SMS VDP Viewer Settings
 		public ToolDialogSettings SmsVdpSettings = new ToolDialogSettings();
 		public bool SmsVdpAutoLoad = false;
@@ -418,10 +420,6 @@ namespace BizHawk.Client.Common
 		// PCE VDP Viewer Settings
 		public ToolDialogSettings PceVdpSettings = new ToolDialogSettings();
 		public bool PceVdpAutoLoad = false;
-
-		// Genesis VDP Viewer Settings
-		public ToolDialogSettings GenVdpSettings = new ToolDialogSettings();
-		public bool GenVdpAutoLoad = false;
 
 		// NESPPU Settings
 		public ToolDialogSettings NesPPUSettings = new ToolDialogSettings();

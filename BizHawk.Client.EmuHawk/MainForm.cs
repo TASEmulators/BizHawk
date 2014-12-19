@@ -355,6 +355,8 @@ namespace BizHawk.Client.EmuHawk
 				LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
 			}
 
+			GlobalWin.Tools.AutoLoad();
+
 			if (Global.Config.RecentWatches.AutoLoad)
 			{
 				GlobalWin.Tools.LoadRamWatch(!Global.Config.DisplayRamWatch);
@@ -433,11 +435,6 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.PceSoundDebuggerAutoload)
 			{
 				GlobalWin.Tools.Load<PCESoundDebugger>();
-			}
-
-			if (Global.Config.GenVdpAutoLoad)
-			{
-				GlobalWin.Tools.Load<GenVDPViewer>();
 			}
 
 			if (Global.Config.AutoLoadSNESGraphicsDebugger)

@@ -8,6 +8,7 @@ using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
+using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -60,12 +61,120 @@ namespace BizHawk.Client.EmuHawk
 			var newTool = CreateInstance(toolType);
 
 			ServiceInjector.UpdateServices(Global.Emulator.ServiceProvider, newTool);
-			newTool.Restart();
 
+			ToolDialogSettings settings;
+			if (!Global.Config.CommonToolSettings.TryGetValue(toolType.ToString(), out settings))
+			{
+				settings = new ToolDialogSettings();
+				Global.Config.CommonToolSettings[toolType.ToString()] = settings;
+			}
+
+			AttachSettingHooks(newTool, settings);
+
+			newTool.Restart();
 			newTool.Show();
 			return newTool;
 		}
 
+		public void AutoLoad()
+		{
+			foreach (var typename in Global.Config.CommonToolSettings.Where(kvp => kvp.Value.AutoLoad).Select(kvp => kvp.Key))
+			{
+				// this type resolution might not be sufficient.  more investigation is needed
+				Type t = Type.GetType(typename);
+				if (t == null)
+				{
+					Console.WriteLine("BENIGN: Couldn't find type {0}", typename);
+				}
+				else
+				{
+					Load(t, false);
+				}
+			}
+		}
+
+		private static void AttachSettingHooks(IToolForm tool, ToolDialogSettings settings)
+		{
+			if (!(tool is GenVDPViewer))
+				return;
+			var form = (Form)tool;
+
+			var menu = new ToolStripMenuItem("Tool Settings (FIX ME)");
+
+			menu.DropDownItems.Add("Save Window Position");
+			menu.DropDownItems.Add("Stay on Top");
+			menu.DropDownItems.Add("Float from Parent");
+			menu.DropDownItems.Add("Auto Load");
+
+			(menu.DropDownItems[0] as ToolStripMenuItem).Checked = settings.SaveWindowPosition;
+			(menu.DropDownItems[1] as ToolStripMenuItem).Checked = settings.TopMost;
+			(menu.DropDownItems[2] as ToolStripMenuItem).Checked = settings.FloatingWindow;
+			(menu.DropDownItems[3] as ToolStripMenuItem).Checked = settings.AutoLoad;
+
+			form.TopMost = settings.TopMost;
+
+			// do we need to do this OnShown() as well?
+			form.Owner = settings.FloatingWindow ? null : GlobalWin.MainForm;
+			
+			if (settings.UseWindowPosition)
+			{
+				form.Location = settings.WindowPosition;
+			}
+			if (settings.UseWindowSize)
+			{
+				form.Size = settings.WindowSize;
+			}
+
+			form.FormClosing += (o, e) =>
+			{
+				settings.Wndx = form.Location.X;
+				settings.Wndy = form.Location.Y;
+				settings.Width = form.Right - form.Left; // why not form.Size.Width?
+				settings.Height = form.Bottom - form.Top;
+			};
+
+			menu.DropDownItems[0].Click += (o, e) =>
+			{
+				bool val = !(o as ToolStripMenuItem).Checked;
+				settings.SaveWindowPosition = val;
+				(o as ToolStripMenuItem).Checked = val;
+			};
+			menu.DropDownItems[1].Click += (o, e) =>
+			{
+				bool val = !(o as ToolStripMenuItem).Checked;
+				settings.TopMost = val;
+				(o as ToolStripMenuItem).Checked = val;
+				form.TopMost = val;
+			};
+			menu.DropDownItems[2].Click += (o, e) =>
+			{
+				bool val = !(o as ToolStripMenuItem).Checked;
+				settings.FloatingWindow = val;
+				(o as ToolStripMenuItem).Checked = val;
+				form.Owner = val ? null : GlobalWin.MainForm;
+			};
+			menu.DropDownItems[3].Click += (o, e) =>
+			{
+				bool val = !(o as ToolStripMenuItem).Checked;
+				settings.AutoLoad = val;
+				(o as ToolStripMenuItem).Checked = val;
+			};
+
+			foreach (Control c in form.Controls)
+			{
+				if (c is MenuStrip)
+				{
+					var ms = c as MenuStrip;
+					ms.Items.Add(menu);
+					return;
+				}
+			}
+			// got here without finding a menustrip, means there is no menustrip.
+			// what to do?  could put in a context menu or something?
+		}
+
+
+	
 		/// <summary>
 		/// Determines whether a given IToolForm is already loaded
 		/// </summary>
