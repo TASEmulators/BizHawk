@@ -21,16 +21,16 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Loads the tool dialog T, if it does not exist it will be created, if it is already open, it will be focused
 		/// </summary>
-		public T Load<T>() where T : IToolForm
+		public T Load<T>(bool focus = true) where T : IToolForm
 		{
-			return (T)Load(typeof(T));
+			return (T)Load(typeof(T), focus);
 		}
 
 		/// <summary>
 		/// Loads a tool dialog of type toolType if it does not exist it will be
 		/// created, if it is already open, it will be focused.
 		/// </summary>
-		public IToolForm Load(Type toolType)
+		public IToolForm Load(Type toolType, bool focus = true)
 		{
 			if (!typeof(IToolForm).IsAssignableFrom(toolType))
 				throw new ArgumentException(String.Format("Type {0} does not implement IToolForm.", toolType.Name));
@@ -48,8 +48,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					existingTool.Show();
-					existingTool.Focus();
+					if (focus)
+					{
+						existingTool.Show();
+						existingTool.Focus();
+					}
 					return existingTool;
 				}
 			}
@@ -90,23 +93,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public IToolForm Get<T>() where T : IToolForm
 		{
-			var existingTool = _tools.FirstOrDefault(x => x is T);
-			if (existingTool != null)
-			{
-				if (existingTool.IsDisposed)
-				{
-					Close<T>();
-					return CreateInstance<T>();
-				}
-				else
-				{
-					return existingTool;
-				}
-			}
-			else
-			{
-				return CreateInstance<T>();
-			}
+			return Load<T>(false);
 		}
 
 		public void UpdateBefore()
