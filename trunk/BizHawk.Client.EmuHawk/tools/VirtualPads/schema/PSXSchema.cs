@@ -11,9 +11,10 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IEnumerable<PadSchema> GetPadSchemas()
 		{
+			var psx = ((Octoshock)Global.Emulator);
 			yield return DualShockController(1);
 			yield return DualShockController(2);
-			yield return ConsoleButtons();
+			yield return ConsoleButtons(psx);
 		}
 
 		public static PadSchema DualShockController(int controller)
@@ -22,6 +23,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				IsConsole = false,
 				DefaultSize = new Size(420, 260),
+				DisplayName = "DualShock Player" + controller,
 				Buttons = new[]
 				{
 					new PadSchema.ButtonScema
@@ -152,7 +154,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(3, 120),
 						Type = PadSchema.PadInputType.AnalogStick
 					},
-										new PadSchema.ButtonScema
+					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " RStick X",
 						MaxValue = 127,
@@ -163,38 +165,30 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 		}
-		private static PadSchema ConsoleButtons()
+		private static PadSchema ConsoleButtons(Octoshock psx)
 		{
 			return new PadSchema
 			{
 				DisplayName = "Console",
 				IsConsole = true,
-				DefaultSize = new Size(360, 250),
+				DefaultSize = new Size(310, 400),
 				Buttons = new[]
 				{
 					new PadSchema.ButtonScema
 					{
-						Name = "Eject",
-						DisplayName = "Eject",
+						Name = "Reset",
+						DisplayName = "Reset",
 						Location = new Point(10, 15),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "Reset",
-						DisplayName = "Reset",
-						Location = new Point(60, 15),
-						Type = PadSchema.PadInputType.Boolean
-					},
-					new PadSchema.ButtonScema
-					{
-						Name = "Disc Select",
-						MinValue = 1,
-						MaxValue = 5,
-						DisplayName = "Disc Select",
-						Location = new Point(10, 40),
-						TargetSize = new Size(300,100),
-						Type = PadSchema.PadInputType.FloatSingle
+						Name = "Disc Select", //not really, but shuts up a warning
+						Type = PadSchema.PadInputType.DiscManager,
+						Location = new Point(10,54),
+						TargetSize = new Size(300,300),
+						OwnerEmulator = psx,
+						SecondaryNames = new [] { "Eject", "Insert", "Disc Select" }
 					}
 				}
 			};

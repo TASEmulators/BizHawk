@@ -10,7 +10,8 @@ namespace BizHawk.Client.EmuHawk
 			Boolean,		// A single on/off button
 			AnalogStick,	// An analog stick X,Y Pair
 			FloatSingle,	// A single analog button (pressure sensitive button for instance)
-			TargetedPair	// A X,Y pair intended to be a screen cooridnate (for zappers, mouse, stylus, etc)
+			TargetedPair,	// A X,Y pair intended to be a screen cooridnate (for zappers, mouse, stylus, etc)
+			DiscManager
 		}
 
 		// Default size of the pad
@@ -31,6 +32,7 @@ namespace BizHawk.Client.EmuHawk
 			public string[] SecondaryNames { get; set; } // Any other buttons necessary to operate (such as the Y axis)
 			public int MaxValue { get; set; } // For non-boolean values, specifies the maximum value the button allows
 			public int MinValue { get; set; } // For non-boolean values, specifies the minimum value the button allows
+			public object OwnerEmulator { get; set; }
 		}
 	}
 

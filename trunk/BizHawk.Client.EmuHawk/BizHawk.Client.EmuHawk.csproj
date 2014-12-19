@@ -982,6 +982,12 @@
     <Compile Include="tools\VirtualPads\controls\VirtualPadButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\VirtualPads\controls\VirtualPadDiscManager.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPads\controls\VirtualPadDiscManager.Designer.cs">
+      <DependentUpon>VirtualPadDiscManager.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\VirtualPads\controls\VirtualPadTargetScreen.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1363,6 +1369,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPads\controls\VirtualPadAnalogStick.resx">
       <DependentUpon>VirtualPadAnalogStick.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\VirtualPads\controls\VirtualPadDiscManager.resx">
+      <DependentUpon>VirtualPadDiscManager.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPads\controls\VirtualPadTargetScreen.resx">
       <DependentUpon>VirtualPadTargetScreen.cs</DependentUpon>

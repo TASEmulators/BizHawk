@@ -1262,6 +1262,7 @@ EW_EXPORT s32 shock_PowerOn(void* psx)
 {
 	if(s_ShockState.power) return SHOCK_NOCANDO;
 
+	s_ShockState.power = true;	
 	PSX_Power(true);
 
 	return SHOCK_OK;
@@ -1844,9 +1845,16 @@ EW_EXPORT s32 shock_SetDisc(void* psx, ShockDiscRef* disc)
 	//TODO - non-psx disc is legal here. should pass null ID to CDC setdisc
 	
 	//analyze disc so we dont have to annoyingly manage it from client
+
+	//TODO - so junky
 	ShockDiscInfo info;
-	s32 ret = shock_AnalyzeDisc(disc,&info);
-	if(ret != SHOCK_OK) return ret;
+	strcpy(info.id,"\0\0\0\0");
+	info.region = REGION_NONE;
+	if(disc != NULL)
+	{
+		s32 ret = shock_AnalyzeDisc(disc,&info);
+		if(ret != SHOCK_OK) return ret;
+	}
 
 	//heres a comment from some old savestating code. something to keep in mind (maybe or maybe not a surprise depending on your point of view)
 	//"Call SetDisc() BEFORE we load CDC state, since SetDisc() has emulation side effects.  We might want to clean this up in the future."

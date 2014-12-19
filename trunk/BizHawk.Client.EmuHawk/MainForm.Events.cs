@@ -1769,6 +1769,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void PSXDiscControlsMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<VirtualpadTool>().ScrollToPadSchema("Console");
+		}
+
 		private void FlushSaveRAMMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveRam();

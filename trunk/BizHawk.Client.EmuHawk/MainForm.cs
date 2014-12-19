@@ -3737,6 +3737,7 @@ namespace BizHawk.Client.EmuHawk
 			FeaturesMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
 
+		
 
 
 	}
