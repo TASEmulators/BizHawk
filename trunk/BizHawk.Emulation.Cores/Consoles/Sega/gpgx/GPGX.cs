@@ -697,6 +697,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (SaveRamModified)
 					DisposedSaveRam = CloneSaveRam();
 				KillMemCallbacks();
+				if (CD != null)
+				{
+					CD.Dispose();
+				}
 				AttachedCore = null;
 				disposed = true;
 			}
