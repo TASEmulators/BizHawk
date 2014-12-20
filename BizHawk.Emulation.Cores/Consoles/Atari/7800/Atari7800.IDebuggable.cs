@@ -7,9 +7,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 {
 	public partial class Atari7800 : IDebuggable
 	{
-		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			return new Dictionary<string, Register>
+			return new Dictionary<string, RegisterValue>
 			{
 				{ "A", theMachine.CPU.A },
 				{ "P", theMachine.CPU.P },

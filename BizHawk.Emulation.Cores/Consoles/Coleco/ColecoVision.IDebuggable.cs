@@ -9,9 +9,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 {
 	public partial class ColecoVision : IDebuggable
 	{
-		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			return new Dictionary<string, Register>
+			return new Dictionary<string, RegisterValue>
 			{
 				{ "A", Cpu.RegisterA },
 				{ "AF", Cpu.RegisterAF },

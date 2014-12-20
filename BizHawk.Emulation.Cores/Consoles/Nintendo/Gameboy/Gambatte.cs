@@ -238,12 +238,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region debug
 
-		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			int[] data = new int[10];
 			LibGambatte.gambatte_getregs(GambatteState, data);
 
-			return new Dictionary<string, Register>
+			return new Dictionary<string, RegisterValue>
 			{
 				{ "PC", (ushort)(data[(int)LibGambatte.RegIndicies.PC] & 0xffff) },
 				{ "SP", (ushort)(data[(int)LibGambatte.RegIndicies.SP] & 0xffff) },

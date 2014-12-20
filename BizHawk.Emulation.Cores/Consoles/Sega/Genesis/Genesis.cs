@@ -260,9 +260,9 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 #endif
 		}
 
-		public IDictionary<string, BizHawk.Emulation.Common.Register> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			return new Dictionary<string, BizHawk.Emulation.Common.Register>
+			return new Dictionary<string, RegisterValue>
 			{
 				{ "A-0", MainCPU.A[0].s32 },
 				{ "A-1", MainCPU.A[1].s32 },
