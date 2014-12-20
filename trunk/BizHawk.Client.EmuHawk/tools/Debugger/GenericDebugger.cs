@@ -28,11 +28,12 @@ namespace BizHawk.Client.EmuHawk
 			DisassemblerView.QueryItemText += DisassemblerView_QueryItemText;
 			DisassemblerView.QueryItemBkColor += DisassemblerView_QueryItemBkColor;
 			DisassemblerView.VirtualMode = true;
-			DisassemblerView.ItemCount = ADDR_MAX + 1;
 		}
 
 		private void GenericDebugger_Load(object sender, EventArgs e)
 		{
+			DisassemblerView.ItemCount = BusMaxValue + 1;
+
 			_defaultWidth = Size.Width;
 			_defaultHeight = Size.Height;
 
