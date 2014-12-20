@@ -136,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = register.Key,
 						Text = register.Value.Value.ToHexString(register.Value.BitSize / 16),
-						Width = 45,
+						Width = 6 + ((register.Value.BitSize / 4) * 9),
 						Location = new Point(40, y),
 						MaxLength = register.Value.BitSize / 4,
 						CharacterCasing = CharacterCasing.Upper
