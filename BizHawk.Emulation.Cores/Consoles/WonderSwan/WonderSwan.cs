@@ -268,13 +268,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			writer.Write(savebuff.Length);
 			writer.Write(savebuff);
 
-			// other variables
-			/*
-			writer.Write(IsLagFrame);
-			writer.Write(LagCount);
-			writer.Write(Frame);
-			*/
-
 			var d = new TextStateData();
 			SaveTextStateData(d);
 			BinaryQuickSerializer.Write(d, writer);
@@ -289,10 +282,9 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			if (!BizSwan.bizswan_binstateload(Core, savebuff, savebuff.Length))
 				throw new InvalidOperationException("bizswan_binstateload() returned false!");
 
-			// other variables
-			IsLagFrame = reader.ReadBoolean();
-			LagCount = reader.ReadInt32();
-			Frame = reader.ReadInt32();
+			var d = new TextStateData();
+			BinaryQuickSerializer.Read(d, reader);
+			LoadTextStateData(d);
 		}
 
 		public byte[] SaveStateBinary()
@@ -602,7 +594,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public void DiscardSamples()
 		{
 			sbuffcontains = 0;
-			new DiscSystem.Disc().Dispose();
 		}
 
 		#endregion
