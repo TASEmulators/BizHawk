@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 
@@ -52,6 +53,39 @@ namespace BizHawk.Client.EmuHawk
 				{
 					break;
 				}
+			}
+		}
+
+		private void DisassemblerView_QueryItemText(int index, int column, out string text)
+		{
+			text = "";
+			if (column == 0)
+			{
+				if (PC <= index && index < PC + DisassemblyLines.Count)
+				{
+					int a = PC;
+					for (int i = 0; i < index - PC; ++i)
+					{
+						a += DisassemblyLines[i].Size;
+					}
+
+					text = string.Format("{0:X4}", a);
+				}
+			}
+			else if (column == 1)
+			{
+				if (PC <= index && index < PC + DisassemblyLines.Count)
+				{
+					text = DisassemblyLines[index - PC].Mnemonic;
+				}
+			}
+		}
+
+		private void DisassemblerView_QueryItemBkColor(int index, int column, ref Color color)
+		{
+			if (index == PC)
+			{
+				color = Color.LightCyan;
 			}
 		}
 	}
