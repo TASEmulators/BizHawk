@@ -277,6 +277,7 @@
 			this.DisassemblerView.UseCompatibleStateImageBehavior = false;
 			this.DisassemblerView.UseCustomBackground = true;
 			this.DisassemblerView.View = System.Windows.Forms.View.Details;
+			this.DisassemblerView.Scroll += new System.Windows.Forms.ScrollEventHandler(this.DisassemblerView_Scroll);
 			// 
 			// Address
 			// 
