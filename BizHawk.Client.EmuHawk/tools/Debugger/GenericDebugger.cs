@@ -111,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						DisassemblerBox.Controls.Add(new Label
 						{
-							Location = new Point(30, 23),
+							Location = new Point(35, 23),
 							Text = Disassembler.Cpu
 						});
 					}
@@ -120,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					DisassemblerBox.Controls.Add(new Label
 					{
-						Location = new Point(30, 23),
+						Location = new Point(35, 23),
 						Text = Disassembler.Cpu
 					});
 				}
