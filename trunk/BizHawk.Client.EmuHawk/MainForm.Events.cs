@@ -1122,7 +1122,6 @@ namespace BizHawk.Client.EmuHawk
 
 			CheatsMenuItem.Enabled = ToolAvailable<Cheats>();
 			HexEditorMenuItem.Enabled = ToolAvailable<HexEditor>();
-			//HexEditorMenuItem.Enabled = true;
 			RamSearchMenuItem.Enabled = ToolAvailable<RamSearch>();
 			RamWatchMenuItem.Enabled = ToolAvailable<RamWatch>();
 
