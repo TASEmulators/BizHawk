@@ -145,7 +145,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			if (settings.UseWindowSize)
 			{
-				form.Size = settings.WindowSize;
+				if (form.FormBorderStyle == FormBorderStyle.Sizable || form.FormBorderStyle == FormBorderStyle.SizableToolWindow)
+					form.Size = settings.WindowSize;
 			}
 
 			form.FormClosing += (o, e) =>
