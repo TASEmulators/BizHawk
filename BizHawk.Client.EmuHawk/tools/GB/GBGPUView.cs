@@ -12,7 +12,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class GBGPUView : Form, IToolForm
+	public partial class GBGPUView : Form, IToolFormAutoConfig
 	{
 		[RequiredService]
 		public Gameboy Gb { get; private set; }
@@ -81,10 +81,6 @@ namespace BizHawk.Client.EmuHawk
 			_messagetimer.Interval = 5000;
 			_messagetimer.Tick += messagetimer_Tick;
 
-			checkBoxAutoLoad.Checked = Global.Config.AutoLoadGBGPUView;
-			checkBoxSavePos.Checked = Global.Config.GBGPUViewSaveWindowPosition;
-
-			// TODO: from config
 			spriteback = Color.FromArgb(255, Global.Config.GBGPUSpriteBack);
 		}
 
@@ -485,12 +481,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBGPUView_Load(object sender, EventArgs e)
 		{
-			if (Global.Config.GBGPUViewSaveWindowPosition)
-			{
-				Point p = new Point(Global.Config.GBGPUViewWndx, Global.Config.GBGPUViewWndy);
-				if (p.X >= 0 && p.Y >= 0)
-					Location = p;
-			}
 		}
 
 		#region refresh
@@ -939,18 +929,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBGPUView_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			Global.Config.GBGPUViewWndx = Location.X;
-			Global.Config.GBGPUViewWndy = Location.Y;
-		}
-
-		private void checkBoxAutoLoad_CheckedChanged(object sender, EventArgs e)
-		{
-			Global.Config.AutoLoadGBGPUView = (sender as CheckBox).Checked;
-		}
-
-		private void checkBoxSavePos_CheckedChanged(object sender, EventArgs e)
-		{
-			Global.Config.GBGPUViewSaveWindowPosition = (sender as CheckBox).Checked;
 		}
 
 		private void buttonChangeColor_Click(object sender, EventArgs e)

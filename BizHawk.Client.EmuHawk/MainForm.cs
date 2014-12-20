@@ -392,11 +392,6 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.LoadGameGenieEc();
 			}
 
-			if (Global.Config.AutoLoadGBGPUView)
-			{
-				GlobalWin.Tools.Load<GBGPUView>();
-			}
-
 			if (Global.Config.AutoloadTAStudio)
 			{
 				GlobalWin.Tools.Load<TAStudio>();

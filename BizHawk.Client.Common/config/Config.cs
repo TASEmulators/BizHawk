@@ -433,10 +433,6 @@ namespace BizHawk.Client.Common
 		public int NESNameTableRefreshRate = 4;
 
 		// gb gpu view settings
-		public bool AutoLoadGBGPUView = false;
-		public bool GBGPUViewSaveWindowPosition = true;
-		public int GBGPUViewWndx = -1;
-		public int GBGPUViewWndy = -1;
 		public Color GBGPUSpriteBack = Color.Lime;
 
 		// SNES Graphics Debugger Dialog Settings

@@ -62,13 +62,11 @@
 			this.labelMemory = new System.Windows.Forms.Label();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
 			this.labelClipboard = new System.Windows.Forms.Label();
-			this.groupBox7 = new System.Windows.Forms.GroupBox();
-			this.checkBoxSavePos = new System.Windows.Forms.CheckBox();
-			this.checkBoxAutoLoad = new System.Windows.Forms.CheckBox();
 			this.groupBox8 = new System.Windows.Forms.GroupBox();
 			this.labelSpriteBackColor = new System.Windows.Forms.Label();
 			this.buttonChangeColor = new System.Windows.Forms.Button();
 			this.panelSpriteBackColor = new System.Windows.Forms.Panel();
+			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -77,7 +75,6 @@
 			this.groupBoxDetails.SuspendLayout();
 			this.groupBoxMemory.SuspendLayout();
 			this.groupBox6.SuspendLayout();
-			this.groupBox7.SuspendLayout();
 			this.groupBox8.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -141,7 +138,7 @@
 			this.groupBox1.Controls.Add(this.bmpViewWin);
 			this.groupBox1.Controls.Add(this.label1);
 			this.groupBox1.Controls.Add(this.label2);
-			this.groupBox1.Location = new System.Drawing.Point(12, 12);
+			this.groupBox1.Location = new System.Drawing.Point(12, 27);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(530, 294);
 			this.groupBox1.TabIndex = 16;
@@ -180,7 +177,7 @@
 			this.groupBox2.Controls.Add(this.bmpViewTiles1);
 			this.groupBox2.Controls.Add(this.bmpViewTiles2);
 			this.groupBox2.Controls.Add(this.label4);
-			this.groupBox2.Location = new System.Drawing.Point(548, 12);
+			this.groupBox2.Location = new System.Drawing.Point(548, 27);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(274, 230);
 			this.groupBox2.TabIndex = 17;
@@ -220,7 +217,7 @@
 			this.groupBox3.Controls.Add(this.bmpViewBGPal);
 			this.groupBox3.Controls.Add(this.bmpViewSPPal);
 			this.groupBox3.Controls.Add(this.label6);
-			this.groupBox3.Location = new System.Drawing.Point(548, 248);
+			this.groupBox3.Location = new System.Drawing.Point(548, 263);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(274, 115);
 			this.groupBox3.TabIndex = 18;
@@ -265,7 +262,7 @@
 			// groupBox4
 			// 
 			this.groupBox4.Controls.Add(this.bmpViewOAM);
-			this.groupBox4.Location = new System.Drawing.Point(12, 312);
+			this.groupBox4.Location = new System.Drawing.Point(12, 327);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(332, 41);
 			this.groupBox4.TabIndex = 19;
@@ -293,7 +290,7 @@
 			this.groupBox5.Controls.Add(this.radioButtonRefreshManual);
 			this.groupBox5.Controls.Add(this.radioButtonRefreshScanline);
 			this.groupBox5.Controls.Add(this.radioButtonRefreshFrame);
-			this.groupBox5.Location = new System.Drawing.Point(548, 369);
+			this.groupBox5.Location = new System.Drawing.Point(548, 384);
 			this.groupBox5.Name = "groupBox5";
 			this.groupBox5.Size = new System.Drawing.Size(274, 94);
 			this.groupBox5.TabIndex = 20;
@@ -369,7 +366,7 @@
 			// 
 			this.groupBoxDetails.Controls.Add(this.labelDetails);
 			this.groupBoxDetails.Controls.Add(this.bmpViewDetails);
-			this.groupBoxDetails.Location = new System.Drawing.Point(12, 359);
+			this.groupBoxDetails.Location = new System.Drawing.Point(12, 374);
 			this.groupBoxDetails.Name = "groupBoxDetails";
 			this.groupBoxDetails.Size = new System.Drawing.Size(262, 153);
 			this.groupBoxDetails.TabIndex = 21;
@@ -400,7 +397,7 @@
 			// 
 			this.groupBoxMemory.Controls.Add(this.bmpViewMemory);
 			this.groupBoxMemory.Controls.Add(this.labelMemory);
-			this.groupBoxMemory.Location = new System.Drawing.Point(280, 359);
+			this.groupBoxMemory.Location = new System.Drawing.Point(280, 374);
 			this.groupBoxMemory.Name = "groupBoxMemory";
 			this.groupBoxMemory.Size = new System.Drawing.Size(262, 153);
 			this.groupBoxMemory.TabIndex = 22;
@@ -429,7 +426,7 @@
 			// groupBox6
 			// 
 			this.groupBox6.Controls.Add(this.labelClipboard);
-			this.groupBox6.Location = new System.Drawing.Point(548, 469);
+			this.groupBox6.Location = new System.Drawing.Point(548, 484);
 			this.groupBox6.Name = "groupBox6";
 			this.groupBox6.Size = new System.Drawing.Size(274, 43);
 			this.groupBox6.TabIndex = 23;
@@ -445,45 +442,12 @@
 			this.labelClipboard.TabIndex = 0;
 			this.labelClipboard.Text = "CTRL+C copies the pane under the mouse.";
 			// 
-			// groupBox7
-			// 
-			this.groupBox7.Controls.Add(this.checkBoxSavePos);
-			this.groupBox7.Controls.Add(this.checkBoxAutoLoad);
-			this.groupBox7.Location = new System.Drawing.Point(350, 312);
-			this.groupBox7.Name = "groupBox7";
-			this.groupBox7.Size = new System.Drawing.Size(192, 41);
-			this.groupBox7.TabIndex = 24;
-			this.groupBox7.TabStop = false;
-			this.groupBox7.Text = "Config";
-			// 
-			// checkBoxSavePos
-			// 
-			this.checkBoxSavePos.AutoSize = true;
-			this.checkBoxSavePos.Location = new System.Drawing.Point(87, 19);
-			this.checkBoxSavePos.Name = "checkBoxSavePos";
-			this.checkBoxSavePos.Size = new System.Drawing.Size(90, 17);
-			this.checkBoxSavePos.TabIndex = 1;
-			this.checkBoxSavePos.Text = "Save position";
-			this.checkBoxSavePos.UseVisualStyleBackColor = true;
-			this.checkBoxSavePos.CheckedChanged += new System.EventHandler(this.checkBoxSavePos_CheckedChanged);
-			// 
-			// checkBoxAutoLoad
-			// 
-			this.checkBoxAutoLoad.AutoSize = true;
-			this.checkBoxAutoLoad.Location = new System.Drawing.Point(6, 19);
-			this.checkBoxAutoLoad.Name = "checkBoxAutoLoad";
-			this.checkBoxAutoLoad.Size = new System.Drawing.Size(68, 17);
-			this.checkBoxAutoLoad.TabIndex = 0;
-			this.checkBoxAutoLoad.Text = "Autoload";
-			this.checkBoxAutoLoad.UseVisualStyleBackColor = true;
-			this.checkBoxAutoLoad.CheckedChanged += new System.EventHandler(this.checkBoxAutoLoad_CheckedChanged);
-			// 
 			// groupBox8
 			// 
 			this.groupBox8.Controls.Add(this.labelSpriteBackColor);
 			this.groupBox8.Controls.Add(this.buttonChangeColor);
 			this.groupBox8.Controls.Add(this.panelSpriteBackColor);
-			this.groupBox8.Location = new System.Drawing.Point(548, 518);
+			this.groupBox8.Location = new System.Drawing.Point(548, 533);
 			this.groupBox8.Name = "groupBox8";
 			this.groupBox8.Size = new System.Drawing.Size(274, 48);
 			this.groupBox8.TabIndex = 25;
@@ -517,13 +481,20 @@
 			this.panelSpriteBackColor.Size = new System.Drawing.Size(55, 23);
 			this.panelSpriteBackColor.TabIndex = 0;
 			// 
+			// menuStrip1
+			// 
+			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+			this.menuStrip1.Name = "menuStrip1";
+			this.menuStrip1.Size = new System.Drawing.Size(834, 24);
+			this.menuStrip1.TabIndex = 26;
+			this.menuStrip1.Text = "menuStrip1";
+			// 
 			// GBGPUView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(834, 578);
+			this.ClientSize = new System.Drawing.Size(834, 593);
 			this.Controls.Add(this.groupBox8);
-			this.Controls.Add(this.groupBox7);
 			this.Controls.Add(this.groupBox6);
 			this.Controls.Add(this.groupBoxMemory);
 			this.Controls.Add(this.groupBoxDetails);
@@ -532,8 +503,10 @@
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
+			this.Controls.Add(this.menuStrip1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "GBGPUView";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "GPU Viewer";
@@ -556,11 +529,10 @@
 			this.groupBoxMemory.PerformLayout();
 			this.groupBox6.ResumeLayout(false);
 			this.groupBox6.PerformLayout();
-			this.groupBox7.ResumeLayout(false);
-			this.groupBox7.PerformLayout();
 			this.groupBox8.ResumeLayout(false);
 			this.groupBox8.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -599,12 +571,10 @@
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.GroupBox groupBox6;
 		private System.Windows.Forms.Label labelClipboard;
-		private System.Windows.Forms.GroupBox groupBox7;
-		private System.Windows.Forms.CheckBox checkBoxSavePos;
-		private System.Windows.Forms.CheckBox checkBoxAutoLoad;
 		private System.Windows.Forms.GroupBox groupBox8;
 		private System.Windows.Forms.Panel panelSpriteBackColor;
 		private System.Windows.Forms.Button buttonChangeColor;
 		private System.Windows.Forms.Label labelSpriteBackColor;
+		private System.Windows.Forms.MenuStrip menuStrip1;
 	}
 }
