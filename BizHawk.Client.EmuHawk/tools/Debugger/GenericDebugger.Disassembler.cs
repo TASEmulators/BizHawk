@@ -20,7 +20,16 @@ namespace BizHawk.Client.EmuHawk
 			public string Mnemonic { get; private set; }
 		}
 
-		private const int ADDR_MAX = 0xFFFF; // TODO: this isn't a constant, calculate it off bus size
+		//private const int ADDR_MAX = 0xFFFF; // TODO: this isn't a constant, calculate it off bus size
+
+		private int BusMaxValue
+		{
+			get
+			{
+				return MemoryDomains.SystemBus.Size;
+			}
+		}
+
 		private const int DISASM_LINE_COUNT = 100;
 
 		private readonly List<DisasmOp> DisassemblyLines = new List<DisasmOp>();
@@ -32,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisassemblerView.BlazingFast = true;
 				Disassemble(DISASM_LINE_COUNT);
-				DisassemblerView.ensureVisible(0xFFFF);
+				DisassemblerView.ensureVisible(BusMaxValue);
 				DisassemblerView.ensureVisible(PC);
 				DisassemblerView.Refresh();
 				DisassemblerView.BlazingFast = false;
@@ -49,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 				string line = Disassembler.Disassemble(MemoryDomains.SystemBus, (ushort)a, out advance);
 				DisassemblyLines.Add(new DisasmOp(advance, line));
 				a += advance;
-				if (a > ADDR_MAX)
+				if (a > BusMaxValue)
 				{
 					break;
 				}
