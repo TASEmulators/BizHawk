@@ -132,22 +132,26 @@ namespace BizHawk.Client.EmuHawk
 				});
 			}
 
-			RegisterPanel.Core = Core;
+			RegisterPanel.Core = Debuggable;
 			RegisterPanel.ParentDebugger = this;
 			RegisterPanel.GenerateUI();
 
-			BreakPointControl1.Core = Core;
+			BreakPointControl1.Core = Debuggable;
 			BreakPointControl1.MCS = MCS;
 			BreakPointControl1.ParentDebugger = this;
 			BreakPointControl1.GenerateUI();
+
+			StepIntoMenuItem.Enabled = StepIntoBtn.Enabled = CanStepInto;
+			StepOutMenuItem.Enabled = StepOutBtn.Enabled = CanStepOut;
+			StepOverMenuItem.Enabled = StepOverBtn.Enabled = CanStepOver;
 		}
 
 		private void DisengageDebugger()
 		{
 			SaveConfigSettings();
-			if (Core.Tracer != null)
+			if (Debuggable.Tracer != null)
 			{
-				Core.Tracer.Enabled = false;
+				Debuggable.Tracer.Enabled = false;
 			}
 
 			BreakPointControl1.Shutdown();
