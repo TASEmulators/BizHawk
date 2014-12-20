@@ -650,6 +650,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			return ret;
 		}
 
+		public bool CanStep(StepType type) { return false; }
+
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
 

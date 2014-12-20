@@ -397,6 +397,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			throw new NotImplementedException();
 		}
 
+		public bool CanStep(StepType type) { return false; }
+
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
 

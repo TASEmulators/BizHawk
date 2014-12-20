@@ -254,6 +254,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public ITracer Tracer { get; private set; }
 		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
+		public bool CanStep(StepType type) { return false; }
+
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
 

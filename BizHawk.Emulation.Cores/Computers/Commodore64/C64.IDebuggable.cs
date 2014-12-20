@@ -65,5 +65,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
+
+		public bool CanStep(StepType type) { return false; }
 	}
 }

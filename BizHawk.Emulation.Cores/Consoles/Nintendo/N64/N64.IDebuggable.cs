@@ -71,6 +71,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
+		public bool CanStep(StepType type) { return false; }
+
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
 

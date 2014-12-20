@@ -600,6 +600,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
+		public bool CanStep(StepType type) { return false; }
+
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
 

@@ -60,6 +60,19 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
+		public bool CanStep(StepType type)
+		{
+			switch (type)
+			{
+				case StepType.Into:
+					return true;
+				default:
+				case StepType.Out:
+				case StepType.Over:
+					return false;
+			}
+		}
+
 		[FeatureNotImplemented]
 		public void Step(StepType type)
 		{
