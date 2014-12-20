@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class GenericDebugger : IToolForm
 	{
 		[RequiredService]
-		private IDebuggable Core { get; set; }
+		private IDebuggable Debuggable { get; set; }
 		[OptionalService]
 		private IDisassemblable Disassembler { get; set; }
 		[OptionalService]
@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 		private int PC
 		{
 			// TODO: is this okay for N64?
-			get { return (int)Core.GetCpuFlagsAndRegisters()[Disassembler.PCRegisterName].Value; }
+			get { return (int)Debuggable.GetCpuFlagsAndRegisters()[Disassembler.PCRegisterName].Value; }
 		}
 
 		#region Implementation checking
@@ -58,6 +58,51 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Disassembler.Cpu = Disassembler.Cpu;
 					return true;
+				}
+				catch (NotImplementedException)
+				{
+					return false;
+				}
+			}
+		}
+
+		private bool CanStepInto
+		{
+			get
+			{
+				try
+				{
+					return Debuggable.CanStep(StepType.Into);
+				}
+				catch (NotImplementedException)
+				{
+					return false;
+				}
+			}
+		}
+
+		private bool CanStepOver
+		{
+			get
+			{
+				try
+				{
+					return Debuggable.CanStep(StepType.Over);
+				}
+				catch (NotImplementedException)
+				{
+					return false;
+				}
+			}
+		}
+
+		private bool CanStepOut
+		{
+			get
+			{
+				try
+				{
+					return Debuggable.CanStep(StepType.Out);
 				}
 				catch (NotImplementedException)
 				{
