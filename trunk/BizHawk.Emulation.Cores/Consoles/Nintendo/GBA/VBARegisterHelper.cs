@@ -32,9 +32,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			int* p = (int*)_locs[name];
 			*p = val;
 		}
-		public Dictionary<string, Register> GetAllRegisters()
+		public Dictionary<string, RegisterValue> GetAllRegisters()
 		{
-			var ret = new Dictionary<string, Register>();
+			var ret = new Dictionary<string, RegisterValue>();
 			foreach (var kvp in _locs)
 			{
 				ret[kvp.Key] = GetRegister(kvp.Key);

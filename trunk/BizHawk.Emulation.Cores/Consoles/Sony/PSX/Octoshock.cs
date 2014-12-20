@@ -926,9 +926,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		#region IDebuggable
 
 		// TODO: don't cast to int, and are any of these not 32 bit?
-		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			Dictionary<string, Register> ret = new Dictionary<string, Register>();
+			Dictionary<string, RegisterValue> ret = new Dictionary<string, RegisterValue>();
 			var regs = new OctoshockDll.ShockRegisters_CPU();
 
 			OctoshockDll.shock_GetRegisters_CPU(psx, ref regs);

@@ -204,7 +204,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			api.Dispose();
 		}
 
-		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			LibsnesApi.CpuRegs regs;
 			api.QUERY_peek_cpu_regs(out regs);
@@ -218,7 +218,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			bool fz = (regs.p & 0x02)!=0;
 			bool fc = (regs.p & 0x01)!=0;
 			
-			return new Dictionary<string, Register>
+			return new Dictionary<string, RegisterValue>
 			{
 				{ "PC", regs.pc },
 				{ "A", regs.a },

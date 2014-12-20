@@ -8,9 +8,9 @@ namespace BizHawk.Emulation.Cores.Calculators
 {
 	public partial class TI83 : IDebuggable
 	{
-		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			return new Dictionary<string, Register>
+			return new Dictionary<string, RegisterValue>
 			{
 				{ "A", cpu.RegisterA },
 				{ "AF", cpu.RegisterAF },

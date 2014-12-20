@@ -17,9 +17,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, IMemoryDomains, ISaveRam, IDebuggable, IStatable, IInputPollable
 	{
-		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			var ret = new Dictionary<string, Register>();
+			var ret = new Dictionary<string, RegisterValue>();
 			int[] data = new int[LibMeteor.regnames.Length];
 			LibMeteor.libmeteor_getregs(data);
 			for (int i = 0; i < data.Length; i++)

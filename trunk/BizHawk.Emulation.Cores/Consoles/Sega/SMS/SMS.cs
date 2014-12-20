@@ -488,9 +488,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
-		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			return new Dictionary<string, Register>
+			return new Dictionary<string, RegisterValue>
 			{
 				{ "A", Cpu.RegisterA },
 				{ "AF", Cpu.RegisterAF },

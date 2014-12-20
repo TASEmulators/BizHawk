@@ -629,14 +629,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			MemoryDomains = new MemoryDomainList(mm, 0);
 		}
 
-		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			LibGPGX.RegisterInfo[] regs = new LibGPGX.RegisterInfo[LibGPGX.gpgx_getmaxnumregs()];
 
 			int n = LibGPGX.gpgx_getregs(regs);
 			if (n > regs.Length)
 				throw new InvalidOperationException("A buffer overrun has occured!");
-			var ret = new Dictionary<string, Register>();
+			var ret = new Dictionary<string, RegisterValue>();
 			for (int i = 0; i < n; i++)
 			{
 				// el hacko
@@ -645,7 +645,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (name.Contains("68K SR") || name.StartsWith("Z80"))
 					size = 16;
 				ret[Marshal.PtrToStringAnsi(regs[i].Name)] =
-					new Register { BitSize = size, Value = (ulong)regs[i].Value };
+					new RegisterValue { BitSize = size, Value = (ulong)regs[i].Value };
 			}
 			return ret;
 		}

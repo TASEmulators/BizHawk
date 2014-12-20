@@ -899,9 +899,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public bool BinarySaveStatesPreferred { get { return false; } }
 
-		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			return new Dictionary<string, Register>
+			return new Dictionary<string, RegisterValue>
 			{
 				{ "A", cpu.A },
 				{ "X", cpu.X },

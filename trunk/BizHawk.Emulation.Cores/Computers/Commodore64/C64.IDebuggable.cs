@@ -7,9 +7,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	public partial class C64 : IDebuggable
 	{
-		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			return new Dictionary<string, Register>
+			return new Dictionary<string, RegisterValue>
 			{
 				{ "A", board.cpu.A },
 				{ "X", board.cpu.X },
