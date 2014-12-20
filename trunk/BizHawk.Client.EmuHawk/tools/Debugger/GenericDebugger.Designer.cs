@@ -286,7 +286,7 @@
 			// Instruction
 			// 
 			this.Instruction.Text = "Instruction";
-			this.Instruction.Width = 143;
+			this.Instruction.Width = 291;
 			// 
 			// StepOutBtn
 			// 
