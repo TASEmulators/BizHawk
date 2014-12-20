@@ -89,6 +89,7 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 			else
 			{
 				this.Enabled = false;
+				ParentDebugger.DisableBreakpointBox();
 			}
 		}
 

@@ -77,6 +77,13 @@ namespace BizHawk.Client.EmuHawk
 		public void DisableRegisterBox()
 		{
 			RegistersGroupBox.Enabled = false;
+			toolTip1.SetToolTip(RegistersGroupBox, "This core does not currently support reading registers");
+		}
+
+		public void DisableBreakpointBox()
+		{
+			BreakpointsGroupBox.Enabled = false;
+			toolTip1.SetToolTip(BreakpointsGroupBox, "This core does not currently support breakpoints");
 		}
 
 		private void OnCpuDropDownIndexChanged(object sender, EventArgs e)
@@ -130,6 +137,8 @@ namespace BizHawk.Client.EmuHawk
 					Location = new Point(35, 23),
 					Text = "Unknown"
 				});
+
+				toolTip1.SetToolTip(DisassemblerBox, "This core does not currently support disassembling");
 			}
 
 			RegisterPanel.Core = Debuggable;
@@ -144,6 +153,21 @@ namespace BizHawk.Client.EmuHawk
 			StepIntoMenuItem.Enabled = StepIntoBtn.Enabled = CanStepInto;
 			StepOutMenuItem.Enabled = StepOutBtn.Enabled = CanStepOut;
 			StepOverMenuItem.Enabled = StepOverBtn.Enabled = CanStepOver;
+
+			if (!StepIntoMenuItem.Enabled)
+			{
+				toolTip1.SetToolTip(StepIntoBtn, "This core does not currently implement this feature");
+			}
+
+			if (!StepOutMenuItem.Enabled)
+			{
+				toolTip1.SetToolTip(StepOutBtn, "This core does not currently implement this feature");
+			}
+
+			if (!StepOverMenuItem.Enabled)
+			{
+				toolTip1.SetToolTip(StepOverBtn, "This core does not currently implement this feature");
+			}
 		}
 
 		private void DisengageDebugger()
@@ -337,6 +361,30 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				return base.ProcessCmdKey(ref msg, keyData);
+			}
+		}
+
+		private Control _currentToolTipControl = null; 
+		private void GenericDebugger_MouseMove(object sender, MouseEventArgs e)
+		{
+			var control = GetChildAtPoint(e.Location);
+			if (control != null)
+			{
+				if (!control.Enabled && _currentToolTipControl == null)
+				{
+					string toolTipString = toolTip1.GetToolTip(control);
+					toolTip1.Show(toolTipString, control, control.Width / 2, control.Height / 2);
+					_currentToolTipControl = control;
+				}
+			}
+			else
+			{
+				if (_currentToolTipControl != null)
+				{
+					toolTip1.Hide(_currentToolTipControl);
+				}
+
+				_currentToolTipControl = null;
 			}
 		}
 	}
