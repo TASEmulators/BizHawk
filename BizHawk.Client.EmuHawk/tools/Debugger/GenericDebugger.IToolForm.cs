@@ -115,8 +115,16 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
+			// TODO: probably none of this
 			RegisterPanel.UpdateValues();
 			UpdateDisassembler();
+		}
+
+		private void FullUpdate()
+		{
+			RegisterPanel.UpdateValues();
+			UpdateDisassembler();
+			// TODO: update breakpoint list
 		}
 
 		public void FastUpdate()

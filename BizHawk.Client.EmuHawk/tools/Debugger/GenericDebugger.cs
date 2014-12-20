@@ -247,17 +247,29 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StepIntoMenuItem_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("TODO");
+			if (CanStepInto)
+			{
+				Debuggable.Step(StepType.Into);
+				FullUpdate();
+			}
 		}
 
 		private void StepOverMenuItem_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("TODO");
+			if (CanStepOver)
+			{
+				Debuggable.Step(StepType.Over);
+				FullUpdate();
+			}
 		}
 
 		private void StepOutMenuItem_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("TODO");
+			if (CanStepOut)
+			{
+				Debuggable.Step(StepType.Out);
+				FullUpdate();
+			}
 		}
 
 		#endregion
@@ -307,19 +319,19 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
-			if (keyData == Keys.F10)
+			if (keyData == Keys.F11)
 			{
 				StepIntoMenuItem_Click(null, null);
 				return true;
 			}
 			else if (keyData == (Keys.F11 | Keys.Shift))
 			{
-				StepOverMenuItem_Click(null, null);
+				StepOutMenuItem_Click(null, null);
 				return true;
 			}
-			else if (keyData == Keys.F11)
+			else if (keyData == Keys.F10)
 			{
-				StepOutMenuItem_Click(null, null);
+				StepOverMenuItem_Click(null, null);
 				return true;
 			}
 			else
