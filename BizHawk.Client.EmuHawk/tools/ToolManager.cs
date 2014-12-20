@@ -7,6 +7,7 @@ using System.Reflection;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Common.ReflectionExtensions;
 
 using System.Windows.Forms;
 
@@ -62,15 +63,29 @@ namespace BizHawk.Client.EmuHawk
 
 			ServiceInjector.UpdateServices(Global.Emulator.ServiceProvider, newTool);
 
-			ToolDialogSettings settings;
-			if (!Global.Config.CommonToolSettings.TryGetValue(toolType.ToString(), out settings))
+			// auto settings
+			if (newTool is IToolFormAutoConfig)
 			{
-				settings = new ToolDialogSettings();
-				Global.Config.CommonToolSettings[toolType.ToString()] = settings;
+				ToolDialogSettings settings;
+				if (!Global.Config.CommonToolSettings.TryGetValue(toolType.ToString(), out settings))
+				{
+					settings = new ToolDialogSettings();
+					Global.Config.CommonToolSettings[toolType.ToString()] = settings;
+				}
+				AttachSettingHooks(newTool as IToolFormAutoConfig, settings);
 			}
 
-			if (newTool is IToolFormAutoConfig)
-				AttachSettingHooks(newTool as IToolFormAutoConfig, settings);
+			// custom settings
+			if (HasCustomConfig(newTool))
+			{
+				Dictionary<string, object> settings;
+				if (!Global.Config.CustomToolSettings.TryGetValue(toolType.ToString(), out settings))
+				{
+					settings = new Dictionary<string, object>();
+					Global.Config.CustomToolSettings[toolType.ToString()] = settings;
+				}
+				InstallCustomConfig(newTool, settings);
+			}
 
 			newTool.Restart();
 			newTool.Show();
@@ -183,9 +198,47 @@ namespace BizHawk.Client.EmuHawk
 				settings.AutoLoad = val;
 				(o as ToolStripMenuItem).Checked = val;
 			};
-
 		}
 
+		private static bool HasCustomConfig(IToolForm tool)
+		{
+			return tool.GetType().GetPropertiesWithAttrib(typeof(ConfigPersistAttribute)).Any();
+		}
+
+		private static void InstallCustomConfig(IToolForm tool, Dictionary<string, object> data)
+		{
+			Type type = tool.GetType();
+			var props = type.GetPropertiesWithAttrib(typeof(ConfigPersistAttribute)).ToList();
+			if (props.Count == 0)
+				return;
+
+			foreach (var prop in props)
+			{
+				object val;
+				if (data.TryGetValue(prop.Name, out val))
+				{
+					try
+					{
+						prop.SetValue(tool, val, null);
+					}
+					catch
+					{
+						// FIXME
+					}
+				}
+			}
+
+			(tool as Form).FormClosing += (o, e) => SaveCustomConfig(tool, data, props);
+		}
+
+		private static void SaveCustomConfig(IToolForm tool, Dictionary<string, object> data, List<PropertyInfo> props)
+		{
+			data.Clear();
+			foreach (var prop in props)
+			{
+				data.Add(prop.Name, prop.GetValue(tool, null));
+			}
+		}
 
 	
 		/// <summary>

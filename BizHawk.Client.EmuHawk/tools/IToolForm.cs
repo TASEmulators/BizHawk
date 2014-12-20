@@ -53,4 +53,9 @@ namespace BizHawk.Client.EmuHawk
 	public interface IToolFormAutoConfig : IToolForm
 	{
 	}
+
+	[AttributeUsage(AttributeTargets.Property)]
+	public class ConfigPersistAttribute : Attribute
+	{
+	}
 }
