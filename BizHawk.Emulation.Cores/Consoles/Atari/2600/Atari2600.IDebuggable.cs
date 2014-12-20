@@ -90,12 +90,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private void StepInto()
 		{
-			var size = opsize[Cpu.PeekMemory(Cpu.PC)];
-
-			for (int i = 0; i < size; i++)
+			do
 			{
 				CycleAdvance();
-			}
+			} while (!Cpu.AtStart);
 		}
 
 		//the opsize table is used to quickly grab the instruction sizes (in bytes)
