@@ -54,18 +54,18 @@ namespace BizHawk.Client.EmuHawk
 			text = "";
 			if (column == 0)
 			{
-				if (addr <= index && index < addr + lines.Count)
+				if (PC <= index && index < PC + DisassemblyLines.Count)
 				{
-					int a = addr;
-					for (int i = 0; i < index - addr; ++i)
-						a += lines[i].size;
+					int a = PC;
+					for (int i = 0; i < index - PC; ++i)
+						a += DisassemblyLines[i].Size;
 					text = string.Format("{0:X4}", a);
 				}
 			}
 			else if (column == 1)
 			{
-				if (addr <= index && index < addr + lines.Count)
-					text = lines[index - addr].mnemonic;
+				if (PC <= index && index < PC + DisassemblyLines.Count)
+					text = DisassemblyLines[index - PC].Mnemonic;
 			}
 		}
 
@@ -202,54 +202,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Owner = Global.Config.RamSearchSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
-
-		#region Disassembler TODO refacotor
-
-		private readonly List<DisasmOp> lines = new List<DisasmOp>();
-
-		private struct DisasmOp
-		{
-			public readonly int size;
-			public readonly string mnemonic;
-			public DisasmOp(int s, string m) { size = s; mnemonic = m; }
-		}
-
-		private int addr;
-		private const int ADDR_MAX = 0xFFFF; // TODO: this isn't a constant, calculate it off bus size
-		private const int DISASM_LINE_COUNT = 100;
-
-		private void UpdateDisassembler()
-		{
-			// Always show a window's worth of instructions (if possible)
-			if (CanDisassemble)
-			{
-				addr = PC;
-
-				DisassemblerView.BlazingFast = true;
-				Disasm(DISASM_LINE_COUNT);
-				DisassemblerView.ensureVisible(0xFFFF);
-				DisassemblerView.ensureVisible(PC);
-
-				DisassemblerView.Refresh();
-				DisassemblerView.BlazingFast = false;
-			}
-		}
-
-		private void Disasm(int line_count)
-		{
-			lines.Clear();
-			int a = addr;
-			for (int i = 0; i < line_count; ++i)
-			{
-				int advance;
-				string line = Disassembler.Disassemble(MemoryDomains.SystemBus, (ushort)a, out advance);
-				lines.Add(new DisasmOp(advance, line));
-				a += advance;
-				if (a > ADDR_MAX) break;
-			}
-		}
-
-		#endregion
 
 		#region Menu Items
 
