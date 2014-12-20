@@ -102,11 +102,6 @@ namespace BizHawk.Emulation.Common
 				.OrderBy(fi => (int)Marshal.OffsetOf(t, fi.Name))
 				.ToList();
 
-			foreach (var field in DeepEquality.GetAllFields(t))
-			{
-				Console.WriteLine("{0} @{1}", field.Name, field.GetManagedOffset());
-			}
-
 			var rmeth = new DynamicMethod(t.Name + "_r", null, new[] { typeof(object), typeof(BinaryReader) }, true);
 			var wmeth = new DynamicMethod(t.Name + "_w", null, new[] { typeof(object), typeof(BinaryWriter) }, true);
 
@@ -126,7 +121,6 @@ namespace BizHawk.Emulation.Common
 						throw new InvalidOperationException("(R) Can't handle nested type " + field.FieldType);
 					il.Emit(OpCodes.Callvirt, m);
 					il.Emit(OpCodes.Stfld, field);
-					Console.WriteLine("(R) {0} {1}: {2}", field.Name, field.FieldType, m);
 				}
 				il.Emit(OpCodes.Ret);
 			}
@@ -146,7 +140,6 @@ namespace BizHawk.Emulation.Common
 					if (!writehandlers.TryGetValue(field.FieldType, out m))
 						throw new InvalidOperationException("(W) Can't handle nested type " + field.FieldType);
 					il.Emit(OpCodes.Callvirt, m);
-					Console.WriteLine("(W) {0} {1}: {2}", field.Name, field.FieldType, m);
 				}
 				il.Emit(OpCodes.Ret);
 			}
