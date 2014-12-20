@@ -412,6 +412,7 @@ namespace BizHawk.Client.Common
 		#endregion
 
 		public Dictionary<string, ToolDialogSettings> CommonToolSettings = new Dictionary<string, ToolDialogSettings>();
+		public Dictionary<string, Dictionary<string, object>> CustomToolSettings = new Dictionary<string, Dictionary<string, object>>();
 
 		// SMS VDP Viewer Settings
 		public ToolDialogSettings SmsVdpSettings = new ToolDialogSettings();
@@ -431,9 +432,6 @@ namespace BizHawk.Client.Common
 		public ToolDialogSettings NesNameTableSettings = new ToolDialogSettings();
 		public bool AutoLoadNESNameTable = false;
 		public int NESNameTableRefreshRate = 4;
-
-		// gb gpu view settings
-		public Color GBGPUSpriteBack = Color.Lime;
 
 		// SNES Graphics Debugger Dialog Settings
 		public bool AutoLoadSNESGraphicsDebugger = false;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using BizHawk.Common.ReflectionExtensions;
 
 namespace BizHawk.Emulation.Common
 {
@@ -11,22 +12,16 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public static class ServiceInjector
 	{
-		private static IEnumerable<PropertyInfo> GetPropertiesWithAttr(Type type, Type attributeType)
-		{
-			return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic)
-				.Where(p => p.GetCustomAttributes(attributeType, false).Length > 0);
-		}
-
 		/// <summary>
 		/// Feeds the target its required services.
 		/// </summary>
 		/// <returns>false if update failed</returns>
 		public static bool UpdateServices(IEmulatorServiceProvider source, object target)
 		{
-			Type toolType = target.GetType();
+			Type targetType = target.GetType();
 			object[] tmp = new object[1];
 
-			foreach (var propinfo in GetPropertiesWithAttr(toolType, typeof(RequiredService)))
+			foreach (var propinfo in targetType.GetPropertiesWithAttrib(typeof(RequiredService)))
 			{
 				tmp[0] = source.GetService(propinfo.PropertyType);
 				if (tmp[0] == null)
@@ -34,7 +29,7 @@ namespace BizHawk.Emulation.Common
 				propinfo.GetSetMethod(true).Invoke(target, tmp);
 			}
 
-			foreach (var propinfo in GetPropertiesWithAttr(toolType, typeof(OptionalService)))
+			foreach (var propinfo in targetType.GetPropertiesWithAttrib(typeof(OptionalService)))
 			{
 				tmp[0] = source.GetService(propinfo.PropertyType);
 				propinfo.GetSetMethod(true).Invoke(target, tmp);
@@ -48,7 +43,7 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public static bool IsAvailable(IEmulatorServiceProvider source, Type targetType)
 		{
-			return GetPropertiesWithAttr(targetType, typeof(RequiredService))
+			return targetType.GetPropertiesWithAttrib(typeof(RequiredService))
 				.Select(pi => pi.PropertyType)
 				.All(t => source.HasService(t));
 		}
