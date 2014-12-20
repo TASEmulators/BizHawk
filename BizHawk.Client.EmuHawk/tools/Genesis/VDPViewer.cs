@@ -13,7 +13,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class GenVDPViewer : Form, IToolForm
+	public partial class GenVDPViewer : Form, IToolFormAutoConfig
 	{
 		[RequiredService]
 		private GPGX Emu { get; set; }

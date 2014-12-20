@@ -69,7 +69,8 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.CommonToolSettings[toolType.ToString()] = settings;
 			}
 
-			AttachSettingHooks(newTool, settings);
+			if (newTool is IToolFormAutoConfig)
+				AttachSettingHooks(newTool as IToolFormAutoConfig, settings);
 
 			newTool.Restart();
 			newTool.Show();
@@ -93,23 +94,45 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static void AttachSettingHooks(IToolForm tool, ToolDialogSettings settings)
+		private static void AttachSettingHooks(IToolFormAutoConfig tool, ToolDialogSettings settings)
 		{
-			if (!(tool is GenVDPViewer))
-				return;
 			var form = (Form)tool;
 
-			var menu = new ToolStripMenuItem("Tool Settings (FIX ME)");
+			ToolStripItemCollection dest = null;
+			foreach (Control c in form.Controls)
+			{
+				if (c is MenuStrip)
+				{
+					var ms = c as MenuStrip;
+					foreach (ToolStripMenuItem submenu in ms.Items)
+					{
+						if (submenu.Text.Contains("Settings"))
+						{
+							dest = submenu.DropDownItems;
+							break;
+						}
+					}
+					if (dest == null)
+					{
+						var submenu = new ToolStripMenuItem("&Settings");
+						ms.Items.Add(submenu);
+						dest = submenu.DropDownItems;
+					}
+					break;
+				}
+			}
+			if (dest == null)
+				throw new InvalidOperationException("IToolFormAutoConfig must have menu to bind to!");
 
-			menu.DropDownItems.Add("Save Window Position");
-			menu.DropDownItems.Add("Stay on Top");
-			menu.DropDownItems.Add("Float from Parent");
-			menu.DropDownItems.Add("Auto Load");
+			dest.Add("Save Window Position");
+			dest.Add("Stay on Top");
+			dest.Add("Float from Parent");
+			dest.Add("Auto Load");
 
-			(menu.DropDownItems[0] as ToolStripMenuItem).Checked = settings.SaveWindowPosition;
-			(menu.DropDownItems[1] as ToolStripMenuItem).Checked = settings.TopMost;
-			(menu.DropDownItems[2] as ToolStripMenuItem).Checked = settings.FloatingWindow;
-			(menu.DropDownItems[3] as ToolStripMenuItem).Checked = settings.AutoLoad;
+			(dest[0] as ToolStripMenuItem).Checked = settings.SaveWindowPosition;
+			(dest[1] as ToolStripMenuItem).Checked = settings.TopMost;
+			(dest[2] as ToolStripMenuItem).Checked = settings.FloatingWindow;
+			(dest[3] as ToolStripMenuItem).Checked = settings.AutoLoad;
 
 			form.TopMost = settings.TopMost;
 
@@ -133,44 +156,33 @@ namespace BizHawk.Client.EmuHawk
 				settings.Height = form.Bottom - form.Top;
 			};
 
-			menu.DropDownItems[0].Click += (o, e) =>
+			dest[0].Click += (o, e) =>
 			{
 				bool val = !(o as ToolStripMenuItem).Checked;
 				settings.SaveWindowPosition = val;
 				(o as ToolStripMenuItem).Checked = val;
 			};
-			menu.DropDownItems[1].Click += (o, e) =>
+			dest[1].Click += (o, e) =>
 			{
 				bool val = !(o as ToolStripMenuItem).Checked;
 				settings.TopMost = val;
 				(o as ToolStripMenuItem).Checked = val;
 				form.TopMost = val;
 			};
-			menu.DropDownItems[2].Click += (o, e) =>
+			dest[2].Click += (o, e) =>
 			{
 				bool val = !(o as ToolStripMenuItem).Checked;
 				settings.FloatingWindow = val;
 				(o as ToolStripMenuItem).Checked = val;
 				form.Owner = val ? null : GlobalWin.MainForm;
 			};
-			menu.DropDownItems[3].Click += (o, e) =>
+			dest[3].Click += (o, e) =>
 			{
 				bool val = !(o as ToolStripMenuItem).Checked;
 				settings.AutoLoad = val;
 				(o as ToolStripMenuItem).Checked = val;
 			};
 
-			foreach (Control c in form.Controls)
-			{
-				if (c is MenuStrip)
-				{
-					var ms = c as MenuStrip;
-					ms.Items.Add(menu);
-					return;
-				}
-			}
-			// got here without finding a menustrip, means there is no menustrip.
-			// what to do?  could put in a context menu or something?
 		}
 
 

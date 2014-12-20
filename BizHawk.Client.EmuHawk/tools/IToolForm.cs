@@ -46,4 +46,11 @@ namespace BizHawk.Client.EmuHawk
 		bool IsDisposed { get; }
 		bool IsHandleCreated { get; }
 	}
+
+	/// <summary>
+	/// toolform that takes automatic common configuration infrastructure
+	/// </summary>
+	public interface IToolFormAutoConfig : IToolForm
+	{
+	}
 }
