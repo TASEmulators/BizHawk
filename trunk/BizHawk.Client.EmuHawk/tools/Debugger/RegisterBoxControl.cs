@@ -42,6 +42,9 @@ namespace BizHawk.Client.EmuHawk
 				foreach (var register in registers)
 				{
 					Controls
+						.OfType<Panel>()
+						.First(p => p.Name == "FlagPanel")
+						.Controls
 						.OfType<CheckBox>()
 						.ToList()
 						.ForEach(checkbox =>
@@ -59,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							if (textbox.Name == register.Key)
 							{
-								textbox.Text = register.Value.ToString();
+								textbox.Text = register.Value.Value.ToHexString(register.Value.BitSize / 16);
 							}
 						});
 				}
@@ -118,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 			var registers = Core.GetCpuFlagsAndRegisters();
 
 			int y = 0;
-			foreach (var register in registers)
+			foreach (var register in registers.Where(r => r.Value.BitSize != 1))
 			{
 				this.Controls.Add(new Label
 				{
@@ -129,63 +132,32 @@ namespace BizHawk.Client.EmuHawk
 
 				if (canset)
 				{
-					if (register.Key.Contains("Flag")) // TODO: this depends on naming conventions!
+					var t = new TextBox
 					{
-						var c = new CheckBox
-						{
-							Name = register.Key,
-							Text = "",
-							Checked = register.Value.Value == 1 ? true : false,
-							Location = new Point(40, y)
-						};
+						Name = register.Key,
+						Text = register.Value.Value.ToHexString(register.Value.BitSize / 16),
+						Width = 45,
+						Location = new Point(40, y),
+						MaxLength = register.Value.BitSize / 4,
+						CharacterCasing = CharacterCasing.Upper
+					};
 
-						c.CheckedChanged += (o, e) =>
-						{
-							if (!_supressChangeEvents)
-							{
-								try
-								{
-									Core.SetCpuRegister(c.Name, c.Checked ? 1 : 0);
-								}
-								catch (InvalidOperationException) // TODO: This is hacky stuff because NES doesn't support setting flags!  Need to know when a core supports this or not, and enable/disable the box accordingly
-								{
-									_supressChangeEvents = true;
-									c.Checked = !c.Checked;
-									_supressChangeEvents = false;
-									c.Enabled = false;
-								}
-							}
-						};
-
-						this.Controls.Add(c);
-					}
-					else
+					t.TextChanged += (o, e) =>
 					{
-						var t = new TextBox
+						if (!_supressChangeEvents)
 						{
-							Name = register.Key,
-							Text = register.Value.ToString(),
-							Width = 45,
-							Location = new Point(40, y),
-						};
-
-						t.TextChanged += (o, e) =>
-						{
-							if (!_supressChangeEvents)
+							try
 							{
-								try
-								{
-									Core.SetCpuRegister(t.Name, int.Parse(t.Text));
-								}
-								catch (InvalidOperationException)
-								{
-									t.Enabled = false;
-								}
+								Core.SetCpuRegister(t.Name, int.Parse(t.Text));
 							}
-						};
+							catch (InvalidOperationException)
+							{
+								t.Enabled = false;
+							}
+						}
+					};
 
-						this.Controls.Add(t);
-					}
+					this.Controls.Add(t);
 				}
 				else
 				{
@@ -199,6 +171,56 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				y += 25;
+			}
+
+			var flags = registers.Where(r => r.Value.BitSize == 1);
+
+			if (flags.Any())
+			{
+				var p = new Panel
+				{
+					Name = "FlagPanel",
+					Location = new Point(5, y),
+					BorderStyle = BorderStyle.None,
+					Size = new Size(240, 23),
+					AutoScroll = true
+				};
+
+				foreach (var flag in registers.Where(r => r.Value.BitSize == 1).OrderByDescending(x => x.Key))
+				{
+					var c = new CheckBox
+					{
+						Appearance = System.Windows.Forms.Appearance.Button,
+						Name = flag.Key,
+						Text = flag.Key.Replace("Flag", "").Trim(), // Hack
+						Checked = flag.Value.Value == 1 ? true : false,
+						Location = new Point(40, y),
+						Dock = DockStyle.Left,
+						Size = new Size(23, 23)
+					};
+
+					c.CheckedChanged += (o, e) =>
+					{
+						if (!_supressChangeEvents)
+						{
+							try
+							{
+								Core.SetCpuRegister(c.Name, c.Checked ? 1 : 0);
+							}
+							catch (InvalidOperationException) // TODO: This is hacky stuff because NES doesn't support setting flags!  Need to know when a core supports this or not, and enable/disable the box accordingly
+							{
+								_supressChangeEvents = true;
+								c.Checked = !c.Checked;
+								_supressChangeEvents = false;
+								c.Enabled = false;
+							}
+						}
+					};
+
+					p.Controls.Add(c);
+				}
+
+				this.Controls.Add(p);
 			}
 		}
 	}
