@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GenericDebugger));
 			this.menuStrip1 = new MenuStripEx();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,6 +56,7 @@
 			this.StepOutBtn = new System.Windows.Forms.Button();
 			this.StepIntoBtn = new System.Windows.Forms.Button();
 			this.StepOverBtn = new System.Windows.Forms.Button();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.menuStrip1.SuspendLayout();
 			this.RegistersGroupBox.SuspendLayout();
 			this.BreakpointsGroupBox.SuspendLayout();
@@ -227,6 +229,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.BreakPointControl1.Core = null;
 			this.BreakPointControl1.Location = new System.Drawing.Point(8, 19);
+			this.BreakPointControl1.MCS = null;
 			this.BreakPointControl1.Name = "BreakPointControl1";
 			this.BreakPointControl1.ParentDebugger = null;
 			this.BreakPointControl1.Size = new System.Drawing.Size(225, 256);
@@ -339,6 +342,7 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Debugger";
 			this.Load += new System.EventHandler(this.GenericDebugger_Load);
+			this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GenericDebugger_MouseMove);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.RegistersGroupBox.ResumeLayout(false);
@@ -378,5 +382,6 @@
 		private System.Windows.Forms.ToolStripMenuItem StepIntoMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem StepOverMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem StepOutMenuItem;
+		private System.Windows.Forms.ToolTip toolTip1;
 	}
 }
