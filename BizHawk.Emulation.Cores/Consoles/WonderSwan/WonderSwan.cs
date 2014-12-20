@@ -330,14 +330,15 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public MemoryDomainList MemoryDomains { get; private set; }
 	
-		public IDictionary<string, int> GetCpuFlagsAndRegisters()
+		// TODO: are all of these registers actually the same bit size?
+		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
 		{
-			var ret = new Dictionary<string, int>();
+			var ret = new Dictionary<string, Register>();
 			for (int i = (int)BizSwan.NecRegsMin; i <= (int)BizSwan.NecRegsMax; i++)
 			{
 				BizSwan.NecRegs en = (BizSwan.NecRegs)i;
 				uint val = BizSwan.bizswan_getnecreg(Core, en);
-				ret[Enum.GetName(typeof(BizSwan.NecRegs), en)] = (int)val;
+				ret[Enum.GetName(typeof(BizSwan.NecRegs), en)] = (ushort)val;
 			}
 			return ret;
 		}

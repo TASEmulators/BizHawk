@@ -7,9 +7,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	public partial class Atari2600 : IDebuggable
 	{
-		public IDictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
 		{
-			return new Dictionary<string, int>
+			return new Dictionary<string, Register>
 			{
 				{ "A", Cpu.A },
 				{ "X", Cpu.X },
@@ -17,15 +17,15 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				{ "S", Cpu.S },
 				{ "PC", Cpu.PC },
 
-				{ "Flag C", Cpu.FlagC ? 1 : 0 },
-				{ "Flag Z", Cpu.FlagZ ? 1 : 0 },
-				{ "Flag I", Cpu.FlagI ? 1 : 0 },
-				{ "Flag D", Cpu.FlagD ? 1 : 0 },
+				{ "Flag C", Cpu.FlagC },
+				{ "Flag Z", Cpu.FlagZ },
+				{ "Flag I", Cpu.FlagI },
+				{ "Flag D", Cpu.FlagD },
 
-				{ "Flag B", Cpu.FlagB ? 1 : 0 },
-				{ "Flag V", Cpu.FlagV ? 1 : 0 },
-				{ "Flag N", Cpu.FlagN ? 1 : 0 },
-				{ "Flag T", Cpu.FlagT ? 1 : 0 }
+				{ "Flag B", Cpu.FlagB },
+				{ "Flag V", Cpu.FlagV },
+				{ "Flag N", Cpu.FlagN },
+				{ "Flag T", Cpu.FlagT }
 			};
 		}
 

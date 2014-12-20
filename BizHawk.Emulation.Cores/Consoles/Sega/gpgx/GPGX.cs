@@ -629,17 +629,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			MemoryDomains = new MemoryDomainList(mm, 0);
 		}
 
-
-		public IDictionary<string, int> GetCpuFlagsAndRegisters()
+		// TODO: are any of these registers not 16 bit?
+		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
 		{
 			LibGPGX.RegisterInfo[] regs = new LibGPGX.RegisterInfo[LibGPGX.gpgx_getmaxnumregs()];
 
 			int n = LibGPGX.gpgx_getregs(regs);
 			if (n > regs.Length)
 				throw new InvalidOperationException("A buffer overrun has occured!");
-			var ret = new Dictionary<string, int>();
+			var ret = new Dictionary<string, Register>();
 			for (int i = 0; i < n; i++)
-				ret[Marshal.PtrToStringAnsi(regs[i].Name)] = regs[i].Value;
+				ret[Marshal.PtrToStringAnsi(regs[i].Name)] = (ushort)regs[i].Value;
 			return ret;
 		}
 

@@ -8,9 +8,9 @@ namespace BizHawk.Emulation.Cores.Calculators
 {
 	public partial class TI83 : IDebuggable
 	{
-		public IDictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
 		{
-			return new Dictionary<string, int>
+			return new Dictionary<string, Register>
 			{
 				{ "A", cpu.RegisterA },
 				{ "AF", cpu.RegisterAF },
@@ -34,14 +34,14 @@ namespace BizHawk.Emulation.Cores.Calculators
 				{ "Shadow DE", cpu.RegisterShadowDE },
 				{ "Shadow HL", cpu.RegisterShadowHL },
 				{ "SP", cpu.RegisterSP },
-				{ "Flag C", cpu.RegisterF.Bit(0) ? 1 : 0 },
-				{ "Flag N", cpu.RegisterF.Bit(1) ? 1 : 0 },
-				{ "Flag P/V", cpu.RegisterF.Bit(2) ? 1 : 0 },
-				{ "Flag 3rd", cpu.RegisterF.Bit(3) ? 1 : 0 },
-				{ "Flag H", cpu.RegisterF.Bit(4) ? 1 : 0 },
-				{ "Flag 5th", cpu.RegisterF.Bit(5) ? 1 : 0 },
-				{ "Flag Z", cpu.RegisterF.Bit(6) ? 1 : 0 },
-				{ "Flag S", cpu.RegisterF.Bit(7) ? 1 : 0 }
+				{ "Flag C", cpu.RegisterF.Bit(0) },
+				{ "Flag N", cpu.RegisterF.Bit(1) },
+				{ "Flag P/V", cpu.RegisterF.Bit(2) },
+				{ "Flag 3rd", cpu.RegisterF.Bit(3) },
+				{ "Flag H", cpu.RegisterF.Bit(4) },
+				{ "Flag 5th", cpu.RegisterF.Bit(5) },
+				{ "Flag Z", cpu.RegisterF.Bit(6) },
+				{ "Flag S", cpu.RegisterF.Bit(7) }
 			};
 		}
 

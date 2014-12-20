@@ -57,6 +57,7 @@ namespace BizHawk.Client.Common
 			return Global.Emulator.Frame;
 		}
 
+		// TODO: what about 64 bit registers?
 		[LuaMethodAttributes(
 			"getregister",
 			"returns the value of a cpu register or flag specified by name. For a complete list of possible registers or flags for a given core, use getregisters"
@@ -73,7 +74,7 @@ namespace BizHawk.Client.Common
 
 				var registers = debuggable.GetCpuFlagsAndRegisters();
 				return registers.ContainsKey(name)
-					? registers[name]
+					? (int)registers[name].Value
 					: 0;
 			}
 			catch (NotImplementedException)

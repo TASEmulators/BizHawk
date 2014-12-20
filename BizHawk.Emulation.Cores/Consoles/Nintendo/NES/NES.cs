@@ -899,23 +899,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public bool BinarySaveStatesPreferred { get { return false; } }
 
-		public IDictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
 		{
-			return new Dictionary<string, int>
+			return new Dictionary<string, Register>
 			{
 				{ "A", cpu.A },
 				{ "X", cpu.X },
 				{ "Y", cpu.Y },
 				{ "S", cpu.S },
 				{ "PC", cpu.PC },
-				{ "Flag C", cpu.FlagC ? 1 : 0 },
-				{ "Flag Z", cpu.FlagZ ? 1 : 0 },
-				{ "Flag I", cpu.FlagI ? 1 : 0 },
-				{ "Flag D", cpu.FlagD ? 1 : 0 },
-				{ "Flag B", cpu.FlagB ? 1 : 0 },
-				{ "Flag V", cpu.FlagV ? 1 : 0 },
-				{ "Flag N", cpu.FlagN ? 1 : 0 },
-				{ "Flag T", cpu.FlagT ? 1 : 0 }
+				{ "Flag C", cpu.FlagC },
+				{ "Flag Z", cpu.FlagZ },
+				{ "Flag I", cpu.FlagI },
+				{ "Flag D", cpu.FlagD },
+				{ "Flag B", cpu.FlagB },
+				{ "Flag V", cpu.FlagV },
+				{ "Flag N", cpu.FlagN },
+				{ "Flag T", cpu.FlagT }
 			};
 		}
 

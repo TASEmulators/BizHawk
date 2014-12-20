@@ -377,17 +377,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public MemoryDomainList MemoryDomains { get; private set; }
 
-		public IDictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
 		{
 			int[] regs = new int[6];
-			var ret = new Dictionary<string, int>();
+			var ret = new Dictionary<string, Register>();
 			LibQuickNES.qn_get_cpuregs(Context, regs);
-			ret["A"] = regs[0];
-			ret["X"] = regs[1];
-			ret["Y"] = regs[2];
-			ret["SP"] = regs[3];
-			ret["PC"] = regs[4];
-			ret["P"] = regs[5];
+			ret["A"] = (byte)regs[0];
+			ret["X"] = (byte)regs[1];
+			ret["Y"] = (byte)regs[2];
+			ret["SP"] = (ushort)regs[3];
+			ret["PC"] = (ushort)regs[4];
+			ret["P"] = (byte)regs[5];
 			return ret;
 		}
 
