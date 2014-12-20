@@ -48,11 +48,18 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		{
 			get
 			{
-				int major, minor;
-				//other overloads may not exist...
-				GL.GetInteger(GetPName.MajorVersion, out major);
-				GL.GetInteger(GetPName.MajorVersion, out minor);
-				return major * 100 + minor * 10;
+				//doesnt work on older than gl3 maybe
+				//int major, minor;
+				////other overloads may not exist...
+				//GL.GetInteger(GetPName.MajorVersion, out major);
+				//GL.GetInteger(GetPName.MinorVersion, out minor);
+
+				//supposedly the standard dictates that whatever junk is in the version string, some kind of version is at the beginning
+				string version_string = GL.GetString(StringName.Version);
+				var version_parts = version_string.Split('.');
+				int major = int.Parse(version_parts[0]);
+				//getting a minor version out is too hard and not needed now
+				return major * 100;
 			}
 		}
 
