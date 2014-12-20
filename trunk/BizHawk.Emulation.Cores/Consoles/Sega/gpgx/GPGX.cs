@@ -629,7 +629,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			MemoryDomains = new MemoryDomainList(mm, 0);
 		}
 
-		// TODO: are any of these registers not 16 bit?
 		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
 		{
 			LibGPGX.RegisterInfo[] regs = new LibGPGX.RegisterInfo[LibGPGX.gpgx_getmaxnumregs()];
@@ -639,7 +638,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				throw new InvalidOperationException("A buffer overrun has occured!");
 			var ret = new Dictionary<string, Register>();
 			for (int i = 0; i < n; i++)
-				ret[Marshal.PtrToStringAnsi(regs[i].Name)] = (ushort)regs[i].Value;
+			{
+				// el hacko
+				string name = Marshal.PtrToStringAnsi(regs[i].Name);
+				byte size = 32;
+				if (name.Contains("68K SR") || name.StartsWith("Z80"))
+					size = 16;
+				ret[Marshal.PtrToStringAnsi(regs[i].Name)] =
+					new Register { BitSize = size, Value = (ulong)regs[i].Value };
+			}
 			return ret;
 		}
 
