@@ -282,8 +282,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			if (!BizSwan.bizswan_binstateload(Core, savebuff, savebuff.Length))
 				throw new InvalidOperationException("bizswan_binstateload() returned false!");
 
-			var d = new TextStateData();
-			BinaryQuickSerializer.Read(d, reader);
+			var d = BinaryQuickSerializer.Create<TextStateData>(reader);
 			LoadTextStateData(d);
 		}
 

@@ -18,7 +18,8 @@ namespace BizHawk.Emulation.Common
 		// fields are serialized/deserialized in their memory order as reported by Marshal.OffsetOf
 		// to do anything useful, passed targets should be [StructLayout.Sequential] or [StructLayout.Explicit]
 
-		#region reflection infrastructure
+		#region methodinfo from a lambda expression.  cool.
+
 		private static MethodInfo FromExpression(Expression e)
 		{
 			var caller = e as MethodCallExpression;
@@ -26,7 +27,6 @@ namespace BizHawk.Emulation.Common
 				throw new ArgumentException("Expression must be a method call");
 			return caller.Method;
 		}
-
 		private static MethodInfo Method(Expression<Action> f)
 		{
 			return FromExpression(f.Body);
@@ -35,6 +35,10 @@ namespace BizHawk.Emulation.Common
 		{
 			return FromExpression(f.Body);
 		}
+
+		#endregion
+
+		#region read and write handlers for individual fields
 
 		private static Dictionary<Type, MethodInfo> readhandlers = new Dictionary<Type, MethodInfo>();
 		private static Dictionary<Type, MethodInfo> writehandlers = new Dictionary<Type, MethodInfo>();
@@ -46,6 +50,7 @@ namespace BizHawk.Emulation.Common
 				throw new InvalidOperationException("Type mismatch");
 			readhandlers.Add(typeof(T), method);
 		}
+
 		private static void AddW<T>(Expression<Action<BinaryWriter>> f)
 		{
 			var method = Method(f);
@@ -82,8 +87,11 @@ namespace BizHawk.Emulation.Common
 
 			AddR<ulong>(r => r.ReadUInt64());
 			AddW<ulong>(r => r.Write((ulong)0));
-
 		}
+
+		#endregion
+
+		#region dynamic code generation
 
 		private delegate void Reader(object target, BinaryReader r);
 		private delegate void Writer(object target, BinaryWriter w);
@@ -95,7 +103,7 @@ namespace BizHawk.Emulation.Common
 			public Writer Write;
 		}
 
-		private static SerializationFactory CreateSer(Type t)
+		private static SerializationFactory CreateFactory(Type t)
 		{
 			var fields = DeepEquality.GetAllFields(t)
 				//.OrderBy(fi => (int)fi.GetManagedOffset()) // [StructLayout.Sequential] doesn't work with this
@@ -151,20 +159,36 @@ namespace BizHawk.Emulation.Common
 				Write = (Writer)wmeth.CreateDelegate(typeof(Writer))
 			};
 		}
+
 		#endregion
 
-		private static IDictionary<Type, SerializationFactory> sers =
+		private static IDictionary<Type, SerializationFactory> serializers =
 			new ConcurrentDictionary<Type, SerializationFactory>();
 
 		private static SerializationFactory GetFactory(Type t)
 		{
 			SerializationFactory f;
-			if (!sers.TryGetValue(t, out f))
+			if (!serializers.TryGetValue(t, out f))
 			{
-				f = CreateSer(t);
-				sers[t] = f;
+				f = CreateFactory(t);
+				serializers[t] = f;
 			}
 			return f;
+		}
+
+		public static T Create<T>(BinaryReader r)
+			where T : new()
+		{
+			T target = new T();
+			Read(target, r);
+			return target;
+		}
+
+		public static object Create(Type t, BinaryReader r)
+		{
+			object target = Activator.CreateInstance(t);
+			Read(target, r);
+			return target;
 		}
 
 		public static void Read(object target, BinaryReader r)
