@@ -50,6 +50,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private bool CanSetCpu
+		{
+			get
+			{
+				try
+				{
+					Disassembler.Cpu = Disassembler.Cpu;
+					return true;
+				}
+				catch (NotImplementedException)
+				{
+					return false;
+				}
+			}
+		}
+
 		#endregion
 
 		public void UpdateValues()

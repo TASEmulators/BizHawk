@@ -86,14 +86,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EngageDebugger()
 		{
-			if (Disassembler != null)
+			if (CanDisassemble)
 			{
 				try
 				{
-					// Quick way to check if setting is implemented
-					Disassembler.Cpu = Disassembler.Cpu;
-
-					if (Disassembler.AvailableCpus.Count() > 1)
+					if (CanSetCpu && Disassembler.AvailableCpus.Count() > 1)
 					{
 						var c = new ComboBox
 						{
@@ -139,7 +136,6 @@ namespace BizHawk.Client.EmuHawk
 			RegisterPanel.ParentDebugger = this;
 			RegisterPanel.GenerateUI();
 
-			// TODO: handle if unavailable
 			BreakPointControl1.Core = Core;
 			BreakPointControl1.MCS = MCS;
 			BreakPointControl1.ParentDebugger = this;
@@ -179,6 +175,7 @@ namespace BizHawk.Client.EmuHawk
 			Owner = Global.Config.RamSearchSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
+		#region Disassembler TODO refacotor
 
 		private readonly List<DisasmOp> lines = new List<DisasmOp>();
 
@@ -223,6 +220,8 @@ namespace BizHawk.Client.EmuHawk
 				if (a > ADDR_MAX) break;
 			}
 		}
+
+		#endregion
 
 		#region Menu Items
 
