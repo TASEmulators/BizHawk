@@ -218,27 +218,35 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		JsonSerializer ser = new JsonSerializer() { Formatting = Formatting.Indented };
 
+		[StructLayout(LayoutKind.Sequential)]
 		class TextStateData
 		{
-			public int Frame;
-			public int LagCount;
 			public bool IsLagFrame;
+			public int LagCount;
+			public int Frame;
 		}
-		
+
+		private void LoadTextStateData(TextStateData d)
+		{
+			IsLagFrame = d.IsLagFrame;
+			LagCount = d.LagCount;
+			Frame = d.Frame;
+		}
+		private void SaveTextStateData(TextStateData d)
+		{
+			d.IsLagFrame = IsLagFrame;
+			d.LagCount = LagCount;
+			d.Frame = Frame;
+		}
+
 		public void SaveStateText(TextWriter writer)
 		{
 			var s = new TextState<TextStateData>();
 			s.Prepare();
 			var ff = s.GetFunctionPointersSave();
 			BizSwan.bizswan_txtstatesave(Core, ref ff);
-			s.ExtraData.IsLagFrame = IsLagFrame;
-			s.ExtraData.LagCount = LagCount;
-			s.ExtraData.Frame = Frame;
-
+			SaveTextStateData(s.ExtraData);
 			ser.Serialize(writer, s);
-			// write extra copy of stuff we don't use
-			writer.WriteLine();
-			writer.WriteLine("Frame {0}", Frame);
 		}
 
 		public void LoadStateText(TextReader reader)
@@ -247,9 +255,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			s.Prepare();
 			var ff = s.GetFunctionPointersLoad();
 			BizSwan.bizswan_txtstateload(Core, ref ff);
-			IsLagFrame = s.ExtraData.IsLagFrame;
-			LagCount = s.ExtraData.LagCount;
-			Frame = s.ExtraData.Frame;
+			LoadTextStateData(s.ExtraData);
 		}
 
 		byte[] savebuff;
@@ -263,9 +269,15 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			writer.Write(savebuff);
 
 			// other variables
+			/*
 			writer.Write(IsLagFrame);
 			writer.Write(LagCount);
 			writer.Write(Frame);
+			*/
+
+			var d = new TextStateData();
+			SaveTextStateData(d);
+			BinaryQuickSerializer.Write(d, writer);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
@@ -330,7 +342,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public MemoryDomainList MemoryDomains { get; private set; }
 	
-		// TODO: are all of these registers actually the same bit size?
 		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
 		{
 			var ret = new Dictionary<string, Register>();
@@ -591,6 +602,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public void DiscardSamples()
 		{
 			sbuffcontains = 0;
+			new DiscSystem.Disc().Dispose();
 		}
 
 		#endregion
