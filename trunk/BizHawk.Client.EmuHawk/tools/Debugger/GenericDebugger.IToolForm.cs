@@ -20,10 +20,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private MemoryDomainList MemoryDomains { get { return MemoryDomainSource.MemoryDomains; } }
 
-		private int PC
+		private uint PC
 		{
 			// TODO: is this okay for N64?
-			get { return (int)Debuggable.GetCpuFlagsAndRegisters()[Disassembler.PCRegisterName].Value; }
+			get { return (uint)Debuggable.GetCpuFlagsAndRegisters()[Disassembler.PCRegisterName].Value; }
 		}
 
 		#region Implementation checking
