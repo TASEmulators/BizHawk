@@ -21,11 +21,15 @@ namespace BizHawk.Emulation.Common
 
 		IMemoryCallbackSystem MemoryCallbacks { get; }
 
-		// Advanced Navigation
-		//void StepInto();
-		//void StepOut();
-		//void StepOver();
+		/// <summary>
+		/// Informs the calling code whether or not the given step type is implemented,
+		/// if false, a NotImplementedException will be thrown if Step is called with the given value
+		/// </summary>
+		bool CanStep(StepType type);
 
+		/// <summary>
+		/// Advances the core based on the given Step type
+		/// </summary>
 		void Step(StepType type);
 	}
 

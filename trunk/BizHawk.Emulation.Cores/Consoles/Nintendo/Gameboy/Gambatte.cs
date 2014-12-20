@@ -289,6 +289,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			_inputCallbacks = ics;
 		}
 
+		public bool CanStep(StepType type) { return false; }
+
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
 

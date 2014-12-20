@@ -421,6 +421,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			regs.SetRegister(register, value);
 		}
 
+		public bool CanStep(StepType type) { return false; }
+
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
 

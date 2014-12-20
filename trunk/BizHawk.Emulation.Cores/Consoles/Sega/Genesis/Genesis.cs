@@ -292,6 +292,8 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 			};
 		}
 
+		public bool CanStep(StepType type) { return false; }
+
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
 
