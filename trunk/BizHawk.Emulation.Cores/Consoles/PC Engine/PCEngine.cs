@@ -546,9 +546,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		MemoryDomainList memoryDomains;
 		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
-		public IDictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
 		{
-			return new Dictionary<string, int>
+			return new Dictionary<string, Register>
 			{
 				{ "A", Cpu.A },
 				{ "X", Cpu.X },

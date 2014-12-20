@@ -7,9 +7,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 {
 	public partial class Atari7800 : IDebuggable
 	{
-		public IDictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
 		{
-			return new Dictionary<string, int>
+			return new Dictionary<string, Register>
 			{
 				{ "A", theMachine.CPU.A },
 				{ "P", theMachine.CPU.P },
@@ -17,13 +17,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				{ "S", theMachine.CPU.S },
 				{ "X", theMachine.CPU.X },
 				{ "Y", theMachine.CPU.Y },
-				{ "Flag B", theMachine.CPU.fB ? 1 : 0 },
-				{ "Flag C", theMachine.CPU.fC ? 1 : 0 },
-				{ "Flag D", theMachine.CPU.fD ? 1 : 0 },
-				{ "Flag I", theMachine.CPU.fI ? 1 : 0 },
-				{ "Flag N", theMachine.CPU.fN ? 1 : 0 },
-				{ "Flag V", theMachine.CPU.fV ? 1 : 0 },
-				{ "Flag Z", theMachine.CPU.fZ ? 1 : 0 }
+				{ "Flag B", theMachine.CPU.fB },
+				{ "Flag C", theMachine.CPU.fC },
+				{ "Flag D", theMachine.CPU.fD },
+				{ "Flag I", theMachine.CPU.fI },
+				{ "Flag N", theMachine.CPU.fN },
+				{ "Flag V", theMachine.CPU.fV },
+				{ "Flag Z", theMachine.CPU.fZ }
 			};
 		}
 

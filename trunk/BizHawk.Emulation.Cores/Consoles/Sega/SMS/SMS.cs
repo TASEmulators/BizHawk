@@ -488,9 +488,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
-		public IDictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
 		{
-			return new Dictionary<string, int>
+			return new Dictionary<string, Register>
 			{
 				{ "A", Cpu.RegisterA },
 				{ "AF", Cpu.RegisterAF },
@@ -514,14 +514,14 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				{ "Shadow DE", Cpu.RegisterShadowDE },
 				{ "Shadow HL", Cpu.RegisterShadowHL },
 				{ "SP", Cpu.RegisterSP },
-				{ "Flag C", Cpu.RegisterF.Bit(0) ? 1 : 0 },
-				{ "Flag N", Cpu.RegisterF.Bit(1) ? 1 : 0 },
-				{ "Flag P/V", Cpu.RegisterF.Bit(2) ? 1 : 0 },
-				{ "Flag 3rd", Cpu.RegisterF.Bit(3) ? 1 : 0 },
-				{ "Flag H", Cpu.RegisterF.Bit(4) ? 1 : 0 },
-				{ "Flag 5th", Cpu.RegisterF.Bit(5) ? 1 : 0 },
-				{ "Flag Z", Cpu.RegisterF.Bit(6) ? 1 : 0 },
-				{ "Flag S", Cpu.RegisterF.Bit(7) ? 1 : 0 },
+				{ "Flag C", Cpu.RegisterF.Bit(0) },
+				{ "Flag N", Cpu.RegisterF.Bit(1) },
+				{ "Flag P/V", Cpu.RegisterF.Bit(2) },
+				{ "Flag 3rd", Cpu.RegisterF.Bit(3) },
+				{ "Flag H", Cpu.RegisterF.Bit(4) },
+				{ "Flag 5th", Cpu.RegisterF.Bit(5) },
+				{ "Flag Z", Cpu.RegisterF.Bit(6) },
+				{ "Flag S", Cpu.RegisterF.Bit(7) },
 			};
 		}
 

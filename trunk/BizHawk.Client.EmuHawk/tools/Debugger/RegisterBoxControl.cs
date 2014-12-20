@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							if (checkbox.Name == register.Key)
 							{
-								checkbox.Checked = register.Value == 1;
+								checkbox.Checked = register.Value.Value == 1;
 							}
 						});
 
@@ -135,7 +135,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							Name = register.Key,
 							Text = "",
-							Checked = register.Value == 1 ? true : false,
+							Checked = register.Value.Value == 1 ? true : false,
 							Location = new Point(40, y)
 						};
 

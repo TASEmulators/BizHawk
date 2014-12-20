@@ -22,7 +22,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private int PC
 		{
-			get { return Core.GetCpuFlagsAndRegisters()[Disassembler.PCRegisterName]; }
+			// TODO: is this okay for N64?
+			get { return (int)Core.GetCpuFlagsAndRegisters()[Disassembler.PCRegisterName].Value; }
 		}
 
 		#region Implementation checking

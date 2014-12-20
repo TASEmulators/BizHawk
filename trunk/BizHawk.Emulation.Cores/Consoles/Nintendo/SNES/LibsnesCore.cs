@@ -204,7 +204,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			api.Dispose();
 		}
 
-		public IDictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
 		{
 			LibsnesApi.CpuRegs regs;
 			api.QUERY_peek_cpu_regs(out regs);
@@ -218,31 +218,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			bool fz = (regs.p & 0x02)!=0;
 			bool fc = (regs.p & 0x01)!=0;
 			
-			return new Dictionary<string, int>
+			return new Dictionary<string, Register>
 			{
-				{ "PC", (int)regs.pc },
-				{ "A", (int)regs.a },
-				{ "X", (int)regs.x },
-				{ "Y", (int)regs.y },
-				{ "Z", (int)regs.z },
-				{ "S", (int)regs.s },
-				{ "D", (int)regs.d },
-				{ "Vector", (int)regs.vector },
-				{ "P", (int)regs.p },
-				{ "AA", (int)regs.aa },
-				{ "RD", (int)regs.rd },
-				{ "SP", (int)regs.sp },
-				{ "DP", (int)regs.dp },
-				{ "DB", (int)regs.db },
-				{ "MDR", (int)regs.mdr },
-				{ "Flag N", fn?1:0 },
-				{ "Flag V", fv?1:0 },
-				{ "Flag M", fm?1:0 },
-				{ "Flag X", fx?1:0 },
-				{ "Flag D", fd?1:0 },
-				{ "Flag I", fi?1:0 },
-				{ "Flag Z", fz?1:0 },
-				{ "Flag C", fc?1:0 },
+				{ "PC", regs.pc },
+				{ "A", regs.a },
+				{ "X", regs.x },
+				{ "Y", regs.y },
+				{ "Z", regs.z },
+				{ "S", regs.s },
+				{ "D", regs.d },
+				{ "Vector", regs.vector },
+				{ "P", regs.p },
+				{ "AA", regs.aa },
+				{ "RD", regs.rd },
+				{ "SP", regs.sp },
+				{ "DP", regs.dp },
+				{ "DB", regs.db },
+				{ "MDR", regs.mdr },
+				{ "Flag N", fn },
+				{ "Flag V", fv },
+				{ "Flag M", fm },
+				{ "Flag X", fx },
+				{ "Flag D", fd },
+				{ "Flag I", fi },
+				{ "Flag Z", fz },
+				{ "Flag C", fc },
 			};
 		}
 

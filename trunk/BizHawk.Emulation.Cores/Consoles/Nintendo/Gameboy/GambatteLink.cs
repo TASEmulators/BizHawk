@@ -413,13 +413,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public MemoryDomainList MemoryDomains { get; private set; }
 
-		public IDictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, Register> GetCpuFlagsAndRegisters()
 		{
 			var left = L.GetCpuFlagsAndRegisters()
-				.Select(reg => new KeyValuePair<string, int>("Left " + reg.Key, reg.Value));
+				.Select(reg => new KeyValuePair<string, Register>("Left " + reg.Key, reg.Value));
 
 			var right = R.GetCpuFlagsAndRegisters()
-				.Select(reg => new KeyValuePair<string, int>("Right " + reg.Key, reg.Value));
+				.Select(reg => new KeyValuePair<string, Register>("Right " + reg.Key, reg.Value));
 
 			return left.Union(right).ToList().ToDictionary(pair => pair.Key, pair => pair.Value);
 		}
