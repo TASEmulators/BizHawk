@@ -653,6 +653,10 @@
     <Compile Include="tools\Debugger\GenericDebugger.Designer.cs">
       <DependentUpon>GenericDebugger.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\Debugger\GenericDebugger.Disassembler.cs">
+      <DependentUpon>GenericDebugger.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="tools\Debugger\GenericDebugger.IControlMainform.cs">
       <DependentUpon>GenericDebugger.cs</DependentUpon>
       <SubType>Form</SubType>
