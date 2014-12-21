@@ -124,6 +124,7 @@ namespace BizHawk.Client.EmuHawk
 			BreakPointControl1.Core = Debuggable;
 			BreakPointControl1.MCS = MCS;
 			BreakPointControl1.ParentDebugger = this;
+			BreakPointControl1.MemoryDomains = MemoryDomains;
 			BreakPointControl1.GenerateUI();
 
 			StepIntoMenuItem.Enabled = StepIntoBtn.Enabled = CanStepInto;
