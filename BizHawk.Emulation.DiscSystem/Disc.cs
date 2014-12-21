@@ -261,6 +261,10 @@ FILE ""xarp.barp.marp.farp"" BINARY
 			int aba = 0;
 			int dpIndex = 0;
 
+			//TODO - from mednafen (on PC-FX chip chan kick)
+			//If we're more than 2 seconds(150 sectors) from the real "start" of the track/INDEX 01, and the track is a data track,
+			//and the preceding track is an audio track, encode it as audio(by taking the SubQ control field from the preceding 
+
 			//NOTE: discs may have subcode which is nonsense or possibly not recoverable from a sensible disc structure.
 			//but this function does what it says.
 
@@ -272,18 +276,23 @@ FILE ""xarp.barp.marp.farp"" BINARY
 			{
 				if (dpIndex < Structure.Points.Count - 1)
 				{
-					if (aba >= Structure.Points[dpIndex + 1].ABA)
+					while (aba >= Structure.Points[dpIndex + 1].ABA)
 					{
 						dpIndex++;
 					}
 				}
 				var dp = Structure.Points[dpIndex];
 
+				if (aba == 4903 + 150)
+				{
+					int zzz = 9;
+				}
+
 				var se = Sectors[aba];
 
 				EControlQ control = dp.Track.Control;
 				bool pause = true;
-				if (dp.Num != 0)
+				if (dp.Num != 0) //TODO - shouldnt this be IndexNum?
 					pause = false;
 				if ((dp.Track.Control & EControlQ.DataUninterrupted)!=0)
 					pause = false;
@@ -294,8 +303,8 @@ FILE ""xarp.barp.marp.farp"" BINARY
 
 				SubchannelQ sq = new SubchannelQ();
 				sq.q_status = SubchannelQ.ComputeStatus(adr, control);
-				sq.q_tno = (byte)dp.TrackNum;
-				sq.q_index = (byte)dp.IndexNum;
+				sq.q_tno = BCD2.FromDecimal(dp.TrackNum).BCDValue;
+				sq.q_index = BCD2.FromDecimal(dp.IndexNum).BCDValue;
 
 				int track_relative_aba = aba - dp.Track.Indexes[1].aba;
 				track_relative_aba = Math.Abs(track_relative_aba);
