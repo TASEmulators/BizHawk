@@ -377,16 +377,6 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Load<Cheats>();
 			}
 
-			if (Global.Config.AutoLoadNESPPU)
-			{
-				GlobalWin.Tools.Load<NesPPU>();
-			}
-
-			if (Global.Config.AutoLoadNESNameTable)
-			{
-				GlobalWin.Tools.Load<NESNameTableViewer>();
-			}
-
 			if (Global.Config.NESGGAutoload)
 			{
 				GlobalWin.Tools.LoadGameGenieEc();

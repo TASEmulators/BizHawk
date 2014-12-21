@@ -18,28 +18,22 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IEmulator _emu { get; set; }
 
+		[ConfigPersist]
+		private int RefreshRateConfig
+		{
+			get { return RefreshRate.Value; }
+			set { RefreshRate.Value = value; }
+		}
+
 		int scanline;
 
 		public NESNameTableViewer()
 		{
 			InitializeComponent();
-			Closing += (o, e) =>
-				{
-					Global.Config.NesNameTableSettings.Wndx = Location.X;
-					Global.Config.NesNameTableSettings.Wndx = Location.Y;
-					Global.Config.NESNameTableRefreshRate = RefreshRate.Value;
-				};
-			TopMost = Global.Config.NesNameTableSettings.TopMost;
 		}
 
 		private void NESNameTableViewer_Load(object sender, EventArgs e)
 		{
-			if (Global.Config.NesNameTableSettings.UseWindowPosition)
-			{
-				Location = Global.Config.NesNameTableSettings.WindowPosition;
-			}
-
-			RefreshRate.Value = Global.Config.NESNameTableRefreshRate;
 			Generate(true);
 		}
 
@@ -199,7 +193,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RefreshFloatingWindowControl()
 		{
-			Owner = Global.Config.NesNameTableSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
 		#region Events
@@ -219,36 +212,6 @@ namespace BizHawk.Client.EmuHawk
 		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
 			Close();
-		}
-
-		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			AutoloadMenuItem.Checked = Global.Config.AutoLoadNESNameTable;
-			SaveWindowPositionMenuItem.Checked = Global.Config.NesNameTableSettings.SaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Global.Config.NesNameTableSettings.TopMost;
-			FloatingWindowMenuItem.Checked = Global.Config.NesNameTableSettings.FloatingWindow;
-		}
-
-		private void AutoloadMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.AutoLoadNESNameTable ^= true;
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.NesNameTableSettings.SaveWindowPosition ^= true;
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.NesNameTableSettings.TopMost ^= true;
-			TopMost = Global.Config.NesNameTableSettings.TopMost;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.NesNameTableSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
 		}
 
 		private void RefreshImageContextMenuItem_Click(object sender, EventArgs e)

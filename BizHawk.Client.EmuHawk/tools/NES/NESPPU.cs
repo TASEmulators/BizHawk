@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class NesPPU : Form, IToolForm
+	public partial class NesPPU : Form, IToolFormAutoConfig
 	{
 		// TODO:
 		// If 8/16 sprite mode, mouse over should put 32x64 version of prite
@@ -30,24 +30,30 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IEmulator _emu { get; set; }
 
+		[ConfigPersist]
+		private int RefreshRateConfig
+		{
+			get { return RefreshRate.Value; }
+			set { RefreshRate.Value = value; }
+		}
+
+		private bool _chrromview = false;
+		[ConfigPersist]
+		private bool ChrRomView
+		{
+			get { return _chrromview; }
+			set { _chrromview = value; CalculateFormSize(); }
+		}
+
 		public NesPPU()
 		{
 			InitializeComponent();
-			Closing += (o, e) =>
-				{
-					Global.Config.NesPPUSettings.Wndx = Location.X;
-					Global.Config.NesPPUSettings.Wndy = Location.Y;
-					Global.Config.NESPPURefreshRate = RefreshRate.Value;
-				};
-			TopMost = Global.Config.NesPPUSettings.TopMost;
 			CalculateFormSize();
 		}
 
 		private void NesPPU_Load(object sender, EventArgs e)
 		{
-			LoadConfigSettings();
 			ClearDetails();
-			RefreshRate.Value = Global.Config.NESPPURefreshRate;
 			Generate(true);
 			CHRROMViewReload();
 		}
@@ -74,14 +80,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
-
-		private void LoadConfigSettings()
-		{
-			if (Global.Config.NesPPUSettings.UseWindowPosition)
-			{
-				Location = Global.Config.NesPPUSettings.WindowPosition;
-			}
-		}
 
 		private byte GetBit(byte[] PPUBus, int address, int bit)
 		{
@@ -326,7 +324,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RefreshFloatingWindowControl()
 		{
-			Owner = Global.Config.NesPPUSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
 		#region Events
@@ -474,33 +471,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			AutoLoadMenuItem.Checked = Global.Config.AutoLoadNESPPU;
-			SaveWindowPositionMenuItem.Checked = Global.Config.NesPPUSettings.SaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Global.Config.NesPPUSettings.TopMost;
-			FloatingWindowMenuItem.Checked = Global.Config.NesPPUSettings.FloatingWindow;
-			cHRROMTileViewerToolStripMenuItem.Checked = Global.Config.NESPPUChrRomView;
-		}
-
-		private void AutoloadMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.AutoLoadNESPPU ^= true;
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.NesPPUSettings.SaveWindowPosition ^= true;
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.NesPPUSettings.TopMost ^= true;
-			TopMost = Global.Config.NesPPUSettings.TopMost;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.NesPPUSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
+			cHRROMTileViewerToolStripMenuItem.Checked = ChrRomView;
 		}
 
 		#endregion
@@ -838,13 +809,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void cHRROMTileViewerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.NESPPUChrRomView ^= true;
-			CalculateFormSize();
+			ChrRomView ^= true;
 		}
 
 		private void CalculateFormSize()
 		{
-			Width = Global.Config.NESPPUChrRomView ? 861 : 580;
+			Width = ChrRomView ? 861 : 580;
 		}
 
 		private void CHRROMViewReload()

@@ -229,6 +229,11 @@ namespace BizHawk.Client.EmuHawk
 						var converter = TypeDescriptor.GetConverter(prop.PropertyType);
 						val = converter.ConvertFromString((string)val);
 					}
+					else if (!(val is bool) && prop.PropertyType.IsPrimitive)
+					{
+						// numeric constanst are similarly hosed
+						val = Convert.ChangeType(val, prop.PropertyType);
+					}
 					prop.SetValue(tool, val, null);
 				}
 			}
