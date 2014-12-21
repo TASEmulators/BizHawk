@@ -230,27 +230,34 @@ namespace BizHawk.Emulation.DiscSystem
 				//the aba that this cue blob starts on
 				int blob_disc_aba_start = Sectors.Count;
 
-				//for each track within the file, create an index 0 if it is missing.
-				//also check to make sure there is an index 1
+
+				//this is a bit dodgy.. lets fixup the indices so we have something for index 0
+				//TODO - I WISH WE DIDNT HAVE TO DO THIS. WE SHOULDNT PAY SO MUCH ATTENTION TO THE INTEGRITY OF THE INDEXES
+				Timestamp blob_ts = new Timestamp(0);
 				for (int t = 0; t < cue_file.Tracks.Count; t++)
 				{
 					var cue_track = cue_file.Tracks[t];
 					if (!cue_track.Indexes.ContainsKey(1))
 						throw new Cue.CueBrokenException("Track was missing an index 01");
-					if (!cue_track.Indexes.ContainsKey(0))
+					for (int i = 0; i <= 99; i++)
 					{
-						//index 0 will default to the same as index 1.
-						//i am not sure whether it is valid to have two indexes with the same timestamp.
-						//we will do this to simplify some processing, but we can purge it in a later pass if we need to.
-						var cti = new Cue.CueTrackIndex(0);
-						cue_track.Indexes[0] = cti;
-						cti.Timestamp = cue_track.Indexes[1].Timestamp;
+						if (cue_track.Indexes.ContainsKey(i))
+						{
+							blob_ts = cue_track.Indexes[i].Timestamp;
+						}
+						else if (i == 0)
+						{
+							var cti = new Cue.CueTrackIndex(0);
+							cue_track.Indexes[0] = cti;
+							cti.Timestamp = blob_ts;
+						}
 					}
 				}
 
 				//validate that the first index in the file is 00:00:00
+				//"The first index of a file must start at 00:00:00"
+				//zero 20-dec-2014 - NOTE - index 0 is OK. we've seen files that 'start' at non-zero but thats only with index 1 -- an index 0 was explicitly listed at time 0
 				if (cue_file.Tracks[0].Indexes[0].Timestamp.Sector != 0) throw new Cue.CueBrokenException("`The first index of a blob must start at 00:00:00.`");
-
 
 				//for each track within the file:
 				for (int t = 0; t < cue_file.Tracks.Count; t++)
@@ -416,6 +423,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//finally, analyze the length of the sessions and the entire disc by summing the lengths of the tracks
 			//this is a little more complex than it looks, because the length of a thing is not determined by summing it
 			//but rather by the difference in abas between start and end
+			//EDIT - or is the above nonsense? it should be the amount of data present, full stop.
 			Structure.LengthInSectors = 0;
 			foreach (var toc_session in Structure.Sessions)
 			{
