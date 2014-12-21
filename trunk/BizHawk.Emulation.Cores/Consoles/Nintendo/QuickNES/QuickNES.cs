@@ -179,6 +179,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
+			CheckDisposed();
 			using (FP.Save())
 			{
 				if (Controller["Power"])
@@ -273,6 +274,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public void SaveStateText(System.IO.TextWriter writer)
 		{
+			CheckDisposed();
 			var temp = SaveStateBinary();
 			temp.SaveAsHexFast(writer);
 			// write extra copy of stuff we don't use
@@ -281,6 +283,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public void LoadStateText(System.IO.TextReader reader)
 		{
+			CheckDisposed();
 			string hex = reader.ReadLine();
 			byte[] state = new byte[hex.Length / 2];
 			state.ReadFromHexFast(hex);
@@ -289,6 +292,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public void SaveStateBinary(System.IO.BinaryWriter writer)
 		{
+			CheckDisposed();
 			LibQuickNES.ThrowStringError(LibQuickNES.qn_state_save(Context, SaveStateBuff, SaveStateBuff.Length));
 			writer.Write(SaveStateBuff.Length);
 			writer.Write(SaveStateBuff);
@@ -300,6 +304,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public void LoadStateBinary(System.IO.BinaryReader reader)
 		{
+			CheckDisposed();
 			int len = reader.ReadInt32();
 			if (len != SaveStateBuff.Length)
 				throw new InvalidOperationException("Unexpected savestate buffer length!");
@@ -313,6 +318,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public byte[] SaveStateBinary()
 		{
+			CheckDisposed();
 			var ms = new System.IO.MemoryStream(SaveStateBuff2, true);
 			var bw = new System.IO.BinaryWriter(ms);
 			SaveStateBinary(bw);
@@ -630,6 +636,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				LibQuickNES.qn_delete(Context);
 				Context = IntPtr.Zero;
 			}
+		}
+
+		void CheckDisposed()
+		{
+			if (Context == IntPtr.Zero)
+				throw new ObjectDisposedException(GetType().Name);
 		}
 
 		#region VideoProvider
