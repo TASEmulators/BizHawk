@@ -15,6 +15,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class GreenzoneSettingsForm : Form
 	{
+		public IStatable Statable { get; set; }
+
 		private readonly TasStateManagerSettings Settings;
 		private decimal _stateSizeMb;
 		public GreenzoneSettingsForm(TasStateManagerSettings settings)
@@ -25,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GreenzoneSettings_Load(object sender, EventArgs e)
 		{
-			_stateSizeMb = Global.Emulator.AsStatable().SaveStateBinary().Length / (decimal)1024 / (decimal)1024;
+			_stateSizeMb = Statable.SaveStateBinary().Length / (decimal)1024 / (decimal)1024;
 
 			SaveGreenzoneCheckbox.Checked = Settings.SaveGreenzone;
 			CapacityNumeric.Value = Settings.Capacitymb == 0 ? 1 : Settings.Capacitymb < CapacityNumeric.Maximum ?
