@@ -97,18 +97,14 @@
 			this.Table1P6MenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.Table1P7MenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SettingsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.AutoLoadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.cHRROMTileViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NesPPUStatusBar = new StatusStripEx();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.Messagetimer = new System.Windows.Forms.Timer(this.components);
 			this.CHRROMGroup = new System.Windows.Forms.GroupBox();
-			this.CHRROMView = new BizHawk.Client.EmuHawk.PatternViewer();
-			this.numericUpDownCHRROMBank = new System.Windows.Forms.NumericUpDown();
 			this.label5 = new System.Windows.Forms.Label();
-			this.cHRROMTileViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.numericUpDownCHRROMBank = new System.Windows.Forms.NumericUpDown();
+			this.CHRROMView = new BizHawk.Client.EmuHawk.PatternViewer();
 			this.PatternGroup.SuspendLayout();
 			this.PatternContext.SuspendLayout();
 			this.PalettesGroup.SuspendLayout();
@@ -578,7 +574,7 @@
             this.Table0P6MenuItem,
             this.Table0P7MenuItem});
 			this.Table0PaletteSubMenu.Name = "Table0PaletteSubMenu";
-			this.Table0PaletteSubMenu.Size = new System.Drawing.Size(152, 22);
+			this.Table0PaletteSubMenu.Size = new System.Drawing.Size(146, 22);
 			this.Table0PaletteSubMenu.Text = "Table 0 Palette";
 			this.Table0PaletteSubMenu.DropDownOpened += new System.EventHandler(this.Table0PaletteSubMenu_DropDownOpened);
 			// 
@@ -650,7 +646,7 @@
             this.Table1P6MenuItem,
             this.Table1P7MenuItem});
 			this.Table1PaletteSubMenu.Name = "Table1PaletteSubMenu";
-			this.Table1PaletteSubMenu.Size = new System.Drawing.Size(152, 22);
+			this.Table1PaletteSubMenu.Size = new System.Drawing.Size(146, 22);
 			this.Table1PaletteSubMenu.Text = "Table 1 Palette";
 			this.Table1PaletteSubMenu.DropDownOpened += new System.EventHandler(this.Table1PaletteSubMenu_DropDownOpened);
 			// 
@@ -713,46 +709,22 @@
 			// SettingsSubMenu
 			// 
 			this.SettingsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.AutoLoadMenuItem,
-            this.SaveWindowPositionMenuItem,
-            this.AlwaysOnTopMenuItem,
-            this.FloatingWindowMenuItem,
             this.cHRROMTileViewerToolStripMenuItem});
 			this.SettingsSubMenu.Name = "SettingsSubMenu";
 			this.SettingsSubMenu.Size = new System.Drawing.Size(58, 20);
 			this.SettingsSubMenu.Text = "&Settings";
 			this.SettingsSubMenu.DropDownOpened += new System.EventHandler(this.SettingsSubMenu_DropDownOpened);
 			// 
-			// AutoLoadMenuItem
+			// cHRROMTileViewerToolStripMenuItem
 			// 
-			this.AutoLoadMenuItem.Name = "AutoLoadMenuItem";
-			this.AutoLoadMenuItem.Size = new System.Drawing.Size(179, 22);
-			this.AutoLoadMenuItem.Text = "Autoload";
-			this.AutoLoadMenuItem.Click += new System.EventHandler(this.AutoloadMenuItem_Click);
-			// 
-			// SaveWindowPositionMenuItem
-			// 
-			this.SaveWindowPositionMenuItem.Name = "SaveWindowPositionMenuItem";
-			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(179, 22);
-			this.SaveWindowPositionMenuItem.Text = "Save Window Position";
-			this.SaveWindowPositionMenuItem.Click += new System.EventHandler(this.SaveWindowPositionMenuItem_Click);
-			// 
-			// AlwaysOnTopMenuItem
-			// 
-			this.AlwaysOnTopMenuItem.Name = "AlwaysOnTopMenuItem";
-			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(179, 22);
-			this.AlwaysOnTopMenuItem.Text = "Always On Top";
-			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
-			// 
-			// FloatingWindowMenuItem
-			// 
-			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
-			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(179, 22);
-			this.FloatingWindowMenuItem.Text = "Floating Window";
-			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
+			this.cHRROMTileViewerToolStripMenuItem.Name = "cHRROMTileViewerToolStripMenuItem";
+			this.cHRROMTileViewerToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+			this.cHRROMTileViewerToolStripMenuItem.Text = "CHR ROM Tile Viewer";
+			this.cHRROMTileViewerToolStripMenuItem.Click += new System.EventHandler(this.cHRROMTileViewerToolStripMenuItem_Click);
 			// 
 			// NesPPUStatusBar
 			// 
+			this.NesPPUStatusBar.ClickThrough = true;
 			this.NesPPUStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
 			this.NesPPUStatusBar.Location = new System.Drawing.Point(0, 349);
@@ -785,23 +757,6 @@
 			this.CHRROMGroup.TabStop = false;
 			this.CHRROMGroup.Text = "CHR ROM Tiles";
 			// 
-			// CHRROMView
-			// 
-			this.CHRROMView.BackColor = System.Drawing.Color.Transparent;
-			this.CHRROMView.Location = new System.Drawing.Point(7, 20);
-			this.CHRROMView.Name = "CHRROMView";
-			this.CHRROMView.Size = new System.Drawing.Size(256, 128);
-			this.CHRROMView.TabIndex = 0;
-			this.CHRROMView.Text = "patternViewer1";
-			// 
-			// numericUpDownCHRROMBank
-			// 
-			this.numericUpDownCHRROMBank.Location = new System.Drawing.Point(47, 154);
-			this.numericUpDownCHRROMBank.Name = "numericUpDownCHRROMBank";
-			this.numericUpDownCHRROMBank.Size = new System.Drawing.Size(120, 20);
-			this.numericUpDownCHRROMBank.TabIndex = 1;
-			this.numericUpDownCHRROMBank.ValueChanged += new System.EventHandler(this.numericUpDownCHRROMBank_ValueChanged);
-			// 
 			// label5
 			// 
 			this.label5.AutoSize = true;
@@ -811,12 +766,22 @@
 			this.label5.TabIndex = 2;
 			this.label5.Text = "Bank:";
 			// 
-			// cHRROMTileViewerToolStripMenuItem
+			// numericUpDownCHRROMBank
 			// 
-			this.cHRROMTileViewerToolStripMenuItem.Name = "cHRROMTileViewerToolStripMenuItem";
-			this.cHRROMTileViewerToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-			this.cHRROMTileViewerToolStripMenuItem.Text = "CHR ROM Tile Viewer";
-			this.cHRROMTileViewerToolStripMenuItem.Click += new System.EventHandler(this.cHRROMTileViewerToolStripMenuItem_Click);
+			this.numericUpDownCHRROMBank.Location = new System.Drawing.Point(47, 154);
+			this.numericUpDownCHRROMBank.Name = "numericUpDownCHRROMBank";
+			this.numericUpDownCHRROMBank.Size = new System.Drawing.Size(120, 20);
+			this.numericUpDownCHRROMBank.TabIndex = 1;
+			this.numericUpDownCHRROMBank.ValueChanged += new System.EventHandler(this.numericUpDownCHRROMBank_ValueChanged);
+			// 
+			// CHRROMView
+			// 
+			this.CHRROMView.BackColor = System.Drawing.Color.Transparent;
+			this.CHRROMView.Location = new System.Drawing.Point(7, 20);
+			this.CHRROMView.Name = "CHRROMView";
+			this.CHRROMView.Size = new System.Drawing.Size(256, 128);
+			this.CHRROMView.TabIndex = 0;
+			this.CHRROMView.Text = "patternViewer1";
 			// 
 			// NesPPU
 			// 
@@ -899,8 +864,6 @@
 		private System.Windows.Forms.Label label3;
 		private MenuStripEx NesPPUMenu;
 		private System.Windows.Forms.ToolStripMenuItem SettingsSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem AutoLoadMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SaveWindowPositionMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PatternSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem Table0PaletteSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem Table0P0MenuItem;
@@ -945,8 +908,6 @@
 		private StatusStripEx NesPPUStatusBar;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
 		private System.Windows.Forms.Timer Messagetimer;
-		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
 		private System.Windows.Forms.GroupBox CHRROMGroup;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.NumericUpDown numericUpDownCHRROMBank;

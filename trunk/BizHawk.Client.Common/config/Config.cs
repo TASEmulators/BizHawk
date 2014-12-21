@@ -422,17 +422,6 @@ namespace BizHawk.Client.Common
 		public ToolDialogSettings PceVdpSettings = new ToolDialogSettings();
 		public bool PceVdpAutoLoad = false;
 
-		// NESPPU Settings
-		public ToolDialogSettings NesPPUSettings = new ToolDialogSettings();
-		public bool AutoLoadNESPPU = false;
-		public int NESPPURefreshRate = 4;
-		public bool NESPPUChrRomView = false;
-
-		// NES NameTableViewer Settings
-		public ToolDialogSettings NesNameTableSettings = new ToolDialogSettings();
-		public bool AutoLoadNESNameTable = false;
-		public int NESNameTableRefreshRate = 4;
-
 		// SNES Graphics Debugger Dialog Settings
 		public bool AutoLoadSNESGraphicsDebugger = false;
 		public bool SNESGraphicsDebuggerSaveWindowPosition = true;
