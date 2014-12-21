@@ -35,11 +35,6 @@
 			this.VDC2MenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.canvas = new BizHawk.Client.EmuHawk.PCEBGCanvas();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
@@ -65,8 +60,7 @@
 			// 
 			this.PceBgViewerMenu.ClickThrough = true;
 			this.PceBgViewerMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ViewerSubMenu,
-            this.OptionsSubMenu});
+            this.ViewerSubMenu});
 			this.PceBgViewerMenu.Location = new System.Drawing.Point(0, 0);
 			this.PceBgViewerMenu.Name = "PceBgViewerMenu";
 			this.PceBgViewerMenu.Size = new System.Drawing.Size(676, 24);
@@ -81,76 +75,36 @@
             this.toolStripSeparator1,
             this.ExitMenuItem});
 			this.ViewerSubMenu.Name = "ViewerSubMenu";
-			this.ViewerSubMenu.Size = new System.Drawing.Size(54, 20);
+			this.ViewerSubMenu.Size = new System.Drawing.Size(51, 20);
 			this.ViewerSubMenu.Text = "&Viewer";
 			this.ViewerSubMenu.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
 			// 
 			// VDC1MenuItem
 			// 
 			this.VDC1MenuItem.Name = "VDC1MenuItem";
-			this.VDC1MenuItem.Size = new System.Drawing.Size(134, 22);
+			this.VDC1MenuItem.Size = new System.Drawing.Size(152, 22);
 			this.VDC1MenuItem.Text = "VDC&1";
 			this.VDC1MenuItem.Click += new System.EventHandler(this.VDC1MenuItem_Click);
 			// 
 			// VDC2MenuItem
 			// 
 			this.VDC2MenuItem.Name = "VDC2MenuItem";
-			this.VDC2MenuItem.Size = new System.Drawing.Size(134, 22);
+			this.VDC2MenuItem.Size = new System.Drawing.Size(152, 22);
 			this.VDC2MenuItem.Text = "VCD&2";
 			this.VDC2MenuItem.Click += new System.EventHandler(this.VDC2MenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(131, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
 			// 
 			// ExitMenuItem
 			// 
 			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.ExitMenuItem.Size = new System.Drawing.Size(134, 22);
+			this.ExitMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
-			// 
-			// OptionsSubMenu
-			// 
-			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.AutoloadMenuItem,
-            this.SaveWindowPositionMenuItem,
-            this.AlwaysOnTopMenuItem,
-            this.FloatingWindowMenuItem});
-			this.OptionsSubMenu.Name = "OptionsSubMenu";
-			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
-			this.OptionsSubMenu.Text = "&Options";
-			this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
-			// 
-			// AutoloadMenuItem
-			// 
-			this.AutoloadMenuItem.Name = "AutoloadMenuItem";
-			this.AutoloadMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.AutoloadMenuItem.Text = "&Autoload";
-			this.AutoloadMenuItem.Click += new System.EventHandler(this.AutoloadMenuItem_Click);
-			// 
-			// SaveWindowPositionMenuItem
-			// 
-			this.SaveWindowPositionMenuItem.Name = "SaveWindowPositionMenuItem";
-			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.SaveWindowPositionMenuItem.Text = "&Save Window position";
-			this.SaveWindowPositionMenuItem.Click += new System.EventHandler(this.SaveWindowPositionMenuItem_Click);
-			// 
-			// AlwaysOnTopMenuItem
-			// 
-			this.AlwaysOnTopMenuItem.Name = "AlwaysOnTopMenuItem";
-			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.AlwaysOnTopMenuItem.Text = "Always On Top";
-			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
-			// 
-			// FloatingWindowMenuItem
-			// 
-			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
-			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.FloatingWindowMenuItem.Text = "Floating Window";
-			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
 			// 
 			// groupBox1
 			// 
@@ -208,7 +162,7 @@
 			this.RefreshRate.Minimum = 1;
 			this.RefreshRate.Name = "RefreshRate";
 			this.RefreshRate.Orientation = System.Windows.Forms.Orientation.Vertical;
-			this.RefreshRate.Size = new System.Drawing.Size(45, 136);
+			this.RefreshRate.Size = new System.Drawing.Size(42, 136);
 			this.RefreshRate.TabIndex = 0;
 			this.RefreshRate.TickFrequency = 4;
 			this.RefreshRate.Value = 16;
@@ -324,10 +278,7 @@
 
 		private PCEBGCanvas canvas;
         private MenuStripEx PceBgViewerMenu;
-        private System.Windows.Forms.ToolStripMenuItem ViewerSubMenu;
-        private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
-        private System.Windows.Forms.ToolStripMenuItem AutoloadMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem SaveWindowPositionMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ViewerSubMenu;
         private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem VDC1MenuItem;
 		private System.Windows.Forms.ToolStripMenuItem VDC2MenuItem;
@@ -345,7 +296,5 @@
 		private System.Windows.Forms.Label TileIDLabel;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
 	}
 }

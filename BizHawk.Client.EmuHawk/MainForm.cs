@@ -402,16 +402,6 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Load<SmsVDPViewer>();
 			}
 
-			if (Global.Config.PCEBGViewerAutoload)
-			{
-				GlobalWin.Tools.Load<PceBgViewer>();
-			}
-
-			if (Global.Config.PceVdpAutoLoad)
-			{
-				GlobalWin.Tools.Load<PCETileViewer>();
-			}
-
 			if (Global.Config.RecentPceCdlFiles.AutoLoad)
 			{
 				GlobalWin.Tools.Load<PCECDL>();
