@@ -237,14 +237,20 @@ namespace BizHawk.Client.EmuHawk
 		class Parameters
 		{
 			public int width, height;
+			public int pitch; //in bytes
+			public int pitch_add;
 			public void PopulateBITMAPINFOHEADER24(ref Win32.BITMAPINFOHEADER bmih)
 			{
 				bmih.Init();
 				bmih.biPlanes = 1;
 				bmih.biBitCount = 24;
 				bmih.biHeight = height;
+				//pad up width so that we end up with multiple of 4 bytes
+				pitch = width * 3;
+				pitch = (pitch + 3) & ~3;
+				pitch_add = pitch - width * 3;
 				bmih.biWidth = width;
-				bmih.biSizeImage = (uint)(3 * width * height);
+				bmih.biSizeImage = (uint)(pitch * height);
 			}
 
 			public void PopulateBITMAPINFOHEADER32(ref Win32.BITMAPINFOHEADER bmih)
@@ -252,9 +258,10 @@ namespace BizHawk.Client.EmuHawk
 				bmih.Init();
 				bmih.biPlanes = 1;
 				bmih.biBitCount = 32;
+				pitch = width * 4;
 				bmih.biHeight = height;
 				bmih.biWidth = width;
-				bmih.biSizeImage = (uint)(4 * width * height);
+				bmih.biSizeImage = (uint)(pitch * height);
 			}
 
 			public bool has_audio;
@@ -781,14 +788,17 @@ namespace BizHawk.Client.EmuHawk
 					|| parameters.height != source.BufferHeight)
 					throw new InvalidOperationException("video buffer changed between start and now");
 
-				int todo = source.BufferHeight * source.BufferWidth;
+				int pitch_add = parameters.pitch_add;
+
+				int todo = parameters.pitch * parameters.height;
 				int w = source.BufferWidth;
 				int h = source.BufferHeight;
 
 				if (!bit32)
 				{
-					IntPtr buf = GetStaticGlobalBuf(todo * 3);
+					IntPtr buf = GetStaticGlobalBuf(todo);
 
+					//TODO - would using a byte* be faster?
 					int[] buffer = source.GetVideoBuffer();
 					fixed (int* buffer_ptr = &buffer[0])
 					{
@@ -808,10 +818,11 @@ namespace BizHawk.Client.EmuHawk
 									*bp++ = (byte)b;
 								}
 								idx -= w * 2;
+								bp += pitch_add;
 							}
 
 							int bytes_written;
-							int ret = Win32.AVIStreamWrite(pAviCompressedVideoStream, outStatus.video_frames, 1, new IntPtr(bytes_ptr), todo * 3, Win32.AVIIF_KEYFRAME, IntPtr.Zero, out bytes_written);
+							int ret = Win32.AVIStreamWrite(pAviCompressedVideoStream, outStatus.video_frames, 1, new IntPtr(bytes_ptr), todo, Win32.AVIIF_KEYFRAME, IntPtr.Zero, out bytes_written);
 							outStatus.video_bytes += bytes_written;
 							outStatus.video_frames++;
 						}
