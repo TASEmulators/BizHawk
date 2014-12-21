@@ -14,7 +14,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class PCETileViewer : Form, IToolForm
+	public partial class PCETileViewer : Form, IToolFormAutoConfig
 	{
 		[RequiredService]
 		public PCEngine emu { get; private set; }
@@ -233,48 +233,13 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewSP.SaveFile();
 		}
 
-		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			autoloadToolStripMenuItem.Checked = Global.Config.PceVdpAutoLoad;
-			saveWindowPositionToolStripMenuItem.Checked = Global.Config.PceVdpSettings.SaveWindowPosition;
-			alwaysOnTopToolStripMenuItem.Checked = Global.Config.PceVdpSettings.TopMost;
-			floatingWindowToolStripMenuItem.Checked = Global.Config.PceVdpSettings.FloatingWindow;
-		}
-
-		private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.PceVdpAutoLoad ^= true;
-		}
-
-		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.PceVdpSettings.SaveWindowPosition ^= true;
-		}
-
-		private void alwaysOnTopToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			TopMost = Global.Config.PceVdpSettings.TopMost ^= true;
-		}
-
-		private void floatingWindowToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.PceVdpSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
-		}
-
 		private void PCETileViewer_Load(object sender, EventArgs e)
 		{
 			vce = emu.VCE;
-			TopMost = Global.Config.PceVdpSettings.TopMost;
-			if (Global.Config.PceVdpSettings.UseWindowPosition)
-			{
-				Location = Global.Config.PceVdpSettings.WindowPosition;
-			}
 		}
 
 		private void RefreshFloatingWindowControl()
 		{
-			Owner = Global.Config.PceVdpSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
 		protected override void OnShown(EventArgs e)

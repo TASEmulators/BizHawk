@@ -43,11 +43,6 @@
 			this.saveSpriteScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.alwaysOnTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.floatingWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -133,8 +128,7 @@
 			// 
 			this.menuStrip1.ClickThrough = true;
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FileSubMenu,
-            this.OptionsSubMenu});
+            this.FileSubMenu});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Size = new System.Drawing.Size(810, 24);
@@ -149,75 +143,35 @@
             this.toolStripSeparator1,
             this.closeToolStripMenuItem});
 			this.FileSubMenu.Name = "FileSubMenu";
-			this.FileSubMenu.Size = new System.Drawing.Size(37, 20);
+			this.FileSubMenu.Size = new System.Drawing.Size(35, 20);
 			this.FileSubMenu.Text = "&File";
 			// 
 			// saveBackgroundScreenshotToolStripMenuItem
 			// 
 			this.saveBackgroundScreenshotToolStripMenuItem.Name = "saveBackgroundScreenshotToolStripMenuItem";
-			this.saveBackgroundScreenshotToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+			this.saveBackgroundScreenshotToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
 			this.saveBackgroundScreenshotToolStripMenuItem.Text = "Save BG Screenshot...";
 			this.saveBackgroundScreenshotToolStripMenuItem.Click += new System.EventHandler(this.saveBackgroundScreenshotToolStripMenuItem_Click);
 			// 
 			// saveSpriteScreenshotToolStripMenuItem
 			// 
 			this.saveSpriteScreenshotToolStripMenuItem.Name = "saveSpriteScreenshotToolStripMenuItem";
-			this.saveSpriteScreenshotToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+			this.saveSpriteScreenshotToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
 			this.saveSpriteScreenshotToolStripMenuItem.Text = "Save Sprite Screenshot...";
 			this.saveSpriteScreenshotToolStripMenuItem.Click += new System.EventHandler(this.saveSpriteScreenshotToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(198, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(195, 6);
 			// 
 			// closeToolStripMenuItem
 			// 
 			this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
 			this.closeToolStripMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.closeToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+			this.closeToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
 			this.closeToolStripMenuItem.Text = "&Close";
 			this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
-			// 
-			// OptionsSubMenu
-			// 
-			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.autoloadToolStripMenuItem,
-            this.saveWindowPositionToolStripMenuItem,
-            this.alwaysOnTopToolStripMenuItem,
-            this.floatingWindowToolStripMenuItem});
-			this.OptionsSubMenu.Name = "OptionsSubMenu";
-			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
-			this.OptionsSubMenu.Text = "&Options";
-			this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
-			// 
-			// autoloadToolStripMenuItem
-			// 
-			this.autoloadToolStripMenuItem.Name = "autoloadToolStripMenuItem";
-			this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.autoloadToolStripMenuItem.Text = "&Autoload";
-			this.autoloadToolStripMenuItem.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
-			// 
-			// saveWindowPositionToolStripMenuItem
-			// 
-			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
-			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
-			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
-			// 
-			// alwaysOnTopToolStripMenuItem
-			// 
-			this.alwaysOnTopToolStripMenuItem.Name = "alwaysOnTopToolStripMenuItem";
-			this.alwaysOnTopToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.alwaysOnTopToolStripMenuItem.Text = "Always On Top";
-			this.alwaysOnTopToolStripMenuItem.Click += new System.EventHandler(this.alwaysOnTopToolStripMenuItem_Click);
-			// 
-			// floatingWindowToolStripMenuItem
-			// 
-			this.floatingWindowToolStripMenuItem.Name = "floatingWindowToolStripMenuItem";
-			this.floatingWindowToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.floatingWindowToolStripMenuItem.Text = "Floating Window";
-			this.floatingWindowToolStripMenuItem.Click += new System.EventHandler(this.floatingWindowToolStripMenuItem_Click);
 			// 
 			// PCETileViewer
 			// 
@@ -261,10 +215,5 @@
 		private System.Windows.Forms.ToolStripMenuItem saveBackgroundScreenshotToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveSpriteScreenshotToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-		private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem autoloadToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem alwaysOnTopToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem floatingWindowToolStripMenuItem;
 	}
 }

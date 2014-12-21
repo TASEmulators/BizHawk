@@ -418,10 +418,6 @@ namespace BizHawk.Client.Common
 		public ToolDialogSettings SmsVdpSettings = new ToolDialogSettings();
 		public bool SmsVdpAutoLoad = false;
 
-		// PCE VDP Viewer Settings
-		public ToolDialogSettings PceVdpSettings = new ToolDialogSettings();
-		public bool PceVdpAutoLoad = false;
-
 		// SNES Graphics Debugger Dialog Settings
 		public bool AutoLoadSNESGraphicsDebugger = false;
 		public bool SNESGraphicsDebuggerSaveWindowPosition = true;
@@ -430,11 +426,6 @@ namespace BizHawk.Client.Common
 		public int SNESGraphicsDebuggerRefreshRate = 4;
 		public bool SNESGraphicsUseUserBackdropColor = false;
 		public int SNESGraphicsUserBackdropColor = -1;
-
-		// PCE BG Viewer settings
-		public ToolDialogSettings PceBgViewerSettings = new ToolDialogSettings();
-		public bool PCEBGViewerAutoload = false;
-		public int PCEBGViewerRefreshRate = 16;
 
 		// PCE CDL settings
 		public ToolDialogSettings PceCdlSettings = new ToolDialogSettings();
