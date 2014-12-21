@@ -134,12 +134,14 @@ namespace BizHawk.Emulation.DiscSystem
 	{
 		/// <summary>
 		/// ADR and CONTROL
+		/// TODO - make BCD2?
 		/// </summary>
 		public byte q_status;
 
 		/// <summary>
 		/// normal track: BCD indications of the current track number
 		/// leadin track: should be 0 
+		/// TODO - make BCD2?
 		/// </summary>
 		public byte q_tno;
 
