@@ -124,11 +124,17 @@ namespace BizHawk.Client.Common
 
 		public Func<RomGame, string> ChoosePlatform { get; set; }
 
+		// in case we get sent back through the picker more than once, use the same choice the second time
+		int? previouschoice;
 		private int? HandleArchive(HawkFile file)
 		{
+			if (previouschoice.HasValue)
+				return previouschoice;
+
 			if (ChooseArchive != null)
 			{
-				return ChooseArchive(file);
+				previouschoice = ChooseArchive(file);
+				return previouschoice;
 			}
 
 			return null;
@@ -184,7 +190,7 @@ namespace BizHawk.Client.Common
 				// if we have an archive and need to bind something, then pop the dialog
 				if (file.IsArchive && !file.IsBound)
 				{
-					var result = HandleArchive(file);
+					int? result = HandleArchive(file);
 					if (result.HasValue)
 					{
 						file.BindArchiveMember(result.Value);
