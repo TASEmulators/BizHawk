@@ -39,15 +39,10 @@
 			this.menuStrip1 = new MenuStripEx();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveTilesScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.CloseMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.savePalettesScrenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveBGScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.CloseMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -122,8 +117,7 @@
 			// 
 			this.menuStrip1.ClickThrough = true;
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FileSubMenu,
-            this.OptionsSubMenu});
+            this.FileSubMenu});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Size = new System.Drawing.Size(572, 24);
@@ -139,82 +133,42 @@
             this.toolStripSeparator1,
             this.CloseMenuItem});
 			this.FileSubMenu.Name = "FileSubMenu";
-			this.FileSubMenu.Size = new System.Drawing.Size(37, 20);
+			this.FileSubMenu.Size = new System.Drawing.Size(35, 20);
 			this.FileSubMenu.Text = "&File";
 			// 
 			// saveTilesScreenshotToolStripMenuItem
 			// 
 			this.saveTilesScreenshotToolStripMenuItem.Name = "saveTilesScreenshotToolStripMenuItem";
-			this.saveTilesScreenshotToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.saveTilesScreenshotToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.saveTilesScreenshotToolStripMenuItem.Text = "Save Tiles Screenshot...";
 			this.saveTilesScreenshotToolStripMenuItem.Click += new System.EventHandler(this.saveTilesScreenshotToolStripMenuItem_Click);
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(203, 6);
-			// 
-			// CloseMenuItem
-			// 
-			this.CloseMenuItem.Name = "CloseMenuItem";
-			this.CloseMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.CloseMenuItem.Size = new System.Drawing.Size(206, 22);
-			this.CloseMenuItem.Text = "&Close";
-			this.CloseMenuItem.Click += new System.EventHandler(this.CloseMenuItem_Click);
-			// 
-			// OptionsSubMenu
-			// 
-			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.AutoloadMenuItem,
-            this.SaveWindowPositionMenuItem,
-            this.AlwaysOnTopMenuItem,
-            this.FloatingWindowMenuItem});
-			this.OptionsSubMenu.Name = "OptionsSubMenu";
-			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
-			this.OptionsSubMenu.Text = "&Options";
-			this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
-			// 
-			// AutoloadMenuItem
-			// 
-			this.AutoloadMenuItem.Name = "AutoloadMenuItem";
-			this.AutoloadMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.AutoloadMenuItem.Text = "&Autoload";
-			this.AutoloadMenuItem.Click += new System.EventHandler(this.AutoloadMenuItem_Click);
-			// 
-			// SaveWindowPositionMenuItem
-			// 
-			this.SaveWindowPositionMenuItem.Name = "SaveWindowPositionMenuItem";
-			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.SaveWindowPositionMenuItem.Text = "Save Window Position";
-			this.SaveWindowPositionMenuItem.Click += new System.EventHandler(this.SaveWindowPositionMenuItem_Click);
-			// 
-			// AlwaysOnTopMenuItem
-			// 
-			this.AlwaysOnTopMenuItem.Name = "AlwaysOnTopMenuItem";
-			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.AlwaysOnTopMenuItem.Text = "Always On Top";
-			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
-			// 
-			// FloatingWindowMenuItem
-			// 
-			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
-			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.FloatingWindowMenuItem.Text = "Floating Window";
-			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
 			// 
 			// savePalettesScrenshotToolStripMenuItem
 			// 
 			this.savePalettesScrenshotToolStripMenuItem.Name = "savePalettesScrenshotToolStripMenuItem";
-			this.savePalettesScrenshotToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.savePalettesScrenshotToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.savePalettesScrenshotToolStripMenuItem.Text = "Save Palettes Screnshot...";
 			this.savePalettesScrenshotToolStripMenuItem.Click += new System.EventHandler(this.savePalettesScrenshotToolStripMenuItem_Click);
 			// 
 			// saveBGScreenshotToolStripMenuItem
 			// 
 			this.saveBGScreenshotToolStripMenuItem.Name = "saveBGScreenshotToolStripMenuItem";
-			this.saveBGScreenshotToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.saveBGScreenshotToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.saveBGScreenshotToolStripMenuItem.Text = "Save BG Screenshot...";
 			this.saveBGScreenshotToolStripMenuItem.Click += new System.EventHandler(this.saveBGScreenshotToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(200, 6);
+			// 
+			// CloseMenuItem
+			// 
+			this.CloseMenuItem.Name = "CloseMenuItem";
+			this.CloseMenuItem.ShortcutKeyDisplayString = "Alt+F4";
+			this.CloseMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.CloseMenuItem.Text = "&Close";
+			this.CloseMenuItem.Click += new System.EventHandler(this.CloseMenuItem_Click);
 			// 
 			// SmsVDPViewer
 			// 
@@ -256,11 +210,6 @@
 		private MenuStripEx menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem FileSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem CloseMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem AutoloadMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SaveWindowPositionMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveTilesScreenshotToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem savePalettesScrenshotToolStripMenuItem;

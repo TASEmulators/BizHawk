@@ -14,7 +14,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class SmsVDPViewer : Form, IToolForm
+	public partial class SmsVDPViewer : Form, IToolFormAutoConfig
 	{
 		[RequiredService]
 		private SMS sms { get; set; }
@@ -207,58 +207,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void RefreshFloatingWindowControl()
-		{
-			Owner = Global.Config.SmsVdpSettings.FloatingWindow ? null : GlobalWin.MainForm;
-		}
-
-		protected override void OnShown(EventArgs e)
-		{
-			RefreshFloatingWindowControl();
-			base.OnShown(e);
-		}
-
 		private void CloseMenuItem_Click(object sender, EventArgs e)
 		{
 			Close();
 		}
 
-		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			AutoloadMenuItem.Checked = Global.Config.SmsVdpAutoLoad;
-			SaveWindowPositionMenuItem.Checked = Global.Config.SmsVdpSettings.SaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Global.Config.SmsVdpSettings.TopMost;
-			FloatingWindowMenuItem.Checked = Global.Config.SmsVdpSettings.FloatingWindow;
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SmsVdpSettings.SaveWindowPosition ^= true;
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			TopMost = Global.Config.SmsVdpSettings.TopMost ^= true;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SmsVdpSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
-		}
-
 		private void VDPViewer_Load(object sender, EventArgs e)
 		{
-			TopMost = Global.Config.SmsVdpSettings.TopMost;
-			if (Global.Config.SmsVdpSettings.UseWindowPosition)
-			{
-				Location = Global.Config.SmsVdpSettings.WindowPosition;
-			}
-		}
-
-		private void AutoloadMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SmsVdpAutoLoad ^= true;
 		}
 
 		private void saveTilesScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
