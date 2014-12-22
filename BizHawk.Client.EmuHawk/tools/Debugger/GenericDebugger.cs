@@ -16,9 +16,6 @@ namespace BizHawk.Client.EmuHawk
 	[ToolAttributes(released: false)]
 	public partial class GenericDebugger : Form, IToolFormAutoConfig, IControlMainform
 	{
-		private int _defaultWidth;
-		private int _defaultHeight;
-
 		public GenericDebugger()
 		{
 			InitializeComponent();
@@ -32,10 +29,6 @@ namespace BizHawk.Client.EmuHawk
 		private void GenericDebugger_Load(object sender, EventArgs e)
 		{
 			DisassemblerView.ItemCount = BusMaxValue + 1;
-
-			_defaultWidth = Size.Width;
-			_defaultHeight = Size.Height;
-
 			EngageDebugger();
 		}
 
