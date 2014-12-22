@@ -407,11 +407,6 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Load<SNESGraphicsDebugger>();
 			}
 
-			if (Global.Config.GenericDebuggerAutoload)
-			{
-				GlobalWin.Tools.Load<GenericDebugger>();
-			}
-
 			if (Global.Config.DisplayStatusBar == false)
 			{
 				MainStatusBar.Visible = false;

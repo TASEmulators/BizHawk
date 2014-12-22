@@ -538,10 +538,6 @@ namespace BizHawk.Client.Common
 
 		public BindingCollection HotkeyBindings = new BindingCollection();
 
-		// Generic Debugger
-		public ToolDialogSettings GenericDebuggerSettings = new ToolDialogSettings();
-		public bool GenericDebuggerAutoload = false;
-
 		// Analog Hotkey values
 		public int Analog_LargeChange = 10;
 		public int Analog_SmallChange = 1;
