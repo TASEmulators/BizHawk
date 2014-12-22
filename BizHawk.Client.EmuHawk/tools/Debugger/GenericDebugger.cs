@@ -14,7 +14,7 @@ using BizHawk.Client.Common;
 namespace BizHawk.Client.EmuHawk
 {
 	[ToolAttributes(released: false)]
-	public partial class GenericDebugger : Form, IToolForm, IControlMainform
+	public partial class GenericDebugger : Form, IToolFormAutoConfig, IControlMainform
 	{
 		private int _defaultWidth;
 		private int _defaultHeight;
@@ -22,7 +22,6 @@ namespace BizHawk.Client.EmuHawk
 		public GenericDebugger()
 		{
 			InitializeComponent();
-			TopMost = Global.Config.GenericDebuggerSettings.TopMost;
 			Closing += (o, e) => DisengageDebugger();
 
 			DisassemblerView.QueryItemText += DisassemblerView_QueryItemText;
@@ -36,16 +35,6 @@ namespace BizHawk.Client.EmuHawk
 
 			_defaultWidth = Size.Width;
 			_defaultHeight = Size.Height;
-
-			if (Global.Config.GenericDebuggerSettings.UseWindowPosition)
-			{
-				Location = Global.Config.GenericDebuggerSettings.WindowPosition;
-			}
-
-			if (Global.Config.GenericDebuggerSettings.UseWindowSize)
-			{
-				Size = Global.Config.GenericDebuggerSettings.WindowSize;
-			}
 
 			EngageDebugger();
 		}
@@ -149,24 +138,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisengageDebugger()
 		{
-			SaveConfigSettings();
 			if (Debuggable.Tracer != null)
 			{
 				Debuggable.Tracer.Enabled = false;
 			}
 
 			BreakPointControl1.Shutdown();
-		}
-
-		private void SaveConfigSettings()
-		{
-			if (Global.Config.GenericDebuggerSettings.SaveWindowPosition)
-			{
-				Global.Config.GenericDebuggerSettings.Wndx = Location.X;
-				Global.Config.GenericDebuggerSettings.Wndy = Location.Y;
-				Global.Config.GenericDebuggerSettings.Width = Right - Left;
-				Global.Config.GenericDebuggerSettings.Height = Bottom - Top;
-			}
 		}
 
 		protected override void OnShown(EventArgs e)
@@ -179,8 +156,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Owner = Global.Config.RamSearchSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
-
-		#region Menu Items
 
 		#region File
 
@@ -224,49 +199,6 @@ namespace BizHawk.Client.EmuHawk
 				FullUpdate();
 			}
 		}
-
-		#endregion
-
-		#region Options
-
-		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			AutoloadMenuItem.Checked = Global.Config.GenericDebuggerAutoload;
-			SaveWindowPositionMenuItem.Checked = Global.Config.GenericDebuggerSettings.SaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Global.Config.GenericDebuggerSettings.TopMost;
-			FloatingWindowMenuItem.Checked = Global.Config.GenericDebuggerSettings.FloatingWindow;
-		}
-
-		private void AutoloadMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GenericDebuggerAutoload ^= true;
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GenericDebuggerSettings.SaveWindowPosition ^= true;
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			TopMost = Global.Config.GenericDebuggerSettings.TopMost ^= true;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GenericDebuggerSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
-		}
-
-		private void RestoreDefaultsMenuItem_Click(object sender, EventArgs e)
-		{
-			Size = new Size(_defaultWidth, _defaultHeight);
-			Global.Config.GenericDebuggerSettings = new ToolDialogSettings();
-			TopMost = Global.Config.GenericDebuggerSettings.TopMost;
-			RefreshFloatingWindowControl();
-		}
-
-		#endregion
 
 		#endregion
 
