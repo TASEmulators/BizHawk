@@ -495,7 +495,18 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadFile(FileInfo file)
 		{
 			CurrentTasMovie.Filename = file.FullName;
-			CurrentTasMovie.Load();
+			try
+			{
+				CurrentTasMovie.Load();
+			}
+			catch
+			{
+				MessageBox.Show(
+					"Tastudio could not open the file. Due to the loading process, the emulator/Tastudio may be in a unspecified state. Bizhawk will now close.",
+					"Tastudio",
+					MessageBoxButtons.OK);
+				Application.Exit();
+			}
 			Global.Config.RecentTas.Add(CurrentTasMovie.Filename);
 
 			if (CurrentTasMovie.InputLogLength > 0) // TODO: this is probably reoccuring logic, break off into a function
