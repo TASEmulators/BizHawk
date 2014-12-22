@@ -5,6 +5,8 @@
 	/// </summary>
 	public interface ITracer
 	{
+		// TODO: would it be faster (considering both disk and screen output) to keep the data as a List<string> directly?
+
 		bool Enabled { get; set; }
 
 		/// <summary>

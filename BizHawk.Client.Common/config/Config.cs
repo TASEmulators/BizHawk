@@ -328,9 +328,11 @@ namespace BizHawk.Client.Common
 		public Color HexHighlightFreezeColor = Color.Violet;
 
 		// Trace Logger Settings
+		/*
 		public ToolDialogSettings TraceLoggerSettings = new ToolDialogSettings();
 		public bool TraceLoggerAutoLoad = false;
 		public int TraceLoggerMaxLines = 100000;
+		*/
 
 		// Video dumping settings
 		public string VideoWriter = "";
