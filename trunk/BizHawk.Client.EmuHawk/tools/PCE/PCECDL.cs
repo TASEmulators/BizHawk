@@ -37,7 +37,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RefreshFloatingWindowControl()
 		{
-			Owner = Global.Config.SmsVdpSettings.FloatingWindow ? null : GlobalWin.MainForm;
+			// TODO: FIXME
+			// Owner = Global.Config.SmsVdpSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
 		protected override void OnShown(EventArgs e)

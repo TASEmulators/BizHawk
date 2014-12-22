@@ -397,11 +397,6 @@ namespace BizHawk.Client.EmuHawk
 				OpenLuaConsole();
 			}
 
-			if (Global.Config.SmsVdpAutoLoad)
-			{
-				GlobalWin.Tools.Load<SmsVDPViewer>();
-			}
-
 			if (Global.Config.RecentPceCdlFiles.AutoLoad)
 			{
 				GlobalWin.Tools.Load<PCECDL>();

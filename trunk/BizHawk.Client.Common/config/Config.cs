@@ -327,13 +327,6 @@ namespace BizHawk.Client.Common
 		public Color HexHighlightColor = Color.Pink;
 		public Color HexHighlightFreezeColor = Color.Violet;
 
-		// Trace Logger Settings
-		/*
-		public ToolDialogSettings TraceLoggerSettings = new ToolDialogSettings();
-		public bool TraceLoggerAutoLoad = false;
-		public int TraceLoggerMaxLines = 100000;
-		*/
-
 		// Video dumping settings
 		public string VideoWriter = "";
 		public int JMDCompression = 3;
@@ -415,10 +408,6 @@ namespace BizHawk.Client.Common
 
 		public Dictionary<string, ToolDialogSettings> CommonToolSettings = new Dictionary<string, ToolDialogSettings>();
 		public Dictionary<string, Dictionary<string, object>> CustomToolSettings = new Dictionary<string, Dictionary<string, object>>();
-
-		// SMS VDP Viewer Settings
-		public ToolDialogSettings SmsVdpSettings = new ToolDialogSettings();
-		public bool SmsVdpAutoLoad = false;
 
 		// SNES Graphics Debugger Dialog Settings
 		public bool AutoLoadSNESGraphicsDebugger = false;
