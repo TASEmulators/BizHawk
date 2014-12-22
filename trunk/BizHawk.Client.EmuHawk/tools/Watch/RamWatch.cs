@@ -196,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (!string.IsNullOrWhiteSpace(_watches.CurrentFileName))
+			if (_watches != null && !string.IsNullOrWhiteSpace(_watches.CurrentFileName))
 			{
 				_watches.RefreshDomans(_core, _core.MemoryDomains.MainMemory);
 				_watches.Reload();
