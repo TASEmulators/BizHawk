@@ -511,7 +511,6 @@ namespace BizHawk.Client.Common
 
 		// VirtualPad Dialog
 		public ToolDialogSettings VirtualPadSettings = new ToolDialogSettings();
-		public bool VirtualPadsUpdatePads = true;
 		public bool AutoloadVirtualPad = false;
 		public bool VirtualPadSticky = true;
 		public bool VirtualPadClearClearsAnalog = false;
