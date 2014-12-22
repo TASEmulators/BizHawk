@@ -418,10 +418,6 @@ namespace BizHawk.Client.Common
 		public bool SNESGraphicsUseUserBackdropColor = false;
 		public int SNESGraphicsUserBackdropColor = -1;
 
-		// PCE CDL settings
-		public ToolDialogSettings PceCdlSettings = new ToolDialogSettings();
-		public RecentFiles RecentPceCdlFiles = new RecentFiles(8);
-
 		// PCE Sound Debugger settings
 		public ToolDialogSettings PceSoundDebuggerSettings = new ToolDialogSettings();
 		public bool PceSoundDebuggerAutoload = false;

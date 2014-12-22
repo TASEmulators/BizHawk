@@ -397,11 +397,6 @@ namespace BizHawk.Client.EmuHawk
 				OpenLuaConsole();
 			}
 
-			if (Global.Config.RecentPceCdlFiles.AutoLoad)
-			{
-				GlobalWin.Tools.Load<PCECDL>();
-			}
-
 			if (Global.Config.PceSoundDebuggerAutoload)
 			{
 				GlobalWin.Tools.Load<PCESoundDebugger>();
