@@ -55,44 +55,10 @@
 			this.BackupSRamCheckbox = new System.Windows.Forms.CheckBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.LogWindowAsConsoleCheckbox = new System.Windows.Forms.CheckBox();
-			this.tabPage2 = new System.Windows.Forms.TabPage();
-			this.IncreaseRecentBtn = new System.Windows.Forms.Button();
-			this.DecreaseRecentBtn = new System.Windows.Forms.Button();
-			this.RecentGroupBox = new System.Windows.Forms.GroupBox();
-			this.label19 = new System.Windows.Forms.Label();
-			this.RecentSearchesNumeric = new System.Windows.Forms.NumericUpDown();
-			this.label20 = new System.Windows.Forms.Label();
-			this.RecentWatchesNumeric = new System.Windows.Forms.NumericUpDown();
-			this.label21 = new System.Windows.Forms.Label();
-			this.RecentLuaSessionsNumeric = new System.Windows.Forms.NumericUpDown();
-			this.label22 = new System.Windows.Forms.Label();
-			this.RecentLuaScriptNumeric = new System.Windows.Forms.NumericUpDown();
-			this.label23 = new System.Windows.Forms.Label();
-			this.RecentPceCDLNumeric = new System.Windows.Forms.NumericUpDown();
-			this.label18 = new System.Windows.Forms.Label();
-			this.RecentTblNumeric = new System.Windows.Forms.NumericUpDown();
-			this.label16 = new System.Windows.Forms.Label();
-			this.RecentCheatsNumeric = new System.Windows.Forms.NumericUpDown();
-			this.label17 = new System.Windows.Forms.Label();
-			this.RecentMoviesNumeric = new System.Windows.Forms.NumericUpDown();
-			this.label15 = new System.Windows.Forms.Label();
-			this.RecentRomsNumeric = new System.Windows.Forms.NumericUpDown();
-			this.label11 = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage3.SuspendLayout();
-			this.tabPage2.SuspendLayout();
-			this.RecentGroupBox.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.RecentSearchesNumeric)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.RecentWatchesNumeric)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.RecentLuaSessionsNumeric)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.RecentLuaScriptNumeric)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.RecentPceCDLNumeric)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.RecentTblNumeric)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.RecentCheatsNumeric)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.RecentMoviesNumeric)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.RecentRomsNumeric)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// OkBtn
@@ -125,7 +91,6 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.tabControl1.Controls.Add(this.tabPage1);
 			this.tabControl1.Controls.Add(this.tabPage3);
-			this.tabControl1.Controls.Add(this.tabPage2);
 			this.tabControl1.Location = new System.Drawing.Point(12, 12);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
@@ -373,360 +338,6 @@
 			this.LogWindowAsConsoleCheckbox.Text = "Create the log window as a console window";
 			this.LogWindowAsConsoleCheckbox.UseVisualStyleBackColor = true;
 			// 
-			// tabPage2
-			// 
-			this.tabPage2.Controls.Add(this.IncreaseRecentBtn);
-			this.tabPage2.Controls.Add(this.DecreaseRecentBtn);
-			this.tabPage2.Controls.Add(this.RecentGroupBox);
-			this.tabPage2.Location = new System.Drawing.Point(4, 22);
-			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(386, 323);
-			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "Recent Menus";
-			this.tabPage2.UseVisualStyleBackColor = true;
-			// 
-			// IncreaseRecentBtn
-			// 
-			this.IncreaseRecentBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.IncreaseRecentBtn.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Forward;
-			this.IncreaseRecentBtn.Location = new System.Drawing.Point(357, 14);
-			this.IncreaseRecentBtn.Name = "IncreaseRecentBtn";
-			this.IncreaseRecentBtn.Size = new System.Drawing.Size(23, 23);
-			this.IncreaseRecentBtn.TabIndex = 5;
-			this.IncreaseRecentBtn.UseVisualStyleBackColor = true;
-			this.IncreaseRecentBtn.Click += new System.EventHandler(this.IncreaseRecentBtn_Click);
-			// 
-			// DecreaseRecentBtn
-			// 
-			this.DecreaseRecentBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.DecreaseRecentBtn.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Back;
-			this.DecreaseRecentBtn.Location = new System.Drawing.Point(335, 14);
-			this.DecreaseRecentBtn.Name = "DecreaseRecentBtn";
-			this.DecreaseRecentBtn.Size = new System.Drawing.Size(23, 23);
-			this.DecreaseRecentBtn.TabIndex = 3;
-			this.DecreaseRecentBtn.UseVisualStyleBackColor = true;
-			this.DecreaseRecentBtn.Click += new System.EventHandler(this.DecreaseRecentBtn_Click);
-			// 
-			// RecentGroupBox
-			// 
-			this.RecentGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.RecentGroupBox.Controls.Add(this.label19);
-			this.RecentGroupBox.Controls.Add(this.RecentSearchesNumeric);
-			this.RecentGroupBox.Controls.Add(this.label20);
-			this.RecentGroupBox.Controls.Add(this.RecentWatchesNumeric);
-			this.RecentGroupBox.Controls.Add(this.label21);
-			this.RecentGroupBox.Controls.Add(this.RecentLuaSessionsNumeric);
-			this.RecentGroupBox.Controls.Add(this.label22);
-			this.RecentGroupBox.Controls.Add(this.RecentLuaScriptNumeric);
-			this.RecentGroupBox.Controls.Add(this.label23);
-			this.RecentGroupBox.Controls.Add(this.RecentPceCDLNumeric);
-			this.RecentGroupBox.Controls.Add(this.label18);
-			this.RecentGroupBox.Controls.Add(this.RecentTblNumeric);
-			this.RecentGroupBox.Controls.Add(this.label16);
-			this.RecentGroupBox.Controls.Add(this.RecentCheatsNumeric);
-			this.RecentGroupBox.Controls.Add(this.label17);
-			this.RecentGroupBox.Controls.Add(this.RecentMoviesNumeric);
-			this.RecentGroupBox.Controls.Add(this.label15);
-			this.RecentGroupBox.Controls.Add(this.RecentRomsNumeric);
-			this.RecentGroupBox.Controls.Add(this.label11);
-			this.RecentGroupBox.Location = new System.Drawing.Point(15, 37);
-			this.RecentGroupBox.Name = "RecentGroupBox";
-			this.RecentGroupBox.Size = new System.Drawing.Size(365, 280);
-			this.RecentGroupBox.TabIndex = 2;
-			this.RecentGroupBox.TabStop = false;
-			this.RecentGroupBox.Text = "Max number of recent files";
-			// 
-			// label19
-			// 
-			this.label19.AutoSize = true;
-			this.label19.Location = new System.Drawing.Point(15, 122);
-			this.label19.Name = "label19";
-			this.label19.Size = new System.Drawing.Size(90, 13);
-			this.label19.TabIndex = 18;
-			this.label19.Text = "Translation tables";
-			// 
-			// RecentSearchesNumeric
-			// 
-			this.RecentSearchesNumeric.Location = new System.Drawing.Point(276, 105);
-			this.RecentSearchesNumeric.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-			this.RecentSearchesNumeric.Minimum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-			this.RecentSearchesNumeric.Name = "RecentSearchesNumeric";
-			this.RecentSearchesNumeric.Size = new System.Drawing.Size(43, 20);
-			this.RecentSearchesNumeric.TabIndex = 9;
-			this.RecentSearchesNumeric.Value = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-			// 
-			// label20
-			// 
-			this.label20.AutoSize = true;
-			this.label20.Location = new System.Drawing.Point(200, 109);
-			this.label20.Name = "label20";
-			this.label20.Size = new System.Drawing.Size(52, 13);
-			this.label20.TabIndex = 16;
-			this.label20.Text = "Searches";
-			// 
-			// RecentWatchesNumeric
-			// 
-			this.RecentWatchesNumeric.Location = new System.Drawing.Point(276, 79);
-			this.RecentWatchesNumeric.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-			this.RecentWatchesNumeric.Minimum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-			this.RecentWatchesNumeric.Name = "RecentWatchesNumeric";
-			this.RecentWatchesNumeric.Size = new System.Drawing.Size(43, 20);
-			this.RecentWatchesNumeric.TabIndex = 8;
-			this.RecentWatchesNumeric.Value = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-			// 
-			// label21
-			// 
-			this.label21.AutoSize = true;
-			this.label21.Location = new System.Drawing.Point(200, 83);
-			this.label21.Name = "label21";
-			this.label21.Size = new System.Drawing.Size(50, 13);
-			this.label21.TabIndex = 14;
-			this.label21.Text = "Watches";
-			// 
-			// RecentLuaSessionsNumeric
-			// 
-			this.RecentLuaSessionsNumeric.Location = new System.Drawing.Point(276, 53);
-			this.RecentLuaSessionsNumeric.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-			this.RecentLuaSessionsNumeric.Minimum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-			this.RecentLuaSessionsNumeric.Name = "RecentLuaSessionsNumeric";
-			this.RecentLuaSessionsNumeric.Size = new System.Drawing.Size(43, 20);
-			this.RecentLuaSessionsNumeric.TabIndex = 7;
-			this.RecentLuaSessionsNumeric.Value = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-			// 
-			// label22
-			// 
-			this.label22.AutoSize = true;
-			this.label22.Location = new System.Drawing.Point(200, 57);
-			this.label22.Name = "label22";
-			this.label22.Size = new System.Drawing.Size(70, 13);
-			this.label22.TabIndex = 12;
-			this.label22.Text = "Lua Sessions";
-			// 
-			// RecentLuaScriptNumeric
-			// 
-			this.RecentLuaScriptNumeric.Location = new System.Drawing.Point(276, 27);
-			this.RecentLuaScriptNumeric.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-			this.RecentLuaScriptNumeric.Minimum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-			this.RecentLuaScriptNumeric.Name = "RecentLuaScriptNumeric";
-			this.RecentLuaScriptNumeric.Size = new System.Drawing.Size(43, 20);
-			this.RecentLuaScriptNumeric.TabIndex = 6;
-			this.RecentLuaScriptNumeric.Value = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-			// 
-			// label23
-			// 
-			this.label23.AutoSize = true;
-			this.label23.Location = new System.Drawing.Point(200, 31);
-			this.label23.Name = "label23";
-			this.label23.Size = new System.Drawing.Size(60, 13);
-			this.label23.TabIndex = 10;
-			this.label23.Text = "Lua Scripts";
-			// 
-			// RecentPceCDLNumeric
-			// 
-			this.RecentPceCDLNumeric.Location = new System.Drawing.Point(124, 142);
-			this.RecentPceCDLNumeric.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-			this.RecentPceCDLNumeric.Minimum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-			this.RecentPceCDLNumeric.Name = "RecentPceCDLNumeric";
-			this.RecentPceCDLNumeric.Size = new System.Drawing.Size(43, 20);
-			this.RecentPceCDLNumeric.TabIndex = 5;
-			this.RecentPceCDLNumeric.Value = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-			// 
-			// label18
-			// 
-			this.label18.AutoSize = true;
-			this.label18.Location = new System.Drawing.Point(15, 146);
-			this.label18.Name = "label18";
-			this.label18.Size = new System.Drawing.Size(103, 13);
-			this.label18.TabIndex = 8;
-			this.label18.Text = "PCE code/data logs";
-			// 
-			// RecentTblNumeric
-			// 
-			this.RecentTblNumeric.Location = new System.Drawing.Point(124, 118);
-			this.RecentTblNumeric.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-			this.RecentTblNumeric.Minimum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-			this.RecentTblNumeric.Name = "RecentTblNumeric";
-			this.RecentTblNumeric.Size = new System.Drawing.Size(43, 20);
-			this.RecentTblNumeric.TabIndex = 4;
-			this.RecentTblNumeric.Value = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-			// 
-			// label16
-			// 
-			this.label16.AutoSize = true;
-			this.label16.Location = new System.Drawing.Point(15, 109);
-			this.label16.Name = "label16";
-			this.label16.Size = new System.Drawing.Size(56, 13);
-			this.label16.TabIndex = 6;
-			this.label16.Text = "Hex Editor";
-			// 
-			// RecentCheatsNumeric
-			// 
-			this.RecentCheatsNumeric.Location = new System.Drawing.Point(124, 79);
-			this.RecentCheatsNumeric.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-			this.RecentCheatsNumeric.Minimum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-			this.RecentCheatsNumeric.Name = "RecentCheatsNumeric";
-			this.RecentCheatsNumeric.Size = new System.Drawing.Size(43, 20);
-			this.RecentCheatsNumeric.TabIndex = 3;
-			this.RecentCheatsNumeric.Value = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-			// 
-			// label17
-			// 
-			this.label17.AutoSize = true;
-			this.label17.Location = new System.Drawing.Point(15, 83);
-			this.label17.Name = "label17";
-			this.label17.Size = new System.Drawing.Size(40, 13);
-			this.label17.TabIndex = 4;
-			this.label17.Text = "Cheats";
-			// 
-			// RecentMoviesNumeric
-			// 
-			this.RecentMoviesNumeric.Location = new System.Drawing.Point(124, 53);
-			this.RecentMoviesNumeric.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-			this.RecentMoviesNumeric.Minimum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-			this.RecentMoviesNumeric.Name = "RecentMoviesNumeric";
-			this.RecentMoviesNumeric.Size = new System.Drawing.Size(43, 20);
-			this.RecentMoviesNumeric.TabIndex = 2;
-			this.RecentMoviesNumeric.Value = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-			// 
-			// label15
-			// 
-			this.label15.AutoSize = true;
-			this.label15.Location = new System.Drawing.Point(15, 57);
-			this.label15.Name = "label15";
-			this.label15.Size = new System.Drawing.Size(41, 13);
-			this.label15.TabIndex = 2;
-			this.label15.Text = "Movies";
-			// 
-			// RecentRomsNumeric
-			// 
-			this.RecentRomsNumeric.Location = new System.Drawing.Point(124, 27);
-			this.RecentRomsNumeric.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-			this.RecentRomsNumeric.Minimum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-			this.RecentRomsNumeric.Name = "RecentRomsNumeric";
-			this.RecentRomsNumeric.Size = new System.Drawing.Size(43, 20);
-			this.RecentRomsNumeric.TabIndex = 1;
-			this.RecentRomsNumeric.Value = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-			// 
-			// label11
-			// 
-			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(15, 31);
-			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(34, 13);
-			this.label11.TabIndex = 0;
-			this.label11.Text = "Roms";
-			// 
 			// EmuHawkOptions
 			// 
 			this.AcceptButton = this.OkBtn;
@@ -747,18 +358,6 @@
 			this.tabPage1.PerformLayout();
 			this.tabPage3.ResumeLayout(false);
 			this.tabPage3.PerformLayout();
-			this.tabPage2.ResumeLayout(false);
-			this.RecentGroupBox.ResumeLayout(false);
-			this.RecentGroupBox.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.RecentSearchesNumeric)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.RecentWatchesNumeric)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.RecentLuaSessionsNumeric)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.RecentLuaScriptNumeric)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.RecentPceCDLNumeric)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.RecentTblNumeric)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.RecentCheatsNumeric)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.RecentMoviesNumeric)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.RecentRomsNumeric)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -769,7 +368,6 @@
 		private System.Windows.Forms.Button CancelBtn;
 		private System.Windows.Forms.TabControl tabControl1;
 		private System.Windows.Forms.TabPage tabPage1;
-		private System.Windows.Forms.TabPage tabPage2;
 		private System.Windows.Forms.CheckBox StartPausedCheckbox;
 		private System.Windows.Forms.CheckBox PauseWhenMenuActivatedCheckbox;
 		private System.Windows.Forms.CheckBox EnableContextMenuCheckbox;
@@ -789,31 +387,9 @@
 		private System.Windows.Forms.Label label9;
 		private System.Windows.Forms.Label label10;
 		private System.Windows.Forms.CheckBox FrameAdvSkipLagCheckbox;
-		private System.Windows.Forms.Label label11;
 		private System.Windows.Forms.Label label12;
 		private System.Windows.Forms.Label label13;
 		private System.Windows.Forms.Label label14;
-		private System.Windows.Forms.GroupBox RecentGroupBox;
-		private System.Windows.Forms.NumericUpDown RecentSearchesNumeric;
-		private System.Windows.Forms.Label label20;
-		private System.Windows.Forms.NumericUpDown RecentWatchesNumeric;
-		private System.Windows.Forms.Label label21;
-		private System.Windows.Forms.NumericUpDown RecentLuaSessionsNumeric;
-		private System.Windows.Forms.Label label22;
-		private System.Windows.Forms.NumericUpDown RecentLuaScriptNumeric;
-		private System.Windows.Forms.Label label23;
-		private System.Windows.Forms.NumericUpDown RecentPceCDLNumeric;
-		private System.Windows.Forms.Label label18;
-		private System.Windows.Forms.NumericUpDown RecentTblNumeric;
-		private System.Windows.Forms.Label label16;
-		private System.Windows.Forms.NumericUpDown RecentCheatsNumeric;
-		private System.Windows.Forms.Label label17;
-		private System.Windows.Forms.NumericUpDown RecentMoviesNumeric;
-		private System.Windows.Forms.Label label15;
-		private System.Windows.Forms.NumericUpDown RecentRomsNumeric;
-		private System.Windows.Forms.Label label19;
-		private System.Windows.Forms.Button IncreaseRecentBtn;
-		private System.Windows.Forms.Button DecreaseRecentBtn;
 		private System.Windows.Forms.CheckBox StartFullScreenCheckbox;
 	}
 }
