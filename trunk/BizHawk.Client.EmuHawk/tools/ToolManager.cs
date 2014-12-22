@@ -113,7 +113,6 @@ namespace BizHawk.Client.EmuHawk
 		private static void AttachSettingHooks(IToolFormAutoConfig tool, ToolDialogSettings settings)
 		{
 			var form = (Form)tool;
-
 			ToolStripItemCollection dest = null;
 			foreach (Control c in form.Controls)
 			{
@@ -125,6 +124,7 @@ namespace BizHawk.Client.EmuHawk
 						if (submenu.Text.Contains("Settings"))
 						{
 							dest = submenu.DropDownItems;
+							dest.Add(new ToolStripSeparator());
 							break;
 						}
 					}
@@ -140,15 +140,17 @@ namespace BizHawk.Client.EmuHawk
 			if (dest == null)
 				throw new InvalidOperationException("IToolFormAutoConfig must have menu to bind to!");
 
-			dest.Add("Save Window Position");
-			dest.Add("Stay on Top");
-			dest.Add("Float from Parent");
-			dest.Add("Auto Load");
+			int idx = dest.Count;
 
-			(dest[0] as ToolStripMenuItem).Checked = settings.SaveWindowPosition;
-			(dest[1] as ToolStripMenuItem).Checked = settings.TopMost;
-			(dest[2] as ToolStripMenuItem).Checked = settings.FloatingWindow;
-			(dest[3] as ToolStripMenuItem).Checked = settings.AutoLoad;
+			dest.Add("Save Window &Position");
+			dest.Add("Stay on &Top");
+			dest.Add("&Float from Parent");
+			dest.Add("&Autoload");
+
+			(dest[idx+0] as ToolStripMenuItem).Checked = settings.SaveWindowPosition;
+			(dest[idx + 1] as ToolStripMenuItem).Checked = settings.TopMost;
+			(dest[idx + 2] as ToolStripMenuItem).Checked = settings.FloatingWindow;
+			(dest[idx + 3] as ToolStripMenuItem).Checked = settings.AutoLoad;
 
 			form.TopMost = settings.TopMost;
 
@@ -173,27 +175,27 @@ namespace BizHawk.Client.EmuHawk
 				settings.Height = form.Bottom - form.Top;
 			};
 
-			dest[0].Click += (o, e) =>
+			dest[idx + 0].Click += (o, e) =>
 			{
 				bool val = !(o as ToolStripMenuItem).Checked;
 				settings.SaveWindowPosition = val;
 				(o as ToolStripMenuItem).Checked = val;
 			};
-			dest[1].Click += (o, e) =>
+			dest[idx + 1].Click += (o, e) =>
 			{
 				bool val = !(o as ToolStripMenuItem).Checked;
 				settings.TopMost = val;
 				(o as ToolStripMenuItem).Checked = val;
 				form.TopMost = val;
 			};
-			dest[2].Click += (o, e) =>
+			dest[idx + 2].Click += (o, e) =>
 			{
 				bool val = !(o as ToolStripMenuItem).Checked;
 				settings.FloatingWindow = val;
 				(o as ToolStripMenuItem).Checked = val;
 				form.Owner = val ? null : GlobalWin.MainForm;
 			};
-			dest[3].Click += (o, e) =>
+			dest[idx + 3].Click += (o, e) =>
 			{
 				bool val = !(o as ToolStripMenuItem).Checked;
 				settings.AutoLoad = val;

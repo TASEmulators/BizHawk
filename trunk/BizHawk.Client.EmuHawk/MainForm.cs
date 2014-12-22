@@ -417,11 +417,6 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Load<SNESGraphicsDebugger>();
 			}
 
-			if (Global.Config.TraceLoggerAutoLoad)
-			{
-				GlobalWin.Tools.Load<TraceLogger>();
-			}
-
 			if (Global.Config.GenericDebuggerAutoload)
 			{
 				GlobalWin.Tools.Load<GenericDebugger>();
