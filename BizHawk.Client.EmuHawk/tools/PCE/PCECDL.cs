@@ -14,37 +14,36 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class PCECDL : Form, IToolForm
+	public partial class PCECDL : Form, IToolFormAutoConfig
 	{
 		[RequiredService]
 		private PCEngine _emu { get; set; }
 		private CodeDataLog _cdl;
 
+		private RecentFiles _recent_fld = new RecentFiles();
+		[ConfigPersist]
+		private RecentFiles _recent
+		{
+			get
+			{ return _recent_fld; }
+			set
+			{
+				_recent_fld = value;
+				if (_recent_fld.AutoLoad)
+				{
+					LoadFile(_recent.MostRecent);
+					_currentFileName = _recent.MostRecent;
+				}
+			}
+		}
+
 		private MemoryDomainList MemoryDomains { get { return _emu.MemoryDomains; } }
 
 		private string _currentFileName = string.Empty;
 
-		private int _defaultWidth;
-		private int _defaultHeight;
-
 		public PCECDL()
 		{
 			InitializeComponent();
-			TopMost = Global.Config.PceCdlSettings.TopMost;
-
-			Closing += (o, e) => SaveConfigSettings();
-		}
-
-		private void RefreshFloatingWindowControl()
-		{
-			// TODO: FIXME
-			// Owner = Global.Config.SmsVdpSettings.FloatingWindow ? null : GlobalWin.MainForm;
-		}
-
-		protected override void OnShown(EventArgs e)
-		{
-			RefreshFloatingWindowControl();
-			base.OnShown(e);
 		}
 
 		public void UpdateValues()
@@ -129,31 +128,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SaveConfigSettings()
-		{
-			Global.Config.PceCdlSettings.Wndx = Location.X;
-			Global.Config.PceCdlSettings.Wndy = Location.Y;
-			Global.Config.PceCdlSettings.Width = Right - Left;
-			Global.Config.PceCdlSettings.Height = Bottom - Top;
-		}
-
-		private void LoadConfigSettings()
-		{
-			// Size and Positioning
-			_defaultWidth = Size.Width;
-			_defaultHeight = Size.Height;
-
-			if (Global.Config.PceCdlSettings.UseWindowPosition)
-			{
-				Location = Global.Config.PceCdlSettings.WindowPosition;
-			}
-
-			if (Global.Config.PceCdlSettings.UseWindowSize)
-			{
-				Size = Global.Config.PceCdlSettings.WindowSize;
-			}
-		}
-
 		#region Events
 
 		#region File
@@ -171,8 +145,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(
-				Global.Config.RecentPceCdlFiles.RecentMenu(LoadFile, true));
+			RecentSubMenu.DropDownItems.AddRange(_recent.RecentMenu(LoadFile, true));
 		}
 
 		private void NewMenuItem_Click(object sender, EventArgs e)
@@ -206,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 							_cdl = newCDL;
 							_emu.Cpu.CDL = _cdl;
 							UpdateDisplay();
-							Global.Config.RecentPceCdlFiles.Add(file.FullName);
+							_recent.Add(file.FullName);
 							_currentFileName = file.FullName;
 						}
 					}
@@ -239,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 					using (var fs = new FileStream(file.FullName, FileMode.Create, FileAccess.Write))
 					{
 						_cdl.Save(fs);
-						Global.Config.RecentPceCdlFiles.Add(file.FullName);
+						_recent.Add(file.FullName);
 						_currentFileName = file.FullName;
 					}
 				}
@@ -311,53 +284,10 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		#region Options
-
-		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			SaveWindowPositionMenuItem.Checked = Global.Config.PceCdlSettings.SaveWindowPosition;
-			TopMost = AlwaysOnTopMenuItem.Checked = Global.Config.PceCdlSettings.TopMost;
-			FloatingWindowMenuItem.Checked = Global.Config.PceCdlSettings.FloatingWindow;
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.PceCdlSettings.SaveWindowPosition ^= true;
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.PceCdlSettings.TopMost ^= true;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.PceCdlSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
-		}
-
-		private void RestoreDefaultSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			Size = new Size(_defaultWidth, _defaultHeight);
-
-			Global.Config.PceCdlSettings.SaveWindowPosition = true;
-			Global.Config.PceCdlSettings.TopMost = TopMost = false;
-			Global.Config.PceCdlSettings.FloatingWindow = false;
-		}
-
-		#endregion
-
 		#region Dialog Events
 
 		private void PCECDL_Load(object sender, EventArgs e)
 		{
-			LoadConfigSettings();
-
-			if (Global.Config.RecentPceCdlFiles.AutoLoad)
-			{
-				LoadFile(Global.Config.RecentPceCdlFiles.MostRecent);
-				_currentFileName = Global.Config.RecentPceCdlFiles.MostRecent;
-			}
 		}
 
 		private void LoggingActiveCheckbox_CheckedChanged(object sender, EventArgs e)

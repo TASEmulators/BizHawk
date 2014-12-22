@@ -48,7 +48,6 @@ namespace BizHawk.Client.EmuHawk
 			RecentMoviesNumeric.Value = Global.Config.RecentMovies.MAX_RECENT_FILES;
 			RecentCheatsNumeric.Value = Global.Config.RecentCheats.MAX_RECENT_FILES;
 			RecentTblNumeric.Value = Global.Config.RecentTables.MAX_RECENT_FILES;
-			RecentPceCDLNumeric.Value = Global.Config.RecentPceCdlFiles.MAX_RECENT_FILES;
 			RecentLuaScriptNumeric.Value = Global.Config.RecentLua.MAX_RECENT_FILES;
 			RecentLuaSessionsNumeric.Value = Global.Config.RecentLuaSession.MAX_RECENT_FILES;
 			RecentWatchesNumeric.Value = Global.Config.RecentWatches.MAX_RECENT_FILES;
@@ -78,7 +77,6 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.RecentMovies.MAX_RECENT_FILES = (int)RecentMoviesNumeric.Value;
 			Global.Config.RecentCheats.MAX_RECENT_FILES = (int)RecentCheatsNumeric.Value;
 			Global.Config.RecentTables.MAX_RECENT_FILES = (int)RecentTblNumeric.Value;
-			Global.Config.RecentPceCdlFiles.MAX_RECENT_FILES = (int)RecentPceCDLNumeric.Value;
 			Global.Config.RecentLua.MAX_RECENT_FILES = (int)RecentLuaScriptNumeric.Value;
 			Global.Config.RecentLuaSession.MAX_RECENT_FILES = (int)RecentLuaSessionsNumeric.Value;
 			Global.Config.RecentWatches.MAX_RECENT_FILES = (int)RecentWatchesNumeric.Value;
