@@ -502,10 +502,10 @@ namespace BizHawk.Client.EmuHawk
 			catch
 			{
 				MessageBox.Show(
-					"Tastudio could not open the file. Due to the loading process, the emulator/Tastudio may be in a unspecified state. Bizhawk will now close.",
+					"Tastudio could not open the file. Due to the loading process, the emulator/Tastudio may be in a unspecified state depending on the error.",
 					"Tastudio",
 					MessageBoxButtons.OK);
-				Application.Exit();
+				return;
 			}
 			Global.Config.RecentTas.Add(CurrentTasMovie.Filename);
 
