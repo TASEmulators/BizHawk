@@ -85,9 +85,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisassemblerView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (DisassemblyLines[index].Address == PC)
+			if (DisassemblyLines.Any() && index < DisassemblyLines.Count)
 			{
-				color = Color.LightCyan;
+				if (DisassemblyLines[index].Address == PC)
+				{
+					color = Color.LightCyan;
+				}
 			}
 		}
 
