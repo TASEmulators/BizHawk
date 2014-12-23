@@ -41,19 +41,22 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (var register in registers)
 				{
-					Controls
-						.OfType<Panel>()
-						.First(p => p.Name == "FlagPanel")
-						.Controls
-						.OfType<CheckBox>()
-						.ToList()
-						.ForEach(checkbox =>
-						{
-							if (checkbox.Name == register.Key)
+					if (Controls.OfType<Panel>().Any(p => p.Name == "FlagPanel"))
+					{
+						Controls
+							.OfType<Panel>()
+							.First(p => p.Name == "FlagPanel")
+							.Controls
+							.OfType<CheckBox>()
+							.ToList()
+							.ForEach(checkbox =>
 							{
-								checkbox.Checked = register.Value.Value == 1;
-							}
-						});
+								if (checkbox.Name == register.Key)
+								{
+									checkbox.Checked = register.Value.Value == 1;
+								}
+							});
+					}
 
 					Controls
 						.OfType<TextBox>()
@@ -196,7 +199,8 @@ namespace BizHawk.Client.EmuHawk
 						Checked = flag.Value.Value == 1 ? true : false,
 						Location = new Point(40, y),
 						Dock = DockStyle.Left,
-						Size = new Size(23, 23)
+						Size = new Size(23, 23),
+						Enabled = canset
 					};
 
 					c.CheckedChanged += (o, e) =>
