@@ -110,10 +110,24 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private static void RefreshSettings(Form form, ToolStripItemCollection menu, ToolDialogSettings settings, int idx)
+		{
+			(menu[idx + 0] as ToolStripMenuItem).Checked = settings.SaveWindowPosition;
+			(menu[idx + 1] as ToolStripMenuItem).Checked = settings.TopMost;
+			(menu[idx + 2] as ToolStripMenuItem).Checked = settings.FloatingWindow;
+			(menu[idx + 3] as ToolStripMenuItem).Checked = settings.AutoLoad;
+
+			form.TopMost = settings.TopMost;
+
+			// do we need to do this OnShown() as well?
+			form.Owner = settings.FloatingWindow ? null : GlobalWin.MainForm;
+		}
+
 		private static void AttachSettingHooks(IToolFormAutoConfig tool, ToolDialogSettings settings)
 		{
 			var form = (Form)tool;
 			ToolStripItemCollection dest = null;
+			var oldsize = form.Size; // this should be the right time to grab this size
 			foreach (Control c in form.Controls)
 			{
 				if (c is MenuStrip)
@@ -146,17 +160,10 @@ namespace BizHawk.Client.EmuHawk
 			dest.Add("Stay on &Top");
 			dest.Add("&Float from Parent");
 			dest.Add("&Autoload");
+			dest.Add("Restore &Defaults");
 
-			(dest[idx+0] as ToolStripMenuItem).Checked = settings.SaveWindowPosition;
-			(dest[idx + 1] as ToolStripMenuItem).Checked = settings.TopMost;
-			(dest[idx + 2] as ToolStripMenuItem).Checked = settings.FloatingWindow;
-			(dest[idx + 3] as ToolStripMenuItem).Checked = settings.AutoLoad;
+			RefreshSettings(form, dest, settings, idx);
 
-			form.TopMost = settings.TopMost;
-
-			// do we need to do this OnShown() as well?
-			form.Owner = settings.FloatingWindow ? null : GlobalWin.MainForm;
-			
 			if (settings.UseWindowPosition)
 			{
 				form.Location = settings.WindowPosition;
@@ -200,6 +207,12 @@ namespace BizHawk.Client.EmuHawk
 				bool val = !(o as ToolStripMenuItem).Checked;
 				settings.AutoLoad = val;
 				(o as ToolStripMenuItem).Checked = val;
+			};
+			dest[idx + 4].Click += (o, e) =>
+			{
+				settings.RestoreDefaults();
+				RefreshSettings(form, dest, settings, idx);
+				form.Size = oldsize;
 			};
 		}
 

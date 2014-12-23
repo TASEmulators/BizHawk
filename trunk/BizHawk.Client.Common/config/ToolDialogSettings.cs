@@ -14,6 +14,18 @@ namespace BizHawk.Client.Common
 			FloatingWindow = true;
 		}
 
+		public void RestoreDefaults()
+		{
+			_wndx = null;
+			_wndy = null;
+			SaveWindowPosition = true;
+			FloatingWindow = true;
+			TopMost = false;
+			AutoLoad = false;
+			Width = null;
+			Height = null;
+		}
+
 		[JsonIgnore]
 		public int? Wndx
 		{
