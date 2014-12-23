@@ -91,11 +91,18 @@ namespace BizHawk.Client.EmuHawk
 			RegisterPanel.ParentDebugger = this;
 			RegisterPanel.GenerateUI();
 
-			BreakPointControl1.Core = Debuggable;
-			BreakPointControl1.MCS = MCS;
-			BreakPointControl1.ParentDebugger = this;
-			BreakPointControl1.MemoryDomains = MemoryDomains;
-			BreakPointControl1.GenerateUI();
+			if (CanUseMemoryCallbacks)
+			{
+				BreakPointControl1.Core = Debuggable;
+				BreakPointControl1.MCS = MemoryCallbacks;
+				BreakPointControl1.ParentDebugger = this;
+				BreakPointControl1.MemoryDomains = MemoryDomains;
+				BreakPointControl1.GenerateUI();
+			}
+			else
+			{
+				DisableBreakpointBox();
+			}
 
 			StepIntoMenuItem.Enabled = StepIntoBtn.Enabled = CanStepInto;
 			StepOutMenuItem.Enabled = StepOutBtn.Enabled = CanStepOut;
