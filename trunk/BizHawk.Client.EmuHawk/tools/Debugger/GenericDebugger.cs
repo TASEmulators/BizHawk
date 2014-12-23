@@ -28,8 +28,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GenericDebugger_Load(object sender, EventArgs e)
 		{
-			DisassemblerView.ItemCount = BusMaxValue + 1;
+			SetDisassemblerItemCount();
 			EngageDebugger();
+			UpdateDisassembler();
 		}
 
 		public void DisableRegisterBox()

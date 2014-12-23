@@ -9,19 +9,21 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class GenericDebugger
 	{
+		private readonly List<DisasmOp> DisassemblyLines = new List<DisasmOp>();
+
 		private class DisasmOp
 		{
-			public DisasmOp(int s, string m)
+			public DisasmOp(uint address, int s, string m)
 			{
+				Address = address;
 				Size = s;
 				Mnemonic = m;
 			}
 
+			public uint Address { get; private set; }
 			public int Size { get; private set; }
 			public string Mnemonic { get; private set; }
 		}
-
-		//private const int ADDR_MAX = 0xFFFF; // TODO: this isn't a constant, calculate it off bus size
 
 		private int BusMaxValue
 		{
@@ -31,20 +33,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private const int DISASM_LINE_COUNT = 100;
-
-		private readonly List<DisasmOp> DisassemblyLines = new List<DisasmOp>();
-
 		private void UpdateDisassembler()
 		{
-			// Always show a window's worth of instructions (if possible)
 			if (CanDisassemble)
 			{
 				DisassemblerView.BlazingFast = true;
 				currentDisassemblerAddress = PC;
-				Disassemble(DISASM_LINE_COUNT);
-				DisassemblerView.ensureVisible(BusMaxValue);
-				DisassemblerView.ensureVisible((int)PC);
+				Disassemble();
 				DisassemblerView.Refresh();
 				DisassemblerView.BlazingFast = false;
 			}
@@ -52,15 +47,17 @@ namespace BizHawk.Client.EmuHawk
 
 		uint currentDisassemblerAddress = 0;
 
-		private void Disassemble(int line_count)
+		private void Disassemble()
 		{
+			int line_count = DisassemblerView.NumberOfVisibleRows;
+
 			DisassemblyLines.Clear();
 			uint a = currentDisassemblerAddress;
 			for (int i = 0; i < line_count; ++i)
 			{
 				int advance;
 				string line = Disassembler.Disassemble(MemoryDomains.SystemBus, (ushort)a, out advance);
-				DisassemblyLines.Add(new DisasmOp(advance, line));
+				DisassemblyLines.Add(new DisasmOp(a, advance, line));
 				a += (uint)advance;
 				if (a > BusMaxValue)
 				{
@@ -72,33 +69,23 @@ namespace BizHawk.Client.EmuHawk
 		private void DisassemblerView_QueryItemText(int index, int column, out string text)
 		{
 			text = "";
-			if (column == 0)
-			{
-				//if (PC <= index && index < PC + DisassemblyLines.Count)
-				if (currentDisassemblerAddress <= index && index < currentDisassemblerAddress + DisassemblyLines.Count)
-				{
-					int a = (int)currentDisassemblerAddress;
-					for (int i = 0; i < index - currentDisassemblerAddress; ++i)
-					{
-						a += DisassemblyLines[i].Size;
-					}
 
-					text = string.Format("{0:X4}", a);
-				}
-			}
-			else if (column == 1)
+			if (index < DisassemblyLines.Count)
 			{
-				//if (PC <= index && index < PC + DisassemblyLines.Count)
-				if (currentDisassemblerAddress <= index && index < currentDisassemblerAddress + DisassemblyLines.Count)
+				if (column == 0)
 				{
-					text = DisassemblyLines[index - (int)currentDisassemblerAddress].Mnemonic;
+					text = string.Format("{0:X4}", DisassemblyLines[index].Address);
+				}
+				else if (column == 1)
+				{
+					text = DisassemblyLines[index].Mnemonic;
 				}
 			}
 		}
 
 		private void DisassemblerView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (index == PC)
+			if (DisassemblyLines[index].Address == PC)
 			{
 				color = Color.LightCyan;
 			}
@@ -117,6 +104,12 @@ namespace BizHawk.Client.EmuHawk
 				}
 				newaddress--;
 
+				if (newaddress < 0)
+				{
+					newaddress = 0;
+					break;
+				}
+
 				// Just in case
 				if (currentDisassemblerAddress - newaddress > 5)
 				{
@@ -131,6 +124,10 @@ namespace BizHawk.Client.EmuHawk
 		private void IncrementCurrentAddress()
 		{
 			currentDisassemblerAddress += (uint)DisassemblyLines.First().Size;
+			if (currentDisassemblerAddress >= BusMaxValue)
+			{
+				currentDisassemblerAddress = (uint)(BusMaxValue - 1);
+			}
 		}
 
 		private void DisassemblerView_Scroll(object sender, ScrollEventArgs e)
@@ -138,16 +135,27 @@ namespace BizHawk.Client.EmuHawk
 			if (e.Type == ScrollEventType.SmallIncrement)
 			{
 				IncrementCurrentAddress();
-				Disassemble(DISASM_LINE_COUNT);
+				Disassemble();
 				DisassemblerView.Refresh();
 			}
 
 			if (e.Type == ScrollEventType.SmallDecrement)
 			{
 				DecrementCurrentAddress();
-				Disassemble(DISASM_LINE_COUNT);
+				Disassemble();
 				DisassemblerView.Refresh();
 			}
+		}
+
+		private void SetDisassemblerItemCount()
+		{
+			DisassemblerView.ItemCount = DisassemblerView.NumberOfVisibleRows + 1;
+		}
+
+		private void DisassemblerView_SizeChanged(object sender, EventArgs e)
+		{
+			SetDisassemblerItemCount();
+			Disassemble();
 		}
 	}
 }

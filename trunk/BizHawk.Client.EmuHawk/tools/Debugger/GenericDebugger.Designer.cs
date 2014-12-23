@@ -80,7 +80,7 @@
 			// 
 			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.ExitMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.ExitMenuItem.Size = new System.Drawing.Size(145, 22);
 			this.ExitMenuItem.Text = "&Close";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
@@ -217,6 +217,7 @@
 			this.DisassemblerView.UseCustomBackground = true;
 			this.DisassemblerView.View = System.Windows.Forms.View.Details;
 			this.DisassemblerView.Scroll += new System.Windows.Forms.ScrollEventHandler(this.DisassemblerView_Scroll);
+			this.DisassemblerView.SizeChanged += new System.EventHandler(this.DisassemblerView_SizeChanged);
 			// 
 			// Address
 			// 
