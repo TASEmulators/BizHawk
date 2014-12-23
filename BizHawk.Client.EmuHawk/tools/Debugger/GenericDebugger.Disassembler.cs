@@ -130,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IncrementCurrentAddress()
 		{
-			currentDisassemblerAddress++;
+			currentDisassemblerAddress += (uint)DisassemblyLines.First().Size;
 		}
 
 		private void DisassemblerView_Scroll(object sender, ScrollEventArgs e)
@@ -139,27 +139,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				IncrementCurrentAddress();
 				Disassemble(DISASM_LINE_COUNT);
+				DisassemblerView.Refresh();
 			}
 
 			if (e.Type == ScrollEventType.SmallDecrement)
 			{
 				DecrementCurrentAddress();
 				Disassemble(DISASM_LINE_COUNT);
+				DisassemblerView.Refresh();
 			}
-
-				//int oldv = e.OldValue;
-				//int newv = e.NewValue;
-				//int diff = oldv - newv;
-				
-				//if (e.OldValue > e.NewValue) // Scrolled Up
-				//{
-				//	Disassemble(DISASM_LINE_COUNT, PC - (e.OldValue - e.NewValue));
-				//}
-				//else if (e.OldValue < e.NewValue) // Scrolled Down
-				//{
-				//	Disassemble(DISASM_LINE_COUNT, PC - (e.OldValue - e.NewValue));
-				//}
-			//}
 		}
 	}
 }
