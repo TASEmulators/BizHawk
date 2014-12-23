@@ -58,16 +58,33 @@ namespace BizHawk.Client.EmuHawk
 							});
 					}
 
-					Controls
-						.OfType<TextBox>()
-						.ToList()
-						.ForEach(textbox =>
-						{
-							if (textbox.Name == register.Key)
+					if (CanSetCpuRegisters)
+					{
+
+						Controls
+							.OfType<TextBox>()
+							.ToList()
+							.ForEach(textbox =>
 							{
-								textbox.Text = register.Value.Value.ToHexString(register.Value.BitSize / 16);
-							}
-						});
+								if (textbox.Name == register.Key)
+								{
+									textbox.Text = register.Value.Value.ToHexString(register.Value.BitSize / 16);
+								}
+							});
+					}
+					else
+					{
+						Controls
+							.OfType<Label>()
+							.ToList()
+							.ForEach(label =>
+							{
+								if (label.Name == register.Key)
+								{
+									label.Text = register.Value.Value.ToHexString(register.Value.BitSize / 16);
+								}
+							});
+					}
 				}
 
 				_supressChangeEvents = false;
