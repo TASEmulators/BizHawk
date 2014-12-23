@@ -15,8 +15,8 @@ namespace BizHawk.Client.EmuHawk
 		private IDisassemblable Disassembler { get; set; }
 		[OptionalService]
 		private IMemoryDomains MemoryDomainSource { get; set; }
-		[OptionalService]
-		private IMemoryCallbackSystem MCS { get; set; }
+
+		private IMemoryCallbackSystem MemoryCallbacks { get { return Debuggable.MemoryCallbacks; } }
 
 		private MemoryDomainList MemoryDomains { get { return MemoryDomainSource.MemoryDomains; } }
 
@@ -27,6 +27,27 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#region Implementation checking
+
+		private bool CanUseMemoryCallbacks
+		{
+			get
+			{
+				if (Debuggable != null)
+				{
+					try
+					{
+						var result = Debuggable.MemoryCallbacks.HasReads;
+						return true;
+					}
+					catch (NotImplementedException)
+					{
+						return false;
+					}
+				}
+
+				return false;
+			}
+		}
 
 		private bool CanDisassemble
 		{
