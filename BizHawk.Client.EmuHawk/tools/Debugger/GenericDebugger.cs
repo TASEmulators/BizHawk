@@ -33,22 +33,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateDisassembler();
 		}
 
-		public void DisableRegisterBox()
-		{
-			RegistersGroupBox.Enabled = false;
-			toolTip1.SetToolTip(RegistersGroupBox, "This core does not currently support reading registers");
-		}
-
-		public void DisableBreakpointBox()
-		{
-			BreakpointsGroupBox.Enabled = false;
-			toolTip1.SetToolTip(BreakpointsGroupBox, "This core does not currently support breakpoints");
-		}
-
-		private void OnCpuDropDownIndexChanged(object sender, EventArgs e)
-		{
-			Disassembler.Cpu = (sender as ComboBox).SelectedItem.ToString();
-		}
+		
 
 		private void EngageDebugger()
 		{
@@ -135,15 +120,21 @@ namespace BizHawk.Client.EmuHawk
 			BreakPointControl1.Shutdown();
 		}
 
-		protected override void OnShown(EventArgs e)
+		public void DisableRegisterBox()
 		{
-			RefreshFloatingWindowControl();
-			base.OnShown(e);
+			RegistersGroupBox.Enabled = false;
+			toolTip1.SetToolTip(RegistersGroupBox, "This core does not currently support reading registers");
 		}
 
-		private void RefreshFloatingWindowControl()
+		public void DisableBreakpointBox()
 		{
-			Owner = Global.Config.RamSearchSettings.FloatingWindow ? null : GlobalWin.MainForm;
+			BreakpointsGroupBox.Enabled = false;
+			toolTip1.SetToolTip(BreakpointsGroupBox, "This core does not currently support breakpoints");
+		}
+
+		private void OnCpuDropDownIndexChanged(object sender, EventArgs e)
+		{
+			Disassembler.Cpu = (sender as ComboBox).SelectedItem.ToString();
 		}
 
 		#region File
