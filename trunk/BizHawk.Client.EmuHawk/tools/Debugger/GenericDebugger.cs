@@ -28,15 +28,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GenericDebugger_Load(object sender, EventArgs e)
 		{
-			SetDisassemblerItemCount();
 			EngageDebugger();
-			UpdateDisassembler();
 		}
-
-		
 
 		private void EngageDebugger()
 		{
+			DisassemblyLines.Clear();
+
 			if (CanDisassemble)
 			{
 				try
@@ -72,10 +70,14 @@ namespace BizHawk.Client.EmuHawk
 						Text = Disassembler.Cpu
 					});
 				}
+
+				SetDisassemblerItemCount();
+				UpdateDisassembler();
 			}
 			else
 			{
 				DisassemblerBox.Enabled = false;
+				DisassemblerView.ItemCount = 0;
 				DisassemblerBox.Controls.Add(new Label
 				{
 					Location = new Point(35, 23),

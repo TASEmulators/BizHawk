@@ -134,7 +134,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			// TODO
+			DisengageDebugger();
+			EngageDebugger();
 		}
 
 		public bool AskSaveChanges()
