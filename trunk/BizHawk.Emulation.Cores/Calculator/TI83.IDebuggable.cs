@@ -120,12 +120,6 @@ namespace BizHawk.Emulation.Cores.Calculators
 			}
 		}
 
-		public ITracer Tracer
-		{
-			[FeatureNotImplemented]
-			get { throw new NotImplementedException(); }
-		}
-
 		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
 		[FeatureNotImplemented]

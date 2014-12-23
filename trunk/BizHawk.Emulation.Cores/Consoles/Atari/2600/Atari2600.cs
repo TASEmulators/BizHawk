@@ -21,6 +21,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private readonly GameInfo _game;
 		private int _frame;
 
+		private ITraceable Tracer { get; set; }
+
 		[CoreConstructor("A26")]
 		public Atari2600(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
@@ -47,6 +49,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			var ser = new  BasicServiceProvider(this);
 			ser.Register<IDisassemblable>(Cpu);
+			ser.Register<ITraceable>(Tracer);
 			ServiceProvider = ser;
 		}
 

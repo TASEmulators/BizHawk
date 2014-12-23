@@ -54,12 +54,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			}
 		}
 
-		public ITracer Tracer
-		{
-			[FeatureNotImplemented]
-			get { throw new NotImplementedException(); }
-		}
-
 		public IMemoryCallbackSystem MemoryCallbacks
 		{
 			[FeatureNotImplemented]

@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			IsSG1000 = game.System == "SG";
 			RomData = rom;
 			Tracer = new TraceBuffer();
-			
+			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
 			if (RomData.Length % BankSize != 0)
 				Array.Resize(ref RomData, ((RomData.Length / BankSize) + 1) * BankSize);
 			RomBanks = (byte)(RomData.Length / BankSize);
@@ -216,7 +216,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		public ITracer Tracer { get; private set; }
+		private ITraceable Tracer { get; set; }
 
 		string DetermineRegion(string gameRegion)
 		{

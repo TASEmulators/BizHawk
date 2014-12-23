@@ -17,8 +17,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class TraceLogger : Form, IToolFormAutoConfig
 	{
 		[RequiredService]
-		private IDebuggable _debugtarget { get; set; }
-		private ITracer Tracer { get { return _debugtarget.Tracer; } }
+		private ITraceable Tracer { get; set; }
 
 		[ConfigPersist]
 		private int MaxLines { get; set; }

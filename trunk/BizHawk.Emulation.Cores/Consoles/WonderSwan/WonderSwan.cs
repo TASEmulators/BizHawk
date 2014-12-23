@@ -133,15 +133,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		public ITracer Tracer
-		{
-			[FeatureNotImplemented]
-			get
-			{
-				throw new NotImplementedException();
-			}
-		}
-
 		public void Dispose()
 		{
 			if (Core != IntPtr.Zero)

@@ -71,6 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 					throw new InvalidOperationException("LoadRom() returned false!");
 
 				Tracer = new TraceBuffer();
+				ser.Register<ITraceable>(Tracer);
 
 				CoreComm.VsyncNum = 262144;
 				CoreComm.VsyncDen = 4389;
@@ -117,7 +118,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
 
-		public ITracer Tracer { get; private set; }
+		private ITraceable Tracer { get; set; }
 
 		public string SystemId { get { return "GBA"; } }
 

@@ -56,8 +56,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
-		public ITracer Tracer { get; private set; }
-
 		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
 		public bool CanStep(StepType type)

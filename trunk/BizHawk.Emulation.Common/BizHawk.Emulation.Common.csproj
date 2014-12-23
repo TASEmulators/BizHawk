@@ -87,7 +87,7 @@
     <Compile Include="Interfaces\ISoundProvider.cs" />
     <Compile Include="Interfaces\IStatable.cs" />
     <Compile Include="Interfaces\ISyncSoundProvider.cs" />
-    <Compile Include="Interfaces\ITracer.cs" />
+    <Compile Include="Interfaces\ITraceable.cs" />
     <Compile Include="Interfaces\IVideoProvider.cs" />
     <Compile Include="MemoryDomain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

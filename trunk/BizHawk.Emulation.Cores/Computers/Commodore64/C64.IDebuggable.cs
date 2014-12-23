@@ -51,12 +51,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 		}
 
-		public ITracer Tracer
-		{
-			[FeatureNotImplemented]
-			get { throw new NotImplementedException(); }
-		}
-
 		public IMemoryCallbackSystem MemoryCallbacks
 		{
 			[FeatureNotImplemented]

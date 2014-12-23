@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public GPGX(CoreComm comm, byte[] rom, DiscSystem.Disc CD, object Settings, object SyncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
-
+			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(_tracer);
 			// this can influence some things internally
 			string romextension = "GEN";
 
@@ -391,14 +391,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
 
 		private readonly TraceBuffer _tracer = new TraceBuffer();
-
-		public ITracer Tracer
-		{
-			get
-			{
-				return _tracer;
-			}
-		}
 
 		#endregion
 

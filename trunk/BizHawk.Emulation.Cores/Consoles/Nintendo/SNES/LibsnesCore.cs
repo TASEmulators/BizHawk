@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			ServiceProvider = new BasicServiceProvider(this);
 			MemoryCallbacks = new MemoryCallbackSystem();
 			Tracer = new TraceBuffer();
+			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
 
 			_game = game;
 			CoreComm = comm;
@@ -251,7 +252,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		// TODO: optimize managed to unmanaged using the ActiveChanged event
 		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
 
-		public ITracer Tracer { get; private set; }
+		public ITraceable Tracer { get; private set; }
 		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
 		public bool CanStep(StepType type) { return false; }

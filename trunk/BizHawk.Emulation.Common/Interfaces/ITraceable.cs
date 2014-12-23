@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Allows the cpu to dump trace info to a trace stream
 	/// </summary>
-	public interface ITracer
+	public interface ITraceable : IEmulatorService
 	{
 		// TODO: would it be faster (considering both disk and screen output) to keep the data as a List<string> directly?
 

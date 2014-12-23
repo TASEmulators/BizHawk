@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			this.SyncSettings = (NESSyncSettings)SyncSettings ?? new NESSyncSettings();
 			this.ControllerSettings = this.SyncSettings.Controls;
 			CoreComm = comm;
-			Tracer = new TraceBuffer();
+			
 			MemoryCallbacks = new MemoryCallbackSystem();
 			BootGodDB.Initialize();
 			videoProvider = new MyVideoProvider(this);
@@ -53,6 +53,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			var ser = new BasicServiceProvider(this);
 			ser.Register<IDisassemblable>(cpu);
 
+			Tracer = new TraceBuffer();
+			ser.Register<ITraceable>(Tracer);
+			
 			if (board is BANDAI_FCG_1)
 			{
 				var reader = (board as BANDAI_FCG_1).reader;
@@ -951,7 +954,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
 
-		public ITracer Tracer { get; private set; }
+		private ITraceable Tracer { get; set; }
 		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
 		NESSettings Settings = new NESSettings();
