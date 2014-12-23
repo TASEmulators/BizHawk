@@ -131,11 +131,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisengageDebugger()
 		{
-			if (Debuggable.Tracer != null)
-			{
-				Debuggable.Tracer.Enabled = false;
-			}
-
 			BreakPointControl1.Shutdown();
 		}
 
