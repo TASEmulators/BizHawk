@@ -164,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 					this.Controls.Add(new Label
 					{
 						Name = register.Key,
-						Text = register.Value.ToString(),
+						Text = register.Value.Value.ToString(),
 						Width = 45,
 						Location = new Point(40, y)
 					});
