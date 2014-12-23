@@ -408,15 +408,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
 
-		public ITracer Tracer
-		{
-			[FeatureNotImplemented]
-			get
-			{
-				throw new NotImplementedException();
-			}
-		}
-
 		public IMemoryCallbackSystem MemoryCallbacks
 		{
 			[FeatureNotImplemented]

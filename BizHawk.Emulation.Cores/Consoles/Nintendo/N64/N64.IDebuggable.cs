@@ -60,15 +60,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			throw new NotImplementedException();
 		}
 
-		public ITracer Tracer
-		{
-			[FeatureNotImplemented]
-			get
-			{
-				throw new NotImplementedException();
-			}
-		}
-
 		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
 		public bool CanStep(StepType type) { return false; }

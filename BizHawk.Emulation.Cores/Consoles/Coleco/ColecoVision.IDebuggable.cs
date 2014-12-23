@@ -121,12 +121,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 		}
 
-		public ITracer Tracer
-		{
-			[FeatureNotImplemented]
-			get { throw new NotImplementedException(); }
-		}
-
 		public IMemoryCallbackSystem MemoryCallbacks
 		{
 			[FeatureNotImplemented]

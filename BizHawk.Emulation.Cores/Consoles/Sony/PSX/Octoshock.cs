@@ -201,6 +201,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public Octoshock(CoreComm comm, List<DiscSystem.Disc> discs, List<string> discNames, byte[] exe, object settings, object syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
+			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(tracer);
 			CoreComm = comm;
 			DriveLightEnabled = true;
 
@@ -996,7 +997,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			OctoshockDll.shock_SetRegister_CPU(psx, index, (uint)value);
 		}
 
-		public ITracer Tracer { get { return tracer; } }
+		public ITraceable Tracer { get { return tracer; } }
 
 		public int ShockTraceCallback(IntPtr opaque, uint PC, uint inst, string dis)
 		{

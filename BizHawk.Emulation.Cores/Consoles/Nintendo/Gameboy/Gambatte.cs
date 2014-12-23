@@ -129,6 +129,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			ser.Register<IDisassemblable>(new GBDisassembler());
 			ServiceProvider = ser;
 			Tracer = new TraceBuffer();
+			ser.Register<ITraceable>(Tracer);
 			InitMemoryCallbacks();
 			CoreComm = comm;
 
@@ -264,7 +265,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			throw new NotImplementedException();
 		}
 
-		public ITracer Tracer { get; private set; }
+		private ITraceable Tracer { get; set; }
 
 		/// <summary>
 		/// true if the emulator is currently emulating CGB

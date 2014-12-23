@@ -70,6 +70,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			Tracer = new TraceBuffer();
+			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
+
 			MemoryCallbacks = new MemoryCallbackSystem();
 			CoreComm = comm;
 
@@ -94,7 +96,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public string BoardName { get { return null; } }
 
-		public ITracer Tracer { get; private set; }
+		private ITraceable Tracer { get; set; }
 		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
 		public PCEngine(CoreComm comm, GameInfo game, Disc disc, object Settings, object syncSettings)

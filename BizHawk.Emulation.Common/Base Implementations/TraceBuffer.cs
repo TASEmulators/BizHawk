@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Common
 {
-	public class TraceBuffer : ITracer
+	public class TraceBuffer : ITraceable
 	{
 		private readonly StringBuilder buffer;
 
