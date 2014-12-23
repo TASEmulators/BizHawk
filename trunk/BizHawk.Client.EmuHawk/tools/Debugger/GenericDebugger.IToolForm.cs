@@ -124,12 +124,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RegisterPanel.UpdateValues();
 			UpdateDisassembler();
-			// TODO: update breakpoint list
+			// TODO: check for new breakpoints and add them to the Breakpoint list?
 		}
 
 		public void FastUpdate()
 		{
-			// TODO
+			// Nothing to do
 		}
 
 		public void Restart()
