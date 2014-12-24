@@ -59,18 +59,6 @@
       <Filter>psx</Filter>
     </ClCompile>
     <ClCompile Include="..\endian.cpp" />
-    <ClCompile Include="..\cdrom\lec.cpp">
-      <Filter>cdrom</Filter>
-    </ClCompile>
-    <ClCompile Include="..\cdrom\galois.cpp">
-      <Filter>cdrom</Filter>
-    </ClCompile>
-    <ClCompile Include="..\cdrom\l-ec.cpp">
-      <Filter>cdrom</Filter>
-    </ClCompile>
-    <ClCompile Include="..\cdrom\crc32.cpp">
-      <Filter>cdrom</Filter>
-    </ClCompile>
     <ClCompile Include="..\psx\input\dualshock.cpp">
       <Filter>psx\input</Filter>
     </ClCompile>
@@ -108,12 +96,6 @@
     <ClCompile Include="..\video\Deinterlacer.cpp">
       <Filter>video</Filter>
     </ClCompile>
-    <ClCompile Include="..\cdrom\CDUtility.cpp">
-      <Filter>cdrom</Filter>
-    </ClCompile>
-    <ClCompile Include="..\cdrom\recover-raw.cpp">
-      <Filter>cdrom</Filter>
-    </ClCompile>
     <ClCompile Include="..\emuware\EW_state.cpp">
       <Filter>emuware</Filter>
     </ClCompile>
@@ -128,6 +110,9 @@
     </ClCompile>
     <ClCompile Include="..\psx\gpu_sprite.cpp">
       <Filter>psx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cdrom\CDUtility.cpp">
+      <Filter>cdrom</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -175,15 +160,6 @@
     </ClInclude>
     <ClInclude Include="..\psx\timer.h">
       <Filter>psx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\cdrom\CDUtility.h">
-      <Filter>cdrom</Filter>
-    </ClInclude>
-    <ClInclude Include="..\cdrom\dvdisaster.h">
-      <Filter>cdrom</Filter>
-    </ClInclude>
-    <ClInclude Include="..\cdrom\lec.h">
-      <Filter>cdrom</Filter>
     </ClInclude>
     <ClInclude Include="..\psx\input\dualanalog.h">
       <Filter>psx\input</Filter>
@@ -235,6 +211,9 @@
     </ClInclude>
     <ClInclude Include="..\psx\masmem.h">
       <Filter>psx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\cdrom\CDUtility.h">
+      <Filter>cdrom</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

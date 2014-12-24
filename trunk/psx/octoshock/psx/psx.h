@@ -1,7 +1,6 @@
 #pragma once
 
 #include "emuware/emuware.h"
-#include "cdrom/cdromif.h"
 #include "video/surface.h"
 #include "masmem.h"
 #include "endian.h"
