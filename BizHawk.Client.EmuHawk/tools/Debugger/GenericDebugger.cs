@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GenericDebugger_Load(object sender, EventArgs e)
 		{
-			EngageDebugger();
+			
 		}
 
 		private void EngageDebugger()
