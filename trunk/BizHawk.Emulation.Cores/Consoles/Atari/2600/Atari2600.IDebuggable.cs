@@ -63,10 +63,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			switch (type)
 			{
 				case StepType.Into:
-					return true;
-				default:
 				case StepType.Out:
 				case StepType.Over:
+					return true;
+				default:
 					return false;
 			}
 		}
@@ -80,9 +80,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					StepInto();
 					break;
 				case StepType.Out:
-					throw new NotImplementedException();
+					StepOut();
+					break;
 				case StepType.Over:
-					throw new NotImplementedException();
+					StepOver();
+					break;
 			}
 		}
 
@@ -93,6 +95,64 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				CycleAdvance();
 			} while (!Cpu.AtStart);
 		}
+
+		private void StepOver()
+		{
+			var instruction = Cpu.PeekMemory(Cpu.PC);
+
+			if (instruction == JSR)
+			{
+				var destination = Cpu.PC + opsize[JSR];
+				while(Cpu.PC != destination)
+				{
+					StepInto();
+				}
+			}
+			else
+			{
+				StepInto();
+			}
+		}
+
+		private void StepOut()
+		{
+			var instruction = Cpu.PeekMemory(Cpu.PC);
+
+			JSRCount = instruction == JSR ? 1 : 0;
+
+			var bailOutFrame = Frame + 1;
+			while (true)
+			{
+				StepInto();
+				var instr = Cpu.PeekMemory(Cpu.PC);
+				if (instr == JSR)
+				{
+					JSRCount++;
+				}
+				else if (instr == RTS && JSRCount <= 0)
+				{
+					StepInto();
+					JSRCount = 0;
+					break;
+				}
+				else if (instr == RTS)
+				{
+					JSRCount--;
+				}
+				else // Emergency bail out logic
+				{
+					if (Frame == bailOutFrame)
+					{
+						break;
+					}
+				}
+			}
+		}
+
+		private int JSRCount = 0;
+
+		private const byte JSR = 0x20;
+		private const byte RTS = 0x60;
 
 		//the opsize table is used to quickly grab the instruction sizes (in bytes)
 		private readonly byte[] opsize = new byte[]
