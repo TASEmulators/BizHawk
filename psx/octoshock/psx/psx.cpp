@@ -22,8 +22,8 @@
 #include "timer.h"
 #include "sio.h"
 #include "cdc.h"
+#include "Stream.h"
 #include "spu.h"
-#include "cdrom/cdromif.h"
 #include "error.h"
 #include "endian.h"
 #include "emuware/EW_state.h"
@@ -2270,6 +2270,8 @@ s32 ShockDiscRef::InternalReadLBA2448(s32 lba, void* dst2448, bool needSubcode)
 	
 	if(needSubcode && mSuppliesDeinterleavedSubcode)
 	{
+		//presently, CDC consumes deinterleaved subcode.
+		//perhaps this could be optimized in the future
 		u8 tmp[96];
 		CDUtility::subpw_interleave((u8*)dst2448+2352,tmp);
 		memcpy((u8*)dst2448+2352,tmp,96);
