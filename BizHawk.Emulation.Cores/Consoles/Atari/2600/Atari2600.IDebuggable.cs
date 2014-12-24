@@ -147,5 +147,40 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		/*0xE0*/	0,1,0,0,2,2,2,0,0,0,0,0,3,3,3,0,
 		/*0xF0*/	0,4,0,0,0,5,5,0,0,6,0,0,0,7,7,0
 		};
+
+		#region Currently Unused Debug hooks
+
+		private void ScanlineAdvance()
+		{
+			StartFrameCond();
+			int currentLine = _tia.LineCount;
+			while (_tia.LineCount == currentLine)
+				Cycle();
+			FinishFrameCond();
+		}
+
+		private void CycleAdvance()
+		{
+			StartFrameCond();
+			Cycle();
+			FinishFrameCond();
+		}
+
+		private int CurrentScanLine
+		{
+			get { return _tia.LineCount; }
+		}
+
+		private bool IsVsync
+		{
+			get { return _tia.IsVSync; }
+		}
+
+		private bool IsVBlank
+		{
+			get { return _tia.IsVBlank; }
+		}
+
+		#endregion
 	}
 }
