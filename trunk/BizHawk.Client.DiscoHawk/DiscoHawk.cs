@@ -201,6 +201,8 @@ namespace BizHawk.Client.DiscoHawk
 			else
 			{
 				//test stuff...
+				MednadiscTester tester = new MednadiscTester();
+				tester.TestDirectory(@"c:\isos\psx");
 			}
 		}
 	}
