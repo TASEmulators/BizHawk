@@ -140,8 +140,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OK_Click(object sender, EventArgs e)
 		{
-			GlobalWin.OSD.AddMessage("Rewind settings saved");
-
 			Global.Config.RewindFrequencySmall = (int)SmallSavestateNumeric.Value;
 			Global.Config.RewindFrequencyMedium = (int)MediumSavestateNumeric.Value;
 			Global.Config.RewindFrequencyLarge = (int)LargeSavestateNumeric.Value;
@@ -172,6 +170,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.SaveLargeScreenshotWithStates = SaveLargeScreenshotsCheckbox.Checked;
 			Global.Config.BigScreenshotSize = (int)(BigScreenshotNumeric.Value * 1024);
 
+			GlobalWin.OSD.AddMessage("Rewind and State settings saved");
 			Close();
 		}
 
