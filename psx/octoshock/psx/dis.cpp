@@ -56,13 +56,14 @@ public:
 
 	void format(const char* fmt, ...)
 	{
-		va_list ap;
-		va_start(ap,fmt);
 		int remain = buflen-ofs;
 		if(remain>0)
 		{
+			va_list ap;
+			va_start(ap,fmt);
 			int done = vsnprintf(buf,remain,fmt,ap);
 			va_end(ap);
+		
 			if(done>=0)
 			{
 				ofs += done;
