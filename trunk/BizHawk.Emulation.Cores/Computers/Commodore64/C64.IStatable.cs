@@ -41,6 +41,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		private void SyncState(Serializer ser)
 		{
 			ser.BeginSection("core");
+			ser.Sync("frame", ref _frame);
+			ser.Sync("islag", ref _islag);
+			ser.Sync("lagcount", ref _lagcount);
 			board.SyncState(ser);
 			ser.EndSection();
 		}
