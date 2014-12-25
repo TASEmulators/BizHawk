@@ -423,12 +423,11 @@ bool PS_CDC::DecodeSubQ(uint8 *subpw)
 
  if((tmp_q[0] & 0xF) == 1)
  {
-  memcpy(SubQBuf_Safe, tmp_q, 0xC);
   SubQChecksumOK = subq_check_checksum(tmp_q);
 
   if(SubQChecksumOK)
   {
-  // memcpy(SubQBuf_Safe, tmp_q, 0xC);
+   memcpy(SubQBuf_Safe, tmp_q, 0xC);
    return(true);
   }
  }
