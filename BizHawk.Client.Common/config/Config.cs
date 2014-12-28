@@ -420,10 +420,6 @@ namespace BizHawk.Client.Common
 		public int SNESGraphicsUserBackdropColor = -1;
 		*/
 
-		// PCE Sound Debugger settings
-		public ToolDialogSettings PceSoundDebuggerSettings = new ToolDialogSettings();
-		public bool PceSoundDebuggerAutoload = false;
-
 		#region Cheats Dialog
 
 		public ToolDialogSettings CheatsSettings = new ToolDialogSettings();

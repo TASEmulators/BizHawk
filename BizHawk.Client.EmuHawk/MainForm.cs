@@ -397,11 +397,6 @@ namespace BizHawk.Client.EmuHawk
 				OpenLuaConsole();
 			}
 
-			if (Global.Config.PceSoundDebuggerAutoload)
-			{
-				GlobalWin.Tools.Load<PCESoundDebugger>();
-			}
-
 			if (Global.Config.DisplayStatusBar == false)
 			{
 				MainStatusBar.Visible = false;
