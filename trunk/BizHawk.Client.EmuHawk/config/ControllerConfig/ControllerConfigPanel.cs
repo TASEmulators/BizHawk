@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.Client.EmuHawk
 {
 	// this is a little messy right now because of remnants of the old config system
@@ -17,14 +19,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public List<string> buttons = new List<string>();
 
-		public int InputMarginLeft = 0;
-		public int LabelPadding = 5;
+		public int InputMarginLeft = UIHelper.ScaleX(0);
+		public int LabelPadding = UIHelper.ScaleX(5);
 
-		public int MarginTop = 0;
-		public int Spacing = 24;
-		public int InputSize = 170;
-		public int ColumnWidth = 280;
-		public int LabelWidth = 60;
+		public int MarginTop = UIHelper.ScaleY(0);
+		public int Spacing = UIHelper.ScaleY(24);
+		public int InputSize = UIHelper.ScaleX(170);
+		public int ColumnWidth = UIHelper.ScaleX(280);
+		public int LabelWidth = UIHelper.ScaleX(60);
 
 		public ToolTip Tooltip;
 
@@ -105,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 			for (int i = 0; i < buttons.Count; i++)
 			{
 				y += Spacing;
-				if (y > (_panelSize.Height - 30))
+				if (y > (_panelSize.Height - UIHelper.ScaleY(30)))
 				{
 					y = MarginTop;
 					x += ColumnWidth;
@@ -114,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 				InputCompositeWidget iw = new InputCompositeWidget
 				{
 					Location = new Point(x, y),
-					Size = new Size(InputSize, 23),
+					Size = new Size(InputSize, UIHelper.ScaleY(23)),
 					TabIndex = i,
 					AutoTab = this.Autotab
 				};
@@ -126,7 +128,8 @@ namespace BizHawk.Client.EmuHawk
 				Inputs.Add(iw);
 				Label label = new Label
 					{
-						Location = new Point(x + InputSize + LabelPadding, y + 3),
+						Location = new Point(x + InputSize + LabelPadding, y + UIHelper.ScaleY(3)),
+						Size = new Size(UIHelper.ScaleX(100), UIHelper.ScaleY(15)),
 						Text = buttons[i].Replace('_', ' ').Trim(),
 					};
 
