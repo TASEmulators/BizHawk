@@ -43,7 +43,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						var c = new ComboBox
 						{
-							Location = new Point(35, 17),
+							Location = new Point(UIHelper.ScaleX(35), UIHelper.ScaleY(17)),
+							Width = UIHelper.ScaleX(121),
 							DropDownStyle = ComboBoxStyle.DropDownList
 						};
 
@@ -57,7 +58,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						DisassemblerBox.Controls.Add(new Label
 						{
-							Location = new Point(35, 23),
+							Location = new Point(UIHelper.ScaleX(35), UIHelper.ScaleY(23)),
+							Size = new Size(UIHelper.ScaleX(100), UIHelper.ScaleY(15)),
 							Text = Disassembler.Cpu
 						});
 					}
@@ -66,7 +68,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					DisassemblerBox.Controls.Add(new Label
 					{
-						Location = new Point(35, 23),
+						Location = new Point(UIHelper.ScaleX(35), UIHelper.ScaleY(23)),
+						Size = new Size(UIHelper.ScaleX(100), UIHelper.ScaleY(15)),
 						Text = Disassembler.Cpu
 					});
 				}
@@ -80,7 +83,8 @@ namespace BizHawk.Client.EmuHawk
 				DisassemblerView.ItemCount = 0;
 				DisassemblerBox.Controls.Add(new Label
 				{
-					Location = new Point(35, 23),
+					Location = new Point(UIHelper.ScaleX(35), UIHelper.ScaleY(23)),
+					Size = new Size(UIHelper.ScaleX(100), UIHelper.ScaleY(15)),
 					Text = "Unknown"
 				});
 

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
@@ -142,14 +143,14 @@ namespace BizHawk.Client.EmuHawk
 
 			var registers = Core.GetCpuFlagsAndRegisters();
 
-			int y = 0;
+			int y = UIHelper.ScaleY(0);
 			foreach (var register in registers.Where(r => r.Value.BitSize != 1))
 			{
 				this.Controls.Add(new Label
 				{
 					Text = register.Key.Replace("Flag ", "") + (canset ? ": " : ""),
-					Location = new Point(5, y + 2),
-					Width = 35
+					Location = new Point(UIHelper.ScaleX(5), y + UIHelper.ScaleY(2)),
+					Size = new Size(UIHelper.ScaleX(35), UIHelper.ScaleY(15))
 				});
 
 				if (canset)
@@ -158,8 +159,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = register.Key,
 						Text = register.Value.Value.ToHexString(register.Value.BitSize / 16),
-						Width = 6 + ((register.Value.BitSize / 4) * 9),
-						Location = new Point(40, y),
+						Width = UIHelper.ScaleX(6 + ((register.Value.BitSize / 4) * 9)),
+						Location = new Point(UIHelper.ScaleX(40), y),
 						MaxLength = register.Value.BitSize / 4,
 						CharacterCasing = CharacterCasing.Upper
 					};
@@ -187,12 +188,12 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = register.Key,
 						Text = register.Value.Value.ToString(),
-						Width = 45,
-						Location = new Point(40, y)
+						Size = new Size(UIHelper.ScaleX(45), UIHelper.ScaleY(15)),
+						Location = new Point(UIHelper.ScaleX(40), y)
 					});
 				}
 
-				y += 25;
+				y += UIHelper.ScaleY(25);
 			}
 
 			var flags = registers.Where(r => r.Value.BitSize == 1);
@@ -202,9 +203,9 @@ namespace BizHawk.Client.EmuHawk
 				var p = new Panel
 				{
 					Name = "FlagPanel",
-					Location = new Point(5, y),
+					Location = new Point(UIHelper.ScaleX(5), y),
 					BorderStyle = BorderStyle.None,
-					Size = new Size(240, 23),
+					Size = new Size(UIHelper.ScaleX(240), UIHelper.ScaleY(23)),
 					AutoScroll = true
 				};
 
@@ -216,9 +217,9 @@ namespace BizHawk.Client.EmuHawk
 						Name = flag.Key,
 						Text = flag.Key.Replace("Flag", "").Trim(), // Hack
 						Checked = flag.Value.Value == 1 ? true : false,
-						Location = new Point(40, y),
+						Location = new Point(UIHelper.ScaleX(40), y),
 						Dock = DockStyle.Left,
-						Size = new Size(23, 23),
+						Size = new Size(UIHelper.ScaleX(23), UIHelper.ScaleY(23)),
 						Enabled = canset
 					};
 
