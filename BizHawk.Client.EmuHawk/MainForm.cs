@@ -402,11 +402,6 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Load<PCESoundDebugger>();
 			}
 
-			if (Global.Config.AutoLoadSNESGraphicsDebugger)
-			{
-				GlobalWin.Tools.Load<SNESGraphicsDebugger>();
-			}
-
 			if (Global.Config.DisplayStatusBar == false)
 			{
 				MainStatusBar.Visible = false;
