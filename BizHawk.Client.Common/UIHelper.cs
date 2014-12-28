@@ -37,5 +37,15 @@ namespace BizHawk.Client.Common
 		{
 			return (int)Math.Round(size * AutoScaleFactorY);
 		}
+
+		public static Point Scale(Point p)
+		{
+			return new Point(ScaleX(p.X), ScaleY(p.Y));
+		}
+
+		public static Size Scale(Size s)
+		{
+			return new Size(ScaleX(s.Width), ScaleY(s.Height));
+		}
 	}
 }
