@@ -47,6 +47,8 @@
 			// textBox1
 			// 
 			this.textBox1.AllowDrop = true;
+			this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBox1.Location = new System.Drawing.Point(3, 5);
 			this.textBox1.Name = "textBox1";
 			this.textBox1.Size = new System.Drawing.Size(270, 20);
@@ -67,8 +69,7 @@
 			// 
 			// DualGBFileSelector
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
 			this.Controls.Add(this.UseCurrentRomButton);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.textBox1);

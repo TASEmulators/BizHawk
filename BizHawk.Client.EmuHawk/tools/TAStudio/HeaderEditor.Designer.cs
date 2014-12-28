@@ -209,6 +209,8 @@ namespace BizHawk.Client.EmuHawk
 			// MovieHeaderEditor
 			// 
 			this.AcceptButton = this.OkBtn;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.CancelBtn;
 			this.ClientSize = new System.Drawing.Size(321, 273);
 			this.Controls.Add(this.label6);
