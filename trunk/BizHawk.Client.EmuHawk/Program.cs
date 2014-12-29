@@ -273,7 +273,8 @@ REDO_DISPMETHOD:
 
 			void this_StartupNextInstance(object sender, StartupNextInstanceEventArgs e)
 			{
-				(MainForm as MainForm).LoadRom(e.CommandLine[0]);
+				if (e.CommandLine.Count >= 1)
+					(MainForm as MainForm).LoadRom(e.CommandLine[0]);
 			}
 
 			protected override void OnCreateMainForm()
