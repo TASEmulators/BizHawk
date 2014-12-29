@@ -48,9 +48,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void CloseAll()
 		{
-			foreach (var device in Devices)
-				device.joystick.Dispose();
-			Devices.Clear();
+			if (Devices != null)
+			{
+				foreach (var device in Devices)
+					device.joystick.Dispose();
+				Devices.Clear();
+			}
 		}
 
 		// ********************************** Instance Members **********************************
