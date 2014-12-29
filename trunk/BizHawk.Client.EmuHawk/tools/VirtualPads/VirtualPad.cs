@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							// When scaling up, unfortunately the icon will look too small, but at least we can make the rest of the button bigger
 							buttonControl.AutoSize = false;
-							buttonControl.Size = UIHelper.Scale(new Size(button.Icon.Width + 4, button.Icon.Height + 4));
+							buttonControl.Size = new Size(UIHelper.ScaleX(button.Icon.Width) + 6, UIHelper.ScaleY(button.Icon.Height) + 6);
 						}
 						PadBox.Controls.Add(buttonControl);
 						break;
