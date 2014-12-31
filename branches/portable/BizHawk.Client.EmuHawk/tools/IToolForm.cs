@@ -44,15 +44,18 @@ namespace BizHawk.Client.EmuHawk
 		void Show();
 		void Close();
 		bool IsDisposed { get; }
+		bool IsHandleCreated { get; }
 	}
 
-	[AttributeUsage(AttributeTargets.Property)]
-	public class RequiredService : Attribute
+	/// <summary>
+	/// toolform that takes automatic common configuration infrastructure
+	/// </summary>
+	public interface IToolFormAutoConfig : IToolForm
 	{
 	}
 
 	[AttributeUsage(AttributeTargets.Property)]
-	public class OptionalService : Attribute
+	public class ConfigPersistAttribute : Attribute
 	{
 	}
 }

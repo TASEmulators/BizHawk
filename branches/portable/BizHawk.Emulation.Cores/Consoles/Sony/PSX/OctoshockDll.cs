@@ -83,6 +83,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public const int SHOCK_ERROR = -1;
 		public const int SHOCK_NOCANDO = -2;
 		public const int SHOCK_INVALID_ADDRESS = -3;
+		public const int SHOCK_OVERFLOW = -4;
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct ShockDiscInfo
@@ -151,10 +152,16 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		};
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate int ShockTraceCallback(IntPtr opaque, uint PC, uint inst, string dis);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int ShockDisc_ReadTOC(IntPtr opaque, ShockTOC* read_target, ShockTOCTrack* tracks101);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int ShockDisc_ReadLBA(IntPtr opaque, int lba, void* dst);
+
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern int shock_Util_DisassembleMIPS(uint PC, uint instr, IntPtr outbuf, int buflen);
 
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_CreateDisc(out IntPtr outDisc, IntPtr Opaque, int lbaCount, ShockDisc_ReadTOC ReadTOC, ShockDisc_ReadLBA ReadLBA2448, bool suppliesDeinterleavedSubcode);
@@ -164,6 +171,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_AnalyzeDisc(IntPtr disc, out ShockDiscInfo info);
+
+
 
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_Create(out IntPtr psx, eRegion region, void* firmware512k);
@@ -230,5 +239,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_SetRegister_CPU(IntPtr psx, int index, uint value);
+
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern int shock_SetTraceCallback(IntPtr psx, IntPtr opaque, ShockTraceCallback callback);
 	}
 }

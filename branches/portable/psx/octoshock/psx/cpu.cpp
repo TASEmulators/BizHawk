@@ -19,6 +19,10 @@
 #include "cpu.h"
 #include "gte.h"
 
+//not very organized, is it
+void* g_ShockTraceCallbackOpaque = NULL;
+ShockCallback_Trace g_ShockTraceCallback = NULL;
+
 /* TODO
 	Make sure load delays are correct.
 
@@ -594,6 +598,15 @@ pscpu_timestamp_t PS_CPU::RunReal(pscpu_timestamp_t timestamp_in)
 #define ITYPE_ZE uint32_t rs MDFN_NOWARN_UNUSED = (instr >> 21) & 0x1F; uint32_t rt MDFN_NOWARN_UNUSED = (instr >> 16) & 0x1F; uint32_t immediate = instr & 0xFFFF; /*printf(" rs=%02x(%08x), rt=%02x(%08x), immediate=(%08x) ", rs, GPR[rs], rt, GPR[rt], immediate);*/
 #define JTYPE uint32_t target = instr & ((1 << 26) - 1); /*printf(" target=(%08x) ", target);*/
 #define RTYPE uint32_t rs MDFN_NOWARN_UNUSED = (instr >> 21) & 0x1F; uint32_t rt MDFN_NOWARN_UNUSED = (instr >> 16) & 0x1F; uint32_t rd MDFN_NOWARN_UNUSED = (instr >> 11) & 0x1F; uint32_t shamt MDFN_NOWARN_UNUSED = (instr >> 6) & 0x1F; /*printf(" rs=%02x(%08x), rt=%02x(%08x), rd=%02x(%08x) ", rs, GPR[rs], rt, GPR[rt], rd, GPR[rd]);*/
+				 
+				 {
+					if(g_ShockTraceCallback)
+					{
+						char tmp[100];
+						shock_Util_DisassembleMIPS(PC, instr, tmp, 100);
+						g_ShockTraceCallback(g_ShockTraceCallbackOpaque, PC, instr, tmp);
+					}	
+				}
 
 #if 1
 #include "cpu_bigswitch.inc"

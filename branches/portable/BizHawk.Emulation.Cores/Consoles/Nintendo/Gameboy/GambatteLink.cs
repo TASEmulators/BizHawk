@@ -92,12 +92,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem();
 		public IMemoryCallbackSystem MemoryCallbacks { get { return _memorycallbacks; } }
 
-		public ITracer Tracer
-		{
-			[FeatureNotImplemented]
-			get { throw new NotImplementedException(); }
-		}
-
 		public IVideoProvider VideoProvider { get { return this; } }
 		public ISoundProvider SoundProvider { get { return null; } }
 		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
@@ -413,13 +407,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public MemoryDomainList MemoryDomains { get; private set; }
 
-		public IDictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			var left = L.GetCpuFlagsAndRegisters()
-				.Select(reg => new KeyValuePair<string, int>("Left " + reg.Key, reg.Value));
+				.Select(reg => new KeyValuePair<string, RegisterValue>("Left " + reg.Key, reg.Value));
 
 			var right = R.GetCpuFlagsAndRegisters()
-				.Select(reg => new KeyValuePair<string, int>("Right " + reg.Key, reg.Value));
+				.Select(reg => new KeyValuePair<string, RegisterValue>("Right " + reg.Key, reg.Value));
 
 			return left.Union(right).ToList().ToDictionary(pair => pair.Key, pair => pair.Value);
 		}
@@ -447,6 +441,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			MemoryDomains = new MemoryDomainList(mm);
 		}
+
+		public bool CanStep(StepType type) { return false; }
 
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }

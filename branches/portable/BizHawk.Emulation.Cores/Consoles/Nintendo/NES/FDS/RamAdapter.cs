@@ -400,7 +400,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					writereg = writereglatch;
 					bytetransferflag = true;
 					// irq?
-					Console.WriteLine("FDS: Startwrite @{0} Reload {1:x2}", diskpos, writereglatch);
+					// Console.WriteLine("FDS: Startwrite @{0} Reload {1:x2}", diskpos, writereglatch);
 					crc = 0;
 					writecomputecrc = true;
 				}
@@ -491,7 +491,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							Write();
 						if (diskpos == disksize)
 						{
-							Console.WriteLine("FDS: End of Disk");
+							// Console.WriteLine("FDS: End of Disk");
 							state = RamAdapterState.RESET;
 							transferreset = false;
 							//numcrc = 0;
@@ -508,7 +508,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						SetCycles();
 						transferreset = false;
 						//numcrc = 0;
-						Console.WriteLine("FDS: Return or Insert Complete");
+						// Console.WriteLine("FDS: Return or Insert Complete");
 						if (DriveLightCallback != null)
 							DriveLightCallback(false);
 						break;
@@ -516,7 +516,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						state = RamAdapterState.RUNNING;
 						SetCycles();
 						//transferreset = false; // this definitely does not happen.
-						Console.WriteLine("FDS: Spin up complete!  Disk is running");
+						// Console.WriteLine("FDS: Spin up complete!  Disk is running");
 						if (DriveLightCallback != null)
 							DriveLightCallback(true);
 						break;

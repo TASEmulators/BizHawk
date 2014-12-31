@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					(addr, value) => M6532.WriteMemory((ushort)addr, value)),
 				new MemoryDomain(
 					"System Bus",
-					8192,
+					65536,
 					MemoryDomain.Endian.Little,
 					addr => _mapper.PeekMemory((ushort) addr),
 					(addr, value) => _mapper.PokeMemory((ushort) addr, value)) 

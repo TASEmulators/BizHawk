@@ -14,6 +14,7 @@ using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 using BizHawk.Client.Common;
+using System.Reflection;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -30,12 +31,6 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.MainForm.Location.X + GlobalWin.MainForm.Size.Width,
 				GlobalWin.MainForm.Location.Y
 			);
-
-			SetTools();
-			SetSize();
-
-			ToolBoxStrip.Select();
-			ToolBoxItems.First().Select();
 		}
 
 		public bool AskSaveChanges() { return true;  }
@@ -50,57 +45,51 @@ namespace BizHawk.Client.EmuHawk
 		public void Restart()
 		{
 			SetTools();
+			SetSize();
+
+			ToolBoxStrip.Select();
+			ToolBoxItems.First().Select();
 		}
 
 		private void SetTools()
 		{
-			HexEditorToolbarItem.Visible =
-				RamWatchToolbarItem.Visible =
-				RamSearchToolbarItem.Visible =
-				CheatsToolBarItem.Visible =
-				Global.Emulator.HasMemoryDomains();
-
-			NesPPUToolbarItem.Visible =
-				NesNameTableToolbarItem.Visible =
-				Global.Emulator is NES;
-
-			NesGameGenieToolbarItem.Visible = Global.Emulator.SystemId == "NES";
-
-			TI83KeypadToolbarItem.Visible = Global.Emulator is TI83;
-
-			SNESGraphicsDebuggerToolbarItem.Visible =
-			SNESGameGenieToolbarItem.Visible =
-				Global.Emulator is LibsnesCore;
-
-			GGGameGenieToolbarItem.Visible =
-				Global.Game.System == "GG";
-
-			PceCdlToolbarItem.Visible =
-				PceBgViewerToolbarItem.Visible =
-				PceTileToolbarItem.Visible =
-				PceSoundDebuggerButton.Visible =
-				Global.Emulator is PCEngine;
-			
-			GBGameGenieToolbarItem.Visible = 
-				GbGpuViewerToolBarItem.Visible =
-				Global.Game.System == "GB";
-
-			GbaGpuViewerToolBarItem.Visible = Global.Emulator is GBA;
-
-			GenesisGameGenieToolBarItem.Visible = Global.Emulator.SystemId == "GEN" && VersionInfo.DeveloperBuild;
-			GenesisVdpToolBarItem.Visible = Global.Emulator is GPGX;
-
-			SmsVdpToolbarItem.Visible = Global.Emulator is SMS;
-
-			TAStudioToolbarItem.Visible = Global.Emulator.HasSavestates() && Global.Emulator.CanPollInput();
-
-			foreach (var button in ToolBoxItems)
-			{
-				if (button.Visible)
+			var availableTools = Assembly
+				.GetAssembly(typeof(IToolForm))
+				.GetTypes()
+				.Where(t => typeof(IToolForm).IsAssignableFrom(t))
+				.Where(t => typeof(Form).IsAssignableFrom(t))
+				.Where(t => !(typeof(ToolBox).IsAssignableFrom(t)))
+				.Where(t => VersionInfo.DeveloperBuild ? true : !(t.GetCustomAttributes(false)
+					.OfType<ToolAttributes>().Any(a => !a.Released)))
+				.Where(t => !(t == typeof(GBGameGenie))) // Hack, this tool is specific to a system id and a sub-system (gb and gg) we have no reasonable way to declare a dependency like that
+				.Where(t => BizHawk.Emulation.Common.ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, t))
+				.Select(t => Activator.CreateInstance(t))
+				.Select(instance => new
 				{
-					var toolBtn = button as ToolStripButton;
-					toolBtn.Click += (o, e) => Close();
-				}
+					Type = instance.GetType(),
+					Instance = instance,
+					Icon = (instance as Form).Icon.ToBitmap(),
+					Text = (instance as Form).Text,
+					ShowIcon = (instance as Form).ShowIcon
+				})
+				.ToList();
+
+			foreach (var tool in availableTools)
+			{
+				var t = new ToolStripButton
+				{
+					Image = tool.Icon,
+					Text = tool.Text,
+					DisplayStyle = tool.ShowIcon ? ToolStripItemDisplayStyle.Image : ToolStripItemDisplayStyle.Text
+				};
+
+				t.Click += (o, e) =>
+				{
+					GlobalWin.Tools.Load(tool.Type);
+					Close();
+				};
+
+				ToolBoxStrip.Items.Add(t);
 			}
 		}
 
@@ -115,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				return ToolBoxStrip.Items.Cast<ToolStripItem>().Where(x => x.Visible);
+				return ToolBoxStrip.Items.Cast<ToolStripItem>();
 			}
 		}
 
@@ -131,129 +120,5 @@ namespace BizHawk.Client.EmuHawk
 				return base.ProcessCmdKey(ref msg, keyData);
 			}
 		}
-
-		#region Icon Clicks
-
-		private void CheatsToolBarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<Cheats>();
-		}
-
-		private void RamWatchToolbarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.LoadRamWatch(true);
-		}
-
-		private void RamSearchToolbarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<RamSearch>();
-		}
-
-		private void HexEditorToolbarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<HexEditor>();
-		}
-
-		private void LuaConsoleToolbarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.MainForm.OpenLuaConsole();
-		}
-
-		private void NesPPUToolbarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<NesPPU>();
-		}
-
-		private void NesGameGenieToolbarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.LoadGameGenieEc();
-		}
-
-		private void NesNameTableToolbarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<NESNameTableViewer>();
-		}
-
-		private void TI83KeypadToolbarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<TI83KeyPad>();
-		}
-
-		private void TAStudioToolbarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<TAStudio>();
-		}
-
-		private void SNESGraphicsDebuggerToolbarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<SNESGraphicsDebugger>();
-		}
-
-		private void VirtualpadToolbarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<VirtualpadTool>();
-		}
-
-		private void SNESGameGenieToolbarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.LoadGameGenieEc();
-		}
-
-		private void GGGameGenieToolbarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.LoadGameGenieEc();
-		}
-
-		private void GBGameGenieToolbarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.LoadGameGenieEc();
-		}
-
-		private void GbGpuViewerToolBarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<GBGPUView>();
-		}
-
-		private void PceCdlToolbarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<PCECDL>();
-		}
-
-		private void PceBgViewerToolbarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<PceBgViewer>();
-		}
-
-		private void PceSoundDebuggerButton_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<PCESoundDebugger>();
-		}
-
-		private void GbaGpuViewerToolBarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<GBAGPUView>();
-		}
-
-		private void GenesisGameGenieToolBarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<GenGameGenie>();
-		}
-
-		private void SmsVdpToolbarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<SmsVDPViewer>();
-		}
-
-		private void PceTileToolbarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<PCETileViewer>();
-		}
-
-		private void GenesisVdpToolBarItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<GenVDPViewer>();
-		}
-
-		#endregion
 	}
 }

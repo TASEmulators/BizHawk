@@ -18,11 +18,56 @@ namespace BizHawk.Emulation.DiscSystem
 		void ReadSubcodeChannel(int number, byte[] buffer, int offset);
 	}
 
+	public static class SubcodeUtils
+	{
+		public static void Interleave(byte[] in_buf, int in_buf_index, byte[] out_buf, int out_buf_index)
+		{
+			for (int d = 0; d < 12; d++)
+			{
+				for (int bitpoodle = 0; bitpoodle < 8; bitpoodle++)
+				{
+					int rawb = 0;
+
+					for (int ch = 0; ch < 8; ch++)
+					{
+						rawb |= ((in_buf[ch * 12 + d + in_buf_index] >> (7 - bitpoodle)) & 1) << (7 - ch);
+					}
+					out_buf[(d << 3) + bitpoodle + out_buf_index] = (byte)rawb;
+				}
+			}
+		}
+
+		public static void Deinterleave(byte[] in_buf, int in_buf_index, byte[] out_buf, int out_buf_index)
+		{
+			for (int i = 0; i < 96; i++)
+				out_buf[i] = 0;
+
+			for (int ch = 0; ch < 8; ch++)
+			{
+				for (int i = 0; i < 96; i++)
+				{
+					out_buf[(ch * 12) + (i >> 3) + out_buf_index] |= (byte)(((in_buf[i + in_buf_index] >> (7 - ch)) & 0x1) << (7 - (i & 0x7)));
+				}
+			}
+
+		}
+	}
+
+
+
+
 	/// <summary>
 	/// Reads subcode from an internally-managed buffer
 	/// </summary>
 	class BufferedSubcodeSector : ISubcodeSector
 	{
+		public void Synthesize_SubchannelP(bool pause)
+		{
+			byte val = pause ? (byte)0xFF : (byte)0x00;
+			for (int i = 0; i < 12; i++)
+				SubcodeDeinterleaved[i] = val;
+		}
+
 		/// <summary>
 		/// Fills this subcode buffer with subchannel Q data. calculates the required CRC, as well.
 		/// Returns the crc, calculated or otherwise.
@@ -127,12 +172,14 @@ namespace BizHawk.Emulation.DiscSystem
 	{
 		/// <summary>
 		/// ADR and CONTROL
+		/// TODO - make BCD2?
 		/// </summary>
 		public byte q_status;
 
 		/// <summary>
 		/// normal track: BCD indications of the current track number
 		/// leadin track: should be 0 
+		/// TODO - make BCD2?
 		/// </summary>
 		public byte q_tno;
 

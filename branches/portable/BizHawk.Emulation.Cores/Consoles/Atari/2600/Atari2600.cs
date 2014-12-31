@@ -21,6 +21,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private readonly GameInfo _game;
 		private int _frame;
 
+		private ITraceable Tracer { get; set; }
+
 		[CoreConstructor("A26")]
 		public Atari2600(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
@@ -47,6 +49,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			var ser = new  BasicServiceProvider(this);
 			ser.Register<IDisassemblable>(Cpu);
+			ser.Register<ITraceable>(Tracer);
 			ServiceProvider = ser;
 		}
 
@@ -79,10 +82,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public bool DeterministicEmulation { get; set; }
 
-		public A2600Settings Settings { get; private set; }
-
-		public A2600SyncSettings SyncSettings { get; private set; }
-
 		public static readonly ControllerDefinition Atari2600ControllerDefinition = new ControllerDefinition
 		{
 			Name = "Atari 2600 Basic Controller",
@@ -93,21 +92,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				"Reset", "Select", "Power"
 			}
 		};
-
-		public int CurrentScanLine
-		{
-			get { return _tia.LineCount; }
-		}
-
-		public bool IsVsync
-		{
-			get { return _tia.IsVSync; }
-		}
-
-		public bool IsVBlank
-		{
-			get { return _tia.IsVBlank; }
-		}
 
 		public CompactGameInfo GenerateGameDbEntry()
 		{

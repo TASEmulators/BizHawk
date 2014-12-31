@@ -327,11 +327,6 @@ namespace BizHawk.Client.Common
 		public Color HexHighlightColor = Color.Pink;
 		public Color HexHighlightFreezeColor = Color.Violet;
 
-		// Trace Logger Settings
-		public ToolDialogSettings TraceLoggerSettings = new ToolDialogSettings();
-		public bool TraceLoggerAutoLoad = false;
-		public int TraceLoggerMaxLines = 100000;
-
 		// Video dumping settings
 		public string VideoWriter = "";
 		public int JMDCompression = 3;
@@ -411,36 +406,10 @@ namespace BizHawk.Client.Common
 
 		#endregion
 
-		// SMS VDP Viewer Settings
-		public ToolDialogSettings SmsVdpSettings = new ToolDialogSettings();
-		public bool SmsVdpAutoLoad = false;
+		public Dictionary<string, ToolDialogSettings> CommonToolSettings = new Dictionary<string, ToolDialogSettings>();
+		public Dictionary<string, Dictionary<string, object>> CustomToolSettings = new Dictionary<string, Dictionary<string, object>>();
 
-		// PCE VDP Viewer Settings
-		public ToolDialogSettings PceVdpSettings = new ToolDialogSettings();
-		public bool PceVdpAutoLoad = false;
-
-		// Genesis VDP Viewer Settings
-		public ToolDialogSettings GenVdpSettings = new ToolDialogSettings();
-		public bool GenVdpAutoLoad = false;
-
-		// NESPPU Settings
-		public ToolDialogSettings NesPPUSettings = new ToolDialogSettings();
-		public bool AutoLoadNESPPU = false;
-		public int NESPPURefreshRate = 4;
-		public bool NESPPUChrRomView = false;
-
-		// NES NameTableViewer Settings
-		public ToolDialogSettings NesNameTableSettings = new ToolDialogSettings();
-		public bool AutoLoadNESNameTable = false;
-		public int NESNameTableRefreshRate = 4;
-
-		// gb gpu view settings
-		public bool AutoLoadGBGPUView = false;
-		public bool GBGPUViewSaveWindowPosition = true;
-		public int GBGPUViewWndx = -1;
-		public int GBGPUViewWndy = -1;
-		public Color GBGPUSpriteBack = Color.Lime;
-
+		/*
 		// SNES Graphics Debugger Dialog Settings
 		public bool AutoLoadSNESGraphicsDebugger = false;
 		public bool SNESGraphicsDebuggerSaveWindowPosition = true;
@@ -449,19 +418,7 @@ namespace BizHawk.Client.Common
 		public int SNESGraphicsDebuggerRefreshRate = 4;
 		public bool SNESGraphicsUseUserBackdropColor = false;
 		public int SNESGraphicsUserBackdropColor = -1;
-
-		// PCE BG Viewer settings
-		public ToolDialogSettings PceBgViewerSettings = new ToolDialogSettings();
-		public bool PCEBGViewerAutoload = false;
-		public int PCEBGViewerRefreshRate = 16;
-
-		// PCE CDL settings
-		public ToolDialogSettings PceCdlSettings = new ToolDialogSettings();
-		public RecentFiles RecentPceCdlFiles = new RecentFiles(8);
-
-		// PCE Sound Debugger settings
-		public ToolDialogSettings PceSoundDebuggerSettings = new ToolDialogSettings();
-		public bool PceSoundDebuggerAutoload = false;
+		*/
 
 		#region Cheats Dialog
 
@@ -539,7 +496,6 @@ namespace BizHawk.Client.Common
 
 		// VirtualPad Dialog
 		public ToolDialogSettings VirtualPadSettings = new ToolDialogSettings();
-		public bool VirtualPadsUpdatePads = true;
 		public bool AutoloadVirtualPad = false;
 		public bool VirtualPadSticky = true;
 		public bool VirtualPadClearClearsAnalog = false;
@@ -579,14 +535,6 @@ namespace BizHawk.Client.Common
 		public bool TI83ToolTips = true;
 
 		public BindingCollection HotkeyBindings = new BindingCollection();
-
-		// Atari 2600 Debugger
-		public ToolDialogSettings Atari2600DebuggerSettings = new ToolDialogSettings();
-		public bool Atari2600DebuggerAutoload = false;
-
-		// Generic Debugger
-		public ToolDialogSettings GenericDebuggerSettings = new ToolDialogSettings();
-		public bool GenericDebuggerAutoload = false;
 
 		// Analog Hotkey values
 		public int Analog_LargeChange = 10;

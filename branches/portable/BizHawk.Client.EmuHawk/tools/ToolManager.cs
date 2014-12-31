@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.ComponentModel;
 
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
+using BizHawk.Common.ReflectionExtensions;
+
+using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -19,21 +24,21 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Loads the tool dialog T, if it does not exist it will be created, if it is already open, it will be focused
 		/// </summary>
-		public IToolForm Load<T>() where T : IToolForm
+		public T Load<T>(bool focus = true) where T : IToolForm
 		{
-			return Load(typeof(T));
+			return (T)Load(typeof(T), focus);
 		}
 
 		/// <summary>
 		/// Loads a tool dialog of type toolType if it does not exist it will be
 		/// created, if it is already open, it will be focused.
 		/// </summary>
-		public IToolForm Load(Type toolType)
+		public IToolForm Load(Type toolType, bool focus = true)
 		{
 			if (!typeof(IToolForm).IsAssignableFrom(toolType))
 				throw new ArgumentException(String.Format("Type {0} does not implement IToolForm.", toolType.Name));
 
-			if (!IsAvailable(toolType))
+			if (!ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, toolType))
 				return null;
 
 			var existingTool = _tools.FirstOrDefault(x => toolType.IsAssignableFrom(x.GetType()));
@@ -46,61 +51,221 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					existingTool.Show();
-					existingTool.Focus();
+					if (focus)
+					{
+						existingTool.Show();
+						existingTool.Focus();
+					}
 					return existingTool;
 				}
 			}
 
 			var newTool = CreateInstance(toolType);
 
-			UpdateServices(newTool);
-			newTool.Restart();
+			ServiceInjector.UpdateServices(Global.Emulator.ServiceProvider, newTool);
 
+			// auto settings
+			if (newTool is IToolFormAutoConfig)
+			{
+				ToolDialogSettings settings;
+				if (!Global.Config.CommonToolSettings.TryGetValue(toolType.ToString(), out settings))
+				{
+					settings = new ToolDialogSettings();
+					Global.Config.CommonToolSettings[toolType.ToString()] = settings;
+				}
+				AttachSettingHooks(newTool as IToolFormAutoConfig, settings);
+			}
+
+			// custom settings
+			if (HasCustomConfig(newTool))
+			{
+				Dictionary<string, object> settings;
+				if (!Global.Config.CustomToolSettings.TryGetValue(toolType.ToString(), out settings))
+				{
+					settings = new Dictionary<string, object>();
+					Global.Config.CustomToolSettings[toolType.ToString()] = settings;
+				}
+				InstallCustomConfig(newTool, settings);
+			}
+
+			newTool.Restart();
 			newTool.Show();
 			return newTool;
 		}
 
-
-
-		private static IEnumerable<PropertyInfo> GetPropertiesWithAttr(Type type, Type attributeType)
+		public void AutoLoad()
 		{
-			return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic)
-				.Where(p => p.GetCustomAttributes(attributeType, false).Length > 0);
-		}
-
-		/// <summary>
-		/// Feeds the tool its required services.
-		/// </summary>
-		private void UpdateServices(IToolForm tool)
-		{
-			var toolType = tool.GetType();
-
-			foreach (var propinfo in GetPropertiesWithAttr(toolType, typeof(RequiredService)))
+			foreach (var typename in Global.Config.CommonToolSettings.Where(kvp => kvp.Value.AutoLoad).Select(kvp => kvp.Key))
 			{
-				var service =  Global.Emulator.ServiceProvider.GetService(propinfo.PropertyType);
-				propinfo.GetSetMethod(true).Invoke(tool, new[] { service });
-			}
-
-			foreach (var propinfo in GetPropertiesWithAttr(toolType, typeof(OptionalService)))
-			{
-				var service = Global.Emulator.ServiceProvider.HasService(propinfo.PropertyType)
-					? Global.Emulator.ServiceProvider.GetService(propinfo.PropertyType) : null;
-				propinfo.GetSetMethod(true).Invoke(tool, new[] { service });
+				// this type resolution might not be sufficient.  more investigation is needed
+				Type t = Type.GetType(typename);
+				if (t == null)
+				{
+					Console.WriteLine("BENIGN: Couldn't find type {0}", typename);
+				}
+				else
+				{
+					Load(t, false);
+				}
 			}
 		}
 
-		/// <summary>
-		/// Determines whether a tool is available, considering its dependencies
-		/// and the services provided by the emulator core.
-		/// </summary>
-		public bool IsAvailable(Type toolType)
+		private static void RefreshSettings(Form form, ToolStripItemCollection menu, ToolDialogSettings settings, int idx)
 		{
-			return GetPropertiesWithAttr(toolType, typeof(RequiredService))
-				.Select(pi => pi.PropertyType)
-				.All(t => Global.Emulator.ServiceProvider.HasService(t));
+			(menu[idx + 0] as ToolStripMenuItem).Checked = settings.SaveWindowPosition;
+			(menu[idx + 1] as ToolStripMenuItem).Checked = settings.TopMost;
+			(menu[idx + 2] as ToolStripMenuItem).Checked = settings.FloatingWindow;
+			(menu[idx + 3] as ToolStripMenuItem).Checked = settings.AutoLoad;
+
+			form.TopMost = settings.TopMost;
+
+			// do we need to do this OnShown() as well?
+			form.Owner = settings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
+		private static void AttachSettingHooks(IToolFormAutoConfig tool, ToolDialogSettings settings)
+		{
+			var form = (Form)tool;
+			ToolStripItemCollection dest = null;
+			var oldsize = form.Size; // this should be the right time to grab this size
+			foreach (Control c in form.Controls)
+			{
+				if (c is MenuStrip)
+				{
+					var ms = c as MenuStrip;
+					foreach (ToolStripMenuItem submenu in ms.Items)
+					{
+						if (submenu.Text.Contains("Settings"))
+						{
+							dest = submenu.DropDownItems;
+							dest.Add(new ToolStripSeparator());
+							break;
+						}
+					}
+					if (dest == null)
+					{
+						var submenu = new ToolStripMenuItem("&Settings");
+						ms.Items.Add(submenu);
+						dest = submenu.DropDownItems;
+					}
+					break;
+				}
+			}
+			if (dest == null)
+				throw new InvalidOperationException("IToolFormAutoConfig must have menu to bind to!");
+
+			int idx = dest.Count;
+
+			dest.Add("Save Window &Position");
+			dest.Add("Stay on &Top");
+			dest.Add("&Float from Parent");
+			dest.Add("&Autoload");
+			dest.Add("Restore &Defaults");
+
+			RefreshSettings(form, dest, settings, idx);
+
+			if (settings.UseWindowPosition)
+			{
+				form.Location = settings.WindowPosition;
+			}
+			if (settings.UseWindowSize)
+			{
+				if (form.FormBorderStyle == FormBorderStyle.Sizable || form.FormBorderStyle == FormBorderStyle.SizableToolWindow)
+					form.Size = settings.WindowSize;
+			}
+
+			form.FormClosing += (o, e) =>
+			{
+				settings.Wndx = form.Location.X;
+				settings.Wndy = form.Location.Y;
+				settings.Width = form.Right - form.Left; // why not form.Size.Width?
+				settings.Height = form.Bottom - form.Top;
+			};
+
+			dest[idx + 0].Click += (o, e) =>
+			{
+				bool val = !(o as ToolStripMenuItem).Checked;
+				settings.SaveWindowPosition = val;
+				(o as ToolStripMenuItem).Checked = val;
+			};
+			dest[idx + 1].Click += (o, e) =>
+			{
+				bool val = !(o as ToolStripMenuItem).Checked;
+				settings.TopMost = val;
+				(o as ToolStripMenuItem).Checked = val;
+				form.TopMost = val;
+			};
+			dest[idx + 2].Click += (o, e) =>
+			{
+				bool val = !(o as ToolStripMenuItem).Checked;
+				settings.FloatingWindow = val;
+				(o as ToolStripMenuItem).Checked = val;
+				form.Owner = val ? null : GlobalWin.MainForm;
+			};
+			dest[idx + 3].Click += (o, e) =>
+			{
+				bool val = !(o as ToolStripMenuItem).Checked;
+				settings.AutoLoad = val;
+				(o as ToolStripMenuItem).Checked = val;
+			};
+			dest[idx + 4].Click += (o, e) =>
+			{
+				settings.RestoreDefaults();
+				RefreshSettings(form, dest, settings, idx);
+				form.Size = oldsize;
+			};
+		}
+
+		private static bool HasCustomConfig(IToolForm tool)
+		{
+			return tool.GetType().GetPropertiesWithAttrib(typeof(ConfigPersistAttribute)).Any();
+		}
+
+		private static void InstallCustomConfig(IToolForm tool, Dictionary<string, object> data)
+		{
+			Type type = tool.GetType();
+			var props = type.GetPropertiesWithAttrib(typeof(ConfigPersistAttribute)).ToList();
+			if (props.Count == 0)
+				return;
+
+			foreach (var prop in props)
+			{
+				object val;
+				if (data.TryGetValue(prop.Name, out val))
+				{
+					if (val is string && prop.PropertyType != typeof(string))
+					{
+						// if a type has a TypeConverter, and that converter can convert to string,
+						// that will be used in place of object markup by JSON.NET
+
+						// but that doesn't work with $type metadata, and JSON.NET fails to fall
+						// back on regular object serialization when needed.  so try to undo a TypeConverter
+						// operation here
+						var converter = TypeDescriptor.GetConverter(prop.PropertyType);
+						val = converter.ConvertFromString((string)val);
+					}
+					else if (!(val is bool) && prop.PropertyType.IsPrimitive)
+					{
+						// numeric constanst are similarly hosed
+						val = Convert.ChangeType(val, prop.PropertyType);
+					}
+					prop.SetValue(tool, val, null);
+				}
+			}
+
+			(tool as Form).FormClosing += (o, e) => SaveCustomConfig(tool, data, props);
+		}
+
+		private static void SaveCustomConfig(IToolForm tool, Dictionary<string, object> data, List<PropertyInfo> props)
+		{
+			data.Clear();
+			foreach (var prop in props)
+			{
+				data.Add(prop.Name, prop.GetValue(tool, null));
+			}
+		}
+
+	
 		/// <summary>
 		/// Determines whether a given IToolForm is already loaded
 		/// </summary>
@@ -128,23 +293,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public IToolForm Get<T>() where T : IToolForm
 		{
-			var existingTool = _tools.FirstOrDefault(x => x is T);
-			if (existingTool != null)
-			{
-				if (existingTool.IsDisposed)
-				{
-					Close<T>();
-					return CreateInstance<T>();
-				}
-				else
-				{
-					return existingTool;
-				}
-			}
-			else
-			{
-				return CreateInstance<T>();
-			}
+			return Load<T>(false);
 		}
 
 		public void UpdateBefore()
@@ -198,10 +347,13 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var tool in _tools)
 			{
-				if (IsAvailable(tool.GetType()))
+				if (ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, tool.GetType()))
 				{
-					UpdateServices(tool);
-					tool.Restart();
+					ServiceInjector.UpdateServices(Global.Emulator.ServiceProvider, tool);
+					if ((tool.IsHandleCreated && !tool.IsDisposed) || tool is RamWatch) // Hack for Ram Watch - in display watches mode it wants to keep running even closed, it will handle disposed logic
+					{
+						tool.Restart();
+					}
 				}
 				else
 				{

@@ -12,17 +12,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\cdrom\CDUtility.cpp" />
-    <ClCompile Include="..\cdrom\crc32.cpp" />
-    <ClCompile Include="..\cdrom\galois.cpp" />
-    <ClCompile Include="..\cdrom\l-ec.cpp" />
-    <ClCompile Include="..\cdrom\lec.cpp" />
-    <ClCompile Include="..\cdrom\recover-raw.cpp" />
     <ClCompile Include="..\emuware\emuware.cpp" />
     <ClCompile Include="..\emuware\EW_state.cpp" />
     <ClCompile Include="..\endian.cpp" />
     <ClCompile Include="..\octoshock.cpp" />
     <ClCompile Include="..\psx\cdc.cpp" />
-    <ClCompile Include="..\psx\cpu.cpp" />
+    <ClCompile Include="..\psx\cpu.cpp">
+      <AssemblerOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">All</AssemblerOutput>
+    </ClCompile>
     <ClCompile Include="..\psx\dis.cpp" />
     <ClCompile Include="..\psx\dma.cpp" />
     <ClCompile Include="..\psx\frontio.cpp" />
@@ -52,8 +49,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\cdrom\CDUtility.h" />
-    <ClInclude Include="..\cdrom\dvdisaster.h" />
-    <ClInclude Include="..\cdrom\lec.h" />
     <ClInclude Include="..\cdrom\SimpleFIFO.h" />
     <ClInclude Include="..\emuware\emuware.h" />
     <ClInclude Include="..\emuware\EW_state.h" />

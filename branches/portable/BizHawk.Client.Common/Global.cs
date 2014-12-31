@@ -138,6 +138,8 @@ namespace BizHawk.Client.Common
 						return SystemInfo.WonderSwan;
 					case "Lynx":
 						return SystemInfo.Lynx;
+					case "PSX":
+						return SystemInfo.PSX;
 				}
 			}
 		}

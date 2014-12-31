@@ -47,6 +47,7 @@ namespace BizHawk.Client.EmuHawk
 			WantsToControlStopMovie = true;
 			TasPlaybackBox.Tastudio = this;
 			MarkerControl.Tastudio = this;
+			MarkerControl.Emulator = this.Emulator;
 			TasView.QueryItemText += TasView_QueryItemText;
 			TasView.QueryItemBkColor += TasView_QueryItemBkColor;
 			TasView.QueryItemIcon += TasView_QueryItemIcon;
@@ -494,7 +495,18 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadFile(FileInfo file)
 		{
 			CurrentTasMovie.Filename = file.FullName;
-			CurrentTasMovie.Load();
+			try
+			{
+				CurrentTasMovie.Load();
+			}
+			catch
+			{
+				MessageBox.Show(
+					"Tastudio could not open the file. Due to the loading process, the emulator/Tastudio may be in a unspecified state depending on the error.",
+					"Tastudio",
+					MessageBoxButtons.OK);
+				return;
+			}
 			Global.Config.RecentTas.Add(CurrentTasMovie.Filename);
 
 			if (CurrentTasMovie.InputLogLength > 0) // TODO: this is probably reoccuring logic, break off into a function

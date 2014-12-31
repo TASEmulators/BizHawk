@@ -129,6 +129,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			ser.Register<IDisassemblable>(new GBDisassembler());
 			ServiceProvider = ser;
 			Tracer = new TraceBuffer();
+			ser.Register<ITraceable>(Tracer);
 			InitMemoryCallbacks();
 			CoreComm = comm;
 
@@ -238,23 +239,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region debug
 
-		public IDictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			int[] data = new int[10];
 			LibGambatte.gambatte_getregs(GambatteState, data);
 
-			return new Dictionary<string, int>
+			return new Dictionary<string, RegisterValue>
 			{
-				{ "PC", data[(int)LibGambatte.RegIndicies.PC] & 0xffff },
-				{ "SP", data[(int)LibGambatte.RegIndicies.SP] & 0xffff },
-				{ "A", data[(int)LibGambatte.RegIndicies.A] & 0xff },
-				{ "B", data[(int)LibGambatte.RegIndicies.B] & 0xff },
-				{ "C", data[(int)LibGambatte.RegIndicies.C] & 0xff },
-				{ "D", data[(int)LibGambatte.RegIndicies.D] & 0xff },
-				{ "E", data[(int)LibGambatte.RegIndicies.E] & 0xff },
-				{ "F", data[(int)LibGambatte.RegIndicies.F] & 0xff },
-				{ "H", data[(int)LibGambatte.RegIndicies.H] & 0xff },
-				{ "L", data[(int)LibGambatte.RegIndicies.L] & 0xff }
+				{ "PC", (ushort)(data[(int)LibGambatte.RegIndicies.PC] & 0xffff) },
+				{ "SP", (ushort)(data[(int)LibGambatte.RegIndicies.SP] & 0xffff) },
+				{ "A", (byte)(data[(int)LibGambatte.RegIndicies.A] & 0xff) },
+				{ "B", (byte)(data[(int)LibGambatte.RegIndicies.B] & 0xff) },
+				{ "C", (byte)(data[(int)LibGambatte.RegIndicies.C] & 0xff) },
+				{ "D", (byte)(data[(int)LibGambatte.RegIndicies.D] & 0xff) },
+				{ "E", (byte)(data[(int)LibGambatte.RegIndicies.E] & 0xff) },
+				{ "F", (byte)(data[(int)LibGambatte.RegIndicies.F] & 0xff) },
+				{ "H", (byte)(data[(int)LibGambatte.RegIndicies.H] & 0xff) },
+				{ "L", (byte)(data[(int)LibGambatte.RegIndicies.L] & 0xff) }
 			};
 		}
 
@@ -264,7 +265,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			throw new NotImplementedException();
 		}
 
-		public ITracer Tracer { get; private set; }
+		private ITraceable Tracer { get; set; }
 
 		/// <summary>
 		/// true if the emulator is currently emulating CGB
@@ -288,6 +289,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			_inputCallbacks = ics;
 		}
+
+		public bool CanStep(StepType type) { return false; }
 
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
@@ -495,10 +498,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				return new byte[0];
 		}
 
+		private byte[] FixRTC(byte[] data, int offset)
+		{
+			// length - offset is the start of the VBA-only data; so
+			// length - offset - 4 is the start of the RTC block
+			int idx = data.Length - offset - 4;
+
+			byte[] ret = new byte[idx + 4];
+			Buffer.BlockCopy(data, 0, ret, 0, idx);
+			data[idx] = (byte)zerotime;
+			data[idx + 1] = (byte)(zerotime >> 8);
+			data[idx + 2] = (byte)(zerotime >> 16);
+			data[idx + 3] = (byte)(zerotime >> 24);
+
+			return ret;
+		}
+
 		public void StoreSaveRam(byte[] data)
 		{
-			if (data.Length != LibGambatte.gambatte_savesavedatalength(GambatteState))
-				throw new ArgumentException("Size of saveram data does not match expected!");
+			int expected = LibGambatte.gambatte_savesavedatalength(GambatteState);
+			switch (data.Length - expected)
+			{
+				case 0:
+					break;
+				default:
+					throw new ArgumentException("Size of saveram data does not match expected!");
+				case 44:
+					data = FixRTC(data, 44);
+					break;
+				case 40:
+					data = FixRTC(data, 40);
+					break;
+			}
 			LibGambatte.gambatte_loadsavedata(GambatteState, data);
 		}
 

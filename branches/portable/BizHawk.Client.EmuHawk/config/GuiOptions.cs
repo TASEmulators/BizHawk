@@ -42,17 +42,6 @@ namespace BizHawk.Client.EmuHawk
 					LogWindowAsConsoleCheckbox,
 					"This can not be changed while the log window is open. I know, it's annoying.");
 			}
-
-			// Recent
-			RecentRomsNumeric.Value = Global.Config.RecentRoms.MAX_RECENT_FILES;
-			RecentMoviesNumeric.Value = Global.Config.RecentMovies.MAX_RECENT_FILES;
-			RecentCheatsNumeric.Value = Global.Config.RecentCheats.MAX_RECENT_FILES;
-			RecentTblNumeric.Value = Global.Config.RecentTables.MAX_RECENT_FILES;
-			RecentPceCDLNumeric.Value = Global.Config.RecentPceCdlFiles.MAX_RECENT_FILES;
-			RecentLuaScriptNumeric.Value = Global.Config.RecentLua.MAX_RECENT_FILES;
-			RecentLuaSessionsNumeric.Value = Global.Config.RecentLuaSession.MAX_RECENT_FILES;
-			RecentWatchesNumeric.Value = Global.Config.RecentWatches.MAX_RECENT_FILES;
-			RecentSearchesNumeric.Value = Global.Config.RecentSearches.MAX_RECENT_FILES;
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
@@ -73,17 +62,6 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.BackupSaveram = BackupSRamCheckbox.Checked;
 			Global.Config.SkipLagFrame = FrameAdvSkipLagCheckbox.Checked;
 
-			//Recent
-			Global.Config.RecentRoms.MAX_RECENT_FILES = (int)RecentRomsNumeric.Value;
-			Global.Config.RecentMovies.MAX_RECENT_FILES = (int)RecentMoviesNumeric.Value;
-			Global.Config.RecentCheats.MAX_RECENT_FILES = (int)RecentCheatsNumeric.Value;
-			Global.Config.RecentTables.MAX_RECENT_FILES = (int)RecentTblNumeric.Value;
-			Global.Config.RecentPceCdlFiles.MAX_RECENT_FILES = (int)RecentPceCDLNumeric.Value;
-			Global.Config.RecentLua.MAX_RECENT_FILES = (int)RecentLuaScriptNumeric.Value;
-			Global.Config.RecentLuaSession.MAX_RECENT_FILES = (int)RecentLuaSessionsNumeric.Value;
-			Global.Config.RecentWatches.MAX_RECENT_FILES = (int)RecentWatchesNumeric.Value;
-			Global.Config.RecentSearches.MAX_RECENT_FILES = (int)RecentSearchesNumeric.Value;
-
 			Close();
 			DialogResult = DialogResult.OK;
 			GlobalWin.OSD.AddMessage("Custom configurations saved.");
@@ -95,35 +73,5 @@ namespace BizHawk.Client.EmuHawk
 			DialogResult = DialogResult.Cancel;
 			GlobalWin.OSD.AddMessage("Customizing aborted.");
 		}
-
-		private void DecreaseRecentBtn_Click(object sender, EventArgs e)
-		{
-			RecentGroupBox.Controls
-				.OfType<NumericUpDown>()
-				.ToList()
-				.ForEach(n =>
-				{
-					if (n.Value > n.Minimum)
-					{
-						n.Value--;
-					}
-				});
-		}
-
-		private void IncreaseRecentBtn_Click(object sender, EventArgs e)
-		{
-			RecentGroupBox.Controls
-				.OfType<NumericUpDown>()
-				.ToList()
-				.ForEach(n =>
-				{
-					if (n.Value < n.Maximum)
-					{
-						n.Value++;
-					}
-				});
-		}
-
-
 	}
 }

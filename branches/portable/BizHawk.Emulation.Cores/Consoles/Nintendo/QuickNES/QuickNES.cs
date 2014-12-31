@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public class QuickNES : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IInputPollable,
-		IStatable, IDebuggable, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>
+		IStatable, IDebuggable, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>, Cores.Nintendo.NES.INESPPUViewable
 	{
 		#region FPU precision
 
@@ -185,6 +185,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
+			CheckDisposed();
 			using (FP.Save())
 			{
 				if (Controller["Power"])
@@ -205,6 +206,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					Blit();
 				if (rendersound)
 					DrainAudio();
+
+				if (CB1 != null) CB1();
+				if (CB2 != null) CB2();
 			}
 		}
 
@@ -276,6 +280,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public void SaveStateText(System.IO.TextWriter writer)
 		{
+			CheckDisposed();
 			var temp = SaveStateBinary();
 			temp.SaveAsHexFast(writer);
 			// write extra copy of stuff we don't use
@@ -284,6 +289,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public void LoadStateText(System.IO.TextReader reader)
 		{
+			CheckDisposed();
 			string hex = reader.ReadLine();
 			byte[] state = new byte[hex.Length / 2];
 			state.ReadFromHexFast(hex);
@@ -292,6 +298,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public void SaveStateBinary(System.IO.BinaryWriter writer)
 		{
+			CheckDisposed();
 			LibQuickNES.ThrowStringError(LibQuickNES.qn_state_save(Context, SaveStateBuff, SaveStateBuff.Length));
 			writer.Write(SaveStateBuff.Length);
 			writer.Write(SaveStateBuff);
@@ -303,6 +310,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public void LoadStateBinary(System.IO.BinaryReader reader)
 		{
+			CheckDisposed();
 			int len = reader.ReadInt32();
 			if (len != SaveStateBuff.Length)
 				throw new InvalidOperationException("Unexpected savestate buffer length!");
@@ -316,6 +324,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public byte[] SaveStateBinary()
 		{
+			CheckDisposed();
 			var ms = new System.IO.MemoryStream(SaveStateBuff2, true);
 			var bw = new System.IO.BinaryWriter(ms);
 			SaveStateBinary(bw);
@@ -380,17 +389,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public MemoryDomainList MemoryDomains { get; private set; }
 
-		public IDictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			int[] regs = new int[6];
-			var ret = new Dictionary<string, int>();
+			var ret = new Dictionary<string, RegisterValue>();
 			LibQuickNES.qn_get_cpuregs(Context, regs);
-			ret["A"] = regs[0];
-			ret["X"] = regs[1];
-			ret["Y"] = regs[2];
-			ret["SP"] = regs[3];
-			ret["PC"] = regs[4];
-			ret["P"] = regs[5];
+			ret["A"] = (byte)regs[0];
+			ret["X"] = (byte)regs[1];
+			ret["Y"] = (byte)regs[2];
+			ret["SP"] = (ushort)regs[3];
+			ret["PC"] = (ushort)regs[4];
+			ret["P"] = (byte)regs[5];
 			return ret;
 		}
 
@@ -400,17 +409,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			throw new NotImplementedException();
 		}
 
+		public bool CanStep(StepType type) { return false; }
+
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
-
-		public ITracer Tracer
-		{
-			[FeatureNotImplemented]
-			get
-			{
-				throw new NotImplementedException();
-			}
-		}
 
 		public IMemoryCallbackSystem MemoryCallbacks
 		{
@@ -633,6 +635,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			}
 		}
 
+		void CheckDisposed()
+		{
+			if (Context == IntPtr.Zero)
+				throw new ObjectDisposedException(GetType().Name);
+		}
+
 		#region VideoProvider
 
 		int[] VideoOutput = new int[256 * 240];
@@ -720,6 +728,103 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public void DiscardSamples()
 		{
+		}
+
+		#endregion
+
+		#region INESPPUViewable
+
+		// todo: don't just call the callbacks at the end of frame; use the scanline info
+		Action CB1;
+		Action CB2;
+
+		public int[] GetPalette()
+		{
+			return VideoPalette;
+		}
+
+		private byte R2000 { get { return LibQuickNES.qn_get_reg2000(Context); } }
+
+		public bool BGBaseHigh
+		{
+			get { return (R2000 & 0x10) != 0; }
+		}
+
+		public bool SPBaseHigh
+		{
+			get { return (R2000 & 0x08) != 0; }
+		}
+
+		public bool SPTall
+		{
+			get { return (R2000 & 0x20) != 0; }
+		}
+
+		byte[] ppubusbuf = new byte[0x3000];
+		public byte[] GetPPUBus()
+		{
+			LibQuickNES.qn_peek_ppubus(Context, ppubusbuf);
+			return ppubusbuf;
+		}
+
+		byte[] palrambuf = new byte[0x20];
+		public byte[] GetPalRam()
+		{
+			Marshal.Copy(LibQuickNES.qn_get_palmem(Context), palrambuf, 0, 0x20);
+			return palrambuf;
+		}
+
+		byte[] oambuf = new byte[0x100];
+		public byte[] GetOam()
+		{
+			Marshal.Copy(LibQuickNES.qn_get_oammem(Context), oambuf, 0, 0x100);
+			return oambuf;
+		}
+
+		public byte PeekPPU(int addr)
+		{
+			return LibQuickNES.qn_peek_ppu(Context, addr);
+		}
+
+		// we don't use quicknes's MMC5 at all, so these three methods are just stubs
+		public byte[] GetExTiles()
+		{
+			throw new InvalidOperationException();
+		}
+
+		public bool ExActive
+		{
+			get { return false; }
+		}
+
+		public byte[] GetExRam()
+		{
+			throw new InvalidOperationException();
+		}
+
+		public MemoryDomain GetCHRROM()
+		{
+			return MemoryDomains["CHR VROM"];
+		}
+
+		public void InstallCallback1(Action cb, int sl)
+		{
+			CB1 = cb;
+		}
+
+		public void InstallCallback2(Action cb, int sl)
+		{
+			CB2 = cb;
+		}
+
+		public void RemoveCallback1()
+		{
+			CB1 = null;
+		}
+
+		public void RemoveCallback2()
+		{
+			CB2 = null;
 		}
 
 		#endregion

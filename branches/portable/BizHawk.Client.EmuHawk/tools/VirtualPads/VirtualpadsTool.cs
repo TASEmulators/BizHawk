@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				return ControllerBox.Controls
+				return ControllerPanel.Controls
 					.OfType<VirtualPad>()
 					.ToList();
 			}
@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CreatePads()
 		{
-			ControllerBox.Controls.Clear();
+			ControllerPanel.Controls.Clear();
 
 			var schemaType = Assembly
 				.GetExecutingAssembly()
@@ -107,8 +107,19 @@ namespace BizHawk.Client.EmuHawk
 
 				if (pads.Any())
 				{
-					ControllerBox.Controls.AddRange(pads.Reverse().ToArray());
+					ControllerPanel.Controls.AddRange(pads.Reverse().ToArray());
 				}
+			}
+		}
+
+		public void ScrollToPadSchema(string padSchemaName)
+		{
+			foreach (var control in ControllerPanel.Controls)
+			{
+				VirtualPad vp = control as VirtualPad;
+				if (vp == null) continue;
+				if (vp.PadSchemaDisplayName == padSchemaName)
+					ControllerPanel.ScrollControlIntoView(vp);
 			}
 		}
 
@@ -132,6 +143,10 @@ namespace BizHawk.Client.EmuHawk
 							break;
 						case PadSchema.PadInputType.Boolean:
 							searchset = bools;
+							break;
+						case PadSchema.PadInputType.DiscManager:
+							searchset = bools;
+							searchset.UnionWith(analogs);
 							break;
 					}
 					if (!searchset.Contains(button.Name))

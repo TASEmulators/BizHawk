@@ -9,40 +9,31 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class NESNameTableViewer : Form, IToolForm
+	public partial class NESNameTableViewer : Form, IToolFormAutoConfig
 	{
 		// TODO:
 		// Show Scroll Lines + UI Toggle
 		[RequiredService]
-		private NES _nes { get; set; }
-		[RequiredService]
-		private INESPPUViewable xxx { get; set; }
+		private INESPPUViewable _ppu { get; set; }
 		[RequiredService]
 		private IEmulator _emu { get; set; }
 
-		private readonly NES.PPU.DebugCallback _callback = new NES.PPU.DebugCallback();
+		[ConfigPersist]
+		private int RefreshRateConfig
+		{
+			get { return RefreshRate.Value; }
+			set { RefreshRate.Value = value; }
+		}
+
+		int scanline;
 
 		public NESNameTableViewer()
 		{
 			InitializeComponent();
-			Closing += (o, e) =>
-				{
-					Global.Config.NesNameTableSettings.Wndx = Location.X;
-					Global.Config.NesNameTableSettings.Wndx = Location.Y;
-					Global.Config.NESNameTableRefreshRate = RefreshRate.Value;
-				};
-			TopMost = Global.Config.NesNameTableSettings.TopMost;
-			_callback.Callback = () => Generate();
 		}
 
 		private void NESNameTableViewer_Load(object sender, EventArgs e)
 		{
-			if (Global.Config.NesNameTableSettings.UseWindowPosition)
-			{
-				Location = Global.Config.NesNameTableSettings.WindowPosition;
-			}
-
-			RefreshRate.Value = Global.Config.NESNameTableRefreshRate;
 			Generate(true);
 		}
 
@@ -58,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			_nes.ppu.NTViewCallback = _callback;
+			_ppu.InstallCallback1(() => Generate(), scanline);
 		}
 
 		public void FastUpdate()
@@ -89,11 +80,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private unsafe void GenerateExAttr(int* dst, int pitch, byte[] palram, byte[] ppumem, byte[] exram)
 		{
-			byte[] chr = xxx.GetExTiles();
+			byte[] chr = _ppu.GetExTiles();
 			int chr_mask = chr.Length - 1;
 
 			fixed (byte* chrptr = chr, palptr = palram, ppuptr = ppumem, exptr = exram)
-			fixed (int* finalpal = xxx.GetPalette())
+			fixed (int* finalpal = _ppu.GetPalette())
 			{
 				DrawExNT(dst, pitch, palptr, ppuptr + 0x2000, exptr, chrptr, chr_mask, finalpal);
 				DrawExNT(dst + 256, pitch, palptr, ppuptr + 0x2400, exptr, chrptr, chr_mask, finalpal);
@@ -106,9 +97,9 @@ namespace BizHawk.Client.EmuHawk
 		private unsafe void GenerateAttr(int* dst, int pitch, byte[] palram, byte[] ppumem)
 		{
 			fixed (byte* palptr = palram, ppuptr = ppumem)
-			fixed (int* finalpal = xxx.GetPalette())
+			fixed (int* finalpal = _ppu.GetPalette())
 			{
-				byte* chrptr = ppuptr + (xxx.BGBaseHigh ? 0x1000 : 0);
+				byte* chrptr = ppuptr + (_ppu.BGBaseHigh ? 0x1000 : 0);
 				DrawNT(dst, pitch, palptr, ppuptr + 0x2000, chrptr, finalpal);
 				DrawNT(dst + 256, pitch, palptr, ppuptr + 0x2400, chrptr, finalpal);
 				dst += pitch * 240;
@@ -182,13 +173,13 @@ namespace BizHawk.Client.EmuHawk
 			var pitch = bmpdata.Stride / 4;
 
 			// Buffer all the data from the ppu, because it will be read multiple times and that is slow
-			var ppuBuffer = xxx.GetPPUBus();
+			var ppuBuffer = _ppu.GetPPUBus();
 
-			var palram = xxx.GetPalRam();
+			var palram = _ppu.GetPalRam();
 
-			if (xxx.ExActive)
+			if (_ppu.ExActive)
 			{
-				byte[] exram = xxx.GetExRam();
+				byte[] exram = _ppu.GetExRam();
 				GenerateExAttr(dptr, pitch, palram, ppuBuffer, exram);
 			}
 			else
@@ -202,7 +193,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RefreshFloatingWindowControl()
 		{
-			Owner = Global.Config.NesNameTableSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
 		#region Events
@@ -222,36 +212,6 @@ namespace BizHawk.Client.EmuHawk
 		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
 			Close();
-		}
-
-		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			AutoloadMenuItem.Checked = Global.Config.AutoLoadNESNameTable;
-			SaveWindowPositionMenuItem.Checked = Global.Config.NesNameTableSettings.SaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Global.Config.NesNameTableSettings.TopMost;
-			FloatingWindowMenuItem.Checked = Global.Config.NesNameTableSettings.FloatingWindow;
-		}
-
-		private void AutoloadMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.AutoLoadNESNameTable ^= true;
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.NesNameTableSettings.SaveWindowPosition ^= true;
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.NesNameTableSettings.TopMost ^= true;
-			TopMost = Global.Config.NesNameTableSettings.TopMost;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.NesNameTableSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
 		}
 
 		private void RefreshImageContextMenuItem_Click(object sender, EventArgs e)
@@ -286,18 +246,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NESNameTableViewer_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			if (_nes != null && _nes.ppu.NTViewCallback == _callback)
-			{
-				_nes.ppu.NTViewCallback = null;
-			}
+			_ppu.RemoveCallback1();
 		}
 
 		private void ScanlineTextbox_TextChanged(object sender, EventArgs e)
 		{
-			int temp;
-			if (int.TryParse(txtScanline.Text, out temp))
+			if (int.TryParse(txtScanline.Text, out scanline))
 			{
-				_callback.Scanline = temp;
+				_ppu.InstallCallback1(() => Generate(), scanline);
 			}
 		}
 
@@ -364,7 +320,7 @@ namespace BizHawk.Client.EmuHawk
 			XYLabel.Text = TileX + " : " + TileY;
 			int PPUAddress = 0x2000 + (NameTable * 0x400) + ((TileY % 30) * 32) + (TileX % 32);
 			PPUAddressLabel.Text = string.Format("{0:X4}", PPUAddress);
-			int TileID = xxx.PeekPPU(PPUAddress);
+			int TileID = _ppu.PeekPPU(PPUAddress);
 			TileIDLabel.Text = string.Format("{0:X2}", TileID);
 			TableLabel.Text = NameTable.ToString();
 
@@ -381,7 +337,7 @@ namespace BizHawk.Client.EmuHawk
 			int tx = px >> 3;
 			int ty = py >> 3;
 			int atbyte_ptr = ntaddr + 0x3C0 + ((ty >> 2) << 3) + (tx >> 2);
-			int at = xxx.PeekPPU(atbyte_ptr + 0x2000);
+			int at = _ppu.PeekPPU(atbyte_ptr + 0x2000);
 			if ((ty & 2) != 0) at >>= 4;
 			if ((tx & 2) != 0) at >>= 2;
 			at &= 0x03;

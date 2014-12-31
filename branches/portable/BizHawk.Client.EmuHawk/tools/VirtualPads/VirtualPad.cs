@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 using System.Drawing;
 
@@ -27,6 +28,8 @@ namespace BizHawk.Client.EmuHawk
 					.ToList();
 			}
 		}
+
+		public string PadSchemaDisplayName { get { return _schema.DisplayName; } }
 
 		public bool ReadOnly
 		{
@@ -54,27 +57,35 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VirtualPadControl_Load(object sender, EventArgs e)
 		{
-			Size = _schema.DefaultSize;
-			MaximumSize = _schema.MaxSize ?? _schema.DefaultSize;
+			Size = UIHelper.Scale(_schema.DefaultSize);
+			MaximumSize = UIHelper.Scale(_schema.MaxSize ?? _schema.DefaultSize);
 			PadBox.Text = _schema.DisplayName;
 			foreach (var button in _schema.Buttons)
 			{
+				// TODO: Size of all controls should ideally be scaled, only implemented on button for now
 				switch (button.Type)
 				{
 					case PadSchema.PadInputType.Boolean:
-						PadBox.Controls.Add(new VirtualPadButton
+						var buttonControl = new VirtualPadButton
 						{
 							Name = button.Name,
 							Text = button.DisplayName,
-							Location = button.Location,
+							Location = UIHelper.Scale(button.Location),
 							Image = button.Icon,
-						});
+						};
+						if (button.Icon != null && UIHelper.AutoScaleFactorX > 1F && UIHelper.AutoScaleFactorY > 1F)
+						{
+							// When scaling up, unfortunately the icon will look too small, but at least we can make the rest of the button bigger
+							buttonControl.AutoSize = false;
+							buttonControl.Size = new Size(UIHelper.ScaleX(button.Icon.Width) + 6, UIHelper.ScaleY(button.Icon.Height) + 6);
+						}
+						PadBox.Controls.Add(buttonControl);
 						break;
 					case PadSchema.PadInputType.AnalogStick:
 						PadBox.Controls.Add(new VirtualPadAnalogStick
 						{
 							Name = button.Name,
-							Location = button.Location,
+							Location = UIHelper.Scale(button.Location),
 							Size = new Size(button.MaxValue + 79, button.MaxValue + 9), // TODO: don't use hardcoded values here, at least make them defaults in the AnalogStick object itself
 							RangeX = button.MaxValue,
 							RangeY = button.MaxValue // TODO ability to pass in a different Y max
@@ -84,10 +95,10 @@ namespace BizHawk.Client.EmuHawk
 						PadBox.Controls.Add(new VirtualPadTargetScreen
 						{
 							Name = button.Name,
-							Location = button.Location,
+							Location = UIHelper.Scale(button.Location),
+							Size = button.TargetSize,
 							XName = button.Name,
 							YName = button.SecondaryNames[0],
-							Size = button.TargetSize,
 							RangeX = button.MaxValue,
 							RangeY = button.MaxValue // TODO: ability to have a different Y than X
 						});
@@ -97,10 +108,20 @@ namespace BizHawk.Client.EmuHawk
 						{
 							Name = button.Name,
 							DisplayName = button.DisplayName,
-							Location = button.Location,
+							Location = UIHelper.Scale(button.Location),
 							Size = button.TargetSize,
 							MinValue = button.MinValue,
 							MaxValue = button.MaxValue
+						});
+						break;
+					case PadSchema.PadInputType.DiscManager:
+						PadBox.Controls.Add(new VirtualPadDiscManager(button.SecondaryNames)
+						{
+							Name = button.Name,
+							//DisplayName = button.DisplayName,
+							Location = UIHelper.Scale(button.Location),
+							Size = button.TargetSize,
+							OwnerEmulator = button.OwnerEmulator
 						});
 						break;
 				}

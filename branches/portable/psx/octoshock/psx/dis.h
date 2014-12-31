@@ -1,11 +1,3 @@
 #pragma once
 
-#include "emuware/emuware.h"
-#include <string>
-
-namespace MDFN_IEN_PSX
-{
-
-std::string DisassembleMIPS(uint32 PC, uint32 instr);
-
-}
+EW_EXPORT s32 shock_Util_DisassembleMIPS(u32 PC, u32 instr, void* outbuf, s32 buflen);

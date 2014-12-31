@@ -133,15 +133,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		public ITracer Tracer
-		{
-			[FeatureNotImplemented]
-			get
-			{
-				throw new NotImplementedException();
-			}
-		}
-
 		public void Dispose()
 		{
 			if (Core != IntPtr.Zero)
@@ -218,27 +209,35 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		JsonSerializer ser = new JsonSerializer() { Formatting = Formatting.Indented };
 
+		[StructLayout(LayoutKind.Sequential)]
 		class TextStateData
 		{
-			public int Frame;
-			public int LagCount;
 			public bool IsLagFrame;
+			public int LagCount;
+			public int Frame;
 		}
-		
+
+		private void LoadTextStateData(TextStateData d)
+		{
+			IsLagFrame = d.IsLagFrame;
+			LagCount = d.LagCount;
+			Frame = d.Frame;
+		}
+		private void SaveTextStateData(TextStateData d)
+		{
+			d.IsLagFrame = IsLagFrame;
+			d.LagCount = LagCount;
+			d.Frame = Frame;
+		}
+
 		public void SaveStateText(TextWriter writer)
 		{
 			var s = new TextState<TextStateData>();
 			s.Prepare();
 			var ff = s.GetFunctionPointersSave();
 			BizSwan.bizswan_txtstatesave(Core, ref ff);
-			s.ExtraData.IsLagFrame = IsLagFrame;
-			s.ExtraData.LagCount = LagCount;
-			s.ExtraData.Frame = Frame;
-
+			SaveTextStateData(s.ExtraData);
 			ser.Serialize(writer, s);
-			// write extra copy of stuff we don't use
-			writer.WriteLine();
-			writer.WriteLine("Frame {0}", Frame);
 		}
 
 		public void LoadStateText(TextReader reader)
@@ -247,9 +246,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			s.Prepare();
 			var ff = s.GetFunctionPointersLoad();
 			BizSwan.bizswan_txtstateload(Core, ref ff);
-			IsLagFrame = s.ExtraData.IsLagFrame;
-			LagCount = s.ExtraData.LagCount;
-			Frame = s.ExtraData.Frame;
+			LoadTextStateData(s.ExtraData);
 		}
 
 		byte[] savebuff;
@@ -262,10 +259,9 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			writer.Write(savebuff.Length);
 			writer.Write(savebuff);
 
-			// other variables
-			writer.Write(IsLagFrame);
-			writer.Write(LagCount);
-			writer.Write(Frame);
+			var d = new TextStateData();
+			SaveTextStateData(d);
+			BinaryQuickSerializer.Write(d, writer);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
@@ -277,10 +273,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			if (!BizSwan.bizswan_binstateload(Core, savebuff, savebuff.Length))
 				throw new InvalidOperationException("bizswan_binstateload() returned false!");
 
-			// other variables
-			IsLagFrame = reader.ReadBoolean();
-			LagCount = reader.ReadInt32();
-			Frame = reader.ReadInt32();
+			var d = BinaryQuickSerializer.Create<TextStateData>(reader);
+			LoadTextStateData(d);
 		}
 
 		public byte[] SaveStateBinary()
@@ -330,14 +324,14 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public MemoryDomainList MemoryDomains { get; private set; }
 	
-		public IDictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			var ret = new Dictionary<string, int>();
+			var ret = new Dictionary<string, RegisterValue>();
 			for (int i = (int)BizSwan.NecRegsMin; i <= (int)BizSwan.NecRegsMax; i++)
 			{
 				BizSwan.NecRegs en = (BizSwan.NecRegs)i;
 				uint val = BizSwan.bizswan_getnecreg(Core, en);
-				ret[Enum.GetName(typeof(BizSwan.NecRegs), en)] = (int)val;
+				ret[Enum.GetName(typeof(BizSwan.NecRegs), en)] = (ushort)val;
 			}
 			return ret;
 		}
@@ -347,6 +341,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		{
 			throw new NotImplementedException();
 		}
+
+		public bool CanStep(StepType type) { return false; }
 
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }

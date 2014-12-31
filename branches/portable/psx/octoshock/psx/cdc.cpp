@@ -51,8 +51,6 @@
 #include "psx.h"
 #include "cdc.h"
 #include "spu.h"
-#include "cdrom/CDUtility.h"
-#include "cdrom/cdromif.h"
 #include "endian.h"
 
 using namespace CDUtility;
@@ -176,7 +174,7 @@ void PS_CDC::SoftReset(void)
  SectorPipe_Pos = SectorPipe_In = 0;
  SectorsRead = 0;
 
- memset(SubQBuf, 0, sizeof(SubQBuf));
+ //memset(SubQBuf, 0, sizeof(SubQBuf));
  memset(SubQBuf_Safe, 0, sizeof(SubQBuf_Safe));
  SubQChecksumOK = false;
 
@@ -266,7 +264,7 @@ SYNCFUNC(PS_CDC)
   NSS(SectorPipe_Pos);
   NSS(SectorPipe_In);
 
-  NSS(SubQBuf);
+  //NSS(SubQBuf);
   NSS(SubQBuf_Safe);
 
   NSS(SubQChecksumOK);
@@ -425,7 +423,6 @@ bool PS_CDC::DecodeSubQ(uint8 *subpw)
 
  if((tmp_q[0] & 0xF) == 1)
  {
-  memcpy(SubQBuf, tmp_q, 0xC);
   SubQChecksumOK = subq_check_checksum(tmp_q);
 
   if(SubQChecksumOK)
@@ -860,18 +857,17 @@ void PS_CDC::HandlePlayRead(void)
  {
   PSX_WARNING("[CDC] In leadout area: %u", CurSector);
 
-  //
-  // Synthesis is a bit of a kludge... :/
-  //
-  synth_leadout_sector_lba(0x02, toc, CurSector, read_buf);
-  DecodeSubQ(read_buf + 2352);
+  // " Synthesis is a bit of a kludge " but we've taken it out of here
+	//synth_leadout_sector_lba(0x02, toc, CurSector, read_buf);
+	Cur_disc->ReadLBA2448(CurSector,read_buf);	// FIXME: error out on error.
  }
  else
  {
   Cur_disc->ReadLBA2448(CurSector,read_buf);	// FIXME: error out on error.
-  DecodeSubQ(read_buf + 2352);
  }
  
+  DecodeSubQ(read_buf + 2352);
+
 
  if(SubQBuf_Safe[1] == 0xAA && (DriveStatus == DS_PLAYING || (!(SubQBuf_Safe[0] & 0x40) && (Mode & MODE_CDDA))))
  {
@@ -975,10 +971,12 @@ void PS_CDC::HandlePlayRead(void)
      // maybe if(!(Mode & 0x30)) too?
      if(!(buf[12 + 6] & 0x20))
      {
+			#ifdef LEC_CHECK
       if(!edc_lec_check_and_correct(buf, true))
       {
        printf("Bad sector? - %d", CurSector);
       }
+			#endif
      }
 
      if(!(Mode & 0x30) && (buf[12 + 6] & 0x20))

@@ -196,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (!string.IsNullOrWhiteSpace(_watches.CurrentFileName))
+			if (_watches != null && !string.IsNullOrWhiteSpace(_watches.CurrentFileName))
 			{
 				_watches.RefreshDomans(_core, _core.MemoryDomains.MainMemory);
 				_watches.Reload();
@@ -373,7 +373,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var we = new WatchEditor
 				{
-					InitialLocation = this.ChildPointToScreen(WatchListView)
+					InitialLocation = this.ChildPointToScreen(WatchListView),
+					Core = _core
 				};
 
 				we.SetWatch(_watches.Domain, SelectedWatches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit);
@@ -756,7 +757,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var we = new WatchEditor
 			{
-				InitialLocation = this.ChildPointToScreen(WatchListView)
+				InitialLocation = this.ChildPointToScreen(WatchListView),
+				Core = _core
 			};
 			we.SetWatch(_watches.Domain);
 			we.ShowHawkDialog();

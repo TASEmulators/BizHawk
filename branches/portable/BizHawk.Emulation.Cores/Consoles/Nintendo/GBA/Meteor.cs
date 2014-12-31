@@ -17,15 +17,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, IMemoryDomains, ISaveRam, IDebuggable, IStatable, IInputPollable
 	{
-		public IDictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			var ret = new Dictionary<string, int>();
+			var ret = new Dictionary<string, RegisterValue>();
 			int[] data = new int[LibMeteor.regnames.Length];
 			LibMeteor.libmeteor_getregs(data);
 			for (int i = 0; i < data.Length; i++)
 				ret.Add(LibMeteor.regnames[i], data[i]);
 			return ret;
 		}
+
+		public bool CanStep(StepType type) { return false; }
 
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
@@ -62,6 +64,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			{
 				Header = "   -Addr--- -Opcode- -Instruction------------------- -R0----- -R1----- -R2----- -R3----- -R4----- -R5----- -R6----- -R7----- -R8----- -R9----- -R10---- -R11---- -R12---- -R13(SP) -R14(LR) -R15(PC) -CPSR--- -SPSR---"
 			};
+
+			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
 
 			CoreComm = comm;
 
@@ -110,8 +114,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		// TODO: optimize managed to unmanaged using the ActiveChanged event
 		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
 
-
-		public ITracer Tracer { get; private set; }
+		private ITraceable Tracer { get; set; }
 
 		public string SystemId { get { return "GBA"; } }
 		public bool DeterministicEmulation { get { return true; } }

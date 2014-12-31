@@ -92,7 +92,7 @@ class PS_CDC
  uint8 SectorPipe_Pos;
  uint8 SectorPipe_In;
 
- uint8 SubQBuf[0xC];
+ //uint8 SubQBuf[0xC];
  uint8 SubQBuf_Safe[0xC];
  bool SubQChecksumOK;
 

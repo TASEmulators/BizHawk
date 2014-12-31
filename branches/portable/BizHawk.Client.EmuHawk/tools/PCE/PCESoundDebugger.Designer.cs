@@ -80,15 +80,9 @@
 			this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.SoundMenuStrip = new MenuStripEx();
-			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.TopMostMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
-			this.SoundMenuStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// btnExport
@@ -254,53 +248,12 @@
 			// 
 			// SoundMenuStrip
 			// 
-			this.SoundMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.OptionsSubMenu});
+			this.SoundMenuStrip.ClickThrough = true;
 			this.SoundMenuStrip.Location = new System.Drawing.Point(0, 0);
 			this.SoundMenuStrip.Name = "SoundMenuStrip";
 			this.SoundMenuStrip.Size = new System.Drawing.Size(787, 24);
 			this.SoundMenuStrip.TabIndex = 4;
 			this.SoundMenuStrip.Text = "menuStrip1";
-			// 
-			// OptionsSubMenu
-			// 
-			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.AutoloadMenuItem,
-            this.SaveWindowPositionMenuItem,
-            this.TopMostMenuItem,
-            this.FloatingWindowMenuItem});
-			this.OptionsSubMenu.Name = "OptionsSubMenu";
-			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
-			this.OptionsSubMenu.Text = "&Options";
-			this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
-			// 
-			// AutoloadMenuItem
-			// 
-			this.AutoloadMenuItem.Name = "AutoloadMenuItem";
-			this.AutoloadMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.AutoloadMenuItem.Text = "&Autoload";
-			this.AutoloadMenuItem.Click += new System.EventHandler(this.AutoloadMenuItem_Click);
-			// 
-			// SaveWindowPositionMenuItem
-			// 
-			this.SaveWindowPositionMenuItem.Name = "SaveWindowPositionMenuItem";
-			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.SaveWindowPositionMenuItem.Text = "Save Window Position";
-			this.SaveWindowPositionMenuItem.Click += new System.EventHandler(this.SaveWindowPositionMenuItem_Click);
-			// 
-			// TopMostMenuItem
-			// 
-			this.TopMostMenuItem.Name = "TopMostMenuItem";
-			this.TopMostMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.TopMostMenuItem.Text = "Always on Top";
-			this.TopMostMenuItem.Click += new System.EventHandler(this.TopMostMenuItem_Click);
-			// 
-			// FloatingWindowMenuItem
-			// 
-			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
-			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.FloatingWindowMenuItem.Text = "Floating Window";
-			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
 			// 
 			// PCESoundDebugger
 			// 
@@ -316,12 +269,9 @@
 			this.Name = "PCESoundDebugger";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Sound Debugger";
-			this.Load += new System.EventHandler(this.PCESoundDebugger_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
-			this.SoundMenuStrip.ResumeLayout(false);
-			this.SoundMenuStrip.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -344,10 +294,5 @@
 		private System.Windows.Forms.ColumnHeader columnHeader4;
 		private System.Windows.Forms.ColumnHeader columnHeader1;
 		private MenuStripEx SoundMenuStrip;
-		private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem AutoloadMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SaveWindowPositionMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem TopMostMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
 	}
 }

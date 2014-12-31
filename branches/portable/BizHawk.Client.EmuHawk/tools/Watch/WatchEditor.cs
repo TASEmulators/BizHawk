@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 		public enum Mode { New, Duplicate, Edit };
 		
 		private readonly List<Watch> _watchList = new List<Watch>();
-		private readonly IMemoryDomains Core;
+		public IMemoryDomains Core { get; set; }
 
 		private Mode _mode = Mode.New;
 		private bool _loading = true;
@@ -28,7 +28,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public WatchEditor()
 		{
-			Core = (IMemoryDomains)Global.Emulator;
 			_changedDisplayType = false;
 			InitializeComponent();
 		}

@@ -8,10 +8,11 @@ using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using System.Collections.Generic;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class GBGPUView : Form, IToolForm
+	public partial class GBGPUView : Form, IToolFormAutoConfig
 	{
 		[RequiredService]
 		public Gameboy Gb { get; private set; }
@@ -44,12 +45,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private Color _spriteback;
 		
-		Color spriteback
+		[ConfigPersist]
+		public Color Spriteback
 		{
 			get { return _spriteback; }
 			set
 			{
-				_spriteback = value;
+				_spriteback = Color.FromArgb(255, value); // force fully opaque
 				panelSpriteBackColor.BackColor = _spriteback;
 				labelSpriteBackColor.Text = string.Format("({0},{1},{2})", _spriteback.R, _spriteback.G, _spriteback.B);
 			}
@@ -79,12 +81,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_messagetimer.Interval = 5000;
 			_messagetimer.Tick += messagetimer_Tick;
-
-			checkBoxAutoLoad.Checked = Global.Config.AutoLoadGBGPUView;
-			checkBoxSavePos.Checked = Global.Config.GBGPUViewSaveWindowPosition;
-
-			// TODO: from config
-			spriteback = Color.FromArgb(255, Global.Config.GBGPUSpriteBack);
+			Spriteback = Color.Lime; // will be overrided from config after construct
 		}
 
 		public void Restart()
@@ -372,7 +369,7 @@ namespace BizHawk.Client.EmuHawk
 				p = (int*)_sppal;
 				for (int i = 0; i < 32; i++)
 					p[i] |= unchecked((int)0xff000000);
-				int c = spriteback.ToArgb();
+				int c = Spriteback.ToArgb();
 				for (int i = 0; i < 32; i += 4)
 					p[i] = c;
 			}
@@ -478,19 +475,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Gb.SetScanlineCallback(null, 0);
 			}
-
-			Global.Config.GBGPUSpriteBack = spriteback;
 		}
 
 		private void GBGPUView_Load(object sender, EventArgs e)
 		{
-			if (Global.Config.GBGPUViewSaveWindowPosition)
-			{
-				Point p = new Point(Global.Config.GBGPUViewWndx, Global.Config.GBGPUViewWndy);
-				if (p.X >= 0 && p.Y >= 0)
-					Location = p;
-			}
-			Restart();
 		}
 
 		#region refresh
@@ -939,18 +927,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBGPUView_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			Global.Config.GBGPUViewWndx = Location.X;
-			Global.Config.GBGPUViewWndy = Location.Y;
-		}
-
-		private void checkBoxAutoLoad_CheckedChanged(object sender, EventArgs e)
-		{
-			Global.Config.AutoLoadGBGPUView = (sender as CheckBox).Checked;
-		}
-
-		private void checkBoxSavePos_CheckedChanged(object sender, EventArgs e)
-		{
-			Global.Config.GBGPUViewSaveWindowPosition = (sender as CheckBox).Checked;
 		}
 
 		private void buttonChangeColor_Click(object sender, EventArgs e)
@@ -960,13 +936,12 @@ namespace BizHawk.Client.EmuHawk
 				dlg.AllowFullOpen = true;
 				dlg.AnyColor = true;
 				dlg.FullOpen = true;
-				dlg.Color = spriteback;
+				dlg.Color = Spriteback;
 
 				var result = dlg.ShowHawkDialog();
 				if (result == DialogResult.OK)
 				{
-					// force full opaque
-					spriteback = Color.FromArgb(255, dlg.Color);
+					Spriteback = dlg.Color;
 				}
 			}
 		}

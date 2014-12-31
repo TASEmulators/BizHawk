@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public GPGX(CoreComm comm, byte[] rom, DiscSystem.Disc CD, object Settings, object SyncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
-
+			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(_tracer);
 			// this can influence some things internally
 			string romextension = "GEN";
 
@@ -392,14 +392,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private readonly TraceBuffer _tracer = new TraceBuffer();
 
-		public ITracer Tracer
-		{
-			get
-			{
-				return _tracer;
-			}
-		}
-
 		#endregion
 
 		// TODO: use render and rendersound
@@ -629,19 +621,28 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			MemoryDomains = new MemoryDomainList(mm, 0);
 		}
 
-
-		public IDictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			LibGPGX.RegisterInfo[] regs = new LibGPGX.RegisterInfo[LibGPGX.gpgx_getmaxnumregs()];
 
 			int n = LibGPGX.gpgx_getregs(regs);
 			if (n > regs.Length)
 				throw new InvalidOperationException("A buffer overrun has occured!");
-			var ret = new Dictionary<string, int>();
+			var ret = new Dictionary<string, RegisterValue>();
 			for (int i = 0; i < n; i++)
-				ret[Marshal.PtrToStringAnsi(regs[i].Name)] = regs[i].Value;
+			{
+				// el hacko
+				string name = Marshal.PtrToStringAnsi(regs[i].Name);
+				byte size = 32;
+				if (name.Contains("68K SR") || name.StartsWith("Z80"))
+					size = 16;
+				ret[Marshal.PtrToStringAnsi(regs[i].Name)] =
+					new RegisterValue { BitSize = size, Value = (ulong)regs[i].Value };
+			}
 			return ret;
 		}
+
+		public bool CanStep(StepType type) { return false; }
 
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
@@ -697,6 +698,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (SaveRamModified)
 					DisposedSaveRam = CloneSaveRam();
 				KillMemCallbacks();
+				if (CD != null)
+				{
+					CD.Dispose();
+				}
 				AttachedCore = null;
 				disposed = true;
 			}

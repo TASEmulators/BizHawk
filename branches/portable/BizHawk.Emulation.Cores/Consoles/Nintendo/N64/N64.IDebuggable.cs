@@ -8,10 +8,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	public partial class N64 : IDebuggable
 	{
-		public IDictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			// note: the approach this code takes is highly bug-prone
-			var ret = new Dictionary<string, int>();
+			var ret = new Dictionary<string, RegisterValue>();
 			var data = new byte[32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + 32 * 4 + 32 * 8];
 			api.getRegisters(data);
 
@@ -60,16 +60,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			throw new NotImplementedException();
 		}
 
-		public ITracer Tracer
-		{
-			[FeatureNotImplemented]
-			get
-			{
-				throw new NotImplementedException();
-			}
-		}
-
 		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
+
+		public bool CanStep(StepType type) { return false; }
 
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }

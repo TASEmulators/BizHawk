@@ -124,11 +124,17 @@ namespace BizHawk.Client.Common
 
 		public Func<RomGame, string> ChoosePlatform { get; set; }
 
+		// in case we get sent back through the picker more than once, use the same choice the second time
+		int? previouschoice;
 		private int? HandleArchive(HawkFile file)
 		{
+			if (previouschoice.HasValue)
+				return previouschoice;
+
 			if (ChooseArchive != null)
 			{
-				return ChooseArchive(file);
+				previouschoice = ChooseArchive(file);
+				return previouschoice;
 			}
 
 			return null;
@@ -184,7 +190,7 @@ namespace BizHawk.Client.Common
 				// if we have an archive and need to bind something, then pop the dialog
 				if (file.IsArchive && !file.IsBound)
 				{
-					var result = HandleArchive(file);
+					int? result = HandleArchive(file);
 					if (result.HasValue)
 					{
 						file.BindArchiveMember(result.Value);
@@ -216,6 +222,7 @@ namespace BizHawk.Client.Common
 						//load discs for all the m3u
 						m3u.Rebase(Path.GetDirectoryName(path));
 						List<Disc> discs = new List<Disc>();
+						List<string> discNames = new List<string>();
 						foreach (var e in m3u.Entries)
 						{
 							Disc disc = null;
@@ -229,9 +236,10 @@ namespace BizHawk.Client.Common
 								disc = Disc.FromCCDPath(discPath);
 							if(disc == null)
 								throw new InvalidOperationException("Can't load one of the files specified in the M3U");
+							discNames.Add(Path.GetFileNameWithoutExtension(discPath));
 							discs.Add(disc);
 						}
-						nextEmulator = new Octoshock(nextComm, discs, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
+						nextEmulator = new Octoshock(nextComm, discs, discNames, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
 						nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 						game = new GameInfo { Name = Path.GetFileNameWithoutExtension(file.Name) };
 						game.System = "PSX";
@@ -292,7 +300,7 @@ namespace BizHawk.Client.Common
 								nextEmulator = new PSP(nextComm, file.Name);
 								break;
 							case "PSX":
-								nextEmulator = new Octoshock(nextComm, new List<Disc>(new[]{disc}), null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
+								nextEmulator = new Octoshock(nextComm, new List<Disc>(new[]{disc}), new List<string>(new[]{Path.GetFileNameWithoutExtension(path)}), null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
 								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 								break;
 							case "PCE":
@@ -454,7 +462,7 @@ namespace BizHawk.Client.Common
 								core = CoreInventory.Instance["GBA", "VBA-Next"];
 								break;
 							case "PSX":
-								nextEmulator = new Octoshock(nextComm, null, rom.FileData, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
+								nextEmulator = new Octoshock(nextComm, null, null, rom.FileData, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
 								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 								break;
 							case "DEBUG":

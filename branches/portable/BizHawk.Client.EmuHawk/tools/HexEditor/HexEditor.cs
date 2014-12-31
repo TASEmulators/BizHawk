@@ -23,7 +23,11 @@ namespace BizHawk.Client.EmuHawk
 	public partial class HexEditor : Form, IToolForm
 	{
 		[RequiredService]
-		private MemoryDomainList MemoryDomains { get; set; }
+		private IMemoryDomains MemoryDomainSource { get; set; }
+		private MemoryDomainList MemoryDomains { get { return MemoryDomainSource.MemoryDomains; } }
+
+		[RequiredService]
+		private IEmulator Emulator { get; set; }
 
 		private bool fontSizeSet = false;
 		private int fontWidth;
@@ -79,8 +83,6 @@ namespace BizHawk.Client.EmuHawk
 			AddressLabel.Font = font;
 
 			TopMost = Global.Config.HexEditorSettings.TopMost;
-
-			Restart();
 		}
 
 		private int? HighlightedAddress
@@ -134,11 +136,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			if (!IsHandleCreated || IsDisposed)
-			{
-				return;
-			}
-
 			var theDomain = _domain.Name.ToLower() == "file on disk" ? 999 : GetDomainInt(_domain.Name);
 
 			SetMemoryDomainMenu(); // Calls update routines, TODO: refactor, that is confusing!
@@ -445,8 +442,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HexEditor_Load(object sender, EventArgs e)
 		{
-			Restart();
-
 			_defaultWidth = Size.Width;     // Save these first so that the user can restore to its original size
 			_defaultHeight = Size.Height;
 
@@ -658,7 +653,7 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateGroupBoxTitle()
 		{
 			var addressesString = "0x" + string.Format("{0:X8}", _domainSize / _dataSize).TrimStart('0');
-			MemoryViewerBox.Text = Global.Emulator.SystemId + " " + _domain + "  -  " + addressesString + " addresses";
+			MemoryViewerBox.Text = Emulator.SystemId + " " + _domain + "  -  " + addressesString + " addresses";
 		}
 
 		private void SetMemoryDomainMenu()

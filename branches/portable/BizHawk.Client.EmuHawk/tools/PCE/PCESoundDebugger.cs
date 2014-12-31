@@ -13,12 +13,13 @@ using BizHawk.Client.Common;
 
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Common.Components;
+using BizHawk.Emulation.Common;
 
 using ICSharpCode.SharpZipLib.Zip;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class PCESoundDebugger : Form, IToolForm
+	public partial class PCESoundDebugger : Form, IToolFormAutoConfig
 	{
 		[RequiredService]
 		private PCEngine _pce { get; set; }
@@ -38,24 +39,22 @@ namespace BizHawk.Client.EmuHawk
 		{
 			for (int i = 0; i < lvChEn.Items.Count; i++)
 				lvChEn.Items[i].Checked = true;
-
-			RefreshFloatingWindowControl();
 			base.OnShown(e);
 		}
 
 		public void UpdateValues()
 		{
-			foreach(var entry in PSGEntries)
+			foreach (var entry in PSGEntries)
 			{
 				entry.wasactive = entry.active;
 				entry.active = false;
 			}
-			
+
 			bool sync = false;
 			lvPsgWaveforms.BeginUpdate();
 			lvChannels.BeginUpdate();
 
-			for(int i=0;i<6;i++)
+			for (int i = 0; i < 6; i++)
 			{
 				var ch = _pce.PSG.Channels[i];
 
@@ -116,7 +115,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					PSGEntry entry = PSGEntryTable[md5];
 					entry.active = true;
-					
+
 					//are we playing the same sample as before?
 					if (LastSamples[i] == entry) { }
 					else
@@ -184,13 +183,13 @@ namespace BizHawk.Client.EmuHawk
 			0x52, 0x49, 0x46, 0x46, 0x24, 0x04, 0x00, 0x00, 0x57, 0x41, 0x56, 0x45, 0x66, 0x6D, 0x74, 0x20, 
 			0x10, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0xE0, 0x2E, 0x00, 0x00, 0xC0, 0x5D, 0x00, 0x00, 
 			0x02, 0x00, 0x10, 0x00, 0x64, 0x61, 0x74, 0x61, 0x00, 0x04, 0x00, 0x00, 
-		} ;
+		};
 
 
 		private void btnExport_Click(object sender, EventArgs e)
 		{
 			string tmpf = Path.GetTempFileName() + ".zip";
-			using (var stream = new FileStream(tmpf,FileMode.Create,FileAccess.Write,FileShare.Read))
+			using (var stream = new FileStream(tmpf, FileMode.Create, FileAccess.Write, FileShare.Read))
 			{
 				var zip = new ZipOutputStream(stream)
 				{
@@ -211,7 +210,7 @@ namespace BizHawk.Client.EmuHawk
 					bw.Flush();
 					ms.Position = 0x2C;
 					for (int i = 0; i < 32; i++)
-						for(int j=0;j<16;j++)
+						for (int j = 0; j < 16; j++)
 							bw.Write(entry.waveform[i]);
 					bw.Flush();
 					var buf = ms.GetBuffer();
@@ -253,7 +252,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void lvPsgWaveforms_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.F2 && lvPsgWaveforms.SelectedItems.Count>0)
+			if (e.KeyCode == Keys.F2 && lvPsgWaveforms.SelectedItems.Count > 0)
 			{
 				lvPsgWaveforms.SelectedItems[0].BeginEdit();
 			}
@@ -273,7 +272,6 @@ namespace BizHawk.Client.EmuHawk
 		private void lvChEn_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
 		{
 
-
 		}
 
 		private void lvChEn_ItemChecked(object sender, ItemCheckedEventArgs e)
@@ -281,48 +279,5 @@ namespace BizHawk.Client.EmuHawk
 			for (int i = 0; i < 6; i++)
 				_pce.PSG.UserMute[i] = !lvChEn.Items[i].Checked;
 		}
-
-		private void PCESoundDebugger_Load(object sender, EventArgs e)
-		{
-			TopMost = Global.Config.PceSoundDebuggerSettings.TopMost;
-			if (Global.Config.PceSoundDebuggerSettings.UseWindowPosition)
-			{
-				Location = Global.Config.PceSoundDebuggerSettings.WindowPosition;
-			}
-		}
-
-		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			AutoloadMenuItem.Checked = Global.Config.PceSoundDebuggerAutoload;
-			SaveWindowPositionMenuItem.Checked = Global.Config.PceSoundDebuggerSettings.SaveWindowPosition;
-			TopMostMenuItem.Checked = Global.Config.PceSoundDebuggerSettings.TopMost;
-			FloatingWindowMenuItem.Checked = Global.Config.PceSoundDebuggerSettings.FloatingWindow;
-		}
-
-		private void AutoloadMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.PceSoundDebuggerAutoload ^= true;
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.PceSoundDebuggerSettings.SaveWindowPosition ^= true;
-		}
-
-		private void TopMostMenuItem_Click(object sender, EventArgs e)
-		{
-			TopMost = Global.Config.PceSoundDebuggerSettings.TopMost ^= true;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.PceSoundDebuggerSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
-		}
-
-		private void RefreshFloatingWindowControl()
-		{
-			Owner = Global.Config.PceSoundDebuggerSettings.FloatingWindow ? null : GlobalWin.MainForm;
-		} 
 	}
 }

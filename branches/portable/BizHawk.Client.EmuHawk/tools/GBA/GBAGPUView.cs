@@ -7,6 +7,7 @@ using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using System.Collections.Generic;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -719,7 +720,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBAGPUView_Load(object sender, EventArgs e)
 		{
-			Restart();
 		}
 
 		void ShowSelectedWidget()

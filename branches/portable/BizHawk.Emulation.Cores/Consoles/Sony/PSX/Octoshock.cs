@@ -3,12 +3,20 @@
 //TODO Disc.Structure.Sessions[0].length_aba was 0
 //TODO mednafen 0.9.37 changed some disc region detection heuristics. analyze and apply in c# side. also the SCEX id handling changed, maybe simplified
 
+//TODO - ok, think about this. we MUST load a state with the CDC completely intact. no quickly changing discs. thats madness.
+//well, I could savestate the disc index and validate the disc collection when loading a state.
+//the big problem is, it's completely at odds with the slider-based disc changing model. 
+//but, maybe it can be reconciled with that model by using the disc ejection to our advantage. 
+//perhaps moving the slider is meaningless if the disc is ejected--it only affects what disc is inserted when the disc gets inserted!! yeah! this might could save us!
+//not exactly user friendly but maybe we can build it from there with a custom UI.. a disk-changer? dunno if that would help
+
 using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+
 
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
@@ -27,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 	{
 		public string SystemId { get { return "PSX"; } }
 
-		public static readonly ControllerDefinition DualShockController = new ControllerDefinition
+		public static readonly ControllerDefinition PSXControllerDefinition = new ControllerDefinition
 		{
 			Name = "DualShock Controller",
 			BoolButtons =
@@ -36,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				"P1 R1",  "P1 L2", "P1 R2", "P1 L3", "P1 R3", "P1 MODE",  
 				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Select", "P2 Start", "P2 Square", "P2 Triangle", "P2 Circle", "P2 Cross", "P2 L1", 
 				"P2 R1",  "P2 L2", "P2 R2", "P2 L3", "P2 R3", "P2 MODE",
-				"Eject", "Reset", 
+				"Eject", "Insert", "Reset", 
 			},
 			FloatControls =
 			{
@@ -55,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				new[] {0.0f, 128.0f, 255.0f},
 				new[] {255.0f, 128.0f, 0.0f},
 				new[] {1.0f,1.0f,5.0f},
-			}
+			},
 		};
 
 		public string BoardName { get { return null; } }
@@ -70,6 +78,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		static Octoshock CurrOctoshockCore;
 
 		IntPtr psx;
+		TraceBuffer tracer = new TraceBuffer();
 
 		bool disposed = false;
 		public void Dispose()
@@ -178,24 +187,30 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		List<DiscInterface> discInterfaces = new List<DiscInterface>();
 		DiscInterface currentDiscInterface;
 
-		OctoshockDll.eRegion SystemRegion;
-		OctoshockDll.eVidStandard SystemVidStandard;
+		public OctoshockDll.eRegion SystemRegion { get; private set; }
+		public OctoshockDll.eVidStandard SystemVidStandard { get; private set; }
+		public System.Drawing.Size CurrentVideoSize { get; private set; }
+		
+		public bool CurrentDiscEjected { get; private set; }
+		public int CurrentDiscIndexMounted { get; private set; }
+
+		public List<string> HackyDiscButtons = new List<string>();
 
 		//note: its annoying that we have to have a disc before constructing this.
 		//might want to change that later. HOWEVER - we need to definitely have a region, at least
-		public Octoshock(CoreComm comm, List<DiscSystem.Disc> discs, byte[] exe, object settings, object syncSettings)
+		public Octoshock(CoreComm comm, List<DiscSystem.Disc> discs, List<string> discNames, byte[] exe, object settings, object syncSettings)
 		{
-			//analyze our first disc from the list by default, because i dont know
-
 			ServiceProvider = new BasicServiceProvider(this);
+			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(tracer);
 			CoreComm = comm;
+			DriveLightEnabled = true;
 
 			_Settings = (Settings)settings ?? new Settings();
 			_SyncSettings = (SyncSettings)syncSettings ?? new SyncSettings();
 
-			DriveLightEnabled = true;
-
 			Attach();
+
+			HackyDiscButtons.AddRange(discNames);
 
 			//assume this region for EXE and PSF, maybe not correct though
 			string firmwareRegion = "U";
@@ -203,7 +218,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			if (discs != null)
 			{
-				foreach(var disc in discs)
+				foreach (var disc in discs)
 				{
 					var discInterface = new DiscInterface(disc,
 						(di) =>
@@ -234,10 +249,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 
 			//see http://problemkaputt.de/psx-spx.htm
-			int CpuClock_n = 44100*768;
+			int CpuClock_n = 44100 * 768;
 			int CpuClock_d = 1;
-			int VidClock_n = CpuClock_n*11;
-			int VidClock_d = CpuClock_d*7;
+			int VidClock_n = CpuClock_n * 11;
+			int VidClock_d = CpuClock_d * 7;
 			if (SystemRegion == OctoshockDll.eRegion.EU)
 			{
 				CoreComm.VsyncNum = VidClock_n;
@@ -260,26 +275,49 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			SetMemoryDomains();
 
-			//TODO - refactor resolution detection and set this accordingly to the first frame of emulation, or at least what the bios is doing first
-			VirtualWidth = 800;
-			VirtualHeight = 480;
+			//set a default framebuffer based on the first frame of emulation, to cut down on flickering or whatever
+			//this is probably quixotic, but we have to pick something
+			{
+				BufferWidth = 280;
+				BufferHeight = 240;
+				if (SystemVidStandard == OctoshockDll.eVidStandard.PAL)
+				{
+					BufferWidth = 280;
+					BufferHeight = 288;
+				}
+				CurrentVideoSize = new System.Drawing.Size(BufferWidth, BufferHeight);
+				var size = Octoshock.CalculateResolution(SystemVidStandard, _Settings, BufferWidth, BufferHeight);
+				BufferWidth = VirtualWidth = size.Width;
+				BufferHeight = VirtualHeight = size.Height;
+				frameBuffer = new int[BufferWidth * BufferHeight];
+			}
 
-			//set a default framebuffer
-			BufferWidth = VirtualWidth;
-			BufferHeight = VirtualHeight;
-			frameBuffer = new int[BufferWidth * BufferHeight];
-
+			//TODO - should be able to cold boot system with disc isnerted
 			if (discInterfaces.Count != 0)
 			{
-				//disc will be set during first frame advance
+				//start with first disc inserted and tray closed
+				CurrentDiscEjected = false;
+				CurrentDiscIndexMounted = 1;
+				currentDiscInterface = discInterfaces[CurrentDiscIndexMounted - 1];
+				OctoshockDll.shock_OpenTray(psx);
+				OctoshockDll.shock_SetDisc(psx, currentDiscInterface.OctoshockHandle);
+				OctoshockDll.shock_CloseTray(psx);
 			}
 			else
 			{
 				//must be an exe
 				fixed (byte* pExeBuffer = exe)
 					OctoshockDll.shock_MountEXE(psx, pExeBuffer, exe.Length);
+
+				//start with no disc inserted and tray closed
+				CurrentDiscEjected = false;
+				CurrentDiscIndexMounted = 0;
+				OctoshockDll.shock_CloseTray(psx);
 			}
+
+			//connect two dualshocks, thats all we're doing right now
 			OctoshockDll.shock_Peripheral_Connect(psx, 0x01, OctoshockDll.ePeripheralType.DualShock);
+			OctoshockDll.shock_Peripheral_Connect(psx, 0x02, OctoshockDll.ePeripheralType.DualShock);
 
 			//do this after framebuffers and peripherals and whatever crap are setup. kind of lame, but thats how it is for now
 			StudySaveBufferSize();
@@ -345,29 +383,117 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			byte right_y = (byte)Controller.GetFloat("P1 RStick Y");
 
 			OctoshockDll.shock_Peripheral_SetPadInput(psx, 0x01, buttons, left_x, left_y, right_x, right_y);
+
+			//dualshock style
+			buttons = 0;
+			if (Controller["P2 Select"]) buttons |= 1;
+			if (Controller["P2 L3"]) buttons |= 2;
+			if (Controller["P2 R3"]) buttons |= 4;
+			if (Controller["P2 Start"]) buttons |= 8;
+			if (Controller["P2 Up"]) buttons |= 16;
+			if (Controller["P2 Right"]) buttons |= 32;
+			if (Controller["P2 Down"]) buttons |= 64;
+			if (Controller["P2 Left"]) buttons |= 128;
+			if (Controller["P2 L2"]) buttons |= 256;
+			if (Controller["P2 R2"]) buttons |= 512;
+			if (Controller["P2 L1"]) buttons |= 1024;
+			if (Controller["P2 R1"]) buttons |= 2048;
+			if (Controller["P2 Triangle"]) buttons |= 4096;
+			if (Controller["P2 Circle"]) buttons |= 8192;
+			if (Controller["P2 Cross"]) buttons |= 16384;
+			if (Controller["P2 Square"]) buttons |= 32768;
+			if (Controller["P2 MODE"]) buttons |= 65536;
+
+			left_x = (byte)Controller.GetFloat("P2 LStick X");
+			left_y = (byte)Controller.GetFloat("P2 LStick Y");
+			right_x = (byte)Controller.GetFloat("P2 RStick X");
+			right_y = (byte)Controller.GetFloat("P2 RStick Y");
+
+			OctoshockDll.shock_Peripheral_SetPadInput(psx, 0x02, buttons, left_x, left_y, right_x, right_y);
+		}
+
+		/// <summary>
+		/// Calculates what the output resolution would be for the given input resolution and settings
+		/// </summary>
+		public static System.Drawing.Size CalculateResolution(OctoshockDll.eVidStandard standard, Settings settings, int w, int h)
+		{
+			int virtual_width = settings.ClipHorizontalOverscan ? 768 : 800;
+
+			int scanline_start = standard == OctoshockDll.eVidStandard.NTSC ? settings.ScanlineStart_NTSC : settings.ScanlineStart_PAL;
+			int scanline_end = standard == OctoshockDll.eVidStandard.NTSC ? settings.ScanlineEnd_NTSC : settings.ScanlineEnd_PAL;
+			int scanline_num = scanline_end - scanline_start + 1;
+			int real_scanline_num = standard == OctoshockDll.eVidStandard.NTSC ? 240 : 288;
+
+			int VirtualWidth=-1, VirtualHeight=-1;
+			switch (settings.ResolutionMode)
+			{
+				case eResolutionMode.Debug:
+					VirtualWidth = w;
+					VirtualHeight = h;
+					break;
+				case eResolutionMode.Mednafen:
+					VirtualWidth = settings.ClipHorizontalOverscan ? 302 : 320;
+					VirtualHeight = scanline_num;
+					break;
+				case eResolutionMode.PixelPro:
+					VirtualWidth = virtual_width;
+					VirtualHeight = scanline_num * 2;
+					break;
+				case eResolutionMode.TweakedMednafen:
+					VirtualWidth = settings.ClipHorizontalOverscan ? 378 : 400;
+					VirtualHeight = (int)(scanline_num * 300.0f / real_scanline_num);
+					break;
+			}
+
+			return new System.Drawing.Size(VirtualWidth, VirtualHeight);
+		}
+
+		void FrameAdvance_PrepDiscState()
+		{
+			//if eject is requested, and valid, apply it
+			if (Controller["Eject"] && !CurrentDiscEjected)
+			{
+				OctoshockDll.shock_OpenTray(psx);
+				CurrentDiscEjected = true;
+			}
+
+			//change the disc if needed, and valid
+			//TODO - warning if zero time change?
+			int requestedDisc = (int)Controller.GetFloat("Disc Select");
+			if (requestedDisc != CurrentDiscIndexMounted && CurrentDiscEjected)
+			{
+				CurrentDiscIndexMounted = requestedDisc;
+				if (CurrentDiscIndexMounted == 0)
+				{
+					currentDiscInterface = null;
+					OctoshockDll.shock_SetDisc(psx, IntPtr.Zero);
+				}
+				else
+				{
+					currentDiscInterface = discInterfaces[CurrentDiscIndexMounted - 1];
+					OctoshockDll.shock_SetDisc(psx, currentDiscInterface.OctoshockHandle);
+				}
+			}
+
+			//if insert is requested, and valid, apply it
+			if (Controller["Insert"] && CurrentDiscEjected)
+			{
+				OctoshockDll.shock_CloseTray(psx);
+				CurrentDiscEjected = false;
+			}
 		}
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			Frame++;
+
+			//clear drive light. itll get set to light up by sector-reading callbacks
+			//TODO - debounce this by a frame or so perhaps?
 			DriveLightOn = false;
 
+			FrameAdvance_PrepDiscState();
+			
 			SetInput();
-
-			if (Controller["Eject"]) OctoshockDll.shock_OpenTray(psx);
-
-			//if requested disc is not matching current disc, set it now
-			int discChoice = (int)Controller.GetFloat("Disc Select") - 1;
-			if (discChoice >= discInterfaces.Count)
-				discChoice = discInterfaces.Count - 1;
-			if (discInterfaces[discChoice] != currentDiscInterface)
-			{
-				currentDiscInterface = discInterfaces[discChoice];
-				if (!Controller["Eject"]) OctoshockDll.shock_OpenTray(psx); //open tray if needed
-				OctoshockDll.shock_SetDisc(psx, currentDiscInterface.OctoshockHandle);
-			}
-
-			if (!Controller["Eject"]) OctoshockDll.shock_CloseTray(psx);
 
 			var ropts = new OctoshockDll.ShockRenderOptions()
 			{
@@ -377,12 +503,25 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			};
 			OctoshockDll.shock_SetRenderOptions(psx, ref ropts);
 
+			//prep tracer
+			if (tracer.Enabled)
+				OctoshockDll.shock_SetTraceCallback(psx, IntPtr.Zero, ShockTraceCallback);
+			else
+				OctoshockDll.shock_SetTraceCallback(psx, IntPtr.Zero, null);
+
+			//------------------------
 			OctoshockDll.shock_Step(psx, OctoshockDll.eShockStep.Frame);
+			//------------------------
 
 			//what happens to sound in this case?
 			if (render == false) return;
 
 			OctoshockDll.ShockFramebufferInfo fb = new OctoshockDll.ShockFramebufferInfo();
+
+			//run this once to get current logical size
+			OctoshockDll.shock_GetFramebuffer(psx, ref fb);
+			CurrentVideoSize = new System.Drawing.Size(fb.width, fb.height);
+
 			if (_Settings.ResolutionMode == eResolutionMode.PixelPro)
 				fb.flags = OctoshockDll.eShockFramebufferFlags.Normalize;
 
@@ -393,31 +532,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			BufferWidth = w;
 			BufferHeight = h;
 
-			int virtual_width = ropts.clipOverscan ? 768 : 800;
-			int scanline_num = ropts.scanline_end - ropts.scanline_start + 1;
-			int real_scanline_num = SystemVidStandard == OctoshockDll.eVidStandard.NTSC ? 240 : 288;
-
-			switch (_Settings.ResolutionMode)
-			{
-				case eResolutionMode.Debug:
-					VirtualWidth = w;
-					VirtualHeight = h;
-					break;
-				case eResolutionMode.Mednafen:
-					VirtualWidth = ropts.clipOverscan ? 302 : 320;
-					VirtualHeight = scanline_num;
-					break;
-				case eResolutionMode.PixelPro:
-					VirtualWidth = virtual_width;
-					VirtualHeight = scanline_num*2;
-					break;
-				case eResolutionMode.TweakedMednafen:
-					{
-						VirtualWidth = ropts.clipOverscan ? 378 : 400;
-						VirtualHeight = (int)(scanline_num * 300.0f / real_scanline_num);
-					}
-					break;
-			}
+			var size = CalculateResolution(this.SystemVidStandard, _Settings, w, h);
+			VirtualWidth = size.Width;
+			VirtualHeight = size.Height;
 
 			int len = w * h;
 			if (frameBuffer.Length != len)
@@ -440,7 +557,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 		}
 
-		public ControllerDefinition ControllerDefinition { get { return DualShockController; } }
+		public ControllerDefinition ControllerDefinition { get { return PSXControllerDefinition; } }
 		public IController Controller { get; set; }
 
 		public int Frame { get; private set; }
@@ -563,6 +680,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			public int Frame;
 			public int LagCount;
 			public bool IsLagFrame;
+			public bool CurrentDiscEjected;
+			public int CurrentDiscIndexMounted;
 		}
 
 		public void SaveStateText(TextWriter writer)
@@ -582,6 +701,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			s.ExtraData.IsLagFrame = IsLagFrame;
 			s.ExtraData.LagCount = LagCount;
 			s.ExtraData.Frame = Frame;
+			s.ExtraData.CurrentDiscEjected = CurrentDiscEjected;
+			s.ExtraData.CurrentDiscIndexMounted = CurrentDiscIndexMounted;
 
 			ser.Serialize(writer, s);
 			// TODO write extra copy of stuff we don't use (WHY?)
@@ -604,6 +725,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			IsLagFrame = s.ExtraData.IsLagFrame;
 			LagCount = s.ExtraData.LagCount;
 			Frame = s.ExtraData.Frame;
+			CurrentDiscEjected = s.ExtraData.CurrentDiscEjected;
+			CurrentDiscIndexMounted = s.ExtraData.CurrentDiscIndexMounted;
 		}
 
 		byte[] savebuff;
@@ -615,7 +738,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			transaction.transaction = OctoshockDll.eShockStateTransaction.BinarySize;
 			int size = OctoshockDll.shock_StateTransaction(psx, ref transaction);
 			savebuff = new byte[size];
-			savebuff2 = new byte[savebuff.Length + 13];
+			savebuff2 = new byte[savebuff.Length + 4+  4+4+1+1+4];
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
@@ -639,6 +762,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				writer.Write(IsLagFrame);
 				writer.Write(LagCount);
 				writer.Write(Frame);
+				writer.Write(CurrentDiscEjected);
+				writer.Write(CurrentDiscIndexMounted);
 			}
 		}
 
@@ -665,6 +790,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				IsLagFrame = reader.ReadBoolean();
 				LagCount = reader.ReadInt32();
 				Frame = reader.ReadInt32();
+				CurrentDiscEjected = reader.ReadBoolean();
+				CurrentDiscIndexMounted = reader.ReadInt32();
+
+				//TODO - need a method to sneak the required disc, without having to do a proper eject sequence
 			}
 		}
 
@@ -797,9 +926,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		#region IDebuggable
 
-		public IDictionary<string, int> GetCpuFlagsAndRegisters()
+		// TODO: don't cast to int, and are any of these not 32 bit?
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			Dictionary<string, int> ret = new Dictionary<string, int>();
+			Dictionary<string, RegisterValue> ret = new Dictionary<string, RegisterValue>();
 			var regs = new OctoshockDll.ShockRegisters_CPU();
 
 			OctoshockDll.shock_GetRegisters_CPU(psx, ref regs);
@@ -827,6 +957,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			ret["fp"] = (int)regs.GPR[30];
 			ret["ra"] = (int)regs.GPR[31];
 
+			ret["pc"] = (int)regs.PC;
+			ret["lo"] = (int)regs.LO;
+			ret["hi"] = (int)regs.HI;
+			ret["sr"] = (int)regs.SR;
+			ret["cause"] = (int)regs.CAUSE;
+			ret["epc"] = (int)regs.EPC;
+
 			return ret;
 		}
 
@@ -843,7 +980,15 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			{"s4",20},{"s5",21},{"s6",22},{"s7",23},
 			{"t8",24},{"t9",25},
 			{"k0",26},{"k1",27},
-			{"gp",28},{"sp",29},{"fp",30},{"ra",31}
+			{"gp",28},{"sp",29},{"fp",30},{"ra",31},
+			{"pc",32},
+			//33 - PC_NEXT
+			//34 - IN_BD_SLOT
+			{"lo",35},
+			{"hi",36},
+			{"sr",37},
+			{"cause",38},
+			{"epc",39},
 		};
 
 		public void SetCpuRegister(string register, int value)
@@ -852,11 +997,18 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			OctoshockDll.shock_SetRegister_CPU(psx, index, (uint)value);
 		}
 
-		[FeatureNotImplemented]
-		public ITracer Tracer { get { throw new NotImplementedException(); } }
+		public ITraceable Tracer { get { return tracer; } }
+
+		public int ShockTraceCallback(IntPtr opaque, uint PC, uint inst, string dis)
+		{
+			Tracer.Put(dis);
+			return OctoshockDll.SHOCK_OK;
+		}
 
 		[FeatureNotImplemented]
 		public IMemoryCallbackSystem MemoryCallbacks { get { throw new NotImplementedException(); } }
+
+		public bool CanStep(StepType type) { return false; }
 
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }

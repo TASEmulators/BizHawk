@@ -8,12 +8,14 @@ using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class MarkerControl : UserControl
 	{
 		public TAStudio Tastudio { get; set; }
+		public IEmulator Emulator { get; set; }
 
 		public MarkerControl()
 		{
@@ -48,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MarkerView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
 		{
-			var prev = Tastudio.CurrentTasMovie.Markers.PreviousOrCurrent(Global.Emulator.Frame);
+			var prev = Tastudio.CurrentTasMovie.Markers.PreviousOrCurrent(Global.Emulator.Frame);//Temp fix
 
 			if (prev != null && index == Tastudio.CurrentTasMovie.Markers.IndexOf(prev))
 			{

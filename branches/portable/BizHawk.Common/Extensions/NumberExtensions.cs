@@ -24,6 +24,11 @@ namespace BizHawk.Common.NumberExtensions
 			return string.Format("{0:X" + numdigits + "}", n);
 		}
 
+		public static string ToHexString(this ulong n, int numdigits)
+		{
+			return string.Format("{0:X" + numdigits + "}", n);
+		}
+
 		public static bool Bit(this byte b, int index)
 		{
 			return (b & (1 << index)) != 0;

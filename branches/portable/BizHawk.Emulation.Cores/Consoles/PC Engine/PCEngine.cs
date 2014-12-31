@@ -70,6 +70,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			Tracer = new TraceBuffer();
+			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
+
 			MemoryCallbacks = new MemoryCallbackSystem();
 			CoreComm = comm;
 
@@ -94,12 +96,13 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public string BoardName { get { return null; } }
 
-		public ITracer Tracer { get; private set; }
+		private ITraceable Tracer { get; set; }
 		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
 		public PCEngine(CoreComm comm, GameInfo game, Disc disc, object Settings, object syncSettings)
 		{
 			CoreComm = comm;
+			ServiceProvider = new BasicServiceProvider(this);
 			Tracer = new TraceBuffer();
 			MemoryCallbacks = new MemoryCallbackSystem();
 			DriveLightEnabled = true;
@@ -545,9 +548,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		MemoryDomainList memoryDomains;
 		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
-		public IDictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			return new Dictionary<string, int>
+			return new Dictionary<string, RegisterValue>
 			{
 				{ "A", Cpu.A },
 				{ "X", Cpu.X },
@@ -564,6 +567,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				{ "MPR-7", Cpu.MPR[7] }
 			};
 		}
+
+		public bool CanStep(StepType type) { return false; }
 
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }

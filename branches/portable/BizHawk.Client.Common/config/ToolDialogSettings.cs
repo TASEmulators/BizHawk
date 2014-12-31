@@ -14,6 +14,18 @@ namespace BizHawk.Client.Common
 			FloatingWindow = true;
 		}
 
+		public void RestoreDefaults()
+		{
+			_wndx = null;
+			_wndy = null;
+			SaveWindowPosition = true;
+			FloatingWindow = true;
+			TopMost = false;
+			AutoLoad = false;
+			Width = null;
+			Height = null;
+		}
+
 		[JsonIgnore]
 		public int? Wndx
 		{
@@ -48,6 +60,7 @@ namespace BizHawk.Client.Common
 		public bool SaveWindowPosition { get; set; }
 		public bool TopMost { get; set; }
 		public bool FloatingWindow { get; set; }
+		public bool AutoLoad { get; set; }
 
 		[JsonIgnore]
 		public bool UseWindowPosition

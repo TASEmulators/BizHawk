@@ -1,7 +1,6 @@
 #pragma once
 
 #include "emuware/emuware.h"
-#include "cdrom/cdromif.h"
 #include "video/surface.h"
 #include "masmem.h"
 #include "endian.h"
@@ -186,6 +185,7 @@ enum eShockMemcardTransaction
 #define SHOCK_ERROR -1
 #define SHOCK_NOCANDO -2
 #define SHOCK_INVALID_ADDRESS -3
+#define SHOCK_OVERFLOW -4
 
 struct ShockTOCTrack
 {
@@ -215,6 +215,9 @@ struct ShockRegisters_CPU
 // to the leadout track(even if last_track < 99, IE the leadout track details are duplicated).
 typedef s32 (*ShockDisc_ReadTOC)(void* opaque, ShockTOC *read_target, ShockTOCTrack tracks[100 + 1]);
 typedef s32 (*ShockDisc_ReadLBA)(void* opaque, s32 lba, void* dst);
+
+//The callback to be issued for traces
+typedef s32 (*ShockCallback_Trace)(void* opaque, u32 PC, u32 inst, const char* msg);
 
 class ShockDiscRef
 {
@@ -361,3 +364,6 @@ EW_EXPORT s32 shock_GetRegisters_CPU(void* psx, ShockRegisters_CPU* buffer);
 
 //Sets a CPU register. Rather than have an enum for the registers, lets just use the index (not offset) within the struct
 EW_EXPORT s32 shock_SetRegister_CPU(void* psx, s32 index, u32 value);
+
+//Sets the callback to be used for CPU tracing
+EW_EXPORT s32 shock_SetTraceCallback(void* psx, void* opaque, ShockCallback_Trace callback);

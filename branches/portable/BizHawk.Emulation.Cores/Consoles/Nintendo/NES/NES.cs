@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			this.SyncSettings = (NESSyncSettings)SyncSettings ?? new NESSyncSettings();
 			this.ControllerSettings = this.SyncSettings.Controls;
 			CoreComm = comm;
-			Tracer = new TraceBuffer();
+			
 			MemoryCallbacks = new MemoryCallbackSystem();
 			BootGodDB.Initialize();
 			videoProvider = new MyVideoProvider(this);
@@ -53,6 +53,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			var ser = new BasicServiceProvider(this);
 			ser.Register<IDisassemblable>(cpu);
 
+			Tracer = new TraceBuffer();
+			ser.Register<ITraceable>(Tracer);
+			
 			if (board is BANDAI_FCG_1)
 			{
 				var reader = (board as BANDAI_FCG_1).reader;
@@ -899,23 +902,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public bool BinarySaveStatesPreferred { get { return false; } }
 
-		public IDictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			return new Dictionary<string, int>
+			return new Dictionary<string, RegisterValue>
 			{
 				{ "A", cpu.A },
 				{ "X", cpu.X },
 				{ "Y", cpu.Y },
 				{ "S", cpu.S },
 				{ "PC", cpu.PC },
-				{ "Flag C", cpu.FlagC ? 1 : 0 },
-				{ "Flag Z", cpu.FlagZ ? 1 : 0 },
-				{ "Flag I", cpu.FlagI ? 1 : 0 },
-				{ "Flag D", cpu.FlagD ? 1 : 0 },
-				{ "Flag B", cpu.FlagB ? 1 : 0 },
-				{ "Flag V", cpu.FlagV ? 1 : 0 },
-				{ "Flag N", cpu.FlagN ? 1 : 0 },
-				{ "Flag T", cpu.FlagT ? 1 : 0 }
+				{ "Flag C", cpu.FlagC },
+				{ "Flag Z", cpu.FlagZ },
+				{ "Flag I", cpu.FlagI },
+				{ "Flag D", cpu.FlagD },
+				{ "Flag B", cpu.FlagB },
+				{ "Flag V", cpu.FlagV },
+				{ "Flag N", cpu.FlagN },
+				{ "Flag T", cpu.FlagT }
 			};
 		}
 
@@ -946,10 +949,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
+		public bool CanStep(StepType type) { return false; }
+
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
 
-		public ITracer Tracer { get; private set; }
+		private ITraceable Tracer { get; set; }
 		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
 		NESSettings Settings = new NESSettings();

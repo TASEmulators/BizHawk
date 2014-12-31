@@ -22,8 +22,8 @@
 #include "timer.h"
 #include "sio.h"
 #include "cdc.h"
+#include "Stream.h"
 #include "spu.h"
-#include "cdrom/cdromif.h"
 #include "error.h"
 #include "endian.h"
 #include "emuware/EW_state.h"
@@ -33,7 +33,8 @@
 #include <stdarg.h>
 #include <ctype.h>
 
-#define FB_WIDTH 768
+//we're a bit sloppy right now.. use this to make sure theres adequate room for double-sizing a 400px wide screen
+#define FB_WIDTH 800
 #define FB_HEIGHT 576
 
 //extern MDFNGI EmulatedPSX;
@@ -1041,7 +1042,7 @@ struct ShockState
 struct ShockPeripheral
 {
 	ePeripheralType type;
-	u8 buffer[16];
+	u8 buffer[32]; //must be larger than 16+3+1 or thereabouts because the dualshock writes some rumble data into it. bleck, ill fix it later
 };
 
 struct {
@@ -1062,7 +1063,7 @@ struct {
 	s32 Connect(s32 address, s32 type)
 	{
 		//check the port address
-		int portnum = address&1;
+		int portnum = address&0x0F;
 		if(portnum != 1 && portnum != 2)
 			return SHOCK_INVALID_ADDRESS;
 		portnum--;
@@ -1099,7 +1100,7 @@ struct {
 	s32 SetPadInput(s32 address, u32 buttons, u8 left_x, u8 left_y, u8 right_x, u8 right_y)
 	{
 		//check the port address
-		int portnum = address&1;
+		int portnum = address&0x0F;
 		if(portnum != 1 && portnum != 2)
 			return SHOCK_INVALID_ADDRESS;
 		portnum--;
@@ -1261,6 +1262,7 @@ EW_EXPORT s32 shock_PowerOn(void* psx)
 {
 	if(s_ShockState.power) return SHOCK_NOCANDO;
 
+	s_ShockState.power = true;	
 	PSX_Power(true);
 
 	return SHOCK_OK;
@@ -1360,7 +1362,12 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 	//new frame, hasnt been normalized
 	s_FramebufferNormalized = false;
 	s_FramebufferCurrent = 0;
-	s_FramebufferCurrentWidth = 768;
+	s_FramebufferCurrentWidth = FB_WIDTH;
+
+	//just in case we debug printed or something like that
+	fflush(stdout);
+	fflush(stderr);
+
 
 	return SHOCK_OK;
 }
@@ -1838,9 +1845,16 @@ EW_EXPORT s32 shock_SetDisc(void* psx, ShockDiscRef* disc)
 	//TODO - non-psx disc is legal here. should pass null ID to CDC setdisc
 	
 	//analyze disc so we dont have to annoyingly manage it from client
+
+	//TODO - so junky
 	ShockDiscInfo info;
-	s32 ret = shock_AnalyzeDisc(disc,&info);
-	if(ret != SHOCK_OK) return ret;
+	strcpy(info.id,"\0\0\0\0");
+	info.region = REGION_NONE;
+	if(disc != NULL)
+	{
+		s32 ret = shock_AnalyzeDisc(disc,&info);
+		if(ret != SHOCK_OK) return ret;
+	}
 
 	//heres a comment from some old savestating code. something to keep in mind (maybe or maybe not a surprise depending on your point of view)
 	//"Call SetDisc() BEFORE we load CDC state, since SetDisc() has emulation side effects.  We might want to clean this up in the future."
@@ -2256,6 +2270,8 @@ s32 ShockDiscRef::InternalReadLBA2448(s32 lba, void* dst2448, bool needSubcode)
 	
 	if(needSubcode && mSuppliesDeinterleavedSubcode)
 	{
+		//presently, CDC consumes deinterleaved subcode.
+		//perhaps this could be optimized in the future
 		u8 tmp[96];
 		CDUtility::subpw_interleave((u8*)dst2448+2352,tmp);
 		memcpy((u8*)dst2448+2352,tmp,96);
@@ -2418,9 +2434,12 @@ SYNCFUNC(PSX)
 	IRQ_SyncState(isReader,ns);
 	ns->ExitSection("IRQ");
 
-	//zero: this is probably OK
 	if(isReader)
 	{
+		//the purpose of this is to restore the sorting of the event list
+		//event updates are programmed to have no effect if the time step is 0
+		//and at this point, the time base timestamp will be 0 (it always is after a frame advance)
+		//so the event updaters just run, do nothing, and restore themselves in the list
 		ForceEventUpdates(0);	// FIXME to work with debugger step mode.
 	}
 }
@@ -2500,5 +2519,17 @@ EW_EXPORT s32 shock_SetRenderOptions(void* pxs, ShockRenderOptions* opts)
 {
 	GPU->SetRenderOptions(opts);
 	s_ShockConfig.opts = *opts;
+	return SHOCK_OK;
+}
+
+extern void* g_ShockTraceCallbackOpaque;
+extern ShockCallback_Trace g_ShockTraceCallback;
+
+//Sets the callback to be used for CPU tracing
+EW_EXPORT s32 shock_SetTraceCallback(void* psx, void* opaque, ShockCallback_Trace callback)
+{
+	g_ShockTraceCallbackOpaque = opaque;
+	g_ShockTraceCallback = callback;
+
 	return SHOCK_OK;
 }

@@ -16,7 +16,15 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class TasStateManager
 	{
-		private readonly IStatable Core;
+		// TODO: pass this in, and find a solution to a stale reference (this is instantiated BEFORE a new core instance is made, making this one stale if it is simply set in the constructor
+		private IStatable Core
+		{
+			get
+			{
+				return Global.Emulator.AsStatable();
+			}
+		}
+
 		private readonly SortedList<int, byte[]> States = new SortedList<int, byte[]>();
 
 		private readonly TasMovie _movie;
@@ -44,10 +52,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public TasStateManager(TasMovie movie, IStatable core)
+		public TasStateManager(TasMovie movie)
 		{
 			_movie = movie;
-			Core = core;
 
 			Settings = new TasStateManagerSettings(Global.Config.DefaultTasProjSettings);
 

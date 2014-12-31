@@ -364,6 +364,8 @@ namespace BizHawk.Client.EmuHawk
 				LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
 			}
 
+			GlobalWin.Tools.AutoLoad();
+
 			if (Global.Config.RecentWatches.AutoLoad)
 			{
 				GlobalWin.Tools.LoadRamWatch(!Global.Config.DisplayRamWatch);
@@ -384,24 +386,9 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Load<Cheats>();
 			}
 
-			if (Global.Config.AutoLoadNESPPU)
-			{
-				GlobalWin.Tools.Load<NesPPU>();
-			}
-
-			if (Global.Config.AutoLoadNESNameTable)
-			{
-				GlobalWin.Tools.Load<NESNameTableViewer>();
-			}
-
 			if (Global.Config.NESGGAutoload)
 			{
 				GlobalWin.Tools.LoadGameGenieEc();
-			}
-
-			if (Global.Config.AutoLoadGBGPUView)
-			{
-				GlobalWin.Tools.Load<GBGPUView>();
 			}
 
 			if (Global.Config.AutoloadTAStudio)
@@ -417,56 +404,6 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.AutoLoadLuaConsole)
 			{
 				OpenLuaConsole();
-			}
-
-			if (Global.Config.SmsVdpAutoLoad)
-			{
-				GlobalWin.Tools.Load<SmsVDPViewer>();
-			}
-
-			if (Global.Config.PCEBGViewerAutoload)
-			{
-				GlobalWin.Tools.Load<PceBgViewer>();
-			}
-
-			if (Global.Config.PceVdpAutoLoad)
-			{
-				GlobalWin.Tools.Load<PCETileViewer>();
-			}
-
-			if (Global.Config.RecentPceCdlFiles.AutoLoad)
-			{
-				GlobalWin.Tools.Load<PCECDL>();
-			}
-
-			if (Global.Config.PceSoundDebuggerAutoload)
-			{
-				GlobalWin.Tools.Load<PCESoundDebugger>();
-			}
-
-			if (Global.Config.GenVdpAutoLoad)
-			{
-				GlobalWin.Tools.Load<GenVDPViewer>();
-			}
-
-			if (Global.Config.AutoLoadSNESGraphicsDebugger)
-			{
-				GlobalWin.Tools.Load<SNESGraphicsDebugger>();
-			}
-
-			if (Global.Config.TraceLoggerAutoLoad)
-			{
-				GlobalWin.Tools.Load<TraceLogger>();
-				}
-
-			if (Global.Config.GenericDebuggerAutoload)
-			{
-				GlobalWin.Tools.Load<GenericDebugger>();
-			}
-
-			if (Global.Config.Atari2600DebuggerAutoload && Global.Emulator is Atari2600)
-			{
-				GlobalWin.Tools.Load<Atari2600Debugger>();
 			}
 
 			if (Global.Config.DisplayStatusBar == false)
@@ -1807,7 +1744,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private static unsafe BitmapBuffer MakeScreenshotImage()
 		{
-			return new BitmapBuffer(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight, Global.Emulator.VideoProvider.GetVideoBuffer());
+			var bb = new BitmapBuffer(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight, Global.Emulator.VideoProvider.GetVideoBuffer());
+			bb.DiscardAlpha();
+			return bb;
 		}
 
 		private void SaveStateAs()
@@ -3761,6 +3700,7 @@ namespace BizHawk.Client.EmuHawk
 			FeaturesMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
 
+		
 
 
 	}

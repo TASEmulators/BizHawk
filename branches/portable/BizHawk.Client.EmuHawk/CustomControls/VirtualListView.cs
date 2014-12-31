@@ -422,7 +422,19 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		[Browsable(false)]
+		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
 		public int LineHeight { get; private set; }
+
+		[Browsable(false)]
+		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		public int NumberOfVisibleRows
+		{
+			get
+			{
+				return Height / LineHeight;
+			}
+		}
 
 		#region Constructors
 

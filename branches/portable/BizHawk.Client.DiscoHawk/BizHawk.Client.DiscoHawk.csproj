@@ -97,6 +97,7 @@
     <Compile Include="MainDiscoForm.Designer.cs">
       <DependentUpon>MainDiscoForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="MednadiscTester.cs" />
     <Compile Include="ProgressDialog.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -296,5 +296,16 @@ namespace BizHawk.Client.Common
 				};
 			}
 		}
+		public static SystemInfo PSX
+		{
+			get
+			{
+				return new SystemInfo
+				{
+					DisplayName = "PlayStation",
+					ByteSize = 4,
+				};
+			}
+		}
 	}
 }

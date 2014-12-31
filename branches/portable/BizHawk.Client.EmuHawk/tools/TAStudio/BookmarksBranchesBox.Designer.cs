@@ -46,8 +46,7 @@
 			// 
 			// BookmarksBranchesBox
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
 			this.Controls.Add(this.BookmarksBranchesGroupBox);
 			this.Name = "BookmarksBranchesBox";
 			this.Size = new System.Drawing.Size(204, 253);

@@ -607,12 +607,6 @@
     </Compile>
     <Compile Include="Throttle.cs" />
     <Compile Include="ToolAttributes.cs" />
-    <Compile Include="tools\Atari2600\Atari2600Debugger.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Atari2600\Atari2600Debugger.Designer.cs">
-      <DependentUpon>Atari2600Debugger.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\BatchRun.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -650,6 +644,10 @@
     </Compile>
     <Compile Include="tools\Debugger\GenericDebugger.Designer.cs">
       <DependentUpon>GenericDebugger.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\Debugger\GenericDebugger.Disassembler.cs">
+      <DependentUpon>GenericDebugger.cs</DependentUpon>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="tools\Debugger\GenericDebugger.IControlMainform.cs">
       <DependentUpon>GenericDebugger.cs</DependentUpon>
@@ -980,6 +978,12 @@
     <Compile Include="tools\VirtualPads\controls\VirtualPadButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\VirtualPads\controls\VirtualPadDiscManager.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPads\controls\VirtualPadDiscManager.Designer.cs">
+      <DependentUpon>VirtualPadDiscManager.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\VirtualPads\controls\VirtualPadTargetScreen.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1220,9 +1224,6 @@
     <EmbeddedResource Include="RomStatusPicker.resx">
       <DependentUpon>RomStatusPicker.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\Atari2600\Atari2600Debugger.resx">
-      <DependentUpon>Atari2600Debugger.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="tools\BatchRun.resx">
       <DependentUpon>BatchRun.cs</DependentUpon>
     </EmbeddedResource>
@@ -1364,6 +1365,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPads\controls\VirtualPadAnalogStick.resx">
       <DependentUpon>VirtualPadAnalogStick.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\VirtualPads\controls\VirtualPadDiscManager.resx">
+      <DependentUpon>VirtualPadDiscManager.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPads\controls\VirtualPadTargetScreen.resx">
       <DependentUpon>VirtualPadTargetScreen.cs</DependentUpon>

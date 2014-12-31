@@ -115,22 +115,12 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 				return false;
 			}
 
-			// TODO: this is a pretty ugly way to handle this
-			var debuggable = (IDebuggable)core.ServiceProvider.GetService<IDebuggable>();
-			if (debuggable != null)
-			{
-				try
-				{
-					var tracer = debuggable.Tracer;
-					return true;
-				}
-				catch (NotImplementedException)
-				{
-					return false;
-				}
-			}
+			return core.ServiceProvider.HasService<ITraceable>();
+		}
 
-			return false;
+		public static ITraceable AsTracer(this IEmulator core)
+		{
+			return (ITraceable)core.ServiceProvider.GetService<ITraceable>();
 		}
 
 		public static bool MemoryCallbacksAvailable(this IEmulator core)

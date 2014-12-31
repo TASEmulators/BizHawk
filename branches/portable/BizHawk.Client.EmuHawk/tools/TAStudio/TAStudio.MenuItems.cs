@@ -576,7 +576,8 @@ namespace BizHawk.Client.EmuHawk
 			new GreenzoneSettingsForm(CurrentTasMovie.TasStateManager.Settings)
 			{
 				Owner = GlobalWin.MainForm,
-				Location = this.ChildPointToScreen(TasView)
+				Location = this.ChildPointToScreen(TasView),
+				Statable = this.StatableEmulator
 			}.Show();
 			UpdateChangesIndicator();
 		}

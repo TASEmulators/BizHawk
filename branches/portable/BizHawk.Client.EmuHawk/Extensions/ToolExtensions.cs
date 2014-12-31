@@ -162,6 +162,27 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 				items.Add(auto);
 			}
 
+			var settingsitem = new ToolStripMenuItem { Text = "&Recent Settings..." };
+			settingsitem.Click += (o, ev) =>
+			{
+				using (var prompt = new InputPrompt
+				{
+					TextInputType = InputPrompt.InputType.Unsigned,
+					Message = "Number of recent files to track",
+					InitialValue = recent.MAX_RECENT_FILES.ToString()
+				})
+				{
+					var result = prompt.ShowDialog();
+					if (result == DialogResult.OK)
+					{
+						int val = int.Parse(prompt.PromptText);
+						if (val > 0)
+							recent.MAX_RECENT_FILES = val;
+					}
+				}
+			};
+			items.Add(settingsitem);
+
 			return items.ToArray();
 		}
 

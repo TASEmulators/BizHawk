@@ -421,7 +421,7 @@ namespace BizHawk.Client.EmuHawk
 					box.SetButtons(
 						new[] { "Switch", "Cancel" },
 						new[] { DialogResult.Yes, DialogResult.Cancel });
-					
+
 					box.MaximumSize = new Size(450, 350);
 					box.SetMessageToAutoSize();
 					var result = box.ShowDialog();
@@ -1098,6 +1098,11 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Tools
 
+		static bool ToolAvailable<T>()
+		{
+			return ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, typeof(T));
+		}
+
 		private void ToolsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ToolBoxMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["ToolBox"].Bindings;
@@ -1109,18 +1114,17 @@ namespace BizHawk.Client.EmuHawk
 			TAStudioMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["TAStudio"].Bindings;
 			VirtualPadMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Virtual Pad"].Bindings;
 			TraceLoggerMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Trace Logger"].Bindings;
-			TraceLoggerMenuItem.Enabled = Global.Emulator.CpuTraceAvailable();
+			TraceLoggerMenuItem.Enabled = ToolAvailable<TraceLogger>();
 
-			TAStudioMenuItem.Enabled = Global.Emulator.HasSavestates() && Global.Emulator.CanPollInput();
+			TAStudioMenuItem.Enabled = ToolAvailable<TAStudio>();
 
-			CheatsMenuItem.Enabled =
-				HexEditorMenuItem.Enabled =
-				RamSearchMenuItem.Enabled =
-				RamWatchMenuItem.Enabled =
-				Global.Emulator.HasMemoryDomains();
+			CheatsMenuItem.Enabled = ToolAvailable<Cheats>();
+			HexEditorMenuItem.Enabled = ToolAvailable<HexEditor>();
+			RamSearchMenuItem.Enabled = ToolAvailable<RamSearch>();
+			RamWatchMenuItem.Enabled = ToolAvailable<RamWatch>();
 
 			DebuggerMenuItem.Visible = VersionInfo.DeveloperBuild;
-			DebuggerMenuItem.Enabled = Global.Emulator.CanDebug();
+			DebuggerMenuItem.Enabled = ToolAvailable<GenericDebugger>();
 
 			batchRunnerToolStripMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
@@ -1207,16 +1211,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FDSControlsMenuItem.Enabled = Global.Emulator.BoardName == "FDS";
 
-			NESPPUViewerMenuItem.Enabled =
-				NESNametableViewerMenuItem.Enabled =
-				NESSoundChannelsMenuItem.Enabled =
-				MovieSettingsMenuItem.Enabled =
-				Global.Emulator is NES;
+			NESSoundChannelsMenuItem.Enabled = ToolAvailable<NESSoundConfig>();
+			MovieSettingsMenuItem.Enabled = ToolAvailable<NESSyncSettingsForm>()
+				&& !Global.MovieSession.Movie.IsActive;
 
-			NesControllerSettingsMenuItem.Enabled = (Global.Emulator is NES || Global.Emulator is QuickNES) && !Global.MovieSession.Movie.IsActive;
-			MovieSettingsMenuItem.Enabled = Global.Emulator is NES && !Global.MovieSession.Movie.IsActive;
+			NesControllerSettingsMenuItem.Enabled = ToolAvailable<NesControllerSettings>()
+				&& !Global.MovieSession.Movie.IsActive;
 
-			barcodeReaderToolStripMenuItem.Enabled = GlobalWin.Tools.IsAvailable(typeof(BarcodeEntry));
+			barcodeReaderToolStripMenuItem.Enabled = ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, typeof(BarcodeEntry));
 		}
 
 		private void FdsControlsMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1385,13 +1387,13 @@ namespace BizHawk.Client.EmuHawk
 			HighlightActiveDisplayRegionMenuItem.Checked = s.HighlightActiveDisplayRegion;
 
 			SMSEnableFMChipMenuItem.Visible =
-				SMSFix3DGameDisplayToolStripMenuItem.Visible = 
-				SMSenableBIOSToolStripMenuItem.Visible = 
+				SMSFix3DGameDisplayToolStripMenuItem.Visible =
+				SMSenableBIOSToolStripMenuItem.Visible =
 				Global.Game.System == "SMS";
 
 			SMSOverclockMenuItem.Visible =
 				SMSForceStereoMenuItem.Visible =
-				SMSdisplayToolStripMenuItem.Visible = 
+				SMSdisplayToolStripMenuItem.Visible =
 				Global.Game.System != "GG";
 
 			ShowClippedRegionsMenuItem.Visible =
@@ -1400,7 +1402,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Game.System == "GG";
 
 			SMSOverclockMenuItem.Visible =
-				SMSVDPViewerToolStripMenuItem.Visible = 
+				SMSVDPViewerToolStripMenuItem.Visible =
 				Global.Game.System != "SG";
 		}
 
@@ -1528,10 +1530,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void KeypadMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.Emulator is TI83)
-			{
-				GlobalWin.Tools.Load<TI83KeyPad>();
-			}
+			GlobalWin.Tools.Load<TI83KeyPad>();
 		}
 
 		private void AutoloadKeypadMenuItem_Click(object sender, EventArgs e)
@@ -1579,19 +1578,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AtariSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			if (!VersionInfo.DeveloperBuild)
-			{
-				Atari2600DebuggerMenuItem.Visible =
-					toolStripSeparator31.Visible =
-					false;
-			}
 
-			Atari2600DebuggerMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
-		}
-
-		private void Atari2600DebuggerMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<Atari2600Debugger>();
 		}
 
 		private void AtariSettingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1636,14 +1623,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBPaletteConfigMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.Emulator is Gameboy)
-			{
-				var gb = Global.Emulator as Gameboy;
-				if (gb.IsCGBMode())
-					CGBColorChooserForm.DoCGBColorChooserFormDialog(this);
-				else
-					ColorChooserForm.DoColorChooserFormDialog(this);
-			}
+			var gb = Global.Emulator as Gameboy;
+			if (gb.IsCGBMode())
+				CGBColorChooserForm.DoCGBColorChooserFormDialog(this);
+			else
+				ColorChooserForm.DoColorChooserFormDialog(this);
 		}
 
 		private void LoadGBInSGBMenuItem_Click(object sender, EventArgs e)
@@ -1782,6 +1766,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void PSXDiscControlsMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<VirtualpadTool>().ScrollToPadSchema("Console");
+		}
+
 		private void FlushSaveRAMMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveRam();
@@ -1812,7 +1801,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			N64PluginSettingsMenuItem.Enabled =
 				N64ControllerSettingsMenuItem.Enabled =
-				N64ExpansionSlotMenuItem.Enabled = 
+				N64ExpansionSlotMenuItem.Enabled =
 				!Global.MovieSession.Movie.IsActive;
 
 			N64CircularAnalogRangeMenuItem.Checked = Global.Config.N64UseCircularAnalogConstraint;
@@ -2369,7 +2358,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void FormDragDrop_internal(object sender, DragEventArgs e)
-		{		
+		{
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			var isLua = false;
 			foreach (var path in filePaths)
