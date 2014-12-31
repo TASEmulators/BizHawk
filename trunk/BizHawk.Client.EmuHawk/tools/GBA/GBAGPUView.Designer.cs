@@ -41,12 +41,13 @@
 			this.radioButtonScanline = new System.Windows.Forms.RadioButton();
 			this.labelClipboard = new System.Windows.Forms.Label();
 			this.timerMessage = new System.Windows.Forms.Timer(this.components);
+			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// listBoxWidgets
 			// 
-			this.listBoxWidgets.Location = new System.Drawing.Point(12, 25);
+			this.listBoxWidgets.Location = new System.Drawing.Point(12, 40);
 			this.listBoxWidgets.Name = "listBoxWidgets";
 			this.listBoxWidgets.Size = new System.Drawing.Size(137, 160);
 			this.listBoxWidgets.TabIndex = 0;
@@ -61,13 +62,13 @@
 			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.panel1.Location = new System.Drawing.Point(155, 0);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(481, 405);
+			this.panel1.Size = new System.Drawing.Size(481, 474);
 			this.panel1.TabIndex = 1;
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(12, 9);
+			this.label1.Location = new System.Drawing.Point(12, 24);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(92, 13);
 			this.label1.TabIndex = 2;
@@ -75,7 +76,7 @@
 			// 
 			// buttonShowWidget
 			// 
-			this.buttonShowWidget.Location = new System.Drawing.Point(29, 191);
+			this.buttonShowWidget.Location = new System.Drawing.Point(29, 206);
 			this.buttonShowWidget.Name = "buttonShowWidget";
 			this.buttonShowWidget.Size = new System.Drawing.Size(75, 23);
 			this.buttonShowWidget.TabIndex = 3;
@@ -89,7 +90,7 @@
 			this.groupBox1.Controls.Add(this.hScrollBar1);
 			this.groupBox1.Controls.Add(this.radioButtonManual);
 			this.groupBox1.Controls.Add(this.radioButtonScanline);
-			this.groupBox1.Location = new System.Drawing.Point(15, 220);
+			this.groupBox1.Location = new System.Drawing.Point(15, 235);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(134, 133);
 			this.groupBox1.TabIndex = 4;
@@ -142,7 +143,7 @@
 			// labelClipboard
 			// 
 			this.labelClipboard.AutoSize = true;
-			this.labelClipboard.Location = new System.Drawing.Point(9, 356);
+			this.labelClipboard.Location = new System.Drawing.Point(9, 371);
 			this.labelClipboard.MaximumSize = new System.Drawing.Size(145, 0);
 			this.labelClipboard.Name = "labelClipboard";
 			this.labelClipboard.Size = new System.Drawing.Size(117, 26);
@@ -154,19 +155,29 @@
 			this.timerMessage.Interval = 5000;
 			this.timerMessage.Tick += new System.EventHandler(this.timerMessage_Tick);
 			// 
+			// menuStrip1
+			// 
+			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+			this.menuStrip1.Name = "menuStrip1";
+			this.menuStrip1.Size = new System.Drawing.Size(636, 24);
+			this.menuStrip1.TabIndex = 6;
+			this.menuStrip1.Text = "menuStrip1";
+			// 
 			// GBAGPUView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(636, 405);
+			this.ClientSize = new System.Drawing.Size(636, 474);
 			this.Controls.Add(this.labelClipboard);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.buttonShowWidget);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.listBoxWidgets);
+			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
+			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "GBAGPUView";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -194,6 +205,7 @@
 		private System.Windows.Forms.RadioButton radioButtonScanline;
 		private System.Windows.Forms.Label labelClipboard;
 		private System.Windows.Forms.Timer timerMessage;
+		private System.Windows.Forms.MenuStrip menuStrip1;
 
 	}
 }
