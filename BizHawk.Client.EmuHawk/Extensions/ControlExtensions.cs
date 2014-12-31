@@ -74,6 +74,43 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 			}
 		}
 
+		public static ToolStripMenuItem GenerateColumnsMenu(this ToolDialogSettings.ColumnList list)
+		{
+			var menu = new ToolStripMenuItem
+			{
+				Name = "GeneratedColumnsSubMenu",
+				Text = "Columns"
+			};
+
+			var dummyList = list;
+
+			foreach (var column in dummyList)
+			{
+				var menuItem = new ToolStripMenuItem
+				{
+					Name = column.Name,
+					Text = column.Name.Replace("Column", string.Empty)
+				};
+
+				menuItem.Click += (o, ev) =>
+				{
+					dummyList[menuItem.Name].Visible ^= true;
+				};
+
+				menu.DropDownItems.Add(menuItem);
+			}
+
+			menu.DropDownOpened += (o, e) =>
+			{
+				foreach (var column in dummyList)
+				{
+					(menu.DropDownItems[column.Name] as ToolStripMenuItem).Checked = column.Visible;
+				}
+			};
+
+			return menu;
+		}
+
 		public static Point ChildPointToScreen(this Control control, Control child)
 		{
 			return control.PointToScreen(new Point(child.Location.X, child.Location.Y));
