@@ -6,8 +6,9 @@ namespace BizHawk.Client.Common
 {
 	public static class UIHelper
 	{
-		private static SizeF _autoScaleBaseSize = new SizeF(6F, 13F);
-		private static SizeF _autoScaleCurrentSize = GetCurrentAutoScaleSize(AutoScaleMode.Font);
+		private static readonly AutoScaleMode _autoScaleMode = AutoScaleMode.Font;
+		private static readonly SizeF _autoScaleBaseSize = new SizeF(6F, 13F);
+		private static readonly SizeF _autoScaleCurrentSize = GetCurrentAutoScaleSize(_autoScaleMode);
 
 		private static SizeF GetCurrentAutoScaleSize(AutoScaleMode autoScaleMode)
 		{
@@ -16,6 +17,16 @@ namespace BizHawk.Client.Common
 				form.AutoScaleMode = autoScaleMode;
 				return form.CurrentAutoScaleDimensions;
 			}
+		}
+
+		public static AutoScaleMode AutoScaleMode
+		{
+			get { return _autoScaleMode; }
+		}
+
+		public static SizeF AutoScaleBaseSize
+		{
+			get { return _autoScaleBaseSize; }
 		}
 
 		public static float AutoScaleFactorX

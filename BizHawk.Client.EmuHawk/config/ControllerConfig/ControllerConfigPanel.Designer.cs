@@ -50,7 +50,8 @@
 			// 
 			// ControllerConfigPanel
 			// 
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ContextMenuStrip = this.contextMenuStrip1;
 			this.Name = "ControllerConfigPanel";
 			this.Size = new System.Drawing.Size(203, 292);
