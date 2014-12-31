@@ -358,6 +358,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					unavailable.Add(tool);
+					ServiceInjector.ClearServices(tool); // the services of the old emulator core are no longer valid on the tool
 				}
 			}
 
