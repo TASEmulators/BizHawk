@@ -204,6 +204,8 @@ namespace BizHawk.Client.EmuHawk
 			CheatEditor.SetAddEvent(AddCheat);
 			CheatEditor.SetEditEvent(EditCheat);
 			UpdateDialog();
+
+			CheatsMenu.Items.Add(Settings.Columns.GenerateColumnsMenu());
 		}
 
 		private void ToggleGameGenieButton()
@@ -663,68 +665,6 @@ namespace BizHawk.Client.EmuHawk
 			RefreshFloatingWindowControl();
 			ColumnPositions();
 			LoadColumnInfo();
-		}
-
-		#endregion
-
-		#region Columns
-
-		private void ColumnsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			ShowNameMenuItem.Checked = Settings.Columns[NAME].Visible;
-			ShowAddressMenuItem.Checked = Settings.Columns[ADDRESS].Visible;
-			ShowValueMenuItem.Checked = Settings.Columns[VALUE].Visible;
-			ShowCompareMenuItem.Checked = Settings.Columns[COMPARE].Visible;
-			ShowOnMenuItem.Checked = Settings.Columns[ON].Visible;
-			ShowDomainMenuItem.Checked = Settings.Columns[DOMAIN].Visible;
-			ShowSizeMenuItem.Checked = Settings.Columns[SIZE].Visible;
-			ShowEndianMenuItem.Checked = Settings.Columns[ENDIAN].Visible;
-			ShowDisplayTypeMenuItem.Checked = Settings.Columns[TYPE].Visible;
-		}
-
-		private void ShowNameMenuItem_Click(object sender, EventArgs e)
-		{
-			DoColumnToggle(NAME);
-		}
-
-		private void ShowAddressMenuItem_Click(object sender, EventArgs e)
-		{
-			DoColumnToggle(ADDRESS);
-		}
-
-		private void ShowValueMenuItem_Click(object sender, EventArgs e)
-		{
-			DoColumnToggle(VALUE);
-		}
-
-		private void ShowCompareMenuItem_Click(object sender, EventArgs e)
-		{
-			DoColumnToggle(COMPARE);
-		}
-
-		private void ShowOnMenuItem_Click(object sender, EventArgs e)
-		{
-			DoColumnToggle(ON);
-		}
-
-		private void ShowDomainMenuItem_Click(object sender, EventArgs e)
-		{
-			DoColumnToggle(DOMAIN);
-		}
-
-		private void ShowSizeMenuItem_Click(object sender, EventArgs e)
-		{
-			DoColumnToggle(SIZE);
-		}
-
-		private void ShowEndianMenuItem_Click(object sender, EventArgs e)
-		{
-			DoColumnToggle(ENDIAN);
-		}
-
-		private void ShowDisplayTypeMenuItem_Click(object sender, EventArgs e)
-		{
-			DoColumnToggle(TYPE);
 		}
 
 		#endregion
