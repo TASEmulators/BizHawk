@@ -794,7 +794,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBAGPUView_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			gba.SetScanlineCallback(null, 0);
+			if (gba != null)
+			{
+				gba.SetScanlineCallback(null, 0);
+			}
 		}
 
 		#region copy to clipboard
