@@ -409,65 +409,12 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, ToolDialogSettings> CommonToolSettings = new Dictionary<string, ToolDialogSettings>();
 		public Dictionary<string, Dictionary<string, object>> CustomToolSettings = new Dictionary<string, Dictionary<string, object>>();
 
-		#region Cheats Dialog
+		#region Cheats
 
-		public ToolDialogSettings CheatsSettings = new ToolDialogSettings();
-		public bool Cheats_ValuesAsHex = true;
 		public bool DisableCheatsOnLoad = false;
 		public bool LoadCheatFileByGame = true;
 		public bool CheatsAutoSaveOnClose = true;
 		public RecentFiles RecentCheats = new RecentFiles(8);
-		public int CheatsNameWidth = -1;
-		public int CheatsAddressWidth = -1;
-		public int CheatsValueWidth = -1;
-		public int CheatsCompareWidth = -1;
-		public int CheatsDomainWidth = -1;
-		public int CheatsOnWidth = -1;
-		public int CheatsNameIndex = 0;
-		public int CheatsAddressIndex = 1;
-		public int CheatsValueIndex = 2;
-		public int CheatsCompareIndex = 3;
-		public int CheatsOnIndex = 4;
-		public int CheatsDomainIndex = 5;
-
-		public Dictionary<string, int> CheatsColumnWidths = new Dictionary<string, int>
-			{
-			{ "NamesColumn", -1 },
-			{ "AddressColumn", -1 },
-			{ "ValueColumn", -1 },
-			{ "CompareColumn", -1 },
-			{ "OnColumn", -1 },
-			{ "DomainColumn", -1 },
-			{ "SizeColumn", -1 },
-			{ "EndianColumn", -1 },
-			{ "DisplayTypeColumn", -1 },
-		};
-
-		public Dictionary<string, int> CheatsColumnIndices = new Dictionary<string, int>
-			{
-			{ "NamesColumn", 0 },
-			{ "AddressColumn", 1 },
-			{ "ValueColumn", 2 },
-			{ "CompareColumn", 3 },
-			{ "OnColumn", 4 },
-			{ "DomainColumn", 5 },
-			{ "SizeColumn", 6 },
-			{ "EndianColumn", 7 },
-			{ "DisplayTypeColumn", 8 },
-		};
-
-		public Dictionary<string, bool> CheatsColumnShow = new Dictionary<string, bool>
-			{
-			{ "NamesColumn", true },
-			{ "AddressColumn", true },
-			{ "ValueColumn", true },
-			{ "CompareColumn", true },
-			{ "OnColumn", false },
-			{ "DomainColumn", true },
-			{ "SizeColumn", true },
-			{ "EndianColumn", false },
-			{ "DisplayTypeColumn", false },
-		};
 
 		#endregion
 
