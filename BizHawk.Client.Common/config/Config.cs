@@ -409,17 +409,6 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, ToolDialogSettings> CommonToolSettings = new Dictionary<string, ToolDialogSettings>();
 		public Dictionary<string, Dictionary<string, object>> CustomToolSettings = new Dictionary<string, Dictionary<string, object>>();
 
-		/*
-		// SNES Graphics Debugger Dialog Settings
-		public bool AutoLoadSNESGraphicsDebugger = false;
-		public bool SNESGraphicsDebuggerSaveWindowPosition = true;
-		public int SNESGraphicsDebuggerWndx = -1;
-		public int SNESGraphicsDebuggerWndy = -1;
-		public int SNESGraphicsDebuggerRefreshRate = 4;
-		public bool SNESGraphicsUseUserBackdropColor = false;
-		public int SNESGraphicsUserBackdropColor = -1;
-		*/
-
 		#region Cheats Dialog
 
 		public ToolDialogSettings CheatsSettings = new ToolDialogSettings();

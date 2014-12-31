@@ -11,7 +11,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class GBAGPUView : Form, IToolForm
+	public partial class GBAGPUView : Form, IToolFormAutoConfig
 	{
 		[RequiredService]
 		IGBAGPUViewable gba { get; set; }
