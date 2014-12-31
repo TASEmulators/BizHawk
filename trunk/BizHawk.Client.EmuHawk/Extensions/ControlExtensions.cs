@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Common.ReflectionExtensions;
+using BizHawk.Client.Common;
 
 
 namespace BizHawk.Client.EmuHawk.WinFormExtensions
@@ -50,6 +51,25 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 					};
 
 					listView.Columns.Add(column);
+				}
+			}
+		}
+
+		public static void AddColumn(this ListView listView, ToolDialogSettings.Column column)
+		{
+			if (column.Visible)
+			{
+				if (listView.Columns[column.Name] == null)
+				{
+					var lsstViewColumn = new ColumnHeader
+					{
+						Name = column.Name,
+						Text = column.Name.Replace("Column", string.Empty),
+						Width = column.Width,
+						DisplayIndex = column.Index
+					};
+
+					listView.Columns.Add(lsstViewColumn);
 				}
 			}
 		}
