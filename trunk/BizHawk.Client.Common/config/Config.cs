@@ -244,13 +244,6 @@ namespace BizHawk.Client.Common
 		public Watch.PreviousType RamWatchDefinePrevious = Watch.PreviousType.LastFrame;
 		public bool DisplayRamWatch = false;
 
-		// HexEditor Settings
-		public ToolDialogSettings HexEditorSettings = new ToolDialogSettings();
-		public bool AutoLoadHexEditor = false;
-		public bool HexEditorBigEndian = false;
-		public int HexEditorDataSize = 1;
-		public RecentFiles RecentTables = new RecentFiles(8);
-
 		// Hex Editor Colors
 		public Color HexBackgrndColor = Color.FromName("Control");
 		public Color HexForegrndColor = Color.FromName("ControlText");
