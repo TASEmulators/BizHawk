@@ -95,7 +95,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public void AutoLoad()
 		{
-			foreach (var typename in Global.Config.CommonToolSettings.Where(kvp => kvp.Value.AutoLoad).Select(kvp => kvp.Key))
+			var genericSettings = Global.Config.CommonToolSettings
+				.Where(kvp => kvp.Value.AutoLoad)
+				.Select(kvp => kvp.Key);
+
+			var customSettings = Global.Config.CustomToolSettings
+				.Where(list => list.Value.Any(kvp => typeof(ToolDialogSettings).IsAssignableFrom(kvp.Value.GetType()) && (kvp.Value as ToolDialogSettings).AutoLoad))
+				.Select(kvp => kvp.Key);
+
+			var typeNames = genericSettings.Concat(customSettings);
+
+			foreach (var typename in typeNames)
 			{
 				// this type resolution might not be sufficient.  more investigation is needed
 				Type t = Type.GetType(typename);

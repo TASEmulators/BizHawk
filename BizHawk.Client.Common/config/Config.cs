@@ -244,45 +244,6 @@ namespace BizHawk.Client.Common
 		public Watch.PreviousType RamWatchDefinePrevious = Watch.PreviousType.LastFrame;
 		public bool DisplayRamWatch = false;
 
-		// RamSearch Settings
-		public ToolDialogSettings RamSearchSettings = new ToolDialogSettings();
-		public int RamSearchPrev_Type = 1;
-		public RecentFiles RecentSearches = new RecentFiles(8);
-		public int RamSearchPreviousAs = 0;
-		public bool RamSearchPreviewMode = true;
-		public bool RamSearchAlwaysExcludeRamWatch = false;
-		public int RamSearchAddressWidth = -1;
-		public int RamSearchValueWidth = -1;
-		public int RamSearchPrevWidth = -1;
-		public int RamSearchChangesWidth = -1;
-		public int RamSearchAddressIndex = 0;
-		public int RamSearchValueIndex = 1;
-		public int RamSearchPrevIndex = 2;
-		public int RamSearchChangesIndex = 3;
-		public bool RamSearchFastMode = false;
-
-		public Dictionary<string, int> RamSearchColumnWidths = new Dictionary<string, int>
-		{
-			{ "AddressColumn", -1 },
-			{ "ValueColumn", -1 },
-			{ "PrevColumn", -1 },
-			{ "ChangesColumn", -1 },
-			{ "DiffColumn", -1 },
-		};
-
-		public Dictionary<string, int> RamSearchColumnIndexes = new Dictionary<string, int>
-			{
-			{ "AddressColumn", 0 },
-			{ "ValueColumn", 1 },
-			{ "PrevColumn", 2 },
-			{ "ChangesColumn", 3 },
-			{ "DiffColumn", 4 },
-		};
-
-		public bool RamSearchShowPrevColumn = true;
-		public bool RamSearchShowChangeColumn = true;
-		public bool RamSearchShowDiffColumn = false;
-
 		// HexEditor Settings
 		public ToolDialogSettings HexEditorSettings = new ToolDialogSettings();
 		public bool AutoLoadHexEditor = false;

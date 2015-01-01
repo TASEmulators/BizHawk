@@ -362,11 +362,6 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.LoadRamWatch(!Global.Config.DisplayRamWatch);
 			}
 
-			if (Global.Config.RecentSearches.AutoLoad)
-			{
-				GlobalWin.Tools.Load<RamSearch>();
-			}
-
 			if (Global.Config.AutoLoadHexEditor)
 			{
 				GlobalWin.Tools.Load<HexEditor>();
