@@ -401,7 +401,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RefreshFloatingWindowControl()
 		{
-			Owner = Global.Config.RamSearchSettings.FloatingWindow ? null : GlobalWin.MainForm;
+			Owner = Global.Config.HexEditorSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
 		private static string GetSaveFileFromUser()
