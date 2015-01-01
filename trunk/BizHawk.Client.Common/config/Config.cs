@@ -341,10 +341,6 @@ namespace BizHawk.Client.Common
 		// TAStudio
 		public TasStateManagerSettings DefaultTasProjSettings = new TasStateManagerSettings();
 
-		// GB/GG Game Genie Encoder/Decoder
-		public ToolDialogSettings GbGGSettings = new ToolDialogSettings();
-		public bool GBGGAutoload = false;
-
 		// Movie Settings
 		public RecentFiles RecentMovies = new RecentFiles(8);
 		public string DefaultAuthor = "default user";
