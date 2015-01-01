@@ -15,9 +15,9 @@ namespace BizHawk.Client.Common
 		public MemoryLuaLibrary(Lua lua)
 			: base(lua)
 		{
-			if (Global.Emulator.HasMemoryDomains())
+			if (MemoryDomainCore != null)
 			{
-				var domains = Global.Emulator.AsMemoryDomains().MemoryDomains;
+				var domains = MemoryDomainCore.MemoryDomains;
 				_currentMemoryDomain = domains.IndexOf(domains.MainMemory);
 			}
 		}
@@ -25,9 +25,9 @@ namespace BizHawk.Client.Common
 		public MemoryLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback)
 		{
-			if (Global.Emulator.HasMemoryDomains())
+			if (MemoryDomainCore != null)
 			{
-				var domains = Global.Emulator.AsMemoryDomains().MemoryDomains;
+				var domains = MemoryDomainCore.MemoryDomains;
 				_currentMemoryDomain = domains.IndexOf(domains.MainMemory);
 			}
 		}
@@ -38,13 +38,13 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (Global.Emulator.HasMemoryDomains())
+				if (MemoryDomainCore != null)
 				{
-					return Global.Emulator.AsMemoryDomains().MemoryDomains[_currentMemoryDomain];
+					return MemoryDomainCore.MemoryDomains[_currentMemoryDomain];
 				}
 				else
 				{
-					var error = string.Format("Error: {0} does not implement memory domains", Global.Emulator.Attributes().CoreName);
+					var error = string.Format("Error: {0} does not implement memory domains", Emulator.Attributes().CoreName);
 					Log(error);
 					throw new NotImplementedException(error);
 				}
