@@ -305,7 +305,7 @@ namespace BizHawk.Client.EmuHawk
 				TasView.CurrentCell.Column.Name == FrameColumnName &&
 				e.Button == MouseButtons.Left)
 			{
-				if (Global.Config.TAStudioEmptyMarkers)
+				if (Settings.EmptyMarkers)
 				{
 					CurrentTasMovie.Markers.Add(TasView.CurrentCell.RowIndex.Value, string.Empty);
 					RefreshDialog();
