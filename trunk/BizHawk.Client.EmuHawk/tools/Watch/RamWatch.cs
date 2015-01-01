@@ -336,22 +336,6 @@ namespace BizHawk.Client.EmuHawk
 			UpdateStatusBar();
 		}
 
-		private void ColumnPositions()
-		{
-			foreach (ColumnHeader column in WatchListView.Columns)
-			{
-				var index = Settings.Columns[column.Name].Index;
-				if (index < WatchListView.Columns.Count)
-				{
-					column.DisplayIndex = Settings.Columns[column.Name].Index;
-				}
-				else
-				{
-					column.DisplayIndex = WatchListView.Columns.Count - 1;
-				}
-			}
-		}
-
 		private void CopyWatchesToClipBoard()
 		{
 			var indexes = SelectedIndices.ToList();
@@ -440,12 +424,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			WatchListView.Columns.Clear();
 
-			foreach (var column in Settings.Columns)
+			var columns = Settings.Columns
+				.Where(c => c.Visible)
+				.OrderBy(c => c.Index);
+
+			foreach (var column in columns)
 			{
 				WatchListView.AddColumn(column);
 			}
-
-			ColumnPositions();
 		}
 
 		private void LoadConfigSettings()
@@ -943,15 +929,22 @@ namespace BizHawk.Client.EmuHawk
 			RefreshFloatingWindowControl();
 		}
 
-		private void RestoreWindowSizeMenuItem_Click(object sender, EventArgs e)
+		private void RestoreDefaultsMenuItem_Click(object sender, EventArgs e)
 		{
 			Settings = new RamWatchSettings();
 			Size = new Size(_defaultWidth, _defaultHeight);
 
+			RamWatchMenu.Items.Remove(
+				RamWatchMenu.Items
+					.OfType<ToolStripMenuItem>()
+					.First(x => x.Name == "GeneratedColumnsSubMenu")
+			);
+
+			RamWatchMenu.Items.Add(Settings.Columns.GenerateColumnsMenu(ColumnToggleCallback));
+
 			Global.Config.DisplayRamWatch = false;
 
 			RefreshFloatingWindowControl();
-			ColumnPositions();
 			LoadColumnInfo();
 		}
 
@@ -964,8 +957,14 @@ namespace BizHawk.Client.EmuHawk
 			TopMost = Settings.TopMost;
 			_watches = new WatchList(_core, _core.MemoryDomains.MainMemory, _emu.SystemId);
 			LoadConfigSettings();
-			menuStrip1.Items.Add(Settings.Columns.GenerateColumnsMenu());
+			RamWatchMenu.Items.Add(Settings.Columns.GenerateColumnsMenu(ColumnToggleCallback));
 			UpdateStatusBar();
+		}
+
+		private void ColumnToggleCallback()
+		{
+			SaveColumnInfo();
+			LoadColumnInfo();
 		}
 
 		private void NewRamWatch_Activated(object sender, EventArgs e)

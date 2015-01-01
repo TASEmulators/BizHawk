@@ -181,7 +181,13 @@ namespace BizHawk.Client.EmuHawk
 			CheatEditor.SetEditEvent(EditCheat);
 			UpdateDialog();
 
-			CheatsMenu.Items.Add(Settings.Columns.GenerateColumnsMenu());
+			CheatsMenu.Items.Add(Settings.Columns.GenerateColumnsMenu(ColumnToggleCallback));
+		}
+
+		private void ColumnToggleCallback()
+		{
+			SaveColumnInfo();
+			LoadColumnInfo();
 		}
 
 		private void ToggleGameGenieButton()
@@ -235,27 +241,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			CheatListView.Columns.Clear();
 
-			foreach (var column in Settings.Columns)
+			var columns = Settings.Columns
+				.Where(c => c.Visible)
+				.OrderBy(c => c.Index);
+
+			foreach (var column in columns)
 			{
 				CheatListView.AddColumn(column);
-			}
-
-			ColumnPositions();
-		}
-
-		private void ColumnPositions()
-		{
-			foreach (ColumnHeader column in CheatListView.Columns)
-			{
-				var index = Settings.Columns[column.Name].Index;
-				if (index < CheatListView.Columns.Count)
-				{
-					column.DisplayIndex = Settings.Columns[column.Name].Index;
-				}
-				else
-				{
-					column.DisplayIndex = CheatListView.Columns.Count - 1;
-				}
 			}
 		}
 
@@ -621,17 +613,24 @@ namespace BizHawk.Client.EmuHawk
 			RefreshFloatingWindowControl();
 		}
 
-		private void RestoreWindowSizeMenuItem_Click(object sender, EventArgs e)
+		private void RestoreDefaultsMenuItem_Click(object sender, EventArgs e)
 		{
 			Size = new Size(_defaultWidth, _defaultHeight);
 			Settings = new CheatsSettings();
+
+			CheatsMenu.Items.Remove(
+				CheatsMenu.Items
+					.OfType<ToolStripMenuItem>()
+					.First(x => x.Name == "GeneratedColumnsSubMenu")
+			);
+
+			CheatsMenu.Items.Add(Settings.Columns.GenerateColumnsMenu(ColumnToggleCallback));
 
 			Global.Config.DisableCheatsOnLoad = false;
 			Global.Config.LoadCheatFileByGame = true;
 			Global.Config.CheatsAutoSaveOnClose = true;
 
 			RefreshFloatingWindowControl();
-			ColumnPositions();
 			LoadColumnInfo();
 		}
 
