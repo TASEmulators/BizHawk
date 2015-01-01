@@ -16,7 +16,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class TAStudio : Form, IToolForm, IControlMainform
+	public partial class TAStudio : Form, IToolFormAutoConfig, IControlMainform
 	{
 		// TODO: UI flow that conveniently allows to start from savestate
 		private const string MarkerColumnName = "MarkerColumn";
@@ -24,8 +24,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
 
-		private int _defaultWidth;
-		private int _defaultHeight;
 		private MovieEndAction _originalEndAction; // The movie end behavior selected by the user (that is overridden by TAStudio)
 		private Dictionary<string, string> GenerateColumnNames()
 		{
@@ -51,8 +49,6 @@ namespace BizHawk.Client.EmuHawk
 			TasView.QueryItemText += TasView_QueryItemText;
 			TasView.QueryItemBkColor += TasView_QueryItemBkColor;
 			TasView.QueryItemIcon += TasView_QueryItemIcon;
-
-			TopMost = Global.Config.TAStudioSettings.TopMost;
 			TasView.InputPaintingMode = Global.Config.TAStudioDrawInput;
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
 			TasView.MultiSelect = true;
@@ -278,30 +274,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void LoadConfigSettings()
-		{
-			_defaultWidth = Size.Width;
-			_defaultHeight = Size.Height;
-
-			if (Global.Config.TAStudioSettings.UseWindowPosition)
-			{
-				Location = Global.Config.TAStudioSettings.WindowPosition;
-			}
-
-			if (Global.Config.TAStudioSettings.UseWindowSize)
-			{
-				Size = Global.Config.TAStudioSettings.WindowSize;
-			}
-		}
-
-		private void SaveConfigSettings()
-		{
-			Global.Config.TAStudioSettings.Wndx = Location.X;
-			Global.Config.TAStudioSettings.Wndy = Location.Y;
-			Global.Config.TAStudioSettings.Width = Right - Left;
-			Global.Config.TAStudioSettings.Height = Bottom - Top;
-		}
-
 		private void StartAtNearestFrameAndEmulate(int frame)
 		{
 			CurrentTasMovie.SwitchToPlay();
@@ -362,11 +334,6 @@ namespace BizHawk.Client.EmuHawk
 			message += _tasClipboard.Any() ? _tasClipboard.Count + " rows 0 col": "empty";
 
 			SplicerStatusLabel.Text = message;
-		}
-
-		private void RefreshFloatingWindowControl()
-		{
-			Owner = Global.Config.TAStudioSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
 		public void CallAddMarkerPopUp(int? frame = null)
@@ -527,7 +494,6 @@ namespace BizHawk.Client.EmuHawk
 		private void Tastudio_Load(object sender, EventArgs e)
 		{
 			InitializeOnLoad();
-			LoadConfigSettings();
 			SetColumnsFromCurrentStickies();
 
 			if (VersionInfo.DeveloperBuild)
@@ -571,7 +537,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Start Scenario 3: No movie, but user wants to autload their last project
-			else if (Global.Config.AutoloadTAStudioProject && !string.IsNullOrEmpty(Global.Config.RecentTas.MostRecent))
+			else if (Global.Config.RecentTas.AutoLoad && !string.IsNullOrEmpty(Global.Config.RecentTas.MostRecent))
 			{
 				var result = LoadProject(Global.Config.RecentTas.MostRecent);
 				if (!result)
@@ -600,7 +566,6 @@ namespace BizHawk.Client.EmuHawk
 			if (AskSaveChanges())
 			{
 				WantsToControlStopMovie = false;
-				SaveConfigSettings();
 				GlobalWin.MainForm.StopMovie(saveChanges: false);
 				DisengageTastudio();
 			}
@@ -608,12 +573,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				e.Cancel = true;
 			}
-		}
-
-		protected override void OnShown(EventArgs e)
-		{
-			RefreshFloatingWindowControl();
-			base.OnShown(e);
 		}
 
 		/// <summary>
