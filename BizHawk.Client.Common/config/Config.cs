@@ -341,10 +341,6 @@ namespace BizHawk.Client.Common
 		// TAStudio
 		public TasStateManagerSettings DefaultTasProjSettings = new TasStateManagerSettings();
 
-		// NES Game Genie Encoder/Decoder
-		public ToolDialogSettings NesGGSettings = new ToolDialogSettings();
-		public bool NESGGAutoload = false;
-
 		// GB/GG Game Genie Encoder/Decoder
 		public ToolDialogSettings GbGGSettings = new ToolDialogSettings();
 		public bool GBGGAutoload = false;

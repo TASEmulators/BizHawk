@@ -367,11 +367,6 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Load<Cheats>();
 			}
 
-			if (Global.Config.NESGGAutoload)
-			{
-				GlobalWin.Tools.LoadGameGenieEc();
-			}
-
 			if (Global.Config.DisplayStatusBar == false)
 			{
 				MainStatusBar.Visible = false;
