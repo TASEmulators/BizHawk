@@ -50,17 +50,7 @@ namespace BizHawk.Client.EmuHawk
 			Docs.Clear();
 			_caller = passed.Get();
 
-			// what was this?
-			/*
-			var tt = typeof(TastudioLuaLibrary);
-			var mm = typeof(MainMemoryLuaLibrary);
-
-			var tatt = tt.GetCustomAttributes(typeof(LuaLibraryAttributes), false);
-			var matt = mm.GetCustomAttributes(typeof(LuaLibraryAttributes), false);
-			*/
-
 			// Register lua libraries
-			// why sealed ones only?
 			var libs = Assembly
 				.Load("BizHawk.Client.Common")
 				.GetTypes()
