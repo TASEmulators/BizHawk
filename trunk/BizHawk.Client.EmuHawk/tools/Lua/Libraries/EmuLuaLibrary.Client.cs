@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 			"bufferheight",
 			"Gets the current height in pixels of the emulator's drawing area"
 		)]
-		public static int BufferHeight()
+		public int BufferHeight()
 		{
 			var height = Emulator.VideoProvider.BufferHeight;
 			var point = new System.Drawing.Point(0, height);
@@ -67,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 			"bufferwidth",
 			"Gets the current width in pixels of the emulator's drawing area"
 		)]
-		public static int BufferWidth()
+		public int BufferWidth()
 		{
 			var width = Emulator.VideoProvider.BufferWidth;
 			var point = new System.Drawing.Point(width, 0);

@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 
-using BizHawk.Client.Common;
 using LuaInterface;
+
+using BizHawk.Emulation.Common;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public sealed class GuiLuaLibrary : LuaLibraryBase
 	{
+		[RequiredService]
+		public IEmulator Emulator { get; set; }
+
 		public GuiLuaLibrary(Lua lua)
 			: base(lua) { }
 
