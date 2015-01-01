@@ -240,37 +240,8 @@ namespace BizHawk.Client.Common
 		public bool AutoLoadLuaConsole = false;
 		public bool DisableLuaScriptsOnLoad = false;
 
-		// RamWatch Settings
-		public ToolDialogSettings RamWatchSettings = new ToolDialogSettings();
+		// Watch Settings
 		public RecentFiles RecentWatches = new RecentFiles(8);
-		public bool RamWatchShowAddressColumn = true;
-		public bool RamWatchShowChangeColumn = true;
-		public bool RamWatchShowPrevColumn = false;
-		public bool RamWatchShowDiffColumn = false;
-		public bool RamWatchShowDomainColumn = true;
-
-		public Dictionary<string, int> RamWatchColumnWidths = new Dictionary<string, int>
-			{
-			{ "AddressColumn", -1 },
-			{ "ValueColumn", -1 },
-			{ "PrevColumn", -1 },
-			{ "ChangesColumn", -1 },
-			{ "DiffColumn", -1 },
-			{ "DomainColumn", -1 },
-			{ "NotesColumn",-1 },
-		};
-
-		public Dictionary<string, int> RamWatchColumnIndexes = new Dictionary<string, int>
-			{
-			{ "AddressColumn", 0 },
-			{ "ValueColumn", 1 },
-			{ "PrevColumn", 2 },
-			{ "ChangesColumn", 3 },
-			{ "DiffColumn", 4 },
-			{ "DomainColumn", 5 },
-			{ "NotesColumn", 6 },
-		};
-
 		public Watch.PreviousType RamWatchDefinePrevious = Watch.PreviousType.LastFrame;
 
 		// RamSearch Settings
