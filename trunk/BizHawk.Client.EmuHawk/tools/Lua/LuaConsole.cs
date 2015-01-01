@@ -577,7 +577,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentSessionsSubMenu.DropDownItems.Clear();
 			RecentSessionsSubMenu.DropDownItems.AddRange(
-				Global.Config.RecentLuaSession.RecentMenu(LoadSessionFromRecent));
+				Global.Config.RecentLuaSession.RecentMenu(LoadSessionFromRecent, true));
 		}
 
 		private void RecentScriptsSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -915,7 +915,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SaveWindowPositionMenuItem.Checked = Global.Config.LuaSettings.SaveWindowPosition;
 			AutoloadConsoleMenuItem.Checked = Global.Config.AutoLoadLuaConsole;
-			AutoloadSessionMenuItem.Checked = Global.Config.RecentLuaSession.AutoLoad;
 			DisableScriptsOnLoadMenuItem.Checked = Global.Config.DisableLuaScriptsOnLoad;
 			AlwaysOnTopMenuItem.Checked = Global.Config.LuaSettings.TopMost;
 			FloatingWindowMenuItem.Checked = Global.Config.LuaSettings.FloatingWindow;
@@ -924,11 +923,6 @@ namespace BizHawk.Client.EmuHawk
 		private void AutoloadConsoleMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.AutoLoadLuaConsole ^= true;
-		}
-
-		private void AutoloadSessionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RecentLuaSession.AutoLoad ^= true;
 		}
 
 		private void DisableScriptsOnLoadMenuItem_Click(object sender, EventArgs e)
