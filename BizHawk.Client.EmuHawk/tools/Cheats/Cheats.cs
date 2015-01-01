@@ -19,36 +19,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class Cheats : Form, IToolForm
 	{
-		[RequiredService]
-		private IMemoryDomains Core { get; set; }
-
-		[RequiredService] // TODO: use of this property should be factored out
-		private IEmulator Emu { get; set; }
-
-		[ConfigPersist]
-		public CheatsSettings Settings { get; set; }
-
-		public class CheatsSettings : ToolDialogSettings
-		{
-			public CheatsSettings()
-			{
-				Columns = new ColumnList
-				{
-					new Column { Name = "NamesColumn", Visible = true, Index = 0, Width = 128 },
-					new Column { Name = "AddressColumn", Visible = true, Index = 1, Width = 60 },
-					new Column { Name = "ValueColumn", Visible = true, Index = 2, Width = 59 },
-					new Column { Name = "CompareColumn", Visible = true, Index = 3, Width = 59 },
-					new Column { Name = "OnColumn", Visible = false, Index = 4, Width = 28 },
-					new Column { Name = "DomainColumn", Visible = true, Index = 5, Width = 55 },
-					new Column { Name = "SizeColumn", Visible = true, Index = 6, Width = 55 },
-					new Column { Name = "EndianColumn", Visible = false, Index = 7, Width = 55 },
-					new Column { Name = "DisplayTypeColumn", Visible = false, Index = 8, Width = 55 }
-				};
-			}
-
-			public ColumnList Columns { get; set; }
-		}
-
 		private const string NAME = "NamesColumn";
 		private const string ADDRESS = "AddressColumn";
 		private const string VALUE = "ValueColumn";
@@ -63,8 +33,6 @@ namespace BizHawk.Client.EmuHawk
 		private int _defaultHeight;
 		private string _sortedColumn = string.Empty;
 		private bool _sortReverse;
-
-		public bool UpdateBefore { get { return false; } }
 
 		public Cheats()
 		{
@@ -90,6 +58,14 @@ namespace BizHawk.Client.EmuHawk
 			_sortedColumn = string.Empty;
 			_sortReverse = false;
 		}
+
+		[RequiredService]
+		private IMemoryDomains Core { get; set; }
+
+		[ConfigPersist]
+		public CheatsSettings Settings { get; set; }
+
+		public bool UpdateBefore { get { return false; } }
 
 		public void UpdateValues()
 		{
@@ -212,11 +188,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GameGenieToolbarSeparator.Visible =
 				LoadGameGenieToolbarItem.Visible =
-				   (Emu.SystemId == "NES")
-				|| (Emu.SystemId == "GEN" && VersionInfo.DeveloperBuild)
-				|| (Emu.SystemId == "GB")
-				|| (Global.Game.System == "GG")
-				|| (Emu is LibsnesCore);
+				GlobalWin.Tools.GameGenieAvailable;
 		}
 
 		private void AddCheat()
@@ -489,12 +461,8 @@ namespace BizHawk.Client.EmuHawk
 			DisableAllCheatsMenuItem.Enabled = Global.CheatList.ActiveCount > 0;
 
 			GameGenieSeparator.Visible =
-				OpenGameGenieEncoderDecoderMenuItem.Visible = 
-					   (Emu.SystemId == "NES") 
-					|| (Emu is Genesis)
-					|| (Emu.SystemId == "GB")
-					|| (Global.Game.System == "GG")
-					|| (Emu is LibsnesCore);
+				OpenGameGenieEncoderDecoderMenuItem.Visible =
+				GlobalWin.Tools.GameGenieAvailable;
 		}
 
 		private void RemoveCheatMenuItem_Click(object sender, EventArgs e)
@@ -765,5 +733,26 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#endregion
+
+		public class CheatsSettings : ToolDialogSettings
+		{
+			public CheatsSettings()
+			{
+				Columns = new ColumnList
+				{
+					new Column { Name = NAME, Visible = true, Index = 0, Width = 128 },
+					new Column { Name = ADDRESS, Visible = true, Index = 1, Width = 60 },
+					new Column { Name = VALUE, Visible = true, Index = 2, Width = 59 },
+					new Column { Name = COMPARE, Visible = true, Index = 3, Width = 59 },
+					new Column { Name = ON, Visible = false, Index = 4, Width = 28 },
+					new Column { Name = DOMAIN, Visible = true, Index = 5, Width = 55 },
+					new Column { Name = SIZE, Visible = true, Index = 6, Width = 55 },
+					new Column { Name = ENDIAN, Visible = false, Index = 7, Width = 55 },
+					new Column { Name = TYPE, Visible = false, Index = 8, Width = 55 }
+				};
+			}
+
+			public ColumnList Columns { get; set; }
+		}
 	}
 }

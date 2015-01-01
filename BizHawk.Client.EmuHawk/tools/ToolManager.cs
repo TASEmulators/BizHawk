@@ -535,6 +535,19 @@ namespace BizHawk.Client.EmuHawk
 			return ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, typeof(T));
 		}
 
+		// Eventually we want a single game genie tool, then this mess goes away
+		public bool GameGenieAvailable
+		{
+			get
+			{
+				return (Global.Emulator.SystemId == "NES")
+					|| (Global.Emulator.SystemId == "GEN" && VersionInfo.DeveloperBuild)
+					|| (Global.Emulator.SystemId == "GB")
+					|| (Global.Game.System == "GG")
+					|| (Global.Emulator is BizHawk.Emulation.Cores.Nintendo.SNES.LibsnesCore);
+			}
+		}
+
 		// Note: Referencing these properties creates an instance of the tool and persists it.  They should be referenced by type if this is not desired
 		#region Tools
 
