@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 					if (frame != Emulator.Frame) // If we aren't already at our destination, seek
 					{
 						GlobalWin.MainForm.UnpauseEmulator();
-						if (Global.Config.TAStudioAutoPause && frame < CurrentTasMovie.InputLogLength)
+						if (Settings.AutoPause && frame < CurrentTasMovie.InputLogLength)
 						{
 							GlobalWin.MainForm.PauseOnFrame = CurrentTasMovie.InputLogLength;
 						}

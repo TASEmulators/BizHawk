@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentSubMenu.DropDownItems.Clear();
 			RecentSubMenu.DropDownItems.AddRange(
-				Global.Config.RecentTas.RecentMenu(DummyLoadProject, true));
+				Settings.RecentTas.RecentMenu(DummyLoadProject, true));
 		}
 
 		private void NewTasMenuItem_Click(object sender, EventArgs e)
@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CurrentTasMovie.Save();
 				MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " saved.";
-				Global.Config.RecentTas.Add(CurrentTasMovie.Filename);
+				Settings.RecentTas.Add(CurrentTasMovie.Filename);
 			}
 		}
 
@@ -96,7 +96,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CurrentTasMovie.Filename = file.FullName;
 				CurrentTasMovie.Save();
-				Global.Config.RecentTas.Add(CurrentTasMovie.Filename);
+				Settings.RecentTas.Add(CurrentTasMovie.Filename);
 				MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " saved.";
 				SetTextProperty();
 			}
@@ -529,26 +529,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			DrawInputByDraggingMenuItem.Checked = Global.Config.TAStudioDrawInput;
-			AutopauseAtEndOfMovieMenuItem.Checked = Global.Config.TAStudioAutoPause;
-			EmptyNewMarkerNotesMenuItem.Checked = Global.Config.TAStudioEmptyMarkers;
-
-			
+			DrawInputByDraggingMenuItem.Checked = Settings.DrawInput;
+			AutopauseAtEndOfMovieMenuItem.Checked = Settings.AutoPause;
+			EmptyNewMarkerNotesMenuItem.Checked = Settings.EmptyMarkers;
 		}
 
 		private void DrawInputByDraggingMenuItem_Click(object sender, EventArgs e)
 		{
-			TasView.InputPaintingMode = Global.Config.TAStudioDrawInput ^= true;
+			TasView.InputPaintingMode = Settings.DrawInput ^= true;
 		}
 
 		private void EmptyNewMarkerNotesMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.TAStudioEmptyMarkers ^= true;
+			Settings.EmptyMarkers ^= true;
 		}
 
 		private void AutopauseAtEndMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.TAStudioAutoPause ^= true;
+			Settings.AutoPause ^= true;
 		}
 
 		#endregion
