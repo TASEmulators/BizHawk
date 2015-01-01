@@ -345,10 +345,6 @@ namespace BizHawk.Client.Common
 		public ToolDialogSettings NesGGSettings = new ToolDialogSettings();
 		public bool NESGGAutoload = false;
 
-		// SNES Game Genie Encoder/Decoder
-		public ToolDialogSettings SnesGGSettings = new ToolDialogSettings();
-		public bool SNESGGAutoload = false;
-
 		// GB/GG Game Genie Encoder/Decoder
 		public ToolDialogSettings GbGGSettings = new ToolDialogSettings();
 		public bool GBGGAutoload = false;
