@@ -530,6 +530,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public bool IsAvailable<T>()
+		{
+			return ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, typeof(T));
+		}
+
 		// Note: Referencing these properties creates an instance of the tool and persists it.  They should be referenced by type if this is not desired
 		#region Tools
 
