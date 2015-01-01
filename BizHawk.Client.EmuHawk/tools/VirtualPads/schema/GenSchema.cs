@@ -228,7 +228,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(14, 17),
 						Type = PadSchema.PadInputType.TargetedPair,
 						MaxValue = 10000,
-						TargetSize = new Size(320, 270),
+						TargetSize = new Size(320, 240),
 						SecondaryNames = new []
 						{
 							"P" + controller + " Lightgun Y",

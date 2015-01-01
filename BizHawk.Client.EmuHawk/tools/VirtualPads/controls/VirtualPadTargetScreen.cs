@@ -29,8 +29,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VirtualPadTargetScreen_Load(object sender, EventArgs e)
 		{
-			XNumeric.Maximum = TargetPanel.Width;
-			YNumeric.Maximum = TargetPanel.Height;
+			XNumeric.Maximum = TargetPanel.Width - 1;
+			YNumeric.Maximum = TargetPanel.Height - 1;
 		}
 
 		#region IVirtualPadControl Implementation
@@ -105,6 +105,22 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		// Size of the extra controls to the right / bottom of the target panel at 96 DPI
+		private Size PaddingSize
+		{
+			get { return new Size(0, 30); }
+		}
+
+		public Size TargetSize
+		{
+			get { return TargetPanel.Size; }
+			set
+			{
+				TargetPanel.Size = value;
+				Size = UIHelper.Scale(value + PaddingSize);
+			}
+		}
+
 		// These are the value that a maximum x or y actually represent, used to translate from control X,Y to values the core expects
 		public int RangeX { get; set; }
 		public int RangeY { get; set; }
@@ -157,9 +173,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (overrideY.HasValue)
+				if (overrideY.HasValue) // Shouldn't this be overrideX?
 				{
-					return overrideY.Value;
+					return overrideY.Value; // Shouldn't this be overrideX?
 				}
 
 				return (int)(Global.StickyXORAdapter.GetFloat(XName) / MultiplierX);
@@ -191,7 +207,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (overrideY.HasValue)
 				{
-					return overrideX.Value;
+					return overrideX.Value; // Shouldn't this be overrideY?
 				}
 
 				return (int)(Global.StickyXORAdapter.GetFloat(YName) / MultiplierY);
