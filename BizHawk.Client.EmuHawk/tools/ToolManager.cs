@@ -740,14 +740,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void LoadTraceLogger()
-		{
-			if (Global.Emulator.CpuTraceAvailable())
-			{
-				Load<TraceLogger>();
-			}
-		}
-
 		public void LoadGameGenieEc()
 		{
 			if (Global.Emulator.SystemId == "NES")
