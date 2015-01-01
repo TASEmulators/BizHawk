@@ -1100,11 +1100,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Tools
 
-		static bool ToolAvailable<T>()
-		{
-			return ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, typeof(T));
-		}
-
 		private void ToolsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ToolBoxMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["ToolBox"].Bindings;
@@ -1116,17 +1111,17 @@ namespace BizHawk.Client.EmuHawk
 			TAStudioMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["TAStudio"].Bindings;
 			VirtualPadMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Virtual Pad"].Bindings;
 			TraceLoggerMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Trace Logger"].Bindings;
-			TraceLoggerMenuItem.Enabled = ToolAvailable<TraceLogger>();
+			TraceLoggerMenuItem.Enabled = GlobalWin.Tools.IsAvailable<TraceLogger>();
 
-			TAStudioMenuItem.Enabled = ToolAvailable<TAStudio>();
+			TAStudioMenuItem.Enabled = GlobalWin.Tools.IsAvailable<TAStudio>();
 
-			CheatsMenuItem.Enabled = ToolAvailable<Cheats>();
-			HexEditorMenuItem.Enabled = ToolAvailable<HexEditor>();
-			RamSearchMenuItem.Enabled = ToolAvailable<RamSearch>();
-			RamWatchMenuItem.Enabled = ToolAvailable<RamWatch>();
+			CheatsMenuItem.Enabled = GlobalWin.Tools.IsAvailable<Cheats>();
+			HexEditorMenuItem.Enabled = GlobalWin.Tools.IsAvailable<HexEditor>();
+			RamSearchMenuItem.Enabled = GlobalWin.Tools.IsAvailable<RamSearch>();
+			RamWatchMenuItem.Enabled = GlobalWin.Tools.IsAvailable<RamWatch>();
 
 			DebuggerMenuItem.Visible = VersionInfo.DeveloperBuild;
-			DebuggerMenuItem.Enabled = ToolAvailable<GenericDebugger>();
+			DebuggerMenuItem.Enabled = GlobalWin.Tools.IsAvailable<GenericDebugger>();
 
 			batchRunnerToolStripMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
@@ -1213,11 +1208,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FDSControlsMenuItem.Enabled = Global.Emulator.BoardName == "FDS";
 
-			NESSoundChannelsMenuItem.Enabled = ToolAvailable<NESSoundConfig>();
-			MovieSettingsMenuItem.Enabled = ToolAvailable<NESSyncSettingsForm>()
+			NESSoundChannelsMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NESSoundConfig>();
+			MovieSettingsMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NESSyncSettingsForm>()
 				&& !Global.MovieSession.Movie.IsActive;
 
-			NesControllerSettingsMenuItem.Enabled = ToolAvailable<NesControllerSettings>()
+			NesControllerSettingsMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NesControllerSettings>()
 				&& !Global.MovieSession.Movie.IsActive;
 
 			barcodeReaderToolStripMenuItem.Enabled = ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, typeof(BarcodeEntry));
