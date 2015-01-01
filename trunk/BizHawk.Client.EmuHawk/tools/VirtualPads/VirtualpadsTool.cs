@@ -5,12 +5,22 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualpadTool : Form, IToolFormAutoConfig
 	{
+		[RequiredService]
+		private IEmulator Emulator { get; set; }
+
+		[ConfigPersist]
+		public bool StickyPads { get; set; }
+
+		[ConfigPersist]
+		public bool ClearAlsoClearsAnalog { get; set; }
+		
 		private bool _readOnly;
 
 		private List<VirtualPad> Pads
@@ -36,13 +46,6 @@ namespace BizHawk.Client.EmuHawk
 				Pads.ForEach(p => p.ReadOnly = value);
 			}
 		}
-
-		[ConfigPersist]
-		public bool StickyPads { get; set; }
-
-		[ConfigPersist]
-		public bool ClearAlsoClearsAnalog { get; set; }
-
 
 		public VirtualpadTool()
 		{
@@ -85,14 +88,14 @@ namespace BizHawk.Client.EmuHawk
 					.Any())
 				.FirstOrDefault(t => t.GetCustomAttributes(false)
 					.OfType<SchemaAttributes>()
-					.First().SystemId == Global.Emulator.SystemId);
+					.First().SystemId == Emulator.SystemId);
 			
 			if (schemaType != null)
 			{
 				var padschemas = (Activator.CreateInstance(schemaType) as IVirtualPadSchema).GetPadSchemas();
 				if (VersionInfo.DeveloperBuild)
 				{
-					CheckPads(padschemas, Global.Emulator.ControllerDefinition);
+					CheckPads(padschemas, Emulator.ControllerDefinition);
 				}
 				var pads = padschemas.Select(s => new VirtualPad(s));
 
