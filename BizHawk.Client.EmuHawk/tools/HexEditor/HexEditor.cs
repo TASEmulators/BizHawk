@@ -39,8 +39,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Dictionary<int, char> _textTable = new Dictionary<int, char>();
 
-		private int _defaultWidth;
-		private int _defaultHeight;
 		private int _rowsVisible;
 		private int _numDigits = 4;
 		private string _numDigitsStr = "{0:X4}";
@@ -443,9 +441,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HexEditor_Load(object sender, EventArgs e)
 		{
-			_defaultWidth = Size.Width;     // Save these first so that the user can restore to its original size
-			_defaultHeight = Size.Height;
-
 			SetMemoryDomainMenu();
 			SetDataSize(DataSize);
 
