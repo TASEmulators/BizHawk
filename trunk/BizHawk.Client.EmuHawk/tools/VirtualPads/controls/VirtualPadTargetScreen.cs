@@ -19,8 +19,8 @@ namespace BizHawk.Client.EmuHawk
 		private bool _readonly;
 		private bool _isSet; // The tool has to keep track of this because there is currently no way to know if a float button is being autoheld or just held
 		
-		private int? overrideX = null;
-		private int? overrideY = null;
+		private int? _overrideX = null;
+		private int? _overrideY = null;
 
 		public VirtualPadTargetScreen()
 		{
@@ -44,8 +44,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.StickyXORAdapter.Unset(XName);
 			Global.StickyXORAdapter.Unset(YName);
-			overrideX = null;
-			overrideY = null;
+			_overrideX = null;
+			_overrideY = null;
 			_isSet = false;
 			Refresh();
 		}
@@ -63,8 +63,8 @@ namespace BizHawk.Client.EmuHawk
 			XNumeric.Value = (int)newX;
 			YNumeric.Value = (int)newY;
 
-			overrideX = (int)newX;
-			overrideY = (int)newY;
+			_overrideX = (int)newX;
+			_overrideY = (int)newY;
 
 			if (changed)
 			{
@@ -97,8 +97,8 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!_readonly)
 				{
-					overrideX = null;
-					overrideY = null;
+					_overrideX = null;
+					_overrideY = null;
 				}
 			}
 		}
@@ -173,12 +173,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (overrideY.HasValue) // Shouldn't this be overrideX?
-				{
-					return overrideY.Value; // Shouldn't this be overrideX?
-				}
-
-				return (int)(Global.StickyXORAdapter.GetFloat(XName) / MultiplierX);
+				return _overrideX ?? (int)(Global.StickyXORAdapter.GetFloat(XName) / MultiplierX);
 			}
 
 			set
@@ -205,12 +200,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (overrideY.HasValue)
-				{
-					return overrideX.Value; // Shouldn't this be overrideY?
-				}
-
-				return (int)(Global.StickyXORAdapter.GetFloat(YName) / MultiplierY);
+				return _overrideY ?? (int)(Global.StickyXORAdapter.GetFloat(YName) / MultiplierY);
 			}
 
 			set
