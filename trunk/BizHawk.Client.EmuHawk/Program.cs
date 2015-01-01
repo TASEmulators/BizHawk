@@ -9,8 +9,6 @@ using SlimDX.DirectSound;
 using Microsoft.VisualBasic.ApplicationServices;
 #endif
 
-#pragma warning disable 618
-
 using BizHawk.Common;
 using BizHawk.Client.Common;
 
@@ -52,8 +50,8 @@ namespace BizHawk.Client.EmuHawk
 			if (!VersionInfo.DeveloperBuild)
 			{
 				var thisversion = typeof(Program).Assembly.GetName().Version;
-				var utilversion = Assembly.LoadWithPartialName("Bizhawk.Client.Common").GetName().Version;
-				var emulversion = Assembly.LoadWithPartialName("Bizhawk.Emulation.Cores").GetName().Version;
+				var utilversion = Assembly.Load(new AssemblyName("Bizhawk.Client.Common")).GetName().Version;
+				var emulversion = Assembly.Load(new AssemblyName("Bizhawk.Emulation.Cores")).GetName().Version;
 
 				if (thisversion != utilversion || thisversion != emulversion)
 				{
