@@ -551,7 +551,7 @@ namespace BizHawk.Client.EmuHawk
 			get
 			{
 				return (Global.Emulator.SystemId == "NES")
-					|| (Global.Emulator.SystemId == "GEN" && VersionInfo.DeveloperBuild)
+					|| (Global.Emulator.SystemId == "GEN")
 					|| (Global.Emulator.SystemId == "GB")
 					|| (Global.Game.System == "GG")
 					|| (Global.Emulator is BizHawk.Emulation.Cores.Nintendo.SNES.LibsnesCore);
