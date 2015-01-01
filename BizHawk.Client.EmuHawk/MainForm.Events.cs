@@ -1905,6 +1905,11 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreConfig.DoDialog(this, "Genesis Settings");
 		}
 
+		private void GenesisGameGenieECDC_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<GenGameGenie>();
+		}
+
 		#endregion
 
 		#region Wondersawn

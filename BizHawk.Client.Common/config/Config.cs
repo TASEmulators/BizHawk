@@ -344,11 +344,6 @@ namespace BizHawk.Client.Common
 		// GB/GG Game Genie Encoder/Decoder
 		public ToolDialogSettings GbGGSettings = new ToolDialogSettings();
 		public bool GBGGAutoload = false;
-		
-
-		// GEN Game Genie Encoder/Decoder
-		public ToolDialogSettings GenGGSettings = new ToolDialogSettings();
-		public bool GenGGAutoload = false;
 
 		// Movie Settings
 		public RecentFiles RecentMovies = new RecentFiles(8);
