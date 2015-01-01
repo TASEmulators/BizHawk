@@ -342,11 +342,8 @@ namespace BizHawk.Client.Common
 		#endregion
 
 		// TAStudio Dialog
-		public ToolDialogSettings TAStudioSettings = new ToolDialogSettings();
 		public RecentFiles RecentTas = new RecentFiles(8);
 		public TasStateManagerSettings DefaultTasProjSettings = new TasStateManagerSettings();
-		public bool AutoloadTAStudio = false;
-		public bool AutoloadTAStudioProject = false;
 		public bool TAStudioDrawInput = true;
 		public bool TAStudioAutoPause = true;
 		public bool TAStudioAutoRestoreLastPosition = false;

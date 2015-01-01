@@ -372,11 +372,6 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.LoadGameGenieEc();
 			}
 
-			if (Global.Config.AutoloadTAStudio)
-			{
-				GlobalWin.Tools.Load<TAStudio>();
-			}
-
 			if (Global.Config.AutoloadVirtualPad)
 			{
 				GlobalWin.Tools.Load<VirtualpadTool>();
