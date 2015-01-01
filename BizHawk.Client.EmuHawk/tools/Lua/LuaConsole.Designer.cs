@@ -59,8 +59,9 @@
 			this.PauseScriptMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.EditScriptMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RemoveScriptMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.InsertSeparatorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.DuplicateScriptMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+			this.InsertSeparatorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MoveUpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MoveDownMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SelectAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,7 +70,6 @@
 			this.RegisteredFunctionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoloadConsoleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AutoloadSessionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DisableScriptsOnLoadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -105,7 +105,6 @@
 			this.LuaListView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.PathName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.DuplicateScriptMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ScriptListContextMenu.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.ConsoleContextMenu.SuspendLayout();
@@ -382,6 +381,18 @@
 			this.RemoveScriptMenuItem.Text = "&Remove Script";
 			this.RemoveScriptMenuItem.Click += new System.EventHandler(this.RemoveScriptMenuItem_Click);
 			// 
+			// DuplicateScriptMenuItem
+			// 
+			this.DuplicateScriptMenuItem.Name = "DuplicateScriptMenuItem";
+			this.DuplicateScriptMenuItem.Size = new System.Drawing.Size(218, 22);
+			this.DuplicateScriptMenuItem.Text = "&Duplicate Script";
+			this.DuplicateScriptMenuItem.Click += new System.EventHandler(this.DuplicateScriptMenuItem_Click);
+			// 
+			// toolStripSeparator7
+			// 
+			this.toolStripSeparator7.Name = "toolStripSeparator7";
+			this.toolStripSeparator7.Size = new System.Drawing.Size(215, 6);
+			// 
 			// InsertSeparatorMenuItem
 			// 
 			this.InsertSeparatorMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.InsertSeparator;
@@ -390,11 +401,6 @@
 			this.InsertSeparatorMenuItem.Size = new System.Drawing.Size(218, 22);
 			this.InsertSeparatorMenuItem.Text = "Insert Separator";
 			this.InsertSeparatorMenuItem.Click += new System.EventHandler(this.InsertSeparatorMenuItem_Click);
-			// 
-			// toolStripSeparator7
-			// 
-			this.toolStripSeparator7.Name = "toolStripSeparator7";
-			this.toolStripSeparator7.Size = new System.Drawing.Size(215, 6);
 			// 
 			// MoveUpMenuItem
 			// 
@@ -447,7 +453,6 @@
 			// 
 			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.AutoloadConsoleMenuItem,
-            this.AutoloadSessionMenuItem,
             this.DisableScriptsOnLoadMenuItem,
             this.toolStripSeparator4,
             this.SaveWindowPositionMenuItem,
@@ -466,13 +471,6 @@
 			this.AutoloadConsoleMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.AutoloadConsoleMenuItem.Text = "Autoload Console";
 			this.AutoloadConsoleMenuItem.Click += new System.EventHandler(this.AutoloadConsoleMenuItem_Click);
-			// 
-			// AutoloadSessionMenuItem
-			// 
-			this.AutoloadSessionMenuItem.Name = "AutoloadSessionMenuItem";
-			this.AutoloadSessionMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.AutoloadSessionMenuItem.Text = "Autoload Session";
-			this.AutoloadSessionMenuItem.Click += new System.EventHandler(this.AutoloadSessionMenuItem_Click);
 			// 
 			// DisableScriptsOnLoadMenuItem
 			// 
@@ -804,13 +802,6 @@
 			this.PathName.Text = "Path";
 			this.PathName.Width = 195;
 			// 
-			// DuplicateScriptMenuItem
-			// 
-			this.DuplicateScriptMenuItem.Name = "DuplicateScriptMenuItem";
-			this.DuplicateScriptMenuItem.Size = new System.Drawing.Size(218, 22);
-			this.DuplicateScriptMenuItem.Text = "&Duplicate Script";
-			this.DuplicateScriptMenuItem.Click += new System.EventHandler(this.DuplicateScriptMenuItem_Click);
-			// 
 			// LuaConsole
 			// 
 			this.AllowDrop = true;
@@ -902,7 +893,6 @@
 		private System.Windows.Forms.ContextMenuStrip ConsoleContextMenu;
 		private System.Windows.Forms.ToolStripMenuItem ClearConsoleContextItem;
 		private System.Windows.Forms.ToolStripMenuItem DisableScriptsOnLoadMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AutoloadSessionMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PauseScriptMenuItem;
 		private System.Windows.Forms.ToolStripButton PauseToolbarItem;
 		private System.Windows.Forms.ToolStripMenuItem PauseScriptContextItem;
