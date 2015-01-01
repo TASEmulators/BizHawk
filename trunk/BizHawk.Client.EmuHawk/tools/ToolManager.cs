@@ -176,6 +176,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (settings.UseWindowPosition)
 			{
+				form.StartPosition = FormStartPosition.Manual;
 				form.Location = settings.WindowPosition;
 			}
 			if (settings.UseWindowSize)

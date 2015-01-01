@@ -495,7 +495,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			FloatRanges = { new[] { 0.0f, 128.0f, 255.0f }, new[] { 0.0f, 120.0f, 239.0f } }
 		};
 
-
 		public void Strobe(StrobeInfo s, IController c)
 		{
 		}
