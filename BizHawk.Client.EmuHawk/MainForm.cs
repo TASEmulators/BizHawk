@@ -372,11 +372,6 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.LoadGameGenieEc();
 			}
 
-			if (Global.Config.AutoloadVirtualPad)
-			{
-				GlobalWin.Tools.Load<VirtualpadTool>();
-			}
-
 			if (Global.Config.DisplayStatusBar == false)
 			{
 				MainStatusBar.Visible = false;

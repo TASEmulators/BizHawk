@@ -9,10 +9,8 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class VirtualpadTool : Form, IToolForm
+	public partial class VirtualpadTool : Form, IToolFormAutoConfig
 	{
-		private int _defaultWidth;
-		private int _defaultHeight;
 		private bool _readOnly;
 
 		private List<VirtualPad> Pads
@@ -39,34 +37,27 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[ConfigPersist]
+		public bool StickyPads { get; set; }
+
+		[ConfigPersist]
+		public bool ClearAlsoClearsAnalog { get; set; }
+
+
 		public VirtualpadTool()
 		{
+			StickyPads = true;
 			InitializeComponent();
-			Closing += (o, e) => SaveConfigSettings();
-			TopMost = Global.Config.VirtualPadSettings.TopMost;
 		}
 
 		private void VirtualpadTool_Load(object sender, EventArgs e)
 		{
-			_defaultWidth = Size.Width;
-			_defaultHeight = Size.Height;
-
-			if (Global.Config.VirtualPadSettings.UseWindowPosition)
-			{
-				Location = Global.Config.VirtualPadSettings.WindowPosition;
-			}
-
-			if (Global.Config.VirtualPadSettings.UseWindowPosition)
-			{
-				Size = Global.Config.VirtualPadSettings.WindowSize;
-			}
-
 			CreatePads();
 		}
 
 		public void ClearVirtualPadHolds()
 		{
-			if (Global.Config.VirtualPadClearClearsAnalog)
+			if (ClearAlsoClearsAnalog)
 			{
 				Pads.ForEach(pad => pad.Clear());
 			}
@@ -159,19 +150,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SaveConfigSettings()
-		{
-			Global.Config.VirtualPadSettings.Wndx = Location.X;
-			Global.Config.VirtualPadSettings.Wndy = Location.Y;
-			Global.Config.VirtualPadSettings.Width = Right - Left;
-			Global.Config.VirtualPadSettings.Height = Bottom - Top;
-		}
-
-		private void RefreshFloatingWindowControl()
-		{
-			Owner = Global.Config.VirtualPadSettings.FloatingWindow ? null : GlobalWin.MainForm;
-		}
-
 		#region IToolForm Implementation
 
 		public bool AskSaveChanges() { return true; }
@@ -211,7 +189,7 @@ namespace BizHawk.Client.EmuHawk
 				Readonly = false;
 			}
 
-			if (!Readonly && !Global.Config.VirtualPadSticky)
+			if (!Readonly && !StickyPads)
 			{
 				Pads.ForEach(pad => pad.Clear());
 			}
@@ -223,7 +201,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// TODO: SetPrevious logic should go here too or that will get out of whack
 
-			if (!Readonly && !Global.Config.VirtualPadSticky)
+			if (!Readonly && !StickyPads)
 			{
 				Pads.ForEach(pad => pad.Clear());
 			}
@@ -231,64 +209,11 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		#region Events
-
 		#region Menu
-
-		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			AutoloadMenuItem.Checked = Global.Config.AutoloadVirtualPad;
-			SaveWindowPositionMenuItem.Checked = Global.Config.VirtualPadSettings.SaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Global.Config.VirtualPadSettings.TopMost;
-			FloatingWindowMenuItem.Checked = Global.Config.VirtualPadSettings.FloatingWindow;
-			ClearClearsAnalogInputMenuItem.Checked = Global.Config.VirtualPadClearClearsAnalog;
-		}
-
-		private void ClearClearsAnalogInputMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.VirtualPadClearClearsAnalog ^= true;
-		}
-
-		private void AutoloadMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.AutoloadVirtualPad ^= true;
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.VirtualPadSettings.SaveWindowPosition ^= true;
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.VirtualPadSettings.TopMost ^= true;
-			TopMost = Global.Config.VirtualPadSettings.TopMost;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.VirtualPadSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
-		}
-
-		private void RestoreDefaultSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			Size = new Size(_defaultWidth, _defaultHeight);
-
-			Global.Config.VirtualPadSettings.SaveWindowPosition = true;
-			Global.Config.VirtualPadSettings.TopMost = TopMost = false;
-			Global.Config.VirtualPadSettings.FloatingWindow = false;
-			Global.Config.VirtualPadClearClearsAnalog = false;
-		}
-
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
 
 		private void PadsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			StickyMenuItem.Checked = Global.Config.VirtualPadSticky;
+			StickyMenuItem.Checked = StickyPads;
 		}
 
 		private void ClearAllMenuItem_Click(object sender, EventArgs e)
@@ -298,15 +223,28 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StickyMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.VirtualPadSticky ^= true;
+			StickyPads ^= true;
 		}
 
 		private void PadBoxContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			StickyContextMenuItem.Checked = Global.Config.VirtualPadSticky;
+			StickyContextMenuItem.Checked = StickyPads;
 		}
 
-		#endregion
+		private void ExitMenuItem_Click(object sender, EventArgs e)
+		{
+			Close();
+		}
+
+		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			ClearClearsAnalogInputMenuItem.Checked = ClearAlsoClearsAnalog;
+		}
+
+		private void ClearClearsAnalogInputMenuItem_Click(object sender, EventArgs e)
+		{
+			ClearAlsoClearsAnalog ^= true;
+		}
 
 		#endregion
 	}
