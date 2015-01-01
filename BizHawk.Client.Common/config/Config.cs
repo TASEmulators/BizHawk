@@ -192,7 +192,6 @@ namespace BizHawk.Client.Common
 		public bool DisplayStatusBar = true;
 		public int DispRamWatchx = 0;
 		public int DispRamWatchy = 70;
-		public bool DisplayRamWatch = false;
 		public int DispMessagex = 3;
 		public int DispMessagey = 0;
 		public int DispMessageanchor = 2;
@@ -243,6 +242,7 @@ namespace BizHawk.Client.Common
 		// Watch Settings
 		public RecentFiles RecentWatches = new RecentFiles(8);
 		public Watch.PreviousType RamWatchDefinePrevious = Watch.PreviousType.LastFrame;
+		public bool DisplayRamWatch = false;
 
 		// RamSearch Settings
 		public ToolDialogSettings RamSearchSettings = new ToolDialogSettings();
