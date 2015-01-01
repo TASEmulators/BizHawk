@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 			}
 		}
 
-		public static ToolStripMenuItem GenerateColumnsMenu(this ToolDialogSettings.ColumnList list)
+		public static ToolStripMenuItem GenerateColumnsMenu(this ToolDialogSettings.ColumnList list, Action changeCallback)
 		{
 			var menu = new ToolStripMenuItem
 			{
@@ -95,6 +95,7 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 				menuItem.Click += (o, ev) =>
 				{
 					dummyList[menuItem.Name].Visible ^= true;
+					changeCallback();
 				};
 
 				menu.DropDownItems.Add(menuItem);
@@ -135,6 +136,11 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 		public static IEnumerable<int> SelectedIndices(this ListView listView)
 		{
 			return listView.SelectedIndices.Cast<int>();
+		}
+
+		public static IEnumerable<ColumnHeader> ColumnHeaders(this ListView listView)
+		{
+			return listView.Columns.OfType<ColumnHeader>();
 		}
 
 		#endregion

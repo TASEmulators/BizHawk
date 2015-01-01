@@ -493,7 +493,7 @@
 			this.RestoreWindowSizeMenuItem.Name = "RestoreWindowSizeMenuItem";
 			this.RestoreWindowSizeMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.RestoreWindowSizeMenuItem.Text = "Restore Default Settings";
-			this.RestoreWindowSizeMenuItem.Click += new System.EventHandler(this.RestoreWindowSizeMenuItem_Click);
+			this.RestoreWindowSizeMenuItem.Click += new System.EventHandler(this.RestoreDefaultsMenuItem_Click);
 			// 
 			// toolStrip1
 			// 

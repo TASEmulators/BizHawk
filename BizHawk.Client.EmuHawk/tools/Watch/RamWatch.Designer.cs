@@ -65,7 +65,7 @@
 			this.moveDownToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.pauseToolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.menuStrip1 = new MenuStripEx();
+			this.RamWatchMenu = new MenuStripEx();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.NewListMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OpenMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -116,7 +116,7 @@
 			this.ListViewContextMenu.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
-			this.menuStrip1.SuspendLayout();
+			this.RamWatchMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// WatchCountLabel
@@ -467,16 +467,16 @@
 			// 
 			// menuStrip1
 			// 
-			this.menuStrip1.ClickThrough = true;
-			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.RamWatchMenu.ClickThrough = true;
+			this.RamWatchMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu,
             this.WatchesSubMenu,
             this.OptionsSubMenu});
-			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(364, 24);
-			this.menuStrip1.TabIndex = 3;
-			this.menuStrip1.Text = "menuStrip1";
+			this.RamWatchMenu.Location = new System.Drawing.Point(0, 0);
+			this.RamWatchMenu.Name = "menuStrip1";
+			this.RamWatchMenu.Size = new System.Drawing.Size(364, 24);
+			this.RamWatchMenu.TabIndex = 3;
+			this.RamWatchMenu.Text = "menuStrip1";
 			// 
 			// FileSubMenu
 			// 
@@ -809,7 +809,7 @@
 			this.RestoreWindowSizeMenuItem.Name = "RestoreWindowSizeMenuItem";
 			this.RestoreWindowSizeMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.RestoreWindowSizeMenuItem.Text = "Restore Default Settings";
-			this.RestoreWindowSizeMenuItem.Click += new System.EventHandler(this.RestoreWindowSizeMenuItem_Click);
+			this.RestoreWindowSizeMenuItem.Click += new System.EventHandler(this.RestoreDefaultsMenuItem_Click);
 			// 
 			// WatchListView
 			// 
@@ -902,7 +902,7 @@
 			this.Controls.Add(this.MemDomainLabel);
 			this.Controls.Add(this.WatchCountLabel);
 			this.Controls.Add(this.toolStrip1);
-			this.Controls.Add(this.menuStrip1);
+			this.Controls.Add(this.RamWatchMenu);
 			this.Controls.Add(this.WatchListView);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "RamWatch";
@@ -918,8 +918,8 @@
 			this.statusStrip1.PerformLayout();
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
-			this.menuStrip1.ResumeLayout(false);
-			this.menuStrip1.PerformLayout();
+			this.RamWatchMenu.ResumeLayout(false);
+			this.RamWatchMenu.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -935,7 +935,7 @@
 		private System.Windows.Forms.ColumnHeader DiffColumn;
 		private System.Windows.Forms.ColumnHeader DomainColumn;
 		private System.Windows.Forms.ColumnHeader NotesColumn;
-		private MenuStripEx menuStrip1;
+		private MenuStripEx RamWatchMenu;
 		private System.Windows.Forms.ToolStripMenuItem FileSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem NewListMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem OpenMenuItem;
