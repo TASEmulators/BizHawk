@@ -332,23 +332,14 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, ToolDialogSettings> CommonToolSettings = new Dictionary<string, ToolDialogSettings>();
 		public Dictionary<string, Dictionary<string, object>> CustomToolSettings = new Dictionary<string, Dictionary<string, object>>();
 
-		#region Cheats
-
+		// Cheats
 		public bool DisableCheatsOnLoad = false;
 		public bool LoadCheatFileByGame = true;
 		public bool CheatsAutoSaveOnClose = true;
 		public RecentFiles RecentCheats = new RecentFiles(8);
 
-		#endregion
-
 		// TAStudio
 		public TasStateManagerSettings DefaultTasProjSettings = new TasStateManagerSettings();
-
-		// VirtualPad Dialog
-		public ToolDialogSettings VirtualPadSettings = new ToolDialogSettings();
-		public bool AutoloadVirtualPad = false;
-		public bool VirtualPadSticky = true;
-		public bool VirtualPadClearClearsAnalog = false;
 
 		// NES Game Genie Encoder/Decoder
 		public ToolDialogSettings NesGGSettings = new ToolDialogSettings();
