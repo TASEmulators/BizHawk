@@ -68,15 +68,8 @@
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.StopAllScriptsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RegisteredFunctionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.AutoloadConsoleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SettingsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.DisableScriptsOnLoadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-			this.RestoreDefaultSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.HelpSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.FunctionsListMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OnlineDocsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -185,7 +178,7 @@
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu,
             this.ScriptSubMenu,
-            this.OptionsSubMenu,
+            this.SettingsSubMenu,
             this.HelpSubMenu});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
@@ -449,73 +442,21 @@
 			this.RegisteredFunctionsMenuItem.Text = "&Registered Functions...";
 			this.RegisteredFunctionsMenuItem.Click += new System.EventHandler(this.RegisteredFunctionsMenuItem_Click);
 			// 
-			// OptionsSubMenu
+			// SettingsSubMenu
 			// 
-			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.AutoloadConsoleMenuItem,
-            this.DisableScriptsOnLoadMenuItem,
-            this.toolStripSeparator4,
-            this.SaveWindowPositionMenuItem,
-            this.AlwaysOnTopMenuItem,
-            this.FloatingWindowMenuItem,
-            this.toolStripSeparator5,
-            this.RestoreDefaultSettingsMenuItem});
-			this.OptionsSubMenu.Name = "OptionsSubMenu";
-			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
-			this.OptionsSubMenu.Text = "&Options";
-			this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
-			// 
-			// AutoloadConsoleMenuItem
-			// 
-			this.AutoloadConsoleMenuItem.Name = "AutoloadConsoleMenuItem";
-			this.AutoloadConsoleMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.AutoloadConsoleMenuItem.Text = "Autoload Console";
-			this.AutoloadConsoleMenuItem.Click += new System.EventHandler(this.AutoloadConsoleMenuItem_Click);
+			this.SettingsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.DisableScriptsOnLoadMenuItem});
+			this.SettingsSubMenu.Name = "SettingsSubMenu";
+			this.SettingsSubMenu.Size = new System.Drawing.Size(61, 20);
+			this.SettingsSubMenu.Text = "&Settings";
+			this.SettingsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
 			// 
 			// DisableScriptsOnLoadMenuItem
 			// 
 			this.DisableScriptsOnLoadMenuItem.Name = "DisableScriptsOnLoadMenuItem";
-			this.DisableScriptsOnLoadMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.DisableScriptsOnLoadMenuItem.Size = new System.Drawing.Size(196, 22);
 			this.DisableScriptsOnLoadMenuItem.Text = "Disable Scripts on Load";
 			this.DisableScriptsOnLoadMenuItem.Click += new System.EventHandler(this.DisableScriptsOnLoadMenuItem_Click);
-			// 
-			// toolStripSeparator4
-			// 
-			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(196, 6);
-			// 
-			// SaveWindowPositionMenuItem
-			// 
-			this.SaveWindowPositionMenuItem.Name = "SaveWindowPositionMenuItem";
-			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.SaveWindowPositionMenuItem.Text = "Save Window Position";
-			this.SaveWindowPositionMenuItem.Click += new System.EventHandler(this.SaveWindowPositionMenuItem_Click);
-			// 
-			// AlwaysOnTopMenuItem
-			// 
-			this.AlwaysOnTopMenuItem.Name = "AlwaysOnTopMenuItem";
-			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.AlwaysOnTopMenuItem.Text = "Always On Top";
-			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
-			// 
-			// FloatingWindowMenuItem
-			// 
-			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
-			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.FloatingWindowMenuItem.Text = "Floating Window";
-			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
-			// 
-			// toolStripSeparator5
-			// 
-			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(196, 6);
-			// 
-			// RestoreDefaultSettingsMenuItem
-			// 
-			this.RestoreDefaultSettingsMenuItem.Name = "RestoreDefaultSettingsMenuItem";
-			this.RestoreDefaultSettingsMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.RestoreDefaultSettingsMenuItem.Text = "Restore Default Settings";
-			this.RestoreDefaultSettingsMenuItem.Click += new System.EventHandler(this.RestoreDefaultSettingsMenuItem_Click);
 			// 
 			// HelpSubMenu
 			// 
@@ -851,9 +792,7 @@
 		public System.Windows.Forms.ColumnHeader Script;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.ToolStripMenuItem NewSessionMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem SaveWindowPositionMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem RestoreDefaultSettingsMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SettingsSubMenu;
 		private System.Windows.Forms.Label NumberOfScripts;
 		private System.Windows.Forms.ToolStripMenuItem InsertSeparatorMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem StopAllScriptsMenuItem;
@@ -861,11 +800,9 @@
 		private System.Windows.Forms.ToolStripMenuItem RecentScriptsSubMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private System.Windows.Forms.ToolStripMenuItem StopAllScriptsContextItem;
-		private System.Windows.Forms.ToolStripMenuItem AutoloadConsoleMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem RemoveScriptContextItem;
 		private System.Windows.Forms.ToolStripMenuItem InsertSeperatorContextItem;
 		private System.Windows.Forms.ToolStripSeparator ScriptContextSeparator;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripMenuItem EditScriptContextItem;
 		private System.Windows.Forms.ToolStripMenuItem ToggleScriptContextItem;
 		private System.Windows.Forms.ToolStripMenuItem RemoveScriptMenuItem;
@@ -903,9 +840,6 @@
 		private System.Windows.Forms.ToolStripButton NewScriptToolbarItem;
 		private System.Windows.Forms.ToolStripMenuItem RegisteredFunctionsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem RegisteredFunctionsContextItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
 		private System.Windows.Forms.ToolStripButton RefreshScriptToolbarItem;
 		private System.Windows.Forms.ToolStripMenuItem RefreshScriptMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
