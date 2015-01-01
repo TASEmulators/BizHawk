@@ -17,11 +17,9 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class LuaConsole : Form, IToolForm
+	public partial class LuaConsole : Form, IToolFormAutoConfig
 	{
 		private readonly LuaFileList _luaList;
-		private int _defaultWidth;
-		private int _defaultHeight;
 		private bool _sortReverse;
 		private string _lastColumnSorted;
 
@@ -53,8 +51,6 @@ namespace BizHawk.Client.EmuHawk
 			LuaListView.QueryItemText += LuaListView_QueryItemText;
 			LuaListView.QueryItemBkColor += LuaListView_QueryItemBkColor;
 			LuaListView.VirtualMode = true;
-
-			TopMost = Global.Config.LuaSettings.TopMost;
 		}
 
 		public EmuLuaLibrary LuaImp { get; set; }
@@ -69,11 +65,6 @@ namespace BizHawk.Client.EmuHawk
 		private IEnumerable<LuaFile> SelectedFiles
 		{
 			get { return SelectedItems.Where(x => !x.IsSeparator); }
-		}
-
-		private void RefreshFloatingWindowControl()
-		{
-			Owner = Global.Config.LuaSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
 		public void UpdateValues()
@@ -98,7 +89,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaConsole_Load(object sender, EventArgs e)
 		{
-			LoadConfigSettings();
 			if (Global.Config.RecentLuaSession.AutoLoad)
 			{
 				if (!Global.Config.RecentLuaSession.Empty)
@@ -255,29 +245,10 @@ namespace BizHawk.Client.EmuHawk
 			return path;
 		}
 
+		// TODO: Rename me
 		private void SaveConfigSettings()
 		{
 			LuaImp.Close();
-			Global.Config.LuaSettings.Wndx = Location.X;
-			Global.Config.LuaSettings.Wndy = Location.Y;
-			Global.Config.LuaSettings.Width = Right - Left;
-			Global.Config.LuaSettings.Height = Bottom - Top;
-		}
-
-		private void LoadConfigSettings()
-		{
-			_defaultWidth = Size.Width;
-			_defaultHeight = Size.Height;
-
-			if (Global.Config.LuaSettings.UseWindowPosition)
-			{
-				Location = Global.Config.LuaSettings.WindowPosition;
-			}
-
-			if (Global.Config.LuaSettings.UseWindowSize)
-			{
-				Size = Global.Config.LuaSettings.WindowSize;
-			}
 		}
 
 		private static FileInfo GetFileFromUser(string filter)
@@ -913,47 +884,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			SaveWindowPositionMenuItem.Checked = Global.Config.LuaSettings.SaveWindowPosition;
-			AutoloadConsoleMenuItem.Checked = Global.Config.AutoLoadLuaConsole;
 			DisableScriptsOnLoadMenuItem.Checked = Global.Config.DisableLuaScriptsOnLoad;
-			AlwaysOnTopMenuItem.Checked = Global.Config.LuaSettings.TopMost;
-			FloatingWindowMenuItem.Checked = Global.Config.LuaSettings.FloatingWindow;
-		}
-
-		private void AutoloadConsoleMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.AutoLoadLuaConsole ^= true;
 		}
 
 		private void DisableScriptsOnLoadMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.DisableLuaScriptsOnLoad ^= true;
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.LuaSettings.SaveWindowPosition ^= true;
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.LuaSettings.TopMost ^= true;
-			TopMost = Global.Config.LuaSettings.TopMost;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.LuaSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
-		}
-
-		private void RestoreDefaultSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			Size = new Size(_defaultWidth, _defaultHeight);
-
-			Global.Config.LuaSettings.SaveWindowPosition = true;
-			Global.Config.LuaSettings.TopMost = TopMost = false;
-			Global.Config.LuaSettings.FloatingWindow = false;
 		}
 
 		#endregion
@@ -999,12 +935,6 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region Dialog, Listview, OutputBox
-
-		protected override void OnShown(EventArgs e)
-		{
-			RefreshFloatingWindowControl();
-			base.OnShown(e);
-		}
 
 		private void LuaConsole_DragDrop(object sender, DragEventArgs e)
 		{
@@ -1149,7 +1079,6 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.DisplayManager.ClearLuaSurfaces();
 		}
 
-	
 		#endregion
 	}
 }

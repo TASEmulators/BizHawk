@@ -382,11 +382,6 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Load<VirtualpadTool>();
 			}
 
-			if (Global.Config.AutoLoadLuaConsole)
-			{
-				OpenLuaConsole();
-			}
-
 			if (Global.Config.DisplayStatusBar == false)
 			{
 				MainStatusBar.Visible = false;

@@ -232,11 +232,9 @@ namespace BizHawk.Client.Common
 		public int LogWindowWidth = -1;
 		public int LogWindowHeight = -1;
 
-		// Lua Console
-		public ToolDialogSettings LuaSettings = new ToolDialogSettings();
+		// Lua
 		public RecentFiles RecentLua = new RecentFiles(8);
 		public RecentFiles RecentLuaSession = new RecentFiles(8);
-		public bool AutoLoadLuaConsole = false;
 		public bool DisableLuaScriptsOnLoad = false;
 
 		// Watch Settings
