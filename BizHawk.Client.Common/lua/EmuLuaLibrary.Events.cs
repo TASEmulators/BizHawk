@@ -11,6 +11,12 @@ namespace BizHawk.Client.Common
 	[Description("A library for registering lua functions to emulator events.\n All events support multiple registered methods.\nAll registered event methods can be named and return a Guid when registered")]
 	public sealed class EventLuaLibrary : LuaLibraryBase
 	{
+		[OptionalService]
+		public IInputPollable InputPollableCore { get; set; }
+
+		[OptionalService]
+		public IDebuggable DebuggableCore { get; set; }
+
 		private readonly LuaFunctionList _luaFunctions = new LuaFunctionList();
 
 		public EventLuaLibrary(Lua lua)
@@ -157,25 +163,28 @@ namespace BizHawk.Client.Common
 			"oninputpoll",
 			"Calls the given lua function after each time the emulator core polls for input"
 		)]
-		public void OnInputPoll(LuaFunction luaf, string name = null)
+		public string OnInputPoll(LuaFunction luaf, string name = null)
 		{
 			var nlf = new NamedLuaFunction(luaf, "OnInputPoll", LogOutputCallback, CurrentThread, name);
 			_luaFunctions.Add(nlf);
 
-			if (Global.Emulator.CanPollInput())
+			if (InputPollableCore != null)
 			{
 				try
 				{
-					Global.Emulator.AsInputPollable().InputCallbacks.Add(nlf.Callback);
+					InputPollableCore.InputCallbacks.Add(nlf.Callback);
+					return nlf.Guid.ToString();
 				}
 				catch (NotImplementedException)
 				{
 					LogNotImplemented();
+					return Guid.Empty.ToString();
 				}
 			}
 			else
 			{
 				LogNotImplemented();
+				return Guid.Empty.ToString();
 			}
 		}
 
@@ -201,20 +210,26 @@ namespace BizHawk.Client.Common
 		)]
 		public string OnMemoryExecute(LuaFunction luaf, uint address, string name = null)
 		{
-			if (Global.Emulator.MemoryCallbacksAvailable())
+			try
 			{
-				var nlf = new NamedLuaFunction(luaf, "OnMemoryExecute", LogOutputCallback, CurrentThread, name);
-				_luaFunctions.Add(nlf);
+				if (DebuggableCore != null)
+				{
+					var nlf = new NamedLuaFunction(luaf, "OnMemoryExecute", LogOutputCallback, CurrentThread, name);
+					_luaFunctions.Add(nlf);
 
-				Global.Emulator.AsDebuggable().MemoryCallbacks.Add(
-					new MemoryCallback(MemoryCallbackType.Execute, "Lua Hook", nlf.Callback, address));
-				return nlf.Guid.ToString();
+					DebuggableCore.MemoryCallbacks.Add(
+						new MemoryCallback(MemoryCallbackType.Execute, "Lua Hook", nlf.Callback, address));
+					return nlf.Guid.ToString();
+				}
 			}
-			else
+			catch(NotImplementedException)
 			{
 				LogMemoryCallbacksNotImplemented();
 				return Guid.Empty.ToString();
 			}
+
+			LogMemoryCallbacksNotImplemented();
+			return Guid.Empty.ToString();
 		}
 
 		[LuaMethodAttributes(
@@ -223,19 +238,26 @@ namespace BizHawk.Client.Common
 		)]
 		public string OnMemoryRead(LuaFunction luaf, uint? address = null, string name = null)
 		{
-			if (Global.Emulator.MemoryCallbacksAvailable())
+			try
 			{
-				var nlf = new NamedLuaFunction(luaf, "OnMemoryRead", LogOutputCallback, CurrentThread, name);
-				_luaFunctions.Add(nlf);
-				Global.Emulator.AsDebuggable().MemoryCallbacks.Add(
-					new MemoryCallback(MemoryCallbackType.Read, "Lua Hook", nlf.Callback, address));
-				return nlf.Guid.ToString();
+				if (DebuggableCore != null)
+				{
+					var nlf = new NamedLuaFunction(luaf, "OnMemoryRead", LogOutputCallback, CurrentThread, name);
+					_luaFunctions.Add(nlf);
+
+					DebuggableCore.MemoryCallbacks.Add(
+						new MemoryCallback(MemoryCallbackType.Execute, "Lua Hook", nlf.Callback, address));
+					return nlf.Guid.ToString();
+				}
 			}
-			else
+			catch (NotImplementedException)
 			{
 				LogMemoryCallbacksNotImplemented();
 				return Guid.Empty.ToString();
 			}
+
+			LogMemoryCallbacksNotImplemented();
+			return Guid.Empty.ToString();
 		}
 
 		[LuaMethodAttributes(
@@ -244,19 +266,26 @@ namespace BizHawk.Client.Common
 		)]
 		public string OnMemoryWrite(LuaFunction luaf, uint? address = null, string name = null)
 		{
-			if (Global.Emulator.MemoryCallbacksAvailable())
+			try
 			{
-				var nlf = new NamedLuaFunction(luaf, "OnMemoryWrite", LogOutputCallback, CurrentThread, name);
-				_luaFunctions.Add(nlf);
-				Global.Emulator.AsDebuggable().MemoryCallbacks.Add(
-					new MemoryCallback(MemoryCallbackType.Write, "Lua Hook", nlf.Callback, address));
-				return nlf.Guid.ToString();
+				if (DebuggableCore != null)
+				{
+					var nlf = new NamedLuaFunction(luaf, "OnMemoryWrite", LogOutputCallback, CurrentThread, name);
+					_luaFunctions.Add(nlf);
+
+					DebuggableCore.MemoryCallbacks.Add(
+						new MemoryCallback(MemoryCallbackType.Execute, "Lua Hook", nlf.Callback, address));
+					return nlf.Guid.ToString();
+				}
 			}
-			else
+			catch (NotImplementedException)
 			{
 				LogMemoryCallbacksNotImplemented();
 				return Guid.Empty.ToString();
 			}
+
+			LogMemoryCallbacksNotImplemented();
+			return Guid.Empty.ToString();
 		}
 
 		[LuaMethodAttributes(
