@@ -105,7 +105,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TasStatusStrip = new StatusStripEx();
 			this.MessageStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.SplicerStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-			this.TasPlaybackBox = new BizHawk.Client.EmuHawk.PlaybackBox(this);
+			this.TasPlaybackBox = new BizHawk.Client.EmuHawk.PlaybackBox();
 			this.MarkerControl = new BizHawk.Client.EmuHawk.MarkerControl();
 			this.MarkerContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.EditMarkerContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
