@@ -125,11 +125,6 @@ namespace BizHawk.Client.Common
 
 					break;
 			}
-
-			if (_keepHistory)
-			{
-				_history.AddState(_watchList);
-			}
 		}
 
 		/// <summary>
