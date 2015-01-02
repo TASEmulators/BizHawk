@@ -80,7 +80,6 @@ namespace BizHawk.Client.EmuHawk
 		public void Restart()
 		{
 			CheatEditor.Core = Core;
-			StartNewList();
 		}
 
 		/// <summary>
