@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -145,36 +146,19 @@ namespace BizHawk.Client.EmuHawk
 
 		static ulong GetCurTime()
 		{
-#if WINDOWS
 			if (tmethod == 1)
-			{
-				ulong tmp;
-				QueryPerformanceCounter(out tmp);
-				return tmp;
-			}
+				return (ulong)Stopwatch.GetTimestamp();
 			else
-			{
-#endif
 				return (ulong)Environment.TickCount;
-#if WINDOWS
-			}
-#endif
 		}
 
 
 #if WINDOWS
-		[DllImport("kernel32.dll", SetLastError = true)]
-		static extern bool QueryPerformanceCounter(out ulong lpPerformanceCount);
-
-		[DllImport("kernel32.dll", SetLastError = true)]
-		static extern bool QueryPerformanceFrequency(out ulong frequency);
-
 		[DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
 		static extern uint timeBeginPeriod(uint uMilliseconds);
-
-		static readonly int tmethod;
 #endif
 
+		static readonly int tmethod;
 		static readonly ulong afsfreq;
 		static readonly ulong tfreq;
 
@@ -182,16 +166,23 @@ namespace BizHawk.Client.EmuHawk
 		{
 #if WINDOWS
 			timeBeginPeriod(1);
-			tmethod = 0;
-			if (QueryPerformanceFrequency(out afsfreq))
-				tmethod = 1;
-			else
-				afsfreq = 1000;
-			Console.WriteLine("throttle method: {0}; resolution: {1}", tmethod, afsfreq);
-#else
-			afsfreq = 1000;
 #endif
-			tfreq = afsfreq << 16;
+#if WINDOWS // This seems safe even on other platforms, but needs testing to confirm
+			if (Stopwatch.IsHighResolution)
+			{
+				afsfreq = (ulong)Stopwatch.Frequency;
+				tmethod = 1;
+			}
+			else
+			{
+#endif
+				afsfreq = 1000;
+				tmethod = 0;
+#if WINDOWS
+			}
+#endif
+			Console.WriteLine("throttle method: {0}; resolution: {1}", tmethod, afsfreq);
+			tfreq = afsfreq * 65536;
 		}
 
 		public void SetCoreFps(double desired_fps)
@@ -343,35 +334,43 @@ namespace BizHawk.Client.EmuHawk
 		{
 			AutoFrameSkip_BeforeThrottle();
 
-		waiter:
-			if (signal_unthrottle)
-				return;
+			bool lowCPUMode = false; // Hard-code to true for testing
+			ulong timePerFrame = tfreq / desiredfps;
 
-			ulong ttime = GetCurTime();
-
-			if ((ttime - ltime) < (tfreq / desiredfps))
+			while (true)
 			{
-				ulong sleepy = (tfreq / desiredfps) - (ttime - ltime);
-				sleepy *= 1000;
-				if (tfreq >= 65536)
-					sleepy /= afsfreq;
-				else
-					sleepy = 0;
-				if (sleepy >= 10 || paused)
+				if (signal_unthrottle)
+					return;
+
+				ulong ttime = GetCurTime();
+				ulong elapsedTime = ttime - ltime;
+
+				if (elapsedTime >= timePerFrame)
 				{
-					Thread.Sleep((int)(sleepy / 2));
+					if (elapsedTime >= timePerFrame * 4)
+						ltime = ttime;
+					else
+						ltime += timePerFrame;
+
+					return;
+				}
+
+				int sleepy = (int)((timePerFrame - elapsedTime) * 1000 / afsfreq);
+				if (lowCPUMode && (sleepy >= 2 || paused))
+				{
+					// Subtract 1 to reduce the chance of oversleeping
+					Thread.Sleep(Math.Max(sleepy - 1, 1));
+				}
+				else if (sleepy >= 10 || paused)
+				{
 					// reduce it further beacuse Sleep usually sleeps for more than the amount we tell it to
+					Thread.Sleep(sleepy / 2);
 				}
 				else if (sleepy > 0) // spin for <1 millisecond waits
 				{
 					Thread.Yield(); // limit to other threads on the same CPU core for other short waits
 				}
-				goto waiter;
 			}
-			if ((ttime - ltime) >= (tfreq * 4 / desiredfps))
-				ltime = ttime;
-			else
-				ltime += tfreq / desiredfps;
 		}
 	}
 }
