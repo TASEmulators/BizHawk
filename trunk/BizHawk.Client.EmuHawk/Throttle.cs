@@ -66,6 +66,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public bool cfg_lowcpumode
+		{
+			get
+			{
+				return Global.Config.ClockThrottleUseLowCPUMode;
+			}
+		}
+
 		public void Step(bool allowSleep, int forceFrameSkip)
 		{
 			int skipRate = (forceFrameSkip < 0) ? cfg_frameskiprate : forceFrameSkip;
@@ -167,7 +175,6 @@ namespace BizHawk.Client.EmuHawk
 #if WINDOWS
 			timeBeginPeriod(1);
 #endif
-#if WINDOWS // This seems safe even on other platforms, but needs testing to confirm
 			if (Stopwatch.IsHighResolution)
 			{
 				afsfreq = (ulong)Stopwatch.Frequency;
@@ -175,12 +182,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-#endif
 				afsfreq = 1000;
 				tmethod = 0;
-#if WINDOWS
 			}
-#endif
 			Console.WriteLine("throttle method: {0}; resolution: {1}", tmethod, afsfreq);
 			tfreq = afsfreq * 65536;
 		}
@@ -334,7 +338,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			AutoFrameSkip_BeforeThrottle();
 
-			bool lowCPUMode = false; // Hard-code to true for testing
 			ulong timePerFrame = tfreq / desiredfps;
 
 			while (true)
@@ -356,7 +359,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				int sleepy = (int)((timePerFrame - elapsedTime) * 1000 / afsfreq);
-				if (lowCPUMode && (sleepy >= 2 || paused))
+				if (cfg_lowcpumode && (sleepy >= 2 || paused))
 				{
 					// Subtract 1 to reduce the chance of oversleeping
 					Thread.Sleep(Math.Max(sleepy - 1, 1));
