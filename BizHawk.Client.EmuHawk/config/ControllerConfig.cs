@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Control CreateNormalPanel(Dictionary<string, string> settings, List<string> buttons, Size size)
 		{
-			var cp = new ControllerConfigPanel { Dock = DockStyle.Fill };
+			var cp = new ControllerConfigPanel { Dock = DockStyle.Fill, AutoScroll = true };
 			cp.Tooltip = toolTip1;
 			cp.LoadSettings(settings, checkBoxAutoTab.Checked, buttons, size.Width, size.Height);
 			return cp;
@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static Control CreateAnalogPanel(Dictionary<string, Config.AnalogBind> settings, List<string> buttons, Size size)
 		{
-			return new AnalogBindPanel(settings, buttons) { Dock = DockStyle.Fill };
+			return new AnalogBindPanel(settings, buttons) { Dock = DockStyle.Fill, AutoScroll = true };
 		}
 
 		private static void LoadToPanel<T>(Control dest, string controllerName, IList<string> controllerButtons, IDictionary<string, Dictionary<string, T>> settingsblock, T defaultvalue, PanelCreator<T> createpanel)
