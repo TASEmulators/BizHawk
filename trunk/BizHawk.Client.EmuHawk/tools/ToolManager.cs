@@ -338,11 +338,14 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void UpdateValues<T>() where T : IToolForm
 		{
-			CloseIfDisposed<T>();
 			var tool = _tools.FirstOrDefault(x => x is T);
 			if (tool != null)
 			{
-				tool.UpdateValues();
+				if (!tool.IsDisposed ||
+					(tool is RamWatch && Global.Config.DisplayRamWatch)) // Ram Watch hack, on screen display should run even if Ram Watch is closed
+				{
+					tool.UpdateValues();
+				}
 			}
 		}
 
@@ -385,7 +388,6 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void Restart<T>() where T : IToolForm
 		{
-			CloseIfDisposed<T>();
 			var tool = _tools.FirstOrDefault(x => x is T);
 			if (tool != null)
 			{
@@ -473,15 +475,6 @@ namespace BizHawk.Client.EmuHawk
 			// Add to our list of tools
 			_tools.Add(tool);
 			return tool;
-		}
-
-		private void CloseIfDisposed<T>() where T : IToolForm
-		{
-			var existingTool = _tools.FirstOrDefault(x => x is T);
-			if (existingTool != null && existingTool.IsDisposed)
-			{
-				Close<T>();
-			}
 		}
 
 		public void UpdateToolsBefore(bool fromLua = false)
