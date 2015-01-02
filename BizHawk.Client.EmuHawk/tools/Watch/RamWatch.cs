@@ -156,7 +156,7 @@ namespace BizHawk.Client.EmuHawk
 		public void LoadFileFromRecent(string path)
 		{
 			var ask_result = true;
-			if (_watches != null && _watches.Changes)
+			if (_watches.Changes)
 			{
 				ask_result = AskSaveChanges();
 			}

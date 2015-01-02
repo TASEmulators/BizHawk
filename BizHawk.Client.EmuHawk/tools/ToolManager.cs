@@ -729,15 +729,16 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadRamWatch(bool loadDialog)
 		{
-			if (Global.Emulator.HasMemoryDomains())
-			if (!IsLoaded<RamWatch>() && Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
+			Load<RamWatch>();
+
+			if (Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
 			{
-				GlobalWin.Tools.RamWatch.LoadFileFromRecent(Global.Config.RecentWatches.MostRecent);
+				RamWatch.LoadFileFromRecent(Global.Config.RecentWatches.MostRecent);
 			}
 
-			if (loadDialog)
+			if (!loadDialog)
 			{
-				GlobalWin.Tools.Load<RamWatch>();
+				Get<RamWatch>().Close();
 			}
 		}
 
