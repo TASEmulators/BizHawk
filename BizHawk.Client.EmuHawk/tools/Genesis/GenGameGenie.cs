@@ -8,14 +8,21 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 
+using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class GenGameGenie : Form, IToolFormAutoConfig
 	{
 		#pragma warning disable 675
 
+		/// <summary>
+		/// For now this is is an unecessary restriction to make sure it doesn't show up as available for non-genesis cores
+		/// Note: this unnecessarily prevents it from being on the Genesis core, but that's okay it isn't released
+		/// Eventually we want a generic game genie tool and a hack like this won't be necessary
+		/// </summary>
 		[RequiredService]
-		private IEmulator Emulator { get; set; }
+		private GPGX Emulator { get; set; }
 
 		[RequiredService]
 		private IMemoryDomains MemoryDomainService { get; set; }
