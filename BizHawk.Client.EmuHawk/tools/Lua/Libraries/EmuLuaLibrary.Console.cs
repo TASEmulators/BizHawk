@@ -78,6 +78,11 @@ namespace BizHawk.Client.EmuHawk
 		// Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable
 		private static void LogWithSeparator(string separator, string terminator, params object[] outputs)
 		{
+            if(outputs == null)
+            {
+                GlobalWin.Tools.LuaConsole.WriteToOutputWindow("NULL");
+                return;
+            }
 			for (var outIndex = 0; outIndex < outputs.Length; outIndex++)
 			{
 				var output = outputs[outIndex];
