@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				sfd.FileName = "NULL";
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
 			}
 
@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				sfd.FileName = "NULL";
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPathFragment, null);
 			}
 
