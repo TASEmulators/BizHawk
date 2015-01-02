@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NESGameGenie));
 			this.GameGenieCode = new System.Windows.Forms.TextBox();
 			this.GameGenieCodeBox = new System.Windows.Forms.GroupBox();
 			this.label3 = new System.Windows.Forms.Label();
@@ -157,7 +158,7 @@
 			// AddCheat
 			// 
 			this.AddCheat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.AddCheat.Location = new System.Drawing.Point(202, 230);
+			this.AddCheat.Location = new System.Drawing.Point(212, 230);
 			this.AddCheat.Name = "AddCheat";
 			this.AddCheat.Size = new System.Drawing.Size(69, 21);
 			this.AddCheat.TabIndex = 33;
@@ -402,7 +403,7 @@
 			this.Encoding.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.Encoding.Appearance = System.Windows.Forms.Appearance.Button;
 			this.Encoding.AutoSize = true;
-			this.Encoding.Location = new System.Drawing.Point(217, 119);
+			this.Encoding.Location = new System.Drawing.Point(227, 119);
 			this.Encoding.Name = "Encoding";
 			this.Encoding.Size = new System.Drawing.Size(54, 23);
 			this.Encoding.TabIndex = 31;
@@ -412,7 +413,7 @@
 			// ClearButton
 			// 
 			this.ClearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.ClearButton.Location = new System.Drawing.Point(217, 148);
+			this.ClearButton.Location = new System.Drawing.Point(227, 148);
 			this.ClearButton.Name = "ClearButton";
 			this.ClearButton.Size = new System.Drawing.Size(54, 23);
 			this.ClearButton.TabIndex = 32;
@@ -425,7 +426,7 @@
 			this.MenuStrip.ClickThrough = true;
 			this.MenuStrip.Location = new System.Drawing.Point(0, 0);
 			this.MenuStrip.Name = "MenuStrip";
-			this.MenuStrip.Size = new System.Drawing.Size(292, 24);
+			this.MenuStrip.Size = new System.Drawing.Size(302, 24);
 			this.MenuStrip.TabIndex = 8;
 			this.MenuStrip.Text = "menuStrip1";
 			// 
@@ -433,7 +434,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(292, 260);
+			this.ClientSize = new System.Drawing.Size(302, 260);
 			this.Controls.Add(this.ClearButton);
 			this.Controls.Add(this.Encoding);
 			this.Controls.Add(this.groupBox1);
@@ -442,14 +443,14 @@
 			this.Controls.Add(this.GameGenieCodeBox);
 			this.Controls.Add(this.MenuStrip);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.MenuStrip;
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(312, 302);
+			this.MaximumSize = new System.Drawing.Size(322, 302);
 			this.MinimumSize = new System.Drawing.Size(312, 295);
 			this.Name = "NESGameGenie";
-			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "NES Game Genie Encoder / Decoder";
+			this.Text = "Game Genie Encoder / Decoder";
 			this.Load += new System.EventHandler(this.NESGameGenie_Load);
 			this.GameGenieCodeBox.ResumeLayout(false);
 			this.GameGenieCodeBox.PerformLayout();
