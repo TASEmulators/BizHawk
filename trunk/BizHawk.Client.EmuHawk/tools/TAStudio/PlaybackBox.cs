@@ -62,16 +62,23 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public PlaybackBox()
+		public PlaybackBox(TAStudio tastudio)
 		{
+			Tastudio = tastudio;
 			InitializeComponent();
+			
+		}
+
+		protected override void OnLoad(EventArgs e)
+		{
+			base.OnLoad(e);
+
 			_programmaticallyChangingValue = true;
-			if (Global.Config != null) // A check needed for the designer
-			{
-				TurboSeekCheckbox.Checked = Global.Config.TurboSeek;
-				AutoRestoreCheckbox.Checked = Tastudio.Settings.AutoRestoreLastPosition;
-				FollowCursorCheckbox.Checked = Tastudio.Settings.FollowCursor;
-			}
+			
+			TurboSeekCheckbox.Checked = Global.Config.TurboSeek;
+			AutoRestoreCheckbox.Checked = Tastudio.Settings.AutoRestoreLastPosition;
+			FollowCursorCheckbox.Checked = Tastudio.Settings.FollowCursor;
+
 			_programmaticallyChangingValue = false;
 		}
 
