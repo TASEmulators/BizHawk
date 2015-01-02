@@ -70,6 +70,9 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		public IEmulator Emu { get; set; }
 
+		[RequiredService]
+		public IInputPollable InputPollableCore { get; set; }
+
 		[ConfigPersist]
 		public RamSearchSettings Settings { get; set; }
 
@@ -267,7 +270,14 @@ namespace BizHawk.Client.EmuHawk
 
 				if (_autoSearch)
 				{
-					DoSearch();
+					if (Settings.AutoSearchTakeLagFramesIntoAccount && InputPollableCore.IsLagFrame)
+					{
+						// Do nothing
+					}
+					else
+					{
+						DoSearch();
+					}
 				}
 
 				_forcePreviewClear = false;
@@ -931,11 +941,13 @@ namespace BizHawk.Client.EmuHawk
 
 				PreviewMode = true;
 				RecentSearches = new RecentFiles(8);
+				AutoSearchTakeLagFramesIntoAccount = true;
 			}
 
 			public ColumnList Columns { get; set; }
 			public bool PreviewMode { get; set; }
 			public bool AlwaysExcludeRamWatch { get; set; }
+			public bool AutoSearchTakeLagFramesIntoAccount { get; set; }
 
 			public RecentFiles RecentSearches { get; set; }
 		}
@@ -1271,6 +1283,7 @@ namespace BizHawk.Client.EmuHawk
 			AlwaysOnTopMenuItem.Checked = Settings.TopMost;
 			FloatingWindowMenuItem.Checked = Settings.FloatingWindow;
 			AutoSearchMenuItem.Checked = _autoSearch;
+			AutoSearchAccountForLagMenuItem.Checked = Settings.AutoSearchTakeLagFramesIntoAccount;
 		}
 
 		private void PreviewModeMenuItem_Click(object sender, EventArgs e)
@@ -1285,6 +1298,11 @@ namespace BizHawk.Client.EmuHawk
 			DoSearchToolButton.Enabled =
 				SearchButton.Enabled =
 				!_autoSearch;
+		}
+
+		private void AutoSearchAccountForLagMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.AutoSearchTakeLagFramesIntoAccount ^= true;
 		}
 
 		private void ExcludeRamWatchMenuItem_Click(object sender, EventArgs e)

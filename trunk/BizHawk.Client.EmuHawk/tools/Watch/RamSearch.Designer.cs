@@ -156,6 +156,7 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.DisplayTypeDropdown = new System.Windows.Forms.ComboBox();
+			this.AutoSearchAccountForLagMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			SearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ListViewContextMenu.SuspendLayout();
 			this.RamSearchMenu.SuspendLayout();
@@ -350,7 +351,7 @@
 			this.ClearPreviewContextMenuItem.Text = "&Clear Preview";
 			this.ClearPreviewContextMenuItem.Click += new System.EventHandler(this.ClearPreviewContextMenuItem_Click);
 			// 
-			// menuStrip1
+			// RamSearchMenu
 			// 
 			this.RamSearchMenu.ClickThrough = true;
 			this.RamSearchMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -359,7 +360,7 @@
             this.searchToolStripMenuItem,
             this.optionsToolStripMenuItem});
 			this.RamSearchMenu.Location = new System.Drawing.Point(0, 0);
-			this.RamSearchMenu.Name = "menuStrip1";
+			this.RamSearchMenu.Name = "RamSearchMenu";
 			this.RamSearchMenu.Size = new System.Drawing.Size(445, 24);
 			this.RamSearchMenu.TabIndex = 4;
 			this.RamSearchMenu.Text = "menuStrip1";
@@ -745,6 +746,7 @@
 			this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.PreviewModeMenuItem,
             this.AutoSearchMenuItem,
+            this.AutoSearchAccountForLagMenuItem,
             this.toolStripSeparator9,
             this.ExcludeRamWatchMenuItem,
             this.UseUndoHistoryMenuItem,
@@ -1361,6 +1363,13 @@
 			this.DisplayTypeDropdown.TabIndex = 95;
 			this.DisplayTypeDropdown.SelectedIndexChanged += new System.EventHandler(this.DisplayTypeDropdown_SelectedIndexChanged);
 			// 
+			// AutoSearchAccountForLagMenuItem
+			// 
+			this.AutoSearchAccountForLagMenuItem.Name = "AutoSearchAccountForLagMenuItem";
+			this.AutoSearchAccountForLagMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.AutoSearchAccountForLagMenuItem.Text = "&Auto-Search Account for Lag";
+			this.AutoSearchAccountForLagMenuItem.Click += new System.EventHandler(this.AutoSearchAccountForLagMenuItem_Click);
+			// 
 			// RamSearch
 			// 
 			this.AllowDrop = true;
@@ -1532,5 +1541,6 @@
 		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
 		private System.Windows.Forms.ToolStripButton ErrorIconButton;
 		private System.Windows.Forms.ToolStripMenuItem Previous_LastChangeMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem AutoSearchAccountForLagMenuItem;
 	}
 }
