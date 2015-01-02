@@ -891,15 +891,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ToggleAutoSearch()
-		{
-			_autoSearch ^= true;
-			AutoSearchCheckBox.Checked = _autoSearch;
-			DoSearchToolButton.Enabled =
-				SearchButton.Enabled =
-				!_autoSearch;
-		}
-
 		private void GoToSpecifiedAddress()
 		{
 			WatchListView.SelectedIndices.Clear();
@@ -1289,7 +1280,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AutoSearchMenuItem_Click(object sender, EventArgs e)
 		{
-			ToggleAutoSearch();
+			_autoSearch ^= true;
+			AutoSearchCheckBox.Checked = _autoSearch;
+			DoSearchToolButton.Enabled =
+				SearchButton.Enabled =
+				!_autoSearch;
 		}
 
 		private void ExcludeRamWatchMenuItem_Click(object sender, EventArgs e)
