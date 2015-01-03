@@ -537,10 +537,13 @@
 			// 
 			this.InputBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.InputBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+			this.InputBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
 			this.InputBox.Location = new System.Drawing.Point(6, 229);
 			this.InputBox.Name = "InputBox";
 			this.InputBox.Size = new System.Drawing.Size(246, 20);
 			this.InputBox.TabIndex = 3;
+			this.InputBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.InputBox_KeyDown);
 			// 
 			// NumberOfScripts
 			// 
@@ -662,7 +665,7 @@
 			this.DuplicateToolbarButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.DuplicateToolbarButton.Name = "DuplicateToolbarButton";
 			this.DuplicateToolbarButton.Size = new System.Drawing.Size(23, 22);
-			this.DuplicateToolbarButton.Text = "toolStripButton1";
+			this.DuplicateToolbarButton.Text = "Duplicate Script";
 			this.DuplicateToolbarButton.Click += new System.EventHandler(this.DuplicateScriptMenuItem_Click);
 			// 
 			// toolStripSeparator2
@@ -712,8 +715,7 @@
 			this.EraseToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.EraseToolbarItem.Name = "EraseToolbarItem";
 			this.EraseToolbarItem.Size = new System.Drawing.Size(23, 22);
-			this.EraseToolbarItem.Text = "toolStripButton1";
-			this.EraseToolbarItem.ToolTipText = "Erase Stale/Stuck Lua Drawing Layers";
+			this.EraseToolbarItem.Text = "Erase Stale/Stuck Lua Drawing Layers";
 			this.EraseToolbarItem.Click += new System.EventHandler(this.EraseToolbarItem_Click);
 			// 
 			// LuaListView

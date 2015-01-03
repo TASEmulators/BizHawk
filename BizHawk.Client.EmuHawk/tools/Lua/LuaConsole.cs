@@ -56,7 +56,6 @@ namespace BizHawk.Client.EmuHawk
 			LuaListView.VirtualMode = true;
 
             InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a=> a.Library + "."+ a.Name).ToArray());
-            InputBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
 		}
 
 		public EmuLuaLibrary LuaImp { get; set; }
