@@ -361,8 +361,15 @@ namespace BizHawk.Client.EmuHawk
 				int sleepy = (int)((timePerFrame - elapsedTime) * 1000 / afsfreq);
 				if (cfg_lowcpumode && (sleepy >= 2 || paused))
 				{
-					// Subtract 1 to reduce the chance of oversleeping
+					// The actual sleep time on Windows is always at least the requested time, plus a
+					// bit of oversleep which usually does not exceed the timer period as specified in
+					// timeBeginPeriod. So we'll subtract 1 ms from the sleep time to avoid sleeping
+					// longer than desired.
 					Thread.Sleep(Math.Max(sleepy - 1, 1));
+
+					// The original mode in the following 'else' block initially existed before the
+					// call to timeBeginPeriod was added, which may explain its aversion to sleeping
+					// given the default timer period of 15.625 ms.
 				}
 				else if (sleepy >= 10 || paused)
 				{
