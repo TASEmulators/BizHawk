@@ -77,9 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				//CurrentTasMovie.Save();
-				//MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " saved.";
-                _saveBackgroundWorker.RunWorkerAsync();
+				_saveBackgroundWorker.RunWorkerAsync();
 				Settings.RecentTas.Add(CurrentTasMovie.Filename);
 			}
 		}
@@ -97,10 +95,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CurrentTasMovie.Filename = file.FullName;
 
-				//CurrentTasMovie.Save();
                 _saveBackgroundWorker.RunWorkerAsync();
 				Settings.RecentTas.Add(CurrentTasMovie.Filename);
-				//MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " saved.";
 				SetTextProperty();
 			}
 		}
