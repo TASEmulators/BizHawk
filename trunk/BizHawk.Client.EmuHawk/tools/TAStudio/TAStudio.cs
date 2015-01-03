@@ -555,12 +555,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Tastudio_Load(object sender, EventArgs e)
 		{
-			InitializeOnLoad();
-			if(CurrentTasMovie == null) // dialog was aborted
+			if(!InitializeOnLoad())
 			{
 				Close();
+				this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 				return;
 			}
+
 			SetColumnsFromCurrentStickies();
 
 			if (VersionInfo.DeveloperBuild)
@@ -579,7 +580,7 @@ namespace BizHawk.Client.EmuHawk
 			RefreshDialog();
 		}
 
-		private void InitializeOnLoad()
+		private bool InitializeOnLoad()
 		{
 			// Start Scenario 1: A regular movie is active
 			if (Global.MovieSession.Movie.IsActive && !(Global.MovieSession.Movie is TasMovie))
@@ -592,7 +593,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					return;
+					return false;
 				}
 			}
 
@@ -625,6 +626,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SetUpColumns();
 			}
+			return true;
 		}
 
 		private void Tastudio_Closing(object sender, FormClosingEventArgs e)
