@@ -452,11 +452,13 @@ namespace BizHawk.Client.Common
 		{
 			if (isSticky)
 			{
-				this._stickySet.Add(button);
+				_stickySet.Add(button);
+				buttonStarts.Add(button, Global.Emulator.Frame);
 			}
 			else
 			{
-				this._stickySet.Remove(button);
+				_stickySet.Remove(button);
+				buttonStarts.Remove(button);
 			}
 		}
 
