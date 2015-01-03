@@ -24,6 +24,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
 
+        private BackgroundWorker _saveBackgroundWorker;
+
 		private MovieEndAction _originalEndAction; // The movie end behavior selected by the user (that is overridden by TAStudio)
 		private Dictionary<string, string> GenerateColumnNames()
 		{
@@ -65,6 +67,39 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			Settings = new TAStudioSettings();
 
+            // TODO: show this at all times or hide it when saving is done?
+            this.SavingProgressBar.Visible = false;
+            
+            _saveBackgroundWorker = new BackgroundWorker();
+            _saveBackgroundWorker.WorkerReportsProgress = true;
+            _saveBackgroundWorker.DoWork += (s, e) =>
+            {
+                this.Invoke(() => this.MessageStatusLabel.Text = "Saving " + Path.GetFileName(CurrentTasMovie.Filename) + "...");
+                this.Invoke(() => this.SavingProgressBar.Visible = true);
+                CurrentTasMovie.Save();
+            };
+
+            _saveBackgroundWorker.ProgressChanged += (s, e) =>
+            {
+                SavingProgressBar.Value = e.ProgressPercentage;
+            };
+
+            _saveBackgroundWorker.RunWorkerCompleted += (s, e) =>
+            {
+                this.Invoke(() => this.MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " saved.");
+                this.Invoke(() => this.SavingProgressBar.Visible = false);
+
+                // SUPER HACKY, and i'm not even sure it's necessary
+                Timer t = new Timer();
+                t.Tick += (a, b) =>
+                {
+                    this.Invoke(() => this.MessageStatusLabel.Text = "TAStudio engaged.");
+                    t.Stop();
+                };
+                t.Interval = 5000;
+                t.Start();
+            };
+
 			WantsToControlStopMovie = true;
 			TasPlaybackBox.Tastudio = this;
 			MarkerControl.Tastudio = this;
@@ -77,6 +112,7 @@ namespace BizHawk.Client.EmuHawk
 			TasView.MultiSelect = true;
 			TasView.MaxCharactersInHorizontal = 1;
 			WantsToControlRestartMovie = true;
+            
 		}
 
 		private void TastudioToStopMovie()
@@ -120,7 +156,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewTasMovie()
 		{
-			Global.MovieSession.Movie = new TasMovie();
+			Global.MovieSession.Movie = new TasMovie(false, _saveBackgroundWorker);
 			SetTasMovieCallbacks();
 			CurrentTasMovie.PropertyChanged += new PropertyChangedEventHandler(this.TasMovie_OnPropertyChanged);
 			CurrentTasMovie.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
@@ -194,14 +230,17 @@ namespace BizHawk.Client.EmuHawk
 				text += " - " + CurrentTasMovie.Name + (CurrentTasMovie.Changes ? "*" : "");
 			}
 
-			Text = text;
+            if (this.InvokeRequired)
+                this.Invoke(() => Text = text);
+            else
+                Text = text;
 		}
 
 		public bool LoadProject(string path)
 		{
 			if (AskSaveChanges())
 			{
-				var movie = new TasMovie
+				var movie = new TasMovie(false, _saveBackgroundWorker)
 				{
 					Filename = path,
 					ClientSettingsForSave = ClientSettingsForSave,

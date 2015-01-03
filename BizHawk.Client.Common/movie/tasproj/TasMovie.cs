@@ -22,10 +22,12 @@ namespace BizHawk.Client.Common
 		private readonly Dictionary<int, IController> InputStateCache = new Dictionary<int, IController>();
 		private readonly List<string> VerificationLog = new List<string>(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 
-		public TasMovie(string path, bool startsFromSavestate = false) : base(path)
+        private BackgroundWorker _progressReportWorker = null;
+
+		public TasMovie(string path, bool startsFromSavestate = false, BackgroundWorker progressReportWorker = null) : base(path)
 		{
 			// TODO: how to call the default constructor AND the base(path) constructor?  And is base(path) calling base() ?
-
+            _progressReportWorker = progressReportWorker;
 			if (!Global.Emulator.HasSavestates())
 			{
 				throw new InvalidOperationException("Cannot create a TasMovie against a core that does not implement IStatable");
@@ -38,9 +40,10 @@ namespace BizHawk.Client.Common
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
 		}
 
-		public TasMovie(bool startsFromSavestate = false)
+        public TasMovie(bool startsFromSavestate = false, BackgroundWorker progressReportWorker = null)
 			: base()
-		{
+        {
+            _progressReportWorker = progressReportWorker;
 			if (!Global.Emulator.HasSavestates())
 			{
 				throw new InvalidOperationException("Cannot create a TasMovie against a core that does not implement IStatable");
