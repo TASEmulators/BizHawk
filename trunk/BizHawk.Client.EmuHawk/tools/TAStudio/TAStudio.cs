@@ -556,6 +556,11 @@ namespace BizHawk.Client.EmuHawk
 		private void Tastudio_Load(object sender, EventArgs e)
 		{
 			InitializeOnLoad();
+			if(CurrentTasMovie == null) // dialog was aborted
+			{
+				Close();
+				return;
+			}
 			SetColumnsFromCurrentStickies();
 
 			if (VersionInfo.DeveloperBuild)
@@ -587,7 +592,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					Close();
 					return;
 				}
 			}
