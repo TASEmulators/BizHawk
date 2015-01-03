@@ -69,22 +69,18 @@ namespace BizHawk.Client.EmuHawk
 			ColumnWidth = CellWidth;
 			ColumnHeight = CellHeight + 2;
 
-			var width = new VScrollBar().Width;
 			VBar = new VScrollBar
 			{
-				Location = new Point(Width - width, 0),
+				// Location gets calculated later (e.g. on resize)
 				Visible = false,
-				Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom,
 				SmallChange = CellHeight,
 				LargeChange = CellHeight * 20
 			};
 
-			var height = new HScrollBar().Height;
 			HBar = new HScrollBar
 			{
-				Location = new Point(0, Height - height),
+				// Location gets calculated later (e.g. on resize)
 				Visible = false,
-				Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
 				SmallChange = 1,
 				LargeChange = 20
 			};
@@ -1606,8 +1602,8 @@ namespace BizHawk.Client.EmuHawk
 					VBar.Maximum = RowsToPixels(RowCount + 1) - DrawHeight + VBar.LargeChange - 1;
 				}
 
-				VBar.Location = new Point(Width - 17, 0);
-				VBar.Size = new Size(VBar.Width, Height);
+				VBar.Location = new Point(Width - VBar.Width, 0);
+				VBar.Height = Height;
 				VBar.Visible = true;
 			}
 			else
@@ -1619,7 +1615,6 @@ namespace BizHawk.Client.EmuHawk
 			//Update HBar
 			if (NeedsHScrollbar)
 			{
-				HBar.Visible = true;
 				if (HorizontalOrientation)
 				{
 					HBar.Maximum = RowsToPixels(RowCount + 1) - DrawWidth + HBar.LargeChange - 1;
@@ -1629,15 +1624,9 @@ namespace BizHawk.Client.EmuHawk
 					HBar.Maximum = TotalColWidth.Value - DrawWidth + HBar.LargeChange;
 				}
 
-				if (NeedsVScrollbar)
-				{
-					HBar.Size = new Size(Width - VBar.Width + 1, HBar.Height);
-				}
-				else
-				{
-					VBar.Location = new Point(0, Height - 17);
-					HBar.Size = new Size(Width, HBar.Height);
-				}
+				HBar.Location = new Point(0, Height - HBar.Height);
+				HBar.Width = Width - (NeedsVScrollbar ? (VBar.Width + 1) : 0);
+				HBar.Visible = true;
 			}
 			else
 			{
