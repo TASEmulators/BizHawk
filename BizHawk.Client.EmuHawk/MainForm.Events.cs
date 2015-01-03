@@ -236,11 +236,6 @@ namespace BizHawk.Client.EmuHawk
 				= SaveMovieMenuItem.Enabled
 				= Global.MovieSession.Movie.IsActive;
 
-			PlayMovieMenuItem.Enabled =
-				RecordMovieMenuItem.Enabled =
-				RecentMovieSubMenu.Enabled =
-				!Global.MovieSession.Movie.IsActive;
-
 			ReadonlyMenuItem.Checked = Global.MovieSession.ReadOnly;
 			AutomaticallyBackupMoviesMenuItem.Checked = Global.Config.EnableBackupMovies;
 			FullMovieLoadstatesMenuItem.Checked = Global.Config.VBAStyleMovieLoadState;
@@ -390,11 +385,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RecordMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.MovieSession.Movie.IsActive)
-			{
-				return;
-			}
-
 			if (!Global.Emulator.Attributes().Released)
 			{
 				var result = MessageBox.Show
@@ -444,10 +434,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PlayMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!Global.MovieSession.Movie.IsActive)
-			{
-				new PlayMovie().ShowDialog();
-			}
+			new PlayMovie().ShowDialog();
 		}
 
 		private void StopMovieMenuItem_Click(object sender, EventArgs e)
