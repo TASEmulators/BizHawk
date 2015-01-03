@@ -53,12 +53,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				return Tastudio.Settings.FollowCursor;
+                return false;
+                // FIXME
+				//return Tastudio.Settings.FollowCursor;
 			}
 
 			set
 			{
-				FollowCursorCheckbox.Checked = Tastudio.Settings.FollowCursor = value;
+                // FIXME
+				//FollowCursorCheckbox.Checked = Tastudio.Settings.FollowCursor = value;
 			}
 		}
 
@@ -80,8 +83,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Tastudio != null) // For the designer
 			{
-				AutoRestoreCheckbox.Checked = Tastudio.Settings.AutoRestoreLastPosition;
-				FollowCursorCheckbox.Checked = Tastudio.Settings.FollowCursor;
+                // FIXME
+				//AutoRestoreCheckbox.Checked = Tastudio.Settings.AutoRestoreLastPosition;
+				//FollowCursorCheckbox.Checked = Tastudio.Settings.FollowCursor;
 			}
 
 			_programmaticallyChangingValue = false;

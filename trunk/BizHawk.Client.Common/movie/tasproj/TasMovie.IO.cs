@@ -7,6 +7,8 @@ using System.Text;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.IOExtensions;
+using System.Diagnostics;
+using System.ComponentModel;
 
 namespace BizHawk.Client.Common
 {
@@ -14,9 +16,26 @@ namespace BizHawk.Client.Common
 	{
 		public Func<string> ClientSettingsForSave { get; set; }
 		public Action<string> GetClientSettingsOnLoad { get; set; }
+        
+        private const double PROGRESS_STEP = 100 / 12; // TODO hardcoded for now, there might be a better way of doing this
+
+        private double _totalProgress = 0;
+
+        private void ReportProgress(double percent)
+        {
+            if (_progressReportWorker != null)
+            {
+                _totalProgress += percent;
+                _progressReportWorker.ReportProgress((int)_totalProgress);
+            }
+        }
 
 		protected override void Write(string fn)
 		{
+            
+
+            _totalProgress = 0;
+
 			var file = new FileInfo(fn);
 			if (!file.Directory.Exists)
 			{
@@ -26,22 +45,29 @@ namespace BizHawk.Client.Common
 			using (var bs = new BinaryStateSaver(fn, false))
 			{
 				bs.PutLump(BinaryStateLump.Movieheader, tw => tw.WriteLine(Header.ToString()));
-				bs.PutLump(BinaryStateLump.Comments, tw => tw.WriteLine(CommentsString()));
-				bs.PutLump(BinaryStateLump.Subtitles, tw => tw.WriteLine(Subtitles.ToString()));
-				bs.PutLump(BinaryStateLump.SyncSettings, tw => tw.WriteLine(SyncSettingsJson));
-
-				bs.PutLump(BinaryStateLump.Input, tw => tw.WriteLine(RawInputLog()));
+                ReportProgress(PROGRESS_STEP);
+                bs.PutLump(BinaryStateLump.Comments, tw => tw.WriteLine(CommentsString()));
+                ReportProgress(PROGRESS_STEP);
+                bs.PutLump(BinaryStateLump.Subtitles, tw => tw.WriteLine(Subtitles.ToString()));
+                ReportProgress(PROGRESS_STEP);
+                bs.PutLump(BinaryStateLump.SyncSettings, tw => tw.WriteLine(SyncSettingsJson));
+                ReportProgress(PROGRESS_STEP);
+                bs.PutLump(BinaryStateLump.Input, tw => tw.WriteLine(RawInputLog()));
+                ReportProgress(PROGRESS_STEP);
 
 				// TasProj extras
-
-				bs.PutLump(BinaryStateLump.GreenzoneSettings, tw => tw.WriteLine(StateManager.Settings.ToString()));
+                bs.PutLump(BinaryStateLump.GreenzoneSettings, tw => tw.WriteLine(StateManager.Settings.ToString()));
+                ReportProgress(PROGRESS_STEP);
 				if (StateManager.Settings.SaveGreenzone)
 				{
 					bs.PutLump(BinaryStateLump.Greenzone, (BinaryWriter bw) => StateManager.Save(bw));
-				}
+                }
+                ReportProgress(PROGRESS_STEP);
 
-				bs.PutLump(BinaryStateLump.LagLog, (BinaryWriter bw) => LagLog.Save(bw));
-				bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
+                bs.PutLump(BinaryStateLump.LagLog, (BinaryWriter bw) => LagLog.Save(bw));
+                ReportProgress(PROGRESS_STEP);
+                bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
+                ReportProgress(PROGRESS_STEP);
 
 				if (StartsFromSavestate)
 				{
@@ -53,18 +79,20 @@ namespace BizHawk.Client.Common
 					{
 						bs.PutLump(BinaryStateLump.Corestate, (BinaryWriter bw) => bw.Write(BinarySavestate));
 					}
-				}
-
+                }
+                ReportProgress(PROGRESS_STEP);
 				if (ClientSettingsForSave != null)
 				{
 					var clientSettingsJson = ClientSettingsForSave();
 					bs.PutLump(BinaryStateLump.ClientSettings, (TextWriter tw) => tw.Write(clientSettingsJson));
-				}
+                }
+                ReportProgress(PROGRESS_STEP);
 
 				if (VerificationLog.Any())
 				{
 					bs.PutLump(BinaryStateLump.VerificationLog, tw => tw.WriteLine(InputLogToString(VerificationLog)));
-				}
+                }
+                ReportProgress(PROGRESS_STEP);
 			}
 
 			Changes = false;
