@@ -52,7 +52,25 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			if (ProfileSelectComboBox.SelectedIndex == 0) // Casual Gaming
+			switch (ProfileSelectComboBox.SelectedItem.ToString())
+			{
+				default:
+				case "Custom Profile": // For now
+				case "Casual Gaming":
+					Global.Config.SelectedProfile = Config.ClientProfile.Casual;
+					break;
+				case "Longplays":
+					Global.Config.SelectedProfile = Config.ClientProfile.Longplay;
+					break;
+				case "Tool-assisted Speedruns":
+					Global.Config.SelectedProfile = Config.ClientProfile.Tas;
+					break;
+				case "N64 Tool-assisted Speedruns":
+					Global.Config.SelectedProfile = Config.ClientProfile.N64Tas;
+					break;
+			}
+
+			if (Global.Config.SelectedProfile == Config.ClientProfile.Casual)
 			{
 				DisplayProfileSettingBoxes(false);
 				Global.Config.SaveLargeScreenshotWithStates = false;
@@ -108,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 				// NES
 				Global.Config.NES_InQuickNES = true;
 			}
-			else if (ProfileSelectComboBox.SelectedIndex == 3) // Long Plays
+			else if (Global.Config.SelectedProfile == Config.ClientProfile.Longplay)
 			{
 				DisplayProfileSettingBoxes(false);
 				Global.Config.SaveLargeScreenshotWithStates = false;
@@ -164,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 				// NES
 				Global.Config.NES_InQuickNES = true;
 			}
-			else if (ProfileSelectComboBox.SelectedIndex == 1) // TAS
+			else if (Global.Config.SelectedProfile == Config.ClientProfile.Tas)
 			{
 				DisplayProfileSettingBoxes(false);
 
@@ -223,7 +241,7 @@ namespace BizHawk.Client.EmuHawk
 				// NES
 				Global.Config.NES_InQuickNES = true;
 			}
-			else if (ProfileSelectComboBox.SelectedIndex == 2) // N64 TAS
+			else if (Global.Config.SelectedProfile == Config.ClientProfile.N64Tas)
 			{
 				DisplayProfileSettingBoxes(false);
 
@@ -282,28 +300,10 @@ namespace BizHawk.Client.EmuHawk
 				// NES
 				Global.Config.NES_InQuickNES = true;
 			}
-			else if (ProfileSelectComboBox.SelectedIndex == 4) //custom
+			else if (Global.Config.SelectedProfile == Config.ClientProfile.Custom)
 			{
 				//Disabled for now
 				//DisplayProfileSettingBoxes(true);
-			}
-
-			switch(ProfileSelectComboBox.SelectedItem.ToString())
-			{
-				default:
-				case "Custom Profile": // For now
-				case "Casual Gaming":
-					Global.Config.SelectedProfile = Config.ClientProfile.Casual;
-					break;
-				case "Longplays":
-					Global.Config.SelectedProfile = Config.ClientProfile.Longplay;
-					break;
-				case "Tool-assisted Speedruns":
-					Global.Config.SelectedProfile = Config.ClientProfile.Tas;
-					break;
-				case "N64 Tool-assisted Speedruns":
-					Global.Config.SelectedProfile = Config.ClientProfile.N64Tas;
-					break;
 			}
 
 			bool oldUpdateAutoCheckEnabled = Global.Config.Update_AutoCheckEnabled;
