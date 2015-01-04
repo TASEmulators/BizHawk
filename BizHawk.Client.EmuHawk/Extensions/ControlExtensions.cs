@@ -32,9 +32,15 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 		}
 
 		// extension method to make Control.Invoke easier to use
-		public static void Invoke(this Control control, Action action)
+		public static object Invoke(this Control control, Action action)
 		{
-			control.Invoke(action);
+			return control.Invoke(action);
+		}
+
+		// extension method to make Control.BeginInvoke easier to use
+		public static IAsyncResult BeginInvoke(this Control control, Action action)
+		{
+			return control.BeginInvoke(action);
 		}
 
 		public static void AddColumn(this ListView listView, string columnName, bool enabled, int columnWidth)
