@@ -70,10 +70,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateChecker.CheckComplete += (s2, e2) =>
 			{
 				if (IsDisposed) return;
-				BeginInvoke((MethodInvoker)(() =>
-				{
-					UpdateNotification.Visible = UpdateChecker.IsNewVersionAvailable;
-				}));
+				this.BeginInvoke(() => { UpdateNotification.Visible = UpdateChecker.IsNewVersionAvailable; });
 			};
 			UpdateChecker.BeginCheck(); // Won't actually check unless enabled by user
 		}
