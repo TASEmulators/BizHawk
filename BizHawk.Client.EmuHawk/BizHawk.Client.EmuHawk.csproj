@@ -1057,6 +1057,9 @@
     <Compile Include="tools\Watch\WatchValueBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="UpdateChecker.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <EmbeddedResource Include="AVOut\FFmpegWriterForm.resx">
       <DependentUpon>FFmpegWriterForm.cs</DependentUpon>
     </EmbeddedResource>

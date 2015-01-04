@@ -2252,6 +2252,25 @@ namespace BizHawk.Client.EmuHawk
 			ProfileFirstBootLabel.Visible = false;
 		}
 
+		private void UpdateNotification_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Sound.StopSound();
+			DialogResult result = MessageBox.Show(this,
+				"Version " + Global.Config.Update_LatestVersion + " is now available. Would you like to open the BizHawk homepage?\r\n\r\nClick \"No\" to hide the update notification for this version.",
+				"New Version Available", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+			GlobalWin.Sound.StartSound();
+
+			if (result == DialogResult.Yes)
+			{
+				System.Threading.ThreadPool.QueueUserWorkItem((s) => System.Diagnostics.Process.Start(VersionInfo.HomePage).Dispose());
+			}
+			else if (result == DialogResult.No)
+			{
+				UpdateChecker.IgnoreNewVersion();
+				UpdateChecker.BeginCheck(skipCheck: true); // Trigger event to hide new version notification
+			}
+		}
+
 		#endregion
 
 		#region Form Events

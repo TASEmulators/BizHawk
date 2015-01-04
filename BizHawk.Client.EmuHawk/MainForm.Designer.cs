@@ -332,6 +332,7 @@
 			this.CoreNameStatusBarButton = new System.Windows.Forms.ToolStripStatusLabel();
 			this.ProfileFirstBootLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.LinkConnectStatusBarButton = new System.Windows.Forms.ToolStripStatusLabel();
+			this.UpdateNotification = new System.Windows.Forms.ToolStripStatusLabel();
 			this.MainFormContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.OpenRomContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LoadLastRomContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -2751,7 +2752,8 @@
             this.KeyPriorityStatusLabel,
             this.CoreNameStatusBarButton,
             this.ProfileFirstBootLabel,
-            this.LinkConnectStatusBarButton});
+            this.LinkConnectStatusBarButton,
+            this.UpdateNotification});
 			this.MainStatusBar.Location = new System.Drawing.Point(0, 386);
 			this.MainStatusBar.Name = "MainStatusBar";
 			this.MainStatusBar.ShowItemToolTips = true;
@@ -2956,6 +2958,17 @@
 			this.LinkConnectStatusBarButton.Text = "Link connection is currently enabled";
 			this.LinkConnectStatusBarButton.ToolTipText = "Link connection is currently enabled";
 			this.LinkConnectStatusBarButton.Click += new System.EventHandler(this.LinkConnectStatusBarButton_Click);
+			// 
+			// UpdateNotification
+			// 
+			this.UpdateNotification.IsLink = true;
+			this.UpdateNotification.LinkColor = System.Drawing.Color.Red;
+			this.UpdateNotification.Name = "UpdateNotification";
+			this.UpdateNotification.Size = new System.Drawing.Size(46, 17);
+			this.UpdateNotification.Spring = true;
+			this.UpdateNotification.Text = "New version available!";
+			this.UpdateNotification.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.UpdateNotification.Click += new System.EventHandler(this.UpdateNotification_Click);
 			// 
 			// MainFormContextMenu
 			// 
@@ -3737,6 +3750,7 @@
 		private System.Windows.Forms.ToolStripMenuItem FlushSaveRAMMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PSXDiscControlsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GenesisGameGenieECDC;
+		private System.Windows.Forms.ToolStripStatusLabel UpdateNotification;
 	}
 }
 
