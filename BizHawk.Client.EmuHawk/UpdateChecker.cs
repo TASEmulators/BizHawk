@@ -9,8 +9,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public static class UpdateChecker
 	{
-		// TODO: Fill in actual URL... for now it will just grab it from right here: [VersionNumber]1.9.2[/VersionNumber]
-		private static readonly string _latestVersionInfoURL = "http://bizhawk.googlecode.com/svn/trunk/BizHawk.Client.EmuHawk/UpdateChecker.cs";
+		private static readonly string _latestVersionInfoURL = "http://tasvideos.org/SystemBizHawkReleaseManager.html";
 		private static readonly TimeSpan _minimumCheckDuration = TimeSpan.FromHours(8);
 
 		private static bool AutoCheckEnabled
@@ -108,6 +107,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static string GetTextFromTag(string info, string tagName)
 		{
+			info = info.Replace("&#91;", "[").Replace("&#93;", "]").Replace("&#47;", "/");
 			string openTag = "[" + tagName + "]";
 			string closeTag = "[/" + tagName + "]";
 			int start = info.IndexOf(openTag, StringComparison.OrdinalIgnoreCase);
