@@ -9,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public static class UpdateChecker
 	{
-		// TODO: Fill in actual URL... for now it will just grab it from right here: [LatestVersion]1.9.2[/LatestVersion]
+		// TODO: Fill in actual URL... for now it will just grab it from right here: [VersionNumber]1.9.2[/VersionNumber]
 		private static readonly string _latestVersionInfoURL = "http://bizhawk.googlecode.com/svn/trunk/BizHawk.Client.EmuHawk/UpdateChecker.cs";
 		private static readonly TimeSpan _minimumCheckDuration = TimeSpan.FromHours(8);
 
