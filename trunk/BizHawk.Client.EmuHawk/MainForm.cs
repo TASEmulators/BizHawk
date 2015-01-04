@@ -47,11 +47,13 @@ namespace BizHawk.Client.EmuHawk
 			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
 
 			// Hide Status bar icons and general statusbar prep
+			MainStatusBar.Padding = new Padding(MainStatusBar.Padding.Left, MainStatusBar.Padding.Top, MainStatusBar.Padding.Left, MainStatusBar.Padding.Bottom); // Workaround to remove extra padding on right
 			PlayRecordStatusButton.Visible = false;
 			AVIStatusLabel.Visible = false;
 			SetPauseStatusbarIcon();
 			ToolHelpers.UpdateCheatRelatedTools(null, null);
 			RebootStatusBarIcon.Visible = false;
+			UpdateNotification.Visible = false;
 			StatusBarDiskLightOnImage = Properties.Resources.LightOn;
 			StatusBarDiskLightOffImage = Properties.Resources.LightOff;
 			LinkCableOn = Properties.Resources.connect_16x16;
@@ -63,6 +65,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			HandleToggleLightAndLink();
+
+			// New version notification
+			UpdateChecker.CheckComplete += (s2, e2) =>
+			{
+				if (IsDisposed) return;
+				BeginInvoke((MethodInvoker)(() =>
+				{
+					UpdateNotification.Visible = UpdateChecker.IsNewVersionAvailable;
+				}));
+			};
+			UpdateChecker.BeginCheck(); // Won't actually check unless enabled by user
 		}
 
 		static MainForm()

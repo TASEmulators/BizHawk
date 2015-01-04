@@ -92,6 +92,10 @@ namespace BizHawk.Client.Common
 		public bool AVI_CaptureOSD = false;
 		public bool Screenshot_CaptureOSD = false;
 		public bool FirstBoot = true;
+		public bool Update_AutoCheckEnabled = false;
+		public DateTime? Update_LastCheckTimeUTC = null;
+		public string Update_LatestVersion = "";
+		public string Update_IgnoreVersion = "";
 
 		//public bool TurboSeek = true; // When PauseOnFrame is set, this will decide whether the client goes into turbo mode or not
 

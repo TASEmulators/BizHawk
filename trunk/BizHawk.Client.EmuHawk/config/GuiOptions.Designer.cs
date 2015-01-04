@@ -56,6 +56,7 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.LogWindowAsConsoleCheckbox = new System.Windows.Forms.CheckBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.AutoCheckForUpdates = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage3.SuspendLayout();
@@ -99,6 +100,7 @@
 			// 
 			// tabPage1
 			// 
+			this.tabPage1.Controls.Add(this.AutoCheckForUpdates);
 			this.tabPage1.Controls.Add(this.StartFullScreenCheckbox);
 			this.tabPage1.Controls.Add(this.label14);
 			this.tabPage1.Controls.Add(this.label3);
@@ -123,17 +125,17 @@
 			// StartFullScreenCheckbox
 			// 
 			this.StartFullScreenCheckbox.AutoSize = true;
-			this.StartFullScreenCheckbox.Location = new System.Drawing.Point(104, 100);
+			this.StartFullScreenCheckbox.Location = new System.Drawing.Point(98, 63);
 			this.StartFullScreenCheckbox.Name = "StartFullScreenCheckbox";
 			this.StartFullScreenCheckbox.Size = new System.Drawing.Size(110, 17);
-			this.StartFullScreenCheckbox.TabIndex = 13;
+			this.StartFullScreenCheckbox.TabIndex = 3;
 			this.StartFullScreenCheckbox.Text = "Start in Fullscreen";
 			this.StartFullScreenCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// label14
 			// 
 			this.label14.AutoSize = true;
-			this.label14.Location = new System.Drawing.Point(26, 299);
+			this.label14.Location = new System.Drawing.Point(26, 246);
 			this.label14.Name = "label14";
 			this.label14.Size = new System.Drawing.Size(303, 13);
 			this.label14.TabIndex = 12;
@@ -142,7 +144,7 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(26, 285);
+			this.label3.Location = new System.Drawing.Point(26, 232);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(272, 13);
 			this.label3.TabIndex = 11;
@@ -151,7 +153,7 @@
 			// SingleInstanceModeCheckbox
 			// 
 			this.SingleInstanceModeCheckbox.AutoSize = true;
-			this.SingleInstanceModeCheckbox.Location = new System.Drawing.Point(6, 265);
+			this.SingleInstanceModeCheckbox.Location = new System.Drawing.Point(6, 212);
 			this.SingleInstanceModeCheckbox.Name = "SingleInstanceModeCheckbox";
 			this.SingleInstanceModeCheckbox.Size = new System.Drawing.Size(127, 17);
 			this.SingleInstanceModeCheckbox.TabIndex = 10;
@@ -161,26 +163,26 @@
 			// NeverAskSaveCheckbox
 			// 
 			this.NeverAskSaveCheckbox.AutoSize = true;
-			this.NeverAskSaveCheckbox.Location = new System.Drawing.Point(6, 146);
+			this.NeverAskSaveCheckbox.Location = new System.Drawing.Point(6, 109);
 			this.NeverAskSaveCheckbox.Name = "NeverAskSaveCheckbox";
 			this.NeverAskSaveCheckbox.Size = new System.Drawing.Size(184, 17);
-			this.NeverAskSaveCheckbox.TabIndex = 6;
+			this.NeverAskSaveCheckbox.TabIndex = 5;
 			this.NeverAskSaveCheckbox.Text = "Never be asked to save changes";
 			this.NeverAskSaveCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(26, 245);
+			this.label2.Location = new System.Drawing.Point(26, 192);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(349, 13);
-			this.label2.TabIndex = 8;
+			this.label2.TabIndex = 9;
 			this.label2.Text = "When this is set, the client will receive user input even when focus is lost";
 			// 
 			// AcceptBackgroundInputCheckbox
 			// 
 			this.AcceptBackgroundInputCheckbox.AutoSize = true;
-			this.AcceptBackgroundInputCheckbox.Location = new System.Drawing.Point(6, 225);
+			this.AcceptBackgroundInputCheckbox.Location = new System.Drawing.Point(6, 172);
 			this.AcceptBackgroundInputCheckbox.Name = "AcceptBackgroundInputCheckbox";
 			this.AcceptBackgroundInputCheckbox.Size = new System.Drawing.Size(146, 17);
 			this.AcceptBackgroundInputCheckbox.TabIndex = 8;
@@ -190,49 +192,49 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(26, 201);
+			this.label1.Location = new System.Drawing.Point(26, 152);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(315, 13);
-			this.label1.TabIndex = 6;
+			this.label1.TabIndex = 7;
 			this.label1.Text = "When this is set, the client will continue to run when it loses focus";
 			// 
 			// RunInBackgroundCheckbox
 			// 
 			this.RunInBackgroundCheckbox.AutoSize = true;
-			this.RunInBackgroundCheckbox.Location = new System.Drawing.Point(6, 181);
+			this.RunInBackgroundCheckbox.Location = new System.Drawing.Point(6, 132);
 			this.RunInBackgroundCheckbox.Name = "RunInBackgroundCheckbox";
 			this.RunInBackgroundCheckbox.Size = new System.Drawing.Size(117, 17);
-			this.RunInBackgroundCheckbox.TabIndex = 7;
+			this.RunInBackgroundCheckbox.TabIndex = 6;
 			this.RunInBackgroundCheckbox.Text = "Run in background";
 			this.RunInBackgroundCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// SaveWindowPositionCheckbox
 			// 
 			this.SaveWindowPositionCheckbox.AutoSize = true;
-			this.SaveWindowPositionCheckbox.Location = new System.Drawing.Point(6, 123);
+			this.SaveWindowPositionCheckbox.Location = new System.Drawing.Point(6, 86);
 			this.SaveWindowPositionCheckbox.Name = "SaveWindowPositionCheckbox";
 			this.SaveWindowPositionCheckbox.Size = new System.Drawing.Size(133, 17);
-			this.SaveWindowPositionCheckbox.TabIndex = 5;
+			this.SaveWindowPositionCheckbox.TabIndex = 4;
 			this.SaveWindowPositionCheckbox.Text = "Save Window Position";
 			this.SaveWindowPositionCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// EnableContextMenuCheckbox
 			// 
 			this.EnableContextMenuCheckbox.AutoSize = true;
-			this.EnableContextMenuCheckbox.Location = new System.Drawing.Point(6, 63);
+			this.EnableContextMenuCheckbox.Location = new System.Drawing.Point(6, 40);
 			this.EnableContextMenuCheckbox.Name = "EnableContextMenuCheckbox";
 			this.EnableContextMenuCheckbox.Size = new System.Drawing.Size(128, 17);
-			this.EnableContextMenuCheckbox.TabIndex = 2;
+			this.EnableContextMenuCheckbox.TabIndex = 1;
 			this.EnableContextMenuCheckbox.Text = "Enable Context Menu";
 			this.EnableContextMenuCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// StartPausedCheckbox
 			// 
 			this.StartPausedCheckbox.AutoSize = true;
-			this.StartPausedCheckbox.Location = new System.Drawing.Point(6, 100);
+			this.StartPausedCheckbox.Location = new System.Drawing.Point(6, 63);
 			this.StartPausedCheckbox.Name = "StartPausedCheckbox";
 			this.StartPausedCheckbox.Size = new System.Drawing.Size(86, 17);
-			this.StartPausedCheckbox.TabIndex = 4;
+			this.StartPausedCheckbox.TabIndex = 2;
 			this.StartPausedCheckbox.Text = "Start paused";
 			this.StartPausedCheckbox.UseVisualStyleBackColor = true;
 			// 
@@ -312,7 +314,7 @@
 			// BackupSRamCheckbox
 			// 
 			this.BackupSRamCheckbox.AutoSize = true;
-			this.BackupSRamCheckbox.Location = new System.Drawing.Point(4, 61);
+			this.BackupSRamCheckbox.Location = new System.Drawing.Point(6, 61);
 			this.BackupSRamCheckbox.Name = "BackupSRamCheckbox";
 			this.BackupSRamCheckbox.Size = new System.Drawing.Size(108, 17);
 			this.BackupSRamCheckbox.TabIndex = 9;
@@ -337,6 +339,16 @@
 			this.LogWindowAsConsoleCheckbox.TabIndex = 1;
 			this.LogWindowAsConsoleCheckbox.Text = "Create the log window as a console window";
 			this.LogWindowAsConsoleCheckbox.UseVisualStyleBackColor = true;
+			// 
+			// AutoCheckForUpdates
+			// 
+			this.AutoCheckForUpdates.AutoSize = true;
+			this.AutoCheckForUpdates.Location = new System.Drawing.Point(6, 266);
+			this.AutoCheckForUpdates.Name = "AutoCheckForUpdates";
+			this.AutoCheckForUpdates.Size = new System.Drawing.Size(288, 17);
+			this.AutoCheckForUpdates.TabIndex = 13;
+			this.AutoCheckForUpdates.Text = "Automatically check for and notify me of newer versions";
+			this.AutoCheckForUpdates.UseVisualStyleBackColor = true;
 			// 
 			// EmuHawkOptions
 			// 
@@ -391,5 +403,6 @@
 		private System.Windows.Forms.Label label13;
 		private System.Windows.Forms.Label label14;
 		private System.Windows.Forms.CheckBox StartFullScreenCheckbox;
+		private System.Windows.Forms.CheckBox AutoCheckForUpdates;
 	}
 }
