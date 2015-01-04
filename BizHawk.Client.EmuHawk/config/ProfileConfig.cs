@@ -46,6 +46,8 @@ namespace BizHawk.Client.EmuHawk
 					ProfileSelectComboBox.SelectedItem = "N64 Tool-assisted Speedruns";
 					break;
 			}
+
+			AutoCheckForUpdates.Checked = Global.Config.Update_AutoCheckEnabled;
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
@@ -304,6 +306,14 @@ namespace BizHawk.Client.EmuHawk
 					break;
 			}
 
+			bool oldUpdateAutoCheckEnabled = Global.Config.Update_AutoCheckEnabled;
+			Global.Config.Update_AutoCheckEnabled = AutoCheckForUpdates.Checked;
+			if (Global.Config.Update_AutoCheckEnabled != oldUpdateAutoCheckEnabled)
+			{
+				if (!Global.Config.Update_AutoCheckEnabled) UpdateChecker.ResetHistory();
+				UpdateChecker.BeginCheck(); // Call even if auto checking is disabled to trigger event (it won't actually check)
+			}
+
 			DialogResult = DialogResult.OK;
 			Close();
 		}
@@ -323,7 +333,7 @@ namespace BizHawk.Client.EmuHawk
 				SaveScreenshotStatesCheckBox.Visible = true;
 				SaveLargeScreenshotStatesCheckBox.Visible = true;
 				AllowUDLRCheckBox.Visible = true;
-				GeneralOptionsLabel.Visible = true;
+				CustomProfileOptionsLabel.Visible = true;
 			}
 			else
 			{
@@ -333,7 +343,7 @@ namespace BizHawk.Client.EmuHawk
 				SaveScreenshotStatesCheckBox.Visible = false;
 				SaveLargeScreenshotStatesCheckBox.Visible = false;
 				AllowUDLRCheckBox.Visible = false;
-				GeneralOptionsLabel.Visible = false;
+				CustomProfileOptionsLabel.Visible = false;
 			}
 		}
 

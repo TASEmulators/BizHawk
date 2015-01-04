@@ -29,8 +29,6 @@ namespace BizHawk.Client.EmuHawk
 			AcceptBackgroundInputCheckbox.Checked = Global.Config.AcceptBackgroundInput;
 			NeverAskSaveCheckbox.Checked = Global.Config.SupressAskSave;
 			SingleInstanceModeCheckbox.Checked = Global.Config.SingleInstanceMode;
-			AutoCheckForUpdates.Visible = VersionInfo.DeveloperBuild;
-			AutoCheckForUpdates.Checked = Global.Config.Update_AutoCheckEnabled;
 
 			BackupSRamCheckbox.Checked = Global.Config.BackupSaveram;
 			FrameAdvSkipLagCheckbox.Checked = Global.Config.SkipLagFrame;
@@ -47,8 +45,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			bool oldUpdateAutoCheckEnabled = Global.Config.Update_AutoCheckEnabled;
-
 			Global.Config.StartFullscreen = StartFullScreenCheckbox.Checked;
 			Global.Config.StartPaused = StartPausedCheckbox.Checked;
 			Global.Config.PauseWhenMenuActivated = PauseWhenMenuActivatedCheckbox.Checked;
@@ -58,17 +54,10 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.AcceptBackgroundInput = AcceptBackgroundInputCheckbox.Checked;
 			Global.Config.SupressAskSave = NeverAskSaveCheckbox.Checked;
 			Global.Config.SingleInstanceMode = SingleInstanceModeCheckbox.Checked;
-			Global.Config.Update_AutoCheckEnabled = AutoCheckForUpdates.Checked;
 
 			Global.Config.BackupSaveram = BackupSRamCheckbox.Checked;
 			Global.Config.SkipLagFrame = FrameAdvSkipLagCheckbox.Checked;
 			Global.Config.WIN32_CONSOLE = LogWindowAsConsoleCheckbox.Checked;
-
-			if (Global.Config.Update_AutoCheckEnabled != oldUpdateAutoCheckEnabled)
-			{
-				if (!Global.Config.Update_AutoCheckEnabled) UpdateChecker.ResetHistory();
-				UpdateChecker.BeginCheck(); // Call even if auto checking is disabled to trigger event (it won't actually check)
-			}
 
 			Close();
 			DialogResult = DialogResult.OK;
