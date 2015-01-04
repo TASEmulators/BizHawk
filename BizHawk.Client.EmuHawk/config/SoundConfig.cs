@@ -7,6 +7,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class SoundConfig : Form
 	{
+		private bool _programmaticallyChangingValue;
+
 		public SoundConfig()
 		{
 			InitializeComponent();
@@ -14,6 +16,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SoundConfig_Load(object sender, EventArgs e)
 		{
+			_programmaticallyChangingValue = true;
+
 			SoundOnCheckBox.Checked = Global.Config.SoundEnabled;
 			MuteFrameAdvance.Checked = Global.Config.MuteFrameAdvance;
 			ThrottlecheckBox.Checked = Global.Config.SoundThrottle;
@@ -23,7 +27,6 @@ namespace BizHawk.Client.EmuHawk
 
 			// vestigal
 			ThrottlecheckBox.Visible = false;
-
 
 			var dd = SoundEnumeration.DeviceNames();
 			listBoxSoundDevices.Items.Add("<default>");
@@ -36,6 +39,8 @@ namespace BizHawk.Client.EmuHawk
 					listBoxSoundDevices.SelectedItem = d;
 				}
 			}
+
+			_programmaticallyChangingValue = false;
 		}
 
 		private void OK_Click(object sender, EventArgs e)
@@ -66,17 +71,10 @@ namespace BizHawk.Client.EmuHawk
 		private void SoundVolNumeric_ValueChanged(object sender, EventArgs e)
 		{
 			SoundVolBar.Value = (int)SoundVolNumeric.Value;
-			//This is changed through the user or the Above Scroll Bar
-			//Is it Zero?  Mute
-			if (SoundVolBar.Value == 0)
-			{
-				SoundOnCheckBox.Checked = false;
-			}
-			// Not Zero.  Unmute
-			else
-			{
-				SoundOnCheckBox.Checked = true;
-			}
+
+			// If the user is changing the volume, automatically turn on/off sound accordingly
+			if (!_programmaticallyChangingValue)
+				SoundOnCheckBox.Checked = SoundVolBar.Value != 0;
 		}
 
 		private void SoundOnCheckBox_CheckedChanged(object sender, EventArgs e)

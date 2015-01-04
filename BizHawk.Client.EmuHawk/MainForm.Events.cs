@@ -2262,7 +2262,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result == DialogResult.Yes)
 			{
-				System.Threading.ThreadPool.QueueUserWorkItem((s) => System.Diagnostics.Process.Start(VersionInfo.HomePage).Dispose());
+				System.Threading.ThreadPool.QueueUserWorkItem((s) => { using (System.Diagnostics.Process.Start(VersionInfo.HomePage)) { } });
 			}
 			else if (result == DialogResult.No)
 			{
