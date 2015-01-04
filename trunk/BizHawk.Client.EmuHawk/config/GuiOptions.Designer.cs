@@ -56,7 +56,6 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.LogWindowAsConsoleCheckbox = new System.Windows.Forms.CheckBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.AutoCheckForUpdates = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage3.SuspendLayout();
@@ -100,7 +99,6 @@
 			// 
 			// tabPage1
 			// 
-			this.tabPage1.Controls.Add(this.AutoCheckForUpdates);
 			this.tabPage1.Controls.Add(this.StartFullScreenCheckbox);
 			this.tabPage1.Controls.Add(this.label14);
 			this.tabPage1.Controls.Add(this.label3);
@@ -340,16 +338,6 @@
 			this.LogWindowAsConsoleCheckbox.Text = "Create the log window as a console window";
 			this.LogWindowAsConsoleCheckbox.UseVisualStyleBackColor = true;
 			// 
-			// AutoCheckForUpdates
-			// 
-			this.AutoCheckForUpdates.AutoSize = true;
-			this.AutoCheckForUpdates.Location = new System.Drawing.Point(6, 266);
-			this.AutoCheckForUpdates.Name = "AutoCheckForUpdates";
-			this.AutoCheckForUpdates.Size = new System.Drawing.Size(288, 17);
-			this.AutoCheckForUpdates.TabIndex = 13;
-			this.AutoCheckForUpdates.Text = "Automatically check for and notify me of newer versions";
-			this.AutoCheckForUpdates.UseVisualStyleBackColor = true;
-			// 
 			// EmuHawkOptions
 			// 
 			this.AcceptButton = this.OkBtn;
@@ -403,6 +391,5 @@
 		private System.Windows.Forms.Label label13;
 		private System.Windows.Forms.Label label14;
 		private System.Windows.Forms.CheckBox StartFullScreenCheckbox;
-		private System.Windows.Forms.CheckBox AutoCheckForUpdates;
 	}
 }
