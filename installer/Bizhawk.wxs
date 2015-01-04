@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?define ProductVersion = "1.9.1"?>
+<?define ProductUpgradeCode = "7F9AD1EE-27D4-48A6-9D28-E959C1C8AD00"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" UpgradeCode="$(var.ProductUpgradeCode)" Name="BizHawk" Version="$(var.ProductVersion)" Manufacturer="BizHawk" Language="1033">
+		<Package InstallerVersion="200" Compressed="yes" Comments="BizHawk Installer Package" />        
+		<Media Id="1" Cabinet="product.cab" EmbedCab="yes" />
+		<Icon Id="ProductIcon" SourceFile="BizHawk\corphawk.ico" />
+		<Property Id="ARPPRODUCTICON" Value="ProductIcon" />
+		<Property Id="ARPHELPLINK" Value="http://tasvIdeos.org/forum/viewforum.php?f=64" />
+		<Property Id="ARPURLINFOABOUT" Value="http://tasvIdeos.org/BizHawk.html" />
+		<Property Id="ARPNOREPAIR" Value="1" />
+		<Property Id="ARPNOMODIFY" Value="0" />
+		<Upgrade Id="$(var.ProductUpgradeCode)">
+			<UpgradeVersion Minimum="$(var.ProductVersion)" OnlyDetect="yes" Property="NEWERVERSIONDETECTED" />
+			<UpgradeVersion Minimum="1.0.0" Maximum="1.8.4" IncludeMinimum="yes" IncludeMaximum="yes" Property="OLDERVERSIONBEINGUPGRADED" />
+		</Upgrade>
+		<Condition Message="A newer version of this software is already installed.">NOT NEWERVERSIONDETECTED</Condition>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLDIR" Name="BizHawk">
+					<Component Id="ApplicationFiles" Guid="7F9AD1EE-27D4-48A6-9D28-E959C1C8AD01">
+						<!-- Duplicating a File Id is bad.  Don't do that. -->
+						<File Id="DEFCTRL.JSON" Name="defctrl.json" Source="Bizhawk\defctrl.json" />
+						<File Id="DISCOHAWK.EXE" Name="DiscoHawk.exe" Source="Bizhawk\DiscoHawk.exe" />
+						<File Id="EMUHAWK.EXE" Name="EmuHawk.exe" Source="Bizhawk\EmuHawk.exe" />
+					</Component>
+				<Directory Id="DLL" Name="DLL">
+					<Component Id="DLL" Guid="7F9AD1EE-27D4-48A6-9D28-E959C1C8AD02">
+						<File Id="_7Z.DLL" Name="7z.dll" Source="Bizhawk\dll\7z.dll" />
+						<File Id="BIZHAWK.BIZWARE.BIZWAREGL.DLL" Name="BizHawk.Bizware.BizwareGL.dll" Source="Bizhawk\dll\BizHawk.Bizware.BizwareGL.dll" />
+						<File Id="BIZHAWK.BIZWARE.BIZWAREGL.OPENTK.DLL" Name="BizHawk.Bizware.BizwareGL.OpenTK.dll" Source="Bizhawk\dll\BizHawk.Bizware.BizwareGL.OpenTK.dll" />
+						<File Id="BIZHAWK.CLIENT.COMMON.DLL" Name="BizHawk.Client.Common.dll" Source="Bizhawk\dll\BizHawk.Client.Common.dll" />
+						<File Id="BIZHAWK.COMMON.DLL" Name="BizHawk.Common.dll" Source="Bizhawk\dll\BizHawk.Common.dll" />
+						<File Id="BIZHAWK.EMULATION.COMMON.DLL" Name="BizHawk.Emulation.Common.dll" Source="Bizhawk\dll\BizHawk.Emulation.Common.dll" />
+						<File Id="BIZHAWK.EMULATION.CORES.DLL" Name="BizHawk.Emulation.Cores.dll" Source="Bizhawk\dll\BizHawk.Emulation.Cores.dll" />
+						<File Id="BIZHAWK.EMULATION.DISCSYSTEM.DLL" Name="BizHawk.Emulation.DiscSystem.dll" Source="Bizhawk\dll\BizHawk.Emulation.DiscSystem.dll" />
+						<File Id="BIZLYNX.DLL" Name="bizlynx.dll" Source="Bizhawk\dll\bizlynx.dll" />
+						<File Id="BIZSWAN.DLL" Name="bizswan.dll" Source="Bizhawk\dll\bizswan.dll" />
+						<File Id="BLIP_BUF.DLL" Name="blip_buf.dll" Source="Bizhawk\dll\blip_buf.dll" />
+						<File Id="CSHARP_SQLITE.DLL" Name="CSharp-SQLite.dll" Source="Bizhawk\dll\CSharp-SQLite.dll" />
+						<File Id="D3D8.DLL" Name="d3d8.dll" Source="Bizhawk\dll\d3d8.dll" />
+						<File Id="EMU7800.DLL" Name="EMU7800.dll" Source="Bizhawk\dll\EMU7800.dll" />
+						<File Id="FFMPEG.EXE" Name="ffmpeg.exe" Source="Bizhawk\dll\ffmpeg.exe" />
+						<File Id="FFMPEG_README.TXT" Name="ffmpeg_readme.txt" Source="Bizhawk\dll\ffmpeg_readme.txt" />
+						<File Id="FREETYPE6.DLL" Name="freetype6.dll" Source="Bizhawk\dll\freetype6.dll" />
+						<File Id="GONGSHELL.DLL" Name="GongShell.dll" Source="Bizhawk\dll\GongShell.dll" />
+						<File Id="ICSHARPCODE.SHARPZIPLIB.DLL" Name="ICSharpCode.SharpZipLib.dll" Source="Bizhawk\dll\ICSharpCode.SharpZipLib.dll" />
+						<File Id="IONIC.ZIP.DLL" Name="Ionic.Zip.dll" Source="Bizhawk\dll\Ionic.Zip.dll" />
+						<File Id="JABO_DIRECT3D8_PATCHED.DLL" Name="Jabo_Direct3D8_patched.dll" Source="Bizhawk\dll\Jabo_Direct3D8_patched.dll" />
+						<File Id="LIBBIZSNES.DLL" Name="libbizsnes.dll" Source="Bizhawk\dll\libbizsnes.dll" />
+						<File Id="LIBCO_MSVC_WIN32.DLL" Name="libco_msvc_win32.dll" Source="Bizhawk\dll\libco_msvc_win32.dll" />
+						<File Id="LIBDARM.DLL" Name="libdarm.dll" Source="Bizhawk\dll\libdarm.dll" />
+						<File Id="LIBGAMBATTE.DLL" Name="libgambatte.dll" Source="Bizhawk\dll\libgambatte.dll" />
+						<File Id="LIBGENPLUSGX.DLL" Name="libgenplusgx.dll" Source="Bizhawk\dll\libgenplusgx.dll" />
+						<File Id="LIBMEDNAHAWK.DLL" Name="libmednahawk.dll" Source="Bizhawk\dll\libmednahawk.dll" />
+						<File Id="LIBMETEOR.DLL" Name="libmeteor.dll" Source="Bizhawk\dll\libmeteor.dll" />
+						<File Id="LIBPNG12.DLL" Name="libpng12.dll" Source="Bizhawk\dll\libpng12.dll" />
+						<File Id="LIBQUICKNES.DLL" Name="libquicknes.dll" Source="Bizhawk\dll\libquicknes.dll" />
+						<File Id="LIBSNESHAWK_32_COMPATIBILITY.EXE" Name="libsneshawk-32-compatibility.exe" Source="Bizhawk\dll\libsneshawk-32-compatibility.exe" />
+						<File Id="LIBSNESHAWK_32_PERFORMANCE.EXE" Name="libsneshawk-32-performance.exe" Source="Bizhawk\dll\libsneshawk-32-performance.exe" />
+						<File Id="LIBSPEEXDSP.DLL" Name="libspeexdsp.dll" Source="Bizhawk\dll\libspeexdsp.dll" />
+						<File Id="LIBVBANEXT.DLL" Name="libvbanext.dll" Source="Bizhawk\dll\libvbanext.dll" />
+						<File Id="LIBYABAUSE.DLL" Name="libyabause.dll" Source="Bizhawk\dll\libyabause.dll" />
+						<File Id="LUA51.DLL" Name="lua51.dll" Source="Bizhawk\dll\lua51.dll" />
+						<File Id="LUAINTERFACE.DLL" Name="LuaInterface.dll" Source="Bizhawk\dll\LuaInterface.dll" />
+						<File Id="MUPEN64PLUS_AUDIO_BKM.DLL" Name="mupen64plus-audio-bkm.dll" Source="Bizhawk\dll\mupen64plus-audio-bkm.dll" />
+						<File Id="MUPEN64PLUS_INPUT_BKM.DLL" Name="mupen64plus-input-bkm.dll" Source="Bizhawk\dll\mupen64plus-input-bkm.dll" />
+						<File Id="MUPEN64PLUS_RSP_HLE.DLL" Name="mupen64plus-rsp-hle.dll" Source="Bizhawk\dll\mupen64plus-rsp-hle.dll" />
+						<File Id="MUPEN64PLUS_RSP_Z64_HLEVIdEO.DLL" Name="mupen64plus-rsp-z64-hlevIdeo.dll" Source="Bizhawk\dll\mupen64plus-rsp-z64-hlevIdeo.dll" />
+						<File Id="MUPEN64PLUS_VIdEO_GLIdE64.DLL" Name="mupen64plus-vIdeo-glIde64.dll" Source="Bizhawk\dll\mupen64plus-vIdeo-glIde64.dll" />
+						<File Id="MUPEN64PLUS_VIdEO_GLIdE64MK2.DLL" Name="mupen64plus-vIdeo-glIde64mk2.dll" Source="Bizhawk\dll\mupen64plus-vIdeo-glIde64mk2.dll" />
+						<File Id="MUPEN64PLUS_VIdEO_JABO.DLL" Name="mupen64plus-vIdeo-jabo.dll" Source="Bizhawk\dll\mupen64plus-vIdeo-jabo.dll" />
+						<File Id="MUPEN64PLUS_VIdEO_RICE.DLL" Name="mupen64plus-vIdeo-rice.dll" Source="Bizhawk\dll\mupen64plus-vIdeo-rice.dll" />
+						<File Id="MUPEN64PLUS.DLL" Name="mupen64plus.dll" Source="Bizhawk\dll\mupen64plus.dll" />
+						<File Id="MUSASHIdLL.DLL" Name="MusashIdLL.dll" Source="Bizhawk\dll\MusashIdLL.dll" />
+						<File Id="NEWTONSOFT.JSON.DLL" Name="Newtonsoft.Json.dll" Source="Bizhawk\dll\Newtonsoft.Json.dll" />
+						<File Id="OPENTK.DLL" Name="OpenTK.dll" Source="Bizhawk\dll\OpenTK.dll" />
+						<File Id="OPENTK.GLCONTROL.DLL" Name="OpenTK.GLControl.dll" Source="Bizhawk\dll\OpenTK.GLControl.dll" />
+						<File Id="SDL.DLL" Name="SDL.dll" Source="Bizhawk\dll\SDL.dll" />
+						<File Id="SLIMDX.DLL" Name="SlimDX.dll" Source="Bizhawk\dll\SlimDX.dll" />
+						<File Id="ZLIB1.DLL" Name="zlib1.dll" Source="Bizhawk\dll\zlib1.dll" />
+					</Component>
+				</Directory>
+				<Directory Id="FIRMWARE" Name="Firmware">
+					<Component Id="Firmware" Guid="7F9AD1EE-27D4-48A6-9D28-E959C1C8AD03">
+						<CreateFolder/>
+					</Component>
+				</Directory>
+				<Directory Id="GAMEBOY" Name="Gameboy">
+					<Directory Id="GB_PALETTES" Name="Palettes">
+						<Component Id="GBPalettes" Guid="7F9AD1EE-27D4-48A6-9D28-E959C1C8AD04">
+							<File Id="ALLEY_WAY.PAL" Name="ALLEY WAY.pal" Source="Bizhawk\Gameboy\Palettes\ALLEY WAY.pal" />
+							<File Id="ASTEROIDS_MISCMD.PAL" Name="ASTEROIDS&amp;MISCMD.pal" Source="Bizhawk\Gameboy\Palettes\ASTEROIDS&amp;MISCMD.pal" />
+							<File Id="BA.TOSHINDEN.PAL" Name="BA.TOSHINDEN.pal" Source="Bizhawk\Gameboy\Palettes\BA.TOSHINDEN.pal" />
+							<File Id="BALLOON_KID.PAL" Name="BALLOON KID.pal" Source="Bizhawk\Gameboy\Palettes\BALLOON KID.pal" />
+							<File Id="BASEBALL.PAL" Name="BASEBALL.pal" Source="Bizhawk\Gameboy\Palettes\BASEBALL.pal" />
+							<File Id="BGB__LCD_GREEN_.PAL" Name="BGB (lcd green).pal" Source="Bizhawk\Gameboy\Palettes\BGB (lcd green).pal" />
+							<File Id="BOY_AND_BLOB_GB1.PAL" Name="BOY AND BLOB GB1.pal" Source="Bizhawk\Gameboy\Palettes\BOY AND BLOB GB1.pal" />
+							<File Id="BOY_AND_BLOB_GB2.PAL" Name="BOY AND BLOB GB2.pal" Source="Bizhawk\Gameboy\Palettes\BOY AND BLOB GB2.pal" />
+							<File Id="BSNES_V087.PAL" Name="bsnes v087.pal" Source="Bizhawk\Gameboy\Palettes\bsnes v087.pal" />
+							<File Id="BT2RAGNAROKWORLD.PAL" Name="BT2RAGNAROKWORLD.pal" Source="Bizhawk\Gameboy\Palettes\BT2RAGNAROKWORLD.pal" />
+							<File Id="DEFAULT.PAL" Name="default.pal" Source="Bizhawk\Gameboy\Palettes\default.pal" />
+							<File Id="DEFENDER_JOUST.PAL" Name="DEFENDER&amp;JOUST.pal" Source="Bizhawk\Gameboy\Palettes\DEFENDER&amp;JOUST.pal" />
+							<File Id="DMG_FOOTBALL.PAL" Name="DMG FOOTBALL.pal" Source="Bizhawk\Gameboy\Palettes\DMG FOOTBALL.pal" />
+							<File Id="DONKEY_KONG.PAL" Name="DONKEY KONG.pal" Source="Bizhawk\Gameboy\Palettes\DONKEY KONG.pal" />
+							<File Id="DONKEYKONGLAND_2.PAL" Name="DONKEYKONGLAND 2.pal" Source="Bizhawk\Gameboy\Palettes\DONKEYKONGLAND 2.pal" />
+							<File Id="DONKEYKONGLAND_3.PAL" Name="DONKEYKONGLAND 3.pal" Source="Bizhawk\Gameboy\Palettes\DONKEYKONGLAND 3.pal" />
+							<File Id="DONKEYKONGLAND.PAL" Name="DONKEYKONGLAND.pal" Source="Bizhawk\Gameboy\Palettes\DONKEYKONGLAND.pal" />
+							<File Id="DONKEYKONGLAND95.PAL" Name="DONKEYKONGLAND95.pal" Source="Bizhawk\Gameboy\Palettes\DONKEYKONGLAND95.pal" />
+							<File Id="DR.MARIO.PAL" Name="DR.MARIO.pal" Source="Bizhawk\Gameboy\Palettes\DR.MARIO.pal" />
+							<File Id="DYNABLASTER.PAL" Name="DYNABLASTER.pal" Source="Bizhawk\Gameboy\Palettes\DYNABLASTER.pal" />
+							<File Id="F1RACE.PAL" Name="F1RACE.pal" Source="Bizhawk\Gameboy\Palettes\F1RACE.pal" />
+							<File Id="G_W_GALLERY.PAL" Name="G&amp;W GALLERY.pal" Source="Bizhawk\Gameboy\Palettes\G&amp;W GALLERY.pal" />
+							<File Id="GALAGA_GALAXIAN.PAL" Name="GALAGA&amp;GALAXIAN.pal" Source="Bizhawk\Gameboy\Palettes\GALAGA&amp;GALAXIAN.pal" />
+							<File Id="GAME_AND_WATCH_2.PAL" Name="Game and Watch 2.pal" Source="Bizhawk\Gameboy\Palettes\Game and Watch 2.pal" />
+							<File Id="GAME_WATCH.PAL" Name="GAME&amp;WATCH.pal" Source="Bizhawk\Gameboy\Palettes\GAME&amp;WATCH.pal" />
+							<File Id="GAMEBOY_GALLERY.PAL" Name="GAMEBOY GALLERY.pal" Source="Bizhawk\Gameboy\Palettes\GAMEBOY GALLERY.pal" />
+							<File Id="GAMEBOY_GALLERY2.PAL" Name="GAMEBOY GALLERY2.pal" Source="Bizhawk\Gameboy\Palettes\GAMEBOY GALLERY2.pal" />
+							<File Id="GBC___BLUE.PAL" Name="GBC - Blue.pal" Source="Bizhawk\Gameboy\Palettes\GBC - Blue.pal" />
+							<File Id="GBC___BROWN.PAL" Name="GBC - Brown.pal" Source="Bizhawk\Gameboy\Palettes\GBC - Brown.pal" />
+							<File Id="GBC___DARK_BLUE.PAL" Name="GBC - Dark Blue.pal" Source="Bizhawk\Gameboy\Palettes\GBC - Dark Blue.pal" />
+							<File Id="GBC___DARK_BROWN.PAL" Name="GBC - Dark Brown.pal" Source="Bizhawk\Gameboy\Palettes\GBC - Dark Brown.pal" />
+							<File Id="GBC___DARK_GREEN.PAL" Name="GBC - Dark Green.pal" Source="Bizhawk\Gameboy\Palettes\GBC - Dark Green.pal" />
+							<File Id="GBC___GRAYSCALE.PAL" Name="GBC - Grayscale.pal" Source="Bizhawk\Gameboy\Palettes\GBC - Grayscale.pal" />
+							<File Id="GBC___GREEN.PAL" Name="GBC - Green.pal" Source="Bizhawk\Gameboy\Palettes\GBC - Green.pal" />
+							<File Id="GBC___INVERTED.PAL" Name="GBC - Inverted.pal" Source="Bizhawk\Gameboy\Palettes\GBC - Inverted.pal" />
+							<File Id="GBC___ORANGE.PAL" Name="GBC - Orange.pal" Source="Bizhawk\Gameboy\Palettes\GBC - Orange.pal" />
+							<File Id="GBC___PASTEL_MIX.PAL" Name="GBC - Pastel Mix.pal" Source="Bizhawk\Gameboy\Palettes\GBC - Pastel Mix.pal" />
+							<File Id="GBC___RED.PAL" Name="GBC - Red.pal" Source="Bizhawk\Gameboy\Palettes\GBC - Red.pal" />
+							<File Id="GBC___YELLOW.PAL" Name="GBC - Yellow.pal" Source="Bizhawk\Gameboy\Palettes\GBC - Yellow.pal" />
+							<File Id="GBWARS.PAL" Name="GBWARS.pal" Source="Bizhawk\Gameboy\Palettes\GBWARS.pal" />
+							<File Id="GOLF.PAL" Name="GOLF.pal" Source="Bizhawk\Gameboy\Palettes\GOLF.pal" />
+							<File Id="HOSHINOKA_BI.PAL" Name="HOSHINOKA-BI.pal" Source="Bizhawk\Gameboy\Palettes\HOSHINOKA-BI.pal" />
+							<File Id="JAMES__BOND__007.PAL" Name="JAMES  BOND  007.pal" Source="Bizhawk\Gameboy\Palettes\JAMES  BOND  007.pal" />
+							<File Id="KAERUNOTAMENI.PAL" Name="KAERUNOTAMENI.pal" Source="Bizhawk\Gameboy\Palettes\KAERUNOTAMENI.pal" />
+							<File Id="KEN_GRIFFEY_JR.PAL" Name="KEN GRIFFEY JR.pal" Source="Bizhawk\Gameboy\Palettes\KEN GRIFFEY JR.pal" />
+							<File Id="KID_ICARUS.PAL" Name="KID ICARUS.pal" Source="Bizhawk\Gameboy\Palettes\KID ICARUS.pal" />
+							<File Id="KILLERINSTINCT95.PAL" Name="KILLERINSTINCT95.pal" Source="Bizhawk\Gameboy\Palettes\KILLERINSTINCT95.pal" />
+							<File Id="KINGOFTHEZOO.PAL" Name="KINGOFTHEZOO.pal" Source="Bizhawk\Gameboy\Palettes\KINGOFTHEZOO.pal" />
+							<File Id="KIRAKIRA_KIDS.PAL" Name="KIRAKIRA KIDS.pal" Source="Bizhawk\Gameboy\Palettes\KIRAKIRA KIDS.pal" />
+							<File Id="KIRBY_BLOCKBALL.PAL" Name="KIRBY BLOCKBALL.pal" Source="Bizhawk\Gameboy\Palettes\KIRBY BLOCKBALL.pal" />
+							<File Id="KIRBY_DREAM_LAND.PAL" Name="KIRBY DREAM LAND.pal" Source="Bizhawk\Gameboy\Palettes\KIRBY DREAM LAND.pal" />
+							<File Id="KIRBY_S_PINBALL.PAL" Name="KIRBY'S PINBALL.pal" Source="Bizhawk\Gameboy\Palettes\KIRBY'S PINBALL.pal" />
+							<File Id="KIRBY2.PAL" Name="KIRBY2.pal" Source="Bizhawk\Gameboy\Palettes\KIRBY2.pal" />
+							<File Id="LOLO2.PAL" Name="LOLO2.pal" Source="Bizhawk\Gameboy\Palettes\LOLO2.pal" />
+							<File Id="MAGNETIC_SOCCER.PAL" Name="MAGNETIC SOCCER.pal" Source="Bizhawk\Gameboy\Palettes\MAGNETIC SOCCER.pal" />
+							<File Id="MANSELL.PAL" Name="MANSELL.pal" Source="Bizhawk\Gameboy\Palettes\MANSELL.pal" />
+							<File Id="MARIO___YOSHI.PAL" Name="MARIO &amp; YOSHI.pal" Source="Bizhawk\Gameboy\Palettes\MARIO &amp; YOSHI.pal" />
+							<File Id="MARIO_S_PICROSS.PAL" Name="MARIO'S PICROSS.pal" Source="Bizhawk\Gameboy\Palettes\MARIO'S PICROSS.pal" />
+							<File Id="MARIOLAND2.PAL" Name="MARIOLAND2.pal" Source="Bizhawk\Gameboy\Palettes\MARIOLAND2.pal" />
+							<File Id="MEGA_MAN_2.PAL" Name="MEGA MAN 2.pal" Source="Bizhawk\Gameboy\Palettes\MEGA MAN 2.pal" />
+							<File Id="MEGAMAN.PAL" Name="MEGAMAN.pal" Source="Bizhawk\Gameboy\Palettes\MEGAMAN.pal" />
+							<File Id="MEGAMAN3.PAL" Name="MEGAMAN3.pal" Source="Bizhawk\Gameboy\Palettes\MEGAMAN3.pal" />
+							<File Id="METROID2.PAL" Name="METROID2.pal" Source="Bizhawk\Gameboy\Palettes\METROID2.pal" />
+							<File Id="MILLI_CENTI_PEDE.PAL" Name="MILLI&amp;CENTI&amp;PEDE.pal" Source="Bizhawk\Gameboy\Palettes\MILLI&amp;CENTI&amp;PEDE.pal" />
+							<File Id="MOGURANYA.PAL" Name="MOGURANYA.pal" Source="Bizhawk\Gameboy\Palettes\MOGURANYA.pal" />
+							<File Id="MYSTIC_QUEST.PAL" Name="MYSTIC QUEST.pal" Source="Bizhawk\Gameboy\Palettes\MYSTIC QUEST.pal" />
+							<File Id="NETTOU_KOF_95.PAL" Name="NETTOU KOF 95.pal" Source="Bizhawk\Gameboy\Palettes\NETTOU KOF 95.pal" />
+							<File Id="NEW_CHESSMASTER.PAL" Name="NEW CHESSMASTER.pal" Source="Bizhawk\Gameboy\Palettes\NEW CHESSMASTER.pal" />
+							<File Id="OTHELLO.PAL" Name="OTHELLO.pal" Source="Bizhawk\Gameboy\Palettes\OTHELLO.pal" />
+							<File Id="PAC_IN_TIME.PAL" Name="PAC-IN-TIME.pal" Source="Bizhawk\Gameboy\Palettes\PAC-IN-TIME.pal" />
+							<File Id="PICROSS_2.PAL" Name="PICROSS 2.pal" Source="Bizhawk\Gameboy\Palettes\PICROSS 2.pal" />
+							<File Id="PINOCCHIO.PAL" Name="PINOCCHIO.pal" Source="Bizhawk\Gameboy\Palettes\PINOCCHIO.pal" />
+							<File Id="POKEBOM.PAL" Name="POKEBOM.pal" Source="Bizhawk\Gameboy\Palettes\POKEBOM.pal" />
+							<File Id="POKEMON_BLUE.PAL" Name="POKEMON BLUE.pal" Source="Bizhawk\Gameboy\Palettes\POKEMON BLUE.pal" />
+							<File Id="POKEMON_GREEN.PAL" Name="POKEMON GREEN.pal" Source="Bizhawk\Gameboy\Palettes\POKEMON GREEN.pal" />
+							<File Id="POKEMON_RED.PAL" Name="POKEMON RED.pal" Source="Bizhawk\Gameboy\Palettes\POKEMON RED.pal" />
+							<File Id="POKEMON_YELLOW.PAL" Name="POKEMON YELLOW.pal" Source="Bizhawk\Gameboy\Palettes\POKEMON YELLOW.pal" />
+							<File Id="QIX.PAL" Name="QIX.pal" Source="Bizhawk\Gameboy\Palettes\QIX.pal" />
+							<File Id="RADARMISSION.PAL" Name="RADARMISSION.pal" Source="Bizhawk\Gameboy\Palettes\RADARMISSION.pal" />
+							<File Id="ROCKMAN_WORLD.PAL" Name="ROCKMAN WORLD.pal" Source="Bizhawk\Gameboy\Palettes\ROCKMAN WORLD.pal" />
+							<File Id="ROCKMAN_WORLD2.PAL" Name="ROCKMAN WORLD2.pal" Source="Bizhawk\Gameboy\Palettes\ROCKMAN WORLD2.pal" />
+							<File Id="ROCKMANWORLD3.PAL" Name="ROCKMANWORLD3.pal" Source="Bizhawk\Gameboy\Palettes\ROCKMANWORLD3.pal" />
+							<File Id="SEIKEN_DENSETSU.PAL" Name="SEIKEN DENSETSU.pal" Source="Bizhawk\Gameboy\Palettes\SEIKEN DENSETSU.pal" />
+							<File Id="SOCCER.PAL" Name="SOCCER.pal" Source="Bizhawk\Gameboy\Palettes\SOCCER.pal" />
+							<File Id="SOLARSTRIKER.PAL" Name="SOLARSTRIKER.pal" Source="Bizhawk\Gameboy\Palettes\SOLARSTRIKER.pal" />
+							<File Id="SPACE_INVADERS.PAL" Name="SPACE INVADERS.pal" Source="Bizhawk\Gameboy\Palettes\SPACE INVADERS.pal" />
+							<File Id="STAR_STACKER.PAL" Name="STAR STACKER.pal" Source="Bizhawk\Gameboy\Palettes\STAR STACKER.pal" />
+							<File Id="STAR_WARS_NOA.PAL" Name="STAR WARS-NOA.pal" Source="Bizhawk\Gameboy\Palettes\STAR WARS-NOA.pal" />
+							<File Id="STAR_WARS.PAL" Name="STAR WARS.pal" Source="Bizhawk\Gameboy\Palettes\STAR WARS.pal" />
+							<File Id="STREET_FIGHTER_2.PAL" Name="STREET FIGHTER 2.pal" Source="Bizhawk\Gameboy\Palettes\STREET FIGHTER 2.pal" />
+							<File Id="SUPER_MARIOLAND.PAL" Name="SUPER MARIOLAND.pal" Source="Bizhawk\Gameboy\Palettes\SUPER MARIOLAND.pal" />
+							<File Id="SUPER_RC_PRO_AM.PAL" Name="SUPER RC PRO-AM.pal" Source="Bizhawk\Gameboy\Palettes\SUPER RC PRO-AM.pal" />
+							<File Id="SUPERDONKEYKONG.PAL" Name="SUPERDONKEYKONG.pal" Source="Bizhawk\Gameboy\Palettes\SUPERDONKEYKONG.pal" />
+							<File Id="SUPERMARIOLAND3.PAL" Name="SUPERMARIOLAND3.pal" Source="Bizhawk\Gameboy\Palettes\SUPERMARIOLAND3.pal" />
+							<File Id="TENNIS.PAL" Name="TENNIS.pal" Source="Bizhawk\Gameboy\Palettes\TENNIS.pal" />
+							<File Id="TETRIS_ATTACK.PAL" Name="TETRIS ATTACK.pal" Source="Bizhawk\Gameboy\Palettes\TETRIS ATTACK.pal" />
+							<File Id="TETRIS_BLAST.PAL" Name="TETRIS BLAST.pal" Source="Bizhawk\Gameboy\Palettes\TETRIS BLAST.pal" />
+							<File Id="TETRIS_FLASH.PAL" Name="TETRIS FLASH.pal" Source="Bizhawk\Gameboy\Palettes\TETRIS FLASH.pal" />
+							<File Id="TETRIS_PLUS.PAL" Name="TETRIS PLUS.pal" Source="Bizhawk\Gameboy\Palettes\TETRIS PLUS.pal" />
+							<File Id="TETRIS.PAL" Name="TETRIS.pal" Source="Bizhawk\Gameboy\Palettes\TETRIS.pal" />
+							<File Id="TETRIS2.PAL" Name="TETRIS2.pal" Source="Bizhawk\Gameboy\Palettes\TETRIS2.pal" />
+							<File Id="THE_CHESSMASTER.PAL" Name="THE CHESSMASTER.pal" Source="Bizhawk\Gameboy\Palettes\THE CHESSMASTER.pal" />
+							<File Id="TOPRANKINGTENNIS.PAL" Name="TOPRANKINGTENNIS.pal" Source="Bizhawk\Gameboy\Palettes\TOPRANKINGTENNIS.pal" />
+							<File Id="TOPRANKTENNIS.PAL" Name="TOPRANKTENNIS.pal" Source="Bizhawk\Gameboy\Palettes\TOPRANKTENNIS.pal" />
+							<File Id="TOY_STORY.PAL" Name="TOY STORY.pal" Source="Bizhawk\Gameboy\Palettes\TOY STORY.pal" />
+							<File Id="TRIP_WORLD.PAL" Name="TRIP WORLD.pal" Source="Bizhawk\Gameboy\Palettes\TRIP WORLD.pal" />
+							<File Id="VEGAS_STAKES.PAL" Name="VEGAS STAKES.pal" Source="Bizhawk\Gameboy\Palettes\VEGAS STAKES.pal" />
+							<File Id="WARIO_BLAST.PAL" Name="WARIO BLAST.pal" Source="Bizhawk\Gameboy\Palettes\WARIO BLAST.pal" />
+							<File Id="WARIOLAND2.PAL" Name="WARIOLAND2.pal" Source="Bizhawk\Gameboy\Palettes\WARIOLAND2.pal" />
+							<File Id="WAVERACE.PAL" Name="WAVERACE.pal" Source="Bizhawk\Gameboy\Palettes\WAVERACE.pal" />
+							<File Id="WORLDCUP.PAL" Name="WORLD CUP.pal" Source="Bizhawk\Gameboy\Palettes\WORLD CUP.pal" />
+							<File Id="X.PAL" Name="X.pal" Source="Bizhawk\Gameboy\Palettes\X.pal" />
+							<File Id="YAKUMAN.PAL" Name="YAKUMAN.pal" Source="Bizhawk\Gameboy\Palettes\YAKUMAN.pal" />
+							<File Id="YOSHI_S_COOKIE.PAL" Name="YOSHI'S COOKIE.pal" Source="Bizhawk\Gameboy\Palettes\YOSHI'S COOKIE.pal" />
+							<File Id="YOSSY_NO_COOKIE.PAL" Name="YOSSY NO COOKIE.pal" Source="Bizhawk\Gameboy\Palettes\YOSSY NO COOKIE.pal" />
+							<File Id="YOSSY_NO_PANEPON.PAL" Name="YOSSY NO PANEPON.pal" Source="Bizhawk\Gameboy\Palettes\YOSSY NO PANEPON.pal" />
+							<File Id="YOSSY_NO_TAMAGO.PAL" Name="YOSSY NO TAMAGO.pal" Source="Bizhawk\Gameboy\Palettes\YOSSY NO TAMAGO.pal" />
+							<File Id="ZELDA.PAL" Name="ZELDA.pal" Source="Bizhawk\Gameboy\Palettes\ZELDA.pal" />
+							<File Id="ZELDA2.PAL" Name="ZELDA2.pal" Source="Bizhawk\Gameboy\Palettes\ZELDA2.pal" />
+						</Component>
+					</Directory>
+				</Directory>
+				<Directory Id="GAMEDB" Name="gamedb">
+					<Component Id="GameDB" DiskId="1" Guid="7F9AD1EE-27D4-48A6-9D28-E959C1C8AD05">
+						<File Id="EMU7800.CSV" Name="EMU7800.csv" Source="Bizhawk\gamedb\EMU7800.csv" />
+						<File Id="GAME.DB" Name="game.db" Source="Bizhawk\gamedb\game.db" />
+						<File Id="GAMEDB.TXT" Name="gamedb.txt" Source="Bizhawk\gamedb\gamedb.txt" />
+						<File Id="GAMEDB_A2600.TXT" Name="gamedb_a2600.txt" Source="Bizhawk\gamedb\gamedb_a2600.txt" />
+						<File Id="GAMEDB_COLECO.TXT" Name="gamedb_coleco.txt" Source="Bizhawk\gamedb\gamedb_coleco.txt" />
+						<File Id="GAMEDB_GB.TXT" Name="gamedb_gb.txt" Source="Bizhawk\gamedb\gamedb_gb.txt" />
+						<File Id="GAMEDB_GBA.TXT" Name="gamedb_gba.txt" Source="Bizhawk\gamedb\gamedb_gba.txt" />
+						<File Id="GAMEDB_GBC.TXT" Name="gamedb_gbc.txt" Source="Bizhawk\gamedb\gamedb_gbc.txt" />
+						<File Id="GAMEDB_LYNX.TXT" Name="gamedb_lynx.txt" Source="Bizhawk\gamedb\gamedb_lynx.txt" />
+						<File Id="GAMEDB_N64.TXT" Name="gamedb_n64.txt" Source="Bizhawk\gamedb\gamedb_n64.txt" />
+						<File Id="GAMEDB_NESHOMEBREW.TXT" Name="gamedb_neshomebrew.txt" Source="Bizhawk\gamedb\gamedb_neshomebrew.txt" />
+						<File Id="GAMEDB_PCE_CD.TXT" Name="gamedb_pce_cd.txt" Source="Bizhawk\gamedb\gamedb_pce_cd.txt" />
+						<File Id="GAMEDB_PCE_HUCARDS.TXT" Name="gamedb_pce_hucards.txt" Source="Bizhawk\gamedb\gamedb_pce_hucards.txt" />
+						<File Id="GAMEDB_SEGA_GG.TXT" Name="gamedb_sega_gg.txt" Source="Bizhawk\gamedb\gamedb_sega_gg.txt" />
+						<File Id="GAMEDB_SEGA_MD.TXT" Name="gamedb_sega_md.txt" Source="Bizhawk\gamedb\gamedb_sega_md.txt" />
+						<File Id="GAMEDB_SEGA_SG1000.TXT" Name="gamedb_sega_sg1000.txt" Source="Bizhawk\gamedb\gamedb_sega_sg1000.txt" />
+						<File Id="GAMEDB_SEGA_SMS.TXT" Name="gamedb_sega_sms.txt" Source="Bizhawk\gamedb\gamedb_sega_sms.txt" />
+						<File Id="GAMEDB_SNES.TXT" Name="gamedb_snes.txt" Source="Bizhawk\gamedb\gamedb_snes.txt" />
+						<File Id="GAMEDB_VS.TXT" Name="gamedb_vs.txt" Source="Bizhawk\gamedb\gamedb_vs.txt" />
+						<File Id="GAMEDB_WS.TXT" Name="gamedb_ws.txt" Source="Bizhawk\gamedb\gamedb_ws.txt" />
+						<File Id="GAMEDB_WSC.TXT" Name="gamedb_wsc.txt" Source="Bizhawk\gamedb\gamedb_wsc.txt" />
+						<File Id="NESCARTS.7Z" Name="NesCarts.7z" Source="Bizhawk\gamedb\NesCarts.7z" />
+						<File Id="UPDATE_GAMEDB.BAT" Name="update_gamedb.bat" Source="Bizhawk\gamedb\update_gamedb.bat" />
+						<File Id="WGET.EXE" Name="wget.exe" Source="Bizhawk\gamedb\wget.exe" />
+					</Component>
+				</Directory>
+				<Directory Id="NES_1" Name="NES">
+                        <Directory Id="NES_PALETTES" Name="Palettes">
+                            <Component Id="NESPallettes" DiskId="1" Guid="511B2276-8A30-4293-B2DD-2F365DD9A394">
+                                <File Id="ASQ_REALITYA.PAL" Name="ASQ_realityA.pal" Source="Bizhawk\NES\Palettes\ASQ_realityA.pal" />
+                                <File Id="ASQ_REALITYB.PAL" Name="ASQ_realityB.pal" Source="Bizhawk\NES\Palettes\ASQ_realityB.pal" />
+                                <File Id="BMF_FINAL2.PAL" Name="BMF_final2.pal" Source="Bizhawk\NES\Palettes\BMF_final2.pal" />
+                                <File Id="BMF_FINAL3.PAL" Name="BMF_final3.pal" Source="Bizhawk\NES\Palettes\BMF_final3.pal" />
+                                <File Id="FCEU_13_DEFAULT_NITSUJA.PAL" Name="FCEU-13-default_nitsuja.pal" Source="Bizhawk\NES\Palettes\FCEU-13-default_nitsuja.pal" />
+                                <File Id="FCEU_15_NITSUJA_NEW.PAL" Name="FCEU-15-nitsuja_new.pal" Source="Bizhawk\NES\Palettes\FCEU-15-nitsuja_new.pal" />
+                                <File Id="FCEUX.PAL" Name="FCEUX.pal" Source="Bizhawk\NES\Palettes\FCEUX.pal" />
+                                <File Id="QUICKNES.PAL" Name="QuickNes.pal" Source="Bizhawk\NES\Palettes\QuickNes.pal" />
+                                <File Id="SONY_CXA2025AS_US.PAL" Name="SONY_CXA2025AS_US.pal" Source="Bizhawk\NES\Palettes\SONY_CXA2025AS_US.pal" />
+                            </Component>
+                        </Directory>
+                    </Directory>
+				<Directory Id="PREREQ" Name="Prereq">
+					<Component Id="Prereq" Guid="7F9AD1EE-27D4-48A6-9D28-E959C1C8ADCF">
+						<File Id="DOTNETFX40_FULL_SETUP.EXE" Name="dotNetFx40_Full_setup.exe" Source="Bizhawk\Prereq\dotNetFx40_Full_setup.exe" />
+						<File Id="DXWEBSETUP.EXE" Name="dxwebsetup.exe" Source="Bizhawk\Prereq\dxwebsetup.exe" />
+						<File Id="VCREDIST_2010_SP1_X86.EXE" Name="vcredist_2010_sp1_x86.exe" Source="Bizhawk\Prereq\vcredist_2010_sp1_x86.exe" />
+						<File Id="WIC_X86_ENU.EXE" Name="wic_x86_enu.exe" Source="Bizhawk\Prereq\wic_x86_enu.exe" />
+					</Component>
+				</Directory>
+							<Directory Id="LUA" Name="Lua">
+					<Component Id="LUA" DiskId="1" Guid="43B86A6F-B2C0-4130-B167-A848C10EBEED">
+						<File Id="BUTTONCOUNT.LUA" Name="ButtonCount.lua" Source="Bizhawk\Lua\ButtonCount.lua" />
+						<File Id="MOVIECLOCK.LUA" Name="MovieClock.lua" Source="Bizhawk\Lua\MovieClock.lua" />
+					</Component>
+					<Directory Id="GENESIS" Name="Genesis">
+						<Component Id="GenesisLUA" DiskId="1" Guid="3982006F-85CE-42DF-82F2-576B01C59B0F">
+							<File Id="CASTLEVANIA_BLOODLINES.LUA" Name="Castlevania Bloodlines.lua" Source="Bizhawk\Lua\Genesis\Castlevania Bloodlines.lua" />
+							<File Id="LEGEND_OF_TOKI.LUA" Name="Legend of Toki.lua" Source="Bizhawk\Lua\Genesis\Legend of Toki.lua" />
+						</Component>
+					</Directory>
+					<Directory Id="N64" Name="N64">
+						<Component Id="N64LUA" DiskId="1" Guid="ED6B90FA-AB78-4C3C-980A-250BDC4A47ED">
+							<File Id="M64_READER.LUA" Name="M64_reader.lua" Source="Bizhawk\Lua\N64\M64_reader.lua" />
+						</Component>
+					</Directory>
+					<Directory Id="NES" Name="NES">
+						<Component Id="NESLUA" DiskId="1" Guid="9FDF9C70-1F4B-4D37-A881-E45673BE144B">
+							<File Id="CASTLEVANIA.LUA" Name="Castlevania.lua" Source="Bizhawk\Lua\NES\Castlevania.lua" />
+							<File Id="CONTRA_FORCE.LUA" Name="Contra force.lua" Source="Bizhawk\Lua\NES\Contra force.lua" />
+							<File Id="CRYSTALIS.LUA" Name="Crystalis.lua" Source="Bizhawk\Lua\NES\Crystalis.lua" />
+							<File Id="FAXANDU.LUA" Name="Faxandu.lua" Source="Bizhawk\Lua\NES\Faxandu.lua" />
+							<File Id="HOLY_DIVER.LUA" Name="Holy Diver.lua" Source="Bizhawk\Lua\NES\Holy Diver.lua" />
+							<File Id="MEGAMAN_4.LUA" Name="Megaman 4.lua" Source="Bizhawk\Lua\NES\Megaman 4.lua" />
+							<File Id="NINJAGAIDEN_HITBOX.LUA" Name="NinjaGaiden_Hitbox.lua" Source="Bizhawk\Lua\NES\NinjaGaiden_Hitbox.lua" />
+							<File Id="PUNCHOUTSTATS.LUA" Name="PunchOutStats.lua" Source="Bizhawk\Lua\NES\PunchOutStats.lua" />
+							<File Id="RBIBASEBALL.LUA" Name="RBIBaseball.lua" Source="Bizhawk\Lua\NES\RBIBaseball.lua" />
+							<File Id="SIMONS_QUEST.LUA" Name="Simons Quest.lua" Source="Bizhawk\Lua\NES\Simons Quest.lua" />
+							<File Id="SMB2U.LUA" Name="SMB2U.lua" Source="Bizhawk\Lua\NES\SMB2U.lua" />
+							<File Id="SNAKE_RATTLE_N__ROLL.LUA" Name="Snake Rattle N' Roll.lua" Source="Bizhawk\Lua\NES\Snake Rattle N' Roll.lua" />
+							<File Id="SUPER_C.LUA" Name="Super C.lua" Source="Bizhawk\Lua\NES\Super C.lua" />
+							<File Id="VICE_PROJECT_DOOM.LUA" Name="Vice Project Doom.lua" Source="Bizhawk\Lua\NES\Vice Project Doom.lua" />
+							<File Id="ZAPPERTARGET.LUA" Name="ZapperTarget.lua" Source="Bizhawk\Lua\NES\ZapperTarget.lua" />
+						</Component>
+					</Directory>
+					<Directory Id="PCE" Name="PCE">
+						<Component Id="PCELUA" DiskId="1" Guid="9BC7623A-DA9E-4057-BD08-E0E54223A36E">
+							<File Id="CASTLEVANIA_RONDO_OF_BLOOD.LUA" Name="Castlevania_Rondo_of_Blood.lua" Source="Bizhawk\Lua\PCE\Castlevania_Rondo_of_Blood.lua" />
+						</Component>
+					</Directory>
+					<Directory Id="SNES" Name="SNES">
+						<Component Id="SNESLUA" DiskId="1" Guid="A09BD079-1C58-47F9-911D-368F19D823C2">
+							<File Id="CONGO_S_CAPER.LUA" Name="Congo's Caper.lua" Source="Bizhawk\Lua\SNES\Congo's Caper.lua" />
+							<File Id="CONTRA_3.LUA" Name="Contra 3.lua" Source="Bizhawk\Lua\SNES\Contra 3.lua" />
+							<File Id="DONKEY_KONG_COUNTRY_3.LUA" Name="Donkey Kong Country 3.lua" Source="Bizhawk\Lua\SNES\Donkey Kong Country 3.lua" />
+							<File Id="MEGAMAN_X.LUA" Name="Megaman X.lua" Source="Bizhawk\Lua\SNES\Megaman X.lua" />
+							<File Id="MEGAMAN_X2.LUA" Name="Megaman X2.lua" Source="Bizhawk\Lua\SNES\Megaman X2.lua" />
+							<File Id="MEGAMAN_X3.LUA" Name="Megaman X3.lua" Source="Bizhawk\Lua\SNES\Megaman X3.lua" />
+							<File Id="ROCKMAN___FORTE.LUA" Name="Rockman &amp; Forte.lua" Source="Bizhawk\Lua\SNES\Rockman &amp; Forte.lua" />
+							<File Id="SUPER_CASTLEVANIA_4.LUA" Name="Super Castlevania 4.lua" Source="Bizhawk\Lua\SNES\Super Castlevania 4.lua" />
+							<File Id="SUPER_GHOULS_N_GHOST.LUA" Name="Super Ghouls N Ghost.lua" Source="Bizhawk\Lua\SNES\Super Ghouls N Ghost.lua" />
+							<File Id="SUPER_MARIO_WORLD.LUA" Name="Super Mario World.lua" Source="Bizhawk\Lua\SNES\Super Mario World.lua" />
+							<File Id="SUPER_METROID.LUA" Name="Super Metroid.lua" Source="Bizhawk\Lua\SNES\Super Metroid.lua" />
+							<File Id="Y_S_III.LUA" Name="Y's III.lua" Source="Bizhawk\Lua\SNES\Y's III.lua" />
+						</Component>
+					</Directory>
+					<Directory Id="UNITTESTS" Name="UnitTests">
+						<Component Id="UnitTestsLUA" DiskId="1" Guid="17BB182B-4AC9-44E5-AC78-5F4CEC2AF4AF">
+							<File Id="CONSOLE.LUA" Name="Console.lua" Source="Bizhawk\Lua\UnitTests\Console.lua" />
+							<File Id="GAMEINFO.LUA" Name="GameInfo.lua" Source="Bizhawk\Lua\UnitTests\GameInfo.lua" />
+							<File Id="JOYPAD_ROUNDTRIP.LUA" Name="Joypad_RoundTrip.lua" Source="Bizhawk\Lua\UnitTests\Joypad_RoundTrip.lua" />
+							<File Id="JOYPAD_SET.LUA" Name="Joypad_Set.lua" Source="Bizhawk\Lua\UnitTests\Joypad_Set.lua" />
+							<File Id="JOYPAD_WITHCONTROLLERNUMBERS.LUA" Name="Joypad_WithControllerNumbers.lua" Source="Bizhawk\Lua\UnitTests\Joypad_WithControllerNumbers.lua" />
+							<File Id="UNITTESTS.LUA" Name="UnitTests.lua" Source="Bizhawk\Lua\UnitTests\UnitTests.lua" />
+						</Component>
+					</Directory>
+				</Directory>
+				<Directory Id="SHADERS" Name="shaders">
+					<Directory Id="BICUBIC" Name="bicubic">
+						<Component Id="ShadersBicubic" DiskId="1" Guid="A8437F68-3C4C-455D-B399-BFCA085BD1AF">
+							<File Id="BICUBIC_FAST.CG" Name="bicubic-fast.cg" Source="Bizhawk\shaders\bicubic\bicubic-fast.cg" />
+							<File Id="BICUBIC_FAST.GLSL" Name="bicubic-fast.glsl" Source="Bizhawk\shaders\bicubic\bicubic-fast.glsl" />
+						</Component>
+					</Directory>
+					<Directory Id="BIZHAWK" Name="BizHawk">
+						<Component Id="ShadersBizHawk" DiskId="1" Guid="41D58C73-54AE-4396-883D-5E513B86FF82">
+							<File Id="BICUBIC_FAST.CGP" Name="bicubic-fast.cgp" Source="Bizhawk\shaders\BizHawk\bicubic-fast.cgp" />
+							<File Id="BICUBIC_FAST.GLSL_1" Name="bicubic-fast.glsl" Source="Bizhawk\shaders\BizHawk\bicubic-fast.glsl" />
+							<File Id="BIZSCANLINES.CGP" Name="BizScanlines.cgp" Source="Bizhawk\shaders\BizHawk\BizScanlines.cgp" />
+							<File Id="BIZSCANLINES.GLSL" Name="BizScanlines.glsl" Source="Bizhawk\shaders\BizHawk\BizScanlines.glsl" />
+							<File Id="HQ2X.CG" Name="hq2x.cg" Source="Bizhawk\shaders\BizHawk\hq2x.cg" />
+							<File Id="HQ2X.CGP" Name="hq2x.cgp" Source="Bizhawk\shaders\BizHawk\hq2x.cgp" />
+							<File Id="HQ2X.GLSL" Name="hq2x.glsl" Source="Bizhawk\shaders\BizHawk\hq2x.glsl" />
+							<File Id="TEST.CGP" Name="test.cgp" Source="Bizhawk\shaders\BizHawk\test.cgp" />
+						</Component>
+					</Directory>
+				</Directory>
+				</Directory>
+			<!-- This is our End of Root Marker -->
+			</Directory>
+			<!-- Shortcuts and Start Menu items -->
+			<Directory Id="ProgramMenuFolder">
+				<Directory Id="ProgramMenuSubfolder" Name="BizHawk">
+					<Component Id="ApplicationShortcuts" Guid="7F9AD1EE-27D4-48A6-9D28-E959C1C8ADCC">
+						<Shortcut Id="ApplicationShortcut1" Name="BizHawk Client" Description="Run Bizhawk" Target="[INSTALLDIR]emuhawk.exe" WorkingDirectory="INSTALLDIR" />
+						<RegistryValue Root="HKCU" Key="Software\BizHawk\EmuHawk" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+						<RemoveFolder Id="ProgramMenuSubfolder" On="uninstall" />
+					</Component>
+				</Directory>
+			</Directory>
+		<!-- This is our End of SourceDir marker.  DO NOT put files past this. -->
+		</Directory>
+		<InstallExecuteSequence>
+			<RemoveExistingProducts After="InstallValidate" />
+		</InstallExecuteSequence>
+		<Feature Id="DefaultFeature" Level="1">
+			<!-- This tells the MSI what to actually do. -->
+			<!-- Setup Application Files and ApplicatonShortcuts -->
+			<!-- If you change the Id, change these too. -->
+			<ComponentRef Id="ApplicationFiles" />
+			<ComponentRef Id="DLL" />
+			<ComponentRef Id="Firmware"/>
+			<ComponentRef Id="GameDB" />
+			<ComponentRef Id="LUA" />
+			<ComponentRef Id="GenesisLUA" />
+			<ComponentRef Id="N64LUA" />
+			<ComponentRef Id="NESLUA" />
+			<ComponentRef Id="SNESLUA" />
+			<ComponentRef Id="PCELUA" />
+			<ComponentRef Id="UnitTestsLUA" />
+			<ComponentRef Id="Prereq" />
+			<ComponentRef Id="ApplicationShortcuts" />
+			<ComponentRef Id="ShadersBicubic" />
+			<ComponentRef Id="ShadersBizHawk"/>
+			<ComponentRef Id="NESPallettes" />
+			<ComponentRef Id="GBPalettes"/>
+			
+		</Feature>
+		<UI />
+	</Product>
+</Wix>
