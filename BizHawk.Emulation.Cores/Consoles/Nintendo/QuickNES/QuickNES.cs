@@ -488,7 +488,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			[DisplayName("Clip Left and Right")]
 			public bool ClipLeftAndRight { get; set; }
 
-			[DefaultValue(false)]
+			[DefaultValue(true)]
 			[Description("Clip the top and bottom 8 pixels of the display, which sometimes contain nametable garbage.")]
 			[DisplayName("Clip Top and Bottom")]
 			public bool ClipTopAndBottom { get; set; }
