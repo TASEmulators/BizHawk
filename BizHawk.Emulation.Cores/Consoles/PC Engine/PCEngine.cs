@@ -68,9 +68,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		[CoreConstructor("PCE", "SGX")]
 		public PCEngine(CoreComm comm, GameInfo game, byte[] rom, object Settings, object syncSettings)
 		{
-			ServiceProvider = new BasicServiceProvider(this);
-			Tracer = new TraceBuffer();
-			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
 
 			MemoryCallbacks = new MemoryCallbackSystem();
 			CoreComm = comm;
@@ -90,6 +87,14 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			_syncSettings = (PCESyncSettings)syncSettings ?? new PCESyncSettings();
 			Init(game, rom);
 			SetControllerButtons();
+
+			{
+				var ser = new BasicServiceProvider(this);
+				ServiceProvider = ser;
+				Tracer = new TraceBuffer();
+				ser.Register<ITraceable>(Tracer);
+				ser.Register<IDisassemblable>(Cpu);
+			}
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
@@ -490,6 +495,21 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					Cpu.WriteMemory21(addr, value);
 				});
 			domains.Add(SystemBusDomain);
+
+			var CpuBusDomain = new MemoryDomain("CPU Bus", 0x10000, MemoryDomain.Endian.Little,
+				(addr) =>
+				{
+					if (addr < 0 || addr >= 0x10000)
+						throw new ArgumentOutOfRangeException();
+					return Cpu.ReadMemory((ushort)addr);
+				},
+				(addr, value) =>
+				{
+					if (addr < 0 || addr >= 0x10000)
+						throw new ArgumentOutOfRangeException();
+					Cpu.WriteMemory((ushort)addr, value);
+				});
+			domains.Add(CpuBusDomain);
 
 			var RomDomain = new MemoryDomain("ROM", RomLength, MemoryDomain.Endian.Little,
 				addr => RomData[addr],
