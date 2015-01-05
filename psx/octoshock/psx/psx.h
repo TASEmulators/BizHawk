@@ -1,5 +1,6 @@
 #pragma once
 
+#include "octoshock.h"
 #include "emuware/emuware.h"
 #include "video/surface.h"
 #include "masmem.h"
