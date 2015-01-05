@@ -67,6 +67,11 @@ namespace BizHawk.Emulation.DiscSystem
 	public partial class Disc : IDisposable
 	{
 		/// <summary>
+		/// Free-form optional memos about the disc
+		/// </summary>
+		public Dictionary<string, object> Memos = new Dictionary<string, object>();
+
+		/// <summary>
 		/// The raw TOC entries found in the lead-in track.
 		/// </summary>
 		public List<RawTOCEntry> RawTOCEntries = new List<RawTOCEntry>();
@@ -204,9 +209,19 @@ FILE ""xarp.barp.marp.farp"" BINARY
 		{
 			var ret = new Disc();
 			ret.FromCuePathInternal(cuePath, prefs);
+
 			ret.Structure.Synthesize_TOCPointsFromSessions();
 			ret.Synthesize_SubcodeFromStructure();
 			ret.Synthesize_TOCRawFromStructure();
+
+			//try loading SBI. make sure its done after the subcode is synthesized!
+			string sbiPath = Path.ChangeExtension(cuePath, "sbi");
+			if (File.Exists(sbiPath) && SBI_Format.QuickCheckISSBI(sbiPath))
+			{
+				var sbi = new SBI_Format().LoadSBIPath(sbiPath);
+				ret.ApplySBI(sbi);
+			}
+
 			return ret;
 		}
 
@@ -252,6 +267,33 @@ FILE ""xarp.barp.marp.farp"" BINARY
 		}
 
 		/// <summary>
+		/// applies an SBI file to the disc
+		/// </summary>
+		public void ApplySBI(SBI_Format.SBIFile sbi)
+		{
+			//save this, it's small, and we'll want it for disc processing a/b checks
+			Memos["sbi"] = sbi;
+
+			int n = sbi.ABAs.Count;
+			byte[] subcode = new byte[96];
+			int b=0;
+			for (int i = 0; i < n; i++)
+			{
+				int aba = sbi.ABAs[i];
+				var oldSubcode = this.Sectors[aba].SubcodeSector;
+				oldSubcode.ReadSubcodeDeinterleaved(subcode, 0);
+				for (int j = 0; j < 12; j++)
+				{
+					short patch = sbi.subq[b++];
+					if (patch == -1) continue;
+					else subcode[12 + j] = (byte)patch;
+				}
+				var bss = new BufferedSubcodeSector();
+				Sectors[aba].SubcodeSector = BufferedSubcodeSector.CloneFromBytesDeinterleaved(subcode);
+			}
+		}
+
+		/// <summary>
 		/// Creates the subcode (really, just subchannel Q) for this disc from its current TOC.
 		/// Depends on the TOCPoints existing in the structure
 		/// TODO - do we need a fully 0xFF P-subchannel for PSX?
@@ -283,10 +325,6 @@ FILE ""xarp.barp.marp.farp"" BINARY
 				}
 				var dp = Structure.Points[dpIndex];
 
-				if (aba == 4903 + 150)
-				{
-					int zzz = 9;
-				}
 
 				var se = Sectors[aba];
 
@@ -366,8 +404,14 @@ FILE ""xarp.barp.marp.farp"" BINARY
 			return new BCD2 {DecimalValue = d};
 		}
 
+		public static int BCDToInt(byte n)
+		{
+			var bcd = new BCD2();
+			bcd.BCDValue = n;
+			return bcd.DecimalValue;
+		}
 
-		static byte IntToBCD(int n)
+		public static byte IntToBCD(int n)
 		{
 			int ones;
 			int tens = Math.DivRem(n, 10, out ones);
