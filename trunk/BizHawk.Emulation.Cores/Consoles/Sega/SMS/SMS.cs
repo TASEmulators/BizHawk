@@ -212,6 +212,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				SaveRAM = new byte[0x8000];
 
 			SetupMemoryDomains();
+			(ServiceProvider as BasicServiceProvider).Register<IDisassemblable>(new Disassembler());
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
