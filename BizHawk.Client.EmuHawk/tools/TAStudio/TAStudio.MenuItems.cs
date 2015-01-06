@@ -68,6 +68,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private bool _exiting = false;
+
 		private void SaveTasMenuItem_Click(object sender, EventArgs e)
 		{
 			if (string.IsNullOrEmpty(CurrentTasMovie.Filename) ||
@@ -77,7 +79,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				_saveBackgroundWorker.RunWorkerAsync();
+				if (_exiting)
+				{
+					CurrentTasMovie.Save();
+				}
+				else
+				{
+					_saveBackgroundWorker.RunWorkerAsync();
+				}
 				Settings.RecentTas.Add(CurrentTasMovie.Filename);
 			}
 		}
@@ -95,7 +104,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CurrentTasMovie.Filename = file.FullName;
 
-                _saveBackgroundWorker.RunWorkerAsync();
+				if (_exiting)
+				{
+					CurrentTasMovie.Save();
+				}
+				else
+				{
+					_saveBackgroundWorker.RunWorkerAsync();
+				}
+
 				Settings.RecentTas.Add(CurrentTasMovie.Filename);
 				SetTextProperty();
 			}

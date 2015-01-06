@@ -230,10 +230,14 @@ namespace BizHawk.Client.EmuHawk
 				text += " - " + CurrentTasMovie.Name + (CurrentTasMovie.Changes ? "*" : "");
 			}
 
-            if (this.InvokeRequired)
-                this.Invoke(() => Text = text);
-            else
-                Text = text;
+			if (this.InvokeRequired)
+			{
+				this.Invoke(() => Text = text);
+			}
+			else
+			{
+				Text = text;
+			}
 		}
 
 		public bool LoadProject(string path)
@@ -631,6 +635,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Tastudio_Closing(object sender, FormClosingEventArgs e)
 		{
+			_exiting = true;
 			if (AskSaveChanges())
 			{
 				WantsToControlStopMovie = false;
@@ -640,6 +645,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				e.Cancel = true;
+				_exiting = false;
 			}
 		}
 
