@@ -255,6 +255,8 @@ namespace BizHawk.Client.Common
 			{
 				LatchInputFromLog();
 
+				InputManager.RewireInputChain();
+
 				if (Movie.IsRecording) // The movie end situation can cause the switch to record mode, in that case we need to capture some input for this frame
 				{
 					HandleFrameLoopForRecordMode();

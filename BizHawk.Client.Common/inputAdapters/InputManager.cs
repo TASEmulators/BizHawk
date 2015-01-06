@@ -25,7 +25,7 @@ namespace BizHawk.Client.Common
 
 			// connect the movie session before MovieOutputHardpoint if it is doing anything
 			// otherwise connect the MovieInputSourceAdapter to it, effectively bypassing the movie session
-			if (Global.MovieSession.Movie != null)
+			if (Global.MovieSession.Movie.IsPlaying && Global.MovieSession.Movie.IsRecording)
 			{
 				Global.MovieOutputHardpoint.Source = Global.MovieSession.MovieControllerAdapter;
 			}
