@@ -77,6 +77,9 @@ class InputDevice_DualShock : public InputDevice
 
  void CheckManualAnaModeChange(void);
 
+ //non-serialized state
+ IO_Dualshock* io;
+
  //
  //
  bool cur_ana_button_state;
@@ -261,6 +264,7 @@ void InputDevice_DualShock::Power(void)
 
 void InputDevice_DualShock::UpdateInput(const void *data)
 {
+	io = (IO_Dualshock*)data;
  uint8 *d8 = (uint8 *)data;
  uint8* const rumb_dp = &d8[3 + 16];
 
@@ -438,13 +442,15 @@ bool InputDevice_DualShock::Clock(bool TxD, int32 &dsr_pulse_delay)
 	  transmit_buffer[4] = axes[0][1];
 	  transmit_buffer[5] = axes[1][0];
 	  transmit_buffer[6] = axes[1][1];
-          transmit_count = 7;
+		transmit_count = 7;
+		io->active = 1;
 	 }
 	 else
 	 {
 	  transmit_buffer[1] = 0xFF ^ buttons[0];
  	  transmit_buffer[2] = 0xFF ^ buttons[1];
  	  transmit_count = 3;
+		io->active = 1;
 	 }
 	}
 	else
@@ -452,8 +458,8 @@ bool InputDevice_DualShock::Clock(bool TxD, int32 &dsr_pulse_delay)
 	 command_phase = -1;
 	 transmit_buffer[1] = 0;
 	 transmit_buffer[2] = 0;
-         transmit_pos = 0;
-         transmit_count = 0;
+	 transmit_pos = 0;
+	 transmit_count = 0;
 	}
 	break;
 
@@ -557,12 +563,14 @@ bool InputDevice_DualShock::Clock(bool TxD, int32 &dsr_pulse_delay)
 	 transmit_buffer[4] = axes[1][0];
 	 transmit_buffer[5] = axes[1][1];
  	 transmit_count = 6;
+	 io->active = 1;
 	}
 	else
 	{
 	 transmit_buffer[0] = 0xFF ^ buttons[0];
 	 transmit_buffer[1] = 0xFF ^ buttons[1];
 	 transmit_count = 2;
+	 io->active = 1;
 
 	 if(!(rumble_magic[2] & 0xFE))
 	 {

@@ -150,3 +150,10 @@ char (*BLAHBLAHBLAH( UNALIGNED T (&)[N] ))[N];
 #else
 #define EW_EXPORT extern "C" __declspec(dllimport)
 #endif
+
+//http://stackoverflow.com/questions/1537964/visual-c-equivalent-of-gccs-attribute-packed
+#ifdef _MSC_VER
+#define EW_PACKED( ... ) __pragma( pack(push, 1) ) __VA_ARGS__  __pragma( pack(pop) )
+#else
+#define EW_PACKED( ... ) __Declaration__ __VA_ARGS__ ((__packed__))
+#endif

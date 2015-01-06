@@ -28,6 +28,8 @@
 #include "endian.h"
 #include "emuware/EW_state.h"
 
+#include "input/dualshock.h"
+
 //#include <mednafen/PSFLoader.h>
 
 #include <stdarg.h>
@@ -1097,6 +1099,36 @@ struct {
 		return SHOCK_OK;
 	}
 
+	s32 PollActive(s32 address, bool clear)
+	{
+		//check the port address
+		int portnum = address&0x0F;
+		if(portnum != 1 && portnum != 2)
+			return SHOCK_INVALID_ADDRESS;
+		portnum--;
+
+		s32 ret = SHOCK_FALSE;
+
+		u8* buf = ports[portnum].buffer;
+		switch(ports[portnum].type)
+		{
+		case ePeripheralType_DualShock:
+			{
+				IO_Dualshock* io_dualshock = (IO_Dualshock*)buf;
+				if(io_dualshock->active) ret = SHOCK_TRUE;
+				if(clear) io_dualshock->active = 0;
+				return ret;
+				break;
+			}
+
+		case ePeripheralType_None:
+			return SHOCK_NOCANDO;
+
+		default:
+			return SHOCK_ERROR;
+		}
+	}
+
 	s32 SetPadInput(s32 address, u32 buttons, u8 left_x, u8 left_y, u8 right_x, u8 right_y)
 	{
 		//check the port address
@@ -1109,14 +1141,17 @@ struct {
 		switch(ports[portnum].type)
 		{
 		case ePeripheralType_DualShock:
-			buf[0] = (buttons>>0)&0xFF;
-			buf[1] = (buttons>>8)&0xFF;
-			buf[2] = (buttons>>16)&0xFF; //this is only the analog mode button
-			buf[3] = right_x;
-			buf[4] = right_y;
-			buf[5] = left_x;
-			buf[6] = left_y;
-			return SHOCK_OK;
+			{
+				IO_Dualshock* io_dualshock = (IO_Dualshock*)buf;
+				io_dualshock->buttons[0] = (buttons>>0)&0xFF;
+				io_dualshock->buttons[1] = (buttons>>8)&0xFF;
+				io_dualshock->buttons[2] = (buttons>>16)&0xFF; //this is only the analog mode button
+				io_dualshock->right_x = right_x;
+				io_dualshock->right_y = right_y;
+				io_dualshock->left_x = left_x;
+				io_dualshock->left_y = left_y;
+				return SHOCK_OK;
+			}
 		
 		default:
 			return SHOCK_ERROR;
@@ -1164,12 +1199,17 @@ struct {
 
 EW_EXPORT s32 shock_Peripheral_Connect(void* psx, s32 address, s32 type)
 {
-	return s_ShockPeripheralState.Connect(address,type);
+	return s_ShockPeripheralState.Connect(address, type);
 }
 
 EW_EXPORT s32 shock_Peripheral_SetPadInput(void* psx, s32 address, u32 buttons, u8 left_x, u8 left_y, u8 right_x, u8 right_y)
 {
 	return s_ShockPeripheralState.SetPadInput(address, buttons, left_x, left_y, right_x, right_y);
+}
+
+EW_EXPORT s32 shock_Peripheral_PollActive(void* psx, s32 address, s32 clear)
+{
+	return s_ShockPeripheralState.PollActive(address, clear!=SHOCK_FALSE);
 }
 
 EW_EXPORT s32 shock_Peripheral_MemcardTransact(void* psx, s32 address, ShockMemcardTransaction* transaction)
@@ -1731,7 +1771,7 @@ static void LoadEXE(const uint8 *data, const uint32 size, bool ignore_pcsp = fal
  po += 4;
 }
 
-EW_EXPORT s32 shock_MountEXE(void* psx, void* exebuf, int size)
+EW_EXPORT s32 shock_MountEXE(void* psx, void* exebuf, s32 size)
 {
 	LoadEXE((uint8*)exebuf, (uint32)size);
 	return SHOCK_OK;
