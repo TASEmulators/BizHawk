@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				string latestVersionInfo = DownloadURLAsString(_latestVersionInfoURL);
+				string latestVersionInfo = WebUtility.HtmlDecode(DownloadURLAsString(_latestVersionInfoURL));
 
 				LatestVersion = GetVersionNumberFromVersionInfo(latestVersionInfo);
 			}
@@ -107,7 +107,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private static string GetTextFromTag(string info, string tagName)
 		{
-			info = info.Replace("&#91;", "[").Replace("&#93;", "]").Replace("&#47;", "/");
 			string openTag = "[" + tagName + "]";
 			string closeTag = "[/" + tagName + "]";
 			int start = info.IndexOf(openTag, StringComparison.OrdinalIgnoreCase);
