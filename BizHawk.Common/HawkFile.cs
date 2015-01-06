@@ -269,7 +269,7 @@ namespace BizHawk.Common
 		/// </summary>
 		public HawkFile BindArchiveMember(HawkFileArchiveItem item)
 		{
-			return BindArchiveMember(item.ArchiveIndex);
+			return BindArchiveMember(item.Index);
 		}
 
 		/// <summary>
