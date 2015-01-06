@@ -194,6 +194,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public static extern int shock_Peripheral_MemcardTransact(IntPtr psx, int address, ref ShockMemcardTransaction transaction);
 
 		[DllImport(dd, CallingConvention = cc)]
+		public static extern int shock_Peripheral_PollActive(IntPtr psx, int address, bool clear);
+
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_MountEXE(IntPtr psx, void* exebuf, int size);
 
 		[DllImport(dd, CallingConvention = cc)]

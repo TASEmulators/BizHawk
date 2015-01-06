@@ -347,11 +347,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		}
 
 
-		[FeatureNotImplemented]
 		public void ResetCounters()
 		{
-			// FIXME when all this stuff is implemented
 			Frame = 0;
+			LagCount = 0;
+			IsLagFrame = false;
 		}
 
 		void SetInput()
@@ -512,6 +512,15 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			//------------------------
 			OctoshockDll.shock_Step(psx, OctoshockDll.eShockStep.Frame);
 			//------------------------
+
+			//lag maintenance:
+			int pad1 = OctoshockDll.shock_Peripheral_PollActive(psx, 0x01, true);
+			int pad2 = OctoshockDll.shock_Peripheral_PollActive(psx, 0x02, true);
+			IsLagFrame = true;
+			if (pad1 == OctoshockDll.SHOCK_TRUE) IsLagFrame = false;
+			if (pad2 == OctoshockDll.SHOCK_TRUE) IsLagFrame = false;
+			if (IsLagFrame)
+				LagCount++;
 
 			//what happens to sound in this case?
 			if (render == false) return;

@@ -46,13 +46,12 @@ namespace MDFN_IEN_PSX
 {
 #endif
 
-#include "emuware/PACKED.h"
+EW_PACKED(
 struct gtematrix
 {
  int16 MX[3][3];
  int16 dummy;
-};
-#include "emuware/PACKED_END.h"
+});
 
 typedef struct
 {

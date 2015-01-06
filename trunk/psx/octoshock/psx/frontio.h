@@ -51,7 +51,6 @@ class InputDevice
 
  private:
  unsigned chair_r, chair_g, chair_b;
- bool draw_chair;
  protected:
  int32 chair_x, chair_y;
 };
