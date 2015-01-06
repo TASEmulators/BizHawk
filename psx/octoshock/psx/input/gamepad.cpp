@@ -192,50 +192,5 @@ InputDevice *Device_Gamepad_Create(void)
 }
 
 
-InputDeviceInputInfoStruct Device_Gamepad_IDII[16] =
-{
- { "select", "SELECT", 4, IDIT_BUTTON, NULL },
- { NULL, "empty", 0, IDIT_BUTTON },
- { NULL, "empty", 0, IDIT_BUTTON },
- { "start", "START", 5, IDIT_BUTTON, NULL },
- { "up", "UP ↑", 0, IDIT_BUTTON, "down" },
- { "right", "RIGHT →", 3, IDIT_BUTTON, "left" },
- { "down", "DOWN ↓", 1, IDIT_BUTTON, "up" },
- { "left", "LEFT ←", 2, IDIT_BUTTON, "right" },
-
- { "l2", "L2 (rear left shoulder)", 11, IDIT_BUTTON, NULL },
- { "r2", "R2 (rear right shoulder)", 13, IDIT_BUTTON, NULL },
- { "l1", "L1 (front left shoulder)", 10, IDIT_BUTTON, NULL },
- { "r1", "R1 (front right shoulder)", 12, IDIT_BUTTON, NULL },
-
- { "triangle", "△ (upper)", 6, IDIT_BUTTON_CAN_RAPID, NULL },
- { "circle", "○ (right)", 9, IDIT_BUTTON_CAN_RAPID, NULL },
- { "cross", "x (lower)", 7, IDIT_BUTTON_CAN_RAPID, NULL },
- { "square", "□ (left)", 8, IDIT_BUTTON_CAN_RAPID, NULL },
-};
-
-InputDeviceInputInfoStruct Device_Dancepad_IDII[16] =
-{
- { "select", "SELECT", 0, IDIT_BUTTON, NULL },
- { NULL, "empty", 0, IDIT_BUTTON },
- { NULL, "empty", 0, IDIT_BUTTON },
- { "start", "START", 1, IDIT_BUTTON, NULL },
-
- { "up", "UP ↑", 3, IDIT_BUTTON, 	NULL },
- { "right", "RIGHT →", 6, IDIT_BUTTON, 	NULL },
- { "down", "DOWN ↓", 8, IDIT_BUTTON, 	NULL },
- { "left", "LEFT ←", 5, IDIT_BUTTON, 	NULL },
-
- { NULL, "empty", 0, IDIT_BUTTON, NULL },
- { NULL, "empty", 0, IDIT_BUTTON, NULL },
- { NULL, "empty", 0, IDIT_BUTTON, NULL },
- { NULL, "empty", 0, IDIT_BUTTON, NULL },
-
- { "triangle", "△ (lower left)", 7, IDIT_BUTTON, NULL },
- { "circle", "○ (upper right)", 4, IDIT_BUTTON, NULL },
- { "cross", "x (upper left)", 2, IDIT_BUTTON, NULL },
- { "square", "□ (lower right)", 9, IDIT_BUTTON, NULL },
-};
-
 
 }
