@@ -2410,6 +2410,11 @@ namespace BizHawk.Client.EmuHawk
 					OpenRom();
 				}
 
+				if (Global.Emulator.IsNull())
+				{
+					return;
+				}
+
 				StartNewMovie(MovieService.Get(filePaths[0]), false);
 			}
 			else if (ext.ToUpper() == ".STATE")
@@ -2438,6 +2443,11 @@ namespace BizHawk.Client.EmuHawk
 				if (Global.Emulator.IsNull())
 				{
 					OpenRom();
+				}
+
+				if (Global.Emulator.IsNull())
+				{
+					return;
 				}
 
 				// tries to open a legacy movie format by importing it
