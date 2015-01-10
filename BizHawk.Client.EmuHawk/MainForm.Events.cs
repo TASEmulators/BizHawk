@@ -2405,10 +2405,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (MovieService.IsValidMovieExtension(ext))
 			{
-				if (!Global.MovieSession.Movie.IsActive)
+				if (Global.Emulator.IsNull())
 				{
-					StartNewMovie(MovieService.Get(filePaths[0]), false);
+					OpenRom();
 				}
+
+				StartNewMovie(MovieService.Get(filePaths[0]), false);
 			}
 			else if (ext.ToUpper() == ".STATE")
 			{
@@ -2433,35 +2435,28 @@ namespace BizHawk.Client.EmuHawk
 
 			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))
 			{
-				if (!Global.MovieSession.Movie.IsActive)
+				if (Global.Emulator.IsNull())
 				{
-					//tries to open a legacy movie format by importing it
-					if (CurrentlyOpenRom == null)
-					{
-						OpenRom();
-					}
-					else
-					{
-						LoadRom(CurrentlyOpenRom);
-					}
-
-					string errorMsg;
-					string warningMsg;
-					var movie = MovieImport.ImportFile(filePaths[0], out errorMsg, out warningMsg);
-					if (!string.IsNullOrEmpty(errorMsg))
-					{
-						MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					}
-					else
-					{
-						// fix movie extension to something palatable for these purposes. 
-						// for instance, something which doesnt clobber movies you already may have had.
-						// i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
-						StartNewMovie(movie, false);
-					}
-
-					GlobalWin.OSD.AddMessage(warningMsg);
+					OpenRom();
 				}
+
+				// tries to open a legacy movie format by importing it
+				string errorMsg;
+				string warningMsg;
+				var movie = MovieImport.ImportFile(filePaths[0], out errorMsg, out warningMsg);
+				if (!string.IsNullOrEmpty(errorMsg))
+				{
+					MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+				else
+				{
+					// fix movie extension to something palatable for these purposes. 
+					// for instance, something which doesnt clobber movies you already may have had.
+					// i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
+					StartNewMovie(movie, false);
+				}
+
+				GlobalWin.OSD.AddMessage(warningMsg);
 			}
 			else
 			{
