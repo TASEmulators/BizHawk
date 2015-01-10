@@ -154,14 +154,8 @@ namespace BizHawk.Client.Common
 					Movie.SwitchToRecord();
 					break;
 				case MovieEndAction.Pause:
-					if (Global.Emulator.Frame >= Movie.InputLogLength)
-					{
-						Movie.Stop();
-					}
-					else
-					{
-						PauseCallback();
-					}
+					Movie.Stop();
+					PauseCallback();
 					break;
 				default:
 				case MovieEndAction.Finish:
