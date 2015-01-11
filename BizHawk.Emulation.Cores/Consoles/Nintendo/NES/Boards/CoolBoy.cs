@@ -49,6 +49,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (!exp[3].Bit(7))
 				{
 					exp[addr & 3] = value;
+					/*
+					if (exp[3].Bit(7))
+					{
+						Console.WriteLine("EXP Write Protect Activated");
+					}
+					if (exp[3].Bit(4))
+					{
+						Console.WriteLine("Funky Mode Active");
+					}
+					*/
 				}
 			}
 		}
@@ -89,7 +99,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int v = base.Get_PRGBank_8K(addr);
 
 			int ret = baseaddr << shift | v & mask;
-			if (exp[3].Bit(0))
+			if (exp[3].Bit(4))
 			{
 				ret |= exp[3] & (0x0e ^ exp[1] & 2);
 			}
@@ -112,6 +122,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			ser.Sync("exp", ref exp, false);
+		}
+
+		public override void NESSoftReset()
+		{
+			Array.Clear(exp, 0, 4);
 		}
 	}
 }
