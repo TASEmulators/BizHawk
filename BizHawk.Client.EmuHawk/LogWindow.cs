@@ -123,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var sb = new StringBuilder();
 			foreach (var s in Lines)
-				sb.Append(s);
+				sb.AppendLine(s);
 			if (sb.Length > 0)
 				Clipboard.SetText(sb.ToString(), TextDataFormat.Text);
 		}
