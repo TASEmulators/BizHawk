@@ -328,16 +328,14 @@ FILE ""xarp.barp.marp.farp"" BINARY
 
 				var se = Sectors[aba];
 
-				EControlQ control = dp.Track.Control;
+				EControlQ control = dp.Control;
 				bool pause = true;
 				if (dp.Num != 0) //TODO - shouldnt this be IndexNum?
 					pause = false;
-				if ((dp.Track.Control & EControlQ.DataUninterrupted)!=0)
+				if ((dp.Control & EControlQ.DataUninterrupted)!=0)
 					pause = false;
-				
-				//we always use ADR=1 (mode-1 q block)
-				//this could be more sophisticated but it is almost useless for emulation (only useful for catalog/ISRC numbers)
-				int adr = 1;
+
+				int adr = dp.ADR;
 
 				SubchannelQ sq = new SubchannelQ();
 				sq.q_status = SubchannelQ.ComputeStatus(adr, control);
