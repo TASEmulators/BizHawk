@@ -259,7 +259,8 @@ FILE ""xarp.barp.marp.farp"" BINARY
 				TOCRaw.TOCItems[i + 1].Exists = true;
 				//TOCRaw.TOCItems[i + 1].LBATimestamp = new Timestamp(track.Start_ABA - 150); //AUGH. see comment in Start_ABA
 				//TOCRaw.TOCItems[i + 1].LBATimestamp = new Timestamp(track.Indexes[1].LBA);  //ZOUNDS!
-				TOCRaw.TOCItems[i + 1].LBATimestamp = new Timestamp(track.Indexes[1].LBA + 150); //WHATEVER, I DONT KNOW. MAKES IT MATCH THE CCD, BUT THERES MORE PROBLEMS
+				//TOCRaw.TOCItems[i + 1].LBATimestamp = new Timestamp(track.Indexes[1].LBA + 150); //WHATEVER, I DONT KNOW. MAKES IT MATCH THE CCD, BUT THERES MORE PROBLEMS
+				TOCRaw.TOCItems[i + 1].LBATimestamp = new Timestamp(track.Indexes[1].LBA); //WHAT?? WE NEED THIS AFTER ALL! ZOUNDS MEANS, THERE WAS JUST SOME OTHER BUG
 				lastEnd = track.LengthInSectors + track.Indexes[1].LBA;
 			}
 
