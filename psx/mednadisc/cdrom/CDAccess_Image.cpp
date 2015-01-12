@@ -327,7 +327,13 @@ std::string MDFN_toupper(const std::string &str)
 
 void CDAccess_Image::LoadSBI(const std::string& sbi_path)
 {
+ //test whether it exists
+ FILE* inf = fopen(sbi_path.c_str(),"rb");
+ if(inf == NULL)
+	 return;
+
  printf(_("Loading SBI file \"%s\"...\n"), sbi_path.c_str());
+
  {
   //MDFN_AutoIndent aind(1);
 
