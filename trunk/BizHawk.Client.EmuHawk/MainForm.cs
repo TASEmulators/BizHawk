@@ -1656,6 +1656,7 @@ namespace BizHawk.Client.EmuHawk
 
 			//TODO - did we change 'unthrottled' nomenclature to turbo? is turbo defined as 'temporarily disable throttle entirely'?
 
+			var rewind = Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind);
 			var fastforward = Global.ClientControls["Fast Forward"] || FastForward;
 			var superfastforward = IsTurboing;
 			
@@ -1667,7 +1668,10 @@ namespace BizHawk.Client.EmuHawk
 			_throttle.SetCoreFps(Global.Emulator.CoreComm.VsyncRate);
 			_throttle.signal_paused = EmulatorPaused;
 			_throttle.signal_unthrottle = _unthrottled || superfastforward;
-			_throttle.SetSpeedPercent(fastforward ? Global.Config.SpeedPercentAlternate : Global.Config.SpeedPercent);
+			_throttle.SetSpeedPercent(
+				rewind && Global.Config.RewindSpeedProportional ? Math.Max(100 / Global.Rewinder.RewindFrequency, 5) :
+				fastforward ? Global.Config.SpeedPercentAlternate :
+				Global.Config.SpeedPercent);
 		}
 
 		private void SetSpeedPercentAlternate(int value)

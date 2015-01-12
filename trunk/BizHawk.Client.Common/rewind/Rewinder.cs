@@ -51,6 +51,11 @@ namespace BizHawk.Client.Common
 			get { return _rewindBuffer != null; }
 		}
 
+		public int RewindFrequency
+		{
+			get { return _rewindFrequency; }
+		}
+
 		// TOOD: this should not be parameterless?! It is only possible due to passing a static context in
 		public void CaptureRewindState()
 		{
