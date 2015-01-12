@@ -120,17 +120,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			Action<int, byte> pokeByte;
 
 			peekByte = delegate(int addr)
-				{
-					return api.m64p_read_memory_8((uint)addr);
-				};
-				pokeByte = delegate(int addr, byte val)
-				{
-					api.m64p_write_memory_8((uint)addr, val);
-				};
+			{
+				return api.m64p_read_memory_8((uint)addr);
+			};
+
+			pokeByte = delegate(int addr, byte val)
+			{
+				api.m64p_write_memory_8((uint)addr, val);
+			};
 
 			_memoryDomains.Add(new MemoryDomain
 				(
-					name: "Sytem Bus",
+					name: "System Bus",
 					size: 0, //special case for full 32bit memorydomain
 					endian: MemoryDomain.Endian.Big,
 					peekByte: peekByte,
