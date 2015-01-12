@@ -1659,7 +1659,14 @@ namespace BizHawk.Client.EmuHawk
 			var rewind = Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind);
 			var fastforward = Global.ClientControls["Fast Forward"] || FastForward;
 			var superfastforward = IsTurboing;
-			
+
+			int speedPercent = fastforward ? Global.Config.SpeedPercentAlternate : Global.Config.SpeedPercent;
+
+			if (rewind)
+			{
+				speedPercent = Math.Max(speedPercent / Global.Rewinder.RewindFrequency, 5);
+			}
+
 			//zero 11-oct-2014 - i think this is more correct..
 			//Global.ForceNoThrottle = _unthrottled || fastforward;
 			Global.ForceNoThrottle = _unthrottled || fastforward || superfastforward;
@@ -1668,10 +1675,7 @@ namespace BizHawk.Client.EmuHawk
 			_throttle.SetCoreFps(Global.Emulator.CoreComm.VsyncRate);
 			_throttle.signal_paused = EmulatorPaused;
 			_throttle.signal_unthrottle = _unthrottled || superfastforward;
-			_throttle.SetSpeedPercent(
-				rewind && Global.Config.RewindSpeedProportional ? Math.Max(100 / Global.Rewinder.RewindFrequency, 5) :
-				fastforward ? Global.Config.SpeedPercentAlternate :
-				Global.Config.SpeedPercent);
+			_throttle.SetSpeedPercent(speedPercent);
 		}
 
 		private void SetSpeedPercentAlternate(int value)
