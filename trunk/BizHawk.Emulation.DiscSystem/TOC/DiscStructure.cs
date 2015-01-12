@@ -21,6 +21,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// TODO - this is kind of garbage, but... I was using it for Synthesize_SubcodeFromStructure() :/
 		/// Really, what it is, is a series of points where the tno/index change. Kind of an agenda. And thats how that function uses it.
 		/// Maybe I should rename it something different, or at least comment it
+		/// Or, you could look at this as a kind of compressed disc map
 		/// </summary>
 		public List<TOCPoint> Points;
 
@@ -104,6 +105,9 @@ namespace BizHawk.Emulation.DiscSystem
 			public int ABA, TrackNum, IndexNum;
 			public Track Track;
 
+			public int ADR;
+			public EControlQ Control;
+
 			public int LBA
 			{
 				get { return ABA - 150; }
@@ -116,23 +120,64 @@ namespace BizHawk.Emulation.DiscSystem
 		public void Synthesize_TOCPointsFromSessions()
 		{
 			Points = new List<TOCPoint>();
-			
+
 			int num = 0;
 			foreach (var ses in Sessions)
 			{
-				foreach (var track in ses.Tracks)
-					foreach (var index in track.Indexes)
+				for(int t=0;t<ses.Tracks.Count;t++)
+				{
+					int tnum = t + 1;
+					var track = ses.Tracks[t];
+					for(int i=0;i<track.Indexes.Count;i++)
 					{
+						var index = track.Indexes[i];
+						bool repeat = false;
+						int aba = index.aba;
+					REPEAT:
 						var tp = new TOCPoint
+						{
+							Num = num++,
+							ABA = aba,
+							TrackNum = track.Number,
+							IndexNum = index.Number,
+							Track = track,
+							ADR = track.ADR,
+							Control = track.Control
+						};
+
+						//special case!
+						//yellow-book says:
+						//pre-gap for "first part of a digital data track not containing user data and encoded as a pause"
+						//first interval: at least 75 sectors coded as preceding track
+						//second interval: at least 150 sectors coded as user data track.
+						//TODO - add pause flag tracking to TOCPoint
+						//see mednafen's "TODO: Look into how we're supposed to handle subq control field in the four combinations of track types(data/audio)."
+						if (tnum != 1 && i == 0 && track.TrackType != ETrackType.Audio && !repeat)
+						{
+							//NOTE: we dont implement this exactly the same as mednafen, I think my logic is closer to the docs, but who knows, its complicated
+							int distance = track.Indexes[i + 1].aba - track.Indexes[i].aba;
+							//well, how do we know to apply this logic?
+							//we assume the 150 sector pregap is more important. so if thats all there is, theres no 75 sector pregap like the old track
+							//if theres a longer pregap, then we generate weird old track pregap to contain the rest.
+							if (distance > 150)
 							{
-								Num = num++,
-								ABA = index.aba,
-								TrackNum = track.Number,
-								IndexNum = index.Number,
-								Track = track
-							};
+								int weirdPregapSize = distance - 150;
+
+								//need a new point. fix the old one
+								tp.ADR = Points[Points.Count - 1].ADR;
+								tp.Control = Points[Points.Count - 1].Control;
+								Points.Add(tp);
+
+								aba += weirdPregapSize;
+								repeat = true;
+								goto REPEAT;
+							}
+						}
+
+
 						Points.Add(tp);
 					}
+				}
 
 				var tpLeadout = new TOCPoint();
 				var lastTrack = ses.Tracks[ses.Tracks.Count - 1];
@@ -167,6 +212,9 @@ namespace BizHawk.Emulation.DiscSystem
 			/// </summary>
 			public int Number;
 
+			/// <summary>
+			/// Conceptual track type, not necessarily stored this way anywhere
+			/// </summary>
 			public ETrackType TrackType;
 
 			/// <summary>
@@ -175,6 +223,11 @@ namespace BizHawk.Emulation.DiscSystem
 			/// they normally don't; they're useful for describing what type of contents the track is.
 			/// </summary>
 			public EControlQ Control;
+
+			/// <summary>
+			/// Well, it seems a track can have an ADR property (used to fill the subchannel Q). This is delivered from a CCD file but may have to be guessed from 
+			/// </summary>
+			public int ADR = 1;
 
 			/// <summary>
 			/// All the indexes related to the track. These will be 0-Indexed, but they could be non-consecutive.

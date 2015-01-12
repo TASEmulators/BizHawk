@@ -281,6 +281,7 @@ namespace BizHawk.Emulation.DiscSystem
 					session.Tracks.Add(toc_track);
 					toc_track.Number = curr_track;
 					toc_track.TrackType = cue_track.TrackType;
+					toc_track.ADR = 1; //safe assumption. CUE can't store this.
 
 					//choose a Control value based on track type and other flags from cue
 					//TODO - this might need to be controlled by cue loading prefs
