@@ -18,13 +18,24 @@ namespace BizHawk.Client.EmuHawk
 		public VirtualPadDiscManager(string[] buttonNames)
 		{
 			InitializeComponent();
-			btnEject.Name = buttonNames[0];
-			btnInsert.Name = buttonNames[1];
+			btnOpen.Name = buttonNames[0];
+			btnClose.Name = buttonNames[1];
 			_discSelectName = buttonNames[2];
+
+			UpdateCoreAssociation();
 		}
 
 		string _discSelectName;
-		public object OwnerEmulator { get; set; }
+		object _ownerEmulator;
+		public object OwnerEmulator
+		{
+			get { return _ownerEmulator; }
+			set
+			{
+				_ownerEmulator = value;
+				UpdateValues();
+			}
+		}
 
 		object lastCoreOwner;
 
@@ -69,17 +80,48 @@ namespace BizHawk.Client.EmuHawk
 			if (OwnerEmulator is Octoshock)
 			{
 				var psx = OwnerEmulator as Octoshock;
-				bool eject = psx.CurrentDiscEjected;
+				bool eject = psx.CurrentTrayOpen;
+				bool enableDiscs = eject;
+				bool refreshDiscs = true;
 
-				btnEject.Enabled = !eject;
-				btnInsert.Enabled = eject;
+				//special logic: if this is frame 0, we can begin in any state
+				if (psx.Frame == 0)
+				{
+					lblTimeZero.Visible = true;
+					btnOpen.Enabled = true;
+					btnClose.Enabled = true;
 
-				if (!btnEject.Enabled) btnEject.Checked = false;
-				if (!btnInsert.Enabled) btnInsert.Checked = false;
+					//if neither button is picked, start with 'closed' selected
+					//(kind of a hack for the initial update)
+					if (!btnClose.Checked && !btnOpen.Checked)
+					{
+						btnClose.Checked = true;
+					}
+					else
+					{
+						//while we're here, make sure this only happens the first time
+						refreshDiscs = false;
+					}
+
+					enableDiscs = btnOpen.Checked;
+
+					//since user hasnt ever needed to set the disc, make sure it's set here
+					//UPDATE: do it below
+					//Global.StickyXORAdapter.SetFloat(_discSelectName, psx.CurrentDiscIndexMounted);	
+				}
+				else
+				{
+					lblTimeZero.Visible = false;
+					btnOpen.Enabled = !eject;
+					btnClose.Enabled = eject;
+
+					if (!btnOpen.Enabled) btnOpen.Checked = false;
+					if (!btnClose.Enabled) btnClose.Checked = false;
+				}
 
 				//if we're not ejected, then the disc is frozen in the current configuration
-				lvDiscs.Enabled = eject;
-				if (!eject)
+				lvDiscs.Enabled = enableDiscs;
+				if (!eject && refreshDiscs)
 				{
 					lvDiscs.SelectedIndices.Clear();
 					lvDiscs.SelectedIndices.Add(psx.CurrentDiscIndexMounted);
@@ -117,6 +159,24 @@ namespace BizHawk.Client.EmuHawk
 			if (lvDiscs.SelectedIndices.Count == 0)
 			  Global.StickyXORAdapter.SetFloat(_discSelectName, 0);	
 			else Global.StickyXORAdapter.SetFloat(_discSelectName, lvDiscs.SelectedIndices[0]);
+		}
+
+		private void btnClose_Click(object sender, EventArgs e)
+		{
+			if (lblTimeZero.Visible)
+			{
+				btnOpen.Checked = !btnClose.Checked;
+				UpdateValues();
+			}
+		}
+
+		private void btnOpen_Click(object sender, EventArgs e)
+		{
+			if (lblTimeZero.Visible)
+			{
+				btnClose.Checked = !btnOpen.Checked;
+				UpdateValues();
+			}
 		}
 
 	
