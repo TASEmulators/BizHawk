@@ -215,7 +215,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public bool HasSystemBus
+		public bool HasCheatDomain
 		{
 			get
 			{
@@ -223,7 +223,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public MemoryDomain SystemBus
+		public MemoryDomain CheatDomain
 		{
 			get
 			{

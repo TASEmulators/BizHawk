@@ -105,7 +105,7 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 			var b = new AddBreakpointDialog
 			{
 				// TODO: don't use Global.Emulator! Pass in an IMemoryDomains implementation from the parent tool
-				MaxAddressSize = Global.Emulator.AsMemoryDomains().MemoryDomains.SystemBus.Size - 1
+				MaxAddressSize = Global.Emulator.AsMemoryDomains().MemoryDomains.CheatDomain.Size - 1
 			};
 
 			if (b.ShowDialog() == DialogResult.OK)
