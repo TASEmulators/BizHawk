@@ -543,22 +543,22 @@
     <Compile Include="Consoles\Sega\Saturn\LibYabause.cs" />
     <Compile Include="Consoles\Sega\Saturn\Yabause.cs" />
     <Compile Include="Consoles\Sega\Saturn\Yabause.IDriveLight.cs">
-        <DependentUpon>Yabause.cs</DependentUpon>
+      <DependentUpon>Yabause.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\Saturn\Yabause.IInputPollable.cs">
-        <DependentUpon>Yabause.cs</DependentUpon>
+      <DependentUpon>Yabause.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\Saturn\Yabause.IMemoryDomains.cs">
-        <DependentUpon>Yabause.cs</DependentUpon>
+      <DependentUpon>Yabause.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\Saturn\Yabause.ISaveram.cs">
-        <DependentUpon>Yabause.cs</DependentUpon>
+      <DependentUpon>Yabause.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\Saturn\Yabause.ISettable.cs">
-        <DependentUpon>Yabause.cs</DependentUpon>
+      <DependentUpon>Yabause.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\Saturn\Yabause.IStatable.cs">
-        <DependentUpon>Yabause.cs</DependentUpon>
+      <DependentUpon>Yabause.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\SMS\TerebiOekaki.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.Korea.cs" />
@@ -574,6 +574,15 @@
     <Compile Include="Consoles\Sony\PSX\OctoshockDll.cs" />
     <Compile Include="Consoles\WonderSwan\BizSwan.cs" />
     <Compile Include="Consoles\WonderSwan\WonderSwan.cs" />
+    <Compile Include="Consoles\WonderSwan\WonderSwan.Controller.cs">
+      <DependentUpon>WonderSwan.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\WonderSwan\WonderSwan.ISettable.cs">
+      <DependentUpon>WonderSwan.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\WonderSwan\WonderSwan.IStatable.cs">
+      <DependentUpon>WonderSwan.cs</DependentUpon>
+    </Compile>
     <Compile Include="CoreInventory.cs" />
     <Compile Include="CPUs\68000\Diassembler.cs" />
     <Compile Include="CPUs\68000\Instructions\BitArithemetic.cs" />
