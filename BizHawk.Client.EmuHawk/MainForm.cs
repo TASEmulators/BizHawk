@@ -1651,30 +1651,26 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SyncThrottle()
 		{
-			//TODO - this is a bit confusing. theres a difference between signal_unthrottle and Global.ForceNoThrottle. Isn't that kind of weird?
-			//someone should evaluate these different modes and clean that up.
-
 			//TODO - did we change 'unthrottled' nomenclature to turbo? is turbo defined as 'temporarily disable throttle entirely'?
 
 			var rewind = Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind);
-			var fastforward = Global.ClientControls["Fast Forward"] || FastForward;
-			var superfastforward = IsTurboing;
+			var fastForward = Global.ClientControls["Fast Forward"] || FastForward;
+			var superFastForward = IsTurboing;
 
-			int speedPercent = fastforward ? Global.Config.SpeedPercentAlternate : Global.Config.SpeedPercent;
+			int speedPercent = fastForward ? Global.Config.SpeedPercentAlternate : Global.Config.SpeedPercent;
 
 			if (rewind)
 			{
 				speedPercent = Math.Max(speedPercent / Global.Rewinder.RewindFrequency, 5);
 			}
 
-			//zero 11-oct-2014 - i think this is more correct..
-			//Global.ForceNoThrottle = _unthrottled || fastforward;
-			Global.ForceNoThrottle = _unthrottled || fastforward || superfastforward;
+			Global.DisableSecondaryThrottling = _unthrottled || fastForward || superFastForward || rewind;
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
 			_throttle.SetCoreFps(Global.Emulator.CoreComm.VsyncRate);
 			_throttle.signal_paused = EmulatorPaused;
-			_throttle.signal_unthrottle = _unthrottled || superfastforward;
+			_throttle.signal_unthrottle = _unthrottled || superFastForward;
+			_throttle.signal_overrideSecondaryThrottle = (fastForward || rewind) && (Global.Config.SoundThrottle || Global.Config.VSyncThrottle || Global.Config.VSync);
 			_throttle.SetSpeedPercent(speedPercent);
 		}
 

@@ -159,65 +159,62 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DrawMessages(IBlitter g)
 		{
-			if (!Global.ClientControls["MaxTurbo"])
+			messages.RemoveAll(m => DateTime.Now > m.ExpireAt);
+			int line = 1;
+			if (Global.Config.StackOSDMessages)
 			{
-				messages.RemoveAll(m => DateTime.Now > m.ExpireAt);
-				int line = 1;
-				if (Global.Config.StackOSDMessages)
+				for (int i = messages.Count - 1; i >= 0; i--, line++)
 				{
-					for (int i = messages.Count - 1; i >= 0; i--, line++)
+					float x = GetX(g, Global.Config.DispMessagex, Global.Config.DispMessageanchor, messages[i].Message);
+					float y = GetY(g, Global.Config.DispMessagey, Global.Config.DispMessageanchor, messages[i].Message);
+					if (Global.Config.DispMessageanchor < 2)
 					{
-						float x = GetX(g, Global.Config.DispMessagex, Global.Config.DispMessageanchor, messages[i].Message);
-						float y = GetY(g, Global.Config.DispMessagey, Global.Config.DispMessageanchor, messages[i].Message);
-						if (Global.Config.DispMessageanchor < 2)
-						{
-							y += ((line - 1) * 18);
-						}
-						else
-						{
-							y -= ((line - 1) * 18);
-						}
-
-						g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
-						g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
+						y += ((line - 1) * 18);
 					}
+					else
+					{
+						y -= ((line - 1) * 18);
+					}
+
+					g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
+					g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
 				}
-				else
+			}
+			else
+			{
+				if (messages.Any())
 				{
-					if (messages.Any())
+					int i = messages.Count - 1;
+
+					float x = GetX(g, Global.Config.DispMessagex, Global.Config.DispMessageanchor, messages[i].Message);
+					float y = GetY(g, Global.Config.DispMessagey, Global.Config.DispMessageanchor, messages[i].Message);
+					if (Global.Config.DispMessageanchor < 2)
 					{
-						int i = messages.Count - 1;
-
-						float x = GetX(g, Global.Config.DispMessagex, Global.Config.DispMessageanchor, messages[i].Message);
-						float y = GetY(g, Global.Config.DispMessagey, Global.Config.DispMessageanchor, messages[i].Message);
-						if (Global.Config.DispMessageanchor < 2)
-						{
-							y += ((line - 1) * 18);
-						}
-						else
-						{
-							y -= ((line - 1) * 18);
-						}
-
-						g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
-						g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
+						y += ((line - 1) * 18);
 					}
+					else
+					{
+						y -= ((line - 1) * 18);
+					}
+
+					g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
+					g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
 				}
+			}
 
-				foreach (var text in GUITextList)
+			foreach (var text in GUITextList)
+			{
+				try
 				{
-					try
-					{
-						float posx = GetX(g, text.X, text.Anchor, text.Message);
-						float posy = GetY(g, text.Y, text.Anchor, text.Message);
+					float posx = GetX(g, text.X, text.Anchor, text.Message);
+					float posy = GetY(g, text.Y, text.Anchor, text.Message);
 
-						g.DrawString(text.Message, MessageFont, text.BackGround, posx + 2, posy + 2);
-						g.DrawString(text.Message, MessageFont, text.ForeColor, posx, posy);
-					}
-					catch (Exception)
-					{
-						return;
-					}
+					g.DrawString(text.Message, MessageFont, text.BackGround, posx + 2, posy + 2);
+					g.DrawString(text.Message, MessageFont, text.ForeColor, posx, posy);
+				}
+				catch (Exception)
+				{
+					return;
 				}
 			}
 		}

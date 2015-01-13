@@ -209,7 +209,7 @@ namespace BizHawk.Client.EmuHawk
 
 				samplesProvided = 2 * nsampgot;
 
-				if (!Global.ForceNoThrottle)
+				if (!Global.DisableSecondaryThrottling)
 					while (samplesNeeded < samplesProvided)
 					{
 						System.Threading.Thread.Sleep((samplesProvided - samplesNeeded) / 88); // let audio clock control sleep time
