@@ -362,7 +362,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			mm.Add(MemoryDomain.FromIntPtr("OAM", 1024, l, s.oam));
 			mm.Add(MemoryDomain.FromIntPtr("ROM", 32 * 1024 * 1024, l, s.rom));
 
-			mm.Add(new MemoryDomain("BUS", 0x10000000, l,
+			mm.Add(new MemoryDomain("System Bus", 0x10000000, l,
 				delegate(int addr)
 				{
 					if (addr < 0 || addr >= 0x10000000)
