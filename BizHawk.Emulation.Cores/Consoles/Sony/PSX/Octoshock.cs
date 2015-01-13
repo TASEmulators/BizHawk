@@ -622,7 +622,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			MemoryDomains = new MemoryDomainList(mmd, 0);
 		}
 
-		public MemoryDomainList MemoryDomains { get; private set; }
+		public IMemoryDomainList MemoryDomains { get; private set; }
 
 		#endregion
 

@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private MemoryDomainList MemoryDomains { get { return _emu.MemoryDomains; } }
+		private IMemoryDomainList MemoryDomains { get { return _emu.MemoryDomains; } }
 
 		private string _currentFileName = string.Empty;
 

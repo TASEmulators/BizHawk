@@ -487,7 +487,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			memoryDomains = new MemoryDomainList(domains);
 		}
 
-		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
+		public IMemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{

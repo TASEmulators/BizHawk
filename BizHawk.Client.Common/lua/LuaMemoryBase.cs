@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 
 		protected abstract MemoryDomain Domain { get; }
 
-		protected MemoryDomainList DomainList
+		protected IMemoryDomainList DomainList
 		{
 			get
 			{

@@ -446,7 +446,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		public string SystemId { get { return "NES"; } }
-		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
+		public IMemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		public string GameName { get { return game_name; } }
 

@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 		public IDebuggable Core { get; set; }
 		public IMemoryCallbackSystem MCS { get; set; }
 		public GenericDebugger ParentDebugger { get; set; }
-		public MemoryDomainList MemoryDomains { get; set; }
+		public IMemoryDomainList MemoryDomains { get; set; }
 		private readonly BreakpointList Breakpoints = new BreakpointList();
 
 		public BreakpointControl()

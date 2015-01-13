@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 {
 	public partial class ColecoVision : IMemoryDomains
 	{
-		public MemoryDomainList MemoryDomains
+		public IMemoryDomainList MemoryDomains
 		{
 			get { return memoryDomains; }
 		}

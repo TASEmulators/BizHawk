@@ -322,7 +322,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem();
 		public IMemoryCallbackSystem MemoryCallbacks { get { return _memorycallbacks; } }
 
-		public MemoryDomainList MemoryDomains { get; private set; }
+		public IMemoryDomainList MemoryDomains { get; private set; }
 	
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{

@@ -184,7 +184,7 @@ namespace BizHawk.Emulation.Common
 		}
 	}
 
-	public class MemoryDomainList : ReadOnlyCollection<MemoryDomain>
+	public class MemoryDomainList : ReadOnlyCollection<MemoryDomain>, IMemoryDomainList
 	{
 		private readonly int _mainMemoryIndex;
 

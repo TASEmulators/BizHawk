@@ -235,7 +235,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		#region memorydomains
 
 		List<MemoryDomain> _MemoryDomains = new List<MemoryDomain>();
-		public MemoryDomainList MemoryDomains { get; private set; }
+		public IMemoryDomainList MemoryDomains { get; private set; }
 
 		void AddMemoryDomain(LibMeteor.MemoryArea which, int size, string name)
 		{

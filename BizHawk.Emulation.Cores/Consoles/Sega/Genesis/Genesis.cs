@@ -489,7 +489,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 			memoryDomains = new MemoryDomainList(domains);
 		}
 
-		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
+		public IMemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		public void Dispose() { }
 	}
