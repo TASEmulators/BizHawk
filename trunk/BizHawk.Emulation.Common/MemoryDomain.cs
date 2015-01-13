@@ -219,7 +219,7 @@ namespace BizHawk.Emulation.Common
 		{
 			get
 			{
-				return this.Any(x => x.Name == "System Bus" || x.Name == "BUS"); // Have to account for "BUS" because some developers don't like consistency!
+				return this.Any(x => x.Name == "System Bus");
 			}
 		}
 
@@ -227,7 +227,7 @@ namespace BizHawk.Emulation.Common
 		{
 			get
 			{
-				return this.FirstOrDefault(x => x.Name == "System Bus" || x.Name == "BUS");
+				return this.FirstOrDefault(x => x.Name == "System Bus");
 			}
 		}
 	}

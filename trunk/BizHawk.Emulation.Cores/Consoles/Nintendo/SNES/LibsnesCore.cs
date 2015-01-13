@@ -1025,7 +1025,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			byte* blockptr = api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.WRAM);
 
-			var md = new MemoryDomain("BUS", 0x1000000, MemoryDomain.Endian.Little,
+			var md = new MemoryDomain("System Bus", 0x1000000, MemoryDomain.Endian.Little,
 				(addr) =>
 				{
 					var a = FakeBusMap(addr);
@@ -1129,7 +1129,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 				if (!DeterministicEmulation)
 				{
-					_memoryDomains.Add(new MemoryDomain("BUS", 0x1000000, MemoryDomain.Endian.Little,
+					_memoryDomains.Add(new MemoryDomain("System Bus", 0x1000000, MemoryDomain.Endian.Little,
 						(addr) => api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr),
 						(addr, val) => api.QUERY_poke(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr, val)));
 				}

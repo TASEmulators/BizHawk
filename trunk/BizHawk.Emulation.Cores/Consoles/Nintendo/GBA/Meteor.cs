@@ -279,7 +279,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			AddMemoryDomain(LibMeteor.MemoryArea.rom, 32 * 1024 * 1024, "ROM");
 			// special domain for system bus
 			{
-				MemoryDomain sb = new MemoryDomain("BUS", 1 << 28, MemoryDomain.Endian.Little,
+				MemoryDomain sb = new MemoryDomain("System Bus", 1 << 28, MemoryDomain.Endian.Little,
 					delegate(int addr)
 					{
 						if (addr < 0 || addr >= 0x10000000)
