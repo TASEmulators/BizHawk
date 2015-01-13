@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Common
 				endian,
 				delegate(int addr)
 				{
-					if (addr < 0 || addr >= size)
+					if ((uint)addr >= size)
 						throw new ArgumentOutOfRangeException();
 					return p[addr];
 				},
@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Common
 				{
 					if (writable)
 					{
-						if (addr < 0 || addr >= size)
+						if ((uint)addr >= size)
 							throw new ArgumentOutOfRangeException();
 						p[addr] = val;
 					}
