@@ -18,9 +18,9 @@ namespace BizHawk.Client.Common
 		public static MovieSession MovieSession = new MovieSession();
 
 		/// <summary>
-		/// whether throttling is force-disabled by use of fast forward
+		/// Used to disable secondary throttling (e.g. vsync, audio) for unthrottled modes or when the primary (clock) throttle is taking over (e.g. during fast forward/rewind).
 		/// </summary>
-		public static bool ForceNoThrottle;
+		public static bool DisableSecondaryThrottling;
 
 		public static Controller NullControls;
 		public static AutofireController AutofireNullControls;

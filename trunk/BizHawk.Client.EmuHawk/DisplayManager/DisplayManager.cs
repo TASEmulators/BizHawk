@@ -633,7 +633,7 @@ TESTEROO:
 				//maybe the user wants vsync, but not vsync throttle.
 				//this makes sense... but we dont have the infrastructure to support it now (we'd have to enable triple buffering or something like that)
 				//so what we're gonna do is disable vsync no matter what if throttling is off, and maybe nobody will notice.
-				if (Global.ForceNoThrottle)
+				if (Global.DisableSecondaryThrottling)
 					vsync = false;
 
 				if (LastVsyncSetting != vsync || LastVsyncSettingGraphicsControl != presentationPanel.GraphicsControl)

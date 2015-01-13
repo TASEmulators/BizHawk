@@ -21,33 +21,21 @@ namespace BizHawk.Client.EmuHawk
 		public bool signal_frameAdvance;
 		public bool signal_unthrottle;
 		public bool signal_continuousframeAdvancing; //continuousframeAdvancing
+		public bool signal_overrideSecondaryThrottle;
 
 		public int cfg_frameskiprate
 		{
 			get
 			{
-				if (Global.ClientControls["MaxTurbo"])
-				{
-					return 20;
-				}
-				else
-				{
-					return Global.Config.FrameSkip;
-				}
+				return Global.Config.FrameSkip;
 			}
 		}
+
 		public bool cfg_frameLimit
 		{
 			get
 			{
-				if (Global.ClientControls["MaxTurbo"])
-				{
-					return false;
-				}
-				else
-				{
-					return Global.Config.ClockThrottle;
-				}
+				return Global.Config.ClockThrottle;
 			}
 		}
 
@@ -55,14 +43,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (Global.ClientControls["MaxTurbo"])
-				{
-					return false;
-				}
-				else
-				{
-					return Global.Config.AutoMinimizeSkipping;
-				}
+				return Global.Config.AutoMinimizeSkipping;
 			}
 		}
 
@@ -116,7 +97,7 @@ namespace BizHawk.Client.EmuHawk
 				if (framestoskip < 1)
 					framestoskip += ffSkipRate;
 			}
-			else if ((signal_paused || /*autoframeskipenab && frameskiprate ||*/ cfg_frameLimit) && allowSleep)
+			else if ((signal_paused || /*autoframeskipenab && frameskiprate ||*/ cfg_frameLimit || signal_overrideSecondaryThrottle) && allowSleep)
 			{
 				SpeedThrottle(signal_paused);
 			}
@@ -159,7 +140,6 @@ namespace BizHawk.Client.EmuHawk
 			else
 				return (ulong)Environment.TickCount;
 		}
-
 
 #if WINDOWS
 		[DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
@@ -332,7 +312,6 @@ namespace BizHawk.Client.EmuHawk
 			lastSkip = rv;
 			return rv;
 		}
-
 
 		void SpeedThrottle(bool paused)
 		{
