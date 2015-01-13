@@ -381,7 +381,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			MemoryDomains = new MemoryDomainList(mm, 0);
 		}
 
-		public MemoryDomainList MemoryDomains { get; private set; }
+		public IMemoryDomainList MemoryDomains { get; private set; }
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{

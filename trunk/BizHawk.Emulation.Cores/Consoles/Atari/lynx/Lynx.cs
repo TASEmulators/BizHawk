@@ -390,7 +390,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		}
 
 
-		public MemoryDomainList MemoryDomains { get; private set; }
+		public IMemoryDomainList MemoryDomains { get; private set; }
 
 		#endregion
 	}

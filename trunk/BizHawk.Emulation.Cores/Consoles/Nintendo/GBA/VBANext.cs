@@ -403,7 +403,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			MemoryDomains = new MemoryDomainList(mm, 0);
 		}
 
-		public MemoryDomainList MemoryDomains { get; private set; }
+		public IMemoryDomainList MemoryDomains { get; private set; }
 
 		VBARegisterHelper regs;
 

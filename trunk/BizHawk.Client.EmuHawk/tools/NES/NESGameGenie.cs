@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[RequiredService]
 		private IMemoryDomains MemoryDomainService { get; set; }
-		private MemoryDomainList MemoryDomains { get { return MemoryDomainService.MemoryDomains; } }
+		private IMemoryDomainList MemoryDomains { get { return MemoryDomainService.MemoryDomains; } }
 
 		private readonly Dictionary<char, int> _gameGenieTable = new Dictionary<char, int>
 		{

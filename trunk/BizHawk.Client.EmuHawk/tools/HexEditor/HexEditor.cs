@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		[RequiredService]
 		private IMemoryDomains MemoryDomainSource { get; set; }
-		private MemoryDomainList MemoryDomains { get { return MemoryDomainSource.MemoryDomains; } }
+		private IMemoryDomainList MemoryDomains { get { return MemoryDomainSource.MemoryDomains; } }
 
 		[RequiredService]
 		private IEmulator Emulator { get; set; }

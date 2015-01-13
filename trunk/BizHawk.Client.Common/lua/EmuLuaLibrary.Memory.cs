@@ -60,6 +60,7 @@ namespace BizHawk.Client.Common
 		public LuaTable GetMemoryDomainList()
 		{
 			var table = Lua.NewTable();
+
 			for (int i = 0; i < DomainList.Count; i++)
 			{
 				table[i] = DomainList[i].Name;

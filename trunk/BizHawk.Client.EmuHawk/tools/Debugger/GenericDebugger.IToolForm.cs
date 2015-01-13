@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private IMemoryCallbackSystem MemoryCallbacks { get { return Debuggable.MemoryCallbacks; } }
 
-		private MemoryDomainList MemoryDomains { get { return MemoryDomainSource.MemoryDomains; } }
+		private IMemoryDomainList MemoryDomains { get { return MemoryDomainSource.MemoryDomains; } }
 
 		private uint PC
 		{

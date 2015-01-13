@@ -782,7 +782,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		}
 
 		private List<MemoryDomain> _MemoryDomains = new List<MemoryDomain>();
-		public MemoryDomainList MemoryDomains { get; private set; }
+		public IMemoryDomainList MemoryDomains { get; private set; }
 
 		#endregion
 

@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 {
 	public partial class Yabause : IMemoryDomains
 	{
-		public MemoryDomainList MemoryDomains { get; private set; }
+		public IMemoryDomainList MemoryDomains { get; private set; }
 
 		private void InitMemoryDomains()
 		{

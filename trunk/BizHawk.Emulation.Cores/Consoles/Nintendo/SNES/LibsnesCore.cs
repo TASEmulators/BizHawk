@@ -1145,7 +1145,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private MemoryDomain MainMemory;
 		private List<MemoryDomain> _memoryDomains = new List<MemoryDomain>();
-		public MemoryDomainList MemoryDomains { get; private set; }
+		public IMemoryDomainList MemoryDomains { get; private set; }
 
 		#region audio stuff
 
