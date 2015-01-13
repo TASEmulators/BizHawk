@@ -99,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Core != null)
 			{
-				AddressBox.SetHexProperties(Core.MemoryDomains.MainMemory.Size);
+				AddressBox.SetHexProperties(Core.MemoryDomains.CheatDomain.Size);
 			}
 
 			ValueBox.ByteSize = 
