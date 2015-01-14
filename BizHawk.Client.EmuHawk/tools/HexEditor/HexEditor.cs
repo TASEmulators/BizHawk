@@ -124,11 +124,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			if (!IsHandleCreated || IsDisposed)
-			{
-				return;
-			}
-
 			AddressesLabel.Text = GenerateMemoryViewString();
 			AddressLabel.Text = GenerateAddressString();
 		}
@@ -140,16 +135,32 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			var theDomain = _domain.Name.ToLower() == "file on disk" ? 999 : GetDomainInt(_domain.Name);
+			_rom = GetRomBytes();
+			_romDomain = new MemoryDomain(
+				"File on Disk", _rom.Length, MemoryDomain.Endian.Little, i => _rom[i], (i, value) => _rom[i] = value);
 
-			SetMemoryDomainMenu(); // Calls update routines, TODO: refactor, that is confusing!
-
-			if (theDomain.HasValue)
+			if (_domain.Name == _romDomain.Name)
 			{
-				SetMemoryDomain(theDomain.Value);
+				_domain = _romDomain;
+			}
+			else if (MemoryDomains.Any(x => x.Name == _domain.Name))
+			{
+				_domain = MemoryDomains[_domain.Name];
+			}
+			else
+			{
+				_domain = MemoryDomains.MainMemory;
 			}
 
-			SetHeader();
+			// TODO: SetMemoryDomain copy pasta, do it in one place
+			//store domain size separately as a long, to apply 0-hack
+			_domainSize = _domain.Size;
+			if (_domainSize == 0)
+				_domainSize = 0x100000000;
+
+			BigEndian = _domain.EndianType == MemoryDomain.Endian.Big;
+			_maxRow = (int)(_domainSize / 2);
+
 			ResetScrollBar();
 			SetDataSize(DataSize);
 			UpdateValues();
@@ -327,18 +338,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private int? GetDomainInt(string name)
-		{
-			for (var i = 0; i < MemoryDomains.Count; i++)
-			{
-				if (MemoryDomains[i].Name == name)
-				{
-					return i;
-				}
-			}
+		//private int? GetDomainInt(string name)
+		//{
+		//	for (var i = 0; i < MemoryDomains.Count; i++)
+		//	{
+		//		if (MemoryDomains[i].Name == name)
+		//		{
+		//			return i;
+		//		}
+		//	}
 
-			return null;
-		}
+		//	return null;
+		//}
 
 		private static bool CurrentRomIsArchive()
 		{
@@ -441,7 +452,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HexEditor_Load(object sender, EventArgs e)
 		{
-			SetMemoryDomainMenu();
 			SetDataSize(DataSize);
 
 			if (RecentTables.AutoLoad)
@@ -569,16 +579,23 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SetMemoryDomain(MemoryDomain d)
+		private void SetMemoryDomain(string name)
 		{
-			_domain = d;
+			if (name == _romDomain.Name)
+			{
+				_domain = _romDomain;
+			}
+			else
+			{
+				_domain = MemoryDomains[name];
 
-			//store domain size separately as a long, to apply 0-hack
-			_domainSize = _domain.Size;
-			if (_domainSize == 0)
-				_domainSize = 0x100000000;
+				//store domain size separately as a long, to apply 0-hack
+				_domainSize = _domain.Size;
+				if (_domainSize == 0)
+					_domainSize = 0x100000000;
+			}
 
-			BigEndian = d.EndianType == MemoryDomain.Endian.Big;
+			BigEndian = _domain.EndianType == MemoryDomain.Endian.Big;
 			_maxRow = (int)(_domainSize / 2);
 			SetUpScrollBar();
 			if (0 >= HexScrollBar.Minimum && 0 <= HexScrollBar.Maximum)
@@ -586,36 +603,12 @@ namespace BizHawk.Client.EmuHawk
 				HexScrollBar.Value = 0;
 			}
 
-			Refresh();
+			UpdateGroupBoxTitle();
+			UpdateValues();
 		}
 
 		private void SetDomain(MemoryDomain domain)
 		{
-			SetMemoryDomain(GetDomainInt(domain.Name) ?? 0);
-			SetHeader();
-		}
-
-		// TODO: this should be removable or at least refactorable
-		private void SetMemoryDomain(int pos)
-		{
-			// <zeromus> THIS IS HORRIBLE.
-			if (pos == 999) 
-			{
-				// <zeromus> THIS IS HORRIBLE.
-				_rom = GetRomBytes();
-
-				// <zeromus> THIS IS HORRIBLE.
-				_romDomain = new MemoryDomain(
-					"File on Disk", _rom.Length, MemoryDomain.Endian.Little, i => _rom[i], (i, value) => _rom[i] = value);
-
-				// <zeromus> THIS IS HORRIBLE.
-				SetMemoryDomain(_romDomain);
-			}
-			else if (pos < MemoryDomains.Count)
-			{
-				SetMemoryDomain(MemoryDomains[pos]);
-			}
-
 			SetHeader();
 			UpdateGroupBoxTitle();
 			ResetScrollBar();
@@ -627,38 +620,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var addressesString = "0x" + string.Format("{0:X8}", _domainSize / DataSize).TrimStart('0');
 			MemoryViewerBox.Text = Emulator.SystemId + " " + _domain + "  -  " + addressesString + " addresses";
-		}
-
-		private void SetMemoryDomainMenu()
-		{
-			MemoryDomainsMenuItem.DropDownItems.Clear();
-
-			for (var i = 0; i < MemoryDomains.Count; i++)
-			{
-				//zero 11-sep-2014 - historically, memorydomains of size zero were ignored.
-				//now, they'll be confused with a 32bit memorydomain. hope that's not a problem.
-				var str = MemoryDomains[i].ToString();
-				var item = new ToolStripMenuItem { Text = str };
-				{
-					var temp = i;
-					item.Click += (o, ev) => SetMemoryDomain(temp);
-				}
-
-				if (i == 0)
-				{
-					SetMemoryDomain(i);
-				}
-
-				MemoryDomainsMenuItem.DropDownItems.Add(item);
-				_domainMenuItems.Add(item);
-			}
-
-			// Add File on Disk memory domain
-			// <zeromus> THIS IS HORRIBLE.
-			var rom_item = new ToolStripMenuItem { Text = "File on Disk" };
-			rom_item.Click += (o, ev) => SetMemoryDomain(999); // 999 will denote File on Disk
-			MemoryDomainsMenuItem.DropDownItems.Add(rom_item);
-			_domainMenuItems.Add(rom_item);
 		}
 
 		private void ClearNibbles()
@@ -1392,10 +1353,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MemoryDomainsMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			foreach (var menuItem in _domainMenuItems)
+			MemoryDomainsMenuItem.DropDownItems.Clear();
+			MemoryDomainsMenuItem.DropDownItems.AddRange(
+				MemoryDomains.MenuItems(SetMemoryDomain, _domain.Name)
+				.ToArray());
+
+			
+			var romMenuItem = new ToolStripMenuItem
 			{
-				menuItem.Checked = _domain.Name == menuItem.Text;
-			}
+				Text = _romDomain.Name,
+				Checked = _domain.Name == _romDomain.Name
+			};
+
+			MemoryDomainsMenuItem.DropDownItems.Add(new ToolStripSeparator());
+			MemoryDomainsMenuItem.DropDownItems.Add(romMenuItem);
+
+			romMenuItem.Click += (o, ev) => SetMemoryDomain(_romDomain.Name);
+
 		}
 
 		private void DataSizeByteMenuItem_Click(object sender, EventArgs e)
