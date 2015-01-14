@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			CheatEditor.Core = Core;
+			CheatEditor.MemoryDomains = Core;
 		}
 
 		/// <summary>
@@ -173,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 		private void Cheats_Load(object sender, EventArgs e)
 		{
 			TopMost = Settings.TopMost;
-			CheatEditor.Core = Core;
+			CheatEditor.MemoryDomains = Core;
 			LoadConfigSettings();
 			ToggleGameGenieButton();
 			CheatEditor.SetAddEvent(AddCheat);

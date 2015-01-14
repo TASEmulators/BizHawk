@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		isReleased: true
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public sealed partial class SMS : IEmulator, IMemoryDomains, ISaveRam, IStatable, IInputPollable,
+	public sealed partial class SMS : IEmulator, ISaveRam, IStatable, IInputPollable,
 		IDebuggable, ISettable<SMS.SMSSettings, SMS.SMSSyncSettings>
 	{
 		// Constants
@@ -485,9 +485,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				domains.Add(ExtRamDomain);
 			}
 			memoryDomains = new MemoryDomainList(domains);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(memoryDomains);
 		}
-
-		public IMemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{

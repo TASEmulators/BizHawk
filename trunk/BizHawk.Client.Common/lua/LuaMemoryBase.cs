@@ -24,13 +24,13 @@ namespace BizHawk.Client.Common
 
 		protected abstract MemoryDomain Domain { get; }
 
-		protected IMemoryDomainList DomainList
+		protected IMemoryDomains DomainList
 		{
 			get
 			{
 				if (MemoryDomainCore != null)
 				{
-					return MemoryDomainCore.MemoryDomains;
+					return MemoryDomainCore;
 				}
 				else
 				{

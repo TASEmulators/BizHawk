@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		isReleased: false
 		)]
 	[ServiceNotApplicable(typeof(ISettable<,>))]
-	sealed public partial class C64 : IEmulator, IMemoryDomains, IStatable, IInputPollable, IDriveLight, IDebuggable
+	sealed public partial class C64 : IEmulator, IStatable, IInputPollable, IDriveLight, IDebuggable
 	{
 		// framework
 		public C64(CoreComm comm, GameInfo game, byte[] rom, string romextension)

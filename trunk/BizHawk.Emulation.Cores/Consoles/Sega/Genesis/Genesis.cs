@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 		isPorted: false,
 		isReleased: false
 		)]
-	public sealed partial class Genesis : IEmulator, IMemoryDomains, ISaveRam, IStatable, IInputPollable
+	public sealed partial class Genesis : IEmulator, ISaveRam, IStatable, IInputPollable
 	{
 		private int _lagcount = 0;
 		private bool lagged = true;
@@ -487,9 +487,8 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 			domains.Add(RomDomain);
 			domains.Add(SystemBusDomain);
 			memoryDomains = new MemoryDomainList(domains);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(memoryDomains);
 		}
-
-		public IMemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		public void Dispose() { }
 	}

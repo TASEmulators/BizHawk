@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 {
 	[CoreAttributes("Cygne/Mednafen", "Dox", true, true, "0.9.36.5", "http://mednafen.sourceforge.net/")]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public partial class WonderSwan : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam,
+	public partial class WonderSwan : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam,
 		IInputPollable, IDebuggable
 	{
 		[CoreConstructor("WSWAN")]
@@ -150,7 +150,9 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				string sname = Marshal.PtrToStringAnsi(name);
 				mmd.Add(MemoryDomain.FromIntPtr(sname, size, MemoryDomain.Endian.Little, data));
 			}
+
 			MemoryDomains = new MemoryDomainList(mmd, 0);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
 
 		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
@@ -159,7 +161,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem();
 		public IMemoryCallbackSystem MemoryCallbacks { get { return _memorycallbacks; } }
 
-		public IMemoryDomainList MemoryDomains { get; private set; }
+		private IMemoryDomains MemoryDomains;
 	
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{

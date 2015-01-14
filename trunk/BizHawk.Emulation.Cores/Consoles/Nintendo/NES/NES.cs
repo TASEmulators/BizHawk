@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		isPorted: false,
 		isReleased: true
 		)]
-	public partial class NES : IEmulator, IMemoryDomains, ISaveRam, IDebuggable, IStatable, IInputPollable,
+	public partial class NES : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable,
 		ISettable<NES.NESSettings, NES.NESSyncSettings>
 	{
 		static readonly bool USE_DATABASE = true;
@@ -443,10 +443,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				domains.Add((board as ExROM).GetExRAM());
 
 			memoryDomains = new MemoryDomainList(domains);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(memoryDomains);
 		}
 
 		public string SystemId { get { return "NES"; } }
-		public IMemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		public string GameName { get { return game_name; } }
 

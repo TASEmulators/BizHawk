@@ -19,8 +19,7 @@ namespace BizHawk.Client.Common
 		{
 			if (MemoryDomainCore != null)
 			{
-				var domains = MemoryDomainCore.MemoryDomains;
-				_currentMemoryDomain = domains.MainMemory;
+				_currentMemoryDomain = MemoryDomainCore.MainMemory;
 			}
 		}
 
@@ -29,8 +28,7 @@ namespace BizHawk.Client.Common
 		{
 			if (MemoryDomainCore != null)
 			{
-				var domains = MemoryDomainCore.MemoryDomains;
-				_currentMemoryDomain = domains.MainMemory;
+				_currentMemoryDomain = MemoryDomainCore.MainMemory;
 			}
 		}
 

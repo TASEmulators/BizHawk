@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		isReleased: true
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public class GambatteLink : IEmulator, IVideoProvider, ISyncSoundProvider, IInputPollable, ISaveRam, IStatable, IMemoryDomains,
+	public class GambatteLink : IEmulator, IVideoProvider, ISyncSoundProvider, IInputPollable, ISaveRam, IStatable,
 		IDebuggable, ISettable<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings>
 	{
 		bool disposed = false;
@@ -405,7 +405,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region debugging
 
-		public IMemoryDomainList MemoryDomains { get; private set; }
+		private IMemoryDomains _memoryDomains;
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
@@ -439,7 +439,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			foreach (var md in R.MemoryDomains)
 				mm.Add(new MemoryDomain("R " + md.Name, md.Size, md.EndianType, md.PeekByte, md.PokeByte));
 
-			MemoryDomains = new MemoryDomainList(mm);
+			_memoryDomains = new MemoryDomainList(mm);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
 		}
 
 		public bool CanStep(StepType type) { return false; }

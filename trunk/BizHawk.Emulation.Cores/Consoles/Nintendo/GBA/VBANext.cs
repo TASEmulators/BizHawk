@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 	[CoreAttributes("VBA-Next", "many authors", true, true, "cd508312a29ed8c29dacac1b11c2dce56c338a54", "https://github.com/libretro/vba-next")]
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public class VBANext : IEmulator, IVideoProvider, ISyncSoundProvider, IInputPollable,
-		IGBAGPUViewable, IMemoryDomains, ISaveRam, IStatable, IDebuggable, ISettable<object, VBANext.SyncSettings>
+		IGBAGPUViewable, ISaveRam, IStatable, IDebuggable, ISettable<object, VBANext.SyncSettings>
 	{
 		IntPtr Core;
 
@@ -400,10 +400,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 					});
 				mm.Add(cr);
 			}
-			MemoryDomains = new MemoryDomainList(mm, 0);
+
+			_memoryDomains = new MemoryDomainList(mm, 0);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
 		}
 
-		public IMemoryDomainList MemoryDomains { get; private set; }
+		private IMemoryDomains _memoryDomains;
 
 		VBARegisterHelper regs;
 

@@ -42,7 +42,7 @@ namespace BizHawk.Client.Common
 			{
 				var decoder = new NESGameGenieDecoder(code);
 				var watch = Watch.GenerateWatch(
-					Global.Emulator.AsMemoryDomains().MemoryDomains["System Bus"],
+					Global.Emulator.AsMemoryDomains()["System Bus"],
 					decoder.Address,
 					Watch.WatchSize.Byte,
 					Watch.DisplayType.Hex,

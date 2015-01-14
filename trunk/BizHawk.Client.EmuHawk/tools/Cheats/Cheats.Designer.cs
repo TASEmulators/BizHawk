@@ -648,7 +648,7 @@
 			this.CheatEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.CheatEditor.Core = null;
+			this.CheatEditor.MemoryDomains = null;
 			this.CheatEditor.Location = new System.Drawing.Point(6, 14);
 			this.CheatEditor.Name = "CheatEditor";
 			this.CheatEditor.Size = new System.Drawing.Size(190, 264);

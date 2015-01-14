@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		isPorted: false,
 		isReleased: true
 		)]
-	public sealed partial class PCEngine : IEmulator, IMemoryDomains, ISaveRam, IStatable, IInputPollable,
+	public sealed partial class PCEngine : IEmulator, ISaveRam, IStatable, IInputPollable,
 		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>, IDriveLight
 	{
 		// ROM
@@ -563,10 +563,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 
 			memoryDomains = new MemoryDomainList(domains);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(memoryDomains);
 		}
 
 		MemoryDomainList memoryDomains;
-		public IMemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{

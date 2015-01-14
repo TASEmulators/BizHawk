@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public class Gameboy : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IInputPollable,
-		IMemoryDomains, IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>
+		IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>
 	{
 		#region ALL SAVESTATEABLE STATE GOES HERE
 
@@ -753,7 +753,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				_MemoryDomains.Add(MemoryDomain.FromIntPtr(name, length, MemoryDomain.Endian.Little, data));
 		}
 
-		void InitMemoryDomains()
+		private void InitMemoryDomains()
 		{
 			CreateMemoryDomain(LibGambatte.MemoryAreas.wram, "WRAM");
 			CreateMemoryDomain(LibGambatte.MemoryAreas.rom, "ROM");
@@ -779,10 +779,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				}));
 
 			MemoryDomains = new MemoryDomainList(_MemoryDomains);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
 
 		private List<MemoryDomain> _MemoryDomains = new List<MemoryDomain>();
-		public IMemoryDomainList MemoryDomains { get; private set; }
+		internal IMemoryDomains MemoryDomains { get; set; }
 
 		#endregion
 

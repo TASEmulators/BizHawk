@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		portedUrl: "http://byuu.org/"
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public unsafe class LibsnesCore : IEmulator, IVideoProvider, IMemoryDomains, ISaveRam, IStatable, IInputPollable,
+	public unsafe class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable,
 		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
 	{
 		public LibsnesCore(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData, CoreComm comm, object Settings, object SyncSettings)
@@ -1141,11 +1141,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 
 			MemoryDomains = new MemoryDomainList(_memoryDomains);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
 
 		private MemoryDomain MainMemory;
 		private List<MemoryDomain> _memoryDomains = new List<MemoryDomain>();
-		public IMemoryDomainList MemoryDomains { get; private set; }
+		private IMemoryDomains MemoryDomains;
 
 		#region audio stuff
 

@@ -457,7 +457,7 @@ namespace BizHawk.Client.Common
 								compare = int.Parse(vals[2], NumberStyles.HexNumber);
 							}
 
-							var domain = Global.Emulator.AsMemoryDomains().MemoryDomains[vals[3]];
+							var domain = Global.Emulator.AsMemoryDomains()[vals[3]];
 							var enabled = vals[4] == "1";
 							var name = vals[5];
 
