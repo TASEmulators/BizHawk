@@ -63,9 +63,11 @@ namespace BizHawk.Client.Common
 		{
 			var table = Lua.NewTable();
 
-			for (int i = 0; i < DomainList.Count; i++)
+			int i = 0;
+			foreach (var domain in DomainList)
 			{
-				table[i] = DomainList[i].Name;
+				table[i] = domain.Name;
+				i++;
 			}
 
 			return table;
