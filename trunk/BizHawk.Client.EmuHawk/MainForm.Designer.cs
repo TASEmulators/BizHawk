@@ -149,7 +149,6 @@
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			this.SpeedSkipSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.ClockThrottleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ClockThrottleLowCPUMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AudioThrottleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.VsyncThrottleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator27 = new System.Windows.Forms.ToolStripSeparator();
@@ -1459,7 +1458,6 @@
 			// 
 			this.SpeedSkipSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ClockThrottleMenuItem,
-            this.ClockThrottleLowCPUMenuItem,
             this.AudioThrottleMenuItem,
             this.VsyncThrottleMenuItem,
             this.toolStripSeparator27,
@@ -1490,162 +1488,155 @@
 			// ClockThrottleMenuItem
 			// 
 			this.ClockThrottleMenuItem.Name = "ClockThrottleMenuItem";
-			this.ClockThrottleMenuItem.Size = new System.Drawing.Size(287, 22);
+			this.ClockThrottleMenuItem.Size = new System.Drawing.Size(202, 22);
 			this.ClockThrottleMenuItem.Text = "Clock Throttle";
 			this.ClockThrottleMenuItem.Click += new System.EventHandler(this.ClockThrottleMenuItem_Click);
-			// 
-			// ClockThrottleLowCPUMenuItem
-			// 
-			this.ClockThrottleLowCPUMenuItem.Name = "ClockThrottleLowCPUMenuItem";
-			this.ClockThrottleLowCPUMenuItem.Size = new System.Drawing.Size(287, 22);
-			this.ClockThrottleLowCPUMenuItem.Text = "Clock Throttle (Low CPU) [experimental]";
-			this.ClockThrottleLowCPUMenuItem.Click += new System.EventHandler(this.ClockThrottleMenuItem_Click);
 			// 
 			// AudioThrottleMenuItem
 			// 
 			this.AudioThrottleMenuItem.Name = "AudioThrottleMenuItem";
-			this.AudioThrottleMenuItem.Size = new System.Drawing.Size(287, 22);
+			this.AudioThrottleMenuItem.Size = new System.Drawing.Size(202, 22);
 			this.AudioThrottleMenuItem.Text = "Audio Throttle";
 			this.AudioThrottleMenuItem.Click += new System.EventHandler(this.AudioThrottleMenuItem_Click);
 			// 
 			// VsyncThrottleMenuItem
 			// 
 			this.VsyncThrottleMenuItem.Name = "VsyncThrottleMenuItem";
-			this.VsyncThrottleMenuItem.Size = new System.Drawing.Size(287, 22);
+			this.VsyncThrottleMenuItem.Size = new System.Drawing.Size(202, 22);
 			this.VsyncThrottleMenuItem.Text = "VSync Throttle";
 			this.VsyncThrottleMenuItem.Click += new System.EventHandler(this.VsyncThrottleMenuItem_Click);
 			// 
 			// toolStripSeparator27
 			// 
 			this.toolStripSeparator27.Name = "toolStripSeparator27";
-			this.toolStripSeparator27.Size = new System.Drawing.Size(284, 6);
+			this.toolStripSeparator27.Size = new System.Drawing.Size(199, 6);
 			// 
 			// VsyncEnabledMenuItem
 			// 
 			this.VsyncEnabledMenuItem.Name = "VsyncEnabledMenuItem";
-			this.VsyncEnabledMenuItem.Size = new System.Drawing.Size(287, 22);
+			this.VsyncEnabledMenuItem.Size = new System.Drawing.Size(202, 22);
 			this.VsyncEnabledMenuItem.Text = "VSync Enabled";
 			this.VsyncEnabledMenuItem.Click += new System.EventHandler(this.VsyncEnabledMenuItem_Click);
 			// 
 			// toolStripMenuItem3
 			// 
 			this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-			this.toolStripMenuItem3.Size = new System.Drawing.Size(284, 6);
+			this.toolStripMenuItem3.Size = new System.Drawing.Size(199, 6);
 			// 
 			// MinimizeSkippingMenuItem
 			// 
 			this.MinimizeSkippingMenuItem.Name = "MinimizeSkippingMenuItem";
-			this.MinimizeSkippingMenuItem.Size = new System.Drawing.Size(287, 22);
+			this.MinimizeSkippingMenuItem.Size = new System.Drawing.Size(202, 22);
 			this.MinimizeSkippingMenuItem.Text = "Auto-minimize skipping";
 			this.MinimizeSkippingMenuItem.Click += new System.EventHandler(this.MinimizeSkippingMenuItem_Click);
 			// 
 			// NeverSkipMenuItem
 			// 
 			this.NeverSkipMenuItem.Name = "NeverSkipMenuItem";
-			this.NeverSkipMenuItem.Size = new System.Drawing.Size(287, 22);
+			this.NeverSkipMenuItem.Size = new System.Drawing.Size(202, 22);
 			this.NeverSkipMenuItem.Text = "0 (never skip)";
 			this.NeverSkipMenuItem.Click += new System.EventHandler(this.NeverSkipMenuItem_Click);
 			// 
 			// Frameskip1MenuItem
 			// 
 			this.Frameskip1MenuItem.Name = "Frameskip1MenuItem";
-			this.Frameskip1MenuItem.Size = new System.Drawing.Size(287, 22);
+			this.Frameskip1MenuItem.Size = new System.Drawing.Size(202, 22);
 			this.Frameskip1MenuItem.Text = "1";
 			this.Frameskip1MenuItem.Click += new System.EventHandler(this.Frameskip1MenuItem_Click);
 			// 
 			// Frameskip2MenuItem
 			// 
 			this.Frameskip2MenuItem.Name = "Frameskip2MenuItem";
-			this.Frameskip2MenuItem.Size = new System.Drawing.Size(287, 22);
+			this.Frameskip2MenuItem.Size = new System.Drawing.Size(202, 22);
 			this.Frameskip2MenuItem.Text = "2";
 			this.Frameskip2MenuItem.Click += new System.EventHandler(this.Frameskip2MenuItem_Click);
 			// 
 			// Frameskip3MenuItem
 			// 
 			this.Frameskip3MenuItem.Name = "Frameskip3MenuItem";
-			this.Frameskip3MenuItem.Size = new System.Drawing.Size(287, 22);
+			this.Frameskip3MenuItem.Size = new System.Drawing.Size(202, 22);
 			this.Frameskip3MenuItem.Text = "3";
 			this.Frameskip3MenuItem.Click += new System.EventHandler(this.Frameskip3MenuItem_Click);
 			// 
 			// Frameskip4MenuItem
 			// 
 			this.Frameskip4MenuItem.Name = "Frameskip4MenuItem";
-			this.Frameskip4MenuItem.Size = new System.Drawing.Size(287, 22);
+			this.Frameskip4MenuItem.Size = new System.Drawing.Size(202, 22);
 			this.Frameskip4MenuItem.Text = "4";
 			this.Frameskip4MenuItem.Click += new System.EventHandler(this.Frameskip4MenuItem_Click);
 			// 
 			// Frameskip5MenuItem
 			// 
 			this.Frameskip5MenuItem.Name = "Frameskip5MenuItem";
-			this.Frameskip5MenuItem.Size = new System.Drawing.Size(287, 22);
+			this.Frameskip5MenuItem.Size = new System.Drawing.Size(202, 22);
 			this.Frameskip5MenuItem.Text = "5";
 			this.Frameskip5MenuItem.Click += new System.EventHandler(this.Frameskip5MenuItem_Click);
 			// 
 			// Frameskip6MenuItem
 			// 
 			this.Frameskip6MenuItem.Name = "Frameskip6MenuItem";
-			this.Frameskip6MenuItem.Size = new System.Drawing.Size(287, 22);
+			this.Frameskip6MenuItem.Size = new System.Drawing.Size(202, 22);
 			this.Frameskip6MenuItem.Text = "6";
 			this.Frameskip6MenuItem.Click += new System.EventHandler(this.Frameskip6MenuItem_Click);
 			// 
 			// Frameskip7MenuItem
 			// 
 			this.Frameskip7MenuItem.Name = "Frameskip7MenuItem";
-			this.Frameskip7MenuItem.Size = new System.Drawing.Size(287, 22);
+			this.Frameskip7MenuItem.Size = new System.Drawing.Size(202, 22);
 			this.Frameskip7MenuItem.Text = "7";
 			this.Frameskip7MenuItem.Click += new System.EventHandler(this.Frameskip7MenuItem_Click);
 			// 
 			// Frameskip8MenuItem
 			// 
 			this.Frameskip8MenuItem.Name = "Frameskip8MenuItem";
-			this.Frameskip8MenuItem.Size = new System.Drawing.Size(287, 22);
+			this.Frameskip8MenuItem.Size = new System.Drawing.Size(202, 22);
 			this.Frameskip8MenuItem.Text = "8";
 			this.Frameskip8MenuItem.Click += new System.EventHandler(this.Frameskip8MenuItem_Click);
 			// 
 			// Frameskip9MenuItem
 			// 
 			this.Frameskip9MenuItem.Name = "Frameskip9MenuItem";
-			this.Frameskip9MenuItem.Size = new System.Drawing.Size(287, 22);
+			this.Frameskip9MenuItem.Size = new System.Drawing.Size(202, 22);
 			this.Frameskip9MenuItem.Text = "9";
 			this.Frameskip9MenuItem.Click += new System.EventHandler(this.Frameskip9MenuItem_Click);
 			// 
 			// toolStripMenuItem5
 			// 
 			this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-			this.toolStripMenuItem5.Size = new System.Drawing.Size(284, 6);
+			this.toolStripMenuItem5.Size = new System.Drawing.Size(199, 6);
 			// 
 			// Speed50MenuItem
 			// 
 			this.Speed50MenuItem.Name = "Speed50MenuItem";
-			this.Speed50MenuItem.Size = new System.Drawing.Size(287, 22);
+			this.Speed50MenuItem.Size = new System.Drawing.Size(202, 22);
 			this.Speed50MenuItem.Text = "Speed 50%";
 			this.Speed50MenuItem.Click += new System.EventHandler(this.Speed50MenuItem_Click);
 			// 
 			// Speed75MenuItem
 			// 
 			this.Speed75MenuItem.Name = "Speed75MenuItem";
-			this.Speed75MenuItem.Size = new System.Drawing.Size(287, 22);
+			this.Speed75MenuItem.Size = new System.Drawing.Size(202, 22);
 			this.Speed75MenuItem.Text = "Speed 75%";
 			this.Speed75MenuItem.Click += new System.EventHandler(this.Speed75MenuItem_Click);
 			// 
 			// Speed100MenuItem
 			// 
 			this.Speed100MenuItem.Name = "Speed100MenuItem";
-			this.Speed100MenuItem.Size = new System.Drawing.Size(287, 22);
+			this.Speed100MenuItem.Size = new System.Drawing.Size(202, 22);
 			this.Speed100MenuItem.Text = "Speed 100%";
 			this.Speed100MenuItem.Click += new System.EventHandler(this.Speed100MenuItem_Click);
 			// 
 			// Speed150MenuItem
 			// 
 			this.Speed150MenuItem.Name = "Speed150MenuItem";
-			this.Speed150MenuItem.Size = new System.Drawing.Size(287, 22);
+			this.Speed150MenuItem.Size = new System.Drawing.Size(202, 22);
 			this.Speed150MenuItem.Text = "Speed 150%";
 			this.Speed150MenuItem.Click += new System.EventHandler(this.Speed150MenuItem_Click);
 			// 
 			// Speed200MenuItem
 			// 
 			this.Speed200MenuItem.Name = "Speed200MenuItem";
-			this.Speed200MenuItem.Size = new System.Drawing.Size(287, 22);
+			this.Speed200MenuItem.Size = new System.Drawing.Size(202, 22);
 			this.Speed200MenuItem.Text = "Speed 200%";
 			this.Speed200MenuItem.Click += new System.EventHandler(this.Speed200MenuItem_Click);
 			// 
@@ -3498,7 +3489,6 @@
 		private System.Windows.Forms.ToolStripMenuItem Speed150MenuItem;
 		private System.Windows.Forms.ToolStripMenuItem Speed200MenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ClockThrottleMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ClockThrottleLowCPUMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
 		private System.Windows.Forms.ToolStripMenuItem SaveConfigMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem LoadConfigMenuItem;
