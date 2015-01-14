@@ -31,6 +31,11 @@ namespace BizHawk.Emulation.Common
 			{
 				Services.Add(coreType, core);
 				coreType = coreType.BaseType;
+
+				if (coreType == typeof(object)) // Don't register object
+				{
+					coreType = null;
+				}
 			}
 		}
 
@@ -68,6 +73,14 @@ namespace BizHawk.Emulation.Common
 		public bool HasService(Type t)
 		{
 			return Services.ContainsKey(t);
+		}
+
+		public IEnumerable<Type> AvailableServices
+		{
+			get
+			{
+				return Services.Select(d => d.Key);
+			}
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Common
 {
@@ -25,5 +26,10 @@ namespace BizHawk.Emulation.Common
 		/// Else returns null
 		/// </summary>
 		object GetService(Type t);
+
+		/// <summary>
+		/// A list of all cuurently registered services available to be called
+		/// </summary>
+		IEnumerable<Type> AvailableServices { get; }
 	}
 }
