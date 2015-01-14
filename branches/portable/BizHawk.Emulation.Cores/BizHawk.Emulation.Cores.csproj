@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}</ProjectGuid>
@@ -33,7 +33,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -46,7 +46,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
 	</PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -343,6 +343,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\BANDAI_74_161_161_32.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\BxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Camerica.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\CoolBoy.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\DatachBarcode.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Farid-UNROM-8-in-1.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\FS304.cs" />
@@ -544,6 +545,24 @@
     <Compile Include="Consoles\Sega\Saturn\FilePiping.cs" />
     <Compile Include="Consoles\Sega\Saturn\LibYabause.cs" />
     <Compile Include="Consoles\Sega\Saturn\Yabause.cs" />
+    <Compile Include="Consoles\Sega\Saturn\Yabause.IDriveLight.cs">
+      <DependentUpon>Yabause.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\Saturn\Yabause.IInputPollable.cs">
+      <DependentUpon>Yabause.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\Saturn\Yabause.IMemoryDomains.cs">
+      <DependentUpon>Yabause.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\Saturn\Yabause.ISaveram.cs">
+      <DependentUpon>Yabause.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\Saturn\Yabause.ISettable.cs">
+      <DependentUpon>Yabause.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\Saturn\Yabause.IStatable.cs">
+      <DependentUpon>Yabause.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Sega\SMS\TerebiOekaki.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.Korea.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.ExtRam.cs" />
@@ -558,6 +577,15 @@
     <Compile Include="Consoles\Sony\PSX\OctoshockDll.cs" />
     <Compile Include="Consoles\WonderSwan\BizSwan.cs" />
     <Compile Include="Consoles\WonderSwan\WonderSwan.cs" />
+    <Compile Include="Consoles\WonderSwan\WonderSwan.Controller.cs">
+      <DependentUpon>WonderSwan.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\WonderSwan\WonderSwan.ISettable.cs">
+      <DependentUpon>WonderSwan.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\WonderSwan\WonderSwan.IStatable.cs">
+      <DependentUpon>WonderSwan.cs</DependentUpon>
+    </Compile>
     <Compile Include="CoreInventory.cs" />
     <Compile Include="CPUs\68000\Diassembler.cs" />
     <Compile Include="CPUs\68000\Instructions\BitArithemetic.cs" />
@@ -578,6 +606,7 @@
     <Compile Include="CPUs\HuC6280\Disassembler.cs" />
     <Compile Include="CPUs\HuC6280\Execute.cs" />
     <Compile Include="CPUs\HuC6280\HuC6280.cs" />
+    <Compile Include="CPUs\HuC6280\IDisassemblable.cs" />
     <Compile Include="CPUs\MOS 6502X\Disassembler.cs" />
     <Compile Include="CPUs\MOS 6502X\Execute.cs" />
     <Compile Include="CPUs\MOS 6502X\MOS6502X.cs" />

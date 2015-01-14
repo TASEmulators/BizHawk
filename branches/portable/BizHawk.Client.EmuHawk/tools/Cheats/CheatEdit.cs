@@ -38,9 +38,9 @@ namespace BizHawk.Client.EmuHawk
 					.Select(d => d.ToString())
 					.ToArray());
 
-				if (Core.MemoryDomains.HasSystemBus)
+				if (Core.MemoryDomains.HasCheatDomain)
 				{
-					DomainDropDown.SelectedItem = Core.MemoryDomains.SystemBus.ToString();
+					DomainDropDown.SelectedItem = Core.MemoryDomains.CheatDomain.ToString();
 				}
 				else
 				{
@@ -99,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Core != null)
 			{
-				AddressBox.SetHexProperties(Core.MemoryDomains.MainMemory.Size);
+				AddressBox.SetHexProperties(Core.MemoryDomains.CheatDomain.Size);
 			}
 
 			ValueBox.ByteSize = 

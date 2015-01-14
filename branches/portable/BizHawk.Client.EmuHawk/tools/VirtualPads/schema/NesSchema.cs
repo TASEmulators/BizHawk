@@ -366,8 +366,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Zapper",
 				IsConsole = false,
-				DefaultSize = new Size(356, 260),
-				MaxSize = new Size(356, 260),
+				DefaultSize = new Size(356, 290),
+				MaxSize = new Size(356, 290),
 				Buttons = new[]
 				{
 					new PadSchema.ButtonScema
@@ -526,8 +526,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Tablet",
 				IsConsole = false,
-				DefaultSize = new Size(356, 260),
-				MaxSize = new Size(356, 260),
+				DefaultSize = new Size(356, 290),
+				MaxSize = new Size(356, 290),
 				Buttons = new[]
 				{
 					new PadSchema.ButtonScema

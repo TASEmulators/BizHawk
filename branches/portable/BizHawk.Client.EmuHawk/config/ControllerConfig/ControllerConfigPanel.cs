@@ -107,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 			for (int i = 0; i < buttons.Count; i++)
 			{
 				y += Spacing;
-				if (y > (_panelSize.Height - UIHelper.ScaleY(30)))
+				if (y > (_panelSize.Height - UIHelper.ScaleY(62)))
 				{
 					y = MarginTop;
 					x += ColumnWidth;

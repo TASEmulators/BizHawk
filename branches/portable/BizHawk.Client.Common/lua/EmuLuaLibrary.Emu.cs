@@ -19,6 +19,15 @@ namespace BizHawk.Client.Common
 	[Description("A library for interacting with the currently loaded emulator core")]
 	public sealed class EmulatorLuaLibrary : LuaLibraryBase
 	{
+		[RequiredService]
+		public IEmulator Emulator { get; set; }
+
+		[OptionalService]
+		public IDebuggable DebuggableCore { get; set; }
+
+		[OptionalService]
+		public IInputPollable InputPollableCore { get; set; }
+
 		public Action FrameAdvanceCallback { get; set; }
 		public Action YieldCallback { get; set; }
 
@@ -52,9 +61,9 @@ namespace BizHawk.Client.Common
 			"framecount",
 			"Returns the current frame count"
 		)]
-		public static int FrameCount()
+		public int FrameCount()
 		{
-			return Global.Emulator.Frame;
+			return Emulator.Frame;
 		}
 
 		// TODO: what about 64 bit registers?
@@ -66,13 +75,12 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				var debuggable = Global.Emulator.AsDebuggable();
-				if (!Global.Emulator.CanDebug())
+				if (DebuggableCore == null)
 				{
 					throw new NotImplementedException();
 				}
 
-				var registers = debuggable.GetCpuFlagsAndRegisters();
+				var registers = DebuggableCore.GetCpuFlagsAndRegisters();
 				return registers.ContainsKey(name)
 					? (int)registers[name].Value
 					: 0;
@@ -82,7 +90,7 @@ namespace BizHawk.Client.Common
 
 				Log(string.Format(
 					"Error: {0} does not yet implement getregister()",
-					Global.Emulator.Attributes().CoreName));
+					Emulator.Attributes().CoreName));
 				return 0;
 			}
 		}
@@ -97,22 +105,21 @@ namespace BizHawk.Client.Common
 
 			try
 			{
-				var debuggable = Global.Emulator.AsDebuggable();
-				if (!Global.Emulator.CanDebug())
+				if (DebuggableCore == null)
 				{
 					throw new NotImplementedException();
 				}
 
-				foreach (var kvp in debuggable.GetCpuFlagsAndRegisters())
+				foreach (var kvp in DebuggableCore.GetCpuFlagsAndRegisters())
 				{
-					table[kvp.Key] = kvp.Value;
+					table[kvp.Key] = kvp.Value.Value;
 				}
 			}
 			catch (NotImplementedException)
 			{
 				Log(string.Format(
 					"Error: {0} does not yet implement getregisters()",
-					Global.Emulator.Attributes().CoreName));
+					Emulator.Attributes().CoreName));
 			}
 
 			return table;
@@ -126,19 +133,18 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				var debuggable = Global.Emulator.AsDebuggable();
-				if (!Global.Emulator.CanDebug())
+				if (DebuggableCore == null)
 				{
 					throw new NotImplementedException();
 				}
 
-				debuggable.SetCpuRegister(register, value);
+				DebuggableCore.SetCpuRegister(register, value);
 			}
 			catch (NotImplementedException)
 			{
 				Log(string.Format(
 					"Error: {0} does not yet implement setregister()",
-					Global.Emulator.Attributes().CoreName));
+					Emulator.Attributes().CoreName));
 			}
 		}
 
@@ -157,13 +163,13 @@ namespace BizHawk.Client.Common
 		)]
 		public bool IsLagged()
 		{
-			if (Global.Emulator.CanPollInput())
+			if (InputPollableCore != null)
 			{
-				return Global.Emulator.AsInputPollable().IsLagFrame;
+				return InputPollableCore.IsLagFrame;
 			}
 			else
 			{
-				Log("Can not get lag information, core does not implement IInputPollable");
+				Log(string.Format("Can not get lag information, {0} does not implement IInputPollable", Emulator.Attributes().CoreName));
 				return false;
 			}
 		}
@@ -174,13 +180,13 @@ namespace BizHawk.Client.Common
 		)]
 		public int LagCount()
 		{
-			if (Global.Emulator.CanPollInput())
+			if (InputPollableCore != null)
 			{
-				return Global.Emulator.AsInputPollable().LagCount;
+				return InputPollableCore.LagCount;
 			}
 			else
 			{
-				Log("Can not get lag information, core does not implement IInputPollable");
+				Log(string.Format("Can not get lag information, {0} does not implement IInputPollable", Emulator.Attributes().CoreName));
 				return 0;
 			}
 		}
@@ -207,21 +213,21 @@ namespace BizHawk.Client.Common
 			"setrenderplanes",
 			"Toggles the drawing of sprites and background planes. Set to false or nil to disable a pane, anything else will draw them"
 		)]
-		public static void SetRenderPlanes(params bool[] luaParam)
+		public void SetRenderPlanes(params bool[] luaParam)
 		{
-			if (Global.Emulator is NES)
+			if (Emulator is NES)
 			{
 				// in the future, we could do something more arbitrary here.
 				// but this isn't any worse than the old system
-				var nes = Global.Emulator as NES;
+				var nes = Emulator as NES;
 				var s = nes.GetSettings();
 				s.DispSprites = (bool)luaParam[0];
 				s.DispBackground = (bool)luaParam[1];
 				nes.PutSettings(s);
 			}
-			else if (Global.Emulator is QuickNES)
+			else if (Emulator is QuickNES)
 			{
-				var quicknes = Global.Emulator as QuickNES;
+				var quicknes = Emulator as QuickNES;
 				var s = quicknes.GetSettings();
 				// this core doesn't support disabling BG
 				bool showsp = GetSetting(0, luaParam);
@@ -231,9 +237,9 @@ namespace BizHawk.Client.Common
 					s.NumSprites = 0;
 				quicknes.PutSettings(s);
 			}
-			else if (Global.Emulator is PCEngine)
+			else if (Emulator is PCEngine)
 			{
-				var pce = Global.Emulator as PCEngine;
+				var pce = Emulator as PCEngine;
 				var s = pce.GetSettings();
 				s.ShowOBJ1 = GetSetting(0, luaParam);
 				s.ShowBG1 = GetSetting(1, luaParam);
@@ -245,17 +251,17 @@ namespace BizHawk.Client.Common
 
 				pce.PutSettings(s);
 			}
-			else if (Global.Emulator is SMS)
+			else if (Emulator is SMS)
 			{
-				var sms = Global.Emulator as SMS;
+				var sms = Emulator as SMS;
 				var s = sms.GetSettings();
 				s.DispOBJ = GetSetting(0, luaParam);
 				s.DispBG = GetSetting(1, luaParam);
 				sms.PutSettings(s);
 			}
-			else if (Global.Emulator is WonderSwan)
+			else if (Emulator is WonderSwan)
 			{
-				var ws = Global.Emulator as WonderSwan;
+				var ws = Emulator as WonderSwan;
 				var s = ws.GetSettings();
 				s.EnableSprites = GetSetting(0, luaParam);
 				s.EnableFG = GetSetting(1, luaParam);
@@ -291,10 +297,10 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Game != null)
 			{
-				var displaytype = Global.Emulator.GetType().GetProperty("DisplayType");
+				var displaytype = Emulator.GetType().GetProperty("DisplayType");
 				if (displaytype != null)
 				{
-					return displaytype.GetValue(Global.Emulator, null).ToString();
+					return displaytype.GetValue(Emulator, null).ToString();
 				}
 			}
 

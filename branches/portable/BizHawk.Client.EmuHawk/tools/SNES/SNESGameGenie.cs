@@ -11,12 +11,12 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class SNESGameGenie : Form, IToolForm
+	public partial class SNESGameGenie : Form, IToolFormAutoConfig
 	{
 		[RequiredService]
 		public LibsnesCore Emulator { get; set; }
 
-		private MemoryDomainList MemoryDomains { get { return Emulator.MemoryDomains; } }
+		private IMemoryDomainList MemoryDomains { get { return Emulator.MemoryDomains; } }
 
 		// including transposition
 		// Code: D F 4 7 0 9 1 5 6 B C 8 A 2 3 E
@@ -46,22 +46,11 @@ namespace BizHawk.Client.EmuHawk
 		public SNESGameGenie()
 		{
 			InitializeComponent();
-			TopMost = Global.Config.SnesGGSettings.TopMost;
-			Closing += (o, e) =>
-			{
-				Global.Config.SnesGGSettings.Wndx = Location.X;
-				Global.Config.SnesGGSettings.Wndy = Location.Y;
-			};
 		}
 
 		private void SNESGameGenie_Load(object sender, EventArgs e)
 		{
 			addcheatbt.Enabled = false;
-
-			if (Global.Config.SnesGGSettings.UseWindowPosition)
-			{
-				Location = Global.Config.SnesGGSettings.WindowPosition;
-			}
 		}
 
 		#region Public API
@@ -180,59 +169,7 @@ namespace BizHawk.Client.EmuHawk
 			return code;
 		}
 
-		private void RefreshFloatingWindowControl()
-		{
-			Owner = Global.Config.SnesGGSettings.FloatingWindow ? null : GlobalWin.MainForm;
-		}
-
-		#region Events
-
-		#region Menu
-
-		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			AutoloadMenuItem.Checked = Global.Config.SNESGGAutoload;
-			SaveWindowPositionMenuItem.Checked = Global.Config.SnesGGSettings.SaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Global.Config.SnesGGSettings.TopMost;
-			FloatingWindowMenuItem.Checked = Global.Config.SnesGGSettings.FloatingWindow;
-		}
-
-		private void AutoloadMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SNESGGAutoload ^= true;
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SnesGGSettings.SaveWindowPosition ^= true;
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SnesGGSettings.TopMost ^= true;
-			TopMost = Global.Config.SnesGGSettings.TopMost;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SnesGGSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
-		}
-
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
-		#endregion
-
-		#region Dialog and Controls
-
-		protected override void OnShown(EventArgs e)
-		{
-			RefreshFloatingWindowControl();
-			base.OnShown(e);
-		}
+		#region Dialog and Control Events
 
 		private void ClearButton_Click(object sender, EventArgs e)
 		{
@@ -418,8 +355,6 @@ namespace BizHawk.Client.EmuHawk
 				GGCodeMaskBox.Text += code;
 			}
 		}
-
-		#endregion
 
 		#endregion
 	}

@@ -15,47 +15,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		isReleased: false
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, IMemoryDomains, ISaveRam, IDebuggable, IStatable, IInputPollable
+	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, IMemoryDomains, ISaveRam, IStatable, IInputPollable
 	{
-		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
-		{
-			var ret = new Dictionary<string, RegisterValue>();
-			int[] data = new int[LibMeteor.regnames.Length];
-			LibMeteor.libmeteor_getregs(data);
-			for (int i = 0; i < data.Length; i++)
-				ret.Add(LibMeteor.regnames[i], data[i]);
-			return ret;
-		}
-
-		public bool CanStep(StepType type) { return false; }
-
-		[FeatureNotImplemented]
-		public void Step(StepType type) { throw new NotImplementedException(); }
-
-		[FeatureNotImplemented]
-		public void SetCpuRegister(string register, int value)
-		{
-			throw new NotImplementedException();
-		}
-
-		public IMemoryCallbackSystem MemoryCallbacks
-		{
-			[FeatureNotImplemented]
-			get { throw new NotImplementedException(); }
-		}
-
-		public static readonly ControllerDefinition GBAController =
-		new ControllerDefinition
-		{
-			Name = "GBA Controller",
-			BoolButtons =
-			{					
-				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "L", "R", "Power"
-			}
-		};
-		public ControllerDefinition ControllerDefinition { get { return GBAController; } }
-		public IController Controller { get; set; }
-
 		[CoreConstructor("GBA")]
 		public GBA(CoreComm comm, byte[] file)
 		{
@@ -89,6 +50,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
+		{
+			var ret = new Dictionary<string, RegisterValue>();
+			int[] data = new int[LibMeteor.regnames.Length];
+			LibMeteor.libmeteor_getregs(data);
+			for (int i = 0; i < data.Length; i++)
+				ret.Add(LibMeteor.regnames[i], data[i]);
+			return ret;
+		}
+
+		public static readonly ControllerDefinition GBAController =
+		new ControllerDefinition
+		{
+			Name = "GBA Controller",
+			BoolButtons =
+			{					
+				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "L", "R", "Power"
+			}
+		};
+		public ControllerDefinition ControllerDefinition { get { return GBAController; } }
+		public IController Controller { get; set; }
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
@@ -252,7 +235,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		#region memorydomains
 
 		List<MemoryDomain> _MemoryDomains = new List<MemoryDomain>();
-		public MemoryDomainList MemoryDomains { get; private set; }
+		public IMemoryDomainList MemoryDomains { get; private set; }
 
 		void AddMemoryDomain(LibMeteor.MemoryArea which, int size, string name)
 		{
@@ -279,7 +262,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			AddMemoryDomain(LibMeteor.MemoryArea.rom, 32 * 1024 * 1024, "ROM");
 			// special domain for system bus
 			{
-				MemoryDomain sb = new MemoryDomain("BUS", 1 << 28, MemoryDomain.Endian.Little,
+				MemoryDomain sb = new MemoryDomain("System Bus", 1 << 28, MemoryDomain.Endian.Little,
 					delegate(int addr)
 					{
 						if (addr < 0 || addr >= 0x10000000)

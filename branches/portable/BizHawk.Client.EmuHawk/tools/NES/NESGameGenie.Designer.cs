@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NESGameGenie));
 			this.GameGenieCode = new System.Windows.Forms.TextBox();
 			this.GameGenieCodeBox = new System.Windows.Forms.GroupBox();
 			this.label3 = new System.Windows.Forms.Label();
@@ -61,17 +62,9 @@
 			this.Encoding = new System.Windows.Forms.CheckBox();
 			this.ClearButton = new System.Windows.Forms.Button();
 			this.MenuStrip = new MenuStripEx();
-			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GameGenieCodeBox.SuspendLayout();
 			this.ButtonPanel.SuspendLayout();
 			this.groupBox1.SuspendLayout();
-			this.MenuStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// GameGenieCode
@@ -165,7 +158,7 @@
 			// AddCheat
 			// 
 			this.AddCheat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.AddCheat.Location = new System.Drawing.Point(202, 230);
+			this.AddCheat.Location = new System.Drawing.Point(212, 230);
 			this.AddCheat.Name = "AddCheat";
 			this.AddCheat.Size = new System.Drawing.Size(69, 21);
 			this.AddCheat.TabIndex = 33;
@@ -410,7 +403,7 @@
 			this.Encoding.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.Encoding.Appearance = System.Windows.Forms.Appearance.Button;
 			this.Encoding.AutoSize = true;
-			this.Encoding.Location = new System.Drawing.Point(217, 119);
+			this.Encoding.Location = new System.Drawing.Point(227, 119);
 			this.Encoding.Name = "Encoding";
 			this.Encoding.Size = new System.Drawing.Size(54, 23);
 			this.Encoding.TabIndex = 31;
@@ -420,7 +413,7 @@
 			// ClearButton
 			// 
 			this.ClearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.ClearButton.Location = new System.Drawing.Point(217, 148);
+			this.ClearButton.Location = new System.Drawing.Point(227, 148);
 			this.ClearButton.Name = "ClearButton";
 			this.ClearButton.Size = new System.Drawing.Size(54, 23);
 			this.ClearButton.TabIndex = 32;
@@ -431,74 +424,17 @@
 			// MenuStrip
 			// 
 			this.MenuStrip.ClickThrough = true;
-			this.MenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.OptionsSubMenu});
 			this.MenuStrip.Location = new System.Drawing.Point(0, 0);
 			this.MenuStrip.Name = "MenuStrip";
-			this.MenuStrip.Size = new System.Drawing.Size(292, 24);
+			this.MenuStrip.Size = new System.Drawing.Size(302, 24);
 			this.MenuStrip.TabIndex = 8;
 			this.MenuStrip.Text = "menuStrip1";
-			// 
-			// OptionsSubMenu
-			// 
-			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.AutoloadMenuItem,
-            this.SaveWindowPositionMenuItem,
-            this.AlwaysOnTopMenuItem,
-            this.FloatingWindowMenuItem,
-            this.toolStripSeparator1,
-            this.ExitMenuItem});
-			this.OptionsSubMenu.Name = "OptionsSubMenu";
-			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
-			this.OptionsSubMenu.Text = "&Options";
-			this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
-			// 
-			// AutoloadMenuItem
-			// 
-			this.AutoloadMenuItem.Name = "AutoloadMenuItem";
-			this.AutoloadMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.AutoloadMenuItem.Text = "Autoload";
-			this.AutoloadMenuItem.Click += new System.EventHandler(this.AutoloadMenuItem_Click);
-			// 
-			// SaveWindowPositionMenuItem
-			// 
-			this.SaveWindowPositionMenuItem.Name = "SaveWindowPositionMenuItem";
-			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.SaveWindowPositionMenuItem.Text = "Save Window Position";
-			this.SaveWindowPositionMenuItem.Click += new System.EventHandler(this.SaveWindowPositionMenuItem_Click);
-			// 
-			// AlwaysOnTopMenuItem
-			// 
-			this.AlwaysOnTopMenuItem.Name = "AlwaysOnTopMenuItem";
-			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.AlwaysOnTopMenuItem.Text = "Always On Top";
-			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
-			// 
-			// floatingWindowToolStripMenuItem
-			// 
-			this.FloatingWindowMenuItem.Name = "floatingWindowToolStripMenuItem";
-			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.FloatingWindowMenuItem.Text = "Floating Window";
-			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(188, 6);
-			// 
-			// ExitMenuItem
-			// 
-			this.ExitMenuItem.Name = "ExitMenuItem";
-			this.ExitMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.ExitMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.ExitMenuItem.Text = "E&xit";
-			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
 			// NESGameGenie
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(292, 260);
+			this.ClientSize = new System.Drawing.Size(302, 260);
 			this.Controls.Add(this.ClearButton);
 			this.Controls.Add(this.Encoding);
 			this.Controls.Add(this.groupBox1);
@@ -507,22 +443,20 @@
 			this.Controls.Add(this.GameGenieCodeBox);
 			this.Controls.Add(this.MenuStrip);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.MenuStrip;
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(312, 302);
+			this.MaximumSize = new System.Drawing.Size(322, 302);
 			this.MinimumSize = new System.Drawing.Size(312, 295);
 			this.Name = "NESGameGenie";
-			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "NES Game Genie Encoder / Decoder";
+			this.Text = "Game Genie Encoder / Decoder";
 			this.Load += new System.EventHandler(this.NESGameGenie_Load);
 			this.GameGenieCodeBox.ResumeLayout(false);
 			this.GameGenieCodeBox.PerformLayout();
 			this.ButtonPanel.ResumeLayout(false);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
-			this.MenuStrip.ResumeLayout(false);
-			this.MenuStrip.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -562,13 +496,6 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button ClearButton;
-        private MenuStripEx MenuStrip;
-        private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
-        private System.Windows.Forms.ToolStripMenuItem AutoloadMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem SaveWindowPositionMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
+		private MenuStripEx MenuStrip;
     }
 }

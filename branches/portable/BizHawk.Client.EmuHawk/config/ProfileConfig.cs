@@ -46,11 +46,31 @@ namespace BizHawk.Client.EmuHawk
 					ProfileSelectComboBox.SelectedItem = "N64 Tool-assisted Speedruns";
 					break;
 			}
+
+			AutoCheckForUpdates.Checked = Global.Config.Update_AutoCheckEnabled;
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			if (ProfileSelectComboBox.SelectedIndex == 0) // Casual Gaming
+			switch (ProfileSelectComboBox.SelectedItem.ToString())
+			{
+				default:
+				case "Custom Profile": // For now
+				case "Casual Gaming":
+					Global.Config.SelectedProfile = Config.ClientProfile.Casual;
+					break;
+				case "Longplays":
+					Global.Config.SelectedProfile = Config.ClientProfile.Longplay;
+					break;
+				case "Tool-assisted Speedruns":
+					Global.Config.SelectedProfile = Config.ClientProfile.Tas;
+					break;
+				case "N64 Tool-assisted Speedruns":
+					Global.Config.SelectedProfile = Config.ClientProfile.N64Tas;
+					break;
+			}
+
+			if (Global.Config.SelectedProfile == Config.ClientProfile.Casual)
 			{
 				DisplayProfileSettingBoxes(false);
 				Global.Config.SaveLargeScreenshotWithStates = false;
@@ -106,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 				// NES
 				Global.Config.NES_InQuickNES = true;
 			}
-			else if (ProfileSelectComboBox.SelectedIndex == 3) // Long Plays
+			else if (Global.Config.SelectedProfile == Config.ClientProfile.Longplay)
 			{
 				DisplayProfileSettingBoxes(false);
 				Global.Config.SaveLargeScreenshotWithStates = false;
@@ -162,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 				// NES
 				Global.Config.NES_InQuickNES = true;
 			}
-			else if (ProfileSelectComboBox.SelectedIndex == 1) // TAS
+			else if (Global.Config.SelectedProfile == Config.ClientProfile.Tas)
 			{
 				DisplayProfileSettingBoxes(false);
 
@@ -221,7 +241,7 @@ namespace BizHawk.Client.EmuHawk
 				// NES
 				Global.Config.NES_InQuickNES = true;
 			}
-			else if (ProfileSelectComboBox.SelectedIndex == 2) // N64 TAS
+			else if (Global.Config.SelectedProfile == Config.ClientProfile.N64Tas)
 			{
 				DisplayProfileSettingBoxes(false);
 
@@ -280,28 +300,18 @@ namespace BizHawk.Client.EmuHawk
 				// NES
 				Global.Config.NES_InQuickNES = true;
 			}
-			else if (ProfileSelectComboBox.SelectedIndex == 4) //custom
+			else if (Global.Config.SelectedProfile == Config.ClientProfile.Custom)
 			{
 				//Disabled for now
 				//DisplayProfileSettingBoxes(true);
 			}
 
-			switch(ProfileSelectComboBox.SelectedItem.ToString())
+			bool oldUpdateAutoCheckEnabled = Global.Config.Update_AutoCheckEnabled;
+			Global.Config.Update_AutoCheckEnabled = AutoCheckForUpdates.Checked;
+			if (Global.Config.Update_AutoCheckEnabled != oldUpdateAutoCheckEnabled)
 			{
-				default:
-				case "Custom Profile": // For now
-				case "Casual Gaming":
-					Global.Config.SelectedProfile = Config.ClientProfile.Casual;
-					break;
-				case "Longplays":
-					Global.Config.SelectedProfile = Config.ClientProfile.Longplay;
-					break;
-				case "Tool-assisted Speedruns":
-					Global.Config.SelectedProfile = Config.ClientProfile.Tas;
-					break;
-				case "N64 Tool-assisted Speedruns":
-					Global.Config.SelectedProfile = Config.ClientProfile.N64Tas;
-					break;
+				if (!Global.Config.Update_AutoCheckEnabled) UpdateChecker.ResetHistory();
+				UpdateChecker.BeginCheck(); // Call even if auto checking is disabled to trigger event (it won't actually check)
 			}
 
 			DialogResult = DialogResult.OK;
@@ -323,7 +333,7 @@ namespace BizHawk.Client.EmuHawk
 				SaveScreenshotStatesCheckBox.Visible = true;
 				SaveLargeScreenshotStatesCheckBox.Visible = true;
 				AllowUDLRCheckBox.Visible = true;
-				GeneralOptionsLabel.Visible = true;
+				CustomProfileOptionsLabel.Visible = true;
 			}
 			else
 			{
@@ -333,7 +343,7 @@ namespace BizHawk.Client.EmuHawk
 				SaveScreenshotStatesCheckBox.Visible = false;
 				SaveLargeScreenshotStatesCheckBox.Visible = false;
 				AllowUDLRCheckBox.Visible = false;
-				GeneralOptionsLabel.Visible = false;
+				CustomProfileOptionsLabel.Visible = false;
 			}
 		}
 

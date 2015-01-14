@@ -79,7 +79,8 @@
 			// 
 			// InputCompositeWidget
 			// 
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6, 13F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.Name = "InputCompositeWidget";
 			this.Size = new System.Drawing.Size(492, 20);

@@ -491,65 +491,65 @@
             this.toolStripSeparator2,
             this.ExitMenuItem});
 			this.FileSubMenu.Name = "FileSubMenu";
-			this.FileSubMenu.Size = new System.Drawing.Size(35, 20);
+			this.FileSubMenu.Size = new System.Drawing.Size(37, 20);
 			this.FileSubMenu.Text = "&File";
 			// 
 			// SavePaletteScreenshotMenuItem
 			// 
 			this.SavePaletteScreenshotMenuItem.Name = "SavePaletteScreenshotMenuItem";
-			this.SavePaletteScreenshotMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.SavePaletteScreenshotMenuItem.Size = new System.Drawing.Size(212, 22);
 			this.SavePaletteScreenshotMenuItem.Text = "Save Palette Screenshot...";
 			this.SavePaletteScreenshotMenuItem.Click += new System.EventHandler(this.SavePaletteScreenshotMenuItem_Click);
 			// 
 			// SavePatternScreenshotMenuItem
 			// 
 			this.SavePatternScreenshotMenuItem.Name = "SavePatternScreenshotMenuItem";
-			this.SavePatternScreenshotMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.SavePatternScreenshotMenuItem.Size = new System.Drawing.Size(212, 22);
 			this.SavePatternScreenshotMenuItem.Text = "Save Pattern Screenshot...";
 			this.SavePatternScreenshotMenuItem.Click += new System.EventHandler(this.SavePatternScreenshotMenuItem_Click);
 			// 
 			// SaveSpriteScreenshotMenuItem
 			// 
 			this.SaveSpriteScreenshotMenuItem.Name = "SaveSpriteScreenshotMenuItem";
-			this.SaveSpriteScreenshotMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.SaveSpriteScreenshotMenuItem.Size = new System.Drawing.Size(212, 22);
 			this.SaveSpriteScreenshotMenuItem.Text = "Save Sprite Screenshot...";
 			this.SaveSpriteScreenshotMenuItem.Click += new System.EventHandler(this.SaveSpriteScreenshotMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(203, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(209, 6);
 			// 
 			// CopyPaletteToClipboardMenuItem
 			// 
 			this.CopyPaletteToClipboardMenuItem.Name = "CopyPaletteToClipboardMenuItem";
-			this.CopyPaletteToClipboardMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.CopyPaletteToClipboardMenuItem.Size = new System.Drawing.Size(212, 22);
 			this.CopyPaletteToClipboardMenuItem.Text = "Copy Palette to Clipboard";
 			this.CopyPaletteToClipboardMenuItem.Click += new System.EventHandler(this.CopyPaletteToClipboardMenuItem_Click);
 			// 
 			// CopyPatternToClipboardMenuItem
 			// 
 			this.CopyPatternToClipboardMenuItem.Name = "CopyPatternToClipboardMenuItem";
-			this.CopyPatternToClipboardMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.CopyPatternToClipboardMenuItem.Size = new System.Drawing.Size(212, 22);
 			this.CopyPatternToClipboardMenuItem.Text = "Copy Pattern to Clipboard";
 			this.CopyPatternToClipboardMenuItem.Click += new System.EventHandler(this.CopyPatternToClipboardMenuItem_Click);
 			// 
 			// CopySpriteToClipboardMenuItem
 			// 
 			this.CopySpriteToClipboardMenuItem.Name = "CopySpriteToClipboardMenuItem";
-			this.CopySpriteToClipboardMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.CopySpriteToClipboardMenuItem.Size = new System.Drawing.Size(212, 22);
 			this.CopySpriteToClipboardMenuItem.Text = "Copy Sprite to Clipboard";
 			this.CopySpriteToClipboardMenuItem.Click += new System.EventHandler(this.CopySpriteToClipboardMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(203, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(209, 6);
 			// 
 			// ExitMenuItem
 			// 
 			this.ExitMenuItem.Name = "ExitMenuItem";
-			this.ExitMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.ExitMenuItem.Size = new System.Drawing.Size(212, 22);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
@@ -559,7 +559,7 @@
             this.Table0PaletteSubMenu,
             this.Table1PaletteSubMenu});
 			this.PatternSubMenu.Name = "PatternSubMenu";
-			this.PatternSubMenu.Size = new System.Drawing.Size(55, 20);
+			this.PatternSubMenu.Size = new System.Drawing.Size(57, 20);
 			this.PatternSubMenu.Text = "&Pattern";
 			// 
 			// Table0PaletteSubMenu
@@ -574,7 +574,7 @@
             this.Table0P6MenuItem,
             this.Table0P7MenuItem});
 			this.Table0PaletteSubMenu.Name = "Table0PaletteSubMenu";
-			this.Table0PaletteSubMenu.Size = new System.Drawing.Size(146, 22);
+			this.Table0PaletteSubMenu.Size = new System.Drawing.Size(151, 22);
 			this.Table0PaletteSubMenu.Text = "Table 0 Palette";
 			this.Table0PaletteSubMenu.DropDownOpened += new System.EventHandler(this.Table0PaletteSubMenu_DropDownOpened);
 			// 
@@ -646,7 +646,7 @@
             this.Table1P6MenuItem,
             this.Table1P7MenuItem});
 			this.Table1PaletteSubMenu.Name = "Table1PaletteSubMenu";
-			this.Table1PaletteSubMenu.Size = new System.Drawing.Size(146, 22);
+			this.Table1PaletteSubMenu.Size = new System.Drawing.Size(151, 22);
 			this.Table1PaletteSubMenu.Text = "Table 1 Palette";
 			this.Table1PaletteSubMenu.DropDownOpened += new System.EventHandler(this.Table1PaletteSubMenu_DropDownOpened);
 			// 
@@ -711,14 +711,14 @@
 			this.SettingsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cHRROMTileViewerToolStripMenuItem});
 			this.SettingsSubMenu.Name = "SettingsSubMenu";
-			this.SettingsSubMenu.Size = new System.Drawing.Size(58, 20);
+			this.SettingsSubMenu.Size = new System.Drawing.Size(61, 20);
 			this.SettingsSubMenu.Text = "&Settings";
 			this.SettingsSubMenu.DropDownOpened += new System.EventHandler(this.SettingsSubMenu_DropDownOpened);
 			// 
 			// cHRROMTileViewerToolStripMenuItem
 			// 
 			this.cHRROMTileViewerToolStripMenuItem.Name = "cHRROMTileViewerToolStripMenuItem";
-			this.cHRROMTileViewerToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+			this.cHRROMTileViewerToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.cHRROMTileViewerToolStripMenuItem.Text = "CHR ROM Tile Viewer";
 			this.cHRROMTileViewerToolStripMenuItem.Click += new System.EventHandler(this.cHRROMTileViewerToolStripMenuItem_Click);
 			// 
@@ -737,7 +737,7 @@
 			// toolStripStatusLabel1
 			// 
 			this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-			this.toolStripStatusLabel1.Size = new System.Drawing.Size(319, 17);
+			this.toolStripStatusLabel1.Size = new System.Drawing.Size(348, 17);
 			this.toolStripStatusLabel1.Text = "Use CTRL+C to copy the pane under the mouse to the clipboard.";
 			// 
 			// Messagetimer
@@ -804,7 +804,7 @@
 			this.MinimumSize = new System.Drawing.Size(580, 370);
 			this.Name = "NesPPU";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "NES PPU Viewer";
+			this.Text = "PPU Viewer";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NesPPU_FormClosed);
 			this.Load += new System.EventHandler(this.NesPPU_Load);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NesPPU_KeyDown);

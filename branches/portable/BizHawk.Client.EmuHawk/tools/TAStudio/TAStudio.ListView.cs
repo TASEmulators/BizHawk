@@ -256,7 +256,16 @@ namespace BizHawk.Client.EmuHawk
 						else
 						{
 							_startFloatDrawColumn = buttonName;
-							_floatPaintState = CurrentTasMovie.GetFloatValue(frame, buttonName);
+
+							float _floatPaintState = 0;
+							if (frame < CurrentTasMovie.InputLogLength)
+							{
+								_floatPaintState = CurrentTasMovie.GetFloatValue(frame, buttonName);
+							}
+							else
+							{
+								_floatPaintState = Global.ClickyVirtualPadController.GetFloat(buttonName);
+							}
 						}
 					}
 				}
@@ -305,7 +314,7 @@ namespace BizHawk.Client.EmuHawk
 				TasView.CurrentCell.Column.Name == FrameColumnName &&
 				e.Button == MouseButtons.Left)
 			{
-				if (Global.Config.TAStudioEmptyMarkers)
+				if (Settings.EmptyMarkers)
 				{
 					CurrentTasMovie.Markers.Add(TasView.CurrentCell.RowIndex.Value, string.Empty);
 					RefreshDialog();

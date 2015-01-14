@@ -29,11 +29,10 @@ namespace BizHawk.Client.EmuHawk
 			AcceptBackgroundInputCheckbox.Checked = Global.Config.AcceptBackgroundInput;
 			NeverAskSaveCheckbox.Checked = Global.Config.SupressAskSave;
 			SingleInstanceModeCheckbox.Checked = Global.Config.SingleInstanceMode;
-			LogWindowAsConsoleCheckbox.Checked = Global.Config.WIN32_CONSOLE;
-
 
 			BackupSRamCheckbox.Checked = Global.Config.BackupSaveram;
 			FrameAdvSkipLagCheckbox.Checked = Global.Config.SkipLagFrame;
+			LogWindowAsConsoleCheckbox.Checked = Global.Config.WIN32_CONSOLE;
 
 			if (LogConsole.ConsoleVisible)
 			{
@@ -55,12 +54,10 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.AcceptBackgroundInput = AcceptBackgroundInputCheckbox.Checked;
 			Global.Config.SupressAskSave = NeverAskSaveCheckbox.Checked;
 			Global.Config.SingleInstanceMode = SingleInstanceModeCheckbox.Checked;
-			Global.Config.WIN32_CONSOLE = LogWindowAsConsoleCheckbox.Checked;
-
-
 
 			Global.Config.BackupSaveram = BackupSRamCheckbox.Checked;
 			Global.Config.SkipLagFrame = FrameAdvSkipLagCheckbox.Checked;
+			Global.Config.WIN32_CONSOLE = LogWindowAsConsoleCheckbox.Checked;
 
 			Close();
 			DialogResult = DialogResult.OK;

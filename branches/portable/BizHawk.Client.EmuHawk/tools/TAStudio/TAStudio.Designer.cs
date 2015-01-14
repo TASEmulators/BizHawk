@@ -86,8 +86,6 @@ namespace BizHawk.Client.EmuHawk
             this.OsdInBranchScreenshotsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
             this.AutopauseAtEndOfMovieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator20 = new System.Windows.Forms.ToolStripSeparator();
-            this.RotateMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MetaSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.HeaderMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.GreenzoneSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -96,13 +94,7 @@ namespace BizHawk.Client.EmuHawk
             this.toolStripSeparator21 = new System.Windows.Forms.ToolStripSeparator();
             this.DefaultStateSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SettingsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AutoloadProjectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
-            this.RestoreDefaultSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.RotateMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ColumnsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator19 = new System.Windows.Forms.ToolStripSeparator();
             this.HelpSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -139,6 +131,8 @@ namespace BizHawk.Client.EmuHawk
             this.StartFromNowSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.StartNewProjectFromNowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.SavingProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.TASMenu.SuspendLayout();
             this.TasStatusStrip.SuspendLayout();
             this.MarkerContextMenu.SuspendLayout();
@@ -492,9 +486,7 @@ namespace BizHawk.Client.EmuHawk
             this.BranchesRestoreEntireMovieMenuItem,
             this.OsdInBranchScreenshotsMenuItem,
             this.toolStripSeparator14,
-            this.AutopauseAtEndOfMovieMenuItem,
-            this.toolStripSeparator20,
-            this.RotateMenuItem});
+            this.AutopauseAtEndOfMovieMenuItem});
             this.ConfigSubMenu.Name = "ConfigSubMenu";
             this.ConfigSubMenu.Size = new System.Drawing.Size(55, 20);
             this.ConfigSubMenu.Text = "&Config";
@@ -595,18 +587,6 @@ namespace BizHawk.Client.EmuHawk
             this.AutopauseAtEndOfMovieMenuItem.Text = "Autopause at end of Movie";
             this.AutopauseAtEndOfMovieMenuItem.Click += new System.EventHandler(this.AutopauseAtEndMenuItem_Click);
             // 
-            // toolStripSeparator20
-            // 
-            this.toolStripSeparator20.Name = "toolStripSeparator20";
-            this.toolStripSeparator20.Size = new System.Drawing.Size(285, 6);
-            // 
-            // RotateMenuItem
-            // 
-            this.RotateMenuItem.Name = "RotateMenuItem";
-            this.RotateMenuItem.Size = new System.Drawing.Size(288, 22);
-            this.RotateMenuItem.Text = "Rotate";
-            this.RotateMenuItem.Click += new System.EventHandler(this.RotateMenuItem_Click);
-            // 
             // MetaSubMenu
             // 
             this.MetaSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -663,64 +643,18 @@ namespace BizHawk.Client.EmuHawk
             // SettingsSubMenu
             // 
             this.SettingsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.AutoloadMenuItem,
-            this.AutoloadProjectMenuItem,
-            this.SaveWindowPositionMenuItem,
-            this.AlwaysOnTopMenuItem,
-            this.FloatingWindowMenuItem,
-            this.toolStripSeparator12,
-            this.RestoreDefaultSettingsMenuItem});
+            this.RotateMenuItem});
             this.SettingsSubMenu.Name = "SettingsSubMenu";
             this.SettingsSubMenu.Size = new System.Drawing.Size(61, 20);
             this.SettingsSubMenu.Text = "&Settings";
             this.SettingsSubMenu.DropDownOpened += new System.EventHandler(this.SettingsSubMenu_DropDownOpened);
             // 
-            // AutoloadMenuItem
+            // RotateMenuItem
             // 
-            this.AutoloadMenuItem.Name = "AutoloadMenuItem";
-            this.AutoloadMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.AutoloadMenuItem.Text = "Autoload";
-            this.AutoloadMenuItem.Click += new System.EventHandler(this.AutoloadMenuItem_Click);
-            // 
-            // AutoloadProjectMenuItem
-            // 
-            this.AutoloadProjectMenuItem.Name = "AutoloadProjectMenuItem";
-            this.AutoloadProjectMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.AutoloadProjectMenuItem.Text = "Autload &Project";
-            this.AutoloadProjectMenuItem.Click += new System.EventHandler(this.AutoloadProjectMenuItem_Click);
-            // 
-            // SaveWindowPositionMenuItem
-            // 
-            this.SaveWindowPositionMenuItem.Name = "SaveWindowPositionMenuItem";
-            this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.SaveWindowPositionMenuItem.Text = "Save Window Position";
-            this.SaveWindowPositionMenuItem.Click += new System.EventHandler(this.SaveWindowPositionMenuItem_Click);
-            // 
-            // AlwaysOnTopMenuItem
-            // 
-            this.AlwaysOnTopMenuItem.Name = "AlwaysOnTopMenuItem";
-            this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.AlwaysOnTopMenuItem.Text = "Always On Top";
-            this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
-            // 
-            // FloatingWindowMenuItem
-            // 
-            this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
-            this.FloatingWindowMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.FloatingWindowMenuItem.Text = "Floating Window";
-            this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
-            // 
-            // toolStripSeparator12
-            // 
-            this.toolStripSeparator12.Name = "toolStripSeparator12";
-            this.toolStripSeparator12.Size = new System.Drawing.Size(196, 6);
-            // 
-            // RestoreDefaultSettingsMenuItem
-            // 
-            this.RestoreDefaultSettingsMenuItem.Name = "RestoreDefaultSettingsMenuItem";
-            this.RestoreDefaultSettingsMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.RestoreDefaultSettingsMenuItem.Text = "Restore Default Settings";
-            this.RestoreDefaultSettingsMenuItem.Click += new System.EventHandler(this.RestoreDefaultSettingsMenuItem_Click);
+            this.RotateMenuItem.Name = "RotateMenuItem";
+            this.RotateMenuItem.Size = new System.Drawing.Size(108, 22);
+            this.RotateMenuItem.Text = "Rotate";
+            this.RotateMenuItem.Click += new System.EventHandler(this.RotateMenuItem_Click);
             // 
             // ColumnsSubMenu
             // 
@@ -799,6 +733,8 @@ namespace BizHawk.Client.EmuHawk
             this.TasStatusStrip.ClickThrough = true;
             this.TasStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MessageStatusLabel,
+            this.SavingProgressBar,
+            this.toolStripStatusLabel2,
             this.SplicerStatusLabel});
             this.TasStatusStrip.Location = new System.Drawing.Point(0, 497);
             this.TasStatusStrip.Name = "TasStatusStrip";
@@ -834,6 +770,7 @@ namespace BizHawk.Client.EmuHawk
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.MarkerControl.ContextMenuStrip = this.MarkerContextMenu;
+            this.MarkerControl.Emulator = null;
             this.MarkerControl.Location = new System.Drawing.Point(2, 16);
             this.MarkerControl.Name = "MarkerControl";
             this.MarkerControl.Size = new System.Drawing.Size(198, 343);
@@ -1032,6 +969,17 @@ namespace BizHawk.Client.EmuHawk
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Markers";
             // 
+            // SavingProgressBar
+            // 
+            this.SavingProgressBar.Name = "SavingProgressBar";
+            this.SavingProgressBar.Size = new System.Drawing.Size(100, 16);
+            // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(109, 17);
+            this.toolStripStatusLabel2.Spring = true;
+            // 
             // TAStudio
             // 
             this.AllowDrop = true;
@@ -1125,17 +1073,10 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
 		private System.Windows.Forms.ToolStripMenuItem AutopauseAtEndOfMovieMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SettingsSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem AutoloadMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SaveWindowPositionMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
-		private System.Windows.Forms.ToolStripMenuItem RestoreDefaultSettingsMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AutoloadProjectMenuItem;
 		private StatusStripEx TasStatusStrip;
 		private System.Windows.Forms.ToolStripStatusLabel MessageStatusLabel;
 		private PlaybackBox TasPlaybackBox;
 		private System.Windows.Forms.ToolStripStatusLabel SplicerStatusLabel;
-		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MetaSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem HeaderMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem CommentsMenuItem;
@@ -1163,8 +1104,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem GreenZoneIntegrityCheckMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ColumnsSubMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator19;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator20;
-		private System.Windows.Forms.ToolStripMenuItem RotateMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator21;
 		private System.Windows.Forms.ToolStripMenuItem DefaultStateSettingsMenuItem;
 		private System.Windows.Forms.GroupBox groupBox1;
@@ -1175,5 +1114,8 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem RemoveMarkerContextMenuItem;
 		private System.Windows.Forms.ToolStripSeparator StartFromNowSeparator;
 		private System.Windows.Forms.ToolStripMenuItem StartNewProjectFromNowMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem RotateMenuItem;
+        private System.Windows.Forms.ToolStripProgressBar SavingProgressBar;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
 	}
 }

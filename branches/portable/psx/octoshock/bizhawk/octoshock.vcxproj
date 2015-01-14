@@ -39,7 +39,9 @@
     <ClCompile Include="..\psx\input\negcon.cpp" />
     <ClCompile Include="..\psx\irq.cpp" />
     <ClCompile Include="..\psx\mdec.cpp" />
-    <ClCompile Include="..\psx\psx.cpp" />
+    <ClCompile Include="..\psx\psx.cpp">
+      <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</PreprocessToFile>
+    </ClCompile>
     <ClCompile Include="..\psx\sio.cpp" />
     <ClCompile Include="..\psx\spu.cpp" />
     <ClCompile Include="..\psx\timer.cpp" />
@@ -54,6 +56,8 @@
     <ClInclude Include="..\emuware\EW_state.h" />
     <ClInclude Include="..\emuware\msvc\inttypes.h" />
     <ClInclude Include="..\emuware\msvc\stdint.h" />
+    <ClInclude Include="..\emuware\PACKED.h" />
+    <ClInclude Include="..\emuware\PACKED_END.h" />
     <ClInclude Include="..\endian.h" />
     <ClInclude Include="..\error.h" />
     <ClInclude Include="..\git.h" />

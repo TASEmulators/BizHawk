@@ -115,7 +115,8 @@ namespace BizHawk.Emulation.Common
 				var list = FloatControls.Union(BoolButtons);
 
 				yield return list
-					.Where(x => !x.StartsWith("P1 ") && !x.StartsWith("P2 ") && !x.StartsWith("P3 ") && !x.StartsWith("P4 "));
+					.Where(x => !x.StartsWith("P1 ") && !x.StartsWith("P2 ") && !x.StartsWith("P3 ") && !x.StartsWith("P4 ")
+						&& !x.StartsWith("P5 ") && !x.StartsWith("P6 ") && !x.StartsWith("P7 ") && !x.StartsWith("P8 "));
 
 				yield return list
 					.Where(x => x.StartsWith("P1 "));
@@ -128,6 +129,18 @@ namespace BizHawk.Emulation.Common
 
 				yield return list
 					.Where(x => x.StartsWith("P4 "));
+
+				yield return list
+					.Where(x => x.StartsWith("P5 "));
+
+				yield return list
+					.Where(x => x.StartsWith("P6 "));
+
+				yield return list
+					.Where(x => x.StartsWith("P7 "));
+
+				yield return list
+					.Where(x => x.StartsWith("P8 "));
 			}
 		}
 

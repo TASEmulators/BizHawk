@@ -583,7 +583,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		#region debugging tools
 
-		public MemoryDomainList MemoryDomains { get; private set; }
+		public IMemoryDomainList MemoryDomains { get; private set; }
 
 		unsafe void SetMemoryDomains()
 		{

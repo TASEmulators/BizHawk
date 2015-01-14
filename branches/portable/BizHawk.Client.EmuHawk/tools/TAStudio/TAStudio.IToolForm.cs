@@ -102,6 +102,7 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Sound.StartSound();
 				if (result == DialogResult.Yes)
 				{
+					_exiting = true; // Asking to save changes should only ever be called when closing something
 					SaveTasMenuItem_Click(null, null);
 				}
 				else if (result == DialogResult.No)

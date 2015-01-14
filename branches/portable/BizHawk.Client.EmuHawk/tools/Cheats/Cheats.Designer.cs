@@ -76,16 +76,6 @@
 			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.RestoreWindowSizeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ColumnsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowNameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowAddressMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowValueMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowCompareMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowOnMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowDomainMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowSizeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowEndianMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowDisplayTypeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStrip1 = new ToolStripEx();
 			this.NewToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.OpenToolBarItem = new System.Windows.Forms.ToolStripButton();
@@ -131,10 +121,12 @@
 			this.CheatListView.ItemCount = 0;
 			this.CheatListView.Location = new System.Drawing.Point(12, 72);
 			this.CheatListView.Name = "CheatListView";
+			this.CheatListView.SelectAllInProgress = false;
 			this.CheatListView.selectedItem = -1;
 			this.CheatListView.Size = new System.Drawing.Size(414, 278);
 			this.CheatListView.TabIndex = 1;
 			this.CheatListView.UseCompatibleStateImageBehavior = false;
+			this.CheatListView.UseCustomBackground = true;
 			this.CheatListView.View = System.Windows.Forms.View.Details;
 			this.CheatListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.CheatListView_ColumnClick);
 			this.CheatListView.SelectedIndexChanged += new System.EventHandler(this.CheatListView_SelectedIndexChanged);
@@ -224,8 +216,7 @@
 			this.CheatsMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu,
             this.CheatsSubMenu,
-            this.OptionsSubMenu,
-            this.ColumnsSubMenu});
+            this.OptionsSubMenu});
 			this.CheatsMenu.Location = new System.Drawing.Point(0, 0);
 			this.CheatsMenu.Name = "CheatsMenu";
 			this.CheatsMenu.Size = new System.Drawing.Size(646, 24);
@@ -502,87 +493,7 @@
 			this.RestoreWindowSizeMenuItem.Name = "RestoreWindowSizeMenuItem";
 			this.RestoreWindowSizeMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.RestoreWindowSizeMenuItem.Text = "Restore Default Settings";
-			this.RestoreWindowSizeMenuItem.Click += new System.EventHandler(this.RestoreWindowSizeMenuItem_Click);
-			// 
-			// ColumnsSubMenu
-			// 
-			this.ColumnsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ShowNameMenuItem,
-            this.ShowAddressMenuItem,
-            this.ShowValueMenuItem,
-            this.ShowCompareMenuItem,
-            this.ShowOnMenuItem,
-            this.ShowDomainMenuItem,
-            this.ShowSizeMenuItem,
-            this.ShowEndianMenuItem,
-            this.ShowDisplayTypeMenuItem});
-			this.ColumnsSubMenu.Name = "ColumnsSubMenu";
-			this.ColumnsSubMenu.Size = new System.Drawing.Size(67, 20);
-			this.ColumnsSubMenu.Text = "&Columns";
-			this.ColumnsSubMenu.DropDownOpened += new System.EventHandler(this.ColumnsSubMenu_DropDownOpened);
-			// 
-			// ShowNameMenuItem
-			// 
-			this.ShowNameMenuItem.Name = "ShowNameMenuItem";
-			this.ShowNameMenuItem.Size = new System.Drawing.Size(141, 22);
-			this.ShowNameMenuItem.Text = "&Name";
-			this.ShowNameMenuItem.Click += new System.EventHandler(this.ShowNameMenuItem_Click);
-			// 
-			// ShowAddressMenuItem
-			// 
-			this.ShowAddressMenuItem.Name = "ShowAddressMenuItem";
-			this.ShowAddressMenuItem.Size = new System.Drawing.Size(141, 22);
-			this.ShowAddressMenuItem.Text = "&Address";
-			this.ShowAddressMenuItem.Click += new System.EventHandler(this.ShowAddressMenuItem_Click);
-			// 
-			// ShowValueMenuItem
-			// 
-			this.ShowValueMenuItem.Name = "ShowValueMenuItem";
-			this.ShowValueMenuItem.Size = new System.Drawing.Size(141, 22);
-			this.ShowValueMenuItem.Text = "&Value";
-			this.ShowValueMenuItem.Click += new System.EventHandler(this.ShowValueMenuItem_Click);
-			// 
-			// ShowCompareMenuItem
-			// 
-			this.ShowCompareMenuItem.Name = "ShowCompareMenuItem";
-			this.ShowCompareMenuItem.Size = new System.Drawing.Size(141, 22);
-			this.ShowCompareMenuItem.Text = "&Compare";
-			this.ShowCompareMenuItem.Click += new System.EventHandler(this.ShowCompareMenuItem_Click);
-			// 
-			// ShowOnMenuItem
-			// 
-			this.ShowOnMenuItem.Name = "ShowOnMenuItem";
-			this.ShowOnMenuItem.Size = new System.Drawing.Size(141, 22);
-			this.ShowOnMenuItem.Text = "&On";
-			this.ShowOnMenuItem.Click += new System.EventHandler(this.ShowOnMenuItem_Click);
-			// 
-			// ShowDomainMenuItem
-			// 
-			this.ShowDomainMenuItem.Name = "ShowDomainMenuItem";
-			this.ShowDomainMenuItem.Size = new System.Drawing.Size(141, 22);
-			this.ShowDomainMenuItem.Text = "&Domain";
-			this.ShowDomainMenuItem.Click += new System.EventHandler(this.ShowDomainMenuItem_Click);
-			// 
-			// ShowSizeMenuItem
-			// 
-			this.ShowSizeMenuItem.Name = "ShowSizeMenuItem";
-			this.ShowSizeMenuItem.Size = new System.Drawing.Size(141, 22);
-			this.ShowSizeMenuItem.Text = "&Size";
-			this.ShowSizeMenuItem.Click += new System.EventHandler(this.ShowSizeMenuItem_Click);
-			// 
-			// ShowEndianMenuItem
-			// 
-			this.ShowEndianMenuItem.Name = "ShowEndianMenuItem";
-			this.ShowEndianMenuItem.Size = new System.Drawing.Size(141, 22);
-			this.ShowEndianMenuItem.Text = "&Endian";
-			this.ShowEndianMenuItem.Click += new System.EventHandler(this.ShowEndianMenuItem_Click);
-			// 
-			// ShowDisplayTypeMenuItem
-			// 
-			this.ShowDisplayTypeMenuItem.Name = "ShowDisplayTypeMenuItem";
-			this.ShowDisplayTypeMenuItem.Size = new System.Drawing.Size(141, 22);
-			this.ShowDisplayTypeMenuItem.Text = "&Display Type";
-			this.ShowDisplayTypeMenuItem.Click += new System.EventHandler(this.ShowDisplayTypeMenuItem_Click);
+			this.RestoreWindowSizeMenuItem.Click += new System.EventHandler(this.RestoreDefaultsMenuItem_Click);
 			// 
 			// toolStrip1
 			// 
@@ -737,6 +648,7 @@
 			this.CheatEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.CheatEditor.Core = null;
 			this.CheatEditor.Location = new System.Drawing.Point(6, 14);
 			this.CheatEditor.Name = "CheatEditor";
 			this.CheatEditor.Size = new System.Drawing.Size(190, 264);
@@ -822,20 +734,10 @@
 		private System.Windows.Forms.ToolStripButton MoveDownToolbarItem;
 		private System.Windows.Forms.ToolStripButton LoadGameGenieToolbarItem;
 		private System.Windows.Forms.Label TotalLabel;
-		private System.Windows.Forms.ToolStripMenuItem ColumnsSubMenu;
 		private System.Windows.Forms.Label MessageLabel;
 		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowNameMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowAddressMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowValueMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowCompareMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowOnMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowDomainMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ToggleMenuItem;
 		private System.Windows.Forms.ToolStripSeparator GameGenieToolbarSeparator;
-		private System.Windows.Forms.ToolStripMenuItem ShowSizeMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowEndianMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowDisplayTypeMenuItem;
 		private System.Windows.Forms.ContextMenuStrip CheatsContextMenu;
 		private System.Windows.Forms.ToolStripMenuItem ToggleContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem RemoveContextMenuItem;

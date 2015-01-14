@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 	{
 		private List<MemoryDomain> _memoryDomains = new List<MemoryDomain>();
 
-		public MemoryDomainList MemoryDomains { get; private set; }
+		public IMemoryDomainList MemoryDomains { get; private set; }
 
 		private void MakeMemoryDomain(string name, mupen64plusApi.N64_MEMORY id, MemoryDomain.Endian endian, bool swizzled = false)
 		{
@@ -120,17 +120,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			Action<int, byte> pokeByte;
 
 			peekByte = delegate(int addr)
-				{
-					return api.m64p_read_memory_8((uint)addr);
-				};
-				pokeByte = delegate(int addr, byte val)
-				{
-					api.m64p_write_memory_8((uint)addr, val);
-				};
+			{
+				return api.m64p_read_memory_8((uint)addr);
+			};
+
+			pokeByte = delegate(int addr, byte val)
+			{
+				api.m64p_write_memory_8((uint)addr, val);
+			};
 
 			_memoryDomains.Add(new MemoryDomain
 				(
-					name: "Sytem Bus",
+					name: "System Bus",
 					size: 0, //special case for full 32bit memorydomain
 					endian: MemoryDomain.Endian.Big,
 					peekByte: peekByte,

@@ -246,7 +246,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NESNameTableViewer_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			_ppu.RemoveCallback1();
+			if (_ppu != null)
+			{
+				_ppu.RemoveCallback1();
+			}
 		}
 
 		private void ScanlineTextbox_TextChanged(object sender, EventArgs e)

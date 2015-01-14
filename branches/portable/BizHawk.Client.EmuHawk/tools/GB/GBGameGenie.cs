@@ -10,7 +10,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class GBGameGenie : Form, IToolForm
+	public partial class GBGameGenie : Form, IToolFormAutoConfig
 	{
 		// TODO: fix the use of Global.Game.System and Emulator.SystemId
 		[RequiredService]
@@ -19,12 +19,10 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IMemoryDomains MemoryDomainSource { get; set; }
 
-		private MemoryDomainList MemoryDomains { get { return MemoryDomainSource.MemoryDomains; } }
+		private IMemoryDomainList MemoryDomains { get { return MemoryDomainSource.MemoryDomains; } }
 
 		private readonly Dictionary<char, int> _gameGenieTable = new Dictionary<char, int>();
 		private bool _processing;
-
-		#region Public
 
 		public bool AskSaveChanges() { return true; }
 
@@ -54,8 +52,6 @@ namespace BizHawk.Client.EmuHawk
 		public GBGameGenie()
 		{
 			InitializeComponent();
-			Closing += (o, e) => SaveConfigSettings();
-			TopMost = Global.Config.GbGGSettings.TopMost;
 
 			_gameGenieTable.Add('0', 0);     // 0000
 			_gameGenieTable.Add('1', 1);     // 0001
@@ -144,8 +140,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#endregion
-
 		private string GBGGEncode(int val, int add, int cmp)
 		{
 			char[] letters = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
@@ -191,11 +185,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			addcheatbt.Enabled = false;
 
-			if (Global.Config.GbGGSettings.UseWindowPosition)
-			{
-				Location = Global.Config.GbGGSettings.WindowPosition;
-			}
-
 			//"Game Boy/Game Gear Game Genie Encoder / Decoder"
 			if (Emulator.SystemId == "GB")
 			{
@@ -207,59 +196,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SaveConfigSettings()
-		{
-			Global.Config.GbGGSettings.Wndx = Location.X;
-			Global.Config.GbGGSettings.Wndy = Location.Y;
-		}
-
-		private void RefreshFloatingWindowControl()
-		{
-			Owner = Global.Config.GbGGSettings.FloatingWindow ? null : GlobalWin.MainForm;
-		}
-
-		#region Events
-
-		#region Menu
-
-		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			AutoloadMenuItem.Checked = Global.Config.GBGGAutoload;
-			SaveWindowPositionMenuItem.Checked = Global.Config.GbGGSettings.SaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Global.Config.GbGGSettings.TopMost;
-			FloatingWindowMenuItem.Checked = Global.Config.GbGGSettings.FloatingWindow;
-		}
-
-		private void AutoloadMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GBGGAutoload ^= true;
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GbGGSettings.SaveWindowPosition ^= true;
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GbGGSettings.TopMost ^= true;
-			TopMost = Global.Config.GbGGSettings.TopMost;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GbGGSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
-		}
-
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
-		#endregion
-
-		#region Dialog and Controls
+		#region Dialog and Control Events
 
 		private void AddCheatClick(object sender, EventArgs e)
 		{
@@ -551,14 +488,6 @@ namespace BizHawk.Client.EmuHawk
 				_processing = false;
 			}
 		}
-
-		protected override void OnShown(EventArgs e)
-		{
-			RefreshFloatingWindowControl();
-			base.OnShown(e);
-		}
-
-		#endregion
 
 		#endregion
 	}

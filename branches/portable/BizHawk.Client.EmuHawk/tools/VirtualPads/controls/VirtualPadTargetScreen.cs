@@ -19,8 +19,8 @@ namespace BizHawk.Client.EmuHawk
 		private bool _readonly;
 		private bool _isSet; // The tool has to keep track of this because there is currently no way to know if a float button is being autoheld or just held
 		
-		private int? overrideX = null;
-		private int? overrideY = null;
+		private int? _overrideX = null;
+		private int? _overrideY = null;
 
 		public VirtualPadTargetScreen()
 		{
@@ -29,8 +29,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VirtualPadTargetScreen_Load(object sender, EventArgs e)
 		{
-			XNumeric.Maximum = TargetPanel.Width;
-			YNumeric.Maximum = TargetPanel.Height;
+			XNumeric.Maximum = TargetPanel.Width - 1;
+			YNumeric.Maximum = TargetPanel.Height - 1;
 		}
 
 		#region IVirtualPadControl Implementation
@@ -44,8 +44,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.StickyXORAdapter.Unset(XName);
 			Global.StickyXORAdapter.Unset(YName);
-			overrideX = null;
-			overrideY = null;
+			_overrideX = null;
+			_overrideY = null;
 			_isSet = false;
 			Refresh();
 		}
@@ -63,8 +63,8 @@ namespace BizHawk.Client.EmuHawk
 			XNumeric.Value = (int)newX;
 			YNumeric.Value = (int)newY;
 
-			overrideX = (int)newX;
-			overrideY = (int)newY;
+			_overrideX = (int)newX;
+			_overrideY = (int)newY;
 
 			if (changed)
 			{
@@ -97,13 +97,29 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!_readonly)
 				{
-					overrideX = null;
-					overrideY = null;
+					_overrideX = null;
+					_overrideY = null;
 				}
 			}
 		}
 
 		#endregion
+
+		// Size of the extra controls to the right / bottom of the target panel at 96 DPI
+		private Size PaddingSize
+		{
+			get { return new Size(0, 30); }
+		}
+
+		public Size TargetSize
+		{
+			get { return TargetPanel.Size; }
+			set
+			{
+				TargetPanel.Size = value;
+				Size = UIHelper.Scale(value + PaddingSize);
+			}
+		}
 
 		// These are the value that a maximum x or y actually represent, used to translate from control X,Y to values the core expects
 		public int RangeX { get; set; }
@@ -157,12 +173,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (overrideY.HasValue)
-				{
-					return overrideY.Value;
-				}
-
-				return (int)(Global.StickyXORAdapter.GetFloat(XName) / MultiplierX);
+				return _overrideX ?? (int)(Global.StickyXORAdapter.GetFloat(XName) / MultiplierX);
 			}
 
 			set
@@ -189,12 +200,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (overrideY.HasValue)
-				{
-					return overrideX.Value;
-				}
-
-				return (int)(Global.StickyXORAdapter.GetFloat(YName) / MultiplierY);
+				return _overrideY ?? (int)(Global.StickyXORAdapter.GetFloat(YName) / MultiplierY);
 			}
 
 			set

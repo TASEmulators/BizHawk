@@ -29,6 +29,7 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NESNameTableViewer));
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.NameTableView = new BizHawk.Client.EmuHawk.NameTableViewer();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -146,13 +147,13 @@
             this.toolStripSeparator2,
             this.ExitMenuItem});
 			this.FileSubMenu.Name = "FileSubMenu";
-			this.FileSubMenu.Size = new System.Drawing.Size(35, 20);
+			this.FileSubMenu.Size = new System.Drawing.Size(37, 20);
 			this.FileSubMenu.Text = "&File";
 			// 
 			// ScreenshotMenuItem
 			// 
 			this.ScreenshotMenuItem.Name = "ScreenshotMenuItem";
-			this.ScreenshotMenuItem.Size = new System.Drawing.Size(228, 22);
+			this.ScreenshotMenuItem.Size = new System.Drawing.Size(243, 22);
 			this.ScreenshotMenuItem.Text = "Save Screenshot &As...";
 			this.ScreenshotMenuItem.Click += new System.EventHandler(this.ScreenshotMenuItem_Click);
 			// 
@@ -160,20 +161,20 @@
 			// 
 			this.ScreenshotToClipboardMenuItem.Name = "ScreenshotToClipboardMenuItem";
 			this.ScreenshotToClipboardMenuItem.ShortcutKeyDisplayString = "Ctrl+C";
-			this.ScreenshotToClipboardMenuItem.Size = new System.Drawing.Size(228, 22);
+			this.ScreenshotToClipboardMenuItem.Size = new System.Drawing.Size(243, 22);
 			this.ScreenshotToClipboardMenuItem.Text = "Screenshot to &Clipboard";
 			this.ScreenshotToClipboardMenuItem.Click += new System.EventHandler(this.ScreenshotToClipboardMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(225, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(240, 6);
 			// 
 			// ExitMenuItem
 			// 
 			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.ExitMenuItem.Size = new System.Drawing.Size(228, 22);
+			this.ExitMenuItem.Size = new System.Drawing.Size(243, 22);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
@@ -414,7 +415,7 @@
 			this.RefreshRate.Minimum = 1;
 			this.RefreshRate.Name = "RefreshRate";
 			this.RefreshRate.Orientation = System.Windows.Forms.Orientation.Vertical;
-			this.RefreshRate.Size = new System.Drawing.Size(42, 136);
+			this.RefreshRate.Size = new System.Drawing.Size(45, 136);
 			this.RefreshRate.TabIndex = 0;
 			this.RefreshRate.TickFrequency = 4;
 			this.RefreshRate.Value = 1;
@@ -430,12 +431,12 @@
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.menuStrip1);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
 			this.MinimumSize = new System.Drawing.Size(687, 588);
 			this.Name = "NESNameTableViewer";
-			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "NES Nametable Viewer";
+			this.Text = "Nametable Viewer";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NESNameTableViewer_FormClosed);
 			this.Load += new System.EventHandler(this.NESNameTableViewer_Load);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NesNameTableViewer_KeyDown);

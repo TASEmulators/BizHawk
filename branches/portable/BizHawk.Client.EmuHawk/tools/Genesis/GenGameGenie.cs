@@ -8,16 +8,25 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 
+using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
+
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class GenGameGenie : Form, IToolForm
+	public partial class GenGameGenie : Form, IToolFormAutoConfig
 	{
-#pragma warning disable 675
+		#pragma warning disable 675
+
+		/// <summary>
+		/// For now this is is an unecessary restriction to make sure it doesn't show up as available for non-genesis cores
+		/// Note: this unnecessarily prevents it from being on the Genesis core, but that's okay it isn't released
+		/// Eventually we want a generic game genie tool and a hack like this won't be necessary
+		/// </summary>
+		[RequiredService]
+		private GPGX Emulator { get; set; }
 
 		[RequiredService]
-		private IEmulator Emulator { get; set; }
-		[RequiredService]
-		private MemoryDomainList MemoryDomains { get; set; }
+		private IMemoryDomains MemoryDomainService { get; set; }
+		private IMemoryDomainList MemoryDomains { get { return MemoryDomainService.MemoryDomains; } }
 
 		private readonly Dictionary<char, int> _gameGenieTable = new Dictionary<char, int>
 		{
@@ -59,10 +68,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GenGameGenie_Load(object sender, EventArgs e)
 		{
-			if (Global.Config.GenGGSettings.UseWindowPosition)
-			{
-				Location = Global.Config.GenGGSettings.WindowPosition;
-			}
+
 		}
 
 		#region Public API
@@ -95,8 +101,6 @@ namespace BizHawk.Client.EmuHawk
 		public GenGameGenie()
 		{
 			InitializeComponent();
-			Closing += (o, e) => SaveConfigSettings();
-			TopMost = Global.Config.GenGGSettings.TopMost;
 		}
 
 		#endregion
@@ -152,59 +156,7 @@ namespace BizHawk.Client.EmuHawk
 			return new string(array);
 		}
 
-		private void SaveConfigSettings()
-		{
-			Global.Config.GenGGSettings.Wndx = Location.X;
-			Global.Config.GenGGSettings.Wndy = Location.Y;
-		}
-
-		private void RefreshFloatingWindowControl()
-		{
-			Owner = Global.Config.GenGGSettings.FloatingWindow ? null : GlobalWin.MainForm;
-		}
-
-		#region Events
-
-		#region Menu
-
-		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			AutoloadMenuItem.Checked = Global.Config.GenGGAutoload;
-			SaveWindowPositionMenuItem.Checked = Global.Config.GenGGSettings.SaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Global.Config.GenGGSettings.TopMost;
-			FloatingWindowMenuItem.Checked = Global.Config.GenGGSettings.FloatingWindow;
-		}
-
-		private void AutoloadMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GenGGAutoload ^= true;
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GenGGSettings.SaveWindowPosition ^= true;
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GenGGSettings.TopMost ^= true;
-			TopMost = Global.Config.GenGGSettings.TopMost;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GenGGSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
-		}
-
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
-		#endregion
-
-		#region Dialog and Controls
+		#region Dialog and Control Events
 
 		private void GGCodeMaskBox_KeyPress(object sender, KeyPressEventArgs e)
 		{
@@ -376,14 +328,6 @@ namespace BizHawk.Client.EmuHawk
 				value
 			));
 		}
-
-		protected override void OnShown(EventArgs e)
-		{
-			RefreshFloatingWindowControl();
-			base.OnShown(e);
-		}
-
-		#endregion
 
 		#endregion
 	}

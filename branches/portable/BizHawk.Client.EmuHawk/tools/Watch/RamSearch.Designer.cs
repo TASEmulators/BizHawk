@@ -51,7 +51,7 @@
 			this.ViewInHexEditorContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ContextMenuSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.ClearPreviewContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuStrip1 = new MenuStripEx();
+			this.RamSearchMenu = new MenuStripEx();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OpenMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -81,6 +81,7 @@
 			this.Previous_LastSearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PreviousFrameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.Previous_OriginalMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.Previous_LastChangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.newSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
@@ -109,10 +110,6 @@
 			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.RestoreDefaultsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ColumnsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowPreviousMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowChangesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowDiffMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MemDomainLabel = new System.Windows.Forms.Label();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -159,10 +156,10 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.DisplayTypeDropdown = new System.Windows.Forms.ComboBox();
-			this.Previous_LastChangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AutoSearchAccountForLagMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			SearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ListViewContextMenu.SuspendLayout();
-			this.menuStrip1.SuspendLayout();
+			this.RamSearchMenu.SuspendLayout();
 			this.CompareToBox.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.ComparisonBox.SuspendLayout();
@@ -172,17 +169,16 @@
 			// 
 			SearchMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.search;
 			SearchMenuItem.Name = "SearchMenuItem";
-			SearchMenuItem.Size = new System.Drawing.Size(255, 24);
+			SearchMenuItem.Size = new System.Drawing.Size(215, 22);
 			SearchMenuItem.Text = "&Search";
 			SearchMenuItem.Click += new System.EventHandler(this.SearchMenuItem_Click);
 			// 
 			// TotalSearchLabel
 			// 
 			this.TotalSearchLabel.AutoSize = true;
-			this.TotalSearchLabel.Location = new System.Drawing.Point(16, 60);
-			this.TotalSearchLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.TotalSearchLabel.Location = new System.Drawing.Point(12, 49);
 			this.TotalSearchLabel.Name = "TotalSearchLabel";
-			this.TotalSearchLabel.Size = new System.Drawing.Size(86, 17);
+			this.TotalSearchLabel.Size = new System.Drawing.Size(64, 13);
 			this.TotalSearchLabel.TabIndex = 2;
 			this.TotalSearchLabel.Text = "0 addresses";
 			// 
@@ -205,12 +201,11 @@
 			this.WatchListView.GridLines = true;
 			this.WatchListView.HideSelection = false;
 			this.WatchListView.ItemCount = 0;
-			this.WatchListView.Location = new System.Drawing.Point(12, 80);
-			this.WatchListView.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.WatchListView.Location = new System.Drawing.Point(9, 65);
 			this.WatchListView.Name = "WatchListView";
 			this.WatchListView.SelectAllInProgress = false;
 			this.WatchListView.selectedItem = -1;
-			this.WatchListView.Size = new System.Drawing.Size(305, 450);
+			this.WatchListView.Size = new System.Drawing.Size(230, 366);
 			this.WatchListView.TabIndex = 1;
 			this.WatchListView.UseCompatibleStateImageBehavior = false;
 			this.WatchListView.UseCustomBackground = true;
@@ -264,14 +259,14 @@
             this.ContextMenuSeparator3,
             this.ClearPreviewContextMenuItem});
 			this.ListViewContextMenu.Name = "contextMenuStrip1";
-			this.ListViewContextMenu.Size = new System.Drawing.Size(256, 238);
+			this.ListViewContextMenu.Size = new System.Drawing.Size(216, 220);
 			this.ListViewContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ListViewContextMenu_Opening);
 			// 
 			// DoSearchContextMenuItem
 			// 
 			this.DoSearchContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.search;
 			this.DoSearchContextMenuItem.Name = "DoSearchContextMenuItem";
-			this.DoSearchContextMenuItem.Size = new System.Drawing.Size(255, 24);
+			this.DoSearchContextMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.DoSearchContextMenuItem.Text = "&Search";
 			this.DoSearchContextMenuItem.Click += new System.EventHandler(this.SearchMenuItem_Click);
 			// 
@@ -279,21 +274,21 @@
 			// 
 			this.NewSearchContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.restart;
 			this.NewSearchContextMenuItem.Name = "NewSearchContextMenuItem";
-			this.NewSearchContextMenuItem.Size = new System.Drawing.Size(255, 24);
+			this.NewSearchContextMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.NewSearchContextMenuItem.Text = "&Start New Search";
 			this.NewSearchContextMenuItem.Click += new System.EventHandler(this.NewSearchMenuMenuItem_Click);
 			// 
 			// ContextMenuSeparator1
 			// 
 			this.ContextMenuSeparator1.Name = "ContextMenuSeparator1";
-			this.ContextMenuSeparator1.Size = new System.Drawing.Size(252, 6);
+			this.ContextMenuSeparator1.Size = new System.Drawing.Size(212, 6);
 			// 
 			// RemoveContextMenuItem
 			// 
 			this.RemoveContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.RemoveContextMenuItem.Name = "RemoveContextMenuItem";
 			this.RemoveContextMenuItem.ShortcutKeyDisplayString = "Del";
-			this.RemoveContextMenuItem.Size = new System.Drawing.Size(255, 24);
+			this.RemoveContextMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.RemoveContextMenuItem.Text = "Remove Selected";
 			this.RemoveContextMenuItem.Click += new System.EventHandler(this.RemoveMenuItem_Click);
 			// 
@@ -302,7 +297,7 @@
 			this.AddToRamWatchContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.FindHS;
 			this.AddToRamWatchContextMenuItem.Name = "AddToRamWatchContextMenuItem";
 			this.AddToRamWatchContextMenuItem.ShortcutKeyDisplayString = "Ctrl+R";
-			this.AddToRamWatchContextMenuItem.Size = new System.Drawing.Size(255, 24);
+			this.AddToRamWatchContextMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.AddToRamWatchContextMenuItem.Text = "Add to Ram Watch";
 			this.AddToRamWatchContextMenuItem.Click += new System.EventHandler(this.AddToRamWatchMenuItem_Click);
 			// 
@@ -311,7 +306,7 @@
 			this.PokeContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
 			this.PokeContextMenuItem.Name = "PokeContextMenuItem";
 			this.PokeContextMenuItem.ShortcutKeyDisplayString = "Ctrl+P";
-			this.PokeContextMenuItem.Size = new System.Drawing.Size(255, 24);
+			this.PokeContextMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.PokeContextMenuItem.Text = "Poke Address";
 			this.PokeContextMenuItem.Click += new System.EventHandler(this.PokeAddressMenuItem_Click);
 			// 
@@ -320,7 +315,7 @@
 			this.FreezeContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
 			this.FreezeContextMenuItem.Name = "FreezeContextMenuItem";
 			this.FreezeContextMenuItem.ShortcutKeyDisplayString = "Ctrl+F";
-			this.FreezeContextMenuItem.Size = new System.Drawing.Size(255, 24);
+			this.FreezeContextMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.FreezeContextMenuItem.Text = "Freeze Address";
 			this.FreezeContextMenuItem.Click += new System.EventHandler(this.FreezeAddressMenuItem_Click);
 			// 
@@ -328,49 +323,47 @@
 			// 
 			this.UnfreezeAllContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Unfreeze;
 			this.UnfreezeAllContextMenuItem.Name = "UnfreezeAllContextMenuItem";
-			this.UnfreezeAllContextMenuItem.Size = new System.Drawing.Size(255, 24);
+			this.UnfreezeAllContextMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.UnfreezeAllContextMenuItem.Text = "Unfreeze &All";
 			this.UnfreezeAllContextMenuItem.Click += new System.EventHandler(this.UnfreezeAllContextMenuItem_Click);
 			// 
 			// ContextMenuSeparator2
 			// 
 			this.ContextMenuSeparator2.Name = "ContextMenuSeparator2";
-			this.ContextMenuSeparator2.Size = new System.Drawing.Size(252, 6);
+			this.ContextMenuSeparator2.Size = new System.Drawing.Size(212, 6);
 			// 
 			// ViewInHexEditorContextMenuItem
 			// 
 			this.ViewInHexEditorContextMenuItem.Name = "ViewInHexEditorContextMenuItem";
-			this.ViewInHexEditorContextMenuItem.Size = new System.Drawing.Size(255, 24);
+			this.ViewInHexEditorContextMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.ViewInHexEditorContextMenuItem.Text = "View in Hex Editor";
 			this.ViewInHexEditorContextMenuItem.Click += new System.EventHandler(this.ViewInHexEditorContextMenuItem_Click);
 			// 
 			// ContextMenuSeparator3
 			// 
 			this.ContextMenuSeparator3.Name = "ContextMenuSeparator3";
-			this.ContextMenuSeparator3.Size = new System.Drawing.Size(252, 6);
+			this.ContextMenuSeparator3.Size = new System.Drawing.Size(212, 6);
 			// 
 			// ClearPreviewContextMenuItem
 			// 
 			this.ClearPreviewContextMenuItem.Name = "ClearPreviewContextMenuItem";
-			this.ClearPreviewContextMenuItem.Size = new System.Drawing.Size(255, 24);
+			this.ClearPreviewContextMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.ClearPreviewContextMenuItem.Text = "&Clear Preview";
 			this.ClearPreviewContextMenuItem.Click += new System.EventHandler(this.ClearPreviewContextMenuItem_Click);
 			// 
-			// menuStrip1
+			// RamSearchMenu
 			// 
-			this.menuStrip1.ClickThrough = true;
-			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.RamSearchMenu.ClickThrough = true;
+			this.RamSearchMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.settingsToolStripMenuItem,
             this.searchToolStripMenuItem,
-            this.optionsToolStripMenuItem,
-            this.ColumnsMenuItem});
-			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
-			this.menuStrip1.Size = new System.Drawing.Size(593, 28);
-			this.menuStrip1.TabIndex = 4;
-			this.menuStrip1.Text = "menuStrip1";
+            this.optionsToolStripMenuItem});
+			this.RamSearchMenu.Location = new System.Drawing.Point(0, 0);
+			this.RamSearchMenu.Name = "RamSearchMenu";
+			this.RamSearchMenu.Size = new System.Drawing.Size(445, 24);
+			this.RamSearchMenu.TabIndex = 4;
+			this.RamSearchMenu.Text = "menuStrip1";
 			// 
 			// fileToolStripMenuItem
 			// 
@@ -384,7 +377,7 @@
             this.toolStripSeparator4,
             this.exitToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-			this.fileToolStripMenuItem.Size = new System.Drawing.Size(44, 24);
+			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "&File";
 			this.fileToolStripMenuItem.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
 			// 
@@ -393,7 +386,7 @@
 			this.OpenMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.OpenMenuItem.Name = "OpenMenuItem";
 			this.OpenMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-			this.OpenMenuItem.Size = new System.Drawing.Size(228, 24);
+			this.OpenMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.OpenMenuItem.Text = "&Open...";
 			this.OpenMenuItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
 			// 
@@ -402,7 +395,7 @@
 			this.SaveMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
 			this.SaveMenuItem.Name = "SaveMenuItem";
 			this.SaveMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.SaveMenuItem.Size = new System.Drawing.Size(228, 24);
+			this.SaveMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.SaveMenuItem.Text = "&Save";
 			this.SaveMenuItem.Click += new System.EventHandler(this.SaveMenuItem_Click);
 			// 
@@ -411,14 +404,14 @@
 			this.SaveAsMenuItem.Name = "SaveAsMenuItem";
 			this.SaveAsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
-			this.SaveAsMenuItem.Size = new System.Drawing.Size(228, 24);
+			this.SaveAsMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.SaveAsMenuItem.Text = "Save As...";
 			this.SaveAsMenuItem.Click += new System.EventHandler(this.SaveAsMenuItem_Click);
 			// 
 			// AppendFileMenuItem
 			// 
 			this.AppendFileMenuItem.Name = "AppendFileMenuItem";
-			this.AppendFileMenuItem.Size = new System.Drawing.Size(228, 24);
+			this.AppendFileMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.AppendFileMenuItem.Text = "&Append File...";
 			this.AppendFileMenuItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
 			// 
@@ -426,7 +419,7 @@
 			// 
 			this.TruncateFromFileMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.TruncateFromFile;
 			this.TruncateFromFileMenuItem.Name = "TruncateFromFileMenuItem";
-			this.TruncateFromFileMenuItem.Size = new System.Drawing.Size(228, 24);
+			this.TruncateFromFileMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.TruncateFromFileMenuItem.Text = "&Truncate from File...";
 			this.TruncateFromFileMenuItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
 			// 
@@ -436,7 +429,7 @@
             this.toolStripSeparator2});
 			this.RecentSubMenu.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
 			this.RecentSubMenu.Name = "RecentSubMenu";
-			this.RecentSubMenu.Size = new System.Drawing.Size(228, 24);
+			this.RecentSubMenu.Size = new System.Drawing.Size(195, 22);
 			this.RecentSubMenu.Text = "Recent";
 			this.RecentSubMenu.DropDownOpened += new System.EventHandler(this.RecentSubMenu_DropDownOpened);
 			// 
@@ -448,13 +441,13 @@
 			// toolStripSeparator4
 			// 
 			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(225, 6);
+			this.toolStripSeparator4.Size = new System.Drawing.Size(192, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
 			this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(228, 24);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.exitToolStripMenuItem.Text = "&Close";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.CloseMenuItem_Click);
 			// 
@@ -470,7 +463,7 @@
             this.DisplayTypeSubMenu,
             this.DefinePreviousValueSubMenu});
 			this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(74, 24);
+			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
 			this.settingsToolStripMenuItem.Text = "&Settings";
 			this.settingsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.SettingsSubMenu_DropDownOpened);
 			// 
@@ -480,21 +473,21 @@
             this.DetailedMenuItem,
             this.FastMenuItem});
 			this.modeToolStripMenuItem.Name = "modeToolStripMenuItem";
-			this.modeToolStripMenuItem.Size = new System.Drawing.Size(222, 24);
+			this.modeToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.modeToolStripMenuItem.Text = "&Mode";
 			this.modeToolStripMenuItem.DropDownOpened += new System.EventHandler(this.ModeSubMenu_DropDownOpened);
 			// 
 			// DetailedMenuItem
 			// 
 			this.DetailedMenuItem.Name = "DetailedMenuItem";
-			this.DetailedMenuItem.Size = new System.Drawing.Size(135, 24);
+			this.DetailedMenuItem.Size = new System.Drawing.Size(117, 22);
 			this.DetailedMenuItem.Text = "&Detailed";
 			this.DetailedMenuItem.Click += new System.EventHandler(this.DetailedMenuItem_Click);
 			// 
 			// FastMenuItem
 			// 
 			this.FastMenuItem.Name = "FastMenuItem";
-			this.FastMenuItem.Size = new System.Drawing.Size(135, 24);
+			this.FastMenuItem.Size = new System.Drawing.Size(117, 22);
 			this.FastMenuItem.Text = "&Fast";
 			this.FastMenuItem.Click += new System.EventHandler(this.FastMenuItem_Click);
 			// 
@@ -503,7 +496,7 @@
 			this.MemoryDomainsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator6});
 			this.MemoryDomainsSubMenu.Name = "MemoryDomainsSubMenu";
-			this.MemoryDomainsSubMenu.Size = new System.Drawing.Size(222, 24);
+			this.MemoryDomainsSubMenu.Size = new System.Drawing.Size(188, 22);
 			this.MemoryDomainsSubMenu.Text = "&Memory Domains";
 			this.MemoryDomainsSubMenu.DropDownOpened += new System.EventHandler(this.MemoryDomainsSubMenu_DropDownOpened);
 			// 
@@ -519,47 +512,47 @@
             this.WordMenuItem,
             this.DWordMenuItem});
 			this.sizeToolStripMenuItem.Name = "sizeToolStripMenuItem";
-			this.sizeToolStripMenuItem.Size = new System.Drawing.Size(222, 24);
+			this.sizeToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.sizeToolStripMenuItem.Text = "&Size";
 			this.sizeToolStripMenuItem.DropDownOpened += new System.EventHandler(this.SizeSubMenu_DropDownOpened);
 			// 
 			// ByteMenuItem
 			// 
 			this.ByteMenuItem.Name = "ByteMenuItem";
-			this.ByteMenuItem.Size = new System.Drawing.Size(119, 24);
+			this.ByteMenuItem.Size = new System.Drawing.Size(106, 22);
 			this.ByteMenuItem.Text = "&1 Byte";
 			this.ByteMenuItem.Click += new System.EventHandler(this.ByteMenuItem_Click);
 			// 
 			// WordMenuItem
 			// 
 			this.WordMenuItem.Name = "WordMenuItem";
-			this.WordMenuItem.Size = new System.Drawing.Size(119, 24);
+			this.WordMenuItem.Size = new System.Drawing.Size(106, 22);
 			this.WordMenuItem.Text = "&2 Byte";
 			this.WordMenuItem.Click += new System.EventHandler(this.WordMenuItem_Click);
 			// 
 			// DWordMenuItem
 			// 
 			this.DWordMenuItem.Name = "DWordMenuItem";
-			this.DWordMenuItem.Size = new System.Drawing.Size(119, 24);
+			this.DWordMenuItem.Size = new System.Drawing.Size(106, 22);
 			this.DWordMenuItem.Text = "&4 Byte";
 			this.DWordMenuItem.Click += new System.EventHandler(this.DWordMenuItem_Click_Click);
 			// 
 			// CheckMisalignedMenuItem
 			// 
 			this.CheckMisalignedMenuItem.Name = "CheckMisalignedMenuItem";
-			this.CheckMisalignedMenuItem.Size = new System.Drawing.Size(222, 24);
+			this.CheckMisalignedMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.CheckMisalignedMenuItem.Text = "Check Mis-aligned";
 			this.CheckMisalignedMenuItem.Click += new System.EventHandler(this.CheckMisalignedMenuItem_Click);
 			// 
 			// toolStripSeparator8
 			// 
 			this.toolStripSeparator8.Name = "toolStripSeparator8";
-			this.toolStripSeparator8.Size = new System.Drawing.Size(219, 6);
+			this.toolStripSeparator8.Size = new System.Drawing.Size(185, 6);
 			// 
 			// BigEndianMenuItem
 			// 
 			this.BigEndianMenuItem.Name = "BigEndianMenuItem";
-			this.BigEndianMenuItem.Size = new System.Drawing.Size(222, 24);
+			this.BigEndianMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.BigEndianMenuItem.Text = "&Big Endian";
 			this.BigEndianMenuItem.Click += new System.EventHandler(this.BigEndianMenuItem_Click);
 			// 
@@ -568,7 +561,7 @@
 			this.DisplayTypeSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator1});
 			this.DisplayTypeSubMenu.Name = "DisplayTypeSubMenu";
-			this.DisplayTypeSubMenu.Size = new System.Drawing.Size(222, 24);
+			this.DisplayTypeSubMenu.Size = new System.Drawing.Size(188, 22);
 			this.DisplayTypeSubMenu.Text = "&Display Type";
 			this.DisplayTypeSubMenu.DropDownOpened += new System.EventHandler(this.DisplayTypeSubMenu_DropDownOpened);
 			// 
@@ -585,30 +578,37 @@
             this.Previous_OriginalMenuItem,
             this.Previous_LastChangeMenuItem});
 			this.DefinePreviousValueSubMenu.Name = "DefinePreviousValueSubMenu";
-			this.DefinePreviousValueSubMenu.Size = new System.Drawing.Size(222, 24);
+			this.DefinePreviousValueSubMenu.Size = new System.Drawing.Size(188, 22);
 			this.DefinePreviousValueSubMenu.Text = "Define Previous Value";
 			this.DefinePreviousValueSubMenu.DropDownOpened += new System.EventHandler(this.DefinePreviousValueSubMenu_DropDownOpened);
 			// 
 			// Previous_LastSearchMenuItem
 			// 
 			this.Previous_LastSearchMenuItem.Name = "Previous_LastSearchMenuItem";
-			this.Previous_LastSearchMenuItem.Size = new System.Drawing.Size(178, 24);
+			this.Previous_LastSearchMenuItem.Size = new System.Drawing.Size(155, 22);
 			this.Previous_LastSearchMenuItem.Text = "Last &Search";
 			this.Previous_LastSearchMenuItem.Click += new System.EventHandler(this.Previous_LastSearchMenuItem_Click);
 			// 
 			// PreviousFrameMenuItem
 			// 
 			this.PreviousFrameMenuItem.Name = "PreviousFrameMenuItem";
-			this.PreviousFrameMenuItem.Size = new System.Drawing.Size(178, 24);
+			this.PreviousFrameMenuItem.Size = new System.Drawing.Size(155, 22);
 			this.PreviousFrameMenuItem.Text = "&Previous Frame";
 			this.PreviousFrameMenuItem.Click += new System.EventHandler(this.Previous_LastFrameMenuItem_Click);
 			// 
 			// Previous_OriginalMenuItem
 			// 
 			this.Previous_OriginalMenuItem.Name = "Previous_OriginalMenuItem";
-			this.Previous_OriginalMenuItem.Size = new System.Drawing.Size(178, 24);
+			this.Previous_OriginalMenuItem.Size = new System.Drawing.Size(155, 22);
 			this.Previous_OriginalMenuItem.Text = "&Original";
 			this.Previous_OriginalMenuItem.Click += new System.EventHandler(this.Previous_OriginalMenuItem_Click);
+			// 
+			// Previous_LastChangeMenuItem
+			// 
+			this.Previous_LastChangeMenuItem.Name = "Previous_LastChangeMenuItem";
+			this.Previous_LastChangeMenuItem.Size = new System.Drawing.Size(155, 22);
+			this.Previous_LastChangeMenuItem.Text = "Last &Change";
+			this.Previous_LastChangeMenuItem.Click += new System.EventHandler(this.Previous_LastChangeMenuItem_Click);
 			// 
 			// searchToolStripMenuItem
 			// 
@@ -629,7 +629,7 @@
             this.toolStripSeparator13,
             this.ClearUndoMenuItem});
 			this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
-			this.searchToolStripMenuItem.Size = new System.Drawing.Size(65, 24);
+			this.searchToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
 			this.searchToolStripMenuItem.Text = "&Search";
 			this.searchToolStripMenuItem.DropDownOpened += new System.EventHandler(this.SearchSubMenu_DropDownOpened);
 			// 
@@ -637,21 +637,21 @@
 			// 
 			this.newSearchToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.restart;
 			this.newSearchToolStripMenuItem.Name = "newSearchToolStripMenuItem";
-			this.newSearchToolStripMenuItem.Size = new System.Drawing.Size(255, 24);
+			this.newSearchToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.newSearchToolStripMenuItem.Text = "&New Search";
 			this.newSearchToolStripMenuItem.Click += new System.EventHandler(this.NewSearchMenuMenuItem_Click);
 			// 
 			// toolStripSeparator7
 			// 
 			this.toolStripSeparator7.Name = "toolStripSeparator7";
-			this.toolStripSeparator7.Size = new System.Drawing.Size(252, 6);
+			this.toolStripSeparator7.Size = new System.Drawing.Size(212, 6);
 			// 
 			// UndoMenuItem
 			// 
 			this.UndoMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.undo;
 			this.UndoMenuItem.Name = "UndoMenuItem";
 			this.UndoMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-			this.UndoMenuItem.Size = new System.Drawing.Size(255, 24);
+			this.UndoMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.UndoMenuItem.Text = "&Undo";
 			this.UndoMenuItem.Click += new System.EventHandler(this.UndoMenuItem_Click);
 			// 
@@ -661,7 +661,7 @@
 			this.RedoMenuItem.Name = "RedoMenuItem";
 			this.RedoMenuItem.ShortcutKeyDisplayString = "";
 			this.RedoMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-			this.RedoMenuItem.Size = new System.Drawing.Size(255, 24);
+			this.RedoMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.RedoMenuItem.Text = "&Redo";
 			this.RedoMenuItem.Click += new System.EventHandler(this.RedoMenuItem_Click);
 			// 
@@ -669,14 +669,14 @@
 			// 
 			this.CopyValueToPrevMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Previous;
 			this.CopyValueToPrevMenuItem.Name = "CopyValueToPrevMenuItem";
-			this.CopyValueToPrevMenuItem.Size = new System.Drawing.Size(255, 24);
+			this.CopyValueToPrevMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.CopyValueToPrevMenuItem.Text = "Copy Value to Prev";
 			this.CopyValueToPrevMenuItem.Click += new System.EventHandler(this.CopyValueToPrevMenuItem_Click);
 			// 
 			// ClearChangeCountsMenuItem
 			// 
 			this.ClearChangeCountsMenuItem.Name = "ClearChangeCountsMenuItem";
-			this.ClearChangeCountsMenuItem.Size = new System.Drawing.Size(255, 24);
+			this.ClearChangeCountsMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.ClearChangeCountsMenuItem.Text = "&Clear Change Counts";
 			this.ClearChangeCountsMenuItem.Click += new System.EventHandler(this.ClearChangeCountsMenuItem_Click);
 			// 
@@ -685,20 +685,20 @@
 			this.RemoveMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.RemoveMenuItem.Name = "RemoveMenuItem";
 			this.RemoveMenuItem.ShortcutKeyDisplayString = "Delete";
-			this.RemoveMenuItem.Size = new System.Drawing.Size(255, 24);
+			this.RemoveMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.RemoveMenuItem.Text = "&Remove selected";
 			this.RemoveMenuItem.Click += new System.EventHandler(this.RemoveMenuItem_Click);
 			// 
 			// toolStripSeparator5
 			// 
 			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(252, 6);
+			this.toolStripSeparator5.Size = new System.Drawing.Size(212, 6);
 			// 
 			// GoToAddressMenuItem
 			// 
 			this.GoToAddressMenuItem.Name = "GoToAddressMenuItem";
 			this.GoToAddressMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
-			this.GoToAddressMenuItem.Size = new System.Drawing.Size(255, 24);
+			this.GoToAddressMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.GoToAddressMenuItem.Text = "&Go to Address...";
 			this.GoToAddressMenuItem.Click += new System.EventHandler(this.GoToAddressMenuItem_Click);
 			// 
@@ -707,7 +707,7 @@
 			this.AddToRamWatchMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.FindHS;
 			this.AddToRamWatchMenuItem.Name = "AddToRamWatchMenuItem";
 			this.AddToRamWatchMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-			this.AddToRamWatchMenuItem.Size = new System.Drawing.Size(255, 24);
+			this.AddToRamWatchMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.AddToRamWatchMenuItem.Text = "&Add to Ram Watch";
 			this.AddToRamWatchMenuItem.Click += new System.EventHandler(this.AddToRamWatchMenuItem_Click);
 			// 
@@ -716,7 +716,7 @@
 			this.PokeAddressMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
 			this.PokeAddressMenuItem.Name = "PokeAddressMenuItem";
 			this.PokeAddressMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-			this.PokeAddressMenuItem.Size = new System.Drawing.Size(255, 24);
+			this.PokeAddressMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.PokeAddressMenuItem.Text = "&Poke Address";
 			this.PokeAddressMenuItem.Click += new System.EventHandler(this.PokeAddressMenuItem_Click);
 			// 
@@ -725,19 +725,19 @@
 			this.FreezeAddressMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
 			this.FreezeAddressMenuItem.Name = "FreezeAddressMenuItem";
 			this.FreezeAddressMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
-			this.FreezeAddressMenuItem.Size = new System.Drawing.Size(255, 24);
+			this.FreezeAddressMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.FreezeAddressMenuItem.Text = "Freeze Address";
 			this.FreezeAddressMenuItem.Click += new System.EventHandler(this.FreezeAddressMenuItem_Click);
 			// 
 			// toolStripSeparator13
 			// 
 			this.toolStripSeparator13.Name = "toolStripSeparator13";
-			this.toolStripSeparator13.Size = new System.Drawing.Size(252, 6);
+			this.toolStripSeparator13.Size = new System.Drawing.Size(212, 6);
 			// 
 			// ClearUndoMenuItem
 			// 
 			this.ClearUndoMenuItem.Name = "ClearUndoMenuItem";
-			this.ClearUndoMenuItem.Size = new System.Drawing.Size(255, 24);
+			this.ClearUndoMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.ClearUndoMenuItem.Text = "Clear Undo History";
 			this.ClearUndoMenuItem.Click += new System.EventHandler(this.ClearUndoMenuItem_Click);
 			// 
@@ -746,6 +746,7 @@
 			this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.PreviewModeMenuItem,
             this.AutoSearchMenuItem,
+            this.AutoSearchAccountForLagMenuItem,
             this.toolStripSeparator9,
             this.ExcludeRamWatchMenuItem,
             this.UseUndoHistoryMenuItem,
@@ -757,127 +758,94 @@
             this.toolStripSeparator3,
             this.RestoreDefaultsMenuItem});
 			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(73, 24);
+			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
 			this.optionsToolStripMenuItem.Text = "&Options";
 			this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
 			// 
 			// PreviewModeMenuItem
 			// 
 			this.PreviewModeMenuItem.Name = "PreviewModeMenuItem";
-			this.PreviewModeMenuItem.Size = new System.Drawing.Size(287, 24);
+			this.PreviewModeMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.PreviewModeMenuItem.Text = "&Preview Mode";
 			this.PreviewModeMenuItem.Click += new System.EventHandler(this.PreviewModeMenuItem_Click);
 			// 
 			// AutoSearchMenuItem
 			// 
 			this.AutoSearchMenuItem.Name = "AutoSearchMenuItem";
-			this.AutoSearchMenuItem.Size = new System.Drawing.Size(287, 24);
+			this.AutoSearchMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.AutoSearchMenuItem.Text = "&Auto-Search";
 			this.AutoSearchMenuItem.Click += new System.EventHandler(this.AutoSearchMenuItem_Click);
 			// 
 			// toolStripSeparator9
 			// 
 			this.toolStripSeparator9.Name = "toolStripSeparator9";
-			this.toolStripSeparator9.Size = new System.Drawing.Size(284, 6);
+			this.toolStripSeparator9.Size = new System.Drawing.Size(237, 6);
 			// 
 			// ExcludeRamWatchMenuItem
 			// 
 			this.ExcludeRamWatchMenuItem.Name = "ExcludeRamWatchMenuItem";
-			this.ExcludeRamWatchMenuItem.Size = new System.Drawing.Size(287, 24);
+			this.ExcludeRamWatchMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.ExcludeRamWatchMenuItem.Text = "Always E&xclude Ram Search List";
 			this.ExcludeRamWatchMenuItem.Click += new System.EventHandler(this.ExcludeRamWatchMenuItem_Click);
 			// 
 			// UseUndoHistoryMenuItem
 			// 
 			this.UseUndoHistoryMenuItem.Name = "UseUndoHistoryMenuItem";
-			this.UseUndoHistoryMenuItem.Size = new System.Drawing.Size(287, 24);
+			this.UseUndoHistoryMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.UseUndoHistoryMenuItem.Text = "&Use Undo History";
 			this.UseUndoHistoryMenuItem.Click += new System.EventHandler(this.UseUndoHistoryMenuItem_Click);
 			// 
 			// toolStripSeparator11
 			// 
 			this.toolStripSeparator11.Name = "toolStripSeparator11";
-			this.toolStripSeparator11.Size = new System.Drawing.Size(284, 6);
+			this.toolStripSeparator11.Size = new System.Drawing.Size(237, 6);
 			// 
 			// AutoloadDialogMenuItem
 			// 
 			this.AutoloadDialogMenuItem.Name = "AutoloadDialogMenuItem";
-			this.AutoloadDialogMenuItem.Size = new System.Drawing.Size(287, 24);
+			this.AutoloadDialogMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.AutoloadDialogMenuItem.Text = "Auto&load";
 			this.AutoloadDialogMenuItem.Click += new System.EventHandler(this.AutoloadDialogMenuItem_Click);
 			// 
 			// SaveWinPositionMenuItem
 			// 
 			this.SaveWinPositionMenuItem.Name = "SaveWinPositionMenuItem";
-			this.SaveWinPositionMenuItem.Size = new System.Drawing.Size(287, 24);
+			this.SaveWinPositionMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.SaveWinPositionMenuItem.Text = "&Save Window Position";
 			this.SaveWinPositionMenuItem.Click += new System.EventHandler(this.SaveWinPositionMenuItem_Click);
 			// 
 			// AlwaysOnTopMenuItem
 			// 
 			this.AlwaysOnTopMenuItem.Name = "AlwaysOnTopMenuItem";
-			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(287, 24);
+			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.AlwaysOnTopMenuItem.Text = "Always On &Top";
 			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
 			// 
 			// FloatingWindowMenuItem
 			// 
 			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
-			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(287, 24);
+			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.FloatingWindowMenuItem.Text = "&Floating Window";
 			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(284, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(237, 6);
 			// 
 			// RestoreDefaultsMenuItem
 			// 
 			this.RestoreDefaultsMenuItem.Name = "RestoreDefaultsMenuItem";
-			this.RestoreDefaultsMenuItem.Size = new System.Drawing.Size(287, 24);
+			this.RestoreDefaultsMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.RestoreDefaultsMenuItem.Text = "&Restore Default Settings";
 			this.RestoreDefaultsMenuItem.Click += new System.EventHandler(this.RestoreDefaultsMenuItem_Click);
-			// 
-			// ColumnsMenuItem
-			// 
-			this.ColumnsMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ShowPreviousMenuItem,
-            this.ShowChangesMenuItem,
-            this.ShowDiffMenuItem});
-			this.ColumnsMenuItem.Name = "ColumnsMenuItem";
-			this.ColumnsMenuItem.Size = new System.Drawing.Size(78, 24);
-			this.ColumnsMenuItem.Text = "&Columns";
-			this.ColumnsMenuItem.DropDownOpened += new System.EventHandler(this.ColumnsMenuItem_DropDownOpened);
-			// 
-			// ShowPreviousMenuItem
-			// 
-			this.ShowPreviousMenuItem.Name = "ShowPreviousMenuItem";
-			this.ShowPreviousMenuItem.Size = new System.Drawing.Size(177, 24);
-			this.ShowPreviousMenuItem.Text = "&Previous Value";
-			this.ShowPreviousMenuItem.Click += new System.EventHandler(this.ShowPreviousMenuItem_Click);
-			// 
-			// ShowChangesMenuItem
-			// 
-			this.ShowChangesMenuItem.Name = "ShowChangesMenuItem";
-			this.ShowChangesMenuItem.Size = new System.Drawing.Size(177, 24);
-			this.ShowChangesMenuItem.Text = "&Change Counts";
-			this.ShowChangesMenuItem.Click += new System.EventHandler(this.ShowChangesMenuItem_Click);
-			// 
-			// ShowDiffMenuItem
-			// 
-			this.ShowDiffMenuItem.Name = "ShowDiffMenuItem";
-			this.ShowDiffMenuItem.Size = new System.Drawing.Size(177, 24);
-			this.ShowDiffMenuItem.Text = "&Difference";
-			this.ShowDiffMenuItem.Click += new System.EventHandler(this.ShowDiffMenuItem_Click);
 			// 
 			// MemDomainLabel
 			// 
 			this.MemDomainLabel.AutoSize = true;
-			this.MemDomainLabel.Location = new System.Drawing.Point(180, 60);
-			this.MemDomainLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.MemDomainLabel.Location = new System.Drawing.Point(135, 49);
 			this.MemDomainLabel.Name = "MemDomainLabel";
-			this.MemDomainLabel.Size = new System.Drawing.Size(92, 17);
+			this.MemDomainLabel.Size = new System.Drawing.Size(70, 13);
 			this.MemDomainLabel.TabIndex = 8;
 			this.MemDomainLabel.Text = "Main Memory";
 			// 
@@ -885,10 +853,9 @@
 			// 
 			this.MessageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.MessageLabel.AutoSize = true;
-			this.MessageLabel.Location = new System.Drawing.Point(12, 534);
-			this.MessageLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.MessageLabel.Location = new System.Drawing.Point(9, 434);
 			this.MessageLabel.Name = "MessageLabel";
-			this.MessageLabel.Size = new System.Drawing.Size(140, 17);
+			this.MessageLabel.Size = new System.Drawing.Size(106, 13);
 			this.MessageLabel.TabIndex = 9;
 			this.MessageLabel.Text = " todo                         ";
 			// 
@@ -898,8 +865,7 @@
 			this.AutoSearchCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
 			this.AutoSearchCheckBox.AutoSize = true;
 			this.AutoSearchCheckBox.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.AutoSearch;
-			this.AutoSearchCheckBox.Location = new System.Drawing.Point(434, 505);
-			this.AutoSearchCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.AutoSearchCheckBox.Location = new System.Drawing.Point(316, 410);
 			this.AutoSearchCheckBox.Name = "AutoSearchCheckBox";
 			this.AutoSearchCheckBox.Size = new System.Drawing.Size(38, 22);
 			this.AutoSearchCheckBox.TabIndex = 105;
@@ -920,11 +886,9 @@
 			this.CompareToBox.Controls.Add(this.SpecificAddressRadio);
 			this.CompareToBox.Controls.Add(this.SpecificValueRadio);
 			this.CompareToBox.Controls.Add(this.PreviousValueRadio);
-			this.CompareToBox.Location = new System.Drawing.Point(325, 80);
-			this.CompareToBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.CompareToBox.Location = new System.Drawing.Point(244, 65);
 			this.CompareToBox.Name = "CompareToBox";
-			this.CompareToBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-			this.CompareToBox.Size = new System.Drawing.Size(253, 154);
+			this.CompareToBox.Size = new System.Drawing.Size(190, 125);
 			this.CompareToBox.TabIndex = 10;
 			this.CompareToBox.TabStop = false;
 			this.CompareToBox.Text = "Compare To / By";
@@ -935,22 +899,20 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.DifferenceBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.DifferenceBox.Enabled = false;
-			this.DifferenceBox.Location = new System.Drawing.Point(152, 121);
-			this.DifferenceBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.DifferenceBox.Location = new System.Drawing.Point(114, 98);
 			this.DifferenceBox.MaxLength = 8;
 			this.DifferenceBox.Name = "DifferenceBox";
 			this.DifferenceBox.Nullable = false;
-			this.DifferenceBox.Size = new System.Drawing.Size(95, 22);
+			this.DifferenceBox.Size = new System.Drawing.Size(72, 20);
 			this.DifferenceBox.TabIndex = 45;
 			this.DifferenceBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
 			// 
 			// DifferenceRadio
 			// 
 			this.DifferenceRadio.AutoSize = true;
-			this.DifferenceRadio.Location = new System.Drawing.Point(8, 123);
-			this.DifferenceRadio.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.DifferenceRadio.Location = new System.Drawing.Point(6, 100);
 			this.DifferenceRadio.Name = "DifferenceRadio";
-			this.DifferenceRadio.Size = new System.Drawing.Size(114, 21);
+			this.DifferenceRadio.Size = new System.Drawing.Size(89, 17);
 			this.DifferenceRadio.TabIndex = 40;
 			this.DifferenceRadio.Text = "Difference of:";
 			this.DifferenceRadio.UseVisualStyleBackColor = true;
@@ -962,12 +924,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.NumberOfChangesBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.NumberOfChangesBox.Enabled = false;
-			this.NumberOfChangesBox.Location = new System.Drawing.Point(152, 96);
-			this.NumberOfChangesBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.NumberOfChangesBox.Location = new System.Drawing.Point(114, 78);
 			this.NumberOfChangesBox.MaxLength = 8;
 			this.NumberOfChangesBox.Name = "NumberOfChangesBox";
 			this.NumberOfChangesBox.Nullable = false;
-			this.NumberOfChangesBox.Size = new System.Drawing.Size(95, 22);
+			this.NumberOfChangesBox.Size = new System.Drawing.Size(72, 20);
 			this.NumberOfChangesBox.TabIndex = 35;
 			this.NumberOfChangesBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
 			// 
@@ -977,12 +938,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.SpecificAddressBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.SpecificAddressBox.Enabled = false;
-			this.SpecificAddressBox.Location = new System.Drawing.Point(152, 71);
-			this.SpecificAddressBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.SpecificAddressBox.Location = new System.Drawing.Point(114, 58);
 			this.SpecificAddressBox.MaxLength = 8;
 			this.SpecificAddressBox.Name = "SpecificAddressBox";
 			this.SpecificAddressBox.Nullable = false;
-			this.SpecificAddressBox.Size = new System.Drawing.Size(95, 22);
+			this.SpecificAddressBox.Size = new System.Drawing.Size(72, 20);
 			this.SpecificAddressBox.TabIndex = 25;
 			this.SpecificAddressBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
 			// 
@@ -993,12 +953,11 @@
 			this.SpecificValueBox.ByteSize = BizHawk.Client.Common.Watch.WatchSize.Byte;
 			this.SpecificValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.SpecificValueBox.Enabled = false;
-			this.SpecificValueBox.Location = new System.Drawing.Point(152, 47);
-			this.SpecificValueBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.SpecificValueBox.Location = new System.Drawing.Point(114, 38);
 			this.SpecificValueBox.MaxLength = 2;
 			this.SpecificValueBox.Name = "SpecificValueBox";
 			this.SpecificValueBox.Nullable = false;
-			this.SpecificValueBox.Size = new System.Drawing.Size(95, 22);
+			this.SpecificValueBox.Size = new System.Drawing.Size(72, 20);
 			this.SpecificValueBox.TabIndex = 15;
 			this.SpecificValueBox.Text = "00";
 			this.SpecificValueBox.Type = BizHawk.Client.Common.Watch.DisplayType.Hex;
@@ -1007,10 +966,9 @@
 			// NumberOfChangesRadio
 			// 
 			this.NumberOfChangesRadio.AutoSize = true;
-			this.NumberOfChangesRadio.Location = new System.Drawing.Point(9, 98);
-			this.NumberOfChangesRadio.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.NumberOfChangesRadio.Location = new System.Drawing.Point(7, 80);
 			this.NumberOfChangesRadio.Name = "NumberOfChangesRadio";
-			this.NumberOfChangesRadio.Size = new System.Drawing.Size(142, 21);
+			this.NumberOfChangesRadio.Size = new System.Drawing.Size(111, 17);
 			this.NumberOfChangesRadio.TabIndex = 30;
 			this.NumberOfChangesRadio.Text = "Specific Changes:";
 			this.NumberOfChangesRadio.UseVisualStyleBackColor = true;
@@ -1019,10 +977,9 @@
 			// SpecificAddressRadio
 			// 
 			this.SpecificAddressRadio.AutoSize = true;
-			this.SpecificAddressRadio.Location = new System.Drawing.Point(9, 74);
-			this.SpecificAddressRadio.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.SpecificAddressRadio.Location = new System.Drawing.Point(7, 60);
 			this.SpecificAddressRadio.Name = "SpecificAddressRadio";
-			this.SpecificAddressRadio.Size = new System.Drawing.Size(138, 21);
+			this.SpecificAddressRadio.Size = new System.Drawing.Size(107, 17);
 			this.SpecificAddressRadio.TabIndex = 20;
 			this.SpecificAddressRadio.Text = "Specific Address:";
 			this.SpecificAddressRadio.UseVisualStyleBackColor = true;
@@ -1031,10 +988,9 @@
 			// SpecificValueRadio
 			// 
 			this.SpecificValueRadio.AutoSize = true;
-			this.SpecificValueRadio.Location = new System.Drawing.Point(9, 49);
-			this.SpecificValueRadio.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.SpecificValueRadio.Location = new System.Drawing.Point(7, 40);
 			this.SpecificValueRadio.Name = "SpecificValueRadio";
-			this.SpecificValueRadio.Size = new System.Drawing.Size(122, 21);
+			this.SpecificValueRadio.Size = new System.Drawing.Size(96, 17);
 			this.SpecificValueRadio.TabIndex = 10;
 			this.SpecificValueRadio.Text = "Specific Value:";
 			this.SpecificValueRadio.UseVisualStyleBackColor = true;
@@ -1044,10 +1000,9 @@
 			// 
 			this.PreviousValueRadio.AutoSize = true;
 			this.PreviousValueRadio.Checked = true;
-			this.PreviousValueRadio.Location = new System.Drawing.Point(9, 25);
-			this.PreviousValueRadio.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.PreviousValueRadio.Location = new System.Drawing.Point(7, 20);
 			this.PreviousValueRadio.Name = "PreviousValueRadio";
-			this.PreviousValueRadio.Size = new System.Drawing.Size(124, 21);
+			this.PreviousValueRadio.Size = new System.Drawing.Size(96, 17);
 			this.PreviousValueRadio.TabIndex = 5;
 			this.PreviousValueRadio.TabStop = true;
 			this.PreviousValueRadio.Text = "Previous Value";
@@ -1075,9 +1030,9 @@
             this.RebootToolBarSeparator,
             this.RebootToolbarButton,
             this.ErrorIconButton});
-			this.toolStrip1.Location = new System.Drawing.Point(0, 28);
+			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(593, 27);
+			this.toolStrip1.Size = new System.Drawing.Size(445, 25);
 			this.toolStrip1.TabIndex = 11;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
@@ -1087,28 +1042,28 @@
 			this.DoSearchToolButton.Image = ((System.Drawing.Image)(resources.GetObject("DoSearchToolButton.Image")));
 			this.DoSearchToolButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.DoSearchToolButton.Name = "DoSearchToolButton";
-			this.DoSearchToolButton.Size = new System.Drawing.Size(77, 24);
+			this.DoSearchToolButton.Size = new System.Drawing.Size(65, 22);
 			this.DoSearchToolButton.Text = "Search ";
 			this.DoSearchToolButton.Click += new System.EventHandler(this.SearchMenuItem_Click);
 			// 
 			// toolStripSeparator10
 			// 
 			this.toolStripSeparator10.Name = "toolStripSeparator10";
-			this.toolStripSeparator10.Size = new System.Drawing.Size(6, 27);
+			this.toolStripSeparator10.Size = new System.Drawing.Size(6, 25);
 			// 
 			// NewSearchToolButton
 			// 
 			this.NewSearchToolButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.restart;
 			this.NewSearchToolButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.NewSearchToolButton.Name = "NewSearchToolButton";
-			this.NewSearchToolButton.Size = new System.Drawing.Size(59, 24);
+			this.NewSearchToolButton.Size = new System.Drawing.Size(51, 22);
 			this.NewSearchToolButton.Text = "New";
 			this.NewSearchToolButton.Click += new System.EventHandler(this.NewSearchMenuMenuItem_Click);
 			// 
 			// toolStripSeparator15
 			// 
 			this.toolStripSeparator15.Name = "toolStripSeparator15";
-			this.toolStripSeparator15.Size = new System.Drawing.Size(6, 27);
+			this.toolStripSeparator15.Size = new System.Drawing.Size(6, 25);
 			// 
 			// CopyValueToPrevToolBarItem
 			// 
@@ -1117,7 +1072,7 @@
 			this.CopyValueToPrevToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Previous;
 			this.CopyValueToPrevToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.CopyValueToPrevToolBarItem.Name = "CopyValueToPrevToolBarItem";
-			this.CopyValueToPrevToolBarItem.Size = new System.Drawing.Size(23, 24);
+			this.CopyValueToPrevToolBarItem.Size = new System.Drawing.Size(23, 22);
 			this.CopyValueToPrevToolBarItem.Text = "Copy Value to Previous";
 			this.CopyValueToPrevToolBarItem.Click += new System.EventHandler(this.CopyValueToPrevMenuItem_Click);
 			// 
@@ -1127,7 +1082,7 @@
 			this.ClearChangeCountsToolBarItem.Image = ((System.Drawing.Image)(resources.GetObject("ClearChangeCountsToolBarItem.Image")));
 			this.ClearChangeCountsToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.ClearChangeCountsToolBarItem.Name = "ClearChangeCountsToolBarItem";
-			this.ClearChangeCountsToolBarItem.Size = new System.Drawing.Size(23, 24);
+			this.ClearChangeCountsToolBarItem.Size = new System.Drawing.Size(23, 22);
 			this.ClearChangeCountsToolBarItem.Text = "C";
 			this.ClearChangeCountsToolBarItem.ToolTipText = "Clear Change Counts";
 			this.ClearChangeCountsToolBarItem.Click += new System.EventHandler(this.ClearChangeCountsMenuItem_Click);
@@ -1135,7 +1090,7 @@
 			// toolStripSeparator16
 			// 
 			this.toolStripSeparator16.Name = "toolStripSeparator16";
-			this.toolStripSeparator16.Size = new System.Drawing.Size(6, 27);
+			this.toolStripSeparator16.Size = new System.Drawing.Size(6, 25);
 			// 
 			// RemoveToolBarItem
 			// 
@@ -1144,7 +1099,7 @@
 			this.RemoveToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.RemoveToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.RemoveToolBarItem.Name = "RemoveToolBarItem";
-			this.RemoveToolBarItem.Size = new System.Drawing.Size(23, 24);
+			this.RemoveToolBarItem.Size = new System.Drawing.Size(23, 22);
 			this.RemoveToolBarItem.Text = "C&ut";
 			this.RemoveToolBarItem.ToolTipText = "Eliminate Selected Items";
 			this.RemoveToolBarItem.Click += new System.EventHandler(this.RemoveMenuItem_Click);
@@ -1156,7 +1111,7 @@
 			this.AddToRamWatchToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.FindHS;
 			this.AddToRamWatchToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.AddToRamWatchToolBarItem.Name = "AddToRamWatchToolBarItem";
-			this.AddToRamWatchToolBarItem.Size = new System.Drawing.Size(23, 24);
+			this.AddToRamWatchToolBarItem.Size = new System.Drawing.Size(23, 22);
 			this.AddToRamWatchToolBarItem.Text = "Watch";
 			this.AddToRamWatchToolBarItem.Click += new System.EventHandler(this.AddToRamWatchMenuItem_Click);
 			// 
@@ -1167,7 +1122,7 @@
 			this.PokeAddressToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
 			this.PokeAddressToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.PokeAddressToolBarItem.Name = "PokeAddressToolBarItem";
-			this.PokeAddressToolBarItem.Size = new System.Drawing.Size(23, 24);
+			this.PokeAddressToolBarItem.Size = new System.Drawing.Size(23, 22);
 			this.PokeAddressToolBarItem.Text = "Poke";
 			this.PokeAddressToolBarItem.Click += new System.EventHandler(this.PokeAddressMenuItem_Click);
 			// 
@@ -1178,14 +1133,14 @@
 			this.FreezeAddressToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
 			this.FreezeAddressToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.FreezeAddressToolBarItem.Name = "FreezeAddressToolBarItem";
-			this.FreezeAddressToolBarItem.Size = new System.Drawing.Size(23, 24);
+			this.FreezeAddressToolBarItem.Size = new System.Drawing.Size(23, 22);
 			this.FreezeAddressToolBarItem.Text = "Freeze";
 			this.FreezeAddressToolBarItem.Click += new System.EventHandler(this.FreezeAddressMenuItem_Click);
 			// 
 			// toolStripSeparator12
 			// 
 			this.toolStripSeparator12.Name = "toolStripSeparator12";
-			this.toolStripSeparator12.Size = new System.Drawing.Size(6, 27);
+			this.toolStripSeparator12.Size = new System.Drawing.Size(6, 25);
 			// 
 			// UndoToolBarButton
 			// 
@@ -1194,7 +1149,7 @@
 			this.UndoToolBarButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.undo;
 			this.UndoToolBarButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.UndoToolBarButton.Name = "UndoToolBarButton";
-			this.UndoToolBarButton.Size = new System.Drawing.Size(23, 24);
+			this.UndoToolBarButton.Size = new System.Drawing.Size(23, 22);
 			this.UndoToolBarButton.Text = "Undo Search";
 			this.UndoToolBarButton.Click += new System.EventHandler(this.UndoMenuItem_Click);
 			// 
@@ -1205,14 +1160,14 @@
 			this.RedoToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.redo;
 			this.RedoToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.RedoToolBarItem.Name = "RedoToolBarItem";
-			this.RedoToolBarItem.Size = new System.Drawing.Size(23, 24);
+			this.RedoToolBarItem.Size = new System.Drawing.Size(23, 22);
 			this.RedoToolBarItem.Text = "Redo";
 			this.RedoToolBarItem.Click += new System.EventHandler(this.RedoMenuItem_Click);
 			// 
 			// RebootToolBarSeparator
 			// 
 			this.RebootToolBarSeparator.Name = "RebootToolBarSeparator";
-			this.RebootToolBarSeparator.Size = new System.Drawing.Size(6, 27);
+			this.RebootToolBarSeparator.Size = new System.Drawing.Size(6, 25);
 			// 
 			// RebootToolbarButton
 			// 
@@ -1220,7 +1175,7 @@
 			this.RebootToolbarButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.reboot;
 			this.RebootToolbarButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.RebootToolbarButton.Name = "RebootToolbarButton";
-			this.RebootToolbarButton.Size = new System.Drawing.Size(23, 24);
+			this.RebootToolbarButton.Size = new System.Drawing.Size(23, 22);
 			this.RebootToolbarButton.Text = "A new search needs to be started in order for these changes to take effect";
 			this.RebootToolbarButton.Click += new System.EventHandler(this.NewSearchMenuMenuItem_Click);
 			// 
@@ -1231,7 +1186,7 @@
 			this.ErrorIconButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.ExclamationRed;
 			this.ErrorIconButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.ErrorIconButton.Name = "ErrorIconButton";
-			this.ErrorIconButton.Size = new System.Drawing.Size(23, 24);
+			this.ErrorIconButton.Size = new System.Drawing.Size(23, 22);
 			this.ErrorIconButton.Text = "Warning! Out of Range Addresses in list, click to remove them";
 			this.ErrorIconButton.Click += new System.EventHandler(this.ErrorIconButton_Click);
 			// 
@@ -1246,11 +1201,9 @@
 			this.ComparisonBox.Controls.Add(this.LessThanOrEqualToRadio);
 			this.ComparisonBox.Controls.Add(this.GreaterThanRadio);
 			this.ComparisonBox.Controls.Add(this.LessThanRadio);
-			this.ComparisonBox.Location = new System.Drawing.Point(325, 241);
-			this.ComparisonBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.ComparisonBox.Location = new System.Drawing.Point(244, 196);
 			this.ComparisonBox.Name = "ComparisonBox";
-			this.ComparisonBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-			this.ComparisonBox.Size = new System.Drawing.Size(253, 196);
+			this.ComparisonBox.Size = new System.Drawing.Size(190, 159);
 			this.ComparisonBox.TabIndex = 12;
 			this.ComparisonBox.TabStop = false;
 			this.ComparisonBox.Text = "Comparison Operator";
@@ -1259,22 +1212,20 @@
 			// 
 			this.DifferentByBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.DifferentByBox.Enabled = false;
-			this.DifferentByBox.Location = new System.Drawing.Point(117, 162);
-			this.DifferentByBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.DifferentByBox.Location = new System.Drawing.Point(88, 132);
 			this.DifferentByBox.MaxLength = 9;
 			this.DifferentByBox.Name = "DifferentByBox";
 			this.DifferentByBox.Nullable = false;
-			this.DifferentByBox.Size = new System.Drawing.Size(72, 22);
+			this.DifferentByBox.Size = new System.Drawing.Size(55, 20);
 			this.DifferentByBox.TabIndex = 85;
 			this.DifferentByBox.TextChanged += new System.EventHandler(this.DifferentByBox_TextChanged);
 			// 
 			// DifferentByRadio
 			// 
 			this.DifferentByRadio.AutoSize = true;
-			this.DifferentByRadio.Location = new System.Drawing.Point(9, 165);
-			this.DifferentByRadio.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.DifferentByRadio.Location = new System.Drawing.Point(7, 134);
 			this.DifferentByRadio.Name = "DifferentByRadio";
-			this.DifferentByRadio.Size = new System.Drawing.Size(106, 21);
+			this.DifferentByRadio.Size = new System.Drawing.Size(82, 17);
 			this.DifferentByRadio.TabIndex = 80;
 			this.DifferentByRadio.Text = "Different by:";
 			this.DifferentByRadio.UseVisualStyleBackColor = true;
@@ -1283,10 +1234,9 @@
 			// NotEqualToRadio
 			// 
 			this.NotEqualToRadio.AutoSize = true;
-			this.NotEqualToRadio.Location = new System.Drawing.Point(9, 43);
-			this.NotEqualToRadio.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.NotEqualToRadio.Location = new System.Drawing.Point(7, 35);
 			this.NotEqualToRadio.Name = "NotEqualToRadio";
-			this.NotEqualToRadio.Size = new System.Drawing.Size(112, 21);
+			this.NotEqualToRadio.Size = new System.Drawing.Size(88, 17);
 			this.NotEqualToRadio.TabIndex = 55;
 			this.NotEqualToRadio.Text = "Not Equal To";
 			this.NotEqualToRadio.UseVisualStyleBackColor = true;
@@ -1296,10 +1246,9 @@
 			// 
 			this.EqualToRadio.AutoSize = true;
 			this.EqualToRadio.Checked = true;
-			this.EqualToRadio.Location = new System.Drawing.Point(9, 18);
-			this.EqualToRadio.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.EqualToRadio.Location = new System.Drawing.Point(7, 15);
 			this.EqualToRadio.Name = "EqualToRadio";
-			this.EqualToRadio.Size = new System.Drawing.Size(86, 21);
+			this.EqualToRadio.Size = new System.Drawing.Size(68, 17);
 			this.EqualToRadio.TabIndex = 50;
 			this.EqualToRadio.TabStop = true;
 			this.EqualToRadio.Text = "Equal To";
@@ -1309,10 +1258,9 @@
 			// GreaterThanOrEqualToRadio
 			// 
 			this.GreaterThanOrEqualToRadio.AutoSize = true;
-			this.GreaterThanOrEqualToRadio.Location = new System.Drawing.Point(9, 139);
-			this.GreaterThanOrEqualToRadio.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.GreaterThanOrEqualToRadio.Location = new System.Drawing.Point(7, 113);
 			this.GreaterThanOrEqualToRadio.Name = "GreaterThanOrEqualToRadio";
-			this.GreaterThanOrEqualToRadio.Size = new System.Drawing.Size(193, 21);
+			this.GreaterThanOrEqualToRadio.Size = new System.Drawing.Size(146, 17);
 			this.GreaterThanOrEqualToRadio.TabIndex = 75;
 			this.GreaterThanOrEqualToRadio.Text = "Greater Than or Equal To";
 			this.GreaterThanOrEqualToRadio.UseVisualStyleBackColor = true;
@@ -1321,10 +1269,9 @@
 			// LessThanOrEqualToRadio
 			// 
 			this.LessThanOrEqualToRadio.AutoSize = true;
-			this.LessThanOrEqualToRadio.Location = new System.Drawing.Point(9, 114);
-			this.LessThanOrEqualToRadio.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.LessThanOrEqualToRadio.Location = new System.Drawing.Point(7, 93);
 			this.LessThanOrEqualToRadio.Name = "LessThanOrEqualToRadio";
-			this.LessThanOrEqualToRadio.Size = new System.Drawing.Size(174, 21);
+			this.LessThanOrEqualToRadio.Size = new System.Drawing.Size(133, 17);
 			this.LessThanOrEqualToRadio.TabIndex = 70;
 			this.LessThanOrEqualToRadio.Text = "Less Than or Equal To";
 			this.LessThanOrEqualToRadio.UseVisualStyleBackColor = true;
@@ -1333,10 +1280,9 @@
 			// GreaterThanRadio
 			// 
 			this.GreaterThanRadio.AutoSize = true;
-			this.GreaterThanRadio.Location = new System.Drawing.Point(9, 91);
-			this.GreaterThanRadio.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.GreaterThanRadio.Location = new System.Drawing.Point(7, 74);
 			this.GreaterThanRadio.Name = "GreaterThanRadio";
-			this.GreaterThanRadio.Size = new System.Drawing.Size(115, 21);
+			this.GreaterThanRadio.Size = new System.Drawing.Size(88, 17);
 			this.GreaterThanRadio.TabIndex = 65;
 			this.GreaterThanRadio.Text = "Greater Than";
 			this.GreaterThanRadio.UseVisualStyleBackColor = true;
@@ -1345,10 +1291,9 @@
 			// LessThanRadio
 			// 
 			this.LessThanRadio.AutoSize = true;
-			this.LessThanRadio.Location = new System.Drawing.Point(9, 66);
-			this.LessThanRadio.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.LessThanRadio.Location = new System.Drawing.Point(7, 54);
 			this.LessThanRadio.Name = "LessThanRadio";
-			this.LessThanRadio.Size = new System.Drawing.Size(96, 21);
+			this.LessThanRadio.Size = new System.Drawing.Size(75, 17);
 			this.LessThanRadio.TabIndex = 60;
 			this.LessThanRadio.Text = "Less Than";
 			this.LessThanRadio.UseVisualStyleBackColor = true;
@@ -1359,10 +1304,9 @@
 			this.SearchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SearchButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.search;
 			this.SearchButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.SearchButton.Location = new System.Drawing.Point(325, 503);
-			this.SearchButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.SearchButton.Location = new System.Drawing.Point(244, 409);
 			this.SearchButton.Name = "SearchButton";
-			this.SearchButton.Size = new System.Drawing.Size(93, 28);
+			this.SearchButton.Size = new System.Drawing.Size(70, 23);
 			this.SearchButton.TabIndex = 100;
 			this.SearchButton.Text = "&Search";
 			this.SearchButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1378,10 +1322,9 @@
             "1 Byte",
             "2 Byte",
             "4 Byte"});
-			this.SizeDropdown.Location = new System.Drawing.Point(325, 460);
-			this.SizeDropdown.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.SizeDropdown.Location = new System.Drawing.Point(244, 374);
 			this.SizeDropdown.Name = "SizeDropdown";
-			this.SizeDropdown.Size = new System.Drawing.Size(96, 24);
+			this.SizeDropdown.Size = new System.Drawing.Size(73, 21);
 			this.SizeDropdown.TabIndex = 90;
 			this.SizeDropdown.SelectedIndexChanged += new System.EventHandler(this.SizeDropdown_SelectedIndexChanged);
 			// 
@@ -1389,10 +1332,9 @@
 			// 
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(325, 441);
-			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label1.Location = new System.Drawing.Point(244, 358);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(35, 17);
+			this.label1.Size = new System.Drawing.Size(27, 13);
 			this.label1.TabIndex = 97;
 			this.label1.Text = "Size";
 			// 
@@ -1400,10 +1342,9 @@
 			// 
 			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(436, 441);
-			this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label2.Location = new System.Drawing.Point(327, 358);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(54, 17);
+			this.label2.Size = new System.Drawing.Size(41, 13);
 			this.label2.TabIndex = 99;
 			this.label2.Text = "Display";
 			// 
@@ -1416,26 +1357,25 @@
             "1 Byte",
             "2 Byte",
             "4 Byte"});
-			this.DisplayTypeDropdown.Location = new System.Drawing.Point(436, 460);
-			this.DisplayTypeDropdown.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.DisplayTypeDropdown.Location = new System.Drawing.Point(327, 374);
 			this.DisplayTypeDropdown.Name = "DisplayTypeDropdown";
-			this.DisplayTypeDropdown.Size = new System.Drawing.Size(141, 24);
+			this.DisplayTypeDropdown.Size = new System.Drawing.Size(107, 21);
 			this.DisplayTypeDropdown.TabIndex = 95;
 			this.DisplayTypeDropdown.SelectedIndexChanged += new System.EventHandler(this.DisplayTypeDropdown_SelectedIndexChanged);
 			// 
-			// Previous_LastChangeMenuItem
+			// AutoSearchAccountForLagMenuItem
 			// 
-			this.Previous_LastChangeMenuItem.Name = "Previous_LastChangeMenuItem";
-			this.Previous_LastChangeMenuItem.Size = new System.Drawing.Size(178, 24);
-			this.Previous_LastChangeMenuItem.Text = "Last &Change";
-			this.Previous_LastChangeMenuItem.Click += new System.EventHandler(this.Previous_LastChangeMenuItem_Click);
+			this.AutoSearchAccountForLagMenuItem.Name = "AutoSearchAccountForLagMenuItem";
+			this.AutoSearchAccountForLagMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.AutoSearchAccountForLagMenuItem.Text = "&Auto-Search Account for Lag";
+			this.AutoSearchAccountForLagMenuItem.Click += new System.EventHandler(this.AutoSearchAccountForLagMenuItem_Click);
 			// 
 			// RamSearch
 			// 
 			this.AllowDrop = true;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(593, 565);
+			this.ClientSize = new System.Drawing.Size(445, 459);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.DisplayTypeDropdown);
 			this.Controls.Add(this.label1);
@@ -1449,11 +1389,10 @@
 			this.Controls.Add(this.CompareToBox);
 			this.Controls.Add(this.WatchListView);
 			this.Controls.Add(this.TotalSearchLabel);
-			this.Controls.Add(this.menuStrip1);
+			this.Controls.Add(this.RamSearchMenu);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.MainMenuStrip = this.menuStrip1;
-			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-			this.MinimumSize = new System.Drawing.Size(382, 482);
+			this.MainMenuStrip = this.RamSearchMenu;
+			this.MinimumSize = new System.Drawing.Size(290, 399);
 			this.Name = "RamSearch";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Ram Search";
@@ -1462,8 +1401,8 @@
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamSearch_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.NewRamSearch_DragEnter);
 			this.ListViewContextMenu.ResumeLayout(false);
-			this.menuStrip1.ResumeLayout(false);
-			this.menuStrip1.PerformLayout();
+			this.RamSearchMenu.ResumeLayout(false);
+			this.RamSearchMenu.PerformLayout();
 			this.CompareToBox.ResumeLayout(false);
 			this.CompareToBox.PerformLayout();
 			this.toolStrip1.ResumeLayout(false);
@@ -1516,7 +1455,7 @@
 		private System.Windows.Forms.ToolStripMenuItem AddToRamWatchContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PokeContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem FreezeContextMenuItem;
-		private MenuStripEx menuStrip1;
+		private MenuStripEx RamSearchMenu;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.ToolStripMenuItem RedoMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ViewInHexEditorContextMenuItem;
@@ -1590,10 +1529,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
 		private System.Windows.Forms.ToolStripButton UndoToolBarButton;
 		private System.Windows.Forms.ToolStripButton RedoToolBarItem;
-		private System.Windows.Forms.ToolStripMenuItem ColumnsMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowPreviousMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowChangesMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowDiffMenuItem;
 		private System.Windows.Forms.CheckBox AutoSearchCheckBox;
 		private System.Windows.Forms.Button SearchButton;
 		private System.Windows.Forms.ToolStripSeparator RebootToolBarSeparator;
@@ -1606,5 +1541,6 @@
 		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
 		private System.Windows.Forms.ToolStripButton ErrorIconButton;
 		private System.Windows.Forms.ToolStripMenuItem Previous_LastChangeMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem AutoSearchAccountForLagMenuItem;
 	}
 }

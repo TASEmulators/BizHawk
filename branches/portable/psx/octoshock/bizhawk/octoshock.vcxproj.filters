@@ -215,6 +215,12 @@
     <ClInclude Include="..\cdrom\CDUtility.h">
       <Filter>cdrom</Filter>
     </ClInclude>
+    <ClInclude Include="..\emuware\PACKED.h">
+      <Filter>emuware</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emuware\PACKED_END.h">
+      <Filter>emuware</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\psx\spu_fir_table.inc">

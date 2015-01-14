@@ -187,8 +187,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Light Gun",
 				IsConsole = false,
-				DefaultSize = new Size(356, 260),
-				MaxSize = new Size(356, 260),
+				DefaultSize = new Size(356, 290),
+				MaxSize = new Size(356, 290),
 				Buttons = new[]
 				{
 					new PadSchema.ButtonScema

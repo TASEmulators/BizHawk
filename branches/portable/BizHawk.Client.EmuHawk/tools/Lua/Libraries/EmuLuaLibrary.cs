@@ -7,6 +7,7 @@ using LuaInterface;
 using System.Reflection;
 using System.Collections.Generic;
 using BizHawk.Emulation.Common;
+using System.IO;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -50,17 +51,7 @@ namespace BizHawk.Client.EmuHawk
 			Docs.Clear();
 			_caller = passed.Get();
 
-			// what was this?
-			/*
-			var tt = typeof(TastudioLuaLibrary);
-			var mm = typeof(MainMemoryLuaLibrary);
-
-			var tatt = tt.GetCustomAttributes(typeof(LuaLibraryAttributes), false);
-			var matt = mm.GetCustomAttributes(typeof(LuaLibraryAttributes), false);
-			*/
-
 			// Register lua libraries
-			// why sealed ones only?
 			var libs = Assembly
 				.Load("BizHawk.Client.Common")
 				.GetTypes()
@@ -152,10 +143,16 @@ namespace BizHawk.Client.EmuHawk
 		public Lua SpawnCoroutine(string file)
 		{
 			var lua = _lua.NewThread();
-			var main = lua.LoadFile(PathManager.MakeAbsolutePath(file, null));
+            var main = lua.LoadString(File.ReadAllText(file), "main");
 			lua.Push(main); // push main function on to stack for subsequent resuming
 			return lua;
 		}
+
+        public void ExecuteString(string command)
+        {
+            _currThread = _lua.NewThread();
+            _currThread.DoString(command);
+        }
 
 		public ResumeResult ResumeScript(Lua script)
 		{

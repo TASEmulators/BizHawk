@@ -108,7 +108,19 @@ namespace BizHawk.Emulation.DiscSystem
 			Buffer.BlockCopy(SubcodeDeinterleaved, number * 12, buffer, offset, 12);
 		}
 
-		public byte[] SubcodeDeinterleaved = new byte[96];
+		public BufferedSubcodeSector()
+		{
+			SubcodeDeinterleaved = new byte[96];
+		}
+
+		public static BufferedSubcodeSector CloneFromBytesDeinterleaved(byte[] buffer)
+		{
+			var ret = new BufferedSubcodeSector();
+			Buffer.BlockCopy(buffer, 0, ret.SubcodeDeinterleaved, 0, 96);
+			return ret;
+		}
+
+		public byte[] SubcodeDeinterleaved;
 	}
 
 	public class ZeroSubcodeSector : ISubcodeSector

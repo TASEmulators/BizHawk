@@ -134,18 +134,11 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void LatchInputFromLog()
 		{
-			if (Global.Emulator.Frame < Movie.InputLogLength - (Global.Config.MovieEndAction == MovieEndAction.Pause ? 1 : 0)) // Pause logic is a hack for now
+			var input = Movie.GetInputState(Global.Emulator.Frame);
+			MovieControllerAdapter.LatchFromSource(input);
+			if (MultiTrack.IsActive)
 			{
-				var input = Movie.GetInputState(Global.Emulator.Frame);
-				MovieControllerAdapter.LatchFromSource(input);
-				if (MultiTrack.IsActive)
-				{
-					Global.MultitrackRewiringAdapter.Source = MovieControllerAdapter;
-				}
-			}
-			else
-			{
-				HandlePlaybackEnd();
+				Global.MultitrackRewiringAdapter.Source = MovieControllerAdapter;
 			}
 		}
 
@@ -161,7 +154,8 @@ namespace BizHawk.Client.Common
 					Movie.SwitchToRecord();
 					break;
 				case MovieEndAction.Pause:
-					PauseCallback(); // TODO: one frame ago
+					Movie.Stop();
+					PauseCallback();
 					break;
 				default:
 				case MovieEndAction.Finish:
@@ -228,6 +222,11 @@ namespace BizHawk.Client.Common
 
 		public void HandleMovieOnFrameLoop()
 		{
+			if (Movie.IsPlaying && Global.Emulator.Frame >= Movie.InputLogLength)
+			{
+				HandlePlaybackEnd();
+			}
+
 			if (!Movie.IsActive)
 			{
 				LatchInputFromPlayer(Global.MovieInputSourceAdapter);

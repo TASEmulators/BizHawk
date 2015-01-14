@@ -212,6 +212,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				SaveRAM = new byte[0x8000];
 
 			SetupMemoryDomains();
+			(ServiceProvider as BasicServiceProvider).Register<IDisassemblable>(new Disassembler());
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
@@ -486,7 +487,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			memoryDomains = new MemoryDomainList(domains);
 		}
 
-		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
+		public IMemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{

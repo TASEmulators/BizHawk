@@ -281,11 +281,14 @@ namespace BizHawk.Emulation.DiscSystem
 					session.Tracks.Add(toc_track);
 					toc_track.Number = curr_track;
 					toc_track.TrackType = cue_track.TrackType;
+					toc_track.ADR = 1; //safe assumption. CUE can't store this.
 
-					//choose a Control value based on 
+					//choose a Control value based on track type and other flags from cue
+					//TODO - this might need to be controlled by cue loading prefs
+					toc_track.Control = cue_track.Control;
 					if (toc_track.TrackType == ETrackType.Audio)
-						toc_track.Control = EControlQ.StereoNoPreEmph;
-					else toc_track.Control = EControlQ.DataUninterrupted;
+						toc_track.Control |= EControlQ.StereoNoPreEmph;
+					else toc_track.Control |= EControlQ.DataUninterrupted;
 
 					if (curr_track == 1)
 					{
@@ -532,6 +535,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public class CueTrack
 		{
+			public EControlQ Control;
 			public ETrackType TrackType;
 			public int TrackNum;
 			public Timestamp PreGap = new Timestamp();
@@ -682,7 +686,13 @@ namespace BizHawk.Emulation.DiscSystem
 						//TODO - keep these for later?
 						//known flags:
 						//FLAGS DCP
-						//that's all. don't know what it means
+						{
+							var flags = clp.ReadToken();
+							if (flags == "DCP")
+							{
+								currTrack.Control |= EControlQ.CopyPermittedMask;
+							} else throw new CueBrokenException("Unknown flags: " + flags);
+						}
 						break;
 					default:
 						throw new CueBrokenException("unsupported cue command: " + key);

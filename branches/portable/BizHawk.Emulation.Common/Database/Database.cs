@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Common
 
 		private static void LoadDatabase_Escape(string line, string path)
 		{
-			if (!line.ToUpper().StartsWith("#INCLUDE"))
+			if (!line.ToUpperInvariant().StartsWith("#INCLUDE"))
 			{
 				return;
 			}

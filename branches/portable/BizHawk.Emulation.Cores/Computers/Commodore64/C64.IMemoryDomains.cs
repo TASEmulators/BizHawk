@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	public partial class C64 : IMemoryDomains
 	{
-		public MemoryDomainList MemoryDomains
+		public IMemoryDomainList MemoryDomains
 		{
 			get { return memoryDomains; }
 		}

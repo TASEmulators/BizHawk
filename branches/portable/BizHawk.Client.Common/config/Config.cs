@@ -92,6 +92,10 @@ namespace BizHawk.Client.Common
 		public bool AVI_CaptureOSD = false;
 		public bool Screenshot_CaptureOSD = false;
 		public bool FirstBoot = true;
+		public bool Update_AutoCheckEnabled = false;
+		public DateTime? Update_LastCheckTimeUTC = null;
+		public string Update_LatestVersion = "";
+		public string Update_IgnoreVersion = "";
 
 		//public bool TurboSeek = true; // When PauseOnFrame is set, this will decide whether the client goes into turbo mode or not
 
@@ -134,6 +138,7 @@ namespace BizHawk.Client.Common
 		public int SpeedPercent = 100;
 		public int SpeedPercentAlternate = 400;
 		public bool ClockThrottle = true;
+		public bool ClockThrottleUseLowCPUMode = false;
 		public bool AutoMinimizeSkipping = true;
 		public bool VSyncThrottle = false;
 
@@ -192,7 +197,6 @@ namespace BizHawk.Client.Common
 		public bool DisplayStatusBar = true;
 		public int DispRamWatchx = 0;
 		public int DispRamWatchy = 70;
-		public bool DisplayRamWatch = false;
 		public int DispMessagex = 3;
 		public int DispMessagey = 0;
 		public int DispMessageanchor = 2;
@@ -233,91 +237,15 @@ namespace BizHawk.Client.Common
 		public int LogWindowWidth = -1;
 		public int LogWindowHeight = -1;
 
-		// Lua Console
-		public ToolDialogSettings LuaSettings = new ToolDialogSettings();
+		// Lua
 		public RecentFiles RecentLua = new RecentFiles(8);
 		public RecentFiles RecentLuaSession = new RecentFiles(8);
-		public bool AutoLoadLuaConsole = false;
 		public bool DisableLuaScriptsOnLoad = false;
 
-		// RamWatch Settings
-		public ToolDialogSettings RamWatchSettings = new ToolDialogSettings();
+		// Watch Settings
 		public RecentFiles RecentWatches = new RecentFiles(8);
-		public bool RamWatchShowAddressColumn = true;
-		public bool RamWatchShowChangeColumn = true;
-		public bool RamWatchShowPrevColumn = false;
-		public bool RamWatchShowDiffColumn = false;
-		public bool RamWatchShowDomainColumn = true;
-
-		public Dictionary<string, int> RamWatchColumnWidths = new Dictionary<string, int>
-			{
-			{ "AddressColumn", -1 },
-			{ "ValueColumn", -1 },
-			{ "PrevColumn", -1 },
-			{ "ChangesColumn", -1 },
-			{ "DiffColumn", -1 },
-			{ "DomainColumn", -1 },
-			{ "NotesColumn",-1 },
-		};
-
-		public Dictionary<string, int> RamWatchColumnIndexes = new Dictionary<string, int>
-			{
-			{ "AddressColumn", 0 },
-			{ "ValueColumn", 1 },
-			{ "PrevColumn", 2 },
-			{ "ChangesColumn", 3 },
-			{ "DiffColumn", 4 },
-			{ "DomainColumn", 5 },
-			{ "NotesColumn", 6 },
-		};
-
 		public Watch.PreviousType RamWatchDefinePrevious = Watch.PreviousType.LastFrame;
-
-		// RamSearch Settings
-		public ToolDialogSettings RamSearchSettings = new ToolDialogSettings();
-		public int RamSearchPrev_Type = 1;
-		public RecentFiles RecentSearches = new RecentFiles(8);
-		public int RamSearchPreviousAs = 0;
-		public bool RamSearchPreviewMode = true;
-		public bool RamSearchAlwaysExcludeRamWatch = false;
-		public int RamSearchAddressWidth = -1;
-		public int RamSearchValueWidth = -1;
-		public int RamSearchPrevWidth = -1;
-		public int RamSearchChangesWidth = -1;
-		public int RamSearchAddressIndex = 0;
-		public int RamSearchValueIndex = 1;
-		public int RamSearchPrevIndex = 2;
-		public int RamSearchChangesIndex = 3;
-		public bool RamSearchFastMode = false;
-
-		public Dictionary<string, int> RamSearchColumnWidths = new Dictionary<string, int>
-		{
-			{ "AddressColumn", -1 },
-			{ "ValueColumn", -1 },
-			{ "PrevColumn", -1 },
-			{ "ChangesColumn", -1 },
-			{ "DiffColumn", -1 },
-		};
-
-		public Dictionary<string, int> RamSearchColumnIndexes = new Dictionary<string, int>
-			{
-			{ "AddressColumn", 0 },
-			{ "ValueColumn", 1 },
-			{ "PrevColumn", 2 },
-			{ "ChangesColumn", 3 },
-			{ "DiffColumn", 4 },
-		};
-
-		public bool RamSearchShowPrevColumn = true;
-		public bool RamSearchShowChangeColumn = true;
-		public bool RamSearchShowDiffColumn = false;
-
-		// HexEditor Settings
-		public ToolDialogSettings HexEditorSettings = new ToolDialogSettings();
-		public bool AutoLoadHexEditor = false;
-		public bool HexEditorBigEndian = false;
-		public int HexEditorDataSize = 1;
-		public RecentFiles RecentTables = new RecentFiles(8);
+		public bool DisplayRamWatch = false;
 
 		// Hex Editor Colors
 		public Color HexBackgrndColor = Color.FromName("Control");
@@ -409,113 +337,14 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, ToolDialogSettings> CommonToolSettings = new Dictionary<string, ToolDialogSettings>();
 		public Dictionary<string, Dictionary<string, object>> CustomToolSettings = new Dictionary<string, Dictionary<string, object>>();
 
-		/*
-		// SNES Graphics Debugger Dialog Settings
-		public bool AutoLoadSNESGraphicsDebugger = false;
-		public bool SNESGraphicsDebuggerSaveWindowPosition = true;
-		public int SNESGraphicsDebuggerWndx = -1;
-		public int SNESGraphicsDebuggerWndy = -1;
-		public int SNESGraphicsDebuggerRefreshRate = 4;
-		public bool SNESGraphicsUseUserBackdropColor = false;
-		public int SNESGraphicsUserBackdropColor = -1;
-		*/
-
-		#region Cheats Dialog
-
-		public ToolDialogSettings CheatsSettings = new ToolDialogSettings();
-		public bool Cheats_ValuesAsHex = true;
+		// Cheats
 		public bool DisableCheatsOnLoad = false;
 		public bool LoadCheatFileByGame = true;
 		public bool CheatsAutoSaveOnClose = true;
 		public RecentFiles RecentCheats = new RecentFiles(8);
-		public int CheatsNameWidth = -1;
-		public int CheatsAddressWidth = -1;
-		public int CheatsValueWidth = -1;
-		public int CheatsCompareWidth = -1;
-		public int CheatsDomainWidth = -1;
-		public int CheatsOnWidth = -1;
-		public int CheatsNameIndex = 0;
-		public int CheatsAddressIndex = 1;
-		public int CheatsValueIndex = 2;
-		public int CheatsCompareIndex = 3;
-		public int CheatsOnIndex = 4;
-		public int CheatsDomainIndex = 5;
 
-		public Dictionary<string, int> CheatsColumnWidths = new Dictionary<string, int>
-			{
-			{ "NamesColumn", -1 },
-			{ "AddressColumn", -1 },
-			{ "ValueColumn", -1 },
-			{ "CompareColumn", -1 },
-			{ "OnColumn", -1 },
-			{ "DomainColumn", -1 },
-			{ "SizeColumn", -1 },
-			{ "EndianColumn", -1 },
-			{ "DisplayTypeColumn", -1 },
-		};
-
-		public Dictionary<string, int> CheatsColumnIndices = new Dictionary<string, int>
-			{
-			{ "NamesColumn", 0 },
-			{ "AddressColumn", 1 },
-			{ "ValueColumn", 2 },
-			{ "CompareColumn", 3 },
-			{ "OnColumn", 4 },
-			{ "DomainColumn", 5 },
-			{ "SizeColumn", 6 },
-			{ "EndianColumn", 7 },
-			{ "DisplayTypeColumn", 8 },
-		};
-
-		public Dictionary<string, bool> CheatsColumnShow = new Dictionary<string, bool>
-			{
-			{ "NamesColumn", true },
-			{ "AddressColumn", true },
-			{ "ValueColumn", true },
-			{ "CompareColumn", true },
-			{ "OnColumn", false },
-			{ "DomainColumn", true },
-			{ "SizeColumn", true },
-			{ "EndianColumn", false },
-			{ "DisplayTypeColumn", false },
-		};
-
-		#endregion
-
-		// TAStudio Dialog
-		public ToolDialogSettings TAStudioSettings = new ToolDialogSettings();
-		public RecentFiles RecentTas = new RecentFiles(8);
+		// TAStudio
 		public TasStateManagerSettings DefaultTasProjSettings = new TasStateManagerSettings();
-		public bool AutoloadTAStudio = false;
-		public bool AutoloadTAStudioProject = false;
-		public bool TAStudioDrawInput = true;
-		public bool TAStudioAutoPause = true;
-		public bool TAStudioAutoRestoreLastPosition = false;
-		public bool TAStudioFollowCursor = true;
-		public bool TAStudioEmptyMarkers = false;
-
-		// VirtualPad Dialog
-		public ToolDialogSettings VirtualPadSettings = new ToolDialogSettings();
-		public bool AutoloadVirtualPad = false;
-		public bool VirtualPadSticky = true;
-		public bool VirtualPadClearClearsAnalog = false;
-
-		// NES Game Genie Encoder/Decoder
-		public ToolDialogSettings NesGGSettings = new ToolDialogSettings();
-		public bool NESGGAutoload = false;
-
-		// SNES Game Genie Encoder/Decoder
-		public ToolDialogSettings SnesGGSettings = new ToolDialogSettings();
-		public bool SNESGGAutoload = false;
-
-		// GB/GG Game Genie Encoder/Decoder
-		public ToolDialogSettings GbGGSettings = new ToolDialogSettings();
-		public bool GBGGAutoload = false;
-		
-
-		// GEN Game Genie Encoder/Decoder
-		public ToolDialogSettings GenGGSettings = new ToolDialogSettings();
-		public bool GenGGAutoload = false;
 
 		// Movie Settings
 		public RecentFiles RecentMovies = new RecentFiles(8);

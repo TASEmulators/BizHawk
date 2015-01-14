@@ -799,7 +799,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NesPPU_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			_ppu.RemoveCallback2();
+			if (_ppu != null)
+			{
+				_ppu.RemoveCallback2();
+			}
 		}
 
 		#endregion

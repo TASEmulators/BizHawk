@@ -1,4 +1,6 @@
 ﻿using System.Drawing;
+using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
@@ -97,6 +99,25 @@ namespace BizHawk.Client.Common
 			{
 				return new Size(Width ?? 0, Height ?? 0);
 			}
+		}
+
+		public class ColumnList : List<Column>
+		{
+			public Column this[string name]
+			{
+				get
+				{
+					return this.FirstOrDefault(c => c.Name == name);
+				}
+			}
+		}
+
+		public class Column
+		{
+			public string Name { get; set; }
+			public int Width { get; set; }
+			public bool Visible { get; set; }
+			public int Index { get; set; }
 		}
 	}
 }

@@ -218,7 +218,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 			Global.CheatList.RemoveRange(watches.Where(watch => !watch.IsSeparator));
 		}
 
-		public static IEnumerable<ToolStripItem> MenuItems(this MemoryDomainList domains, Action<string> setCallback, string selected = "", int? maxSize = null)
+		public static IEnumerable<ToolStripItem> MenuItems(this IMemoryDomainList domains, Action<string> setCallback, string selected = "", int? maxSize = null)
 		{
 			foreach (var domain in domains)
 			{

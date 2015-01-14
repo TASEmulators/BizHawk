@@ -188,7 +188,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(10,54),
 						TargetSize = new Size(300,300),
 						OwnerEmulator = psx,
-						SecondaryNames = new [] { "Eject", "Insert", "Disc Select" }
+						SecondaryNames = new [] { "Open", "Close", "Disc Select" }
 					}
 				}
 			};

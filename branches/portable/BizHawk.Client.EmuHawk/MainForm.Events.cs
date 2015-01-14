@@ -236,11 +236,6 @@ namespace BizHawk.Client.EmuHawk
 				= SaveMovieMenuItem.Enabled
 				= Global.MovieSession.Movie.IsActive;
 
-			PlayMovieMenuItem.Enabled =
-				RecordMovieMenuItem.Enabled =
-				RecentMovieSubMenu.Enabled =
-				!Global.MovieSession.Movie.IsActive;
-
 			ReadonlyMenuItem.Checked = Global.MovieSession.ReadOnly;
 			AutomaticallyBackupMoviesMenuItem.Checked = Global.Config.EnableBackupMovies;
 			FullMovieLoadstatesMenuItem.Checked = Global.Config.VBAStyleMovieLoadState;
@@ -390,11 +385,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RecordMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.MovieSession.Movie.IsActive)
-			{
-				return;
-			}
-
 			if (!Global.Emulator.Attributes().Released)
 			{
 				var result = MessageBox.Show
@@ -444,10 +434,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PlayMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!Global.MovieSession.Movie.IsActive)
-			{
-				new PlayMovie().ShowDialog();
-			}
+			new PlayMovie().ShowDialog();
 		}
 
 		private void StopMovieMenuItem_Click(object sender, EventArgs e)
@@ -794,7 +781,8 @@ namespace BizHawk.Client.EmuHawk
 		private void FrameSkipMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			MinimizeSkippingMenuItem.Checked = Global.Config.AutoMinimizeSkipping;
-			ClickThrottleMenuItem.Checked = Global.Config.ClockThrottle;
+			ClockThrottleMenuItem.Checked = Global.Config.ClockThrottle && !Global.Config.ClockThrottleUseLowCPUMode;
+			ClockThrottleLowCPUMenuItem.Checked = Global.Config.ClockThrottle && Global.Config.ClockThrottleUseLowCPUMode;
 			VsyncThrottleMenuItem.Checked = Global.Config.VSyncThrottle;
 			NeverSkipMenuItem.Checked = Global.Config.FrameSkip == 0;
 			Frameskip1MenuItem.Checked = Global.Config.FrameSkip == 1;
@@ -941,9 +929,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ClickThrottleMenuItem_Click(object sender, EventArgs e)
+		private void ClockThrottleMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.ClockThrottle ^= true;
+			// Regular clock throttle and low CPU mode share this event
+			bool clickedLowCPUMode = sender == ClockThrottleLowCPUMenuItem;
+			bool isToggling = !Global.Config.ClockThrottle || clickedLowCPUMode == Global.Config.ClockThrottleUseLowCPUMode;
+			if (isToggling)
+			{
+				Global.Config.ClockThrottle ^= true;
+			}
+			Global.Config.ClockThrottleUseLowCPUMode = Global.Config.ClockThrottle && clickedLowCPUMode;
 			if (Global.Config.ClockThrottle)
 			{
 				var old = Global.Config.SoundThrottle;
@@ -1098,11 +1093,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Tools
 
-		static bool ToolAvailable<T>()
-		{
-			return ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, typeof(T));
-		}
-
 		private void ToolsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ToolBoxMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["ToolBox"].Bindings;
@@ -1114,17 +1104,17 @@ namespace BizHawk.Client.EmuHawk
 			TAStudioMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["TAStudio"].Bindings;
 			VirtualPadMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Virtual Pad"].Bindings;
 			TraceLoggerMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Trace Logger"].Bindings;
-			TraceLoggerMenuItem.Enabled = ToolAvailable<TraceLogger>();
+			TraceLoggerMenuItem.Enabled = GlobalWin.Tools.IsAvailable<TraceLogger>();
 
-			TAStudioMenuItem.Enabled = ToolAvailable<TAStudio>();
+			TAStudioMenuItem.Enabled = GlobalWin.Tools.IsAvailable<TAStudio>();
 
-			CheatsMenuItem.Enabled = ToolAvailable<Cheats>();
-			HexEditorMenuItem.Enabled = ToolAvailable<HexEditor>();
-			RamSearchMenuItem.Enabled = ToolAvailable<RamSearch>();
-			RamWatchMenuItem.Enabled = ToolAvailable<RamWatch>();
+			CheatsMenuItem.Enabled = GlobalWin.Tools.IsAvailable<Cheats>();
+			HexEditorMenuItem.Enabled = GlobalWin.Tools.IsAvailable<HexEditor>();
+			RamSearchMenuItem.Enabled = GlobalWin.Tools.IsAvailable<RamSearch>();
+			RamWatchMenuItem.Enabled = GlobalWin.Tools.IsAvailable<RamWatch>();
 
 			DebuggerMenuItem.Visible = VersionInfo.DeveloperBuild;
-			DebuggerMenuItem.Enabled = ToolAvailable<GenericDebugger>();
+			DebuggerMenuItem.Enabled = GlobalWin.Tools.IsAvailable<GenericDebugger>();
 
 			batchRunnerToolStripMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
@@ -1211,11 +1201,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FDSControlsMenuItem.Enabled = Global.Emulator.BoardName == "FDS";
 
-			NESSoundChannelsMenuItem.Enabled = ToolAvailable<NESSoundConfig>();
-			MovieSettingsMenuItem.Enabled = ToolAvailable<NESSyncSettingsForm>()
+			NESSoundChannelsMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NESSoundConfig>();
+			MovieSettingsMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NESSyncSettingsForm>()
 				&& !Global.MovieSession.Movie.IsActive;
 
-			NesControllerSettingsMenuItem.Enabled = ToolAvailable<NesControllerSettings>()
+			NesControllerSettingsMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NesControllerSettings>()
 				&& !Global.MovieSession.Movie.IsActive;
 
 			barcodeReaderToolStripMenuItem.Enabled = ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, typeof(BarcodeEntry));
@@ -1908,6 +1898,11 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreConfig.DoDialog(this, "Genesis Settings");
 		}
 
+		private void GenesisGameGenieECDC_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<GenGameGenie>();
+		}
+
 		#endregion
 
 		#region Wondersawn
@@ -2255,6 +2250,25 @@ namespace BizHawk.Client.EmuHawk
 			ProfileFirstBootLabel.Visible = false;
 		}
 
+		private void UpdateNotification_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Sound.StopSound();
+			DialogResult result = MessageBox.Show(this,
+				"Version " + Global.Config.Update_LatestVersion + " is now available. Would you like to open the BizHawk homepage?\r\n\r\nClick \"No\" to hide the update notification for this version.",
+				"New Version Available", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+			GlobalWin.Sound.StartSound();
+
+			if (result == DialogResult.Yes)
+			{
+				System.Threading.ThreadPool.QueueUserWorkItem((s) => { using (System.Diagnostics.Process.Start(VersionInfo.HomePage)) { } });
+			}
+			else if (result == DialogResult.No)
+			{
+				UpdateChecker.IgnoreNewVersion();
+				UpdateChecker.BeginCheck(skipCheck: true); // Trigger event to hide new version notification
+			}
+		}
+
 		#endregion
 
 		#region Form Events
@@ -2390,10 +2404,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (MovieService.IsValidMovieExtension(ext))
 			{
-				if (!Global.MovieSession.Movie.IsActive)
+				if (Global.Emulator.IsNull())
 				{
-					StartNewMovie(MovieService.Get(filePaths[0]), false);
+					OpenRom();
 				}
+
+				if (Global.Emulator.IsNull())
+				{
+					return;
+				}
+
+				StartNewMovie(MovieService.Get(filePaths[0]), false);
 			}
 			else if (ext.ToUpper() == ".STATE")
 			{
@@ -2418,35 +2439,33 @@ namespace BizHawk.Client.EmuHawk
 
 			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))
 			{
-				if (!Global.MovieSession.Movie.IsActive)
+				if (Global.Emulator.IsNull())
 				{
-					//tries to open a legacy movie format by importing it
-					if (CurrentlyOpenRom == null)
-					{
-						OpenRom();
-					}
-					else
-					{
-						LoadRom(CurrentlyOpenRom);
-					}
-
-					string errorMsg;
-					string warningMsg;
-					var movie = MovieImport.ImportFile(filePaths[0], out errorMsg, out warningMsg);
-					if (!string.IsNullOrEmpty(errorMsg))
-					{
-						MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					}
-					else
-					{
-						// fix movie extension to something palatable for these purposes. 
-						// for instance, something which doesnt clobber movies you already may have had.
-						// i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
-						StartNewMovie(movie, false);
-					}
-
-					GlobalWin.OSD.AddMessage(warningMsg);
+					OpenRom();
 				}
+
+				if (Global.Emulator.IsNull())
+				{
+					return;
+				}
+
+				// tries to open a legacy movie format by importing it
+				string errorMsg;
+				string warningMsg;
+				var movie = MovieImport.ImportFile(filePaths[0], out errorMsg, out warningMsg);
+				if (!string.IsNullOrEmpty(errorMsg))
+				{
+					MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+				else
+				{
+					// fix movie extension to something palatable for these purposes. 
+					// for instance, something which doesnt clobber movies you already may have had.
+					// i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
+					StartNewMovie(movie, false);
+				}
+
+				GlobalWin.OSD.AddMessage(warningMsg);
 			}
 			else
 			{

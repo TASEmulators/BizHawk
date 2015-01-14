@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 {
 	public partial class TI83 : IMemoryDomains
 	{
-		public MemoryDomainList MemoryDomains
+		public IMemoryDomainList MemoryDomains
 		{
 			get { return _memoryDomains; }
 		}

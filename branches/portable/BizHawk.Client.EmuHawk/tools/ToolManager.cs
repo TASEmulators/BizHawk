@@ -95,7 +95,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public void AutoLoad()
 		{
-			foreach (var typename in Global.Config.CommonToolSettings.Where(kvp => kvp.Value.AutoLoad).Select(kvp => kvp.Key))
+			var genericSettings = Global.Config.CommonToolSettings
+				.Where(kvp => kvp.Value.AutoLoad)
+				.Select(kvp => kvp.Key);
+
+			var customSettings = Global.Config.CustomToolSettings
+				.Where(list => list.Value.Any(kvp => typeof(ToolDialogSettings).IsAssignableFrom(kvp.Value.GetType()) && (kvp.Value as ToolDialogSettings).AutoLoad))
+				.Select(kvp => kvp.Key);
+
+			var typeNames = genericSettings.Concat(customSettings);
+
+			foreach (var typename in typeNames)
 			{
 				// this type resolution might not be sufficient.  more investigation is needed
 				Type t = Type.GetType(typename);
@@ -166,6 +176,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (settings.UseWindowPosition)
 			{
+				form.StartPosition = FormStartPosition.Manual;
 				form.Location = settings.WindowPosition;
 			}
 			if (settings.UseWindowSize)
@@ -327,11 +338,14 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void UpdateValues<T>() where T : IToolForm
 		{
-			CloseIfDisposed<T>();
 			var tool = _tools.FirstOrDefault(x => x is T);
 			if (tool != null)
 			{
-				tool.UpdateValues();
+				if (!tool.IsDisposed ||
+					(tool is RamWatch && Global.Config.DisplayRamWatch)) // Ram Watch hack, on screen display should run even if Ram Watch is closed
+				{
+					tool.UpdateValues();
+				}
 			}
 		}
 
@@ -358,6 +372,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					unavailable.Add(tool);
+					ServiceInjector.ClearServices(tool); // the services of the old emulator core are no longer valid on the tool
 				}
 			}
 
@@ -373,7 +388,6 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void Restart<T>() where T : IToolForm
 		{
-			CloseIfDisposed<T>();
 			var tool = _tools.FirstOrDefault(x => x is T);
 			if (tool != null)
 			{
@@ -463,15 +477,6 @@ namespace BizHawk.Client.EmuHawk
 			return tool;
 		}
 
-		private void CloseIfDisposed<T>() where T : IToolForm
-		{
-			var existingTool = _tools.FirstOrDefault(x => x is T);
-			if (existingTool != null && existingTool.IsDisposed)
-			{
-				Close<T>();
-			}
-		}
-
 		public void UpdateToolsBefore(bool fromLua = false)
 		{
 			if (Has<LuaConsole>())
@@ -526,6 +531,24 @@ namespace BizHawk.Client.EmuHawk
 				{
 					tool.FastUpdate();
 				}
+			}
+		}
+
+		public bool IsAvailable<T>()
+		{
+			return ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, typeof(T));
+		}
+
+		// Eventually we want a single game genie tool, then this mess goes away
+		public bool GameGenieAvailable
+		{
+			get
+			{
+				return (Global.Emulator.SystemId == "NES")
+					|| (Global.Emulator.SystemId == "GEN")
+					|| (Global.Emulator.SystemId == "GB")
+					|| (Global.Game.System == "GG")
+					|| (Global.Emulator is BizHawk.Emulation.Cores.Nintendo.SNES.LibsnesCore);
 			}
 		}
 
@@ -699,23 +722,16 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadRamWatch(bool loadDialog)
 		{
-			if (Global.Emulator.HasMemoryDomains())
-			if (!IsLoaded<RamWatch>() && Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
+			Load<RamWatch>();
+
+			if (Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
 			{
-				GlobalWin.Tools.RamWatch.LoadFileFromRecent(Global.Config.RecentWatches.MostRecent);
+				RamWatch.LoadFileFromRecent(Global.Config.RecentWatches.MostRecent);
 			}
 
-			if (loadDialog)
+			if (!loadDialog)
 			{
-				GlobalWin.Tools.Load<RamWatch>();
-			}
-		}
-
-		public void LoadTraceLogger()
-		{
-			if (Global.Emulator.CpuTraceAvailable())
-			{
-				Load<TraceLogger>();
+				Get<RamWatch>().Close();
 			}
 		}
 

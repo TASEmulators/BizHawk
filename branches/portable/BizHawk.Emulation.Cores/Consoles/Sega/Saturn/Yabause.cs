@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		portedVersion: "9.12",
 		portedUrl: "http://yabause.org"
 		)]
-	public class Yabause : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IStatable, IInputPollable,
+	public partial class Yabause : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IStatable, IInputPollable,
 		ISettable<object, Yabause.SaturnSyncSettings>, IDriveLight
 	{
 		public static ControllerDefinition SaturnController = new ControllerDefinition
@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 		LibYabause.InputCallback InputCallbackH;
 
-		public Yabause(CoreComm CoreComm, DiscSystem.Disc CD, object SyncSettings)
+		public Yabause(CoreComm CoreComm, DiscSystem.Disc CD, object syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			byte[] bios = CoreComm.CoreFileProvider.GetFirmware("SAT", "J", true, "Saturn BIOS is required.");
@@ -62,13 +62,12 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			this.CoreComm = CoreComm;
 			this.CD = CD;
 
-			this.SyncSettings = (SaturnSyncSettings)SyncSettings ?? new SaturnSyncSettings();
+			SyncSettings = (SaturnSyncSettings)syncSettings ?? new SaturnSyncSettings();
 
 			if (this.SyncSettings.UseGL && glContext == null)
 			{
 				glContext = CoreComm.RequestGLContext();
 			}
-
 
 			ResetCounters();
 
@@ -83,9 +82,6 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
-
-		public bool DriveLightEnabled { get; private set; }
-		public bool DriveLightOn { get; private set; }
 
 		static object glContext;
 
@@ -203,8 +199,6 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 				LibYabause.libyabause_glresize(width, height);
 		}
 
-
-
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
 			int w, h, nsamp;
@@ -295,79 +289,11 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		}
 
 		public int Frame { get; private set; }
-		public int LagCount { get; set; }
-		public bool IsLagFrame { get; private set; }
-
-		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
-
-		// TODO: optimize managed to unmanaged using the ActiveChanged event
-		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
 
 		public string SystemId { get { return "SAT"; } }
 		public bool DeterministicEmulation { get { return true; } }
 
 		public string BoardName { get { return null; } }
-
-		#region saveram
-
-		public byte[] CloneSaveRam()
-		{
-			if (Disposed)
-			{
-				if (DisposedSaveRam != null)
-				{
-					return (byte[])DisposedSaveRam.Clone();
-				}
-				else
-				{
-					return new byte[0];
-				}
-			}
-			else
-			{
-				var ms = new MemoryStream();
-				var fp = new FilePiping();
-				fp.Get(ms);
-				bool success = LibYabause.libyabause_savesaveram(fp.GetPipeNameNative());
-				fp.Finish();
-				if (!success)
-					throw new Exception("libyabause_savesaveram() failed!");
-				var ret = ms.ToArray();
-				ms.Dispose();
-				return ret;
-			}
-
-		}
-
-		public void StoreSaveRam(byte[] data)
-		{
-			if (Disposed)
-			{
-				throw new Exception("It's a bit late for that");
-			}
-			else
-			{
-				var fp = new FilePiping();
-				fp.Offer(data);
-				bool success = LibYabause.libyabause_loadsaveram(fp.GetPipeNameNative());
-				fp.Finish();
-				if (!success)
-					throw new Exception("libyabause_loadsaveram() failed!");
-			}
-		}
-
-		public bool SaveRamModified
-		{
-			get
-			{
-				if (Disposed)
-					return DisposedSaveRam != null;
-				else
-					return LibYabause.libyabause_saveramodified();
-			}
-		}
-
-		#endregion
 
 		public void ResetCounters()
 		{
@@ -376,173 +302,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			IsLagFrame = false;
 		}
 
-		#region savestates
-
-		void LoadCoreBinary(byte[] data)
-		{
-			var fp = new FilePiping();
-			fp.Offer(data);
-
-			//loadstate can trigger GL work
-			ActivateGL();
-
-			bool succeed = LibYabause.libyabause_loadstate(fp.GetPipeNameNative());
-
-			DeactivateGL();
-
-			fp.Finish();
-			if (!succeed)
-				throw new Exception("libyabause_loadstate() failed");
-		}
-
-		byte[] SaveCoreBinary()
-		{
-			var ms = new MemoryStream();
-			var fp = new FilePiping();
-			fp.Get(ms);
-			bool succeed = LibYabause.libyabause_savestate(fp.GetPipeNameNative());
-			fp.Finish();
-			var ret = ms.ToArray();
-			ms.Close();
-			if (!succeed)
-				throw new Exception("libyabause_savestate() failed");
-			return ret;
-		}
-
-		// these next 5 functions are all exact copy paste from gambatte.
-		// if something's wrong here, it's probably wrong there too
-
-		public void SaveStateText(TextWriter writer)
-		{
-			var temp = SaveStateBinary();
-			temp.SaveAsHexFast(writer);
-			// write extra copy of stuff we don't use
-			writer.WriteLine("Frame {0}", Frame);
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			string hex = reader.ReadLine();
-			byte[] state = new byte[hex.Length / 2];
-			state.ReadFromHexFast(hex);
-			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
-		}
-
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			byte[] data = SaveCoreBinary();
-
-			writer.Write(data.Length);
-			writer.Write(data);
-
-			// other variables
-			writer.Write(IsLagFrame);
-			writer.Write(LagCount);
-			writer.Write(Frame);
-		}
-
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			int length = reader.ReadInt32();
-			byte[] data = reader.ReadBytes(length);
-
-			LoadCoreBinary(data);
-
-			// other variables
-			IsLagFrame = reader.ReadBoolean();
-			LagCount = reader.ReadInt32();
-			Frame = reader.ReadInt32();
-		}
-
-		public bool BinarySaveStatesPreferred { get { return true; } }
-
-		public byte[] SaveStateBinary()
-		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			return ms.ToArray();
-		}
-
-		/// <summary>
-		/// does a save, load, save combo, and checks the two saves for identicalness.
-		/// </summary>
-		void CheckStates()
-		{
-			byte[] s1 = SaveStateBinary();
-			LoadStateBinary(new BinaryReader(new MemoryStream(s1, false)));
-			byte[] s2 = SaveStateBinary();
-			if (s1.Length != s2.Length)
-				throw new Exception(string.Format("CheckStates: Length {0} != {1}", s1.Length, s2.Length));
-			unsafe
-			{
-				fixed (byte* b1 = &s1[0], b2 = &s2[0])
-				{
-					for (int i = 0; i < s1.Length; i++)
-					{
-						if (b1[i] != b2[i])
-						{
-							File.WriteAllBytes("save1.raw", s1);
-							File.WriteAllBytes("save2.raw", s2);
-							throw new Exception(string.Format("CheckStates s1[{0}] = {1}, s2[{0}] = {2}", i, b1[i], b2[i]));
-						}
-					}
-				}
-			}
-		}
-
-
-		#endregion
-
 		public CoreComm CoreComm { get; private set; }
-
-		#region memorydomains
-
-		void InitMemoryDomains()
-		{
-			var ret = new List<MemoryDomain>();
-			var nmds = LibYabause.libyabause_getmemoryareas_ex();
-			foreach (var nmd in nmds)
-			{
-				int l = nmd.length;
-				IntPtr d = nmd.data;
-				ret.Add(new MemoryDomain(
-					nmd.name,
-					nmd.length,
-					MemoryDomain.Endian.Little,
-					delegate(int addr)
-					{
-						if (addr < 0 || addr >= l)
-							throw new ArgumentOutOfRangeException();
-						unsafe
-						{
-							byte* p = (byte*)d;
-							return p[addr];
-						}
-					},
-					delegate(int addr, byte val)
-					{
-						if (addr < 0 || addr >= l)
-							throw new ArgumentOutOfRangeException();
-						unsafe
-						{
-							byte* p = (byte*)d;
-							p[addr] = val;
-						}
-					}
-				));
-			}
-			// fulfill the prophecy of MainMemory always being MemoryDomains[0]
-			var tmp = ret[2];
-			ret[2] = ret[0];
-			ret[0] = tmp;
-			MemoryDomains = new MemoryDomainList(ret);
-		}
-
-		public MemoryDomainList MemoryDomains { get; private set; }
-
-		#endregion
 
 		public void Dispose()
 		{
@@ -703,97 +463,5 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		}
 
 		#endregion
-
-		SaturnSyncSettings SyncSettings;
-
-		public object GetSettings() { return null; }
-		public SaturnSyncSettings GetSyncSettings() { return SyncSettings.Clone(); }
-		public bool PutSettings(object o) { return false; }
-		public bool PutSyncSettings(SaturnSyncSettings o)
-		{
-			bool ret = SaturnSyncSettings.NeedsReboot(SyncSettings, o);
-
-			SyncSettings = o;
-
-			if (GLMode && SyncSettings.UseGL)
-				if (SyncSettings.DispFree)
-					SetGLRes(0, SyncSettings.GLW, SyncSettings.GLH);
-				else
-					SetGLRes(SyncSettings.DispFactor, 0, 0);
-			return ret;
-		}
-
-		public class SaturnSyncSettings
-		{
-			[DisplayName("Open GL Mode")]
-			[Description("Use OpenGL mode for rendering instead of software.")]
-			[DefaultValue(false)]
-			public bool UseGL { get; set; }
-
-			[DisplayName("Display Factor")]
-			[Description("In OpenGL mode, the internal resolution as a multiple of the normal internal resolution (1x, 2x, 3x, 4x).  Ignored in software mode or when a custom resolution is used.")]
-			[DefaultValue(1)]
-			public int DispFactor { get { return _DispFactor; } set { _DispFactor = Math.Max(1, Math.Min(value, 4)); } }
-			[JsonIgnore]
-			[DeepEqualsIgnore]
-			private int _DispFactor;
-
-			[DisplayName("Display Free")]
-			[Description("In OpenGL mode, set to true to use a custom resolution and ignore DispFactor.")]
-			[DefaultValue(false)]
-			public bool DispFree { get { return _DispFree; } set { _DispFree = value; } }
-			[JsonIgnore]
-			[DeepEqualsIgnore]
-			private bool _DispFree;
-
-			[DisplayName("DispFree Final Width")]
-			[Description("In OpenGL mode and when DispFree is true, the width of the final resolution.")]
-			[DefaultValue(640)]
-			public int GLW { get { return _GLW; } set { _GLW = Math.Max(320, Math.Min(value, 2048)); } }
-			[JsonIgnore]
-			[DeepEqualsIgnore]
-			private int _GLW;
-
-			[DisplayName("DispFree Final Height")]
-			[Description("In OpenGL mode and when DispFree is true, the height of the final resolution.")]
-			[DefaultValue(480)]
-			public int GLH { get { return _GLH; } set { _GLH = Math.Max(224, Math.Min(value, 1024)); } }
-			[JsonIgnore]
-			[DeepEqualsIgnore]
-			private int _GLH;
-
-			[DisplayName("Ram Cart Type")]
-			[Description("The type of the attached RAM cart.  Most games will not use this.")]
-			[DefaultValue(LibYabause.CartType.NONE)]
-			public LibYabause.CartType CartType { get; set; }
-
-			[DisplayName("Skip BIOS")]
-			[Description("Skip the Bios Intro screen.")]
-			[DefaultValue(false)]
-			public bool SkipBios { get; set; }
-
-			[DisplayName("Use RealTime RTC")]
-			[Description("If true, the real time clock will reflect real time, instead of emulated time.  Ignored (forced to false) when a movie is recording.")]
-			[DefaultValue(false)]
-			public bool RealTimeRTC { get; set; }
-
-			[DisplayName("RTC intiial time")]
-			[Description("Set the initial RTC time.  Only used when RealTimeRTC is false.")]
-			[DefaultValue(typeof(DateTime), "2010-01-01")]
-			public DateTime RTCInitialTime { get; set; }
-
-			public static bool NeedsReboot(SaturnSyncSettings x, SaturnSyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
-			public SaturnSyncSettings Clone()
-			{
-				return (SaturnSyncSettings)MemberwiseClone();
-			}
-			public SaturnSyncSettings()
-			{
-				SettingsUtil.SetDefaultValues(this);
-			}
-		}
 	}
 }

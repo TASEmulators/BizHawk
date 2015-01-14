@@ -62,7 +62,6 @@ namespace BizHawk.Client.EmuHawk
 			PadBox.Text = _schema.DisplayName;
 			foreach (var button in _schema.Buttons)
 			{
-				// TODO: Size of all controls should ideally be scaled, only implemented on button for now
 				switch (button.Type)
 				{
 					case PadSchema.PadInputType.Boolean:
@@ -77,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							// When scaling up, unfortunately the icon will look too small, but at least we can make the rest of the button bigger
 							buttonControl.AutoSize = false;
-							buttonControl.Size = new Size(UIHelper.ScaleX(button.Icon.Width) + 6, UIHelper.ScaleY(button.Icon.Height) + 6);
+							buttonControl.Size = UIHelper.Scale(button.Icon.Size) + new Size(6, 6);
 						}
 						PadBox.Controls.Add(buttonControl);
 						break;
@@ -86,7 +85,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							Name = button.Name,
 							Location = UIHelper.Scale(button.Location),
-							Size = new Size(button.MaxValue + 79, button.MaxValue + 9), // TODO: don't use hardcoded values here, at least make them defaults in the AnalogStick object itself
+							Size = UIHelper.Scale(new Size(button.MaxValue + 79, button.MaxValue + 9)), // TODO: don't use hardcoded values here, at least make them defaults in the AnalogStick object itself
 							RangeX = button.MaxValue,
 							RangeY = button.MaxValue // TODO ability to pass in a different Y max
 						});
@@ -96,7 +95,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							Name = button.Name,
 							Location = UIHelper.Scale(button.Location),
-							Size = button.TargetSize,
+							TargetSize = button.TargetSize,
 							XName = button.Name,
 							YName = button.SecondaryNames[0],
 							RangeX = button.MaxValue,
@@ -109,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 							Name = button.Name,
 							DisplayName = button.DisplayName,
 							Location = UIHelper.Scale(button.Location),
-							Size = button.TargetSize,
+							Size = UIHelper.Scale(button.TargetSize),
 							MinValue = button.MinValue,
 							MaxValue = button.MaxValue
 						});
@@ -120,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 							Name = button.Name,
 							//DisplayName = button.DisplayName,
 							Location = UIHelper.Scale(button.Location),
-							Size = button.TargetSize,
+							Size = UIHelper.Scale(button.TargetSize),
 							OwnerEmulator = button.OwnerEmulator
 						});
 						break;

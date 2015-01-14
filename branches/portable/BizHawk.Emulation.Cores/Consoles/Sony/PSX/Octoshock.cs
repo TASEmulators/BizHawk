@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				"P1 R1",  "P1 L2", "P1 R2", "P1 L3", "P1 R3", "P1 MODE",  
 				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Select", "P2 Start", "P2 Square", "P2 Triangle", "P2 Circle", "P2 Cross", "P2 L1", 
 				"P2 R1",  "P2 L2", "P2 R2", "P2 L3", "P2 R3", "P2 MODE",
-				"Eject", "Insert", "Reset", 
+				"Open", "Close", "Reset", 
 			},
 			FloatControls =
 			{
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				new[] {255.0f, 128.0f, 0.0f},
 				new[] {0.0f, 128.0f, 255.0f},
 				new[] {255.0f, 128.0f, 0.0f},
-				new[] {1.0f,1.0f,5.0f},
+				new[] {-1f,-1f,-1f}, //this is carefully chosen so that we end up with a -1 disc by default (indicating that it's never been set)
 			},
 		};
 
@@ -191,7 +191,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public OctoshockDll.eVidStandard SystemVidStandard { get; private set; }
 		public System.Drawing.Size CurrentVideoSize { get; private set; }
 		
-		public bool CurrentDiscEjected { get; private set; }
+		public bool CurrentTrayOpen { get; private set; }
 		public int CurrentDiscIndexMounted { get; private set; }
 
 		public List<string> HackyDiscButtons = new List<string>();
@@ -292,16 +292,12 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				frameBuffer = new int[BufferWidth * BufferHeight];
 			}
 
-			//TODO - should be able to cold boot system with disc isnerted
 			if (discInterfaces.Count != 0)
 			{
-				//start with first disc inserted and tray closed
-				CurrentDiscEjected = false;
+				//start with first disc inserted and tray closed. it's a sensible default.
+				//it will be possible for the user to specify a different initial configuration, but this will inform the UI
+				CurrentTrayOpen = false;
 				CurrentDiscIndexMounted = 1;
-				currentDiscInterface = discInterfaces[CurrentDiscIndexMounted - 1];
-				OctoshockDll.shock_OpenTray(psx);
-				OctoshockDll.shock_SetDisc(psx, currentDiscInterface.OctoshockHandle);
-				OctoshockDll.shock_CloseTray(psx);
 			}
 			else
 			{
@@ -310,7 +306,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 					OctoshockDll.shock_MountEXE(psx, pExeBuffer, exe.Length);
 
 				//start with no disc inserted and tray closed
-				CurrentDiscEjected = false;
+				CurrentTrayOpen = false;
 				CurrentDiscIndexMounted = 0;
 				OctoshockDll.shock_CloseTray(psx);
 			}
@@ -347,11 +343,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		}
 
 
-		[FeatureNotImplemented]
 		public void ResetCounters()
 		{
-			// FIXME when all this stuff is implemented
 			Frame = 0;
+			LagCount = 0;
+			IsLagFrame = false;
 		}
 
 		void SetInput()
@@ -450,19 +446,26 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		void FrameAdvance_PrepDiscState()
 		{
-			//if eject is requested, and valid, apply it
-			if (Controller["Eject"] && !CurrentDiscEjected)
+			//reminder: if this is the beginning of time, we can begin with the disc ejected or inserted.
+
+			//if tray open is requested, and valid, apply it
+			//in the first frame, go ahead and open it up so we have a chance to put a disc in it
+			if (Controller["Open"] && !CurrentTrayOpen || Frame==0)
 			{
 				OctoshockDll.shock_OpenTray(psx);
-				CurrentDiscEjected = true;
+				CurrentTrayOpen = true;
 			}
 
 			//change the disc if needed, and valid
-			//TODO - warning if zero time change?
+			//also if frame is 0, we need to set a disc no matter what
 			int requestedDisc = (int)Controller.GetFloat("Disc Select");
-			if (requestedDisc != CurrentDiscIndexMounted && CurrentDiscEjected)
+			if (requestedDisc != CurrentDiscIndexMounted && CurrentTrayOpen
+				|| Frame == 0
+				)
 			{
-				CurrentDiscIndexMounted = requestedDisc;
+				//dont replace default disc with the leave-default placeholder!
+				if (requestedDisc == -1) { }
+				else CurrentDiscIndexMounted = requestedDisc;
 				if (CurrentDiscIndexMounted == 0)
 				{
 					currentDiscInterface = null;
@@ -475,24 +478,31 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				}
 			}
 
-			//if insert is requested, and valid, apply it
-			if (Controller["Insert"] && CurrentDiscEjected)
+			//if tray close is requested, and valid, apply it.
+			if (Controller["Close"] && CurrentTrayOpen)
 			{
 				OctoshockDll.shock_CloseTray(psx);
-				CurrentDiscEjected = false;
+				CurrentTrayOpen = false;
+			}
+
+			//if frame is 0 and user has made no preference, close the tray
+			if (!Controller["Close"] && !Controller["Open"] && Frame == 0 && CurrentTrayOpen)
+			{
+				OctoshockDll.shock_CloseTray(psx);
+				CurrentTrayOpen = false;
 			}
 		}
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{
-			Frame++;
+			FrameAdvance_PrepDiscState();
 
 			//clear drive light. itll get set to light up by sector-reading callbacks
 			//TODO - debounce this by a frame or so perhaps?
 			DriveLightOn = false;
 
-			FrameAdvance_PrepDiscState();
-			
+			Frame++;
+
 			SetInput();
 
 			var ropts = new OctoshockDll.ShockRenderOptions()
@@ -512,6 +522,15 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			//------------------------
 			OctoshockDll.shock_Step(psx, OctoshockDll.eShockStep.Frame);
 			//------------------------
+
+			//lag maintenance:
+			int pad1 = OctoshockDll.shock_Peripheral_PollActive(psx, 0x01, true);
+			int pad2 = OctoshockDll.shock_Peripheral_PollActive(psx, 0x02, true);
+			IsLagFrame = true;
+			if (pad1 == OctoshockDll.SHOCK_TRUE) IsLagFrame = false;
+			if (pad2 == OctoshockDll.SHOCK_TRUE) IsLagFrame = false;
+			if (IsLagFrame)
+				LagCount++;
 
 			//what happens to sound in this case?
 			if (render == false) return;
@@ -603,7 +622,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			MemoryDomains = new MemoryDomainList(mmd, 0);
 		}
 
-		public MemoryDomainList MemoryDomains { get; private set; }
+		public IMemoryDomainList MemoryDomains { get; private set; }
 
 		#endregion
 
@@ -701,7 +720,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			s.ExtraData.IsLagFrame = IsLagFrame;
 			s.ExtraData.LagCount = LagCount;
 			s.ExtraData.Frame = Frame;
-			s.ExtraData.CurrentDiscEjected = CurrentDiscEjected;
+			s.ExtraData.CurrentDiscEjected = CurrentTrayOpen;
 			s.ExtraData.CurrentDiscIndexMounted = CurrentDiscIndexMounted;
 
 			ser.Serialize(writer, s);
@@ -725,7 +744,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			IsLagFrame = s.ExtraData.IsLagFrame;
 			LagCount = s.ExtraData.LagCount;
 			Frame = s.ExtraData.Frame;
-			CurrentDiscEjected = s.ExtraData.CurrentDiscEjected;
+			CurrentTrayOpen = s.ExtraData.CurrentDiscEjected;
 			CurrentDiscIndexMounted = s.ExtraData.CurrentDiscIndexMounted;
 		}
 
@@ -762,7 +781,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				writer.Write(IsLagFrame);
 				writer.Write(LagCount);
 				writer.Write(Frame);
-				writer.Write(CurrentDiscEjected);
+				writer.Write(CurrentTrayOpen);
 				writer.Write(CurrentDiscIndexMounted);
 			}
 		}
@@ -790,7 +809,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				IsLagFrame = reader.ReadBoolean();
 				LagCount = reader.ReadInt32();
 				Frame = reader.ReadInt32();
-				CurrentDiscEjected = reader.ReadBoolean();
+				CurrentTrayOpen = reader.ReadBoolean();
 				CurrentDiscIndexMounted = reader.ReadInt32();
 
 				//TODO - need a method to sneak the required disc, without having to do a proper eject sequence

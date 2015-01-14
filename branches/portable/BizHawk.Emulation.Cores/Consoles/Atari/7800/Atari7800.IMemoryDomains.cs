@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 	{
 		private List<MemoryDomain> _MemoryDomains;
 
-		public MemoryDomainList MemoryDomains { get; private set; }
+		public IMemoryDomainList MemoryDomains { get; private set; }
 
 		public void SetupMemoryDomains(HSC7800 hsc7800)
 		{

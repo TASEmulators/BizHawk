@@ -1,5 +1,6 @@
 #pragma once
 
+#include "octoshock.h"
 #include "emuware/emuware.h"
 #include "video/surface.h"
 #include "masmem.h"
@@ -318,8 +319,17 @@ EW_EXPORT s32 shock_Peripheral_SetPadInput(void* psx, s32 address, u32 buttons, 
 //Performs one of several transactions on an attached memory card.
 EW_EXPORT s32 shock_Peripheral_MemcardTransact(void* psx, s32 address, ShockMemcardTransaction* transaction);
 
+//Polls the given peripheral address for it's active flag status (inverse of lag flag)
+//If you want, the lag flag can be cleared
+//Returns SHOCK_TRUE if the input has been read this frame
+//Returns SHOCK_FALSE if the input hasnt been read this frame (is lagging)
+//Returns SHOCK_NOCANDO if there is no peripheral there 
+//Returns SHOCK_INVALID_ADDRESS if address is invalid
+//Returns SHOCK_ERROR for other errors.
+EW_EXPORT s32 shock_Peripheral_PollActive(void* psx, s32 address, s32 clear);
+
 //Mounts a PS-EXE executable 
-EW_EXPORT s32 shock_MountEXE(void* psx, void* exebuf, int size);
+EW_EXPORT s32 shock_MountEXE(void* psx, void* exebuf, s32 size);
 
 //Sets the power to ON. Returns SHOCK_NOCANDO if already on.
 EW_EXPORT s32 shock_PowerOn(void* psx);

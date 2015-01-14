@@ -1,10 +1,14 @@
 ﻿using System;
 using LuaInterface;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
 	public sealed class GameInfoLuaLibrary : LuaLibraryBase
 	{
+		[RequiredService]
+		public IEmulator Emulator { get; set; }
+
 		public GameInfoLuaLibrary(Lua lua)
 			: base(lua) { }
 
@@ -89,7 +93,7 @@ namespace BizHawk.Client.Common
 		)]
 		public string GetBoardType()
 		{
-			return Global.Emulator.BoardName;
+			return Emulator.BoardName ?? "";
 		}
 
 		[LuaMethodAttributes(

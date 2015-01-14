@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentSubMenu.DropDownItems.Clear();
 			RecentSubMenu.DropDownItems.AddRange(
-				Global.Config.RecentTas.RecentMenu(DummyLoadProject));
+				Settings.RecentTas.RecentMenu(DummyLoadProject, true));
 		}
 
 		private void NewTasMenuItem_Click(object sender, EventArgs e)
@@ -68,6 +68,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private bool _exiting = false;
+
 		private void SaveTasMenuItem_Click(object sender, EventArgs e)
 		{
 			if (string.IsNullOrEmpty(CurrentTasMovie.Filename) ||
@@ -77,9 +79,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				CurrentTasMovie.Save();
-				MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " saved.";
-				Global.Config.RecentTas.Add(CurrentTasMovie.Filename);
+				if (_exiting)
+				{
+					CurrentTasMovie.Save();
+				}
+				else
+				{
+					_saveBackgroundWorker.RunWorkerAsync();
+				}
+				Settings.RecentTas.Add(CurrentTasMovie.Filename);
 			}
 		}
 
@@ -95,9 +103,17 @@ namespace BizHawk.Client.EmuHawk
 			if (file != null)
 			{
 				CurrentTasMovie.Filename = file.FullName;
-				CurrentTasMovie.Save();
-				Global.Config.RecentTas.Add(CurrentTasMovie.Filename);
-				MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " saved.";
+
+				if (_exiting)
+				{
+					CurrentTasMovie.Save();
+				}
+				else
+				{
+					_saveBackgroundWorker.RunWorkerAsync();
+				}
+
+				Settings.RecentTas.Add(CurrentTasMovie.Filename);
 				SetTextProperty();
 			}
 		}
@@ -529,32 +545,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			DrawInputByDraggingMenuItem.Checked = Global.Config.TAStudioDrawInput;
-			AutopauseAtEndOfMovieMenuItem.Checked = Global.Config.TAStudioAutoPause;
-			EmptyNewMarkerNotesMenuItem.Checked = Global.Config.TAStudioEmptyMarkers;
-
-			RotateMenuItem.ShortcutKeyDisplayString = TasView.RotateHotkeyStr;
+			DrawInputByDraggingMenuItem.Checked = Settings.DrawInput;
+			AutopauseAtEndOfMovieMenuItem.Checked = Settings.AutoPause;
+			EmptyNewMarkerNotesMenuItem.Checked = Settings.EmptyMarkers;
 		}
 
 		private void DrawInputByDraggingMenuItem_Click(object sender, EventArgs e)
 		{
-			TasView.InputPaintingMode = Global.Config.TAStudioDrawInput ^= true;
+			TasView.InputPaintingMode = Settings.DrawInput ^= true;
 		}
 
 		private void EmptyNewMarkerNotesMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.TAStudioEmptyMarkers ^= true;
+			Settings.EmptyMarkers ^= true;
 		}
 
 		private void AutopauseAtEndMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.TAStudioAutoPause ^= true;
-		}
-
-		private void RotateMenuItem_Click(object sender, EventArgs e)
-		{
-			TasView.HorizontalOrientation ^= true;
-			CurrentTasMovie.FlagChanges();
+			Settings.AutoPause ^= true;
 		}
 
 		#endregion
@@ -611,49 +619,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			SaveWindowPositionMenuItem.Checked = Global.Config.TAStudioSettings.SaveWindowPosition;
-			AutoloadMenuItem.Checked = Global.Config.AutoloadTAStudio;
-			AutoloadProjectMenuItem.Checked = Global.Config.AutoloadTAStudioProject;
-			AlwaysOnTopMenuItem.Checked = Global.Config.TAStudioSettings.TopMost;
-			FloatingWindowMenuItem.Checked = Global.Config.TAStudioSettings.FloatingWindow;
+			RotateMenuItem.ShortcutKeyDisplayString = TasView.RotateHotkeyStr;
 		}
 
-		private void AutoloadMenuItem_Click(object sender, EventArgs e)
+		private void RotateMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.AutoloadTAStudio ^= true;
-		}
-
-		private void AutoloadProjectMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.AutoloadTAStudioProject ^= true;
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.TAStudioSettings.SaveWindowPosition ^= true;
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.TAStudioSettings.TopMost ^= true;
-			TopMost = Global.Config.TAStudioSettings.TopMost;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.TAStudioSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
-		}
-
-		private void RestoreDefaultSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			Size = new Size(_defaultWidth, _defaultHeight);
-
-			Global.Config.TAStudioSettings.SaveWindowPosition = true;
-			Global.Config.TAStudioSettings.TopMost = false;
-			Global.Config.TAStudioSettings.FloatingWindow = false;
-
-			RefreshFloatingWindowControl();
+			TasView.HorizontalOrientation ^= true;
+			CurrentTasMovie.FlagChanges();
 		}
 
 		#endregion

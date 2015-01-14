@@ -22,13 +22,13 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (Global.Emulator.HasMemoryDomains())
+				if (MemoryDomainCore != null)
 				{
-					return Global.Emulator.AsMemoryDomains().MemoryDomains.MainMemory;
+					return MemoryDomainCore.MemoryDomains.MainMemory;
 				}
 				else
 				{
-					var error = string.Format("Error: {0} does not implement memory domains", Global.Emulator.Attributes().CoreName);
+					var error = string.Format("Error: {0} does not implement memory domains", Emulator.Attributes().CoreName);
 					Log(error);
 					throw new NotImplementedException(error);
 				}

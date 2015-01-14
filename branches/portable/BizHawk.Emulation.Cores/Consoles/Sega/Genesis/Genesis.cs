@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 		isPorted: false,
 		isReleased: false
 		)]
-	public sealed partial class Genesis : IEmulator, IMemoryDomains, IDebuggable, ISaveRam, IStatable, IInputPollable
+	public sealed partial class Genesis : IEmulator, IMemoryDomains, ISaveRam, IStatable, IInputPollable
 	{
 		private int _lagcount = 0;
 		private bool lagged = true;
@@ -47,12 +47,6 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 
 		[FeatureNotImplemented]
 		public IInputCallbackSystem InputCallbacks { get { throw new NotImplementedException(); } }
-
-		public IMemoryCallbackSystem MemoryCallbacks
-		{
-			[FeatureNotImplemented]
-			get { throw new NotImplementedException(); }
-		}
 
 		public void ResetCounters()
 		{
@@ -292,17 +286,6 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 			};
 		}
 
-		public bool CanStep(StepType type) { return false; }
-
-		[FeatureNotImplemented]
-		public void Step(StepType type) { throw new NotImplementedException(); }
-
-		[FeatureNotImplemented]
-		public void SetCpuRegister(string register, int value)
-		{
-			throw new NotImplementedException();
-		}
-
 		int vdpcallback(int level) // Musashi handler
 		{
 			InterruptCallback(level);
@@ -506,7 +489,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 			memoryDomains = new MemoryDomainList(domains);
 		}
 
-		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
+		public IMemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		public void Dispose() { }
 	}

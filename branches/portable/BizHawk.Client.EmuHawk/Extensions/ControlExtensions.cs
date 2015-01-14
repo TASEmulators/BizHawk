@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Common.ReflectionExtensions;
+using BizHawk.Client.Common;
 
 
 namespace BizHawk.Client.EmuHawk.WinFormExtensions
@@ -31,9 +32,15 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 		}
 
 		// extension method to make Control.Invoke easier to use
-		public static void Invoke(this Control control, Action action)
+		public static object Invoke(this Control control, Action action)
 		{
-			control.Invoke(action);
+			return control.Invoke(action);
+		}
+
+		// extension method to make Control.BeginInvoke easier to use
+		public static IAsyncResult BeginInvoke(this Control control, Action action)
+		{
+			return control.BeginInvoke(action);
 		}
 
 		public static void AddColumn(this ListView listView, string columnName, bool enabled, int columnWidth)
@@ -52,6 +59,63 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 					listView.Columns.Add(column);
 				}
 			}
+		}
+
+		public static void AddColumn(this ListView listView, ToolDialogSettings.Column column)
+		{
+			if (column.Visible)
+			{
+				if (listView.Columns[column.Name] == null)
+				{
+					var lsstViewColumn = new ColumnHeader
+					{
+						Name = column.Name,
+						Text = column.Name.Replace("Column", string.Empty),
+						Width = column.Width,
+						DisplayIndex = column.Index
+					};
+
+					listView.Columns.Add(lsstViewColumn);
+				}
+			}
+		}
+
+		public static ToolStripMenuItem GenerateColumnsMenu(this ToolDialogSettings.ColumnList list, Action changeCallback)
+		{
+			var menu = new ToolStripMenuItem
+			{
+				Name = "GeneratedColumnsSubMenu",
+				Text = "Columns"
+			};
+
+			var dummyList = list;
+
+			foreach (var column in dummyList)
+			{
+				var menuItem = new ToolStripMenuItem
+				{
+					Name = column.Name,
+					Text = column.Name.Replace("Column", string.Empty)
+				};
+
+				menuItem.Click += (o, ev) =>
+				{
+					dummyList[menuItem.Name].Visible ^= true;
+					changeCallback();
+				};
+
+				menu.DropDownItems.Add(menuItem);
+			}
+
+			menu.DropDownOpened += (o, e) =>
+			{
+				foreach (var column in dummyList)
+				{
+					(menu.DropDownItems[column.Name] as ToolStripMenuItem).Checked = column.Visible;
+				}
+			};
+
+			return menu;
 		}
 
 		public static Point ChildPointToScreen(this Control control, Control child)
@@ -78,6 +142,11 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 		public static IEnumerable<int> SelectedIndices(this ListView listView)
 		{
 			return listView.SelectedIndices.Cast<int>();
+		}
+
+		public static IEnumerable<ColumnHeader> ColumnHeaders(this ListView listView)
+		{
+			return listView.Columns.OfType<ColumnHeader>();
 		}
 
 		#endregion

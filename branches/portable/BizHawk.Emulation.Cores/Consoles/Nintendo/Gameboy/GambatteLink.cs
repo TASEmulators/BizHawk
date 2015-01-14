@@ -405,7 +405,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region debugging
 
-		public MemoryDomainList MemoryDomains { get; private set; }
+		public IMemoryDomainList MemoryDomains { get; private set; }
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{

@@ -77,6 +77,9 @@ class InputDevice_DualShock : public InputDevice
 
  void CheckManualAnaModeChange(void);
 
+ //non-serialized state
+ IO_Dualshock* io;
+
  //
  //
  bool cur_ana_button_state;
@@ -261,6 +264,7 @@ void InputDevice_DualShock::Power(void)
 
 void InputDevice_DualShock::UpdateInput(const void *data)
 {
+	io = (IO_Dualshock*)data;
  uint8 *d8 = (uint8 *)data;
  uint8* const rumb_dp = &d8[3 + 16];
 
@@ -438,13 +442,15 @@ bool InputDevice_DualShock::Clock(bool TxD, int32 &dsr_pulse_delay)
 	  transmit_buffer[4] = axes[0][1];
 	  transmit_buffer[5] = axes[1][0];
 	  transmit_buffer[6] = axes[1][1];
-          transmit_count = 7;
+		transmit_count = 7;
+		io->active = 1;
 	 }
 	 else
 	 {
 	  transmit_buffer[1] = 0xFF ^ buttons[0];
  	  transmit_buffer[2] = 0xFF ^ buttons[1];
  	  transmit_count = 3;
+		io->active = 1;
 	 }
 	}
 	else
@@ -452,8 +458,8 @@ bool InputDevice_DualShock::Clock(bool TxD, int32 &dsr_pulse_delay)
 	 command_phase = -1;
 	 transmit_buffer[1] = 0;
 	 transmit_buffer[2] = 0;
-         transmit_pos = 0;
-         transmit_count = 0;
+	 transmit_pos = 0;
+	 transmit_count = 0;
 	}
 	break;
 
@@ -557,12 +563,14 @@ bool InputDevice_DualShock::Clock(bool TxD, int32 &dsr_pulse_delay)
 	 transmit_buffer[4] = axes[1][0];
 	 transmit_buffer[5] = axes[1][1];
  	 transmit_count = 6;
+	 io->active = 1;
 	}
 	else
 	{
 	 transmit_buffer[0] = 0xFF ^ buttons[0];
 	 transmit_buffer[1] = 0xFF ^ buttons[1];
 	 transmit_count = 2;
+	 io->active = 1;
 
 	 if(!(rumble_magic[2] & 0xFE))
 	 {
@@ -1043,42 +1051,5 @@ InputDevice *Device_DualShock_Create()
 {
  return new InputDevice_DualShock();
 }
-
-
-InputDeviceInputInfoStruct Device_DualShock_IDII[26] =
-{
- { "select", "SELECT", 4, IDIT_BUTTON, NULL },
- { "l3", "Left Stick, Button(L3)", 18, IDIT_BUTTON, NULL },
- { "r3", "Right stick, Button(R3)", 23, IDIT_BUTTON, NULL },
- { "start", "START", 5, IDIT_BUTTON, NULL },
- { "up", "D-Pad UP ↑", 0, IDIT_BUTTON, "down" },
- { "right", "D-Pad RIGHT →", 3, IDIT_BUTTON, "left" },
- { "down", "D-Pad DOWN ↓", 1, IDIT_BUTTON, "up" },
- { "left", "D-Pad LEFT ←", 2, IDIT_BUTTON, "right" },
-
- { "l2", "L2 (rear left shoulder)", 11, IDIT_BUTTON, NULL },
- { "r2", "R2 (rear right shoulder)", 13, IDIT_BUTTON, NULL },
- { "l1", "L1 (front left shoulder)", 10, IDIT_BUTTON, NULL },
- { "r1", "R1 (front right shoulder)", 12, IDIT_BUTTON, NULL },
-
- { "triangle", "△ (upper)", 6, IDIT_BUTTON_CAN_RAPID, NULL },
- { "circle", "○ (right)", 9, IDIT_BUTTON_CAN_RAPID, NULL },
- { "cross", "x (lower)", 7, IDIT_BUTTON_CAN_RAPID, NULL },
- { "square", "□ (left)", 8, IDIT_BUTTON_CAN_RAPID, NULL },
-
- { "analog", "Analog(mode toggle)", 24, IDIT_BUTTON, NULL },
-
- { "rstick_right", "Right Stick RIGHT →", 22, IDIT_BUTTON_ANALOG, NULL, { NULL, NULL, NULL }, IDIT_BUTTON_ANALOG_FLAG_SQLR },
- { "rstick_left", "Right Stick LEFT ←", 21, IDIT_BUTTON_ANALOG, NULL, { NULL, NULL, NULL }, IDIT_BUTTON_ANALOG_FLAG_SQLR },
- { "rstick_down", "Right Stick DOWN ↓", 20, IDIT_BUTTON_ANALOG, NULL, { NULL, NULL, NULL }, IDIT_BUTTON_ANALOG_FLAG_SQLR },
- { "rstick_up", "Right Stick UP ↑", 19, IDIT_BUTTON_ANALOG, NULL, { NULL, NULL, NULL }, IDIT_BUTTON_ANALOG_FLAG_SQLR },
-
- { "lstick_right", "Left Stick RIGHT →", 17, IDIT_BUTTON_ANALOG, NULL, { NULL, NULL, NULL }, IDIT_BUTTON_ANALOG_FLAG_SQLR },
- { "lstick_left", "Left Stick LEFT ←", 16, IDIT_BUTTON_ANALOG, NULL, { NULL, NULL, NULL }, IDIT_BUTTON_ANALOG_FLAG_SQLR },
- { "lstick_down", "Left Stick DOWN ↓", 15, IDIT_BUTTON_ANALOG, NULL, { NULL, NULL, NULL }, IDIT_BUTTON_ANALOG_FLAG_SQLR },
- { "lstick_up", "Left Stick UP ↑", 14, IDIT_BUTTON_ANALOG, NULL, { NULL, NULL, NULL }, IDIT_BUTTON_ANALOG_FLAG_SQLR },
-
- { "rumble", "RUMBLE MONSTER RUMBA", 100, IDIT_RUMBLE },
-};
 
 }

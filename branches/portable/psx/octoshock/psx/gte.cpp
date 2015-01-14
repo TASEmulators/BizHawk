@@ -46,13 +46,12 @@ namespace MDFN_IEN_PSX
 {
 #endif
 
-#include "emuware/PACKED.h"
+EW_PACKED(
 struct gtematrix
 {
  int16 MX[3][3];
  int16 dummy;
-};
-#include "emuware/PACKED_END.h"
+});
 
 typedef struct
 {
@@ -154,7 +153,7 @@ static INLINE uint8 Sat5(int16 cc)
 // Newton-Raphson division table.  (Initialized at startup; do NOT save in save states!)
 //
 static uint8 DivTable[0x100 + 1];
-static INLINE int32 CalcRecip(uint16 divisor)
+static INLINE uint32 CalcRecip(uint16 divisor)
 {
  int32 x = (0x101 + DivTable[(((divisor & 0x7FFF) + 0x40) >> 7)]);
  int32 tmp = (((int32)divisor * -x) + 0x80) >> 8;
@@ -998,7 +997,7 @@ static INLINE uint32 Divide(uint32 dividend, uint32 divisor)
   dividend <<= shift_bias;
   divisor <<= shift_bias;
 
-  return ((int64)dividend * CalcRecip(divisor | 0x8000) + 32768) >> 16;
+  return std::min<uint32>(0x1FFFF, ((uint64)dividend * CalcRecip(divisor | 0x8000) + 32768) >> 16);
  }
  else
  {

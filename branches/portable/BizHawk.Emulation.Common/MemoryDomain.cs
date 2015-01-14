@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Common
 				endian,
 				delegate(int addr)
 				{
-					if (addr < 0 || addr >= size)
+					if ((uint)addr >= size)
 						throw new ArgumentOutOfRangeException();
 					return p[addr];
 				},
@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Common
 				{
 					if (writable)
 					{
-						if (addr < 0 || addr >= size)
+						if ((uint)addr >= size)
 							throw new ArgumentOutOfRangeException();
 						p[addr] = val;
 					}
@@ -184,7 +184,7 @@ namespace BizHawk.Emulation.Common
 		}
 	}
 
-	public class MemoryDomainList : ReadOnlyCollection<MemoryDomain>
+	public class MemoryDomainList : ReadOnlyCollection<MemoryDomain>, IMemoryDomainList
 	{
 		private readonly int _mainMemoryIndex;
 
@@ -215,19 +215,19 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public bool HasSystemBus
+		public bool HasCheatDomain
 		{
 			get
 			{
-				return this.Any(x => x.Name == "System Bus" || x.Name == "BUS"); // Have to account for "BUS" because some developers don't like consistency!
+				return this.Any(x => x.Name == "System Bus");
 			}
 		}
 
-		public MemoryDomain SystemBus
+		public MemoryDomain CheatDomain
 		{
 			get
 			{
-				return this.FirstOrDefault(x => x.Name == "System Bus" || x.Name == "BUS");
+				return this.FirstOrDefault(x => x.Name == "System Bus");
 			}
 		}
 	}

@@ -1,4 +1,5 @@
-﻿namespace BizHawk.Emulation.Common
+﻿using System.Collections.Generic;
+namespace BizHawk.Emulation.Common
 {
 	public interface IMemoryDomains : IEmulatorService
 	{
@@ -10,6 +11,17 @@
 		/// Other chips, and ram spaces can be added as well.
 		/// Subdomains of another domain are also welcome.
 		/// The MainMemory identifier will be 0 if not set
-		MemoryDomainList MemoryDomains { get; }
+		IMemoryDomainList MemoryDomains { get; }
+	}
+
+	public interface IMemoryDomainList : IEnumerable<MemoryDomain>
+	{
+		MemoryDomain this[string name] { get; }
+
+		MemoryDomain MainMemory { get; }
+
+		bool HasCheatDomain { get; }
+
+		MemoryDomain CheatDomain { get; }
 	}
 }
