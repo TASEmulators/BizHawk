@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Common
 		IMemoryDomainList MemoryDomains { get; }
 	}
 
-	public interface IMemoryDomainList : IList<MemoryDomain>
+	public interface IMemoryDomainList : IEnumerable<MemoryDomain>
 	{
 		MemoryDomain this[string name] { get; }
 
