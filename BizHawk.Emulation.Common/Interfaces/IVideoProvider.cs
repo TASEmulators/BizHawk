@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Common
 {
-	public interface IVideoProvider
+	public interface IVideoProvider : IEmulatorService
 	{
 		int[] GetVideoBuffer();
 
