@@ -96,6 +96,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 			PSG = new SN76489() { MaxVolume = 4681 };
 			VDP = new GenVDP();
 			VDP.DmaReadFrom68000 = ReadWord;
+			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(VDP);
 			SoundMixer = new SoundMixer(YM2612, PSG);
 
 			MainCPU.ReadByte = ReadByte;
@@ -298,11 +299,6 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 		}
 
 		public CoreComm CoreComm { get; private set; }
-
-		public IVideoProvider VideoProvider
-		{
-			get { return VDP; }
-		}
 
 		public ISoundProvider SoundProvider
 		{

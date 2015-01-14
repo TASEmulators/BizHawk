@@ -77,6 +77,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 			HardReset();
 			SetupMemoryDomains();
+			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(new MyVideoProvider(this));
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
@@ -434,10 +435,6 @@ namespace BizHawk.Emulation.Cores.Calculators
 			public int BufferWidth { get { return 96; } }
 			public int BufferHeight { get { return 64; } }
 			public int BackgroundColor { get { return 0; } }
-		}
-		public IVideoProvider VideoProvider
-		{
-			get { return new MyVideoProvider(this); }
 		}
 
 		public ISoundProvider SoundProvider { get { return NullSound.SilenceProvider; } }

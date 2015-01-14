@@ -324,7 +324,6 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 		#region IVideoProvider
 
-		public IVideoProvider VideoProvider { get { return this; } }
 		int[] VideoBuffer = new int[704 * 512];
 		public int[] GetVideoBuffer() { return VideoBuffer; }
 		public int VirtualWidth { get { return BufferWidth; } }

@@ -87,14 +87,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			_syncSettings = (PCESyncSettings)syncSettings ?? new PCESyncSettings();
 			Init(game, rom);
 			SetControllerButtons();
-
-			{
-				var ser = new BasicServiceProvider(this);
-				ServiceProvider = ser;
-				Tracer = new TraceBuffer();
-				ser.Register<ITraceable>(Tracer);
-				ser.Register<IDisassemblable>(Cpu);
-			}
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
@@ -304,6 +296,15 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			Cpu.ResetPC();
 			SetupMemoryDomains();
+
+			{
+				var ser = new BasicServiceProvider(this);
+				ServiceProvider = ser;
+				Tracer = new TraceBuffer();
+				ser.Register<ITraceable>(Tracer);
+				ser.Register<IDisassemblable>(Cpu);
+				ser.Register<IVideoProvider>((IVideoProvider)VPC ?? VDC1);
+			}
 		}
 
 		int lagCount;
@@ -362,11 +363,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		}
 
 		public CoreComm CoreComm { get; private set; }
-
-		public IVideoProvider VideoProvider
-		{
-			get { return (IVideoProvider)VPC ?? VDC1; }
-		}
 
 		ISoundProvider soundProvider;
 		public ISoundProvider SoundProvider

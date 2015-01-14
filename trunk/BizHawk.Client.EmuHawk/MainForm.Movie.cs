@@ -60,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 				if (movie.SavestateFramebuffer != null)
 				{
 					var b1 = movie.SavestateFramebuffer;
-					var b2 = Global.Emulator.VideoProvider.GetVideoBuffer();
+					var b2 = Global.Emulator.VideoProvider().GetVideoBuffer();
 					int len = Math.Min(b1.Length, b2.Length);
 					for (int i = 0; i < len; i++)
 					{

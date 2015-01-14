@@ -34,6 +34,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		public Atari7800(CoreComm comm, GameInfo game, byte[] rom, string GameDBfn)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
+			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(avProvider);
 			InputCallbacks = new InputCallbackSystem();
 			CoreComm = comm;
 			byte[] highscoreBIOS = comm.CoreFileProvider.GetFirmware("A78", "Bios_HSC", false, "Some functions may not work without the high score BIOS.");
@@ -208,7 +209,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		public ISyncSoundProvider SyncSoundProvider { get { return avProvider; } }
 		public bool StartAsyncSound() { return false; }
 		public void EndAsyncSound() { }
-		public IVideoProvider VideoProvider { get { return avProvider; } }
 		public ISoundProvider SoundProvider { get { return null; } }
 
 		MyAVProvider avProvider = new MyAVProvider();

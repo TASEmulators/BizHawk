@@ -869,11 +869,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region IVideoProvider
 
-		public IVideoProvider VideoProvider
-		{
-			get { return this; }
-		}
-
 		/// <summary>
 		/// stored image of most recent frame
 		/// </summary>

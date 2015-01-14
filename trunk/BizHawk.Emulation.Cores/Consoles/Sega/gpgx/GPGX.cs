@@ -746,8 +746,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public DisplayType DisplayType { get; private set; }
 
-		public IVideoProvider VideoProvider { get { return this; } }
-
 		int[] vidbuff = new int[0];
 		int vwidth;
 		int vheight;

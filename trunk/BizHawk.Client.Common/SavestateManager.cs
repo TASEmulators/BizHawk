@@ -34,7 +34,7 @@ namespace BizHawk.Client.Common
 
 				if (Global.Config.SaveScreenshotWithStates)
 				{
-					var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
+					var buff = Global.Emulator.VideoProvider().GetVideoBuffer();
 
 					// If user wants large screenshots, or screenshot is small enough
 					if (Global.Config.SaveLargeScreenshotWithStates || buff.Length < Global.Config.BigScreenshotSize)
@@ -59,7 +59,7 @@ namespace BizHawk.Client.Common
 
 		public static void PopulateFramebuffer(BinaryReader br)
 		{
-			var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
+			var buff = Global.Emulator.VideoProvider().GetVideoBuffer();
 			try
 			{
 				for (int i = 0; i < buff.Length; i++)
@@ -73,7 +73,7 @@ namespace BizHawk.Client.Common
 
 		public static void DumpFramebuffer(BinaryWriter bw)
 		{
-			bw.Write(Global.Emulator.VideoProvider.GetVideoBuffer());
+			bw.Write(Global.Emulator.VideoProvider().GetVideoBuffer());
 		}
 
 		public static bool LoadStateFile(string path, string name)
@@ -143,7 +143,7 @@ namespace BizHawk.Client.Common
 							var args = str.Split(' ');
 							if (args[0] == "Framebuffer")
 							{
-								Global.Emulator.VideoProvider.GetVideoBuffer().ReadFromHex(args[1]);
+								Global.Emulator.VideoProvider().GetVideoBuffer().ReadFromHex(args[1]);
 							}
 						}
 					}

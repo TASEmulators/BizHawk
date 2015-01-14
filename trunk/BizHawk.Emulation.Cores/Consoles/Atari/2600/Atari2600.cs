@@ -47,9 +47,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			RebootCore();
 			SetupMemoryDomains();
 
-			var ser = new  BasicServiceProvider(this);
+			var ser = new BasicServiceProvider(this);
 			ser.Register<IDisassemblable>(Cpu);
 			ser.Register<ITraceable>(Tracer);
+			ser.Register<IVideoProvider>(_tia);
 			ServiceProvider = ser;
 		}
 
@@ -60,8 +61,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public string BoardName { get { return _mapper.GetType().Name; } }
 
 		public CoreComm CoreComm { get; private set; }
-
-		public IVideoProvider VideoProvider { get { return _tia; } }
 
 		public ISoundProvider SoundProvider { get { return _dcfilter; } }
 

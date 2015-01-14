@@ -509,8 +509,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		#region IVideoProvider
 
-		public IVideoProvider VideoProvider { get { return this; } }
-
 		int[] videobuffer;
 		GCHandle videohandle;
 

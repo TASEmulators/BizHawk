@@ -334,7 +334,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		int[] videobuff = new int[WIDTH * HEIGHT];
 
-		public IVideoProvider VideoProvider { get { return this; } }
 		public int[] GetVideoBuffer() { return videobuff; }
 		public int VirtualWidth { get { return BufferWidth; } }
 		public int VirtualHeight { get { return BufferHeight; } }

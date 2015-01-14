@@ -573,7 +573,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ScreenshotClientClipboardMenuItem_Click(object sender, EventArgs e)
 		{
-			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider, Global.Config.Screenshot_CaptureOSD))
+			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider(), Global.Config.Screenshot_CaptureOSD))
 			{
 				bb.Normalize(true);
 				using (var img = bb.ToSysdrawingBitmap())

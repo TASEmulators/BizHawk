@@ -672,7 +672,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			LibQuickNES.qn_blit(Context, VideoOutput, VideoPalette, cropleft, croptop, cropright, cropbottom);
 		}
 
-		public IVideoProvider VideoProvider { get { return this; } }
 		public int[] GetVideoBuffer() { return VideoOutput; }
 		public int VirtualWidth { get { return (int)(BufferWidth * 1.146); } }
 		public int VirtualHeight { get { return BufferHeight; } }
