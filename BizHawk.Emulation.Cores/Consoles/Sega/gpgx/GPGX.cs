@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		portedVersion: "r874",
 		portedUrl: "https://code.google.com/p/genplus-gx/"
 		)]
-	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, IMemoryDomains, ISaveRam, IStatable,
+	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, ISaveRam, IStatable,
 		IInputPollable, IDebuggable, ISettable<GPGX.GPGXSettings, GPGX.GPGXSyncSettings>, IDriveLight
 	{
 		static GPGX AttachedCore = null;
@@ -583,7 +583,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		#region debugging tools
 
-		public IMemoryDomainList MemoryDomains { get; private set; }
+		private IMemoryDomains MemoryDomains;
 
 		unsafe void SetMemoryDomains()
 		{
@@ -619,6 +619,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				}
 			}
 			MemoryDomains = new MemoryDomainList(mm, 0);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()

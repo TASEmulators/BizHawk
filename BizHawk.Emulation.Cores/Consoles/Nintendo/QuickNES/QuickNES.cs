@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		portedUrl: "https://github.com/kode54/QuickNES"
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public class QuickNES : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IInputPollable,
+	public class QuickNES : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IInputPollable,
 		IStatable, IDebuggable, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>, Cores.Nintendo.NES.INESPPUViewable
 	{
 		#region FPU precision
@@ -378,10 +378,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					LibQuickNES.qn_poke_prgbus(Context, addr, val);
 				}
 			));
-			MemoryDomains = new MemoryDomainList(mm, 0);
+
+			_memoryDomains = new MemoryDomainList(mm, 0);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
 		}
 
-		public IMemoryDomainList MemoryDomains { get; private set; }
+		private IMemoryDomains _memoryDomains;
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
@@ -427,8 +429,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		{
 			// inefficient, sloppy, etc etc
 			Emulation.Cores.Nintendo.NES.NES.BootGodDB.Initialize();
-			var chrrom = MemoryDomains["CHR VROM"];
-			var prgrom = MemoryDomains["PRG ROM"];
+			var chrrom = _memoryDomains["CHR VROM"];
+			var prgrom = _memoryDomains["PRG ROM"];
 
 			var ms = new System.IO.MemoryStream();
 			for (int i = 0; i < prgrom.Size; i++)
@@ -798,7 +800,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public MemoryDomain GetCHRROM()
 		{
-			return MemoryDomains["CHR VROM"];
+			return _memoryDomains["CHR VROM"];
 		}
 
 		public void InstallCallback1(Action cb, int sl)

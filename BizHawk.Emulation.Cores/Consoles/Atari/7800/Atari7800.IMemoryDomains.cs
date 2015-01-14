@@ -6,11 +6,11 @@ using EMU7800.Core;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari7800
 {
-	public partial class Atari7800 : IMemoryDomains
+	public partial class Atari7800
 	{
 		private List<MemoryDomain> _MemoryDomains;
 
-		public IMemoryDomainList MemoryDomains { get; private set; }
+		private IMemoryDomains MemoryDomains;
 
 		public void SetupMemoryDomains(HSC7800 hsc7800)
 		{
@@ -97,7 +97,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				else // todo 2600?
 				{
 				}
+
 				MemoryDomains = new MemoryDomainList(_MemoryDomains);
+				(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 			}
 		}
 	}

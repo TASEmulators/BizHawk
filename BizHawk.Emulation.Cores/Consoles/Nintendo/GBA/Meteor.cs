@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		isReleased: false
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, IMemoryDomains, ISaveRam, IStatable, IInputPollable
+	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, ISaveRam, IStatable, IInputPollable
 	{
 		[CoreConstructor("GBA")]
 		public GBA(CoreComm comm, byte[] file)
@@ -235,7 +235,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		#region memorydomains
 
 		List<MemoryDomain> _MemoryDomains = new List<MemoryDomain>();
-		public IMemoryDomainList MemoryDomains { get; private set; }
+		private IMemoryDomains _memoryDomains;
 
 		void AddMemoryDomain(LibMeteor.MemoryArea which, int size, string name)
 		{
@@ -303,7 +303,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				_MemoryDomains.Add(cr);
 			}
 
-			MemoryDomains = new MemoryDomainList(_MemoryDomains);
+			_memoryDomains = new MemoryDomainList(_MemoryDomains);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
 		}
 
 		#endregion

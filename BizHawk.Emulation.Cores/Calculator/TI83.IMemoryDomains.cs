@@ -3,13 +3,8 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Calculators
 {
-	public partial class TI83 : IMemoryDomains
+	public partial class TI83
 	{
-		public IMemoryDomainList MemoryDomains
-		{
-			get { return _memoryDomains; }
-		}
-
 		private void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>
@@ -24,8 +19,9 @@ namespace BizHawk.Emulation.Cores.Calculators
 			};
 
 			_memoryDomains = new MemoryDomainList(domains);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
 		}
 
-		private MemoryDomainList _memoryDomains;
+		private IMemoryDomains _memoryDomains;
 	}
 }

@@ -23,8 +23,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class HexEditor : Form, IToolFormAutoConfig
 	{
 		[RequiredService]
-		private IMemoryDomains MemoryDomainSource { get; set; }
-		private IMemoryDomainList MemoryDomains { get { return MemoryDomainSource.MemoryDomains; } }
+		private IMemoryDomains MemoryDomains { get; set; }
 
 		[RequiredService]
 		private IEmulator Emulator { get; set; }

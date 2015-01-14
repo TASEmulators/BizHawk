@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		portedVersion: "9.12",
 		portedUrl: "http://yabause.org"
 		)]
-	public partial class Yabause : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IStatable, IInputPollable,
+	public partial class Yabause : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IInputPollable,
 		ISettable<object, Yabause.SaturnSyncSettings>, IDriveLight
 	{
 		public static ControllerDefinition SaturnController = new ControllerDefinition

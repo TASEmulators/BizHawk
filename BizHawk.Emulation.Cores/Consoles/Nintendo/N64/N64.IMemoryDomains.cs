@@ -7,11 +7,11 @@ using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
-	public partial class N64 : IMemoryDomains
+	public partial class N64
 	{
 		private List<MemoryDomain> _memoryDomains = new List<MemoryDomain>();
 
-		public IMemoryDomainList MemoryDomains { get; private set; }
+		private IMemoryDomains MemoryDomains;
 
 		private void MakeMemoryDomain(string name, mupen64plusApi.N64_MEMORY id, MemoryDomain.Endian endian, bool swizzled = false)
 		{
@@ -132,13 +132,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			_memoryDomains.Add(new MemoryDomain
 				(
 					name: "System Bus",
-					size: 0, //special case for full 32bit memorydomain
+					size: 0, // special case for full 32bit memorydomain
 					endian: MemoryDomain.Endian.Big,
 					peekByte: peekByte,
 					pokeByte: pokeByte
 				));
 
 			MemoryDomains = new MemoryDomainList(_memoryDomains);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
 	}
 }

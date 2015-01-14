@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _paused = false;
 
 		[RequiredService]
-		private IMemoryDomains _core { get; set; }
+		private IMemoryDomains _memoryDomains { get; set; }
 
 		[RequiredService]
 		private IEmulator _emu { get; set; }
@@ -210,14 +210,14 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_watches != null && !string.IsNullOrWhiteSpace(_watches.CurrentFileName))
 			{
-				_watches.RefreshDomans(_core, _core.MemoryDomains.MainMemory);
+				_watches.RefreshDomans(_memoryDomains, _memoryDomains.MainMemory);
 				_watches.Reload();
 				SetPlatformAndMemoryDomainLabel();
 				UpdateStatusBar();
 			}
 			else
 			{
-				_watches = new WatchList(_core, _core.MemoryDomains.MainMemory, _emu.SystemId);
+				_watches = new WatchList(_memoryDomains, _memoryDomains.MainMemory, _emu.SystemId);
 				NewWatchList(true);
 			}
 		}
@@ -370,7 +370,7 @@ namespace BizHawk.Client.EmuHawk
 				var we = new WatchEditor
 				{
 					InitialLocation = this.ChildPointToScreen(WatchListView),
-					Core = _core
+					MemoryDomains = _memoryDomains
 				};
 
 				we.SetWatch(_watches.Domain, SelectedWatches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit);
@@ -517,7 +517,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetMemoryDomain(string name)
 		{
-			_watches.Domain = _core.MemoryDomains[name];
+			_watches.Domain = _memoryDomains[name];
 			SetPlatformAndMemoryDomainLabel();
 			Update();
 		}
@@ -698,7 +698,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			MemoryDomainsSubMenu.DropDownItems.Clear();
 			MemoryDomainsSubMenu.DropDownItems.AddRange(
-				_core.MemoryDomains.MenuItems(SetMemoryDomain, _watches.Domain.Name)
+				_memoryDomains.MenuItems(SetMemoryDomain, _watches.Domain.Name)
 				.ToArray());
 		}
 
@@ -707,7 +707,7 @@ namespace BizHawk.Client.EmuHawk
 			var we = new WatchEditor
 			{
 				InitialLocation = this.ChildPointToScreen(WatchListView),
-				Core = _core
+				MemoryDomains = _memoryDomains
 			};
 			we.SetWatch(_watches.Domain);
 			we.ShowHawkDialog();
@@ -955,7 +955,7 @@ namespace BizHawk.Client.EmuHawk
 		private void NewRamWatch_Load(object sender, EventArgs e)
 		{
 			TopMost = Settings.TopMost;
-			_watches = new WatchList(_core, _core.MemoryDomains.MainMemory, _emu.SystemId);
+			_watches = new WatchList(_memoryDomains, _memoryDomains.MainMemory, _emu.SystemId);
 			LoadConfigSettings();
 			RamWatchMenu.Items.Add(Settings.Columns.GenerateColumnsMenu(ColumnToggleCallback));
 			UpdateStatusBar();

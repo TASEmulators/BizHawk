@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		isPorted: true,
 		isReleased: false
 		)]
-	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IStatable, IDriveLight, IInputPollable, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IDebuggable
+	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IDriveLight, IInputPollable, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IDebuggable
 	{
 		public string SystemId { get { return "PSX"; } }
 
@@ -620,9 +620,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			mmd.Add(MemoryDomain.FromIntPtr("DCache", size, MemoryDomain.Endian.Little, ptr, true));
 
 			MemoryDomains = new MemoryDomainList(mmd, 0);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
 
-		public IMemoryDomainList MemoryDomains { get; private set; }
+		private IMemoryDomains MemoryDomains;
 
 		#endregion
 

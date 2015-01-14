@@ -3,9 +3,9 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	public partial class Atari2600 : IMemoryDomains
+	public partial class Atari2600
 	{
-		public IMemoryDomainList MemoryDomains { get; private set; }
+		internal IMemoryDomains MemoryDomains;
 
 		private void SetupMemoryDomains()
 		{
@@ -58,6 +58,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
 			MemoryDomains = new MemoryDomainList(domains);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
 	}
 }

@@ -3,14 +3,9 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
-	public partial class C64 : IMemoryDomains
+	public partial class C64
 	{
-		public IMemoryDomainList MemoryDomains
-		{
-			get { return memoryDomains; }
-		}
-
-		private MemoryDomainList memoryDomains;
+		private IMemoryDomains memoryDomains;
 
 		private void SetupMemoryDomains()
 		{
@@ -28,6 +23,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			//domains.Add(new MemoryDomain("1541 VIA1", 0x10, MemoryDomain.Endian.Little, new Func<int, byte>(disk.PeekVia1), new Action<int, byte>(disk.PokeVia1)));
 			//domains.Add(new MemoryDomain("1541 RAM", 0x1000, MemoryDomain.Endian.Little, new Func<int, byte>(disk.PeekRam), new Action<int, byte>(disk.PokeRam)));
 			memoryDomains = new MemoryDomainList(domains);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(memoryDomains);
 		}
 	}
 }

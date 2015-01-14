@@ -11,14 +11,14 @@ namespace BizHawk.Client.EmuHawk
 	{
 		[RequiredService]
 		private IDebuggable Debuggable { get; set; }
+
 		[OptionalService]
 		private IDisassemblable Disassembler { get; set; }
+
 		[OptionalService]
-		private IMemoryDomains MemoryDomainSource { get; set; }
+		private IMemoryDomains MemoryDomains { get; set; }
 
 		private IMemoryCallbackSystem MemoryCallbacks { get { return Debuggable.MemoryCallbacks; } }
-
-		private IMemoryDomainList MemoryDomains { get { return MemoryDomainSource.MemoryDomains; } }
 
 		private uint PC
 		{

@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 			{
 				if (MemoryDomainCore != null)
 				{
-					return MemoryDomainCore.MemoryDomains.MainMemory;
+					return MemoryDomainCore.MainMemory;
 				}
 				else
 				{

@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 {
 	[CoreAttributes("Handy", "K. Wilkins", true, true, "mednafen 0-9-34-1", "http://mednafen.sourceforge.net/")]
 	[ServiceNotApplicable(typeof(ISettable<,>), typeof(IDriveLight))]
-	public class Lynx : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IStatable, IInputPollable
+	public class Lynx : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IInputPollable
 	{
 		IntPtr Core;
 
@@ -386,11 +386,11 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			if (s1 > 0 && p1 != IntPtr.Zero)
 				mms.Add(MemoryDomain.FromIntPtr("Cart B", s1, MemoryDomain.Endian.Little, p1, false));
 
-			MemoryDomains = new MemoryDomainList(mms, 0);
+			_memoryDomains = new MemoryDomainList(mms, 0);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
 		}
 
-
-		public IMemoryDomainList MemoryDomains { get; private set; }
+		private IMemoryDomains _memoryDomains;
 
 		#endregion
 	}
