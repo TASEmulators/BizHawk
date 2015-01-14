@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Common
 
 			Type coreType = core.GetType();
 
-			foreach (Type service in coreType.GetInterfaces())
+			foreach (Type service in coreType.GetInterfaces().Where(t => t != typeof(IEmulatorService)))
 			{
 				Services.Add(service, core);
 			}
