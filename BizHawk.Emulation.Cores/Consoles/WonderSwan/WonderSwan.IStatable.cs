@@ -12,6 +12,12 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 {
 	partial class WonderSwan: IStatable
 	{
+		void InitIStatable()
+		{
+			savebuff = new byte[BizSwan.bizswan_binstatesize(Core)];
+			savebuff2 = new byte[savebuff.Length + 13];
+		}
+
 		JsonSerializer ser = new JsonSerializer() { Formatting = Formatting.Indented };
 
 		[StructLayout(LayoutKind.Sequential)]

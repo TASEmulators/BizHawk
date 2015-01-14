@@ -577,7 +577,13 @@
     <Compile Include="Consoles\WonderSwan\WonderSwan.Controller.cs">
       <DependentUpon>WonderSwan.cs</DependentUpon>
     </Compile>
-    <Compile Include="Consoles\WonderSwan\WonderSwan.ISettable.cs">
+    <Compile Include="Consoles\WonderSwan\WonderSwan.IMemoryDomains.cs">
+      <DependentUpon>WonderSwan.cs</DependentUpon>
+    </Compile>
+     <Compile Include="Consoles\WonderSwan\WonderSwan.ISaveRam.cs">
+      <DependentUpon>WonderSwan.cs</DependentUpon>
+    </Compile>
+     <Compile Include="Consoles\WonderSwan\WonderSwan.ISettable.cs">
       <DependentUpon>WonderSwan.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\WonderSwan\WonderSwan.IStatable.cs">
