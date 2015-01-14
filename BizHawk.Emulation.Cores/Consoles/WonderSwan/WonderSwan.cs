@@ -187,8 +187,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		#region IVideoProvider
 
-		public IVideoProvider VideoProvider { get { return this; } }
-
 		void InitVideo(bool rotate)
 		{
 			if (rotate)

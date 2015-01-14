@@ -92,7 +92,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem();
 		public IMemoryCallbackSystem MemoryCallbacks { get { return _memorycallbacks; } }
 
-		public IVideoProvider VideoProvider { get { return this; } }
 		public ISoundProvider SoundProvider { get { return null; } }
 		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
 		public bool StartAsyncSound() { return false; }

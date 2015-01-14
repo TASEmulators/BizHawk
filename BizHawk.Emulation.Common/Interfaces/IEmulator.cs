@@ -15,11 +15,6 @@ namespace BizHawk.Emulation.Common
 		IEmulatorServiceProvider ServiceProvider { get; }
 
 		/// <summary>
-		/// Video provider to the client
-		/// </summary>
-		IVideoProvider VideoProvider { get; }
-		
-		/// <summary>
 		/// Sound provider for async operation.  this is optional, and is only required after StartAsyncSound() is called and returns true
 		/// </summary>
 		ISoundProvider SoundProvider { get; }
@@ -84,5 +79,14 @@ namespace BizHawk.Emulation.Common
 		/// the corecomm module in use by this core.
 		/// </summary>
 		CoreComm CoreComm { get; }
+	}
+
+	public static class VideoProviderGlue
+	{
+		// todo: this will go away
+		public static IVideoProvider VideoProvider(this IEmulator emu)
+		{
+			return emu.ServiceProvider.GetService<IVideoProvider>();
+		}
 	}
 }

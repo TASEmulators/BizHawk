@@ -531,7 +531,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		int[] videobuff = new int[240 * 160];
 		int[] videopalette = new int[65536];
 
-		public IVideoProvider VideoProvider { get { return this; } }
 		public int[] GetVideoBuffer() { return videobuff; }
 		public int VirtualWidth { get { return 240; } }
 		public int VirtualHeight { get { return 160; } }

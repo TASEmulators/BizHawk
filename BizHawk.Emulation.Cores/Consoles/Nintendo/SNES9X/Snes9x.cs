@@ -62,7 +62,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		#region IVideoProvider
 
 		private int[] _vbuff = new int[512 * 480];
-		public IVideoProvider VideoProvider { get { return this; } }
 		public int[] GetVideoBuffer() { return _vbuff; }
 		public int VirtualWidth
 		{ get { return BufferWidth; } }

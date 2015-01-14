@@ -145,6 +145,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			Cpu.WriteHardware = WritePort;
 
 			Vdp = new VDP(this, Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, DisplayType);
+			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(Vdp);
 			PSG = new SN76489();
 			YM2413 = new YM2413();
 			SoundMixer = new SoundMixer(YM2413, PSG);
@@ -413,7 +414,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
-		public IVideoProvider VideoProvider { get { return Vdp; } }
 		public CoreComm CoreComm { get; private set; }
 
 		ISoundProvider ActiveSoundProvider;

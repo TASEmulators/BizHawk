@@ -79,6 +79,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			Stic.ReadMemory = ReadMemory;
 			Stic.WriteMemory = WriteMemory;
 			Stic.Reset();
+			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(Stic);
 
 			Psg = new PSG();
 			Psg.ReadMemory = ReadMemory;
@@ -107,7 +108,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			}
 		}
 
-		public IVideoProvider VideoProvider { get { return Stic; } }
 		public ISoundProvider SoundProvider { get { return NullSound.SilenceProvider; } }
 		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(NullSound.SilenceProvider, 735); } }
 		public bool StartAsyncSound() { return true; }

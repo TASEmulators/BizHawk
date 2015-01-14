@@ -765,18 +765,19 @@ namespace BizHawk.Client.EmuHawk
 			// also handle floats
 			conInput.AcceptNewFloats(Input.Instance.GetFloats().Select(o =>
 			{
+				var video = Global.Emulator.VideoProvider();
 				// hackish
 				if (o.Item1 == "WMouse X")
 				{
 					var P = GlobalWin.DisplayManager.UntransformPoint(new Point((int)o.Item2, 0));
-					float x = P.X / (float)Global.Emulator.VideoProvider.BufferWidth;
+					float x = P.X / (float)video.BufferWidth;
 					return new Tuple<string, float>("WMouse X", x * 20000 - 10000);
 				}
 					
 				if (o.Item1 == "WMouse Y")
 				{
 					var P = GlobalWin.DisplayManager.UntransformPoint(new Point(0, (int)o.Item2));
-					float y = P.Y / (float)Global.Emulator.VideoProvider.BufferHeight;
+					float y = P.Y / (float)video.BufferHeight;
 					return new Tuple<string, float>("WMouse Y", y * 20000 - 10000);
 				}
 					
@@ -853,7 +854,7 @@ namespace BizHawk.Client.EmuHawk
 			// run this entire thing exactly twice, since the first resize may adjust the menu stacking
 			for (int i = 0; i < 2; i++)
 			{
-				var video = Global.Emulator.VideoProvider;
+				var video = Global.Emulator.VideoProvider();
 				int zoom = Global.Config.TargetZoomFactor;
 				var area = Screen.FromControl(this).WorkingArea;
 
@@ -1708,7 +1709,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static unsafe BitmapBuffer MakeScreenshotImage()
 		{
-			var bb = new BitmapBuffer(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight, Global.Emulator.VideoProvider.GetVideoBuffer());
+			var bb = new BitmapBuffer(Global.Emulator.VideoProvider().BufferWidth, Global.Emulator.VideoProvider().BufferHeight, Global.Emulator.VideoProvider().GetVideoBuffer());
 			bb.DiscardAlpha();
 			return bb;
 		}
@@ -1780,7 +1781,7 @@ namespace BizHawk.Client.EmuHawk
 		private void Render()
 		{
 			//private Size _lastVideoSize = new Size(-1, -1), _lastVirtualSize = new Size(-1, -1);
-			var video = Global.Emulator.VideoProvider;
+			var video = Global.Emulator.VideoProvider();
 			//bool change = false;
 			Size currVideoSize = new Size(video.BufferWidth,video.BufferHeight);
 			Size currVirtualSize = new Size(video.VirtualWidth,video.VirtualWidth);
@@ -1791,7 +1792,7 @@ namespace BizHawk.Client.EmuHawk
 				FrameBufferResized();
 			}
 
-			GlobalWin.DisplayManager.UpdateSource(Global.Emulator.VideoProvider);
+			GlobalWin.DisplayManager.UpdateSource(video);
 		}
 
 		// sends a simulation of a plain alt key keystroke
@@ -2154,7 +2155,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private BitmapBuffer CaptureOSD()
 		{
-			var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider,true);
+			var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider(), true);
 			bb.Normalize(true);
 			return bb;
 		}
@@ -2915,7 +2916,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					aw.SetVideoParameters(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight);
+					aw.SetVideoParameters(Global.Emulator.VideoProvider().BufferWidth, Global.Emulator.VideoProvider().BufferHeight);
 				}
 
 				aw.SetAudioParameters(44100, 2, 16);
@@ -3081,7 +3082,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 							else
 							{
-								bbin = new BitmapBuffer(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight, Global.Emulator.VideoProvider.GetVideoBuffer());
+								bbin = new BitmapBuffer(Global.Emulator.VideoProvider().BufferWidth, Global.Emulator.VideoProvider().BufferHeight, Global.Emulator.VideoProvider().GetVideoBuffer());
 							}
 
 
@@ -3091,7 +3092,7 @@ namespace BizHawk.Client.EmuHawk
 							{
 								if (_avwriterpad)
 								{
-									g.Clear(Color.FromArgb(Global.Emulator.VideoProvider.BackgroundColor));
+									g.Clear(Color.FromArgb(Global.Emulator.VideoProvider().BackgroundColor));
 									g.DrawImageUnscaled(bmpin, (bmpout.Width - bmpin.Width) / 2, (bmpout.Height - bmpin.Height) / 2);
 								}
 								else
@@ -3119,7 +3120,7 @@ namespace BizHawk.Client.EmuHawk
 							disposableOutput = (IDisposable)output;
 						}
 						else
-							output = Global.Emulator.VideoProvider;
+							output = Global.Emulator.VideoProvider();
 					}
 
 					_currAviWriter.SetFrame(Global.Emulator.Frame);

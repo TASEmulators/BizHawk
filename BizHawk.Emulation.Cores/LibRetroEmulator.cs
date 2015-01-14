@@ -432,8 +432,6 @@ namespace BizHawk.Emulation.Cores
 
 		#region IVideoProvider
 
-		public IVideoProvider VideoProvider { get { return this; } }
-
 		float dar;
 		int[] vidbuff;
 		LibRetro.RETRO_PIXEL_FORMAT pixelfmt = LibRetro.RETRO_PIXEL_FORMAT.XRGB1555;

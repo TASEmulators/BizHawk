@@ -37,6 +37,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			cyclesPerFrame = board.vic.CyclesPerFrame;
 			SetupMemoryDomains();
 			HardReset();
+
+			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(board.vic);
 		}
 
 		// internal variables
@@ -68,7 +70,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public ISoundProvider SoundProvider { get { return null; } }
 		public bool StartAsyncSound() { return false; } //TODO
 		public ISyncSoundProvider SyncSoundProvider { get { return board.sid.resampler; } }
-		public IVideoProvider VideoProvider { get { return board.vic; } }
 
 		// controller
 		public ControllerDefinition ControllerDefinition { get { return C64ControllerDefinition; } }

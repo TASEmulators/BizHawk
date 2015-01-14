@@ -34,7 +34,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 			}
 		};
 
-		public IVideoProvider VideoProvider { get { return this; } }
 		public ISoundProvider SoundProvider { get { return null; } }
 		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
 		public bool StartAsyncSound() { return false; }

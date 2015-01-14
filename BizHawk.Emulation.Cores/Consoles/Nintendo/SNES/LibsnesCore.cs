@@ -686,8 +686,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		int[] vidBuffer = new int[256 * 224];
 		int vidWidth = 256, vidHeight = 224;
 
-		public IVideoProvider VideoProvider { get { return this; } }
-
 		public ControllerDefinition ControllerDefinition { get { return SNESController; } }
 		IController controller;
 		public IController Controller
