@@ -138,7 +138,6 @@ namespace BizHawk.Client.Common
 		public int SpeedPercent = 100;
 		public int SpeedPercentAlternate = 400;
 		public bool ClockThrottle = true;
-		public bool ClockThrottleUseLowCPUMode = false;
 		public bool AutoMinimizeSkipping = true;
 		public bool VSyncThrottle = false;
 

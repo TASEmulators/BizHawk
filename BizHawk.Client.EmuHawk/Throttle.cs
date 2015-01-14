@@ -47,14 +47,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public bool cfg_lowcpumode
-		{
-			get
-			{
-				return Global.Config.ClockThrottleUseLowCPUMode;
-			}
-		}
-
 		public void Step(bool allowSleep, int forceFrameSkip)
 		{
 			int skipRate = (forceFrameSkip < 0) ? cfg_frameskiprate : forceFrameSkip;
@@ -337,33 +329,25 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				int sleepy = (int)((timePerFrame - elapsedTime) * 1000 / afsfreq);
-				if (cfg_lowcpumode && (sleepy >= 2 || paused))
+				int sleepTime = (int)((timePerFrame - elapsedTime) * 1000 / afsfreq);
+				if (sleepTime >= 2 || paused)
 				{
 #if WINDOWS
-					// The actual sleep time on Windows is always at least the requested time, plus a
-					// bit of oversleep which usually does not exceed the timer period as specified in
-					// timeBeginPeriod. So we'll subtract 1 ms from the sleep time to avoid sleeping
-					// longer than desired.
-					sleepy -= 1;
+					// Assuming a timer period of 1 ms (i.e. timeBeginPeriod(1)): The actual sleep time
+					// on Windows XP is generally within a half millisecond either way of the requested
+					// time. The actual sleep time on Windows 8 is generally between the requested time
+					// and up to a millisecond over. So we'll subtract 1 ms from the time to avoid
+					// sleeping longer than desired.
+					sleepTime -= 1;
 #else
-					// The actual sleep time on OS X with Mono is always at least the request time,
-					// plus a bit of oversleep which usually does not exceed 25% of the requested time.
-					// So we'll scale the sleep time back to account for that 25%.
-					sleepy = sleepy * 4 / 5;
+					// The actual sleep time on OS X with Mono is generally between the request time
+					// and up to 25% over. So we'll scale the sleep time back to account for that.
+					sleepTime = sleepTime * 4 / 5;
 #endif
-					Thread.Sleep(Math.Max(sleepy, 1));
 
-					// The original mode in the following 'else' block initially existed before the
-					// call to timeBeginPeriod was added, which may explain its aversion to sleeping
-					// given the default timer period of 15.625 ms.
+					Thread.Sleep(Math.Max(sleepTime, 1));
 				}
-				else if (sleepy >= 10 || paused)
-				{
-					// reduce it further beacuse Sleep usually sleeps for more than the amount we tell it to
-					Thread.Sleep(sleepy / 2);
-				}
-				else if (sleepy > 0) // spin for <1 millisecond waits
+				else if (sleepTime > 0) // spin for <1 millisecond waits
 				{
 					Thread.Yield(); // limit to other threads on the same CPU core for other short waits
 				}
