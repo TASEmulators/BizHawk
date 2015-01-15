@@ -140,14 +140,6 @@ namespace BizHawk.Client.EmuHawk
 			CoreTree.ImageList.Images.Add("Good", Properties.Resources.GreenCheck);
 			CoreTree.ImageList.Images.Add("Bad", Properties.Resources.ExclamationRed);
 
-			var services = Assembly
-				.GetAssembly(typeof(IEmulator))
-				.GetTypes()
-				.Where(t => t.IsInterface)
-				.Where(t => typeof(IEmulatorService).IsAssignableFrom(t))
-				.Where(t => t != typeof(IEmulatorService))
-				.ToList();
-
 			var cores = Assembly
 				.Load("BizHawk.Emulation.Cores")
 				.GetTypes()
@@ -180,69 +172,33 @@ namespace BizHawk.Client.EmuHawk
 					ForeColor = core.CoreAttributes.Released ? Color.Black : Color.DarkGray,
 				};
 
-				bool missingImplementation = false;
+				var service = typeof(IEmulator);
 
-				foreach (var service in services.Where(s => !core.ServicesNotApplicable.NotApplicableTypes.Contains(s)))
+				bool isImplemented = false;
+				if (service.IsAssignableFrom(core.CoreType))
 				{
-					bool isImplemented = false;
-					if (service.IsAssignableFrom(core.CoreType))
-					{
-						isImplemented = true;
-					}
-					else if (service.IsAssignableFrom(typeof(ISettable<,>)))
-					{
-						isImplemented = core.CoreType
-							.GetInterfaces()
-							.Where(t => t.IsGenericType &&
-										t.GetGenericTypeDefinition() == typeof(ISettable<,>))
-							.FirstOrDefault() != null;
-					}
+					isImplemented = true;
+				}
 
+				var serviceNode = new TreeNode
+				{
+					Text = service.Name,
+					ForeColor = isImplemented ? Color.Black : Color.Red
+				};
 
-					var serviceNode = new TreeNode
+				serviceNode.Expand();
+
+				bool fullyImplementedInterface = isImplemented;
+
+				if (isImplemented)
+				{
+					foreach (var field in service.GetMethods().OrderBy(f => f.Name))
 					{
-						Text = service.Name,
-						ForeColor = isImplemented ? Color.Black : Color.Red
-					};
+						var coreImplementation = core.CoreType.GetMethod(field.Name);
 
-					bool fullyImplementedInterface = isImplemented;
-
-					if (isImplemented)
-					{
-						foreach (var field in service.GetMethods().OrderBy(f => f.Name))
+						if (coreImplementation != null)
 						{
-							try
-							{
-								var coreImplementation = core.CoreType.GetMethod(field.Name);
-
-								if (coreImplementation != null)
-								{
-									var i = coreImplementation.IsImplemented();
-									serviceNode.Nodes.Add(new TreeNode
-									{
-										Text = field.Name,
-										ImageKey = i ? "Good" : "Bad",
-										SelectedImageKey = i ? "Good" : "Bad",
-										StateImageKey = i ? "Good" : "Bad"
-									});
-
-									if (!i)
-									{
-										fullyImplementedInterface = false;
-									}
-								}
-							}
-							catch (Exception)
-							{
-								// TODO: SavestateBinary() and SaveStateBinary(BinaryWriter bw) cause an exception, need to look at signature too
-							}
-						}
-
-						// Properties are redundant the getter and setters show up when iterating methods
-						/*
-						foreach (var field in service.GetProperties().OrderBy(f => f.Name))
-						{
-							var i = field.IsImplemented();
+							var i = coreImplementation.IsImplemented();
 							serviceNode.Nodes.Add(new TreeNode
 							{
 								Text = field.Name,
@@ -256,19 +212,13 @@ namespace BizHawk.Client.EmuHawk
 								fullyImplementedInterface = false;
 							}
 						}
-						*/
 					}
-					else
-					{
-						missingImplementation = true;
-					}
-
-					serviceNode.StateImageKey = serviceNode.SelectedImageKey = serviceNode.ImageKey = fullyImplementedInterface ? "Good" : "Bad";
-
-					coreNode.Nodes.Add(serviceNode);
 				}
 
-				coreNode.StateImageKey = coreNode.SelectedImageKey = coreNode.ImageKey = missingImplementation ? "Bad" : "Good";
+				serviceNode.StateImageKey = serviceNode.SelectedImageKey = serviceNode.ImageKey = fullyImplementedInterface ? "Good" : "Bad";
+
+				coreNode.Nodes.Add(serviceNode);
+				coreNode.StateImageKey = coreNode.SelectedImageKey = coreNode.ImageKey = fullyImplementedInterface ? "Good" : "Bad";
 
 				CoreTree.Nodes.Add(coreNode);
 			}
