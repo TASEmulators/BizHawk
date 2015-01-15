@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public MemoryDomain GetCHRROM()
 		{
-			return memoryDomains["CHR VROM"];
+			return _memoryDomains["CHR VROM"];
 		}
 
 
