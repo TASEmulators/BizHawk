@@ -27,15 +27,11 @@ namespace BizHawk.Emulation.Common
 			}
 
 			// add the actual instantiated type and any types in the hierarchy
-			while (coreType != null)
+			// except for object because that would be dumb (or would it?)
+			while (coreType != typeof(object))
 			{
 				Services.Add(coreType, core);
 				coreType = coreType.BaseType;
-
-				if (coreType == typeof(object)) // Don't register object
-				{
-					coreType = null;
-				}
 			}
 		}
 
