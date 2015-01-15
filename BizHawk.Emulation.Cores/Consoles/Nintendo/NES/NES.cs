@@ -26,6 +26,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		[CoreConstructor("NES")]
 		public NES(CoreComm comm, GameInfo game, byte[] rom, object Settings, object SyncSettings)
 		{
+			var ser = new BasicServiceProvider(this);
+			ServiceProvider = ser;
+
 			byte[] fdsbios = comm.CoreFileProvider.GetFirmware("NES", "Bios_FDS", false);
 			if (fdsbios != null && fdsbios.Length == 40976)
 			{
@@ -50,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			PutSettings((NESSettings)Settings ?? new NESSettings());
 
-			var ser = new BasicServiceProvider(this);
+			
 			ser.Register<IDisassemblable>(cpu);
 
 			Tracer = new TraceBuffer();
@@ -64,8 +67,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (reader != null)
 					ser.Register<DatachBarcode>(reader);
 			}
-
-			ServiceProvider = ser;
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
