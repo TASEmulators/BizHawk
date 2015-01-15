@@ -1669,7 +1669,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
 			_throttle.SetCoreFps(Global.Emulator.CoreComm.VsyncRate);
-			_throttle.signal_paused = EmulatorPaused;
+			_throttle.signal_paused = EmulatorPaused || Global.Emulator.IsNull();
 			_throttle.signal_unthrottle = _unthrottled || superFastForward;
 			_throttle.signal_overrideSecondaryThrottle = (fastForward || rewind) && (Global.Config.SoundThrottle || Global.Config.VSyncThrottle || Global.Config.VSync);
 			_throttle.SetSpeedPercent(speedPercent);
