@@ -157,6 +157,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		void Init(GameInfo game, byte[] rom)
 		{
+			var ser = new BasicServiceProvider(this);
+			ServiceProvider = ser;
+
 			Controller = NullController.GetNullController();
 			Cpu = new HuC6280(this);
 			VCE = new VCE();
@@ -297,14 +300,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			Cpu.ResetPC();
 			SetupMemoryDomains();
 
-			{
-				var ser = new BasicServiceProvider(this);
-				ServiceProvider = ser;
-				Tracer = new TraceBuffer();
-				ser.Register<ITraceable>(Tracer);
-				ser.Register<IDisassemblable>(Cpu);
-				ser.Register<IVideoProvider>((IVideoProvider)VPC ?? VDC1);
-			}
+			Tracer = new TraceBuffer();
+			ser.Register<ITraceable>(Tracer);
+			ser.Register<IDisassemblable>(Cpu);
+			ser.Register<IVideoProvider>((IVideoProvider)VPC ?? VDC1);
 		}
 
 		int lagCount;
