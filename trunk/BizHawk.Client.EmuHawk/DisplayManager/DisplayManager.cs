@@ -638,6 +638,11 @@ TESTEROO:
 
 				if (LastVsyncSetting != vsync || LastVsyncSettingGraphicsControl != presentationPanel.GraphicsControl)
 				{
+					if (LastVsyncSetting == null && vsync)
+					{
+						// Workaround for vsync not taking effect at startup (Intel graphics related?)
+						presentationPanel.GraphicsControl.SetVsync(false);
+					}
 					presentationPanel.GraphicsControl.SetVsync(vsync);
 					LastVsyncSettingGraphicsControl = presentationPanel.GraphicsControl;
 					LastVsyncSetting = vsync;
