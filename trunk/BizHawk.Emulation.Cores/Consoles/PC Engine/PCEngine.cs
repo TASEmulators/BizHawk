@@ -99,7 +99,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public PCEngine(CoreComm comm, GameInfo game, Disc disc, object Settings, object syncSettings)
 		{
 			CoreComm = comm;
-			ServiceProvider = new BasicServiceProvider(this);
 			Tracer = new TraceBuffer();
 			MemoryCallbacks = new MemoryCallbackSystem();
 			DriveLightEnabled = true;
@@ -157,9 +156,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		void Init(GameInfo game, byte[] rom)
 		{
-			var ser = new BasicServiceProvider(this);
-			ServiceProvider = ser;
-
 			Controller = NullController.GetNullController();
 			Cpu = new HuC6280(this);
 			VCE = new VCE();
@@ -298,12 +294,14 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				VDC1.MultiResHack = game.GetIntValue("MultiResHack");
 
 			Cpu.ResetPC();
-			SetupMemoryDomains();
 
 			Tracer = new TraceBuffer();
+			var ser = new BasicServiceProvider(this);
+			ServiceProvider = ser;
 			ser.Register<ITraceable>(Tracer);
 			ser.Register<IDisassemblable>(Cpu);
 			ser.Register<IVideoProvider>((IVideoProvider)VPC ?? VDC1);
+			SetupMemoryDomains();
 		}
 
 		int lagCount;
