@@ -258,6 +258,21 @@
     </Compile>
     <Compile Include="Consoles\Atari\lynx\LibLynx.cs" />
     <Compile Include="Consoles\Atari\lynx\Lynx.cs" />
+    <Compile Include="Consoles\Atari\lynx\Lynx.IInputPollable.cs">
+    	<DependentUpon>Lynx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\lynx\Lynx.IMemoryDomains.cs">
+    	<DependentUpon>Lynx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\lynx\Lynx.ISaveRam.cs">
+    	<DependentUpon>Lynx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\lynx\Lynx.IStatable.cs">
+    	<DependentUpon>Lynx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\lynx\Lynx.IVideoProvider.cs">
+    	<DependentUpon>Lynx.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Coleco\ColecoVision.cs" />
     <Compile Include="Consoles\Coleco\ColecoVision.IDebuggable.cs">
       <DependentUpon>ColecoVision.cs</DependentUpon>
@@ -580,10 +595,10 @@
     <Compile Include="Consoles\WonderSwan\WonderSwan.IMemoryDomains.cs">
       <DependentUpon>WonderSwan.cs</DependentUpon>
     </Compile>
-     <Compile Include="Consoles\WonderSwan\WonderSwan.ISaveRam.cs">
+    <Compile Include="Consoles\WonderSwan\WonderSwan.ISaveRam.cs">
       <DependentUpon>WonderSwan.cs</DependentUpon>
     </Compile>
-     <Compile Include="Consoles\WonderSwan\WonderSwan.ISettable.cs">
+    <Compile Include="Consoles\WonderSwan\WonderSwan.ISettable.cs">
       <DependentUpon>WonderSwan.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\WonderSwan\WonderSwan.IStatable.cs">
