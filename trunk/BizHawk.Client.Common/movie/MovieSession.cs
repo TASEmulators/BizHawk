@@ -222,7 +222,7 @@ namespace BizHawk.Client.Common
 
 		public void HandleMovieOnFrameLoop()
 		{
-			if (Movie.IsPlaying && Global.Emulator.Frame >= Movie.InputLogLength)
+			if (Movie.IsPlaying && !Movie.IsFinished && Global.Emulator.Frame >= Movie.InputLogLength)
 			{
 				HandlePlaybackEnd();
 			}
