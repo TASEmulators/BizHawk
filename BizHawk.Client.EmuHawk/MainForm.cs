@@ -3656,7 +3656,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FeaturesMenuItem_Click(object sender, EventArgs e)
 		{
-			new CoreFeatureAnalysis().Show();
+			GlobalWin.Tools.Load<CoreFeatureAnalysis>();
 		}
 
 		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
