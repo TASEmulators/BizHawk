@@ -181,13 +181,13 @@ namespace BizHawk.Client.EmuHawk
 			CurrentCoreTree.EndUpdate();
 		}
 
-		private static int CountAllEmuCores()
+		private static IEnumerable<Type> GetAllEmuCores()
 		{
-			return Assembly
+			return
+				Assembly
 				.Load("BizHawk.Emulation.Cores")
 				.GetTypes()
-				.Where(t => typeof(IEmulator).IsAssignableFrom(t) && !t.IsAbstract)
-				.Count();
+				.Where(t => typeof(IEmulator).IsAssignableFrom(t) && !t.IsAbstract);
 		}
 
 
@@ -196,9 +196,12 @@ namespace BizHawk.Client.EmuHawk
 			CoreTree.ImageList = new ImageList();
 			CoreTree.ImageList.Images.Add("Good", Properties.Resources.GreenCheck);
 			CoreTree.ImageList.Images.Add("Bad", Properties.Resources.ExclamationRed);
+			CoreTree.ImageList.Images.Add("Unknown", Properties.Resources.RetroQuestion);
+
+			var possiblecoretypes = GetAllEmuCores().ToList();
 
 			toolStripStatusLabel1.Text = string.Format("Total: {0} Released: {1} Profiled: {2}",
-				CountAllEmuCores(),
+				possiblecoretypes.Count,
 				KnownCores.Values.Count(c => c.Released),
 				KnownCores.Count);
 
@@ -215,6 +218,24 @@ namespace BizHawk.Client.EmuHawk
 				}
 				CoreTree.Nodes.Add(coreNode);
 			}
+			foreach (Type t in possiblecoretypes)
+			{
+				var coreattr = (CoreAttributes)t.GetCustomAttributes(typeof(CoreAttributes), false)[0];
+				if (!KnownCores.ContainsKey(coreattr.CoreName))
+				{
+					string img = "Unknown";
+					var coreNode = new TreeNode
+					{
+						Text = coreattr.CoreName + (coreattr.Released ? string.Empty : " (UNRELEASED)"),
+						ForeColor = coreattr.Released ? Color.Black : Color.DarkGray,
+						ImageKey = img,
+						SelectedImageKey = img,
+						StateImageKey = img
+					};
+					CoreTree.Nodes.Add(coreNode);
+				}
+			}
+
 			CoreTree.EndUpdate();
 		}
 
