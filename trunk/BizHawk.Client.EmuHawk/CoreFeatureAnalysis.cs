@@ -181,14 +181,26 @@ namespace BizHawk.Client.EmuHawk
 			CurrentCoreTree.EndUpdate();
 		}
 
+		private static int CountAllEmuCores()
+		{
+			return Assembly
+				.Load("BizHawk.Emulation.Cores")
+				.GetTypes()
+				.Where(t => typeof(IEmulator).IsAssignableFrom(t) && !t.IsAbstract)
+				.Count();
+		}
+
+
 		private void DoAllCoresTree(CoreInfo current_ci)
 		{
 			CoreTree.ImageList = new ImageList();
 			CoreTree.ImageList.Images.Add("Good", Properties.Resources.GreenCheck);
 			CoreTree.ImageList.Images.Add("Bad", Properties.Resources.ExclamationRed);
 
-			TotalCoresLabel.Text = KnownCores.Count.ToString();
-			ReleasedCoresLabel.Text = KnownCores.Values.Count(c => c.Released).ToString();
+			toolStripStatusLabel1.Text = string.Format("Total: {0} Released: {1} Profiled: {2}",
+				CountAllEmuCores(),
+				KnownCores.Values.Count(c => c.Released),
+				KnownCores.Count);
 
 			CoreTree.Nodes.Clear();
 			CoreTree.BeginUpdate();
