@@ -551,28 +551,28 @@
     <Compile Include="Consoles\Nintendo\QuickNES\Nes_NTSC_Colors.cs" />
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.cs" />
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IDebuggable.cs">
-        <DependentUpon>QuickNES.cs</DependentUpon>
+      <DependentUpon>QuickNES.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IInputPollable.cs">
-        <DependentUpon>QuickNES.cs</DependentUpon>
+      <DependentUpon>QuickNES.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IMemoryDomains.cs">
-        <DependentUpon>QuickNES.cs</DependentUpon>
+      <DependentUpon>QuickNES.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.INESPPUViewable.cs">
-        <DependentUpon>QuickNES.cs</DependentUpon>
+      <DependentUpon>QuickNES.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.ISaveRam.cs">
-        <DependentUpon>QuickNES.cs</DependentUpon>
+      <DependentUpon>QuickNES.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.ISettable.cs">
-        <DependentUpon>QuickNES.cs</DependentUpon>
+      <DependentUpon>QuickNES.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IStatable.cs">
-        <DependentUpon>QuickNES.cs</DependentUpon>
+      <DependentUpon>QuickNES.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IVideoProvider.cs">
-        <DependentUpon>QuickNES.cs</DependentUpon>
+      <DependentUpon>QuickNES.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\SNES9X\LibSnes9x.cs" />
     <Compile Include="Consoles\Nintendo\SNES9X\Snes9x.cs" />
@@ -590,12 +590,13 @@
     <Compile Include="Consoles\PC Engine\CDLMapping.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.TurboCD.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.Populous.cs" />
+    <Compile Include="Consoles\PC Engine\PCEngine.Input.cs" />
     <Compile Include="Consoles\PC Engine\ScsiCDBus.cs" />
     <Compile Include="Consoles\PC Engine\TurboCD.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\EEPROM.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\RomHeader.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\SaveRAM.cs" />
-    <Compile Include="Consoles\Sega\Genesis\Input.cs" />
+    <Compile Include="Consoles\Sega\Genesis\Genesis.Input.cs" />
     <Compile Include="Consoles\Sega\Genesis\Native68000\Musashi.cs" />
     <Compile Include="Consoles\Sega\gpgx\GenDbgHlp.cs" />
     <Compile Include="Consoles\Sega\gpgx\GPGX.cs" />
@@ -622,6 +623,7 @@
     <Compile Include="Consoles\Sega\Saturn\Yabause.IStatable.cs">
       <DependentUpon>Yabause.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Sega\SMS\SMS.Input.cs" />
     <Compile Include="Consoles\Sega\SMS\TerebiOekaki.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.Korea.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.ExtRam.cs" />
@@ -694,7 +696,6 @@
     <Compile Include="FileID.cs" />
     <Compile Include="LibRetro.cs" />
     <Compile Include="LibRetroEmulator.cs" />
-    <Compile Include="Consoles\PC Engine\Input.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.SF2.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.SuperGrafx.cs" />
@@ -711,7 +712,6 @@
     <Compile Include="Consoles\Sega\Genesis\IO.cs" />
     <Compile Include="Consoles\Sega\Genesis\MemoryMap.68000.cs" />
     <Compile Include="Consoles\Sega\Genesis\MemoryMap.Z80.cs" />
-    <Compile Include="Consoles\Sega\SMS\Input.cs" />
     <Compile Include="Consoles\Sega\SMS\SMS.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.cs" />
   </ItemGroup>
