@@ -518,28 +518,28 @@
     <Compile Include="Consoles\Nintendo\NES\INESPPUViewable.cs" />
     <Compile Include="Consoles\Nintendo\NES\NES.cs" />
     <Compile Include="Consoles\Nintendo\NES\NES.IDebuggable.cs">
-        <DependentUpon>NES.cs</DependentUpon>
+      <DependentUpon>NES.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\NES.IDriveLight.cs">
-        <DependentUpon>NES.cs</DependentUpon>
+      <DependentUpon>NES.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\NES.IInputPollable.cs">
-        <DependentUpon>NES.cs</DependentUpon>
+      <DependentUpon>NES.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\NES.IMemoryDomains.cs">
-        <DependentUpon>NES.cs</DependentUpon>
+      <DependentUpon>NES.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\NES.INESPPUViewable.cs">
-        <DependentUpon>NES.cs</DependentUpon>
+      <DependentUpon>NES.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\NES.ISaveRam.cs">
-        <DependentUpon>NES.cs</DependentUpon>
+      <DependentUpon>NES.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\NES.ISettable.cs">
-        <DependentUpon>NES.cs</DependentUpon>
+      <DependentUpon>NES.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\NES.IStatable.cs">
-        <DependentUpon>NES.cs</DependentUpon>
+      <DependentUpon>NES.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\NESControllers.cs" />
     <Compile Include="Consoles\Nintendo\NES\Palettes.cs" />
@@ -550,6 +550,30 @@
     <Compile Include="Consoles\Nintendo\QuickNES\LibQuickNES.cs" />
     <Compile Include="Consoles\Nintendo\QuickNES\Nes_NTSC_Colors.cs" />
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.cs" />
+    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IDebuggable.cs">
+        <DependentUpon>QuickNES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IInputPollable.cs">
+        <DependentUpon>QuickNES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IMemoryDomains.cs">
+        <DependentUpon>QuickNES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.INESPPUViewable.cs">
+        <DependentUpon>QuickNES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.ISaveRam.cs">
+        <DependentUpon>QuickNES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.ISettable.cs">
+        <DependentUpon>QuickNES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IStatable.cs">
+        <DependentUpon>QuickNES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IVideoProvider.cs">
+        <DependentUpon>QuickNES.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\SNES9X\LibSnes9x.cs" />
     <Compile Include="Consoles\Nintendo\SNES9X\Snes9x.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi.cs" />
