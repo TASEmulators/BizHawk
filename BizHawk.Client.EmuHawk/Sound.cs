@@ -218,8 +218,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (asyncsoundProvider != null)
 			{
-				if (samplesNeeded == 0)
-					return;
 				samples = new short[samplesNeeded];
 				//if (asyncsoundProvider != null && Muted == false)
 				//{
@@ -227,6 +225,8 @@ namespace BizHawk.Client.EmuHawk
 				semisync.GetSamples(samples);
 				//}
 				//else asyncsoundProvider.DiscardSamples();
+				if (samplesNeeded == 0)
+					return;
 				samplesProvided = samplesNeeded;
 			}
 			else
