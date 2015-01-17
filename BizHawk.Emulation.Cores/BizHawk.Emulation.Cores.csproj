@@ -352,21 +352,42 @@
     <Compile Include="Consoles\Nintendo\GBA\LibVBANext.cs" />
     <Compile Include="Consoles\Nintendo\GBA\Meteor.cs" />
     <Compile Include="Consoles\Nintendo\GBA\Meteor.IGBAGPUViewable.cs">
-        <DependentUpon>Meteor.cs</DependentUpon>
+      <DependentUpon>Meteor.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\Meteor.IMemoryDomains.cs">
-        <DependentUpon>Meteor.cs</DependentUpon>
+      <DependentUpon>Meteor.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\Meteor.ISaveRam.cs">
-        <DependentUpon>Meteor.cs</DependentUpon>
+      <DependentUpon>Meteor.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\Meteor.IStatable.cs">
-        <DependentUpon>Meteor.cs</DependentUpon>
+      <DependentUpon>Meteor.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\Meteor.IVideoProvider.cs">
-        <DependentUpon>Meteor.cs</DependentUpon>
+      <DependentUpon>Meteor.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBANext.cs" />
+    <Compile Include="Consoles\Nintendo\GBA\VBANext.IDebuggable.cs">
+        <DependentUpon>VBANext.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\VBANext.IGBAGPUViewable.cs">
+        <DependentUpon>VBANext.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\VBANext.IMemoryDomains.cs">
+        <DependentUpon>VBANext.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\VBANext.ISaveRam.cs">
+        <DependentUpon>VBANext.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\VBANext.ISettings.cs">
+        <DependentUpon>VBANext.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\VBANext.IStatable.cs">
+        <DependentUpon>VBANext.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\VBANext.IVideoProvider.cs">
+        <DependentUpon>VBANext.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBARegisterHelper.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64.IDebuggable.cs">
       <DependentUpon>N64.cs</DependentUpon>
