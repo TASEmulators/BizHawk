@@ -322,13 +322,27 @@
       <DependentUpon>Gambatte.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.cs" />
-    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IDebuggable.cs" />
-    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IInputPollable.cs" />
-    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IMemoryDomains.cs" />
-    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.ISaveRam.cs" />
-    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.ISettable.cs" />
-    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IStatable.cs" />
-    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IVideoProvider.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IDebuggable.cs">
+        <DependentUpon>GambatteLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IInputPollable.cs">
+        <DependentUpon>GambatteLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IMemoryDomains.cs">
+        <DependentUpon>GambatteLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.ISaveRam.cs">
+        <DependentUpon>GambatteLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.ISettable.cs">
+        <DependentUpon>GambatteLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IStatable.cs">
+        <DependentUpon>GambatteLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IVideoProvider.cs">
+        <DependentUpon>GambatteLink.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GBColors.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\GBDisassembler.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\LibGambatte.cs" />
