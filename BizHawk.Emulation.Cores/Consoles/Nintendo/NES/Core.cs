@@ -296,7 +296,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 #if VS2012
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-		private void RunCpuOne()
+		internal void RunCpuOne()
 		{
 			cpu_stepcounter++;
 			if (cpu_stepcounter == cpu_sequence[cpu_step])
