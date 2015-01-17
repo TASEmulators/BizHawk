@@ -175,7 +175,7 @@ namespace BizHawk.Client.Common
 		{
 			if (_rewindDeltaEnable)
 			{
-				CaptureRewindStateDelta(coreSavestate, _lastState.Length <= 0x10000);
+				CaptureRewindStateDelta(coreSavestate);
 			}
 			else
 			{
@@ -254,7 +254,7 @@ namespace BizHawk.Client.Common
 			stream.Write(currentState, 0, currentState.Length);
 		}
 
-		private unsafe void CaptureRewindStateDelta(byte[] currentState, bool isSmall)
+		private unsafe void CaptureRewindStateDelta(byte[] currentState)
 		{
 			// in case the state sizes mismatch, capture a full state rather than trying to do anything clever
 			if (currentState.Length != _lastState.Length)
@@ -305,7 +305,7 @@ namespace BizHawk.Client.Common
 						return;
 					}
 
-					// Delta Offset
+					// Offset Delta
 					VLInteger.WriteUnsigned((uint)(changeSequenceStartOffset - lastChangeSequenceStartOffset), _tempBuf, ref index);
 
 					// Length
@@ -355,10 +355,10 @@ namespace BizHawk.Client.Common
 
 					while (index < buf.Length)
 					{
-						int deltaOffset = (int)VLInteger.ReadUnsigned(buf, ref index);
+						int offsetDelta = (int)VLInteger.ReadUnsigned(buf, ref index);
 						int length = (int)VLInteger.ReadUnsigned(buf, ref index);
 
-						offset += deltaOffset;
+						offset += offsetDelta;
 						
 						output.Position = offset;
 						output.Write(buf, index, length);
