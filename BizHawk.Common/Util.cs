@@ -374,6 +374,23 @@ namespace BizHawk.Common
 		}
 	}
 
+	public static class BitConverterLE
+	{
+		public static void WriteBytes(ushort value, byte[] dst, int startIndex)
+		{
+			dst[startIndex    ] = (byte)(value      );
+			dst[startIndex + 1] = (byte)(value >>  8);
+		}
+
+		public static void WriteBytes(uint value, byte[] dst, int startIndex)
+		{
+			dst[startIndex    ] = (byte)(value      );
+			dst[startIndex + 1] = (byte)(value >>  8);
+			dst[startIndex + 2] = (byte)(value >> 16);
+			dst[startIndex + 3] = (byte)(value >> 24);
+		}
+	}
+
 	[Serializable]
 	public class NotTestedException : Exception
 	{
