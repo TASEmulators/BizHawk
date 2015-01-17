@@ -287,11 +287,6 @@ namespace BizHawk.Client.Common
 
 					if (inChangeSequence == false)
 					{
-						if (i >= _lastState.Length)
-						{
-							continue;
-						}
-
 						if (thisByteMatches)
 						{
 							continue;
