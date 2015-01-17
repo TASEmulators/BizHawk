@@ -253,7 +253,7 @@ namespace BizHawk.Client.Common
 			stream.Write(currentState, 0, currentState.Length);
 		}
 
-		private void CaptureRewindStateDelta(byte[] currentState, bool isSmall)
+		private unsafe void CaptureRewindStateDelta(byte[] currentState, bool isSmall)
 		{
 			// in case the state sizes mismatch, capture a full state rather than trying to do anything clever
 			if (currentState.Length != _lastState.Length)
@@ -278,8 +278,13 @@ namespace BizHawk.Client.Common
 			{
 				var writer = new BinaryWriter(ms);
 				writer.Write(false); // delta state
-				for (int i = 0; i < currentState.Length; i++)
+				int stateLength = Math.Min(currentState.Length, _lastState.Length); // Just to be safe :)
+				fixed (byte* pCurrentState = &currentState[0])
+				fixed (byte* pLastState = &_lastState[0])
+				for (int i = 0; i < stateLength; i++)
 				{
+					bool thisByteMatches = *(pCurrentState + i) == *(pLastState + i);
+
 					if (inChangeSequence == false)
 					{
 						if (i >= _lastState.Length)
@@ -287,7 +292,7 @@ namespace BizHawk.Client.Common
 							continue;
 						}
 
-						if (currentState[i] == _lastState[i])
+						if (thisByteMatches)
 						{
 							continue;
 						}
@@ -296,9 +301,10 @@ namespace BizHawk.Client.Common
 						beginChangeSequence = i;
 					}
 
-					if (i - beginChangeSequence == 254 || i == currentState.Length - 1)
+					if (thisByteMatches || i - beginChangeSequence == 254 || i == currentState.Length - 1)
 					{
-						writer.Write((byte)(i - beginChangeSequence + 1));
+						int length = i - beginChangeSequence + (thisByteMatches ? 0 : 1);
+						writer.Write((byte)length);
 						if (isSmall)
 						{
 							writer.Write((ushort)beginChangeSequence);
@@ -308,24 +314,7 @@ namespace BizHawk.Client.Common
 							writer.Write(beginChangeSequence);
 						}
 
-						writer.Write(_lastState, beginChangeSequence, i - beginChangeSequence + 1);
-						inChangeSequence = false;
-						continue;
-					}
-
-					if (currentState[i] == _lastState[i])
-					{
-						writer.Write((byte)(i - beginChangeSequence));
-						if (isSmall)
-						{
-							writer.Write((ushort)beginChangeSequence);
-						}
-						else
-						{
-							writer.Write(beginChangeSequence);
-						}
-
-						writer.Write(_lastState, beginChangeSequence, i - beginChangeSequence);
+						writer.Write(_lastState, beginChangeSequence, length);
 						inChangeSequence = false;
 					}
 				}
