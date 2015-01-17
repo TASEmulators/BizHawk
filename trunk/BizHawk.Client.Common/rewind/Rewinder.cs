@@ -265,64 +265,67 @@ namespace BizHawk.Client.Common
 			var beginChangeSequence = -1;
 			var inChangeSequence = false;
 
-			// try to set up the buffer in advance so we dont ever have exceptions in here
-			// zeromus says: this sets off red flags for me. vecna got an exception that might be related to this inflating to 2x the input size. we should add an emergency check, or analyze how much it could inflate by (perhaps 3x would be adequate in every case?)
 			if (_tempBuf.Length < currentState.Length)
 			{
-				_tempBuf = new byte[currentState.Length * 2];
+				_tempBuf = new byte[currentState.Length];
 			}
 
-			var ms = new MemoryStream(_tempBuf, 0, _tempBuf.Length, true, true); 
-		RETRY:
-			try
+			int offset = 0;
+			_tempBuf[offset++] = 0; // Full state (false = delta)
+			int stateLength = Math.Min(currentState.Length, _lastState.Length); // Just to be safe :)
+			fixed (byte* pCurrentState = &currentState[0])
+			fixed (byte* pLastState = &_lastState[0])
+			for (int i = 0; i < stateLength; i++)
 			{
-				var writer = new BinaryWriter(ms);
-				writer.Write(false); // delta state
-				int stateLength = Math.Min(currentState.Length, _lastState.Length); // Just to be safe :)
-				fixed (byte* pCurrentState = &currentState[0])
-				fixed (byte* pLastState = &_lastState[0])
-				for (int i = 0; i < stateLength; i++)
+				bool thisByteMatches = *(pCurrentState + i) == *(pLastState + i);
+
+				if (inChangeSequence == false)
 				{
-					bool thisByteMatches = *(pCurrentState + i) == *(pLastState + i);
-
-					if (inChangeSequence == false)
+					if (thisByteMatches)
 					{
-						if (thisByteMatches)
-						{
-							continue;
-						}
-
-						inChangeSequence = true;
-						beginChangeSequence = i;
+						continue;
 					}
 
-					if (thisByteMatches || i - beginChangeSequence == 254 || i == currentState.Length - 1)
-					{
-						int length = i - beginChangeSequence + (thisByteMatches ? 0 : 1);
-						writer.Write((byte)length);
-						if (isSmall)
-						{
-							writer.Write((ushort)beginChangeSequence);
-						}
-						else
-						{
-							writer.Write(beginChangeSequence);
-						}
+					inChangeSequence = true;
+					beginChangeSequence = i;
+				}
 
-						writer.Write(_lastState, beginChangeSequence, length);
-						inChangeSequence = false;
+				if (thisByteMatches || i - beginChangeSequence == 254 || i == currentState.Length - 1)
+				{
+					const int maxHeaderSize = 5;
+					int length = i - beginChangeSequence + (thisByteMatches ? 0 : 1);
+
+					if (offset + length + maxHeaderSize >= stateLength)
+					{
+						// If the delta ends up being larger than the full state, capture the full state instead
+						CaptureRewindStateNonDelta(currentState);
+						return;
 					}
+
+					// Length
+					_tempBuf[offset++] = (byte)length;
+
+					// Offset
+					if (isSmall)
+					{
+						BitConverterLE.WriteBytes((ushort)beginChangeSequence, _tempBuf, offset);
+						offset += 2;
+					}
+					else
+					{
+						BitConverterLE.WriteBytes((uint)beginChangeSequence, _tempBuf, offset);
+						offset += 4;
+					}
+
+					// Data
+					Buffer.BlockCopy(_lastState, beginChangeSequence, _tempBuf, offset, length);
+					offset += length;
+
+					inChangeSequence = false;
 				}
 			}
-			catch (NotSupportedException)
-			{
-				// ok... we had an exception after all
-				// if we did actually run out of room in the memorystream, then try it again with a bigger buffer
-				_tempBuf = new byte[_tempBuf.Length * 2];
-				goto RETRY;
-			}
 
-			if (_lastState != null && _lastState.Length == currentState.Length)
+			if (_lastState.Length == currentState.Length)
 			{
 				Buffer.BlockCopy(currentState, 0, _lastState, 0, _lastState.Length);
 			}
@@ -330,9 +333,8 @@ namespace BizHawk.Client.Common
 			{
 				_lastState = (byte[])currentState.Clone();
 			}
-		
-			var seg = new ArraySegment<byte>(_tempBuf, 0, (int)ms.Position);
-			_rewindBuffer.Push(seg);
+
+			_rewindBuffer.Push(new ArraySegment<byte>(_tempBuf, 0, offset));
 		}
 
 		private void RewindLarge() 
