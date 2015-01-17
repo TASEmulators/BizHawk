@@ -159,14 +159,7 @@ namespace BizHawk.Client.Common
 					return;
 				}
 
-				if (_lastState.Length < 0x10000)
-				{
-					Rewind64K();
-				}
-				else
-				{
-					RewindLarge();
-				}
+				RewindDelta();
 			}
 		}
 
@@ -243,15 +236,29 @@ namespace BizHawk.Client.Common
 			return null;
 		}
 
-		private void CaptureRewindStateNonDelta(byte[] currentState)
+		private void CaptureRewindStateNonDelta(byte[] state)
 		{
-			long offset = _rewindBuffer.Enqueue(0, currentState.Length + 1);
+			long offset = _rewindBuffer.Enqueue(0, state.Length + 1);
 			var stream = _rewindBuffer.Stream;
 			stream.Position = offset;
 
 			// write the header for a non-delta frame
-			stream.WriteByte(1); // i.e. true
-			stream.Write(currentState, 0, currentState.Length);
+			stream.WriteByte(1); // Full state = true
+			stream.Write(state, 0, state.Length);
+		}
+
+		private void UpdateLastState(byte[] state, int index, int length)
+		{
+			if (_lastState.Length != length)
+			{
+				_lastState = new byte[length];
+			}
+			Buffer.BlockCopy(state, index, _lastState, 0, length);
+		}
+
+		private void UpdateLastState(byte[] state)
+		{
+			UpdateLastState(state, 0, state.Length);
 		}
 
 		private unsafe void CaptureRewindStateDelta(byte[] currentState)
@@ -259,7 +266,8 @@ namespace BizHawk.Client.Common
 			// in case the state sizes mismatch, capture a full state rather than trying to do anything clever
 			if (currentState.Length != _lastState.Length)
 			{
-				CaptureRewindStateNonDelta(currentState);
+				CaptureRewindStateNonDelta(_lastState);
+				UpdateLastState(currentState);
 				return;
 			}
 
@@ -274,7 +282,7 @@ namespace BizHawk.Client.Common
 				_tempBuf = new byte[stateLength];
 			}
 
-			_tempBuf[index++] = 0; // Full state (false = delta)
+			_tempBuf[index++] = 0; // Full state = false (i.e. delta)
 
 			fixed (byte* pCurrentState = &currentState[0])
 			fixed (byte* pLastState = &_lastState[0])
@@ -301,7 +309,8 @@ namespace BizHawk.Client.Common
 					if (index + length + maxHeaderSize >= stateLength)
 					{
 						// If the delta ends up being larger than the full state, capture the full state instead
-						CaptureRewindStateNonDelta(currentState);
+						CaptureRewindStateNonDelta(_lastState);
+						UpdateLastState(currentState);
 						return;
 					}
 
@@ -320,56 +329,47 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			Buffer.BlockCopy(currentState, 0, _lastState, 0, _lastState.Length);
-
 			_rewindBuffer.Push(new ArraySegment<byte>(_tempBuf, 0, index));
+
+			UpdateLastState(currentState);
 		}
 
-		private void RewindLarge() 
+		private void RewindDelta()
 		{
-			RewindDelta(false); 
-		}
-		
-		private void Rewind64K() 
-		{
-			RewindDelta(true); 
-		}
+			if (!Global.Emulator.HasSavestates()) return;
 
-		private void RewindDelta(bool isSmall)
-		{
-			if (Global.Emulator.HasSavestates())
+			var ms = _rewindBuffer.PopMemoryStream();
+			byte[] buf = ms.GetBuffer();
+			var reader = new BinaryReader(ms);
+			var fullstate = reader.ReadBoolean();
+			if (fullstate)
 			{
-				var ms = _rewindBuffer.PopMemoryStream();
-				var reader = new BinaryReader(ms);
-				var fullstate = reader.ReadBoolean();
-				if (fullstate)
-				{
-					Global.Emulator.AsStatable().LoadStateBinary(reader);
-				}
-				else
-				{
-					byte[] buf = ms.GetBuffer();
-					var output = new MemoryStream(_lastState);
-					int index = 1;
-					int offset = 0;
-
-					while (index < buf.Length)
-					{
-						int offsetDelta = (int)VLInteger.ReadUnsigned(buf, ref index);
-						int length = (int)VLInteger.ReadUnsigned(buf, ref index);
-
-						offset += offsetDelta;
-						
-						output.Position = offset;
-						output.Write(buf, index, length);
-						index += length;
-					}
-
-					reader.Close();
-					output.Position = 0;
-					Global.Emulator.AsStatable().LoadStateBinary(new BinaryReader(output));
-				}
+				UpdateLastState(buf, 1, buf.Length - 1);
+				Global.Emulator.AsStatable().LoadStateBinary(reader);
 			}
+			else
+			{
+				var output = new MemoryStream(_lastState);
+				int index = 1;
+				int offset = 0;
+
+				while (index < buf.Length)
+				{
+					int offsetDelta = (int)VLInteger.ReadUnsigned(buf, ref index);
+					int length = (int)VLInteger.ReadUnsigned(buf, ref index);
+
+					offset += offsetDelta;
+
+					output.Position = offset;
+					output.Write(buf, index, length);
+					index += length;
+				}
+
+				output.Position = 0;
+				Global.Emulator.AsStatable().LoadStateBinary(new BinaryReader(output));
+				output.Close();
+			}
+			reader.Close();
 		}
 	}
 }
