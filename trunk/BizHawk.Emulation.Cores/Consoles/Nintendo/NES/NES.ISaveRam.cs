@@ -12,34 +12,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			get
 			{
-				if (board == null) return false;
-				if (board is FDS) return true;
-				if (board.SaveRam == null) return false;
+				if (Board == null) return false;
+				if (Board is FDS) return true;
+				if (Board.SaveRam == null) return false;
 				return true;
 			}
 		}
 
 		public byte[] CloneSaveRam()
 		{
-			if (board is FDS)
-				return (board as FDS).ReadSaveRam();
+			if (Board is FDS)
+				return (Board as FDS).ReadSaveRam();
 
-			if (board == null || board.SaveRam == null)
+			if (Board == null || Board.SaveRam == null)
 				return null;
-			return (byte[])board.SaveRam.Clone();
+			return (byte[])Board.SaveRam.Clone();
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
-			if (board is FDS)
+			if (Board is FDS)
 			{
-				(board as FDS).StoreSaveRam(data);
+				(Board as FDS).StoreSaveRam(data);
 				return;
 			}
 
-			if (board == null || board.SaveRam == null)
+			if (Board == null || Board.SaveRam == null)
 				return;
-			Array.Copy(data, board.SaveRam, data.Length);
+			Array.Copy(data, Board.SaveRam, data.Length);
 		}
 	}
 }
