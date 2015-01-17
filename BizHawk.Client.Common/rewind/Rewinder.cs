@@ -263,17 +263,19 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			var beginChangeSequence = -1;
-			var inChangeSequence = false;
+			int index = 0;
+			int stateLength = Math.Min(currentState.Length, _lastState.Length);
+			bool inChangeSequence = false;
+			int changeSequenceStartOffset = 0;
+			int lastChangeSequenceStartOffset = 0;
 
-			if (_tempBuf.Length < currentState.Length)
+			if (_tempBuf.Length < stateLength)
 			{
-				_tempBuf = new byte[currentState.Length];
+				_tempBuf = new byte[stateLength];
 			}
 
-			int offset = 0;
-			_tempBuf[offset++] = 0; // Full state (false = delta)
-			int stateLength = Math.Min(currentState.Length, _lastState.Length); // Just to be safe :)
+			_tempBuf[index++] = 0; // Full state (false = delta)
+
 			fixed (byte* pCurrentState = &currentState[0])
 			fixed (byte* pLastState = &_lastState[0])
 			for (int i = 0; i < stateLength; i++)
@@ -288,54 +290,39 @@ namespace BizHawk.Client.Common
 					}
 
 					inChangeSequence = true;
-					beginChangeSequence = i;
+					changeSequenceStartOffset = i;
 				}
 
-				if (thisByteMatches || i - beginChangeSequence == 254 || i == currentState.Length - 1)
+				if (thisByteMatches || i == stateLength - 1)
 				{
-					const int maxHeaderSize = 5;
-					int length = i - beginChangeSequence + (thisByteMatches ? 0 : 1);
+					const int maxHeaderSize = 10;
+					int length = i - changeSequenceStartOffset + (thisByteMatches ? 0 : 1);
 
-					if (offset + length + maxHeaderSize >= stateLength)
+					if (index + length + maxHeaderSize >= stateLength)
 					{
 						// If the delta ends up being larger than the full state, capture the full state instead
 						CaptureRewindStateNonDelta(currentState);
 						return;
 					}
 
-					// Length
-					_tempBuf[offset++] = (byte)length;
+					// Delta Offset
+					VLInteger.WriteUnsigned((uint)(changeSequenceStartOffset - lastChangeSequenceStartOffset), _tempBuf, ref index);
 
-					// Offset
-					if (isSmall)
-					{
-						BitConverterLE.WriteBytes((ushort)beginChangeSequence, _tempBuf, offset);
-						offset += 2;
-					}
-					else
-					{
-						BitConverterLE.WriteBytes((uint)beginChangeSequence, _tempBuf, offset);
-						offset += 4;
-					}
+					// Length
+					VLInteger.WriteUnsigned((uint)length, _tempBuf, ref index);
 
 					// Data
-					Buffer.BlockCopy(_lastState, beginChangeSequence, _tempBuf, offset, length);
-					offset += length;
+					Buffer.BlockCopy(_lastState, changeSequenceStartOffset, _tempBuf, index, length);
+					index += length;
 
 					inChangeSequence = false;
+					lastChangeSequenceStartOffset = changeSequenceStartOffset;
 				}
 			}
 
-			if (_lastState.Length == currentState.Length)
-			{
-				Buffer.BlockCopy(currentState, 0, _lastState, 0, _lastState.Length);
-			}
-			else
-			{
-				_lastState = (byte[])currentState.Clone();
-			}
+			Buffer.BlockCopy(currentState, 0, _lastState, 0, _lastState.Length);
 
-			_rewindBuffer.Push(new ArraySegment<byte>(_tempBuf, 0, offset));
+			_rewindBuffer.Push(new ArraySegment<byte>(_tempBuf, 0, index));
 		}
 
 		private void RewindLarge() 
@@ -361,15 +348,21 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
+					byte[] buf = ms.GetBuffer();
 					var output = new MemoryStream(_lastState);
-					while (ms.Position < ms.Length)
-					{
-						var len = reader.ReadByte();
-						int offset = isSmall ? reader.ReadUInt16() : reader.ReadInt32();
+					int index = 1;
+					int offset = 0;
 
+					while (index < buf.Length)
+					{
+						int deltaOffset = (int)VLInteger.ReadUnsigned(buf, ref index);
+						int length = (int)VLInteger.ReadUnsigned(buf, ref index);
+
+						offset += deltaOffset;
+						
 						output.Position = offset;
-						output.Write(ms.GetBuffer(), (int)ms.Position, len);
-						ms.Position += len;
+						output.Write(buf, index, length);
+						index += length;
 					}
 
 					reader.Close();
