@@ -54,8 +54,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return ret;
 		}
 
-		private NESSettings Settings = new NESSettings();
-		private NESSyncSettings SyncSettings = new NESSyncSettings();
+		internal NESSettings Settings = new NESSettings();
+		internal NESSyncSettings SyncSettings = new NESSyncSettings();
 
 		public class NESSyncSettings
 		{
