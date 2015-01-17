@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 
 #if WINDOWS
 using SlimDX.DirectSound;
@@ -40,7 +42,9 @@ namespace BizHawk.Client.EmuHawk
 		private const int SampleRate = 44100;
 		private const int BytesPerSample = 2;
 		private const int ChannelCount = 2;
-		private const int BufferSize = (SampleRate / 10) * BytesPerSample * ChannelCount; // 1/10th of a second
+		private const int BlockAlign = BytesPerSample * ChannelCount;
+		private const int BufferSize = (SampleRate / 10) * BlockAlign; // 1/10th of a second
+		private const double BufferDuration = (double)(BufferSize / BlockAlign) / SampleRate;
 
 		private bool _muted;
 		private bool _disposed;
@@ -49,6 +53,9 @@ namespace BizHawk.Client.EmuHawk
 		private ISoundProvider _asyncSoundProvider;
 		private ISyncSoundProvider _syncSoundProvider;
 		private int _actualWriteOffset = -1;
+		private int _filledBufferSize;
+		private long _lastWriteTime;
+		private int _lastWriteCursor;
 
 		public Sound(IntPtr handle, DirectSound device)
 		{
@@ -62,8 +69,8 @@ namespace BizHawk.Client.EmuHawk
 					BitsPerSample = BytesPerSample * 8,
 					Channels = ChannelCount,
 					FormatTag = WaveFormatTag.Pcm,
-					BlockAlignment = BytesPerSample * ChannelCount,
-					AverageBytesPerSecond = SampleRate * BytesPerSample * ChannelCount
+					BlockAlignment = BlockAlign,
+					AverageBytesPerSecond = SampleRate * BlockAlign
 				};
 
 			var desc = new SoundBufferDescription
@@ -137,16 +144,36 @@ namespace BizHawk.Client.EmuHawk
 
 		private int CalculateSamplesNeeded()
 		{
-			int playOffset = _deviceBuffer.CurrentPlayPosition;
-			int writeOffset = _deviceBuffer.CurrentWritePosition;
-
+			long currentWriteTime = Stopwatch.GetTimestamp();
+			int playCursor = _deviceBuffer.CurrentPlayPosition;
+			int writeCursor = _deviceBuffer.CurrentWritePosition;
+			if (_actualWriteOffset != -1)
+			{
+				double elapsedTime = (currentWriteTime - _lastWriteTime) / (double)Stopwatch.Frequency; // Seconds
+				int cursorDelta = CircularDistance(_lastWriteCursor, writeCursor, BufferSize);
+				cursorDelta += BufferSize * (int)Math.Round((elapsedTime - (cursorDelta / (double)(SampleRate * BlockAlign))) / BufferDuration);
+				_filledBufferSize -= cursorDelta;
+				if (_filledBufferSize < 0)
+				{
+					// Buffer underflow
+					_actualWriteOffset = -1;
+				}
+			}
 			if (_actualWriteOffset == -1)
 			{
-				_actualWriteOffset = writeOffset;
+				_actualWriteOffset = writeCursor;
+				_filledBufferSize = 0;
 			}
+			_lastWriteTime = currentWriteTime;
+			_lastWriteCursor = writeCursor;
 
-			int bytesNeeded = (playOffset - _actualWriteOffset + BufferSize) % BufferSize;
-			return bytesNeeded / (BytesPerSample * ChannelCount);
+			int bytesNeeded = CircularDistance(_actualWriteOffset, playCursor, BufferSize);
+			return bytesNeeded / BlockAlign;
+		}
+
+		private int CircularDistance(int start, int end, int size)
+		{
+			return (end - start + size) % size;
 		}
 
 		public void UpdateSilence()
@@ -192,7 +219,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!Global.DisableSecondaryThrottling)
 					while (samplesNeeded < samplesProvided)
 					{
-						System.Threading.Thread.Sleep((samplesProvided - samplesNeeded) / (SampleRate / 1000)); // let audio clock control sleep time
+						Thread.Sleep((samplesProvided - samplesNeeded) / (SampleRate / 1000)); // let audio clock control sleep time
 						samplesNeeded = CalculateSamplesNeeded();
 					}
 			}
@@ -214,7 +241,8 @@ namespace BizHawk.Client.EmuHawk
 				return;
 
 			_deviceBuffer.Write(samples, 0, samplesProvided * ChannelCount, _actualWriteOffset, LockFlags.None);
-			_actualWriteOffset = (_actualWriteOffset + (samplesProvided * BytesPerSample * ChannelCount)) % BufferSize;
+			_actualWriteOffset = (_actualWriteOffset + (samplesProvided * BlockAlign)) % BufferSize;
+			_filledBufferSize += samplesProvided * BlockAlign;
 		}
 
 		/// <summary>
