@@ -323,25 +323,25 @@
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IDebuggable.cs">
-        <DependentUpon>GambatteLink.cs</DependentUpon>
+      <DependentUpon>GambatteLink.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IInputPollable.cs">
-        <DependentUpon>GambatteLink.cs</DependentUpon>
+      <DependentUpon>GambatteLink.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IMemoryDomains.cs">
-        <DependentUpon>GambatteLink.cs</DependentUpon>
+      <DependentUpon>GambatteLink.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.ISaveRam.cs">
-        <DependentUpon>GambatteLink.cs</DependentUpon>
+      <DependentUpon>GambatteLink.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.ISettable.cs">
-        <DependentUpon>GambatteLink.cs</DependentUpon>
+      <DependentUpon>GambatteLink.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IStatable.cs">
-        <DependentUpon>GambatteLink.cs</DependentUpon>
+      <DependentUpon>GambatteLink.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IVideoProvider.cs">
-        <DependentUpon>GambatteLink.cs</DependentUpon>
+      <DependentUpon>GambatteLink.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GBColors.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\GBDisassembler.cs" />
@@ -351,6 +351,21 @@
     <Compile Include="Consoles\Nintendo\GBA\LibMeteor.cs" />
     <Compile Include="Consoles\Nintendo\GBA\LibVBANext.cs" />
     <Compile Include="Consoles\Nintendo\GBA\Meteor.cs" />
+    <Compile Include="Consoles\Nintendo\GBA\Meteor.IGBAGPUViewable.cs">
+        <DependentUpon>Meteor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\Meteor.IMemoryDomains.cs">
+        <DependentUpon>Meteor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\Meteor.ISaveRam.cs">
+        <DependentUpon>Meteor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\Meteor.IStatable.cs">
+        <DependentUpon>Meteor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\Meteor.IVideoProvider.cs">
+        <DependentUpon>Meteor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBANext.cs" />
     <Compile Include="Consoles\Nintendo\GBA\VBARegisterHelper.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64.IDebuggable.cs">
