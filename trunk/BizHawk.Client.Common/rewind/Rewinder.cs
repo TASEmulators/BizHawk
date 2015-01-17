@@ -159,7 +159,7 @@ namespace BizHawk.Client.Common
 					return;
 				}
 
-				RewindDelta();
+				RewindOne();
 			}
 		}
 
@@ -334,7 +334,7 @@ namespace BizHawk.Client.Common
 			UpdateLastState(currentState);
 		}
 
-		private void RewindDelta()
+		private void RewindOne()
 		{
 			if (!Global.Emulator.HasSavestates()) return;
 
@@ -344,7 +344,11 @@ namespace BizHawk.Client.Common
 			var fullstate = reader.ReadBoolean();
 			if (fullstate)
 			{
-				UpdateLastState(buf, 1, buf.Length - 1);
+				if (_rewindDeltaEnable)
+				{
+					UpdateLastState(buf, 1, buf.Length - 1);
+				}
+
 				Global.Emulator.AsStatable().LoadStateBinary(reader);
 			}
 			else
