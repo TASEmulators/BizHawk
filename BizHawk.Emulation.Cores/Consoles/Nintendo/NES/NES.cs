@@ -46,10 +46,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			BootGodDB.Initialize();
 			videoProvider = new MyVideoProvider(this);
 			Init(game, rom, fdsbios);
-			if (board is FDS)
+			if (Board is FDS)
 			{
 				DriveLightEnabled = true;
-				(board as FDS).SetDriveLightCallback((val) => DriveLightOn = val);
+				(Board as FDS).SetDriveLightCallback((val) => DriveLightOn = val);
 			}
 			PutSettings((NESSettings)Settings ?? new NESSettings());
 
@@ -60,9 +60,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Register<ITraceable>(Tracer);
 			ser.Register<IVideoProvider>(videoProvider);
 			
-			if (board is BANDAI_FCG_1)
+			if (Board is BANDAI_FCG_1)
 			{
-				var reader = (board as BANDAI_FCG_1).reader;
+				var reader = (Board as BANDAI_FCG_1).reader;
 				// not all BANDAI FCG 1 boards have a barcode reader
 				if (reader != null)
 					ser.Register<DatachBarcode>(reader);
@@ -426,15 +426,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				fdsboard.InitialRegisterValues = InitialMapperRegisterValues;
 				fdsboard.Configure(origin);
 
-				board = fdsboard;
+				Board = fdsboard;
 
 				//create the vram and wram if necessary
 				if (cart.wram_size != 0)
-					board.WRAM = new byte[cart.wram_size * 1024];
+					Board.WRAM = new byte[cart.wram_size * 1024];
 				if (cart.vram_size != 0)
-					board.VRAM = new byte[cart.vram_size * 1024];
+					Board.VRAM = new byte[cart.vram_size * 1024];
 
-				board.PostConfigure();
+				Board.PostConfigure();
 
 				Console.WriteLine("Using NTSC display type for FDS disk image");
 				_display_type = Common.DisplayType.NTSC;
@@ -608,12 +608,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			LoadWriteLine("END NES rom analysis");
 			LoadWriteLine("------");
 
-			board = CreateBoardInstance(boardType);
+			Board = CreateBoardInstance(boardType);
 
 			cart = choice;
-			board.Create(this);
-			board.InitialRegisterValues = InitialMapperRegisterValues;
-			board.Configure(origin);
+			Board.Create(this);
+			Board.InitialRegisterValues = InitialMapperRegisterValues;
+			Board.Configure(origin);
 
 			if (origin == EDetectionOrigin.BootGodDB)
 			{
@@ -647,26 +647,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (iNesHeaderInfo != null)
 			{
 				//pluck the necessary bytes out of the file
-				board.ROM = new byte[choice.prg_size * 1024];
-				Array.Copy(file, 16, board.ROM, 0, board.ROM.Length);
+				Board.ROM = new byte[choice.prg_size * 1024];
+				Array.Copy(file, 16, Board.ROM, 0, Board.ROM.Length);
 				if (choice.chr_size > 0)
 				{
-					board.VROM = new byte[choice.chr_size * 1024];
+					Board.VROM = new byte[choice.chr_size * 1024];
 					int vrom_offset = iNesHeaderInfo.prg_size * 1024;
 
 					// if file isn't long enough for VROM, truncate
-					int vrom_copy_size = Math.Min(board.VROM.Length, file.Length - 16 - vrom_offset);
-					Array.Copy(file, 16 + vrom_offset, board.VROM, 0, vrom_copy_size);
-					if (vrom_copy_size < board.VROM.Length)
-						LoadWriteLine("Less than the expected VROM was found in the file: {0} < {1}", vrom_copy_size, board.VROM.Length);
+					int vrom_copy_size = Math.Min(Board.VROM.Length, file.Length - 16 - vrom_offset);
+					Array.Copy(file, 16 + vrom_offset, Board.VROM, 0, vrom_copy_size);
+					if (vrom_copy_size < Board.VROM.Length)
+						LoadWriteLine("Less than the expected VROM was found in the file: {0} < {1}", vrom_copy_size, Board.VROM.Length);
 				}
 				if (choice.prg_size != iNesHeaderInfo.prg_size || choice.chr_size != iNesHeaderInfo.chr_size)
 					LoadWriteLine("Warning: Detected choice has different filesizes than the INES header!");
 			}
 			else
 			{
-				board.ROM = unif.PRG;
-				board.VROM = unif.CHR;
+				Board.ROM = unif.PRG;
+				Board.VROM = unif.CHR;
 			}
 
 			LoadReport.Flush();
@@ -676,11 +676,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			//create the vram and wram if necessary
 			if (cart.wram_size != 0)
-				board.WRAM = new byte[cart.wram_size * 1024];
+				Board.WRAM = new byte[cart.wram_size * 1024];
 			if (cart.vram_size != 0)
-				board.VRAM = new byte[cart.vram_size * 1024];
+				Board.VRAM = new byte[cart.vram_size * 1024];
 
-			board.PostConfigure();
+			Board.PostConfigure();
 
 			// set up display type
 

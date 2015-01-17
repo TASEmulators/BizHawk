@@ -333,50 +333,50 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return board;
 		}
 
-		public string BoardName { get { return board.GetType().Name; } }
+		public string BoardName { get { return Board.GetType().Name; } }
 
 		void BoardSystemHardReset()
 		{
 			INESBoard newboard;
 			// fds has a unique activation setup
-			if (board is FDS)
+			if (Board is FDS)
 			{
 				var newfds = new FDS();
-				var oldfds = board as FDS;
+				var oldfds = Board as FDS;
 				newfds.biosrom = oldfds.biosrom;
 				newfds.SetDiskImage(oldfds.GetDiskImage());
 				newboard = newfds;
 			}
 			else
 			{
-				newboard = CreateBoardInstance(board.GetType());
+				newboard = CreateBoardInstance(Board.GetType());
 			}
 			newboard.Create(this);
 			// i suppose the old board could have changed its initial register values, although it really shouldn't
 			// you can't use SyncSettings.BoardProperties here because they very well might be different than before
 			// in case the user actually changed something in the UI
-			newboard.InitialRegisterValues = board.InitialRegisterValues;
+			newboard.InitialRegisterValues = Board.InitialRegisterValues;
 			newboard.Configure(origin);
-			newboard.ROM = board.ROM;
-			newboard.VROM = board.VROM;
-			if (board.WRAM != null)
-				newboard.WRAM = new byte[board.WRAM.Length];
-			if (board.VRAM != null)
-				newboard.VRAM = new byte[board.VRAM.Length];
+			newboard.ROM = Board.ROM;
+			newboard.VROM = Board.VROM;
+			if (Board.WRAM != null)
+				newboard.WRAM = new byte[Board.WRAM.Length];
+			if (Board.VRAM != null)
+				newboard.VRAM = new byte[Board.VRAM.Length];
 			newboard.PostConfigure();
 			// the old board's sram must be restored
 			if (newboard is FDS)
 			{
 				var newfds = newboard as FDS;
-				var oldfds = board as FDS;
+				var oldfds = Board as FDS;
 				newfds.StoreSaveRam(oldfds.ReadSaveRam());
 			}
-			else if (board.SaveRam != null)
+			else if (Board.SaveRam != null)
 			{
-				Buffer.BlockCopy(board.SaveRam, 0, newboard.SaveRam, 0, board.SaveRam.Length);
+				Buffer.BlockCopy(Board.SaveRam, 0, newboard.SaveRam, 0, Board.SaveRam.Length);
 			}
-			board.Dispose();
-			board = newboard;
+			Board.Dispose();
+			Board = newboard;
 		}
 
 

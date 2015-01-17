@@ -30,46 +30,46 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			domains.Add(CIRAMdomain);
 			domains.Add(OAMdoman);
 
-			if (!(board is FDS) && board.SaveRam != null)
+			if (!(Board is FDS) && Board.SaveRam != null)
 			{
-				var BatteryRam = new MemoryDomain("Battery RAM", board.SaveRam.Length, MemoryDomain.Endian.Little,
-					addr => board.SaveRam[addr], (addr, value) => board.SaveRam[addr] = value);
+				var BatteryRam = new MemoryDomain("Battery RAM", Board.SaveRam.Length, MemoryDomain.Endian.Little,
+					addr => Board.SaveRam[addr], (addr, value) => Board.SaveRam[addr] = value);
 				domains.Add(BatteryRam);
 			}
 
 			var PRGROM = new MemoryDomain("PRG ROM", cart.prg_size * 1024, MemoryDomain.Endian.Little,
-				addr => board.ROM[addr], (addr, value) => board.ROM[addr] = value);
+				addr => Board.ROM[addr], (addr, value) => Board.ROM[addr] = value);
 			domains.Add(PRGROM);
 
-			if (board.VROM != null)
+			if (Board.VROM != null)
 			{
 				var CHRROM = new MemoryDomain("CHR VROM", cart.chr_size * 1024, MemoryDomain.Endian.Little,
-					addr => board.VROM[addr], (addr, value) => board.VROM[addr] = value);
+					addr => Board.VROM[addr], (addr, value) => Board.VROM[addr] = value);
 				domains.Add(CHRROM);
 			}
 
-			if (board.VRAM != null)
+			if (Board.VRAM != null)
 			{
-				var VRAM = new MemoryDomain("VRAM", board.VRAM.Length, MemoryDomain.Endian.Little,
-					addr => board.VRAM[addr], (addr, value) => board.VRAM[addr] = value);
+				var VRAM = new MemoryDomain("VRAM", Board.VRAM.Length, MemoryDomain.Endian.Little,
+					addr => Board.VRAM[addr], (addr, value) => Board.VRAM[addr] = value);
 				domains.Add(VRAM);
 			}
 
-			if (board.WRAM != null)
+			if (Board.WRAM != null)
 			{
-				var WRAM = new MemoryDomain("WRAM", board.WRAM.Length, MemoryDomain.Endian.Little,
-					addr => board.WRAM[addr], (addr, value) => board.WRAM[addr] = value);
+				var WRAM = new MemoryDomain("WRAM", Board.WRAM.Length, MemoryDomain.Endian.Little,
+					addr => Board.WRAM[addr], (addr, value) => Board.WRAM[addr] = value);
 				domains.Add(WRAM);
 			}
 
 			// if there were more boards with special ram sets, we'd want to do something more general
-			if (board is FDS)
+			if (Board is FDS)
 			{
-				domains.Add((board as FDS).GetDiskPeeker());
+				domains.Add((Board as FDS).GetDiskPeeker());
 			}
-			else if (board is ExROM)
+			else if (Board is ExROM)
 			{
-				domains.Add((board as ExROM).GetExRAM());
+				domains.Add((Board as ExROM).GetExRAM());
 			}
 
 			_memoryDomains = new MemoryDomainList(domains);

@@ -50,14 +50,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public byte PeekPPU(int addr)
 		{
-			return board.PeekPPU(addr);
+			return Board.PeekPPU(addr);
 		}
 
 		public byte[] GetExTiles()
 		{
-			if (board is ExROM)
+			if (Board is ExROM)
 			{
-				return board.VROM ?? board.VRAM;
+				return Board.VROM ?? Board.VRAM;
 			}
 			else
 			{
@@ -67,14 +67,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public bool ExActive
 		{
-			get { return board is ExROM && (board as ExROM).ExAttrActive; }
+			get { return Board is ExROM && (Board as ExROM).ExAttrActive; }
 		}
 
 		public byte[] GetExRam()
 		{
-			if (board is ExROM)
+			if (Board is ExROM)
 			{
-				return (board as ExROM).GetExRAMArray();
+				return (Board as ExROM).GetExRAMArray();
 			}
 			else
 			{

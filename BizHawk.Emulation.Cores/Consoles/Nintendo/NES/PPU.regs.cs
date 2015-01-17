@@ -443,7 +443,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					//normally the address isnt observed by the board till it gets clocked by a read or write.
 					//but maybe thats just because a ppu read/write shoves it on the address bus
 					//apparently this shoves it on the address bus, too, or else blargg's mmc3 tests dont pass
-					nes.board.AddressPPU(ppur.get_2007access());
+					nes.Board.AddressPPU(ppur.get_2007access());
 				}
 
 				vtoggle ^= true;
@@ -480,7 +480,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ppur.increment2007(ppur.status.rendering && reg_2001.PPUON, reg_2000.vram_incr32 != 0);
 
 				//see comments in $2006
-				nes.board.AddressPPU(ppur.get_2007access()); 
+				nes.Board.AddressPPU(ppur.get_2007access()); 
 			}
 			byte read_2007()
 			{
@@ -502,7 +502,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ppur.increment2007(ppur.status.rendering && reg_2001.PPUON, reg_2000.vram_incr32 != 0);
 
 				//see comments in $2006
-				nes.board.AddressPPU(ppur.get_2007access()); 
+				nes.Board.AddressPPU(ppur.get_2007access()); 
 				
 				return ret;
 			}

@@ -81,8 +81,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//when the ppu issues a write it goes through here and into the game board
 			public void ppubus_write(int addr, byte value)
 			{
-				nes.board.AddressPPU(addr);
-				nes.board.WritePPU(addr, value);
+				nes.Board.AddressPPU(addr);
+				nes.Board.WritePPU(addr, value);
 			}
 
 			//when the ppu issues a read it goes through here and into the game board
@@ -92,14 +92,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (!reg_2001.PPUON && ppu)
 					return 0xFF;
 
-				nes.board.AddressPPU(addr);
-				return nes.board.ReadPPU(addr);
+				nes.Board.AddressPPU(addr);
+				return nes.Board.ReadPPU(addr);
 			}
 
 			//debug tools peek into the ppu through this
 			public byte ppubus_peek(int addr)
 			{
-				return nes.board.PeekPPU(addr);
+				return nes.Board.PeekPPU(addr);
 			}
 
 			public enum PPUPHASE
@@ -229,7 +229,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						Reg2002_vblank_clear_pending = false;
 					}
 
-					nes.board.ClockPPU();
+					nes.Board.ClockPPU();
 				}
 			}
 
