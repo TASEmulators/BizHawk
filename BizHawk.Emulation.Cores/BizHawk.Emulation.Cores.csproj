@@ -301,27 +301,34 @@
     <Compile Include="Consoles\Intellivision\STIC.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.IDebuggable.cs">
-        <DependentUpon>Gambatte.cs</DependentUpon>
+      <DependentUpon>Gambatte.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.IMemoryDomains.cs">
-        <DependentUpon>Gambatte.cs</DependentUpon>
+      <DependentUpon>Gambatte.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.ISaveRam.cs">
-        <DependentUpon>Gambatte.cs</DependentUpon>
+      <DependentUpon>Gambatte.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.ISettable.cs">
-        <DependentUpon>Gambatte.cs</DependentUpon>
+      <DependentUpon>Gambatte.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.IStatable.cs">
-        <DependentUpon>Gambatte.cs</DependentUpon>
+      <DependentUpon>Gambatte.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.ITraceable.cs">
-        <DependentUpon>Gambatte.cs</DependentUpon>
+      <DependentUpon>Gambatte.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.IVideoProvider.cs">
-        <DependentUpon>Gambatte.cs</DependentUpon>
+      <DependentUpon>Gambatte.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IDebuggable.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IInputPollable.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IMemoryDomains.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.ISaveRam.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.ISettable.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IStatable.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IVideoProvider.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\GBColors.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\GBDisassembler.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\LibGambatte.cs" />
