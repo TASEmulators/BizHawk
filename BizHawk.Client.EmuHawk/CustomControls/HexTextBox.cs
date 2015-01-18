@@ -37,14 +37,14 @@ namespace BizHawk.Client.EmuHawk
 			ResetText();
 		}
 
-		private uint GetMax()
+		public long GetMax()
 		{
 			if (_maxSize.HasValue)
 			{
-				return (uint)_maxSize.Value;
+				return _maxSize.Value;
 			}
 
-			return (uint)(((long)1 << (4 * MaxLength)) - 1);
+			return ((long)1 << (4 * MaxLength)) - 1;
 		}
 
 		public override void ResetText()
@@ -92,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 					var val = (uint)ToRawInt();
 					if (val == 0)
 					{
-						val = GetMax();
+						val = (uint)GetMax(); // int to long todo
 					}
 					else
 					{
