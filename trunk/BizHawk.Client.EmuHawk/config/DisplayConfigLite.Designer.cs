@@ -36,7 +36,7 @@
 			this.lblUserFilterName = new System.Windows.Forms.Label();
 			this.btnSelectUserFilter = new System.Windows.Forms.Button();
 			this.rbUser = new System.Windows.Forms.RadioButton();
-			this.tbScanlineIntensity = new System.Windows.Forms.TrackBar();
+			this.tbScanlineIntensity = new BizHawk.Client.EmuHawk.TransparentTrackBar();
 			this.rbNone = new System.Windows.Forms.RadioButton();
 			this.rbScanlines = new System.Windows.Forms.RadioButton();
 			this.rbHq2x = new System.Windows.Forms.RadioButton();
@@ -69,7 +69,7 @@
 			this.rbGDIPlus = new System.Windows.Forms.RadioButton();
 			this.tpMisc = new System.Windows.Forms.TabPage();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.trackbarFrameSizeWindowed = new System.Windows.Forms.TrackBar();
+			this.trackbarFrameSizeWindowed = new BizHawk.Client.EmuHawk.TransparentTrackBar();
 			this.label9 = new System.Windows.Forms.Label();
 			this.cbStatusBarWindowed = new System.Windows.Forms.CheckBox();
 			this.cbCaptionWindowed = new System.Windows.Forms.CheckBox();
@@ -710,7 +710,7 @@
 		private System.Windows.Forms.RadioButton rbNone;
 		private System.Windows.Forms.RadioButton rbScanlines;
 		private System.Windows.Forms.RadioButton rbHq2x;
-		private System.Windows.Forms.TrackBar tbScanlineIntensity;
+		private BizHawk.Client.EmuHawk.TransparentTrackBar tbScanlineIntensity;
 		private System.Windows.Forms.CheckBox checkLetterbox;
 		private System.Windows.Forms.CheckBox checkPadInteger;
 		private System.Windows.Forms.GroupBox grpFinalFilter;
@@ -746,7 +746,7 @@
 		private System.Windows.Forms.TabPage tabPage1;
 		private System.Windows.Forms.CheckBox cbStatusBarWindowed;
 		private System.Windows.Forms.Label label9;
-		private System.Windows.Forms.TrackBar trackbarFrameSizeWindowed;
+		private BizHawk.Client.EmuHawk.TransparentTrackBar trackbarFrameSizeWindowed;
 		private System.Windows.Forms.CheckBox cbMenuWindowed;
 		private System.Windows.Forms.CheckBox cbCaptionWindowed;
 		private System.Windows.Forms.GroupBox groupBox4;
