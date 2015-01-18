@@ -10,13 +10,14 @@ namespace BizHawk.Client.Common
 	public class Rewinder
 	{
 		private StreamBlobDatabase _rewindBuffer;
+		private byte[] _rewindBufferBacking;
+		private long? _overrideMemoryLimit;
 		private RewindThreader _rewindThread;
 		private byte[] _lastState;
 		private bool _rewindImpossible;
 		private int _rewindFrequency = 1;
 		private bool _rewindDeltaEnable;
-		private byte[] _rewindFellationBuf;
-		private byte[] _tempBuf = new byte[0];
+		private byte[] _deltaBuffer = new byte[0];
 
 		public Rewinder()
 		{
@@ -122,14 +123,14 @@ namespace BizHawk.Client.Common
 
 				if (rewind_enabled)
 				{
-					var cap = Global.Config.Rewind_BufferSize * (long)1024 * 1024;
+					var capacity = Global.Config.Rewind_BufferSize * (long)1024 * 1024;
 
 					if (_rewindBuffer != null)
 					{
 						_rewindBuffer.Dispose();
 					}
 
-					_rewindBuffer = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, cap, BufferManage);
+					_rewindBuffer = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, capacity, BufferManage);
 
 					if (_rewindThread != null)
 					{
@@ -216,24 +217,53 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private byte[] BufferManage(byte[] inbuf, long size, bool allocate)
+		private byte[] BufferManage(byte[] inbuf, ref long size, bool allocate)
 		{
 			if (allocate)
 			{
-				// if we have an appropriate buffer free, return it
-				if (_rewindFellationBuf != null && _rewindFellationBuf.LongLength == size)
+				if (size > Int32.MaxValue)
 				{
-					var ret = _rewindFellationBuf;
-					_rewindFellationBuf = null;
-					return ret;
+					// I think we need .NET 4.5+ on x64 to allocate > 2GB
+					size = Int32.MaxValue;
+				}
+
+				if (_overrideMemoryLimit != null)
+				{
+					size = Math.Min(_overrideMemoryLimit.Value, size);
+				}
+
+				// if we have an appropriate buffer free, return it
+				if (_rewindBufferBacking != null)
+				{
+					var buf = _rewindBufferBacking;
+					_rewindBufferBacking = null;
+					if (buf.LongLength == size)
+					{
+						return buf;
+					}
 				}
 
 				// otherwise, allocate it
-				return new byte[size];
+				do
+				{
+					try
+					{
+						return new byte[size];
+					}
+					catch (OutOfMemoryException)
+					{
+						size /= 2;
+						_overrideMemoryLimit = size;
+					}
+				}
+				while (size > 1);
+				throw new OutOfMemoryException();
 			}
-			
-			_rewindFellationBuf = inbuf;
-			return null;
+			else
+			{
+				_rewindBufferBacking = inbuf;
+				return null;
+			}
 		}
 
 		private void CaptureRewindStateNonDelta(byte[] state)
@@ -277,12 +307,12 @@ namespace BizHawk.Client.Common
 			int changeSequenceStartOffset = 0;
 			int lastChangeSequenceStartOffset = 0;
 
-			if (_tempBuf.Length < stateLength)
+			if (_deltaBuffer.Length < stateLength)
 			{
-				_tempBuf = new byte[stateLength];
+				_deltaBuffer = new byte[stateLength];
 			}
 
-			_tempBuf[index++] = 0; // Full state = false (i.e. delta)
+			_deltaBuffer[index++] = 0; // Full state = false (i.e. delta)
 
 			fixed (byte* pCurrentState = &currentState[0])
 			fixed (byte* pLastState = &_lastState[0])
@@ -315,13 +345,13 @@ namespace BizHawk.Client.Common
 					}
 
 					// Offset Delta
-					VLInteger.WriteUnsigned((uint)(changeSequenceStartOffset - lastChangeSequenceStartOffset), _tempBuf, ref index);
+					VLInteger.WriteUnsigned((uint)(changeSequenceStartOffset - lastChangeSequenceStartOffset), _deltaBuffer, ref index);
 
 					// Length
-					VLInteger.WriteUnsigned((uint)length, _tempBuf, ref index);
+					VLInteger.WriteUnsigned((uint)length, _deltaBuffer, ref index);
 
 					// Data
-					Buffer.BlockCopy(_lastState, changeSequenceStartOffset, _tempBuf, index, length);
+					Buffer.BlockCopy(_lastState, changeSequenceStartOffset, _deltaBuffer, index, length);
 					index += length;
 
 					inChangeSequence = false;
@@ -329,7 +359,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			_rewindBuffer.Push(new ArraySegment<byte>(_tempBuf, 0, index));
+			_rewindBuffer.Push(new ArraySegment<byte>(_deltaBuffer, 0, index));
 
 			UpdateLastState(currentState);
 		}
