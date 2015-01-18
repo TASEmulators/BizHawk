@@ -1420,7 +1420,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedWatches.Any())
 			{
-				ToolHelpers.ViewInHexEditor(_searches.Domain, SelectedWatches.Select(x => x.Address ?? 0).Cast<long>(), SelectedSize); // int to long TODO: address should be long
+				ToolHelpers.ViewInHexEditor(_searches.Domain, SelectedWatches.Select(x => x.Address ?? 0), SelectedSize);
 			}
 		}
 

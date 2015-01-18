@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						NotesBox.Text = _watchList[0].Notes;
-						AddressBox.SetFromRawInt(_watchList[0].Address ?? 0);
+						AddressBox.SetFromRawInt((int)(_watchList[0].Address ?? 0)); // int to long todo
 					}
 
 					SetBigEndianCheckBox();
