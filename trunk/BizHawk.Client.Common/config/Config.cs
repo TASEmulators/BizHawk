@@ -153,7 +153,7 @@ namespace BizHawk.Client.Common
 		public int Rewind_LargeStateSize = 1048576; //1mb
 		public int Rewind_BufferSize = 128; //in mb
 		public bool Rewind_OnDisk = false;
-		public bool Rewind_IsThreaded = false;
+		public bool Rewind_IsThreaded = Environment.ProcessorCount > 1;
 
 		// Savestate settings
 		public SaveStateTypeE SaveStateType = SaveStateTypeE.Default;
