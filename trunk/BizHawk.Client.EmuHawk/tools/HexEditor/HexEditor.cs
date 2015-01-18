@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly List<ToolStripMenuItem> _domainMenuItems = new List<ToolStripMenuItem>();
 		private readonly char[] _nibbles = { 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G' };    // G = off 0-9 & A-F are acceptable values
-		private readonly List<int> _secondaryHighlightedAddresses = new List<int>();
+		private readonly List<long> _secondaryHighlightedAddresses = new List<long>();
 
 		private readonly Dictionary<int, char> _textTable = new Dictionary<int, char>();
 
@@ -43,8 +43,8 @@ namespace BizHawk.Client.EmuHawk
 		private int _numDigits = 4;
 		private string _numDigitsStr = "{0:X4}";
 		private string _digitFormatString = "{0:X2}";
-		private int _addressHighlighted = -1;
-		private int _addressOver = -1;
+		private long _addressHighlighted = -1;
+		private long _addressOver = -1;
 
 		private int _maxRow;
 
@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 			AddressLabel.Font = font;
 		}
 
-		private int? HighlightedAddress
+		private long? HighlightedAddress
 		{
 			get
 			{
@@ -160,7 +160,7 @@ namespace BizHawk.Client.EmuHawk
 			AddressLabel.Text = GenerateAddressString();
 		}
 
-		public void SetToAddresses(IEnumerable<int> addresses, MemoryDomain domain, Watch.WatchSize size)
+		public void SetToAddresses(IEnumerable<long> addresses, MemoryDomain domain, Watch.WatchSize size)
 		{
 			DataSize = (int)size;
 			SetDataSize(DataSize);
@@ -196,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FindNext(string value, bool wrap)
 		{
-			var found = -1;
+			long found = -1;
 
 			var search = value.Replace(" ", string.Empty).ToUpper();
 			if (string.IsNullOrEmpty(search))
@@ -206,7 +206,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var numByte = search.Length / 2;
 
-			int startByte;
+			long startByte;
 			if (_addressHighlighted == -1)
 			{
 				startByte = 0;
@@ -252,7 +252,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FindPrev(string value, bool wrap)
 		{
-			var found = -1;
+			long found = -1;
 
 			var search = value.Replace(" ", string.Empty).ToUpper();
 			if (string.IsNullOrEmpty(search))
@@ -262,7 +262,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var numByte = search.Length / 2;
 
-			int startByte;
+			long startByte;
 			if (_addressHighlighted == -1)
 			{
 				startByte = (int)(_domain.Size - DataSize);
@@ -553,11 +553,11 @@ namespace BizHawk.Client.EmuHawk
 				: _domain.PeekByte(address); 
 		}
 
-		private int MakeValue(int address)
+		private int MakeValue(long address)
 		{
-			if (Global.CheatList.IsActive(_domain, address))
+			if (Global.CheatList.IsActive(_domain, (int)address)) // int to long TODO: cheats should use long
 			{
-				return Global.CheatList.GetCheatValue(_domain, address, (Watch.WatchSize)DataSize ).Value;
+				return Global.CheatList.GetCheatValue(_domain, (int)address, (Watch.WatchSize)DataSize ).Value;
 			}
 
 			switch (DataSize)
@@ -618,7 +618,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void GoToAddress(int address) // int to long TODO: address must be int
+		private void GoToAddress(long address)
 		{
 			if (address < 0)
 			{
@@ -627,7 +627,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (address >= _domain.Size)
 			{
-				address = (int)(_domain.Size - 1);
+				address = (int)(_domain.Size - DataSize);
 			}
 
 			SetHighlighted(address);
@@ -637,7 +637,7 @@ namespace BizHawk.Client.EmuHawk
 			AddressLabel.Text = GenerateAddressString();
 		}
 
-		private void SetHighlighted(int address) // int to long TODO: address must be int
+		private void SetHighlighted(long address)
 		{
 			if (address < 0)
 			{
@@ -646,7 +646,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (address >= _domain.Size)
 			{
-				address = (int)(_domain.Size - 1);
+				address = (int)(_domain.Size - DataSize);
 			}
 
 			if (!IsVisible(address))
@@ -657,7 +657,7 @@ namespace BizHawk.Client.EmuHawk
 					value = 0;
 				}
 
-				HexScrollBar.Value = value;
+				HexScrollBar.Value = (int)value; // This will fail on a sufficiently large domain
 			}
 
 			_addressHighlighted = address;
@@ -678,7 +678,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool IsVisible(int address)
+		private bool IsVisible(long address)
 		{
 			var i = address >> 4;
 			return i >= HexScrollBar.Value && i < (_rowsVisible + HexScrollBar.Value);
@@ -715,45 +715,45 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private Watch MakeWatch(int address)
+		private Watch MakeWatch(long address)
 		{
 			switch (DataSize)
 			{
 				default:
 				case 1:
-					return new ByteWatch(_domain, address, Watch.DisplayType.Hex, BigEndian, string.Empty);
+					return new ByteWatch(_domain, (int)address, Watch.DisplayType.Hex, BigEndian, string.Empty); // int to long TODO: watches should use long for address
 				case 2:
-					return new WordWatch(_domain, address, Watch.DisplayType.Hex, BigEndian, string.Empty);
+					return new WordWatch(_domain, (int)address, Watch.DisplayType.Hex, BigEndian, string.Empty);
 				case 4:
-					return new DWordWatch(_domain, address, Watch.DisplayType.Hex, BigEndian, string.Empty);
+					return new DWordWatch(_domain, (int)address, Watch.DisplayType.Hex, BigEndian, string.Empty);
 			}
 		}
 
-		private bool IsFrozen(int address)
+		private bool IsFrozen(long address)
 		{
-			return Global.CheatList.IsActive(_domain, address);
+			return Global.CheatList.IsActive(_domain, (int)address); // int to long TODO: cheat should accept long
 		}
 
-		private void UnFreezeAddress(int address)
+		private void UnFreezeAddress(long address)
 		{
 			if (address >= 0) 
 			{
 				// TODO: can't unfreeze address 0??
 				Global.CheatList.RemoveRange(
-					Global.CheatList.Where(x => x.Contains(address)).ToList());
+					Global.CheatList.Where(x => x.Contains((int)address)).ToList());
 			}
 
 			MemoryViewerBox.Refresh();
 		}
 
 		// TODO refactor to int?
-		private void FreezeAddress(int address)
+		private void FreezeAddress(long address)
 		{
 			if (address >= 0)
 			{
 				var watch = Watch.GenerateWatch(
 					_domain,
-					address,
+					(int)address,
 					WatchSize,
 					Watch.DisplayType.Hex,
 					string.Empty,
@@ -772,7 +772,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var watch = Watch.GenerateWatch(
 					_domain,
-					address,
+					(int)address, // int to long TODO: address sould be long here
 					WatchSize,
 					Watch.DisplayType.Hex,
 					string.Empty,
@@ -923,20 +923,20 @@ namespace BizHawk.Client.EmuHawk
 			MemoryViewerBox.Refresh();
 		}
 
-		private Point GetAddressCoordinates(int address)
+		private Point GetAddressCoordinates(long address)
 		{
 			var extra = (address % DataSize) * fontWidth * 2;
 			var xOffset = AddressesLabel.Location.X + fontWidth / 2 - 2;
 			var yOffset = AddressesLabel.Location.Y;
 
 			return new Point(
-				(((address % 16) / DataSize) * (fontWidth * (DataSize * 2 + 1))) + xOffset + extra,
-				(((address / 16) - HexScrollBar.Value) * fontHeight) + yOffset
+				(int)((((address % 16) / DataSize) * (fontWidth * (DataSize * 2 + 1))) + xOffset + extra),
+				(int)((((address / 16) - HexScrollBar.Value) * fontHeight) + yOffset)
 				);
 		}
 
 		// TODO: rename this, but it is a hack work around for highlighting misaligned addresses that result from highlighting on in a smaller data size and switching size
-		private bool NeedsExtra(int val)
+		private bool NeedsExtra(long val)
 		{
 			return val % DataSize > 0;
 		}
@@ -949,7 +949,7 @@ namespace BizHawk.Client.EmuHawk
 			return start;
 		}
 
-		private int GetTextX(int address)
+		private long GetTextX(long address)
 		{
 			return GetTextOffset() + ((address % 16) * fontWidth);
 		}
@@ -977,7 +977,7 @@ namespace BizHawk.Client.EmuHawk
 			return str;
 		}
 
-		private void AddToSecondaryHighlights(int address) // int to long TODO: address must be int
+		private void AddToSecondaryHighlights(long address)
 		{
 			if (address >= 0 && address < _domain.Size)
 			{
@@ -986,23 +986,23 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// TODO: obsolete me
-		private void PokeWord(int address, byte _1, byte _2)
+		private void PokeWord(long address, byte _1, byte _2)
 		{
 			if (BigEndian)
 			{
-				_domain.PokeByte(address, _2);
-				_domain.PokeByte(address + 1, _1);
+				_domain.PokeByte((int)address, _2);
+				_domain.PokeByte((int)address + 1, _1);
 			}
 			else
 			{
-				_domain.PokeByte(address, _1);
-				_domain.PokeByte(address + 1, _2);
+				_domain.PokeByte((int)address, _1);
+				_domain.PokeByte((int)address + 1, _2);
 			}
 		}
 
-		private void IncrementAddress(int address)
+		private void IncrementAddress(long address)
 		{
-			if (Global.CheatList.IsActive(_domain, address))
+			if (Global.CheatList.IsActive(_domain, (int)address))
 			{
 				// TODO: Increment should be intelligent since IsActive is.  If this address is part of a multi-byte cheat it should intelligently increment just that byte
 				Global.CheatList.FirstOrDefault(x => x.Domain == _domain && x.Address == address).Increment();
@@ -1033,9 +1033,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DecrementAddress(int address)
+		private void DecrementAddress(long address)
 		{
-			if (Global.CheatList.IsActive(_domain, address))
+			if (Global.CheatList.IsActive(_domain, (int)address))
 			{
 				// TODO: Increment should be intelligent since IsActive is.  If this address is part of a multi-byte cheat it should intelligently increment just that byte
 				Global.CheatList.FirstOrDefault(x => x.Domain == _domain && x.Address == address).Decrement();
@@ -1066,7 +1066,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private string ValueString(int address)
+		private string ValueString(long address)
 		{
 			if (address != -1)
 			{
@@ -1087,7 +1087,7 @@ namespace BizHawk.Client.EmuHawk
 			return string.Empty;
 		}
 
-		private void HighlightSecondaries(string value, int found)
+		private void HighlightSecondaries(string value, long found)
 		{
 			// This function assumes that the primary highlighted value has been set and sets the remaining characters in this string
 			_secondaryHighlightedAddresses.Clear();
@@ -1394,7 +1394,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result == DialogResult.OK && inputPrompt.PromptText.IsHex())
 			{
-				GoToAddress(int.Parse(inputPrompt.PromptText, NumberStyles.HexNumber));
+				GoToAddress(long.Parse(inputPrompt.PromptText, NumberStyles.HexNumber));
 			}
 
 			AddressLabel.Text = GenerateAddressString();
@@ -1443,7 +1443,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PokeAddressMenuItem_Click(object sender, EventArgs e)
 		{
-			var addresses = new List<int>();
+			var addresses = new List<long>();
 			if (HighlightedAddress.HasValue)
 			{
 				addresses.Add(HighlightedAddress.Value);
@@ -1464,7 +1464,7 @@ namespace BizHawk.Client.EmuHawk
 				var watches = addresses.Select(
 					address => Watch.GenerateWatch(
 						_domain,
-						address,
+						(int)address,
 						(Watch.WatchSize)DataSize,
 						Watch.DisplayType.Hex,
 						string.Empty,
@@ -1529,7 +1529,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			int newHighlighted;
+			long newHighlighted;
 			switch (e.KeyCode)
 			{
 				case Keys.Up:
@@ -1962,7 +1962,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// Create a slight offset to increase rectangle sizes
 				var point = GetAddressCoordinates(_addressHighlighted);
-				var textX = GetTextX(_addressHighlighted);
+				var textX = (int)GetTextX(_addressHighlighted);
 				var textpoint = new Point(textX, point.Y);
 
 				var rect = new Rectangle(point, new Size(fontWidth * 2 * DataSize + (NeedsExtra(_addressHighlighted) ? fontWidth : 0) + 2, fontHeight));
@@ -1970,7 +1970,7 @@ namespace BizHawk.Client.EmuHawk
 
 				var textrect = new Rectangle(textpoint, new Size(fontWidth * DataSize, fontHeight));
 
-				if (Global.CheatList.IsActive(_domain, _addressHighlighted))
+				if (Global.CheatList.IsActive(_domain, (int)_addressHighlighted)) // int to long TODO
 				{
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), rect);
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), textrect);
@@ -1985,7 +1985,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var address in _secondaryHighlightedAddresses)
 			{
 				var point = GetAddressCoordinates(address);
-				var textX = GetTextX(address);
+				var textX = (int)GetTextX(address);
 				var textpoint = new Point(textX, point.Y);
 
 				var rect = new Rectangle(point, new Size(fontWidth * 2 * DataSize + 2, fontHeight));
@@ -1993,7 +1993,7 @@ namespace BizHawk.Client.EmuHawk
 
 				var textrect = new Rectangle(textpoint, new Size(fontWidth * DataSize, fontHeight));
 
-				if (Global.CheatList.IsActive(_domain, address))
+				if (Global.CheatList.IsActive(_domain, (int)address))
 				{
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), rect);
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), textrect);
