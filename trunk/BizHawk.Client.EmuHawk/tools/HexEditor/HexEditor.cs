@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 			"NULL", 1024, MemoryDomain.Endian.Little, addr => 0, delegate(long a, byte v) { v = 0; });
 
 		private int _row;
-		private int _addr;
+		private long _addr;
 		private string _findStr = string.Empty;
 		private bool _mouseIsDown;
 		private byte[] _rom;
@@ -152,7 +152,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			BigEndian = _domain.EndianType == MemoryDomain.Endian.Big;
-			_maxRow = (int)(_domain.Size / 2); // int to long TODO: this probably is bad
+			_maxRow = _domain.Size / 2;
 
 			ResetScrollBar();
 			SetDataSize(DataSize);
@@ -548,16 +548,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private byte MakeByte(long address)
 		{
-			return Global.CheatList.IsActive(_domain, (int)address) // int to long todo
-				? Global.CheatList.GetByteValue(_domain, (int)address).Value
+			return Global.CheatList.IsActive(_domain, address)
+				? Global.CheatList.GetByteValue(_domain, address).Value
 				: _domain.PeekByte(address); 
 		}
 
 		private int MakeValue(long address)
 		{
-			if (Global.CheatList.IsActive(_domain, (int)address)) // int to long TODO: cheats should use long
+			if (Global.CheatList.IsActive(_domain, address))
 			{
-				return Global.CheatList.GetCheatValue(_domain, (int)address, (Watch.WatchSize)DataSize ).Value;
+				return Global.CheatList.GetCheatValue(_domain, address, (Watch.WatchSize)DataSize ).Value;
 			}
 
 			switch (DataSize)
@@ -721,17 +721,17 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case 1:
-					return new ByteWatch(_domain, (int)address, Watch.DisplayType.Hex, BigEndian, string.Empty); // int to long TODO: watches should use long for address
+					return new ByteWatch(_domain, address, Watch.DisplayType.Hex, BigEndian, string.Empty);
 				case 2:
-					return new WordWatch(_domain, (int)address, Watch.DisplayType.Hex, BigEndian, string.Empty);
+					return new WordWatch(_domain, address, Watch.DisplayType.Hex, BigEndian, string.Empty);
 				case 4:
-					return new DWordWatch(_domain, (int)address, Watch.DisplayType.Hex, BigEndian, string.Empty);
+					return new DWordWatch(_domain, address, Watch.DisplayType.Hex, BigEndian, string.Empty);
 			}
 		}
 
 		private bool IsFrozen(long address)
 		{
-			return Global.CheatList.IsActive(_domain, (int)address); // int to long TODO: cheat should accept long
+			return Global.CheatList.IsActive(_domain, address);
 		}
 
 		private void UnFreezeAddress(long address)
@@ -740,7 +740,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// TODO: can't unfreeze address 0??
 				Global.CheatList.RemoveRange(
-					Global.CheatList.Where(x => x.Contains((int)address)).ToList());
+					Global.CheatList.Where(x => x.Contains(address)).ToList());
 			}
 
 			MemoryViewerBox.Refresh();
@@ -753,7 +753,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var watch = Watch.GenerateWatch(
 					_domain,
-					(int)address,
+					address,
 					WatchSize,
 					Watch.DisplayType.Hex,
 					string.Empty,
@@ -772,7 +772,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var watch = Watch.GenerateWatch(
 					_domain,
-					(int)address, // int to long TODO: address sould be long here
+					address,
 					WatchSize,
 					Watch.DisplayType.Hex,
 					string.Empty,
@@ -1662,7 +1662,7 @@ namespace BizHawk.Client.EmuHawk
 
 					break;
 				case Keys.End:
-					newHighlighted = (int)(_domain.Size - DataSize); // int to long TODO: newHighlighted must be long
+					newHighlighted = _domain.Size - DataSize;
 					if (e.Modifiers == Keys.Shift)
 					{
 						for (var i = _addressHighlighted; i < newHighlighted; i += DataSize)
@@ -1970,7 +1970,7 @@ namespace BizHawk.Client.EmuHawk
 
 				var textrect = new Rectangle(textpoint, new Size(fontWidth * DataSize, fontHeight));
 
-				if (Global.CheatList.IsActive(_domain, (int)_addressHighlighted)) // int to long TODO
+				if (Global.CheatList.IsActive(_domain, _addressHighlighted))
 				{
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), rect);
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), textrect);

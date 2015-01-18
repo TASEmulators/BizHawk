@@ -42,7 +42,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		protected int _address;
+		protected long _address;
 		protected MemoryDomain _domain;
 		protected DisplayType _type;
 		protected bool _bigEndian;
@@ -68,7 +68,7 @@ namespace BizHawk.Client.Common
 
 		public string DomainName { get { return _domain != null ? _domain.Name : string.Empty; } }
 
-		public virtual int? Address { get { return _address; } }
+		public virtual long? Address { get { return _address; } }
 
 		public virtual string AddressString { get { return _address.ToString(AddressFormatStr); } }
 
@@ -213,7 +213,7 @@ namespace BizHawk.Client.Common
 
 		protected uint GetDWord()
 		{
-			if (Global.CheatList.IsActive(_domain, _address))
+			if (Global.CheatList.IsActive(_domain, (int)_address))
 			{
 				return (uint)Global.CheatList.GetCheatValue(_domain, _address, WatchSize.DWord).Value;
 			}
@@ -263,7 +263,7 @@ namespace BizHawk.Client.Common
 
 		public string Notes { get { return _notes; } set { _notes = value; } }
 
-		public static Watch GenerateWatch(MemoryDomain domain, int address, WatchSize size, DisplayType type, string notes, bool bigEndian)
+		public static Watch GenerateWatch(MemoryDomain domain, long address, WatchSize size, DisplayType type, string notes, bool bigEndian)
 		{
 			switch (size)
 			{
@@ -279,7 +279,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static Watch GenerateWatch(MemoryDomain domain, int address, WatchSize size, DisplayType type, bool bigendian, long prev, int changecount)
+		public static Watch GenerateWatch(MemoryDomain domain, long address, WatchSize size, DisplayType type, bool bigendian, long prev, int changecount)
 		{
 			switch (size)
 			{
@@ -341,7 +341,7 @@ namespace BizHawk.Client.Common
 
 		public override int GetHashCode()
 		{
-			return this.Domain.GetHashCode() + this.Address ?? 0;
+			return this.Domain.GetHashCode() + (int)(this.Address ?? 0);
 		}
 
 		public static bool operator ==(Watch a, Watch b)
@@ -384,7 +384,7 @@ namespace BizHawk.Client.Common
 			get { return new SeparatorWatch(); }
 		}
 
-		public override int? Address
+		public override long? Address
 		{
 			get { return null; }
 		}
@@ -464,7 +464,7 @@ namespace BizHawk.Client.Common
 		private byte _previous;
 		private byte _value;
 
-		public ByteWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, string notes)
+		public ByteWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string notes)
 		{
 			_address = address;
 			_domain = domain;
@@ -481,14 +481,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public ByteWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, byte prev, int changeCount, string notes = null)
+		public ByteWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, byte prev, int changeCount, string notes = null)
 			: this(domain, address, type, bigEndian, notes)
 		{
 			_previous = prev;
 			_changecount = changeCount;
 		}
 
-		public override int? Address
+		public override long? Address
 		{
 			get { return _address; }
 		}
@@ -692,7 +692,7 @@ namespace BizHawk.Client.Common
 		private ushort _previous;
 		private ushort _value;
 
-		public WordWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, string notes)
+		public WordWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string notes)
 		{
 			_domain = domain;
 			_address = address;
@@ -711,7 +711,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public WordWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, ushort prev, int changeCount, string notes = null)
+		public WordWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, ushort prev, int changeCount, string notes = null)
 			: this(domain, address, type, bigEndian, notes)
 		{
 			_previous = prev;
@@ -911,7 +911,7 @@ namespace BizHawk.Client.Common
 		private uint _value;
 		private uint _previous;
 
-		public DWordWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, string notes)
+		public DWordWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string notes)
 		{
 			_domain = domain;
 			_address = address;
@@ -930,7 +930,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public DWordWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, uint prev, int changeCount, string notes = null)
+		public DWordWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, uint prev, int changeCount, string notes = null)
 			: this(domain, address, type, bigEndian, notes)
 		{
 			_previous = prev;
