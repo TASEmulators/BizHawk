@@ -20,10 +20,6 @@ namespace BizHawk.Emulation.Common
 
 		public string Name { get; private set; }
 
-		/// <summary>
-		/// Special note: if this is 0, the memorydomain is 0x100000000 (full 32bits) in size.
-		/// This was judged to be less of a mess than using a bunch of longs everywhere.
-		/// </summary>
 		public long Size { get; private set; }
 
 		public Endian EndianType { get; private set; }
