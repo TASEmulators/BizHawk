@@ -210,7 +210,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public static void ViewInHexEditor(MemoryDomain domain, IEnumerable<int> addresses, Watch.WatchSize size)
+		public static void ViewInHexEditor(MemoryDomain domain, IEnumerable<long> addresses, Watch.WatchSize size)
 		{
 			GlobalWin.Tools.Load<HexEditor>();
 			GlobalWin.Tools.HexEditor.SetToAddresses(addresses, domain, size);

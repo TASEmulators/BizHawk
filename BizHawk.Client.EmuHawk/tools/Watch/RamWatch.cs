@@ -1040,11 +1040,11 @@ namespace BizHawk.Client.EmuHawk
 
 				if (selected.Select(x => x.Domain).Distinct().Count() > 1)
 				{
-					ToolHelpers.ViewInHexEditor(selected[0].Domain, new List<int> { selected.First().Address ?? 0 }, selected.First().Size);
+					ToolHelpers.ViewInHexEditor(selected[0].Domain, new List<long> { (long)(selected.First().Address ?? 0) }, selected.First().Size); // int to long todo: address should be long
 				}
 				else
 				{
-					ToolHelpers.ViewInHexEditor(selected.First().Domain, selected.Select(x => x.Address ?? 0), selected.First().Size);
+					ToolHelpers.ViewInHexEditor(selected.First().Domain, selected.Select(x => x.Address ?? 0).Cast<long>(), selected.First().Size); // int to long todo: address should be long
 				}
 			}
 		}
