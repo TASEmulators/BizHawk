@@ -226,7 +226,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 				var item = new ToolStripMenuItem
 				{
 					Text = name,
-					Enabled = !(maxSize.HasValue && domain.Size > maxSize.Value) && !(maxSize.HasValue && domain.Size == 0), // 0 denotes a full 32bit size, which is definiately greater than max size!
+					Enabled = !(maxSize.HasValue && domain.Size > maxSize.Value),
 					Checked = name == selected
 				};
 				item.Click += (o, ev) => setCallback(name);
