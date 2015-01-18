@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						NotesBox.Text = _watchList[0].Notes;
-						AddressBox.SetFromRawInt((int)(_watchList[0].Address ?? 0)); // int to long todo
+						AddressBox.SetFromLong(_watchList[0].Address ?? 0);
 					}
 
 					SetBigEndianCheckBox();
@@ -213,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 				default:
 				case Mode.New:
 					var domain = MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
-					var address = AddressBox.ToRawInt() ?? 0;
+					var address = AddressBox.ToLong() ?? 0;
 					var notes = NotesBox.Text;
 					var type = Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString());
 					var bigendian = BigEndianCheckBox.Checked;

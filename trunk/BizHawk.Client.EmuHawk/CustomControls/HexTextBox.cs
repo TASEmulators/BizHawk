@@ -137,6 +137,26 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Text = val.HasValue ? string.Format(_addressFormatStr, val) : string.Empty;
 		}
+
+		public void SetFromLong(long val)
+		{
+			Text = string.Format(_addressFormatStr, val);
+		}
+
+		public long? ToLong()
+		{
+			if (string.IsNullOrWhiteSpace(Text))
+			{
+				if (Nullable)
+				{
+					return null;
+				}
+
+				return 0;
+			}
+
+			return long.Parse(Text, NumberStyles.HexNumber);
+		}
 	}
 
 	public class UnsignedIntegerBox : TextBox, INumberBox
