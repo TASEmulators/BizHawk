@@ -9,18 +9,6 @@ namespace BizHawk.Emulation.Common
 	{
 		public enum Endian { Big, Little, Unknown }
 
-		public readonly string Name;
-
-		/// <summary>
-		/// Special note: if this is 0, the memorydomain is 0x100000000 (full 32bits) in size.
-		/// This was judged to be less of a mess than using a bunch of longs everywhere.
-		/// </summary>
-		public readonly int Size;
-		public readonly Endian EndianType;
-
-		public readonly Func<int, byte> PeekByte;
-		public readonly Action<int, byte> PokeByte;
-
 		public MemoryDomain(string name, int size, Endian endian, Func<int, byte> peekByte, Action<int, byte> pokeByte)
 		{
 			Name = name;
@@ -30,12 +18,23 @@ namespace BizHawk.Emulation.Common
 			PokeByte = pokeByte;
 		}
 
+		public string Name { get; private set; }
+
+		/// <summary>
+		/// Special note: if this is 0, the memorydomain is 0x100000000 (full 32bits) in size.
+		/// This was judged to be less of a mess than using a bunch of longs everywhere.
+		/// </summary>
+		public int Size { get; private set; }
+
+		public Endian EndianType { get; private set; }
+
+		public Func<int, byte> PeekByte { get; private set; }
+
+		public Action<int, byte> PokeByte { get; private set; }
+
 		/// <summary>
 		/// create a memorydomain that references an unmanaged memory block
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="size"></param>
-		/// <param name="endian"></param>
 		/// <param name="data">must remain valid as long as the MemoryDomain exists!</param>
 		/// <param name="writable">if false, writes will be ignored</param>
 		/// <returns></returns>
@@ -72,9 +71,6 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// create a memorydomain that references an unmanaged memory block with 16 bit swaps
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="size"></param>
-		/// <param name="endian"></param>
 		/// <param name="data">must remain valid as long as the MemoryDomain exists!</param>
 		/// <param name="writable">if false, writes will be ignored</param>
 		/// <returns></returns>
