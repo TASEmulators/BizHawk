@@ -46,11 +46,11 @@ namespace BizHawk.Client.EmuHawk
 			get { return (uint)AddressBox.ToRawInt().Value; }
 		}
 
-		public int MaxAddressSize
+		public long MaxAddressSize
 		{
 			get
 			{
-				return AddressBox.MaxLength;
+				return AddressBox.MaxLength; // int to long TODO: I think this logic was wrong (even before the int to long refactor)
 			}
 
 			set

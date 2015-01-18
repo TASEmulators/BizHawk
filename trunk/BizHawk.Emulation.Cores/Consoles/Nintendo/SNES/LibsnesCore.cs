@@ -1026,7 +1026,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			var md = new MemoryDomain("System Bus", 0x1000000, MemoryDomain.Endian.Little,
 				(addr) =>
 				{
-					var a = FakeBusMap(addr);
+					var a = FakeBusMap((int)addr);
 					if (a.HasValue)
 						return blockptr[a.Value];
 					else
@@ -1034,7 +1034,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				},
 				(addr, val) =>
 				{
-					var a = FakeBusMap(addr);
+					var a = FakeBusMap((int)addr);
 					if (a.HasValue)
 						blockptr[a.Value] = val;
 				});			

@@ -16,9 +16,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			var RAM = new MemoryDomain("RAM", 0x800, MemoryDomain.Endian.Little,
 				addr => ram[addr], (addr, value) => ram[addr] = value);
 			var SystemBus = new MemoryDomain("System Bus", 0x10000, MemoryDomain.Endian.Little,
-				addr => PeekMemory((ushort)addr), (addr, value) => ApplySystemBusPoke(addr, value));
+				addr => PeekMemory((ushort)addr), (addr, value) => ApplySystemBusPoke((int)addr, value));
 			var PPUBus = new MemoryDomain("PPU Bus", 0x4000, MemoryDomain.Endian.Little,
-				addr => ppu.ppubus_peek(addr), (addr, value) => ppu.ppubus_write(addr, value));
+				addr => ppu.ppubus_peek((int)addr), (addr, value) => ppu.ppubus_write((int)addr, value));
 			var CIRAMdomain = new MemoryDomain("CIRAM (nametables)", 0x800, MemoryDomain.Endian.Little,
 				addr => CIRAM[addr], (addr, value) => CIRAM[addr] = value);
 			var OAMdoman = new MemoryDomain("OAM", 64 * 4, MemoryDomain.Endian.Unknown,

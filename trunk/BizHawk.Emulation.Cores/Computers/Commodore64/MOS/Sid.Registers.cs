@@ -7,14 +7,24 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	sealed public partial class Sid
 	{
+		public byte Peek(long addr)
+		{
+			return ReadRegister((int)(addr & 0x1F));
+		}
+
+		public void Poke(long addr, byte val)
+		{
+			WriteRegister((int)(addr & 0x1F), val);
+		}
+
 		public byte Peek(int addr)
 		{
-			return ReadRegister((addr & 0x1F));
+			return ReadRegister((int)(addr & 0x1F));
 		}
 
 		public void Poke(int addr, byte val)
 		{
-			WriteRegister((addr & 0x1F), val);
+			WriteRegister((int)(addr & 0x1F), val);
 		}
 
 		public byte Read(int addr)

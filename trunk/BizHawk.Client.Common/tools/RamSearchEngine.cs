@@ -68,7 +68,7 @@ namespace BizHawk.Client.Common
 				listSize /= (int)_settings.Size;
 			}
 
-			_watchList = new List<IMiniWatch>(listSize);
+			_watchList = new List<IMiniWatch>((int)listSize);
 
 			switch (_settings.Size)
 			{

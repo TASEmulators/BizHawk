@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 	public class HexTextBox : TextBox, INumberBox
 	{
 		private string _addressFormatStr = string.Empty;
-		private int? _maxSize;
+		private long? _maxSize;
 		private bool _nullable = true;
 
 		public HexTextBox()
@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool Nullable { get { return _nullable; } set { _nullable = value; } }
 
-		public void SetHexProperties(int domainSize)
+		public void SetHexProperties(long domainSize)
 		{
 			_maxSize = domainSize - 1;
 			MaxLength = _maxSize.Value.NumHexDigits();

@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private long _domainSize;
 		private MemoryDomain _domain = new MemoryDomain(
-			"NULL", 1024, MemoryDomain.Endian.Little, addr => 0, delegate(int a, byte v) { v = 0; });
+			"NULL", 1024, MemoryDomain.Endian.Little, addr => 0, delegate(long a, byte v) { v = 0; });
 
 		private int _row;
 		private int _addr;

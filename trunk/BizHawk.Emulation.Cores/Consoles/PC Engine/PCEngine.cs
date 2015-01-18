@@ -479,13 +479,13 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				{
 					if (addr < 0 || addr >= 0x200000)
 						throw new ArgumentOutOfRangeException();
-					return Cpu.ReadMemory21(addr);
+					return Cpu.ReadMemory21((int)addr);
 				},
 				(addr, value) =>
 				{
 					if (addr < 0 || addr >= 0x200000)
 						throw new ArgumentOutOfRangeException();
-					Cpu.WriteMemory21(addr, value);
+					Cpu.WriteMemory21((int)addr, value);
 				});
 			domains.Add(SystemBusDomain);
 

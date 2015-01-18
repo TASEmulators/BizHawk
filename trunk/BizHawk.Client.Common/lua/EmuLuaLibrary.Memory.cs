@@ -84,9 +84,9 @@ namespace BizHawk.Client.Common
 			"getcurrentmemorydomainsize",
 			"Returns the number of bytes of the current memory domain selected by Lua. The default is Main memory"
 		)]
-		public int GetCurrentMemoryDomainSize()
+		public uint GetCurrentMemoryDomainSize() // int to long TODO: test this and think about it more
 		{
-			return Domain.Size;
+			return (uint)Domain.Size;
 		}
 
 		[LuaMethodAttributes(

@@ -600,17 +600,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				{
 					byte* p = (byte*)area;
 					mm.Add(new MemoryDomain(name, size, MemoryDomain.Endian.Unknown,
-						delegate(int addr)
+						delegate(long addr)
 						{
 							if (addr < 0 || addr >= 65536)
 								throw new ArgumentOutOfRangeException();
 							return p[addr ^ 1];
 						},
-						delegate(int addr, byte val)
+						delegate(long addr, byte val)
 						{
 							if (addr < 0 || addr >= 65536)
 								throw new ArgumentOutOfRangeException();
-							LibGPGX.gpgx_poke_vram(addr ^ 1, val);
+							LibGPGX.gpgx_poke_vram(((int)addr) ^ 1, val);
 						}));
 				}
 				else
