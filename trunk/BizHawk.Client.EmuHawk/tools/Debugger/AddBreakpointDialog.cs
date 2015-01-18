@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				return AddressBox.MaxLength; // int to long TODO: I think this logic was wrong (even before the int to long refactor)
+				return AddressBox.GetMax();
 			}
 
 			set
