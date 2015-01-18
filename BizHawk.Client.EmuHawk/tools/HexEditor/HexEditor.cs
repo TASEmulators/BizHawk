@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 		private long _addressHighlighted = -1;
 		private long _addressOver = -1;
 
-		private int _maxRow;
+		private long _maxRow;
 
 		private MemoryDomain _domain = new MemoryDomain(
 			"NULL", 1024, MemoryDomain.Endian.Little, addr => 0, delegate(long a, byte v) { v = 0; });
@@ -546,10 +546,10 @@ namespace BizHawk.Client.EmuHawk
 			return rowStr.ToString();
 		}
 
-		private byte MakeByte(int address)
+		private byte MakeByte(long address)
 		{
-			return Global.CheatList.IsActive(_domain, address)
-				? Global.CheatList.GetByteValue(_domain, address).Value
+			return Global.CheatList.IsActive(_domain, (int)address) // int to long todo
+				? Global.CheatList.GetByteValue(_domain, (int)address).Value
 				: _domain.PeekByte(address); 
 		}
 
@@ -584,7 +584,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			BigEndian = _domain.EndianType == MemoryDomain.Endian.Big;
-			_maxRow = (int)(_domain.Size / 2);
+			_maxRow = _domain.Size / 2;
 			SetUpScrollBar();
 			if (0 >= HexScrollBar.Minimum && 0 <= HexScrollBar.Maximum)
 			{
@@ -864,9 +864,9 @@ namespace BizHawk.Client.EmuHawk
 			AddressLabel.Text = GenerateAddressString();
 		}
 
-		private int GetPointedAddress(int x, int y)
+		private long GetPointedAddress(int x, int y)
 		{
-			int address;
+			long address;
 
 			// Scroll value determines the first row
 			var i = HexScrollBar.Value;
