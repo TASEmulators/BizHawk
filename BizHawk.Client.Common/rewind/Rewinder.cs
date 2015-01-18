@@ -235,12 +235,14 @@ namespace BizHawk.Client.Common
 				// if we have an appropriate buffer free, return it
 				if (_rewindBufferBacking != null)
 				{
-					var buf = _rewindBufferBacking;
-					_rewindBufferBacking = null;
-					if (buf.LongLength == size)
+					if (_rewindBufferBacking.LongLength == size)
 					{
+						var buf = _rewindBufferBacking;
+						_rewindBufferBacking = null;
 						return buf;
 					}
+
+					_rewindBufferBacking = null;
 				}
 
 				// otherwise, allocate it

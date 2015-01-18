@@ -65,6 +65,7 @@ namespace BizHawk.Client.Common
 			{
 				long capacity = 0;
 				_mBufferManage(_mAllocatedBuffer, ref capacity, false);
+				_mAllocatedBuffer = null;
 			}
 		}
 
