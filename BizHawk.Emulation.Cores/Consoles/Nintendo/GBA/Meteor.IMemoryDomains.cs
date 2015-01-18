@@ -37,13 +37,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			// special domain for system bus
 			{
 				MemoryDomain sb = new MemoryDomain("System Bus", 1 << 28, MemoryDomain.Endian.Little,
-					delegate(int addr)
+					delegate(long addr)
 					{
 						if (addr < 0 || addr >= 0x10000000)
 							throw new IndexOutOfRangeException();
 						return LibMeteor.libmeteor_peekbus((uint)addr);
 					},
-					delegate(int addr, byte val)
+					delegate(long addr, byte val)
 					{
 						if (addr < 0 || addr >= 0x10000000)
 							throw new IndexOutOfRangeException();
@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				var ew = _domainList[1];
 				var iw = _domainList[0];
 				MemoryDomain cr = new MemoryDomain("Combined WRAM", (256 + 32) * 1024, MemoryDomain.Endian.Little,
-					delegate(int addr)
+					delegate(long addr)
 					{
 						if (addr < 0 || addr >= (256 + 32) * 1024)
 							throw new IndexOutOfRangeException();
@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 						else
 							return ew.PeekByte(addr);
 					},
-					delegate(int addr, byte val)
+					delegate(long addr, byte val)
 					{
 						if (addr < 0 || addr >= (256 + 32) * 1024)
 							throw new IndexOutOfRangeException();

@@ -50,9 +50,9 @@ namespace BizHawk.Client.Common
 			"getcurrentmemorydomainsize",
 			"Returns the number of bytes of the domain defined as main memory"
 		)]
-		public int GetSize()
+		public uint GetSize() // int to long TODO: test this and think about it more
 		{
-			return Domain.Size;
+			return (uint)Domain.Size;
 		}
 
 		#endregion

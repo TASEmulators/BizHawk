@@ -474,7 +474,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 				(addr, value) => RomData[addr & (RomData.Length - 1)] = value);
 
 			var SystemBusDomain = new MemoryDomain("System Bus", 0x1000000, MemoryDomain.Endian.Big,
-				addr => (byte)ReadByte(addr),
+				addr => (byte)ReadByte((int)addr),
 				(addr, value) => Write8((uint)addr, (uint)value));
 
 			domains.Add(MainMemoryDomain);

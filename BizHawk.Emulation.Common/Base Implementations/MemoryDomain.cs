@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Common
 	{
 		public enum Endian { Big, Little, Unknown }
 
-		public MemoryDomain(string name, int size, Endian endian, Func<int, byte> peekByte, Action<int, byte> pokeByte)
+		public MemoryDomain(string name, long size, Endian endian, Func<long, byte> peekByte, Action<long, byte> pokeByte)
 		{
 			Name = name;
 			Size = size;
@@ -24,13 +24,13 @@ namespace BizHawk.Emulation.Common
 		/// Special note: if this is 0, the memorydomain is 0x100000000 (full 32bits) in size.
 		/// This was judged to be less of a mess than using a bunch of longs everywhere.
 		/// </summary>
-		public int Size { get; private set; }
+		public long Size { get; private set; }
 
 		public Endian EndianType { get; private set; }
 
-		public Func<int, byte> PeekByte { get; private set; }
+		public Func<long, byte> PeekByte { get; private set; }
 
-		public Action<int, byte> PokeByte { get; private set; }
+		public Action<long, byte> PokeByte { get; private set; }
 
 		/// <summary>
 		/// create a memorydomain that references an unmanaged memory block
@@ -50,13 +50,13 @@ namespace BizHawk.Emulation.Common
 				name,
 				size,
 				endian,
-				delegate(int addr)
+				delegate(long addr)
 				{
 					if ((uint)addr >= size)
 						throw new ArgumentOutOfRangeException();
 					return p[addr];
 				},
-				delegate(int addr, byte val)
+				delegate(long addr, byte val)
 				{
 					if (writable)
 					{
@@ -86,13 +86,13 @@ namespace BizHawk.Emulation.Common
 				name,
 				size,
 				endian,
-				delegate(int addr)
+				delegate(long addr)
 				{
 					if (addr < 0 || addr >= size)
 						throw new ArgumentOutOfRangeException();
 					return p[addr ^ 1];
 				},
-				delegate(int addr, byte val)
+				delegate(long addr, byte val)
 				{
 					if (writable)
 					{
@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Common
 			return Name;
 		}
 
-		public ushort PeekWord(int addr, bool bigEndian)
+		public ushort PeekWord(long addr, bool bigEndian)
 		{
 			Endian endian = bigEndian ? Endian.Big : Endian.Little;
 			switch (endian)
@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public uint PeekDWord(int addr, bool bigEndian)
+		public uint PeekDWord(long addr, bool bigEndian)
 		{
 			Endian endian = bigEndian ? Endian.Big : Endian.Little;
 			switch (endian)
@@ -141,7 +141,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public void PokeWord(int addr, ushort val, bool bigEndian)
+		public void PokeWord(long addr, ushort val, bool bigEndian)
 		{
 			Endian endian = bigEndian ? Endian.Big : Endian.Little;
 			switch (endian)
@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public void PokeDWord(int addr, uint val, bool bigEndian)
+		public void PokeDWord(long addr, uint val, bool bigEndian)
 		{
 			Endian endian = bigEndian ? Endian.Big : Endian.Little;
 			switch (endian)

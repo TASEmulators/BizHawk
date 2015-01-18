@@ -25,24 +25,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			mm.Add(MemoryDomain.FromIntPtr("ROM", 32 * 1024 * 1024, l, s.rom));
 
 			mm.Add(new MemoryDomain("System Bus", 0x10000000, l,
-				delegate(int addr)
+				delegate(long addr)
 				{
 					if (addr < 0 || addr >= 0x10000000)
 						throw new ArgumentOutOfRangeException();
-					return LibVBANext.SystemBusRead(Core, addr);
+					return LibVBANext.SystemBusRead(Core, (int)addr);
 				},
-				delegate(int addr, byte val)
+				delegate(long addr, byte val)
 				{
 					if (addr < 0 || addr >= 0x10000000)
 						throw new ArgumentOutOfRangeException();
-					LibVBANext.SystemBusWrite(Core, addr, val);
+					LibVBANext.SystemBusWrite(Core, (int)addr, val);
 				}));
 			// special combined ram memory domain
 			{
 				var ew = mm[1];
 				var iw = mm[0];
 				MemoryDomain cr = new MemoryDomain("Combined WRAM", (256 + 32) * 1024, MemoryDomain.Endian.Little,
-					delegate(int addr)
+					delegate(long addr)
 					{
 						if (addr < 0 || addr >= (256 + 32) * 1024)
 							throw new IndexOutOfRangeException();
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 						else
 							return ew.PeekByte(addr);
 					},
-					delegate(int addr, byte val)
+					delegate(long addr, byte val)
 					{
 						if (addr < 0 || addr >= (256 + 32) * 1024)
 							throw new IndexOutOfRangeException();

@@ -22,13 +22,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				{
 					_MemoryDomains.Add(new MemoryDomain(
 						"RAM1", 0x800, MemoryDomain.Endian.Unknown,
-						delegate(int addr)
+						delegate(long addr)
 						{
 							if (addr < 0 || addr >= 0x800)
 								throw new ArgumentOutOfRangeException();
 							return ((Machine7800)theMachine).RAM1[(ushort)addr];
 						},
-						delegate(int addr, byte val)
+						delegate(long addr, byte val)
 						{
 							if (addr < 0 || addr >= 0x800)
 								throw new ArgumentOutOfRangeException();
@@ -36,13 +36,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 						}));
 					_MemoryDomains.Add(new MemoryDomain(
 						"RAM2", 0x800, MemoryDomain.Endian.Unknown,
-						delegate(int addr)
+						delegate(long addr)
 						{
 							if (addr < 0 || addr >= 0x800)
 								throw new ArgumentOutOfRangeException();
 							return ((Machine7800)theMachine).RAM2[(ushort)addr];
 						},
-						delegate(int addr, byte val)
+						delegate(long addr, byte val)
 						{
 							if (addr < 0 || addr >= 0x800)
 								throw new ArgumentOutOfRangeException();
@@ -50,44 +50,44 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 						}));
 					_MemoryDomains.Add(new MemoryDomain(
 						"BIOS ROM", bios.Length, MemoryDomain.Endian.Unknown,
-						delegate(int addr)
+						delegate(long addr)
 						{
 							return bios[addr];
 						},
-						delegate(int addr, byte val)
+						delegate(long addr, byte val)
 						{
 						}));
 					if (hsc7800 != null)
 					{
 						_MemoryDomains.Add(new MemoryDomain(
 							"HSC ROM", hsbios.Length, MemoryDomain.Endian.Unknown,
-							delegate(int addr)
+							delegate(long addr)
 							{
 								return hsbios[addr];
 							},
-							delegate(int addr, byte val)
+							delegate(long addr, byte val)
 							{
 							}));
 						_MemoryDomains.Add(new MemoryDomain(
 							"HSC RAM", hsram.Length, MemoryDomain.Endian.Unknown,
-							delegate(int addr)
+							delegate(long addr)
 							{
 								return hsram[addr];
 							},
-							delegate(int addr, byte val)
+							delegate(long addr, byte val)
 							{
 								hsram[addr] = val;
 							}));
 					}
 					_MemoryDomains.Add(new MemoryDomain(
 						"System Bus", 65536, MemoryDomain.Endian.Unknown,
-						delegate(int addr)
+						delegate(long addr)
 						{
 							if (addr < 0 || addr >= 0x10000)
 								throw new ArgumentOutOfRangeException();
 							return theMachine.Mem[(ushort)addr];
 						},
-						delegate(int addr, byte val)
+						delegate(long addr, byte val)
 						{
 							if (addr < 0 || addr >= 0x10000)
 								throw new ArgumentOutOfRangeException();

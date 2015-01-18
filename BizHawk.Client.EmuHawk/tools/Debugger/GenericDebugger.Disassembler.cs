@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 			public string Mnemonic { get; private set; }
 		}
 
-		private int BusMaxValue
+		private long BusMaxValue
 		{
 			get
 			{
