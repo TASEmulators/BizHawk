@@ -563,6 +563,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					{ "A26", "Atari 2600" },
 					{ "A78", "Atari 7800" },
+					{ "Lynx", "Atari Lynx" },
 
 					{ "NES", "Nintendo Entertainment System/Famicom" },
 					{ "SNES", "Super Nintendo" },
@@ -570,6 +571,9 @@ namespace BizHawk.Client.EmuHawk
 
 					{ "GB", "Game Boy" },
 					{ "GBC", "Game Boy Color" },
+					{ "GBA", "Gameboy Advance" },
+
+					{ "PSX", "Playstation" },
 
 					{ "SMS", "Sega Master System" },
 					{ "GG", "Sega Game Gear" },
@@ -583,7 +587,6 @@ namespace BizHawk.Client.EmuHawk
 					{ "TI83", "TI-83 Calculator" },
 
 					{ "WSWAN", "WonderSwan" },
-                    { "GBA", "Gameboy Advance" }
 				};
 
 				if (VersionInfo.DeveloperBuild)
