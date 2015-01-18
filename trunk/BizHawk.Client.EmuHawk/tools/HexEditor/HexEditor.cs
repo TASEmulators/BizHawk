@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 		private MemoryDomain _domain = new MemoryDomain(
 			"NULL", 1024, MemoryDomain.Endian.Little, addr => 0, delegate(long a, byte v) { v = 0; });
 
-		private int _row;
+		private long _row;
 		private long _addr;
 		private string _findStr = string.Empty;
 		private bool _mouseIsDown;
@@ -869,7 +869,7 @@ namespace BizHawk.Client.EmuHawk
 			long address;
 
 			// Scroll value determines the first row
-			var i = HexScrollBar.Value;
+			long i = HexScrollBar.Value;
 			var rowoffset = y / fontHeight;
 			i += rowoffset;
 			int colWidth = DataSize * 2 + 1;
@@ -2037,22 +2037,22 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				var pointed_address = GetPointedAddress(e.X, e.Y);
-				if (pointed_address >= 0)
+				var pointedAddress = GetPointedAddress(e.X, e.Y);
+				if (pointedAddress >= 0)
 				{
 					if ((ModifierKeys & Keys.Control) == Keys.Control)
 					{
-						if (pointed_address == _addressHighlighted)
+						if (pointedAddress == _addressHighlighted)
 						{
 							ClearHighlighted();
 						}
-						else if (_secondaryHighlightedAddresses.Contains(pointed_address))
+						else if (_secondaryHighlightedAddresses.Contains(pointedAddress))
 						{
-							_secondaryHighlightedAddresses.Remove(pointed_address);
+							_secondaryHighlightedAddresses.Remove(pointedAddress);
 						}
 						else
 						{
-							_secondaryHighlightedAddresses.Add(pointed_address);
+							_secondaryHighlightedAddresses.Add(pointedAddress);
 						}
 					}
 					else if ((ModifierKeys & Keys.Shift) == Keys.Shift)
@@ -2061,7 +2061,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						SetHighlighted(pointed_address);
+						SetHighlighted(pointedAddress);
 						_secondaryHighlightedAddresses.Clear();
 						_findStr = string.Empty;
 					}
