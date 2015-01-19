@@ -213,7 +213,7 @@ namespace BizHawk.Client.Common
 
 		protected uint GetDWord()
 		{
-			if (Global.CheatList.IsActive(_domain, (int)_address))
+			if (Global.CheatList.IsActive(_domain, _address))
 			{
 				return (uint)Global.CheatList.GetCheatValue(_domain, _address, WatchSize.DWord).Value;
 			}
