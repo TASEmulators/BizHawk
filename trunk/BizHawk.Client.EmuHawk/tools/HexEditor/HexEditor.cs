@@ -1458,7 +1458,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var poke = new RamPoke
 				{
-					InitialLocation = PointToScreen(GetAddressCoordinates(addresses[0])),
+					InitialLocation = this.ChildPointToScreen(AddressLabel),
 					ParentTool = this
 				};
 
@@ -1985,24 +1985,27 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var address in _secondaryHighlightedAddresses)
 			{
-				var point = GetAddressCoordinates(address);
-				var textX = (int)GetTextX(address);
-				var textpoint = new Point(textX, point.Y);
-
-				var rect = new Rectangle(point, new Size(fontWidth * 2 * DataSize + 2, fontHeight));
-				e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
-
-				var textrect = new Rectangle(textpoint, new Size(fontWidth * DataSize, fontHeight));
-
-				if (Global.CheatList.IsActive(_domain, (int)address))
+				if (IsVisible(address))
 				{
-					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), rect);
-					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), textrect);
-				}
-				else
-				{
-					e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(0x77FFD4D4)), rect);
-					e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(0x77FFD4D4)), textrect);
+					var point = GetAddressCoordinates(address);
+					var textX = (int)GetTextX(address);
+					var textpoint = new Point(textX, point.Y);
+
+					var rect = new Rectangle(point, new Size(fontWidth * 2 * DataSize + 2, fontHeight));
+					e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
+
+					var textrect = new Rectangle(textpoint, new Size(fontWidth * DataSize, fontHeight));
+
+					if (Global.CheatList.IsActive(_domain, (int)address))
+					{
+						e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), rect);
+						e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), textrect);
+					}
+					else
+					{
+						e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(0x77FFD4D4)), rect);
+						e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(0x77FFD4D4)), textrect);
+					}
 				}
 			}
 
