@@ -221,10 +221,11 @@ namespace BizHawk.Client.Common
 		{
 			if (allocate)
 			{
-				if (size > Int32.MaxValue)
+				const int MaxByteArraySize = 0x7FFFFFC7;
+				if (size > MaxByteArraySize)
 				{
-					// I think we need .NET 4.5+ on x64 to allocate > 2GB
-					size = Int32.MaxValue;
+					// .NET won't let us allocate more than this in one array
+					size = MaxByteArraySize;
 				}
 
 				if (_overrideMemoryLimit != null)
