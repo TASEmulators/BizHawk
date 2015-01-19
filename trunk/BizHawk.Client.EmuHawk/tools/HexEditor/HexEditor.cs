@@ -1458,7 +1458,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var poke = new RamPoke
 				{
-					InitialLocation = GetAddressCoordinates(addresses[0])
+					InitialLocation = PointToScreen(GetAddressCoordinates(addresses[0])),
+					ParentTool = this
 				};
 
 				var watches = addresses.Select(
