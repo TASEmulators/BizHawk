@@ -61,7 +61,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			AddressBox.SetHexProperties(_watchList[0].Domain.Size);
-			AddressBox.Text = _watchList.Select(a => a.AddressString).Distinct().Aggregate((addrStr, nextStr) => addrStr + ("," + nextStr));
+			if (_watchList.Count < 10) // Hack in case an asburd amount of addresses is picked, this can get slow and create a too long string
+			{
+				AddressBox.Text = _watchList
+					.Select(a => a.AddressString)
+					.Distinct()
+					.Aggregate((addrStr, nextStr) => addrStr + ("," + nextStr));
+			}
+			else
+			{
+				AddressBox.Text = _watchList
+					.Take(10)
+					.Select(a => a.AddressString)
+					.Distinct()
+					.Aggregate((addrStr, nextStr) => addrStr + ("," + nextStr));
+			}
+
 			ValueHexLabel.Text = _watchList[0].Type == Watch.DisplayType.Hex ? "0x" : string.Empty;
 			ValueBox.Text = _watchList[0].ValueString.Replace(" ", string.Empty);
 			DomainLabel.Text = _watchList[0].Domain.Name;
