@@ -265,7 +265,7 @@ namespace BizHawk.Client.EmuHawk
 			long startByte;
 			if (_addressHighlighted == -1)
 			{
-				startByte = (int)(_domain.Size - DataSize);
+				startByte = _domain.Size - DataSize;
 			}
 			else
 			{
@@ -627,7 +627,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (address >= _domain.Size)
 			{
-				address = (int)(_domain.Size - DataSize);
+				address = _domain.Size - DataSize;
 			}
 
 			SetHighlighted(address);
@@ -646,7 +646,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (address >= _domain.Size)
 			{
-				address = (int)(_domain.Size - DataSize);
+				address = _domain.Size - DataSize;
 			}
 
 			if (!IsVisible(address))
@@ -990,19 +990,19 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (BigEndian)
 			{
-				_domain.PokeByte((int)address, _2);
-				_domain.PokeByte((int)address + 1, _1);
+				_domain.PokeByte(address, _2);
+				_domain.PokeByte(address + 1, _1);
 			}
 			else
 			{
-				_domain.PokeByte((int)address, _1);
-				_domain.PokeByte((int)address + 1, _2);
+				_domain.PokeByte(address, _1);
+				_domain.PokeByte(address + 1, _2);
 			}
 		}
 
 		private void IncrementAddress(long address)
 		{
-			if (Global.CheatList.IsActive(_domain, (int)address))
+			if (Global.CheatList.IsActive(_domain, address))
 			{
 				// TODO: Increment should be intelligent since IsActive is.  If this address is part of a multi-byte cheat it should intelligently increment just that byte
 				Global.CheatList.FirstOrDefault(x => x.Domain == _domain && x.Address == address).Increment();
@@ -1035,7 +1035,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DecrementAddress(long address)
 		{
-			if (Global.CheatList.IsActive(_domain, (int)address))
+			if (Global.CheatList.IsActive(_domain, address))
 			{
 				// TODO: Increment should be intelligent since IsActive is.  If this address is part of a multi-byte cheat it should intelligently increment just that byte
 				Global.CheatList.FirstOrDefault(x => x.Domain == _domain && x.Address == address).Decrement();
@@ -1465,7 +1465,7 @@ namespace BizHawk.Client.EmuHawk
 				var watches = addresses.Select(
 					address => Watch.GenerateWatch(
 						_domain,
-						(int)address,
+						address,
 						(Watch.WatchSize)DataSize,
 						Watch.DisplayType.Hex,
 						string.Empty,
@@ -1996,7 +1996,7 @@ namespace BizHawk.Client.EmuHawk
 
 					var textrect = new Rectangle(textpoint, new Size(fontWidth * DataSize, fontHeight));
 
-					if (Global.CheatList.IsActive(_domain, (int)address))
+					if (Global.CheatList.IsActive(_domain, address))
 					{
 						e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), rect);
 						e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), textrect);
