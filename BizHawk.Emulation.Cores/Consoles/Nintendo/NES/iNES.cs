@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				CartV2.prg_size *= 16;
 				CartV2.chr_size *= 8;
 
-                CartV2.wram_battery = (data[6] & 2) != 0; // should this be respected in v2 mode??
+				CartV2.wram_battery = (data[6] & 2) != 0; // should this be respected in v2 mode??
 
 				int wrambat = iNES2Wram(data[10] >> 4);
 				int wramnon = iNES2Wram(data[10] & 15);
@@ -103,6 +103,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			return true;
 		}
-
 	}
 }

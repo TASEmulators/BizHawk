@@ -99,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (palette != null && palette.Exists)
 					{
-						var data = NES.Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(palette.Name));
+						var data = Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(palette.Name));
 						if (showmsg) GlobalWin.OSD.AddMessage("Palette file loaded: " + palette.Name);
 						return data;
 					}
@@ -111,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 				else // no filename: interpret this as "reset to default"
 				{
 					if (showmsg) GlobalWin.OSD.AddMessage("Standard Palette set");
-					return (int[,])NES.Palettes.QuickNESPalette.Clone();
+					return (int[,])Palettes.QuickNESPalette.Clone();
 				}
 			}
 			else // checkbox unchecked: we're reusing whatever palette was set
