@@ -23,15 +23,15 @@
 namespace gambatte {
 
 CPU::CPU()
-: memory(Interrupter(SP, PC_)),
+: memory(Interrupter(SP, PC)),
   cycleCounter_(0),
-  PC_(0x100),
+  PC(0x100),
   SP(0xFFFE),
   HF1(0xF),
   HF2(0xF),
   ZF(0),
   CF(0x100),
-  A_(0x01),
+  A(0x01),
   B(0x00),
   C(0x13),
   D(0x00),
@@ -93,9 +93,9 @@ void CPU::loadState(const SaveState &state) {
 	memory.loadState(state/*, cycleCounter_*/);
 	
 	cycleCounter_ = state.cpu.cycleCounter;
-	PC_ = state.cpu.PC & 0xFFFF;
+	PC = state.cpu.PC & 0xFFFF;
 	SP = state.cpu.SP & 0xFFFF;
-	A_ = state.cpu.A & 0xFF;
+	A = state.cpu.A & 0xFF;
 	B = state.cpu.B & 0xFF;
 	C = state.cpu.C & 0xFF;
 	D = state.cpu.D & 0xFF;
@@ -488,11 +488,11 @@ void CPU::loadState(const SaveState &state) {
 void CPU::process(const unsigned long cycles) {
 	memory.setEndtime(cycleCounter_, cycles);
 	
-	unsigned char A = A_;
+	//unsigned char A = A_;
 	unsigned long cycleCounter = cycleCounter_;
 	
 	while (memory.isActive()) {
-		unsigned short PC = PC_;
+		//unsigned short PC = PC_;
 		
 		if (memory.halted()) {
 			if (cycleCounter < memory.nextEventTime()) {
@@ -2831,19 +2831,19 @@ void CPU::process(const unsigned long cycles) {
 			}
 		}
 		
-		PC_ = PC;
+		//PC_ = PC;
 		cycleCounter = memory.event(cycleCounter);
 	}
 	
-	A_ = A;
+	//A_ = A;
 	cycleCounter_ = cycleCounter;
 }
 
 void CPU::GetRegs(int *dest)
 {
-	dest[0] = PC_;
+	dest[0] = PC;
 	dest[1] = SP;
-	dest[2] = A_;
+	dest[2] = A;
 	dest[3] = B;
 	dest[4] = C;
 	dest[5] = D;
@@ -2857,13 +2857,13 @@ SYNCFUNC(CPU)
 {
 	SSS(memory);
 	NSS(cycleCounter_);
-	NSS(PC_);
+	NSS(PC);
 	NSS(SP);
 	NSS(HF1);
 	NSS(HF2);
 	NSS(ZF);
 	NSS(CF);
-	NSS(A_);
+	NSS(A);
 	NSS(B);
 	NSS(C);
 	NSS(D);

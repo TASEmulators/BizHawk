@@ -29,12 +29,12 @@ class CPU {
 	
 	unsigned long cycleCounter_;
 
-	unsigned short PC_;
+	unsigned short PC;
 	unsigned short SP;
 	
 	unsigned HF1, HF2, ZF, CF;
 
-	unsigned char A_, B, C, D, E, /*F,*/ H, L;
+	unsigned char A, B, C, D, E, /*F,*/ H, L;
 
 	bool skip;
 	
