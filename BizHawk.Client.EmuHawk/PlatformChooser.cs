@@ -49,8 +49,8 @@ namespace BizHawk.Client.EmuHawk
 				var radio = new RadioButton
 				{
 					Text = platform.Value,
-					Location = new Point(15, 15 + (count * spacing)),
-					Size = new Size(200, 23)
+					Location = UIHelper.Scale(new Point(15, 15 + (count * spacing))),
+					Size = UIHelper.Scale(new Size(200, 23))
 				};
 
 				PlatformsGroupBox.Controls.Add(radio);
