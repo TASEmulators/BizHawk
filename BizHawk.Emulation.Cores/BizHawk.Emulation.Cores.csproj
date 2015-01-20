@@ -368,25 +368,25 @@
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBANext.cs" />
     <Compile Include="Consoles\Nintendo\GBA\VBANext.IDebuggable.cs">
-        <DependentUpon>VBANext.cs</DependentUpon>
+      <DependentUpon>VBANext.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBANext.IGBAGPUViewable.cs">
-        <DependentUpon>VBANext.cs</DependentUpon>
+      <DependentUpon>VBANext.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBANext.IMemoryDomains.cs">
-        <DependentUpon>VBANext.cs</DependentUpon>
+      <DependentUpon>VBANext.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBANext.ISaveRam.cs">
-        <DependentUpon>VBANext.cs</DependentUpon>
+      <DependentUpon>VBANext.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBANext.ISettings.cs">
-        <DependentUpon>VBANext.cs</DependentUpon>
+      <DependentUpon>VBANext.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBANext.IStatable.cs">
-        <DependentUpon>VBANext.cs</DependentUpon>
+      <DependentUpon>VBANext.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBANext.IVideoProvider.cs">
-        <DependentUpon>VBANext.cs</DependentUpon>
+      <DependentUpon>VBANext.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBARegisterHelper.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64.IDebuggable.cs">
@@ -423,7 +423,6 @@
     <Compile Include="Consoles\Nintendo\N64\NativeApi\mupen64plusInputApi.cs" />
     <Compile Include="Consoles\Nintendo\N64\NativeApi\mupen64plusVideoApi.cs" />
     <Compile Include="Consoles\Nintendo\NES\APU.cs" />
-    <Compile Include="Consoles\Nintendo\NES\BoardSystem.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\AVE-NINA.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\AxROM.cs">
       <SubType>Code</SubType>
@@ -588,12 +587,12 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\VRC6.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\VRC7.cs" />
     <Compile Include="Consoles\Nintendo\NES\BisqAPU.cs" />
-    <Compile Include="Consoles\Nintendo\NES\Core.cs" />
     <Compile Include="Consoles\Nintendo\NES\FDS\FDS.cs" />
     <Compile Include="Consoles\Nintendo\NES\FDS\FDSAudio.cs" />
     <Compile Include="Consoles\Nintendo\NES\FDS\RamAdapter.cs" />
-    <Compile Include="Consoles\Nintendo\NES\iNES.cs" />
     <Compile Include="Consoles\Nintendo\NES\INESPPUViewable.cs" />
+    <Compile Include="Consoles\Nintendo\NES\NES.BoardSystem.cs" />
+    <Compile Include="Consoles\Nintendo\NES\NES.Core.cs" />
     <Compile Include="Consoles\Nintendo\NES\NES.cs" />
     <Compile Include="Consoles\Nintendo\NES\NES.IDebuggable.cs">
       <DependentUpon>NES.cs</DependentUpon>
@@ -607,6 +606,7 @@
     <Compile Include="Consoles\Nintendo\NES\NES.IMemoryDomains.cs">
       <DependentUpon>NES.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Nintendo\NES\NES.iNES.cs" />
     <Compile Include="Consoles\Nintendo\NES\NES.INESPPUViewable.cs">
       <DependentUpon>NES.cs</DependentUpon>
     </Compile>
