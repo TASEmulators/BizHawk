@@ -675,6 +675,7 @@
     <Compile Include="Consoles\Sega\Genesis\Cart\RomHeader.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\SaveRAM.cs" />
     <Compile Include="Consoles\Sega\Genesis\Genesis.Input.cs" />
+    <Compile Include="Consoles\Sega\Genesis\Genesis.IO.cs" />
     <Compile Include="Consoles\Sega\Genesis\Native68000\Musashi.cs" />
     <Compile Include="Consoles\Sega\gpgx\GenDbgHlp.cs" />
     <Compile Include="Consoles\Sega\gpgx\GPGX.cs" />
@@ -787,7 +788,6 @@
     <Compile Include="Consoles\Sega\Genesis\GenVDP.cs" />
     <Compile Include="Consoles\Sega\Genesis\GenVDP.DMA.cs" />
     <Compile Include="Consoles\Sega\Genesis\GenVDP.Render.cs" />
-    <Compile Include="Consoles\Sega\Genesis\IO.cs" />
     <Compile Include="Consoles\Sega\Genesis\MemoryMap.68000.cs" />
     <Compile Include="Consoles\Sega\Genesis\MemoryMap.Z80.cs" />
     <Compile Include="Consoles\Sega\SMS\SMS.cs" />
