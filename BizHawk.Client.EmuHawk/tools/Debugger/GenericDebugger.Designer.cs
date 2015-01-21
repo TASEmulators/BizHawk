@@ -50,6 +50,8 @@
 			this.StepIntoBtn = new System.Windows.Forms.Button();
 			this.StepOverBtn = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.SeekToBtn = new System.Windows.Forms.Button();
+			this.SeekToBox = new BizHawk.Client.EmuHawk.HexTextBox();
 			this.menuStrip1.SuspendLayout();
 			this.RegistersGroupBox.SuspendLayout();
 			this.BreakpointsGroupBox.SuspendLayout();
@@ -233,7 +235,7 @@
 			// 
 			this.StepOutBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.StepOutBtn.Enabled = false;
-			this.StepOutBtn.Location = new System.Drawing.Point(680, 325);
+			this.StepOutBtn.Location = new System.Drawing.Point(680, 398);
 			this.StepOutBtn.Name = "StepOutBtn";
 			this.StepOutBtn.Size = new System.Drawing.Size(75, 23);
 			this.StepOutBtn.TabIndex = 10;
@@ -245,7 +247,7 @@
 			// 
 			this.StepIntoBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.StepIntoBtn.Enabled = false;
-			this.StepIntoBtn.Location = new System.Drawing.Point(680, 267);
+			this.StepIntoBtn.Location = new System.Drawing.Point(680, 340);
 			this.StepIntoBtn.Name = "StepIntoBtn";
 			this.StepIntoBtn.Size = new System.Drawing.Size(75, 23);
 			this.StepIntoBtn.TabIndex = 11;
@@ -257,7 +259,7 @@
 			// 
 			this.StepOverBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.StepOverBtn.Enabled = false;
-			this.StepOverBtn.Location = new System.Drawing.Point(680, 296);
+			this.StepOverBtn.Location = new System.Drawing.Point(680, 369);
 			this.StepOverBtn.Name = "StepOverBtn";
 			this.StepOverBtn.Size = new System.Drawing.Size(75, 23);
 			this.StepOverBtn.TabIndex = 12;
@@ -265,11 +267,31 @@
 			this.StepOverBtn.UseVisualStyleBackColor = true;
 			this.StepOverBtn.Click += new System.EventHandler(this.StepOverMenuItem_Click);
 			// 
+			// SeekToBtn
+			// 
+			this.SeekToBtn.Location = new System.Drawing.Point(680, 267);
+			this.SeekToBtn.Name = "SeekToBtn";
+			this.SeekToBtn.Size = new System.Drawing.Size(75, 23);
+			this.SeekToBtn.TabIndex = 13;
+			this.SeekToBtn.Text = "Seek To:";
+			this.SeekToBtn.UseVisualStyleBackColor = true;
+			// 
+			// SeekToBox
+			// 
+			this.SeekToBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.SeekToBox.Location = new System.Drawing.Point(680, 297);
+			this.SeekToBox.Name = "SeekToBox";
+			this.SeekToBox.Nullable = false;
+			this.SeekToBox.Size = new System.Drawing.Size(75, 20);
+			this.SeekToBox.TabIndex = 14;
+			// 
 			// GenericDebugger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(767, 560);
+			this.Controls.Add(this.SeekToBox);
+			this.Controls.Add(this.SeekToBtn);
 			this.Controls.Add(this.StepOverBtn);
 			this.Controls.Add(this.StepIntoBtn);
 			this.Controls.Add(this.StepOutBtn);
@@ -317,5 +339,7 @@
 		private System.Windows.Forms.ToolStripMenuItem StepOverMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem StepOutMenuItem;
 		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.Button SeekToBtn;
+		private HexTextBox SeekToBox;
 	}
 }

@@ -102,10 +102,26 @@ namespace BizHawk.Client.EmuHawk
 				BreakPointControl1.ParentDebugger = this;
 				BreakPointControl1.MemoryDomains = MemoryDomains;
 				BreakPointControl1.GenerateUI();
+				EnabledBreakpointBox();
 			}
 			else
 			{
 				DisableBreakpointBox();
+			}
+
+			SeekToBox.Enabled = SeekToBtn.Enabled = CanUseMemoryCallbacks && RegisterPanel.CanGetCpuRegisters;
+
+			if (RegisterPanel.CanGetCpuRegisters)
+			{
+				var pc = Debuggable.GetCpuFlagsAndRegisters()["PC"];
+				SeekToBox.Nullable = false;
+				SeekToBox.SetHexProperties((long)Math.Pow(2, pc.BitSize));
+				SeekToBox.SetFromRawInt(0);
+			}
+			else
+			{
+				SeekToBox.Nullable = true;
+				SeekToBox.Text = string.Empty;
 			}
 
 			StepIntoMenuItem.Enabled = StepIntoBtn.Enabled = CanStepInto;
@@ -143,6 +159,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			BreakpointsGroupBox.Enabled = false;
 			toolTip1.SetToolTip(BreakpointsGroupBox, "This core does not currently support breakpoints");
+		}
+
+		public void EnabledBreakpointBox()
+		{
+			BreakpointsGroupBox.Enabled = true;
+			toolTip1.SetToolTip(BreakpointsGroupBox, "");
 		}
 
 		private void OnCpuDropDownIndexChanged(object sender, EventArgs e)

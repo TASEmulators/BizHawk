@@ -92,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool CanGetCpuRegisters
+		public bool CanGetCpuRegisters
 		{
 			get
 			{
@@ -108,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool CanSetCpuRegisters
+		public bool CanSetCpuRegisters
 		{
 			get
 			{
