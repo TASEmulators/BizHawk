@@ -77,6 +77,8 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 				Breakpoints.Remove(seekBreakpoint);
 				UpdateValues();
 			}
+
+			ParentDebugger.DisableCancelSeekBtn();
 		}
 
 		public void UpdateValues()
@@ -141,6 +143,17 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 			{
 				Name = SeekName + pcVal.ToHexString(pcBitSize / 4)
 			});
+		}
+
+		public void RemoveCurrentSeek()
+		{
+			var seekBreakpoint = Breakpoints.FirstOrDefault(x => x.Name.StartsWith(SeekName));
+
+			if (seekBreakpoint != null)
+			{
+				Breakpoints.Remove(seekBreakpoint);
+				UpdateValues();
+			}
 		}
 
 		private IEnumerable<int> SelectedIndices
