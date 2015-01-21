@@ -78,6 +78,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			HardReset();
 			SetupMemoryDomains();
 			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(new MyVideoProvider(this));
+			(ServiceProvider as BasicServiceProvider).Register<IDisassemblable>(new Disassembler());
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
