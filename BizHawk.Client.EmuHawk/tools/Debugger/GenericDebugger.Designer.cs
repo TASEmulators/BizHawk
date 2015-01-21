@@ -275,6 +275,7 @@
 			this.SeekToBtn.TabIndex = 13;
 			this.SeekToBtn.Text = "Seek To:";
 			this.SeekToBtn.UseVisualStyleBackColor = true;
+			this.SeekToBtn.Click += new System.EventHandler(this.SeekToBtn_Click);
 			// 
 			// SeekToBox
 			// 

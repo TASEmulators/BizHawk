@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
@@ -65,11 +66,25 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 			UpdateValues();
 		}
 
+		private void SeekCallback()
+		{
+			BreakpointCallback();
+
+			var seekBreakpoint = Breakpoints.FirstOrDefault(x => x.Name.StartsWith(SeekName));
+
+			if (seekBreakpoint != null)
+			{
+				Breakpoints.Remove(seekBreakpoint);
+				UpdateValues();
+			}
+		}
+
 		public void UpdateValues()
 		{
-			if (this.Enabled)
+			if (Enabled)
 			{
-
+				BreakpointView.ItemCount = Breakpoints.Count;
+				UpdateStatsLabel();
 			}
 		}
 
@@ -116,6 +131,16 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 			BreakpointView.ItemCount = Breakpoints.Count;
 			UpdateBreakpointRemoveButton();
 			UpdateStatsLabel();
+		}
+
+		private const string SeekName = "Seek to PC ";
+
+		public void AddSeekBreakpoint(uint pcVal, int pcBitSize)
+		{
+			Breakpoints.Add(new Breakpoint(true, Core, SeekCallback, pcVal, MemoryCallbackType.Execute)
+			{
+				Name = SeekName + pcVal.ToHexString(pcBitSize / 4)
+			});
 		}
 
 		private IEnumerable<int> SelectedIndices

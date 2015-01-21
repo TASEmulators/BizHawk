@@ -33,6 +33,22 @@ namespace BizHawk.Client.EmuHawk
 		private bool _active;
 		private readonly IDebuggable _core;
 
+		public Breakpoint(bool readOnly, IDebuggable core, Action callBack, uint address, MemoryCallbackType type, bool enabled = true)
+		{
+			_core = core;
+
+			Callback = callBack;
+			Address = address;
+			Active = enabled;
+			Name = "Pause";
+			ReadOnly = readOnly;
+
+			if (enabled)
+			{
+				AddCallback();
+			}
+		}
+
 		public Breakpoint(IDebuggable core, Action callBack, uint address, MemoryCallbackType type, bool enabled = true)
 		{
 			_core = core;
