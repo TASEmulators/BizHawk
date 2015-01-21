@@ -263,5 +263,13 @@ namespace BizHawk.Client.EmuHawk
 				_currentToolTipControl = null;
 			}
 		}
+
+		private void SeekToBtn_Click(object sender, EventArgs e)
+		{
+			var pcVal = (uint)(SeekToBox.ToRawInt() ?? 0);
+			var pcBitSize = Debuggable.GetCpuFlagsAndRegisters()["PC"].BitSize;
+			BreakPointControl1.AddSeekBreakpoint(pcVal, pcBitSize);
+			BreakPointControl1.UpdateValues();
+		}
 	}
 }
