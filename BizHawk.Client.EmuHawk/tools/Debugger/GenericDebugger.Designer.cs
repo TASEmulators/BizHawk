@@ -52,6 +52,7 @@
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.SeekToBtn = new System.Windows.Forms.Button();
 			this.SeekToBox = new BizHawk.Client.EmuHawk.HexTextBox();
+			this.CancelSeekBtn = new System.Windows.Forms.Button();
 			this.menuStrip1.SuspendLayout();
 			this.RegistersGroupBox.SuspendLayout();
 			this.BreakpointsGroupBox.SuspendLayout();
@@ -235,7 +236,7 @@
 			// 
 			this.StepOutBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.StepOutBtn.Enabled = false;
-			this.StepOutBtn.Location = new System.Drawing.Point(680, 398);
+			this.StepOutBtn.Location = new System.Drawing.Point(680, 519);
 			this.StepOutBtn.Name = "StepOutBtn";
 			this.StepOutBtn.Size = new System.Drawing.Size(75, 23);
 			this.StepOutBtn.TabIndex = 10;
@@ -247,7 +248,7 @@
 			// 
 			this.StepIntoBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.StepIntoBtn.Enabled = false;
-			this.StepIntoBtn.Location = new System.Drawing.Point(680, 340);
+			this.StepIntoBtn.Location = new System.Drawing.Point(680, 461);
 			this.StepIntoBtn.Name = "StepIntoBtn";
 			this.StepIntoBtn.Size = new System.Drawing.Size(75, 23);
 			this.StepIntoBtn.TabIndex = 11;
@@ -259,7 +260,7 @@
 			// 
 			this.StepOverBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.StepOverBtn.Enabled = false;
-			this.StepOverBtn.Location = new System.Drawing.Point(680, 369);
+			this.StepOverBtn.Location = new System.Drawing.Point(680, 490);
 			this.StepOverBtn.Name = "StepOverBtn";
 			this.StepOverBtn.Size = new System.Drawing.Size(75, 23);
 			this.StepOverBtn.TabIndex = 12;
@@ -269,6 +270,7 @@
 			// 
 			// SeekToBtn
 			// 
+			this.SeekToBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SeekToBtn.Location = new System.Drawing.Point(680, 267);
 			this.SeekToBtn.Name = "SeekToBtn";
 			this.SeekToBtn.Size = new System.Drawing.Size(75, 23);
@@ -279,6 +281,7 @@
 			// 
 			// SeekToBox
 			// 
+			this.SeekToBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SeekToBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.SeekToBox.Location = new System.Drawing.Point(680, 297);
 			this.SeekToBox.Name = "SeekToBox";
@@ -286,11 +289,23 @@
 			this.SeekToBox.Size = new System.Drawing.Size(75, 20);
 			this.SeekToBox.TabIndex = 14;
 			// 
+			// CancelSeekBtn
+			// 
+			this.CancelSeekBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.CancelSeekBtn.Location = new System.Drawing.Point(699, 323);
+			this.CancelSeekBtn.Name = "CancelSeekBtn";
+			this.CancelSeekBtn.Size = new System.Drawing.Size(56, 23);
+			this.CancelSeekBtn.TabIndex = 15;
+			this.CancelSeekBtn.Text = "Cancel";
+			this.CancelSeekBtn.UseVisualStyleBackColor = true;
+			this.CancelSeekBtn.Click += new System.EventHandler(this.CancelSeekBtn_Click);
+			// 
 			// GenericDebugger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(767, 560);
+			this.Controls.Add(this.CancelSeekBtn);
 			this.Controls.Add(this.SeekToBox);
 			this.Controls.Add(this.SeekToBtn);
 			this.Controls.Add(this.StepOverBtn);
@@ -342,5 +357,6 @@
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.Button SeekToBtn;
 		private HexTextBox SeekToBox;
+		private System.Windows.Forms.Button CancelSeekBtn;
 	}
 }

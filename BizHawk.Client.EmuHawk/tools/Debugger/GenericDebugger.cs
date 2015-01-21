@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 		private void EngageDebugger()
 		{
 			DisassemblyLines.Clear();
-
+			CancelSeekBtn.Enabled = false;
 			if (CanDisassemble)
 			{
 				try
@@ -264,12 +264,25 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void DisableCancelSeekBtn()
+		{
+			CancelSeekBtn.Enabled = false;
+		}
+
 		private void SeekToBtn_Click(object sender, EventArgs e)
 		{
+			CancelSeekBtn.Enabled = true;
 			var pcVal = (uint)(SeekToBox.ToRawInt() ?? 0);
 			var pcBitSize = Debuggable.GetCpuFlagsAndRegisters()["PC"].BitSize;
+			BreakPointControl1.RemoveCurrentSeek();
 			BreakPointControl1.AddSeekBreakpoint(pcVal, pcBitSize);
 			BreakPointControl1.UpdateValues();
+		}
+
+		private void CancelSeekBtn_Click(object sender, EventArgs e)
+		{
+			BreakPointControl1.RemoveCurrentSeek();
+			CancelSeekBtn.Enabled = false;
 		}
 	}
 }
