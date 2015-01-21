@@ -100,6 +100,7 @@
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PreviewModeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoSearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AutoSearchAccountForLagMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			this.ExcludeRamWatchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.UseUndoHistoryMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -156,7 +157,6 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.DisplayTypeDropdown = new System.Windows.Forms.ComboBox();
-			this.AutoSearchAccountForLagMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			SearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ListViewContextMenu.SuspendLayout();
 			this.RamSearchMenu.SuspendLayout();
@@ -169,7 +169,7 @@
 			// 
 			SearchMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.search;
 			SearchMenuItem.Name = "SearchMenuItem";
-			SearchMenuItem.Size = new System.Drawing.Size(215, 22);
+			SearchMenuItem.Size = new System.Drawing.Size(219, 22);
 			SearchMenuItem.Text = "&Search";
 			SearchMenuItem.Click += new System.EventHandler(this.SearchMenuItem_Click);
 			// 
@@ -637,21 +637,21 @@
 			// 
 			this.newSearchToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.restart;
 			this.newSearchToolStripMenuItem.Name = "newSearchToolStripMenuItem";
-			this.newSearchToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.newSearchToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.newSearchToolStripMenuItem.Text = "&New Search";
 			this.newSearchToolStripMenuItem.Click += new System.EventHandler(this.NewSearchMenuMenuItem_Click);
 			// 
 			// toolStripSeparator7
 			// 
 			this.toolStripSeparator7.Name = "toolStripSeparator7";
-			this.toolStripSeparator7.Size = new System.Drawing.Size(212, 6);
+			this.toolStripSeparator7.Size = new System.Drawing.Size(216, 6);
 			// 
 			// UndoMenuItem
 			// 
 			this.UndoMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.undo;
 			this.UndoMenuItem.Name = "UndoMenuItem";
 			this.UndoMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-			this.UndoMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.UndoMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.UndoMenuItem.Text = "&Undo";
 			this.UndoMenuItem.Click += new System.EventHandler(this.UndoMenuItem_Click);
 			// 
@@ -661,7 +661,7 @@
 			this.RedoMenuItem.Name = "RedoMenuItem";
 			this.RedoMenuItem.ShortcutKeyDisplayString = "";
 			this.RedoMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-			this.RedoMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.RedoMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.RedoMenuItem.Text = "&Redo";
 			this.RedoMenuItem.Click += new System.EventHandler(this.RedoMenuItem_Click);
 			// 
@@ -669,14 +669,14 @@
 			// 
 			this.CopyValueToPrevMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Previous;
 			this.CopyValueToPrevMenuItem.Name = "CopyValueToPrevMenuItem";
-			this.CopyValueToPrevMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.CopyValueToPrevMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.CopyValueToPrevMenuItem.Text = "Copy Value to Prev";
 			this.CopyValueToPrevMenuItem.Click += new System.EventHandler(this.CopyValueToPrevMenuItem_Click);
 			// 
 			// ClearChangeCountsMenuItem
 			// 
 			this.ClearChangeCountsMenuItem.Name = "ClearChangeCountsMenuItem";
-			this.ClearChangeCountsMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.ClearChangeCountsMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.ClearChangeCountsMenuItem.Text = "&Clear Change Counts";
 			this.ClearChangeCountsMenuItem.Click += new System.EventHandler(this.ClearChangeCountsMenuItem_Click);
 			// 
@@ -685,20 +685,20 @@
 			this.RemoveMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.RemoveMenuItem.Name = "RemoveMenuItem";
 			this.RemoveMenuItem.ShortcutKeyDisplayString = "Delete";
-			this.RemoveMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.RemoveMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.RemoveMenuItem.Text = "&Remove selected";
 			this.RemoveMenuItem.Click += new System.EventHandler(this.RemoveMenuItem_Click);
 			// 
 			// toolStripSeparator5
 			// 
 			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(212, 6);
+			this.toolStripSeparator5.Size = new System.Drawing.Size(216, 6);
 			// 
 			// GoToAddressMenuItem
 			// 
 			this.GoToAddressMenuItem.Name = "GoToAddressMenuItem";
 			this.GoToAddressMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
-			this.GoToAddressMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.GoToAddressMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.GoToAddressMenuItem.Text = "&Go to Address...";
 			this.GoToAddressMenuItem.Click += new System.EventHandler(this.GoToAddressMenuItem_Click);
 			// 
@@ -706,8 +706,8 @@
 			// 
 			this.AddToRamWatchMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.FindHS;
 			this.AddToRamWatchMenuItem.Name = "AddToRamWatchMenuItem";
-			this.AddToRamWatchMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-			this.AddToRamWatchMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.AddToRamWatchMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
+			this.AddToRamWatchMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.AddToRamWatchMenuItem.Text = "&Add to Ram Watch";
 			this.AddToRamWatchMenuItem.Click += new System.EventHandler(this.AddToRamWatchMenuItem_Click);
 			// 
@@ -716,7 +716,7 @@
 			this.PokeAddressMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
 			this.PokeAddressMenuItem.Name = "PokeAddressMenuItem";
 			this.PokeAddressMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-			this.PokeAddressMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.PokeAddressMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.PokeAddressMenuItem.Text = "&Poke Address";
 			this.PokeAddressMenuItem.Click += new System.EventHandler(this.PokeAddressMenuItem_Click);
 			// 
@@ -725,19 +725,19 @@
 			this.FreezeAddressMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
 			this.FreezeAddressMenuItem.Name = "FreezeAddressMenuItem";
 			this.FreezeAddressMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
-			this.FreezeAddressMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.FreezeAddressMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.FreezeAddressMenuItem.Text = "Freeze Address";
 			this.FreezeAddressMenuItem.Click += new System.EventHandler(this.FreezeAddressMenuItem_Click);
 			// 
 			// toolStripSeparator13
 			// 
 			this.toolStripSeparator13.Name = "toolStripSeparator13";
-			this.toolStripSeparator13.Size = new System.Drawing.Size(212, 6);
+			this.toolStripSeparator13.Size = new System.Drawing.Size(216, 6);
 			// 
 			// ClearUndoMenuItem
 			// 
 			this.ClearUndoMenuItem.Name = "ClearUndoMenuItem";
-			this.ClearUndoMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.ClearUndoMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.ClearUndoMenuItem.Text = "Clear Undo History";
 			this.ClearUndoMenuItem.Click += new System.EventHandler(this.ClearUndoMenuItem_Click);
 			// 
@@ -775,6 +775,13 @@
 			this.AutoSearchMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.AutoSearchMenuItem.Text = "&Auto-Search";
 			this.AutoSearchMenuItem.Click += new System.EventHandler(this.AutoSearchMenuItem_Click);
+			// 
+			// AutoSearchAccountForLagMenuItem
+			// 
+			this.AutoSearchAccountForLagMenuItem.Name = "AutoSearchAccountForLagMenuItem";
+			this.AutoSearchAccountForLagMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.AutoSearchAccountForLagMenuItem.Text = "&Auto-Search Account for Lag";
+			this.AutoSearchAccountForLagMenuItem.Click += new System.EventHandler(this.AutoSearchAccountForLagMenuItem_Click);
 			// 
 			// toolStripSeparator9
 			// 
@@ -1362,13 +1369,6 @@
 			this.DisplayTypeDropdown.Size = new System.Drawing.Size(107, 21);
 			this.DisplayTypeDropdown.TabIndex = 95;
 			this.DisplayTypeDropdown.SelectedIndexChanged += new System.EventHandler(this.DisplayTypeDropdown_SelectedIndexChanged);
-			// 
-			// AutoSearchAccountForLagMenuItem
-			// 
-			this.AutoSearchAccountForLagMenuItem.Name = "AutoSearchAccountForLagMenuItem";
-			this.AutoSearchAccountForLagMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.AutoSearchAccountForLagMenuItem.Text = "&Auto-Search Account for Lag";
-			this.AutoSearchAccountForLagMenuItem.Click += new System.EventHandler(this.AutoSearchAccountForLagMenuItem_Click);
 			// 
 			// RamSearch
 			// 
