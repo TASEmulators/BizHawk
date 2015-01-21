@@ -9,13 +9,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 		{
 			var domains = new List<MemoryDomain>
 			{
-				new MemoryDomain(
-					"Main RAM",
-					ram.Length,
-					MemoryDomain.Endian.Little,
-					addr => ram[addr],
-					(addr, value) => ram[addr] = value
-				)
+				MemoryDomain.FromByteArray("Main RAM", MemoryDomain.Endian.Little, ram)
 			};
 
 			_memoryDomains = new MemoryDomainList(domains);

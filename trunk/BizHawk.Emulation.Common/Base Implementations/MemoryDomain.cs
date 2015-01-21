@@ -29,18 +29,48 @@ namespace BizHawk.Emulation.Common
 		public Action<long, byte> PokeByte { get; private set; }
 
 		/// <summary>
+		/// creates a memorydomain that references a managed byte array
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="endian"></param>
+		/// <param name="data"></param>
+		/// <param name="writable">if false, writes will be ignored</param>
+		/// <returns></returns>
+		public static MemoryDomain FromByteArray(string name, Endian endian, byte[] data, bool writable = true)
+		{
+			if (data == null)
+				throw new ArgumentNullException("data");
+			return new MemoryDomain
+			(
+				name,
+				data.Length,
+				endian,
+				delegate(long addr)
+				{
+					return data[addr];
+				},
+				delegate(long addr, byte val)
+				{
+					if (writable)
+						data[addr] = val;
+				}
+			);
+		}
+
+		/// <summary>
 		/// create a memorydomain that references an unmanaged memory block
 		/// </summary>
 		/// <param name="data">must remain valid as long as the MemoryDomain exists!</param>
 		/// <param name="writable">if false, writes will be ignored</param>
 		/// <returns></returns>
-		public unsafe static MemoryDomain FromIntPtr(string name, int size, Endian endian, IntPtr data, bool writable = true)
+		public unsafe static MemoryDomain FromIntPtr(string name, long size, Endian endian, IntPtr data, bool writable = true)
 		{
 			if (data == IntPtr.Zero)
 				throw new ArgumentNullException("data");
-			if (size <= 0)
+			if ((ulong)size >= 0x80000000)
 				throw new ArgumentOutOfRangeException("size");
 			byte* p = (byte*)data;
+			uint l = (uint)size;
 			return new MemoryDomain
 			(
 				name,
@@ -48,7 +78,7 @@ namespace BizHawk.Emulation.Common
 				endian,
 				delegate(long addr)
 				{
-					if ((uint)addr >= size)
+					if ((uint)addr >= l)
 						throw new ArgumentOutOfRangeException();
 					return p[addr];
 				},
@@ -56,7 +86,7 @@ namespace BizHawk.Emulation.Common
 				{
 					if (writable)
 					{
-						if ((uint)addr >= size)
+						if ((uint)addr >= l)
 							throw new ArgumentOutOfRangeException();
 						p[addr] = val;
 					}
@@ -70,13 +100,14 @@ namespace BizHawk.Emulation.Common
 		/// <param name="data">must remain valid as long as the MemoryDomain exists!</param>
 		/// <param name="writable">if false, writes will be ignored</param>
 		/// <returns></returns>
-		public unsafe static MemoryDomain FromIntPtrSwap16(string name, int size, Endian endian, IntPtr data, bool writable = true)
+		public unsafe static MemoryDomain FromIntPtrSwap16(string name, long size, Endian endian, IntPtr data, bool writable = true)
 		{
 			if (data == IntPtr.Zero)
 				throw new ArgumentNullException("data");
-			if (size <= 0)
+			if ((ulong)size >= 0x80000000)
 				throw new ArgumentOutOfRangeException("size");
 			byte* p = (byte*)data;
+			uint l = (uint)size;
 			return new MemoryDomain
 			(
 				name,
@@ -84,7 +115,7 @@ namespace BizHawk.Emulation.Common
 				endian,
 				delegate(long addr)
 				{
-					if (addr < 0 || addr >= size)
+					if ((uint)addr >= l)
 						throw new ArgumentOutOfRangeException();
 					return p[addr ^ 1];
 				},
@@ -92,7 +123,7 @@ namespace BizHawk.Emulation.Common
 				{
 					if (writable)
 					{
-						if (addr < 0 || addr >= size)
+						if ((uint)addr >= l)
 							throw new ArgumentOutOfRangeException();
 						p[addr ^ 1] = val;
 					}

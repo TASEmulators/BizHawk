@@ -598,6 +598,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				string name = Marshal.PtrToStringAnsi(pname);
 				if (name == "VRAM")
 				{
+					// vram pokes need to go through hook which invalidates cached tiles
 					byte* p = (byte*)area;
 					mm.Add(new MemoryDomain(name, size, MemoryDomain.Endian.Unknown,
 						delegate(long addr)
