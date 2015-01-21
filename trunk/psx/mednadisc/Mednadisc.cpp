@@ -21,6 +21,23 @@ EW_EXPORT void* mednadisc_LoadCD(const char* fname)
 	return disc;
 }
 
+struct JustTOC
+{
+  uint8 first_track;
+  uint8 last_track;
+  uint8 disc_type;
+};
+
+EW_EXPORT void mednadisc_ReadTOC(CDAccess* disc, JustTOC* justToc, CDUtility::TOC_Track *tracks101)
+{
+	CDUtility::TOC toc;
+	disc->Read_TOC(&toc);
+	justToc->first_track = toc.first_track;
+	justToc->last_track = toc.last_track;
+	justToc->disc_type = toc.disc_type;
+	memcpy(tracks101,toc.tracks,sizeof(toc.tracks));
+}
+
 EW_EXPORT int32 mednadisc_ReadSector(CDAccess* disc, int lba, void* buf2448)
 {
 	try {
