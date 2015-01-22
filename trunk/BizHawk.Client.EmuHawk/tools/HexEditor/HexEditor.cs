@@ -1863,6 +1863,8 @@ namespace BizHawk.Client.EmuHawk
 				FreezeContextItem.Text = "&Freeze";
 				FreezeContextItem.Image = Properties.Resources.Freeze;
 			}
+
+			viewN64MatrixToolStripMenuItem.Visible = DataSize == 4;
 		}
 
 		private void IncrementContextItem_Click(object sender, EventArgs e)
@@ -2094,6 +2096,48 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		private void HexMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+		{
+
+		}
+
 		#endregion
+
+		private void viewN64MatrixToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (!HighlightedAddress.HasValue)
+				return;
+
+			bool bigend = true;
+			long addr = HighlightedAddress.Value;
+			//ushort  = _domain.PeekWord(addr,bigend);
+
+			float[,] matVals = new float[4,4];
+
+			for (int i = 0; i < 4; i++)
+			{
+					for (int j = 0; j < 4; j++) 
+					{
+						ushort hi = _domain.PeekWord(((addr+(i<<3)+(j<<1)     )^0x0),bigend);
+						ushort lo = _domain.PeekWord(((addr+(i<<3)+(j<<1) + 32)^0x0),bigend);
+						matVals[i,j] = (int)(((hi << 16) | lo)) / 65536.0f;
+					}
+			}
+
+			//if needed
+			//var mat = new SlimDX.Matrix();
+			//mat.M11 = matVals[0, 0]; mat.M12 = matVals[0, 1]; mat.M13 = matVals[0, 2]; mat.M14 = matVals[0, 3];
+			//mat.M21 = matVals[1, 0]; mat.M22 = matVals[1, 1]; mat.M23 = matVals[1, 2]; mat.M24 = matVals[1, 3];
+			//mat.M31 = matVals[2, 0]; mat.M32 = matVals[2, 1]; mat.M33 = matVals[2, 2]; mat.M34 = matVals[2, 3];
+			//mat.M41 = matVals[3, 0]; mat.M42 = matVals[3, 1]; mat.M43 = matVals[3, 2]; mat.M44 = matVals[3, 3];
+			//MessageBox.Show(mat.ToString());
+
+			StringWriter sw = new StringWriter();
+				for(int i=0;i<4;i++)
+			sw.WriteLine("{0,18:0.00000} {1,18:0.00000} {2,18:0.00000} {3,18:0.00000}", matVals[i, 0], matVals[i, 1], matVals[i, 2], matVals[i, 3]);
+			var str = sw.ToString();
+			MessageBox.Show(str);
+
+		}
 	}
 } 
