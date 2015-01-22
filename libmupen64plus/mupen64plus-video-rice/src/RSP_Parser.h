@@ -620,7 +620,7 @@ uint32 DLParser_CheckUcode(uint32 ucStart, uint32 ucDStart, uint32 ucSize, uint3
 
 bool IsUsedAsDI(uint32 addr);
 
-#if defined(DEBUGGER)
+#if defined(DEBUGGER) || defined(WANT_LOG_UCODE)
   void __cdecl LOG_UCODE(const char* szFormat, ...);
 #else
   inline void LOG_UCODE(...) {}
