@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 	public abstract class Watch
 	{
 		public enum WatchSize { Byte = 1, Word = 2, DWord = 4, Separator = 0 }
-		public enum DisplayType { Separator, Signed, Unsigned, Hex, Binary, FixedPoint_12_4, FixedPoint_20_12, Float }
+		public enum DisplayType { Separator, Signed, Unsigned, Hex, Binary, FixedPoint_12_4, FixedPoint_20_12, FixedPoint_16_16, Float }
 		public enum PreviousType { Original = 0, LastSearch = 1, LastFrame = 2, LastChange = 3 }
 
 		public static string DisplayTypeToString(DisplayType type)
@@ -26,6 +26,8 @@ namespace BizHawk.Client.Common
 					return "Fixed Point 12.4";
 				case DisplayType.FixedPoint_20_12:
 					return "Fixed Point 20.12";
+				case DisplayType.FixedPoint_16_16:
+					return "Fixed Point 16.16";
 			}
 		}
 
@@ -39,6 +41,8 @@ namespace BizHawk.Client.Common
 					return DisplayType.FixedPoint_12_4;
 				case "Fixed Point 20.12":
 					return DisplayType.FixedPoint_20_12;
+				case "Fixed Point 16.16":
+					return DisplayType.FixedPoint_16_16;
 			}
 		}
 
@@ -130,6 +134,8 @@ namespace BizHawk.Client.Common
 						return '1';
 					case DisplayType.FixedPoint_20_12:
 						return '2';
+					case DisplayType.FixedPoint_16_16:
+						return '3';
 					case DisplayType.Float:
 						return 'f';
 				}
@@ -155,6 +161,8 @@ namespace BizHawk.Client.Common
 					return DisplayType.FixedPoint_12_4;
 				case '2':
 					return DisplayType.FixedPoint_20_12;
+				case '3':
+					return DisplayType.FixedPoint_16_16;
 				case 'f':
 					return DisplayType.Float;
 			}
@@ -970,7 +978,7 @@ namespace BizHawk.Client.Common
 			{
 				return new List<DisplayType>
 					{
-					DisplayType.Unsigned, DisplayType.Signed, DisplayType.Hex, DisplayType.FixedPoint_20_12, DisplayType.Float
+					DisplayType.Unsigned, DisplayType.Signed, DisplayType.Hex, DisplayType.FixedPoint_20_12, DisplayType.FixedPoint_16_16, DisplayType.Float
 				};
 			}
 		}
@@ -1003,6 +1011,8 @@ namespace BizHawk.Client.Common
 					return val.ToHexString(8);
 				case DisplayType.FixedPoint_20_12:
 					return string.Format("{0:0.######}", val / 4096.0);
+				case DisplayType.FixedPoint_16_16:
+					return string.Format("{0:0.######}", val / 65536.0);
 				case DisplayType.Float:
 					var bytes = BitConverter.GetBytes(val);
 					var _float = BitConverter.ToSingle(bytes, 0);
@@ -1055,6 +1065,17 @@ namespace BizHawk.Client.Common
 						if (value.IsFixedPoint())
 						{
 							val = (uint)(int)(double.Parse(value) * 4096.0);
+						}
+						else
+						{
+							return false;
+						}
+
+						break;
+					case DisplayType.FixedPoint_16_16:
+						if (value.IsFixedPoint())
+						{
+							val = (uint)(int)(double.Parse(value) * 65536.0);
 						}
 						else
 						{
