@@ -39,6 +39,7 @@ void RSP_GBI0_Mtx(Gfx *gfx)
 
     uint32 addr = RSPSegmentAddr((gfx->gbi0matrix.addr));
 
+
     LOG_UCODE("    Command: %s %s %s Length %d Address 0x%08x",
         gfx->gbi0matrix.projection == 1 ? "Projection" : "ModelView",
         gfx->gbi0matrix.load == 1 ? "Load" : "Mul", 
@@ -55,6 +56,7 @@ void RSP_GBI0_Mtx(Gfx *gfx)
     
     if (gfx->gbi0matrix.projection)
     {
+		//__asm int 3;
         CRender::g_pRender->SetProjection(matToLoad, gfx->gbi0matrix.push, gfx->gbi0matrix.load);
     }
     else
