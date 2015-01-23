@@ -30,10 +30,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
 			length = 4; // TODO: is this right?
-			var instruction = m.PeekWord(addr, true);
+			var instruction = m.PeekDWord(addr, true);
 
-			var result = api.m64p_decode_op((uint)instruction, (int)addr);
-			var strResult = Marshal.PtrToStringAnsi(result);
+			//TODO - reserve buffer here for disassembling into. allocating repeatedly will be slower
+			var result = api.m64p_decode_op(instruction, addr);
+			string strResult = Marshal.PtrToStringAnsi(result);
 
 			return strResult;
 		}
