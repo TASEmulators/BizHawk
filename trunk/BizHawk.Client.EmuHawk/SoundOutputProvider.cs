@@ -37,6 +37,10 @@ namespace BizHawk.Client.EmuHawk
 		private Queue<int> _outputCountHistory = new Queue<int>();
 		private Queue<bool> _hardCorrectionHistory = new Queue<bool>();
 
+		private bool _disableFramerateCompensation;
+		private double _lastSamplesPerFrame;
+		private int _lastBaseProviderSampleCount;
+
 		private short[] _resampleBuffer = new short[0];
 		private double _resampleLengthRoundingError;
 
@@ -52,6 +56,9 @@ namespace BizHawk.Client.EmuHawk
 			_extraCountHistory.Clear();
 			_outputCountHistory.Clear();
 			_hardCorrectionHistory.Clear();
+			_disableFramerateCompensation = false;
+			_lastSamplesPerFrame = 0.0;
+			_lastBaseProviderSampleCount = 0;
 			_resampleBuffer = new short[0];
 			_resampleLengthRoundingError = 0.0;
 
@@ -122,11 +129,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (LogDebug)
 			{
-				Console.WriteLine("Avg: {0:0.0} ms, Min: {1:0.0} ms, Max: {2:0.0} ms, Scale: {3:0.0000}",
+				Console.WriteLine("Avg: {0:0.0} ms, Min: {1:0.0} ms, Max: {2:0.0} ms, Scale: {3:0.0000} {4}",
 					_extraCountHistory.Average() * 1000.0 / SampleRate,
 					_extraCountHistory.Min() * 1000.0 / SampleRate,
 					_extraCountHistory.Max() * 1000.0 / SampleRate,
-					scaleFactor);
+					scaleFactor,
+					_disableFramerateCompensation ? "*" : "");
 			}
 
 			return outputSampleCount;
@@ -139,10 +147,24 @@ namespace BizHawk.Client.EmuHawk
 
 			BaseSoundProvider.GetSamples(out samples, out count);
 
-			if (count != 0)
+			if (SamplesPerFrame != _lastSamplesPerFrame)
 			{
-				scaleFactor *= SamplesPerFrame / count;
+				_disableFramerateCompensation = false;
 			}
+
+			if (count != 0 && !_disableFramerateCompensation)
+			{
+				if (_lastBaseProviderSampleCount != 0 && Math.Abs(count - _lastBaseProviderSampleCount) > 10)
+				{
+					_disableFramerateCompensation = true;
+				}
+
+				scaleFactor *= SamplesPerFrame / count;
+
+				_lastBaseProviderSampleCount = count;
+			}
+
+			_lastSamplesPerFrame = SamplesPerFrame;
 
 			double newCountTarget = count * scaleFactor;
 			int newCount = (int)Math.Round(newCountTarget + _resampleLengthRoundingError);
