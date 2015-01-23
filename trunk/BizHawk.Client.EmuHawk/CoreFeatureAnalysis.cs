@@ -206,16 +206,6 @@ namespace BizHawk.Client.EmuHawk
 			CurrentCoreTree.EndUpdate();
 		}
 
-		private static IEnumerable<Type> GetAllEmuCores()
-		{
-			return
-				Assembly
-				.Load("BizHawk.Emulation.Cores")
-				.GetTypes()
-				.Where(t => typeof(IEmulator).IsAssignableFrom(t) && !t.IsAbstract);
-		}
-
-
 		private void DoAllCoresTree(CoreInfo current_ci)
 		{
 			CoreTree.ImageList = new ImageList();
@@ -223,7 +213,19 @@ namespace BizHawk.Client.EmuHawk
 			CoreTree.ImageList.Images.Add("Bad", Properties.Resources.ExclamationRed);
 			CoreTree.ImageList.Images.Add("Unknown", Properties.Resources.RetroQuestion);
 
-			var possiblecoretypes = GetAllEmuCores().ToList();
+			var possiblecoretypes =
+				Assembly
+				.Load("BizHawk.Emulation.Cores")
+				.GetTypes()
+				.Where(t => typeof(IEmulator).IsAssignableFrom(t) && !t.IsAbstract)
+				.Select(t => new
+				{
+					Type = t,
+					CoreAttributes = (CoreAttributes)t.GetCustomAttributes(typeof(CoreAttributes), false).First()
+				})
+				.OrderByDescending(t => t.CoreAttributes.Released)
+				.ThenBy(t => t.CoreAttributes.CoreName)
+				.ToList();
 
 			toolStripStatusLabel1.Text = string.Format("Total: {0} Released: {1} Profiled: {2}",
 				possiblecoretypes.Count,
@@ -243,16 +245,16 @@ namespace BizHawk.Client.EmuHawk
 				}
 				CoreTree.Nodes.Add(coreNode);
 			}
-			foreach (Type t in possiblecoretypes)
+
+			foreach (var t in possiblecoretypes)
 			{
-				var coreattr = (CoreAttributes)t.GetCustomAttributes(typeof(CoreAttributes), false)[0];
-				if (!KnownCores.ContainsKey(coreattr.CoreName))
+				if (!KnownCores.ContainsKey(t.CoreAttributes.CoreName))
 				{
 					string img = "Unknown";
 					var coreNode = new TreeNode
 					{
-						Text = coreattr.CoreName + (coreattr.Released ? string.Empty : " (UNRELEASED)"),
-						ForeColor = coreattr.Released ? Color.Black : Color.DarkGray,
+						Text = t.CoreAttributes.CoreName + (t.CoreAttributes.Released ? string.Empty : " (UNRELEASED)"),
+						ForeColor = t.CoreAttributes.Released ? Color.Black : Color.DarkGray,
 						ImageKey = img,
 						SelectedImageKey = img,
 						StateImageKey = img
