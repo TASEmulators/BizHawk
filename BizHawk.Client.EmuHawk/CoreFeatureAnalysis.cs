@@ -21,6 +21,7 @@ namespace BizHawk.Client.EmuHawk
 			public string TypeName { get; set; }
 			public bool Released { get; set; }
 			public Dictionary<string, ServiceInfo> Services { get; set; }
+			public List<string> NotApplicableTypes { get; set; }
 
 			public CoreInfo() { }
 			public CoreInfo(IEmulator emu)
@@ -30,10 +31,24 @@ namespace BizHawk.Client.EmuHawk
 				Released = emu.Attributes().Released;
 				Services = new Dictionary<string, ServiceInfo>();
 				var ser = emu.ServiceProvider;
-				foreach (Type t in ser.AvailableServices)
+				foreach (Type t in ser.AvailableServices.Where(type => type != emu.GetType()))
 				{
 					var si = new ServiceInfo(t, ser.GetService(t));
 					Services.Add(si.TypeName, si);
+				}
+
+				var notapplicableAttr = ((ServiceNotApplicable)Attribute
+					.GetCustomAttribute(emu.GetType(), typeof(ServiceNotApplicable)));
+
+				if (notapplicableAttr != null)
+				{
+					NotApplicableTypes = notapplicableAttr.NotApplicableTypes
+					.Select(x => x.ToString())
+					.ToList();
+				}
+				else
+				{
+					NotApplicableTypes = new List<string>();
 				}
 			}
 		}
@@ -97,8 +112,6 @@ namespace BizHawk.Client.EmuHawk
 
 		[ConfigPersist]
 		private Dictionary<string, CoreInfo> KnownCores { get; set; }
-		[ConfigPersist]
-		private HashSet<string> KnownServices { get; set; }
 
 		#endregion
 
@@ -109,7 +122,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 			KnownCores = new Dictionary<string, CoreInfo>();
-			KnownServices = new HashSet<string>();
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
@@ -151,7 +163,20 @@ namespace BizHawk.Client.EmuHawk
 				}
 				ret.Nodes.Add(serviceNode);
 			}
-			foreach (string servicename in KnownServices.Where(s => !ci.Services.ContainsKey(s)))
+
+
+			var knownServies = Assembly.GetAssembly(typeof(IEmulator))
+				.GetTypes()
+				.Where(t => typeof(IEmulatorService).IsAssignableFrom(t))
+				.Where(t => t != typeof(IEmulatorService))
+				.Where(t => t.IsInterface)
+				.Select(t => t.ToString());
+
+			var additionalServices = knownServies
+				.Where(s => !ci.Services.ContainsKey(s))
+				.Where(s => !ci.NotApplicableTypes.Contains(s));
+
+			foreach (string servicename in additionalServices)
 			{
 				string img = "Bad";
 				var serviceNode = new TreeNode
@@ -253,10 +278,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ci = new CoreInfo(emu);
 			KnownCores[ci.CoreName] = ci;
-
-			// this will keep phantom services around even when no core implements them,
-			// which might not be desired?
-			KnownServices.UnionWith(ci.Services.Keys);
 
 			DoCurrentCoreTree(ci);
 			DoAllCoresTree(ci);
