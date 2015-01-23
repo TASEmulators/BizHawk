@@ -130,7 +130,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void GenerateUI()
 		{
-			this.SuspendLayout();
 			this.Controls.Clear();
 			var canget = CanGetCpuRegisters;
 			var canset = CanSetCpuRegisters;
@@ -249,8 +248,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				this.Controls.Add(p);
-
-				this.ResumeLayout();
 			}
 		}
 	}
