@@ -62,6 +62,7 @@
 			this.MediumStateSizeLabel = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.label17 = new System.Windows.Forms.Label();
 			this.RewindIsThreadedCheckbox = new System.Windows.Forms.CheckBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.BufferSizeUpDown = new System.Windows.Forms.NumericUpDown();
@@ -87,7 +88,6 @@
 			this.trackBarCompression = new System.Windows.Forms.TrackBar();
 			this.nudCompression = new System.Windows.Forms.NumericUpDown();
 			this.groupBox7 = new System.Windows.Forms.GroupBox();
-			this.label12 = new System.Windows.Forms.Label();
 			this.KbLabel = new System.Windows.Forms.Label();
 			this.BigScreenshotNumeric = new System.Windows.Forms.NumericUpDown();
 			this.SaveLargeScreenshotsCheckbox = new System.Windows.Forms.CheckBox();
@@ -97,7 +97,7 @@
 			this.label15 = new System.Windows.Forms.Label();
 			this.label16 = new System.Windows.Forms.Label();
 			this.BackupSavestatesCheckbox = new System.Windows.Forms.CheckBox();
-			this.label17 = new System.Windows.Forms.Label();
+			this.label12 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.LargeSavestateNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.MediumSavestateNumeric)).BeginInit();
@@ -145,9 +145,9 @@
 			this.SmallLabel1.AutoSize = true;
 			this.SmallLabel1.Location = new System.Drawing.Point(40, 40);
 			this.SmallLabel1.Name = "SmallLabel1";
-			this.SmallLabel1.Size = new System.Drawing.Size(164, 13);
+			this.SmallLabel1.Size = new System.Drawing.Size(166, 13);
 			this.SmallLabel1.TabIndex = 2;
-			this.SmallLabel1.Text = "Small savestates (less than 32kb)";
+			this.SmallLabel1.Text = "Small savestates (less than 32KB)";
 			this.SmallLabel1.Click += new System.EventHandler(this.SmallLabel1_Click);
 			// 
 			// groupBox1
@@ -260,9 +260,9 @@
 			this.LargeLabel1.AutoSize = true;
 			this.LargeLabel1.Location = new System.Drawing.Point(40, 88);
 			this.LargeLabel1.Name = "LargeLabel1";
-			this.LargeLabel1.Size = new System.Drawing.Size(177, 13);
+			this.LargeLabel1.Size = new System.Drawing.Size(179, 13);
 			this.LargeLabel1.TabIndex = 10;
-			this.LargeLabel1.Text = "Large savestates (more than 100kb)";
+			this.LargeLabel1.Text = "Large savestates (more than 100KB)";
 			this.LargeLabel1.Click += new System.EventHandler(this.LargeLabel1_Click);
 			// 
 			// MediumLabel2
@@ -311,9 +311,9 @@
 			this.MediumLabel1.AutoSize = true;
 			this.MediumLabel1.Location = new System.Drawing.Point(40, 64);
 			this.MediumLabel1.Name = "MediumLabel1";
-			this.MediumLabel1.Size = new System.Drawing.Size(158, 13);
+			this.MediumLabel1.Size = new System.Drawing.Size(160, 13);
 			this.MediumLabel1.TabIndex = 6;
-			this.MediumLabel1.Text = "Medium savestates (32 - 100kb)";
+			this.MediumLabel1.Text = "Medium savestates (32 - 100KB)";
 			this.MediumLabel1.Click += new System.EventHandler(this.MediumLabel1_Click);
 			// 
 			// SmallLabel2
@@ -382,9 +382,9 @@
 			this.StateSizeLabel.AutoSize = true;
 			this.StateSizeLabel.Location = new System.Drawing.Point(92, 17);
 			this.StateSizeLabel.Name = "StateSizeLabel";
-			this.StateSizeLabel.Size = new System.Drawing.Size(28, 13);
+			this.StateSizeLabel.Size = new System.Drawing.Size(30, 13);
 			this.StateSizeLabel.TabIndex = 6;
-			this.StateSizeLabel.Text = "0 kb";
+			this.StateSizeLabel.Text = "0 KB";
 			// 
 			// MediumStateTrackbar
 			// 
@@ -467,9 +467,9 @@
 			this.LargeStateSizeLabel.AutoSize = true;
 			this.LargeStateSizeLabel.Location = new System.Drawing.Point(312, 71);
 			this.LargeStateSizeLabel.Name = "LargeStateSizeLabel";
-			this.LargeStateSizeLabel.Size = new System.Drawing.Size(19, 13);
+			this.LargeStateSizeLabel.Size = new System.Drawing.Size(21, 13);
 			this.LargeStateSizeLabel.TabIndex = 12;
-			this.LargeStateSizeLabel.Text = "kb";
+			this.LargeStateSizeLabel.Text = "KB";
 			// 
 			// label5
 			// 
@@ -498,9 +498,9 @@
 			this.MediumStateSizeLabel.AutoSize = true;
 			this.MediumStateSizeLabel.Location = new System.Drawing.Point(313, 35);
 			this.MediumStateSizeLabel.Name = "MediumStateSizeLabel";
-			this.MediumStateSizeLabel.Size = new System.Drawing.Size(19, 13);
+			this.MediumStateSizeLabel.Size = new System.Drawing.Size(21, 13);
 			this.MediumStateSizeLabel.TabIndex = 9;
-			this.MediumStateSizeLabel.Text = "kb";
+			this.MediumStateSizeLabel.Text = "KB";
 			// 
 			// label2
 			// 
@@ -526,6 +526,15 @@
 			this.groupBox3.TabIndex = 9;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Rewind Options";
+			// 
+			// label17
+			// 
+			this.label17.AutoSize = true;
+			this.label17.Location = new System.Drawing.Point(6, 19);
+			this.label17.Name = "label17";
+			this.label17.Size = new System.Drawing.Size(278, 13);
+			this.label17.TabIndex = 32;
+			this.label17.Text = "These options affect rewind performance in various ways:";
 			// 
 			// RewindIsThreadedCheckbox
 			// 
@@ -812,15 +821,6 @@
 			this.groupBox7.TabStop = false;
 			this.groupBox7.Text = "Savestate Options";
 			// 
-			// label12
-			// 
-			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(19, 21);
-			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(96, 13);
-			this.label12.TabIndex = 24;
-			this.label12.Text = "Compression Level";
-			// 
 			// KbLabel
 			// 
 			this.KbLabel.AutoSize = true;
@@ -919,14 +919,14 @@
 			this.BackupSavestatesCheckbox.Text = "Backup Savestates";
 			this.BackupSavestatesCheckbox.UseVisualStyleBackColor = true;
 			// 
-			// label17
+			// label12
 			// 
-			this.label17.AutoSize = true;
-			this.label17.Location = new System.Drawing.Point(6, 19);
-			this.label17.Name = "label17";
-			this.label17.Size = new System.Drawing.Size(278, 13);
-			this.label17.TabIndex = 32;
-			this.label17.Text = "These options affect rewind performance in various ways:";
+			this.label12.AutoSize = true;
+			this.label12.Location = new System.Drawing.Point(19, 21);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(96, 13);
+			this.label12.TabIndex = 24;
+			this.label12.Text = "Compression Level";
 			// 
 			// RewindConfig
 			// 
