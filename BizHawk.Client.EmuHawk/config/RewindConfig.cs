@@ -94,18 +94,18 @@ namespace BizHawk.Client.EmuHawk
 			if (num >= 1024)
 			{
 				num /= 1024.0;
-				StateSizeLabel.Text = String.Format("{0:0.00}", num) + " mb";
+				StateSizeLabel.Text = String.Format("{0:0.00}", num) + " MB";
 			}
 			else
 			{
-				StateSizeLabel.Text = String.Format("{0:0.00}", num) + " kb";
+				StateSizeLabel.Text = String.Format("{0:0.00}", num) + " KB";
 			}
 
 
-			SmallLabel1.Text = "Small savestates (less than " + (_mediumStateSize / 1024) + "kb)";
+			SmallLabel1.Text = "Small savestates (less than " + (_mediumStateSize / 1024) + "KB)";
 			MediumLabel1.Text = "Medium savestates (" + (_mediumStateSize / 1024)
-				+ " - " + (_largeStateSize / 1024) + "kb)";
-			LargeLabel1.Text = "Large savestates (" + (_largeStateSize / 1024) + "kb or more)";
+				+ " - " + (_largeStateSize / 1024) + "KB)";
+			LargeLabel1.Text = "Large savestates (" + (_largeStateSize / 1024) + "KB or more)";
 
 			if (_stateSize >= _largeStateSize)
 			{
