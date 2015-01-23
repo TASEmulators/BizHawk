@@ -1458,15 +1458,15 @@ namespace BizHawk.Client.EmuHawk
 				// note that the avi dumper has already rewired the emulator itself in this case.
 				GlobalWin.Sound.SetAsyncInputPin(_dumpProxy);
 			}
-			else if (Global.Config.SoundThrottle)
+			else if (Global.Config.SoundThrottle || Global.Config.UseNewOutputBuffer)
 			{
-				// for sound throttle, use sync mode
+				// for sound throttle and new output buffer, use sync mode
 				Global.Emulator.EndAsyncSound();
 				GlobalWin.Sound.SetSyncInputPin(Global.Emulator.SyncSoundProvider);
 			}
 			else
 			{
-				// for vsync\clock throttle modes, use async
+				// for vsync\clock throttle modes through old output buffer, use async
 				GlobalWin.Sound.SetAsyncInputPin(
 					!Global.Emulator.StartAsyncSound()
 						? new MetaspuAsync(Global.Emulator.SyncSoundProvider, ESynchMethod.ESynchMethod_V)

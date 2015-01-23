@@ -616,6 +616,7 @@
     <Compile Include="RomStatusPicker.Designer.cs">
       <DependentUpon>RomStatusPicker.cs</DependentUpon>
     </Compile>
+    <Compile Include="SoundOutputProvider.cs" />
     <Compile Include="Throttle.cs" />
     <Compile Include="ToolAttributes.cs" />
     <Compile Include="tools\BatchRun.cs">

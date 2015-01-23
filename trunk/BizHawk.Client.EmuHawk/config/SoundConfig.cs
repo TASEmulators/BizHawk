@@ -20,13 +20,10 @@ namespace BizHawk.Client.EmuHawk
 
 			SoundOnCheckBox.Checked = Global.Config.SoundEnabled;
 			MuteFrameAdvance.Checked = Global.Config.MuteFrameAdvance;
-			ThrottlecheckBox.Checked = Global.Config.SoundThrottle;
+			UseNewOutputBuffer.Checked = Global.Config.UseNewOutputBuffer;
 			SoundVolBar.Value = Global.Config.SoundVolume;
 			SoundVolNumeric.Value = Global.Config.SoundVolume;
 			UpdateSoundDialog();
-
-			// vestigal
-			ThrottlecheckBox.Visible = false;
 
 			var dd = SoundEnumeration.DeviceNames();
 			listBoxSoundDevices.Items.Add("<default>");
@@ -47,8 +44,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config.SoundEnabled = SoundOnCheckBox.Checked;
 			Global.Config.MuteFrameAdvance = MuteFrameAdvance.Checked;
+			Global.Config.UseNewOutputBuffer = UseNewOutputBuffer.Checked;
 			Global.Config.SoundVolume = SoundVolBar.Value;
-			Global.Config.SoundThrottle = ThrottlecheckBox.Checked;
 			Global.Config.SoundDevice = (string)listBoxSoundDevices.SelectedItem ?? "<default>";
 			GlobalWin.Sound.ChangeVolume(Global.Config.SoundVolume);
 			GlobalWin.Sound.UpdateSoundSettings();
@@ -81,13 +78,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			UpdateSoundDialog();
 		}
+
 		private void UpdateSoundDialog()
 		{
-			//Ocean Prince commented this out
-			//SoundVolGroup.Enabled =
-			MuteFrameAdvance.Enabled =
-			ThrottlecheckBox.Enabled =
-				SoundOnCheckBox.Checked;
+			MuteFrameAdvance.Enabled = SoundOnCheckBox.Checked;
 		}
 	}
 }
