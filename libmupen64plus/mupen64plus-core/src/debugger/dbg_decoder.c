@@ -797,6 +797,30 @@ r4k_disassemble_split_quick ( uint32_t instruction,
     );
 }
 
+#include "api/m64p_types.h"
+
+EXPORT char* CALL biz_r4300_decode_op(uint32 instr, int counter)
+{
+	char * _final;
+	char * _op, * _args;
+    
+    _op = NULL;
+    _args = NULL;
+	_final = NULL;
+    
+    r4k_disassemble_split_quick(
+        instr,
+        counter,
+        &_op,
+        &_args
+    );
+
+
+    //free( _op );
+	strcat(_op, " ");
+	strcat(_op, _args);
+	return _op;
+}
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[ DECODE_OP ]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[//
 
@@ -819,4 +843,3 @@ void r4300_decode_op ( uint32 instr, char * opcode, char * arguments, int counte
     
     free( _op );
 }
-

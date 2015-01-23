@@ -392,6 +392,9 @@
     <Compile Include="Consoles\Nintendo\N64\N64.IDebuggable.cs">
       <DependentUpon>N64.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Nintendo\N64\N64.IDisassemblable.cs">
+        <DependentUpon>N64.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\N64\N64.IInputPollable.cs">
       <DependentUpon>N64.cs</DependentUpon>
     </Compile>
