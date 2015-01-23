@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 namespace BizHawk.Emulation.Common
 {
-	[CoreAttributes("NullHawk", "")]
+	[CoreAttributes("NullHawk", "", false, true, "", "")]
 	public class NullEmulator : IEmulator, IVideoProvider, ISyncSoundProvider, ISoundProvider, ISettable<NullEmulator.NullEmulatorSettings, object>
 	{
 		public NullEmulator(CoreComm comm, object settings)
