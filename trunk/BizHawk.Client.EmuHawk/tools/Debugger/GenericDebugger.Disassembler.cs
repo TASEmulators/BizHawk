@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 			for (int i = 0; i < line_count; ++i)
 			{
 				int advance;
-				string line = Disassembler.Disassemble(MemoryDomains.CheatDomain, (ushort)a, out advance);
+				string line = Disassembler.Disassemble(MemoryDomains.CheatDomain, a, out advance);
 				DisassemblyLines.Add(new DisasmOp(a, advance, line));
 				a += (uint)advance;
 				if (a > BusMaxValue)
