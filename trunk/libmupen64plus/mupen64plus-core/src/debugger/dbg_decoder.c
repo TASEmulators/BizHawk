@@ -805,6 +805,10 @@ EXPORT char* CALL biz_r4300_decode_op(uint32 instr, uint32 counter)
 	static char tmp[128];
 	static struct r4k_dis_t state;
 	memset( &state, 0, sizeof(state) );
+
+	//in case the disassembler does nothing
+	tmp[0] = 0;
+
   r4k_disassemble(
       &state,
       instr,
