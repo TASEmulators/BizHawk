@@ -139,7 +139,10 @@ namespace BizHawk.Client.EmuHawk
 
 			BaseSoundProvider.GetSamples(out samples, out count);
 
-			scaleFactor *= SamplesPerFrame / count;
+			if (count != 0)
+			{
+				scaleFactor *= SamplesPerFrame / count;
+			}
 
 			double newCountTarget = count * scaleFactor;
 			int newCount = (int)Math.Round(newCountTarget + _resampleLengthRoundingError);
