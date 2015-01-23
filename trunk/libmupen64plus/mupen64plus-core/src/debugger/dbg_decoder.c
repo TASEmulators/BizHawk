@@ -799,27 +799,20 @@ r4k_disassemble_split_quick ( uint32_t instruction,
 
 #include "api/m64p_types.h"
 
-EXPORT char* CALL biz_r4300_decode_op(uint32 instr, int counter)
+//WARNING - RETURNS A STATIC BUFFER
+EXPORT char* CALL biz_r4300_decode_op(uint32 instr, uint32 counter)
 {
-	char * _final;
-	char * _op, * _args;
-    
-    _op = NULL;
-    _args = NULL;
-	_final = NULL;
-    
-    r4k_disassemble_split_quick(
-        instr,
-        counter,
-        &_op,
-        &_args
-    );
+	static char tmp[128];
+	static struct r4k_dis_t state;
+	memset( &state, 0, sizeof(state) );
+  r4k_disassemble(
+      &state,
+      instr,
+      counter,
+      tmp
+  );
 
-
-    //free( _op );
-	strcat(_op, " ");
-	strcat(_op, _args);
-	return _op;
+	return tmp;
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[ DECODE_OP ]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[//

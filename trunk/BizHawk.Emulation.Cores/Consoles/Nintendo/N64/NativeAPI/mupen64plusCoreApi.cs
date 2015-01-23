@@ -265,8 +265,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		delegate m64p_error CoreDoCommandRenderCallback(m64p_command Command, int ParamInt, RenderCallback ParamPtr);
 		CoreDoCommandRenderCallback m64pCoreDoCommandRenderCallback;
 
+		//WARNING - RETURNS A STATIC BUFFER
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate IntPtr biz_r4300_decode_op(uint instr, int counter);
+		public delegate IntPtr biz_r4300_decode_op(uint instr, uint counter);
 		public biz_r4300_decode_op m64p_decode_op; 
 
 		/// <summary>
