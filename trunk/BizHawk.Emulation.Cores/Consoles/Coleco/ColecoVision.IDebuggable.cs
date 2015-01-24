@@ -121,11 +121,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks
-		{
-			[FeatureNotImplemented]
-			get { throw new NotImplementedException(); }
-		}
+		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
 		public bool CanStep(StepType type) { return false; }
 
