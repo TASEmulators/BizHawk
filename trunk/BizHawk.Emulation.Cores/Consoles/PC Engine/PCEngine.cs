@@ -157,7 +157,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		void Init(GameInfo game, byte[] rom)
 		{
 			Controller = NullController.GetNullController();
-			Cpu = new HuC6280(this);
+			Cpu = new HuC6280(MemoryCallbacks);
 			VCE = new VCE();
 			VDC1 = new VDC(this, Cpu, VCE);
 			PSG = new HuC6280PSG();
