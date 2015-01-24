@@ -40,6 +40,11 @@ namespace BizHawk.Client.Common
 			{
 				if (MemoryDomainCore != null)
 				{
+					if (_currentMemoryDomain == null)
+					{
+						_currentMemoryDomain = MemoryDomainCore.MainMemory;
+					}
+
 					return _currentMemoryDomain;
 				}
 				else
