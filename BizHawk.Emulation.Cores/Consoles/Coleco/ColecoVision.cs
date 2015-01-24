@@ -36,6 +36,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public ColecoVision(CoreComm comm, GameInfo game, byte[] rom, object SyncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
+			MemoryCallbacks = new MemoryCallbackSystem();
 			CoreComm = comm;
 			_syncSettings = (ColecoSyncSettings)SyncSettings ?? new ColecoSyncSettings();
 			bool skipbios = this._syncSettings.SkipBiosIntro;
@@ -45,6 +46,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			Cpu.WriteMemory = WriteMemory;
 			Cpu.ReadHardware = ReadPort;
 			Cpu.WriteHardware = WritePort;
+			Cpu.MemoryCallbacks = MemoryCallbacks;
 
 			VDP = new TMS9918A(Cpu);
 			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(VDP);
@@ -60,6 +62,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			LoadRom(rom, skipbios);
 			this.game = game;
 			SetupMemoryDomains();
+			(ServiceProvider as BasicServiceProvider).Register<IDisassemblable>(new Disassembler());
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
