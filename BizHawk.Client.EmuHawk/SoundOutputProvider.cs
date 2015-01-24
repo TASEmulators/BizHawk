@@ -14,8 +14,8 @@ namespace BizHawk.Client.EmuHawk
 	// samples here on average. As long as we're within +/-5 milliseconds we don't need
 	// to touch the source audio. Once it goes outside of that window, we'll start to
 	// perform a "soft" correction by resampling it to hopefully get back inside our
-	// window shortly. If it ends up going too low (-40 ms) and depleting the output
-	// device's buffer, or too high (+40 ms), we will perform a "hard" correction by
+	// window shortly. If it ends up going too low (-45 ms) and depleting the output
+	// device's buffer, or too high (+45 ms), we will perform a "hard" correction by
 	// generating silence or discarding samples.
 	public class SoundOutputProvider
 	{
@@ -152,12 +152,9 @@ namespace BizHawk.Client.EmuHawk
 				_baseSamplesPerFrame.Clear();
 				_lastAdvertisedSamplesPerFrame = AdvertisedSamplesPerFrame;
 			}
-			if (count != 0)
-			{
-				UpdateHistory(_baseSamplesPerFrame, count, BaseSampleRateMaxHistoryLength);
-			}
+			UpdateHistory(_baseSamplesPerFrame, count, BaseSampleRateMaxHistoryLength);
 
-			if (_baseSamplesPerFrame.Count >= BaseSampleRateUsableHistoryLength)
+			if (_baseSamplesPerFrame.Count >= BaseSampleRateUsableHistoryLength && !_baseSamplesPerFrame.Any(n => n == 0))
 			{
 				double baseAverageSamplesPerFrame = _baseSamplesPerFrame.Average();
 				if (baseAverageSamplesPerFrame != 0.0)
