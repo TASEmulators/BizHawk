@@ -143,6 +143,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			Cpu.RegisterSP = 0xDFF0;
 			Cpu.ReadHardware = ReadPort;
 			Cpu.WriteHardware = WritePort;
+			Cpu.MemoryCallbacks = MemoryCallbacks;
 
 			Vdp = new VDP(this, Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, DisplayType);
 			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(Vdp);
