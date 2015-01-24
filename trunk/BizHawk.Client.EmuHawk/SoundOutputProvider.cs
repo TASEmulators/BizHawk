@@ -163,8 +163,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			double newCountTarget = count * scaleFactor;
-			int newCount = (int)Math.Round(newCountTarget + _resampleLengthRoundingError);
+			double newCountExact = (count * scaleFactor) + _resampleLengthRoundingError;
+			int newCount = (int)Math.Round(newCountExact);
 			// Due to small inaccuracies and rounding errors, it's pointless to resample by
 			// just a sample or two because those may be fluctuations that will average out
 			// over time. So instead of immediately resampling to cover small differences, we
@@ -179,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 			// time so we need to keep track of it. With NTSC @ 59.94 FPS, for example, if we
 			// were to always round to 736 samples per frame ignoring the rounding error, we
 			// would drift by ~22 milliseconds per minute.
-			_resampleLengthRoundingError += newCountTarget - count;
+			_resampleLengthRoundingError = newCountExact - count;
 
 			AddSamplesToBuffer(samples, count);
 		}
@@ -236,6 +236,7 @@ namespace BizHawk.Client.EmuHawk
 				return output;
 			}
 
+			double roundingError = 0.0;
 			for (int iOutput = 0; iOutput < outputCount; iOutput++)
 			{
 				double iInput = ((double)iOutput / (outputCount - 1)) * (inputCount - 1);
@@ -249,9 +250,17 @@ namespace BizHawk.Client.EmuHawk
 
 				for (int iChannel = 0; iChannel < ChannelCount; iChannel++)
 				{
-					output[iOutput * ChannelCount + iChannel] = (short)
-						(input[iInput0 * ChannelCount + iChannel] * input0Weight +
-						 input[iInput1 * ChannelCount + iChannel] * input1Weight);
+					double valueExact =
+						input[iInput0 * ChannelCount + iChannel] * input0Weight +
+						input[iInput1 * ChannelCount + iChannel] * input1Weight +
+						roundingError;
+
+					if (valueExact < -32768.0) valueExact = -32768.0;
+					if (valueExact > 32767.0) valueExact = 32767.0;
+
+					short value = (short)((int)(valueExact + 32768.5) - 32768);
+					output[iOutput * ChannelCount + iChannel] = value;
+					roundingError = valueExact - value;
 				}
 			}
 
