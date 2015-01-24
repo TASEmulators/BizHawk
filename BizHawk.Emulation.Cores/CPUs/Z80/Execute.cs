@@ -46,7 +46,14 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 				{
 
 					if (Debug)
+					{
 						Logger(State());
+					}
+
+					if (MemoryCallbacks != null)
+					{
+						MemoryCallbacks.CallExecutes(RegPC.Word);
+					}
 
 					++RegR;
 					switch (ReadMemory(RegPC.Word++))

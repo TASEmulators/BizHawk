@@ -64,6 +64,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			cpu.WriteHardware = WriteHardware;
 			cpu.IRQCallback = IRQCallback;
 			cpu.NMICallback = NMICallback;
+			cpu.MemoryCallbacks = MemoryCallbacks;
 
 			this.rom = rom;
 			LinkPort = new TI83LinkPort(this);
