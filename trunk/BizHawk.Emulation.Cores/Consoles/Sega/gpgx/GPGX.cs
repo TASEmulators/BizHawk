@@ -619,7 +619,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					mm.Add(MemoryDomain.FromIntPtrSwap16(name, size, MemoryDomain.Endian.Big, area));
 				}
 			}
-			MemoryDomains = new MemoryDomainList(mm, 0);
+			MemoryDomains = new MemoryDomainList(mm);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
 

@@ -13,10 +13,10 @@ namespace BizHawk.Emulation.Common
 	{
 		MemoryDomain this[string name] { get; }
 
-		MemoryDomain MainMemory { get; }
+		MemoryDomain MainMemory { get; set; }
 
 		bool HasSystemBus { get; }
 
-		MemoryDomain SystemBus { get; }
+		MemoryDomain SystemBus { get; set; }
 	}
 }

@@ -209,17 +209,12 @@ namespace BizHawk.Emulation.Common
 
 	public class MemoryDomainList : ReadOnlyCollection<MemoryDomain>, IMemoryDomains
 	{
-		private readonly int _mainMemoryIndex;
+		private MemoryDomain _mainMemory;
+		private MemoryDomain _systemBus;
 
 		public MemoryDomainList(IList<MemoryDomain> domains) 
 			: base(domains)
 		{
-		}
-
-		public MemoryDomainList(IList<MemoryDomain> domains, int mainMemoryIndex)
-			: this(domains)
-		{
-			_mainMemoryIndex = mainMemoryIndex;
 		}
 
 		public MemoryDomain this[string name]
@@ -234,7 +229,17 @@ namespace BizHawk.Emulation.Common
 		{
 			get
 			{
-				return this[_mainMemoryIndex];
+				if (_mainMemory != null)
+				{
+					return _mainMemory;
+				}
+
+				return this.First();
+			}
+
+			set
+			{
+				_mainMemory = value;
 			}
 		}
 
@@ -242,6 +247,11 @@ namespace BizHawk.Emulation.Common
 		{
 			get
 			{
+				if (_systemBus != null)
+				{
+					return true;
+				}
+
 				return this.Any(x => x.Name == "System Bus");
 			}
 		}
@@ -250,7 +260,17 @@ namespace BizHawk.Emulation.Common
 		{
 			get
 			{
+				if (_systemBus != null)
+				{
+					return _systemBus;
+				}
+
 				return this.FirstOrDefault(x => x.Name == "System Bus");
+			}
+
+			set
+			{
+				_systemBus = value;
 			}
 		}
 	}

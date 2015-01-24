@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				string sname = Marshal.PtrToStringAnsi(name);
 				mmd.Add(MemoryDomain.FromIntPtr(sname, size, MemoryDomain.Endian.Little, data));
 			}
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(new MemoryDomainList(mmd, 0));
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(new MemoryDomainList(mmd));
 		}
 	}
 }

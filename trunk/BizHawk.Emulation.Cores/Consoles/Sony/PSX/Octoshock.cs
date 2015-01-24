@@ -618,7 +618,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.DCache);
 			mmd.Add(MemoryDomain.FromIntPtr("DCache", size, MemoryDomain.Endian.Little, ptr, true));
 
-			MemoryDomains = new MemoryDomainList(mmd, 0);
+			MemoryDomains = new MemoryDomainList(mmd);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
 
