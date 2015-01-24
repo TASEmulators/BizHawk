@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 		public Breakpoint(IDebuggable core, Action callBack, uint address, MemoryCallbackType type, bool enabled = true)
 		{
 			_core = core;
-
+			Type = type;
 			Callback = callBack;
 			Address = address;
 			Active = enabled;
