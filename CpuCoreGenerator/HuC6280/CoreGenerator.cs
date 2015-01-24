@@ -494,7 +494,7 @@ namespace HuC6280
             w.WriteLine("                LagIFlag = FlagI;");
             w.WriteLine();
             w.WriteLine("                if (Debug) Logger(State());");
-            w.WriteLine("                Core.MemoryCallbacks.CallExecutes(PC);");
+            w.WriteLine("                MemoryCallbacks.CallExecutes(PC);");
             w.WriteLine("                if (CDLLoggingActive) CDLOpcode();");
             w.WriteLine();
             w.WriteLine("                byte opcode = ReadMemory(PC++);");
