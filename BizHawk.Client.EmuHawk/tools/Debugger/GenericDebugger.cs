@@ -284,5 +284,10 @@ namespace BizHawk.Client.EmuHawk
 			BreakPointControl1.RemoveCurrentSeek();
 			CancelSeekBtn.Enabled = false;
 		}
+
+		private void ToPCBtn_Click(object sender, EventArgs e)
+		{
+			UpdateDisassembler();
+		}
 	}
 }

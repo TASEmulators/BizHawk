@@ -38,6 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			if (CanDisassemble)
 			{
 				DisassemblerView.BlazingFast = true;
+				DisassemblerView.ItemCount = 0;
 				currentDisassemblerAddress = PC;
 				Disassemble();
 				DisassemblerView.Refresh();
