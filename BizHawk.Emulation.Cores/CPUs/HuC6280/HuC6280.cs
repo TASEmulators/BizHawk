@@ -229,13 +229,16 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		public byte ReadMemory(ushort address)
 		{
 			byte page = MPR[address >> 13];
-			return ReadMemory21((page << 13) | (address & 0x1FFF));
+			var result = ReadMemory21((page << 13) | (address & 0x1FFF));
+			MemoryCallbacks.CallReads(address);
+			return result;
 		}
 
 		public void WriteMemory(ushort address, byte value)
 		{
 			byte page = MPR[address >> 13];
 			WriteMemory21((page << 13) | (address & 0x1FFF), value);
+			MemoryCallbacks.CallWrites(address);
 		}
 
 		private ushort ReadWord(ushort address)
