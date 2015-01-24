@@ -34,6 +34,7 @@ namespace BizHawk.Client.EmuHawk
 		private void EngageDebugger()
 		{
 			DisassemblyLines.Clear();
+			GlobalWin.MainForm.OnPauseChanged += OnPauseChanged;
 			CancelSeekBtn.Enabled = false;
 			if (CanDisassemble)
 			{
@@ -147,6 +148,7 @@ namespace BizHawk.Client.EmuHawk
 		private void DisengageDebugger()
 		{
 			BreakPointControl1.Shutdown();
+			GlobalWin.MainForm.OnPauseChanged -= OnPauseChanged;
 		}
 
 		public void DisableRegisterBox()
@@ -288,6 +290,11 @@ namespace BizHawk.Client.EmuHawk
 		private void ToPCBtn_Click(object sender, EventArgs e)
 		{
 			UpdateDisassembler();
+		}
+
+		private void RefreshMenuItem_Click(object sender, EventArgs e)
+		{
+			FullUpdate();
 		}
 	}
 }

@@ -503,6 +503,41 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion`
 
+		#region Pause
+
+		private bool _emulatorPaused;
+		public bool EmulatorPaused
+		{
+			get
+			{
+				return _emulatorPaused;
+			}
+
+			private set
+			{
+				_emulatorPaused = value;
+				if (OnPauseChanged != null)
+				{
+					OnPauseChanged(this, new PauseChangedEventArgs(_emulatorPaused));
+				}
+			}
+		}
+
+		public delegate void PauseChangedEventHandler(object sender, PauseChangedEventArgs e);
+		public event PauseChangedEventHandler OnPauseChanged;
+
+		public class PauseChangedEventArgs : EventArgs
+		{
+			public PauseChangedEventArgs(bool paused)
+			{
+				Paused = paused;
+			}
+
+			public bool Paused { get; private set; }
+		}
+
+		#endregion
+
 		#region Properties
 
 		public string CurrentlyOpenRom;
@@ -513,7 +548,6 @@ namespace BizHawk.Client.EmuHawk
 		public bool TurboFastForward = false;
 		public bool RestoreReadWriteOnStop = false;
 		public bool UpdateFrame = false;
-		public bool EmulatorPaused { get; private set; }
 
 		private int? _pauseOnFrame;
 		public int? PauseOnFrame // If set, upon completion of this frame, the client wil pause

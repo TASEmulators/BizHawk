@@ -136,9 +136,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			// TODO: probably none of this
-			RegisterPanel.UpdateValues();
-			UpdateDisassembler();
+			// Nothing to do
 		}
 
 		private void FullUpdate()
