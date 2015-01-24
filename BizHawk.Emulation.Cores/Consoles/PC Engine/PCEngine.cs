@@ -474,7 +474,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				(addr, value) => Ram[addr] = value);
 			domains.Add(MainMemoryDomain);
 
-			var SystemBusDomain = new MemoryDomain("System Bus", 0x200000, MemoryDomain.Endian.Little,
+			var SystemBusDomain = new MemoryDomain("System Bus (21 bit)", 0x200000, MemoryDomain.Endian.Little,
 				(addr) =>
 				{
 					if (addr < 0 || addr >= 0x200000)
@@ -489,7 +489,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				});
 			domains.Add(SystemBusDomain);
 
-			var CpuBusDomain = new MemoryDomain("CPU Bus", 0x10000, MemoryDomain.Endian.Little,
+			var CpuBusDomain = new MemoryDomain("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				(addr) =>
 				{
 					if (addr < 0 || addr >= 0x10000)
