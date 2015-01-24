@@ -51,17 +51,26 @@ namespace BizHawk.Emulation.Common
 
 		public void CallReads(uint addr)
 		{
-			Call(Reads, addr);
+			if (_hasReads)
+			{
+				Call(Reads, addr);
+			}
 		}
 
 		public void CallWrites(uint addr)
 		{
-			Call(Writes, addr);
+			if (_hasWrites)
+			{
+				Call(Writes, addr);
+			}
 		}
 
 		public void CallExecutes(uint addr)
 		{
-			Call(Execs, addr);
+			if (_hasExecutes)
+			{
+				Call(Execs, addr);
+			}
 		}
 
 		public bool HasReads
