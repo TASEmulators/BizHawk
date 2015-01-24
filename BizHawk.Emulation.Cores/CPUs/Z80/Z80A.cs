@@ -38,6 +38,26 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 		public Func<ushort, byte> ReadMemory;
 		public Action<ushort, byte> WriteMemory;
 
+		public byte ReadMemoryWrapper(ushort addr)
+		{
+			if (MemoryCallbacks != null)
+			{
+				MemoryCallbacks.CallReads(addr);
+			}
+
+			return ReadMemory(addr);
+		}
+
+		public void WriteMemoryWrapper(ushort addr, byte value)
+		{
+			if (MemoryCallbacks != null)
+			{
+				MemoryCallbacks.CallWrites(addr);
+			}
+
+			WriteMemory(addr, value);
+		}
+
 		public IMemoryCallbackSystem MemoryCallbacks { get; set; }
 
 		// Utility function, not used by core
