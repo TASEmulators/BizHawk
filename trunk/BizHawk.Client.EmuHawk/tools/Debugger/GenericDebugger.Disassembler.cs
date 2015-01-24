@@ -160,5 +160,33 @@ namespace BizHawk.Client.EmuHawk
 			SetDisassemblerItemCount();
 			Disassemble();
 		}
+
+		private void DisassemblerView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.C) // Ctrl + C
+			{
+				CopySelectedDisassembler();
+			}
+		}
+
+		private void CopySelectedDisassembler()
+		{
+			var indices = DisassemblerView.SelectedIndices;
+
+			if (indices.Count > 0)
+			{
+				var blob = new StringBuilder();
+				foreach (int index in indices)
+				{
+					blob.Append(DisassemblyLines[index].Address)
+						.Append(" ")
+						.Append(DisassemblyLines[index].Mnemonic)
+						.AppendLine();
+				}
+
+				blob.Remove(blob.Length - 2, 2); // Lazy way to not have a line break at the end
+				Clipboard.SetDataObject(blob.ToString());
+			}
+		}
 	}
 }

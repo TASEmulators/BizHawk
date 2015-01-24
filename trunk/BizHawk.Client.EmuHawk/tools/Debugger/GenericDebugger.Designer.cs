@@ -208,6 +208,7 @@
 			this.DisassemblerView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Address,
             this.Instruction});
+			this.DisassemblerView.FullRowSelect = true;
 			this.DisassemblerView.GridLines = true;
 			this.DisassemblerView.ItemCount = 0;
 			this.DisassemblerView.Location = new System.Drawing.Point(6, 39);
@@ -221,6 +222,7 @@
 			this.DisassemblerView.View = System.Windows.Forms.View.Details;
 			this.DisassemblerView.Scroll += new System.Windows.Forms.ScrollEventHandler(this.DisassemblerView_Scroll);
 			this.DisassemblerView.SizeChanged += new System.EventHandler(this.DisassemblerView_SizeChanged);
+			this.DisassemblerView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DisassemblerView_KeyDown);
 			// 
 			// Address
 			// 
