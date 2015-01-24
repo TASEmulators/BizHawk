@@ -97,8 +97,6 @@ namespace BizHawk.Emulation.Cores.Calculators
 				ret = rom[romPage * 0x4000 + addr - 0x4000]; //other rom page
 			else ret = ram[addr - 0x8000];
 
-			MemoryCallbacks.CallReads(addr);
-
 			return ret;
 		}
 
@@ -109,8 +107,6 @@ namespace BizHawk.Emulation.Cores.Calculators
 			else if (addr < 0x8000)
 				return; //other rom page
 			else ram[addr - 0x8000] = value;
-
-			MemoryCallbacks.CallWrites(addr);
 		}
 
 		public void WriteHardware(ushort addr, byte value)
