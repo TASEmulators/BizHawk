@@ -42,6 +42,7 @@
 			this.BreakpointsGroupBox = new System.Windows.Forms.GroupBox();
 			this.BreakPointControl1 = new BizHawk.Client.EmuHawk.tools.Debugger.BreakpointControl();
 			this.DisassemblerBox = new System.Windows.Forms.GroupBox();
+			this.ToPCBtn = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.DisassemblerView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.Address = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -181,6 +182,7 @@
 			// 
 			this.DisassemblerBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+			this.DisassemblerBox.Controls.Add(this.ToPCBtn);
 			this.DisassemblerBox.Controls.Add(this.label1);
 			this.DisassemblerBox.Controls.Add(this.DisassemblerView);
 			this.DisassemblerBox.Location = new System.Drawing.Point(12, 27);
@@ -189,6 +191,17 @@
 			this.DisassemblerBox.TabIndex = 7;
 			this.DisassemblerBox.TabStop = false;
 			this.DisassemblerBox.Text = "Disassembler";
+			// 
+			// ToPCBtn
+			// 
+			this.ToPCBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.ToPCBtn.Location = new System.Drawing.Point(351, 13);
+			this.ToPCBtn.Name = "ToPCBtn";
+			this.ToPCBtn.Size = new System.Drawing.Size(50, 23);
+			this.ToPCBtn.TabIndex = 3;
+			this.ToPCBtn.Text = "To PC";
+			this.ToPCBtn.UseVisualStyleBackColor = true;
+			this.ToPCBtn.Click += new System.EventHandler(this.ToPCBtn_Click);
 			// 
 			// label1
 			// 
@@ -360,5 +373,6 @@
 		private System.Windows.Forms.Button SeekToBtn;
 		private HexTextBox SeekToBox;
 		private System.Windows.Forms.Button CancelSeekBtn;
+		private System.Windows.Forms.Button ToPCBtn;
 	}
 }
