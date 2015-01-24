@@ -15,8 +15,8 @@ namespace BizHawk.Emulation.Common
 
 		MemoryDomain MainMemory { get; }
 
-		bool HasCheatDomain { get; }
+		bool HasSystemBus { get; }
 
-		MemoryDomain CheatDomain { get; }
+		MemoryDomain SystemBus { get; }
 	}
 }
