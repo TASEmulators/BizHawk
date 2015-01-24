@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 		private const int BufferSizeSamples = SampleRate * BufferSizeMilliseconds / 1000;
 		private const int BufferSizeBytes = BufferSizeSamples * BlockAlign;
 		private const double BufferSizeSeconds = (double)(BufferSizeBytes / BlockAlign) / SampleRate;
-		private const int MinBufferFullnessMilliseconds = 60;
+		private const int MinBufferFullnessMilliseconds = 55;
 		private const int MinBufferFullnessSamples = SampleRate * MinBufferFullnessMilliseconds / 1000;
 
 		private bool _muted;

@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private const int SampleRate = 44100;
 		private const int ChannelCount = 2;
-		private const int MaxExtraMilliseconds = 40;
+		private const int MaxExtraMilliseconds = 45;
 		private const int MaxExtraSamples = SampleRate * MaxExtraMilliseconds / 1000;
 		private const int MaxTargetOffsetMilliseconds = 5;
 		private const int MaxTargetOffsetSamples = SampleRate * MaxTargetOffsetMilliseconds / 1000;
@@ -30,6 +30,9 @@ namespace BizHawk.Client.EmuHawk
 		private const int UsableHistoryLength = 20;
 		private const int MaxHistoryLength = 60;
 		private const int SoftCorrectionLength = 240;
+		private const int BaseSampleRateUsableHistoryLength = 60;
+		private const int BaseSampleRateMaxHistoryLength = 300;
+		private const int MinResamplingDistanceSamples = 3;
 
 		private Queue<short> _buffer = new Queue<short>(MaxExtraSamples * ChannelCount);
 
@@ -37,9 +40,8 @@ namespace BizHawk.Client.EmuHawk
 		private Queue<int> _outputCountHistory = new Queue<int>();
 		private Queue<bool> _hardCorrectionHistory = new Queue<bool>();
 
-		private bool _disableFramerateCompensation;
-		private double _lastSamplesPerFrame;
-		private int _lastBaseProviderSampleCount;
+		private double _lastAdvertisedSamplesPerFrame;
+		private Queue<int> _baseSamplesPerFrame = new Queue<int>();
 
 		private short[] _resampleBuffer = new short[0];
 		private double _resampleLengthRoundingError;
@@ -56,9 +58,8 @@ namespace BizHawk.Client.EmuHawk
 			_extraCountHistory.Clear();
 			_outputCountHistory.Clear();
 			_hardCorrectionHistory.Clear();
-			_disableFramerateCompensation = false;
-			_lastSamplesPerFrame = 0.0;
-			_lastBaseProviderSampleCount = 0;
+			_lastAdvertisedSamplesPerFrame = 0.0;
+			_baseSamplesPerFrame.Clear();
 			_resampleBuffer = new short[0];
 			_resampleLengthRoundingError = 0.0;
 
@@ -70,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool LogDebug { get; set; }
 
-		private double SamplesPerFrame
+		private double AdvertisedSamplesPerFrame
 		{
 			get { return SampleRate / Global.Emulator.CoreComm.VsyncRate; }
 		}
@@ -89,7 +90,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			GetSamplesFromBase(scaleFactor);
+			GetSamplesFromBase(ref scaleFactor);
 
 			int bufferSampleCount = _buffer.Count / ChannelCount;
 			int extraSampleCount = bufferSampleCount - idealSampleCount;
@@ -121,61 +122,58 @@ namespace BizHawk.Client.EmuHawk
 
 			int outputSampleCount = Math.Min(idealSampleCount, bufferSampleCount);
 
-			UpdateHistory(_extraCountHistory, extraSampleCount);
-			UpdateHistory(_outputCountHistory, outputSampleCount);
-			UpdateHistory(_hardCorrectionHistory, hardCorrected);
+			UpdateHistory(_extraCountHistory, extraSampleCount, MaxHistoryLength);
+			UpdateHistory(_outputCountHistory, outputSampleCount, MaxHistoryLength);
+			UpdateHistory(_hardCorrectionHistory, hardCorrected, MaxHistoryLength);
 
 			GetSamplesFromBuffer(samples, outputSampleCount);
 
 			if (LogDebug)
 			{
-				Console.WriteLine("Avg: {0:0.0} ms, Min: {1:0.0} ms, Max: {2:0.0} ms, Scale: {3:0.0000} {4}",
+				Console.WriteLine("Avg: {0:0.0} ms, Min: {1:0.0} ms, Max: {2:0.0} ms, Scale: {3:0.0000}",
 					_extraCountHistory.Average() * 1000.0 / SampleRate,
 					_extraCountHistory.Min() * 1000.0 / SampleRate,
 					_extraCountHistory.Max() * 1000.0 / SampleRate,
-					scaleFactor,
-					_disableFramerateCompensation ? "*" : "");
+					scaleFactor);
 			}
 
 			return outputSampleCount;
 		}
 
-		private void GetSamplesFromBase(double scaleFactor)
+		private void GetSamplesFromBase(ref double scaleFactor)
 		{
 			short[] samples;
 			int count;
 
 			BaseSoundProvider.GetSamples(out samples, out count);
 
-			if (SamplesPerFrame != _lastSamplesPerFrame)
+			if (AdvertisedSamplesPerFrame != _lastAdvertisedSamplesPerFrame)
 			{
-				_disableFramerateCompensation = false;
+				_baseSamplesPerFrame.Clear();
+				_lastAdvertisedSamplesPerFrame = AdvertisedSamplesPerFrame;
+			}
+			if (count != 0)
+			{
+				UpdateHistory(_baseSamplesPerFrame, count, BaseSampleRateMaxHistoryLength);
 			}
 
-			if (count != 0 && !_disableFramerateCompensation)
+			if (_baseSamplesPerFrame.Count >= BaseSampleRateUsableHistoryLength)
 			{
-				if (_lastBaseProviderSampleCount != 0 && Math.Abs(count - _lastBaseProviderSampleCount) > 10)
+				double baseAverageSamplesPerFrame = _baseSamplesPerFrame.Average();
+				if (baseAverageSamplesPerFrame != 0.0)
 				{
-					_disableFramerateCompensation = true;
+					scaleFactor *= AdvertisedSamplesPerFrame / baseAverageSamplesPerFrame;
 				}
-
-				scaleFactor *= SamplesPerFrame / count;
-
-				_lastBaseProviderSampleCount = count;
 			}
-
-			_lastSamplesPerFrame = SamplesPerFrame;
 
 			double newCountTarget = count * scaleFactor;
 			int newCount = (int)Math.Round(newCountTarget + _resampleLengthRoundingError);
-			// Do not resample for one-sample differences. With NTSC @ 59.94 FPS, for example,
-			// there are ~735.7 samples per frame so the source will oscillate between 735 and
-			// 736 samples. Our calculated number of samples will also oscillate between 735
-			// and 736, but likely out of phase. There's no point resampling to make up for
-			// something that will average out over time, so don't resample for these
-			// differences. We will, however, keep track of them as part of the rounding error
-			// in case they end up not averaging out as expected.
-			if (Math.Abs(newCount - count) > 1)
+			// Due to small inaccuracies and rounding errors, it's pointless to resample by
+			// just a sample or two because those may be fluctuations that will average out
+			// over time. So instead of immediately resampling to cover small differences, we
+			// will just keep track of it as part of the rounding error and only resample later
+			// if a more significant difference accumulates.
+			if (Math.Abs(newCount - count) >= MinResamplingDistanceSamples)
 			{
 				samples = Resample(samples, count, newCount);
 				count = newCount;
@@ -189,10 +187,10 @@ namespace BizHawk.Client.EmuHawk
 			AddSamplesToBuffer(samples, count);
 		}
 
-		private void UpdateHistory<T>(Queue<T> queue, T value)
+		private void UpdateHistory<T>(Queue<T> queue, T value, int maxLength)
 		{
 			queue.Enqueue(value);
-			while (queue.Count > MaxHistoryLength)
+			while (queue.Count > maxLength)
 			{
 				queue.Dequeue();
 			}
