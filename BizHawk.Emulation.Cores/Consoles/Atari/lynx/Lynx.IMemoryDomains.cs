@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
             if (s1 > 0 && p1 != IntPtr.Zero)
                 mms.Add(MemoryDomain.FromIntPtr("Cart B", s1, MemoryDomain.Endian.Little, p1, false));
 
-            _memoryDomains = new MemoryDomainList(mms, 0);
+            _memoryDomains = new MemoryDomainList(mms);
             (ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
         }
 

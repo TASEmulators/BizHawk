@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				mm.Add(cr);
 			}
 
-			_memoryDomains = new MemoryDomainList(mm, 0);
+			_memoryDomains = new MemoryDomainList(mm);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
 		}
 	}
