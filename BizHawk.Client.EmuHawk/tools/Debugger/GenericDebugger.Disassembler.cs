@@ -189,5 +189,10 @@ namespace BizHawk.Client.EmuHawk
 				Clipboard.SetDataObject(blob.ToString());
 			}
 		}
+
+		private void OnPauseChanged(object sender, MainForm.PauseChangedEventArgs e)
+		{
+			FullUpdate();
+		}
 	}
 }

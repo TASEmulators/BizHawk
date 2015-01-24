@@ -54,6 +54,8 @@
 			this.SeekToBtn = new System.Windows.Forms.Button();
 			this.SeekToBox = new BizHawk.Client.EmuHawk.HexTextBox();
 			this.CancelSeekBtn = new System.Windows.Forms.Button();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.RefreshMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.RegistersGroupBox.SuspendLayout();
 			this.BreakpointsGroupBox.SuspendLayout();
@@ -93,7 +95,9 @@
 			this.DebugSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.StepIntoMenuItem,
             this.StepOverMenuItem,
-            this.StepOutMenuItem});
+            this.StepOutMenuItem,
+            this.toolStripSeparator1,
+            this.RefreshMenuItem});
 			this.DebugSubMenu.Name = "DebugSubMenu";
 			this.DebugSubMenu.Size = new System.Drawing.Size(54, 20);
 			this.DebugSubMenu.Text = "&Debug";
@@ -315,6 +319,19 @@
 			this.CancelSeekBtn.UseVisualStyleBackColor = true;
 			this.CancelSeekBtn.Click += new System.EventHandler(this.CancelSeekBtn_Click);
 			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(174, 6);
+			// 
+			// RefreshMenuItem
+			// 
+			this.RefreshMenuItem.Name = "RefreshMenuItem";
+			this.RefreshMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
+			this.RefreshMenuItem.Size = new System.Drawing.Size(177, 22);
+			this.RefreshMenuItem.Text = "Refresh";
+			this.RefreshMenuItem.Click += new System.EventHandler(this.RefreshMenuItem_Click);
+			// 
 			// GenericDebugger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -374,5 +391,7 @@
 		private HexTextBox SeekToBox;
 		private System.Windows.Forms.Button CancelSeekBtn;
 		private System.Windows.Forms.Button ToPCBtn;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripMenuItem RefreshMenuItem;
 	}
 }
