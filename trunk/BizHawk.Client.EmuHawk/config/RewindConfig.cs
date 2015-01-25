@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 				RewindFramesUsedLabel.Text = "N/A";
 			}
 
-
+			RewindSpeedNumeric.Value = Global.Config.RewindSpeedMultiplier;
 			DiskBufferCheckbox.Checked = Global.Config.Rewind_OnDisk;
 			RewindIsThreadedCheckbox.Checked = Global.Config.Rewind_IsThreaded;
 			_stateSize = Global.Emulator.AsStatable().SaveStateBinary().Length;
@@ -148,6 +148,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.RewindEnabledMedium = MediumStateEnabledBox.Checked;
 			Global.Config.RewindEnabledLarge = LargeStateEnabledBox.Checked;
 			Global.Rewinder.DoRewindSettings();
+			Global.Config.RewindSpeedMultiplier = (int)RewindSpeedNumeric.Value;
 			Global.Config.Rewind_UseDelta = UseDeltaCompression.Checked;
 			Global.Config.Rewind_MediumStateSize = (int)(MediumStateUpDown.Value * 1024);
 			Global.Config.Rewind_LargeStateSize = (int)(LargeStateUpDown.Value * 1024);
