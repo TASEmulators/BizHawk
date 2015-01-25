@@ -157,7 +157,7 @@ namespace BizHawk.Client.Common
 
 		// Savestate settings
 		public SaveStateTypeE SaveStateType = SaveStateTypeE.Default;
-		public const int DefaultSaveStateCompressionLevelNormal = 5;
+		public const int DefaultSaveStateCompressionLevelNormal = 0;
 		public int SaveStateCompressionLevelNormal = DefaultSaveStateCompressionLevelNormal;
 		public const int DefaultSaveStateCompressionLevelRewind = 0;//this isnt actually used yet 
 		public int SaveStateCompressionLevelRewind = DefaultSaveStateCompressionLevelRewind;//this isnt actually used yet 
