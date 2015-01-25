@@ -228,6 +228,7 @@ namespace BizHawk.Client.Common
 		public int SoundVolume = 100; // Range 0-100
 		public bool SoundThrottle = false;
 		public string SoundDevice = "";
+		public int SoundBufferSizeMs = 100;
 		public bool UseNewOutputBuffer = false;
 
 		// Log Window

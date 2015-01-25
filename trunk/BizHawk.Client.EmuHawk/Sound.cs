@@ -43,18 +43,14 @@ namespace BizHawk.Client.EmuHawk
 		private const int BytesPerSample = 2;
 		private const int ChannelCount = 2;
 		private const int BlockAlign = BytesPerSample * ChannelCount;
-		private const int BufferSizeMilliseconds = 100;
-		private const int BufferSizeSamples = SampleRate * BufferSizeMilliseconds / 1000;
-		private const int BufferSizeBytes = BufferSizeSamples * BlockAlign;
-		private const double BufferSizeSeconds = (double)(BufferSizeBytes / BlockAlign) / SampleRate;
-		private const int MinBufferFullnessMilliseconds = 55;
-		private const int MinBufferFullnessSamples = SampleRate * MinBufferFullnessMilliseconds / 1000;
+		private const int MinBufferFullnessSamples = 55 * SampleRate / 1000;
 
 		private bool _muted;
 		private bool _disposed;
+		private DirectSound _device;
 		private SecondarySoundBuffer _deviceBuffer;
 		private readonly BufferedAsync _semiSync = new BufferedAsync();
-		private readonly SoundOutputProvider _outputProvider = new SoundOutputProvider();
+		private SoundOutputProvider _outputProvider;
 		private ISoundProvider _asyncSoundProvider;
 		private ISyncSoundProvider _syncSoundProvider;
 		private int _actualWriteOffsetBytes = -1;
@@ -67,6 +63,24 @@ namespace BizHawk.Client.EmuHawk
 			if (device == null) return;
 
 			device.SetCooperativeLevel(handle, CooperativeLevel.Priority);
+			_device = device;
+		}
+
+		private int BufferSizeMilliseconds { get; set; }
+
+		private int BufferSizeSamples
+		{
+			get { return SampleRate * BufferSizeMilliseconds / 1000; }
+		}
+
+		private int BufferSizeBytes
+		{
+			get { return BufferSizeSamples * BlockAlign; }
+		}
+
+		private void CreateDeviceBuffer()
+		{
+			BufferSizeMilliseconds = Global.Config.SoundBufferSizeMs;
 
 			var format = new WaveFormat
 				{
@@ -81,25 +95,31 @@ namespace BizHawk.Client.EmuHawk
 			var desc = new SoundBufferDescription
 				{
 					Format = format,
-					Flags =
-						BufferFlags.GlobalFocus | BufferFlags.Software | BufferFlags.GetCurrentPosition2 | BufferFlags.ControlVolume,
+					Flags = BufferFlags.GlobalFocus | BufferFlags.Software | BufferFlags.GetCurrentPosition2 | BufferFlags.ControlVolume,
 					SizeInBytes = BufferSizeBytes
 				};
 
-			_deviceBuffer = new SecondarySoundBuffer(device, desc);
+			_deviceBuffer = new SecondarySoundBuffer(_device, desc);
+		}
 
-			ChangeVolume(Global.Config.SoundVolume);
+		public void ApplyVolumeSettings()
+		{
+			if (_deviceBuffer == null) return;
 
-			//LogUnderruns = true;
-			//_outputProvider.LogDebug = true;
+			if (Global.Config.SoundVolume == 0)
+				_deviceBuffer.Volume = -5000;
+			else
+				_deviceBuffer.Volume = 0 - ((100 - Global.Config.SoundVolume) * 45);
 		}
 
 		public void StartSound()
 		{
 			if (_disposed) throw new ObjectDisposedException("Sound");
-			if (Global.Config.SoundEnabled == false) return;
-			if (_deviceBuffer == null) return;
-			if (IsPlaying) return;
+			if (!Global.Config.SoundEnabled) return;
+			if (_deviceBuffer != null) return;
+
+			CreateDeviceBuffer();
+			ApplyVolumeSettings();
 
 			_deviceBuffer.Write(new byte[BufferSizeBytes], 0, LockFlags.EntireBuffer);
 			_deviceBuffer.CurrentPlayPosition = 0;
@@ -109,34 +129,33 @@ namespace BizHawk.Client.EmuHawk
 			_filledBufferSizeBytes = 0;
 			_lastWriteTime = 0;
 			_lastWriteCursor = 0;
-		}
 
-		bool IsPlaying
-		{
-			get
-			{
-				if (_deviceBuffer == null) return false;
-				if ((_deviceBuffer.Status & BufferStatus.Playing) != 0) return true;
-				return false;
-			}
+			_outputProvider = new SoundOutputProvider();
+			_outputProvider.HardCorrectionThresholdSamples = BufferSizeSamples - MinBufferFullnessSamples;
+			_outputProvider.BaseSoundProvider = _syncSoundProvider;
+
+			//LogUnderruns = true;
+			//_outputProvider.LogDebug = true;
 		}
 
 		public void StopSound()
 		{
-			if (!IsPlaying) return;
+			if (_deviceBuffer == null) return;
 
 			_deviceBuffer.Write(new byte[BufferSizeBytes], 0, LockFlags.EntireBuffer);
 			_deviceBuffer.Stop();
+			_deviceBuffer.Dispose();
+			_deviceBuffer = null;
+
+			_outputProvider = null;
+
+			BufferSizeMilliseconds = 0;
 		}
 
 		public void Dispose()
 		{
 			if (_disposed) return;
-			if (_deviceBuffer != null && _deviceBuffer.Disposed == false)
-			{
-				_deviceBuffer.Dispose();
-				_deviceBuffer = null;
-			}
+			StopSound();
 			_disposed = true;
 		}
 
@@ -150,7 +169,10 @@ namespace BizHawk.Client.EmuHawk
 			_semiSync.DiscardSamples();
 			_semiSync.BaseSoundProvider = null;
 			_syncSoundProvider = source;
-			_outputProvider.BaseSoundProvider = source;
+			if (_outputProvider != null)
+			{
+				_outputProvider.BaseSoundProvider = source;
+			}
 		}
 
 		public void SetAsyncInputPin(ISoundProvider source)
@@ -160,21 +182,29 @@ namespace BizHawk.Client.EmuHawk
 				_syncSoundProvider.DiscardSamples();
 				_syncSoundProvider = null;
 			}
-			_outputProvider.DiscardSamples();
-			_outputProvider.BaseSoundProvider = null;
+			if (_outputProvider != null)
+			{
+				_outputProvider.DiscardSamples();
+				_outputProvider.BaseSoundProvider = null;
+			}
 			_asyncSoundProvider = source;
 			_semiSync.BaseSoundProvider = source;
 			_semiSync.RecalculateMagic(Global.CoreComm.VsyncRate);
 		}
 
-		public bool InitializeBufferWithSilence
+		private bool InitializeBufferWithSilence
 		{
-			get { return Global.Config.SoundThrottle; }
+			get { return true; }
 		}
 
-		public bool RecoverFromUnderrunsWithSilence
+		private bool RecoverFromUnderrunsWithSilence
 		{
-			get { return Global.Config.SoundThrottle; }
+			get { return true; }
+		}
+
+		private int SilenceLeaveRoomForFrameCount
+		{
+			get { return Global.Config.SoundThrottle ? 1 : 2; } // Why 2? I don't know, but it seems to work well with the clock throttle's behavior.
 		}
 
 		public bool LogUnderruns { get; set; }
@@ -188,8 +218,9 @@ namespace BizHawk.Client.EmuHawk
 			if (_actualWriteOffsetBytes != -1)
 			{
 				double elapsedSeconds = (currentWriteTime - _lastWriteTime) / (double)Stopwatch.Frequency;
+				double bufferSizeSeconds = (double)BufferSizeSamples / SampleRate;
 				int cursorDelta = CircularDistance(_lastWriteCursor, writeCursor, BufferSizeBytes);
-				cursorDelta += BufferSizeBytes * (int)Math.Round((elapsedSeconds - (cursorDelta / (double)(SampleRate * BlockAlign))) / BufferSizeSeconds);
+				cursorDelta += BufferSizeBytes * (int)Math.Round((elapsedSeconds - (cursorDelta / (double)(SampleRate * BlockAlign))) / bufferSizeSeconds);
 				_filledBufferSizeBytes -= cursorDelta;
 				if (_filledBufferSizeBytes < 0)
 				{
@@ -206,9 +237,8 @@ namespace BizHawk.Client.EmuHawk
 			int samplesNeeded = CircularDistance(_actualWriteOffsetBytes, playCursor, BufferSizeBytes) / BlockAlign;
 			if ((isInitializing && InitializeBufferWithSilence) || (detectedUnderrun && RecoverFromUnderrunsWithSilence))
 			{
-				// Fill the buffer with silence but leave enough empty for one frame's audio
 				int samplesPerFrame = (int)Math.Round(SampleRate / Global.Emulator.CoreComm.VsyncRate);
-				int silenceSamples = Math.Max(samplesNeeded - samplesPerFrame, 0);
+				int silenceSamples = Math.Max(samplesNeeded - (SilenceLeaveRoomForFrameCount * samplesPerFrame), 0);
 				WriteSamples(new short[silenceSamples * 2], silenceSamples);
 				samplesNeeded -= silenceSamples;
 			}
@@ -244,7 +274,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateSound()
 		{
-			if (Global.Config.SoundEnabled == false || _disposed)
+			if (!Global.Config.SoundEnabled || _deviceBuffer == null || _disposed)
 			{
 				if (_asyncSoundProvider != null) _asyncSoundProvider.DiscardSamples();
 				if (_syncSoundProvider != null) _syncSoundProvider.DiscardSamples();
@@ -281,7 +311,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					samples = new short[samplesNeeded * ChannelCount];
 
-					samplesProvided = _outputProvider.GetSamples(samples, samplesNeeded, samplesNeeded - (BufferSizeSamples - MinBufferFullnessSamples));
+					samplesProvided = _outputProvider.GetSamples(samples, samplesNeeded);
 				}
 			}
 			else if (_asyncSoundProvider != null)
@@ -296,31 +326,6 @@ namespace BizHawk.Client.EmuHawk
 				return;
 
 			WriteSamples(samples, samplesProvided);
-		}
-
-		/// <summary>
-		/// Range: 0-100
-		/// </summary>
-		/// <param name="vol"></param>
-		public void ChangeVolume(int vol)
-		{
-			if (vol > 100)
-				vol = 100;
-			if (vol < 0)
-				vol = 0;
-			Global.Config.SoundVolume = vol;
-			UpdateSoundSettings();
-		}
-
-		/// <summary>
-		/// Uses Global.Config.SoundEnabled, this just notifies the object to read it
-		/// </summary>
-		public void UpdateSoundSettings()
-		{
-			if (!Global.Config.SoundEnabled || Global.Config.SoundVolume == 0)
-				_deviceBuffer.Volume = -5000;
-			else
-				_deviceBuffer.Volume = 0 - ((100 - Global.Config.SoundVolume) * 45);
 		}
 	}
 #else
