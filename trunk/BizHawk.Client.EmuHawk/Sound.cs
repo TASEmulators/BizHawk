@@ -100,10 +100,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_deviceBuffer == null) return;
 
-			if (Global.Config.SoundVolume == 0)
-				_deviceBuffer.Volume = -5000;
-			else
-				_deviceBuffer.Volume = 0 - ((100 - Global.Config.SoundVolume) * 45);
+			_deviceBuffer.Volume = Global.Config.SoundVolume == 0 ? -10000 : ((100 - Global.Config.SoundVolume) * -45);
 		}
 
 		public void StartSound()
@@ -321,7 +318,9 @@ namespace BizHawk.Client.EmuHawk
 				samplesProvided = samplesNeeded;
 			}
 			else
+			{
 				return;
+			}
 
 			WriteSamples(samples, samplesProvided);
 		}
