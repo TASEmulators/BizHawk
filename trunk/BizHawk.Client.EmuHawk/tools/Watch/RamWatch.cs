@@ -687,10 +687,10 @@ namespace BizHawk.Client.EmuHawk
 				RemoveWatchMenuItem.Enabled =
 				MoveUpMenuItem.Enabled =
 				MoveDownMenuItem.Enabled =
-				FreezeAddressMenuItem.Enabled =
 				SelectedIndices.Any();
 
 			PokeAddressMenuItem.Enabled =
+				FreezeAddressMenuItem.Enabled =
 				SelectedIndices.Any() &&
 				SelectedWatches.All(w => w.Domain.CanPoke());
 
@@ -1012,6 +1012,7 @@ namespace BizHawk.Client.EmuHawk
 				indexes.Count > 0;
 
 			PokeContextMenuItem.Enabled =
+				FreezeContextMenuItem.Visible =
 				SelectedIndices.Any() &&
 				SelectedWatches.All(w => w.Domain.CanPoke());
 

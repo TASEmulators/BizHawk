@@ -1173,10 +1173,10 @@ namespace BizHawk.Client.EmuHawk
 
 			RemoveMenuItem.Enabled =
 				AddToRamWatchMenuItem.Enabled =
-				FreezeAddressMenuItem.Enabled =
 				SelectedIndices.Any();
 
 			PokeAddressMenuItem.Enabled =
+				FreezeAddressMenuItem.Enabled =
 				SelectedIndices.Any() &&
 				SelectedWatches.All(w => w.Domain.CanPoke());
 
@@ -1388,6 +1388,7 @@ namespace BizHawk.Client.EmuHawk
 				SelectedIndices.Any();
 
 			PokeContextMenuItem.Enabled =
+				FreezeContextMenuItem.Visible =
 				SelectedIndices.Any() &&
 				SelectedWatches.All(w => w.Domain.CanPoke());
 
