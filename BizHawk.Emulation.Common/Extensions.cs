@@ -163,6 +163,27 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return (IDisassemblable)core.ServiceProvider.GetService<IDisassemblable>();
 		}
 
+		public static bool CanPoke(this MemoryDomain d)
+		{
+			if (d.PokeByte == null)
+			{
+				return false;
+			}
+			
+			try
+			{
+				d.PokeByte(0, d.PeekByte(0));
+			}
+			catch (NotImplementedException)
+			{
+				return false;
+			}
+
+			return true;
+
+
+		}
+
 		// TODO: a better place for these
 		public static bool IsImplemented(this MethodInfo info)
 		{

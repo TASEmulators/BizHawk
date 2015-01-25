@@ -52,7 +52,13 @@ namespace BizHawk.Emulation.Common
 				delegate(long addr, byte val)
 				{
 					if (writable)
+					{
 						data[addr] = val;
+					}
+					else
+					{
+						throw new NotImplementedException();
+					}
 				}
 			);
 		}
