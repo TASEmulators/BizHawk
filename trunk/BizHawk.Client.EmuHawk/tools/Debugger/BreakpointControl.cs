@@ -150,6 +150,11 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 				MaxAddressSize = Global.Emulator.AsMemoryDomains().SystemBus.Size - 1
 			};
 
+			if (!MCS.ExecuteCallbacksAvailable)
+			{
+				b.DisableExecuteOption();
+			}
+
 			if (b.ShowHawkDialog() == DialogResult.OK)
 			{
 				Breakpoints.Add(Core, b.Address, b.BreakType);

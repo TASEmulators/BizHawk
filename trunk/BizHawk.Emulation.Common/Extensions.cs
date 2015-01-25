@@ -136,7 +136,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			{
 				try
 				{
-					var tracer = debuggable.MemoryCallbacks;
+					var callbacks = debuggable.MemoryCallbacks;
 					return true;
 				}
 				catch (NotImplementedException)
@@ -146,6 +146,24 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			}
 
 			return false;
+		}
+
+		public static bool MemoryCallbacksAvailable(this IDebuggable core)
+		{
+			if (core == null)
+			{
+				return false;
+			}
+
+			try
+			{
+				var callbacks = core.MemoryCallbacks;
+				return true;
+			}
+			catch (NotImplementedException)
+			{
+				return false;
+			}
 		}
 
 		public static bool CanDisassemble(this IEmulator core)

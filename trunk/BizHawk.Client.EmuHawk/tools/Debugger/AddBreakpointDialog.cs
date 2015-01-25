@@ -18,6 +18,17 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
+		public void DisableExecuteOption()
+		{
+			if (ExecuteRadio.Checked)
+			{
+				ReadRadio.Checked = true;
+			}
+
+			ExecuteRadio.Enabled = false;
+			
+		}
+
 		public MemoryCallbackType BreakType
 		{
 			get

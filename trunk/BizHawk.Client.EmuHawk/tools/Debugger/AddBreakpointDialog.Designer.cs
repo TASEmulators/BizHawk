@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.AddButton = new System.Windows.Forms.Button();
 			this.BreakpointTypeGroupbox = new System.Windows.Forms.GroupBox();
 			this.ExecuteRadio = new System.Windows.Forms.RadioButton();
@@ -35,6 +36,7 @@
 			this.ReadRadio = new System.Windows.Forms.RadioButton();
 			this.AddressBox = new BizHawk.Client.EmuHawk.HexTextBox();
 			this.label1 = new System.Windows.Forms.Label();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.BreakpointTypeGroupbox.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -144,5 +146,6 @@
 		private System.Windows.Forms.RadioButton ReadRadio;
 		private HexTextBox AddressBox;
 		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.ToolTip toolTip1;
 	}
 }
