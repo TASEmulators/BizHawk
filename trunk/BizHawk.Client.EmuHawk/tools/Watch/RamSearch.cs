@@ -425,8 +425,14 @@ namespace BizHawk.Client.EmuHawk
 			DoSearchToolButton.Enabled =
 				CopyValueToPrevToolBarItem.Enabled =
 				_searches.Count > 0;
+			
 			UpdateUndoToolBarButtons();
 			OutOfRangeCheck();
+
+			PokeAddressToolBarItem.Enabled =
+				FreezeAddressToolBarItem.Enabled =
+				SelectedIndices.Any() &&
+				_searches.Domain.CanPoke();
 		}
 
 		private int? CompareToValue
@@ -1690,9 +1696,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RemoveToolBarItem.Enabled =
 				AddToRamWatchToolBarItem.Enabled =
-				PokeAddressToolBarItem.Enabled =
-				FreezeAddressToolBarItem.Enabled =
 				SelectedIndices.Any();
+
+			PokeAddressToolBarItem.Enabled =
+				FreezeAddressToolBarItem.Enabled =
+				SelectedIndices.Any() &&
+				_searches.Domain.CanPoke();
 		}
 
 		private void WatchListView_Enter(object sender, EventArgs e)
