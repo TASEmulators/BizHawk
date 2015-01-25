@@ -8,6 +8,11 @@ namespace BizHawk.Emulation.Common
 {
 	public class MemoryCallbackSystem : IMemoryCallbackSystem
 	{
+		public MemoryCallbackSystem()
+		{
+			ExecuteCallbacksAvailable = true;
+		}
+
 		private readonly List<IMemoryCallback> Reads = new List<IMemoryCallback>();
 		private readonly List<IMemoryCallback> Writes = new List<IMemoryCallback>();
 		private readonly List<IMemoryCallback> Execs = new List<IMemoryCallback>();
@@ -17,6 +22,8 @@ namespace BizHawk.Emulation.Common
 		private bool _hasReads = false;
 		private bool _hasWrites = false;
 		private bool _hasExecutes = false;
+
+		public bool ExecuteCallbacksAvailable { get; set; }
 
 		public void Add(IMemoryCallback callback)
 		{
