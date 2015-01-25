@@ -1111,8 +1111,19 @@ EXPORT void CALL GetRegisters(unsigned char * dest)
 {
 	memcpy(dest, reg, 8 * 32);
 	dest += 8 * 32;
-	memcpy(dest, &(PC->addr), 4);
+
+	if (PC != NULL)
+	{
+		memcpy(dest, &(PC->addr), 4);
+	}
+	else
+	{
+		char stupid[] = "0000";
+		memcpy(dest, stupid, 4);
+	}
+
 	dest += 4;
+
 	memcpy(dest, &llbit, 4);
 	dest += 4;
 	memcpy(dest, &lo, 8);
