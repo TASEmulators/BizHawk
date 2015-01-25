@@ -98,6 +98,9 @@
 			this.label16 = new System.Windows.Forms.Label();
 			this.BackupSavestatesCheckbox = new System.Windows.Forms.CheckBox();
 			this.label12 = new System.Windows.Forms.Label();
+			this.label18 = new System.Windows.Forms.Label();
+			this.RewindSpeedNumeric = new System.Windows.Forms.NumericUpDown();
+			this.label19 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.LargeSavestateNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.MediumSavestateNumeric)).BeginInit();
@@ -115,12 +118,13 @@
 			((System.ComponentModel.ISupportInitialize)(this.nudCompression)).BeginInit();
 			this.groupBox7.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.BigScreenshotNumeric)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.RewindSpeedNumeric)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(575, 437);
+			this.OK.Location = new System.Drawing.Point(575, 470);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 0;
@@ -132,7 +136,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(656, 437);
+			this.Cancel.Location = new System.Drawing.Point(656, 470);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 1;
@@ -360,10 +364,10 @@
 			// UseDeltaCompression
 			// 
 			this.UseDeltaCompression.AutoSize = true;
-			this.UseDeltaCompression.Location = new System.Drawing.Point(16, 59);
+			this.UseDeltaCompression.Location = new System.Drawing.Point(16, 89);
 			this.UseDeltaCompression.Name = "UseDeltaCompression";
 			this.UseDeltaCompression.Size = new System.Drawing.Size(332, 17);
-			this.UseDeltaCompression.TabIndex = 4;
+			this.UseDeltaCompression.TabIndex = 5;
 			this.UseDeltaCompression.Text = "Use delta compression (economizes buffer usage at cost of CPU)";
 			this.UseDeltaCompression.UseVisualStyleBackColor = true;
 			this.UseDeltaCompression.CheckedChanged += new System.EventHandler(this.UseDeltaCompression_CheckedChanged);
@@ -393,7 +397,7 @@
 			this.MediumStateTrackbar.Maximum = 4096;
 			this.MediumStateTrackbar.Minimum = 1;
 			this.MediumStateTrackbar.Name = "MediumStateTrackbar";
-			this.MediumStateTrackbar.Size = new System.Drawing.Size(186, 42);
+			this.MediumStateTrackbar.Size = new System.Drawing.Size(186, 45);
 			this.MediumStateTrackbar.TabIndex = 7;
 			this.MediumStateTrackbar.TickFrequency = 256;
 			this.MediumStateTrackbar.Value = 1;
@@ -409,7 +413,7 @@
 			this.groupBox2.Controls.Add(this.MediumStateSizeLabel);
 			this.groupBox2.Controls.Add(this.label2);
 			this.groupBox2.Controls.Add(this.MediumStateTrackbar);
-			this.groupBox2.Location = new System.Drawing.Point(12, 356);
+			this.groupBox2.Location = new System.Drawing.Point(12, 387);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(371, 105);
 			this.groupBox2.TabIndex = 8;
@@ -487,7 +491,7 @@
 			this.LargeStateTrackbar.Maximum = 16384;
 			this.LargeStateTrackbar.Minimum = 256;
 			this.LargeStateTrackbar.Name = "LargeStateTrackbar";
-			this.LargeStateTrackbar.Size = new System.Drawing.Size(186, 42);
+			this.LargeStateTrackbar.Size = new System.Drawing.Size(186, 45);
 			this.LargeStateTrackbar.TabIndex = 10;
 			this.LargeStateTrackbar.TickFrequency = 1024;
 			this.LargeStateTrackbar.Value = 256;
@@ -513,6 +517,9 @@
 			// 
 			// groupBox3
 			// 
+			this.groupBox3.Controls.Add(this.label19);
+			this.groupBox3.Controls.Add(this.RewindSpeedNumeric);
+			this.groupBox3.Controls.Add(this.label18);
 			this.groupBox3.Controls.Add(this.label17);
 			this.groupBox3.Controls.Add(this.RewindIsThreadedCheckbox);
 			this.groupBox3.Controls.Add(this.label4);
@@ -522,7 +529,7 @@
 			this.groupBox3.Controls.Add(this.UseDeltaCompression);
 			this.groupBox3.Location = new System.Drawing.Point(12, 214);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(371, 136);
+			this.groupBox3.Size = new System.Drawing.Size(371, 167);
 			this.groupBox3.TabIndex = 9;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Rewind Options";
@@ -530,19 +537,19 @@
 			// label17
 			// 
 			this.label17.AutoSize = true;
-			this.label17.Location = new System.Drawing.Point(6, 19);
+			this.label17.Location = new System.Drawing.Point(6, 47);
 			this.label17.Name = "label17";
 			this.label17.Size = new System.Drawing.Size(278, 13);
-			this.label17.TabIndex = 32;
+			this.label17.TabIndex = 3;
 			this.label17.Text = "These options affect rewind performance in various ways:";
 			// 
 			// RewindIsThreadedCheckbox
 			// 
 			this.RewindIsThreadedCheckbox.AutoSize = true;
-			this.RewindIsThreadedCheckbox.Location = new System.Drawing.Point(16, 82);
+			this.RewindIsThreadedCheckbox.Location = new System.Drawing.Point(16, 112);
 			this.RewindIsThreadedCheckbox.Name = "RewindIsThreadedCheckbox";
 			this.RewindIsThreadedCheckbox.Size = new System.Drawing.Size(151, 17);
-			this.RewindIsThreadedCheckbox.TabIndex = 17;
+			this.RewindIsThreadedCheckbox.TabIndex = 6;
 			this.RewindIsThreadedCheckbox.Text = "Use additional CPU thread";
 			this.toolTip1.SetToolTip(this.RewindIsThreadedCheckbox, "This doesn\'t always speed things up... that\'s why it\'s an option.");
 			this.RewindIsThreadedCheckbox.UseVisualStyleBackColor = true;
@@ -550,15 +557,15 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(140, 106);
+			this.label4.Location = new System.Drawing.Point(149, 137);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(23, 13);
-			this.label4.TabIndex = 16;
+			this.label4.TabIndex = 9;
 			this.label4.Text = "MB";
 			// 
 			// BufferSizeUpDown
 			// 
-			this.BufferSizeUpDown.Location = new System.Drawing.Point(85, 102);
+			this.BufferSizeUpDown.Location = new System.Drawing.Point(93, 135);
 			this.BufferSizeUpDown.Maximum = new decimal(new int[] {
             32768,
             0,
@@ -571,7 +578,7 @@
             0});
 			this.BufferSizeUpDown.Name = "BufferSizeUpDown";
 			this.BufferSizeUpDown.Size = new System.Drawing.Size(52, 20);
-			this.BufferSizeUpDown.TabIndex = 15;
+			this.BufferSizeUpDown.TabIndex = 8;
 			this.BufferSizeUpDown.Value = new decimal(new int[] {
             1,
             0,
@@ -582,19 +589,19 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(6, 106);
+			this.label3.Location = new System.Drawing.Point(6, 137);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(81, 13);
-			this.label3.TabIndex = 6;
+			this.label3.TabIndex = 7;
 			this.label3.Text = "Max buffer size:";
 			// 
 			// DiskBufferCheckbox
 			// 
 			this.DiskBufferCheckbox.AutoSize = true;
-			this.DiskBufferCheckbox.Location = new System.Drawing.Point(16, 37);
+			this.DiskBufferCheckbox.Location = new System.Drawing.Point(16, 67);
 			this.DiskBufferCheckbox.Name = "DiskBufferCheckbox";
 			this.DiskBufferCheckbox.Size = new System.Drawing.Size(188, 17);
-			this.DiskBufferCheckbox.TabIndex = 5;
+			this.DiskBufferCheckbox.TabIndex = 4;
 			this.DiskBufferCheckbox.Text = "Use disk for buffer instead of RAM";
 			this.toolTip1.SetToolTip(this.DiskBufferCheckbox, "To support a longer rewind buffer, you can choose to have it stored on your disk." +
         " Where, precisely? Not sure. Probably %TEMP%");
@@ -774,7 +781,7 @@
 			this.trackBarCompression.Location = new System.Drawing.Point(22, 37);
 			this.trackBarCompression.Maximum = 9;
 			this.trackBarCompression.Name = "trackBarCompression";
-			this.trackBarCompression.Size = new System.Drawing.Size(157, 42);
+			this.trackBarCompression.Size = new System.Drawing.Size(157, 45);
 			this.trackBarCompression.TabIndex = 20;
 			this.toolTip1.SetToolTip(this.trackBarCompression, "0 = None; 9 = Maximum");
 			this.trackBarCompression.Value = 1;
@@ -824,7 +831,7 @@
 			// KbLabel
 			// 
 			this.KbLabel.AutoSize = true;
-			this.KbLabel.Location = new System.Drawing.Point(252, 223);
+			this.KbLabel.Location = new System.Drawing.Point(254, 223);
 			this.KbLabel.Name = "KbLabel";
 			this.KbLabel.Size = new System.Drawing.Size(21, 13);
 			this.KbLabel.TabIndex = 33;
@@ -928,13 +935,53 @@
 			this.label12.TabIndex = 24;
 			this.label12.Text = "Compression Level";
 			// 
+			// label18
+			// 
+			this.label18.AutoSize = true;
+			this.label18.Location = new System.Drawing.Point(6, 21);
+			this.label18.Name = "label18";
+			this.label18.Size = new System.Drawing.Size(78, 13);
+			this.label18.TabIndex = 0;
+			this.label18.Text = "Rewind speed:";
+			// 
+			// RewindSpeedNumeric
+			// 
+			this.RewindSpeedNumeric.Location = new System.Drawing.Point(90, 19);
+			this.RewindSpeedNumeric.Maximum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+			this.RewindSpeedNumeric.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.RewindSpeedNumeric.Name = "RewindSpeedNumeric";
+			this.RewindSpeedNumeric.Size = new System.Drawing.Size(36, 20);
+			this.RewindSpeedNumeric.TabIndex = 1;
+			this.RewindSpeedNumeric.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			// 
+			// label19
+			// 
+			this.label19.AutoSize = true;
+			this.label19.Location = new System.Drawing.Point(128, 21);
+			this.label19.Name = "label19";
+			this.label19.Size = new System.Drawing.Size(12, 13);
+			this.label19.TabIndex = 2;
+			this.label19.Text = "x";
+			// 
 			// RewindConfig
 			// 
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(741, 472);
+			this.ClientSize = new System.Drawing.Size(741, 505);
 			this.Controls.Add(this.groupBox7);
 			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.groupBox3);
@@ -973,6 +1020,7 @@
 			this.groupBox7.ResumeLayout(false);
 			this.groupBox7.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.BigScreenshotNumeric)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.RewindSpeedNumeric)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -1047,5 +1095,8 @@
 				private System.Windows.Forms.Label label15;
 				private System.Windows.Forms.Label label16;
 				private System.Windows.Forms.CheckBox BackupSavestatesCheckbox;
+				private System.Windows.Forms.Label label19;
+				private System.Windows.Forms.NumericUpDown RewindSpeedNumeric;
+				private System.Windows.Forms.Label label18;
 	}
 }

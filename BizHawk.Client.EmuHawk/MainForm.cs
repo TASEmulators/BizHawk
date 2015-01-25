@@ -1686,28 +1686,33 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-
 		private void SyncThrottle()
 		{
-			//TODO - did we change 'unthrottled' nomenclature to turbo? is turbo defined as 'temporarily disable throttle entirely'?
+			// "unthrottled" = throttle was turned off with "Toggle Throttle" hotkey
+			// "turbo" = throttle is off due to the "Turbo" hotkey being held
+			// They are basically the same thing but one is a toggle and the other requires a
+			// hotkey to be held. There is however slightly different behavior in that turbo
+			// skips outputting the audio. There's also a third way which is when no throttle
+			// method is selected, but the clock throttle determines that by itself and
+			// everything appears normal here.
 
 			var rewind = Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind);
 			var fastForward = Global.ClientControls["Fast Forward"] || FastForward;
-			var superFastForward = IsTurboing;
+			var turbo = IsTurboing;
 
 			int speedPercent = fastForward ? Global.Config.SpeedPercentAlternate : Global.Config.SpeedPercent;
 
 			if (rewind)
 			{
-				speedPercent = Math.Max(speedPercent / Global.Rewinder.RewindFrequency, 5);
+				speedPercent = Math.Max(speedPercent * Global.Config.RewindSpeedMultiplier / Global.Rewinder.RewindFrequency, 5);
 			}
 
-			Global.DisableSecondaryThrottling = _unthrottled || fastForward || superFastForward || rewind;
+			Global.DisableSecondaryThrottling = _unthrottled || turbo || fastForward || rewind;
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
 			_throttle.SetCoreFps(Global.Emulator.CoreComm.VsyncRate);
 			_throttle.signal_paused = EmulatorPaused;
-			_throttle.signal_unthrottle = _unthrottled || superFastForward;
+			_throttle.signal_unthrottle = _unthrottled || turbo;
 			_throttle.signal_overrideSecondaryThrottle = (fastForward || rewind) && (Global.Config.SoundThrottle || Global.Config.VSyncThrottle || Global.Config.VSync);
 			_throttle.SetSpeedPercent(speedPercent);
 		}
