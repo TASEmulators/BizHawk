@@ -37,9 +37,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				domains.Add(BatteryRam);
 			}
 
-			var PRGROM = new MemoryDomain("PRG ROM", cart.prg_size * 1024, MemoryDomain.Endian.Little,
-				addr => Board.ROM[addr], (addr, value) => Board.ROM[addr] = value);
-			domains.Add(PRGROM);
+			if (Board.ROM != null)
+			{
+				var PRGROM = new MemoryDomain("PRG ROM", cart.prg_size * 1024, MemoryDomain.Endian.Little,
+					addr => Board.ROM[addr], (addr, value) => Board.ROM[addr] = value);
+				domains.Add(PRGROM);
+			}
 
 			if (Board.VROM != null)
 			{
