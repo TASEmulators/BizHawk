@@ -86,8 +86,32 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 		{
 			if (Enabled)
 			{
+				CheckForNewBreakpoints();
+
 				BreakpointView.ItemCount = Breakpoints.Count;
 				UpdateStatsLabel();
+			}
+		}
+
+		/// <summary>
+		/// Did any breakpoints get added from other sources such as lua?
+		/// </summary>
+		private void CheckForNewBreakpoints()
+		{
+			if (MCS != null)
+			{
+				foreach (var callback in MCS)
+				{
+					if (!Breakpoints.Any(b => 
+						b.Type == callback.Type &&
+						b.Address == callback.Address &&
+						b.Name == callback.Name &&
+						b.Callback == callback.Callback
+						))
+					{
+						Breakpoints.Add(new Breakpoint(Core, callback));
+					}
+				}
 			}
 		}
 
