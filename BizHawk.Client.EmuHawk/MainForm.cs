@@ -2093,6 +2093,13 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.DisplayInput ^= true;
 		}
 
+		public static void ToggleSound()
+		{
+			Global.Config.SoundEnabled ^= true;
+			GlobalWin.Sound.StopSound();
+			GlobalWin.Sound.StartSound();
+		}
+
 		private static void VolumeUp()
 		{
 			Global.Config.SoundVolume += 10;
@@ -2101,15 +2108,8 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.SoundVolume = 100;
 			}
 
-			GlobalWin.Sound.ChangeVolume(Global.Config.SoundVolume);
+			GlobalWin.Sound.ApplyVolumeSettings();
 			GlobalWin.OSD.AddMessage("Volume " + Global.Config.SoundVolume);
-		}
-
-		public static void ToggleSound()
-		{
-			Global.Config.SoundEnabled ^= true;
-			GlobalWin.Sound.UpdateSoundSettings();
-			GlobalWin.Sound.StartSound();
 		}
 
 		private static void VolumeDown()
@@ -2120,7 +2120,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.SoundVolume = 0;
 			}
 
-			GlobalWin.Sound.ChangeVolume(Global.Config.SoundVolume);
+			GlobalWin.Sound.ApplyVolumeSettings();
 			GlobalWin.OSD.AddMessage("Volume " + Global.Config.SoundVolume);
 		}
 

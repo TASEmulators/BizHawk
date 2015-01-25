@@ -37,17 +37,21 @@
 			this.SoundVolNumeric = new System.Windows.Forms.NumericUpDown();
 			this.UseNewOutputBuffer = new System.Windows.Forms.CheckBox();
 			this.listBoxSoundDevices = new System.Windows.Forms.ListBox();
-			this.label1 = new System.Windows.Forms.Label();
+			this.SoundDeviceLabel = new System.Windows.Forms.Label();
+			this.BufferSizeLabel = new System.Windows.Forms.Label();
+			this.BufferSizeNumeric = new System.Windows.Forms.NumericUpDown();
+			this.BufferSizeUnitsLabel = new System.Windows.Forms.Label();
 			this.SoundVolGroup.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.SoundVolBar)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.SoundVolNumeric)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.BufferSizeNumeric)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// Cancel
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(317, 209);
+			this.Cancel.Location = new System.Drawing.Point(317, 244);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 0;
@@ -59,7 +63,7 @@
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.OK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.OK.Location = new System.Drawing.Point(236, 209);
+			this.OK.Location = new System.Drawing.Point(236, 244);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 1;
@@ -135,19 +139,62 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.listBoxSoundDevices.FormattingEnabled = true;
-			this.listBoxSoundDevices.Location = new System.Drawing.Point(108, 108);
+			this.listBoxSoundDevices.Location = new System.Drawing.Point(108, 102);
 			this.listBoxSoundDevices.Name = "listBoxSoundDevices";
 			this.listBoxSoundDevices.Size = new System.Drawing.Size(284, 95);
 			this.listBoxSoundDevices.TabIndex = 6;
 			// 
-			// label1
+			// SoundDeviceLabel
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(108, 92);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(78, 13);
-			this.label1.TabIndex = 7;
-			this.label1.Text = "Sound Device:";
+			this.SoundDeviceLabel.AutoSize = true;
+			this.SoundDeviceLabel.Location = new System.Drawing.Point(108, 86);
+			this.SoundDeviceLabel.Name = "SoundDeviceLabel";
+			this.SoundDeviceLabel.Size = new System.Drawing.Size(78, 13);
+			this.SoundDeviceLabel.TabIndex = 7;
+			this.SoundDeviceLabel.Text = "Sound Device:";
+			// 
+			// BufferSizeLabel
+			// 
+			this.BufferSizeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.BufferSizeLabel.AutoSize = true;
+			this.BufferSizeLabel.Location = new System.Drawing.Point(105, 213);
+			this.BufferSizeLabel.Name = "BufferSizeLabel";
+			this.BufferSizeLabel.Size = new System.Drawing.Size(61, 13);
+			this.BufferSizeLabel.TabIndex = 8;
+			this.BufferSizeLabel.Text = "Buffer Size:";
+			// 
+			// BufferSizeNumeric
+			// 
+			this.BufferSizeNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.BufferSizeNumeric.Location = new System.Drawing.Point(172, 211);
+			this.BufferSizeNumeric.Maximum = new decimal(new int[] {
+            250,
+            0,
+            0,
+            0});
+			this.BufferSizeNumeric.Minimum = new decimal(new int[] {
+            80,
+            0,
+            0,
+            0});
+			this.BufferSizeNumeric.Name = "BufferSizeNumeric";
+			this.BufferSizeNumeric.Size = new System.Drawing.Size(59, 20);
+			this.BufferSizeNumeric.TabIndex = 9;
+			this.BufferSizeNumeric.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+			// 
+			// BufferSizeUnitsLabel
+			// 
+			this.BufferSizeUnitsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.BufferSizeUnitsLabel.AutoSize = true;
+			this.BufferSizeUnitsLabel.Location = new System.Drawing.Point(237, 213);
+			this.BufferSizeUnitsLabel.Name = "BufferSizeUnitsLabel";
+			this.BufferSizeUnitsLabel.Size = new System.Drawing.Size(63, 13);
+			this.BufferSizeUnitsLabel.TabIndex = 10;
+			this.BufferSizeUnitsLabel.Text = "milliseconds";
 			// 
 			// SoundConfig
 			// 
@@ -155,8 +202,11 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(404, 244);
-			this.Controls.Add(this.label1);
+			this.ClientSize = new System.Drawing.Size(404, 279);
+			this.Controls.Add(this.BufferSizeUnitsLabel);
+			this.Controls.Add(this.BufferSizeNumeric);
+			this.Controls.Add(this.BufferSizeLabel);
+			this.Controls.Add(this.SoundDeviceLabel);
 			this.Controls.Add(this.listBoxSoundDevices);
 			this.Controls.Add(this.UseNewOutputBuffer);
 			this.Controls.Add(this.SoundVolGroup);
@@ -174,6 +224,7 @@
 			this.SoundVolGroup.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.SoundVolBar)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.SoundVolNumeric)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.BufferSizeNumeric)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -190,6 +241,9 @@
 		private System.Windows.Forms.TrackBar SoundVolBar;
 		private System.Windows.Forms.CheckBox UseNewOutputBuffer;
 		private System.Windows.Forms.ListBox listBoxSoundDevices;
-		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label SoundDeviceLabel;
+		private System.Windows.Forms.Label BufferSizeLabel;
+		private System.Windows.Forms.NumericUpDown BufferSizeNumeric;
+		private System.Windows.Forms.Label BufferSizeUnitsLabel;
 	}
 }

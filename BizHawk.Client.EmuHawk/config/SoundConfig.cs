@@ -21,6 +21,7 @@ namespace BizHawk.Client.EmuHawk
 			SoundOnCheckBox.Checked = Global.Config.SoundEnabled;
 			MuteFrameAdvance.Checked = Global.Config.MuteFrameAdvance;
 			UseNewOutputBuffer.Checked = Global.Config.UseNewOutputBuffer;
+			BufferSizeNumeric.Value = Global.Config.SoundBufferSizeMs;
 			SoundVolBar.Value = Global.Config.SoundVolume;
 			SoundVolNumeric.Value = Global.Config.SoundVolume;
 			UpdateSoundDialog();
@@ -45,10 +46,10 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.SoundEnabled = SoundOnCheckBox.Checked;
 			Global.Config.MuteFrameAdvance = MuteFrameAdvance.Checked;
 			Global.Config.UseNewOutputBuffer = UseNewOutputBuffer.Checked;
+			Global.Config.SoundBufferSizeMs = (int)BufferSizeNumeric.Value;
 			Global.Config.SoundVolume = SoundVolBar.Value;
 			Global.Config.SoundDevice = (string)listBoxSoundDevices.SelectedItem ?? "<default>";
-			GlobalWin.Sound.ChangeVolume(Global.Config.SoundVolume);
-			GlobalWin.Sound.UpdateSoundSettings();
+			GlobalWin.Sound.StopSound();
 			GlobalWin.Sound.StartSound();
 			GlobalWin.OSD.AddMessage("Sound settings saved");
 			Close();

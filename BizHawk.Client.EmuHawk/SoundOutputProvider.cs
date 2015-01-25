@@ -14,19 +14,14 @@ namespace BizHawk.Client.EmuHawk
 	// samples here on average. As long as we're within +/-5 milliseconds we don't need
 	// to touch the source audio. Once it goes outside of that window, we'll start to
 	// perform a "soft" correction by resampling it to hopefully get back inside our
-	// window shortly. If it ends up going too low (-45 ms) and depleting the output
-	// device's buffer, or too high (+45 ms), we will perform a "hard" correction by
-	// generating silence or discarding samples.
+	// window shortly. If it ends up going too low or too high, we will perform a
+	// "hard" correction by generating silence or discarding samples.
 	public class SoundOutputProvider
 	{
 		private const int SampleRate = 44100;
 		private const int ChannelCount = 2;
-		private const int MaxExtraMilliseconds = 45;
-		private const int MaxExtraSamples = SampleRate * MaxExtraMilliseconds / 1000;
-		private const int MaxTargetOffsetMilliseconds = 5;
-		private const int MaxTargetOffsetSamples = SampleRate * MaxTargetOffsetMilliseconds / 1000;
-		private const int HardCorrectionMilliseconds = 20;
-		private const int HardCorrectionSamples = SampleRate * HardCorrectionMilliseconds / 1000;
+		private const int SoftCorrectionThresholdSamples = 5 * SampleRate / 1000;
+		private const int StartupHardCorrectionThresholdSamples = 10 * SampleRate / 1000;
 		private const int UsableHistoryLength = 20;
 		private const int MaxHistoryLength = 60;
 		private const int SoftCorrectionLength = 240;
@@ -34,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 		private const int BaseSampleRateMaxHistoryLength = 300;
 		private const int MinResamplingDistanceSamples = 3;
 
-		private Queue<short> _buffer = new Queue<short>(MaxExtraSamples * ChannelCount);
+		private Queue<short> _buffer = new Queue<short>();
 
 		private Queue<int> _extraCountHistory = new Queue<int>();
 		private Queue<int> _outputCountHistory = new Queue<int>();
@@ -46,11 +41,13 @@ namespace BizHawk.Client.EmuHawk
 		private short[] _resampleBuffer = new short[0];
 		private double _resampleLengthRoundingError;
 
-		public ISyncSoundProvider BaseSoundProvider { get; set; }
-
 		public SoundOutputProvider()
 		{
 		}
+
+		public int HardCorrectionThresholdSamples { get; set; }
+
+		public ISyncSoundProvider BaseSoundProvider { get; set; }
 
 		public void DiscardSamples()
 		{
@@ -76,14 +73,14 @@ namespace BizHawk.Client.EmuHawk
 			get { return SampleRate / Global.Emulator.CoreComm.VsyncRate; }
 		}
 
-		public int GetSamples(short[] samples, int idealSampleCount, int minSampleCount)
+		public int GetSamples(short[] samples, int idealSampleCount)
 		{
 			double scaleFactor = 1.0;
 
 			if (_extraCountHistory.Count >= UsableHistoryLength && !_hardCorrectionHistory.Any(c => c))
 			{
 				double offsetFromTarget = _extraCountHistory.Average();
-				if (Math.Abs(offsetFromTarget) > MaxTargetOffsetSamples)
+				if (Math.Abs(offsetFromTarget) > SoftCorrectionThresholdSamples)
 				{
 					double correctionSpan = _outputCountHistory.Average() * SoftCorrectionLength;
 					scaleFactor *= correctionSpan / (correctionSpan + offsetFromTarget);
@@ -94,11 +91,13 @@ namespace BizHawk.Client.EmuHawk
 
 			int bufferSampleCount = _buffer.Count / ChannelCount;
 			int extraSampleCount = bufferSampleCount - idealSampleCount;
+			int hardCorrectionThresholdSamples = _extraCountHistory.Count >= UsableHistoryLength ? HardCorrectionThresholdSamples :
+				Math.Min(StartupHardCorrectionThresholdSamples, HardCorrectionThresholdSamples);
 			bool hardCorrected = false;
 
-			if (bufferSampleCount < minSampleCount)
+			if (extraSampleCount < -hardCorrectionThresholdSamples)
 			{
-				int generateSampleCount = (minSampleCount - bufferSampleCount) + HardCorrectionSamples;
+				int generateSampleCount = -extraSampleCount;
 				if (LogDebug) Console.WriteLine("Generating " + generateSampleCount + " samples");
 				for (int i = 0; i < generateSampleCount * ChannelCount; i++)
 				{
@@ -106,9 +105,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 				hardCorrected = true;
 			}
-			else if (extraSampleCount > MaxExtraSamples)
+			else if (extraSampleCount > hardCorrectionThresholdSamples)
 			{
-				int discardSampleCount = (extraSampleCount - MaxExtraSamples) + HardCorrectionSamples;
+				int discardSampleCount = extraSampleCount;
 				if (LogDebug) Console.WriteLine("Discarding " + discardSampleCount + " samples");
 				for (int i = 0; i < discardSampleCount * ChannelCount; i++)
 				{
@@ -236,7 +235,6 @@ namespace BizHawk.Client.EmuHawk
 				return output;
 			}
 
-			double roundingError = 0.0;
 			for (int iOutput = 0; iOutput < outputCount; iOutput++)
 			{
 				double iInput = ((double)iOutput / (outputCount - 1)) * (inputCount - 1);
@@ -250,17 +248,11 @@ namespace BizHawk.Client.EmuHawk
 
 				for (int iChannel = 0; iChannel < ChannelCount; iChannel++)
 				{
-					double valueExact =
+					double value =
 						input[iInput0 * ChannelCount + iChannel] * input0Weight +
-						input[iInput1 * ChannelCount + iChannel] * input1Weight +
-						roundingError;
+						input[iInput1 * ChannelCount + iChannel] * input1Weight;
 
-					if (valueExact < -32768.0) valueExact = -32768.0;
-					if (valueExact > 32767.0) valueExact = 32767.0;
-
-					short value = (short)((int)(valueExact + 32768.5) - 32768);
-					output[iOutput * ChannelCount + iChannel] = value;
-					roundingError = valueExact - value;
+					output[iOutput * ChannelCount + iChannel] = (short)((int)(value + 32768.5) - 32768);
 				}
 			}
 
