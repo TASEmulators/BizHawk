@@ -43,7 +43,6 @@ namespace BizHawk.Client.EmuHawk
 		private const int BytesPerSample = 2;
 		private const int ChannelCount = 2;
 		private const int BlockAlign = BytesPerSample * ChannelCount;
-		private const int MinBufferFullnessSamples = 55 * SampleRate / 1000;
 
 		private bool _muted;
 		private bool _disposed;
@@ -66,12 +65,7 @@ namespace BizHawk.Client.EmuHawk
 			_device = device;
 		}
 
-		private int BufferSizeMilliseconds { get; set; }
-
-		private int BufferSizeSamples
-		{
-			get { return SampleRate * BufferSizeMilliseconds / 1000; }
-		}
+		private int BufferSizeSamples { get; set; }
 
 		private int BufferSizeBytes
 		{
@@ -80,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CreateDeviceBuffer()
 		{
-			BufferSizeMilliseconds = Global.Config.SoundBufferSizeMs;
+			BufferSizeSamples = MillisecondsToSamples(Global.Config.SoundBufferSizeMs);
 
 			var format = new WaveFormat
 				{
@@ -130,8 +124,9 @@ namespace BizHawk.Client.EmuHawk
 			_lastWriteTime = 0;
 			_lastWriteCursor = 0;
 
+			int minBufferFullnessSamples = MillisecondsToSamples(Global.Config.SoundBufferSizeMs >= 80 ? 55 : 35);
 			_outputProvider = new SoundOutputProvider();
-			_outputProvider.MaxSamplesDeficit = BufferSizeSamples - MinBufferFullnessSamples;
+			_outputProvider.MaxSamplesDeficit = BufferSizeSamples - minBufferFullnessSamples;
 			_outputProvider.BaseSoundProvider = _syncSoundProvider;
 
 			//LogUnderruns = true;
@@ -149,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_outputProvider = null;
 
-			BufferSizeMilliseconds = 0;
+			BufferSizeSamples = 0;
 		}
 
 		public void Dispose()
@@ -326,6 +321,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 
 			WriteSamples(samples, samplesProvided);
+		}
+
+		private static int MillisecondsToSamples(int milliseconds)
+		{
+			return milliseconds * SampleRate / 1000;
 		}
 	}
 #else

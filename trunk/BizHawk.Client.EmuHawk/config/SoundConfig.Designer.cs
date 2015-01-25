@@ -173,7 +173,7 @@
             0,
             0});
 			this.BufferSizeNumeric.Minimum = new decimal(new int[] {
-            80,
+            60,
             0,
             0,
             0});
