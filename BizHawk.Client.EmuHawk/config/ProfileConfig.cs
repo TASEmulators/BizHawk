@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.AllowUD_LR = false;
 				Global.Config.BackupSavestates = false;
 
-				Global.Config.SaveStateCompressionLevelNormal = 5;
+				Global.Config.SaveStateCompressionLevelNormal = 0;
 				Global.Config.RewindEnabledLarge = false;
 				Global.Config.RewindEnabledMedium = false;
 				Global.Config.RewindEnabledSmall = true;
