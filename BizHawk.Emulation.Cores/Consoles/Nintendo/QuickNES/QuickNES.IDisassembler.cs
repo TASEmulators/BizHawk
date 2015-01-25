@@ -32,12 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
-			return MOS6502X.Disassemble((ushort)addr, out length, PeekSystemBus);
-		}
-
-		private byte PeekSystemBus(ushort addr)
-		{
-			return _memoryDomains.SystemBus.PeekByte(addr);
+			return MOS6502X.Disassemble((ushort)addr, out length, (a) => m.PeekByte(a));
 		}
 	}
 }
