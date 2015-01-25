@@ -146,6 +146,10 @@ namespace BizHawk.Client.EmuHawk
 
 			var maxCharSize = registers.Where(r => r.Value.BitSize != 1).Max(r => r.Key.Length);
 			var width = maxCharSize * 5;
+			if (width < 20)
+			{
+				width = 20;
+			}
 
 			foreach (var register in registers.Where(r => r.Value.BitSize != 1))
 			{
@@ -153,7 +157,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Text = register.Key,
 					Location = new Point(UIHelper.ScaleX(5), y + UIHelper.ScaleY(2)),
-					Size = new Size(UIHelper.ScaleX(width), UIHelper.ScaleY(15))
+					Size = new Size(UIHelper.ScaleX(width + 5), UIHelper.ScaleY(15))
 				});
 
 				if (canset)
@@ -192,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 						Name = register.Key,
 						Text = register.Value.Value.ToString(),
 						Size = new Size(UIHelper.ScaleX(6 + ((register.Value.BitSize / 4) * 9)), UIHelper.ScaleY(15)),
-						Location = new Point(UIHelper.ScaleX(width + 10), y)
+						Location = new Point(UIHelper.ScaleX(width + 12), y + 2)
 					});
 				}
 
