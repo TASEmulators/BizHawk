@@ -49,17 +49,12 @@ namespace BizHawk.Emulation.Common
 				{
 					return data[addr];
 				},
+				writable ?
 				delegate(long addr, byte val)
 				{
-					if (writable)
-					{
-						data[addr] = val;
-					}
-					else
-					{
-						throw new NotImplementedException();
-					}
+					data[addr] = val;
 				}
+				: (Action<long, byte>)null
 			);
 		}
 
@@ -88,15 +83,14 @@ namespace BizHawk.Emulation.Common
 						throw new ArgumentOutOfRangeException();
 					return p[addr];
 				},
+				writable ?
 				delegate(long addr, byte val)
 				{
-					if (writable)
-					{
-						if ((uint)addr >= l)
-							throw new ArgumentOutOfRangeException();
-						p[addr] = val;
-					}
+					if ((uint)addr >= l)
+						throw new ArgumentOutOfRangeException();
+					p[addr] = val;
 				}
+				: (Action<long, byte>)null
 			);
 		}
 
@@ -125,15 +119,14 @@ namespace BizHawk.Emulation.Common
 						throw new ArgumentOutOfRangeException();
 					return p[addr ^ 1];
 				},
+				writable ?
 				delegate(long addr, byte val)
 				{
-					if (writable)
-					{
-						if ((uint)addr >= l)
-							throw new ArgumentOutOfRangeException();
-						p[addr ^ 1] = val;
-					}
+					if ((uint)addr >= l)
+						throw new ArgumentOutOfRangeException();
+					p[addr ^ 1] = val;
 				}
+				: (Action<long, byte>)null
 			);
 		}
 
