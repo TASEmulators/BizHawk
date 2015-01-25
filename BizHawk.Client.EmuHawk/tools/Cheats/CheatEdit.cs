@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -35,6 +36,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DomainDropDown.Items.Clear();
 				DomainDropDown.Items.AddRange(MemoryDomains
+					.Where(d => d.CanPoke())
 					.Select(d => d.ToString())
 					.ToArray());
 

@@ -180,8 +180,6 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			}
 
 			return true;
-
-
 		}
 
 		// TODO: a better place for these
