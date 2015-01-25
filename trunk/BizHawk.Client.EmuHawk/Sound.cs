@@ -124,7 +124,10 @@ namespace BizHawk.Client.EmuHawk
 			_lastWriteTime = 0;
 			_lastWriteCursor = 0;
 
-			int minBufferFullnessSamples = MillisecondsToSamples(Global.Config.SoundBufferSizeMs >= 80 ? 55 : 35);
+			int minBufferFullnessSamples = MillisecondsToSamples(
+				Global.Config.SoundBufferSizeMs < 80 ? 35 :
+				Global.Config.SoundBufferSizeMs < 100 ? 45 :
+				55);
 			_outputProvider = new SoundOutputProvider();
 			_outputProvider.MaxSamplesDeficit = BufferSizeSamples - minBufferFullnessSamples;
 			_outputProvider.BaseSoundProvider = _syncSoundProvider;
