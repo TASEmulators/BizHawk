@@ -634,7 +634,9 @@
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IDebuggable.cs">
       <DependentUpon>QuickNES.cs</DependentUpon>
     </Compile>
-    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IDisassembler.cs" />
+    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IDisassembler.cs">
+        <DependentUpon>QuickNES.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IInputPollable.cs">
       <DependentUpon>QuickNES.cs</DependentUpon>
     </Compile>
