@@ -109,14 +109,14 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					Log(string.Format("Unable to find domain: ", domain));
+					Log(string.Format("Unable to find domain: {0}", domain));
 					return false;
 				}
 
 			}
 			catch // Just in case
 			{
-				Log(string.Format("Unable to find domain: ", domain));
+				Log(string.Format("Unable to find domain: {0}", domain));
 			}
 
 			return false;
