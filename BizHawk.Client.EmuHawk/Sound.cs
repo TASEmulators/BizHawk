@@ -100,7 +100,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_deviceBuffer == null) return;
 
-			_deviceBuffer.Volume = Global.Config.SoundVolume == 0 ? -10000 : ((100 - Global.Config.SoundVolume) * -45);
+			double volume = Global.Config.SoundVolume / 100.0;
+			if (volume < 0.0) volume = 0.0;
+			if (volume > 1.0) volume = 1.0;
+			_deviceBuffer.Volume = CalculateDirectSoundVolumeLevel(volume);
 		}
 
 		public void StartSound()
@@ -328,6 +331,14 @@ namespace BizHawk.Client.EmuHawk
 		private static int MillisecondsToSamples(int milliseconds)
 		{
 			return milliseconds * SampleRate / 1000;
+		}
+
+		/// <param name="level">Percent volume level from 0.0 to 1.0.</param>
+		private static int CalculateDirectSoundVolumeLevel(double level)
+		{
+			// I'm not sure if this is "technically" correct but it works okay
+			int range = (int)Volume.Maximum - (int)Volume.Minimum;
+			return (int)(Math.Pow(level, 0.15) * range) + (int)Volume.Minimum;
 		}
 	}
 #else
