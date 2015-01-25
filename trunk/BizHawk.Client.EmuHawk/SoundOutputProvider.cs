@@ -22,6 +22,11 @@ namespace BizHawk.Client.EmuHawk
 		private const int ChannelCount = 2;
 		private const int SoftCorrectionThresholdSamples = 5 * SampleRate / 1000;
 		private const int StartupHardCorrectionThresholdSamples = 10 * SampleRate / 1000;
+		// Can't go more than 50 ms or so even if there's enough buffered up in the device
+		// because the clock throttle loses its "rubber band" effect and won't replenish
+		// our buffer. At that point it's better to hard correct than to let the soft
+		// correction cause a major pitch shift.
+		private const int NormalHardCorrectionThresholdSamples = 50 * SampleRate / 1000;
 		private const int UsableHistoryLength = 20;
 		private const int MaxHistoryLength = 60;
 		private const int SoftCorrectionLength = 240;
@@ -45,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
-		public int HardCorrectionThresholdSamples { get; set; }
+		public int MaxSamplesDeficit { get; set; }
 
 		public ISyncSoundProvider BaseSoundProvider { get; set; }
 
@@ -91,8 +96,9 @@ namespace BizHawk.Client.EmuHawk
 
 			int bufferSampleCount = _buffer.Count / ChannelCount;
 			int extraSampleCount = bufferSampleCount - idealSampleCount;
-			int hardCorrectionThresholdSamples = _extraCountHistory.Count >= UsableHistoryLength ? HardCorrectionThresholdSamples :
-				Math.Min(StartupHardCorrectionThresholdSamples, HardCorrectionThresholdSamples);
+			int hardCorrectionThresholdSamples = _extraCountHistory.Count >= UsableHistoryLength ?
+				Math.Min(NormalHardCorrectionThresholdSamples, MaxSamplesDeficit) :
+				Math.Min(StartupHardCorrectionThresholdSamples, MaxSamplesDeficit);
 			bool hardCorrected = false;
 
 			if (extraSampleCount < -hardCorrectionThresholdSamples)

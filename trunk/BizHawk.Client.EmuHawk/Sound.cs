@@ -131,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 			_lastWriteCursor = 0;
 
 			_outputProvider = new SoundOutputProvider();
-			_outputProvider.HardCorrectionThresholdSamples = BufferSizeSamples - MinBufferFullnessSamples;
+			_outputProvider.MaxSamplesDeficit = BufferSizeSamples - MinBufferFullnessSamples;
 			_outputProvider.BaseSoundProvider = _syncSoundProvider;
 
 			//LogUnderruns = true;
