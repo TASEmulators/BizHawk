@@ -687,9 +687,12 @@ namespace BizHawk.Client.EmuHawk
 				RemoveWatchMenuItem.Enabled =
 				MoveUpMenuItem.Enabled =
 				MoveDownMenuItem.Enabled =
-				PokeAddressMenuItem.Enabled =
 				FreezeAddressMenuItem.Enabled =
 				SelectedIndices.Any();
+
+			PokeAddressMenuItem.Enabled =
+				SelectedIndices.Any() &&
+				SelectedWatches.All(w => w.Domain.CanPoke());
 
 			PauseMenuItem.Text = _paused ? "Unpause" : "Pause";
 		}
@@ -1007,6 +1010,10 @@ namespace BizHawk.Client.EmuHawk
 				MoveDownContextMenuItem.Visible =
 				Separator6.Visible = 
 				indexes.Count > 0;
+
+			PokeContextMenuItem.Enabled =
+				SelectedIndices.Any() &&
+				SelectedWatches.All(w => w.Domain.CanPoke());
 
 			var allCheats = _watches.All(x => Global.CheatList.IsActive(x.Domain, x.Address ?? 0));
 

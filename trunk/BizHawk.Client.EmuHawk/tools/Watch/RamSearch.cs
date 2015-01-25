@@ -1173,9 +1173,12 @@ namespace BizHawk.Client.EmuHawk
 
 			RemoveMenuItem.Enabled =
 				AddToRamWatchMenuItem.Enabled =
-				PokeAddressMenuItem.Enabled =
 				FreezeAddressMenuItem.Enabled =
 				SelectedIndices.Any();
+
+			PokeAddressMenuItem.Enabled =
+				SelectedIndices.Any() &&
+				SelectedWatches.All(w => w.Domain.CanPoke());
 
 			UndoMenuItem.Enabled =
 				ClearUndoMenuItem.Enabled =
@@ -1379,12 +1382,14 @@ namespace BizHawk.Client.EmuHawk
 
 			RemoveContextMenuItem.Visible =
 				AddToRamWatchContextMenuItem.Visible =
-				PokeContextMenuItem.Visible =
 				FreezeContextMenuItem.Visible =
 				ContextMenuSeparator2.Visible =
-
 				ViewInHexEditorContextMenuItem.Visible =
 				SelectedIndices.Any();
+
+			PokeContextMenuItem.Enabled =
+				SelectedIndices.Any() &&
+				SelectedWatches.All(w => w.Domain.CanPoke());
 
 			UnfreezeAllContextMenuItem.Visible = Global.CheatList.ActiveCount > 0;
 
