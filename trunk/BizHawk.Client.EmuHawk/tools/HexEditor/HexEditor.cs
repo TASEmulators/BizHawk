@@ -590,23 +590,29 @@ namespace BizHawk.Client.EmuHawk
 				HexScrollBar.Value = 0;
 			}
 
+			if (_domain.CanPoke())
+			{
+				AddressesLabel.ForeColor = SystemColors.ControlText;
+			}
+			else
+			{
+				AddressesLabel.ForeColor = SystemColors.ControlDarkDark;
+			}
+
 			UpdateGroupBoxTitle();
 			UpdateValues();
 		}
 
 		private void SetDomain(MemoryDomain domain)
 		{
-			SetHeader();
-			UpdateGroupBoxTitle();
-			ResetScrollBar();
-			UpdateValues();
-			MemoryViewerBox.Refresh();
+			SetMemoryDomain(domain.Name);
 		}
 
 		private void UpdateGroupBoxTitle()
 		{
 			var addressesString = "0x" + string.Format("{0:X8}", _domain.Size / DataSize).TrimStart('0');
-			MemoryViewerBox.Text = Emulator.SystemId + " " + _domain + "  -  " + addressesString + " addresses";
+			MemoryViewerBox.Text = Emulator.SystemId + " " + _domain + (_domain.CanPoke() ? "" : " (READ-ONLY)") +
+				"  -  " + addressesString + " addresses";
 		}
 
 		private void ClearNibbles()
@@ -1250,6 +1256,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EditMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
+			var data = Clipboard.GetDataObject();
+			PasteMenuItem.Enabled =
+				_domain.CanPoke() &&
+				(HighlightedAddress.HasValue || _secondaryHighlightedAddresses.Any()) &&
+				data != null &&
+				data.GetDataPresent(DataFormats.Text);
+
 			FindNextMenuItem.Enabled = !string.IsNullOrWhiteSpace(_findStr);
 		}
 
@@ -1334,8 +1347,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			AddToRamWatchMenuItem.Enabled =
-				FreezeAddressMenuItem.Enabled =
 				HighlightedAddress.HasValue;
+
+			PokeAddressMenuItem.Enabled =
+				FreezeAddressMenuItem.Enabled =
+				HighlightedAddress.HasValue &&
+				_domain.CanPoke();
 		}
 
 		private void MemoryDomainsMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1417,6 +1434,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FreezeAddressMenuItem_Click(object sender, EventArgs e)
 		{
+			if (!_domain.CanPoke())
+			{
+				return;
+			}
+
 			if (HighlightedAddress.HasValue)
 			{
 				if (IsFrozen(HighlightedAddress.Value))
@@ -1442,6 +1464,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PokeAddressMenuItem_Click(object sender, EventArgs e)
 		{
+			if (!_domain.CanPoke())
+			{
+				return;
+			}
+
 			var addresses = new List<long>();
 			if (HighlightedAddress.HasValue)
 			{
@@ -1729,6 +1756,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			if (!_domain.CanPoke())
+			{
+				return;
+			}
+
 			switch (DataSize)
 			{
 				default:
@@ -1837,16 +1869,19 @@ namespace BizHawk.Client.EmuHawk
 			var data = Clipboard.GetDataObject();
 
 			CopyContextItem.Visible =
-				FreezeContextItem.Visible =
 				AddToRamWatchContextItem.Visible =
+				HighlightedAddress.HasValue || _secondaryHighlightedAddresses.Any();
+
+			FreezeContextItem.Visible =
 				PokeContextItem.Visible =
 				IncrementContextItem.Visible =
 				DecrementContextItem.Visible =
 				ContextSeparator2.Visible =
-				HighlightedAddress.HasValue || _secondaryHighlightedAddresses.Any();
+				(HighlightedAddress.HasValue || _secondaryHighlightedAddresses.Any()) &&
+				_domain.CanPoke();
 
 			UnfreezeAllContextItem.Visible = Global.CheatList.ActiveCount > 0;
-			PasteContextItem.Visible = data != null && data.GetDataPresent(DataFormats.Text);
+			PasteContextItem.Visible = _domain.CanPoke() && data != null && data.GetDataPresent(DataFormats.Text);
 
 			ContextSeparator1.Visible =
 				HighlightedAddress.HasValue ||
@@ -1864,11 +1899,17 @@ namespace BizHawk.Client.EmuHawk
 				FreezeContextItem.Image = Properties.Resources.Freeze;
 			}
 
-			viewN64MatrixToolStripMenuItem.Visible = DataSize == 4;
+
+			toolStripMenuItem1.Visible = viewN64MatrixToolStripMenuItem.Visible = DataSize == 4;
 		}
 
 		private void IncrementContextItem_Click(object sender, EventArgs e)
 		{
+			if (!_domain.CanPoke())
+			{
+				return;
+			}
+
 			if (HighlightedAddress.HasValue)
 			{
 				IncrementAddress(HighlightedAddress.Value);
@@ -1881,6 +1922,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DecrementContextItem_Click(object sender, EventArgs e)
 		{
+			if (!_domain.CanPoke())
+			{
+				return;
+			}
+
 			if (HighlightedAddress.HasValue)
 			{
 				DecrementAddress(HighlightedAddress.Value);
