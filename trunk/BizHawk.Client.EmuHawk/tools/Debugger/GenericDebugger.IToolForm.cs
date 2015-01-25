@@ -143,7 +143,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RegisterPanel.UpdateValues();
 			UpdateDisassembler();
-			// TODO: check for new breakpoints and add them to the Breakpoint list?
+			BreakPointControl1.UpdateValues();
 		}
 
 		public void FastUpdate()
