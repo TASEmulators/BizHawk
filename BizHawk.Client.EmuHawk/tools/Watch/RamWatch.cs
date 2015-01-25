@@ -197,6 +197,11 @@ namespace BizHawk.Client.EmuHawk
 					Global.Config.RecentWatches.Add(_watches.CurrentFileName);
 					SetMemoryDomain(_watches.Domain.ToString());
 					UpdateStatusBar();
+
+					PokeAddressToolBarItem.Enabled =
+						FreezeAddressToolBarItem.Enabled =
+						SelectedIndices.Any() &&
+						SelectedWatches.All(w => w.Domain.CanPoke());
 				}
 			}
 		}
@@ -469,6 +474,11 @@ namespace BizHawk.Client.EmuHawk
 				UpdateStatusBar();
 				_sortReverse = false;
 				_sortedColumn = string.Empty;
+
+				PokeAddressToolBarItem.Enabled =
+					FreezeAddressToolBarItem.Enabled =
+					SelectedIndices.Any() &&
+					SelectedWatches.All(w => w.Domain.CanPoke());
 			}
 		}
 
@@ -962,6 +972,11 @@ namespace BizHawk.Client.EmuHawk
 			LoadConfigSettings();
 			RamWatchMenu.Items.Add(Settings.Columns.GenerateColumnsMenu(ColumnToggleCallback));
 			UpdateStatusBar();
+
+			PokeAddressToolBarItem.Enabled =
+				FreezeAddressToolBarItem.Enabled =
+				SelectedIndices.Any() &&
+				SelectedWatches.All(w => w.Domain.CanPoke());
 		}
 
 		private void ColumnToggleCallback()
@@ -1071,6 +1086,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				EditWatch();
 			}
+		}
+
+		private void WatchListView_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			PokeAddressToolBarItem.Enabled =
+				FreezeAddressToolBarItem.Enabled =
+				SelectedIndices.Any() &&
+				SelectedWatches.All(w => w.Domain.CanPoke());
 		}
 
 		private void WatchListView_MouseDoubleClick(object sender, MouseEventArgs e)
