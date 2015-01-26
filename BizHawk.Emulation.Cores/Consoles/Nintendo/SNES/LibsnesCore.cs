@@ -40,6 +40,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			Tracer = new TraceBuffer();
 			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
 
+			(ServiceProvider as BasicServiceProvider).Register<IDisassemblable>(new BizHawk.Emulation.Cores.Components.W65816.W65816_DisassemblerService());
+
 			_game = game;
 			CoreComm = comm;
 			byte[] sgbRomData = null;
