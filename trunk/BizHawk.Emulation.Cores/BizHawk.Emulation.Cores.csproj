@@ -635,7 +635,7 @@
       <DependentUpon>QuickNES.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IDisassembler.cs">
-        <DependentUpon>QuickNES.cs</DependentUpon>
+      <DependentUpon>QuickNES.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IInputPollable.cs">
       <DependentUpon>QuickNES.cs</DependentUpon>
@@ -739,6 +739,7 @@
       <DependentUpon>WonderSwan.cs</DependentUpon>
     </Compile>
     <Compile Include="CoreInventory.cs" />
+    <Compile Include="CPUs\W65816\Disassembler.cs" />
     <Compile Include="CPUs\68000\Diassembler.cs" />
     <Compile Include="CPUs\68000\Instructions\BitArithemetic.cs" />
     <Compile Include="CPUs\68000\Instructions\DataMovement.cs" />
