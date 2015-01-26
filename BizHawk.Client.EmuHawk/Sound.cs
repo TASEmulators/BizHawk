@@ -307,9 +307,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					samples = new short[samplesNeeded * ChannelCount];
-
-					samplesProvided = _outputProvider.GetSamples(samples, samplesNeeded);
+					_outputProvider.GetSamples(samplesNeeded, out samples, out samplesProvided);
 				}
 			}
 			else if (_asyncSoundProvider != null)

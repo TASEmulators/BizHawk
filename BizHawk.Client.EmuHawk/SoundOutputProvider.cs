@@ -43,6 +43,8 @@ namespace BizHawk.Client.EmuHawk
 		private double _lastAdvertisedSamplesPerFrame;
 		private Queue<int> _baseSamplesPerFrame = new Queue<int>();
 
+		private short[] _outputBuffer = new short[0];
+
 		private short[] _resampleBuffer = new short[0];
 		private double _resampleLengthRoundingError;
 
@@ -62,6 +64,7 @@ namespace BizHawk.Client.EmuHawk
 			_hardCorrectionHistory.Clear();
 			_lastAdvertisedSamplesPerFrame = 0.0;
 			_baseSamplesPerFrame.Clear();
+			_outputBuffer = new short[0];
 			_resampleBuffer = new short[0];
 			_resampleLengthRoundingError = 0.0;
 
@@ -78,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 			get { return SampleRate / Global.Emulator.CoreComm.VsyncRate; }
 		}
 
-		public int GetSamples(short[] samples, int idealSampleCount)
+		public void GetSamples(int idealSampleCount, out short[] samples, out int sampleCount)
 		{
 			double scaleFactor = 1.0;
 
@@ -131,8 +134,6 @@ namespace BizHawk.Client.EmuHawk
 			UpdateHistory(_outputCountHistory, outputSampleCount, MaxHistoryLength);
 			UpdateHistory(_hardCorrectionHistory, hardCorrected, MaxHistoryLength);
 
-			GetSamplesFromBuffer(samples, outputSampleCount);
-
 			if (LogDebug)
 			{
 				Console.WriteLine("Avg: {0:0.0} ms, Min: {1:0.0} ms, Max: {2:0.0} ms, Scale: {3:0.0000}",
@@ -142,7 +143,9 @@ namespace BizHawk.Client.EmuHawk
 					scaleFactor);
 			}
 
-			return outputSampleCount;
+			sampleCount = outputSampleCount;
+			samples = GetOutputBuffer(sampleCount);
+			GetSamplesFromBuffer(samples, sampleCount);
 		}
 
 		private void GetSamplesFromBase(ref double scaleFactor)
@@ -212,6 +215,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_buffer.Enqueue(samples[i]);
 			}
+		}
+
+		private short[] GetOutputBuffer(int count)
+		{
+			if (_outputBuffer.Length < count * ChannelCount)
+			{
+				_outputBuffer = new short[count * ChannelCount];
+			}
+			return _outputBuffer;
 		}
 
 		private short[] GetResampleBuffer(int count)
