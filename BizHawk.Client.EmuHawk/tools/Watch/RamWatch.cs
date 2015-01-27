@@ -366,6 +366,35 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void PasteWatchesToClipBoard()
+		{
+			var data = Clipboard.GetDataObject();
+
+			if (data != null && data.GetDataPresent(DataFormats.Text))
+			{
+				var clipboardRows = ((string)data.GetData(DataFormats.Text)).Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+				foreach (var row in clipboardRows)
+				{
+					var watch = Watch.FromString(row, _memoryDomains);
+					if ((object)watch != null)
+					{
+						_watches.Add(watch);
+					}
+				}
+
+				FullyUpdateWatchList();
+			}
+		}
+
+		private void FullyUpdateWatchList()
+		{
+			WatchListView.ItemCount = _watches.ItemCount;
+			UpdateWatchCount();
+			UpdateStatusBar();
+			UpdateValues();
+		}
+
 		private void EditWatch(bool duplicate = false)
 		{
 			var indexes = SelectedIndices.ToList();
@@ -1078,9 +1107,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				RemoveWatchMenuItem_Click(sender, e);
 			}
-			else if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) // Copy
+			else if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) // Ctrl+C
 			{
 				CopyWatchesToClipBoard();
+			}
+			else if (e.KeyCode == Keys.V && e.Control && !e.Alt && !e.Shift) // Ctrl+V
+			{
+				PasteWatchesToClipBoard();
 			}
 			else if (e.KeyCode == Keys.Enter && !e.Control && !e.Alt && !e.Shift) // Enter
 			{
