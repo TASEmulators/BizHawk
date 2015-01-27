@@ -160,6 +160,7 @@
     </Compile>
     <Compile Include="AVOut\NutMuxer.cs" />
     <Compile Include="AVOut\NutWriter.cs" />
+    <Compile Include="AVOut\ImageSequenceWriter.cs" />
     <Compile Include="AVOut\SynclessRecorder.cs" />
     <Compile Include="AVOut\SynclessRecordingTools.cs">
       <SubType>Form</SubType>
