@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
@@ -343,20 +344,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CopyWatchesToClipBoard()
 		{
-			var indexes = SelectedIndices.ToList();
-
-			if (indexes.Any())
+			if (SelectedItems.Any())
 			{
 				var sb = new StringBuilder();
-				foreach (var index in indexes)
+				foreach (var watch in SelectedItems)
 				{
-					foreach (ColumnHeader column in WatchListView.Columns)
-					{
-						sb.Append(GetColumnValue(column.Name, index)).Append('\t');
-					}
-
-					sb.Remove(sb.Length - 1, 1);
-					sb.AppendLine();
+					sb.AppendLine(Watch.ToString(watch, _watches.Domain));
 				}
 
 				if (sb.Length > 0)

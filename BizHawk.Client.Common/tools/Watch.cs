@@ -38,7 +38,7 @@ namespace BizHawk.Client.Common
 				var type = Watch.DisplayTypeFromChar(parts[2][0]);
 				var bigEndian = parts[3] == "0" ? false : true;
 				var domain = domains[parts[4]];
-				var notes = parts[5];
+				var notes = parts[5].Trim(new[] { '\r', '\n' });
 
 				return Watch.GenerateWatch(
 					domain,
@@ -55,18 +55,19 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static string ToString(Watch watch, int numdigits)
+		public static string ToString(Watch watch, MemoryDomain domain)
 		{
+			var numDigits = (domain.Size - 1).NumHexDigits();
+
 			var sb = new StringBuilder();
 
 			sb
-				.Append((watch.Address ?? 0).ToHexString(numdigits)).Append('\t')
+				.Append((watch.Address ?? 0).ToHexString(numDigits)).Append('\t')
 				.Append(watch.SizeAsChar).Append('\t')
 				.Append(watch.TypeAsChar).Append('\t')
 				.Append(watch.BigEndian ? '1' : '0').Append('\t')
 				.Append(watch.DomainName).Append('\t')
-				.Append(watch.Notes)
-				.AppendLine();
+				.Append(watch.Notes.Trim(new[] { '\r', '\n' }));
 
 			return sb.ToString();
 		}
