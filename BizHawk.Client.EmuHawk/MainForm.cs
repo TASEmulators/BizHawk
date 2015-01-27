@@ -172,6 +172,16 @@ namespace BizHawk.Client.EmuHawk
 				{
 					cmdDumpType = arg.Substring(arg.IndexOf('=') + 1);
 				}
+				else if (arg.StartsWith("--dump-frames="))
+				{
+					var list = arg.Substring(arg.IndexOf('=') + 1);
+					var items = list.Split(',');
+					_currAviWriterFrameList = new HashSet<int>();
+					for (int j = 0; j < items.Length; j++)
+						_currAviWriterFrameList.Add(int.Parse(items[j]));
+					//automatically set dump length to maximum frame
+					_autoDumpLength = _currAviWriterFrameList.OrderBy(x => x).Last();
+				}
 				else if (arg.StartsWith("--dump-name="))
 				{
 					cmdDumpName = arg.Substring(arg.IndexOf('=') + 1);
@@ -1221,6 +1231,7 @@ namespace BizHawk.Client.EmuHawk
 
 		// AVI/WAV state
 		private IVideoWriter _currAviWriter;
+		private HashSet<int> _currAviWriterFrameList;
 		private ISoundProvider _aviSoundInput;
 		private MetaspuSoundProvider _dumpProxy; // an audio proxy used for dumping
 		private bool _dumpaudiosync; // set true to for experimental AV dumping
@@ -3109,6 +3120,13 @@ namespace BizHawk.Client.EmuHawk
 				//TODO ZERO - this code is pretty jacked. we'll want to frugalize buffers better for speedier dumping, and we might want to rely on the GL layer for padding
 				try
 				{
+					//is this the best time to handle this? or deeper inside?
+					if (_currAviWriterFrameList != null)
+					{
+						if (!_currAviWriterFrameList.Contains(Global.Emulator.Frame))
+							goto HANDLE_AUTODUMP;
+					}
+
 					IVideoProvider output;
 					IDisposable disposableOutput = null;
 					if (_avwriterResizew > 0 && _avwriterResizeh > 0)
@@ -3191,6 +3209,7 @@ namespace BizHawk.Client.EmuHawk
 					AbortAv();
 				}
 
+			HANDLE_AUTODUMP:
 				if (_autoDumpLength > 0)
 				{
 					_autoDumpLength--;
