@@ -41,14 +41,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Closing += (o, e) =>
 			{
-				if (AskSaveChanges())
-				{
-					SaveConfigSettings();
-				}
-				else
-				{
-					e.Cancel = true;
-				}
+				SaveConfigSettings();
 			};
 
 			CheatListView.QueryItemText += CheatListView_QueryItemText;
@@ -121,26 +114,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool AskSaveChanges()
 		{
-			if (Global.CheatList.Changes)
-			{
-				GlobalWin.Sound.StopSound();
-				var result = MessageBox.Show("Save Changes?", "Cheats", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
-				GlobalWin.Sound.StartSound();
-				if (result == DialogResult.Yes)
-				{
-					Global.CheatList.Save();
-				}
-				else if (result == DialogResult.No)
-				{
-					Global.CheatList.Changes = false;
-					return true;
-				}
-				else if (result == DialogResult.Cancel)
-				{
-					return false;
-				}
-			}
-
 			return true;
 		}
 
