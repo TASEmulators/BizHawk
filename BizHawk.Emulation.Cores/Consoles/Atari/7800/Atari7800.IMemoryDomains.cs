@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 							}
 							else if (addr < 0x800)
 							{
-								((Machine7800)theMachine).RAM1[(ushort)addr] = val;
+								((Machine7800)theMachine).RAM1[(ushort)(addr & 0x800)] = val;
 							}
 							else
 							{
