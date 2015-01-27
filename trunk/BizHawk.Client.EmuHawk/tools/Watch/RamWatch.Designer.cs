@@ -461,7 +461,7 @@
 			this.pauseToolStripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Pause;
 			this.pauseToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.pauseToolStripButton.Name = "pauseToolStripButton";
-			this.pauseToolStripButton.Size = new System.Drawing.Size(23, 20);
+			this.pauseToolStripButton.Size = new System.Drawing.Size(23, 22);
 			this.pauseToolStripButton.Text = "Pause";
 			this.pauseToolStripButton.Click += new System.EventHandler(this.PauseMenuItem_Click);
 			// 
@@ -914,6 +914,7 @@
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamWatch_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.NewRamWatch_DragEnter);
 			this.Enter += new System.EventHandler(this.NewRamWatch_Enter);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.WatchListView_KeyDown);
 			this.ListViewContextMenu.ResumeLayout(false);
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();

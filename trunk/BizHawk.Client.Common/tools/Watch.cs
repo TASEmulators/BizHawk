@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
@@ -15,6 +16,60 @@ namespace BizHawk.Client.Common
 		public enum WatchSize { Byte = 1, Word = 2, DWord = 4, Separator = 0 }
 		public enum DisplayType { Separator, Signed, Unsigned, Hex, Binary, FixedPoint_12_4, FixedPoint_20_12, FixedPoint_16_16, Float }
 		public enum PreviousType { Original = 0, LastSearch = 1, LastFrame = 2, LastChange = 3 }
+
+		public static Watch FromString(string line, IMemoryDomains domains)
+		{
+			try
+			{
+				var parts = line.Split(new[] { '\t' }, 6);
+
+				if (parts.Length < 6)
+				{
+					if (parts.Length >= 3 && parts[2] == "_")
+					{
+						return SeparatorWatch.Instance;
+					}
+
+					return null;
+				}
+
+				var address = long.Parse(parts[0], NumberStyles.HexNumber);
+				var size = Watch.SizeFromChar(parts[1][0]);
+				var type = Watch.DisplayTypeFromChar(parts[2][0]);
+				var bigEndian = parts[3] == "0" ? false : true;
+				var domain = domains[parts[4]];
+				var notes = parts[5];
+
+				return Watch.GenerateWatch(
+					domain,
+					address,
+					size,
+					type,
+					notes,
+					bigEndian
+					);
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		public static string ToString(Watch watch, int numdigits)
+		{
+			var sb = new StringBuilder();
+
+			sb
+				.Append((watch.Address ?? 0).ToHexString(numdigits)).Append('\t')
+				.Append(watch.SizeAsChar).Append('\t')
+				.Append(watch.TypeAsChar).Append('\t')
+				.Append(watch.BigEndian ? '1' : '0').Append('\t')
+				.Append(watch.DomainName).Append('\t')
+				.Append(watch.Notes)
+				.AppendLine();
+
+			return sb.ToString();
+		}
 
 		public static string DisplayTypeToString(DisplayType type)
 		{
@@ -365,7 +420,7 @@ namespace BizHawk.Client.Common
 
 		public static bool operator !=(Watch a, Watch b)
 		{
-			return !(a == b);
+			return !a.Equals(b);
 		}
 
 		public static bool operator ==(Watch a, Cheat b)
