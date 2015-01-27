@@ -1487,6 +1487,23 @@ namespace BizHawk.Client.EmuHawk
 			ToggleSearchDependentToolBarItems();
 		}
 
+		private void CopyWatchesToClipBoard()
+		{
+			if (SelectedItems.Any())
+			{
+				var sb = new StringBuilder();
+				foreach (var watch in SelectedItems)
+				{
+					sb.AppendLine(Watch.ToString(watch, _searches.Domain));
+				}
+
+				if (sb.Length > 0)
+				{
+					Clipboard.SetDataObject(sb.ToString());
+				}
+			}
+		}
+
 		#endregion
 
 		#region Compare To Box
@@ -1666,25 +1683,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) // Copy
 			{
-				if (SelectedIndices.Any())
-				{
-					var sb = new StringBuilder();
-					foreach (var index in SelectedIndices)
-					{
-						foreach (ColumnHeader column in WatchListView.Columns)
-						{
-							sb.Append(GetColumnValue(column.Name, index)).Append('\t');
-						}
-
-						sb.Remove(sb.Length - 1, 1);
-						sb.AppendLine();
-					}
-
-					if (sb.Length > 0)
-					{
-						Clipboard.SetDataObject(sb.ToString());
-					}
-				}
+				CopyWatchesToClipBoard();
 			}
 			else if (e.KeyCode == Keys.Escape && !e.Control && !e.Alt && !e.Shift)
 			{
