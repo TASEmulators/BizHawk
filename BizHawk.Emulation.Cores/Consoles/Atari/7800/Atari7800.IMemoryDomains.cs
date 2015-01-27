@@ -59,9 +59,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 						{
 							return bios[addr];
 						},
-						delegate(long addr, byte val)
-						{
-						}));
+						null
+						));
+
 					if (hsc7800 != null)
 					{
 						_MemoryDomains.Add(new MemoryDomain(
@@ -70,9 +70,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 							{
 								return hsbios[addr];
 							},
-							delegate(long addr, byte val)
-							{
-							}));
+							null));
+
 						_MemoryDomains.Add(new MemoryDomain(
 							"HSC RAM", hsram.Length, MemoryDomain.Endian.Unknown,
 							delegate(long addr)
@@ -84,6 +83,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 								hsram[addr] = val;
 							}));
 					}
+
 					_MemoryDomains.Add(new MemoryDomain(
 						"System Bus", 65536, MemoryDomain.Endian.Unknown,
 						delegate(long addr)
