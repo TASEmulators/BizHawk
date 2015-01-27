@@ -1097,7 +1097,14 @@ namespace BizHawk.Client.EmuHawk
 					}
 					catch (LuaScriptException ex)
 					{
-						ConsoleLog(ex.ToString());
+						try
+						{
+							LuaImp.ExecuteString(string.Format("console.log({0})", InputBox.Text));
+						}
+						catch
+						{
+							ConsoleLog(ex.ToString());
+						}
 					}
 					_consoleCommandHistory.Insert(0, InputBox.Text);
 					_consoleCommandHistoryIndex = -1;
