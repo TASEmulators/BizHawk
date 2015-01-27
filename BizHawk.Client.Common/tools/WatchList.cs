@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -104,7 +105,7 @@ namespace BizHawk.Client.Common
 			return _watchList.GetEnumerator();
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}
@@ -393,14 +394,7 @@ namespace BizHawk.Client.Common
 
 				foreach (var watch in _watchList)
 				{
-					sb
-						.Append(string.Format(AddressFormatStr, watch.Address ?? 0)).Append('\t')
-						.Append(watch.SizeAsChar).Append('\t')
-						.Append(watch.TypeAsChar).Append('\t')
-						.Append(watch.BigEndian ? '1' : '0').Append('\t')
-						.Append(watch.DomainName).Append('\t')
-						.Append(watch.Notes)
-						.AppendLine();
+					sb.AppendLine(Watch.ToString(watch, _domain));
 				}
 
 				sw.WriteLine(sb.ToString());
