@@ -228,7 +228,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (GlobalWin.Tools.AskSave())
 				{
-					Global.CheatList.SaveOnClose();
 					CloseGame();
 					Global.MovieSession.Movie.Stop();
 					GlobalWin.Tools.Close();
@@ -3526,6 +3525,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				StopMovie(true);
 			}
+
+			Global.CheatList.SaveOnClose();
 			Global.Emulator.Dispose();
 			Global.CoreComm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals();
