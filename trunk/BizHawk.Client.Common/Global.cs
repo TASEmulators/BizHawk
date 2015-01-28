@@ -22,6 +22,11 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static bool DisableSecondaryThrottling;
 
+		/// <summary>
+		/// How far the sound output buffer can go below full before drastic corrective measures are taken.
+		/// </summary>
+		public static int SoundMaxBufferDeficitMs;
+
 		public static Controller NullControls;
 		public static AutofireController AutofireNullControls;
 

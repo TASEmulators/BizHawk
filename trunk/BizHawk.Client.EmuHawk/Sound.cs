@@ -124,13 +124,16 @@ namespace BizHawk.Client.EmuHawk
 			_lastWriteTime = 0;
 			_lastWriteCursor = 0;
 
-			int minBufferFullnessSamples = MillisecondsToSamples(
+			int minBufferFullnessMs =
 				Global.Config.SoundBufferSizeMs < 80 ? 35 :
 				Global.Config.SoundBufferSizeMs < 100 ? 45 :
-				55);
+				55;
+
 			_outputProvider = new SoundOutputProvider();
-			_outputProvider.MaxSamplesDeficit = BufferSizeSamples - minBufferFullnessSamples;
+			_outputProvider.MaxSamplesDeficit = BufferSizeSamples - MillisecondsToSamples(minBufferFullnessMs);
 			_outputProvider.BaseSoundProvider = _syncSoundProvider;
+
+			Global.SoundMaxBufferDeficitMs = Global.Config.SoundBufferSizeMs - minBufferFullnessMs;
 
 			//LogUnderruns = true;
 			//_outputProvider.LogDebug = true;
@@ -146,6 +149,8 @@ namespace BizHawk.Client.EmuHawk
 			_deviceBuffer = null;
 
 			_outputProvider = null;
+
+			Global.SoundMaxBufferDeficitMs = 0;
 
 			BufferSizeSamples = 0;
 		}
@@ -224,6 +229,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (LogUnderruns) Console.WriteLine("DirectSound underrun detected!");
 					detectedUnderrun = true;
+					_outputProvider.OnUnderrun();
 				}
 			}
 			bool isInitializing = _actualWriteOffsetBytes == -1;

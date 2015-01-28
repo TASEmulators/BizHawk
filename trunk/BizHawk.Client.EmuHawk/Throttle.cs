@@ -321,7 +321,11 @@ namespace BizHawk.Client.EmuHawk
 
 				if (elapsedTime >= timePerFrame)
 				{
-					if (elapsedTime >= timePerFrame * 4)
+					int maxMissedFrames = (int)Math.Ceiling((Global.SoundMaxBufferDeficitMs / 1000.0) / ((double)timePerFrame / afsfreq));
+					if (maxMissedFrames < 3)
+						maxMissedFrames = 3;
+
+					if (elapsedTime > timePerFrame * (ulong)(1 + maxMissedFrames))
 						ltime = ttime;
 					else
 						ltime += timePerFrame;
