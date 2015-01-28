@@ -21,15 +21,12 @@ namespace BizHawk.Client.EmuHawk
 		private const int SampleRate = 44100;
 		private const int ChannelCount = 2;
 		private const int SoftCorrectionThresholdSamples = 5 * SampleRate / 1000;
-		private const int StartupHardCorrectionThresholdSamples = 10 * SampleRate / 1000;
-		// Can't go more than 50 ms or so even if there's enough buffered up in the device
-		// because the clock throttle loses its "rubber band" effect and won't replenish
-		// our buffer. At that point it's better to hard correct than to let the soft
-		// correction cause a major pitch shift.
-		private const int NormalHardCorrectionThresholdSamples = 50 * SampleRate / 1000;
+		private const int StartupMaxSamplesSurplusDeficit = 10 * SampleRate / 1000;
+		private const int MaxSamplesSurplus = 50 * SampleRate / 1000;
 		private const int UsableHistoryLength = 20;
 		private const int MaxHistoryLength = 60;
 		private const int SoftCorrectionLength = 240;
+		private const int BaseMaxConsecutiveEmptyFrames = 1;
 		private const int BaseSampleRateUsableHistoryLength = 60;
 		private const int BaseSampleRateMaxHistoryLength = 300;
 		private const int MinResamplingDistanceSamples = 3;
@@ -39,6 +36,9 @@ namespace BizHawk.Client.EmuHawk
 		private Queue<int> _extraCountHistory = new Queue<int>();
 		private Queue<int> _outputCountHistory = new Queue<int>();
 		private Queue<bool> _hardCorrectionHistory = new Queue<bool>();
+
+		private int _baseConsecutiveEmptyFrames;
+		private Queue<bool> _baseEmptyFrameCorrectionHistory = new Queue<bool>();
 
 		private double _lastAdvertisedSamplesPerFrame;
 		private Queue<int> _baseSamplesPerFrame = new Queue<int>();
@@ -62,6 +62,8 @@ namespace BizHawk.Client.EmuHawk
 			_extraCountHistory.Clear();
 			_outputCountHistory.Clear();
 			_hardCorrectionHistory.Clear();
+			_baseConsecutiveEmptyFrames = 0;
+			_baseEmptyFrameCorrectionHistory.Clear();
 			_lastAdvertisedSamplesPerFrame = 0.0;
 			_baseSamplesPerFrame.Clear();
 			_outputBuffer = new short[0];
@@ -72,6 +74,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				BaseSoundProvider.DiscardSamples();
 			}
+		}
+
+		public void OnUnderrun()
+		{
+			_extraCountHistory.Clear();
+			_outputCountHistory.Clear();
+			_hardCorrectionHistory.Clear();
 		}
 
 		public bool LogDebug { get; set; }
@@ -87,7 +96,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_extraCountHistory.Count >= UsableHistoryLength && !_hardCorrectionHistory.Any(c => c))
 			{
-				double offsetFromTarget = _extraCountHistory.Average();
+				double offsetFromTarget = CalculatePowerMean(_extraCountHistory, 0.6);
 				if (Math.Abs(offsetFromTarget) > SoftCorrectionThresholdSamples)
 				{
 					double correctionSpan = _outputCountHistory.Average() * SoftCorrectionLength;
@@ -99,12 +108,13 @@ namespace BizHawk.Client.EmuHawk
 
 			int bufferSampleCount = _buffer.Count / ChannelCount;
 			int extraSampleCount = bufferSampleCount - idealSampleCount;
-			int hardCorrectionThresholdSamples = _extraCountHistory.Count >= UsableHistoryLength ?
-				Math.Min(NormalHardCorrectionThresholdSamples, MaxSamplesDeficit) :
-				Math.Min(StartupHardCorrectionThresholdSamples, MaxSamplesDeficit);
+			int maxSamplesDeficit = _extraCountHistory.Count >= UsableHistoryLength ?
+				MaxSamplesDeficit : Math.Min(StartupMaxSamplesSurplusDeficit, MaxSamplesDeficit);
+			int maxSamplesSurplus = _extraCountHistory.Count >= UsableHistoryLength ?
+				MaxSamplesSurplus : Math.Min(StartupMaxSamplesSurplusDeficit, MaxSamplesSurplus);
 			bool hardCorrected = false;
 
-			if (extraSampleCount < -hardCorrectionThresholdSamples)
+			if (extraSampleCount < -maxSamplesDeficit)
 			{
 				int generateSampleCount = -extraSampleCount;
 				if (LogDebug) Console.WriteLine("Generating " + generateSampleCount + " samples");
@@ -114,7 +124,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				hardCorrected = true;
 			}
-			else if (extraSampleCount > hardCorrectionThresholdSamples)
+			else if (extraSampleCount > maxSamplesSurplus)
 			{
 				int discardSampleCount = extraSampleCount;
 				if (LogDebug) Console.WriteLine("Discarding " + discardSampleCount + " samples");
@@ -136,8 +146,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (LogDebug)
 			{
-				Console.WriteLine("Avg: {0:0.0} ms, Min: {1:0.0} ms, Max: {2:0.0} ms, Scale: {3:0.0000}",
-					_extraCountHistory.Average() * 1000.0 / SampleRate,
+				Console.WriteLine("Avg: {0:0.0} ms, Min: {1:0.0}, Max: {2:0.0}, Scale: {3:0.0000}",
+					CalculatePowerMean(_extraCountHistory, 0.6) * 1000.0 / SampleRate,
 					_extraCountHistory.Min() * 1000.0 / SampleRate,
 					_extraCountHistory.Max() * 1000.0 / SampleRate,
 					scaleFactor);
@@ -155,6 +165,24 @@ namespace BizHawk.Client.EmuHawk
 
 			BaseSoundProvider.GetSamples(out samples, out count);
 
+			bool correctedEmptyFrame = false;
+			if (count == 0)
+			{
+				_baseConsecutiveEmptyFrames++;
+				if (_baseConsecutiveEmptyFrames > BaseMaxConsecutiveEmptyFrames)
+				{
+					int silenceCount = (int)Math.Round(AdvertisedSamplesPerFrame);
+					samples = Resample(samples, count, silenceCount);
+					count = silenceCount;
+					correctedEmptyFrame = true;
+				}
+			}
+			else if (_baseConsecutiveEmptyFrames != 0)
+			{
+				_baseConsecutiveEmptyFrames = 0;
+			}
+			UpdateHistory(_baseEmptyFrameCorrectionHistory, correctedEmptyFrame, MaxHistoryLength);
+
 			if (AdvertisedSamplesPerFrame != _lastAdvertisedSamplesPerFrame)
 			{
 				_baseSamplesPerFrame.Clear();
@@ -162,7 +190,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			UpdateHistory(_baseSamplesPerFrame, count, BaseSampleRateMaxHistoryLength);
 
-			if (_baseSamplesPerFrame.Count >= BaseSampleRateUsableHistoryLength && !_baseSamplesPerFrame.Any(n => n == 0))
+			if (_baseSamplesPerFrame.Count >= BaseSampleRateUsableHistoryLength &&
+				!_baseEmptyFrameCorrectionHistory.Any(n => n))
 			{
 				double baseAverageSamplesPerFrame = _baseSamplesPerFrame.Average();
 				if (baseAverageSamplesPerFrame != 0.0)
@@ -192,7 +221,13 @@ namespace BizHawk.Client.EmuHawk
 			AddSamplesToBuffer(samples, count);
 		}
 
-		private void UpdateHistory<T>(Queue<T> queue, T value, int maxLength)
+		private static double CalculatePowerMean(IEnumerable<int> values, double power)
+		{
+			double x = values.Average(n => Math.Pow(Math.Abs(n), power) * Math.Sign(n));
+			return Math.Pow(Math.Abs(x), 1.0 / power) * Math.Sign(x);
+		}
+
+		private static void UpdateHistory<T>(Queue<T> queue, T value, int maxLength)
 		{
 			queue.Enqueue(value);
 			while (queue.Count > maxLength)
