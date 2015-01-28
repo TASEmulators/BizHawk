@@ -136,7 +136,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			{
 				try
 				{
-					var tracer = debuggable.MemoryCallbacks;
+					var callbacks = debuggable.MemoryCallbacks;
 					return true;
 				}
 				catch (NotImplementedException)
@@ -146,6 +146,24 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			}
 
 			return false;
+		}
+
+		public static bool MemoryCallbacksAvailable(this IDebuggable core)
+		{
+			if (core == null)
+			{
+				return false;
+			}
+
+			try
+			{
+				var callbacks = core.MemoryCallbacks;
+				return true;
+			}
+			catch (NotImplementedException)
+			{
+				return false;
+			}
 		}
 
 		public static bool CanDisassemble(this IEmulator core)
@@ -161,6 +179,25 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 		public static IDisassemblable AsDissassembler(this IEmulator core)
 		{
 			return (IDisassemblable)core.ServiceProvider.GetService<IDisassemblable>();
+		}
+
+		public static bool CanPoke(this MemoryDomain d)
+		{
+			if (d.PokeByte == null)
+			{
+				return false;
+			}
+			
+			try
+			{
+				d.PokeByte(0, d.PeekByte(0));
+			}
+			catch (NotImplementedException)
+			{
+				return false;
+			}
+
+			return true;
 		}
 
 		// TODO: a better place for these

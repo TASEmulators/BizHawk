@@ -261,6 +261,21 @@
     </Compile>
     <Compile Include="Consoles\Atari\lynx\LibLynx.cs" />
     <Compile Include="Consoles\Atari\lynx\Lynx.cs" />
+    <Compile Include="Consoles\Atari\lynx\Lynx.IInputPollable.cs">
+      <DependentUpon>Lynx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\lynx\Lynx.IMemoryDomains.cs">
+      <DependentUpon>Lynx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\lynx\Lynx.ISaveRam.cs">
+      <DependentUpon>Lynx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\lynx\Lynx.IStatable.cs">
+      <DependentUpon>Lynx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\lynx\Lynx.IVideoProvider.cs">
+      <DependentUpon>Lynx.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Coleco\ColecoVision.cs" />
     <Compile Include="Consoles\Coleco\ColecoVision.IDebuggable.cs">
       <DependentUpon>ColecoVision.cs</DependentUpon>
@@ -288,7 +303,49 @@
     <Compile Include="Consoles\Intellivision\PSG.cs" />
     <Compile Include="Consoles\Intellivision\STIC.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.IDebuggable.cs">
+      <DependentUpon>Gambatte.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.IMemoryDomains.cs">
+      <DependentUpon>Gambatte.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.ISaveRam.cs">
+      <DependentUpon>Gambatte.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.ISettable.cs">
+      <DependentUpon>Gambatte.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.IStatable.cs">
+      <DependentUpon>Gambatte.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.ITraceable.cs">
+      <DependentUpon>Gambatte.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.IVideoProvider.cs">
+      <DependentUpon>Gambatte.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IDebuggable.cs">
+      <DependentUpon>GambatteLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IInputPollable.cs">
+      <DependentUpon>GambatteLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IMemoryDomains.cs">
+      <DependentUpon>GambatteLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.ISaveRam.cs">
+      <DependentUpon>GambatteLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.ISettable.cs">
+      <DependentUpon>GambatteLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IStatable.cs">
+      <DependentUpon>GambatteLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IVideoProvider.cs">
+      <DependentUpon>GambatteLink.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GBColors.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\GBDisassembler.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\LibGambatte.cs" />
@@ -297,9 +354,48 @@
     <Compile Include="Consoles\Nintendo\GBA\LibMeteor.cs" />
     <Compile Include="Consoles\Nintendo\GBA\LibVBANext.cs" />
     <Compile Include="Consoles\Nintendo\GBA\Meteor.cs" />
+    <Compile Include="Consoles\Nintendo\GBA\Meteor.IGBAGPUViewable.cs">
+      <DependentUpon>Meteor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\Meteor.IMemoryDomains.cs">
+      <DependentUpon>Meteor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\Meteor.ISaveRam.cs">
+      <DependentUpon>Meteor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\Meteor.IStatable.cs">
+      <DependentUpon>Meteor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\Meteor.IVideoProvider.cs">
+      <DependentUpon>Meteor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBANext.cs" />
+    <Compile Include="Consoles\Nintendo\GBA\VBANext.IDebuggable.cs">
+      <DependentUpon>VBANext.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\VBANext.IGBAGPUViewable.cs">
+      <DependentUpon>VBANext.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\VBANext.IMemoryDomains.cs">
+      <DependentUpon>VBANext.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\VBANext.ISaveRam.cs">
+      <DependentUpon>VBANext.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\VBANext.ISettings.cs">
+      <DependentUpon>VBANext.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\VBANext.IStatable.cs">
+      <DependentUpon>VBANext.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\VBANext.IVideoProvider.cs">
+      <DependentUpon>VBANext.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBARegisterHelper.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64.IDebuggable.cs">
+      <DependentUpon>N64.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\N64\N64.IDisassemblable.cs">
       <DependentUpon>N64.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\N64\N64.IInputPollable.cs">
@@ -333,7 +429,6 @@
     <Compile Include="Consoles\Nintendo\N64\NativeApi\mupen64plusInputApi.cs" />
     <Compile Include="Consoles\Nintendo\N64\NativeApi\mupen64plusVideoApi.cs" />
     <Compile Include="Consoles\Nintendo\NES\APU.cs" />
-    <Compile Include="Consoles\Nintendo\NES\BoardSystem.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\AVE-NINA.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\AxROM.cs">
       <SubType>Code</SubType>
@@ -498,14 +593,38 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\VRC6.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\VRC7.cs" />
     <Compile Include="Consoles\Nintendo\NES\BisqAPU.cs" />
-    <Compile Include="Consoles\Nintendo\NES\Core.cs" />
     <Compile Include="Consoles\Nintendo\NES\FDS\FDS.cs" />
     <Compile Include="Consoles\Nintendo\NES\FDS\FDSAudio.cs" />
     <Compile Include="Consoles\Nintendo\NES\FDS\RamAdapter.cs" />
-    <Compile Include="Consoles\Nintendo\NES\iNES.cs" />
     <Compile Include="Consoles\Nintendo\NES\INESPPUViewable.cs" />
+    <Compile Include="Consoles\Nintendo\NES\NES.BoardSystem.cs" />
+    <Compile Include="Consoles\Nintendo\NES\NES.Core.cs" />
     <Compile Include="Consoles\Nintendo\NES\NES.cs" />
-    <Compile Include="Consoles\Nintendo\NES\NES.INESPPUViewable.cs" />
+    <Compile Include="Consoles\Nintendo\NES\NES.IDebuggable.cs">
+      <DependentUpon>NES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\NES\NES.IDriveLight.cs">
+      <DependentUpon>NES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\NES\NES.IInputPollable.cs">
+      <DependentUpon>NES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\NES\NES.IMemoryDomains.cs">
+      <DependentUpon>NES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\NES\NES.iNES.cs" />
+    <Compile Include="Consoles\Nintendo\NES\NES.INESPPUViewable.cs">
+      <DependentUpon>NES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\NES\NES.ISaveRam.cs">
+      <DependentUpon>NES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\NES\NES.ISettable.cs">
+      <DependentUpon>NES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\NES\NES.IStatable.cs">
+      <DependentUpon>NES.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\NES\NESControllers.cs" />
     <Compile Include="Consoles\Nintendo\NES\Palettes.cs" />
     <Compile Include="Consoles\Nintendo\NES\PPU.cs" />
@@ -515,6 +634,33 @@
     <Compile Include="Consoles\Nintendo\QuickNES\LibQuickNES.cs" />
     <Compile Include="Consoles\Nintendo\QuickNES\Nes_NTSC_Colors.cs" />
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.cs" />
+    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IDebuggable.cs">
+      <DependentUpon>QuickNES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IDisassembler.cs">
+      <DependentUpon>QuickNES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IInputPollable.cs">
+      <DependentUpon>QuickNES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IMemoryDomains.cs">
+      <DependentUpon>QuickNES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.INESPPUViewable.cs">
+      <DependentUpon>QuickNES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.ISaveRam.cs">
+      <DependentUpon>QuickNES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.ISettable.cs">
+      <DependentUpon>QuickNES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IStatable.cs">
+      <DependentUpon>QuickNES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IVideoProvider.cs">
+      <DependentUpon>QuickNES.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\SNES9X\LibSnes9x.cs" />
     <Compile Include="Consoles\Nintendo\SNES9X\Snes9x.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi.cs" />
@@ -527,16 +673,18 @@
     <Compile Include="Consoles\Nintendo\SNES\SnesColors.cs" />
     <Compile Include="Consoles\Nintendo\SNES\SNESGraphicsDecoder.cs" />
     <Compile Include="Consoles\PC Engine\ADPCM.cs" />
-    <Compile Include="Consoles\PC Engine\ArcadeCard.cs" />
-    <Compile Include="Consoles\PC Engine\CDLMapping.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.TurboCD.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.Populous.cs" />
+    <Compile Include="Consoles\PC Engine\PCEngine.ArcadeCard.cs" />
+    <Compile Include="Consoles\PC Engine\PCEngine.CDLMapping.cs" />
+    <Compile Include="Consoles\PC Engine\PCEngine.Input.cs" />
+    <Compile Include="Consoles\PC Engine\PCEngine.TurboCD.cs" />
     <Compile Include="Consoles\PC Engine\ScsiCDBus.cs" />
-    <Compile Include="Consoles\PC Engine\TurboCD.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\EEPROM.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\RomHeader.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\SaveRAM.cs" />
-    <Compile Include="Consoles\Sega\Genesis\Input.cs" />
+    <Compile Include="Consoles\Sega\Genesis\Genesis.Input.cs" />
+    <Compile Include="Consoles\Sega\Genesis\Genesis.IO.cs" />
     <Compile Include="Consoles\Sega\Genesis\Native68000\Musashi.cs" />
     <Compile Include="Consoles\Sega\gpgx\GenDbgHlp.cs" />
     <Compile Include="Consoles\Sega\gpgx\GPGX.cs" />
@@ -563,6 +711,7 @@
     <Compile Include="Consoles\Sega\Saturn\Yabause.IStatable.cs">
       <DependentUpon>Yabause.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Sega\SMS\SMS.Input.cs" />
     <Compile Include="Consoles\Sega\SMS\TerebiOekaki.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.Korea.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.ExtRam.cs" />
@@ -580,6 +729,12 @@
     <Compile Include="Consoles\WonderSwan\WonderSwan.Controller.cs">
       <DependentUpon>WonderSwan.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\WonderSwan\WonderSwan.IMemoryDomains.cs">
+      <DependentUpon>WonderSwan.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\WonderSwan\WonderSwan.ISaveRam.cs">
+      <DependentUpon>WonderSwan.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\WonderSwan\WonderSwan.ISettable.cs">
       <DependentUpon>WonderSwan.cs</DependentUpon>
     </Compile>
@@ -587,6 +742,7 @@
       <DependentUpon>WonderSwan.cs</DependentUpon>
     </Compile>
     <Compile Include="CoreInventory.cs" />
+    <Compile Include="CPUs\W65816\Disassembler.cs" />
     <Compile Include="CPUs\68000\Diassembler.cs" />
     <Compile Include="CPUs\68000\Instructions\BitArithemetic.cs" />
     <Compile Include="CPUs\68000\Instructions\DataMovement.cs" />
@@ -629,7 +785,6 @@
     <Compile Include="FileID.cs" />
     <Compile Include="LibRetro.cs" />
     <Compile Include="LibRetroEmulator.cs" />
-    <Compile Include="Consoles\PC Engine\Input.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.SF2.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.SuperGrafx.cs" />
@@ -643,10 +798,8 @@
     <Compile Include="Consoles\Sega\Genesis\GenVDP.cs" />
     <Compile Include="Consoles\Sega\Genesis\GenVDP.DMA.cs" />
     <Compile Include="Consoles\Sega\Genesis\GenVDP.Render.cs" />
-    <Compile Include="Consoles\Sega\Genesis\IO.cs" />
     <Compile Include="Consoles\Sega\Genesis\MemoryMap.68000.cs" />
     <Compile Include="Consoles\Sega\Genesis\MemoryMap.Z80.cs" />
-    <Compile Include="Consoles\Sega\SMS\Input.cs" />
     <Compile Include="Consoles\Sega\SMS\SMS.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.cs" />
   </ItemGroup>

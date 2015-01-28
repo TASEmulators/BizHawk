@@ -9,19 +9,7 @@ namespace BizHawk.Emulation.Common
 	{
 		public enum Endian { Big, Little, Unknown }
 
-		public readonly string Name;
-
-		/// <summary>
-		/// Special note: if this is 0, the memorydomain is 0x100000000 (full 32bits) in size.
-		/// This was judged to be less of a mess than using a bunch of longs everywhere.
-		/// </summary>
-		public readonly int Size;
-		public readonly Endian EndianType;
-
-		public readonly Func<int, byte> PeekByte;
-		public readonly Action<int, byte> PokeByte;
-
-		public MemoryDomain(string name, int size, Endian endian, Func<int, byte> peekByte, Action<int, byte> pokeByte)
+		public MemoryDomain(string name, long size, Endian endian, Func<long, byte> peekByte, Action<long, byte> pokeByte)
 		{
 			Name = name;
 			Size = size;
@@ -30,81 +18,115 @@ namespace BizHawk.Emulation.Common
 			PokeByte = pokeByte;
 		}
 
+		public string Name { get; private set; }
+
+		public long Size { get; private set; }
+
+		public Endian EndianType { get; private set; }
+
+		public Func<long, byte> PeekByte { get; private set; }
+
+		public Action<long, byte> PokeByte { get; private set; }
+
+		/// <summary>
+		/// creates a memorydomain that references a managed byte array
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="endian"></param>
+		/// <param name="data"></param>
+		/// <param name="writable">if false, writes will be ignored</param>
+		/// <returns></returns>
+		public static MemoryDomain FromByteArray(string name, Endian endian, byte[] data, bool writable = true)
+		{
+			if (data == null)
+				throw new ArgumentNullException("data");
+			return new MemoryDomain
+			(
+				name,
+				data.Length,
+				endian,
+				delegate(long addr)
+				{
+					return data[addr];
+				},
+				writable ?
+				delegate(long addr, byte val)
+				{
+					data[addr] = val;
+				}
+				: (Action<long, byte>)null
+			);
+		}
+
 		/// <summary>
 		/// create a memorydomain that references an unmanaged memory block
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="size"></param>
-		/// <param name="endian"></param>
 		/// <param name="data">must remain valid as long as the MemoryDomain exists!</param>
 		/// <param name="writable">if false, writes will be ignored</param>
 		/// <returns></returns>
-		public unsafe static MemoryDomain FromIntPtr(string name, int size, Endian endian, IntPtr data, bool writable = true)
+		public unsafe static MemoryDomain FromIntPtr(string name, long size, Endian endian, IntPtr data, bool writable = true)
 		{
 			if (data == IntPtr.Zero)
 				throw new ArgumentNullException("data");
-			if (size <= 0)
+			if ((ulong)size >= 0x80000000)
 				throw new ArgumentOutOfRangeException("size");
 			byte* p = (byte*)data;
+			uint l = (uint)size;
 			return new MemoryDomain
 			(
 				name,
 				size,
 				endian,
-				delegate(int addr)
+				delegate(long addr)
 				{
-					if ((uint)addr >= size)
+					if ((uint)addr >= l)
 						throw new ArgumentOutOfRangeException();
 					return p[addr];
 				},
-				delegate(int addr, byte val)
+				writable ?
+				delegate(long addr, byte val)
 				{
-					if (writable)
-					{
-						if ((uint)addr >= size)
-							throw new ArgumentOutOfRangeException();
-						p[addr] = val;
-					}
+					if ((uint)addr >= l)
+						throw new ArgumentOutOfRangeException();
+					p[addr] = val;
 				}
+				: (Action<long, byte>)null
 			);
 		}
 
 		/// <summary>
 		/// create a memorydomain that references an unmanaged memory block with 16 bit swaps
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="size"></param>
-		/// <param name="endian"></param>
 		/// <param name="data">must remain valid as long as the MemoryDomain exists!</param>
 		/// <param name="writable">if false, writes will be ignored</param>
 		/// <returns></returns>
-		public unsafe static MemoryDomain FromIntPtrSwap16(string name, int size, Endian endian, IntPtr data, bool writable = true)
+		public unsafe static MemoryDomain FromIntPtrSwap16(string name, long size, Endian endian, IntPtr data, bool writable = true)
 		{
 			if (data == IntPtr.Zero)
 				throw new ArgumentNullException("data");
-			if (size <= 0)
+			if ((ulong)size >= 0x80000000)
 				throw new ArgumentOutOfRangeException("size");
 			byte* p = (byte*)data;
+			uint l = (uint)size;
 			return new MemoryDomain
 			(
 				name,
 				size,
 				endian,
-				delegate(int addr)
+				delegate(long addr)
 				{
-					if (addr < 0 || addr >= size)
+					if ((uint)addr >= l)
 						throw new ArgumentOutOfRangeException();
 					return p[addr ^ 1];
 				},
-				delegate(int addr, byte val)
+				writable ?
+				delegate(long addr, byte val)
 				{
-					if (writable)
-					{
-						if (addr < 0 || addr >= size)
-							throw new ArgumentOutOfRangeException();
-						p[addr ^ 1] = val;
-					}
+					if ((uint)addr >= l)
+						throw new ArgumentOutOfRangeException();
+					p[addr ^ 1] = val;
 				}
+				: (Action<long, byte>)null
 			);
 		}
 
@@ -113,7 +135,7 @@ namespace BizHawk.Emulation.Common
 			return Name;
 		}
 
-		public ushort PeekWord(int addr, bool bigEndian)
+		public ushort PeekWord(long addr, bool bigEndian)
 		{
 			Endian endian = bigEndian ? Endian.Big : Endian.Little;
 			switch (endian)
@@ -126,7 +148,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public uint PeekDWord(int addr, bool bigEndian)
+		public uint PeekDWord(long addr, bool bigEndian)
 		{
 			Endian endian = bigEndian ? Endian.Big : Endian.Little;
 			switch (endian)
@@ -145,7 +167,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public void PokeWord(int addr, ushort val, bool bigEndian)
+		public void PokeWord(long addr, ushort val, bool bigEndian)
 		{
 			Endian endian = bigEndian ? Endian.Big : Endian.Little;
 			switch (endian)
@@ -162,7 +184,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public void PokeDWord(int addr, uint val, bool bigEndian)
+		public void PokeDWord(long addr, uint val, bool bigEndian)
 		{
 			Endian endian = bigEndian ? Endian.Big : Endian.Little;
 			switch (endian)
@@ -184,19 +206,14 @@ namespace BizHawk.Emulation.Common
 		}
 	}
 
-	public class MemoryDomainList : ReadOnlyCollection<MemoryDomain>, IMemoryDomainList
+	public class MemoryDomainList : ReadOnlyCollection<MemoryDomain>, IMemoryDomains
 	{
-		private readonly int _mainMemoryIndex;
+		private MemoryDomain _mainMemory;
+		private MemoryDomain _systemBus;
 
 		public MemoryDomainList(IList<MemoryDomain> domains) 
 			: base(domains)
 		{
-		}
-
-		public MemoryDomainList(IList<MemoryDomain> domains, int mainMemoryIndex)
-			: this(domains)
-		{
-			_mainMemoryIndex = mainMemoryIndex;
 		}
 
 		public MemoryDomain this[string name]
@@ -211,23 +228,48 @@ namespace BizHawk.Emulation.Common
 		{
 			get
 			{
-				return this[_mainMemoryIndex];
+				if (_mainMemory != null)
+				{
+					return _mainMemory;
+				}
+
+				return this.First();
+			}
+
+			set
+			{
+				_mainMemory = value;
 			}
 		}
 
-		public bool HasCheatDomain
+		public bool HasSystemBus
 		{
 			get
 			{
+				if (_systemBus != null)
+				{
+					return true;
+				}
+
 				return this.Any(x => x.Name == "System Bus");
 			}
 		}
 
-		public MemoryDomain CheatDomain
+		public MemoryDomain SystemBus
 		{
 			get
 			{
+				if (_systemBus != null)
+				{
+					return _systemBus;
+				}
+
 				return this.FirstOrDefault(x => x.Name == "System Bus");
+			}
+
+			set
+			{
+				_systemBus = value;
 			}
 		}
 	}

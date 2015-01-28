@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace BizHawk.Client.Common
 {
 	public class WatchList : IList<Watch>
 	{
-		private IMemoryDomains _core;
+		private IMemoryDomains _memoryDomains;
 		private List<Watch> _watchList = new List<Watch>();
 		private MemoryDomain _domain;
 		private string _currentFilename = string.Empty;
@@ -28,21 +29,21 @@ namespace BizHawk.Client.Common
 
 		public WatchList(IMemoryDomains core, MemoryDomain domain, string systemid)
 		{
-			_core = core;
+			_memoryDomains = core;
 			_domain = domain;
 			_systemid = systemid;
 		}
 
 		public void RefreshDomans(IMemoryDomains core, MemoryDomain domain)
 		{
-			_core = core;
+			_memoryDomains = core;
 			_domain = domain;
 
 			_watchList.ForEach(w =>
 			{
 				if (w.Domain != null)
 				{
-					w.Domain = _core.MemoryDomains[w.Domain.Name];
+					w.Domain = _memoryDomains[w.Domain.Name];
 				}
 			});
 		}
@@ -104,7 +105,7 @@ namespace BizHawk.Client.Common
 			return _watchList.GetEnumerator();
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}
@@ -393,14 +394,7 @@ namespace BizHawk.Client.Common
 
 				foreach (var watch in _watchList)
 				{
-					sb
-						.Append(string.Format(AddressFormatStr, watch.Address ?? 0)).Append('\t')
-						.Append(watch.SizeAsChar).Append('\t')
-						.Append(watch.TypeAsChar).Append('\t')
-						.Append(watch.BigEndian ? '1' : '0').Append('\t')
-						.Append(watch.DomainName).Append('\t')
-						.Append(watch.Notes)
-						.AppendLine();
+					sb.AppendLine(Watch.ToString(watch, _domain));
 				}
 
 				sw.WriteLine(sb.ToString());
@@ -489,7 +483,7 @@ namespace BizHawk.Client.Common
 
 					// Temporary, rename if kept
 					int addr;
-					var memDomain = _core.MemoryDomains.MainMemory;
+					var memDomain = _memoryDomains.MainMemory;
 
 					var temp = line.Substring(0, line.IndexOf('\t'));
 					try
@@ -527,7 +521,7 @@ namespace BizHawk.Client.Common
 						startIndex = line.IndexOf('\t') + 1;
 						line = line.Substring(startIndex, line.Length - startIndex);   // Domain
 						temp = line.Substring(0, line.IndexOf('\t'));
-						memDomain = _core.MemoryDomains[temp] ?? _core.MemoryDomains.MainMemory;
+						memDomain = _memoryDomains[temp] ?? _memoryDomains.MainMemory;
 					}
 
 					startIndex = line.IndexOf('\t') + 1;
@@ -541,10 +535,10 @@ namespace BizHawk.Client.Common
 							type,
 							notes,
 							bigEndian));
-					_domain = _core.MemoryDomains[domain];
+					_domain = _memoryDomains[domain];
 				}
 
-				Domain = _core.MemoryDomains[domain] ?? _core.MemoryDomains.MainMemory;
+				Domain = _memoryDomains[domain] ?? _memoryDomains.MainMemory;
 				_currentFilename = path;
 			}
 

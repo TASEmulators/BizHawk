@@ -265,6 +265,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		delegate m64p_error CoreDoCommandRenderCallback(m64p_command Command, int ParamInt, RenderCallback ParamPtr);
 		CoreDoCommandRenderCallback m64pCoreDoCommandRenderCallback;
 
+		//WARNING - RETURNS A STATIC BUFFER
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate IntPtr biz_r4300_decode_op(uint instr, uint counter);
+		public biz_r4300_decode_op m64p_decode_op; 
+
 		/// <summary>
 		/// Reads from the "system bus"
 		/// </summary>
@@ -499,6 +504,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 			m64p_read_memory_8 = (biz_read_memory)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "biz_read_memory"), typeof(biz_read_memory));
 			m64p_write_memory_8 = (biz_write_memory)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "biz_write_memory"), typeof(biz_write_memory));
+
+			m64p_decode_op = (biz_r4300_decode_op)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "biz_r4300_decode_op"), typeof(biz_r4300_decode_op));
 		}
 
 		/// <summary>

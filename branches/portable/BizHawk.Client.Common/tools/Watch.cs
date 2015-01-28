@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
@@ -13,8 +14,63 @@ namespace BizHawk.Client.Common
 	public abstract class Watch
 	{
 		public enum WatchSize { Byte = 1, Word = 2, DWord = 4, Separator = 0 }
-		public enum DisplayType { Separator, Signed, Unsigned, Hex, Binary, FixedPoint_12_4, FixedPoint_20_12, Float }
+		public enum DisplayType { Separator, Signed, Unsigned, Hex, Binary, FixedPoint_12_4, FixedPoint_20_12, FixedPoint_16_16, Float }
 		public enum PreviousType { Original = 0, LastSearch = 1, LastFrame = 2, LastChange = 3 }
+
+		public static Watch FromString(string line, IMemoryDomains domains)
+		{
+			try
+			{
+				var parts = line.Split(new[] { '\t' }, 6);
+
+				if (parts.Length < 6)
+				{
+					if (parts.Length >= 3 && parts[2] == "_")
+					{
+						return SeparatorWatch.Instance;
+					}
+
+					return null;
+				}
+
+				var address = long.Parse(parts[0], NumberStyles.HexNumber);
+				var size = Watch.SizeFromChar(parts[1][0]);
+				var type = Watch.DisplayTypeFromChar(parts[2][0]);
+				var bigEndian = parts[3] == "0" ? false : true;
+				var domain = domains[parts[4]];
+				var notes = parts[5].Trim(new[] { '\r', '\n' });
+
+				return Watch.GenerateWatch(
+					domain,
+					address,
+					size,
+					type,
+					notes,
+					bigEndian
+					);
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		public static string ToString(Watch watch, MemoryDomain domain)
+		{
+			var numDigits = (domain.Size - 1).NumHexDigits();
+
+			var sb = new StringBuilder();
+
+			sb
+				.Append((watch.Address ?? 0).ToHexString(numDigits)).Append('\t')
+				.Append(watch.SizeAsChar).Append('\t')
+				.Append(watch.TypeAsChar).Append('\t')
+				.Append(watch.BigEndian ? '1' : '0').Append('\t')
+				.Append(watch.DomainName).Append('\t')
+				.Append(watch.Notes.Trim(new[] { '\r', '\n' }));
+
+			return sb.ToString();
+		}
 
 		public static string DisplayTypeToString(DisplayType type)
 		{
@@ -26,6 +82,8 @@ namespace BizHawk.Client.Common
 					return "Fixed Point 12.4";
 				case DisplayType.FixedPoint_20_12:
 					return "Fixed Point 20.12";
+				case DisplayType.FixedPoint_16_16:
+					return "Fixed Point 16.16";
 			}
 		}
 
@@ -39,10 +97,12 @@ namespace BizHawk.Client.Common
 					return DisplayType.FixedPoint_12_4;
 				case "Fixed Point 20.12":
 					return DisplayType.FixedPoint_20_12;
+				case "Fixed Point 16.16":
+					return DisplayType.FixedPoint_16_16;
 			}
 		}
 
-		protected int _address;
+		protected long _address;
 		protected MemoryDomain _domain;
 		protected DisplayType _type;
 		protected bool _bigEndian;
@@ -68,7 +128,7 @@ namespace BizHawk.Client.Common
 
 		public string DomainName { get { return _domain != null ? _domain.Name : string.Empty; } }
 
-		public virtual int? Address { get { return _address; } }
+		public virtual long? Address { get { return _address; } }
 
 		public virtual string AddressString { get { return _address.ToString(AddressFormatStr); } }
 
@@ -130,6 +190,8 @@ namespace BizHawk.Client.Common
 						return '1';
 					case DisplayType.FixedPoint_20_12:
 						return '2';
+					case DisplayType.FixedPoint_16_16:
+						return '3';
 					case DisplayType.Float:
 						return 'f';
 				}
@@ -155,6 +217,8 @@ namespace BizHawk.Client.Common
 					return DisplayType.FixedPoint_12_4;
 				case '2':
 					return DisplayType.FixedPoint_20_12;
+				case '3':
+					return DisplayType.FixedPoint_16_16;
 				case 'f':
 					return DisplayType.Float;
 			}
@@ -263,7 +327,7 @@ namespace BizHawk.Client.Common
 
 		public string Notes { get { return _notes; } set { _notes = value; } }
 
-		public static Watch GenerateWatch(MemoryDomain domain, int address, WatchSize size, DisplayType type, string notes, bool bigEndian)
+		public static Watch GenerateWatch(MemoryDomain domain, long address, WatchSize size, DisplayType type, string notes, bool bigEndian)
 		{
 			switch (size)
 			{
@@ -279,7 +343,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static Watch GenerateWatch(MemoryDomain domain, int address, WatchSize size, DisplayType type, bool bigendian, long prev, int changecount)
+		public static Watch GenerateWatch(MemoryDomain domain, long address, WatchSize size, DisplayType type, bool bigendian, long prev, int changecount)
 		{
 			switch (size)
 			{
@@ -341,7 +405,7 @@ namespace BizHawk.Client.Common
 
 		public override int GetHashCode()
 		{
-			return this.Domain.GetHashCode() + this.Address ?? 0;
+			return this.Domain.GetHashCode() + (int)(this.Address ?? 0);
 		}
 
 		public static bool operator ==(Watch a, Watch b)
@@ -357,7 +421,7 @@ namespace BizHawk.Client.Common
 
 		public static bool operator !=(Watch a, Watch b)
 		{
-			return !(a == b);
+			return !a.Equals(b);
 		}
 
 		public static bool operator ==(Watch a, Cheat b)
@@ -384,7 +448,7 @@ namespace BizHawk.Client.Common
 			get { return new SeparatorWatch(); }
 		}
 
-		public override int? Address
+		public override long? Address
 		{
 			get { return null; }
 		}
@@ -464,7 +528,7 @@ namespace BizHawk.Client.Common
 		private byte _previous;
 		private byte _value;
 
-		public ByteWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, string notes)
+		public ByteWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string notes)
 		{
 			_address = address;
 			_domain = domain;
@@ -481,14 +545,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public ByteWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, byte prev, int changeCount, string notes = null)
+		public ByteWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, byte prev, int changeCount, string notes = null)
 			: this(domain, address, type, bigEndian, notes)
 		{
 			_previous = prev;
 			_changecount = changeCount;
 		}
 
-		public override int? Address
+		public override long? Address
 		{
 			get { return _address; }
 		}
@@ -692,7 +756,7 @@ namespace BizHawk.Client.Common
 		private ushort _previous;
 		private ushort _value;
 
-		public WordWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, string notes)
+		public WordWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string notes)
 		{
 			_domain = domain;
 			_address = address;
@@ -711,7 +775,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public WordWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, ushort prev, int changeCount, string notes = null)
+		public WordWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, ushort prev, int changeCount, string notes = null)
 			: this(domain, address, type, bigEndian, notes)
 		{
 			_previous = prev;
@@ -911,7 +975,7 @@ namespace BizHawk.Client.Common
 		private uint _value;
 		private uint _previous;
 
-		public DWordWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, string notes)
+		public DWordWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string notes)
 		{
 			_domain = domain;
 			_address = address;
@@ -930,7 +994,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public DWordWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, uint prev, int changeCount, string notes = null)
+		public DWordWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, uint prev, int changeCount, string notes = null)
 			: this(domain, address, type, bigEndian, notes)
 		{
 			_previous = prev;
@@ -970,7 +1034,7 @@ namespace BizHawk.Client.Common
 			{
 				return new List<DisplayType>
 					{
-					DisplayType.Unsigned, DisplayType.Signed, DisplayType.Hex, DisplayType.FixedPoint_20_12, DisplayType.Float
+					DisplayType.Unsigned, DisplayType.Signed, DisplayType.Hex, DisplayType.FixedPoint_20_12, DisplayType.FixedPoint_16_16, DisplayType.Float
 				};
 			}
 		}
@@ -1003,6 +1067,8 @@ namespace BizHawk.Client.Common
 					return val.ToHexString(8);
 				case DisplayType.FixedPoint_20_12:
 					return string.Format("{0:0.######}", val / 4096.0);
+				case DisplayType.FixedPoint_16_16:
+					return string.Format("{0:0.######}", val / 65536.0);
 				case DisplayType.Float:
 					var bytes = BitConverter.GetBytes(val);
 					var _float = BitConverter.ToSingle(bytes, 0);
@@ -1055,6 +1121,17 @@ namespace BizHawk.Client.Common
 						if (value.IsFixedPoint())
 						{
 							val = (uint)(int)(double.Parse(value) * 4096.0);
+						}
+						else
+						{
+							return false;
+						}
+
+						break;
+					case DisplayType.FixedPoint_16_16:
+						if (value.IsFixedPoint())
+						{
+							val = (uint)(int)(double.Parse(value) * 65536.0);
 						}
 						else
 						{

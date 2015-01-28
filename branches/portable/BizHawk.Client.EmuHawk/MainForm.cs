@@ -181,6 +181,16 @@ namespace BizHawk.Client.EmuHawk
 				{
 					cmdDumpType = arg.Substring(arg.IndexOf('=') + 1);
 				}
+				else if (arg.StartsWith("--dump-frames="))
+				{
+					var list = arg.Substring(arg.IndexOf('=') + 1);
+					var items = list.Split(',');
+					_currAviWriterFrameList = new HashSet<int>();
+					for (int j = 0; j < items.Length; j++)
+						_currAviWriterFrameList.Add(int.Parse(items[j]));
+					//automatically set dump length to maximum frame
+					_autoDumpLength = _currAviWriterFrameList.OrderBy(x => x).Last();
+				}
 				else if (arg.StartsWith("--dump-name="))
 				{
 					cmdDumpName = arg.Substring(arg.IndexOf('=') + 1);
@@ -227,7 +237,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (GlobalWin.Tools.AskSave())
 				{
-					Global.CheatList.SaveOnClose();
 					CloseGame();
 					Global.MovieSession.Movie.Stop();
 					GlobalWin.Tools.Close();
@@ -523,6 +532,41 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion`
 
+		#region Pause
+
+		private bool _emulatorPaused;
+		public bool EmulatorPaused
+		{
+			get
+			{
+				return _emulatorPaused;
+			}
+
+			private set
+			{
+				_emulatorPaused = value;
+				if (OnPauseChanged != null)
+				{
+					OnPauseChanged(this, new PauseChangedEventArgs(_emulatorPaused));
+				}
+			}
+		}
+
+		public delegate void PauseChangedEventHandler(object sender, PauseChangedEventArgs e);
+		public event PauseChangedEventHandler OnPauseChanged;
+
+		public class PauseChangedEventArgs : EventArgs
+		{
+			public PauseChangedEventArgs(bool paused)
+			{
+				Paused = paused;
+			}
+
+			public bool Paused { get; private set; }
+		}
+
+		#endregion
+
 		#region Properties
 
 		public string CurrentlyOpenRom;
@@ -533,7 +577,6 @@ namespace BizHawk.Client.EmuHawk
 		public bool TurboFastForward = false;
 		public bool RestoreReadWriteOnStop = false;
 		public bool UpdateFrame = false;
-		public bool EmulatorPaused { get; private set; }
 
 		private int? _pauseOnFrame;
 		public int? PauseOnFrame // If set, upon completion of this frame, the client wil pause
@@ -583,6 +626,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					{ "A26", "Atari 2600" },
 					{ "A78", "Atari 7800" },
+					{ "Lynx", "Atari Lynx" },
 
 					{ "NES", "Nintendo Entertainment System/Famicom" },
 					{ "SNES", "Super Nintendo" },
@@ -590,6 +634,9 @@ namespace BizHawk.Client.EmuHawk
 
 					{ "GB", "Game Boy" },
 					{ "GBC", "Game Boy Color" },
+					{ "GBA", "Gameboy Advance" },
+
+					{ "PSX", "Playstation" },
 
 					{ "SMS", "Sega Master System" },
 					{ "GG", "Sega Game Gear" },
@@ -603,7 +650,6 @@ namespace BizHawk.Client.EmuHawk
 					{ "TI83", "TI-83 Calculator" },
 
 					{ "WSWAN", "WonderSwan" },
-                    { "GBA", "Gameboy Advance" }
 				};
 
 				if (VersionInfo.DeveloperBuild)
@@ -785,18 +831,19 @@ namespace BizHawk.Client.EmuHawk
 			// also handle floats
 			conInput.AcceptNewFloats(Input.Instance.GetFloats().Select(o =>
 				{
+				var video = Global.Emulator.VideoProvider();
 					// hackish
 					if (o.Item1 == "WMouse X")
 					{
 					var P = GlobalWin.DisplayManager.UntransformPoint(new Point((int)o.Item2, 0));
-						float x = P.X / (float)Global.Emulator.VideoProvider.BufferWidth;
+					float x = P.X / (float)video.BufferWidth;
 						return new Tuple<string, float>("WMouse X", x * 20000 - 10000);
 				}
 					
 				if (o.Item1 == "WMouse Y")
 					{
 					var P = GlobalWin.DisplayManager.UntransformPoint(new Point(0, (int)o.Item2));
-						float y = P.Y / (float)Global.Emulator.VideoProvider.BufferHeight;
+					float y = P.Y / (float)video.BufferHeight;
 						return new Tuple<string, float>("WMouse Y", y * 20000 - 10000);
 					}
 					
@@ -873,7 +920,7 @@ namespace BizHawk.Client.EmuHawk
 			// run this entire thing exactly twice, since the first resize may adjust the menu stacking
 			for (int i = 0; i < 2; i++)
 			{
-				var video = Global.Emulator.VideoProvider;
+				var video = Global.Emulator.VideoProvider();
 				int zoom = Global.Config.TargetZoomFactor;
 				var area = Screen.FromControl(this).WorkingArea;
 
@@ -1203,6 +1250,7 @@ namespace BizHawk.Client.EmuHawk
 
 		// AVI/WAV state
 		private IVideoWriter _currAviWriter;
+		private HashSet<int> _currAviWriterFrameList;
 		private ISoundProvider _aviSoundInput;
 		private MetaspuSoundProvider _dumpProxy; // an audio proxy used for dumping
 		private bool _dumpaudiosync; // set true to for experimental AV dumping
@@ -1474,15 +1522,15 @@ namespace BizHawk.Client.EmuHawk
 				// note that the avi dumper has already rewired the emulator itself in this case.
 				GlobalWin.Sound.SetAsyncInputPin(_dumpProxy);
 			}
-			else if (Global.Config.SoundThrottle)
+			else if (Global.Config.SoundThrottle || Global.Config.UseNewOutputBuffer)
 			{
-				// for sound throttle, use sync mode
+				// for sound throttle and new output buffer, use sync mode
 				Global.Emulator.EndAsyncSound();
 				GlobalWin.Sound.SetSyncInputPin(Global.Emulator.SyncSoundProvider);
 			}
 			else
 			{
-				// for vsync\clock throttle modes, use async
+				// for vsync\clock throttle modes through old output buffer, use async
 				GlobalWin.Sound.SetAsyncInputPin(
 					!Global.Emulator.StartAsyncSound()
 						? new MetaspuAsync(Global.Emulator.SyncSoundProvider, ESynchMethod.ESynchMethod_V)
@@ -1668,28 +1716,33 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-
 		private void SyncThrottle()
 		{
-			//TODO - did we change 'unthrottled' nomenclature to turbo? is turbo defined as 'temporarily disable throttle entirely'?
+			// "unthrottled" = throttle was turned off with "Toggle Throttle" hotkey
+			// "turbo" = throttle is off due to the "Turbo" hotkey being held
+			// They are basically the same thing but one is a toggle and the other requires a
+			// hotkey to be held. There is however slightly different behavior in that turbo
+			// skips outputting the audio. There's also a third way which is when no throttle
+			// method is selected, but the clock throttle determines that by itself and
+			// everything appears normal here.
 
 			var rewind = Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind);
 			var fastForward = Global.ClientControls["Fast Forward"] || FastForward;
-			var superFastForward = IsTurboing;
+			var turbo = IsTurboing;
 
 			int speedPercent = fastForward ? Global.Config.SpeedPercentAlternate : Global.Config.SpeedPercent;
 
 			if (rewind)
 			{
-				speedPercent = Math.Max(speedPercent / Global.Rewinder.RewindFrequency, 5);
+				speedPercent = Math.Max(speedPercent * Global.Config.RewindSpeedMultiplier / Global.Rewinder.RewindFrequency, 5);
 			}
 
-			Global.DisableSecondaryThrottling = _unthrottled || fastForward || superFastForward || rewind;
+			Global.DisableSecondaryThrottling = _unthrottled || turbo || fastForward || rewind;
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
 			_throttle.SetCoreFps(Global.Emulator.CoreComm.VsyncRate);
 			_throttle.signal_paused = EmulatorPaused;
-			_throttle.signal_unthrottle = _unthrottled || superFastForward;
+			_throttle.signal_unthrottle = _unthrottled || turbo;
 			_throttle.signal_overrideSecondaryThrottle = (fastForward || rewind) && (Global.Config.SoundThrottle || Global.Config.VSyncThrottle || Global.Config.VSync);
 			_throttle.SetSpeedPercent(speedPercent);
 			}
@@ -1728,7 +1781,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static unsafe BitmapBuffer MakeScreenshotImage()
 		{
-			var bb = new BitmapBuffer(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight, Global.Emulator.VideoProvider.GetVideoBuffer());
+			var bb = new BitmapBuffer(Global.Emulator.VideoProvider().BufferWidth, Global.Emulator.VideoProvider().BufferHeight, Global.Emulator.VideoProvider().GetVideoBuffer());
 			bb.DiscardAlpha();
 			return bb;
 		}
@@ -1798,7 +1851,7 @@ namespace BizHawk.Client.EmuHawk
 		private void Render()
 		{
 			//private Size _lastVideoSize = new Size(-1, -1), _lastVirtualSize = new Size(-1, -1);
-			var video = Global.Emulator.VideoProvider;
+			var video = Global.Emulator.VideoProvider();
 			//bool change = false;
 			Size currVideoSize = new Size(video.BufferWidth,video.BufferHeight);
 			Size currVirtualSize = new Size(video.VirtualWidth,video.VirtualWidth);
@@ -1809,7 +1862,7 @@ namespace BizHawk.Client.EmuHawk
 				FrameBufferResized();
 			}
 
-			GlobalWin.DisplayManager.UpdateSource(Global.Emulator.VideoProvider);
+			GlobalWin.DisplayManager.UpdateSource(video);
 		}
 
 		// sends a simulation of a plain alt key keystroke
@@ -2074,6 +2127,13 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.DisplayInput ^= true;
 		}
 
+		public static void ToggleSound()
+		{
+			Global.Config.SoundEnabled ^= true;
+			GlobalWin.Sound.StopSound();
+			GlobalWin.Sound.StartSound();
+		}
+
 		private static void VolumeUp()
 		{
 			Global.Config.SoundVolume += 10;
@@ -2082,15 +2142,8 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.SoundVolume = 100;
 			}
 
-			GlobalWin.Sound.ChangeVolume(Global.Config.SoundVolume);
+			GlobalWin.Sound.ApplyVolumeSettings();
 			GlobalWin.OSD.AddMessage("Volume " + Global.Config.SoundVolume);
-		}
-
-		public static void ToggleSound()
-		{
-			Global.Config.SoundEnabled ^= true;
-			GlobalWin.Sound.UpdateSoundSettings();
-			GlobalWin.Sound.StartSound();
 		}
 
 		private static void VolumeDown()
@@ -2101,7 +2154,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.SoundVolume = 0;
 			}
 
-			GlobalWin.Sound.ChangeVolume(Global.Config.SoundVolume);
+			GlobalWin.Sound.ApplyVolumeSettings();
 			GlobalWin.OSD.AddMessage("Volume " + Global.Config.SoundVolume);
 		}
 
@@ -2173,7 +2226,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private BitmapBuffer CaptureOSD()
 		{
-			var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider,true);
+			var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider(), true);
 			bb.Normalize(true);
 			return bb;
 		}
@@ -2934,7 +2987,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					aw.SetVideoParameters(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight);
+					aw.SetVideoParameters(Global.Emulator.VideoProvider().BufferWidth, Global.Emulator.VideoProvider().BufferHeight);
 				}
 
 				aw.SetAudioParameters(44100, 2, 16);
@@ -3085,6 +3138,13 @@ namespace BizHawk.Client.EmuHawk
 				//TODO ZERO - this code is pretty jacked. we'll want to frugalize buffers better for speedier dumping, and we might want to rely on the GL layer for padding
 				try
 				{
+					//is this the best time to handle this? or deeper inside?
+					if (_currAviWriterFrameList != null)
+					{
+						if (!_currAviWriterFrameList.Contains(Global.Emulator.Frame))
+							goto HANDLE_AUTODUMP;
+					}
+
 					IVideoProvider output;
 					IDisposable disposableOutput = null;
 					if (_avwriterResizew > 0 && _avwriterResizeh > 0)
@@ -3100,7 +3160,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 							else
 							{
-								bbin = new BitmapBuffer(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight, Global.Emulator.VideoProvider.GetVideoBuffer());
+								bbin = new BitmapBuffer(Global.Emulator.VideoProvider().BufferWidth, Global.Emulator.VideoProvider().BufferHeight, Global.Emulator.VideoProvider().GetVideoBuffer());
 							}
 
 
@@ -3110,7 +3170,7 @@ namespace BizHawk.Client.EmuHawk
 							{
 								if (_avwriterpad)
 								{
-									g.Clear(Color.FromArgb(Global.Emulator.VideoProvider.BackgroundColor));
+									g.Clear(Color.FromArgb(Global.Emulator.VideoProvider().BackgroundColor));
 									g.DrawImageUnscaled(bmpin, (bmpout.Width - bmpin.Width) / 2, (bmpout.Height - bmpin.Height) / 2);
 								}
 								else
@@ -3138,7 +3198,7 @@ namespace BizHawk.Client.EmuHawk
 							disposableOutput = (IDisposable)output;
 						}
 						else
-							output = Global.Emulator.VideoProvider;
+							output = Global.Emulator.VideoProvider();
 					}
 
 					_currAviWriter.SetFrame(Global.Emulator.Frame);
@@ -3167,6 +3227,7 @@ namespace BizHawk.Client.EmuHawk
 					AbortAv();
 				}
 
+			HANDLE_AUTODUMP:
 				if (_autoDumpLength > 0)
 				{
 					_autoDumpLength--;
@@ -3485,6 +3546,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				StopMovie(true);
 			}
+
+			Global.CheatList.SaveOnClose();
 			Global.Emulator.Dispose();
 			Global.CoreComm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals();
@@ -3676,7 +3739,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FeaturesMenuItem_Click(object sender, EventArgs e)
 		{
-			new CoreFeatureAnalysis().Show();
+			GlobalWin.Tools.Load<CoreFeatureAnalysis>();
 		}
 
 		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)

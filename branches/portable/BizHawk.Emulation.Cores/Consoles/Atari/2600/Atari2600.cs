@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		isReleased: true
 		)]
 	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
-	public partial class Atari2600 : IEmulator, IMemoryDomains, IStatable, IDebuggable, IInputPollable, ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
+	public partial class Atari2600 : IEmulator, IStatable, IDebuggable, IInputPollable, ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
 	{
 		private readonly GameInfo _game;
 		private int _frame;
@@ -26,6 +26,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		[CoreConstructor("A26")]
 		public Atari2600(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
+			var ser = new BasicServiceProvider(this);
+			ServiceProvider = ser;
+
 			Tracer = new TraceBuffer();
 			MemoryCallbacks = new MemoryCallbackSystem();
 			InputCallbacks = new InputCallbackSystem();
@@ -47,10 +50,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			RebootCore();
 			SetupMemoryDomains();
 
-			var ser = new  BasicServiceProvider(this);
+			
 			ser.Register<IDisassemblable>(Cpu);
 			ser.Register<ITraceable>(Tracer);
-			ServiceProvider = ser;
+			ser.Register<IVideoProvider>(_tia);
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
@@ -60,8 +63,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public string BoardName { get { return _mapper.GetType().Name; } }
 
 		public CoreComm CoreComm { get; private set; }
-
-		public IVideoProvider VideoProvider { get { return _tia; } }
 
 		public ISoundProvider SoundProvider { get { return _dcfilter; } }
 

@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common
 
 		#region API
 
-		public IEnumerable<int> OutOfRangeAddress
+		public IEnumerable<long> OutOfRangeAddress
 		{
 			get
 			{
@@ -68,7 +68,7 @@ namespace BizHawk.Client.Common
 				listSize /= (int)_settings.Size;
 			}
 
-			_watchList = new List<IMiniWatch>(listSize);
+			_watchList = new List<IMiniWatch>((int)listSize);
 
 			switch (_settings.Size)
 			{
@@ -198,7 +198,7 @@ namespace BizHawk.Client.Common
 			return before - _watchList.Count;
 		}
 
-		public bool Preview(int address)
+		public bool Preview(long address)
 		{
 			IEnumerable<IMiniWatch> listOfOne;
 
@@ -356,11 +356,11 @@ namespace BizHawk.Client.Common
 				_history.AddState(_watchList);
 			}
 
-			var removeList = indices.Select(i => _watchList[i]);
+			var removeList = indices.Select(i => _watchList[i]); // This will fail after int.MaxValue but Ram Search fails on domains that large anyway
 			_watchList = _watchList.Except(removeList).ToList();
 		}
 
-		public void AddRange(List<int> addresses, bool append)
+		public void AddRange(List<long> addresses, bool append)
 		{
 			if (!append)
 			{
@@ -874,7 +874,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private long GetValue(int addr)
+		private long GetValue(long addr)
 		{
 			//do not return sign extended variables from here.
 			switch (_settings.Size)
@@ -912,7 +912,7 @@ namespace BizHawk.Client.Common
 
 		public interface IMiniWatch
 		{
-			int Address { get; }
+			long Address { get; }
 			long Previous { get; } //do not store sign extended variables in here.
 			void SetPreviousToCurrent(MemoryDomain domain, bool bigendian);
 		}
@@ -927,10 +927,10 @@ namespace BizHawk.Client.Common
 
 		private sealed class MiniByteWatch : IMiniWatch
 		{
-			public int Address { get; private set; }
+			public long Address { get; private set; }
 			private byte _previous;
 
-			public MiniByteWatch(MemoryDomain domain, int addr)
+			public MiniByteWatch(MemoryDomain domain, long addr)
 			{
 				Address = addr;
 				_previous = domain.PeekByte(Address % domain.Size);
@@ -949,10 +949,10 @@ namespace BizHawk.Client.Common
 
 		private sealed class MiniWordWatch : IMiniWatch
 		{
-			public int Address { get; private set; }
+			public long Address { get; private set; }
 			private ushort _previous;
 
-			public MiniWordWatch(MemoryDomain domain, int addr, bool bigEndian)
+			public MiniWordWatch(MemoryDomain domain, long addr, bool bigEndian)
 			{
 				Address = addr;
 				_previous = domain.PeekWord(Address % domain.Size, bigEndian);
@@ -971,10 +971,10 @@ namespace BizHawk.Client.Common
 
 		public sealed class MiniDWordWatch : IMiniWatch
 		{
-			public int Address { get; private set; }
+			public long Address { get; private set; }
 			private uint _previous;
 
-			public MiniDWordWatch(MemoryDomain domain, int addr, bool bigEndian)
+			public MiniDWordWatch(MemoryDomain domain, long addr, bool bigEndian)
 			{
 				Address = addr;
 				_previous = domain.PeekDWord(Address % domain.Size, bigEndian);
@@ -993,13 +993,13 @@ namespace BizHawk.Client.Common
 
 		private sealed class MiniByteWatchDetailed : IMiniWatch, IMiniWatchDetails
 		{
-			public int Address { get; private set; }
+			public long Address { get; private set; }
 
 			private byte _previous;
 			private byte _prevFrame;
 			private int _changecount;
 
-			public MiniByteWatchDetailed(MemoryDomain domain, int addr)
+			public MiniByteWatchDetailed(MemoryDomain domain, long addr)
 			{
 				Address = addr;
 				SetPreviousToCurrent(domain, false);
@@ -1054,13 +1054,13 @@ namespace BizHawk.Client.Common
 
 		private sealed class MiniWordWatchDetailed : IMiniWatch, IMiniWatchDetails
 		{
-			public int Address { get; private set; }
+			public long Address { get; private set; }
 
 			private ushort _previous;
 			private ushort _prevFrame;
 			private int _changecount;
 
-			public MiniWordWatchDetailed(MemoryDomain domain, int addr, bool bigEndian)
+			public MiniWordWatchDetailed(MemoryDomain domain, long addr, bool bigEndian)
 			{
 				Address = addr;
 				SetPreviousToCurrent(domain, bigEndian);
@@ -1114,13 +1114,13 @@ namespace BizHawk.Client.Common
 
 		public sealed class MiniDWordWatchDetailed : IMiniWatch, IMiniWatchDetails
 		{
-			public int Address { get; private set; }
+			public long Address { get; private set; }
 
 			private uint _previous;
 			private uint _prevFrame;
 			private int _changecount;
 
-			public MiniDWordWatchDetailed(MemoryDomain domain, int addr, bool bigEndian)
+			public MiniDWordWatchDetailed(MemoryDomain domain, long addr, bool bigEndian)
 			{
 				Address = addr;
 				SetPreviousToCurrent(domain, bigEndian);
@@ -1174,17 +1174,17 @@ namespace BizHawk.Client.Common
 
 		public class Settings
 		{
-			public Settings(IMemoryDomains core)
+			public Settings(IMemoryDomains memoryDomains)
 			{
-				BigEndian = core.MemoryDomains.MainMemory.EndianType == MemoryDomain.Endian.Big;
+				BigEndian = memoryDomains.MainMemory.EndianType == MemoryDomain.Endian.Big;
 				// TODO: Fetch this default from the IMemoryDomains object when that's implemented.
 				Size = (Watch.WatchSize)Global.SystemInfo.ByteSize;
 				Type = Watch.DisplayType.Unsigned;
-				Mode = core.MemoryDomains.MainMemory.Size > (1024 * 1024) ?
+				Mode = memoryDomains.MainMemory.Size > (1024 * 1024) ?
 					SearchMode.Fast :
 					SearchMode.Detailed;
 
-				Domain = core.MemoryDomains.MainMemory;
+				Domain = memoryDomains.MainMemory;
 				CheckMisAligned = false;
 				PreviousType = Watch.PreviousType.LastSearch;
 			}

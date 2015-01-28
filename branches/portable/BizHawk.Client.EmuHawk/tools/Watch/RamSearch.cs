@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[RequiredService]
-		public IMemoryDomains Core { get; set; }
+		public IMemoryDomains MemoryDomains { get; set; }
 
 		[RequiredService]
 		public IEmulator Emu { get; set; }
@@ -125,8 +125,8 @@ namespace BizHawk.Client.EmuHawk
 
 			RamSearchMenu.Items.Add(Settings.Columns.GenerateColumnsMenu(ColumnToggleCallback));
 
-			_settings = new RamSearchEngine.Settings(Core);
-			_searches = new RamSearchEngine(_settings, Core);
+			_settings = new RamSearchEngine.Settings(MemoryDomains);
+			_searches = new RamSearchEngine(_settings, MemoryDomains);
 
 			ErrorIconButton.Visible = false;
 			_dropdownDontfire = true;
@@ -135,7 +135,7 @@ namespace BizHawk.Client.EmuHawk
 			SpecificValueBox.Type = _settings.Type;
 
 			MessageLabel.Text = string.Empty;
-			SpecificAddressBox.MaxLength = (Core.MemoryDomains.MainMemory.Size - 1).NumHexDigits();
+			SpecificAddressBox.MaxLength = (MemoryDomains.MainMemory.Size - 1).NumHexDigits();
 			HardSetSizeDropDown(_settings.Size);
 			PopulateTypeDropDown();
 			HardSetDisplayTypeDropDown(_settings.Type);
@@ -302,8 +302,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			_settings = new RamSearchEngine.Settings(Core);
-			_searches = new RamSearchEngine(_settings, Core);
+			_settings = new RamSearchEngine.Settings(MemoryDomains);
+			_searches = new RamSearchEngine(_settings, MemoryDomains);
 			MessageLabel.Text = "Search restarted";
 			DoDomainSizeCheck();
 			NewSearch();
@@ -325,7 +325,7 @@ namespace BizHawk.Client.EmuHawk
 			var compareVal = _searches.CompareValue;
 			var differentBy = _searches.DifferentBy;
 
-			_searches = new RamSearchEngine(_settings, Core, compareTo, compareVal, differentBy);
+			_searches = new RamSearchEngine(_settings, MemoryDomains, compareTo, compareVal, differentBy);
 			_searches.Start();
 			if (Settings.AlwaysExcludeRamWatch)
 			{
@@ -425,8 +425,14 @@ namespace BizHawk.Client.EmuHawk
 			DoSearchToolButton.Enabled =
 				CopyValueToPrevToolBarItem.Enabled =
 				_searches.Count > 0;
+			
 			UpdateUndoToolBarButtons();
 			OutOfRangeCheck();
+
+			PokeAddressToolBarItem.Enabled =
+				FreezeAddressToolBarItem.Enabled =
+				SelectedIndices.Any() &&
+				_searches.Domain.CanPoke();
 		}
 
 		private int? CompareToValue
@@ -596,7 +602,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetMemoryDomain(string name)
 		{
-			_settings.Domain = Core.MemoryDomains[name];
+			_settings.Domain = MemoryDomains[name];
 			SetReboot(true);
 			SpecificAddressBox.MaxLength = (_settings.Domain.Size - 1).NumHexDigits();
 			DoDomainSizeCheck();
@@ -808,7 +814,7 @@ namespace BizHawk.Client.EmuHawk
 					_currentFileName = file.FullName;
 				}
 
-				var watches = new WatchList(Core, _settings.Domain, Emu.SystemId);
+				var watches = new WatchList(MemoryDomains, _settings.Domain, Emu.SystemId);
 				watches.Load(file.FullName, append);
 
 				var watchList = watches.Where(x => !x.IsSeparator);
@@ -981,7 +987,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!string.IsNullOrWhiteSpace(_currentFileName))
 			{
-				var watches = new WatchList(Core, _settings.Domain, Emu.SystemId) { CurrentFileName = _currentFileName };
+				var watches = new WatchList(MemoryDomains, _settings.Domain, Emu.SystemId) { CurrentFileName = _currentFileName };
 				for (var i = 0; i < _searches.Count; i++)
 				{
 					watches.Add(_searches[i]);
@@ -1009,7 +1015,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveAsMenuItem_Click(object sender, EventArgs e)
 		{
-			var watches = new WatchList(Core, _settings.Domain, Emu.SystemId) { CurrentFileName = _currentFileName };
+			var watches = new WatchList(MemoryDomains, _settings.Domain, Emu.SystemId) { CurrentFileName = _currentFileName };
 			for (var i = 0; i < _searches.Count; i++)
 			{
 				watches.Add(_searches[i]);
@@ -1048,7 +1054,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			MemoryDomainsSubMenu.DropDownItems.Clear();
 			MemoryDomainsSubMenu.DropDownItems.AddRange(
-				Core.MemoryDomains.MenuItems(SetMemoryDomain, _searches.Domain.Name, MaxSupportedSize)
+				MemoryDomains.MenuItems(SetMemoryDomain, _searches.Domain.Name, MaxSupportedSize)
 				.ToArray());
 		}
 
@@ -1173,9 +1179,12 @@ namespace BizHawk.Client.EmuHawk
 
 			RemoveMenuItem.Enabled =
 				AddToRamWatchMenuItem.Enabled =
-				PokeAddressMenuItem.Enabled =
-				FreezeAddressMenuItem.Enabled =
 				SelectedIndices.Any();
+
+			PokeAddressMenuItem.Enabled =
+				FreezeAddressMenuItem.Enabled =
+				SelectedIndices.Any() &&
+				SelectedWatches.All(w => w.Domain.CanPoke());
 
 			UndoMenuItem.Enabled =
 				ClearUndoMenuItem.Enabled =
@@ -1359,7 +1368,7 @@ namespace BizHawk.Client.EmuHawk
 			RamSearchMenu.Items.Add(Settings.Columns.GenerateColumnsMenu(ColumnToggleCallback));
 
 
-			_settings = new RamSearchEngine.Settings(Core);
+			_settings = new RamSearchEngine.Settings(MemoryDomains);
 			if (_settings.Mode == RamSearchEngine.Settings.SearchMode.Fast)
 			{
 				SetToFastMode();
@@ -1379,12 +1388,15 @@ namespace BizHawk.Client.EmuHawk
 
 			RemoveContextMenuItem.Visible =
 				AddToRamWatchContextMenuItem.Visible =
-				PokeContextMenuItem.Visible =
 				FreezeContextMenuItem.Visible =
 				ContextMenuSeparator2.Visible =
-
 				ViewInHexEditorContextMenuItem.Visible =
 				SelectedIndices.Any();
+
+			PokeContextMenuItem.Enabled =
+				FreezeContextMenuItem.Visible =
+				SelectedIndices.Any() &&
+				SelectedWatches.All(w => w.Domain.CanPoke());
 
 			UnfreezeAllContextMenuItem.Visible = Global.CheatList.ActiveCount > 0;
 
@@ -1473,6 +1485,23 @@ namespace BizHawk.Client.EmuHawk
 
 			UpdateList();
 			ToggleSearchDependentToolBarItems();
+		}
+
+		private void CopyWatchesToClipBoard()
+		{
+			if (SelectedItems.Any())
+			{
+				var sb = new StringBuilder();
+				foreach (var watch in SelectedItems)
+				{
+					sb.AppendLine(Watch.ToString(watch, _searches.Domain));
+				}
+
+				if (sb.Length > 0)
+				{
+					Clipboard.SetDataObject(sb.ToString());
+				}
+			}
 		}
 
 		#endregion
@@ -1654,25 +1683,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) // Copy
 			{
-				if (SelectedIndices.Any())
-				{
-					var sb = new StringBuilder();
-					foreach (var index in SelectedIndices)
-					{
-						foreach (ColumnHeader column in WatchListView.Columns)
-						{
-							sb.Append(GetColumnValue(column.Name, index)).Append('\t');
-						}
-
-						sb.Remove(sb.Length - 1, 1);
-						sb.AppendLine();
-					}
-
-					if (sb.Length > 0)
-					{
-						Clipboard.SetDataObject(sb.ToString());
-					}
-				}
+				CopyWatchesToClipBoard();
 			}
 			else if (e.KeyCode == Keys.Escape && !e.Control && !e.Alt && !e.Shift)
 			{
@@ -1684,9 +1695,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RemoveToolBarItem.Enabled =
 				AddToRamWatchToolBarItem.Enabled =
-				PokeAddressToolBarItem.Enabled =
-				FreezeAddressToolBarItem.Enabled =
 				SelectedIndices.Any();
+
+			PokeAddressToolBarItem.Enabled =
+				FreezeAddressToolBarItem.Enabled =
+				SelectedIndices.Any() &&
+				_searches.Domain.CanPoke();
 		}
 
 		private void WatchListView_Enter(object sender, EventArgs e)

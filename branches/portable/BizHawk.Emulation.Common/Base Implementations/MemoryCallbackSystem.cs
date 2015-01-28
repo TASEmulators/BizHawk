@@ -8,19 +8,39 @@ namespace BizHawk.Emulation.Common
 {
 	public class MemoryCallbackSystem : IMemoryCallbackSystem
 	{
+		public MemoryCallbackSystem()
+		{
+			ExecuteCallbacksAvailable = true;
+		}
+
 		private readonly List<IMemoryCallback> Reads = new List<IMemoryCallback>();
 		private readonly List<IMemoryCallback> Writes = new List<IMemoryCallback>();
 		private readonly List<IMemoryCallback> Execs = new List<IMemoryCallback>();
 
 		bool empty = true;
 
+		private bool _hasReads = false;
+		private bool _hasWrites = false;
+		private bool _hasExecutes = false;
+
+		public bool ExecuteCallbacksAvailable { get; set; }
+
 		public void Add(IMemoryCallback callback)
 		{
 			switch (callback.Type)
 			{
-				case MemoryCallbackType.Execute: Execs.Add(callback); break;
-				case MemoryCallbackType.Read: Reads.Add(callback); break;
-				case MemoryCallbackType.Write: Writes.Add(callback); break;
+				case MemoryCallbackType.Execute:
+					Execs.Add(callback);
+					_hasExecutes = true;
+					break;
+				case MemoryCallbackType.Read:
+					Reads.Add(callback);
+					_hasReads = true;
+					break;
+				case MemoryCallbackType.Write:
+					Writes.Add(callback);
+					_hasWrites = true;
+					break;
 			}
 			if (empty)
 				Changes();
@@ -38,32 +58,48 @@ namespace BizHawk.Emulation.Common
 
 		public void CallReads(uint addr)
 		{
-			Call(Reads, addr);
+			if (_hasReads)
+			{
+				Call(Reads, addr);
+			}
 		}
 
 		public void CallWrites(uint addr)
 		{
-			Call(Writes, addr);
+			if (_hasWrites)
+			{
+				Call(Writes, addr);
+			}
 		}
 
 		public void CallExecutes(uint addr)
 		{
-			Call(Execs, addr);
+			if (_hasExecutes)
+			{
+				Call(Execs, addr);
+			}
 		}
 
 		public bool HasReads
 		{
-			get { return Reads.Count > 0; }
+			get { return _hasReads; }
 		}
 
 		public bool HasWrites
 		{
-			get { return Writes.Count > 0; }
+			get { return _hasWrites; }
 		}
 
 		public bool HasExecutes
 		{
-			get { return Execs.Count > 0; }
+			get { return _hasExecutes; }
+		}
+
+		private void UpdateHasVariables()
+		{
+			_hasReads = Reads.Count > 0;
+			_hasWrites = Reads.Count > 0;
+			_hasExecutes = Reads.Count > 0;
 		}
 
 		private int RemoveInternal(Action action)
@@ -72,6 +108,9 @@ namespace BizHawk.Emulation.Common
 			ret += Reads.RemoveAll(imc => imc.Callback == action);
 			ret += Writes.RemoveAll(imc => imc.Callback == action);
 			ret += Execs.RemoveAll(imc => imc.Callback == action);
+
+			UpdateHasVariables();
+
 			return ret;
 		}
 
@@ -100,6 +139,8 @@ namespace BizHawk.Emulation.Common
 					Changes();
 				empty = newEmpty;
 			}
+
+			UpdateHasVariables();
 		}
 
 		public void Clear()
@@ -110,6 +151,8 @@ namespace BizHawk.Emulation.Common
 			if (!empty)
 				Changes();
 			empty = true;
+
+			UpdateHasVariables();
 		}
 
 		public delegate void ActiveChangedEventHandler();

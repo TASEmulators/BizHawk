@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		portedUrl: "https://code.google.com/p/mupen64plus/"
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public partial class N64 : IEmulator, IMemoryDomains, ISaveRam, IDebuggable, IStatable, IInputPollable,
+	public partial class N64 : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IDisassemblable,
 		ISettable<N64Settings, N64SyncSettings>
 	{
 		private readonly N64Input _inputProvider;
@@ -54,7 +54,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			InputCallbacks = new InputCallbackSystem();
-			MemoryCallbacks = new MemoryCallbackSystem();
+			MemoryCallbacks = new MemoryCallbackSystem
+			{
+				ExecuteCallbacksAvailable = false
+			};
 
 			int SaveType = 0;
 			if (game.OptionValue("SaveType") == "EEPROM_16K")
@@ -128,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			_videoProvider = new N64VideoProvider(api, videosettings);
 			_audioProvider = new N64Audio(api);
 			_inputProvider = new N64Input(this.AsInputPollable(), api, comm, this._syncSettings.Controllers);
-
+			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(_videoProvider);
 
 			string rsp = _syncSettings.Rsp == N64SyncSettings.RspType.Rsp_Hle ?
 				"mupen64plus-rsp-hle.dll" :
@@ -232,8 +235,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public string BoardName { get { return null; } }
 
 		public CoreComm CoreComm { get; private set; }
-
-		public IVideoProvider VideoProvider { get { return _videoProvider; } }
 
 		public DisplayType DisplayType { get { return _display_type; } }
 

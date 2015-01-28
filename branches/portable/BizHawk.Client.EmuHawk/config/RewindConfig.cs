@@ -14,6 +14,7 @@ namespace BizHawk.Client.EmuHawk
 		private int _mediumStateSize;
 		private int _largeStateSize;
 		private int _stateSizeCategory = 1; //1 = small, 2 = med, 3 = larg //TODO: enum
+
 		public RewindConfig()
 		{
 			InitializeComponent();
@@ -32,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 				RewindFramesUsedLabel.Text = "N/A";
 			}
 
-
+			RewindSpeedNumeric.Value = Global.Config.RewindSpeedMultiplier;
 			DiskBufferCheckbox.Checked = Global.Config.Rewind_OnDisk;
 			RewindIsThreadedCheckbox.Checked = Global.Config.Rewind_IsThreaded;
 			_stateSize = Global.Emulator.AsStatable().SaveStateBinary().Length;
@@ -94,18 +95,18 @@ namespace BizHawk.Client.EmuHawk
 			if (num >= 1024)
 			{
 				num /= 1024.0;
-				StateSizeLabel.Text = String.Format("{0:0.00}", num) + " mb";
+				StateSizeLabel.Text = String.Format("{0:0.00}", num) + " MB";
 			}
 			else
 			{
-				StateSizeLabel.Text = String.Format("{0:0.00}", num) + " kb";
+				StateSizeLabel.Text = String.Format("{0:0.00}", num) + " KB";
 			}
 
 
-			SmallLabel1.Text = "Small savestates (less than " + (_mediumStateSize / 1024) + "kb)";
+			SmallLabel1.Text = "Small savestates (less than " + (_mediumStateSize / 1024) + "KB)";
 			MediumLabel1.Text = "Medium savestates (" + (_mediumStateSize / 1024)
-				+ " - " + (_largeStateSize / 1024) + "kb)";
-			LargeLabel1.Text = "Large savestates (" + (_largeStateSize / 1024) + "kb or more)";
+				+ " - " + (_largeStateSize / 1024) + "KB)";
+			LargeLabel1.Text = "Large savestates (" + (_largeStateSize / 1024) + "KB or more)";
 
 			if (_stateSize >= _largeStateSize)
 			{
@@ -138,37 +139,45 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
+		private bool TriggerRewindSettingsReload { get; set; }
+
+		private void PutRewindSetting<T>(ref T setting, T value) where T : IEquatable<T>
+		{
+			if (setting.Equals(value)) return;
+			setting = value;
+			TriggerRewindSettingsReload = true;
+		}
+
 		private void OK_Click(object sender, EventArgs e)
 		{
-			Global.Config.RewindFrequencySmall = (int)SmallSavestateNumeric.Value;
-			Global.Config.RewindFrequencyMedium = (int)MediumSavestateNumeric.Value;
-			Global.Config.RewindFrequencyLarge = (int)LargeSavestateNumeric.Value;
+			// These settings are used by DoRewindSettings, which we'll only call if anything actually changed (i.e. preserve rewind history if possible)
+			PutRewindSetting(ref Global.Config.RewindEnabledSmall, SmallStateEnabledBox.Checked);
+			PutRewindSetting(ref Global.Config.RewindEnabledMedium, MediumStateEnabledBox.Checked);
+			PutRewindSetting(ref Global.Config.RewindEnabledLarge, LargeStateEnabledBox.Checked);
+			PutRewindSetting(ref Global.Config.RewindFrequencySmall, (int)SmallSavestateNumeric.Value);
+			PutRewindSetting(ref Global.Config.RewindFrequencyMedium, (int)MediumSavestateNumeric.Value);
+			PutRewindSetting(ref Global.Config.RewindFrequencyLarge, (int)LargeSavestateNumeric.Value);
+			PutRewindSetting(ref Global.Config.Rewind_OnDisk, DiskBufferCheckbox.Checked);
+			PutRewindSetting(ref Global.Config.Rewind_UseDelta, UseDeltaCompression.Checked);
+			PutRewindSetting(ref Global.Config.Rewind_IsThreaded, RewindIsThreadedCheckbox.Checked);
+			PutRewindSetting(ref Global.Config.Rewind_BufferSize, (int)BufferSizeUpDown.Value);
+			PutRewindSetting(ref Global.Config.Rewind_MediumStateSize, (int)MediumStateUpDown.Value * 1024);
+			PutRewindSetting(ref Global.Config.Rewind_LargeStateSize, (int)LargeStateUpDown.Value * 1024);
+			if (TriggerRewindSettingsReload)
+			{
+				Global.Rewinder.DoRewindSettings();
+			}
 
-			Global.Config.RewindEnabledSmall = SmallStateEnabledBox.Checked;
-			Global.Config.RewindEnabledMedium = MediumStateEnabledBox.Checked;
-			Global.Config.RewindEnabledLarge = LargeStateEnabledBox.Checked;
-			Global.Rewinder.DoRewindSettings();
-			Global.Config.Rewind_UseDelta = UseDeltaCompression.Checked;
-			Global.Config.Rewind_MediumStateSize = (int)(MediumStateUpDown.Value * 1024);
-			Global.Config.Rewind_LargeStateSize = (int)(LargeStateUpDown.Value * 1024);
-			Global.Config.Rewind_OnDisk = DiskBufferCheckbox.Checked;
-			Global.Config.Rewind_BufferSize = (int)BufferSizeUpDown.Value;
+			// These settings are not used by DoRewindSettings
+			Global.Config.RewindSpeedMultiplier = (int)RewindSpeedNumeric.Value;
 			Global.Config.SaveStateCompressionLevelNormal = (int)nudCompression.Value;
-
 			if (rbStatesDefault.Checked) Global.Config.SaveStateType = Config.SaveStateTypeE.Default;
 			if (rbStatesBinary.Checked) Global.Config.SaveStateType = Config.SaveStateTypeE.Binary;
 			if (rbStatesText.Checked) Global.Config.SaveStateType = Config.SaveStateTypeE.Text;
-
-			if (Global.Config.Rewind_IsThreaded != RewindIsThreadedCheckbox.Checked)
-			{
-				GlobalWin.MainForm.FlagNeedsReboot();
-				Global.Config.Rewind_IsThreaded = RewindIsThreadedCheckbox.Checked;
-			}
-
 			Global.Config.BackupSavestates = BackupSavestatesCheckbox.Checked;
 			Global.Config.SaveScreenshotWithStates = ScreenshotInStatesCheckbox.Checked;
 			Global.Config.SaveLargeScreenshotWithStates = SaveLargeScreenshotsCheckbox.Checked;
-			Global.Config.BigScreenshotSize = (int)(BigScreenshotNumeric.Value * 1024);
+			Global.Config.BigScreenshotSize = (int)BigScreenshotNumeric.Value * 1024;
 
 			GlobalWin.OSD.AddMessage("Rewind and State settings saved");
 			Close();

@@ -5,13 +5,8 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
-	public partial class ColecoVision : IMemoryDomains
+	public partial class ColecoVision
 	{
-		public IMemoryDomainList MemoryDomains
-		{
-			get { return memoryDomains; }
-		}
-
 		private MemoryDomainList memoryDomains;
 
 		private void SetupMemoryDomains()
@@ -47,6 +42,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			domains.Add(VRamDomain);
 			domains.Add(SystemBusDomain);
 			memoryDomains = new MemoryDomainList(domains);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(memoryDomains);
 		}
 	}
 }

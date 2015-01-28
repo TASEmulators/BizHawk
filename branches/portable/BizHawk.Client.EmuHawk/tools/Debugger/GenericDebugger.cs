@@ -34,7 +34,8 @@ namespace BizHawk.Client.EmuHawk
 		private void EngageDebugger()
 		{
 			DisassemblyLines.Clear();
-
+			GlobalWin.MainForm.OnPauseChanged += OnPauseChanged;
+			CancelSeekBtn.Enabled = false;
 			if (CanDisassemble)
 			{
 				try
@@ -102,10 +103,26 @@ namespace BizHawk.Client.EmuHawk
 				BreakPointControl1.ParentDebugger = this;
 				BreakPointControl1.MemoryDomains = MemoryDomains;
 				BreakPointControl1.GenerateUI();
+				EnabledBreakpointBox();
 			}
 			else
 			{
 				DisableBreakpointBox();
+			}
+
+			SeekToBox.Enabled = SeekToBtn.Enabled = CanUseMemoryCallbacks && RegisterPanel.CanGetCpuRegisters;
+
+			if (RegisterPanel.CanGetCpuRegisters)
+			{
+				var pc = Debuggable.GetCpuFlagsAndRegisters()["PC"];
+				SeekToBox.Nullable = false;
+				SeekToBox.SetHexProperties((long)Math.Pow(2, pc.BitSize));
+				SeekToBox.SetFromRawInt(0);
+			}
+			else
+			{
+				SeekToBox.Nullable = true;
+				SeekToBox.Text = string.Empty;
 			}
 
 			StepIntoMenuItem.Enabled = StepIntoBtn.Enabled = CanStepInto;
@@ -131,6 +148,7 @@ namespace BizHawk.Client.EmuHawk
 		private void DisengageDebugger()
 		{
 			BreakPointControl1.Shutdown();
+			GlobalWin.MainForm.OnPauseChanged -= OnPauseChanged;
 		}
 
 		public void DisableRegisterBox()
@@ -143,6 +161,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			BreakpointsGroupBox.Enabled = false;
 			toolTip1.SetToolTip(BreakpointsGroupBox, "This core does not currently support breakpoints");
+		}
+
+		public void EnabledBreakpointBox()
+		{
+			BreakpointsGroupBox.Enabled = true;
+			toolTip1.SetToolTip(BreakpointsGroupBox, "");
 		}
 
 		private void OnCpuDropDownIndexChanged(object sender, EventArgs e)
@@ -240,6 +264,37 @@ namespace BizHawk.Client.EmuHawk
 
 				_currentToolTipControl = null;
 			}
+		}
+
+		public void DisableCancelSeekBtn()
+		{
+			CancelSeekBtn.Enabled = false;
+		}
+
+		private void SeekToBtn_Click(object sender, EventArgs e)
+		{
+			CancelSeekBtn.Enabled = true;
+			var pcVal = (uint)(SeekToBox.ToRawInt() ?? 0);
+			var pcBitSize = Debuggable.GetCpuFlagsAndRegisters()["PC"].BitSize;
+			BreakPointControl1.RemoveCurrentSeek();
+			BreakPointControl1.AddSeekBreakpoint(pcVal, pcBitSize);
+			BreakPointControl1.UpdateValues();
+		}
+
+		private void CancelSeekBtn_Click(object sender, EventArgs e)
+		{
+			BreakPointControl1.RemoveCurrentSeek();
+			CancelSeekBtn.Enabled = false;
+		}
+
+		private void ToPCBtn_Click(object sender, EventArgs e)
+		{
+			UpdateDisassembler();
+		}
+
+		private void RefreshMenuItem_Click(object sender, EventArgs e)
+		{
+			FullUpdate();
 		}
 	}
 }

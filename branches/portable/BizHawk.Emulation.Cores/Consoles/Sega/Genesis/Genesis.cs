@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 		isPorted: false,
 		isReleased: false
 		)]
-	public sealed partial class Genesis : IEmulator, IMemoryDomains, ISaveRam, IStatable, IInputPollable
+	public sealed partial class Genesis : IEmulator, ISaveRam, IStatable, IInputPollable
 	{
 		private int _lagcount = 0;
 		private bool lagged = true;
@@ -96,6 +96,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 			PSG = new SN76489() { MaxVolume = 4681 };
 			VDP = new GenVDP();
 			VDP.DmaReadFrom68000 = ReadWord;
+			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(VDP);
 			SoundMixer = new SoundMixer(YM2612, PSG);
 
 			MainCPU.ReadByte = ReadByte;
@@ -299,11 +300,6 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 
 		public CoreComm CoreComm { get; private set; }
 
-		public IVideoProvider VideoProvider
-		{
-			get { return VDP; }
-		}
-
 		public ISoundProvider SoundProvider
 		{
 			get { return SoundMixer; }
@@ -478,7 +474,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 				(addr, value) => RomData[addr & (RomData.Length - 1)] = value);
 
 			var SystemBusDomain = new MemoryDomain("System Bus", 0x1000000, MemoryDomain.Endian.Big,
-				addr => (byte)ReadByte(addr),
+				addr => (byte)ReadByte((int)addr),
 				(addr, value) => Write8((uint)addr, (uint)value));
 
 			domains.Add(MainMemoryDomain);
@@ -487,9 +483,8 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 			domains.Add(RomDomain);
 			domains.Add(SystemBusDomain);
 			memoryDomains = new MemoryDomainList(domains);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(memoryDomains);
 		}
-
-		public IMemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		public void Dispose() { }
 	}

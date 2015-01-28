@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 			{
 				if (MemoryDomainCore != null)
 				{
-					return MemoryDomainCore.MemoryDomains.MainMemory;
+					return MemoryDomainCore.MainMemory;
 				}
 				else
 				{
@@ -50,9 +50,9 @@ namespace BizHawk.Client.Common
 			"getcurrentmemorydomainsize",
 			"Returns the number of bytes of the domain defined as main memory"
 		)]
-		public int GetSize()
+		public uint GetSize()
 		{
-			return Domain.Size;
+			return (uint)Domain.Size;
 		}
 
 		#endregion

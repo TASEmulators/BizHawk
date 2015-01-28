@@ -138,7 +138,6 @@ namespace BizHawk.Client.Common
 		public int SpeedPercent = 100;
 		public int SpeedPercentAlternate = 400;
 		public bool ClockThrottle = true;
-		public bool ClockThrottleUseLowCPUMode = false;
 		public bool AutoMinimizeSkipping = true;
 		public bool VSyncThrottle = false;
 
@@ -154,11 +153,12 @@ namespace BizHawk.Client.Common
 		public int Rewind_LargeStateSize = 1048576; //1mb
 		public int Rewind_BufferSize = 128; //in mb
 		public bool Rewind_OnDisk = false;
-		public bool Rewind_IsThreaded = false;
+		public bool Rewind_IsThreaded = Environment.ProcessorCount > 1;
+		public int RewindSpeedMultiplier = 1;
 
 		// Savestate settings
 		public SaveStateTypeE SaveStateType = SaveStateTypeE.Default;
-		public const int DefaultSaveStateCompressionLevelNormal = 5;
+		public const int DefaultSaveStateCompressionLevelNormal = 0;
 		public int SaveStateCompressionLevelNormal = DefaultSaveStateCompressionLevelNormal;
 		public const int DefaultSaveStateCompressionLevelRewind = 0;//this isnt actually used yet 
 		public int SaveStateCompressionLevelRewind = DefaultSaveStateCompressionLevelRewind;//this isnt actually used yet 
@@ -229,6 +229,8 @@ namespace BizHawk.Client.Common
 		public int SoundVolume = 100; // Range 0-100
 		public bool SoundThrottle = false;
 		public string SoundDevice = "";
+		public int SoundBufferSizeMs = 100;
+		public bool UseNewOutputBuffer = false;
 
 		// Log Window
 		public bool LogWindowSaveWindowPosition = true;

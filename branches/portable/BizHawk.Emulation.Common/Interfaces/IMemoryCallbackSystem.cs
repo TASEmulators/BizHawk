@@ -12,6 +12,11 @@ namespace BizHawk.Emulation.Common
 		 */
 
 		/// <summary>
+		/// Specifies whether or not Execute callbacks are available for this this implementation
+		/// </summary>
+		bool ExecuteCallbacksAvailable { get; }
+
+		/// <summary>
 		/// Returns whether or not there are currently any read hooks
 		/// </summary>
 		bool HasReads { get; }

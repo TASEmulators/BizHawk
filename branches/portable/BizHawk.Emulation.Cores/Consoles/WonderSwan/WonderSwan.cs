@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 {
 	[CoreAttributes("Cygne/Mednafen", "Dox", true, true, "0.9.36.5", "http://mednafen.sourceforge.net/")]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public partial class WonderSwan : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam,
+	public partial class WonderSwan : IEmulator, IVideoProvider, ISyncSoundProvider,
 		IInputPollable, IDebuggable
 	{
 		[CoreConstructor("WSWAN")]
@@ -41,15 +41,13 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				CoreComm.VsyncNum = 3072000; // master CPU clock, also pixel clock
 				CoreComm.VsyncDen = (144 + 15) * (224 + 32); // 144 vislines, 15 vblank lines; 224 vispixels, 32 hblank pixels
 
-				saverambuff = new byte[BizSwan.bizswan_saveramsize(Core)];
+				InitISaveRam();
 
 				InitVideo(rotate);
 				PutSettings(_Settings);
-				SetMemoryDomains();
+				InitIMemoryDomains();
 
-				savebuff = new byte[BizSwan.bizswan_binstatesize(Core)];
-				savebuff2 = new byte[savebuff.Length + 13];
-
+				InitIStatable();
 				InitDebugCallbacks();
 			}
 			catch
@@ -109,49 +107,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public bool DeterministicEmulation { get; private set; }
 		public string BoardName { get { return null; } }
 
-		#region SaveRam
-
-		byte[] saverambuff;
-
-		public byte[] CloneSaveRam()
-		{
-			if (!BizSwan.bizswan_saveramsave(Core, saverambuff, saverambuff.Length))
-				throw new InvalidOperationException("bizswan_saveramsave() returned false!");
-			return (byte[])saverambuff.Clone();
-		}
-
-		public void StoreSaveRam(byte[] data)
-		{
-			if (!BizSwan.bizswan_saveramload(Core, data, data.Length))
-				throw new InvalidOperationException("bizswan_saveramload() returned false!");
-		}
-
-		public bool SaveRamModified
-		{
-			get { return BizSwan.bizswan_saveramsize(Core) > 0; }
-		}
-
-		#endregion
-
 		#region Debugging
-
-		void SetMemoryDomains()
-		{
-			var mmd = new List<MemoryDomain>();
-			for (int i = 0; ; i++)
-			{
-				IntPtr name;
-				int size;
-				IntPtr data;
-				if (!BizSwan.bizswan_getmemoryarea(Core, i, out name, out size, out data))
-					break;
-				if (size == 0)
-					continue;
-				string sname = Marshal.PtrToStringAnsi(name);
-				mmd.Add(MemoryDomain.FromIntPtr(sname, size, MemoryDomain.Endian.Little, data));
-			}
-			MemoryDomains = new MemoryDomainList(mmd, 0);
-		}
 
 		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
@@ -159,8 +115,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem();
 		public IMemoryCallbackSystem MemoryCallbacks { get { return _memorycallbacks; } }
 
-		public IMemoryDomainList MemoryDomains { get; private set; }
-	
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			var ret = new Dictionary<string, RegisterValue>();
@@ -232,8 +186,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		#endregion
 
 		#region IVideoProvider
-
-		public IVideoProvider VideoProvider { get { return this; } }
 
 		void InitVideo(bool rotate)
 		{

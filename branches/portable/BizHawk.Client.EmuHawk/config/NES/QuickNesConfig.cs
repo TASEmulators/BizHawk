@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (palette != null && palette.Exists)
 			{
-				var data = Emulation.Cores.Nintendo.NES.NES.Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(palette.Name));
+				var data = Emulation.Cores.Nintendo.NES.Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(palette.Name));
 				Settings.SetNesHawkPalette(data);
 				SetPaletteImage();
 			}

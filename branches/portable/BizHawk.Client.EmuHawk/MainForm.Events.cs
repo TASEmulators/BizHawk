@@ -571,7 +571,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ScreenshotClientClipboardMenuItem_Click(object sender, EventArgs e)
 		{
-			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider, Global.Config.Screenshot_CaptureOSD))
+			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider(), Global.Config.Screenshot_CaptureOSD))
 			{
 				bb.Normalize(true);
 				using (var img = bb.ToSysdrawingBitmap())
@@ -781,8 +781,7 @@ namespace BizHawk.Client.EmuHawk
 		private void FrameSkipMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			MinimizeSkippingMenuItem.Checked = Global.Config.AutoMinimizeSkipping;
-			ClockThrottleMenuItem.Checked = Global.Config.ClockThrottle && !Global.Config.ClockThrottleUseLowCPUMode;
-			ClockThrottleLowCPUMenuItem.Checked = Global.Config.ClockThrottle && Global.Config.ClockThrottleUseLowCPUMode;
+			ClockThrottleMenuItem.Checked = Global.Config.ClockThrottle;
 			VsyncThrottleMenuItem.Checked = Global.Config.VSyncThrottle;
 			NeverSkipMenuItem.Checked = Global.Config.FrameSkip == 0;
 			Frameskip1MenuItem.Checked = Global.Config.FrameSkip == 1;
@@ -931,14 +930,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClockThrottleMenuItem_Click(object sender, EventArgs e)
 		{
-			// Regular clock throttle and low CPU mode share this event
-			bool clickedLowCPUMode = sender == ClockThrottleLowCPUMenuItem;
-			bool isToggling = !Global.Config.ClockThrottle || clickedLowCPUMode == Global.Config.ClockThrottleUseLowCPUMode;
-			if (isToggling)
-			{
-				Global.Config.ClockThrottle ^= true;
-			}
-			Global.Config.ClockThrottleUseLowCPUMode = Global.Config.ClockThrottle && clickedLowCPUMode;
+			Global.Config.ClockThrottle ^= true;
 			if (Global.Config.ClockThrottle)
 			{
 				var old = Global.Config.SoundThrottle;

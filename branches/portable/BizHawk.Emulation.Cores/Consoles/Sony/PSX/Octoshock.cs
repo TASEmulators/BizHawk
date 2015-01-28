@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		isPorted: true,
 		isReleased: false
 		)]
-	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains, ISaveRam, IStatable, IDriveLight, IInputPollable, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IDebuggable
+	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IDriveLight, IInputPollable, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IDebuggable
 	{
 		public string SystemId { get { return "PSX"; } }
 
@@ -71,7 +71,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		private int[] frameBuffer = new int[0];
 		private Random rand = new Random();
 		public CoreComm CoreComm { get; private set; }
-		public IVideoProvider VideoProvider { get { return this; } }
 
 		//we can only have one active core at a time, due to the lib being so static.
 		//so we'll track the current one here and detach the previous one whenever a new one is booted up.
@@ -619,10 +618,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.DCache);
 			mmd.Add(MemoryDomain.FromIntPtr("DCache", size, MemoryDomain.Endian.Little, ptr, true));
 
-			MemoryDomains = new MemoryDomainList(mmd, 0);
+			MemoryDomains = new MemoryDomainList(mmd);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
 
-		public IMemoryDomainList MemoryDomains { get; private set; }
+		private IMemoryDomains MemoryDomains;
 
 		#endregion
 

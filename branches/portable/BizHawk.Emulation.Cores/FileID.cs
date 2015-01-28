@@ -46,7 +46,14 @@ namespace BizHawk.Emulation.Cores
 		A26, A52, A78, LNX,
 
 		JAD, SBI,
-		M3U
+		M3U,
+
+		//audio codec formats
+		WAV, APE, MPC, FLAC,
+		MP3, //can't be ID'd very readily..
+		
+		//misc disc-related files:
+		ECM
 	}
 
 	public class FileIDResult
@@ -241,6 +248,7 @@ namespace BizHawk.Emulation.Cores
 			public int Offset;
 			public string Key;
 			public int Length = -1;
+			public Func<Stream,bool> ExtraCheck;
 		}
 
 		//some of these (NES, UNIF for instance) should be lower confidence probably...
@@ -250,7 +258,8 @@ namespace BizHawk.Emulation.Cores
 			public static SimpleMagicRecord INES = new SimpleMagicRecord { Offset = 0, Key = "NES" };
 			public static SimpleMagicRecord UNIF = new SimpleMagicRecord { Offset = 0, Key = "UNIF" }; 
 
-			public static SimpleMagicRecord FDS = new SimpleMagicRecord { Offset = 0, Key = "\x01*NINTENDO-HVC*" };
+			public static SimpleMagicRecord FDS_HEADERLESS = new SimpleMagicRecord { Offset = 0, Key = "\x01*NINTENDO-HVC*" };
+			public static SimpleMagicRecord FDS_HEADER = new SimpleMagicRecord { Offset = 0, Key = "FDS\x1A" };
 
 			//the GBA nintendo logo.. we'll only use 16 bytes of it but theyre all here, for reference
 			//we cant expect these roms to be normally sized, but we may be able to find other features of the header to use for extra checks
@@ -278,6 +287,15 @@ namespace BizHawk.Emulation.Cores
 
 			public static SimpleMagicRecord SBI = new SimpleMagicRecord { Key = "SBI\0" };
 			public static SimpleMagicRecord M3U = new SimpleMagicRecord { Key = "#EXTM3U" }; //note: M3U may not have this. EXTM3U only has it. We'll still catch it by extension though.
+
+			public static SimpleMagicRecord ECM = new SimpleMagicRecord { Key = "ECM\0" };
+			public static SimpleMagicRecord FLAC = new SimpleMagicRecord { Key = "fLaC" };
+			public static SimpleMagicRecord MPC = new SimpleMagicRecord { Key = "MP+", ExtraCheck = (s) => { s.Position += 3; return s.ReadByte() >= 7; } };
+			public static SimpleMagicRecord APE = new SimpleMagicRecord { Key = "MAC " };
+			public static SimpleMagicRecord[] WAV = new SimpleMagicRecord[] {
+				new SimpleMagicRecord { Offset = 0, Key = "RIFF" },
+				new SimpleMagicRecord { Offset = 8, Key = "WAVEfmt " }
+			};
 		}
 
 		class ExtensionInfo
@@ -299,7 +317,7 @@ namespace BizHawk.Emulation.Cores
 		/// </summary>
 		static Dictionary<string, ExtensionInfo> ExtensionHandlers = new Dictionary<string, ExtensionInfo> {
 		  { "NES", new ExtensionInfo(FileIDType.INES, Test_INES ) },
-			{ "FDS", new ExtensionInfo(FileIDType.FDS, (j)=>Test_Simple(j,FileIDType.FDS,SimpleMagics.FDS) ) },
+			{ "FDS", new ExtensionInfo(FileIDType.FDS, Test_FDS ) },
 			{ "GBA", new ExtensionInfo(FileIDType.GBA, (j)=>Test_Simple(j,FileIDType.GBA,SimpleMagics.GBA) ) },
 			{ "NDS", new ExtensionInfo(FileIDType.NDS, (j)=>Test_Simple(j,FileIDType.NDS,SimpleMagics.NDS) ) },
 			{ "UNF", new ExtensionInfo(FileIDType.UNIF, Test_UNIF ) },
@@ -355,21 +373,46 @@ namespace BizHawk.Emulation.Cores
 			
 			//for now
 			{ "ROM", new ExtensionInfo(FileIDType.Multiple, null ) }, //could be MSX too
+
+			{ "MP3", new ExtensionInfo(FileIDType.MP3, null ) },
+			{ "WAV", new ExtensionInfo(FileIDType.WAV, (j)=>Test_Simple(j,FileIDType.WAV,SimpleMagics.WAV) ) },
+			{ "APE", new ExtensionInfo(FileIDType.APE, (j)=>Test_Simple(j,FileIDType.APE,SimpleMagics.APE) ) },
+			{ "MPC", new ExtensionInfo(FileIDType.MPC, (j)=>Test_Simple(j,FileIDType.MPC,SimpleMagics.MPC) ) },
+			{ "FLAC", new ExtensionInfo(FileIDType.FLAC, (j)=>Test_Simple(j,FileIDType.FLAC,SimpleMagics.FLAC) ) },
+			{ "ECM", new ExtensionInfo(FileIDType.ECM, (j)=>Test_Simple(j,FileIDType.ECM,SimpleMagics.ECM) ) },
 		};
 
 		delegate FileIDResult FormatTester(IdentifyJob job);
 
+		static int[] no_offsets = new int[] { 0 };
+
 		/// <summary>
 		/// checks for the magic string (bytewise ASCII check) at the given address
 		/// </summary>
-		static bool CheckMagic(Stream stream, SimpleMagicRecord rec, params int[] offsets)
+		static bool CheckMagic(Stream stream, IEnumerable<SimpleMagicRecord> recs, params int[] offsets)
 		{
 			if (offsets.Length == 0)
-				return CheckMagicOne(stream, rec, 0);
-			else foreach (int n in offsets)
-					if (CheckMagicOne(stream, rec, n))
-						return true;
+				offsets = no_offsets;
+
+			foreach (int n in offsets)
+			{
+				bool ok = true;
+				foreach (var r in recs)
+				{
+					if (!CheckMagicOne(stream, r, n))
+					{
+						ok = false;
+						break;
+					}
+				}
+				if (ok) return true;
+			}
 			return false;
+		}
+
+		static bool CheckMagic(Stream stream, SimpleMagicRecord rec, params int[] offsets)
+		{
+			return CheckMagic(stream, new SimpleMagicRecord[] { rec }, offsets);
 		}
 
 		static bool CheckMagicOne(Stream stream, SimpleMagicRecord rec, int offset)
@@ -386,7 +429,12 @@ namespace BizHawk.Emulation.Cores
 				if (n != key[i])
 					return false;
 			}
-			return true;
+			if (rec.ExtraCheck != null)
+			{
+				stream.Position = rec.Offset + offset;
+				return rec.ExtraCheck(stream);
+			}
+			else return true;
 		}
 
 		static int ReadByte(Stream stream, int ofs)
@@ -408,6 +456,29 @@ namespace BizHawk.Emulation.Cores
 				ret.Confidence = 50;
 
 			return ret;
+		}
+
+		static FileIDResult Test_FDS(IdentifyJob job)
+		{
+			if (CheckMagic(job.Stream, SimpleMagics.FDS_HEADER))
+				return new FileIDResult(FileIDType.FDS, 90); //kind of a small header..
+			if (CheckMagic(job.Stream, SimpleMagics.FDS_HEADERLESS))
+				return new FileIDResult(FileIDType.FDS, 95);
+
+			return new FileIDResult();
+		}
+
+		/// <summary>
+		/// all magics must pass
+		/// </summary>
+		static FileIDResult Test_Simple(IdentifyJob job, FileIDType type, SimpleMagicRecord[] magics)
+		{
+			var ret = new FileIDResult(type);
+
+			if (CheckMagic(job.Stream, magics))
+				return new FileIDResult(type, 100);
+			else
+				return new FileIDResult();
 		}
 
 		static FileIDResult Test_Simple(IdentifyJob job, FileIDType type, SimpleMagicRecord magic)

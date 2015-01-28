@@ -42,6 +42,7 @@
 			this.BreakpointsGroupBox = new System.Windows.Forms.GroupBox();
 			this.BreakPointControl1 = new BizHawk.Client.EmuHawk.tools.Debugger.BreakpointControl();
 			this.DisassemblerBox = new System.Windows.Forms.GroupBox();
+			this.ToPCBtn = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.DisassemblerView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.Address = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -50,6 +51,11 @@
 			this.StepIntoBtn = new System.Windows.Forms.Button();
 			this.StepOverBtn = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.SeekToBtn = new System.Windows.Forms.Button();
+			this.SeekToBox = new BizHawk.Client.EmuHawk.HexTextBox();
+			this.CancelSeekBtn = new System.Windows.Forms.Button();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.RefreshMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.RegistersGroupBox.SuspendLayout();
 			this.BreakpointsGroupBox.SuspendLayout();
@@ -89,7 +95,9 @@
 			this.DebugSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.StepIntoMenuItem,
             this.StepOverMenuItem,
-            this.StepOutMenuItem});
+            this.StepOutMenuItem,
+            this.toolStripSeparator1,
+            this.RefreshMenuItem});
 			this.DebugSubMenu.Name = "DebugSubMenu";
 			this.DebugSubMenu.Size = new System.Drawing.Size(54, 20);
 			this.DebugSubMenu.Text = "&Debug";
@@ -178,6 +186,7 @@
 			// 
 			this.DisassemblerBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+			this.DisassemblerBox.Controls.Add(this.ToPCBtn);
 			this.DisassemblerBox.Controls.Add(this.label1);
 			this.DisassemblerBox.Controls.Add(this.DisassemblerView);
 			this.DisassemblerBox.Location = new System.Drawing.Point(12, 27);
@@ -186,6 +195,17 @@
 			this.DisassemblerBox.TabIndex = 7;
 			this.DisassemblerBox.TabStop = false;
 			this.DisassemblerBox.Text = "Disassembler";
+			// 
+			// ToPCBtn
+			// 
+			this.ToPCBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.ToPCBtn.Location = new System.Drawing.Point(351, 13);
+			this.ToPCBtn.Name = "ToPCBtn";
+			this.ToPCBtn.Size = new System.Drawing.Size(50, 23);
+			this.ToPCBtn.TabIndex = 3;
+			this.ToPCBtn.Text = "To PC";
+			this.ToPCBtn.UseVisualStyleBackColor = true;
+			this.ToPCBtn.Click += new System.EventHandler(this.ToPCBtn_Click);
 			// 
 			// label1
 			// 
@@ -205,6 +225,7 @@
 			this.DisassemblerView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Address,
             this.Instruction});
+			this.DisassemblerView.FullRowSelect = true;
 			this.DisassemblerView.GridLines = true;
 			this.DisassemblerView.ItemCount = 0;
 			this.DisassemblerView.Location = new System.Drawing.Point(6, 39);
@@ -218,6 +239,7 @@
 			this.DisassemblerView.View = System.Windows.Forms.View.Details;
 			this.DisassemblerView.Scroll += new System.Windows.Forms.ScrollEventHandler(this.DisassemblerView_Scroll);
 			this.DisassemblerView.SizeChanged += new System.EventHandler(this.DisassemblerView_SizeChanged);
+			this.DisassemblerView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DisassemblerView_KeyDown);
 			// 
 			// Address
 			// 
@@ -233,7 +255,7 @@
 			// 
 			this.StepOutBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.StepOutBtn.Enabled = false;
-			this.StepOutBtn.Location = new System.Drawing.Point(680, 325);
+			this.StepOutBtn.Location = new System.Drawing.Point(680, 519);
 			this.StepOutBtn.Name = "StepOutBtn";
 			this.StepOutBtn.Size = new System.Drawing.Size(75, 23);
 			this.StepOutBtn.TabIndex = 10;
@@ -245,7 +267,7 @@
 			// 
 			this.StepIntoBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.StepIntoBtn.Enabled = false;
-			this.StepIntoBtn.Location = new System.Drawing.Point(680, 267);
+			this.StepIntoBtn.Location = new System.Drawing.Point(680, 461);
 			this.StepIntoBtn.Name = "StepIntoBtn";
 			this.StepIntoBtn.Size = new System.Drawing.Size(75, 23);
 			this.StepIntoBtn.TabIndex = 11;
@@ -257,7 +279,7 @@
 			// 
 			this.StepOverBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.StepOverBtn.Enabled = false;
-			this.StepOverBtn.Location = new System.Drawing.Point(680, 296);
+			this.StepOverBtn.Location = new System.Drawing.Point(680, 490);
 			this.StepOverBtn.Name = "StepOverBtn";
 			this.StepOverBtn.Size = new System.Drawing.Size(75, 23);
 			this.StepOverBtn.TabIndex = 12;
@@ -265,11 +287,59 @@
 			this.StepOverBtn.UseVisualStyleBackColor = true;
 			this.StepOverBtn.Click += new System.EventHandler(this.StepOverMenuItem_Click);
 			// 
+			// SeekToBtn
+			// 
+			this.SeekToBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SeekToBtn.Location = new System.Drawing.Point(680, 267);
+			this.SeekToBtn.Name = "SeekToBtn";
+			this.SeekToBtn.Size = new System.Drawing.Size(75, 23);
+			this.SeekToBtn.TabIndex = 13;
+			this.SeekToBtn.Text = "Seek To:";
+			this.SeekToBtn.UseVisualStyleBackColor = true;
+			this.SeekToBtn.Click += new System.EventHandler(this.SeekToBtn_Click);
+			// 
+			// SeekToBox
+			// 
+			this.SeekToBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SeekToBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.SeekToBox.Location = new System.Drawing.Point(680, 297);
+			this.SeekToBox.Name = "SeekToBox";
+			this.SeekToBox.Nullable = false;
+			this.SeekToBox.Size = new System.Drawing.Size(75, 20);
+			this.SeekToBox.TabIndex = 14;
+			// 
+			// CancelSeekBtn
+			// 
+			this.CancelSeekBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.CancelSeekBtn.Location = new System.Drawing.Point(699, 323);
+			this.CancelSeekBtn.Name = "CancelSeekBtn";
+			this.CancelSeekBtn.Size = new System.Drawing.Size(56, 23);
+			this.CancelSeekBtn.TabIndex = 15;
+			this.CancelSeekBtn.Text = "Cancel";
+			this.CancelSeekBtn.UseVisualStyleBackColor = true;
+			this.CancelSeekBtn.Click += new System.EventHandler(this.CancelSeekBtn_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(174, 6);
+			// 
+			// RefreshMenuItem
+			// 
+			this.RefreshMenuItem.Name = "RefreshMenuItem";
+			this.RefreshMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
+			this.RefreshMenuItem.Size = new System.Drawing.Size(177, 22);
+			this.RefreshMenuItem.Text = "Refresh";
+			this.RefreshMenuItem.Click += new System.EventHandler(this.RefreshMenuItem_Click);
+			// 
 			// GenericDebugger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(767, 560);
+			this.Controls.Add(this.CancelSeekBtn);
+			this.Controls.Add(this.SeekToBox);
+			this.Controls.Add(this.SeekToBtn);
 			this.Controls.Add(this.StepOverBtn);
 			this.Controls.Add(this.StepIntoBtn);
 			this.Controls.Add(this.StepOutBtn);
@@ -317,5 +387,11 @@
 		private System.Windows.Forms.ToolStripMenuItem StepOverMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem StepOutMenuItem;
 		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.Button SeekToBtn;
+		private HexTextBox SeekToBox;
+		private System.Windows.Forms.Button CancelSeekBtn;
+		private System.Windows.Forms.Button ToPCBtn;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripMenuItem RefreshMenuItem;
 	}
 }

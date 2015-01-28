@@ -123,6 +123,11 @@ namespace BizHawk.Client.EmuHawk
 			get { return MaxUnsignedInt / 4096.0; }
 		}
 
+		private double Max16_16
+		{
+			get { return MaxUnsignedInt / 65536.0; }
+		}
+
 		private static double _12_4_Unit
 		{
 			get { return 1 / 16.0; }
@@ -131,6 +136,11 @@ namespace BizHawk.Client.EmuHawk
 		private static double _20_12_Unit
 		{
 			get { return 1 / 4096.0; }
+		}
+
+		private static double _16_16_Unit
+		{
+			get { return 1 / 65536.0; }
 		}
 
 		public override void ResetText()
@@ -153,6 +163,7 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					case Watch.DisplayType.FixedPoint_12_4:
 					case Watch.DisplayType.FixedPoint_20_12:
+					case Watch.DisplayType.FixedPoint_16_16:
 					case Watch.DisplayType.Float:
 						Text = "0.0";
 						break;
@@ -238,6 +249,7 @@ namespace BizHawk.Client.EmuHawk
 					MaxLength = 21;
 					break;
 				case Watch.DisplayType.FixedPoint_20_12:
+				case Watch.DisplayType.FixedPoint_16_16:
 					MaxLength = 64;
 					break;
 			}
@@ -279,6 +291,7 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case Watch.DisplayType.FixedPoint_12_4:
 				case Watch.DisplayType.FixedPoint_20_12:
+				case Watch.DisplayType.FixedPoint_16_16:
 					if (!e.KeyChar.IsFixedPoint())
 					{
 						e.Handled = true;
@@ -403,6 +416,19 @@ namespace BizHawk.Client.EmuHawk
 
 						Text = f24val.ToString();
 						break;
+					case Watch.DisplayType.FixedPoint_16_16:
+						var f16val = double.Parse(text);
+						if (f16val >= Max16_16 - _16_16_Unit)
+						{
+							f16val = 0;
+						}
+						else
+						{
+							f16val += _16_16_Unit;
+						}
+
+						Text = f16val.ToString();
+						break;
 					case Watch.DisplayType.Float:
 						var dval = double.Parse(text);
 						if (dval > double.MaxValue - 1)
@@ -506,6 +532,19 @@ namespace BizHawk.Client.EmuHawk
 
 						Text = f24val.ToString();
 						break;
+					case Watch.DisplayType.FixedPoint_16_16:
+						var f16val = double.Parse(text);
+						if (f16val < 0 + _16_16_Unit)
+						{
+							f16val = Max16_16;
+						}
+						else
+						{
+							f16val -= _16_16_Unit;
+						}
+
+						Text = f16val.ToString();
+						break;
 					case Watch.DisplayType.Float:
 						var dval = double.Parse(text);
 						if (dval > double.MaxValue - 1)
@@ -550,6 +589,7 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case Watch.DisplayType.FixedPoint_12_4:
 				case Watch.DisplayType.FixedPoint_20_12:
+				case Watch.DisplayType.FixedPoint_16_16:
 					Text = Text.OnlyFixedPoint();
 					break;
 				case Watch.DisplayType.Float:
@@ -616,6 +656,13 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					break;
+				case Watch.DisplayType.FixedPoint_16_16:
+					if (Text.IsFixedPoint())
+					{
+						return (int)(double.Parse(Text) * 65536.0);
+					}
+
+					break;
 				case Watch.DisplayType.Float:
 					if (Text.IsFloat())
 					{
@@ -657,6 +704,9 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					case Watch.DisplayType.FixedPoint_20_12:
 						Text = string.Format("{0:F5}", val.Value / 4096.0);
+						break;
+					case Watch.DisplayType.FixedPoint_16_16:
+						Text = string.Format("{0:F5}", val.Value / 65536.0);
 						break;
 					case Watch.DisplayType.Float:
 						var bytes = BitConverter.GetBytes(val.Value);

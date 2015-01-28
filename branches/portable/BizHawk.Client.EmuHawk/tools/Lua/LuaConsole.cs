@@ -23,8 +23,8 @@ namespace BizHawk.Client.EmuHawk
 		private bool _sortReverse;
 		private string _lastColumnSorted;
 
-        private List<string> _consoleCommandHistory = new List<string>();
-        private int _consoleCommandHistoryIndex = -1;
+		private List<string> _consoleCommandHistory = new List<string>();
+		private int _consoleCommandHistoryIndex = -1;
 
 		public LuaConsole()
 		{
@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 			LuaListView.QueryItemBkColor += LuaListView_QueryItemBkColor;
 			LuaListView.VirtualMode = true;
 
-            InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a=> a.Library + "."+ a.Name).ToArray());
+			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a => a.Library + "." + a.Name).ToArray());
 		}
 
 		public EmuLuaLibrary LuaImp { get; set; }
@@ -115,11 +115,11 @@ namespace BizHawk.Client.EmuHawk
 			if (LuaAlreadyInSession(processedPath) == false)
 			{
 				var luaFile = new LuaFile(string.Empty, processedPath);
-                
+
 				_luaList.Add(luaFile);
 				LuaListView.ItemCount = _luaList.Count;
 				Global.Config.RecentLua.Add(processedPath);
-                
+
 
 				if (!Global.Config.DisableLuaScriptsOnLoad)
 				{
@@ -130,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					catch (Exception e)
 					{
-                        if (e.GetType() == typeof(LuaInterface.LuaScriptException))
+						if (e.GetType() == typeof(LuaInterface.LuaScriptException))
 						{
 							luaFile.Enabled = false;
 							ConsoleLog(e.Message);
@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					catch (Exception e)
 					{
-                        if (e is LuaScriptException)
+						if (e is LuaScriptException)
 						{
 							file.Enabled = false;
 							ConsoleLog(e.Message);
@@ -516,13 +516,13 @@ namespace BizHawk.Client.EmuHawk
 
 					return true;
 				}
-				
+
 				if (result == DialogResult.No)
 				{
 					_luaList.Changes = false;
 					return true;
 				}
-				
+
 				if (result == DialogResult.Cancel)
 				{
 					return false;
@@ -640,14 +640,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var sfd = new SaveFileDialog
 			{
-				InitialDirectory = !string.IsNullOrWhiteSpace(_luaList.Filename) ? 
+				InitialDirectory = !string.IsNullOrWhiteSpace(_luaList.Filename) ?
 					Path.GetDirectoryName(_luaList.Filename) :
 					PathManager.MakeAbsolutePath(Global.Config.PathEntries.LuaPathFragment, null),
 				DefaultExt = ".lua",
 				FileName = !string.IsNullOrWhiteSpace(_luaList.Filename) ?
 					Path.GetFileNameWithoutExtension(_luaList.Filename) :
 					Path.GetFileNameWithoutExtension(Global.Game.Name),
-					OverwritePrompt = true,
+				OverwritePrompt = true,
 				Filter = "Lua Scripts (*.lua)|*.lua|All Files (*.*)|*.*"
 			};
 
@@ -965,7 +965,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-                if (ex is LuaScriptException || ex is LuaException)
+				if (ex is LuaScriptException || ex is LuaException)
 				{
 					ConsoleLog(ex.Message);
 				}
@@ -1077,68 +1077,75 @@ namespace BizHawk.Client.EmuHawk
 			ToggleScriptMenuItem_Click(sender, e);
 		}
 
-        private void InputBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if(e.KeyCode == Keys.Enter)
-            {
-                string consoleBeforeCall = OutputBox.Text;
-                // TODO: Maybe make these try-catches more general
-                if (InputBox.Text != "")
-                {
-                    try
-                    {
-                        LuaImp.ExecuteString(InputBox.Text);
+		private void InputBox_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter)
+			{
+				string consoleBeforeCall = OutputBox.Text;
+				// TODO: Maybe make these try-catches more general
+				if (InputBox.Text != "")
+				{
+					try
+					{
+						LuaImp.ExecuteString(InputBox.Text);
 
-                        // TODO: This isn't exactly optimal
-                        if (OutputBox.Text == consoleBeforeCall)
-                            ConsoleLog("Command successfully executed");
-                    }
-                    catch (LuaScriptException ex)
-                    {
-                        ConsoleLog(ex.ToString());
-                    }
-                    _consoleCommandHistory.Insert(0, InputBox.Text);
-                    _consoleCommandHistoryIndex = -1;
-                    InputBox.Clear();
-                }
-            }
-            else if(e.KeyCode == Keys.Up)
-            {
-                if (_consoleCommandHistoryIndex < _consoleCommandHistory.Count-1)
-                {
-                    _consoleCommandHistoryIndex++;
-                    InputBox.Text = _consoleCommandHistory[_consoleCommandHistoryIndex];
-                    InputBox.Select(InputBox.Text.Length, 0);
-                }
-                e.Handled = true;
-            }
-            else if(e.KeyCode == Keys.Down)
-            {
-                if (_consoleCommandHistoryIndex == 0)
-                {
-                    _consoleCommandHistoryIndex--;
-                    InputBox.Text = "";
-                }
-                else if (_consoleCommandHistoryIndex > 0)
-                {
-                    _consoleCommandHistoryIndex--;
-                    InputBox.Text = _consoleCommandHistory[_consoleCommandHistoryIndex];
-                    InputBox.Select(InputBox.Text.Length, 0);
-                }
-                e.Handled = true;
-            }
-            else if(e.KeyCode == Keys.Tab)
-            {
-                this.ProcessTabKey(false);
-                e.Handled = true;
-            }
-        }
+						// TODO: This isn't exactly optimal
+						if (OutputBox.Text == consoleBeforeCall)
+							ConsoleLog("Command successfully executed");
+					}
+					catch (LuaScriptException ex)
+					{
+						try
+						{
+							LuaImp.ExecuteString(string.Format("console.log({0})", InputBox.Text));
+						}
+						catch
+						{
+							ConsoleLog(ex.ToString());
+						}
+					}
+					_consoleCommandHistory.Insert(0, InputBox.Text);
+					_consoleCommandHistoryIndex = -1;
+					InputBox.Clear();
+				}
+			}
+			else if (e.KeyCode == Keys.Up)
+			{
+				if (_consoleCommandHistoryIndex < _consoleCommandHistory.Count - 1)
+				{
+					_consoleCommandHistoryIndex++;
+					InputBox.Text = _consoleCommandHistory[_consoleCommandHistoryIndex];
+					InputBox.Select(InputBox.Text.Length, 0);
+				}
+				e.Handled = true;
+			}
+			else if (e.KeyCode == Keys.Down)
+			{
+				if (_consoleCommandHistoryIndex == 0)
+				{
+					_consoleCommandHistoryIndex--;
+					InputBox.Text = "";
+				}
+				else if (_consoleCommandHistoryIndex > 0)
+				{
+					_consoleCommandHistoryIndex--;
+					InputBox.Text = _consoleCommandHistory[_consoleCommandHistoryIndex];
+					InputBox.Select(InputBox.Text.Length, 0);
+				}
+				e.Handled = true;
+			}
+			else if (e.KeyCode == Keys.Tab)
+			{
+				this.ProcessTabKey(false);
+				e.Handled = true;
+			}
+		}
 
-        protected override bool ProcessTabKey(bool forward)
-        {
-            // TODO: Make me less dirty (please)
-            return false;
-        }
+		protected override bool ProcessTabKey(bool forward)
+		{
+			// TODO: Make me less dirty (please)
+			return false;
+		}
 
 		#endregion
 

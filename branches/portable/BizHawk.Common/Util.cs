@@ -374,6 +374,55 @@ namespace BizHawk.Common
 		}
 	}
 
+	public static class BitConverterLE
+	{
+		public static void WriteBytes(ushort value, byte[] dst, int index)
+		{
+			dst[index    ] = (byte)(value      );
+			dst[index + 1] = (byte)(value >>  8);
+		}
+
+		public static void WriteBytes(uint value, byte[] dst, int index)
+		{
+			dst[index    ] = (byte)(value      );
+			dst[index + 1] = (byte)(value >>  8);
+			dst[index + 2] = (byte)(value >> 16);
+			dst[index + 3] = (byte)(value >> 24);
+		}
+	}
+
+	public static class VLInteger
+	{
+		public static void WriteUnsigned(uint value, byte[] data, ref int index)
+		{
+			// This is optimized for good performance on both the x86 and x64 JITs. Don't change anything without benchmarking.
+			do
+			{
+				uint x = value & 0x7FU;
+				value >>= 7;
+				data[index++] = (byte)((value != 0U ? 0x80U : 0U) | x);
+			}
+			while (value != 0U);
+		}
+
+		public static uint ReadUnsigned(byte[] data, ref int index)
+		{
+			// This is optimized for good performance on both the x86 and x64 JITs. Don't change anything without benchmarking.
+			uint value = 0U;
+			int shiftCount = 0;
+			bool isLastByte; // Negating the comparison and moving it earlier in the loop helps a lot on x86 for some reason
+			do
+			{
+				uint x = (uint)data[index++];
+				isLastByte = (x & 0x80U) == 0U;
+				value |= (x & 0x7FU) << shiftCount;
+				shiftCount += 7;
+			}
+			while (!isLastByte);
+			return value;
+		}
+	}
+
 	[Serializable]
 	public class NotTestedException : Exception
 	{

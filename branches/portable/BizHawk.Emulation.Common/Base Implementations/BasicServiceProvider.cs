@@ -21,13 +21,18 @@ namespace BizHawk.Emulation.Common
 
 			Type coreType = core.GetType();
 
-			foreach (Type service in coreType.GetInterfaces())
+			var services = coreType.GetInterfaces()
+				.Where(t => typeof(IEmulatorService).IsAssignableFrom(t))
+				.Where(t => t != typeof(IEmulatorService));
+
+			foreach (Type service in services)
 			{
 				Services.Add(service, core);
 			}
 
 			// add the actual instantiated type and any types in the hierarchy
-			while (coreType != null)
+			// except for object because that would be dumb (or would it?)
+			while (coreType != typeof(object))
 			{
 				Services.Add(coreType, core);
 				coreType = coreType.BaseType;
@@ -39,7 +44,8 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="provider"></param>
-		public void Register<T>(T provider)
+		public void Register<T>(T provider) 
+			where T : IEmulatorService
 		{
 			if (provider == null)
 				throw new ArgumentNullException("provider");
@@ -47,6 +53,7 @@ namespace BizHawk.Emulation.Common
 		}
 
 		public T GetService<T>()
+			where T : IEmulatorService
 		{
 			return (T)GetService(typeof(T));
 		}
@@ -61,6 +68,7 @@ namespace BizHawk.Emulation.Common
 		}
 
 		public bool HasService<T>()
+			where T : IEmulatorService
 		{
 			return HasService(typeof(T));
 		}
@@ -68,6 +76,14 @@ namespace BizHawk.Emulation.Common
 		public bool HasService(Type t)
 		{
 			return Services.ContainsKey(t);
+		}
+
+		public IEnumerable<Type> AvailableServices
+		{
+			get
+			{
+				return Services.Select(d => d.Key);
+			}
 		}
 	}
 }

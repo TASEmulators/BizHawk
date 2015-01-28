@@ -19,8 +19,7 @@ namespace BizHawk.Client.Common
 		{
 			if (MemoryDomainCore != null)
 			{
-				var domains = MemoryDomainCore.MemoryDomains;
-				_currentMemoryDomain = domains.MainMemory;
+				_currentMemoryDomain = MemoryDomainCore.MainMemory;
 			}
 		}
 
@@ -29,8 +28,7 @@ namespace BizHawk.Client.Common
 		{
 			if (MemoryDomainCore != null)
 			{
-				var domains = MemoryDomainCore.MemoryDomains;
-				_currentMemoryDomain = domains.MainMemory;
+				_currentMemoryDomain = MemoryDomainCore.MainMemory;
 			}
 		}
 
@@ -42,6 +40,11 @@ namespace BizHawk.Client.Common
 			{
 				if (MemoryDomainCore != null)
 				{
+					if (_currentMemoryDomain == null)
+					{
+						_currentMemoryDomain = MemoryDomainCore.MainMemory;
+					}
+
 					return _currentMemoryDomain;
 				}
 				else
@@ -86,9 +89,9 @@ namespace BizHawk.Client.Common
 			"getcurrentmemorydomainsize",
 			"Returns the number of bytes of the current memory domain selected by Lua. The default is Main memory"
 		)]
-		public int GetCurrentMemoryDomainSize()
+		public uint GetCurrentMemoryDomainSize()
 		{
-			return Domain.Size;
+			return (uint)Domain.Size;
 		}
 
 		[LuaMethodAttributes(
@@ -106,14 +109,14 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					Log(string.Format("Unable to find domain: ", domain));
+					Log(string.Format("Unable to find domain: {0}", domain));
 					return false;
 				}
 
 			}
 			catch // Just in case
 			{
-				Log(string.Format("Unable to find domain: ", domain));
+				Log(string.Format("Unable to find domain: {0}", domain));
 			}
 
 			return false;

@@ -23,35 +23,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		portedUrl: "http://gambatte.sourceforge.net/"
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public class Gameboy : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IInputPollable,
-		IMemoryDomains, IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>
+	public partial class Gameboy : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IInputPollable,
+		IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>
 	{
-		#region ALL SAVESTATEABLE STATE GOES HERE
-
-		/// <summary>
-		/// internal gambatte state
-		/// </summary>
-		internal IntPtr GambatteState = IntPtr.Zero;
-
-		public int Frame { get; set; }
-		public int LagCount { get; set; }
-		public bool IsLagFrame { get; private set; }
-
-		// all cycle counts are relative to a 2*1024*1024 mhz refclock
-
-		/// <summary>
-		/// total cycles actually executed
-		/// </summary>
-		private ulong _cycleCount = 0;
-
-		/// <summary>
-		/// number of extra cycles we overran in the last frame
-		/// </summary>
-		private uint frameOverflow = 0;
-		public ulong CycleCount { get { return _cycleCount; } }
-
-		#endregion
-
 		/// <summary>
 		/// the nominal length of one frame
 		/// </summary>
@@ -152,18 +126,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			try
 			{
-				this._SyncSettings = (GambatteSyncSettings)SyncSettings ?? new GambatteSyncSettings();
+				this._syncSettings = (GambatteSyncSettings)SyncSettings ?? new GambatteSyncSettings();
 				// copy over non-loadflag syncsettings now; they won't take effect if changed later
-				zerotime = (uint)this._SyncSettings.RTCInitialTime;
-				real_rtc_time = DeterministicEmulation ? false : this._SyncSettings.RealTimeRTC;
+				zerotime = (uint)this._syncSettings.RTCInitialTime;
+				real_rtc_time = DeterministicEmulation ? false : this._syncSettings.RealTimeRTC;
 
 				LibGambatte.LoadFlags flags = 0;
 
-				if (this._SyncSettings.ForceDMG)
+				if (this._syncSettings.ForceDMG)
 					flags |= LibGambatte.LoadFlags.FORCE_DMG;
-				if (this._SyncSettings.GBACGB)
+				if (this._syncSettings.GBACGB)
 					flags |= LibGambatte.LoadFlags.GBA_CGB;
-				if (this._SyncSettings.MulticartCompat)
+				if (this._syncSettings.MulticartCompat)
 					flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
 
 				if (LibGambatte.gambatte_load(GambatteState, file, (uint)file.Length, GetCurrentTime(), flags) != 0)
@@ -210,6 +184,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
+        #region ALL SAVESTATEABLE STATE GOES HERE
+
+        /// <summary>
+        /// internal gambatte state
+        /// </summary>
+        internal IntPtr GambatteState = IntPtr.Zero;
+
+        public int Frame { get; set; }
+        public int LagCount { get; set; }
+        public bool IsLagFrame { get; private set; }
+
+        // all cycle counts are relative to a 2*1024*1024 mhz refclock
+
+        /// <summary>
+        /// total cycles actually executed
+        /// </summary>
+        private ulong _cycleCount = 0;
+
+        /// <summary>
+        /// number of extra cycles we overran in the last frame
+        /// </summary>
+        private uint frameOverflow = 0;
+        public ulong CycleCount { get { return _cycleCount; } }
+
+        #endregion
+
 		#region controller
 
 		public static readonly ControllerDefinition GbController = new ControllerDefinition
@@ -237,36 +237,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#endregion
 
-		#region debug
-
-		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
-		{
-			int[] data = new int[10];
-			LibGambatte.gambatte_getregs(GambatteState, data);
-
-			return new Dictionary<string, RegisterValue>
-			{
-				{ "PC", (ushort)(data[(int)LibGambatte.RegIndicies.PC] & 0xffff) },
-				{ "SP", (ushort)(data[(int)LibGambatte.RegIndicies.SP] & 0xffff) },
-				{ "A", (byte)(data[(int)LibGambatte.RegIndicies.A] & 0xff) },
-				{ "B", (byte)(data[(int)LibGambatte.RegIndicies.B] & 0xff) },
-				{ "C", (byte)(data[(int)LibGambatte.RegIndicies.C] & 0xff) },
-				{ "D", (byte)(data[(int)LibGambatte.RegIndicies.D] & 0xff) },
-				{ "E", (byte)(data[(int)LibGambatte.RegIndicies.E] & 0xff) },
-				{ "F", (byte)(data[(int)LibGambatte.RegIndicies.F] & 0xff) },
-				{ "H", (byte)(data[(int)LibGambatte.RegIndicies.H] & 0xff) },
-				{ "L", (byte)(data[(int)LibGambatte.RegIndicies.L] & 0xff) }
-			};
-		}
-
-		[FeatureNotImplemented]
-		public void SetCpuRegister(string register, int value)
-		{
-			throw new NotImplementedException();
-		}
-
-		private ITraceable Tracer { get; set; }
-
 		/// <summary>
 		/// true if the emulator is currently emulating CGB
 		/// </summary>
@@ -289,13 +259,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			_inputCallbacks = ics;
 		}
-
-		public bool CanStep(StepType type) { return false; }
-
-		[FeatureNotImplemented]
-		public void Step(StepType type) { throw new NotImplementedException(); }
-
-		#endregion
 
 		internal void FrameAdvancePrep()
 		{
@@ -346,7 +309,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			FrameAdvancePrep();
-			if (_SyncSettings.EqualLengthFrames)
+			if (_syncSettings.EqualLengthFrames)
 			{
 				while (true)
 				{
@@ -482,70 +445,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public bool DeterministicEmulation { get; private set; }
 
-		#region saveram
-
-		public byte[] CloneSaveRam()
-		{
-			int length = LibGambatte.gambatte_savesavedatalength(GambatteState);
-
-			if (length > 0)
-			{
-				byte[] ret = new byte[length];
-				LibGambatte.gambatte_savesavedata(GambatteState, ret);
-				return ret;
-			}
-			else
-				return new byte[0];
-		}
-
-		private byte[] FixRTC(byte[] data, int offset)
-		{
-			// length - offset is the start of the VBA-only data; so
-			// length - offset - 4 is the start of the RTC block
-			int idx = data.Length - offset - 4;
-
-			byte[] ret = new byte[idx + 4];
-			Buffer.BlockCopy(data, 0, ret, 0, idx);
-			data[idx] = (byte)zerotime;
-			data[idx + 1] = (byte)(zerotime >> 8);
-			data[idx + 2] = (byte)(zerotime >> 16);
-			data[idx + 3] = (byte)(zerotime >> 24);
-
-			return ret;
-		}
-
-		public void StoreSaveRam(byte[] data)
-		{
-			int expected = LibGambatte.gambatte_savesavedatalength(GambatteState);
-			switch (data.Length - expected)
-			{
-				case 0:
-					break;
-				default:
-					throw new ArgumentException("Size of saveram data does not match expected!");
-				case 44:
-					data = FixRTC(data, 44);
-					break;
-				case 40:
-					data = FixRTC(data, 40);
-					break;
-			}
-			LibGambatte.gambatte_loadsavedata(GambatteState, data);
-		}
-
-		public bool SaveRamModified
-		{
-			get
-			{
-				if (LibGambatte.gambatte_savesavedatalength(GambatteState) == 0)
-					return false;
-				else
-					return true; // need to wire more stuff into the core to actually know this
-			}
-		}
-
-		#endregion
-
 		public void ResetCounters()
 		{
 			Frame = 0;
@@ -557,234 +456,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			frameOverflow = 0;
 		}
 
-		#region savestates
-
-		byte[] savebuff;
-		byte[] savebuff2;
-
-		void NewSaveCoreSetBuff()
-		{
-			savebuff = new byte[LibGambatte.gambatte_newstatelen(GambatteState)];
-			savebuff2 = new byte[savebuff.Length + 4 + 21];
-		}
-
-		JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
-
-		// other data in the text state besides core
-		internal class TextStateData
-		{
-			public int Frame;
-			public int LagCount;
-			public bool IsLagFrame;
-			public ulong _cycleCount;
-			public uint frameOverflow;
-		}
-
-		internal TextState<TextStateData> SaveState()
-		{
-			var s = new TextState<TextStateData>();
-			s.Prepare();
-			var ff = s.GetFunctionPointersSave();
-			LibGambatte.gambatte_newstatesave_ex(GambatteState, ref ff);
-			s.ExtraData.IsLagFrame = IsLagFrame;
-			s.ExtraData.LagCount = LagCount;
-			s.ExtraData.Frame = Frame;
-			s.ExtraData.frameOverflow = frameOverflow;
-			s.ExtraData._cycleCount = _cycleCount;
-			return s;
-		}
-
-		internal void LoadState(TextState<TextStateData> s)
-		{
-			s.Prepare();
-			var ff = s.GetFunctionPointersLoad();
-			LibGambatte.gambatte_newstateload_ex(GambatteState, ref ff);
-			IsLagFrame = s.ExtraData.IsLagFrame;
-			LagCount = s.ExtraData.LagCount;
-			Frame = s.ExtraData.Frame;
-			frameOverflow = s.ExtraData.frameOverflow;
-			_cycleCount = s.ExtraData._cycleCount;
-		}
-
-		public void SaveStateText(System.IO.TextWriter writer)
-		{
-			var s = SaveState();
-			ser.Serialize(writer, s);
-			// write extra copy of stuff we don't use
-			writer.WriteLine();
-			writer.WriteLine("Frame {0}", Frame);
-		}
-
-		public void LoadStateText(System.IO.TextReader reader)
-		{
-			var s = (TextState<TextStateData>)ser.Deserialize(reader, typeof(TextState<TextStateData>));
-			LoadState(s);
-		}
-
-		public void SaveStateBinary(System.IO.BinaryWriter writer)
-		{
-			if (!LibGambatte.gambatte_newstatesave(GambatteState, savebuff, savebuff.Length))
-				throw new Exception("gambatte_newstatesave() returned false");
-
-			writer.Write(savebuff.Length);
-			writer.Write(savebuff);
-
-			// other variables
-			writer.Write(IsLagFrame);
-			writer.Write(LagCount);
-			writer.Write(Frame);
-			writer.Write(frameOverflow);
-			writer.Write(_cycleCount);
-		}
-
-		public void LoadStateBinary(System.IO.BinaryReader reader)
-		{
-			int length = reader.ReadInt32();
-			if (length != savebuff.Length)
-				throw new InvalidOperationException("Savestate buffer size mismatch!");
-
-			reader.Read(savebuff, 0, savebuff.Length);
-
-			if (!LibGambatte.gambatte_newstateload(GambatteState, savebuff, savebuff.Length))
-				throw new Exception("gambatte_newstateload() returned false");
-
-			// other variables
-			IsLagFrame = reader.ReadBoolean();
-			LagCount = reader.ReadInt32();
-			Frame = reader.ReadInt32();
-			frameOverflow = reader.ReadUInt32();
-			_cycleCount = reader.ReadUInt64();
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			MemoryStream ms = new MemoryStream(savebuff2);
-			BinaryWriter bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			if (ms.Position != savebuff2.Length)
-				throw new InvalidOperationException();
-			ms.Close();
-			return savebuff2;
-		}
-
-		public bool BinarySaveStatesPreferred { get { return true; } }
-
-		#endregion
-
-		#region memorycallback
-
-		LibGambatte.MemoryCallback readcb;
-		LibGambatte.MemoryCallback writecb;
-		LibGambatte.MemoryCallback execcb;
-
-		private MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem();
-		public IMemoryCallbackSystem MemoryCallbacks { get { return _memorycallbacks; } }
-
-		/// <summary>
-		/// for use in dual core
-		/// </summary>
-		/// <param name="ics"></param>
-		public void ConnectMemoryCallbackSystem(MemoryCallbackSystem mcs)
-		{
-			_memorycallbacks = mcs;
-		}
-
-		void InitMemoryCallbacks()
-		{
-			readcb = (addr) => MemoryCallbacks.CallReads(addr);
-			writecb = (addr) => MemoryCallbacks.CallWrites(addr);
-			execcb = (addr) => MemoryCallbacks.CallExecutes(addr);
-			_memorycallbacks.ActiveChanged += RefreshMemoryCallbacks;
-		}
-
-		void RefreshMemoryCallbacks()
-		{
-			var mcs = MemoryCallbacks;
-
-			LibGambatte.gambatte_setreadcallback(GambatteState, mcs.HasReads ? readcb : null);
-			LibGambatte.gambatte_setwritecallback(GambatteState, mcs.HasWrites ? writecb : null);
-			LibGambatte.gambatte_setexeccallback(GambatteState, mcs.HasExecutes ? execcb : null);
-		}
-
-		#endregion
-
 		public CoreComm CoreComm { get; set; }
-
-		LibGambatte.TraceCallback tracecb;
-
-		void MakeTrace(IntPtr _s)
-		{
-			int[] s = new int[13];
-			System.Runtime.InteropServices.Marshal.Copy(_s, s, 0, 13);
-			ushort unused;
-
-			Tracer.Put(string.Format(
-				"{13} SP:{2:x2} A:{3:x2} B:{4:x2} C:{5:x2} D:{6:x2} E:{7:x2} F:{8:x2} H:{9:x2} L:{10:x2} {11} Cy:{0}",
-				s[0],
-				s[1] & 0xffff,
-				s[2] & 0xffff,
-				s[3] & 0xff,
-				s[4] & 0xff,
-				s[5] & 0xff,
-				s[6] & 0xff,
-				s[7] & 0xff,
-				s[8] & 0xff,
-				s[9] & 0xff,
-				s[10] & 0xff,
-				s[11] != 0 ? "skip" : "",
-				s[12] & 0xff,
-				Common.Components.Z80GB.NewDisassembler.Disassemble((ushort)s[1], (addr) => LibGambatte.gambatte_cpuread(GambatteState, addr), out unused).PadRight(30)
-			));
-		}
-
-		#region MemoryDomains
-
-		void CreateMemoryDomain(LibGambatte.MemoryAreas which, string name)
-		{
-			IntPtr data = IntPtr.Zero;
-			int length = 0;
-
-			if (!LibGambatte.gambatte_getmemoryarea(GambatteState, which, ref data, ref length))
-				throw new Exception("gambatte_getmemoryarea() failed!");
-
-			// if length == 0, it's an empty block; (usually rambank on some carts); that's ok
-			if (data != IntPtr.Zero && length > 0)
-				_MemoryDomains.Add(MemoryDomain.FromIntPtr(name, length, MemoryDomain.Endian.Little, data));
-		}
-
-		void InitMemoryDomains()
-		{
-			CreateMemoryDomain(LibGambatte.MemoryAreas.wram, "WRAM");
-			CreateMemoryDomain(LibGambatte.MemoryAreas.rom, "ROM");
-			CreateMemoryDomain(LibGambatte.MemoryAreas.vram, "VRAM");
-			CreateMemoryDomain(LibGambatte.MemoryAreas.cartram, "Cart RAM");
-			CreateMemoryDomain(LibGambatte.MemoryAreas.oam, "OAM");
-			CreateMemoryDomain(LibGambatte.MemoryAreas.hram, "HRAM");
-
-			// also add a special memory domain for the system bus, where calls get sent directly to the core each time
-
-			_MemoryDomains.Add(new MemoryDomain("System Bus", 65536, MemoryDomain.Endian.Little,
-				delegate(int addr)
-				{
-					if (addr < 0 || addr >= 65536)
-						throw new ArgumentOutOfRangeException();
-					return LibGambatte.gambatte_cpuread(GambatteState, (ushort)addr);
-				},
-				delegate(int addr, byte val)
-				{
-					if (addr < 0 || addr >= 65536)
-						throw new ArgumentOutOfRangeException();
-					LibGambatte.gambatte_cpuwrite(GambatteState, (ushort)addr, val);
-				}));
-
-			MemoryDomains = new MemoryDomainList(_MemoryDomains);
-		}
-
-		private List<MemoryDomain> _MemoryDomains = new List<MemoryDomain>();
-		public IMemoryDomainList MemoryDomains { get; private set; }
-
-		#endregion
 
 		#region ppudebug
 
@@ -865,51 +537,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 			DisposeSound();
 		}
-
-		#region IVideoProvider
-
-		public IVideoProvider VideoProvider
-		{
-			get { return this; }
-		}
-
-		/// <summary>
-		/// stored image of most recent frame
-		/// </summary>
-		int[] VideoBuffer = new int[160 * 144];
-
-		public int[] GetVideoBuffer()
-		{
-			return VideoBuffer;
-		}
-
-		public int VirtualWidth
-		{
-			// only sgb changes this, which we don't emulate here
-			get { return 160; }
-		}
-
-		public int VirtualHeight
-		{
-			get { return 144; }
-		}
-
-		public int BufferWidth
-		{
-			get { return 160; }
-		}
-
-		public int BufferHeight
-		{
-			get { return 144; }
-		}
-
-		public int BackgroundColor
-		{
-			get { return 0; }
-		}
-
-		#endregion
 
 		#region palette
 
@@ -1024,120 +651,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			nsamp = soundoutbuffcontains;
 		}
 
-		public bool Muted { get { return _Settings.Muted; } }
-
-		#endregion
-
-		#region Settings
-
-		GambatteSettings _Settings;
-		GambatteSyncSettings _SyncSettings;
-
-		public GambatteSettings GetSettings() { return _Settings.Clone(); }
-		public GambatteSyncSettings GetSyncSettings() { return _SyncSettings.Clone(); }
-		public bool PutSettings(GambatteSettings o)
-		{
-			_Settings = o;
-			if (IsCGBMode())
-				SetCGBColors(_Settings.CGBColors);
-			else
-				ChangeDMGColors(_Settings.GBPalette);
-			return false;
-		}
-
-		public bool PutSyncSettings(GambatteSyncSettings o)
-		{
-			bool ret = GambatteSyncSettings.NeedsReboot(_SyncSettings, o);
-			_SyncSettings = o;
-			return ret;
-		}
-
-		public class GambatteSettings
-		{
-			private static readonly int[] DefaultPalette = new[]
-				{
-					10798341, 8956165, 1922333, 337157,
-					10798341, 8956165, 1922333, 337157,
-					10798341, 8956165, 1922333, 337157
-				};
-
-			public int[] GBPalette;
-			public GBColors.ColorType CGBColors;
-			/// <summary>
-			/// true to mute all audio
-			/// </summary>
-			public bool Muted;
-
-			public GambatteSettings()
-			{
-				GBPalette = (int[])DefaultPalette.Clone();
-				CGBColors = GBColors.ColorType.gambatte;
-			}
-
-			public GambatteSettings Clone()
-			{
-				var ret = (GambatteSettings)MemberwiseClone();
-				ret.GBPalette = (int[])GBPalette.Clone();
-				return ret;
-			}
-		}
-
-		public class GambatteSyncSettings
-		{
-			[DisplayName("Force DMG Mode")]
-			[Description("Force the game to run on DMG hardware, even if it's detected as a CGB game.  Relevant for games that are \"CGB Enhanced\" but do not require CGB.")]
-			[DefaultValue(false)]
-			public bool ForceDMG { get; set; }
-
-			[DisplayName("CGB in GBA")]
-			[Description("Emulate GBA hardware running a CGB game, instead of CGB hardware.  Relevant only for titles that detect the presense of a GBA, such as Shantae.")]
-			[DefaultValue(false)]
-			public bool GBACGB { get; set; }
-
-			[DisplayName("Multicart Compatibility")]
-			[Description("Use special compatibility hacks for certain multicart games.  Relevant only for specific multicarts.")]
-			[DefaultValue(false)]
-			public bool MulticartCompat { get; set; }
-
-			[DisplayName("Realtime RTC")]
-			[Description("If true, the real time clock in MBC3 games will reflect real time, instead of emulated time.  Ignored (treated as false) when a movie is recording.")]
-			[DefaultValue(false)]
-			public bool RealTimeRTC { get; set; }
-
-			[DisplayName("RTC Initial Time")]
-			[Description("Set the initial RTC time in terms of elapsed seconds.  Only used when RealTimeRTC is false.")]
-			[DefaultValue(0)]
-			public int RTCInitialTime
-			{
-				get { return _RTCInitialTime; }
-				set { _RTCInitialTime = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
-			}
-			[JsonIgnore]
-			int _RTCInitialTime;
-
-			[DisplayName("Equal Length Frames")]
-			[Description("When false, emulation frames sync to vblank.  Only useful for high level TASing.")]
-			[DefaultValue(true)]
-			public bool EqualLengthFrames { get { return _EqualLengthFrames; } set { _EqualLengthFrames = value; } }
-			[JsonIgnore]
-			[DeepEqualsIgnore]
-			private bool _EqualLengthFrames;
-
-			public GambatteSyncSettings()
-			{
-				SettingsUtil.SetDefaultValues(this);
-			}
-
-			public GambatteSyncSettings Clone()
-			{
-				return (GambatteSyncSettings)MemberwiseClone();
-			}
-
-			public static bool NeedsReboot(GambatteSyncSettings x, GambatteSyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
-		}
+		public bool Muted { get { return _settings.Muted; } }
 
 		#endregion
 	}

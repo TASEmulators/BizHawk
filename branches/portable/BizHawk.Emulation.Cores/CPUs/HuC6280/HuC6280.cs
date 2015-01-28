@@ -9,10 +9,10 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 {
 	public sealed partial class HuC6280
 	{
-		public HuC6280(IDebuggable core)
+		public HuC6280(IMemoryCallbackSystem callbacks)
 		{
 			Reset();
-			Core = core;
+			MemoryCallbacks = callbacks;
 		}
 
 		public void Reset()
@@ -224,18 +224,21 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		public Action<int, byte> WriteVDC;
 		public Action<int> ThinkAction = delegate { };
 
-		public IDebuggable Core;
+		public IMemoryCallbackSystem MemoryCallbacks;
 
 		public byte ReadMemory(ushort address)
 		{
 			byte page = MPR[address >> 13];
-			return ReadMemory21((page << 13) | (address & 0x1FFF));
+			var result = ReadMemory21((page << 13) | (address & 0x1FFF));
+			MemoryCallbacks.CallReads(address);
+			return result;
 		}
 
 		public void WriteMemory(ushort address, byte value)
 		{
 			byte page = MPR[address >> 13];
 			WriteMemory21((page << 13) | (address & 0x1FFF), value);
+			MemoryCallbacks.CallWrites(address);
 		}
 
 		private ushort ReadWord(ushort address)

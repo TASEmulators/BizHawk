@@ -24,6 +24,11 @@ namespace BizHawk.Common.NumberExtensions
 			return string.Format("{0:X" + numdigits + "}", n);
 		}
 
+		public static string ToHexString(this long n, int numdigits)
+		{
+			return string.Format("{0:X" + numdigits + "}", n);
+		}
+
 		public static string ToHexString(this ulong n, int numdigits)
 		{
 			return string.Format("{0:X" + numdigits + "}", n);
@@ -63,7 +68,7 @@ namespace BizHawk.Common.NumberExtensions
 		/// Receives a number and returns the number of hexadecimal digits it is
 		/// Note: currently only returns 2, 4, 6, or 8
 		/// </summary>
-		public static int NumHexDigits(this int i)
+		public static int NumHexDigits(this long i)
 		{
 			//now this is a bit of a trick. if it was less than 0, it mustve been >= 0x80000000 and so takes all 8 digits
 			if (i < 0)
@@ -86,7 +91,12 @@ namespace BizHawk.Common.NumberExtensions
 				return 6;
 			}
 
-			return 8;
+			if (i < 0x100000000)
+			{
+				return 8;
+			}
+
+			return 16;
 		}
 	}
 }

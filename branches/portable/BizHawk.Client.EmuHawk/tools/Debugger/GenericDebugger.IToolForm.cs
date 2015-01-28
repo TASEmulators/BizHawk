@@ -11,14 +11,14 @@ namespace BizHawk.Client.EmuHawk
 	{
 		[RequiredService]
 		private IDebuggable Debuggable { get; set; }
+
 		[OptionalService]
 		private IDisassemblable Disassembler { get; set; }
+
 		[OptionalService]
-		private IMemoryDomains MemoryDomainSource { get; set; }
+		private IMemoryDomains MemoryDomains { get; set; }
 
 		private IMemoryCallbackSystem MemoryCallbacks { get { return Debuggable.MemoryCallbacks; } }
-
-		private IMemoryDomainList MemoryDomains { get { return MemoryDomainSource.MemoryDomains; } }
 
 		private uint PC
 		{
@@ -136,16 +136,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			// TODO: probably none of this
-			RegisterPanel.UpdateValues();
-			UpdateDisassembler();
+			// Nothing to do
 		}
 
 		private void FullUpdate()
 		{
 			RegisterPanel.UpdateValues();
 			UpdateDisassembler();
-			// TODO: check for new breakpoints and add them to the Breakpoint list?
+			BreakPointControl1.UpdateValues();
 		}
 
 		public void FastUpdate()

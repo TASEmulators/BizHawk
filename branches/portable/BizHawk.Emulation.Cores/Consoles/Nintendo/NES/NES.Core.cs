@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public byte[] CIRAM; //AKA nametables
 		string game_name = string.Empty; //friendly name exposed to user and used as filename base
 		CartInfo cart; //the current cart prototype. should be moved into the board, perhaps
-		INESBoard board; //the board hardware that is currently driving things
+		internal INESBoard Board; //the board hardware that is currently driving things
 		EDetectionOrigin origin = EDetectionOrigin.None;
 		int sprdma_countdown;
 		bool _irq_apu; //various irq signals that get merged to the cpu irq pin
@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <returns></returns>
 		public INESBoard GetBoard()
 		{
-			return board;
+			return Board;
 		}
 
 		public void Dispose()
@@ -106,7 +106,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					samples[i + 1] = samples[i];
 
 				//mix in the cart's extra sound circuit
-				nes.board.ApplyCustomAudio(samples);
+				nes.Board.ApplyCustomAudio(samples);
 			}
 
 			public void GetSamples(out short[] samples, out int nsamp)
@@ -126,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				for (int i = 0; i < nsamp * 2; i += 2)
 					samples[i + 1] = samples[i];
 
-				nes.board.ApplyCustomAudio(samples);
+				nes.Board.ApplyCustomAudio(samples);
 			}
 
 			public void DiscardSamples()
@@ -170,9 +170,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// controls other than the deck
 				ControllerDefinition.BoolButtons.Add("Power");
 				ControllerDefinition.BoolButtons.Add("Reset");
-				if (board is FDS)
+				if (Board is FDS)
 				{
-					var b = board as FDS;
+					var b = Board as FDS;
 					ControllerDefinition.BoolButtons.Add("FDS Eject");
 					for (int i = 0; i < b.NumSides; i++)
 						ControllerDefinition.BoolButtons.Add("FDS Insert " + i);
@@ -244,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			lagged = true;
 			if (resetSignal)
 			{
-				board.NESSoftReset();
+				Board.NESSoftReset();
 				cpu.NESSoftReset();
 				apu.NESSoftReset();
 				ppu.NESSoftReset();
@@ -261,9 +261,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			resetSignal = Controller["Reset"];
 			hardResetSignal = Controller["Power"];
 
-			if (board is FDS)
+			if (Board is FDS)
 			{
-				var b = board as FDS;
+				var b = Board as FDS;
 				if (Controller["FDS Eject"])
 					b.Eject();
 				for (int i = 0; i < b.NumSides; i++)
@@ -296,7 +296,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 #if VS2012
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-		private void RunCpuOne()
+		internal void RunCpuOne()
 		{
 			cpu_stepcounter++;
 			if (cpu_stepcounter == cpu_sequence[cpu_step])
@@ -320,12 +320,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					cpu_deadcounter--;
 				else
 				{
-					cpu.IRQ = _irq_apu || board.IRQSignal;
+					cpu.IRQ = _irq_apu || Board.IRQSignal;
 					cpu.ExecuteOne();
 				}
 
 				apu.RunOne();
-				board.ClockCPU();
+				Board.ClockCPU();
 				ppu.PostCpuInstructionOne();
 			}
 		}
@@ -493,7 +493,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (addr >= 0x4020)
 			{
-				ret = board.PeekCart(addr); //easy optimization, since rom reads are so common, move this up (reordering the rest of these elseifs is not easy)
+				ret = Board.PeekCart(addr); //easy optimization, since rom reads are so common, move this up (reordering the rest of these elseifs is not easy)
 			}
 			else if (addr < 0x0800)
 			{
@@ -534,7 +534,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			
 			if (addr >= 0x8000)
 			{
-				ret = board.ReadPRG(addr - 0x8000); //easy optimization, since rom reads are so common, move this up (reordering the rest of these elseifs is not easy)
+				ret = Board.ReadPRG(addr - 0x8000); //easy optimization, since rom reads are so common, move this up (reordering the rest of these elseifs is not easy)
 			}
 			else if (addr < 0x0800)
 			{
@@ -554,11 +554,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x6000)
 			{
-				ret = board.ReadEXP(addr - 0x4000);
+				ret = Board.ReadEXP(addr - 0x4000);
 			}
 			else
 			{
-				ret = board.ReadWRAM(addr - 0x6000);
+				ret = Board.ReadWRAM(addr - 0x6000);
 			}
 			
 			//handle breakpoints and stuff.
@@ -613,15 +613,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x6000)
 			{
-				board.WriteEXP(addr - 0x4000, value);
+				Board.WriteEXP(addr - 0x4000, value);
 			}
 			else if (addr < 0x8000)
 			{
-				board.WriteWRAM(addr - 0x6000, value);
+				Board.WriteWRAM(addr - 0x6000, value);
 			}
 			else
 			{
-				board.WritePRG(addr - 0x8000, value);
+				Board.WritePRG(addr - 0x8000, value);
 			}
 
 			MemoryCallbacks.CallWrites(addr);

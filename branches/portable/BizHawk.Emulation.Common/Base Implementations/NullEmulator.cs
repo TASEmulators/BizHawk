@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 namespace BizHawk.Emulation.Common
 {
-	[CoreAttributes("NullHawk", "")]
+	[CoreAttributes("NullHawk", "", false, true, "", "")]
 	public class NullEmulator : IEmulator, IVideoProvider, ISyncSoundProvider, ISoundProvider, ISettable<NullEmulator.NullEmulatorSettings, object>
 	{
 		public NullEmulator(CoreComm comm, object settings)
@@ -32,7 +32,6 @@ namespace BizHawk.Emulation.Common
 		private readonly int[] frameBuffer = new int[256 * 192];
 		private readonly Random rand = new Random();
 		public CoreComm CoreComm { get; private set; }
-		public IVideoProvider VideoProvider { get { return this; } }
 		public ISoundProvider SoundProvider { get { return this; } }
 		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
 		public bool StartAsyncSound() { return true; }

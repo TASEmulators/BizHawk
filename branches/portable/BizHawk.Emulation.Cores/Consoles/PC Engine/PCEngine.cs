@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		isPorted: false,
 		isReleased: true
 		)]
-	public sealed partial class PCEngine : IEmulator, IMemoryDomains, ISaveRam, IStatable, IInputPollable,
+	public sealed partial class PCEngine : IEmulator, ISaveRam, IStatable, IInputPollable,
 		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>, IDriveLight
 	{
 		// ROM
@@ -87,14 +87,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			_syncSettings = (PCESyncSettings)syncSettings ?? new PCESyncSettings();
 			Init(game, rom);
 			SetControllerButtons();
-
-			{
-				var ser = new BasicServiceProvider(this);
-				ServiceProvider = ser;
-				Tracer = new TraceBuffer();
-				ser.Register<ITraceable>(Tracer);
-				ser.Register<IDisassemblable>(Cpu);
-			}
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
@@ -107,7 +99,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public PCEngine(CoreComm comm, GameInfo game, Disc disc, object Settings, object syncSettings)
 		{
 			CoreComm = comm;
-			ServiceProvider = new BasicServiceProvider(this);
 			Tracer = new TraceBuffer();
 			MemoryCallbacks = new MemoryCallbackSystem();
 			DriveLightEnabled = true;
@@ -166,7 +157,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		void Init(GameInfo game, byte[] rom)
 		{
 			Controller = NullController.GetNullController();
-			Cpu = new HuC6280(this);
+			Cpu = new HuC6280(MemoryCallbacks);
 			VCE = new VCE();
 			VDC1 = new VDC(this, Cpu, VCE);
 			PSG = new HuC6280PSG();
@@ -303,6 +294,13 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				VDC1.MultiResHack = game.GetIntValue("MultiResHack");
 
 			Cpu.ResetPC();
+
+			Tracer = new TraceBuffer();
+			var ser = new BasicServiceProvider(this);
+			ServiceProvider = ser;
+			ser.Register<ITraceable>(Tracer);
+			ser.Register<IDisassemblable>(Cpu);
+			ser.Register<IVideoProvider>((IVideoProvider)VPC ?? VDC1);
 			SetupMemoryDomains();
 		}
 
@@ -362,11 +360,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		}
 
 		public CoreComm CoreComm { get; private set; }
-
-		public IVideoProvider VideoProvider
-		{
-			get { return (IVideoProvider)VPC ?? VDC1; }
-		}
 
 		ISoundProvider soundProvider;
 		public ISoundProvider SoundProvider
@@ -481,22 +474,22 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				(addr, value) => Ram[addr] = value);
 			domains.Add(MainMemoryDomain);
 
-			var SystemBusDomain = new MemoryDomain("System Bus", 0x200000, MemoryDomain.Endian.Little,
+			var SystemBusDomain = new MemoryDomain("System Bus (21 bit)", 0x200000, MemoryDomain.Endian.Little,
 				(addr) =>
 				{
 					if (addr < 0 || addr >= 0x200000)
 						throw new ArgumentOutOfRangeException();
-					return Cpu.ReadMemory21(addr);
+					return Cpu.ReadMemory21((int)addr);
 				},
 				(addr, value) =>
 				{
 					if (addr < 0 || addr >= 0x200000)
 						throw new ArgumentOutOfRangeException();
-					Cpu.WriteMemory21(addr, value);
+					Cpu.WriteMemory21((int)addr, value);
 				});
 			domains.Add(SystemBusDomain);
 
-			var CpuBusDomain = new MemoryDomain("CPU Bus", 0x10000, MemoryDomain.Endian.Little,
+			var CpuBusDomain = new MemoryDomain("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				(addr) =>
 				{
 					if (addr < 0 || addr >= 0x10000)
@@ -563,10 +556,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 
 			memoryDomains = new MemoryDomainList(domains);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(memoryDomains);
 		}
 
 		MemoryDomainList memoryDomains;
-		public IMemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{

@@ -106,6 +106,24 @@ namespace BizHawk.Client.Common
 				var val = playerSource[button];
 				MyBoolButtons[button] = val;
 			}
+
+			foreach (var button in Type.FloatControls)
+			{
+				var bnp = ButtonNameParser.Parse(button);
+				if (bnp == null)
+				{
+					continue;
+				}
+
+				if (bnp.PlayerNum != playerNum)
+				{
+					continue;
+				}
+
+				var val = playerSource.GetFloat(button);
+
+				MyFloatControls[button] = val;
+			}
 		}
 
 		/// <summary>

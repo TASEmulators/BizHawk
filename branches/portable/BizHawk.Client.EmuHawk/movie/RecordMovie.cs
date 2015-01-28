@@ -105,7 +105,7 @@ namespace BizHawk.Client.EmuHawk
 						if (movieToRecord.SavestateFramebuffer != null)
 						{
 
-							movieToRecord.SavestateFramebuffer = (int[])Global.Emulator.VideoProvider.GetVideoBuffer().Clone();
+							movieToRecord.SavestateFramebuffer = (int[])Global.Emulator.VideoProvider().GetVideoBuffer().Clone();
 						}
 					}
 				}

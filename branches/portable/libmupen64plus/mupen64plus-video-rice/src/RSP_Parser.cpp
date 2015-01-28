@@ -1772,7 +1772,7 @@ void LoadMatrix(uint32 addr)
     }
 
 
-#ifdef DEBUGGER
+
     LOG_UCODE(
         " %#+12.5f %#+12.5f %#+12.5f %#+12.5f\r\n"
         " %#+12.5f %#+12.5f %#+12.5f %#+12.5f\r\n"
@@ -1782,6 +1782,6 @@ void LoadMatrix(uint32 addr)
         matToLoad.m[1][0], matToLoad.m[1][1], matToLoad.m[1][2], matToLoad.m[1][3],
         matToLoad.m[2][0], matToLoad.m[2][1], matToLoad.m[2][2], matToLoad.m[2][3],
         matToLoad.m[3][0], matToLoad.m[3][1], matToLoad.m[3][2], matToLoad.m[3][3]);
-#endif // DEBUGGER
+
 }
 

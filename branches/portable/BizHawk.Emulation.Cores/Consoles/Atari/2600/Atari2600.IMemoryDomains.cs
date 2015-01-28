@@ -3,9 +3,9 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	public partial class Atari2600 : IMemoryDomains
+	public partial class Atari2600
 	{
-		public IMemoryDomainList MemoryDomains { get; private set; }
+		internal IMemoryDomains MemoryDomains;
 
 		private void SetupMemoryDomains()
 		{
@@ -53,11 +53,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					"Cart Ram",
 					_mapper.CartRam.Len,
 					MemoryDomain.Endian.Little,
-					addr => _mapper.CartRam[addr],
-					(addr, value) => _mapper.CartRam[addr] = value));
+					addr => _mapper.CartRam[(int)addr],
+					(addr, value) => _mapper.CartRam[(int)addr] = value));
 			}
 
 			MemoryDomains = new MemoryDomainList(domains);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
 	}
 }

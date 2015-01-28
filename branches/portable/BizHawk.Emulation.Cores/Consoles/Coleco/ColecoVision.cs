@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		isReleased: true
 		)]
 	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
-	public sealed partial class ColecoVision : IEmulator, IMemoryDomains, IDebuggable, IInputPollable, IStatable, ISettable<object, ColecoVision.ColecoSyncSettings>
+	public sealed partial class ColecoVision : IEmulator, IDebuggable, IInputPollable, IStatable, ISettable<object, ColecoVision.ColecoSyncSettings>
 	{
 		// ROM
 		public byte[] RomData;
@@ -36,6 +36,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public ColecoVision(CoreComm comm, GameInfo game, byte[] rom, object SyncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
+			MemoryCallbacks = new MemoryCallbackSystem();
 			CoreComm = comm;
 			_syncSettings = (ColecoSyncSettings)SyncSettings ?? new ColecoSyncSettings();
 			bool skipbios = this._syncSettings.SkipBiosIntro;
@@ -45,8 +46,10 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			Cpu.WriteMemory = WriteMemory;
 			Cpu.ReadHardware = ReadPort;
 			Cpu.WriteHardware = WritePort;
+			Cpu.MemoryCallbacks = MemoryCallbacks;
 
 			VDP = new TMS9918A(Cpu);
+			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(VDP);
 			PSG = new SN76489();
 
 			// TODO: hack to allow bios-less operation would be nice, no idea if its feasible
@@ -59,6 +62,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			LoadRom(rom, skipbios);
 			this.game = game;
 			SetupMemoryDomains();
+			(ServiceProvider as BasicServiceProvider).Register<IDisassemblable>(new Disassembler());
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
@@ -159,7 +163,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public string SystemId { get { return "Coleco"; } }
 		public GameInfo game;
 		public CoreComm CoreComm { get; private set; }
-		public IVideoProvider VideoProvider { get { return VDP; } }
 		public ISoundProvider SoundProvider { get { return PSG; } }
 
 		public string BoardName { get { return null; } }

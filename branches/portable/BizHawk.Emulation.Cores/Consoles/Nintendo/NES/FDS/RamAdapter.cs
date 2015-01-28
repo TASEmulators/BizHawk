@@ -290,7 +290,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// </summary>
 		/// <param name="addr"></param>
 		/// <returns></returns>
-		public byte PeekData(int addr)
+		public byte PeekData(long addr)
 		{
 			if (disk != null && disk.Length > addr)
 				return disk[addr];

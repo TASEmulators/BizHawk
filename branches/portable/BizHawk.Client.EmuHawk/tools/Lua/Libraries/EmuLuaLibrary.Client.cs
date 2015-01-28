@@ -13,6 +13,8 @@ namespace BizHawk.Client.EmuHawk
 	{
 		[RequiredService]
 		public IEmulator Emulator { get; set; }
+		[RequiredService]
+		public IVideoProvider VideoProvider { get; set; }
 
 		private readonly Dictionary<int, string> _filterMappings = new Dictionary<int, string>
 			{
@@ -57,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public int BufferHeight()
 		{
-			var height = Emulator.VideoProvider.BufferHeight;
+			var height = VideoProvider.BufferHeight;
 			var point = new System.Drawing.Point(0, height);
 
 			return GlobalWin.DisplayManager.TransformPoint(point).Y - BorderHeight();
@@ -69,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public int BufferWidth()
 		{
-			var width = Emulator.VideoProvider.BufferWidth;
+			var width = VideoProvider.BufferWidth;
 			var point = new System.Drawing.Point(width, 0);
 
 			return GlobalWin.DisplayManager.TransformPoint(point).X - BorderWidth();

@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		isReleased: false
 		)]
 	[ServiceNotApplicable(typeof(ISettable<,>))]
-	sealed public partial class C64 : IEmulator, IMemoryDomains, IStatable, IInputPollable, IDriveLight, IDebuggable
+	sealed public partial class C64 : IEmulator, IStatable, IInputPollable, IDriveLight, IDebuggable
 	{
 		// framework
 		public C64(CoreComm comm, GameInfo game, byte[] rom, string romextension)
@@ -37,6 +37,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			cyclesPerFrame = board.vic.CyclesPerFrame;
 			SetupMemoryDomains();
 			HardReset();
+
+			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(board.vic);
 		}
 
 		// internal variables
@@ -68,7 +70,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public ISoundProvider SoundProvider { get { return null; } }
 		public bool StartAsyncSound() { return false; } //TODO
 		public ISyncSoundProvider SyncSoundProvider { get { return board.sid.resampler; } }
-		public IVideoProvider VideoProvider { get { return board.vic; } }
 
 		// controller
 		public ControllerDefinition ControllerDefinition { get { return C64ControllerDefinition; } }

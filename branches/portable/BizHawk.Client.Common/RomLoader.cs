@@ -246,6 +246,11 @@ namespace BizHawk.Client.Common
 					}
 					else if (ext == ".iso" || ext == ".cue" || ext == ".ccd")
 					{
+						if (file.IsArchive)
+						{
+							throw new InvalidOperationException("Can't load CD files from archives!");
+						}
+
 						Disc disc = null;
 						if(ext == ".iso")
 							disc = Disc.FromIsoPath(path);

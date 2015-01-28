@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public MemoryDomain GetExRAM()
 		{
-			return new MemoryDomain("ExRAM", EXRAM.Length, MemoryDomain.Endian.Little, (addr) => EXRAM[addr], (addr, val) => EXRAM[addr] = val);
+			return MemoryDomain.FromByteArray("ExRAM", MemoryDomain.Endian.Little, EXRAM);
 		}
 
 		/// <summary>
@@ -244,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int bank_1k = addr >> 10;
 			int ofs = addr & ((1 << 10) - 1);
 
-			if (exram_mode == 1 && NES.ppu.ppuphase == NES.PPU.PPUPHASE.BG)
+			if (exram_mode == 1 && NES.ppu.ppuphase == PPU.PPUPHASE.BG)
 			{
 				int exram_addr = last_nt_read;
 				int bank_4k = EXRAM[exram_addr] & 0x3F;
@@ -266,7 +266,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				&& NES.ppu.reg_2001.show_obj 
 				)
 			{
-				if (NES.ppu.ppuphase == NES.PPU.PPUPHASE.OBJ)
+				if (NES.ppu.ppuphase == PPU.PPUPHASE.OBJ)
 					bank_1k = a_banks_1k[bank_1k];
 				else
 					bank_1k = b_banks_1k[bank_1k];

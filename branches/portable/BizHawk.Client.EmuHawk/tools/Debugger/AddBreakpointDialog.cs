@@ -11,11 +11,22 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class AddBreakpointDialog : Form
+    public partial class AddBreakpointDialog : Form, IHasShowDialog
 	{
 		public AddBreakpointDialog()
 		{
 			InitializeComponent();
+		}
+
+		public void DisableExecuteOption()
+		{
+			if (ExecuteRadio.Checked)
+			{
+				ReadRadio.Checked = true;
+			}
+
+			ExecuteRadio.Enabled = false;
+			
 		}
 
 		public MemoryCallbackType BreakType
@@ -46,11 +57,11 @@ namespace BizHawk.Client.EmuHawk
 			get { return (uint)AddressBox.ToRawInt().Value; }
 		}
 
-		public int MaxAddressSize
+		public long MaxAddressSize
 		{
 			get
 			{
-				return AddressBox.MaxLength;
+				return AddressBox.GetMax();
 			}
 
 			set

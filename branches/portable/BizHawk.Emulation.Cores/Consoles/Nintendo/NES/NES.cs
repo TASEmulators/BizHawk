@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		isPorted: false,
 		isReleased: true
 		)]
-	public partial class NES : IEmulator, IMemoryDomains, ISaveRam, IDebuggable, IStatable, IInputPollable,
+	public partial class NES : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable,
 		ISettable<NES.NESSettings, NES.NESSyncSettings>
 	{
 		static readonly bool USE_DATABASE = true;
@@ -26,6 +26,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		[CoreConstructor("NES")]
 		public NES(CoreComm comm, GameInfo game, byte[] rom, object Settings, object SyncSettings)
 		{
+			var ser = new BasicServiceProvider(this);
+			ServiceProvider = ser;
+
 			byte[] fdsbios = comm.CoreFileProvider.GetFirmware("NES", "Bios_FDS", false);
 			if (fdsbios != null && fdsbios.Length == 40976)
 			{
@@ -43,28 +46,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			BootGodDB.Initialize();
 			videoProvider = new MyVideoProvider(this);
 			Init(game, rom, fdsbios);
-			if (board is FDS)
+			if (Board is FDS)
 			{
 				DriveLightEnabled = true;
-				(board as FDS).SetDriveLightCallback((val) => DriveLightOn = val);
+				(Board as FDS).SetDriveLightCallback((val) => DriveLightOn = val);
 			}
 			PutSettings((NESSettings)Settings ?? new NESSettings());
 
-			var ser = new BasicServiceProvider(this);
+			
 			ser.Register<IDisassemblable>(cpu);
 
 			Tracer = new TraceBuffer();
 			ser.Register<ITraceable>(Tracer);
+			ser.Register<IVideoProvider>(videoProvider);
 			
-			if (board is BANDAI_FCG_1)
+			if (Board is BANDAI_FCG_1)
 			{
-				var reader = (board as BANDAI_FCG_1).reader;
+				var reader = (Board as BANDAI_FCG_1).reader;
 				// not all BANDAI FCG 1 boards have a barcode reader
 				if (reader != null)
 					ser.Register<DatachBarcode>(reader);
 			}
-
-			ServiceProvider = ser;
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
@@ -73,9 +75,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			BootGodDB.Initialize();
 		}
-
-		public bool DriveLightEnabled { get; private set; }
-		public bool DriveLightOn { get; private set; }
 
 		public void WriteLogTimestamp()
 		{
@@ -301,7 +300,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		MyVideoProvider videoProvider;
-		public IVideoProvider VideoProvider { get { return videoProvider; } }
 		public ISoundProvider SoundProvider { get { return magicSoundProvider; } }
 		public ISyncSoundProvider SyncSoundProvider { get { return magicSoundProvider; } }
 		public bool StartAsyncSound() { return true; }
@@ -328,9 +326,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		int _frame;
-		int _lagcount;
-		bool lagged = true;
-		bool islag = false;
+
 		public int Frame { get { return _frame; } set { _frame = value; } }
 
 		public void ResetCounters()
@@ -341,112 +337,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		public long Timestamp { get; private set; }
-		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
-		public bool IsLagFrame { get { return islag; } }
-
-		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
-		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
 
 		public bool DeterministicEmulation { get { return true; } }
 
-		public byte[] CloneSaveRam()
-		{
-			if (board is FDS)
-				return (board as FDS).ReadSaveRam();
-
-			if (board == null || board.SaveRam == null)
-				return null;
-			return (byte[])board.SaveRam.Clone();
-		}
-		public void StoreSaveRam(byte[] data)
-		{
-			if (board is FDS)
-			{
-				(board as FDS).StoreSaveRam(data);
-				return;
-			}
-
-			if (board == null || board.SaveRam == null)
-				return;
-			Array.Copy(data, board.SaveRam, data.Length);
-		}
-
-		public bool SaveRamModified
-		{
-			get
-			{
-				if (board == null) return false;
-				if (board is FDS) return true;
-				if (board.SaveRam == null) return false;
-				return true;
-			}
-		}
-
-		private MemoryDomainList memoryDomains;
-
-		private void SetupMemoryDomains()
-		{
-			var domains = new List<MemoryDomain>();
-			var RAM = new MemoryDomain("RAM", 0x800, MemoryDomain.Endian.Little,
-				addr => ram[addr], (addr, value) => ram[addr] = value);
-			var SystemBus = new MemoryDomain("System Bus", 0x10000, MemoryDomain.Endian.Little,
-				addr => PeekMemory((ushort)addr), (addr, value) => ApplySystemBusPoke(addr, value));
-			var PPUBus = new MemoryDomain("PPU Bus", 0x4000, MemoryDomain.Endian.Little,
-				addr => ppu.ppubus_peek(addr), (addr, value) => ppu.ppubus_write(addr, value));
-			var CIRAMdomain = new MemoryDomain("CIRAM (nametables)", 0x800, MemoryDomain.Endian.Little,
-				addr => CIRAM[addr], (addr, value) => CIRAM[addr] = value);
-			var OAMdoman = new MemoryDomain("OAM", 64 * 4, MemoryDomain.Endian.Unknown,
-				addr => ppu.OAM[addr], (addr, value) => ppu.OAM[addr] = value);
-
-			domains.Add(RAM);
-			domains.Add(SystemBus);
-			domains.Add(PPUBus);
-			domains.Add(CIRAMdomain);
-			domains.Add(OAMdoman);
-
-			if (!(board is FDS) && board.SaveRam != null)
-			{
-				var BatteryRam = new MemoryDomain("Battery RAM", board.SaveRam.Length, MemoryDomain.Endian.Little,
-					addr => board.SaveRam[addr], (addr, value) => board.SaveRam[addr] = value);
-				domains.Add(BatteryRam);
-			}
-
-			var PRGROM = new MemoryDomain("PRG ROM", cart.prg_size * 1024, MemoryDomain.Endian.Little,
-				addr => board.ROM[addr], (addr, value) => board.ROM[addr] = value);
-			domains.Add(PRGROM);
-
-			if (board.VROM != null)
-			{
-				var CHRROM = new MemoryDomain("CHR VROM", cart.chr_size * 1024, MemoryDomain.Endian.Little,
-					addr => board.VROM[addr], (addr, value) => board.VROM[addr] = value);
-				domains.Add(CHRROM);
-			}
-
-			if (board.VRAM != null)
-			{
-				var VRAM = new MemoryDomain("VRAM", board.VRAM.Length, MemoryDomain.Endian.Little,
-					addr => board.VRAM[addr], (addr, value) => board.VRAM[addr] = value);
-				domains.Add(VRAM);
-			}
-
-			if (board.WRAM != null)
-			{
-				var WRAM = new MemoryDomain("WRAM", board.WRAM.Length, MemoryDomain.Endian.Little,
-					addr => board.WRAM[addr], (addr, value) => board.WRAM[addr] = value);
-				domains.Add(WRAM);
-			}
-
-			// if there were more boards with special ram sets, we'd want to do something more general
-			if (board is FDS)
-				domains.Add((board as FDS).GetDiskPeeker());
-			else if (board is ExROM)
-				domains.Add((board as ExROM).GetExRAM());
-
-			memoryDomains = new MemoryDomainList(domains);
-		}
-
 		public string SystemId { get { return "NES"; } }
-		public IMemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		public string GameName { get { return game_name; } }
 
@@ -532,15 +426,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				fdsboard.InitialRegisterValues = InitialMapperRegisterValues;
 				fdsboard.Configure(origin);
 
-				board = fdsboard;
+				Board = fdsboard;
 
 				//create the vram and wram if necessary
 				if (cart.wram_size != 0)
-					board.WRAM = new byte[cart.wram_size * 1024];
+					Board.WRAM = new byte[cart.wram_size * 1024];
 				if (cart.vram_size != 0)
-					board.VRAM = new byte[cart.vram_size * 1024];
+					Board.VRAM = new byte[cart.vram_size * 1024];
 
-				board.PostConfigure();
+				Board.PostConfigure();
 
 				Console.WriteLine("Using NTSC display type for FDS disk image");
 				_display_type = Common.DisplayType.NTSC;
@@ -714,12 +608,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			LoadWriteLine("END NES rom analysis");
 			LoadWriteLine("------");
 
-			board = CreateBoardInstance(boardType);
+			Board = CreateBoardInstance(boardType);
 
 			cart = choice;
-			board.Create(this);
-			board.InitialRegisterValues = InitialMapperRegisterValues;
-			board.Configure(origin);
+			Board.Create(this);
+			Board.InitialRegisterValues = InitialMapperRegisterValues;
+			Board.Configure(origin);
 
 			if (origin == EDetectionOrigin.BootGodDB)
 			{
@@ -753,26 +647,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (iNesHeaderInfo != null)
 			{
 				//pluck the necessary bytes out of the file
-				board.ROM = new byte[choice.prg_size * 1024];
-				Array.Copy(file, 16, board.ROM, 0, board.ROM.Length);
+				Board.ROM = new byte[choice.prg_size * 1024];
+				Array.Copy(file, 16, Board.ROM, 0, Board.ROM.Length);
 				if (choice.chr_size > 0)
 				{
-					board.VROM = new byte[choice.chr_size * 1024];
+					Board.VROM = new byte[choice.chr_size * 1024];
 					int vrom_offset = iNesHeaderInfo.prg_size * 1024;
 
 					// if file isn't long enough for VROM, truncate
-					int vrom_copy_size = Math.Min(board.VROM.Length, file.Length - 16 - vrom_offset);
-					Array.Copy(file, 16 + vrom_offset, board.VROM, 0, vrom_copy_size);
-					if (vrom_copy_size < board.VROM.Length)
-						LoadWriteLine("Less than the expected VROM was found in the file: {0} < {1}", vrom_copy_size, board.VROM.Length);
+					int vrom_copy_size = Math.Min(Board.VROM.Length, file.Length - 16 - vrom_offset);
+					Array.Copy(file, 16 + vrom_offset, Board.VROM, 0, vrom_copy_size);
+					if (vrom_copy_size < Board.VROM.Length)
+						LoadWriteLine("Less than the expected VROM was found in the file: {0} < {1}", vrom_copy_size, Board.VROM.Length);
 				}
 				if (choice.prg_size != iNesHeaderInfo.prg_size || choice.chr_size != iNesHeaderInfo.chr_size)
 					LoadWriteLine("Warning: Detected choice has different filesizes than the INES header!");
 			}
 			else
 			{
-				board.ROM = unif.PRG;
-				board.VROM = unif.CHR;
+				Board.ROM = unif.PRG;
+				Board.VROM = unif.CHR;
 			}
 
 			LoadReport.Flush();
@@ -782,11 +676,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			//create the vram and wram if necessary
 			if (cart.wram_size != 0)
-				board.WRAM = new byte[cart.wram_size * 1024];
+				Board.WRAM = new byte[cart.wram_size * 1024];
 			if (cart.vram_size != 0)
-				board.VRAM = new byte[cart.vram_size * 1024];
+				Board.VRAM = new byte[cart.vram_size * 1024];
 
-			board.PostConfigure();
+			Board.PostConfigure();
 
 			// set up display type
 
@@ -841,235 +735,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void SyncState(Serializer ser)
-		{
-			int version = 4;
-			ser.BeginSection("NES");
-			ser.Sync("version", ref version);
-			ser.Sync("Frame", ref _frame);
-			ser.Sync("Lag", ref _lagcount);
-			ser.Sync("IsLag", ref islag);
-			cpu.SyncState(ser);
-			ser.Sync("ram", ref ram, false);
-			ser.Sync("CIRAM", ref CIRAM, false);
-			ser.Sync("cpu_accumulate", ref cpu_accumulate);
-			ser.Sync("_irq_apu", ref _irq_apu);
-			ser.Sync("sprdma_countdown", ref sprdma_countdown);
-			ser.Sync("cpu_step", ref cpu_step);
-			ser.Sync("cpu_stepcounter", ref cpu_stepcounter);
-			ser.Sync("cpu_deadcounter", ref cpu_deadcounter);
-			ser.BeginSection("Board");
-			board.SyncState(ser);
-			if (board is NESBoardBase && !((NESBoardBase)board).SyncStateFlag)
-				throw new InvalidOperationException("the current NES mapper didnt call base.SyncState");
-			ser.EndSection();
-			ppu.SyncState(ser);
-			apu.SyncState(ser);
-
-			if (version >= 2)
-			{
-				ser.Sync("DB", ref DB);
-			}
-			if (version >= 3)
-			{
-				ser.Sync("latched4016", ref latched4016);
-				ser.BeginSection("ControllerDeck");
-				ControllerDeck.SyncState(ser);
-				ser.EndSection();
-			}
-			if (version >= 4)
-			{
-				ser.Sync("resetSignal", ref resetSignal);
-				ser.Sync("hardResetSignal", ref hardResetSignal);
-			}
-
-			ser.EndSection();
-		}
-
-		public void SaveStateText(TextWriter writer) { SyncState(Serializer.CreateTextWriter(writer)); }
-		public void LoadStateText(TextReader reader) { SyncState(Serializer.CreateTextReader(reader)); }
-		public void SaveStateBinary(BinaryWriter bw) { SyncState(Serializer.CreateBinaryWriter(bw)); }
-		public void LoadStateBinary(BinaryReader br) { SyncState(Serializer.CreateBinaryReader(br)); }
-
-		public byte[] SaveStateBinary()
-		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			return ms.ToArray();
-		}
-
-		public bool BinarySaveStatesPreferred { get { return false; } }
-
-		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
-		{
-			return new Dictionary<string, RegisterValue>
-			{
-				{ "A", cpu.A },
-				{ "X", cpu.X },
-				{ "Y", cpu.Y },
-				{ "S", cpu.S },
-				{ "PC", cpu.PC },
-				{ "Flag C", cpu.FlagC },
-				{ "Flag Z", cpu.FlagZ },
-				{ "Flag I", cpu.FlagI },
-				{ "Flag D", cpu.FlagD },
-				{ "Flag B", cpu.FlagB },
-				{ "Flag V", cpu.FlagV },
-				{ "Flag N", cpu.FlagN },
-				{ "Flag T", cpu.FlagT }
-			};
-		}
-
-		public void SetCpuRegister(string register, int value)
-		{
-			switch (register)
-			{
-				default:
-					throw new InvalidOperationException();
-				case "A":
-					cpu.A = (byte)value;
-					break;
-				case "X":
-					cpu.X = (byte)value;
-					break;
-				case "Y":
-					cpu.Y = (byte)value;
-					break;
-				case "S":
-					cpu.S = (byte)value;
-					break;
-				case "PC":
-					cpu.PC = (ushort)value;
-					break;
-				case "Flag I":
-					cpu.FlagI = value > 0;
-					break;
-			}
-		}
-
-		public bool CanStep(StepType type) { return false; }
-
-		[FeatureNotImplemented]
-		public void Step(StepType type) { throw new NotImplementedException(); }
-
 		private ITraceable Tracer { get; set; }
-		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
-
-		NESSettings Settings = new NESSettings();
-		NESSyncSettings SyncSettings = new NESSyncSettings();
-
-		public NESSettings GetSettings() { return Settings.Clone(); }
-		public NESSyncSettings GetSyncSettings() { return SyncSettings.Clone(); }
-		public bool PutSettings(NESSettings o)
-		{
-			Settings = o;
-			if (Settings.ClipLeftAndRight)
-			{
-				videoProvider.left = 8;
-				videoProvider.right = 247;
-			}
-			else
-			{
-				videoProvider.left = 0;
-				videoProvider.right = 255;
-			}
-			CoreComm.ScreenLogicalOffsetX = videoProvider.left;
-			CoreComm.ScreenLogicalOffsetY = DisplayType == DisplayType.NTSC ? Settings.NTSC_TopLine : Settings.PAL_TopLine;
-
-			SetPalette(Settings.Palette);
-
-			apu.Square1V = Settings.Square1;
-			apu.Square2V = Settings.Square2;
-			apu.TriangleV = Settings.Triangle;
-			apu.NoiseV = Settings.Noise;
-			apu.DMCV = Settings.DMC;
-
-			return false;
-		}
-		public bool PutSyncSettings(NESSyncSettings o)
-		{
-			bool ret = NESSyncSettings.NeedsReboot(SyncSettings, o);
-			SyncSettings = o;
-			return ret;
-		}
-
-		public class NESSettings
-		{
-			public bool AllowMoreThanEightSprites = false;
-			public bool ClipLeftAndRight = false;
-			public bool DispBackground = true;
-			public bool DispSprites = true;
-			public int BackgroundColor = 0;
-
-			public int NTSC_TopLine = 8;
-			public int NTSC_BottomLine = 231;
-			public int PAL_TopLine = 0;
-			public int PAL_BottomLine = 239;
-
-			public int[,] Palette;
-
-			public int Square1 = 376;
-			public int Square2 = 376;
-			public int Triangle = 426;
-			public int Noise = 247;
-			public int DMC = 167;
-
-			public NESSettings Clone()
-			{
-				var ret = (NESSettings)MemberwiseClone();
-				ret.Palette = (int[,])ret.Palette.Clone();
-				return ret;
-			}
-
-			public NESSettings()
-			{
-				Palette = (int[,])Palettes.QuickNESPalette.Clone();
-			}
-
-			[Newtonsoft.Json.JsonConstructor]
-			public NESSettings(int[,] Palette)
-			{
-				if (Palette == null)
-					// only needed for SVN purposes
-					this.Palette = (int[,])Palettes.QuickNESPalette.Clone();
-				else
-					this.Palette = Palette;
-			}
-		}
-
-		public class NESSyncSettings
-		{
-			public Dictionary<string, string> BoardProperties = new Dictionary<string, string>();
-
-			public enum Region
-			{
-				Default,
-				NTSC,
-				PAL,
-				Dendy
-			};
-
-			public Region RegionOverride = Region.Default;
-
-			public NESControlSettings Controls = new NESControlSettings();
-
-			public NESSyncSettings Clone()
-			{
-				var ret = (NESSyncSettings)MemberwiseClone();
-				ret.BoardProperties = new Dictionary<string, string>(BoardProperties);
-				ret.Controls = Controls.Clone();
-				return ret;
-			}
-
-			public static bool NeedsReboot(NESSyncSettings x, NESSyncSettings y)
-			{
-				return !(Util.DictionaryEqual(x.BoardProperties, y.BoardProperties) &&
-					x.RegionOverride == y.RegionOverride &&
-					!NESControlSettings.NeedsReboot(x.Controls, y.Controls));
-			}
-		}
 	}
 }
 

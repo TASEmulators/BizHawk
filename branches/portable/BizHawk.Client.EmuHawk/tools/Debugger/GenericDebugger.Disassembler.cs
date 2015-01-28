@@ -25,11 +25,11 @@ namespace BizHawk.Client.EmuHawk
 			public string Mnemonic { get; private set; }
 		}
 
-		private int BusMaxValue
+		private long BusMaxValue
 		{
 			get
 			{
-				return MemoryDomains.CheatDomain.Size;
+				return MemoryDomains.SystemBus.Size;
 			}
 		}
 
@@ -38,6 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			if (CanDisassemble)
 			{
 				DisassemblerView.BlazingFast = true;
+				DisassemblerView.ItemCount = 0;
 				currentDisassemblerAddress = PC;
 				Disassemble();
 				DisassemblerView.Refresh();
@@ -56,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 			for (int i = 0; i < line_count; ++i)
 			{
 				int advance;
-				string line = Disassembler.Disassemble(MemoryDomains.CheatDomain, (ushort)a, out advance);
+				string line = Disassembler.Disassemble(MemoryDomains.SystemBus, a, out advance);
 				DisassemblyLines.Add(new DisasmOp(a, advance, line));
 				a += (uint)advance;
 				if (a > BusMaxValue)
@@ -100,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 			while (true)
 			{
 				int bytestoadvance;
-				Disassembler.Disassemble(MemoryDomains.CheatDomain, newaddress, out bytestoadvance);
+				Disassembler.Disassemble(MemoryDomains.SystemBus, newaddress, out bytestoadvance);
 				if (newaddress + bytestoadvance == currentDisassemblerAddress)
 				{
 					break;
@@ -159,6 +160,39 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SetDisassemblerItemCount();
 			Disassemble();
+		}
+
+		private void DisassemblerView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.C) // Ctrl + C
+			{
+				CopySelectedDisassembler();
+			}
+		}
+
+		private void CopySelectedDisassembler()
+		{
+			var indices = DisassemblerView.SelectedIndices;
+
+			if (indices.Count > 0)
+			{
+				var blob = new StringBuilder();
+				foreach (int index in indices)
+				{
+					blob.Append(DisassemblyLines[index].Address)
+						.Append(" ")
+						.Append(DisassemblyLines[index].Mnemonic)
+						.AppendLine();
+				}
+
+				blob.Remove(blob.Length - 2, 2); // Lazy way to not have a line break at the end
+				Clipboard.SetDataObject(blob.ToString());
+			}
+		}
+
+		private void OnPauseChanged(object sender, MainForm.PauseChangedEventArgs e)
+		{
+			FullUpdate();
 		}
 	}
 }

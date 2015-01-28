@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		portedVersion: "r874",
 		portedUrl: "https://code.google.com/p/genplus-gx/"
 		)]
-	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, IMemoryDomains, ISaveRam, IStatable,
+	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, ISaveRam, IStatable,
 		IInputPollable, IDebuggable, ISettable<GPGX.GPGXSettings, GPGX.GPGXSyncSettings>, IDriveLight
 	{
 		static GPGX AttachedCore = null;
@@ -583,7 +583,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		#region debugging tools
 
-		public IMemoryDomainList MemoryDomains { get; private set; }
+		private IMemoryDomains MemoryDomains;
 
 		unsafe void SetMemoryDomains()
 		{
@@ -598,19 +598,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				string name = Marshal.PtrToStringAnsi(pname);
 				if (name == "VRAM")
 				{
+					// vram pokes need to go through hook which invalidates cached tiles
 					byte* p = (byte*)area;
 					mm.Add(new MemoryDomain(name, size, MemoryDomain.Endian.Unknown,
-						delegate(int addr)
+						delegate(long addr)
 						{
 							if (addr < 0 || addr >= 65536)
 								throw new ArgumentOutOfRangeException();
 							return p[addr ^ 1];
 						},
-						delegate(int addr, byte val)
+						delegate(long addr, byte val)
 						{
 							if (addr < 0 || addr >= 65536)
 								throw new ArgumentOutOfRangeException();
-							LibGPGX.gpgx_poke_vram(addr ^ 1, val);
+							LibGPGX.gpgx_poke_vram(((int)addr) ^ 1, val);
 						}));
 				}
 				else
@@ -618,7 +619,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					mm.Add(MemoryDomain.FromIntPtrSwap16(name, size, MemoryDomain.Endian.Big, area));
 				}
 			}
-			MemoryDomains = new MemoryDomainList(mm, 0);
+			MemoryDomains = new MemoryDomainList(mm);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
@@ -744,8 +746,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		#region VideoProvider
 
 		public DisplayType DisplayType { get; private set; }
-
-		public IVideoProvider VideoProvider { get { return this; } }
 
 		int[] vidbuff = new int[0];
 		int vwidth;

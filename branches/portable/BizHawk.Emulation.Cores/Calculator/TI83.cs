@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 		isReleased: true
 		)]
 	[ServiceNotApplicable(typeof(ISaveRam))]
-	public partial class TI83 : IEmulator, IMemoryDomains, IStatable, IDebuggable, IInputPollable, ISettable<TI83.TI83Settings, object>
+	public partial class TI83 : IEmulator, IStatable, IDebuggable, IInputPollable, ISettable<TI83.TI83Settings, object>
 	{
 		//hardware
 		private readonly Z80A cpu = new Z80A();
@@ -64,6 +64,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			cpu.WriteHardware = WriteHardware;
 			cpu.IRQCallback = IRQCallback;
 			cpu.NMICallback = NMICallback;
+			cpu.MemoryCallbacks = MemoryCallbacks;
 
 			this.rom = rom;
 			LinkPort = new TI83LinkPort(this);
@@ -77,6 +78,8 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 			HardReset();
 			SetupMemoryDomains();
+			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(new MyVideoProvider(this));
+			(ServiceProvider as BasicServiceProvider).Register<IDisassemblable>(new Disassembler());
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
@@ -94,8 +97,6 @@ namespace BizHawk.Emulation.Cores.Calculators
 				ret = rom[romPage * 0x4000 + addr - 0x4000]; //other rom page
 			else ret = ram[addr - 0x8000];
 
-			MemoryCallbacks.CallReads(addr);
-
 			return ret;
 		}
 
@@ -106,8 +107,6 @@ namespace BizHawk.Emulation.Cores.Calculators
 			else if (addr < 0x8000)
 				return; //other rom page
 			else ram[addr - 0x8000] = value;
-
-			MemoryCallbacks.CallWrites(addr);
 		}
 
 		public void WriteHardware(ushort addr, byte value)
@@ -434,10 +433,6 @@ namespace BizHawk.Emulation.Cores.Calculators
 			public int BufferWidth { get { return 96; } }
 			public int BufferHeight { get { return 64; } }
 			public int BackgroundColor { get { return 0; } }
-		}
-		public IVideoProvider VideoProvider
-		{
-			get { return new MyVideoProvider(this); }
 		}
 
 		public ISoundProvider SoundProvider { get { return NullSound.SilenceProvider; } }

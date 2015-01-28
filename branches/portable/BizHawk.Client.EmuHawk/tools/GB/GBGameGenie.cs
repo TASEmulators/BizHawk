@@ -17,9 +17,7 @@ namespace BizHawk.Client.EmuHawk
 		private IEmulator Emulator { get; set; }
 
 		[RequiredService]
-		private IMemoryDomains MemoryDomainSource { get; set; }
-
-		private IMemoryDomainList MemoryDomains { get { return MemoryDomainSource.MemoryDomains; } }
+		private IMemoryDomains MemoryDomains { get; set; }
 
 		private readonly Dictionary<char, int> _gameGenieTable = new Dictionary<char, int>();
 		private bool _processing;

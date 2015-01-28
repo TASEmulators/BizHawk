@@ -57,8 +57,8 @@
 			this.cutToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.clearChangeCountsToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.duplicateWatchToolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.pokeToolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.freezeToolStripButton = new System.Windows.Forms.ToolStripButton();
+			this.PokeAddressToolBarItem = new System.Windows.Forms.ToolStripButton();
+			this.FreezeAddressToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.seperatorToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.moveUpToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -290,8 +290,8 @@
             this.cutToolStripButton,
             this.clearChangeCountsToolStripButton,
             this.duplicateWatchToolStripButton,
-            this.pokeToolStripButton,
-            this.freezeToolStripButton,
+            this.PokeAddressToolBarItem,
+            this.FreezeAddressToolBarItem,
             this.seperatorToolStripButton,
             this.toolStripSeparator6,
             this.moveUpToolStripButton,
@@ -393,26 +393,26 @@
 			this.duplicateWatchToolStripButton.Text = "Duplicate Watch";
 			this.duplicateWatchToolStripButton.Click += new System.EventHandler(this.DuplicateWatchMenuItem_Click);
 			// 
-			// pokeToolStripButton
+			// PokeAddressToolBarItem
 			// 
-			this.pokeToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.pokeToolStripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
-			this.pokeToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.pokeToolStripButton.Name = "pokeToolStripButton";
-			this.pokeToolStripButton.Size = new System.Drawing.Size(23, 22);
-			this.pokeToolStripButton.Text = "toolStripButton2";
-			this.pokeToolStripButton.ToolTipText = "Poke address";
-			this.pokeToolStripButton.Click += new System.EventHandler(this.PokeAddressMenuItem_Click);
+			this.PokeAddressToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.PokeAddressToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
+			this.PokeAddressToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.PokeAddressToolBarItem.Name = "PokeAddressToolBarItem";
+			this.PokeAddressToolBarItem.Size = new System.Drawing.Size(23, 22);
+			this.PokeAddressToolBarItem.Text = "toolStripButton2";
+			this.PokeAddressToolBarItem.ToolTipText = "Poke address";
+			this.PokeAddressToolBarItem.Click += new System.EventHandler(this.PokeAddressMenuItem_Click);
 			// 
-			// freezeToolStripButton
+			// FreezeAddressToolBarItem
 			// 
-			this.freezeToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.freezeToolStripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
-			this.freezeToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.freezeToolStripButton.Name = "freezeToolStripButton";
-			this.freezeToolStripButton.Size = new System.Drawing.Size(23, 22);
-			this.freezeToolStripButton.Text = "Freeze Address";
-			this.freezeToolStripButton.Click += new System.EventHandler(this.FreezeAddressMenuItem_Click);
+			this.FreezeAddressToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.FreezeAddressToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
+			this.FreezeAddressToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.FreezeAddressToolBarItem.Name = "FreezeAddressToolBarItem";
+			this.FreezeAddressToolBarItem.Size = new System.Drawing.Size(23, 22);
+			this.FreezeAddressToolBarItem.Text = "Freeze Address";
+			this.FreezeAddressToolBarItem.Click += new System.EventHandler(this.FreezeAddressMenuItem_Click);
 			// 
 			// seperatorToolStripButton
 			// 
@@ -465,7 +465,7 @@
 			this.pauseToolStripButton.Text = "Pause";
 			this.pauseToolStripButton.Click += new System.EventHandler(this.PauseMenuItem_Click);
 			// 
-			// menuStrip1
+			// RamWatchMenu
 			// 
 			this.RamWatchMenu.ClickThrough = true;
 			this.RamWatchMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -473,7 +473,7 @@
             this.WatchesSubMenu,
             this.OptionsSubMenu});
 			this.RamWatchMenu.Location = new System.Drawing.Point(0, 0);
-			this.RamWatchMenu.Name = "menuStrip1";
+			this.RamWatchMenu.Name = "RamWatchMenu";
 			this.RamWatchMenu.Size = new System.Drawing.Size(364, 24);
 			this.RamWatchMenu.TabIndex = 3;
 			this.RamWatchMenu.Text = "menuStrip1";
@@ -843,6 +843,7 @@
 			this.WatchListView.UseCustomBackground = true;
 			this.WatchListView.View = System.Windows.Forms.View.Details;
 			this.WatchListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.WatchListView_ColumnClick);
+			this.WatchListView.SelectedIndexChanged += new System.EventHandler(this.WatchListView_SelectedIndexChanged);
 			this.WatchListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamWatch_DragDrop);
 			this.WatchListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.NewRamWatch_DragEnter);
 			this.WatchListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.WatchListView_KeyDown);
@@ -913,6 +914,7 @@
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamWatch_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.NewRamWatch_DragEnter);
 			this.Enter += new System.EventHandler(this.NewRamWatch_Enter);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.WatchListView_KeyDown);
 			this.ListViewContextMenu.ResumeLayout(false);
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();
@@ -979,8 +981,8 @@
 		private System.Windows.Forms.ToolStripButton cutToolStripButton;
 		private System.Windows.Forms.ToolStripButton clearChangeCountsToolStripButton;
 		private System.Windows.Forms.ToolStripButton duplicateWatchToolStripButton;
-		private System.Windows.Forms.ToolStripButton pokeToolStripButton;
-		private System.Windows.Forms.ToolStripButton freezeToolStripButton;
+		private System.Windows.Forms.ToolStripButton PokeAddressToolBarItem;
+		private System.Windows.Forms.ToolStripButton FreezeAddressToolBarItem;
 		private System.Windows.Forms.ToolStripButton seperatorToolStripButton;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripButton moveUpToolStripButton;

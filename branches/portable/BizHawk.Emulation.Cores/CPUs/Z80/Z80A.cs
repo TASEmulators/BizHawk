@@ -1,7 +1,9 @@
 using System;
 using System.Globalization;
 using System.IO;
+
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 // This Z80 emulator is a modified version of Ben Ryves 'Brazil' emulator.
 // It is MIT licensed.
@@ -35,6 +37,28 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 
 		public Func<ushort, byte> ReadMemory;
 		public Action<ushort, byte> WriteMemory;
+
+		public byte ReadMemoryWrapper(ushort addr)
+		{
+			if (MemoryCallbacks != null)
+			{
+				MemoryCallbacks.CallReads(addr);
+			}
+
+			return ReadMemory(addr);
+		}
+
+		public void WriteMemoryWrapper(ushort addr, byte value)
+		{
+			if (MemoryCallbacks != null)
+			{
+				MemoryCallbacks.CallWrites(addr);
+			}
+
+			WriteMemory(addr, value);
+		}
+
+		public IMemoryCallbackSystem MemoryCallbacks { get; set; }
 
 		// Utility function, not used by core
 		public ushort ReadWord(ushort addr)

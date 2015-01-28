@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 				Global.Emulator.AsInputPollable().InputCallbacks.Remove(function.Callback);
 			}
 
-			if (Global.Emulator.CanDebug())
+			if (Global.Emulator.CanDebug() && Global.Emulator.MemoryCallbacksAvailable())
 			{
 				Global.Emulator.AsDebuggable().MemoryCallbacks.Remove(function.Callback);
 			}

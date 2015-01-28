@@ -92,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool CanGetCpuRegisters
+		public bool CanGetCpuRegisters
 		{
 			get
 			{
@@ -108,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool CanSetCpuRegisters
+		public bool CanSetCpuRegisters
 		{
 			get
 			{
@@ -130,7 +130,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void GenerateUI()
 		{
-			this.SuspendLayout();
 			this.Controls.Clear();
 			var canget = CanGetCpuRegisters;
 			var canset = CanSetCpuRegisters;
@@ -144,13 +143,21 @@ namespace BizHawk.Client.EmuHawk
 			var registers = Core.GetCpuFlagsAndRegisters();
 
 			int y = UIHelper.ScaleY(0);
+
+			var maxCharSize = registers.Where(r => r.Value.BitSize != 1).Max(r => r.Key.Length);
+			var width = maxCharSize * 5;
+			if (width < 20)
+			{
+				width = 20;
+			}
+
 			foreach (var register in registers.Where(r => r.Value.BitSize != 1))
 			{
 				this.Controls.Add(new Label
 				{
-					Text = register.Key.Replace("Flag ", "") + (canset ? ": " : ""),
+					Text = register.Key,
 					Location = new Point(UIHelper.ScaleX(5), y + UIHelper.ScaleY(2)),
-					Size = new Size(UIHelper.ScaleX(35), UIHelper.ScaleY(15))
+					Size = new Size(UIHelper.ScaleX(width + 5), UIHelper.ScaleY(15))
 				});
 
 				if (canset)
@@ -160,7 +167,7 @@ namespace BizHawk.Client.EmuHawk
 						Name = register.Key,
 						Text = register.Value.Value.ToHexString(register.Value.BitSize / 16),
 						Width = UIHelper.ScaleX(6 + ((register.Value.BitSize / 4) * 9)),
-						Location = new Point(UIHelper.ScaleX(40), y),
+						Location = new Point(UIHelper.ScaleX(width + 10), y),
 						MaxLength = register.Value.BitSize / 4,
 						CharacterCasing = CharacterCasing.Upper
 					};
@@ -188,8 +195,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = register.Key,
 						Text = register.Value.Value.ToString(),
-						Size = new Size(UIHelper.ScaleX(45), UIHelper.ScaleY(15)),
-						Location = new Point(UIHelper.ScaleX(40), y)
+						Size = new Size(UIHelper.ScaleX(6 + ((register.Value.BitSize / 4) * 9)), UIHelper.ScaleY(15)),
+						Location = new Point(UIHelper.ScaleX(width + 12), y + 2)
 					});
 				}
 
@@ -245,8 +252,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				this.Controls.Add(p);
-
-				this.ResumeLayout();
 			}
 		}
 	}

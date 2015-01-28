@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		portedUrl: "http://byuu.org/"
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public unsafe class LibsnesCore : IEmulator, IVideoProvider, IMemoryDomains, ISaveRam, IStatable, IInputPollable,
+	public unsafe class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable,
 		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
 	{
 		public LibsnesCore(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData, CoreComm comm, object Settings, object SyncSettings)
@@ -39,6 +39,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			MemoryCallbacks = new MemoryCallbackSystem();
 			Tracer = new TraceBuffer();
 			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
+
+			(ServiceProvider as BasicServiceProvider).Register<IDisassemblable>(new BizHawk.Emulation.Cores.Components.W65816.W65816_DisassemblerService());
 
 			_game = game;
 			CoreComm = comm;
@@ -686,8 +688,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		int[] vidBuffer = new int[256 * 224];
 		int vidWidth = 256, vidHeight = 224;
 
-		public IVideoProvider VideoProvider { get { return this; } }
-
 		public ControllerDefinition ControllerDefinition { get { return SNESController; } }
 		IController controller;
 		public IController Controller
@@ -1028,7 +1028,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			var md = new MemoryDomain("System Bus", 0x1000000, MemoryDomain.Endian.Little,
 				(addr) =>
 				{
-					var a = FakeBusMap(addr);
+					var a = FakeBusMap((int)addr);
 					if (a.HasValue)
 						return blockptr[a.Value];
 					else
@@ -1036,7 +1036,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				},
 				(addr, val) =>
 				{
-					var a = FakeBusMap(addr);
+					var a = FakeBusMap((int)addr);
 					if (a.HasValue)
 						blockptr[a.Value] = val;
 				});			
@@ -1141,11 +1141,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 
 			MemoryDomains = new MemoryDomainList(_memoryDomains);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
 
 		private MemoryDomain MainMemory;
 		private List<MemoryDomain> _memoryDomains = new List<MemoryDomain>();
-		public IMemoryDomainList MemoryDomains { get; private set; }
+		private IMemoryDomains MemoryDomains;
 
 		#region audio stuff
 

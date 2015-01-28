@@ -7,9 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk.tools.Debugger
 {
@@ -18,7 +20,7 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 		public IDebuggable Core { get; set; }
 		public IMemoryCallbackSystem MCS { get; set; }
 		public GenericDebugger ParentDebugger { get; set; }
-		public IMemoryDomainList MemoryDomains { get; set; }
+		public IMemoryDomains MemoryDomains { get; set; }
 		private readonly BreakpointList Breakpoints = new BreakpointList();
 
 		public BreakpointControl()
@@ -65,11 +67,51 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 			UpdateValues();
 		}
 
+		private void SeekCallback()
+		{
+			BreakpointCallback();
+
+			var seekBreakpoint = Breakpoints.FirstOrDefault(x => x.Name.StartsWith(SeekName));
+
+			if (seekBreakpoint != null)
+			{
+				Breakpoints.Remove(seekBreakpoint);
+				UpdateValues();
+			}
+
+			ParentDebugger.DisableCancelSeekBtn();
+		}
+
 		public void UpdateValues()
 		{
-			if (this.Enabled)
+			if (Enabled)
 			{
+				CheckForNewBreakpoints();
 
+				BreakpointView.ItemCount = Breakpoints.Count;
+				UpdateStatsLabel();
+			}
+		}
+
+		/// <summary>
+		/// Did any breakpoints get added from other sources such as lua?
+		/// </summary>
+		private void CheckForNewBreakpoints()
+		{
+			if (MCS != null)
+			{
+				foreach (var callback in MCS)
+				{
+					if (!Breakpoints.Any(b => 
+						b.Type == callback.Type &&
+						b.Address == callback.Address &&
+						b.Name == callback.Name &&
+						b.Callback == callback.Callback
+						))
+					{
+						Breakpoints.Add(new Breakpoint(Core, callback));
+					}
+				}
 			}
 		}
 
@@ -105,10 +147,15 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 			var b = new AddBreakpointDialog
 			{
 				// TODO: don't use Global.Emulator! Pass in an IMemoryDomains implementation from the parent tool
-				MaxAddressSize = Global.Emulator.AsMemoryDomains().MemoryDomains.CheatDomain.Size - 1
+				MaxAddressSize = Global.Emulator.AsMemoryDomains().SystemBus.Size - 1
 			};
 
-			if (b.ShowDialog() == DialogResult.OK)
+			if (!MCS.ExecuteCallbacksAvailable)
+			{
+				b.DisableExecuteOption();
+			}
+
+			if (b.ShowHawkDialog() == DialogResult.OK)
 			{
 				Breakpoints.Add(Core, b.Address, b.BreakType);
 			}
@@ -116,6 +163,27 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 			BreakpointView.ItemCount = Breakpoints.Count;
 			UpdateBreakpointRemoveButton();
 			UpdateStatsLabel();
+		}
+
+		private const string SeekName = "Seek to PC ";
+
+		public void AddSeekBreakpoint(uint pcVal, int pcBitSize)
+		{
+			Breakpoints.Add(new Breakpoint(true, Core, SeekCallback, pcVal, MemoryCallbackType.Execute)
+			{
+				Name = SeekName + pcVal.ToHexString(pcBitSize / 4)
+			});
+		}
+
+		public void RemoveCurrentSeek()
+		{
+			var seekBreakpoint = Breakpoints.FirstOrDefault(x => x.Name.StartsWith(SeekName));
+
+			if (seekBreakpoint != null)
+			{
+				Breakpoints.Remove(seekBreakpoint);
+				UpdateValues();
+			}
 		}
 
 		private IEnumerable<int> SelectedIndices

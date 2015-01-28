@@ -6,9 +6,9 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sega.Saturn
 {
-	public partial class Yabause : IMemoryDomains
+	public partial class Yabause
 	{
-		public IMemoryDomainList MemoryDomains { get; private set; }
+		private IMemoryDomains _memoryDomains;
 
 		private void InitMemoryDomains()
 		{
@@ -22,7 +22,10 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			}
 
 			// main memory is in position 2
-			MemoryDomains = new MemoryDomainList(ret, 2);
+			_memoryDomains = new MemoryDomainList(ret);
+			_memoryDomains.MainMemory = _memoryDomains["Work Ram Low"];
+
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
 		}
 	}
 }

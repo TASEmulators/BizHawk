@@ -16,7 +16,8 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		public LibsnesCore Emulator { get; set; }
 
-		private IMemoryDomainList MemoryDomains { get { return Emulator.MemoryDomains; } }
+		[RequiredService]
+		private IMemoryDomains MemoryDomains { get; set; }
 
 		// including transposition
 		// Code: D F 4 7 0 9 1 5 6 B C 8 A 2 3 E

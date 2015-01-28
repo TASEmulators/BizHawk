@@ -125,19 +125,35 @@
     <Compile Include="movie\bk2\Bk2FloatConstants.cs" />
     <Compile Include="movie\bk2\Bk2MnemonicConstants.cs" />
     <Compile Include="movie\bk2\Bk2Movie.cs" />
-    <Compile Include="movie\bk2\Bk2Movie.HeaderApi.cs" />
-    <Compile Include="movie\bk2\Bk2Movie.InputLog.cs" />
-    <Compile Include="movie\bk2\Bk2Movie.IO.cs" />
-    <Compile Include="movie\bk2\Bk2Movie.ModeApi.cs" />
+    <Compile Include="movie\bk2\Bk2Movie.HeaderApi.cs">
+        <DependentUpon>Bk2Movie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="movie\bk2\Bk2Movie.InputLog.cs">
+        <DependentUpon>Bk2Movie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="movie\bk2\Bk2Movie.IO.cs">
+        <DependentUpon>Bk2Movie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="movie\bk2\Bk2Movie.ModeApi.cs">
+        <DependentUpon>Bk2Movie.cs</DependentUpon>
+    </Compile>
     <Compile Include="movie\bkm\BkmControllerAdapter.cs" />
     <Compile Include="movie\bkm\BkmHeader.cs" />
     <Compile Include="movie\bkm\BkmLogEntryGenerator.cs" />
     <Compile Include="movie\bkm\BkmMnemonicConstants.cs" />
     <Compile Include="movie\bkm\BkmMovie.cs" />
-    <Compile Include="movie\bkm\BkmMovie.HeaderApi.cs" />
-    <Compile Include="movie\bkm\BkmMovie.InputLog.cs" />
-    <Compile Include="movie\bkm\BkmMovie.IO.cs" />
-    <Compile Include="movie\bkm\BkmMovie.ModeApi.cs" />
+    <Compile Include="movie\bkm\BkmMovie.HeaderApi.cs">
+        <DependentUpon>BkmMovie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="movie\bkm\BkmMovie.InputLog.cs">
+        <DependentUpon>BkmMovie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="movie\bkm\BkmMovie.IO.cs">
+        <DependentUpon>BkmMovie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="movie\bkm\BkmMovie.ModeApi.cs">
+        <DependentUpon>BkmMovie.cs</DependentUpon>
+    </Compile>
     <Compile Include="movie\conversions\MovieConversionExtensions.cs" />
     <Compile Include="movie\HeaderKeys.cs" />
     <Compile Include="movie\interfaces\ILogEntryGenerator.cs" />
@@ -151,8 +167,12 @@
     <Compile Include="movie\Subtitle.cs" />
     <Compile Include="movie\SubtitleList.cs" />
     <Compile Include="movie\tasproj\TasLagLog.cs" />
-    <Compile Include="movie\tasproj\TasMovie.Editing.cs" />
-    <Compile Include="movie\tasproj\TasMovie.IO.cs" />
+    <Compile Include="movie\tasproj\TasMovie.Editing.cs">
+        <DependentUpon>TasMovie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="movie\tasproj\TasMovie.IO.cs">
+        <DependentUpon>TasMovie.cs</DependentUpon>
+    </Compile>
     <Compile Include="movie\tasproj\TasMovie.cs" />
     <Compile Include="movie\tasproj\TasMovieMarker.cs" />
     <Compile Include="movie\tasproj\TasStateManager.cs" />

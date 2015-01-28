@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		portedUrl: "http://emu7800.sourceforge.net/"
 		)]
 	[ServiceNotApplicable(typeof(ISettable<,>), typeof(IDriveLight))]
-	public partial class Atari7800 : IEmulator, IMemoryDomains, ISaveRam, IDebuggable, IStatable, IInputPollable
+	public partial class Atari7800 : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable
 	{
 		// TODO:
 		// some things don't work when you try to plug in a 2600 game
@@ -29,6 +29,47 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				TIATables.NTSCPalette[i] |= unchecked((int)0xff000000);
 			for (int i = 0; i < TIATables.PALPalette.Length; i++)
 				TIATables.PALPalette[i] |= unchecked((int)0xff000000);
+		}
+
+		public Atari7800(CoreComm comm, GameInfo game, byte[] rom, string GameDBfn)
+		{
+			ServiceProvider = new BasicServiceProvider(this);
+			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(avProvider);
+			InputCallbacks = new InputCallbackSystem();
+			CoreComm = comm;
+			byte[] highscoreBIOS = comm.CoreFileProvider.GetFirmware("A78", "Bios_HSC", false, "Some functions may not work without the high score BIOS.");
+			byte[] pal_bios = comm.CoreFileProvider.GetFirmware("A78", "Bios_PAL", false, "The game will not run if the correct region BIOS is not available.");
+			byte[] ntsc_bios = comm.CoreFileProvider.GetFirmware("A78", "Bios_NTSC", false, "The game will not run if the correct region BIOS is not available.");
+
+			if (EMU7800.Win.GameProgramLibrary.EMU7800DB == null)
+			{
+				EMU7800.Win.GameProgramLibrary.EMU7800DB = new EMU7800.Win.GameProgramLibrary(new StreamReader(GameDBfn));
+			}
+
+			if (rom.Length % 1024 == 128)
+			{
+				Console.WriteLine("Trimming 128 byte .a78 header...");
+				byte[] newrom = new byte[rom.Length - 128];
+				Buffer.BlockCopy(rom, 128, newrom, 0, newrom.Length);
+				rom = newrom;
+			}
+			GameInfo = EMU7800.Win.GameProgramLibrary.EMU7800DB.TryRecognizeRom(rom);
+			CoreComm.RomStatusDetails = GameInfo.ToString();
+			Console.WriteLine("Rom Determiniation from 7800DB:");
+			Console.WriteLine(GameInfo.ToString());
+
+			this.rom = rom;
+			this.game = game;
+			this.hsbios = highscoreBIOS;
+			this.bios = GameInfo.MachineType == MachineType.A7800PAL ? pal_bios : ntsc_bios;
+			_pal = GameInfo.MachineType == MachineType.A7800PAL || GameInfo.MachineType == MachineType.A2600PAL;
+
+			if (bios == null)
+			{
+				throw new MissingFirmwareException("The BIOS corresponding to the region of the game you loaded is required to run Atari 7800 games.");
+			}
+
+			HardReset();
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
@@ -122,46 +163,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			}
 		}
 
-		public Atari7800(CoreComm comm, GameInfo game, byte[] rom, string GameDBfn)
-		{
-			ServiceProvider = new BasicServiceProvider(this);
-			InputCallbacks = new InputCallbackSystem();
-			CoreComm = comm;
-			byte[] highscoreBIOS = comm.CoreFileProvider.GetFirmware("A78", "Bios_HSC", false, "Some functions may not work without the high score BIOS.");
-			byte[] pal_bios = comm.CoreFileProvider.GetFirmware("A78", "Bios_PAL", false, "The game will not run if the correct region BIOS is not available.");
-			byte[] ntsc_bios = comm.CoreFileProvider.GetFirmware("A78", "Bios_NTSC", false, "The game will not run if the correct region BIOS is not available.");
-
-			if (EMU7800.Win.GameProgramLibrary.EMU7800DB == null)
-			{
-				EMU7800.Win.GameProgramLibrary.EMU7800DB = new EMU7800.Win.GameProgramLibrary(new StreamReader(GameDBfn));
-			}
-
-			if (rom.Length % 1024 == 128)
-			{
-				Console.WriteLine("Trimming 128 byte .a78 header...");
-				byte[] newrom = new byte[rom.Length - 128];
-				Buffer.BlockCopy(rom, 128, newrom, 0, newrom.Length);
-				rom = newrom;
-			}
-			GameInfo = EMU7800.Win.GameProgramLibrary.EMU7800DB.TryRecognizeRom(rom);
-			CoreComm.RomStatusDetails = GameInfo.ToString();
-			Console.WriteLine("Rom Determiniation from 7800DB:");
-			Console.WriteLine(GameInfo.ToString());
-
-			this.rom = rom;
-			this.game = game;
-			this.hsbios = highscoreBIOS;
-			this.bios = GameInfo.MachineType == MachineType.A7800PAL ? pal_bios : ntsc_bios;
-			_pal = GameInfo.MachineType == MachineType.A7800PAL || GameInfo.MachineType == MachineType.A2600PAL;
-
-			if (bios == null)
-			{
-				throw new MissingFirmwareException("The BIOS corresponding to the region of the game you loaded is required to run Atari 7800 games.");
-			}
-
-			HardReset();
-		}
-
 		private bool _pal;
 		public DisplayType DisplayType
 		{
@@ -208,7 +209,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		public ISyncSoundProvider SyncSoundProvider { get { return avProvider; } }
 		public bool StartAsyncSound() { return false; }
 		public void EndAsyncSound() { }
-		public IVideoProvider VideoProvider { get { return avProvider; } }
 		public ISoundProvider SoundProvider { get { return null; } }
 
 		MyAVProvider avProvider = new MyAVProvider();

@@ -108,5 +108,15 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.HexEditor.FindNext(GetFindBoxChars(), false);
 			}
 		}
+
+		private void HexFind_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Escape)
+			{
+				e.Handled = true;
+				Close();
+			}
+		}
+
 	}
 }

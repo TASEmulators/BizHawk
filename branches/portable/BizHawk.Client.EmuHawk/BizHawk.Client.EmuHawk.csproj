@@ -152,6 +152,7 @@
     </Compile>
     <Compile Include="AVOut\NutMuxer.cs" />
     <Compile Include="AVOut\NutWriter.cs" />
+    <Compile Include="AVOut\ImageSequenceWriter.cs" />
     <Compile Include="AVOut\SynclessRecorder.cs" />
     <Compile Include="AVOut\SynclessRecordingTools.cs">
       <SubType>Form</SubType>
@@ -480,6 +481,9 @@
     <Compile Include="CustomControls\QuickProgressPopup.Designer.cs">
       <DependentUpon>QuickProgressPopup.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControls\TransparentTrackbar.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CustomControls\ReadonlyCheckbox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -605,6 +609,7 @@
     <Compile Include="RomStatusPicker.Designer.cs">
       <DependentUpon>RomStatusPicker.cs</DependentUpon>
     </Compile>
+    <Compile Include="SoundOutputProvider.cs" />
     <Compile Include="Throttle.cs" />
     <Compile Include="ToolAttributes.cs" />
     <Compile Include="tools\BatchRun.cs">

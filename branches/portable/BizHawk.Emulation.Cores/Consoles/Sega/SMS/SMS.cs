@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		isReleased: true
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public sealed partial class SMS : IEmulator, IMemoryDomains, ISaveRam, IStatable, IInputPollable,
+	public sealed partial class SMS : IEmulator, ISaveRam, IStatable, IInputPollable,
 		IDebuggable, ISettable<SMS.SMSSettings, SMS.SMSSyncSettings>
 	{
 		// Constants
@@ -143,8 +143,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			Cpu.RegisterSP = 0xDFF0;
 			Cpu.ReadHardware = ReadPort;
 			Cpu.WriteHardware = WritePort;
+			Cpu.MemoryCallbacks = MemoryCallbacks;
 
 			Vdp = new VDP(this, Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, DisplayType);
+			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(Vdp);
 			PSG = new SN76489();
 			YM2413 = new YM2413();
 			SoundMixer = new SoundMixer(YM2413, PSG);
@@ -413,7 +415,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
-		public IVideoProvider VideoProvider { get { return Vdp; } }
 		public CoreComm CoreComm { get; private set; }
 
 		ISoundProvider ActiveSoundProvider;
@@ -485,9 +486,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				domains.Add(ExtRamDomain);
 			}
 			memoryDomains = new MemoryDomainList(domains);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(memoryDomains);
 		}
-
-		public IMemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{

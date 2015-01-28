@@ -146,24 +146,24 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public bool FlagN { get { return cpu.FlagN; } }
 		public bool FlagT { get { return cpu.FlagT; } }
 
-		public byte Peek(int addr)
+		public byte Peek(long addr)
 		{
 			if (addr == 0x0000)
 				return port.Direction;
 			else if (addr == 0x0001)
 				return PortData;
 			else
-				return PeekMemory(addr);
+				return PeekMemory((int)addr);
 		}
 
-		public void Poke(int addr, byte val)
+		public void Poke(long addr, byte val)
 		{
 			if (addr == 0x0000)
 				port.Direction = val;
 			else if (addr == 0x0001)
 				port.Latch = val;
 			else
-				PokeMemory(addr, val);
+				PokeMemory((int)addr, val);
 		}
 
 		public byte PortData
