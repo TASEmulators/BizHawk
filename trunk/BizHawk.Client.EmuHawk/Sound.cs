@@ -124,10 +124,13 @@ namespace BizHawk.Client.EmuHawk
 			_lastWriteTime = 0;
 			_lastWriteCursor = 0;
 
-			int minBufferFullnessMs =
-				Global.Config.SoundBufferSizeMs < 80 ? 35 :
-				Global.Config.SoundBufferSizeMs < 100 ? 45 :
-				55;
+			// 35 to 65 milliseconds depending on how big the buffer is. This is a trade-off
+			// between more frequent but less severe glitches (i.e. catching underruns before
+			// they happen and filling the buffer with silence) or less frequent but more
+			// severe glitches. At least on my Windows 8 machines, the distance between the
+			// play and write cursors can be up to 30 milliseconds, so that would be the
+			// absolute minimum we could use here.
+			int minBufferFullnessMs = Math.Min(35 + ((Global.Config.SoundBufferSizeMs - 60) / 2), 65);
 
 			_outputProvider = new SoundOutputProvider();
 			_outputProvider.MaxSamplesDeficit = BufferSizeSamples - MillisecondsToSamples(minBufferFullnessMs);
@@ -229,7 +232,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (LogUnderruns) Console.WriteLine("DirectSound underrun detected!");
 					detectedUnderrun = true;
-					_outputProvider.OnUnderrun();
+					_outputProvider.OnVolatility();
 				}
 			}
 			bool isInitializing = _actualWriteOffsetBytes == -1;
@@ -307,12 +310,16 @@ namespace BizHawk.Client.EmuHawk
 
 					while (samplesNeeded < samplesProvided && !Global.DisableSecondaryThrottling)
 					{
-						Thread.Sleep((samplesProvided - samplesNeeded) / (SampleRate / 1000)); // let audio clock control sleep time
+						Thread.Sleep((samplesProvided - samplesNeeded) / (SampleRate / 1000)); // Let the audio clock control sleep time
 						samplesNeeded = CalculateSamplesNeeded();
 					}
 				}
 				else
 				{
+					if (Global.DisableSecondaryThrottling) // This indicates rewind or fast-forward
+					{
+						_outputProvider.OnVolatility();
+					}
 					_outputProvider.GetSamples(samplesNeeded, out samples, out samplesProvided);
 				}
 			}
