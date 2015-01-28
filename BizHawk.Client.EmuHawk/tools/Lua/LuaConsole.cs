@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			InitializeComponent();
-			LuaImp = new EmuLuaLibrary(this);
+			
 			Closing += (o, e) =>
 			{
 				if (AskSaveChanges())
@@ -54,8 +54,6 @@ namespace BizHawk.Client.EmuHawk
 			LuaListView.QueryItemText += LuaListView_QueryItemText;
 			LuaListView.QueryItemBkColor += LuaListView_QueryItemBkColor;
 			LuaListView.VirtualMode = true;
-
-			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a => a.Library + "." + a.Name).ToArray());
 		}
 
 		public EmuLuaLibrary LuaImp { get; set; }
@@ -105,6 +103,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
+			LuaImp = new EmuLuaLibrary(this);
+			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a => a.Library + "." + a.Name).ToArray());
 			UpdateDialog();
 		}
 
