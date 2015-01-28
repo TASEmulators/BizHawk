@@ -384,6 +384,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void ApplyVolumeSettings()
+		{
+			//Todo: Port this?
+			/*if (_deviceBuffer == null) return;
+
+			double volume = Global.Config.SoundVolume / 100.0;
+			if (volume < 0.0) volume = 0.0;
+			if (volume > 1.0) volume = 1.0;
+			_deviceBuffer.Volume = CalculateDirectSoundVolumeLevel(volume);*/
+		}
+
 		public void StartSound()
 		{
 			AL.SourcePlay(_audSource);
@@ -427,7 +438,7 @@ namespace BizHawk.Client.EmuHawk
 			AL.GetSource(_audSource, ALGetSourcei.BuffersProcessed, out amtToFill);
 			for(int i=0; i<amtToFill; i++)
 			{
-				int samplesNeeded = SNDDXGetAudioSpace() * 2;
+				int samplesNeeded = CalculateSamplesNeeded() * 2;
 				int samplesProvided = 0;
 				short[] samples;
 
@@ -462,7 +473,7 @@ namespace BizHawk.Client.EmuHawk
 				AL.SourceQueueBuffer(_audSource, buffer);
 				if (syncsoundProvider != null)
 				{
-					if (!Global.ForceNoThrottle)
+					if (!Global.DisableSecondaryThrottling)
 					{
 						int buffersProcessed;
 						do
