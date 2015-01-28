@@ -54,7 +54,7 @@
 			this.Cancel.Location = new System.Drawing.Point(317, 244);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
-			this.Cancel.TabIndex = 0;
+			this.Cancel.TabIndex = 1;
 			this.Cancel.Text = "&Cancel";
 			this.Cancel.UseVisualStyleBackColor = true;
 			this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
@@ -66,7 +66,7 @@
 			this.OK.Location = new System.Drawing.Point(236, 244);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
-			this.OK.TabIndex = 1;
+			this.OK.TabIndex = 0;
 			this.OK.Text = "&Ok";
 			this.OK.UseVisualStyleBackColor = true;
 			this.OK.Click += new System.EventHandler(this.OK_Click);
@@ -77,7 +77,7 @@
 			this.SoundOnCheckBox.Location = new System.Drawing.Point(147, 12);
 			this.SoundOnCheckBox.Name = "SoundOnCheckBox";
 			this.SoundOnCheckBox.Size = new System.Drawing.Size(74, 17);
-			this.SoundOnCheckBox.TabIndex = 2;
+			this.SoundOnCheckBox.TabIndex = 3;
 			this.SoundOnCheckBox.Text = "Sound On";
 			this.SoundOnCheckBox.UseVisualStyleBackColor = true;
 			this.SoundOnCheckBox.CheckedChanged += new System.EventHandler(this.SoundOnCheckBox_CheckedChanged);
@@ -88,7 +88,7 @@
 			this.MuteFrameAdvance.Location = new System.Drawing.Point(147, 35);
 			this.MuteFrameAdvance.Name = "MuteFrameAdvance";
 			this.MuteFrameAdvance.Size = new System.Drawing.Size(128, 17);
-			this.MuteFrameAdvance.TabIndex = 3;
+			this.MuteFrameAdvance.TabIndex = 4;
 			this.MuteFrameAdvance.Text = "Mute Frame Advance";
 			this.MuteFrameAdvance.UseVisualStyleBackColor = true;
 			// 
@@ -99,7 +99,7 @@
 			this.SoundVolGroup.Location = new System.Drawing.Point(12, 12);
 			this.SoundVolGroup.Name = "SoundVolGroup";
 			this.SoundVolGroup.Size = new System.Drawing.Size(90, 219);
-			this.SoundVolGroup.TabIndex = 4;
+			this.SoundVolGroup.TabIndex = 2;
 			this.SoundVolGroup.TabStop = false;
 			this.SoundVolGroup.Text = "Volume";
 			// 
@@ -111,7 +111,7 @@
 			this.SoundVolBar.Name = "SoundVolBar";
 			this.SoundVolBar.Orientation = System.Windows.Forms.Orientation.Vertical;
 			this.SoundVolBar.Size = new System.Drawing.Size(45, 164);
-			this.SoundVolBar.TabIndex = 1;
+			this.SoundVolBar.TabIndex = 0;
 			this.SoundVolBar.TickFrequency = 10;
 			this.SoundVolBar.Scroll += new System.EventHandler(this.trackBar1_Scroll);
 			// 
@@ -120,7 +120,7 @@
 			this.SoundVolNumeric.Location = new System.Drawing.Point(16, 190);
 			this.SoundVolNumeric.Name = "SoundVolNumeric";
 			this.SoundVolNumeric.Size = new System.Drawing.Size(59, 20);
-			this.SoundVolNumeric.TabIndex = 0;
+			this.SoundVolNumeric.TabIndex = 1;
 			this.SoundVolNumeric.ValueChanged += new System.EventHandler(this.SoundVolNumeric_ValueChanged);
 			// 
 			// UseNewOutputBuffer
@@ -142,7 +142,7 @@
 			this.listBoxSoundDevices.Location = new System.Drawing.Point(108, 102);
 			this.listBoxSoundDevices.Name = "listBoxSoundDevices";
 			this.listBoxSoundDevices.Size = new System.Drawing.Size(284, 95);
-			this.listBoxSoundDevices.TabIndex = 6;
+			this.listBoxSoundDevices.TabIndex = 7;
 			// 
 			// SoundDeviceLabel
 			// 
@@ -150,7 +150,7 @@
 			this.SoundDeviceLabel.Location = new System.Drawing.Point(108, 86);
 			this.SoundDeviceLabel.Name = "SoundDeviceLabel";
 			this.SoundDeviceLabel.Size = new System.Drawing.Size(78, 13);
-			this.SoundDeviceLabel.TabIndex = 7;
+			this.SoundDeviceLabel.TabIndex = 6;
 			this.SoundDeviceLabel.Text = "Sound Device:";
 			// 
 			// BufferSizeLabel
