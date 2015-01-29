@@ -107,9 +107,47 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LuaImp.GuiLibrary.DrawFinish();
 			}
+			
+			var runningScripts = _luaList.Where(f => f.Enabled).ToList();
+
+			foreach (var file in runningScripts)
+			{
+				LuaImp.CallExitEvent(file.Thread);
+
+				var functions = LuaImp.RegisteredFunctions.Where(x => x.Lua == file.Thread).ToList();
+
+				foreach (var function in functions)
+					LuaImp.RegisteredFunctions.Remove(function);
+
+				UpdateRegisteredFunctionsDialog();
+
+				file.Stop();
+			}
 
 			LuaImp = new EmuLuaLibrary(this);
 			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a => a.Library + "." + a.Name).ToArray());
+
+			foreach (var file in runningScripts)
+			{
+				try
+				{
+					file.Thread = LuaImp.SpawnCoroutine(file.Path);
+					file.Enabled = true;
+				}
+				catch (Exception ex)
+				{
+					if (ex is LuaScriptException)
+					{
+						file.Enabled = false;
+						ConsoleLog(ex.Message);
+					}
+					else
+					{
+						MessageBox.Show(ex.ToString());
+					}
+				}
+			}
+
 			UpdateDialog();
 		}
 
