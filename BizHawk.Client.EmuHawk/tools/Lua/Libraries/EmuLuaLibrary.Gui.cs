@@ -70,6 +70,11 @@ namespace BizHawk.Client.EmuHawk
 			_luaSurface = null;
 		}
 
+		public bool HasLuaSurface
+		{
+			get { return _luaSurface != null; }
+		}
+
 		#endregion
 
 		#region Helpers
