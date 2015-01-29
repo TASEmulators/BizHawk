@@ -52,8 +52,15 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawNew(string name)
 		{
-			DrawFinish();
-			_luaSurface = GlobalWin.DisplayManager.LockLuaSurface(name);
+			try
+			{
+				DrawFinish();
+				_luaSurface = GlobalWin.DisplayManager.LockLuaSurface(name);
+			}
+			catch (InvalidOperationException ex)
+			{
+				Log(ex.ToString());
+			}
 		}
 
 		public void DrawFinish()
