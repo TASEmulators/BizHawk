@@ -103,6 +103,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
+			if (LuaImp != null && LuaImp.GuiLibrary != null && LuaImp.GuiLibrary.HasLuaSurface)
+			{
+				LuaImp.GuiLibrary.DrawFinish();
+			}
+
 			LuaImp = new EmuLuaLibrary(this);
 			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a => a.Library + "." + a.Name).ToArray());
 			UpdateDialog();
@@ -340,7 +345,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool LoadLuaSession(string path)
 		{
-			return _luaList.LoadLuaSession(path);
+			var result = _luaList.LoadLuaSession(path);
+
+			RunLuaScripts();
+			UpdateDialog();
+			_luaList.Changes = false;
+
+			return result;
 		}
 
 		/// <summary>
