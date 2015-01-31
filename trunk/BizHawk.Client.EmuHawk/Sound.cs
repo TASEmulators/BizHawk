@@ -143,19 +143,30 @@ namespace BizHawk.Client.EmuHawk
 			_semiSync.RecalculateMagic(Global.CoreComm.VsyncRate);
 		}
 
-		public bool InitializeBufferWithSilence
+		private bool InitializeBufferWithSilence
 		{
 			get { return true; }
 		}
 
-		public bool RecoverFromUnderrunsWithSilence
+		private bool RecoverFromUnderrunsWithSilence
 		{
 			get { return true; }
 		}
 
-		public int SilenceLeaveRoomForFrameCount
+		private int SilenceLeaveRoomForFrameCount
 		{
 			get { return Global.Config.SoundThrottle ? 1 : 2; } // Why 2? I don't know, but it seems to work well with the clock throttle's behavior.
+		}
+
+		internal void HandleInitializationOrUnderrun(bool isUnderrun, ref int samplesNeeded)
+		{
+			if ((!isUnderrun && InitializeBufferWithSilence) || (isUnderrun && RecoverFromUnderrunsWithSilence))
+			{
+				int samplesPerFrame = (int)Math.Round(Sound.SampleRate / Global.Emulator.CoreComm.VsyncRate);
+				int silenceSamples = Math.Max(samplesNeeded - (SilenceLeaveRoomForFrameCount * samplesPerFrame), 0);
+				_soundOutput.WriteSamples(new short[silenceSamples * 2], silenceSamples);
+				samplesNeeded -= silenceSamples;
+			}
 		}
 
 		public bool LogUnderruns { get; set; }
@@ -348,8 +359,9 @@ namespace BizHawk.Client.EmuHawk
 			long currentWriteTime = Stopwatch.GetTimestamp();
 			int playCursor = _deviceBuffer.CurrentPlayPosition;
 			int writeCursor = _deviceBuffer.CurrentWritePosition;
+			bool isInitializing = _actualWriteOffsetBytes == -1;
 			bool detectedUnderrun = false;
-			if (_actualWriteOffsetBytes != -1)
+			if (!isInitializing)
 			{
 				double elapsedSeconds = (currentWriteTime - _lastWriteTime) / (double)Stopwatch.Frequency;
 				double bufferSizeSeconds = (double)BufferSizeSamples / Sound.SampleRate;
@@ -362,19 +374,15 @@ namespace BizHawk.Client.EmuHawk
 					detectedUnderrun = true;
 				}
 			}
-			bool isInitializing = _actualWriteOffsetBytes == -1;
 			if (isInitializing || detectedUnderrun)
 			{
 				_actualWriteOffsetBytes = writeCursor;
 				_filledBufferSizeBytes = 0;
 			}
 			int samplesNeeded = CircularDistance(_actualWriteOffsetBytes, playCursor, BufferSizeBytes) / Sound.BlockAlign;
-			if ((isInitializing && _sound.InitializeBufferWithSilence) || (detectedUnderrun && _sound.RecoverFromUnderrunsWithSilence))
+			if (isInitializing || detectedUnderrun)
 			{
-				int samplesPerFrame = (int)Math.Round(Sound.SampleRate / Global.Emulator.CoreComm.VsyncRate);
-				int silenceSamples = Math.Max(samplesNeeded - (_sound.SilenceLeaveRoomForFrameCount * samplesPerFrame), 0);
-				WriteSamples(new short[silenceSamples * 2], silenceSamples);
-				samplesNeeded -= silenceSamples;
+				_sound.HandleInitializationOrUnderrun(detectedUnderrun, ref samplesNeeded);
 			}
 			_lastWriteTime = currentWriteTime;
 			_lastWriteCursor = writeCursor;
@@ -487,12 +495,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			long samplesAwaitingPlayback = _runningSamplesQueued - _sourceVoice.State.SamplesPlayed;
 			int samplesNeeded = (int)Math.Max(BufferSizeSamples - samplesAwaitingPlayback, 0);
-			if ((isInitializing && _sound.InitializeBufferWithSilence) || (detectedUnderrun && _sound.RecoverFromUnderrunsWithSilence))
+			if (isInitializing || detectedUnderrun)
 			{
-				int samplesPerFrame = (int)Math.Round(Sound.SampleRate / Global.Emulator.CoreComm.VsyncRate);
-				int silenceSamples = Math.Max(samplesNeeded - (_sound.SilenceLeaveRoomForFrameCount * samplesPerFrame), 0);
-				WriteSamples(new short[silenceSamples * 2], silenceSamples);
-				samplesNeeded -= silenceSamples;
+				_sound.HandleInitializationOrUnderrun(detectedUnderrun, ref samplesNeeded);
 			}
 			return samplesNeeded;
 		}
@@ -550,22 +555,34 @@ namespace BizHawk.Client.EmuHawk
 
 		public int CalculateSamplesNeeded()
 		{
-			Start:
 			long currentWriteTime = Stopwatch.GetTimestamp();
-			if (_lastWriteTime != 0)
+			bool isInitializing = _lastWriteTime == 0;
+			bool detectedUnderrun = false;
+			if (!isInitializing)
 			{
 				double elapsedSeconds = (currentWriteTime - _lastWriteTime) / (double)Stopwatch.Frequency;
-				if (elapsedSeconds < 0.001)
+				// Due to rounding errors this doesn't work well in audio throttle mode unless enough time has passed
+				if (elapsedSeconds >= 0.001)
 				{
-					// Due to rounding errors this doesn't work too well in audio throttle mode unless we let more time pass
-					Thread.Sleep(1);
-					goto Start;
+					_remainingSamples -= (int)Math.Round(elapsedSeconds * Sound.SampleRate);
+					if (_remainingSamples < 0)
+					{
+						_remainingSamples = 0;
+						_sound.OnUnderrun();
+						detectedUnderrun = true;
+					}
+					_lastWriteTime = currentWriteTime;
 				}
-				_remainingSamples -= (int)Math.Round(elapsedSeconds * Sound.SampleRate);
-				if (_remainingSamples < 0) _remainingSamples = 0;
+			}
+			else
+			{
+				_lastWriteTime = currentWriteTime;
 			}
 			int samplesNeeded = BufferSizeSamples - _remainingSamples;
-			_lastWriteTime = currentWriteTime;
+			if (isInitializing || detectedUnderrun)
+			{
+				_sound.HandleInitializationOrUnderrun(detectedUnderrun, ref samplesNeeded);
+			}
 			return samplesNeeded;
 		}
 
