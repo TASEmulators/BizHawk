@@ -43,8 +43,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public Sound(IntPtr mainWindowHandle)
 		{
-			_soundOutput = new DirectSoundSoundOutput(this, mainWindowHandle);
-			//_soundOutput = new XAudio2SoundOutput(this);
+			if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.DirectSound)
+				_soundOutput = new DirectSoundSoundOutput(this, mainWindowHandle);
+			else if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.XAudio2)
+				_soundOutput = new XAudio2SoundOutput(this);
+			else
+				_soundOutput = new DummySoundOutput(this);
 		}
 
 		public void Dispose()
@@ -267,7 +271,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static IEnumerable<string> GetDeviceNames()
 		{
-			return DirectSound.GetDevices().Select(d => d.Description);
+			return DirectSound.GetDevices().Select(d => d.Description).ToList();
 		}
 
 		private int BufferSizeSamples { get; set; }
@@ -429,7 +433,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using (XAudio2 device = new XAudio2())
 			{
-				return Enumerable.Range(0, device.DeviceCount).Select(n => device.GetDeviceDetails(n).DisplayName);
+				return Enumerable.Range(0, device.DeviceCount).Select(n => device.GetDeviceDetails(n).DisplayName).ToList();
 			}
 		}
 
@@ -475,13 +479,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public int CalculateSamplesNeeded()
 		{
-			long samplesAwaitingPlayback = _runningSamplesQueued - _sourceVoice.State.SamplesPlayed;
 			bool isInitializing = _runningSamplesQueued == 0;
 			bool detectedUnderrun = !isInitializing && _sourceVoice.State.BuffersQueued == 0;
 			if (detectedUnderrun)
 			{
 				_sound.OnUnderrun();
 			}
+			long samplesAwaitingPlayback = _runningSamplesQueued - _sourceVoice.State.SamplesPlayed;
 			int samplesNeeded = (int)Math.Max(BufferSizeSamples - samplesAwaitingPlayback, 0);
 			if ((isInitializing && _sound.InitializeBufferWithSilence) || (detectedUnderrun && _sound.RecoverFromUnderrunsWithSilence))
 			{
@@ -499,11 +503,76 @@ namespace BizHawk.Client.EmuHawk
 			// TODO: Re-use these buffers
 			byte[] bytes = new byte[sampleCount * Sound.BlockAlign];
 			Buffer.BlockCopy(samples, 0, bytes, 0, bytes.Length);
-			_sourceVoice.SubmitSourceBuffer(new AudioBuffer {
+			_sourceVoice.SubmitSourceBuffer(new AudioBuffer
+			{
 				AudioBytes = bytes.Length,
 				AudioData = new DataStream(bytes, true, false)
 			});
 			_runningSamplesQueued += sampleCount;
+		}
+	}
+
+	public class DummySoundOutput : ISoundOutput
+	{
+		private Sound _sound;
+		private int _remainingSamples;
+		private long _lastWriteTime;
+
+		public DummySoundOutput(Sound sound)
+		{
+			_sound = sound;
+		}
+
+		public void Dispose()
+		{
+		}
+
+		private int BufferSizeSamples { get; set; }
+
+		public int MaxSamplesDeficit { get; private set; }
+
+		public void ApplyVolumeSettings(double volume)
+		{
+		}
+
+		public void StartSound()
+		{
+			BufferSizeSamples = Sound.MillisecondsToSamples(Global.Config.SoundBufferSizeMs);
+			MaxSamplesDeficit = BufferSizeSamples;
+
+			_lastWriteTime = 0;
+		}
+
+		public void StopSound()
+		{
+			BufferSizeSamples = 0;
+		}
+
+		public int CalculateSamplesNeeded()
+		{
+			Start:
+			long currentWriteTime = Stopwatch.GetTimestamp();
+			if (_lastWriteTime != 0)
+			{
+				double elapsedSeconds = (currentWriteTime - _lastWriteTime) / (double)Stopwatch.Frequency;
+				if (elapsedSeconds < 0.001)
+				{
+					// Due to rounding errors this doesn't work too well in audio throttle mode unless we let more time pass
+					Thread.Sleep(1);
+					goto Start;
+				}
+				_remainingSamples -= (int)Math.Round(elapsedSeconds * Sound.SampleRate);
+				if (_remainingSamples < 0) _remainingSamples = 0;
+			}
+			int samplesNeeded = BufferSizeSamples - _remainingSamples;
+			_lastWriteTime = currentWriteTime;
+			return samplesNeeded;
+		}
+
+		public void WriteSamples(short[] samples, int sampleCount)
+		{
+			if (sampleCount == 0) return;
+			_remainingSamples += sampleCount;
 		}
 	}
 #else

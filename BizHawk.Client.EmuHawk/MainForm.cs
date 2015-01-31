@@ -281,7 +281,13 @@ namespace BizHawk.Client.EmuHawk
 			try { GlobalWin.Sound = new Sound(Handle); }
 			catch
 			{
-				MessageBox.Show("Couldn't initialize DirectSound! Things may go poorly for you. Try changing your sound driver to 41khz instead of 48khz in mmsys.cpl.", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				string message = "Couldn't initialize sound device! Try changing the output method in Sound config.";
+				if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.DirectSound)
+					message = "Couldn't initialize DirectSound! Things may go poorly for you. Try changing your sound driver to 44.1khz instead of 48khz in mmsys.cpl.";
+				MessageBox.Show(message, "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+				Global.Config.SoundOutputMethod = Config.ESoundOutputMethod.Dummy;
+				GlobalWin.Sound = new Sound(Handle);
 			}
 #else
 			Global.Sound = new Sound();
@@ -1506,19 +1512,10 @@ namespace BizHawk.Client.EmuHawk
 				// note that the avi dumper has already rewired the emulator itself in this case.
 				GlobalWin.Sound.SetAsyncInputPin(_dumpProxy);
 			}
-			else if (Global.Config.SoundThrottle || Global.Config.UseNewOutputBuffer)
-			{
-				// for sound throttle and new output buffer, use sync mode
-				Global.Emulator.EndAsyncSound();
-				GlobalWin.Sound.SetSyncInputPin(Global.Emulator.SyncSoundProvider);
-			}
 			else
 			{
-				// for vsync\clock throttle modes through old output buffer, use async
-				GlobalWin.Sound.SetAsyncInputPin(
-					!Global.Emulator.StartAsyncSound()
-						? new MetaspuAsync(Global.Emulator.SyncSoundProvider, ESynchMethod.ESynchMethod_V)
-						: Global.Emulator.SoundProvider);
+				Global.Emulator.EndAsyncSound();
+				GlobalWin.Sound.SetSyncInputPin(Global.Emulator.SyncSoundProvider);
 			}
 		}
 
