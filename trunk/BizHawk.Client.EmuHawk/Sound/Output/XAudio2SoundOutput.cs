@@ -18,6 +18,7 @@ namespace BizHawk.Client.EmuHawk
 		private XAudio2 _device;
 		private MasteringVoice _masteringVoice;
 		private SourceVoice _sourceVoice;
+		private BufferPool _bufferPool;
 		private long _runningSamplesQueued;
 
 		public XAudio2SoundOutput(Sound sound)
@@ -79,6 +80,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_sourceVoice = new SourceVoice(_device, format);
 
+			_bufferPool = new BufferPool();
 			_runningSamplesQueued = 0;
 
 			_sourceVoice.Start();
@@ -89,6 +91,8 @@ namespace BizHawk.Client.EmuHawk
 			_sourceVoice.Stop();
 			_sourceVoice.Dispose();
 			_sourceVoice = null;
+
+			_bufferPool = null;
 
 			BufferSizeSamples = 0;
 		}
@@ -113,15 +117,50 @@ namespace BizHawk.Client.EmuHawk
 		public void WriteSamples(short[] samples, int sampleCount)
 		{
 			if (sampleCount == 0) return;
-			// TODO: Re-use these buffers
-			byte[] bytes = new byte[sampleCount * Sound.BlockAlign];
-			Buffer.BlockCopy(samples, 0, bytes, 0, bytes.Length);
+			_bufferPool.Release(_sourceVoice.State.BuffersQueued);
+			int byteCount = sampleCount * Sound.BlockAlign;
+			var buffer = _bufferPool.Obtain(byteCount);
+			Buffer.BlockCopy(samples, 0, buffer.Bytes, 0, byteCount);
 			_sourceVoice.SubmitSourceBuffer(new AudioBuffer
-			{
-				AudioBytes = bytes.Length,
-				AudioData = new DataStream(bytes, true, false)
-			});
+				{
+					AudioBytes = byteCount,
+					AudioData = buffer.DataStream
+				});
 			_runningSamplesQueued += sampleCount;
+		}
+
+		private class BufferPool
+		{
+			private List<BufferPoolItem> _availableItems = new List<BufferPoolItem>();
+			private Queue<BufferPoolItem> _obtainedItems = new Queue<BufferPoolItem>();
+
+			public BufferPoolItem Obtain(int length)
+			{
+				BufferPoolItem item = _availableItems.Where(n => n.MaxLength >= length).OrderBy(n => n.MaxLength).FirstOrDefault() ?? new BufferPoolItem(length);
+				_availableItems.Remove(item);
+				_obtainedItems.Enqueue(item);
+				return item;
+			}
+
+			public void Release(int buffersQueued)
+			{
+				while (_obtainedItems.Count > buffersQueued)
+					_availableItems.Add(_obtainedItems.Dequeue());
+			}
+
+			public class BufferPoolItem
+			{
+				public int MaxLength { get; private set; }
+				public byte[] Bytes { get; private set; }
+				public DataStream DataStream { get; private set; }
+
+				public BufferPoolItem(int length)
+				{
+					MaxLength = length;
+					Bytes = new byte[MaxLength];
+					DataStream = new DataStream(Bytes, true, false);
+				}
+			}
 		}
 	}
 }
