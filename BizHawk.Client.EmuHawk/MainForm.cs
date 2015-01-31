@@ -277,7 +277,6 @@ namespace BizHawk.Client.EmuHawk
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
 			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
-#if WINDOWS
 			try { GlobalWin.Sound = new Sound(Handle); }
 			catch
 			{
@@ -289,9 +288,6 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.SoundOutputMethod = Config.ESoundOutputMethod.Dummy;
 				GlobalWin.Sound = new Sound(Handle);
 			}
-#else
-			Global.Sound = new Sound();
-#endif
 			GlobalWin.Sound.StartSound();
 			InputManager.RewireInputChain();
 			GlobalWin.Tools = new ToolManager();

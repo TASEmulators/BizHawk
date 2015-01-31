@@ -617,7 +617,11 @@
     <Compile Include="RomStatusPicker.Designer.cs">
       <DependentUpon>RomStatusPicker.cs</DependentUpon>
     </Compile>
-    <Compile Include="SoundOutputProvider.cs" />
+    <Compile Include="Sound\Output\DirectSoundSoundOutput.cs" />
+    <Compile Include="Sound\Output\DummySoundOutput.cs" />
+    <Compile Include="Sound\Output\XAudio2SoundOutput.cs" />
+    <Compile Include="Sound\Sound.cs" />
+    <Compile Include="Sound\Utilities\SoundOutputProvider.cs" />
     <Compile Include="Throttle.cs" />
     <Compile Include="ToolAttributes.cs" />
     <Compile Include="tools\BatchRun.cs">
@@ -1413,7 +1417,6 @@
       <DependentUpon>InputPrompt.cs</DependentUpon>
     </Compile>
     <Compile Include="ScreenSaver.cs" />
-    <Compile Include="Sound.cs" />
     <Compile Include="tools\ToolBox.cs">
       <SubType>Form</SubType>
     </Compile>
