@@ -3716,5 +3716,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FeaturesMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
+
+		private void PSXControllerSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			new PSXControllerConfig().ShowDialog();
+		}
 	}
 }
