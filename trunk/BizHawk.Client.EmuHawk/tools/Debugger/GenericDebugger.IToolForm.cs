@@ -20,6 +20,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private IMemoryCallbackSystem MemoryCallbacks { get { return Debuggable.MemoryCallbacks; } }
 
+
+		private RegisterValue PCRegister
+		{
+			get { return Debuggable.GetCpuFlagsAndRegisters()[Disassembler.PCRegisterName]; }
+		}
+
+		// TODO: get rid of me
 		private uint PC
 		{
 			// TODO: is this okay for N64?
