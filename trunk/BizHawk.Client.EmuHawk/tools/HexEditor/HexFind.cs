@@ -71,23 +71,17 @@ namespace BizHawk.Client.EmuHawk
 			var size = FindBox.Size;
 
 			Controls.Remove(FindBox);
-			if (HexRadio.Checked)
-			{
-				FindBox = new HexTextBox
-				{
-					CharacterCasing = CharacterCasing.Upper,
-					Nullable = true
-				};
-			}
-			else
-			{
-				FindBox = new TextBox { CharacterCasing = CharacterCasing.Normal };
-			}
 
-			FindBox.Text = text;
-			FindBox.Size = size;
+			FindBox = new HexTextBox
+			{
+				CharacterCasing = CharacterCasing.Upper,
+				Nullable = HexRadio.Checked,
+				Text = text,
+				Size = size,
+				Location = location
+			};
+
 			Controls.Add(FindBox);
-			FindBox.Location = location;
 		}
 
 		private void HexRadio_CheckedChanged(object sender, EventArgs e)
