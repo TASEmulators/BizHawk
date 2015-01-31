@@ -8,29 +8,25 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class HexFind : Form
 	{
-		private Point _location;
-
 		public HexFind()
 		{
 			InitializeComponent();
 			ChangeCasing();
 		}
 
-		public void SetInitialValue(string value)
-		{
-			FindBox.Text = value;
-		}
+		public Point InitialLocation { get; set; }
 
-		public void SetLocation(Point p)
+		public string InitialValue
 		{
-			_location = p;
+			get { return FindBox.Text; }
+			set { FindBox.Text = value ?? string.Empty; }
 		}
 
 		private void HexFind_Load(object sender, EventArgs e)
 		{
-			if (_location.X > 0 && _location.Y > 0)
+			if (InitialLocation.X > 0 && InitialLocation.Y > 0)
 			{
-				Location = _location;
+				Location = InitialLocation;
 			}
 		}
 
@@ -77,8 +73,11 @@ namespace BizHawk.Client.EmuHawk
 			Controls.Remove(FindBox);
 			if (HexRadio.Checked)
 			{
-				FindBox = new HexTextBox { CharacterCasing = CharacterCasing.Upper };
-				(FindBox as HexTextBox).Nullable = true;
+				FindBox = new HexTextBox
+				{
+					CharacterCasing = CharacterCasing.Upper,
+					Nullable = true
+				};
 			}
 			else
 			{
@@ -117,6 +116,5 @@ namespace BizHawk.Client.EmuHawk
 				Close();
 			}
 		}
-
 	}
 }
