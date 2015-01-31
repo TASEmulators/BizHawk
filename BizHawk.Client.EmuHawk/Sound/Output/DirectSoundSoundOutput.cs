@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// I'm not sure if this is "technically" correct but it works okay
 			int range = (int)Volume.Maximum - (int)Volume.Minimum;
-			_deviceBuffer.Volume = (int)(Math.Pow(volume, 0.15) * range) + (int)Volume.Minimum;
+			_deviceBuffer.Volume = (int)(Math.Pow(volume, 0.1) * range) + (int)Volume.Minimum;
 		}
 
 		public void StartSound()
