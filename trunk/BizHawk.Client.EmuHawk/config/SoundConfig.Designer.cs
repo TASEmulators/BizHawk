@@ -35,16 +35,19 @@
 			this.SoundVolGroup = new System.Windows.Forms.GroupBox();
 			this.SoundVolBar = new System.Windows.Forms.TrackBar();
 			this.SoundVolNumeric = new System.Windows.Forms.NumericUpDown();
-			this.UseNewOutputBuffer = new System.Windows.Forms.CheckBox();
 			this.listBoxSoundDevices = new System.Windows.Forms.ListBox();
 			this.SoundDeviceLabel = new System.Windows.Forms.Label();
 			this.BufferSizeLabel = new System.Windows.Forms.Label();
 			this.BufferSizeNumeric = new System.Windows.Forms.NumericUpDown();
 			this.BufferSizeUnitsLabel = new System.Windows.Forms.Label();
+			this.grpOutputMethod = new System.Windows.Forms.GroupBox();
+			this.rbOutputMethodXAudio2 = new System.Windows.Forms.RadioButton();
+			this.rbOutputMethodDirectSound = new System.Windows.Forms.RadioButton();
 			this.SoundVolGroup.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.SoundVolBar)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.SoundVolNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.BufferSizeNumeric)).BeginInit();
+			this.grpOutputMethod.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// Cancel
@@ -62,7 +65,6 @@
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.OK.Location = new System.Drawing.Point(236, 244);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
@@ -74,7 +76,7 @@
 			// SoundOnCheckBox
 			// 
 			this.SoundOnCheckBox.AutoSize = true;
-			this.SoundOnCheckBox.Location = new System.Drawing.Point(147, 12);
+			this.SoundOnCheckBox.Location = new System.Drawing.Point(108, 31);
 			this.SoundOnCheckBox.Name = "SoundOnCheckBox";
 			this.SoundOnCheckBox.Size = new System.Drawing.Size(74, 17);
 			this.SoundOnCheckBox.TabIndex = 3;
@@ -85,7 +87,7 @@
 			// MuteFrameAdvance
 			// 
 			this.MuteFrameAdvance.AutoSize = true;
-			this.MuteFrameAdvance.Location = new System.Drawing.Point(147, 35);
+			this.MuteFrameAdvance.Location = new System.Drawing.Point(108, 54);
 			this.MuteFrameAdvance.Name = "MuteFrameAdvance";
 			this.MuteFrameAdvance.Size = new System.Drawing.Size(128, 17);
 			this.MuteFrameAdvance.TabIndex = 4;
@@ -123,23 +125,13 @@
 			this.SoundVolNumeric.TabIndex = 1;
 			this.SoundVolNumeric.ValueChanged += new System.EventHandler(this.SoundVolNumeric_ValueChanged);
 			// 
-			// UseNewOutputBuffer
-			// 
-			this.UseNewOutputBuffer.AutoSize = true;
-			this.UseNewOutputBuffer.Location = new System.Drawing.Point(147, 58);
-			this.UseNewOutputBuffer.Name = "UseNewOutputBuffer";
-			this.UseNewOutputBuffer.Size = new System.Drawing.Size(205, 17);
-			this.UseNewOutputBuffer.TabIndex = 5;
-			this.UseNewOutputBuffer.Text = "Use New Output Buffer (Experimental)";
-			this.UseNewOutputBuffer.UseVisualStyleBackColor = true;
-			// 
 			// listBoxSoundDevices
 			// 
 			this.listBoxSoundDevices.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.listBoxSoundDevices.FormattingEnabled = true;
-			this.listBoxSoundDevices.Location = new System.Drawing.Point(108, 102);
+			this.listBoxSoundDevices.Location = new System.Drawing.Point(108, 108);
 			this.listBoxSoundDevices.Name = "listBoxSoundDevices";
 			this.listBoxSoundDevices.Size = new System.Drawing.Size(284, 95);
 			this.listBoxSoundDevices.TabIndex = 7;
@@ -147,7 +139,7 @@
 			// SoundDeviceLabel
 			// 
 			this.SoundDeviceLabel.AutoSize = true;
-			this.SoundDeviceLabel.Location = new System.Drawing.Point(108, 86);
+			this.SoundDeviceLabel.Location = new System.Drawing.Point(105, 92);
 			this.SoundDeviceLabel.Name = "SoundDeviceLabel";
 			this.SoundDeviceLabel.Size = new System.Drawing.Size(78, 13);
 			this.SoundDeviceLabel.TabIndex = 6;
@@ -173,7 +165,7 @@
             0,
             0});
 			this.BufferSizeNumeric.Minimum = new decimal(new int[] {
-            60,
+            30,
             0,
             0,
             0});
@@ -196,6 +188,41 @@
 			this.BufferSizeUnitsLabel.TabIndex = 10;
 			this.BufferSizeUnitsLabel.Text = "milliseconds";
 			// 
+			// grpOutputMethod
+			// 
+			this.grpOutputMethod.Controls.Add(this.rbOutputMethodXAudio2);
+			this.grpOutputMethod.Controls.Add(this.rbOutputMethodDirectSound);
+			this.grpOutputMethod.Location = new System.Drawing.Point(292, 12);
+			this.grpOutputMethod.Name = "grpOutputMethod";
+			this.grpOutputMethod.Size = new System.Drawing.Size(100, 68);
+			this.grpOutputMethod.TabIndex = 5;
+			this.grpOutputMethod.TabStop = false;
+			this.grpOutputMethod.Text = "Output Method";
+			// 
+			// rbOutputMethodXAudio2
+			// 
+			this.rbOutputMethodXAudio2.AutoSize = true;
+			this.rbOutputMethodXAudio2.Location = new System.Drawing.Point(6, 42);
+			this.rbOutputMethodXAudio2.Name = "rbOutputMethodXAudio2";
+			this.rbOutputMethodXAudio2.Size = new System.Drawing.Size(65, 17);
+			this.rbOutputMethodXAudio2.TabIndex = 1;
+			this.rbOutputMethodXAudio2.TabStop = true;
+			this.rbOutputMethodXAudio2.Text = "XAudio2";
+			this.rbOutputMethodXAudio2.UseVisualStyleBackColor = true;
+			this.rbOutputMethodXAudio2.CheckedChanged += new System.EventHandler(this.OutputMethodRadioButtons_CheckedChanged);
+			// 
+			// rbOutputMethodDirectSound
+			// 
+			this.rbOutputMethodDirectSound.AutoSize = true;
+			this.rbOutputMethodDirectSound.Location = new System.Drawing.Point(6, 19);
+			this.rbOutputMethodDirectSound.Name = "rbOutputMethodDirectSound";
+			this.rbOutputMethodDirectSound.Size = new System.Drawing.Size(84, 17);
+			this.rbOutputMethodDirectSound.TabIndex = 0;
+			this.rbOutputMethodDirectSound.TabStop = true;
+			this.rbOutputMethodDirectSound.Text = "DirectSound";
+			this.rbOutputMethodDirectSound.UseVisualStyleBackColor = true;
+			this.rbOutputMethodDirectSound.CheckedChanged += new System.EventHandler(this.OutputMethodRadioButtons_CheckedChanged);
+			// 
 			// SoundConfig
 			// 
 			this.AcceptButton = this.OK;
@@ -203,12 +230,12 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
 			this.ClientSize = new System.Drawing.Size(404, 279);
+			this.Controls.Add(this.grpOutputMethod);
 			this.Controls.Add(this.BufferSizeUnitsLabel);
 			this.Controls.Add(this.BufferSizeNumeric);
 			this.Controls.Add(this.BufferSizeLabel);
 			this.Controls.Add(this.SoundDeviceLabel);
 			this.Controls.Add(this.listBoxSoundDevices);
-			this.Controls.Add(this.UseNewOutputBuffer);
 			this.Controls.Add(this.SoundVolGroup);
 			this.Controls.Add(this.MuteFrameAdvance);
 			this.Controls.Add(this.SoundOnCheckBox);
@@ -225,6 +252,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.SoundVolBar)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.SoundVolNumeric)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.BufferSizeNumeric)).EndInit();
+			this.grpOutputMethod.ResumeLayout(false);
+			this.grpOutputMethod.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -239,11 +268,13 @@
 		private System.Windows.Forms.GroupBox SoundVolGroup;
 		private System.Windows.Forms.NumericUpDown SoundVolNumeric;
 		private System.Windows.Forms.TrackBar SoundVolBar;
-		private System.Windows.Forms.CheckBox UseNewOutputBuffer;
 		private System.Windows.Forms.ListBox listBoxSoundDevices;
 		private System.Windows.Forms.Label SoundDeviceLabel;
 		private System.Windows.Forms.Label BufferSizeLabel;
 		private System.Windows.Forms.NumericUpDown BufferSizeNumeric;
 		private System.Windows.Forms.Label BufferSizeUnitsLabel;
+		private System.Windows.Forms.GroupBox grpOutputMethod;
+		private System.Windows.Forms.RadioButton rbOutputMethodXAudio2;
+		private System.Windows.Forms.RadioButton rbOutputMethodDirectSound;
 	}
 }
