@@ -77,14 +77,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-#if WINDOWS
-			try { GlobalWin.DSound = SoundEnumeration.Create(); }
-			catch
-			{
-				MessageBox.Show("Couldn't initialize DirectSound! Things may go poorly for you. Try changing your sound driver to 41khz instead of 48khz in mmsys.cpl.", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-#endif
-
 			//create IGL context. we do this whether or not the user has selected OpenGL, so that we can run opengl-based emulator cores
 			GlobalWin.IGL_GL = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
 
@@ -183,8 +175,11 @@ REDO_DISPMETHOD:
 #if WINDOWS
 			finally
 			{
-				if (GlobalWin.DSound != null && GlobalWin.DSound.Disposed == false)
-					GlobalWin.DSound.Dispose();
+				if (GlobalWin.Sound != null)
+				{
+					GlobalWin.Sound.Dispose();
+					GlobalWin.Sound = null;
+				}
 				GlobalWin.GL.Dispose();
 				GamePad.CloseAll();
 			}

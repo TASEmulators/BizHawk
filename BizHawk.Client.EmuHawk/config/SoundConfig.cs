@@ -26,15 +26,14 @@ namespace BizHawk.Client.EmuHawk
 			SoundVolNumeric.Value = Global.Config.SoundVolume;
 			UpdateSoundDialog();
 
-			var dd = SoundEnumeration.DeviceNames();
 			listBoxSoundDevices.Items.Add("<default>");
 			listBoxSoundDevices.SelectedIndex = 0;
-			foreach (var d in dd)
+			foreach (var name in DirectSoundSoundOutput.GetDeviceNames())
 			{
-				listBoxSoundDevices.Items.Add(d);
-				if (d == Global.Config.SoundDevice)
+				listBoxSoundDevices.Items.Add(name);
+				if (name == Global.Config.SoundDevice)
 				{
-					listBoxSoundDevices.SelectedItem = d;
+					listBoxSoundDevices.SelectedItem = name;
 				}
 			}
 
