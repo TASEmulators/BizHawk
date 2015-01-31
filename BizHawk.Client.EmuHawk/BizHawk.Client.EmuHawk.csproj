@@ -419,6 +419,12 @@
     <Compile Include="config\ProfileConfig.Designer.cs">
       <DependentUpon>ProfileConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\PSX\PSXControllerConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\PSX\PSXControllerConfig.Designer.cs">
+      <DependentUpon>PSXControllerConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\PSX\PSXOptions.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1188,6 +1194,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\ProfileConfig.resx">
       <DependentUpon>ProfileConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\PSX\PSXControllerConfig.resx">
+      <DependentUpon>PSXControllerConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\PSX\PSXOptions.resx">
       <DependentUpon>PSXOptions.cs</DependentUpon>
