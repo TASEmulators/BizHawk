@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -1247,11 +1248,12 @@ namespace BizHawk.Client.EmuHawk
 		private bool _exit;
 		private bool _exitRequestPending;
 		private bool _runloopFrameProgress;
-		private DateTime _frameAdvanceTimestamp = DateTime.MinValue;
+		private long _frameAdvanceTimestamp;
+		private long _frameRewindTimestamp;
 		private int _runloopFps;
 		private int _runloopLastFps;
 		private bool _runloopFrameadvance;
-		private DateTime _runloopSecond;
+		private long _runloopSecond;
 		private bool _runloopLastFf;
 		private bool _inResizeLoop;
 
@@ -2692,11 +2694,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var runFrame = false;
 			_runloopFrameadvance = false;
-			var now = DateTime.Now;
+			var currentTimestamp = Stopwatch.GetTimestamp();
 			var suppressCaptureRewind = false;
 
-			double frameAdvanceTimestampDelta = (now - _frameAdvanceTimestamp).TotalMilliseconds;
-			bool frameProgressTimeElapsed = Global.Config.FrameProgressDelayMs < frameAdvanceTimestampDelta;
+			double frameAdvanceTimestampDeltaMs = (double)(currentTimestamp - _frameAdvanceTimestamp) / Stopwatch.Frequency * 1000.0;
+			bool frameProgressTimeElapsed = frameAdvanceTimestampDeltaMs >= Global.Config.FrameProgressDelayMs;
 
 			if (Global.Config.SkipLagFrame && IsLagFrame && frameProgressTimeElapsed && Global.Emulator.Frame > 0)
 			{
@@ -2706,12 +2708,12 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.ClientControls["Frame Advance"] || PressFrameAdvance)
 			{
 				// handle the initial trigger of a frame advance
-				if (_frameAdvanceTimestamp == DateTime.MinValue)
+				if (_frameAdvanceTimestamp == 0)
 				{
 					PauseEmulator();
 					runFrame = true;
 					_runloopFrameadvance = true;
-					_frameAdvanceTimestamp = now;
+					_frameAdvanceTimestamp = currentTimestamp;
 				}
 				else
 				{
@@ -2733,7 +2735,7 @@ namespace BizHawk.Client.EmuHawk
 					PauseEmulator();
 				}
 
-				_frameAdvanceTimestamp = DateTime.MinValue;
+				_frameAdvanceTimestamp = 0;
 			}
 
 			if (!EmulatorPaused)
@@ -2741,7 +2743,7 @@ namespace BizHawk.Client.EmuHawk
 				runFrame = true;
 			}
 
-			bool isRewinding = suppressCaptureRewind = Rewind(ref runFrame);
+			bool isRewinding = suppressCaptureRewind = Rewind(ref runFrame, currentTimestamp);
 
 			if (UpdateFrame)
 			{
@@ -2781,10 +2783,10 @@ namespace BizHawk.Client.EmuHawk
 
 				_runloopFps++;
 
-				if ((DateTime.Now - _runloopSecond).TotalSeconds > 1)
+				if ((double)(currentTimestamp - _runloopSecond) / Stopwatch.Frequency >= 1.0)
 				{
 					_runloopLastFps = _runloopFps;
-					_runloopSecond = DateTime.Now;
+					_runloopSecond = currentTimestamp;
 					_runloopFps = 0;
 					updateFpsString = true;
 				}
@@ -3660,7 +3662,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool Rewind(ref bool runFrame)
+		private bool Rewind(ref bool runFrame, long currentTimestamp)
 		{
 			if (IsSlave && master.WantsToControlRewind)
 			{
@@ -3675,10 +3677,33 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind)
 				&& !Global.MovieSession.Movie.IsRecording) // Rewind isn't "bulletproof" and can desync a recording movie!
 			{
-				Global.Rewinder.Rewind(1);
+				if (EmulatorPaused)
+				{
+					if (_frameRewindTimestamp == 0)
+					{
+						isRewinding = true;
+						_frameRewindTimestamp = currentTimestamp;
+					}
+					else
+					{
+						double timestampDeltaMs = (double)(currentTimestamp - _frameRewindTimestamp) / Stopwatch.Frequency * 1000.0;
+						isRewinding = timestampDeltaMs >= Global.Config.FrameProgressDelayMs;
+					}
+				}
+				else
+				{
+					isRewinding = true;
+				}
 
-				runFrame = Global.Rewinder.Count != 0;
-				isRewinding = true;
+				if (isRewinding)
+				{
+					Global.Rewinder.Rewind(1);
+					runFrame = Global.Rewinder.Count != 0;
+				}
+			}
+			else
+			{
+				_frameRewindTimestamp = 0;
 			}
 
 			return isRewinding;
