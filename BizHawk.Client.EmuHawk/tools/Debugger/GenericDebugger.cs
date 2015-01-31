@@ -114,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (RegisterPanel.CanGetCpuRegisters)
 			{
-				var pc = Debuggable.GetCpuFlagsAndRegisters()["PC"];
+				var pc = PCRegister;
 				SeekToBox.Nullable = false;
 				SeekToBox.SetHexProperties((long)Math.Pow(2, pc.BitSize));
 				SeekToBox.SetFromRawInt(0);
