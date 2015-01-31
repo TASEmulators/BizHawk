@@ -255,7 +255,7 @@ namespace BizHawk.Client.Common
 					_luaFunctions.Add(nlf);
 
 					DebuggableCore.MemoryCallbacks.Add(
-						new MemoryCallback(MemoryCallbackType.Execute, "Lua Hook", nlf.Callback, address));
+						new MemoryCallback(MemoryCallbackType.Read, "Lua Hook", nlf.Callback, address));
 					return nlf.Guid.ToString();
 				}
 			}
@@ -283,7 +283,7 @@ namespace BizHawk.Client.Common
 					_luaFunctions.Add(nlf);
 
 					DebuggableCore.MemoryCallbacks.Add(
-						new MemoryCallback(MemoryCallbackType.Execute, "Lua Hook", nlf.Callback, address));
+						new MemoryCallback(MemoryCallbackType.Write, "Lua Hook", nlf.Callback, address));
 					return nlf.Guid.ToString();
 				}
 			}
