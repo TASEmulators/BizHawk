@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 
 #if WINDOWS
+using SlimDX;
 using SlimDX.DirectSound;
 using SlimDX.Multimedia;
+using SlimDX.XAudio2;
 #endif
 
 using BizHawk.Emulation.Common;
@@ -13,130 +16,68 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-#if WINDOWS
-	public static class SoundEnumeration
+	public interface ISoundOutput : IDisposable
 	{
-		public static DirectSound Create()
-		{
-			var dc = DirectSound.GetDevices();
-			foreach (var dev in dc)
-			{
-				if (dev.Description == Global.Config.SoundDevice)
-					return new DirectSound(dev.DriverGuid);
-			}
-			return new DirectSound();
-		}
-
-		public static IEnumerable<string> DeviceNames()
-		{
-			var ret = new List<string>();
-			var dc = DirectSound.GetDevices();
-			foreach (var dev in dc)
-				ret.Add(dev.Description);
-			return ret;
-		}
+		void StartSound();
+		void StopSound();
+		void ApplyVolumeSettings(double volume);
+		int MaxSamplesDeficit { get; }
+		int CalculateSamplesNeeded();
+		void WriteSamples(short[] samples, int sampleCount);
 	}
 
+#if WINDOWS
 	public class Sound : IDisposable
 	{
-		private const int SampleRate = 44100;
-		private const int BytesPerSample = 2;
-		private const int ChannelCount = 2;
-		private const int BlockAlign = BytesPerSample * ChannelCount;
+		public const int SampleRate = 44100;
+		public const int BytesPerSample = 2;
+		public const int ChannelCount = 2;
+		public const int BlockAlign = BytesPerSample * ChannelCount;
 
-		private bool _muted;
 		private bool _disposed;
-		private DirectSound _device;
-		private SecondarySoundBuffer _deviceBuffer;
-		private readonly BufferedAsync _semiSync = new BufferedAsync();
-		private SoundOutputProvider _outputProvider;
-		private ISoundProvider _asyncSoundProvider;
+		private ISoundOutput _soundOutput;
 		private ISyncSoundProvider _syncSoundProvider;
-		private int _actualWriteOffsetBytes = -1;
-		private int _filledBufferSizeBytes;
-		private long _lastWriteTime;
-		private int _lastWriteCursor;
+		private ISoundProvider _asyncSoundProvider;
+		private SoundOutputProvider _outputProvider;
+		private readonly BufferedAsync _semiSync = new BufferedAsync();
 
-		public Sound(IntPtr handle, DirectSound device)
+		public Sound(IntPtr mainWindowHandle)
 		{
-			if (device == null) return;
-
-			device.SetCooperativeLevel(handle, CooperativeLevel.Priority);
-			_device = device;
+			_soundOutput = new DirectSoundSoundOutput(this, mainWindowHandle);
+			//_soundOutput = new XAudio2SoundOutput(this);
 		}
 
-		private int BufferSizeSamples { get; set; }
-
-		private int BufferSizeBytes
+		public void Dispose()
 		{
-			get { return BufferSizeSamples * BlockAlign; }
+			if (_disposed) return;
+
+			StopSound();
+
+			_soundOutput.Dispose();
+			_soundOutput = null;
+
+			_disposed = true;
 		}
 
-		private void CreateDeviceBuffer()
-		{
-			BufferSizeSamples = MillisecondsToSamples(Global.Config.SoundBufferSizeMs);
-
-			var format = new WaveFormat
-				{
-					SamplesPerSecond = SampleRate,
-					BitsPerSample = BytesPerSample * 8,
-					Channels = ChannelCount,
-					FormatTag = WaveFormatTag.Pcm,
-					BlockAlignment = BlockAlign,
-					AverageBytesPerSecond = SampleRate * BlockAlign
-				};
-
-			var desc = new SoundBufferDescription
-				{
-					Format = format,
-					Flags = BufferFlags.GlobalFocus | BufferFlags.Software | BufferFlags.GetCurrentPosition2 | BufferFlags.ControlVolume,
-					SizeInBytes = BufferSizeBytes
-				};
-
-			_deviceBuffer = new SecondarySoundBuffer(_device, desc);
-		}
-
-		public void ApplyVolumeSettings()
-		{
-			if (_deviceBuffer == null) return;
-
-			double volume = Global.Config.SoundVolume / 100.0;
-			if (volume < 0.0) volume = 0.0;
-			if (volume > 1.0) volume = 1.0;
-			_deviceBuffer.Volume = CalculateDirectSoundVolumeLevel(volume);
-		}
+		public bool IsStarted { get; private set; }
 
 		public void StartSound()
 		{
-			if (_disposed) throw new ObjectDisposedException("Sound");
+			if (_disposed) return;
 			if (!Global.Config.SoundEnabled) return;
-			if (_deviceBuffer != null) return;
+			if (IsStarted) return;
 
-			CreateDeviceBuffer();
-			ApplyVolumeSettings();
-
-			_deviceBuffer.Write(new byte[BufferSizeBytes], 0, LockFlags.EntireBuffer);
-			_deviceBuffer.CurrentPlayPosition = 0;
-			_deviceBuffer.Play(0, PlayFlags.Looping);
-
-			_actualWriteOffsetBytes = -1;
-			_filledBufferSizeBytes = 0;
-			_lastWriteTime = 0;
-			_lastWriteCursor = 0;
-
-			// 35 to 65 milliseconds depending on how big the buffer is. This is a trade-off
-			// between more frequent but less severe glitches (i.e. catching underruns before
-			// they happen and filling the buffer with silence) or less frequent but more
-			// severe glitches. At least on my Windows 8 machines, the distance between the
-			// play and write cursors can be up to 30 milliseconds, so that would be the
-			// absolute minimum we could use here.
-			int minBufferFullnessMs = Math.Min(35 + ((Global.Config.SoundBufferSizeMs - 60) / 2), 65);
+			_soundOutput.StartSound();
 
 			_outputProvider = new SoundOutputProvider();
-			_outputProvider.MaxSamplesDeficit = BufferSizeSamples - MillisecondsToSamples(minBufferFullnessMs);
+			_outputProvider.MaxSamplesDeficit = _soundOutput.MaxSamplesDeficit;
 			_outputProvider.BaseSoundProvider = _syncSoundProvider;
 
-			Global.SoundMaxBufferDeficitMs = Global.Config.SoundBufferSizeMs - minBufferFullnessMs;
+			Global.SoundMaxBufferDeficitMs = (int)Math.Ceiling(SamplesToMilliseconds(_soundOutput.MaxSamplesDeficit));
+
+			IsStarted = true;
+
+			ApplyVolumeSettings();
 
 			//LogUnderruns = true;
 			//_outputProvider.LogDebug = true;
@@ -144,25 +85,25 @@ namespace BizHawk.Client.EmuHawk
 
 		public void StopSound()
 		{
-			if (_deviceBuffer == null) return;
+			if (!IsStarted) return;
 
-			_deviceBuffer.Write(new byte[BufferSizeBytes], 0, LockFlags.EntireBuffer);
-			_deviceBuffer.Stop();
-			_deviceBuffer.Dispose();
-			_deviceBuffer = null;
+			_soundOutput.StopSound();
 
 			_outputProvider = null;
 
 			Global.SoundMaxBufferDeficitMs = 0;
 
-			BufferSizeSamples = 0;
+			IsStarted = false;
 		}
 
-		public void Dispose()
+		public void ApplyVolumeSettings()
 		{
-			if (_disposed) return;
-			StopSound();
-			_disposed = true;
+			if (!IsStarted) return;
+
+			double volume = Global.Config.SoundVolume / 100.0;
+			if (volume < 0.0) volume = 0.0;
+			if (volume > 1.0) volume = 1.0;
+			_soundOutput.ApplyVolumeSettings(volume);
 		}
 
 		public void SetSyncInputPin(ISyncSoundProvider source)
@@ -198,90 +139,34 @@ namespace BizHawk.Client.EmuHawk
 			_semiSync.RecalculateMagic(Global.CoreComm.VsyncRate);
 		}
 
-		private bool InitializeBufferWithSilence
+		public bool InitializeBufferWithSilence
 		{
 			get { return true; }
 		}
 
-		private bool RecoverFromUnderrunsWithSilence
+		public bool RecoverFromUnderrunsWithSilence
 		{
 			get { return true; }
 		}
 
-		private int SilenceLeaveRoomForFrameCount
+		public int SilenceLeaveRoomForFrameCount
 		{
 			get { return Global.Config.SoundThrottle ? 1 : 2; } // Why 2? I don't know, but it seems to work well with the clock throttle's behavior.
 		}
 
 		public bool LogUnderruns { get; set; }
 
-		private int CalculateSamplesNeeded()
+		public void OnUnderrun()
 		{
-			long currentWriteTime = Stopwatch.GetTimestamp();
-			int playCursor = _deviceBuffer.CurrentPlayPosition;
-			int writeCursor = _deviceBuffer.CurrentWritePosition;
-			bool detectedUnderrun = false;
-			if (_actualWriteOffsetBytes != -1)
-			{
-				double elapsedSeconds = (currentWriteTime - _lastWriteTime) / (double)Stopwatch.Frequency;
-				double bufferSizeSeconds = (double)BufferSizeSamples / SampleRate;
-				int cursorDelta = CircularDistance(_lastWriteCursor, writeCursor, BufferSizeBytes);
-				cursorDelta += BufferSizeBytes * (int)Math.Round((elapsedSeconds - (cursorDelta / (double)(SampleRate * BlockAlign))) / bufferSizeSeconds);
-				_filledBufferSizeBytes -= cursorDelta;
-				if (_filledBufferSizeBytes < 0)
-				{
-					if (LogUnderruns) Console.WriteLine("DirectSound underrun detected!");
-					detectedUnderrun = true;
-					_outputProvider.OnVolatility();
-				}
-			}
-			bool isInitializing = _actualWriteOffsetBytes == -1;
-			if (isInitializing || detectedUnderrun)
-			{
-				_actualWriteOffsetBytes = writeCursor;
-				_filledBufferSizeBytes = 0;
-			}
-			int samplesNeeded = CircularDistance(_actualWriteOffsetBytes, playCursor, BufferSizeBytes) / BlockAlign;
-			if ((isInitializing && InitializeBufferWithSilence) || (detectedUnderrun && RecoverFromUnderrunsWithSilence))
-			{
-				int samplesPerFrame = (int)Math.Round(SampleRate / Global.Emulator.CoreComm.VsyncRate);
-				int silenceSamples = Math.Max(samplesNeeded - (SilenceLeaveRoomForFrameCount * samplesPerFrame), 0);
-				WriteSamples(new short[silenceSamples * 2], silenceSamples);
-				samplesNeeded -= silenceSamples;
-			}
-			_lastWriteTime = currentWriteTime;
-			_lastWriteCursor = writeCursor;
-			return samplesNeeded;
+			if (!IsStarted) return;
+
+			if (LogUnderruns) Console.WriteLine("Sound underrun detected!");
+			_outputProvider.OnVolatility();
 		}
 
-		private int CircularDistance(int start, int end, int size)
+		public void UpdateSound(bool outputSilence)
 		{
-			return (end - start + size) % size;
-		}
-
-		private void WriteSamples(short[] samples, int sampleCount)
-		{
-			if (sampleCount == 0) return;
-			_deviceBuffer.Write(samples, 0, sampleCount * ChannelCount, _actualWriteOffsetBytes, LockFlags.None);
-			AdvanceWriteOffset(sampleCount);
-		}
-
-		private void AdvanceWriteOffset(int sampleCount)
-		{
-			_actualWriteOffsetBytes = (_actualWriteOffsetBytes + (sampleCount * BlockAlign)) % BufferSizeBytes;
-			_filledBufferSizeBytes += sampleCount * BlockAlign;
-		}
-
-		public void UpdateSilence()
-		{
-			_muted = true;
-			UpdateSound();
-			_muted = false;
-		}
-
-		public void UpdateSound()
-		{
-			if (!Global.Config.SoundEnabled || _deviceBuffer == null || _disposed)
+			if (!Global.Config.SoundEnabled || !IsStarted || _disposed)
 			{
 				if (_asyncSoundProvider != null) _asyncSoundProvider.DiscardSamples();
 				if (_syncSoundProvider != null) _syncSoundProvider.DiscardSamples();
@@ -290,10 +175,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			short[] samples;
-			int samplesNeeded = CalculateSamplesNeeded();
+			int samplesNeeded = _soundOutput.CalculateSamplesNeeded();
 			int samplesProvided;
 
-			if (_muted)
+			if (outputSilence)
 			{
 				samples = new short[samplesNeeded * ChannelCount];
 				samplesProvided = samplesNeeded;
@@ -311,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 					while (samplesNeeded < samplesProvided && !Global.DisableSecondaryThrottling)
 					{
 						Thread.Sleep((samplesProvided - samplesNeeded) / (SampleRate / 1000)); // Let the audio clock control sleep time
-						samplesNeeded = CalculateSamplesNeeded();
+						samplesNeeded = _soundOutput.CalculateSamplesNeeded();
 					}
 				}
 				else
@@ -336,20 +221,289 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			WriteSamples(samples, samplesProvided);
+			_soundOutput.WriteSamples(samples, samplesProvided);
 		}
 
-		private static int MillisecondsToSamples(int milliseconds)
+		public static int MillisecondsToSamples(int milliseconds)
 		{
 			return milliseconds * SampleRate / 1000;
 		}
 
-		/// <param name="level">Percent volume level from 0.0 to 1.0.</param>
-		private static int CalculateDirectSoundVolumeLevel(double level)
+		public static double SamplesToMilliseconds(int samples)
+		{
+			return samples * 1000.0 / SampleRate;
+		}
+	}
+
+	public class DirectSoundSoundOutput : ISoundOutput
+	{
+		private bool _disposed;
+		private Sound _sound;
+		private DirectSound _device;
+		private SecondarySoundBuffer _deviceBuffer;
+		private int _actualWriteOffsetBytes = -1;
+		private int _filledBufferSizeBytes;
+		private long _lastWriteTime;
+		private int _lastWriteCursor;
+
+		public DirectSoundSoundOutput(Sound sound, IntPtr mainWindowHandle)
+		{
+			_sound = sound;
+
+			var deviceInfo = DirectSound.GetDevices().FirstOrDefault(d => d.Description == Global.Config.SoundDevice);
+			_device = deviceInfo != null ? new DirectSound(deviceInfo.DriverGuid) : new DirectSound();
+			_device.SetCooperativeLevel(mainWindowHandle, CooperativeLevel.Priority);
+		}
+
+		public void Dispose()
+		{
+			if (_disposed) return;
+
+			_device.Dispose();
+			_device = null;
+
+			_disposed = true;
+		}
+
+		public static IEnumerable<string> GetDeviceNames()
+		{
+			return DirectSound.GetDevices().Select(d => d.Description);
+		}
+
+		private int BufferSizeSamples { get; set; }
+
+		private int BufferSizeBytes
+		{
+			get { return BufferSizeSamples * Sound.BlockAlign; }
+		}
+
+		public int MaxSamplesDeficit { get; private set; }
+
+		public void ApplyVolumeSettings(double volume)
 		{
 			// I'm not sure if this is "technically" correct but it works okay
 			int range = (int)Volume.Maximum - (int)Volume.Minimum;
-			return (int)(Math.Pow(level, 0.15) * range) + (int)Volume.Minimum;
+			_deviceBuffer.Volume = (int)(Math.Pow(volume, 0.15) * range) + (int)Volume.Minimum;
+		}
+
+		public void StartSound()
+		{
+			BufferSizeSamples = Sound.MillisecondsToSamples(Global.Config.SoundBufferSizeMs);
+
+			// 35 to 65 milliseconds depending on how big the buffer is. This is a trade-off
+			// between more frequent but less severe glitches (i.e. catching underruns before
+			// they happen and filling the buffer with silence) or less frequent but more
+			// severe glitches. At least on my Windows 8 machines, the distance between the
+			// play and write cursors can be up to 30 milliseconds, so that would be the
+			// absolute minimum we could use here.
+			int minBufferFullnessMs = Math.Min(35 + ((Global.Config.SoundBufferSizeMs - 60) / 2), 65);
+			MaxSamplesDeficit = BufferSizeSamples - Sound.MillisecondsToSamples(minBufferFullnessMs);
+
+			var format = new WaveFormat
+				{
+					SamplesPerSecond = Sound.SampleRate,
+					BitsPerSample = Sound.BytesPerSample * 8,
+					Channels = Sound.ChannelCount,
+					FormatTag = WaveFormatTag.Pcm,
+					BlockAlignment = Sound.BlockAlign,
+					AverageBytesPerSecond = Sound.SampleRate * Sound.BlockAlign
+				};
+
+			var desc = new SoundBufferDescription
+				{
+					Format = format,
+					Flags =
+						SlimDX.DirectSound.BufferFlags.GlobalFocus |
+						SlimDX.DirectSound.BufferFlags.Software |
+						SlimDX.DirectSound.BufferFlags.GetCurrentPosition2 |
+						SlimDX.DirectSound.BufferFlags.ControlVolume,
+					SizeInBytes = BufferSizeBytes
+				};
+
+			_deviceBuffer = new SecondarySoundBuffer(_device, desc);
+
+			_actualWriteOffsetBytes = -1;
+			_filledBufferSizeBytes = 0;
+			_lastWriteTime = 0;
+			_lastWriteCursor = 0;
+
+			_deviceBuffer.Play(0, SlimDX.DirectSound.PlayFlags.Looping);
+		}
+
+		public void StopSound()
+		{
+			_deviceBuffer.Stop();
+			_deviceBuffer.Dispose();
+			_deviceBuffer = null;
+
+			BufferSizeSamples = 0;
+		}
+
+		public int CalculateSamplesNeeded()
+		{
+			long currentWriteTime = Stopwatch.GetTimestamp();
+			int playCursor = _deviceBuffer.CurrentPlayPosition;
+			int writeCursor = _deviceBuffer.CurrentWritePosition;
+			bool detectedUnderrun = false;
+			if (_actualWriteOffsetBytes != -1)
+			{
+				double elapsedSeconds = (currentWriteTime - _lastWriteTime) / (double)Stopwatch.Frequency;
+				double bufferSizeSeconds = (double)BufferSizeSamples / Sound.SampleRate;
+				int cursorDelta = CircularDistance(_lastWriteCursor, writeCursor, BufferSizeBytes);
+				cursorDelta += BufferSizeBytes * (int)Math.Round((elapsedSeconds - (cursorDelta / (double)(Sound.SampleRate * Sound.BlockAlign))) / bufferSizeSeconds);
+				_filledBufferSizeBytes -= cursorDelta;
+				if (_filledBufferSizeBytes < 0)
+				{
+					_sound.OnUnderrun();
+					detectedUnderrun = true;
+				}
+			}
+			bool isInitializing = _actualWriteOffsetBytes == -1;
+			if (isInitializing || detectedUnderrun)
+			{
+				_actualWriteOffsetBytes = writeCursor;
+				_filledBufferSizeBytes = 0;
+			}
+			int samplesNeeded = CircularDistance(_actualWriteOffsetBytes, playCursor, BufferSizeBytes) / Sound.BlockAlign;
+			if ((isInitializing && _sound.InitializeBufferWithSilence) || (detectedUnderrun && _sound.RecoverFromUnderrunsWithSilence))
+			{
+				int samplesPerFrame = (int)Math.Round(Sound.SampleRate / Global.Emulator.CoreComm.VsyncRate);
+				int silenceSamples = Math.Max(samplesNeeded - (_sound.SilenceLeaveRoomForFrameCount * samplesPerFrame), 0);
+				WriteSamples(new short[silenceSamples * 2], silenceSamples);
+				samplesNeeded -= silenceSamples;
+			}
+			_lastWriteTime = currentWriteTime;
+			_lastWriteCursor = writeCursor;
+			return samplesNeeded;
+		}
+
+		private int CircularDistance(int start, int end, int size)
+		{
+			return (end - start + size) % size;
+		}
+
+		public void WriteSamples(short[] samples, int sampleCount)
+		{
+			if (sampleCount == 0) return;
+			_deviceBuffer.Write(samples, 0, sampleCount * Sound.ChannelCount, _actualWriteOffsetBytes, LockFlags.None);
+			_actualWriteOffsetBytes = (_actualWriteOffsetBytes + (sampleCount * Sound.BlockAlign)) % BufferSizeBytes;
+			_filledBufferSizeBytes += sampleCount * Sound.BlockAlign;
+		}
+	}
+
+	public class XAudio2SoundOutput : ISoundOutput
+	{
+		private bool _disposed;
+		private Sound _sound;
+		private XAudio2 _device;
+		private MasteringVoice _masteringVoice;
+		private SourceVoice _sourceVoice;
+		private long _runningSamplesQueued;
+
+		public XAudio2SoundOutput(Sound sound)
+		{
+			_sound = sound;
+			_device = new XAudio2();
+			int? deviceIndex = Enumerable.Range(0, _device.DeviceCount)
+				.Select(n => (int?)n)
+				.FirstOrDefault(n => _device.GetDeviceDetails(n.Value).DisplayName == Global.Config.SoundDevice);
+			_masteringVoice = deviceIndex == null ?
+				new MasteringVoice(_device, Sound.ChannelCount, Sound.SampleRate) :
+				new MasteringVoice(_device, Sound.ChannelCount, Sound.SampleRate, deviceIndex.Value);
+		}
+
+		public void Dispose()
+		{
+			if (_disposed) return;
+
+			_masteringVoice.Dispose();
+			_masteringVoice = null;
+
+			_device.Dispose();
+			_device = null;
+
+			_disposed = true;
+		}
+
+		public static IEnumerable<string> GetDeviceNames()
+		{
+			using (XAudio2 device = new XAudio2())
+			{
+				return Enumerable.Range(0, device.DeviceCount).Select(n => device.GetDeviceDetails(n).DisplayName);
+			}
+		}
+
+		private int BufferSizeSamples { get; set; }
+
+		public int MaxSamplesDeficit { get; private set; }
+
+		public void ApplyVolumeSettings(double volume)
+		{
+			_sourceVoice.Volume = (float)volume;
+		}
+
+		public void StartSound()
+		{
+			BufferSizeSamples = Sound.MillisecondsToSamples(Global.Config.SoundBufferSizeMs);
+			MaxSamplesDeficit = BufferSizeSamples;
+
+			var format = new WaveFormat
+				{
+					SamplesPerSecond = Sound.SampleRate,
+					BitsPerSample = Sound.BytesPerSample * 8,
+					Channels = Sound.ChannelCount,
+					FormatTag = WaveFormatTag.Pcm,
+					BlockAlignment = Sound.BlockAlign,
+					AverageBytesPerSecond = Sound.SampleRate * Sound.BlockAlign
+				};
+
+			_sourceVoice = new SourceVoice(_device, format);
+
+			_runningSamplesQueued = 0;
+
+			_sourceVoice.Start();
+		}
+
+		public void StopSound()
+		{
+			_sourceVoice.Stop();
+			_sourceVoice.Dispose();
+			_sourceVoice = null;
+
+			BufferSizeSamples = 0;
+		}
+
+		public int CalculateSamplesNeeded()
+		{
+			long samplesAwaitingPlayback = _runningSamplesQueued - _sourceVoice.State.SamplesPlayed;
+			bool isInitializing = _runningSamplesQueued == 0;
+			bool detectedUnderrun = !isInitializing && _sourceVoice.State.BuffersQueued == 0;
+			if (detectedUnderrun)
+			{
+				_sound.OnUnderrun();
+			}
+			int samplesNeeded = (int)Math.Max(BufferSizeSamples - samplesAwaitingPlayback, 0);
+			if ((isInitializing && _sound.InitializeBufferWithSilence) || (detectedUnderrun && _sound.RecoverFromUnderrunsWithSilence))
+			{
+				int samplesPerFrame = (int)Math.Round(Sound.SampleRate / Global.Emulator.CoreComm.VsyncRate);
+				int silenceSamples = Math.Max(samplesNeeded - (_sound.SilenceLeaveRoomForFrameCount * samplesPerFrame), 0);
+				WriteSamples(new short[silenceSamples * 2], silenceSamples);
+				samplesNeeded -= silenceSamples;
+			}
+			return samplesNeeded;
+		}
+
+		public void WriteSamples(short[] samples, int sampleCount)
+		{
+			if (sampleCount == 0) return;
+			// TODO: Re-use these buffers
+			byte[] bytes = new byte[sampleCount * Sound.BlockAlign];
+			Buffer.BlockCopy(samples, 0, bytes, 0, bytes.Length);
+			_sourceVoice.SubmitSourceBuffer(new AudioBuffer {
+				AudioBytes = bytes.Length,
+				AudioData = new DataStream(bytes, true, false)
+			});
+			_runningSamplesQueued += sampleCount;
 		}
 	}
 #else

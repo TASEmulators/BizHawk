@@ -278,7 +278,11 @@ namespace BizHawk.Client.EmuHawk
 			Global.AutoFireController = Global.AutofireNullControls;
 			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
 #if WINDOWS
-			GlobalWin.Sound = new Sound(Handle, GlobalWin.DSound);
+			try { GlobalWin.Sound = new Sound(Handle); }
+			catch
+			{
+				MessageBox.Show("Couldn't initialize DirectSound! Things may go poorly for you. Try changing your sound driver to 41khz instead of 48khz in mmsys.cpl.", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 #else
 			Global.Sound = new Sound();
 #endif
@@ -2886,14 +2890,8 @@ namespace BizHawk.Client.EmuHawk
 				UpdateFrame = false;
 			}
 
-			if (genSound && !coreskipaudio)
-			{
-				GlobalWin.Sound.UpdateSound();
-			}
-			else
-			{
-				GlobalWin.Sound.UpdateSilence();
-			}
+			bool outputSilence = !genSound || coreskipaudio;
+			GlobalWin.Sound.UpdateSound(outputSilence);
 		}
 
 		#endregion
