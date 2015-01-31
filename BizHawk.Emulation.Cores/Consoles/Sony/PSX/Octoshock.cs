@@ -66,6 +66,66 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			},
 		};
 
+		private void SetControllerButtons()
+		{
+			ControllerDefinition.BoolButtons.Clear();
+			ControllerDefinition.FloatControls.Clear();
+
+			
+			for (int i = 0; i < _SyncSettings.Controllers.Length; i++)
+			{
+				if (_SyncSettings.Controllers[i].IsConnected)
+				{
+					ControllerDefinition.BoolButtons.AddRange(new[]
+					{
+						"P" + (i + 1) + " Up",
+						"P" + (i + 1) + " Down",
+						"P" + (i + 1) + " Left",
+						"P" + (i + 1) + " Right",
+						"P" + (i + 1) + " Select",
+						"P" + (i + 1) + " Start",
+						"P" + (i + 1) + " Square",
+						"P" + (i + 1) + " Triangle",
+						"P" + (i + 1) + " Circle",
+						"P" + (i + 1) + " Cross",
+						"P" + (i + 1) + " L1", 
+						"P" + (i + 1) + " R1",
+						"P" + (i + 1) + " L2",
+						"P" + (i + 1) + " R2",
+						"P" + (i + 1) + " L3",
+						"P" + (i + 1) + " R3",
+						"P" + (i + 1) + " MODE",
+					});
+
+					ControllerDefinition.FloatControls.AddRange(new[]
+					{
+						"P" + (i + 1) + " LStick X",
+						"P" + (i + 1) + " LStick Y",
+						"P" + (i + 1) + " RStick X",
+						"P" + (i + 1) + " RStick Y"
+					});
+
+					ControllerDefinition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
+					ControllerDefinition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
+					ControllerDefinition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
+					ControllerDefinition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
+				}
+			}
+
+			ControllerDefinition.BoolButtons.AddRange(new[]
+			{
+				"Open",
+				"Close",
+				"Reset"
+			});
+
+			ControllerDefinition.FloatControls.Add("Disc Select");
+
+			ControllerDefinition.FloatRanges.Add(
+				new[] {-1f,-1f,-1f} //this is carefully chosen so that we end up with a -1 disc by default (indicating that it's never been set)
+			);
+		}
+
 		public string BoardName { get { return null; } }
 
 		private int[] frameBuffer = new int[0];
@@ -317,6 +377,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			//do this after framebuffers and peripherals and whatever crap are setup. kind of lame, but thats how it is for now
 			StudySaveBufferSize();
 
+			SetControllerButtons();
 			OctoshockDll.shock_PowerOn(psx);
 		}
 
@@ -853,6 +914,17 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			{
 				return (SyncSettings)MemberwiseClone();
 			}
+
+			public ControllerSetting[] Controllers = 
+			{
+				new ControllerSetting { IsConnected = true },
+				new ControllerSetting { IsConnected = false }
+			};
+		}
+
+		public class ControllerSetting
+		{
+			public bool IsConnected { get; set; }
 		}
 
 		public class Settings
