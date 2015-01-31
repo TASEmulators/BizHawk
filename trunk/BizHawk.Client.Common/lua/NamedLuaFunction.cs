@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 				{
 					_function.Call();
 				}
-				catch (SystemException ex)
+				catch (Exception ex)
 				{
 					logCallback(
 						"error running function attached by the event " +
