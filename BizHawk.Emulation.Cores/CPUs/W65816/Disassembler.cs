@@ -416,8 +416,6 @@ namespace BizHawk.Emulation.Cores.Components.W65816
 					//sprintf(pbuf, "($%02X)", mem[1]);
 					offset = 2;
 					break;
-					offset = 3;
-					break;
 				// Stack Relative
 				case 0x03:case 0x23:case 0x43:case 0x63:case 0x83:case 0xA3:case 0xC3:case 0xE3:
 					pbuf = string.Format("${0:X2},S", peek(addr = 1));
