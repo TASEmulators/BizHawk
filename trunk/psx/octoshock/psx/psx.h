@@ -343,6 +343,9 @@ EW_EXPORT s32 shock_OpenTray(void* psx);
 //Sets the disc in the tray. Returns SHOCK_NOCANDO if it's closed. You can pass NULL to remove a disc from the tray
 EW_EXPORT s32 shock_SetDisc(void* psx, ShockDiscRef* disc);
 
+//POKES the disc in the tray, for use after loading a state. Does not affect any of the internal emulation parameters
+EW_EXPORT s32 shock_PokeDisc(void* psx, ShockDiscRef* disc);
+
 //Closes the disc tray. Returns SHOCK_NOCANDO if already closed.
 EW_EXPORT s32 shock_CloseTray(void* psx);
 

@@ -212,6 +212,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public static extern int shock_SetDisc(IntPtr psx, IntPtr disc);
 
 		[DllImport(dd, CallingConvention = cc)]
+		public static extern int shock_PokeDisc(IntPtr psx, IntPtr disc);
+
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_CloseTray(IntPtr psx);
 
 		[DllImport(dd, CallingConvention = cc)]

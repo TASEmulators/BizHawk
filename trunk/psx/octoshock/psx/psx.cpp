@@ -1285,8 +1285,7 @@ EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
 	s_ShockState.power = false;
 	s_ShockState.eject = false;
 
-	//set tray closed with no disc
-	CDC->SetDisc(false,NULL,"");
+	//do we need to do anything particualr with the CDC disc/tray state? survey says... no.
 
 	return SHOCK_OK;
 }
@@ -1896,15 +1895,41 @@ EW_EXPORT s32 shock_SetDisc(void* psx, ShockDiscRef* disc)
 		if(ret != SHOCK_OK) return ret;
 	}
 
+	s_CurrDiscInfo = info;
+	s_CurrDisc = disc;
+
+	CDC->SetDisc(s_CurrDisc,s_CurrDiscInfo.id, false);
+
+	return SHOCK_OK;
+}
+
+EW_EXPORT s32 shock_PokeDisc(void* psx, ShockDiscRef* disc)
+{
+	//TODO HACKS! DONT COPY/PASTE SO MUCH! REFACTOR DISC ID STUFF!
+
+	//let's talk about why this function is needed. well, let's paste an old comment on the subject:
 	//heres a comment from some old savestating code. something to keep in mind (maybe or maybe not a surprise depending on your point of view)
 	//"Call SetDisc() BEFORE we load CDC state, since SetDisc() has emulation side effects.  We might want to clean this up in the future."
 	//I'm not really sure I like how SetDisc works, so I'm glad this was brought to our attention
 
+		//TODO - non-psx disc is legal here. should pass null ID to CDC setdisc
+	
+	//analyze disc so we dont have to annoyingly manage it from client
+
+	//TODO - so junky
+	ShockDiscInfo info;
+	strcpy(info.id,"\0\0\0\0");
+	info.region = REGION_NONE;
+	if(disc != NULL)
+	{
+		s32 ret = shock_AnalyzeDisc(disc,&info);
+		if(ret != SHOCK_OK) return ret;
+	}
+
 	s_CurrDiscInfo = info;
 	s_CurrDisc = disc;
 
-	//set the disc to the CDC, but since its necessarily open to insert, this is false
-	CDC->SetDisc(true,s_CurrDisc,s_CurrDiscInfo.id);
+	CDC->SetDisc(s_CurrDisc,s_CurrDiscInfo.id,true);
 
 	return SHOCK_OK;
 }
@@ -1913,7 +1938,7 @@ EW_EXPORT s32 shock_OpenTray(void* psx)
 {
 	if(s_ShockState.eject) return SHOCK_NOCANDO;
 	s_ShockState.eject = true;
-	CDC->SetDisc(true,s_CurrDisc,s_CurrDiscInfo.id);
+	CDC->OpenTray();
 	return SHOCK_OK;
 }
 
@@ -1921,7 +1946,7 @@ EW_EXPORT s32 shock_CloseTray(void* psx)
 {
 	if(!s_ShockState.eject) return SHOCK_NOCANDO;
 	s_ShockState.eject = false;
-	CDC->SetDisc(false,s_CurrDisc,s_CurrDiscInfo.id);
+	CDC->CloseTray(false);
 	return SHOCK_OK;
 }
 
@@ -2106,7 +2131,6 @@ static s32 AnalyzeDiscEx(ShockDiscRef* disc, ShockDiscInfo* info)
 	uint8 buf[2048];
 	uint8 fbuf[2048 + 1];
 	unsigned ipos, opos;
-	int i;
 
 	//clear it out in case of error
 	info->region = REGION_NONE;

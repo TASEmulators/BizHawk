@@ -62,6 +62,7 @@ PS_CDC::PS_CDC() : DMABuffer(4096)
 {
  IsPSXDisc = false;
  Cur_disc = NULL;
+ Open_disc = NULL;
 
  DriveStatus = DS_STOPPED;
  PendingCommandPhase = 0;
@@ -90,33 +91,58 @@ void PS_CDC::DMForceStop(void)
  SectorsRead = 0;
 }
 
-void PS_CDC::SetDisc(bool tray_open, ShockDiscRef *disc, const char *disc_id)
+void PS_CDC::OpenTray()
 {
- if(tray_open)
-  disc = NULL;
+	//effectively a NOP at t=0
+	DMForceStop();
 
- Cur_disc = disc;
- IsPSXDisc = false;
- memset(DiscID, 0, sizeof(DiscID));
+	//zero 31-jan-2015 - psxtech says that what this is used for is actually a 'was open' flag which gets cleared after the status gets polled.
+	//so lets set it here, and rename it later if we're sure.
+	DiscChanged = true;
+}
 
- if(!Cur_disc)
- {
-  DMForceStop();
- }
- else
- {
-  HeaderBufValid = false;
-  DiscStartupDelay = (int64)1000 * 33868800 / 1000;
-  DiscChanged = true;
+void PS_CDC::CloseTray(bool poke)
+{
+	//switch pending (open) disc to current disc
+	Cur_disc = Open_disc;
+	Open_disc = NULL;
+	char disc_id[5];
+	strncpy(disc_id,(char*)Open_DiscID,4);
+	Open_DiscID[0] = 0;
 
-  Cur_disc->ReadTOC((ShockTOC*)&toc,(ShockTOCTrack*)toc.tracks);
+	//prepare analysis if disc: leave in empty state
+	IsPSXDisc = false;
+	memset(DiscID, 0, sizeof(DiscID));
 
-  if(disc_id)
-  {
-   strncpy((char *)DiscID, disc_id, 4);
-   IsPSXDisc = true;
-  }
- }
+	//stuff to always happen, even when poking:
+	if(Cur_disc)
+	{
+		Cur_disc->ReadTOC((ShockTOC*)&toc,(ShockTOCTrack*)toc.tracks);
+
+		//complete analysis
+		if(disc_id)
+		{
+			strncpy((char *)DiscID, disc_id, 4);
+			IsPSXDisc = true;
+		}
+	}
+
+	//stuff to happen when not poking (reset CDC state)
+	if(Cur_disc && !poke)
+	{
+		HeaderBufValid = false;
+		DiscStartupDelay = (int64)1000 * 33868800 / 1000;
+	}
+
+}
+
+void PS_CDC::SetDisc(ShockDiscRef *disc, const char *disc_id, bool poke)
+{
+	Open_disc = disc;
+	strncpy((char*)Open_DiscID,disc_id,4);
+
+	if(poke)
+		CloseTray(true);
 }
 
 int32 PS_CDC::CalcNextEvent(void)

@@ -524,6 +524,20 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			return new System.Drawing.Size(VirtualWidth, VirtualHeight);
 		}
 
+		void PokeDisc()
+		{
+			if (CurrentDiscIndexMounted == 0)
+			{
+				currentDiscInterface = null;
+				OctoshockDll.shock_PokeDisc(psx, IntPtr.Zero);
+			}
+			else
+			{
+				currentDiscInterface = discInterfaces[CurrentDiscIndexMounted - 1];
+				OctoshockDll.shock_PokeDisc(psx, currentDiscInterface.OctoshockHandle);
+			}
+		}
+
 		void FrameAdvance_PrepDiscState()
 		{
 			//reminder: if this is the beginning of time, we can begin with the disc ejected or inserted.
@@ -834,6 +848,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			Frame = s.ExtraData.Frame;
 			CurrentTrayOpen = s.ExtraData.CurrentDiscEjected;
 			CurrentDiscIndexMounted = s.ExtraData.CurrentDiscIndexMounted;
+			PokeDisc();
 		}
 
 		byte[] savebuff;
@@ -899,8 +914,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				Frame = reader.ReadInt32();
 				CurrentTrayOpen = reader.ReadBoolean();
 				CurrentDiscIndexMounted = reader.ReadInt32();
-
-				//TODO - need a method to sneak the required disc, without having to do a proper eject sequence
+				PokeDisc();
 			}
 		}
 
