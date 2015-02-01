@@ -136,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 			if (buckets[0].Count == controllerButtons.Count)
 			{
 				// everything went into bucket 0, so make no tabs at all
-				dest.Controls.Add(createpanel(settings, null, dest.Size));
+				dest.Controls.Add(createpanel(settings, controllerButtons.ToList(), dest.Size));
 			}
 			else
 			{
